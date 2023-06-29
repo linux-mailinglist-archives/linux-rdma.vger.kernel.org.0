@@ -2,144 +2,112 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C1F2742BD9
-	for <lists+linux-rdma@lfdr.de>; Thu, 29 Jun 2023 20:19:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1CE32742F88
+	for <lists+linux-rdma@lfdr.de>; Thu, 29 Jun 2023 23:33:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232210AbjF2ST0 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 29 Jun 2023 14:19:26 -0400
-Received: from mail-bn8nam12on2112.outbound.protection.outlook.com ([40.107.237.112]:23265
-        "EHLO NAM12-BN8-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S232166AbjF2STR (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Thu, 29 Jun 2023 14:19:17 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=mboB9/Y3gw2Sj6FvAGbs8HMySbrb1HG4aw3kuD3Gjy0VmTBeBuV9ds5kOAMViXwP8fIDgm4ok836QYwnSKTQALDyjjm+z35oN2bmsLgy8ZU49aKlq460XvhKHO71naZt1Fl8chd1PY9n1lobPJsaEFCv/ktv+6RQJ2W+KEJLJG3JYE6nKl0Ax0NK1ZHKZEI21FQdCn3uESSpqzxuj3gotHXKLOjhUG6sUjGXGF1lllEeRzcdkxxGb60xDg8DpEBnirAg6aTII0ZU1fH3IsVguBKLAyZaDV9hLNwV4gjYPij6lXBPrO7fIuzY8Gn7owKH2CclpytsWfl9cAlda1sS6A==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=X3Dl+YL0PCQKfqxfcTrMbTXYDL+5DpvrmfteLqndCHM=;
- b=guCWlLAQA483WLfeCW+z7xohsM3tlQw8iw/1y38+90ZD2wr8o6GkM/Xaos61E5z/My0TMa/t9ZxQiSg8O3HpybLTglrvZJiNLV0N0ls40lBOGNQpeeKsf1QzZr2mQvAQOsuT+ADs3fS8IZM0MgpAbPHbew0riDojzDCZPjlRxDz5L88HuYIyAaWKR2NCiVTdjW0ybM4G7kOR+lK+HkSp9l3ZUcUgshUwlN74CH0YMULBF8hG04DiH2J0YDrPegU3WWpNycwHiWZVlVbLUZzaR4Nlsn5LaufbpETmI0c4gyjnxW/2pvtFptmzt4EybUpT5R7TF+P971I2l7EgLI07gQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=microsoft.com; dmarc=pass action=none
- header.from=microsoft.com; dkim=pass header.d=microsoft.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=X3Dl+YL0PCQKfqxfcTrMbTXYDL+5DpvrmfteLqndCHM=;
- b=aq43z4/WCzNvP7DMojdFl8Yk1+HotNagy0LVReiSZexyZFInhhJkF1ctGoru30feFmu4AlwopTAc6g9LqmIwSkY7IXNBHlpUcwLr3b2lbeARd6tLhbvY8/j6Zbu55bknOGRMY1FVyP34RSZ6It5DQj3Nbx4v5+M/rLfDUdkUCyE=
-Received: from PH7PR21MB3263.namprd21.prod.outlook.com (2603:10b6:510:1db::16)
- by DS7PR21MB3774.namprd21.prod.outlook.com (2603:10b6:8:91::17) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6521.2; Thu, 29 Jun
- 2023 18:19:13 +0000
-Received: from PH7PR21MB3263.namprd21.prod.outlook.com
- ([fe80::eee5:34cd:7c3b:9374]) by PH7PR21MB3263.namprd21.prod.outlook.com
- ([fe80::eee5:34cd:7c3b:9374%5]) with mapi id 15.20.6544.002; Thu, 29 Jun 2023
- 18:19:13 +0000
-From:   Long Li <longli@microsoft.com>
-To:     Jakub Kicinski <kuba@kernel.org>,
-        "longli@linuxonhyperv.com" <longli@linuxonhyperv.com>
-CC:     Paolo Abeni <pabeni@redhat.com>, Jason Gunthorpe <jgg@ziepe.ca>,
-        Leon Romanovsky <leon@kernel.org>,
-        Ajay Sharma <sharmaajay@microsoft.com>,
-        Dexuan Cui <decui@microsoft.com>,
-        KY Srinivasan <kys@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        Wei Liu <wei.liu@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "stable@vger.kernel.org" <stable@vger.kernel.org>
-Subject: RE: [Patch v3] net: mana: Batch ringing RX queue doorbell on
- receiving packets
-Thread-Topic: [Patch v3] net: mana: Batch ringing RX queue doorbell on
- receiving packets
-Thread-Index: AQHZqInuIa+OQxGM80ioo4gKQGwCLa+hejgAgAB9bYCAACOaAA==
-Date:   Thu, 29 Jun 2023 18:19:13 +0000
-Message-ID: <PH7PR21MB326323DE489A3169669EBDAACE25A@PH7PR21MB3263.namprd21.prod.outlook.com>
-References: <1687823827-15850-1-git-send-email-longli@linuxonhyperv.com>
-        <36c95dd6babb2202f70594d5dde13493af62dcad.camel@redhat.com>
- <20230629091129.19217388@kernel.org>
-In-Reply-To: <20230629091129.19217388@kernel.org>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-msip_labels: MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ActionId=5d16f9ba-8b78-42de-8cac-9a99bd56e784;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ContentBits=0;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Enabled=true;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Method=Standard;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Name=Internal;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SetDate=2023-06-29T18:18:54Z;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SiteId=72f988bf-86f1-41af-91ab-2d7cd011db47;
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=microsoft.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: PH7PR21MB3263:EE_|DS7PR21MB3774:EE_
-x-ms-office365-filtering-correlation-id: a32ea673-e23c-4584-9713-08db78cd578f
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: iFDxUIKQcggpmsBPnZjsHLORLwN2Od26kYRsYw+X/Mt63BAgj8WnuxLDkVlhmcS+XHXF//hTzQ9wYYNn3RVsrTuHvGbZ7Jk/hA8zAC8fsKCWJtufJ6qasr1t6L+9E9q0KlJemufuRa3ChZFdJkBNqjM0RU+5xWCyVOY2sgpEAeHypn/nYK+QBcN+7nyfr1mgDh5rC7jvhkkcGLvIHWyxvmwD3EAYPyw6YPnIqYRBdhApRsqak/K8cJMJ8n1hj7W913AGwf318/Vudp3RZ9UI30REEwByTh7q+teLdYfaM50XNycjCdn4aYyKFb6xY09K5Jh8ZzqwrVZCW+qHF101gC0TYpflyagVrlOywiDL3RIpcQzR5BmKohOpnoshUxEPFeXood4ccRPtxtfmSuEfUDKW6barV9Q0joOJp9bFKkiHlUPr3yhiWfbC5qLUV7hV9kxPJwC+lhxgLqdszNShP5/jhubMbLSt3CNgEKDOHKuCh7RAa9Ljy3wa6CnCzsBJad6gB/nUh3O92XWvOLhasn7uGwsFpIxI5OfKUVy9PiuYOZrV/Vvu2WquIywkJifZF0xRChIzHsgp8EypwhSgS2ZD6DGxNz1CAywp113GUTwVr+iGqROZMUT9rxItrjq1aKflrm3mZ+cU4KpJD0qa4xKXiHDuYVZMWxsqdgoxKlA=
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH7PR21MB3263.namprd21.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(4636009)(396003)(136003)(39860400002)(376002)(346002)(366004)(451199021)(122000001)(6506007)(64756008)(66556008)(66476007)(316002)(186003)(4326008)(9686003)(66446008)(76116006)(52536014)(26005)(66946007)(478600001)(86362001)(8990500004)(55016003)(4744005)(82950400001)(7696005)(7416002)(38070700005)(8676002)(33656002)(5660300002)(54906003)(82960400001)(41300700001)(10290500003)(8936002)(110136005)(2906002)(38100700002)(71200400001);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?swpD89+GFIlv9J2qnW5z3bQnyk2XDr963DYO9qqHoOcEJtwth3z4Qet548nh?=
- =?us-ascii?Q?p3/cdZl61/8JgWySj/i7cBoh6PPa7+A/nSwcNrz2S3J2zGc0FQG4Y2FcHnd4?=
- =?us-ascii?Q?vMZwfbR/BK5gg+vEc7Pe4IqN34Bid987nDAz7rEbV+HDtgt+CYlvZuuiNzn2?=
- =?us-ascii?Q?DtFkASZyz50l6QfP6VqDRXMLhGSnf9e/mEBPf0Yem5b0ZjtvelOs4hmpi7vK?=
- =?us-ascii?Q?Cxu1sc2lufz7jmroLgIAb45kJVX0iEj0hJ59TtVzPBZLnMlkVL6wqd7jTV3X?=
- =?us-ascii?Q?f5lNnhHog5Zpllc3CVgwzJEMhepz/ZBmVp0/951Oyypr3aQFwBy4jF7rexYC?=
- =?us-ascii?Q?Q3JZT1Zre4Kvlf72bOXh0cRF0Pqx56krm6ol0k5HEFCaW4DgyL/mPy0Or2CX?=
- =?us-ascii?Q?KwChBprIbcpS/8UNbdvZwlwhxx1oi+J0NrpRWLtjcrfT9DRWYq+jHSPWCdSh?=
- =?us-ascii?Q?DnsP9s1dEDKwvp1+l3VJP4HUekg5SZ0cUvFwAF0CqR9RCYX/420enkNT1BP+?=
- =?us-ascii?Q?PjhvudNA3K53+kTbbd+kzOFh+t82e4SBNbFXnHDbVdiKVQsC+91hAdYx/DNc?=
- =?us-ascii?Q?+ol224Cx3+arY5FXtaNdyIcFaXJwYKCCw9q8pL0L15HqBFylFkxh9ZNdq5ex?=
- =?us-ascii?Q?ULssYoW42wwlkgs/XcM6Xncuw3xBUWItSnXCeJWiGtttzgO/LO+/dRD4bqWZ?=
- =?us-ascii?Q?lHsJjaKzGUqHy0VHTf5nAwPsRAT7ovTnH56ml/FmeYXxcZa6RNJnI9qK6P5W?=
- =?us-ascii?Q?4fXEBOvmiePA1aaFdCZTsgMLzVk2YTmqq5Iq0JCOJE6jTHKFFRZpwP8TBBqN?=
- =?us-ascii?Q?6SvEkioX7NuqaAYVpPq2gX19Ukhi7LpLvSVaTT4OamAQRc6plNSVfyZvUicc?=
- =?us-ascii?Q?wGCbp6Y3yemgBSEoI/4wA0iZKi3O6Dd+Q6bOIJzJX4CziAEQ9RsAtOycw7cq?=
- =?us-ascii?Q?7Dqvz7HVhtaPi4WbqkI6AD484ekegw4r3BSuCm5c9ZuBzHioDcTQSEtL1c2T?=
- =?us-ascii?Q?lVIeC98kOlBVq4Y8xSB6F6ATjY4AVTEDa+cJI52qE3qcwWdd6F4rYDa+LvJ3?=
- =?us-ascii?Q?dzmjtukAKMKTmz6MQDtCcYVSbVd8rBYj1paT676E2M/ChIP9awl9Ap0SlemY?=
- =?us-ascii?Q?e6Tv43iVDE7YEBfuDRGbIRJINi2II7hGbAYpwXhmnStm/5tLJyx7sFY8anfj?=
- =?us-ascii?Q?1zl5H/BNoTC7jaY7mLM2NOJlf/ZWqFSbXNXTcSXTTT1z6oEgjuTt3Wxmq/VA?=
- =?us-ascii?Q?tZ6vLGcDaST5njqqRUEQ9Em5TZ+fYIOXVJhTaVjbVAgjNLdvRG3nMeoGBMlI?=
- =?us-ascii?Q?yXPXR6gSYC3ihE5G/6UT/isqJGBB9YjFX6gw10qPhI0vMBHxtuz+RljEJ5kM?=
- =?us-ascii?Q?r+28MiRBTKiCrL5IrcaXWDQnwBfjzpXiurqviXbYFjDxjXN+N0X/css6noCd?=
- =?us-ascii?Q?R/r4KGFv0ya7XvKV+NMeekJUmsdpWTmc9TtmwD+Sfo1eT0VmuY0f/l5sF5Ur?=
- =?us-ascii?Q?mBmx90jpeK0Rv1aZER5KYtY4r0f7UZa5In4SCLgJ7ctIeIKQJV9f5rl2Vjc9?=
- =?us-ascii?Q?5kRLTjdd89zPupe5ys8ut37yFwL7r/3y7rx5JgHN?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        id S232017AbjF2VdO (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 29 Jun 2023 17:33:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56614 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232037AbjF2VdM (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 29 Jun 2023 17:33:12 -0400
+Received: from mail-pj1-x102c.google.com (mail-pj1-x102c.google.com [IPv6:2607:f8b0:4864:20::102c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 262B02D69
+        for <linux-rdma@vger.kernel.org>; Thu, 29 Jun 2023 14:33:10 -0700 (PDT)
+Received: by mail-pj1-x102c.google.com with SMTP id 98e67ed59e1d1-2633b669f5fso741137a91.2
+        for <linux-rdma@vger.kernel.org>; Thu, 29 Jun 2023 14:33:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=purestorage.com; s=google2022; t=1688074389; x=1690666389;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=o83jcI1G1ZsT+qyL5GtnXINDpgyMSgFFKrn+OMZU0bQ=;
+        b=P6RliEi/7YAsD7DwWKzXpii8hPyr7p3rLn3FzoQAlOOE2B2qRc7BNrCKD/DmISvMwk
+         4AKLYqD2h4W/zXycI1fpFatKWcafdlOIK483g3FaoZWAmMv7GS/6tW8SKkdWFTdg2x0R
+         MmgA9VZAJ+1UQ3GY/BNwrjzhDfSHyXbA/l4agQIG8nMeDY5FLKKAkBrjtQayLm5Efup5
+         q5D3u9fHdabRzmh+eZFPAoDG1uZF4uvj1PnFd7nJP4rGRo3/TUVI15l2kipXuTPf0lQC
+         k+stO5QQ+3zrrK0t/5lDzbZaXtS/yApFq3lpWfrM0Z9k6rHynEAc5VZCWUFdy+Y45j/S
+         H0zg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1688074389; x=1690666389;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=o83jcI1G1ZsT+qyL5GtnXINDpgyMSgFFKrn+OMZU0bQ=;
+        b=iFZoKOfunh3S4p9CGRPfXVSCcXqYNBE+Y6lwzotwfZkifHjMe/T94oE47ZoqZXJ7XJ
+         dMgZFMWOB6cgxY8DjAthCNtPhsLn4qy+S9d5qCxmAEyZE9tOwXRe+xLBvJFHL2c0po/v
+         nm5URv1yhOht4g/XwGE12io/dxN9P+Na586CvFD7RwdGX3WsKsGZ/RTSp+JOKh7rUwq7
+         qdV89kcZM8mS9usEr4hLu2CSB4VbQPRAgFvbZMMGwHqcmpn0xXskz9ZmlgO7JFLTBaoE
+         sQPkD8VE9Uiob1V7QoFqDFPpLQZT5vA78ZzR6Rwk9LR+v79Jw9pb1j2NUKAKwm7EFDqp
+         niKQ==
+X-Gm-Message-State: ABy/qLYwqmHyzJdE0Z5pbYcKJ/RhZ3E37owrVcw5lglHdCfmMp1HX79G
+        GtrxduknZ33oRC4UgAFcuk9URg==
+X-Google-Smtp-Source: APBJJlGWMQ6gS+bisZayuJKzqMgM5EqxAN2JKKHwbcvp71/M91QNObD9ajE7HrirTEsEPmZxPlTMoQ==
+X-Received: by 2002:a17:90a:17e5:b0:263:1661:1d1a with SMTP id q92-20020a17090a17e500b0026316611d1amr626383pja.7.1688074389493;
+        Thu, 29 Jun 2023 14:33:09 -0700 (PDT)
+Received: from dev-yzhong.dev.purestorage.com ([208.88.159.129])
+        by smtp.googlemail.com with ESMTPSA id t8-20020a17090a024800b0025bcdada95asm4830016pje.38.2023.06.29.14.33.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 29 Jun 2023 14:33:08 -0700 (PDT)
+From:   Yuanyuan Zhong <yzhong@purestorage.com>
+To:     leon@kernel.org, jgg@ziepe.ca
+Cc:     cachen@purestorage.com, linux-rdma@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Yuanyuan Zhong <yzhong@purestorage.com>
+Subject: [PATCH 0/1] RDMA/mlx5: align MR mem allocation size to power-of-two
+Date:   Thu, 29 Jun 2023 15:32:47 -0600
+Message-Id: <20230629213248.3184245-1-yzhong@purestorage.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-X-OriginatorOrg: microsoft.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: PH7PR21MB3263.namprd21.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: a32ea673-e23c-4584-9713-08db78cd578f
-X-MS-Exchange-CrossTenant-originalarrivaltime: 29 Jun 2023 18:19:13.5210
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 72f988bf-86f1-41af-91ab-2d7cd011db47
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: Q58sYIrSBPf/WR1YwHsgmMNmtPqo8x2T3cCQ0p9zwa5yr8vchxnidnvdcXRu/JROhbEwNiuQevZbpIxsKQKnaQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS7PR21MB3774
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,T_SCC_BODY_TEXT_LINE,T_SPF_PERMERROR autolearn=ham
+        autolearn_force=no version=3.4.6
+X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
+        lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-> Subject: Re: [Patch v3] net: mana: Batch ringing RX queue doorbell on rec=
-eiving
-> packets
->=20
-> On Thu, 29 Jun 2023 10:42:34 +0200 Paolo Abeni wrote:
-> > > While we are making changes in this code path, change the code for
-> > > ringing doorbell to set the WQE_COUNT to 0 for Receive Queue. The
-> > > hardware specification specifies that it should set to 0. Although
-> > > currently the hardware doesn't enforce the check, in the future
-> > > releases it may do.
->=20
-> And please split this cleanup into a separate patch, it doesn't sound lik=
-e it has to
-> be done as part of the optimization.
+Hello,
 
-Will do, thanks.
+Recently I noticed the mlx5_alloc_priv_descs() do many allocations from
+kmalloc-8k. It's called from following chain:
+cma_cm_event_handler => nvme_rdma_cm_handler => nvme_rdma_create_queue_ib
+=> ib_mr_pool_init => ib_alloc_mr => __mlx5_ib_alloc_mr
+=> _mlx5_alloc_mkey_descs
 
-Long
+When the nvme-rdma asks to allocate memory regions that support maximum 257
+sg entries, the real MR memory allocation size is slightly bigger than 2048.
+
+The MR memory allocation seems adding "add_size" to guarantee that there
+is enough space to find the memory aligned to 2048 (MLX5_UMR_ALIGN).
+
+The requested size is bigger than 4096 after adding the extra bytes.
+Then kmalloc uses 8192 as the actual allocation size.
+
+For power-of-two sizes, the alignment can be guaranteed by kmalloc()
+according to commit 59bb47985c1d ("mm, sl[aou]b: guarantee natural
+alignment for kmalloc(power-of-two)").
+
+Here comes a draft patch that uses the lesser of existing requested
+size or the next power-of-two size.
+
+I'm not sure if it's better to simply allocate roundup_pow_of_two(),
+or if it's true to assume that slab will not have intermediate size
+between 2 power-of-two sizes. Also not sure if a generic memalign()
+will be the better approach.
+
+Can you please let me know what's the preferred fix, or fix it directly
+to let the allocation use the smaller slab if possible? Thanks
+
+
+Yuanyuan Zhong (1):
+  RDMA/mlx5: align MR mem allocation size to power-of-two
+
+ drivers/infiniband/hw/mlx5/mr.c | 5 +++++
+ 1 file changed, 5 insertions(+)
+
+-- 
+2.34.1
+
