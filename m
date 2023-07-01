@@ -2,542 +2,175 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E0E7A744A4B
-	for <lists+linux-rdma@lfdr.de>; Sat,  1 Jul 2023 17:37:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F3C89744A89
+	for <lists+linux-rdma@lfdr.de>; Sat,  1 Jul 2023 18:24:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229506AbjGAPhu (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Sat, 1 Jul 2023 11:37:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45354 "EHLO
+        id S229477AbjGAQYU (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Sat, 1 Jul 2023 12:24:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55404 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229531AbjGAPhu (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Sat, 1 Jul 2023 11:37:50 -0400
-Received: from out-23.mta1.migadu.com (out-23.mta1.migadu.com [IPv6:2001:41d0:203:375::17])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3483E2686
-        for <linux-rdma@vger.kernel.org>; Sat,  1 Jul 2023 08:37:47 -0700 (PDT)
-Message-ID: <77743769-ae5b-c174-e6f7-bb96066a250d@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1688225865;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=T5xNZhlaB1VbnbpckTs8TSEgmwhtQg1jJqegYPx3XnQ=;
-        b=M5LNyspCKw9TtfKvanbkgoB5UtJJH7q0PgAZlWMVMgOsh5WDZrQ6EfgK+k91UiaX59MMSZ
-        QUo9Myvl+VnDYnZSrkrMPmsXyGQRldD5tXlvLPIZtBHK6E2P0G7TAoIGzZeD1cVk/KUI2O
-        RQ5EURGbQZgW2ZZadNtWQnl4yd2z5kA=
-Date:   Sat, 1 Jul 2023 23:37:38 +0800
-MIME-Version: 1.0
-Subject: Re: [PATCH for-next] RDMA/rxe: Fix freeing busy objects
-To:     Bob Pearson <rpearsonhpe@gmail.com>, jgg@nvidia.com,
-        zyjzyj2000@gmail.com, frank.zago@hpe.com, ian.ziemba@hpe.com,
-        jhack@hpe.com, linux-rdma@vger.kernel.org
-References: <20230630163827.95373-1-rpearsonhpe@gmail.com>
- <f4077962-b528-e46f-a0e2-7c1e6bd57d02@linux.dev>
- <83abcbad-64f4-6829-64e4-20ce55eb6ab4@gmail.com>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From:   Zhu Yanjun <yanjun.zhu@linux.dev>
-In-Reply-To: <83abcbad-64f4-6829-64e4-20ce55eb6ab4@gmail.com>
+        with ESMTP id S229446AbjGAQYT (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Sat, 1 Jul 2023 12:24:19 -0400
+Received: from NAM12-DM6-obe.outbound.protection.outlook.com (mail-dm6nam12on2043.outbound.protection.outlook.com [40.107.243.43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6137A135
+        for <linux-rdma@vger.kernel.org>; Sat,  1 Jul 2023 09:24:18 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=lZY3+dSsbuc2MNERyROABsgoPhXER/3HLtsm0IJtyUr7wucgVEfPA9XS05BAlvLIHNPsIzC4hRqaM3dSDHBWbsGKkzP2DqwQPDoimC4cZEvvxIYdlQXrc2jzSyLXgG7b2kPVjmZyPoGyKxHY6dRUl2c7i/ylas1swWm2GBsQ/i1HKtpYGWM2zaHTwoVJQjtOurUhcEN+TSc4pfItcXgEaTxYVQeKQddMvcJ+L+YAmhXVVr8wWECICv3phumOncOizKC7OoAxexQmJbF6PESCPoahMB02IQLOjsXoFcSb6tI1dVxKZUm12FcuQ2kUIdoP36h9bHaphhVwV6amNdkvHA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=hN8ZluH6YR3bPhBr99OBRZV4aCL2JZJWl5XDyL3P9hE=;
+ b=aPWZfls737ABrE4x706yzunStZL8cby+8SotQcJfD7MU/4sdHo3uvQqt5K+Q+MmrnqN6WHlJcbCwDE1LwxDWOkPUzwa+3b+ySnLPOKR3oJPYepwSd/ubXN7H8PBCNJy+rE4wmMn2M8cdzFbIVBwCcOpKtpMMZF0pcVaWqJAH9TC6GD7LLUTQge2xvAC7NGfZBcUCZF5Na5z0CZqLqDePh5LcJKsUvkvtYxqCY4hQmjD7st43WDBpSlZQu12ntnunQPHGcnrwe51UmQP7IcA4Nw6Q+UDluCVFjc/XhFBigJjCD5Ccwu5XcvBv0Jyug8y4HA95dj4/taTDVj3xSLzqCg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=talpey.com; dmarc=pass action=none header.from=talpey.com;
+ dkim=pass header.d=talpey.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=talpey.com;
+Received: from BYAPR01MB4438.prod.exchangelabs.com (2603:10b6:a03:98::12) by
+ LV2PR01MB7598.prod.exchangelabs.com (2603:10b6:408:17d::22) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.6544.19; Sat, 1 Jul 2023 16:24:14 +0000
+Received: from BYAPR01MB4438.prod.exchangelabs.com
+ ([fe80::4bda:af27:33d2:a9ca]) by BYAPR01MB4438.prod.exchangelabs.com
+ ([fe80::4bda:af27:33d2:a9ca%2]) with mapi id 15.20.6544.024; Sat, 1 Jul 2023
+ 16:24:13 +0000
+Message-ID: <1132df9f-63a1-f309-8123-b9302e5cdc3c@talpey.com>
+Date:   Sat, 1 Jul 2023 12:24:07 -0400
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.12.0
+Subject: Re: [PATCH v5 4/4] RDMA/cma: Avoid GID lookups on iWARP devices
+To:     Chuck Lever <cel@kernel.org>, jgg@nvidia.com
+Cc:     Chuck Lever <chuck.lever@oracle.com>, BMT@zurich.ibm.com,
+        linux-rdma@vger.kernel.org, yanjun.zhu@linux.dev
+References: <168805171754.164730.1318944278265675377.stgit@manet.1015granger.net>
+ <168805181129.164730.67097436102991889.stgit@manet.1015granger.net>
+Content-Language: en-US
+From:   Tom Talpey <tom@talpey.com>
+In-Reply-To: <168805181129.164730.67097436102991889.stgit@manet.1015granger.net>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: BL1PR13CA0333.namprd13.prod.outlook.com
+ (2603:10b6:208:2c6::8) To BYAPR01MB4438.prod.exchangelabs.com
+ (2603:10b6:a03:98::12)
+MIME-Version: 1.0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: BYAPR01MB4438:EE_|LV2PR01MB7598:EE_
+X-MS-Office365-Filtering-Correlation-Id: d50a1f33-3d6f-4da0-3167-08db7a4f9ac5
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: AuRWad5UfXCRkHAye0hSllJGu38QoR0ePS4qDu2V7QWQh5BXutOrGnJzYL4pwuThwgE26ieVj1vXCz0UysNA2eZMepPJldJZ1swmYzqHQiu/Wnb0cP6EFsLza4mKDNa9vdjzqf4GFiOr9mZYWYjy2DZOH/5o+Asj0LbpYjVHnc7eicUMaD5s9Pdt2PA3Gn28bEV51EFa1jnnZy9wAiviIVPvvSFORFPRVqaGrESXSTLfICSTc9H4Vf7c0hY0N9IQ8WKTaBy+wS9US8gsFx0zpJXirs8xPc4YfMzd4WHV+t1HGPadJtQy0ya9xblk6K09r3qkvV0TK1LZdU3Pu4o1aZbK29SwBsaaHXHt7gU8Ive+lE/4bHa1i+c5/5Jbdc9wK34WJ2CM3Lra6L643sx1lZnMWiRL6hQ4KHuiS4OvkM/YGR3Fx9gmRGxywMC6ByooRBAr70Utz8xOmsfhtju2qwNPu4GI0EaSQMx/uUWZWfQovuse+h909f1icFh8NoKaXmGkl/Xs+7rzsonWD3w+IqNMBQA/wOZqiwWZcUFsQitMdp2mxgGDxSV5UxLRsvzpF2UHB7WIduVdqA8+1l0rqKLLuTa4ouYaZrrHNQ4vKSJDC11kqFfoy8KrkMuJCtzoPquH2bTyAuf4SXhgmpOpyA==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR01MB4438.prod.exchangelabs.com;PTR:;CAT:NONE;SFS:(13230028)(396003)(39830400003)(346002)(136003)(376002)(366004)(451199021)(31686004)(6666004)(4326008)(316002)(66946007)(478600001)(66476007)(66556008)(36756003)(31696002)(86362001)(186003)(26005)(83380400001)(53546011)(6512007)(2616005)(8936002)(2906002)(8676002)(5660300002)(41300700001)(6486002)(52116002)(38100700002)(38350700002)(6506007)(43740500002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?ZEFabThmVFRXbXA3Mk1pZmlBWXYyRGtwc1Z3L2lMRHNyanZENWhWQnhmL2JC?=
+ =?utf-8?B?Tkg5bmpUT3BZekRkT2h2YmpGZUxNOWJuT2YzRk1vaFRHZVUzbjR0NnNOSEk4?=
+ =?utf-8?B?cnJSVHFWaWV2OGNPTzdBWTRKRTM2ekRCaVVFbk0wdW96UVRMQk4xWnBpZ2g3?=
+ =?utf-8?B?Zm55TEd2N09yR3dVcUljODZwUmE4ajd0b2RUZ0l0ZHVVcDNHSVB5OWNCZjhq?=
+ =?utf-8?B?NnpFVCtxRGo5NGFVeWZ5cTArVm0vbW9OWktlZVhMV0pXQzRaVm9KVHZxUXZG?=
+ =?utf-8?B?V1JaWHpPWTgxWDJxWmRlQUlneWNqMzB1RFZvdzk3c1dwNHFMSEFrTlNmNGRI?=
+ =?utf-8?B?WmQzUkErVENSWVo0TCtFZVk3Y09oVnRYTXRxRVJnRHF6NFRxM2RJSjFZZ0h0?=
+ =?utf-8?B?MUxBY0tTampnUHdMK1dRb3VZL05adFZGTzAxckdmUkZOUXRiNWp4OUtaWXIy?=
+ =?utf-8?B?N0xtUUtQY055b1RPaUpDVGQrT0RGU0daZ0xEQzQxN0JPV3psdU9OZmliam9U?=
+ =?utf-8?B?L25Vc2hRTmplNkNzUEJBUzN6aW1lQldJd3B2eVZLZ0NuTDk4clVhYk9vZ1Fu?=
+ =?utf-8?B?NEFndmJMdytFVkZRTENNSUlVR2hSZTU4SzhWYkd5SzQwMTBtUmpGTDkwOGMy?=
+ =?utf-8?B?ZmQwRE9STDJSR1FIbC9XRmhzdUVBcFd3RWhuakFKSEgwa1AzUUhSTkxIZjJ3?=
+ =?utf-8?B?dFhUTC9QcnVkMUYyUHo2OVkvd0g3OUtMeFllSDJ5U2lFamRKbTdEWXF6UW14?=
+ =?utf-8?B?WmZIUitUNXRSUUpIdE04NnljR0dWY3FiRzB2TXJyYWdaR0p1UThvUGpLOWlj?=
+ =?utf-8?B?OFhyMS9XZGZ6TTZld3gzZkdkcFEwMXdCVDJzYUllM1FTNTM2QThPejVGd3pU?=
+ =?utf-8?B?WmxwdkRZd3k3NE1YZnNKY3NlMTN6Z2I5bE9tcVJ0KzNvTGhRRDJUMUZadWN3?=
+ =?utf-8?B?WFZvNmVJT3hyUXM4emRhckc2U0QrOHFWUFFhSEdPRTBQY2lxaVNKRm9lZ1pH?=
+ =?utf-8?B?Z2dXV0FGNUhrSXQzRUsxaGg3VFM5a1NkMCtLRHdvLyt5azVFVDJZdmVPdlRK?=
+ =?utf-8?B?VXFNdHA5Nmo2UGxQcnB0b3prSklITzdOSjdTZ3dLVFRIb1JwZ2J2dUxMMWI1?=
+ =?utf-8?B?Y3ZkcGtpclY1bDg5LzY1Y0NZYllIRHd1Y3dWWjNhV21KM242SVMrRnhRNERm?=
+ =?utf-8?B?dERyNnZvNVJSRWx5WWZZSUlLbDdHa0UwZEp5WFRTWXEvR05uUGtuUzBuZmQ4?=
+ =?utf-8?B?OHlXMmwvakNsSVczM2Z2UFhOQUN4MVdsa1dyaTVXeDJYZW12OUJCdTcrWDFL?=
+ =?utf-8?B?UEdYRzVKVG42QjRONnNwWkdQcS9aYVJUWWpseFZsaXZaOXZlK1I0NUxxcDJw?=
+ =?utf-8?B?OWxSUUJHbTNMTjRDMkkyYTlZR2ZqWkhUbi83U2JTc1ZvOUtFVGFvTUgwZThK?=
+ =?utf-8?B?NUdPc1BSSWE3K3VZVzJGcXA3Umw3WWJiUjhoeEVzZ2lmVnFya1NjOWRoaTZN?=
+ =?utf-8?B?YmE5dVNLT1RDRG1TRU5XTVdiUElXSWI5Nk96MTFYZHk0T1BmN253V1dkTmpy?=
+ =?utf-8?B?cTVjb25rdTZTYkFFVlA0SDE0cjdOa2NWOTVWRFNEL2UyMWdPYjJubVQwbzBx?=
+ =?utf-8?B?MUx2elVzY1plQWpudG1UcSt0VjlwUkgxeDN6UlF1SW1abzhJQmMrV3Z3aklQ?=
+ =?utf-8?B?Z2JSeFdlbDF0R3FNUzRQSjc5L0wrdVVnUzZyamNCazBlMTBxNjNPa0ZLUVdo?=
+ =?utf-8?B?Qkk2V2NVdXhJNjBxTklqbUVCVHF3TDdvV0MwRjhWMmhRMVJqNU42RUJrZUVr?=
+ =?utf-8?B?cGtNRlE0c0paRlhnMkRWeGd2aTdjYVEyTEJXM3R1RU8yZTNFcVBLOHhHbjB3?=
+ =?utf-8?B?UnlHV3RGdU54NU54bXlPQklzdk83QzJMV01uNzF4YTN3M2RFa0tXMFd2Undw?=
+ =?utf-8?B?amcrdU16bGxCYXFWVmErRkszTStXVk5aUlkwOCtCY0tjZmtaSDNFZ2MzSi85?=
+ =?utf-8?B?SCs1SnBYMzZHMGJLNEx3dlV6UW4rc3FvbEtrblJDUWNndmdoVTZCeWNkT25X?=
+ =?utf-8?B?SGZabFFTeDE2QkkzTU5OcFczYWdZeUtSc0JjNkZJbHBNSHg2OE00c3lIQ0R0?=
+ =?utf-8?Q?FOXav6E6mLcuucGSpfGc5jZbq?=
+X-OriginatorOrg: talpey.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: d50a1f33-3d6f-4da0-3167-08db7a4f9ac5
+X-MS-Exchange-CrossTenant-AuthSource: BYAPR01MB4438.prod.exchangelabs.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 01 Jul 2023 16:24:12.8552
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 2b2dcae7-2555-4add-bc80-48756da031d5
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: i+ODc/xrq4PM6J6wW89NjddqdGuzoUcnTn6ATKlohfF1FXoS8UrMp00aVX0oOvct
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: LV2PR01MB7598
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
+On 6/29/2023 11:16 AM, Chuck Lever wrote:
+> From: Chuck Lever <chuck.lever@oracle.com>
+> 
+> We would like to enable the use of siw on top of a VPN that is
+> constructed and managed via a tun device. That hasn't worked up
+> until now because ARPHRD_NONE devices (such as tun devices) have
+> no GID for the RDMA/core to look up.
+> 
+> But it turns out that the egress device has already been picked for
+> us -- no GID is necessary. addr_handler() just has to do the right
+> thing with it.
+> 
+> Suggested-by: Jason Gunthorpe <jgg@nvidia.com>
+> Signed-off-by: Chuck Lever <chuck.lever@oracle.com>
+> ---
+>   drivers/infiniband/core/cma.c |   15 +++++++++++++++
+>   1 file changed, 15 insertions(+)
+> 
+> diff --git a/drivers/infiniband/core/cma.c b/drivers/infiniband/core/cma.c
+> index 889b3e4ea980..07bb5ac4019d 100644
+> --- a/drivers/infiniband/core/cma.c
+> +++ b/drivers/infiniband/core/cma.c
+> @@ -700,6 +700,21 @@ cma_validate_port(struct ib_device *device, u32 port,
+>   	if ((dev_type != ARPHRD_INFINIBAND) && rdma_protocol_ib(device, port))
+>   		goto out;
+>   
+> +	/* Linux iWARP devices have but one port */
 
-在 2023/7/1 22:48, Bob Pearson 写道:
-> On 7/1/23 01:50, Zhu Yanjun wrote:
->> 在 2023/7/1 0:38, Bob Pearson 写道:
->>> Currently the rxe driver calls wait_for_completion_timeout() in
->>> rxe_complete() to wait until all the references to the object have
->>> been freed before final cleanup and returning to the rdma-core
->>> destroy verb. If this does not happen within the timeout interval
->>> it prints a WARN_ON and returns to the 'destroy' verb caller
->>> without any indication that there was an error. This is incorrect.
->>>
->>> A very heavily loaded system can take an arbitrarily long time to
->>> complete the work needed before freeing all the references with no
->>> guarantees of performance within a specific time. This has been
->>> observed in high stress high scale testing of the rxe driver.
->>>
->>> Another frequent cause of these timeouts is due to ref counting bugs
->>> introduced by changes in the driver so it is helpful to continue
->>> to report the timeouts.
->>>
->>> This patch puts the completion timeout call in a loop with a 10 second
->>> timeout and issues a WARN_ON each pass through the loop. The case
->>> for objects that cannot sleep is treated similarly. It also changes
->>> the type of the rxe_cleanup() subroutine to void and fixes calls to
->>> reflect this API change. This is better aligned with the code in
->>> rdma-core which sometimes fails to check the return value of
->>> destroy verb calls assuming they will always succeed. Specifically
->>> this is the case for kernel qp's.
->> Hi, Bob
->>
->> You change the timeout to 10s in this commit. Based on https://www.kernel.org/doc/html/latest/process/submitting-patches.html#describe-your-changes
->>
->> Can you describe the pros and cons of this change?
->> If there are some data to support your change, it is better.
-> The problem is that a heavily loaded system can take a long time to complete work.
-> This is not a bug per se so it would be wrong to terminate IO in progress. But on the
-> other hand it is most likely not going to recover so it helps to report the condition.
-> This patch replaces an error exit with a wait as long as necessary, or until someone
-> intervenes and reboots the system. The previous timeout code issued a WARN_ON in about
-> 0.2 seconds and then exiting leaving a messy situation that wasn't going to get fixed.
-> The new version issues a WARN_ON every 10 seconds until the operation succeeds or
-> the system is rebooted. This is long enough that is won't clog the logs but often enough
-> to get noticed.
+I don't believe this comment is correct, or necessary. In-tree drivers
+exist for several multi-port iWARP devices, and the port bnumber passed
+to rdma_protocol_iwarp() and rdma_get_gid_attr() will follow, no?
 
+The code looks correct otherwise...
 
-To fix this problem, you changes too much.
+Tom.
 
-I received the trainings from different companies. In the trainings,  an 
-important code conduct is: modify the minimum source codes to fix a problem.
-
-Too much changes will introduce risks. This is to a commericial software 
-products. I am not sure whether it is good to an open source project or not.
-
-And if we need to changes too much, according to 
-https://www.kernel.org/doc/html/latest/process/submitting-patches.html#describe-your-changes, 
-it had better split the big commit to several commits.
-
-One commit is to fix one problem.
-
-Just my 2 cents.
-
-Zhu Yanjun
-
->
-> If rdma-core handled error returns from ib_destroy_qp correctly a cleaner solution might
-> be possible but it doesn't. This approach is similar to the soft lockup warnings from Linux.
->
-> This change is a result of very high load stress testing causing the current version to fail.
->
-> Bob
->> Thanks
->> Zhu Yanjun
->>
->>> Fixes: 215d0a755e1b ("RDMA/rxe: Stop lookup of partially built objects")
->>> Signed-off-by: Bob Pearson <rpearsonhpe@gmail.com>
->>> ---
->>>    drivers/infiniband/sw/rxe/rxe_pool.c  |  39 ++++------
->>>    drivers/infiniband/sw/rxe/rxe_pool.h  |   2 +-
->>>    drivers/infiniband/sw/rxe/rxe_verbs.c | 108 ++++++++++----------------
->>>    3 files changed, 56 insertions(+), 93 deletions(-)
->>>
->>> diff --git a/drivers/infiniband/sw/rxe/rxe_pool.c b/drivers/infiniband/sw/rxe/rxe_pool.c
->>> index 6215c6de3a84..819dc30a7a96 100644
->>> --- a/drivers/infiniband/sw/rxe/rxe_pool.c
->>> +++ b/drivers/infiniband/sw/rxe/rxe_pool.c
->>> @@ -6,7 +6,7 @@
->>>      #include "rxe.h"
->>>    -#define RXE_POOL_TIMEOUT    (200)
->>> +#define RXE_POOL_TIMEOUT    (10000)    /* 10 seconds */
->>>    #define RXE_POOL_ALIGN        (16)
->>>      static const struct rxe_type_info {
->>> @@ -171,15 +171,16 @@ static void rxe_elem_release(struct kref *kref)
->>>    {
->>>        struct rxe_pool_elem *elem = container_of(kref, typeof(*elem), ref_cnt);
->>>    -    complete(&elem->complete);
->>> +    complete_all(&elem->complete);
->>>    }
->>>    -int __rxe_cleanup(struct rxe_pool_elem *elem, bool sleepable)
->>> +void __rxe_cleanup(struct rxe_pool_elem *elem, bool sleepable)
->>>    {
->>>        struct rxe_pool *pool = elem->pool;
->>>        struct xarray *xa = &pool->xa;
->>> -    static int timeout = RXE_POOL_TIMEOUT;
->>> -    int ret, err = 0;
->>> +    int timeout = RXE_POOL_TIMEOUT;
->>> +    unsigned long until;
->>> +    int ret;
->>>        void *xa_ret;
->>>          if (sleepable)
->>> @@ -202,39 +203,31 @@ int __rxe_cleanup(struct rxe_pool_elem *elem, bool sleepable)
->>>         * return to rdma-core
->>>         */
->>>        if (sleepable) {
->>> -        if (!completion_done(&elem->complete) && timeout) {
->>> +        while (!completion_done(&elem->complete) && timeout) {
->>>                ret = wait_for_completion_timeout(&elem->complete,
->>>                        timeout);
->>> -
->>> -            /* Shouldn't happen. There are still references to
->>> -             * the object but, rather than deadlock, free the
->>> -             * object or pass back to rdma-core.
->>> -             */
->>> -            if (WARN_ON(!ret))
->>> -                err = -EINVAL;
->>> +            WARN_ON(!ret);
->>>            }
->>>        } else {
->>> -        unsigned long until = jiffies + timeout;
->>> -
->>>            /* AH objects are unique in that the destroy_ah verb
->>>             * can be called in atomic context. This delay
->>>             * replaces the wait_for_completion call above
->>>             * when the destroy_ah call is not sleepable
->>>             */
->>> -        while (!completion_done(&elem->complete) &&
->>> -                time_before(jiffies, until))
->>> -            mdelay(1);
->>> -
->>> -        if (WARN_ON(!completion_done(&elem->complete)))
->>> -            err = -EINVAL;
->>> +        while (!completion_done(&elem->complete) && timeout) {
->>> +            until = jiffies + timeout;
->>> +            while (!completion_done(&elem->complete) &&
->>> +                   time_before(jiffies, until)) {
->>> +                mdelay(10);
->>> +            }
->>> +            WARN_ON(!completion_done(&elem->complete));
->>> +        }
->>>        }
->>>          if (pool->cleanup)
->>>            pool->cleanup(elem);
->>>          atomic_dec(&pool->num_elem);
->>> -
->>> -    return err;
->>>    }
->>>      int __rxe_get(struct rxe_pool_elem *elem)
->>> diff --git a/drivers/infiniband/sw/rxe/rxe_pool.h b/drivers/infiniband/sw/rxe/rxe_pool.h
->>> index b42e26427a70..14facdb45aad 100644
->>> --- a/drivers/infiniband/sw/rxe/rxe_pool.h
->>> +++ b/drivers/infiniband/sw/rxe/rxe_pool.h
->>> @@ -70,7 +70,7 @@ int __rxe_get(struct rxe_pool_elem *elem);
->>>    int __rxe_put(struct rxe_pool_elem *elem);
->>>    #define rxe_put(obj) __rxe_put(&(obj)->elem)
->>>    -int __rxe_cleanup(struct rxe_pool_elem *elem, bool sleepable);
->>> +void __rxe_cleanup(struct rxe_pool_elem *elem, bool sleepable);
->>>    #define rxe_cleanup(obj) __rxe_cleanup(&(obj)->elem, true)
->>>    #define rxe_cleanup_ah(obj, sleepable) __rxe_cleanup(&(obj)->elem, sleepable)
->>>    diff --git a/drivers/infiniband/sw/rxe/rxe_verbs.c b/drivers/infiniband/sw/rxe/rxe_verbs.c
->>> index f4321a172000..a5e639ee2217 100644
->>> --- a/drivers/infiniband/sw/rxe/rxe_verbs.c
->>> +++ b/drivers/infiniband/sw/rxe/rxe_verbs.c
->>> @@ -218,11 +218,8 @@ static int rxe_alloc_ucontext(struct ib_ucontext *ibuc, struct ib_udata *udata)
->>>    static void rxe_dealloc_ucontext(struct ib_ucontext *ibuc)
->>>    {
->>>        struct rxe_ucontext *uc = to_ruc(ibuc);
->>> -    int err;
->>>    -    err = rxe_cleanup(uc);
->>> -    if (err)
->>> -        rxe_err_uc(uc, "cleanup failed, err = %d", err);
->>> +    rxe_cleanup(uc);
->>>    }
->>>      /* pd */
->>> @@ -248,11 +245,8 @@ static int rxe_alloc_pd(struct ib_pd *ibpd, struct ib_udata *udata)
->>>    static int rxe_dealloc_pd(struct ib_pd *ibpd, struct ib_udata *udata)
->>>    {
->>>        struct rxe_pd *pd = to_rpd(ibpd);
->>> -    int err;
->>>    -    err = rxe_cleanup(pd);
->>> -    if (err)
->>> -        rxe_err_pd(pd, "cleanup failed, err = %d", err);
->>> +    rxe_cleanup(pd);
->>>          return 0;
->>>    }
->>> @@ -265,7 +259,7 @@ static int rxe_create_ah(struct ib_ah *ibah,
->>>        struct rxe_dev *rxe = to_rdev(ibah->device);
->>>        struct rxe_ah *ah = to_rah(ibah);
->>>        struct rxe_create_ah_resp __user *uresp = NULL;
->>> -    int err, cleanup_err;
->>> +    int err;
->>>          if (udata) {
->>>            /* test if new user provider */
->>> @@ -312,9 +306,7 @@ static int rxe_create_ah(struct ib_ah *ibah,
->>>        return 0;
->>>      err_cleanup:
->>> -    cleanup_err = rxe_cleanup(ah);
->>> -    if (cleanup_err)
->>> -        rxe_err_ah(ah, "cleanup failed, err = %d", cleanup_err);
->>> +    rxe_cleanup(ah);
->>>    err_out:
->>>        rxe_err_ah(ah, "returned err = %d", err);
->>>        return err;
->>> @@ -354,11 +346,8 @@ static int rxe_query_ah(struct ib_ah *ibah, struct rdma_ah_attr *attr)
->>>    static int rxe_destroy_ah(struct ib_ah *ibah, u32 flags)
->>>    {
->>>        struct rxe_ah *ah = to_rah(ibah);
->>> -    int err;
->>>    -    err = rxe_cleanup_ah(ah, flags & RDMA_DESTROY_AH_SLEEPABLE);
->>> -    if (err)
->>> -        rxe_err_ah(ah, "cleanup failed, err = %d", err);
->>> +    rxe_cleanup_ah(ah, flags & RDMA_DESTROY_AH_SLEEPABLE);
->>>          return 0;
->>>    }
->>> @@ -371,12 +360,12 @@ static int rxe_create_srq(struct ib_srq *ibsrq, struct ib_srq_init_attr *init,
->>>        struct rxe_pd *pd = to_rpd(ibsrq->pd);
->>>        struct rxe_srq *srq = to_rsrq(ibsrq);
->>>        struct rxe_create_srq_resp __user *uresp = NULL;
->>> -    int err, cleanup_err;
->>> +    int err;
->>>          if (udata) {
->>>            if (udata->outlen < sizeof(*uresp)) {
->>>                err = -EINVAL;
->>> -            rxe_err_dev(rxe, "malformed udata");
->>> +            rxe_dbg_dev(rxe, "malformed udata");
->>>                goto err_out;
->>>            }
->>>            uresp = udata->outbuf;
->>> @@ -413,9 +402,7 @@ static int rxe_create_srq(struct ib_srq *ibsrq, struct ib_srq_init_attr *init,
->>>        return 0;
->>>      err_cleanup:
->>> -    cleanup_err = rxe_cleanup(srq);
->>> -    if (cleanup_err)
->>> -        rxe_err_srq(srq, "cleanup failed, err = %d", cleanup_err);
->>> +    rxe_cleanup(srq);
->>>    err_out:
->>>        rxe_err_dev(rxe, "returned err = %d", err);5f004bcaee4cb552cf1b46a50
->>>        return err;
->>> @@ -514,11 +501,8 @@ static int rxe_post_srq_recv(struct ib_srq *ibsrq, const struct ib_recv_wr *wr,
->>>    static int rxe_destroy_srq(struct ib_srq *ibsrq, struct ib_udata *udata)
->>>    {
->>>        struct rxe_srq *srq = to_rsrq(ibsrq);
->>> -    int err;
->>>    -    err = rxe_cleanup(srq);
->>> -    if (err)
->>> -        rxe_err_srq(srq, "cleanup failed, err = %d", err);
->>> +    rxe_cleanup(srq);
->>>          return 0;
->>>    }
->>> @@ -531,7 +515,7 @@ static int rxe_create_qp(struct ib_qp *ibqp, struct ib_qp_init_attr *init,
->>>        struct rxe_pd *pd = to_rpd(ibqp->pd);
->>>        struct rxe_qp *qp = to_rqp(ibqp);
->>>        struct rxe_create_qp_resp __user *uresp = NULL;
->>> -    int err, cleanup_err;
->>> +    int err;
->>>          if (udata) {
->>>            if (udata->inlen) {
->>> @@ -580,9 +564,7 @@ static int rxe_create_qp(struct ib_qp *ibqp, struct ib_qp_init_attr *init,
->>>        return 0;
->>>      err_cleanup:
->>> -    cleanup_err = rxe_cleanup(qp);
->>> -    if (cleanup_err)
->>> -        rxe_err_qp(qp, "cleanup failed, err = %d", cleanup_err);
->>> +    rxe_cleanup(qp);
->>>    err_out:
->>>        rxe_err_dev(rxe, "returned err = %d", err);
->>>        return err;
->>> @@ -648,9 +630,7 @@ static int rxe_destroy_qp(struct ib_qp *ibqp, struct ib_udata *udata)
->>>            goto err_out;
->>>        }
->>>    -    err = rxe_cleanup(qp);
->>> -    if (err)
->>> -        rxe_err_qp(qp, "cleanup failed, err = %d", err);
->>> +    rxe_cleanup(qp);
->>>          return 0;
->>>    @@ -675,12 +655,12 @@ static int validate_send_wr(struct rxe_qp *qp, const struct ib_send_wr *ibwr,
->>>        do {
->>>            mask = wr_opcode_mask(ibwr->opcode, qp);
->>>            if (!mask) {
->>> -            rxe_err_qp(qp, "bad wr opcode for qp type");
->>> +            rxe_dbg_qp(qp, "bad wr opcode for qp type");
->>>                break;
->>>            }
->>>              if (num_sge > sq->max_sge) {
->>> -            rxe_err_qp(qp, "num_sge > max_sge");
->>> +            rxe_dbg_qp(qp, "num_sge > max_sge");
->>>                break;
->>>            }
->>>    @@ -689,27 +669,27 @@ static int validate_send_wr(struct rxe_qp *qp, const struct ib_send_wr *ibwr,
->>>                length += ibwr->sg_list[i].length;
->>>              if (length > (1UL << 31)) {
->>> -            rxe_err_qp(qp, "message length too long");
->>> +            rxe_dbg_qp(qp, "message length too long");
->>>                break;
->>>            }
->>>              if (mask & WR_ATOMIC_MASK) {
->>>                if (length != 8) {
->>> -                rxe_err_qp(qp, "atomic length != 8");
->>> +                rxe_dbg_qp(qp, "atomic length != 8");
->>>                    break;
->>>                }
->>>                if (atomic_wr(ibwr)->remote_addr & 0x7) {
->>> -                rxe_err_qp(qp, "misaligned atomic address");
->>> +                rxe_dbg_qp(qp, "misaligned atomic address");
->>>                    break;
->>>                }
->>>            }
->>>            if (ibwr->send_flags & IB_SEND_INLINE) {
->>>                if (!(mask & WR_INLINE_MASK)) {
->>> -                rxe_err_qp(qp, "opcode doesn't support inline data");
->>> +                rxe_dbg_qp(qp, "opcode doesn't support inline data");
->>>                    break;
->>>                }
->>>                if (length > sq->max_inline) {
->>> -                rxe_err_qp(qp, "inline length too big");
->>> +                rxe_dbg_qp(qp, "inline length too big");
->>>                    break;
->>>                }
->>>            }
->>> @@ -747,7 +727,7 @@ static int init_send_wr(struct rxe_qp *qp, struct rxe_send_wr *wr,
->>>            case IB_WR_SEND:
->>>                break;
->>>            default:
->>> -            rxe_err_qp(qp, "bad wr opcode %d for UD/GSI QP",
->>> +            rxe_dbg_qp(qp, "bad wr opcode %d for UD/GSI QP",
->>>                        wr->opcode);
->>>                return -EINVAL;
->>>            }
->>> @@ -795,7 +775,7 @@ static int init_send_wr(struct rxe_qp *qp, struct rxe_send_wr *wr,
->>>            case IB_WR_ATOMIC_WRITE:
->>>                break;
->>>            default:
->>> -            rxe_err_qp(qp, "unsupported wr opcode %d",
->>> +            rxe_dbg_qp(qp, "unsupported wr opcode %d",
->>>                        wr->opcode);
->>>                return -EINVAL;
->>>                break;
->>> @@ -871,7 +851,7 @@ static int post_one_send(struct rxe_qp *qp, const struct ib_send_wr *ibwr)
->>>          full = queue_full(sq->queue, QUEUE_TYPE_FROM_ULP);
->>>        if (unlikely(full)) {
->>> -        rxe_err_qp(qp, "send queue full");
->>> +        rxe_dbg_qp(qp, "send queue full");
->>>            return -ENOMEM;
->>>        }
->>>    @@ -923,14 +903,14 @@ static int rxe_post_send(struct ib_qp *ibqp, const struct ib_send_wr *wr,
->>>        /* caller has already called destroy_qp */
->>>        if (WARN_ON_ONCE(!qp->valid)) {
->>>            spin_unlock_irqrestore(&qp->state_lock, flags);
->>> -        rxe_err_qp(qp, "qp has been destroyed");
->>> +        rxe_dbg_qp(qp, "qp has been destroyed");
->>>            return -EINVAL;
->>>        }
->>>          if (unlikely(qp_state(qp) < IB_QPS_RTS)) {
->>>            spin_unlock_irqrestore(&qp->state_lock, flags);
->>>            *bad_wr = wr;
->>> -        rxe_err_qp(qp, "qp not ready to send");
->>> +        rxe_dbg_qp(qp, "qp not ready to send");
->>>            return -EINVAL;
->>>        }
->>>        spin_unlock_irqrestore(&qp->state_lock, flags);
->>> @@ -997,7 +977,7 @@ static int post_one_recv(struct rxe_rq *rq, const struct ib_recv_wr *ibwr)
->>>        return 0;
->>>      err_out:
->>> -    rxe_dbg("returned err = %d", err);
->>> +    rxe_err("returned err = %d", err);
->>>        return err;
->>>    }
->>>    @@ -1013,7 +993,7 @@ static int rxe_post_recv(struct ib_qp *ibqp, const struct ib_recv_wr *wr,
->>>        /* caller has already called destroy_qp */
->>>        if (WARN_ON_ONCE(!qp->valid)) {
->>>            spin_unlock_irqrestore(&qp->state_lock, flags);
->>> -        rxe_err_qp(qp, "qp has been destroyed");
->>> +        rxe_dbg_qp(qp, "qp has been destroyed");
->>>            return -EINVAL;
->>>        }
->>>    @@ -1061,7 +1041,7 @@ static int rxe_create_cq(struct ib_cq *ibcq, const struct ib_cq_init_attr *attr,
->>>        struct rxe_dev *rxe = to_rdev(dev);
->>>        struct rxe_cq *cq = to_rcq(ibcq);
->>>        struct rxe_create_cq_resp __user *uresp = NULL;
->>> -    int err, cleanup_err;
->>> +    int err;
->>>          if (udata) {
->>>            if (udata->outlen < sizeof(*uresp)) {
->>> @@ -1100,9 +1080,7 @@ static int rxe_create_cq(struct ib_cq *ibcq, const struct ib_cq_init_attr *attr,
->>>        return 0;
->>>      err_cleanup:
->>> -    cleanup_err = rxe_cleanup(cq);
->>> -    if (cleanup_err)
->>> -        rxe_err_cq(cq, "cleanup failed, err = %d", cleanup_err);
->>> +    rxe_cleanup(cq);
->>>    err_out:
->>>        rxe_err_dev(rxe, "returned err = %d", err);
->>>        return err;
->>> @@ -1207,9 +1185,7 @@ static int rxe_destroy_cq(struct ib_cq *ibcq, struct ib_udata *udata)
->>>            goto err_out;
->>>        }
->>>    -    err = rxe_cleanup(cq);
->>> -    if (err)
->>> -        rxe_err_cq(cq, "cleanup failed, err = %d", err);
->>> +    rxe_cleanup(cq);
->>>          return 0;
->>>    @@ -1257,10 +1233,10 @@ static struct ib_mr *rxe_reg_user_mr(struct ib_pd *ibpd, u64 start,
->>>        struct rxe_dev *rxe = to_rdev(ibpd->device);
->>>        struct rxe_pd *pd = to_rpd(ibpd);
->>>        struct rxe_mr *mr;
->>> -    int err, cleanup_err;
->>> +    int err;
->>>          if (access & ~RXE_ACCESS_SUPPORTED_MR) {
->>> -        rxe_err_pd(pd, "access = %#x not supported (%#x)", access,
->>> +        rxe_dbg_pd(pd, "access = %#x not supported (%#x)", access,
->>>                    RXE_ACCESS_SUPPORTED_MR);
->>>            return ERR_PTR(-EOPNOTSUPP);
->>>        }
->>> @@ -1289,9 +1265,7 @@ static struct ib_mr *rxe_reg_user_mr(struct ib_pd *ibpd, u64 start,
->>>        return &mr->ibmr;
->>>      err_cleanup:
->>> -    cleanup_err = rxe_cleanup(mr);
->>> -    if (cleanup_err)
->>> -        rxe_err_mr(mr, "cleanup failed, err = %d", cleanup_err);
->>> +    rxe_cleanup(mr);
->>>    err_free:
->>>        kfree(mr);
->>>        rxe_err_pd(pd, "returned err = %d", err);
->>> @@ -1311,7 +1285,7 @@ static struct ib_mr *rxe_rereg_user_mr(struct ib_mr *ibmr, int flags,
->>>         * rereg_pd and rereg_access
->>>         */
->>>        if (flags & ~RXE_MR_REREG_SUPPORTED) {
->>> -        rxe_err_mr(mr, "flags = %#x not supported", flags);
->>> +        rxe_dbg_mr(mr, "flags = %#x not supported", flags);
->>>            return ERR_PTR(-EOPNOTSUPP);
->>>        }
->>>    @@ -1323,7 +1297,7 @@ static struct ib_mr *rxe_rereg_user_mr(struct ib_mr *ibmr, int flags,
->>>          if (flags & IB_MR_REREG_ACCESS) {
->>>            if (access & ~RXE_ACCESS_SUPPORTED_MR) {
->>> -            rxe_err_mr(mr, "access = %#x not supported", access);
->>> +            rxe_dbg_mr(mr, "access = %#x not supported", access);
->>>                return ERR_PTR(-EOPNOTSUPP);
->>>            }
->>>            mr->access = access;
->>> @@ -1338,7 +1312,7 @@ static struct ib_mr *rxe_alloc_mr(struct ib_pd *ibpd, enum ib_mr_type mr_type,
->>>        struct rxe_dev *rxe = to_rdev(ibpd->device);
->>>        struct rxe_pd *pd = to_rpd(ibpd);
->>>        struct rxe_mr *mr;
->>> -    int err, cleanup_err;
->>> +    int err;
->>>          if (mr_type != IB_MR_TYPE_MEM_REG) {
->>>            err = -EINVAL;
->>> @@ -1369,9 +1343,7 @@ static struct ib_mr *rxe_alloc_mr(struct ib_pd *ibpd, enum ib_mr_type mr_type,
->>>        return &mr->ibmr;
->>>      err_cleanup:
->>> -    cleanup_err = rxe_cleanup(mr);
->>> -    if (cleanup_err)
->>> -        rxe_err_mr(mr, "cleanup failed, err = %d", err);
->>> +    rxe_cleanup(mr);
->>>    err_free:
->>>        kfree(mr);
->>>    err_out:
->>> @@ -1382,7 +1354,7 @@ static struct ib_mr *rxe_alloc_mr(struct ib_pd *ibpd, enum ib_mr_type mr_type,
->>>    static int rxe_dereg_mr(struct ib_mr *ibmr, struct ib_udata *udata)
->>>    {
->>>        struct rxe_mr *mr = to_rmr(ibmr);
->>> -    int err, cleanup_err;
->>> +    int err;
->>>          /* See IBA 10.6.7.2.6 */
->>>        if (atomic_read(&mr->num_mw) > 0) {
->>> @@ -1391,9 +1363,7 @@ static int rxe_dereg_mr(struct ib_mr *ibmr, struct ib_udata *udata)
->>>            goto err_out;
->>>        }
->>>    -    cleanup_err = rxe_cleanup(mr);
->>> -    if (cleanup_err)
->>> -        rxe_err_mr(mr, "cleanup failed, err = %d", cleanup_err);
->>> +    rxe_cleanup(mr);
->>>          kfree_rcu(mr);
->>>        return 0;
->>> @@ -1524,7 +1494,7 @@ int rxe_register_device(struct rxe_dev *rxe, const char *ibdev_name)
->>>          err = ib_register_device(dev, ibdev_name, NULL);
->>>        if (err)
->>> -        rxe_dbg_dev(rxe, "failed with error %d\n", err);
->>> +        rxe_err_dev(rxe, "failed with error %d\n", err);
->>>          /*
->>>         * Note that rxe may be invalid at this point if another thread
->>>
->>> base-commit: 5f004bcaee4cb552cf1b46a505f18f08777db7e5
+> +	if (rdma_protocol_iwarp(device, port)) {
+> +		sgid_attr = rdma_get_gid_attr(device, port, 0);
+> +		if (IS_ERR(sgid_attr))
+> +			goto out;
+> +
+> +		rcu_read_lock();
+> +		ndev = rcu_dereference(sgid_attr->ndev);
+> +		if (!net_eq(dev_net(ndev), dev_addr->net) ||
+> +		    ndev->ifindex != bound_if_index)
+> +			sgid_attr = ERR_PTR(-ENODEV);
+> +		rcu_read_unlock();
+> +		goto out;
+> +	}
+> +
+>   	if (dev_type == ARPHRD_ETHER && rdma_protocol_roce(device, port)) {
+>   		ndev = dev_get_by_index(dev_addr->net, bound_if_index);
+>   		if (!ndev)
+> 
+> 
+> 
