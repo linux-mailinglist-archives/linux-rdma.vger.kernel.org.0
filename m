@@ -2,38 +2,38 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 95EE3746157
-	for <lists+linux-rdma@lfdr.de>; Mon,  3 Jul 2023 19:23:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 12DCA74615F
+	for <lists+linux-rdma@lfdr.de>; Mon,  3 Jul 2023 19:26:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230102AbjGCRX4 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 3 Jul 2023 13:23:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45158 "EHLO
+        id S231174AbjGCR0C (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 3 Jul 2023 13:26:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46256 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229932AbjGCRXz (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 3 Jul 2023 13:23:55 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 03D68E5D;
-        Mon,  3 Jul 2023 10:23:55 -0700 (PDT)
+        with ESMTP id S229977AbjGCR0B (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 3 Jul 2023 13:26:01 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46CE7E62;
+        Mon,  3 Jul 2023 10:25:53 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 864F360FD8;
-        Mon,  3 Jul 2023 17:23:54 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9880BC433C7;
-        Mon,  3 Jul 2023 17:23:52 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id DA12760FEF;
+        Mon,  3 Jul 2023 17:25:52 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E19CEC433C7;
+        Mon,  3 Jul 2023 17:25:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1688405033;
-        bh=HqoN+ykT6mcx6CD/Ub4vmYOWlAUj2Sw0KQddslJPPDs=;
+        s=k20201202; t=1688405152;
+        bh=rYNHyEKxVBivZJaI/Nsw/8pEmEkG38XoEZOgA3+Gx5E=;
         h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=dqWzK3zrOi4s/PD7nVSHt10ysL9pI4UiMx8ZhJMul+Wf8QpZZ7azO7KoaO37KGPnQ
-         35M/lCZY9wt2iu31FiNlO2x52ufOgZBw969Ge6Fr4NymYTs10AfFn64i823I6ZSCzU
-         ztMgHEeDbyK0BmjQupnqFLgy5+8OAp+k/HM3pFyUEZ0+KmI8c06n2kkSWKQ1VRBlSn
-         6KYo0ZBSf7Z6+kMT3VPw9GJ+yOwubUywRMHJA+7aXZRfmlFFtSWHk2liHgoiMqQ3FZ
-         IfBKRbp1pVA+AEW2zOdecKTwPEGqJ8PD+mVLsR8d7DfG3pdZzTW+sE6dwAFXLdpRLp
-         vKVdtwwgK4mDw==
-Message-ID: <011d3204-5c33-782c-41d1-53bf9bd2e095@kernel.org>
-Date:   Mon, 3 Jul 2023 11:23:51 -0600
+        b=HRhH09xDcmyQdwdg+w9B4k0qFdh5qm8B20+2qPbVM/j6cBNpwATBWA29920ipsdqB
+         F7J6ZGI3CQDbI6idwFIgjtEfSilmVr17LolUgwKXZ4iVZtE/opYl7ICfUIT8st5Hiv
+         UxbpHaA7dWmEdwwciJmm+4gyUYba6rSUEZSepH3nxzXch2fsPbVSzaYGe0r4rI5wGM
+         Ym039RUrohqsYMxJCMpB3liziGDbDIggIi4ViVYy8fZk//93aQZ1c2OmH4npo4biPW
+         Z139jMJ6PzTzBE2Rk/CxIz4mMINsMFtO1wKBzZeV7eNjfUppPND0kRaiNMIHRjo8Sy
+         N44lUtKIfK3tQ==
+Message-ID: <31db0e5d-4b6d-9b2e-90cc-87a15d500b2e@kernel.org>
+Date:   Mon, 3 Jul 2023 11:25:50 -0600
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
  Gecko/20100101 Thunderbird/102.12.0
@@ -87,14 +87,14 @@ References: <20230612130256.4572-1-linyunsheng@huawei.com>
  <5e0ac5bb-2cfa-3b58-9503-1e161f3c9bd5@kernel.org>
  <CAHS8izP2fPS56uXKMCnbKnPNn=xhTd0SZ1NRUgnAvyuSeSSjGA@mail.gmail.com>
  <47b79e77-461b-8fe9-41fb-b69a6b205ef2@kernel.org>
- <CANn89iKAvrf92Fy8a_M+V9eya6OHokey2_yxQ3JiCT87fKND_w@mail.gmail.com>
+ <CANn89iJLAnnvFfkmJbQ=ZFMwaqiYDOTD3-P+NpkEMzP9aKV-ig@mail.gmail.com>
 From:   David Ahern <dsahern@kernel.org>
-In-Reply-To: <CANn89iKAvrf92Fy8a_M+V9eya6OHokey2_yxQ3JiCT87fKND_w@mail.gmail.com>
+In-Reply-To: <CANn89iJLAnnvFfkmJbQ=ZFMwaqiYDOTD3-P+NpkEMzP9aKV-ig@mail.gmail.com>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-7.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        RCVD_IN_DNSWL_HI,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -102,23 +102,22 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 7/3/23 11:13 AM, Eric Dumazet wrote:
-> diff --git a/net/packet/af_packet.c b/net/packet/af_packet.c
-> index a2dbeb264f260e5b8923ece9aac99fe19ddfeb62..aa4133d1b1e0676e408499ea4534b51262394432
-> 100644
-> --- a/net/packet/af_packet.c
-> +++ b/net/packet/af_packet.c
-> @@ -2152,7 +2152,7 @@ static int packet_rcv(struct sk_buff *skb,
-> struct net_device *dev,
->                 }
->         }
+On 7/3/23 11:15 AM, Eric Dumazet wrote:
+> On Mon, Jul 3, 2023 at 4:45 PM David Ahern <dsahern@kernel.org> wrote:
 > 
-> -       snaplen = skb->len;
-> +       snaplen = skb->devmem ? skb_headlen(skb) : skb->len;
+>> That is my expectation. The tcpdump is just an easy example of accessing
+>> the skb page frags. skb_copy_and_csum_bits used by icmp is another
+>> example that can walk frags wanting access to device memory. You did not
+>> cause a panic or trip a WARN_ON for example with the tcpdump?
+>>
 > 
+> ICMP packets do not land on the queues having devmem buffers, for
+> obvious reasons.
 
-Ok, so you expect a flag on the skb noting the use of 'untouchable'
-memory. That aligns with my expectations based on POCs.
+I was not referring to ICMP packets coming in to the nic, but rather an
+icmp getting triggered during stack processing.
 
-Based on the above: 1) skb->head is expected to be host memory, and 2)
-the flag is a global for all frags, so no mix and match.
+> 
+> Only chosen TCP flows are steered to these queues.
+
+of course.
