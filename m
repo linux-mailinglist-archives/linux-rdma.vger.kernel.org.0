@@ -2,154 +2,174 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 462D97464CA
-	for <lists+linux-rdma@lfdr.de>; Mon,  3 Jul 2023 23:20:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 13C777464FD
+	for <lists+linux-rdma@lfdr.de>; Mon,  3 Jul 2023 23:43:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230242AbjGCVT6 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 3 Jul 2023 17:19:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50064 "EHLO
+        id S231160AbjGCVnU (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 3 Jul 2023 17:43:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55922 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229653AbjGCVT6 (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 3 Jul 2023 17:19:58 -0400
-Received: from NAM02-DM3-obe.outbound.protection.outlook.com (mail-dm3nam02on2081.outbound.protection.outlook.com [40.107.95.81])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2AE92E59;
-        Mon,  3 Jul 2023 14:19:57 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=KGsPl3tXfIp4FrcECsUFf5PTM08XTVkiOaX+nn+gPpVOAilmJAlj5sgFUq5cvI1C3OACZLz0JnhrHp3WJiAKuNY3ie11la4dNPXCHpy25MDkU6YSy3rAx1Hgloa8Hdrxg1Fd2tD6NXErxzUyLmvplqCr6YCBsiy/3ZQejPD/n+yK2jZkvHiQNN5+ICdTWcv8cyNsjd7WGKaNLonqdvNdt4fp0cFgTRH0Wer78/e3htJ7Xq0VZikzqzKmH5Ln13KrsZSQN05hQXIZvz9NMzwRZHMNbkDU8dNdctZJKfcegZy5ciTdgchukUJkgrYYdxUDOlCCL4RLeHx/r0EX9ScduA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=EHrvsg6mQIKnSQt5M8kc88n6Lav13CJ6+csjWnJs9/U=;
- b=EWYYqRJ0NXn2/S+ly0GRtGa3oppMJxAQMnME0OIZVyeqHlXu1Sxq5j+PuTIQ3ZpEIvBxB9pXcQrEd8RX92Q/J76gC8apNeTAmW1Tkq8bPs+0jjDn5U55NgvSZgd1K7Ndtybcx4Ua9f0wWqIxOnVGkZmcUSwB4MAs4FGN2iMH9tRrIaNPgspW7/lE8rQQg1plqEkhlsZZgj6m9wP5zHhesoc6AyZAtNatuympjUYsI3ItM/lA5m6Vtu3nzenJbA+vd3eSc4mJIzpfK6q/u8e9NQ1eDMeJpA1aJOt+IXVMYCXlJKG0K94ItWEgC39L/8b/R9dEa1y/MwsBJqi4wzl0Nw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=EHrvsg6mQIKnSQt5M8kc88n6Lav13CJ6+csjWnJs9/U=;
- b=Am0BjOugld3Qs19joUuKYdoxRL6jp+EqGi9gpTqc16u4CUgkLnwQEDemw2N9AHXDA2PRkPT7ItK3LNezjxY7PHRZDkQ9geWBQo1rwoD07FahLP595K0IPmV8MYp2pJ0Af+1LhmypjTuxjxOO260cEZ/WOIu/o1kG28G0jQhDQmDXCGPAXuJIi+PWs+Eizg8mCFmYG03AhNpNBnqDrTR1eoy00WcH+U2tsKfdNBzVJ2QJieMY7Gz1l0QpmZL+tESm/bsQWjv/Aqzdi4/K6bUwFkyXEG8jX6xT6gOQepCwlxUevZW/XeFwcTukOF7aitj8baHMvK9CjDFzI557QdsbAA==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nvidia.com;
-Received: from LV2PR12MB5869.namprd12.prod.outlook.com (2603:10b6:408:176::16)
- by MW4PR12MB7439.namprd12.prod.outlook.com (2603:10b6:303:22b::7) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6544.19; Mon, 3 Jul
- 2023 21:19:53 +0000
-Received: from LV2PR12MB5869.namprd12.prod.outlook.com
- ([fe80::b26d:72b8:be41:2f0c]) by LV2PR12MB5869.namprd12.prod.outlook.com
- ([fe80::b26d:72b8:be41:2f0c%4]) with mapi id 15.20.6544.024; Mon, 3 Jul 2023
- 21:19:53 +0000
-Date:   Mon, 3 Jul 2023 18:19:51 -0300
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Leon Romanovsky <leonro@nvidia.com>
-Subject: Re: [GIT PULL] Please pull RDMA subsystem changes
-Message-ID: <ZKM7d/01mrbNO77V@nvidia.com>
-References: <ZJzUeFT7lLqEjMJn@nvidia.com>
- <CAHk-=wjiSW52tf=xaBe0LrFJrRbSnA=E1ziKBEioMT9cMJPM1A@mail.gmail.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAHk-=wjiSW52tf=xaBe0LrFJrRbSnA=E1ziKBEioMT9cMJPM1A@mail.gmail.com>
-X-ClientProxiedBy: SJ0PR05CA0012.namprd05.prod.outlook.com
- (2603:10b6:a03:33b::17) To LV2PR12MB5869.namprd12.prod.outlook.com
- (2603:10b6:408:176::16)
+        with ESMTP id S231148AbjGCVnU (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 3 Jul 2023 17:43:20 -0400
+Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com [IPv6:2607:f8b0:4864:20::62e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6AD0EE62
+        for <linux-rdma@vger.kernel.org>; Mon,  3 Jul 2023 14:43:18 -0700 (PDT)
+Received: by mail-pl1-x62e.google.com with SMTP id d9443c01a7336-1b89cfb4571so7512955ad.3
+        for <linux-rdma@vger.kernel.org>; Mon, 03 Jul 2023 14:43:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google; t=1688420598; x=1691012598;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=zb/tmr/noeY2rNeZVS/rd5RWOm9XHi+842eE/ic0+a0=;
+        b=AiAmewfofTMCDjim2n5Tw+1ZtqlOIk0bXi6iRE5v5TlHNIye7/DkwQc6W3qq8LjOIp
+         Xqa4BLwykqMBs3rTWLQCqB46cY7yk3e1UlXmD3dachyhxKT3HwGyQ5ZQUBoEeRTg6FWt
+         V3FoZeb/Pfcslwv6G9ml4ZN+Vhlb3NLpYwVIhyIi4T14lqPagW7Xqsj1Vy9HAv94g+UV
+         eCE+uAt/Ww3sa8lilIbrUy2CO/y3njkzPQf1M1G2yc4qYYfB6dr/PTXL5EfFbJB+6aSL
+         RGoqXV5w3f2vXm8fzuxp5DSKfDMzQA8c3OkoqHlFbZHcWSFOF/jGyPHFIwQaqg3O6Ipn
+         SNTA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1688420598; x=1691012598;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=zb/tmr/noeY2rNeZVS/rd5RWOm9XHi+842eE/ic0+a0=;
+        b=bQAIF2iIzmd/7Wo5kNlsnkZ2+3YIS+Y6tDVqytDR5p5EQB9Jbu/kL4KnoSd2/USSrd
+         QTrzqP+FkKNU+OvMO9/Ci+VjlUUJlb5sv6GJkZKQXTqKotMoafQv3KHXCp9wtSMm3Dw3
+         dyL0Ujjh/98OGT61q7QxunxpCID6Sfoiv/fs/11Y/yhvRSGE0/ADSJZkrN/ekEyjuSDr
+         BZHpp/JlPxv2de/qUPjmFDpTbFWXsNlAMzjpbMWXSYGY0qLLfsedZOGCYUBkzSd6utCl
+         Xi+1bQDq4+HNs2RMr40Cs/BluunpAPbszaLLWp8WhoP1r5NMbTImWctzqJWELn2YvyOj
+         KrAA==
+X-Gm-Message-State: ABy/qLYfClZx9fNdSwAhnU5SNYtAQBzziFnk9hFyWQu+nBFzP/99Tvdj
+        tiUjTGYfnSiFx+sQr45z70AMCA==
+X-Google-Smtp-Source: APBJJlFY5Wk4ycN3RNcdbeJSOzZJDY4GA9boj1G/G7OddE78CxDwcF9OafgCPpqmAI1xuqydRL+o/g==
+X-Received: by 2002:a17:902:c1cd:b0:1b8:400a:48f2 with SMTP id c13-20020a170902c1cd00b001b8400a48f2mr12348909plc.62.1688420597872;
+        Mon, 03 Jul 2023 14:43:17 -0700 (PDT)
+Received: from ziepe.ca (ip-216-194-73-131.syban.net. [216.194.73.131])
+        by smtp.gmail.com with ESMTPSA id h23-20020a17090aea9700b0025dc5749b4csm14888942pjz.21.2023.07.03.14.43.17
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 03 Jul 2023 14:43:17 -0700 (PDT)
+Received: from jgg by jggl with local (Exim 4.95)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1qGRKG-000BU8-Jc;
+        Mon, 03 Jul 2023 18:43:16 -0300
+Date:   Mon, 3 Jul 2023 18:43:16 -0300
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Mina Almasry <almasrymina@google.com>
+Cc:     David Ahern <dsahern@kernel.org>, Jakub Kicinski <kuba@kernel.org>,
+        Jesper Dangaard Brouer <jbrouer@redhat.com>,
+        brouer@redhat.com, Alexander Duyck <alexander.duyck@gmail.com>,
+        Yunsheng Lin <linyunsheng@huawei.com>, davem@davemloft.net,
+        pabeni@redhat.com, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Lorenzo Bianconi <lorenzo@kernel.org>,
+        Yisen Zhuang <yisen.zhuang@huawei.com>,
+        Salil Mehta <salil.mehta@huawei.com>,
+        Eric Dumazet <edumazet@google.com>,
+        Sunil Goutham <sgoutham@marvell.com>,
+        Geetha sowjanya <gakula@marvell.com>,
+        Subbaraya Sundeep <sbhatta@marvell.com>,
+        hariprasad <hkelam@marvell.com>,
+        Saeed Mahameed <saeedm@nvidia.com>,
+        Leon Romanovsky <leon@kernel.org>,
+        Felix Fietkau <nbd@nbd.name>,
+        Ryder Lee <ryder.lee@mediatek.com>,
+        Shayne Chen <shayne.chen@mediatek.com>,
+        Sean Wang <sean.wang@mediatek.com>,
+        Kalle Valo <kvalo@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
+        linux-rdma@vger.kernel.org, linux-wireless@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org,
+        Jonathan Lemon <jonathan.lemon@gmail.com>
+Subject: Re: Memory providers multiplexing (Was: [PATCH net-next v4 4/5]
+ page_pool: remove PP_FLAG_PAGE_FRAG flag)
+Message-ID: <ZKNA9Pkg2vMJjHds@ziepe.ca>
+References: <CAKgT0Uc6Xoyh3Edgt+83b+HTM5j4JDr3fuxcyL9qDk+Wwt9APg@mail.gmail.com>
+ <908b8b17-f942-f909-61e6-276df52a5ad5@huawei.com>
+ <CAKgT0UeZfbxDYaeUntrQpxHmwCh6zy0dEpjxghiCNxPxv=kdoQ@mail.gmail.com>
+ <72ccf224-7b45-76c5-5ca9-83e25112c9c6@redhat.com>
+ <20230616122140.6e889357@kernel.org>
+ <eadebd58-d79a-30b6-87aa-1c77acb2ec17@redhat.com>
+ <20230619110705.106ec599@kernel.org>
+ <CAHS8izOySGEcXmMg3Gbb5DS-D9-B165gNpwf5a+ObJ7WigLmHg@mail.gmail.com>
+ <5e0ac5bb-2cfa-3b58-9503-1e161f3c9bd5@kernel.org>
+ <CAHS8izP2fPS56uXKMCnbKnPNn=xhTd0SZ1NRUgnAvyuSeSSjGA@mail.gmail.com>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: LV2PR12MB5869:EE_|MW4PR12MB7439:EE_
-X-MS-Office365-Filtering-Correlation-Id: f47f1c08-ab6a-48ac-86a3-08db7c0b3e60
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: XxUXs4hoj8I5w34HdMdUgylwfvni99pcpAnRMD1dQSmys8N7f7sXS/qCLUNBJ5UFYOo05Ue4F0BjcIBLA1qWGRqR1Ujf4LWUhV9uz/XrrZnDx0NyWXyX8N6gf4evHj5DcFEAFfd1NmHk0khlGWHPLQDKaN5FTQZnK47pWGIb+umoqQwLpVtRoExJs4LLQgEBaHLxbEoMlzD0cdRdk/oMBBtEZfsGB36O1oUp/T9rcN9hjAE1048BWzyMgb39rCmEFWYMEzPNvlCu82uFySjveSSkX6XGohxetZkPBnXjlrY0Sxl8RPKVh8wEelrcyh9y3jNF0SPHcQe5LcVfGVKTN7aliI0z08vgvt/0mxRDdA/4WDIJVjbEHtah36FNcihfzwYwMTQZBnz6IaYjIM7ie6M3qSzZHLQrkpDY9IdW5woCwl1/yT/Lnfhn83oeBThkhOhyEp0KX8qDaLJxk9Q5C0Hu9lU75Wfn1in0Xf+Wx/OLzFK9VSISmAUt3UV1oyGhJU88MuCSjjauKkpu7qy5meDRTwy/Kq7Soj+mXp+uiUWsPJpeBS8TxaJ6hW4P+83K
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:LV2PR12MB5869.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(4636009)(376002)(396003)(366004)(39860400002)(346002)(136003)(451199021)(86362001)(107886003)(8676002)(8936002)(5660300002)(66476007)(26005)(6506007)(478600001)(66556008)(6486002)(66946007)(6916009)(41300700001)(4326008)(316002)(186003)(6512007)(2616005)(2906002)(83380400001)(36756003)(38100700002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?lupdH0GbQy4/9Dm/0FITGxiiZXFvDjqwv1eDUkSjzVaoU1/jkuIfc/jfmsEy?=
- =?us-ascii?Q?UZPSt74WHpkZORF312XO/XUcNKdwypRJySeDJGt1X8n2rXnYhEW2v8RYe8lA?=
- =?us-ascii?Q?7AT62fgdK4jBJUnTMXmox4H4l6vKFkA6n35rlUp1YiAH67HXm+m/Gp1bN+Bi?=
- =?us-ascii?Q?50LuBpBZbw06YuTsZEd6m1pyWzVGAD2qHS82CXozE7WIgVI3yIZ5NjMvO75H?=
- =?us-ascii?Q?7AGsngrD8u0L1lfpU3BBucbpKvqG728XDhiOcZXjddPJVI0FTVLCOd4vShuY?=
- =?us-ascii?Q?45ovMB3fhekvJnoclxOuOhHHjqCGdvU8A6HF/A9c4XlMu6YGvFP07QMOpO8W?=
- =?us-ascii?Q?6jORr/aQ6+mCjmU0G3SBBAL2hBRQ+xhLxxlyr3nWivcWQ/USOADObp7Knn0J?=
- =?us-ascii?Q?jfy3taz4YvoIv7hJvUe8pC9r+J4LX+mPHGunDt2Zq8hPcTA/vPB+aPwowm2G?=
- =?us-ascii?Q?yyBdX+XPsG22IhoHd3NQ5tyklfsKKAO2VGNBpbAqTKyjsfakMw4xbWQkAbAU?=
- =?us-ascii?Q?KNb1WqzHnvA3AsAxiG4pWJrn+C0i4Gv9hkNhf7CZB1sqB86ZXgUhOQ+dQaKH?=
- =?us-ascii?Q?9FHUbgL3edxacG1OI4NvimvCEztlu5FrnJY1mZhlcHNUhcmZEXuYINSyLWIV?=
- =?us-ascii?Q?v9JzwcV8GiIJcbRlV2nMOu0g37S9sJZFY2USHXI7SAXtimJQ1yxBigR2ysie?=
- =?us-ascii?Q?WTwmY8qo+UGN3Q6WwlAZRPlkKu3ges93+g6FBxZRD58jDn5az9lomyTiOuqk?=
- =?us-ascii?Q?qyr0qybYrpR2a7sTs5ItjBWuukWIsd0fkPCuCK+gOXX5yhDbEveH+b2AET5r?=
- =?us-ascii?Q?eO5op+Pm/htKUDashk8vLCGiqWAynZn8lA5MO1RaAAGvVWpqHSmD2TZEkXTL?=
- =?us-ascii?Q?HH8/e5g+zUtXopvNoEqEIDNIm8n/470g497knUt9pWjJ4QiFdlx652nCxBEb?=
- =?us-ascii?Q?azCFoAa3h00KLkuqOrXydaSgf2JbyypDOO/aiBICRmB4XFX3yLSdGt7MztY3?=
- =?us-ascii?Q?opR905DlsV1+rr6pM6YmWvkMAYlgBd1BMplXSgvg854EVSMFL4SfIrXnGEl7?=
- =?us-ascii?Q?05QJG5JhCICUX6Q4fKcxLR7eqlztHkpGRNdg93aYy0ijI9fNKW+s9WcIqb6S?=
- =?us-ascii?Q?PrbKZnpzmS/2uAJ3DP8tErlxr/6p8dpWc3yjJ/5tLy5TEjqPx/BFrBZJuJEv?=
- =?us-ascii?Q?49CKQwuVbrvaKDYM+TZFGW1d3+tTSqnaeqc+FvRMyXeBdkiCJHaNw9Ij5KBs?=
- =?us-ascii?Q?HigRcq1aiJ7Kz/bLgAhtOvzKfCTq0pBZh+P4nWwHGLhluD5GmaDILxFt6ZzB?=
- =?us-ascii?Q?MywTo6QnJOQ6gqd5RU0CPhGtoF9HDGS/E9GiIo/EBaMr3erRKTx+78XQf8iC?=
- =?us-ascii?Q?lp85TNgQFz4C/bHJNOy7Sus+uEODOGalczGvHBUiTQCsQZvijYqfF8B7fqoR?=
- =?us-ascii?Q?HJWq18kn48rFQJE45rUj8xHrgOQlDtFKsiCnAENfXTtjbI2UCWgJ+op7VzM1?=
- =?us-ascii?Q?0vE5xTz9dDwryRamWFFPOHxbyP9bz9Dh+KH89BYs4fO0HE7cg2rKyQHeMWZG?=
- =?us-ascii?Q?kFTx/pcT72bgqQK7EeLOCNiJYudQ5tg67UDUCRTw?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: f47f1c08-ab6a-48ac-86a3-08db7c0b3e60
-X-MS-Exchange-CrossTenant-AuthSource: LV2PR12MB5869.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 03 Jul 2023 21:19:53.7296
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: YjQQTnzKrQlSH7IFyarfb+H+pmp9140ZF0iZ474XS4aC9/n7XXbeYZ19bNVYNMDV
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW4PR12MB7439
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAHS8izP2fPS56uXKMCnbKnPNn=xhTd0SZ1NRUgnAvyuSeSSjGA@mail.gmail.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Thu, Jun 29, 2023 at 09:10:17PM -0700, Linus Torvalds wrote:
-> On Wed, 28 Jun 2023 at 17:46, Jason Gunthorpe <jgg@nvidia.com> wrote:
+On Sun, Jul 02, 2023 at 11:22:33PM -0700, Mina Almasry wrote:
+> On Sun, Jul 2, 2023 at 9:20 PM David Ahern <dsahern@kernel.org> wrote:
 > >
-> > Here are the changes for RDMA for this cycle, there was a small rxe
-> > conflict with v6.4 that I resolved in the usual way.
+> > On 6/29/23 8:27 PM, Mina Almasry wrote:
+> > >
+> > > Hello Jakub, I'm looking into device memory (peer-to-peer) networking
+> > > actually, and I plan to pursue using the page pool as a front end.
+> > >
+> > > Quick description of what I have so far:
+> > > current implementation uses device memory with struct pages; I am
+> > > putting all those pages in a gen_pool, and we have written an
+> > > allocator that allocates pages from the gen_pool. In the driver, we
+> > > use this allocator instead of alloc_page() (the driver in question is
+> > > gve which currently doesn't use the page pool). When the driver is
+> > > done with the p2p page, it simply decrements the refcount on it and
+> > > the page is freed back to the gen_pool.
 > 
-> Please just don't. I'd rather know about the conflicts. See
+> Quick update here, I was able to get my implementation working with
+> the page pool as a front end with the memory provider API Jakub wrote
+> here:
+> https://github.com/kuba-moo/linux/tree/pp-providers
 > 
->    Documentation/maintainer/rebasing-and-merging.rst
+> The main complication indeed was the fact that my device memory pages
+> are ZONE_DEVICE pages, which are incompatible with the page_pool due
+> to the union in struct page. I thought of a couple of approaches to
+> resolve that.
 > 
-> and about gazillion emails on the issue.
+> 1. Make my device memory pages non-ZONE_DEVICE pages. 
 
-OK, I thought the release merges were OK, I've sent them this way for
-a long time now. Easy to change
- 
-> > - Lots of small cleanups and rework in bnxt_re
-> >    * Use the common mmap functions
-> >    * Support disassociation
-> >    * Improve FW command flow
-> >
-> > - bnxt_re support for "low latency push", this allows a packet
-> 
-> This allows a packet WHAT?
+Hard no on this from a mm perspective.. We need P2P memory to be
+properly tagged and have the expected struct pages to be DMA mappable
+and otherwise, you totally break everything if you try to do this..
 
-Oh it got lost "a packet to be Tx'd without DMA"
+> 2. Convert the pages from ZONE_DEVICE pages to page_pool pages and
+> vice versa as they're being inserted and removed from the page pool.
 
-> On a positive note, I see that you have a blue checkmark by google
-> now, and Google says
-> 
->   "The sender of this email has verified that
->     they own nvidia.com and the logo in the
->     profile image. Learn more"
-> 
-> which is lovely. I expect great things from nvidia now that you
-> apparently own it. Congratulations! Champagne all around!
+This is kind of scary, it is very, very, fragile to rework the pages
+like this. Eg what happens when the owning device unplugs and needs to
+revoke these pages? I think it would likely crash..
 
-I thought only Twitter did blue checkmarks!
+I think it also technically breaks the DMA API as we may need to look
+into the pgmap to do cache ops on some architectures.
 
-Thanks,
+I suggest you try to work with 8k folios and then the tail page's
+struct page is empty enough to store the information you need..
+Or allocate per page memory and do a memdesc like thing..
+
+Though overall, you won't find devices creating struct pages for their
+P2P memory today, so I'm not sure what the purpose is. Jonathan
+already got highly slammed for proposing code to the kernel that was
+unusable. Please don't repeat that. Other than a special NVMe use case
+the interface for P2P is DMABUF right now and it is not struct page
+backed.
+
+Even if we did get to struct pages for device memory, it is highly
+likely cases you are interested in will be using larger than 4k
+folios, so page pool would need to cope with this nicely as well.
+
 Jason
