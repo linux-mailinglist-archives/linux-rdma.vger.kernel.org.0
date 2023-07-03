@@ -2,219 +2,231 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 30158745FEE
-	for <lists+linux-rdma@lfdr.de>; Mon,  3 Jul 2023 17:34:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C8EE674601A
+	for <lists+linux-rdma@lfdr.de>; Mon,  3 Jul 2023 17:51:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230337AbjGCPeR (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 3 Jul 2023 11:34:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32806 "EHLO
+        id S229792AbjGCPve (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 3 Jul 2023 11:51:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37540 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229454AbjGCPeR (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 3 Jul 2023 11:34:17 -0400
-Received: from smtp-fw-9105.amazon.com (smtp-fw-9105.amazon.com [207.171.188.204])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28F78E58
-        for <linux-rdma@vger.kernel.org>; Mon,  3 Jul 2023 08:34:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1688398456; x=1719934456;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=QdJsZGHElp+59iYnPZCsEvqhb2xdWB4h9Y8DcL1miFw=;
-  b=Xp+V/QiqrGrbpHYLGvF4c4VbFzsJuXGZ6fd86rXbsmkyQIvOXAlXe1uu
-   94o6IAyjynJkyOz3YIauM8XGaQdVCM6R2JLIMe8zmbgapX1KgKu0y8tF/
-   OkmTk4K3O5h4qinKwH+xSGzNgIkjW3YhVhFoaFSSqplhUbX8V8LsEK0EB
-   Q=;
-X-IronPort-AV: E=Sophos;i="6.01,178,1684800000"; 
-   d="scan'208";a="658409821"
-Received: from pdx4-co-svc-p1-lb2-vlan3.amazon.com (HELO email-inbound-relay-pdx-2c-m6i4x-b1c0e1d0.us-west-2.amazon.com) ([10.25.36.214])
-  by smtp-border-fw-9105.sea19.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Jul 2023 15:34:08 +0000
-Received: from EX19D019EUA004.ant.amazon.com (pdx1-ws-svc-p6-lb9-vlan2.pdx.amazon.com [10.236.137.194])
-        by email-inbound-relay-pdx-2c-m6i4x-b1c0e1d0.us-west-2.amazon.com (Postfix) with ESMTPS id 49172806B1;
-        Mon,  3 Jul 2023 15:34:08 +0000 (UTC)
-Received: from EX19D022EUA002.ant.amazon.com (10.252.50.201) by
- EX19D019EUA004.ant.amazon.com (10.252.50.227) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.30; Mon, 3 Jul 2023 15:34:07 +0000
-Received: from EX19MTAUWB001.ant.amazon.com (10.250.64.248) by
- EX19D022EUA002.ant.amazon.com (10.252.50.201) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.30; Mon, 3 Jul 2023 15:34:06 +0000
-Received: from dev-dsk-mrgolin-1c-b2091117.eu-west-1.amazon.com
- (10.253.103.172) by mail-relay.amazon.com (10.250.64.254) with Microsoft SMTP
- Server id 15.2.1118.30 via Frontend Transport; Mon, 3 Jul 2023 15:34:05 +0000
-From:   Michael Margolin <mrgolin@amazon.com>
-To:     <jgg@nvidia.com>, <leon@kernel.org>, <linux-rdma@vger.kernel.org>
-CC:     <sleybo@amazon.com>, <matua@amazon.com>, <gal.pressman@linux.dev>,
-        "Daniel Kranzdorf" <dkkranzd@amazon.com>,
-        Yonatan Nachum <ynachum@amazon.com>
-Subject: [PATCH] RDMA/efa: Add RDMA write HW statistics counters
-Date:   Mon, 3 Jul 2023 15:34:04 +0000
-Message-ID: <20230703153404.30877-1-mrgolin@amazon.com>
-X-Mailer: git-send-email 2.40.1
+        with ESMTP id S229738AbjGCPvd (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 3 Jul 2023 11:51:33 -0400
+Received: from NAM12-MW2-obe.outbound.protection.outlook.com (mail-mw2nam12on2124.outbound.protection.outlook.com [40.107.244.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05C6DC2;
+        Mon,  3 Jul 2023 08:51:32 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=bMd6S1jjvHufR9Sad8Yz+NZXvN8LAP9WyJ9spbxhpMHiLxPB/23j/PMlswtPWiPeL3k1AHgiArpbQx8qDWw5Fh5omvcqBehKMfc0rDQXNx0koe5i4meyHyNUv5OSnDPY7Ss3sxGgSiwl9sIod9YeeeubwrVUC5ejg9qalYPtJLnrDFesGvf8SYPqe7k2VDYB2ihwQxYJArNKX0SXui8JNFNxvKBCQWV/sKgMJNn/4gWfwHdRUr0D5P7EpUPAGuW/zuDI796TGl39734zAbLELyJ6KfyrAMpmvdw0zi7L8s+gJMRIcS10EkJ4u4xNmpr2fjuUJQXaDCDAC1F/wjZ+Sw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=xxLKuqzB8F3ZwItGN/CCzSImCLnYoPoXp8nFK1ZVaK0=;
+ b=av6UWM+e93l6F0EcHxICwW44u5nqlPLDf5bhaq+PE2ksyvLMJ6QOmHrq9Q2i4My1iRM74uweudefXNyiqeGIxC8Zvgeh5ZJ+N0wM0CcYgMRtmaE5PrH2RCPOM+ojKr8v6HlK/PAtC/jzbgTrYL99CYzrA57mtYs8xl+4faYdPuirr8xetfXMGTc/qoxtj1iWpjzORhbWAv+mhLn9YEtd837kxwtPvDj3p+xJnI48Vwyd3kiLvF9PuQ6k4gfw5dRjvMnQw1tar4ciF3/+7t2PYKsyYmLS+420vJywmN+hjDl3KXVrwxmHrOdbQQk76iZ+ta6JYDP0QzQ+UEOwCEzFIw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=microsoft.com; dmarc=pass action=none
+ header.from=microsoft.com; dkim=pass header.d=microsoft.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=xxLKuqzB8F3ZwItGN/CCzSImCLnYoPoXp8nFK1ZVaK0=;
+ b=e5Zd/I53k3pZt7xS35Qews8W2WHkM9VyQOkq9qFZDNiZjaWZpXuMNr+i8f6BBz9n5UOqnwiK8QpjKHuq4Nnl8hXxpwAxzedLw6abWPUUNzeYypudieg6KwZSXeqAyjps4hNAm/phDe4F5SNb1R99AIIQbk6+SS9Bv9EHNiDSHm8=
+Received: from PH7PR21MB3116.namprd21.prod.outlook.com (2603:10b6:510:1d0::10)
+ by DM4PR21MB3682.namprd21.prod.outlook.com (2603:10b6:8:af::13) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6544.9; Mon, 3 Jul
+ 2023 15:51:28 +0000
+Received: from PH7PR21MB3116.namprd21.prod.outlook.com
+ ([fe80::848b:6d47:841d:20ff]) by PH7PR21MB3116.namprd21.prod.outlook.com
+ ([fe80::848b:6d47:841d:20ff%4]) with mapi id 15.20.6544.006; Mon, 3 Jul 2023
+ 15:51:28 +0000
+From:   Haiyang Zhang <haiyangz@microsoft.com>
+To:     souradeep chakrabarti <schakrabarti@linux.microsoft.com>,
+        KY Srinivasan <kys@microsoft.com>,
+        "wei.liu@kernel.org" <wei.liu@kernel.org>,
+        Dexuan Cui <decui@microsoft.com>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        "edumazet@google.com" <edumazet@google.com>,
+        "kuba@kernel.org" <kuba@kernel.org>,
+        "pabeni@redhat.com" <pabeni@redhat.com>,
+        Long Li <longli@microsoft.com>,
+        Ajay Sharma <sharmaajay@microsoft.com>,
+        "leon@kernel.org" <leon@kernel.org>,
+        "cai.huoqing@linux.dev" <cai.huoqing@linux.dev>,
+        "ssengar@linux.microsoft.com" <ssengar@linux.microsoft.com>,
+        "vkuznets@redhat.com" <vkuznets@redhat.com>,
+        "tglx@linutronix.de" <tglx@linutronix.de>,
+        "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>
+CC:     "stable@vger.kernel.org" <stable@vger.kernel.org>,
+        Souradeep Chakrabarti <schakrabarti@microsoft.com>
+Subject: RE: [PATCH V4 net] net: mana: Fix MANA VF unload when host is
+ unresponsive
+Thread-Topic: [PATCH V4 net] net: mana: Fix MANA VF unload when host is
+ unresponsive
+Thread-Index: AQHZrYtO9uZDC1JBBkmdomCootYeWK+oLtxg
+Date:   Mon, 3 Jul 2023 15:51:28 +0000
+Message-ID: <PH7PR21MB31166AAAE7225559D751F722CA29A@PH7PR21MB3116.namprd21.prod.outlook.com>
+References: <1688374171-10534-1-git-send-email-schakrabarti@linux.microsoft.com>
+In-Reply-To: <1688374171-10534-1-git-send-email-schakrabarti@linux.microsoft.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+msip_labels: MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ActionId=5f961a7e-ca82-4161-a6dd-538abc496366;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ContentBits=0;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Enabled=true;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Method=Standard;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Name=Internal;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SetDate=2023-07-03T15:42:29Z;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SiteId=72f988bf-86f1-41af-91ab-2d7cd011db47;
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=microsoft.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: PH7PR21MB3116:EE_|DM4PR21MB3682:EE_
+x-ms-office365-filtering-correlation-id: 88375292-f5c5-433c-58ff-08db7bdd5d46
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: ylwkPHfIky+3RiEbfjij+bxL5rto0jxS/RX9uZhN/ogIicbRlo12j6m9IvzN3oYIbO6DdoGSM4m4TBuBOcyiHMX4H9LFmGN3qmQ6iICeKH+/W8iHqSWQXg+LvouAvDVpOdGs6bFERqHBm890Smll1ZrA71Wdu85TKgynpmhiSoNPa83oi9p3LJ3NmOgHjvTFnIseEvUdXE8nIAjCN3HRaCrU2fIOZtw7I8jaOyb51gqZk12hOtlEHeV+KbYJ1Pn3FXl9dEpBN7BpyevQh953pCN4AwcYdS1KzGCwPQ1nmUC/GpZoxk88izXVZLzh9Y8YFkZnQpKzjq1cBH1WLWrHqIxmg7z5a5arQGQ5auS8BcSwuWZyW5bIHXBW3scdHuJlZ3ppYp/WdAq7vngjNtXfP2PvxtMhL/PsE+I6A/7lAs+UxHOABycPlEn/4hRt1lpOf3pFYtruTHop3S1W28kLk0c2TfIDWw/zgzSVBGdw0qLiAI56z75xIVwoTnZZ47IzQ0ubaRTTHwlxfEaTAbE48SZ3mTqL3rSgN/AG6waoLo0TKwK4sWz5KGzbIqSA4MuPaJLysrxRRZckgHxLmc1P0P0WIxkQOk918wchTu7e5f+EXLIwxTv8i147ZWEJO9wae5J2UZPl9bXh9yLFB8EKHM2MPBPpZGVK/8id4YjEeLN46cRlsguf7HU5UX0x/ZjG
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH7PR21MB3116.namprd21.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(4636009)(366004)(346002)(396003)(39860400002)(376002)(136003)(451199021)(82950400001)(82960400001)(53546011)(8990500004)(921005)(10290500003)(6506007)(316002)(66446008)(64756008)(38070700005)(76116006)(55016003)(66556008)(66476007)(4326008)(38100700002)(122000001)(66946007)(107886003)(83380400001)(66899021)(186003)(26005)(9686003)(478600001)(8936002)(54906003)(110136005)(8676002)(2906002)(71200400001)(5660300002)(7416002)(7696005)(41300700001)(86362001)(52536014)(33656002);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?xvvBdowBc+b8qZTXkTEyPmRdd65aORxRZH8iy+ReGGbUT/8Eq5DBFjPYL6qp?=
+ =?us-ascii?Q?xHKepeEkEplPVp9JPAym0p7QRgw3pGn2vsHmf8af7CkjNgH4vPreggPB5N2L?=
+ =?us-ascii?Q?RtfvEXiO/5MpqFNlHs8G2C33Faz2ENiKjX5NEA406RYMZkOlTs2/YZkmfsVV?=
+ =?us-ascii?Q?czUGF2OB+vDFnM3HH3z97q6V3GyHdS7lblMhpmvpzsFyO+f7OlPLRz0AO12C?=
+ =?us-ascii?Q?73Elc9CXiT2HXcjbBWu38Fdn3wDl1y1tjhCEESvR2RzEVSsHYd/1iJaoY41F?=
+ =?us-ascii?Q?pckAk/AeHq6BTDM3+rsHPTVpjUQ3qV2DkVbGwck+5zhVBfoV4htrkSUIYXte?=
+ =?us-ascii?Q?K4oq+bpdyV1eMg93QmkhxnPGzKWeZjrz2VrLy17+lLdcimaRglP7iTgp+GwN?=
+ =?us-ascii?Q?EUSPnQV8z00Cw4v6kdD4V6orDVu1f0LR3SdE5Demhaf4yG+ekgJVZ1EJY2SE?=
+ =?us-ascii?Q?HY4kR3uY3jNdsteh2z296lHkIIXzAOzR4BVuIbWyUwGa6BC5BhNfM4Au5nQg?=
+ =?us-ascii?Q?3/XwH7mx13aT7gaWb0tRmCRewi8YiyhW5XbEoRxP2A9V1uY8Ct1gwx/mr7UW?=
+ =?us-ascii?Q?bXdJzPlmzEdLdESW3frRbGmj3OO/pKWifZp47XDVgi+rUzTOsjP25Jd4uGha?=
+ =?us-ascii?Q?3T2370L2wvqcEdJVtZXtibjjo6OGMF1NZS52HBiF2e/Sjw+EsHubmG5h5oUH?=
+ =?us-ascii?Q?zF3TP0yQOdaFAwC77CgCG9IFOcMH4jmm5UQr9fQZ30QTVcxdu5xziUGvUMgf?=
+ =?us-ascii?Q?pcwEe28GM8Pc75Z5MZWF6BYBQrlWunrkR8RT23T3z4c3uLtL5EXqdg56HfJx?=
+ =?us-ascii?Q?zhG6byErd5bfx5gDccKu7635/8PIwu3l3FFSdcdvXWsNac7Gyr9l/QQsxDfK?=
+ =?us-ascii?Q?1RRChE0kW+40X25XbWZ+5HCOfhEKmCZ54qaLqQgvj8KINIa42BMLAw3zQ6a2?=
+ =?us-ascii?Q?GubXxDKTR4zPl9IFVVICDMWTN1HajNzcgB6JfPdVg67tCtlE6oSGdEBnTLiD?=
+ =?us-ascii?Q?H4KRnuxm32FEwOK/wA2GzoDFsHHc1N+2pk5Gc1D5HjoWU6o/TQBoJbd4rxrs?=
+ =?us-ascii?Q?+PRr8MZ0lCx92IKnadWg8K7Fgyyv/vFG15iUcajZT8IDcI99HRc6iNrpOn8g?=
+ =?us-ascii?Q?WRbLZbkZUlAn0wLZ3Gu6PAR0Qts1gZnogD1Ppx7c/av1O0Ga1JnL1HKX8323?=
+ =?us-ascii?Q?vXJnKQIKqc1zWO6ekw53TPBrRkmrzWzO0SamC/4DtW0psS+Hjy795yyFeoH9?=
+ =?us-ascii?Q?nnreB9iSCSxL9g+rN9y7ewh/KI0Kir8nb+S6TyfWarx96ejcFZvLbijINZ2f?=
+ =?us-ascii?Q?0oz1SD7RxIfgyEYUYw+b4JIHIXNU2Ya5GX+t7qFAlJcdYB5T2r5smHTj3Y4A?=
+ =?us-ascii?Q?XxshStKt28eRLeI4tXw01J6X5qWP5aBXjZcVVgPIhg79+eem90EyacVgiCud?=
+ =?us-ascii?Q?Sy7LhxghwL/+3PmhaVSdJ4wf62ikUEUhGPrha5IOt+49QsHoKTgMnwfTd93r?=
+ =?us-ascii?Q?hozRTWUbBIj/GiFxr4v9QpS2V2QdJEWQ3nhY3riQLQOPxZTcPp4fpiLYctZg?=
+ =?us-ascii?Q?2WuyfST+pK+yy9DxcIphAjJj+7SWziV83TEFvcZn?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
-        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+X-OriginatorOrg: microsoft.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: PH7PR21MB3116.namprd21.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 88375292-f5c5-433c-58ff-08db7bdd5d46
+X-MS-Exchange-CrossTenant-originalarrivaltime: 03 Jul 2023 15:51:28.5333
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 72f988bf-86f1-41af-91ab-2d7cd011db47
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: GeaWYQ9jeb1oTRlAf58puQkiqIAksTyiaMIxGfuA+1SMMa/4ON8D2PPjLZ1GKe/1p2PUxAQ0HlQDoC/VaxC78g==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM4PR21MB3682
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Update device API and request RDMA write counters if RDMA write is
-supported by device. Expose newly added counters through ib core
-counters mechanism.
 
-Reviewed-by: Daniel Kranzdorf <dkkranzd@amazon.com>
-Reviewed-by: Yonatan Nachum <ynachum@amazon.com>
-Signed-off-by: Michael Margolin <mrgolin@amazon.com>
----
- .../infiniband/hw/efa/efa_admin_cmds_defs.h    | 13 +++++++++++++
- drivers/infiniband/hw/efa/efa_com_cmd.c        |  8 +++++++-
- drivers/infiniband/hw/efa/efa_com_cmd.h        | 10 +++++++++-
- drivers/infiniband/hw/efa/efa_verbs.c          | 18 ++++++++++++++++++
- 4 files changed, 47 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/infiniband/hw/efa/efa_admin_cmds_defs.h b/drivers/infiniband/hw/efa/efa_admin_cmds_defs.h
-index 4e93ef7f84ee..9c65bd27bae0 100644
---- a/drivers/infiniband/hw/efa/efa_admin_cmds_defs.h
-+++ b/drivers/infiniband/hw/efa/efa_admin_cmds_defs.h
-@@ -66,6 +66,7 @@ enum efa_admin_get_stats_type {
- 	EFA_ADMIN_GET_STATS_TYPE_BASIC              = 0,
- 	EFA_ADMIN_GET_STATS_TYPE_MESSAGES           = 1,
- 	EFA_ADMIN_GET_STATS_TYPE_RDMA_READ          = 2,
-+	EFA_ADMIN_GET_STATS_TYPE_RDMA_WRITE         = 3,
- };
- 
- enum efa_admin_get_stats_scope {
-@@ -570,6 +571,16 @@ struct efa_admin_rdma_read_stats {
- 	u64 read_resp_bytes;
- };
- 
-+struct efa_admin_rdma_write_stats {
-+	u64 write_wrs;
-+
-+	u64 write_bytes;
-+
-+	u64 write_wr_err;
-+
-+	u64 write_recv_bytes;
-+};
-+
- struct efa_admin_acq_get_stats_resp {
- 	struct efa_admin_acq_common_desc acq_common_desc;
- 
-@@ -579,6 +590,8 @@ struct efa_admin_acq_get_stats_resp {
- 		struct efa_admin_messages_stats messages_stats;
- 
- 		struct efa_admin_rdma_read_stats rdma_read_stats;
-+
-+		struct efa_admin_rdma_write_stats rdma_write_stats;
- 	} u;
- };
- 
-diff --git a/drivers/infiniband/hw/efa/efa_com_cmd.c b/drivers/infiniband/hw/efa/efa_com_cmd.c
-index 8f8885e002ba..576811885d59 100644
---- a/drivers/infiniband/hw/efa/efa_com_cmd.c
-+++ b/drivers/infiniband/hw/efa/efa_com_cmd.c
-@@ -1,6 +1,6 @@
- // SPDX-License-Identifier: GPL-2.0 OR BSD-2-Clause
- /*
-- * Copyright 2018-2021 Amazon.com, Inc. or its affiliates. All rights reserved.
-+ * Copyright 2018-2023 Amazon.com, Inc. or its affiliates. All rights reserved.
-  */
- 
- #include "efa_com.h"
-@@ -794,6 +794,12 @@ int efa_com_get_stats(struct efa_com_dev *edev,
- 		result->rdma_read_stats.read_wr_err = resp.u.rdma_read_stats.read_wr_err;
- 		result->rdma_read_stats.read_resp_bytes = resp.u.rdma_read_stats.read_resp_bytes;
- 		break;
-+	case EFA_ADMIN_GET_STATS_TYPE_RDMA_WRITE:
-+		result->rdma_write_stats.write_wrs = resp.u.rdma_write_stats.write_wrs;
-+		result->rdma_write_stats.write_bytes = resp.u.rdma_write_stats.write_bytes;
-+		result->rdma_write_stats.write_wr_err = resp.u.rdma_write_stats.write_wr_err;
-+		result->rdma_write_stats.write_recv_bytes = resp.u.rdma_write_stats.write_recv_bytes;
-+		break;
- 	}
- 
- 	return 0;
-diff --git a/drivers/infiniband/hw/efa/efa_com_cmd.h b/drivers/infiniband/hw/efa/efa_com_cmd.h
-index 0898ad5bc340..fc97f37bb39b 100644
---- a/drivers/infiniband/hw/efa/efa_com_cmd.h
-+++ b/drivers/infiniband/hw/efa/efa_com_cmd.h
-@@ -1,6 +1,6 @@
- /* SPDX-License-Identifier: GPL-2.0 OR BSD-2-Clause */
- /*
-- * Copyright 2018-2021 Amazon.com, Inc. or its affiliates. All rights reserved.
-+ * Copyright 2018-2023 Amazon.com, Inc. or its affiliates. All rights reserved.
-  */
- 
- #ifndef _EFA_COM_CMD_H_
-@@ -262,10 +262,18 @@ struct efa_com_rdma_read_stats {
- 	u64 read_resp_bytes;
- };
- 
-+struct efa_com_rdma_write_stats {
-+	u64 write_wrs;
-+	u64 write_bytes;
-+	u64 write_wr_err;
-+	u64 write_recv_bytes;
-+};
-+
- union efa_com_get_stats_result {
- 	struct efa_com_basic_stats basic_stats;
- 	struct efa_com_messages_stats messages_stats;
- 	struct efa_com_rdma_read_stats rdma_read_stats;
-+	struct efa_com_rdma_write_stats rdma_write_stats;
- };
- 
- int efa_com_create_qp(struct efa_com_dev *edev,
-diff --git a/drivers/infiniband/hw/efa/efa_verbs.c b/drivers/infiniband/hw/efa/efa_verbs.c
-index 2a195c4b0f17..7a27d79c0541 100644
---- a/drivers/infiniband/hw/efa/efa_verbs.c
-+++ b/drivers/infiniband/hw/efa/efa_verbs.c
-@@ -61,6 +61,10 @@ struct efa_user_mmap_entry {
- 	op(EFA_RDMA_READ_BYTES, "rdma_read_bytes") \
- 	op(EFA_RDMA_READ_WR_ERR, "rdma_read_wr_err") \
- 	op(EFA_RDMA_READ_RESP_BYTES, "rdma_read_resp_bytes") \
-+	op(EFA_RDMA_WRITE_WRS, "rdma_write_wrs") \
-+	op(EFA_RDMA_WRITE_BYTES, "rdma_write_bytes") \
-+	op(EFA_RDMA_WRITE_WR_ERR, "rdma_write_wr_err") \
-+	op(EFA_RDMA_WRITE_RECV_BYTES, "rdma_write_recv_bytes") \
- 
- #define EFA_STATS_ENUM(ename, name) ename,
- #define EFA_STATS_STR(ename, nam) \
-@@ -2080,6 +2084,7 @@ static int efa_fill_port_stats(struct efa_dev *dev, struct rdma_hw_stats *stats,
- {
- 	struct efa_com_get_stats_params params = {};
- 	union efa_com_get_stats_result result;
-+	struct efa_com_rdma_write_stats *rws;
- 	struct efa_com_rdma_read_stats *rrs;
- 	struct efa_com_messages_stats *ms;
- 	struct efa_com_basic_stats *bs;
-@@ -2121,6 +2126,19 @@ static int efa_fill_port_stats(struct efa_dev *dev, struct rdma_hw_stats *stats,
- 	stats->value[EFA_RDMA_READ_WR_ERR] = rrs->read_wr_err;
- 	stats->value[EFA_RDMA_READ_RESP_BYTES] = rrs->read_resp_bytes;
- 
-+	if (EFA_DEV_CAP(dev, RDMA_WRITE)) {
-+		params.type = EFA_ADMIN_GET_STATS_TYPE_RDMA_WRITE;
-+		err = efa_com_get_stats(&dev->edev, &params, &result);
-+		if (err)
-+			return err;
-+
-+		rws = &result.rdma_write_stats;
-+		stats->value[EFA_RDMA_WRITE_WRS] = rws->write_wrs;
-+		stats->value[EFA_RDMA_WRITE_BYTES] = rws->write_bytes;
-+		stats->value[EFA_RDMA_WRITE_WR_ERR] = rws->write_wr_err;
-+		stats->value[EFA_RDMA_WRITE_RECV_BYTES] = rws->write_recv_bytes;
-+	}
-+
- 	return ARRAY_SIZE(efa_port_stats_descs);
- }
- 
--- 
-2.40.1
+> -----Original Message-----
+> From: souradeep chakrabarti <schakrabarti@linux.microsoft.com>
+> Sent: Monday, July 3, 2023 4:50 AM
+> To: KY Srinivasan <kys@microsoft.com>; Haiyang Zhang
+> <haiyangz@microsoft.com>; wei.liu@kernel.org; Dexuan Cui
+> <decui@microsoft.com>; davem@davemloft.net; edumazet@google.com;
+> kuba@kernel.org; pabeni@redhat.com; Long Li <longli@microsoft.com>; Ajay
+> Sharma <sharmaajay@microsoft.com>; leon@kernel.org;
+> cai.huoqing@linux.dev; ssengar@linux.microsoft.com; vkuznets@redhat.com;
+> tglx@linutronix.de; linux-hyperv@vger.kernel.org; netdev@vger.kernel.org;
+> linux-kernel@vger.kernel.org; linux-rdma@vger.kernel.org
+> Cc: stable@vger.kernel.org; Souradeep Chakrabarti
+> <schakrabarti@microsoft.com>; Souradeep Chakrabarti
+> <schakrabarti@linux.microsoft.com>
+> Subject: [PATCH V4 net] net: mana: Fix MANA VF unload when host is
+> unresponsive
+>=20
+> From: Souradeep Chakrabarti <schakrabarti@linux.microsoft.com>
+>=20
+> When unloading the MANA driver, mana_dealloc_queues() waits for the MANA
+> hardware to complete any inflight packets and set the pending send count
+> to zero. But if the hardware has failed, mana_dealloc_queues()
+> could wait forever.
+>=20
+> Fix this by adding a timeout to the wait. Set the timeout to 120 seconds,
+> which is a somewhat arbitrary value that is more than long enough for
+> functional hardware to complete any sends.
+>=20
+> Signed-off-by: Souradeep Chakrabarti <schakrabarti@linux.microsoft.com>
+> ---
+> V3 -> V4:
+> * Fixed the commit message to describe the context.
+> * Removed the vf_unload_timeout, as it is not required.
+> ---
+>  drivers/net/ethernet/microsoft/mana/mana_en.c | 26 ++++++++++++++++---
+>  1 file changed, 23 insertions(+), 3 deletions(-)
+>=20
+> diff --git a/drivers/net/ethernet/microsoft/mana/mana_en.c
+> b/drivers/net/ethernet/microsoft/mana/mana_en.c
+> index a499e460594b..d26f1da70411 100644
+> --- a/drivers/net/ethernet/microsoft/mana/mana_en.c
+> +++ b/drivers/net/ethernet/microsoft/mana/mana_en.c
+> @@ -2346,7 +2346,10 @@ static int mana_dealloc_queues(struct net_device
+> *ndev)
+>  {
+>  	struct mana_port_context *apc =3D netdev_priv(ndev);
+>  	struct gdma_dev *gd =3D apc->ac->gdma_dev;
+> +	unsigned long timeout;
+>  	struct mana_txq *txq;
+> +	struct sk_buff *skb;
+> +	struct mana_cq *cq;
+>  	int i, err;
+>=20
+>  	if (apc->port_is_up)
+> @@ -2363,15 +2366,32 @@ static int mana_dealloc_queues(struct net_device
+> *ndev)
+>  	 * to false, but it doesn't matter since mana_start_xmit() drops any
+>  	 * new packets due to apc->port_is_up being false.
+>  	 *
+> -	 * Drain all the in-flight TX packets
+> +	 * Drain all the in-flight TX packets.
+> +	 * A timeout of 120 seconds for all the queues is used.
+> +	 * This will break the while loop when h/w is not responding.
+> +	 * This value of 120 has been decided here considering max
+> +	 * number of queues.
+>  	 */
+> +
+> +	timeout =3D jiffies + 120 * HZ;
+>  	for (i =3D 0; i < apc->num_queues; i++) {
+>  		txq =3D &apc->tx_qp[i].txq;
+> -
+> -		while (atomic_read(&txq->pending_sends) > 0)
+> +		while (atomic_read(&txq->pending_sends) > 0 &&
+> +		       time_before(jiffies, timeout)) {
+>  			usleep_range(1000, 2000);
+> +		}
+>  	}
+>=20
+> +	for (i =3D 0; i < apc->num_queues; i++) {
+> +		txq =3D &apc->tx_qp[i].txq;
+> +		cq =3D &apc->tx_qp[i].tx_cq;
+> +		while (atomic_read(&txq->pending_sends)) {
+> +			skb =3D skb_dequeue(&txq->pending_skbs);
+> +			mana_unmap_skb(skb, apc);
+> +			napi_consume_skb(skb, cq->budget);
+
+This is not in NAPI context, so it should be dev_consume_skb_any()
+
+Thanks,
+- Haiyang
+
 
