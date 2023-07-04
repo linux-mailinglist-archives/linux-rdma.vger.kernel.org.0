@@ -2,69 +2,111 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D8837746BDD
-	for <lists+linux-rdma@lfdr.de>; Tue,  4 Jul 2023 10:29:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B8EA746EAE
+	for <lists+linux-rdma@lfdr.de>; Tue,  4 Jul 2023 12:31:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230145AbjGDI3W (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 4 Jul 2023 04:29:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49120 "EHLO
+        id S231534AbjGDKbJ (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 4 Jul 2023 06:31:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50876 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230004AbjGDI3V (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 4 Jul 2023 04:29:21 -0400
-Received: from smtp-fw-80008.amazon.com (smtp-fw-80008.amazon.com [99.78.197.219])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 499D2B1
-        for <linux-rdma@vger.kernel.org>; Tue,  4 Jul 2023 01:29:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1688459360; x=1719995360;
-  h=message-id:date:mime-version:to:cc:references:from:
-   in-reply-to:content-transfer-encoding:subject;
-  bh=K9f2lwDFKyEvc2+ANERZiDeN0XzOpgc30lfYttF3Hlc=;
-  b=Ym6c6NJq8v12Gek57GQeM2zqT72MZA5pA+kOZY6ooEZLHcckca1U1K41
-   otQgl8vZAjUNdtwuts3/ZbjfMwhZ/Ka714mKPwM6PceRegbzgghdp9+9+
-   Xb0rL05Z94beRSCy9BYTIgBQHov7WMY/1HrQRQZL+bY093HxK8LcC/8u4
-   g=;
-X-IronPort-AV: E=Sophos;i="6.01,180,1684800000"; 
-   d="scan'208";a="14145180"
-Subject: Re: [PATCH] RDMA/efa: Add RDMA write HW statistics counters
-Received: from pdx4-co-svc-p1-lb2-vlan2.amazon.com (HELO email-inbound-relay-pdx-2c-m6i4x-dc7c3f8b.us-west-2.amazon.com) ([10.25.36.210])
-  by smtp-border-fw-80008.pdx80.corp.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Jul 2023 08:29:17 +0000
-Received: from EX19D004EUA001.ant.amazon.com (pdx1-ws-svc-p6-lb9-vlan3.pdx.amazon.com [10.236.137.198])
-        by email-inbound-relay-pdx-2c-m6i4x-dc7c3f8b.us-west-2.amazon.com (Postfix) with ESMTPS id 7DF74A0CDE;
-        Tue,  4 Jul 2023 08:29:17 +0000 (UTC)
-Received: from EX19D031EUB003.ant.amazon.com (10.252.61.88) by
- EX19D004EUA001.ant.amazon.com (10.252.50.27) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.30; Tue, 4 Jul 2023 08:29:17 +0000
-Received: from [192.168.154.204] (10.85.143.177) by
- EX19D031EUB003.ant.amazon.com (10.252.61.88) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.30; Tue, 4 Jul 2023 08:29:13 +0000
-Message-ID: <5ecddd0a-00e0-042a-d3c0-cea177055875@amazon.com>
-Date:   Tue, 4 Jul 2023 11:29:08 +0300
+        with ESMTP id S230090AbjGDKbI (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 4 Jul 2023 06:31:08 -0400
+Received: from NAM02-SN1-obe.outbound.protection.outlook.com (mail-sn1nam02on2049.outbound.protection.outlook.com [40.107.96.49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DAD5B135;
+        Tue,  4 Jul 2023 03:31:05 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Owv4yTsdDdXVUkGLtPEYCg48QKy3eQ62+Dfm4f1/+LdLbtIS0YjQTiDMODhyQIyJhpaqupvahtCWvGa7Y0GZO9kbWh6cbSBF6fLLo2LZjziO41K7r13pINfDKjKDD4d+ACzweNKt15QSUnPcmijM3i1jVGdTS9rjFvqikC15mpwtZAuhdff7oVnDY+zurk2N6HUKiWPBJ5c6/Ri7KR1/xqcuPhE5endYFLOLWeh2LM8cK+m7nE6uyiGGL1wgyF1N9vq996/oCJVbGO07+Hd+WeS703zcjexKZiMqAqbVtcgThsVvVUW29uellD0S2zwuxm+D2gCR5dG6YLwmTRjIvQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=j6Ki/oDE73OM2g24kGgjiV8glv9v3VhsD3MghY96r4M=;
+ b=INegiR0LQ8IdzHvw3dcLM1XHmQwiQjgsgvkPd6ik9ihEyZsPXKK03jB+Cp129PXhHqAZs25jBWL1a+fIudiYXpqGwMHce0dwWX3Yde82jaL2+HY6K4KtN9uqJHOgtQu5yxrVL92J5oEdPclWUef5rJtmlua6++OgxQkoLOU+/hddCnhqMwGRDWuo2VHgQQZ/Sc7ur+0/1DLykVCLzhl4/QE4WoXmwjH7D7uxhtdWyPvtkBsRt1xojYtmRz8Wfmbg5mv0qB61ZWY/NeMSoP/vTxWydcxKWZZOPucddYYiRu4nZ3H9ZE7xZkBLYAlFAGYm9BVCM/Ci7pNRBy4Ki09XIA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 216.228.117.160) smtp.rcpttodomain=intel.com smtp.mailfrom=nvidia.com;
+ dmarc=pass (p=reject sp=reject pct=100) action=none header.from=nvidia.com;
+ dkim=none (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=j6Ki/oDE73OM2g24kGgjiV8glv9v3VhsD3MghY96r4M=;
+ b=HS4CN+3utxELqT81Gc0WRXIc6jITo6UP4avHd3xPYFQQEpXcSC8uHjBUU4lQbDhNbg0Ujo8QLY/k4aOWL2DArUq2tiaAa5EtB2i0HjGepRqFfGeysSztmHUnTDiPk76kCrMpbz4HzspC7frZs1t1rEP3L5jULR6Cf9keWDY6X2C6XSVcnjrf9RgqsIraZYs0489IKePThsLK43Tbfmn886ZR9xLhdN7TpRjXmPisPrC7pHEztt11ws0ihUK/ePhZzuCkkBBcRjFEdw9FWYkirQsH4mz6lzSKp0nXKfjReQRZtHOk1aR+pFegtQJ39PoELVQ1pNeY2G1jjelXK7C+qA==
+Received: from MW4P221CA0020.NAMP221.PROD.OUTLOOK.COM (2603:10b6:303:8b::25)
+ by PH7PR12MB8106.namprd12.prod.outlook.com (2603:10b6:510:2ba::9) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6544.24; Tue, 4 Jul
+ 2023 10:31:04 +0000
+Received: from CO1NAM11FT022.eop-nam11.prod.protection.outlook.com
+ (2603:10b6:303:8b:cafe::d4) by MW4P221CA0020.outlook.office365.com
+ (2603:10b6:303:8b::25) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6565.18 via Frontend
+ Transport; Tue, 4 Jul 2023 10:31:03 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.117.160)
+ smtp.mailfrom=nvidia.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=nvidia.com;
+Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
+ 216.228.117.160 as permitted sender) receiver=protection.outlook.com;
+ client-ip=216.228.117.160; helo=mail.nvidia.com; pr=C
+Received: from mail.nvidia.com (216.228.117.160) by
+ CO1NAM11FT022.mail.protection.outlook.com (10.13.175.199) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.6521.44 via Frontend Transport; Tue, 4 Jul 2023 10:31:03 +0000
+Received: from rnnvmail201.nvidia.com (10.129.68.8) by mail.nvidia.com
+ (10.129.200.66) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.5; Tue, 4 Jul 2023
+ 03:30:53 -0700
+Received: from [172.27.1.49] (10.126.231.35) by rnnvmail201.nvidia.com
+ (10.129.68.8) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.37; Tue, 4 Jul 2023
+ 03:30:47 -0700
+Message-ID: <5621fe4a-5c21-b407-91a1-4cc299f5abb0@nvidia.com>
+Date:   Tue, 4 Jul 2023 13:30:43 +0300
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
  Thunderbird/102.12.0
-To:     Gal Pressman <gal.pressman@linux.dev>, <jgg@nvidia.com>,
-        <leon@kernel.org>, <linux-rdma@vger.kernel.org>
-CC:     <sleybo@amazon.com>, <matua@amazon.com>,
-        Daniel Kranzdorf <dkkranzd@amazon.com>,
-        Yonatan Nachum <ynachum@amazon.com>
-References: <20230703153404.30877-1-mrgolin@amazon.com>
- <5b57402b-b238-7fe5-c1e7-75937c3c1480@linux.dev>
+Subject: Re: [linux-next:master] BUILD REGRESSION
+ 296d53d8f84ce50ffaee7d575487058c8d437335
 Content-Language: en-US
-From:   "Margolin, Michael" <mrgolin@amazon.com>
-In-Reply-To: <5b57402b-b238-7fe5-c1e7-75937c3c1480@linux.dev>
+To:     kernel test robot <lkp@intel.com>,
+        Andrew Morton <akpm@linux-foundation.org>
+CC:     Linux Memory Management List <linux-mm@kvack.org>,
+        <kunit-dev@googlegroups.com>, <kvmarm@lists.linux.dev>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-arm-msm@vger.kernel.org>, <linux-bluetooth@vger.kernel.org>,
+        <linux-kselftest@vger.kernel.org>, <linux-parisc@vger.kernel.org>,
+        <linux-rdma@vger.kernel.org>, <linux-riscv@lists.infradead.org>,
+        <linux-usb@vger.kernel.org>, <netdev@vger.kernel.org>
+References: <202307032309.v4K1IBoR-lkp@intel.com>
+From:   Shay Drory <shayd@nvidia.com>
+In-Reply-To: <202307032309.v4K1IBoR-lkp@intel.com>
 Content-Type: text/plain; charset="UTF-8"; format=flowed
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.85.143.177]
-X-ClientProxiedBy: EX19D039UWA003.ant.amazon.com (10.13.139.49) To
- EX19D031EUB003.ant.amazon.com (10.252.61.88)
-X-Spam-Status: No, score=-2.9 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_LOW,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+X-Originating-IP: [10.126.231.35]
+X-ClientProxiedBy: rnnvmail201.nvidia.com (10.129.68.8) To
+ rnnvmail201.nvidia.com (10.129.68.8)
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: CO1NAM11FT022:EE_|PH7PR12MB8106:EE_
+X-MS-Office365-Filtering-Correlation-Id: 1e39ff4d-e360-4728-e8d7-08db7c79c4c3
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 9Dg1qCc2ry6ECA1DeFK0AJNkukvr5SGvJUuu2Rc/EXg/nkPf1U6wqU8GA3nNoha245s/tZ4H9sB+ynensGCbCTW7vQQRrmpovDizSt8fig3pTU3prn2qxQnv1NxY2LvPwSFPWs7tqJvFqFlOmPejF7sn3jX3GpzFPxXaNZeaZN5oFuDa6KAF3xD6Wzk61XVgjICVN3Fk74W4SWQTFyB+DycJTK79YGKjHxZZQZ313TOSeI9WGkIyCkKcGmqaFgo7SO1kKJTBwXCDKWONm6+rz/DNvKIaG0tASDCj4+Ia01ZpyyB1DTboQJnLuBPMvlDElWeFeQPJ9gpC5B1QgAN5UFSig0HCPKWKXmR1uPGroeyKn+sHTL/qzT21zY46prAfPemcmyJZoDpnMZMulhsPJtErnW5ofKTkQSrMRlkeZbYQV3AXLz/4R8BdLMmLqBtiC16h7WuDajf98C+go4ExFMa6dVGbAjJ/yw7RXa/n+sCw26z3N9p8T2/wf7lxIQFvoDrF1hodAaA2GVz6UTHYMew4SbKRbXX/VkRYToUO5q6DhKhF2tkyiHtBTvSn4R+7JWDQ9aimDD/xsnBuPiaAh9vh6jDKgTReBm4phdBMaJ02xiG5qnIsV5JJJt0giv2HblD0ocQ+UBJeit/JKmDXPn37M6qICNo4K4/H5D41w9qsULAerbp1WAkfqTadJSvPUNlGrtmbXdOEMawhAHam/xplHW2taeQoO+aXSCgWFV+TNlSgXRWfMP0oj6j9DUuCfJhPicOwkKBiqOC5zu31Oyv5JYVmJhJDQqB8mvJXYMAe/HIJoTIgCky7SAcoVu+0
+X-Forefront-Antispam-Report: CIP:216.228.117.160;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc6edge1.nvidia.com;CAT:NONE;SFS:(13230028)(4636009)(396003)(39860400002)(136003)(376002)(346002)(451199021)(36840700001)(46966006)(40470700004)(6666004)(16526019)(186003)(966005)(31686004)(478600001)(4744005)(7416002)(26005)(5660300002)(47076005)(36756003)(2906002)(2616005)(86362001)(83380400001)(336012)(82310400005)(31696002)(426003)(82740400003)(36860700001)(70586007)(4326008)(7636003)(70206006)(316002)(8936002)(16576012)(110136005)(54906003)(41300700001)(356005)(8676002)(40480700001)(53546011)(40460700003)(43740500002);DIR:OUT;SFP:1101;
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 04 Jul 2023 10:31:03.6023
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 1e39ff4d-e360-4728-e8d7-08db7c79c4c3
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.117.160];Helo=[mail.nvidia.com]
+X-MS-Exchange-CrossTenant-AuthSource: CO1NAM11FT022.eop-nam11.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH7PR12MB8106
+X-Spam-Status: No, score=-1.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        NICE_REPLY_A,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -72,157 +114,17 @@ List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
 
-On 7/4/2023 10:20 AM, Gal Pressman wrote:
-> CAUTION: This email originated from outside of the organization. Do not click links or open attachments unless you can confirm the sender and know the content is safe.
->
->
->
-> On 03/07/2023 18:34, Michael Margolin wrote:
->> Update device API and request RDMA write counters if RDMA write is
->> supported by device. Expose newly added counters through ib core
->> counters mechanism.
->>
->> Reviewed-by: Daniel Kranzdorf <dkkranzd@amazon.com>
->> Reviewed-by: Yonatan Nachum <ynachum@amazon.com>
->> Signed-off-by: Michael Margolin <mrgolin@amazon.com>
->> ---
->>   .../infiniband/hw/efa/efa_admin_cmds_defs.h    | 13 +++++++++++++
->>   drivers/infiniband/hw/efa/efa_com_cmd.c        |  8 +++++++-
->>   drivers/infiniband/hw/efa/efa_com_cmd.h        | 10 +++++++++-
->>   drivers/infiniband/hw/efa/efa_verbs.c          | 18 ++++++++++++++++++
->>   4 files changed, 47 insertions(+), 2 deletions(-)
->>
->> diff --git a/drivers/infiniband/hw/efa/efa_admin_cmds_defs.h b/drivers/infiniband/hw/efa/efa_admin_cmds_defs.h
->> index 4e93ef7f84ee..9c65bd27bae0 100644
->> --- a/drivers/infiniband/hw/efa/efa_admin_cmds_defs.h
->> +++ b/drivers/infiniband/hw/efa/efa_admin_cmds_defs.h
->> @@ -66,6 +66,7 @@ enum efa_admin_get_stats_type {
->>        EFA_ADMIN_GET_STATS_TYPE_BASIC              = 0,
->>        EFA_ADMIN_GET_STATS_TYPE_MESSAGES           = 1,
->>        EFA_ADMIN_GET_STATS_TYPE_RDMA_READ          = 2,
->> +     EFA_ADMIN_GET_STATS_TYPE_RDMA_WRITE         = 3,
->>   };
->>
->>   enum efa_admin_get_stats_scope {
->> @@ -570,6 +571,16 @@ struct efa_admin_rdma_read_stats {
->>        u64 read_resp_bytes;
->>   };
->>
->> +struct efa_admin_rdma_write_stats {
->> +     u64 write_wrs;
->> +
->> +     u64 write_bytes;
->> +
->> +     u64 write_wr_err;
->> +
->> +     u64 write_recv_bytes;
->> +};
->> +
->>   struct efa_admin_acq_get_stats_resp {
->>        struct efa_admin_acq_common_desc acq_common_desc;
->>
->> @@ -579,6 +590,8 @@ struct efa_admin_acq_get_stats_resp {
->>                struct efa_admin_messages_stats messages_stats;
->>
->>                struct efa_admin_rdma_read_stats rdma_read_stats;
->> +
->> +             struct efa_admin_rdma_write_stats rdma_write_stats;
->>        } u;
->>   };
->>
->> diff --git a/drivers/infiniband/hw/efa/efa_com_cmd.c b/drivers/infiniband/hw/efa/efa_com_cmd.c
->> index 8f8885e002ba..576811885d59 100644
->> --- a/drivers/infiniband/hw/efa/efa_com_cmd.c
->> +++ b/drivers/infiniband/hw/efa/efa_com_cmd.c
->> @@ -1,6 +1,6 @@
->>   // SPDX-License-Identifier: GPL-2.0 OR BSD-2-Clause
->>   /*
->> - * Copyright 2018-2021 Amazon.com, Inc. or its affiliates. All rights reserved.
->> + * Copyright 2018-2023 Amazon.com, Inc. or its affiliates. All rights reserved.
->>    */
->>
->>   #include "efa_com.h"
->> @@ -794,6 +794,12 @@ int efa_com_get_stats(struct efa_com_dev *edev,
->>                result->rdma_read_stats.read_wr_err = resp.u.rdma_read_stats.read_wr_err;
->>                result->rdma_read_stats.read_resp_bytes = resp.u.rdma_read_stats.read_resp_bytes;
->>                break;
->> +     case EFA_ADMIN_GET_STATS_TYPE_RDMA_WRITE:
->> +             result->rdma_write_stats.write_wrs = resp.u.rdma_write_stats.write_wrs;
->> +             result->rdma_write_stats.write_bytes = resp.u.rdma_write_stats.write_bytes;
->> +             result->rdma_write_stats.write_wr_err = resp.u.rdma_write_stats.write_wr_err;
->> +             result->rdma_write_stats.write_recv_bytes = resp.u.rdma_write_stats.write_recv_bytes;
->> +             break;
->>        }
->>
->>        return 0;
->> diff --git a/drivers/infiniband/hw/efa/efa_com_cmd.h b/drivers/infiniband/hw/efa/efa_com_cmd.h
->> index 0898ad5bc340..fc97f37bb39b 100644
->> --- a/drivers/infiniband/hw/efa/efa_com_cmd.h
->> +++ b/drivers/infiniband/hw/efa/efa_com_cmd.h
->> @@ -1,6 +1,6 @@
->>   /* SPDX-License-Identifier: GPL-2.0 OR BSD-2-Clause */
->>   /*
->> - * Copyright 2018-2021 Amazon.com, Inc. or its affiliates. All rights reserved.
->> + * Copyright 2018-2023 Amazon.com, Inc. or its affiliates. All rights reserved.
->>    */
->>
->>   #ifndef _EFA_COM_CMD_H_
->> @@ -262,10 +262,18 @@ struct efa_com_rdma_read_stats {
->>        u64 read_resp_bytes;
->>   };
->>
->> +struct efa_com_rdma_write_stats {
->> +     u64 write_wrs;
->> +     u64 write_bytes;
->> +     u64 write_wr_err;
->> +     u64 write_recv_bytes;
->> +};
->> +
->>   union efa_com_get_stats_result {
->>        struct efa_com_basic_stats basic_stats;
->>        struct efa_com_messages_stats messages_stats;
->>        struct efa_com_rdma_read_stats rdma_read_stats;
->> +     struct efa_com_rdma_write_stats rdma_write_stats;
->>   };
->>
->>   int efa_com_create_qp(struct efa_com_dev *edev,
->> diff --git a/drivers/infiniband/hw/efa/efa_verbs.c b/drivers/infiniband/hw/efa/efa_verbs.c
->> index 2a195c4b0f17..7a27d79c0541 100644
->> --- a/drivers/infiniband/hw/efa/efa_verbs.c
->> +++ b/drivers/infiniband/hw/efa/efa_verbs.c
->> @@ -61,6 +61,10 @@ struct efa_user_mmap_entry {
->>        op(EFA_RDMA_READ_BYTES, "rdma_read_bytes") \
->>        op(EFA_RDMA_READ_WR_ERR, "rdma_read_wr_err") \
->>        op(EFA_RDMA_READ_RESP_BYTES, "rdma_read_resp_bytes") \
->> +     op(EFA_RDMA_WRITE_WRS, "rdma_write_wrs") \
->> +     op(EFA_RDMA_WRITE_BYTES, "rdma_write_bytes") \
->> +     op(EFA_RDMA_WRITE_WR_ERR, "rdma_write_wr_err") \
->> +     op(EFA_RDMA_WRITE_RECV_BYTES, "rdma_write_recv_bytes") \
->>
->>   #define EFA_STATS_ENUM(ename, name) ename,
->>   #define EFA_STATS_STR(ename, nam) \
->> @@ -2080,6 +2084,7 @@ static int efa_fill_port_stats(struct efa_dev *dev, struct rdma_hw_stats *stats,
->>   {
->>        struct efa_com_get_stats_params params = {};
->>        union efa_com_get_stats_result result;
->> +     struct efa_com_rdma_write_stats *rws;
->>        struct efa_com_rdma_read_stats *rrs;
->>        struct efa_com_messages_stats *ms;
->>        struct efa_com_basic_stats *bs;
->> @@ -2121,6 +2126,19 @@ static int efa_fill_port_stats(struct efa_dev *dev, struct rdma_hw_stats *stats,
->>        stats->value[EFA_RDMA_READ_WR_ERR] = rrs->read_wr_err;
->>        stats->value[EFA_RDMA_READ_RESP_BYTES] = rrs->read_resp_bytes;
->>
->> +     if (EFA_DEV_CAP(dev, RDMA_WRITE)) {
-> I wonder if the same check is missing for RDMA_READ? Or is it redundant
-> for RDMA_WRITE?
->
-> Patch looks good,
-> Reviewed-by: Gal Pressman <gal.pressman@linux.dev>
-
-Thanks Gal, RDMA read is fully deployed so device will always support 
-requests for related counters.
+On 03/07/2023 18:11, kernel test robot wrote:
+> tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git master
+> branch HEAD: 296d53d8f84ce50ffaee7d575487058c8d437335  Add linux-next specific files for 20230703
 
 
-Michael
+[...]
+
+> Unverified Error/Warning (likely false positive, please contact us if interested):
+>
+> drivers/net/ethernet/mellanox/mlx5/core/lib/devcom.c:98 mlx5_devcom_register_device() error: uninitialized symbol 'tmp_dev'.
+
+
+This *is* a false positive. there is a comment explaining it.
 
