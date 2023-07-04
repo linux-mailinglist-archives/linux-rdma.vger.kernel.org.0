@@ -2,84 +2,97 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E2909746642
-	for <lists+linux-rdma@lfdr.de>; Tue,  4 Jul 2023 01:55:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 236017466B2
+	for <lists+linux-rdma@lfdr.de>; Tue,  4 Jul 2023 02:56:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230240AbjGCXzr (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 3 Jul 2023 19:55:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54610 "EHLO
+        id S229732AbjGDAxE (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 3 Jul 2023 20:53:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41204 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230208AbjGCXzq (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 3 Jul 2023 19:55:46 -0400
-Received: from mail-ej1-x630.google.com (mail-ej1-x630.google.com [IPv6:2a00:1450:4864:20::630])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 94899187
-        for <linux-rdma@vger.kernel.org>; Mon,  3 Jul 2023 16:55:45 -0700 (PDT)
-Received: by mail-ej1-x630.google.com with SMTP id a640c23a62f3a-9936b3d0286so170484666b.0
-        for <linux-rdma@vger.kernel.org>; Mon, 03 Jul 2023 16:55:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google; t=1688428544; x=1691020544;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=vSdK1dgSw1SsTFoY2n1BvPJHJg9tmlm/zjsLZax/LHE=;
-        b=NAYc2j3GlDShANhFW6W2coOpp8wGnL9hLpB3/K5EQnFCh3rAUW5X2jZ9QBjp5SHs6Q
-         jPrjmWQ4HZes70HAS8ZS9NARQ0UbQu4p+dNDuWzy9jPXFhyNvR7Cb4IVmZXs3nKG4CyQ
-         0dX6TORGy86Ux7E2M/3ccxdniw50VPGf0iO1o=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1688428544; x=1691020544;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=vSdK1dgSw1SsTFoY2n1BvPJHJg9tmlm/zjsLZax/LHE=;
-        b=k3UYFZUK+W7sLQg5VLrU1Nk0iK7XzcAxXAsZOR3cpBARRG06+yS38rjsRJK0iaIM0U
-         9fsZFV1Dfxlq/n/f22aJhg3rCTGrgCnaoKEQS0v1ZfTZwBF2lsnf44Mvk1DJjDlSrgi3
-         6zB/sR3rHhvHvO5qRnPwE9VKDNB+1FseQsL5eeEyzkqv8n3dT0mIw+4f5HscRNXQjrbJ
-         OoHFxyEoPMrG1A6cocX5zi76p8o4jz5xDexR8gZ8RdS1ny1ZadIJCPs0M7r0T9VLRVH7
-         7BOCezZZ45M4MU6lG6+2nSIl6MHpmFC/IxmThxeEn8wgV3locRl81s4HC/eV3tuz2hP4
-         tqAg==
-X-Gm-Message-State: ABy/qLZ+3wvVNdY3jnjitH8QtK02TwF0vZ28a6kngoeduzUpwlh+6pMO
-        Nq1m5Hdwx3KaNKAHLzabbnWaH/3bTe8LFdkhzR8DFJ1t
-X-Google-Smtp-Source: APBJJlF4pUzYoUeip3lYspkddeV743dAoR7CImpqM17cE46l2auLpNgsUkyrNi0CU0GDWp5BGGu+qA==
-X-Received: by 2002:a17:906:29ce:b0:992:b8b6:6bcd with SMTP id y14-20020a17090629ce00b00992b8b66bcdmr10254038eje.16.1688428543999;
-        Mon, 03 Jul 2023 16:55:43 -0700 (PDT)
-Received: from mail-ed1-f46.google.com (mail-ed1-f46.google.com. [209.85.208.46])
-        by smtp.gmail.com with ESMTPSA id a3-20020a17090682c300b00992025654c4sm9025935ejy.182.2023.07.03.16.55.43
-        for <linux-rdma@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 03 Jul 2023 16:55:43 -0700 (PDT)
-Received: by mail-ed1-f46.google.com with SMTP id 4fb4d7f45d1cf-51d7f350758so6424630a12.3
-        for <linux-rdma@vger.kernel.org>; Mon, 03 Jul 2023 16:55:43 -0700 (PDT)
-X-Received: by 2002:aa7:d502:0:b0:51d:d1ca:eab9 with SMTP id
- y2-20020aa7d502000000b0051dd1caeab9mr8690475edq.32.1688428542685; Mon, 03 Jul
- 2023 16:55:42 -0700 (PDT)
+        with ESMTP id S229622AbjGDAxD (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 3 Jul 2023 20:53:03 -0400
+X-Greylist: delayed 65 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Mon, 03 Jul 2023 17:53:00 PDT
+Received: from unicom146.biz-email.net (unicom146.biz-email.net [210.51.26.146])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7200F136;
+        Mon,  3 Jul 2023 17:53:00 -0700 (PDT)
+Received: from unicom146.biz-email.net
+        by unicom146.biz-email.net ((D)) with ASMTP (SSL) id ZXD00050;
+        Tue, 04 Jul 2023 08:51:50 +0800
+Received: from lihongweizz00.home.langchao.com (10.180.207.169) by
+ jtjnmail201601.home.langchao.com (10.100.2.1) with Microsoft SMTP Server id
+ 15.1.2507.27; Tue, 4 Jul 2023 08:51:50 +0800
+From:   lihongweizz <lihongweizz@inspur.com>
+To:     <sagi@grimberg.me>, <mgurtovoy@nvidia.com>, <jgg@ziepe.ca>,
+        <leon@kernel.org>
+CC:     <linux-rdma@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        Rock Li <lihongweizz@inspur.com>
+Subject: [PATCH] IB/iser: Protect tasks cleanup in case iser connection was stopped
+Date:   Tue, 4 Jul 2023 08:51:44 +0800
+Message-ID: <20230704005144.1172-1-lihongweizz@inspur.com>
+X-Mailer: git-send-email 2.40.1.windows.1
 MIME-Version: 1.0
-References: <20230703113025.356682-1-arnd@kernel.org> <20230703133242.GB32152@unreal>
-In-Reply-To: <20230703133242.GB32152@unreal>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Mon, 3 Jul 2023 16:55:25 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wiJ2S9rrz6+aVv88ct7vZjZW8O02MFxXkCUmOXcx9em6w@mail.gmail.com>
-Message-ID: <CAHk-=wiJ2S9rrz6+aVv88ct7vZjZW8O02MFxXkCUmOXcx9em6w@mail.gmail.com>
-Subject: Re: [PATCH] RDMA: fix INFINIBAND_USER_ACCESS dependency
-To:     Leon Romanovsky <leon@kernel.org>
-Cc:     Arnd Bergmann <arnd@kernel.org>, Jason Gunthorpe <jgg@ziepe.ca>,
-        Selvin Xavier <selvin.xavier@broadcom.com>,
-        Arnd Bergmann <arnd@arndb.de>, linux-rdma@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=no autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.180.207.169]
+tUid:   20237040851508f3372386f2df8ea6a16e04484201e48
+X-Abuse-Reports-To: service@corp-email.com
+Abuse-Reports-To: service@corp-email.com
+X-Complaints-To: service@corp-email.com
+X-Report-Abuse-To: service@corp-email.com
+X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_LOW,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Mon, 3 Jul 2023 at 06:32, Leon Romanovsky <leon@kernel.org> wrote:
->
-> Linus, can you please apply this patch directly as it is overkill to
-> send PR for one patch?
+From: Rock Li <lihongweizz@inspur.com>
 
-Done.
+We met a crash issue as below:
+...
+ #7 [ff61b991f6f63d10] page_fault at ffffffffab80111e
+    [exception RIP: iscsi_iser_cleanup_task+13]
+    RIP: ffffffffc046c04d RSP: ff61b991f6f63dc0 RFLAGS: 00010246
+    RAX: 0000000000000000 RBX: ff4bd0aalf7a5610 RCX: ff61b991f6f63dc8
+    RDX: ff61b991f6f63d68 RSI: ff61b991f6f63d58 RDI: ff4bd0aalf6cdc00
+    RBP: 0000000000000005 R8: 0000000000000073 R9: 0000000000000005
+    R10: 0000000000000000 R11: 00000ccde3e0f5c0 R12: ff4bd08c0e0631f8
+    R13: ff4bd0a95ffd3c78 R14: ff4bd0a95ffd3c78 R15: ff4bd0aalf6cdc00
+    ORIG_RAX: ffffffffffffffff CS: 0010 SS: 0018
+ #8 [ff616991f6f63dc0] __iscsi_put_task at ffffffffc0bd3652 [libiscsi]
+ #9 [ff61b991f6f63e00] iscsi_put_task at ffffffffc0bd36e9 [libiscsi]
+...
 
-                  Linus
+After analysing the vmcore, we find that the iser connection was already
+stopped before abort handler running. The iser_conn is already unbindded
+and released. So we add iser connection validation check inside cleanup
+task to fix this corner case.
+
+Signed-off-by: Rock Li <lihongweizz@inspur.com>
+---
+ drivers/infiniband/ulp/iser/iscsi_iser.c | 7 ++++++-
+ 1 file changed, 6 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/infiniband/ulp/iser/iscsi_iser.c b/drivers/infiniband/ulp/iser/iscsi_iser.c
+index bb9aaff92ca3..35dfbf41fc40 100644
+--- a/drivers/infiniband/ulp/iser/iscsi_iser.c
++++ b/drivers/infiniband/ulp/iser/iscsi_iser.c
+@@ -366,7 +366,12 @@ static void iscsi_iser_cleanup_task(struct iscsi_task *task)
+ 	struct iscsi_iser_task *iser_task = task->dd_data;
+ 	struct iser_tx_desc *tx_desc = &iser_task->desc;
+ 	struct iser_conn *iser_conn = task->conn->dd_data;
+-	struct iser_device *device = iser_conn->ib_conn.device;
++	struct iser_device *device;
++
++	/* stop connection might happens before iser cleanup work */
++	if (!iser_conn)
++		return;
++	device = iser_conn->ib_conn.device;
+ 
+ 	/* DEVICE_REMOVAL event might have already released the device */
+ 	if (!device)
+-- 
+2.27.0
+
