@@ -2,201 +2,137 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2FD33747BAE
-	for <lists+linux-rdma@lfdr.de>; Wed,  5 Jul 2023 05:06:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 06F11747BC1
+	for <lists+linux-rdma@lfdr.de>; Wed,  5 Jul 2023 05:19:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230487AbjGEDGR (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 4 Jul 2023 23:06:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32838 "EHLO
+        id S229775AbjGEDT2 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 4 Jul 2023 23:19:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36032 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231211AbjGEDGO (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 4 Jul 2023 23:06:14 -0400
-Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 861C91709;
-        Tue,  4 Jul 2023 20:06:12 -0700 (PDT)
-Received: from kwepemi500006.china.huawei.com (unknown [172.30.72.57])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4Qwkxf1tR6ztQwJ;
-        Wed,  5 Jul 2023 11:03:18 +0800 (CST)
-Received: from [10.67.102.17] (10.67.102.17) by kwepemi500006.china.huawei.com
- (7.221.188.68) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Wed, 5 Jul
- 2023 11:06:09 +0800
-Message-ID: <53e8025d-803d-f6c5-b853-8352163d9a2e@hisilicon.com>
-Date:   Wed, 5 Jul 2023 11:05:50 +0800
+        with ESMTP id S229772AbjGEDT0 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 4 Jul 2023 23:19:26 -0400
+Received: from APC01-TYZ-obe.outbound.protection.outlook.com (mail-tyzapc01on2122.outbound.protection.outlook.com [40.107.117.122])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF93D1B6;
+        Tue,  4 Jul 2023 20:19:24 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=euEIPDDxVa0SFYv43Q95xXDSDjx30ZQTtdFUgivqLjLo67Nm8zvtHGcv9IKD6MswL+VmGoUI51gaA3cP0ex2QnMGda2jFAJaVudUMwrpAVLJBtsmN28DFbuQvtjNMrRhqZGjIBxjm4rVPoPOyfPD74tKCNo97Y/KiRcS11VkcfGKKksXR7Ar1QYWNPMK/DdKUOUhvhMCpH5te3Vjz+XgHcUrwdGl+P15d55wqLWNXy6MW+jLGTdphcLiStJW6VtWFu9/BS+ncI+Ku2U9wdMDWUt5SSiJj5uC5heryhn2+wE3j2dWIde5yBHbacnTTeIT4IIg0/uskCJCTe4f3ut2nA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=U4ZYWoe7TQjP431yKcPFnJX2obdINcZqdvH9uCkJcMQ=;
+ b=VVGRRA0C4geEF+0tMdk9uoIvLIOTzMKXlm+RCGp7pQRN9OAiyOj3EDtclcNrLJi3Yruz55E6paBrGUnQwLpaF8EIYBL1erAA0F6DQAm3J1dOHjH0mbXRB68zqno+LnCCREnWlQouK2YZt+jQVtAJrQxnbwmSzJMx9IdcFkE5Jm2Js27f9KplwbJ7yf4gJcFtw0GZNY4hhQoXQwaRLUgZ7HA+F1WLyt63IvYhJ1o+9wcdBrOCnTGtBY36sBt7htZLFXj8Y9ysGm88yigzvf2IcaxD+MP+IHvWKO8Aol+VbcDc3sLKLtpx3ZTOfHPRtvI4XiPqcl8/ArAP6916phC+iQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=vivo.com; dmarc=pass action=none header.from=vivo.com;
+ dkim=pass header.d=vivo.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=vivo.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=U4ZYWoe7TQjP431yKcPFnJX2obdINcZqdvH9uCkJcMQ=;
+ b=EUmmijhKkMJFzLjbwuPdjuw0OMbyJiBmJdy3cgRyYwlM6dX8cIynLGDOG5U92QJL7BM6MgGvgOe+vHVSFFLqkqmqkXMrpywmnnpiPQAMxyc6akoUIBxDEIk2QthiEr2zezg9z1mZ2HI6pR4e3b2Ovxm2Bp5lM4IKObqz7m4FFEggrzy2kNFk3C8ZEZUBWWwhBKTj8Rc1oOzAl/XeumwEJu1/5MWliWgaJOISo1R3fp56H4EltEWgnvVvMxRvG8Fjdd4VpBkdQ14G/89gv9scJBeysAisnhckqzZ96ZQ73wJOh0beyx/MQ3JoeNRZoqYinmt2VUGzc4sEJTsxiojNGg==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=vivo.com;
+Received: from SEZPR06MB5269.apcprd06.prod.outlook.com (2603:1096:101:78::6)
+ by JH0PR06MB6317.apcprd06.prod.outlook.com (2603:1096:990:19::8) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6565.15; Wed, 5 Jul
+ 2023 03:19:18 +0000
+Received: from SEZPR06MB5269.apcprd06.prod.outlook.com
+ ([fe80::fa0e:6c06:7474:285c]) by SEZPR06MB5269.apcprd06.prod.outlook.com
+ ([fe80::fa0e:6c06:7474:285c%5]) with mapi id 15.20.6565.016; Wed, 5 Jul 2023
+ 03:19:17 +0000
+From:   Minjie Du <duminjie@vivo.com>
+To:     Mustafa Ismail <mustafa.ismail@intel.com>,
+        Shiraz Saleem <shiraz.saleem@intel.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Leon Romanovsky <leon@kernel.org>,
+        linux-rdma@vger.kernel.org (open list:INTEL ETHERNET PROTOCOL DRIVER
+        FOR RDMA), linux-kernel@vger.kernel.org (open list)
+Cc:     opensource.kernel@vivo.com, Minjie Du <duminjie@vivo.com>
+Subject: [PATCH v1] drivers: hw: Remove duplicate assignments
+Date:   Wed,  5 Jul 2023 11:18:49 +0800
+Message-Id: <20230705031849.2443-1-duminjie@vivo.com>
+X-Mailer: git-send-email 2.39.0
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: TY2PR0101CA0035.apcprd01.prod.exchangelabs.com
+ (2603:1096:404:8000::21) To SEZPR06MB5269.apcprd06.prod.outlook.com
+ (2603:1096:101:78::6)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.1.0
-Subject: Re: [PATCH v2 for-next] RDMA/core: Get IB width and speed from netdev
-To:     Leon Romanovsky <leon@kernel.org>
-CC:     <jgg@nvidia.com>, <linux-rdma@vger.kernel.org>,
-        <linuxarm@huawei.com>, <linux-kernel@vger.kernel.org>
-References: <20230603063833.541682-1-huangjunxian6@hisilicon.com>
- <20230611174605.GG12152@unreal>
- <1b11b9e9-a729-0d61-52e3-6bcf132ca356@hisilicon.com>
- <20230628050019.GC23952@unreal>
-Content-Language: en-US
-From:   Junxian Huang <huangjunxian6@hisilicon.com>
-In-Reply-To: <20230628050019.GC23952@unreal>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.67.102.17]
-X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
- kwepemi500006.china.huawei.com (7.221.188.68)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: SEZPR06MB5269:EE_|JH0PR06MB6317:EE_
+X-MS-Office365-Filtering-Correlation-Id: f530a96e-c903-4670-43f2-08db7d069deb
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: mlBI3sV32Th+1/Q7NNlxT6Jwmj6T2dJ6lmOSJrqU4dqfAaW3VD/6vs0m68elOwBJ/hQ48tBOw73eGFN8M+7tCba6DhpFu0GMGPoS5y6KQpATX05lu0oJqK+Ck3KALgijSYofF46wrM5SFkTaei8kpsI28ztL/leD9fT/+4ZrP0XqSEBg5xkBPEfWE3J8myo9Ny9QV/qvrQLNXo80SIgTUf7EZnbKtVYOalUkjZ8yt7TkZzvAW9uPp0FieCRENlADxLziP0hFitP7kO8CoYM7qRQ9EZFE7lq1aty0XE6q6/9vWChayG8crisC8NBJmXZvcSfn2ownoSOA6bHnDWPfosaq3X4IkOGDRN4ioyQ0/7c4UtDP19fzmIjNQekPYwfVIR3en+gClqJk8Lj+RYUmZRxBZaxGZzxD8dTT4Mu15hI988Rf1xxLD97V1+14L0aNCXt0TYbirrcT4hdL5YVIxsAkT8hRjERWBCOwppT/S35iwfGTfdSVi7Z9vVJI5Ioi3FV3BTE/g2YaGmoQralDUV1TJ1s8g4XjhRra0Ru4xwU+sXCJpQkd1B9jML9po3h/tHtAB+rzq9Qcwa4WB7fxgICa2Bf4gk3btYX7lzmiufo=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SEZPR06MB5269.apcprd06.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(4636009)(376002)(346002)(136003)(39860400002)(396003)(366004)(451199021)(26005)(478600001)(1076003)(6666004)(6512007)(6506007)(107886003)(86362001)(2616005)(186003)(38350700002)(38100700002)(4326008)(66476007)(66946007)(66556008)(83380400001)(110136005)(52116002)(6486002)(316002)(5660300002)(8676002)(8936002)(4744005)(41300700001)(2906002)(36756003);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?UVNKvgnqE616F7dfnoFsGcWF1lI0hZlmiJDH/ieOfOXc++1mZpVHgzJn3+WU?=
+ =?us-ascii?Q?XVAbVht+KmQ2EsM+sUsmc6RcDm2vNdNfH1MfTVQMSG4v6c489LT0y3hYWUB3?=
+ =?us-ascii?Q?YmyTmkGY9ywDynPSgnBrqvXPBMZZ4Bx0Z/HUJsaYtGTQNCuB/qF9ZX3LYNT0?=
+ =?us-ascii?Q?odZEjGz/XJaU40gcW2ChBM79MospSgJr1IGZyspbGMJmXJicKzhaqszq69LO?=
+ =?us-ascii?Q?N214KGjmJ3ffwtqLqxz1X3FCBCMgxCbRaL96ypQv/p2Anh9tulooOfOu+Z2R?=
+ =?us-ascii?Q?2meeYa+eY0aULiGouKB1SH02U+A5zZrziWSMY6b9UCxTSw4PddeBreQBuoeZ?=
+ =?us-ascii?Q?/dfB+cYEGh4d7Ktt69DLVqm1AP+uv2HCxu/pPcFVW5dC1lgmIFDBrqEX68HN?=
+ =?us-ascii?Q?YCSa8yURfocKLjLu8pAFvOtju97dIuIum0md25VVQ1ip0uPAE3ygz/RxqDRb?=
+ =?us-ascii?Q?LcwvlpQool3KdB9at6B7c8bKzmkZLRD9wIJP53kBhEe8lhp9BvBrHle/7jle?=
+ =?us-ascii?Q?s04/3EglvkJt2tRmrpyW8ITXX37vxcQED3kO+0zZoNJdnV5cYtNwLtcwY2Sl?=
+ =?us-ascii?Q?tzZtepwP3hEBlDudUHEqwdlMsxmtFFqR+V6pzgms0DA0i3zNXyhr2zGCyh6p?=
+ =?us-ascii?Q?lEBSNiIe7yH/WKsFZu0KEskrZZBMTYRwxitbxqD7s4JoxxwIvt/xLpjAZ517?=
+ =?us-ascii?Q?LY5AaiyQj6FHGT7qmYBFP0iBdAGuNc2vHsCdZMdtq7KDGutpOijUoUrlcGYw?=
+ =?us-ascii?Q?281pna9GAZ6C14dlkBZv8ZnXs9lDFHwBKttYe7R9Mf9HqrAnX28gNWWyZAiM?=
+ =?us-ascii?Q?9rMEBh9CEucrT33jTTrUWZT3uXnZ33lp1C697X4rQar8am+cTi8IgTCv2MOO?=
+ =?us-ascii?Q?o5t+Hwl7pnWE44t/S2tmkZ/6G68FGIB6/Py0mHfIOnkhpDBeJTp41N1xvuk9?=
+ =?us-ascii?Q?/rkCS+BSZkhI806Zur/9Ni3+As7nQjGcIsmI2sk6A4cUGX9GEA8xokXzA+mF?=
+ =?us-ascii?Q?mSxtkcc/zSWvFciti1dw1SgozYjeI4ndlSCRRbJ5IRBTyoHLv8HENWebvtp9?=
+ =?us-ascii?Q?i97ZXfK0KQcJQ5QJiiaXkoqYFE7J+f8FfNEs+Hl+ukGYAXQSfSzecVONTS9x?=
+ =?us-ascii?Q?mezuVsk1AWud9obKYpka2UlVKM08p7CRSDPQN7lJ26lMW36yMPnoF17bxYj7?=
+ =?us-ascii?Q?8h6gTEJzgdva8wvE345f+EeW3Do/jjpg/CzdwTPsq+ZVHRMZ1XeOq/LoYV5T?=
+ =?us-ascii?Q?b2XPJD0nLxcZVB93CNeSTJUdyuA060I7aXcXq7slS/2+XRdRY0XhTAKpXpyH?=
+ =?us-ascii?Q?AdNAz75btHr8Nc8UsyCxw4MvDxyobx9AfHj1b/05HxicdK7mxl3F1QPEd0fk?=
+ =?us-ascii?Q?TxE3R5TUKE8aoFho+PS63CElr401UDwAw3hlL269yvQMUpRwaTrVuDFgJFeT?=
+ =?us-ascii?Q?v3LKyeQUULPTWzif9g6jowjUdr46a40QCKW0HNr9e2RgvkCEl/08kaBURdJq?=
+ =?us-ascii?Q?EQTNj2LiMLVM3OA+mRPoY62dThiU2Fj3Lq9t/W00F8SsfFckbGf4+b2XHr3s?=
+ =?us-ascii?Q?Ybya20z425Q7i5VGcg4ESDeJ9nbS72g2AmLgmntC?=
+X-OriginatorOrg: vivo.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: f530a96e-c903-4670-43f2-08db7d069deb
+X-MS-Exchange-CrossTenant-AuthSource: SEZPR06MB5269.apcprd06.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 05 Jul 2023 03:19:17.8819
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 923e42dc-48d5-4cbe-b582-1a797a6412ed
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: L/yDpFZsJyqZfs463ZJWB/8bfHWkfkKFOAHOWLO8ATsVg+5owXGdaRqLmhU7g4h5DxdVTmid8TuF6VnAiCC1HQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: JH0PR06MB6317
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
+make iwqp->ietf_mem.va avoid double assignment.
 
+Signed-off-by: Minjie Du <duminjie@vivo.com>
+---
+ drivers/infiniband/hw/irdma/cm.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-On 2023/6/28 13:00, Leon Romanovsky wrote:
-> On Mon, Jun 19, 2023 at 02:20:54PM +0800, Junxian Huang wrote:
->>
->>
->> On 2023/6/12 1:46, Leon Romanovsky wrote:
->>> On Sat, Jun 03, 2023 at 02:38:33PM +0800, Junxian Huang wrote:
->>>> From: Haoyue Xu <xuhaoyue1@hisilicon.com>
->>>>
->>>> Previously, there was no way to query the number of lanes for a network
->>>> card, so the same netdev_speed would result in a fixed pair of width and
->>>> speed. As network card specifications become more diverse, such fixed
->>>> mode is no longer suitable, so a method is needed to obtain the correct
->>>> width and speed based on the number of lanes.
->>>
->>> I'm sorry but I didn't understand the problem statement. Can you please
->>> provide an example of configuration that will give different results 
->>> before this patch and after?
->>>
->>
->> I'll give examples with 20G and 200G netdevs respectively.
->>
->> 20G:
->> Before this patch, regardless of the actual number of lanes, the width and
->> speed displayed in ibv_devinfo would be always fixed:
->> 	active_width: 4X
->> 	active_speed: 5 Gbps
->> After this patch, there will be different combinations of width and speed
->> according to the number of lanes. For example, for a 20G netdev whose number
->> of lanes is 2, the width and speed displayed in ibv_devinfo will be:
->> 	active_width: 2X
->> 	active_speed: 10 Gbps
->>
->> 200G:
->> Before this patch, netdevs with netdev_speed more than 40G cannot get a right
->> width and speed in ibv_devinfo. Only the default result would be displayed:
->> 	active_width: 4X
->> 	active_speed: 25 Gbps
->> After this patch, taking an example with 4 lanes, the displayed results will be:
->> 	active_width: 4X
->> 	active_speed: 50 Gbps
->>
-> 
-> <...>
-> 
->>>> +	cap_link_lanes_supported = netdev->ethtool_ops->cap_link_lanes_supported;
->>>>  	rtnl_unlock();
->>>>  
->>>>  	dev_put(netdev);
->>>>  
->>>>  	if (!rc && lksettings.base.speed != (u32)SPEED_UNKNOWN) {
->>>>  		netdev_speed = lksettings.base.speed;
->>>> +		if (cap_link_lanes_supported && lksettings.lanes) {
->>>
->>> According to the documentation cap_link_lanes_supported defines if
->>> number of lanes can be supplied by user and I would expect from
->>> __ethtool_get_link_ksettings() to get right numbers after it was
->>> changed.
-> 
-> No, I'm saying that cap_link_lanes_supported is variable which only says
-> if number of lanes can be changed and __ethtool_get_link_ksettings()
-> will return right number of lanes every time it is called without need
-> to call to ib_get_width_and_speed() again.
-> 
-> Thanks
-> 
+diff --git a/drivers/infiniband/hw/irdma/cm.c b/drivers/infiniband/hw/irdma/cm.c
+index 70009b970..a65dad5a8 100644
+--- a/drivers/infiniband/hw/irdma/cm.c
++++ b/drivers/infiniband/hw/irdma/cm.c
+@@ -3577,7 +3577,6 @@ void irdma_free_lsmm_rsrc(struct irdma_qp *iwqp)
+ 				  iwqp->ietf_mem.size, iwqp->ietf_mem.va,
+ 				  iwqp->ietf_mem.pa);
+ 		iwqp->ietf_mem.va = NULL;
+-		iwqp->ietf_mem.va = NULL;
+ 	}
+ }
+ 
+-- 
+2.39.0
 
-These two functions have different purposes.
-
-The number of lanes is indeed obtained from __ethtool_get_link_ksettings(),
-and ib_get_width_and_speed() converts the number of lanes into ib_width and
-ib_speed, which are the output of ib_get_eth_speed().
-
-Junxian
-
->>>
->>> Thanks
->>>
->>
->> I'm sorry but I didn't quite understand. Do you mean the critical section of
->> rtnl_lock() here should be expanded to make sure getting the right number of
->> lanes?
->>
->> Junxian
->>
->>>> +			ib_get_width_and_speed(netdev_speed, lksettings.lanes,
->>>> +					       speed, width);
->>>> +			return 0;
->>>> +		}
->>>>  	} else {
->>>>  		netdev_speed = SPEED_1000;
->>>> -		pr_warn("%s speed is unknown, defaulting to %u\n", netdev->name,
->>>> -			netdev_speed);
->>>> +		if (rc)
->>>> +			pr_warn("%s speed is unknown, defaulting to %u\n",
->>>> +				netdev->name, netdev_speed);
->>>>  	}
->>>>  
->>>>  	if (netdev_speed <= SPEED_1000) {
->>>> diff --git a/include/rdma/ib_verbs.h b/include/rdma/ib_verbs.h
->>>> index 1e7774ac808f..7dc926ec7fee 100644
->>>> --- a/include/rdma/ib_verbs.h
->>>> +++ b/include/rdma/ib_verbs.h
->>>> @@ -552,6 +552,18 @@ static inline int ib_width_enum_to_int(enum ib_port_width width)
->>>>  	}
->>>>  }
->>>>  
->>>> +static inline int ib_int_to_ib_width(u32 lanes)
->>>> +{
->>>> +	switch (lanes) {
->>>> +	case 1: return IB_WIDTH_1X;
->>>> +	case 2: return IB_WIDTH_2X;
->>>> +	case 4: return IB_WIDTH_4X;
->>>> +	case 8: return IB_WIDTH_8X;
->>>> +	case 12: return IB_WIDTH_12X;
->>>> +	default: return IB_WIDTH_1X;
->>>> +	}
->>>> +}
->>>> +
->>>>  enum ib_port_speed {
->>>>  	IB_SPEED_SDR	= 1,
->>>>  	IB_SPEED_DDR	= 2,
->>>> @@ -563,6 +575,20 @@ enum ib_port_speed {
->>>>  	IB_SPEED_NDR	= 128,
->>>>  };
->>>>  
->>>> +static inline int ib_eth_to_ib_speed(u32 speed)
->>>> +{
->>>> +	switch (speed) {
->>>> +	case SPEED_2500: return IB_SPEED_SDR;
->>>> +	case SPEED_5000: return IB_SPEED_DDR;
->>>> +	case SPEED_10000: return IB_SPEED_FDR10;
->>>> +	case SPEED_14000: return IB_SPEED_FDR;
->>>> +	case SPEED_25000: return IB_SPEED_EDR;
->>>> +	case SPEED_50000: return IB_SPEED_HDR;
->>>> +	case SPEED_100000: return IB_SPEED_NDR;
->>>> +	default: return IB_SPEED_SDR;
->>>> +	}
->>>> +}
->>>> +
->>>>  enum ib_stat_flag {
->>>>  	IB_STAT_FLAG_OPTIONAL = 1 << 0,
->>>>  };
->>>> -- 
->>>> 2.30.0
->>>>
