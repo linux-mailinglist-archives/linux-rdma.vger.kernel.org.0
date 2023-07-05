@@ -2,116 +2,130 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D061F747EA2
-	for <lists+linux-rdma@lfdr.de>; Wed,  5 Jul 2023 09:54:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CF892747F2C
+	for <lists+linux-rdma@lfdr.de>; Wed,  5 Jul 2023 10:16:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229850AbjGEHyL (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 5 Jul 2023 03:54:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59288 "EHLO
+        id S232449AbjGEIQT (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 5 Jul 2023 04:16:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42382 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229700AbjGEHyJ (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 5 Jul 2023 03:54:09 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF766E2;
-        Wed,  5 Jul 2023 00:54:08 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 6D60961408;
-        Wed,  5 Jul 2023 07:54:08 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4FF3EC433C8;
-        Wed,  5 Jul 2023 07:54:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1688543647;
-        bh=YWfxi/xZnE3bJaiOHq81mY4QNBuZCJ6nAJGjGfLnkhs=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=U4HXUcmVzNBi7NvgetIMhOEL+Cvbn6Dz90QrbEWiojEgZM1rVHFxLuNmcw3eTzHm2
-         4P1VTVqZ/z37S/RHNVfolcI7c8GcHuFMmWJXmDX/6jD/Bd8McbppLMggZ3ixd4PsTp
-         X1vuO5BN1O4Wy5QG6JPSDihiewPtEGHUZzxiL+8UIMgyQ4azrMY2LEvW0XMdsyfWQD
-         vrn+5/WOO99AGX7Va3qYIJEAuQuR2dFxrzUwgzTyK4rRbAxazY5k4IBOfV7fNvy2bx
-         hNvW3BSoJ/4JSkASK6kmGfVQ5QSsnbHru1MfpYoy0Do/MgIAI+bPHWDyLLMjazzqoI
-         xGhiLo2Ja9utw==
-Date:   Wed, 5 Jul 2023 10:54:03 +0300
-From:   Leon Romanovsky <leon@kernel.org>
-To:     lihongweizz <lihongweizz@inspur.com>
-Cc:     sagi@grimberg.me, mgurtovoy@nvidia.com, jgg@ziepe.ca,
-        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] IB/iser: Protect tasks cleanup in case iser connection
- was stopped
-Message-ID: <20230705075403.GI6455@unreal>
-References: <20230704005144.1172-1-lihongweizz@inspur.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230704005144.1172-1-lihongweizz@inspur.com>
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+        with ESMTP id S232446AbjGEIQS (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 5 Jul 2023 04:16:18 -0400
+Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 3598E1709;
+        Wed,  5 Jul 2023 01:16:17 -0700 (PDT)
+Received: by linux.microsoft.com (Postfix, from userid 1099)
+        id 6B27B20A1043; Wed,  5 Jul 2023 01:16:16 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 6B27B20A1043
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+        s=default; t=1688544976;
+        bh=WbiYtCCkfhxy2EY5js2nXgs66lTqxblIFI1ejNxQRPc=;
+        h=From:To:Cc:Subject:Date:From;
+        b=scSfyhRTze3AHlBP9Vv0lBFdiZGT/u683sHmKUvnmvqpfkrSOrAsuFbTLSAJ90qyC
+         BHwcyQavvZSqPT1fSBsXFR5DgKoz1arui0ECqrj69rN9LH7jGEZ3Ot/vuxdenE/3C1
+         AhjBq2JrCi/duD+KPEATi5hKhnZ1UNpnkb/f0Kx8=
+From:   Souradeep Chakrabarti <schakrabarti@linux.microsoft.com>
+To:     kys@microsoft.com, haiyangz@microsoft.com, wei.liu@kernel.org,
+        decui@microsoft.com, davem@davemloft.net, edumazet@google.com,
+        kuba@kernel.org, pabeni@redhat.com, longli@microsoft.com,
+        sharmaajay@microsoft.com, leon@kernel.org, cai.huoqing@linux.dev,
+        ssengar@linux.microsoft.com, vkuznets@redhat.com,
+        tglx@linutronix.de, linux-hyperv@vger.kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-rdma@vger.kernel.org
+Cc:     stable@vger.kernel.org, schakrabarti@microsoft.com,
+        Souradeep Chakrabarti <schakrabarti@linux.microsoft.com>
+Subject: [PATCH V5 net] net: mana: Fix MANA VF unload when hardware is unresponsive
+Date:   Wed,  5 Jul 2023 01:16:13 -0700
+Message-Id: <1688544973-2507-1-git-send-email-schakrabarti@linux.microsoft.com>
+X-Mailer: git-send-email 1.8.3.1
+X-Spam-Status: No, score=-19.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_MED,
+        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,
+        USER_IN_DEF_SPF_WL autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Tue, Jul 04, 2023 at 08:51:44AM +0800, lihongweizz wrote:
-> From: Rock Li <lihongweizz@inspur.com>
-> 
-> We met a crash issue as below:
-> ...
->  #7 [ff61b991f6f63d10] page_fault at ffffffffab80111e
->     [exception RIP: iscsi_iser_cleanup_task+13]
->     RIP: ffffffffc046c04d RSP: ff61b991f6f63dc0 RFLAGS: 00010246
->     RAX: 0000000000000000 RBX: ff4bd0aalf7a5610 RCX: ff61b991f6f63dc8
->     RDX: ff61b991f6f63d68 RSI: ff61b991f6f63d58 RDI: ff4bd0aalf6cdc00
->     RBP: 0000000000000005 R8: 0000000000000073 R9: 0000000000000005
->     R10: 0000000000000000 R11: 00000ccde3e0f5c0 R12: ff4bd08c0e0631f8
->     R13: ff4bd0a95ffd3c78 R14: ff4bd0a95ffd3c78 R15: ff4bd0aalf6cdc00
->     ORIG_RAX: ffffffffffffffff CS: 0010 SS: 0018
->  #8 [ff616991f6f63dc0] __iscsi_put_task at ffffffffc0bd3652 [libiscsi]
->  #9 [ff61b991f6f63e00] iscsi_put_task at ffffffffc0bd36e9 [libiscsi]
-> ...
-> 
-> After analysing the vmcore, we find that the iser connection was already
-> stopped before abort handler running. The iser_conn is already unbindded
-> and released. So we add iser connection validation check inside cleanup
-> task to fix this corner case.
-> 
-> Signed-off-by: Rock Li <lihongweizz@inspur.com>
-> ---
->  drivers/infiniband/ulp/iser/iscsi_iser.c | 7 ++++++-
->  1 file changed, 6 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/infiniband/ulp/iser/iscsi_iser.c b/drivers/infiniband/ulp/iser/iscsi_iser.c
-> index bb9aaff92ca3..35dfbf41fc40 100644
-> --- a/drivers/infiniband/ulp/iser/iscsi_iser.c
-> +++ b/drivers/infiniband/ulp/iser/iscsi_iser.c
-> @@ -366,7 +366,12 @@ static void iscsi_iser_cleanup_task(struct iscsi_task *task)
->  	struct iscsi_iser_task *iser_task = task->dd_data;
->  	struct iser_tx_desc *tx_desc = &iser_task->desc;
->  	struct iser_conn *iser_conn = task->conn->dd_data;
-> -	struct iser_device *device = iser_conn->ib_conn.device;
-> +	struct iser_device *device;
-> +
-> +	/* stop connection might happens before iser cleanup work */
-> +	if (!iser_conn)
-> +		return;
+When unloading the MANA driver, mana_dealloc_queues() waits for the MANA
+hardware to complete any inflight packets and set the pending send count
+to zero. But if the hardware has failed, mana_dealloc_queues()
+could wait forever.
 
-And what prevents from iser_conn being not valid here?
-For example, in the flow:
-1. Start iscsi_iser_cleanup_task
-2. Get valid task->conn->dd_data
-3. Pass this if (..) check
-4. Context switch and release connection
-5. iser_conn now points to released memory.
+Fix this by adding a timeout to the wait. Set the timeout to 120 seconds,
+which is a somewhat arbitrary value that is more than long enough for
+functional hardware to complete any sends.
 
-Thanks
+Fixes: ca9c54d2d6a5 ("net: mana: Add a driver for Microsoft Azure Network Adapter (MANA)")
+---
+V4 -> V5:
+* Added fixes tag
+* Changed the usleep_range from static to incremental value.
+* Initialized timeout in the begining.
+---
+Signed-off-by: Souradeep Chakrabarti <schakrabarti@linux.microsoft.com>
+---
+ drivers/net/ethernet/microsoft/mana/mana_en.c | 30 ++++++++++++++++---
+ 1 file changed, 26 insertions(+), 4 deletions(-)
 
-> +	device = iser_conn->ib_conn.device;
->  
->  	/* DEVICE_REMOVAL event might have already released the device */
->  	if (!device)
-> -- 
-> 2.27.0
-> 
+diff --git a/drivers/net/ethernet/microsoft/mana/mana_en.c b/drivers/net/ethernet/microsoft/mana/mana_en.c
+index a499e460594b..56b7074db1a2 100644
+--- a/drivers/net/ethernet/microsoft/mana/mana_en.c
++++ b/drivers/net/ethernet/microsoft/mana/mana_en.c
+@@ -2345,9 +2345,13 @@ int mana_attach(struct net_device *ndev)
+ static int mana_dealloc_queues(struct net_device *ndev)
+ {
+ 	struct mana_port_context *apc = netdev_priv(ndev);
++	unsigned long timeout = jiffies + 120 * HZ;
+ 	struct gdma_dev *gd = apc->ac->gdma_dev;
+ 	struct mana_txq *txq;
++	struct sk_buff *skb;
++	struct mana_cq *cq;
+ 	int i, err;
++	u32 tsleep;
+ 
+ 	if (apc->port_is_up)
+ 		return -EINVAL;
+@@ -2363,15 +2367,33 @@ static int mana_dealloc_queues(struct net_device *ndev)
+ 	 * to false, but it doesn't matter since mana_start_xmit() drops any
+ 	 * new packets due to apc->port_is_up being false.
+ 	 *
+-	 * Drain all the in-flight TX packets
++	 * Drain all the in-flight TX packets.
++	 * A timeout of 120 seconds for all the queues is used.
++	 * This will break the while loop when h/w is not responding.
++	 * This value of 120 has been decided here considering max
++	 * number of queues.
+ 	 */
++
+ 	for (i = 0; i < apc->num_queues; i++) {
+ 		txq = &apc->tx_qp[i].txq;
+-
+-		while (atomic_read(&txq->pending_sends) > 0)
+-			usleep_range(1000, 2000);
++		tsleep = 1000;
++		while (atomic_read(&txq->pending_sends) > 0 &&
++		       time_before(jiffies, timeout)) {
++			usleep_range(tsleep, tsleep << 1);
++			tsleep <<= 1;
++		}
+ 	}
+ 
++	for (i = 0; i < apc->num_queues; i++) {
++		txq = &apc->tx_qp[i].txq;
++		cq = &apc->tx_qp[i].tx_cq;
++		while (atomic_read(&txq->pending_sends)) {
++			skb = skb_dequeue(&txq->pending_skbs);
++			mana_unmap_skb(skb, apc);
++			dev_consume_skb_any(skb);
++			atomic_sub(1, &txq->pending_sends);
++		}
++	}
+ 	/* We're 100% sure the queues can no longer be woken up, because
+ 	 * we're sure now mana_poll_tx_cq() can't be running.
+ 	 */
+-- 
+2.34.1
+
