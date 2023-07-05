@@ -2,227 +2,259 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 337147480B9
-	for <lists+linux-rdma@lfdr.de>; Wed,  5 Jul 2023 11:22:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C6987480E5
+	for <lists+linux-rdma@lfdr.de>; Wed,  5 Jul 2023 11:33:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229635AbjGEJWa (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 5 Jul 2023 05:22:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47622 "EHLO
+        id S231422AbjGEJdF (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 5 Jul 2023 05:33:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50992 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230100AbjGEJW3 (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 5 Jul 2023 05:22:29 -0400
-Received: from unicom145.biz-email.net (unicom145.biz-email.net [210.51.26.145])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8553AA0;
-        Wed,  5 Jul 2023 02:22:16 -0700 (PDT)
-Received: from unicom145.biz-email.net
-        by unicom145.biz-email.net ((D)) with ASMTP (SSL) id BIC00109;
-        Wed, 05 Jul 2023 17:22:09 +0800
-Received: from jtjnmail201606.home.langchao.com (10.100.2.6) by
- jtjnmail201604.home.langchao.com (10.100.2.4) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.27; Wed, 5 Jul 2023 17:22:08 +0800
-Received: from jtjnmail201606.home.langchao.com ([fe80::8583:33f:807a:3430])
- by jtjnmail201606.home.langchao.com ([fe80::8583:33f:807a:3430%6]) with mapi
- id 15.01.2507.027; Wed, 5 Jul 2023 17:22:08 +0800
-From:   =?gb2312?B?Um9jayBMaSjA7rrqzrAp?= <lihongweizz@inspur.com>
-To:     "leon@kernel.org" <leon@kernel.org>
-CC:     "sagi@grimberg.me" <sagi@grimberg.me>,
-        "mgurtovoy@nvidia.com" <mgurtovoy@nvidia.com>,
-        "jgg@ziepe.ca" <jgg@ziepe.ca>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] IB/iser: Protect tasks cleanup in case iser connection
- was stopped
-Thread-Topic: [PATCH] IB/iser: Protect tasks cleanup in case iser connection
- was stopped
-Thread-Index: AdmvGU9ORds3IdmXc0qwN4zLTm0C0g==
-Date:   Wed, 5 Jul 2023 09:22:08 +0000
-Message-ID: <45c68d6835964dcbae8fbd983696064b@inspur.com>
-Accept-Language: zh-CN, en-US
-Content-Language: zh-CN
-X-MS-Has-Attach: yes
-X-MS-TNEF-Correlator: 
-x-originating-ip: [10.180.207.169]
-Content-Type: multipart/signed; protocol="application/x-pkcs7-signature";
-        micalg=SHA1; boundary="----=_NextPart_000_016E_01D9AF65.38AB7A20"
-MIME-Version: 1.0
-tUid:   20237051722090abb66891f1b1e2eabce6c7294234d58
-X-Abuse-Reports-To: service@corp-email.com
-Abuse-Reports-To: service@corp-email.com
-X-Complaints-To: service@corp-email.com
-X-Report-Abuse-To: service@corp-email.com
-X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_LOW,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+        with ESMTP id S229532AbjGEJdE (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 5 Jul 2023 05:33:04 -0400
+Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id A42F41711;
+        Wed,  5 Jul 2023 02:33:02 -0700 (PDT)
+Received: by linux.microsoft.com (Postfix, from userid 1099)
+        id C78FA20938BF; Wed,  5 Jul 2023 02:33:01 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com C78FA20938BF
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+        s=default; t=1688549581;
+        bh=BujkrTlk1vj49nUHXLGB7avpayiTaU0StVHZua2nrDU=;
+        h=From:To:Cc:Subject:Date:From;
+        b=dZbn8jG0HXJvZtpvfVJEzv5QXB7taiwcmYy80l0/6ieruKkBhF405WvURGKK1ND9o
+         ItrfK+Pti4uwRHd+cMe0rvRJ/p2C/f6kNbeAxTZpjBVDgUx0po267lpBLME+okk8Ys
+         wa/NJDCKLXYS8jUfJbCnmi3Bl2oy/OihTLcHBr9Q=
+From:   Souradeep Chakrabarti <schakrabarti@linux.microsoft.com>
+To:     kys@microsoft.com, haiyangz@microsoft.com, wei.liu@kernel.org,
+        decui@microsoft.com, davem@davemloft.net, edumazet@google.com,
+        kuba@kernel.org, pabeni@redhat.com, longli@microsoft.com,
+        sharmaajay@microsoft.com, leon@kernel.org, cai.huoqing@linux.dev,
+        ssengar@linux.microsoft.com, vkuznets@redhat.com,
+        tglx@linutronix.de, linux-hyperv@vger.kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-rdma@vger.kernel.org
+Cc:     stable@vger.kernel.org, schakrabarti@microsoft.com,
+        Souradeep Chakrabarti <schakrabarti@linux.microsoft.com>
+Subject: [PATCH net] net: mana: Configure hwc timeout from hardware
+Date:   Wed,  5 Jul 2023 02:32:58 -0700
+Message-Id: <1688549578-12906-1-git-send-email-schakrabarti@linux.microsoft.com>
+X-Mailer: git-send-email 1.8.3.1
+X-Spam-Status: No, score=-19.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_MED,
+        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,
+        USER_IN_DEF_SPF_WL autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-------=_NextPart_000_016E_01D9AF65.38AB7A20
-Content-Type: text/plain;
-	charset="gb2312"
-Content-Transfer-Encoding: 7bit
+At present hwc timeout value is a fixed value.
+This patch sets the hwc timeout from the hardware.
 
-> > On Tue, Jul 04, 2023 at 08:51:44AM +0800, lihongweizz wrote:
-> > From: Rock Li <lihongweizz@inspur.com>
-> >
-> > We met a crash issue as below:
-> > ...
-> >  #7 [ff61b991f6f63d10] page_fault at ffffffffab80111e
-> >     [exception RIP: iscsi_iser_cleanup_task+13]
-> >     RIP: ffffffffc046c04d RSP: ff61b991f6f63dc0 RFLAGS: 00010246
-> >     RAX: 0000000000000000 RBX: ff4bd0aalf7a5610 RCX: ff61b991f6f63dc8
-> >     RDX: ff61b991f6f63d68 RSI: ff61b991f6f63d58 RDI: ff4bd0aalf6cdc00
-> >     RBP: 0000000000000005 R8: 0000000000000073 R9:
-> 0000000000000005
-> >     R10: 0000000000000000 R11: 00000ccde3e0f5c0 R12:
-> ff4bd08c0e0631f8
-> >     R13: ff4bd0a95ffd3c78 R14: ff4bd0a95ffd3c78 R15: ff4bd0aalf6cdc00
-> >     ORIG_RAX: ffffffffffffffff CS: 0010 SS: 0018
-> >  #8 [ff616991f6f63dc0] __iscsi_put_task at ffffffffc0bd3652 [libiscsi]
-> >  #9 [ff61b991f6f63e00] iscsi_put_task at ffffffffc0bd36e9 [libiscsi]
-> > ...
-> >
-> > After analysing the vmcore, we find that the iser connection was
-> > already stopped before abort handler running. The iser_conn is already
-> > unbindded and released. So we add iser connection validation check
-> > inside cleanup task to fix this corner case.
-> >
-> > Signed-off-by: Rock Li <lihongweizz@inspur.com>
-> > ---
-> >  drivers/infiniband/ulp/iser/iscsi_iser.c | 7 ++++++-
-> >  1 file changed, 6 insertions(+), 1 deletion(-)
-> >
-> > diff --git a/drivers/infiniband/ulp/iser/iscsi_iser.c
-> > b/drivers/infiniband/ulp/iser/iscsi_iser.c
-> > index bb9aaff92ca3..35dfbf41fc40 100644
-> > --- a/drivers/infiniband/ulp/iser/iscsi_iser.c
-> > +++ b/drivers/infiniband/ulp/iser/iscsi_iser.c
-> > @@ -366,7 +366,12 @@ static void iscsi_iser_cleanup_task(struct
-iscsi_task
-> *task)
-> >  	struct iscsi_iser_task *iser_task = task->dd_data;
-> >  	struct iser_tx_desc *tx_desc = &iser_task->desc;
-> >  	struct iser_conn *iser_conn = task->conn->dd_data;
-> > -	struct iser_device *device = iser_conn->ib_conn.device;
-> > +	struct iser_device *device;
-> > +
-> > +	/* stop connection might happens before iser cleanup work */
-> > +	if (!iser_conn)
-> > +		return;
-> 
-> And what prevents from iser_conn being not valid here?
-> For example, in the flow:
-> 1. Start iscsi_iser_cleanup_task
-> 2. Get valid task->conn->dd_data
-> 3. Pass this if (..) check
-> 4. Context switch and release connection 5. iser_conn now points to
-released
-> memory.
-> 
-> Thanks
+Signed-off-by: Souradeep Chakrabarti <schakrabarti@linux.microsoft.com>
+---
+ .../net/ethernet/microsoft/mana/gdma_main.c   | 27 +++++++++++++++++++
+ .../net/ethernet/microsoft/mana/hw_channel.c  | 25 ++++++++++++++++-
+ include/net/mana/gdma.h                       | 20 +++++++++++++-
+ include/net/mana/hw_channel.h                 |  5 ++++
+ 4 files changed, 75 insertions(+), 2 deletions(-)
 
-Hi Leon,
-Thanks for your reply:) In case iscsi_stop_conn was executed cocurrently or
-after iscsi_iser_cleanup_task, above issue would happen.
-I've confirmed the values in iscsi_cls_conn and iscsi_conn instances from
-vmcore:
+diff --git a/drivers/net/ethernet/microsoft/mana/gdma_main.c b/drivers/net/ethernet/microsoft/mana/gdma_main.c
+index 8f3f78b68592..5d30347e0137 100644
+--- a/drivers/net/ethernet/microsoft/mana/gdma_main.c
++++ b/drivers/net/ethernet/microsoft/mana/gdma_main.c
+@@ -106,6 +106,30 @@ static int mana_gd_query_max_resources(struct pci_dev *pdev)
+ 	return 0;
+ }
+ 
++static int mana_gd_query_hwc_timeout(struct pci_dev *pdev, u32 *timeout_val)
++{
++	struct gdma_context *gc = pci_get_drvdata(pdev);
++	struct gdma_query_hwc_timeout_req req = {};
++	struct gdma_query_hwc_timeout_resp resp = {};
++	int err;
++
++	mana_gd_init_req_hdr(&req.hdr, GDMA_QUERY_HWC_TIMEOUT,
++			     sizeof(req), sizeof(resp));
++	req.timeout_ms = *timeout_val;
++	err = mana_gd_send_request(gc, sizeof(req), &req, sizeof(resp), &resp);
++	if (err || resp.hdr.status) {
++		dev_err(gc->dev, "Failed to query timeout: %d, 0x%x\n", err,
++			resp.hdr.status);
++		return err ? err : -EPROTO;
++	}
++
++	*timeout_val = resp.timeout_ms;
++	dev_info(gc->dev, "Successfully changed the timeout value %u\n",
++		 *timeout_val);
++
++	return 0;
++}
++
+ static int mana_gd_detect_devices(struct pci_dev *pdev)
+ {
+ 	struct gdma_context *gc = pci_get_drvdata(pdev);
+@@ -879,6 +903,7 @@ int mana_gd_verify_vf_version(struct pci_dev *pdev)
+ 	struct gdma_context *gc = pci_get_drvdata(pdev);
+ 	struct gdma_verify_ver_resp resp = {};
+ 	struct gdma_verify_ver_req req = {};
++	struct hw_channel_context *hwc = gc->hwc.driver_data;
+ 	int err;
+ 
+ 	mana_gd_init_req_hdr(&req.hdr, GDMA_VERIFY_VF_DRIVER_VERSION,
+@@ -907,6 +932,8 @@ int mana_gd_verify_vf_version(struct pci_dev *pdev)
+ 			err, resp.hdr.status);
+ 		return err ? err : -EPROTO;
+ 	}
++	if (resp.pf_cap_flags1 & GDMA_DRV_CAP_FLAG_1_HWC_TIMEOUT_RECONFIG)
++		mana_gd_query_hwc_timeout(pdev, &hwc->hwc_timeout);
+ 
+ 	return 0;
+ }
+diff --git a/drivers/net/ethernet/microsoft/mana/hw_channel.c b/drivers/net/ethernet/microsoft/mana/hw_channel.c
+index 9d1507eba5b9..f5980c26fd09 100644
+--- a/drivers/net/ethernet/microsoft/mana/hw_channel.c
++++ b/drivers/net/ethernet/microsoft/mana/hw_channel.c
+@@ -174,7 +174,25 @@ static void mana_hwc_init_event_handler(void *ctx, struct gdma_queue *q_self,
+ 		complete(&hwc->hwc_init_eqe_comp);
+ 		break;
+ 
++	case GDMA_EQE_HWC_SOC_RECONFIG_DATA:
++		type_data.as_uint32 = event->details[0];
++		type = type_data.type;
++		val = type_data.value;
++
++		switch (type) {
++		case HWC_DATA_CFG_HWC_TIMEOUT:
++			hwc->hwc_timeout = val;
++			break;
++
++		default:
++			dev_warn(hwc->dev, "Received unknown reconfig type %u\n", type);
++			break;
++		}
++
++		break;
++
+ 	default:
++		dev_warn(hwc->dev, "Received unknown gdma event %u\n", event->type);
+ 		/* Ignore unknown events, which should never happen. */
+ 		break;
+ 	}
+@@ -704,6 +722,7 @@ int mana_hwc_create_channel(struct gdma_context *gc)
+ 	gd->pdid = INVALID_PDID;
+ 	gd->doorbell = INVALID_DOORBELL;
+ 
++	hwc->hwc_timeout = HW_CHANNEL_WAIT_RESOURCE_TIMEOUT_MS;
+ 	/* mana_hwc_init_queues() only creates the required data structures,
+ 	 * and doesn't touch the HWC device.
+ 	 */
+@@ -770,6 +789,8 @@ void mana_hwc_destroy_channel(struct gdma_context *gc)
+ 	hwc->gdma_dev->doorbell = INVALID_DOORBELL;
+ 	hwc->gdma_dev->pdid = INVALID_PDID;
+ 
++	hwc->hwc_timeout = 0;
++
+ 	kfree(hwc);
+ 	gc->hwc.driver_data = NULL;
+ 	gc->hwc.gdma_context = NULL;
+@@ -818,6 +839,7 @@ int mana_hwc_send_request(struct hw_channel_context *hwc, u32 req_len,
+ 		dest_vrq = hwc->pf_dest_vrq_id;
+ 		dest_vrcq = hwc->pf_dest_vrcq_id;
+ 	}
++	dev_err(hwc->dev, "HWC: timeout %u ms\n", hwc->hwc_timeout);
+ 
+ 	err = mana_hwc_post_tx_wqe(txq, tx_wr, dest_vrq, dest_vrcq, false);
+ 	if (err) {
+@@ -825,7 +847,8 @@ int mana_hwc_send_request(struct hw_channel_context *hwc, u32 req_len,
+ 		goto out;
+ 	}
+ 
+-	if (!wait_for_completion_timeout(&ctx->comp_event, 30 * HZ)) {
++	if (!wait_for_completion_timeout(&ctx->comp_event,
++					 (hwc->hwc_timeout / 1000) * HZ)) {
+ 		dev_err(hwc->dev, "HWC: Request timed out!\n");
+ 		err = -ETIMEDOUT;
+ 		goto out;
+diff --git a/include/net/mana/gdma.h b/include/net/mana/gdma.h
+index 96c120160f15..88b6ef7ce1a6 100644
+--- a/include/net/mana/gdma.h
++++ b/include/net/mana/gdma.h
+@@ -33,6 +33,7 @@ enum gdma_request_type {
+ 	GDMA_DESTROY_PD			= 30,
+ 	GDMA_CREATE_MR			= 31,
+ 	GDMA_DESTROY_MR			= 32,
++	GDMA_QUERY_HWC_TIMEOUT		= 84, /* 0x54 */
+ };
+ 
+ #define GDMA_RESOURCE_DOORBELL_PAGE	27
+@@ -57,6 +58,8 @@ enum gdma_eqe_type {
+ 	GDMA_EQE_HWC_INIT_EQ_ID_DB	= 129,
+ 	GDMA_EQE_HWC_INIT_DATA		= 130,
+ 	GDMA_EQE_HWC_INIT_DONE		= 131,
++	GDMA_EQE_HWC_SOC_RECONFIG	= 132,
++	GDMA_EQE_HWC_SOC_RECONFIG_DATA	= 133,
+ };
+ 
+ enum {
+@@ -531,10 +534,12 @@ enum {
+  * so the driver is able to reliably support features like busy_poll.
+  */
+ #define GDMA_DRV_CAP_FLAG_1_NAPI_WKDONE_FIX BIT(2)
++#define GDMA_DRV_CAP_FLAG_1_HWC_TIMEOUT_RECONFIG BIT(3)
+ 
+ #define GDMA_DRV_CAP_FLAGS1 \
+ 	(GDMA_DRV_CAP_FLAG_1_EQ_SHARING_MULTI_VPORT | \
+-	 GDMA_DRV_CAP_FLAG_1_NAPI_WKDONE_FIX)
++	 GDMA_DRV_CAP_FLAG_1_NAPI_WKDONE_FIX | \
++	 GDMA_DRV_CAP_FLAG_1_HWC_TIMEOUT_RECONFIG)
+ 
+ #define GDMA_DRV_CAP_FLAGS2 0
+ 
+@@ -664,6 +669,19 @@ struct gdma_disable_queue_req {
+ 	u32 alloc_res_id_on_creation;
+ }; /* HW DATA */
+ 
++/* GDMA_QUERY_HWC_TIMEOUT */
++struct gdma_query_hwc_timeout_req {
++	struct gdma_req_hdr hdr;
++	u32 timeout_ms;
++	u32 reserved;
++};
++
++struct gdma_query_hwc_timeout_resp {
++	struct gdma_resp_hdr hdr;
++	u32 timeout_ms;
++	u32 reserved;
++};
++
+ enum atb_page_size {
+ 	ATB_PAGE_SIZE_4K,
+ 	ATB_PAGE_SIZE_8K,
+diff --git a/include/net/mana/hw_channel.h b/include/net/mana/hw_channel.h
+index 6a757a6e2732..3d3b5c881bc1 100644
+--- a/include/net/mana/hw_channel.h
++++ b/include/net/mana/hw_channel.h
+@@ -23,6 +23,10 @@
+ #define HWC_INIT_DATA_PF_DEST_RQ_ID	10
+ #define HWC_INIT_DATA_PF_DEST_CQ_ID	11
+ 
++#define HWC_DATA_CFG_HWC_TIMEOUT 1
++
++#define HW_CHANNEL_WAIT_RESOURCE_TIMEOUT_MS 30000
++
+ /* Structures labeled with "HW DATA" are exchanged with the hardware. All of
+  * them are naturally aligned and hence don't need __packed.
+  */
+@@ -182,6 +186,7 @@ struct hw_channel_context {
+ 
+ 	u32 pf_dest_vrq_id;
+ 	u32 pf_dest_vrcq_id;
++	u32 hwc_timeout;
+ 
+ 	struct hwc_caller_ctx *caller_ctx;
+ };
+-- 
+2.34.1
 
-iscsi_stop_conn
-  ...
-  WRITE_ONCE(conn->state, ISCSI_CONN_FAILED);      --- confirmed
-  ...
-  conn->transport->stop_conn => iscsi_iser_conn_stop
-    iscsi_conn_stop
-      ...
-      conn->c_stage = ISCSI_CONN_STOPPED;          --- confirmed
-    conn->dd_data = NULL;                          --- confirmed
-
-The crash scene tells us that iscsi_stop_conn was executed before
-iscsi_iser_cleanup_task start, the iser_conn instance was already released. 
-
-> 
-> > +	device = iser_conn->ib_conn.device;
-> >
-> >  	/* DEVICE_REMOVAL event might have already released the device */
-> >  	if (!device)
-> > --
-> > 2.27.0
-> >
-
-------=_NextPart_000_016E_01D9AF65.38AB7A20
-Content-Type: application/pkcs7-signature; name="smime.p7s"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment; filename="smime.p7s"
-
-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
-BggqhkiG9w0DAgICAIAwDgYIKoZIhvcNAwQCAgCAMAcGBSsOAwIHMAoGCCqGSIb3DQMHMB0GA1Ud
-DgQWBBRaBc9d7NDesVRKJOjt1innorCQlzAfBgNVHSMEGDAWgBReWQOmtExYYJFO9h61pTmmMsE1
-ajCCAQ8GA1UdHwSCAQYwggECMIH/oIH8oIH5hoG6bGRhcDovLy9DTj1JTlNQVVItQ0EsQ049SlRD
-QTIwMTIsQ049Q0RQLENOPVB1YmxpYyUyMEtleSUyMFNlcnZpY2VzLENOPVNlcnZpY2VzLENOPUNv
-bmZpZ3VyYXRpb24sREM9aG9tZSxEQz1sYW5nY2hhbyxEQz1jb20/Y2VydGlmaWNhdGVSZXZvY2F0
-aW9uTGlzdD9iYXNlP29iamVjdENsYXNzPWNSTERpc3RyaWJ1dGlvblBvaW50hjpodHRwOi8vSlRD
-QTIwMTIuaG9tZS5sYW5nY2hhby5jb20vQ2VydEVucm9sbC9JTlNQVVItQ0EuY3JsMIIBKQYIKwYB
-BQUHAQEEggEbMIIBFzCBsQYIKwYBBQUHMAKGgaRsZGFwOi8vL0NOPUlOU1BVUi1DQSxDTj1BSUEs
-Q049UHVibGljJTIwS2V5JTIwU2VydmljZXMsQ049U2VydmljZXMsQ049Q29uZmlndXJhdGlvbixE
-Qz1ob21lLERDPWxhbmdjaGFvLERDPWNvbT9jQUNlcnRpZmljYXRlP2Jhc2U/b2JqZWN0Q2xhc3M9
-Y2VydGlmaWNhdGlvbkF1dGhvcml0eTBhBggrBgEFBQcwAoZVaHR0cDovL0pUQ0EyMDEyLmhvbWUu
-bGFuZ2NoYW8uY29tL0NlcnRFbnJvbGwvSlRDQTIwMTIuaG9tZS5sYW5nY2hhby5jb21fSU5TUFVS
-LUNBLmNydDBJBgNVHREEQjBAoCYGCisGAQQBgjcUAgOgGAwWbGlob25nd2VpenpAaW5zcHVyLmNv
-bYEWbGlob25nd2VpenpAaW5zcHVyLmNvbTANBgkqhkiG9w0BAQsFAAOCAQEAbgg5pyExgLZRaa7t
-7XYfCwnVeO7Fzb2IyHLpR6UJw3tMeftOi+j+eM1PjvDxixho7R8lDhCGkoIwXdtJfXMMEfGTnXmh
-+oY9PrWfhlgCn6ZeU633jtV5kDi8JFa/g7JP0SgZvOCsxbHJXM78HKy8gUUsLrXJ8yKHzt/uEgUK
-ekHEjh1eWmxvCXuLyCd15SVIgDuVvXipcygfdbc52JrhLab4IgDUq+4SKC7X9s6iUdbyxq8T0aA6
-2C0AmIIbJyG6cLAMmSSOMzM31hiflRiGmJOqpcjFsd1+1GTy1KM+jvmTJFiadG1bx5AhuWoXKyst
-fQgatmAtt6XCB7rmbjOapDGCA5MwggOPAgEBMHAwWTETMBEGCgmSJomT8ixkARkWA2NvbTEYMBYG
-CgmSJomT8ixkARkWCGxhbmdjaGFvMRQwEgYKCZImiZPyLGQBGRYEaG9tZTESMBAGA1UEAxMJSU5T
-UFVSLUNBAhN+AADCsSyiGj7nnfwAAAAAAMKxMAkGBSsOAwIaBQCgggH4MBgGCSqGSIb3DQEJAzEL
-BgkqhkiG9w0BBwEwHAYJKoZIhvcNAQkFMQ8XDTIzMDcwNTA5MjIwNlowIwYJKoZIhvcNAQkEMRYE
-FOXW4Sz/NiwgUtK1iIdOACFoalTvMH8GCSsGAQQBgjcQBDFyMHAwWTETMBEGCgmSJomT8ixkARkW
-A2NvbTEYMBYGCgmSJomT8ixkARkWCGxhbmdjaGFvMRQwEgYKCZImiZPyLGQBGRYEaG9tZTESMBAG
-A1UEAxMJSU5TUFVSLUNBAhN+AADCsSyiGj7nnfwAAAAAAMKxMIGBBgsqhkiG9w0BCRACCzFyoHAw
-WTETMBEGCgmSJomT8ixkARkWA2NvbTEYMBYGCgmSJomT8ixkARkWCGxhbmdjaGFvMRQwEgYKCZIm
-iZPyLGQBGRYEaG9tZTESMBAGA1UEAxMJSU5TUFVSLUNBAhN+AADCsSyiGj7nnfwAAAAAAMKxMIGT
-BgkqhkiG9w0BCQ8xgYUwgYIwCwYJYIZIAWUDBAEqMAsGCWCGSAFlAwQBFjAKBggqhkiG9w0DBzAL
-BglghkgBZQMEAQIwDgYIKoZIhvcNAwICAgCAMA0GCCqGSIb3DQMCAgFAMAcGBSsOAwIaMAsGCWCG
-SAFlAwQCAzALBglghkgBZQMEAgIwCwYJYIZIAWUDBAIBMA0GCSqGSIb3DQEBAQUABIIBAGmPA1PP
-GyegA96azdOx2Wwku9Y1oSk13yfu4y12D9gp03iB8HtHI+3zA2JSu9xs2/4UbLimsy+kPT08MKOq
-5o97vwyn4/lyYfQxKAjrh4S6BBeoTZnlAqK6kCsODYQNWOa/WFNgHuLkoT2+23rm7ONLilTXSpDl
-b7W7SWU2nLRDa/IfxDj156QerpRKR87GZXUPqSGbHj2I6eEcP/icXV0hU6flWp6IHhgt8Qe3cEm7
-1q0iF/rfzZ4K9XbIHX5ha8/zqBXWnwYgO7r7jhyVZuuF9e+TfQOfAUXgFsMBM2xZzkiV8TEP51dx
-Ak4ZEDyz7dQuNoudbLxRZFg5JN5N0uUAAAAAAAA=
-
-------=_NextPart_000_016E_01D9AF65.38AB7A20--
