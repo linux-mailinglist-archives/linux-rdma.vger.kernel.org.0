@@ -2,54 +2,49 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 24490747F83
-	for <lists+linux-rdma@lfdr.de>; Wed,  5 Jul 2023 10:24:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 83725747FDE
+	for <lists+linux-rdma@lfdr.de>; Wed,  5 Jul 2023 10:40:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229906AbjGEIYF (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 5 Jul 2023 04:24:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49112 "EHLO
+        id S231542AbjGEIkZ (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 5 Jul 2023 04:40:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57536 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231317AbjGEIYA (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 5 Jul 2023 04:24:00 -0400
+        with ESMTP id S230345AbjGEIkX (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 5 Jul 2023 04:40:23 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30B3BC1
-        for <linux-rdma@vger.kernel.org>; Wed,  5 Jul 2023 01:23:59 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C4C07CA
+        for <linux-rdma@vger.kernel.org>; Wed,  5 Jul 2023 01:40:22 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id BA1B961489
-        for <linux-rdma@vger.kernel.org>; Wed,  5 Jul 2023 08:23:58 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5EA9CC433C8;
-        Wed,  5 Jul 2023 08:23:57 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 5733C614A0
+        for <linux-rdma@vger.kernel.org>; Wed,  5 Jul 2023 08:40:22 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3A7C7C433C7;
+        Wed,  5 Jul 2023 08:40:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1688545438;
-        bh=jL2t6AUn6hzbYzzckYRgVf8ByWotOQ4NEXr2JAdtcG8=;
+        s=k20201202; t=1688546421;
+        bh=YZEPVJbe8eBR6f/rYmrqxfd49CIPBEevX1RCUX4xzFE=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=pYj6Fq/hWszOWdJeF3FLgviiHyu+RFMMAEv9MVzuLlx+/5qZkje15/10LtaGmFqts
-         EW4sAT73wesgPmKBoIgnkjjDMQ3ofzkMuj4IccJ74fFLmAXMmrPOIIf+2s516fiMDS
-         9kDlWt58wbmSz3X/ColOvvMhIiUHPBZaFVocdlSYd4LntXEeVDVY7Enp1y2n4X9WxU
-         8ItoG+XjmvgpBQ0/SvbrVnEgqmnL26c5oVxRjH58gqgLL5+1my5bf4TRu/6WM7MDbx
-         IpqL0xd/mieDiqTkIVIqEpzfT5Rl3MGHJj3/L6ahYeq4/r8v+WFnoClLmIhAIrNV4/
-         RjDUIrGURgbHg==
-Date:   Wed, 5 Jul 2023 11:23:53 +0300
+        b=SYlRlnGTrO/c7y09oOTCsksd1EpdeLoSeY9YxCB8vFtoC/cGq28Pbh3UYn+ikhkLB
+         ZNw6UK+D77vpi1cHrddlfdMsjvgfB6Kmhn85YXQ/bMjLycH0C2QLaBLUMIukXZss98
+         1XYPj0Oave7kAHae+CV2bSrBCTugJJwCAx04cEjsFe/E+6UC33G0uwaPx1HOGDRA8a
+         8vfUOiJ2eP1tDPUq8Gq2bqQN5J/b1lkS7f3d6Z20UUSVmGBusnfU0VVSkAtFWjTfNP
+         zDTHNJJVobIg4f2lEmP64XFVv/s1UePCr+onJL+NAJrgIYigwDE44+tsx51q8S5syv
+         QsFlsHDCLNPvQ==
+Date:   Wed, 5 Jul 2023 11:40:17 +0300
 From:   Leon Romanovsky <leon@kernel.org>
-To:     Simon Horman <simon.horman@corigine.com>
-Cc:     Zhengchao Shao <shaozhengchao@huawei.com>, netdev@vger.kernel.org,
-        linux-rdma@vger.kernel.org, davem@davemloft.net,
-        edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
-        valex@nvidia.com, kliteyn@nvidia.com, mbloch@nvidia.com,
-        danielj@nvidia.com, erezsh@mellanox.com, saeedm@nvidia.com,
-        weiyongjun1@huawei.com, yuehaibing@huawei.com
-Subject: Re: [PATCH net] net/mlx5: DR, fix memory leak in
- mlx5dr_cmd_create_reformat_ctx
-Message-ID: <20230705082353.GJ6455@unreal>
-References: <20230704033308.3773764-1-shaozhengchao@huawei.com>
- <ZKQvbCkdeVWWCzEw@corigine.com>
+To:     linux-rdma@vger.kernel.org, Daniel Vacek <neelx@redhat.com>
+Cc:     Rogerio Moraes <rogerio@cadence.com>
+Subject: Re: [PATCH v2] verbs: fix compilation warning with C++20
+Message-ID: <20230705084017.GK6455@unreal>
+References: <20230609153147.667674-1-neelx@redhat.com>
+ <20230613131931.738436-1-neelx@redhat.com>
+ <168854221298.91294.7240817458366723584.b4-ty@nvidia.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <ZKQvbCkdeVWWCzEw@corigine.com>
+In-Reply-To: <168854221298.91294.7240817458366723584.b4-ty@nvidia.com>
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
@@ -60,61 +55,33 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Tue, Jul 04, 2023 at 03:40:44PM +0100, Simon Horman wrote:
-> On Tue, Jul 04, 2023 at 11:33:08AM +0800, Zhengchao Shao wrote:
-> > when mlx5_cmd_exec failed in mlx5dr_cmd_create_reformat_ctx, the memory
-> > pointed by 'in' is not released, which will cause memory leak. Move memory
-> > release after mlx5_cmd_exec.
-> > 
-> > Fixes: 1d9186476e12 ("net/mlx5: DR, Add direct rule command utilities")
-> > Signed-off-by: Zhengchao Shao <shaozhengchao@huawei.com>
-> > ---
-> >  drivers/net/ethernet/mellanox/mlx5/core/steering/dr_cmd.c | 2 +-
-> >  1 file changed, 1 insertion(+), 1 deletion(-)
-> > 
-> > diff --git a/drivers/net/ethernet/mellanox/mlx5/core/steering/dr_cmd.c b/drivers/net/ethernet/mellanox/mlx5/core/steering/dr_cmd.c
-> > index 7491911ebcb5..cf5820744e99 100644
-> > --- a/drivers/net/ethernet/mellanox/mlx5/core/steering/dr_cmd.c
-> > +++ b/drivers/net/ethernet/mellanox/mlx5/core/steering/dr_cmd.c
-> > @@ -563,11 +563,11 @@ int mlx5dr_cmd_create_reformat_ctx(struct mlx5_core_dev *mdev,
-> >  		memcpy(pdata, reformat_data, reformat_size);
-> >  
-> >  	err = mlx5_cmd_exec(mdev, in, inlen, out, sizeof(out));
-> > +	kvfree(in);
-> >  	if (err)
-> >  		return err;
-> >  
-> >  	*reformat_id = MLX5_GET(alloc_packet_reformat_context_out, out, packet_reformat_id);
-> > -	kvfree(in);
-> >  
-> >  	return err;
-> >  }
+On Wed, Jul 05, 2023 at 10:30:12AM +0300, Leon Romanovsky wrote:
 > 
-> Hi Zhengchao Shao,
+> On Tue, 13 Jun 2023 15:19:31 +0200, Daniel Vacek wrote:
+> > Our customer reported the below warning whe using Clang v16.0.4 and C++20,
+> > on a code that includes the header "/usr/include/infiniband/verbs.h":
+> > 
+> > error: bitwise operation between different enumeration types ('ibv_access_flags' and
+> > 'ib_uverbs_access_flags') is deprecated [-Werror,-Wdeprecated-enum-enum-conversion]
+> >                 mem->mr = ibv_reg_mr(dev->pd, (void*)start, len, IBV_ACCESS_LOCAL_WRITE);
+> >                           ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+> > /usr/include/infiniband/verbs.h:2514:19: note: expanded from macro 'ibv_reg_mr'
+> >                              ((access) & IBV_ACCESS_OPTIONAL_RANGE) == 0))
+> >                               ~~~~~~~~ ^ ~~~~~~~~~~~~~~~~~~~~~~~~~
+> > 1 error generated.
+> > 
+> > [...]
 > 
-> I agree this is a correct fix.
-> However, I think a more idiomatic approach to this problem
-> would be to use a goto label. Something like this (completely untested!).
+> Applied, thanks!
+> 
+> [1/1] verbs: fix compilation warning with C++20
+>       https://git.kernel.org/rdma/rdma/c/9e5ccbfdd208a1
 
-Thanks, your change looks more natural to me.
+The more accurate link is https://github.com/linux-rdma/rdma-core/pull/1367
+
+Thanks
 
 > 
-> diff --git a/drivers/net/ethernet/mellanox/mlx5/core/steering/dr_cmd.c b/drivers/net/ethernet/mellanox/mlx5/core/steering/dr_cmd.c
-> index 7491911ebcb5..8c2a34a0d6be 100644
-> --- a/drivers/net/ethernet/mellanox/mlx5/core/steering/dr_cmd.c
-> +++ b/drivers/net/ethernet/mellanox/mlx5/core/steering/dr_cmd.c
-> @@ -564,11 +564,12 @@ int mlx5dr_cmd_create_reformat_ctx(struct mlx5_core_dev *mdev,
->  
->  	err = mlx5_cmd_exec(mdev, in, inlen, out, sizeof(out));
->  	if (err)
-> -		return err;
-> +		goto err_free_in;
->  
->  	*reformat_id = MLX5_GET(alloc_packet_reformat_context_out, out, packet_reformat_id);
-> -	kvfree(in);
->  
-> +err_free_in:
-> +	kvfree(in);
->  	return err;
->  }
->  
+> Best regards,
+> -- 
+> Leon Romanovsky <leonro@nvidia.com>
