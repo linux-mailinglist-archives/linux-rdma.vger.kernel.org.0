@@ -2,135 +2,284 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A921D74824D
-	for <lists+linux-rdma@lfdr.de>; Wed,  5 Jul 2023 12:40:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 52F97748278
+	for <lists+linux-rdma@lfdr.de>; Wed,  5 Jul 2023 12:47:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232131AbjGEKkQ (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 5 Jul 2023 06:40:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52468 "EHLO
+        id S231252AbjGEKrk (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 5 Jul 2023 06:47:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57600 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232079AbjGEKkP (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 5 Jul 2023 06:40:15 -0400
-Received: from APC01-TYZ-obe.outbound.protection.outlook.com (mail-tyzapc01on2138.outbound.protection.outlook.com [40.107.117.138])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B100E63;
-        Wed,  5 Jul 2023 03:40:14 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=LFeksQ3p3SR0NYHsB2Kc7PUKi21ixJV5aWLA+ISiQa/23CUOUIol09gBLGM0YCw4A4A+t2J7YV5F4nUO2rrTUrB1FWBlHC4/er8b5zeyyStRb3E9WW97bnuVeWXgk5k8+QHggP69uYFs5xn/0FDE2sljuKSKeK/owZhbWeE7TtGLDQdt2fk3EERGlBtTfgHJFTNmwAjnJCZY+ANGqDvnOsbvAS//p/3t5GTFi/FAoChoUSok3urM+0NlljuaAB7s7t8msq/CHjBbHnN3vEI15oV2/vHwflF/EhdtzvKJs9qxPFt2wMzdDmlfTrzvHc+D28X95Lmz26YjkJBMPTe3cQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=0Vk95VKEXhW9u8TltFZldVDSSnhngu23wfCNwShB5+I=;
- b=dNXvucPdOSqy+FgLwjUGxQgWT1VsPR5kzKJ7ybCkKZsXvS88Gfqtmk+57x+vIQX17XLWgEG2cmgR6Oqt26O0XiLSesb4xtkyFvR/yAtEeK/FNYNYh3tJoOYIZ3No0vEWds1RGflzBiO5ul3mBlRTA6pus4Jrg7/Parm34rCiyBQwklukhKcPA0JWktLbKkBe/lQm/cV09a2R3mwDQhXe20aDYkIFsC+7rwPJN05eFQ0loUSK5gVFXbwNq3q3KdBY2U9sREc990oPdDRvWt1oKvZ4lBvhDQY0pZrhALJnMqtyR+CtbcEL/sm3cik0FaDahfj9hvFbtlbSrHlzH6hD0Q==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=vivo.com; dmarc=pass action=none header.from=vivo.com;
- dkim=pass header.d=vivo.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=vivo.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=0Vk95VKEXhW9u8TltFZldVDSSnhngu23wfCNwShB5+I=;
- b=lX5SDN6qlzDD67vY5wb/gp0wiW+NJJJY6diDNXL2PMaHTowPxVhcMiRZvGaVloT7gA/U89c237MkBYonjvaHFbwTRjqyMPLi+sGn3F9a0zPeO1O9FXkQElHpKDBaEwsjiiREsCUKY734PsrlbrurnSZGf99P1pF219twg2sCCeNt+1b+jC2Qg6AvJnfE/K4aYDGGOMWSzPDK/UVeeAGOUaAQtW52f4yzRs2kB9W0yxztWNpENc8lxxTcLqX+FrqZ34WRIqnQNHUERlqZ9b65M0xfRI0FgQGw9enLjUBXQaPAsvAVeJOvfueoTLWvjwVtbjre+aCTBuUlf4f6DLI4TA==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=vivo.com;
-Received: from SG2PR06MB5288.apcprd06.prod.outlook.com (2603:1096:4:1dc::9) by
- TYSPR06MB6444.apcprd06.prod.outlook.com (2603:1096:400:47b::8) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.6544.24; Wed, 5 Jul 2023 10:40:11 +0000
-Received: from SG2PR06MB5288.apcprd06.prod.outlook.com
- ([fe80::c2b:41ab:3b14:f920]) by SG2PR06MB5288.apcprd06.prod.outlook.com
- ([fe80::c2b:41ab:3b14:f920%7]) with mapi id 15.20.6565.016; Wed, 5 Jul 2023
- 10:40:11 +0000
-From:   Minjie Du <duminjie@vivo.com>
-To:     Markus.Elfring@web.de, Michal Kalderon <mkalderon@marvell.com>,
-        Ariel Elior <aelior@marvell.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Leon Romanovsky <leon@kernel.org>,
-        linux-rdma@vger.kernel.org (open list:QLOGIC QL4xxx RDMA DRIVER),
-        linux-kernel@vger.kernel.org (open list)
-Cc:     opensource.kernel@vivo.com, Minjie Du <duminjie@vivo.com>
-Subject: [PATCH v2] RDMA/qedr: Remove a duplicate assignment in qedr_create_gsi_qp()
-Date:   Wed,  5 Jul 2023 18:39:50 +0800
-Message-Id: <20230705103950.15225-1-duminjie@vivo.com>
-X-Mailer: git-send-email 2.39.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: SG2P153CA0016.APCP153.PROD.OUTLOOK.COM (2603:1096::26) To
- SG2PR06MB5288.apcprd06.prod.outlook.com (2603:1096:4:1dc::9)
+        with ESMTP id S229892AbjGEKri (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 5 Jul 2023 06:47:38 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 351F1CE;
+        Wed,  5 Jul 2023 03:47:37 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id B8999614B5;
+        Wed,  5 Jul 2023 10:47:36 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5EA84C433C8;
+        Wed,  5 Jul 2023 10:47:35 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1688554056;
+        bh=tXaDAEFFqwz3MdzV/UCaf19abTnplFxYfyIVI9HClWw=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=O+/a/TH9sFtTiOWjJ4Jn/673r1B8raG26yzICtJ85aWfDs1A1XBGJ7uIl3rpSZaJl
+         vfc9s/J80ymott0va8GQ6vTMCPy2IuiM+Iizp1XRjrHh+oExEjKT6/Z17IdcBuFF6O
+         g6chK1heLOpjzzP7d5ur7PlghtJT69zzMiONE93OphqY2eDnIq0+tUX9CxaLe16rvG
+         zyEJOFePaGdiYRqY+oA3GkSv6wWmk98Chn7ldWPQ7G9zsCK9zZZjDMiitOdSwIY4Be
+         3F0g5iU3h5q8KvYuWB0ImkANgS8eOqMhMdMLYAh6kv2DoXMiFlPXDunt89QPhqZLFu
+         s1DdEZFza7UrQ==
+Date:   Wed, 5 Jul 2023 13:47:31 +0300
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Souradeep Chakrabarti <schakrabarti@linux.microsoft.com>
+Cc:     kys@microsoft.com, haiyangz@microsoft.com, wei.liu@kernel.org,
+        decui@microsoft.com, davem@davemloft.net, edumazet@google.com,
+        kuba@kernel.org, pabeni@redhat.com, longli@microsoft.com,
+        sharmaajay@microsoft.com, cai.huoqing@linux.dev,
+        ssengar@linux.microsoft.com, vkuznets@redhat.com,
+        tglx@linutronix.de, linux-hyperv@vger.kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-rdma@vger.kernel.org, stable@vger.kernel.org,
+        schakrabarti@microsoft.com
+Subject: Re: [PATCH net] net: mana: Configure hwc timeout from hardware
+Message-ID: <20230705104731.GM6455@unreal>
+References: <1688549578-12906-1-git-send-email-schakrabarti@linux.microsoft.com>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: SG2PR06MB5288:EE_|TYSPR06MB6444:EE_
-X-MS-Office365-Filtering-Correlation-Id: 7a6e19ff-6831-41a9-cfb3-08db7d44354e
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: wOJWrLjYLe3ieqcqgH0J0AnXfokwiGR361pUAdDY1oyHpQ2T9ME4OQYxUHtlCbJEU13uTB7AyJlWJEkOnPIO3WK3ptpGiX4bdU5ccR82qep3sL8Tx9rGXyh2/6N6z7CDj6GKM2gqF0lly7Yf5dFNec1Y0aZZcIbQARKLTnkWsKxKC7rwwce3agNCPQpyFGmrazhAgQy6OY6PydWgJG1G1UDAB1DXwGXrlDF8pYplkkOj5C6YdGGgl43wlRJs5YBF9HivHq7vFpibyYaqFg1G6zq0RjdznSe71igJ6WOrnKjxLCpb+3LCKNwIa4Sd6g6V71eZ/aplLzzCb4RV1oJCCw7v4vUqJpnpjaX6QA3SpeLYzwymJ+PqemfhG9HmYZwnfwelLolLRGdRjg5Di8gsBHrcgCdnggvmD/+aw9pX2aKGiL3G61usB0vXPjO6k21W5D/ttTdbZWgWQnzkeQOCOvMdBzeTovjyU1LgjHBxOeBoPzqBT/gE3f3SuY0s+SnExbG5w/dcwvEi6JSgLsrEhFSbRHViVX39mEy88VpA20M/DKo50IetZFMT0WUUQwmzQLFr57TDQga3IIGjOOviRWL4/cVCEqQ4YJZMKw2MJuPUQOI3gR1vZuwF9kpRp8Wz
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SG2PR06MB5288.apcprd06.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(4636009)(136003)(376002)(366004)(396003)(346002)(39850400004)(451199021)(6666004)(38350700002)(38100700002)(52116002)(2906002)(4744005)(6486002)(8936002)(8676002)(110136005)(36756003)(41300700001)(5660300002)(478600001)(66946007)(86362001)(4326008)(186003)(66556008)(66476007)(26005)(107886003)(1076003)(6506007)(6512007)(316002)(2616005)(83380400001);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?h1YYRkW01Y22f4ci0fuxZiBmwYw8S9JfNXoxaEHAZa7A40/RrnkkhXIkebYv?=
- =?us-ascii?Q?mtt61uHuY24BJUW1DD5fm/kceXBJjuS2HGZiKXy2O4VZBqjfBoL3Ond+JGgv?=
- =?us-ascii?Q?UX+7j5f7C3sZJHLo7P5rnTdDSrDWVdkR9ouUJYmkWv0Hr4Y/YC2auLDQEEfj?=
- =?us-ascii?Q?qNbX2BWFdCW5fm8SPH60xWDg9euH77jnJe1FVuAor4e0Z4XPh1xYl1XbAsYo?=
- =?us-ascii?Q?sGVB76HzL0ETET07F9Yz1GNwNBfQX1SALj9YZLE9uFCR2kgFBgnLvsQ60bY4?=
- =?us-ascii?Q?7isjZEztkg1NDcf2KlpiXNnXBIR1WecNItYlGaVP0MChry8rX1T2fyAtRWAX?=
- =?us-ascii?Q?K2QOqQHKLv+yEhNK2O84i3LtX7pNyRih97eXNe+xotHnCLpWlde8L6qsUXAI?=
- =?us-ascii?Q?GesTdB6oEA/2G2Aknl3DhFuV39Tn6vddi1PHpu4mjUYt6DCzxCt7sy6B7WFT?=
- =?us-ascii?Q?Q0GaOAwqT/e2RP5z+UmtPexzifzoRc5FZiFPEBTa8tNVc+TUs5rP4WAoDc2a?=
- =?us-ascii?Q?bsm3qxd9Fn4H5EkskOwT6aJQPM19xL56gaq8/4kHSMTodud/ZQMwmj5DKPXU?=
- =?us-ascii?Q?KkPgJQQAZeDRIuqpYSrSMu/QZTPOdOgcD6JX9K2KMQGz6TEVz1WpYQiHMAlz?=
- =?us-ascii?Q?ajgKALPDYEm9W70QSgsXuVLf9DMH9VJKuqtJfL906sZIw9Ij8FA1SwD4NpNU?=
- =?us-ascii?Q?IYbrmmOYQEixFxq7Yq4ttbUyOpt1mLga2DxGjszdpIISWgVAV1za8mUwcmMh?=
- =?us-ascii?Q?v5Y7Yc9DwogvUHlr/2Qh9IQ3iJ+fC/cUpBZVvjPib/efix+6R1n6FGX2qw6H?=
- =?us-ascii?Q?FNxN5XfVGqu6ZIdZNxmm8k7s7MYpQnZ1/vhnqSGnjBX6lWk1c7XPlEAnWb15?=
- =?us-ascii?Q?as5TaysywtPuvOMeWi8YxToH13rYQ7yYC+KzikjEduwRNncxf0X2EMolZ1/j?=
- =?us-ascii?Q?Ft2fvAicxi98tFFSxmcmisGDMqg/Sqyi6Nw3v8G5VImGaCYsvtcj70NIvUS3?=
- =?us-ascii?Q?v2DZ5K6koL2lFtq3RoaP9bfgsLVdVKb9cGXPERaRZwAgANVJ0Rf5ho7HPJT7?=
- =?us-ascii?Q?j/xrfWFrJol0/wWWAzncH1b8ztHMsunZ1/YSVf/WrVSz7WqbAHXBbyY7BDhD?=
- =?us-ascii?Q?9ROgJfVMZA51iSCMeM8S344WsRVb8LiQJDLmpym7ducOziA2rCNIyuNLw95V?=
- =?us-ascii?Q?dUVQ9YZL8wUbvxQapvXlD6VOEC22J1LG5v9rwUNT3mh2yzF/GeUysp0ANoIc?=
- =?us-ascii?Q?S/+yeVxIQ51IYJjokzvI1RT9qRv6cRbvR6UgmfruAtuscErM9b7EEfKN6OiV?=
- =?us-ascii?Q?Qpj22IJ6e2GbVI5BWh/Ymn+8st83utfqVM09zvzbErLSrQxOmYzAJOJbJxyg?=
- =?us-ascii?Q?PB/lhrTB7bApFjpCuNT72ZnllNvutFBb3vn6fSTBuvLHNefZhOPn0VAJpoh8?=
- =?us-ascii?Q?yp1Munvl3y+ZhhnDxgdSykYQfgDkbkPK+/6cwFSD1ZQZnAXdJzrw1Wj+t0Xg?=
- =?us-ascii?Q?2Kvkz/9l2Kp7n/ZKSUUCH34blb8B5su2lPCkOINIS9f57JK/NzaoRZERGevZ?=
- =?us-ascii?Q?V0kI5Id9UNrS5HPHPrmpprG7iUAQaHyUROVe2CJX?=
-X-OriginatorOrg: vivo.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 7a6e19ff-6831-41a9-cfb3-08db7d44354e
-X-MS-Exchange-CrossTenant-AuthSource: SG2PR06MB5288.apcprd06.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 05 Jul 2023 10:40:11.0300
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 923e42dc-48d5-4cbe-b582-1a797a6412ed
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 5jHxKMjC3MbG5o949DoLC/9IRxAWvme00HM85xKYl7lZNNNdTbJznAHEVp+bj93oM7QD8XmX2ok5SDuVLMNe3Q==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: TYSPR06MB6444
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1688549578-12906-1-git-send-email-schakrabarti@linux.microsoft.com>
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Delete a duplicate statement from this function implementation.
+On Wed, Jul 05, 2023 at 02:32:58AM -0700, Souradeep Chakrabarti wrote:
+> At present hwc timeout value is a fixed value.
+> This patch sets the hwc timeout from the hardware.
+> 
+> Signed-off-by: Souradeep Chakrabarti <schakrabarti@linux.microsoft.com>
+> ---
+>  .../net/ethernet/microsoft/mana/gdma_main.c   | 27 +++++++++++++++++++
+>  .../net/ethernet/microsoft/mana/hw_channel.c  | 25 ++++++++++++++++-
+>  include/net/mana/gdma.h                       | 20 +++++++++++++-
+>  include/net/mana/hw_channel.h                 |  5 ++++
+>  4 files changed, 75 insertions(+), 2 deletions(-)
 
-Signed-off-by: Minjie Du <duminjie@vivo.com>
----
- drivers/infiniband/hw/qedr/qedr_roce_cm.c | 1 -
- 1 file changed, 1 deletion(-)
+We are in merge window now, it is not net material.
 
-diff --git a/drivers/infiniband/hw/qedr/qedr_roce_cm.c b/drivers/infiniband/hw/qedr/qedr_roce_cm.c
-index 05307c148..859f66a51 100644
---- a/drivers/infiniband/hw/qedr/qedr_roce_cm.c
-+++ b/drivers/infiniband/hw/qedr/qedr_roce_cm.c
-@@ -354,7 +354,6 @@ int qedr_create_gsi_qp(struct qedr_dev *dev, struct ib_qp_init_attr *attrs,
- 	/* the GSI CQ is handled by the driver so remove it from the FW */
- 	qedr_destroy_gsi_cq(dev, attrs);
- 	dev->gsi_rqcq->cq_type = QEDR_CQ_TYPE_GSI;
--	dev->gsi_rqcq->cq_type = QEDR_CQ_TYPE_GSI;
- 
- 	DP_DEBUG(dev, QEDR_MSG_GSI, "created GSI QP %p\n", qp);
- 
--- 
-2.39.0
+> 
+> diff --git a/drivers/net/ethernet/microsoft/mana/gdma_main.c b/drivers/net/ethernet/microsoft/mana/gdma_main.c
+> index 8f3f78b68592..5d30347e0137 100644
+> --- a/drivers/net/ethernet/microsoft/mana/gdma_main.c
+> +++ b/drivers/net/ethernet/microsoft/mana/gdma_main.c
+> @@ -106,6 +106,30 @@ static int mana_gd_query_max_resources(struct pci_dev *pdev)
+>  	return 0;
+>  }
+>  
+> +static int mana_gd_query_hwc_timeout(struct pci_dev *pdev, u32 *timeout_val)
+> +{
 
+Callers are not checking return value, so or make this function void or
+check return value.
+
+> +	struct gdma_context *gc = pci_get_drvdata(pdev);
+> +	struct gdma_query_hwc_timeout_req req = {};
+> +	struct gdma_query_hwc_timeout_resp resp = {};
+> +	int err;
+> +
+> +	mana_gd_init_req_hdr(&req.hdr, GDMA_QUERY_HWC_TIMEOUT,
+> +			     sizeof(req), sizeof(resp));
+> +	req.timeout_ms = *timeout_val;
+> +	err = mana_gd_send_request(gc, sizeof(req), &req, sizeof(resp), &resp);
+> +	if (err || resp.hdr.status) {
+
+I see this check almost in all callers to mana_gd_send_request(). It
+will be nice if mana_gd_send_request() would check status internally
+and return error.
+
+> +		dev_err(gc->dev, "Failed to query timeout: %d, 0x%x\n", err,
+> +			resp.hdr.status);
+> +		return err ? err : -EPROTO;
+> +	}
+> +
+> +	*timeout_val = resp.timeout_ms;
+> +	dev_info(gc->dev, "Successfully changed the timeout value %u\n",
+> +		 *timeout_val);
+> +
+> +	return 0;
+> +}
+> +
+>  static int mana_gd_detect_devices(struct pci_dev *pdev)
+>  {
+>  	struct gdma_context *gc = pci_get_drvdata(pdev);
+> @@ -879,6 +903,7 @@ int mana_gd_verify_vf_version(struct pci_dev *pdev)
+>  	struct gdma_context *gc = pci_get_drvdata(pdev);
+>  	struct gdma_verify_ver_resp resp = {};
+>  	struct gdma_verify_ver_req req = {};
+> +	struct hw_channel_context *hwc = gc->hwc.driver_data;
+>  	int err;
+>  
+>  	mana_gd_init_req_hdr(&req.hdr, GDMA_VERIFY_VF_DRIVER_VERSION,
+> @@ -907,6 +932,8 @@ int mana_gd_verify_vf_version(struct pci_dev *pdev)
+>  			err, resp.hdr.status);
+>  		return err ? err : -EPROTO;
+>  	}
+> +	if (resp.pf_cap_flags1 & GDMA_DRV_CAP_FLAG_1_HWC_TIMEOUT_RECONFIG)
+> +		mana_gd_query_hwc_timeout(pdev, &hwc->hwc_timeout);
+>  
+>  	return 0;
+>  }
+> diff --git a/drivers/net/ethernet/microsoft/mana/hw_channel.c b/drivers/net/ethernet/microsoft/mana/hw_channel.c
+> index 9d1507eba5b9..f5980c26fd09 100644
+> --- a/drivers/net/ethernet/microsoft/mana/hw_channel.c
+> +++ b/drivers/net/ethernet/microsoft/mana/hw_channel.c
+> @@ -174,7 +174,25 @@ static void mana_hwc_init_event_handler(void *ctx, struct gdma_queue *q_self,
+>  		complete(&hwc->hwc_init_eqe_comp);
+>  		break;
+>  
+> +	case GDMA_EQE_HWC_SOC_RECONFIG_DATA:
+> +		type_data.as_uint32 = event->details[0];
+> +		type = type_data.type;
+> +		val = type_data.value;
+> +
+> +		switch (type) {
+> +		case HWC_DATA_CFG_HWC_TIMEOUT:
+> +			hwc->hwc_timeout = val;
+> +			break;
+> +
+> +		default:
+> +			dev_warn(hwc->dev, "Received unknown reconfig type %u\n", type);
+> +			break;
+> +		}
+> +
+> +		break;
+> +
+>  	default:
+> +		dev_warn(hwc->dev, "Received unknown gdma event %u\n", event->type);
+>  		/* Ignore unknown events, which should never happen. */
+>  		break;
+>  	}
+> @@ -704,6 +722,7 @@ int mana_hwc_create_channel(struct gdma_context *gc)
+>  	gd->pdid = INVALID_PDID;
+>  	gd->doorbell = INVALID_DOORBELL;
+>  
+> +	hwc->hwc_timeout = HW_CHANNEL_WAIT_RESOURCE_TIMEOUT_MS;
+>  	/* mana_hwc_init_queues() only creates the required data structures,
+>  	 * and doesn't touch the HWC device.
+>  	 */
+> @@ -770,6 +789,8 @@ void mana_hwc_destroy_channel(struct gdma_context *gc)
+>  	hwc->gdma_dev->doorbell = INVALID_DOORBELL;
+>  	hwc->gdma_dev->pdid = INVALID_PDID;
+>  
+> +	hwc->hwc_timeout = 0;
+> +
+>  	kfree(hwc);
+>  	gc->hwc.driver_data = NULL;
+>  	gc->hwc.gdma_context = NULL;
+> @@ -818,6 +839,7 @@ int mana_hwc_send_request(struct hw_channel_context *hwc, u32 req_len,
+>  		dest_vrq = hwc->pf_dest_vrq_id;
+>  		dest_vrcq = hwc->pf_dest_vrcq_id;
+>  	}
+> +	dev_err(hwc->dev, "HWC: timeout %u ms\n", hwc->hwc_timeout);
+>  
+>  	err = mana_hwc_post_tx_wqe(txq, tx_wr, dest_vrq, dest_vrcq, false);
+>  	if (err) {
+> @@ -825,7 +847,8 @@ int mana_hwc_send_request(struct hw_channel_context *hwc, u32 req_len,
+>  		goto out;
+>  	}
+>  
+> -	if (!wait_for_completion_timeout(&ctx->comp_event, 30 * HZ)) {
+> +	if (!wait_for_completion_timeout(&ctx->comp_event,
+> +					 (hwc->hwc_timeout / 1000) * HZ)) {
+>  		dev_err(hwc->dev, "HWC: Request timed out!\n");
+>  		err = -ETIMEDOUT;
+>  		goto out;
+> diff --git a/include/net/mana/gdma.h b/include/net/mana/gdma.h
+> index 96c120160f15..88b6ef7ce1a6 100644
+> --- a/include/net/mana/gdma.h
+> +++ b/include/net/mana/gdma.h
+> @@ -33,6 +33,7 @@ enum gdma_request_type {
+>  	GDMA_DESTROY_PD			= 30,
+>  	GDMA_CREATE_MR			= 31,
+>  	GDMA_DESTROY_MR			= 32,
+> +	GDMA_QUERY_HWC_TIMEOUT		= 84, /* 0x54 */
+>  };
+>  
+>  #define GDMA_RESOURCE_DOORBELL_PAGE	27
+> @@ -57,6 +58,8 @@ enum gdma_eqe_type {
+>  	GDMA_EQE_HWC_INIT_EQ_ID_DB	= 129,
+>  	GDMA_EQE_HWC_INIT_DATA		= 130,
+>  	GDMA_EQE_HWC_INIT_DONE		= 131,
+> +	GDMA_EQE_HWC_SOC_RECONFIG	= 132,
+> +	GDMA_EQE_HWC_SOC_RECONFIG_DATA	= 133,
+>  };
+>  
+>  enum {
+> @@ -531,10 +534,12 @@ enum {
+>   * so the driver is able to reliably support features like busy_poll.
+>   */
+>  #define GDMA_DRV_CAP_FLAG_1_NAPI_WKDONE_FIX BIT(2)
+> +#define GDMA_DRV_CAP_FLAG_1_HWC_TIMEOUT_RECONFIG BIT(3)
+>  
+>  #define GDMA_DRV_CAP_FLAGS1 \
+>  	(GDMA_DRV_CAP_FLAG_1_EQ_SHARING_MULTI_VPORT | \
+> -	 GDMA_DRV_CAP_FLAG_1_NAPI_WKDONE_FIX)
+> +	 GDMA_DRV_CAP_FLAG_1_NAPI_WKDONE_FIX | \
+> +	 GDMA_DRV_CAP_FLAG_1_HWC_TIMEOUT_RECONFIG)
+>  
+>  #define GDMA_DRV_CAP_FLAGS2 0
+>  
+> @@ -664,6 +669,19 @@ struct gdma_disable_queue_req {
+>  	u32 alloc_res_id_on_creation;
+>  }; /* HW DATA */
+>  
+> +/* GDMA_QUERY_HWC_TIMEOUT */
+> +struct gdma_query_hwc_timeout_req {
+> +	struct gdma_req_hdr hdr;
+> +	u32 timeout_ms;
+> +	u32 reserved;
+> +};
+> +
+> +struct gdma_query_hwc_timeout_resp {
+> +	struct gdma_resp_hdr hdr;
+> +	u32 timeout_ms;
+> +	u32 reserved;
+> +};
+> +
+>  enum atb_page_size {
+>  	ATB_PAGE_SIZE_4K,
+>  	ATB_PAGE_SIZE_8K,
+> diff --git a/include/net/mana/hw_channel.h b/include/net/mana/hw_channel.h
+> index 6a757a6e2732..3d3b5c881bc1 100644
+> --- a/include/net/mana/hw_channel.h
+> +++ b/include/net/mana/hw_channel.h
+> @@ -23,6 +23,10 @@
+>  #define HWC_INIT_DATA_PF_DEST_RQ_ID	10
+>  #define HWC_INIT_DATA_PF_DEST_CQ_ID	11
+>  
+> +#define HWC_DATA_CFG_HWC_TIMEOUT 1
+> +
+> +#define HW_CHANNEL_WAIT_RESOURCE_TIMEOUT_MS 30000
+> +
+>  /* Structures labeled with "HW DATA" are exchanged with the hardware. All of
+>   * them are naturally aligned and hence don't need __packed.
+>   */
+> @@ -182,6 +186,7 @@ struct hw_channel_context {
+>  
+>  	u32 pf_dest_vrq_id;
+>  	u32 pf_dest_vrcq_id;
+> +	u32 hwc_timeout;
+>  
+>  	struct hwc_caller_ctx *caller_ctx;
+>  };
+> -- 
+> 2.34.1
+> 
