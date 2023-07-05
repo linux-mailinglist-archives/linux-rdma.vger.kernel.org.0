@@ -2,125 +2,79 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F0614747CB5
-	for <lists+linux-rdma@lfdr.de>; Wed,  5 Jul 2023 07:52:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 09792747D51
+	for <lists+linux-rdma@lfdr.de>; Wed,  5 Jul 2023 08:48:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229744AbjGEFwq (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 5 Jul 2023 01:52:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59190 "EHLO
+        id S229871AbjGEGrx (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 5 Jul 2023 02:47:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49628 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229647AbjGEFwp (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 5 Jul 2023 01:52:45 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E463DB2;
-        Tue,  4 Jul 2023 22:52:43 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 7050961425;
-        Wed,  5 Jul 2023 05:52:43 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 508FCC433C8;
-        Wed,  5 Jul 2023 05:52:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1688536362;
-        bh=NQsFB+2RAaeuXH+1ZMfVCmr9PB+efMMQy8Vc7+0uDMw=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=hffdCYLsKUQwJVoGPVqW8rsFnbBu7Hodcjt+MmNfLEkQBxXWhery2IASAx6WRt2Rf
-         mTdJIoQQ33sOKzfXDmDKBXStaz/vH/miTkDJ/RXrI4U5iOzF6q9Dc4qSIM3MzU4qLC
-         m/FyrWrT7DQtsUv5s2asRDu7YMzNOtgH3P7K1bDpWQyOHrvBp+AVqj0mC5jfTO6F2r
-         a+ta5kkGmLev7VHafXNb7TMYzDiikAGfu0xfu77F4CKoJyEB/vrKmbcZIyTyl+xC2U
-         Vj2/DJXD6ghlWgTXLK9aKmx8WP67L1Hm4r3O4Zg9S7CBDJ6z4RmxHLSf/iW3ZYCSfy
-         XYn/KA8sW/LAw==
-Date:   Wed, 5 Jul 2023 08:52:38 +0300
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Chengfeng Ye <dg573847474@gmail.com>
+        with ESMTP id S231733AbjGEGrw (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 5 Jul 2023 02:47:52 -0400
+Received: from mail-wr1-x430.google.com (mail-wr1-x430.google.com [IPv6:2a00:1450:4864:20::430])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 652AE1701;
+        Tue,  4 Jul 2023 23:47:51 -0700 (PDT)
+Received: by mail-wr1-x430.google.com with SMTP id ffacd0b85a97d-3143b72c5ffso2839014f8f.3;
+        Tue, 04 Jul 2023 23:47:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1688539670; x=1691131670;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=zPVgka7nHr5apAHt3cgYkZtaysYSA73oSGWSwDanDig=;
+        b=QDchem/LTAMTPYN94EaCfWYhV0Fr4+qGoale8uFLMC7qRJsG0UZWvQlGSzOb6jddP7
+         6O7JPv3FNT0xXT7hcgC77cZ8SiGrUNj9xXFSPZrXPfhtEKBv7dWmdYzmXwCbpEHZ/dWJ
+         k8wRhcLpTZyX/GL+Fq5jyhfwr0UAi2J6lotVldgWmKl4IMgvb6sMSySCkoNT8BRAmHzo
+         V5FnYneXuIirV03RRkfxfBG0HOtnGSoKnltDeVeMnJmeeMQbk//7nxYZDGqpwWRfEDA5
+         J6gsTF/5lAFk/lM2HDj5zkUWQIl4a1nQrgrGRMIYOj5y+47TVGbrWzP4ZarnFzsewGsR
+         pNKA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1688539670; x=1691131670;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=zPVgka7nHr5apAHt3cgYkZtaysYSA73oSGWSwDanDig=;
+        b=HtJJxipivz2V9RrWYE/NPqpdJMIer/k0bi0CjXZO+7XSD7GjrjjIPetffrRx06CC4p
+         jJKuNi1pCWzSH9m7GqwY958K0iJBxJbfb/zDI+bABRT7qChEWKp515SJ3eJ1kOjtP4IL
+         /i+yYnsriy4VhvaGEUzzbQFpAyA///TfJf8Rx/6bYspgWH33/tvRB7hprAfO8iBfjnzx
+         zRiz9XgtOCFUABQyC3hNXYXH/TlXD9etod0ahMXJNaWRGAV7U+mJGdyL+kRaJNrFGuSO
+         1771QKfvDyVfIZn9ikOgjgZJiU7MaNgmgRl8hAP9KACfammlqxXjBt8LhsXKVu6KeVbO
+         Ox6w==
+X-Gm-Message-State: ABy/qLZSxSejrz8pF+A39Zx/NYqKbZJTk0ffVCw6nZ8gCecwmlG8RsOs
+        DQxNQ1cKdAqsJ2lIkELDleiKSPNZ9ZI8FxTA2DqOpnbndecbLL+C
+X-Google-Smtp-Source: APBJJlEGn6z5ZHHwKeFtVe/sLPmlDkdHxuPRILmLsZJUuSNO2Dso3PevmR5Xel+OCbncZ7iDAyDdrzNSm97uUH2B8Cc=
+X-Received: by 2002:adf:dfcf:0:b0:313:f783:262a with SMTP id
+ q15-20020adfdfcf000000b00313f783262amr18276397wrn.21.1688539669270; Tue, 04
+ Jul 2023 23:47:49 -0700 (PDT)
+MIME-Version: 1.0
+References: <20230628045925.5261-1-dg573847474@gmail.com> <20230704114849.GA6455@unreal>
+ <CAAo+4rXkMM87OJzim=8dACdV=kWK_1yXeD=W5GZzHoJ2Gz6rtw@mail.gmail.com> <20230705055238.GG6455@unreal>
+In-Reply-To: <20230705055238.GG6455@unreal>
+From:   Chengfeng Ye <dg573847474@gmail.com>
+Date:   Wed, 5 Jul 2023 14:47:38 +0800
+Message-ID: <CAAo+4rVMH-0zmJfYHmnUF9D5e0pbSdjcdAbWkBdroedQ2JJOGA@mail.gmail.com>
+Subject: Re: [PATCH] IB/hfi1: Fix potential deadlock on &sde->flushlist_lock
+To:     Leon Romanovsky <leon@kernel.org>
 Cc:     dennis.dalessandro@cornelisnetworks.com, jgg@ziepe.ca,
         linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] IB/hfi1: Fix potential deadlock on &sde->flushlist_lock
-Message-ID: <20230705055238.GG6455@unreal>
-References: <20230628045925.5261-1-dg573847474@gmail.com>
- <20230704114849.GA6455@unreal>
- <CAAo+4rXkMM87OJzim=8dACdV=kWK_1yXeD=W5GZzHoJ2Gz6rtw@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAAo+4rXkMM87OJzim=8dACdV=kWK_1yXeD=W5GZzHoJ2Gz6rtw@mail.gmail.com>
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Wed, Jul 05, 2023 at 01:42:31AM +0800, Chengfeng Ye wrote:
-> > Plus, we already in context where interrupts are stopped.
-> 
-> Indeed they can be called from .ndo_start_xmit callback and
-> the document said it is with bh disabled.
-> 
-> But I found some call chain from the user process that seems could
-> be called from irq disabled context. For sdma_send_txlist(),
-> there is a call chain.
-> 
-> -> hfi1_write_iter()  (.write_iter callback)
-> -> hfi1_user_sdma_process_request()
-> -> user_sdma_send_pkts()
-> -> sdma_send_txlist()
-> 
-> The .write_iter seems not to disable irq by default, as mentioned by
-> https://www.kernel.org/doc/Documentation/filesystems/vfs.txt
-> And I didn't find any explicit disabling or bh or irq along the call path,
-> and also see several  copy_from_usr() which cannot be invoked under
-> irq context.
-> 
-> 
-> For sdma_send_txreq(), there is a call chain.
-> 
-> -> qp_priv_alloc()
-> -> iowait_init() (register _hfi1_do_tid_send() as a work queue)
-> -> _hfi1_do_tid_send() (workqueue)
-> -> hfi1_do_tid_send()
-> -> hfi1_verbs_send()
-> -> sr(qp, ps, 0) (sr could points to hfi1_verbs_send_dm())
-> -> hfi1_verbs_send_dma()
-> -> sdma_send_txreq()
-> 
-> _hfi1_do_tid_send() is a work queue without irq disabled by default,
-> I also check the remaining call path and also found that there is no explicit
-> irq disable, instead the call site of hfi1_verbs_send() is exactly after
-> spin_lock_irq_restore(), seems like a hint that it is probably called withirq
-> enable.
+> Exactly, we already called to spin_lock_irqsave(), there is no value in
+> doing it twice.
 
-Right, that path is called in process context and can sleep, there is no
-need in irq disabled variant there.
+Oh yeah, I just notice that the lock acquisition of &sde->flushlist_lock
+is always nested inside &sde->tail_lock due to the goto. Then it is true
+that no need for irq invariant lock/unlock on &sde->flushlist_lock.
 
-> 
-> Another hint is that the lock acquisition of
-> spin_lock_irqsave(&sde->tail_lock, flags);
-> just before my patch in the same function also disable irq, seems like another
-> hint that this function could be called with interrupt disable,
+Thanks much for your reply and your time.
 
-Exactly, we already called to spin_lock_irqsave(), there is no value in
-doing it twice.
-void f() {
-	spin_lock_irqsave(...)
-	spin_lock_irqsave(...)
-	....
-	spin_unlock_irqrestore(...)
-	spin_unlock_irqrestore(...)
-}
-
-is exactly the same as
-void f() {
-	spin_lock_irqsave(...)
-	spin_lock(...)
-	....
-	spin_unlock(...)
-	spin_unlock_irqrestore(...)
-}
-
-Thanks
+Best Regards,
+Chengfeng
