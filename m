@@ -2,150 +2,76 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 02CCF74AF3C
-	for <lists+linux-rdma@lfdr.de>; Fri,  7 Jul 2023 12:59:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3201674B066
+	for <lists+linux-rdma@lfdr.de>; Fri,  7 Jul 2023 14:02:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232565AbjGGK7K (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 7 Jul 2023 06:59:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56254 "EHLO
+        id S230007AbjGGMCa (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 7 Jul 2023 08:02:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49088 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232033AbjGGK7J (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 7 Jul 2023 06:59:09 -0400
-Received: from szxga08-in.huawei.com (szxga08-in.huawei.com [45.249.212.255])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D83E19A5;
-        Fri,  7 Jul 2023 03:59:01 -0700 (PDT)
-Received: from kwepemi500006.china.huawei.com (unknown [172.30.72.56])
-        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4Qy9P33kdlz1FDfy;
-        Fri,  7 Jul 2023 18:58:31 +0800 (CST)
-Received: from localhost.localdomain (10.67.165.2) by
- kwepemi500006.china.huawei.com (7.221.188.68) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.27; Fri, 7 Jul 2023 18:58:59 +0800
-From:   Junxian Huang <huangjunxian6@hisilicon.com>
-To:     <jgg@nvidia.com>, <leon@kernel.org>
-CC:     <linux-rdma@vger.kernel.org>, <linuxarm@huawei.com>,
-        <linux-kernel@vger.kernel.org>, <huangjunxian6@hisilicon.com>
-Subject: [PATCH v3 for-next] RDMA/core: Get IB width and speed from netdev
-Date:   Fri, 7 Jul 2023 18:56:34 +0800
-Message-ID: <20230707105634.1921046-1-huangjunxian6@hisilicon.com>
-X-Mailer: git-send-email 2.30.0
+        with ESMTP id S231421AbjGGMCO (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 7 Jul 2023 08:02:14 -0400
+Received: from smtp-relay-services-0.canonical.com (smtp-relay-services-0.canonical.com [185.125.188.250])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 746A31FE1
+        for <linux-rdma@vger.kernel.org>; Fri,  7 Jul 2023 05:02:13 -0700 (PDT)
+Received: from buildd-manager.lp.internal (buildd-manager.lp.internal [10.131.66.156])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by smtp-relay-services-0.canonical.com (Postfix) with ESMTPSA id D8C8442586
+        for <linux-rdma@vger.kernel.org>; Fri,  7 Jul 2023 12:02:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=launchpad.net;
+        s=20210803; t=1688731331;
+        bh=olBRBiOI5UPxv6dKnPP6VNdHS3zSC5FE9U7uLMWw5SE=;
+        h=Content-Type:MIME-Version:To:From:Subject:Message-Id:Date:
+         Reply-To;
+        b=gBrKab6Cy9dyhTjAR4z1lXHMo6bsGQxAPlOg//4NeuF/+BR9gWkaSnpo/nbT1Yyxx
+         aNv/5d33d/gZ27dz5U+KPTT7/fhol9WvJiVYylPn/0caZjlR3CgQuUek7+ymn2dxYq
+         IZkKIBgnkClcRIfAeIWVaYgfHZT6UNrJVLFJKf8UF7h6s8GIfOGqbp4SKOm3De63cp
+         Hepz88RRy35/WO1OUlOCbxvpBJq5mZY2VzB83pnK5zze3IYIEmEAqfcgc+rQChPtnj
+         2PRkvvSwf0uuXaXQ09FHsfVesS92CS9jSBC4e2ZVt2Uv4+C7GTPe02jp/J84UVD8HP
+         265QHGfqNUphA==
+Received: from juju-4112d9-prod-launchpad-manual-servers-4.lp.internal (localhost [127.0.0.1])
+        by buildd-manager.lp.internal (Postfix) with ESMTP id E0D02BDE6A
+        for <linux-rdma@vger.kernel.org>; Fri,  7 Jul 2023 12:02:10 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.67.165.2]
-X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
- kwepemi500006.china.huawei.com (7.221.188.68)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: quoted-printable
+X-Launchpad-Message-Rationale: Requester @linux-rdma
+X-Launchpad-Message-For: linux-rdma
+X-Launchpad-Notification-Type: recipe-build-status
+X-Launchpad-Build-State: MANUALDEPWAIT
+X-Launchpad-Archive: ~linux-rdma/ubuntu/rdma-core-daily
+To:     Linux RDMA <linux-rdma@vger.kernel.org>
+From:   noreply@launchpad.net
+Subject: [recipe build #3569706] of ~linux-rdma rdma-core-daily in xenial: Dependency wait
+Message-Id: <168873133091.11814.16610779617739883625.launchpad@juju-4112d9-prod-launchpad-manual-servers-4.lp.internal>
+Date:   Fri, 07 Jul 2023 12:02:10 -0000
+Reply-To: noreply@launchpad.net
+Sender: noreply@launchpad.net
+X-Generated-By: Launchpad (canonical.com); Revision="2ac9e3bf4ab511504f8fc651371e24a6a047ba12"; Instance="buildmaster"
+X-Launchpad-Hash: 0f7dff1774bad54209d67d833db870955a5bd669
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Haoyue Xu <xuhaoyue1@hisilicon.com>
+ * State: Dependency wait
+ * Recipe: linux-rdma/rdma-core-daily
+ * Archive: ~linux-rdma/ubuntu/rdma-core-daily
+ * Distroseries: xenial
+ * Duration: 2 minutes
+ * Build Log: https://launchpad.net/~linux-rdma/+archive/ubuntu/rdma-core-d=
+aily/+recipebuild/3569706/+files/buildlog.txt.gz
+ * Upload Log:=20
+ * Builder: https://launchpad.net/builders/lcy02-amd64-032
 
-Previously, there was no way to query the number of lanes for a network
-card, so the same netdev_speed would result in a fixed pair of width and
-speed. As network card specifications become more diverse, such fixed
-mode is no longer suitable, so a method is needed to obtain the correct
-width and speed based on the number of lanes.
-
-This patch retrieves netdev lanes and speed from net_device and
-translates them to IB width and speed. Also, add a generic function
-to translating netdev speed to IB speed.
-
-Signed-off-by: Haoyue Xu <xuhaoyue1@hisilicon.com>
-Signed-off-by: Luoyouming <luoyouming@huawei.com>
-Signed-off-by: Junxian Huang <huangjunxian6@hisilicon.com>
----
- drivers/infiniband/core/verbs.c | 17 +++++++++++++++--
- include/rdma/ib_verbs.h         | 26 ++++++++++++++++++++++++++
- 2 files changed, 41 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/infiniband/core/verbs.c b/drivers/infiniband/core/verbs.c
-index b99b3cc283b6..55a3ac9d01e2 100644
---- a/drivers/infiniband/core/verbs.c
-+++ b/drivers/infiniband/core/verbs.c
-@@ -1880,6 +1880,13 @@ int ib_modify_qp_with_udata(struct ib_qp *ib_qp, struct ib_qp_attr *attr,
- }
- EXPORT_SYMBOL(ib_modify_qp_with_udata);
- 
-+static void ib_get_width_and_speed(u32 netdev_speed, u32 lanes,
-+				   u16 *speed, u8 *width)
-+{
-+	*width = ib_int_to_ib_width(lanes);
-+	*speed = ib_eth_to_ib_speed(netdev_speed / lanes);
-+}
-+
- int ib_get_eth_speed(struct ib_device *dev, u32 port_num, u16 *speed, u8 *width)
- {
- 	int rc;
-@@ -1902,10 +1909,16 @@ int ib_get_eth_speed(struct ib_device *dev, u32 port_num, u16 *speed, u8 *width)
- 
- 	if (!rc && lksettings.base.speed != (u32)SPEED_UNKNOWN) {
- 		netdev_speed = lksettings.base.speed;
-+		if (lksettings.lanes) {
-+			ib_get_width_and_speed(netdev_speed, lksettings.lanes,
-+					       speed, width);
-+			return 0;
-+		}
- 	} else {
- 		netdev_speed = SPEED_1000;
--		pr_warn("%s speed is unknown, defaulting to %u\n", netdev->name,
--			netdev_speed);
-+		if (rc)
-+			pr_warn("%s speed is unknown, defaulting to %u\n",
-+				netdev->name, netdev_speed);
- 	}
- 
- 	if (netdev_speed <= SPEED_1000) {
-diff --git a/include/rdma/ib_verbs.h b/include/rdma/ib_verbs.h
-index 1e7774ac808f..7dc926ec7fee 100644
---- a/include/rdma/ib_verbs.h
-+++ b/include/rdma/ib_verbs.h
-@@ -552,6 +552,18 @@ static inline int ib_width_enum_to_int(enum ib_port_width width)
- 	}
- }
- 
-+static inline int ib_int_to_ib_width(u32 lanes)
-+{
-+	switch (lanes) {
-+	case 1: return IB_WIDTH_1X;
-+	case 2: return IB_WIDTH_2X;
-+	case 4: return IB_WIDTH_4X;
-+	case 8: return IB_WIDTH_8X;
-+	case 12: return IB_WIDTH_12X;
-+	default: return IB_WIDTH_1X;
-+	}
-+}
-+
- enum ib_port_speed {
- 	IB_SPEED_SDR	= 1,
- 	IB_SPEED_DDR	= 2,
-@@ -563,6 +575,20 @@ enum ib_port_speed {
- 	IB_SPEED_NDR	= 128,
- };
- 
-+static inline int ib_eth_to_ib_speed(u32 speed)
-+{
-+	switch (speed) {
-+	case SPEED_2500: return IB_SPEED_SDR;
-+	case SPEED_5000: return IB_SPEED_DDR;
-+	case SPEED_10000: return IB_SPEED_FDR10;
-+	case SPEED_14000: return IB_SPEED_FDR;
-+	case SPEED_25000: return IB_SPEED_EDR;
-+	case SPEED_50000: return IB_SPEED_HDR;
-+	case SPEED_100000: return IB_SPEED_NDR;
-+	default: return IB_SPEED_SDR;
-+	}
-+}
-+
- enum ib_stat_flag {
- 	IB_STAT_FLAG_OPTIONAL = 1 << 0,
- };
--- 
-2.30.0
+--=20
+https://launchpad.net/~linux-rdma/+archive/ubuntu/rdma-core-daily/+recipebu=
+ild/3569706
+Your team Linux RDMA is the requester of the build.
 
