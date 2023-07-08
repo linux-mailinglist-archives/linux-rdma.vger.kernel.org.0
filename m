@@ -2,72 +2,84 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E523974BA53
-	for <lists+linux-rdma@lfdr.de>; Sat,  8 Jul 2023 02:02:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D03674BC7E
+	for <lists+linux-rdma@lfdr.de>; Sat,  8 Jul 2023 09:08:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231953AbjGHACD (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 7 Jul 2023 20:02:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47768 "EHLO
+        id S229826AbjGHHHJ (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Sat, 8 Jul 2023 03:07:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56410 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232088AbjGHACC (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 7 Jul 2023 20:02:02 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C8527126;
-        Fri,  7 Jul 2023 17:01:59 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 5C86161AC7;
-        Sat,  8 Jul 2023 00:01:59 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 51CC6C433C7;
-        Sat,  8 Jul 2023 00:01:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1688774518;
-        bh=Ems+EKXwQA6oSusGgVodL1Hdfvdv/wmqk+JwPBsQFd8=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=jhtuqCmoXo1h5jzgXUzl1AM9bdaSyQyQ3ej5jf75gP3cWlNk9CLseSnplwTyHVnMq
-         /GLngSsJIF7IabzZ6UzzS67hoLbzdzD5TjSeFkxfKVK0uLIP/phopc+pQ5s5w54oTy
-         kDVu0jphco0S1YQtiit4fQIE/keOdRHp5dDQxDQJTZoNDAEX5TrBKDJYOvJdpk+2gH
-         NyuzXjVTZ2dA8OOgVS32XatRE7McnTtgAncd/d7iai02ihaXnyx7kF0q8CITOMtVDL
-         8L+XYKfyRFBUHaKZoRMKg8HspsQP1DSbbM1Q3BvuU6FseJsPeezOpx806PpInsoAR0
-         gOzSsyn3lsUxw==
-Date:   Fri, 7 Jul 2023 17:01:57 -0700
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Yunsheng Lin <linyunsheng@huawei.com>
-Cc:     <davem@davemloft.net>, <pabeni@redhat.com>,
-        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        Lorenzo Bianconi <lorenzo@kernel.org>,
-        Alexander Duyck <alexander.duyck@gmail.com>,
-        Liang Chen <liangchen.linux@gmail.com>,
-        Alexander Lobakin <aleksander.lobakin@intel.com>,
-        Saeed Mahameed <saeedm@nvidia.com>,
-        Leon Romanovsky <leon@kernel.org>,
-        Eric Dumazet <edumazet@google.com>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
-        <linux-rdma@vger.kernel.org>
-Subject: Re: [PATCH v5 RFC 1/6] page_pool: frag API support for 32-bit arch
- with 64-bit DMA
-Message-ID: <20230707170157.12727e44@kernel.org>
-In-Reply-To: <20230629120226.14854-2-linyunsheng@huawei.com>
-References: <20230629120226.14854-1-linyunsheng@huawei.com>
-        <20230629120226.14854-2-linyunsheng@huawei.com>
+        with ESMTP id S229557AbjGHHHI (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Sat, 8 Jul 2023 03:07:08 -0400
+Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E26B12107;
+        Sat,  8 Jul 2023 00:07:07 -0700 (PDT)
+Received: from dggpeml500026.china.huawei.com (unknown [172.30.72.55])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4QyhBz2YgtzqTdX;
+        Sat,  8 Jul 2023 15:06:35 +0800 (CST)
+Received: from huawei.com (10.175.101.6) by dggpeml500026.china.huawei.com
+ (7.185.36.106) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Sat, 8 Jul
+ 2023 15:07:03 +0800
+From:   Zhengchao Shao <shaozhengchao@huawei.com>
+To:     <netdev@vger.kernel.org>, <linux-rdma@vger.kernel.org>,
+        <davem@davemloft.net>, <edumazet@google.com>, <kuba@kernel.org>,
+        <pabeni@redhat.com>
+CC:     <saeedm@nvidia.com>, <leon@kernel.org>, <tariqt@nvidia.com>,
+        <lkayal@nvidia.co>, <weiyongjun1@huawei.com>,
+        <yuehaibing@huawei.com>, <shaozhengchao@huawei.com>
+Subject: [PATCH net] net/mlx5: fix potential memory leak in mlx5e_init_rep_rx
+Date:   Sat, 8 Jul 2023 15:13:07 +0800
+Message-ID: <20230708071307.149100-1-shaozhengchao@huawei.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.101.6]
+X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
+ dggpeml500026.china.huawei.com (7.185.36.106)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Thu, 29 Jun 2023 20:02:21 +0800 Yunsheng Lin wrote:
-> -#include <linux/dma-direction.h>
-> +#include <linux/dma-mapping.h>
+The memory pointed to by the priv->rx_res pointer is not freed in the error
+path of mlx5e_init_rep_rx, which can lead to a memory leak. Fix by freeing
+the memory in the error path, thereby making the error path identical to
+mlx5e_cleanup_rep_rx().
 
-And the include is still here, too, eh..
+Fixes: af8bbf730068 ("net/mlx5e: Convert mlx5e_flow_steering member of mlx5e_priv to pointer")
+Signed-off-by: Zhengchao Shao <shaozhengchao@huawei.com>
+---
+ drivers/net/ethernet/mellanox/mlx5/core/en_rep.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en_rep.c b/drivers/net/ethernet/mellanox/mlx5/core/en_rep.c
+index 965a8261c99b..06f4d3480ce0 100644
+--- a/drivers/net/ethernet/mellanox/mlx5/core/en_rep.c
++++ b/drivers/net/ethernet/mellanox/mlx5/core/en_rep.c
+@@ -1012,7 +1012,7 @@ static int mlx5e_init_rep_rx(struct mlx5e_priv *priv)
+ 	err = mlx5e_open_drop_rq(priv, &priv->drop_rq);
+ 	if (err) {
+ 		mlx5_core_err(mdev, "open drop rq failed, %d\n", err);
+-		return err;
++		goto err_rx_res_free;
+ 	}
+ 
+ 	err = mlx5e_rx_res_init(priv->rx_res, priv->mdev, 0,
+@@ -1046,6 +1046,7 @@ static int mlx5e_init_rep_rx(struct mlx5e_priv *priv)
+ 	mlx5e_rx_res_destroy(priv->rx_res);
+ err_close_drop_rq:
+ 	mlx5e_close_drop_rq(&priv->drop_rq);
++err_rx_res_free:
+ 	mlx5e_rx_res_free(priv->rx_res);
+ 	priv->rx_res = NULL;
+ err_free_fs:
+-- 
+2.34.1
+
