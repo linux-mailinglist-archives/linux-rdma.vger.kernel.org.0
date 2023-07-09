@@ -2,94 +2,130 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7992074C1D8
-	for <lists+linux-rdma@lfdr.de>; Sun,  9 Jul 2023 12:18:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 236DC74C42C
+	for <lists+linux-rdma@lfdr.de>; Sun,  9 Jul 2023 14:40:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230333AbjGIKSl (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Sun, 9 Jul 2023 06:18:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55028 "EHLO
+        id S229579AbjGIMkA (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Sun, 9 Jul 2023 08:40:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53020 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229593AbjGIKSk (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Sun, 9 Jul 2023 06:18:40 -0400
-Received: from mail-lj1-x22a.google.com (mail-lj1-x22a.google.com [IPv6:2a00:1450:4864:20::22a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E1AA9D7;
-        Sun,  9 Jul 2023 03:18:38 -0700 (PDT)
-Received: by mail-lj1-x22a.google.com with SMTP id 38308e7fff4ca-2b70bfc8db5so39280901fa.2;
-        Sun, 09 Jul 2023 03:18:38 -0700 (PDT)
+        with ESMTP id S229535AbjGIMj7 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Sun, 9 Jul 2023 08:39:59 -0400
+Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 07A8D130;
+        Sun,  9 Jul 2023 05:39:59 -0700 (PDT)
+Received: by mail-pl1-x641.google.com with SMTP id d9443c01a7336-1b8b2b60731so15055515ad.2;
+        Sun, 09 Jul 2023 05:39:59 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1688897917; x=1691489917;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=xk2m3eHHg5+WopAG9c1J4W9MrnyvygLtozQpKMScTFo=;
-        b=RRrEkLYFOnIueZb+jlwBNOJq3kxO8jMPoe426E09fImJI0qTLwTNTJVbE2xdiCQleX
-         dzZAyCeTN98xnTgM431CW3zLBrRHUxLAcKxlZcqSygkfbHMwCEQfll83fIh/O151omru
-         2Mu6Z5ZOzAp0dhPGWk/MO0popmI4rCSjqMvW2ZQGknjfLoTA+uJHnQnTf4IxD3B2YJh6
-         iX8GycpTUKy+s/RDG6iIR27M07+T3aUn4nR76u/7UMpaNG1Uci8jsbgncgxdYKeTMQSc
-         LFk3xBFX52X2S5e3RQDOzmq33Eaw7eMsAPM+bEs8VBAsFM49KQqeZbFwegI2SZjf7QMz
-         xsfg==
+        d=gmail.com; s=20221208; t=1688906398; x=1691498398;
+        h=content-transfer-encoding:content-language:in-reply-to:mime-version
+         :user-agent:date:message-id:from:references:cc:to:subject:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=AunKTef2eVoQgdM8wyqDnspSjgv/YIQnYn6ve6LmJII=;
+        b=DlennG7Y4GQFlVxQjTnTSmmMBJD2potTQ8oqXI3hJyqMdd12UB8A4NhzXtZ83D7Q2j
+         DUa0vbOdQMFGtlu2JzcVhrk+IIUE7x5SBKqkPgGSThLlfPXGKe++HivBdKd/8m5+8DUt
+         rO2rKcwlXEGCLRlT3XbRvr5jFhmVk2s8xCpJEijniNe47NOa4cSCSfhKP3a4ZdpdmTYL
+         tRUBTYXp+wy1L1U5DMbpNc3fPtcXlLI1ceI6qPoFLFiwj59Cxws3/Z10f6CuTtQDy5Cl
+         B+qQ9k76XZuFIOwcviNiKGwcKjeBbp+vTQPV1s46ixATK3SLwFjTedxrqLYhEMcQ1SB4
+         Kglg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1688897917; x=1691489917;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
+        d=1e100.net; s=20221208; t=1688906398; x=1691498398;
+        h=content-transfer-encoding:content-language:in-reply-to:mime-version
+         :user-agent:date:message-id:from:references:cc:to:subject
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=xk2m3eHHg5+WopAG9c1J4W9MrnyvygLtozQpKMScTFo=;
-        b=Kctj9iFXKJ7N93AvPBKG6jNlfv2SBf5Ve1BS0s6Q9V/d571ZNMo4vD7XXry4nwAFgB
-         ggOavFb0cPkk5NqCPQAjEDbj8WTgsUnnCpgrZEg3S0LEgAKANqgG+2BDtgoqnJ4lKcOM
-         zxhATtyaiUv0PG6lCPYHqOFg3K9r4FBjR5RL01PqGvTnMPaFI6klLOjqmJr+3TvMyFhM
-         Bd1/hPBRMm3MghjKz18byBpKUXgw+jd6z4uj/YjRh28JR3VS7ITLwgoL22lE1Y2jIFtg
-         L4TaUWB3KBp14Mn+zlTrticuHuzGVqHOnvSPkuVcC6shOeUSt2xSMp6VIL1yVQDPK+Sr
-         fbCw==
-X-Gm-Message-State: ABy/qLbySOaoSJZOmftY45NQT7N6r9fEd90TIxlP0kY7LcOds99G9F49
-        lTl3lORSY4h7WqqlOmI9VIw=
-X-Google-Smtp-Source: APBJJlEBQPPjBt8sE9ybUNfyT1TX5y/I8L3AqziJjP83MpIMRG6iC/bVUpw5cGYBL3gt4Vq9CvzS/Q==
-X-Received: by 2002:a2e:854f:0:b0:2b6:e76b:1e50 with SMTP id u15-20020a2e854f000000b002b6e76b1e50mr6677741ljj.41.1688897916836;
-        Sun, 09 Jul 2023 03:18:36 -0700 (PDT)
-Received: from [192.168.0.107] ([77.126.161.239])
-        by smtp.gmail.com with ESMTPSA id w14-20020a170906b18e00b00992ca779f42sm4625305ejy.97.2023.07.09.03.18.35
+        bh=AunKTef2eVoQgdM8wyqDnspSjgv/YIQnYn6ve6LmJII=;
+        b=ZAi4l2gYhNDvqBMmV8rHDb5BZ0hSBPi/CefhzrGKm7WEwBeqqjr1DeqsSPkg9R1r5R
+         CqogLvd4zcjsLIlrrfZ7/JxJNUtoYG8O94HZmJ9OMlwU9zfkYZBqVWK4Y/gX6WHWBIaC
+         isDdN7ruEfokqo35ixcHRaWpoYxpP9CgfNon3WZDfiUQDyjFCNIVa22/No3VG+ExhBfH
+         tONuu0a5/mbOwTWPrn+MG0c2ofwUAKIghQ2q+OnHylpjL4LdcYZMCKSjAvWszudMwozA
+         VkMk0WWwTLuVUx2HAdBJF//CTmSDO1qMhm4wO1fGzZD8zXepjH7YyP3e53ivasgSDeX5
+         J4iA==
+X-Gm-Message-State: ABy/qLasTQ7xtkr+ZRbUcqgVLsem4fojAsBlOHg8nRMQzf1db9I9uW1p
+        F3wIPwjDduKPhyXMH6SQ+cOL3vLA8scTJiGr
+X-Google-Smtp-Source: APBJJlEVymbZm7XdprX4gfU/SLXEpyNTedwLKgASfuNwnbJeSLXzAJ7NQOqdPHGELnD+00BxMx2s7Q==
+X-Received: by 2002:a17:902:b58c:b0:1b8:94e9:e7cb with SMTP id a12-20020a170902b58c00b001b894e9e7cbmr7359068pls.21.1688906398236;
+        Sun, 09 Jul 2023 05:39:58 -0700 (PDT)
+Received: from ?IPv6:2409:8a55:301b:e120:1523:3ecb:e154:8f22? ([2409:8a55:301b:e120:1523:3ecb:e154:8f22])
+        by smtp.gmail.com with ESMTPSA id d17-20020a170903231100b001b3d0aff88fsm6249708plh.109.2023.07.09.05.39.52
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 09 Jul 2023 03:18:36 -0700 (PDT)
-Message-ID: <a70fa545-8690-0d8a-cb04-421b04c67a61@gmail.com>
-Date:   Sun, 9 Jul 2023 13:18:33 +0300
+        Sun, 09 Jul 2023 05:39:57 -0700 (PDT)
+Subject: Re: [PATCH v5 RFC 1/6] page_pool: frag API support for 32-bit arch
+ with 64-bit DMA
+To:     Jakub Kicinski <kuba@kernel.org>,
+        Yunsheng Lin <linyunsheng@huawei.com>
+Cc:     davem@davemloft.net, pabeni@redhat.com, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Lorenzo Bianconi <lorenzo@kernel.org>,
+        Alexander Duyck <alexander.duyck@gmail.com>,
+        Liang Chen <liangchen.linux@gmail.com>,
+        Alexander Lobakin <aleksander.lobakin@intel.com>,
+        Saeed Mahameed <saeedm@nvidia.com>,
+        Leon Romanovsky <leon@kernel.org>,
+        Eric Dumazet <edumazet@google.com>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
+        linux-rdma@vger.kernel.org
+References: <20230629120226.14854-1-linyunsheng@huawei.com>
+ <20230629120226.14854-2-linyunsheng@huawei.com>
+ <20230707165921.565b1228@kernel.org>
+From:   Yunsheng Lin <yunshenglin0825@gmail.com>
+Message-ID: <81a8b412-f2b5-fac9-caa4-149d5bf71510@gmail.com>
+Date:   Sun, 9 Jul 2023 20:39:45 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.2
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.12.0
-Subject: Re: [PATCH net] net/mlx5: fix potential memory leak in
- mlx5e_init_rep_rx
-Content-Language: en-US
-To:     Zhengchao Shao <shaozhengchao@huawei.com>, netdev@vger.kernel.org,
-        linux-rdma@vger.kernel.org, davem@davemloft.net,
-        edumazet@google.com, kuba@kernel.org, pabeni@redhat.com
-Cc:     saeedm@nvidia.com, leon@kernel.org, lkayal@nvidia.co,
-        weiyongjun1@huawei.com, yuehaibing@huawei.com,
-        Tariq Toukan <tariqt@nvidia.com>
-References: <20230708071307.149100-1-shaozhengchao@huawei.com>
-From:   Tariq Toukan <ttoukan.linux@gmail.com>
-In-Reply-To: <20230708071307.149100-1-shaozhengchao@huawei.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+In-Reply-To: <20230707165921.565b1228@kernel.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-GB
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-
-
-On 08/07/2023 10:13, Zhengchao Shao wrote:
-> The memory pointed to by the priv->rx_res pointer is not freed in the error
-> path of mlx5e_init_rep_rx, which can lead to a memory leak. Fix by freeing
-> the memory in the error path, thereby making the error path identical to
-> mlx5e_cleanup_rep_rx().
+On 2023/7/8 7:59, Jakub Kicinski wrote:
+> On Thu, 29 Jun 2023 20:02:21 +0800 Yunsheng Lin wrote:
+>> +		/* Return error here to avoid mlx5e_page_release_fragmented()
+>> +		 * calling page_pool_defrag_page() to write to pp_frag_count
+>> +		 * which is overlapped with dma_addr_upper in 'struct page' for
+>> +		 * arch with PAGE_POOL_DMA_USE_PP_FRAG_COUNT being true.
+>> +		 */
+>> +		if (PAGE_POOL_DMA_USE_PP_FRAG_COUNT) {
+>> +			err = -EINVAL;
+>> +			goto err_free_by_rq_type;
+>> +		}
 > 
-> Fixes: af8bbf730068 ("net/mlx5e: Convert mlx5e_flow_steering member of mlx5e_priv to pointer")
-> Signed-off-by: Zhengchao Shao <shaozhengchao@huawei.com>
+> I told you not to do this in a comment on v4.
+> Keep the flag in page pool params and let the creation fail.
 
-Thanks for your patch.
-Reviewed-by: Tariq Toukan <tariqt@nvidia.com>
+There seems to be naming disagreement in the previous discussion,
+The simplest way seems to be reuse the
+PAGE_POOL_DMA_USE_PP_FRAG_COUNT and do the checking in the driver
+without introducing new macro or changing macro name.
 
+Let's be more specific about what is your suggestion here:
+Do you mean keep the PP_FLAG_PAGE_FRAG flag and keep the below
+checking in page_pool_init(), right?
+	if (PAGE_POOL_DMA_USE_PP_FRAG_COUNT &&
+	    pool->p.flags & PP_FLAG_PAGE_FRAG)
+		return -EINVAL;
 
+Isn't it confusing to still say page frag is not supported
+for PAGE_POOL_DMA_USE_PP_FRAG_COUNT being true case when this
+patch will now add support for it, at least from API POV, the
+page_pool_alloc_frag() is always supported now.
+
+Maybe remove the PP_FLAG_PAGE_FRAG and add a new macro named
+PP_FLAG_PAGE_SPLIT_IN_DRIVER, and do the checking as before in
+page_pool_init() like below?
+	if (PAGE_POOL_DMA_USE_PP_FRAG_COUNT &&
+	    pool->p.flags & PP_FLAG_PAGE_SPLIT_IN_DRIVER)
+		return -EINVAL;
+
+Or any better suggestion? 
