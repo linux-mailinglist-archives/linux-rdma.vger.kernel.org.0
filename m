@@ -2,217 +2,171 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4205274DBE7
-	for <lists+linux-rdma@lfdr.de>; Mon, 10 Jul 2023 19:07:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 44D0074DCAA
+	for <lists+linux-rdma@lfdr.de>; Mon, 10 Jul 2023 19:44:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230286AbjGJRHC (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 10 Jul 2023 13:07:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60992 "EHLO
+        id S231587AbjGJRoK (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 10 Jul 2023 13:44:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55514 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230244AbjGJRHA (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 10 Jul 2023 13:07:00 -0400
-Received: from NAM11-BN8-obe.outbound.protection.outlook.com (mail-bn8nam11on2041.outbound.protection.outlook.com [40.107.236.41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BFE12128
-        for <linux-rdma@vger.kernel.org>; Mon, 10 Jul 2023 10:06:58 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=jPw22VtmjRgk6N3nAxtvw71hmxehGMTMJ01ci3QlhRH1BNOpa401oUckztf37gkjrh75TW/KMjCPmN5QDo1rX6PGQcNFo6BCwHJWdtWz5HYNnJUa0U6atGkTgmzODqQ4IDrY1wcN7fGwl4HnZwumvVx80LAjt2VnriMhvlQzQC5Y0bkxgIEnd9OCOC+S5H9QEj1Q/GFPwIO5RmHAzeYyFnaYq44xSVOEvz3aaTKnzjH3kkgAKEp9YCtwPSF059Y2P600WGkLfv4YpV5O6LRxicq5j2gu9RkyQgkbNA82bFvnJ6n1xHr4NOczsvmN6ntGm104V++ROIP5iUgYVsS6Rg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=rsQ8hq5rRklUrAEPKp2WYg+oiszuA2oxG59euJrugrU=;
- b=QOdZA/arMbtnDW9jR8FTctvppLmHpiF58UXUofD7ln5M2xzg/2KOwnc5xe2BgVt9x6/AiPtjx9EYBtGT8x62oqs8VB2AeGKeCRVoWb6ldklRt7BGDrplJ/5jgcXpn14tqapy/0FQS1fMKJrCxsTiqQWBbTTfuzBJFbOHEMoxNFjzcRv1po3a4mQc69UwHcQ3bqueu74OnpjCgtEygc3ZlCGwg2WzQKYbbbpF/80YIyfTe0pL2Rrs6Trnlus3jT7yWT4eruUHGmQPRH7TrKJ1I6mrO7RYgmRuRNc2ALhpqu5BKo0DDyMvTUp5mbQidmdZwYYk2JUUa3e3N0lZ2uReJg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=rsQ8hq5rRklUrAEPKp2WYg+oiszuA2oxG59euJrugrU=;
- b=CrXRxSwquRHeu/jNYF+jeEtnPt7xbfBrav47PXMKQ4lluHCp9WMsHwG2k/lY4WzdWlCFlC70/4CpvmZJaWxERyCCZ9M/foqy61wh1efNvd2E5vK7iXrh77Lfq33bdRLs/6OIsdHyXxHffOWTfz05tD5T2nCNCkAgHlgy/CHsm53SmK6ofbvKxaW/05/WgphCQpqEWEeThZiLRNcyk1V/OXDDdlTlyE+ZK+CYdLRCanLLoTwcGFPWBLlXQJK033norJ1uLVJQ56Mmb1LCo4dPs0vafn/4fJssUA7EksvE4qX4V1ugMaiZYhOEOIFGPJ7IYBYpLOiiPyKt8UXPrBjGaw==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nvidia.com;
-Received: from LV2PR12MB5869.namprd12.prod.outlook.com (2603:10b6:408:176::16)
- by SJ0PR12MB5486.namprd12.prod.outlook.com (2603:10b6:a03:3bb::20) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6565.30; Mon, 10 Jul
- 2023 17:06:56 +0000
-Received: from LV2PR12MB5869.namprd12.prod.outlook.com
- ([fe80::98a5:ba0f:4167:8d53]) by LV2PR12MB5869.namprd12.prod.outlook.com
- ([fe80::98a5:ba0f:4167:8d53%4]) with mapi id 15.20.6565.028; Mon, 10 Jul 2023
- 17:06:56 +0000
-Date:   Mon, 10 Jul 2023 14:06:55 -0300
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     Chuck Lever III <chuck.lever@oracle.com>
-Cc:     Tom Talpey <tom@talpey.com>, Chuck Lever <cel@kernel.org>,
-        Bernard Metzler <BMT@zurich.ibm.com>,
-        linux-rdma <linux-rdma@vger.kernel.org>,
-        Zhu Yanjun <yanjun.zhu@linux.dev>
-Subject: Re: [PATCH v5 4/4] RDMA/cma: Avoid GID lookups on iWARP devices
-Message-ID: <ZKw6rySZlRLCls+L@nvidia.com>
-References: <168805171754.164730.1318944278265675377.stgit@manet.1015granger.net>
- <168805181129.164730.67097436102991889.stgit@manet.1015granger.net>
- <1132df9f-63a1-f309-8123-b9302e5cdc3c@talpey.com>
- <7F4E0CAA-A06B-4F43-B019-4E471B10DDE7@oracle.com>
- <ZKM4jM6Ve5PUhHFk@nvidia.com>
- <a8f54410-f680-190a-5e00-3226f186b2d6@talpey.com>
- <50C32C40-D3D8-40CF-B332-C12FEE894FDF@oracle.com>
+        with ESMTP id S229823AbjGJRoJ (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 10 Jul 2023 13:44:09 -0400
+Received: from mail-qk1-x734.google.com (mail-qk1-x734.google.com [IPv6:2607:f8b0:4864:20::734])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9834612B
+        for <linux-rdma@vger.kernel.org>; Mon, 10 Jul 2023 10:44:07 -0700 (PDT)
+Received: by mail-qk1-x734.google.com with SMTP id af79cd13be357-765a4ff26cdso433080585a.0
+        for <linux-rdma@vger.kernel.org>; Mon, 10 Jul 2023 10:44:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google; t=1689011047; x=1691603047;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=AOnVzen9HDghW2bswxVCUVsZLhlFm73bqh1O1PTU2i4=;
+        b=WLQs6EGun6B4BulXmKogPdCt5oDVFVpE2okzj27FHCHNnLDGIi5Czr14p89ybAaXYJ
+         lhMk1w685GxTpiUrgFlizkUlyNVVz8nobylcjl30cPaLaTPeJE3z6JVgYmXjCN3ss5vo
+         Q82dok6ccsNwR6dZZeC5Uc8sSHaM9gSRZNnou3UkB0vrGQPnuGeSrm1Q/3KZboxAzoVb
+         H13lwGXwQ6e6Km+Dl3IMJxRHMGkEVGEkOp0D+LLl6byPLvxeJpBIju++uVvCt5NYV2/7
+         7w/6QRlieWrNTaKDG74MRdVrZ5SqOcAGw5ip54VjrxKSNLq8BAtYgaaEz7vgDQF4W/kA
+         ufBA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689011047; x=1691603047;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=AOnVzen9HDghW2bswxVCUVsZLhlFm73bqh1O1PTU2i4=;
+        b=lk6o/G/sY/bkkmzAint7n9u1pQ57Q3Answ7AHCgXgp/+1W9Kp5G00PbnCDOEuIyYJk
+         nPtZgeH49CgFNXC8rkuyvD/5xTPGRy/Aw1NE7DtfPDdrl0yZ+s+QVGooCFxPEHK3HE2W
+         Rtlt8lYIC5E7BMwUg6MSQCukjCyE7qPg7hvuFbllI26wz3T/9tnpZhvzv6S5upOm3JMU
+         pXjH8qhA+vFIr1HGrU5y7uZn1T0rJ9U99PaZzJrveDh+qFC3zsm8aWu0xFeZzbTsaIrf
+         D2tmJVgmHw27xArT3Ak17AYz5EKQt2agO0bs0A/ikkMPecSvUPH3p48+lWR6xIR0meKK
+         jyuA==
+X-Gm-Message-State: ABy/qLbwDc0aFGGaKy3sihr3jDe25bD1v9oyiE3MZtwfGV9L+O6VL1+b
+        J/ovpVjY5NOt4APVIXibdkwN1w==
+X-Google-Smtp-Source: APBJJlEadY1dI3vNQ2N0fmgDC+Ual1DpU2psFdVln3u1qHl6Z/3ncb0HysMERESWP4YSo180rdHzZw==
+X-Received: by 2002:a37:b645:0:b0:75d:4e8b:9d19 with SMTP id g66-20020a37b645000000b0075d4e8b9d19mr14672746qkf.26.1689011046739;
+        Mon, 10 Jul 2023 10:44:06 -0700 (PDT)
+Received: from ziepe.ca (hlfxns017vw-142-68-25-194.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.68.25.194])
+        by smtp.gmail.com with ESMTPSA id o8-20020a0cf4c8000000b0063007ccaf42sm59906qvm.57.2023.07.10.10.44.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 10 Jul 2023 10:44:06 -0700 (PDT)
+Received: from jgg by wakko with local (Exim 4.95)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1qIuvd-0004KO-KO;
+        Mon, 10 Jul 2023 14:44:05 -0300
+Date:   Mon, 10 Jul 2023 14:44:05 -0300
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Mina Almasry <almasrymina@google.com>
+Cc:     David Ahern <dsahern@kernel.org>, Jakub Kicinski <kuba@kernel.org>,
+        Jesper Dangaard Brouer <jbrouer@redhat.com>,
+        brouer@redhat.com, Alexander Duyck <alexander.duyck@gmail.com>,
+        Yunsheng Lin <linyunsheng@huawei.com>, davem@davemloft.net,
+        pabeni@redhat.com, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Lorenzo Bianconi <lorenzo@kernel.org>,
+        Yisen Zhuang <yisen.zhuang@huawei.com>,
+        Salil Mehta <salil.mehta@huawei.com>,
+        Eric Dumazet <edumazet@google.com>,
+        Sunil Goutham <sgoutham@marvell.com>,
+        Geetha sowjanya <gakula@marvell.com>,
+        Subbaraya Sundeep <sbhatta@marvell.com>,
+        hariprasad <hkelam@marvell.com>,
+        Saeed Mahameed <saeedm@nvidia.com>,
+        Leon Romanovsky <leon@kernel.org>,
+        Felix Fietkau <nbd@nbd.name>,
+        Ryder Lee <ryder.lee@mediatek.com>,
+        Shayne Chen <shayne.chen@mediatek.com>,
+        Sean Wang <sean.wang@mediatek.com>,
+        Kalle Valo <kvalo@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
+        linux-rdma@vger.kernel.org, linux-wireless@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org,
+        Jonathan Lemon <jonathan.lemon@gmail.com>
+Subject: Re: Memory providers multiplexing (Was: [PATCH net-next v4 4/5]
+ page_pool: remove PP_FLAG_PAGE_FRAG flag)
+Message-ID: <ZKxDZfVAbVHgNgIM@ziepe.ca>
+References: <CAKgT0UeZfbxDYaeUntrQpxHmwCh6zy0dEpjxghiCNxPxv=kdoQ@mail.gmail.com>
+ <72ccf224-7b45-76c5-5ca9-83e25112c9c6@redhat.com>
+ <20230616122140.6e889357@kernel.org>
+ <eadebd58-d79a-30b6-87aa-1c77acb2ec17@redhat.com>
+ <20230619110705.106ec599@kernel.org>
+ <CAHS8izOySGEcXmMg3Gbb5DS-D9-B165gNpwf5a+ObJ7WigLmHg@mail.gmail.com>
+ <5e0ac5bb-2cfa-3b58-9503-1e161f3c9bd5@kernel.org>
+ <CAHS8izP2fPS56uXKMCnbKnPNn=xhTd0SZ1NRUgnAvyuSeSSjGA@mail.gmail.com>
+ <ZKNA9Pkg2vMJjHds@ziepe.ca>
+ <CAHS8izNB0qNaU8OTcwDYmeVPtCrEjTTOhwCHtVsLiyhXmPLsXQ@mail.gmail.com>
+MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <50C32C40-D3D8-40CF-B332-C12FEE894FDF@oracle.com>
-X-ClientProxiedBy: MN2PR07CA0015.namprd07.prod.outlook.com
- (2603:10b6:208:1a0::25) To LV2PR12MB5869.namprd12.prod.outlook.com
- (2603:10b6:408:176::16)
-MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: LV2PR12MB5869:EE_|SJ0PR12MB5486:EE_
-X-MS-Office365-Filtering-Correlation-Id: a105c943-2b16-4172-fa5f-08db816810cd
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: +oqEiTlruVtJvRM8sbZAsDni5dQc+op2Kh+q6X5V2Cp1vWiqu3Xyj4YxoxzYMORFEaVB4biIa8y1pODOvRdf1h+C+xTjgGPZzw4KV0NyhXnGgk6sACpPoqLrEdFV7BuehnakZOaExhNP3qHgqDEa4/KnTqGGLf8wP/VN9H7AKMp7dKCg662B/gdmdZyyhr1LMGV5VdmvIfkvEqXmPHJwHiSd/6aF6BwpfLrmL4I1heJjCz36Zdfz2MtZs6x1ZEtlcbNPUUWGNPaXUaN46H1Fs/HWzqqA4ZW0epZGw6vIUpGFdh5I3syd4f1NIPXtNCGTWEOch2fcPMbhj97J/nJy7isunmTqhURRiFkJ7f4tAjryxpJEqpJiZ+W6wIzTP+f5hFlShUi4dTEzX1y/xK3keO0PbJSL4VJoyUJTxpFBVHV3GTDAXtTTmWGGteMIRQzIScNqDoOlD+ztMddeCOY8BFoKylYttbwk092NspZxfIP4yCidNsu4KRYEI4Iqx+LgoV2Gk+Pw7+BaFZxVjDzDkBfD94zmsCDaXY1b96StgqDbIHjBuvrwQAzxVZwDOKImGX4LKbrE6vyoRHWlM02v2Y9NL5khvQ5Lk6K/hh2TkLM=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:LV2PR12MB5869.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(4636009)(346002)(366004)(376002)(39860400002)(136003)(396003)(451199021)(86362001)(38100700002)(36756003)(6486002)(54906003)(53546011)(26005)(186003)(6506007)(6512007)(2616005)(5660300002)(316002)(2906002)(66556008)(6916009)(478600001)(66946007)(8936002)(8676002)(83380400001)(4326008)(66476007)(41300700001)(67856001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?PiLjyd/AY+iE+iEsaiYbgM92wyReXhtOxDnafwgyv2oQiSbV+YRToSAH4wQG?=
- =?us-ascii?Q?dJI3eJ9zEqbWbcLXmww5cmctJazt0MzQKZzEC8rog1ccTQnIvZ1vvVRpWrO6?=
- =?us-ascii?Q?lCslEa4bjHOLE+SAnIzyPUwmjl1UeLSb9h0339etQc/f6YMxToHyR+3eNXVN?=
- =?us-ascii?Q?9WOXVJX2kx8YI0Hu6PvLDCXEZfqznT5QqT6hPcrUT3/MkV3Q+iLhvYZ12pO6?=
- =?us-ascii?Q?NTe0Cn2i4EBEi83vfP349kyE1HyMTy1AZYVDfpiCkwTHxcB5egRgTGByjEBf?=
- =?us-ascii?Q?qyfySaJgCDwOD2XMXRdcghrTUf98NDaU+WDZYGP08p94xhmHiIW5+9O/vkqC?=
- =?us-ascii?Q?PqQxA8EG4SAkuORn8uayZZJeVN7TQejax+D443eOELbXYEDGh/44M+VeqkfN?=
- =?us-ascii?Q?Nated22OJ5BPzOMAdarKUTxHSrgtNrlBVpWGncFynO+wq6h/km/+ooCsZKNu?=
- =?us-ascii?Q?FhcYpBvf2vJt6wHlca/WTJxHpM8KD4KFk/zvablHfNi7/fhp4f0WxbgAt13l?=
- =?us-ascii?Q?/hlMcsYBpaWKEM9/IpkY2M2r4nLVOOAv0Boey4BU2J+Sa6ZQAZF93/dubROn?=
- =?us-ascii?Q?NRxWdaHkzs18ItS8rIPylj3tRyBe931QKMwq16/Cl9yzPG4NITckDZMoNrj+?=
- =?us-ascii?Q?5IjEQU2sKws1ZsMNg/h7zVfWnippCVrJs/y4t/37Ksl3uRTf/t6E/T5cEdsy?=
- =?us-ascii?Q?7PfEsYWhS4SDPMiyBCP9j+FGncIoxxmNZd7Mh9edIyZtRuuTlyp9lzpZxY1H?=
- =?us-ascii?Q?7wN3dAWfniJ53e9POGIQuKGhjGje3Cq7aHCmK4PSfp6j4mdJdC5wgn/hZNjg?=
- =?us-ascii?Q?JnuJkyr+JzaDt6KnUfwOmLsm5c7ZGJ79MGPEwQwkjKtNZQJgjNQAxIyBquPI?=
- =?us-ascii?Q?Nl7ZKpPQDx5rr0KAGjJSymigehzhvRRMRW6M+CaF/xk7EG+lY8OYGalJ56fj?=
- =?us-ascii?Q?tZghVzdN5BRde4JdXv2PqRPCXUmEpg4a6CfZ+nygLqYwVzR2F34P/PT59Ea0?=
- =?us-ascii?Q?jqpgTzPZXmsWm1phzu4WsqhB/Xyb5253USNovoJtF/j/oJ1MxTFzh/6PBhgC?=
- =?us-ascii?Q?w4vWkL6OG0WIZD5jeZYqOqEQPawXSGd0jTCQTsLEW7llwIpNVWITrBQrw8I3?=
- =?us-ascii?Q?oVBcoacyk1CIR+rQrKewi04GaeFCubcZ5MCmKibFt/58kSKhfeJ3zcJB5hKT?=
- =?us-ascii?Q?YXIck/8939xVv6P+UjoLcPJxeiv3VY2MHcWqC1se8Qx7dInM6CxHSAXZ9m7d?=
- =?us-ascii?Q?xJJL1LWVqBVYVobaaw0tbL0b5EHC6uLPw59VXhFiGzJWgKoqTazpSj41wlxz?=
- =?us-ascii?Q?uNy1jYo1iHc3Axrr4Vf5tf6/MK36OA1t1kF++iNwepWuNQzepnSf0+sfV0ub?=
- =?us-ascii?Q?9Ez6TzmIx4g6LdX6HBlJuusEt8hYOs33L9mTxGij/EM3L3ixO/89m2JMce8Y?=
- =?us-ascii?Q?urYY1j2uRyeTGIk2fXsgFKlrf1AjT3B34FYC0BdVEV/geqxsy5SPc5Z8I8F9?=
- =?us-ascii?Q?F2uMyk6NHgf82+ktP9uSvaiFmmKjEJVLmEPsPJonVyDQkBI3vqnlF1io/nGo?=
- =?us-ascii?Q?XhPObWb2MKVj4jbkDGGZXolczgktvgmX9yJFVmos?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: a105c943-2b16-4172-fa5f-08db816810cd
-X-MS-Exchange-CrossTenant-AuthSource: LV2PR12MB5869.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 10 Jul 2023 17:06:56.3387
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: IItrT5V40+Lvumkukj8y8r15b0oMY6AT3F0r0Sf+DyLHS+EXySpe2+VyKalEpegs
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR12MB5486
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+In-Reply-To: <CAHS8izNB0qNaU8OTcwDYmeVPtCrEjTTOhwCHtVsLiyhXmPLsXQ@mail.gmail.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Tue, Jul 04, 2023 at 02:54:59PM +0000, Chuck Lever III wrote:
+On Wed, Jul 05, 2023 at 06:17:39PM -0700, Mina Almasry wrote:
+
+> Another issue is that in networks with low MTU, we could be DMAing
+> 1400/1500 bytes into each allocation, which is problematic if the
+> allocation is 8K+. I would need to investigate a bit to see if/how to
+> solve that, and we may end up having to split the page and again run
+> into the 'not enough room in struct page' problem.
+
+You don't have an intree driver to use this with, so who knows, but
+the out of tree GPU drivers tend to use a 64k memory management page
+size, and I don't expect you'd make progress with a design where a 64K
+naturaly sized allocator is producing 4k/8k non-compound pages just
+for netdev. We are still struggling with pagemap support for variable
+page size folios, so there is a bunch of technical blockers before
+drivers could do this.
+
+This is why it is so important to come with a complete in-tree
+solution, as we cannot review this design if your work is done with
+hacked up out of tree drivers.
+
+Fully and properly adding P2P ZONE_DEVICE to a real world driver is a
+pretty big ask still.
+
+> > Or allocate per page memory and do a memdesc like thing..
 > 
+> I need to review memdesc more closely. Do you imagine I add a pointer
+> in struct page that points to the memdesc? 
+
+Pointer to extra memory from the PFN has been the usual meaning of
+memdesc, so doing an interm where the pointer is in the struct page is
+a reasonable starting point.
+
+> > Though overall, you won't find devices creating struct pages for their
+> > P2P memory today, so I'm not sure what the purpose is. Jonathan
+> > already got highly slammed for proposing code to the kernel that was
+> > unusable. Please don't repeat that. Other than a special NVMe use case
+> > the interface for P2P is DMABUF right now and it is not struct page
+> > backed.
+> >
 > 
-> > On Jul 4, 2023, at 10:23 AM, Tom Talpey <tom@talpey.com> wrote:
-> > 
-> > On 7/3/2023 5:07 PM, Jason Gunthorpe wrote:
-> >> On Sat, Jul 01, 2023 at 04:27:23PM +0000, Chuck Lever III wrote:
-> >>> 
-> >>> 
-> >>>> On Jul 1, 2023, at 12:24 PM, Tom Talpey <tom@talpey.com> wrote:
-> >>>> 
-> >>>> On 6/29/2023 11:16 AM, Chuck Lever wrote:
-> >>>>> From: Chuck Lever <chuck.lever@oracle.com>
-> >>>>> We would like to enable the use of siw on top of a VPN that is
-> >>>>> constructed and managed via a tun device. That hasn't worked up
-> >>>>> until now because ARPHRD_NONE devices (such as tun devices) have
-> >>>>> no GID for the RDMA/core to look up.
-> >>>>> But it turns out that the egress device has already been picked for
-> >>>>> us -- no GID is necessary. addr_handler() just has to do the right
-> >>>>> thing with it.
-> >>>>> Suggested-by: Jason Gunthorpe <jgg@nvidia.com>
-> >>>>> Signed-off-by: Chuck Lever <chuck.lever@oracle.com>
-> >>>>> ---
-> >>>>>  drivers/infiniband/core/cma.c |   15 +++++++++++++++
-> >>>>>  1 file changed, 15 insertions(+)
-> >>>>> diff --git a/drivers/infiniband/core/cma.c b/drivers/infiniband/core/cma.c
-> >>>>> index 889b3e4ea980..07bb5ac4019d 100644
-> >>>>> --- a/drivers/infiniband/core/cma.c
-> >>>>> +++ b/drivers/infiniband/core/cma.c
-> >>>>> @@ -700,6 +700,21 @@ cma_validate_port(struct ib_device *device, u32 port,
-> >>>>>   if ((dev_type != ARPHRD_INFINIBAND) && rdma_protocol_ib(device, port))
-> >>>>>   goto out;
-> >>>>>  + /* Linux iWARP devices have but one port */
-> >>>> 
-> >>>> I don't believe this comment is correct, or necessary. In-tree drivers
-> >>>> exist for several multi-port iWARP devices, and the port bnumber passed
-> >>>> to rdma_protocol_iwarp() and rdma_get_gid_attr() will follow, no?
-> >>> 
-> >>> Then I must have misunderstood what Jason said about the reason
-> >>> for the rdma_protocol_iwarp() check. He said that we are able to
-> >>> do this kind of GID lookup because iWARP devices have only a
-> >>> single port.
-> >>> 
-> >>> Jason?
-> >> I don't know alot about iwarp - tom does iwarp really have multiported
-> >> *struct ib_device* models? This is different from multiport hw.
-> > 
-> > I don't see how the iWARP protocol impacts this, but I believe the
-> > cxgb4 provider implements multiport. It sets the ibdev.phys_port_cnt
-> > anyway. Perhaps this is incorrect.
-> > 
-> >> If it is multiport how do the gid tables work across the ports?
-> > 
-> > Again, not sure how to respond. iWARP doesn't express the gid as a
-> > protocol element. And the iw_cm really doesn't either, although it
-> > does implement a gid-type API I guess. That's local behavior though,
-> > not something that goes on the wire directly.
-> > 
-> > Maybe I should ask... what does the "Linux iWARP devices have but one
-> > port" actually mean in the comment? Would the code below it not work
-> > if that were not the case? All I'm saying is that the comment seems
-> > to be unnecessary, and confusing.
-> 
-> It replaces a code comment you complained about in an earlier review
-> regarding the use of "if (rdma_protocol_iwarp())". As far as I
-> understand, /in Linux/ each iWARP endpoint gets its own ib_device
-> and that device has exactly one port.
->
-> So for example, a physical device that has two ports would appear
-> as two ib_devices each with a single port. Is that not how it
-> works? It's certainly possible I've misunderstood something.
+> Our approach is actually to extend DMABUF to provide struct page
+> backed attachment mappings, which as far as I understand sidesteps the
+> issues Jonathan ran into.
 
-That is how I would expect it to work. Multi-port ib_device is really
-only something that exists to support IB's APM, and iWarp doesn't have
-that.
+No DMABUF exporters do this today, so your patch series is just as
+incomplete as the prior ones. Please don't post it as non-RFC,
+unusable code like this must not be merged.
 
-Otherwise verbs says a QP is bound to a single IB device's port and a
-single GID of that port. It should not float around between multiple
-ports.
+> that supports dmabuf and in fact a lot of my tests use udmabuf to
+> minimize the dependencies. The RFC may come with a udmabuf selftest to
+> showcase that any dmabuf, even a mocked one, would be supported.
 
-So, I don't know what the iwarp drivers did here.
-
-As for rthe comment, I don't think it is quite right, this code
-already knows what ib_device port it is supposed to be using somehow,
-so it doesn't matter.
-
-I think it should be more like:
-
- In iWarp mode we need to have a sgid entry to be able to locate the
- netdevice. iWarp drivers are not allowed to associate more than one
- net device with their gid tables, so returning the first entry is
- sufficient. iWarp will ignore the GID entries actual GID, and the
- passed in GID may not even be present in the GID table for tunnels
- and other non-ethernet netdevices.
+That is not good enough to get merged. You need to get agreement and
+coded merged from actual driver owners of dmabuf exporters that they
+want to support this direction. As above it has surprising road
+blocks outside netdev :\
 
 Jason
