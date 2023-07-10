@@ -2,56 +2,79 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 916B274CFDB
-	for <lists+linux-rdma@lfdr.de>; Mon, 10 Jul 2023 10:24:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 589F174D23A
+	for <lists+linux-rdma@lfdr.de>; Mon, 10 Jul 2023 11:51:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232675AbjGJIYY (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 10 Jul 2023 04:24:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43678 "EHLO
+        id S230162AbjGJJv2 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 10 Jul 2023 05:51:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35524 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232999AbjGJIYI (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 10 Jul 2023 04:24:08 -0400
-Received: from mail-ej1-x631.google.com (mail-ej1-x631.google.com [IPv6:2a00:1450:4864:20::631])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF398183
-        for <linux-rdma@vger.kernel.org>; Mon, 10 Jul 2023 01:23:57 -0700 (PDT)
-Received: by mail-ej1-x631.google.com with SMTP id a640c23a62f3a-992b2249d82so549927366b.1
-        for <linux-rdma@vger.kernel.org>; Mon, 10 Jul 2023 01:23:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=resnulli-us.20221208.gappssmtp.com; s=20221208; t=1688977436; x=1691569436;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=lVVTTcakGIJzotpbfodORieW7nDILC8yQwEKuMOUYLA=;
-        b=v8PbxExQdeZ1rHkHw7LZ/7j9U0WaA1dkJRr1esV51tDnEYnz1yXdBnwheipucQw7iU
-         Dwny0J0H5BLnpfGCG5wzHd2FnzlN2eKCW8gMzeSEoxaUGxTKsnw6EvOsEUU4TK67JfFM
-         Fphyzekktczmyd9ASIWTNFAeo2y/sK6qzV5gvKJEWK5UQrHLGo1bEQy410Gg0pjYZAno
-         l+f8A80ndIBgzckm1LdIX5bAeQYPaJaXuB13ipB3GplwZOJY/GVnmBg1MPjebry6Ueg9
-         L5E9ztuma8giElufrDqCE9zHYDHjDcl1vKgQ9QXsO3zircBl8jFsHwzGNf5dL/40PtRb
-         4zSQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1688977436; x=1691569436;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=lVVTTcakGIJzotpbfodORieW7nDILC8yQwEKuMOUYLA=;
-        b=bsQVBMEbN+qSBxvDduj2ufxaZJPXB4UZIojqs+RjEyHCULIv8agcDOgjRgfpdlrrR6
-         2sbhQoljQD+0Yah3kcetRO9tusw5VVUOo113P1OZH8tekIOPjXwdNV7yKYWI9nTzE3S4
-         4nGIrfwqRiiRwKqSjY2an3VwMCeWBgmWFisP+brW7tvGYd54KVtol8pBufd5panByahr
-         YnXfA7lUsvD4C/Xs+FGnbP130DK6GS3GYl7i5kZV2/vRkPxSpL+C6s8LfluQTkCMx/Wr
-         V+JhjEnjqJPUv9hWymRrw5SwRmjr2iaw5lmJI8LQummtmPDcs0Y887ah/XJwkWZnaVUU
-         rqqw==
-X-Gm-Message-State: ABy/qLa+OTxd8s5b7XXb4yJBTyEDdjEE2xF5Bxonozr8JIF/6yP2sVPA
-        bwj+jAh2tc7vDQBUgqzhvHMLtA==
-X-Google-Smtp-Source: APBJJlF/N78SzaPnYo5KIYgXXWBnknej6T2zV2RqWE8pAe5WopCVgqY0xM4CSFkpZNpYhf0+V/cUNg==
-X-Received: by 2002:a17:906:101e:b0:993:fba5:cdf3 with SMTP id 30-20020a170906101e00b00993fba5cdf3mr5110018ejm.6.1688977436009;
-        Mon, 10 Jul 2023 01:23:56 -0700 (PDT)
-Received: from localhost (host-213-179-129-39.customer.m-online.net. [213.179.129.39])
-        by smtp.gmail.com with ESMTPSA id u2-20020a1709063b8200b0098e42bef732sm5733689ejf.183.2023.07.10.01.23.54
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 10 Jul 2023 01:23:55 -0700 (PDT)
-Date:   Mon, 10 Jul 2023 10:23:53 +0200
-From:   Jiri Pirko <jiri@resnulli.us>
-To:     "Kubalewski, Arkadiusz" <arkadiusz.kubalewski@intel.com>
-Cc:     "kuba@kernel.org" <kuba@kernel.org>,
+        with ESMTP id S233142AbjGJJuY (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 10 Jul 2023 05:50:24 -0400
+Received: from mga06.intel.com (mga06b.intel.com [134.134.136.31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B1E8C10CA;
+        Mon, 10 Jul 2023 02:45:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1688982355; x=1720518355;
+  h=from:to:cc:subject:date:message-id:references:
+   in-reply-to:content-transfer-encoding:mime-version;
+  bh=d7exP4plSIxF5xH78Efzg3zwyfsggIgaiFqM7HOOUxc=;
+  b=fbdV+zhfXF3nQ4p5r4f1UefLBKZJWyyNRNs/OdgE+WKwGFLqRglWid/y
+   OalPugNy2P0/pZNzRUFA5unlu6wl7o++odWI9zgkSyftqnoFeZtjxsEfj
+   aaStX+kA5BQdkmi0QSaGK4vZDeWEJPORb7WmtfQjq7cBdAcknlZvOD3Vv
+   JkoJye0U5xBSVpLLnp8pbzLV/drSRLtcr8KC5Ojrp15Z9IkjPLf8c/dYk
+   wwuMJhzrHfIKez+NazVqxO6oUxALCVl1lj32kd3kEaMXIpkgcRjf9YhHV
+   ge/NwBPxXAtme5MuiSxrgmk8xZhRMYV41T1zzBRny4ul9q3uUUFSUSZ59
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10766"; a="427994079"
+X-IronPort-AV: E=Sophos;i="6.01,194,1684825200"; 
+   d="scan'208";a="427994079"
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Jul 2023 02:45:54 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10766"; a="670886326"
+X-IronPort-AV: E=Sophos;i="6.01,194,1684825200"; 
+   d="scan'208";a="670886326"
+Received: from orsmsx601.amr.corp.intel.com ([10.22.229.14])
+  by orsmga003.jf.intel.com with ESMTP; 10 Jul 2023 02:45:54 -0700
+Received: from orsmsx611.amr.corp.intel.com (10.22.229.24) by
+ ORSMSX601.amr.corp.intel.com (10.22.229.14) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.27; Mon, 10 Jul 2023 02:45:54 -0700
+Received: from orsmsx611.amr.corp.intel.com (10.22.229.24) by
+ ORSMSX611.amr.corp.intel.com (10.22.229.24) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.27; Mon, 10 Jul 2023 02:45:53 -0700
+Received: from orsedg603.ED.cps.intel.com (10.7.248.4) by
+ orsmsx611.amr.corp.intel.com (10.22.229.24) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.27 via Frontend Transport; Mon, 10 Jul 2023 02:45:53 -0700
+Received: from NAM10-BN7-obe.outbound.protection.outlook.com (104.47.70.108)
+ by edgegateway.intel.com (134.134.137.100) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.27; Mon, 10 Jul 2023 02:45:48 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=hdlwYf/Eai3PL2hJSwVq4P1iiLeEAvA50tMHJTOQf+HmOU0YOyORkDH+u0Lg6T+7S8m9lTUmOaYcu53kVVxOBLNbYf5+aNNKR7nax1jOpdvC14hNOIHgwrR3jiAeW3Lqzj82hfnBi9MK970BoDR9MLE8xHAiQwJP8juYt8o6yyO/ZVd1o2REDhy47KS160/1KRHaVJdwRNgqUe7NP+87LOPFSv8wWFc0H2VtBSxYK1tj3A7KX7Rn6DYUTI20UeDL7+DFtlETm+s0TgUV/uAvISA+ZtoRxWomTSBmT1vRbUVnHzNk63legb9zOV1DPmuitOgzMO1zi9Yxz/kV5vpZWw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=8QzlNQM7etd2Vc4zuNBZetsVI5/8fGZG2jbTmNkIu/U=;
+ b=b/3WqiBztK0ZnAT/AMwrLxoDSvnfAOGCJtUESiRzyC4eQ+cc0wH/vdJ25ylt72ZuIE29WFykYRliXavIJ7KFUYKUbKbVgYOMMD06hiaAOduaixwhIFapMEyHdBhv9HWpBjMrvzfZutLYgYvfQPUqSxQsZQZ7kOSd2KVNB9mgCWdLjgPZ8tLPukooSb1U9TQ1XeC5k7B8kAT6uJf6jOa95GQuysIKTIXq6lCC8KYGfiN/9iFrK73j/IAhGkV05taqmGilmC+YIKVna5zbyf24Lps/jv5qbZzyEQ7lPu+4MSnvRq185Y7NTMlXCleGFC4HiK3g7lOUnNRaGnA2DjYQ/A==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Received: from DM6PR11MB4657.namprd11.prod.outlook.com (2603:10b6:5:2a6::7) by
+ DM4PR11MB5325.namprd11.prod.outlook.com (2603:10b6:5:390::19) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.6565.30; Mon, 10 Jul 2023 09:45:46 +0000
+Received: from DM6PR11MB4657.namprd11.prod.outlook.com
+ ([fe80::24bd:974b:5c01:83d6]) by DM6PR11MB4657.namprd11.prod.outlook.com
+ ([fe80::24bd:974b:5c01:83d6%3]) with mapi id 15.20.6565.028; Mon, 10 Jul 2023
+ 09:45:46 +0000
+From:   "Kubalewski, Arkadiusz" <arkadiusz.kubalewski@intel.com>
+To:     Jakub Kicinski <kuba@kernel.org>
+CC:     "jiri@resnulli.us" <jiri@resnulli.us>,
         "vadfed@meta.com" <vadfed@meta.com>,
         "jonathan.lemon@gmail.com" <jonathan.lemon@gmail.com>,
         "pabeni@redhat.com" <pabeni@redhat.com>,
@@ -102,116 +125,99 @@ Cc:     "kuba@kernel.org" <kuba@kernel.org>,
         <linux-arm-kernel@lists.infradead.org>, poros <poros@redhat.com>,
         mschmidt <mschmidt@redhat.com>,
         "linux-clk@vger.kernel.org" <linux-clk@vger.kernel.org>,
-        "vadim.fedorenko@linux.dev" <vadim.fedorenko@linux.dev>
-Subject: Re: [RFC PATCH v8 08/10] ice: implement dpll interface to control cgu
-Message-ID: <ZKvAGSwbJWEQmESs@nanopsycho>
-References: <20230609121853.3607724-1-arkadiusz.kubalewski@intel.com>
- <20230609121853.3607724-9-arkadiusz.kubalewski@intel.com>
- <ZISmmH0jqxZRB4VX@nanopsycho>
- <DM6PR11MB4657161D2871747A7B404EDD9B5FA@DM6PR11MB4657.namprd11.prod.outlook.com>
- <ZJLtR0c+tvCbUgri@nanopsycho>
- <ZJ0hQRcm6S05r8VE@nanopsycho>
- <DM6PR11MB465726733894C7E64AD3367E9B29A@DM6PR11MB4657.namprd11.prod.outlook.com>
+        "vadim.fedorenko@linux.dev" <vadim.fedorenko@linux.dev>,
+        Bagas Sanjaya <bagasdotme@gmail.com>
+Subject: RE: [RFC PATCH v9 01/10] dpll: documentation on DPLL subsystem
+ interface
+Thread-Topic: [RFC PATCH v9 01/10] dpll: documentation on DPLL subsystem
+ interface
+Thread-Index: AQHZpc/1HqWZmXZSIkW1j8k3PlGshq+gvrKAgBIcCpA=
+Date:   Mon, 10 Jul 2023 09:45:45 +0000
+Message-ID: <DM6PR11MB4657FEDD367D6E9A9E0D3A209B30A@DM6PR11MB4657.namprd11.prod.outlook.com>
+References: <20230623123820.42850-1-arkadiusz.kubalewski@intel.com>
+        <20230623123820.42850-2-arkadiusz.kubalewski@intel.com>
+ <20230628141153.15709d97@kernel.org>
+In-Reply-To: <20230628141153.15709d97@kernel.org>
+Accept-Language: pl-PL, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: DM6PR11MB4657:EE_|DM4PR11MB5325:EE_
+x-ms-office365-filtering-correlation-id: 4cbf8185-f044-4651-4323-08db812a6f5a
+x-ld-processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: K71Uyy6qrJlKqdwUMmegyMz45iVMPCB2ABwy3l2G/hu4fvQHOoymSyWBA0d9QcavQy+jh2GJIbk4KaXiFXe4g2sTRkXHhuuTvMoQW85AEy9XoEjxlrzPMGgCgYcmurKS/ZqA+ed8IJcugn+9FRpQauLwhUUtj3+FIFXut5jH/iwEGgWwbGUEhBKOYI7Tp7GaHXPJ6lCphcg6rG3kNEMyYkPgta2KGK7urH/T8A1lDR7uuek2UatYu2vUid00Tp4vXXQ7DbvoBD2jRtCs7SqjxsgW4qN8slKutB86veYq9P+6t2/wDC55WKRTW/pnslzer+eHXzlZ/IJisQacK2Ve6MRlBNH8kljgJNLj8+i2v7VoC7qJ68kDVek5/HV4XHOr+Sfyk7xzx0tcDjVEbL/fWVN5k4hXaypiVL/58tMKoqbDrgHy/3lIGgBIpEajKLppnOjaa6qY3DULXJSITtSrcgPbKqQDmQkze+QJDcaKkZ+bgIouf9R0ypu3SOXQ46MxyZhHbEIJmB6s0QGsxiIbyLyQ5NcgwpX8BMaa/CSdTY/5xnC+1gDZmjEROC4cjY49M0qLi7p0H9xlM5aNWLgZj+4QsLlS9XeQoJkNjI8y/KbbXV+/2dsEup/3i3eVHt0D
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR11MB4657.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(39860400002)(376002)(136003)(346002)(396003)(366004)(451199021)(186003)(9686003)(26005)(6506007)(83380400001)(41300700001)(4744005)(4326008)(64756008)(66446008)(66476007)(2906002)(66556008)(52536014)(316002)(7416002)(5660300002)(7406005)(8936002)(8676002)(6916009)(478600001)(66946007)(7696005)(76116006)(71200400001)(54906003)(55016003)(33656002)(122000001)(82960400001)(38070700005)(38100700002)(86362001);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?sPILxzvz1I1aS9pj43WQ6OpB5vdpUjvIzbivY639JtBwrTH1PuY8uu1J6mX5?=
+ =?us-ascii?Q?f+jSaFbik4pRe8QmHPRSdzsHdGB+tSceQeuMXxGR57zOJPT+rtB0IRQX1mYx?=
+ =?us-ascii?Q?IAGTbsmU3M82R+vO+p9vFtJk0gf8Z2hrAaWBJq1SL+owPCc+q5wxfUFGVFv1?=
+ =?us-ascii?Q?+WhVQE6ZmE9zg8oeZIt0+H3/lQEAD7oSd/a8D1sByIjkWxfgm3YbJDaa9bRs?=
+ =?us-ascii?Q?aCmbS8XS4kxOPjpSa9C0I3g62+cpgLToXkqm3X/0L8kmpoYlLElP9tWVIB3F?=
+ =?us-ascii?Q?aZB2QkR8xL9JXK/+evY374V9hLjl6hT+ai1pJnfORr6omaRGBQZiIjUkvEpo?=
+ =?us-ascii?Q?nIXAANd9Vin3ucSNz9wO7IhUOxI3WofYJqM0/oBn7EZH/+85G0aZOMRQfCUc?=
+ =?us-ascii?Q?h/lZHX5s4hBplbmhraLvhGzjUfSvkv3Ta4UljxCL4wTQ/nivdg1hDLlbSjFE?=
+ =?us-ascii?Q?0q5xq9x2psQpbhh/t2WnfdmmiRwXvudu6HAesaEHFJ+5n4j2d4tQ2IO3JeAG?=
+ =?us-ascii?Q?I22IkHDwkUwz/O0dOakMQ1hzXqcnBKK08sBypc26lOiV8d2Kfh6w7OvdXNZZ?=
+ =?us-ascii?Q?K0d//8wf3xrWD3D4cGilvxuICRwrQa5vF8pZ9kgbWRumRvJSdnA9T8xafY9g?=
+ =?us-ascii?Q?LDKgSgkVl7B9L8PkpkG3QU6MZy8CLmAWNKpTSDYb7iq7RBnnM7i8WQKRBjx2?=
+ =?us-ascii?Q?ZOSR1zdr9sKpkzld3Rke7Qbx4juh2gL+f3UjwUa8Xd8SMKk3XIMP6dgpq0q8?=
+ =?us-ascii?Q?KulIn2tDVPJedoYgLQZL06oRHbjYZufZ7gGyrmqEMj6uinJgeBU0uOmyTzHC?=
+ =?us-ascii?Q?zsOVJbKglWhu4mIn+4gBO+fLPyGg+tQRHNePKckJSskMmto6hGfvk9oZtfO8?=
+ =?us-ascii?Q?V+qLlWs0n1e6HQNWPiXrXo1hs2TO00LZSKw9QTefCNRIujQRgHsyjn4mzW8O?=
+ =?us-ascii?Q?cSjVz+UJj3s1PCmX9rYNjUJFxdoLTSIBv9t84/syUs9tNB62UCjK5WeF85B/?=
+ =?us-ascii?Q?LhEX4mBbIOgWSo9rn/VPRhmL8Oe1ZhXZ7y39f6g3jTOuZmmHoJ4TIxUP89+c?=
+ =?us-ascii?Q?iIFlB+cubICAUu3GTRo93sSIfyUvq9lkgF4Lklbc/sYq7PJ4Ppad+fe/FFLi?=
+ =?us-ascii?Q?cdlz4Y2e92cYzB7MXV0zIMlPN+9E7TvIBvNsPwgJ2SEr91yrkVz7rPoEaPKq?=
+ =?us-ascii?Q?o/96yoQ3yCmKlFNrko15jWNOLJeu5K8dremEHJnoTbtv4EXLZk+AWqdw9qSk?=
+ =?us-ascii?Q?rYNqe6kxglfWjzrclPHrg+6aGbN9mJrZxBLUgil/MoswfCtw3X4XaqhsDx2I?=
+ =?us-ascii?Q?h9CPAk3vQIDq7JL0k643wmeh59J3lXjY4hNPoOXSnuaLqrKWURHBL8b4S7hL?=
+ =?us-ascii?Q?cb5EX+Zi3gpECNIxFWrOvnmIRdv1Qxa4jX0jnnuMt44gx9cbcl7W2EDIeivK?=
+ =?us-ascii?Q?YVo+zA/LjItoDA15mSRdiqY9uk9a0XDl5hRwUifZimZ3T5UQw9R/t1t0Fykn?=
+ =?us-ascii?Q?hW5JE+6lMofIhD0C1nWOsTJXkoITlDMkGzJNfsDmnRjRhSwAyvV0YQcozfq4?=
+ =?us-ascii?Q?9HZA23sgeWm5rUcgZqAD69Fuy1jpXDjVrCDtCIKNqtDmTkTTiub84BnR5grU?=
+ =?us-ascii?Q?3w=3D=3D?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <DM6PR11MB465726733894C7E64AD3367E9B29A@DM6PR11MB4657.namprd11.prod.outlook.com>
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: DM6PR11MB4657.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 4cbf8185-f044-4651-4323-08db812a6f5a
+X-MS-Exchange-CrossTenant-originalarrivaltime: 10 Jul 2023 09:45:45.9630
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: FkOiiQcixzjzFIGen4Equ4WAy+nUhiXiQy0Bx4OFjlNjt9r0zDYgx37nBlb/dr17ZoyaOKfI78WdL/uZRSzdmHGaq5QJi5dza9oxolOdyhI=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM4PR11MB5325
+X-OriginatorOrg: intel.com
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Mon, Jul 03, 2023 at 02:37:18PM CEST, arkadiusz.kubalewski@intel.com wrote:
->>From: Jiri Pirko <jiri@resnulli.us>
->>Sent: Thursday, June 29, 2023 8:14 AM
->>
->>Wed, Jun 21, 2023 at 02:29:59PM CEST, jiri@resnulli.us wrote:
->>>Mon, Jun 19, 2023 at 10:34:12PM CEST, arkadiusz.kubalewski@intel.com
->>wrote:
->>>>>From: Jiri Pirko <jiri@resnulli.us>
->>>>>Sent: Saturday, June 10, 2023 6:37 PM
->>>>>
->>>>>Fri, Jun 09, 2023 at 02:18:51PM CEST, arkadiusz.kubalewski@intel.com
->>>>>wrote:
->>>>>
->>>>>[...]
->>>>>
->>>>>
->>>>>>+static int ice_dpll_mode_get(const struct dpll_device *dpll, void *priv,
->>>>>>+			     enum dpll_mode *mode,
->>>>>>+			     struct netlink_ext_ack *extack)
->>>>>>+{
->>>>>>+	*mode = DPLL_MODE_AUTOMATIC;
->>>>>
->>>>>I don't understand how the automatic mode could work with SyncE. The
->>>>>There is one pin exposed for one netdev. The SyncE daemon should select
->>>>>exacly one pin. How do you achieve that?
->>>>>Is is by setting DPLL_PIN_STATE_SELECTABLE on the pin-netdev you want to
->>>>>select and DPLL_PIN_STATE_DISCONNECTED on the rest?
->>>>>
->>>>>
->>>>>[...]
->>>>
->>>>AUTOMATIC mode autoselects highest priority valid signal.
->>>>As you have pointed out, for SyncE selection, the user must be able to
->>>>manually
->>>>select a pin state to enable recovery of signal from particular port.
->>>>
->>>>In "ice" case there are 2 pins for network PHY clock signal recovery, and
->>>>both
->>>>are parent pins (MUX-type). There are also 4 pins assigned to netdevs
->>>>(one per
->>>>port). Thus passing a signal from PHY to the pin is done through the MUX-
->>>>pin,
->>>>by selecting proper state on pin-parent pair (where parent pins is highest
->>>>prio
->>>>pin on dpll).
->>>
->>>Could you show me some examples please?
->>
->>Arkadiusz, could you please reply to this?
->>Thanks!
->>
+>From: Jakub Kicinski <kuba@kernel.org>
+>Sent: Wednesday, June 28, 2023 11:12 PM
 >
->Sure, sorry for the delays, let's try that.
+>On Fri, 23 Jun 2023 14:38:11 +0200 Arkadiusz Kubalewski wrote:
+>> +    'pin-parent': [{'pin-id': 2, 'pin-state': 'connected'},
+>> +                   {'pin-id': 3, 'pin-state': 'disconnected'},
+>> +                   {'id': 0, 'pin-direction': 'input'},
+>> +                   {'id': 1, 'pin-direction': 'input'}],
 >
->'ice' use case:
->Enabling a PHY clock recovery for DPLL_MODE_AUTOMATIC dpll (ID#0) with PHY
->recovered clock signals (PIN_ID#13) being muxed using MUX-type pin (PIN_ID#2)
->
->1. Set MUX-type pin to state selectable and highest priority on a dpll device
->(or make sure it is already configured):
->CMD_PIN_SET:
->	PIN_ID			2
->	PIN_PARENT_DEVICE	(nest)
->		ID		0
->		PIN_STATE	SELECTABLE
->		PIN_PRIO	0
->(assume all the other pins have prio >=1)
->
->2. Set connected state on a pin-parent_pin tuple where parent is a pin from #1
->CMD_PIN_SET:
->	PIN_ID			13
->	PIN_PARENT_PIN		(nest)
->		PIN_ID		2
->		PIN_STATE	CONNECTED
+>This bit of documentation is out of date now, right?
 
-How does this look from the perspective of a SyncE flow. Let's say you
-have eth0 and eth1, both is connected with a DPLL pin. Could you show
-how you select eth0 and then eth1?
+True, fixed for v10.
 
-
-
->
->Thank you!
->Arkadiusz
->
->>>
->>>
->>>>
->>>>Thank you!
->>>>Arkadiusz
+Thank you!
+Arkadiusz
