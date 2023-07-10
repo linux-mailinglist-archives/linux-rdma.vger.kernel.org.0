@@ -2,104 +2,124 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3314E74DD79
-	for <lists+linux-rdma@lfdr.de>; Mon, 10 Jul 2023 20:38:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D7E674DD93
+	for <lists+linux-rdma@lfdr.de>; Mon, 10 Jul 2023 20:49:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229575AbjGJSip (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 10 Jul 2023 14:38:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50910 "EHLO
+        id S231673AbjGJStU (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 10 Jul 2023 14:49:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55126 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229814AbjGJSio (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 10 Jul 2023 14:38:44 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7CE8137;
-        Mon, 10 Jul 2023 11:38:43 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 5C4D061194;
-        Mon, 10 Jul 2023 18:38:43 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3609CC433C7;
-        Mon, 10 Jul 2023 18:38:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1689014322;
-        bh=fv0im7OOKhu0ZHpC2ngHTz9yoPg8xIv9FEQrluCM8SA=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=m8JOQyM/6oOYwJYitkD5Q3rSTU1pZ6eUvfNap1vFj0x1Xd8xkx998HB4v9nwUN9wo
-         7wIlI+hlVsw1UbzZIiytE+XFyRF6YLq/X65c0q4oKI66MaE3skfKYLdR+uMM/baFjB
-         fYPpDFRVqmK3E5wbcJ1EWtCKbYjo0iVe9+TaS2Kx5oxAtkFpnl7kHuDCgxmZUSdULe
-         36ZAZeeDVQtO0Hr+lgeNDWY1H+Fd0JgN7r8kzRMABqStvNrfD4DJHSCvFtoD4QzLX3
-         NVR3jC8DFZ6G14vFHt7PWlw79IYBToRyeAjcUrbhFAX+snKh1b3pnJ0OWymjiq8FZc
-         rfCw+1GKsf2Qw==
-Date:   Mon, 10 Jul 2023 11:38:41 -0700
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Yunsheng Lin <yunshenglin0825@gmail.com>,
-        Alexander Lobakin <aleksander.lobakin@intel.com>
-Cc:     Yunsheng Lin <linyunsheng@huawei.com>, davem@davemloft.net,
-        pabeni@redhat.com, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Lorenzo Bianconi <lorenzo@kernel.org>,
-        Alexander Duyck <alexander.duyck@gmail.com>,
-        Liang Chen <liangchen.linux@gmail.com>,
-        Saeed Mahameed <saeedm@nvidia.com>,
-        Leon Romanovsky <leon@kernel.org>,
-        Eric Dumazet <edumazet@google.com>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
-        linux-rdma@vger.kernel.org
-Subject: Re: [PATCH v5 RFC 1/6] page_pool: frag API support for 32-bit arch
- with 64-bit DMA
-Message-ID: <20230710113841.482cbeac@kernel.org>
-In-Reply-To: <3d973088-4881-0863-0207-36d61b4505ec@gmail.com>
-References: <20230629120226.14854-1-linyunsheng@huawei.com>
-        <20230629120226.14854-2-linyunsheng@huawei.com>
-        <20230707170157.12727e44@kernel.org>
-        <3d973088-4881-0863-0207-36d61b4505ec@gmail.com>
+        with ESMTP id S231737AbjGJStT (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 10 Jul 2023 14:49:19 -0400
+Received: from mail-qk1-x729.google.com (mail-qk1-x729.google.com [IPv6:2607:f8b0:4864:20::729])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 17310C3
+        for <linux-rdma@vger.kernel.org>; Mon, 10 Jul 2023 11:49:18 -0700 (PDT)
+Received: by mail-qk1-x729.google.com with SMTP id af79cd13be357-765ae938b1bso453144985a.0
+        for <linux-rdma@vger.kernel.org>; Mon, 10 Jul 2023 11:49:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google; t=1689014957; x=1691606957;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=Vuc2RGlNDPX0WHzNUZ68FNKD5vSaPC+1T3268GsGn1o=;
+        b=DPIKL7B+r1AOTGxEGLAytamKWjUCWYUXYDWmNUI/bDuwAyuooJXXUDjveqLQOqPG7v
+         Kd80OWCOvvUhkkIq/cpCisoIDqJATbT0bieuc22iPsFQnQDqw7bzQwaW4kfnSiPqV5AE
+         kwvmgohQY4tHcsMJrkUA1zbuvrX8wFapl23T/f6I1SqE/lAE8gYSyGjdMTuSa76dM08a
+         BqNLA/9fKgDEpy3YB0y3zdvmhRBr3IoW/gWDVTAL1Z1OyvLaVV2tfjRuyeDVLFafGVeO
+         nDGTgtnB9NLRqoFxe4LLtQdL+mAl26xCD9L9h1BPE7o4mvs5h1MiXJtuEvAI4aSC/C+1
+         HoJA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689014957; x=1691606957;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Vuc2RGlNDPX0WHzNUZ68FNKD5vSaPC+1T3268GsGn1o=;
+        b=XfXTWbcUNycKNCOGqYBBqzEhPukTeGjM5yUQ88lhQxLcKNJfu8L402orwcXKt9S4Id
+         oghBbvB1KI27+vREgPBV8fgj/nntnUlsQHH4FgY7N20S/Cbg0uRvyrrHnWa4Zfbo1mEy
+         /gnPb2B/OSfMtvDyJm3p2BGOMcYA1I/Fv359o6gVTVVub+I+/KHfkxe9KFBVH5IpzRMh
+         klJoUcQ/scpxVf/R8Jcbx5Cds1yXGY1uJ3uF0X86d44HcvsconORJ8j1T+hiq3o1OLBH
+         bX4FBI/wa4WouHBMTiJkPkKBpjFxFgFlTo1lRqwdsjUH/QrnedzQsCK7b2rYNhZMNno+
+         ScqQ==
+X-Gm-Message-State: ABy/qLbMu4ZEH/nJqHb4MiFQlsG1pmz+mOc2ozJqA1YVOaBkEkWU+J1J
+        LHobab7jrTcN0BhhCeGgFJWmoQ==
+X-Google-Smtp-Source: APBJJlEN2A6v97mnICa+7D7yKuUQ5xgkdehvfwJj1fIED8lFSPF7TGTOKOhmkv5c6gLp+tpP/XkfBQ==
+X-Received: by 2002:a0c:e352:0:b0:62f:a95:4567 with SMTP id a18-20020a0ce352000000b0062f0a954567mr11937154qvm.11.1689014957254;
+        Mon, 10 Jul 2023 11:49:17 -0700 (PDT)
+Received: from ziepe.ca (hlfxns017vw-142-68-25-194.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.68.25.194])
+        by smtp.gmail.com with ESMTPSA id e4-20020a0cf344000000b0062b76c29978sm137011qvm.6.2023.07.10.11.49.16
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 10 Jul 2023 11:49:16 -0700 (PDT)
+Received: from jgg by wakko with local (Exim 4.95)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1qIvwi-0004qc-7N;
+        Mon, 10 Jul 2023 15:49:16 -0300
+Date:   Mon, 10 Jul 2023 15:49:16 -0300
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Dan Carpenter <dan.carpenter@linaro.org>
+Cc:     Leon Romanovsky <leon@kernel.org>, Guy Levi <guyle@mellanox.com>,
+        Yishai Hadas <yishaih@nvidia.com>, linux-rdma@vger.kernel.org,
+        kernel-janitors@vger.kernel.org
+Subject: Re: [PATCH] RDMA/mlx4: Make check for invalid flags stricter
+Message-ID: <ZKxSrOVS/CtxJaDl@ziepe.ca>
+References: <233ed975-982d-422a-b498-410f71d8a101@moroto.mountain>
+ <20230704133841.GD6455@unreal>
+ <359dc6de-2b08-4baa-99cc-d5e5f6e6ce43@kadam.mountain>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <359dc6de-2b08-4baa-99cc-d5e5f6e6ce43@kadam.mountain>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Sun, 9 Jul 2023 20:54:12 +0800 Yunsheng Lin wrote:
-> > And the include is still here, too, eh.. =20
->=20
-> In V4, it has:
->=20
-> --- a/include/net/page_pool.h
-> +++ b/include/net/page_pool.h
-> @@ -33,6 +33,7 @@=20
->  #include <linux/mm.h> /* Needed by ptr_ring */
->  #include <linux/ptr_ring.h>
->  #include <linux/dma-direction.h>
-> +#include <linux/dma-mapping.h>
->=20
-> As dma_get_cache_alignment() defined in dma-mapping.h is used
-> here, so we need to include dma-mapping.h.
->=20
-> I though the agreement is that this patch only remove the
-> "#include <linux/dma-direction.h>" as we dma-mapping.h has included
-> dma-direction.h.
->=20
-> And Alexander will work on excluding page_pool.h from skbuff.h
-> https://lore.kernel.org/all/09842498-b3ba-320d-be8d-348b85e8d525@intel.co=
-m/
->=20
-> Did I miss something obvious here=EF=BC=9F Or there is better way to do it
-> than the method discussed in the above thread?
+On Tue, Jul 04, 2023 at 05:07:17PM +0300, Dan Carpenter wrote:
+> On Tue, Jul 04, 2023 at 04:38:41PM +0300, Leon Romanovsky wrote:
+> > On Thu, Jun 29, 2023 at 09:07:37AM +0300, Dan Carpenter wrote:
+> > > This code is trying to ensure that only the flags specified in the list
+> > > are allowed.  The problem is that ucmd->rx_hash_fields_mask is a u64 and
+> > > the flags are an enum which is treated as a u32 in this context.  That
+> > > means the test doesn't check whether the highest 32 bits are zero.
+> > > 
+> > > Fixes: 4d02ebd9bbbd ("IB/mlx4: Fix RSS hash fields restrictions")
+> > > Signed-off-by: Dan Carpenter <dan.carpenter@linaro.org>
+> > > ---
+> > > The MLX4_IB_RX_HASH_INNER value is declared as
+> > > "MLX4_IB_RX_HASH_INNER           = 1ULL << 31," which suggests that it
+> > > should be type ULL but that doesn't work.  It will still be basically a
+> > > u32.  (Enum types are weird).
+> > 
+> > Can you please elaborate more why enum left to be int? It is surprise to me.
+> 
+> Enum types are not defined very strictly in C so it's up to the
+> compiler.
+> 
+> Clang, GCC and Sparse implement them in the same way.  They default
+> to u32 unless the values can't fit, then they become whatever type fits.
+> So if you have a negative, it becomes an int or a big value changes the
+> type to unsigned long.
 
-We're adding a ton of static inline functions to what is a fairly core
-header for networking, that's what re-triggered by complaint:
+It is worse than that, the standard has some wording that the
+constants have to be 'int' so gcc makes most of those values 'int'
+when it computes the | across them.  There is some 'beyond C' behavior
+here where gcc will make only the non-int representable constants
+some larger type (ie MLX4_IB_RX_HASH_INNER is u32 and
+MLX4_IB_RX_HASH_SRC_IPV4 is int)
 
- include/net/page_pool.h                       | 179 ++++++++++++++----
+This is totally un-intuitive that the type of the enum constants is
+not the type of the enum itself (which is u32 in this case), but here
+we are.
 
-Maybe we should revisit the idea of creating a new header file for
-inline helpers... Olek, WDYT?
+C23 finally fixes this by brining the C++ feature of explicitly typed
+enums and then the enum and all the constants have a consistent,
+specified, type.
+
+But this is definately the right thing to do, I actually thought we
+had a function specifically for doing this test becaue of how tricky ~
+is...
+
+Jason
