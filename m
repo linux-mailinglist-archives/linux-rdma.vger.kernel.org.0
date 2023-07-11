@@ -2,44 +2,43 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 86BA374F928
-	for <lists+linux-rdma@lfdr.de>; Tue, 11 Jul 2023 22:34:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D18D974F92F
+	for <lists+linux-rdma@lfdr.de>; Tue, 11 Jul 2023 22:39:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230180AbjGKUeZ (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 11 Jul 2023 16:34:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45142 "EHLO
+        id S229987AbjGKUjV (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 11 Jul 2023 16:39:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46552 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229693AbjGKUeY (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 11 Jul 2023 16:34:24 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 729ECB7;
-        Tue, 11 Jul 2023 13:34:23 -0700 (PDT)
+        with ESMTP id S229945AbjGKUjU (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 11 Jul 2023 16:39:20 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B01771AE;
+        Tue, 11 Jul 2023 13:39:18 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 07195615F6;
-        Tue, 11 Jul 2023 20:34:23 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 49AAEC433C7;
-        Tue, 11 Jul 2023 20:34:21 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 45E69615D4;
+        Tue, 11 Jul 2023 20:39:18 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 67C0FC433C8;
+        Tue, 11 Jul 2023 20:39:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1689107662;
-        bh=Tvmu/JdqsFHoqwxn8e5DiBMwjsswLbqpvPrbdWqX3mU=;
+        s=k20201202; t=1689107957;
+        bh=IUkMami0q8XF0yGB572r+2o8IYCDeaMrkBy4BDhJ9Ag=;
         h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=KT2GetEFtYlkaoWB9SkIWERR/pM6252wtR3+uYa5U8hU6Z72yd0jGdfKEHGRCUPDg
-         cV6CxM61kiS9aR8QbLm1lVOKFqo7tiDLKsmIyqsbhxa0VksU16jxRrop0XkHgITqSP
-         EFW3qqHEOocqEyXqP1oLbP2Pw7wZbnpXltb/judIGIutmoF5JzbncOkM51LN3SO7bm
-         E6tbNJFPipV38BWXPsj0vvodOwB6lnCc+5okEl9j4wKGIrXJaVLbiLW7Ru/TvHo4J8
-         Gr9Nye/bZVAOskwP2AUf4LN5Tsox+cB+wfVMSPjU9nO5urg3uBLRwuMcGC+sSUCrVw
-         seVSCxPh1GKNg==
-Date:   Tue, 11 Jul 2023 13:34:20 -0700
+        b=gLHjwzndBZxh0m1Nwmqy8nrX9bXH8Vnv5+ZxrOfGDXN7jd40Msiv1J1bZGLXIH5z2
+         oJus6+FV8hP/WWNUuLuXoDk6kzGjM/xqn2z5cs0lsl0vJoXcsLz6mxPfoPzzyXOJk2
+         ORK7ZgszHiFGEYqHl5+9he/2D0jMNPJYBIXp5AuznXtKSF5+HOhzHJhAbxtRHoVsWv
+         QLF/dB+6GNTaQCV8o+aXrkly/dblANoUCP5yjOBckkEnDQh7KBZVIma1e2/6qhRLSB
+         INnioJnYNn4NmBgc4I1Wl8idrPvVBzvQ44p1B7prACsfxGgObO+QDbc+AaVYi/PQP3
+         aNkSejK68rzag==
+Date:   Tue, 11 Jul 2023 13:39:15 -0700
 From:   Jakub Kicinski <kuba@kernel.org>
-To:     Jason Gunthorpe <jgg@ziepe.ca>
-Cc:     Christoph Hellwig <hch@lst.de>,
-        Mina Almasry <almasrymina@google.com>,
+To:     Mina Almasry <almasrymina@google.com>
+Cc:     David Ahern <dsahern@kernel.org>, Jason Gunthorpe <jgg@ziepe.ca>,
+        Christoph Hellwig <hch@lst.de>,
         John Hubbard <jhubbard@nvidia.com>,
         Dan Williams <dan.j.williams@intel.com>,
-        David Ahern <dsahern@kernel.org>,
         Jesper Dangaard Brouer <jbrouer@redhat.com>,
         brouer@redhat.com, Alexander Duyck <alexander.duyck@gmail.com>,
         Yunsheng Lin <linyunsheng@huawei.com>, davem@davemloft.net,
@@ -71,9 +70,13 @@ Cc:     Christoph Hellwig <hch@lst.de>,
         Jonathan Lemon <jonathan.lemon@gmail.com>
 Subject: Re: Memory providers multiplexing (Was: [PATCH net-next v4 4/5]
  page_pool: remove PP_FLAG_PAGE_FRAG flag)
-Message-ID: <20230711133420.5df88f02@kernel.org>
-In-Reply-To: <ZK2k9YQiXTtcGhp0@ziepe.ca>
-References: <ZKxDZfVAbVHgNgIM@ziepe.ca>
+Message-ID: <20230711133915.03482fdc@kernel.org>
+In-Reply-To: <CAHS8izNHkLF0OowU=p=mSNZss700HKAzv1Oxqu2bvvfX_HxttA@mail.gmail.com>
+References: <5e0ac5bb-2cfa-3b58-9503-1e161f3c9bd5@kernel.org>
+        <CAHS8izP2fPS56uXKMCnbKnPNn=xhTd0SZ1NRUgnAvyuSeSSjGA@mail.gmail.com>
+        <ZKNA9Pkg2vMJjHds@ziepe.ca>
+        <CAHS8izNB0qNaU8OTcwDYmeVPtCrEjTTOhwCHtVsLiyhXmPLsXQ@mail.gmail.com>
+        <ZKxDZfVAbVHgNgIM@ziepe.ca>
         <CAHS8izO3h3yh=CLJgzhLwCVM4SLgf64nnmBtGrXs=vxuJQHnMQ@mail.gmail.com>
         <ZKyZBbKEpmkFkpWV@ziepe.ca>
         <20230711042708.GA18658@lst.de>
@@ -81,9 +84,9 @@ References: <ZKxDZfVAbVHgNgIM@ziepe.ca>
         <20230711050445.GA19323@lst.de>
         <ZK1FbjG+VP/zxfO1@ziepe.ca>
         <20230711090047.37d7fe06@kernel.org>
-        <ZK2Gh2qGxlpZexCM@ziepe.ca>
-        <20230711100636.63b0a88a@kernel.org>
-        <ZK2k9YQiXTtcGhp0@ziepe.ca>
+        <04187826-8dad-d17b-2469-2837bafd3cd5@kernel.org>
+        <20230711093224.1bf30ed5@kernel.org>
+        <CAHS8izNHkLF0OowU=p=mSNZss700HKAzv1Oxqu2bvvfX_HxttA@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
@@ -97,59 +100,30 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Tue, 11 Jul 2023 15:52:37 -0300 Jason Gunthorpe wrote:
-> > Now we're getting into our favorite argument and completely
-> > sidetracking the conversation, aren't we? :) And as usual 
-> > our ability to present facts is limited by various NDAs..  
+On Tue, 11 Jul 2023 10:06:28 -0700 Mina Almasry wrote:
+> > > Any reason not to allow an alternative representation for skb frags than
+> > > struct page?  
+> >
+> > I don't think there's a hard technical reason. We can make it work.  
 > 
-> Yes, well, maybe I should stop taking the bait everytime you write
-> "proprietary" :)
-> 
-> > > We also have the roce support in the switch from all major
-> > > switch vendors.  
-> > 
-> > By which you mean all major switch vendors should support basic RoCE
-> > requirements. But most vendors will try to put special features into
-> > their switches trying to make the full NIC + switch solution as sticky
-> > as possible.  
-> 
-> Yep. At the high end open standards based ethernet has also notably
-> "failed" as well. Every switch vendor now offers their own proprietary
-> ecosystem on a whole bunch of different axis. They all present
-> "ethernet" toward the host but the host often needs to work in a
-> special way to really take full advantage of the proprietary fabric
-> behaviors.
+> I also think we can switch the representation for skb frags to
+> something else. However - please do correct me if I'm wrong - I don't
+> think that is sufficient for device memory TCP. My understanding is
+> that we also need to modify any NIC drivers that want to use device
+> memory TCP to understand a new memory type, and the page pool as well
+> if that's involved. I think in particular modifying the memory type in
+> all the NIC drivers that want to do device memory TCP is difficult. Do
+> you think this is feasible?
 
-I'm not familiar with "high end open standards based on ethernet", would
-those be some RDMA / storage things? For TCP/IP networks pretty much
-the only things that matter in a switch are bandwidth, size of buffers,
-power... Implementation stuff.
+That's why I was thinking about adding an abstraction between 
+the page pool and the driver. Instead of feeding driver pages
+a new abstraction could feed the driver just an identifier and a PA.
 
-> > Last I checked every generation of HW from even a single vendor came out
-> > with a new congestion control algorithm and add-ons.   
-> 
-> Probably, but I don't really view this as an IB or roce issue.
-> 
-> Back in the day, there was "data center ethernet" which was a
-> standardization effort to try and tame some of these problems. roce
-> was imagined as an important workload over DCE, but the effort was
-> ethernet focused and generic. Sadly DCE and successor standard based
-> congestion mangement approaches did not work, or were "standardized"
-> in a way that had a big hole that needed to be filled with proprietary
-> algorithms. Eventualy the interest in standardization seems to have
-> waned and several of the big network operators seem to be valuing
-> their unique congestion management as a proprietary element. From a
-> vendor perspective this is has turned into an interop train
-> wreck. Sigh.
-> 
-> roce is just highly sensitive to loss - which is managed in ethernet
-> through congestion management. This is why you see roce and congestion
-> management so tightly linked, and perhaps in some deployments becomes
-> the motivating reason to look at congestion management.
+Whether we want to support fragmentation in that model or not would 
+have to be decided.
 
-A lot of "standardization" efforts are just attempts to prove to 
-a buyers that an ecosystem exists.
+We can take pages from the page pool and feed them to drivers via
+such an API, but drivers need to stop expecting pages.
 
-Open source the firmware. Let people actually hack on it and when
-the users bring their own algorithms de facto standardization will
-happen. Short of that it's all smoke and mirrors.
+That's for data buffers only, obviously. We can keep using pages 
+and raw page pool for headers.
