@@ -2,389 +2,168 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B0F5774F793
-	for <lists+linux-rdma@lfdr.de>; Tue, 11 Jul 2023 19:54:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4508B74F828
+	for <lists+linux-rdma@lfdr.de>; Tue, 11 Jul 2023 20:52:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231828AbjGKRyU (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 11 Jul 2023 13:54:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50934 "EHLO
+        id S230437AbjGKSwm (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 11 Jul 2023 14:52:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44962 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231765AbjGKRyU (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 11 Jul 2023 13:54:20 -0400
-Received: from mga04.intel.com (mga04.intel.com [192.55.52.120])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A56C8E77
-        for <linux-rdma@vger.kernel.org>; Tue, 11 Jul 2023 10:54:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1689098058; x=1720634058;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=XtLlra2UIPluggep982K7wV4npokUhWZAQamScwEf+A=;
-  b=FIMA7Ts2biX6VOSQ9sFwDnDhuEB0XHVda7cuGJ4RCUYxvVXNiKvneEZj
-   XoOzba6SlrHoQ/UL93bseWjLpQAy2QGI7+LErF6rUjq2i9s6OH7vSWAMx
-   uuX5x1tYF/iAi9mqCM6+g2nBncD2ddXQST5tXuC/KkMhc1/vsYdA8kNPJ
-   8gEJhAeBbFBcG28AAWSniaMdU/pUPf09QSERH+kqOJaVOQS5tDYQ6eBTF
-   ShV4tMIOdU41PtOuRVMp/vnDJBbz8Ou7YMLF5q4aQJgxr1SIFAnRwk8NO
-   QvIsOpMEyNPWSagAcFxR5MY/Svorg0NxD8S0nl2LQkRpDiJAAANxMVChS
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10768"; a="363555795"
-X-IronPort-AV: E=Sophos;i="6.01,197,1684825200"; 
-   d="scan'208";a="363555795"
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Jul 2023 10:54:18 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10768"; a="845363525"
-X-IronPort-AV: E=Sophos;i="6.01,197,1684825200"; 
-   d="scan'208";a="845363525"
-Received: from ssaleem-mobl1.amr.corp.intel.com ([10.92.33.5])
-  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Jul 2023 10:54:08 -0700
-From:   Shiraz Saleem <shiraz.saleem@intel.com>
-To:     phaddad@nvidia.com, jgg@nvidia.com, leon@kernel.org,
-        linux-rdma@vger.kernel.org
-Cc:     Shiraz Saleem <shiraz.saleem@intel.com>
-Subject: [PATCH for-rc] Revert "RDMA/core: Refactor rdma_bind_addr"
-Date:   Tue, 11 Jul 2023 12:53:58 -0500
-Message-Id: <20230711175358.1313-1-shiraz.saleem@intel.com>
-X-Mailer: git-send-email 2.39.0
+        with ESMTP id S229509AbjGKSwl (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 11 Jul 2023 14:52:41 -0400
+Received: from mail-qk1-x735.google.com (mail-qk1-x735.google.com [IPv6:2607:f8b0:4864:20::735])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C648AE49
+        for <linux-rdma@vger.kernel.org>; Tue, 11 Jul 2023 11:52:39 -0700 (PDT)
+Received: by mail-qk1-x735.google.com with SMTP id af79cd13be357-7659dc74da1so577919585a.3
+        for <linux-rdma@vger.kernel.org>; Tue, 11 Jul 2023 11:52:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google; t=1689101559; x=1691693559;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=csq2hP6IGrsJizVBuDWOWzciwuvySb83mfb1bAUQeAw=;
+        b=O6yj1kfBmt/f46fGl5YF3ZVJn3iClEXfkHrq1NBwzA3zeFlPKxh61DLstld0JhkzXq
+         h9GCIk46LJKP5FEMhlmgxGdR6DZHqGE8zkEPe0m8HwO3oYCvuIT+h216JZzEKzRT45VH
+         fihme1JeEVJ5o7rLj+sp0HM+VyiPgOa+4UWUCJ8nczCJMAvSl0mDXfZE65/pQiDQgR46
+         KXQ8MO1UkrrB/BNF3dM4Tr7JLFvYzyjqwWXAqiIjG0pmZzaxZyvvqaOWcuYKyh4LOvP4
+         IvsRAbNbBcQCuYjr3QJF3eqkPZPCTeLSQBqYAlk4Rf6atATMuVoe1YiRvI7PbrsyIUPo
+         WEyg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689101559; x=1691693559;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=csq2hP6IGrsJizVBuDWOWzciwuvySb83mfb1bAUQeAw=;
+        b=C8kCrLYwA0QI+oXJfvQWlwry6B8mxKvLh3dB6Gumixnasl5t0QRTUhT4HdZVJsgg9z
+         7amkaZkeg2qujRCyVkRD2mWtAWnVZEJMDgeIDLQ6O4z+0KARspYySP5n8ltDQYQSKYk5
+         LxRew9Kj2MGY6IFI4m6teNi3whhKtF+cTm/y7Ks7+PKEJxIMHpf8k8p0yH9Y1yeC/RIl
+         3nzylYyXlt7YTmHtyI87RQVhNlqek6hE5XNz3PcpwAGQd82nHHrQ7Vr9ZGKRV0ZPb3+Z
+         LOafdipPRSKx1INJljJzPHLEo7F3Sheo4BSXYeFwPxkZljz8e6l+lOosb6cB2aW1vtkV
+         K7Gg==
+X-Gm-Message-State: ABy/qLZWYVUxTEa+w4inIHIxfWQgRLlodX7JM1PiJTEs3hS+/Rixii1C
+        /nhYZVmAtOVVBwCpNWW6daa9WQ==
+X-Google-Smtp-Source: APBJJlGz3e2wm1ItETv6Tpn24AKM42/GznMyImhnBUCl/FD/+Lt6lzms0CFX41BO0AXGLY19Tbl9Zw==
+X-Received: by 2002:a05:620a:2904:b0:75d:5640:22e7 with SMTP id m4-20020a05620a290400b0075d564022e7mr22796538qkp.55.1689101558954;
+        Tue, 11 Jul 2023 11:52:38 -0700 (PDT)
+Received: from ziepe.ca (hlfxns017vw-142-68-25-194.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.68.25.194])
+        by smtp.gmail.com with ESMTPSA id j3-20020a05620a146300b00765ab6d3e81sm1269520qkl.122.2023.07.11.11.52.37
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 11 Jul 2023 11:52:38 -0700 (PDT)
+Received: from jgg by wakko with local (Exim 4.95)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1qJITV-000JMj-F8;
+        Tue, 11 Jul 2023 15:52:37 -0300
+Date:   Tue, 11 Jul 2023 15:52:37 -0300
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Jakub Kicinski <kuba@kernel.org>
+Cc:     Christoph Hellwig <hch@lst.de>,
+        Mina Almasry <almasrymina@google.com>,
+        John Hubbard <jhubbard@nvidia.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        David Ahern <dsahern@kernel.org>,
+        Jesper Dangaard Brouer <jbrouer@redhat.com>,
+        brouer@redhat.com, Alexander Duyck <alexander.duyck@gmail.com>,
+        Yunsheng Lin <linyunsheng@huawei.com>, davem@davemloft.net,
+        pabeni@redhat.com, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Lorenzo Bianconi <lorenzo@kernel.org>,
+        Yisen Zhuang <yisen.zhuang@huawei.com>,
+        Salil Mehta <salil.mehta@huawei.com>,
+        Eric Dumazet <edumazet@google.com>,
+        Sunil Goutham <sgoutham@marvell.com>,
+        Geetha sowjanya <gakula@marvell.com>,
+        Subbaraya Sundeep <sbhatta@marvell.com>,
+        hariprasad <hkelam@marvell.com>,
+        Saeed Mahameed <saeedm@nvidia.com>,
+        Leon Romanovsky <leon@kernel.org>,
+        Felix Fietkau <nbd@nbd.name>,
+        Ryder Lee <ryder.lee@mediatek.com>,
+        Shayne Chen <shayne.chen@mediatek.com>,
+        Sean Wang <sean.wang@mediatek.com>,
+        Kalle Valo <kvalo@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
+        linux-rdma@vger.kernel.org, linux-wireless@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org,
+        Jonathan Lemon <jonathan.lemon@gmail.com>
+Subject: Re: Memory providers multiplexing (Was: [PATCH net-next v4 4/5]
+ page_pool: remove PP_FLAG_PAGE_FRAG flag)
+Message-ID: <ZK2k9YQiXTtcGhp0@ziepe.ca>
+References: <ZKxDZfVAbVHgNgIM@ziepe.ca>
+ <CAHS8izO3h3yh=CLJgzhLwCVM4SLgf64nnmBtGrXs=vxuJQHnMQ@mail.gmail.com>
+ <ZKyZBbKEpmkFkpWV@ziepe.ca>
+ <20230711042708.GA18658@lst.de>
+ <20230710215906.49514550@kernel.org>
+ <20230711050445.GA19323@lst.de>
+ <ZK1FbjG+VP/zxfO1@ziepe.ca>
+ <20230711090047.37d7fe06@kernel.org>
+ <ZK2Gh2qGxlpZexCM@ziepe.ca>
+ <20230711100636.63b0a88a@kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230711100636.63b0a88a@kernel.org>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-This reverts commit 8d037973d48c026224ab285e6a06985ccac6f7bf.
+On Tue, Jul 11, 2023 at 10:06:36AM -0700, Jakub Kicinski wrote:
 
-A regression is seen on irdma devices on certain tests which uses
-rdma CM, such as cmtime.
+> Now we're getting into our favorite argument and completely
+> sidetracking the conversation, aren't we? :) And as usual 
+> our ability to present facts is limited by various NDAs..
 
-No connections can be established with the MAD QP experiences a fatal
-error on the client side.
+Yes, well, maybe I should stop taking the bait everytime you write
+"proprietary" :)
+ 
+> > We also have the roce support in the switch from all major
+> > switch vendors.
+> 
+> By which you mean all major switch vendors should support basic RoCE
+> requirements. But most vendors will try to put special features into
+> their switches trying to make the full NIC + switch solution as sticky
+> as possible.
 
-The cma destination address is not updated with the dst_addr passed in
-when ULP calls resolve address and id_priv state is 'bound' in
-resolve_prepare_src. Therefore the dgid passed into irdma driver to
-create an Address Handle AH) for the MAD QP is 0. The create AH descriptor
-as well as the ARP cache entry is invalid and HW throws an asynchronous
-events as result.
+Yep. At the high end open standards based ethernet has also notably
+"failed" as well. Every switch vendor now offers their own proprietary
+ecosystem on a whole bunch of different axis. They all present
+"ethernet" toward the host but the host often needs to work in a
+special way to really take full advantage of the proprietary fabric
+behaviors.
 
-[ 1207.656888] resolve_prepare_src caller: ucma_resolve_addr+0xff/0x170 [rdma_ucm] daddr=200.0.4.28 id_priv->state=7
-[....]
-[ 1207.680362] ice 0000:07:00.1 rocep7s0f1: caller: irdma_create_ah+0x3e/0x70 [irdma] ah_id=0 arp_idx=0 dest_ip=0.0.0.0
-destMAC=00:00:64:ca:b7:52 ipvalid=1 raw=0000:0000:0000:0000:0000:ffff:0000:0000
-[ 1207.682077] ice 0000:07:00.1 rocep7s0f1: abnormal ae_id = 0x401 bool qp=1 qp_id = 1, ae_src=5
-[ 1207.691657] infiniband rocep7s0f1: Fatal error (1) on MAD QP (1)
+> Last I checked every generation of HW from even a single vendor came out
+> with a new congestion control algorithm and add-ons. 
 
-Signed-off-by: Shiraz Saleem <shiraz.saleem@intel.com>
----
- drivers/infiniband/core/cma.c | 253 +++++++++++++++++-----------------
- 1 file changed, 123 insertions(+), 130 deletions(-)
+Probably, but I don't really view this as an IB or roce issue.
 
-diff --git a/drivers/infiniband/core/cma.c b/drivers/infiniband/core/cma.c
-index 1ee87c3aaeab..d8d0e4f02704 100644
---- a/drivers/infiniband/core/cma.c
-+++ b/drivers/infiniband/core/cma.c
-@@ -3549,6 +3549,121 @@ static int cma_resolve_ib_addr(struct rdma_id_private *id_priv)
- 	return ret;
- }
- 
-+static int cma_bind_addr(struct rdma_cm_id *id, struct sockaddr *src_addr,
-+			 const struct sockaddr *dst_addr)
-+{
-+	struct sockaddr_storage zero_sock = {};
-+
-+	if (src_addr && src_addr->sa_family)
-+		return rdma_bind_addr(id, src_addr);
-+
-+	/*
-+	 * When the src_addr is not specified, automatically supply an any addr
-+	 */
-+	zero_sock.ss_family = dst_addr->sa_family;
-+	if (IS_ENABLED(CONFIG_IPV6) && dst_addr->sa_family == AF_INET6) {
-+		struct sockaddr_in6 *src_addr6 =
-+			(struct sockaddr_in6 *)&zero_sock;
-+		struct sockaddr_in6 *dst_addr6 =
-+			(struct sockaddr_in6 *)dst_addr;
-+
-+		src_addr6->sin6_scope_id = dst_addr6->sin6_scope_id;
-+		if (ipv6_addr_type(&dst_addr6->sin6_addr) & IPV6_ADDR_LINKLOCAL)
-+			id->route.addr.dev_addr.bound_dev_if =
-+				dst_addr6->sin6_scope_id;
-+	} else if (dst_addr->sa_family == AF_IB) {
-+		((struct sockaddr_ib *)&zero_sock)->sib_pkey =
-+			((struct sockaddr_ib *)dst_addr)->sib_pkey;
-+	}
-+	return rdma_bind_addr(id, (struct sockaddr *)&zero_sock);
-+}
-+
-+/*
-+ * If required, resolve the source address for bind and leave the id_priv in
-+ * state RDMA_CM_ADDR_BOUND. This oddly uses the state to determine the prior
-+ * calls made by ULP, a previously bound ID will not be re-bound and src_addr is
-+ * ignored.
-+ */
-+static int resolve_prepare_src(struct rdma_id_private *id_priv,
-+			       struct sockaddr *src_addr,
-+			       const struct sockaddr *dst_addr)
-+{
-+	int ret;
-+
-+	memcpy(cma_dst_addr(id_priv), dst_addr, rdma_addr_size(dst_addr));
-+	if (!cma_comp_exch(id_priv, RDMA_CM_ADDR_BOUND, RDMA_CM_ADDR_QUERY)) {
-+		/* For a well behaved ULP state will be RDMA_CM_IDLE */
-+		ret = cma_bind_addr(&id_priv->id, src_addr, dst_addr);
-+		if (ret)
-+			goto err_dst;
-+		if (WARN_ON(!cma_comp_exch(id_priv, RDMA_CM_ADDR_BOUND,
-+					   RDMA_CM_ADDR_QUERY))) {
-+			ret = -EINVAL;
-+			goto err_dst;
-+		}
-+	}
-+
-+	if (cma_family(id_priv) != dst_addr->sa_family) {
-+		ret = -EINVAL;
-+		goto err_state;
-+	}
-+	return 0;
-+
-+err_state:
-+	cma_comp_exch(id_priv, RDMA_CM_ADDR_QUERY, RDMA_CM_ADDR_BOUND);
-+err_dst:
-+	memset(cma_dst_addr(id_priv), 0, rdma_addr_size(dst_addr));
-+	return ret;
-+}
-+
-+int rdma_resolve_addr(struct rdma_cm_id *id, struct sockaddr *src_addr,
-+		      const struct sockaddr *dst_addr, unsigned long timeout_ms)
-+{
-+	struct rdma_id_private *id_priv =
-+		container_of(id, struct rdma_id_private, id);
-+	int ret;
-+
-+	ret = resolve_prepare_src(id_priv, src_addr, dst_addr);
-+	if (ret)
-+		return ret;
-+
-+	if (cma_any_addr(dst_addr)) {
-+		ret = cma_resolve_loopback(id_priv);
-+	} else {
-+		if (dst_addr->sa_family == AF_IB) {
-+			ret = cma_resolve_ib_addr(id_priv);
-+		} else {
-+			/*
-+			 * The FSM can return back to RDMA_CM_ADDR_BOUND after
-+			 * rdma_resolve_ip() is called, eg through the error
-+			 * path in addr_handler(). If this happens the existing
-+			 * request must be canceled before issuing a new one.
-+			 * Since canceling a request is a bit slow and this
-+			 * oddball path is rare, keep track once a request has
-+			 * been issued. The track turns out to be a permanent
-+			 * state since this is the only cancel as it is
-+			 * immediately before rdma_resolve_ip().
-+			 */
-+			if (id_priv->used_resolve_ip)
-+				rdma_addr_cancel(&id->route.addr.dev_addr);
-+			else
-+				id_priv->used_resolve_ip = 1;
-+			ret = rdma_resolve_ip(cma_src_addr(id_priv), dst_addr,
-+					      &id->route.addr.dev_addr,
-+					      timeout_ms, addr_handler,
-+					      false, id_priv);
-+		}
-+	}
-+	if (ret)
-+		goto err;
-+
-+	return 0;
-+err:
-+	cma_comp_exch(id_priv, RDMA_CM_ADDR_QUERY, RDMA_CM_ADDR_BOUND);
-+	return ret;
-+}
-+EXPORT_SYMBOL(rdma_resolve_addr);
-+
- int rdma_set_reuseaddr(struct rdma_cm_id *id, int reuse)
- {
- 	struct rdma_id_private *id_priv;
-@@ -3951,26 +4066,27 @@ int rdma_listen(struct rdma_cm_id *id, int backlog)
- }
- EXPORT_SYMBOL(rdma_listen);
- 
--static int rdma_bind_addr_dst(struct rdma_id_private *id_priv,
--			      struct sockaddr *addr, const struct sockaddr *daddr)
-+int rdma_bind_addr(struct rdma_cm_id *id, struct sockaddr *addr)
- {
--	struct sockaddr *id_daddr;
-+	struct rdma_id_private *id_priv;
- 	int ret;
-+	struct sockaddr  *daddr;
- 
- 	if (addr->sa_family != AF_INET && addr->sa_family != AF_INET6 &&
- 	    addr->sa_family != AF_IB)
- 		return -EAFNOSUPPORT;
- 
-+	id_priv = container_of(id, struct rdma_id_private, id);
- 	if (!cma_comp_exch(id_priv, RDMA_CM_IDLE, RDMA_CM_ADDR_BOUND))
- 		return -EINVAL;
- 
--	ret = cma_check_linklocal(&id_priv->id.route.addr.dev_addr, addr);
-+	ret = cma_check_linklocal(&id->route.addr.dev_addr, addr);
- 	if (ret)
- 		goto err1;
- 
- 	memcpy(cma_src_addr(id_priv), addr, rdma_addr_size(addr));
- 	if (!cma_any_addr(addr)) {
--		ret = cma_translate_addr(addr, &id_priv->id.route.addr.dev_addr);
-+		ret = cma_translate_addr(addr, &id->route.addr.dev_addr);
- 		if (ret)
- 			goto err1;
- 
-@@ -3990,10 +4106,8 @@ static int rdma_bind_addr_dst(struct rdma_id_private *id_priv,
- 		}
- #endif
- 	}
--	id_daddr = cma_dst_addr(id_priv);
--	if (daddr != id_daddr)
--		memcpy(id_daddr, daddr, rdma_addr_size(addr));
--	id_daddr->sa_family = addr->sa_family;
-+	daddr = cma_dst_addr(id_priv);
-+	daddr->sa_family = addr->sa_family;
- 
- 	ret = cma_get_port(id_priv);
- 	if (ret)
-@@ -4009,127 +4123,6 @@ static int rdma_bind_addr_dst(struct rdma_id_private *id_priv,
- 	cma_comp_exch(id_priv, RDMA_CM_ADDR_BOUND, RDMA_CM_IDLE);
- 	return ret;
- }
--
--static int cma_bind_addr(struct rdma_cm_id *id, struct sockaddr *src_addr,
--			 const struct sockaddr *dst_addr)
--{
--	struct rdma_id_private *id_priv =
--		container_of(id, struct rdma_id_private, id);
--	struct sockaddr_storage zero_sock = {};
--
--	if (src_addr && src_addr->sa_family)
--		return rdma_bind_addr_dst(id_priv, src_addr, dst_addr);
--
--	/*
--	 * When the src_addr is not specified, automatically supply an any addr
--	 */
--	zero_sock.ss_family = dst_addr->sa_family;
--	if (IS_ENABLED(CONFIG_IPV6) && dst_addr->sa_family == AF_INET6) {
--		struct sockaddr_in6 *src_addr6 =
--			(struct sockaddr_in6 *)&zero_sock;
--		struct sockaddr_in6 *dst_addr6 =
--			(struct sockaddr_in6 *)dst_addr;
--
--		src_addr6->sin6_scope_id = dst_addr6->sin6_scope_id;
--		if (ipv6_addr_type(&dst_addr6->sin6_addr) & IPV6_ADDR_LINKLOCAL)
--			id->route.addr.dev_addr.bound_dev_if =
--				dst_addr6->sin6_scope_id;
--	} else if (dst_addr->sa_family == AF_IB) {
--		((struct sockaddr_ib *)&zero_sock)->sib_pkey =
--			((struct sockaddr_ib *)dst_addr)->sib_pkey;
--	}
--	return rdma_bind_addr_dst(id_priv, (struct sockaddr *)&zero_sock, dst_addr);
--}
--
--/*
-- * If required, resolve the source address for bind and leave the id_priv in
-- * state RDMA_CM_ADDR_BOUND. This oddly uses the state to determine the prior
-- * calls made by ULP, a previously bound ID will not be re-bound and src_addr is
-- * ignored.
-- */
--static int resolve_prepare_src(struct rdma_id_private *id_priv,
--			       struct sockaddr *src_addr,
--			       const struct sockaddr *dst_addr)
--{
--	int ret;
--
--	if (!cma_comp_exch(id_priv, RDMA_CM_ADDR_BOUND, RDMA_CM_ADDR_QUERY)) {
--		/* For a well behaved ULP state will be RDMA_CM_IDLE */
--		ret = cma_bind_addr(&id_priv->id, src_addr, dst_addr);
--		if (ret)
--			return ret;
--		if (WARN_ON(!cma_comp_exch(id_priv, RDMA_CM_ADDR_BOUND,
--					   RDMA_CM_ADDR_QUERY)))
--			return -EINVAL;
--
--	}
--
--	if (cma_family(id_priv) != dst_addr->sa_family) {
--		ret = -EINVAL;
--		goto err_state;
--	}
--	return 0;
--
--err_state:
--	cma_comp_exch(id_priv, RDMA_CM_ADDR_QUERY, RDMA_CM_ADDR_BOUND);
--	return ret;
--}
--
--int rdma_resolve_addr(struct rdma_cm_id *id, struct sockaddr *src_addr,
--		      const struct sockaddr *dst_addr, unsigned long timeout_ms)
--{
--	struct rdma_id_private *id_priv =
--		container_of(id, struct rdma_id_private, id);
--	int ret;
--
--	ret = resolve_prepare_src(id_priv, src_addr, dst_addr);
--	if (ret)
--		return ret;
--
--	if (cma_any_addr(dst_addr)) {
--		ret = cma_resolve_loopback(id_priv);
--	} else {
--		if (dst_addr->sa_family == AF_IB) {
--			ret = cma_resolve_ib_addr(id_priv);
--		} else {
--			/*
--			 * The FSM can return back to RDMA_CM_ADDR_BOUND after
--			 * rdma_resolve_ip() is called, eg through the error
--			 * path in addr_handler(). If this happens the existing
--			 * request must be canceled before issuing a new one.
--			 * Since canceling a request is a bit slow and this
--			 * oddball path is rare, keep track once a request has
--			 * been issued. The track turns out to be a permanent
--			 * state since this is the only cancel as it is
--			 * immediately before rdma_resolve_ip().
--			 */
--			if (id_priv->used_resolve_ip)
--				rdma_addr_cancel(&id->route.addr.dev_addr);
--			else
--				id_priv->used_resolve_ip = 1;
--			ret = rdma_resolve_ip(cma_src_addr(id_priv), dst_addr,
--					      &id->route.addr.dev_addr,
--					      timeout_ms, addr_handler,
--					      false, id_priv);
--		}
--	}
--	if (ret)
--		goto err;
--
--	return 0;
--err:
--	cma_comp_exch(id_priv, RDMA_CM_ADDR_QUERY, RDMA_CM_ADDR_BOUND);
--	return ret;
--}
--EXPORT_SYMBOL(rdma_resolve_addr);
--
--int rdma_bind_addr(struct rdma_cm_id *id, struct sockaddr *addr)
--{
--	struct rdma_id_private *id_priv =
--		container_of(id, struct rdma_id_private, id);
--
--	return rdma_bind_addr_dst(id_priv, addr, cma_dst_addr(id_priv));
--}
- EXPORT_SYMBOL(rdma_bind_addr);
- 
- static int cma_format_hdr(void *hdr, struct rdma_id_private *id_priv)
--- 
-2.31.1
+Back in the day, there was "data center ethernet" which was a
+standardization effort to try and tame some of these problems. roce
+was imagined as an important workload over DCE, but the effort was
+ethernet focused and generic. Sadly DCE and successor standard based
+congestion mangement approaches did not work, or were "standardized"
+in a way that had a big hole that needed to be filled with proprietary
+algorithms. Eventualy the interest in standardization seems to have
+waned and several of the big network operators seem to be valuing
+their unique congestion management as a proprietary element. From a
+vendor perspective this is has turned into an interop train
+wreck. Sigh.
 
+roce is just highly sensitive to loss - which is managed in ethernet
+through congestion management. This is why you see roce and congestion
+management so tightly linked, and perhaps in some deployments becomes
+the motivating reason to look at congestion management.
+
+However, TCP under congestion management is also very interesting and
+is a motivation to deploy congestion management in its own right in
+some cases.
+
+Jason
