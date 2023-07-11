@@ -2,51 +2,50 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F34874F78E
-	for <lists+linux-rdma@lfdr.de>; Tue, 11 Jul 2023 19:53:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D06074F78F
+	for <lists+linux-rdma@lfdr.de>; Tue, 11 Jul 2023 19:53:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231742AbjGKRxS (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 11 Jul 2023 13:53:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50160 "EHLO
+        id S231680AbjGKRxg (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 11 Jul 2023 13:53:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50472 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231680AbjGKRxR (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 11 Jul 2023 13:53:17 -0400
+        with ESMTP id S231765AbjGKRxf (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 11 Jul 2023 13:53:35 -0400
 Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F2714E55
-        for <linux-rdma@vger.kernel.org>; Tue, 11 Jul 2023 10:53:16 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 017B7E75
+        for <linux-rdma@vger.kernel.org>; Tue, 11 Jul 2023 10:53:33 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1689097996; x=1720633996;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=UCMTpmw21y3uzOlGpdf3BM0hksxK2jGdaP/9qtBBAE0=;
-  b=eCoM/6YBin7A1S8nNyz/IwMBnNHcX97SPhQ8t0xVZvy3iMjsV9d2m45e
-   B8IS9YX6gQ+SwK2uFQTrPWkulPkSCNztBMTwxTQersTTq1N1NB6W4ZPet
-   YUPYg8shwb7LP4w9BlPLpHJ7M8liiDT4/2vJ3sYVJyGPYi3+Iz3pAC1Cr
-   A9A77rtu7t8ygN5lo14QGSOu5Mni+gQ82XxBIAH1so5rfgsjqRK80wy+G
-   HGcjSRAgrZdsG4jSb1OxD9+MeZIiejxzhWlz7tT4XqABuobd9UhbmEeGq
-   DxY2w1ggq6EjhM+QmigcrBF9nMi1r+M+CTY7sX51RitslDcRG2+c8E8c9
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10768"; a="395482614"
+  t=1689098013; x=1720634013;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=l/lIAH6znHcmKi2Nacg770J+FO8rVxHGAivFgHWAZ1I=;
+  b=IcdbtAfevDrE+bn73PWZs0pCWP647b7ud4NqZ8/yJ2ZVkqGdKFs4+vAY
+   J8jcJli0DM/8MeMWIHXS2YqTPGBYGXbOnaHsFTyuHflSn6S+IvG7AS7b6
+   Gx6PDhhebzEP+zGyZgC0jNMvv0onEy5j61aRS+Ijag2evKSa/ah0ITIRf
+   RmtkBM+W2SoSbmTvlR3AmklWYt+pxi5wQFBiz1nmx442HIZHXqmBEbFSy
+   Q+jZNiNeCmSH+TJe6hRrg2Tc7YsJRdCF7jQyEC+018cqCdHx/FGwm4Z6E
+   evMIMhmNpeViAluiMZ0+VDAuqzAVoLaEDGiBEOPhocHVrm6t+pumXMYgT
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10768"; a="395482731"
 X-IronPort-AV: E=Sophos;i="6.01,197,1684825200"; 
-   d="scan'208";a="395482614"
+   d="scan'208";a="395482731"
 Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Jul 2023 10:53:08 -0700
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Jul 2023 10:53:33 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10768"; a="724542505"
+X-IronPort-AV: E=McAfee;i="6600,9927,10768"; a="724542559"
 X-IronPort-AV: E=Sophos;i="6.01,197,1684825200"; 
-   d="scan'208";a="724542505"
+   d="scan'208";a="724542559"
 Received: from ssaleem-mobl1.amr.corp.intel.com ([10.92.33.5])
-  by fmsmga007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Jul 2023 10:53:08 -0700
+  by fmsmga007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Jul 2023 10:53:31 -0700
 From:   Shiraz Saleem <shiraz.saleem@intel.com>
 To:     jgg@nvidia.com, leon@kernel.org, linux-rdma@vger.kernel.org
-Cc:     Shiraz Saleem <shiraz.saleem@intel.com>
-Subject: [PATCH for-rc 3/3] RDMA/irdma: Fix data race on CQP request done
-Date:   Tue, 11 Jul 2023 12:52:53 -0500
-Message-Id: <20230711175253.1289-4-shiraz.saleem@intel.com>
+Cc:     Mustafa Ismail <mustafa.ismail@intel.com>,
+        Shiraz Saleem <shiraz.saleem@intel.com>
+Subject: [PATCH for-next v2] RDMA/irdma: Implement egress VLAN priority
+Date:   Tue, 11 Jul 2023 12:53:18 -0500
+Message-Id: <20230711175318.1301-1-shiraz.saleem@intel.com>
 X-Mailer: git-send-email 2.39.0
-In-Reply-To: <20230711175253.1289-1-shiraz.saleem@intel.com>
-References: <20230711175253.1289-1-shiraz.saleem@intel.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
@@ -60,118 +59,231 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-KCSAN detects a data race on cqp_request->request_done memory location
-which is accessed locklessly in irdma_handle_cqp_op while being
-updated in irdma_cqp_ce_handler.
+From: Mustafa Ismail <mustafa.ismail@intel.com>
 
-Annotate lockless intent with READ_ONCE/WRITE_ONCE to avoid any
-compiler optimizations like load fusing and/or KCSAN warning.
+When a VLAN interface is in use, get and use the VLAN
+egress mapping.
 
-[222808.417128] BUG: KCSAN: data-race in irdma_cqp_ce_handler [irdma] / irdma_wait_event [irdma]
-
-[222808.417532] write to 0xffff8e44107019dc of 1 bytes by task 29658 on cpu 5:
-[222808.417610]  irdma_cqp_ce_handler+0x21e/0x270 [irdma]
-[222808.417725]  cqp_compl_worker+0x1b/0x20 [irdma]
-[222808.417827]  process_one_work+0x4d1/0xa40
-[222808.417835]  worker_thread+0x319/0x700
-[222808.417842]  kthread+0x180/0x1b0
-[222808.417852]  ret_from_fork+0x22/0x30
-
-[222808.417918] read to 0xffff8e44107019dc of 1 bytes by task 29688 on cpu 1:
-[222808.417995]  irdma_wait_event+0x1e2/0x2c0 [irdma]
-[222808.418099]  irdma_handle_cqp_op+0xae/0x170 [irdma]
-[222808.418202]  irdma_cqp_cq_destroy_cmd+0x70/0x90 [irdma]
-[222808.418308]  irdma_puda_dele_rsrc+0x46d/0x4d0 [irdma]
-[222808.418411]  irdma_rt_deinit_hw+0x179/0x1d0 [irdma]
-[222808.418514]  irdma_ib_dealloc_device+0x11/0x40 [irdma]
-[222808.418618]  ib_dealloc_device+0x2a/0x120 [ib_core]
-[222808.418823]  __ib_unregister_device+0xde/0x100 [ib_core]
-[222808.418981]  ib_unregister_device+0x22/0x40 [ib_core]
-[222808.419142]  irdma_ib_unregister_device+0x70/0x90 [irdma]
-[222808.419248]  i40iw_close+0x6f/0xc0 [irdma]
-[222808.419352]  i40e_client_device_unregister+0x14a/0x180 [i40e]
-[222808.419450]  i40iw_remove+0x21/0x30 [irdma]
-[222808.419554]  auxiliary_bus_remove+0x31/0x50
-[222808.419563]  device_remove+0x69/0xb0
-[222808.419572]  device_release_driver_internal+0x293/0x360
-[222808.419582]  driver_detach+0x7c/0xf0
-[222808.419592]  bus_remove_driver+0x8c/0x150
-[222808.419600]  driver_unregister+0x45/0x70
-[222808.419610]  auxiliary_driver_unregister+0x16/0x30
-[222808.419618]  irdma_exit_module+0x18/0x1e [irdma]
-[222808.419733]  __do_sys_delete_module.constprop.0+0x1e2/0x310
-[222808.419745]  __x64_sys_delete_module+0x1b/0x30
-[222808.419755]  do_syscall_64+0x39/0x90
-[222808.419763]  entry_SYSCALL_64_after_hwframe+0x63/0xcd
-
-[222808.419829] value changed: 0x01 -> 0x03
-
-Fixes: 915cc7ac0f8 ("RDMA/irdma: Add miscellaneous utility definitions")
+Signed-off-by: Mustafa Ismail <mustafa.ismail@intel.com>
 Signed-off-by: Shiraz Saleem <shiraz.saleem@intel.com>
 ---
- drivers/infiniband/hw/irdma/hw.c    | 2 +-
- drivers/infiniband/hw/irdma/main.h  | 2 +-
- drivers/infiniband/hw/irdma/utils.c | 6 +++---
- 3 files changed, 5 insertions(+), 5 deletions(-)
+v1-->v2:
+Use the ndev inside rcu_read_lock and process inline instead
+of calling irdma_netdev_vlan_ipv6().
 
-diff --git a/drivers/infiniband/hw/irdma/hw.c b/drivers/infiniband/hw/irdma/hw.c
-index 795f7fd..1cfc03d 100644
---- a/drivers/infiniband/hw/irdma/hw.c
-+++ b/drivers/infiniband/hw/irdma/hw.c
-@@ -2075,7 +2075,7 @@ void irdma_cqp_ce_handler(struct irdma_pci_f *rf, struct irdma_sc_cq *cq)
- 			cqp_request->compl_info.error = info.error;
+v0-->v1:
+Use rcu_dereference on GID attribute __rcu pointer
+vs the function arg in irdma_roce_get_vlan_prio
+---
+ drivers/infiniband/hw/irdma/cm.c    | 66 +++++++++++++++++++++++++++--
+ drivers/infiniband/hw/irdma/verbs.c | 45 ++++++++++++++++----
+ 2 files changed, 99 insertions(+), 12 deletions(-)
+
+diff --git a/drivers/infiniband/hw/irdma/cm.c b/drivers/infiniband/hw/irdma/cm.c
+index 70009b970e08..6b71b67ce9ff 100644
+--- a/drivers/infiniband/hw/irdma/cm.c
++++ b/drivers/infiniband/hw/irdma/cm.c
+@@ -1555,6 +1555,41 @@ static int irdma_del_multiple_qhash(struct irdma_device *iwdev,
+ 	return ret;
+ }
  
- 			if (cqp_request->waiting) {
--				cqp_request->request_done = true;
-+				WRITE_ONCE(cqp_request->request_done, true);
- 				wake_up(&cqp_request->waitq);
- 				irdma_put_cqp_request(&rf->cqp, cqp_request);
- 			} else {
-diff --git a/drivers/infiniband/hw/irdma/main.h b/drivers/infiniband/hw/irdma/main.h
-index def6dd5..2323962 100644
---- a/drivers/infiniband/hw/irdma/main.h
-+++ b/drivers/infiniband/hw/irdma/main.h
-@@ -161,8 +161,8 @@ struct irdma_cqp_request {
- 	void (*callback_fcn)(struct irdma_cqp_request *cqp_request);
- 	void *param;
- 	struct irdma_cqp_compl_info compl_info;
-+	bool request_done; /* READ/WRITE_ONCE macros operate on it */
- 	bool waiting:1;
--	bool request_done:1;
- 	bool dynamic:1;
- };
++static u8 irdma_iw_get_vlan_prio(u32 *loc_addr, u8 prio, bool ipv4)
++{
++	struct net_device *ndev = NULL;
++
++	rcu_read_lock();
++	if (ipv4) {
++		ndev = ip_dev_find(&init_net, htonl(loc_addr[0]));
++	} else {
++		struct net_device *ip_dev;
++		struct in6_addr laddr6;
++
++		irdma_copy_ip_htonl(laddr6.in6_u.u6_addr32, loc_addr);
++
++		for_each_netdev_rcu (&init_net, ip_dev) {
++			if (ipv6_chk_addr(&init_net, &laddr6, ip_dev, 1)) {
++				ndev = ip_dev;
++				break;
++			}
++		}
++	}
++
++	if (!ndev)
++		goto done;
++	if (is_vlan_dev(ndev))
++		prio = (vlan_dev_get_egress_qos_mask(ndev, prio) & VLAN_PRIO_MASK)
++			>> VLAN_PRIO_SHIFT;
++	if (ipv4)
++		dev_put(ndev);
++
++done:
++	rcu_read_unlock();
++
++	return prio;
++}
++
+ /**
+  * irdma_netdev_vlan_ipv6 - Gets the netdev and mac
+  * @addr: local IPv6 address
+@@ -1667,6 +1702,12 @@ static int irdma_add_mqh_6(struct irdma_device *iwdev,
+ 					    ifp->addr.in6_u.u6_addr32);
+ 			memcpy(cm_info->loc_addr, child_listen_node->loc_addr,
+ 			       sizeof(cm_info->loc_addr));
++			if (!iwdev->vsi.dscp_mode)
++				cm_info->user_pri =
++				irdma_iw_get_vlan_prio(child_listen_node->loc_addr,
++						       cm_info->user_pri,
++						       false);
++
+ 			ret = irdma_manage_qhash(iwdev, cm_info,
+ 						 IRDMA_QHASH_TYPE_TCP_SYN,
+ 						 IRDMA_QHASH_MANAGE_TYPE_ADD,
+@@ -1751,6 +1792,11 @@ static int irdma_add_mqh_4(struct irdma_device *iwdev,
+ 				ntohl(ifa->ifa_address);
+ 			memcpy(cm_info->loc_addr, child_listen_node->loc_addr,
+ 			       sizeof(cm_info->loc_addr));
++			if (!iwdev->vsi.dscp_mode)
++				cm_info->user_pri =
++				irdma_iw_get_vlan_prio(child_listen_node->loc_addr,
++						       cm_info->user_pri,
++						       true);
+ 			ret = irdma_manage_qhash(iwdev, cm_info,
+ 						 IRDMA_QHASH_TYPE_TCP_SYN,
+ 						 IRDMA_QHASH_MANAGE_TYPE_ADD,
+@@ -2219,6 +2265,10 @@ irdma_make_cm_node(struct irdma_cm_core *cm_core, struct irdma_device *iwdev,
+ 		} else {
+ 			cm_node->tos = max(listener->tos, cm_info->tos);
+ 			cm_node->user_pri = rt_tos2priority(cm_node->tos);
++			cm_node->user_pri =
++				irdma_iw_get_vlan_prio(cm_info->loc_addr,
++						       cm_node->user_pri,
++						       cm_info->ipv4);
+ 		}
+ 		ibdev_dbg(&iwdev->ibdev,
+ 			  "DCB: listener: TOS:[%d] UP:[%d]\n", cm_node->tos,
+@@ -3832,11 +3882,15 @@ int irdma_connect(struct iw_cm_id *cm_id, struct iw_cm_conn_param *conn_param)
+ 	cm_info.cm_id = cm_id;
+ 	cm_info.qh_qpid = iwdev->vsi.ilq->qp_id;
+ 	cm_info.tos = cm_id->tos;
+-	if (iwdev->vsi.dscp_mode)
++	if (iwdev->vsi.dscp_mode) {
+ 		cm_info.user_pri =
+ 			iwqp->sc_qp.vsi->dscp_map[irdma_tos2dscp(cm_info.tos)];
+-	else
++	} else {
+ 		cm_info.user_pri = rt_tos2priority(cm_id->tos);
++		cm_info.user_pri = irdma_iw_get_vlan_prio(cm_info.loc_addr,
++							  cm_info.user_pri,
++							  cm_info.ipv4);
++	}
  
-diff --git a/drivers/infiniband/hw/irdma/utils.c b/drivers/infiniband/hw/irdma/utils.c
-index 775a799..eb083f7 100644
---- a/drivers/infiniband/hw/irdma/utils.c
-+++ b/drivers/infiniband/hw/irdma/utils.c
-@@ -481,7 +481,7 @@ void irdma_free_cqp_request(struct irdma_cqp *cqp,
- 	if (cqp_request->dynamic) {
- 		kfree(cqp_request);
- 	} else {
--		cqp_request->request_done = false;
-+		WRITE_ONCE(cqp_request->request_done, false);
- 		cqp_request->callback_fcn = NULL;
- 		cqp_request->waiting = false;
+ 	if (iwqp->sc_qp.dev->ws_add(iwqp->sc_qp.vsi, cm_info.user_pri))
+ 		return -ENOMEM;
+@@ -3980,7 +4034,7 @@ int irdma_create_listen(struct iw_cm_id *cm_id, int backlog)
+ 	cm_listen_node->tos = cm_id->tos;
+ 	if (iwdev->vsi.dscp_mode)
+ 		cm_listen_node->user_pri =
+-			iwdev->vsi.dscp_map[irdma_tos2dscp(cm_id->tos)];
++		iwdev->vsi.dscp_map[irdma_tos2dscp(cm_id->tos)];
+ 	else
+ 		cm_listen_node->user_pri = rt_tos2priority(cm_id->tos);
+ 	cm_info.user_pri = cm_listen_node->user_pri;
+@@ -3990,6 +4044,12 @@ int irdma_create_listen(struct iw_cm_id *cm_id, int backlog)
+ 			if (err)
+ 				goto error;
+ 		} else {
++			if (!iwdev->vsi.dscp_mode)
++				cm_listen_node->user_pri =
++				irdma_iw_get_vlan_prio(cm_info.loc_addr,
++						       cm_info.user_pri,
++						       cm_info.ipv4);
++			cm_info.user_pri = cm_listen_node->user_pri;
+ 			err = irdma_manage_qhash(iwdev, &cm_info,
+ 						 IRDMA_QHASH_TYPE_TCP_SYN,
+ 						 IRDMA_QHASH_MANAGE_TYPE_ADD,
+diff --git a/drivers/infiniband/hw/irdma/verbs.c b/drivers/infiniband/hw/irdma/verbs.c
+index 9c4fe4fa9001..9964483ff052 100644
+--- a/drivers/infiniband/hw/irdma/verbs.c
++++ b/drivers/infiniband/hw/irdma/verbs.c
+@@ -1098,6 +1098,24 @@ static int irdma_query_pkey(struct ib_device *ibdev, u32 port, u16 index,
+ 	return 0;
+ }
  
-@@ -515,7 +515,7 @@ void irdma_put_cqp_request(struct irdma_cqp *cqp,
- {
- 	if (cqp_request->waiting) {
- 		cqp_request->compl_info.error = true;
--		cqp_request->request_done = true;
-+		WRITE_ONCE(cqp_request->request_done, true);
- 		wake_up(&cqp_request->waitq);
++static u8 irdma_roce_get_vlan_prio(const struct ib_gid_attr *attr, u8 prio)
++{
++	struct net_device *ndev;
++
++	rcu_read_lock();
++	ndev = rcu_dereference(attr->ndev);
++	if (!ndev)
++		goto exit;
++	if (is_vlan_dev(ndev)) {
++		u16 vlan_qos = vlan_dev_get_egress_qos_mask(ndev, prio);
++
++		prio = (vlan_qos & VLAN_PRIO_MASK) >> VLAN_PRIO_SHIFT;
++	}
++exit:
++	rcu_read_unlock();
++	return prio;
++}
++
+ /**
+  * irdma_modify_qp_roce - modify qp request
+  * @ibqp: qp's pointer for modify
+@@ -1174,7 +1192,8 @@ int irdma_modify_qp_roce(struct ib_qp *ibqp, struct ib_qp_attr *attr,
+ 
+ 	if (attr_mask & IB_QP_AV) {
+ 		struct irdma_av *av = &iwqp->roce_ah.av;
+-		const struct ib_gid_attr *sgid_attr;
++		const struct ib_gid_attr *sgid_attr =
++				attr->ah_attr.grh.sgid_attr;
+ 		u16 vlan_id = VLAN_N_VID;
+ 		u32 local_ip[4];
+ 
+@@ -1189,17 +1208,22 @@ int irdma_modify_qp_roce(struct ib_qp *ibqp, struct ib_qp_attr *attr,
+ 						   roce_info->dest_qp);
+ 			irdma_qp_rem_qos(&iwqp->sc_qp);
+ 			dev->ws_remove(iwqp->sc_qp.vsi, ctx_info->user_pri);
+-			ctx_info->user_pri = rt_tos2priority(udp_info->tos);
+-			iwqp->sc_qp.user_pri = ctx_info->user_pri;
+-			if (dev->ws_add(iwqp->sc_qp.vsi, ctx_info->user_pri))
+-				return -ENOMEM;
+-			irdma_qp_add_qos(&iwqp->sc_qp);
++			if (iwqp->sc_qp.vsi->dscp_mode)
++				ctx_info->user_pri =
++				iwqp->sc_qp.vsi->dscp_map[irdma_tos2dscp(udp_info->tos)];
++			else
++				ctx_info->user_pri = rt_tos2priority(udp_info->tos);
+ 		}
+-		sgid_attr = attr->ah_attr.grh.sgid_attr;
+ 		ret = rdma_read_gid_l2_fields(sgid_attr, &vlan_id,
+ 					      ctx_info->roce_info->mac_addr);
+ 		if (ret)
+ 			return ret;
++		ctx_info->user_pri = irdma_roce_get_vlan_prio(sgid_attr,
++							      ctx_info->user_pri);
++		if (dev->ws_add(iwqp->sc_qp.vsi, ctx_info->user_pri))
++			return -ENOMEM;
++		iwqp->sc_qp.user_pri = ctx_info->user_pri;
++		irdma_qp_add_qos(&iwqp->sc_qp);
+ 
+ 		if (vlan_id >= VLAN_N_VID && iwdev->dcb_vlan_mode)
+ 			vlan_id = 0;
+@@ -4261,9 +4285,12 @@ static int irdma_setup_ah(struct ib_ah *ibah, struct rdma_ah_init_attr *attr)
+ 		ah_info->vlan_tag = 0;
+ 
+ 	if (ah_info->vlan_tag < VLAN_N_VID) {
++		u8 prio = rt_tos2priority(ah_info->tc_tos);
++
++		prio = irdma_roce_get_vlan_prio(sgid_attr, prio);
++
++		ah_info->vlan_tag |= (u16)prio << VLAN_PRIO_SHIFT;
+ 		ah_info->insert_vlan_tag = true;
+-		ah_info->vlan_tag |=
+-			rt_tos2priority(ah_info->tc_tos) << VLAN_PRIO_SHIFT;
  	}
- 	wait_event_timeout(cqp->remove_wq,
-@@ -571,7 +571,7 @@ static int irdma_wait_event(struct irdma_pci_f *rf,
- 	do {
- 		irdma_cqp_ce_handler(rf, &rf->ccq.sc_cq);
- 		if (wait_event_timeout(cqp_request->waitq,
--				       cqp_request->request_done,
-+				       READ_ONCE(cqp_request->request_done),
- 				       msecs_to_jiffies(CQP_COMPL_WAIT_TIME_MS)))
- 			break;
  
+ 	return 0;
 -- 
-1.8.3.1
+2.31.1
 
