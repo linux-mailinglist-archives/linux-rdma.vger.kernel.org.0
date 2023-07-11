@@ -2,116 +2,122 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 34A0F74F8C0
-	for <lists+linux-rdma@lfdr.de>; Tue, 11 Jul 2023 22:09:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 23A8374F8D9
+	for <lists+linux-rdma@lfdr.de>; Tue, 11 Jul 2023 22:14:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230058AbjGKUJH (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 11 Jul 2023 16:09:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37596 "EHLO
+        id S229560AbjGKUOt (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 11 Jul 2023 16:14:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40464 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229537AbjGKUJG (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 11 Jul 2023 16:09:06 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A7DA7139;
-        Tue, 11 Jul 2023 13:09:05 -0700 (PDT)
+        with ESMTP id S230018AbjGKUOs (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 11 Jul 2023 16:14:48 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28865188;
+        Tue, 11 Jul 2023 13:14:47 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 3A84A61566;
-        Tue, 11 Jul 2023 20:09:05 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1F5A5C433C8;
-        Tue, 11 Jul 2023 20:09:04 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 9A9F1615F4;
+        Tue, 11 Jul 2023 20:14:46 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 79250C433C9;
+        Tue, 11 Jul 2023 20:14:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1689106144;
-        bh=wk7VELBrn/wBoMAIT6EmbBSd/EdsoGglWydsGe0Fzns=;
+        s=k20201202; t=1689106486;
+        bh=QQ99VSEJ6m4sXmbmothGlilr6UcEysLFPY7XMiYqWYE=;
         h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=anzmEXzmRgeCPp6Qh3t9tE3C7pdprZE1CwU0MRqgfvbT27tru+k4O8YTUI0Fiwz82
-         y8DEEOcYoQxuVjlFWNgLIfImiodY3KEmY4I5GPH2Ig/dUP0YaW1mDGCj2w8epifs5Q
-         +3Hw2EB5AdooqhZG/DJ0FmTutld7DHw9Ia/xT02TMjfzkilnRYRtJ4hCE1O3pI6PlP
-         cDn8vSvmeEOtrc/HcJiHVi0NkFOtyzk7WOPSCBI0gSj1y7AmHGYbe2Q6spx+69eY/I
-         huGaVLSPSaw1HDvV43v9T32uygt5dRYBRtnw3El5hJ8WDViV+katflTokrBwejeQvL
-         DU262nhnKPCgA==
-Date:   Tue, 11 Jul 2023 13:09:03 -0700
+        b=F31+5G5q1kfmzpJ15gBHIwtHxL9nwCFFLcEOKirbusA2Twqp9jcnzJRCtb14dlq94
+         PjV0eAAjnd7Cd9joG25dBCL1xkx1chsR2rvqFGyerUkjJOXzEyr0nmjXAV93oeYoHr
+         m29+ZJu0dCzQLyaD+3cJI3ZPQ+s1BCFfnRyEIvacR8gaO/H4QBppX/wxTIlxkx38V8
+         7HPEQ/ThdwClPfg+enYIkIq7DobUatOn0MLuTyhWiICws1x6v/0LET2YeIEmf+qq8U
+         pRmOm3JmcsrKQ+leYH5bieK1ykedF2/GHCsOf/3Q+EawbagWjlfefvtjzi+sYdYbtY
+         jpvvU8v026JvA==
+Date:   Tue, 11 Jul 2023 13:14:43 -0700
 From:   Jakub Kicinski <kuba@kernel.org>
-To:     Alexander Lobakin <aleksander.lobakin@intel.com>
-Cc:     Yunsheng Lin <yunshenglin0825@gmail.com>,
-        Yunsheng Lin <linyunsheng@huawei.com>, <davem@davemloft.net>,
-        <pabeni@redhat.com>, <netdev@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>,
-        Lorenzo Bianconi <lorenzo@kernel.org>,
-        Alexander Duyck <alexander.duyck@gmail.com>,
-        Liang Chen <liangchen.linux@gmail.com>,
-        Saeed Mahameed <saeedm@nvidia.com>,
-        "Leon Romanovsky" <leon@kernel.org>,
-        Eric Dumazet <edumazet@google.com>,
-        "Jesper Dangaard Brouer" <hawk@kernel.org>,
-        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
-        <linux-rdma@vger.kernel.org>
-Subject: Re: [PATCH v5 RFC 1/6] page_pool: frag API support for 32-bit arch
- with 64-bit DMA
-Message-ID: <20230711130903.2961a804@kernel.org>
-In-Reply-To: <1bec23ff-d38b-3fdf-1bb3-89658c1d465a@intel.com>
-References: <20230629120226.14854-1-linyunsheng@huawei.com>
-        <20230629120226.14854-2-linyunsheng@huawei.com>
-        <20230707170157.12727e44@kernel.org>
-        <3d973088-4881-0863-0207-36d61b4505ec@gmail.com>
-        <20230710113841.482cbeac@kernel.org>
-        <8639b838-8284-05a2-dbc3-7e4cb45f163a@intel.com>
-        <20230711093705.45454e41@kernel.org>
-        <1bec23ff-d38b-3fdf-1bb3-89658c1d465a@intel.com>
+To:     "Kubalewski, Arkadiusz" <arkadiusz.kubalewski@intel.com>
+Cc:     Jiri Pirko <jiri@resnulli.us>, "vadfed@meta.com" <vadfed@meta.com>,
+        "jonathan.lemon@gmail.com" <jonathan.lemon@gmail.com>,
+        "pabeni@redhat.com" <pabeni@redhat.com>,
+        "corbet@lwn.net" <corbet@lwn.net>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        "edumazet@google.com" <edumazet@google.com>,
+        "vadfed@fb.com" <vadfed@fb.com>,
+        "Brandeburg, Jesse" <jesse.brandeburg@intel.com>,
+        "Nguyen, Anthony L" <anthony.l.nguyen@intel.com>,
+        "M, Saeed" <saeedm@nvidia.com>,
+        "leon@kernel.org" <leon@kernel.org>,
+        "richardcochran@gmail.com" <richardcochran@gmail.com>,
+        "sj@kernel.org" <sj@kernel.org>,
+        "javierm@redhat.com" <javierm@redhat.com>,
+        "ricardo.canuelo@collabora.com" <ricardo.canuelo@collabora.com>,
+        "mst@redhat.com" <mst@redhat.com>,
+        "tzimmermann@suse.de" <tzimmermann@suse.de>,
+        "Michalik, Michal" <michal.michalik@intel.com>,
+        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
+        "jacek.lawrynowicz@linux.intel.com" 
+        <jacek.lawrynowicz@linux.intel.com>,
+        "airlied@redhat.com" <airlied@redhat.com>,
+        "ogabbay@kernel.org" <ogabbay@kernel.org>,
+        "arnd@arndb.de" <arnd@arndb.de>,
+        "nipun.gupta@amd.com" <nipun.gupta@amd.com>,
+        "axboe@kernel.dk" <axboe@kernel.dk>,
+        "linux@zary.sk" <linux@zary.sk>,
+        "masahiroy@kernel.org" <masahiroy@kernel.org>,
+        "benjamin.tissoires@redhat.com" <benjamin.tissoires@redhat.com>,
+        "geert+renesas@glider.be" <geert+renesas@glider.be>,
+        "Olech, Milena" <milena.olech@intel.com>,
+        "kuniyu@amazon.com" <kuniyu@amazon.com>,
+        "liuhangbin@gmail.com" <liuhangbin@gmail.com>,
+        "hkallweit1@gmail.com" <hkallweit1@gmail.com>,
+        "andy.ren@getcruise.com" <andy.ren@getcruise.com>,
+        "razor@blackwall.org" <razor@blackwall.org>,
+        "idosch@nvidia.com" <idosch@nvidia.com>,
+        "lucien.xin@gmail.com" <lucien.xin@gmail.com>,
+        "nicolas.dichtel@6wind.com" <nicolas.dichtel@6wind.com>,
+        "phil@nwl.cc" <phil@nwl.cc>,
+        "claudiajkang@gmail.com" <claudiajkang@gmail.com>,
+        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "intel-wired-lan@lists.osuosl.org" <intel-wired-lan@lists.osuosl.org>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>, poros <poros@redhat.com>,
+        mschmidt <mschmidt@redhat.com>,
+        "linux-clk@vger.kernel.org" <linux-clk@vger.kernel.org>,
+        "vadim.fedorenko@linux.dev" <vadim.fedorenko@linux.dev>
+Subject: Re: [RFC PATCH v9 00/10] Create common DPLL configuration API
+Message-ID: <20230711131443.2a4af476@kernel.org>
+In-Reply-To: <DM6PR11MB4657067EE043F4DBB9D8B03B9B31A@DM6PR11MB4657.namprd11.prod.outlook.com>
+References: <20230623123820.42850-1-arkadiusz.kubalewski@intel.com>
+        <ZJq3a6rl6dnPMV17@nanopsycho>
+        <DM6PR11MB4657084DDD7554663F86C1C19B24A@DM6PR11MB4657.namprd11.prod.outlook.com>
+        <ZJwWXZmZe4lQ04iK@nanopsycho>
+        <DM6PR11MB4657751607C36FC711271D639B30A@DM6PR11MB4657.namprd11.prod.outlook.com>
+        <ZKv1FRTXWLnLGRRS@nanopsycho>
+        <DM6PR11MB46575D14FFE115546FDC9DEB9B31A@DM6PR11MB4657.namprd11.prod.outlook.com>
+        <ZK1CizcqjqO1L/RQ@nanopsycho>
+        <DM6PR11MB4657067EE043F4DBB9D8B03B9B31A@DM6PR11MB4657.namprd11.prod.outlook.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Tue, 11 Jul 2023 18:59:51 +0200 Alexander Lobakin wrote:
-> From: Jakub Kicinski <kuba@kernel.org>
-> Date: Tue, 11 Jul 2023 09:37:05 -0700
+On Tue, 11 Jul 2023 17:17:51 +0000 Kubalewski, Arkadiusz wrote:
+> >I think better to add the check to pin-register so future synce pin
+> >users don't have similar weird ideas. Could you please add this check?
 > 
-> > On Tue, 11 Jul 2023 12:59:00 +0200 Alexander Lobakin wrote:  
-> >> I'm fine with that, although ain't really able to work on this myself
-> >> now :s (BTW I almost finished Netlink bigints, just some more libie/IAVF
-> >> crap).  
-> > 
-> > FWIW I was thinking about the bigints recently, and from ynl
-> > perspective I think we may want two flavors :( One which is at
-> > most the length of platform's long long, and another which is  
-> 
-> `long long` or `long`? `long long` is always 64-bit unless I'm missing
-> something. On my 32-bit MIPS they were :D
-> If `long long`, what's the point then if we have %NLA_U64 and would
-> still have to add dumb padding attrs? :D I thought the idea was to carry
-> 64+ bits encapsulated in 32-bit primitives.
+> Don't think it is way to go, and I don't think there is anything good
+> with preventing device drivers from labeling their pins the way they want.
 
-Sorry I confused things. Keep in mind we're only talking about what 
-the generated YNL code ends up looking like, not the "wire" format.
-So we still "transport" things as multiple 32b chunks at netlink level.
-No padding.
-
-The question is how to render the C / C++ code on the YNL side (or 
-any practical library). Are we storing all those values as bigints and
-require users to coerce them to a more natural type on each access?
-That'd defeat the goal of the new int type becoming the default /
-"don't overthink the sizing" type.
-
-If we have a subtype with a max size of 64b, it can be 32b or 64b on
-the wire, as needed, but user space can feel assured that u64 will
-always be able to store the result.
-
-The long long is my misguided attempt to be platform dependent.
-I think a better way of putting it would actually be 2 * sizeof(long).
-That way we can use u128 as max, which seems to only be defined on 64b
-platforms. But that's just a random thought, I'm not sure how useful 
-it would be.
-
-Perhaps we need two types, one "basic" which tops out at 64b and one
-"really bigint" which can be used as bitmaps as well?
+We had a long argument about how label should have a clearly defined
+meaning. We're not going to rehash it on every revision. What did 
+I miss :|
