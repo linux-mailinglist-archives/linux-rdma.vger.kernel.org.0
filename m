@@ -2,64 +2,63 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 38BF174ED8C
-	for <lists+linux-rdma@lfdr.de>; Tue, 11 Jul 2023 14:05:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B3E3674EFE9
+	for <lists+linux-rdma@lfdr.de>; Tue, 11 Jul 2023 15:11:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231357AbjGKMFI (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 11 Jul 2023 08:05:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43076 "EHLO
+        id S232918AbjGKNLb (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 11 Jul 2023 09:11:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39912 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230128AbjGKMFH (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 11 Jul 2023 08:05:07 -0400
-Received: from mail-qk1-x735.google.com (mail-qk1-x735.google.com [IPv6:2607:f8b0:4864:20::735])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B48DE5C
-        for <linux-rdma@vger.kernel.org>; Tue, 11 Jul 2023 05:05:05 -0700 (PDT)
-Received: by mail-qk1-x735.google.com with SMTP id af79cd13be357-7679ea01e16so524900785a.2
-        for <linux-rdma@vger.kernel.org>; Tue, 11 Jul 2023 05:05:05 -0700 (PDT)
+        with ESMTP id S229907AbjGKNLa (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 11 Jul 2023 09:11:30 -0400
+Received: from mail-pg1-x52c.google.com (mail-pg1-x52c.google.com [IPv6:2607:f8b0:4864:20::52c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CFCFC18D
+        for <linux-rdma@vger.kernel.org>; Tue, 11 Jul 2023 06:11:28 -0700 (PDT)
+Received: by mail-pg1-x52c.google.com with SMTP id 41be03b00d2f7-55779047021so3901374a12.3
+        for <linux-rdma@vger.kernel.org>; Tue, 11 Jul 2023 06:11:28 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google; t=1689077104; x=1691669104;
+        d=ziepe.ca; s=google; t=1689081088; x=1691673088;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=sDj/nUPhv/hb6kVZTAGV+ec/xse6Mtcau18exq4wFfg=;
-        b=mJnWqKwDMLasfvZIgnnLjeZubYFEXhgQUriyniboKusYls6+C/mL95Tb4P3ahgb2ly
-         UfehINYtKiyzWMJO7IBeL7aNkUVN35SC7VJSVhsw9KFV+q6daoC6BFGPiFkn9FxJajzq
-         DGaYAQI13Yu06T7GpFqdzzv2PTbbTGLptVEHwLsBhHqorONeJqwlaEcsfs34Zcq3U9NW
-         XheotZD5oo/pIyPuubqGr9ReOeVNnM5310WYJjx2KhOphWoCWgsJm7SEkfyGIZEM39en
-         /F4Qgy6k5T17Cq8QWsHYSMwY4649dC6Iii0F1d1VtBiEHgup1B7AOz6IJUhmKOxeJZFa
-         AZsA==
+        bh=wPdyri92L3qWMfLakhYh6hhyYNfXQVLXTm4MfbgrCSM=;
+        b=HwueZwYKGASMpnXA54qa8kJRp+Y4TROwaWVjgJT4DHOi3ase5SMQmwObiWZdcOnT2b
+         CwCMZWz9Hl0Nf8clwIL1/U8+96qtWxYbRLt78/Fl90aPtkcN457gFUR5xSld5i5HM9tr
+         Oavf4f466zEk31fxGKU7oxnYu6069ftd+pioCLw9L1Zz95x2dH0oN3DPndP4gxw9RR2l
+         Q+6idxu3a9Gwva3IUt/XaDHCSfP8VtvG4OKolu00OkEPrPR6Bss4kT7j64ItS/p+g4OJ
+         /yCYIbcFLFzGPz5W1FDVexH7CCmz3cmPkKfhUC40s6RPZmxWu/Wm088eTy+yzVLEHOUU
+         7VGQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689077104; x=1691669104;
+        d=1e100.net; s=20221208; t=1689081088; x=1691673088;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=sDj/nUPhv/hb6kVZTAGV+ec/xse6Mtcau18exq4wFfg=;
-        b=LHf5pt1WXqDFwLTqFEHrBRB8CfjrSvH/o6CFtXA8Z4FXGKLmuke28yzWUGUUMA9h0c
-         jBmrivcF+gyeVdWn502hlIPTKF8QfW89db/TJDgYm6Y2sAPxccORN/VHEsnqwuZoc4vw
-         kft6uMkBB8BLwXzSfEviRGctXKN2q0yG9jtvGG8JU6aOuNvpRQvZXvZpjt542PAeynfX
-         8NhiKSoNEKAoJlbyaKpaE3SUDjy+av4p3zYevpID29/5nNt2X1AcEs9esUSTmOG3aB/U
-         yVqZ831aAsO1+I3o5ZkbyFoGVzKUknN/sI96s+dpCzIgAXeWijtsScYJ4+3b68Fw96CW
-         tCMQ==
-X-Gm-Message-State: ABy/qLYpoZbPB5A9eYb9/QtQ1Dox8P+bZYAPo5tY4ppzTHVTY/euwNKW
-        kYauefuLHV6Ji/iSm5yJVNWCyw==
-X-Google-Smtp-Source: APBJJlHlMSiZUq+WY356by/kwiQKIEq734XHbryNHy9OPRb10YQGqsssS7qFeOD/eSjn/EPBX8tRnQ==
-X-Received: by 2002:a0c:a98d:0:b0:635:e209:178c with SMTP id a13-20020a0ca98d000000b00635e209178cmr12615604qvb.10.1689077104237;
-        Tue, 11 Jul 2023 05:05:04 -0700 (PDT)
-Received: from ziepe.ca (hlfxns017vw-142-68-25-194.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.68.25.194])
-        by smtp.gmail.com with ESMTPSA id q17-20020a0ce211000000b006362d4eeb6esm956869qvl.144.2023.07.11.05.05.03
+        bh=wPdyri92L3qWMfLakhYh6hhyYNfXQVLXTm4MfbgrCSM=;
+        b=SIqhCEDIiLHL/omMaLDlSEij1nTp7rZ2BaSVfl7yI4zJ3qYzH+jQeS44jXXoE5nUzH
+         qlbTGB8e8cHQAtu7Qqao5EfMl202eGndlU0BljGUlwkKFnWPmtn+U7HN5x6KvGAA33nk
+         4rQCYWZjHB0WmNbuCq3O+pTGxSdbU8HwR+I98T7r+MLgJ6nzjvY6KhTFpFKCvBJRJVzO
+         F5lig+PqCk7GsIlhZnGYFQ2TjJOFl1ih3S5xkRew02JpAfv+JgtKCpoManUlRKA4/wUZ
+         X+/m7tsvOw257Bt3hi4Lw7vt/+7Yusk1zzOC0Ya23395pC4HLSUfsfFUJRdtZWqyZE5N
+         NL3w==
+X-Gm-Message-State: ABy/qLbYA8XUpsAJh502Q8rlrryYzqeaLd+pTm+WgLJA+SiqN2swIxQ8
+        ep1aoaWmF8zP7v7z5UpGRrWVIw==
+X-Google-Smtp-Source: APBJJlH/pNqhx9Sk3rAUvsyO9Yo5N3ENJbgYjIKEPGeTeHsBGXcH1oaexcEKAHIm23DxD+Q1c2BUkg==
+X-Received: by 2002:a17:90a:df02:b0:25c:571:44bc with SMTP id gp2-20020a17090adf0200b0025c057144bcmr12789299pjb.28.1689081087984;
+        Tue, 11 Jul 2023 06:11:27 -0700 (PDT)
+Received: from ziepe.ca ([206.223.160.26])
+        by smtp.gmail.com with ESMTPSA id q17-20020a17090a2e1100b00256353eb8f2sm7811671pjd.5.2023.07.11.06.11.27
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 11 Jul 2023 05:05:03 -0700 (PDT)
+        Tue, 11 Jul 2023 06:11:27 -0700 (PDT)
 Received: from jgg by wakko with local (Exim 4.95)
         (envelope-from <jgg@ziepe.ca>)
-        id 1qJC74-0008zp-Q7;
-        Tue, 11 Jul 2023 09:05:02 -0300
-Date:   Tue, 11 Jul 2023 09:05:02 -0300
+        id 1qJD9J-0009xq-LG;
+        Tue, 11 Jul 2023 10:11:25 -0300
+Date:   Tue, 11 Jul 2023 10:11:25 -0300
 From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     Jakub Kicinski <kuba@kernel.org>,
-        Mina Almasry <almasrymina@google.com>,
-        John Hubbard <jhubbard@nvidia.com>,
+To:     Mina Almasry <almasrymina@google.com>
+Cc:     Christoph Hellwig <hch@lst.de>, John Hubbard <jhubbard@nvidia.com>,
         Dan Williams <dan.j.williams@intel.com>,
         David Ahern <dsahern@kernel.org>,
+        Jakub Kicinski <kuba@kernel.org>,
         Jesper Dangaard Brouer <jbrouer@redhat.com>,
         brouer@redhat.com, Alexander Duyck <alexander.duyck@gmail.com>,
         Yunsheng Lin <linyunsheng@huawei.com>, davem@davemloft.net,
@@ -91,21 +90,21 @@ Cc:     Jakub Kicinski <kuba@kernel.org>,
         Jonathan Lemon <jonathan.lemon@gmail.com>
 Subject: Re: Memory providers multiplexing (Was: [PATCH net-next v4 4/5]
  page_pool: remove PP_FLAG_PAGE_FRAG flag)
-Message-ID: <ZK1FbjG+VP/zxfO1@ziepe.ca>
-References: <5e0ac5bb-2cfa-3b58-9503-1e161f3c9bd5@kernel.org>
+Message-ID: <ZK1U/Vo0NvhNm9pq@ziepe.ca>
+References: <20230619110705.106ec599@kernel.org>
+ <CAHS8izOySGEcXmMg3Gbb5DS-D9-B165gNpwf5a+ObJ7WigLmHg@mail.gmail.com>
+ <5e0ac5bb-2cfa-3b58-9503-1e161f3c9bd5@kernel.org>
  <CAHS8izP2fPS56uXKMCnbKnPNn=xhTd0SZ1NRUgnAvyuSeSSjGA@mail.gmail.com>
  <ZKNA9Pkg2vMJjHds@ziepe.ca>
  <CAHS8izNB0qNaU8OTcwDYmeVPtCrEjTTOhwCHtVsLiyhXmPLsXQ@mail.gmail.com>
  <ZKxDZfVAbVHgNgIM@ziepe.ca>
  <CAHS8izO3h3yh=CLJgzhLwCVM4SLgf64nnmBtGrXs=vxuJQHnMQ@mail.gmail.com>
  <ZKyZBbKEpmkFkpWV@ziepe.ca>
- <20230711042708.GA18658@lst.de>
- <20230710215906.49514550@kernel.org>
- <20230711050445.GA19323@lst.de>
+ <CAHS8izOTiSO5PkM+x-CASjwew=U2j=JRNpbz_6NC6AsDTQ17Ug@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230711050445.GA19323@lst.de>
+In-Reply-To: <CAHS8izOTiSO5PkM+x-CASjwew=U2j=JRNpbz_6NC6AsDTQ17Ug@mail.gmail.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
@@ -116,23 +115,34 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Tue, Jul 11, 2023 at 07:04:45AM +0200, Christoph Hellwig wrote:
-> On Mon, Jul 10, 2023 at 09:59:06PM -0700, Jakub Kicinski wrote:
-> > On Tue, 11 Jul 2023 06:27:08 +0200 Christoph Hellwig wrote:
-> > > Not going to comment on the rest of this as it seems bat shit crazy
-> > > hacks for out of tree junk.  Why is anyone even wasting time on this?
-> > 
-> > Noob question - how does RDMA integrate with the out of tree junk?
-> > AFAIU it's possible to run the "in-tree" RDMA stack and get "GPU
-> > direct".
-> 
-> I don't care and it has absolutel no business being discussed here.
-> 
-> FYI at leat iWarp is a totally open standard.
+On Mon, Jul 10, 2023 at 05:45:05PM -0700, Mina Almasry wrote:
 
-So is Infiniband, Jakub has a unique definition of "proprietary".
+> > At least from my position I want to see MEMORY_DEVICE_PCI_P2PDMA used
+> > to represent P2P memory.
+> 
+> Would using p2pdma API instead of dmabuf be an acceptable direction?
 
-RDMA works with the AMD and Intel intree drivers using DMABUF without
-requiring struct pages using the DRM hacky scatterlist approach.
+"p2pdma API" is really just using MEMORY_DEVICE_PCI_P2PDMA and
+teaching the pagepool how to work with ZONE_DEVICE pages.
+
+I suspect this will clash badly with Matthew's work here:
+
+https://lore.kernel.org/all/20230111042214.907030-1-willy@infradead.org/
+
+As from a mm side we haven't ever considered that ZONE_DEVICE and
+"netmem" can be composed together. The entire point of netmem like
+stuff is that the allocator hands over the majority of struct page to
+the allocatee, and ZONE_DEVICE can't work like that. 
+
+However, assuming that can be solved in some agreeable way then it
+would be OK to go down this path.
+
+But, I feel like this is just overall too hard a direction from the mm
+perspective.
+
+I don't know anything about page pool, but the main sticking point is
+its reliance on struct page. If it can find another way to locate its
+meta data (eg an xarray), at least for some cases, it would make
+things alot easier.
 
 Jason
