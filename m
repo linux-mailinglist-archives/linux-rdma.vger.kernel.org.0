@@ -2,180 +2,240 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A3F8750FF2
-	for <lists+linux-rdma@lfdr.de>; Wed, 12 Jul 2023 19:49:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BA6D97511BC
+	for <lists+linux-rdma@lfdr.de>; Wed, 12 Jul 2023 22:16:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231774AbjGLRs6 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 12 Jul 2023 13:48:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48624 "EHLO
+        id S232252AbjGLUQR (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 12 Jul 2023 16:16:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47102 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232345AbjGLRs4 (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 12 Jul 2023 13:48:56 -0400
-X-Greylist: delayed 1201 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Wed, 12 Jul 2023 10:48:53 PDT
-Received: from smtp.rcn.com (mail.rcn.syn-alias.com [129.213.13.252])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C0C61FFC
-        for <linux-rdma@vger.kernel.org>; Wed, 12 Jul 2023 10:48:53 -0700 (PDT)
-X-Authed-Username: dG10YWxwZXlAcmNuLmNvbQ==
-Authentication-Results:  smtp01.rcn.email-ash1.sync.lan smtp.user=<hidden>; auth=pass (PLAIN)
-Received: from [96.237.161.173] ([96.237.161.173:51669] helo=[192.168.0.206])
-        by smtp.rcn.com (envelope-from <tom@talpey.com>)
-        (ecelerity 4.4.0.19839 r(msys-ecelerity:tags/4.4.0.0^0)) with ESMTPSA (cipher=AES128-GCM-SHA256) 
-        id CE/40-05333-3D2EEA46; Wed, 12 Jul 2023 13:28:52 -0400
-Message-ID: <a31b0568-f8f0-1940-9fce-6a011112d6a0@talpey.com>
-Date:   Wed, 12 Jul 2023 13:28:51 -0400
+        with ESMTP id S231836AbjGLUQQ (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 12 Jul 2023 16:16:16 -0400
+Received: from mail-vk1-xa32.google.com (mail-vk1-xa32.google.com [IPv6:2607:f8b0:4864:20::a32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4ED1A1FFC
+        for <linux-rdma@vger.kernel.org>; Wed, 12 Jul 2023 13:16:14 -0700 (PDT)
+Received: by mail-vk1-xa32.google.com with SMTP id 71dfb90a1353d-4813422f311so431937e0c.2
+        for <linux-rdma@vger.kernel.org>; Wed, 12 Jul 2023 13:16:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20221208; t=1689192973; x=1691784973;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=/ZSa4NetAP62hVIVyvAbNH/+emK9xW+vVSDSphd0g5Y=;
+        b=f3Ii093FW9+oc2F8zRSaiEu5EyBxsVuk08e/GPtsqsSeShWLCXC1bZxIOmmMmcmq1X
+         oK6yGMz/yKUAxH6edgErEdCMXXNog2fkqOIotGgFfIVUj0iCgmVT+v8LC5kpCquThfT7
+         s7k5uUiWkhgOwmaUx18/OOTEOwqIkO3nmFoBTk4Dexu9TnDZDg74BS662UfijW794wbe
+         4mv5gp2rm0Aw88kz4kO6NM+04OR7peKtJVIioaYBTxh1ruVx+TUQsaXoyF64QJDSCbCU
+         fJTbKpPR0YESffxmDzel4+2Y9WS8i4XOsqrufpBhzDjq1QWzp4YaNmCPgw4rBSNvB9NK
+         5lvw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689192973; x=1691784973;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=/ZSa4NetAP62hVIVyvAbNH/+emK9xW+vVSDSphd0g5Y=;
+        b=RiGMLzKxGU6LYeJkCPRWo2y/3OK3cLoRaDE4ZgcTbMi0ZGEFOeSswmdi+UZGlH8d7Z
+         B5m86H7YBc6HL2CVK6dtSyaRKgY4j+W1MFF/fAi9K0ZlAbktCHFTC0Dgajq2d7Xgf72J
+         WAMmavWYLXbf50rNmODs5mGg9jYizSNqo81R35z/ajfwXgmRZbFxtjYZCWRfTNbYJf0H
+         l+piHXiPecyMHkbAdJaG3JzEpezhb0czwFQHVYi7TF9D9pMMoCOSYl71Xm2QzsFsRqBD
+         qv4mDFSW1W2Bgd3wHZxu2ga0c2WSgj8V8lPVSJ0UE8oYXX+vwGohTuhnYgZHq6XLdOrr
+         sJEA==
+X-Gm-Message-State: ABy/qLagUe37It3Uz4iUCtLSc/Ph9C2zHgRl+NxH5VGJKSSCIYAwQbSR
+        XjacqakMuXQNHgoylxKa001CD7SR+ZLNda27g9BbHQ==
+X-Google-Smtp-Source: APBJJlEZodLxymYp6zmTXbF705s1wpVAmKh0FiHChRMpwA1Y+RhEAUbnIuR5QMDX6deaSzma4SHNwgy0sovv8EPmhPw=
+X-Received: by 2002:a67:af0b:0:b0:445:208:2d62 with SMTP id
+ v11-20020a67af0b000000b0044502082d62mr12673636vsl.23.1689192973170; Wed, 12
+ Jul 2023 13:16:13 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH v5 4/4] RDMA/cma: Avoid GID lookups on iWARP devices
-Content-Language: en-US
-To:     Chuck Lever III <chuck.lever@oracle.com>,
-        Jason Gunthorpe <jgg@nvidia.com>
-Cc:     Chuck Lever <cel@kernel.org>, Bernard Metzler <BMT@zurich.ibm.com>,
-        linux-rdma <linux-rdma@vger.kernel.org>,
-        Zhu Yanjun <yanjun.zhu@linux.dev>
-References: <168805171754.164730.1318944278265675377.stgit@manet.1015granger.net>
- <168805181129.164730.67097436102991889.stgit@manet.1015granger.net>
- <1132df9f-63a1-f309-8123-b9302e5cdc3c@talpey.com>
- <7F4E0CAA-A06B-4F43-B019-4E471B10DDE7@oracle.com>
- <ZKM4jM6Ve5PUhHFk@nvidia.com>
- <a8f54410-f680-190a-5e00-3226f186b2d6@talpey.com>
- <50C32C40-D3D8-40CF-B332-C12FEE894FDF@oracle.com>
- <ZKw6rySZlRLCls+L@nvidia.com>
- <3748AE3D-95E1-4C22-925F-FA24740D1833@oracle.com>
-From:   Tom Talpey <tom@talpey.com>
-In-Reply-To: <3748AE3D-95E1-4C22-925F-FA24740D1833@oracle.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Vade-Verdict: clean
-X-Vade-Analysis-1: gggruggvucftvghtrhhoucdtuddrgedviedrfedvgdduudefucetufdoteggodetrfdotffvucfrrhho
-X-Vade-Analysis-2: fhhilhgvmecuufgjpfetvefqtfdptfevpfdpgffpggdqtfevpfdpqfgfvfenuceurghilhhouhhtmecu
-X-Vade-Analysis-3: fedtudenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujfgurhepkfffgggfuffvvehfhfgj
-X-Vade-Analysis-4: tgfgsehtjeertddtfeejnecuhfhrohhmpefvohhmucfvrghlphgvhicuoehtohhmsehtrghlphgvhidr
-X-Vade-Analysis-5: tghomheqnecuggftrfgrthhtvghrnhepudethfegfeejjeeghedtffegkedttdduueekleejhfduudek
-X-Vade-Analysis-6: gfehuedvudfgudefnecukfhppeeliedrvdefjedrudeiuddrudejfeenucevlhhushhtvghrufhiiigv
-X-Vade-Analysis-7: pedtnecurfgrrhgrmhepihhnvghtpeeliedrvdefjedrudeiuddrudejfedphhgvlhhopegludelvddr
-X-Vade-Analysis-8: udeikedrtddrvddtiegnpdhmrghilhhfrhhomhepthhomhesthgrlhhpvgihrdgtohhmpdhrtghpthht
-X-Vade-Analysis-9: oheptghhuhgtkhdrlhgvvhgvrhesohhrrggtlhgvrdgtohhmpdhrtghpthhtohepjhhgghesnhhvihgu
-X-Vade-Analysis-10: ihgrrdgtohhmpdhrtghpthhtoheptggvlheskhgvrhhnvghlrdhorhhgpdhrtghpthhtohepuefovfes
-X-Vade-Analysis-11: iihurhhitghhrdhisghmrdgtohhmpdhrtghpthhtoheplhhinhhugidqrhgumhgrsehvghgvrhdrkhgv
-X-Vade-Analysis-12: rhhnvghlrdhorhhgpdhrtghpthhtohephigrnhhjuhhnrdiihhhusehlihhnuhigrdguvghvpdhmthgr
-X-Vade-Analysis-13: hhhoshhtpehsmhhtphdtuddrrhgtnhdrvghmrghilhdqrghshhdurdhshihntgdrlhgrnh
-X-Vade-Client: RCN
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_FAIL,SPF_HELO_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=no autolearn_force=no version=3.4.6
+References: <20230710215906.49514550@kernel.org> <20230711050445.GA19323@lst.de>
+ <ZK1FbjG+VP/zxfO1@ziepe.ca> <20230711090047.37d7fe06@kernel.org>
+ <04187826-8dad-d17b-2469-2837bafd3cd5@kernel.org> <20230711093224.1bf30ed5@kernel.org>
+ <CAHS8izNHkLF0OowU=p=mSNZss700HKAzv1Oxqu2bvvfX_HxttA@mail.gmail.com>
+ <20230711133915.03482fdc@kernel.org> <2263ae79-690e-8a4d-fca2-31aacc5c9bc6@kernel.org>
+ <CAHS8izP=k8CqUZk7bGUx4ctm4m2kRC2MyEJv+N4+b0cHVkTQmA@mail.gmail.com> <ZK6kOBl4EgyYPtaD@ziepe.ca>
+In-Reply-To: <ZK6kOBl4EgyYPtaD@ziepe.ca>
+From:   Mina Almasry <almasrymina@google.com>
+Date:   Wed, 12 Jul 2023 13:16:00 -0700
+Message-ID: <CAHS8izNuda2DXKTFAov64F7J2_BbMPaqJg1NuMpWpqGA20+S_Q@mail.gmail.com>
+Subject: Re: Memory providers multiplexing (Was: [PATCH net-next v4 4/5]
+ page_pool: remove PP_FLAG_PAGE_FRAG flag)
+To:     Jason Gunthorpe <jgg@ziepe.ca>
+Cc:     David Ahern <dsahern@kernel.org>,
+        Samiullah Khawaja <skhawaja@google.com>,
+        Willem de Bruijn <willemb@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Christoph Hellwig <hch@lst.de>,
+        John Hubbard <jhubbard@nvidia.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Jesper Dangaard Brouer <jbrouer@redhat.com>,
+        brouer@redhat.com, Alexander Duyck <alexander.duyck@gmail.com>,
+        Yunsheng Lin <linyunsheng@huawei.com>, davem@davemloft.net,
+        pabeni@redhat.com, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Lorenzo Bianconi <lorenzo@kernel.org>,
+        Yisen Zhuang <yisen.zhuang@huawei.com>,
+        Salil Mehta <salil.mehta@huawei.com>,
+        Eric Dumazet <edumazet@google.com>,
+        Sunil Goutham <sgoutham@marvell.com>,
+        Geetha sowjanya <gakula@marvell.com>,
+        Subbaraya Sundeep <sbhatta@marvell.com>,
+        hariprasad <hkelam@marvell.com>,
+        Saeed Mahameed <saeedm@nvidia.com>,
+        Leon Romanovsky <leon@kernel.org>,
+        Felix Fietkau <nbd@nbd.name>,
+        Ryder Lee <ryder.lee@mediatek.com>,
+        Shayne Chen <shayne.chen@mediatek.com>,
+        Sean Wang <sean.wang@mediatek.com>,
+        Kalle Valo <kvalo@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
+        linux-rdma@vger.kernel.org, linux-wireless@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org,
+        Jonathan Lemon <jonathan.lemon@gmail.com>,
+        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
+        logang@deltatee.com, Bjorn Helgaas <bhelgaas@google.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 7/11/2023 6:49 PM, Chuck Lever III wrote:
-> 
-> 
->> On Jul 10, 2023, at 1:06 PM, Jason Gunthorpe <jgg@nvidia.com> wrote:
->>
->> On Tue, Jul 04, 2023 at 02:54:59PM +0000, Chuck Lever III wrote:
->>>
->>>
->>>> On Jul 4, 2023, at 10:23 AM, Tom Talpey <tom@talpey.com> wrote:
->>>>
->>>> On 7/3/2023 5:07 PM, Jason Gunthorpe wrote:
->>>>> On Sat, Jul 01, 2023 at 04:27:23PM +0000, Chuck Lever III wrote:
->>>>>>
->>>>>>
->>>>>>> On Jul 1, 2023, at 12:24 PM, Tom Talpey <tom@talpey.com> wrote:
->>>>>>>
->>>>>>> On 6/29/2023 11:16 AM, Chuck Lever wrote:
->>>>>>>> From: Chuck Lever <chuck.lever@oracle.com>
->>>>>>>> We would like to enable the use of siw on top of a VPN that is
->>>>>>>> constructed and managed via a tun device. That hasn't worked up
->>>>>>>> until now because ARPHRD_NONE devices (such as tun devices) have
->>>>>>>> no GID for the RDMA/core to look up.
->>>>>>>> But it turns out that the egress device has already been picked for
->>>>>>>> us -- no GID is necessary. addr_handler() just has to do the right
->>>>>>>> thing with it.
->>>>>>>> Suggested-by: Jason Gunthorpe <jgg@nvidia.com>
->>>>>>>> Signed-off-by: Chuck Lever <chuck.lever@oracle.com>
->>>>>>>> ---
->>>>>>>> drivers/infiniband/core/cma.c |   15 +++++++++++++++
->>>>>>>> 1 file changed, 15 insertions(+)
->>>>>>>> diff --git a/drivers/infiniband/core/cma.c b/drivers/infiniband/core/cma.c
->>>>>>>> index 889b3e4ea980..07bb5ac4019d 100644
->>>>>>>> --- a/drivers/infiniband/core/cma.c
->>>>>>>> +++ b/drivers/infiniband/core/cma.c
->>>>>>>> @@ -700,6 +700,21 @@ cma_validate_port(struct ib_device *device, u32 port,
->>>>>>>>   if ((dev_type != ARPHRD_INFINIBAND) && rdma_protocol_ib(device, port))
->>>>>>>>   goto out;
->>>>>>>> + /* Linux iWARP devices have but one port */
->>>>>>>
->>>>>>> I don't believe this comment is correct, or necessary. In-tree drivers
->>>>>>> exist for several multi-port iWARP devices, and the port bnumber passed
->>>>>>> to rdma_protocol_iwarp() and rdma_get_gid_attr() will follow, no?
->>>>>>
->>>>>> Then I must have misunderstood what Jason said about the reason
->>>>>> for the rdma_protocol_iwarp() check. He said that we are able to
->>>>>> do this kind of GID lookup because iWARP devices have only a
->>>>>> single port.
->>>>>>
->>>>>> Jason?
->>>>> I don't know alot about iwarp - tom does iwarp really have multiported
->>>>> *struct ib_device* models? This is different from multiport hw.
->>>>
->>>> I don't see how the iWARP protocol impacts this, but I believe the
->>>> cxgb4 provider implements multiport. It sets the ibdev.phys_port_cnt
->>>> anyway. Perhaps this is incorrect.
->>>>
->>>>> If it is multiport how do the gid tables work across the ports?
->>>>
->>>> Again, not sure how to respond. iWARP doesn't express the gid as a
->>>> protocol element. And the iw_cm really doesn't either, although it
->>>> does implement a gid-type API I guess. That's local behavior though,
->>>> not something that goes on the wire directly.
->>>>
->>>> Maybe I should ask... what does the "Linux iWARP devices have but one
->>>> port" actually mean in the comment? Would the code below it not work
->>>> if that were not the case? All I'm saying is that the comment seems
->>>> to be unnecessary, and confusing.
->>>
->>> It replaces a code comment you complained about in an earlier review
->>> regarding the use of "if (rdma_protocol_iwarp())". As far as I
->>> understand, /in Linux/ each iWARP endpoint gets its own ib_device
->>> and that device has exactly one port.
->>>
->>> So for example, a physical device that has two ports would appear
->>> as two ib_devices each with a single port. Is that not how it
->>> works? It's certainly possible I've misunderstood something.
->>
->> That is how I would expect it to work. Multi-port ib_device is really
->> only something that exists to support IB's APM, and iWarp doesn't have
->> that.
->>
->> Otherwise verbs says a QP is bound to a single IB device's port and a
->> single GID of that port. It should not float around between multiple
->> ports.
->>
->> So, I don't know what the iwarp drivers did here.
->>
->> As for rthe comment, I don't think it is quite right, this code
->> already knows what ib_device port it is supposed to be using somehow,
->> so it doesn't matter.
->>
->> I think it should be more like:
->>
->> In iWarp mode we need to have a sgid entry to be able to locate the
->> netdevice. iWarp drivers are not allowed to associate more than one
->> net device with their gid tables, so returning the first entry is
->> sufficient. iWarp will ignore the GID entries actual GID, and the
->> passed in GID may not even be present in the GID table for tunnels
->> and other non-ethernet netdevices.
-> 
-> I can make that change and post a refresh. I'd like
-> to hear from Tom first.
+On Wed, Jul 12, 2023 at 6:01=E2=80=AFAM Jason Gunthorpe <jgg@ziepe.ca> wrot=
+e:
+>
+> On Tue, Jul 11, 2023 at 08:42:24PM -0700, Mina Almasry wrote:
+>
+> > 1. The device memory driver would be the p2pdma provider. It would
+> > expose a user API which allocates a device memory region, calls
+> > pci_p2pdma_add_resource() and pci_p2pmem_publish() on it, and returns
+> > a reference to it to the userspace.
+>
+> This is not quite right, if you convert any of the GPU drivers to use
+> P2PDMA you are going to need to restructure the p2pmem stuff to
+> seperate the genalloc. The GPU driver must continue to be the owner
+> and allocator of the MMIO memory it already controls, we can't have
+> two allocators working in parallel.
+>
+> The genalloc stuff supports the special NVMe use case, I don't know of
+> anything else that would like to work that way.
+>
 
-The extra detail is helpful, but I'm still queasy about tying this to
-iWARP. The situation seems much more general. But the breadcrumbs are
-here so if the situation arises in another transport, there's a trail
-for others to follow.
+I think maybe you misunderstood the proposal. AFAICT the genalloc
+stuff works for us, although there are other issues with p2pdma that I
+need to solve.
 
-Tom.
+The proposal was that the uapi in step #1 allocates a region of GPU
+memory, and sets up a p2pdma provider for this region of memory. From
+the perspective of the GPU, the memory is allocated, and in use by the
+user. The p2pdma provider uses genalloc to give out 4K regions with
+struct pages to in-kernel allocators from this memory region. Why
+would that not work? Looking at the code, that seems to be how p2pdma
+works today. The p2pdma provider does p2pdma_add_resource() on a chunk
+of its memory, and the genalloc allocates memory from that chunk?
+
+The actual issues I see with this approach are:
+
+1. There is no way for the p2pdma provider to relinquish back the
+memory it has provided via pci_p2pdma_add_resource(), in the case that
+the user crashed or would like to free the GPU buffer. I would need to
+add a pci_p2pdma_remove_resource(). Would that be  acceptable?
+
+2. The p2pdma semantics seem to be global to the pci device. I.e., 1
+GPU can export 1 p2pdma resource at a time (the way I'm reading the
+API). This is not usable for my use case. I would need multiple users
+to be able to use the uapi in step #1 simultaneously. I would need the
+same pci device to export different p2pdma resources simultaneously
+and the p2pdma clients would need to be able to import some of the
+resources. I would likely need to add an api like this:
+
+diff --git a/include/linux/pci-p2pdma.h b/include/linux/pci-p2pdma.h
+index 8318a97c9c61..c9d754713fdc 100644
+--- a/include/linux/pci-p2pdma.h
++++ b/include/linux/pci-p2pdma.h
+@@ -19,6 +19,33 @@ struct scatterlist;
+ #ifdef CONFIG_PCI_P2PDMA
+ int pci_p2pdma_add_resource(struct pci_dev *pdev, int bar, size_t size,
+                u64 offset);
++
++/* Adds a resource similar to pci_p2pdma_add_resource, and returns a file
++ * handle referring to this resource. Multiple such resources can be expor=
+ted
++ * by the same pci device.
++ */
++struct file *pci_p2pdma_add_resource_with_handle(struct pci_dev *pdev,
++               int bar,
++               size_t size,
++               u64 offset);
++
++/* Remove a resource added via pci_p2pdma_add_resource_with_handle() */
++struct file *pci_p2pdma_remove_resource_with_handle(
++               struct file *p2pdma_resource_file);
++
++/* Allocates memory from a resource created using
++ * pci_p2pdma_add_resource_with_handle()
++ */
++void *pci_alloc_p2pmem_from_handle(struct file *p2pdma_resource_file,
++               size_t size);
++
++/* Frees p2pmem to a resource created using
++ * pci_p2pdma_add_resource_with_handle()
++ */
++void pci_free_p2pmem_to_handle(struct pci_dev *p2pdma_resource_file,
++               void *addr,
++               size_t size);
++
+
+Looking for feedback from anyone knowledgeable, but the p2pdma
+maintainers as well if possibl.
+
+> > 2. The NIC driver would be the p2pdma client and orchestrator. It
+> > would expose a user API which binds an rxq to a pci device. Prior to
+> > the bind the user API would check that the pci device has published
+> > p2p memory (pci_has_p2pmem()), and check the the p2p mem is accessible
+> > to the driver (pci_p2pdma_distance() I think), etc.
+>
+> This doesn't fit the programming model for GPUs at all. You don't want
+> to get packets landing in random GPU memory that a kernel side
+> allocator selects, you want packets landing in GPU memory owned by a
+> specific process that owns the TCP connection.
+>
+
+I think this comment is maybe a side effect of the misunderstanding.
+In the proposal, the user allocates a GPU buffer using the API in step
+#1, and then binds the memory to the NIC rx queue using the API
+specified in step #2. We use flow steering & RSS to steer this user's
+TCP traffic to the buffer owned by them.
+
+> This is why DMABUF is used here as it gives a handle to the GPU
+> memory. What you want is to get the P2P pages either directly from the
+> DMABUF or via pin_user_pages() on the DMABUF's mmap.
+>
+> > AFAICT, all the concerns brought up in this thread are sidestepped by
+> > using p2pdma. I need not allocate struct pages in the core dma-buf
+> > code anymore (or anywhere), and I need not allocate pgmaps. I would
+> > just re-use the p2pdma support.
+>
+> Well, as I said it is going to be a big ask to P2P enable any of the
+> DRM drivers.
+>
+> And you still have the netmem vs zone_device struct page conflict to
+> figure out
+>
+> But it is alot closer to reasonable than this RFC.
+>
+> Jason
+
+--=20
+Thanks,
+Mina
