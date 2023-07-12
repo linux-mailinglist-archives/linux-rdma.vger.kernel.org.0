@@ -2,79 +2,94 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 90FB375089A
-	for <lists+linux-rdma@lfdr.de>; Wed, 12 Jul 2023 14:46:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 209B07508C9
+	for <lists+linux-rdma@lfdr.de>; Wed, 12 Jul 2023 14:53:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232103AbjGLMqW (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 12 Jul 2023 08:46:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57780 "EHLO
+        id S230434AbjGLMxm (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 12 Jul 2023 08:53:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33526 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233326AbjGLMqV (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 12 Jul 2023 08:46:21 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4CD91995
-        for <linux-rdma@vger.kernel.org>; Wed, 12 Jul 2023 05:46:17 -0700 (PDT)
+        with ESMTP id S230327AbjGLMxl (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 12 Jul 2023 08:53:41 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 175A61736;
+        Wed, 12 Jul 2023 05:53:41 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 25731617BD
-        for <linux-rdma@vger.kernel.org>; Wed, 12 Jul 2023 12:46:17 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 07EBFC433C8;
-        Wed, 12 Jul 2023 12:46:15 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id A9397617D4;
+        Wed, 12 Jul 2023 12:53:40 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9007DC433C8;
+        Wed, 12 Jul 2023 12:53:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1689165976;
-        bh=80fSw/vvGRbwEkz/ubmkFFoZeTQVogp/gTDy55dhf3w=;
-        h=From:To:In-Reply-To:References:Subject:Date:From;
-        b=Fmhf8L7xdCdWG5EDLAcTmk+9pvUfiNP8krwNZ0LT90wXOuiJMLtNadfTZz6k3SPZC
-         wPA++0F1E9XOX3cgD1MeH4VZCBhPS5Y95D3FQ+HcKphT4q0heOeE5qLYjdjcy42SLv
-         WZ0HUKgsRxjBorKHrasDCKHqR+UrYb4eyH0d+VF2xVRu+wOdWVnboMrNdEBWVNJp6L
-         KvejZ3r7PVJ3LWdmAWX61dskaa4RvwT9NvEYaMWAl+MswQuGVX3bf6mx8TWe0yhA8I
-         zrjHvIVEz1iNMtHhv6dwv73skA0ghZqsTtR3tXoSUAMhn5bXBhjnFr6QH/dQCtATR7
-         Go2XhvFCSwbmw==
+        s=k20201202; t=1689166420;
+        bh=Pg9A9mnKvw4Wu1iALCgZhjUHVKyjzHiVGJADCkOOGqg=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=rNSbqQ3EyIHIQlbDOGigdsrxIdKVeS8uyfuNt3oNBeuJ17HcMg6ix01i9nFtSKD7p
+         O6AbAEQRzeTNYwa1LbVwWyOzgNE27RPzPGLylryD2f4nJSozm2LDrCc7kgg/nyebqu
+         ENAp05tbpyt4yMfgL4ybzpUiP5qujyAKcpFBi26KCwQ94zXHTkgCI+Npo3QWjf6C28
+         /fupsGakza9DDeE5gyzh0cZcnrKL/uR1XRSyPNbu4nOW5yVwlDRJvw5yqaOHYbcepp
+         rddfo8coXynvaELp/GNWHOsyePi58zhM4BUNQ7r3F/23IVEwDc8xamayGbORnhIw+t
+         SvnhZytB0CvRg==
+Date:   Wed, 12 Jul 2023 15:53:36 +0300
 From:   Leon Romanovsky <leon@kernel.org>
-To:     linux-rdma@vger.kernel.org, Jason Gunthorpe <jgg@ziepe.ca>,
-        Shiraz Saleem <shiraz.saleem@intel.com>
-In-Reply-To: <20230711175253.1289-1-shiraz.saleem@intel.com>
-References: <20230711175253.1289-1-shiraz.saleem@intel.com>
-Subject: Re: [PATCH for-rc 0/3] irdma KCSAN fixes
-Message-Id: <168916597262.1232125.17373243742095411297.b4-ty@kernel.org>
-Date:   Wed, 12 Jul 2023 15:46:12 +0300
+To:     Junxian Huang <huangjunxian6@hisilicon.com>
+Cc:     jgg@nvidia.com, linux-rdma@vger.kernel.org, linuxarm@huawei.com,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH for-rc 3/3] RDMA/hns: Add check and adjust for function
+ resource values
+Message-ID: <20230712125336.GE41919@unreal>
+References: <20230712060033.15961-1-huangjunxian6@hisilicon.com>
+ <20230712060033.15961-4-huangjunxian6@hisilicon.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Mailer: b4 0.12-dev-a055d
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230712060033.15961-4-huangjunxian6@hisilicon.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-
-On Tue, 11 Jul 2023 12:52:50 -0500, Shiraz Saleem wrote:
-> This series address missing read barriers and a couple
-> of KCSAN reports on the irdma driver.
+On Wed, Jul 12, 2023 at 02:00:33PM +0800, Junxian Huang wrote:
+> Currently, RoCE driver gets function resource values from firmware
+> without validity check. As these resources are mostly related to memory,
+> an invalid value may lead to serious consequence such as kernel panic.
 > 
-> Shiraz Saleem (3):
->   RDMA/irdma: Add missing read barriers
->   RDMA/irdma: Fix data race on CQP completion stats
->   RDMA/irdma: Fix data race on CQP request done
+> This patch adds check for these resource values and adjusts the invalid
+> ones.
 > 
-> [...]
+> Signed-off-by: Junxian Huang <huangjunxian6@hisilicon.com>
+> ---
+>  drivers/infiniband/hw/hns/hns_roce_hw_v2.c | 116 ++++++++++++++++++++-
+>  drivers/infiniband/hw/hns/hns_roce_hw_v2.h |  37 +++++++
+>  2 files changed, 149 insertions(+), 4 deletions(-)
+> 
+> diff --git a/drivers/infiniband/hw/hns/hns_roce_hw_v2.c b/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
+> index c4b92d8bd98a..dae0e6959fa0 100644
+> --- a/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
+> +++ b/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
+> @@ -1650,6 +1650,98 @@ static int hns_roce_config_global_param(struct hns_roce_dev *hr_dev)
+>  	return hns_roce_cmq_send(hr_dev, &desc, 1);
+>  }
 
-Applied, thanks!
+<...>
 
-[1/3] RDMA/irdma: Add missing read barriers
-      https://git.kernel.org/rdma/rdma/c/13120f2d08fd73
-[2/3] RDMA/irdma: Fix data race on CQP completion stats
-      https://git.kernel.org/rdma/rdma/c/df56ce725d7c61
-[3/3] RDMA/irdma: Fix data race on CQP request done
-      https://git.kernel.org/rdma/rdma/c/e77ac83ee5fd16
+> +static inline bool check_res_is_supported(struct hns_roce_dev *hr_dev,
+> +					  struct hns_roce_bt_num *bt_num_entry)
+> +{
 
-Best regards,
--- 
-Leon Romanovsky <leon@kernel.org>
+<...>
+
+> +static inline void adjust_eqc_bt_num(struct hns_roce_caps *caps,
+> +				     u16 *invalid_flag)
+> +{
+
+No inline functions in *.c files.
+
+Thanks
