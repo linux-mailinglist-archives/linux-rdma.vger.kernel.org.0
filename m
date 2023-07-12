@@ -2,64 +2,74 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7576974FBF6
-	for <lists+linux-rdma@lfdr.de>; Wed, 12 Jul 2023 01:57:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1478F74FDE6
+	for <lists+linux-rdma@lfdr.de>; Wed, 12 Jul 2023 05:42:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231145AbjGKX5C (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 11 Jul 2023 19:57:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56520 "EHLO
+        id S231241AbjGLDmk (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 11 Jul 2023 23:42:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41918 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229538AbjGKX5B (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 11 Jul 2023 19:57:01 -0400
-Received: from mail-oi1-x230.google.com (mail-oi1-x230.google.com [IPv6:2607:f8b0:4864:20::230])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1AC051712
-        for <linux-rdma@vger.kernel.org>; Tue, 11 Jul 2023 16:57:00 -0700 (PDT)
-Received: by mail-oi1-x230.google.com with SMTP id 5614622812f47-3a1e6022b93so4843529b6e.1
-        for <linux-rdma@vger.kernel.org>; Tue, 11 Jul 2023 16:57:00 -0700 (PDT)
+        with ESMTP id S229772AbjGLDmi (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 11 Jul 2023 23:42:38 -0400
+Received: from mail-qt1-x831.google.com (mail-qt1-x831.google.com [IPv6:2607:f8b0:4864:20::831])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC81710E3
+        for <linux-rdma@vger.kernel.org>; Tue, 11 Jul 2023 20:42:36 -0700 (PDT)
+Received: by mail-qt1-x831.google.com with SMTP id d75a77b69052e-403b3213d8aso19158971cf.0
+        for <linux-rdma@vger.kernel.org>; Tue, 11 Jul 2023 20:42:36 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google; t=1689119819; x=1691711819;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=leJKi4u06YRTzo0lBrUW1GjV6mczJ561dFwtREQL+Dg=;
-        b=DXK8WidcvmvzjeVYH/6WijviZ73toBOmyVp9mIOd03ZD+R3rHWdoxQSvE5e9wD1KCJ
-         9mK/DDwssbLXSnouE8MAwnVDe+VkRcpQSrinJNmyu0FnYmd+CKVNA1F34dvSGu5lfZwy
-         cyr25JKjczwfRObdI7oARPE9gHghtmOAegQpocDq/APkFl+1PNSXGJo1xP2SNdGpJGtv
-         /nEQL7vqxVxYsTwIY7luylFSj8xoTEsYM9t5cm2HxYfPwTnzx8rs4qClhieKHRjwL54Q
-         8sya8gM8UB4rmOcx/i0v01+HlH4cbtNGlO2x9kzZaZUcFmUL9dtfGxX7fDRkv+FMzf1u
-         InjQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689119819; x=1691711819;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+        d=google.com; s=20221208; t=1689133356; x=1691725356;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=leJKi4u06YRTzo0lBrUW1GjV6mczJ561dFwtREQL+Dg=;
-        b=iQv+pP8BAHUJCp+G9HoSIGKNer5WZXzZdA6OpUgcfx9Iy9TAFzrN5zrIq8VL4Qv3Am
-         gio855eC4ZOPrCuwUU3D1h253U8DI98QWIr5lntwj+rMiVIWdshhMudbaEFyAOZIHLLZ
-         Pvxis2fpEVB22v4teV8ar/2eI7wwwa5kK7JWA/CqWco3wnbYuvOnlmUwQb89kSDdf8+P
-         58Nc04LreAZjDGXahPSonPpz7w5r6vRTWU++cyss+x5PEEv+Dv4vdyWJbv1b7tuMD2wN
-         Zn2R9SkDxIUMSkqDxT61LDk5xotcQgVRYLF6ulLOWJmKL/Xvz3DL4OQ9schhHU4oJJCC
-         8gnw==
-X-Gm-Message-State: ABy/qLbpou5qvY+qS2VlkQpx9l6CWDHjXAyUz/VSkhaNAY5nR7F7kmZ5
-        BgomOFii6o8KNifUjjBVfQ1P1g==
-X-Google-Smtp-Source: APBJJlHPVDwycmPbbNO1kwHaGDMrzsNQAmVLFppzVomF/d82yUMQJxrek5vJqs3gAPlID0cxcW6lxg==
-X-Received: by 2002:a05:6808:11cf:b0:3a3:fa64:b543 with SMTP id p15-20020a05680811cf00b003a3fa64b543mr9841890oiv.12.1689119819344;
-        Tue, 11 Jul 2023 16:56:59 -0700 (PDT)
-Received: from ziepe.ca (hlfxns017vw-142-68-25-194.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.68.25.194])
-        by smtp.gmail.com with ESMTPSA id x11-20020a63b34b000000b005533c53f550sm1952223pgt.45.2023.07.11.16.56.57
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 11 Jul 2023 16:56:58 -0700 (PDT)
-Received: from jgg by wakko with local (Exim 4.95)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1qJNE0-000KOY-Hj;
-        Tue, 11 Jul 2023 20:56:56 -0300
-Date:   Tue, 11 Jul 2023 20:56:56 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Jakub Kicinski <kuba@kernel.org>
-Cc:     Christoph Hellwig <hch@lst.de>,
-        Mina Almasry <almasrymina@google.com>,
+        bh=AGC+6rPypaLJlCQX7D5f9PQLl8/lGoMDODsVm7b1HB0=;
+        b=3GLId8TpPFMbUN9+cqTJNNfvBWQHOwWggxKJsfePx31Keuk7IDA1cPTlVt51od2qSi
+         YDxpkLxjSX5K7RB9R0IMlh54mcS5SYJRZ6P/MzOUrhAILetGevNyuWSehecm0MkkDY4B
+         cGtibi5VjM67BkjWh3puy/uVWENRwqa13UsXS3DU2fV4AZYmAdnfgTUqRuEGYcJEos5i
+         3GK0UELsxf/4Sb87gmmGZVXLaxsYWNHu7nvKWg9GMmPqrKrHBZIuaZzh7JyXtSERo8y4
+         mTUDMdrI4PgfLk7lPMQBVMLpNHTuOXBGIXb1AK9mchDingX0e+fVFsGsAW8sBts2z52d
+         HkIw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689133356; x=1691725356;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=AGC+6rPypaLJlCQX7D5f9PQLl8/lGoMDODsVm7b1HB0=;
+        b=H3uSSu5ONGqRA19NP0YcrOvt9Pz6EXAasgajxZWIj2S/9t/mKMP95+lxqWSpdD8Hpr
+         m4f/s4Ldbi9Zunwp3dFONhDni09BPhfMp7F9nT9b+p+yjjBjv0DUA74qxzQJ3lP1v/OZ
+         L+zP6SOd6mPY+sS+hWi5InQDedH57/UgVOW5KlcevQeU4Jplbmjl8ZNb9k+dwzDSLmab
+         mIexC4PraCJBI+YrpN4Yi3qBnrNrzdqjQ1d0jeoXMheuEZih3vK734YurKeXTEsjOS7L
+         pyyhSmR3RhDC1jvt+m6ApSfI51IGYF9NcrDw49vHAeqXTAndgn+mfQdITlLM9sPLJGhz
+         6GGg==
+X-Gm-Message-State: ABy/qLbcsZCNqqKAuP3xkV5yBB/yfJwbpY0r5Jc+Cv5xDYcySSSiny1a
+        vxbt+6gwQfsMWtMzoENbF7bLGOUmQb1uIIIs5mfM/g==
+X-Google-Smtp-Source: APBJJlGQk5m4ovyiIS1fPut2mEBR26FBNA+DsJcg5Cn6rSJjDN7JUCMrWohf1AoamlB5EuvcTpqlSalrUzemY5XWjM4=
+X-Received: by 2002:ac8:7c50:0:b0:403:c417:ba9d with SMTP id
+ o16-20020ac87c50000000b00403c417ba9dmr1033325qtv.16.1689133355634; Tue, 11
+ Jul 2023 20:42:35 -0700 (PDT)
+MIME-Version: 1.0
+References: <5e0ac5bb-2cfa-3b58-9503-1e161f3c9bd5@kernel.org>
+ <CAHS8izP2fPS56uXKMCnbKnPNn=xhTd0SZ1NRUgnAvyuSeSSjGA@mail.gmail.com>
+ <ZKNA9Pkg2vMJjHds@ziepe.ca> <CAHS8izNB0qNaU8OTcwDYmeVPtCrEjTTOhwCHtVsLiyhXmPLsXQ@mail.gmail.com>
+ <ZKxDZfVAbVHgNgIM@ziepe.ca> <CAHS8izO3h3yh=CLJgzhLwCVM4SLgf64nnmBtGrXs=vxuJQHnMQ@mail.gmail.com>
+ <ZKyZBbKEpmkFkpWV@ziepe.ca> <20230711042708.GA18658@lst.de>
+ <20230710215906.49514550@kernel.org> <20230711050445.GA19323@lst.de>
+ <ZK1FbjG+VP/zxfO1@ziepe.ca> <20230711090047.37d7fe06@kernel.org>
+ <04187826-8dad-d17b-2469-2837bafd3cd5@kernel.org> <20230711093224.1bf30ed5@kernel.org>
+ <CAHS8izNHkLF0OowU=p=mSNZss700HKAzv1Oxqu2bvvfX_HxttA@mail.gmail.com>
+ <20230711133915.03482fdc@kernel.org> <2263ae79-690e-8a4d-fca2-31aacc5c9bc6@kernel.org>
+In-Reply-To: <2263ae79-690e-8a4d-fca2-31aacc5c9bc6@kernel.org>
+From:   Mina Almasry <almasrymina@google.com>
+Date:   Tue, 11 Jul 2023 20:42:24 -0700
+Message-ID: <CAHS8izP=k8CqUZk7bGUx4ctm4m2kRC2MyEJv+N4+b0cHVkTQmA@mail.gmail.com>
+Subject: Re: Memory providers multiplexing (Was: [PATCH net-next v4 4/5]
+ page_pool: remove PP_FLAG_PAGE_FRAG flag)
+To:     David Ahern <dsahern@kernel.org>,
+        Samiullah Khawaja <skhawaja@google.com>,
+        Willem de Bruijn <willemb@google.com>
+Cc:     Jakub Kicinski <kuba@kernel.org>, Jason Gunthorpe <jgg@ziepe.ca>,
+        Christoph Hellwig <hch@lst.de>,
         John Hubbard <jhubbard@nvidia.com>,
         Dan Williams <dan.j.williams@intel.com>,
-        David Ahern <dsahern@kernel.org>,
         Jesper Dangaard Brouer <jbrouer@redhat.com>,
         brouer@redhat.com, Alexander Duyck <alexander.duyck@gmail.com>,
         Yunsheng Lin <linyunsheng@huawei.com>, davem@davemloft.net,
@@ -88,84 +98,132 @@ Cc:     Christoph Hellwig <hch@lst.de>,
         linux-rdma@vger.kernel.org, linux-wireless@vger.kernel.org,
         linux-arm-kernel@lists.infradead.org,
         linux-mediatek@lists.infradead.org,
-        Jonathan Lemon <jonathan.lemon@gmail.com>
-Subject: Re: Memory providers multiplexing (Was: [PATCH net-next v4 4/5]
- page_pool: remove PP_FLAG_PAGE_FRAG flag)
-Message-ID: <ZK3sSMSVWM5EbHLG@ziepe.ca>
-References: <ZKyZBbKEpmkFkpWV@ziepe.ca>
- <20230711042708.GA18658@lst.de>
- <20230710215906.49514550@kernel.org>
- <20230711050445.GA19323@lst.de>
- <ZK1FbjG+VP/zxfO1@ziepe.ca>
- <20230711090047.37d7fe06@kernel.org>
- <ZK2Gh2qGxlpZexCM@ziepe.ca>
- <20230711100636.63b0a88a@kernel.org>
- <ZK2k9YQiXTtcGhp0@ziepe.ca>
- <20230711133420.5df88f02@kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230711133420.5df88f02@kernel.org>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+        Jonathan Lemon <jonathan.lemon@gmail.com>,
+        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
+        logang@deltatee.com, Bjorn Helgaas <bhelgaas@google.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Tue, Jul 11, 2023 at 01:34:20PM -0700, Jakub Kicinski wrote:
+On Tue, Jul 11, 2023 at 2:39=E2=80=AFPM David Ahern <dsahern@kernel.org> wr=
+ote:
+>
+> On 7/11/23 2:39 PM, Jakub Kicinski wrote:
+> > On Tue, 11 Jul 2023 10:06:28 -0700 Mina Almasry wrote:
+> >>>> Any reason not to allow an alternative representation for skb frags =
+than
+> >>>> struct page?
+> >>>
+> >>> I don't think there's a hard technical reason. We can make it work.
+> >>
+> >> I also think we can switch the representation for skb frags to
+> >> something else. However - please do correct me if I'm wrong - I don't
+> >> think that is sufficient for device memory TCP. My understanding is
+> >> that we also need to modify any NIC drivers that want to use device
+> >> memory TCP to understand a new memory type, and the page pool as well
+> >> if that's involved. I think in particular modifying the memory type in
+> >> all the NIC drivers that want to do device memory TCP is difficult. Do
+> >> you think this is feasible?
+> >
+> > That's why I was thinking about adding an abstraction between
+> > the page pool and the driver. Instead of feeding driver pages
+> > a new abstraction could feed the driver just an identifier and a PA.
+>
+> skb frag is currently a bio_vec. Overloading the 'struct page' address
+> in that struct with another address is easy to do. Requiring a certain
+> alignment on the address gives you a few low bits to use a flags / magic
+> / etc.
+>
+> Overloading len and offset is not really possible - way too much code is
+> affected (e.g., iov walking and MSS / TSO segmenting).
+>
+> ie., you could overload page address with a pointer to an object in your
+> new abstraction layer and the struct has the other meta data.
+>
+> typedef struct skb_frag {
+>         union {
+>                 struct bio_vec bvec;
+>                 struct new_abstraction abs;
+>         };
+> } skb_frag_t;
+>
+> where
+>
+> struct new_abstraction {
+>         void *addr,
+>         unsigned int len;
+>         unsigned int offset;
+> };
+>
+> I have been playing with a similar and it co-exists with the existing
+> code quite well with the constraint on location of len and offset.
+>
+> >
+> > Whether we want to support fragmentation in that model or not would
+> > have to be decided.
+> >
+> > We can take pages from the page pool and feed them to drivers via
+> > such an API, but drivers need to stop expecting pages.
+>
+> yes, drivers would have to be updated to understand the new format. A
+> downside, but again relatively easy to manage.
+>
 
-> > Yep. At the high end open standards based ethernet has also notably
-> > "failed" as well. Every switch vendor now offers their own proprietary
-> > ecosystem on a whole bunch of different axis. They all present
-> > "ethernet" toward the host but the host often needs to work in a
-> > special way to really take full advantage of the proprietary fabric
-> > behaviors.
-> 
-> I'm not familiar with "high end open standards based on ethernet", would
-> those be some RDMA / storage things? For TCP/IP networks pretty much
-> the only things that matter in a switch are bandwidth, size of buffers,
-> power... Implementation stuff.
+I'm glad to see that you're open to this approach. As far as I
+understand, getting device memory in a struct page form would still be
+preferred, no? And the approach you point to would be a backup plan I
+presume?
 
-I would say when you are getting into ethernet deployments with 25 or
-51 Tbps switches directly connected to hosts running at >100G you are
-getting into the high end side of things.
+Since the good folks on this thread have pointed me to p2pdma to
+address my use case, I've been doing some homework to see if it can
+apply. AFACT so far, it applies, and Willem actually had a prototype
+of it working a while back. The rough approach Willem and I are
+thinking of would be something like:
 
-These are very expensive networks. They run complex congestion
-provoking workloads. They have sophisticated multi-pathing. They often
-use use a non-blocking topology. Congestion management is important.
+1. The device memory driver would be the p2pdma provider. It would
+expose a user API which allocates a device memory region, calls
+pci_p2pdma_add_resource() and pci_p2pmem_publish() on it, and returns
+a reference to it to the userspace.
 
-Making this work with good utilization, and low tail latency is a
-really hard problem. Many of the solutions come with switch features
-supporting it.
+2. The NIC driver would be the p2pdma client and orchestrator. It
+would expose a user API which binds an rxq to a pci device. Prior to
+the bind the user API would check that the pci device has published
+p2p memory (pci_has_p2pmem()), and check the the p2p mem is accessible
+to the driver (pci_p2pdma_distance() I think), etc.
 
-You'd proably say these are not TCP focused networks, even though they
-are based on ethernet and IP.
+3. The NIC would allocate pages from the p2pdma provider for incoming
+packets, and create devmem skbs, and deliver the devmem skbs to the
+user using the support in my RFC. AFACT all that code need not be
+changed.
 
-So I think of them as high end "standards based" ethernet and IP
-looking networks that have proprietary elements mixed in throughout.
+AFAICT, all the concerns brought up in this thread are sidestepped by
+using p2pdma. I need not allocate struct pages in the core dma-buf
+code anymore (or anywhere), and I need not allocate pgmaps. I would
+just re-use the p2pdma support.
 
-Right now there is a bit of a press war between vendors on 'ethernet
-for AI'. Both Broadcom and NVIDIA are taking techonlogies that were
-originally built for TCP ethernet networks and remixing/speeding them
-up to run roce workloads effectively. There is alot more information
-available now without NDA that shows some detail on this space.
+Anyone see any glaring issues with this approach? I plan on trying to
+implement a PoC and sending an RFC v2.
 
-AWS's SRD multipathing, Broadcom "AI Ethernet" and NVIDIA's Spectrum-X
-spring to mind as topical to what these sorts of ethernet networks
-are.
+The only pending concern is integration with the page pool, but we
+already have some ideas on how to solve that.
 
-> A lot of "standardization" efforts are just attempts to prove to 
-> a buyers that an ecosystem exists.
+> >
+> > That's for data buffers only, obviously. We can keep using pages
+> > and raw page pool for headers.
+>
+> yes.
 
-Heh, that was probably more true years ago. These days it seems like
-some standardization is also being done so the large hyperscalers can
-improve their Approved Vendors List.
 
-I suppose as long as the result is something we can implement openly
-in Linux the motivation for standardization is less important.
 
-Jason
+--=20
+Thanks,
+Mina
