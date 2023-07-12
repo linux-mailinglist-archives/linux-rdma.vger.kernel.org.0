@@ -2,162 +2,105 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 382E37513B6
-	for <lists+linux-rdma@lfdr.de>; Thu, 13 Jul 2023 00:42:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6AB6E751497
+	for <lists+linux-rdma@lfdr.de>; Thu, 13 Jul 2023 01:41:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232558AbjGLWmD (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 12 Jul 2023 18:42:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43364 "EHLO
+        id S231901AbjGLXlt (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 12 Jul 2023 19:41:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49164 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232550AbjGLWmC (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 12 Jul 2023 18:42:02 -0400
-Received: from mail-vs1-xe29.google.com (mail-vs1-xe29.google.com [IPv6:2607:f8b0:4864:20::e29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B31151BF6
-        for <linux-rdma@vger.kernel.org>; Wed, 12 Jul 2023 15:42:00 -0700 (PDT)
-Received: by mail-vs1-xe29.google.com with SMTP id ada2fe7eead31-440b66adc81so73504137.1
-        for <linux-rdma@vger.kernel.org>; Wed, 12 Jul 2023 15:42:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1689201720; x=1691793720;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=mz/xfQs228JkD+EmKHVt4aMZuBD4Ky+nWhlpQiowkyI=;
-        b=3JuEXg+yPSc6oD9k/gVHY9JmrXpcmYz2DdmUKfAenXycWth8Ys52+0sfJNBJqhx+JA
-         POfjtfGzT4R2YWrxkgajUcAHuZwh0tHTbms8ZnyvNuUeIHHVBkyqjnNmi7pVjn+1p2XO
-         FT+BJijgfx1i+WKA7jlT7PyuiJDtM4V2bSpZ2ORkcz5BPrprzhZVrwTkYbGJtevpuwWu
-         +4s8IYxiO+jzUiXLxbNo6SvC/rtIpPMvBFlxMxrSFT5yrglpO/RRHqDNwsQ7XIWt3Mrm
-         6q7/TIQmwLLzR3bbJ6UgAadSF6ClWCYMawulX/tcO2I2umBPB5clyz54VDHR+jYWjASk
-         +o/w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689201720; x=1691793720;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=mz/xfQs228JkD+EmKHVt4aMZuBD4Ky+nWhlpQiowkyI=;
-        b=gjPP2T0aqxIIohmJ7wtZ1x26LX66M+ueoqKgVW8umg6g0eWPQbI/2DNmoQSnisdeWH
-         4JFI53dYv5KZa5Rcsh9ktwMgWq23zHp2BDJJhyjgW9lc0I4hACqswRiEpgfOSyllzbNC
-         lR2WfeGPDykVgNhv97O0XD1ymfuUO+sxCdae9A9evC4ha4mlh5F1qm4DcbOfyc9s0Kx/
-         +azTSDQmEdfKzU/dOT+4mRJAOsKtA7ChVNXjCmelsotUdAmRZt+GGdG9Ii/9n8Sct9QO
-         Xc2wG8RH84Wj1jqAhEJLKIVrtrzciUxabLZ2Kx39VC+Q6APwtHkL50iFXPcFcxILr+xL
-         5UeA==
-X-Gm-Message-State: ABy/qLZK2lDNl9QSDS5dfqlEnIICyHhM9NAG6t+FWxfwddApnpcwTwFe
-        yYENvDC/XAMoGiJ/PQNqyRbOVFdOV+yN/+x3aCt2PQ==
-X-Google-Smtp-Source: APBJJlHG9tuCdU7vOjJOYos5RKoNNv0/pCxlxo2gIMlFQovsMtvJLWra+WgillnY1AK2C/ycTstYjvsR47Bt+BOekOU=
-X-Received: by 2002:a67:b407:0:b0:443:4eca:f7f0 with SMTP id
- x7-20020a67b407000000b004434ecaf7f0mr99255vsl.11.1689201719631; Wed, 12 Jul
- 2023 15:41:59 -0700 (PDT)
+        with ESMTP id S231298AbjGLXls (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 12 Jul 2023 19:41:48 -0400
+Received: from mga18.intel.com (mga18.intel.com [134.134.136.126])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A4294119
+        for <linux-rdma@vger.kernel.org>; Wed, 12 Jul 2023 16:41:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1689205305; x=1720741305;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=NDM1GLLqipqCvLCWqCXsY7OpVFXGUb0MCKIdfC40eLU=;
+  b=jPUfszAQrZOEqwFzc6OmmyO16c7Ex1HWsQ3ap7/QMj8ayIcTYaUAO9ZC
+   KyxG4SJUCnDdKA45zeyzc/eN4ioMmSWFFxScGSKJafzBgZ9/NIkSVjCxI
+   hdwlhLN6ijrznRetvaUrk+NNBrAaHCxZ6EHY9CAKBTxHHogjiquG0E+qn
+   gow97UBRNxgPlFsZV/OG0T19cQkkmjGSnyRsac2LD7vUOW89nKHxybfda
+   Uaxa1C7tvbN+Jyhmtlz2a3IVl4EDKv2C1GiV8N5ux2w5eyFYCL3CrMq9G
+   IRgf6fWXbzhflvObsacCYux2LTnNqzsQQvXjhtDMDPyy/KreK+MXjM5md
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10769"; a="349886951"
+X-IronPort-AV: E=Sophos;i="6.01,200,1684825200"; 
+   d="scan'208";a="349886951"
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Jul 2023 16:41:44 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10769"; a="699040857"
+X-IronPort-AV: E=Sophos;i="6.01,200,1684825200"; 
+   d="scan'208";a="699040857"
+Received: from ssaleem-mobl1.amr.corp.intel.com ([10.92.33.5])
+  by orsmga006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Jul 2023 16:41:45 -0700
+From:   Shiraz Saleem <shiraz.saleem@intel.com>
+To:     phaddad@nvidia.com, jgg@nvidia.com, leon@kernel.org,
+        linux-rdma@vger.kernel.org
+Cc:     Shiraz Saleem <shiraz.saleem@intel.com>
+Subject: [PATCH for-rc] RDMA/core: Update CMA destination address on rdma_resolve_addr
+Date:   Wed, 12 Jul 2023 18:41:33 -0500
+Message-Id: <20230712234133.1343-1-shiraz.saleem@intel.com>
+X-Mailer: git-send-email 2.39.0
 MIME-Version: 1.0
-References: <20230711050445.GA19323@lst.de> <ZK1FbjG+VP/zxfO1@ziepe.ca>
- <20230711090047.37d7fe06@kernel.org> <04187826-8dad-d17b-2469-2837bafd3cd5@kernel.org>
- <20230711093224.1bf30ed5@kernel.org> <CAHS8izNHkLF0OowU=p=mSNZss700HKAzv1Oxqu2bvvfX_HxttA@mail.gmail.com>
- <20230711133915.03482fdc@kernel.org> <2263ae79-690e-8a4d-fca2-31aacc5c9bc6@kernel.org>
- <CAHS8izP=k8CqUZk7bGUx4ctm4m2kRC2MyEJv+N4+b0cHVkTQmA@mail.gmail.com>
- <20f6cbda-e361-9a81-de51-b395ec13841a@amd.com> <ZK6ktnwIjXIobFIM@ziepe.ca> <4f6e62e0-b4c2-9fca-6964-28cfea902de0@amd.com>
-In-Reply-To: <4f6e62e0-b4c2-9fca-6964-28cfea902de0@amd.com>
-From:   Mina Almasry <almasrymina@google.com>
-Date:   Wed, 12 Jul 2023 15:41:47 -0700
-Message-ID: <CAHS8izPK4DZ-7JKuxh712tjuh1zpB+Stu6aSdC6vbN3YWHLfMg@mail.gmail.com>
-Subject: Re: Memory providers multiplexing (Was: [PATCH net-next v4 4/5]
- page_pool: remove PP_FLAG_PAGE_FRAG flag)
-To:     =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>
-Cc:     Jason Gunthorpe <jgg@ziepe.ca>, David Ahern <dsahern@kernel.org>,
-        Samiullah Khawaja <skhawaja@google.com>,
-        Willem de Bruijn <willemb@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Christoph Hellwig <hch@lst.de>,
-        John Hubbard <jhubbard@nvidia.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Jesper Dangaard Brouer <jbrouer@redhat.com>,
-        brouer@redhat.com, Alexander Duyck <alexander.duyck@gmail.com>,
-        Yunsheng Lin <linyunsheng@huawei.com>, davem@davemloft.net,
-        pabeni@redhat.com, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Lorenzo Bianconi <lorenzo@kernel.org>,
-        Yisen Zhuang <yisen.zhuang@huawei.com>,
-        Salil Mehta <salil.mehta@huawei.com>,
-        Eric Dumazet <edumazet@google.com>,
-        Sunil Goutham <sgoutham@marvell.com>,
-        Geetha sowjanya <gakula@marvell.com>,
-        Subbaraya Sundeep <sbhatta@marvell.com>,
-        hariprasad <hkelam@marvell.com>,
-        Saeed Mahameed <saeedm@nvidia.com>,
-        Leon Romanovsky <leon@kernel.org>,
-        Felix Fietkau <nbd@nbd.name>,
-        Ryder Lee <ryder.lee@mediatek.com>,
-        Shayne Chen <shayne.chen@mediatek.com>,
-        Sean Wang <sean.wang@mediatek.com>,
-        Kalle Valo <kvalo@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
-        linux-rdma@vger.kernel.org, linux-wireless@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org,
-        Jonathan Lemon <jonathan.lemon@gmail.com>, logang@deltatee.com,
-        Bjorn Helgaas <bhelgaas@google.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-        autolearn=unavailable autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Wed, Jul 12, 2023 at 6:35=E2=80=AFAM Christian K=C3=B6nig
-<christian.koenig@amd.com> wrote:
->
-> Am 12.07.23 um 15:03 schrieb Jason Gunthorpe:
-> > On Wed, Jul 12, 2023 at 09:55:51AM +0200, Christian K=C3=B6nig wrote:
-> >
-> >>> Anyone see any glaring issues with this approach? I plan on trying to
-> >>> implement a PoC and sending an RFC v2.
-> >> Well we already have DMA-buf as user API for this use case, which is
-> >> perfectly supported by RDMA if I'm not completely mistaken.
-> >>
-> >> So what problem do you try to solve here actually?
-> > In a nutshell, netdev's design currently needs struct pages to do DMA
-> > to it's packet buffers.
-> >
-> > So it cannot consume the scatterlist that dmabuf puts out
-> >
-> > RDMA doesn't need struct pages at all, so it is fine.
-> >
-> > If Mina can go down the path of changing netdev to avoid needing
-> > struct pages then no changes to DRM side things.
-> >
-> > Otherwise a P2P struct page and a co-existance with netmem on a
-> > ZONE_DEVICE page would be required. :\
->
-> Uff, depending on why netdev needs struct page (I think I have a good
-> idea why) this isn't really going to work generically either way.
->
-> What we maybe able to do is to allow copy_file_range() between DMA-buf
-> file descriptor and a TCP socket.
->
-> If I'm not completely mistaken that should then end up in DMA-bufs
-> file_operations->copy_file_range callback (maybe with some minor change
-> to allows this).
->
-> The DMA-buf framework could then forward this to the exporter of the
-> memory which owns the backing memory could then do the necessary steps.
->
+8d037973d48c ("RDMA/core: Refactor rdma_bind_addr") intoduces as regression
+on irdma devices on certain tests which uses rdma CM, such as cmtime.
 
-I may be missing something, but the way it works on our end for
-receive is that we give a list of buffers (dma_addr + length + other
-metadata) to the network card, and the network card writes incoming
-packets to these dma_addrs and gives us an rx completion pointing to
-the data it DMA'd. Usually the network card does something like an
-alloc_page() + dma_map_page() and provides the to the network card.
-Transmit path works similarly. Not sure that adding copy_file_range()
-support to dma-buf enables this in some way.
+No connections can be established with the MAD QP experiences a fatal
+error on the active side.
 
---=20
-Thanks,
-Mina
+The cma destination address is not updated with the dst_addr when ULP
+on active side calls rdma_bind_addr followed by rdma_resolve_addr.
+The id_priv state is 'bound' in resolve_prepare_src and update is skipped.
+
+This leaves the dgid passed into irdma driver to create an Address Handle
+(AH) for the MAD QP at 0. The create AH descriptor as well as the ARP cache
+entry is invalid and HW throws an asynchronous events as result.
+
+[ 1207.656888] resolve_prepare_src caller: ucma_resolve_addr+0xff/0x170 [rdma_ucm] daddr=200.0.4.28 id_priv->state=7
+[....]
+[ 1207.680362] ice 0000:07:00.1 rocep7s0f1: caller: irdma_create_ah+0x3e/0x70 [irdma] ah_id=0 arp_idx=0 dest_ip=0.0.0.0
+destMAC=00:00:64:ca:b7:52 ipvalid=1 raw=0000:0000:0000:0000:0000:ffff:0000:0000
+[ 1207.682077] ice 0000:07:00.1 rocep7s0f1: abnormal ae_id = 0x401 bool qp=1 qp_id = 1, ae_src=5
+[ 1207.691657] infiniband rocep7s0f1: Fatal error (1) on MAD QP (1)
+
+Fix this by updating the CMA destination address when the ULP calls
+a resolve address with the CM state already bound.
+
+Fixes: 8d037973d48c ("RDMA/core: Refactor rdma_bind_addr")
+Signed-off-by: Shiraz Saleem <shiraz.saleem@intel.com>
+---
+ drivers/infiniband/core/cma.c | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/drivers/infiniband/core/cma.c b/drivers/infiniband/core/cma.c
+index 1ee87c3..9891c7d 100644
+--- a/drivers/infiniband/core/cma.c
++++ b/drivers/infiniband/core/cma.c
+@@ -4062,6 +4062,8 @@ static int resolve_prepare_src(struct rdma_id_private *id_priv,
+ 					   RDMA_CM_ADDR_QUERY)))
+ 			return -EINVAL;
+ 
++	} else {
++		memcpy(cma_dst_addr(id_priv), dst_addr, rdma_addr_size(dst_addr));
+ 	}
+ 
+ 	if (cma_family(id_priv) != dst_addr->sa_family) {
+-- 
+1.8.3.1
+
