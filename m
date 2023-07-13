@@ -2,241 +2,125 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 77209751E6B
-	for <lists+linux-rdma@lfdr.de>; Thu, 13 Jul 2023 12:07:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D7FE875218D
+	for <lists+linux-rdma@lfdr.de>; Thu, 13 Jul 2023 14:46:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234518AbjGMKHb (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 13 Jul 2023 06:07:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48728 "EHLO
+        id S233910AbjGMMqw (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 13 Jul 2023 08:46:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56930 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234623AbjGMKGn (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 13 Jul 2023 06:06:43 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7DFBE212B;
-        Thu, 13 Jul 2023 03:06:34 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 04D7760ADC;
-        Thu, 13 Jul 2023 10:06:34 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 34C10C433D9;
-        Thu, 13 Jul 2023 10:06:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1689242793;
-        bh=+Df4cQ3XZPwLfFxJgIqPrDY4l9UAdwCjr9DGoW3/ojk=;
-        h=From:Date:Subject:References:In-Reply-To:To:Cc:From;
-        b=j+ukf52dvZ+nUEPwpL9/EYruyhEbJbg7d1yjKDMcd3GOYxX7RclutpFcH5UUHlkpI
-         fnIEho3ycJz28JfRAPfizI9cf3F0lqh4jC9ZF+UZUl5JTb6HfdwpWlIJ9bsmZ0DsOQ
-         PAjBHJokUk/yF6GqX5PHCHsaDKT13j+MVST75N+zeiC2em3PJTUKrCtRR1KKmsmMCX
-         MYnQq0YQbswQU++9LLW3pgHXNsdqcZtbb04btB9J/lGIIF9SRPTFcmVmql2ih2n6bH
-         BAMadKjZaQhxN2qUstf+rs137LSKZ/kMx1juo/8V60a80JJWvq1eqYcfgXe/BuR2sH
-         +vKmJxA1p+x+A==
-From:   Christian Brauner <brauner@kernel.org>
-Date:   Thu, 13 Jul 2023 12:05:38 +0200
-Subject: [PATCH 2/2] eventfd: simplify eventfd_signal_mask()
-MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20230713-vfs-eventfd-signal-v1-2-7fda6c5d212b@kernel.org>
-References: <20230713-vfs-eventfd-signal-v1-0-7fda6c5d212b@kernel.org>
-In-Reply-To: <20230713-vfs-eventfd-signal-v1-0-7fda6c5d212b@kernel.org>
-To:     linux-fsdevel@vger.kernel.org
-Cc:     Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
-        David Woodhouse <dwmw2@infradead.org>,
-        Paul Durrant <paul@xen.org>, Oded Gabbay <ogabbay@kernel.org>,
-        Wu Hao <hao.wu@intel.com>, Tom Rix <trix@redhat.com>,
-        Moritz Fischer <mdf@kernel.org>, Xu Yilun <yilun.xu@intel.com>,
-        Zhenyu Wang <zhenyuw@linux.intel.com>,
-        Zhi Wang <zhi.a.wang@intel.com>,
-        Jani Nikula <jani.nikula@linux.intel.com>,
-        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>,
-        Tvrtko Ursulin <tvrtko.ursulin@linux.intel.com>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
+        with ESMTP id S233560AbjGMMqu (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 13 Jul 2023 08:46:50 -0400
+Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5206926B1;
+        Thu, 13 Jul 2023 05:46:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1689252386; x=1720788386;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=32kRKfdMgDzPzA7zG83cMwuqvw0HkhDshGCOND8kKRk=;
+  b=fxSIoaW67HJ4JXON+sFsfRe3SAj+egnPB3bO2NSP58lcVmRfsFqHc5g+
+   MMusC4bspqOJ9p3mQOj4hRoaZkCxPFEGGJYHaW36oCaBXPHJAKbc64R8d
+   J3elUik7h1YyO6xnpfOljW59k6rTzMFJijA1cA5H+LlofdSYvxNwOaNM3
+   8Bj9YxFW2D/LcCMh0C2YiPl3x9ahohnd7VzUwhsek73WpvHG1kRYSDIVZ
+   09IE4BWc2wM5yFNlNnfuF426g4Va9BO2ZzjkB6Gp45SWDQnjM0DNn/RuH
+   NaEce348aD8uayEU3GzZ2Hs7U/dtn8FpAhEJh3nhcCwtvjtojJ2w0cd+G
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10770"; a="367796963"
+X-IronPort-AV: E=Sophos;i="6.01,202,1684825200"; 
+   d="scan'208";a="367796963"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Jul 2023 05:46:23 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10770"; a="757144480"
+X-IronPort-AV: E=Sophos;i="6.01,202,1684825200"; 
+   d="scan'208";a="757144480"
+Received: from ijarvine-mobl2.ger.corp.intel.com ([10.251.222.39])
+  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Jul 2023 05:46:07 -0700
+From:   =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
+To:     linux-pci@vger.kernel.org, Bjorn Helgaas <bhelgaas@google.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Rob Herring <robh@kernel.org>,
+        =?UTF-8?q?Krzysztof=20Wilczy=C5=84ski?= <kw@linux.com>,
+        Emmanuel Grumbach <emmanuel.grumbach@intel.com>,
+        "Rafael J . Wysocki" <rafael@kernel.org>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Lukas Wunner <lukas@wunner.de>,
+        Saeed Mahameed <saeedm@nvidia.com>,
         Leon Romanovsky <leon@kernel.org>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Frederic Barrat <fbarrat@linux.ibm.com>,
-        Andrew Donnellan <ajd@linux.ibm.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Eric Farman <farman@linux.ibm.com>,
-        Matthew Rosato <mjrosato@linux.ibm.com>,
-        Halil Pasic <pasic@linux.ibm.com>,
-        Vineeth Vijayan <vneethv@linux.ibm.com>,
-        Peter Oberparleiter <oberpar@linux.ibm.com>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Alexander Gordeev <agordeev@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@linux.ibm.com>,
-        Sven Schnelle <svens@linux.ibm.com>,
-        Tony Krowiak <akrowiak@linux.ibm.com>,
-        Jason Herne <jjherne@linux.ibm.com>,
-        Harald Freudenberger <freude@linux.ibm.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
-        Diana Craciun <diana.craciun@oss.nxp.com>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        Eric Auger <eric.auger@redhat.com>, Fei Li <fei1.li@intel.com>,
-        Benjamin LaHaise <bcrl@kvack.org>,
-        Christian Brauner <brauner@kernel.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        Shakeel Butt <shakeelb@google.com>,
-        Muchun Song <muchun.song@linux.dev>,
-        Kirti Wankhede <kwankhede@nvidia.com>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        linux-fpga@vger.kernel.org, intel-gvt-dev@lists.freedesktop.org,
-        intel-gfx@lists.freedesktop.org, linux-rdma@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, linux-s390@vger.kernel.org,
-        linux-usb@vger.kernel.org,
-        virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
-        linux-aio@kvack.org, cgroups@vger.kernel.org, linux-mm@kvack.org,
-        Jens Axboe <axboe@kernel.dk>,
-        Pavel Begunkov <asml.silence@gmail.com>,
-        io-uring@vger.kernel.org
-X-Mailer: b4 0.13-dev-099c9
-X-Developer-Signature: v=1; a=openpgp-sha256; l=4338; i=brauner@kernel.org;
- h=from:subject:message-id; bh=+Df4cQ3XZPwLfFxJgIqPrDY4l9UAdwCjr9DGoW3/ojk=;
- b=owGbwMvMwCU28Zj0gdSKO4sYT6slMaSsP1NbdfmkaWaxQvZah7/MWs/ufCrO2q82U2T1DIWDSy0u
- LwzX6ChhYRDjYpAVU2RxaDcJl1vOU7HZKFMDZg4rE8gQBi5OAZiIshkjww4t2ytlzT8ElQsqm7Su/N
- b3T10XyfCvYZ2XvvOJclnpCIbvvh+/WjLaTozOzj3stenvds+qri//VkTNPGGwWHTi+Uc8AA==
-X-Developer-Key: i=brauner@kernel.org; a=openpgp;
- fpr=4880B8C9BD0E5106FC070F4F7B3C391EFEA93624
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Moshe Shemesh <moshe@mellanox.com>, netdev@vger.kernel.org,
+        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Dean Luick <dean.luick@cornelisnetworks.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        =?UTF-8?q?Jonas=20Dre=C3=9Fler?= <verdre@v0yd.nl>,
+        =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>,
+        Moshe Shemesh <moshe@nvidia.com>,
+        Simon Horman <simon.horman@corigine.com>,
+        stable@vger.kernel.org
+Subject: [PATCH v4 07/11] net/mlx5: Use RMW accessors for changing LNKCTL
+Date:   Thu, 13 Jul 2023 15:45:01 +0300
+Message-Id: <20230713124505.94866-8-ilpo.jarvinen@linux.intel.com>
+X-Mailer: git-send-email 2.30.2
+In-Reply-To: <20230713124505.94866-1-ilpo.jarvinen@linux.intel.com>
+References: <20230713124505.94866-1-ilpo.jarvinen@linux.intel.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-The eventfd_signal_mask() helper was introduced for io_uring and similar
-to eventfd_signal() it always passed 1 for @n. So don't bother with that
-argument at all.
+Don't assume that only the driver would be accessing LNKCTL of the
+upstream bridge. ASPM policy changes can trigger write to LNKCTL
+outside of driver's control.
 
-Signed-off-by: Christian Brauner <brauner@kernel.org>
+Use RMW capability accessors which do proper locking to avoid losing
+concurrent updates to the register value.
+
+Fixes: eabe8e5e88f5 ("net/mlx5: Handle sync reset now event")
+Suggested-by: Lukas Wunner <lukas@wunner.de>
+Signed-off-by: Ilpo Järvinen <ilpo.jarvinen@linux.intel.com>
+Reviewed-by: Moshe Shemesh <moshe@nvidia.com>
+Reviewed-by: Simon Horman <simon.horman@corigine.com>
+Cc: stable@vger.kernel.org
 ---
- drivers/gpu/drm/i915/gvt/interrupt.c | 2 +-
- fs/eventfd.c                         | 9 +++++----
- include/linux/eventfd.h              | 9 ++++-----
- io_uring/io_uring.c                  | 4 ++--
- 4 files changed, 12 insertions(+), 12 deletions(-)
+ drivers/net/ethernet/mellanox/mlx5/core/fw_reset.c | 9 ++-------
+ 1 file changed, 2 insertions(+), 7 deletions(-)
 
-diff --git a/drivers/gpu/drm/i915/gvt/interrupt.c b/drivers/gpu/drm/i915/gvt/interrupt.c
-index 3d9e09c2add4..31aff6f733d4 100644
---- a/drivers/gpu/drm/i915/gvt/interrupt.c
-+++ b/drivers/gpu/drm/i915/gvt/interrupt.c
-@@ -435,7 +435,7 @@ static int inject_virtual_interrupt(struct intel_vgpu *vgpu)
- 	 */
- 	if (!test_bit(INTEL_VGPU_STATUS_ATTACHED, vgpu->status))
- 		return -ESRCH;
--	if (vgpu->msi_trigger && eventfd_signal(vgpu->msi_trigger) != 1)
-+	if (vgpu->msi_trigger && !eventfd_signal(vgpu->msi_trigger))
- 		return -EFAULT;
- 	return 0;
- }
-diff --git a/fs/eventfd.c b/fs/eventfd.c
-index dc9e01053235..077be5da72bd 100644
---- a/fs/eventfd.c
-+++ b/fs/eventfd.c
-@@ -43,9 +43,10 @@ struct eventfd_ctx {
- 	int id;
- };
+diff --git a/drivers/net/ethernet/mellanox/mlx5/core/fw_reset.c b/drivers/net/ethernet/mellanox/mlx5/core/fw_reset.c
+index 4804990b7f22..99dcbd006357 100644
+--- a/drivers/net/ethernet/mellanox/mlx5/core/fw_reset.c
++++ b/drivers/net/ethernet/mellanox/mlx5/core/fw_reset.c
+@@ -384,16 +384,11 @@ static int mlx5_pci_link_toggle(struct mlx5_core_dev *dev)
+ 		pci_cfg_access_lock(sdev);
+ 	}
+ 	/* PCI link toggle */
+-	err = pci_read_config_word(bridge, cap + PCI_EXP_LNKCTL, &reg16);
+-	if (err)
+-		return err;
+-	reg16 |= PCI_EXP_LNKCTL_LD;
+-	err = pci_write_config_word(bridge, cap + PCI_EXP_LNKCTL, reg16);
++	err = pcie_capability_set_word(bridge, PCI_EXP_LNKCTL, PCI_EXP_LNKCTL_LD);
+ 	if (err)
+ 		return err;
+ 	msleep(500);
+-	reg16 &= ~PCI_EXP_LNKCTL_LD;
+-	err = pci_write_config_word(bridge, cap + PCI_EXP_LNKCTL, reg16);
++	err = pcie_capability_clear_word(bridge, PCI_EXP_LNKCTL, PCI_EXP_LNKCTL_LD);
+ 	if (err)
+ 		return err;
  
--__u64 eventfd_signal_mask(struct eventfd_ctx *ctx, __u64 n, __poll_t mask)
-+bool eventfd_signal_mask(struct eventfd_ctx *ctx, __poll_t mask)
- {
- 	unsigned long flags;
-+	__u64 n = 1;
- 
- 	/*
- 	 * Deadlock or stack overflow issues can happen if we recurse here
-@@ -68,7 +69,7 @@ __u64 eventfd_signal_mask(struct eventfd_ctx *ctx, __u64 n, __poll_t mask)
- 	current->in_eventfd = 0;
- 	spin_unlock_irqrestore(&ctx->wqh.lock, flags);
- 
--	return n;
-+	return n == 1;
- }
- 
- /**
-@@ -82,9 +83,9 @@ __u64 eventfd_signal_mask(struct eventfd_ctx *ctx, __u64 n, __poll_t mask)
-  *
-  * Returns the amount by which the counter was incremented.
-  */
--__u64 eventfd_signal(struct eventfd_ctx *ctx)
-+bool eventfd_signal(struct eventfd_ctx *ctx)
- {
--	return eventfd_signal_mask(ctx, 1, 0);
-+	return eventfd_signal_mask(ctx, 0);
- }
- EXPORT_SYMBOL_GPL(eventfd_signal);
- 
-diff --git a/include/linux/eventfd.h b/include/linux/eventfd.h
-index 562089431551..0155ee25f7c8 100644
---- a/include/linux/eventfd.h
-+++ b/include/linux/eventfd.h
-@@ -35,8 +35,8 @@ void eventfd_ctx_put(struct eventfd_ctx *ctx);
- struct file *eventfd_fget(int fd);
- struct eventfd_ctx *eventfd_ctx_fdget(int fd);
- struct eventfd_ctx *eventfd_ctx_fileget(struct file *file);
--__u64 eventfd_signal(struct eventfd_ctx *ctx);
--__u64 eventfd_signal_mask(struct eventfd_ctx *ctx, __u64 n, __poll_t mask);
-+bool eventfd_signal(struct eventfd_ctx *ctx);
-+bool eventfd_signal_mask(struct eventfd_ctx *ctx, __poll_t mask);
- int eventfd_ctx_remove_wait_queue(struct eventfd_ctx *ctx, wait_queue_entry_t *wait,
- 				  __u64 *cnt);
- void eventfd_ctx_do_read(struct eventfd_ctx *ctx, __u64 *cnt);
-@@ -58,13 +58,12 @@ static inline struct eventfd_ctx *eventfd_ctx_fdget(int fd)
- 	return ERR_PTR(-ENOSYS);
- }
- 
--static inline int eventfd_signal(struct eventfd_ctx *ctx)
-+static inline bool eventfd_signal(struct eventfd_ctx *ctx)
- {
- 	return -ENOSYS;
- }
- 
--static inline int eventfd_signal_mask(struct eventfd_ctx *ctx, __u64 n,
--				      unsigned mask)
-+static inline bool eventfd_signal_mask(struct eventfd_ctx *ctx, unsigned mask)
- {
- 	return -ENOSYS;
- }
-diff --git a/io_uring/io_uring.c b/io_uring/io_uring.c
-index e8096d502a7c..a9359ef73935 100644
---- a/io_uring/io_uring.c
-+++ b/io_uring/io_uring.c
-@@ -537,7 +537,7 @@ static void io_eventfd_ops(struct rcu_head *rcu)
- 	int ops = atomic_xchg(&ev_fd->ops, 0);
- 
- 	if (ops & BIT(IO_EVENTFD_OP_SIGNAL_BIT))
--		eventfd_signal_mask(ev_fd->cq_ev_fd, 1, EPOLL_URING_WAKE);
-+		eventfd_signal_mask(ev_fd->cq_ev_fd, EPOLL_URING_WAKE);
- 
- 	/* IO_EVENTFD_OP_FREE_BIT may not be set here depending on callback
- 	 * ordering in a race but if references are 0 we know we have to free
-@@ -573,7 +573,7 @@ static void io_eventfd_signal(struct io_ring_ctx *ctx)
- 		goto out;
- 
- 	if (likely(eventfd_signal_allowed())) {
--		eventfd_signal_mask(ev_fd->cq_ev_fd, 1, EPOLL_URING_WAKE);
-+		eventfd_signal_mask(ev_fd->cq_ev_fd, EPOLL_URING_WAKE);
- 	} else {
- 		atomic_inc(&ev_fd->refs);
- 		if (!atomic_fetch_or(BIT(IO_EVENTFD_OP_SIGNAL_BIT), &ev_fd->ops))
-
 -- 
-2.34.1
+2.30.2
 
