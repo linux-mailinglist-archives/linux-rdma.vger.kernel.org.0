@@ -2,50 +2,122 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4CA457524EA
-	for <lists+linux-rdma@lfdr.de>; Thu, 13 Jul 2023 16:17:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 15733752534
+	for <lists+linux-rdma@lfdr.de>; Thu, 13 Jul 2023 16:33:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230142AbjGMORP (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 13 Jul 2023 10:17:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32774 "EHLO
+        id S230462AbjGMOdM (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 13 Jul 2023 10:33:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46468 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233586AbjGMORF (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 13 Jul 2023 10:17:05 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A8C5273C;
-        Thu, 13 Jul 2023 07:17:04 -0700 (PDT)
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out1.suse.de (Postfix) with ESMTP id 4B9A92215C;
-        Thu, 13 Jul 2023 14:17:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1689257823; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-        bh=0F3IVRfOzkZV04oqAbKVuLpJxEE0JQCptBRjfSogYEU=;
-        b=k4Iv4+i8i2pPGKsG6+WpXS4qYs5OaDShVpDg/2SC1skE75pAPVb9lttsOqC53wfpeVhzTa
-        E2gJDAoKff5l0MhE/tvjWXJmJnLEUtJbhgBCDx3j6hEFBkYw7d/DnLo73T+DFb6dAXOz20
-        rbpkaZvAg7MuHO7VfHjGfChaL6GCxas=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1689257823;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-        bh=0F3IVRfOzkZV04oqAbKVuLpJxEE0JQCptBRjfSogYEU=;
-        b=tJXDZNVs+MB1qj2V4LeR4c80hcvRGxpL+bg47FPaMfNqP2MLCrwHh4oeIFHXbhQ3HvAXnB
-        GBJDxm1BXCmw2sBQ==
-Received: from adalid.arch.suse.de (adalid.arch.suse.de [10.161.8.13])
-        by relay2.suse.de (Postfix) with ESMTP id 2EAF62C142;
-        Thu, 13 Jul 2023 14:17:03 +0000 (UTC)
-From:   Thomas Bogendoerfer <tbogendoerfer@suse.de>
-To:     Jason Gunthorpe <jgg@ziepe.ca>, Leon Romanovsky <leon@kernel.org>,
-        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] RDMA/mthca: Fix crash when polling CQ for shared QPs
-Date:   Thu, 13 Jul 2023 16:16:58 +0200
-Message-Id: <20230713141658.9426-1-tbogendoerfer@suse.de>
-X-Mailer: git-send-email 2.35.3
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        with ESMTP id S230267AbjGMOdL (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 13 Jul 2023 10:33:11 -0400
+Received: from mail-pl1-x64a.google.com (mail-pl1-x64a.google.com [IPv6:2607:f8b0:4864:20::64a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D76126B7
+        for <linux-rdma@vger.kernel.org>; Thu, 13 Jul 2023 07:33:07 -0700 (PDT)
+Received: by mail-pl1-x64a.google.com with SMTP id d9443c01a7336-1b89e3715acso3340365ad.3
+        for <linux-rdma@vger.kernel.org>; Thu, 13 Jul 2023 07:33:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20221208; t=1689258787; x=1691850787;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=fr2vYa/Ch6xYV487nmzxcm8iM/FlpnkWVHQ5jynQTbg=;
+        b=jacaK9M2p8ae07DYtf3WTwW4sJ88AeR0PMoTM/K8Zom80G9CNsRED8/7OkNACpL4FI
+         vSrK+poAQrpW9b9XXAEX3N+/eJqGG0fl2uSilp/V2zhMmynFGmkNp19rQMAPCUIgro+L
+         8wZFnIyWuBTpd6inSk0jhwWPq/qOKDhiCmrdy2nICENUOLQPMx4zm5vkc1J+N+jf8F/9
+         NWijWeXBKP6nhRWfAZooF9dECtwpwP1B06LROVi+ZRGQWEPDlF+8FcWtS7IpVg38LWBC
+         sabPszkfHQCdZSa4qO28HKir4zE3m+cUi5LtAFjCZb9xEKl25slyjVF3CoaXZrvttifT
+         RnQA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689258787; x=1691850787;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=fr2vYa/Ch6xYV487nmzxcm8iM/FlpnkWVHQ5jynQTbg=;
+        b=Q8gG98O2FJXc89OfBTyClLfA+xlvJkOm0DU8SqouJUY2f64SBMf44gekOMNcnqW+vQ
+         JsOrpftcmSKdR1iyHU410/W2Z9S5dW1QBXZMVQQ23MzfGO83BmZTv3Q8kpR3F9x6+mGM
+         TU6wSb2PQpQ630x/ZI+Io1CILgd0rPNIEy91tBuPPrqxwcQX2Xg2TNFycDPwRfej7ROy
+         IW+NPXCbIhGM2oxVJb+RogTGlbccHtwAhmbzuEtxG51J32Ktxto/DxXsHc3kDt1MgMHL
+         McxQKzoUL57sHN/bUC7Ql6vB6Q1dT0YNpdUuZ9vJvZEgOAKAoEkdUGqmHIEsCJPHT7FS
+         HHlg==
+X-Gm-Message-State: ABy/qLasouMudACzXfLV8YOYg6L+aoWx+lHrKZBc7LpEXYUobp2BeN/T
+        Y+CKODImZFNEuGpmNAdCHazZ4rVinZ4=
+X-Google-Smtp-Source: APBJJlFAAhWItEMB5PDxlVd4/XD0kDAeGPn5ZZPTnMU3ojU8FDM9Oji9AhkfLIh7rpZuc1o0H3AhYJQLwhY=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a17:902:b282:b0:1ba:1704:89d1 with SMTP id
+ u2-20020a170902b28200b001ba170489d1mr5846plr.10.1689258786828; Thu, 13 Jul
+ 2023 07:33:06 -0700 (PDT)
+Date:   Thu, 13 Jul 2023 07:33:05 -0700
+In-Reply-To: <20230713-vfs-eventfd-signal-v1-2-7fda6c5d212b@kernel.org>
+Mime-Version: 1.0
+References: <20230713-vfs-eventfd-signal-v1-0-7fda6c5d212b@kernel.org> <20230713-vfs-eventfd-signal-v1-2-7fda6c5d212b@kernel.org>
+Message-ID: <ZLAK+FA3qgbHW0YK@google.com>
+Subject: Re: [PATCH 2/2] eventfd: simplify eventfd_signal_mask()
+From:   Sean Christopherson <seanjc@google.com>
+To:     Christian Brauner <brauner@kernel.org>
+Cc:     linux-fsdevel@vger.kernel.org,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+        David Woodhouse <dwmw2@infradead.org>,
+        Paul Durrant <paul@xen.org>, Oded Gabbay <ogabbay@kernel.org>,
+        Wu Hao <hao.wu@intel.com>, Tom Rix <trix@redhat.com>,
+        Moritz Fischer <mdf@kernel.org>, Xu Yilun <yilun.xu@intel.com>,
+        Zhenyu Wang <zhenyuw@linux.intel.com>,
+        Zhi Wang <zhi.a.wang@intel.com>,
+        Jani Nikula <jani.nikula@linux.intel.com>,
+        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
+        Rodrigo Vivi <rodrigo.vivi@intel.com>,
+        Tvrtko Ursulin <tvrtko.ursulin@linux.intel.com>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Leon Romanovsky <leon@kernel.org>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Frederic Barrat <fbarrat@linux.ibm.com>,
+        Andrew Donnellan <ajd@linux.ibm.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Eric Farman <farman@linux.ibm.com>,
+        Matthew Rosato <mjrosato@linux.ibm.com>,
+        Halil Pasic <pasic@linux.ibm.com>,
+        Vineeth Vijayan <vneethv@linux.ibm.com>,
+        Peter Oberparleiter <oberpar@linux.ibm.com>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Alexander Gordeev <agordeev@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@linux.ibm.com>,
+        Sven Schnelle <svens@linux.ibm.com>,
+        Tony Krowiak <akrowiak@linux.ibm.com>,
+        Jason Herne <jjherne@linux.ibm.com>,
+        Harald Freudenberger <freude@linux.ibm.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
+        Diana Craciun <diana.craciun@oss.nxp.com>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        Eric Auger <eric.auger@redhat.com>, Fei Li <fei1.li@intel.com>,
+        Benjamin LaHaise <bcrl@kvack.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        Shakeel Butt <shakeelb@google.com>,
+        Muchun Song <muchun.song@linux.dev>,
+        Kirti Wankhede <kwankhede@nvidia.com>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        linux-fpga@vger.kernel.org, intel-gvt-dev@lists.freedesktop.org,
+        intel-gfx@lists.freedesktop.org, linux-rdma@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, linux-s390@vger.kernel.org,
+        linux-usb@vger.kernel.org,
+        virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
+        linux-aio@kvack.org, cgroups@vger.kernel.org, linux-mm@kvack.org,
+        Jens Axboe <axboe@kernel.dk>,
+        Pavel Begunkov <asml.silence@gmail.com>,
+        io-uring@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        USER_IN_DEF_DKIM_WL autolearn=unavailable autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -53,31 +125,93 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Commit 21c2fe94abb2 ("RDMA/mthca: Combine special QP struct with mthca QP")
-introduced a new struct mthca_sqp which doesn't contain struct mthca_qp
-any longer. Placing a pointer of this new struct into qptable leads
-to crashes, because mthca_poll_one() expects a qp pointer. Fix this
-by putting the correct pointer into qptable.
+On Thu, Jul 13, 2023, Christian Brauner wrote:
+> diff --git a/fs/eventfd.c b/fs/eventfd.c
+> index dc9e01053235..077be5da72bd 100644
+> --- a/fs/eventfd.c
+> +++ b/fs/eventfd.c
+> @@ -43,9 +43,10 @@ struct eventfd_ctx {
+>  	int id;
+>  };
+>  
+> -__u64 eventfd_signal_mask(struct eventfd_ctx *ctx, __u64 n, __poll_t mask)
+> +bool eventfd_signal_mask(struct eventfd_ctx *ctx, __poll_t mask)
+>  {
+>  	unsigned long flags;
+> +	__u64 n = 1;
+>  
+>  	/*
+>  	 * Deadlock or stack overflow issues can happen if we recurse here
+> @@ -68,7 +69,7 @@ __u64 eventfd_signal_mask(struct eventfd_ctx *ctx, __u64 n, __poll_t mask)
+>  	current->in_eventfd = 0;
+>  	spin_unlock_irqrestore(&ctx->wqh.lock, flags);
+>  
+> -	return n;
+> +	return n == 1;
+>  }
 
-Fixes: 21c2fe94abb2 ("RDMA/mthca: Combine special QP struct with mthca QP")
-Signed-off-by: Thomas Bogendoerfer <tbogendoerfer@suse.de>
----
- drivers/infiniband/hw/mthca/mthca_qp.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+...
 
-diff --git a/drivers/infiniband/hw/mthca/mthca_qp.c b/drivers/infiniband/hw/mthca/mthca_qp.c
-index 69bba0ef4a5d..53f43649f7d0 100644
---- a/drivers/infiniband/hw/mthca/mthca_qp.c
-+++ b/drivers/infiniband/hw/mthca/mthca_qp.c
-@@ -1393,7 +1393,7 @@ int mthca_alloc_sqp(struct mthca_dev *dev,
- 	if (mthca_array_get(&dev->qp_table.qp, mqpn))
- 		err = -EBUSY;
- 	else
--		mthca_array_set(&dev->qp_table.qp, mqpn, qp->sqp);
-+		mthca_array_set(&dev->qp_table.qp, mqpn, qp);
- 	spin_unlock_irq(&dev->qp_table.lock);
- 
- 	if (err)
--- 
-2.35.3
+> @@ -58,13 +58,12 @@ static inline struct eventfd_ctx *eventfd_ctx_fdget(int fd)
+>  	return ERR_PTR(-ENOSYS);
+>  }
+>  
+> -static inline int eventfd_signal(struct eventfd_ctx *ctx)
+> +static inline bool eventfd_signal(struct eventfd_ctx *ctx)
+>  {
+>  	return -ENOSYS;
+>  }
+>  
+> -static inline int eventfd_signal_mask(struct eventfd_ctx *ctx, __u64 n,
+> -				      unsigned mask)
+> +static inline bool eventfd_signal_mask(struct eventfd_ctx *ctx, unsigned mask)
+>  {
+>  	return -ENOSYS;
 
+This will morph to "true" for what should be an error case.  One option would be
+to have eventfd_signal_mask() return 0/-errno instead of the count, but looking
+at all the callers, nothing ever actually consumes the result.
+
+KVMGT morphs failure into -EFAULT
+
+	if (vgpu->msi_trigger && eventfd_signal(vgpu->msi_trigger, 1) != 1)
+		return -EFAULT;
+
+but the only caller of that user ignores the return value.
+
+	if (vgpu_vreg(vgpu, i915_mmio_reg_offset(GEN8_MASTER_IRQ))
+			& ~GEN8_MASTER_IRQ_CONTROL)
+		inject_virtual_interrupt(vgpu);
+
+The sample driver in samples/vfio-mdev/mtty.c uses a similar pattern: prints an
+error but otherwise ignores the result.
+
+So why not return nothing?  That will simplify eventfd_signal_mask() a wee bit
+more, and eliminate that bizarre return value confusion for the ugly stubs, e.g.
+
+void eventfd_signal_mask(struct eventfd_ctx *ctx, unsigned mask)
+{
+	unsigned long flags;
+
+	/*
+	 * Deadlock or stack overflow issues can happen if we recurse here
+	 * through waitqueue wakeup handlers. If the caller users potentially
+	 * nested waitqueues with custom wakeup handlers, then it should
+	 * check eventfd_signal_allowed() before calling this function. If
+	 * it returns false, the eventfd_signal() call should be deferred to a
+	 * safe context.
+	 */
+	if (WARN_ON_ONCE(current->in_eventfd))
+		return;
+
+	spin_lock_irqsave(&ctx->wqh.lock, flags);
+	current->in_eventfd = 1;
+	if (ctx->count < ULLONG_MAX)
+		ctx->count++;
+	if (waitqueue_active(&ctx->wqh))
+		wake_up_locked_poll(&ctx->wqh, EPOLLIN | mask);
+	current->in_eventfd = 0;
+	spin_unlock_irqrestore(&ctx->wqh.lock, flags);
+}
+
+You could even go further and unify the real and stub versions of eventfd_signal().
