@@ -2,140 +2,108 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 30874753EB6
-	for <lists+linux-rdma@lfdr.de>; Fri, 14 Jul 2023 17:24:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 49FF4753EE4
+	for <lists+linux-rdma@lfdr.de>; Fri, 14 Jul 2023 17:32:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236362AbjGNPYw (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 14 Jul 2023 11:24:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49184 "EHLO
+        id S235965AbjGNPb7 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 14 Jul 2023 11:31:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53286 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236063AbjGNPYv (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 14 Jul 2023 11:24:51 -0400
-Received: from mail-oo1-xc32.google.com (mail-oo1-xc32.google.com [IPv6:2607:f8b0:4864:20::c32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2FD9830D8
-        for <linux-rdma@vger.kernel.org>; Fri, 14 Jul 2023 08:24:48 -0700 (PDT)
-Received: by mail-oo1-xc32.google.com with SMTP id 006d021491bc7-5634808e16eso1367719eaf.2
-        for <linux-rdma@vger.kernel.org>; Fri, 14 Jul 2023 08:24:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google; t=1689348287; x=1691940287;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=KKCPDDjyadziwl2/AK/7bwW5AQLCnpdzpQfQJ+yWANU=;
-        b=VkfHth5MNAZHQQpEhdDGh0pq0hoDNb/IkCyvJyfZlohZ7FEqc/tc2UlGQlp5P+ls2k
-         LP4Az77bQs/0UVX1KSsNiwTlKtw8ZJErPfpgp4NpbjjW9RxzvWKdoj5q9JZGtbqYKyMw
-         IkbeE1z0uT48kd4G5uv3BxnFhNNELaU6M+7XHRszPJ3LTmAtfce0FwO0kiq6qtWbZVLj
-         +GaUqzfPkfSAQcQuVfYKAUHYwjH4iU0nqNSXmWkPMWsXsceycWdUU7PI1Bdr+PTPu7X6
-         X/OpA3sg1LJmtBpK2xUftGMYHz3Z91vTuIVh4aBU1pURrsic+RJAvN3CFStnNYgOJO/U
-         rXPA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689348287; x=1691940287;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=KKCPDDjyadziwl2/AK/7bwW5AQLCnpdzpQfQJ+yWANU=;
-        b=cK8ngH0MgIfD9r03Kgplle66wLlFfAcAo0PN3e9Kt5U/X3LZPoWJt4NqPROrskfnEv
-         mlKIiKFHMRoC8BumaILbGiZe+07UKV7KfLt1lKNTZGBhM0WPfrZnRtRIez9EliG6I22B
-         +j+sP2c/dIY/m4+QM4GIE/xTpzxKDwP3CpmAZV/AJ4KOtOCwz/mKE8Z7bNtg0JaBKfj2
-         pm9qbk4fIDUNKLeDnalxJ37UxqaPuHi5mmV/Kn3gUrbqD3b+1GAjRqtLPf0YTkjahA6O
-         ziVYYORqkR3A0ew9DUjG9zRkJC0wxO+Yaw2INfMDQs59OEBV2ECcC/GSr3JRX3iuTZM1
-         JKdg==
-X-Gm-Message-State: ABy/qLb90JV/xx6vs71hZTOB4Dwu2FhxALUVqtrZpNxP68eeZHhe90m7
-        rojhbOaxPQWHzMWpvwJUc2sDyw==
-X-Google-Smtp-Source: APBJJlH+MwWcaUVg/7akbj8keBMvf8gq7EKuq9vDRBoNFYJ4+ezTmB048XjMLkW7GX8JAT8v1K03Sg==
-X-Received: by 2002:a05:6808:2226:b0:3a3:eceb:7bbc with SMTP id bd38-20020a056808222600b003a3eceb7bbcmr7147567oib.54.1689348287397;
-        Fri, 14 Jul 2023 08:24:47 -0700 (PDT)
-Received: from ziepe.ca (hlfxns017vw-142-68-25-194.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.68.25.194])
-        by smtp.gmail.com with ESMTPSA id x19-20020a17090aa39300b00263154aab24sm1230248pjp.57.2023.07.14.08.24.46
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 14 Jul 2023 08:24:46 -0700 (PDT)
-Received: from jgg by wakko with local (Exim 4.95)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1qKKez-0017NL-5i;
-        Fri, 14 Jul 2023 12:24:45 -0300
-Date:   Fri, 14 Jul 2023 12:24:45 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Christian Brauner <brauner@kernel.org>
-Cc:     Alex Williamson <alex.williamson@redhat.com>,
-        linux-fsdevel@vger.kernel.org, linux-aio@kvack.org,
-        linux-usb@vger.kernel.org, Matthew Rosato <mjrosato@linux.ibm.com>,
-        Paul Durrant <paul@xen.org>, Tom Rix <trix@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        dri-devel@lists.freedesktop.org, Michal Hocko <mhocko@kernel.org>,
-        linux-mm@kvack.org, Kirti Wankhede <kwankhede@nvidia.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Jens Axboe <axboe@kernel.dk>,
-        Vineeth Vijayan <vneethv@linux.ibm.com>,
-        Diana Craciun <diana.craciun@oss.nxp.com>,
-        Alexander Gordeev <agordeev@linux.ibm.com>,
-        Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Leon Romanovsky <leon@kernel.org>,
-        Harald Freudenberger <freude@linux.ibm.com>,
-        Fei Li <fei1.li@intel.com>, x86@kernel.org,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        Halil Pasic <pasic@linux.ibm.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        intel-gfx@lists.freedesktop.org,
-        Christian Borntraeger <borntraeger@linux.ibm.com>,
-        linux-fpga@vger.kernel.org, Zhi Wang <zhi.a.wang@intel.com>,
-        Wu Hao <hao.wu@intel.com>, Jason Herne <jjherne@linux.ibm.com>,
-        Eric Farman <farman@linux.ibm.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Andrew Donnellan <ajd@linux.ibm.com>,
-        Arnd Bergmann <arnd@arndb.de>, linux-s390@vger.kernel.org,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        linuxppc-dev@lists.ozlabs.org, Eric Auger <eric.auger@redhat.com>,
-        Borislav Petkov <bp@alien8.de>, kvm@vger.kernel.org,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>, cgroups@vger.kernel.org,
-        Thomas Gleixner <tglx@linutronix.de>,
-        virtualization@lists.linux-foundation.org,
-        intel-gvt-dev@lists.freedesktop.org, io-uring@vger.kernel.org,
-        netdev@vger.kernel.org, Tony Krowiak <akrowiak@linux.ibm.com>,
-        Tvrtko Ursulin <tvrtko.ursulin@linux.intel.com>,
-        Pavel Begunkov <asml.silence@gmail.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Oded Gabbay <ogabbay@kernel.org>,
-        Muchun Song <muchun.song@linux.dev>,
-        Peter Oberparleiter <oberpar@linux.ibm.com>,
-        linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
-        Benjamin LaHaise <bcrl@kvack.org>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Sven Schnelle <svens@linux.ibm.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Frederic Barrat <fbarrat@linux.ibm.com>,
-        Moritz Fischer <mdf@kernel.org>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        David Woodhouse <dwmw2@infradead.org>,
-        Xu Yilun <yilun.xu@intel.com>, jaz@semihalf.com
-Subject: Re: [PATCH 0/2] eventfd: simplify signal helpers
-Message-ID: <ZLFovYocElAD7gJ0@ziepe.ca>
-References: <20230630155936.3015595-1-jaz@semihalf.com>
- <20230714-gauner-unsolidarisch-fc51f96c61e8@brauner>
+        with ESMTP id S236338AbjGNPb6 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 14 Jul 2023 11:31:58 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE304B4;
+        Fri, 14 Jul 2023 08:31:56 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 69FF261D53;
+        Fri, 14 Jul 2023 15:31:56 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E3456C433C8;
+        Fri, 14 Jul 2023 15:31:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1689348715;
+        bh=BZibhodv9mYmaldbAkgC6exLTG1CjJoX1GGScEeSuPM=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=N91TO1CpOC+GYb1J5AVvBZ4SEETH5c6ITsflBdSVxRrRgN5royAaRkjJFJ5WLvSR1
+         yWkBe6A+zdU1O3I48jNA8lyBing3UjX98V0DzZ5yUTFFIG1mopqeLRPTOOY0j5VhC3
+         rJJb/aS9XZ0LIMEsqnRWLhpEDD1PVYaPyvhWjrjCvcGryh4gH0RpdCef8J37/LMH+h
+         3jl4CdBClXEDmz8YEujAVdU3GmjOC+3rmFUCZq8iscRzaJC/gC9rUHkA/OPc7zln29
+         1lH472s0k0wXWEXKI4+wsqrwihiStNk5DrLK6ChTZUkDI2AI2NXBFC3YL3YFeXIn6K
+         IN+0RQXfsh6+g==
+Date:   Fri, 14 Jul 2023 08:31:52 -0700
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Jesper Dangaard Brouer <jbrouer@redhat.com>
+Cc:     Haiyang Zhang <haiyangz@microsoft.com>, brouer@redhat.com,
+        "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        Dexuan Cui <decui@microsoft.com>,
+        KY Srinivasan <kys@microsoft.com>,
+        Paul Rosswurm <paulros@microsoft.com>,
+        "olaf@aepfle.de" <olaf@aepfle.de>,
+        "vkuznets@redhat.com" <vkuznets@redhat.com>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        "wei.liu@kernel.org" <wei.liu@kernel.org>,
+        "edumazet@google.com" <edumazet@google.com>,
+        "pabeni@redhat.com" <pabeni@redhat.com>,
+        "leon@kernel.org" <leon@kernel.org>,
+        Long Li <longli@microsoft.com>,
+        "ssengar@linux.microsoft.com" <ssengar@linux.microsoft.com>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        "daniel@iogearbox.net" <daniel@iogearbox.net>,
+        "john.fastabend@gmail.com" <john.fastabend@gmail.com>,
+        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
+        "ast@kernel.org" <ast@kernel.org>,
+        Ajay Sharma <sharmaajay@microsoft.com>,
+        "hawk@kernel.org" <hawk@kernel.org>,
+        "tglx@linutronix.de" <tglx@linutronix.de>,
+        "shradhagupta@linux.microsoft.com" <shradhagupta@linux.microsoft.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Ilias Apalodimas <ilias.apalodimas@linaro.org>
+Subject: Re: [PATCH net-next] net: mana: Add page pool for RX buffers
+Message-ID: <20230714083152.3f64d38a@kernel.org>
+In-Reply-To: <3b043a95-a4bc-bbaf-c8e0-240e8ddea62f@redhat.com>
+References: <1689259687-5231-1-git-send-email-haiyangz@microsoft.com>
+        <20230713205326.5f960907@kernel.org>
+        <85bfa818-6856-e3ea-ef4d-16646c57d1cc@redhat.com>
+        <PH7PR21MB31166EF9DB2F453999D2E92ECA34A@PH7PR21MB3116.namprd21.prod.outlook.com>
+        <3b043a95-a4bc-bbaf-c8e0-240e8ddea62f@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230714-gauner-unsolidarisch-fc51f96c61e8@brauner>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=unavailable autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Fri, Jul 14, 2023 at 09:05:21AM +0200, Christian Brauner wrote:
+On Fri, 14 Jul 2023 15:13:15 +0200 Jesper Dangaard Brouer wrote:
+> > Thank Jakub and Jesper for the reviews.
+> > I'm aware of the page_pool.rst doc, and actually tried it before this
+> > patch, but I got lower perf. If I understand correctly, we should call
+> > page_pool_release_page() before passing the SKB to napi_gro_receive().
+> > 
+> > I found the page_pool_dev_alloc_pages() goes through the slow path,
+> > because the page_pool_release_page() let the page leave the pool.
+> > 
+> > Do we have to call page_pool_release_page() before passing the SKB
+> > to napi_gro_receive()? Any better way to recycle the pages from the
+> > upper layer of non-XDP case?
+> >   
+> 
+> Today SKB "upper layers" can recycle page_pool backed packet data/page.
+> 
+> Just use skb_mark_for_recycle(skb), then you don't need 
+> page_pool_release_page().
+> 
+> I guess, we should update the documentation, mentioning this.
 
-> I have no skin in the game aside from having to drop this conversion
-> which I'm fine to do if there are actually users for this btu really,
-> that looks a lot like abusing an api that really wasn't designed for
-> this.
-
-Yeah, I think so too. The ACPI thing should use its own FD if it wants
-to feed actual data..
-
-Jason
-
+Ah, I should probably send in the few cleanups form the huge page
+series. It looks like all users of page_pool_release_page() can
+be converted to skb recycling, so we should hide it and remove 
+from docs?
