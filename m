@@ -2,192 +2,159 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BA274753517
-	for <lists+linux-rdma@lfdr.de>; Fri, 14 Jul 2023 10:34:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A566753518
+	for <lists+linux-rdma@lfdr.de>; Fri, 14 Jul 2023 10:35:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229492AbjGNIei (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        id S233196AbjGNIei (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
         Fri, 14 Jul 2023 04:34:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46952 "EHLO
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46960 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235255AbjGNIed (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 14 Jul 2023 04:34:33 -0400
-Received: from mail-pf1-x431.google.com (mail-pf1-x431.google.com [IPv6:2607:f8b0:4864:20::431])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B7FBA7
-        for <linux-rdma@vger.kernel.org>; Fri, 14 Jul 2023 01:34:32 -0700 (PDT)
-Received: by mail-pf1-x431.google.com with SMTP id d2e1a72fcca58-666ed230c81so1614685b3a.0
-        for <linux-rdma@vger.kernel.org>; Fri, 14 Jul 2023 01:34:32 -0700 (PDT)
+        with ESMTP id S234787AbjGNIef (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 14 Jul 2023 04:34:35 -0400
+Received: from mail-pf1-x42c.google.com (mail-pf1-x42c.google.com [IPv6:2607:f8b0:4864:20::42c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3133D106
+        for <linux-rdma@vger.kernel.org>; Fri, 14 Jul 2023 01:34:35 -0700 (PDT)
+Received: by mail-pf1-x42c.google.com with SMTP id d2e1a72fcca58-6686708c986so1631853b3a.0
+        for <linux-rdma@vger.kernel.org>; Fri, 14 Jul 2023 01:34:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google; t=1689323672; x=1691915672;
-        h=mime-version:references:in-reply-to:message-id:date:subject:cc:to
-         :from:from:to:cc:subject:date:message-id:reply-to;
-        bh=3Oog7LSEibQNrMMs2e9RcYzHGAV/KIdKnpbKSRQv5Ng=;
-        b=iBkW47t3+pwc6K7RAeCFliJlZtLw0CKfOs8UQPo4BUequJrCX7RDpny9dhyA7rs08b
-         RtFAtVnrhCep67K0UXVFNOy+guBNRBgXKjTLSCtkGZ8H6xFVozIMnM3jzekW732G2Uwb
-         QvWjj++ogqohm/fDlg9iujYRsrvZ+kTdGXcRI=
+        d=broadcom.com; s=google; t=1689323674; x=1691915674;
+        h=references:in-reply-to:message-id:date:subject:cc:to:from:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=peAaup9EUFTZony7pp5t/qsa+wAptvYXp9t+tQj+W1Y=;
+        b=ZJkDufZewAxFYd4etXTlMDuWaOJePZcetBgJwsIFuN72qRrdhE5f7x5OeLmfNAgbyr
+         MZllJNVXevIaQWKb/v4FgByILJssOEdrvdjzTpGaQs4jbQ2wRIfAbWqOcD3uCTLN3tCg
+         XE13FMk9rkidGh0DDIrIKIXFuz5nPBLaXaIcY=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689323672; x=1691915672;
-        h=mime-version:references:in-reply-to:message-id:date:subject:cc:to
-         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=3Oog7LSEibQNrMMs2e9RcYzHGAV/KIdKnpbKSRQv5Ng=;
-        b=YxpdoL4EenwSbnK8rtpILIbEzc4s/qjkG1U/6rDK8OmKJ9Z4R/bs51pEhlRlJLbL8P
-         HZ8gaYkS4VPAsNO/M+XgQHGEIkn6bjD+jvi+m0a24Xe0HJJdcPBRHrCaafl2th1P4Y/7
-         YB6oa33LPp47OnemveKnDcHwvzBDTnwZlO5waNDU4drjNW/KyY3h8knYOarjQQkKRmMt
-         wr8AwaYhtWDEsi+WGWV2olhxpUIzgx2Sb3Bv0+deu8pYd6K/Xtu8WIjIe7fitIwKhxOz
-         KO9/7O3qgLsayo7aToQHGNwPNUORtWIEfxjOl3EbcOqSQJiO4jrmF1hLtulkqrMUaFFW
-         tOkA==
-X-Gm-Message-State: ABy/qLaMssff9jLG8c0oMsFdVRsgrC5oRVoEKh47vRzSdEn6jqgYslJa
-        kCk65uOD6V4uaeZYoNtbik9GNennNacDv/QufT4=
-X-Google-Smtp-Source: APBJJlED7siS0sxuAD3KrewLy0FjAhPswIqIg1IFC1zn7wWbCRJfR5oeVSPcu6aSgVyM6rkKjXR7/Q==
-X-Received: by 2002:a05:6a21:32a2:b0:131:e222:ca86 with SMTP id yt34-20020a056a2132a200b00131e222ca86mr3588103pzb.39.1689323671897;
-        Fri, 14 Jul 2023 01:34:31 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1689323674; x=1691915674;
+        h=references:in-reply-to:message-id:date:subject:cc:to:from
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=peAaup9EUFTZony7pp5t/qsa+wAptvYXp9t+tQj+W1Y=;
+        b=f869tT1uTjJgWzuT29K047OMewVPNGsc10a6MRaPOnNYU/eb8wA/dWQTahPRHQhSc1
+         5rOHWwfPIYGlfOcVVxwCfhNPp7mOQmKz3vwiURDvG6VMW4+OcaCJ+WLgiZvUswvX0HrT
+         qydP4rMZ/iNN5fg1I+rGE3eD2cAM0Wrgybp/RzYYo2O8JcpDpJWVqtsoc/QqjBVQk+cI
+         mb36w81rctpbVB4Y9gYjmTanER3Z6mx6oL91YQ8vygK9VaKFVUr4L8JUtJSE1j0cGurk
+         1f1wBMtPRXJqrrHrxaIoNugiKe1eAzG7jZ0VhLrgDVXKAm1o0NLjXCTK0+y4jh7AyLfu
+         NbIA==
+X-Gm-Message-State: ABy/qLYNpPhtvcFS8anuhMy7mXBKK2oVZYa+iXoWGh3N8l/RK+jUQ6Rl
+        iCfbD0PwdtJ9+Pcov7K/iTuQhA==
+X-Google-Smtp-Source: APBJJlFH8BGUXIcEzY7cj9mNNfeUPjhzsT21gzKvYwOZAyDzcwatDLomDkoN/QzNYdM5QnskfOiykA==
+X-Received: by 2002:a05:6a00:3a26:b0:67f:1d30:9e51 with SMTP id fj38-20020a056a003a2600b0067f1d309e51mr4770156pfb.33.1689323674559;
+        Fri, 14 Jul 2023 01:34:34 -0700 (PDT)
 Received: from dhcp-10-192-206-197.iig.avagotech.net.net ([192.19.234.250])
-        by smtp.gmail.com with ESMTPSA id i13-20020aa787cd000000b00674364577dasm6653894pfo.203.2023.07.14.01.34.29
+        by smtp.gmail.com with ESMTPSA id i13-20020aa787cd000000b00674364577dasm6653894pfo.203.2023.07.14.01.34.32
         (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Fri, 14 Jul 2023 01:34:31 -0700 (PDT)
+        Fri, 14 Jul 2023 01:34:33 -0700 (PDT)
 From:   Selvin Xavier <selvin.xavier@broadcom.com>
 To:     jgg@ziepe.ca, leon@kernel.org
 Cc:     linux-rdma@vger.kernel.org, andrew.gospodarek@broadcom.com,
-        Kashyap Desai <kashyap.desai@broadcom.com>,
-        Selvin Xavier <selvin.xavier@broadcom.com>
-Subject: [PATCH for-rc 1/2] RDMA/bnxt_re: Prevent handling any completions after qp destroy
-Date:   Fri, 14 Jul 2023 01:22:48 -0700
-Message-Id: <1689322969-25402-2-git-send-email-selvin.xavier@broadcom.com>
+        Selvin Xavier <selvin.xavier@broadcom.com>,
+        Kashyap Desai <kashyap.desai@broadcom.com>
+Subject: [PATCH for-rc 2/2] bnxt_re: Fix hang during driver unload
+Date:   Fri, 14 Jul 2023 01:22:49 -0700
+Message-Id: <1689322969-25402-3-git-send-email-selvin.xavier@broadcom.com>
 X-Mailer: git-send-email 2.5.5
 In-Reply-To: <1689322969-25402-1-git-send-email-selvin.xavier@broadcom.com>
 References: <1689322969-25402-1-git-send-email-selvin.xavier@broadcom.com>
-MIME-Version: 1.0
 Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
-        boundary="00000000000066618d06006e517f"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        boundary="0000000000008e965b06006e5162"
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+        MIME_HEADER_CTYPE_ONLY,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE,T_TVD_MIME_NO_HEADERS,URIBL_BLOCKED autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
---00000000000066618d06006e517f
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+--0000000000008e965b06006e5162
 
-From: Kashyap Desai <kashyap.desai@broadcom.com>
+Driver unload hits a hang during stress testing of load/unload.
 
-HW may generate completions that indicates QP is destroyed.
-Driver should not be scheduling any more completion handlers
-for this QP, after the QP is destroyed. Since CQs are active
-during the QP destroy, driver may still schedule completion
-handlers. This can cause a race where the destroy_cq and poll_cq
-running simultaneously.
+stack trace snippet -
 
-Snippet of kernel panic while doing bnxt_re driver load unload in loop.
-This indicates a poll after the CQ is freed. 
+tasklet_kill at ffffffff9aabb8b2
+bnxt_qplib_nq_stop_irq at ffffffffc0a805fb [bnxt_re]
+bnxt_qplib_disable_nq at ffffffffc0a80c5b [bnxt_re]
+bnxt_re_dev_uninit at ffffffffc0a67d15 [bnxt_re]
+bnxt_re_remove_device at ffffffffc0a6af1d [bnxt_re]
 
-[77786.481636] Call Trace:
-[77786.481640]  <TASK>
-[77786.481644]  bnxt_re_poll_cq+0x14a/0x620 [bnxt_re]
-[77786.481658]  ? kvm_clock_read+0x14/0x30
-[77786.481693]  __ib_process_cq+0x57/0x190 [ib_core]
-[77786.481728]  ib_cq_poll_work+0x26/0x80 [ib_core]
-[77786.481761]  process_one_work+0x1e5/0x3f0
-[77786.481768]  worker_thread+0x50/0x3a0
-[77786.481785]  ? __pfx_worker_thread+0x10/0x10
-[77786.481790]  kthread+0xe2/0x110
-[77786.481794]  ? __pfx_kthread+0x10/0x10
-[77786.481797]  ret_from_fork+0x2c/0x50
+tasklet_kill can hang if the tasklet is scheduled after it is disabled.
 
-To avoid this, complete all completion handlers before returning the
-destroy QP. If free_cq is called soon after destroy_qp,  IB stack
-will cancel the CQ work before invoking the destroy_cq verb and
-this will prevent any race mentioned.
+Modified the sequences to disable the interrupt first and synchronize
+irq before disabling the tasklet.
 
 Fixes: 1ac5a4047975 ("RDMA/bnxt_re: Add bnxt_re RoCE driver")
 Signed-off-by: Kashyap Desai <kashyap.desai@broadcom.com>
 Signed-off-by: Selvin Xavier <selvin.xavier@broadcom.com>
 ---
- drivers/infiniband/hw/bnxt_re/ib_verbs.c | 12 ++++++++++++
- drivers/infiniband/hw/bnxt_re/qplib_fp.c | 18 ++++++++++++++++++
- drivers/infiniband/hw/bnxt_re/qplib_fp.h |  1 +
- 3 files changed, 31 insertions(+)
+ drivers/infiniband/hw/bnxt_re/qplib_fp.c   | 10 +++++-----
+ drivers/infiniband/hw/bnxt_re/qplib_rcfw.c |  9 ++++-----
+ 2 files changed, 9 insertions(+), 10 deletions(-)
 
-diff --git a/drivers/infiniband/hw/bnxt_re/ib_verbs.c b/drivers/infiniband/hw/bnxt_re/ib_verbs.c
-index abef0b8..03cc45a 100644
---- a/drivers/infiniband/hw/bnxt_re/ib_verbs.c
-+++ b/drivers/infiniband/hw/bnxt_re/ib_verbs.c
-@@ -869,7 +869,10 @@ static int bnxt_re_destroy_gsi_sqp(struct bnxt_re_qp *qp)
- int bnxt_re_destroy_qp(struct ib_qp *ib_qp, struct ib_udata *udata)
- {
- 	struct bnxt_re_qp *qp = container_of(ib_qp, struct bnxt_re_qp, ib_qp);
-+	struct bnxt_qplib_qp *qplib_qp = &qp->qplib_qp;
- 	struct bnxt_re_dev *rdev = qp->rdev;
-+	struct bnxt_qplib_nq *scq_nq = NULL;
-+	struct bnxt_qplib_nq *rcq_nq = NULL;
- 	unsigned int flags;
- 	int rc;
- 
-@@ -903,6 +906,15 @@ int bnxt_re_destroy_qp(struct ib_qp *ib_qp, struct ib_udata *udata)
- 	ib_umem_release(qp->rumem);
- 	ib_umem_release(qp->sumem);
- 
-+	/* Flush all the entries of notification queue associated with
-+	 * given qp.
-+	 */
-+	scq_nq = qplib_qp->scq->nq;
-+	rcq_nq = qplib_qp->rcq->nq;
-+	bnxt_re_synchronize_nq(scq_nq);
-+	if (scq_nq != rcq_nq)
-+		bnxt_re_synchronize_nq(rcq_nq);
-+
- 	return 0;
- }
- 
 diff --git a/drivers/infiniband/hw/bnxt_re/qplib_fp.c b/drivers/infiniband/hw/bnxt_re/qplib_fp.c
-index 91aed77..a12c7ad 100644
+index a12c7ad..a425556 100644
 --- a/drivers/infiniband/hw/bnxt_re/qplib_fp.c
 +++ b/drivers/infiniband/hw/bnxt_re/qplib_fp.c
-@@ -381,6 +381,24 @@ static void bnxt_qplib_service_nq(struct tasklet_struct *t)
- 	spin_unlock_bh(&hwq->lock);
+@@ -420,19 +420,19 @@ void bnxt_qplib_nq_stop_irq(struct bnxt_qplib_nq *nq, bool kill)
+ 	if (!nq->requested)
+ 		return;
+ 
+-	tasklet_disable(&nq->nq_tasklet);
++	nq->requested = false;
+ 	/* Mask h/w interrupt */
+ 	bnxt_qplib_ring_nq_db(&nq->nq_db.dbinfo, nq->res->cctx, false);
+ 	/* Sync with last running IRQ handler */
+ 	synchronize_irq(nq->msix_vec);
+-	if (kill)
+-		tasklet_kill(&nq->nq_tasklet);
+-
+ 	irq_set_affinity_hint(nq->msix_vec, NULL);
+ 	free_irq(nq->msix_vec, nq);
+ 	kfree(nq->name);
+ 	nq->name = NULL;
+-	nq->requested = false;
++
++	if (kill)
++		tasklet_kill(&nq->nq_tasklet);
++	tasklet_disable(&nq->nq_tasklet);
  }
  
-+/* bnxt_re_synchronize_nq - self polling notification queue.
-+ * @nq      -     notification queue pointer
-+ *
-+ * This function will start polling entries of a given notification queue
-+ * for all pending  entries.
-+ * This function is useful to synchronize notification entries while resources
-+ * are going away.
-+ */
-+
-+void bnxt_re_synchronize_nq(struct bnxt_qplib_nq *nq)
-+{
-+	int budget = nq->budget;
-+
-+	nq->budget = nq->hwq.max_elements;
-+	bnxt_qplib_service_nq(&nq->nq_tasklet);
-+	nq->budget = budget;
-+}
-+
- static irqreturn_t bnxt_qplib_nq_irq(int irq, void *dev_instance)
- {
- 	struct bnxt_qplib_nq *nq = dev_instance;
-diff --git a/drivers/infiniband/hw/bnxt_re/qplib_fp.h b/drivers/infiniband/hw/bnxt_re/qplib_fp.h
-index a428208..404b851 100644
---- a/drivers/infiniband/hw/bnxt_re/qplib_fp.h
-+++ b/drivers/infiniband/hw/bnxt_re/qplib_fp.h
-@@ -553,6 +553,7 @@ int bnxt_qplib_process_flush_list(struct bnxt_qplib_cq *cq,
- 				  struct bnxt_qplib_cqe *cqe,
- 				  int num_cqes);
- void bnxt_qplib_flush_cqn_wq(struct bnxt_qplib_qp *qp);
-+void bnxt_re_synchronize_nq(struct bnxt_qplib_nq *nq);
+ void bnxt_qplib_disable_nq(struct bnxt_qplib_nq *nq)
+diff --git a/drivers/infiniband/hw/bnxt_re/qplib_rcfw.c b/drivers/infiniband/hw/bnxt_re/qplib_rcfw.c
+index b30e66b..bc3aea4 100644
+--- a/drivers/infiniband/hw/bnxt_re/qplib_rcfw.c
++++ b/drivers/infiniband/hw/bnxt_re/qplib_rcfw.c
+@@ -989,19 +989,18 @@ void bnxt_qplib_rcfw_stop_irq(struct bnxt_qplib_rcfw *rcfw, bool kill)
+ 	if (!creq->requested)
+ 		return;
  
- static inline void *bnxt_qplib_get_swqe(struct bnxt_qplib_q *que, u32 *swq_idx)
- {
+-	tasklet_disable(&creq->creq_tasklet);
++	creq->requested = false;
+ 	/* Mask h/w interrupts */
+ 	bnxt_qplib_ring_nq_db(&creq->creq_db.dbinfo, rcfw->res->cctx, false);
+ 	/* Sync with last running IRQ-handler */
+ 	synchronize_irq(creq->msix_vec);
+-	if (kill)
+-		tasklet_kill(&creq->creq_tasklet);
+-
+ 	free_irq(creq->msix_vec, rcfw);
+ 	kfree(creq->irq_name);
+ 	creq->irq_name = NULL;
+-	creq->requested = false;
+ 	atomic_set(&rcfw->rcfw_intr_enabled, 0);
++	if (kill)
++		tasklet_kill(&creq->creq_tasklet);
++	tasklet_disable(&creq->creq_tasklet);
+ }
+ 
+ void bnxt_qplib_disable_rcfw_channel(struct bnxt_qplib_rcfw *rcfw)
 -- 
 2.5.5
 
 
---00000000000066618d06006e517f
+--0000000000008e965b06006e5162
 Content-Type: application/pkcs7-signature; name="smime.p7s"
 Content-Transfer-Encoding: base64
 Content-Disposition: attachment; filename="smime.p7s"
@@ -258,14 +225,14 @@ j1Ze9ndr+YDXPpCymOsynmmw0ErHZGGW1OmMpAEt0A+613glWCURLDlP8HONi1wnINV6aDiEf0ad
 9NMGxDsp+YWiRXD3txfo2OMQbpIxM90QfhKKacX8t1J1oAAWxDrLVTJBXBNvz5tr+D1sYwuye93r
 hImmkM1unboxggJtMIICaQIBATBrMFsxCzAJBgNVBAYTAkJFMRkwFwYDVQQKExBHbG9iYWxTaWdu
 IG52LXNhMTEwLwYDVQQDEyhHbG9iYWxTaWduIEdDQyBSMyBQZXJzb25hbFNpZ24gMiBDQSAyMDIw
-Agxy+Cu4x/7lM0zxY7cwDQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIEII3qd12CCWYl
-wPTdMtYEKZnCpgokWIpMTyXdsPVAAsJLMBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZI
-hvcNAQkFMQ8XDTIzMDcxNDA4MzQzMlowaQYJKoZIhvcNAQkPMVwwWjALBglghkgBZQMEASowCwYJ
+Agxy+Cu4x/7lM0zxY7cwDQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIEIKh2pN0/qiq3
+yEYQyRzZlOi7dcZxEoRNDDCJQefaDNqJMBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZI
+hvcNAQkFMQ8XDTIzMDcxNDA4MzQzNFowaQYJKoZIhvcNAQkPMVwwWjALBglghkgBZQMEASowCwYJ
 YIZIAWUDBAEWMAsGCWCGSAFlAwQBAjAKBggqhkiG9w0DBzALBgkqhkiG9w0BAQowCwYJKoZIhvcN
-AQEHMAsGCWCGSAFlAwQCATANBgkqhkiG9w0BAQEFAASCAQCRzCqS4E435EsiAdFrp8Q2Q8e/vq4n
-upotLgZTCN4pnej2hKxAlwAhMrVgdnI8o8QsMRWup9tPYmvF1X4l+1CFIuwj9vQK8BsXh0fd3Th9
-R92Khstr+E74dt4jNnMyMxwftj2ys8LCnDGKELqB9bhX9Jkm5u3Hz8nGon+uq4hka+9ajkIOfRzM
-pHHiPVQNfPN08SYd9czhKDIfQRliWG8xNP2Dl6QYx1vH+ehUfkLsTKlLS+XzwCFzMU3dpQNkISZL
-jENfRYtYI1m0chJa8B3glfDIN5zkfi5RDlJyq0BDP9pmdIUY78w7AjYHqp1r9fuL8F6oC+mNO53Y
-WHbVOFf0
---00000000000066618d06006e517f--
+AQEHMAsGCWCGSAFlAwQCATANBgkqhkiG9w0BAQEFAASCAQANykeQ7YUOQhUTh8rJ5K9jiK08epxF
+M7U1N2mLV61gT0rWLbUoNwQLlJdhTQ/LfZrb4fjVq7kSp1AROXNf/izFtZ09ChXA2d1mXUItErD+
+07z/XNooUEIqLrSAidwRoqTqHZ5tlpfimtH9l2XGdx82vEHrKNtlozELHCLMbwRevO/UPFjw7Wgn
+c5jVKh5AEt2zR8JXNNb1iIS9RSxehSgqKNP75VFNgkfsHwO4HAl51duuh+SPYulqL1mwv2i2bp9O
+5QOAYlp/xv+0CLwQnxXhcI3FlIgJNdkpyG4+jkdYQ4foxD+mz600B549VNOFri34irrQQugYtHEE
+mYbM62sb
+--0000000000008e965b06006e5162--
