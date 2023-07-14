@@ -2,135 +2,168 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A7F73753362
-	for <lists+linux-rdma@lfdr.de>; Fri, 14 Jul 2023 09:43:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 73AFA753516
+	for <lists+linux-rdma@lfdr.de>; Fri, 14 Jul 2023 10:34:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234558AbjGNHny (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 14 Jul 2023 03:43:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41046 "EHLO
+        id S231235AbjGNIeh (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 14 Jul 2023 04:34:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46942 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234889AbjGNHnx (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 14 Jul 2023 03:43:53 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B04321718
-        for <linux-rdma@vger.kernel.org>; Fri, 14 Jul 2023 00:43:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1689320589;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=8RV6VmoCSDJlQIGxTSc2C/ilkhOc2GYT+YQNbt5Ygqs=;
-        b=JRnJ9klUZh7SaY7c1XcMDGWWnJvMEFqvM0Vw9h5rYscXQCxye8Q+G5uKeH58FGDsUGQUwu
-        JIM9NJRljQ34dXepQny7niV1ILYj7/6Gaz3foE2PFWzFoAzt00BvwILTnXZbcbobX3qaEp
-        v0naJ6X3niLgkuPPfTK6oo5mlq8x1TE=
-Received: from mail-ej1-f69.google.com (mail-ej1-f69.google.com
- [209.85.218.69]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-349-XT54AGwFN7WypH4LUQqAmg-1; Fri, 14 Jul 2023 03:43:07 -0400
-X-MC-Unique: XT54AGwFN7WypH4LUQqAmg-1
-Received: by mail-ej1-f69.google.com with SMTP id a640c23a62f3a-989249538a1so90886866b.1
-        for <linux-rdma@vger.kernel.org>; Fri, 14 Jul 2023 00:43:07 -0700 (PDT)
+        with ESMTP id S235610AbjGNIeb (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 14 Jul 2023 04:34:31 -0400
+Received: from mail-pf1-x42f.google.com (mail-pf1-x42f.google.com [IPv6:2607:f8b0:4864:20::42f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C27D51BF9
+        for <linux-rdma@vger.kernel.org>; Fri, 14 Jul 2023 01:34:29 -0700 (PDT)
+Received: by mail-pf1-x42f.google.com with SMTP id d2e1a72fcca58-66f3fc56ef4so1827584b3a.0
+        for <linux-rdma@vger.kernel.org>; Fri, 14 Jul 2023 01:34:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=broadcom.com; s=google; t=1689323669; x=1691915669;
+        h=message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=OB9ng6QOI/K/8wTPjnSiwBWcTW33pcznZeTeCfdgEMQ=;
+        b=gqt0T83Wr5wIdp1McJEuW3oTQ5vGa9MtH4hmx0r1GoTplkrsyuSMczT/7cPGnQYdzH
+         UBihImetsrsKz3FDY+rJhSVK3CzZG/yi/HWlb9y8iCRNClRFx6NFNYZwTFWzLr7ufud9
+         LeWcvVBxHydrMuyDNokZn2yKjNp43wuxF+oVg=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689320586; x=1691912586;
-        h=content-transfer-encoding:in-reply-to:references:to
-         :content-language:subject:cc:user-agent:mime-version:date:message-id
-         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=8RV6VmoCSDJlQIGxTSc2C/ilkhOc2GYT+YQNbt5Ygqs=;
-        b=JO5BftLQN+Fxt/DPXbiEjZ3aN02ZQlIcnShfVVDlbnqNiEnOT1fuyC+4IKuOpCBVFy
-         Oineg+4x55MkJVubjxYfwqE+yD9IjrD6TVNZ46E0HXpnv/oAVTJWjycT8BHiKAkUcJ18
-         yF5wL15QbYtrg3Xda02xokIirDigyWxKuhfmdXAmaUkZe5WBBNjiHB5HtcOLHih6+JvC
-         9P/qsX8gyWU91aNH0ytMH/A2qQHnMMYwX3cRUUsh8g+I6pfip5w8Hg0cUqms8h9mK3E+
-         CJhsEdhN7Ece0+OMmB6hhfXpBi0PD/vUW5Ah6LGjIGs724NgQLaARlHnqsaRFQ9lVtCv
-         pSkQ==
-X-Gm-Message-State: ABy/qLb4Z1UyZ6IkNP+UWMAjP70InBd1KQwiSvAhqTz3lr52Bx7io1bP
-        E7Wp52uw0EbhVbjWYm+SOorujwiVn2b1So+Wbf3ahU+w0xAmW85EBD+tBcwRX9TvHdlEoNYhlLQ
-        q8XKjE8WkmKBlqqcPtSjElw==
-X-Received: by 2002:a17:906:22db:b0:991:b613:9b65 with SMTP id q27-20020a17090622db00b00991b6139b65mr2766721eja.37.1689320586277;
-        Fri, 14 Jul 2023 00:43:06 -0700 (PDT)
-X-Google-Smtp-Source: APBJJlGkVCdUgKT4CuozT1y45CBxqcp7kgkZtxRkxzueS/PYGMNLQEIkj3Ux6bf9a7KqgPcPlaagDg==
-X-Received: by 2002:a17:906:22db:b0:991:b613:9b65 with SMTP id q27-20020a17090622db00b00991b6139b65mr2766691eja.37.1689320585955;
-        Fri, 14 Jul 2023 00:43:05 -0700 (PDT)
-Received: from [192.168.42.100] (194-45-78-10.static.kviknet.net. [194.45.78.10])
-        by smtp.gmail.com with ESMTPSA id d20-20020a170906371400b0098e2eaec395sm5074876ejc.130.2023.07.14.00.43.04
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 14 Jul 2023 00:43:05 -0700 (PDT)
-From:   Jesper Dangaard Brouer <jbrouer@redhat.com>
-X-Google-Original-From: Jesper Dangaard Brouer <brouer@redhat.com>
-Message-ID: <85bfa818-6856-e3ea-ef4d-16646c57d1cc@redhat.com>
-Date:   Fri, 14 Jul 2023 09:43:04 +0200
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.10.0
-Cc:     brouer@redhat.com,
-        "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        Dexuan Cui <decui@microsoft.com>,
-        KY Srinivasan <kys@microsoft.com>,
-        Paul Rosswurm <paulros@microsoft.com>,
-        "olaf@aepfle.de" <olaf@aepfle.de>,
-        "vkuznets@redhat.com" <vkuznets@redhat.com>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "wei.liu@kernel.org" <wei.liu@kernel.org>,
-        "edumazet@google.com" <edumazet@google.com>,
-        "pabeni@redhat.com" <pabeni@redhat.com>,
-        "leon@kernel.org" <leon@kernel.org>,
-        Long Li <longli@microsoft.com>,
-        "ssengar@linux.microsoft.com" <ssengar@linux.microsoft.com>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        "daniel@iogearbox.net" <daniel@iogearbox.net>,
-        "john.fastabend@gmail.com" <john.fastabend@gmail.com>,
-        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
-        "ast@kernel.org" <ast@kernel.org>,
-        Ajay Sharma <sharmaajay@microsoft.com>,
-        "hawk@kernel.org" <hawk@kernel.org>,
-        "tglx@linutronix.de" <tglx@linutronix.de>,
-        "shradhagupta@linux.microsoft.com" <shradhagupta@linux.microsoft.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Ilias Apalodimas <ilias.apalodimas@linaro.org>
-Subject: Re: [PATCH net-next] net: mana: Add page pool for RX buffers
-Content-Language: en-US
-To:     Jakub Kicinski <kuba@kernel.org>,
-        Haiyang Zhang <haiyangz@microsoft.com>
-References: <1689259687-5231-1-git-send-email-haiyangz@microsoft.com>
- <20230713205326.5f960907@kernel.org>
-In-Reply-To: <20230713205326.5f960907@kernel.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
-        version=3.4.6
+        d=1e100.net; s=20221208; t=1689323669; x=1691915669;
+        h=message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=OB9ng6QOI/K/8wTPjnSiwBWcTW33pcznZeTeCfdgEMQ=;
+        b=Z/9OQuZA3RWSZfo0Ps8OUTJBSf+X+XeF6xRPa/GBeqc63MCmtt176AoKB5Dc8VjYpl
+         SeKc9J98UWTSxdlrnfYvRHMx7gPew9j/Bdeqgv5ITMBVF9FYuoM6dfyU0sDwCXS0Dp7U
+         jFpHn1EJ2KD3pMODoZURiqiSdScijftHO1x5/Rzf0NdQxT+sasuv30gdSaG48Q9D4TXn
+         aZwq/AFIe/0ck2PvyEyVdubQNzYKTKoJyYA8A+PP0WHsvo1yhdtWed8cNx8qi6a+xj/U
+         7rAEFkwDktw7KOcH4yxf+lTSGllKiqhqNwsCZXN+eioccLqHPmCLcW/0jsJTMmKm6UuI
+         LBng==
+X-Gm-Message-State: ABy/qLbjDZ6Zvde5l6g9b4lX+l275+vGw5exD5q2jU66L0zcjWTemoP/
+        mGYiztssYWCvkFIXvpPJS3t6kQ==
+X-Google-Smtp-Source: APBJJlGXgVpUsb+bg0nEtq2b/6D9E8pWhdNgNwdmujrp1IyMGQhKLjZtebqT6Am8UrJMleIJprb2Hg==
+X-Received: by 2002:a05:6a20:3d12:b0:12f:9f7a:3bd with SMTP id y18-20020a056a203d1200b0012f9f7a03bdmr2368683pzi.31.1689323669149;
+        Fri, 14 Jul 2023 01:34:29 -0700 (PDT)
+Received: from dhcp-10-192-206-197.iig.avagotech.net.net ([192.19.234.250])
+        by smtp.gmail.com with ESMTPSA id i13-20020aa787cd000000b00674364577dasm6653894pfo.203.2023.07.14.01.34.27
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Fri, 14 Jul 2023 01:34:28 -0700 (PDT)
+From:   Selvin Xavier <selvin.xavier@broadcom.com>
+To:     jgg@ziepe.ca, leon@kernel.org
+Cc:     linux-rdma@vger.kernel.org, andrew.gospodarek@broadcom.com,
+        Selvin Xavier <selvin.xavier@broadcom.com>
+Subject: [PATCH for-rc 0/2] RDMA/bnxt_re: Bug fixes
+Date:   Fri, 14 Jul 2023 01:22:47 -0700
+Message-Id: <1689322969-25402-1-git-send-email-selvin.xavier@broadcom.com>
+X-Mailer: git-send-email 2.5.5
+Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
+        boundary="0000000000003c3ae806006e5136"
+X-Spam-Status: No, score=-1.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        MIME_HEADER_CTYPE_ONLY,MIME_NO_TEXT,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,T_TVD_MIME_NO_HEADERS,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
+--0000000000003c3ae806006e5136
+
+Includes two fixes for issues seen during load/unload stress tests.
+
+Kashyap Desai (1):
+  RDMA/bnxt_re: Prevent handling any completions after qp destroy
+
+Selvin Xavier (1):
+  bnxt_re: Fix hang during driver unload
+
+ drivers/infiniband/hw/bnxt_re/ib_verbs.c   | 12 ++++++++++++
+ drivers/infiniband/hw/bnxt_re/qplib_fp.c   | 28 +++++++++++++++++++++++-----
+ drivers/infiniband/hw/bnxt_re/qplib_fp.h   |  1 +
+ drivers/infiniband/hw/bnxt_re/qplib_rcfw.c |  9 ++++-----
+ 4 files changed, 40 insertions(+), 10 deletions(-)
+
+-- 
+2.5.5
 
 
-On 14/07/2023 05.53, Jakub Kicinski wrote:
-> On Thu, 13 Jul 2023 14:48:45 +0000 Haiyang Zhang wrote:
->> Add page pool for RX buffers for faster buffer cycle and reduce CPU
->> usage.
->>
->> Get an extra ref count of a page after allocation, so after upper
->> layers put the page, it's still referenced by the pool. We can reuse
->> it as RX buffer without alloc a new page.
-> 
-> Please use the real page_pool API from include/net/page_pool.h
-> We've moved past every driver reinventing the wheel, sorry.
+--0000000000003c3ae806006e5136
+Content-Type: application/pkcs7-signature; name="smime.p7s"
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename="smime.p7s"
+Content-Description: S/MIME Cryptographic Signature
 
-+1
-
-Quoting[1]: Documentation/networking/page_pool.rst
-
-  Basic use involves replacing alloc_pages() calls with the 
-page_pool_alloc_pages() call.
-  Drivers should use page_pool_dev_alloc_pages() replacing 
-dev_alloc_pages().
-
-
-[1] https://kernel.org/doc/html/latest/networking/page_pool.html
-
+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
+FYMZp2DojLAq9f4Oi2OBetbnWxo0WGycXpmq/jC4PUx2u9mazQ79i80VLagGRshWniESXuf+SYG8
++zBimjld9ZZnwm7itHAZdtme4YYFxx+EHa4PUxPV8t+hPHhsiIjirPa1pVXPbQIDAQABo4IB2zCC
+AdcwDgYDVR0PAQH/BAQDAgWgMIGjBggrBgEFBQcBAQSBljCBkzBOBggrBgEFBQcwAoZCaHR0cDov
+L3NlY3VyZS5nbG9iYWxzaWduLmNvbS9jYWNlcnQvZ3NnY2NyM3BlcnNvbmFsc2lnbjJjYTIwMjAu
+Y3J0MEEGCCsGAQUFBzABhjVodHRwOi8vb2NzcC5nbG9iYWxzaWduLmNvbS9nc2djY3IzcGVyc29u
+YWxzaWduMmNhMjAyMDBNBgNVHSAERjBEMEIGCisGAQQBoDIBKAowNDAyBggrBgEFBQcCARYmaHR0
+cHM6Ly93d3cuZ2xvYmFsc2lnbi5jb20vcmVwb3NpdG9yeS8wCQYDVR0TBAIwADBJBgNVHR8EQjBA
+MD6gPKA6hjhodHRwOi8vY3JsLmdsb2JhbHNpZ24uY29tL2dzZ2NjcjNwZXJzb25hbHNpZ24yY2Ey
+MDIwLmNybDAlBgNVHREEHjAcgRpzZWx2aW4ueGF2aWVyQGJyb2FkY29tLmNvbTATBgNVHSUEDDAK
+BggrBgEFBQcDBDAfBgNVHSMEGDAWgBSWM9HmWBdbNHWKgVZk1b5I3qGPzzAdBgNVHQ4EFgQU3TaH
+dsgUhTW3LwObmZ20fj+8Xj8wDQYJKoZIhvcNAQELBQADggEBAAbt6Sptp6ZlTnhM2FDhkVXks68/
+iqvfL/e8wSPVdBxOuiP+8EXGLV3E72KfTTJXMbkcmFpK2K11poBDQJhz0xyOGTESjXNnN6Eqq+iX
+hQtF8xG2lzPq8MijKI4qXk5Vy5DYfwsVfcF0qJw5AhC32nU9uuIPJq8/mQbZfqmoanV/yadootGr
+j1Ze9ndr+YDXPpCymOsynmmw0ErHZGGW1OmMpAEt0A+613glWCURLDlP8HONi1wnINV6aDiEf0ad
+9NMGxDsp+YWiRXD3txfo2OMQbpIxM90QfhKKacX8t1J1oAAWxDrLVTJBXBNvz5tr+D1sYwuye93r
+hImmkM1unboxggJtMIICaQIBATBrMFsxCzAJBgNVBAYTAkJFMRkwFwYDVQQKExBHbG9iYWxTaWdu
+IG52LXNhMTEwLwYDVQQDEyhHbG9iYWxTaWduIEdDQyBSMyBQZXJzb25hbFNpZ24gMiBDQSAyMDIw
+Agxy+Cu4x/7lM0zxY7cwDQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIEIEEfBFaQsFIJ
+9sXs31ZHL0aufMci8AaRBTxqjo7ZeVDWMBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZI
+hvcNAQkFMQ8XDTIzMDcxNDA4MzQyOVowaQYJKoZIhvcNAQkPMVwwWjALBglghkgBZQMEASowCwYJ
+YIZIAWUDBAEWMAsGCWCGSAFlAwQBAjAKBggqhkiG9w0DBzALBgkqhkiG9w0BAQowCwYJKoZIhvcN
+AQEHMAsGCWCGSAFlAwQCATANBgkqhkiG9w0BAQEFAASCAQAjSMrmRtbRC+yDARZx2v6+gDET3Zi3
+lvE3SEMNuLjz0WQREA1jlPswU6wZE1hkJ+igPWjbqRBUp+qXRmGq63QOU2YGnIn+342b2mSS1gp+
+dKt0rm8KHQCYI11eWZPtac7ATwF0s6PQP/wpZRI2Vb2cQM98AlNT22xm8pO3BlTYbAg936f+v4EA
+O/VDa9DhqINH1a/gBblUIMNqo7WSivuT5Vvh0SgE9tSgDenH7XsyZFAjvSHT52DJYqpuk4AEPCI4
+T/hWx3iMgn4celEpIYn+Bz47hZHXSx6fzGtbZB2FtkJyd5ShAPSuiq3Vqn+oeRXYuq47QxHIP6ZA
+hhVRMv/3
+--0000000000003c3ae806006e5136--
