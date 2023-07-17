@@ -2,165 +2,117 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6CFA875700F
-	for <lists+linux-rdma@lfdr.de>; Tue, 18 Jul 2023 00:53:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 043DB75708B
+	for <lists+linux-rdma@lfdr.de>; Tue, 18 Jul 2023 01:35:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229742AbjGQWxB (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 17 Jul 2023 18:53:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49400 "EHLO
+        id S229862AbjGQXfc (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 17 Jul 2023 19:35:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50276 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230218AbjGQWwz (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 17 Jul 2023 18:52:55 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BBF1F124
-        for <linux-rdma@vger.kernel.org>; Mon, 17 Jul 2023 15:52:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1689634328;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=8wy84DSSq8n2YYiK0mWellsvoswCFp/2kMAmdZ+UHHc=;
-        b=XQUo3bvqjUpsOUN8GsxyIHaDVPFy4YocF1KfVpXfseLNxnoHQQwMv7AlCeG4Zoo/+Ykf3U
-        D9Q+8g6vNPpsonv/zzORLqloc3niRORGz95s4pjnDwTDD/xUtUNZlEbpvZnorV19sdyt+c
-        kDgNidq2eXxF6QoXTFIJDi3me8/vWE0=
-Received: from mail-il1-f200.google.com (mail-il1-f200.google.com
- [209.85.166.200]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-270-0uYKBxEXMSGYfyi7NKm3Mw-1; Mon, 17 Jul 2023 18:52:07 -0400
-X-MC-Unique: 0uYKBxEXMSGYfyi7NKm3Mw-1
-Received: by mail-il1-f200.google.com with SMTP id e9e14a558f8ab-345ac896b2dso34891645ab.2
-        for <linux-rdma@vger.kernel.org>; Mon, 17 Jul 2023 15:52:07 -0700 (PDT)
+        with ESMTP id S229919AbjGQXfb (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 17 Jul 2023 19:35:31 -0400
+Received: from mail-ej1-x62c.google.com (mail-ej1-x62c.google.com [IPv6:2a00:1450:4864:20::62c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28BF410B;
+        Mon, 17 Jul 2023 16:34:38 -0700 (PDT)
+Received: by mail-ej1-x62c.google.com with SMTP id a640c23a62f3a-992b66e5affso704174566b.3;
+        Mon, 17 Jul 2023 16:34:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1689636780; x=1692228780;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=XUDr0WJ36nzGg+x0m6xG86uy/+jSOmIe2ZQC2dKU+JY=;
+        b=R72h7HqH8exWkKdBGuHmTn/A6yXVCx/MQxMlWukO2c9mf0bQu7HeyztJLnYzun3qUI
+         CPubk0fYrugSrzwwHJa6WuMyVEv7jAqlCxZ6Ha1zyjPOInzg8uu+1Dg11qNhmpWUXCyy
+         FnKmOrzNTcdUIq6NzCnXXFgkMr3Cx4GageF7idZk2wz5rSEiqnlp6SyKLHKbHnjdYfU2
+         j6QMS3ugtyHUXlGvH983eK2DS4EQI62/d+0LTaiDWUNNdG/HxFi+5vh5RjedFNHVdryP
+         MnAaWvLpheISDoE0GquVbuPi7DNKbFnoE9TO2wkkaOCItUf5+59K6lQvRCNepNU27ktN
+         Em9Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689634327; x=1692226327;
-        h=content-transfer-encoding:mime-version:organization:references
-         :in-reply-to:message-id:subject:cc:to:from:date:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=8wy84DSSq8n2YYiK0mWellsvoswCFp/2kMAmdZ+UHHc=;
-        b=T3awHMhkjGBzhl86yif6ymWD2s6evE6x3d/Uy4mWWK5bCj7IsHnLYdKtFiVOs1zxSz
-         kqAXgUX9ZhYmDc+5ghReDUsupd1/qkiiN+FF/LM4N397F76r3iJUEv62SmJVkoOj4JzR
-         GLr1F9hMNvjFX/oE7x/+c5juCkjDRYL/+V2oY+ogRdihnURoJNIhECbcXUzhkH3yZ1Oz
-         VgBhd0xzjOEaoTgPnOb7y2wRgg9VIO1WpaZl3aocYuOIqLqmfJrE3spUrhe11PiqQSpt
-         x1UxLWU7X3iNRktLPlfZArr9Pfw7CXrUpYS+z8Qry8p2V2kWqq4j6jC6u/duWz06b7kS
-         IeOQ==
-X-Gm-Message-State: ABy/qLYJ8IZQjs9Lgh4M3Peagw2je+g8cL3+XG1Rq5afCP+MeSNg97cB
-        UkPlAY4lr5KIAkbQxUETOVcJ5VYRnYlZINm+dq+uYgS9z0hRtNWzfTo5PK741MeENuNVjvtHTqV
-        Se1ekzG6YtwmznRPLrHkAuw==
-X-Received: by 2002:a92:c651:0:b0:347:693a:7300 with SMTP id 17-20020a92c651000000b00347693a7300mr1012022ill.26.1689634327046;
-        Mon, 17 Jul 2023 15:52:07 -0700 (PDT)
-X-Google-Smtp-Source: APBJJlGlBYmCdY1EaUds5QDcX7E6PqePOm9wJTOwk2wgOBkeJp+9wxIVvWJlHjSTuTXhWw/m+atXtQ==
-X-Received: by 2002:a92:c651:0:b0:347:693a:7300 with SMTP id 17-20020a92c651000000b00347693a7300mr1012015ill.26.1689634326829;
-        Mon, 17 Jul 2023 15:52:06 -0700 (PDT)
-Received: from redhat.com ([38.15.36.239])
-        by smtp.gmail.com with ESMTPSA id d10-20020a92ddca000000b00341c0710169sm242627ilr.46.2023.07.17.15.52.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 17 Jul 2023 15:52:06 -0700 (PDT)
-Date:   Mon, 17 Jul 2023 16:52:03 -0600
-From:   Alex Williamson <alex.williamson@redhat.com>
-To:     Jason Gunthorpe <jgg@ziepe.ca>
-Cc:     Grzegorz Jaszczyk <jaz@semihalf.com>,
-        Christian Brauner <brauner@kernel.org>,
-        linux-fsdevel@vger.kernel.org, linux-aio@kvack.org,
-        linux-usb@vger.kernel.org, Matthew Rosato <mjrosato@linux.ibm.com>,
-        Paul Durrant <paul@xen.org>, Tom Rix <trix@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        dri-devel@lists.freedesktop.org, Michal Hocko <mhocko@kernel.org>,
-        linux-mm@kvack.org, Kirti Wankhede <kwankhede@nvidia.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Jens Axboe <axboe@kernel.dk>,
-        Vineeth Vijayan <vneethv@linux.ibm.com>,
-        Diana Craciun <diana.craciun@oss.nxp.com>,
-        Alexander Gordeev <agordeev@linux.ibm.com>,
-        Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Leon Romanovsky <leon@kernel.org>,
-        Harald Freudenberger <freude@linux.ibm.com>,
-        Fei Li <fei1.li@intel.com>, x86@kernel.org,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        Halil Pasic <pasic@linux.ibm.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        intel-gfx@lists.freedesktop.org,
-        Christian Borntraeger <borntraeger@linux.ibm.com>,
-        linux-fpga@vger.kernel.org, Zhi Wang <zhi.a.wang@intel.com>,
-        Wu Hao <hao.wu@intel.com>, Jason Herne <jjherne@linux.ibm.com>,
-        Eric Farman <farman@linux.ibm.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Andrew Donnellan <ajd@linux.ibm.com>,
-        Arnd Bergmann <arnd@arndb.de>, linux-s390@vger.kernel.org,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        linuxppc-dev@lists.ozlabs.org, Eric Auger <eric.auger@redhat.com>,
-        Borislav Petkov <bp@alien8.de>, kvm@vger.kernel.org,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>, cgroups@vger.kernel.org,
-        Thomas Gleixner <tglx@linutronix.de>,
-        virtualization@lists.linux-foundation.org,
-        intel-gvt-dev@lists.freedesktop.org, io-uring@vger.kernel.org,
-        netdev@vger.kernel.org, Tony Krowiak <akrowiak@linux.ibm.com>,
-        Tvrtko Ursulin <tvrtko.ursulin@linux.intel.com>,
-        Pavel Begunkov <asml.silence@gmail.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Oded Gabbay <ogabbay@kernel.org>,
-        Muchun Song <muchun.song@linux.dev>,
-        Peter Oberparleiter <oberpar@linux.ibm.com>,
-        linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
-        Benjamin LaHaise <bcrl@kvack.org>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Sven Schnelle <svens@linux.ibm.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Frederic Barrat <fbarrat@linux.ibm.com>,
-        Moritz Fischer <mdf@kernel.org>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        David Woodhouse <dwmw2@infradead.org>,
-        Xu Yilun <yilun.xu@intel.com>,
-        Dominik Behr <dbehr@chromium.org>,
-        Marcin Wojtas <mw@semihalf.com>
-Subject: Re: [PATCH 0/2] eventfd: simplify signal helpers
-Message-ID: <20230717165203.4ee6b1e6.alex.williamson@redhat.com>
-In-Reply-To: <ZLW8wEzkhBxd0O0L@ziepe.ca>
-References: <20230630155936.3015595-1-jaz@semihalf.com>
-        <20230714-gauner-unsolidarisch-fc51f96c61e8@brauner>
-        <CAH76GKPF4BjJLrzLBW8k12ATaAGADeMYc2NQ9+j0KgRa0pomUw@mail.gmail.com>
-        <20230717130831.0f18381a.alex.williamson@redhat.com>
-        <ZLW8wEzkhBxd0O0L@ziepe.ca>
-Organization: Red Hat
+        d=1e100.net; s=20221208; t=1689636780; x=1692228780;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=XUDr0WJ36nzGg+x0m6xG86uy/+jSOmIe2ZQC2dKU+JY=;
+        b=LyG0NPrH26ewEBaMEyiukPEArnD1SiHXozJBWucCWZmJsFMRJoLcv8Xjm8YucZfzNG
+         p9CF0nWCQd0v7gac5tA6si0/mOPFOIXnGNHsRxw8Jo3lbRpXHRDz0Njy7GPfkXOCHqnu
+         1ty++lg4hSxEVpiYPUAhQEI4ME5nvK5oq/M4tSswkVk3QluxmMKBYfi0YKP+ESXF1sie
+         7iP/A8NHGlT2c8vFdUnDZdOlQo/zTbbx8+8BE1niYnmHA+UPEJmx2se0x8rwiURNxEGY
+         2QalXAo5JWUcSK1Hst6VIEzITPIF8hgyGI3zddi60IFu80O1/lzlIlbT3/H/54ub3a4U
+         N+dg==
+X-Gm-Message-State: ABy/qLZfq20xUh2QketLE4xymAiSFvvjwYX9AMuPeoZ+Nu+DDq0E9QXW
+        zpvwUe72Olqu3KJ1qTHZkytMRwYJTDVKxparc/fhEPi9760=
+X-Google-Smtp-Source: APBJJlE1VufSgLLzwZ0wh5XIZlg806W1ISKFqvU35SLDRo3m8iBCXl2XRyjXOwehO1xfQV/AeH9gU+mb7fdtFJSw7xI=
+X-Received: by 2002:a05:651c:105b:b0:2b8:67ce:4ad7 with SMTP id
+ x27-20020a05651c105b00b002b867ce4ad7mr5740002ljm.6.1689636061093; Mon, 17 Jul
+ 2023 16:21:01 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+References: <43698d8a3ed4e720899eadac887427f73d7ec2eb.1689623735.git.christophe.jaillet@wanadoo.fr>
+In-Reply-To: <43698d8a3ed4e720899eadac887427f73d7ec2eb.1689623735.git.christophe.jaillet@wanadoo.fr>
+From:   Zhu Yanjun <zyjzyj2000@gmail.com>
+Date:   Tue, 18 Jul 2023 07:20:48 +0800
+Message-ID: <CAD=hENdpVxzE+Mvre7kdU-Z1Cr0z=6DFwhEh17-bNf-2Z0haJw@mail.gmail.com>
+Subject: Re: [PATCH] RDMA/rxe: Fix an error handling path in rxe_bind_mw()
+To:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Cc:     Jason Gunthorpe <jgg@ziepe.ca>, Leon Romanovsky <leon@kernel.org>,
+        Bob Pearson <rpearsonhpe@gmail.com>,
+        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org,
+        linux-rdma@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Mon, 17 Jul 2023 19:12:16 -0300
-Jason Gunthorpe <jgg@ziepe.ca> wrote:
+On Tue, Jul 18, 2023 at 3:55=E2=80=AFAM Christophe JAILLET
+<christophe.jaillet@wanadoo.fr> wrote:
+>
+> All errors go to the error handling path, except this one. Be consistent
+> and also branch to it.
+>
+> Fixes: 02ed253770fb ("RDMA/rxe: Introduce rxe access supported flags")
+> Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+> ---
+> /!\ Speculative /!\
+>
+>    This patch is based on analysis of the surrounding code and should be
+>    reviewed with care !
+>
+> /!\ Speculative /!\
+> ---
+>  drivers/infiniband/sw/rxe/rxe_mw.c | 3 ++-
+>  1 file changed, 2 insertions(+), 1 deletion(-)
+>
+> diff --git a/drivers/infiniband/sw/rxe/rxe_mw.c b/drivers/infiniband/sw/r=
+xe/rxe_mw.c
+> index d8a43d87de93..d9312b5c9d20 100644
+> --- a/drivers/infiniband/sw/rxe/rxe_mw.c
+> +++ b/drivers/infiniband/sw/rxe/rxe_mw.c
+> @@ -199,7 +199,8 @@ int rxe_bind_mw(struct rxe_qp *qp, struct rxe_send_wq=
+e *wqe)
+>
+>         if (access & ~RXE_ACCESS_SUPPORTED_MW) {
+>                 rxe_err_mw(mw, "access %#x not supported", access);
 
-> On Mon, Jul 17, 2023 at 01:08:31PM -0600, Alex Williamson wrote:
-> 
-> > What would that mechanism be?  We've been iterating on getting the
-> > serialization and buffering correct, but I don't know of another means
-> > that combines the notification with a value, so we'd likely end up with
-> > an eventfd only for notification and a separate ring buffer for
-> > notification values.  
-> 
-> All FDs do this. You just have to make a FD with custom
-> file_operations that does what this wants. The uAPI shouldn't be able
-> to tell if the FD is backing it with an eventfd or otherwise. Have the
-> kernel return the FD instead of accepting it. Follow the basic design
-> of eg mlx5vf_save_fops
+https://www.kernel.org/doc/Documentation/core-api/printk-formats.rst
+What is "%#x"? No such definition in the above link.
+Except that, I am fine with it.
 
-Sure, userspace could poll on any fd and read a value from it, but at
-that point we're essentially duplicating a lot of what eventfd provides
-for a minor(?) semantic difference over how the counter value is
-interpreted.  Using an actual eventfd allows the ACPI notification to
-work as just another interrupt index within the existing vfio IRQ uAPI.
-Thanks,
+Acked-by: Zhu Yanjun <zyjzyj2000@gmail.com>
+Zhu Yanjun
 
-Alex
-
+> -               return -EOPNOTSUPP;
+> +               ret =3D -EOPNOTSUPP;
+> +               goto err_drop_mr;
+>         }
+>
+>         spin_lock_bh(&mw->lock);
+> --
+> 2.34.1
+>
