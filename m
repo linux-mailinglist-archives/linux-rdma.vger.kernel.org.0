@@ -2,278 +2,184 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 236A2755DF4
-	for <lists+linux-rdma@lfdr.de>; Mon, 17 Jul 2023 10:10:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BBCC6755E73
+	for <lists+linux-rdma@lfdr.de>; Mon, 17 Jul 2023 10:29:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229766AbjGQIKo (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 17 Jul 2023 04:10:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37634 "EHLO
+        id S231189AbjGQI3w (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 17 Jul 2023 04:29:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45544 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229582AbjGQIKn (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 17 Jul 2023 04:10:43 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3360FA6;
-        Mon, 17 Jul 2023 01:10:42 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id BAE5760FA6;
-        Mon, 17 Jul 2023 08:10:41 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B5A6EC433C7;
-        Mon, 17 Jul 2023 08:10:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1689581441;
-        bh=3BI8Gb7qqek+UQaNpN3lbIXBVjdNBu5DmPwjCxoinRQ=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=YC6LAqsROzypf3yPftYTxUsVauBU4Csak40lgaVFo5i2n7wjo4HHorDcCQbeidfIE
-         68PidudAw3qX3kqfHoY2gbP7vyEZqlRTlqPg1c+q15xoiwxSuxdoxIwuc8RtnWb1E/
-         VS+TQvhJvqkjwK43JOy4rs1LD0PKSI90ieo1QCnitNNyXo/BPIjCRAzSz7TDd0SvtV
-         vRHz8B0KzoPea6DxkWjBL/1VHltE8m78m+MiNcvKSMEHI+1D3RrFRY3ldZCckyzrVR
-         pnFx7ha1V18CptSaTirxiAYUvp0v3ZT9AvrKC59uIjcJ8c+osKilfpd/Xv7vnA5DMl
-         tJr0p9LV2iL0g==
-Date:   Mon, 17 Jul 2023 11:10:37 +0300
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Junxian Huang <huangjunxian6@hisilicon.com>
-Cc:     jgg@nvidia.com, linux-rdma@vger.kernel.org, linuxarm@huawei.com,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 for-rc 3/3] RDMA/hns: Add check and adjust for
- function resource values
-Message-ID: <20230717081037.GF9461@unreal>
-References: <20230717060340.453850-1-huangjunxian6@hisilicon.com>
- <20230717060340.453850-4-huangjunxian6@hisilicon.com>
+        with ESMTP id S231345AbjGQI3u (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 17 Jul 2023 04:29:50 -0400
+Received: from mail-il1-x12f.google.com (mail-il1-x12f.google.com [IPv6:2607:f8b0:4864:20::12f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C9EFB191
+        for <linux-rdma@vger.kernel.org>; Mon, 17 Jul 2023 01:29:46 -0700 (PDT)
+Received: by mail-il1-x12f.google.com with SMTP id e9e14a558f8ab-345ff33d286so22420905ab.3
+        for <linux-rdma@vger.kernel.org>; Mon, 17 Jul 2023 01:29:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=semihalf.com; s=google; t=1689582586; x=1692174586;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=KrEcIar0BkfpmBL+8BCmNKqe2TUSK3LL+WBdNYsOjsM=;
+        b=e52IJgo7nORao0Gl4I5dRpwwbrYRCXZTSuwaC/thRVodGrQS/Ih+iZx/Zsqn89WU3w
+         pQgXUWQS+Vk59/Fh6rrIEqzCQJkEny2i0gy7zEPOvxwj9yUxhnNvrizRbt8YsZpplHpx
+         RjVLFZyrzR9wafddakUgpMo5lLKlNumHP6uiacp/wGVyLbBbCgrHIUP/7snpf7XV2sof
+         jlaeLm95LpwgAuzcjO7UCvT+e3bh2UJ0I6TbCUpKBOZvGLRTw6wJXY5zbY52dacz1/1P
+         iPPOvh8ArwyYCroEOLn3Y8OJKVgd78PUACDF8tTPiPB+Om3hyy+66x8dhT2yU/74h83y
+         v2JA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689582586; x=1692174586;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=KrEcIar0BkfpmBL+8BCmNKqe2TUSK3LL+WBdNYsOjsM=;
+        b=Dw42RNCbT6iyxsQYRRvG6PnM/rDb+VeZK0RQOQXqOIJSpGi4ecW8QZBl2PWRabANJD
+         UxunYgayEtPNnAz65oBTxSWtespQdWHgoPPjOiC8+1HdemmO5qP7Ws9X5Oo71lFRF/zL
+         /hmloV4ptPm+UewACp/QAfEuzTH97x6vNLmHqdIZtNL8oxT+h0lZDwE+oQoff8zPfpCv
+         X6Z5klsxnn0B6bI07dVIFBE8sCQdZRJpx96xXAysu+Xx3DaapO0bs9ZRZ5hWaTu9IGSX
+         o9c0f4YVAntbGfCZEYgfaaLrRyU43qiV9l4372N8iayOsh5kN8MMcOKyhlm9fB5Jw6Jj
+         4VOA==
+X-Gm-Message-State: ABy/qLYUAsXBHn99QleDIPxsPtrKqyorx9wc09Znzuv9HWqyh2F7DpAI
+        yHE2N8qvQjnYoJh2LpTWFPuH079ZAx2Gq6JL7wrgag==
+X-Google-Smtp-Source: APBJJlGE7jn73weZAb7Q+GH4ouydfCd9ILtA9ynYfWdyB1I4k5TGE6qNhhrOJBaOwSkah9YrBoRDKcKZ9t95G975sJc=
+X-Received: by 2002:a92:d4d2:0:b0:345:d470:baa6 with SMTP id
+ o18-20020a92d4d2000000b00345d470baa6mr9664500ilm.29.1689582586220; Mon, 17
+ Jul 2023 01:29:46 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230717060340.453850-4-huangjunxian6@hisilicon.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+References: <20230630155936.3015595-1-jaz@semihalf.com> <20230714-gauner-unsolidarisch-fc51f96c61e8@brauner>
+In-Reply-To: <20230714-gauner-unsolidarisch-fc51f96c61e8@brauner>
+From:   Grzegorz Jaszczyk <jaz@semihalf.com>
+Date:   Mon, 17 Jul 2023 10:29:34 +0200
+Message-ID: <CAH76GKPF4BjJLrzLBW8k12ATaAGADeMYc2NQ9+j0KgRa0pomUw@mail.gmail.com>
+Subject: Re: [PATCH 0/2] eventfd: simplify signal helpers
+To:     Christian Brauner <brauner@kernel.org>,
+        Alex Williamson <alex.williamson@redhat.com>
+Cc:     linux-fsdevel@vger.kernel.org, linux-aio@kvack.org,
+        linux-usb@vger.kernel.org, Matthew Rosato <mjrosato@linux.ibm.com>,
+        Paul Durrant <paul@xen.org>, Tom Rix <trix@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        dri-devel@lists.freedesktop.org, Michal Hocko <mhocko@kernel.org>,
+        linux-mm@kvack.org, Kirti Wankhede <kwankhede@nvidia.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Jens Axboe <axboe@kernel.dk>,
+        Vineeth Vijayan <vneethv@linux.ibm.com>,
+        Diana Craciun <diana.craciun@oss.nxp.com>,
+        Alexander Gordeev <agordeev@linux.ibm.com>,
+        Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Leon Romanovsky <leon@kernel.org>,
+        Harald Freudenberger <freude@linux.ibm.com>,
+        Fei Li <fei1.li@intel.com>, x86@kernel.org,
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        Halil Pasic <pasic@linux.ibm.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>, Ingo Molnar <mingo@redhat.com>,
+        intel-gfx@lists.freedesktop.org,
+        Christian Borntraeger <borntraeger@linux.ibm.com>,
+        linux-fpga@vger.kernel.org, Zhi Wang <zhi.a.wang@intel.com>,
+        Wu Hao <hao.wu@intel.com>, Jason Herne <jjherne@linux.ibm.com>,
+        Eric Farman <farman@linux.ibm.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Andrew Donnellan <ajd@linux.ibm.com>,
+        Arnd Bergmann <arnd@arndb.de>, linux-s390@vger.kernel.org,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        linuxppc-dev@lists.ozlabs.org, Eric Auger <eric.auger@redhat.com>,
+        Borislav Petkov <bp@alien8.de>, kvm@vger.kernel.org,
+        Rodrigo Vivi <rodrigo.vivi@intel.com>, cgroups@vger.kernel.org,
+        Thomas Gleixner <tglx@linutronix.de>,
+        virtualization@lists.linux-foundation.org,
+        intel-gvt-dev@lists.freedesktop.org, io-uring@vger.kernel.org,
+        netdev@vger.kernel.org, Tony Krowiak <akrowiak@linux.ibm.com>,
+        Tvrtko Ursulin <tvrtko.ursulin@linux.intel.com>,
+        Pavel Begunkov <asml.silence@gmail.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Oded Gabbay <ogabbay@kernel.org>,
+        Muchun Song <muchun.song@linux.dev>,
+        Peter Oberparleiter <oberpar@linux.ibm.com>,
+        linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
+        Benjamin LaHaise <bcrl@kvack.org>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Sven Schnelle <svens@linux.ibm.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Frederic Barrat <fbarrat@linux.ibm.com>,
+        Moritz Fischer <mdf@kernel.org>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        David Woodhouse <dwmw2@infradead.org>,
+        Xu Yilun <yilun.xu@intel.com>,
+        Dominik Behr <dbehr@chromium.org>,
+        Marcin Wojtas <mw@semihalf.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Mon, Jul 17, 2023 at 02:03:40PM +0800, Junxian Huang wrote:
-> Currently, RoCE driver gets function resource values from firmware
-> without validity check. 
+pt., 14 lip 2023 o 09:05 Christian Brauner <brauner@kernel.org> napisa=C5=
+=82(a):
+>
+> On Thu, Jul 13, 2023 at 11:10:54AM -0600, Alex Williamson wrote:
+> > On Thu, 13 Jul 2023 12:05:36 +0200
+> > Christian Brauner <brauner@kernel.org> wrote:
+> >
+> > > Hey everyone,
+> > >
+> > > This simplifies the eventfd_signal() and eventfd_signal_mask() helper=
+s
+> > > by removing the count argument which is effectively unused.
+> >
+> > We have a patch under review which does in fact make use of the
+> > signaling value:
+> >
+> > https://lore.kernel.org/all/20230630155936.3015595-1-jaz@semihalf.com/
+>
+> Huh, thanks for the link.
+>
+> Quoting from
+> https://patchwork.kernel.org/project/kvm/patch/20230307220553.631069-1-ja=
+z@semihalf.com/#25266856
+>
+> > Reading an eventfd returns an 8-byte value, we generally only use it
+> > as a counter, but it's been discussed previously and IIRC, it's possibl=
+e
+> > to use that value as a notification value.
+>
+> So the goal is to pipe a specific value through eventfd? But it is
+> explicitly a counter. The whole thing is written around a counter and
+> each write and signal adds to the counter.
+>
+> The consequences are pretty well described in the cover letter of
+> v6 https://lore.kernel.org/all/20230630155936.3015595-1-jaz@semihalf.com/
+>
+> > Since the eventfd counter is used as ACPI notification value
+> > placeholder, the eventfd signaling needs to be serialized in order to
+> > not end up with notification values being coalesced. Therefore ACPI
+> > notification values are buffered and signalized one by one, when the
+> > previous notification value has been consumed.
+>
+> But isn't this a good indication that you really don't want an eventfd
+> but something that's explicitly designed to associate specific data with
+> a notification? Using eventfd in that manner requires serialization,
+> buffering, and enforces ordering.
+>
+> I have no skin in the game aside from having to drop this conversion
+> which I'm fine to do if there are actually users for this btu really,
+> that looks a lot like abusing an api that really wasn't designed for
+> this.
 
-Kernel trusts devices underneath, otherwise why should we stop with
-capabilities? Let's check all PCI transactions and verify any response
-from FW too.
-
-> As these resources are mostly related to memory,
-> an invalid value may lead to serious consequence such as kernel panic.
-> 
-> This patch adds check for these resource values and adjusts the invalid
-> ones.
-
-These are FW bugs which should be fixed.
-
-Thanks
-
-> 
-> Signed-off-by: Junxian Huang <huangjunxian6@hisilicon.com>
-> ---
->  drivers/infiniband/hw/hns/hns_roce_hw_v2.c | 115 ++++++++++++++++++++-
->  drivers/infiniband/hw/hns/hns_roce_hw_v2.h |  37 +++++++
->  2 files changed, 148 insertions(+), 4 deletions(-)
-> 
-> diff --git a/drivers/infiniband/hw/hns/hns_roce_hw_v2.c b/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
-> index c4b92d8bd98a..f5649fd25042 100644
-> --- a/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
-> +++ b/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
-> @@ -1650,6 +1650,97 @@ static int hns_roce_config_global_param(struct hns_roce_dev *hr_dev)
->  	return hns_roce_cmq_send(hr_dev, &desc, 1);
->  }
->  
-> +static const struct hns_roce_bt_num {
-> +	u32 res_offset;
-> +	u32 min;
-> +	u32 max;
-> +	enum hns_roce_res_invalid_flag invalid_flag;
-> +	enum hns_roce_res_revision revision;
-> +	bool vf_support;
-> +} bt_num_table[] = {
-> +	{RES_OFFSET_IN_CAPS(qpc_bt_num), 1,
-> +	 MAX_QPC_BT_NUM, QPC_BT_NUM_INVALID_FLAG, RES_FOR_ALL, true},
-> +	{RES_OFFSET_IN_CAPS(srqc_bt_num), 1,
-> +	 MAX_SRQC_BT_NUM, SRQC_BT_NUM_INVALID_FLAG, RES_FOR_ALL, true},
-> +	{RES_OFFSET_IN_CAPS(cqc_bt_num), 1,
-> +	 MAX_CQC_BT_NUM, CQC_BT_NUM_INVALID_FLAG, RES_FOR_ALL, true},
-> +	{RES_OFFSET_IN_CAPS(mpt_bt_num), 1,
-> +	 MAX_MPT_BT_NUM, MPT_BT_NUM_INVALID_FLAG, RES_FOR_ALL, true},
-> +	{RES_OFFSET_IN_CAPS(sl_num), 1,
-> +	 MAX_SL_NUM, QID_NUM_INVALID_FLAG, RES_FOR_ALL, true},
-> +	{RES_OFFSET_IN_CAPS(sccc_bt_num), 1,
-> +	 MAX_SCCC_BT_NUM, SCCC_BT_NUM_INVALID_FLAG, RES_FOR_ALL, true},
-> +	{RES_OFFSET_IN_CAPS(qpc_timer_bt_num), 1,
-> +	 MAX_QPC_TIMER_BT_NUM, QPC_TIMER_BT_NUM_INVALID_FLAG,
-> +	 RES_FOR_ALL, false},
-> +	{RES_OFFSET_IN_CAPS(cqc_timer_bt_num), 1,
-> +	 MAX_CQC_TIMER_BT_NUM, CQC_TIMER_BT_NUM_INVALID_FLAG,
-> +	 RES_FOR_ALL, false},
-> +	{RES_OFFSET_IN_CAPS(gmv_bt_num), 1,
-> +	 MAX_GMV_BT_NUM, GMV_BT_NUM_INVALID_FLAG,
-> +	 RES_FOR_HIP09, true},
-> +	{RES_OFFSET_IN_CAPS(smac_bt_num), 1,
-> +	 MAX_SMAC_BT_NUM, SMAC_BT_NUM_INVALID_FLAG,
-> +	 RES_FOR_HIP08, true},
-> +	{RES_OFFSET_IN_CAPS(sgid_bt_num), 1,
-> +	 MAX_SGID_BT_NUM, SGID_BT_NUM_INVALID_FLAG,
-> +	 RES_FOR_HIP08, true},
-> +};
-> +
-> +static bool check_res_is_supported(struct hns_roce_dev *hr_dev,
-> +				   struct hns_roce_bt_num *bt_num_entry)
-> +{
-> +	if (!bt_num_entry->vf_support && hr_dev->is_vf)
-> +		return false;
-> +
-> +	if (bt_num_entry->revision == RES_FOR_HIP09 &&
-> +	    hr_dev->pci_dev->revision <= PCI_REVISION_ID_HIP08)
-> +		return false;
-> +
-> +	if (bt_num_entry->revision == RES_FOR_HIP08 &&
-> +	    hr_dev->pci_dev->revision >= PCI_REVISION_ID_HIP09)
-> +		return false;
-> +
-> +	return true;
-> +}
-> +
-> +static void adjust_eqc_bt_num(struct hns_roce_caps *caps, u16 *invalid_flag)
-> +{
-> +	if (caps->eqc_bt_num < caps->num_comp_vectors + caps->num_aeq_vectors ||
-> +	    caps->eqc_bt_num > MAX_EQC_BT_NUM) {
-> +		caps->eqc_bt_num = caps->eqc_bt_num > MAX_EQC_BT_NUM ?
-> +				   MAX_EQC_BT_NUM : caps->num_comp_vectors +
-> +						    caps->num_aeq_vectors;
-> +		*invalid_flag |= 1 << EQC_BT_NUM_INVALID_FLAG;
-> +	}
-> +}
-> +
-> +static u16 adjust_res_caps(struct hns_roce_dev *hr_dev)
-> +{
-> +	struct hns_roce_caps *caps = &hr_dev->caps;
-> +	u16 invalid_flag = 0;
-> +	u32 min, max;
-> +	u32 *res;
-> +	int i;
-> +
-> +	for (i = 0; i < ARRAY_SIZE(bt_num_table); i++) {
-> +		if (!check_res_is_supported(hr_dev, &bt_num_table[i]))
-> +			continue;
-> +
-> +		res = (u32 *)((void *)caps + bt_num_table[i].res_offset);
-> +		min = bt_num_table[i].min;
-> +		max = bt_num_table[i].max;
-> +		if (*res < min || *res > max) {
-> +			*res = *res < min ? min : max;
-> +			invalid_flag |= 1 << bt_num_table[i].invalid_flag;
-> +		}
-> +	}
-> +
-> +	adjust_eqc_bt_num(caps, &invalid_flag);
-> +
-> +	return invalid_flag;
-> +}
-> +
->  static int load_func_res_caps(struct hns_roce_dev *hr_dev, bool is_vf)
->  {
->  	struct hns_roce_cmq_desc desc[2];
-> @@ -1730,11 +1821,19 @@ static int hns_roce_query_pf_resource(struct hns_roce_dev *hr_dev)
->  	}
->  
->  	ret = load_pf_timer_res_caps(hr_dev);
-> -	if (ret)
-> +	if (ret) {
->  		dev_err(dev, "failed to load pf timer resource, ret = %d.\n",
->  			ret);
-> +		return ret;
-> +	}
->  
-> -	return ret;
-> +	ret = adjust_res_caps(hr_dev);
-> +	if (ret)
-> +		dev_warn(dev,
-> +			 "invalid resource values have been adjusted, invalid_flag = 0x%x.\n",
-> +			 ret);
-> +
-> +	return 0;
->  }
->  
->  static int hns_roce_query_vf_resource(struct hns_roce_dev *hr_dev)
-> @@ -1743,10 +1842,18 @@ static int hns_roce_query_vf_resource(struct hns_roce_dev *hr_dev)
->  	int ret;
->  
->  	ret = load_func_res_caps(hr_dev, true);
-> -	if (ret)
-> +	if (ret) {
->  		dev_err(dev, "failed to load vf res caps, ret = %d.\n", ret);
-> +		return ret;
-> +	}
->  
-> -	return ret;
-> +	ret = adjust_res_caps(hr_dev);
-> +	if (ret)
-> +		dev_warn(dev,
-> +			 "invalid resource values have been adjusted, invalid_flag = 0x%x.\n",
-> +			 ret);
-> +
-> +	return 0;
->  }
->  
->  static int __hns_roce_set_vf_switch_param(struct hns_roce_dev *hr_dev,
-> diff --git a/drivers/infiniband/hw/hns/hns_roce_hw_v2.h b/drivers/infiniband/hw/hns/hns_roce_hw_v2.h
-> index d9693f6cc802..c2d46383c88c 100644
-> --- a/drivers/infiniband/hw/hns/hns_roce_hw_v2.h
-> +++ b/drivers/infiniband/hw/hns/hns_roce_hw_v2.h
-> @@ -972,6 +972,43 @@ struct hns_roce_func_clear {
->  #define CFG_GLOBAL_PARAM_1US_CYCLES CMQ_REQ_FIELD_LOC(9, 0)
->  #define CFG_GLOBAL_PARAM_UDP_PORT CMQ_REQ_FIELD_LOC(31, 16)
->  
-> +enum hns_roce_res_invalid_flag {
-> +	QPC_BT_NUM_INVALID_FLAG,
-> +	SRQC_BT_NUM_INVALID_FLAG,
-> +	CQC_BT_NUM_INVALID_FLAG,
-> +	MPT_BT_NUM_INVALID_FLAG,
-> +	EQC_BT_NUM_INVALID_FLAG,
-> +	SMAC_BT_NUM_INVALID_FLAG,
-> +	SGID_BT_NUM_INVALID_FLAG,
-> +	QID_NUM_INVALID_FLAG,
-> +	SCCC_BT_NUM_INVALID_FLAG,
-> +	GMV_BT_NUM_INVALID_FLAG,
-> +	QPC_TIMER_BT_NUM_INVALID_FLAG,
-> +	CQC_TIMER_BT_NUM_INVALID_FLAG,
-> +};
-> +
-> +enum hns_roce_res_revision {
-> +	RES_FOR_HIP08,
-> +	RES_FOR_HIP09,
-> +	RES_FOR_ALL,
-> +};
-> +
-> +#define RES_OFFSET_IN_CAPS(res) \
-> +	(offsetof(struct hns_roce_caps, res))
-> +
-> +#define MAX_QPC_BT_NUM 2048
-> +#define MAX_SRQC_BT_NUM 512
-> +#define MAX_CQC_BT_NUM 512
-> +#define MAX_MPT_BT_NUM 512
-> +#define MAX_EQC_BT_NUM 512
-> +#define MAX_SMAC_BT_NUM 256
-> +#define MAX_SGID_BT_NUM 256
-> +#define MAX_SL_NUM 8
-> +#define MAX_SCCC_BT_NUM 512
-> +#define MAX_GMV_BT_NUM 256
-> +#define MAX_QPC_TIMER_BT_NUM 1728
-> +#define MAX_CQC_TIMER_BT_NUM 1600
-> +
->  /*
->   * Fields of HNS_ROCE_OPC_QUERY_PF_RES, HNS_ROCE_OPC_QUERY_VF_RES
->   * and HNS_ROCE_OPC_ALLOC_VF_RES
-> -- 
-> 2.30.0
-> 
+https://patchwork.kernel.org/project/kvm/patch/20230307220553.631069-1-jaz@=
+semihalf.com/
+was posted at the beginig of March and one of the main things we've
+discussed was the mechanism for propagating acpi notification value.
+We've endup with eventfd as the best mechanism and have actually been
+using it from v2. I really do not want to waste this effort, I think
+we are quite advanced with v6 now. Additionally we didn't actually
+modify any part of eventfd support that was in place, we only used it
+in a specific (and discussed beforehand) way.
