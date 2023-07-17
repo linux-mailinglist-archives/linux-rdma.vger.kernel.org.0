@@ -2,184 +2,125 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BBCC6755E73
-	for <lists+linux-rdma@lfdr.de>; Mon, 17 Jul 2023 10:29:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 092B3756269
+	for <lists+linux-rdma@lfdr.de>; Mon, 17 Jul 2023 14:07:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231189AbjGQI3w (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 17 Jul 2023 04:29:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45544 "EHLO
+        id S230449AbjGQMHS (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 17 Jul 2023 08:07:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40552 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231345AbjGQI3u (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 17 Jul 2023 04:29:50 -0400
-Received: from mail-il1-x12f.google.com (mail-il1-x12f.google.com [IPv6:2607:f8b0:4864:20::12f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C9EFB191
-        for <linux-rdma@vger.kernel.org>; Mon, 17 Jul 2023 01:29:46 -0700 (PDT)
-Received: by mail-il1-x12f.google.com with SMTP id e9e14a558f8ab-345ff33d286so22420905ab.3
-        for <linux-rdma@vger.kernel.org>; Mon, 17 Jul 2023 01:29:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=semihalf.com; s=google; t=1689582586; x=1692174586;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=KrEcIar0BkfpmBL+8BCmNKqe2TUSK3LL+WBdNYsOjsM=;
-        b=e52IJgo7nORao0Gl4I5dRpwwbrYRCXZTSuwaC/thRVodGrQS/Ih+iZx/Zsqn89WU3w
-         pQgXUWQS+Vk59/Fh6rrIEqzCQJkEny2i0gy7zEPOvxwj9yUxhnNvrizRbt8YsZpplHpx
-         RjVLFZyrzR9wafddakUgpMo5lLKlNumHP6uiacp/wGVyLbBbCgrHIUP/7snpf7XV2sof
-         jlaeLm95LpwgAuzcjO7UCvT+e3bh2UJ0I6TbCUpKBOZvGLRTw6wJXY5zbY52dacz1/1P
-         iPPOvh8ArwyYCroEOLn3Y8OJKVgd78PUACDF8tTPiPB+Om3hyy+66x8dhT2yU/74h83y
-         v2JA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689582586; x=1692174586;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=KrEcIar0BkfpmBL+8BCmNKqe2TUSK3LL+WBdNYsOjsM=;
-        b=Dw42RNCbT6iyxsQYRRvG6PnM/rDb+VeZK0RQOQXqOIJSpGi4ecW8QZBl2PWRabANJD
-         UxunYgayEtPNnAz65oBTxSWtespQdWHgoPPjOiC8+1HdemmO5qP7Ws9X5Oo71lFRF/zL
-         /hmloV4ptPm+UewACp/QAfEuzTH97x6vNLmHqdIZtNL8oxT+h0lZDwE+oQoff8zPfpCv
-         X6Z5klsxnn0B6bI07dVIFBE8sCQdZRJpx96xXAysu+Xx3DaapO0bs9ZRZ5hWaTu9IGSX
-         o9c0f4YVAntbGfCZEYgfaaLrRyU43qiV9l4372N8iayOsh5kN8MMcOKyhlm9fB5Jw6Jj
-         4VOA==
-X-Gm-Message-State: ABy/qLYUAsXBHn99QleDIPxsPtrKqyorx9wc09Znzuv9HWqyh2F7DpAI
-        yHE2N8qvQjnYoJh2LpTWFPuH079ZAx2Gq6JL7wrgag==
-X-Google-Smtp-Source: APBJJlGE7jn73weZAb7Q+GH4ouydfCd9ILtA9ynYfWdyB1I4k5TGE6qNhhrOJBaOwSkah9YrBoRDKcKZ9t95G975sJc=
-X-Received: by 2002:a92:d4d2:0:b0:345:d470:baa6 with SMTP id
- o18-20020a92d4d2000000b00345d470baa6mr9664500ilm.29.1689582586220; Mon, 17
- Jul 2023 01:29:46 -0700 (PDT)
-MIME-Version: 1.0
-References: <20230630155936.3015595-1-jaz@semihalf.com> <20230714-gauner-unsolidarisch-fc51f96c61e8@brauner>
-In-Reply-To: <20230714-gauner-unsolidarisch-fc51f96c61e8@brauner>
-From:   Grzegorz Jaszczyk <jaz@semihalf.com>
-Date:   Mon, 17 Jul 2023 10:29:34 +0200
-Message-ID: <CAH76GKPF4BjJLrzLBW8k12ATaAGADeMYc2NQ9+j0KgRa0pomUw@mail.gmail.com>
-Subject: Re: [PATCH 0/2] eventfd: simplify signal helpers
-To:     Christian Brauner <brauner@kernel.org>,
-        Alex Williamson <alex.williamson@redhat.com>
-Cc:     linux-fsdevel@vger.kernel.org, linux-aio@kvack.org,
-        linux-usb@vger.kernel.org, Matthew Rosato <mjrosato@linux.ibm.com>,
-        Paul Durrant <paul@xen.org>, Tom Rix <trix@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        dri-devel@lists.freedesktop.org, Michal Hocko <mhocko@kernel.org>,
-        linux-mm@kvack.org, Kirti Wankhede <kwankhede@nvidia.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Jens Axboe <axboe@kernel.dk>,
-        Vineeth Vijayan <vneethv@linux.ibm.com>,
-        Diana Craciun <diana.craciun@oss.nxp.com>,
-        Alexander Gordeev <agordeev@linux.ibm.com>,
-        Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
+        with ESMTP id S231184AbjGQMHP (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 17 Jul 2023 08:07:15 -0400
+Received: from mga07.intel.com (mga07.intel.com [134.134.136.100])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F65810E4;
+        Mon, 17 Jul 2023 05:06:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1689595609; x=1721131609;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=32kRKfdMgDzPzA7zG83cMwuqvw0HkhDshGCOND8kKRk=;
+  b=cLNXM8HVveJmjjSca+UcMMTJr4JrX8zXGbXCLtVlWVmrdcKa2J1+uMu3
+   APQZ0opFu2faKy5HomRcwvU1n1AFrjeOEbnnrpOUcK4Z5BU7TDmLEt3q/
+   e/L9xSJcbQHwscBwxM3on8/WN7e3rsV3R/gs7JFYio5EdUq9QORSnW31N
+   yRSjAb08G6aT9zHzUuT4MUfDFsGoIQRz21e0CZOnMfnI7mddLNZ+m2/Mx
+   3PfoU0KVMtHDbqAeoTg4KkGBGilr3ARkfdUK2sxMDDqWy2CP8a15qqIzq
+   OQ0qY2hBLqajtU6NEx8wKzCF3cO7xZqnoJicH6cmX8qF9gYvhL4Z8l+VP
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10773"; a="432081825"
+X-IronPort-AV: E=Sophos;i="6.01,211,1684825200"; 
+   d="scan'208";a="432081825"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Jul 2023 05:06:41 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10773"; a="752876275"
+X-IronPort-AV: E=Sophos;i="6.01,211,1684825200"; 
+   d="scan'208";a="752876275"
+Received: from dkravtso-mobl1.ccr.corp.intel.com (HELO ijarvine-mobl2.ger.corp.intel.com) ([10.252.45.233])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Jul 2023 05:06:34 -0700
+From:   =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
+To:     linux-pci@vger.kernel.org, Bjorn Helgaas <bhelgaas@google.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Rob Herring <robh@kernel.org>,
+        =?UTF-8?q?Krzysztof=20Wilczy=C5=84ski?= <kw@linux.com>,
+        Emmanuel Grumbach <emmanuel.grumbach@intel.com>,
+        "Rafael J . Wysocki" <rafael@kernel.org>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Lukas Wunner <lukas@wunner.de>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Saeed Mahameed <saeedm@nvidia.com>,
         Leon Romanovsky <leon@kernel.org>,
-        Harald Freudenberger <freude@linux.ibm.com>,
-        Fei Li <fei1.li@intel.com>, x86@kernel.org,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        Halil Pasic <pasic@linux.ibm.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>, Ingo Molnar <mingo@redhat.com>,
-        intel-gfx@lists.freedesktop.org,
-        Christian Borntraeger <borntraeger@linux.ibm.com>,
-        linux-fpga@vger.kernel.org, Zhi Wang <zhi.a.wang@intel.com>,
-        Wu Hao <hao.wu@intel.com>, Jason Herne <jjherne@linux.ibm.com>,
-        Eric Farman <farman@linux.ibm.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Andrew Donnellan <ajd@linux.ibm.com>,
-        Arnd Bergmann <arnd@arndb.de>, linux-s390@vger.kernel.org,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        linuxppc-dev@lists.ozlabs.org, Eric Auger <eric.auger@redhat.com>,
-        Borislav Petkov <bp@alien8.de>, kvm@vger.kernel.org,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>, cgroups@vger.kernel.org,
-        Thomas Gleixner <tglx@linutronix.de>,
-        virtualization@lists.linux-foundation.org,
-        intel-gvt-dev@lists.freedesktop.org, io-uring@vger.kernel.org,
-        netdev@vger.kernel.org, Tony Krowiak <akrowiak@linux.ibm.com>,
-        Tvrtko Ursulin <tvrtko.ursulin@linux.intel.com>,
-        Pavel Begunkov <asml.silence@gmail.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Oded Gabbay <ogabbay@kernel.org>,
-        Muchun Song <muchun.song@linux.dev>,
-        Peter Oberparleiter <oberpar@linux.ibm.com>,
-        linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
-        Benjamin LaHaise <bcrl@kvack.org>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Sven Schnelle <svens@linux.ibm.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Frederic Barrat <fbarrat@linux.ibm.com>,
-        Moritz Fischer <mdf@kernel.org>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        David Woodhouse <dwmw2@infradead.org>,
-        Xu Yilun <yilun.xu@intel.com>,
-        Dominik Behr <dbehr@chromium.org>,
-        Marcin Wojtas <mw@semihalf.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
-        autolearn_force=no version=3.4.6
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Moshe Shemesh <moshe@mellanox.com>, netdev@vger.kernel.org,
+        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Dean Luick <dean.luick@cornelisnetworks.com>,
+        =?UTF-8?q?Jonas=20Dre=C3=9Fler?= <verdre@v0yd.nl>,
+        =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>,
+        Moshe Shemesh <moshe@nvidia.com>,
+        Simon Horman <simon.horman@corigine.com>,
+        stable@vger.kernel.org
+Subject: [PATCH v5 07/11] net/mlx5: Use RMW accessors for changing LNKCTL
+Date:   Mon, 17 Jul 2023 15:04:59 +0300
+Message-Id: <20230717120503.15276-8-ilpo.jarvinen@linux.intel.com>
+X-Mailer: git-send-email 2.30.2
+In-Reply-To: <20230717120503.15276-1-ilpo.jarvinen@linux.intel.com>
+References: <20230717120503.15276-1-ilpo.jarvinen@linux.intel.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-pt., 14 lip 2023 o 09:05 Christian Brauner <brauner@kernel.org> napisa=C5=
-=82(a):
->
-> On Thu, Jul 13, 2023 at 11:10:54AM -0600, Alex Williamson wrote:
-> > On Thu, 13 Jul 2023 12:05:36 +0200
-> > Christian Brauner <brauner@kernel.org> wrote:
-> >
-> > > Hey everyone,
-> > >
-> > > This simplifies the eventfd_signal() and eventfd_signal_mask() helper=
-s
-> > > by removing the count argument which is effectively unused.
-> >
-> > We have a patch under review which does in fact make use of the
-> > signaling value:
-> >
-> > https://lore.kernel.org/all/20230630155936.3015595-1-jaz@semihalf.com/
->
-> Huh, thanks for the link.
->
-> Quoting from
-> https://patchwork.kernel.org/project/kvm/patch/20230307220553.631069-1-ja=
-z@semihalf.com/#25266856
->
-> > Reading an eventfd returns an 8-byte value, we generally only use it
-> > as a counter, but it's been discussed previously and IIRC, it's possibl=
-e
-> > to use that value as a notification value.
->
-> So the goal is to pipe a specific value through eventfd? But it is
-> explicitly a counter. The whole thing is written around a counter and
-> each write and signal adds to the counter.
->
-> The consequences are pretty well described in the cover letter of
-> v6 https://lore.kernel.org/all/20230630155936.3015595-1-jaz@semihalf.com/
->
-> > Since the eventfd counter is used as ACPI notification value
-> > placeholder, the eventfd signaling needs to be serialized in order to
-> > not end up with notification values being coalesced. Therefore ACPI
-> > notification values are buffered and signalized one by one, when the
-> > previous notification value has been consumed.
->
-> But isn't this a good indication that you really don't want an eventfd
-> but something that's explicitly designed to associate specific data with
-> a notification? Using eventfd in that manner requires serialization,
-> buffering, and enforces ordering.
->
-> I have no skin in the game aside from having to drop this conversion
-> which I'm fine to do if there are actually users for this btu really,
-> that looks a lot like abusing an api that really wasn't designed for
-> this.
+Don't assume that only the driver would be accessing LNKCTL of the
+upstream bridge. ASPM policy changes can trigger write to LNKCTL
+outside of driver's control.
 
-https://patchwork.kernel.org/project/kvm/patch/20230307220553.631069-1-jaz@=
-semihalf.com/
-was posted at the beginig of March and one of the main things we've
-discussed was the mechanism for propagating acpi notification value.
-We've endup with eventfd as the best mechanism and have actually been
-using it from v2. I really do not want to waste this effort, I think
-we are quite advanced with v6 now. Additionally we didn't actually
-modify any part of eventfd support that was in place, we only used it
-in a specific (and discussed beforehand) way.
+Use RMW capability accessors which do proper locking to avoid losing
+concurrent updates to the register value.
+
+Fixes: eabe8e5e88f5 ("net/mlx5: Handle sync reset now event")
+Suggested-by: Lukas Wunner <lukas@wunner.de>
+Signed-off-by: Ilpo Järvinen <ilpo.jarvinen@linux.intel.com>
+Reviewed-by: Moshe Shemesh <moshe@nvidia.com>
+Reviewed-by: Simon Horman <simon.horman@corigine.com>
+Cc: stable@vger.kernel.org
+---
+ drivers/net/ethernet/mellanox/mlx5/core/fw_reset.c | 9 ++-------
+ 1 file changed, 2 insertions(+), 7 deletions(-)
+
+diff --git a/drivers/net/ethernet/mellanox/mlx5/core/fw_reset.c b/drivers/net/ethernet/mellanox/mlx5/core/fw_reset.c
+index 4804990b7f22..99dcbd006357 100644
+--- a/drivers/net/ethernet/mellanox/mlx5/core/fw_reset.c
++++ b/drivers/net/ethernet/mellanox/mlx5/core/fw_reset.c
+@@ -384,16 +384,11 @@ static int mlx5_pci_link_toggle(struct mlx5_core_dev *dev)
+ 		pci_cfg_access_lock(sdev);
+ 	}
+ 	/* PCI link toggle */
+-	err = pci_read_config_word(bridge, cap + PCI_EXP_LNKCTL, &reg16);
+-	if (err)
+-		return err;
+-	reg16 |= PCI_EXP_LNKCTL_LD;
+-	err = pci_write_config_word(bridge, cap + PCI_EXP_LNKCTL, reg16);
++	err = pcie_capability_set_word(bridge, PCI_EXP_LNKCTL, PCI_EXP_LNKCTL_LD);
+ 	if (err)
+ 		return err;
+ 	msleep(500);
+-	reg16 &= ~PCI_EXP_LNKCTL_LD;
+-	err = pci_write_config_word(bridge, cap + PCI_EXP_LNKCTL, reg16);
++	err = pcie_capability_clear_word(bridge, PCI_EXP_LNKCTL, PCI_EXP_LNKCTL_LD);
+ 	if (err)
+ 		return err;
+ 
+-- 
+2.30.2
+
