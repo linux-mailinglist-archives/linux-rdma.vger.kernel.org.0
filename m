@@ -2,32 +2,32 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C8942755B22
+	by mail.lfdr.de (Postfix) with ESMTP id 7D852755B21
 	for <lists+linux-rdma@lfdr.de>; Mon, 17 Jul 2023 08:06:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231358AbjGQGGX (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 17 Jul 2023 02:06:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48464 "EHLO
+        id S230418AbjGQGGW (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 17 Jul 2023 02:06:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48418 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231311AbjGQGGS (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 17 Jul 2023 02:06:18 -0400
+        with ESMTP id S231283AbjGQGGP (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 17 Jul 2023 02:06:15 -0400
 Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A446E6B;
-        Sun, 16 Jul 2023 23:06:15 -0700 (PDT)
-Received: from kwepemi500006.china.huawei.com (unknown [172.30.72.53])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4R4BMH3GD5zNmN7;
-        Mon, 17 Jul 2023 14:02:51 +0800 (CST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 915AAE4C;
+        Sun, 16 Jul 2023 23:06:13 -0700 (PDT)
+Received: from kwepemi500006.china.huawei.com (unknown [172.30.72.54])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4R4BPZ3H52zVjfP;
+        Mon, 17 Jul 2023 14:04:50 +0800 (CST)
 Received: from localhost.localdomain (10.67.165.2) by
  kwepemi500006.china.huawei.com (7.221.188.68) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.27; Mon, 17 Jul 2023 14:06:09 +0800
+ 15.1.2507.27; Mon, 17 Jul 2023 14:06:10 +0800
 From:   Junxian Huang <huangjunxian6@hisilicon.com>
 To:     <jgg@nvidia.com>, <leon@kernel.org>
 CC:     <linux-rdma@vger.kernel.org>, <linuxarm@huawei.com>,
         <linux-kernel@vger.kernel.org>, <huangjunxian6@hisilicon.com>
-Subject: [PATCH v2 for-rc 1/3] RDMA/hns: support get xrcd num from firmware
-Date:   Mon, 17 Jul 2023 14:03:38 +0800
-Message-ID: <20230717060340.453850-2-huangjunxian6@hisilicon.com>
+Subject: [PATCH v2 for-rc 2/3] RDMA/hns: Remove VF extend configuration
+Date:   Mon, 17 Jul 2023 14:03:39 +0800
+Message-ID: <20230717060340.453850-3-huangjunxian6@hisilicon.com>
 X-Mailer: git-send-email 2.30.0
 In-Reply-To: <20230717060340.453850-1-huangjunxian6@hisilicon.com>
 References: <20230717060340.453850-1-huangjunxian6@hisilicon.com>
@@ -47,75 +47,193 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Luoyouming <luoyouming@huawei.com>
+Remove VF extend configuration since the relative registers are
+configured in firmware currently.
 
-Support driver get the num of xrcd from firmware
-
-Signed-off-by: Luoyouming <luoyouming@huawei.com>
 Signed-off-by: Junxian Huang <huangjunxian6@hisilicon.com>
 ---
- drivers/infiniband/hw/hns/hns_roce_hw_v2.c | 5 ++---
- drivers/infiniband/hw/hns/hns_roce_hw_v2.h | 3 ++-
- 2 files changed, 4 insertions(+), 4 deletions(-)
+ drivers/infiniband/hw/hns/hns_roce_device.h |  1 -
+ drivers/infiniband/hw/hns/hns_roce_hw_v2.c  | 84 +++------------------
+ drivers/infiniband/hw/hns/hns_roce_hw_v2.h  | 10 ---
+ 3 files changed, 10 insertions(+), 85 deletions(-)
 
+diff --git a/drivers/infiniband/hw/hns/hns_roce_device.h b/drivers/infiniband/hw/hns/hns_roce_device.h
+index 84239b907de2..6084c1649000 100644
+--- a/drivers/infiniband/hw/hns/hns_roce_device.h
++++ b/drivers/infiniband/hw/hns/hns_roce_device.h
+@@ -714,7 +714,6 @@ struct hns_roce_caps {
+ 	u32		max_rq_sg;
+ 	u32		rsv0;
+ 	u32		num_qps;
+-	u32		num_pi_qps;
+ 	u32		reserved_qps;
+ 	u32		num_srqs;
+ 	u32		max_wqes;
 diff --git a/drivers/infiniband/hw/hns/hns_roce_hw_v2.c b/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
-index d4c6b9bc0a4e..fb3ce4af22b5 100644
+index fb3ce4af22b5..c4b92d8bd98a 100644
 --- a/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
 +++ b/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
-@@ -2093,9 +2093,6 @@ static void apply_func_caps(struct hns_roce_dev *hr_dev)
- 	caps->qpc_timer_hop_num = HNS_ROCE_HOP_NUM_0;
- 	caps->cqc_timer_hop_num = HNS_ROCE_HOP_NUM_0;
+@@ -1698,29 +1698,6 @@ static int load_func_res_caps(struct hns_roce_dev *hr_dev, bool is_vf)
+ 	return 0;
+ }
  
--	caps->num_xrcds = HNS_ROCE_V2_MAX_XRCD_NUM;
--	caps->reserved_xrcds = HNS_ROCE_V2_RSV_XRCD_NUM;
+-static int load_ext_cfg_caps(struct hns_roce_dev *hr_dev, bool is_vf)
+-{
+-	struct hns_roce_cmq_desc desc;
+-	struct hns_roce_cmq_req *req = (struct hns_roce_cmq_req *)desc.data;
+-	struct hns_roce_caps *caps = &hr_dev->caps;
+-	u32 func_num, qp_num;
+-	int ret;
 -
- 	caps->num_srqwqe_segs = HNS_ROCE_V2_MAX_SRQWQE_SEGS;
- 	caps->num_idx_segs = HNS_ROCE_V2_MAX_IDX_SEGS;
+-	hns_roce_cmq_setup_basic_desc(&desc, HNS_ROCE_OPC_EXT_CFG, true);
+-	ret = hns_roce_cmq_send(hr_dev, &desc, 1);
+-	if (ret)
+-		return ret;
+-
+-	func_num = is_vf ? 1 : max_t(u32, 1, hr_dev->func_num);
+-	qp_num = hr_reg_read(req, EXT_CFG_QP_PI_NUM) / func_num;
+-	caps->num_pi_qps = round_down(qp_num, HNS_ROCE_QP_BANK_NUM);
+-
+-	qp_num = hr_reg_read(req, EXT_CFG_QP_NUM) / func_num;
+-	caps->num_qps = round_down(qp_num, HNS_ROCE_QP_BANK_NUM);
+-
+-	return 0;
+-}
+-
+ static int load_pf_timer_res_caps(struct hns_roce_dev *hr_dev)
+ {
+ 	struct hns_roce_cmq_desc desc;
+@@ -1741,50 +1718,37 @@ static int load_pf_timer_res_caps(struct hns_roce_dev *hr_dev)
+ 	return 0;
+ }
  
-@@ -2218,6 +2215,7 @@ static int hns_roce_query_caps(struct hns_roce_dev *hr_dev)
- 	caps->num_cqs = 1 << hr_reg_read(resp_c, PF_CAPS_C_NUM_CQS);
- 	caps->gid_table_len[0] = hr_reg_read(resp_c, PF_CAPS_C_MAX_GID);
- 	caps->max_cqes = 1 << hr_reg_read(resp_c, PF_CAPS_C_CQ_DEPTH);
-+	caps->num_xrcds = 1 << hr_reg_read(resp_c, PF_CAPS_C_NUM_XRCDS);
- 	caps->num_mtpts = 1 << hr_reg_read(resp_c, PF_CAPS_C_NUM_MRWS);
- 	caps->num_qps = 1 << hr_reg_read(resp_c, PF_CAPS_C_NUM_QPS);
- 	caps->max_qp_init_rdma = hr_reg_read(resp_c, PF_CAPS_C_MAX_ORD);
-@@ -2238,6 +2236,7 @@ static int hns_roce_query_caps(struct hns_roce_dev *hr_dev)
- 	caps->reserved_mrws = hr_reg_read(resp_e, PF_CAPS_E_RSV_MRWS);
- 	caps->chunk_sz = 1 << hr_reg_read(resp_e, PF_CAPS_E_CHUNK_SIZE_SHIFT);
- 	caps->reserved_cqs = hr_reg_read(resp_e, PF_CAPS_E_RSV_CQS);
-+	caps->reserved_xrcds = hr_reg_read(resp_e, PF_CAPS_E_RSV_XRCDS);
- 	caps->reserved_srqs = hr_reg_read(resp_e, PF_CAPS_E_RSV_SRQS);
- 	caps->reserved_lkey = hr_reg_read(resp_e, PF_CAPS_E_RSV_LKEYS);
+-static int query_func_resource_caps(struct hns_roce_dev *hr_dev, bool is_vf)
++static int hns_roce_query_pf_resource(struct hns_roce_dev *hr_dev)
+ {
+ 	struct device *dev = hr_dev->dev;
+ 	int ret;
  
+-	ret = load_func_res_caps(hr_dev, is_vf);
++	ret = load_func_res_caps(hr_dev, false);
+ 	if (ret) {
+-		dev_err(dev, "failed to load res caps, ret = %d (%s).\n", ret,
+-			is_vf ? "vf" : "pf");
++		dev_err(dev, "failed to load pf res caps, ret = %d.\n", ret);
+ 		return ret;
+ 	}
+ 
+-	if (hr_dev->pci_dev->revision >= PCI_REVISION_ID_HIP09) {
+-		ret = load_ext_cfg_caps(hr_dev, is_vf);
+-		if (ret)
+-			dev_err(dev, "failed to load ext cfg, ret = %d (%s).\n",
+-				ret, is_vf ? "vf" : "pf");
+-	}
++	ret = load_pf_timer_res_caps(hr_dev);
++	if (ret)
++		dev_err(dev, "failed to load pf timer resource, ret = %d.\n",
++			ret);
+ 
+ 	return ret;
+ }
+ 
+-static int hns_roce_query_pf_resource(struct hns_roce_dev *hr_dev)
++static int hns_roce_query_vf_resource(struct hns_roce_dev *hr_dev)
+ {
+ 	struct device *dev = hr_dev->dev;
+ 	int ret;
+ 
+-	ret = query_func_resource_caps(hr_dev, false);
++	ret = load_func_res_caps(hr_dev, true);
+ 	if (ret)
+-		return ret;
+-
+-	ret = load_pf_timer_res_caps(hr_dev);
+-	if (ret)
+-		dev_err(dev, "failed to load pf timer resource, ret = %d.\n",
+-			ret);
++		dev_err(dev, "failed to load vf res caps, ret = %d.\n", ret);
+ 
+ 	return ret;
+ }
+ 
+-static int hns_roce_query_vf_resource(struct hns_roce_dev *hr_dev)
+-{
+-	return query_func_resource_caps(hr_dev, true);
+-}
+-
+ static int __hns_roce_set_vf_switch_param(struct hns_roce_dev *hr_dev,
+ 					  u32 vf_id)
+ {
+@@ -1867,24 +1831,6 @@ static int config_vf_hem_resource(struct hns_roce_dev *hr_dev, int vf_id)
+ 	return hns_roce_cmq_send(hr_dev, desc, 2);
+ }
+ 
+-static int config_vf_ext_resource(struct hns_roce_dev *hr_dev, u32 vf_id)
+-{
+-	struct hns_roce_cmq_desc desc;
+-	struct hns_roce_cmq_req *req = (struct hns_roce_cmq_req *)desc.data;
+-	struct hns_roce_caps *caps = &hr_dev->caps;
+-
+-	hns_roce_cmq_setup_basic_desc(&desc, HNS_ROCE_OPC_EXT_CFG, false);
+-
+-	hr_reg_write(req, EXT_CFG_VF_ID, vf_id);
+-
+-	hr_reg_write(req, EXT_CFG_QP_PI_NUM, caps->num_pi_qps);
+-	hr_reg_write(req, EXT_CFG_QP_PI_IDX, vf_id * caps->num_pi_qps);
+-	hr_reg_write(req, EXT_CFG_QP_NUM, caps->num_qps);
+-	hr_reg_write(req, EXT_CFG_QP_IDX, vf_id * caps->num_qps);
+-
+-	return hns_roce_cmq_send(hr_dev, &desc, 1);
+-}
+-
+ static int hns_roce_alloc_vf_resource(struct hns_roce_dev *hr_dev)
+ {
+ 	u32 func_num = max_t(u32, 1, hr_dev->func_num);
+@@ -1899,16 +1845,6 @@ static int hns_roce_alloc_vf_resource(struct hns_roce_dev *hr_dev)
+ 				vf_id, ret);
+ 			return ret;
+ 		}
+-
+-		if (hr_dev->pci_dev->revision >= PCI_REVISION_ID_HIP09) {
+-			ret = config_vf_ext_resource(hr_dev, vf_id);
+-			if (ret) {
+-				dev_err(hr_dev->dev,
+-					"failed to config vf-%u ext res, ret = %d.\n",
+-					vf_id, ret);
+-				return ret;
+-			}
+-		}
+ 	}
+ 
+ 	return 0;
 diff --git a/drivers/infiniband/hw/hns/hns_roce_hw_v2.h b/drivers/infiniband/hw/hns/hns_roce_hw_v2.h
-index 7033eae2407c..2b87f0cf06ec 100644
+index 2b87f0cf06ec..d9693f6cc802 100644
 --- a/drivers/infiniband/hw/hns/hns_roce_hw_v2.h
 +++ b/drivers/infiniband/hw/hns/hns_roce_hw_v2.h
-@@ -42,7 +42,6 @@
- #define HNS_ROCE_V2_MAX_SRQWQE_SEGS		0x1000000
- #define HNS_ROCE_V2_MAX_IDX_SEGS		0x1000000
- #define HNS_ROCE_V2_MAX_XRCD_NUM		0x1000000
--#define HNS_ROCE_V2_RSV_XRCD_NUM		0
+@@ -219,7 +219,6 @@ enum hns_roce_opcode_type {
+ 	HNS_ROCE_OPC_QUERY_VF_RES			= 0x850e,
+ 	HNS_ROCE_OPC_CFG_GMV_TBL			= 0x850f,
+ 	HNS_ROCE_OPC_CFG_GMV_BT				= 0x8510,
+-	HNS_ROCE_OPC_EXT_CFG				= 0x8512,
+ 	HNS_ROCE_QUERY_RAM_ECC				= 0x8513,
+ 	HNS_SWITCH_PARAMETER_CFG			= 0x1033,
+ };
+@@ -956,15 +955,6 @@ struct hns_roce_func_clear {
+ #define HNS_ROCE_V2_READ_FUNC_CLEAR_FLAG_INTERVAL	40
+ #define HNS_ROCE_V2_READ_FUNC_CLEAR_FLAG_FAIL_WAIT	20
  
- #define HNS_ROCE_V2_QP_ACK_TIMEOUT_OFS_HIP08    10
- 
-@@ -1202,6 +1201,7 @@ struct hns_roce_query_pf_caps_c {
- #define PF_CAPS_C_NUM_CQS PF_CAPS_C_FIELD_LOC(51, 32)
- #define PF_CAPS_C_MAX_GID PF_CAPS_C_FIELD_LOC(60, 52)
- #define PF_CAPS_C_CQ_DEPTH PF_CAPS_C_FIELD_LOC(86, 64)
-+#define PF_CAPS_C_NUM_XRCDS PF_CAPS_C_FIELD_LOC(91, 87)
- #define PF_CAPS_C_NUM_MRWS PF_CAPS_C_FIELD_LOC(115, 96)
- #define PF_CAPS_C_NUM_QPS PF_CAPS_C_FIELD_LOC(147, 128)
- #define PF_CAPS_C_MAX_ORD PF_CAPS_C_FIELD_LOC(155, 148)
-@@ -1260,6 +1260,7 @@ struct hns_roce_query_pf_caps_e {
- #define PF_CAPS_E_RSV_MRWS PF_CAPS_E_FIELD_LOC(19, 0)
- #define PF_CAPS_E_CHUNK_SIZE_SHIFT PF_CAPS_E_FIELD_LOC(31, 20)
- #define PF_CAPS_E_RSV_CQS PF_CAPS_E_FIELD_LOC(51, 32)
-+#define PF_CAPS_E_RSV_XRCDS PF_CAPS_E_FIELD_LOC(63, 52)
- #define PF_CAPS_E_RSV_SRQS PF_CAPS_E_FIELD_LOC(83, 64)
- #define PF_CAPS_E_RSV_LKEYS PF_CAPS_E_FIELD_LOC(115, 96)
- 
+-/* Fields of HNS_ROCE_OPC_EXT_CFG */
+-#define EXT_CFG_VF_ID CMQ_REQ_FIELD_LOC(31, 0)
+-#define EXT_CFG_QP_PI_IDX CMQ_REQ_FIELD_LOC(45, 32)
+-#define EXT_CFG_QP_PI_NUM CMQ_REQ_FIELD_LOC(63, 48)
+-#define EXT_CFG_QP_NUM CMQ_REQ_FIELD_LOC(87, 64)
+-#define EXT_CFG_QP_IDX CMQ_REQ_FIELD_LOC(119, 96)
+-#define EXT_CFG_LLM_IDX CMQ_REQ_FIELD_LOC(139, 128)
+-#define EXT_CFG_LLM_NUM CMQ_REQ_FIELD_LOC(156, 144)
+-
+ #define CFG_LLM_A_BA_L CMQ_REQ_FIELD_LOC(31, 0)
+ #define CFG_LLM_A_BA_H CMQ_REQ_FIELD_LOC(63, 32)
+ #define CFG_LLM_A_DEPTH CMQ_REQ_FIELD_LOC(76, 64)
 -- 
 2.30.0
 
