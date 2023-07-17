@@ -2,217 +2,223 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 92FDA756C01
-	for <lists+linux-rdma@lfdr.de>; Mon, 17 Jul 2023 20:28:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BAAAC756CD3
+	for <lists+linux-rdma@lfdr.de>; Mon, 17 Jul 2023 21:09:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229540AbjGQS2g (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 17 Jul 2023 14:28:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56160 "EHLO
+        id S230399AbjGQTJ2 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 17 Jul 2023 15:09:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52194 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231899AbjGQS2D (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 17 Jul 2023 14:28:03 -0400
-Received: from BN6PR00CU002.outbound.protection.outlook.com (mail-eastus2azon11021018.outbound.protection.outlook.com [52.101.57.18])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F40A2113;
-        Mon, 17 Jul 2023 11:27:43 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=HNLxzrSliU+Oq5yxOzPlh6WhYMTe9TxxvIAJKW6ev0NaMNGVx0lLYQUTFuMBOPyA7Oh3JY08As+Hvv93yJJJNjshfG2BboTpJKCJ1aVsMXOh6hrZjCCraTy9HM/xGQr4eBL3zL1gsCiQTF0BgdN0Ecn5+qi9Hb67KNE0Je/axiXH3rHzY8DwZeMaLYlooQybytYFXyWxpIwVAY0Tk4GbHqYiaJYWm06DL16lYN/SuhPQuwhALllBx6YI2fbu7W+3lpz1HPJ82iUW1lBAAq0pdiuampv3H/6dDE1sdcMnUVlb5d+l4qpkP+1gTd6wyjQEIk3XRDv8keLwLf3OJaS//g==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=xECg2fdFybFeUo6Syly6J+PHeoJu2YjCl2vbEQ6tcxo=;
- b=RHeU3Nj4sVN+GCyD2tUW7HihvpWb3C8SbLiS0iuiTs81/Wf0KFcqaCfHSF6+y0JwBD8DAmtncC5TfG9uvVWCwNLZXBotXlz1LOXXi+4IF738Za7X9hohLe8Byn+aW+CVZau2JwP0rUdSWuasy+Ai/b2PGll+Aeg6UhKkh7swrOYzrMNfNdT0ObSO/A4YDXz7ehxIuiYXsrCzIuGGHwNyNMyiGgrlG3thwmMRAWolmahP1as5kmyz0FovhFUgcV+ocU5n8q1YeVuBPXgEw3+JAMTAE8CtHMKHoI/qlH1Q2Nio6/x7kL7VWtEf3rPcgL1FIVTyw9J9bwV+X1Z2Z9GaEw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=microsoft.com; dmarc=pass action=none
- header.from=microsoft.com; dkim=pass header.d=microsoft.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=xECg2fdFybFeUo6Syly6J+PHeoJu2YjCl2vbEQ6tcxo=;
- b=UFO2IXJk16hHG/Bauj5hlludBMcKNiIPu2z6nH2UGkfHnynvSekXm0HMt1KP0X4X/KQ8KqmIwdtbXa3sEDHRyYWwcwpx1bmqhyvw85X30CKo9/I8cQn/j9ixic/M5FTPeatmWlDQuoJPofZ5k7cDS8ZKawPI4rC7k+5bTU9WzQk=
-Received: from PH7PR21MB3116.namprd21.prod.outlook.com (2603:10b6:510:1d0::10)
- by BYAPR21MB1320.namprd21.prod.outlook.com (2603:10b6:a03:115::10) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6631.7; Mon, 17 Jul
- 2023 18:26:05 +0000
-Received: from PH7PR21MB3116.namprd21.prod.outlook.com
- ([fe80::1cd5:4b0e:d53d:3089]) by PH7PR21MB3116.namprd21.prod.outlook.com
- ([fe80::1cd5:4b0e:d53d:3089%6]) with mapi id 15.20.6609.020; Mon, 17 Jul 2023
- 18:26:05 +0000
-From:   Haiyang Zhang <haiyangz@microsoft.com>
-To:     Jesper Dangaard Brouer <jbrouer@redhat.com>,
-        Jakub Kicinski <kuba@kernel.org>
-CC:     "brouer@redhat.com" <brouer@redhat.com>,
-        "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        Dexuan Cui <decui@microsoft.com>,
-        KY Srinivasan <kys@microsoft.com>,
-        Paul Rosswurm <paulros@microsoft.com>,
-        "olaf@aepfle.de" <olaf@aepfle.de>,
-        "vkuznets@redhat.com" <vkuznets@redhat.com>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "wei.liu@kernel.org" <wei.liu@kernel.org>,
-        "edumazet@google.com" <edumazet@google.com>,
-        "pabeni@redhat.com" <pabeni@redhat.com>,
-        "leon@kernel.org" <leon@kernel.org>,
-        Long Li <longli@microsoft.com>,
-        "ssengar@linux.microsoft.com" <ssengar@linux.microsoft.com>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        "daniel@iogearbox.net" <daniel@iogearbox.net>,
-        "john.fastabend@gmail.com" <john.fastabend@gmail.com>,
-        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
-        "ast@kernel.org" <ast@kernel.org>,
-        Ajay Sharma <sharmaajay@microsoft.com>,
-        "hawk@kernel.org" <hawk@kernel.org>,
-        "tglx@linutronix.de" <tglx@linutronix.de>,
-        "shradhagupta@linux.microsoft.com" <shradhagupta@linux.microsoft.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Ilias Apalodimas <ilias.apalodimas@linaro.org>
-Subject: RE: [PATCH net-next] net: mana: Add page pool for RX buffers
-Thread-Topic: [PATCH net-next] net: mana: Add page pool for RX buffers
-Thread-Index: Adm1mSA+i88N/DCwBUak7+uxb6tVIwAbZ3gAAAgFFQAAClU74AABMteAAKG2e1A=
-Date:   Mon, 17 Jul 2023 18:26:05 +0000
-Message-ID: <PH7PR21MB3116A5F9D82745EF174B4AD5CA3BA@PH7PR21MB3116.namprd21.prod.outlook.com>
-References: <1689259687-5231-1-git-send-email-haiyangz@microsoft.com>
- <20230713205326.5f960907@kernel.org>
- <85bfa818-6856-e3ea-ef4d-16646c57d1cc@redhat.com>
- <PH7PR21MB31166EF9DB2F453999D2E92ECA34A@PH7PR21MB3116.namprd21.prod.outlook.com>
- <3b043a95-a4bc-bbaf-c8e0-240e8ddea62f@redhat.com>
-In-Reply-To: <3b043a95-a4bc-bbaf-c8e0-240e8ddea62f@redhat.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-msip_labels: MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ActionId=d2dcd3ba-2179-47d4-97b2-b07df7ca8193;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ContentBits=0;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Enabled=true;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Method=Standard;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Name=Internal;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SetDate=2023-07-17T18:23:35Z;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SiteId=72f988bf-86f1-41af-91ab-2d7cd011db47;
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=microsoft.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: PH7PR21MB3116:EE_|BYAPR21MB1320:EE_
-x-ms-office365-filtering-correlation-id: 6ca0c1a9-3c69-43a8-480b-08db86f348b0
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: KiZseGPOoTcJ3LmgCO+QAcsgoDSPQNwNDdaOPGcSg6w4jTVtY52nM7S0FaDLlXJ8+jJqokZxP+yXuLFnVej82WXqmGiDWonhEVRw04Tu1XUIOIQBS3puibtbIEA2tzo2Mgj1iUpRCHOncSEEa87ZBaDxx/x82cTAmwzaTZzJCfMA0d8w2+jYaICHJSNncUaRG4ME1sCroxuiiQWwFryZcDCHc0lXuBervSD8C+N4R250IaLWTN8p2TfWJ9THsgg8/f1ZnUC/KOOCDyMAGyVvYbVDhPfOLm1doUWhOI7j87GMJPYeVeKONC+NMhc7hQEMePCqWobLS8s9gqrbJynmLamYo9RVxuy99toMV4sDYpsdtKwLNt9/ogdSW652HirNoDFqWFg9KhfLc/Bew0dI98kPFE6dD5dyI//DGmC/imORH0eIkngzcHIqPSkxwzZGRZ2U8CKhwM+L4zLo48SEKqlT5iOwR30dP72sLvaJRm351ZNvfCVAO2jieTjlvvgissIyekuYDTsNL5MVDgMN+VKySn3DJMg4GwavmjegeIeoeTPIqtJg0cDI2tQM6+QhWIb+i6qMvgYtzcf4kTE7W4TXaMwR5Jnsv8N+4Bjg867Wt76PNOqBAd3QzKJad2jdeIwNt2bH1WpZ3NWoxh1HWiGW2EYOKcwH9V+hcZYoRx4=
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH7PR21MB3116.namprd21.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(4636009)(376002)(346002)(39860400002)(396003)(136003)(366004)(451199021)(2906002)(8676002)(8936002)(82950400001)(82960400001)(316002)(41300700001)(5660300002)(38100700002)(7416002)(122000001)(52536014)(86362001)(33656002)(8990500004)(55016003)(38070700005)(7696005)(478600001)(10290500003)(71200400001)(9686003)(966005)(83380400001)(186003)(26005)(53546011)(6506007)(76116006)(64756008)(66556008)(4326008)(66446008)(66476007)(66946007)(54906003)(110136005);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?Oqtzz4A6e+s8dQDn1IirBS1ostJx0tkUkbk9aBTLHLC8LGIgSbSCBzHK6UoP?=
- =?us-ascii?Q?MOC9JnLO+TlP9KRlTRSiJDg+HsP30OG8gfim9kicKr9lZR+0MxUnM04vIf4r?=
- =?us-ascii?Q?qE1fmEDhIvo5BWqI8r0qPCbv8vFYv3s6hTTYr9vxjmq1b8yEB+jx1k7HyCsd?=
- =?us-ascii?Q?lc2h0swJ9+iyTfjhsKyMEKp2zSOFqnZB/ozGud9o+V+Zv+ol1RqipH79WWPv?=
- =?us-ascii?Q?+O1y9zyMTIgR7Ab0qsw3rLJ3A6erKP6S2GmpCm5SL7QKTSyaBI7kasMxQF/f?=
- =?us-ascii?Q?SrcO+bfUMQBlWJpcrIetAUp1mVk3Ei+jSgWgkEW3GkP4GOiJBQk1VU9SJ7RE?=
- =?us-ascii?Q?3Iiz3WqMtYWcNP446C2rSLcaoBGcGUJXR72ozdBB4Yw1AzAnvWkUTv5eAGMz?=
- =?us-ascii?Q?0/ubIPjdtmeZAXXDo+BWJk8+YpgLAvuLr3AUAGEyww805nenygEe6G6GizVG?=
- =?us-ascii?Q?NKhY0u7JBwj7F327mJyWPg7Wu0HwLQtbDpCPpey4Spl6tJr3r75S9BBjeR/k?=
- =?us-ascii?Q?VhDCODWQ/6Y43Df7LRTnrB5lMVRUJ8TsAFtrtEbnX6zm3g/Zv8wihVzRVIUa?=
- =?us-ascii?Q?bTipr6F+mTYABBVQ8ZInfKIIPxBFMgnQXL89+cEm48m52v3YX+9xUxjT17El?=
- =?us-ascii?Q?DFechBr2FTcYyc0HrDhj4/8uYF+TpQQ9LL1BGpl6wBD3Sfwx3SMO2XIXET9F?=
- =?us-ascii?Q?kce9gfJe0rbl7o4FGiFkpF6RFMrUvqa/CjMetnu9N1VVhVoykEmOIKQoQepJ?=
- =?us-ascii?Q?MjaPfFxUKwp4MeCt+9S7SxhrwTUTZ58DoW2RzEOLIIv0qMWYtKlo3/wNREWz?=
- =?us-ascii?Q?Kf3Hc+ICxHZBCeOficlEJKtY1AKco2FqgESn7Tfz3khaxWTdyawsNnn2tTeD?=
- =?us-ascii?Q?XyOmOSHOrUcinBjbbHN7r3YtDCjNgO1guP0oE17ZGaKdzP9qIrWOCl4ZaijI?=
- =?us-ascii?Q?XoN3FEdTaltVTgs0sTh9batHfbwALEux/y5Uqx2Vn9Uu4W3XbN8rE5trK2GT?=
- =?us-ascii?Q?BbD7UNf85HpaCXExF8lX3RSBZKuSuuSwYLiXi7R0AOYOxWK1U3M+bOPTWiM4?=
- =?us-ascii?Q?awD/RDWquhsOGCv/T6lqHlY+ZEaDv4+lxJubTAiFH106MHaYIaUKfMpiIObS?=
- =?us-ascii?Q?p5uiJM73v7flTgZPDA/XldGbCu4+2xPb8n1B+eWUYLFPTfyDpZ2ge2xB3al4?=
- =?us-ascii?Q?lIVWaFrQggYlicc8G3Wh5O1XFeU/wfzmlvM8HRheazMlWoUR1u8skN9D+t9V?=
- =?us-ascii?Q?+Hd230I138RTvz9eW0DCTzebBEUW85x/q8UOR5H5E8YMX/Afb3rinBeZXL4s?=
- =?us-ascii?Q?0d2Z3cXWYJoclDBwqnSw3rL4N7qWzTN2+DKpDJhU+hlVvj2PgfVZ+cBNq2NP?=
- =?us-ascii?Q?VgUNxFjdiqwQa+DEBsUP/OpPvGhL1sqxGGcYhy28lj1P1o8nmF2E3KYM4M/g?=
- =?us-ascii?Q?S1y3M5RHwbuHsSq1OeN12Ua7aDlNPgrZOn+9H8eRmORBMKxv6cOCSm3amYq5?=
- =?us-ascii?Q?UN0WTT0SlHA5U0MZfur2lGGpTUNuBHkPsgVmo9aTAVGIlY0rDJdgocz2XxJB?=
- =?us-ascii?Q?rdZ15ULG3/eeSIn4JbfhOor6jYoqENz/59PwafzU?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        with ESMTP id S229978AbjGQTJY (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 17 Jul 2023 15:09:24 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD1A597
+        for <linux-rdma@vger.kernel.org>; Mon, 17 Jul 2023 12:08:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1689620916;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=Ir1J/k3wLKNYp7LI2ijvFBF6ZKrDfOA6Drq2a2Jon50=;
+        b=B4DThB0Lv+ETPz9tIxnhsTUh5Kp+TOxJvpk8PPAEd97110jklxpxktgtbNDlizQhQoSAvQ
+        HZjPR1G3S0xmT0JBFNTa6k2Ue4F6y+TxzVQiHf3wepfXw4yccXvaXlHhA2gjW3b7dumZS5
+        7UT2PTW3mg/Yi9wPoBAcjZyKoDqE3H8=
+Received: from mail-il1-f197.google.com (mail-il1-f197.google.com
+ [209.85.166.197]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-581-WIvnUu7nMharrVCReoM_kQ-1; Mon, 17 Jul 2023 15:08:34 -0400
+X-MC-Unique: WIvnUu7nMharrVCReoM_kQ-1
+Received: by mail-il1-f197.google.com with SMTP id e9e14a558f8ab-34650d1dfd4so30501305ab.2
+        for <linux-rdma@vger.kernel.org>; Mon, 17 Jul 2023 12:08:34 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689620914; x=1692212914;
+        h=content-transfer-encoding:mime-version:organization:references
+         :in-reply-to:message-id:subject:cc:to:from:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=Ir1J/k3wLKNYp7LI2ijvFBF6ZKrDfOA6Drq2a2Jon50=;
+        b=FWrZI49CNHmjuUm6NjzZmbsfuWHATKyD+01KvbNzk6aXNY8Y0SNHg3Ykw33rLo64+F
+         qMybArYmRIQiGuRjU35jFu4aGsfKzcqQhiPLr4u6mbKpli8iuIvzCI2huAgzMCFtioUW
+         +5pTIzRD9TGRXAGPmZNsL3G4+dXaquvfsb3ZSKA7XMfHTaoS1LQNPp7AGx5/TOCJ8Vvd
+         ib4uUFPzjefc+m8vBztEWeMCjP5hS5Q7I/7aVq2LlYmnvjDEq9GW3prkx1BttapSwboo
+         E6OC15sjMrRh79w2/uByq6Cr14KAcOEDg+cSX86pJe9yhT1XGin2PSWMrvoqI3h8EybW
+         x9pg==
+X-Gm-Message-State: ABy/qLZ04ePhswA/RYgk6kRDZQhUK3e/HGmnmVwqujBl7ODyBPgwDk7N
+        RWpbApYlpWHnDfBkzjrX0Q7v+dBayiZq8TqWq8HtDlhxPz1nYrV+DWu8IuJjO2SCRP60C5lDoLB
+        l/pjeHReV+VPWJObknxNviw==
+X-Received: by 2002:a05:6e02:1a8b:b0:348:8542:a673 with SMTP id k11-20020a056e021a8b00b003488542a673mr578083ilv.22.1689620914135;
+        Mon, 17 Jul 2023 12:08:34 -0700 (PDT)
+X-Google-Smtp-Source: APBJJlH8IAKDk/Qq0r0DbEq84CfbH5y70uroq/83Nyu0gFtjM6u4GlatJgupAE/Bg/5ujaAlXs4PMg==
+X-Received: by 2002:a05:6e02:1a8b:b0:348:8542:a673 with SMTP id k11-20020a056e021a8b00b003488542a673mr578040ilv.22.1689620913830;
+        Mon, 17 Jul 2023 12:08:33 -0700 (PDT)
+Received: from redhat.com ([38.15.36.239])
+        by smtp.gmail.com with ESMTPSA id o9-20020a92dac9000000b003460b456030sm129837ilq.60.2023.07.17.12.08.31
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 17 Jul 2023 12:08:33 -0700 (PDT)
+Date:   Mon, 17 Jul 2023 13:08:31 -0600
+From:   Alex Williamson <alex.williamson@redhat.com>
+To:     Grzegorz Jaszczyk <jaz@semihalf.com>
+Cc:     Christian Brauner <brauner@kernel.org>,
+        linux-fsdevel@vger.kernel.org, linux-aio@kvack.org,
+        linux-usb@vger.kernel.org, Matthew Rosato <mjrosato@linux.ibm.com>,
+        Paul Durrant <paul@xen.org>, Tom Rix <trix@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        dri-devel@lists.freedesktop.org, Michal Hocko <mhocko@kernel.org>,
+        linux-mm@kvack.org, Kirti Wankhede <kwankhede@nvidia.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Jens Axboe <axboe@kernel.dk>,
+        Vineeth Vijayan <vneethv@linux.ibm.com>,
+        Diana Craciun <diana.craciun@oss.nxp.com>,
+        Alexander Gordeev <agordeev@linux.ibm.com>,
+        Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Leon Romanovsky <leon@kernel.org>,
+        Harald Freudenberger <freude@linux.ibm.com>,
+        Fei Li <fei1.li@intel.com>, x86@kernel.org,
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        Halil Pasic <pasic@linux.ibm.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>, Ingo Molnar <mingo@redhat.com>,
+        intel-gfx@lists.freedesktop.org,
+        Christian Borntraeger <borntraeger@linux.ibm.com>,
+        linux-fpga@vger.kernel.org, Zhi Wang <zhi.a.wang@intel.com>,
+        Wu Hao <hao.wu@intel.com>, Jason Herne <jjherne@linux.ibm.com>,
+        Eric Farman <farman@linux.ibm.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Andrew Donnellan <ajd@linux.ibm.com>,
+        Arnd Bergmann <arnd@arndb.de>, linux-s390@vger.kernel.org,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        linuxppc-dev@lists.ozlabs.org, Eric Auger <eric.auger@redhat.com>,
+        Borislav Petkov <bp@alien8.de>, kvm@vger.kernel.org,
+        Rodrigo Vivi <rodrigo.vivi@intel.com>, cgroups@vger.kernel.org,
+        Thomas Gleixner <tglx@linutronix.de>,
+        virtualization@lists.linux-foundation.org,
+        intel-gvt-dev@lists.freedesktop.org, io-uring@vger.kernel.org,
+        netdev@vger.kernel.org, Tony Krowiak <akrowiak@linux.ibm.com>,
+        Tvrtko Ursulin <tvrtko.ursulin@linux.intel.com>,
+        Pavel Begunkov <asml.silence@gmail.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Oded Gabbay <ogabbay@kernel.org>,
+        Muchun Song <muchun.song@linux.dev>,
+        Peter Oberparleiter <oberpar@linux.ibm.com>,
+        linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
+        Benjamin LaHaise <bcrl@kvack.org>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Sven Schnelle <svens@linux.ibm.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Frederic Barrat <fbarrat@linux.ibm.com>,
+        Moritz Fischer <mdf@kernel.org>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        David Woodhouse <dwmw2@infradead.org>,
+        Xu Yilun <yilun.xu@intel.com>,
+        Dominik Behr <dbehr@chromium.org>,
+        Marcin Wojtas <mw@semihalf.com>
+Subject: Re: [PATCH 0/2] eventfd: simplify signal helpers
+Message-ID: <20230717130831.0f18381a.alex.williamson@redhat.com>
+In-Reply-To: <CAH76GKPF4BjJLrzLBW8k12ATaAGADeMYc2NQ9+j0KgRa0pomUw@mail.gmail.com>
+References: <20230630155936.3015595-1-jaz@semihalf.com>
+        <20230714-gauner-unsolidarisch-fc51f96c61e8@brauner>
+        <CAH76GKPF4BjJLrzLBW8k12ATaAGADeMYc2NQ9+j0KgRa0pomUw@mail.gmail.com>
+Organization: Red Hat
 MIME-Version: 1.0
-X-OriginatorOrg: microsoft.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: PH7PR21MB3116.namprd21.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 6ca0c1a9-3c69-43a8-480b-08db86f348b0
-X-MS-Exchange-CrossTenant-originalarrivaltime: 17 Jul 2023 18:26:05.7630
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 72f988bf-86f1-41af-91ab-2d7cd011db47
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: vnsjoZ8YEnPu860U8/I2uNnv3UQT/yfpbCLaFXZhDVV0LNx9p/veMOprpRlv+ytnUZh5b7ZfC1P9rt+liENWBg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR21MB1320
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
+On Mon, 17 Jul 2023 10:29:34 +0200
+Grzegorz Jaszczyk <jaz@semihalf.com> wrote:
 
+> pt., 14 lip 2023 o 09:05 Christian Brauner <brauner@kernel.org> napisa=C5=
+=82(a):
+> >
+> > On Thu, Jul 13, 2023 at 11:10:54AM -0600, Alex Williamson wrote: =20
+> > > On Thu, 13 Jul 2023 12:05:36 +0200
+> > > Christian Brauner <brauner@kernel.org> wrote:
+> > > =20
+> > > > Hey everyone,
+> > > >
+> > > > This simplifies the eventfd_signal() and eventfd_signal_mask() help=
+ers
+> > > > by removing the count argument which is effectively unused. =20
+> > >
+> > > We have a patch under review which does in fact make use of the
+> > > signaling value:
+> > >
+> > > https://lore.kernel.org/all/20230630155936.3015595-1-jaz@semihalf.com=
+/ =20
+> >
+> > Huh, thanks for the link.
+> >
+> > Quoting from
+> > https://patchwork.kernel.org/project/kvm/patch/20230307220553.631069-1-=
+jaz@semihalf.com/#25266856
+> > =20
+> > > Reading an eventfd returns an 8-byte value, we generally only use it
+> > > as a counter, but it's been discussed previously and IIRC, it's possi=
+ble
+> > > to use that value as a notification value. =20
+> >
+> > So the goal is to pipe a specific value through eventfd? But it is
+> > explicitly a counter. The whole thing is written around a counter and
+> > each write and signal adds to the counter.
+> >
+> > The consequences are pretty well described in the cover letter of
+> > v6 https://lore.kernel.org/all/20230630155936.3015595-1-jaz@semihalf.co=
+m/
+> > =20
+> > > Since the eventfd counter is used as ACPI notification value
+> > > placeholder, the eventfd signaling needs to be serialized in order to
+> > > not end up with notification values being coalesced. Therefore ACPI
+> > > notification values are buffered and signalized one by one, when the
+> > > previous notification value has been consumed. =20
+> >
+> > But isn't this a good indication that you really don't want an eventfd
+> > but something that's explicitly designed to associate specific data with
+> > a notification? Using eventfd in that manner requires serialization,
+> > buffering, and enforces ordering.
 
-> -----Original Message-----
-> From: Jesper Dangaard Brouer <jbrouer@redhat.com>
-> Sent: Friday, July 14, 2023 9:13 AM
-> To: Haiyang Zhang <haiyangz@microsoft.com>; Jesper Dangaard Brouer
-> <jbrouer@redhat.com>; Jakub Kicinski <kuba@kernel.org>
-> Cc: brouer@redhat.com; linux-hyperv@vger.kernel.org; netdev@vger.kernel.o=
-rg;
-> Dexuan Cui <decui@microsoft.com>; KY Srinivasan <kys@microsoft.com>; Paul
-> Rosswurm <paulros@microsoft.com>; olaf@aepfle.de; vkuznets@redhat.com;
-> davem@davemloft.net; wei.liu@kernel.org; edumazet@google.com;
-> pabeni@redhat.com; leon@kernel.org; Long Li <longli@microsoft.com>;
-> ssengar@linux.microsoft.com; linux-rdma@vger.kernel.org;
-> daniel@iogearbox.net; john.fastabend@gmail.com; bpf@vger.kernel.org;
-> ast@kernel.org; Ajay Sharma <sharmaajay@microsoft.com>; hawk@kernel.org;
-> tglx@linutronix.de; shradhagupta@linux.microsoft.com; linux-
-> kernel@vger.kernel.org; Ilias Apalodimas <ilias.apalodimas@linaro.org>
-> Subject: Re: [PATCH net-next] net: mana: Add page pool for RX buffers
->=20
-> [You don't often get email from jbrouer@redhat.com. Learn why this is
-> important at https://aka.ms/LearnAboutSenderIdentification ]
->=20
-> On 14/07/2023 14.51, Haiyang Zhang wrote:
-> >
-> >
-> >> -----Original Message-----
-> >> From: Jesper Dangaard Brouer <jbrouer@redhat.com>
-> >> On 14/07/2023 05.53, Jakub Kicinski wrote:
-> >>> On Thu, 13 Jul 2023 14:48:45 +0000 Haiyang Zhang wrote:
-> >>>> Add page pool for RX buffers for faster buffer cycle and reduce CPU
-> >>>> usage.
-> >>>>
-> >>>> Get an extra ref count of a page after allocation, so after upper
-> >>>> layers put the page, it's still referenced by the pool. We can reuse
-> >>>> it as RX buffer without alloc a new page.
-> >>>
-> >>> Please use the real page_pool API from include/net/page_pool.h
-> >>> We've moved past every driver reinventing the wheel, sorry.
-> >>
-> >> +1
-> >>
-> >> Quoting[1]: Documentation/networking/page_pool.rst
-> >>
-> >>    Basic use involves replacing alloc_pages() calls with the
-> >> page_pool_alloc_pages() call.
-> >>    Drivers should use page_pool_dev_alloc_pages() replacing
-> >> dev_alloc_pages().
-> >
-> > Thank Jakub and Jesper for the reviews.
-> > I'm aware of the page_pool.rst doc, and actually tried it before this
-> > patch, but I got lower perf. If I understand correctly, we should call
-> > page_pool_release_page() before passing the SKB to napi_gro_receive().
-> >
-> > I found the page_pool_dev_alloc_pages() goes through the slow path,
-> > because the page_pool_release_page() let the page leave the pool.
-> >
-> > Do we have to call page_pool_release_page() before passing the SKB
-> > to napi_gro_receive()? Any better way to recycle the pages from the
-> > upper layer of non-XDP case?
-> >
->=20
-> Today SKB "upper layers" can recycle page_pool backed packet data/page.
->=20
-> Just use skb_mark_for_recycle(skb), then you don't need
-> page_pool_release_page().
+What would that mechanism be?  We've been iterating on getting the
+serialization and buffering correct, but I don't know of another means
+that combines the notification with a value, so we'd likely end up with
+an eventfd only for notification and a separate ring buffer for
+notification values.
 
-Will do. Thanks a lot!
+As this series demonstrates, the current in-kernel users only increment
+the counter and most userspace likely discards the counter value, which
+makes the counter largely a waste.  While perhaps unconventional,
+there's no requirement that the counter may only be incremented by one,
+nor any restriction that I see in how userspace must interpret the
+counter value.
 
-- Haiyang
+As I understand the ACPI notification proposal that Grzegorz links
+below, a notification with an interpreted value allows for a more
+direct userspace implementation when dealing with a series of discrete
+notification with value events.  Thanks,
+
+Alex
+
+> > I have no skin in the game aside from having to drop this conversion
+> > which I'm fine to do if there are actually users for this btu really,
+> > that looks a lot like abusing an api that really wasn't designed for
+> > this. =20
+>=20
+> https://patchwork.kernel.org/project/kvm/patch/20230307220553.631069-1-ja=
+z@semihalf.com/
+> was posted at the beginig of March and one of the main things we've
+> discussed was the mechanism for propagating acpi notification value.
+> We've endup with eventfd as the best mechanism and have actually been
+> using it from v2. I really do not want to waste this effort, I think
+> we are quite advanced with v6 now. Additionally we didn't actually
+> modify any part of eventfd support that was in place, we only used it
+> in a specific (and discussed beforehand) way.
 
