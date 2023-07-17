@@ -2,294 +2,217 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C0D4E756AAB
-	for <lists+linux-rdma@lfdr.de>; Mon, 17 Jul 2023 19:33:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 92FDA756C01
+	for <lists+linux-rdma@lfdr.de>; Mon, 17 Jul 2023 20:28:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231327AbjGQRdW (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 17 Jul 2023 13:33:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49586 "EHLO
+        id S229540AbjGQS2g (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 17 Jul 2023 14:28:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56160 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230203AbjGQRdV (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 17 Jul 2023 13:33:21 -0400
-Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0676E91
-        for <linux-rdma@vger.kernel.org>; Mon, 17 Jul 2023 10:33:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1689615186; x=1721151186;
-  h=date:from:to:cc:subject:message-id;
-  bh=1bSMTmTliW7quBPV4iHs+KOw3szF+earbc6J7r3mLRA=;
-  b=FL0iAFP5MEJM2PvaUrGwABekPo2l4nJOVvCj7REzhDpgfI8hfO1lIs2L
-   uTkMLjJWRWBY1vYzHingUoxO6DpkcgNe9c/2Y6tYNvDtFfVaDDjHFex21
-   0I8771sD4DQXqbg32dPOZ7dkHeyCM9HHyifeBUBRajqLf7t3GkW46SWwH
-   rVktcNKcv7DIQEMmmxb9vAjJlpBaoVhopaj+OKGNvGzkDwsYv/lhAuwC0
-   xjpFlgiF9wxYTUgGxIwA0o0iOBF+lQhOAzZMyT1yYKx3Ks+8Ek1zhZZUc
-   BdVRpcPVNe33B7I6PW2gSq0P8cEPxBAX4Tnf8dQXnQfV+RB0TOkrD14Ft
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10774"; a="366033402"
-X-IronPort-AV: E=Sophos;i="6.01,211,1684825200"; 
-   d="scan'208";a="366033402"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Jul 2023 10:33:06 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10774"; a="788725760"
-X-IronPort-AV: E=Sophos;i="6.01,211,1684825200"; 
-   d="scan'208";a="788725760"
-Received: from lkp-server01.sh.intel.com (HELO c544d7fc5005) ([10.239.97.150])
-  by fmsmga008.fm.intel.com with ESMTP; 17 Jul 2023 10:33:05 -0700
-Received: from kbuild by c544d7fc5005 with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qLS5o-0009lq-0x;
-        Mon, 17 Jul 2023 17:33:04 +0000
-Date:   Tue, 18 Jul 2023 01:32:46 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Leon Romanovsky <leon@kernel.org>
-Cc:     Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg+lists@ziepe.ca>,
-        linux-rdma@vger.kernel.org
-Subject: [rdma:for-rc] BUILD SUCCESS
- 29900bf351e1a7e4643da5c3c3cd9df75c577b88
-Message-ID: <202307180139.PFBUcS0r-lkp@intel.com>
-User-Agent: s-nail v14.9.24
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        with ESMTP id S231899AbjGQS2D (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 17 Jul 2023 14:28:03 -0400
+Received: from BN6PR00CU002.outbound.protection.outlook.com (mail-eastus2azon11021018.outbound.protection.outlook.com [52.101.57.18])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F40A2113;
+        Mon, 17 Jul 2023 11:27:43 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=HNLxzrSliU+Oq5yxOzPlh6WhYMTe9TxxvIAJKW6ev0NaMNGVx0lLYQUTFuMBOPyA7Oh3JY08As+Hvv93yJJJNjshfG2BboTpJKCJ1aVsMXOh6hrZjCCraTy9HM/xGQr4eBL3zL1gsCiQTF0BgdN0Ecn5+qi9Hb67KNE0Je/axiXH3rHzY8DwZeMaLYlooQybytYFXyWxpIwVAY0Tk4GbHqYiaJYWm06DL16lYN/SuhPQuwhALllBx6YI2fbu7W+3lpz1HPJ82iUW1lBAAq0pdiuampv3H/6dDE1sdcMnUVlb5d+l4qpkP+1gTd6wyjQEIk3XRDv8keLwLf3OJaS//g==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=xECg2fdFybFeUo6Syly6J+PHeoJu2YjCl2vbEQ6tcxo=;
+ b=RHeU3Nj4sVN+GCyD2tUW7HihvpWb3C8SbLiS0iuiTs81/Wf0KFcqaCfHSF6+y0JwBD8DAmtncC5TfG9uvVWCwNLZXBotXlz1LOXXi+4IF738Za7X9hohLe8Byn+aW+CVZau2JwP0rUdSWuasy+Ai/b2PGll+Aeg6UhKkh7swrOYzrMNfNdT0ObSO/A4YDXz7ehxIuiYXsrCzIuGGHwNyNMyiGgrlG3thwmMRAWolmahP1as5kmyz0FovhFUgcV+ocU5n8q1YeVuBPXgEw3+JAMTAE8CtHMKHoI/qlH1Q2Nio6/x7kL7VWtEf3rPcgL1FIVTyw9J9bwV+X1Z2Z9GaEw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=microsoft.com; dmarc=pass action=none
+ header.from=microsoft.com; dkim=pass header.d=microsoft.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=xECg2fdFybFeUo6Syly6J+PHeoJu2YjCl2vbEQ6tcxo=;
+ b=UFO2IXJk16hHG/Bauj5hlludBMcKNiIPu2z6nH2UGkfHnynvSekXm0HMt1KP0X4X/KQ8KqmIwdtbXa3sEDHRyYWwcwpx1bmqhyvw85X30CKo9/I8cQn/j9ixic/M5FTPeatmWlDQuoJPofZ5k7cDS8ZKawPI4rC7k+5bTU9WzQk=
+Received: from PH7PR21MB3116.namprd21.prod.outlook.com (2603:10b6:510:1d0::10)
+ by BYAPR21MB1320.namprd21.prod.outlook.com (2603:10b6:a03:115::10) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6631.7; Mon, 17 Jul
+ 2023 18:26:05 +0000
+Received: from PH7PR21MB3116.namprd21.prod.outlook.com
+ ([fe80::1cd5:4b0e:d53d:3089]) by PH7PR21MB3116.namprd21.prod.outlook.com
+ ([fe80::1cd5:4b0e:d53d:3089%6]) with mapi id 15.20.6609.020; Mon, 17 Jul 2023
+ 18:26:05 +0000
+From:   Haiyang Zhang <haiyangz@microsoft.com>
+To:     Jesper Dangaard Brouer <jbrouer@redhat.com>,
+        Jakub Kicinski <kuba@kernel.org>
+CC:     "brouer@redhat.com" <brouer@redhat.com>,
+        "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        Dexuan Cui <decui@microsoft.com>,
+        KY Srinivasan <kys@microsoft.com>,
+        Paul Rosswurm <paulros@microsoft.com>,
+        "olaf@aepfle.de" <olaf@aepfle.de>,
+        "vkuznets@redhat.com" <vkuznets@redhat.com>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        "wei.liu@kernel.org" <wei.liu@kernel.org>,
+        "edumazet@google.com" <edumazet@google.com>,
+        "pabeni@redhat.com" <pabeni@redhat.com>,
+        "leon@kernel.org" <leon@kernel.org>,
+        Long Li <longli@microsoft.com>,
+        "ssengar@linux.microsoft.com" <ssengar@linux.microsoft.com>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        "daniel@iogearbox.net" <daniel@iogearbox.net>,
+        "john.fastabend@gmail.com" <john.fastabend@gmail.com>,
+        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
+        "ast@kernel.org" <ast@kernel.org>,
+        Ajay Sharma <sharmaajay@microsoft.com>,
+        "hawk@kernel.org" <hawk@kernel.org>,
+        "tglx@linutronix.de" <tglx@linutronix.de>,
+        "shradhagupta@linux.microsoft.com" <shradhagupta@linux.microsoft.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Ilias Apalodimas <ilias.apalodimas@linaro.org>
+Subject: RE: [PATCH net-next] net: mana: Add page pool for RX buffers
+Thread-Topic: [PATCH net-next] net: mana: Add page pool for RX buffers
+Thread-Index: Adm1mSA+i88N/DCwBUak7+uxb6tVIwAbZ3gAAAgFFQAAClU74AABMteAAKG2e1A=
+Date:   Mon, 17 Jul 2023 18:26:05 +0000
+Message-ID: <PH7PR21MB3116A5F9D82745EF174B4AD5CA3BA@PH7PR21MB3116.namprd21.prod.outlook.com>
+References: <1689259687-5231-1-git-send-email-haiyangz@microsoft.com>
+ <20230713205326.5f960907@kernel.org>
+ <85bfa818-6856-e3ea-ef4d-16646c57d1cc@redhat.com>
+ <PH7PR21MB31166EF9DB2F453999D2E92ECA34A@PH7PR21MB3116.namprd21.prod.outlook.com>
+ <3b043a95-a4bc-bbaf-c8e0-240e8ddea62f@redhat.com>
+In-Reply-To: <3b043a95-a4bc-bbaf-c8e0-240e8ddea62f@redhat.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+msip_labels: MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ActionId=d2dcd3ba-2179-47d4-97b2-b07df7ca8193;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ContentBits=0;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Enabled=true;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Method=Standard;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Name=Internal;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SetDate=2023-07-17T18:23:35Z;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SiteId=72f988bf-86f1-41af-91ab-2d7cd011db47;
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=microsoft.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: PH7PR21MB3116:EE_|BYAPR21MB1320:EE_
+x-ms-office365-filtering-correlation-id: 6ca0c1a9-3c69-43a8-480b-08db86f348b0
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: KiZseGPOoTcJ3LmgCO+QAcsgoDSPQNwNDdaOPGcSg6w4jTVtY52nM7S0FaDLlXJ8+jJqokZxP+yXuLFnVej82WXqmGiDWonhEVRw04Tu1XUIOIQBS3puibtbIEA2tzo2Mgj1iUpRCHOncSEEa87ZBaDxx/x82cTAmwzaTZzJCfMA0d8w2+jYaICHJSNncUaRG4ME1sCroxuiiQWwFryZcDCHc0lXuBervSD8C+N4R250IaLWTN8p2TfWJ9THsgg8/f1ZnUC/KOOCDyMAGyVvYbVDhPfOLm1doUWhOI7j87GMJPYeVeKONC+NMhc7hQEMePCqWobLS8s9gqrbJynmLamYo9RVxuy99toMV4sDYpsdtKwLNt9/ogdSW652HirNoDFqWFg9KhfLc/Bew0dI98kPFE6dD5dyI//DGmC/imORH0eIkngzcHIqPSkxwzZGRZ2U8CKhwM+L4zLo48SEKqlT5iOwR30dP72sLvaJRm351ZNvfCVAO2jieTjlvvgissIyekuYDTsNL5MVDgMN+VKySn3DJMg4GwavmjegeIeoeTPIqtJg0cDI2tQM6+QhWIb+i6qMvgYtzcf4kTE7W4TXaMwR5Jnsv8N+4Bjg867Wt76PNOqBAd3QzKJad2jdeIwNt2bH1WpZ3NWoxh1HWiGW2EYOKcwH9V+hcZYoRx4=
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH7PR21MB3116.namprd21.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(4636009)(376002)(346002)(39860400002)(396003)(136003)(366004)(451199021)(2906002)(8676002)(8936002)(82950400001)(82960400001)(316002)(41300700001)(5660300002)(38100700002)(7416002)(122000001)(52536014)(86362001)(33656002)(8990500004)(55016003)(38070700005)(7696005)(478600001)(10290500003)(71200400001)(9686003)(966005)(83380400001)(186003)(26005)(53546011)(6506007)(76116006)(64756008)(66556008)(4326008)(66446008)(66476007)(66946007)(54906003)(110136005);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?Oqtzz4A6e+s8dQDn1IirBS1ostJx0tkUkbk9aBTLHLC8LGIgSbSCBzHK6UoP?=
+ =?us-ascii?Q?MOC9JnLO+TlP9KRlTRSiJDg+HsP30OG8gfim9kicKr9lZR+0MxUnM04vIf4r?=
+ =?us-ascii?Q?qE1fmEDhIvo5BWqI8r0qPCbv8vFYv3s6hTTYr9vxjmq1b8yEB+jx1k7HyCsd?=
+ =?us-ascii?Q?lc2h0swJ9+iyTfjhsKyMEKp2zSOFqnZB/ozGud9o+V+Zv+ol1RqipH79WWPv?=
+ =?us-ascii?Q?+O1y9zyMTIgR7Ab0qsw3rLJ3A6erKP6S2GmpCm5SL7QKTSyaBI7kasMxQF/f?=
+ =?us-ascii?Q?SrcO+bfUMQBlWJpcrIetAUp1mVk3Ei+jSgWgkEW3GkP4GOiJBQk1VU9SJ7RE?=
+ =?us-ascii?Q?3Iiz3WqMtYWcNP446C2rSLcaoBGcGUJXR72ozdBB4Yw1AzAnvWkUTv5eAGMz?=
+ =?us-ascii?Q?0/ubIPjdtmeZAXXDo+BWJk8+YpgLAvuLr3AUAGEyww805nenygEe6G6GizVG?=
+ =?us-ascii?Q?NKhY0u7JBwj7F327mJyWPg7Wu0HwLQtbDpCPpey4Spl6tJr3r75S9BBjeR/k?=
+ =?us-ascii?Q?VhDCODWQ/6Y43Df7LRTnrB5lMVRUJ8TsAFtrtEbnX6zm3g/Zv8wihVzRVIUa?=
+ =?us-ascii?Q?bTipr6F+mTYABBVQ8ZInfKIIPxBFMgnQXL89+cEm48m52v3YX+9xUxjT17El?=
+ =?us-ascii?Q?DFechBr2FTcYyc0HrDhj4/8uYF+TpQQ9LL1BGpl6wBD3Sfwx3SMO2XIXET9F?=
+ =?us-ascii?Q?kce9gfJe0rbl7o4FGiFkpF6RFMrUvqa/CjMetnu9N1VVhVoykEmOIKQoQepJ?=
+ =?us-ascii?Q?MjaPfFxUKwp4MeCt+9S7SxhrwTUTZ58DoW2RzEOLIIv0qMWYtKlo3/wNREWz?=
+ =?us-ascii?Q?Kf3Hc+ICxHZBCeOficlEJKtY1AKco2FqgESn7Tfz3khaxWTdyawsNnn2tTeD?=
+ =?us-ascii?Q?XyOmOSHOrUcinBjbbHN7r3YtDCjNgO1guP0oE17ZGaKdzP9qIrWOCl4ZaijI?=
+ =?us-ascii?Q?XoN3FEdTaltVTgs0sTh9batHfbwALEux/y5Uqx2Vn9Uu4W3XbN8rE5trK2GT?=
+ =?us-ascii?Q?BbD7UNf85HpaCXExF8lX3RSBZKuSuuSwYLiXi7R0AOYOxWK1U3M+bOPTWiM4?=
+ =?us-ascii?Q?awD/RDWquhsOGCv/T6lqHlY+ZEaDv4+lxJubTAiFH106MHaYIaUKfMpiIObS?=
+ =?us-ascii?Q?p5uiJM73v7flTgZPDA/XldGbCu4+2xPb8n1B+eWUYLFPTfyDpZ2ge2xB3al4?=
+ =?us-ascii?Q?lIVWaFrQggYlicc8G3Wh5O1XFeU/wfzmlvM8HRheazMlWoUR1u8skN9D+t9V?=
+ =?us-ascii?Q?+Hd230I138RTvz9eW0DCTzebBEUW85x/q8UOR5H5E8YMX/Afb3rinBeZXL4s?=
+ =?us-ascii?Q?0d2Z3cXWYJoclDBwqnSw3rL4N7qWzTN2+DKpDJhU+hlVvj2PgfVZ+cBNq2NP?=
+ =?us-ascii?Q?VgUNxFjdiqwQa+DEBsUP/OpPvGhL1sqxGGcYhy28lj1P1o8nmF2E3KYM4M/g?=
+ =?us-ascii?Q?S1y3M5RHwbuHsSq1OeN12Ua7aDlNPgrZOn+9H8eRmORBMKxv6cOCSm3amYq5?=
+ =?us-ascii?Q?UN0WTT0SlHA5U0MZfur2lGGpTUNuBHkPsgVmo9aTAVGIlY0rDJdgocz2XxJB?=
+ =?us-ascii?Q?rdZ15ULG3/eeSIn4JbfhOor6jYoqENz/59PwafzU?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+X-OriginatorOrg: microsoft.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: PH7PR21MB3116.namprd21.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 6ca0c1a9-3c69-43a8-480b-08db86f348b0
+X-MS-Exchange-CrossTenant-originalarrivaltime: 17 Jul 2023 18:26:05.7630
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 72f988bf-86f1-41af-91ab-2d7cd011db47
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: vnsjoZ8YEnPu860U8/I2uNnv3UQT/yfpbCLaFXZhDVV0LNx9p/veMOprpRlv+ytnUZh5b7ZfC1P9rt+liENWBg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR21MB1320
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git for-rc
-branch HEAD: 29900bf351e1a7e4643da5c3c3cd9df75c577b88  RDMA/bnxt_re: Fix hang during driver unload
 
-elapsed time: 724m
 
-configs tested: 215
-configs skipped: 8
+> -----Original Message-----
+> From: Jesper Dangaard Brouer <jbrouer@redhat.com>
+> Sent: Friday, July 14, 2023 9:13 AM
+> To: Haiyang Zhang <haiyangz@microsoft.com>; Jesper Dangaard Brouer
+> <jbrouer@redhat.com>; Jakub Kicinski <kuba@kernel.org>
+> Cc: brouer@redhat.com; linux-hyperv@vger.kernel.org; netdev@vger.kernel.o=
+rg;
+> Dexuan Cui <decui@microsoft.com>; KY Srinivasan <kys@microsoft.com>; Paul
+> Rosswurm <paulros@microsoft.com>; olaf@aepfle.de; vkuznets@redhat.com;
+> davem@davemloft.net; wei.liu@kernel.org; edumazet@google.com;
+> pabeni@redhat.com; leon@kernel.org; Long Li <longli@microsoft.com>;
+> ssengar@linux.microsoft.com; linux-rdma@vger.kernel.org;
+> daniel@iogearbox.net; john.fastabend@gmail.com; bpf@vger.kernel.org;
+> ast@kernel.org; Ajay Sharma <sharmaajay@microsoft.com>; hawk@kernel.org;
+> tglx@linutronix.de; shradhagupta@linux.microsoft.com; linux-
+> kernel@vger.kernel.org; Ilias Apalodimas <ilias.apalodimas@linaro.org>
+> Subject: Re: [PATCH net-next] net: mana: Add page pool for RX buffers
+>=20
+> [You don't often get email from jbrouer@redhat.com. Learn why this is
+> important at https://aka.ms/LearnAboutSenderIdentification ]
+>=20
+> On 14/07/2023 14.51, Haiyang Zhang wrote:
+> >
+> >
+> >> -----Original Message-----
+> >> From: Jesper Dangaard Brouer <jbrouer@redhat.com>
+> >> On 14/07/2023 05.53, Jakub Kicinski wrote:
+> >>> On Thu, 13 Jul 2023 14:48:45 +0000 Haiyang Zhang wrote:
+> >>>> Add page pool for RX buffers for faster buffer cycle and reduce CPU
+> >>>> usage.
+> >>>>
+> >>>> Get an extra ref count of a page after allocation, so after upper
+> >>>> layers put the page, it's still referenced by the pool. We can reuse
+> >>>> it as RX buffer without alloc a new page.
+> >>>
+> >>> Please use the real page_pool API from include/net/page_pool.h
+> >>> We've moved past every driver reinventing the wheel, sorry.
+> >>
+> >> +1
+> >>
+> >> Quoting[1]: Documentation/networking/page_pool.rst
+> >>
+> >>    Basic use involves replacing alloc_pages() calls with the
+> >> page_pool_alloc_pages() call.
+> >>    Drivers should use page_pool_dev_alloc_pages() replacing
+> >> dev_alloc_pages().
+> >
+> > Thank Jakub and Jesper for the reviews.
+> > I'm aware of the page_pool.rst doc, and actually tried it before this
+> > patch, but I got lower perf. If I understand correctly, we should call
+> > page_pool_release_page() before passing the SKB to napi_gro_receive().
+> >
+> > I found the page_pool_dev_alloc_pages() goes through the slow path,
+> > because the page_pool_release_page() let the page leave the pool.
+> >
+> > Do we have to call page_pool_release_page() before passing the SKB
+> > to napi_gro_receive()? Any better way to recycle the pages from the
+> > upper layer of non-XDP case?
+> >
+>=20
+> Today SKB "upper layers" can recycle page_pool backed packet data/page.
+>=20
+> Just use skb_mark_for_recycle(skb), then you don't need
+> page_pool_release_page().
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+Will do. Thanks a lot!
 
-tested configs:
-alpha                            allyesconfig   gcc  
-alpha                               defconfig   gcc  
-alpha                randconfig-r003-20230717   gcc  
-arc                              allyesconfig   gcc  
-arc                          axs103_defconfig   gcc  
-arc                                 defconfig   gcc  
-arc                  randconfig-r006-20230717   gcc  
-arc                  randconfig-r012-20230717   gcc  
-arc                  randconfig-r016-20230717   gcc  
-arc                  randconfig-r036-20230717   gcc  
-arc                  randconfig-r043-20230717   gcc  
-arm                              allmodconfig   gcc  
-arm                              allyesconfig   gcc  
-arm                                 defconfig   gcc  
-arm                         lpc18xx_defconfig   gcc  
-arm                   milbeaut_m10v_defconfig   clang
-arm                         mv78xx0_defconfig   clang
-arm                        mvebu_v7_defconfig   gcc  
-arm                          pxa168_defconfig   clang
-arm                  randconfig-r005-20230717   gcc  
-arm                  randconfig-r006-20230717   gcc  
-arm                  randconfig-r021-20230717   clang
-arm                  randconfig-r032-20230717   gcc  
-arm                  randconfig-r034-20230717   gcc  
-arm                  randconfig-r046-20230717   clang
-arm                        realview_defconfig   gcc  
-arm                           sama5_defconfig   gcc  
-arm                          sp7021_defconfig   clang
-arm                        spear6xx_defconfig   gcc  
-arm                           tegra_defconfig   gcc  
-arm                       versatile_defconfig   clang
-arm                         vf610m4_defconfig   gcc  
-arm64                            allyesconfig   gcc  
-arm64                               defconfig   gcc  
-arm64                randconfig-r013-20230717   gcc  
-arm64                randconfig-r014-20230717   gcc  
-arm64                randconfig-r021-20230717   gcc  
-arm64                randconfig-r023-20230717   gcc  
-arm64                randconfig-r024-20230717   gcc  
-arm64                randconfig-r026-20230717   gcc  
-arm64                randconfig-r034-20230717   clang
-csky                                defconfig   gcc  
-csky                 randconfig-r001-20230717   gcc  
-csky                 randconfig-r002-20230717   gcc  
-csky                 randconfig-r013-20230717   gcc  
-csky                 randconfig-r023-20230717   gcc  
-csky                 randconfig-r025-20230717   gcc  
-hexagon              randconfig-r005-20230717   clang
-hexagon              randconfig-r033-20230717   clang
-hexagon              randconfig-r041-20230717   clang
-hexagon              randconfig-r045-20230717   clang
-i386                             allyesconfig   gcc  
-i386         buildonly-randconfig-r004-20230717   clang
-i386         buildonly-randconfig-r005-20230717   clang
-i386         buildonly-randconfig-r006-20230717   clang
-i386                              debian-10.3   gcc  
-i386                                defconfig   gcc  
-i386                 randconfig-i001-20230717   clang
-i386                 randconfig-i002-20230717   clang
-i386                 randconfig-i003-20230717   clang
-i386                 randconfig-i004-20230717   clang
-i386                 randconfig-i005-20230717   clang
-i386                 randconfig-i006-20230717   clang
-i386                 randconfig-i011-20230717   gcc  
-i386                 randconfig-i012-20230717   gcc  
-i386                 randconfig-i013-20230717   gcc  
-i386                 randconfig-i014-20230717   gcc  
-i386                 randconfig-i015-20230717   gcc  
-i386                 randconfig-i016-20230717   gcc  
-i386                 randconfig-r004-20230717   clang
-i386                 randconfig-r005-20230717   clang
-i386                 randconfig-r013-20230717   gcc  
-i386                 randconfig-r015-20230717   gcc  
-i386                 randconfig-r016-20230717   gcc  
-i386                 randconfig-r031-20230717   clang
-i386                 randconfig-r035-20230717   clang
-loongarch                        allmodconfig   gcc  
-loongarch                         allnoconfig   gcc  
-loongarch                           defconfig   gcc  
-loongarch            randconfig-r004-20230717   gcc  
-loongarch            randconfig-r021-20230717   gcc  
-loongarch            randconfig-r023-20230717   gcc  
-m68k                             allmodconfig   gcc  
-m68k                             allyesconfig   gcc  
-m68k                                defconfig   gcc  
-m68k                        m5272c3_defconfig   gcc  
-m68k                        mvme16x_defconfig   gcc  
-m68k                 randconfig-r012-20230717   gcc  
-m68k                 randconfig-r015-20230717   gcc  
-m68k                 randconfig-r032-20230717   gcc  
-m68k                           sun3_defconfig   gcc  
-microblaze                      mmu_defconfig   gcc  
-microblaze           randconfig-r002-20230717   gcc  
-microblaze           randconfig-r006-20230717   gcc  
-microblaze           randconfig-r014-20230717   gcc  
-mips                             allmodconfig   gcc  
-mips                             allyesconfig   gcc  
-mips                     decstation_defconfig   gcc  
-mips                            gpr_defconfig   gcc  
-mips                  maltasmvp_eva_defconfig   gcc  
-mips                        omega2p_defconfig   clang
-mips                 randconfig-r022-20230717   clang
-nios2                               defconfig   gcc  
-nios2                randconfig-r012-20230717   gcc  
-nios2                randconfig-r016-20230717   gcc  
-nios2                randconfig-r024-20230717   gcc  
-openrisc                            defconfig   gcc  
-openrisc             randconfig-r012-20230717   gcc  
-openrisc             randconfig-r013-20230717   gcc  
-openrisc             randconfig-r026-20230717   gcc  
-openrisc             randconfig-r032-20230717   gcc  
-openrisc             randconfig-r034-20230717   gcc  
-parisc                           allyesconfig   gcc  
-parisc                              defconfig   gcc  
-parisc                generic-32bit_defconfig   gcc  
-parisc                generic-64bit_defconfig   gcc  
-parisc               randconfig-r002-20230717   gcc  
-parisc               randconfig-r015-20230717   gcc  
-parisc               randconfig-r025-20230717   gcc  
-parisc               randconfig-r031-20230717   gcc  
-parisc64                            defconfig   gcc  
-powerpc                          allmodconfig   gcc  
-powerpc                           allnoconfig   gcc  
-powerpc                      chrp32_defconfig   gcc  
-powerpc                     ep8248e_defconfig   gcc  
-powerpc                    ge_imp3a_defconfig   clang
-powerpc                 mpc8313_rdb_defconfig   clang
-powerpc                 mpc834x_itx_defconfig   gcc  
-powerpc                      pasemi_defconfig   gcc  
-powerpc                      pmac32_defconfig   clang
-powerpc                     powernv_defconfig   clang
-powerpc                      ppc44x_defconfig   clang
-powerpc              randconfig-r016-20230717   gcc  
-powerpc                     redwood_defconfig   gcc  
-powerpc                     sequoia_defconfig   gcc  
-powerpc                     tqm8540_defconfig   clang
-powerpc                     tqm8555_defconfig   gcc  
-riscv                            allmodconfig   gcc  
-riscv                             allnoconfig   clang
-riscv                             allnoconfig   gcc  
-riscv                            allyesconfig   gcc  
-riscv                               defconfig   gcc  
-riscv                randconfig-r026-20230717   gcc  
-riscv                randconfig-r033-20230717   clang
-riscv                randconfig-r034-20230717   clang
-riscv                randconfig-r035-20230717   clang
-riscv                randconfig-r042-20230717   gcc  
-riscv                          rv32_defconfig   gcc  
-s390                             allmodconfig   gcc  
-s390                             allyesconfig   gcc  
-s390                                defconfig   gcc  
-s390                 randconfig-r001-20230717   clang
-s390                 randconfig-r002-20230717   clang
-s390                 randconfig-r005-20230717   clang
-s390                 randconfig-r033-20230717   clang
-s390                 randconfig-r044-20230717   gcc  
-sh                               allmodconfig   gcc  
-sh                         ap325rxa_defconfig   gcc  
-sh                        edosk7760_defconfig   gcc  
-sh                     magicpanelr2_defconfig   gcc  
-sh                   randconfig-r014-20230717   gcc  
-sh                   randconfig-r022-20230717   gcc  
-sh                   randconfig-r031-20230717   gcc  
-sh                   randconfig-r036-20230717   gcc  
-sh                      rts7751r2d1_defconfig   gcc  
-sh                           se7712_defconfig   gcc  
-sh                        sh7757lcr_defconfig   gcc  
-sh                            titan_defconfig   gcc  
-sh                          urquell_defconfig   gcc  
-sparc                            allyesconfig   gcc  
-sparc                               defconfig   gcc  
-sparc                randconfig-r011-20230717   gcc  
-sparc                randconfig-r022-20230717   gcc  
-sparc                randconfig-r033-20230717   gcc  
-sparc                randconfig-r036-20230717   gcc  
-sparc64              randconfig-r001-20230717   gcc  
-sparc64              randconfig-r011-20230717   gcc  
-um                               allmodconfig   clang
-um                                allnoconfig   clang
-um                               allyesconfig   clang
-um                                  defconfig   gcc  
-um                             i386_defconfig   gcc  
-um                   randconfig-r001-20230717   gcc  
-um                   randconfig-r004-20230717   gcc  
-um                   randconfig-r022-20230717   clang
-um                   randconfig-r025-20230717   clang
-um                   randconfig-r031-20230717   gcc  
-um                           x86_64_defconfig   gcc  
-x86_64                           allyesconfig   gcc  
-x86_64       buildonly-randconfig-r001-20230717   clang
-x86_64       buildonly-randconfig-r002-20230717   clang
-x86_64       buildonly-randconfig-r003-20230717   clang
-x86_64                              defconfig   gcc  
-x86_64                                  kexec   gcc  
-x86_64               randconfig-r003-20230717   clang
-x86_64               randconfig-r011-20230717   gcc  
-x86_64               randconfig-r026-20230717   gcc  
-x86_64               randconfig-x001-20230717   gcc  
-x86_64               randconfig-x002-20230717   gcc  
-x86_64               randconfig-x003-20230717   gcc  
-x86_64               randconfig-x004-20230717   gcc  
-x86_64               randconfig-x005-20230717   gcc  
-x86_64               randconfig-x006-20230717   gcc  
-x86_64               randconfig-x011-20230717   clang
-x86_64               randconfig-x012-20230717   clang
-x86_64               randconfig-x013-20230717   clang
-x86_64               randconfig-x014-20230717   clang
-x86_64               randconfig-x015-20230717   clang
-x86_64               randconfig-x016-20230717   clang
-x86_64                          rhel-8.3-rust   clang
-x86_64                               rhel-8.3   gcc  
-xtensa                           alldefconfig   gcc  
-xtensa                       common_defconfig   gcc  
-xtensa                generic_kc705_defconfig   gcc  
-xtensa               randconfig-r024-20230717   gcc  
-xtensa                    smp_lx200_defconfig   gcc  
+- Haiyang
 
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
