@@ -2,62 +2,62 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B330E755B30
-	for <lists+linux-rdma@lfdr.de>; Mon, 17 Jul 2023 08:08:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E6DC2755B32
+	for <lists+linux-rdma@lfdr.de>; Mon, 17 Jul 2023 08:08:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231404AbjGQGIL (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 17 Jul 2023 02:08:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49994 "EHLO
+        id S231450AbjGQGIN (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 17 Jul 2023 02:08:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49588 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231451AbjGQGHx (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 17 Jul 2023 02:07:53 -0400
-Received: from mail-pl1-x62a.google.com (mail-pl1-x62a.google.com [IPv6:2607:f8b0:4864:20::62a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D3B2C1BEE
-        for <linux-rdma@vger.kernel.org>; Sun, 16 Jul 2023 23:07:25 -0700 (PDT)
-Received: by mail-pl1-x62a.google.com with SMTP id d9443c01a7336-1b9cd6a0051so24970045ad.1
-        for <linux-rdma@vger.kernel.org>; Sun, 16 Jul 2023 23:07:25 -0700 (PDT)
+        with ESMTP id S231454AbjGQGHy (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 17 Jul 2023 02:07:54 -0400
+Received: from mail-pg1-x52d.google.com (mail-pg1-x52d.google.com [IPv6:2607:f8b0:4864:20::52d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0EFC9E6B
+        for <linux-rdma@vger.kernel.org>; Sun, 16 Jul 2023 23:07:27 -0700 (PDT)
+Received: by mail-pg1-x52d.google.com with SMTP id 41be03b00d2f7-55adfa61199so3209641a12.2
+        for <linux-rdma@vger.kernel.org>; Sun, 16 Jul 2023 23:07:27 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google; t=1689574036; x=1692166036;
+        d=broadcom.com; s=google; t=1689574040; x=1692166040;
         h=references:in-reply-to:message-id:date:subject:cc:to:from:from:to
          :cc:subject:date:message-id:reply-to;
-        bh=Q5BvM0TjlfnlDcKjzQaEtFRE4dzBWCgoPSnoidbz/UY=;
-        b=ZQvM81wC8No6udwpjOtBxDoHXs77RjLWhhKrqKMcDTs51O8iy5SVPXAwDZuRFa87so
-         DcEudIMw0AyEbezdDkdpI7IadZXnnZFoejaAuXkLu0mL+xYpllc/bHk2QMgs9oUeDhlP
-         dZNMm5FFASfisGlSHZXkQg6NdVQghBoQSl/7c=
+        bh=AfYkg3CCDYeUL6Cm7P+Js4VYj7lBhU19Li0zauZkHIg=;
+        b=UY5HwWJq8Wp+zgYCZiuhTBpKj52XCWvTJAwu/0XY9412izlYOvGkxmx73R9fDdZPCN
+         ePJDz49qBsIfiVAGPSuTaMjVbqZyrm/WyupeduZIEMF7dnbYLTY/wdcjkqdCNWo8wZiH
+         XI1dpVCmFHz7euJkSaecYIWajst01Khj6hEuU=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689574036; x=1692166036;
+        d=1e100.net; s=20221208; t=1689574040; x=1692166040;
         h=references:in-reply-to:message-id:date:subject:cc:to:from
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=Q5BvM0TjlfnlDcKjzQaEtFRE4dzBWCgoPSnoidbz/UY=;
-        b=Beoffs9kKyfkjCnkkJVb2pMF/gzsoipVxyCYT/SjEgDD8RmyCZ2Ym1/6WCUGRctxBP
-         7y8kBcqD5x/Osug3FmGm4PPC6MNjMJ3lp61r0hoeyuup5x+lj45bDK9CnR9Xb4YlYBUq
-         4uLwmSRhwVzbLnA9VLs7Kl7tFGTTAF55uBgNpUX7818Xr7txWvHBgVFLiFxsV9ITnbe4
-         B7Qw/T0HYOfzIhPFmKkGRAIJ3IVfbUqwVqQyZAAx7xmpl2SiweJmVgPeLwHKjr4/DBqV
-         alR6rJSKznGTChAq66lKFJdaxavJJs4uXIZEM655Jj9BuRaNbdwDHNOParlxTe2YLpFb
-         xSjw==
-X-Gm-Message-State: ABy/qLY6KQsAo81b5LjDJuF+v/Lbj0dFWgCUUObTYWZjkuqSUwKkdoNh
-        740tmtgSXzODGzCOpAtoB8P1Qg==
-X-Google-Smtp-Source: APBJJlEfF/fidW1qlURVcX4Srhyc8UO5iTNYUWhXSgHKTfA3CavE4BAp2e5zMTbZX8X0vAcylQLc9A==
-X-Received: by 2002:a17:903:2343:b0:1b8:77b3:6bed with SMTP id c3-20020a170903234300b001b877b36bedmr11889870plh.64.1689574036682;
-        Sun, 16 Jul 2023 23:07:16 -0700 (PDT)
+        bh=AfYkg3CCDYeUL6Cm7P+Js4VYj7lBhU19Li0zauZkHIg=;
+        b=cFtE+AFHm48tqirTo8ERRwWybzmSLGL+Un6bns2Z617Tgd6wyQV+dYBRImeXn54w13
+         48yzo4Y3R5V4gHoksgERdhufu4qgYAVF503CumZQXLnacy1cut0KYHUy2gOKIv6l95j5
+         1u4D2JEVbFwFbCA1WTHSsVuUi6GvRtxB977UoxoU/b+DXeV6skcqEVAwsN7Kew0U0wRC
+         oDGxDq6ngg/dfqoSLzzNHNhiNizEP3hko1aaRIBDpovi/60ubyxoiwK5eBZyEQ211HaK
+         jet6QLzsGqThhj2ExxsYueaXFPHeP/eTX1JG1yKte/RMGe1KrRwEmbjjouJDvgTg3RvM
+         yDOg==
+X-Gm-Message-State: ABy/qLbQcPeuSR5yf5DxhrV0lpiWDblCtg7u3aIS3WVGgjRAs16tKexS
+        Xcnnc4tRo4JNkOJ7fKEUIV4fJg==
+X-Google-Smtp-Source: APBJJlF4Q6RTyOqBrJh5PcIz/WNyPAHjOBvtwM6peh+zVHUFOHG3Hhr89O6LTxYxzaNihKlQVYPoYg==
+X-Received: by 2002:a17:90a:3e4a:b0:262:ed49:ffe7 with SMTP id t10-20020a17090a3e4a00b00262ed49ffe7mr10711550pjm.25.1689574039669;
+        Sun, 16 Jul 2023 23:07:19 -0700 (PDT)
 Received: from dhcp-10-192-206-197.iig.avagotech.net.net ([192.19.234.250])
-        by smtp.gmail.com with ESMTPSA id q17-20020a170902789100b001b9da7b6bc3sm11849632pll.184.2023.07.16.23.07.13
+        by smtp.gmail.com with ESMTPSA id q17-20020a170902789100b001b9da7b6bc3sm11849632pll.184.2023.07.16.23.07.16
         (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Sun, 16 Jul 2023 23:07:15 -0700 (PDT)
+        Sun, 16 Jul 2023 23:07:18 -0700 (PDT)
 From:   Selvin Xavier <selvin.xavier@broadcom.com>
 To:     jgg@ziepe.ca, leon@kernel.org
 Cc:     linux-rdma@vger.kernel.org, andrew.gospodarek@broadcom.com,
         michael.chan@broadcom.com,
         Chandramohan Akula <chandramohan.akula@broadcom.com>,
         Selvin Xavier <selvin.xavier@broadcom.com>
-Subject: [PATCH for-next v2 5/7] RDMA/bnxt_re: Update alloc_page uapi for pacing
-Date:   Sun, 16 Jul 2023 22:53:12 -0700
-Message-Id: <1689573194-27687-6-git-send-email-selvin.xavier@broadcom.com>
+Subject: [PATCH for-next v2 6/7] RDMA/bnxt_re: Implement doorbell pacing algorithm
+Date:   Sun, 16 Jul 2023 22:53:13 -0700
+Message-Id: <1689573194-27687-7-git-send-email-selvin.xavier@broadcom.com>
 X-Mailer: git-send-email 2.5.5
 In-Reply-To: <1689573194-27687-1-git-send-email-selvin.xavier@broadcom.com>
 References: <1689573194-27687-1-git-send-email-selvin.xavier@broadcom.com>
 Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
-        boundary="0000000000004b375f0600a89c6d"
+        boundary="0000000000007abba60600a89c75"
 X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         MIME_HEADER_CTYPE_ONLY,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,
@@ -69,136 +69,210 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
---0000000000004b375f0600a89c6d
+--0000000000007abba60600a89c75
 
 From: Chandramohan Akula <chandramohan.akula@broadcom.com>
 
-Update the alloc_page uapi functionality for handling the
-mapping of doorbell pacing shared page and bar address.
+User applications alert the driver when the Doorbell FIFO
+reaches the alarm threshold. The driver updates the pacing
+parameters in the shared page to do the maximum pacing
+by the application till the DB FIFO congestion reduces to
+pacing threshold. Driver keeps checking the DB FIFO depth
+at the pacing interval and gradually adjusts the pacing level.
+Once the pacing level reaches default values (no congestion in
+the FIFO) pacing gets completed.
 
 Signed-off-by: Chandramohan Akula <chandramohan.akula@broadcom.com>
 Signed-off-by: Selvin Xavier <selvin.xavier@broadcom.com>
 ---
- drivers/infiniband/hw/bnxt_re/ib_verbs.c | 34 +++++++++++++++++++++++++++++---
- drivers/infiniband/hw/bnxt_re/ib_verbs.h |  2 ++
- include/uapi/rdma/bnxt_re-abi.h          |  2 ++
- 3 files changed, 35 insertions(+), 3 deletions(-)
+ drivers/infiniband/hw/bnxt_re/bnxt_re.h |   5 ++
+ drivers/infiniband/hw/bnxt_re/main.c    | 124 ++++++++++++++++++++++++++++++++
+ 2 files changed, 129 insertions(+)
 
-diff --git a/drivers/infiniband/hw/bnxt_re/ib_verbs.c b/drivers/infiniband/hw/bnxt_re/ib_verbs.c
-index 86b71c7..8238c4b 100644
---- a/drivers/infiniband/hw/bnxt_re/ib_verbs.c
-+++ b/drivers/infiniband/hw/bnxt_re/ib_verbs.c
-@@ -565,6 +565,8 @@ bnxt_re_mmap_entry_insert(struct bnxt_re_ucontext *uctx, u64 mem_offset,
- 		break;
- 	case BNXT_RE_MMAP_UC_DB:
- 	case BNXT_RE_MMAP_WC_DB:
-+	case BNXT_RE_MMAP_DBR_BAR:
-+	case BNXT_RE_MMAP_DBR_PAGE:
- 		ret = rdma_user_mmap_entry_insert(&uctx->ib_uctx,
- 						  &entry->rdma_entry, PAGE_SIZE);
- 		break;
-@@ -4149,6 +4151,18 @@ int bnxt_re_mmap(struct ib_ucontext *ib_uctx, struct vm_area_struct *vma)
- 	case BNXT_RE_MMAP_SH_PAGE:
- 		ret = vm_insert_page(vma, vma->vm_start, virt_to_page(uctx->shpg));
- 		break;
-+	case BNXT_RE_MMAP_DBR_BAR:
-+		pfn = bnxt_entry->mem_offset >> PAGE_SHIFT;
-+		ret = rdma_user_mmap_io(ib_uctx, vma, pfn, PAGE_SIZE,
-+					pgprot_noncached(vma->vm_page_prot),
-+					rdma_entry);
-+		break;
-+	case BNXT_RE_MMAP_DBR_PAGE:
-+		/* Driver doesn't expect write access for user space */
-+		if (vma->vm_flags & VM_WRITE)
-+			return -EFAULT;
-+		ret = vm_insert_page(vma, vma->vm_start, virt_to_page(bnxt_entry->mem_offset));
-+		break;
- 	default:
- 		ret = -EINVAL;
- 		break;
-@@ -4180,7 +4194,7 @@ static int UVERBS_HANDLER(BNXT_RE_METHOD_ALLOC_PAGE)(struct uverbs_attr_bundle *
- 	u64 mmap_offset;
- 	u32 length;
- 	u32 dpi;
--	u64 dbr;
-+	u64 addr;
- 	int err;
+diff --git a/drivers/infiniband/hw/bnxt_re/bnxt_re.h b/drivers/infiniband/hw/bnxt_re/bnxt_re.h
+index 1543f80..2175103 100644
+--- a/drivers/infiniband/hw/bnxt_re/bnxt_re.h
++++ b/drivers/infiniband/hw/bnxt_re/bnxt_re.h
+@@ -121,8 +121,10 @@ struct bnxt_re_pacing {
+ 	u32 dbq_pacing_time; /* ms */
+ 	u32 dbr_def_do_pacing;
+ 	bool dbr_pacing;
++	struct mutex dbq_lock; /* synchronize db pacing algo */
+ };
  
- 	uctx = container_of(ib_uverbs_get_ucontext(attrs), struct bnxt_re_ucontext, ib_uctx);
-@@ -4202,19 +4216,30 @@ static int UVERBS_HANDLER(BNXT_RE_METHOD_ALLOC_PAGE)(struct uverbs_attr_bundle *
- 				return -ENOMEM;
- 			length = PAGE_SIZE;
- 			dpi = uctx->wcdpi.dpi;
--			dbr = (u64)uctx->wcdpi.umdbr;
-+			addr = (u64)uctx->wcdpi.umdbr;
- 			mmap_flag = BNXT_RE_MMAP_WC_DB;
- 		} else {
- 			return -EINVAL;
- 		}
++#define BNXT_RE_MAX_DBR_DO_PACING 0xFFFF
+ #define BNXT_RE_DBR_PACING_TIME 5 /* ms */
+ #define BNXT_RE_PACING_ALGO_THRESHOLD 250 /* Entries in DB FIFO */
+ #define BNXT_RE_PACING_ALARM_TH_MULTIPLE 2 /* Multiple of pacing algo threshold */
+@@ -193,6 +195,8 @@ struct bnxt_re_dev {
+ 	u32 is_virtfn;
+ 	u32 num_vfs;
+ 	struct bnxt_re_pacing pacing;
++	struct work_struct dbq_fifo_check_work;
++	struct delayed_work dbq_pacing_work;
+ };
  
- 		break;
-+	case BNXT_RE_ALLOC_DBR_BAR_PAGE:
-+		length = PAGE_SIZE;
-+		addr = (u64)rdev->pacing.dbr_bar_addr;
-+		mmap_flag = BNXT_RE_MMAP_DBR_BAR;
-+		break;
+ #define to_bnxt_re_dev(ptr, member)	\
+@@ -203,6 +207,7 @@ struct bnxt_re_dev {
+ #define BNXT_RE_ROCEV2_IPV6_PACKET	3
+ 
+ #define BNXT_RE_CHECK_RC(x) ((x) && ((x) != -ETIMEDOUT))
++void bnxt_re_pacing_alert(struct bnxt_re_dev *rdev);
+ 
+ static inline struct device *rdev_to_dev(struct bnxt_re_dev *rdev)
+ {
+diff --git a/drivers/infiniband/hw/bnxt_re/main.c b/drivers/infiniband/hw/bnxt_re/main.c
+index 13cd84d..6469811 100644
+--- a/drivers/infiniband/hw/bnxt_re/main.c
++++ b/drivers/infiniband/hw/bnxt_re/main.c
+@@ -475,6 +475,125 @@ static void bnxt_re_set_default_pacing_data(struct bnxt_re_dev *rdev)
+ 		pacing_data->pacing_th * BNXT_RE_PACING_ALARM_TH_MULTIPLE;
+ }
+ 
++static void __wait_for_fifo_occupancy_below_th(struct bnxt_re_dev *rdev)
++{
++	u32 read_val, fifo_occup;
 +
-+	case BNXT_RE_ALLOC_DBR_PAGE:
-+		length = PAGE_SIZE;
-+		addr = (u64)rdev->pacing.dbr_page;
-+		mmap_flag = BNXT_RE_MMAP_DBR_PAGE;
-+		break;
++	/* loop shouldn't run infintely as the occupancy usually goes
++	 * below pacing algo threshold as soon as pacing kicks in.
++	 */
++	while (1) {
++		read_val = readl(rdev->en_dev->bar0 + rdev->pacing.dbr_db_fifo_reg_off);
++		fifo_occup = BNXT_RE_MAX_FIFO_DEPTH -
++			((read_val & BNXT_RE_DB_FIFO_ROOM_MASK) >>
++			 BNXT_RE_DB_FIFO_ROOM_SHIFT);
++		/* Fifo occupancy cannot be greater the MAX FIFO depth */
++		if (fifo_occup > BNXT_RE_MAX_FIFO_DEPTH)
++			break;
++
++		if (fifo_occup < rdev->qplib_res.pacing_data->pacing_th)
++			break;
++	}
++}
++
++static void bnxt_re_db_fifo_check(struct work_struct *work)
++{
++	struct bnxt_re_dev *rdev = container_of(work, struct bnxt_re_dev,
++			dbq_fifo_check_work);
++	struct bnxt_qplib_db_pacing_data *pacing_data;
++	u32 pacing_save;
++
++	if (!mutex_trylock(&rdev->pacing.dbq_lock))
++		return;
++	pacing_data = rdev->qplib_res.pacing_data;
++	pacing_save = rdev->pacing.do_pacing_save;
++	__wait_for_fifo_occupancy_below_th(rdev);
++	cancel_delayed_work_sync(&rdev->dbq_pacing_work);
++	if (pacing_save > rdev->pacing.dbr_def_do_pacing) {
++		/* Double the do_pacing value during the congestion */
++		pacing_save = pacing_save << 1;
++	} else {
++		/*
++		 * when a new congestion is detected increase the do_pacing
++		 * by 8 times. And also increase the pacing_th by 4 times. The
++		 * reason to increase pacing_th is to give more space for the
++		 * queue to oscillate down without getting empty, but also more
++		 * room for the queue to increase without causing another alarm.
++		 */
++		pacing_save = pacing_save << 3;
++		pacing_data->pacing_th = rdev->pacing.pacing_algo_th * 4;
++	}
++
++	if (pacing_save > BNXT_RE_MAX_DBR_DO_PACING)
++		pacing_save = BNXT_RE_MAX_DBR_DO_PACING;
++
++	pacing_data->do_pacing = pacing_save;
++	rdev->pacing.do_pacing_save = pacing_data->do_pacing;
++	pacing_data->alarm_th =
++		pacing_data->pacing_th * BNXT_RE_PACING_ALARM_TH_MULTIPLE;
++	schedule_delayed_work(&rdev->dbq_pacing_work,
++			      msecs_to_jiffies(rdev->pacing.dbq_pacing_time));
++	mutex_unlock(&rdev->pacing.dbq_lock);
++}
++
++static void bnxt_re_pacing_timer_exp(struct work_struct *work)
++{
++	struct bnxt_re_dev *rdev = container_of(work, struct bnxt_re_dev,
++			dbq_pacing_work.work);
++	struct bnxt_qplib_db_pacing_data *pacing_data;
++	u32 read_val, fifo_occup;
++
++	if (!mutex_trylock(&rdev->pacing.dbq_lock))
++		return;
++
++	pacing_data = rdev->qplib_res.pacing_data;
++	read_val = readl(rdev->en_dev->bar0 + rdev->pacing.dbr_db_fifo_reg_off);
++	fifo_occup = BNXT_RE_MAX_FIFO_DEPTH -
++		((read_val & BNXT_RE_DB_FIFO_ROOM_MASK) >>
++		 BNXT_RE_DB_FIFO_ROOM_SHIFT);
++
++	if (fifo_occup > pacing_data->pacing_th)
++		goto restart_timer;
++
++	/*
++	 * Instead of immediately going back to the default do_pacing
++	 * reduce it by 1/8 times and restart the timer.
++	 */
++	pacing_data->do_pacing = pacing_data->do_pacing - (pacing_data->do_pacing >> 3);
++	pacing_data->do_pacing = max_t(u32, rdev->pacing.dbr_def_do_pacing, pacing_data->do_pacing);
++	if (pacing_data->do_pacing <= rdev->pacing.dbr_def_do_pacing) {
++		bnxt_re_set_default_pacing_data(rdev);
++		goto dbq_unlock;
++	}
++
++restart_timer:
++	schedule_delayed_work(&rdev->dbq_pacing_work,
++			      msecs_to_jiffies(rdev->pacing.dbq_pacing_time));
++dbq_unlock:
++	rdev->pacing.do_pacing_save = pacing_data->do_pacing;
++	mutex_unlock(&rdev->pacing.dbq_lock);
++}
++
++void bnxt_re_pacing_alert(struct bnxt_re_dev *rdev)
++{
++	struct bnxt_qplib_db_pacing_data *pacing_data;
++
++	if (!rdev->pacing.dbr_pacing)
++		return;
++	mutex_lock(&rdev->pacing.dbq_lock);
++	pacing_data = rdev->qplib_res.pacing_data;
++
++	/*
++	 * Increase the alarm_th to max so that other user lib instances do not
++	 * keep alerting the driver.
++	 */
++	pacing_data->alarm_th = BNXT_RE_MAX_FIFO_DEPTH;
++	pacing_data->do_pacing = BNXT_RE_MAX_DBR_DO_PACING;
++	cancel_work_sync(&rdev->dbq_fifo_check_work);
++	schedule_work(&rdev->dbq_fifo_check_work);
++	mutex_unlock(&rdev->pacing.dbq_lock);
++}
++
+ static int bnxt_re_initialize_dbr_pacing(struct bnxt_re_dev *rdev)
+ {
+ 	if (bnxt_re_hwrm_dbr_pacing_qcfg(rdev))
+@@ -506,11 +625,16 @@ static int bnxt_re_initialize_dbr_pacing(struct bnxt_re_dev *rdev)
+ 	rdev->qplib_res.pacing_data->fifo_room_shift = BNXT_RE_DB_FIFO_ROOM_SHIFT;
+ 	rdev->qplib_res.pacing_data->grc_reg_offset = rdev->pacing.dbr_db_fifo_reg_off;
+ 	bnxt_re_set_default_pacing_data(rdev);
++	/* Initialize worker for DBR Pacing */
++	INIT_WORK(&rdev->dbq_fifo_check_work, bnxt_re_db_fifo_check);
++	INIT_DELAYED_WORK(&rdev->dbq_pacing_work, bnxt_re_pacing_timer_exp);
+ 	return 0;
+ }
  
- 	default:
- 		return -EOPNOTSUPP;
- 	}
+ static void bnxt_re_deinitialize_dbr_pacing(struct bnxt_re_dev *rdev)
+ {
++	cancel_work_sync(&rdev->dbq_fifo_check_work);
++	cancel_delayed_work_sync(&rdev->dbq_pacing_work);
+ 	if (rdev->pacing.dbr_page)
+ 		free_page((u64)rdev->pacing.dbr_page);
  
--	entry = bnxt_re_mmap_entry_insert(uctx, dbr, mmap_flag, &mmap_offset);
-+	entry = bnxt_re_mmap_entry_insert(uctx, addr, mmap_flag, &mmap_offset);
- 	if (!entry)
- 		return -ENOMEM;
- 
-@@ -4254,6 +4279,9 @@ static int alloc_page_obj_cleanup(struct ib_uobject *uobject,
- 			uctx->wcdpi.dbr = NULL;
- 		}
- 		break;
-+	case BNXT_RE_MMAP_DBR_BAR:
-+	case BNXT_RE_MMAP_DBR_PAGE:
-+		break;
- 	default:
- 		goto exit;
- 	}
-diff --git a/drivers/infiniband/hw/bnxt_re/ib_verbs.h b/drivers/infiniband/hw/bnxt_re/ib_verbs.h
-index 32d9e9d..f392a09 100644
---- a/drivers/infiniband/hw/bnxt_re/ib_verbs.h
-+++ b/drivers/infiniband/hw/bnxt_re/ib_verbs.h
-@@ -146,6 +146,8 @@ enum bnxt_re_mmap_flag {
- 	BNXT_RE_MMAP_SH_PAGE,
- 	BNXT_RE_MMAP_UC_DB,
- 	BNXT_RE_MMAP_WC_DB,
-+	BNXT_RE_MMAP_DBR_PAGE,
-+	BNXT_RE_MMAP_DBR_BAR,
- };
- 
- struct bnxt_re_user_mmap_entry {
-diff --git a/include/uapi/rdma/bnxt_re-abi.h b/include/uapi/rdma/bnxt_re-abi.h
-index 060bf1d..78a324f 100644
---- a/include/uapi/rdma/bnxt_re-abi.h
-+++ b/include/uapi/rdma/bnxt_re-abi.h
-@@ -136,6 +136,8 @@ enum bnxt_re_objects {
- 
- enum bnxt_re_alloc_page_type {
- 	BNXT_RE_ALLOC_WC_PAGE = 0,
-+	BNXT_RE_ALLOC_DBR_BAR_PAGE,
-+	BNXT_RE_ALLOC_DBR_PAGE,
- };
- 
- enum bnxt_re_var_alloc_page_attrs {
 -- 
 2.5.5
 
 
---0000000000004b375f0600a89c6d
+--0000000000007abba60600a89c75
 Content-Type: application/pkcs7-signature; name="smime.p7s"
 Content-Transfer-Encoding: base64
 Content-Disposition: attachment; filename="smime.p7s"
@@ -269,14 +343,14 @@ j1Ze9ndr+YDXPpCymOsynmmw0ErHZGGW1OmMpAEt0A+613glWCURLDlP8HONi1wnINV6aDiEf0ad
 9NMGxDsp+YWiRXD3txfo2OMQbpIxM90QfhKKacX8t1J1oAAWxDrLVTJBXBNvz5tr+D1sYwuye93r
 hImmkM1unboxggJtMIICaQIBATBrMFsxCzAJBgNVBAYTAkJFMRkwFwYDVQQKExBHbG9iYWxTaWdu
 IG52LXNhMTEwLwYDVQQDEyhHbG9iYWxTaWduIEdDQyBSMyBQZXJzb25hbFNpZ24gMiBDQSAyMDIw
-Agxy+Cu4x/7lM0zxY7cwDQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIEIJZWEC17TtXU
-ULBFBpnbW/3R0uzWPpfKyOguuM+mgfjDMBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZI
-hvcNAQkFMQ8XDTIzMDcxNzA2MDcxNlowaQYJKoZIhvcNAQkPMVwwWjALBglghkgBZQMEASowCwYJ
+Agxy+Cu4x/7lM0zxY7cwDQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIEIC3zxJKxvHEO
+iQdLBIAUrgjwXz4Cv5C5FOJE5TPTELfvMBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZI
+hvcNAQkFMQ8XDTIzMDcxNzA2MDcyMFowaQYJKoZIhvcNAQkPMVwwWjALBglghkgBZQMEASowCwYJ
 YIZIAWUDBAEWMAsGCWCGSAFlAwQBAjAKBggqhkiG9w0DBzALBgkqhkiG9w0BAQowCwYJKoZIhvcN
-AQEHMAsGCWCGSAFlAwQCATANBgkqhkiG9w0BAQEFAASCAQBMaoEDv7KQEtCF8gKHTU0LaRGFdjvj
-3exVZJcmxGCq/P2KRE5eN+EOBhs4zUYt4Q2YPWT+Ek8cSHv9MnLYEvn2MxwQnYcEcUvW8j8c8QXn
-/E8SZWpU1qZQxe2nkGMJyJdCRykWkkul6q6QCJT38+TLMcPXiouhEIBZY5dkfLCvWWafpLLFHnnn
-O+l/wACSuUjmXe+nm1HAA2WqVQ/sRvtjBdMEmF567LBa1JOTpubZm4uRbD3Dk9CooK/1Rh58ukB4
-ujaXQHm4BNxiTW4Id2tATYAq1hpuKyk5fta9lXAW9FUn8NhnohOy2C+BrU1XysR5BliRqTPG9yXh
-tJASzvOg
---0000000000004b375f0600a89c6d--
+AQEHMAsGCWCGSAFlAwQCATANBgkqhkiG9w0BAQEFAASCAQCZTJzvLczVYg7+2SBvsGZWj1SKC4Bs
+vNgAGZwKHrZmObSqmZ2Cx+gV98Q5GKUskcOSIZGpmI0RCciYrX3Xj2VE3fB4OUYrNrfqKIZ1XBbA
+NpGEhgixDfyeVCweOVD9EdEo2SCngATOTsO1HABpZRQZlxkrzjtD3wj9sE3DQ/cQwARDvU0iB/Qj
+UOjPGeLJEfEPJmx/F48b01mmON+sm3x1Tancv4pSuCL6VxIVHomrCD2ioN6RAoupbUQG5f/wN+hU
+SV4rEL0VT2emOYSqotOgujGEc9r2wzYaPM7e3gWgqoJWHOZpNG60wWPE8cSyzHalp+scGW0FGuWR
+xVBbfVo5
+--0000000000007abba60600a89c75--
