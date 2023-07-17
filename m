@@ -2,119 +2,158 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A15CC755B2D
+	by mail.lfdr.de (Postfix) with ESMTP id 43F5E755B2C
 	for <lists+linux-rdma@lfdr.de>; Mon, 17 Jul 2023 08:08:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231283AbjGQGIH (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 17 Jul 2023 02:08:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49008 "EHLO
+        id S230230AbjGQGIG (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 17 Jul 2023 02:08:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49992 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231345AbjGQGHv (ORCPT
+        with ESMTP id S231343AbjGQGHv (ORCPT
         <rfc822;linux-rdma@vger.kernel.org>); Mon, 17 Jul 2023 02:07:51 -0400
-Received: from mail-pl1-x632.google.com (mail-pl1-x632.google.com [IPv6:2607:f8b0:4864:20::632])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 33C4219BD
+Received: from mail-pf1-x42e.google.com (mail-pf1-x42e.google.com [IPv6:2607:f8b0:4864:20::42e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C64A519BF
         for <linux-rdma@vger.kernel.org>; Sun, 16 Jul 2023 23:07:19 -0700 (PDT)
-Received: by mail-pl1-x632.google.com with SMTP id d9443c01a7336-1b9cd6a0051so24969005ad.1
+Received: by mail-pf1-x42e.google.com with SMTP id d2e1a72fcca58-666eef03ebdso2603249b3a.1
         for <linux-rdma@vger.kernel.org>; Sun, 16 Jul 2023 23:07:19 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google; t=1689574021; x=1692166021;
-        h=message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=FOxiNhVUIkk6XznM190whCP1UXL369Da8s/oCPFiso0=;
-        b=LhEUg19a2jWnrUllvPrVMeGwiAPDnbxfGploIuv8Er+arXDIcNZFoJ1ZPg1okHzflm
-         JZHOwifGL6mpKJlrymhoqY2XG43pH5EQ4DWEoRbgZ35G+ktffrA/j5DJXzOHBaeX58tW
-         /nWE5QQYFpHZxPZbkliW3BXKhcxHF+AZ4Oxrg=
+        d=broadcom.com; s=google; t=1689574025; x=1692166025;
+        h=references:in-reply-to:message-id:date:subject:cc:to:from:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=uI+QK1lrvwgqc4Q8+LJN6GDAuyUsJs0qz1ZsuR6c9TA=;
+        b=NxFCtvGLBVLxyaHca2+ynC3PGhj90ZmQAcTUOGMC45xqNbHTqrobDrD0KwBCIDUnQH
+         YDSFYKMXQY1LkkcvQa4k3coF56GrcnMumRmwtO+CIWnSO6cyO7FCsAebP8OHltCLJNFO
+         uAMrecA6LdFiRM7KAIITI+HCFu6rz9Y51qc80=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689574021; x=1692166021;
-        h=message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=FOxiNhVUIkk6XznM190whCP1UXL369Da8s/oCPFiso0=;
-        b=QCk+QHeg19O0p3SulWjRLz2cUm/yuYKG2DVAyDreYbu5o0aU6XvdoEFXksmXNKc5TA
-         kuj9NY12T9jOAGHmfymoSyh2OORZD15cG8AvxS3OizHJACMCwR08BdH15MV9wFTKTzhA
-         SpiwLYjnKoTRrP3XR4GmABcrImTY/YZdzKLLjPGVH3C+ffd8FPo0AirGavx4wi+Ff9eK
-         k4aYWqAaQHgpTk/ljmGC173a6OwIfNbu05iCowPIvOSlKhu7e1dp3FNtYvrByuUXScDs
-         qIol0Hc9tKfLn8fZjDR8YKRHGOHaqn09ke9KLYlBaZJEqZpU6RB2A4AzRe+i2hhxA/c+
-         Y02g==
-X-Gm-Message-State: ABy/qLYrj7G8AEjjX8IBsx0oFo4uF/6geApTzwIf4FOX8tpadvRA9bR4
-        QVwVdAaaYZbmoLKHxMw97BbDqw==
-X-Google-Smtp-Source: APBJJlERYl14O9dfjJh9WmbgKtUsdSHis4T03ddyhNrWKO0dosaD8LmyEvxllETfES6J00IOFGUxjQ==
-X-Received: by 2002:a17:902:ec88:b0:1b8:1687:b53 with SMTP id x8-20020a170902ec8800b001b816870b53mr12155748plg.26.1689574021608;
-        Sun, 16 Jul 2023 23:07:01 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1689574025; x=1692166025;
+        h=references:in-reply-to:message-id:date:subject:cc:to:from
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=uI+QK1lrvwgqc4Q8+LJN6GDAuyUsJs0qz1ZsuR6c9TA=;
+        b=Pk0/LOm6raGmsDlhWJj0/8w2LUPQC+mAUYw1o5SGcUpKEJE1DNekRKUgL3mtFF+/2y
+         tdMbO8y44gfG6Nb4EjjNo93B0JJDGjpy1ascR4VrbMQxZAkGnwxruWi5OejEPmDXGlBc
+         jTyugC6QTrZfS1f9oHfT0fQEqNih7pwvwWAnjOPWq96foLs+qnqwewU+49GbZIocPqHW
+         YhuC5vctLpQaQKFPZgf5aqRlVsKa0jB+hcWYjcUezCtAYO7qky4OUdDG1Gvjs6XyvWGB
+         dDoKqCZnUYUt355i1mlORPI6vJxwzBShVmJzXvh/Z3kx45B/ouwjs/McePE4TROrs6S9
+         TfEA==
+X-Gm-Message-State: ABy/qLZIUwOXyhbV8E4pX+ynU+elKm2m/Ebss8cX2l/PuvogEUiqKPbS
+        ww57yAroXmugA4ihsflboZ+4vg==
+X-Google-Smtp-Source: APBJJlEZvGQPG7y1K3vfqazbruOLhOlfPS+gyJpCvwHnR1YBAgYzm40Sxxb55DlW0XJo4Rd2lRARtg==
+X-Received: by 2002:a05:6a20:12c9:b0:134:9f4e:623f with SMTP id v9-20020a056a2012c900b001349f4e623fmr3696932pzg.14.1689574024780;
+        Sun, 16 Jul 2023 23:07:04 -0700 (PDT)
 Received: from dhcp-10-192-206-197.iig.avagotech.net.net ([192.19.234.250])
-        by smtp.gmail.com with ESMTPSA id q17-20020a170902789100b001b9da7b6bc3sm11849632pll.184.2023.07.16.23.06.58
+        by smtp.gmail.com with ESMTPSA id q17-20020a170902789100b001b9da7b6bc3sm11849632pll.184.2023.07.16.23.07.01
         (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Sun, 16 Jul 2023 23:07:00 -0700 (PDT)
+        Sun, 16 Jul 2023 23:07:03 -0700 (PDT)
 From:   Selvin Xavier <selvin.xavier@broadcom.com>
 To:     jgg@ziepe.ca, leon@kernel.org
 Cc:     linux-rdma@vger.kernel.org, andrew.gospodarek@broadcom.com,
         michael.chan@broadcom.com,
+        Chandramohan Akula <chandramohan.akula@broadcom.com>,
         Selvin Xavier <selvin.xavier@broadcom.com>
-Subject: [PATCH for-next v2 0/7]RDMA/bnxt_re: Doorbell Drop Prevention 
-Date:   Sun, 16 Jul 2023 22:53:07 -0700
-Message-Id: <1689573194-27687-1-git-send-email-selvin.xavier@broadcom.com>
+Subject: [PATCH for-next v2 1/7] bnxt_en: Update HW interface headers
+Date:   Sun, 16 Jul 2023 22:53:08 -0700
+Message-Id: <1689573194-27687-2-git-send-email-selvin.xavier@broadcom.com>
 X-Mailer: git-send-email 2.5.5
+In-Reply-To: <1689573194-27687-1-git-send-email-selvin.xavier@broadcom.com>
+References: <1689573194-27687-1-git-send-email-selvin.xavier@broadcom.com>
 Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
-        boundary="0000000000006632f80600a89b63"
-X-Spam-Status: No, score=-1.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        boundary="0000000000009757ee0600a89bc6"
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        MIME_HEADER_CTYPE_ONLY,MIME_NO_TEXT,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,T_TVD_MIME_NO_HEADERS
-        autolearn=no autolearn_force=no version=3.4.6
+        MIME_HEADER_CTYPE_ONLY,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE,T_TVD_MIME_NO_HEADERS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
---0000000000006632f80600a89b63
+--0000000000009757ee0600a89bc6
 
-The idea behind this series is to prevent Doorbell drops
-on some of the Broadcom adapters that require Doorbell
-moderation. This is achieved by pacing the doorbell writes
-into the hardware FIFO. The rate at which individual doorbells
-are written needs to be dynamically adjusted, because
-it depends on the ability of the hardware to drain the
-FIFO and on the number and behavior of individual
-doorbell writers. When congestion is detected by the user
-library, it notifies the driver and driver adjust the
-pacing parameters dynamically in a shared page, which will
-be used for pacing the Doorbells.
+From: Chandramohan Akula <chandramohan.akula@broadcom.com>
 
-Currently this feature is targeted only for user applications.
-The corresponding user lib patch is in the pull request.
-https://github.com/linux-rdma/rdma-core/pull/1360
+Updating the HW structures for the doorbell pacing related
+information. Newly added interface structures will be used in
+the followup patches.
 
-Thanks,
-Selivn
+CC: Michael Chan <michael.chan@broadcom.com>
+Signed-off-by: Chandramohan Akula <chandramohan.akula@broadcom.com>
+Signed-off-by: Selvin Xavier <selvin.xavier@broadcom.com>
+---
+ drivers/net/ethernet/broadcom/bnxt/bnxt_hsi.h | 54 +++++++++++++++++++++++++++
+ 1 file changed, 54 insertions(+)
 
-v1 -> v2:
-     Rebased the patches on top of the latest for-next branch
-
-Chandramohan Akula (7):
-  bnxt_en: Update HW interface headers
-  bnxt_en: Share the bar0 address with the RoCE driver
-  RDMA/bnxt_re: Initialize Doorbell pacing feature
-  RDMA/bnxt_re: Enable pacing support for the user apps
-  RDMA/bnxt_re: Update alloc_page uapi for pacing
-  RDMA/bnxt_re: Implement doorbell pacing algorithm
-  RDMA/bnxt_re: Add a new uapi for driver notification
-
- drivers/infiniband/hw/bnxt_re/bnxt_re.h       |  27 ++++
- drivers/infiniband/hw/bnxt_re/ib_verbs.c      |  51 +++++-
- drivers/infiniband/hw/bnxt_re/ib_verbs.h      |   2 +
- drivers/infiniband/hw/bnxt_re/main.c          | 220 ++++++++++++++++++++++++++
- drivers/infiniband/hw/bnxt_re/qplib_res.h     |  19 +++
- drivers/net/ethernet/broadcom/bnxt/bnxt_hsi.h |  54 +++++++
- drivers/net/ethernet/broadcom/bnxt/bnxt_ulp.c |   2 +-
- drivers/net/ethernet/broadcom/bnxt/bnxt_ulp.h |   1 +
- include/uapi/rdma/bnxt_re-abi.h               |   7 +
- 9 files changed, 379 insertions(+), 4 deletions(-)
-
+diff --git a/drivers/net/ethernet/broadcom/bnxt/bnxt_hsi.h b/drivers/net/ethernet/broadcom/bnxt/bnxt_hsi.h
+index b31de4c..a2d3a80 100644
+--- a/drivers/net/ethernet/broadcom/bnxt/bnxt_hsi.h
++++ b/drivers/net/ethernet/broadcom/bnxt/bnxt_hsi.h
+@@ -3721,6 +3721,60 @@ struct hwrm_func_backing_store_qcaps_v2_output {
+ 	u8	valid;
+ };
+ 
++/* hwrm_func_dbr_pacing_qcfg_input (size:128b/16B) */
++struct hwrm_func_dbr_pacing_qcfg_input {
++	__le16  req_type;
++	__le16  cmpl_ring;
++	__le16  seq_id;
++	__le16  target_id;
++	__le64  resp_addr;
++};
++
++/* hwrm_func_dbr_pacing_qcfg_output (size:512b/64B) */
++struct hwrm_func_dbr_pacing_qcfg_output {
++	__le16  error_code;
++	__le16  req_type;
++	__le16  seq_id;
++	__le16  resp_len;
++	u8      flags;
++#define FUNC_DBR_PACING_QCFG_RESP_FLAGS_DBR_NQ_EVENT_ENABLED     0x1UL
++	u8      unused_0[7];
++	__le32  dbr_stat_db_fifo_reg;
++#define FUNC_DBR_PACING_QCFG_RESP_DBR_STAT_DB_FIFO_REG_ADDR_SPACE_MASK    0x3UL
++#define FUNC_DBR_PACING_QCFG_RESP_DBR_STAT_DB_FIFO_REG_ADDR_SPACE_SFT     0
++#define FUNC_DBR_PACING_QCFG_RESP_DBR_STAT_DB_FIFO_REG_ADDR_SPACE_PCIE_CFG  0x0UL
++#define FUNC_DBR_PACING_QCFG_RESP_DBR_STAT_DB_FIFO_REG_ADDR_SPACE_GRC       0x1UL
++#define FUNC_DBR_PACING_QCFG_RESP_DBR_STAT_DB_FIFO_REG_ADDR_SPACE_BAR0      0x2UL
++#define FUNC_DBR_PACING_QCFG_RESP_DBR_STAT_DB_FIFO_REG_ADDR_SPACE_BAR1      0x3UL
++#define FUNC_DBR_PACING_QCFG_RESP_DBR_STAT_DB_FIFO_REG_ADDR_SPACE_LAST     \
++		FUNC_DBR_PACING_QCFG_RESP_DBR_STAT_DB_FIFO_REG_ADDR_SPACE_BAR1
++#define FUNC_DBR_PACING_QCFG_RESP_DBR_STAT_DB_FIFO_REG_ADDR_MASK          0xfffffffcUL
++#define FUNC_DBR_PACING_QCFG_RESP_DBR_STAT_DB_FIFO_REG_ADDR_SFT           2
++	__le32  dbr_stat_db_fifo_reg_watermark_mask;
++	u8      dbr_stat_db_fifo_reg_watermark_shift;
++	u8      unused_1[3];
++	__le32  dbr_stat_db_fifo_reg_fifo_room_mask;
++	u8      dbr_stat_db_fifo_reg_fifo_room_shift;
++	u8      unused_2[3];
++	__le32  dbr_throttling_aeq_arm_reg;
++#define FUNC_DBR_PACING_QCFG_RESP_DBR_THROTTLING_AEQ_ARM_REG_ADDR_SPACE_MASK    0x3UL
++#define FUNC_DBR_PACING_QCFG_RESP_DBR_THROTTLING_AEQ_ARM_REG_ADDR_SPACE_SFT     0
++#define FUNC_DBR_PACING_QCFG_RESP_DBR_THROTTLING_AEQ_ARM_REG_ADDR_SPACE_PCIE_CFG  0x0UL
++#define FUNC_DBR_PACING_QCFG_RESP_DBR_THROTTLING_AEQ_ARM_REG_ADDR_SPACE_GRC       0x1UL
++#define FUNC_DBR_PACING_QCFG_RESP_DBR_THROTTLING_AEQ_ARM_REG_ADDR_SPACE_BAR0      0x2UL
++#define FUNC_DBR_PACING_QCFG_RESP_DBR_THROTTLING_AEQ_ARM_REG_ADDR_SPACE_BAR1      0x3UL
++#define FUNC_DBR_PACING_QCFG_RESP_DBR_THROTTLING_AEQ_ARM_REG_ADDR_SPACE_LAST	\
++		FUNC_DBR_PACING_QCFG_RESP_DBR_THROTTLING_AEQ_ARM_REG_ADDR_SPACE_BAR1
++#define FUNC_DBR_PACING_QCFG_RESP_DBR_THROTTLING_AEQ_ARM_REG_ADDR_MASK          0xfffffffcUL
++#define FUNC_DBR_PACING_QCFG_RESP_DBR_THROTTLING_AEQ_ARM_REG_ADDR_SFT           2
++	u8      dbr_throttling_aeq_arm_reg_val;
++	u8      unused_3[7];
++	__le32  primary_nq_id;
++	__le32  pacing_threshold;
++	u8      unused_4[7];
++	u8      valid;
++};
++
+ /* hwrm_func_drv_if_change_input (size:192b/24B) */
+ struct hwrm_func_drv_if_change_input {
+ 	__le16	req_type;
 -- 
 2.5.5
 
 
---0000000000006632f80600a89b63
+--0000000000009757ee0600a89bc6
 Content-Type: application/pkcs7-signature; name="smime.p7s"
 Content-Transfer-Encoding: base64
 Content-Disposition: attachment; filename="smime.p7s"
@@ -185,14 +224,14 @@ j1Ze9ndr+YDXPpCymOsynmmw0ErHZGGW1OmMpAEt0A+613glWCURLDlP8HONi1wnINV6aDiEf0ad
 9NMGxDsp+YWiRXD3txfo2OMQbpIxM90QfhKKacX8t1J1oAAWxDrLVTJBXBNvz5tr+D1sYwuye93r
 hImmkM1unboxggJtMIICaQIBATBrMFsxCzAJBgNVBAYTAkJFMRkwFwYDVQQKExBHbG9iYWxTaWdu
 IG52LXNhMTEwLwYDVQQDEyhHbG9iYWxTaWduIEdDQyBSMyBQZXJzb25hbFNpZ24gMiBDQSAyMDIw
-Agxy+Cu4x/7lM0zxY7cwDQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIEINnHicVdC18c
-aSoRlnyUm0RLyVFihOvK+QQovpkSnB8pMBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZI
-hvcNAQkFMQ8XDTIzMDcxNzA2MDcwMVowaQYJKoZIhvcNAQkPMVwwWjALBglghkgBZQMEASowCwYJ
+Agxy+Cu4x/7lM0zxY7cwDQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIEIJASa5/+fp5M
+02soXEbf9Nt3RVykn2/8TlmsNJ70WQM8MBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZI
+hvcNAQkFMQ8XDTIzMDcxNzA2MDcwNVowaQYJKoZIhvcNAQkPMVwwWjALBglghkgBZQMEASowCwYJ
 YIZIAWUDBAEWMAsGCWCGSAFlAwQBAjAKBggqhkiG9w0DBzALBgkqhkiG9w0BAQowCwYJKoZIhvcN
-AQEHMAsGCWCGSAFlAwQCATANBgkqhkiG9w0BAQEFAASCAQCkPpWWwhrAWNcndcCqBXXI0n3TnKLe
-r8yiWLj57wTYEbh3tIE9r5y77wgJhrYCuHcqrZKK64HQkXf7YgH/cdNKZgVUBXNB7Vbl6fdCu/sj
-SWUqOFgF6EAtPhR8pY8VtE8X4C2U1CdGXWvZonrcuVKI04VGGU6b5Avbiumy+CBmRZ6A08WweUrl
-irrMdbj/x5EzCknW3iIeU+e1ZpGck5hWDyMbgZfd4fE2AonfHPcyjVcQ/WMkHQAOtrgdtGrwichB
-4ckK20ip5QYP/BQ8CEZhOxD7i+rFjj+5+BLagQNyGe20h6CUnHCSRLsYiph27xzeCuFIPBxX2aYZ
-IaRSsaRp
---0000000000006632f80600a89b63--
+AQEHMAsGCWCGSAFlAwQCATANBgkqhkiG9w0BAQEFAASCAQDfoPQE+9jQv0ZfPJjZJIMkAf7oj6cG
+ClhhBSpKdzymJhSfMs7lxyWKDlm9t0tJdVcqTDA9FoL3NWZhaJu6hzNPQ5EJiAAoOInyHCBy/rWo
+vK07FN1v3gICZvkcNZru1FshcleazkVtGKJCSMaNfhytxYJeTVZ8Kx4RIQWDlTaOEaDATv4qjlnZ
+ZRJlg91eafBWRQa5F5xDvhLnZ1CtTQPF6xD5RzZlD0NaLfM3izFVj3FF/XI/Y5/5aohnogl0AXU7
+S3mT2eQtAuCplXs2eyykVULEG3UXy2WRTFV/7m1SzgZ2L6ARxeY9jcZYWGky+xeG7JjgQIyQAjHD
+dEqVkvQ7
+--0000000000009757ee0600a89bc6--
