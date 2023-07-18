@@ -2,123 +2,270 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 18193758400
-	for <lists+linux-rdma@lfdr.de>; Tue, 18 Jul 2023 20:00:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E9EA758405
+	for <lists+linux-rdma@lfdr.de>; Tue, 18 Jul 2023 20:01:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231342AbjGRSAt (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 18 Jul 2023 14:00:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42796 "EHLO
+        id S231915AbjGRSBC (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 18 Jul 2023 14:01:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43012 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231425AbjGRSAs (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 18 Jul 2023 14:00:48 -0400
-Received: from mail-oi1-x22c.google.com (mail-oi1-x22c.google.com [IPv6:2607:f8b0:4864:20::22c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2FA75C0
-        for <linux-rdma@vger.kernel.org>; Tue, 18 Jul 2023 11:00:48 -0700 (PDT)
-Received: by mail-oi1-x22c.google.com with SMTP id 5614622812f47-39ca120c103so3784967b6e.2
-        for <linux-rdma@vger.kernel.org>; Tue, 18 Jul 2023 11:00:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1689703247; x=1692295247;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=XiducbU0Z276ddwT5Mxs5bsEbtVKyWhgJJcUYbp5cus=;
-        b=Gti8w+JJKlHjX5YXwExaLlX/yAJ5yHTTo84TisM35iv9WNRdzDpS+Evl/8IAwX4qfo
-         TvKV1ydKTBxa58xQLGWW8jCPiBoyx4ohEPYelC+KGBW9tEhoeCH+cWf3CVj3MFLKTS76
-         W2Cd2TjSAuSuyBgsDr/REos8ug6eiK9cp0vdKQFL8ZDz1rJn6vhMEJhu9xuV4YAXM3vD
-         daVBuXINXupPX/mNGqcRJDkRKbhNeY9KlHy0LJc/ezgMcWjOQe35RtbFtmPx1ivGsfv5
-         HNW33MXkw/0xWqIxRweqWJBbV5uGcoQgFs+u1+TmiJUlYrP8z8rpO6QiNZLGM+PrZ7a8
-         i0/w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689703247; x=1692295247;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=XiducbU0Z276ddwT5Mxs5bsEbtVKyWhgJJcUYbp5cus=;
-        b=E6xzyno/Xq++FYJiQIX9JgcBJ95zDIsuzF3XcbhEPVsf6OGa35iWvDiEgBNIBw2STv
-         ox8Y0tV8lU75fuMLAsov5XyJ+Po0rUOGn2iyFiIAnTSB6YKnNh43EalQ8U7+z7/22o5b
-         HvlVlnW4xsizid78EIBFd4zwbMADzuDmUJocLQzp3vF2f34Q4dqBO+b6dIAq9S+ozB/a
-         rCE6ULV4uyRpX3gDTdzHszVhVDB+J/y1q0z+dlf3gBWSa2A9fTsCi5hvLMHRXOi05lWV
-         ZrMGoMAUCb3iX3sWEp2Na0y1pFcbWQSW7XaRWitngKO3+nhxpI14zVFPb+eEN94poA1E
-         tX4A==
-X-Gm-Message-State: ABy/qLbvQdImFA27rccgNYfDwiTHrBTlQnICIRFzKCltjdtq4fCS/TJH
-        EbzrD5fV8OFvIXDQyvu6dvA=
-X-Google-Smtp-Source: APBJJlEbMvtRtJf/jXu8YVHWuIgdxNyrOwZ9WnuXRM/ykYc4E2kQb7lFgf/7ylAqqbPtb+ZxNYgiPg==
-X-Received: by 2002:a05:6808:1d8:b0:3a2:572a:eaa6 with SMTP id x24-20020a05680801d800b003a2572aeaa6mr42501oic.5.1689703247258;
-        Tue, 18 Jul 2023 11:00:47 -0700 (PDT)
-Received: from rpearson-X570-AORUS-PRO-WIFI.tx.rr.com (2603-8081-140c-1a00-407d-4821-8a8f-dae8.res6.spectrum.com. [2603:8081:140c:1a00:407d:4821:8a8f:dae8])
-        by smtp.gmail.com with ESMTPSA id o3-20020a05680803c300b003a38df6284dsm1007954oie.11.2023.07.18.11.00.46
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 18 Jul 2023 11:00:46 -0700 (PDT)
-From:   Bob Pearson <rpearsonhpe@gmail.com>
-To:     jgg@nvidia.com, leon@kernel.org, zyjzyj2000@gmail.com,
-        linux-rdma@vger.kernel.org, jhack@hpe.com
-Cc:     Bob Pearson <rpearsonhpe@gmail.com>
-Subject: [PATCH for-next 2/2] RDMA/rxe: Enable rcu locking of indexed objects
-Date:   Tue, 18 Jul 2023 12:59:44 -0500
-Message-Id: <20230718175943.16734-3-rpearsonhpe@gmail.com>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20230718175943.16734-1-rpearsonhpe@gmail.com>
-References: <20230718175943.16734-1-rpearsonhpe@gmail.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        with ESMTP id S232169AbjGRSBA (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 18 Jul 2023 14:01:00 -0400
+Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 04A581722;
+        Tue, 18 Jul 2023 11:00:55 -0700 (PDT)
+Received: by linux.microsoft.com (Postfix, from userid 1099)
+        id 5902621C4506; Tue, 18 Jul 2023 11:00:54 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 5902621C4506
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+        s=default; t=1689703254;
+        bh=2EtqkbDML7oSfMbtE2vBfMQ9qbiYn/gMi6DTcnH66S0=;
+        h=From:To:Cc:Subject:Date:From;
+        b=UU0wJTw3xTZzKiLiCButWWRHugpqky6Kf/2OKf1FlXlFsud8OWv5zLQQiQQQJswGD
+         fs2+v7peejuwH9kzecdyv1hfXFVUtf5S4qco0xdVL5Ls3sQYqDZG1xlqNBjC6cb6ZQ
+         JUvd1TBxur75PEUPwXmqZwI20w6rENkp9rCNqwUI=
+From:   Souradeep Chakrabarti <schakrabarti@linux.microsoft.com>
+To:     kys@microsoft.com, haiyangz@microsoft.com, wei.liu@kernel.org,
+        decui@microsoft.com, davem@davemloft.net, edumazet@google.com,
+        kuba@kernel.org, pabeni@redhat.com, longli@microsoft.com,
+        sharmaajay@microsoft.com, leon@kernel.org, cai.huoqing@linux.dev,
+        ssengar@linux.microsoft.com, vkuznets@redhat.com,
+        tglx@linutronix.de, linux-hyperv@vger.kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-rdma@vger.kernel.org
+Cc:     schakrabarti@microsoft.com,
+        Souradeep Chakrabarti <schakrabarti@linux.microsoft.com>
+Subject: [PATCH V4 net-next] net: mana: Configure hwc timeout from hardware
+Date:   Tue, 18 Jul 2023 11:00:32 -0700
+Message-Id: <1689703232-24858-1-git-send-email-schakrabarti@linux.microsoft.com>
+X-Mailer: git-send-email 1.8.3.1
+X-Spam-Status: No, score=-17.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,
+        USER_IN_DEF_SPF_WL autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Make rcu_read locking of critical sections with the indexed
-verbs objects be protected from early freeing of those objects.
-The AH, QP, MR and MW objects are looked up from their indices
-contained in received packets or WQEs during I/O processing.
-Make these objects be freed using kfree_rcu to avoid races.
+At present hwc timeout value is a fixed value. This patch sets the hwc
+timeout from the hardware. It now uses a new hardware capability
+GDMA_DRV_CAP_FLAG_1_HWC_TIMEOUT_RECONFIG to query and set the value
+in hwc_timeout.
 
-Signed-off-by: Bob Pearson <rpearsonhpe@gmail.com>
+Signed-off-by: Souradeep Chakrabarti <schakrabarti@linux.microsoft.com>
 ---
- drivers/infiniband/sw/rxe/rxe_pool.h  | 1 +
- drivers/infiniband/sw/rxe/rxe_verbs.c | 6 +++++-
- 2 files changed, 6 insertions(+), 1 deletion(-)
+V3 -> V4:
+* Changing branch to net-next.
+* Changed the commit message to 75 chars per line.
+---
+ .../net/ethernet/microsoft/mana/gdma_main.c   | 30 ++++++++++++++++++-
+ .../net/ethernet/microsoft/mana/hw_channel.c  | 25 +++++++++++++++-
+ include/net/mana/gdma.h                       | 20 ++++++++++++-
+ include/net/mana/hw_channel.h                 |  5 ++++
+ 4 files changed, 77 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/infiniband/sw/rxe/rxe_pool.h b/drivers/infiniband/sw/rxe/rxe_pool.h
-index b42e26427a70..ef2f6f88e254 100644
---- a/drivers/infiniband/sw/rxe/rxe_pool.h
-+++ b/drivers/infiniband/sw/rxe/rxe_pool.h
-@@ -25,6 +25,7 @@ struct rxe_pool_elem {
- 	struct kref		ref_cnt;
- 	struct list_head	list;
- 	struct completion	complete;
-+	struct rcu_head		rcu;
- 	u32			index;
- };
- 
-diff --git a/drivers/infiniband/sw/rxe/rxe_verbs.c b/drivers/infiniband/sw/rxe/rxe_verbs.c
-index 903f0b71447e..b899924b81eb 100644
---- a/drivers/infiniband/sw/rxe/rxe_verbs.c
-+++ b/drivers/infiniband/sw/rxe/rxe_verbs.c
-@@ -1395,7 +1395,7 @@ static int rxe_dereg_mr(struct ib_mr *ibmr, struct ib_udata *udata)
- 	if (cleanup_err)
- 		rxe_err_mr(mr, "cleanup failed, err = %d", cleanup_err);
- 
--	kfree_rcu_mightsleep(mr);
-+	kfree_rcu(mr, elem.rcu);
+diff --git a/drivers/net/ethernet/microsoft/mana/gdma_main.c b/drivers/net/ethernet/microsoft/mana/gdma_main.c
+index 8f3f78b68592..4537a70e30d4 100644
+--- a/drivers/net/ethernet/microsoft/mana/gdma_main.c
++++ b/drivers/net/ethernet/microsoft/mana/gdma_main.c
+@@ -106,6 +106,25 @@ static int mana_gd_query_max_resources(struct pci_dev *pdev)
  	return 0;
+ }
  
- err_out:
-@@ -1494,6 +1494,10 @@ static const struct ib_device_ops rxe_dev_ops = {
- 	INIT_RDMA_OBJ_SIZE(ib_srq, rxe_srq, ibsrq),
- 	INIT_RDMA_OBJ_SIZE(ib_ucontext, rxe_ucontext, ibuc),
- 	INIT_RDMA_OBJ_SIZE(ib_mw, rxe_mw, ibmw),
++static int mana_gd_query_hwc_timeout(struct pci_dev *pdev, u32 *timeout_val)
++{
++	struct gdma_context *gc = pci_get_drvdata(pdev);
++	struct gdma_query_hwc_timeout_resp resp = {};
++	struct gdma_query_hwc_timeout_req req = {};
++	int err;
 +
-+	.rcu_offset_ah = offsetof(struct rxe_ah, elem.rcu),
-+	.rcu_offset_qp = offsetof(struct rxe_qp, elem.rcu),
-+	.rcu_offset_mw = offsetof(struct rxe_mw, elem.rcu),
++	mana_gd_init_req_hdr(&req.hdr, GDMA_QUERY_HWC_TIMEOUT,
++			     sizeof(req), sizeof(resp));
++	req.timeout_ms = *timeout_val;
++	err = mana_gd_send_request(gc, sizeof(req), &req, sizeof(resp), &resp);
++	if (err || resp.hdr.status)
++		return err ? err : -EPROTO;
++
++	*timeout_val = resp.timeout_ms;
++
++	return 0;
++}
++
+ static int mana_gd_detect_devices(struct pci_dev *pdev)
+ {
+ 	struct gdma_context *gc = pci_get_drvdata(pdev);
+@@ -879,8 +898,11 @@ int mana_gd_verify_vf_version(struct pci_dev *pdev)
+ 	struct gdma_context *gc = pci_get_drvdata(pdev);
+ 	struct gdma_verify_ver_resp resp = {};
+ 	struct gdma_verify_ver_req req = {};
++	struct hw_channel_context *hwc;
+ 	int err;
+ 
++	hwc = gc->hwc.driver_data;
++
+ 	mana_gd_init_req_hdr(&req.hdr, GDMA_VERIFY_VF_DRIVER_VERSION,
+ 			     sizeof(req), sizeof(resp));
+ 
+@@ -907,7 +929,13 @@ int mana_gd_verify_vf_version(struct pci_dev *pdev)
+ 			err, resp.hdr.status);
+ 		return err ? err : -EPROTO;
+ 	}
+-
++	if (resp.pf_cap_flags1 & GDMA_DRV_CAP_FLAG_1_HWC_TIMEOUT_RECONFIG) {
++		err = mana_gd_query_hwc_timeout(pdev, &hwc->hwc_timeout);
++		if (err) {
++			dev_err(gc->dev, "Failed to set the hwc timeout %d\n", err);
++			return err;
++		}
++	}
+ 	return 0;
+ }
+ 
+diff --git a/drivers/net/ethernet/microsoft/mana/hw_channel.c b/drivers/net/ethernet/microsoft/mana/hw_channel.c
+index 2bd1d74021f7..db433501e5e6 100644
+--- a/drivers/net/ethernet/microsoft/mana/hw_channel.c
++++ b/drivers/net/ethernet/microsoft/mana/hw_channel.c
+@@ -174,7 +174,25 @@ static void mana_hwc_init_event_handler(void *ctx, struct gdma_queue *q_self,
+ 		complete(&hwc->hwc_init_eqe_comp);
+ 		break;
+ 
++	case GDMA_EQE_HWC_SOC_RECONFIG_DATA:
++		type_data.as_uint32 = event->details[0];
++		type = type_data.type;
++		val = type_data.value;
++
++		switch (type) {
++		case HWC_DATA_CFG_HWC_TIMEOUT:
++			hwc->hwc_timeout = val;
++			break;
++
++		default:
++			dev_warn(hwc->dev, "Received unknown reconfig type %u\n", type);
++			break;
++		}
++
++		break;
++
+ 	default:
++		dev_warn(hwc->dev, "Received unknown gdma event %u\n", event->type);
+ 		/* Ignore unknown events, which should never happen. */
+ 		break;
+ 	}
+@@ -704,6 +722,7 @@ int mana_hwc_create_channel(struct gdma_context *gc)
+ 	gd->pdid = INVALID_PDID;
+ 	gd->doorbell = INVALID_DOORBELL;
+ 
++	hwc->hwc_timeout = HW_CHANNEL_WAIT_RESOURCE_TIMEOUT_MS;
+ 	/* mana_hwc_init_queues() only creates the required data structures,
+ 	 * and doesn't touch the HWC device.
+ 	 */
+@@ -770,6 +789,8 @@ void mana_hwc_destroy_channel(struct gdma_context *gc)
+ 	hwc->gdma_dev->doorbell = INVALID_DOORBELL;
+ 	hwc->gdma_dev->pdid = INVALID_PDID;
+ 
++	hwc->hwc_timeout = 0;
++
+ 	kfree(hwc);
+ 	gc->hwc.driver_data = NULL;
+ 	gc->hwc.gdma_context = NULL;
+@@ -818,6 +839,7 @@ int mana_hwc_send_request(struct hw_channel_context *hwc, u32 req_len,
+ 		dest_vrq = hwc->pf_dest_vrq_id;
+ 		dest_vrcq = hwc->pf_dest_vrcq_id;
+ 	}
++	dev_err(hwc->dev, "HWC: timeout %u ms\n", hwc->hwc_timeout);
+ 
+ 	err = mana_hwc_post_tx_wqe(txq, tx_wr, dest_vrq, dest_vrcq, false);
+ 	if (err) {
+@@ -825,7 +847,8 @@ int mana_hwc_send_request(struct hw_channel_context *hwc, u32 req_len,
+ 		goto out;
+ 	}
+ 
+-	if (!wait_for_completion_timeout(&ctx->comp_event, 30 * HZ)) {
++	if (!wait_for_completion_timeout(&ctx->comp_event,
++					 (hwc->hwc_timeout / 1000) * HZ)) {
+ 		dev_err(hwc->dev, "HWC: Request timed out!\n");
+ 		err = -ETIMEDOUT;
+ 		goto out;
+diff --git a/include/net/mana/gdma.h b/include/net/mana/gdma.h
+index 96c120160f15..88b6ef7ce1a6 100644
+--- a/include/net/mana/gdma.h
++++ b/include/net/mana/gdma.h
+@@ -33,6 +33,7 @@ enum gdma_request_type {
+ 	GDMA_DESTROY_PD			= 30,
+ 	GDMA_CREATE_MR			= 31,
+ 	GDMA_DESTROY_MR			= 32,
++	GDMA_QUERY_HWC_TIMEOUT		= 84, /* 0x54 */
  };
  
- int rxe_register_device(struct rxe_dev *rxe, const char *ibdev_name)
+ #define GDMA_RESOURCE_DOORBELL_PAGE	27
+@@ -57,6 +58,8 @@ enum gdma_eqe_type {
+ 	GDMA_EQE_HWC_INIT_EQ_ID_DB	= 129,
+ 	GDMA_EQE_HWC_INIT_DATA		= 130,
+ 	GDMA_EQE_HWC_INIT_DONE		= 131,
++	GDMA_EQE_HWC_SOC_RECONFIG	= 132,
++	GDMA_EQE_HWC_SOC_RECONFIG_DATA	= 133,
+ };
+ 
+ enum {
+@@ -531,10 +534,12 @@ enum {
+  * so the driver is able to reliably support features like busy_poll.
+  */
+ #define GDMA_DRV_CAP_FLAG_1_NAPI_WKDONE_FIX BIT(2)
++#define GDMA_DRV_CAP_FLAG_1_HWC_TIMEOUT_RECONFIG BIT(3)
+ 
+ #define GDMA_DRV_CAP_FLAGS1 \
+ 	(GDMA_DRV_CAP_FLAG_1_EQ_SHARING_MULTI_VPORT | \
+-	 GDMA_DRV_CAP_FLAG_1_NAPI_WKDONE_FIX)
++	 GDMA_DRV_CAP_FLAG_1_NAPI_WKDONE_FIX | \
++	 GDMA_DRV_CAP_FLAG_1_HWC_TIMEOUT_RECONFIG)
+ 
+ #define GDMA_DRV_CAP_FLAGS2 0
+ 
+@@ -664,6 +669,19 @@ struct gdma_disable_queue_req {
+ 	u32 alloc_res_id_on_creation;
+ }; /* HW DATA */
+ 
++/* GDMA_QUERY_HWC_TIMEOUT */
++struct gdma_query_hwc_timeout_req {
++	struct gdma_req_hdr hdr;
++	u32 timeout_ms;
++	u32 reserved;
++};
++
++struct gdma_query_hwc_timeout_resp {
++	struct gdma_resp_hdr hdr;
++	u32 timeout_ms;
++	u32 reserved;
++};
++
+ enum atb_page_size {
+ 	ATB_PAGE_SIZE_4K,
+ 	ATB_PAGE_SIZE_8K,
+diff --git a/include/net/mana/hw_channel.h b/include/net/mana/hw_channel.h
+index 6a757a6e2732..3d3b5c881bc1 100644
+--- a/include/net/mana/hw_channel.h
++++ b/include/net/mana/hw_channel.h
+@@ -23,6 +23,10 @@
+ #define HWC_INIT_DATA_PF_DEST_RQ_ID	10
+ #define HWC_INIT_DATA_PF_DEST_CQ_ID	11
+ 
++#define HWC_DATA_CFG_HWC_TIMEOUT 1
++
++#define HW_CHANNEL_WAIT_RESOURCE_TIMEOUT_MS 30000
++
+ /* Structures labeled with "HW DATA" are exchanged with the hardware. All of
+  * them are naturally aligned and hence don't need __packed.
+  */
+@@ -182,6 +186,7 @@ struct hw_channel_context {
+ 
+ 	u32 pf_dest_vrq_id;
+ 	u32 pf_dest_vrcq_id;
++	u32 hwc_timeout;
+ 
+ 	struct hwc_caller_ctx *caller_ctx;
+ };
 -- 
-2.39.2
+2.34.1
 
