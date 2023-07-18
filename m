@@ -2,170 +2,135 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5775675817D
-	for <lists+linux-rdma@lfdr.de>; Tue, 18 Jul 2023 17:56:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2361D758339
+	for <lists+linux-rdma@lfdr.de>; Tue, 18 Jul 2023 19:06:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233806AbjGRP4t (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 18 Jul 2023 11:56:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49764 "EHLO
+        id S230159AbjGRRGh (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 18 Jul 2023 13:06:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41438 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233783AbjGRP4p (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 18 Jul 2023 11:56:45 -0400
-Received: from mail-qt1-x82a.google.com (mail-qt1-x82a.google.com [IPv6:2607:f8b0:4864:20::82a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F031019AD
-        for <linux-rdma@vger.kernel.org>; Tue, 18 Jul 2023 08:56:40 -0700 (PDT)
-Received: by mail-qt1-x82a.google.com with SMTP id d75a77b69052e-403f65a3f8cso7661721cf.2
-        for <linux-rdma@vger.kernel.org>; Tue, 18 Jul 2023 08:56:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google; t=1689695800; x=1692287800;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=Tjh+qVHNBsaCt+fpZytXbv4JtN2Kf+QfiKBiC+OQp3c=;
-        b=bYsTsBY1ioUL9k8drjTPCTw/fEJ0EAlGX5g4owJLPMPxN2CHLKUwbHRdsGU8yNpkgq
-         tSJhCUQojCe7iZMsDT/aY34J1oz2QHRzCjLM+KqEBEo9M8BD2KOp45IRPvgTMkckJ6dq
-         H9fFQEgiHBZaevHiGZSqEfXqcoEtLjezHUCteBqtpUndGthYRfcrzEkhL4CGHaIFAcmx
-         6wdKboUdDaPeOVdQT0aOEr8C1+gySsRWrc1UqrjcLLXuhZDet2FHUgbuPzKGfDMScL/V
-         K78x7SFpD7MaWzPqAIp0HWYQyARw7uG7tneLlNjtBlR/Fv5UIeG6Vm/K9G6rR6HJEl7q
-         8oNQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689695800; x=1692287800;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Tjh+qVHNBsaCt+fpZytXbv4JtN2Kf+QfiKBiC+OQp3c=;
-        b=XDXReHuIAgbaZSUO/M5T84XRLLjVEeaTx4gRy454rmPw5VveG+TuSgf0R7IG02f2Hk
-         EWIu14hl8UsNBe2B5o8t4b8Uy8mbjG+yDffNRjak+UflO82NFg0BuIpchTOxhu58DN6/
-         KegSkhAtcjHN3V2xahzgUZXWj9ox0l3xVCzoGeKHjzpNPPdls+8QadD90DJXjNuTdR/F
-         IY4RgOiJSd0uxfSz8Ew4AInJaphGT4bemvSjJyWbdDMYJ4qcmLJVxIWDI2krT/0VyFqA
-         F6DRDLTuhxCOQF+cPwy0A8GJmiozlFZmmrJHVUrPeJ736hdH4gk3ndtJAsyfRXuYfhPx
-         QCUA==
-X-Gm-Message-State: ABy/qLYxG/34XdIvzOjr/UTn01UTReGQ0IBeYG8cm1LdM85hMwWWS0aq
-        6TXd1fV1BMl0kY2+qbV1hMd9og==
-X-Google-Smtp-Source: APBJJlFA9677r6PhZxjwKlQ1fKWxhiNMVqP6N1YqyjTADbRS7wwnXs7xld1btAoYMOwt7mM3Vw+c9w==
-X-Received: by 2002:ac8:7dd0:0:b0:403:a814:ef4d with SMTP id c16-20020ac87dd0000000b00403a814ef4dmr21293071qte.49.1689695800050;
-        Tue, 18 Jul 2023 08:56:40 -0700 (PDT)
-Received: from ziepe.ca ([206.223.160.26])
-        by smtp.gmail.com with ESMTPSA id s21-20020ac87595000000b003e635f80e72sm727847qtq.48.2023.07.18.08.56.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 18 Jul 2023 08:56:39 -0700 (PDT)
-Received: from jgg by wakko with local (Exim 4.95)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1qLn42-002YJT-5I;
-        Tue, 18 Jul 2023 12:56:38 -0300
-Date:   Tue, 18 Jul 2023 12:56:38 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Alex Williamson <alex.williamson@redhat.com>
-Cc:     Grzegorz Jaszczyk <jaz@semihalf.com>,
-        Christian Brauner <brauner@kernel.org>,
-        linux-fsdevel@vger.kernel.org, linux-aio@kvack.org,
-        linux-usb@vger.kernel.org, Matthew Rosato <mjrosato@linux.ibm.com>,
-        Paul Durrant <paul@xen.org>, Tom Rix <trix@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        dri-devel@lists.freedesktop.org, Michal Hocko <mhocko@kernel.org>,
-        linux-mm@kvack.org, Kirti Wankhede <kwankhede@nvidia.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Jens Axboe <axboe@kernel.dk>,
-        Vineeth Vijayan <vneethv@linux.ibm.com>,
-        Diana Craciun <diana.craciun@oss.nxp.com>,
-        Alexander Gordeev <agordeev@linux.ibm.com>,
-        Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Leon Romanovsky <leon@kernel.org>,
-        Harald Freudenberger <freude@linux.ibm.com>,
-        Fei Li <fei1.li@intel.com>, x86@kernel.org,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        Halil Pasic <pasic@linux.ibm.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        intel-gfx@lists.freedesktop.org,
-        Christian Borntraeger <borntraeger@linux.ibm.com>,
-        linux-fpga@vger.kernel.org, Zhi Wang <zhi.a.wang@intel.com>,
-        Wu Hao <hao.wu@intel.com>, Jason Herne <jjherne@linux.ibm.com>,
-        Eric Farman <farman@linux.ibm.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Andrew Donnellan <ajd@linux.ibm.com>,
-        Arnd Bergmann <arnd@arndb.de>, linux-s390@vger.kernel.org,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        linuxppc-dev@lists.ozlabs.org, Eric Auger <eric.auger@redhat.com>,
-        Borislav Petkov <bp@alien8.de>, kvm@vger.kernel.org,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>, cgroups@vger.kernel.org,
-        Thomas Gleixner <tglx@linutronix.de>,
-        virtualization@lists.linux-foundation.org,
-        intel-gvt-dev@lists.freedesktop.org, io-uring@vger.kernel.org,
-        netdev@vger.kernel.org, Tony Krowiak <akrowiak@linux.ibm.com>,
-        Tvrtko Ursulin <tvrtko.ursulin@linux.intel.com>,
-        Pavel Begunkov <asml.silence@gmail.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Oded Gabbay <ogabbay@kernel.org>,
-        Muchun Song <muchun.song@linux.dev>,
-        Peter Oberparleiter <oberpar@linux.ibm.com>,
-        linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
-        Benjamin LaHaise <bcrl@kvack.org>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Sven Schnelle <svens@linux.ibm.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Frederic Barrat <fbarrat@linux.ibm.com>,
-        Moritz Fischer <mdf@kernel.org>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        David Woodhouse <dwmw2@infradead.org>,
-        Xu Yilun <yilun.xu@intel.com>,
-        Dominik Behr <dbehr@chromium.org>,
-        Marcin Wojtas <mw@semihalf.com>
-Subject: Re: [PATCH 0/2] eventfd: simplify signal helpers
-Message-ID: <ZLa2NmwexoxPkS9a@ziepe.ca>
-References: <20230630155936.3015595-1-jaz@semihalf.com>
- <20230714-gauner-unsolidarisch-fc51f96c61e8@brauner>
- <CAH76GKPF4BjJLrzLBW8k12ATaAGADeMYc2NQ9+j0KgRa0pomUw@mail.gmail.com>
- <20230717130831.0f18381a.alex.williamson@redhat.com>
- <ZLW8wEzkhBxd0O0L@ziepe.ca>
- <20230717165203.4ee6b1e6.alex.williamson@redhat.com>
+        with ESMTP id S232347AbjGRRGf (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 18 Jul 2023 13:06:35 -0400
+Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB5F21739;
+        Tue, 18 Jul 2023 10:06:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1689699967; x=1721235967;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=CEwwrjwPfBcE3oHaafHaOcaByORj1Xv2apS2NjCY/9c=;
+  b=IGR5rkqaOeSM7p5JhFVdy+RPyiKbpBG2yODuN9SFU5x6rQ6XddgBXZ53
+   n4uunr3P99/HRbEaKChxTKDql3WYvTGpmo4rKu5Qa10XRNxvbWNqp1lw6
+   Nnc5yzcqd9jyjCbQLrd/7EyGry/ESVF5JBLLYk6l/IRfwJ06uP6M59ekl
+   ynt29aYr9v1BJdW/JDFl+HP3c4jFW4QvgLC1gRwpiruFv8pY5f/B8A4OI
+   xhTVi0aoE6KeL0I7rBS/6JP/kNoheudVkyXhNnIqt7mjlonIFhT0mvarq
+   AyPOPzQ1n2Q06GrT4fN05W+Y9m4Ie5mSBHf37QkxUAAJxv9HROcvTYWDx
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10775"; a="369818793"
+X-IronPort-AV: E=Sophos;i="6.01,214,1684825200"; 
+   d="scan'208";a="369818793"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Jul 2023 10:05:53 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10775"; a="813831154"
+X-IronPort-AV: E=Sophos;i="6.01,214,1684825200"; 
+   d="scan'208";a="813831154"
+Received: from lkp-server02.sh.intel.com (HELO 36946fcf73d7) ([10.239.97.151])
+  by FMSMGA003.fm.intel.com with ESMTP; 18 Jul 2023 10:05:24 -0700
+Received: from kbuild by 36946fcf73d7 with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qLo7t-0001jn-25;
+        Tue, 18 Jul 2023 17:04:48 +0000
+Date:   Wed, 19 Jul 2023 01:02:58 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Junxian Huang <huangjunxian6@hisilicon.com>, jgg@nvidia.com,
+        leon@kernel.org
+Cc:     oe-kbuild-all@lists.linux.dev, linux-rdma@vger.kernel.org,
+        linuxarm@huawei.com, linux-kernel@vger.kernel.org,
+        huangjunxian6@hisilicon.com
+Subject: Re: [PATCH v2 for-rc 3/3] RDMA/hns: Add check and adjust for
+ function resource values
+Message-ID: <202307190042.hWzQQIOk-lkp@intel.com>
+References: <20230717060340.453850-4-huangjunxian6@hisilicon.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230717165203.4ee6b1e6.alex.williamson@redhat.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=unavailable autolearn_force=no version=3.4.6
+In-Reply-To: <20230717060340.453850-4-huangjunxian6@hisilicon.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Mon, Jul 17, 2023 at 04:52:03PM -0600, Alex Williamson wrote:
-> On Mon, 17 Jul 2023 19:12:16 -0300
-> Jason Gunthorpe <jgg@ziepe.ca> wrote:
-> 
-> > On Mon, Jul 17, 2023 at 01:08:31PM -0600, Alex Williamson wrote:
-> > 
-> > > What would that mechanism be?  We've been iterating on getting the
-> > > serialization and buffering correct, but I don't know of another means
-> > > that combines the notification with a value, so we'd likely end up with
-> > > an eventfd only for notification and a separate ring buffer for
-> > > notification values.  
-> > 
-> > All FDs do this. You just have to make a FD with custom
-> > file_operations that does what this wants. The uAPI shouldn't be able
-> > to tell if the FD is backing it with an eventfd or otherwise. Have the
-> > kernel return the FD instead of accepting it. Follow the basic design
-> > of eg mlx5vf_save_fops
-> 
-> Sure, userspace could poll on any fd and read a value from it, but at
-> that point we're essentially duplicating a lot of what eventfd provides
-> for a minor(?) semantic difference over how the counter value is
-> interpreted.  Using an actual eventfd allows the ACPI notification to
-> work as just another interrupt index within the existing vfio IRQ
-> uAPI.
+Hi Junxian,
 
-Yes, duplicated, sort of, whatever the "ack" is to allow pushing a new
-value can be revised to run as part of the read.
+kernel test robot noticed the following build warnings:
 
-But I don't really view it as a minor difference. eventfd is a
-counter. It should not be abused otherwise, even if it can be made to
-work.
+[auto build test WARNING on rdma/for-next]
+[also build test WARNING on linus/master v6.5-rc2 next-20230718]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
 
-It really isn't an IRQ if it is pushing an async message w/data.
+url:    https://github.com/intel-lab-lkp/linux/commits/Junxian-Huang/RDMA-hns-support-get-xrcd-num-from-firmware/20230718-171525
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git for-next
+patch link:    https://lore.kernel.org/r/20230717060340.453850-4-huangjunxian6%40hisilicon.com
+patch subject: [PATCH v2 for-rc 3/3] RDMA/hns: Add check and adjust for function resource values
+config: arm64-allyesconfig (https://download.01.org/0day-ci/archive/20230719/202307190042.hWzQQIOk-lkp@intel.com/config)
+compiler: aarch64-linux-gcc (GCC) 12.3.0
+reproduce: (https://download.01.org/0day-ci/archive/20230719/202307190042.hWzQQIOk-lkp@intel.com/reproduce)
 
-Jason
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202307190042.hWzQQIOk-lkp@intel.com/
+
+All warnings (new ones prefixed by >>):
+
+   drivers/infiniband/hw/hns/hns_roce_hw_v2.c: In function 'adjust_res_caps':
+>> drivers/infiniband/hw/hns/hns_roce_hw_v2.c:1709:53: warning: passing argument 2 of 'check_res_is_supported' discards 'const' qualifier from pointer target type [-Wdiscarded-qualifiers]
+    1709 |                 if (!check_res_is_supported(hr_dev, &bt_num_table[i]))
+         |                                                     ^~~~~~~~~~~~~~~~
+   drivers/infiniband/hw/hns/hns_roce_hw_v2.c:1673:60: note: expected 'struct hns_roce_bt_num *' but argument is of type 'const struct hns_roce_bt_num *'
+    1673 |                                    struct hns_roce_bt_num *bt_num_entry)
+         |                                    ~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~
+
+
+vim +1709 drivers/infiniband/hw/hns/hns_roce_hw_v2.c
+
+  1699	
+  1700	static u16 adjust_res_caps(struct hns_roce_dev *hr_dev)
+  1701	{
+  1702		struct hns_roce_caps *caps = &hr_dev->caps;
+  1703		u16 invalid_flag = 0;
+  1704		u32 min, max;
+  1705		u32 *res;
+  1706		int i;
+  1707	
+  1708		for (i = 0; i < ARRAY_SIZE(bt_num_table); i++) {
+> 1709			if (!check_res_is_supported(hr_dev, &bt_num_table[i]))
+  1710				continue;
+  1711	
+  1712			res = (u32 *)((void *)caps + bt_num_table[i].res_offset);
+  1713			min = bt_num_table[i].min;
+  1714			max = bt_num_table[i].max;
+  1715			if (*res < min || *res > max) {
+  1716				*res = *res < min ? min : max;
+  1717				invalid_flag |= 1 << bt_num_table[i].invalid_flag;
+  1718			}
+  1719		}
+  1720	
+  1721		adjust_eqc_bt_num(caps, &invalid_flag);
+  1722	
+  1723		return invalid_flag;
+  1724	}
+  1725	
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
