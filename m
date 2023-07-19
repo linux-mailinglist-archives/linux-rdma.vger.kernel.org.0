@@ -2,55 +2,52 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 96CB4758E5B
-	for <lists+linux-rdma@lfdr.de>; Wed, 19 Jul 2023 09:08:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F0C6B758E7A
+	for <lists+linux-rdma@lfdr.de>; Wed, 19 Jul 2023 09:14:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229513AbjGSHIe (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 19 Jul 2023 03:08:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45122 "EHLO
+        id S229497AbjGSHOB (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 19 Jul 2023 03:14:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48186 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229497AbjGSHId (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 19 Jul 2023 03:08:33 -0400
+        with ESMTP id S229512AbjGSHOB (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 19 Jul 2023 03:14:01 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 756C1E43;
-        Wed, 19 Jul 2023 00:08:32 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B977E43;
+        Wed, 19 Jul 2023 00:14:00 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 04AB0612B4;
-        Wed, 19 Jul 2023 07:08:32 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 754CAC433C8;
-        Wed, 19 Jul 2023 07:08:30 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id E40AB612C9;
+        Wed, 19 Jul 2023 07:13:59 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 72670C433C8;
+        Wed, 19 Jul 2023 07:13:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1689750511;
-        bh=vIgxjK1nHjyKdJKx7z3ZJwiHL/Y2wz1xQKW4KNcqGFA=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=tWf4xPGaf+BJQulEhvX5yAcfYPvpcX3HTkBIO4fTnH77cWUXLyCFnSjtvTCHPluLx
-         fmrRXeVrjueyMjNq9oov+mQJSQwYXNa7TgU3Gg4GCm6DvqCIUHtAyE3pDqVNjjOfNK
-         QUL4T05lH3g4t7UHkYEDLzEvXJ7pFeqgrbQa2qzul15xRJU5WeV85siwCCJWDDvdq1
-         DcmvPL3Sm9y9Tnm0Km+9qXkc6SckFbxVN26LUL2u4QcvMWH30CriGmtiHxA62p02bj
-         BOLjc/DliDwhyq0jlQ/2yyrH5w1wK1Ph3e8QEj4G5MrmsLvbOBKZj0UujrYsVSVSYX
-         sjnRFdl57nnNg==
-Date:   Wed, 19 Jul 2023 10:08:26 +0300
+        s=k20201202; t=1689750839;
+        bh=wKMTdx6Rq19uLdNhU2xuF85dRnRfzVgD3FULIvhmTjs=;
+        h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+        b=LBEIFzPtSjmrwRUReqABzv9wl9O6sYg5edpu3HQcl0wunebsoFNMF78EEBrpCEkgv
+         QbBUr3B+SbJ3oHz9aUh4gQ/iQ9aQOVFCCyxg8an2Zhb9rDcM+8YGVuyIchp9XZnQAS
+         CYefFDmtWM6UzmJvVkPHWTFzI4M4AGKBBC2cvn7hxUTkhqD+irENkQkKRFigqCBQNv
+         gLkC2Lrrsz3ncDqhK6jzLpJHtY0oh4tLsTMgr93HxqinvssDZC5ajUn3eM2XzzzOha
+         17cMwecKsWHQypFAh8roD3+OkT23p7WyQqcc6EEqAkhQGG/HDjugQHrRXFs7meZi3y
+         IDEn9nngtWUVg==
 From:   Leon Romanovsky <leon@kernel.org>
-To:     Souradeep Chakrabarti <schakrabarti@linux.microsoft.com>
-Cc:     kys@microsoft.com, haiyangz@microsoft.com, wei.liu@kernel.org,
-        decui@microsoft.com, davem@davemloft.net, edumazet@google.com,
-        kuba@kernel.org, pabeni@redhat.com, longli@microsoft.com,
-        sharmaajay@microsoft.com, cai.huoqing@linux.dev,
-        ssengar@linux.microsoft.com, vkuznets@redhat.com,
-        tglx@linutronix.de, linux-hyperv@vger.kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-rdma@vger.kernel.org, schakrabarti@microsoft.com
-Subject: Re: [PATCH V4 net-next] net: mana: Configure hwc timeout from
- hardware
-Message-ID: <20230719070826.GF8808@unreal>
-References: <1689703232-24858-1-git-send-email-schakrabarti@linux.microsoft.com>
+To:     Mustafa Ismail <mustafa.ismail@intel.com>,
+        Shiraz Saleem <shiraz.saleem@intel.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>, Arnd Bergmann <arnd@kernel.org>
+Cc:     Arnd Bergmann <arnd@arndb.de>,
+        Sindhu Devale <sindhu.devale@intel.com>,
+        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org
+In-Reply-To: <20230718193835.3546684-1-arnd@kernel.org>
+References: <20230718193835.3546684-1-arnd@kernel.org>
+Subject: Re: [PATCH] RDMA/irdma: fix building without IPv6
+Message-Id: <168975083513.990259.11334065090312758176.b4-ty@kernel.org>
+Date:   Wed, 19 Jul 2023 10:13:55 +0300
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1689703232-24858-1-git-send-email-schakrabarti@linux.microsoft.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Mailer: b4 0.12-dev-a055d
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
@@ -61,35 +58,23 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Tue, Jul 18, 2023 at 11:00:32AM -0700, Souradeep Chakrabarti wrote:
-> At present hwc timeout value is a fixed value. This patch sets the hwc
-> timeout from the hardware. It now uses a new hardware capability
-> GDMA_DRV_CAP_FLAG_1_HWC_TIMEOUT_RECONFIG to query and set the value
-> in hwc_timeout.
+
+On Tue, 18 Jul 2023 21:38:09 +0200, Arnd Bergmann wrote:
+> The new irdma_iw_get_vlan_prio() function requires IPv6 support to build:
 > 
-> Signed-off-by: Souradeep Chakrabarti <schakrabarti@linux.microsoft.com>
-> ---
-> V3 -> V4:
-> * Changing branch to net-next.
-> * Changed the commit message to 75 chars per line.
-> ---
->  .../net/ethernet/microsoft/mana/gdma_main.c   | 30 ++++++++++++++++++-
->  .../net/ethernet/microsoft/mana/hw_channel.c  | 25 +++++++++++++++-
->  include/net/mana/gdma.h                       | 20 ++++++++++++-
->  include/net/mana/hw_channel.h                 |  5 ++++
->  4 files changed, 77 insertions(+), 3 deletions(-)
+> x86_64-linux-ld: drivers/infiniband/hw/irdma/cm.o: in function `irdma_iw_get_vlan_prio':
+> cm.c:(.text+0x2832): undefined reference to `ipv6_chk_addr'
+> 
+> Add a compile-time check in the same way as elsewhere in this file to avoid
+> this by conditionally leaving out the ipv6 specific bits.
+> 
+> [...]
 
-<...>
+Applied, thanks!
 
->  	gc->hwc.driver_data = NULL;
->  	gc->hwc.gdma_context = NULL;
-> @@ -818,6 +839,7 @@ int mana_hwc_send_request(struct hw_channel_context *hwc, u32 req_len,
->  		dest_vrq = hwc->pf_dest_vrq_id;
->  		dest_vrcq = hwc->pf_dest_vrcq_id;
->  	}
-> +	dev_err(hwc->dev, "HWC: timeout %u ms\n", hwc->hwc_timeout);
+[1/1] RDMA/irdma: fix building without IPv6
+      https://git.kernel.org/rdma/rdma/c/b3d2b014b259ba
 
-Why do you print this message every time and with error level?
-Probably you should delete it.
-
-Thanks
+Best regards,
+-- 
+Leon Romanovsky <leon@kernel.org>
