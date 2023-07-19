@@ -2,67 +2,73 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7536E7599AA
-	for <lists+linux-rdma@lfdr.de>; Wed, 19 Jul 2023 17:26:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ACCC4759A89
+	for <lists+linux-rdma@lfdr.de>; Wed, 19 Jul 2023 18:14:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231839AbjGSP0j (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 19 Jul 2023 11:26:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36274 "EHLO
+        id S229637AbjGSQOi (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 19 Jul 2023 12:14:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39860 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231794AbjGSP0g (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 19 Jul 2023 11:26:36 -0400
-Received: from mail-vs1-xe36.google.com (mail-vs1-xe36.google.com [IPv6:2607:f8b0:4864:20::e36])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 643B410D4
-        for <linux-rdma@vger.kernel.org>; Wed, 19 Jul 2023 08:26:27 -0700 (PDT)
-Received: by mail-vs1-xe36.google.com with SMTP id ada2fe7eead31-44358c019ddso2498599137.1
-        for <linux-rdma@vger.kernel.org>; Wed, 19 Jul 2023 08:26:27 -0700 (PDT)
+        with ESMTP id S229596AbjGSQOi (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 19 Jul 2023 12:14:38 -0400
+Received: from mail-oa1-x2c.google.com (mail-oa1-x2c.google.com [IPv6:2001:4860:4864:20::2c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E0B4710B
+        for <linux-rdma@vger.kernel.org>; Wed, 19 Jul 2023 09:14:36 -0700 (PDT)
+Received: by mail-oa1-x2c.google.com with SMTP id 586e51a60fabf-1b059dd7c0cso5612276fac.0
+        for <linux-rdma@vger.kernel.org>; Wed, 19 Jul 2023 09:14:36 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=blockbridge.com; s=google; t=1689780386; x=1690385186;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=JukgVsbDHKr1MqAolgv3lVT+a4db5PmVajsRBUO6KK0=;
-        b=KSjSFaBpKK2Zgp90kdVd/YE66ezqbFWLOFuUZheTN/Sz/OAyJ8V5MuoXUBp9VzuNmh
-         rWdqbb1LWLPrS40qAXa3jjJ+aGMvr4ZkgcPtHHGHFszMBNuKdiI2MYwcWgSfAfFVy+AE
-         715y+j5L1T74MRQ2OqrhrA+eGSnQtebfhRWG7G5PfOEldwcBtQu2GwPJBRTx+RJZtfKZ
-         sjoVKYELsiLZ5m+BeHm4KiIYSiopBnXH0VhlX4Djiz27WKOkfgpINz8/cZ61LdxsASW8
-         rLbGe2FdoklKsTBbPjbpsv9MHfJSUfvaTBrx4QieGbC9qCPCEqbVzLdaFO3vrl9IRFIR
-         YJ5g==
+        d=gmail.com; s=20221208; t=1689783275; x=1692375275;
+        h=content-transfer-encoding:in-reply-to:from:references:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=n+yr0SwLIJTZ+rjKL48fZL6dhCm6tOlZQ6MYdakXIkk=;
+        b=GuUHc4ZXOKEkrhWJPUvXtrKyVvelzR/bRUY+uxqc73qIb/37pMCKtOjcbhWgaIML6E
+         7HDg8XTK1dOJgLiqCp8jKkbgRR+O8fBubG6jkioibTq5ErXYXvThX//gONiECKh+Rsx3
+         uNKZdXkxoo04uwe+yV68Cyx6lQZvOInoJT/8BKAFkOi+sHEHtPQ+ubr0cml3fgXWaikF
+         qQ8Sj0R5M5MXXMZPsjVnDPk761GMe3RRDjrcZ/UefwCooEi0ncfjcaQl0L81v3CNGsTa
+         nser9SMO030cLwGXnaEJV3v4fnBiDkuTlsWiMWfGLz2t4ApyQjb0uhxKOWgwnG/XLsi8
+         XnYQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689780386; x=1690385186;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=JukgVsbDHKr1MqAolgv3lVT+a4db5PmVajsRBUO6KK0=;
-        b=h6VoZY4IebsiSpmUZcvFagni/G/6Ql7RMiLyLt8xPu/glrzZVueLioxt8TQ36KPdqB
-         CYgwilpWMEBaVrD2v6sHo0ziTGUqHit1pkDF1uLJ4WIUmMizQz+TmYTOa3HnIjlnCTvU
-         qnK91tm/tdooh6i0VXPhtNUMn7LKMaov4XyHZs5W0Gev1U0GIWOMTmSVKUsgztHQ4TkZ
-         r7U8YquQOQGdZe2MOdZJ8tmUka3yUfHaw51nll/sOcn8i4Ox77WkpRRCXuwMHxjEkd0Y
-         BUxmmI8eWt5YzANYTyNGcku3Li1g1zUZZGuZF6ETRpH7W0mWhggBuBCriPm4zn4DAzB9
-         Ff5g==
-X-Gm-Message-State: ABy/qLab6+mMMaK7mmywk0DlkR3UnwYerBkBj/31gspZV0KPZhXoxPt0
-        xd8XYMa8vV8eFqtT8Q6PzCsfHmZRjC+r8FO04tuM1utHh0uEMLZJN5I=
-X-Google-Smtp-Source: APBJJlHJjStUvS+vXXtBW2VhvEJKiPh6u0hvC/pcRo1CzJb1Sd66LN+lE0TXFfzxFjqJR2bG4hq3VaGB0K+cmSh7D8w=
-X-Received: by 2002:a67:ef89:0:b0:446:afff:90ce with SMTP id
- r9-20020a67ef89000000b00446afff90cemr8545600vsp.34.1689780386448; Wed, 19 Jul
- 2023 08:26:26 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1689783275; x=1692375275;
+        h=content-transfer-encoding:in-reply-to:from:references:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=n+yr0SwLIJTZ+rjKL48fZL6dhCm6tOlZQ6MYdakXIkk=;
+        b=ceRQTyRrhUxx7BdmGKws5x7XwlHnhByNbgK9xmS9HUe2CPMbqAnSea7YWxUfapL0jc
+         Czm25LTJsgC3An6LOkOby/nV/YslFrxtrsKYwaP/N814p7hBjzd1VWijz4FiM4PvApyv
+         ManpBewRy1ueGaRsQtirg9Tc5ot4Vp7Mez2UCzdUPFZHRuSxYy06uY0Pg27VktKM2umX
+         ELVXcF40QRoG7fMlvAApJAy4gHbEc+uxzJESeHY4B353g6fQKufdNwF+wWXDKUhcVS9I
+         elfspQ7epAmPiFOH+sz4XcwqP1J25t1q6pBwqdRNS6JfVoshQfdVAApho7J6PCw228PY
+         uHWg==
+X-Gm-Message-State: ABy/qLbwPyyA/2iyh0Zo3smV/sEx4EkD6BMA704nTwQGy9cpq0jNpgf3
+        pIiLAgSGBMqt0Je5npqIYxQfSsgAGyA=
+X-Google-Smtp-Source: APBJJlF0fzZQAjPCNXRybA6ZMOsbWfTJIwZyo02/my5TChjSvNFcGvqW2SyuNqByuWOKr2YT/LARWw==
+X-Received: by 2002:a05:6870:6003:b0:1b0:5141:4c6e with SMTP id t3-20020a056870600300b001b051414c6emr23716019oaa.26.1689783275249;
+        Wed, 19 Jul 2023 09:14:35 -0700 (PDT)
+Received: from ?IPV6:2603:8081:140c:1a00:6b28:6b74:44a5:2cfa? (2603-8081-140c-1a00-6b28-6b74-44a5-2cfa.res6.spectrum.com. [2603:8081:140c:1a00:6b28:6b74:44a5:2cfa])
+        by smtp.gmail.com with ESMTPSA id w1-20020a056870854100b001b3d93884fdsm2045428oaj.57.2023.07.19.09.14.34
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 19 Jul 2023 09:14:34 -0700 (PDT)
+Message-ID: <8f924d85-1ca7-d51a-d8ed-d019957244f1@gmail.com>
+Date:   Wed, 19 Jul 2023 11:14:34 -0500
 MIME-Version: 1.0
-References: <CAHex0cr5NVCpERLfudrTk-rhHez0uodnkbj5fp5X58zh3DFvfg@mail.gmail.com>
- <64BDF3A9-86BB-4F55-8F28-161C7B92ECDD@oracle.com> <CAHex0cqHgjRuxjGX1=t-OFUv6=5nMuVJE+oC6w2FC2p-OQichg@mail.gmail.com>
- <7256cf0a-4a4e-2c28-b74a-21026769d43f@nvidia.com>
-In-Reply-To: <7256cf0a-4a4e-2c28-b74a-21026769d43f@nvidia.com>
-From:   Jonathan Nicklin <jnicklin@blockbridge.com>
-Date:   Wed, 19 Jul 2023 11:25:50 -0400
-Message-ID: <CAHex0cpt_0zU7A1h3scMuZp97faYV5uKi_U06D_GYCe7zHaqxw@mail.gmail.com>
-Subject: Re: mlx5: set_roce_address() / GID add failure
-To:     Mark Zhang <markzhang@nvidia.com>
-Cc:     William Kucharski <william.kucharski@oracle.com>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: Fwd: pyverbs test_resize_cq fails in some cases
+Content-Language: en-US
+To:     Edward Srouji <edwards@nvidia.com>, linux-rdma@vger.kernel.org,
+        Jason Gunthorpe <jgg@nvidia.com>
+References: <f218337a-b975-bfa7-635d-bafc42c2df04@gmail.com>
+ <b43c8172-a1c3-2ebd-e70e-198ae68248b5@gmail.com>
+ <a958a957-dfe3-9348-632f-ee0c9af13238@gmail.com>
+ <94b33c65-e0b5-663a-f041-3b96df3ef977@nvidia.com>
+From:   Bob Pearson <rpearsonhpe@gmail.com>
+In-Reply-To: <94b33c65-e0b5-663a-f041-3b96df3ef977@nvidia.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -70,73 +76,118 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Thanks a ton, Mark. That's precisely what the issue was.
+On 7/18/23 10:13, Edward Srouji wrote:
+> 
+> On 7/18/2023 5:08 AM, Bob Pearson wrote:
+>> External email: Use caution opening links or attachments
+>>
+>>
+>> On 3/23/23 21:38, Bob Pearson wrote:
+>>>
+>>>
+>>> -------- Forwarded Message --------
+>>> Subject: pyverbs test_resize_cq fails in some cases
+>>> Date: Thu, 23 Mar 2023 21:37:28 -0500
+>>> From: Bob Pearson <rpearsonhpe@gmail.com>
+>>> To: Edward Srouji <edwards@nvidia.com>
+>>> CC: Jason Gunthorpe <jgg@nvidia.com>, Zhu Yanjun <zyjzyj2000@gmail.com>
+>>>
+>>> Edward,
+>>>
+>>> The pyverbs test: test_resize_cq fails for the rxe driver in some cases.
+>>>
+>>> The code is definitely racy:
+>>>
+>>> def test_resize_cq(self):
+>>>          """
+>>>          Test resize CQ, start with specific value and then increase and decrease
+>>>          the CQ size. The test also check bad flow of decrease the CQ size when
+>>>          there are more completions on it than the new value.
+>>>          """
+>>>          self.create_players(CQUDResources, cq_depth=3)
+>>>          # Decrease the CQ size.
+>>>          new_cq_size = 1
+>>>          try:
+>>>              self.client.cq.resize(new_cq_size)
+>>>          except PyverbsRDMAError as ex:
+>>>              if ex.error_code == errno.EOPNOTSUPP:
+>>>                  raise unittest.SkipTest('Resize CQ is not supported')
+>>>              raise ex
+>>>          self.assertTrue(self.client.cq.cqe >= new_cq_size,
+>>>                          f'The actual CQ size ({self.client.cq.cqe}) is less '
+>>>                          'than guaranteed ({new_cq_size})')
+>>>
+>>>          # Increase the CQ size.
+>>>          new_cq_size = 7
+>>>          self.client.cq.resize(new_cq_size)
+>>>          self.assertTrue(self.client.cq.cqe >= new_cq_size,
+>>>                          f'The actual CQ size ({self.client.cq.cqe}) is less '
+>>>                          'than guaranteed ({new_cq_size})')
+>>>
+>>>          # Fill the CQ entries except one for avoid cq_overrun warnings.
+>>>          send_wr, _ = u.get_send_elements(self.client, False)
+>>>          ah_client = u.get_global_ah(self.client, self.gid_index, self.ib_port)
+>>>          for i in range(self.client.cq.cqe - 1):
+>>>              u.send(self.client, send_wr, ah=ah_client)
+>>>
+>>>        ### This posts 6 send work requests but does not wait for them to complete
+>>>        ### The following proceeds while the sends are executing in the background
+>>>        ### and the test can fail. An easy fix is to add the line
+>>>          time.sleep(1/1000)  ### or maybe something a little larger but this works for me.
+>>>        ### alternatively you could test the data at the destination.
+>>>
+>>>          # Decrease the CQ size to less than the CQ unpolled entries.
+>>>          new_cq_size = 1
+>>>          with self.assertRaises(PyverbsRDMAError) as ex:
+>>>              self.client.cq.resize(new_cq_size)
+>>>          self.assertEqual(ex.exception.error_code, errno.EINVAL)
+>>>
+>>> Bob
+>> Edward,
+>>
+>> This is showing up again. The software drivers are slower than the hardware drivers.
+>> Now that the send side logic in the rxe driver is handled by a workqueue and if it is
+>> scheduled instead of running inline this test will fail some percentage of the time.
+>> Especially when the test is run for the first time but 5-10% of the time after that.
+>> If you run the send side logic inline it is fast enough that the test doesn't fail but
+>> that doesn't allow the workqueue tasks to spread out on the available cores so for high
+>> QP count it is much better to schedule them.
+>>
+>> There are a few time.sleep(1) calls in the pyverbs test suite but that is wasteful and
+>> better is time.sleep(0.001) which works fine for this test and doesn't slow down the
+>> run time for the whole suite noticeably.
+> 
+> I prefer not to add a sleep (the only sleeps are in mlx5_vfio test which is required to wait for the port to become up - but it's not run by default until the user specifically configure an mlx5_vfio device).
+> 
+> What if we poll the CQ for one completion, to make sure that the driver had the time to publish a CQE (which might be enough "time" for us)?
+> i.e.
+> 
+> $ git diff
+> diff --git a/tests/test_cq.py b/tests/test_cq.py
+> index 98485e3f8..e17676304 100644
+> --- a/tests/test_cq.py
+> +++ b/tests/test_cq.py
+> @@ -123,6 +123,7 @@ class CQTest(RDMATestCase):
+>          ah_client = u.get_global_ah(self.client, self.gid_index, self.ib_port)
+>          for i in range(self.client.cq.cqe - 1):
+>              u.send(self.client, send_wr, ah=ah_client)
+> +        u.poll_cq(self.client.cq)
+> 
+>          # Decrease the CQ size to less than the CQ unpolled entries.
+>          new_cq_size = 1
+> 
+> Could you try to see if that solves the issue for you?
+> 
+>>
+>> Bottom line this test case is racy.
+>>
+>> If you want I can submit a 2 line patch that does this. Or if you would that would be
+>> better.
+>>
+>> Bob
 
--Jonathan
+Yes. May take a day or two to get to it but I will definitely try it.
 
-On Tue, Jul 18, 2023 at 10:08=E2=80=AFPM Mark Zhang <markzhang@nvidia.com> =
-wrote:
->
-> On 7/19/2023 9:40 AM, Jonathan Nicklin wrote:
-> > External email: Use caution opening links or attachments
-> >
-> >
-> > Thanks for the reply and the link. I believe that is a different
-> > failure mode involving __ib_cache_gid_add(). In my case, there is no
-> > traffic (the link is completely idle). And, the failure mode is
-> > persistent no matter how many times I "toggle the link."
-> >
-> >
-> > -Jonathan
-> >
-> > On Tue, Jul 18, 2023 at 9:28=E2=80=AFPM William Kucharski
-> > <william.kucharski@oracle.com> wrote:
-> >>
-> >> Yes - it's NVIDIA issue 2326155:
-> >>
-> >> https://docs.nvidia.com/networking/display/MLNXOFEDv590560113/Known+Is=
-sues
-> >>
-> >> William Kucharski
-> >>
-> >> On Jul 18, 2023, at 19:06, Jonathan Nicklin <jnicklin@blockbridge.com>=
- wrote:
-> >>
-> >> =EF=BB=BFHello,
-> >>
-> >> I've encountered an unexpected error configuring RDMA/ROCEV2 with one =
-of our
-> >> 200G ConnectX6 NICS. This issue reproduces consistently on 5.4.249 and=
- 6.4.3.
-> >>
-> >> dmesg output:
-> >>
-> >> [    9.863871] mlx5_core 0000:01:00.0: mlx5_cmd_out_err:803:(pid
-> >> 1440): SET_ROCE_ADDRESS(0x761) op_mod(0x0) failed, status bad
-> >> parameter(0x3), syndrome (0x63c66), err(-22)
-> >> [    9.881250] infiniband mlx5_2: add_roce_gid GID add failed port=3D1=
- index=3D0
-> >> [    9.889095] __ib_cache_gid_add: unable to add gid
-> >> fe80:0000:0000:0000:ad3e:e3ff:fe92:b31b error=3D-22
-> >>
->
-> Seems this syndrome indicates it's a multicast source_mac which is not
-> allowed. For more information please contact your Nvidia support
-> representative, thanks.
->
-> >> Device Type:      ConnectX6
-> >> Part Number:      MCX653105A-HDA_Ax
-> >> Description:      ConnectX-6 VPI adapter card; HDR IB (200Gb/s) and 20=
-0GbE ...
-> >> PSID:             MT_0000000223
-> >> PCI Device Name:  0000:01:00.0
-> >>
-> >> Firmware is up to date. LINK_TYPE is to ETH(2) and ROCE_CONTROL is
-> >> ROCE_ENABLE(2).
-> >>
-> >> Has anyone seen this syndrome? Any advice or assistance is appreciated=
-.
-> >>
-> >> Thanks,
-> >> -Jonathan
->
+Thanks
+
+Bob
