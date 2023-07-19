@@ -2,73 +2,58 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id ACCC4759A89
-	for <lists+linux-rdma@lfdr.de>; Wed, 19 Jul 2023 18:14:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A5EF759AFD
+	for <lists+linux-rdma@lfdr.de>; Wed, 19 Jul 2023 18:38:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229637AbjGSQOi (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 19 Jul 2023 12:14:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39860 "EHLO
+        id S230127AbjGSQiJ (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 19 Jul 2023 12:38:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54978 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229596AbjGSQOi (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 19 Jul 2023 12:14:38 -0400
-Received: from mail-oa1-x2c.google.com (mail-oa1-x2c.google.com [IPv6:2001:4860:4864:20::2c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E0B4710B
-        for <linux-rdma@vger.kernel.org>; Wed, 19 Jul 2023 09:14:36 -0700 (PDT)
-Received: by mail-oa1-x2c.google.com with SMTP id 586e51a60fabf-1b059dd7c0cso5612276fac.0
-        for <linux-rdma@vger.kernel.org>; Wed, 19 Jul 2023 09:14:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1689783275; x=1692375275;
-        h=content-transfer-encoding:in-reply-to:from:references:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=n+yr0SwLIJTZ+rjKL48fZL6dhCm6tOlZQ6MYdakXIkk=;
-        b=GuUHc4ZXOKEkrhWJPUvXtrKyVvelzR/bRUY+uxqc73qIb/37pMCKtOjcbhWgaIML6E
-         7HDg8XTK1dOJgLiqCp8jKkbgRR+O8fBubG6jkioibTq5ErXYXvThX//gONiECKh+Rsx3
-         uNKZdXkxoo04uwe+yV68Cyx6lQZvOInoJT/8BKAFkOi+sHEHtPQ+ubr0cml3fgXWaikF
-         qQ8Sj0R5M5MXXMZPsjVnDPk761GMe3RRDjrcZ/UefwCooEi0ncfjcaQl0L81v3CNGsTa
-         nser9SMO030cLwGXnaEJV3v4fnBiDkuTlsWiMWfGLz2t4ApyQjb0uhxKOWgwnG/XLsi8
-         XnYQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689783275; x=1692375275;
-        h=content-transfer-encoding:in-reply-to:from:references:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=n+yr0SwLIJTZ+rjKL48fZL6dhCm6tOlZQ6MYdakXIkk=;
-        b=ceRQTyRrhUxx7BdmGKws5x7XwlHnhByNbgK9xmS9HUe2CPMbqAnSea7YWxUfapL0jc
-         Czm25LTJsgC3An6LOkOby/nV/YslFrxtrsKYwaP/N814p7hBjzd1VWijz4FiM4PvApyv
-         ManpBewRy1ueGaRsQtirg9Tc5ot4Vp7Mez2UCzdUPFZHRuSxYy06uY0Pg27VktKM2umX
-         ELVXcF40QRoG7fMlvAApJAy4gHbEc+uxzJESeHY4B353g6fQKufdNwF+wWXDKUhcVS9I
-         elfspQ7epAmPiFOH+sz4XcwqP1J25t1q6pBwqdRNS6JfVoshQfdVAApho7J6PCw228PY
-         uHWg==
-X-Gm-Message-State: ABy/qLbwPyyA/2iyh0Zo3smV/sEx4EkD6BMA704nTwQGy9cpq0jNpgf3
-        pIiLAgSGBMqt0Je5npqIYxQfSsgAGyA=
-X-Google-Smtp-Source: APBJJlF0fzZQAjPCNXRybA6ZMOsbWfTJIwZyo02/my5TChjSvNFcGvqW2SyuNqByuWOKr2YT/LARWw==
-X-Received: by 2002:a05:6870:6003:b0:1b0:5141:4c6e with SMTP id t3-20020a056870600300b001b051414c6emr23716019oaa.26.1689783275249;
-        Wed, 19 Jul 2023 09:14:35 -0700 (PDT)
-Received: from ?IPV6:2603:8081:140c:1a00:6b28:6b74:44a5:2cfa? (2603-8081-140c-1a00-6b28-6b74-44a5-2cfa.res6.spectrum.com. [2603:8081:140c:1a00:6b28:6b74:44a5:2cfa])
-        by smtp.gmail.com with ESMTPSA id w1-20020a056870854100b001b3d93884fdsm2045428oaj.57.2023.07.19.09.14.34
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 19 Jul 2023 09:14:34 -0700 (PDT)
-Message-ID: <8f924d85-1ca7-d51a-d8ed-d019957244f1@gmail.com>
-Date:   Wed, 19 Jul 2023 11:14:34 -0500
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: Fwd: pyverbs test_resize_cq fails in some cases
-Content-Language: en-US
-To:     Edward Srouji <edwards@nvidia.com>, linux-rdma@vger.kernel.org,
-        Jason Gunthorpe <jgg@nvidia.com>
-References: <f218337a-b975-bfa7-635d-bafc42c2df04@gmail.com>
- <b43c8172-a1c3-2ebd-e70e-198ae68248b5@gmail.com>
- <a958a957-dfe3-9348-632f-ee0c9af13238@gmail.com>
- <94b33c65-e0b5-663a-f041-3b96df3ef977@nvidia.com>
-From:   Bob Pearson <rpearsonhpe@gmail.com>
-In-Reply-To: <94b33c65-e0b5-663a-f041-3b96df3ef977@nvidia.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        with ESMTP id S230150AbjGSQiH (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 19 Jul 2023 12:38:07 -0400
+Received: from mga06.intel.com (mga06b.intel.com [134.134.136.31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4106510CB
+        for <linux-rdma@vger.kernel.org>; Wed, 19 Jul 2023 09:37:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1689784670; x=1721320670;
+  h=date:from:to:cc:subject:message-id;
+  bh=XHP3k2c+IQzlh3LPfweR7uE2XwnNTh5iMREGJlBWxGI=;
+  b=R9tTt7TzzCxNZH6ocBxXb5r4OBsbkJDtCct4G9ed5kCkPGFRs2CAq7+A
+   DdUuJxleTJlSGXWbaEsZihXNazWDpgUcdklZ0dhYKXy3e6jS/cucXyR0P
+   kHEqpE/WYpE8sHEI2y4N8T9HD6RMcsVxwOH2xUltoA35DTiBCxPspibsF
+   j1NXr/87dC4UnnIO+XZ+aUr60wwgvZ2JwxCXua/Rwx3Qe55VuaZQ0dCgl
+   IENF3v+6rLaM2GJGMA2FTWOFoGaMvq/O+sm1hJCwBtbuhTN65FwkrBY2z
+   OD7vd1W66++jlX+KeErmGOtyNgt0MK51WOOB4+jETuia09/eOwZ0KyDMq
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10776"; a="430285205"
+X-IronPort-AV: E=Sophos;i="6.01,216,1684825200"; 
+   d="scan'208";a="430285205"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Jul 2023 09:35:41 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10776"; a="789478738"
+X-IronPort-AV: E=Sophos;i="6.01,216,1684825200"; 
+   d="scan'208";a="789478738"
+Received: from lkp-server02.sh.intel.com (HELO 36946fcf73d7) ([10.239.97.151])
+  by fmsmga008.fm.intel.com with ESMTP; 19 Jul 2023 09:35:39 -0700
+Received: from kbuild by 36946fcf73d7 with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qMA9L-0005HO-0G;
+        Wed, 19 Jul 2023 16:35:39 +0000
+Date:   Thu, 20 Jul 2023 00:35:00 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Leon Romanovsky <leon@kernel.org>
+Cc:     Doug Ledford <dledford@redhat.com>,
+        Jason Gunthorpe <jgg+lists@ziepe.ca>,
+        linux-rdma@vger.kernel.org
+Subject: [rdma:wip/leon-for-rc] BUILD SUCCESS
+ 5c719d7aef298e9b727f39b45e88528a96df3620
+Message-ID: <202307200058.sgejfnrK-lkp@intel.com>
+User-Agent: s-nail v14.9.24
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -76,118 +61,215 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 7/18/23 10:13, Edward Srouji wrote:
-> 
-> On 7/18/2023 5:08 AM, Bob Pearson wrote:
->> External email: Use caution opening links or attachments
->>
->>
->> On 3/23/23 21:38, Bob Pearson wrote:
->>>
->>>
->>> -------- Forwarded Message --------
->>> Subject: pyverbs test_resize_cq fails in some cases
->>> Date: Thu, 23 Mar 2023 21:37:28 -0500
->>> From: Bob Pearson <rpearsonhpe@gmail.com>
->>> To: Edward Srouji <edwards@nvidia.com>
->>> CC: Jason Gunthorpe <jgg@nvidia.com>, Zhu Yanjun <zyjzyj2000@gmail.com>
->>>
->>> Edward,
->>>
->>> The pyverbs test: test_resize_cq fails for the rxe driver in some cases.
->>>
->>> The code is definitely racy:
->>>
->>> def test_resize_cq(self):
->>>          """
->>>          Test resize CQ, start with specific value and then increase and decrease
->>>          the CQ size. The test also check bad flow of decrease the CQ size when
->>>          there are more completions on it than the new value.
->>>          """
->>>          self.create_players(CQUDResources, cq_depth=3)
->>>          # Decrease the CQ size.
->>>          new_cq_size = 1
->>>          try:
->>>              self.client.cq.resize(new_cq_size)
->>>          except PyverbsRDMAError as ex:
->>>              if ex.error_code == errno.EOPNOTSUPP:
->>>                  raise unittest.SkipTest('Resize CQ is not supported')
->>>              raise ex
->>>          self.assertTrue(self.client.cq.cqe >= new_cq_size,
->>>                          f'The actual CQ size ({self.client.cq.cqe}) is less '
->>>                          'than guaranteed ({new_cq_size})')
->>>
->>>          # Increase the CQ size.
->>>          new_cq_size = 7
->>>          self.client.cq.resize(new_cq_size)
->>>          self.assertTrue(self.client.cq.cqe >= new_cq_size,
->>>                          f'The actual CQ size ({self.client.cq.cqe}) is less '
->>>                          'than guaranteed ({new_cq_size})')
->>>
->>>          # Fill the CQ entries except one for avoid cq_overrun warnings.
->>>          send_wr, _ = u.get_send_elements(self.client, False)
->>>          ah_client = u.get_global_ah(self.client, self.gid_index, self.ib_port)
->>>          for i in range(self.client.cq.cqe - 1):
->>>              u.send(self.client, send_wr, ah=ah_client)
->>>
->>>        ### This posts 6 send work requests but does not wait for them to complete
->>>        ### The following proceeds while the sends are executing in the background
->>>        ### and the test can fail. An easy fix is to add the line
->>>          time.sleep(1/1000)  ### or maybe something a little larger but this works for me.
->>>        ### alternatively you could test the data at the destination.
->>>
->>>          # Decrease the CQ size to less than the CQ unpolled entries.
->>>          new_cq_size = 1
->>>          with self.assertRaises(PyverbsRDMAError) as ex:
->>>              self.client.cq.resize(new_cq_size)
->>>          self.assertEqual(ex.exception.error_code, errno.EINVAL)
->>>
->>> Bob
->> Edward,
->>
->> This is showing up again. The software drivers are slower than the hardware drivers.
->> Now that the send side logic in the rxe driver is handled by a workqueue and if it is
->> scheduled instead of running inline this test will fail some percentage of the time.
->> Especially when the test is run for the first time but 5-10% of the time after that.
->> If you run the send side logic inline it is fast enough that the test doesn't fail but
->> that doesn't allow the workqueue tasks to spread out on the available cores so for high
->> QP count it is much better to schedule them.
->>
->> There are a few time.sleep(1) calls in the pyverbs test suite but that is wasteful and
->> better is time.sleep(0.001) which works fine for this test and doesn't slow down the
->> run time for the whole suite noticeably.
-> 
-> I prefer not to add a sleep (the only sleeps are in mlx5_vfio test which is required to wait for the port to become up - but it's not run by default until the user specifically configure an mlx5_vfio device).
-> 
-> What if we poll the CQ for one completion, to make sure that the driver had the time to publish a CQE (which might be enough "time" for us)?
-> i.e.
-> 
-> $ git diff
-> diff --git a/tests/test_cq.py b/tests/test_cq.py
-> index 98485e3f8..e17676304 100644
-> --- a/tests/test_cq.py
-> +++ b/tests/test_cq.py
-> @@ -123,6 +123,7 @@ class CQTest(RDMATestCase):
->          ah_client = u.get_global_ah(self.client, self.gid_index, self.ib_port)
->          for i in range(self.client.cq.cqe - 1):
->              u.send(self.client, send_wr, ah=ah_client)
-> +        u.poll_cq(self.client.cq)
-> 
->          # Decrease the CQ size to less than the CQ unpolled entries.
->          new_cq_size = 1
-> 
-> Could you try to see if that solves the issue for you?
-> 
->>
->> Bottom line this test case is racy.
->>
->> If you want I can submit a 2 line patch that does this. Or if you would that would be
->> better.
->>
->> Bob
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git wip/leon-for-rc
+branch HEAD: 5c719d7aef298e9b727f39b45e88528a96df3620  RDMA/rxe: Fix an error handling path in rxe_bind_mw()
 
-Yes. May take a day or two to get to it but I will definitely try it.
+elapsed time: 1652m
 
-Thanks
+configs tested: 196
+configs skipped: 20
 
-Bob
+The following configs have been built successfully.
+More configs may be tested in the coming days.
+
+tested configs:
+alpha                            allyesconfig   gcc  
+alpha                               defconfig   gcc  
+arc                              allyesconfig   gcc  
+arc                          axs101_defconfig   gcc  
+arc                                 defconfig   gcc  
+arc                  randconfig-r005-20230718   gcc  
+arc                  randconfig-r024-20230718   gcc  
+arc                  randconfig-r031-20230718   gcc  
+arc                  randconfig-r035-20230718   gcc  
+arc                  randconfig-r043-20230718   gcc  
+arm                              allmodconfig   gcc  
+arm                              allyesconfig   gcc  
+arm                     am200epdkit_defconfig   clang
+arm                                 defconfig   gcc  
+arm                            hisi_defconfig   gcc  
+arm                          ixp4xx_defconfig   clang
+arm                            mps2_defconfig   gcc  
+arm                           omap1_defconfig   clang
+arm                          pxa3xx_defconfig   gcc  
+arm                  randconfig-r015-20230718   gcc  
+arm                  randconfig-r032-20230718   clang
+arm                  randconfig-r034-20230718   clang
+arm                  randconfig-r036-20230718   clang
+arm                  randconfig-r046-20230718   gcc  
+arm64                            allyesconfig   gcc  
+arm64                               defconfig   gcc  
+arm64                randconfig-r001-20230718   gcc  
+arm64                randconfig-r011-20230718   clang
+arm64                randconfig-r012-20230718   clang
+arm64                randconfig-r022-20230718   clang
+arm64                randconfig-r023-20230718   clang
+csky                                defconfig   gcc  
+csky                 randconfig-r024-20230718   gcc  
+csky                 randconfig-r025-20230718   gcc  
+csky                 randconfig-r034-20230718   gcc  
+hexagon              randconfig-r021-20230718   clang
+hexagon              randconfig-r031-20230718   clang
+hexagon              randconfig-r033-20230718   clang
+hexagon              randconfig-r041-20230718   clang
+hexagon              randconfig-r045-20230718   clang
+i386                             allyesconfig   gcc  
+i386         buildonly-randconfig-r004-20230718   gcc  
+i386         buildonly-randconfig-r005-20230718   gcc  
+i386         buildonly-randconfig-r006-20230718   gcc  
+i386                              debian-10.3   gcc  
+i386                                defconfig   gcc  
+i386                 randconfig-i001-20230718   gcc  
+i386                 randconfig-i002-20230718   gcc  
+i386                 randconfig-i003-20230718   gcc  
+i386                 randconfig-i004-20230718   gcc  
+i386                 randconfig-i005-20230718   gcc  
+i386                 randconfig-i006-20230718   gcc  
+i386                 randconfig-i011-20230718   clang
+i386                 randconfig-i012-20230718   clang
+i386                 randconfig-i013-20230718   clang
+i386                 randconfig-i014-20230718   clang
+i386                 randconfig-i015-20230718   clang
+i386                 randconfig-i016-20230718   clang
+i386                 randconfig-r002-20230718   gcc  
+i386                 randconfig-r006-20230718   gcc  
+i386                 randconfig-r013-20230718   clang
+i386                 randconfig-r015-20230718   clang
+i386                 randconfig-r024-20230718   clang
+loongarch                        allmodconfig   gcc  
+loongarch                         allnoconfig   gcc  
+loongarch                           defconfig   gcc  
+loongarch            randconfig-r031-20230718   gcc  
+m68k                             allmodconfig   gcc  
+m68k                             allyesconfig   gcc  
+m68k                                defconfig   gcc  
+m68k                 randconfig-r021-20230718   gcc  
+m68k                 randconfig-r031-20230718   gcc  
+microblaze           randconfig-r004-20230718   gcc  
+microblaze           randconfig-r012-20230718   gcc  
+microblaze           randconfig-r023-20230718   gcc  
+microblaze           randconfig-r033-20230718   gcc  
+microblaze           randconfig-r036-20230718   gcc  
+mips                             allmodconfig   gcc  
+mips                             allyesconfig   gcc  
+mips                  cavium_octeon_defconfig   clang
+mips                           ip22_defconfig   clang
+mips                           jazz_defconfig   gcc  
+mips                        qi_lb60_defconfig   clang
+mips                 randconfig-r013-20230718   gcc  
+mips                 randconfig-r016-20230718   gcc  
+mips                 randconfig-r022-20230718   gcc  
+mips                 randconfig-r023-20230718   gcc  
+nios2                               defconfig   gcc  
+nios2                randconfig-r002-20230718   gcc  
+nios2                randconfig-r005-20230718   gcc  
+nios2                randconfig-r035-20230718   gcc  
+openrisc             randconfig-r014-20230718   gcc  
+openrisc             randconfig-r034-20230718   gcc  
+parisc                           allyesconfig   gcc  
+parisc                              defconfig   gcc  
+parisc               randconfig-r022-20230718   gcc  
+parisc               randconfig-r024-20230718   gcc  
+parisc64                            defconfig   gcc  
+powerpc                          allmodconfig   gcc  
+powerpc                           allnoconfig   gcc  
+powerpc                      arches_defconfig   gcc  
+powerpc                          g5_defconfig   clang
+powerpc                    klondike_defconfig   gcc  
+powerpc                      mgcoge_defconfig   gcc  
+powerpc                    mvme5100_defconfig   clang
+powerpc              randconfig-r005-20230718   gcc  
+powerpc              randconfig-r006-20230718   gcc  
+powerpc              randconfig-r014-20230718   clang
+powerpc              randconfig-r015-20230718   clang
+powerpc              randconfig-r023-20230718   clang
+powerpc              randconfig-r025-20230718   clang
+powerpc              randconfig-r033-20230718   gcc  
+powerpc              randconfig-r034-20230718   gcc  
+powerpc              randconfig-r036-20230718   gcc  
+powerpc                     tqm8540_defconfig   clang
+riscv                            allmodconfig   gcc  
+riscv                             allnoconfig   gcc  
+riscv                            allyesconfig   gcc  
+riscv                               defconfig   gcc  
+riscv             nommu_k210_sdcard_defconfig   gcc  
+riscv                randconfig-r013-20230718   clang
+riscv                randconfig-r016-20230718   clang
+riscv                randconfig-r022-20230718   clang
+riscv                randconfig-r023-20230718   clang
+riscv                randconfig-r042-20230718   clang
+riscv                          rv32_defconfig   gcc  
+s390                             allmodconfig   gcc  
+s390                             allyesconfig   gcc  
+s390                                defconfig   gcc  
+s390                 randconfig-r001-20230718   gcc  
+s390                 randconfig-r006-20230718   gcc  
+s390                 randconfig-r015-20230718   clang
+s390                 randconfig-r025-20230718   clang
+s390                 randconfig-r031-20230718   gcc  
+s390                 randconfig-r044-20230718   clang
+sh                               allmodconfig   gcc  
+sh                        edosk7705_defconfig   gcc  
+sh                   randconfig-r001-20230718   gcc  
+sh                   randconfig-r012-20230718   gcc  
+sh                   randconfig-r021-20230718   gcc  
+sh                   randconfig-r026-20230718   gcc  
+sh                   randconfig-r034-20230718   gcc  
+sh                          rsk7201_defconfig   gcc  
+sh                           se7724_defconfig   gcc  
+sh                          urquell_defconfig   gcc  
+sparc                            allyesconfig   gcc  
+sparc                               defconfig   gcc  
+sparc                randconfig-r003-20230718   gcc  
+sparc                randconfig-r004-20230718   gcc  
+sparc                randconfig-r016-20230718   gcc  
+sparc                randconfig-r024-20230718   gcc  
+sparc                randconfig-r026-20230718   gcc  
+sparc                randconfig-r031-20230718   gcc  
+sparc64              randconfig-r004-20230718   gcc  
+sparc64              randconfig-r036-20230718   gcc  
+um                               allmodconfig   clang
+um                                allnoconfig   clang
+um                               allyesconfig   clang
+um                                  defconfig   gcc  
+um                             i386_defconfig   gcc  
+um                   randconfig-r002-20230718   clang
+um                   randconfig-r011-20230718   gcc  
+um                   randconfig-r026-20230718   gcc  
+um                           x86_64_defconfig   gcc  
+x86_64                           allyesconfig   gcc  
+x86_64       buildonly-randconfig-r001-20230718   gcc  
+x86_64       buildonly-randconfig-r002-20230718   gcc  
+x86_64       buildonly-randconfig-r003-20230718   gcc  
+x86_64                              defconfig   gcc  
+x86_64                                  kexec   gcc  
+x86_64               randconfig-r012-20230718   clang
+x86_64               randconfig-r014-20230718   clang
+x86_64               randconfig-r021-20230718   clang
+x86_64               randconfig-r032-20230718   gcc  
+x86_64               randconfig-x001-20230718   clang
+x86_64               randconfig-x002-20230718   clang
+x86_64               randconfig-x003-20230718   clang
+x86_64               randconfig-x004-20230718   clang
+x86_64               randconfig-x005-20230718   clang
+x86_64               randconfig-x006-20230718   clang
+x86_64               randconfig-x011-20230718   gcc  
+x86_64               randconfig-x012-20230718   gcc  
+x86_64               randconfig-x013-20230718   gcc  
+x86_64               randconfig-x014-20230718   gcc  
+x86_64               randconfig-x015-20230718   gcc  
+x86_64               randconfig-x016-20230718   gcc  
+x86_64                           rhel-8.3-bpf   gcc  
+x86_64                          rhel-8.3-func   gcc  
+x86_64                    rhel-8.3-kselftests   gcc  
+x86_64                         rhel-8.3-kunit   gcc  
+x86_64                           rhel-8.3-ltp   gcc  
+x86_64                          rhel-8.3-rust   clang
+x86_64                               rhel-8.3   gcc  
+xtensa               randconfig-r006-20230718   gcc  
+xtensa               randconfig-r033-20230718   gcc  
+xtensa               randconfig-r034-20230718   gcc  
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
