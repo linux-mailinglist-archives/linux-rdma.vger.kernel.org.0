@@ -2,105 +2,74 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9DBEF7597A4
-	for <lists+linux-rdma@lfdr.de>; Wed, 19 Jul 2023 16:02:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A15DB759876
+	for <lists+linux-rdma@lfdr.de>; Wed, 19 Jul 2023 16:35:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230445AbjGSOCe (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 19 Jul 2023 10:02:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42350 "EHLO
+        id S230061AbjGSOfR (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 19 Jul 2023 10:35:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33586 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230028AbjGSOCd (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 19 Jul 2023 10:02:33 -0400
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BDEF58E;
-        Wed, 19 Jul 2023 07:02:31 -0700 (PDT)
-Received: from pps.filterd (m0279871.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 36JDhtKs007417;
-        Wed, 19 Jul 2023 14:01:50 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=qcppdkim1;
- bh=Ow7m3jr75URZ7/he9bZZDJXevWwjWsi1e2wS+QOs+tU=;
- b=oAJrr0NbpKZfKlvIh+41mpTLblMhSq/1YHr4nGKTD6Y9NxTj1Z+dk/57l8PmvUUfQkFF
- Kx9KsQFK0g0mwNO21IsbaQcd5/L+V5WE0gMDXzyRFuQpb6t6Jv6PLeBiYkaBb2r3nI5l
- RhqpuKiHzJg5l3wKxdWdASX6SZQ7ZB2vdVz44436qUVd6BfMxpVpJZB2BXOdFke3ad9q
- 3OCPfheENKDccGyvETHbW6TtrA9dyCEH/XQK8ksvjuap0tXJ32CnJVG0CWX0+mBElIb7
- JpptWIidltBUgMa122fnq0WH81s0E06JKykdAedWpIEDaZPZuQdxy7xyorN3+pouRX4I VA== 
-Received: from nalasppmta05.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3rwps5bed5-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 19 Jul 2023 14:01:48 +0000
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-        by NALASPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 36JE1lm1002273
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 19 Jul 2023 14:01:47 GMT
-Received: from [10.48.241.243] (10.49.16.6) by nalasex01a.na.qualcomm.com
- (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.30; Wed, 19 Jul
- 2023 07:01:46 -0700
-Message-ID: <7738463c-c592-5d59-61ec-d39f9544b18f@quicinc.com>
-Date:   Wed, 19 Jul 2023 07:01:45 -0700
+        with ESMTP id S229622AbjGSOeq (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 19 Jul 2023 10:34:46 -0400
+Received: from mail-oa1-x2f.google.com (mail-oa1-x2f.google.com [IPv6:2001:4860:4864:20::2f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 809ACC7
+        for <linux-rdma@vger.kernel.org>; Wed, 19 Jul 2023 07:34:45 -0700 (PDT)
+Received: by mail-oa1-x2f.google.com with SMTP id 586e51a60fabf-1bac8445e06so1018412fac.1
+        for <linux-rdma@vger.kernel.org>; Wed, 19 Jul 2023 07:34:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1689777285; x=1692369285;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=Na27NwBvd6f/ZJ3US8o2hFH7DfwG/0t8m0Qr2AhKy90=;
+        b=Bjr09v+wNulB1inONi/lLs9dt3kWZhd/V7KgdZ9GQYJCKB55Ok247m1ql7B0b2II1y
+         xCwr+8J+v2vM6MD2Eea58EvhE96IW7enw3vuWyw6ckykay2WSmdrHN7VWEDUVcKrd4Pu
+         6Jk0iEEKHplmbUOLdBhGawSQRdTJ0FAbPsz3dXjio+mQcUelYWyC7X0FXoAA6HMbyj7W
+         +m4YSJDRWzV8Pw6lR/+yj9OHNnVQzsYimNM9pi7jvi6v60Rvn1hqX9sSsmwDjPyxNfm3
+         91Dk7TCwCbx612W4m+wmwqdbwD0SnU9TOKNk2Pr1Vw+DpxHH2Duh0jw26ZN/86eDScj3
+         nXsA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689777285; x=1692369285;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=Na27NwBvd6f/ZJ3US8o2hFH7DfwG/0t8m0Qr2AhKy90=;
+        b=N5FHxQFIcBtqmF+QsIUtKCi4lT8JFlOmv+3PaoOkSa+7EzC3wE0RFxcAz11/ndP0mX
+         mFzWZWlN64vVLWC9ZjWiaS4d5siuA1t/86HyI2E7EwkPjnxB5dJlMpJWxEkxDUlOIxSb
+         x5gMil+strd2/EULPxyV+44DtHqmYOjNNJQt2JwHYogCWc8nCyuN5TEJFI3u2/7UGgjB
+         lHUEFXDQXCfoX4oRmSIxZoKAz62lb261O+V0VXSX9cvAJ3A2ZMvKNEwiVp0C6+uEFJX3
+         pd/1eM2w5u+1jT2lg9IpJO8Wlfh8EPYvIsycwdozeoAjBUYZPCoTaU3vvZjWI7RxBhq6
+         mdiw==
+X-Gm-Message-State: ABy/qLYZhJPaOzdXvRj+k47wqXEjbQPqjFkjQ7bdmUGPjglj/dFccodL
+        QxzQRMy3oFxyPbf7YlajNGY=
+X-Google-Smtp-Source: APBJJlEV5sOtV4fNT2eXwQIlI4gqrfViday1Cr+5oV6u9ur0kf/TdzkfbTetRHlMmSVb6YT8ldqlVA==
+X-Received: by 2002:a05:6870:8192:b0:1ba:66c1:da53 with SMTP id k18-20020a056870819200b001ba66c1da53mr12418625oae.22.1689777284729;
+        Wed, 19 Jul 2023 07:34:44 -0700 (PDT)
+Received: from ?IPV6:2603:8081:140c:1a00:6b28:6b74:44a5:2cfa? (2603-8081-140c-1a00-6b28-6b74-44a5-2cfa.res6.spectrum.com. [2603:8081:140c:1a00:6b28:6b74:44a5:2cfa])
+        by smtp.gmail.com with ESMTPSA id x21-20020a05687031d500b001b02a3426ddsm1979496oac.14.2023.07.19.07.34.43
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 19 Jul 2023 07:34:44 -0700 (PDT)
+Message-ID: <5a036610-a51e-98ec-5319-1d7ce01b15a9@gmail.com>
+Date:   Wed, 19 Jul 2023 09:34:43 -0500
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
  Thunderbird/102.13.0
-Subject: Re: [PATCH net-next] page_pool: split types and declarations from
- page_pool.h
+Subject: Re: [PATCH for-next 2/2] RDMA/rxe: Enable rcu locking of indexed
+ objects
+To:     Zhu Yanjun <zyjzyj2000@gmail.com>
+Cc:     jgg@nvidia.com, leon@kernel.org, linux-rdma@vger.kernel.org,
+        jhack@hpe.com
+References: <20230718175943.16734-1-rpearsonhpe@gmail.com>
+ <20230718175943.16734-3-rpearsonhpe@gmail.com>
+ <CAD=hENcA5aUJQ0H_ufqpeHp=4KHBae=5K5GnaNDPSz+eFxk__w@mail.gmail.com>
 Content-Language: en-US
-To:     Yunsheng Lin <linyunsheng@huawei.com>, <davem@davemloft.net>,
-        <kuba@kernel.org>, <pabeni@redhat.com>
-CC:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        Alexander Lobakin <aleksander.lobakin@intel.com>,
-        Eric Dumazet <edumazet@google.com>,
-        Wei Fang <wei.fang@nxp.com>,
-        Shenwei Wang <shenwei.wang@nxp.com>,
-        Clark Wang <xiaoning.wang@nxp.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Sunil Goutham <sgoutham@marvell.com>,
-        Geetha sowjanya <gakula@marvell.com>,
-        Subbaraya Sundeep <sbhatta@marvell.com>,
-        hariprasad <hkelam@marvell.com>,
-        Saeed Mahameed <saeedm@nvidia.com>,
-        Leon Romanovsky <leon@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Felix Fietkau <nbd@nbd.name>,
-        Lorenzo Bianconi <lorenzo@kernel.org>,
-        Ryder Lee <ryder.lee@mediatek.com>,
-        Shayne Chen <shayne.chen@mediatek.com>,
-        Sean Wang <sean.wang@mediatek.com>,
-        Kalle Valo <kvalo@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>,
-        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
-        <linux-rdma@vger.kernel.org>, <bpf@vger.kernel.org>,
-        <linux-wireless@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-mediatek@lists.infradead.org>
-References: <20230719121339.63331-1-linyunsheng@huawei.com>
-From:   Jeff Johnson <quic_jjohnson@quicinc.com>
-In-Reply-To: <20230719121339.63331-1-linyunsheng@huawei.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.49.16.6]
-X-ClientProxiedBy: nalasex01c.na.qualcomm.com (10.47.97.35) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: _L3h4Q3N71Ht3lEC8JxD5IKpRtE2fNnX
-X-Proofpoint-ORIG-GUID: _L3h4Q3N71Ht3lEC8JxD5IKpRtE2fNnX
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
- definitions=2023-07-19_09,2023-07-19_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=821
- malwarescore=0 mlxscore=0 bulkscore=0 suspectscore=0 lowpriorityscore=0
- adultscore=0 phishscore=0 spamscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2306200000 definitions=main-2307190125
+From:   Bob Pearson <rpearsonhpe@gmail.com>
+In-Reply-To: <CAD=hENcA5aUJQ0H_ufqpeHp=4KHBae=5K5GnaNDPSz+eFxk__w@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_MSPIKE_H2,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -108,12 +77,73 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 7/19/2023 5:13 AM, Yunsheng Lin wrote:
-> Split types and pure function declarations from page_pool.h
-> and add them in page_page_types.h, so that C sources can
+On 7/19/23 00:38, Zhu Yanjun wrote:
+> On Wed, Jul 19, 2023 at 2:00 AM Bob Pearson <rpearsonhpe@gmail.com> wrote:
+>>
+>> Make rcu_read locking of critical sections with the indexed
+>> verbs objects be protected from early freeing of those objects.
+>> The AH, QP, MR and MW objects are looked up from their indices
+>> contained in received packets or WQEs during I/O processing.
+>> Make these objects be freed using kfree_rcu to avoid races.
+>>
+>> Signed-off-by: Bob Pearson <rpearsonhpe@gmail.com>
+>> ---
+>>  drivers/infiniband/sw/rxe/rxe_pool.h  | 1 +
+>>  drivers/infiniband/sw/rxe/rxe_verbs.c | 6 +++++-
+>>  2 files changed, 6 insertions(+), 1 deletion(-)
+>>
+>> diff --git a/drivers/infiniband/sw/rxe/rxe_pool.h b/drivers/infiniband/sw/rxe/rxe_pool.h
+>> index b42e26427a70..ef2f6f88e254 100644
+>> --- a/drivers/infiniband/sw/rxe/rxe_pool.h
+>> +++ b/drivers/infiniband/sw/rxe/rxe_pool.h
+>> @@ -25,6 +25,7 @@ struct rxe_pool_elem {
+>>         struct kref             ref_cnt;
+>>         struct list_head        list;
+>>         struct completion       complete;
+>> +       struct rcu_head         rcu;
+>>         u32                     index;
+>>  };
+>>
+>> diff --git a/drivers/infiniband/sw/rxe/rxe_verbs.c b/drivers/infiniband/sw/rxe/rxe_verbs.c
+>> index 903f0b71447e..b899924b81eb 100644
+>> --- a/drivers/infiniband/sw/rxe/rxe_verbs.c
+>> +++ b/drivers/infiniband/sw/rxe/rxe_verbs.c
+>> @@ -1395,7 +1395,7 @@ static int rxe_dereg_mr(struct ib_mr *ibmr, struct ib_udata *udata)
+>>         if (cleanup_err)
+>>                 rxe_err_mr(mr, "cleanup failed, err = %d", cleanup_err);
+>>
+>> -       kfree_rcu_mightsleep(mr);
+>> +       kfree_rcu(mr, elem.rcu);
+>>         return 0;
+>>
+>>  err_out:
+>> @@ -1494,6 +1494,10 @@ static const struct ib_device_ops rxe_dev_ops = {
+>>         INIT_RDMA_OBJ_SIZE(ib_srq, rxe_srq, ibsrq),
+>>         INIT_RDMA_OBJ_SIZE(ib_ucontext, rxe_ucontext, ibuc),
+>>         INIT_RDMA_OBJ_SIZE(ib_mw, rxe_mw, ibmw),
+>> +
+>> +       .rcu_offset_ah = offsetof(struct rxe_ah, elem.rcu),
+>> +       .rcu_offset_qp = offsetof(struct rxe_qp, elem.rcu),
+>> +       .rcu_offset_mw = offsetof(struct rxe_mw, elem.rcu),
+> 
+> In your commits, you mentioned that ah, qp, mw and mr will be
+> protected. But here, only ah, qp and mw are set.
+> Not sure if mr is also protected and set in other place.
+> Except that, I am fine with it.
+> 
+> Acked-by: Zhu Yanjun <zyjzyj2000@gmail.com>
+> 
+> Zhu Yanjun
+> 
+>>  };
+>>
+>>  int rxe_register_device(struct rxe_dev *rxe, const char *ibdev_name)
+>> --
+>> 2.39.2
+>>
 
-nit: s/page_page_types/page_pool_types/
+All of the verbs objects except MR are allocated and freed by rdma-core. MR is allocated
+and freed by the drivers. So for MR the kfree_rcu call is made in rxe_dereg_mr().
+I changed it from kfree_rcu_mightsleep to the kfree_rcu variant to match the three others.
 
-> include page_pool.h and headers should generally only include
-> page_pool_types.h as suggested by jakub.
-
+Bob
