@@ -2,74 +2,67 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A15DB759876
-	for <lists+linux-rdma@lfdr.de>; Wed, 19 Jul 2023 16:35:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7536E7599AA
+	for <lists+linux-rdma@lfdr.de>; Wed, 19 Jul 2023 17:26:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230061AbjGSOfR (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 19 Jul 2023 10:35:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33586 "EHLO
+        id S231839AbjGSP0j (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 19 Jul 2023 11:26:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36274 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229622AbjGSOeq (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 19 Jul 2023 10:34:46 -0400
-Received: from mail-oa1-x2f.google.com (mail-oa1-x2f.google.com [IPv6:2001:4860:4864:20::2f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 809ACC7
-        for <linux-rdma@vger.kernel.org>; Wed, 19 Jul 2023 07:34:45 -0700 (PDT)
-Received: by mail-oa1-x2f.google.com with SMTP id 586e51a60fabf-1bac8445e06so1018412fac.1
-        for <linux-rdma@vger.kernel.org>; Wed, 19 Jul 2023 07:34:45 -0700 (PDT)
+        with ESMTP id S231794AbjGSP0g (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 19 Jul 2023 11:26:36 -0400
+Received: from mail-vs1-xe36.google.com (mail-vs1-xe36.google.com [IPv6:2607:f8b0:4864:20::e36])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 643B410D4
+        for <linux-rdma@vger.kernel.org>; Wed, 19 Jul 2023 08:26:27 -0700 (PDT)
+Received: by mail-vs1-xe36.google.com with SMTP id ada2fe7eead31-44358c019ddso2498599137.1
+        for <linux-rdma@vger.kernel.org>; Wed, 19 Jul 2023 08:26:27 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1689777285; x=1692369285;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=Na27NwBvd6f/ZJ3US8o2hFH7DfwG/0t8m0Qr2AhKy90=;
-        b=Bjr09v+wNulB1inONi/lLs9dt3kWZhd/V7KgdZ9GQYJCKB55Ok247m1ql7B0b2II1y
-         xCwr+8J+v2vM6MD2Eea58EvhE96IW7enw3vuWyw6ckykay2WSmdrHN7VWEDUVcKrd4Pu
-         6Jk0iEEKHplmbUOLdBhGawSQRdTJ0FAbPsz3dXjio+mQcUelYWyC7X0FXoAA6HMbyj7W
-         +m4YSJDRWzV8Pw6lR/+yj9OHNnVQzsYimNM9pi7jvi6v60Rvn1hqX9sSsmwDjPyxNfm3
-         91Dk7TCwCbx612W4m+wmwqdbwD0SnU9TOKNk2Pr1Vw+DpxHH2Duh0jw26ZN/86eDScj3
-         nXsA==
+        d=blockbridge.com; s=google; t=1689780386; x=1690385186;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=JukgVsbDHKr1MqAolgv3lVT+a4db5PmVajsRBUO6KK0=;
+        b=KSjSFaBpKK2Zgp90kdVd/YE66ezqbFWLOFuUZheTN/Sz/OAyJ8V5MuoXUBp9VzuNmh
+         rWdqbb1LWLPrS40qAXa3jjJ+aGMvr4ZkgcPtHHGHFszMBNuKdiI2MYwcWgSfAfFVy+AE
+         715y+j5L1T74MRQ2OqrhrA+eGSnQtebfhRWG7G5PfOEldwcBtQu2GwPJBRTx+RJZtfKZ
+         sjoVKYELsiLZ5m+BeHm4KiIYSiopBnXH0VhlX4Djiz27WKOkfgpINz8/cZ61LdxsASW8
+         rLbGe2FdoklKsTBbPjbpsv9MHfJSUfvaTBrx4QieGbC9qCPCEqbVzLdaFO3vrl9IRFIR
+         YJ5g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689777285; x=1692369285;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=Na27NwBvd6f/ZJ3US8o2hFH7DfwG/0t8m0Qr2AhKy90=;
-        b=N5FHxQFIcBtqmF+QsIUtKCi4lT8JFlOmv+3PaoOkSa+7EzC3wE0RFxcAz11/ndP0mX
-         mFzWZWlN64vVLWC9ZjWiaS4d5siuA1t/86HyI2E7EwkPjnxB5dJlMpJWxEkxDUlOIxSb
-         x5gMil+strd2/EULPxyV+44DtHqmYOjNNJQt2JwHYogCWc8nCyuN5TEJFI3u2/7UGgjB
-         lHUEFXDQXCfoX4oRmSIxZoKAz62lb261O+V0VXSX9cvAJ3A2ZMvKNEwiVp0C6+uEFJX3
-         pd/1eM2w5u+1jT2lg9IpJO8Wlfh8EPYvIsycwdozeoAjBUYZPCoTaU3vvZjWI7RxBhq6
-         mdiw==
-X-Gm-Message-State: ABy/qLYZhJPaOzdXvRj+k47wqXEjbQPqjFkjQ7bdmUGPjglj/dFccodL
-        QxzQRMy3oFxyPbf7YlajNGY=
-X-Google-Smtp-Source: APBJJlEV5sOtV4fNT2eXwQIlI4gqrfViday1Cr+5oV6u9ur0kf/TdzkfbTetRHlMmSVb6YT8ldqlVA==
-X-Received: by 2002:a05:6870:8192:b0:1ba:66c1:da53 with SMTP id k18-20020a056870819200b001ba66c1da53mr12418625oae.22.1689777284729;
-        Wed, 19 Jul 2023 07:34:44 -0700 (PDT)
-Received: from ?IPV6:2603:8081:140c:1a00:6b28:6b74:44a5:2cfa? (2603-8081-140c-1a00-6b28-6b74-44a5-2cfa.res6.spectrum.com. [2603:8081:140c:1a00:6b28:6b74:44a5:2cfa])
-        by smtp.gmail.com with ESMTPSA id x21-20020a05687031d500b001b02a3426ddsm1979496oac.14.2023.07.19.07.34.43
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 19 Jul 2023 07:34:44 -0700 (PDT)
-Message-ID: <5a036610-a51e-98ec-5319-1d7ce01b15a9@gmail.com>
-Date:   Wed, 19 Jul 2023 09:34:43 -0500
+        d=1e100.net; s=20221208; t=1689780386; x=1690385186;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=JukgVsbDHKr1MqAolgv3lVT+a4db5PmVajsRBUO6KK0=;
+        b=h6VoZY4IebsiSpmUZcvFagni/G/6Ql7RMiLyLt8xPu/glrzZVueLioxt8TQ36KPdqB
+         CYgwilpWMEBaVrD2v6sHo0ziTGUqHit1pkDF1uLJ4WIUmMizQz+TmYTOa3HnIjlnCTvU
+         qnK91tm/tdooh6i0VXPhtNUMn7LKMaov4XyHZs5W0Gev1U0GIWOMTmSVKUsgztHQ4TkZ
+         r7U8YquQOQGdZe2MOdZJ8tmUka3yUfHaw51nll/sOcn8i4Ox77WkpRRCXuwMHxjEkd0Y
+         BUxmmI8eWt5YzANYTyNGcku3Li1g1zUZZGuZF6ETRpH7W0mWhggBuBCriPm4zn4DAzB9
+         Ff5g==
+X-Gm-Message-State: ABy/qLab6+mMMaK7mmywk0DlkR3UnwYerBkBj/31gspZV0KPZhXoxPt0
+        xd8XYMa8vV8eFqtT8Q6PzCsfHmZRjC+r8FO04tuM1utHh0uEMLZJN5I=
+X-Google-Smtp-Source: APBJJlHJjStUvS+vXXtBW2VhvEJKiPh6u0hvC/pcRo1CzJb1Sd66LN+lE0TXFfzxFjqJR2bG4hq3VaGB0K+cmSh7D8w=
+X-Received: by 2002:a67:ef89:0:b0:446:afff:90ce with SMTP id
+ r9-20020a67ef89000000b00446afff90cemr8545600vsp.34.1689780386448; Wed, 19 Jul
+ 2023 08:26:26 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH for-next 2/2] RDMA/rxe: Enable rcu locking of indexed
- objects
-To:     Zhu Yanjun <zyjzyj2000@gmail.com>
-Cc:     jgg@nvidia.com, leon@kernel.org, linux-rdma@vger.kernel.org,
-        jhack@hpe.com
-References: <20230718175943.16734-1-rpearsonhpe@gmail.com>
- <20230718175943.16734-3-rpearsonhpe@gmail.com>
- <CAD=hENcA5aUJQ0H_ufqpeHp=4KHBae=5K5GnaNDPSz+eFxk__w@mail.gmail.com>
-Content-Language: en-US
-From:   Bob Pearson <rpearsonhpe@gmail.com>
-In-Reply-To: <CAD=hENcA5aUJQ0H_ufqpeHp=4KHBae=5K5GnaNDPSz+eFxk__w@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+References: <CAHex0cr5NVCpERLfudrTk-rhHez0uodnkbj5fp5X58zh3DFvfg@mail.gmail.com>
+ <64BDF3A9-86BB-4F55-8F28-161C7B92ECDD@oracle.com> <CAHex0cqHgjRuxjGX1=t-OFUv6=5nMuVJE+oC6w2FC2p-OQichg@mail.gmail.com>
+ <7256cf0a-4a4e-2c28-b74a-21026769d43f@nvidia.com>
+In-Reply-To: <7256cf0a-4a4e-2c28-b74a-21026769d43f@nvidia.com>
+From:   Jonathan Nicklin <jnicklin@blockbridge.com>
+Date:   Wed, 19 Jul 2023 11:25:50 -0400
+Message-ID: <CAHex0cpt_0zU7A1h3scMuZp97faYV5uKi_U06D_GYCe7zHaqxw@mail.gmail.com>
+Subject: Re: mlx5: set_roce_address() / GID add failure
+To:     Mark Zhang <markzhang@nvidia.com>
+Cc:     William Kucharski <william.kucharski@oracle.com>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -77,73 +70,73 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 7/19/23 00:38, Zhu Yanjun wrote:
-> On Wed, Jul 19, 2023 at 2:00 AM Bob Pearson <rpearsonhpe@gmail.com> wrote:
->>
->> Make rcu_read locking of critical sections with the indexed
->> verbs objects be protected from early freeing of those objects.
->> The AH, QP, MR and MW objects are looked up from their indices
->> contained in received packets or WQEs during I/O processing.
->> Make these objects be freed using kfree_rcu to avoid races.
->>
->> Signed-off-by: Bob Pearson <rpearsonhpe@gmail.com>
->> ---
->>  drivers/infiniband/sw/rxe/rxe_pool.h  | 1 +
->>  drivers/infiniband/sw/rxe/rxe_verbs.c | 6 +++++-
->>  2 files changed, 6 insertions(+), 1 deletion(-)
->>
->> diff --git a/drivers/infiniband/sw/rxe/rxe_pool.h b/drivers/infiniband/sw/rxe/rxe_pool.h
->> index b42e26427a70..ef2f6f88e254 100644
->> --- a/drivers/infiniband/sw/rxe/rxe_pool.h
->> +++ b/drivers/infiniband/sw/rxe/rxe_pool.h
->> @@ -25,6 +25,7 @@ struct rxe_pool_elem {
->>         struct kref             ref_cnt;
->>         struct list_head        list;
->>         struct completion       complete;
->> +       struct rcu_head         rcu;
->>         u32                     index;
->>  };
->>
->> diff --git a/drivers/infiniband/sw/rxe/rxe_verbs.c b/drivers/infiniband/sw/rxe/rxe_verbs.c
->> index 903f0b71447e..b899924b81eb 100644
->> --- a/drivers/infiniband/sw/rxe/rxe_verbs.c
->> +++ b/drivers/infiniband/sw/rxe/rxe_verbs.c
->> @@ -1395,7 +1395,7 @@ static int rxe_dereg_mr(struct ib_mr *ibmr, struct ib_udata *udata)
->>         if (cleanup_err)
->>                 rxe_err_mr(mr, "cleanup failed, err = %d", cleanup_err);
->>
->> -       kfree_rcu_mightsleep(mr);
->> +       kfree_rcu(mr, elem.rcu);
->>         return 0;
->>
->>  err_out:
->> @@ -1494,6 +1494,10 @@ static const struct ib_device_ops rxe_dev_ops = {
->>         INIT_RDMA_OBJ_SIZE(ib_srq, rxe_srq, ibsrq),
->>         INIT_RDMA_OBJ_SIZE(ib_ucontext, rxe_ucontext, ibuc),
->>         INIT_RDMA_OBJ_SIZE(ib_mw, rxe_mw, ibmw),
->> +
->> +       .rcu_offset_ah = offsetof(struct rxe_ah, elem.rcu),
->> +       .rcu_offset_qp = offsetof(struct rxe_qp, elem.rcu),
->> +       .rcu_offset_mw = offsetof(struct rxe_mw, elem.rcu),
-> 
-> In your commits, you mentioned that ah, qp, mw and mr will be
-> protected. But here, only ah, qp and mw are set.
-> Not sure if mr is also protected and set in other place.
-> Except that, I am fine with it.
-> 
-> Acked-by: Zhu Yanjun <zyjzyj2000@gmail.com>
-> 
-> Zhu Yanjun
-> 
->>  };
->>
->>  int rxe_register_device(struct rxe_dev *rxe, const char *ibdev_name)
->> --
->> 2.39.2
->>
+Thanks a ton, Mark. That's precisely what the issue was.
 
-All of the verbs objects except MR are allocated and freed by rdma-core. MR is allocated
-and freed by the drivers. So for MR the kfree_rcu call is made in rxe_dereg_mr().
-I changed it from kfree_rcu_mightsleep to the kfree_rcu variant to match the three others.
+-Jonathan
 
-Bob
+On Tue, Jul 18, 2023 at 10:08=E2=80=AFPM Mark Zhang <markzhang@nvidia.com> =
+wrote:
+>
+> On 7/19/2023 9:40 AM, Jonathan Nicklin wrote:
+> > External email: Use caution opening links or attachments
+> >
+> >
+> > Thanks for the reply and the link. I believe that is a different
+> > failure mode involving __ib_cache_gid_add(). In my case, there is no
+> > traffic (the link is completely idle). And, the failure mode is
+> > persistent no matter how many times I "toggle the link."
+> >
+> >
+> > -Jonathan
+> >
+> > On Tue, Jul 18, 2023 at 9:28=E2=80=AFPM William Kucharski
+> > <william.kucharski@oracle.com> wrote:
+> >>
+> >> Yes - it's NVIDIA issue 2326155:
+> >>
+> >> https://docs.nvidia.com/networking/display/MLNXOFEDv590560113/Known+Is=
+sues
+> >>
+> >> William Kucharski
+> >>
+> >> On Jul 18, 2023, at 19:06, Jonathan Nicklin <jnicklin@blockbridge.com>=
+ wrote:
+> >>
+> >> =EF=BB=BFHello,
+> >>
+> >> I've encountered an unexpected error configuring RDMA/ROCEV2 with one =
+of our
+> >> 200G ConnectX6 NICS. This issue reproduces consistently on 5.4.249 and=
+ 6.4.3.
+> >>
+> >> dmesg output:
+> >>
+> >> [    9.863871] mlx5_core 0000:01:00.0: mlx5_cmd_out_err:803:(pid
+> >> 1440): SET_ROCE_ADDRESS(0x761) op_mod(0x0) failed, status bad
+> >> parameter(0x3), syndrome (0x63c66), err(-22)
+> >> [    9.881250] infiniband mlx5_2: add_roce_gid GID add failed port=3D1=
+ index=3D0
+> >> [    9.889095] __ib_cache_gid_add: unable to add gid
+> >> fe80:0000:0000:0000:ad3e:e3ff:fe92:b31b error=3D-22
+> >>
+>
+> Seems this syndrome indicates it's a multicast source_mac which is not
+> allowed. For more information please contact your Nvidia support
+> representative, thanks.
+>
+> >> Device Type:      ConnectX6
+> >> Part Number:      MCX653105A-HDA_Ax
+> >> Description:      ConnectX-6 VPI adapter card; HDR IB (200Gb/s) and 20=
+0GbE ...
+> >> PSID:             MT_0000000223
+> >> PCI Device Name:  0000:01:00.0
+> >>
+> >> Firmware is up to date. LINK_TYPE is to ETH(2) and ROCE_CONTROL is
+> >> ROCE_ENABLE(2).
+> >>
+> >> Has anyone seen this syndrome? Any advice or assistance is appreciated=
+.
+> >>
+> >> Thanks,
+> >> -Jonathan
+>
