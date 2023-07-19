@@ -2,44 +2,43 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A8F1C759101
-	for <lists+linux-rdma@lfdr.de>; Wed, 19 Jul 2023 11:03:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 52E4C75911B
+	for <lists+linux-rdma@lfdr.de>; Wed, 19 Jul 2023 11:05:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230514AbjGSJDe (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 19 Jul 2023 05:03:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50018 "EHLO
+        id S229788AbjGSJFK (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 19 Jul 2023 05:05:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50984 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231247AbjGSJCy (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 19 Jul 2023 05:02:54 -0400
+        with ESMTP id S230465AbjGSJE7 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 19 Jul 2023 05:04:59 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A31F2210D
-        for <linux-rdma@vger.kernel.org>; Wed, 19 Jul 2023 02:02:48 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C79072711
+        for <linux-rdma@vger.kernel.org>; Wed, 19 Jul 2023 02:04:24 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 2EB4860DFA
-        for <linux-rdma@vger.kernel.org>; Wed, 19 Jul 2023 09:02:48 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E047AC433C9;
-        Wed, 19 Jul 2023 09:02:46 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id A7BDF611F6
+        for <linux-rdma@vger.kernel.org>; Wed, 19 Jul 2023 09:03:57 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7AAC8C433C8;
+        Wed, 19 Jul 2023 09:03:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1689757367;
-        bh=cDNznz1x+Pv+hm4NxAC2Um0aY0OwLCxjN7p56KK4zLw=;
+        s=k20201202; t=1689757437;
+        bh=Bgo2IUQwL9S9EFvZj+Sk6bqqTDrKNfaJwza7aNHlIvA=;
         h=From:To:Cc:Subject:Date:From;
-        b=b0rJVFAi800yMDxAeOrJGljnDLd41qTxLJAHM+a4PuSSgLYasaWibp1PNH6F1PHIF
-         8og8U6l802wqviIHBH44ixV8pxLIRz/0fIM/l0iYUxurc03O92Y7oVyWu4y7I08uF9
-         c5p4WebKNWff+VFaPsDH/s/1jDdjq4WXRZ5GaJDPk+BlgDd7tCK44GBCy2EWfDuRXz
-         J1K4AD+bTTpFTs7PXmEh0d7lbVo0aOOtX/8yo9hE3NVyAln0Z8c+h0bPdbzwL7Hme8
-         D/8Is6oQoYb1AaYk+oGKsKq0Wzek+r0b2l1BfERTZ33JLalILA5l3pnztVfvPJw1kU
-         m4ddHzufecblg==
+        b=gPwc7FkYHgiIZwaAIj22ff17bvAFH0vqbET1TAZnsAwcYRI6kdqUBbUgY+1y+c3Ma
+         elSXh69F3Er24ey54MYy+VIERqKhQlOnwT3wOcGETIregUidWYuGfA8mMtYfQF9eAn
+         Lb9BUhqXPsEMeA+wGj/styku2N+7gVPzeotuwbkaJWz1R2WBQscaUtwc31oOXPNh2E
+         X52iWv2GRWknuxmXqKMRxdkjofoRmmbbqqQficIha5w7tzqtzjrrl5mhDELdaV1OeT
+         DNaNh7pBtiBGMIumUBst1OP9TmhEq5Dq5G2giGd6mZg6l5sREdWVqNBCiOf3KHyZHn
+         BmVcQLaOrL1bw==
 From:   Leon Romanovsky <leon@kernel.org>
 To:     Jason Gunthorpe <jgg@nvidia.com>
-Cc:     Michael Guralnik <michaelgur@nvidia.com>,
-        Artemy Kovalyov <artemyko@nvidia.com>,
-        linux-rdma@vger.kernel.org
-Subject: [PATCH rdma-rc] RDMA/umem: Set iova in ODP flow
-Date:   Wed, 19 Jul 2023 12:02:41 +0300
-Message-ID: <3d4be7ca2155bf239dd8c00a2d25974a92c26ab8.1689757344.git.leon@kernel.org>
+Cc:     Shetu Ayalew <shetu@nvidia.com>, linux-rdma@vger.kernel.org,
+        Maor Gottlieb <maorg@nvidia.com>
+Subject: [PATCH rdma-next] IB/mlx5: Add HW counter called rx_dct_connect
+Date:   Wed, 19 Jul 2023 12:03:51 +0300
+Message-ID: <6d2313eedc567fc29f5ba53c197d5678962bb43a.1689757404.git.leon@kernel.org>
 X-Mailer: git-send-email 2.41.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -53,62 +52,30 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Michael Guralnik <michaelgur@nvidia.com>
+From: Shetu Ayalew <shetu@nvidia.com>
 
-Fixing the ODP registration flow to set the iova correctly.
-The calculation in ib_umem_num_dma_blocks() function assumes the iova of
-the umem is set correctly.
+The rx_dct_connect counter shows the number of received connection
+requests for the associated DCTs.
 
-When iova is not set, the calculation in ib_umem_num_dma_blocks() is
-equivalent to length/page_size, which is true only when memory is aligned.
-For unaligned memory, iova must be set for the ALIGN() in the
-ib_umem_num_dma_blocks() to take effect and return a correct value.
-
-mlx5_ib uses ib_umem_num_dma_blocks() to decide the mkey size to use for
-the MR. Without this fix, when registering unaligned ODP MR, a wrong
-size mkey might be chosen and this might cause the UMR to fail.
-
-UMR would fail over insufficient size to update the mkey translation:
-infiniband mlx5_0: dump_cqe:273:(pid 0): dump error cqe
-00000000: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-00000010: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-00000020: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-00000030: 00 00 00 00 0f 00 78 06 25 00 00 58 00 da ac d2
-infiniband mlx5_0: mlx5_ib_post_send_wait:806:(pid 20311): reg umr
-failed (6)
-infiniband mlx5_0: pagefault_real_mr:661:(pid 20311): Failed to update
-mkey page tables
-
-Fixes: f0093fb1a7cb ("RDMA/mlx5: Move mlx5_ib_cont_pages() to the creation of the mlx5_ib_mr")
-Fixes: a665aca89a41 ("RDMA/umem: Split ib_umem_num_pages() into ib_umem_num_dma_blocks()")
-Signed-off-by: Artemy Kovalyov <artemyko@nvidia.com>
-Signed-off-by: Michael Guralnik <michaelgur@nvidia.com>
+Signed-off-by: Shetu Ayalew <shetu@nvidia.com>
+Reviewed-by: Maor Gottlieb <maorg@nvidia.com>
 Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
 ---
- drivers/infiniband/core/umem.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ drivers/infiniband/hw/mlx5/counters.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/infiniband/core/umem.c b/drivers/infiniband/core/umem.c
-index 755a9c57db6f..f9ab671c8eda 100644
---- a/drivers/infiniband/core/umem.c
-+++ b/drivers/infiniband/core/umem.c
-@@ -85,6 +85,8 @@ unsigned long ib_umem_find_best_pgsz(struct ib_umem *umem,
- 	dma_addr_t mask;
- 	int i;
+diff --git a/drivers/infiniband/hw/mlx5/counters.c b/drivers/infiniband/hw/mlx5/counters.c
+index 93257fa5aae8..14af6ff91dfa 100644
+--- a/drivers/infiniband/hw/mlx5/counters.c
++++ b/drivers/infiniband/hw/mlx5/counters.c
+@@ -40,6 +40,7 @@ static const struct mlx5_ib_counter retrans_q_cnts[] = {
+ 	INIT_Q_COUNTER(packet_seq_err),
+ 	INIT_Q_COUNTER(implied_nak_seq_err),
+ 	INIT_Q_COUNTER(local_ack_timeout_err),
++	INIT_Q_COUNTER(rx_dct_connect),
+ };
  
-+	umem->iova = va = virt;
-+
- 	if (umem->is_odp) {
- 		unsigned int page_size = BIT(to_ib_umem_odp(umem)->page_shift);
- 
-@@ -100,7 +102,6 @@ unsigned long ib_umem_find_best_pgsz(struct ib_umem *umem,
- 	 */
- 	pgsz_bitmap &= GENMASK(BITS_PER_LONG - 1, PAGE_SHIFT);
- 
--	umem->iova = va = virt;
- 	/* The best result is the smallest page size that results in the minimum
- 	 * number of required pages. Compute the largest page size that could
- 	 * work based on VA address bits that don't change.
+ static const struct mlx5_ib_counter vport_basic_q_cnts[] = {
 -- 
 2.41.0
 
