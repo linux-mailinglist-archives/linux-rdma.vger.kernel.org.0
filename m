@@ -2,57 +2,195 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8EF5775CB2B
-	for <lists+linux-rdma@lfdr.de>; Fri, 21 Jul 2023 17:13:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D11BF75CCB1
+	for <lists+linux-rdma@lfdr.de>; Fri, 21 Jul 2023 17:54:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231724AbjGUPNz (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 21 Jul 2023 11:13:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49424 "EHLO
+        id S230482AbjGUPx6 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 21 Jul 2023 11:53:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54050 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231679AbjGUPNw (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 21 Jul 2023 11:13:52 -0400
-X-Greylist: delayed 463 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Fri, 21 Jul 2023 08:13:43 PDT
-Received: from mail.ispras.ru (mail.ispras.ru [83.149.199.84])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE9DA30DB;
-        Fri, 21 Jul 2023 08:13:43 -0700 (PDT)
-Received: from tp-owlcat.intra.ispras.ru (unknown [10.10.165.6])
-        by mail.ispras.ru (Postfix) with ESMTPSA id EB21640B27AF;
-        Fri, 21 Jul 2023 15:05:57 +0000 (UTC)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mail.ispras.ru EB21640B27AF
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ispras.ru;
-        s=default; t=1689951958;
-        bh=O0b5d9evA9lwBqNidYtPEYBZ7CVLeRcJ2bV1Mfo3SIU=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=S0i1WqiRtXiHhhkHUV6IlKrtQZAUvVRZe2S/M7HAqcGQgRINg/yP+yIxGj8NDuExT
-         HcMpCxo3hW8I+RUP3qIk0iiZlFAaKzD7oZxLMLwymxhgd6UzhMKP3qolInJfOGDCU5
-         7J0zU+X38yJMauQdaYJe2v5R7i2uN6fQrQ93EuIE=
-From:   Anton Gusev <aagusev@ispras.ru>
-To:     stable@vger.kernel.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Anton Gusev <aagusev@ispras.ru>,
-        Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
+        with ESMTP id S230340AbjGUPxz (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 21 Jul 2023 11:53:55 -0400
+Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B21E3C2F;
+        Fri, 21 Jul 2023 08:53:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1689954809; x=1721490809;
+  h=message-id:date:subject:to:cc:references:from:
+   in-reply-to:content-transfer-encoding:mime-version;
+  bh=yodEFnGZlGujUkKv50OWn70ICwYXjxcUSTuqqxjBSPQ=;
+  b=EpiSBS6p5uaXZXZ7JNB+OxmEW4+4Lcfjd3o7/GpjgPMsieTp73PxtrLx
+   lZWbWxZaO6DYVb1T9f43KsbsVb9FDbJyeDfkP7eh5ifpPZViTsIF3zY8r
+   Ud162rziCIWMcXnSG6MB5zEKCvroqz86gAaxSTz6vnlkPV5O1TV66i6Kj
+   Jo/dspUq2Ev5KKrk/bG2nWlid7SGNna0/FI2pzmtirAyCscIqKwbUhorg
+   JbtNBkwVYamxl3Cov/zQoXziLBKjeAZHdh5vpnLnA42rHIvrsJp37y9nq
+   Wh5nbKsu5SswTkVzEecgMdxMcibifI9OOS8cPBFwmXfCepMZOEo2PQwTE
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10778"; a="357044447"
+X-IronPort-AV: E=Sophos;i="6.01,222,1684825200"; 
+   d="scan'208";a="357044447"
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Jul 2023 08:53:04 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10778"; a="702098205"
+X-IronPort-AV: E=Sophos;i="6.01,222,1684825200"; 
+   d="scan'208";a="702098205"
+Received: from fmsmsx602.amr.corp.intel.com ([10.18.126.82])
+  by orsmga006.jf.intel.com with ESMTP; 21 Jul 2023 08:52:54 -0700
+Received: from fmsmsx611.amr.corp.intel.com (10.18.126.91) by
+ fmsmsx602.amr.corp.intel.com (10.18.126.82) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.27; Fri, 21 Jul 2023 08:52:34 -0700
+Received: from fmsmsx602.amr.corp.intel.com (10.18.126.82) by
+ fmsmsx611.amr.corp.intel.com (10.18.126.91) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.27; Fri, 21 Jul 2023 08:52:32 -0700
+Received: from FMSEDG603.ED.cps.intel.com (10.1.192.133) by
+ fmsmsx602.amr.corp.intel.com (10.18.126.82) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.27 via Frontend Transport; Fri, 21 Jul 2023 08:52:32 -0700
+Received: from NAM02-BN1-obe.outbound.protection.outlook.com (104.47.51.46) by
+ edgegateway.intel.com (192.55.55.68) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.27; Fri, 21 Jul 2023 08:52:32 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=aXDRvqv3zqWf9Gq+CMZintAusnTJ12PvbEMZ7nYzzutGh+7y1crXyykCkjg/0GgYoBcBfGoSrV02MuyJgtRbBtc2U5CEJPaQAW6+PhMcoZkgIAvDitAC//3jssvHvhJuYYMB7BXss7edyMGcR0MTraYEy8/iutYMNPIsgtKRj9a2AP3O9gIP+TFLhDVUkvZ13HW+ZQ55OC+vvk7zDf1g0m1rthFPxxhmY9iffy9fFFm7oJkqAsz8Wee+yY1TTht/hVhu9LJnxd9F28burlqLU6ZAD1vZzdIzh7u37GWyIbNZ6yn5rltqptGfYjw0QWgTZgf8jGaun5jdAFLFPHa6Ug==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=c8II4X3lXtucyX1Ab5YifNEecvgN9WvjLx5z709Kj/Q=;
+ b=O7sMmPU6tyay/SRICzEHZMCi0sDZ+1dhAPC5HhSzH9nzDLljR3hL77DzcJhTDrOiQkQQ2lcpOCbGSCNKiHSlclfg0Bz124A1fiQbBiNF+OHEseGn5PQhxSdSxqT/3wytZsyP0m+b+6biRRw56iHwVDIfq+Deci5J9T9WbtzNE66KTFw+V995bp+L69JkYQd6Niqo53fPGmPJ3TMNFkxVpNqsRR0klksOUgV1y95GVQ8vKsJ9oobv5i0wzJJR0m9EFxVa53lQBZTZqhn/LsfgF+jWo6UsE1gQmE/fnjHqbnnankb50LVi+KBQTwWmWZ0TQESTm8dfchKo1QC+nmYMYA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+Received: from DM6PR11MB3625.namprd11.prod.outlook.com (2603:10b6:5:13a::21)
+ by IA1PR11MB7753.namprd11.prod.outlook.com (2603:10b6:208:421::19) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6609.28; Fri, 21 Jul
+ 2023 15:52:29 +0000
+Received: from DM6PR11MB3625.namprd11.prod.outlook.com
+ ([fe80::44ff:6a5:9aa4:124a]) by DM6PR11MB3625.namprd11.prod.outlook.com
+ ([fe80::44ff:6a5:9aa4:124a%7]) with mapi id 15.20.6609.026; Fri, 21 Jul 2023
+ 15:52:29 +0000
+Message-ID: <ccb728be-832c-be93-2023-6a5c78c53e6a@intel.com>
+Date:   Fri, 21 Jul 2023 17:51:17 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.12.0
+Subject: Re: [PATCH net-next] page_pool: split types and declarations from
+ page_pool.h
+Content-Language: en-US
+To:     Jakub Kicinski <kuba@kernel.org>,
+        Yunsheng Lin <linyunsheng@huawei.com>
+CC:     <davem@davemloft.net>, <pabeni@redhat.com>,
+        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        Eric Dumazet <edumazet@google.com>,
+        Wei Fang <wei.fang@nxp.com>,
+        Shenwei Wang <shenwei.wang@nxp.com>,
+        Clark Wang <xiaoning.wang@nxp.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Sunil Goutham <sgoutham@marvell.com>,
+        Geetha sowjanya <gakula@marvell.com>,
+        "Subbaraya Sundeep" <sbhatta@marvell.com>,
+        hariprasad <hkelam@marvell.com>,
+        "Saeed Mahameed" <saeedm@nvidia.com>,
         Leon Romanovsky <leon@kernel.org>,
-        Sasha Levin <sashal@kernel.org>,
-        Mark Zhang <markzhang@nvidia.com>,
-        =?UTF-8?q?H=C3=A5kon=20Bugge?= <haakon.bugge@oracle.com>,
-        Michael Guralnik <michaelgur@nvidia.com>,
-        Roland Dreier <rolandd@cisco.com>,
-        Sean Hefty <sean.hefty@intel.com>, linux-rdma@vger.kernel.org,
-        linux-kernel@vger.kernel.org, lvc-project@linuxtesting.org,
-        syzbot+dc3dfba010d7671e05f5@syzkaller.appspotmail.com,
-        Jason Gunthorpe <jgg@nvidia.com>
-Subject: [PATCH 5.10 1/1] RDMA/cma: Ensure rdma_addr_cancel() happens before issuing more requests
-Date:   Fri, 21 Jul 2023 18:05:33 +0300
-Message-ID: <20230721150535.191318-2-aagusev@ispras.ru>
-X-Mailer: git-send-email 2.41.0
-In-Reply-To: <20230721150535.191318-1-aagusev@ispras.ru>
-References: <20230721150535.191318-1-aagusev@ispras.ru>
+        "Alexei Starovoitov" <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Felix Fietkau <nbd@nbd.name>,
+        Lorenzo Bianconi <lorenzo@kernel.org>,
+        Ryder Lee <ryder.lee@mediatek.com>,
+        Shayne Chen <shayne.chen@mediatek.com>,
+        Sean Wang <sean.wang@mediatek.com>,
+        Kalle Valo <kvalo@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>,
+        "Ilias Apalodimas" <ilias.apalodimas@linaro.org>,
+        <linux-rdma@vger.kernel.org>, <bpf@vger.kernel.org>,
+        <linux-wireless@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-mediatek@lists.infradead.org>
+References: <20230719121339.63331-1-linyunsheng@huawei.com>
+ <0838ed9e-8b5c-cc93-0175-9d6cbf695dda@intel.com>
+ <7e9c1276-9996-d9dd-c061-b1e66361c48b@huawei.com>
+ <20230720092247.279d65f3@kernel.org>
+ <f5d40062-bb0d-055b-8c02-912cfd020aca@huawei.com>
+ <20230721075615.118acad4@kernel.org>
+From:   Alexander Lobakin <aleksander.lobakin@intel.com>
+In-Reply-To: <20230721075615.118acad4@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: FR2P281CA0030.DEUP281.PROD.OUTLOOK.COM
+ (2603:10a6:d10:14::17) To DM6PR11MB3625.namprd11.prod.outlook.com
+ (2603:10b6:5:13a::21)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: DM6PR11MB3625:EE_|IA1PR11MB7753:EE_
+X-MS-Office365-Filtering-Correlation-Id: 877191d8-17b6-43a3-da7a-08db8a027cc3
+X-LD-Processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: XamEHMGU00iU/GPWT5YFUps00A2dD8Cn6ssZpbZ196PpVCPYdDROlQyUfi1Nx4gYV73O72uKJrARYa/xww1fv6CaVoCD/qH14bKnp4agOzcUB8e74bEfYG2b53KLDzOz22i9adK1/BsiP0uBv68r4pJiKGhB3K/tQXEwbo2FG0uT97KZ/GQwb7cTwl2l8sui5JmUaHpJiXRUK9P9MgGJ5rMXWuoEwNn+9PvQ1fFw5AFFuP334CBHPp2K+tTt5YSuR4UCrXMQ5YRoNDC7sWc4q+xs3eqUXlx1Vr6FV/vDk/feOWydYjJ7PleY0H+0avBoT5c3wx9atHFiFFFFhEiiOrG8kGYy+QZSeTew7SnaAnNjsYGOWWwVLDI/cAzl+3s/aUAZGAp/J50ineXwHLhFnMZrkFfBwcZu7NzJ0BjDfcnrt3FHOIrTpeKN6r1K2qla1aG/RX9ocRjaoAX+aA1yN1PvHeH8uD/L8jisfTTi2A5Xd4vP/AJM0AJxtQJOb3ov3mfL8hr2m7AMIjZB7mjN051oOJpX3EN56EwFD5aGfAasuP7hkgh39H0Q57aQ9/dPXTIDjICMs7gscUb4HnXnKXawp4ydHdr3Hry0OklWKGLzq4pnEBGDu/TRP9YVnXGRbbAnzNZQgVl0S/kGSxpKWw==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR11MB3625.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(376002)(396003)(346002)(39860400002)(366004)(136003)(451199021)(316002)(4326008)(66946007)(66556008)(66476007)(38100700002)(6512007)(6666004)(6486002)(31696002)(86362001)(110136005)(54906003)(478600001)(4744005)(2906002)(82960400001)(36756003)(41300700001)(2616005)(31686004)(5660300002)(8936002)(8676002)(7406005)(7416002)(186003)(6506007)(26005)(43740500002)(45980500001);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?aHVVKyswcFVqZTFYWlFpeGxNNDhRdzNUWGh1Tm5reVM4bnZsbmh5QnFpMTdD?=
+ =?utf-8?B?NnFXaVhtTU4welJDanRqS1lxVmRWTHhCRGJpdWN3QlpjYS9Tamxkdm9adGtV?=
+ =?utf-8?B?Kyt5OE52NS95TWdrNFQ3TmFVSllsaEdLOEcwL0NWc1FDQWpLRzdSZUdXZENB?=
+ =?utf-8?B?Um9jMDZCNEt2N2YyRG50SWFHV1Zid3hFLy9uUVFUZ2l0Tmx1SUpQV2lFcEwz?=
+ =?utf-8?B?WEZ5NGZ0V05XMm5KOVNWbTd5Vk5lTVFDeE5ZdHlDL09pemUrYzVOWjQrVEx6?=
+ =?utf-8?B?RmlQOXBVRVdlanV1WC9wb0ZYOFdZaWIwQjNUeEhFYmx6ZFM2a2lpb3ByR1ht?=
+ =?utf-8?B?SnhzZG5hVVJJckFVZ01ENnpma1hNQmsrdjdNeUo3S1haSXVqNzBwMTZuZTFT?=
+ =?utf-8?B?aTFwMlEwVWxUMnpSRDhvN1NJWnNJRldjL01iZlRVeDNCeUNPY01TZnZ5WVQr?=
+ =?utf-8?B?MDMzaEZzREljTi9xeGowaDVlQ2cvb3B0R3RFVjBxcTlyYkZHTjlodUUvbThj?=
+ =?utf-8?B?R3M4dTJVamVIaXFCV1hCR3dhdFNMaW5NY2xmR0lSTE9nWEFpbVpKMnprWXQx?=
+ =?utf-8?B?ZDk3cWt1RmhVdXYwdkpaRysxT0tTaDdleThOb3Zoak9CMFFURnc2MlV5L1RW?=
+ =?utf-8?B?RTl3WkNmMXU0TmFOZGttY1hvbmRHWEt1eHhnaThjT3daVW9WbVQrRlduN1p4?=
+ =?utf-8?B?bldXK2dBcmI5QUNVSWtwQi9TV09zdExWUTlZVlhhbmVyUjVHaHZkaHVBWE8x?=
+ =?utf-8?B?c29pQW1tNS84UnZaZ0pGUGZlamROMFBJRStnYXowSHIrb21mWHdZUTcrM3dL?=
+ =?utf-8?B?QUVkdWNNN1FjbWZ3RWM0OVdGUFNEKzNiZFc5UlhXRGdSUDdNWndiVHpvNGVO?=
+ =?utf-8?B?R25adnVHN2orbjRvREhYMXRwQk1QOG1BTzh2YnFNRXhDRXZLcmJ6LzZTUFM0?=
+ =?utf-8?B?U0RsdWM3NnNYWGVkQzJ3TmcxYzVEQkcvMUovR0thcS9OZkFZU291SWF4YWxx?=
+ =?utf-8?B?N1I1M0g0VGlnTkI2VGtjWHhHN2dOVW5qcGNBZWJsa1lYT2RVL2ExczQxYWpJ?=
+ =?utf-8?B?T0RoTWx5OXRBMFBuZkUxU3g5QUFoMjFPbFRTSHgza0JPcHozVWI4bHhtemx6?=
+ =?utf-8?B?V0VvbG1iWUc5WjREcWU0R0N1OERXTlF0d2g5Z3lKMldiME9ucmJOOGRwYk44?=
+ =?utf-8?B?NXkrVUl5QTZUMENLbFVlSDV3REZDbjhBcDNYbjkyT0tPeWkxUUJOWmp6clhC?=
+ =?utf-8?B?WmtsamQrSTU0R2tRbmJ5dHlBMkNwU244VGppNmdFN0dSUDZ0ckVVZzE4OHVL?=
+ =?utf-8?B?bTdVQXR0RzRBb09FSG1HL0wwOFM0V1draGo4VmJ6c1FCbHE1VmpxbFNmYjUy?=
+ =?utf-8?B?azUxdGUzVjdvdDRuZSsvZ1VFa1B5UlFiUXNKMXFXZHVUZTAyNU01c1FhWjBS?=
+ =?utf-8?B?NGQ3RjFLNHdKZ1ZxTk1wMWNRT3gwSmFTd1VqblBxT2dub01SUU1Ia09kaFlX?=
+ =?utf-8?B?MEorQzhjWWVoRjBmd1VVY0FoV0oySFhlRUlBZmNhOVNmRE9UVXkra2k1c09R?=
+ =?utf-8?B?MG4rOEkxQ3EySlhrc0dJaGRZcmc1NWRvUFYvdW9rdGlWcklsRllhOUdwMVBC?=
+ =?utf-8?B?Y1FUdyt0WFNZUWlaRGs2cUwzMFhSbldHWEpYVzVVZGx1UXhYdlF6SU8wRUl3?=
+ =?utf-8?B?R0lpQ0lZdkUvTHpaSjcvTWNSaGk4MGdJVkcxWlE4YlhlQ0NIcmNaKytUc2NT?=
+ =?utf-8?B?Sm1LUWJxdkZYZEd1dXZqOHh4L1htYlBHbHZvSUtwSmdCVFQwUDFoTzE3N0dR?=
+ =?utf-8?B?Y2NBWk94VDJPOS9iQUVOZFBLdG5rUnR3eGpwNUduRHRpTVlKalFvUnhqeU1P?=
+ =?utf-8?B?S2NnRTRwbzFDRzB4RGc4RFhJdFowNG0xSE1NZ0FuN1JwU3hSRTVnY1RyblQ0?=
+ =?utf-8?B?OUsrQUN1cXk1NkNNZFpwVDF6eExEU1ZWRURPa3hRcHJjNkc1MHVseVBKaE5s?=
+ =?utf-8?B?QzIwZG5XVVVKTG9LbkI5d2o3QjI4Y0MrYWpUTjFIRXhrUTBBdDYzaStFRktD?=
+ =?utf-8?B?THgyWHByWXVlejJ6T3B6a2x6RDZrOWlwYm9ISm50cDNhMm0rTGJMTGQyckZo?=
+ =?utf-8?B?NmNCR01WdVdXenY2V3pDTkJyVTdLbksxZHMxSVZ2RWIxRWpXbmFVQU5BRUZy?=
+ =?utf-8?Q?jfS/Wu7l8cVrvA12V3G+/xU=3D?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: 877191d8-17b6-43a3-da7a-08db8a027cc3
+X-MS-Exchange-CrossTenant-AuthSource: DM6PR11MB3625.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 21 Jul 2023 15:52:29.4137
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: /A49SaXnk3GU/Yu80RSbZeqviZRJdnXylGu+uisQVR18MEazOjLB+ypkLKEQ+co/nqw+8925MRxabIz8NNaZbQpP98eij353NFMst3VW7HY=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: IA1PR11MB7753
+X-OriginatorOrg: intel.com
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -60,128 +198,30 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-commit 305d568b72f17f674155a2a8275f865f207b3808 upstream.
+From: Jakub Kicinski <kuba@kernel.org>
+Date: Fri, 21 Jul 2023 07:56:15 -0700
 
-The FSM can run in a circle allowing rdma_resolve_ip() to be called twice
-on the same id_priv. While this cannot happen without going through the
-work, it violates the invariant that the same address resolution
-background request cannot be active twice.
+> On Fri, 21 Jul 2023 19:12:25 +0800 Yunsheng Lin wrote:
+>> Just to be clear, include/net/page_pool.h is still there, we are not
+>> putting page_pool.h in include/net/page_pool/ and renaming it to
+>> something else, right? As there is no that kind of uniformity in
+>> include/net/* as far as I can see.
+> 
+> Like many things the uniformity is a plan which mostly exists in my head
+> at this stage :) But it is somewhat inspired by include/linux/sched.*
+> 
+>> More specificly, yon means the below, right?
+>> include/net/page_pool.h
+>> include/net/page_pool/types.h
+> 
+> Yes.
 
-       CPU 1                                  CPU 2
+What I meant is
 
-rdma_resolve_addr():
-  RDMA_CM_IDLE -> RDMA_CM_ADDR_QUERY
-  rdma_resolve_ip(addr_handler)  #1
+include/net/page_pool/types.h
+include/net/page_pool/driver.h
 
-			 process_one_req(): for #1
-                          addr_handler():
-                            RDMA_CM_ADDR_QUERY -> RDMA_CM_ADDR_BOUND
-                            mutex_unlock(&id_priv->handler_mutex);
-                            [.. handler still running ..]
+I'm not insisting, just to be clear :)
 
-rdma_resolve_addr():
-  RDMA_CM_ADDR_BOUND -> RDMA_CM_ADDR_QUERY
-  rdma_resolve_ip(addr_handler)
-    !! two requests are now on the req_list
-
-rdma_destroy_id():
- destroy_id_handler_unlock():
-  _destroy_id():
-   cma_cancel_operation():
-    rdma_addr_cancel()
-
-                          // process_one_req() self removes it
-		          spin_lock_bh(&lock);
-                           cancel_delayed_work(&req->work);
-	                   if (!list_empty(&req->list)) == true
-
-      ! rdma_addr_cancel() returns after process_on_req #1 is done
-
-   kfree(id_priv)
-
-			 process_one_req(): for #2
-                          addr_handler():
-	                    mutex_lock(&id_priv->handler_mutex);
-                            !! Use after free on id_priv
-
-rdma_addr_cancel() expects there to be one req on the list and only
-cancels the first one. The self-removal behavior of the work only happens
-after the handler has returned. This yields a situations where the
-req_list can have two reqs for the same "handle" but rdma_addr_cancel()
-only cancels the first one.
-
-The second req remains active beyond rdma_destroy_id() and will
-use-after-free id_priv once it inevitably triggers.
-
-Fix this by remembering if the id_priv has called rdma_resolve_ip() and
-always cancel before calling it again. This ensures the req_list never
-gets more than one item in it and doesn't cost anything in the normal flow
-that never uses this strange error path.
-
-Link: https://lore.kernel.org/r/0-v1-3bc675b8006d+22-syz_cancel_uaf_jgg@nvidia.com
-Cc: stable@vger.kernel.org
-Fixes: e51060f08a61 ("IB: IP address based RDMA connection manager")
-Reported-by: syzbot+dc3dfba010d7671e05f5@syzkaller.appspotmail.com
-Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
-Signed-off-by: Anton Gusev <aagusev@ispras.ru>
----
- drivers/infiniband/core/cma.c      | 23 +++++++++++++++++++++++
- drivers/infiniband/core/cma_priv.h |  1 +
- 2 files changed, 24 insertions(+)
-
-diff --git a/drivers/infiniband/core/cma.c b/drivers/infiniband/core/cma.c
-index db24f7dfa00f..805678f6fe57 100644
---- a/drivers/infiniband/core/cma.c
-+++ b/drivers/infiniband/core/cma.c
-@@ -1792,6 +1792,14 @@ static void cma_cancel_operation(struct rdma_id_private *id_priv,
- {
- 	switch (state) {
- 	case RDMA_CM_ADDR_QUERY:
-+		/*
-+		 * We can avoid doing the rdma_addr_cancel() based on state,
-+		 * only RDMA_CM_ADDR_QUERY has a work that could still execute.
-+		 * Notice that the addr_handler work could still be exiting
-+		 * outside this state, however due to the interaction with the
-+		 * handler_mutex the work is guaranteed not to touch id_priv
-+		 * during exit.
-+		 */
- 		rdma_addr_cancel(&id_priv->id.route.addr.dev_addr);
- 		break;
- 	case RDMA_CM_ROUTE_QUERY:
-@@ -3401,6 +3409,21 @@ int rdma_resolve_addr(struct rdma_cm_id *id, struct sockaddr *src_addr,
- 		if (dst_addr->sa_family == AF_IB) {
- 			ret = cma_resolve_ib_addr(id_priv);
- 		} else {
-+			/*
-+			 * The FSM can return back to RDMA_CM_ADDR_BOUND after
-+			 * rdma_resolve_ip() is called, eg through the error
-+			 * path in addr_handler(). If this happens the existing
-+			 * request must be canceled before issuing a new one.
-+			 * Since canceling a request is a bit slow and this
-+			 * oddball path is rare, keep track once a request has
-+			 * been issued. The track turns out to be a permanent
-+			 * state since this is the only cancel as it is
-+			 * immediately before rdma_resolve_ip().
-+			 */
-+			if (id_priv->used_resolve_ip)
-+				rdma_addr_cancel(&id->route.addr.dev_addr);
-+			else
-+				id_priv->used_resolve_ip = 1;
- 			ret = rdma_resolve_ip(cma_src_addr(id_priv), dst_addr,
- 					      &id->route.addr.dev_addr,
- 					      timeout_ms, addr_handler,
-diff --git a/drivers/infiniband/core/cma_priv.h b/drivers/infiniband/core/cma_priv.h
-index caece96ebcf5..b53f4fa5e3fb 100644
---- a/drivers/infiniband/core/cma_priv.h
-+++ b/drivers/infiniband/core/cma_priv.h
-@@ -89,6 +89,7 @@ struct rdma_id_private {
- 	u8			reuseaddr;
- 	u8			afonly;
- 	u8			timeout;
-+	u8 used_resolve_ip;
- 	enum ib_gid_type	gid_type;
- 
- 	/*
--- 
-2.41.0
-
+Thanks,
+Olek
