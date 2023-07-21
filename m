@@ -2,60 +2,60 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 214A975D5F8
+	by mail.lfdr.de (Postfix) with ESMTP id 7B6C375D5F9
 	for <lists+linux-rdma@lfdr.de>; Fri, 21 Jul 2023 22:51:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230264AbjGUUvL (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 21 Jul 2023 16:51:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56900 "EHLO
+        id S230283AbjGUUvM (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 21 Jul 2023 16:51:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56916 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230127AbjGUUvK (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 21 Jul 2023 16:51:10 -0400
-Received: from mail-oi1-x22b.google.com (mail-oi1-x22b.google.com [IPv6:2607:f8b0:4864:20::22b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5583C30EA
-        for <linux-rdma@vger.kernel.org>; Fri, 21 Jul 2023 13:51:09 -0700 (PDT)
-Received: by mail-oi1-x22b.google.com with SMTP id 5614622812f47-3a3b7f992e7so1617741b6e.2
-        for <linux-rdma@vger.kernel.org>; Fri, 21 Jul 2023 13:51:09 -0700 (PDT)
+        with ESMTP id S230268AbjGUUvL (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 21 Jul 2023 16:51:11 -0400
+Received: from mail-oo1-xc33.google.com (mail-oo1-xc33.google.com [IPv6:2607:f8b0:4864:20::c33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4311B30E2
+        for <linux-rdma@vger.kernel.org>; Fri, 21 Jul 2023 13:51:10 -0700 (PDT)
+Received: by mail-oo1-xc33.google.com with SMTP id 006d021491bc7-563439ea4a2so1503066eaf.0
+        for <linux-rdma@vger.kernel.org>; Fri, 21 Jul 2023 13:51:10 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1689972668; x=1690577468;
+        d=gmail.com; s=20221208; t=1689972669; x=1690577469;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=piWlo3/tFoxJPMOCyPDxN1hN4WpGqotBjw4+5hWeBIw=;
-        b=N3ouiJxZNu+IYfsBXrbv0SITQKyVAEaJIUJsryFcFVTJ74dY8MOeJ6VoPYPROdY5Zx
-         nMb5ThWtd8HCUGQqy0k1o7BAwujDEmpjiDdTOFeetp06VFIEIeEtDKtrw7QBWwvbcsRT
-         Cboaf2kB3NCWHdtl/oMP58rj5ONGUNEHAAY7k/ZxB/yrXJss+dFUTy1GHoybK/sl8CdR
-         alZbyJyTx4QfC+4BjFGs8VHGEv7dKAWZpFrZmgMthtWOsfOKXo96jPonZSLJH7+m8+7U
-         aelLApWDkMTrC20M+YbeSfUKlbgZxU6Ax8kg0KZsU5Va3w/zQQr+VZB0R/42oMOq7/fW
-         mhbg==
+        bh=Ab5HfWQqqxPkl4GvltNoLygUb3ZXkv4d8gCaU1bGBsQ=;
+        b=YZPXi5egj7X0sgjP4sHOeKcFh5bM9spTAGMDfhJjL5rtmoKsFgouPLBqJAtp1357L+
+         PvnOgh2HvVVa83YPoNEZbGieoUGUEss5stWnFZ9Z5tiWaI1MlMILEZ0yrjSHh6T8d0Lk
+         /a30ZMqb3mcjZ8aMsZX/5lTZ9otlfbS71BJdLxPJNO3+Evqr8QFcyr5eT7EDoRb9Ny2J
+         MTMH++p3gE7qNNRQEtCF/Fx0KbmnOP3yC2HDFXRGoNAVDUKYMPBGM5kX/YNNhm1bP3EM
+         JYXjTdf9EW3uCf/YKCFzxWHj1323b9BxP4ddUlLoF5nZS/s0SA/FM2KEYKddR5PxhWtN
+         SIlQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689972668; x=1690577468;
+        d=1e100.net; s=20221208; t=1689972669; x=1690577469;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=piWlo3/tFoxJPMOCyPDxN1hN4WpGqotBjw4+5hWeBIw=;
-        b=VanE+ETTrtr2lXlcTYWYRq7aSpoymnLp6qmY/xFcq70dkxApIlPiALp8FEmxoHa/OZ
-         vNlJXyyi1OIMsXgqeSXBd+hY3t66BAZ5AMySqHihVvITSgILeyUJ/VFg5ZqCX5S6rF7g
-         0ALQUvJF1GN0h1tqMN7QqeFcv5NkZCiZGwG+EfqaIpYRicTqo7KzTDIgRD78sAPvjwB3
-         zftnB41zkSldckxJ//ni1hujv4r28tnTNEvwhUgnH7/7C9JjC8aWE46t8hpoD4eAfJH9
-         Yskart6J52O2TDdNI44Z4lQL1RGngl6ULES13055ehHJC4qS8WC17ZuTVLf6ij2jGejj
-         bQgg==
-X-Gm-Message-State: ABy/qLYhsKrXriWGaBjDTuDWJ/dzKpWwD6duD99WFPaG5z019y+MAnAB
-        lpG5cmuzkt5+X7noOmaL7sI=
-X-Google-Smtp-Source: APBJJlGAsh/ktYStvvs8T3mEVTy2DB3PS4cqEFNhGyX/xdNdr7iigryVn4p0qMJb7Yi1FG6otRPQZA==
-X-Received: by 2002:a54:4487:0:b0:3a4:8a13:9891 with SMTP id v7-20020a544487000000b003a48a139891mr3122256oiv.16.1689972668506;
-        Fri, 21 Jul 2023 13:51:08 -0700 (PDT)
+        bh=Ab5HfWQqqxPkl4GvltNoLygUb3ZXkv4d8gCaU1bGBsQ=;
+        b=Gq7kvN4b6U5OZ1ERVX1JA5UpjoZwi199wbCd6G+ZH3Va85BUcM04N11O9tGu9txNya
+         RNH13JAABDcSMfz1jOBCZ/qsYF5zVtyFRruKvarx6l/V1wsuw/uSvSKIROZVfjD2UoA6
+         FpEuVg91lh02yTRB6m29h0gNBTsXFLyJoHUQEh+gUtzKX7sVCcjRZi6W5vAsjwH4Jbhl
+         o0y98BcLwORLbVa67LeXzOOFNUSexL2fLBGJExviAhxyZ2sMsJ+U1hx8bNSCWhwRz0tT
+         fBd2Dtq/73GGDb4WXiBYxg4YqbGyWbI9HbpcCmu8YdUXu2Ri/6+2xjSNGp5EmVluvMQp
+         ewgg==
+X-Gm-Message-State: ABy/qLZnryBIAwiaW3mIqFmBEGpi1WuEwDPJPcFz1UpzOgekUFfIiVSL
+        62CnrYleAZ7j5dvSILYXGLY=
+X-Google-Smtp-Source: APBJJlFIMFxMKhEDOPYe56XzjfBvmq+Zcp4tmsgvXAMqg2DULJOZHfcHblQbbcpuHio9SesCb9K8ug==
+X-Received: by 2002:aca:2212:0:b0:3a3:7e62:fca2 with SMTP id b18-20020aca2212000000b003a37e62fca2mr3494771oic.0.1689972669420;
+        Fri, 21 Jul 2023 13:51:09 -0700 (PDT)
 Received: from rpearson-X570-AORUS-PRO-WIFI.tx.rr.com (2603-8081-140c-1a00-3742-d596-b265-a511.res6.spectrum.com. [2603:8081:140c:1a00:3742:d596:b265:a511])
-        by smtp.gmail.com with ESMTPSA id o188-20020acaf0c5000000b003a375c11aa5sm1909551oih.30.2023.07.21.13.51.07
+        by smtp.gmail.com with ESMTPSA id o188-20020acaf0c5000000b003a375c11aa5sm1909551oih.30.2023.07.21.13.51.08
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 21 Jul 2023 13:51:08 -0700 (PDT)
+        Fri, 21 Jul 2023 13:51:09 -0700 (PDT)
 From:   Bob Pearson <rpearsonhpe@gmail.com>
 To:     jgg@nvidia.com, leon@kernel.org, zyjzyj2000@gmail.com,
         jhack@hpe.com, linux-rdma@vger.kernel.org
 Cc:     Bob Pearson <rpearsonhpe@gmail.com>
-Subject: [PATCH for-next 3/9] RDMA/rxe: Fix freeing busy objects
-Date:   Fri, 21 Jul 2023 15:50:16 -0500
-Message-Id: <20230721205021.5394-4-rpearsonhpe@gmail.com>
+Subject: [PATCH for-next 4/9] RDMA/rxe: Fix delayed send packet handling
+Date:   Fri, 21 Jul 2023 15:50:17 -0500
+Message-Id: <20230721205021.5394-5-rpearsonhpe@gmail.com>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20230721205021.5394-1-rpearsonhpe@gmail.com>
 References: <20230721205021.5394-1-rpearsonhpe@gmail.com>
@@ -71,366 +71,174 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Currently the rxe driver calls wait_for_completion_timeout() in
-rxe_complete() to wait for the references to the object to be
-freed before final cleanup and returning to the rdma-core
-destroy verb. If this does not happen within the timeout interval
-it prints a WARN_ON and returns to the 'destroy' verb caller
-without any indication that there was an error. This is incorrect.
+In cable pull testing some NICs can hold a send packet long enough
+to allow ulp protocol stacks to destroy the qp and the cleanup
+routines to timeout waiting for all qp references to be released.
+When the NIC driver finally frees the SKB the qp pointer is no longer
+valid and causes a seg fault in rxe_skb_tx_dtor().
 
-A heavily loaded system can take an arbitrarily long time to
-complete the work needed before freeing all the references with no
-guarantees of performance within a specific time.
+This patch passes the qp index instead of the qp to the skb destructor
+callback function. The call back is required to lookup the qp from the
+index and if it has been destroyed the lookup will return NULL and the
+qp will not be referenced avoiding the seg fault.
 
-Another frequent cause of these timeouts is due to ref counting bugs
-introduced by changes in the driver so it is helpful to report the
-timeouts if they occur.
-
-This patch changes the type of the rxe_cleanup() subroutine to void
-and fixes calls to reflect this API change in rxe_verbs.c. This is
-better aligned with the code in rdma-core which sometimes fails to
-check the return value of destroy verb calls assuming they will always
-succeed. Specifically this is the case for kernel qp's.
-
-Not able to return an error, this patch puts the completion timeout or
-busy wait code into a subroutine called wait_until_done(). And places
-the call in a loop with a 10 second timeout that issues a WARN_ON
-each pass through the loop. This is slow enough to not overload the
-logs.
-
-Fixes: 215d0a755e1b ("RDMA/rxe: Stop lookup of partially built objects")
+Fixes: 8700e3e7c485 ("Soft RoCE driver")
 Signed-off-by: Bob Pearson <rpearsonhpe@gmail.com>
 ---
- drivers/infiniband/sw/rxe/rxe_pool.c  | 39 ++++++-------
- drivers/infiniband/sw/rxe/rxe_pool.h  |  2 +-
- drivers/infiniband/sw/rxe/rxe_verbs.c | 79 +++++++--------------------
- 3 files changed, 38 insertions(+), 82 deletions(-)
+ drivers/infiniband/sw/rxe/rxe_net.c | 87 ++++++++++++++++++++++-------
+ drivers/infiniband/sw/rxe/rxe_qp.c  |  1 -
+ 2 files changed, 67 insertions(+), 21 deletions(-)
 
-diff --git a/drivers/infiniband/sw/rxe/rxe_pool.c b/drivers/infiniband/sw/rxe/rxe_pool.c
-index b88492f5f300..9877a798258a 100644
---- a/drivers/infiniband/sw/rxe/rxe_pool.c
-+++ b/drivers/infiniband/sw/rxe/rxe_pool.c
-@@ -6,7 +6,7 @@
- 
- #include "rxe.h"
- 
--#define RXE_POOL_TIMEOUT	(200)
-+#define RXE_POOL_TIMEOUT	(10000)	/* 10 seconds */
- #define RXE_POOL_ALIGN		(16)
- 
- static const struct rxe_type_info {
-@@ -175,16 +175,17 @@ static void rxe_elem_release(struct kref *kref)
- {
- 	struct rxe_pool_elem *elem = container_of(kref, typeof(*elem), ref_cnt);
- 
--	complete(&elem->complete);
-+	complete_all(&elem->complete);
+diff --git a/drivers/infiniband/sw/rxe/rxe_net.c b/drivers/infiniband/sw/rxe/rxe_net.c
+index cd59666158b1..10e4a752ff7c 100644
+--- a/drivers/infiniband/sw/rxe/rxe_net.c
++++ b/drivers/infiniband/sw/rxe/rxe_net.c
+@@ -131,19 +131,28 @@ static struct dst_entry *rxe_find_route(struct net_device *ndev,
+ 	return dst;
  }
  
--int __rxe_cleanup(struct rxe_pool_elem *elem, bool sleepable)
-+void __rxe_cleanup(struct rxe_pool_elem *elem, bool sleepable)
++static struct rxe_dev *get_rxe_from_skb(struct sk_buff *skb)
++{
++	struct rxe_dev *rxe;
++	struct net_device *ndev = skb->dev;
++
++	rxe = rxe_get_dev_from_net(ndev);
++	if (!rxe && is_vlan_dev(ndev))
++		rxe = rxe_get_dev_from_net(vlan_dev_real_dev(ndev));
++
++	return rxe;
++}
++
+ static int rxe_udp_encap_recv(struct sock *sk, struct sk_buff *skb)
  {
- 	struct rxe_pool *pool = elem->pool;
- 	struct xarray *xa = &pool->xa;
--	static int timeout = RXE_POOL_TIMEOUT;
-+	int timeout = RXE_POOL_TIMEOUT;
-+	unsigned long until;
- 	unsigned long flags;
--	int ret, err = 0;
-+	int ret;
- 	void *xa_ret;
+ 	struct udphdr *udph;
+ 	struct rxe_dev *rxe;
+-	struct net_device *ndev = skb->dev;
+ 	struct rxe_pkt_info *pkt = SKB_TO_PKT(skb);
  
- 	if (sleepable)
-@@ -209,39 +210,31 @@ int __rxe_cleanup(struct rxe_pool_elem *elem, bool sleepable)
- 	 * return to rdma-core
+ 	/* takes a reference on rxe->ib_dev
+ 	 * drop when skb is freed
  	 */
- 	if (sleepable) {
--		if (!completion_done(&elem->complete) && timeout) {
-+		while (!completion_done(&elem->complete) && timeout) {
- 			ret = wait_for_completion_timeout(&elem->complete,
- 					timeout);
--
--			/* Shouldn't happen. There are still references to
--			 * the object but, rather than deadlock, free the
--			 * object or pass back to rdma-core.
--			 */
--			if (WARN_ON(!ret))
--				err = -EINVAL;
-+			WARN_ON(!ret);
- 		}
+-	rxe = rxe_get_dev_from_net(ndev);
+-	if (!rxe && is_vlan_dev(ndev))
+-		rxe = rxe_get_dev_from_net(vlan_dev_real_dev(ndev));
++	rxe = get_rxe_from_skb(skb);
+ 	if (!rxe)
+ 		goto drop;
+ 
+@@ -345,46 +354,84 @@ int rxe_prepare(struct rxe_av *av, struct rxe_pkt_info *pkt,
+ 
+ static void rxe_skb_tx_dtor(struct sk_buff *skb)
+ {
+-	struct sock *sk = skb->sk;
+-	struct rxe_qp *qp = sk->sk_user_data;
+-	int skb_out = atomic_dec_return(&qp->skb_out);
++	struct rxe_dev *rxe;
++	unsigned int index;
++	struct rxe_qp *qp;
++	int skb_out;
++
++	/* takes a ref on ib device if success */
++	rxe = get_rxe_from_skb(skb);
++	if (!rxe)
++		goto out;
++
++	/* recover source qp index from sk->sk_user_data
++	 * free the reference taken in rxe_send
++	 */
++	index = (int)(uintptr_t)skb->sk->sk_user_data;
++	sock_put(skb->sk);
+ 
++	/* lookup qp from index, takes a ref on success */
++	qp = rxe_pool_get_index(&rxe->qp_pool, index);
++	if (!qp)
++		goto out_put_ibdev;
++
++	skb_out = atomic_dec_return(&qp->skb_out);
+ 	if (unlikely(qp->need_req_skb &&
+ 		     skb_out < RXE_INFLIGHT_SKBS_PER_QP_LOW))
+ 		rxe_sched_task(&qp->req.task);
+ 
+ 	rxe_put(qp);
++out_put_ibdev:
++	ib_device_put(&rxe->ib_dev);
++out:
++	return;
+ }
+ 
+ static int rxe_send(struct sk_buff *skb, struct rxe_pkt_info *pkt)
+ {
++	struct rxe_qp *qp = pkt->qp;
++	struct sock *sk;
+ 	int err;
+ 
+-	skb->destructor = rxe_skb_tx_dtor;
+-	skb->sk = pkt->qp->sk->sk;
++	/* qp can be destroyed while this packet is waiting on
++	 * the tx queue. So need to protect sk.
++	 */
++	sk = qp->sk->sk;
++	sock_hold(sk);
++	skb->sk = sk;
+ 
+-	rxe_get(pkt->qp);
+ 	atomic_inc(&pkt->qp->skb_out);
+ 
++	sk->sk_user_data = (void *)(long)qp->elem.index;
++	skb->destructor = rxe_skb_tx_dtor;
++
+ 	if (skb->protocol == htons(ETH_P_IP)) {
+-		err = ip_local_out(dev_net(skb_dst(skb)->dev), skb->sk, skb);
++		err = ip_local_out(dev_net(skb_dst(skb)->dev), sk, skb);
+ 	} else if (skb->protocol == htons(ETH_P_IPV6)) {
+-		err = ip6_local_out(dev_net(skb_dst(skb)->dev), skb->sk, skb);
++		err = ip6_local_out(dev_net(skb_dst(skb)->dev), sk, skb);
  	} else {
--		unsigned long until = jiffies + timeout;
--
- 		/* AH objects are unique in that the destroy_ah verb
- 		 * can be called in atomic context. This delay
- 		 * replaces the wait_for_completion call above
- 		 * when the destroy_ah call is not sleepable
- 		 */
--		while (!completion_done(&elem->complete) &&
--				time_before(jiffies, until))
--			mdelay(1);
--
--		if (WARN_ON(!completion_done(&elem->complete)))
--			err = -EINVAL;
-+		while (!completion_done(&elem->complete) && timeout) {
-+			until = jiffies + timeout;
-+			while (!completion_done(&elem->complete) &&
-+			       time_before(jiffies, until)) {
-+				mdelay(10);
-+			}
-+			WARN_ON(!completion_done(&elem->complete));
-+		}
+-		rxe_dbg_qp(pkt->qp, "Unknown layer 3 protocol: %d\n",
+-				skb->protocol);
+-		atomic_dec(&pkt->qp->skb_out);
+-		rxe_put(pkt->qp);
+-		kfree_skb(skb);
+-		return -EINVAL;
++		rxe_dbg_qp(qp, "Unknown layer 3 protocol: %d",
++			   skb->protocol);
++		err = -EINVAL;
++		goto err_not_sent;
  	}
  
- 	if (pool->cleanup)
- 		pool->cleanup(elem);
- 
- 	atomic_dec(&pool->num_elem);
--
--	return err;
- }
- 
- int __rxe_get(struct rxe_pool_elem *elem)
-diff --git a/drivers/infiniband/sw/rxe/rxe_pool.h b/drivers/infiniband/sw/rxe/rxe_pool.h
-index d764c51ed6f7..efef4b05d1ed 100644
---- a/drivers/infiniband/sw/rxe/rxe_pool.h
-+++ b/drivers/infiniband/sw/rxe/rxe_pool.h
-@@ -71,7 +71,7 @@ int __rxe_get(struct rxe_pool_elem *elem);
- int __rxe_put(struct rxe_pool_elem *elem);
- #define rxe_put(obj) __rxe_put(&(obj)->elem)
- 
--int __rxe_cleanup(struct rxe_pool_elem *elem, bool sleepable);
-+void __rxe_cleanup(struct rxe_pool_elem *elem, bool sleepable);
- #define rxe_cleanup(obj) __rxe_cleanup(&(obj)->elem, true)
- #define rxe_cleanup_ah(obj, sleepable) __rxe_cleanup(&(obj)->elem, sleepable)
- 
-diff --git a/drivers/infiniband/sw/rxe/rxe_verbs.c b/drivers/infiniband/sw/rxe/rxe_verbs.c
-index 5e93dbac17b3..67995c259916 100644
---- a/drivers/infiniband/sw/rxe/rxe_verbs.c
-+++ b/drivers/infiniband/sw/rxe/rxe_verbs.c
-@@ -218,11 +218,8 @@ static int rxe_alloc_ucontext(struct ib_ucontext *ibuc, struct ib_udata *udata)
- static void rxe_dealloc_ucontext(struct ib_ucontext *ibuc)
- {
- 	struct rxe_ucontext *uc = to_ruc(ibuc);
--	int err;
- 
--	err = rxe_cleanup(uc);
--	if (err)
--		rxe_err_uc(uc, "cleanup failed, err = %d", err);
-+	rxe_cleanup(uc);
- }
- 
- /* pd */
-@@ -248,11 +245,8 @@ static int rxe_alloc_pd(struct ib_pd *ibpd, struct ib_udata *udata)
- static int rxe_dealloc_pd(struct ib_pd *ibpd, struct ib_udata *udata)
- {
- 	struct rxe_pd *pd = to_rpd(ibpd);
--	int err;
- 
--	err = rxe_cleanup(pd);
--	if (err)
--		rxe_err_pd(pd, "cleanup failed, err = %d", err);
-+	rxe_cleanup(pd);
- 
- 	return 0;
- }
-@@ -266,7 +260,7 @@ static int rxe_create_ah(struct ib_ah *ibah,
- 	struct rxe_ah *ah = to_rah(ibah);
- 	struct rxe_create_ah_resp __user *uresp = NULL;
- 	bool sleepable = init_attr->flags & RDMA_CREATE_AH_SLEEPABLE;
--	int err, cleanup_err;
-+	int err;
- 
- 	if (udata) {
- 		/* test if new user provider */
-@@ -312,9 +306,7 @@ static int rxe_create_ah(struct ib_ah *ibah,
- 	return 0;
- 
- err_cleanup:
--	cleanup_err = rxe_cleanup_ah(ah, sleepable);
--	if (cleanup_err)
--		rxe_err_ah(ah, "cleanup failed, err = %d", cleanup_err);
-+	rxe_cleanup_ah(ah, sleepable);
- err_out:
- 	rxe_err_ah(ah, "returned err = %d", err);
- 	return err;
-@@ -355,11 +347,8 @@ static int rxe_destroy_ah(struct ib_ah *ibah, u32 flags)
- {
- 	struct rxe_ah *ah = to_rah(ibah);
- 	bool sleepable = flags & RDMA_DESTROY_AH_SLEEPABLE;
--	int err;
- 
--	err = rxe_cleanup_ah(ah, sleepable);
--	if (err)
--		rxe_err_ah(ah, "cleanup failed, err = %d", err);
-+	rxe_cleanup_ah(ah, sleepable);
- 
- 	return 0;
- }
-@@ -372,7 +361,7 @@ static int rxe_create_srq(struct ib_srq *ibsrq, struct ib_srq_init_attr *init,
- 	struct rxe_pd *pd = to_rpd(ibsrq->pd);
- 	struct rxe_srq *srq = to_rsrq(ibsrq);
- 	struct rxe_create_srq_resp __user *uresp = NULL;
--	int err, cleanup_err;
-+	int err;
- 
- 	if (udata) {
- 		if (udata->outlen < sizeof(*uresp)) {
-@@ -414,9 +403,7 @@ static int rxe_create_srq(struct ib_srq *ibsrq, struct ib_srq_init_attr *init,
- 	return 0;
- 
- err_cleanup:
--	cleanup_err = rxe_cleanup(srq);
--	if (cleanup_err)
--		rxe_err_srq(srq, "cleanup failed, err = %d", cleanup_err);
-+	rxe_cleanup(srq);
- err_out:
- 	rxe_err_dev(rxe, "returned err = %d", err);
- 	return err;
-@@ -515,11 +502,8 @@ static int rxe_post_srq_recv(struct ib_srq *ibsrq, const struct ib_recv_wr *wr,
- static int rxe_destroy_srq(struct ib_srq *ibsrq, struct ib_udata *udata)
- {
- 	struct rxe_srq *srq = to_rsrq(ibsrq);
--	int err;
- 
--	err = rxe_cleanup(srq);
--	if (err)
--		rxe_err_srq(srq, "cleanup failed, err = %d", err);
-+	rxe_cleanup(srq);
- 
- 	return 0;
- }
-@@ -532,7 +516,7 @@ static int rxe_create_qp(struct ib_qp *ibqp, struct ib_qp_init_attr *init,
- 	struct rxe_pd *pd = to_rpd(ibqp->pd);
- 	struct rxe_qp *qp = to_rqp(ibqp);
- 	struct rxe_create_qp_resp __user *uresp = NULL;
--	int err, cleanup_err;
-+	int err;
- 
- 	if (udata) {
- 		if (udata->inlen) {
-@@ -581,9 +565,7 @@ static int rxe_create_qp(struct ib_qp *ibqp, struct ib_qp_init_attr *init,
- 	return 0;
- 
- err_cleanup:
--	cleanup_err = rxe_cleanup(qp);
--	if (cleanup_err)
--		rxe_err_qp(qp, "cleanup failed, err = %d", cleanup_err);
-+	rxe_cleanup(qp);
- err_out:
- 	rxe_err_dev(rxe, "returned err = %d", err);
- 	return err;
-@@ -649,9 +631,7 @@ static int rxe_destroy_qp(struct ib_qp *ibqp, struct ib_udata *udata)
- 		goto err_out;
++	/* IP consumed the packet, the destructor will handle cleanup */
+ 	if (unlikely(net_xmit_eval(err))) {
+-		rxe_dbg_qp(pkt->qp, "error sending packet: %d\n", err);
+-		return -EAGAIN;
++		rxe_dbg_qp(qp, "Error sending packet: %d", err);
++		err = -EAGAIN;
++		goto err_out;
  	}
  
--	err = rxe_cleanup(qp);
--	if (err)
--		rxe_err_qp(qp, "cleanup failed, err = %d", err);
-+	rxe_cleanup(qp);
- 
  	return 0;
- 
-@@ -1062,7 +1042,7 @@ static int rxe_create_cq(struct ib_cq *ibcq, const struct ib_cq_init_attr *attr,
- 	struct rxe_dev *rxe = to_rdev(dev);
- 	struct rxe_cq *cq = to_rcq(ibcq);
- 	struct rxe_create_cq_resp __user *uresp = NULL;
--	int err, cleanup_err;
-+	int err;
- 
- 	if (udata) {
- 		if (udata->outlen < sizeof(*uresp)) {
-@@ -1101,9 +1081,7 @@ static int rxe_create_cq(struct ib_cq *ibcq, const struct ib_cq_init_attr *attr,
- 	return 0;
- 
- err_cleanup:
--	cleanup_err = rxe_cleanup(cq);
--	if (cleanup_err)
--		rxe_err_cq(cq, "cleanup failed, err = %d", cleanup_err);
-+	rxe_cleanup(cq);
- err_out:
- 	rxe_err_dev(rxe, "returned err = %d", err);
- 	return err;
-@@ -1208,9 +1186,7 @@ static int rxe_destroy_cq(struct ib_cq *ibcq, struct ib_udata *udata)
- 		goto err_out;
- 	}
- 
--	err = rxe_cleanup(cq);
--	if (err)
--		rxe_err_cq(cq, "cleanup failed, err = %d", err);
-+	rxe_cleanup(cq);
- 
- 	return 0;
- 
-@@ -1258,7 +1234,7 @@ static struct ib_mr *rxe_reg_user_mr(struct ib_pd *ibpd, u64 start,
- 	struct rxe_dev *rxe = to_rdev(ibpd->device);
- 	struct rxe_pd *pd = to_rpd(ibpd);
- 	struct rxe_mr *mr;
--	int err, cleanup_err;
-+	int err;
- 
- 	if (access & ~RXE_ACCESS_SUPPORTED_MR) {
- 		rxe_err_pd(pd, "access = %#x not supported (%#x)", access,
-@@ -1290,9 +1266,7 @@ static struct ib_mr *rxe_reg_user_mr(struct ib_pd *ibpd, u64 start,
- 	return &mr->ibmr;
- 
- err_cleanup:
--	cleanup_err = rxe_cleanup(mr);
--	if (cleanup_err)
--		rxe_err_mr(mr, "cleanup failed, err = %d", cleanup_err);
-+	rxe_cleanup(mr);
- err_free:
- 	kfree(mr);
- 	rxe_err_pd(pd, "returned err = %d", err);
-@@ -1339,7 +1313,7 @@ static struct ib_mr *rxe_alloc_mr(struct ib_pd *ibpd, enum ib_mr_type mr_type,
- 	struct rxe_dev *rxe = to_rdev(ibpd->device);
- 	struct rxe_pd *pd = to_rpd(ibpd);
- 	struct rxe_mr *mr;
--	int err, cleanup_err;
-+	int err;
- 
- 	if (mr_type != IB_MR_TYPE_MEM_REG) {
- 		err = -EINVAL;
-@@ -1370,9 +1344,7 @@ static struct ib_mr *rxe_alloc_mr(struct ib_pd *ibpd, enum ib_mr_type mr_type,
- 	return &mr->ibmr;
- 
- err_cleanup:
--	cleanup_err = rxe_cleanup(mr);
--	if (cleanup_err)
--		rxe_err_mr(mr, "cleanup failed, err = %d", err);
-+	rxe_cleanup(mr);
- err_free:
- 	kfree(mr);
- err_out:
-@@ -1383,25 +1355,16 @@ static struct ib_mr *rxe_alloc_mr(struct ib_pd *ibpd, enum ib_mr_type mr_type,
- static int rxe_dereg_mr(struct ib_mr *ibmr, struct ib_udata *udata)
- {
- 	struct rxe_mr *mr = to_rmr(ibmr);
--	int err, cleanup_err;
- 
- 	/* See IBA 10.6.7.2.6 */
- 	if (atomic_read(&mr->num_mw) > 0) {
--		err = -EINVAL;
--		rxe_dbg_mr(mr, "mr has mw's bound");
--		goto err_out;
-+		rxe_err_mr(mr, "mr has mw's bound");
-+		return -EINVAL;
- 	}
- 
--	cleanup_err = rxe_cleanup(mr);
--	if (cleanup_err)
--		rxe_err_mr(mr, "cleanup failed, err = %d", cleanup_err);
--
-+	rxe_cleanup(mr);
- 	kfree_rcu(mr, elem.rcu);
- 	return 0;
--
--err_out:
--	rxe_err_mr(mr, "returned err = %d", err);
--	return err;
++
++err_not_sent:
++	skb->destructor = NULL;
++	atomic_dec(&pkt->qp->skb_out);
++	kfree_skb(skb);
++	sock_put(sk);
++err_out:
++	return err;
  }
  
- static ssize_t parent_show(struct device *device,
+ /* fix up a send packet to match the packets
+diff --git a/drivers/infiniband/sw/rxe/rxe_qp.c b/drivers/infiniband/sw/rxe/rxe_qp.c
+index a569b111a9d2..dcbf71031453 100644
+--- a/drivers/infiniband/sw/rxe/rxe_qp.c
++++ b/drivers/infiniband/sw/rxe/rxe_qp.c
+@@ -194,7 +194,6 @@ static int rxe_qp_init_req(struct rxe_dev *rxe, struct rxe_qp *qp,
+ 	err = sock_create_kern(&init_net, AF_INET, SOCK_DGRAM, 0, &qp->sk);
+ 	if (err < 0)
+ 		return err;
+-	qp->sk->sk->sk_user_data = qp;
+ 
+ 	/* pick a source UDP port number for this QP based on
+ 	 * the source QPN. this spreads traffic for different QPs
 -- 
 2.39.2
 
