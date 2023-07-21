@@ -2,86 +2,52 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9DDEE75CABE
-	for <lists+linux-rdma@lfdr.de>; Fri, 21 Jul 2023 16:56:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F12FA75CB2A
+	for <lists+linux-rdma@lfdr.de>; Fri, 21 Jul 2023 17:13:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231204AbjGUO4X (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 21 Jul 2023 10:56:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38098 "EHLO
+        id S231680AbjGUPNy (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 21 Jul 2023 11:13:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49350 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231368AbjGUO4X (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 21 Jul 2023 10:56:23 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C389330E3;
-        Fri, 21 Jul 2023 07:56:18 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 2F15161CB7;
-        Fri, 21 Jul 2023 14:56:18 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7E9D1C433C7;
-        Fri, 21 Jul 2023 14:56:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1689951377;
-        bh=GbEdKOfppLFqOiQbkW2R1KhTapJ4FFcPNoaoNaBCLKY=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=NXlKWpLuPeKFqxlrQAj4ALgNKRqep1DB4i8zp75V7Cvk8c/efHwVnko4stlpjU4/i
-         90qJ6XaOrO/Q0iWCqzCKbSXeO6sa2SO8PtbYKhoqUEWtwhsbZNFjOGVPxUj9cQ1ONL
-         ea6ISpEAjOP6gaPvwe/PUjlGBh22NxI2o7vYtxmgTFkSWT1OlhLe0BLR1a4Np62JRc
-         WqwybNdxjwXcxp6R6p8oFhYpuRHyGsHIIyyOGgCnFxqCBiA6Kd8/VJqDZDqoNRCI9g
-         K+ABmjUwR9H1QO1ejIRI9WI99NrytMs340M2ScQtOwONLs/z+3O+SClu0JjxYM/nic
-         /bxbxhWrBks3A==
-Date:   Fri, 21 Jul 2023 07:56:15 -0700
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Yunsheng Lin <linyunsheng@huawei.com>
-Cc:     Alexander Lobakin <aleksander.lobakin@intel.com>,
-        <davem@davemloft.net>, <pabeni@redhat.com>,
-        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        Eric Dumazet <edumazet@google.com>,
-        Wei Fang <wei.fang@nxp.com>,
-        Shenwei Wang <shenwei.wang@nxp.com>,
-        Clark Wang <xiaoning.wang@nxp.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Sunil Goutham <sgoutham@marvell.com>,
-        Geetha sowjanya <gakula@marvell.com>,
-        Subbaraya Sundeep <sbhatta@marvell.com>,
-        hariprasad <hkelam@marvell.com>,
-        Saeed Mahameed <saeedm@nvidia.com>,
+        with ESMTP id S231693AbjGUPNv (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 21 Jul 2023 11:13:51 -0400
+Received: from mail.ispras.ru (mail.ispras.ru [83.149.199.84])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE5A530E3;
+        Fri, 21 Jul 2023 08:13:43 -0700 (PDT)
+Received: from tp-owlcat.intra.ispras.ru (unknown [10.10.165.6])
+        by mail.ispras.ru (Postfix) with ESMTPSA id 48BD440B27AC;
+        Fri, 21 Jul 2023 15:05:56 +0000 (UTC)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mail.ispras.ru 48BD440B27AC
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ispras.ru;
+        s=default; t=1689951956;
+        bh=XTwyWVZFfamFmp6s8GAMDD3q7CDQ92gXY7bdsxBiQgM=;
+        h=From:To:Cc:Subject:Date:From;
+        b=PLyJJ0OYyZKy8MvMZvxtAZQIuGtOWU6a3m58PwuMkGqtDcQtYLfrI34fNN4pqgP4X
+         WqQdOKEBzerD3zpShixEKvc0xcFqmga7zPBogZy94XzlgHDoAJcvuKxhlj3ivoryvx
+         dWHNOzmCmsYq54vPJ0wkJjqEgWf79FciN8oQ++y4=
+From:   Anton Gusev <aagusev@ispras.ru>
+To:     stable@vger.kernel.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Anton Gusev <aagusev@ispras.ru>,
+        Doug Ledford <dledford@redhat.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
         Leon Romanovsky <leon@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Felix Fietkau <nbd@nbd.name>,
-        Lorenzo Bianconi <lorenzo@kernel.org>,
-        Ryder Lee <ryder.lee@mediatek.com>,
-        Shayne Chen <shayne.chen@mediatek.com>,
-        Sean Wang <sean.wang@mediatek.com>,
-        Kalle Valo <kvalo@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>,
-        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
-        <linux-rdma@vger.kernel.org>, <bpf@vger.kernel.org>,
-        <linux-wireless@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-mediatek@lists.infradead.org>
-Subject: Re: [PATCH net-next] page_pool: split types and declarations from
- page_pool.h
-Message-ID: <20230721075615.118acad4@kernel.org>
-In-Reply-To: <f5d40062-bb0d-055b-8c02-912cfd020aca@huawei.com>
-References: <20230719121339.63331-1-linyunsheng@huawei.com>
-        <0838ed9e-8b5c-cc93-0175-9d6cbf695dda@intel.com>
-        <7e9c1276-9996-d9dd-c061-b1e66361c48b@huawei.com>
-        <20230720092247.279d65f3@kernel.org>
-        <f5d40062-bb0d-055b-8c02-912cfd020aca@huawei.com>
+        Sasha Levin <sashal@kernel.org>,
+        Mark Zhang <markzhang@nvidia.com>,
+        =?UTF-8?q?H=C3=A5kon=20Bugge?= <haakon.bugge@oracle.com>,
+        Michael Guralnik <michaelgur@nvidia.com>,
+        Roland Dreier <rolandd@cisco.com>,
+        Sean Hefty <sean.hefty@intel.com>, linux-rdma@vger.kernel.org,
+        linux-kernel@vger.kernel.org, lvc-project@linuxtesting.org
+Subject: [PATCH 5.10 0/1] RDMA/cma: Ensure rdma_addr_cancel() happens before issuing more requests
+Date:   Fri, 21 Jul 2023 18:05:32 +0300
+Message-ID: <20230721150535.191318-1-aagusev@ispras.ru>
+X-Mailer: git-send-email 2.41.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -89,17 +55,12 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Fri, 21 Jul 2023 19:12:25 +0800 Yunsheng Lin wrote:
-> Just to be clear, include/net/page_pool.h is still there, we are not
-> putting page_pool.h in include/net/page_pool/ and renaming it to
-> something else, right? As there is no that kind of uniformity in
-> include/net/* as far as I can see.
+Syzkaller reports use-after-free at addr_handler in 5.10 stable
+releases. The problem was fixed in upstream and backported into
+5.14, but wasn't applied to 5.10 and lower versions due to a small
+merge conflict.
 
-Like many things the uniformity is a plan which mostly exists in my head
-at this stage :) But it is somewhat inspired by include/linux/sched.*
+This patch is a modified version that can be cleanly applied to 5.10 and
+5.4 stable branches.
 
-> More specificly, yon means the below, right?
-> include/net/page_pool.h
-> include/net/page_pool/types.h
-
-Yes.
+Found by Linux Verification Center (linuxtesting.org) with Syzkaller.
