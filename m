@@ -2,104 +2,72 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 558BD75DD7F
-	for <lists+linux-rdma@lfdr.de>; Sat, 22 Jul 2023 18:47:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BEDAC75DDE8
+	for <lists+linux-rdma@lfdr.de>; Sat, 22 Jul 2023 19:33:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229468AbjGVQrd (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Sat, 22 Jul 2023 12:47:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57528 "EHLO
+        id S229960AbjGVRdn (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Sat, 22 Jul 2023 13:33:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38794 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229813AbjGVQrc (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Sat, 22 Jul 2023 12:47:32 -0400
-X-Greylist: delayed 244 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Sat, 22 Jul 2023 09:47:31 PDT
-Received: from smtp.smtpout.orange.fr (smtp-28.smtpout.orange.fr [80.12.242.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 113CB10FA
-        for <linux-rdma@vger.kernel.org>; Sat, 22 Jul 2023 09:47:30 -0700 (PDT)
-Received: from pop-os.home ([86.243.2.178])
-        by smtp.orange.fr with ESMTPA
-        id NFlNqftgEZWkDNFlOqjnql; Sat, 22 Jul 2023 18:47:29 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wanadoo.fr;
-        s=t20230301; t=1690044449;
-        bh=IQyaExm2W+hWmqxwBEcF/S4pavhj7DW1iV5TthHyYq0=;
-        h=From:To:Cc:Subject:Date;
-        b=bv6jFkyPyNTJAMS45ucOXR0aal1IV5W56+H6O/egzxKIDCJmW9IbSNtvYllo84heK
-         kKUxEWgD0UzOCdCp8ckbb5dtvYxgyLrPNbHN/QivomcO3XgGtKLmno54hYOQ6SXbbo
-         w/cK/Z9ZpGlRH0uTMjoRvlTwITZaW5ReuzffE6nwszpSH3t6Em6LY8D8IDhatmJi91
-         r7bTnzCQnRiq4+ct1gyt5lODJcKAHXe5B3YrSeHQVUnZ8gQlkqakffCDHc5qYRO4MM
-         +7Wk6XlzyjnH34PqzYxEgMsrG7lvf1uyLXp2cE+nDcOkDKwKSL3pPTH0wkLELackOL
-         K7t9XNqvKmegw==
-X-ME-Helo: pop-os.home
-X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
-X-ME-Date: Sat, 22 Jul 2023 18:47:29 +0200
-X-ME-IP: 86.243.2.178
-From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-To:     Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Leon Romanovsky <leon@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-        linux-rdma@vger.kernel.org
-Subject: [PATCH v2] IB/hfi1: Use struct_size()
-Date:   Sat, 22 Jul 2023 18:47:24 +0200
-Message-Id: <f4618a67d5ae0a30eb3f2b4558c8cc790feed79a.1690044376.git.christophe.jaillet@wanadoo.fr>
-X-Mailer: git-send-email 2.34.1
+        with ESMTP id S229469AbjGVRdg (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Sat, 22 Jul 2023 13:33:36 -0400
+Received: from mail-pg1-x52a.google.com (mail-pg1-x52a.google.com [IPv6:2607:f8b0:4864:20::52a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75AA12691
+        for <linux-rdma@vger.kernel.org>; Sat, 22 Jul 2023 10:33:33 -0700 (PDT)
+Received: by mail-pg1-x52a.google.com with SMTP id 41be03b00d2f7-55b5a3915f5so1564153a12.0
+        for <linux-rdma@vger.kernel.org>; Sat, 22 Jul 2023 10:33:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1690047213; x=1690652013;
+        h=content-transfer-encoding:to:subject:message-id:date:from:reply-to
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=XwQ9KTk0AvNg4YEGpLO6Mzd1tQ0NGTk2GH4qBYSzWYc=;
+        b=VgzZMptrmZ8TWZlxmL7uj46LqGTn5bcQsDytmauMeEb7890xlnF7daq2CEEGMnZ9/Z
+         2YeM29/AwkqHTH0jS1CpvSk9kZVtYGiyBT6f7RMo9cKuvHoe9kZi0PhVT9S16QwWl6IJ
+         hKylPvfYWtUMI1hzwsNnorESKbmngUKjbDcVWCqohrvzxnrnZ1diQfvsyNAPN33EhcDw
+         /D3WxcSxyY44lsDuJ+oKIB1HMNlws0smCwwol4ecOLZkv5tgkze8FDT79naNiVl3ANsv
+         u8OnTj2mk9bfWSZSexMMF0mPnUX8wekGS356PXJXTSnIGQioil1IOh0CHgMKRQ/Dc5vP
+         IDcg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690047213; x=1690652013;
+        h=content-transfer-encoding:to:subject:message-id:date:from:reply-to
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=XwQ9KTk0AvNg4YEGpLO6Mzd1tQ0NGTk2GH4qBYSzWYc=;
+        b=g89zr/8ZxOsF3KBRqaND05swjhl/DgLWoq21Tq9MYT4Jm33jyIStYT8ScsIE9FL2z+
+         gXoPh8WgBsj4MobAlaPa7peuzvwlAM0ypzjHyomLGSS1IeWO4EpG56iwCSDlrOi4GrAm
+         G8fdq+z8+ECbPJl5kdpKcE7PiEmvZAQX2uRADMChf9lbF/rlOXun7/8GXdM/C3tLWZsW
+         zIJF8/+QRyL2gGSuSDqcDMdJ+OcsM63QsGA1baQRRSCHN//+6pr6CaUocWpsB0/H3mns
+         j2x8hY/w56RMuVHaJdSGg1aXgLKXaTIMZsW7YOtlbN4IbSa2je8LuvAVKVHQmqIDE7eh
+         /eFg==
+X-Gm-Message-State: ABy/qLagjCt3M7IHBfDhg/OmgXXvF9SqJzX+dcuJsIHQ3yCOEhLuFw0c
+        D0VNtTdwrV724sedr4QOilGbAkszq0EmR8Y/erw=
+X-Google-Smtp-Source: APBJJlGaafNiiHf9/1O0psWPRSU+7sNla2aMoOYF66iC/Xrx4mVCb4Rkkl5MrHBWY+m5yeh1LUIwdQAeleHpZGArl9Y=
+X-Received: by 2002:a17:90b:d8f:b0:250:6c76:fd9b with SMTP id
+ bg15-20020a17090b0d8f00b002506c76fd9bmr3433350pjb.38.1690047212899; Sat, 22
+ Jul 2023 10:33:32 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
-        version=3.4.6
+Received: by 2002:a05:6a20:556:b0:130:f967:83dc with HTTP; Sat, 22 Jul 2023
+ 10:33:32 -0700 (PDT)
+Reply-To: mrsvl06@gmail.com
+From:   Veronica Lee <barr.freemanukoh@gmail.com>
+Date:   Sat, 22 Jul 2023 19:33:32 +0200
+Message-ID: <CAB6WZPoaKVWPbmVCghccn8Ed=43UndtTt_gOWQ-F7rurprkDnQ@mail.gmail.com>
+Subject: re
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: base64
+X-Spam-Status: No, score=4.5 required=5.0 tests=BAYES_50,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,FREEMAIL_REPLYTO,
+        FREEMAIL_REPLYTO_END_DIGIT,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE,UNDISC_FREEM autolearn=no
+        autolearn_force=no version=3.4.6
+X-Spam-Level: ****
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Use struct_size() instead of hand-writing it, when allocating a structure
-with a flex array.
-
-This is less verbose, more robust and more informative.
-
-Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
----
-It will also be helpful if the __counted_by() annotation is added with a
-Coccinelle script such as:
-   https://git.kernel.org/pub/scm/linux/kernel/git/kees/linux.git/commit/?h=devel/counted_by&id=adc5b3cb48a049563dc673f348eab7b6beba8a9b
-
-
-Change in v2: use struct_size() in another place just a few line below.
----
- drivers/infiniband/hw/hfi1/pio.c | 9 +++------
- 1 file changed, 3 insertions(+), 6 deletions(-)
-
-diff --git a/drivers/infiniband/hw/hfi1/pio.c b/drivers/infiniband/hw/hfi1/pio.c
-index 62e7dc9bea7b..dfea53e0fdeb 100644
---- a/drivers/infiniband/hw/hfi1/pio.c
-+++ b/drivers/infiniband/hw/hfi1/pio.c
-@@ -1893,9 +1893,7 @@ int pio_map_init(struct hfi1_devdata *dd, u8 port, u8 num_vls, u8 *vl_scontexts)
- 			vl_scontexts[i] = sc_per_vl + (extra > 0 ? 1 : 0);
- 	}
- 	/* build new map */
--	newmap = kzalloc(sizeof(*newmap) +
--			 roundup_pow_of_two(num_vls) *
--			 sizeof(struct pio_map_elem *),
-+	newmap = kzalloc(struct_size(newmap, map, roundup_pow_of_two(num_vls)),
- 			 GFP_KERNEL);
- 	if (!newmap)
- 		goto bail;
-@@ -1910,9 +1908,8 @@ int pio_map_init(struct hfi1_devdata *dd, u8 port, u8 num_vls, u8 *vl_scontexts)
- 			int sz = roundup_pow_of_two(vl_scontexts[i]);
- 
- 			/* only allocate once */
--			newmap->map[i] = kzalloc(sizeof(*newmap->map[i]) +
--						 sz * sizeof(struct
--							     send_context *),
-+			newmap->map[i] = kzalloc(struct_size(newmap->map[i],
-+							     ksc, sz),
- 						 GFP_KERNEL);
- 			if (!newmap->map[i])
- 				goto bail;
--- 
-2.34.1
-
+16nXnNeV150g15nXp9eZ16jXmSwg15DXoNeZINek15XXoNeUINeQ15zXmdeaINec157XmdeT16Ig
+16nXkdeo16bXldeg15kg15zXl9ec15XXpyDXkNeZ16rXmiDXkNecINeq15TXodehINec15TXqdeZ
+15Eg15zXpNeo15jXmdedDQo=
