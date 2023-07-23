@@ -2,72 +2,90 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BEDAC75DDE8
-	for <lists+linux-rdma@lfdr.de>; Sat, 22 Jul 2023 19:33:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A66A75E053
+	for <lists+linux-rdma@lfdr.de>; Sun, 23 Jul 2023 09:45:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229960AbjGVRdn (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Sat, 22 Jul 2023 13:33:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38794 "EHLO
+        id S229691AbjGWHp1 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Sun, 23 Jul 2023 03:45:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46548 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229469AbjGVRdg (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Sat, 22 Jul 2023 13:33:36 -0400
-Received: from mail-pg1-x52a.google.com (mail-pg1-x52a.google.com [IPv6:2607:f8b0:4864:20::52a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75AA12691
-        for <linux-rdma@vger.kernel.org>; Sat, 22 Jul 2023 10:33:33 -0700 (PDT)
-Received: by mail-pg1-x52a.google.com with SMTP id 41be03b00d2f7-55b5a3915f5so1564153a12.0
-        for <linux-rdma@vger.kernel.org>; Sat, 22 Jul 2023 10:33:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1690047213; x=1690652013;
-        h=content-transfer-encoding:to:subject:message-id:date:from:reply-to
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=XwQ9KTk0AvNg4YEGpLO6Mzd1tQ0NGTk2GH4qBYSzWYc=;
-        b=VgzZMptrmZ8TWZlxmL7uj46LqGTn5bcQsDytmauMeEb7890xlnF7daq2CEEGMnZ9/Z
-         2YeM29/AwkqHTH0jS1CpvSk9kZVtYGiyBT6f7RMo9cKuvHoe9kZi0PhVT9S16QwWl6IJ
-         hKylPvfYWtUMI1hzwsNnorESKbmngUKjbDcVWCqohrvzxnrnZ1diQfvsyNAPN33EhcDw
-         /D3WxcSxyY44lsDuJ+oKIB1HMNlws0smCwwol4ecOLZkv5tgkze8FDT79naNiVl3ANsv
-         u8OnTj2mk9bfWSZSexMMF0mPnUX8wekGS356PXJXTSnIGQioil1IOh0CHgMKRQ/Dc5vP
-         IDcg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690047213; x=1690652013;
-        h=content-transfer-encoding:to:subject:message-id:date:from:reply-to
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=XwQ9KTk0AvNg4YEGpLO6Mzd1tQ0NGTk2GH4qBYSzWYc=;
-        b=g89zr/8ZxOsF3KBRqaND05swjhl/DgLWoq21Tq9MYT4Jm33jyIStYT8ScsIE9FL2z+
-         gXoPh8WgBsj4MobAlaPa7peuzvwlAM0ypzjHyomLGSS1IeWO4EpG56iwCSDlrOi4GrAm
-         G8fdq+z8+ECbPJl5kdpKcE7PiEmvZAQX2uRADMChf9lbF/rlOXun7/8GXdM/C3tLWZsW
-         zIJF8/+QRyL2gGSuSDqcDMdJ+OcsM63QsGA1baQRRSCHN//+6pr6CaUocWpsB0/H3mns
-         j2x8hY/w56RMuVHaJdSGg1aXgLKXaTIMZsW7YOtlbN4IbSa2je8LuvAVKVHQmqIDE7eh
-         /eFg==
-X-Gm-Message-State: ABy/qLagjCt3M7IHBfDhg/OmgXXvF9SqJzX+dcuJsIHQ3yCOEhLuFw0c
-        D0VNtTdwrV724sedr4QOilGbAkszq0EmR8Y/erw=
-X-Google-Smtp-Source: APBJJlGaafNiiHf9/1O0psWPRSU+7sNla2aMoOYF66iC/Xrx4mVCb4Rkkl5MrHBWY+m5yeh1LUIwdQAeleHpZGArl9Y=
-X-Received: by 2002:a17:90b:d8f:b0:250:6c76:fd9b with SMTP id
- bg15-20020a17090b0d8f00b002506c76fd9bmr3433350pjb.38.1690047212899; Sat, 22
- Jul 2023 10:33:32 -0700 (PDT)
-MIME-Version: 1.0
-Received: by 2002:a05:6a20:556:b0:130:f967:83dc with HTTP; Sat, 22 Jul 2023
- 10:33:32 -0700 (PDT)
-Reply-To: mrsvl06@gmail.com
-From:   Veronica Lee <barr.freemanukoh@gmail.com>
-Date:   Sat, 22 Jul 2023 19:33:32 +0200
-Message-ID: <CAB6WZPoaKVWPbmVCghccn8Ed=43UndtTt_gOWQ-F7rurprkDnQ@mail.gmail.com>
-Subject: re
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: base64
-X-Spam-Status: No, score=4.5 required=5.0 tests=BAYES_50,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,FREEMAIL_REPLYTO,
-        FREEMAIL_REPLYTO_END_DIGIT,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE,UNDISC_FREEM autolearn=no
-        autolearn_force=no version=3.4.6
-X-Spam-Level: ****
+        with ESMTP id S229597AbjGWHp1 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Sun, 23 Jul 2023 03:45:27 -0400
+Received: from zg8tmtyylji0my4xnjqumte4.icoremail.net (zg8tmtyylji0my4xnjqumte4.icoremail.net [162.243.164.118])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 4FA7819BF
+        for <linux-rdma@vger.kernel.org>; Sun, 23 Jul 2023 00:45:25 -0700 (PDT)
+Received: from localhost.localdomain (unknown [36.24.99.225])
+        by mail-app3 (Coremail) with SMTP id cC_KCgD3_g6B2rxkkDN_Cw--.46290S4;
+        Sun, 23 Jul 2023 15:45:05 +0800 (CST)
+From:   Lin Ma <linma@zju.edu.cn>
+To:     jgg@ziepe.ca, leon@kernel.org, markzhang@nvidia.com,
+        michaelgur@nvidia.com, ohartoov@nvidia.com,
+        chenzhongjin@huawei.com, yuancan@huawei.com,
+        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Lin Ma <linma@zju.edu.cn>
+Subject: [PATCH v1] RDMA/nldev: Add length check for IFLA_BOND_ARP_IP_TARGET parsing
+Date:   Sun, 23 Jul 2023 15:45:04 +0800
+Message-Id: <20230723074504.3706691-1-linma@zju.edu.cn>
+X-Mailer: git-send-email 2.17.1
+X-CM-TRANSID: cC_KCgD3_g6B2rxkkDN_Cw--.46290S4
+X-Coremail-Antispam: 1UD129KBjvJXoWxJr1Dtr45WrW8WF48ur1UAwb_yoW8JFW3pF
+        W0qFy7KF47JF13Ga1Dta1kWFWa93W7ZFyagFWDt343urn8Xw1S9345CFyYvFWDArWkA3W2
+        vF15Z34j9FZ2qr7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUvC14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
+        1l84ACjcxK6xIIjxv20xvE14v26w1j6s0DM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4U
+        JVWxJr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Gc
+        CE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E
+        2Ix0cI8IcVAFwI0_JrI_JrylYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJV
+        W8JwACjcxG0xvY0x0EwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lFIxGxcIEc7CjxVA2
+        Y2ka0xkIwI1lc2xSY4AK67AK6r4xMxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r
+        1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CE
+        b7AF67AKxVWUtVW8ZwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0x
+        vE2Ix0cI8IcVCY1x0267AKxVW8JVWxJwCI42IY6xAIw20EY4v20xvaj40_Jr0_JF4lIxAI
+        cVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2Kf
+        nxnUUI43ZEXa7VU10tC7UUUUU==
+X-CM-SenderInfo: qtrwiiyqvtljo62m3hxhgxhubq/
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-16nXnNeV150g15nXp9eZ16jXmSwg15DXoNeZINek15XXoNeUINeQ15zXmdeaINec157XmdeT16Ig
-16nXkdeo16bXldeg15kg15zXl9ec15XXpyDXkNeZ16rXmiDXkNecINeq15TXodehINec15TXqdeZ
-15Eg15zXpNeo15jXmdedDQo=
+The nla_for_each_nested parsing in function
+nldev_stat_set_counter_dynamic_doit() does not check the length of the
+attribute. This can lead to an out-of-attribute read and allow a
+malformed nlattr (e.g., length 0) to be viewed as a 4 byte integer.
+
+This patch adds the check based on nla_len() just as other code does,
+see how bond_changelink (drivers/net/bonding/bond_netlink.c) parses
+IFLA_BOND_NS_IP6_TARGET.
+
+Fixes: 3c3c1f141639 ("RDMA/nldev: Allow optional-counter status configuration through RDMA netlink")
+Signed-off-by: Lin Ma <linma@zju.edu.cn>
+---
+ drivers/infiniband/core/nldev.c | 5 +++++
+ 1 file changed, 5 insertions(+)
+
+diff --git a/drivers/infiniband/core/nldev.c b/drivers/infiniband/core/nldev.c
+index d5d3e4f0de77..74635c23b371 100644
+--- a/drivers/infiniband/core/nldev.c
++++ b/drivers/infiniband/core/nldev.c
+@@ -1989,6 +1989,11 @@ static int nldev_stat_set_counter_dynamic_doit(struct nlattr *tb[],
+ 
+ 	nla_for_each_nested(entry_attr, tb[RDMA_NLDEV_ATTR_STAT_HWCOUNTERS],
+ 			    rem) {
++		if (nla_len(entry_attr) < sizeof(index)) {
++			ret = -EINVAL;
++			goto out;
++		}
++
+ 		index = nla_get_u32(entry_attr);
+ 		if ((index >= stats->num_counters) ||
+ 		    !(stats->descs[index].flags & IB_STAT_FLAG_OPTIONAL)) {
+-- 
+2.17.1
+
