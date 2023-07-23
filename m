@@ -2,284 +2,251 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id ACF8475E404
-	for <lists+linux-rdma@lfdr.de>; Sun, 23 Jul 2023 19:25:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B198A75E4D8
+	for <lists+linux-rdma@lfdr.de>; Sun, 23 Jul 2023 22:31:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229862AbjGWRZB (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Sun, 23 Jul 2023 13:25:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59852 "EHLO
+        id S229469AbjGWUbl (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Sun, 23 Jul 2023 16:31:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37614 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229843AbjGWRZB (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Sun, 23 Jul 2023 13:25:01 -0400
-Received: from mail-ot1-x331.google.com (mail-ot1-x331.google.com [IPv6:2607:f8b0:4864:20::331])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD99A121
-        for <linux-rdma@vger.kernel.org>; Sun, 23 Jul 2023 10:24:59 -0700 (PDT)
-Received: by mail-ot1-x331.google.com with SMTP id 46e09a7af769-6bb14015560so1665982a34.2
-        for <linux-rdma@vger.kernel.org>; Sun, 23 Jul 2023 10:24:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1690133099; x=1690737899;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=IleOuyuiKuW+CTiywiFPyy5up/nHGPfNU2JikrSOY1Q=;
-        b=obpHDUz7M5bwlUzhx2Wqup/W+8/CQ8ZqetL1i5aJXjucdrPiUntEjVUUf9QAEtTAV9
-         SOhK+ll2QbXuYbPXxccG8M4aFwoVs3hB18bZHTnidil6KWGYBHs2VdnxjQwEYziRUd+M
-         yRNbUkb3XIvB5AeYwez5ADx/CiJ9UZ1iOpKD/pi7mymWPt1xKj5Em+Xh+bsd4OpUTVMB
-         YuLc2NqVn44YvoETz3HvcLB7fsaEAg7GuI0gir4wsSv9LfdRkKZZn763CVdEFwYnhXGl
-         71/6yiPpKdvCwimyYnTSZw+5p89OrNQSMHO+r+Un5s2cw8QnNqqJCqYAAFBem2ee9Xbv
-         VUeA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690133099; x=1690737899;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=IleOuyuiKuW+CTiywiFPyy5up/nHGPfNU2JikrSOY1Q=;
-        b=dRYK8vBimlX9ROUhcm58JYSVpfTtcYe1gNSk2+FaV6Ca/RUUbL07u31pR0OA5B/2Oi
-         gElqclwp6p3Jhy4373j/uChVB3wu7w0NiGxiyQKU2V/13acPXqpw8NswRXHZV9ZWhHrR
-         DXfTdPtU6A7u+9BCjqDQuUMEb0XOw2Se2pE2OhZ5celx7n2e/zOVSE+ytY/g5tK2AADz
-         O91aGw5aMSGKVJ+pZw4D+iR1gIp8xbhKDY9lGYZHaFaROKGOz2WGhuLPgfGgIAA06F/R
-         c4sba23+mwpI5arQcJr65Ia+A8yhOc6LhLFds5I3mal6dfz8agv0pksuoG2JwtC/wdka
-         hE0Q==
-X-Gm-Message-State: ABy/qLagLJrY1RVwT91pwKsve6vLS/q+/6ADe5VoXmFTMTEZZg8X+M0g
-        n+nWpSP7/92dRRXd8NErc/RZPtBTtzM=
-X-Google-Smtp-Source: APBJJlHaQT2chV0BI4gd//bzOS3WS6D+dBIt6yd35cSkVnVTeQmpx/RFFwKn+v9UAEay2/4O69/FcQ==
-X-Received: by 2002:a05:6830:1d52:b0:6b8:691e:ec53 with SMTP id p18-20020a0568301d5200b006b8691eec53mr4373749oth.11.1690133098851;
-        Sun, 23 Jul 2023 10:24:58 -0700 (PDT)
-Received: from ?IPV6:2603:8081:140c:1a00:351d:323b:44b0:f852? (2603-8081-140c-1a00-351d-323b-44b0-f852.res6.spectrum.com. [2603:8081:140c:1a00:351d:323b:44b0:f852])
-        by smtp.gmail.com with ESMTPSA id k25-20020a0568301bf900b006b8a0c7e14asm3203324otb.55.2023.07.23.10.24.58
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 23 Jul 2023 10:24:58 -0700 (PDT)
-Message-ID: <fca4bc52-448f-7285-f8d6-60b61fbc04b1@gmail.com>
-Date:   Sun, 23 Jul 2023 12:24:57 -0500
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH for-next 4/9] RDMA/rxe: Fix delayed send packet handling
-To:     Zhu Yanjun <zyjzyj2000@gmail.com>
-Cc:     jgg@nvidia.com, leon@kernel.org, jhack@hpe.com,
+        with ESMTP id S229456AbjGWUbl (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Sun, 23 Jul 2023 16:31:41 -0400
+Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF0441B8
+        for <linux-rdma@vger.kernel.org>; Sun, 23 Jul 2023 13:31:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1690144299; x=1721680299;
+  h=date:from:to:cc:subject:message-id;
+  bh=krFdCgp2ok5y6sXF/gEQ2v+6l3pw6vYKMSv7GKhfnMQ=;
+  b=Ar60o8vGUbzzKXt1UNhrEXSfMxi/fe2XKCOMJlxgssYUHLpAbiHf++HQ
+   HZr7PYS6Kr9gc2QIzC3PBwj9vG5XFDBEm0j0yDndch5yXS2kd42HTm5wc
+   4XOylQwxvhNQOi9i45aocDJgWwuzV9sd0V8VivAUAQ+4kIayQ2NdLvuYg
+   aGHD5Grfiyjl00y8eo4yJP7m62BOo3IM5r4dG490gnkU3iaLVGxbNPwh2
+   JiZ19H/1NiqQmKaDnGm7BsWzJo2O4wDK/jkQ8TlPZSchVrUfiybw/Yibm
+   ruQOId1AobaAuynJkDesN0gSTPBtxFGiU521137hQH3KvoN/h3ahB/VeL
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10780"; a="398206662"
+X-IronPort-AV: E=Sophos;i="6.01,227,1684825200"; 
+   d="scan'208";a="398206662"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Jul 2023 13:31:38 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10780"; a="755084280"
+X-IronPort-AV: E=Sophos;i="6.01,227,1684825200"; 
+   d="scan'208";a="755084280"
+Received: from lkp-server02.sh.intel.com (HELO 36946fcf73d7) ([10.239.97.151])
+  by orsmga008.jf.intel.com with ESMTP; 23 Jul 2023 13:31:36 -0700
+Received: from kbuild by 36946fcf73d7 with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qNfjU-0009FD-0m;
+        Sun, 23 Jul 2023 20:31:16 +0000
+Date:   Mon, 24 Jul 2023 04:29:12 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Leon Romanovsky <leon@kernel.org>
+Cc:     Doug Ledford <dledford@redhat.com>,
+        Jason Gunthorpe <jgg+lists@ziepe.ca>,
         linux-rdma@vger.kernel.org
-References: <20230721205021.5394-1-rpearsonhpe@gmail.com>
- <20230721205021.5394-5-rpearsonhpe@gmail.com>
- <CAD=hENeFSR1R8C0PkSSoE22atotT_1tJ1tzHzpNoirb996FNmQ@mail.gmail.com>
-Content-Language: en-US
-From:   Bob Pearson <rpearsonhpe@gmail.com>
-In-Reply-To: <CAD=hENeFSR1R8C0PkSSoE22atotT_1tJ1tzHzpNoirb996FNmQ@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Subject: [rdma:for-next] BUILD SUCCESS
+ 44725a87381353075273618eeedc9127e99c378e
+Message-ID: <202307240410.LJ1T3RgB-lkp@intel.com>
+User-Agent: s-nail v14.9.24
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 7/23/23 08:03, Zhu Yanjun wrote:
-> On Sat, Jul 22, 2023 at 4:51 AM Bob Pearson <rpearsonhpe@gmail.com> wrote:
->>
->> In cable pull testing some NICs can hold a send packet long enough
->> to allow ulp protocol stacks to destroy the qp and the cleanup
->> routines to timeout waiting for all qp references to be released.
->> When the NIC driver finally frees the SKB the qp pointer is no longer
->> valid and causes a seg fault in rxe_skb_tx_dtor().
-> 
-> If a packet is held in some NICs, the later packets of this packet
-> will also be held by this NIC. So this will cause QP not to work well.
-> This is a serious problem. And the problem should be fixed in this
-> kind of NICs. We should not fix it in RXE.
-> 
-> And a QP exists for at least several seconds. A packet can be held in
-> NIC for such a long time? This problem does exist in the real world,
-> or you imagine this scenario?
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git for-next
+branch HEAD: 44725a87381353075273618eeedc9127e99c378e  RDMA/qedr: Remove duplicate assignments of va
 
-This was a real bug observed in a 24 hour stress test where we were running IOR
-traffic over Lustre on a 256 node cluster. Then we ran a test that randomly disabled
-links for 10-20 second and then reenbled them. Lustre will automatically detect the
-down links and reroute the storage traffic to a new RC connection and then when the
-link recovers it will reestablish RC connections on the link. The failover is triggered
-by Lustre timing out on an IO operation and it then tears down the QPs. When the link
-is back up the tx queue is finally processed by the NIC and the skbs are freed in the
-sender calling the rxe skb destructor function which attempts to update a counter in
-the QP state. During the test we would observe 2-3 kernel panics from referencing the
-destroyed qp pointer. We made this change to avoid delaying the qp destroy call for an
-arbitrarily long time and instead took a reference on the struct sock and used the qpn
-instead of the qp pointer. There is a later patch in this series that fixes a related
-but different problem which can occur at the end of the test if someone attempts to
-rmmod the rxe driver while a packet is still pending. In this case it the code in the
-destructor function which is gone not the QP. But still need to protect with ref counts.
+elapsed time: 726m
 
-Bob
-> 
-> I can not imagine this kind of scenario. Please Jason or Leon also check this.
-> 
-> Thanks.
-> Zhu Yanjun
->>
->> This patch passes the qp index instead of the qp to the skb destructor
->> callback function. The call back is required to lookup the qp from the
->> index and if it has been destroyed the lookup will return NULL and the
->> qp will not be referenced avoiding the seg fault.
->>
->> Fixes: 8700e3e7c485 ("Soft RoCE driver")
->> Signed-off-by: Bob Pearson <rpearsonhpe@gmail.com>
->> ---
->>  drivers/infiniband/sw/rxe/rxe_net.c | 87 ++++++++++++++++++++++-------
->>  drivers/infiniband/sw/rxe/rxe_qp.c  |  1 -
->>  2 files changed, 67 insertions(+), 21 deletions(-)
->>
->> diff --git a/drivers/infiniband/sw/rxe/rxe_net.c b/drivers/infiniband/sw/rxe/rxe_net.c
->> index cd59666158b1..10e4a752ff7c 100644
->> --- a/drivers/infiniband/sw/rxe/rxe_net.c
->> +++ b/drivers/infiniband/sw/rxe/rxe_net.c
->> @@ -131,19 +131,28 @@ static struct dst_entry *rxe_find_route(struct net_device *ndev,
->>         return dst;
->>  }
->>
->> +static struct rxe_dev *get_rxe_from_skb(struct sk_buff *skb)
->> +{
->> +       struct rxe_dev *rxe;
->> +       struct net_device *ndev = skb->dev;
->> +
->> +       rxe = rxe_get_dev_from_net(ndev);
->> +       if (!rxe && is_vlan_dev(ndev))
->> +               rxe = rxe_get_dev_from_net(vlan_dev_real_dev(ndev));
->> +
->> +       return rxe;
->> +}
->> +
->>  static int rxe_udp_encap_recv(struct sock *sk, struct sk_buff *skb)
->>  {
->>         struct udphdr *udph;
->>         struct rxe_dev *rxe;
->> -       struct net_device *ndev = skb->dev;
->>         struct rxe_pkt_info *pkt = SKB_TO_PKT(skb);
->>
->>         /* takes a reference on rxe->ib_dev
->>          * drop when skb is freed
->>          */
->> -       rxe = rxe_get_dev_from_net(ndev);
->> -       if (!rxe && is_vlan_dev(ndev))
->> -               rxe = rxe_get_dev_from_net(vlan_dev_real_dev(ndev));
->> +       rxe = get_rxe_from_skb(skb);
->>         if (!rxe)
->>                 goto drop;
->>
->> @@ -345,46 +354,84 @@ int rxe_prepare(struct rxe_av *av, struct rxe_pkt_info *pkt,
->>
->>  static void rxe_skb_tx_dtor(struct sk_buff *skb)
->>  {
->> -       struct sock *sk = skb->sk;
->> -       struct rxe_qp *qp = sk->sk_user_data;
->> -       int skb_out = atomic_dec_return(&qp->skb_out);
->> +       struct rxe_dev *rxe;
->> +       unsigned int index;
->> +       struct rxe_qp *qp;
->> +       int skb_out;
->> +
->> +       /* takes a ref on ib device if success */
->> +       rxe = get_rxe_from_skb(skb);
->> +       if (!rxe)
->> +               goto out;
->> +
->> +       /* recover source qp index from sk->sk_user_data
->> +        * free the reference taken in rxe_send
->> +        */
->> +       index = (int)(uintptr_t)skb->sk->sk_user_data;
->> +       sock_put(skb->sk);
->>
->> +       /* lookup qp from index, takes a ref on success */
->> +       qp = rxe_pool_get_index(&rxe->qp_pool, index);
->> +       if (!qp)
->> +               goto out_put_ibdev;
->> +
->> +       skb_out = atomic_dec_return(&qp->skb_out);
->>         if (unlikely(qp->need_req_skb &&
->>                      skb_out < RXE_INFLIGHT_SKBS_PER_QP_LOW))
->>                 rxe_sched_task(&qp->req.task);
->>
->>         rxe_put(qp);
->> +out_put_ibdev:
->> +       ib_device_put(&rxe->ib_dev);
->> +out:
->> +       return;
->>  }
->>
->>  static int rxe_send(struct sk_buff *skb, struct rxe_pkt_info *pkt)
->>  {
->> +       struct rxe_qp *qp = pkt->qp;
->> +       struct sock *sk;
->>         int err;
->>
->> -       skb->destructor = rxe_skb_tx_dtor;
->> -       skb->sk = pkt->qp->sk->sk;
->> +       /* qp can be destroyed while this packet is waiting on
->> +        * the tx queue. So need to protect sk.
->> +        */
->> +       sk = qp->sk->sk;
->> +       sock_hold(sk);
->> +       skb->sk = sk;
->>
->> -       rxe_get(pkt->qp);
->>         atomic_inc(&pkt->qp->skb_out);
->>
->> +       sk->sk_user_data = (void *)(long)qp->elem.index;
->> +       skb->destructor = rxe_skb_tx_dtor;
->> +
->>         if (skb->protocol == htons(ETH_P_IP)) {
->> -               err = ip_local_out(dev_net(skb_dst(skb)->dev), skb->sk, skb);
->> +               err = ip_local_out(dev_net(skb_dst(skb)->dev), sk, skb);
->>         } else if (skb->protocol == htons(ETH_P_IPV6)) {
->> -               err = ip6_local_out(dev_net(skb_dst(skb)->dev), skb->sk, skb);
->> +               err = ip6_local_out(dev_net(skb_dst(skb)->dev), sk, skb);
->>         } else {
->> -               rxe_dbg_qp(pkt->qp, "Unknown layer 3 protocol: %d\n",
->> -                               skb->protocol);
->> -               atomic_dec(&pkt->qp->skb_out);
->> -               rxe_put(pkt->qp);
->> -               kfree_skb(skb);
->> -               return -EINVAL;
->> +               rxe_dbg_qp(qp, "Unknown layer 3 protocol: %d",
->> +                          skb->protocol);
->> +               err = -EINVAL;
->> +               goto err_not_sent;
->>         }
->>
->> +       /* IP consumed the packet, the destructor will handle cleanup */
->>         if (unlikely(net_xmit_eval(err))) {
->> -               rxe_dbg_qp(pkt->qp, "error sending packet: %d\n", err);
->> -               return -EAGAIN;
->> +               rxe_dbg_qp(qp, "Error sending packet: %d", err);
->> +               err = -EAGAIN;
->> +               goto err_out;
->>         }
->>
->>         return 0;
->> +
->> +err_not_sent:
->> +       skb->destructor = NULL;
->> +       atomic_dec(&pkt->qp->skb_out);
->> +       kfree_skb(skb);
->> +       sock_put(sk);
->> +err_out:
->> +       return err;
->>  }
->>
->>  /* fix up a send packet to match the packets
->> diff --git a/drivers/infiniband/sw/rxe/rxe_qp.c b/drivers/infiniband/sw/rxe/rxe_qp.c
->> index a569b111a9d2..dcbf71031453 100644
->> --- a/drivers/infiniband/sw/rxe/rxe_qp.c
->> +++ b/drivers/infiniband/sw/rxe/rxe_qp.c
->> @@ -194,7 +194,6 @@ static int rxe_qp_init_req(struct rxe_dev *rxe, struct rxe_qp *qp,
->>         err = sock_create_kern(&init_net, AF_INET, SOCK_DGRAM, 0, &qp->sk);
->>         if (err < 0)
->>                 return err;
->> -       qp->sk->sk->sk_user_data = qp;
->>
->>         /* pick a source UDP port number for this QP based on
->>          * the source QPN. this spreads traffic for different QPs
->> --
->> 2.39.2
->>
+configs tested: 173
+configs skipped: 12
 
+The following configs have been built successfully.
+More configs may be tested in the coming days.
+
+tested configs:
+alpha                            allyesconfig   gcc  
+alpha                               defconfig   gcc  
+alpha                randconfig-r006-20230723   gcc  
+alpha                randconfig-r035-20230723   gcc  
+arc                              allyesconfig   gcc  
+arc                                 defconfig   gcc  
+arc                  randconfig-r011-20230723   gcc  
+arc                  randconfig-r012-20230723   gcc  
+arc                  randconfig-r026-20230723   gcc  
+arc                  randconfig-r032-20230723   gcc  
+arc                  randconfig-r043-20230723   gcc  
+arm                              allmodconfig   gcc  
+arm                              allyesconfig   gcc  
+arm                                 defconfig   gcc  
+arm                        mvebu_v7_defconfig   gcc  
+arm                  randconfig-r003-20230723   gcc  
+arm                  randconfig-r024-20230723   clang
+arm                  randconfig-r033-20230723   gcc  
+arm                  randconfig-r046-20230723   clang
+arm64                            allyesconfig   gcc  
+arm64                               defconfig   gcc  
+arm64                randconfig-r014-20230723   gcc  
+arm64                randconfig-r015-20230723   gcc  
+arm64                randconfig-r016-20230723   gcc  
+arm64                randconfig-r025-20230723   gcc  
+arm64                randconfig-r032-20230723   clang
+arm64                randconfig-r036-20230723   clang
+csky                                defconfig   gcc  
+csky                 randconfig-r024-20230723   gcc  
+csky                 randconfig-r026-20230723   gcc  
+hexagon              randconfig-r013-20230723   clang
+hexagon              randconfig-r021-20230723   clang
+hexagon              randconfig-r033-20230723   clang
+hexagon              randconfig-r034-20230723   clang
+hexagon              randconfig-r036-20230723   clang
+hexagon              randconfig-r041-20230723   clang
+hexagon              randconfig-r045-20230723   clang
+i386                             allyesconfig   gcc  
+i386         buildonly-randconfig-r004-20230723   clang
+i386         buildonly-randconfig-r005-20230723   clang
+i386         buildonly-randconfig-r006-20230723   clang
+i386                              debian-10.3   gcc  
+i386                                defconfig   gcc  
+i386                 randconfig-i001-20230723   clang
+i386                 randconfig-i002-20230723   clang
+i386                 randconfig-i003-20230723   clang
+i386                 randconfig-i004-20230723   clang
+i386                 randconfig-i005-20230723   clang
+i386                 randconfig-i006-20230723   clang
+i386                 randconfig-i011-20230723   gcc  
+i386                 randconfig-i012-20230723   gcc  
+i386                 randconfig-i013-20230723   gcc  
+i386                 randconfig-i014-20230723   gcc  
+i386                 randconfig-i015-20230723   gcc  
+i386                 randconfig-i016-20230723   gcc  
+i386                 randconfig-r016-20230723   gcc  
+i386                 randconfig-r021-20230723   gcc  
+i386                 randconfig-r025-20230723   gcc  
+i386                 randconfig-r031-20230723   clang
+loongarch                        allmodconfig   gcc  
+loongarch                         allnoconfig   gcc  
+loongarch                           defconfig   gcc  
+loongarch            randconfig-r001-20230723   gcc  
+loongarch            randconfig-r021-20230723   gcc  
+loongarch            randconfig-r023-20230723   gcc  
+m68k                             allmodconfig   gcc  
+m68k                             allyesconfig   gcc  
+m68k                                defconfig   gcc  
+m68k                 randconfig-r012-20230723   gcc  
+m68k                 randconfig-r016-20230723   gcc  
+m68k                 randconfig-r026-20230723   gcc  
+m68k                 randconfig-r031-20230723   gcc  
+m68k                 randconfig-r034-20230723   gcc  
+microblaze           randconfig-r014-20230723   gcc  
+microblaze           randconfig-r015-20230723   gcc  
+mips                             allmodconfig   gcc  
+mips                             allyesconfig   gcc  
+mips                 decstation_r4k_defconfig   gcc  
+mips                           ip27_defconfig   clang
+mips                     loongson1b_defconfig   gcc  
+mips                     loongson1c_defconfig   clang
+mips                 randconfig-r015-20230723   clang
+mips                 randconfig-r024-20230723   clang
+nios2                         10m50_defconfig   gcc  
+nios2                               defconfig   gcc  
+nios2                randconfig-r024-20230723   gcc  
+nios2                randconfig-r034-20230723   gcc  
+openrisc                    or1ksim_defconfig   gcc  
+openrisc             randconfig-r011-20230723   gcc  
+openrisc             randconfig-r021-20230723   gcc  
+openrisc             randconfig-r022-20230723   gcc  
+openrisc             randconfig-r023-20230723   gcc  
+openrisc             randconfig-r035-20230723   gcc  
+parisc                           allyesconfig   gcc  
+parisc                              defconfig   gcc  
+parisc               randconfig-r015-20230723   gcc  
+parisc               randconfig-r031-20230723   gcc  
+parisc64                            defconfig   gcc  
+powerpc                          allmodconfig   gcc  
+powerpc                           allnoconfig   gcc  
+powerpc                  iss476-smp_defconfig   gcc  
+powerpc                     mpc83xx_defconfig   gcc  
+powerpc              randconfig-r003-20230723   clang
+powerpc              randconfig-r034-20230723   clang
+riscv                            allmodconfig   gcc  
+riscv                             allnoconfig   gcc  
+riscv                            allyesconfig   gcc  
+riscv                               defconfig   gcc  
+riscv                randconfig-r013-20230723   gcc  
+riscv                randconfig-r014-20230723   gcc  
+riscv                randconfig-r036-20230723   clang
+riscv                randconfig-r042-20230723   gcc  
+riscv                          rv32_defconfig   gcc  
+s390                             allmodconfig   gcc  
+s390                             allyesconfig   gcc  
+s390                                defconfig   gcc  
+s390                 randconfig-r005-20230723   clang
+s390                 randconfig-r012-20230723   gcc  
+s390                 randconfig-r013-20230723   gcc  
+s390                 randconfig-r022-20230723   gcc  
+s390                 randconfig-r035-20230723   clang
+s390                 randconfig-r044-20230723   gcc  
+sh                               allmodconfig   gcc  
+sh                         microdev_defconfig   gcc  
+sh                          r7780mp_defconfig   gcc  
+sh                   randconfig-r004-20230723   gcc  
+sh                   randconfig-r011-20230723   gcc  
+sh                   randconfig-r032-20230723   gcc  
+sparc                            allyesconfig   gcc  
+sparc                               defconfig   gcc  
+sparc                randconfig-r001-20230723   gcc  
+sparc                randconfig-r005-20230723   gcc  
+sparc                randconfig-r011-20230723   gcc  
+sparc                randconfig-r023-20230723   gcc  
+sparc64              randconfig-r002-20230723   gcc  
+sparc64              randconfig-r006-20230723   gcc  
+sparc64              randconfig-r031-20230723   gcc  
+um                               allmodconfig   clang
+um                                allnoconfig   clang
+um                               allyesconfig   clang
+um                                  defconfig   gcc  
+um                             i386_defconfig   gcc  
+um                   randconfig-r001-20230723   gcc  
+um                   randconfig-r002-20230723   gcc  
+um                   randconfig-r004-20230723   gcc  
+um                   randconfig-r012-20230723   clang
+um                   randconfig-r033-20230723   gcc  
+um                           x86_64_defconfig   gcc  
+x86_64                           allyesconfig   gcc  
+x86_64       buildonly-randconfig-r001-20230723   clang
+x86_64       buildonly-randconfig-r002-20230723   clang
+x86_64       buildonly-randconfig-r003-20230723   clang
+x86_64                              defconfig   gcc  
+x86_64                                  kexec   gcc  
+x86_64               randconfig-r004-20230723   clang
+x86_64               randconfig-r022-20230723   gcc  
+x86_64               randconfig-r033-20230723   clang
+x86_64               randconfig-x001-20230723   gcc  
+x86_64               randconfig-x002-20230723   gcc  
+x86_64               randconfig-x003-20230723   gcc  
+x86_64               randconfig-x004-20230723   gcc  
+x86_64               randconfig-x005-20230723   gcc  
+x86_64               randconfig-x006-20230723   gcc  
+x86_64               randconfig-x011-20230723   clang
+x86_64               randconfig-x012-20230723   clang
+x86_64               randconfig-x013-20230723   clang
+x86_64               randconfig-x014-20230723   clang
+x86_64               randconfig-x015-20230723   clang
+x86_64               randconfig-x016-20230723   clang
+x86_64                          rhel-8.3-rust   clang
+x86_64                               rhel-8.3   gcc  
+xtensa               randconfig-r016-20230723   gcc  
+xtensa               randconfig-r022-20230723   gcc  
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
