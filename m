@@ -2,55 +2,55 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 72DCA75E939
-	for <lists+linux-rdma@lfdr.de>; Mon, 24 Jul 2023 03:49:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BA74F75E7C9
+	for <lists+linux-rdma@lfdr.de>; Mon, 24 Jul 2023 03:35:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232804AbjGXBtf (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Sun, 23 Jul 2023 21:49:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54078 "EHLO
+        id S230304AbjGXBfF (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Sun, 23 Jul 2023 21:35:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35746 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232924AbjGXBsJ (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Sun, 23 Jul 2023 21:48:09 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 12BFF19AC;
-        Sun, 23 Jul 2023 18:40:27 -0700 (PDT)
+        with ESMTP id S230525AbjGXBeq (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Sun, 23 Jul 2023 21:34:46 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C481F26AE;
+        Sun, 23 Jul 2023 18:31:23 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id AD2AA60F01;
-        Mon, 24 Jul 2023 01:20:29 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5A0B4C433C7;
-        Mon, 24 Jul 2023 01:20:28 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 4DF6760F10;
+        Mon, 24 Jul 2023 01:23:05 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0D081C433C9;
+        Mon, 24 Jul 2023 01:23:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1690161629;
-        bh=vFnoPmcemCx7cbUhqaGYMFZCKWha1HLUSZN0iFBdRoY=;
+        s=k20201202; t=1690161784;
+        bh=ScGVmoukakGMlz6zTgA14PdekQ01iYT9uPfoez43eZ4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=fh6oxf2Ups+6kdrTs6d12aTX/mOzEZBwFLyn3xdUquyGIYPUyKZUbCLSm4NiYAlsE
-         bVuNOKSf/g1sIltKXZ81W4NojZRnc2BMcxSt0KJlseaJ1+5HM1KpOvdZfwEHO9DDGS
-         mZoEY7tZpa+N2hLJ2GDBf+i1M9LKQ6N3E0Ic2hV0KcXM9MkgTtn3MYE+hpUgPjyBDy
-         qIW654PH29VNWkhcmW5KyDMjTlQE4V27RccYqLv3efp4Lyi0IiXhhsSBF6Zd4sFhWQ
-         2PT9FMpjY4416DLbAgQkSHvcWFQSwOB8yIGm8q/1HRsfe9cgy76/v19NCGZ6kKldRP
-         4XhXdT4l5zAMw==
+        b=nTk6vsBxmhgtil/xJ/iWHYrVxjNoVgmHwBCm2s1jRfaAU2SiWeI0/EEN03o1wwNRf
+         j1t++JZ9DmdmHMBSJ6rHqqQPXu7qtyvS7f3VNg2StVl9cQaUiiXhd+neBznuYtX0kD
+         40mnGfYZBS/mc2VSY2r6x8i6sJHzmj+UMXMNiVXzBtvHrQN8YxnJfoveO1m4Pyjw2F
+         f6IDVhlftw3BsRWF1BN92oHuFg+/RRyfsY2Y+WnK1p7vHv6G+e9OJMpO9XtRZec3Be
+         2xhttn+F4SAqbetTtOeCPxA2D7lMT83waeTcFetXP6KFB7Zgzi5M6EzlQ9FFxYIs6L
+         mQ1yGDICeNNQA==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Kashyap Desai <kashyap.desai@broadcom.com>,
-        Selvin Xavier <selvin.xavier@broadcom.com>,
+Cc:     Patrisious Haddad <phaddad@nvidia.com>,
         Leon Romanovsky <leon@kernel.org>,
-        Sasha Levin <sashal@kernel.org>, linux-rdma@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.4 47/58] RDMA/bnxt_re: consider timeout of destroy ah as success.
-Date:   Sun, 23 Jul 2023 21:13:15 -0400
-Message-Id: <20230724011338.2298062-47-sashal@kernel.org>
+        Sasha Levin <sashal@kernel.org>, dledford@redhat.com,
+        linux-rdma@vger.kernel.org
+Subject: [PATCH AUTOSEL 6.1 30/41] RDMA/mlx5: Return the firmware result upon destroying QP/RQ
+Date:   Sun, 23 Jul 2023 21:21:03 -0400
+Message-Id: <20230724012118.2316073-30-sashal@kernel.org>
 X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20230724011338.2298062-1-sashal@kernel.org>
-References: <20230724011338.2298062-1-sashal@kernel.org>
+In-Reply-To: <20230724012118.2316073-1-sashal@kernel.org>
+References: <20230724012118.2316073-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
-X-stable-base: Linux 6.4.5
+X-stable-base: Linux 6.1.40
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -59,118 +59,110 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Kashyap Desai <kashyap.desai@broadcom.com>
+From: Patrisious Haddad <phaddad@nvidia.com>
 
-[ Upstream commit bb8c93618fb0b8567d309f1aebc6df0cd31da1a2 ]
+[ Upstream commit 22664c06e997087fe37f9ba208008c948571214a ]
 
-If destroy_ah is timed out, it is likely to be destroyed by firmware
-but it is taking longer time due to temporary slowness
-in processing the rcfw command. In worst case, there might be
-AH resource leak in firmware.
+Previously when destroying a QP/RQ, the result of the firmware
+destruction function was ignored and upper layers weren't informed
+about the failure.
+Which in turn could lead to various problems since when upper layer
+isn't aware of the failure it continues its operation thinking that the
+related QP/RQ was successfully destroyed while it actually wasn't,
+which could lead to the below kernel WARN.
 
-Sending timeout return value can dump warning message from ib_core
-which can be avoided if we map timeout of destroy_ah as success.
+Currently, we return the correct firmware destruction status to upper
+layers which in case of the RQ would be mlx5_ib_destroy_wq() which
+was already capable of handling RQ destruction failure or in case of
+a QP to destroy_qp_common(), which now would actually warn upon qp
+destruction failure.
 
-Signed-off-by: Kashyap Desai <kashyap.desai@broadcom.com>
-Signed-off-by: Selvin Xavier <selvin.xavier@broadcom.com>
-Link: https://lore.kernel.org/r/1686308514-11996-14-git-send-email-selvin.xavier@broadcom.com
+WARNING: CPU: 3 PID: 995 at drivers/infiniband/core/rdma_core.c:940 uverbs_destroy_ufile_hw+0xcb/0xe0 [ib_uverbs]
+Modules linked in: xt_conntrack xt_MASQUERADE nf_conntrack_netlink nfnetlink xt_addrtype iptable_nat nf_nat br_netfilter rpcrdma rdma_ucm ib_iser libiscsi scsi_transport_iscsi rdma_cm ib_umad ib_ipoib iw_cm ib_cm mlx5_ib ib_uverbs ib_core overlay mlx5_core fuse
+CPU: 3 PID: 995 Comm: python3 Not tainted 5.16.0-rc5+ #1
+Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS rel-1.13.0-0-gf21b5a4aeb02-prebuilt.qemu.org 04/01/2014
+RIP: 0010:uverbs_destroy_ufile_hw+0xcb/0xe0 [ib_uverbs]
+Code: 41 5c 41 5d 41 5e e9 44 34 f0 e0 48 89 df e8 4c 77 ff ff 49 8b 86 10 01 00 00 48 85 c0 74 a1 4c 89 e7 ff d0 eb 9a 0f 0b eb c1 <0f> 0b be 04 00 00 00 48 89 df e8 b6 f6 ff ff e9 75 ff ff ff 90 0f
+RSP: 0018:ffff8881533e3e78 EFLAGS: 00010287
+RAX: ffff88811b2cf3e0 RBX: ffff888106209700 RCX: 0000000000000000
+RDX: ffff888106209780 RSI: ffff8881533e3d30 RDI: ffff888109b101a0
+RBP: 0000000000000001 R08: ffff888127cb381c R09: 0de9890000000009
+R10: ffff888127cb3800 R11: 0000000000000000 R12: ffff888106209780
+R13: ffff888106209750 R14: ffff888100f20660 R15: 0000000000000000
+FS:  00007f8be353b740(0000) GS:ffff88852c980000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007f8bd5b117c0 CR3: 000000012cd8a004 CR4: 0000000000370ea0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ <TASK>
+ ib_uverbs_close+0x1a/0x90 [ib_uverbs]
+ __fput+0x82/0x230
+ task_work_run+0x59/0x90
+ exit_to_user_mode_prepare+0x138/0x140
+ syscall_exit_to_user_mode+0x1d/0x50
+ ? __x64_sys_close+0xe/0x40
+ do_syscall_64+0x4a/0x90
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
+RIP: 0033:0x7f8be3ae0abb
+Code: 03 00 00 00 0f 05 48 3d 00 f0 ff ff 77 41 c3 48 83 ec 18 89 7c 24 0c e8 83 43 f9 ff 8b 7c 24 0c 41 89 c0 b8 03 00 00 00 0f 05 <48> 3d 00 f0 ff ff 77 35 44 89 c7 89 44 24 0c e8 c1 43 f9 ff 8b 44
+RSP: 002b:00007ffdb51909c0 EFLAGS: 00000293 ORIG_RAX: 0000000000000003
+RAX: 0000000000000000 RBX: 0000557bb7f7c020 RCX: 00007f8be3ae0abb
+RDX: 0000557bb7c74010 RSI: 0000557bb7f14ca0 RDI: 0000000000000005
+RBP: 0000557bb7fbd598 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000293 R12: 0000557bb7fbd5b8
+R13: 0000557bb7fbd5a8 R14: 0000000000001000 R15: 0000557bb7f7c020
+ </TASK>
+
+Signed-off-by: Patrisious Haddad <phaddad@nvidia.com>
+Link: https://lore.kernel.org/r/c6df677f931d18090bafbe7f7dbb9524047b7d9b.1685953497.git.leon@kernel.org
 Signed-off-by: Leon Romanovsky <leon@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/infiniband/hw/bnxt_re/bnxt_re.h  |  2 ++
- drivers/infiniband/hw/bnxt_re/ib_verbs.c | 16 ++++++++++++----
- drivers/infiniband/hw/bnxt_re/qplib_sp.c |  8 +++++---
- drivers/infiniband/hw/bnxt_re/qplib_sp.h |  4 ++--
- 4 files changed, 21 insertions(+), 9 deletions(-)
+ drivers/infiniband/hw/mlx5/qpc.c | 10 ++++------
+ 1 file changed, 4 insertions(+), 6 deletions(-)
 
-diff --git a/drivers/infiniband/hw/bnxt_re/bnxt_re.h b/drivers/infiniband/hw/bnxt_re/bnxt_re.h
-index 2c95e6f3d47ac..eef3ef3fabb42 100644
---- a/drivers/infiniband/hw/bnxt_re/bnxt_re.h
-+++ b/drivers/infiniband/hw/bnxt_re/bnxt_re.h
-@@ -179,6 +179,8 @@ struct bnxt_re_dev {
- #define BNXT_RE_ROCEV2_IPV4_PACKET	2
- #define BNXT_RE_ROCEV2_IPV6_PACKET	3
- 
-+#define BNXT_RE_CHECK_RC(x) ((x) && ((x) != -ETIMEDOUT))
-+
- static inline struct device *rdev_to_dev(struct bnxt_re_dev *rdev)
- {
- 	if (rdev)
-diff --git a/drivers/infiniband/hw/bnxt_re/ib_verbs.c b/drivers/infiniband/hw/bnxt_re/ib_verbs.c
-index 952811c40c54b..6a086c42f85f6 100644
---- a/drivers/infiniband/hw/bnxt_re/ib_verbs.c
-+++ b/drivers/infiniband/hw/bnxt_re/ib_verbs.c
-@@ -614,12 +614,20 @@ int bnxt_re_destroy_ah(struct ib_ah *ib_ah, u32 flags)
- {
- 	struct bnxt_re_ah *ah = container_of(ib_ah, struct bnxt_re_ah, ib_ah);
- 	struct bnxt_re_dev *rdev = ah->rdev;
-+	bool block = true;
-+	int rc = 0;
- 
--	bnxt_qplib_destroy_ah(&rdev->qplib_res, &ah->qplib_ah,
--			      !(flags & RDMA_DESTROY_AH_SLEEPABLE));
-+	block = !(flags & RDMA_DESTROY_AH_SLEEPABLE);
-+	rc = bnxt_qplib_destroy_ah(&rdev->qplib_res, &ah->qplib_ah, block);
-+	if (BNXT_RE_CHECK_RC(rc)) {
-+		if (rc == -ETIMEDOUT)
-+			rc = 0;
-+		else
-+			goto fail;
-+	}
- 	atomic_dec(&rdev->ah_count);
--
+diff --git a/drivers/infiniband/hw/mlx5/qpc.c b/drivers/infiniband/hw/mlx5/qpc.c
+index 542e4c63a8de6..d4e7864c56f18 100644
+--- a/drivers/infiniband/hw/mlx5/qpc.c
++++ b/drivers/infiniband/hw/mlx5/qpc.c
+@@ -297,8 +297,7 @@ int mlx5_core_destroy_qp(struct mlx5_ib_dev *dev, struct mlx5_core_qp *qp)
+ 	MLX5_SET(destroy_qp_in, in, opcode, MLX5_CMD_OP_DESTROY_QP);
+ 	MLX5_SET(destroy_qp_in, in, qpn, qp->qpn);
+ 	MLX5_SET(destroy_qp_in, in, uid, qp->uid);
+-	mlx5_cmd_exec_in(dev->mdev, destroy_qp, in);
 -	return 0;
-+fail:
-+	return rc;
++	return mlx5_cmd_exec_in(dev->mdev, destroy_qp, in);
  }
  
- static u8 bnxt_re_stack_to_dev_nw_type(enum rdma_network_type ntype)
-diff --git a/drivers/infiniband/hw/bnxt_re/qplib_sp.c b/drivers/infiniband/hw/bnxt_re/qplib_sp.c
-index b967a17a44beb..10919532bca29 100644
---- a/drivers/infiniband/hw/bnxt_re/qplib_sp.c
-+++ b/drivers/infiniband/hw/bnxt_re/qplib_sp.c
-@@ -468,13 +468,14 @@ int bnxt_qplib_create_ah(struct bnxt_qplib_res *res, struct bnxt_qplib_ah *ah,
- 	return 0;
+ int mlx5_core_set_delay_drop(struct mlx5_ib_dev *dev,
+@@ -548,14 +547,14 @@ int mlx5_core_xrcd_dealloc(struct mlx5_ib_dev *dev, u32 xrcdn)
+ 	return mlx5_cmd_exec_in(dev->mdev, dealloc_xrcd, in);
  }
  
--void bnxt_qplib_destroy_ah(struct bnxt_qplib_res *res, struct bnxt_qplib_ah *ah,
--			   bool block)
-+int bnxt_qplib_destroy_ah(struct bnxt_qplib_res *res, struct bnxt_qplib_ah *ah,
-+			  bool block)
+-static void destroy_rq_tracked(struct mlx5_ib_dev *dev, u32 rqn, u16 uid)
++static int destroy_rq_tracked(struct mlx5_ib_dev *dev, u32 rqn, u16 uid)
  {
- 	struct bnxt_qplib_rcfw *rcfw = res->rcfw;
- 	struct creq_destroy_ah_resp resp = {};
- 	struct bnxt_qplib_cmdqmsg msg = {};
- 	struct cmdq_destroy_ah req = {};
-+	int rc;
+ 	u32 in[MLX5_ST_SZ_DW(destroy_rq_in)] = {};
  
- 	/* Clean up the AH table in the device */
- 	bnxt_qplib_rcfw_cmd_prep((struct cmdq_base *)&req,
-@@ -485,7 +486,8 @@ void bnxt_qplib_destroy_ah(struct bnxt_qplib_res *res, struct bnxt_qplib_ah *ah,
- 
- 	bnxt_qplib_fill_cmdqmsg(&msg, &req, &resp, NULL, sizeof(req),
- 				sizeof(resp), block);
--	bnxt_qplib_rcfw_send_message(rcfw, &msg);
-+	rc = bnxt_qplib_rcfw_send_message(rcfw, &msg);
-+	return rc;
+ 	MLX5_SET(destroy_rq_in, in, opcode, MLX5_CMD_OP_DESTROY_RQ);
+ 	MLX5_SET(destroy_rq_in, in, rqn, rqn);
+ 	MLX5_SET(destroy_rq_in, in, uid, uid);
+-	mlx5_cmd_exec_in(dev->mdev, destroy_rq, in);
++	return mlx5_cmd_exec_in(dev->mdev, destroy_rq, in);
  }
  
- /* MRW */
-diff --git a/drivers/infiniband/hw/bnxt_re/qplib_sp.h b/drivers/infiniband/hw/bnxt_re/qplib_sp.h
-index 5de874659cdfa..4061616048e85 100644
---- a/drivers/infiniband/hw/bnxt_re/qplib_sp.h
-+++ b/drivers/infiniband/hw/bnxt_re/qplib_sp.h
-@@ -327,8 +327,8 @@ int bnxt_qplib_set_func_resources(struct bnxt_qplib_res *res,
- 				  struct bnxt_qplib_ctx *ctx);
- int bnxt_qplib_create_ah(struct bnxt_qplib_res *res, struct bnxt_qplib_ah *ah,
- 			 bool block);
--void bnxt_qplib_destroy_ah(struct bnxt_qplib_res *res, struct bnxt_qplib_ah *ah,
--			   bool block);
-+int bnxt_qplib_destroy_ah(struct bnxt_qplib_res *res, struct bnxt_qplib_ah *ah,
-+			  bool block);
- int bnxt_qplib_alloc_mrw(struct bnxt_qplib_res *res,
- 			 struct bnxt_qplib_mrw *mrw);
- int bnxt_qplib_dereg_mrw(struct bnxt_qplib_res *res, struct bnxt_qplib_mrw *mrw,
+ int mlx5_core_create_rq_tracked(struct mlx5_ib_dev *dev, u32 *in, int inlen,
+@@ -586,8 +585,7 @@ int mlx5_core_destroy_rq_tracked(struct mlx5_ib_dev *dev,
+ 				 struct mlx5_core_qp *rq)
+ {
+ 	destroy_resource_common(dev, rq);
+-	destroy_rq_tracked(dev, rq->qpn, rq->uid);
+-	return 0;
++	return destroy_rq_tracked(dev, rq->qpn, rq->uid);
+ }
+ 
+ static void destroy_sq_tracked(struct mlx5_ib_dev *dev, u32 sqn, u16 uid)
 -- 
 2.39.2
 
