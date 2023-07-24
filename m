@@ -2,168 +2,269 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4655375E76E
-	for <lists+linux-rdma@lfdr.de>; Mon, 24 Jul 2023 03:28:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F3ADB75EAEE
+	for <lists+linux-rdma@lfdr.de>; Mon, 24 Jul 2023 07:38:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230368AbjGXB20 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Sun, 23 Jul 2023 21:28:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58476 "EHLO
+        id S229975AbjGXFiu (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 24 Jul 2023 01:38:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39188 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231411AbjGXB1S (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Sun, 23 Jul 2023 21:27:18 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A2D1E1FE5;
-        Sun, 23 Jul 2023 18:24:50 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id B3AF660F6D;
-        Mon, 24 Jul 2023 01:24:07 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1600AC433C7;
-        Mon, 24 Jul 2023 01:24:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1690161847;
-        bh=4/cShx6t3Zffwv307oGLU/UFEXFHDP2pM+jRdsE6Mz0=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=t22sw4uKmGobuoUXQL+f5h6Kdbhe4vHpWX/4odufKMkTZKFcq6+F118hs2gHB0G7x
-         RFb8c9gfXm2ne+n6quZgx0tetfwCVAPqTJ5u+MbO+iYEm4RaJSuhEuTO7RkAjnxi/D
-         XCOzewQpKox3oEc3brV9cIsLOgnga+gFfFFc6BPH8wVbOxGMyiyJ7KOMV5aOysuX0W
-         EajPikR15PZD759OaLOBUi8zKqnMU9yVUd8Rz50Afb93OrQ8DBL5tibmo3vsE7rSnZ
-         tYtmHnfkTYQujmiAkmqJZXZ7k3/q4vuu7ILwZeVwoQPQ0VG1/8ZgIKTfBa8ut+LBeM
-         UZzITkXkoaEPQ==
-From:   Sasha Levin <sashal@kernel.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Patrisious Haddad <phaddad@nvidia.com>,
-        Leon Romanovsky <leon@kernel.org>,
-        Sasha Levin <sashal@kernel.org>, matanb@mellanox.com,
-        leonro@mellanox.com, dledford@redhat.com, sean.hefty@intel.com,
-        hal.rosenstock@gmail.com, linux-rdma@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.15 15/23] RDMA/mlx5: Return the firmware result upon destroying QP/RQ
-Date:   Sun, 23 Jul 2023 21:23:26 -0400
-Message-Id: <20230724012334.2317140-15-sashal@kernel.org>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20230724012334.2317140-1-sashal@kernel.org>
-References: <20230724012334.2317140-1-sashal@kernel.org>
-MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
-X-stable-base: Linux 5.15.121
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        with ESMTP id S229978AbjGXFiq (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 24 Jul 2023 01:38:46 -0400
+Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 24A79E41;
+        Sun, 23 Jul 2023 22:38:45 -0700 (PDT)
+Received: by linux.microsoft.com (Postfix, from userid 1099)
+        id BD80C23706B2; Sun, 23 Jul 2023 22:38:43 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com BD80C23706B2
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+        s=default; t=1690177123;
+        bh=Vy8aTaM39jpBrwLLP52qlYSRU3Ucfpi8knlMTIQeBUQ=;
+        h=From:To:Cc:Subject:Date:From;
+        b=TVHhqvOYywyg6Td7QfQYAtt/DYVyE8cR+X3kMOHypB2B7MKxZj8GktY1Av9sV1Or9
+         fdopSpVLDUVUHSXA70VOEpCnP7R5Lbl1SNjiH3dCkgWnghPf4OjNgNNCGk0P3p1YLC
+         LXkXNnOoZ+LWuRa069/SFlO0C85cTPgatrEsNZ6w=
+From:   Souradeep Chakrabarti <schakrabarti@linux.microsoft.com>
+To:     kys@microsoft.com, haiyangz@microsoft.com, wei.liu@kernel.org,
+        decui@microsoft.com, davem@davemloft.net, edumazet@google.com,
+        kuba@kernel.org, pabeni@redhat.com, longli@microsoft.com,
+        sharmaajay@microsoft.com, leon@kernel.org, cai.huoqing@linux.dev,
+        ssengar@linux.microsoft.com, vkuznets@redhat.com,
+        tglx@linutronix.de, linux-hyperv@vger.kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-rdma@vger.kernel.org
+Cc:     schakrabarti@microsoft.com,
+        Souradeep Chakrabarti <schakrabarti@linux.microsoft.com>
+Subject: [PATCH V5 net-next] net: mana: Configure hwc timeout from hardware
+Date:   Sun, 23 Jul 2023 22:38:40 -0700
+Message-Id: <1690177120-20938-1-git-send-email-schakrabarti@linux.microsoft.com>
+X-Mailer: git-send-email 1.8.3.1
+X-Spam-Status: No, score=-19.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_MED,
+        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,
+        USER_IN_DEF_SPF_WL autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Patrisious Haddad <phaddad@nvidia.com>
+At present hwc timeout value is a fixed value. This patch sets the hwc
+timeout from the hardware. It now uses a new hardware capability
+GDMA_DRV_CAP_FLAG_1_HWC_TIMEOUT_RECONFIG to query and set the value
+in hwc_timeout.
 
-[ Upstream commit 22664c06e997087fe37f9ba208008c948571214a ]
-
-Previously when destroying a QP/RQ, the result of the firmware
-destruction function was ignored and upper layers weren't informed
-about the failure.
-Which in turn could lead to various problems since when upper layer
-isn't aware of the failure it continues its operation thinking that the
-related QP/RQ was successfully destroyed while it actually wasn't,
-which could lead to the below kernel WARN.
-
-Currently, we return the correct firmware destruction status to upper
-layers which in case of the RQ would be mlx5_ib_destroy_wq() which
-was already capable of handling RQ destruction failure or in case of
-a QP to destroy_qp_common(), which now would actually warn upon qp
-destruction failure.
-
-WARNING: CPU: 3 PID: 995 at drivers/infiniband/core/rdma_core.c:940 uverbs_destroy_ufile_hw+0xcb/0xe0 [ib_uverbs]
-Modules linked in: xt_conntrack xt_MASQUERADE nf_conntrack_netlink nfnetlink xt_addrtype iptable_nat nf_nat br_netfilter rpcrdma rdma_ucm ib_iser libiscsi scsi_transport_iscsi rdma_cm ib_umad ib_ipoib iw_cm ib_cm mlx5_ib ib_uverbs ib_core overlay mlx5_core fuse
-CPU: 3 PID: 995 Comm: python3 Not tainted 5.16.0-rc5+ #1
-Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS rel-1.13.0-0-gf21b5a4aeb02-prebuilt.qemu.org 04/01/2014
-RIP: 0010:uverbs_destroy_ufile_hw+0xcb/0xe0 [ib_uverbs]
-Code: 41 5c 41 5d 41 5e e9 44 34 f0 e0 48 89 df e8 4c 77 ff ff 49 8b 86 10 01 00 00 48 85 c0 74 a1 4c 89 e7 ff d0 eb 9a 0f 0b eb c1 <0f> 0b be 04 00 00 00 48 89 df e8 b6 f6 ff ff e9 75 ff ff ff 90 0f
-RSP: 0018:ffff8881533e3e78 EFLAGS: 00010287
-RAX: ffff88811b2cf3e0 RBX: ffff888106209700 RCX: 0000000000000000
-RDX: ffff888106209780 RSI: ffff8881533e3d30 RDI: ffff888109b101a0
-RBP: 0000000000000001 R08: ffff888127cb381c R09: 0de9890000000009
-R10: ffff888127cb3800 R11: 0000000000000000 R12: ffff888106209780
-R13: ffff888106209750 R14: ffff888100f20660 R15: 0000000000000000
-FS:  00007f8be353b740(0000) GS:ffff88852c980000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007f8bd5b117c0 CR3: 000000012cd8a004 CR4: 0000000000370ea0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- <TASK>
- ib_uverbs_close+0x1a/0x90 [ib_uverbs]
- __fput+0x82/0x230
- task_work_run+0x59/0x90
- exit_to_user_mode_prepare+0x138/0x140
- syscall_exit_to_user_mode+0x1d/0x50
- ? __x64_sys_close+0xe/0x40
- do_syscall_64+0x4a/0x90
- entry_SYSCALL_64_after_hwframe+0x44/0xae
-RIP: 0033:0x7f8be3ae0abb
-Code: 03 00 00 00 0f 05 48 3d 00 f0 ff ff 77 41 c3 48 83 ec 18 89 7c 24 0c e8 83 43 f9 ff 8b 7c 24 0c 41 89 c0 b8 03 00 00 00 0f 05 <48> 3d 00 f0 ff ff 77 35 44 89 c7 89 44 24 0c e8 c1 43 f9 ff 8b 44
-RSP: 002b:00007ffdb51909c0 EFLAGS: 00000293 ORIG_RAX: 0000000000000003
-RAX: 0000000000000000 RBX: 0000557bb7f7c020 RCX: 00007f8be3ae0abb
-RDX: 0000557bb7c74010 RSI: 0000557bb7f14ca0 RDI: 0000000000000005
-RBP: 0000557bb7fbd598 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000293 R12: 0000557bb7fbd5b8
-R13: 0000557bb7fbd5a8 R14: 0000000000001000 R15: 0000557bb7f7c020
- </TASK>
-
-Signed-off-by: Patrisious Haddad <phaddad@nvidia.com>
-Link: https://lore.kernel.org/r/c6df677f931d18090bafbe7f7dbb9524047b7d9b.1685953497.git.leon@kernel.org
-Signed-off-by: Leon Romanovsky <leon@kernel.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Signed-off-by: Souradeep Chakrabarti <schakrabarti@linux.microsoft.com>
 ---
- drivers/infiniband/hw/mlx5/qpc.c | 10 ++++------
- 1 file changed, 4 insertions(+), 6 deletions(-)
+V4 -> V5:
+* Replaced dev_err in mana_hwc_send_request with dev_dbg.
+---
+ .../net/ethernet/microsoft/mana/gdma_main.c   | 30 ++++++++++++++++++-
+ .../net/ethernet/microsoft/mana/hw_channel.c  | 25 +++++++++++++++-
+ include/net/mana/gdma.h                       | 20 ++++++++++++-
+ include/net/mana/hw_channel.h                 |  5 ++++
+ 4 files changed, 77 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/infiniband/hw/mlx5/qpc.c b/drivers/infiniband/hw/mlx5/qpc.c
-index 8844eacf2380e..e508c0753dd37 100644
---- a/drivers/infiniband/hw/mlx5/qpc.c
-+++ b/drivers/infiniband/hw/mlx5/qpc.c
-@@ -297,8 +297,7 @@ int mlx5_core_destroy_qp(struct mlx5_ib_dev *dev, struct mlx5_core_qp *qp)
- 	MLX5_SET(destroy_qp_in, in, opcode, MLX5_CMD_OP_DESTROY_QP);
- 	MLX5_SET(destroy_qp_in, in, qpn, qp->qpn);
- 	MLX5_SET(destroy_qp_in, in, uid, qp->uid);
--	mlx5_cmd_exec_in(dev->mdev, destroy_qp, in);
--	return 0;
-+	return mlx5_cmd_exec_in(dev->mdev, destroy_qp, in);
+diff --git a/drivers/net/ethernet/microsoft/mana/gdma_main.c b/drivers/net/ethernet/microsoft/mana/gdma_main.c
+index 8f3f78b68592..4537a70e30d4 100644
+--- a/drivers/net/ethernet/microsoft/mana/gdma_main.c
++++ b/drivers/net/ethernet/microsoft/mana/gdma_main.c
+@@ -106,6 +106,25 @@ static int mana_gd_query_max_resources(struct pci_dev *pdev)
+ 	return 0;
  }
  
- int mlx5_core_set_delay_drop(struct mlx5_ib_dev *dev,
-@@ -548,14 +547,14 @@ int mlx5_core_xrcd_dealloc(struct mlx5_ib_dev *dev, u32 xrcdn)
- 	return mlx5_cmd_exec_in(dev->mdev, dealloc_xrcd, in);
- }
- 
--static void destroy_rq_tracked(struct mlx5_ib_dev *dev, u32 rqn, u16 uid)
-+static int destroy_rq_tracked(struct mlx5_ib_dev *dev, u32 rqn, u16 uid)
++static int mana_gd_query_hwc_timeout(struct pci_dev *pdev, u32 *timeout_val)
++{
++	struct gdma_context *gc = pci_get_drvdata(pdev);
++	struct gdma_query_hwc_timeout_resp resp = {};
++	struct gdma_query_hwc_timeout_req req = {};
++	int err;
++
++	mana_gd_init_req_hdr(&req.hdr, GDMA_QUERY_HWC_TIMEOUT,
++			     sizeof(req), sizeof(resp));
++	req.timeout_ms = *timeout_val;
++	err = mana_gd_send_request(gc, sizeof(req), &req, sizeof(resp), &resp);
++	if (err || resp.hdr.status)
++		return err ? err : -EPROTO;
++
++	*timeout_val = resp.timeout_ms;
++
++	return 0;
++}
++
+ static int mana_gd_detect_devices(struct pci_dev *pdev)
  {
- 	u32 in[MLX5_ST_SZ_DW(destroy_rq_in)] = {};
+ 	struct gdma_context *gc = pci_get_drvdata(pdev);
+@@ -879,8 +898,11 @@ int mana_gd_verify_vf_version(struct pci_dev *pdev)
+ 	struct gdma_context *gc = pci_get_drvdata(pdev);
+ 	struct gdma_verify_ver_resp resp = {};
+ 	struct gdma_verify_ver_req req = {};
++	struct hw_channel_context *hwc;
+ 	int err;
  
- 	MLX5_SET(destroy_rq_in, in, opcode, MLX5_CMD_OP_DESTROY_RQ);
- 	MLX5_SET(destroy_rq_in, in, rqn, rqn);
- 	MLX5_SET(destroy_rq_in, in, uid, uid);
--	mlx5_cmd_exec_in(dev->mdev, destroy_rq, in);
-+	return mlx5_cmd_exec_in(dev->mdev, destroy_rq, in);
++	hwc = gc->hwc.driver_data;
++
+ 	mana_gd_init_req_hdr(&req.hdr, GDMA_VERIFY_VF_DRIVER_VERSION,
+ 			     sizeof(req), sizeof(resp));
+ 
+@@ -907,7 +929,13 @@ int mana_gd_verify_vf_version(struct pci_dev *pdev)
+ 			err, resp.hdr.status);
+ 		return err ? err : -EPROTO;
+ 	}
+-
++	if (resp.pf_cap_flags1 & GDMA_DRV_CAP_FLAG_1_HWC_TIMEOUT_RECONFIG) {
++		err = mana_gd_query_hwc_timeout(pdev, &hwc->hwc_timeout);
++		if (err) {
++			dev_err(gc->dev, "Failed to set the hwc timeout %d\n", err);
++			return err;
++		}
++	}
+ 	return 0;
  }
  
- int mlx5_core_create_rq_tracked(struct mlx5_ib_dev *dev, u32 *in, int inlen,
-@@ -586,8 +585,7 @@ int mlx5_core_destroy_rq_tracked(struct mlx5_ib_dev *dev,
- 				 struct mlx5_core_qp *rq)
- {
- 	destroy_resource_common(dev, rq);
--	destroy_rq_tracked(dev, rq->qpn, rq->uid);
--	return 0;
-+	return destroy_rq_tracked(dev, rq->qpn, rq->uid);
- }
+diff --git a/drivers/net/ethernet/microsoft/mana/hw_channel.c b/drivers/net/ethernet/microsoft/mana/hw_channel.c
+index 2bd1d74021f7..35b5371d89bb 100644
+--- a/drivers/net/ethernet/microsoft/mana/hw_channel.c
++++ b/drivers/net/ethernet/microsoft/mana/hw_channel.c
+@@ -174,7 +174,25 @@ static void mana_hwc_init_event_handler(void *ctx, struct gdma_queue *q_self,
+ 		complete(&hwc->hwc_init_eqe_comp);
+ 		break;
  
- static void destroy_sq_tracked(struct mlx5_ib_dev *dev, u32 sqn, u16 uid)
++	case GDMA_EQE_HWC_SOC_RECONFIG_DATA:
++		type_data.as_uint32 = event->details[0];
++		type = type_data.type;
++		val = type_data.value;
++
++		switch (type) {
++		case HWC_DATA_CFG_HWC_TIMEOUT:
++			hwc->hwc_timeout = val;
++			break;
++
++		default:
++			dev_warn(hwc->dev, "Received unknown reconfig type %u\n", type);
++			break;
++		}
++
++		break;
++
+ 	default:
++		dev_warn(hwc->dev, "Received unknown gdma event %u\n", event->type);
+ 		/* Ignore unknown events, which should never happen. */
+ 		break;
+ 	}
+@@ -704,6 +722,7 @@ int mana_hwc_create_channel(struct gdma_context *gc)
+ 	gd->pdid = INVALID_PDID;
+ 	gd->doorbell = INVALID_DOORBELL;
+ 
++	hwc->hwc_timeout = HW_CHANNEL_WAIT_RESOURCE_TIMEOUT_MS;
+ 	/* mana_hwc_init_queues() only creates the required data structures,
+ 	 * and doesn't touch the HWC device.
+ 	 */
+@@ -770,6 +789,8 @@ void mana_hwc_destroy_channel(struct gdma_context *gc)
+ 	hwc->gdma_dev->doorbell = INVALID_DOORBELL;
+ 	hwc->gdma_dev->pdid = INVALID_PDID;
+ 
++	hwc->hwc_timeout = 0;
++
+ 	kfree(hwc);
+ 	gc->hwc.driver_data = NULL;
+ 	gc->hwc.gdma_context = NULL;
+@@ -818,6 +839,7 @@ int mana_hwc_send_request(struct hw_channel_context *hwc, u32 req_len,
+ 		dest_vrq = hwc->pf_dest_vrq_id;
+ 		dest_vrcq = hwc->pf_dest_vrcq_id;
+ 	}
++	dev_dbg(hwc->dev, "HWC: timeout %u ms\n", hwc->hwc_timeout);
+ 
+ 	err = mana_hwc_post_tx_wqe(txq, tx_wr, dest_vrq, dest_vrcq, false);
+ 	if (err) {
+@@ -825,7 +847,8 @@ int mana_hwc_send_request(struct hw_channel_context *hwc, u32 req_len,
+ 		goto out;
+ 	}
+ 
+-	if (!wait_for_completion_timeout(&ctx->comp_event, 30 * HZ)) {
++	if (!wait_for_completion_timeout(&ctx->comp_event,
++					 (hwc->hwc_timeout / 1000) * HZ)) {
+ 		dev_err(hwc->dev, "HWC: Request timed out!\n");
+ 		err = -ETIMEDOUT;
+ 		goto out;
+diff --git a/include/net/mana/gdma.h b/include/net/mana/gdma.h
+index 96c120160f15..88b6ef7ce1a6 100644
+--- a/include/net/mana/gdma.h
++++ b/include/net/mana/gdma.h
+@@ -33,6 +33,7 @@ enum gdma_request_type {
+ 	GDMA_DESTROY_PD			= 30,
+ 	GDMA_CREATE_MR			= 31,
+ 	GDMA_DESTROY_MR			= 32,
++	GDMA_QUERY_HWC_TIMEOUT		= 84, /* 0x54 */
+ };
+ 
+ #define GDMA_RESOURCE_DOORBELL_PAGE	27
+@@ -57,6 +58,8 @@ enum gdma_eqe_type {
+ 	GDMA_EQE_HWC_INIT_EQ_ID_DB	= 129,
+ 	GDMA_EQE_HWC_INIT_DATA		= 130,
+ 	GDMA_EQE_HWC_INIT_DONE		= 131,
++	GDMA_EQE_HWC_SOC_RECONFIG	= 132,
++	GDMA_EQE_HWC_SOC_RECONFIG_DATA	= 133,
+ };
+ 
+ enum {
+@@ -531,10 +534,12 @@ enum {
+  * so the driver is able to reliably support features like busy_poll.
+  */
+ #define GDMA_DRV_CAP_FLAG_1_NAPI_WKDONE_FIX BIT(2)
++#define GDMA_DRV_CAP_FLAG_1_HWC_TIMEOUT_RECONFIG BIT(3)
+ 
+ #define GDMA_DRV_CAP_FLAGS1 \
+ 	(GDMA_DRV_CAP_FLAG_1_EQ_SHARING_MULTI_VPORT | \
+-	 GDMA_DRV_CAP_FLAG_1_NAPI_WKDONE_FIX)
++	 GDMA_DRV_CAP_FLAG_1_NAPI_WKDONE_FIX | \
++	 GDMA_DRV_CAP_FLAG_1_HWC_TIMEOUT_RECONFIG)
+ 
+ #define GDMA_DRV_CAP_FLAGS2 0
+ 
+@@ -664,6 +669,19 @@ struct gdma_disable_queue_req {
+ 	u32 alloc_res_id_on_creation;
+ }; /* HW DATA */
+ 
++/* GDMA_QUERY_HWC_TIMEOUT */
++struct gdma_query_hwc_timeout_req {
++	struct gdma_req_hdr hdr;
++	u32 timeout_ms;
++	u32 reserved;
++};
++
++struct gdma_query_hwc_timeout_resp {
++	struct gdma_resp_hdr hdr;
++	u32 timeout_ms;
++	u32 reserved;
++};
++
+ enum atb_page_size {
+ 	ATB_PAGE_SIZE_4K,
+ 	ATB_PAGE_SIZE_8K,
+diff --git a/include/net/mana/hw_channel.h b/include/net/mana/hw_channel.h
+index 6a757a6e2732..3d3b5c881bc1 100644
+--- a/include/net/mana/hw_channel.h
++++ b/include/net/mana/hw_channel.h
+@@ -23,6 +23,10 @@
+ #define HWC_INIT_DATA_PF_DEST_RQ_ID	10
+ #define HWC_INIT_DATA_PF_DEST_CQ_ID	11
+ 
++#define HWC_DATA_CFG_HWC_TIMEOUT 1
++
++#define HW_CHANNEL_WAIT_RESOURCE_TIMEOUT_MS 30000
++
+ /* Structures labeled with "HW DATA" are exchanged with the hardware. All of
+  * them are naturally aligned and hence don't need __packed.
+  */
+@@ -182,6 +186,7 @@ struct hw_channel_context {
+ 
+ 	u32 pf_dest_vrq_id;
+ 	u32 pf_dest_vrcq_id;
++	u32 hwc_timeout;
+ 
+ 	struct hwc_caller_ctx *caller_ctx;
+ };
 -- 
-2.39.2
+2.34.1
 
