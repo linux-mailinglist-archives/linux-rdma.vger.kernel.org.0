@@ -2,92 +2,67 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BAA1775FA43
-	for <lists+linux-rdma@lfdr.de>; Mon, 24 Jul 2023 16:57:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 47AE075FA7A
+	for <lists+linux-rdma@lfdr.de>; Mon, 24 Jul 2023 17:14:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229767AbjGXO5U (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 24 Jul 2023 10:57:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36294 "EHLO
+        id S229644AbjGXPOT (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 24 Jul 2023 11:14:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40686 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229477AbjGXO5T (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 24 Jul 2023 10:57:19 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20F8310C9
-        for <linux-rdma@vger.kernel.org>; Mon, 24 Jul 2023 07:56:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1690210593;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=qyDhIAIIOkviYuugYW1Y2WwDIHyMCteZyLgKjPu6Mk8=;
-        b=bLHOtEixW62mJrsbgtte/mDJCkb+34c3NJYiX19Jc21ABP/NmiQK7U/uWRT3xfnwZH/0mI
-        2SzEvWoJD9zgdCHKZ9z7aW11VPXckxyvQ6aJj7fYunrrszQ4NMobg3DxfzkUjMF+AcDo3q
-        oOsjrlh0BqU4/GaSiA+p4m85l9ZmoaA=
-Received: from mail-ej1-f70.google.com (mail-ej1-f70.google.com
- [209.85.218.70]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-641-tQmyln17NtadvvM7MhvJ7w-1; Mon, 24 Jul 2023 10:56:32 -0400
-X-MC-Unique: tQmyln17NtadvvM7MhvJ7w-1
-Received: by mail-ej1-f70.google.com with SMTP id a640c23a62f3a-997c891a88dso368994966b.3
-        for <linux-rdma@vger.kernel.org>; Mon, 24 Jul 2023 07:56:31 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690210591; x=1690815391;
-        h=content-transfer-encoding:in-reply-to:references:to
-         :content-language:subject:cc:user-agent:mime-version:date:message-id
-         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=qyDhIAIIOkviYuugYW1Y2WwDIHyMCteZyLgKjPu6Mk8=;
-        b=SluZANEnJGMrUraGxJamQq3ZVqJJ3vb1EXoRYGVJEXk2udYge+L0AUz6TA5+e+H/KO
-         sVdXkux+kmfDLpmCpNuwcJWstnEEHlC8T1bW53ivVHy6PHEGAojBP3zqlT+yFITq3ISe
-         r6UhGt/5u2aP9vGjD/tWoobq9Sx/cQqVw2b3nJL6kaYeTlR0BnAH7kC9NTpramaeb+0L
-         bc0ZB5GDKQjrP4tEsdl76nCoV3lNsnsRwZuIltzanhFU2Y49uj8b41ULRwcSfAphQy+W
-         w8YFOwUsutA/S7Fyf0DlxkCqVHYni2wxHP75B66eiCI5Vq4+WZKkaJ5CGErwdg9hcV2g
-         B+WA==
-X-Gm-Message-State: ABy/qLY8ekaHVyGvOXHk92zCXwZuHM8bkqzZFV/5y5leudxuPo4J/lVq
-        KPp5yBdU2fHrLqGo1RdDmsthCWCsWYksHIWdDpx+PNjuxER3bgUg/ehf2BuXSRxzXed9ZcB9KFK
-        l3v6imNbbE9wWLc44ZYKOKg==
-X-Received: by 2002:a17:906:142:b0:99b:4378:a5aa with SMTP id 2-20020a170906014200b0099b4378a5aamr10932493ejh.49.1690210590813;
-        Mon, 24 Jul 2023 07:56:30 -0700 (PDT)
-X-Google-Smtp-Source: APBJJlGew8ZfxpMg1IPHgdW+P4N+fJj23+LIyZEInwx4n2Bho+JUbvzjjxmxPJwDcIJS99FXO2fHEg==
-X-Received: by 2002:a17:906:142:b0:99b:4378:a5aa with SMTP id 2-20020a170906014200b0099b4378a5aamr10932446ejh.49.1690210590470;
-        Mon, 24 Jul 2023 07:56:30 -0700 (PDT)
-Received: from [192.168.42.222] (194-45-78-10.static.kviknet.net. [194.45.78.10])
-        by smtp.gmail.com with ESMTPSA id dt15-20020a170906b78f00b00991bba473e1sm6867427ejb.3.2023.07.24.07.56.27
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 24 Jul 2023 07:56:29 -0700 (PDT)
-From:   Jesper Dangaard Brouer <jbrouer@redhat.com>
-X-Google-Original-From: Jesper Dangaard Brouer <brouer@redhat.com>
-Message-ID: <a2569132-393e-0149-f76c-f6de282e1c96@redhat.com>
-Date:   Mon, 24 Jul 2023 16:56:27 +0200
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.10.0
-Cc:     brouer@redhat.com,
-        =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>,
-        Hari Ramakrishnan <rharix@google.com>,
-        David Ahern <dsahern@kernel.org>,
-        Samiullah Khawaja <skhawaja@google.com>,
-        Willem de Bruijn <willemb@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Christoph Hellwig <hch@lst.de>,
-        John Hubbard <jhubbard@nvidia.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Jesper Dangaard Brouer <jbrouer@redhat.com>,
-        Alexander Duyck <alexander.duyck@gmail.com>,
-        Yunsheng Lin <linyunsheng@huawei.com>, davem@davemloft.net,
-        pabeni@redhat.com, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Lorenzo Bianconi <lorenzo@kernel.org>,
-        Yisen Zhuang <yisen.zhuang@huawei.com>,
-        Salil Mehta <salil.mehta@huawei.com>,
+        with ESMTP id S229481AbjGXPOR (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 24 Jul 2023 11:14:17 -0400
+Received: from NAM10-MW2-obe.outbound.protection.outlook.com (mail-mw2nam10on2120.outbound.protection.outlook.com [40.107.94.120])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B08FC12F;
+        Mon, 24 Jul 2023 08:14:16 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Yeu96kc3BEWEABHL1DQ2hdvPWbmqU5Z4nb40hTv/rNko7VJIphN6Di1lXN5nztzg5Tvv2WGnXxCKzAv6i3pTAF+kW4Cyoep2/M8l3vofywmUgXpjBAD4LZuSG3FnsOS3SjGNOgoCHzrvt366NHqmzT2kiTFNHLETtebCAweu7R2H3qryWRaZh19pUfRdsQVyeydwPeznNRIlgC3oykk+O0yjuP+BPUNLOcPYKbAPces3/tACkF16zBBBEqKwqJOn5cBGqg3NNQKzbmTcfbSaZe2hL6Ky035Y4jisrcDik96pO7AuFzpaAU4YcHULM2cXR/pIkxtuTEUMX4MHOm7Xxw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=ko8vwzn7rJbzVj/grkCsigEnZ0wf/Zc2zL4N2Nm7KBU=;
+ b=BREVmN/8aFmgdOfzINHZrkJCLMnQvlmiNqdJFUPijtf3iihCqVjaUXCGrS1Q19QlaTUCUBha3O9++0tkaWYq22/Q967FWVodIz4rh3pGp+tHqzJWpLQAuaglXVlcb20W/R9UNV4iYhrKNKnWWjlJw1039wapDuPIcfxKonuE28JaMt/Q+9aLHw8nZB/15CBd8RBAqew1bOFO4V8YlLWvRHjYUFDcHd/bZbSjFJCWs0ct/Lb9q5SQ+zYLQs/okx4rkX/lCSPQPFHCygarOOr0lO3YAU/yfc7g7SGNclmhW1LCzXOz1Hl2KTci8GF7xS4P/7sLMPwRSxrqG029gcBl0w==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=corigine.com; dmarc=pass action=none header.from=corigine.com;
+ dkim=pass header.d=corigine.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=corigine.onmicrosoft.com; s=selector2-corigine-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=ko8vwzn7rJbzVj/grkCsigEnZ0wf/Zc2zL4N2Nm7KBU=;
+ b=urLp//67b62r0XCJi2kR5lFLPE5V42VnEVRaE7JqmJbD75/7bg12RjG2zdVibTCUe+OwecAiWqY7SlsjlzSPrbDxrr56eEedlmqscuVNvq22P5TXPvrTcyKKFlqhwi6A5KB5d0D37ji9md9f/7OvvOeCllkJZulmPtKSihLgc0E=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=corigine.com;
+Received: from PH0PR13MB4842.namprd13.prod.outlook.com (2603:10b6:510:78::6)
+ by LV8PR13MB6327.namprd13.prod.outlook.com (2603:10b6:408:18c::10) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6609.32; Mon, 24 Jul
+ 2023 15:14:12 +0000
+Received: from PH0PR13MB4842.namprd13.prod.outlook.com
+ ([fe80::fde7:9821:f2d9:101d]) by PH0PR13MB4842.namprd13.prod.outlook.com
+ ([fe80::fde7:9821:f2d9:101d%7]) with mapi id 15.20.6609.032; Mon, 24 Jul 2023
+ 15:14:11 +0000
+Date:   Mon, 24 Jul 2023 17:14:01 +0200
+From:   Simon Horman <simon.horman@corigine.com>
+To:     Yunsheng Lin <linyunsheng@huawei.com>
+Cc:     davem@davemloft.net, kuba@kernel.org, pabeni@redhat.com,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Alexander Lobakin <aleksander.lobakin@intel.com>,
         Eric Dumazet <edumazet@google.com>,
+        Wei Fang <wei.fang@nxp.com>,
+        Shenwei Wang <shenwei.wang@nxp.com>,
+        Clark Wang <xiaoning.wang@nxp.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
         Sunil Goutham <sgoutham@marvell.com>,
         Geetha sowjanya <gakula@marvell.com>,
         Subbaraya Sundeep <sbhatta@marvell.com>,
         hariprasad <hkelam@marvell.com>,
         Saeed Mahameed <saeedm@nvidia.com>,
         Leon Romanovsky <leon@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
         Felix Fietkau <nbd@nbd.name>,
+        Lorenzo Bianconi <lorenzo@kernel.org>,
         Ryder Lee <ryder.lee@mediatek.com>,
         Shayne Chen <shayne.chen@mediatek.com>,
         Sean Wang <sean.wang@mediatek.com>,
@@ -95,190 +70,153 @@ Cc:     brouer@redhat.com,
         Matthias Brugger <matthias.bgg@gmail.com>,
         AngeloGioacchino Del Regno 
         <angelogioacchino.delregno@collabora.com>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
         Ilias Apalodimas <ilias.apalodimas@linaro.org>,
-        linux-rdma@vger.kernel.org, linux-wireless@vger.kernel.org,
+        linux-rdma@vger.kernel.org, bpf@vger.kernel.org,
+        linux-wireless@vger.kernel.org,
         linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org,
-        Jonathan Lemon <jonathan.lemon@gmail.com>, logang@deltatee.com,
-        Bjorn Helgaas <bhelgaas@google.com>
-Subject: Re: Memory providers multiplexing (Was: [PATCH net-next v4 4/5]
- page_pool: remove PP_FLAG_PAGE_FRAG flag)
-Content-Language: en-US
-To:     Mina Almasry <almasrymina@google.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>
-References: <04187826-8dad-d17b-2469-2837bafd3cd5@kernel.org>
- <20230711093224.1bf30ed5@kernel.org>
- <CAHS8izNHkLF0OowU=p=mSNZss700HKAzv1Oxqu2bvvfX_HxttA@mail.gmail.com>
- <20230711133915.03482fdc@kernel.org>
- <2263ae79-690e-8a4d-fca2-31aacc5c9bc6@kernel.org>
- <CAHS8izP=k8CqUZk7bGUx4ctm4m2kRC2MyEJv+N4+b0cHVkTQmA@mail.gmail.com>
- <ZK6kOBl4EgyYPtaD@ziepe.ca>
- <CAHS8izNuda2DXKTFAov64F7J2_BbMPaqJg1NuMpWpqGA20+S_Q@mail.gmail.com>
- <143a7ca4-e695-db98-9488-84cf8b78cf86@amd.com>
- <CAHS8izPm6XRS54LdCDZVd0C75tA1zHSu6jLVO8nzTLXCc=H7Nw@mail.gmail.com>
- <ZLFv2PIgdeH8gKmh@ziepe.ca>
- <CAHS8izNMB-H3w0CE9kj6hT5q_F6_XJy_X_HtZwmisOEDhp31yg@mail.gmail.com>
-In-Reply-To: <CAHS8izNMB-H3w0CE9kj6hT5q_F6_XJy_X_HtZwmisOEDhp31yg@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
-        version=3.4.6
+        linux-mediatek@lists.infradead.org
+Subject: Re: [PATCH net-next] page_pool: split types and declarations from
+ page_pool.h
+Message-ID: <ZL6VOQ4SL/Zk0FdL@corigine.com>
+References: <20230719121339.63331-1-linyunsheng@huawei.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230719121339.63331-1-linyunsheng@huawei.com>
+X-ClientProxiedBy: AS4P195CA0004.EURP195.PROD.OUTLOOK.COM
+ (2603:10a6:20b:5e2::19) To PH0PR13MB4842.namprd13.prod.outlook.com
+ (2603:10b6:510:78::6)
+MIME-Version: 1.0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: PH0PR13MB4842:EE_|LV8PR13MB6327:EE_
+X-MS-Office365-Filtering-Correlation-Id: 703a2687-4c5b-4ae3-a049-08db8c58a29b
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: cIbzEvJAX9LAgudA/o3TwKgXNcAf1+H+FXnWHHKYgnqRLoo0hKj52kltMX9IrGgEaVAkWMxuW+UbtHqvNNgdRvmyTr8G+ljEZ0sop0oqWlkyZFj0A+TVC7IJC78WfUV3QLx91oOKqEzCgATubA9Ue5aSG4O+KkJtjTYB2ds26rOOfS4ZIAqh5r+QMmZiLAQrEMUF/WD05PIthXAFiI3MfvGmHWfHA6NxspRjIzrhRTtN+yWgJJlyaJqKVUVuBe5Og+97h3++qIzyjLnnEMeA+Za1BvHMt5bH+50xsmLkav0UP4vH6u55uZmIu9TNRRRdx9PWulKkUNKTXoxRJMJOaE5REzgazpcWcp0lf5K97VuRwWdv7XVFF2DPkby+JG64ncR1WTj0IoA9dhCZmwDkRbpHV4Kwh3Wf3wDMHsVU2/MOHt1qJdes/6FA6opD6T2gxlPvi7PmTaVJqGQtczmqrN7EAJSDr/QcFx6ijWFTiBwWaGPUzQplfW4M9mwdsWVT1Cr2zEm3n4+p4VCgjR8kUXJIfaLFxVDTWIxHeU2bg6i3hbeUkEz1i1HCubPjtRqcy75+j562ns5Wz4mfa/XtLLe46cq1yCcGkWBWbmzEt0g=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR13MB4842.namprd13.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(4636009)(39840400004)(346002)(366004)(396003)(136003)(376002)(451199021)(2616005)(2906002)(83380400001)(6916009)(4326008)(316002)(6512007)(6486002)(66476007)(66556008)(66946007)(41300700001)(36756003)(478600001)(86362001)(54906003)(6666004)(7416002)(7406005)(44832011)(38100700002)(186003)(6506007)(8936002)(8676002)(5660300002);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?Xr+4hcT7qxOhgbnNIH0azMmxXB2W/isDy6HaKKBseG3mWUWWySwjmm9qSojA?=
+ =?us-ascii?Q?bQZhfJ8mkUbJhCRT0R30mbfI+TkEFt8Ja+MZJt2cRa2TjWuTuWp8Mfx7ka5C?=
+ =?us-ascii?Q?Dtfr41N+eZSwOMPLe3U7k5T2VGnhy24r+qgcu4tFaYwqz+eg2erJ9lwZHTDB?=
+ =?us-ascii?Q?sPwlMUziziXOGHV00jXlN+xu5hp/53LsE5VrdXd3wz6MzU/ntV8gowoQ3YG1?=
+ =?us-ascii?Q?37qRJGQiIF7jJmbtqukXQ+6DCUWEY/9cFOEx6dQRnG9Zh6sbzdlYKySKOxdD?=
+ =?us-ascii?Q?mE+1p4WoAE8f62TVV+zj9LbgNHbthZs5ucVLtKAHKe5gn5ZOm6BbWJJHuVXp?=
+ =?us-ascii?Q?Xc+llWMkHmlp4IB2eYy6h26VqMKmeiDsxIsAvDGaYGjNukwY+WZLGLSvKNRa?=
+ =?us-ascii?Q?hE4TQO31BoVCu1DBV64/krP/AL9A5gQRFDZeNwF9NCNwaLsDBn+P5ZZp/t79?=
+ =?us-ascii?Q?0VJw3Z7DfbmF4OL78I31p5k+dXrV9RHOn8wVy7UYIYGpQPIPl7gsFlqApsk0?=
+ =?us-ascii?Q?4RHpmM6NEl0mRzuwQxevGuyxNzMdA41qF5oGSBTWl3HdE0p9lEgDXlQhxWOx?=
+ =?us-ascii?Q?oGigb5K4NbD9JCsCvFQWsC4aRYaTwmzNQnzITDog8sP4napwFjEkk+3kEucq?=
+ =?us-ascii?Q?N9gAEpujSsvlfUIzNDInoPfgcvB0ewubZIGEfhpw9sweTzwmRnmqpd7XK6YT?=
+ =?us-ascii?Q?jw7MG/UBmLrk/ROUzptbk4ObSjh+M7uC0pNC7n9Hv+Abh/D4f/zUmfV1PJoH?=
+ =?us-ascii?Q?ScSLMcv2xxxQsSBokU8SLlf02C70fcRrhOsw3e9rj0/msxc3V3Gc3ZvyIBsI?=
+ =?us-ascii?Q?PwGhXwOpAXVkNXWcLK9DNasV/auxhcquTQDa/Ca1Kq+//Ypvth9hfFaoOlYm?=
+ =?us-ascii?Q?xb0BDXDGBp5gS1NLFtFQZqMlssN/4IUJUR6S7RFL2CX/ZrptUX9qPOh7I6je?=
+ =?us-ascii?Q?R3at2uIII8KWqyYMiC98iwdUM6YGhDNEhu3MwF3+mpJFvfzFJ2KpmlCrmX4O?=
+ =?us-ascii?Q?U7+qJwa72RqzfwjcZ1onmRTeJapRSYcYn4j1zMKgWFd1CVobPlp2UwrMXrLG?=
+ =?us-ascii?Q?13N7+oFwm8E74wBcBEqmdywtyYF2rIx+NiL/0+2/PR79ckHttXYEGYYQ5H00?=
+ =?us-ascii?Q?oWmEjk36shXmd0Z1LTjyDq5rPDppLdSYfOLBk4Z7MvxDdTXkIbQl6TUMRHPN?=
+ =?us-ascii?Q?Qf31Iuvge/8EJWoW1/83Lwmhm7JrkGtHxWKyLqqEpGqC2b/PB/xyDBbZMcop?=
+ =?us-ascii?Q?PpX1POowMBqkK30zZGn3wYWNJhaQ4omwVkZGwmaAiz2ISK2V3hq1mFgh9Nj3?=
+ =?us-ascii?Q?i/0tPQNMz3h918t5UL7wme5BzN8EkwuuipRqRCErc9RzdaESlZMzbEmaEF+a?=
+ =?us-ascii?Q?RNLSG1k4V8TedwdrW1M1cMGTwGWiWI27Whsx+U1wcJylfihtdS/Goz+k/EXx?=
+ =?us-ascii?Q?G+aSnUCZE9ZOlkXaijRZDa19R94mNoCWIdd8wENRaDImLWAxLvYMm6cNljhm?=
+ =?us-ascii?Q?Zwi1Dsd9I1FrSWPU+NkhVLDuc8saZs82RMDsilLPdDmUypCkd3xm42vvcc9R?=
+ =?us-ascii?Q?iOJ1/zlDBU6BRJ2OL+QNpqZf8wiTYelcsciDf+2SX1CQlCcmSZOG1wxUlZfo?=
+ =?us-ascii?Q?clj3Xw/BWjXkGrLT0ikvfYOcIfb6uPNy7K82WKJDePSrhfjG3X50AU09G6p6?=
+ =?us-ascii?Q?x9HWFQ=3D=3D?=
+X-OriginatorOrg: corigine.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 703a2687-4c5b-4ae3-a049-08db8c58a29b
+X-MS-Exchange-CrossTenant-AuthSource: PH0PR13MB4842.namprd13.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 24 Jul 2023 15:14:11.8034
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: fe128f2c-073b-4c20-818e-7246a585940c
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: LUULMGDwLbjrB9E/FEYipY9gZtI9SegOsVLUp8VRN2GgvXETs4ppg1tnzX7rXde9yppUsKN7wZROZElcX/VaHW753nKX7B+P63pfSv8UMWw=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: LV8PR13MB6327
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
+On Wed, Jul 19, 2023 at 08:13:37PM +0800, Yunsheng Lin wrote:
 
+Hi Yunsheng,
 
-On 17/07/2023 03.53, Mina Almasry wrote:
-> On Fri, Jul 14, 2023 at 8:55 AM Jason Gunthorpe <jgg@ziepe.ca> wrote:
->>
->> On Fri, Jul 14, 2023 at 07:55:15AM -0700, Mina Almasry wrote:
->>
->>> Once the skb frags with struct new_abstraction are in the TCP stack,
->>> they will need some special handling in code accessing the frags. But
->>> my RFC already addressed that somewhat because the frags were
->>> inaccessible in that case. In this case the frags will be both
->>> inaccessible and will not be struct pages at all (things like
->>> get_page() will not work), so more special handling will be required,
->>> maybe.
->>
->> It seems sort of reasonable, though there will be interesting concerns
->> about coherence and synchronization with generial purpose DMABUFs that
->> will need tackling.
->>
->> Still it is such a lot of churn and weridness in the netdev side, I
->> think you'd do well to present an actual full application as
->> justification.
->>
->> Yes, you showed you can stick unordered TCP data frags into GPU memory
->> sort of quickly, but have you gone further with this to actually show
->> it is useful for a real world GPU centric application?
->>
->> BTW your cover letter said 96% utilization, the usual server
->> configuation is one NIC per GPU, so you were able to hit 1500Gb/sec of
->> TCP BW with this?
->>
-> 
-> I do notice that the number of NICs is missing from our public
-> documentation so far, so I will refrain from specifying how many NICs
-> are on those A3 VMs until the information is public. But I think I can
-> confirm that your general thinking is correct, the perf that we're
-> getting is 96.6% line rate of each GPU/NIC pair, 
+...
 
-What do you mean by 96.6% "line rate".
-Is is the Ethernet line-rate?
+> diff --git a/include/net/page_pool_types.h b/include/net/page_pool_types.h
 
-Is the measured throughput the measured TCP data "goodput"?
-Assuming
-  - MTU 1500 bytes (1514 on wire).
-  - Ethernet header 14 bytes
-  - IP header 20 bytes
-  - TCP header 20 bytes
+...
 
-Due to header overhead the goodput will be approx 96.4%.
-  - (1514-(14+20+20))/1514 = 0.9643
-  - (Not taking Ethernet interframe gap into account).
+> +struct page_pool {
+> +	struct page_pool_params p;
+> +
+> +	struct delayed_work release_dw;
+> +	void (*disconnect)(void *);
+> +	unsigned long defer_start;
+> +	unsigned long defer_warn;
+> +
+> +	u32 pages_state_hold_cnt;
+> +	unsigned int frag_offset;
+> +	struct page *frag_page;
+> +	long frag_users;
+> +
+> +#ifdef CONFIG_PAGE_POOL_STATS
+> +	/* these stats are incremented while in softirq context */
+> +	struct page_pool_alloc_stats alloc_stats;
+> +#endif
+> +	u32 xdp_mem_id;
+> +
+> +	/*
+> +	 * Data structure for allocation side
+> +	 *
+> +	 * Drivers allocation side usually already perform some kind
+> +	 * of resource protection.  Piggyback on this protection, and
+> +	 * require driver to protect allocation side.
+> +	 *
+> +	 * For NIC drivers this means, allocate a page_pool per
+> +	 * RX-queue. As the RX-queue is already protected by
+> +	 * Softirq/BH scheduling and napi_schedule. NAPI schedule
+> +	 * guarantee that a single napi_struct will only be scheduled
+> +	 * on a single CPU (see napi_schedule).
+> +	 */
+> +	struct pp_alloc_cache alloc ____cacheline_aligned_in_smp;
+> +
+> +	/* Data structure for storing recycled pages.
+> +	 *
+> +	 * Returning/freeing pages is more complicated synchronization
+> +	 * wise, because free's can happen on remote CPUs, with no
+> +	 * association with allocation resource.
+> +	 *
+> +	 * Use ptr_ring, as it separates consumer and producer
+> +	 * effeciently, it a way that doesn't bounce cache-lines.
 
-Thus, maybe you have hit Ethernet wire line-rate already?
+I know this is moved from elsewhere, but: effeciently -> efficiently
 
-> and scales linearly
-> for each NIC/GPU pair we've tested with so far. Line rate of each
-> NIC/GPU pair is 200 Gb/sec.
-> 
-> So if we have 8 NIC/GPU pairs we'd be hitting 96.6% * 200 * 8 = 1545 GB/sec.
+> +	 *
+> +	 * TODO: Implement bulk return pages into this structure.
+> +	 */
+> +	struct ptr_ring ring;
+> +
+> +#ifdef CONFIG_PAGE_POOL_STATS
+> +	/* recycle stats are per-cpu to avoid locking */
+> +	struct page_pool_recycle_stats __percpu *recycle_stats;
+> +#endif
+> +	atomic_t pages_state_release_cnt;
+> +
+> +	/* A page_pool is strictly tied to a single RX-queue being
+> +	 * protected by NAPI, due to above pp_alloc_cache. This
+> +	 * refcnt serves purpose is to simplify drivers error handling.
+> +	 */
+> +	refcount_t user_cnt;
+> +
+> +	u64 destroy_cnt;
+> +};
 
-Lets keep our units straight.
-Here you mean 1545 Gbit/sec, which is 193 GBytes/s
-
-> If we have, say, 2 NIC/GPU pairs, we'd be hitting 96.6% * 200 * 2 = 384 GB/sec
-
-Here you mean 384 Gbit/sec, which is 48 GBytes/sec.
-
-> ...
-> etc.
-> 
-
-These massive throughput numbers are important, because they *exceed*
-the physical host RAM/DIMM memory speeds.
-
-This is the *real argument* why software cannot afford to do a single
-copy of the data from host-RAM into GPU-memory, because the CPU memory
-throughput to DRAM/DIMM are insufficient.
-
-My testlab CPU E5-1650 have 4 DIMM slots DDR4
-  - Data Width: 64 bits (= 8 bytes)
-  - Configured Memory Speed: 2400 MT/s
-  - Theoretical maximum memory bandwidth: 76.8 GBytes/s (2400*8*4)
-
-Even the theoretical max 76.8 GBytes/s (614 Gbit/s) is not enough for
-the 193 GBytes/s or 1545 Gbit/s (8 NIC/GPU pairs).
-
-When testing this with lmbench tool bw_mem, the results (below
-signature) are in the area 14.8 GBytes/sec (118 Gbit/s), as soon as
-exceeding L3 cache size.  In practice it looks like main memory is
-limited to reading 118 Gbit/s *once*. (Mina's NICs run at 200 Gbit/s)
-
-Given DDIO can deliver network packets into L3, I also tried to figure
-out what the L3 read bandwidth, which I measured to be 42.4 GBits/sec
-(339 Gbit/s), in hopes that it would be enough, but it was not.
-
-
---Jesper
-(data below signature)
-
-CPU under test:
-
-  $ cat /proc/cpuinfo | egrep -e 'model name|cache size' | head -2
-  model name	: Intel(R) Xeon(R) CPU E5-1650 v4 @ 3.60GHz
-  cache size	: 15360 KB
-
-
-Providing some cmdline outputs from lmbench "bw_mem" tool.
-(Output format is "%0.2f %.2f\n", megabytes, megabytes_per_second)
-
-$ taskset -c 2 /usr/lib/lmbench/bin/x86_64-linux-gnu/bw_mem 256M rd
-256.00 14924.50
-
-$ taskset -c 2 /usr/lib/lmbench/bin/x86_64-linux-gnu/bw_mem 256M wr
-256.00 9895.25
-
-$ taskset -c 2 /usr/lib/lmbench/bin/x86_64-linux-gnu/bw_mem 256M rdwr
-256.00 9737.54
-
-$ taskset -c 2 /usr/lib/lmbench/bin/x86_64-linux-gnu/bw_mem 256M bcopy
-256.00 12462.88
-
-$ taskset -c 2 /usr/lib/lmbench/bin/x86_64-linux-gnu/bw_mem 256M bzero
-256.00 14869.89
-
-
-Next output shows reducing size below L3 cache size, which shows an
-increase in speed, likely the L3 bandwidth.
-
-$ taskset -c 2 /usr/lib/lmbench/bin/x86_64-linux-gnu/bw_mem 64M rd
-64.00 14840.58
-
-$ taskset -c 2 /usr/lib/lmbench/bin/x86_64-linux-gnu/bw_mem 32M rd
-32.00 14823.97
-
-$ taskset -c 2 /usr/lib/lmbench/bin/x86_64-linux-gnu/bw_mem 16M rd
-16.00 24743.86
-
-$ taskset -c 2 /usr/lib/lmbench/bin/x86_64-linux-gnu/bw_mem 8M rd
-8.00 40852.26
-
-$ taskset -c 2 /usr/lib/lmbench/bin/x86_64-linux-gnu/bw_mem 4M rd
-4.00 42545.65
-
-$ taskset -c 2 /usr/lib/lmbench/bin/x86_64-linux-gnu/bw_mem 2M rd
-2.00 42447.82
-
-$ taskset -c 2 /usr/lib/lmbench/bin/x86_64-linux-gnu/bw_mem 1M rd
-1.00 42447.82
-
+...
