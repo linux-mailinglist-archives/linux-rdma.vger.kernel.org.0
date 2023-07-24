@@ -2,57 +2,58 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BA74F75E7C9
-	for <lists+linux-rdma@lfdr.de>; Mon, 24 Jul 2023 03:35:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4655375E76E
+	for <lists+linux-rdma@lfdr.de>; Mon, 24 Jul 2023 03:28:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230304AbjGXBfF (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Sun, 23 Jul 2023 21:35:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35746 "EHLO
+        id S230368AbjGXB20 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Sun, 23 Jul 2023 21:28:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58476 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230525AbjGXBeq (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Sun, 23 Jul 2023 21:34:46 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C481F26AE;
-        Sun, 23 Jul 2023 18:31:23 -0700 (PDT)
+        with ESMTP id S231411AbjGXB1S (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Sun, 23 Jul 2023 21:27:18 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A2D1E1FE5;
+        Sun, 23 Jul 2023 18:24:50 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 4DF6760F10;
-        Mon, 24 Jul 2023 01:23:05 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0D081C433C9;
-        Mon, 24 Jul 2023 01:23:03 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id B3AF660F6D;
+        Mon, 24 Jul 2023 01:24:07 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1600AC433C7;
+        Mon, 24 Jul 2023 01:24:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1690161784;
-        bh=ScGVmoukakGMlz6zTgA14PdekQ01iYT9uPfoez43eZ4=;
+        s=k20201202; t=1690161847;
+        bh=4/cShx6t3Zffwv307oGLU/UFEXFHDP2pM+jRdsE6Mz0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=nTk6vsBxmhgtil/xJ/iWHYrVxjNoVgmHwBCm2s1jRfaAU2SiWeI0/EEN03o1wwNRf
-         j1t++JZ9DmdmHMBSJ6rHqqQPXu7qtyvS7f3VNg2StVl9cQaUiiXhd+neBznuYtX0kD
-         40mnGfYZBS/mc2VSY2r6x8i6sJHzmj+UMXMNiVXzBtvHrQN8YxnJfoveO1m4Pyjw2F
-         f6IDVhlftw3BsRWF1BN92oHuFg+/RRyfsY2Y+WnK1p7vHv6G+e9OJMpO9XtRZec3Be
-         2xhttn+F4SAqbetTtOeCPxA2D7lMT83waeTcFetXP6KFB7Zgzi5M6EzlQ9FFxYIs6L
-         mQ1yGDICeNNQA==
+        b=t22sw4uKmGobuoUXQL+f5h6Kdbhe4vHpWX/4odufKMkTZKFcq6+F118hs2gHB0G7x
+         RFb8c9gfXm2ne+n6quZgx0tetfwCVAPqTJ5u+MbO+iYEm4RaJSuhEuTO7RkAjnxi/D
+         XCOzewQpKox3oEc3brV9cIsLOgnga+gFfFFc6BPH8wVbOxGMyiyJ7KOMV5aOysuX0W
+         EajPikR15PZD759OaLOBUi8zKqnMU9yVUd8Rz50Afb93OrQ8DBL5tibmo3vsE7rSnZ
+         tYtmHnfkTYQujmiAkmqJZXZ7k3/q4vuu7ILwZeVwoQPQ0VG1/8ZgIKTfBa8ut+LBeM
+         UZzITkXkoaEPQ==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Cc:     Patrisious Haddad <phaddad@nvidia.com>,
         Leon Romanovsky <leon@kernel.org>,
-        Sasha Levin <sashal@kernel.org>, dledford@redhat.com,
-        linux-rdma@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.1 30/41] RDMA/mlx5: Return the firmware result upon destroying QP/RQ
-Date:   Sun, 23 Jul 2023 21:21:03 -0400
-Message-Id: <20230724012118.2316073-30-sashal@kernel.org>
+        Sasha Levin <sashal@kernel.org>, matanb@mellanox.com,
+        leonro@mellanox.com, dledford@redhat.com, sean.hefty@intel.com,
+        hal.rosenstock@gmail.com, linux-rdma@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.15 15/23] RDMA/mlx5: Return the firmware result upon destroying QP/RQ
+Date:   Sun, 23 Jul 2023 21:23:26 -0400
+Message-Id: <20230724012334.2317140-15-sashal@kernel.org>
 X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20230724012118.2316073-1-sashal@kernel.org>
-References: <20230724012118.2316073-1-sashal@kernel.org>
+In-Reply-To: <20230724012334.2317140-1-sashal@kernel.org>
+References: <20230724012334.2317140-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
-X-stable-base: Linux 6.1.40
+X-stable-base: Linux 5.15.121
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -123,7 +124,7 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  1 file changed, 4 insertions(+), 6 deletions(-)
 
 diff --git a/drivers/infiniband/hw/mlx5/qpc.c b/drivers/infiniband/hw/mlx5/qpc.c
-index 542e4c63a8de6..d4e7864c56f18 100644
+index 8844eacf2380e..e508c0753dd37 100644
 --- a/drivers/infiniband/hw/mlx5/qpc.c
 +++ b/drivers/infiniband/hw/mlx5/qpc.c
 @@ -297,8 +297,7 @@ int mlx5_core_destroy_qp(struct mlx5_ib_dev *dev, struct mlx5_core_qp *qp)
