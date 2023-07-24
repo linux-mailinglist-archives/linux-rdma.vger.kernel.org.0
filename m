@@ -2,251 +2,170 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B198A75E4D8
-	for <lists+linux-rdma@lfdr.de>; Sun, 23 Jul 2023 22:31:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4FEC175E643
+	for <lists+linux-rdma@lfdr.de>; Mon, 24 Jul 2023 03:16:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229469AbjGWUbl (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Sun, 23 Jul 2023 16:31:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37614 "EHLO
+        id S230047AbjGXBQr (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Sun, 23 Jul 2023 21:16:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45936 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229456AbjGWUbl (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Sun, 23 Jul 2023 16:31:41 -0400
-Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF0441B8
-        for <linux-rdma@vger.kernel.org>; Sun, 23 Jul 2023 13:31:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1690144299; x=1721680299;
-  h=date:from:to:cc:subject:message-id;
-  bh=krFdCgp2ok5y6sXF/gEQ2v+6l3pw6vYKMSv7GKhfnMQ=;
-  b=Ar60o8vGUbzzKXt1UNhrEXSfMxi/fe2XKCOMJlxgssYUHLpAbiHf++HQ
-   HZr7PYS6Kr9gc2QIzC3PBwj9vG5XFDBEm0j0yDndch5yXS2kd42HTm5wc
-   4XOylQwxvhNQOi9i45aocDJgWwuzV9sd0V8VivAUAQ+4kIayQ2NdLvuYg
-   aGHD5Grfiyjl00y8eo4yJP7m62BOo3IM5r4dG490gnkU3iaLVGxbNPwh2
-   JiZ19H/1NiqQmKaDnGm7BsWzJo2O4wDK/jkQ8TlPZSchVrUfiybw/Yibm
-   ruQOId1AobaAuynJkDesN0gSTPBtxFGiU521137hQH3KvoN/h3ahB/VeL
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10780"; a="398206662"
-X-IronPort-AV: E=Sophos;i="6.01,227,1684825200"; 
-   d="scan'208";a="398206662"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Jul 2023 13:31:38 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10780"; a="755084280"
-X-IronPort-AV: E=Sophos;i="6.01,227,1684825200"; 
-   d="scan'208";a="755084280"
-Received: from lkp-server02.sh.intel.com (HELO 36946fcf73d7) ([10.239.97.151])
-  by orsmga008.jf.intel.com with ESMTP; 23 Jul 2023 13:31:36 -0700
-Received: from kbuild by 36946fcf73d7 with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qNfjU-0009FD-0m;
-        Sun, 23 Jul 2023 20:31:16 +0000
-Date:   Mon, 24 Jul 2023 04:29:12 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Leon Romanovsky <leon@kernel.org>
-Cc:     Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg+lists@ziepe.ca>,
-        linux-rdma@vger.kernel.org
-Subject: [rdma:for-next] BUILD SUCCESS
- 44725a87381353075273618eeedc9127e99c378e
-Message-ID: <202307240410.LJ1T3RgB-lkp@intel.com>
-User-Agent: s-nail v14.9.24
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+        with ESMTP id S229983AbjGXBQ2 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Sun, 23 Jul 2023 21:16:28 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 06ACF171A;
+        Sun, 23 Jul 2023 18:16:03 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 033A960F16;
+        Mon, 24 Jul 2023 01:15:13 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 898D4C433C8;
+        Mon, 24 Jul 2023 01:15:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1690161312;
+        bh=nWokQeMtYUr7Atw3bnVpcMn4iJqjdFJHeSpzyXBlRqY=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=Zx6rtNkVXlMv7bhs8YY3FKMUbB/pSUND/E4rxCwnz8xtkjVGLqZNvLea/Kl4bVHAo
+         OZ2+FLi106xZ2arh/QJrfPf81E18CwgcY4TRUuhto6OiNS5mc4urVbE9huTWW6zCpP
+         t4pTk7F1hQssw7Rj1lAK8iCluGlfwEzH8m/SFB61U89uGsCs1KxkIcMjFnzs+2DBRX
+         utbuGv2+BDs4rJmbhwx8FetjgOrLwtBByY3J+VbmkM0xs1BUxmZwTxrZe6XBdEcoZj
+         IaTWAuwWw2FZ2oNybka+uvMMEEZhGolhdvS765AnjVIoc0ORFawjuYRWMqoFuHdPJA
+         AlxDyvt9Km1Dg==
+From:   Sasha Levin <sashal@kernel.org>
+To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Cc:     Long Li <longli@microsoft.com>, Jason Gunthorpe <jgg@nvidia.com>,
+        Sasha Levin <sashal@kernel.org>, sharmaajay@microsoft.com,
+        kys@microsoft.com, haiyangz@microsoft.com, wei.liu@kernel.org,
+        decui@microsoft.com, davem@davemloft.net, edumazet@google.com,
+        kuba@kernel.org, pabeni@redhat.com, tglx@linutronix.de,
+        alardam@gmail.com, shradhagupta@linux.microsoft.com,
+        linux-rdma@vger.kernel.org, linux-hyperv@vger.kernel.org,
+        netdev@vger.kernel.org
+Subject: [PATCH AUTOSEL 6.4 20/58] RDMA/mana_ib: Use v2 version of cfg_rx_steer_req to enable RX coalescing
+Date:   Sun, 23 Jul 2023 21:12:48 -0400
+Message-Id: <20230724011338.2298062-20-sashal@kernel.org>
+X-Mailer: git-send-email 2.39.2
+In-Reply-To: <20230724011338.2298062-1-sashal@kernel.org>
+References: <20230724011338.2298062-1-sashal@kernel.org>
+MIME-Version: 1.0
+X-stable: review
+X-Patchwork-Hint: Ignore
+X-stable-base: Linux 6.4.5
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git for-next
-branch HEAD: 44725a87381353075273618eeedc9127e99c378e  RDMA/qedr: Remove duplicate assignments of va
+From: Long Li <longli@microsoft.com>
 
-elapsed time: 726m
+[ Upstream commit 2145328515c8fa9b8a9f7889250bc6c032f2a0e6 ]
 
-configs tested: 173
-configs skipped: 12
+With RX coalescing, one CQE entry can be used to indicate multiple packets
+on the receive queue. This saves processing time and PCI bandwidth over
+the CQ.
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+The MANA Ethernet driver also uses the v2 version of the protocol. It
+doesn't use RX coalescing and its behavior is not changed.
 
-tested configs:
-alpha                            allyesconfig   gcc  
-alpha                               defconfig   gcc  
-alpha                randconfig-r006-20230723   gcc  
-alpha                randconfig-r035-20230723   gcc  
-arc                              allyesconfig   gcc  
-arc                                 defconfig   gcc  
-arc                  randconfig-r011-20230723   gcc  
-arc                  randconfig-r012-20230723   gcc  
-arc                  randconfig-r026-20230723   gcc  
-arc                  randconfig-r032-20230723   gcc  
-arc                  randconfig-r043-20230723   gcc  
-arm                              allmodconfig   gcc  
-arm                              allyesconfig   gcc  
-arm                                 defconfig   gcc  
-arm                        mvebu_v7_defconfig   gcc  
-arm                  randconfig-r003-20230723   gcc  
-arm                  randconfig-r024-20230723   clang
-arm                  randconfig-r033-20230723   gcc  
-arm                  randconfig-r046-20230723   clang
-arm64                            allyesconfig   gcc  
-arm64                               defconfig   gcc  
-arm64                randconfig-r014-20230723   gcc  
-arm64                randconfig-r015-20230723   gcc  
-arm64                randconfig-r016-20230723   gcc  
-arm64                randconfig-r025-20230723   gcc  
-arm64                randconfig-r032-20230723   clang
-arm64                randconfig-r036-20230723   clang
-csky                                defconfig   gcc  
-csky                 randconfig-r024-20230723   gcc  
-csky                 randconfig-r026-20230723   gcc  
-hexagon              randconfig-r013-20230723   clang
-hexagon              randconfig-r021-20230723   clang
-hexagon              randconfig-r033-20230723   clang
-hexagon              randconfig-r034-20230723   clang
-hexagon              randconfig-r036-20230723   clang
-hexagon              randconfig-r041-20230723   clang
-hexagon              randconfig-r045-20230723   clang
-i386                             allyesconfig   gcc  
-i386         buildonly-randconfig-r004-20230723   clang
-i386         buildonly-randconfig-r005-20230723   clang
-i386         buildonly-randconfig-r006-20230723   clang
-i386                              debian-10.3   gcc  
-i386                                defconfig   gcc  
-i386                 randconfig-i001-20230723   clang
-i386                 randconfig-i002-20230723   clang
-i386                 randconfig-i003-20230723   clang
-i386                 randconfig-i004-20230723   clang
-i386                 randconfig-i005-20230723   clang
-i386                 randconfig-i006-20230723   clang
-i386                 randconfig-i011-20230723   gcc  
-i386                 randconfig-i012-20230723   gcc  
-i386                 randconfig-i013-20230723   gcc  
-i386                 randconfig-i014-20230723   gcc  
-i386                 randconfig-i015-20230723   gcc  
-i386                 randconfig-i016-20230723   gcc  
-i386                 randconfig-r016-20230723   gcc  
-i386                 randconfig-r021-20230723   gcc  
-i386                 randconfig-r025-20230723   gcc  
-i386                 randconfig-r031-20230723   clang
-loongarch                        allmodconfig   gcc  
-loongarch                         allnoconfig   gcc  
-loongarch                           defconfig   gcc  
-loongarch            randconfig-r001-20230723   gcc  
-loongarch            randconfig-r021-20230723   gcc  
-loongarch            randconfig-r023-20230723   gcc  
-m68k                             allmodconfig   gcc  
-m68k                             allyesconfig   gcc  
-m68k                                defconfig   gcc  
-m68k                 randconfig-r012-20230723   gcc  
-m68k                 randconfig-r016-20230723   gcc  
-m68k                 randconfig-r026-20230723   gcc  
-m68k                 randconfig-r031-20230723   gcc  
-m68k                 randconfig-r034-20230723   gcc  
-microblaze           randconfig-r014-20230723   gcc  
-microblaze           randconfig-r015-20230723   gcc  
-mips                             allmodconfig   gcc  
-mips                             allyesconfig   gcc  
-mips                 decstation_r4k_defconfig   gcc  
-mips                           ip27_defconfig   clang
-mips                     loongson1b_defconfig   gcc  
-mips                     loongson1c_defconfig   clang
-mips                 randconfig-r015-20230723   clang
-mips                 randconfig-r024-20230723   clang
-nios2                         10m50_defconfig   gcc  
-nios2                               defconfig   gcc  
-nios2                randconfig-r024-20230723   gcc  
-nios2                randconfig-r034-20230723   gcc  
-openrisc                    or1ksim_defconfig   gcc  
-openrisc             randconfig-r011-20230723   gcc  
-openrisc             randconfig-r021-20230723   gcc  
-openrisc             randconfig-r022-20230723   gcc  
-openrisc             randconfig-r023-20230723   gcc  
-openrisc             randconfig-r035-20230723   gcc  
-parisc                           allyesconfig   gcc  
-parisc                              defconfig   gcc  
-parisc               randconfig-r015-20230723   gcc  
-parisc               randconfig-r031-20230723   gcc  
-parisc64                            defconfig   gcc  
-powerpc                          allmodconfig   gcc  
-powerpc                           allnoconfig   gcc  
-powerpc                  iss476-smp_defconfig   gcc  
-powerpc                     mpc83xx_defconfig   gcc  
-powerpc              randconfig-r003-20230723   clang
-powerpc              randconfig-r034-20230723   clang
-riscv                            allmodconfig   gcc  
-riscv                             allnoconfig   gcc  
-riscv                            allyesconfig   gcc  
-riscv                               defconfig   gcc  
-riscv                randconfig-r013-20230723   gcc  
-riscv                randconfig-r014-20230723   gcc  
-riscv                randconfig-r036-20230723   clang
-riscv                randconfig-r042-20230723   gcc  
-riscv                          rv32_defconfig   gcc  
-s390                             allmodconfig   gcc  
-s390                             allyesconfig   gcc  
-s390                                defconfig   gcc  
-s390                 randconfig-r005-20230723   clang
-s390                 randconfig-r012-20230723   gcc  
-s390                 randconfig-r013-20230723   gcc  
-s390                 randconfig-r022-20230723   gcc  
-s390                 randconfig-r035-20230723   clang
-s390                 randconfig-r044-20230723   gcc  
-sh                               allmodconfig   gcc  
-sh                         microdev_defconfig   gcc  
-sh                          r7780mp_defconfig   gcc  
-sh                   randconfig-r004-20230723   gcc  
-sh                   randconfig-r011-20230723   gcc  
-sh                   randconfig-r032-20230723   gcc  
-sparc                            allyesconfig   gcc  
-sparc                               defconfig   gcc  
-sparc                randconfig-r001-20230723   gcc  
-sparc                randconfig-r005-20230723   gcc  
-sparc                randconfig-r011-20230723   gcc  
-sparc                randconfig-r023-20230723   gcc  
-sparc64              randconfig-r002-20230723   gcc  
-sparc64              randconfig-r006-20230723   gcc  
-sparc64              randconfig-r031-20230723   gcc  
-um                               allmodconfig   clang
-um                                allnoconfig   clang
-um                               allyesconfig   clang
-um                                  defconfig   gcc  
-um                             i386_defconfig   gcc  
-um                   randconfig-r001-20230723   gcc  
-um                   randconfig-r002-20230723   gcc  
-um                   randconfig-r004-20230723   gcc  
-um                   randconfig-r012-20230723   clang
-um                   randconfig-r033-20230723   gcc  
-um                           x86_64_defconfig   gcc  
-x86_64                           allyesconfig   gcc  
-x86_64       buildonly-randconfig-r001-20230723   clang
-x86_64       buildonly-randconfig-r002-20230723   clang
-x86_64       buildonly-randconfig-r003-20230723   clang
-x86_64                              defconfig   gcc  
-x86_64                                  kexec   gcc  
-x86_64               randconfig-r004-20230723   clang
-x86_64               randconfig-r022-20230723   gcc  
-x86_64               randconfig-r033-20230723   clang
-x86_64               randconfig-x001-20230723   gcc  
-x86_64               randconfig-x002-20230723   gcc  
-x86_64               randconfig-x003-20230723   gcc  
-x86_64               randconfig-x004-20230723   gcc  
-x86_64               randconfig-x005-20230723   gcc  
-x86_64               randconfig-x006-20230723   gcc  
-x86_64               randconfig-x011-20230723   clang
-x86_64               randconfig-x012-20230723   clang
-x86_64               randconfig-x013-20230723   clang
-x86_64               randconfig-x014-20230723   clang
-x86_64               randconfig-x015-20230723   clang
-x86_64               randconfig-x016-20230723   clang
-x86_64                          rhel-8.3-rust   clang
-x86_64                               rhel-8.3   gcc  
-xtensa               randconfig-r016-20230723   gcc  
-xtensa               randconfig-r022-20230723   gcc  
+Link: https://lore.kernel.org/r/1684045095-31228-1-git-send-email-longli@linuxonhyperv.com
+Signed-off-by: Long Li <longli@microsoft.com>
+Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
+---
+ drivers/infiniband/hw/mana/qp.c               | 5 ++++-
+ drivers/net/ethernet/microsoft/mana/mana_en.c | 5 ++++-
+ include/net/mana/mana.h                       | 4 +++-
+ 3 files changed, 11 insertions(+), 3 deletions(-)
 
+diff --git a/drivers/infiniband/hw/mana/qp.c b/drivers/infiniband/hw/mana/qp.c
+index 54b61930a7fdb..4b3b5b274e849 100644
+--- a/drivers/infiniband/hw/mana/qp.c
++++ b/drivers/infiniband/hw/mana/qp.c
+@@ -13,7 +13,7 @@ static int mana_ib_cfg_vport_steering(struct mana_ib_dev *dev,
+ 				      u8 *rx_hash_key)
+ {
+ 	struct mana_port_context *mpc = netdev_priv(ndev);
+-	struct mana_cfg_rx_steer_req *req = NULL;
++	struct mana_cfg_rx_steer_req_v2 *req;
+ 	struct mana_cfg_rx_steer_resp resp = {};
+ 	mana_handle_t *req_indir_tab;
+ 	struct gdma_context *gc;
+@@ -33,6 +33,8 @@ static int mana_ib_cfg_vport_steering(struct mana_ib_dev *dev,
+ 	mana_gd_init_req_hdr(&req->hdr, MANA_CONFIG_VPORT_RX, req_buf_size,
+ 			     sizeof(resp));
+ 
++	req->hdr.req.msg_version = GDMA_MESSAGE_V2;
++
+ 	req->vport = mpc->port_handle;
+ 	req->rx_enable = 1;
+ 	req->update_default_rxobj = 1;
+@@ -46,6 +48,7 @@ static int mana_ib_cfg_vport_steering(struct mana_ib_dev *dev,
+ 	req->num_indir_entries = MANA_INDIRECT_TABLE_SIZE;
+ 	req->indir_tab_offset = sizeof(*req);
+ 	req->update_indir_tab = true;
++	req->cqe_coalescing_enable = 1;
+ 
+ 	req_indir_tab = (mana_handle_t *)(req + 1);
+ 	/* The ind table passed to the hardware must have
+diff --git a/drivers/net/ethernet/microsoft/mana/mana_en.c b/drivers/net/ethernet/microsoft/mana/mana_en.c
+index d907727c7b7a5..7f4e861e398e6 100644
+--- a/drivers/net/ethernet/microsoft/mana/mana_en.c
++++ b/drivers/net/ethernet/microsoft/mana/mana_en.c
+@@ -972,7 +972,7 @@ static int mana_cfg_vport_steering(struct mana_port_context *apc,
+ 				   bool update_tab)
+ {
+ 	u16 num_entries = MANA_INDIRECT_TABLE_SIZE;
+-	struct mana_cfg_rx_steer_req *req = NULL;
++	struct mana_cfg_rx_steer_req_v2 *req;
+ 	struct mana_cfg_rx_steer_resp resp = {};
+ 	struct net_device *ndev = apc->ndev;
+ 	mana_handle_t *req_indir_tab;
+@@ -987,6 +987,8 @@ static int mana_cfg_vport_steering(struct mana_port_context *apc,
+ 	mana_gd_init_req_hdr(&req->hdr, MANA_CONFIG_VPORT_RX, req_buf_size,
+ 			     sizeof(resp));
+ 
++	req->hdr.req.msg_version = GDMA_MESSAGE_V2;
++
+ 	req->vport = apc->port_handle;
+ 	req->num_indir_entries = num_entries;
+ 	req->indir_tab_offset = sizeof(*req);
+@@ -996,6 +998,7 @@ static int mana_cfg_vport_steering(struct mana_port_context *apc,
+ 	req->update_hashkey = update_key;
+ 	req->update_indir_tab = update_tab;
+ 	req->default_rxobj = apc->default_rxobj;
++	req->cqe_coalescing_enable = 0;
+ 
+ 	if (update_key)
+ 		memcpy(&req->hashkey, apc->hashkey, MANA_HASH_KEY_SIZE);
+diff --git a/include/net/mana/mana.h b/include/net/mana/mana.h
+index 9eef199728454..024ad8ddb27e5 100644
+--- a/include/net/mana/mana.h
++++ b/include/net/mana/mana.h
+@@ -579,7 +579,7 @@ struct mana_fence_rq_resp {
+ }; /* HW DATA */
+ 
+ /* Configure vPort Rx Steering */
+-struct mana_cfg_rx_steer_req {
++struct mana_cfg_rx_steer_req_v2 {
+ 	struct gdma_req_hdr hdr;
+ 	mana_handle_t vport;
+ 	u16 num_indir_entries;
+@@ -592,6 +592,8 @@ struct mana_cfg_rx_steer_req {
+ 	u8 reserved;
+ 	mana_handle_t default_rxobj;
+ 	u8 hashkey[MANA_HASH_KEY_SIZE];
++	u8 cqe_coalescing_enable;
++	u8 reserved2[7];
+ }; /* HW DATA */
+ 
+ struct mana_cfg_rx_steer_resp {
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+2.39.2
+
