@@ -2,49 +2,44 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4FEC175E643
-	for <lists+linux-rdma@lfdr.de>; Mon, 24 Jul 2023 03:16:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2EBBF75E6B4
+	for <lists+linux-rdma@lfdr.de>; Mon, 24 Jul 2023 03:22:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230047AbjGXBQr (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Sun, 23 Jul 2023 21:16:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45936 "EHLO
+        id S230280AbjGXBWS (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Sun, 23 Jul 2023 21:22:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52056 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229983AbjGXBQ2 (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Sun, 23 Jul 2023 21:16:28 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 06ACF171A;
-        Sun, 23 Jul 2023 18:16:03 -0700 (PDT)
+        with ESMTP id S230321AbjGXBWB (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Sun, 23 Jul 2023 21:22:01 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F612173E;
+        Sun, 23 Jul 2023 18:21:39 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 033A960F16;
-        Mon, 24 Jul 2023 01:15:13 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 898D4C433C8;
-        Mon, 24 Jul 2023 01:15:10 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 3AE0A60F00;
+        Mon, 24 Jul 2023 01:20:28 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 12437C433CA;
+        Mon, 24 Jul 2023 01:20:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1690161312;
-        bh=nWokQeMtYUr7Atw3bnVpcMn4iJqjdFJHeSpzyXBlRqY=;
+        s=k20201202; t=1690161627;
+        bh=oKRZ7342iBVlzDE1kn3A2Va46KkBuH4Ca37m0mkZYHU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Zx6rtNkVXlMv7bhs8YY3FKMUbB/pSUND/E4rxCwnz8xtkjVGLqZNvLea/Kl4bVHAo
-         OZ2+FLi106xZ2arh/QJrfPf81E18CwgcY4TRUuhto6OiNS5mc4urVbE9huTWW6zCpP
-         t4pTk7F1hQssw7Rj1lAK8iCluGlfwEzH8m/SFB61U89uGsCs1KxkIcMjFnzs+2DBRX
-         utbuGv2+BDs4rJmbhwx8FetjgOrLwtBByY3J+VbmkM0xs1BUxmZwTxrZe6XBdEcoZj
-         IaTWAuwWw2FZ2oNybka+uvMMEEZhGolhdvS765AnjVIoc0ORFawjuYRWMqoFuHdPJA
-         AlxDyvt9Km1Dg==
+        b=r3N80f17H9LrxGxnmgehqYskaskRRqh7AhjdjYmR96jDKQAJJbCDe4L0ijzga621I
+         YkCcGAviP+8wRegwv62zBYCqZV4b9PgMPuwmj3W/nUgDINCH4UYogQ9231X9kMtAAN
+         M+Pkt5eqVGr8aEYntnHwAQGzL9gAIMcIxVlv8cZWPhK9s63s1/TQoOAyeRXvs6MOQI
+         pICGfBLrqQ9s/ijNGNSz0KXhg8ZswKpFd8Ru/PEAFWO8INjfosw1P2sapXES4z4FkO
+         c50JKeyo/T7evdI5d3jrCqSIa7xFTxD0FNpd37r1KEOm6L30t0EOy4vSJCIW17xmMM
+         VPoOs/male4qA==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Long Li <longli@microsoft.com>, Jason Gunthorpe <jgg@nvidia.com>,
-        Sasha Levin <sashal@kernel.org>, sharmaajay@microsoft.com,
-        kys@microsoft.com, haiyangz@microsoft.com, wei.liu@kernel.org,
-        decui@microsoft.com, davem@davemloft.net, edumazet@google.com,
-        kuba@kernel.org, pabeni@redhat.com, tglx@linutronix.de,
-        alardam@gmail.com, shradhagupta@linux.microsoft.com,
-        linux-rdma@vger.kernel.org, linux-hyperv@vger.kernel.org,
-        netdev@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.4 20/58] RDMA/mana_ib: Use v2 version of cfg_rx_steer_req to enable RX coalescing
-Date:   Sun, 23 Jul 2023 21:12:48 -0400
-Message-Id: <20230724011338.2298062-20-sashal@kernel.org>
+Cc:     Patrisious Haddad <phaddad@nvidia.com>,
+        Leon Romanovsky <leon@kernel.org>,
+        Sasha Levin <sashal@kernel.org>, linux-rdma@vger.kernel.org
+Subject: [PATCH AUTOSEL 6.4 46/58] RDMA/mlx5: Return the firmware result upon destroying QP/RQ
+Date:   Sun, 23 Jul 2023 21:13:14 -0400
+Message-Id: <20230724011338.2298062-46-sashal@kernel.org>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20230724011338.2298062-1-sashal@kernel.org>
 References: <20230724011338.2298062-1-sashal@kernel.org>
@@ -53,119 +48,120 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 X-stable-base: Linux 6.4.5
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Long Li <longli@microsoft.com>
+From: Patrisious Haddad <phaddad@nvidia.com>
 
-[ Upstream commit 2145328515c8fa9b8a9f7889250bc6c032f2a0e6 ]
+[ Upstream commit 22664c06e997087fe37f9ba208008c948571214a ]
 
-With RX coalescing, one CQE entry can be used to indicate multiple packets
-on the receive queue. This saves processing time and PCI bandwidth over
-the CQ.
+Previously when destroying a QP/RQ, the result of the firmware
+destruction function was ignored and upper layers weren't informed
+about the failure.
+Which in turn could lead to various problems since when upper layer
+isn't aware of the failure it continues its operation thinking that the
+related QP/RQ was successfully destroyed while it actually wasn't,
+which could lead to the below kernel WARN.
 
-The MANA Ethernet driver also uses the v2 version of the protocol. It
-doesn't use RX coalescing and its behavior is not changed.
+Currently, we return the correct firmware destruction status to upper
+layers which in case of the RQ would be mlx5_ib_destroy_wq() which
+was already capable of handling RQ destruction failure or in case of
+a QP to destroy_qp_common(), which now would actually warn upon qp
+destruction failure.
 
-Link: https://lore.kernel.org/r/1684045095-31228-1-git-send-email-longli@linuxonhyperv.com
-Signed-off-by: Long Li <longli@microsoft.com>
-Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
+WARNING: CPU: 3 PID: 995 at drivers/infiniband/core/rdma_core.c:940 uverbs_destroy_ufile_hw+0xcb/0xe0 [ib_uverbs]
+Modules linked in: xt_conntrack xt_MASQUERADE nf_conntrack_netlink nfnetlink xt_addrtype iptable_nat nf_nat br_netfilter rpcrdma rdma_ucm ib_iser libiscsi scsi_transport_iscsi rdma_cm ib_umad ib_ipoib iw_cm ib_cm mlx5_ib ib_uverbs ib_core overlay mlx5_core fuse
+CPU: 3 PID: 995 Comm: python3 Not tainted 5.16.0-rc5+ #1
+Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS rel-1.13.0-0-gf21b5a4aeb02-prebuilt.qemu.org 04/01/2014
+RIP: 0010:uverbs_destroy_ufile_hw+0xcb/0xe0 [ib_uverbs]
+Code: 41 5c 41 5d 41 5e e9 44 34 f0 e0 48 89 df e8 4c 77 ff ff 49 8b 86 10 01 00 00 48 85 c0 74 a1 4c 89 e7 ff d0 eb 9a 0f 0b eb c1 <0f> 0b be 04 00 00 00 48 89 df e8 b6 f6 ff ff e9 75 ff ff ff 90 0f
+RSP: 0018:ffff8881533e3e78 EFLAGS: 00010287
+RAX: ffff88811b2cf3e0 RBX: ffff888106209700 RCX: 0000000000000000
+RDX: ffff888106209780 RSI: ffff8881533e3d30 RDI: ffff888109b101a0
+RBP: 0000000000000001 R08: ffff888127cb381c R09: 0de9890000000009
+R10: ffff888127cb3800 R11: 0000000000000000 R12: ffff888106209780
+R13: ffff888106209750 R14: ffff888100f20660 R15: 0000000000000000
+FS:  00007f8be353b740(0000) GS:ffff88852c980000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007f8bd5b117c0 CR3: 000000012cd8a004 CR4: 0000000000370ea0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ <TASK>
+ ib_uverbs_close+0x1a/0x90 [ib_uverbs]
+ __fput+0x82/0x230
+ task_work_run+0x59/0x90
+ exit_to_user_mode_prepare+0x138/0x140
+ syscall_exit_to_user_mode+0x1d/0x50
+ ? __x64_sys_close+0xe/0x40
+ do_syscall_64+0x4a/0x90
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
+RIP: 0033:0x7f8be3ae0abb
+Code: 03 00 00 00 0f 05 48 3d 00 f0 ff ff 77 41 c3 48 83 ec 18 89 7c 24 0c e8 83 43 f9 ff 8b 7c 24 0c 41 89 c0 b8 03 00 00 00 0f 05 <48> 3d 00 f0 ff ff 77 35 44 89 c7 89 44 24 0c e8 c1 43 f9 ff 8b 44
+RSP: 002b:00007ffdb51909c0 EFLAGS: 00000293 ORIG_RAX: 0000000000000003
+RAX: 0000000000000000 RBX: 0000557bb7f7c020 RCX: 00007f8be3ae0abb
+RDX: 0000557bb7c74010 RSI: 0000557bb7f14ca0 RDI: 0000000000000005
+RBP: 0000557bb7fbd598 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000293 R12: 0000557bb7fbd5b8
+R13: 0000557bb7fbd5a8 R14: 0000000000001000 R15: 0000557bb7f7c020
+ </TASK>
+
+Signed-off-by: Patrisious Haddad <phaddad@nvidia.com>
+Link: https://lore.kernel.org/r/c6df677f931d18090bafbe7f7dbb9524047b7d9b.1685953497.git.leon@kernel.org
+Signed-off-by: Leon Romanovsky <leon@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/infiniband/hw/mana/qp.c               | 5 ++++-
- drivers/net/ethernet/microsoft/mana/mana_en.c | 5 ++++-
- include/net/mana/mana.h                       | 4 +++-
- 3 files changed, 11 insertions(+), 3 deletions(-)
+ drivers/infiniband/hw/mlx5/qpc.c | 10 ++++------
+ 1 file changed, 4 insertions(+), 6 deletions(-)
 
-diff --git a/drivers/infiniband/hw/mana/qp.c b/drivers/infiniband/hw/mana/qp.c
-index 54b61930a7fdb..4b3b5b274e849 100644
---- a/drivers/infiniband/hw/mana/qp.c
-+++ b/drivers/infiniband/hw/mana/qp.c
-@@ -13,7 +13,7 @@ static int mana_ib_cfg_vport_steering(struct mana_ib_dev *dev,
- 				      u8 *rx_hash_key)
+diff --git a/drivers/infiniband/hw/mlx5/qpc.c b/drivers/infiniband/hw/mlx5/qpc.c
+index bae0334d6e7f1..aec011557b4a7 100644
+--- a/drivers/infiniband/hw/mlx5/qpc.c
++++ b/drivers/infiniband/hw/mlx5/qpc.c
+@@ -298,8 +298,7 @@ int mlx5_core_destroy_qp(struct mlx5_ib_dev *dev, struct mlx5_core_qp *qp)
+ 	MLX5_SET(destroy_qp_in, in, opcode, MLX5_CMD_OP_DESTROY_QP);
+ 	MLX5_SET(destroy_qp_in, in, qpn, qp->qpn);
+ 	MLX5_SET(destroy_qp_in, in, uid, qp->uid);
+-	mlx5_cmd_exec_in(dev->mdev, destroy_qp, in);
+-	return 0;
++	return mlx5_cmd_exec_in(dev->mdev, destroy_qp, in);
+ }
+ 
+ int mlx5_core_set_delay_drop(struct mlx5_ib_dev *dev,
+@@ -551,14 +550,14 @@ int mlx5_core_xrcd_dealloc(struct mlx5_ib_dev *dev, u32 xrcdn)
+ 	return mlx5_cmd_exec_in(dev->mdev, dealloc_xrcd, in);
+ }
+ 
+-static void destroy_rq_tracked(struct mlx5_ib_dev *dev, u32 rqn, u16 uid)
++static int destroy_rq_tracked(struct mlx5_ib_dev *dev, u32 rqn, u16 uid)
  {
- 	struct mana_port_context *mpc = netdev_priv(ndev);
--	struct mana_cfg_rx_steer_req *req = NULL;
-+	struct mana_cfg_rx_steer_req_v2 *req;
- 	struct mana_cfg_rx_steer_resp resp = {};
- 	mana_handle_t *req_indir_tab;
- 	struct gdma_context *gc;
-@@ -33,6 +33,8 @@ static int mana_ib_cfg_vport_steering(struct mana_ib_dev *dev,
- 	mana_gd_init_req_hdr(&req->hdr, MANA_CONFIG_VPORT_RX, req_buf_size,
- 			     sizeof(resp));
+ 	u32 in[MLX5_ST_SZ_DW(destroy_rq_in)] = {};
  
-+	req->hdr.req.msg_version = GDMA_MESSAGE_V2;
-+
- 	req->vport = mpc->port_handle;
- 	req->rx_enable = 1;
- 	req->update_default_rxobj = 1;
-@@ -46,6 +48,7 @@ static int mana_ib_cfg_vport_steering(struct mana_ib_dev *dev,
- 	req->num_indir_entries = MANA_INDIRECT_TABLE_SIZE;
- 	req->indir_tab_offset = sizeof(*req);
- 	req->update_indir_tab = true;
-+	req->cqe_coalescing_enable = 1;
+ 	MLX5_SET(destroy_rq_in, in, opcode, MLX5_CMD_OP_DESTROY_RQ);
+ 	MLX5_SET(destroy_rq_in, in, rqn, rqn);
+ 	MLX5_SET(destroy_rq_in, in, uid, uid);
+-	mlx5_cmd_exec_in(dev->mdev, destroy_rq, in);
++	return mlx5_cmd_exec_in(dev->mdev, destroy_rq, in);
+ }
  
- 	req_indir_tab = (mana_handle_t *)(req + 1);
- 	/* The ind table passed to the hardware must have
-diff --git a/drivers/net/ethernet/microsoft/mana/mana_en.c b/drivers/net/ethernet/microsoft/mana/mana_en.c
-index d907727c7b7a5..7f4e861e398e6 100644
---- a/drivers/net/ethernet/microsoft/mana/mana_en.c
-+++ b/drivers/net/ethernet/microsoft/mana/mana_en.c
-@@ -972,7 +972,7 @@ static int mana_cfg_vport_steering(struct mana_port_context *apc,
- 				   bool update_tab)
+ int mlx5_core_create_rq_tracked(struct mlx5_ib_dev *dev, u32 *in, int inlen,
+@@ -589,8 +588,7 @@ int mlx5_core_destroy_rq_tracked(struct mlx5_ib_dev *dev,
+ 				 struct mlx5_core_qp *rq)
  {
- 	u16 num_entries = MANA_INDIRECT_TABLE_SIZE;
--	struct mana_cfg_rx_steer_req *req = NULL;
-+	struct mana_cfg_rx_steer_req_v2 *req;
- 	struct mana_cfg_rx_steer_resp resp = {};
- 	struct net_device *ndev = apc->ndev;
- 	mana_handle_t *req_indir_tab;
-@@ -987,6 +987,8 @@ static int mana_cfg_vport_steering(struct mana_port_context *apc,
- 	mana_gd_init_req_hdr(&req->hdr, MANA_CONFIG_VPORT_RX, req_buf_size,
- 			     sizeof(resp));
+ 	destroy_resource_common(dev, rq);
+-	destroy_rq_tracked(dev, rq->qpn, rq->uid);
+-	return 0;
++	return destroy_rq_tracked(dev, rq->qpn, rq->uid);
+ }
  
-+	req->hdr.req.msg_version = GDMA_MESSAGE_V2;
-+
- 	req->vport = apc->port_handle;
- 	req->num_indir_entries = num_entries;
- 	req->indir_tab_offset = sizeof(*req);
-@@ -996,6 +998,7 @@ static int mana_cfg_vport_steering(struct mana_port_context *apc,
- 	req->update_hashkey = update_key;
- 	req->update_indir_tab = update_tab;
- 	req->default_rxobj = apc->default_rxobj;
-+	req->cqe_coalescing_enable = 0;
- 
- 	if (update_key)
- 		memcpy(&req->hashkey, apc->hashkey, MANA_HASH_KEY_SIZE);
-diff --git a/include/net/mana/mana.h b/include/net/mana/mana.h
-index 9eef199728454..024ad8ddb27e5 100644
---- a/include/net/mana/mana.h
-+++ b/include/net/mana/mana.h
-@@ -579,7 +579,7 @@ struct mana_fence_rq_resp {
- }; /* HW DATA */
- 
- /* Configure vPort Rx Steering */
--struct mana_cfg_rx_steer_req {
-+struct mana_cfg_rx_steer_req_v2 {
- 	struct gdma_req_hdr hdr;
- 	mana_handle_t vport;
- 	u16 num_indir_entries;
-@@ -592,6 +592,8 @@ struct mana_cfg_rx_steer_req {
- 	u8 reserved;
- 	mana_handle_t default_rxobj;
- 	u8 hashkey[MANA_HASH_KEY_SIZE];
-+	u8 cqe_coalescing_enable;
-+	u8 reserved2[7];
- }; /* HW DATA */
- 
- struct mana_cfg_rx_steer_resp {
+ static void destroy_sq_tracked(struct mlx5_ib_dev *dev, u32 sqn, u16 uid)
 -- 
 2.39.2
 
