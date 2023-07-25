@@ -2,92 +2,117 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 565A0762194
-	for <lists+linux-rdma@lfdr.de>; Tue, 25 Jul 2023 20:39:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CE9E87621D1
+	for <lists+linux-rdma@lfdr.de>; Tue, 25 Jul 2023 20:55:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230040AbjGYSjb (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 25 Jul 2023 14:39:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44322 "EHLO
+        id S229780AbjGYSzU (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 25 Jul 2023 14:55:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49642 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229995AbjGYSja (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 25 Jul 2023 14:39:30 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6FCD9A3;
-        Tue, 25 Jul 2023 11:39:29 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 03AB06181E;
-        Tue, 25 Jul 2023 18:39:29 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B7B83C433C7;
-        Tue, 25 Jul 2023 18:39:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1690310368;
-        bh=3rExnCDOFyq/kHOV6hRNpRACHWdns6zbXSMexvXr6WU=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=NlD7DfZdeBR/OmQJQtWTpJ0sYKTrJAi0OXKk8XM40ddHF2Xn2GGnUtphMzPP8S6P3
-         o1nVG1Gu7ka2cDz2Y2x2NftHFZVrMXw+/zHZUqdJmVStsomv3e2ENbdfDgpdQPsUeF
-         icn/DfG4IJluteYaFQJWjWGHeKTmBUSD9F9ywxU+exCeKQK0VawRFT0Qi3Jf8/jANf
-         /BihxJkXqjxbuGKoxLSzM5CliQDy+cBO9XO5B0gnsCqMqTUpNdvL1KUqHQxVce59ro
-         nvJymTnRQ+v6MmOqICys8/jzdwGRAzMYZnyJukUxQ0pRjinbF0s/8GShp9tjcmqbKk
-         gFGUUfEXrz1IA==
-Date:   Tue, 25 Jul 2023 21:39:24 +0300
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Jakub Kicinski <kuba@kernel.org>
-Cc:     Lin Ma <linma@zju.edu.cn>, jgg@ziepe.ca, markzhang@nvidia.com,
-        michaelgur@nvidia.com, ohartoov@nvidia.com,
-        chenzhongjin@huawei.com, yuancan@huawei.com,
-        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v1] RDMA/nldev: Add length check for
- IFLA_BOND_ARP_IP_TARGET parsing
-Message-ID: <20230725183924.GS11388@unreal>
-References: <20230723074504.3706691-1-linma@zju.edu.cn>
- <20230724174707.GB11388@unreal>
- <3c0760b5.e264b.1898a6368f8.Coremail.linma@zju.edu.cn>
- <20230725052557.GI11388@unreal>
- <20230725101405.4cd51059@kernel.org>
+        with ESMTP id S229459AbjGYSzT (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 25 Jul 2023 14:55:19 -0400
+Received: from mail-wr1-x430.google.com (mail-wr1-x430.google.com [IPv6:2a00:1450:4864:20::430])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 63EF2121;
+        Tue, 25 Jul 2023 11:55:18 -0700 (PDT)
+Received: by mail-wr1-x430.google.com with SMTP id ffacd0b85a97d-3144bf65ce9so4743451f8f.3;
+        Tue, 25 Jul 2023 11:55:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1690311317; x=1690916117;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=ID2THAA/NbYE8R23svw1NZ1DXmlvllOYuUgG/DSAang=;
+        b=NpAdRJOK/nGc08rBOaPSeoHJDewfhcQojxFbtmtWPu8I7vOcjH7UoUsxIZzImb1M8f
+         hkZH/X6LIPi31fqxN/mBxBAQ+SkMx64bYGoorbyJa2KrST8IM9bWb6ORrg/hBLuj7Fhr
+         kdhgH/mrMJsuFnsDylrN9t44TvOa26zB9qT+7Q6+dDQC+UoA+pxr8nqNfZXIKhxPS7/S
+         /66tWLyeLceML5d77m7XqXWJIxSpUlZZrA0kp1zZ1U0t65LrTRAi6tJ9qXqkAr8TU/8J
+         fdzBO5jtBcBqAm3eWrduuDsowJQ7a0VoMhUmLMK/Deue2Lb184rQAH+sR6HXy7laSy9+
+         PHFQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690311317; x=1690916117;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=ID2THAA/NbYE8R23svw1NZ1DXmlvllOYuUgG/DSAang=;
+        b=FlKpv/ofvC6y5c6WhfmVC0RCmLCWyh7/+ApEosOd0feQJHLMWzlns0ptmSMib4YVQ7
+         niLtCbtyAYKfW0aIIdOgWANi5Cm3AzDUPxDYnhZ/f0EHXDUv9BxRLMo6DDGFMLnK5nxe
+         fWgn8wNlEmaWXPLUOnVFuziwcAak+j3/Y+HT/90wAn/3kS3YS7TOypkEgNBYV3NDAKGw
+         OdWy+ykxc68yQV/451CnKDFz6DBUttTFXKgAp8zvSuOy/nee2NLjDvGTehrAogSig25J
+         S8cbvOnJgKqSZT/D40OGdwoO86ymz+nNghreiPhhgZvlUgf5kOuVdgOzCJA5od/Nmapg
+         G3FQ==
+X-Gm-Message-State: ABy/qLa2Xp4PxWLdMi4Fmb3kEEKeefVEf/ExFrMzwF/cKjft9eKYprUJ
+        c96wsffIz9AN8yH25XhaV4Q=
+X-Google-Smtp-Source: APBJJlF82vcbC5ug+0jWh48cqy9JDEpPZbebIZMd5AVDHKJVeKNzpC3uDB46oI5jR19N7ydWpjcumw==
+X-Received: by 2002:a5d:6783:0:b0:316:f25f:eb4 with SMTP id v3-20020a5d6783000000b00316f25f0eb4mr8544897wru.60.1690311316599;
+        Tue, 25 Jul 2023 11:55:16 -0700 (PDT)
+Received: from [192.168.0.103] ([77.126.7.132])
+        by smtp.gmail.com with ESMTPSA id v5-20020adfebc5000000b0031417b0d338sm17268946wrn.87.2023.07.25.11.55.15
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 25 Jul 2023 11:55:16 -0700 (PDT)
+Message-ID: <f0190c1c-3b2c-ed8d-b0e6-8176f756630a@gmail.com>
+Date:   Tue, 25 Jul 2023 21:55:14 +0300
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230725101405.4cd51059@kernel.org>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH net-next] net/mlx4: clean up a type issue
+Content-Language: en-US
+To:     Dan Carpenter <dan.carpenter@linaro.org>,
+        Tariq Toukan <tariqt@nvidia.com>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>, netdev@vger.kernel.org,
+        linux-rdma@vger.kernel.org, kernel-janitors@vger.kernel.org
+References: <52d0814a-7287-4160-94b5-ac7939ac61c6@moroto.mountain>
+From:   Tariq Toukan <ttoukan.linux@gmail.com>
+In-Reply-To: <52d0814a-7287-4160-94b5-ac7939ac61c6@moroto.mountain>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Tue, Jul 25, 2023 at 10:14:05AM -0700, Jakub Kicinski wrote:
-> On Tue, 25 Jul 2023 08:25:57 +0300 Leon Romanovsky wrote:
-> > > Yeah I have seen that. Just as Jakub said, empty netlink attributes are valid 
-> > > (they are viewed as flag). The point is that different attribute has different
-> > > length requirement. For this specific code, the RDMA_NLDEV_ATTR_STAT_HWCOUNTERS
-> > > attribute is a nested one whose inner attributes should be NLA_U32. But as you
-> > > can see in variable nldev_policy, the description does not use nested policy to
-> > > enfore that, which results in the bug discussed in my commit message.
-> > > 
-> > >  [RDMA_NLDEV_ATTR_STAT_HWCOUNTERS]       = { .type = NLA_NESTED },
-> > > 
-> > > The elegant fix could be add the nested policy description to nldev_policy while
-> > > this is toublesome as no existing nla_attr has been given to this nested nlattr.
-> > > Hence, add the length check is the simplest solution and you can see such nla_len
-> > > check code all over the kernel.  
-> > 
-> > Right, and this is what bothers me.
-> > 
-> > I would more than happy to change nla_for_each_nested() to be something
-> > like nla_for_each_nested_type(...., sizeof(u32)), which will skip empty
-> > lines, for code which can't have them.
+
+
+On 25/07/2023 8:39, Dan Carpenter wrote:
+> These functions returns type bool, not pointers, so return false instead
+> of NULL.
 > 
-> In general the idea of auto-skipping stuff kernel doesn't recognize
-> is a bit old school. Better direction would be extending the policy
-> validation to cover use cases for such loops.
+> Signed-off-by: Dan Carpenter <dan.carpenter@linaro.org>
+> ---
+> Not a bug.  Targetting net-next.
+> 
+>   drivers/net/ethernet/mellanox/mlx4/mcg.c | 4 ++--
+>   1 file changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/net/ethernet/mellanox/mlx4/mcg.c b/drivers/net/ethernet/mellanox/mlx4/mcg.c
+> index f1716a83a4d3..24d0c7c46878 100644
+> --- a/drivers/net/ethernet/mellanox/mlx4/mcg.c
+> +++ b/drivers/net/ethernet/mellanox/mlx4/mcg.c
+> @@ -294,7 +294,7 @@ static bool check_duplicate_entry(struct mlx4_dev *dev, u8 port,
+>   	struct mlx4_promisc_qp *dqp, *tmp_dqp;
+>   
+>   	if (port < 1 || port > dev->caps.num_ports)
+> -		return NULL;
+> +		return false;
+>   
+>   	s_steer = &mlx4_priv(dev)->steer[port - 1];
+>   
+> @@ -375,7 +375,7 @@ static bool can_remove_steering_entry(struct mlx4_dev *dev, u8 port,
+>   	bool ret = false;
+>   
+>   	if (port < 1 || port > dev->caps.num_ports)
+> -		return NULL;
+> +		return false;
+>   
+>   	s_steer = &mlx4_priv(dev)->steer[port - 1];
+>   
 
-I'm all in for any solution which will help for average developer to write
-netlink code without mistakes.
-
-Thanks
+Thanks for your patch.
+Reviewed-by: Tariq Toukan <tariqt@nvidia.com>
