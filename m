@@ -2,78 +2,81 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C0B4A763B86
-	for <lists+linux-rdma@lfdr.de>; Wed, 26 Jul 2023 17:47:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C03B763B95
+	for <lists+linux-rdma@lfdr.de>; Wed, 26 Jul 2023 17:50:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234083AbjGZPrr (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 26 Jul 2023 11:47:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49714 "EHLO
+        id S231673AbjGZPuy (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 26 Jul 2023 11:50:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51376 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231176AbjGZPrq (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 26 Jul 2023 11:47:46 -0400
+        with ESMTP id S230459AbjGZPux (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 26 Jul 2023 11:50:53 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 42F63193;
-        Wed, 26 Jul 2023 08:47:45 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9AB5193;
+        Wed, 26 Jul 2023 08:50:52 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id D579161B91;
-        Wed, 26 Jul 2023 15:47:44 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1D1C6C433C8;
-        Wed, 26 Jul 2023 15:47:43 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 5775D61B6C;
+        Wed, 26 Jul 2023 15:50:52 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 85D9AC433C8;
+        Wed, 26 Jul 2023 15:50:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1690386464;
-        bh=ntzUm32RuTuI9DzAzwAs39wscUDZsYJF5RGGxmCI+/k=;
+        s=k20201202; t=1690386651;
+        bh=FBVPvVza7HG5I1VIoHJB6h+yX1R7w7DkdilDfqNT6DU=;
         h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=RzpKJzruvMIC6e+h2wdEZ8qON1ieukXJk9w17kGJCOFFhOSuDkuhkgAjiLEpp9ifj
-         mrc1myf+Y48t+Jb4jFaAz85JzvoY2huic7EW0fpoQguPpDQPFtrTSV1ghUlipQMaQq
-         9RNJiikJiqwV0/LpAsTq0sQhSAAZlQseAlot147AlZ0Onm8a8NFL6ujdtNciaRzOBa
-         z3TtnqnGYqS+7OBw1t5LYs2F7ztrg3Fs1v1aujCnJwNfYUL8UG1sEEOx+vGHlbGl1d
-         xNFWTAZVcXM9GzsKbiYWh31EUWCa5tm1DlUx4shA55XFcYDXHbwZorPr1TRaJ9tFpb
-         Nc5fstcERHKZw==
-Date:   Wed, 26 Jul 2023 08:47:42 -0700
+        b=maYVcK7N/Vm7jnhc68l/McAk7CYwSeld6XBM85yy8GktdXapsIj0lVxwy91fEnsNM
+         qUHskpQW3xDpoahJa5Ia4h6ay96WSBm/MpB2E3Lwna0++qtXTylHp0/Fk7/om4dIXZ
+         5cDAEF+kcyCYwPw4Czm4VyAnVtOOkJ/lcJLYZhEEevuujEBllPDWuf8uuXmjareC3H
+         b7tO2FiRCA4uc9GitfhSc1qbPSIV0rNdyc2IfN9/vZauIQJctXvxD4/KI2jL1TRKcb
+         P+TuLrNc3bw6tMDq/GipoSv4zIAoTXgbZIHE4bsLnWqj70kdEX5PbT+ULYI9M4II26
+         P0CQC5tiJcQsA==
+Date:   Wed, 26 Jul 2023 08:50:49 -0700
 From:   Jakub Kicinski <kuba@kernel.org>
-To:     Alexander Lobakin <aleksander.lobakin@intel.com>
-Cc:     Ilias Apalodimas <ilias.apalodimas@linaro.org>,
-        Yunsheng Lin <linyunsheng@huawei.com>, <davem@davemloft.net>,
-        <pabeni@redhat.com>, <netdev@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, Eric Dumazet <edumazet@google.com>,
+To:     Alexander Duyck <alexander.duyck@gmail.com>
+Cc:     Yunsheng Lin <linyunsheng@huawei.com>,
+        Alexander Lobakin <aleksander.lobakin@intel.com>,
+        davem@davemloft.net, pabeni@redhat.com, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Eric Dumazet <edumazet@google.com>,
         Wei Fang <wei.fang@nxp.com>,
         Shenwei Wang <shenwei.wang@nxp.com>,
         Clark Wang <xiaoning.wang@nxp.com>,
         NXP Linux Team <linux-imx@nxp.com>,
         Sunil Goutham <sgoutham@marvell.com>,
         Geetha sowjanya <gakula@marvell.com>,
-        "Subbaraya Sundeep" <sbhatta@marvell.com>,
+        Subbaraya Sundeep <sbhatta@marvell.com>,
         hariprasad <hkelam@marvell.com>,
-        "Saeed Mahameed" <saeedm@nvidia.com>,
+        Saeed Mahameed <saeedm@nvidia.com>,
         Leon Romanovsky <leon@kernel.org>,
-        "Alexei Starovoitov" <ast@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        "Jesper Dangaard Brouer" <hawk@kernel.org>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
         John Fastabend <john.fastabend@gmail.com>,
         Felix Fietkau <nbd@nbd.name>,
         Lorenzo Bianconi <lorenzo@kernel.org>,
-        "Ryder Lee" <ryder.lee@mediatek.com>,
+        Ryder Lee <ryder.lee@mediatek.com>,
         Shayne Chen <shayne.chen@mediatek.com>,
-        "Sean Wang" <sean.wang@mediatek.com>,
+        Sean Wang <sean.wang@mediatek.com>,
         Kalle Valo <kvalo@kernel.org>,
-        "Matthias Brugger" <matthias.bgg@gmail.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
         AngeloGioacchino Del Regno 
         <angelogioacchino.delregno@collabora.com>,
-        <linux-rdma@vger.kernel.org>, <bpf@vger.kernel.org>,
-        <linux-wireless@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-mediatek@lists.infradead.org>
+        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
+        linux-rdma@vger.kernel.org, bpf@vger.kernel.org,
+        linux-wireless@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org
 Subject: Re: [PATCH net-next v2] page_pool: split types and declarations
  from page_pool.h
-Message-ID: <20230726084742.7dc67c79@kernel.org>
-In-Reply-To: <a5d91458-d494-6000-7607-0f17c4461b6e@intel.com>
+Message-ID: <20230726085049.36b527a4@kernel.org>
+In-Reply-To: <CAKgT0UfL4ri-o7WifeewpezGQY1UQKwcBEUSSY80DyKoE8g-0w@mail.gmail.com>
 References: <20230725131258.31306-1-linyunsheng@huawei.com>
-        <ZL/fVF7WetuLgB0l@hera>
-        <20230725141223.19c1c34c@kernel.org>
-        <a5d91458-d494-6000-7607-0f17c4461b6e@intel.com>
+        <94272ffed7636c4c92fcc73ccfc15236dd8e47dc.camel@gmail.com>
+        <16b4ab57-dfb0-2c1d-9be1-57da30dff3c3@intel.com>
+        <22af47fe-1347-3e32-70bf-745d833e88b9@huawei.com>
+        <CAKgT0UcU4RJj0SMQiVM8oZu86ZzK+5NjzZ2ELg_yWZyWGr04PA@mail.gmail.com>
+        <CAKgT0UfL4ri-o7WifeewpezGQY1UQKwcBEUSSY80DyKoE8g-0w@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
@@ -87,18 +90,29 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Wed, 26 Jul 2023 12:48:05 +0200 Alexander Lobakin wrote:
-> > I prefer the more systematic approach of creating a separate types.h
-> > file, so I don't have to keep chasing people or cleaning up the include
-> > hell myself. I think it should be adopted more widely going forward,
-> > it's not just about the page pool.  
-> 
-> I have this patch reworked to introduce
-> include/net/page_pool/{types,helpers}.h in my tree, maybe someone could
-> take a quick look[0] and say if this works while I'm preparing the next
-> version for sending? Not the most MLish way, I know :s
-> 
-> [0]
-> https://github.com/alobakin/linux/commit/19741ee072c32eb1d30033cd4fcb236d1c00bfbf
+On Wed, 26 Jul 2023 08:39:43 -0700 Alexander Duyck wrote:
+> > > I suppose the above suggestion is about splitting or naming by
+> > > the user as the discussed in the below thread?
+> > > https://lore.kernel.org/all/20230721182942.0ca57663@kernel.org/  
+> >
+> > Actually my suggestion is more about defining boundaries for what is
+> > meant to be used by drivers and what isn't. The stuff you could keep
+> > in net/core/page_pool.h would only be usable by the files in net/core/
+> > whereas the stuff you are keeping in the include/net/ folder is usable
+> > by drivers. It is meant to prevent things like what you were
+> > complaining about with the Mellanox drivers making use of interfaces
+> > you didn't intend them to use.
 
-LGTM!
+FWIW moving stuff which is only supposed to be used by core (xdp, skb,
+etc.) to net/core/page_pool.h is a good idea, too. 
+Seems a bit independent from splitting the main header, tho.
+
+> > So for example you could pull out functions like
+> > page_pool_return_skb_page, page_pool_use_xdp_mem,
+> > page_pool_update_nid, and the like and look at relocating them into
+> > the net/core/ folder and thereby prevent abuse of those functions by
+> > drivers.  
+> 
+> Okay, maybe not page_pool_update_nid. It looks like that is already in
+> use in the form of page_pool_nid_changed by drivers..
+
