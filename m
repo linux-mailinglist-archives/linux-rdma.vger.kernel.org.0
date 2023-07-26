@@ -2,140 +2,82 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DA0CB763E20
-	for <lists+linux-rdma@lfdr.de>; Wed, 26 Jul 2023 20:05:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CF341764034
+	for <lists+linux-rdma@lfdr.de>; Wed, 26 Jul 2023 22:08:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231351AbjGZSFu (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 26 Jul 2023 14:05:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50300 "EHLO
+        id S230430AbjGZUI2 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 26 Jul 2023 16:08:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47870 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229949AbjGZSFu (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 26 Jul 2023 14:05:50 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 520801FF5;
-        Wed, 26 Jul 2023 11:05:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Sender:In-Reply-To:Content-Type:
-        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=fUdSbyMasri59LIxUKfjb5lu5YYJqsniF6+eeDt322Q=; b=DFkN7+kcpB7N73mFnnGHkptntF
-        MyxL56OIeohRI14G30XsmKj0s3vmZhE/AD7bJh8knddWtfQsfV3VeSz0D9bcumOq1hsMyngu9HgYQ
-        GL/niposaUkJBmS7Pkw5Kn0Tx6qPabY8YIQTrb0ue7SCCbqteV8F2Uy7/HHgVXPIUQuy4nFAONt9a
-        RhZRWNladuq/dGYVRt/HbTKLGLUVnfyYOcp8FtDkB6mlEwOApP1ObsVm+CPTD2MrzCtVc7WVlQ24w
-        D/eCeHDxQ3fB3lMWtwityCNHoHCkGCgolBBRmBQ4kjPm4WwOB92HuOuwvip8ulOpRb0+WJRPIgmvD
-        NKK9pRhA==;
-Received: from mcgrof by bombadil.infradead.org with local (Exim 4.96 #2 (Red Hat Linux))
-        id 1qOit2-00BF7a-29;
-        Wed, 26 Jul 2023 18:05:24 +0000
-Date:   Wed, 26 Jul 2023 11:05:24 -0700
-From:   Luis Chamberlain <mcgrof@kernel.org>
-To:     Joel Granados <j.granados@samsung.com>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        David Ahern <dsahern@kernel.org>,
+        with ESMTP id S229572AbjGZUI1 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 26 Jul 2023 16:08:27 -0400
+Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id DB16A2701;
+        Wed, 26 Jul 2023 13:08:26 -0700 (PDT)
+Received: by linux.microsoft.com (Postfix, from userid 1174)
+        id 4602A2383123; Wed, 26 Jul 2023 13:08:26 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 4602A2383123
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linuxonhyperv.com;
+        s=default; t=1690402106;
+        bh=BGDglPPcOLPbs33vvdiQMlsE2V42+tWMX+3izbX4MkE=;
+        h=From:To:Cc:Subject:Date:From;
+        b=l6eMBgBeQLt5oYEcLfTwlZuV1sgk/sCELW/55h1Q5PuLYHBzHHNDflPY2QUIlVuT5
+         BYvvF9sHsQL0xenbwyzp475yFMIXWq4LVgWfrIokyBWVj6uddE/clth5m+OZRFhksF
+         Ca2EpTCv/uH4OAfu+rH1eGBLHPdHRn4rIle0kr4U=
+From:   sharmaajay@linuxonhyperv.com
+To:     Jason Gunthorpe <jgg@ziepe.ca>, Leon Romanovsky <leon@kernel.org>,
+        Dexuan Cui <decui@microsoft.com>, Wei Liu <wei.liu@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
         Eric Dumazet <edumazet@google.com>,
         Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Alexander Aring <alex.aring@gmail.com>,
-        Stefan Schmidt <stefan@datenfreihafen.org>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Steffen Klassert <steffen.klassert@secunet.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        Matthieu Baerts <matthieu.baerts@tessares.net>,
-        Mat Martineau <martineau@kernel.org>,
-        Santosh Shilimkar <santosh.shilimkar@oracle.com>,
-        Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>,
-        Xin Long <lucien.xin@gmail.com>,
-        Karsten Graul <kgraul@linux.ibm.com>,
-        Wenjia Zhang <wenjia@linux.ibm.com>,
-        Jan Karcher <jaka@linux.ibm.com>, willy@infradead.org,
-        keescook@chromium.org, josh@joshtriplett.org,
-        "D. Wythe" <alibuda@linux.alibaba.com>,
-        Tony Lu <tonylu@linux.alibaba.com>,
-        Wen Gu <guwen@linux.alibaba.com>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-wpan@vger.kernel.org,
-        mptcp@lists.linux.dev, linux-rdma@vger.kernel.org,
-        rds-devel@oss.oracle.com, linux-sctp@vger.kernel.org,
-        linux-s390@vger.kernel.org
-Subject: Re: [PATCH 11/14] networking: Update to register_net_sysctl_sz
-Message-ID: <ZMFgZHsnhrXNIQ53@bombadil.infradead.org>
-References: <20230726140635.2059334-1-j.granados@samsung.com>
- <CGME20230726140709eucas1p2033d64aec69a1962fd7e64c57ad60adc@eucas1p2.samsung.com>
- <20230726140635.2059334-12-j.granados@samsung.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230726140635.2059334-12-j.granados@samsung.com>
-Sender: Luis Chamberlain <mcgrof@infradead.org>
-X-Spam-Status: No, score=-4.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+        Paolo Abeni <pabeni@redhat.com>
+Cc:     linux-rdma@vger.kernel.org, linux-hyperv@vger.kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Ajay Sharma <sharmaajay@microsoft.com>
+Subject: [Patch v3 0/4] RDMA/mana_ib Read Capabilities
+Date:   Wed, 26 Jul 2023 13:08:20 -0700
+Message-Id: <1690402104-29518-1-git-send-email-sharmaajay@linuxonhyperv.com>
+X-Mailer: git-send-email 1.8.3.1
+X-Spam-Status: No, score=-11.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_MED,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED,USER_IN_DEF_SPF_WL autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Wed, Jul 26, 2023 at 04:06:31PM +0200, Joel Granados wrote:
-> This is part of the effort to remove the sentinel (last empty) element
-> from the ctl_table arrays. We update to the new function and pass it the
-> array size. Care is taken to mirror the NULL assignments with a size of
-> zero (for the unprivileged users). An additional size function was added
-> to the following files in order to calculate the size of an array that
-> is defined in another file:
->     include/net/ipv6.h
->     net/ipv6/icmp.c
->     net/ipv6/route.c
->     net/ipv6/sysctl_net_ipv6.c
-> 
+From: Ajay Sharma <sharmaajay@microsoft.com>
 
-Same here as with the other patches, the "why" and size impact should go here.
-I'll skip mentioning that in the other patches.
+This patch series introduces some cleanup changes and
+resource control changes. The mana and mana_ib devices
+are used at common places so a consistent naming is
+introduced. Adapter object container to have a common
+point of object release for resources and query the
+management software to prevent resource overflow.
+It also introduces async channel for management to
+notify the clients in case of errors/info.
 
-> diff --git a/net/mpls/af_mpls.c b/net/mpls/af_mpls.c
-> index bf6e81d56263..5bad14b3c71e 100644
-> --- a/net/mpls/af_mpls.c
-> +++ b/net/mpls/af_mpls.c
-> @@ -1396,6 +1396,40 @@ static const struct ctl_table mpls_dev_table[] = {
->  	{ }
->  };
->  
-> +static int mpls_platform_labels(struct ctl_table *table, int write,
-> +				void *buffer, size_t *lenp, loff_t *ppos);
-> +#define MPLS_NS_SYSCTL_OFFSET(field)		\
-> +	(&((struct net *)0)->field)
-> +
-> +static const struct ctl_table mpls_table[] = {
-> +	{
-> +		.procname	= "platform_labels",
-> +		.data		= NULL,
-> +		.maxlen		= sizeof(int),
-> +		.mode		= 0644,
-> +		.proc_handler	= mpls_platform_labels,
-> +	},
-> +	{
-> +		.procname	= "ip_ttl_propagate",
-> +		.data		= MPLS_NS_SYSCTL_OFFSET(mpls.ip_ttl_propagate),
-> +		.maxlen		= sizeof(int),
-> +		.mode		= 0644,
-> +		.proc_handler	= proc_dointvec_minmax,
-> +		.extra1		= SYSCTL_ZERO,
-> +		.extra2		= SYSCTL_ONE,
-> +	},
-> +	{
-> +		.procname	= "default_ttl",
-> +		.data		= MPLS_NS_SYSCTL_OFFSET(mpls.default_ttl),
-> +		.maxlen		= sizeof(int),
-> +		.mode		= 0644,
-> +		.proc_handler	= proc_dointvec_minmax,
-> +		.extra1		= SYSCTL_ONE,
-> +		.extra2		= &ttl_max,
-> +	},
-> +	{ }
-> +};
+Ajay Sharma (4):
+  RDMA/mana_ib : Rename all mana_ib_dev type variables to mib_dev
+  RDMA/mana_ib : Register Mana IB  device with Management SW
+  RDMA/mana_ib : Create adapter and Add error eq
+  RDMA/mana_ib : Query adapter capabilities
 
-Unless we hear otherwise from networking folks, I think this move alone
-should probably go as a separate patch with no functional changes to
-make the changes easier to review / bisect.
+ drivers/infiniband/hw/mana/cq.c               |  12 +-
+ drivers/infiniband/hw/mana/device.c           |  72 +++--
+ drivers/infiniband/hw/mana/main.c             | 282 +++++++++++++-----
+ drivers/infiniband/hw/mana/mana_ib.h          |  96 +++++-
+ drivers/infiniband/hw/mana/mr.c               |  42 ++-
+ drivers/infiniband/hw/mana/qp.c               |  82 ++---
+ drivers/infiniband/hw/mana/wq.c               |  21 +-
+ .../net/ethernet/microsoft/mana/gdma_main.c   | 151 ++++++----
+ drivers/net/ethernet/microsoft/mana/mana_en.c |   3 +
+ include/net/mana/gdma.h                       |  16 +-
+ 10 files changed, 529 insertions(+), 248 deletions(-)
 
-  Luis
+-- 
+2.25.1
+
