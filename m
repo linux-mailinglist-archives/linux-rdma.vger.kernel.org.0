@@ -2,174 +2,98 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 79807763961
-	for <lists+linux-rdma@lfdr.de>; Wed, 26 Jul 2023 16:40:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8380E7639EB
+	for <lists+linux-rdma@lfdr.de>; Wed, 26 Jul 2023 17:03:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230194AbjGZOkX (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 26 Jul 2023 10:40:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59924 "EHLO
+        id S234622AbjGZPDW (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 26 Jul 2023 11:03:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46076 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231536AbjGZOkW (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 26 Jul 2023 10:40:22 -0400
-Received: from mail-yb1-xb33.google.com (mail-yb1-xb33.google.com [IPv6:2607:f8b0:4864:20::b33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD03819BE
-        for <linux-rdma@vger.kernel.org>; Wed, 26 Jul 2023 07:40:18 -0700 (PDT)
-Received: by mail-yb1-xb33.google.com with SMTP id 3f1490d57ef6-cb19b1b9a36so7479826276.0
-        for <linux-rdma@vger.kernel.org>; Wed, 26 Jul 2023 07:40:18 -0700 (PDT)
+        with ESMTP id S234733AbjGZPDM (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 26 Jul 2023 11:03:12 -0400
+Received: from mail-pf1-x42c.google.com (mail-pf1-x42c.google.com [IPv6:2607:f8b0:4864:20::42c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9AEC5270D
+        for <linux-rdma@vger.kernel.org>; Wed, 26 Jul 2023 08:03:03 -0700 (PDT)
+Received: by mail-pf1-x42c.google.com with SMTP id d2e1a72fcca58-6862842a028so4001632b3a.0
+        for <linux-rdma@vger.kernel.org>; Wed, 26 Jul 2023 08:03:03 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google; t=1690382418; x=1690987218;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=Nmzr6WuK9l4UiJUyu4TwrFf4WxNP/E3zsB64Xn/1FBA=;
-        b=MXWzUIi0+u4gAw4eh3fe0fCvnm9xstbJINQ81kELxLH/7nx9VtiW07iG+PgKs4B6O/
-         vFQg4juFFUTGl6LLqp4mJwzLbDlANuyLhq5uqEOIoqCM6imlAjJT7E4Nps1eZQiolBiz
-         8qz8e5DT3+1NZ68ZS4Mvx+/Et/1CdoFrJs270=
+        d=broadcom.com; s=google; t=1690383782; x=1690988582;
+        h=message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=pdTPZECglp4d0nVcTh9qAASc/8KdXW05si6oLm1AaL0=;
+        b=Rs+3ufQgdAJ2BQmczJ1kbYrjXHGPRjjHSaSSSLk9baNH8eAnRiSUa9RZV7oQ9UiOor
+         uv3/UULq05JocKK5ZMfgsqkLvbmhQbaCNL6lq4gxpy22/PC5uK2WEqgUn+g4NGU2yG6g
+         ABrr4LExeVDwStVa/zNI9SHMmmTgaBRZnWMtc=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690382418; x=1690987218;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=Nmzr6WuK9l4UiJUyu4TwrFf4WxNP/E3zsB64Xn/1FBA=;
-        b=e9ILzM4xdsqnA//GsGafwxiybjPfe561O1BCInZPvfrR3mhisWUxBYXMY0m8VYmC6y
-         x/92razDfYjKzXUM8/UfG0oTT4/rvWvY0lPXh2NJONTnHjECUzRc4oJpoQd3GGsamsXU
-         qboorWjuF6y1Dwg2s1cDraZ7pp1R0yJxA3e06z48Gk2Nktl/G81l58ag+nORpGd9U3/a
-         5HieDzl7USJO6Xpw6mh4QbRMTmE9DAkWO6ocwZp/Z+HTnXkjrNEGhraqZY0G+vLC3yUd
-         nUUrrzDL53xblL34PgTkjf7seQ+WLKdyjxdh8Sb5SfaCYucyxSIKZQZw0kxqpy3BMTuX
-         WbZg==
-X-Gm-Message-State: ABy/qLYglbEtPuBDFLDlKGSNTd+mIELyGlwZQ52WWQ9eQPsd0scrvykx
-        OV7b7mRl2CeQj9AUv8kdS0QFGSomtHqKkP3iA5Xg+Q==
-X-Google-Smtp-Source: APBJJlGXG6SKerQrdipN5LjlLEKJ1wmSiAV253KQdQ5WElHrO+Pg3qEn2tPADWt62H8vmTz9K4jmgd9FdjLiWvUdts8=
-X-Received: by 2002:a25:8b12:0:b0:d08:2101:562d with SMTP id
- i18-20020a258b12000000b00d082101562dmr1780613ybl.34.1690382417931; Wed, 26
- Jul 2023 07:40:17 -0700 (PDT)
-MIME-Version: 1.0
-References: <1690360493-8428-1-git-send-email-selvin.xavier@broadcom.com> <20230726130726.GW11388@unreal>
-In-Reply-To: <20230726130726.GW11388@unreal>
+        d=1e100.net; s=20221208; t=1690383782; x=1690988582;
+        h=message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=pdTPZECglp4d0nVcTh9qAASc/8KdXW05si6oLm1AaL0=;
+        b=gHPuiMdHPfxGFuM768sIhRDAmejFkorYpbYKMScBb02r/ccbBRJiVvJzq/RPj2uyls
+         u/Xd/gUdJYCKitiCTtfP77P81U9zOcYFMOmRfIxCOOurvlX7CtNJUguf764UiSakt+DL
+         zIYtVchjpWG1uBXMwcYD9Etstu4tPM6XNN1AVqO5a8E0LeJZW6as39ifX5XM7VbWbweL
+         3E3YMpBPn4x/7NWC/wHu0weA52bDIMH2cK4tMlJj2btuOt4joIrZ7ELBxRq773EHZi60
+         nGD8skR6iwTF0TY2qkbgFjm78RYgYR/8DPwz7WgkbY4mCZXYQXxxVR6bzeUHv4LSYA6r
+         DE6Q==
+X-Gm-Message-State: ABy/qLY+PDC2DCTEI1DvCiOf55aVrCW3LDTqdcwRrPHnz3xsNQ19CwyE
+        lGMz3QJF8qYq78Qu/OAAlEp7zA==
+X-Google-Smtp-Source: APBJJlGSN1ZwBWWgWu+H2XmERV+J6Ubu22udCTGlCvnx+6D4YKH73UUvdJigMGKQ7S3WVWs5ZeisIg==
+X-Received: by 2002:a05:6a20:4285:b0:138:1980:1e59 with SMTP id o5-20020a056a20428500b0013819801e59mr2138997pzj.28.1690383782262;
+        Wed, 26 Jul 2023 08:03:02 -0700 (PDT)
+Received: from dhcp-10-192-206-197.iig.avagotech.net.net ([192.19.234.250])
+        by smtp.gmail.com with ESMTPSA id y4-20020a63ad44000000b0055fd10306a2sm12772846pgo.75.2023.07.26.08.02.59
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Wed, 26 Jul 2023 08:03:00 -0700 (PDT)
 From:   Selvin Xavier <selvin.xavier@broadcom.com>
-Date:   Wed, 26 Jul 2023 20:10:03 +0530
-Message-ID: <CA+sbYW1cqdUr2_vwPy5BnLFsAqxATP++BR6QfADoe3P_UfEYWA@mail.gmail.com>
-Subject: Re: [PATCH] IB/core: Add more speed parsing in ib_get_eth_speed()
-To:     Leon Romanovsky <leon@kernel.org>
-Cc:     jgg@ziepe.ca, linux-rdma@vger.kernel.org,
-        andrew.gospodarek@broadcom.com,
-        Kalesh AP <kalesh-anakkur.purayil@broadcom.com>
+To:     jgg@ziepe.ca, leon@kernel.org
+Cc:     linux-rdma@vger.kernel.org, andrew.gospodarek@broadcom.com,
+        Selvin Xavier <selvin.xavier@broadcom.com>
+Subject: [PATCH for-next 0/4] RDMA/bnxt_re: Stats update
+Date:   Wed, 26 Jul 2023 07:51:17 -0700
+Message-Id: <1690383081-15033-1-git-send-email-selvin.xavier@broadcom.com>
+X-Mailer: git-send-email 2.5.5
 Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
-        boundary="0000000000009330eb060164d3a0"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+        boundary="000000000000e572b606016524bd"
+X-Spam-Status: No, score=-1.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        MIME_HEADER_CTYPE_ONLY,MIME_NO_TEXT,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE,T_TVD_MIME_NO_HEADERS,URIBL_BLOCKED
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
---0000000000009330eb060164d3a0
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+--000000000000e572b606016524bd
 
-On Wed, Jul 26, 2023 at 6:37=E2=80=AFPM Leon Romanovsky <leon@kernel.org> w=
-rote:
->
-> On Wed, Jul 26, 2023 at 01:34:53AM -0700, Selvin Xavier wrote:
-> > From: Kalesh AP <kalesh-anakkur.purayil@broadcom.com>
-> >
-> > The function ib_get_eth_speed() does not take consideration
-> > of 50G, 56G, 100G and 200G speeds. Added these speeds parsing.
-> > We are not considering the lane width now. This can be enhanced
-> > later.
-> >
-> > Also, refactored the code to use switch case instead of if-else.
-> >
-> > Signed-off-by: Kalesh AP <kalesh-anakkur.purayil@broadcom.com>
-> > Signed-off-by: Selvin Xavier <selvin.xavier@broadcom.com>
-> > ---
-> >  drivers/infiniband/core/verbs.c | 34 ++++++++++++++++++++++++++++-----=
--
-> >  1 file changed, 28 insertions(+), 6 deletions(-)
-> >
-> > diff --git a/drivers/infiniband/core/verbs.c b/drivers/infiniband/core/=
-verbs.c
-> > index b99b3cc..ebd389a 100644
-> > --- a/drivers/infiniband/core/verbs.c
-> > +++ b/drivers/infiniband/core/verbs.c
-> > @@ -1908,22 +1908,44 @@ int ib_get_eth_speed(struct ib_device *dev, u32=
- port_num, u16 *speed, u8 *width)
-> >                       netdev_speed);
-> >       }
-> >
-> > -     if (netdev_speed <=3D SPEED_1000) {
-> > +     switch (netdev_speed) {
-> > +     case SPEED_1000:
-> >               *width =3D IB_WIDTH_1X;
-> >               *speed =3D IB_SPEED_SDR;
-> > -     } else if (netdev_speed <=3D SPEED_10000) {
-> > +             break;
-> > +     case SPEED_10000:
->
-> This conversion is not equal to code before. We have more speeds between
-> SPEED_1000 and SPEED_10000.
->
-> include/uapi/linux/ethtool.h
-> ...
->   1889 #define SPEED_1000              1000
->   1890 #define SPEED_2500              2500
->   1891 #define SPEED_5000              5000
->   1892 #define SPEED_10000             10000
-Sure. We will handle the two cases that are missing and spin a v2 patch.
->
->
-> Thanks
->
->
->
-> >               *width =3D IB_WIDTH_1X;
-> >               *speed =3D IB_SPEED_FDR10;
-> > -     } else if (netdev_speed <=3D SPEED_20000) {
-> > +             break;
-> > +     case SPEED_20000:
-> >               *width =3D IB_WIDTH_4X;
-> >               *speed =3D IB_SPEED_DDR;
-> > -     } else if (netdev_speed <=3D SPEED_25000) {
-> > +             break;
-> > +     case SPEED_25000:
-> >               *width =3D IB_WIDTH_1X;
-> >               *speed =3D IB_SPEED_EDR;
-> > -     } else if (netdev_speed <=3D SPEED_40000) {
-> > +             break;
-> > +     case SPEED_40000:
-> >               *width =3D IB_WIDTH_4X;
-> >               *speed =3D IB_SPEED_FDR10;
-> > -     } else {
-> > +             break;
-> > +     case SPEED_50000:
-> > +             *width =3D IB_WIDTH_2X;
-> > +             *speed =3D IB_SPEED_EDR;
-> > +             break;
-> > +     case SPEED_56000:
-> > +             *width =3D IB_WIDTH_4X;
-> > +             *speed =3D IB_SPEED_FDR;
-> > +             break;
-> > +     case SPEED_100000:
-> > +             *width =3D IB_WIDTH_4X;
-> > +             *speed =3D IB_SPEED_EDR;
-> > +             break;
-> > +     case SPEED_200000:
-> > +             *width =3D IB_WIDTH_4X;
-> > +             *speed =3D IB_SPEED_HDR;
-> > +             break;
-> > +     default:
-> >               *width =3D IB_WIDTH_4X;
-> >               *speed =3D IB_SPEED_EDR;
-> >       }
-> > --
-> > 2.5.5
-> >
->
->
+This series adds some of the missing hw statistics. Also, adds
+some debug stats maintained by the driver.
 
---0000000000009330eb060164d3a0
+Please review an apply.
+
+Thanks,
+Selvin
+
+Chandramohan Akula (4):
+  bnxt_re: Reorganize the resource stats
+  bnxt_re: Update the hw counters for resource stats
+  bnxt_re: Expose the missing hw counters
+  bnxt_re: Update the debug counters for doorbell pacing
+
+ drivers/infiniband/hw/bnxt_re/bnxt_re.h     |  7 ---
+ drivers/infiniband/hw/bnxt_re/hw_counters.c | 84 +++++++++++++++++++++++++----
+ drivers/infiniband/hw/bnxt_re/hw_counters.h | 55 +++++++++++++++++++
+ drivers/infiniband/hw/bnxt_re/ib_verbs.c    | 77 +++++++++++++++++++-------
+ drivers/infiniband/hw/bnxt_re/main.c        | 17 +++---
+ drivers/infiniband/hw/bnxt_re/qplib_sp.c    |  7 +++
+ 6 files changed, 203 insertions(+), 44 deletions(-)
+
+-- 
+2.5.5
+
+
+--000000000000e572b606016524bd
 Content-Type: application/pkcs7-signature; name="smime.p7s"
 Content-Transfer-Encoding: base64
 Content-Disposition: attachment; filename="smime.p7s"
@@ -240,14 +164,14 @@ j1Ze9ndr+YDXPpCymOsynmmw0ErHZGGW1OmMpAEt0A+613glWCURLDlP8HONi1wnINV6aDiEf0ad
 9NMGxDsp+YWiRXD3txfo2OMQbpIxM90QfhKKacX8t1J1oAAWxDrLVTJBXBNvz5tr+D1sYwuye93r
 hImmkM1unboxggJtMIICaQIBATBrMFsxCzAJBgNVBAYTAkJFMRkwFwYDVQQKExBHbG9iYWxTaWdu
 IG52LXNhMTEwLwYDVQQDEyhHbG9iYWxTaWduIEdDQyBSMyBQZXJzb25hbFNpZ24gMiBDQSAyMDIw
-Agxy+Cu4x/7lM0zxY7cwDQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIEIAzNgLIgO+4r
-Cnmz01X5le3KVPESz2OCp38qHcDzbvpAMBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZI
-hvcNAQkFMQ8XDTIzMDcyNjE0NDAxOFowaQYJKoZIhvcNAQkPMVwwWjALBglghkgBZQMEASowCwYJ
+Agxy+Cu4x/7lM0zxY7cwDQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIEICZv2YIzxY7U
+Lo7Z4hPohc2sffjJbhNhVgOO6ONcxATWMBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZI
+hvcNAQkFMQ8XDTIzMDcyNjE1MDMwMlowaQYJKoZIhvcNAQkPMVwwWjALBglghkgBZQMEASowCwYJ
 YIZIAWUDBAEWMAsGCWCGSAFlAwQBAjAKBggqhkiG9w0DBzALBgkqhkiG9w0BAQowCwYJKoZIhvcN
-AQEHMAsGCWCGSAFlAwQCATANBgkqhkiG9w0BAQEFAASCAQC7WziB9mcl8oN3pMQ7dKQxEKiHQ/xI
-9jHfyOHUcM0ICJYUhS8N7SacV1kblOhCN8BL0CSD0o2rw6u8k7NpytKpZBJ7jnkOUHDlIojEEgUY
-ieNuNYF1DEE0obVBNF//GqQpZIHb9mcpgIoCXM6vGcfbqTfTHJl6mc64TzOIBc+LygyStZQLLiFA
-pYRaJFoaJqhKLdsG5mot9hs76nF8r0xERwFo/+gH8a9NKjFwVKK279XWxpA0uNpZxfEPzfXKfJo3
-1HOogN/SPWEi6EQgatEpPqvRLM0txw1iYM5Os+v3d/Yvuga2I/LsBGbaarvhwEqMI6aQnzWNf3Jp
-QtaUdBkf
---0000000000009330eb060164d3a0--
+AQEHMAsGCWCGSAFlAwQCATANBgkqhkiG9w0BAQEFAASCAQBTX8y0D4MdiI/NHwVbDOzmftl7wesI
+YM16ScyzIPoB8sPOLWKjuH2fWyjjv7KXB1CD1wLCsdWQHXlFVonR+m2lhTP1J6c5Gulk3L0SBfw2
+vUra5Tub7bKAIDIH4Fbf/ecOl62gLjJWgGnvIAAq4TBDgvetypi53E60bAzOOFlYWHIbVTuY25sb
+w2NMSdwSDgTN/8I//3JzN6E0VQFVFsSZoeF+ivxSnf96AeI6IXrwRi5tvo1zxY0O2LsCpTEy5EJm
+wrRAkqM6Iyfbvv9lF0iYwo1Og+PGZdNlaja8//jVX4Ps4T1J2YBTN4d1saa2W6Fv8RHuKe9OEaTP
+jdHltA6N
+--000000000000e572b606016524bd--
