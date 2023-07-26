@@ -2,243 +2,145 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 563D276299B
-	for <lists+linux-rdma@lfdr.de>; Wed, 26 Jul 2023 05:57:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0AA28762AC5
+	for <lists+linux-rdma@lfdr.de>; Wed, 26 Jul 2023 07:26:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231389AbjGZD5d (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 25 Jul 2023 23:57:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52406 "EHLO
+        id S229554AbjGZF0n (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 26 Jul 2023 01:26:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32770 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231330AbjGZD5O (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 25 Jul 2023 23:57:14 -0400
-Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 345A326A8;
-        Tue, 25 Jul 2023 20:57:10 -0700 (PDT)
-Received: by linux.microsoft.com (Postfix, from userid 1174)
-        id C24AC2380B22; Tue, 25 Jul 2023 20:57:09 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com C24AC2380B22
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linuxonhyperv.com;
-        s=default; t=1690343829;
-        bh=cn29Y0IhWYYGeE2rse2hah4n3/yrSw8p/EmKJrmtne4=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=R9fJLuJRRqHlrXnpClK7m7nbWtxQn8wG9JhxPD1ZCfHxRQd0PtW0mannW6frSRskJ
-         2q8asxySL+vauAaJEhZHGrNS68M0wSDovA2WDG1TfbThMiP5vmIXSCE2/jAqBj64N5
-         tCNyvb+7f8Wj6NlP/zTz8uzEktFsVaRR1S7ogeQM=
-From:   sharmaajay@linuxonhyperv.com
-To:     Jason Gunthorpe <jgg@ziepe.ca>, Leon Romanovsky <leon@kernel.org>,
-        Dexuan Cui <decui@microsoft.com>, Wei Liu <wei.liu@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>
-Cc:     linux-rdma@vger.kernel.org, linux-hyperv@vger.kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Ajay Sharma <sharmaajay@microsoft.com>
-Subject: [Patch v2 5/5] RDMA/mana_ib : Query adapter capabilities
-Date:   Tue, 25 Jul 2023 20:57:00 -0700
-Message-Id: <1690343820-20188-6-git-send-email-sharmaajay@linuxonhyperv.com>
-X-Mailer: git-send-email 1.8.3.1
-In-Reply-To: <1690343820-20188-1-git-send-email-sharmaajay@linuxonhyperv.com>
-References: <1690343820-20188-1-git-send-email-sharmaajay@linuxonhyperv.com>
-X-Spam-Status: No, score=-9.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED,USER_IN_DEF_SPF_WL autolearn=no autolearn_force=no
-        version=3.4.6
+        with ESMTP id S229459AbjGZF0l (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 26 Jul 2023 01:26:41 -0400
+Received: from DM6FTOPR00CU001.outbound.protection.outlook.com (mail-centralusazon11020014.outbound.protection.outlook.com [52.101.61.14])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A4B2C212D;
+        Tue, 25 Jul 2023 22:26:40 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=WYG2EG1GHXhfu3ZOaqF36sixQQ+oDPh47KTsITVmacoVPJnIDoB3/RUPkg/6UZHCbq2RyXUyuQ+mCL+20BpRaogUpg40Sp9GbGL4Onnl7YURZ5GDQs/mAL9RM4aUOrYvC99dHSPfUJzFJqrIFmB3nPqsdcRPPOE5puPg1ut78RUKXyzOPmysewgqhTifuUUPi7c1AsErGIof3kONoRBCxb10qotA0fTeAoh6cMTcLyerWOEHM2cImp/D8D3Qufgv2q4aDTLinvXox1IPEoxmKUVFZhnwo3LSZXUQelB9xV3VCrjeooOdtdNnWYvF2GM+DuWL7nYFbgBHMLvqnbn50Q==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=dNittJLQhpGqdDRc+PAIwr1JOjZWdGS7jtYYVQY7W68=;
+ b=YH/aNaaz5jfBu1iGxgtDAeQ8PIddn9jJTy3cjtlKR3oCO3BESsy93NsN/95fA73zGzNg8xZWemPWOd9V+grqW/c0McuRYgZYdo9yw0iqm1tLaohbwfndFzoxPOCXLR8TiLh191t4Yha8R1THgbj/bYhEDnda08rIVNysEtdK985629+WPzd4enqAjvCgq4D5xF+1MSewdystCdCC+jOwHd+IvSPb12aN+4Putu4BP9q6OVGUNMxRnlmvTx+3HS6tugIjZjiLMm294LNhIB6XzjJ/LbcRsq87oA2d6uDbBG12rViHC1XGgdqDPdPF74pxR2S5dX1xceSJBgWCBHZ53A==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=microsoft.com; dmarc=pass action=none
+ header.from=microsoft.com; dkim=pass header.d=microsoft.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=dNittJLQhpGqdDRc+PAIwr1JOjZWdGS7jtYYVQY7W68=;
+ b=WtzILiRB3Ccox4yFrxXyUVLyb86ticZioXU3EsgQFW3HkHE4maRbCRztKY7KPreWE/j1Si3CrNvF8qJ/rXWuqcAYSevX+lEys3vo7ao5BMBQucpRuFmvJBlwvcJf/kFek9WrqJfiJLl0Ocv+AX6OpJKE1vLF9+N9GNe6RO4pIww=
+Received: from BY5PR21MB1394.namprd21.prod.outlook.com (2603:10b6:a03:21c::20)
+ by PH0PR21MB2006.namprd21.prod.outlook.com (2603:10b6:510:48::17) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6652.3; Wed, 26 Jul
+ 2023 05:26:37 +0000
+Received: from BY5PR21MB1394.namprd21.prod.outlook.com
+ ([fe80::9e52:d01f:67f7:2453]) by BY5PR21MB1394.namprd21.prod.outlook.com
+ ([fe80::9e52:d01f:67f7:2453%6]) with mapi id 15.20.6652.004; Wed, 26 Jul 2023
+ 05:26:37 +0000
+From:   Ajay Sharma <sharmaajay@microsoft.com>
+To:     Leon Romanovsky <leon@kernel.org>
+CC:     Long Li <longli@microsoft.com>, Jason Gunthorpe <jgg@ziepe.ca>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [EXTERNAL] Re: [PATCH 1/5] RDMA/mana_ib : Rename all mana_ib_dev
+ type variables to mib_dev
+Thread-Topic: [EXTERNAL] Re: [PATCH 1/5] RDMA/mana_ib : Rename all mana_ib_dev
+ type variables to mib_dev
+Thread-Index: Adm+bRhehYDMzhzwT9iQuSVhrPzPMAAS8WGAADI4dSA=
+Date:   Wed, 26 Jul 2023 05:26:37 +0000
+Message-ID: <CCEF05D1-7A87-4F10-B23B-633F77AA7723@microsoft.com>
+References: <BY5PR21MB1394FE30BA84A501D4FA72C6D602A@BY5PR21MB1394.namprd21.prod.outlook.com>
+ <20230725052839.GJ11388@unreal>
+In-Reply-To: <20230725052839.GJ11388@unreal>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=microsoft.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: BY5PR21MB1394:EE_|PH0PR21MB2006:EE_
+x-ms-office365-filtering-correlation-id: 409b8129-f8a1-4d77-3778-08db8d98e249
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: xblH6wOS/1FMEBBehYnuUhNhozI50Rxjv5WOpRi9z+lLbf+vmhLvCNxCfrvNEK+UqkBYx86macetP1X/jP9gxFQAej/zeDEMnUak71HGnwAwJ/dARyO9lMGfgUyxV40zBNZDcPriwgNpL6ZmGfERYXEDEvVHttzLrvu6fbGHZupdUlqDvWKitMvAvxO4eZux5Tfg+MZXyUIkY5arLM1X+4cGmZkQ9S/rNUngkVlGreglsOTh1Ro0RJo96nwN00q+NNzRgOPmoJmvnJLy+077cAtTCwgZmjH8QKeebaqWlLeQKZMuv4ScIgndsgivBsm+U35s/7Q0/EBNLp4zToBHbpXPLfF4D8mTXhc9gXfOL9dB1iTl8ux3tVxVe5YGfVupFhaYrUH+HR+YOnuj3iAoiUzZu6p7UkSaCpHtvH4ZQ7/bQrzsuGlFzOTjlLNxakMgCnkne1yB0rDJrKvL35KauCuq5BGxVHcqtL6y0wQTnn+t5mDrk+IFZJTrAPCnrCECM9E/9yE0TLSm1cSUw/f4v7Xktz6P3M+DU761JPFimY77CSebEvXMXubNX8opcKUTCvtid/L6N8OGYMl0vmCo0CxbLV5s+H37EumtklwgHqzSC2LiU3GSciXZoPJua9ocze5uhQ5wIRQazL5cbuxKr93K6XBFPUn8XkRwobxa7tB6w61bF08SVY2ibp5XWX8otr1DcT68816EYSnvYu+dXg==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY5PR21MB1394.namprd21.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(4636009)(39860400002)(376002)(396003)(366004)(346002)(136003)(451199021)(10290500003)(2906002)(6486002)(66446008)(478600001)(8676002)(38070700005)(8936002)(316002)(41300700001)(4744005)(6512007)(5660300002)(66476007)(38100700002)(6916009)(122000001)(66556008)(66946007)(4326008)(64756008)(71200400001)(76116006)(54906003)(86362001)(82960400001)(82950400001)(6506007)(53546011)(33656002)(186003)(2616005)(36756003)(45980500001);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?utf-8?B?WTRucDkrZGQxbmh4NUhxVXAvUTJVbjd2enNMMkNqNVNGdXhha01GVTMwSlhy?=
+ =?utf-8?B?UFptMVlhMlBqczZCMnRlT0p6Tm83M28zenlpemNPcWZhdWFFREpIUkg0bDkv?=
+ =?utf-8?B?bDRpb1ZlcmYrOFFBNjVNeHZxd3E2VjAwMFBFTTlWZ2tha1ExTFlkZW1UUVJw?=
+ =?utf-8?B?V0hrcnVOaUdVcXhVMDFVQ2h4OENQRS8zd1RuN3QwM1JrM2FaamxjUVVUMU5m?=
+ =?utf-8?B?cnF2S3hLTlBFRWsrY21QNmczc3RocHdLdmdFNktobWZtYUh3bHB2QW9Oajcy?=
+ =?utf-8?B?bmt3aHJXNlczVVpSVnlGSjdKMmU1VU15em9Ya0E5WG5rUE1rV0tmL3gzSHpu?=
+ =?utf-8?B?WUhDMWtYUjcyeU84TG1uU09kdnRlN3BOcW05TUdBOHNJM2tvMUhUVE8ySi80?=
+ =?utf-8?B?TStXQWx0TFJZUEc1WW12eWNIY0lHVDZLeUJGcHovTnNmNDhMRjJ4Zis4bjlP?=
+ =?utf-8?B?WXhqVzhxQjNVNXA2U3RGQXlwVjJBUU03U3FlcUszMXlPbGgvdlYzTkV0Z1Bi?=
+ =?utf-8?B?RUpLSkFRNnh4TE9pclhRRmlIbk4zRWIwTExNbkcyNnN1U1FaYlZoZENkYi83?=
+ =?utf-8?B?QmRPNnhGTFY2bTN0dVJpVS9sajh3cGc0Z1pNeE1IUUVCeDRLTzJUb3FZS1Ja?=
+ =?utf-8?B?eXA4VTdJeDQySjR4K2FEb2hNVm0wZWpOdVcvcm1nS1o3TzFjZ1N2SVN3QWox?=
+ =?utf-8?B?RE01bDVrYXQrNmwxNVRBbHYzckpsUjVPTU52QVpmVU90dVNaNFp5QS94WHR3?=
+ =?utf-8?B?M1lhVmNrRDVXVWZhSHBmNlZhanl2R0FVUVVlMTUwZ1hmOHVHa0ZGOEpoUEpL?=
+ =?utf-8?B?UG8rcmRzYmJkUU16bUJMZDlXOS9RNkd5TXRrNXlLbGIyY3dYSkpCMTRGUUhP?=
+ =?utf-8?B?d042YnFkb3BNTlVkdU1HelpEbG1wRjhUVjZ5ZmhOZDBkRXN1UmdjTmM4UDZG?=
+ =?utf-8?B?TW9NQTl4L2RDanpocVgzVHBBR0hURGZUajJRWjZXaUxHbXJiYThxRFN6MXJL?=
+ =?utf-8?B?aHBZVkdkUUExeW53dnFya21yUWdNZXM0T1RnbDUrNmFmMWRFYjZ1K0VCNzZo?=
+ =?utf-8?B?enNvMnJxbkJlaCtqRklEaWRVb3huQzdxOTdTb1BBaG56d1RYVnpHdHhkQ2JL?=
+ =?utf-8?B?eG1Dakl6QnFZMHRHQllIQ3hGZEdQdGJtQllwQUxiNnBLUXkyYW9MRElKVmxS?=
+ =?utf-8?B?VjdMNUhTTytiMHBxSnl0aUM4OG1FUXYwdkhzR2NCNWVxamVzcUhlSUVyQmIy?=
+ =?utf-8?B?YWR6bVM2cHVPRnJ6dUo2c3dCd211ZDY1Tm03cytZOWlpaGhBK0IwUnZaRmp3?=
+ =?utf-8?B?eko1SSs1RUZPMGhNd2pmZ2lHekJFaDhrQmoxcGNlNmE5VERsZlA3cHZlaUtR?=
+ =?utf-8?B?WDR4eEpNeHdvcWVRd2p1MHBjT0d2VVJPZDhtcHNLeS95Q0NTckZ1YTI3ZWRu?=
+ =?utf-8?B?MWd5eUEzVGRiZm93dkZKbXc0ZnZpUVJKdnA1YzlMQ2NZOFBsQURuUmlFVnpQ?=
+ =?utf-8?B?YWRiRmJnYlBoOExRWnh0Wjc4cVhMWkNZWmgwSU1jazRsMVZRUmViZjY4Nk8r?=
+ =?utf-8?B?NWhPY2FERTdvOWk2QlJNTmIvOGllMlpsWklzaUl3ZDJySlZkV1VDeU9tdlpY?=
+ =?utf-8?B?NXhlMEg2YXVQb2oyZkJsWEdhc0RYT2dpb0w3UUhhU1lRazBNY29Hdm45Rk9t?=
+ =?utf-8?B?ZFpwdHQ3emROdWZCTmppUlZ6K3dIM0VyVzVhdGpFMnlKWVlmQUEzVjZLUE9H?=
+ =?utf-8?B?L2JLeUhrRE5HUENDVUhOMkJaTkVwNmZEQTlPZEFaRHZaTDJTaDJsSkl3Nkpo?=
+ =?utf-8?B?MHNmNGt3SXBObjRPbW9KS3loSFcydW1YQTE2YzVsKzBVemZhd1FjTDlIRHBF?=
+ =?utf-8?B?b2EzakVGZWdwUkw5c1V4UW14K0hWZ2xZZk0ySVNNN2pZL21JcXFmU0Erc3Uw?=
+ =?utf-8?B?eHF6NjJHMGRXUzRiaXh0NGNlOUJ4ZkQ4TUxOZ25VRmRPZEE2YkVSUDlTSE9Y?=
+ =?utf-8?B?djJ5WXVTNjZWOFA3eVVxeHYvZFh2b05lMS9tZUUzRHR2NGt6cFVlWDhEcTht?=
+ =?utf-8?B?R3dRd1pUTERJTlhEdjY1TVRZNEtsNGtzSkFwOUEzeHFaMjNoUktIWmxLUmc2?=
+ =?utf-8?Q?Y6KP2nk5ZnadGKOjly7aiNR+M?=
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+MIME-Version: 1.0
+X-OriginatorOrg: microsoft.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: BY5PR21MB1394.namprd21.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 409b8129-f8a1-4d77-3778-08db8d98e249
+X-MS-Exchange-CrossTenant-originalarrivaltime: 26 Jul 2023 05:26:37.3692
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 72f988bf-86f1-41af-91ab-2d7cd011db47
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: yBRA6Bu5NNgk2B9SrFQsZwqAnIVpLtE8rYdhXuEbM9A5GXfjsA6VPgiAAUGPt8W4vU0DSZsDORbOXQ2Y9pj0XqYP1p8VoeCMQxngZyknqNo=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR21MB2006
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Ajay Sharma <sharmaajay@microsoft.com>
-
-Query the adapter capabilities to expose to
-other clients and VF.
-
-Signed-off-by: Ajay Sharma <sharmaajay@microsoft.com>
----
- drivers/infiniband/hw/mana/device.c  |  4 +++
- drivers/infiniband/hw/mana/main.c    | 43 ++++++++++++++++++----
- drivers/infiniband/hw/mana/mana_ib.h | 53 +++++++++++++++++++++++++++-
- 3 files changed, 92 insertions(+), 8 deletions(-)
-
-diff --git a/drivers/infiniband/hw/mana/device.c b/drivers/infiniband/hw/mana/device.c
-index 4077e440657a..e15da43c73a0 100644
---- a/drivers/infiniband/hw/mana/device.c
-+++ b/drivers/infiniband/hw/mana/device.c
-@@ -97,6 +97,10 @@ static int mana_ib_probe(struct auxiliary_device *adev,
- 		goto free_error_eq;
- 	}
- 
-+	ret = mana_ib_query_adapter_caps(mib_dev);
-+	if (ret)
-+		ibdev_dbg(&mib_dev->ib_dev, "Failed to get caps, use defaults");
-+
- 	ret = ib_register_device(&mib_dev->ib_dev, "mana_%d",
- 				 mdev->gdma_context->dev);
- 	if (ret)
-diff --git a/drivers/infiniband/hw/mana/main.c b/drivers/infiniband/hw/mana/main.c
-index aab1cc096824..d6cfda1d079f 100644
---- a/drivers/infiniband/hw/mana/main.c
-+++ b/drivers/infiniband/hw/mana/main.c
-@@ -469,21 +469,26 @@ int mana_ib_get_port_immutable(struct ib_device *ibdev, u32 port_num,
- int mana_ib_query_device(struct ib_device *ibdev, struct ib_device_attr *props,
- 			 struct ib_udata *uhw)
- {
-+	struct mana_ib_dev *mib_dev = container_of(ibdev,
-+			struct mana_ib_dev, ib_dev);
-+
- 	props->max_qp = MANA_MAX_NUM_QUEUES;
- 	props->max_qp_wr = MAX_SEND_BUFFERS_PER_QUEUE;
--
--	/*
--	 * max_cqe could be potentially much bigger.
--	 * As this version of driver only support RAW QP, set it to the same
--	 * value as max_qp_wr
--	 */
- 	props->max_cqe = MAX_SEND_BUFFERS_PER_QUEUE;
--
- 	props->max_mr_size = MANA_IB_MAX_MR_SIZE;
- 	props->max_mr = MANA_IB_MAX_MR;
- 	props->max_send_sge = MAX_TX_WQE_SGL_ENTRIES;
- 	props->max_recv_sge = MAX_RX_WQE_SGL_ENTRIES;
- 
-+	if (mib_dev->adapter_handle) {
-+		props->max_qp = mib_dev->adapter_caps.max_qp_count;
-+		props->max_qp_wr = mib_dev->adapter_caps.max_requester_sq_size;
-+		props->max_cqe = mib_dev->adapter_caps.max_requester_sq_size;
-+		props->max_mr = mib_dev->adapter_caps.max_mr_count;
-+		props->max_send_sge = mib_dev->adapter_caps.max_send_wqe_size;
-+		props->max_recv_sge = mib_dev->adapter_caps.max_recv_wqe_size;
-+	}
-+
- 	return 0;
- }
- 
-@@ -598,3 +603,27 @@ int mana_ib_create_error_eq(struct mana_ib_dev *mib_dev)
- 
- 	return 0;
- }
-+
-+int mana_ib_query_adapter_caps(struct mana_ib_dev *mib_dev)
-+{
-+	struct mana_ib_query_adapter_caps_resp resp = {};
-+	struct mana_ib_query_adapter_caps_req req = {};
-+	int err;
-+
-+	mana_gd_init_req_hdr(&req.hdr, MANA_IB_GET_ADAPTER_CAP, sizeof(req),
-+			     sizeof(resp));
-+	req.hdr.resp.msg_version = MANA_IB__GET_ADAPTER_CAP_RESPONSE_V3;
-+	req.hdr.dev_id = mib_dev->gc->mana_ib.dev_id;
-+
-+	err = mana_gd_send_request(mib_dev->gc, sizeof(req), &req,
-+				   sizeof(resp), &resp);
-+
-+	if (err) {
-+		ibdev_err(&mib_dev->ib_dev, "Failed to query adapter caps err %d", err);
-+		return err;
-+	}
-+
-+	memcpy(&mib_dev->adapter_caps, &resp.max_sq_id,
-+			sizeof(mib_dev->adapter_caps));
-+	return 0;
-+}
-diff --git a/drivers/infiniband/hw/mana/mana_ib.h b/drivers/infiniband/hw/mana/mana_ib.h
-index 8a652bccd978..1044358230d3 100644
---- a/drivers/infiniband/hw/mana/mana_ib.h
-+++ b/drivers/infiniband/hw/mana/mana_ib.h
-@@ -20,19 +20,41 @@
- 
- /* MANA doesn't have any limit for MR size */
- #define MANA_IB_MAX_MR_SIZE	U64_MAX
--
-+#define MANA_IB__GET_ADAPTER_CAP_RESPONSE_V3 3
- /*
-  * The hardware limit of number of MRs is greater than maximum number of MRs
-  * that can possibly represent in 24 bits
-  */
- #define MANA_IB_MAX_MR		0xFFFFFFu
- 
-+struct mana_ib_adapter_caps {
-+	u32 max_sq_id;
-+	u32 max_rq_id;
-+	u32 max_cq_id;
-+	u32 max_qp_count;
-+	u32 max_cq_count;
-+	u32 max_mr_count;
-+	u32 max_pd_count;
-+	u32 max_inbound_read_limit;
-+	u32 max_outbound_read_limit;
-+	u32 mw_count;
-+	u32 max_srq_count;
-+	u32 max_requester_sq_size;
-+	u32 max_responder_sq_size;
-+	u32 max_requester_rq_size;
-+	u32 max_responder_rq_size;
-+	u32 max_send_wqe_size;
-+	u32 max_recv_wqe_size;
-+	u32 max_inline_data_size;
-+};
-+
- struct mana_ib_dev {
- 	struct ib_device ib_dev;
- 	struct gdma_dev *gdma_dev;
- 	struct gdma_context *gc;
- 	struct gdma_queue *fatal_err_eq;
- 	mana_handle_t adapter_handle;
-+	struct mana_ib_adapter_caps adapter_caps;
- };
- 
- struct mana_ib_wq {
-@@ -96,6 +118,7 @@ struct mana_ib_rwq_ind_table {
- };
- 
- enum mana_ib_command_code {
-+	MANA_IB_GET_ADAPTER_CAP = 0x30001,
- 	MANA_IB_CREATE_ADAPTER  = 0x30002,
- 	MANA_IB_DESTROY_ADAPTER = 0x30003,
- };
-@@ -120,6 +143,32 @@ struct mana_ib_destroy_adapter_resp {
- 	struct gdma_resp_hdr hdr;
- }; /* HW Data */
- 
-+struct mana_ib_query_adapter_caps_req {
-+	struct gdma_req_hdr hdr;
-+}; /*HW Data */
-+
-+struct mana_ib_query_adapter_caps_resp {
-+	struct gdma_resp_hdr hdr;
-+	u32 max_sq_id;
-+	u32 max_rq_id;
-+	u32 max_cq_id;
-+	u32 max_qp_count;
-+	u32 max_cq_count;
-+	u32 max_mr_count;
-+	u32 max_pd_count;
-+	u32 max_inbound_read_limit;
-+	u32 max_outbound_read_limit;
-+	u32 mw_count;
-+	u32 max_srq_count;
-+	u32 max_requester_sq_size;
-+	u32 max_responder_sq_size;
-+	u32 max_requester_rq_size;
-+	u32 max_responder_rq_size;
-+	u32 max_send_wqe_size;
-+	u32 max_recv_wqe_size;
-+	u32 max_inline_data_size;
-+}; /* HW Data */
-+
- int mana_ib_gd_create_dma_region(struct mana_ib_dev *mib_dev,
- 				 struct ib_umem *umem,
- 				 mana_handle_t *gdma_region);
-@@ -194,4 +243,6 @@ int mana_ib_create_adapter(struct mana_ib_dev *mib_dev);
- 
- int mana_ib_destroy_adapter(struct mana_ib_dev *mib_dev);
- 
-+int mana_ib_query_adapter_caps(struct mana_ib_dev *mib_dev);
-+
- #endif
--- 
-2.25.1
-
+U29ycnkgYWJvdXQgdGhlIG1haWxlciAuIFdpbGwgZml4IGFuZCByZXNlbmQgdGhlIHBhdGNoIHYy
+Lg0KDQo+IE9uIEp1bCAyNSwgMjAyMywgYXQgMTI6MjggQU0sIExlb24gUm9tYW5vdnNreSA8bGVv
+bkBrZXJuZWwub3JnPiB3cm90ZToNCj4gDQo+IO+7v09uIE1vbiwgSnVsIDI0LCAyMDIzIGF0IDA4
+OjI2OjE2UE0gKzAwMDAsIEFqYXkgU2hhcm1hIHdyb3RlOg0KPj4gRnJvbSA4YzQ1ZDFhODk0OTVh
+MWJhMTBiYTZiZmJjOGRiYzNjMzc2YjE0ODEyIE1vbiBTZXAgMTcgMDA6MDA6MDAgMjAwMQ0KPj4g
+RnJvbTogQWpheSBTaGFybWEgc2hhcm1hYWpheUBtaWNyb3NvZnQuY29tPG1haWx0bzpzaGFybWFh
+amF5QG1pY3Jvc29mdC5jb20+DQo+PiBEYXRlOiBUaHUsIDQgTWF5IDIwMjMgMTU6Mjk6MTQgLTA3
+MDANCj4+IFN1YmplY3Q6IFtQQVRDSCAxLzVdIFJETUEvbWFuYV9pYiA6IFJlbmFtZSBhbGwgbWFu
+YV9pYl9kZXYgdHlwZSB2YXJpYWJsZXMgdG8NCj4+IG1pYl9kZXYNCj4+IA0KPj4gUmVuYW1pbmcg
+YWxsIG1hbmFfaWJfZGV2IHR5cGUgdmFyaWFibGVzIHRvIG1pYl9kZXYgdG8gaGF2ZQ0KPj4gY2xl
+YW4gc2VwYXJhdGlvbiBiZXR3ZWVuIGV0aCBkZXYgYW5kIGliZGV2IHZhcmlhYmxlcy4NCj4+IA0K
+Pj4gU2lnbmVkLW9mZi1ieTogQWpheSBTaGFybWEgc2hhcm1hYWpheUBtaWNyb3NvZnQuY29tPG1h
+aWx0bzpzaGFybWFhamF5QG1pY3Jvc29mdC5jb20+DQo+PiAtLS0NCj4gDQo+IFBsZWFzZSBmaXgg
+eW91ciBtYWlsZXIgYW5kIHNlbmQgcGF0Y2hlcyBhcyBwbGFpbiB0ZXh0Lg0KPiBBbHNvIHlvdXIg
+cGF0Y2hlcyBoYXZlIHdyb25nIGVtYWlscyBhbmQgc2hvdWxkIGJlIGdyb3VwZWQgYXMgc2VyaWVz
+Lg0KPiANCj4gVGhhbmtzDQo=
