@@ -2,77 +2,80 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 655817628EE
-	for <lists+linux-rdma@lfdr.de>; Wed, 26 Jul 2023 04:57:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4043F762989
+	for <lists+linux-rdma@lfdr.de>; Wed, 26 Jul 2023 05:57:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229762AbjGZC5B (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 25 Jul 2023 22:57:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35008 "EHLO
+        id S229901AbjGZD5G (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 25 Jul 2023 23:57:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52236 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229522AbjGZC5A (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 25 Jul 2023 22:57:00 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 795CA193;
-        Tue, 25 Jul 2023 19:56:56 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 17A6E61199;
-        Wed, 26 Jul 2023 02:56:56 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 957A2C433C8;
-        Wed, 26 Jul 2023 02:56:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1690340215;
-        bh=CbLxxa3u8xJbX+yXwwYh9sNVab+LKsl8mbRxbBao4+A=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=V7CmLC0tpxIzeUR4SXWl4mOegP7XX9J4Xo9XKyg/Bl2dUlXhMKI3vycvAEpeRxRYD
-         30rBvDson5HiHyCTJjR3tbyTD3TiKnxhix7K4rrbEgEvXFc4uq39Yh+5nJHoV1yOFd
-         wk0EY3tISmhpd3cbHfAATp02x9DFOjJUSRr5hR88P4OBzHbsBfR5eB9E+6YTmL2Kng
-         p3t7zUu0MzgcP1Dfas01UDW45dmCkD52xc4zQ/vCfnP5ZGA/wa8njJQtjl3Nn25DgX
-         cjLMoxJzWHbW6/UpJvQ9H9Y0Kww2K0Ykrvf9BIFpRyHV349TIMiVS03Qkh+HF7E2Rw
-         Czhl2qKVlMnaA==
-Date:   Tue, 25 Jul 2023 19:56:53 -0700
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Souradeep Chakrabarti <schakrabarti@linux.microsoft.com>
-Cc:     kys@microsoft.com, haiyangz@microsoft.com, wei.liu@kernel.org,
-        decui@microsoft.com, davem@davemloft.net, edumazet@google.com,
-        pabeni@redhat.com, longli@microsoft.com, sharmaajay@microsoft.com,
-        leon@kernel.org, cai.huoqing@linux.dev,
-        ssengar@linux.microsoft.com, vkuznets@redhat.com,
-        tglx@linutronix.de, linux-hyperv@vger.kernel.org,
+        with ESMTP id S229527AbjGZD5E (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 25 Jul 2023 23:57:04 -0400
+Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id D70D71BF2;
+        Tue, 25 Jul 2023 20:57:03 -0700 (PDT)
+Received: by linux.microsoft.com (Postfix, from userid 1174)
+        id 1A4BB2380B17; Tue, 25 Jul 2023 20:57:03 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 1A4BB2380B17
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linuxonhyperv.com;
+        s=default; t=1690343823;
+        bh=+FVUEn1yD0tAL3RMqa721SSRIJPoJUbzwns9YtZH6jY=;
+        h=From:To:Cc:Subject:Date:From;
+        b=XF6CDhGicdUdrGXLMt1FMTgiZBG9hmmlYdUfRtKfv8hsIVfeLijxyPD1xHZBP7S9M
+         W0p9bLWATFsR87DPae1MA6t9J1b+6MuswUUDdvLfmVAl8WMlLh8AKmmKtzpRq/N8Ug
+         Pz4wJ3zcZchQuZLAV+mqlqXOvrLcKSEypjy/SfLU=
+From:   sharmaajay@linuxonhyperv.com
+To:     Jason Gunthorpe <jgg@ziepe.ca>, Leon Romanovsky <leon@kernel.org>,
+        Dexuan Cui <decui@microsoft.com>, Wei Liu <wei.liu@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>
+Cc:     linux-rdma@vger.kernel.org, linux-hyperv@vger.kernel.org,
         netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-rdma@vger.kernel.org, schakrabarti@microsoft.com
-Subject: Re: [PATCH V5 net-next] net: mana: Configure hwc timeout from
- hardware
-Message-ID: <20230725195653.2ed5cecc@kernel.org>
-In-Reply-To: <1690177120-20938-1-git-send-email-schakrabarti@linux.microsoft.com>
-References: <1690177120-20938-1-git-send-email-schakrabarti@linux.microsoft.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+        Ajay Sharma <sharmaajay@microsoft.com>
+Subject: [Patch v2 0/5] RDMA/mana_ib Read Capabilities
+Date:   Tue, 25 Jul 2023 20:56:55 -0700
+Message-Id: <1690343820-20188-1-git-send-email-sharmaajay@linuxonhyperv.com>
+X-Mailer: git-send-email 1.8.3.1
+X-Spam-Status: No, score=-9.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED,USER_IN_DEF_SPF_WL autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Sun, 23 Jul 2023 22:38:40 -0700 Souradeep Chakrabarti wrote:
-> @@ -825,7 +847,8 @@ int mana_hwc_send_request(struct hw_channel_context *hwc, u32 req_len,
->  		goto out;
->  	}
->  
-> -	if (!wait_for_completion_timeout(&ctx->comp_event, 30 * HZ)) {
-> +	if (!wait_for_completion_timeout(&ctx->comp_event,
-> +					 (hwc->hwc_timeout / 1000) * HZ)) {
->  		dev_err(hwc->dev, "HWC: Request timed out!\n");
->  		err = -ETIMEDOUT;
->  		goto out;
+From: Ajay Sharma <sharmaajay@microsoft.com>
 
-msecs_to_jiffies()
+This version has style formatting corrections.
+The V1 introduced changes to control resource
+allocation. The resources are managed by
+Management SW and the patch allows reading the
+limits to prevent overflow. 
+
+Ajay Sharma (5):
+  RDMA/mana-ib : Rename all mana_ib_dev type variables to mib_dev
+  RDMA/mana_ib : Register Mana IB  device with Management SW
+  RDMA/mana_ib : Add error eq and notification from SoC
+  RDMA/mana_ib : Create Adapter - each vf bound to adapter object
+  RDMA/mana_ib : Query adapter capabilities
+
+ drivers/infiniband/hw/mana/cq.c               |  12 +-
+ drivers/infiniband/hw/mana/device.c           |  72 +++--
+ drivers/infiniband/hw/mana/main.c             | 258 ++++++++++++------
+ drivers/infiniband/hw/mana/mana_ib.h          |  96 ++++++-
+ drivers/infiniband/hw/mana/mr.c               |  42 ++-
+ drivers/infiniband/hw/mana/qp.c               |  82 +++---
+ drivers/infiniband/hw/mana/wq.c               |  21 +-
+ .../net/ethernet/microsoft/mana/gdma_main.c   | 151 +++++-----
+ drivers/net/ethernet/microsoft/mana/mana_en.c |   3 +
+ include/net/mana/gdma.h                       |  16 +-
+ 10 files changed, 505 insertions(+), 248 deletions(-)
+
 -- 
-pw-bot: cr
+2.25.1
+
