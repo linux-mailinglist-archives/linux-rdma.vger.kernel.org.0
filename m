@@ -2,240 +2,196 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E03917639F4
-	for <lists+linux-rdma@lfdr.de>; Wed, 26 Jul 2023 17:03:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C7717639F5
+	for <lists+linux-rdma@lfdr.de>; Wed, 26 Jul 2023 17:03:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234687AbjGZPD3 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 26 Jul 2023 11:03:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46254 "EHLO
+        id S234639AbjGZPDa (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 26 Jul 2023 11:03:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46268 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234626AbjGZPDW (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 26 Jul 2023 11:03:22 -0400
-Received: from mail-pf1-x430.google.com (mail-pf1-x430.google.com [IPv6:2607:f8b0:4864:20::430])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD47B268B
-        for <linux-rdma@vger.kernel.org>; Wed, 26 Jul 2023 08:03:12 -0700 (PDT)
-Received: by mail-pf1-x430.google.com with SMTP id d2e1a72fcca58-6689430d803so4268534b3a.0
-        for <linux-rdma@vger.kernel.org>; Wed, 26 Jul 2023 08:03:12 -0700 (PDT)
+        with ESMTP id S234637AbjGZPDX (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 26 Jul 2023 11:03:23 -0400
+Received: from mail-pf1-x431.google.com (mail-pf1-x431.google.com [IPv6:2607:f8b0:4864:20::431])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 904D11BFA
+        for <linux-rdma@vger.kernel.org>; Wed, 26 Jul 2023 08:03:14 -0700 (PDT)
+Received: by mail-pf1-x431.google.com with SMTP id d2e1a72fcca58-666e6541c98so6376937b3a.2
+        for <linux-rdma@vger.kernel.org>; Wed, 26 Jul 2023 08:03:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google; t=1690383792; x=1690988592;
+        d=broadcom.com; s=google; t=1690383794; x=1690988594;
         h=references:in-reply-to:message-id:date:subject:cc:to:from:from:to
          :cc:subject:date:message-id:reply-to;
-        bh=m9mKs7uY/0Ne3DjWAsDg60QAQdbixw6cAo+bC7Y1VdU=;
-        b=DhHjexB4g10XALDPq3DlZrza/ImoWJvTXJRdLWLVXOeqGJ3osnxtT6yPIg5T0QQUxz
-         a5Tc1mKRwKsIwfnOWPxRfYi8O2WnVJ6Mm0jXOJ+RS3qB8ulYerccUmhgiecJAs1vXJYT
-         LsRns7F8VW9A2JumSA+6AgQ+UugF35oI+FInY=
+        bh=TxtIiQ2UTv36FdDseVProJr/0okxfhbglYJvGFAJX6Q=;
+        b=O6AdN6th1jWJQoBKInxMkRxxnDdIilkERNyLgHS0TKqfVkEVQqsZ+PO6lPxF11i4TH
+         QzDMZ+hsSrQQxP7aTh8P9hnIJMozduMD2PHWM14Q30GHJY+flf6/QA2gLtNaYWVozm0B
+         R1xq/FKlE15Js12VZs7xwx2OznG8pHq+pGhdI=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690383792; x=1690988592;
+        d=1e100.net; s=20221208; t=1690383794; x=1690988594;
         h=references:in-reply-to:message-id:date:subject:cc:to:from
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=m9mKs7uY/0Ne3DjWAsDg60QAQdbixw6cAo+bC7Y1VdU=;
-        b=L+mcI92VURgzt/qdNMEeLrzKoO+klXx+in67UBANmV/kqI0Tx1eLuZE4ckdxu1Cjro
-         I0KXhW3acjnNNl/T6tddInCMiyQAy/zSALUgM5NGnjdxzxY9/AkxgAYKHink5WnXuafd
-         Fl6jQkK94RMspbbkeEPRHISZj2dmrvKYy7d0711muGCA7vj7dXCfTP2NNsbtcQxvencN
-         He1b++VgdTAMWSI8kB9dGY05AAsZpM2Ki2thjMXl1uOe2M0Cs+V8teP5bltGXH7tGx7B
-         183VebMoCBhboXGdrq9rZRNwuxGfah5/DSYby5Mr82401c/cktqcEyrcC8Kie3LU2b0f
-         jXXg==
-X-Gm-Message-State: ABy/qLbBSLuARB0qRVljp2mtm3UofxjMgqmNjWleiqQPIxsCCKc9hvb2
-        +dCxApm2JmpfvCXiWHRMMxRyNw==
-X-Google-Smtp-Source: APBJJlFaNtCGhoMkWz5rWTCnP7PQk04Ce/FIbPnpldvEOGoaJ6CezI7a7N77ap3JMWmI1KMM0HQUIw==
-X-Received: by 2002:a05:6a20:4425:b0:131:4a64:9977 with SMTP id ce37-20020a056a20442500b001314a649977mr2573701pzb.50.1690383790584;
-        Wed, 26 Jul 2023 08:03:10 -0700 (PDT)
+        bh=TxtIiQ2UTv36FdDseVProJr/0okxfhbglYJvGFAJX6Q=;
+        b=Jlrmy99/BNyMRwGznII53nd8oK3ooRJfjdHmWxVqqrhZVcKL9rWV1Um5Vy80JbNiMW
+         ioJHXYU65aHqwquJcOvk2dR8hbxuReZNX0kKfShmmmAvXSs3GXSuJOutpCs+/5nVGUhg
+         /wQTOWtu4Ow/1Jz7Tr16nEQYJLFQ2f0TuRo8geoIiu/plEMaHELGdtbnWXZ6PKFSpYLv
+         5wiUEfDTEcp5ixNCnmBaKqNBE8gDSBt0agX0aFGQ8sSKA34rz0D5GC4tx+ZOV0NEDTO8
+         lpVz5a+Srug4jYS9dUz5YLwLYYURW2PDkwg1DEXNHd0/JVGbeS/P66u8yY765G1y4lVy
+         ogeQ==
+X-Gm-Message-State: ABy/qLaPOpRUS0KXRI2HmdMjNkxhZzNTc5fRU1s6EdCGbkWo/fnBiuZI
+        jeHg49fKx0nudMvrWG5ZOFs3gQ==
+X-Google-Smtp-Source: APBJJlEdyFeusgE9zPGHM5U6BDIBPJ71VEcCMZW0vPi8oqQIGMp1d4DqNP2l5loQSa1juvAJNmOh2w==
+X-Received: by 2002:a05:6a00:a06:b0:64c:4f2f:a235 with SMTP id p6-20020a056a000a0600b0064c4f2fa235mr3423336pfh.30.1690383793750;
+        Wed, 26 Jul 2023 08:03:13 -0700 (PDT)
 Received: from dhcp-10-192-206-197.iig.avagotech.net.net ([192.19.234.250])
-        by smtp.gmail.com with ESMTPSA id y4-20020a63ad44000000b0055fd10306a2sm12772846pgo.75.2023.07.26.08.03.08
+        by smtp.gmail.com with ESMTPSA id y4-20020a63ad44000000b0055fd10306a2sm12772846pgo.75.2023.07.26.08.03.10
         (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 26 Jul 2023 08:03:09 -0700 (PDT)
+        Wed, 26 Jul 2023 08:03:12 -0700 (PDT)
 From:   Selvin Xavier <selvin.xavier@broadcom.com>
 To:     jgg@ziepe.ca, leon@kernel.org
 Cc:     linux-rdma@vger.kernel.org, andrew.gospodarek@broadcom.com,
         Chandramohan Akula <chandramohan.akula@broadcom.com>,
         Selvin Xavier <selvin.xavier@broadcom.com>
-Subject: [PATCH for-next 3/4] bnxt_re: Expose the missing hw counters
-Date:   Wed, 26 Jul 2023 07:51:20 -0700
-Message-Id: <1690383081-15033-4-git-send-email-selvin.xavier@broadcom.com>
+Subject: [PATCH for-next 4/4] bnxt_re: Update the debug counters for doorbell pacing
+Date:   Wed, 26 Jul 2023 07:51:21 -0700
+Message-Id: <1690383081-15033-5-git-send-email-selvin.xavier@broadcom.com>
 X-Mailer: git-send-email 2.5.5
 In-Reply-To: <1690383081-15033-1-git-send-email-selvin.xavier@broadcom.com>
 References: <1690383081-15033-1-git-send-email-selvin.xavier@broadcom.com>
 Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
-        boundary="0000000000007def2f06016525cf"
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        boundary="0000000000009558240601652560"
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        MIME_HEADER_CTYPE_ONLY,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE,T_TVD_MIME_NO_HEADERS,URIBL_BLOCKED autolearn=ham
-        autolearn_force=no version=3.4.6
+        MIME_BOUND_DIGITS_15,MIME_HEADER_CTYPE_ONLY,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,T_TVD_MIME_NO_HEADERS,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
---0000000000007def2f06016525cf
+--0000000000009558240601652560
 
 From: Chandramohan Akula <chandramohan.akula@broadcom.com>
 
-Add code to expose some of the HW counters related
-to tx/rx data and Congestion control.
+Add debug counters to track the Doorbell pacing events and report the
+doorbell pacing debug stats.
 
 Signed-off-by: Chandramohan Akula <chandramohan.akula@broadcom.com>
 Signed-off-by: Selvin Xavier <selvin.xavier@broadcom.com>
 ---
- drivers/infiniband/hw/bnxt_re/hw_counters.c | 25 +++++++++++++++++++++++--
- drivers/infiniband/hw/bnxt_re/hw_counters.h |  9 +++++++++
- drivers/infiniband/hw/bnxt_re/qplib_sp.c    |  7 +++++++
- 3 files changed, 39 insertions(+), 2 deletions(-)
+ drivers/infiniband/hw/bnxt_re/hw_counters.c | 18 ++++++++++++++++++
+ drivers/infiniband/hw/bnxt_re/hw_counters.h | 11 +++++++++++
+ drivers/infiniband/hw/bnxt_re/main.c        |  3 +++
+ 3 files changed, 32 insertions(+)
 
 diff --git a/drivers/infiniband/hw/bnxt_re/hw_counters.c b/drivers/infiniband/hw/bnxt_re/hw_counters.c
-index 8598af5..e50a1cb 100644
+index e50a1cb..9357240 100644
 --- a/drivers/infiniband/hw/bnxt_re/hw_counters.c
 +++ b/drivers/infiniband/hw/bnxt_re/hw_counters.c
-@@ -82,6 +82,8 @@ static const struct rdma_stat_desc bnxt_re_stat_descs[] = {
- 	[BNXT_RE_TX_PKTS].name		=  "tx_pkts",
- 	[BNXT_RE_TX_BYTES].name		=  "tx_bytes",
- 	[BNXT_RE_RECOVERABLE_ERRORS].name	=  "recoverable_errors",
-+	[BNXT_RE_TX_ERRORS].name                =  "tx_roce_errors",
-+	[BNXT_RE_TX_DISCARDS].name              =  "tx_roce_discards",
- 	[BNXT_RE_RX_ERRORS].name		=  "rx_roce_errors",
- 	[BNXT_RE_RX_DISCARDS].name		=  "rx_roce_discards",
- 	[BNXT_RE_TO_RETRANSMITS].name        = "to_retransmits",
-@@ -129,14 +131,21 @@ static const struct rdma_stat_desc bnxt_re_stat_descs[] = {
- 	[BNXT_RE_TX_READ_RES].name	     = "tx_read_resp",
- 	[BNXT_RE_TX_WRITE_REQ].name	     = "tx_write_req",
- 	[BNXT_RE_TX_SEND_REQ].name	     = "tx_send_req",
-+	[BNXT_RE_TX_ROCE_PKTS].name          = "tx_roce_only_pkts",
-+	[BNXT_RE_TX_ROCE_BYTES].name         = "tx_roce_only_bytes",
- 	[BNXT_RE_RX_ATOMIC_REQ].name	     = "rx_atomic_req",
- 	[BNXT_RE_RX_READ_REQ].name	     = "rx_read_req",
- 	[BNXT_RE_RX_READ_RESP].name	     = "rx_read_resp",
- 	[BNXT_RE_RX_WRITE_REQ].name	     = "rx_write_req",
- 	[BNXT_RE_RX_SEND_REQ].name	     = "rx_send_req",
-+	[BNXT_RE_RX_ROCE_PKTS].name          = "rx_roce_only_pkts",
-+	[BNXT_RE_RX_ROCE_BYTES].name         = "rx_roce_only_bytes",
- 	[BNXT_RE_RX_ROCE_GOOD_PKTS].name     = "rx_roce_good_pkts",
- 	[BNXT_RE_RX_ROCE_GOOD_BYTES].name    = "rx_roce_good_bytes",
--	[BNXT_RE_OOB].name		     = "rx_out_of_buffer"
-+	[BNXT_RE_OOB].name		     = "rx_out_of_buffer",
-+	[BNXT_RE_TX_CNP].name                = "tx_cnp_pkts",
-+	[BNXT_RE_RX_CNP].name                = "rx_cnp_pkts",
-+	[BNXT_RE_RX_ECN].name                = "rx_ecn_marked_pkts",
+@@ -146,6 +146,10 @@ static const struct rdma_stat_desc bnxt_re_stat_descs[] = {
+ 	[BNXT_RE_TX_CNP].name                = "tx_cnp_pkts",
+ 	[BNXT_RE_RX_CNP].name                = "rx_cnp_pkts",
+ 	[BNXT_RE_RX_ECN].name                = "rx_ecn_marked_pkts",
++	[BNXT_RE_PACING_RESCHED].name        = "pacing_reschedule",
++	[BNXT_RE_PACING_CMPL].name           = "pacing_complete",
++	[BNXT_RE_PACING_ALERT].name          = "pacing_alerts",
++	[BNXT_RE_DB_FIFO_REG].name           = "db_fifo_register",
  };
  
  static void bnxt_re_copy_ext_stats(struct bnxt_re_dev *rdev,
-@@ -148,14 +157,22 @@ static void bnxt_re_copy_ext_stats(struct bnxt_re_dev *rdev,
- 	stats->value[BNXT_RE_TX_READ_RES]   = s->tx_read_res;
- 	stats->value[BNXT_RE_TX_WRITE_REQ]  = s->tx_write_req;
- 	stats->value[BNXT_RE_TX_SEND_REQ]   = s->tx_send_req;
-+	stats->value[BNXT_RE_TX_ROCE_PKTS]  = s->tx_roce_pkts;
-+	stats->value[BNXT_RE_TX_ROCE_BYTES] = s->tx_roce_bytes;
- 	stats->value[BNXT_RE_RX_ATOMIC_REQ] = s->rx_atomic_req;
- 	stats->value[BNXT_RE_RX_READ_REQ]   = s->rx_read_req;
- 	stats->value[BNXT_RE_RX_READ_RESP]  = s->rx_read_res;
- 	stats->value[BNXT_RE_RX_WRITE_REQ]  = s->rx_write_req;
- 	stats->value[BNXT_RE_RX_SEND_REQ]   = s->rx_send_req;
-+	stats->value[BNXT_RE_RX_ROCE_PKTS]  = s->rx_roce_pkts;
-+	stats->value[BNXT_RE_RX_ROCE_BYTES] = s->rx_roce_bytes;
- 	stats->value[BNXT_RE_RX_ROCE_GOOD_PKTS] = s->rx_roce_good_pkts;
- 	stats->value[BNXT_RE_RX_ROCE_GOOD_BYTES] = s->rx_roce_good_bytes;
- 	stats->value[BNXT_RE_OOB] = s->rx_out_of_buffer;
-+	stats->value[BNXT_RE_TX_CNP] = s->tx_cnp;
-+	stats->value[BNXT_RE_RX_CNP] = s->rx_cnp;
-+	stats->value[BNXT_RE_RX_ECN] = s->rx_ecn_marked;
-+	stats->value[BNXT_RE_OUT_OF_SEQ_ERR] = s->rx_out_of_sequence;
+@@ -278,6 +282,18 @@ static void bnxt_re_copy_err_stats(struct bnxt_re_dev *rdev,
+ 			err_s->res_oos_drop_count;
  }
  
- static int bnxt_re_get_ext_stat(struct bnxt_re_dev *rdev,
-@@ -298,6 +315,10 @@ int bnxt_re_ib_get_hw_stats(struct ib_device *ibdev,
- 	if (hw_stats) {
- 		stats->value[BNXT_RE_RECOVERABLE_ERRORS] =
- 			le64_to_cpu(hw_stats->tx_bcast_pkts);
-+		stats->value[BNXT_RE_TX_DISCARDS] =
-+			le64_to_cpu(hw_stats->tx_discard_pkts);
-+		stats->value[BNXT_RE_TX_ERRORS] =
-+			le64_to_cpu(hw_stats->tx_error_pkts);
- 		stats->value[BNXT_RE_RX_ERRORS] =
- 			le64_to_cpu(hw_stats->rx_error_pkts);
- 		stats->value[BNXT_RE_RX_DISCARDS] =
-@@ -319,6 +340,7 @@ int bnxt_re_ib_get_hw_stats(struct ib_device *ibdev,
- 				  &rdev->flags);
- 			goto done;
- 		}
-+		bnxt_re_copy_err_stats(rdev, stats, err_s);
- 		if (_is_ext_stats_supported(rdev->dev_attr.dev_cap_flags) &&
- 		    !rdev->is_virtfn) {
- 			rc = bnxt_re_get_ext_stat(rdev, stats);
-@@ -328,7 +350,6 @@ int bnxt_re_ib_get_hw_stats(struct ib_device *ibdev,
++static void bnxt_re_copy_db_pacing_stats(struct bnxt_re_dev *rdev,
++					 struct rdma_hw_stats *stats)
++{
++	struct bnxt_re_db_pacing_stats *pacing_s =  &rdev->stats.pacing;
++
++	stats->value[BNXT_RE_PACING_RESCHED] = pacing_s->resched;
++	stats->value[BNXT_RE_PACING_CMPL] = pacing_s->complete;
++	stats->value[BNXT_RE_PACING_ALERT] = pacing_s->alerts;
++	stats->value[BNXT_RE_DB_FIFO_REG] =
++		readl(rdev->en_dev->bar0 + rdev->pacing.dbr_db_fifo_reg_off);
++}
++
+ int bnxt_re_ib_get_hw_stats(struct ib_device *ibdev,
+ 			    struct rdma_hw_stats *stats,
+ 			    u32 port, int index)
+@@ -350,6 +366,8 @@ int bnxt_re_ib_get_hw_stats(struct ib_device *ibdev,
  				goto done;
  			}
  		}
--		bnxt_re_copy_err_stats(rdev, stats, err_s);
++		if (rdev->pacing.dbr_pacing)
++			bnxt_re_copy_db_pacing_stats(rdev, stats);
  	}
  
  done:
 diff --git a/drivers/infiniband/hw/bnxt_re/hw_counters.h b/drivers/infiniband/hw/bnxt_re/hw_counters.h
-index 7231a2b..f3c4e35 100644
+index f3c4e35..e541b6f 100644
 --- a/drivers/infiniband/hw/bnxt_re/hw_counters.h
 +++ b/drivers/infiniband/hw/bnxt_re/hw_counters.h
-@@ -65,6 +65,8 @@ enum bnxt_re_hw_stats {
- 	BNXT_RE_TX_PKTS,
- 	BNXT_RE_TX_BYTES,
- 	BNXT_RE_RECOVERABLE_ERRORS,
-+	BNXT_RE_TX_ERRORS,
-+	BNXT_RE_TX_DISCARDS,
- 	BNXT_RE_RX_ERRORS,
- 	BNXT_RE_RX_DISCARDS,
- 	BNXT_RE_TO_RETRANSMITS,
-@@ -112,14 +114,21 @@ enum bnxt_re_hw_stats {
- 	BNXT_RE_TX_READ_RES,
- 	BNXT_RE_TX_WRITE_REQ,
- 	BNXT_RE_TX_SEND_REQ,
-+	BNXT_RE_TX_ROCE_PKTS,
-+	BNXT_RE_TX_ROCE_BYTES,
- 	BNXT_RE_RX_ATOMIC_REQ,
- 	BNXT_RE_RX_READ_REQ,
- 	BNXT_RE_RX_READ_RESP,
- 	BNXT_RE_RX_WRITE_REQ,
- 	BNXT_RE_RX_SEND_REQ,
-+	BNXT_RE_RX_ROCE_PKTS,
-+	BNXT_RE_RX_ROCE_BYTES,
- 	BNXT_RE_RX_ROCE_GOOD_PKTS,
- 	BNXT_RE_RX_ROCE_GOOD_BYTES,
- 	BNXT_RE_OOB,
-+	BNXT_RE_TX_CNP,
-+	BNXT_RE_RX_CNP,
-+	BNXT_RE_RX_ECN,
+@@ -129,11 +129,21 @@ enum bnxt_re_hw_stats {
+ 	BNXT_RE_TX_CNP,
+ 	BNXT_RE_RX_CNP,
+ 	BNXT_RE_RX_ECN,
++	BNXT_RE_PACING_RESCHED,
++	BNXT_RE_PACING_CMPL,
++	BNXT_RE_PACING_ALERT,
++	BNXT_RE_DB_FIFO_REG,
  	BNXT_RE_NUM_EXT_COUNTERS
  };
  
-diff --git a/drivers/infiniband/hw/bnxt_re/qplib_sp.c b/drivers/infiniband/hw/bnxt_re/qplib_sp.c
-index ab45f9d..7e57faa 100644
---- a/drivers/infiniband/hw/bnxt_re/qplib_sp.c
-+++ b/drivers/infiniband/hw/bnxt_re/qplib_sp.c
-@@ -832,15 +832,22 @@ int bnxt_qplib_qext_stat(struct bnxt_qplib_rcfw *rcfw, u32 fid,
- 	estat->tx_read_res = le64_to_cpu(sb->tx_read_res_pkts);
- 	estat->tx_write_req = le64_to_cpu(sb->tx_write_req_pkts);
- 	estat->tx_send_req = le64_to_cpu(sb->tx_send_req_pkts);
-+	estat->tx_roce_pkts = le64_to_cpu(sb->tx_roce_pkts);
-+	estat->tx_roce_bytes = le64_to_cpu(sb->tx_roce_bytes);
- 	estat->rx_atomic_req = le64_to_cpu(sb->rx_atomic_req_pkts);
- 	estat->rx_read_req = le64_to_cpu(sb->rx_read_req_pkts);
- 	estat->rx_read_res = le64_to_cpu(sb->rx_read_res_pkts);
- 	estat->rx_write_req = le64_to_cpu(sb->rx_write_req_pkts);
- 	estat->rx_send_req = le64_to_cpu(sb->rx_send_req_pkts);
-+	estat->rx_roce_pkts = le64_to_cpu(sb->rx_roce_pkts);
-+	estat->rx_roce_bytes = le64_to_cpu(sb->rx_roce_bytes);
- 	estat->rx_roce_good_pkts = le64_to_cpu(sb->rx_roce_good_pkts);
- 	estat->rx_roce_good_bytes = le64_to_cpu(sb->rx_roce_good_bytes);
- 	estat->rx_out_of_buffer = le64_to_cpu(sb->rx_out_of_buffer_pkts);
- 	estat->rx_out_of_sequence = le64_to_cpu(sb->rx_out_of_sequence_pkts);
-+	estat->tx_cnp = le64_to_cpu(sb->tx_cnp_pkts);
-+	estat->rx_cnp = le64_to_cpu(sb->rx_cnp_pkts);
-+	estat->rx_ecn_marked = le64_to_cpu(sb->rx_ecn_marked_pkts);
+ #define BNXT_RE_NUM_STD_COUNTERS (BNXT_RE_OUT_OF_SEQ_ERR + 1)
  
- bail:
- 	bnxt_qplib_rcfw_free_sbuf(rcfw, sbuf);
++struct bnxt_re_db_pacing_stats {
++	u64 resched;
++	u64 complete;
++	u64 alerts;
++};
++
+ struct bnxt_re_res_cntrs {
+ 	atomic_t qp_count;
+ 	atomic_t rc_qp_count;
+@@ -164,6 +174,7 @@ struct bnxt_re_rstat {
+ struct bnxt_re_stats {
+ 	struct bnxt_re_rstat            rstat;
+ 	struct bnxt_re_res_cntrs        res;
++	struct bnxt_re_db_pacing_stats  pacing;
+ };
+ 
+ struct rdma_hw_stats *bnxt_re_ib_alloc_hw_port_stats(struct ib_device *ibdev,
+diff --git a/drivers/infiniband/hw/bnxt_re/main.c b/drivers/infiniband/hw/bnxt_re/main.c
+index 91efa04..87960ac 100644
+--- a/drivers/infiniband/hw/bnxt_re/main.c
++++ b/drivers/infiniband/hw/bnxt_re/main.c
+@@ -533,6 +533,7 @@ static void bnxt_re_db_fifo_check(struct work_struct *work)
+ 		pacing_data->pacing_th * BNXT_RE_PACING_ALARM_TH_MULTIPLE;
+ 	schedule_delayed_work(&rdev->dbq_pacing_work,
+ 			      msecs_to_jiffies(rdev->pacing.dbq_pacing_time));
++	rdev->stats.pacing.alerts++;
+ 	mutex_unlock(&rdev->pacing.dbq_lock);
+ }
+ 
+@@ -563,12 +564,14 @@ static void bnxt_re_pacing_timer_exp(struct work_struct *work)
+ 	pacing_data->do_pacing = max_t(u32, rdev->pacing.dbr_def_do_pacing, pacing_data->do_pacing);
+ 	if (pacing_data->do_pacing <= rdev->pacing.dbr_def_do_pacing) {
+ 		bnxt_re_set_default_pacing_data(rdev);
++		rdev->stats.pacing.complete++;
+ 		goto dbq_unlock;
+ 	}
+ 
+ restart_timer:
+ 	schedule_delayed_work(&rdev->dbq_pacing_work,
+ 			      msecs_to_jiffies(rdev->pacing.dbq_pacing_time));
++	rdev->stats.pacing.resched++;
+ dbq_unlock:
+ 	rdev->pacing.do_pacing_save = pacing_data->do_pacing;
+ 	mutex_unlock(&rdev->pacing.dbq_lock);
 -- 
 2.5.5
 
 
---0000000000007def2f06016525cf
+--0000000000009558240601652560
 Content-Type: application/pkcs7-signature; name="smime.p7s"
 Content-Transfer-Encoding: base64
 Content-Disposition: attachment; filename="smime.p7s"
@@ -306,14 +262,14 @@ j1Ze9ndr+YDXPpCymOsynmmw0ErHZGGW1OmMpAEt0A+613glWCURLDlP8HONi1wnINV6aDiEf0ad
 9NMGxDsp+YWiRXD3txfo2OMQbpIxM90QfhKKacX8t1J1oAAWxDrLVTJBXBNvz5tr+D1sYwuye93r
 hImmkM1unboxggJtMIICaQIBATBrMFsxCzAJBgNVBAYTAkJFMRkwFwYDVQQKExBHbG9iYWxTaWdu
 IG52LXNhMTEwLwYDVQQDEyhHbG9iYWxTaWduIEdDQyBSMyBQZXJzb25hbFNpZ24gMiBDQSAyMDIw
-Agxy+Cu4x/7lM0zxY7cwDQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIEIKQHa/rGp8E5
-QNa9SVOuSTx0i/xkf3LOn3Iw41GHhY76MBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZI
-hvcNAQkFMQ8XDTIzMDcyNjE1MDMxMlowaQYJKoZIhvcNAQkPMVwwWjALBglghkgBZQMEASowCwYJ
+Agxy+Cu4x/7lM0zxY7cwDQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIEII7msOX0954L
+rS7aE4LW1Nhlgbi7fJ9jw/WD/In84D85MBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZI
+hvcNAQkFMQ8XDTIzMDcyNjE1MDMxNFowaQYJKoZIhvcNAQkPMVwwWjALBglghkgBZQMEASowCwYJ
 YIZIAWUDBAEWMAsGCWCGSAFlAwQBAjAKBggqhkiG9w0DBzALBgkqhkiG9w0BAQowCwYJKoZIhvcN
-AQEHMAsGCWCGSAFlAwQCATANBgkqhkiG9w0BAQEFAASCAQCKsR1jfroFUdeqEcsHr+kYW2jyTkWW
-bXQtr7CCSL75RAnik8JoHiPKmYBBuelAdExZ2lH8ypCZWcBVAhKPTPxuyru3Tmn92oyS/POeGfbg
-iMFUMhJ0SCitz4hegRsmxNk3RDQDtCwwo6rh/Yey78GG6BAYKHfh2at9PB20lhNizl5HwxtLc9ye
-qcrGq58fvP88Z6Z4w64mNJD2CCAXscQOYwncnQ2X+6EQMyz3pexI6XOPkFT+NhULabn91JrgGn4Y
-LqpQyMcBzR2jK+Ml/ZbQp/0UqtYsPorYgebpfFiR1vFViw6Ur0dbqfqzkqgtLtiiijtlTfKWqaM9
-lv4TQ9Pn
---0000000000007def2f06016525cf--
+AQEHMAsGCWCGSAFlAwQCATANBgkqhkiG9w0BAQEFAASCAQBGL/7fJEac1Wt5iKUc54jlNEs4pxq/
+rV0Gu2f8rFRZEG5sneq29ChikEKXJ/39TGqY3eixyIwMhk3EWp77EKub9+T72HHzR1UhnTWOVm5V
+Q1KcdO8+VqsPUd6RxSLKTWg17+E4zrnD/7EsH8nLOitjz/T0aBy6DqDKHk6aQeQDheMEtEXEu1CI
+nZeR7PygrksvT/DsEqbwrVL8XxFSfQCnj0/Sjyxhji/E9TzWoKyXlVf074JqOynUyIC8Wl8o17ll
+xhrncH9C+UM6HGeQ2JJAFwl1qb7u4RpQI6cY5xY1hyTqYZXZjH85Id2PvIp/1t+jKmB10eC6fF03
+wB+EoqaY
+--0000000000009558240601652560--
