@@ -2,178 +2,148 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 21A0F763657
-	for <lists+linux-rdma@lfdr.de>; Wed, 26 Jul 2023 14:31:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 61A8B763712
+	for <lists+linux-rdma@lfdr.de>; Wed, 26 Jul 2023 15:07:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229939AbjGZMbw (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 26 Jul 2023 08:31:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41272 "EHLO
+        id S232793AbjGZNHk (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 26 Jul 2023 09:07:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34670 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232253AbjGZMbv (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 26 Jul 2023 08:31:51 -0400
-Received: from NAM10-BN7-obe.outbound.protection.outlook.com (mail-bn7nam10on2130.outbound.protection.outlook.com [40.107.92.130])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D2EA912C;
-        Wed, 26 Jul 2023 05:31:49 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=KAb08+emvXd9syzKTs3c510kLK6lfb5VMsn+v1r4W2iMgOTBc3lahJ9Z9ggYShtEcbFfJ7NeVa5KR1RU/tXyj7LKjfRcJCMfEqIgxMe4Pq4C2b1ZHpNIktGJRyeeUDMPfJibaLMfez9/R6S9c3MiNgXM/l3MhJ7aTJIE34BYqf4f8M8kB0KCZsB/qgL+Skl79AB2ggqSGR7cckzq8H3RaQJKfIbG4VBJONd9mstAgMIWx9MMrj6Tl+9FopxTROEJ+bIdu3ylH7iKu+SUSiPqupADrl36lRAsvyJobvdSI6WvOe0lhRsfMeBk3Hf3+CXJHHVcldV7ePLgCB7h8u4ZgA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=4UwF5lT5cHsHi/+MGSLJlxcbQjXiTtDGKA3i/wh4/fM=;
- b=oEAbOZ8bl8qOpv99EgoH6mq/GtVaQ2f9LQ34PS26VLonCTwpSQ2XzVJwqt3hJiPYwY1NpvTpKFlFn5BA26+PfjMrMsUl8Dk1HqDiogufAycwQEPbM/tmIWtx/7hdIX8N9vLdslaCdN0jQX54Tp8Wlld/ZKxkCZNqRpM0bdzs/CzGMUp8PotGPbL0MlkdOTQs/QipcpPy65VTYhKQ1c5aHVBUmdb7zic6jEBxpfmMTEsZqmlVtfRoDOLMzRH2wnu5N0WsrUwNSvKiyZbsMu15NNrXtY3c6aZhwjgonJm2fxVREy1+MywbqBtKXRsDWvz8IGLWYW3EYuzm3v6QpAYmEw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=corigine.com; dmarc=pass action=none header.from=corigine.com;
- dkim=pass header.d=corigine.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=corigine.onmicrosoft.com; s=selector2-corigine-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=4UwF5lT5cHsHi/+MGSLJlxcbQjXiTtDGKA3i/wh4/fM=;
- b=KDp15JUqAZoZfAjyTubX2bNQoWdXgJ6HjU044xtry4iyZHI7E0p2gZ7Hz+OYxr2U0hLicdjx+vgtLqEfsYJ3fc5w973Y1s5jDwLS4bWsWtq2EW1szMA8GqbmCeM+Ix0nOrbuAhU05bd7i3GAW5krB7KbNW8/fmPQO6n6VOhszlI=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=corigine.com;
-Received: from PH0PR13MB4842.namprd13.prod.outlook.com (2603:10b6:510:78::6)
- by PH0PR13MB5568.namprd13.prod.outlook.com (2603:10b6:510:12b::16) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6609.31; Wed, 26 Jul
- 2023 12:31:47 +0000
-Received: from PH0PR13MB4842.namprd13.prod.outlook.com
- ([fe80::fde7:9821:f2d9:101d]) by PH0PR13MB4842.namprd13.prod.outlook.com
- ([fe80::fde7:9821:f2d9:101d%7]) with mapi id 15.20.6609.032; Wed, 26 Jul 2023
- 12:31:47 +0000
-Date:   Wed, 26 Jul 2023 14:31:41 +0200
-From:   Simon Horman <simon.horman@corigine.com>
-To:     sharmaajay@linuxonhyperv.com
-Cc:     Jason Gunthorpe <jgg@ziepe.ca>, Leon Romanovsky <leon@kernel.org>,
-        Dexuan Cui <decui@microsoft.com>, Wei Liu <wei.liu@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>, linux-rdma@vger.kernel.org,
-        linux-hyperv@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Ajay Sharma <sharmaajay@microsoft.com>
-Subject: Re: [Patch v2 5/5] RDMA/mana_ib : Query adapter capabilities
-Message-ID: <ZMESLQsNgTGnD2j/@corigine.com>
-References: <1690343820-20188-1-git-send-email-sharmaajay@linuxonhyperv.com>
- <1690343820-20188-6-git-send-email-sharmaajay@linuxonhyperv.com>
+        with ESMTP id S232666AbjGZNHi (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 26 Jul 2023 09:07:38 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7AD721FFA
+        for <linux-rdma@vger.kernel.org>; Wed, 26 Jul 2023 06:07:32 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 0F960619FD
+        for <linux-rdma@vger.kernel.org>; Wed, 26 Jul 2023 13:07:32 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E5B17C433C7;
+        Wed, 26 Jul 2023 13:07:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1690376851;
+        bh=gmrUscnY0HHn9EXb3VVbnB4HeKljsnLNGZ7F7ONf1cY=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=YQ9ntjSINtjDWy+fqzL9THAYdAFfTQhT45FXWPz+2m+HSpOkxqLgDLQUiAnXi4Yj5
+         gikKRk3sWI8CMXyqvcIbwDlleUbOsJXriFfCph9lTWP7ph8tYnRsP8ii0YE0AGIt9k
+         iLAnPoJvgdJy0Q1cCGX7kcKWijfoZuWgghAEevOIuCyYVkSWBjgAsNt5FY3s3+yiZU
+         DMOg6PYe8anA4arL1a95ERJLn2Jp7wUf+PlPQd+1cUhivjsq+BXHCeR/ks2rojaFYF
+         CNPOjWepZzHPxd8PNC9M9LWzMEPD2YY1BYmU0Yp3tmXFcxaKZx2yjATDlkPFJjOw0n
+         ui42bUE2uqL6w==
+Date:   Wed, 26 Jul 2023 16:07:26 +0300
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Selvin Xavier <selvin.xavier@broadcom.com>
+Cc:     jgg@ziepe.ca, linux-rdma@vger.kernel.org,
+        andrew.gospodarek@broadcom.com,
+        Kalesh AP <kalesh-anakkur.purayil@broadcom.com>
+Subject: Re: [PATCH] IB/core: Add more speed parsing in ib_get_eth_speed()
+Message-ID: <20230726130726.GW11388@unreal>
+References: <1690360493-8428-1-git-send-email-selvin.xavier@broadcom.com>
+MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1690343820-20188-6-git-send-email-sharmaajay@linuxonhyperv.com>
-X-ClientProxiedBy: AS4P190CA0038.EURP190.PROD.OUTLOOK.COM
- (2603:10a6:20b:5d1::17) To PH0PR13MB4842.namprd13.prod.outlook.com
- (2603:10b6:510:78::6)
-MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: PH0PR13MB4842:EE_|PH0PR13MB5568:EE_
-X-MS-Office365-Filtering-Correlation-Id: de71dce9-781c-4530-74cf-08db8dd44774
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: McRD/wnROA42ZvJP9oeTxII+4Q/EmgtWnudiOmAnTqDLd05dXS8fORB1BqGg26Jn4GLvNxd9WFjr8/s0xWhtPcAKdap4+YE+HKjdpKPz/Ic85WiSZPO6XjJd/Pso2z2lruOFRwYTxTsmv1yy6u4Po5mou+5/NnIY7sw8Lv+pU6FcYmTlPl7XWopNuc3OdSwgpqWR20+7I54vjpLmrjHvW+maaLkDTraz/TdtU3abK6S/UOHEXSpF2+Oe4REsD92cK3DXeyHZVQWFGxbpDL5qvawPDX7A2SwP7UhnpLTuDMExPszeemPxqU6G4+C3ldwE36EOkGN5BYY+t0lE/VL7FUYIzQWSfBjRU4FO8bJQT8o/O39xEoXV/E15tJ8mPA5hu6Hz6JNIYcDbavVwPOof5V0QeWtrcfr80kK+Z1VFfNYAqRrPF9Q8q1rK2zAOF30qkjVDjm8Pc4dQJe6w89L4bB7AMOty8tSt689TeD/ogAPUOWbKAzB3bCEK6dA9Ocba9tw/VhKPgIgZHulvhH2lqY7zuVcJyxu+zFLCvmQ/hhLilQ8LzTM1kWbxaVQ3R6k8yRpNsWWah9o5UaL4xHeONX6xRmbm4bRMqQIqQ8LODgM=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR13MB4842.namprd13.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(4636009)(346002)(136003)(366004)(376002)(396003)(39840400004)(451199021)(6512007)(6486002)(478600001)(54906003)(6666004)(83380400001)(86362001)(2906002)(2616005)(4326008)(6506007)(5660300002)(186003)(66476007)(36756003)(38100700002)(44832011)(8676002)(41300700001)(66556008)(8936002)(66946007)(316002)(7416002)(6916009);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?b3eU6ZfwJ+Cht+4GrrKHH5G9JA9QCq2GAE8jIaUfE9Fg2WVz/WbE8swzNsmc?=
- =?us-ascii?Q?801mTO9KER8JW15olE3yo6KHKLuUNpqFXne6yumcYfyVkOnJc5FtLC4Azqup?=
- =?us-ascii?Q?sGHRIWB5cPlPe0pway2ngDaa+ifvpcW/scfaeXhErGv55mvyp96FAnIDzg8P?=
- =?us-ascii?Q?W6s/9o/VkdYJVrZfmnDDpqt89k5mLtLc7G5YoULlsc3A/7xe9upPFKl5DZSV?=
- =?us-ascii?Q?73EwpppC2vDJkJfqpU3Ewx7LFi9AAPpa3trRTOuAldiCMflA+CoptZdMuEFX?=
- =?us-ascii?Q?IDSnFB76WeheD5BHDs+RCXeUuvgjdvGlfSLeAGdE12MV7j4pxthHuZNSrulT?=
- =?us-ascii?Q?al85f/oUEPjsbvTXHeY3hDOX/Yl+6CelqyxbKPRnOMU4aahL/XRy475pljBC?=
- =?us-ascii?Q?VCoAxCP0XTjqG6LaykmswnsjmMVmvrbIi6OP5oJGlZenC8R7RugUFIl9bnob?=
- =?us-ascii?Q?v8VZQvd+baDgC0ygnv/Htrn25zQ/IAmgelz1/5xG32hZlXlhhMje6TfLeOlZ?=
- =?us-ascii?Q?mRygRBoqFs1FeT/jpfTCBP734JI51pYkqlV0+Wp6Pfmj3Ps5RyVoSJrUoBT+?=
- =?us-ascii?Q?ZmUoHblSBBnw2k7P6P7Y+vVyEkCBD//ATy1E7aDCV42kdz9mHl9yug/Tc2R/?=
- =?us-ascii?Q?jcjB+RW83qKj/roUhX0s+F5Py5PlLZDWkFhLFXhSM4jSgE0vQK64EMBwI+yI?=
- =?us-ascii?Q?C/ApW/5u7QKxElVRQBIC+C4gTGWLvt8C+sD27Oqpgn8ihan3IlvDLubj/7bI?=
- =?us-ascii?Q?kRSu+g3U7DaBfIfMIeXcPigdPIaIs/TTDHaAroDguuQH/Y00x0BFuGB1NiJ9?=
- =?us-ascii?Q?dldKsbYUEb6MU7ipe6tPp+s9ypcqRSTyPlWWtsge1mYvkUUel/KuFr6VRqGt?=
- =?us-ascii?Q?q4mK6Xh1unarfUgL7rrT4WwdSQ35vD838yV0/0/FEhLjRd6Sr3CP88NJt2B3?=
- =?us-ascii?Q?zQO6hNX61nh63Uj3fPoaww6Kam1chMexNj2AgJYvm4KM2n30jXZVWfBZ4KXY?=
- =?us-ascii?Q?B4l9PZ6Cko+e8AtUzG2DLNVuE35ufwDEb0pFfLWPAbkqL8hh2n98aUFgwrdQ?=
- =?us-ascii?Q?4NXxwZrkbveyDiK7tqVPA9R2PrHH7K8QFFZyF+p6VY5eXlJ8MmcQqOD5cazp?=
- =?us-ascii?Q?8ZwbrHe7kYhDNqRqzvnEJ1rt00snUwoSqFSq8t0T36DGXRr1v7skZHIp5fuO?=
- =?us-ascii?Q?zXXRTQ80PA3fkfX4MbhVp04V+ryH1edsQYDR5eVuFaCT0gq8mcBwYgWFc+sE?=
- =?us-ascii?Q?VbkTqVor8ruNj6XHgan8pMkHQpekORlRDiohN5pAPPaP1x0IFcPxcTxW0jFq?=
- =?us-ascii?Q?Z93t3wPLmbyQvxR0b5GgECQYoZwSH8HFJaCi0BQX1kcCJko86w2/ekIgMOa8?=
- =?us-ascii?Q?52SFJ2GqLuGApNmYrkrk11OGPsWXPI4sYjnooAc/oMsHIh6zJD3FvBmJtOac?=
- =?us-ascii?Q?Tai0ggvs3Yjlgd5++haKEnD7XkLIT01l25yhhUWjbafQtkNdtpPzb5DCrCqV?=
- =?us-ascii?Q?AjebhsWEvaxzJiiALNoUJErRMe+COMyFQptcbDON2vlifeSkzJ43juNzSWcP?=
- =?us-ascii?Q?LFmeuiAG1lHQqC6f4PgD0kuJigBzwz+pmEwqI7OXWuwaNZDNQ6j23UbcLVTT?=
- =?us-ascii?Q?jWRsTumdNDcLCXdsVkMB2uPryDMjPO6NFR0+Qq0AO+lvzSPVSHfKjm3EFKEQ?=
- =?us-ascii?Q?SH9Kxw=3D=3D?=
-X-OriginatorOrg: corigine.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: de71dce9-781c-4530-74cf-08db8dd44774
-X-MS-Exchange-CrossTenant-AuthSource: PH0PR13MB4842.namprd13.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 26 Jul 2023 12:31:47.5955
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: fe128f2c-073b-4c20-818e-7246a585940c
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: pEwAl6wdSzlPUUDc5ucCwsSym6IrahA08+D6YIzI7aBfO0pCvQx8fGKCaklu68sSeActFfJKMRjlHMdKh4z/mr32sj4ZaHMkPKqc2B1Iu/o=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR13MB5568
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <1690360493-8428-1-git-send-email-selvin.xavier@broadcom.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Tue, Jul 25, 2023 at 08:57:00PM -0700, sharmaajay@linuxonhyperv.com wrote:
+On Wed, Jul 26, 2023 at 01:34:53AM -0700, Selvin Xavier wrote:
+> From: Kalesh AP <kalesh-anakkur.purayil@broadcom.com>
+> 
+> The function ib_get_eth_speed() does not take consideration
+> of 50G, 56G, 100G and 200G speeds. Added these speeds parsing.
+> We are not considering the lane width now. This can be enhanced
+> later.
+> 
+> Also, refactored the code to use switch case instead of if-else.
+> 
+> Signed-off-by: Kalesh AP <kalesh-anakkur.purayil@broadcom.com>
+> Signed-off-by: Selvin Xavier <selvin.xavier@broadcom.com>
+> ---
+>  drivers/infiniband/core/verbs.c | 34 ++++++++++++++++++++++++++++------
+>  1 file changed, 28 insertions(+), 6 deletions(-)
+> 
+> diff --git a/drivers/infiniband/core/verbs.c b/drivers/infiniband/core/verbs.c
+> index b99b3cc..ebd389a 100644
+> --- a/drivers/infiniband/core/verbs.c
+> +++ b/drivers/infiniband/core/verbs.c
+> @@ -1908,22 +1908,44 @@ int ib_get_eth_speed(struct ib_device *dev, u32 port_num, u16 *speed, u8 *width)
+>  			netdev_speed);
+>  	}
+>  
+> -	if (netdev_speed <= SPEED_1000) {
+> +	switch (netdev_speed) {
+> +	case SPEED_1000:
+>  		*width = IB_WIDTH_1X;
+>  		*speed = IB_SPEED_SDR;
+> -	} else if (netdev_speed <= SPEED_10000) {
+> +		break;
+> +	case SPEED_10000:
 
+This conversion is not equal to code before. We have more speeds between
+SPEED_1000 and SPEED_10000.
+
+include/uapi/linux/ethtool.h
 ...
+  1889 #define SPEED_1000              1000
+  1890 #define SPEED_2500              2500
+  1891 #define SPEED_5000              5000
+  1892 #define SPEED_10000             10000
 
-> diff --git a/drivers/infiniband/hw/mana/main.c b/drivers/infiniband/hw/mana/main.c
 
-...
+Thanks
 
-> +int mana_ib_query_adapter_caps(struct mana_ib_dev *mib_dev)
-> +{
-> +	struct mana_ib_query_adapter_caps_resp resp = {};
-> +	struct mana_ib_query_adapter_caps_req req = {};
-> +	int err;
-> +
-> +	mana_gd_init_req_hdr(&req.hdr, MANA_IB_GET_ADAPTER_CAP, sizeof(req),
-> +			     sizeof(resp));
-> +	req.hdr.resp.msg_version = MANA_IB__GET_ADAPTER_CAP_RESPONSE_V3;
-> +	req.hdr.dev_id = mib_dev->gc->mana_ib.dev_id;
-> +
-> +	err = mana_gd_send_request(mib_dev->gc, sizeof(req), &req,
-> +				   sizeof(resp), &resp);
-> +
-> +	if (err) {
-> +		ibdev_err(&mib_dev->ib_dev, "Failed to query adapter caps err %d", err);
-> +		return err;
-> +	}
-> +
-> +	memcpy(&mib_dev->adapter_caps, &resp.max_sq_id,
-> +			sizeof(mib_dev->adapter_caps));
 
-Hi Ajay,
 
-The indentation of the line above is off.
+>  		*width = IB_WIDTH_1X;
+>  		*speed = IB_SPEED_FDR10;
+> -	} else if (netdev_speed <= SPEED_20000) {
+> +		break;
+> +	case SPEED_20000:
+>  		*width = IB_WIDTH_4X;
+>  		*speed = IB_SPEED_DDR;
+> -	} else if (netdev_speed <= SPEED_25000) {
+> +		break;
+> +	case SPEED_25000:
+>  		*width = IB_WIDTH_1X;
+>  		*speed = IB_SPEED_EDR;
+> -	} else if (netdev_speed <= SPEED_40000) {
+> +		break;
+> +	case SPEED_40000:
+>  		*width = IB_WIDTH_4X;
+>  		*speed = IB_SPEED_FDR10;
+> -	} else {
+> +		break;
+> +	case SPEED_50000:
+> +		*width = IB_WIDTH_2X;
+> +		*speed = IB_SPEED_EDR;
+> +		break;
+> +	case SPEED_56000:
+> +		*width = IB_WIDTH_4X;
+> +		*speed = IB_SPEED_FDR;
+> +		break;
+> +	case SPEED_100000:
+> +		*width = IB_WIDTH_4X;
+> +		*speed = IB_SPEED_EDR;
+> +		break;
+> +	case SPEED_200000:
+> +		*width = IB_WIDTH_4X;
+> +		*speed = IB_SPEED_HDR;
+> +		break;
+> +	default:
+>  		*width = IB_WIDTH_4X;
+>  		*speed = IB_SPEED_EDR;
+>  	}
+> -- 
+> 2.5.5
+> 
 
-	memcpy(&mib_dev->adapter_caps, &resp.max_sq_id,
-	       sizeof(mib_dev->adapter_caps));
 
-But, perhaps more importantly, an x86_64 allmodconfig W=1 build with gcc-12
-yields:
-
- In file included from ./include/linux/string.h:254,
-                  from ./include/linux/bitmap.h:11,
-                  from ./include/linux/ethtool.h:16,
-                  from ./include/rdma/ib_verbs.h:15,
-                  from drivers/infiniband/hw/mana/mana_ib.h:9,
-                  from drivers/infiniband/hw/mana/main.c:6:
- In function 'fortify_memcpy_chk',
-     inlined from 'mana_ib_query_adapter_caps' at drivers/infiniband/hw/mana/main.c:626:2:
- ./include/linux/fortify-string.h:592:25: warning: call to '__read_overflow2_field' declared with attribute warning: detected read beyond size of field (2nd parameter); maybe use struct_group()? [-Wattribute-warning]
-   592 |                         __read_overflow2_field(q_size_field, size);
-       |
-
-> +	return 0;
-> +}
-
-...
