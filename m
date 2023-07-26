@@ -2,64 +2,154 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 38B69762E40
-	for <lists+linux-rdma@lfdr.de>; Wed, 26 Jul 2023 09:44:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E470D762F6D
+	for <lists+linux-rdma@lfdr.de>; Wed, 26 Jul 2023 10:16:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232664AbjGZHoa (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 26 Jul 2023 03:44:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36870 "EHLO
+        id S232109AbjGZIQh (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 26 Jul 2023 04:16:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58596 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230398AbjGZHny (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 26 Jul 2023 03:43:54 -0400
-Received: from mail.strategicvision.pl (mail.strategicvision.pl [217.61.105.98])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D9B54682
-        for <linux-rdma@vger.kernel.org>; Wed, 26 Jul 2023 00:39:32 -0700 (PDT)
-Received: by mail.strategicvision.pl (Postfix, from userid 1002)
-        id 4C02183B10; Wed, 26 Jul 2023 09:37:07 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=strategicvision.pl;
-        s=mail; t=1690357053;
-        bh=Z0N5VlX9/JlryGOL5I747Le9USomZJCRNNGRT3LbbKc=;
-        h=Date:From:To:Subject:From;
-        b=opdOPjueEZkYTyDY7zxy3XxzIys/StX/bnH9vHKmFefKEhbCz00CkhgrwsrNUg/Va
-         IPkKhCDWibpkwbP2EtqkN7nvWj1SVaysjZAAhtwFT9M8s+ZoE9T0ZUMmNqoRzvtE/s
-         I9NB0AyvV+5QJfW79hLJ2M48DIJwcceLKbWRwLaEIsBw/5lsHfS22iLeEqJCNIDQai
-         FLZEKcWEiUBypZcAeh0j66FgS154qUe4XbBjWbAVHU87mZBrHg6Vl62FPNtKA4t1Q0
-         5O4C9fm4ErjENo3BwtFxnCL9Ikc+9S20hpU2mfQ1jO/vuQf0v8RvdOfgapIpRwiq5d
-         i+pYMVt9j/0xw==
-Received: by mail.strategicvision.pl for <linux-rdma@vger.kernel.org>; Wed, 26 Jul 2023 07:35:40 GMT
-Message-ID: <20230726084502-0.1.k.8mpi.0.2r4jwfc6bi@strategicvision.pl>
-Date:   Wed, 26 Jul 2023 07:35:40 GMT
-From:   "Adam Charachuta" <adam.charachuta@strategicvision.pl>
-To:     <linux-rdma@vger.kernel.org>
-Subject: =?UTF-8?Q?S=C5=82owa_kluczowe_do_wypozycjonowania?=
-X-Mailer: mail.strategicvision.pl
-MIME-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=3.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_SBL_CSS,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED,URIBL_CSS_A,URIBL_DBL_SPAM
-        autolearn=no autolearn_force=no version=3.4.6
-X-Spam-Level: ***
+        with ESMTP id S231500AbjGZIQI (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 26 Jul 2023 04:16:08 -0400
+Received: from zg8tndyumtaxlji0oc4xnzya.icoremail.net (zg8tndyumtaxlji0oc4xnzya.icoremail.net [46.101.248.176])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 9D83A9032;
+        Wed, 26 Jul 2023 01:06:06 -0700 (PDT)
+Received: from localhost.localdomain (unknown [183.128.133.253])
+        by mail-app2 (Coremail) with SMTP id by_KCgCXDxvL08BkJ3uYCg--.38134S4;
+        Wed, 26 Jul 2023 16:05:32 +0800 (CST)
+From:   Lin Ma <linma@zju.edu.cn>
+To:     michael.chan@broadcom.com, davem@davemloft.net,
+        edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
+        ajit.khaparde@broadcom.com, sriharsha.basavapatna@broadcom.com,
+        somnath.kotur@broadcom.com, jesse.brandeburg@intel.com,
+        anthony.l.nguyen@intel.com, saeedm@nvidia.com, leon@kernel.org,
+        simon.horman@corigine.com, louis.peens@corigine.com,
+        yinjun.zhang@corigine.com, huanhuan.wang@corigine.com,
+        tglx@linutronix.de, bigeasy@linutronix.de, na.wang@corigine.com,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        intel-wired-lan@lists.osuosl.org, linux-rdma@vger.kernel.org,
+        oss-drivers@corigine.com
+Cc:     Lin Ma <linma@zju.edu.cn>
+Subject: [PATCH net-next v1] rtnetlink: remove redundant checks for nlattr IFLA_BRIDGE_MODE
+Date:   Wed, 26 Jul 2023 16:05:22 +0800
+Message-Id: <20230726080522.1064569-1-linma@zju.edu.cn>
+X-Mailer: git-send-email 2.17.1
+X-CM-TRANSID: by_KCgCXDxvL08BkJ3uYCg--.38134S4
+X-Coremail-Antispam: 1UD129KBjvJXoWxZw1DXF1xXw4xWrW3Gw17Wrg_yoWrGFWxpa
+        1UJa4xZ3yvqr45Xan7Ja18ZF9Yqay7t34DuF4Syw4rZ3WvvFyDCr4qgF9I9ryUArWUGF13
+        tr4UAF13Aas8X3JanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUkE14x267AKxVWrJVCq3wAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
+        1l84ACjcxK6xIIjxv20xvE14v26w1j6s0DM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26F4U
+        JVW0owA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x0267AKxVW0oV
+        Cq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0
+        I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r1j6r
+        4UM4x0Y48IcxkI7VAKI48JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwACI402YVCY1x02628v
+        n2kIc2xKxwCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F4
+        0E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_GFv_Wryl
+        IxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxV
+        AFwI0_Gr0_Cr1lIxAIcVCF04k26cxKx2IYs7xG6r1j6r1xMIIF0xvEx4A2jsIE14v26r1j
+        6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x0JUd8n
+        5UUUUU=
+X-CM-SenderInfo: qtrwiiyqvtljo62m3hxhgxhubq/
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,RCVD_IN_MSPIKE_H4,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Dzie=C5=84 dobry,
+The previous patch added the nla_len check in rtnl_bridge_setlink, which
+is the only caller for ndo_bridge_setlink handlers defined in low-level
+driver codes. Hence, this patch cleanups the redundant checks in each
+ndo_bridge_setlink handler function.
 
-zapozna=C5=82em si=C4=99 z Pa=C5=84stwa ofert=C4=85 i z przyjemno=C5=9Bci=
-=C4=85 przyznaj=C4=99, =C5=BCe przyci=C4=85ga uwag=C4=99 i zach=C4=99ca d=
-o dalszych rozm=C3=B3w.=20
+Please apply the fix discussed at the link:
+https://lore.kernel.org/all/20230726075314.1059224-1-linma@zju.edu.cn/
+first before this one.
 
-Pomy=C5=9Bla=C5=82em, =C5=BCe mo=C5=BCe m=C3=B3g=C5=82bym mie=C4=87 sw=C3=
-=B3j wk=C5=82ad w Pa=C5=84stwa rozw=C3=B3j i pom=C3=B3c dotrze=C4=87 z t=C4=
-=85 ofert=C4=85 do wi=C4=99kszego grona odbiorc=C3=B3w. Pozycjonuj=C4=99 =
-strony www, dzi=C4=99ki czemu generuj=C4=85 =C5=9Bwietny ruch w sieci.
+Suggested-by: Hangbin Liu <liuhangbin@gmail.com>
+Signed-off-by: Lin Ma <linma@zju.edu.cn>
+---
+ drivers/net/ethernet/broadcom/bnxt/bnxt.c           | 3 ---
+ drivers/net/ethernet/emulex/benet/be_main.c         | 3 ---
+ drivers/net/ethernet/intel/ixgbe/ixgbe_main.c       | 3 ---
+ drivers/net/ethernet/mellanox/mlx5/core/en_main.c   | 3 ---
+ drivers/net/ethernet/netronome/nfp/nfp_net_common.c | 3 ---
+ 5 files changed, 15 deletions(-)
 
-Mo=C5=BCemy porozmawia=C4=87 w najbli=C5=BCszym czasie?
+diff --git a/drivers/net/ethernet/broadcom/bnxt/bnxt.c b/drivers/net/ethernet/broadcom/bnxt/bnxt.c
+index e5b54e6025be..9e098c1cf1ab 100644
+--- a/drivers/net/ethernet/broadcom/bnxt/bnxt.c
++++ b/drivers/net/ethernet/broadcom/bnxt/bnxt.c
+@@ -13101,9 +13101,6 @@ static int bnxt_bridge_setlink(struct net_device *dev, struct nlmsghdr *nlh,
+ 		if (nla_type(attr) != IFLA_BRIDGE_MODE)
+ 			continue;
+ 
+-		if (nla_len(attr) < sizeof(mode))
+-			return -EINVAL;
+-
+ 		mode = nla_get_u16(attr);
+ 		if (mode == bp->br_mode)
+ 			break;
+diff --git a/drivers/net/ethernet/emulex/benet/be_main.c b/drivers/net/ethernet/emulex/benet/be_main.c
+index 18c2fc880d09..e8abc43a7061 100644
+--- a/drivers/net/ethernet/emulex/benet/be_main.c
++++ b/drivers/net/ethernet/emulex/benet/be_main.c
+@@ -4985,9 +4985,6 @@ static int be_ndo_bridge_setlink(struct net_device *dev, struct nlmsghdr *nlh,
+ 		if (nla_type(attr) != IFLA_BRIDGE_MODE)
+ 			continue;
+ 
+-		if (nla_len(attr) < sizeof(mode))
+-			return -EINVAL;
+-
+ 		mode = nla_get_u16(attr);
+ 		if (BE3_chip(adapter) && mode == BRIDGE_MODE_VEPA)
+ 			return -EOPNOTSUPP;
+diff --git a/drivers/net/ethernet/intel/ixgbe/ixgbe_main.c b/drivers/net/ethernet/intel/ixgbe/ixgbe_main.c
+index 1726297f2e0d..d1381b1b3f3a 100644
+--- a/drivers/net/ethernet/intel/ixgbe/ixgbe_main.c
++++ b/drivers/net/ethernet/intel/ixgbe/ixgbe_main.c
+@@ -10042,9 +10042,6 @@ static int ixgbe_ndo_bridge_setlink(struct net_device *dev,
+ 		if (nla_type(attr) != IFLA_BRIDGE_MODE)
+ 			continue;
+ 
+-		if (nla_len(attr) < sizeof(mode))
+-			return -EINVAL;
+-
+ 		mode = nla_get_u16(attr);
+ 		status = ixgbe_configure_bridge_mode(adapter, mode);
+ 		if (status)
+diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en_main.c b/drivers/net/ethernet/mellanox/mlx5/core/en_main.c
+index defb1efccb78..b2df8e517a85 100644
+--- a/drivers/net/ethernet/mellanox/mlx5/core/en_main.c
++++ b/drivers/net/ethernet/mellanox/mlx5/core/en_main.c
+@@ -4883,9 +4883,6 @@ static int mlx5e_bridge_setlink(struct net_device *dev, struct nlmsghdr *nlh,
+ 		if (nla_type(attr) != IFLA_BRIDGE_MODE)
+ 			continue;
+ 
+-		if (nla_len(attr) < sizeof(mode))
+-			return -EINVAL;
+-
+ 		mode = nla_get_u16(attr);
+ 		if (mode > BRIDGE_MODE_VEPA)
+ 			return -EINVAL;
+diff --git a/drivers/net/ethernet/netronome/nfp/nfp_net_common.c b/drivers/net/ethernet/netronome/nfp/nfp_net_common.c
+index 6b1fb5708434..85f36ec2f986 100644
+--- a/drivers/net/ethernet/netronome/nfp/nfp_net_common.c
++++ b/drivers/net/ethernet/netronome/nfp/nfp_net_common.c
+@@ -2068,9 +2068,6 @@ static int nfp_net_bridge_setlink(struct net_device *dev, struct nlmsghdr *nlh,
+ 		if (nla_type(attr) != IFLA_BRIDGE_MODE)
+ 			continue;
+ 
+-		if (nla_len(attr) < sizeof(mode))
+-			return -EINVAL;
+-
+ 		new_ctrl = nn->dp.ctrl;
+ 		mode = nla_get_u16(attr);
+ 		if (mode == BRIDGE_MODE_VEPA)
+-- 
+2.17.1
 
-
-Pozdrawiam
-Adam Charachuta
