@@ -2,60 +2,60 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9214B765C20
-	for <lists+linux-rdma@lfdr.de>; Thu, 27 Jul 2023 21:29:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F5B6765C23
+	for <lists+linux-rdma@lfdr.de>; Thu, 27 Jul 2023 21:29:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232131AbjG0T3g (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 27 Jul 2023 15:29:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54072 "EHLO
+        id S230428AbjG0T3i (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 27 Jul 2023 15:29:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54062 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232208AbjG0T3d (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 27 Jul 2023 15:29:33 -0400
-Received: from mail-oo1-xc2b.google.com (mail-oo1-xc2b.google.com [IPv6:2607:f8b0:4864:20::c2b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E3DF30DE
-        for <linux-rdma@vger.kernel.org>; Thu, 27 Jul 2023 12:29:28 -0700 (PDT)
-Received: by mail-oo1-xc2b.google.com with SMTP id 006d021491bc7-5636425bf98so783829eaf.1
-        for <linux-rdma@vger.kernel.org>; Thu, 27 Jul 2023 12:29:28 -0700 (PDT)
+        with ESMTP id S232238AbjG0T3f (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 27 Jul 2023 15:29:35 -0400
+Received: from mail-oo1-xc2d.google.com (mail-oo1-xc2d.google.com [IPv6:2607:f8b0:4864:20::c2d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A339D30EB
+        for <linux-rdma@vger.kernel.org>; Thu, 27 Jul 2023 12:29:29 -0700 (PDT)
+Received: by mail-oo1-xc2d.google.com with SMTP id 006d021491bc7-55e1ae72dceso945572eaf.3
+        for <linux-rdma@vger.kernel.org>; Thu, 27 Jul 2023 12:29:29 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1690486167; x=1691090967;
+        d=gmail.com; s=20221208; t=1690486168; x=1691090968;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=xkhXia8nk+h5EHW4veENIj/UEu81qfF17hc+BGHHcpE=;
-        b=imVTSu6Y+4KnL0vp2R1KdQKcwF94pl0/a/6xUUWrsMe4lIHhahzi/Wr7jFWzy4NF7M
-         FvQp5gVdLtGNORqmLkXAq9P+0ETJd5X6V2WTy48s+o1XGElKFQEorxCMr+N/ZUjYzaK8
-         hMfCFelMY1f0oqEzy8N0mUYrlXT6YnPZrEy9d/0e4YfzBQ9cYun2gSDhoyUWoJGCSq+E
-         P3RM1Yh+JFtpLX+UjNcsLHNTnNFWGBnZq5vEqpgYP3GVw30DvixUWh7sJbc+k7l0kXQh
-         e0VFO83NLUW6Oc7kaIiLicwMtqYy+0XedL+0u843lMJ86g16KFfVIgU15xEFGUMwSQ2Q
-         NAzw==
+        bh=+Nc50FVncZ2IVPM6QTujb5QZN24UXhvEl5eqKrdS9c4=;
+        b=ABfBgav1XwUr5fXXota8QbJqoTxtzuiXwbhK/Yeedw0mp6SqP9G3qY7kD9S/gTxO3j
+         LpBo2kozXQzeBOZb+15eDxGD5bMXacNk+eqX8/Ab1+n+NypwRgf4K9e9Fbaa2/F6YN4u
+         3p4LMcT5a55xFby8JNsyALpMbnFSo1Pi0sUPLwydj2OV53V2x+Ow2bwCUbm0MuooOQj/
+         d5IrbiI/Nm5dd/x0OMTJz78h56m/ZFxHBHoPmQcheJJ3u8KLYovBtBTuUcjtmgdXG3c0
+         KYs3/EXORqC52SJE9m2yhFEOsXvHTc68rWqOFLFqleaYdH15KyFsJXa88qpbQ3Oc05Jd
+         /DJQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690486167; x=1691090967;
+        d=1e100.net; s=20221208; t=1690486168; x=1691090968;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=xkhXia8nk+h5EHW4veENIj/UEu81qfF17hc+BGHHcpE=;
-        b=UBydVdTtqsgEa7gBtL79U8UWKc+aIpPU0vGh/8+NjhRMdcYHeIkIil12QWdpYwHbLI
-         /pRFNjyL4yL/J9r++OccXt8gde4wLxrrXDbCEyD6fjsUf/bj1l/uEKnrVB53dS1lGaC0
-         HxCqO3QUQ4rfVDbqe8C92c8qnnQGUUqSS+OInnNQq0gimNcMSovhUwt2g5EJJTOAM6z0
-         mx7QXDtQW2jGhEjk2zwAf1/PRSHvQf3SyS2+H5l08IkSosKov2yLKlxTj42+T/jQM8lS
-         00EsJbcH0UyzCLsuta5vjZAqTaokVFrWyHxVOL9w3EzR+jPvBYI+NEED7yPsoiqcFcF5
-         PnNg==
-X-Gm-Message-State: ABy/qLbg9isRW/ana8ZoO0MQBq9a9XlLl/OU9M8tJ2IAwdToy38w3E1m
-        oMrIO/zKnuWZUee62SFSn6I=
-X-Google-Smtp-Source: APBJJlG9k4v66VSVXJ4sypw8Rli8LoiUK43NCLcnLa3I3I2r1tbUPvFQ8i+p28hWaz/8uzvwjx6wXg==
-X-Received: by 2002:a4a:351e:0:b0:566:fbfb:6278 with SMTP id l30-20020a4a351e000000b00566fbfb6278mr506727ooa.4.1690486167292;
-        Thu, 27 Jul 2023 12:29:27 -0700 (PDT)
+        bh=+Nc50FVncZ2IVPM6QTujb5QZN24UXhvEl5eqKrdS9c4=;
+        b=YmDdgdIMifOsFkxrmikXCkPijjopg6XhB1p+GWRswOT4psfiMvoq3NXbjdXd89m0Qy
+         Ef0cliM4gOf3zZsuEvcqNla/5tMi2M5xye8xrIVpup78kOs2GAyCLbHoo6KM38CP2aJJ
+         xCLLUHZ2xCJ6FSS7oytDzIY6XavRnppZnOLYOnqL0fAIjMmI/JGz8aKruj6NI9e0WUOR
+         LNq9/LWC+A2poYWxkgfZozJEv6XVBe0icYBDZMtBGjm+scv0rJdBy1WkHZ39kGLy9fYD
+         KsPc6WjTz32weDZTsGCPJcVHn7f+d6TKWI72oWzSl/W6h3wwxwCNwRilNWRR8OiHYhJ/
+         7R0w==
+X-Gm-Message-State: ABy/qLb57ZZht2oRHKLWNAYVh8Q2IBZ9QggAfoelWi0gVpY6pzQvBgjX
+        TV1GsSsE8NIiLjPCElXxM5GGAaQ7s5s=
+X-Google-Smtp-Source: APBJJlEAKySnwwtanHi4jovHqwFT/ill+IiFtXOqNADMZpN+BisMz06gotu26t6drkNF5wm2f6cdYw==
+X-Received: by 2002:a4a:7656:0:b0:567:27f4:8c45 with SMTP id w22-20020a4a7656000000b0056727f48c45mr348876ooe.8.1690486168361;
+        Thu, 27 Jul 2023 12:29:28 -0700 (PDT)
 Received: from rpearson-X570-AORUS-PRO-WIFI.tx.rr.com (2603-8081-140c-1a00-a360-d7ee-0b00-a1d3.res6.spectrum.com. [2603:8081:140c:1a00:a360:d7ee:b00:a1d3])
-        by smtp.gmail.com with ESMTPSA id f185-20020a4a58c2000000b005658aed310bsm955354oob.15.2023.07.27.12.29.26
+        by smtp.gmail.com with ESMTPSA id f185-20020a4a58c2000000b005658aed310bsm955354oob.15.2023.07.27.12.29.27
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
         Thu, 27 Jul 2023 12:29:27 -0700 (PDT)
 From:   Bob Pearson <rpearsonhpe@gmail.com>
 To:     jgg@nvidia.com, zyjzyj2000@gmail.com, linux-rdma@vger.kernel.org,
         jhack@hpe.com
 Cc:     Bob Pearson <rpearsonhpe@gmail.com>
-Subject: [PATCH for-next v3 6/8] RDMA/rxe: Put fake udp send code in a subroutine
-Date:   Thu, 27 Jul 2023 14:28:30 -0500
-Message-Id: <20230727192831.65495-7-rpearsonhpe@gmail.com>
+Subject: [PATCH for-next v3 7/8] RDMA/rxe: Combine setting pkt info
+Date:   Thu, 27 Jul 2023 14:28:31 -0500
+Message-Id: <20230727192831.65495-8-rpearsonhpe@gmail.com>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20230727192831.65495-1-rpearsonhpe@gmail.com>
 References: <20230727192831.65495-1-rpearsonhpe@gmail.com>
@@ -71,69 +71,93 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Isolate the code that handles the case of an overlong to a
-subroutine named fake_udp_send().
+Move setting some rxe_pkt_info fields in rxe_init_packet() together
+with the rest of the fields in rxe_init_req_packet() and
+prepare_ack_packet().
 
 Signed-off-by: Bob Pearson <rpearsonhpe@gmail.com>
 ---
- drivers/infiniband/sw/rxe/rxe_req.c | 37 ++++++++++++++++-------------
- 1 file changed, 20 insertions(+), 17 deletions(-)
+ drivers/infiniband/sw/rxe/rxe_net.c  |  6 ------
+ drivers/infiniband/sw/rxe/rxe_req.c  |  4 +++-
+ drivers/infiniband/sw/rxe/rxe_resp.c | 12 ++++++++----
+ 3 files changed, 11 insertions(+), 11 deletions(-)
 
+diff --git a/drivers/infiniband/sw/rxe/rxe_net.c b/drivers/infiniband/sw/rxe/rxe_net.c
+index 006c2d60f04d..94e347a7f386 100644
+--- a/drivers/infiniband/sw/rxe/rxe_net.c
++++ b/drivers/infiniband/sw/rxe/rxe_net.c
+@@ -516,7 +516,6 @@ struct sk_buff *rxe_init_packet(struct rxe_dev *rxe, struct rxe_av *av,
+ 	unsigned int hdr_len;
+ 	struct sk_buff *skb = NULL;
+ 	struct net_device *ndev = rxe->ndev;
+-	const int port_num = 1;
+ 
+ 	if (av->network_type == RXE_NETWORK_TYPE_IPV4)
+ 		hdr_len = ETH_HLEN + sizeof(struct udphdr) +
+@@ -540,11 +539,6 @@ struct sk_buff *rxe_init_packet(struct rxe_dev *rxe, struct rxe_av *av,
+ 	else
+ 		skb->protocol = htons(ETH_P_IPV6);
+ 
+-	pkt->rxe	= rxe;
+-	pkt->port_num	= port_num;
+-	pkt->hdr	= skb_put(skb, pkt->paylen);
+-	pkt->mask	|= RXE_GRH_MASK;
+-
+ out:
+ 	return skb;
+ }
 diff --git a/drivers/infiniband/sw/rxe/rxe_req.c b/drivers/infiniband/sw/rxe/rxe_req.c
-index 27be1a946d62..8423d259f26a 100644
+index 8423d259f26a..4db1bacdfdb8 100644
 --- a/drivers/infiniband/sw/rxe/rxe_req.c
 +++ b/drivers/infiniband/sw/rxe/rxe_req.c
-@@ -707,6 +707,24 @@ static int rxe_do_local_ops(struct rxe_qp *qp, struct rxe_send_wqe *wqe)
- 	return 0;
- }
+@@ -512,7 +512,7 @@ static struct sk_buff *rxe_init_req_packet(struct rxe_qp *qp,
+ 	pkt->opcode = opcode;
+ 	pkt->qp = qp;
+ 	pkt->psn = qp->req.psn;
+-	pkt->mask = rxe_opcode[opcode].mask;
++	pkt->mask = rxe_opcode[opcode].mask | RXE_GRH_MASK;
+ 	pkt->wqe = wqe;
+ 	pkt->port_num = 1;
  
-+/* C10-93.1.1: If the total sum of all the buffer lengths specified for a
-+ * UD message exceeds the MTU of the port as returned by QueryHCA, the CI
-+ * shall not emit any packets for this message. Further, the CI shall not
-+ * generate an error due to this condition.
-+ */
-+static void fake_udp_send(struct rxe_qp *qp, struct rxe_send_wqe *wqe)
-+{
-+	wqe->first_psn = qp->req.psn;
-+	wqe->last_psn = qp->req.psn;
-+	qp->req.psn = (qp->req.psn + 1) & BTH_PSN_MASK;
-+	qp->req.opcode = IB_OPCODE_UD_SEND_ONLY;
-+	qp->req.wqe_index = queue_next_index(qp->sq.queue,
-+				       qp->req.wqe_index);
-+	wqe->state = wqe_state_done;
-+	wqe->status = IB_WC_SUCCESS;
-+	rxe_run_task(&qp->comp.task);
-+}
+@@ -535,6 +535,8 @@ static struct sk_buff *rxe_init_req_packet(struct rxe_qp *qp,
+ 		goto err_out;
+ 	}
+ 
++	pkt->hdr = skb_put(skb, pkt->paylen);
 +
- int rxe_requester(struct rxe_qp *qp)
- {
- 	struct rxe_pkt_info pkt;
-@@ -810,23 +828,8 @@ int rxe_requester(struct rxe_qp *qp)
- 	payload = (mask & (RXE_WRITE_OR_SEND_MASK | RXE_ATOMIC_WRITE_MASK)) ?
- 			wqe->dma.resid : 0;
- 	if (payload > mtu) {
--		if (qp_type(qp) == IB_QPT_UD) {
--			/* C10-93.1.1: If the total sum of all the buffer lengths specified for a
--			 * UD message exceeds the MTU of the port as returned by QueryHCA, the CI
--			 * shall not emit any packets for this message. Further, the CI shall not
--			 * generate an error due to this condition.
--			 */
--
--			/* fake a successful UD send */
--			wqe->first_psn = qp->req.psn;
--			wqe->last_psn = qp->req.psn;
--			qp->req.psn = (qp->req.psn + 1) & BTH_PSN_MASK;
--			qp->req.opcode = IB_OPCODE_UD_SEND_ONLY;
--			qp->req.wqe_index = queue_next_index(qp->sq.queue,
--						       qp->req.wqe_index);
--			wqe->state = wqe_state_done;
--			wqe->status = IB_WC_SUCCESS;
--			rxe_sched_task(&qp->comp.task);
-+		if (unlikely(qp_type(qp) == IB_QPT_UD)) {
-+			fake_udp_send(qp, wqe);
- 			goto done;
- 		}
- 		payload = mtu;
+ 	/* init roce headers */
+ 	rxe_init_roce_hdrs(qp, wqe, pkt);
+ 
+diff --git a/drivers/infiniband/sw/rxe/rxe_resp.c b/drivers/infiniband/sw/rxe/rxe_resp.c
+index 7e79d3e4d64e..8a25c56dfd86 100644
+--- a/drivers/infiniband/sw/rxe/rxe_resp.c
++++ b/drivers/infiniband/sw/rxe/rxe_resp.c
+@@ -768,6 +768,13 @@ static struct sk_buff *prepare_ack_packet(struct rxe_qp *qp,
+ 	struct sk_buff *skb;
+ 	int err;
+ 
++	ack->rxe = rxe;
++	ack->qp = qp;
++	ack->opcode = opcode;
++	ack->mask = rxe_opcode[opcode].mask | RXE_GRH_MASK;
++	ack->psn = psn;
++	ack->port_num = 1;
++
+ 	/*
+ 	 * allocate packet
+ 	 */
+@@ -779,10 +786,7 @@ static struct sk_buff *prepare_ack_packet(struct rxe_qp *qp,
+ 	if (!skb)
+ 		return NULL;
+ 
+-	ack->qp = qp;
+-	ack->opcode = opcode;
+-	ack->mask = rxe_opcode[opcode].mask;
+-	ack->psn = psn;
++	ack->hdr = skb_put(skb, ack->paylen);
+ 
+ 	bth_init(ack, opcode, 0, 0, ack->pad, IB_DEFAULT_PKEY_FULL,
+ 		 qp->attr.dest_qp_num, 0, psn);
 -- 
 2.39.2
 
