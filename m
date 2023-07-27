@@ -2,68 +2,65 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 80934765C24
-	for <lists+linux-rdma@lfdr.de>; Thu, 27 Jul 2023 21:29:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AC74B765CC3
+	for <lists+linux-rdma@lfdr.de>; Thu, 27 Jul 2023 22:02:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232184AbjG0T3j (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 27 Jul 2023 15:29:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54122 "EHLO
+        id S231206AbjG0UCM (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 27 Jul 2023 16:02:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40246 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232249AbjG0T3f (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 27 Jul 2023 15:29:35 -0400
-Received: from mail-oo1-xc2f.google.com (mail-oo1-xc2f.google.com [IPv6:2607:f8b0:4864:20::c2f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AEAD23585
-        for <linux-rdma@vger.kernel.org>; Thu, 27 Jul 2023 12:29:30 -0700 (PDT)
-Received: by mail-oo1-xc2f.google.com with SMTP id 006d021491bc7-55e1ae72dceso945581eaf.3
-        for <linux-rdma@vger.kernel.org>; Thu, 27 Jul 2023 12:29:30 -0700 (PDT)
+        with ESMTP id S232220AbjG0UCL (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 27 Jul 2023 16:02:11 -0400
+Received: from mail-ot1-x32a.google.com (mail-ot1-x32a.google.com [IPv6:2607:f8b0:4864:20::32a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 871562D7B
+        for <linux-rdma@vger.kernel.org>; Thu, 27 Jul 2023 13:02:10 -0700 (PDT)
+Received: by mail-ot1-x32a.google.com with SMTP id 46e09a7af769-6bb29b9044dso1187195a34.1
+        for <linux-rdma@vger.kernel.org>; Thu, 27 Jul 2023 13:02:10 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1690486169; x=1691090969;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=MaJEk5vt2+/wifPhSnLjuk98YQwix/8lRPzZb8SRjVY=;
-        b=Q1A0A9K9xG1/+A9wggaii/E9IA5os8hi0QIfYtSF01BQJGV38uVPT79sg1piGLN7jk
-         btxbiel1+TD40nEXHoaPP0yAiiSCg6eIiCEwti8Ni1QZDnoWP4iEpcur2xjt0QWJwqnm
-         gPFk0MeSkjoS6y3yu17nI6yuuk5LUNSrfWpAhybyWRuV1RKCNqBF3cCxkEQEkaiUG8FW
-         /WTbEGVxmen+JmoaCb3WQeKTH0DvKtGZy9N4HL3oA9N/OAh+wCxfvETov8zfLZHRr7aW
-         S8iwOjcEyMXG4MAXVlDyZ5kq/WCosz3g3Mnr9nGmUhgj/27D4Y0k7TA+uN0NuvA0Hzoi
-         PptA==
+        d=gmail.com; s=20221208; t=1690488130; x=1691092930;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=f8pycM7F39+X1O6TV8CFPhwmYOkSEU3KgWwk/S3UeSU=;
+        b=Ix94ktlU/n8E+zzqJvljjuof3GqaL1qGmf4LwZNIH80nZg9SjNadmU9GkmrtQ+Autb
+         mRilL55w8Huv75QXPUAd7m6fCFN0waIYw2z7Qusa0tq27JTrnCEZ2bIJZQqQLZJEKrPt
+         Oxxo5hi6cdSgNP51TnSsymZhbvPv9MZNEll83b3IAujCZ7AQCQkyCTik/puDTrGhfxk+
+         ne+mgi0YM7UNjjFhBBKwzRH6oTcIUc55QGTuS7F2u67FoE/KSKhikoNS8soJDvfh0eqn
+         VFZ8aaHyAAnx2qx/wqrhQGD/sxhmuEw9NpdM6Km3LsAy95EHJbGYFiAghVchTJVjmbws
+         mbtQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690486169; x=1691090969;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=MaJEk5vt2+/wifPhSnLjuk98YQwix/8lRPzZb8SRjVY=;
-        b=RlNRiFK7XUTvTIy3SQgCt80oqMyKrEJnyn7UnDOmk7qvefWFNCToUyu7onP6/cLhry
-         jaMB5BBX1iNJgtzwXYEMNNhHHIDBVPtZatpzEMdfk4Ru7OwRV67x2vjzyWbCgNGShUhh
-         G9VSIttjC/STi+0KPKmnYu5f2gb9WOfiBo5EfqftbMaGF7mBNn3suOFK0ij1+A60drfu
-         d682tvHeGOmzVmMUj130LIzXQRC5BByjTAsK1gSqDW2ZfxeP7WzuD+nJQvaqa/3su/bv
-         Ayhcanr92MnODp30QsxqR/94EGLpRKGSdkDAYkBw9gOPE/56RxqlOUqYnAB5qS6U32cK
-         C9Ww==
-X-Gm-Message-State: ABy/qLatSwEGjfxXZI7vqdTFpn/nDBl6m+v0NFilxfYe9nngbshZsNST
-        wfpCVzRm4imypd66Tyqp4xA=
-X-Google-Smtp-Source: APBJJlF7tv3GLRfRKkTz246OamsaFfya1ER8X0oGthWqCjVRU7HKEm07KZCa7Me+AgpZkCEd7Ed8Cg==
-X-Received: by 2002:a4a:8201:0:b0:566:f8ee:fa67 with SMTP id d1-20020a4a8201000000b00566f8eefa67mr455270oog.0.1690486169156;
-        Thu, 27 Jul 2023 12:29:29 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1690488130; x=1691092930;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=f8pycM7F39+X1O6TV8CFPhwmYOkSEU3KgWwk/S3UeSU=;
+        b=QDLS0tBqTi5x2Q7718KZr0J91yAx089dRPMfZpNf6DZM9qH/Ro1wJBQpqkjFaQFB/q
+         Q1jEsrniWco66PvmunhzhV06RjkuXdgwEUaQNFplmFCt7WK+v79R2/bARAjwRMqxlBZX
+         Ng5tQoJ+izviit81hTSxqobFt3mONKvJNYQwRpfNDkVjPQtLZUsULt1LZr0K9sv17AdH
+         kIOUTCVh6eyqK1KwmDJlYm4XMH1fFdYz71DnKO0bF/2DHMZMI7R/E8TWV70ux/P10Znx
+         PT9+eiY5K9NmG5jciz0CAYsCwmhoe8k7sCuM56Pl1BN3xgwdaI63aS/jGm8s4fBI9Zqq
+         MPkA==
+X-Gm-Message-State: ABy/qLZ12TFwPtZOt1bsmAeEE53cUTNlVygiA0NmaeQahgV85r34cKpg
+        zi835VVAZ5PU5xfDIgAGMS2sYfqwM+E=
+X-Google-Smtp-Source: APBJJlFYWunlCODceyD6YDS2wox5oyNnmEDwCt2TetO5gFgurLxq2TA+ALtIjh0/tiNG1gDzsyH5bg==
+X-Received: by 2002:a9d:5c10:0:b0:6bc:3133:6aef with SMTP id o16-20020a9d5c10000000b006bc31336aefmr170801otk.26.1690488129789;
+        Thu, 27 Jul 2023 13:02:09 -0700 (PDT)
 Received: from rpearson-X570-AORUS-PRO-WIFI.tx.rr.com (2603-8081-140c-1a00-a360-d7ee-0b00-a1d3.res6.spectrum.com. [2603:8081:140c:1a00:a360:d7ee:b00:a1d3])
-        by smtp.gmail.com with ESMTPSA id f185-20020a4a58c2000000b005658aed310bsm955354oob.15.2023.07.27.12.29.28
+        by smtp.gmail.com with ESMTPSA id m3-20020a9d73c3000000b006b9acf5ebc0sm938142otk.76.2023.07.27.13.02.08
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 27 Jul 2023 12:29:28 -0700 (PDT)
+        Thu, 27 Jul 2023 13:02:08 -0700 (PDT)
 From:   Bob Pearson <rpearsonhpe@gmail.com>
 To:     jgg@nvidia.com, zyjzyj2000@gmail.com, linux-rdma@vger.kernel.org,
         jhack@hpe.com
 Cc:     Bob Pearson <rpearsonhpe@gmail.com>
-Subject: [PATCH for-next v3 8/8] RDMA/rxe: Move next_opcode to rxe_opcode.c
-Date:   Thu, 27 Jul 2023 14:28:32 -0500
-Message-Id: <20230727192831.65495-9-rpearsonhpe@gmail.com>
+Subject: [PATCH for-next v3 00/10] RDMA/rxe: Implement support for nonlinear packets
+Date:   Thu, 27 Jul 2023 15:01:19 -0500
+Message-Id: <20230727200128.65947-1-rpearsonhpe@gmail.com>
 X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20230727192831.65495-1-rpearsonhpe@gmail.com>
-References: <20230727192831.65495-1-rpearsonhpe@gmail.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -71,446 +68,70 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Localize opcode specific code to rxe_opcode.c by moving next_opcode()
-to rxe_next_req_opcode() in rxe_opcode.c.
+This patch set is a revised version of an older set which implements 
+support for nonlinear or fragmented packets. This avoids extra copies
+in both the send and receive paths and gives significant performance
+improvement for large messages such as are used in storage applications.
 
-Signed-off-by: Bob Pearson <rpearsonhpe@gmail.com>
----
- drivers/infiniband/sw/rxe/rxe_opcode.c | 176 ++++++++++++++++++++++++-
- drivers/infiniband/sw/rxe/rxe_opcode.h |   4 +
- drivers/infiniband/sw/rxe/rxe_req.c    | 173 +-----------------------
- 3 files changed, 183 insertions(+), 170 deletions(-)
+This patch set has been heavily tested at large system scale and
+demonstrated a 2X improvement in file system read performance on
+a 200 Gb/sec network.
 
-diff --git a/drivers/infiniband/sw/rxe/rxe_opcode.c b/drivers/infiniband/sw/rxe/rxe_opcode.c
-index 5c0d5c6ffda4..f358b732a751 100644
---- a/drivers/infiniband/sw/rxe/rxe_opcode.c
-+++ b/drivers/infiniband/sw/rxe/rxe_opcode.c
-@@ -5,8 +5,8 @@
-  */
- 
- #include <rdma/ib_pack.h>
--#include "rxe_opcode.h"
--#include "rxe_hdr.h"
-+
-+#include "rxe.h"
- 
- /* useful information about work request opcodes and pkt opcodes in
-  * table form
-@@ -973,3 +973,175 @@ struct rxe_opcode_info rxe_opcode[RXE_NUM_OPCODE] = {
- 	},
- 
- };
-+
-+static int next_opcode_rc(int last_opcode, u32 wr_opcode, bool fits)
-+{
-+	switch (wr_opcode) {
-+	case IB_WR_RDMA_WRITE:
-+		if (last_opcode == IB_OPCODE_RC_RDMA_WRITE_FIRST ||
-+		    last_opcode == IB_OPCODE_RC_RDMA_WRITE_MIDDLE)
-+			return fits ?
-+				IB_OPCODE_RC_RDMA_WRITE_LAST :
-+				IB_OPCODE_RC_RDMA_WRITE_MIDDLE;
-+		else
-+			return fits ?
-+				IB_OPCODE_RC_RDMA_WRITE_ONLY :
-+				IB_OPCODE_RC_RDMA_WRITE_FIRST;
-+
-+	case IB_WR_RDMA_WRITE_WITH_IMM:
-+		if (last_opcode == IB_OPCODE_RC_RDMA_WRITE_FIRST ||
-+		    last_opcode == IB_OPCODE_RC_RDMA_WRITE_MIDDLE)
-+			return fits ?
-+				IB_OPCODE_RC_RDMA_WRITE_LAST_WITH_IMMEDIATE :
-+				IB_OPCODE_RC_RDMA_WRITE_MIDDLE;
-+		else
-+			return fits ?
-+				IB_OPCODE_RC_RDMA_WRITE_ONLY_WITH_IMMEDIATE :
-+				IB_OPCODE_RC_RDMA_WRITE_FIRST;
-+
-+	case IB_WR_SEND:
-+		if (last_opcode == IB_OPCODE_RC_SEND_FIRST ||
-+		    last_opcode == IB_OPCODE_RC_SEND_MIDDLE)
-+			return fits ?
-+				IB_OPCODE_RC_SEND_LAST :
-+				IB_OPCODE_RC_SEND_MIDDLE;
-+		else
-+			return fits ?
-+				IB_OPCODE_RC_SEND_ONLY :
-+				IB_OPCODE_RC_SEND_FIRST;
-+
-+	case IB_WR_SEND_WITH_IMM:
-+		if (last_opcode == IB_OPCODE_RC_SEND_FIRST ||
-+		    last_opcode == IB_OPCODE_RC_SEND_MIDDLE)
-+			return fits ?
-+				IB_OPCODE_RC_SEND_LAST_WITH_IMMEDIATE :
-+				IB_OPCODE_RC_SEND_MIDDLE;
-+		else
-+			return fits ?
-+				IB_OPCODE_RC_SEND_ONLY_WITH_IMMEDIATE :
-+				IB_OPCODE_RC_SEND_FIRST;
-+
-+	case IB_WR_SEND_WITH_INV:
-+		if (last_opcode == IB_OPCODE_RC_SEND_FIRST ||
-+		    last_opcode == IB_OPCODE_RC_SEND_MIDDLE)
-+			return fits ?
-+				IB_OPCODE_RC_SEND_LAST_WITH_INVALIDATE :
-+				IB_OPCODE_RC_SEND_MIDDLE;
-+		else
-+			return fits ?
-+				IB_OPCODE_RC_SEND_ONLY_WITH_INVALIDATE :
-+				IB_OPCODE_RC_SEND_FIRST;
-+
-+	case IB_WR_FLUSH:
-+		return IB_OPCODE_RC_FLUSH;
-+
-+	case IB_WR_RDMA_READ:
-+		return IB_OPCODE_RC_RDMA_READ_REQUEST;
-+
-+	case IB_WR_ATOMIC_CMP_AND_SWP:
-+		return IB_OPCODE_RC_COMPARE_SWAP;
-+
-+	case IB_WR_ATOMIC_FETCH_AND_ADD:
-+		return IB_OPCODE_RC_FETCH_ADD;
-+
-+	case IB_WR_ATOMIC_WRITE:
-+		return IB_OPCODE_RC_ATOMIC_WRITE;
-+
-+	case IB_WR_REG_MR:
-+	case IB_WR_LOCAL_INV:
-+		return OPCODE_NONE;	/* not used */
-+	}
-+
-+	return -EINVAL;
-+}
-+
-+static int next_opcode_uc(int last_opcode, u32 wr_opcode, bool fits)
-+{
-+	switch (wr_opcode) {
-+	case IB_WR_RDMA_WRITE:
-+		if (last_opcode == IB_OPCODE_UC_RDMA_WRITE_FIRST ||
-+		    last_opcode == IB_OPCODE_UC_RDMA_WRITE_MIDDLE)
-+			return fits ?
-+				IB_OPCODE_UC_RDMA_WRITE_LAST :
-+				IB_OPCODE_UC_RDMA_WRITE_MIDDLE;
-+		else
-+			return fits ?
-+				IB_OPCODE_UC_RDMA_WRITE_ONLY :
-+				IB_OPCODE_UC_RDMA_WRITE_FIRST;
-+
-+	case IB_WR_RDMA_WRITE_WITH_IMM:
-+		if (last_opcode == IB_OPCODE_UC_RDMA_WRITE_FIRST ||
-+		    last_opcode == IB_OPCODE_UC_RDMA_WRITE_MIDDLE)
-+			return fits ?
-+				IB_OPCODE_UC_RDMA_WRITE_LAST_WITH_IMMEDIATE :
-+				IB_OPCODE_UC_RDMA_WRITE_MIDDLE;
-+		else
-+			return fits ?
-+				IB_OPCODE_UC_RDMA_WRITE_ONLY_WITH_IMMEDIATE :
-+				IB_OPCODE_UC_RDMA_WRITE_FIRST;
-+
-+	case IB_WR_SEND:
-+		if (last_opcode == IB_OPCODE_UC_SEND_FIRST ||
-+		    last_opcode == IB_OPCODE_UC_SEND_MIDDLE)
-+			return fits ?
-+				IB_OPCODE_UC_SEND_LAST :
-+				IB_OPCODE_UC_SEND_MIDDLE;
-+		else
-+			return fits ?
-+				IB_OPCODE_UC_SEND_ONLY :
-+				IB_OPCODE_UC_SEND_FIRST;
-+
-+	case IB_WR_SEND_WITH_IMM:
-+		if (last_opcode == IB_OPCODE_UC_SEND_FIRST ||
-+		    last_opcode == IB_OPCODE_UC_SEND_MIDDLE)
-+			return fits ?
-+				IB_OPCODE_UC_SEND_LAST_WITH_IMMEDIATE :
-+				IB_OPCODE_UC_SEND_MIDDLE;
-+		else
-+			return fits ?
-+				IB_OPCODE_UC_SEND_ONLY_WITH_IMMEDIATE :
-+				IB_OPCODE_UC_SEND_FIRST;
-+	}
-+
-+	return -EINVAL;
-+}
-+
-+/* compute next requester packet opcode
-+ * assumes caller is following the sequence rules
-+ */
-+int next_req_opcode(struct rxe_qp *qp, int resid, u32 wr_opcode)
-+{
-+	int fits = resid <= qp->mtu;
-+	int last_opcode = qp->req.opcode;
-+	int ret;
-+
-+	switch (qp_type(qp)) {
-+	case IB_QPT_RC:
-+		ret = next_opcode_rc(last_opcode, wr_opcode, fits);
-+		break;
-+	case IB_QPT_UC:
-+		ret = next_opcode_uc(last_opcode, wr_opcode, fits);
-+		break;
-+	case IB_QPT_UD:
-+	case IB_QPT_GSI:
-+		switch (wr_opcode) {
-+		case IB_WR_SEND:
-+			ret = IB_OPCODE_UD_SEND_ONLY;
-+			break;
-+		case IB_WR_SEND_WITH_IMM:
-+			ret = IB_OPCODE_UD_SEND_ONLY_WITH_IMMEDIATE;
-+			break;
-+		default:
-+			ret = -EINVAL;
-+			break;
-+		}
-+		break;
-+	default:
-+		ret = -EINVAL;
-+		break;
-+	}
-+
-+	if (ret == -EINVAL)
-+		rxe_err_qp(qp, "unable to compute next opcode");
-+	return ret;
-+}
-diff --git a/drivers/infiniband/sw/rxe/rxe_opcode.h b/drivers/infiniband/sw/rxe/rxe_opcode.h
-index 5686b691d6b8..61030d9c299f 100644
---- a/drivers/infiniband/sw/rxe/rxe_opcode.h
-+++ b/drivers/infiniband/sw/rxe/rxe_opcode.h
-@@ -7,6 +7,8 @@
- #ifndef RXE_OPCODE_H
- #define RXE_OPCODE_H
- 
-+struct rxe_qp;
-+
- /*
-  * contains header bit mask definitions and header lengths
-  * declaration of the rxe_opcode_info struct and
-@@ -108,4 +110,6 @@ struct rxe_opcode_info {
- 
- extern struct rxe_opcode_info rxe_opcode[RXE_NUM_OPCODE];
- 
-+int next_req_opcode(struct rxe_qp *qp, int resid, u32 wr_opcode);
-+
- #endif /* RXE_OPCODE_H */
-diff --git a/drivers/infiniband/sw/rxe/rxe_req.c b/drivers/infiniband/sw/rxe/rxe_req.c
-index 4db1bacdfdb8..51b781ac2844 100644
---- a/drivers/infiniband/sw/rxe/rxe_req.c
-+++ b/drivers/infiniband/sw/rxe/rxe_req.c
-@@ -11,9 +11,6 @@
- #include "rxe_loc.h"
- #include "rxe_queue.h"
- 
--static int next_opcode(struct rxe_qp *qp, struct rxe_send_wqe *wqe,
--		       u32 opcode);
--
- static inline void retry_first_write_send(struct rxe_qp *qp,
- 					  struct rxe_send_wqe *wqe, int npsn)
- {
-@@ -23,8 +20,8 @@ static inline void retry_first_write_send(struct rxe_qp *qp,
- 		int to_send = (wqe->dma.resid > qp->mtu) ?
- 				qp->mtu : wqe->dma.resid;
- 
--		qp->req.opcode = next_opcode(qp, wqe,
--					     wqe->wr.opcode);
-+		qp->req.opcode = next_req_opcode(qp, wqe->dma.resid,
-+						 wqe->wr.opcode);
- 
- 		if (wqe->wr.send_flags & IB_SEND_INLINE) {
- 			wqe->dma.resid -= to_send;
-@@ -51,7 +48,7 @@ static void req_retry(struct rxe_qp *qp)
- 
- 	qp->req.wqe_index	= cons;
- 	qp->req.psn		= qp->comp.psn;
--	qp->req.opcode		= -1;
-+	qp->req.opcode		= OPCODE_NONE;
- 
- 	for (wqe_index = cons; wqe_index != prod;
- 			wqe_index = queue_next_index(q, wqe_index)) {
-@@ -221,166 +218,6 @@ static int rxe_wqe_is_fenced(struct rxe_qp *qp, struct rxe_send_wqe *wqe)
- 		atomic_read(&qp->req.rd_atomic) != qp->attr.max_rd_atomic;
- }
- 
--static int next_opcode_rc(struct rxe_qp *qp, u32 opcode, int fits)
--{
--	switch (opcode) {
--	case IB_WR_RDMA_WRITE:
--		if (qp->req.opcode == IB_OPCODE_RC_RDMA_WRITE_FIRST ||
--		    qp->req.opcode == IB_OPCODE_RC_RDMA_WRITE_MIDDLE)
--			return fits ?
--				IB_OPCODE_RC_RDMA_WRITE_LAST :
--				IB_OPCODE_RC_RDMA_WRITE_MIDDLE;
--		else
--			return fits ?
--				IB_OPCODE_RC_RDMA_WRITE_ONLY :
--				IB_OPCODE_RC_RDMA_WRITE_FIRST;
--
--	case IB_WR_RDMA_WRITE_WITH_IMM:
--		if (qp->req.opcode == IB_OPCODE_RC_RDMA_WRITE_FIRST ||
--		    qp->req.opcode == IB_OPCODE_RC_RDMA_WRITE_MIDDLE)
--			return fits ?
--				IB_OPCODE_RC_RDMA_WRITE_LAST_WITH_IMMEDIATE :
--				IB_OPCODE_RC_RDMA_WRITE_MIDDLE;
--		else
--			return fits ?
--				IB_OPCODE_RC_RDMA_WRITE_ONLY_WITH_IMMEDIATE :
--				IB_OPCODE_RC_RDMA_WRITE_FIRST;
--
--	case IB_WR_SEND:
--		if (qp->req.opcode == IB_OPCODE_RC_SEND_FIRST ||
--		    qp->req.opcode == IB_OPCODE_RC_SEND_MIDDLE)
--			return fits ?
--				IB_OPCODE_RC_SEND_LAST :
--				IB_OPCODE_RC_SEND_MIDDLE;
--		else
--			return fits ?
--				IB_OPCODE_RC_SEND_ONLY :
--				IB_OPCODE_RC_SEND_FIRST;
--
--	case IB_WR_SEND_WITH_IMM:
--		if (qp->req.opcode == IB_OPCODE_RC_SEND_FIRST ||
--		    qp->req.opcode == IB_OPCODE_RC_SEND_MIDDLE)
--			return fits ?
--				IB_OPCODE_RC_SEND_LAST_WITH_IMMEDIATE :
--				IB_OPCODE_RC_SEND_MIDDLE;
--		else
--			return fits ?
--				IB_OPCODE_RC_SEND_ONLY_WITH_IMMEDIATE :
--				IB_OPCODE_RC_SEND_FIRST;
--
--	case IB_WR_FLUSH:
--		return IB_OPCODE_RC_FLUSH;
--
--	case IB_WR_RDMA_READ:
--		return IB_OPCODE_RC_RDMA_READ_REQUEST;
--
--	case IB_WR_ATOMIC_CMP_AND_SWP:
--		return IB_OPCODE_RC_COMPARE_SWAP;
--
--	case IB_WR_ATOMIC_FETCH_AND_ADD:
--		return IB_OPCODE_RC_FETCH_ADD;
--
--	case IB_WR_SEND_WITH_INV:
--		if (qp->req.opcode == IB_OPCODE_RC_SEND_FIRST ||
--		    qp->req.opcode == IB_OPCODE_RC_SEND_MIDDLE)
--			return fits ? IB_OPCODE_RC_SEND_LAST_WITH_INVALIDATE :
--				IB_OPCODE_RC_SEND_MIDDLE;
--		else
--			return fits ? IB_OPCODE_RC_SEND_ONLY_WITH_INVALIDATE :
--				IB_OPCODE_RC_SEND_FIRST;
--
--	case IB_WR_ATOMIC_WRITE:
--		return IB_OPCODE_RC_ATOMIC_WRITE;
--
--	case IB_WR_REG_MR:
--	case IB_WR_LOCAL_INV:
--		return opcode;
--	}
--
--	return -EINVAL;
--}
--
--static int next_opcode_uc(struct rxe_qp *qp, u32 opcode, int fits)
--{
--	switch (opcode) {
--	case IB_WR_RDMA_WRITE:
--		if (qp->req.opcode == IB_OPCODE_UC_RDMA_WRITE_FIRST ||
--		    qp->req.opcode == IB_OPCODE_UC_RDMA_WRITE_MIDDLE)
--			return fits ?
--				IB_OPCODE_UC_RDMA_WRITE_LAST :
--				IB_OPCODE_UC_RDMA_WRITE_MIDDLE;
--		else
--			return fits ?
--				IB_OPCODE_UC_RDMA_WRITE_ONLY :
--				IB_OPCODE_UC_RDMA_WRITE_FIRST;
--
--	case IB_WR_RDMA_WRITE_WITH_IMM:
--		if (qp->req.opcode == IB_OPCODE_UC_RDMA_WRITE_FIRST ||
--		    qp->req.opcode == IB_OPCODE_UC_RDMA_WRITE_MIDDLE)
--			return fits ?
--				IB_OPCODE_UC_RDMA_WRITE_LAST_WITH_IMMEDIATE :
--				IB_OPCODE_UC_RDMA_WRITE_MIDDLE;
--		else
--			return fits ?
--				IB_OPCODE_UC_RDMA_WRITE_ONLY_WITH_IMMEDIATE :
--				IB_OPCODE_UC_RDMA_WRITE_FIRST;
--
--	case IB_WR_SEND:
--		if (qp->req.opcode == IB_OPCODE_UC_SEND_FIRST ||
--		    qp->req.opcode == IB_OPCODE_UC_SEND_MIDDLE)
--			return fits ?
--				IB_OPCODE_UC_SEND_LAST :
--				IB_OPCODE_UC_SEND_MIDDLE;
--		else
--			return fits ?
--				IB_OPCODE_UC_SEND_ONLY :
--				IB_OPCODE_UC_SEND_FIRST;
--
--	case IB_WR_SEND_WITH_IMM:
--		if (qp->req.opcode == IB_OPCODE_UC_SEND_FIRST ||
--		    qp->req.opcode == IB_OPCODE_UC_SEND_MIDDLE)
--			return fits ?
--				IB_OPCODE_UC_SEND_LAST_WITH_IMMEDIATE :
--				IB_OPCODE_UC_SEND_MIDDLE;
--		else
--			return fits ?
--				IB_OPCODE_UC_SEND_ONLY_WITH_IMMEDIATE :
--				IB_OPCODE_UC_SEND_FIRST;
--	}
--
--	return -EINVAL;
--}
--
--static int next_opcode(struct rxe_qp *qp, struct rxe_send_wqe *wqe,
--		       u32 opcode)
--{
--	int fits = (wqe->dma.resid <= qp->mtu);
--
--	switch (qp_type(qp)) {
--	case IB_QPT_RC:
--		return next_opcode_rc(qp, opcode, fits);
--
--	case IB_QPT_UC:
--		return next_opcode_uc(qp, opcode, fits);
--
--	case IB_QPT_UD:
--	case IB_QPT_GSI:
--		switch (opcode) {
--		case IB_WR_SEND:
--			return IB_OPCODE_UD_SEND_ONLY;
--
--		case IB_WR_SEND_WITH_IMM:
--			return IB_OPCODE_UD_SEND_ONLY_WITH_IMMEDIATE;
--		}
--		break;
--
--	default:
--		break;
--	}
--
--	return -EINVAL;
--}
--
- static inline int check_init_depth(struct rxe_qp *qp, struct rxe_send_wqe *wqe)
- {
- 	int depth;
-@@ -761,7 +598,7 @@ int rxe_requester(struct rxe_qp *qp)
- 	if (unlikely(qp_state(qp) == IB_QPS_RESET)) {
- 		qp->req.wqe_index = queue_get_consumer(q,
- 						QUEUE_TYPE_FROM_CLIENT);
--		qp->req.opcode = -1;
-+		qp->req.opcode = OPCODE_NONE;
- 		qp->req.need_rd_atomic = 0;
- 		qp->req.wait_psn = 0;
- 		qp->req.need_retry = 0;
-@@ -813,7 +650,7 @@ int rxe_requester(struct rxe_qp *qp)
- 		goto exit;
- 	}
- 
--	opcode = next_opcode(qp, wqe, wqe->wr.opcode);
-+	opcode = next_req_opcode(qp, wqe->dma.resid, wqe->wr.opcode);
- 	if (unlikely(opcode < 0)) {
- 		wqe->status = IB_WC_LOC_QP_OP_ERR;
- 		goto err;
+The patch set is rebased to the current for-next branch with the
+following previous patch sets applied:
+	RDMA/rxe: Fix incomplete state save in rxe_requester
+	RDMA/rxe: Misc fixes and cleanups
+	Enable rcu locking of verbs objects
+	RDMA/rxe: Misc cleanups
+
+Bob Pearson (10):
+  RDMA/rxe: Add sg fragment ops
+  RDMA/rxe: Extend rxe_mr_copy to support skb frags
+  RDMA/rxe: Extend copy_data to support skb frags
+  RDMA/rxe: Extend rxe_init_packet() to support frags
+  RDMA/rxe: Extend rxe_icrc.c to support frags
+  RDMA/rxe: Extend rxe_init_req_packet() for frags
+  RDMA/rxe: Extend response packets for frags
+  RDMA/rxe: Extend send/write_data_in() for frags
+  RDMA/rxe: Extend do_read() in rxe_comp.c for frags
+  RDMA/rxe: Enable sg code in rxe
+
+ drivers/infiniband/sw/rxe/rxe.c        |   5 +
+ drivers/infiniband/sw/rxe/rxe.h        |   3 +
+ drivers/infiniband/sw/rxe/rxe_comp.c   |  46 +++-
+ drivers/infiniband/sw/rxe/rxe_icrc.c   |  65 ++++-
+ drivers/infiniband/sw/rxe/rxe_loc.h    |  27 +-
+ drivers/infiniband/sw/rxe/rxe_mr.c     | 348 +++++++++++++++++++------
+ drivers/infiniband/sw/rxe/rxe_net.c    | 109 +++++++-
+ drivers/infiniband/sw/rxe/rxe_opcode.c |   2 +
+ drivers/infiniband/sw/rxe/rxe_recv.c   |   1 +
+ drivers/infiniband/sw/rxe/rxe_req.c    |  88 ++++++-
+ drivers/infiniband/sw/rxe/rxe_resp.c   | 172 +++++++-----
+ drivers/infiniband/sw/rxe/rxe_verbs.h  |   8 +-
+ 12 files changed, 672 insertions(+), 202 deletions(-)
+
+
+base-commit: 693e1cdebb50d2aa67406411ca6d5be195d62771
+prerequisite-patch-id: c3994e7a93e37e0ce4f50e0c768f3c1a0059a02f
+prerequisite-patch-id: 48e13f6ccb560fdeacbd20aaf6696782c23d1190
+prerequisite-patch-id: da75fb8eaa863df840e7b392b5048fcc72b0bef3
+prerequisite-patch-id: d0877649e2edaf00585a0a6a80391fe0d7bbc13b
+prerequisite-patch-id: 6495b1d1f664f8ab91ed9ef9d2ca5b3b27d7df35
+prerequisite-patch-id: a6367b8fedd0d8999139c8b857ebbd3ce5c72245
+prerequisite-patch-id: 78c95e90a5e49b15b7af8ef57130739c143e88b5
+prerequisite-patch-id: 7c65a01066c0418de6897bc8b5f44d078d21b0ec
+prerequisite-patch-id: 8ab09f93c23c7875e56c597e69236c30464723b6
+prerequisite-patch-id: ca9d84b34873b49048e42fb4c13a2a097c215c46
+prerequisite-patch-id: 0f6a587501c8246e1185dfd0cbf5e2044c5f9b13
+prerequisite-patch-id: 5246df93137429916d76e75b9a13a4ad5ceb0bad
+prerequisite-patch-id: 41b0e4150794dd914d9fcb4cd106fe4cf4227611
+prerequisite-patch-id: 02b08ec037bc35b9c7771640c89c66504cdf38a6
+prerequisite-patch-id: dfccc06c16454d7fe8e6fcba064d4e471d314666
+prerequisite-patch-id: 7459a6e5cdd46efd53ba27f9b3e9028af6e0863b
+prerequisite-patch-id: 36d49f9303f5cb276a5601c1ab568eea6eca7d3a
+prerequisite-patch-id: 6359a681e40832694f81ca003c10e5327996bf7d
+prerequisite-patch-id: 558175db657f374dbd3e0a57ac4c5fb77a56b6c6
+prerequisite-patch-id: d6b811de06c8900be5840dd29715161d26db66cf
 -- 
 2.39.2
 
