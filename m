@@ -2,121 +2,224 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 96F42764487
-	for <lists+linux-rdma@lfdr.de>; Thu, 27 Jul 2023 05:44:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C87B5764552
+	for <lists+linux-rdma@lfdr.de>; Thu, 27 Jul 2023 07:13:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229459AbjG0Do5 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 26 Jul 2023 23:44:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45786 "EHLO
+        id S229822AbjG0FNb (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 27 Jul 2023 01:13:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45596 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230083AbjG0Doz (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 26 Jul 2023 23:44:55 -0400
-Received: from szxga03-in.huawei.com (szxga03-in.huawei.com [45.249.212.189])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D30310FC;
-        Wed, 26 Jul 2023 20:44:54 -0700 (PDT)
-Received: from kwepemi500006.china.huawei.com (unknown [172.30.72.55])
-        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4RBGmR6Sl4zLntV;
-        Thu, 27 Jul 2023 11:42:15 +0800 (CST)
-Received: from [10.67.102.17] (10.67.102.17) by kwepemi500006.china.huawei.com
- (7.221.188.68) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Thu, 27 Jul
- 2023 11:44:51 +0800
-Message-ID: <01d762f7-6388-9539-68ee-5425b4d56e58@hisilicon.com>
-Date:   Thu, 27 Jul 2023 11:44:50 +0800
+        with ESMTP id S231289AbjG0FN3 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 27 Jul 2023 01:13:29 -0400
+Received: from mail-yw1-x1134.google.com (mail-yw1-x1134.google.com [IPv6:2607:f8b0:4864:20::1134])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6C8E2724;
+        Wed, 26 Jul 2023 22:13:25 -0700 (PDT)
+Received: by mail-yw1-x1134.google.com with SMTP id 00721157ae682-5768a7e3adbso25780197b3.0;
+        Wed, 26 Jul 2023 22:13:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1690434805; x=1691039605;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=oc2iF7zyvIQRZQViezTnM3M7DWBbv3484xuglbYBePo=;
+        b=jI3Ew8cfqJbKUTa9Nis7dkVYeEEuOLY7PYnlip/+Xcs7S4CAyeBNOoJfgvyVVNBtfZ
+         iIMJ66GIjwWTrlrw4Pbf8Bsgd3jmOcsDmVc9a1gxuAQH9PFyk6PLfuIMohUN+l9cAC/B
+         6r7ZtXbh7QsGkE0ouY8Ci6eGAibCzfPzK+PPp69dsnPFA2ny8lENoZDI/2ztiEkdVgvd
+         BPfhRfVy59qBfx9gVphh7Rt+TlFXHtuexV5YhxL2Cv7QuBCL8I+wmBfvroh2XTiRPUwu
+         f+mj1jx07UULer6nJgZVpyetVHPWpRBgfYizy/SQXUbGiGCfNyV9PHJZomJgMQqfkRFs
+         sCeQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690434805; x=1691039605;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=oc2iF7zyvIQRZQViezTnM3M7DWBbv3484xuglbYBePo=;
+        b=ZW67x7rMXOLMa8QfCFreaZSt8ABZW8u/zm0Q09P0S9hndKb/Tukrk0oXV/LrhwFH+I
+         bB0lP8TqRV5aMI6dZg+olqndVjIkt9o0S+cEPU2rR05/qqip/o1QjmbVPtB5iRjCTE9P
+         ixBu9L4JR5WNFCkgUf6Fl5qqCk65/R9GE+84Uuq2Srq94rBiEd73Uf2i/cFvX3SKed4k
+         i1J44OBsd5FytCogMbikPP+d6rwnPdWYy4ELAh+Kt34SoGO/79PAN7dMYibkMWaCninV
+         LMdhh2v27crEUCIEENagyDECcz6bkNUGF1JKSjuIp4mUO6+fBAqnobLSvpXu8XGl0Mq6
+         4cAA==
+X-Gm-Message-State: ABy/qLb8y6jAb3ttEghm+9BfSimxrARfXaGoLV4NpkSy8Q9MUkwb2bbK
+        jFjHxdc/FkWR5BghW4fETLC3Z7DSb5A/gtVwkN6YzlZD
+X-Google-Smtp-Source: APBJJlE7T/W9W1hCjdIskW6DU4QgxrnAxOmX5Qf7N1kEmh3y+G5Hs0rHTAdkhs3KKZZ+zvfjielGXhKAu/4uIPceSdE=
+X-Received: by 2002:a81:91cb:0:b0:577:2aa4:70aa with SMTP id
+ i194-20020a8191cb000000b005772aa470aamr1923520ywg.21.1690434804053; Wed, 26
+ Jul 2023 22:13:24 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.1.0
-Subject: Re: [PATCH v4 for-next] RDMA/core: Get IB width and speed from netdev
-To:     Leon Romanovsky <leon@kernel.org>
-CC:     <jgg@nvidia.com>, <linux-rdma@vger.kernel.org>,
-        <linuxarm@huawei.com>, <linux-kernel@vger.kernel.org>
-References: <20230721092052.2090449-1-huangjunxian6@hisilicon.com>
- <20230724111938.GB9776@unreal>
-Content-Language: en-US
-From:   Junxian Huang <huangjunxian6@hisilicon.com>
-In-Reply-To: <20230724111938.GB9776@unreal>
+References: <1690377336-1353-1-git-send-email-schakrabarti@linux.microsoft.com>
+ <519602aa-0a6a-70a5-23c7-ce190045e4af@linux.dev>
+In-Reply-To: <519602aa-0a6a-70a5-23c7-ce190045e4af@linux.dev>
+From:   Souradeep Chakrabarti <souradch.linux@gmail.com>
+Date:   Thu, 27 Jul 2023 10:43:12 +0530
+Message-ID: <CABNGXZrcW1tmJALpkx38QxkUs=8ivFzDEc0urgrKVWwybngs0Q@mail.gmail.com>
+Subject: Re: [PATCH V6 net] net: mana: Fix MANA VF unload when hardware is
+To:     Zhu Yanjun <yanjun.zhu@linux.dev>
+Cc:     Souradeep Chakrabarti <schakrabarti@linux.microsoft.com>,
+        kys@microsoft.com, haiyangz@microsoft.com, wei.liu@kernel.org,
+        decui@microsoft.com, davem@davemloft.net, edumazet@google.com,
+        kuba@kernel.org, pabeni@redhat.com, longli@microsoft.com,
+        sharmaajay@microsoft.com, leon@kernel.org, cai.huoqing@linux.dev,
+        ssengar@linux.microsoft.com, vkuznets@redhat.com,
+        tglx@linutronix.de, linux-hyperv@vger.kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-rdma@vger.kernel.org, schakrabarti@microsoft.com,
+        stable@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.67.102.17]
-X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
- kwepemi500006.china.huawei.com (7.221.188.68)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-
-
-On 2023/7/24 19:19, Leon Romanovsky wrote:
-> On Fri, Jul 21, 2023 at 05:20:52PM +0800, Junxian Huang wrote:
->> From: Haoyue Xu <xuhaoyue1@hisilicon.com>
->>
->> Previously, there was no way to query the number of lanes for a network
->> card, so the same netdev_speed would result in a fixed pair of width and
->> speed. As network card specifications become more diverse, such fixed
->> mode is no longer suitable, so a method is needed to obtain the correct
->> width and speed based on the number of lanes.
->>
->> This patch retrieves netdev lanes and speed from net_device and
->> translates them to IB width and speed.
->>
->> Signed-off-by: Haoyue Xu <xuhaoyue1@hisilicon.com>
->> Signed-off-by: Luoyouming <luoyouming@huawei.com>
->> Signed-off-by: Junxian Huang <huangjunxian6@hisilicon.com>
->> ---
->>  drivers/infiniband/core/verbs.c | 100 +++++++++++++++++++++++++-------
->>  1 file changed, 79 insertions(+), 21 deletions(-)
->>
->> diff --git a/drivers/infiniband/core/verbs.c b/drivers/infiniband/core/verbs.c
->> index b99b3cc283b6..25367bd6dd97 100644
->> --- a/drivers/infiniband/core/verbs.c
->> +++ b/drivers/infiniband/core/verbs.c
->> @@ -1880,6 +1880,80 @@ int ib_modify_qp_with_udata(struct ib_qp *ib_qp, struct ib_qp_attr *attr,
->>  }
->>  EXPORT_SYMBOL(ib_modify_qp_with_udata);
->>  
->> +static void ib_get_width_and_speed(u32 netdev_speed, u32 lanes,
->> +				   u16 *speed, u8 *width)
-> 
-> <...>
-> 
->> +	switch (netdev_speed / lanes) {
->> +	case SPEED_2500:
->> +		*speed = IB_SPEED_SDR;
->> +		break;
->> +	case SPEED_5000:
->> +		*speed = IB_SPEED_DDR;
->> +		break;
->> +	case SPEED_10000:
->> +		*speed = IB_SPEED_FDR10;
->> +		break;
->> +	case SPEED_14000:
->> +		*speed = IB_SPEED_FDR;
->> +		break;
->> +	case SPEED_25000:
->> +		*speed = IB_SPEED_EDR;
->> +		break;
->> +	case SPEED_50000:
->> +		*speed = IB_SPEED_HDR;
->> +		break;
->> +	case SPEED_100000:
->> +		*speed = IB_SPEED_NDR;
->> +		break;
->> +	default:
->> +		*speed = IB_SPEED_SDR;
->> +	}
-> 
-> How did you come to these translation values?
-> 
-> Thanks
-
-The IB spec defines the mapping relationship between IB speed and transfer
-rate. For example, if the transfer rate of is 2.5Gbps(SPEED_2500), the IB
-speed will be set to IB_SPEED_SDR.
-
-Junxian
+On Thu, Jul 27, 2023 at 9:07=E2=80=AFAM Zhu Yanjun <yanjun.zhu@linux.dev> w=
+rote:
+>
+> =E5=9C=A8 2023/7/26 21:15, Souradeep Chakrabarti =E5=86=99=E9=81=93:
+> > When unloading the MANA driver, mana_dealloc_queues() waits for the MAN=
+A
+> > hardware to complete any inflight packets and set the pending send coun=
+t
+> > to zero. But if the hardware has failed, mana_dealloc_queues()
+> > could wait forever.
+> >
+> > Fix this by adding a timeout to the wait. Set the timeout to 120 second=
+s,
+> > which is a somewhat arbitrary value that is more than long enough for
+> > functional hardware to complete any sends.
+> >
+> > Cc: stable@vger.kernel.org
+> > Fixes: ca9c54d2d6a5 ("net: mana: Add a driver for Microsoft Azure Netwo=
+rk Adapter (MANA)")
+> >
+> > Signed-off-by: Souradeep Chakrabarti <schakrabarti@linux.microsoft.com>
+> > ---
+> > V5 -> V6:
+> > * Added pcie_flr to reset the pci after timeout.
+> > * Fixed the position of changelog.
+> > * Removed unused variable like cq.
+> >
+> > V4 -> V5:
+> > * Added fixes tag
+> > * Changed the usleep_range from static to incremental value.
+> > * Initialized timeout in the begining.
+> >
+> > V3 -> V4:
+> > * Removed the unnecessary braces from mana_dealloc_queues().
+> >
+> > V2 -> V3:
+> > * Removed the unnecessary braces from mana_dealloc_queues().
+> >
+> > V1 -> V2:
+> > * Added net branch
+> > * Removed the typecasting to (struct mana_context*) of void pointer
+> > * Repositioned timeout variable in mana_dealloc_queues()
+> > * Repositioned vf_unload_timeout in mana_context struct, to utilise the
+> >   6 bytes hole
+> > ---
+> >   drivers/net/ethernet/microsoft/mana/mana_en.c | 38 +++++++++++++++++-=
+-
+> >   1 file changed, 34 insertions(+), 4 deletions(-)
+> >
+> > diff --git a/drivers/net/ethernet/microsoft/mana/mana_en.c b/drivers/ne=
+t/ethernet/microsoft/mana/mana_en.c
+> > index a499e460594b..ea039e2d4c4b 100644
+> > --- a/drivers/net/ethernet/microsoft/mana/mana_en.c
+> > +++ b/drivers/net/ethernet/microsoft/mana/mana_en.c
+> > @@ -8,6 +8,7 @@
+> >   #include <linux/ethtool.h>
+> >   #include <linux/filter.h>
+> >   #include <linux/mm.h>
+> > +#include <linux/pci.h>
+> >
+> >   #include <net/checksum.h>
+> >   #include <net/ip6_checksum.h>
+> > @@ -2345,9 +2346,12 @@ int mana_attach(struct net_device *ndev)
+> >   static int mana_dealloc_queues(struct net_device *ndev)
+> >   {
+> >       struct mana_port_context *apc =3D netdev_priv(ndev);
+> > +     unsigned long timeout =3D jiffies + 120 * HZ;
+> >       struct gdma_dev *gd =3D apc->ac->gdma_dev;
+> >       struct mana_txq *txq;
+> > +     struct sk_buff *skb;
+> >       int i, err;
+> > +     u32 tsleep;
+> >
+> >       if (apc->port_is_up)
+> >               return -EINVAL;
+> > @@ -2363,15 +2367,41 @@ static int mana_dealloc_queues(struct net_devic=
+e *ndev)
+> >        * to false, but it doesn't matter since mana_start_xmit() drops =
+any
+> >        * new packets due to apc->port_is_up being false.
+> >        *
+> > -      * Drain all the in-flight TX packets
+> > +      * Drain all the in-flight TX packets.
+> > +      * A timeout of 120 seconds for all the queues is used.
+> > +      * This will break the while loop when h/w is not responding.
+> > +      * This value of 120 has been decided here considering max
+> > +      * number of queues.
+> >        */
+> > +
+> >       for (i =3D 0; i < apc->num_queues; i++) {
+> >               txq =3D &apc->tx_qp[i].txq;
+> > -
+> > -             while (atomic_read(&txq->pending_sends) > 0)
+> > -                     usleep_range(1000, 2000);
+> > +             tsleep =3D 1000;
+> > +             while (atomic_read(&txq->pending_sends) > 0 &&
+> > +                    time_before(jiffies, timeout)) {
+> > +                     usleep_range(tsleep, tsleep + 1000);
+> > +                     tsleep <<=3D 1;
+> > +             }
+> > +             if (atomic_read(&txq->pending_sends)) {
+> > +                     err  =3D pcie_flr(to_pci_dev(gd->gdma_context->de=
+v));
+> > +                     if (err) {
+> > +                             netdev_err(ndev, "flr failed %d with %d p=
+kts pending in txq %u\n",
+> > +                                        err, atomic_read(&txq->pending=
+_sends),
+> > +                                        txq->gdma_txq_id);
+> > +                     }
+> > +                     break;
+> > +             }
+> >       }
+> >
+> > +     for (i =3D 0; i < apc->num_queues; i++) {
+> > +             txq =3D &apc->tx_qp[i].txq;
+> > +             while (atomic_read(&txq->pending_sends)) {
+> > +                     skb =3D skb_dequeue(&txq->pending_skbs);
+> > +                     mana_unmap_skb(skb, apc);
+> > +                     dev_consume_skb_any(skb);
+> > +                     atomic_sub(1, &txq->pending_sends);
+> > +             }
+> If I get this commit correctly, txq->pending_sends should be equal to
+> the length of txq->pending_skbs?
+>
+> If yes, can we only handle the pending_skbs?
+>
+> the above snippet can be changed to as below? So the performance is bette=
+r?
+> "
+>                 while ((skb =3D skb_dequeue(&txq->pending_skbs))) {
+>                         mana_unmap_skb(skb, apc);
+>                         dev_consume_skb_any(skb);
+>                 }
+>                 atomic_set(&txq->pending_sends, 0);
+> "
+>
+> Zhu Yanjun
+Yes, we can do that, thanks for pointing. Will take care of it in next vers=
+ion.
+>
+> > +     }
+> >       /* We're 100% sure the queues can no longer be woken up, because
+> >        * we're sure now mana_poll_tx_cq() can't be running.
+> >        */
+>
