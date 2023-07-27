@@ -2,60 +2,60 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E214A765CCC
-	for <lists+linux-rdma@lfdr.de>; Thu, 27 Jul 2023 22:02:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 06713765CCD
+	for <lists+linux-rdma@lfdr.de>; Thu, 27 Jul 2023 22:02:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232411AbjG0UCe (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 27 Jul 2023 16:02:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40872 "EHLO
+        id S231701AbjG0UCf (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 27 Jul 2023 16:02:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40938 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232220AbjG0UCc (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 27 Jul 2023 16:02:32 -0400
-Received: from mail-ot1-x336.google.com (mail-ot1-x336.google.com [IPv6:2607:f8b0:4864:20::336])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 07C0F30CD
-        for <linux-rdma@vger.kernel.org>; Thu, 27 Jul 2023 13:02:21 -0700 (PDT)
-Received: by mail-ot1-x336.google.com with SMTP id 46e09a7af769-6b9edef7993so1088542a34.2
-        for <linux-rdma@vger.kernel.org>; Thu, 27 Jul 2023 13:02:21 -0700 (PDT)
+        with ESMTP id S231304AbjG0UCe (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 27 Jul 2023 16:02:34 -0400
+Received: from mail-ot1-x32c.google.com (mail-ot1-x32c.google.com [IPv6:2607:f8b0:4864:20::32c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 055F1358D
+        for <linux-rdma@vger.kernel.org>; Thu, 27 Jul 2023 13:02:22 -0700 (PDT)
+Received: by mail-ot1-x32c.google.com with SMTP id 46e09a7af769-6bb31245130so1123766a34.1
+        for <linux-rdma@vger.kernel.org>; Thu, 27 Jul 2023 13:02:22 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1690488140; x=1691092940;
+        d=gmail.com; s=20221208; t=1690488142; x=1691092942;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=jv4JZdZiF1836Z7KBUUppYgX/3nVIYsPvkge6EqPA74=;
-        b=LTvlSpOyHMHCuRZNu9OPkvt6EPLcsQ3e1DkNP0tyy6vSUnIGPax6q76Jb7Sj2jEROF
-         I3twL1+cVlcujFwQHvEwCE9pIMA1Jq2yRWSoHxbpgWgo9/FJCHwTUp+JHANwEHj8YQZc
-         Y5IZv4Dmzc67qeY1KKtfpRg+zvavfmH04i95bNAAIBqcElHgX1mmLrD5c+UfxadGKAwp
-         sDgzzQf5fJr+EWTXP/VBoMYnf0Y+zF9RmJvK7xJIDXBRo1mxgnAqU2IodFavmCEYMxVP
-         hTfpEUqvHdX8KtygLT4FGVHpEb+f7h/M7BuFGZKy7mEI0EZp3blDvT2M4PxiZufOZBYI
-         /yFQ==
+        bh=m+nZlg9ewOYl0jUwwq9E6BgOMSB9nsqE9ZhNzMzoYko=;
+        b=rYH4N/j3fqWMhXoO7TDBhJwXz9MbkpdOEnhZF/NOKxWJNScvpReuRVxsU/xd5HSGHz
+         vXUdVqZJqXHdlefyX6JBn1jASN2LFfgU3YPm7Iv8q2NNGYjZp1flWmSLlets4E59St6S
+         dkR/b9k7ILJJgHgaAqw4Zcm9gQ9yvWtYyzFi+FzlSGZTGdU/fd3lHQy+fQLdzFge/yxV
+         Hk2rvfWIy7lUYWHVAM9GbrhPhobcgJ1JwskF9hsXgO7kECewbukcgmRoPV9WUip/aFjc
+         4gzsQ02JrzQXe+WV9eaacCz1pekBs4zuzvL60iL+1B3d6kvpJ62zVNy/8tB1gQhtPvYk
+         Egmw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690488140; x=1691092940;
+        d=1e100.net; s=20221208; t=1690488142; x=1691092942;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=jv4JZdZiF1836Z7KBUUppYgX/3nVIYsPvkge6EqPA74=;
-        b=jvH8TbDbLBQroIFT6kFr+dW7F8oYvRgWI0dWkHinXbhU/NLm4HSltvmXIhA83ACAoO
-         zpHo2NCBFpkMjIOIPSrkTXnIP7/zxtt8+sB2zKgWKyrU7jCuVgXy5JxxSbi8zZl+V0Ov
-         1dgy+GcY5vmR4F2sMGQcgN0BB5cQTdwTbSPF0wuIoGf4EJ2Tm5aPGoxa0sFrd6zGWgwp
-         1y2fCyw/xceaqJTe2CBEd5UVxA95VmUYaKmFxl2RrxQypfkUWT6QyPGyYmww5/3GKaR5
-         xD2116ghhKenIIByZ2Hkv9X5GrH6+/0JKG57AqMEW0lgCAW9QviWSashVMj3Fevkt4iy
-         vKEw==
-X-Gm-Message-State: ABy/qLa5X+7nsem7BeYd3VKHE6g2CKPVoKqljowsEwhcRN6Mz443s5Zd
-        g2Mi8+tim+p86m0lm36c+g8=
-X-Google-Smtp-Source: APBJJlGbH5NgePVFcdeie2VMMu6MThpK5V1nGnxEwI9h8NzR2AC9rhM0ugSNydMHcjaembZh9SZNtw==
-X-Received: by 2002:a05:6870:4396:b0:1b0:5bf7:3bb6 with SMTP id r22-20020a056870439600b001b05bf73bb6mr540493oah.28.1690488140656;
-        Thu, 27 Jul 2023 13:02:20 -0700 (PDT)
+        bh=m+nZlg9ewOYl0jUwwq9E6BgOMSB9nsqE9ZhNzMzoYko=;
+        b=hoQdC5m64fAT0fU8GNQB+W0BAjD7o5XuDwrQ0Cp084B13YUT+b40swYadeL6AuFBAI
+         ipbHBh7/hxywVNQVYWQ2VzelzBpJP2idGR5MF6IiYm30XByQMG/YLxKAlphr4pmVmwu4
+         gtlzvnemcgvXQMqkdr0m0eD91G4H+f/nnsRRkHGkr7QjLOgwx6ZNVfGHoUhTmwIbgma9
+         7le7yR3gHIjnTfE0qaDK6+oYcgGtd4UradcOgQs7jpCYMnnK/pe/RA7K30FOcf7X9JPm
+         amtt/Qe2duB2ccwXgMU0YfnMoP83WC4Na5s02wd7lrnDYkXFZgrojtKgQGpbgthhHVOk
+         ANmg==
+X-Gm-Message-State: ABy/qLZXeTK6Af2OVarYPbwSQQt+EpX+8Hi/LXBOBvSamMvY98i2US03
+        ZpsXF7xkOpY40MZUOhJ1tFg=
+X-Google-Smtp-Source: APBJJlFwjqDT71kjcQ846O/qXJio+zpLNjUnkVk7WIWJuBm2EPn+WlRZilnXarK9MTJ7moSHHgRFeA==
+X-Received: by 2002:a05:6830:18c1:b0:6b9:a84a:a393 with SMTP id v1-20020a05683018c100b006b9a84aa393mr160649ote.37.1690488141937;
+        Thu, 27 Jul 2023 13:02:21 -0700 (PDT)
 Received: from rpearson-X570-AORUS-PRO-WIFI.tx.rr.com (2603-8081-140c-1a00-a360-d7ee-0b00-a1d3.res6.spectrum.com. [2603:8081:140c:1a00:a360:d7ee:b00:a1d3])
-        by smtp.gmail.com with ESMTPSA id m3-20020a9d73c3000000b006b9acf5ebc0sm938142otk.76.2023.07.27.13.02.19
+        by smtp.gmail.com with ESMTPSA id m3-20020a9d73c3000000b006b9acf5ebc0sm938142otk.76.2023.07.27.13.02.20
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 27 Jul 2023 13:02:20 -0700 (PDT)
+        Thu, 27 Jul 2023 13:02:21 -0700 (PDT)
 From:   Bob Pearson <rpearsonhpe@gmail.com>
 To:     jgg@nvidia.com, zyjzyj2000@gmail.com, linux-rdma@vger.kernel.org,
         jhack@hpe.com
 Cc:     Bob Pearson <rpearsonhpe@gmail.com>
-Subject: [PATCH for-next v3 09/10] RDMA/rxe: Extend do_read() in rxe_comp.c for frags
-Date:   Thu, 27 Jul 2023 15:01:28 -0500
-Message-Id: <20230727200128.65947-10-rpearsonhpe@gmail.com>
+Subject: [PATCH for-next v3 10/10] RDMA/rxe: Enable sg code in rxe
+Date:   Thu, 27 Jul 2023 15:01:29 -0500
+Message-Id: <20230727200128.65947-11-rpearsonhpe@gmail.com>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20230727200128.65947-1-rpearsonhpe@gmail.com>
 References: <20230727200128.65947-1-rpearsonhpe@gmail.com>
@@ -71,76 +71,52 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Extend do_read() in rxe_comp.c to support fragmented skbs.
-
-Rename rxe_do_read(). Adjust caller's API.
+Make changes to enable sg code in rxe.
 
 Signed-off-by: Bob Pearson <rpearsonhpe@gmail.com>
 ---
- drivers/infiniband/sw/rxe/rxe_comp.c | 39 ++++++++++++++++++----------
- 1 file changed, 26 insertions(+), 13 deletions(-)
+ drivers/infiniband/sw/rxe/rxe.c     | 4 ++--
+ drivers/infiniband/sw/rxe/rxe_req.c | 4 ++--
+ 2 files changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/infiniband/sw/rxe/rxe_comp.c b/drivers/infiniband/sw/rxe/rxe_comp.c
-index 670ee08f6f5a..ecaaed15c4eb 100644
---- a/drivers/infiniband/sw/rxe/rxe_comp.c
-+++ b/drivers/infiniband/sw/rxe/rxe_comp.c
-@@ -360,22 +360,35 @@ static inline enum comp_state check_ack(struct rxe_qp *qp,
- 	return COMPST_ERROR;
- }
+diff --git a/drivers/infiniband/sw/rxe/rxe.c b/drivers/infiniband/sw/rxe/rxe.c
+index 800e8c0d437d..b52dd1704e74 100644
+--- a/drivers/infiniband/sw/rxe/rxe.c
++++ b/drivers/infiniband/sw/rxe/rxe.c
+@@ -14,9 +14,9 @@ MODULE_DESCRIPTION("Soft RDMA transport");
+ MODULE_LICENSE("Dual BSD/GPL");
  
--static inline enum comp_state do_read(struct rxe_qp *qp,
--				      struct rxe_pkt_info *pkt,
--				      struct rxe_send_wqe *wqe)
-+/**
-+ * rxe_do_read() - Process read reply packet
-+ * @qp: The queue pair
-+ * @pkt: Packet info
-+ * @wqe: The current work request
-+ *
-+ * Copy payload from incoming read reply packet into current
-+ * iova.
-+ *
-+ * Returns: 0 on success else an error comp_state
-+ */
-+static inline enum comp_state rxe_do_read(struct rxe_qp *qp,
-+					  struct rxe_pkt_info *pkt,
-+					  struct rxe_send_wqe *wqe)
- {
- 	struct sk_buff *skb = PKT_TO_SKB(pkt);
--	int skb_offset = 0;
--	int ret;
-+	u8 *data_addr = payload_addr(pkt);
-+	int data_len = payload_size(pkt);
-+	enum rxe_mr_copy_op op;
-+	int skb_offset;
-+	int err;
+ /* if true allow using fragmented skbs */
+-bool rxe_use_sg;
++bool rxe_use_sg = true;
+ module_param_named(use_sg, rxe_use_sg, bool, 0444);
+-MODULE_PARM_DESC(use_sg, "Support skb frags; default false");
++MODULE_PARM_DESC(use_sg, "Support skb frags; default true");
  
--	ret = rxe_copy_dma_data(skb, qp->pd, IB_ACCESS_LOCAL_WRITE,
--				&wqe->dma, payload_addr(pkt),
--				skb_offset, payload_size(pkt),
--				RXE_COPY_TO_MR);
--	if (ret) {
--		wqe->status = IB_WC_LOC_PROT_ERR;
-+	op = skb_is_nonlinear(skb) ? RXE_FRAG_TO_MR : RXE_COPY_TO_MR;
-+	skb_offset = rxe_opcode[pkt->opcode].length;
-+	err = rxe_copy_dma_data(skb, qp->pd, IB_ACCESS_LOCAL_WRITE,
-+				&wqe->dma, data_addr,
-+				skb_offset, data_len, op);
-+	if (err)
- 		return COMPST_ERROR;
--	}
+ /* free resources for a rxe device all objects created for this device must
+  * have been destroyed
+diff --git a/drivers/infiniband/sw/rxe/rxe_req.c b/drivers/infiniband/sw/rxe/rxe_req.c
+index cf34d1a58f85..d00c24e1a569 100644
+--- a/drivers/infiniband/sw/rxe/rxe_req.c
++++ b/drivers/infiniband/sw/rxe/rxe_req.c
+@@ -402,7 +402,7 @@ static struct sk_buff *rxe_init_req_packet(struct rxe_qp *qp,
+ 	struct sk_buff *skb = NULL;
+ 	struct rxe_av *av;
+ 	struct rxe_ah *ah = NULL;
+-	bool frag = false;
++	bool frag;
+ 	int err;
  
- 	if (wqe->dma.resid == 0 && (pkt->mask & RXE_END_MASK))
- 		return COMPST_COMP_ACK;
-@@ -704,7 +717,7 @@ int rxe_completer(struct rxe_qp *qp)
- 			break;
+ 	pkt->rxe = rxe;
+@@ -426,7 +426,7 @@ static struct sk_buff *rxe_init_req_packet(struct rxe_qp *qp,
+ 			pkt->pad + RXE_ICRC_SIZE;
  
- 		case COMPST_READ:
--			state = do_read(qp, pkt, wqe);
-+			state = rxe_do_read(qp, pkt, wqe);
- 			break;
- 
- 		case COMPST_ATOMIC:
+ 	/* init skb */
+-	skb = rxe_init_packet(qp, av, pkt, NULL);
++	skb = rxe_init_packet(qp, av, pkt, &frag);
+ 	if (unlikely(!skb)) {
+ 		err = -ENOMEM;
+ 		goto err_out;
 -- 
 2.39.2
 
