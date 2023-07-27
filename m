@@ -2,62 +2,65 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 20CE476561D
-	for <lists+linux-rdma@lfdr.de>; Thu, 27 Jul 2023 16:41:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C91D76561E
+	for <lists+linux-rdma@lfdr.de>; Thu, 27 Jul 2023 16:41:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233873AbjG0Olk (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 27 Jul 2023 10:41:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36248 "EHLO
+        id S231882AbjG0Olo (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 27 Jul 2023 10:41:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36292 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231477AbjG0Olj (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 27 Jul 2023 10:41:39 -0400
-Received: from mail-il1-x12d.google.com (mail-il1-x12d.google.com [IPv6:2607:f8b0:4864:20::12d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB18D30DC
-        for <linux-rdma@vger.kernel.org>; Thu, 27 Jul 2023 07:41:37 -0700 (PDT)
-Received: by mail-il1-x12d.google.com with SMTP id e9e14a558f8ab-348ef70b198so3839445ab.3
-        for <linux-rdma@vger.kernel.org>; Thu, 27 Jul 2023 07:41:37 -0700 (PDT)
+        with ESMTP id S232215AbjG0Olm (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 27 Jul 2023 10:41:42 -0400
+Received: from mail-pf1-x432.google.com (mail-pf1-x432.google.com [IPv6:2607:f8b0:4864:20::432])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 807FB30DC
+        for <linux-rdma@vger.kernel.org>; Thu, 27 Jul 2023 07:41:40 -0700 (PDT)
+Received: by mail-pf1-x432.google.com with SMTP id d2e1a72fcca58-686be28e1a8so736156b3a.0
+        for <linux-rdma@vger.kernel.org>; Thu, 27 Jul 2023 07:41:40 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google; t=1690468897; x=1691073697;
-        h=message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=VoGFTu54ZOJsY4q3h4dzVT22R3igWgJmzNxAI1Ag7Io=;
-        b=NzbnbAAnMvAqQGwN+A1i40sbgdwq9rH4+x6iFGNYKl+Kn75MBtYf3Ww8cNCCIpvFZa
-         MGKkkBBfKyGZl7hobwaWUdqYamn6jEwX5R0JgDjbJa+FYz5O+lCaj81UCPie0qnZ9Pvr
-         wVRtsXHgEZB7OBVKcl65waZ/LCgk0alNKCu4A=
+        d=broadcom.com; s=google; t=1690468900; x=1691073700;
+        h=references:in-reply-to:message-id:date:subject:cc:to:from:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=y0pg23OvZy0XoM6mWAV8CHaB92eVSKunpfYDnEsUioE=;
+        b=eOjVQawe50XxCxoICkHtTkzWAtAF+v33/vnFcshPA+qfWPoSJOgoaBL76JXrZ3+9oE
+         L0u02jxCaH+5/xUNU5wMFl+l0rM0DQLxoojoLBnOm/Es7iIRbMu9nuVFZnsyqdi0rXtB
+         Ps34/jvNygpiyZE3falr/Tz9uV0T5yomytkqU=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690468897; x=1691073697;
-        h=message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=VoGFTu54ZOJsY4q3h4dzVT22R3igWgJmzNxAI1Ag7Io=;
-        b=B+tf1Yp7+3L8IiMm2eeHGsMpIVJBGDI+2L1uUzx4z34X2QLiKSIFUu6Oaynx7Cz9vY
-         8bxFzM7IDxpmBPmrquO6R/W6/0BlI0mV7SUgoZPqGPiQgED3M0Per389RBO/0WqZNohi
-         Yerd/QaVxYs39qTFA0BfWQ9dUdOt2faxP4CJP23cP40xU/WsdEGCgvy8Wjv5iyqKM8aH
-         8YbVk8KSwSIb8o3sdMr2ISiDaCQGIuyMNcJ89/qTz5/nynI3BACux6gpE9YoQ8LQ9fgn
-         F0z8WN50LSwKuAzmmfZNS6nx6MVuxzQX9pojlkKeCo+jERUxT5CIaYFvu8gdF36tsh6E
-         8bhw==
-X-Gm-Message-State: ABy/qLaTUcIpZkjGy9xh9IxodTOtVXum/xZhn+ISZcJFBTbU54+GZeOi
-        Q5TAkzKd9QJT9Z9FmfxrQEv+og==
-X-Google-Smtp-Source: APBJJlG2Vx1yG3dTWSM2Z4XPFkTDzrtjRQYZM+q3CKm6+weO/a4snJXVoZVixa/uw1qt2WSRMAfTxQ==
-X-Received: by 2002:a05:6e02:1341:b0:346:6dc2:997b with SMTP id k1-20020a056e02134100b003466dc2997bmr4652491ilr.23.1690468897039;
-        Thu, 27 Jul 2023 07:41:37 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1690468900; x=1691073700;
+        h=references:in-reply-to:message-id:date:subject:cc:to:from
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=y0pg23OvZy0XoM6mWAV8CHaB92eVSKunpfYDnEsUioE=;
+        b=NJ1BrOFk4peBaa1hdRKWdEP+Xd7h2XbJOUYif0Iv1k2mswdB+S/mLqvA2GXay6uMO+
+         HD2OfxRMEJ5B4M2h0RaJRE2z7GVF6oLAnRpmXunHe4RDD78m4SlqzeNuX046uO8IoEbM
+         +G02i2+GUhGoeXU67Ocfhg9cuRZuWBRNDBxPYX+leoF1KyLh03L3Qt4pJPl6QGkgqjhb
+         kqE5Gn17eJhIMZY6v336iEeZQdFGHIuk4FxFSF0BIvG8ibUX7o7JYKalHvFApvo/2RJI
+         9VndfEXknC3UkjTNJkhoo1zwbm/jDX/zVhxp0qo5lK3hDEuDMZ6bc9xQ+Z8HVK8BYPKp
+         yBoQ==
+X-Gm-Message-State: ABy/qLYPR3ANhdpQrkCe0dMB6jEC0TPq7sy7+s3LoPiv3OefyBybBMuN
+        NLDc1BzsqklHCS77E70bwVP1nA==
+X-Google-Smtp-Source: APBJJlGUgpSHyHX7v6tkF9Me8SfuD+Q4P/ezQaKNISGtSE1N7rLYJ/Ojoc/RBLvU9xn4/tYhYInTWg==
+X-Received: by 2002:a17:90a:d814:b0:268:218b:ad20 with SMTP id a20-20020a17090ad81400b00268218bad20mr4029971pjv.7.1690468899800;
+        Thu, 27 Jul 2023 07:41:39 -0700 (PDT)
 Received: from dhcp-10-192-206-197.iig.avagotech.net.net ([192.19.234.250])
-        by smtp.gmail.com with ESMTPSA id c2-20020a170902d90200b001bbdf33b878sm1539685plz.272.2023.07.27.07.41.34
+        by smtp.gmail.com with ESMTPSA id c2-20020a170902d90200b001bbdf33b878sm1539685plz.272.2023.07.27.07.41.37
         (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 27 Jul 2023 07:41:35 -0700 (PDT)
+        Thu, 27 Jul 2023 07:41:39 -0700 (PDT)
 From:   Selvin Xavier <selvin.xavier@broadcom.com>
 To:     jgg@ziepe.ca, leon@kernel.org
 Cc:     linux-rdma@vger.kernel.org, andrew.gospodarek@broadcom.com,
+        Saravanan Vajravel <saravanan.vajravel@broadcom.com>,
         Selvin Xavier <selvin.xavier@broadcom.com>
-Subject: [PATCH for-next 0/1] RDMA/bnxt_re: Add dmabuf support 
-Date:   Thu, 27 Jul 2023 07:29:53 -0700
-Message-Id: <1690468194-6185-1-git-send-email-selvin.xavier@broadcom.com>
+Subject: [PATCH for-next 1/1] RDMA/bnxt_re: Add support for dmabuf pinned memory regions
+Date:   Thu, 27 Jul 2023 07:29:54 -0700
+Message-Id: <1690468194-6185-2-git-send-email-selvin.xavier@broadcom.com>
 X-Mailer: git-send-email 2.5.5
+In-Reply-To: <1690468194-6185-1-git-send-email-selvin.xavier@broadcom.com>
+References: <1690468194-6185-1-git-send-email-selvin.xavier@broadcom.com>
 Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
-        boundary="000000000000216d54060178f6c6"
-X-Spam-Status: No, score=-1.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        boundary="0000000000004db64c060178f6b8"
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        MIME_HEADER_CTYPE_ONLY,MIME_NO_TEXT,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE,T_TVD_MIME_NO_HEADERS autolearn=no
+        MIME_HEADER_CTYPE_ONLY,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE,T_TVD_MIME_NO_HEADERS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -65,34 +68,132 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
---000000000000216d54060178f6c6
+--0000000000004db64c060178f6b8
 
-Adding support for pinned dmabuf memory regions.
+From: Saravanan Vajravel <saravanan.vajravel@broadcom.com>
 
-This patch is dependent on my previous patch series which is not merged.
-https://lore.kernel.org/linux-rdma/1690383081-15033-1-git-send-email-selvin.xavier@broadcom.com/.
-The patch will apply cleanly only after applying the above series.
+Support the new verb which indicates dmabuf support.
+bnxt doesn't support ODP. So use the pinned version of the
+dmabuf APIs to enable bnxt_re devices to work as dmabuf importer.
 
-The corresponding user library patch is available in the 
-pull request. https://github.com/linux-rdma/rdma-core/pull/1373
-
-Please review and apply.
-Thanks,
-Selvin
-
-Saravanan Vajravel (1):
-  RDMA/bnxt_re: Add support for dmabuf pinned memory regions
-
+Signed-off-by: Saravanan Vajravel <saravanan.vajravel@broadcom.com>
+Signed-off-by: Selvin Xavier <selvin.xavier@broadcom.com>
+---
  drivers/infiniband/hw/bnxt_re/ib_verbs.c | 48 ++++++++++++++++++++++++++------
  drivers/infiniband/hw/bnxt_re/ib_verbs.h |  4 +++
  drivers/infiniband/hw/bnxt_re/main.c     |  1 +
  3 files changed, 44 insertions(+), 9 deletions(-)
 
+diff --git a/drivers/infiniband/hw/bnxt_re/ib_verbs.c b/drivers/infiniband/hw/bnxt_re/ib_verbs.c
+index 2b2505a..3c3459d 100644
+--- a/drivers/infiniband/hw/bnxt_re/ib_verbs.c
++++ b/drivers/infiniband/hw/bnxt_re/ib_verbs.c
+@@ -3981,17 +3981,19 @@ int bnxt_re_dealloc_mw(struct ib_mw *ib_mw)
+ 	return rc;
+ }
+ 
+-/* uverbs */
+-struct ib_mr *bnxt_re_reg_user_mr(struct ib_pd *ib_pd, u64 start, u64 length,
+-				  u64 virt_addr, int mr_access_flags,
+-				  struct ib_udata *udata)
++static struct ib_mr *__bnxt_re_reg_user_mr(struct ib_pd *ib_pd, u64 start,
++					   u64 length, u64 virt_addr, int fd,
++					   int mr_access_flags,
++					   struct ib_udata *udata,
++					   bool dmabuf)
+ {
+ 	struct bnxt_re_pd *pd = container_of(ib_pd, struct bnxt_re_pd, ib_pd);
+ 	struct bnxt_re_dev *rdev = pd->rdev;
++	struct ib_umem_dmabuf *umem_dmabuf;
++	unsigned long page_size;
+ 	struct bnxt_re_mr *mr;
+ 	struct ib_umem *umem;
+-	unsigned long page_size;
+-	int umem_pgs, rc;
++	int umem_pgs, rc = 0;
+ 	u32 active_mrs;
+ 
+ 	if (length > BNXT_RE_MAX_MR_SIZE) {
+@@ -4017,9 +4019,21 @@ struct ib_mr *bnxt_re_reg_user_mr(struct ib_pd *ib_pd, u64 start, u64 length,
+ 	/* The fixed portion of the rkey is the same as the lkey */
+ 	mr->ib_mr.rkey = mr->qplib_mr.rkey;
+ 
+-	umem = ib_umem_get(&rdev->ibdev, start, length, mr_access_flags);
+-	if (IS_ERR(umem)) {
+-		ibdev_err(&rdev->ibdev, "Failed to get umem");
++	if (!dmabuf) {
++		umem = ib_umem_get(&rdev->ibdev, start, length, mr_access_flags);
++		if (IS_ERR(umem))
++			rc = PTR_ERR(umem);
++	} else {
++		umem_dmabuf = ib_umem_dmabuf_get_pinned(&rdev->ibdev, start, length,
++							fd, mr_access_flags);
++		if (IS_ERR(umem_dmabuf))
++			rc = PTR_ERR(umem_dmabuf);
++		else
++			umem = &umem_dmabuf->umem;
++	}
++	if (rc) {
++		ibdev_err(&rdev->ibdev, "Failed to get umem dmabuf = %s",
++			  dmabuf ? "true" : "false");
+ 		rc = -EFAULT;
+ 		goto free_mrw;
+ 	}
+@@ -4059,6 +4073,22 @@ struct ib_mr *bnxt_re_reg_user_mr(struct ib_pd *ib_pd, u64 start, u64 length,
+ 	return ERR_PTR(rc);
+ }
+ 
++struct ib_mr *bnxt_re_reg_user_mr(struct ib_pd *ib_pd, u64 start, u64 length,
++				  u64 virt_addr, int mr_access_flags,
++				  struct ib_udata *udata)
++{
++	return __bnxt_re_reg_user_mr(ib_pd, start, length, virt_addr, 0,
++				     mr_access_flags, udata, false);
++}
++
++struct ib_mr *bnxt_re_reg_user_mr_dmabuf(struct ib_pd *ib_pd, u64 start,
++					 u64 length, u64 virt_addr, int fd,
++					 int mr_access_flags, struct ib_udata *udata)
++{
++	return __bnxt_re_reg_user_mr(ib_pd, start, length, virt_addr, fd,
++				     mr_access_flags, udata, true);
++}
++
+ int bnxt_re_alloc_ucontext(struct ib_ucontext *ctx, struct ib_udata *udata)
+ {
+ 	struct ib_device *ibdev = ctx->device;
+diff --git a/drivers/infiniband/hw/bnxt_re/ib_verbs.h b/drivers/infiniband/hw/bnxt_re/ib_verbs.h
+index f392a09..84715b7 100644
+--- a/drivers/infiniband/hw/bnxt_re/ib_verbs.h
++++ b/drivers/infiniband/hw/bnxt_re/ib_verbs.h
+@@ -229,6 +229,10 @@ int bnxt_re_dealloc_mw(struct ib_mw *mw);
+ struct ib_mr *bnxt_re_reg_user_mr(struct ib_pd *pd, u64 start, u64 length,
+ 				  u64 virt_addr, int mr_access_flags,
+ 				  struct ib_udata *udata);
++struct ib_mr *bnxt_re_reg_user_mr_dmabuf(struct ib_pd *ib_pd, u64 start,
++					 u64 length, u64 virt_addr,
++					 int fd, int mr_access_flags,
++					 struct ib_udata *udata);
+ int bnxt_re_alloc_ucontext(struct ib_ucontext *ctx, struct ib_udata *udata);
+ void bnxt_re_dealloc_ucontext(struct ib_ucontext *context);
+ int bnxt_re_mmap(struct ib_ucontext *context, struct vm_area_struct *vma);
+diff --git a/drivers/infiniband/hw/bnxt_re/main.c b/drivers/infiniband/hw/bnxt_re/main.c
+index 87960ac..c467415 100644
+--- a/drivers/infiniband/hw/bnxt_re/main.c
++++ b/drivers/infiniband/hw/bnxt_re/main.c
+@@ -862,6 +862,7 @@ static const struct ib_device_ops bnxt_re_dev_ops = {
+ 	.query_qp = bnxt_re_query_qp,
+ 	.query_srq = bnxt_re_query_srq,
+ 	.reg_user_mr = bnxt_re_reg_user_mr,
++	.reg_user_mr_dmabuf = bnxt_re_reg_user_mr_dmabuf,
+ 	.req_notify_cq = bnxt_re_req_notify_cq,
+ 	.resize_cq = bnxt_re_resize_cq,
+ 	INIT_RDMA_OBJ_SIZE(ib_ah, bnxt_re_ah, ib_ah),
 -- 
 2.5.5
 
 
---000000000000216d54060178f6c6
+--0000000000004db64c060178f6b8
 Content-Type: application/pkcs7-signature; name="smime.p7s"
 Content-Transfer-Encoding: base64
 Content-Disposition: attachment; filename="smime.p7s"
@@ -163,14 +264,14 @@ j1Ze9ndr+YDXPpCymOsynmmw0ErHZGGW1OmMpAEt0A+613glWCURLDlP8HONi1wnINV6aDiEf0ad
 9NMGxDsp+YWiRXD3txfo2OMQbpIxM90QfhKKacX8t1J1oAAWxDrLVTJBXBNvz5tr+D1sYwuye93r
 hImmkM1unboxggJtMIICaQIBATBrMFsxCzAJBgNVBAYTAkJFMRkwFwYDVQQKExBHbG9iYWxTaWdu
 IG52LXNhMTEwLwYDVQQDEyhHbG9iYWxTaWduIEdDQyBSMyBQZXJzb25hbFNpZ24gMiBDQSAyMDIw
-Agxy+Cu4x/7lM0zxY7cwDQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIEIDZLLEGBYR8Z
-ARh7Q/FnwM20yCsLC3TftDI5iOW3T/BcMBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZI
-hvcNAQkFMQ8XDTIzMDcyNzE0NDEzN1owaQYJKoZIhvcNAQkPMVwwWjALBglghkgBZQMEASowCwYJ
+Agxy+Cu4x/7lM0zxY7cwDQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIEIN8UqMJ3aWlS
+YWsBOmXohFh3XEbg7a0TB0PawuXtoLt2MBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZI
+hvcNAQkFMQ8XDTIzMDcyNzE0NDE0MFowaQYJKoZIhvcNAQkPMVwwWjALBglghkgBZQMEASowCwYJ
 YIZIAWUDBAEWMAsGCWCGSAFlAwQBAjAKBggqhkiG9w0DBzALBgkqhkiG9w0BAQowCwYJKoZIhvcN
-AQEHMAsGCWCGSAFlAwQCATANBgkqhkiG9w0BAQEFAASCAQDQMOTk060YvG0qr9f6/rDubBCXYMit
-0Xvp5hSe60msc7DEW3BpIDPBAdf+KU0ljyfYOblDp8/42v4raJDM7oAf0z3ntmybBigAczOJoLHV
-MEGNX4DL2YWoliDBXd+WuT6nr5xmqLFPpj1I5LNI7D/IgcZhEuJe9BN0Hk48uD5ldJe5t+PwhW8/
-vYOP0Bm554z1sAzhLf8Ykc9ibn6XJrnyjD/RI9ptijvkis3An/vJs8Ad2FvJ/vXigxqiNJn6GVNY
-iN5gvhI2zJcO5y1lSz5GYojfKCt3xGxAVjk20nV/sDPUUSn02wV7D+HVVBJY6p0U+TB5pNxCtPl6
-al5NzewI
---000000000000216d54060178f6c6--
+AQEHMAsGCWCGSAFlAwQCATANBgkqhkiG9w0BAQEFAASCAQCy08Qc0dO1wWEU0R/40eYgggsz4SzJ
+F87a8FMEfdHY2WB6n9Bxs+WKbvCgF7WrgYsR1gCGwwtwTk4Nlu0clbm3zSxJo0SYUSeuZXPcp2Ny
+ThjEj1a6all3ikK4HwiiloaAi+elTA16R3AyjeF9sdmzyrc0Exj4uU4icUOT49dotNRNP8bCst+c
+4GUqy47ODXAMoRyYt3RAY5gBTZBj0D5fz66TD+f4xvzEts7SZWAceRgIXdm3ljgwa3B+jbJWM11w
+xnzcACOu8oBF16NLPr2Z2clfWQFd/gpvnhAUOXB8i61xv025oSe/2IWL1Hopp4jDXm6clZo5Pkmw
+1HNw6hIq
+--0000000000004db64c060178f6b8--
