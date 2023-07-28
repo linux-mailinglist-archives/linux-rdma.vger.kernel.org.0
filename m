@@ -2,288 +2,249 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 46D3676648A
-	for <lists+linux-rdma@lfdr.de>; Fri, 28 Jul 2023 08:53:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 661D17664D1
+	for <lists+linux-rdma@lfdr.de>; Fri, 28 Jul 2023 09:08:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233556AbjG1Gx3 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 28 Jul 2023 02:53:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59694 "EHLO
+        id S233836AbjG1HI2 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 28 Jul 2023 03:08:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42008 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233593AbjG1GxF (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 28 Jul 2023 02:53:05 -0400
-Received: from szxga03-in.huawei.com (szxga03-in.huawei.com [45.249.212.189])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DCD033A97
-        for <linux-rdma@vger.kernel.org>; Thu, 27 Jul 2023 23:52:22 -0700 (PDT)
-Received: from kwepemi500008.china.huawei.com (unknown [172.30.72.57])
-        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4RBytG3z0JzLnw7;
-        Fri, 28 Jul 2023 14:49:42 +0800 (CST)
-Received: from huawei.com (10.90.53.73) by kwepemi500008.china.huawei.com
- (7.221.188.139) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Fri, 28 Jul
- 2023 14:52:19 +0800
-From:   Ruan Jinjie <ruanjinjie@huawei.com>
-To:     <yishaih@nvidia.com>, <jgg@ziepe.ca>, <leon@kernel.org>,
-        <linux-rdma@vger.kernel.org>
-CC:     <ruanjinjie@huawei.com>
-Subject: [PATCH -next] RDMA/mlx: remove a lot of unnecessary NULL values
-Date:   Fri, 28 Jul 2023 14:51:39 +0800
-Message-ID: <20230728065139.3411703-1-ruanjinjie@huawei.com>
-X-Mailer: git-send-email 2.34.1
+        with ESMTP id S233826AbjG1HI1 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 28 Jul 2023 03:08:27 -0400
+Received: from mailout2.w1.samsung.com (mailout2.w1.samsung.com [210.118.77.12])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80EB12680;
+        Fri, 28 Jul 2023 00:08:26 -0700 (PDT)
+Received: from eucas1p1.samsung.com (unknown [182.198.249.206])
+        by mailout2.w1.samsung.com (KnoxPortal) with ESMTP id 20230728070825euoutp02e0189b80afb139f4dff8be57f53016c8~19lrhq8M23066530665euoutp02q;
+        Fri, 28 Jul 2023 07:08:25 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.w1.samsung.com 20230728070825euoutp02e0189b80afb139f4dff8be57f53016c8~19lrhq8M23066530665euoutp02q
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1690528105;
+        bh=Qum+fxM7RBPyl8y3MhCFLGsyQrNSjW2pNwmJJVFVq4U=;
+        h=Date:From:To:CC:Subject:In-Reply-To:References:From;
+        b=ryd3VYtm0+5rgl/Shny/9cY+Tj/A5M5yV/5VlzG9N+GJ3NbDcO4bM1OYc0q28zV65
+         oUeMqDN9GZwlD9QiZqcZd5ZAR3EVT7QFc6rgCAXftVkbPbdP3NVePOsfjOIFA5j52B
+         +27c461AwFCTUU/15FQthDkMYdDYJ3KOG5ChwGvw=
+Received: from eusmges2new.samsung.com (unknown [203.254.199.244]) by
+        eucas1p1.samsung.com (KnoxPortal) with ESMTP id
+        20230728070825eucas1p124d2c559172bf02d7e919934a78f9bc8~19lrUuP_A1311313113eucas1p1I;
+        Fri, 28 Jul 2023 07:08:25 +0000 (GMT)
+Received: from eucas1p2.samsung.com ( [182.198.249.207]) by
+        eusmges2new.samsung.com (EUCPMTA) with SMTP id FF.5C.11320.86963C46; Fri, 28
+        Jul 2023 08:08:25 +0100 (BST)
+Received: from eusmtrp2.samsung.com (unknown [182.198.249.139]) by
+        eucas1p2.samsung.com (KnoxPortal) with ESMTPA id
+        20230728070824eucas1p239506fe062a80030f37e790fada1ac50~19lq3mhpq2942129421eucas1p2B;
+        Fri, 28 Jul 2023 07:08:24 +0000 (GMT)
+Received: from eusmgms2.samsung.com (unknown [182.198.249.180]) by
+        eusmtrp2.samsung.com (KnoxPortal) with ESMTP id
+        20230728070824eusmtrp28cd58d9b2c8f37b17869ccf540f7eae9~19lq2gvF32588125881eusmtrp2k;
+        Fri, 28 Jul 2023 07:08:24 +0000 (GMT)
+X-AuditID: cbfec7f4-97dff70000022c38-d5-64c36968e8ba
+Received: from eusmtip1.samsung.com ( [203.254.199.221]) by
+        eusmgms2.samsung.com (EUCPMTA) with SMTP id 7C.D5.14344.86963C46; Fri, 28
+        Jul 2023 08:08:24 +0100 (BST)
+Received: from CAMSVWEXC02.scsc.local (unknown [106.1.227.72]) by
+        eusmtip1.samsung.com (KnoxPortal) with ESMTPA id
+        20230728070824eusmtip1e6b70b6317fdef07d815019042b4f5da~19lqnXEG-1864518645eusmtip14;
+        Fri, 28 Jul 2023 07:08:24 +0000 (GMT)
+Received: from localhost (106.210.248.223) by CAMSVWEXC02.scsc.local
+        (2002:6a01:e348::6a01:e348) with Microsoft SMTP Server (TLS) id 15.0.1497.2;
+        Fri, 28 Jul 2023 08:08:23 +0100
+Date:   Fri, 28 Jul 2023 09:08:22 +0200
+From:   Joel Granados <j.granados@samsung.com>
+To:     Luis Chamberlain <mcgrof@kernel.org>
+CC:     "David S. Miller" <davem@davemloft.net>,
+        David Ahern <dsahern@kernel.org>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Alexander Aring <alex.aring@gmail.com>,
+        Stefan Schmidt <stefan@datenfreihafen.org>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Steffen Klassert <steffen.klassert@secunet.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        Matthieu Baerts <matthieu.baerts@tessares.net>,
+        Mat Martineau <martineau@kernel.org>,
+        Santosh Shilimkar <santosh.shilimkar@oracle.com>,
+        Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>,
+        Xin Long <lucien.xin@gmail.com>,
+        Karsten Graul <kgraul@linux.ibm.com>,
+        Wenjia Zhang <wenjia@linux.ibm.com>,
+        Jan Karcher <jaka@linux.ibm.com>, <willy@infradead.org>,
+        <keescook@chromium.org>, <josh@joshtriplett.org>,
+        "D. Wythe" <alibuda@linux.alibaba.com>,
+        Tony Lu <tonylu@linux.alibaba.com>,
+        Wen Gu <guwen@linux.alibaba.com>, <netdev@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <linux-wpan@vger.kernel.org>,
+        <mptcp@lists.linux.dev>, <linux-rdma@vger.kernel.org>,
+        <rds-devel@oss.oracle.com>, <linux-sctp@vger.kernel.org>,
+        <linux-s390@vger.kernel.org>
+Subject: Re: [PATCH 11/14] networking: Update to register_net_sysctl_sz
+Message-ID: <20230728070822.nfxb36kvvd7dio2a@localhost>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.90.53.73]
-X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
- kwepemi500008.china.huawei.com (7.221.188.139)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: multipart/signed; micalg="pgp-sha512";
+        protocol="application/pgp-signature"; boundary="3lhbyvnp3aqbgl2h"
+Content-Disposition: inline
+In-Reply-To: <ZMFgZHsnhrXNIQ53@bombadil.infradead.org>
+X-Originating-IP: [106.210.248.223]
+X-ClientProxiedBy: CAMSVWEXC01.scsc.local (2002:6a01:e347::6a01:e347) To
+        CAMSVWEXC02.scsc.local (2002:6a01:e348::6a01:e348)
+X-Brightmail-Tracker: H4sIAAAAAAAAA2WTaVBTZxSG+917c5PAhLmy+Ql0rFBpixRb25HPUuhil9tOfzDTP9rVKLfs
+        gUmgVagDFFFIBDJipSxioJkQgSIDIZTFCEFBNkkLRcCYKYEAAzgQoQSFhgIXW2f673nPed85
+        5/w4PNx5jfTgRYoSGLFIGONNOhDajkf9L0dGtoe9MpeLIX1qIBprkXJQcf8ZAlU3ZWDI0mHm
+        ooYpG4lkM15oULVAonVFHOqVxaL5S0UYMmhzOGigqZhEk/psAslL03FkUcxykDFPRSDztXkM
+        PVZ3ctCd7HUcqXsnMTQstwDUfk7HQb3XfuCiDoU7Wu6ZA+hO3SIHjcn7CZSn1mCoOWuFi8Zt
+        UyRK69Vy0epKMfn2HrqkKpkuSv2NoB8/8qM1V0cwurHwPpfWtu6lFbWJdJ3ajx6dDaZrK7JI
+        unHsEC0vawX0dF0BoK2WUYI2qOZIel73Bxnq8pnDm2FMTOS3jHh/yDGHCHl6I4iv8Tx5t55J
+        BVXuUsDnQep1ePZ+Ji4FDjxnSg3g+aXL22IJQNl8A2DFIoCDzRriSaTgbg6HbZQDqD4/jv3r
+        yjfbuKyoB1CnzMI2IwS1F7anXwKbTFL+sH/OiG+yK/Ui1Mmzt9I4VcCH9QW/b5lcqA+h1V62
+        NU9ABcKhpo5t3gG7Cia2GKdOwpE/TRt+3gZ7wnI7bxP51EHYrdzNbuoD25SrXJZPw27N6NYo
+        SF10hPcK0zls4z2YutYJWHaBM52a7YAXXG+8sh3IA/CGfYHLikoAVWl/YawrCJ4ZnNhOvAPL
+        7AZscwtIOcHhBzvYPZ3gBW0+zpYFMPOsM+v2hZWmOUIOfAqfuqzwqcsK/7uMLftDRfND8n/l
+        fVBVOouzHAyrq+cJBeBWgJ1MoiQ2nJEcEDHfBUiEsZJEUXjAibjYWrDxFD32zqVfQfmMNUAP
+        MB7Qg+c3wuaaSgPwIERxIsbbVdAdqg9zFoQJTyUx4rivxYkxjEQPPHmE907BvuCuE85UuDCB
+        iWaYeEb8pIvx+B6pWFkQv8u6y2nxsCpx2fFnzKmPdDPlZy8j69iazriQnuw9sNJi9Bkp+eb6
+        UC4vxEROYSFeFSVfMr0/YnUqXBsRGEUEP3Pv1FTJrltDKwN9jtG1TiZzw99HawS7VRf6Fien
+        Gw96yWJo/2F+2v5y99UrlqttKa3hrTcSbAEr18uj9OaMl+QHPlY2fPHwl9PPJk0EyC5/2sLv
+        KpouTUvOGo/PdDku6zmW23kzJdoz543FoZIPXjjqe0vpeztIefNzt+LxUMtzF3Ptx2FbS0I1
+        X+omSJLOru4xRmT+5PX9YfFH+a7uQRmfHPoqRWGQvIaizi0J+eRbo1UPupflt5tsdfnvH3n3
+        iDchiRC+6oeLJcJ/AIEgf2SPBAAA
+X-Brightmail-Tracker: H4sIAAAAAAAAA2WSf1CTdRzH/W7P8+yBWj2Npd+mSU3tbOJgyI/vOvlx1OljXZcW3XkmwZLn
+        2C7YaGP8qOtCsUAQbkUhm6iDFAZ5UwdMIA91FBSOH0YSCmaMNgzw1oT4qdBgdXnXf6/7fN6v
+        933vex+SzSsnBKRCmcGolbJUIeGPXVvsuL1VrmhLDik6tR7ZciPR8KVCHFX0HMaQueVTFnK2
+        Ozjo4ugMgYrG1qGfq/8k0JJRhexFachddpyFeq0lOOprqSCQy1aMIV1lHhs5jeM4GiqtxpDj
+        nJuF5k0dOOouXmIjk93FQgM6J0Bt+a04sp87xEHtxtVo+toEQN31kzga1vVgqNTUwELfHpnl
+        oJGZUQIdtFs5aGG2goh9nj559iP6eO51jJ6fE9ENtTdZdLPhNoe2XtlEGy1aut4kom+NR9GW
+        uiME3TwspXVVVwB9t14PaI/zFkb3Vk8QtLv1BrE7YJ94u1qlzWCek6s0GVHCdyQoVCyRInFo
+        mFQs2RaZ8FJouDA4ensyk6rIZNTB0UliednYm+nmtdknLn8PckHd6kLgR0IqDOp/KcELgT/J
+        o84AOGZyAt9iHbwwdQP3cQB80F9I+EIeAIumrv9jNAJYcNSELacwahNsyytbsQkqCPZMDLGX
+        mU9thq26YtaywKaO+cGls43E8iKA2gk9i1UrMpeKhP0t7Ziv9T6AVrOF7Vs8BX/U/74SYlOZ
+        sGfksreJ9PJaWLNILqMfFQE7Twf6XroBXj29wPHxx3DyoQvoQIDhkSLDI0WG/4p8YxEcWPzj
+        /+MtsLpynO3jKGg2uzEj4NQBPqPVpKWkaULFGlmaRqtMER9QpVmA9yyt7XMNTaB2zCO2ARYJ
+        bGCj13Sc/6YXCDClSskI+dzO3bZkHjdZlvMho1YlqrWpjMYGwr2/+Dlb8PQBlffGlRmJkoiQ
+        cElYhDQkXBqxTbiGuyu9QMajUmQZzPsMk86o//VYpJ8gl6WIv/PeF5lnkpY+4f/W3iXwFL5s
+        KX/98Xv3k2pfTT1VEhPbtDXkq7+mm7pHB/amTD2xY5ehe08C+XagI+ex/qyctwY1934qxfZf
+        HX5W+Cuec2Jhh7PDHBdenR/hOBj4yneXXMXUvCZrzfnp/dF5aCM/rkQA4rmrRH2NI8YXFVMJ
+        XwbxRPrDhvQ6xdzsC/5h8kq5arSAK2i+6Roar6msmwoGXdoL8880XQzYQkoHa1+beDcoPz4x
+        9mEc3tx3940NloYZbG+9Liy7N1Nf4+q6w3sQtD43i0rk8/Ay0rGKN6qMN8r3bf4aTsZ8oDT9
+        MPeke2xPc1V5yqHOmMEe+2cnqZijeLYQ08hlEhFbrZH9DbOD1zsrBAAA
+X-CMS-MailID: 20230728070824eucas1p239506fe062a80030f37e790fada1ac50
+X-Msg-Generator: CA
+X-RootMTR: 20230726140709eucas1p2033d64aec69a1962fd7e64c57ad60adc
+X-EPHeader: CA
+CMS-TYPE: 201P
+X-CMS-RootMailID: 20230726140709eucas1p2033d64aec69a1962fd7e64c57ad60adc
+References: <20230726140635.2059334-1-j.granados@samsung.com>
+        <CGME20230726140709eucas1p2033d64aec69a1962fd7e64c57ad60adc@eucas1p2.samsung.com>
+        <20230726140635.2059334-12-j.granados@samsung.com>
+        <ZMFgZHsnhrXNIQ53@bombadil.infradead.org>
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Ther are many pointers assigned first, which need not to be initialized, so
-remove the NULL assignment.
+--3lhbyvnp3aqbgl2h
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Signed-off-by: Ruan Jinjie <ruanjinjie@huawei.com>
----
- drivers/infiniband/hw/mlx4/main.c | 36 +++++++++++++++----------------
- drivers/infiniband/hw/mlx5/mad.c  | 32 +++++++++++++--------------
- 2 files changed, 34 insertions(+), 34 deletions(-)
+On Wed, Jul 26, 2023 at 11:05:24AM -0700, Luis Chamberlain wrote:
+> On Wed, Jul 26, 2023 at 04:06:31PM +0200, Joel Granados wrote:
+> > This is part of the effort to remove the sentinel (last empty) element
+> > from the ctl_table arrays. We update to the new function and pass it the
+> > array size. Care is taken to mirror the NULL assignments with a size of
+> > zero (for the unprivileged users). An additional size function was added
+> > to the following files in order to calculate the size of an array that
+> > is defined in another file:
+> >     include/net/ipv6.h
+> >     net/ipv6/icmp.c
+> >     net/ipv6/route.c
+> >     net/ipv6/sysctl_net_ipv6.c
+> >=20
+>=20
+> Same here as with the other patches, the "why" and size impact should go =
+here.
+> I'll skip mentioning that in the other patches.
+>=20
+> > diff --git a/net/mpls/af_mpls.c b/net/mpls/af_mpls.c
+> > index bf6e81d56263..5bad14b3c71e 100644
+> > --- a/net/mpls/af_mpls.c
+> > +++ b/net/mpls/af_mpls.c
+> > @@ -1396,6 +1396,40 @@ static const struct ctl_table mpls_dev_table[] =
+=3D {
+> >  	{ }
+> >  };
+> > =20
+> > +static int mpls_platform_labels(struct ctl_table *table, int write,
+> > +				void *buffer, size_t *lenp, loff_t *ppos);
+> > +#define MPLS_NS_SYSCTL_OFFSET(field)		\
+> > +	(&((struct net *)0)->field)
+> > +
+> > +static const struct ctl_table mpls_table[] =3D {
+> > +	{
+> > +		.procname	=3D "platform_labels",
+> > +		.data		=3D NULL,
+> > +		.maxlen		=3D sizeof(int),
+> > +		.mode		=3D 0644,
+> > +		.proc_handler	=3D mpls_platform_labels,
+> > +	},
+> > +	{
+> > +		.procname	=3D "ip_ttl_propagate",
+> > +		.data		=3D MPLS_NS_SYSCTL_OFFSET(mpls.ip_ttl_propagate),
+> > +		.maxlen		=3D sizeof(int),
+> > +		.mode		=3D 0644,
+> > +		.proc_handler	=3D proc_dointvec_minmax,
+> > +		.extra1		=3D SYSCTL_ZERO,
+> > +		.extra2		=3D SYSCTL_ONE,
+> > +	},
+> > +	{
+> > +		.procname	=3D "default_ttl",
+> > +		.data		=3D MPLS_NS_SYSCTL_OFFSET(mpls.default_ttl),
+> > +		.maxlen		=3D sizeof(int),
+> > +		.mode		=3D 0644,
+> > +		.proc_handler	=3D proc_dointvec_minmax,
+> > +		.extra1		=3D SYSCTL_ONE,
+> > +		.extra2		=3D &ttl_max,
+> > +	},
+> > +	{ }
+> > +};
+>=20
+> Unless we hear otherwise from networking folks, I think this move alone
+> should probably go as a separate patch with no functional changes to
+> make the changes easier to review / bisect.
+On further inspection, I have dropped this part of the patch as there is
+no real reason to move the mpls_table up the file. I'll comment this in
+the new cover letter
+>=20
+>   Luis
 
-diff --git a/drivers/infiniband/hw/mlx4/main.c b/drivers/infiniband/hw/mlx4/main.c
-index b18e9f2adc82..832e0067b091 100644
---- a/drivers/infiniband/hw/mlx4/main.c
-+++ b/drivers/infiniband/hw/mlx4/main.c
-@@ -132,7 +132,7 @@ static struct net_device *mlx4_ib_get_netdev(struct ib_device *device,
- 
- 	if (dev) {
- 		if (mlx4_is_bonded(ibdev->dev)) {
--			struct net_device *upper = NULL;
-+			struct net_device *upper;
- 
- 			upper = netdev_master_upper_dev_get_rcu(dev);
- 			if (upper) {
-@@ -254,7 +254,7 @@ static int mlx4_ib_add_gid(const struct ib_gid_attr *attr, void **context)
- 	int ret = 0;
- 	int hw_update = 0;
- 	int i;
--	struct gid_entry *gids = NULL;
-+	struct gid_entry *gids;
- 	u16 vlan_id = 0xffff;
- 	u8 mac[ETH_ALEN];
- 
-@@ -345,7 +345,7 @@ static int mlx4_ib_del_gid(const struct ib_gid_attr *attr, void **context)
- 	struct mlx4_port_gid_table   *port_gid_table;
- 	int ret = 0;
- 	int hw_update = 0;
--	struct gid_entry *gids = NULL;
-+	struct gid_entry *gids;
- 
- 	if (!rdma_cap_roce_gid_table(attr->device, attr->port_num))
- 		return -EINVAL;
-@@ -431,8 +431,8 @@ static int mlx4_ib_query_device(struct ib_device *ibdev,
- 				struct ib_udata *uhw)
- {
- 	struct mlx4_ib_dev *dev = to_mdev(ibdev);
--	struct ib_smp *in_mad  = NULL;
--	struct ib_smp *out_mad = NULL;
-+	struct ib_smp *in_mad;
-+	struct ib_smp *out_mad;
- 	int err;
- 	int have_ib_ports;
- 	struct mlx4_uverbs_ex_query_device cmd;
-@@ -649,8 +649,8 @@ mlx4_ib_port_link_layer(struct ib_device *device, u32 port_num)
- static int ib_link_query_port(struct ib_device *ibdev, u32 port,
- 			      struct ib_port_attr *props, int netw_view)
- {
--	struct ib_smp *in_mad  = NULL;
--	struct ib_smp *out_mad = NULL;
-+	struct ib_smp *in_mad;
-+	struct ib_smp *out_mad;
- 	int ext_active_speed;
- 	int mad_ifc_flags = MLX4_MAD_IFC_IGNORE_KEYS;
- 	int err = -ENOMEM;
-@@ -827,8 +827,8 @@ static int mlx4_ib_query_port(struct ib_device *ibdev, u32 port,
- int __mlx4_ib_query_gid(struct ib_device *ibdev, u32 port, int index,
- 			union ib_gid *gid, int netw_view)
- {
--	struct ib_smp *in_mad  = NULL;
--	struct ib_smp *out_mad = NULL;
-+	struct ib_smp *in_mad;
-+	struct ib_smp *out_mad;
- 	int err = -ENOMEM;
- 	struct mlx4_ib_dev *dev = to_mdev(ibdev);
- 	int clear = 0;
-@@ -892,8 +892,8 @@ static int mlx4_ib_query_sl2vl(struct ib_device *ibdev, u32 port,
- 			       u64 *sl2vl_tbl)
- {
- 	union sl2vl_tbl_to_u64 sl2vl64;
--	struct ib_smp *in_mad  = NULL;
--	struct ib_smp *out_mad = NULL;
-+	struct ib_smp *in_mad;
-+	struct ib_smp *out_mad;
- 	int mad_ifc_flags = MLX4_MAD_IFC_IGNORE_KEYS;
- 	int err = -ENOMEM;
- 	int jj;
-@@ -952,8 +952,8 @@ static void mlx4_init_sl2vl_tbl(struct mlx4_ib_dev *mdev)
- int __mlx4_ib_query_pkey(struct ib_device *ibdev, u32 port, u16 index,
- 			 u16 *pkey, int netw_view)
- {
--	struct ib_smp *in_mad  = NULL;
--	struct ib_smp *out_mad = NULL;
-+	struct ib_smp *in_mad;
-+	struct ib_smp *out_mad;
- 	int mad_ifc_flags = MLX4_MAD_IFC_IGNORE_KEYS;
- 	int err = -ENOMEM;
- 
-@@ -1968,8 +1968,8 @@ static int mlx4_ib_mcg_detach(struct ib_qp *ibqp, union ib_gid *gid, u16 lid)
- 
- static int init_node_data(struct mlx4_ib_dev *dev)
- {
--	struct ib_smp *in_mad  = NULL;
--	struct ib_smp *out_mad = NULL;
-+	struct ib_smp *in_mad;
-+	struct ib_smp *out_mad;
- 	int mad_ifc_flags = MLX4_MAD_IFC_IGNORE_KEYS;
- 	int err = -ENOMEM;
- 
-@@ -2621,7 +2621,7 @@ static void *mlx4_ib_add(struct mlx4_dev *dev)
- 	int num_req_counters;
- 	int allocated;
- 	u32 counter_index;
--	struct counter_index *new_counter_index = NULL;
-+	struct counter_index *new_counter_index;
- 
- 	pr_info_once("%s", mlx4_ib_version);
- 
-@@ -2923,7 +2923,7 @@ int mlx4_ib_steer_qp_reg(struct mlx4_ib_dev *mdev, struct mlx4_ib_qp *mqp,
- {
- 	int err;
- 	size_t flow_size;
--	struct ib_flow_attr *flow = NULL;
-+	struct ib_flow_attr *flow;
- 	struct ib_flow_spec_ib *ib_spec;
- 
- 	if (is_attach) {
-@@ -2992,7 +2992,7 @@ static void mlx4_ib_remove(struct mlx4_dev *dev, void *ibdev_ptr)
- 
- static void do_slave_init(struct mlx4_ib_dev *ibdev, int slave, int do_init)
- {
--	struct mlx4_ib_demux_work **dm = NULL;
-+	struct mlx4_ib_demux_work **dm;
- 	struct mlx4_dev *dev = ibdev->dev;
- 	int i;
- 	unsigned long flags;
-diff --git a/drivers/infiniband/hw/mlx5/mad.c b/drivers/infiniband/hw/mlx5/mad.c
-index 9c8a7b206dcf..c5e103abdd24 100644
---- a/drivers/infiniband/hw/mlx5/mad.c
-+++ b/drivers/infiniband/hw/mlx5/mad.c
-@@ -308,8 +308,8 @@ int mlx5_ib_process_mad(struct ib_device *ibdev, int mad_flags, u32 port_num,
- 
- int mlx5_query_ext_port_caps(struct mlx5_ib_dev *dev, unsigned int port)
- {
--	struct ib_smp *in_mad  = NULL;
--	struct ib_smp *out_mad = NULL;
-+	struct ib_smp *in_mad;
-+	struct ib_smp *out_mad;
- 	int err = -ENOMEM;
- 	u16 packet_error;
- 
-@@ -338,7 +338,7 @@ int mlx5_query_ext_port_caps(struct mlx5_ib_dev *dev, unsigned int port)
- static int mlx5_query_mad_ifc_smp_attr_node_info(struct ib_device *ibdev,
- 						 struct ib_smp *out_mad)
- {
--	struct ib_smp *in_mad = NULL;
-+	struct ib_smp *in_mad;
- 	int err = -ENOMEM;
- 
- 	in_mad = kzalloc(sizeof(*in_mad), GFP_KERNEL);
-@@ -358,7 +358,7 @@ static int mlx5_query_mad_ifc_smp_attr_node_info(struct ib_device *ibdev,
- int mlx5_query_mad_ifc_system_image_guid(struct ib_device *ibdev,
- 					 __be64 *sys_image_guid)
- {
--	struct ib_smp *out_mad = NULL;
-+	struct ib_smp *out_mad;
- 	int err = -ENOMEM;
- 
- 	out_mad = kmalloc(sizeof(*out_mad), GFP_KERNEL);
-@@ -380,7 +380,7 @@ int mlx5_query_mad_ifc_system_image_guid(struct ib_device *ibdev,
- int mlx5_query_mad_ifc_max_pkeys(struct ib_device *ibdev,
- 				 u16 *max_pkeys)
- {
--	struct ib_smp *out_mad = NULL;
-+	struct ib_smp *out_mad;
- 	int err = -ENOMEM;
- 
- 	out_mad = kmalloc(sizeof(*out_mad), GFP_KERNEL);
-@@ -402,7 +402,7 @@ int mlx5_query_mad_ifc_max_pkeys(struct ib_device *ibdev,
- int mlx5_query_mad_ifc_vendor_id(struct ib_device *ibdev,
- 				 u32 *vendor_id)
- {
--	struct ib_smp *out_mad = NULL;
-+	struct ib_smp *out_mad;
- 	int err = -ENOMEM;
- 
- 	out_mad = kmalloc(sizeof(*out_mad), GFP_KERNEL);
-@@ -423,8 +423,8 @@ int mlx5_query_mad_ifc_vendor_id(struct ib_device *ibdev,
- 
- int mlx5_query_mad_ifc_node_desc(struct mlx5_ib_dev *dev, char *node_desc)
- {
--	struct ib_smp *in_mad  = NULL;
--	struct ib_smp *out_mad = NULL;
-+	struct ib_smp *in_mad;
-+	struct ib_smp *out_mad;
- 	int err = -ENOMEM;
- 
- 	in_mad  = kzalloc(sizeof(*in_mad), GFP_KERNEL);
-@@ -448,8 +448,8 @@ int mlx5_query_mad_ifc_node_desc(struct mlx5_ib_dev *dev, char *node_desc)
- 
- int mlx5_query_mad_ifc_node_guid(struct mlx5_ib_dev *dev, __be64 *node_guid)
- {
--	struct ib_smp *in_mad  = NULL;
--	struct ib_smp *out_mad = NULL;
-+	struct ib_smp *in_mad;
-+	struct ib_smp *out_mad;
- 	int err = -ENOMEM;
- 
- 	in_mad  = kzalloc(sizeof(*in_mad), GFP_KERNEL);
-@@ -474,8 +474,8 @@ int mlx5_query_mad_ifc_node_guid(struct mlx5_ib_dev *dev, __be64 *node_guid)
- int mlx5_query_mad_ifc_pkey(struct ib_device *ibdev, u32 port, u16 index,
- 			    u16 *pkey)
- {
--	struct ib_smp *in_mad  = NULL;
--	struct ib_smp *out_mad = NULL;
-+	struct ib_smp *in_mad;
-+	struct ib_smp *out_mad;
- 	int err = -ENOMEM;
- 
- 	in_mad  = kzalloc(sizeof(*in_mad), GFP_KERNEL);
-@@ -503,8 +503,8 @@ int mlx5_query_mad_ifc_pkey(struct ib_device *ibdev, u32 port, u16 index,
- int mlx5_query_mad_ifc_gids(struct ib_device *ibdev, u32 port, int index,
- 			    union ib_gid *gid)
- {
--	struct ib_smp *in_mad  = NULL;
--	struct ib_smp *out_mad = NULL;
-+	struct ib_smp *in_mad;
-+	struct ib_smp *out_mad;
- 	int err = -ENOMEM;
- 
- 	in_mad  = kzalloc(sizeof(*in_mad), GFP_KERNEL);
-@@ -545,8 +545,8 @@ int mlx5_query_mad_ifc_port(struct ib_device *ibdev, u32 port,
- {
- 	struct mlx5_ib_dev *dev = to_mdev(ibdev);
- 	struct mlx5_core_dev *mdev = dev->mdev;
--	struct ib_smp *in_mad  = NULL;
--	struct ib_smp *out_mad = NULL;
-+	struct ib_smp *in_mad;
-+	struct ib_smp *out_mad;
- 	int ext_active_speed;
- 	int err = -ENOMEM;
- 
--- 
-2.34.1
+--=20
 
+Joel Granados
+
+--3lhbyvnp3aqbgl2h
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQGzBAABCgAdFiEErkcJVyXmMSXOyyeQupfNUreWQU8FAmTDaWYACgkQupfNUreW
+QU/68gv+P47PIm5nu/CZnpp6uod9hTLumW0n2GsP/jLYIUvXVJHO9gtSYY8+G6EP
+p1IUx5D0qtSHqv7OxVAzrxX63AarjiRYZsD0ocIwfaJsSHFk7zXswRrm59PoEy7Q
+00UgQIY/u30jDcSHTIq9OEuvX0wExPElHNtp08psZZIbaF6QylEemqfSnJ21YFNc
+A44bqIsrTlor9EIuw0rxLcJ7ozCsY0RgaZ7Hc0XE15kqJcoYimMI369R6x+L5d7H
+TxMc+xII07Sd8oNqTAKf8FgKk6v1D+LV6MVfUUuafSYuaDGQVHCkrd0xKnlBo+oC
+f8cSmYkxxrrwEq7fgKhUvvA9Bw1h2d4nXtLH6DgAnj3aMxfqvX1VGw7BtE/E2a1a
+idlmcB8D17LQCt/VXEuCnD1rFiQQoQYdWUNWlwIBuXVVDZ5k5WSQUcgQAyXXaNpS
+KRtvOO7XtsXUqBBJ5rG/d9XLEM+FJ95kmgdts6i1DbsbIeJCY6ixSc8UL5F53z2e
+MVDcle5T
+=PdNZ
+-----END PGP SIGNATURE-----
+
+--3lhbyvnp3aqbgl2h--
