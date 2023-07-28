@@ -2,271 +2,155 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7669776617C
-	for <lists+linux-rdma@lfdr.de>; Fri, 28 Jul 2023 03:49:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ED87F766181
+	for <lists+linux-rdma@lfdr.de>; Fri, 28 Jul 2023 03:54:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230286AbjG1BtZ (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 27 Jul 2023 21:49:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52314 "EHLO
+        id S232517AbjG1Byu (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 27 Jul 2023 21:54:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53368 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230150AbjG1BtY (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 27 Jul 2023 21:49:24 -0400
-Received: from mail-oa1-x2f.google.com (mail-oa1-x2f.google.com [IPv6:2001:4860:4864:20::2f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 908282723
-        for <linux-rdma@vger.kernel.org>; Thu, 27 Jul 2023 18:49:21 -0700 (PDT)
-Received: by mail-oa1-x2f.google.com with SMTP id 586e51a60fabf-1bba1816960so1203072fac.3
-        for <linux-rdma@vger.kernel.org>; Thu, 27 Jul 2023 18:49:21 -0700 (PDT)
+        with ESMTP id S229719AbjG1Byt (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 27 Jul 2023 21:54:49 -0400
+Received: from mail-ot1-x329.google.com (mail-ot1-x329.google.com [IPv6:2607:f8b0:4864:20::329])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BADC8173F
+        for <linux-rdma@vger.kernel.org>; Thu, 27 Jul 2023 18:54:48 -0700 (PDT)
+Received: by mail-ot1-x329.google.com with SMTP id 46e09a7af769-6b9ec15e014so1426796a34.0
+        for <linux-rdma@vger.kernel.org>; Thu, 27 Jul 2023 18:54:48 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1690508961; x=1691113761;
+        d=gmail.com; s=20221208; t=1690509288; x=1691114088;
         h=content-transfer-encoding:in-reply-to:from:references:to
          :content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=2ppjPMItIwUOD07K8bq/Qon9XcEMTzGdCdAnV2mwtmI=;
-        b=C0lres+3d6GphoPNN/nc0Lts8MCM282pjbovZbwcKpAq5W9Kho5Kq5tu4ZRgG3mJ6V
-         h66GbjaGxkq6wC3Np/0dKuET/Uzt5mJEPgbnMriFl5smHBN2886KwIfoGxKTJZhrdfkm
-         HZWHlTKpP2JatToSL3abcNQIn0AG7oP7PQ35lIo7QtI+CCGlHId1N5ry1xOb+IQ7rVNR
-         ZZNzwv7U/XM38RlwAcfetfHLWfCXrPjgNPtbG+d2SNpkxhELgXsS0w//XYrxOiBUf9wq
-         JUGQvl4Lc/typeYcSsjUnTKnyUEsCZLf+oF73alKpQPunlF+v2WIIUWjU3MYn/KO3Nxl
-         +TIw==
+        bh=Gww8VXBUg38r6OY6QWFoN7l9AV551GICLnZJOuBHzhc=;
+        b=mAIHnf4rvYo3R4BK4KMTDYTF/5tWT2JnVBIkgcy9ce/GlIwdJKmY6Uy+fzYIPz7wRQ
+         U7PsaMLc2tbJnlKe5w+FQaKIzUfDj5dl8tBQHFqi0Xz5WiB3BPuwGhJtNsua1ZUFAWJY
+         hNDXzQ2VTa7uwtvGAiYc6ZzcXnvFDqob10QCamgwi6NK4VCLK/WRPLqR9c3zVicaUXp/
+         J8XO60Vemt81gayhEUQJ40AAC501F62I0oNMbv8xadawPkyCTQ8EsMEVmHJJXApZZ+wd
+         lLi5GOtbqQOAs2Y3dbetaa25BLFJ/eeA7BX4U1k6kIzp1Ixiw0+kyAq96hkhBHYMAhLm
+         Fnkw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690508961; x=1691113761;
+        d=1e100.net; s=20221208; t=1690509288; x=1691114088;
         h=content-transfer-encoding:in-reply-to:from:references:to
          :content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=2ppjPMItIwUOD07K8bq/Qon9XcEMTzGdCdAnV2mwtmI=;
-        b=WjvpQhschJGXRcWunAtZzXv6aDWV013e9MHYHsxBxLmpKtJIUHn6IyJqrOVtRtoSAB
-         8nrmEnrobS/YoCowASgqxl3T5O3waOZ0kUvlLPG3xU0cxotkHD+c94IVayoV9UZhgb1k
-         vaN7rug+uofK67+Bfe/cww1o/dEMRs4mt1M4DGO6kkcRm9qoC/CuKpeTD8uK85hBz7uy
-         8e6PiSmJWkkFAX3b9g0QMIB9ZfjYLj3dQfHQtSYSu8b7vDFaUzfjAKP6RGwPzjIMTMoh
-         B8MUFZ/4+sq3zm/3JcwJWpvFFL9YmlOOH3kJ6bgi7ibVlmSDxm7uXFdn4RCZpAJdl5af
-         t/qw==
-X-Gm-Message-State: ABy/qLZ7spRhljJw2d1nq2CKb3saU9FoGuwBoRcd+qycWFOTeoxD4a5J
-        9xDctI7H//e0QvcFuu5c/PkoInbNQFw=
-X-Google-Smtp-Source: APBJJlE3JrB1m1ETxUhGgDUzEYkc9XiqnYKvbJG98Qm+FC3VgsT0z3m94dgbbSN3tDMiAfCuR+LSAA==
-X-Received: by 2002:a05:6870:b50b:b0:1bb:8abf:4a80 with SMTP id v11-20020a056870b50b00b001bb8abf4a80mr1545695oap.9.1690508960760;
-        Thu, 27 Jul 2023 18:49:20 -0700 (PDT)
+        bh=Gww8VXBUg38r6OY6QWFoN7l9AV551GICLnZJOuBHzhc=;
+        b=kDH68Vq9TI7H7exB77W7HQSSn8H3bI9YxzT42mHdsc352G5EVOX4PrDv+wSvpfxuKl
+         W/6OSpYeCd+fq6pt+q+97+sz3yeh1p3kLB9lSwFhHzq2RzX8JEY8mCGWn+8XLsQUTWAL
+         D/0CfDyA4VgaTnP/Dg6gk2dsqpvd3TbDgitvraiFxAUevs2YdZ0szJWlXwmwR2sPFukK
+         74Njrb15E4mJRGxL26353paPwOLrvOFqk6euXG0y8vBH5fiIodcQnGFIhWhP8GXtDt8e
+         Tj+bSNANXq99PriHzEasgZwPgkuAQumbYjA9iCZED/YrKpoEA1DF0GgdZPADFEaOUSih
+         zooA==
+X-Gm-Message-State: ABy/qLZKPqLkozNA4sJJmL4onbcIofV945gevSJUnQ4tHfpTyzGLZuLQ
+        bCCg/jy/s2W6fg5OgAPURL4=
+X-Google-Smtp-Source: APBJJlHQ1v0ybqx2SukwZF316OW5JpW9c+sakhxd9kFRoXwlUKQSLFVo0Gz3RoltwqAqgRFqG+PRcQ==
+X-Received: by 2002:a05:6870:b50b:b0:1bb:8abf:4a80 with SMTP id v11-20020a056870b50b00b001bb8abf4a80mr1560610oap.9.1690509287969;
+        Thu, 27 Jul 2023 18:54:47 -0700 (PDT)
 Received: from ?IPV6:2603:8081:140c:1a00:af49:6f67:7a95:d734? (2603-8081-140c-1a00-af49-6f67-7a95-d734.res6.spectrum.com. [2603:8081:140c:1a00:af49:6f67:7a95:d734])
-        by smtp.gmail.com with ESMTPSA id c19-20020a4a2853000000b00569c240e398sm1202680oof.30.2023.07.27.18.49.20
+        by smtp.gmail.com with ESMTPSA id 4-20020a4a1a04000000b00565d41ba4d0sm1207828oof.35.2023.07.27.18.54.47
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 27 Jul 2023 18:49:20 -0700 (PDT)
-Message-ID: <e9fe24b3-be37-d14f-d601-fdda8937eac9@gmail.com>
-Date:   Thu, 27 Jul 2023 20:49:19 -0500
+        Thu, 27 Jul 2023 18:54:47 -0700 (PDT)
+Message-ID: <58cd3b75-2ebb-9217-197a-5f710a301028@gmail.com>
+Date:   Thu, 27 Jul 2023 20:54:46 -0500
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
  Thunderbird/102.13.0
-Subject: Re: [PATCH for-next v3 01/10] RDMA/rxe: Add sg fragment ops
+Subject: Re: [PATCH for-next v3 00/10] RDMA/rxe: Implement support for
+ nonlinear packets
 Content-Language: en-US
 To:     Zhu Yanjun <yanjun.zhu@linux.dev>, jgg@nvidia.com,
         zyjzyj2000@gmail.com, linux-rdma@vger.kernel.org, jhack@hpe.com
 References: <20230727200128.65947-1-rpearsonhpe@gmail.com>
- <20230727200128.65947-2-rpearsonhpe@gmail.com>
- <31d17c66-17fb-0d95-b64d-6f5bd3a3c123@linux.dev>
+ <d2b1f434-4b49-d7af-6260-2194ef67731d@linux.dev>
 From:   Bob Pearson <rpearsonhpe@gmail.com>
-In-Reply-To: <31d17c66-17fb-0d95-b64d-6f5bd3a3c123@linux.dev>
+In-Reply-To: <d2b1f434-4b49-d7af-6260-2194ef67731d@linux.dev>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 7/27/23 20:07, Zhu Yanjun wrote:
+On 7/27/23 19:40, Zhu Yanjun wrote:
 > 在 2023/7/28 4:01, Bob Pearson 写道:
->> Rename rxe_mr_copy_dir to rxe_mr_copy_op. This allows
->> adding new fragment operations later.
+>> This patch set is a revised version of an older set which implements
+>> support for nonlinear or fragmented packets. This avoids extra copies
+>> in both the send and receive paths and gives significant performance
+>> improvement for large messages such as are used in storage applications.
+>>
+>> This patch set has been heavily tested at large system scale and
+>> demonstrated a 2X improvement in file system read performance on
+>> a 200 Gb/sec network.
+>>
+>> The patch set is rebased to the current for-next branch with the
+>> following previous patch sets applied:
+>>     RDMA/rxe: Fix incomplete state save in rxe_requester
+>>     RDMA/rxe: Misc fixes and cleanups
+>>     Enable rcu locking of verbs objects
+>>     RDMA/rxe: Misc cleanups
+>>
+>> Bob Pearson (10):
+>>    RDMA/rxe: Add sg fragment ops
+>>    RDMA/rxe: Extend rxe_mr_copy to support skb frags
+>>    RDMA/rxe: Extend copy_data to support skb frags
+>>    RDMA/rxe: Extend rxe_init_packet() to support frags
+>>    RDMA/rxe: Extend rxe_icrc.c to support frags
+>>    RDMA/rxe: Extend rxe_init_req_packet() for frags
+>>    RDMA/rxe: Extend response packets for frags
+>>    RDMA/rxe: Extend send/write_data_in() for frags
+>>    RDMA/rxe: Extend do_read() in rxe_comp.c for frags
+>>    RDMA/rxe: Enable sg code in rxe
+>>
+>>   drivers/infiniband/sw/rxe/rxe.c        |   5 +
+>>   drivers/infiniband/sw/rxe/rxe.h        |   3 +
+>>   drivers/infiniband/sw/rxe/rxe_comp.c   |  46 +++-
+>>   drivers/infiniband/sw/rxe/rxe_icrc.c   |  65 ++++-
+>>   drivers/infiniband/sw/rxe/rxe_loc.h    |  27 +-
+>>   drivers/infiniband/sw/rxe/rxe_mr.c     | 348 +++++++++++++++++++------
+>>   drivers/infiniband/sw/rxe/rxe_net.c    | 109 +++++++-
+>>   drivers/infiniband/sw/rxe/rxe_opcode.c |   2 +
+>>   drivers/infiniband/sw/rxe/rxe_recv.c   |   1 +
+>>   drivers/infiniband/sw/rxe/rxe_req.c    |  88 ++++++-
+>>   drivers/infiniband/sw/rxe/rxe_resp.c   | 172 +++++++-----
+>>   drivers/infiniband/sw/rxe/rxe_verbs.h  |   8 +-
+>>   12 files changed, 672 insertions(+), 202 deletions(-)
+>>
+>>
 > 
-> In this commit, only renaming a enum from rxe_mr_copy_dir to rxe_mr_copy_op. And no bug fix and performance enhancing. I am not sure if it is good or not. Please Jason and Leon also check it.
+> What are the following? This is the new format in linux kernel community?
+If you type --base d6b811de06c8900be after git format-patch it documents what the patch
+was applied to. I have multiple patch sets that have to be applied in order.
+Three of them have already been submitted but are not upstream yet. The fourth
+one was submitted just before this set.
+
+Bob
 > 
 > Zhu Yanjun
 > 
->>
->> This is in preparation for supporting fragmented skbs.
-
-Read the next one.
->>
->> Signed-off-by: Bob Pearson <rpearsonhpe@gmail.com>
->> ---
->>   drivers/infiniband/sw/rxe/rxe_comp.c  |  4 ++--
->>   drivers/infiniband/sw/rxe/rxe_loc.h   |  4 ++--
->>   drivers/infiniband/sw/rxe/rxe_mr.c    | 22 +++++++++++-----------
->>   drivers/infiniband/sw/rxe/rxe_req.c   |  2 +-
->>   drivers/infiniband/sw/rxe/rxe_resp.c  |  6 +++---
->>   drivers/infiniband/sw/rxe/rxe_verbs.h |  6 +++---
->>   6 files changed, 22 insertions(+), 22 deletions(-)
->>
->> diff --git a/drivers/infiniband/sw/rxe/rxe_comp.c b/drivers/infiniband/sw/rxe/rxe_comp.c
->> index 5111735aafae..e3f8dfc9b8bf 100644
->> --- a/drivers/infiniband/sw/rxe/rxe_comp.c
->> +++ b/drivers/infiniband/sw/rxe/rxe_comp.c
->> @@ -368,7 +368,7 @@ static inline enum comp_state do_read(struct rxe_qp *qp,
->>         ret = copy_data(qp->pd, IB_ACCESS_LOCAL_WRITE,
->>               &wqe->dma, payload_addr(pkt),
->> -            payload_size(pkt), RXE_TO_MR_OBJ);
->> +            payload_size(pkt), RXE_COPY_TO_MR);
->>       if (ret) {
->>           wqe->status = IB_WC_LOC_PROT_ERR;
->>           return COMPST_ERROR;
->> @@ -390,7 +390,7 @@ static inline enum comp_state do_atomic(struct rxe_qp *qp,
->>         ret = copy_data(qp->pd, IB_ACCESS_LOCAL_WRITE,
->>               &wqe->dma, &atomic_orig,
->> -            sizeof(u64), RXE_TO_MR_OBJ);
->> +            sizeof(u64), RXE_COPY_TO_MR);
->>       if (ret) {
->>           wqe->status = IB_WC_LOC_PROT_ERR;
->>           return COMPST_ERROR;
->> diff --git a/drivers/infiniband/sw/rxe/rxe_loc.h b/drivers/infiniband/sw/rxe/rxe_loc.h
->> index cf38f4dcff78..532026cdd49e 100644
->> --- a/drivers/infiniband/sw/rxe/rxe_loc.h
->> +++ b/drivers/infiniband/sw/rxe/rxe_loc.h
->> @@ -64,9 +64,9 @@ int rxe_mr_init_user(struct rxe_dev *rxe, u64 start, u64 length, u64 iova,
->>   int rxe_mr_init_fast(int max_pages, struct rxe_mr *mr);
->>   int rxe_flush_pmem_iova(struct rxe_mr *mr, u64 iova, unsigned int length);
->>   int rxe_mr_copy(struct rxe_mr *mr, u64 iova, void *addr,
->> -        unsigned int length, enum rxe_mr_copy_dir dir);
->> +        unsigned int length, enum rxe_mr_copy_op op);
->>   int copy_data(struct rxe_pd *pd, int access, struct rxe_dma_info *dma,
->> -          void *addr, int length, enum rxe_mr_copy_dir dir);
->> +          void *addr, int length, enum rxe_mr_copy_op op);
->>   int rxe_map_mr_sg(struct ib_mr *ibmr, struct scatterlist *sg,
->>             int sg_nents, unsigned int *sg_offset);
->>   int rxe_mr_do_atomic_op(struct rxe_mr *mr, u64 iova, int opcode,
->> diff --git a/drivers/infiniband/sw/rxe/rxe_mr.c b/drivers/infiniband/sw/rxe/rxe_mr.c
->> index f54042e9aeb2..812c85cad463 100644
->> --- a/drivers/infiniband/sw/rxe/rxe_mr.c
->> +++ b/drivers/infiniband/sw/rxe/rxe_mr.c
->> @@ -243,7 +243,7 @@ int rxe_map_mr_sg(struct ib_mr *ibmr, struct scatterlist *sgl,
->>   }
->>     static int rxe_mr_copy_xarray(struct rxe_mr *mr, u64 iova, void *addr,
->> -                  unsigned int length, enum rxe_mr_copy_dir dir)
->> +                  unsigned int length, enum rxe_mr_copy_op op)
->>   {
->>       unsigned int page_offset = rxe_mr_iova_to_page_offset(mr, iova);
->>       unsigned long index = rxe_mr_iova_to_index(mr, iova);
->> @@ -259,7 +259,7 @@ static int rxe_mr_copy_xarray(struct rxe_mr *mr, u64 iova, void *addr,
->>           bytes = min_t(unsigned int, length,
->>                   mr_page_size(mr) - page_offset);
->>           va = kmap_local_page(page);
->> -        if (dir == RXE_FROM_MR_OBJ)
->> +        if (op == RXE_COPY_FROM_MR)
->>               memcpy(addr, va + page_offset, bytes);
->>           else
->>               memcpy(va + page_offset, addr, bytes);
->> @@ -275,7 +275,7 @@ static int rxe_mr_copy_xarray(struct rxe_mr *mr, u64 iova, void *addr,
->>   }
->>     static void rxe_mr_copy_dma(struct rxe_mr *mr, u64 dma_addr, void *addr,
->> -                unsigned int length, enum rxe_mr_copy_dir dir)
->> +                unsigned int length, enum rxe_mr_copy_op op)
->>   {
->>       unsigned int page_offset = dma_addr & (PAGE_SIZE - 1);
->>       unsigned int bytes;
->> @@ -288,10 +288,10 @@ static void rxe_mr_copy_dma(struct rxe_mr *mr, u64 dma_addr, void *addr,
->>                   PAGE_SIZE - page_offset);
->>           va = kmap_local_page(page);
->>   -        if (dir == RXE_TO_MR_OBJ)
->> -            memcpy(va + page_offset, addr, bytes);
->> -        else
->> +        if (op == RXE_COPY_FROM_MR)
->>               memcpy(addr, va + page_offset, bytes);
->> +        else
->> +            memcpy(va + page_offset, addr, bytes);
->>             kunmap_local(va);
->>           page_offset = 0;
->> @@ -302,7 +302,7 @@ static void rxe_mr_copy_dma(struct rxe_mr *mr, u64 dma_addr, void *addr,
->>   }
->>     int rxe_mr_copy(struct rxe_mr *mr, u64 iova, void *addr,
->> -        unsigned int length, enum rxe_mr_copy_dir dir)
->> +        unsigned int length, enum rxe_mr_copy_op op)
->>   {
->>       int err;
->>   @@ -313,7 +313,7 @@ int rxe_mr_copy(struct rxe_mr *mr, u64 iova, void *addr,
->>           return -EINVAL;
->>         if (mr->ibmr.type == IB_MR_TYPE_DMA) {
->> -        rxe_mr_copy_dma(mr, iova, addr, length, dir);
->> +        rxe_mr_copy_dma(mr, iova, addr, length, op);
->>           return 0;
->>       }
->>   @@ -323,7 +323,7 @@ int rxe_mr_copy(struct rxe_mr *mr, u64 iova, void *addr,
->>           return err;
->>       }
->>   -    return rxe_mr_copy_xarray(mr, iova, addr, length, dir);
->> +    return rxe_mr_copy_xarray(mr, iova, addr, length, op);
->>   }
->>     /* copy data in or out of a wqe, i.e. sg list
->> @@ -335,7 +335,7 @@ int copy_data(
->>       struct rxe_dma_info    *dma,
->>       void            *addr,
->>       int            length,
->> -    enum rxe_mr_copy_dir    dir)
->> +    enum rxe_mr_copy_op    op)
->>   {
->>       int            bytes;
->>       struct rxe_sge        *sge    = &dma->sge[dma->cur_sge];
->> @@ -395,7 +395,7 @@ int copy_data(
->>             if (bytes > 0) {
->>               iova = sge->addr + offset;
->> -            err = rxe_mr_copy(mr, iova, addr, bytes, dir);
->> +            err = rxe_mr_copy(mr, iova, addr, bytes, op);
->>               if (err)
->>                   goto err2;
->>   diff --git a/drivers/infiniband/sw/rxe/rxe_req.c b/drivers/infiniband/sw/rxe/rxe_req.c
->> index 51b781ac2844..f3653234cf32 100644
->> --- a/drivers/infiniband/sw/rxe/rxe_req.c
->> +++ b/drivers/infiniband/sw/rxe/rxe_req.c
->> @@ -327,7 +327,7 @@ static int rxe_init_payload(struct rxe_qp *qp, struct rxe_send_wqe *wqe,
->>           wqe->dma.sge_offset += payload;
->>       } else {
->>           err = copy_data(qp->pd, 0, &wqe->dma, payload_addr(pkt),
->> -                payload, RXE_FROM_MR_OBJ);
->> +                payload, RXE_COPY_FROM_MR);
->>       }
->>         return err;
->> diff --git a/drivers/infiniband/sw/rxe/rxe_resp.c b/drivers/infiniband/sw/rxe/rxe_resp.c
->> index 8a25c56dfd86..596615c515ad 100644
->> --- a/drivers/infiniband/sw/rxe/rxe_resp.c
->> +++ b/drivers/infiniband/sw/rxe/rxe_resp.c
->> @@ -565,7 +565,7 @@ static enum resp_states send_data_in(struct rxe_qp *qp, void *data_addr,
->>       int err;
->>         err = copy_data(qp->pd, IB_ACCESS_LOCAL_WRITE, &qp->resp.wqe->dma,
->> -            data_addr, data_len, RXE_TO_MR_OBJ);
->> +            data_addr, data_len, RXE_COPY_TO_MR);
->>       if (unlikely(err))
->>           return (err == -ENOSPC) ? RESPST_ERR_LENGTH
->>                       : RESPST_ERR_MALFORMED_WQE;
->> @@ -581,7 +581,7 @@ static enum resp_states write_data_in(struct rxe_qp *qp,
->>       int data_len = payload_size(pkt);
->>         err = rxe_mr_copy(qp->resp.mr, qp->resp.va + qp->resp.offset,
->> -              payload_addr(pkt), data_len, RXE_TO_MR_OBJ);
->> +              payload_addr(pkt), data_len, RXE_COPY_TO_MR);
->>       if (err) {
->>           rc = RESPST_ERR_RKEY_VIOLATION;
->>           goto out;
->> @@ -928,7 +928,7 @@ static enum resp_states read_reply(struct rxe_qp *qp,
->>       }
->>         err = rxe_mr_copy(mr, res->read.va, payload_addr(&ack_pkt),
->> -              payload, RXE_FROM_MR_OBJ);
->> +              payload, RXE_COPY_FROM_MR);
->>       if (err) {
->>           kfree_skb(skb);
->>           state = RESPST_ERR_RKEY_VIOLATION;
->> diff --git a/drivers/infiniband/sw/rxe/rxe_verbs.h b/drivers/infiniband/sw/rxe/rxe_verbs.h
->> index ccb9d19ffe8a..d9c44bd30da4 100644
->> --- a/drivers/infiniband/sw/rxe/rxe_verbs.h
->> +++ b/drivers/infiniband/sw/rxe/rxe_verbs.h
->> @@ -275,9 +275,9 @@ enum rxe_mr_state {
->>       RXE_MR_STATE_VALID,
->>   };
->>   -enum rxe_mr_copy_dir {
->> -    RXE_TO_MR_OBJ,
->> -    RXE_FROM_MR_OBJ,
->> +enum rxe_mr_copy_op {
->> +    RXE_COPY_TO_MR,
->> +    RXE_COPY_FROM_MR,
->>   };
->>     enum rxe_mr_lookup_type {
+>> base-commit: 693e1cdebb50d2aa67406411ca6d5be195d62771
+>> prerequisite-patch-id: c3994e7a93e37e0ce4f50e0c768f3c1a0059a02f
+>> prerequisite-patch-id: 48e13f6ccb560fdeacbd20aaf6696782c23d1190
+>> prerequisite-patch-id: da75fb8eaa863df840e7b392b5048fcc72b0bef3
+>> prerequisite-patch-id: d0877649e2edaf00585a0a6a80391fe0d7bbc13b
+>> prerequisite-patch-id: 6495b1d1f664f8ab91ed9ef9d2ca5b3b27d7df35
+>> prerequisite-patch-id: a6367b8fedd0d8999139c8b857ebbd3ce5c72245
+>> prerequisite-patch-id: 78c95e90a5e49b15b7af8ef57130739c143e88b5
+>> prerequisite-patch-id: 7c65a01066c0418de6897bc8b5f44d078d21b0ec
+>> prerequisite-patch-id: 8ab09f93c23c7875e56c597e69236c30464723b6
+>> prerequisite-patch-id: ca9d84b34873b49048e42fb4c13a2a097c215c46
+>> prerequisite-patch-id: 0f6a587501c8246e1185dfd0cbf5e2044c5f9b13
+>> prerequisite-patch-id: 5246df93137429916d76e75b9a13a4ad5ceb0bad
+>> prerequisite-patch-id: 41b0e4150794dd914d9fcb4cd106fe4cf4227611
+>> prerequisite-patch-id: 02b08ec037bc35b9c7771640c89c66504cdf38a6
+>> prerequisite-patch-id: dfccc06c16454d7fe8e6fcba064d4e471d314666
+>> prerequisite-patch-id: 7459a6e5cdd46efd53ba27f9b3e9028af6e0863b
+>> prerequisite-patch-id: 36d49f9303f5cb276a5601c1ab568eea6eca7d3a
+>> prerequisite-patch-id: 6359a681e40832694f81ca003c10e5327996bf7d
+>> prerequisite-patch-id: 558175db657f374dbd3e0a57ac4c5fb77a56b6c6
+>> prerequisite-patch-id: d6b811de06c8900be5840dd29715161d26db66cf
 > 
 
