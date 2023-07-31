@@ -2,79 +2,77 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3306E7698EC
-	for <lists+linux-rdma@lfdr.de>; Mon, 31 Jul 2023 16:05:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 94438769B0C
+	for <lists+linux-rdma@lfdr.de>; Mon, 31 Jul 2023 17:46:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233054AbjGaOFQ (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 31 Jul 2023 10:05:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54528 "EHLO
+        id S230076AbjGaPqt (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 31 Jul 2023 11:46:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54756 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233064AbjGaOEo (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 31 Jul 2023 10:04:44 -0400
-Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 223A87D96;
-        Mon, 31 Jul 2023 06:59:40 -0700 (PDT)
-Received: from canpemm500007.china.huawei.com (unknown [172.30.72.55])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4RF0Bx3cFXzXdTy;
-        Mon, 31 Jul 2023 21:56:09 +0800 (CST)
-Received: from localhost (10.174.179.215) by canpemm500007.china.huawei.com
- (7.192.104.62) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Mon, 31 Jul
- 2023 21:59:29 +0800
-From:   Yue Haibing <yuehaibing@huawei.com>
-To:     <xuhaoyue1@hisilicon.com>, <huangjunxian6@hisilicon.com>,
-        <jgg@ziepe.ca>, <leon@kernel.org>
-CC:     <linux-rdma@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        Yue Haibing <yuehaibing@huawei.com>
-Subject: [PATCH -next] RDMA/hns: Remove unused function declarations
-Date:   Mon, 31 Jul 2023 21:59:16 +0800
-Message-ID: <20230731135916.32392-1-yuehaibing@huawei.com>
-X-Mailer: git-send-email 2.10.2.windows.1
+        with ESMTP id S229570AbjGaPqt (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 31 Jul 2023 11:46:49 -0400
+Received: from smtp-relay-services-0.canonical.com (smtp-relay-services-0.canonical.com [185.125.188.250])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A40C411A
+        for <linux-rdma@vger.kernel.org>; Mon, 31 Jul 2023 08:46:47 -0700 (PDT)
+Received: from juju-98d295-prod-launchpad-15.localdomain (buildd-manager.lp.internal [10.131.215.202])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-relay-services-0.canonical.com (Postfix) with ESMTPSA id B03CC3F078
+        for <linux-rdma@vger.kernel.org>; Mon, 31 Jul 2023 15:46:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=launchpad.net;
+        s=20210803; t=1690818400;
+        bh=NYvZ3oiFP819Swpwu2VW9FxW8i7N+usJUEshacIwfT4=;
+        h=Content-Type:MIME-Version:To:From:Subject:Message-Id:Date:
+         Reply-To;
+        b=TDiXHLsvFTrnCZNrv/GH9rDzD+bqyxW5x1+iUeDuAGSN4DKPQujTUzETSjZqPZhSe
+         Hbo2qduswCj5T4xWMZc2Djs7igUIq5VHIFUzrc4qyJuj0mUenJMxly34oAxqJmWuZn
+         v+Yus/jUQ/sn9eX+63+P+SgzVtrVRxfCjIWffGueJzjm/QSx9O2/YoLKNa4vShR5hm
+         jTERNtFNkTGVKKtBwwIM09xmojfAePuroL3SCraA8jzEvNduAEDPeWH/G0y3mB2jhk
+         uBMXyGcS24qn9x2R5uLgpUgXBaplJjgiNZyMWa0eWy/dnsb/kN7WlxNtCm83AQ36lu
+         oQQ8x5keXsV6A==
+Received: from buildd-manager.lp.internal (localhost [127.0.0.1])
+        by juju-98d295-prod-launchpad-15.localdomain (Postfix) with ESMTP id BD6897E005
+        for <linux-rdma@vger.kernel.org>; Mon, 31 Jul 2023 15:46:37 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.174.179.215]
-X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
- canpemm500007.china.huawei.com (7.192.104.62)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-5.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: quoted-printable
+X-Launchpad-Message-Rationale: Requester @linux-rdma
+X-Launchpad-Message-For: linux-rdma
+X-Launchpad-Notification-Type: recipe-build-status
+X-Launchpad-Archive: ~linux-rdma/ubuntu/rdma-core-daily
+X-Launchpad-Build-State: MANUALDEPWAIT
+To:     Linux RDMA <linux-rdma@vger.kernel.org>
+From:   noreply@launchpad.net
+Subject: [recipe build #3581277] of ~linux-rdma rdma-core-daily in xenial: Dependency wait
+Message-Id: <169081839777.473079.14226893817247015841.launchpad@buildd-manager.lp.internal>
+Date:   Mon, 31 Jul 2023 15:46:37 -0000
+Reply-To: noreply@launchpad.net
+Sender: noreply@launchpad.net
+X-Generated-By: Launchpad (canonical.com); Revision="d80dbb5bdc9110f3a64cc968928033472d5e0509"; Instance="launchpad-buildd-manager"
+X-Launchpad-Hash: 1337bb8054829069a5361efa2883b34ba81f79d7
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-commit b16f8188472e ("RDMA/hns: Refactor eq code for hip06")
-left behind hns_roce_cleanup_eq_table().
-And commit 773f841ab1ae ("RDMA/hns: Avoid filling sgid index when modifying QP to RTR")
-leave hns_get_gid_index() unused.
+ * State: Dependency wait
+ * Recipe: linux-rdma/rdma-core-daily
+ * Archive: ~linux-rdma/ubuntu/rdma-core-daily
+ * Distroseries: xenial
+ * Duration: 1 minute
+ * Build Log: https://launchpad.net/~linux-rdma/+archive/ubuntu/rdma-core-d=
+aily/+recipebuild/3581277/+files/buildlog.txt.gz
+ * Upload Log:=20
+ * Builder: https://launchpad.net/builders/lcy02-amd64-022
 
-Signed-off-by: Yue Haibing <yuehaibing@huawei.com>
----
- drivers/infiniband/hw/hns/hns_roce_device.h | 2 --
- 1 file changed, 2 deletions(-)
-
-diff --git a/drivers/infiniband/hw/hns/hns_roce_device.h b/drivers/infiniband/hw/hns/hns_roce_device.h
-index 6084c1649000..34e099efaae3 100644
---- a/drivers/infiniband/hw/hns/hns_roce_device.h
-+++ b/drivers/infiniband/hw/hns/hns_roce_device.h
-@@ -1111,7 +1111,6 @@ int hns_roce_init_qp_table(struct hns_roce_dev *hr_dev);
- void hns_roce_init_srq_table(struct hns_roce_dev *hr_dev);
- void hns_roce_init_xrcd_table(struct hns_roce_dev *hr_dev);
- 
--void hns_roce_cleanup_eq_table(struct hns_roce_dev *hr_dev);
- void hns_roce_cleanup_cq_table(struct hns_roce_dev *hr_dev);
- void hns_roce_cleanup_qp_table(struct hns_roce_dev *hr_dev);
- 
-@@ -1205,7 +1204,6 @@ void hns_roce_cq_event(struct hns_roce_dev *hr_dev, u32 cqn, int event_type);
- void flush_cqe(struct hns_roce_dev *dev, struct hns_roce_qp *qp);
- void hns_roce_qp_event(struct hns_roce_dev *hr_dev, u32 qpn, int event_type);
- void hns_roce_srq_event(struct hns_roce_dev *hr_dev, u32 srqn, int event_type);
--u8 hns_get_gid_index(struct hns_roce_dev *hr_dev, u32 port, int gid_index);
- void hns_roce_handle_device_err(struct hns_roce_dev *hr_dev);
- int hns_roce_init(struct hns_roce_dev *hr_dev);
- void hns_roce_exit(struct hns_roce_dev *hr_dev);
--- 
-2.34.1
+--=20
+https://launchpad.net/~linux-rdma/+archive/ubuntu/rdma-core-daily/+recipebu=
+ild/3581277
+Your team Linux RDMA is the requester of the build.
 
