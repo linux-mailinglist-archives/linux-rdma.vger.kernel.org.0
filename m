@@ -2,74 +2,74 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D41F76A078
-	for <lists+linux-rdma@lfdr.de>; Mon, 31 Jul 2023 20:33:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 66F7A76A08E
+	for <lists+linux-rdma@lfdr.de>; Mon, 31 Jul 2023 20:42:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230459AbjGaSdT (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 31 Jul 2023 14:33:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58152 "EHLO
+        id S231687AbjGaSma (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 31 Jul 2023 14:42:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33066 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229930AbjGaSdT (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 31 Jul 2023 14:33:19 -0400
-Received: from mail-oi1-x22a.google.com (mail-oi1-x22a.google.com [IPv6:2607:f8b0:4864:20::22a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E40FE1B1
-        for <linux-rdma@vger.kernel.org>; Mon, 31 Jul 2023 11:33:17 -0700 (PDT)
-Received: by mail-oi1-x22a.google.com with SMTP id 5614622812f47-3a3b7fafd61so3653360b6e.2
-        for <linux-rdma@vger.kernel.org>; Mon, 31 Jul 2023 11:33:17 -0700 (PDT)
+        with ESMTP id S232155AbjGaSmW (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 31 Jul 2023 14:42:22 -0400
+Received: from mail-ot1-x332.google.com (mail-ot1-x332.google.com [IPv6:2607:f8b0:4864:20::332])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 52D352101
+        for <linux-rdma@vger.kernel.org>; Mon, 31 Jul 2023 11:42:11 -0700 (PDT)
+Received: by mail-ot1-x332.google.com with SMTP id 46e09a7af769-6bca7d82d54so736312a34.3
+        for <linux-rdma@vger.kernel.org>; Mon, 31 Jul 2023 11:42:11 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1690828397; x=1691433197;
+        d=gmail.com; s=20221208; t=1690828930; x=1691433730;
         h=content-transfer-encoding:in-reply-to:from:references:cc:to
          :content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=xy+3Dw4EFeQNSx/mu2OTUCMR5qrZDc203+ss7SYw+I4=;
-        b=mU2fDO3bEyL7npMoc3CL1Dzl7JPzMPzaiv4VV+T16bQ80NAlLI9twwoZWyi5ZqHtKf
-         OVLxJKmn5RPX6kbOW5xjvr0cqwb/8iBz/fxViknEtY0V3yN5cTspaWqYTmIhqPx4ZlY1
-         9740DUrjNoMi7BYZ2tgwTR419OyKA0whS7/SF7um7oi7Kz/WyJHSdr36t7Aa6ZCLATgj
-         5KX1s8GC0l6+s/zW2CTV+08DMqypbIWHyw57W+L5/rhmiqxAo7So9Tw9fagOSTM4d8Y2
-         ldNTF572S8Mq+8lTE8+287y07Edtcex8ozKDXwfbxSDlibKO0hUH4Qq6HcEPGGxISpR8
-         4hfA==
+        bh=8xsxM0lFmBzURYMGkKkeSxOAK6r9PDir7Z5KElCvqpI=;
+        b=NbVU2V+3Yu6dvLPHk6mQgcBQdb6pJilbJ7icvh11HFPglOEVIsXcmtV46MqaqgUIrs
+         HMF9xEXzu/R/EROcIE2ai1i8nrb87pkXn9avjUqZgLwwfrGJRYwzWq2VFfxXNSQgjbN9
+         lHI39Tlcyo6CS+MAhTD5llIPXCU3/XNwez9hvJ7HLWfYRn8JAMe51j8VdF0zTV2qW20s
+         063gk1EhGWiPzcZKczmMdum73bSXoCpZqOUNsvMNJxYHuEPkbGL8as2AlSt7qyR53FO+
+         NY4TyUOEX54oLLBQyFY9Q8ouGEacuvjqlVVQTZMA5Fr1n30QpccYmpLJnmT2WtYqg3j+
+         9RtQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690828397; x=1691433197;
+        d=1e100.net; s=20221208; t=1690828930; x=1691433730;
         h=content-transfer-encoding:in-reply-to:from:references:cc:to
          :content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=xy+3Dw4EFeQNSx/mu2OTUCMR5qrZDc203+ss7SYw+I4=;
-        b=ALL7pyzjvyhBqK/KN2G1caA/V72rEYB3KTEOb34OKiDtEQKGAnvt4X+JHR+Uvqbm8S
-         sQ2WebzjFIGhM/934PzAWKCDUZfufIXaYbgcpBKIdTO5ZmnhfXc37Noi2F0VFtPDNvH2
-         x7XC7n1yqI/GLHFEC55vybV8/z8avEcFKRc4PdBfQJq4658fAd3fkwUSEXHj+sHJ2Fjr
-         p3+LIeW6OF0mCjCWch+Pu5FbGRYLZpmnW8AlbpbAb/DIqEdlgzlpWXwYfFgeKc1QYJLE
-         nm/9eA5Uo2pQ+f9TwtscSRpjCsq5vwiBQ3qT1EnhmDGvLHgStdgRCGedObUaaOszUTLI
-         ducg==
-X-Gm-Message-State: ABy/qLbVgb7T4Xltax1rT/OvlXqgpjIvIHosljOzxzVYAo7jN/a4TzJO
-        VwMOq5d4auRWZj72VtFJa6siKAUeR1o=
-X-Google-Smtp-Source: APBJJlH6uodxXq0WkcQ0XsXTLDc3deszVoYHSCatFgY1Sl5woGr+uFwMabXVBJmFyYFrNfYzGAGFpQ==
-X-Received: by 2002:a54:4815:0:b0:3a3:e6eb:9c53 with SMTP id j21-20020a544815000000b003a3e6eb9c53mr10074472oij.23.1690828397201;
-        Mon, 31 Jul 2023 11:33:17 -0700 (PDT)
+        bh=8xsxM0lFmBzURYMGkKkeSxOAK6r9PDir7Z5KElCvqpI=;
+        b=cXLNhNju7ADfnIkYeiVpsUHe9bFHD2F2Zw0bnoXs0Vb9poAGfIvoP3FG/o7hxjiMbp
+         qc3ziqJTIK+Qz50jFOEhcSUyUTPgd9B3uO3uQeZyyvHUo+rveC/d6AnqYU6Q+VEvSS2x
+         FJSef653DAy1WZo+RCYASr0llmNdM/F0ssxQ10JoaSiuiRRjDHQTWKmtySCsl7dQKu0R
+         xbGaA3BlZbRWX/WHYVKW+AAsH4m6s6dDnT4fC1HvpFjwYU2sGXBoNuUTUq6SjOGgnwBq
+         LCyyjb4xoZ3/CeqUj9lnn2wd8GxWMw3QvmjiZurbmS4fsLXTvrJF7hd4r+wwZUstL5ZM
+         U6zA==
+X-Gm-Message-State: ABy/qLZRBVcW0FWIE3lMQKFy3sycRHPpbfzdKL35cOh6ij8JZR+26cHd
+        ffGyw8blF1ThH+BvO8eyrvM=
+X-Google-Smtp-Source: APBJJlGI2EMEpY1dS+1XYEjlYbWlYttCUzd6EC2PRG/+nYZSdZZvgL8DOKylEZX8GsGLj2gr+4WzEg==
+X-Received: by 2002:a05:6830:1557:b0:6b9:cba6:b246 with SMTP id l23-20020a056830155700b006b9cba6b246mr9786552otp.9.1690828930585;
+        Mon, 31 Jul 2023 11:42:10 -0700 (PDT)
 Received: from ?IPV6:2603:8081:140c:1a00:8206:c67a:f41a:8567? (2603-8081-140c-1a00-8206-c67a-f41a-8567.res6.spectrum.com. [2603:8081:140c:1a00:8206:c67a:f41a:8567])
-        by smtp.gmail.com with ESMTPSA id e22-20020a05680809b600b003a1dfa93903sm4348325oig.12.2023.07.31.11.33.16
+        by smtp.gmail.com with ESMTPSA id e15-20020a9d6e0f000000b006b94904baf5sm4283630otr.74.2023.07.31.11.42.09
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 31 Jul 2023 11:33:16 -0700 (PDT)
-Message-ID: <0cfb222c-ff48-daca-d512-3083878100fa@gmail.com>
-Date:   Mon, 31 Jul 2023 13:33:15 -0500
+        Mon, 31 Jul 2023 11:42:10 -0700 (PDT)
+Message-ID: <4aeec08f-bd31-9cac-d121-12da5a20c2ee@gmail.com>
+Date:   Mon, 31 Jul 2023 13:42:09 -0500
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
  Thunderbird/102.13.0
-Subject: Re: [PATCH for-next 4/9] RDMA/rxe: Fix delayed send packet handling
+Subject: Re: [PATCH for-next 8/9] RDMA/rxe: Report leaked objects
 Content-Language: en-US
 To:     Jason Gunthorpe <jgg@nvidia.com>
 Cc:     leon@kernel.org, zyjzyj2000@gmail.com, jhack@hpe.com,
         linux-rdma@vger.kernel.org
 References: <20230721205021.5394-1-rpearsonhpe@gmail.com>
- <20230721205021.5394-5-rpearsonhpe@gmail.com> <ZMf5qhbrgx0lBv20@nvidia.com>
- <f38c7db0-e613-f840-e979-76383460fd7e@gmail.com>
- <ZMf8H4GtL4EZKGd2@nvidia.com>
+ <20230721205021.5394-9-rpearsonhpe@gmail.com> <ZMf6XBIAD0A25csR@nvidia.com>
+ <ecd82fc6-0a2d-7dff-496e-5a92d115da8c@gmail.com>
+ <ZMf987OeXm7bdBDP@nvidia.com>
 From:   Bob Pearson <rpearsonhpe@gmail.com>
-In-Reply-To: <ZMf8H4GtL4EZKGd2@nvidia.com>
+In-Reply-To: <ZMf987OeXm7bdBDP@nvidia.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -77,39 +77,65 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 7/31/23 13:23, Jason Gunthorpe wrote:
-> On Mon, Jul 31, 2023 at 01:20:35PM -0500, Bob Pearson wrote:
->> On 7/31/23 13:12, Jason Gunthorpe wrote:
->>> On Fri, Jul 21, 2023 at 03:50:17PM -0500, Bob Pearson wrote:
->>>> In cable pull testing some NICs can hold a send packet long enough
->>>> to allow ulp protocol stacks to destroy the qp and the cleanup
->>>> routines to timeout waiting for all qp references to be released.
->>>> When the NIC driver finally frees the SKB the qp pointer is no longer
->>>> valid and causes a seg fault in rxe_skb_tx_dtor().
+On 7/31/23 13:31, Jason Gunthorpe wrote:
+> On Mon, Jul 31, 2023 at 01:23:59PM -0500, Bob Pearson wrote:
+>> On 7/31/23 13:15, Jason Gunthorpe wrote:
+>>> On Fri, Jul 21, 2023 at 03:50:21PM -0500, Bob Pearson wrote:
+>>>> This patch gives a more detailed list of objects that are not
+>>>> freed in case of error before the module exits.
 >>>>
->>>> This patch passes the qp index instead of the qp to the skb destructor
->>>> callback function. The call back is required to lookup the qp from the
->>>> index and if it has been destroyed the lookup will return NULL and the
->>>> qp will not be referenced avoiding the seg fault.
+>>>> Signed-off-by: Bob Pearson <rpearsonhpe@gmail.com>
+>>>> ---
+>>>>  drivers/infiniband/sw/rxe/rxe_pool.c | 12 +++++++++++-
+>>>>  1 file changed, 11 insertions(+), 1 deletion(-)
+>>>>
+>>>> diff --git a/drivers/infiniband/sw/rxe/rxe_pool.c b/drivers/infiniband/sw/rxe/rxe_pool.c
+>>>> index cb812bd969c6..3249c2741491 100644
+>>>> --- a/drivers/infiniband/sw/rxe/rxe_pool.c
+>>>> +++ b/drivers/infiniband/sw/rxe/rxe_pool.c
+>>>> @@ -113,7 +113,17 @@ void rxe_pool_init(struct rxe_dev *rxe, struct rxe_pool *pool,
+>>>>  
+>>>>  void rxe_pool_cleanup(struct rxe_pool *pool)
+>>>>  {
+>>>> -	WARN_ON(!xa_empty(&pool->xa));
+>>>> +	unsigned long index;
+>>>> +	struct rxe_pool_elem *elem;
+>>>> +
+>>>> +	xa_lock(&pool->xa);
+>>>> +	xa_for_each(&pool->xa, index, elem) {
+>>>> +		rxe_err_dev(pool->rxe, "%s#%d: Leaked", pool->name,
+>>>> +				elem->index);
+>>>> +	}
+>>>> +	xa_unlock(&pool->xa);
+>>>> +
+>>>> +	xa_destroy(&pool->xa);
+>>>>  }
 >>>
->>> And what if it is a different QP returned?
+>>> Is this why? Just count the number of unfinalized objects and report
+>>> if there is difference, don't mess up the xarray.
 >>>
 >>> Jason
->>
->> Since we are using xarray cyclic alloc you would have to create 16M QPs before the
->> index was reused. This is as good as it gets I think.
+>> This is why I made the last change but I really didn't like that there was no
+>> way to lookup the qp from its index since we were using a NULL xarray entry to
+>> indicate the state of the qp. Making it explicit, i.e. a variable in the struct
+>> seems much more straight forward. Not sure why you hated the last
+>> change.
 > 
-> Sounds terrible, why can't you store the QP pointer instead and hold a
-> refcount on it?
+> Because if you don't call finalize abort has to be deterministic, and
+> abort can't be that if it someone else can access the poitner and, eg,
+> take a reference.
 
-The goal here was to make packet send semantics to be 'fire and forget' i.e. once we
-send the packet not have any dependencies hanging around. But we still wanted to count
-the packets pending to avoid overrunning the send queue.
+rxe_pool_get_index() is the only 'correct' way to look up the pointer and
+it checks the valid state (now). Scanning the xarray or just looking up
+the qp is something outside the scope of the normal flows. Like listing
+orphan objects on module exit.
 
-This allows lustre to do its normal error recovery and destroy the qp and try to create
-a new one when it times out.
+Memory ownership didn't change. It is still the same. The only change is
+how we mark whether the object is valid for lookup.
 
 Bob
+> 
+> It breaks the entire model of how the memory ownership works during creation.
 > 
 > Jason
 
