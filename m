@@ -2,128 +2,165 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DD6CF76A064
-	for <lists+linux-rdma@lfdr.de>; Mon, 31 Jul 2023 20:28:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F83676A06F
+	for <lists+linux-rdma@lfdr.de>; Mon, 31 Jul 2023 20:30:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231450AbjGaS2K (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 31 Jul 2023 14:28:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55316 "EHLO
+        id S229527AbjGaSai (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 31 Jul 2023 14:30:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57266 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231771AbjGaS2B (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 31 Jul 2023 14:28:01 -0400
-Received: from NAM11-DM6-obe.outbound.protection.outlook.com (mail-dm6nam11on2084.outbound.protection.outlook.com [40.107.223.84])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C4E7E1725;
-        Mon, 31 Jul 2023 11:27:58 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=idTQD3aHpZyhnwX3wUQV9MfFrcOse/0QB+87p2qEC+Q/iZ0/z4zdntmezvnpbYQiFsE8bUR174UrwZkZMhCqC0SY2P+EKtKRChwqxC/TlKsQ7cLcNIX8lqKcPZ8I4k6GCCyaFu6G8lnyFWpksKS9+mPDMIc3HPP435+MHX1Gmc3GVQfXPkrINdbXGo8QTmU+m40WQtYsU2BhQ9a/UkPZoyS0fxp9l3S2v3k6h6xfmsB6qr2G5J3IrFU807dOB2a6/H+EffoCvEUJZMWL5O/A8dAq/ZYMEAf7/1TeuPgp6HILRH4RJjb6u9zjvZbPKtG2ppI2y9/bRMrGO7APcMJx6Q==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=7DRxDl8YvrdwjMLt35tbwqseA5FIwOqc/u43lVEhD54=;
- b=h8zohfuyI6gHc7wAxm+62Gut96+IJ46Ri9DMln3kyCbN6pclaWaz1UFw5XfDEvWtfesE2IZbLk5LHfTy9l3Po7xvXonRqXpTlala6fsNVhd3Zr6IRUM7G12v65X7LRSthSL4FkNpzgVh3krvKF4d98Y9xTaPXFzSU2Uep804SDbS/WKYQspUmM+s21ElyY5zc52IJBJBquHRuXx0vwRMYv18VFypWJWDHv9aW31Yw/Kh3DFsY6rjQJ43llcKDC0ItiJlpc9ufXEAmHaMZ4HXowdoizEbqIu8udBO1CEBFrBIJfpPRysag6RT6BAsoQ+vPypB/fty+6bfX6G51dW0mA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=7DRxDl8YvrdwjMLt35tbwqseA5FIwOqc/u43lVEhD54=;
- b=uq+aR6Hjgz1nSJxbTrmhB2IPXSFMQWm1JhbEvwNjiHUx9C/rW+VGY+Fqh/LGCb7l2Nflt40SRfU1fI2lrd1DNBk9oPjzlzqaY0NX8BxPFKJdt6xvpM58ZF43j9tqluwwIGhCNaiOzDjDTjyqsZurvACkwIEcoD3mMT1DCDWYbEYByyMqsJvrcIv9KvCqKyTtbYiOUfyjzFLQ3lOubrq8KWeG7aNcjQKfa5us/jucss8TwHcTvDhlcRaNhDT19WQNpFFMOXaNfW+heaEXUgkMNwct9NgvNI1bPUBjXZZGqmtR8ZKjx5pgqpwSB0TyDS2+FuuLkXuunrBp9YBXKE4vYA==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nvidia.com;
-Received: from LV2PR12MB5869.namprd12.prod.outlook.com (2603:10b6:408:176::16)
- by SA1PR12MB7409.namprd12.prod.outlook.com (2603:10b6:806:29c::11) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6631.42; Mon, 31 Jul
- 2023 18:27:56 +0000
-Received: from LV2PR12MB5869.namprd12.prod.outlook.com
- ([fe80::5111:16e8:5afe:1da1]) by LV2PR12MB5869.namprd12.prod.outlook.com
- ([fe80::5111:16e8:5afe:1da1%6]) with mapi id 15.20.6631.043; Mon, 31 Jul 2023
- 18:27:56 +0000
-Date:   Mon, 31 Jul 2023 15:27:54 -0300
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     Yue Haibing <yuehaibing@huawei.com>
-Cc:     xuhaoyue1@hisilicon.com, huangjunxian6@hisilicon.com,
-        leon@kernel.org, linux-rdma@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH -next] RDMA/hns: Remove unused function declarations
-Message-ID: <ZMf9Kq4bCVXuMKK/@nvidia.com>
-References: <20230731135916.32392-1-yuehaibing@huawei.com>
+        with ESMTP id S231898AbjGaSag (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 31 Jul 2023 14:30:36 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 94ECB1BC3;
+        Mon, 31 Jul 2023 11:30:35 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id DAE5061245;
+        Mon, 31 Jul 2023 18:30:34 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 082BDC433C7;
+        Mon, 31 Jul 2023 18:30:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1690828234;
+        bh=azdNP8cF85m7UDvgXMTAEEGyM/wWyMIGFgmuwIc8ul0=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=O1VpJucJ8qJ4G6AE1OKV3xdN/xK/FDklzv/nwqYZajcZtRy+LSUQU50X+sHs9AxvB
+         xsU2buC2SUK4CZR3jjYJZtrydR9Bbqd9WCPwdG5zMYEjJLfGD0nXQIDtdar/ei7qKh
+         Q4AFqyXfVyBH57dywLI4uw0Frcitouu9e42wpiwCGypovk04FOzCfl60zxzFG2eyak
+         ANZHJkor5YlN+5saTB/xwrXYhgw16Q93h89m9IIkWKyhNAHwsbqX1ZrfONEa6iuY6k
+         btG9dsvLFpB0/w7f/xaTE6xEYGtgYWH7rF7vGs2JSC6YVtwrN6iixwxcTNdpmmdRV2
+         wiQHQ/+OXxCxw==
+Date:   Mon, 31 Jul 2023 20:30:21 +0200
+From:   Simon Horman <horms@kernel.org>
+To:     Joel Granados <joel.granados@gmail.com>
+Cc:     mcgrof@kernel.org, Catalin Marinas <catalin.marinas@arm.com>,
+        Iurii Zaikin <yzaikin@google.com>,
+        Jozsef Kadlecsik <kadlec@netfilter.org>,
+        Sven Schnelle <svens@linux.ibm.com>,
+        Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>,
+        Steffen Klassert <steffen.klassert@secunet.com>,
+        Kees Cook <keescook@chromium.org>,
+        "D. Wythe" <alibuda@linux.alibaba.com>, mptcp@lists.linux.dev,
+        Jakub Kicinski <kuba@kernel.org>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Paolo Abeni <pabeni@redhat.com>, coreteam@netfilter.org,
+        Jan Karcher <jaka@linux.ibm.com>,
+        Alexander Aring <alex.aring@gmail.com>,
+        Will Deacon <will@kernel.org>,
+        Stefan Schmidt <stefan@datenfreihafen.org>,
+        Matthieu Baerts <matthieu.baerts@tessares.net>,
+        bridge@lists.linux-foundation.org,
+        linux-arm-kernel@lists.infradead.org,
+        Joerg Reuter <jreuter@yaina.de>, Julian Anastasov <ja@ssi.bg>,
+        David Ahern <dsahern@kernel.org>,
+        netfilter-devel@vger.kernel.org, Wen Gu <guwen@linux.alibaba.com>,
+        linux-kernel@vger.kernel.org,
+        Santosh Shilimkar <santosh.shilimkar@oracle.com>,
+        linux-wpan@vger.kernel.org, lvs-devel@vger.kernel.org,
+        Karsten Graul <kgraul@linux.ibm.com>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        linux-sctp@vger.kernel.org, Tony Lu <tonylu@linux.alibaba.com>,
+        Pablo Neira Ayuso <pablo@netfilter.org>,
+        Ralf Baechle <ralf@linux-mips.org>,
+        Florian Westphal <fw@strlen.de>, willy@infradead.org,
+        Heiko Carstens <hca@linux.ibm.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        linux-rdma@vger.kernel.org, Roopa Prabhu <roopa@nvidia.com>,
+        Alexander Gordeev <agordeev@linux.ibm.com>,
+        Simon Horman <horms@verge.net.au>,
+        Mat Martineau <martineau@kernel.org>, josh@joshtriplett.org,
+        Christian Borntraeger <borntraeger@linux.ibm.com>,
+        Eric Dumazet <edumazet@google.com>, linux-hams@vger.kernel.org,
+        Wenjia Zhang <wenjia@linux.ibm.com>,
+        linux-fsdevel@vger.kernel.org, linux-s390@vger.kernel.org,
+        Xin Long <lucien.xin@gmail.com>,
+        Nikolay Aleksandrov <razor@blackwall.org>,
+        netdev@vger.kernel.org, rds-devel@oss.oracle.com,
+        Joel Granados <j.granados@samsung.com>
+Subject: Re: [PATCH v2 03/14] sysctl: Add ctl_table_size to ctl_table_header
+Message-ID: <ZMf9vZpGE98oM9W2@kernel.org>
+References: <20230731071728.3493794-1-j.granados@samsung.com>
+ <20230731071728.3493794-4-j.granados@samsung.com>
+MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230731135916.32392-1-yuehaibing@huawei.com>
-X-ClientProxiedBy: BYAPR21CA0007.namprd21.prod.outlook.com
- (2603:10b6:a03:114::17) To LV2PR12MB5869.namprd12.prod.outlook.com
- (2603:10b6:408:176::16)
-MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: LV2PR12MB5869:EE_|SA1PR12MB7409:EE_
-X-MS-Office365-Filtering-Correlation-Id: f89ae24e-deef-4527-8ef9-08db91f3dc88
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: HfgncIf9vuDK0/eTaD/VqZ0pmG7/be/LickmxKUsSOo5iFWdq9XPHUhDUG2QQBzVHHfc/eD/TmXuOyIctO7qRSMmAZ4Lf3C8BxaWWbCeMqy7xEH5W8LSv95J5bQP3s++e+xU3uVpt0fw2NpbKhbxZffRCYuc28qQfedSoBVJEy7CdGcefuFbSr0voZ30n3WJF8aR1ULJsqgdXB5jMwII/ovIFJJqUWZ5sB+wKeUPPGkuJr0icTEjLOFnh+4Zs1k7OM5LExYf5TcCWYF4X5y/vFj7i36PZ6rLsEVxBLSnj7qLBtCRwi01P6UfxhFwY6qJO8MsbYs8sJlGYomM7VputLAtEX/ZS3W9qvwnc62IA8MQPKUwHDIuGK9pK80Kv+fahQCY0PjBVrNGeltxV+i7Qi5uiL26vQJBjA709TMTLV51bqcV4coPFSONsyi2yfli80Ahmmt5LplOaJGg1IIVXPDGVS31DDmiEUtBdGb1rHbcBz9w888vnk+wiOT3F0J/kHC6edFzjyWbtURCcMsvbfu4gDt2Hem+TYt1iEtiCSbV35+i3E/9R4XsQgfRut8A
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:LV2PR12MB5869.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(4636009)(366004)(39860400002)(346002)(136003)(396003)(376002)(451199021)(6512007)(6486002)(36756003)(2616005)(6506007)(26005)(83380400001)(186003)(66946007)(66556008)(41300700001)(38100700002)(66476007)(86362001)(316002)(5660300002)(6916009)(4326008)(8676002)(8936002)(2906002)(478600001)(4744005);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?7AcpWoH1YBYKhodWKQp94ryFqXIMEdIJnK3TH5K683xIqtmhbHVZwg0s7xDp?=
- =?us-ascii?Q?2iwssG/xH/isGFy4eq7G9G5s7q37jpOI7DZunBNb+C5IAFLEzk5eYToXfcwu?=
- =?us-ascii?Q?S0S/fN4/Ayf1FzEG4QmZppqkInqHkyzWDW/YaoelasezfQMXKA2r4it6zfEL?=
- =?us-ascii?Q?klm2uGtPRqJl+t5fFk9t5Eby/ZfiFLJPbVkn4aGaUOAmLsJVTVaYH5jTO3nj?=
- =?us-ascii?Q?Vy4OoA3V4SziCd+MYIwSvPGJkJzmZuYUEnt7li9suZ6AtWeOzXpnXLFeH6B+?=
- =?us-ascii?Q?SrZwPIvYZOcWyBAX/6QmYFnivTVeYy4QS379qIcFFuzGTR9pVQgRNp7MG/WL?=
- =?us-ascii?Q?R+sVyteUJLyZOrEk37ByS0fsB50JjGR10f19n3Csj0oVdOHvKCHE5pBazClv?=
- =?us-ascii?Q?Nr8TttKxGo9jyE7rBy3ix3Pu2Qf3DaHFyHi55ZfdJWUgb16qUCCtBo2z3dqv?=
- =?us-ascii?Q?eW+qGdtaaxJJJ4NKHG4CL60+mVDdApFkZiK6XMGv+nRZ4tJZSqcCKUMJVKwL?=
- =?us-ascii?Q?mnCkYJ7dtuQ2TwG3uIEjjHxUYzSJV4lGpFB8xFAPauD05jwW2iS2Dz9k+FZY?=
- =?us-ascii?Q?sdkCapv7R3ov6aNUr2iJRSaztImo0H00fmQC5UtVcswjxker+RmdbuVpRRrn?=
- =?us-ascii?Q?QaNRJ+NmgYjjbw6GF/RbLxR7nqPDMWIXdqXFvGjFTFrPWrmDBj2vaoEQYFJa?=
- =?us-ascii?Q?bfFaJxZrvl26kpe0vU54FKVkNgfX0a0NtMmLstU0HbXzTclUN0V02MGzDkQM?=
- =?us-ascii?Q?9PW+XfJ1h+tYsxx3uf+weOfF8YuJ8KbgmtAxGKE6YK1xHzjrTc7uj8/P4HYB?=
- =?us-ascii?Q?pAJTX7KDcnhqm+k/zxEMuZ+dEcoj1kvet7DdDzxHjInaCBrFqx0TkU51H6FK?=
- =?us-ascii?Q?tBeoQ4pZxi7Aucb5QwfAbeVALTBDle5WhQAN3cLaclZMpoGcLZ/SCQjRwOpQ?=
- =?us-ascii?Q?HCJk06jpOqKrPXsVPQmsjx1NqN6GZfCN8AAx3ne4n300CoMLnKILwyeNnL+P?=
- =?us-ascii?Q?gQQ4Mmy/fvjT/RONR2gI5CPLlB7imS0346l+RQp2bHHo/ptDuCb20ggsyq/b?=
- =?us-ascii?Q?Az12VQ4/co/DU188nyup6Q1mVEJGSS085xES57CN6k3OHYZkj37XlBWl8asQ?=
- =?us-ascii?Q?VN08eWGpzCs+nZH1OiBluoSFELW1JYUxM/WbaKhu5aqSohc/7btFcCFfPegg?=
- =?us-ascii?Q?T0GzKL9eqzo564/g0kDEpQTabDvkSPGs8IxLBslqyCPw6XckMicaB32ar3k6?=
- =?us-ascii?Q?4L94fijAnQaIqP6YVW5KY0LigL4tgGzyc56KclsnrR4iKmuMqQn6q2eYsWYw?=
- =?us-ascii?Q?qUu+8B+NDIAXHMXsglukvOKJn/akgx7mNaK3JPaGM6Lp/rtsgYCPy0ToCBiK?=
- =?us-ascii?Q?ONloExY+cx21TevNXI8aAmnK8njg9UDq2nj9pBjtz25eIEvWcsemZkFc4o5q?=
- =?us-ascii?Q?D8vpiVfb7JS9VtNAWkIvzfuhOeQ1vwNgdh3S5699LUnHiIZlsDVlmzqh0Qes?=
- =?us-ascii?Q?uClX7YIptvFD2n8V9datjelN6FekS/h2j56IEFB6+havojbOfmtayjaTWPWP?=
- =?us-ascii?Q?klWqf7S+QQ/EQEaQ9RMztJzcyvXvkOXvBcdbrpt+?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: f89ae24e-deef-4527-8ef9-08db91f3dc88
-X-MS-Exchange-CrossTenant-AuthSource: LV2PR12MB5869.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 31 Jul 2023 18:27:56.8171
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: OmrpdrdEqnW9Rgb/pXZgbOpadB1im63UgJTzDaMTagQzI2c159lI/B3P2psSAsuL
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA1PR12MB7409
-X-Spam-Status: No, score=0.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+In-Reply-To: <20230731071728.3493794-4-j.granados@samsung.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Mon, Jul 31, 2023 at 09:59:16PM +0800, Yue Haibing wrote:
-> commit b16f8188472e ("RDMA/hns: Refactor eq code for hip06")
-> left behind hns_roce_cleanup_eq_table().
-> And commit 773f841ab1ae ("RDMA/hns: Avoid filling sgid index when modifying QP to RTR")
-> leave hns_get_gid_index() unused.
+On Mon, Jul 31, 2023 at 09:17:17AM +0200, Joel Granados wrote:
+> The new ctl_table_size element will hold the size of the ctl_table
+> arrays contained in the ctl_table_header. This value should eventually
+> be passed by the callers to the sysctl register infrastructure. And
+> while this commit introduces the variable, it does not set nor use it
+> because that requires case by case considerations for each caller.
 > 
-> Signed-off-by: Yue Haibing <yuehaibing@huawei.com>
+> It provides two important things: (1) A place to put the
+> result of the ctl_table array calculation when it gets introduced for
+> each caller. And (2) the size that will be used as the additional
+> stopping criteria in the list_for_each_table_entry macro (to be added
+> when all the callers are migrated)
+> 
+> Signed-off-by: Joel Granados <j.granados@samsung.com>
 > ---
->  drivers/infiniband/hw/hns/hns_roce_device.h | 2 --
->  1 file changed, 2 deletions(-)
+>  include/linux/sysctl.h | 14 ++++++++++++--
+>  1 file changed, 12 insertions(+), 2 deletions(-)
+> 
+> diff --git a/include/linux/sysctl.h b/include/linux/sysctl.h
+> index 59d451f455bf..33252ad58ebe 100644
+> --- a/include/linux/sysctl.h
+> +++ b/include/linux/sysctl.h
+> @@ -159,12 +159,22 @@ struct ctl_node {
+>  	struct ctl_table_header *header;
+>  };
+>  
+> -/* struct ctl_table_header is used to maintain dynamic lists of
+> -   struct ctl_table trees. */
+> +/**
+> + * struct ctl_table_header - maintains dynamic lists of struct ctl_table trees
+> + * @ctl_table: pointer to the first element in ctl_table array
+> + * @ctl_table_size: number of elements pointed by @ctl_table
+> + * @used: The entry will never be touched when equal to 0.
+> + * @count: Upped every time something is added to @inodes and downed every time
+> + *         something is removed from inodes
+> + * @nreg: When nreg drops to 0 the ctl_table_header will be unregistered.
+> + * @rcu: Delays the freeing of the inode. Introduced with "unfuck proc_sysctl ->d_compare()"
+> + *
+> + */
 
-Applied to for-next, thanks
+Hi Joel,
 
-Jason
+Please consider also adding kernel doc entries for the other fields of
+struct ctl_table_header. According to ./scripts/kernel-doc -none
+they are:
+
+  unregistering
+  ctl_table_arg
+  root
+  set
+  parent
+  node
+  inodes
+
+
+>  struct ctl_table_header {
+>  	union {
+>  		struct {
+>  			struct ctl_table *ctl_table;
+> +			int ctl_table_size;
+>  			int used;
+>  			int count;
+>  			int nreg;
+> -- 
+> 2.30.2
+> 
