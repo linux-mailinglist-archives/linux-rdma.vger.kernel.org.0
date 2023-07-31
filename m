@@ -2,62 +2,65 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E78F768FCE
-	for <lists+linux-rdma@lfdr.de>; Mon, 31 Jul 2023 10:15:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A63E768FD0
+	for <lists+linux-rdma@lfdr.de>; Mon, 31 Jul 2023 10:15:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231649AbjGaIP0 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 31 Jul 2023 04:15:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35810 "EHLO
+        id S231869AbjGaIPf (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 31 Jul 2023 04:15:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35376 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231553AbjGaIPA (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 31 Jul 2023 04:15:00 -0400
-Received: from mail-pf1-x42b.google.com (mail-pf1-x42b.google.com [IPv6:2607:f8b0:4864:20::42b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A8AF81FFA
-        for <linux-rdma@vger.kernel.org>; Mon, 31 Jul 2023 01:12:57 -0700 (PDT)
-Received: by mail-pf1-x42b.google.com with SMTP id d2e1a72fcca58-686e0213c0bso2797562b3a.1
-        for <linux-rdma@vger.kernel.org>; Mon, 31 Jul 2023 01:12:57 -0700 (PDT)
+        with ESMTP id S231955AbjGaIPE (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 31 Jul 2023 04:15:04 -0400
+Received: from mail-pf1-x433.google.com (mail-pf1-x433.google.com [IPv6:2607:f8b0:4864:20::433])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 757E7210B
+        for <linux-rdma@vger.kernel.org>; Mon, 31 Jul 2023 01:13:00 -0700 (PDT)
+Received: by mail-pf1-x433.google.com with SMTP id d2e1a72fcca58-686ed1d2594so4089692b3a.2
+        for <linux-rdma@vger.kernel.org>; Mon, 31 Jul 2023 01:13:00 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google; t=1690791176; x=1691395976;
-        h=message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=9XmyiybNH2dPa940PipDnqy/D901wRKHb5fyicsFFWE=;
-        b=P/f30d1jAItd5aG8otzowQ95GAc1zEniycGgM4WGx64Jv4N4BD7F8UBcR1Kj16/IfW
-         u2ckF07UfXjo3s/y2+LCqfenn6sxy8HKUPXc43J5cxx/wiRHO5dOi1xDy28+moIkhYoN
-         L8K+HW9OP2lPYvYNtlO4NivoUmP4zVqgsVUoE=
+        d=broadcom.com; s=google; t=1690791179; x=1691395979;
+        h=references:in-reply-to:message-id:date:subject:cc:to:from:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=ibkgTPoIFcZiCx3ujdUHo+jA13NWiomc/u4FEVuxcxk=;
+        b=aLfsj1cyfTgSseHcvOcNDgFx+yuWNCU/Tr+Ty2yJ4t2morDH1WnIh0gscjrEpWUlPD
+         bkyIkx4bWXICdPzoBTy0Fc0ei5Bwrn8PYxMlyginCEzvXQ3gl5TKZv0fH85XWTzngrf+
+         Edzfm6NWPuOIXfjktBIppZ1N+v3wJdLXfLm6E=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690791176; x=1691395976;
-        h=message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=9XmyiybNH2dPa940PipDnqy/D901wRKHb5fyicsFFWE=;
-        b=RIelqsU3tY96eJS9SOVSCv82ZXf/0VpKaXR3Jmr7u09I0/mF4QuQ9bUPM+o28HZzeU
-         lCY4fRkYIoMAmKxNS/yWR78aw3uHKfuL1mGqqSInyRTtzQdpjCTtYcxNUzSiPxawderA
-         XYfJdafnWbf2f9+PR9Ix4aAKtVp3v9lGwcmq9FGh/15ChEMEzN1pp5FJruTk80XFMQiv
-         u+AgMO9FLiWbEDt5usHBVNjpQKZ/ErgI2RY+DbPlEEqGNM8tQdwyjqUDk11T83zazBaC
-         oAoWpTXOXx0xbXUXFpcv11UEhY6mH6F3GZ6b3muLyLMT3IOXBPHYq2759vixWTa+nfix
-         GYrg==
-X-Gm-Message-State: ABy/qLZqSrTX2c3cHd/omRzKAj/KqpoH3uLuM5Bu6DT3WmSzzYX4T87M
-        lNpgyVVyJ3iVEiciqBcnffhU8Ka4cru0fnA1ZEU=
-X-Google-Smtp-Source: APBJJlHCVMaCdsT43emZH0d0uSzWUARRHAMmxTrv4ogr9avcwCAs947/umUFQbJCUzuKko6VNdRkhg==
-X-Received: by 2002:a05:6a21:3e0c:b0:133:e3e3:dc07 with SMTP id bk12-20020a056a213e0c00b00133e3e3dc07mr8295091pzc.49.1690791176511;
-        Mon, 31 Jul 2023 01:12:56 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1690791179; x=1691395979;
+        h=references:in-reply-to:message-id:date:subject:cc:to:from
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=ibkgTPoIFcZiCx3ujdUHo+jA13NWiomc/u4FEVuxcxk=;
+        b=FyaDXTLxTD0+5nUiSTY0RWXXthR2lAbPynx0MMDHFQqHucp6NFL5CFcbIk8u55chdB
+         07ziKDeZPdjm4VBXdFh7xjUfSzuvG3MkYkMWiulqRl5yzVQ6KRf3kNoYk8kNr17pFEqU
+         EW0Ggy9dYDwzChTQcXklHmSy+ePh+X1p567yG5aQ4x2W+J3N+OprF5JjHatfCPn3YFJb
+         DXZesLR29EoHuiH0Wi9Zaj6fW+yEnCdpSzwPVTr+6ymjfLLYoOB9stNiiQoAA4b01uI5
+         ebRHlY/vzeJD+nDB8AML9Rv5kh3FbZDyUx/j3BBo3QaEi1qc9XtKsNPnxmhQWOqdETpb
+         dbqg==
+X-Gm-Message-State: ABy/qLZJOq3Nh8H+CmNs7mC0xWKi8bdvgQG9qE2Wsygf+RriSL3gObwC
+        J9pYF5FBe3xzde4APEK+fYI1QQ==
+X-Google-Smtp-Source: APBJJlF6Zy97OgUYB+FTy2ktRRwunh1foP8d8PAfsNAHDJTQtryvdGmCvcEVwfeFhJpiVYnfLCmhDA==
+X-Received: by 2002:a05:6a21:35c2:b0:137:53d1:405 with SMTP id ba2-20020a056a2135c200b0013753d10405mr9975306pzc.26.1690791179206;
+        Mon, 31 Jul 2023 01:12:59 -0700 (PDT)
 Received: from dhcp-10-192-206-197.iig.avagotech.net.net ([192.19.234.250])
-        by smtp.gmail.com with ESMTPSA id n2-20020aa79042000000b00686a80f431dsm6996561pfo.126.2023.07.31.01.12.53
+        by smtp.gmail.com with ESMTPSA id n2-20020aa79042000000b00686a80f431dsm6996561pfo.126.2023.07.31.01.12.56
         (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 31 Jul 2023 01:12:55 -0700 (PDT)
+        Mon, 31 Jul 2023 01:12:58 -0700 (PDT)
 From:   Selvin Xavier <selvin.xavier@broadcom.com>
 To:     jgg@ziepe.ca, leon@kernel.org
 Cc:     linux-rdma@vger.kernel.org, andrew.gospodarek@broadcom.com,
+        Saravanan Vajravel <saravanan.vajravel@broadcom.com>,
         Selvin Xavier <selvin.xavier@broadcom.com>
-Subject: [PATCH for-next v2 0/1] RDMA/bnxt_re: Add dmabuf support
-Date:   Mon, 31 Jul 2023 01:01:12 -0700
-Message-Id: <1690790473-25850-1-git-send-email-selvin.xavier@broadcom.com>
+Subject: [PATCH for-next v2 1/1] RDMA/bnxt_re: Add support for dmabuf pinned memory regions
+Date:   Mon, 31 Jul 2023 01:01:13 -0700
+Message-Id: <1690790473-25850-2-git-send-email-selvin.xavier@broadcom.com>
 X-Mailer: git-send-email 2.5.5
+In-Reply-To: <1690790473-25850-1-git-send-email-selvin.xavier@broadcom.com>
+References: <1690790473-25850-1-git-send-email-selvin.xavier@broadcom.com>
 Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
-        boundary="0000000000007ca1cc0601c3ffd6"
-X-Spam-Status: No, score=-1.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        boundary="000000000000a73bff0601c3ff20"
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        MIME_HEADER_CTYPE_ONLY,MIME_NO_TEXT,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE,T_TVD_MIME_NO_HEADERS autolearn=no
+        MIME_HEADER_CTYPE_ONLY,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE,T_TVD_MIME_NO_HEADERS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -65,34 +68,192 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
---0000000000007ca1cc0601c3ffd6
+--000000000000a73bff0601c3ff20
 
-Adding support for pinned dmabuf memory regions.
+From: Saravanan Vajravel <saravanan.vajravel@broadcom.com>
 
-The corresponding user library patch is available in the
-pull request. https://github.com/linux-rdma/rdma-core/pull/1373
+Support the new verb which indicates dmabuf support.
+bnxt doesn't support ODP. So use the pinned version of the
+dmabuf APIs to enable bnxt_re devices to work as dmabuf importer.
 
-Please review and apply.
-Thanks,
-Selvin
-
-v1 - v2:
-    Rework on the patch based on Jason's comment by passing umem
-    to the helper routine.
-
-Saravanan Vajravel (1):
-  RDMA/bnxt_re: Add support for dmabuf pinned memory regions
-
+Signed-off-by: Saravanan Vajravel <saravanan.vajravel@broadcom.com>
+Signed-off-by: Selvin Xavier <selvin.xavier@broadcom.com>
+---
  drivers/infiniband/hw/bnxt_re/ib_verbs.c | 83 ++++++++++++++++++++++----------
  drivers/infiniband/hw/bnxt_re/ib_verbs.h |  4 ++
  drivers/infiniband/hw/bnxt_re/main.c     |  1 +
  3 files changed, 62 insertions(+), 26 deletions(-)
 
+diff --git a/drivers/infiniband/hw/bnxt_re/ib_verbs.c b/drivers/infiniband/hw/bnxt_re/ib_verbs.c
+index 2b2505a..718572d 100644
+--- a/drivers/infiniband/hw/bnxt_re/ib_verbs.c
++++ b/drivers/infiniband/hw/bnxt_re/ib_verbs.c
+@@ -3981,16 +3981,13 @@ int bnxt_re_dealloc_mw(struct ib_mw *ib_mw)
+ 	return rc;
+ }
+ 
+-/* uverbs */
+-struct ib_mr *bnxt_re_reg_user_mr(struct ib_pd *ib_pd, u64 start, u64 length,
+-				  u64 virt_addr, int mr_access_flags,
+-				  struct ib_udata *udata)
++static struct ib_mr *__bnxt_re_user_reg_mr(struct ib_pd *ib_pd, u64 length, u64 virt_addr,
++					   int mr_access_flags, struct ib_umem *umem)
+ {
+ 	struct bnxt_re_pd *pd = container_of(ib_pd, struct bnxt_re_pd, ib_pd);
+ 	struct bnxt_re_dev *rdev = pd->rdev;
+-	struct bnxt_re_mr *mr;
+-	struct ib_umem *umem;
+ 	unsigned long page_size;
++	struct bnxt_re_mr *mr;
+ 	int umem_pgs, rc;
+ 	u32 active_mrs;
+ 
+@@ -4000,6 +3997,12 @@ struct ib_mr *bnxt_re_reg_user_mr(struct ib_pd *ib_pd, u64 start, u64 length,
+ 		return ERR_PTR(-ENOMEM);
+ 	}
+ 
++	page_size = ib_umem_find_best_pgsz(umem, BNXT_RE_PAGE_SIZE_SUPPORTED, virt_addr);
++	if (!page_size) {
++		ibdev_err(&rdev->ibdev, "umem page size unsupported!");
++		return ERR_PTR(-EINVAL);
++	}
++
+ 	mr = kzalloc(sizeof(*mr), GFP_KERNEL);
+ 	if (!mr)
+ 		return ERR_PTR(-ENOMEM);
+@@ -4011,36 +4014,23 @@ struct ib_mr *bnxt_re_reg_user_mr(struct ib_pd *ib_pd, u64 start, u64 length,
+ 
+ 	rc = bnxt_qplib_alloc_mrw(&rdev->qplib_res, &mr->qplib_mr);
+ 	if (rc) {
+-		ibdev_err(&rdev->ibdev, "Failed to allocate MR");
++		ibdev_err(&rdev->ibdev, "Failed to allocate MR rc = %d", rc);
++		rc = -EIO;
+ 		goto free_mr;
+ 	}
+ 	/* The fixed portion of the rkey is the same as the lkey */
+ 	mr->ib_mr.rkey = mr->qplib_mr.rkey;
+-
+-	umem = ib_umem_get(&rdev->ibdev, start, length, mr_access_flags);
+-	if (IS_ERR(umem)) {
+-		ibdev_err(&rdev->ibdev, "Failed to get umem");
+-		rc = -EFAULT;
+-		goto free_mrw;
+-	}
+ 	mr->ib_umem = umem;
+-
+ 	mr->qplib_mr.va = virt_addr;
+-	page_size = ib_umem_find_best_pgsz(
+-		umem, BNXT_RE_PAGE_SIZE_SUPPORTED, virt_addr);
+-	if (!page_size) {
+-		ibdev_err(&rdev->ibdev, "umem page size unsupported!");
+-		rc = -EFAULT;
+-		goto free_umem;
+-	}
+ 	mr->qplib_mr.total_size = length;
+ 
+ 	umem_pgs = ib_umem_num_dma_blocks(umem, page_size);
+ 	rc = bnxt_qplib_reg_mr(&rdev->qplib_res, &mr->qplib_mr, umem,
+ 			       umem_pgs, page_size);
+ 	if (rc) {
+-		ibdev_err(&rdev->ibdev, "Failed to register user MR");
+-		goto free_umem;
++		ibdev_err(&rdev->ibdev, "Failed to register user MR - rc = %d\n", rc);
++		rc = -EIO;
++		goto free_mrw;
+ 	}
+ 
+ 	mr->ib_mr.lkey = mr->qplib_mr.lkey;
+@@ -4050,8 +4040,7 @@ struct ib_mr *bnxt_re_reg_user_mr(struct ib_pd *ib_pd, u64 start, u64 length,
+ 		rdev->stats.res.mr_watermark = active_mrs;
+ 
+ 	return &mr->ib_mr;
+-free_umem:
+-	ib_umem_release(umem);
++
+ free_mrw:
+ 	bnxt_qplib_free_mrw(&rdev->qplib_res, &mr->qplib_mr);
+ free_mr:
+@@ -4059,6 +4048,48 @@ struct ib_mr *bnxt_re_reg_user_mr(struct ib_pd *ib_pd, u64 start, u64 length,
+ 	return ERR_PTR(rc);
+ }
+ 
++struct ib_mr *bnxt_re_reg_user_mr(struct ib_pd *ib_pd, u64 start, u64 length,
++				  u64 virt_addr, int mr_access_flags,
++				  struct ib_udata *udata)
++{
++	struct bnxt_re_pd *pd = container_of(ib_pd, struct bnxt_re_pd, ib_pd);
++	struct bnxt_re_dev *rdev = pd->rdev;
++	struct ib_umem *umem;
++	struct ib_mr *ib_mr;
++
++	umem = ib_umem_get(&rdev->ibdev, start, length, mr_access_flags);
++	if (IS_ERR(umem))
++		return ERR_CAST(umem);
++
++	ib_mr = __bnxt_re_user_reg_mr(ib_pd, length, virt_addr, mr_access_flags, umem);
++	if (IS_ERR(ib_mr))
++		ib_umem_release(umem);
++	return ib_mr;
++}
++
++struct ib_mr *bnxt_re_reg_user_mr_dmabuf(struct ib_pd *ib_pd, u64 start,
++					 u64 length, u64 virt_addr, int fd,
++					 int mr_access_flags, struct ib_udata *udata)
++{
++	struct bnxt_re_pd *pd = container_of(ib_pd, struct bnxt_re_pd, ib_pd);
++	struct bnxt_re_dev *rdev = pd->rdev;
++	struct ib_umem_dmabuf *umem_dmabuf;
++	struct ib_umem *umem;
++	struct ib_mr *ib_mr;
++
++	umem_dmabuf = ib_umem_dmabuf_get_pinned(&rdev->ibdev, start, length,
++						fd, mr_access_flags);
++	if (IS_ERR(umem_dmabuf))
++		return ERR_CAST(umem_dmabuf);
++
++	umem = &umem_dmabuf->umem;
++
++	ib_mr = __bnxt_re_user_reg_mr(ib_pd, length, virt_addr, mr_access_flags, umem);
++	if (IS_ERR(ib_mr))
++		ib_umem_release(umem);
++	return ib_mr;
++}
++
+ int bnxt_re_alloc_ucontext(struct ib_ucontext *ctx, struct ib_udata *udata)
+ {
+ 	struct ib_device *ibdev = ctx->device;
+diff --git a/drivers/infiniband/hw/bnxt_re/ib_verbs.h b/drivers/infiniband/hw/bnxt_re/ib_verbs.h
+index f392a09..84715b7 100644
+--- a/drivers/infiniband/hw/bnxt_re/ib_verbs.h
++++ b/drivers/infiniband/hw/bnxt_re/ib_verbs.h
+@@ -229,6 +229,10 @@ int bnxt_re_dealloc_mw(struct ib_mw *mw);
+ struct ib_mr *bnxt_re_reg_user_mr(struct ib_pd *pd, u64 start, u64 length,
+ 				  u64 virt_addr, int mr_access_flags,
+ 				  struct ib_udata *udata);
++struct ib_mr *bnxt_re_reg_user_mr_dmabuf(struct ib_pd *ib_pd, u64 start,
++					 u64 length, u64 virt_addr,
++					 int fd, int mr_access_flags,
++					 struct ib_udata *udata);
+ int bnxt_re_alloc_ucontext(struct ib_ucontext *ctx, struct ib_udata *udata);
+ void bnxt_re_dealloc_ucontext(struct ib_ucontext *context);
+ int bnxt_re_mmap(struct ib_ucontext *context, struct vm_area_struct *vma);
+diff --git a/drivers/infiniband/hw/bnxt_re/main.c b/drivers/infiniband/hw/bnxt_re/main.c
+index 87960ac..c467415 100644
+--- a/drivers/infiniband/hw/bnxt_re/main.c
++++ b/drivers/infiniband/hw/bnxt_re/main.c
+@@ -862,6 +862,7 @@ static const struct ib_device_ops bnxt_re_dev_ops = {
+ 	.query_qp = bnxt_re_query_qp,
+ 	.query_srq = bnxt_re_query_srq,
+ 	.reg_user_mr = bnxt_re_reg_user_mr,
++	.reg_user_mr_dmabuf = bnxt_re_reg_user_mr_dmabuf,
+ 	.req_notify_cq = bnxt_re_req_notify_cq,
+ 	.resize_cq = bnxt_re_resize_cq,
+ 	INIT_RDMA_OBJ_SIZE(ib_ah, bnxt_re_ah, ib_ah),
 -- 
 2.5.5
 
 
---0000000000007ca1cc0601c3ffd6
+--000000000000a73bff0601c3ff20
 Content-Type: application/pkcs7-signature; name="smime.p7s"
 Content-Transfer-Encoding: base64
 Content-Disposition: attachment; filename="smime.p7s"
@@ -163,14 +324,14 @@ j1Ze9ndr+YDXPpCymOsynmmw0ErHZGGW1OmMpAEt0A+613glWCURLDlP8HONi1wnINV6aDiEf0ad
 9NMGxDsp+YWiRXD3txfo2OMQbpIxM90QfhKKacX8t1J1oAAWxDrLVTJBXBNvz5tr+D1sYwuye93r
 hImmkM1unboxggJtMIICaQIBATBrMFsxCzAJBgNVBAYTAkJFMRkwFwYDVQQKExBHbG9iYWxTaWdu
 IG52LXNhMTEwLwYDVQQDEyhHbG9iYWxTaWduIEdDQyBSMyBQZXJzb25hbFNpZ24gMiBDQSAyMDIw
-Agxy+Cu4x/7lM0zxY7cwDQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIEIN+RsjNJmBFc
-6VBtGHRbJz7Tj+Do71QcVq6lOwTlMWylMBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZI
-hvcNAQkFMQ8XDTIzMDczMTA4MTI1NlowaQYJKoZIhvcNAQkPMVwwWjALBglghkgBZQMEASowCwYJ
+Agxy+Cu4x/7lM0zxY7cwDQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIEIIO5uSXjI+VY
+P1S4zzBNamNhJ1pVpWekhhvvFXDuW8l2MBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZI
+hvcNAQkFMQ8XDTIzMDczMTA4MTI1OVowaQYJKoZIhvcNAQkPMVwwWjALBglghkgBZQMEASowCwYJ
 YIZIAWUDBAEWMAsGCWCGSAFlAwQBAjAKBggqhkiG9w0DBzALBgkqhkiG9w0BAQowCwYJKoZIhvcN
-AQEHMAsGCWCGSAFlAwQCATANBgkqhkiG9w0BAQEFAASCAQBwWaxEL7hNgA3F/L6gf/AoPz1WRw6q
-T2MwDRlC2r0arklkZzZns1zCzLV1Tg1y0jnWplvHkXP8Jqm/RGFJVkENhC7IJWMETXb/eMK3Nncb
-ExdogcUkpDTg83jnK4gPQP/POI7eHLeicz97op9Yu7BRUNa+QUt0Enf1KT8HoxnQgqZ9J+ZTCUai
-TxfYP4lKrjgTKmIxnbZLSd80lfm2DY4/HncUkqwff8StfrLo4lD/JqhMxzDpqWNScEFYTN6uDIqB
-kZpH6NEa9mYZnKzX3WwEKuWB1b/ZZNbsQJsRRv3Ufx63b3Z4qRzkG5kvXslAaUkqjctJUX+gwuXO
-BuGlzH37
---0000000000007ca1cc0601c3ffd6--
+AQEHMAsGCWCGSAFlAwQCATANBgkqhkiG9w0BAQEFAASCAQB/+oYZV+i8yN+yhtgop19x6Z6SDASg
+XaRxhVcVlyHPHuLKS0LGNBDCY3FFmeORwjndTSLCa+taxcQNDJACsizH3IKbk4nx21XsxcJPd8GX
+FsVN24pjpv1M28f3VPcNJ4CSEfQzVpD+579pMkcXsaPsVRna0Kz2pvWifBOT1JiH9fT5jSevMNRh
+4duucsQMU2n28MqWhODIc/KNHmsLG+pSH4EuFPj6XqJOiwYwoy5rL+YTe1xwPpqaKL+6HZvV5kFs
+GklrxZSgF5ikh8n/3wV1ku+w1aePHgSaslSe3xxd4FWN5bot2/zZDLhha96dxv3mtVOMZ+2He2Rb
+QE8b2nlN
+--000000000000a73bff0601c3ff20--
