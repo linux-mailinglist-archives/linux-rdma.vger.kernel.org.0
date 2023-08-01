@@ -2,55 +2,57 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 75A6576AA92
-	for <lists+linux-rdma@lfdr.de>; Tue,  1 Aug 2023 10:11:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6841276AAA9
+	for <lists+linux-rdma@lfdr.de>; Tue,  1 Aug 2023 10:15:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232094AbjHAIL0 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 1 Aug 2023 04:11:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33428 "EHLO
+        id S232062AbjHAIP5 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 1 Aug 2023 04:15:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36394 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230100AbjHAILY (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 1 Aug 2023 04:11:24 -0400
+        with ESMTP id S232158AbjHAIPz (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 1 Aug 2023 04:15:55 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C73B611D;
-        Tue,  1 Aug 2023 01:11:23 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 65E901FF0;
+        Tue,  1 Aug 2023 01:15:46 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 4D623614A6;
-        Tue,  1 Aug 2023 08:11:23 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B0373C433C8;
-        Tue,  1 Aug 2023 08:11:21 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id CAF1461493;
+        Tue,  1 Aug 2023 08:15:45 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 67930C433C8;
+        Tue,  1 Aug 2023 08:15:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1690877482;
-        bh=OWZu55Ufaewrwq61zbQVPkXisyIVRzmtL9NXkGrrT08=;
+        s=k20201202; t=1690877745;
+        bh=WcMY7k07HhPU+xuvq3b3NbrbeI3Y0arTLnE3joJ1lKQ=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=EVLDGFUjKNL9YQvEJbi0QhgdkVVETRueKCZ2xE2fcWVDSDYQjcZ3ajuQn8FA75WES
-         QzJwkFIXIl53Hvt9giwEdNL08L9HRCrKEw4pZ3ieIyitW1B3bSZIIFjA1DSdoNNZsO
-         /gxpzFmZuvW72e6fhmdqoFGybN5rw84F3gdG4ydJcOjopWXtNHsCtQeEqkrVAl4lRv
-         Y9Ym7C7ibhuPCPwt2u0ZfZG66iMhiW0nNoAUH5NhRTGaeHmvy2GlP37pDtSuU2Q710
-         wcoQYCuFKCk0tVd78iILIpWMKQLDwpnMM8MpM3+shJ4ZL6N4nv2nfQX6Fv/4tENdGt
-         133UkLROCpQ1Q==
-Date:   Tue, 1 Aug 2023 11:11:17 +0300
+        b=XIPfK86/vV7EtTLomxgkhmuqgbPfy194dvv6vCpANsdsCSldUvf9YOYi+24fj9KwL
+         hUNcXa9X7gcgLTHnMrrF9aa+MvLdyHIjCRYispcmrPMxq2dS5hhvLmw9jkQi6KkFnq
+         QkVSfXhnN8/65PXdWQ105b7w5eb7J1RIM60YiU4Rh7JLXcXURElPPvbS0fFBtBNnWw
+         3yiYljdHmSIf5II0J7djpinUk7vNBEekemNvilfmBY10Ct7DkwdMXCdNUqMxovz1Df
+         LJw7SlFEj+TWlmchWyntP8UDn+8RSjrqL0d+H40+RTWlmavjJY9CSjHQ3Z3D4EloDz
+         FWYQIScjlQ0tg==
+Date:   Tue, 1 Aug 2023 11:15:40 +0300
 From:   Leon Romanovsky <leon@kernel.org>
-To:     Jakub Kicinski <kuba@kernel.org>
-Cc:     Lin Ma <linma@zju.edu.cn>, davem@davemloft.net,
-        edumazet@google.com, pabeni@redhat.com, fw@strlen.de,
-        yang.lee@linux.alibaba.com, jgg@ziepe.ca, markzhang@nvidia.com,
-        phaddad@nvidia.com, yuancan@huawei.com, ohartoov@nvidia.com,
-        chenzhongjin@huawei.com, aharonl@nvidia.com,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-rdma@vger.kernel.org
-Subject: Re: [PATCH net v1 1/2] netlink: let len field used to parse
- type-not-care nested attrs
-Message-ID: <20230801081117.GA53714@unreal>
-References: <20230731121247.3972783-1-linma@zju.edu.cn>
- <20230731120326.6bdd5bf9@kernel.org>
+To:     Lin Ma <linma@zju.edu.cn>
+Cc:     Jakub Kicinski <kuba@kernel.org>, jgg@ziepe.ca,
+        markzhang@nvidia.com, michaelgur@nvidia.com, ohartoov@nvidia.com,
+        chenzhongjin@huawei.com, yuancan@huawei.com,
+        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v1] RDMA/nldev: Add length check for
+ IFLA_BOND_ARP_IP_TARGET parsing
+Message-ID: <20230801081540.GB53714@unreal>
+References: <20230723074504.3706691-1-linma@zju.edu.cn>
+ <20230724174707.GB11388@unreal>
+ <3c0760b5.e264b.1898a6368f8.Coremail.linma@zju.edu.cn>
+ <20230725052557.GI11388@unreal>
+ <20230725101405.4cd51059@kernel.org>
+ <20230725183924.GS11388@unreal>
+ <7a2e7314.ee8a2.189abf00b34.Coremail.linma@zju.edu.cn>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230731120326.6bdd5bf9@kernel.org>
+In-Reply-To: <7a2e7314.ee8a2.189abf00b34.Coremail.linma@zju.edu.cn>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
@@ -61,28 +63,55 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Mon, Jul 31, 2023 at 12:03:26PM -0700, Jakub Kicinski wrote:
-> On Mon, 31 Jul 2023 20:12:47 +0800 Lin Ma wrote:
-> > In short, the very direct idea to fix such lengh-check-forgotten bug is
-> > add nla_len() checks like
-> > 
-> >   if (nla_len(nla) < SOME_LEN)
-> >     return -EINVAL;
-> > 
-> > However, this is tedious and just like Leon said: add another layer of
-> > cabal knowledge. The better solution should leverage the nla_policy and
-> > discard nlattr whose length is invalid when doing parsing. That is, we
-> > should defined a nested_policy for the X above like
+On Mon, Jul 31, 2023 at 08:33:02PM +0800, Lin Ma wrote:
+> Hello there,
 > 
-> Hard no. Putting array index into attr type is an advanced case and the
-> parsing code has to be able to deal with low level netlink details.
+> > > > > Yeah I have seen that. Just as Jakub said, empty netlink attributes are valid 
+> > > > > (they are viewed as flag). The point is that different attribute has different
+> > > > > length requirement. For this specific code, the RDMA_NLDEV_ATTR_STAT_HWCOUNTERS
+> > > > > attribute is a nested one whose inner attributes should be NLA_U32. But as you
+> > > > > can see in variable nldev_policy, the description does not use nested policy to
+> > > > > enfore that, which results in the bug discussed in my commit message.
+> > > > > 
+> > > > >  [RDMA_NLDEV_ATTR_STAT_HWCOUNTERS]       = { .type = NLA_NESTED },
+> > > > > 
+> > > > > The elegant fix could be add the nested policy description to nldev_policy while
+> > > > > this is toublesome as no existing nla_attr has been given to this nested nlattr.
+> > > > > Hence, add the length check is the simplest solution and you can see such nla_len
+> > > > > check code all over the kernel.  
+> > > > 
+> > > > Right, and this is what bothers me.
+> > > > 
+> > > > I would more than happy to change nla_for_each_nested() to be something
+> > > > like nla_for_each_nested_type(...., sizeof(u32)), which will skip empty
+> > > > lines, for code which can't have them.
+> > > 
+> > > In general the idea of auto-skipping stuff kernel doesn't recognize
+> > > is a bit old school. Better direction would be extending the policy
+> > > validation to cover use cases for such loops.
+> > 
+> > I'm all in for any solution which will help for average developer to write
+> > netlink code without mistakes.
+> > 
+> > Thanks
+> 
+> I have just come out a new solution for such length issues. Please see
+> * https://lore.kernel.org/all/20230731121247.3972783-1-linma@zju.edu.cn/T/#u
+> * https://lore.kernel.org/all/20230731121324.3973136-1-linma@zju.edu.cn/T/#u
+> 
+> I'm not sure adding additional validation logic in the main nlattr code is
+> the best solution. Still, after investigating the code, the len field can
+> be very suitable for handling the NLA_NESTED cases here. And the developer
+> can do manual parsing with better nla_policy-based checking too.
+> 
+> If this idea is applied, I will also write a script to clean up other
+> nla_len patches based on the nla_policy check.
 
-Jakub,
-
-IMHO, you are lowering too much the separation line between simple vs.
-advanced use cases. 
-
-I had no idea that my use-case of passing nested netlink array is counted
-as advanced usage.
+It looks like Jakub didn't like the idea and we will need to add your
+sizeof checks all other the place.
 
 Thanks
+
+> 
+> Regards
+> Lin
