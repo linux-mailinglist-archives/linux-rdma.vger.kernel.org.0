@@ -2,167 +2,148 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D763976B4BE
-	for <lists+linux-rdma@lfdr.de>; Tue,  1 Aug 2023 14:29:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A840276B4D8
+	for <lists+linux-rdma@lfdr.de>; Tue,  1 Aug 2023 14:35:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232720AbjHAM36 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 1 Aug 2023 08:29:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38110 "EHLO
+        id S232530AbjHAMfC (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 1 Aug 2023 08:35:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41308 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232579AbjHAM35 (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 1 Aug 2023 08:29:57 -0400
-Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 399961FC6;
-        Tue,  1 Aug 2023 05:29:56 -0700 (PDT)
-Received: by linux.microsoft.com (Postfix, from userid 1099)
-        id 87B5A238AF50; Tue,  1 Aug 2023 05:29:55 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 87B5A238AF50
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1690892995;
-        bh=Le5IWUlV+SOiU8nvbAjGXFDnfuBjbT8nhrykMj0k14k=;
-        h=From:To:Cc:Subject:Date:From;
-        b=QbxCkPlXOL/LLmKwjN3yXH6ja2Lg3P8hNezx5avxJmSJyLmBcOP9KapwTglQPrWgI
-         rRV1trxCqelfaklwj2dNcuOWZSeI38r8SfjIGl+2JI/8e3XBUHCvdcdwhMbb5c0Oaf
-         TOxfJApD/w9ureNlZ3mTBBTnR8k+zD5B2SV+Tp7M=
-From:   Souradeep Chakrabarti <schakrabarti@linux.microsoft.com>
-To:     kys@microsoft.com, haiyangz@microsoft.com, wei.liu@kernel.org,
-        decui@microsoft.com, davem@davemloft.net, edumazet@google.com,
-        kuba@kernel.org, pabeni@redhat.com, longli@microsoft.com,
-        sharmaajay@microsoft.com, leon@kernel.org, cai.huoqing@linux.dev,
-        ssengar@linux.microsoft.com, vkuznets@redhat.com,
-        tglx@linutronix.de, linux-hyperv@vger.kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-rdma@vger.kernel.org
-Cc:     schakrabarti@microsoft.com,
-        Souradeep Chakrabarti <schakrabarti@linux.microsoft.com>,
-        stable@vger.kernel.org
-Subject: [PATCH V7 net] net: mana: Fix MANA VF unload when hardware is
-Date:   Tue,  1 Aug 2023 05:29:13 -0700
-Message-Id: <1690892953-25201-1-git-send-email-schakrabarti@linux.microsoft.com>
-X-Mailer: git-send-email 1.8.3.1
-X-Spam-Status: No, score=-17.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,
-        USER_IN_DEF_SPF_WL autolearn=ham autolearn_force=no version=3.4.6
+        with ESMTP id S231734AbjHAMfB (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 1 Aug 2023 08:35:01 -0400
+Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B564B1FC6;
+        Tue,  1 Aug 2023 05:35:00 -0700 (PDT)
+Received: from kwepemi500008.china.huawei.com (unknown [172.30.72.57])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4RFZGr4VdmzNmYn;
+        Tue,  1 Aug 2023 20:31:32 +0800 (CST)
+Received: from huawei.com (10.90.53.73) by kwepemi500008.china.huawei.com
+ (7.221.188.139) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Tue, 1 Aug
+ 2023 20:34:57 +0800
+From:   Ruan Jinjie <ruanjinjie@huawei.com>
+To:     <tariqt@nvidia.com>, <davem@davemloft.net>, <edumazet@google.com>,
+        <kuba@kernel.org>, <pabeni@redhat.com>,
+        <linux-rdma@vger.kernel.org>, <netdev@vger.kernel.org>
+CC:     <ruanjinjie@huawei.com>
+Subject: [PATCH net-next] net/mlx4: remove many unnecessary NULL values
+Date:   Tue, 1 Aug 2023 20:34:22 +0800
+Message-ID: <20230801123422.374541-1-ruanjinjie@huawei.com>
+X-Mailer: git-send-email 2.34.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.90.53.73]
+X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
+ kwepemi500008.china.huawei.com (7.221.188.139)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-When unloading the MANA driver, mana_dealloc_queues() waits for the MANA
-hardware to complete any inflight packets and set the pending send count
-to zero. But if the hardware has failed, mana_dealloc_queues()
-could wait forever.
+Ther are many pointers assigned first, which need not to be initialized, so
+remove the NULL assignment.
 
-Fix this by adding a timeout to the wait. Set the timeout to 120 seconds,
-which is a somewhat arbitrary value that is more than long enough for
-functional hardware to complete any sends.
-
-Cc: stable@vger.kernel.org
-Fixes: ca9c54d2d6a5 ("net: mana: Add a driver for Microsoft Azure Network Adapter (MANA)")
-
-Signed-off-by: Souradeep Chakrabarti <schakrabarti@linux.microsoft.com>
+Signed-off-by: Ruan Jinjie <ruanjinjie@huawei.com>
 ---
-V6 -> V7:
-* Optimized the while loop for freeing skb.
+ drivers/net/ethernet/mellanox/mlx4/en_ethtool.c | 10 +++++-----
+ drivers/net/ethernet/mellanox/mlx4/en_netdev.c  |  4 ++--
+ drivers/net/ethernet/mellanox/mlx4/main.c       | 12 ++++++------
+ 3 files changed, 13 insertions(+), 13 deletions(-)
 
-V5 -> V6:
-* Added pcie_flr to reset the pci after timeout.
-* Fixed the position of changelog.
-* Removed unused variable like cq.
-
-V4 -> V5:
-* Added fixes tag
-* Changed the usleep_range from static to incremental value.
-* Initialized timeout in the begining.
-
-V3 -> V4:
-* Removed the unnecessary braces from mana_dealloc_queues().
-
-V2 -> V3:
-* Removed the unnecessary braces from mana_dealloc_queues().
-
-V1 -> V2:
-* Added net branch
-* Removed the typecasting to (struct mana_context*) of void pointer
-* Repositioned timeout variable in mana_dealloc_queues()
-* Repositioned vf_unload_timeout in mana_context struct, to utilise the
- 6 bytes hole
----
- drivers/net/ethernet/microsoft/mana/mana_en.c | 37 +++++++++++++++++--
- 1 file changed, 33 insertions(+), 4 deletions(-)
-
-diff --git a/drivers/net/ethernet/microsoft/mana/mana_en.c b/drivers/net/ethernet/microsoft/mana/mana_en.c
-index a499e460594b..3c5552a176d0 100644
---- a/drivers/net/ethernet/microsoft/mana/mana_en.c
-+++ b/drivers/net/ethernet/microsoft/mana/mana_en.c
-@@ -8,6 +8,7 @@
- #include <linux/ethtool.h>
- #include <linux/filter.h>
- #include <linux/mm.h>
-+#include <linux/pci.h>
- 
- #include <net/checksum.h>
- #include <net/ip6_checksum.h>
-@@ -2345,9 +2346,12 @@ int mana_attach(struct net_device *ndev)
- static int mana_dealloc_queues(struct net_device *ndev)
+diff --git a/drivers/net/ethernet/mellanox/mlx4/en_ethtool.c b/drivers/net/ethernet/mellanox/mlx4/en_ethtool.c
+index 7d45f1d55f79..164a13272faa 100644
+--- a/drivers/net/ethernet/mellanox/mlx4/en_ethtool.c
++++ b/drivers/net/ethernet/mellanox/mlx4/en_ethtool.c
+@@ -1467,8 +1467,8 @@ static int add_ip_rule(struct mlx4_en_priv *priv,
+ 		       struct list_head *list_h)
  {
- 	struct mana_port_context *apc = netdev_priv(ndev);
-+	unsigned long timeout = jiffies + 120 * HZ;
- 	struct gdma_dev *gd = apc->ac->gdma_dev;
- 	struct mana_txq *txq;
-+	struct sk_buff *skb;
- 	int i, err;
-+	u32 tsleep;
+ 	int err;
+-	struct mlx4_spec_list *spec_l2 = NULL;
+-	struct mlx4_spec_list *spec_l3 = NULL;
++	struct mlx4_spec_list *spec_l2;
++	struct mlx4_spec_list *spec_l3;
+ 	struct ethtool_usrip4_spec *l3_mask = &cmd->fs.m_u.usr_ip4_spec;
  
- 	if (apc->port_is_up)
- 		return -EINVAL;
-@@ -2363,15 +2367,40 @@ static int mana_dealloc_queues(struct net_device *ndev)
- 	 * to false, but it doesn't matter since mana_start_xmit() drops any
- 	 * new packets due to apc->port_is_up being false.
- 	 *
--	 * Drain all the in-flight TX packets
-+	 * Drain all the in-flight TX packets.
-+	 * A timeout of 120 seconds for all the queues is used.
-+	 * This will break the while loop when h/w is not responding.
-+	 * This value of 120 has been decided here considering max
-+	 * number of queues.
- 	 */
-+
- 	for (i = 0; i < apc->num_queues; i++) {
- 		txq = &apc->tx_qp[i].txq;
--
--		while (atomic_read(&txq->pending_sends) > 0)
--			usleep_range(1000, 2000);
-+		tsleep = 1000;
-+		while (atomic_read(&txq->pending_sends) > 0 &&
-+		       time_before(jiffies, timeout)) {
-+			usleep_range(tsleep, tsleep + 1000);
-+			tsleep <<= 1;
-+		}
-+		if (atomic_read(&txq->pending_sends)) {
-+			err = pcie_flr(to_pci_dev(gd->gdma_context->dev));
-+			if (err) {
-+				netdev_err(ndev, "flr failed %d with %d pkts pending in txq %u\n",
-+					   err, atomic_read(&txq->pending_sends),
-+					   txq->gdma_txq_id);
-+			}
-+			break;
-+		}
- 	}
+ 	spec_l3 = kzalloc(sizeof(*spec_l3), GFP_KERNEL);
+@@ -1505,9 +1505,9 @@ static int add_tcp_udp_rule(struct mlx4_en_priv *priv,
+ 			     struct list_head *list_h, int proto)
+ {
+ 	int err;
+-	struct mlx4_spec_list *spec_l2 = NULL;
+-	struct mlx4_spec_list *spec_l3 = NULL;
+-	struct mlx4_spec_list *spec_l4 = NULL;
++	struct mlx4_spec_list *spec_l2;
++	struct mlx4_spec_list *spec_l3;
++	struct mlx4_spec_list *spec_l4;
+ 	struct ethtool_tcpip4_spec *l4_mask = &cmd->fs.m_u.tcp_ip4_spec;
  
-+	for (i = 0; i < apc->num_queues; i++) {
-+		txq = &apc->tx_qp[i].txq;
-+		while (skb = skb_dequeue(&txq->pending_skbs)) {
-+			mana_unmap_skb(skb, apc);
-+			dev_consume_skb_any(skb);
-+		}
-+		atomic_set(&txq->pending_sends, 0);
-+	}
- 	/* We're 100% sure the queues can no longer be woken up, because
- 	 * we're sure now mana_poll_tx_cq() can't be running.
- 	 */
+ 	spec_l2 = kzalloc(sizeof(*spec_l2), GFP_KERNEL);
+diff --git a/drivers/net/ethernet/mellanox/mlx4/en_netdev.c b/drivers/net/ethernet/mellanox/mlx4/en_netdev.c
+index e11bc0ac880e..403604ceebc8 100644
+--- a/drivers/net/ethernet/mellanox/mlx4/en_netdev.c
++++ b/drivers/net/ethernet/mellanox/mlx4/en_netdev.c
+@@ -291,7 +291,7 @@ mlx4_en_filter_alloc(struct mlx4_en_priv *priv, int rxq_index, __be32 src_ip,
+ 		     __be32 dst_ip, u8 ip_proto, __be16 src_port,
+ 		     __be16 dst_port, u32 flow_id)
+ {
+-	struct mlx4_en_filter *filter = NULL;
++	struct mlx4_en_filter *filter;
+ 
+ 	filter = kzalloc(sizeof(struct mlx4_en_filter), GFP_ATOMIC);
+ 	if (!filter)
+@@ -2935,7 +2935,7 @@ static void mlx4_en_bond_work(struct work_struct *work)
+ static int mlx4_en_queue_bond_work(struct mlx4_en_priv *priv, int is_bonded,
+ 				   u8 v2p_p1, u8 v2p_p2)
+ {
+-	struct mlx4_en_bond *bond = NULL;
++	struct mlx4_en_bond *bond;
+ 
+ 	bond = kzalloc(sizeof(*bond), GFP_ATOMIC);
+ 	if (!bond)
+diff --git a/drivers/net/ethernet/mellanox/mlx4/main.c b/drivers/net/ethernet/mellanox/mlx4/main.c
+index 61286b0d9b0c..9320b57cf788 100644
+--- a/drivers/net/ethernet/mellanox/mlx4/main.c
++++ b/drivers/net/ethernet/mellanox/mlx4/main.c
+@@ -864,7 +864,7 @@ static void mlx4_slave_destroy_special_qp_cap(struct mlx4_dev *dev)
+ 
+ static int mlx4_slave_special_qp_cap(struct mlx4_dev *dev)
+ {
+-	struct mlx4_func_cap *func_cap = NULL;
++	struct mlx4_func_cap *func_cap;
+ 	struct mlx4_caps *caps = &dev->caps;
+ 	int i, err = 0;
+ 
+@@ -908,9 +908,9 @@ static int mlx4_slave_cap(struct mlx4_dev *dev)
+ {
+ 	int			   err;
+ 	u32			   page_size;
+-	struct mlx4_dev_cap	   *dev_cap = NULL;
+-	struct mlx4_func_cap	   *func_cap = NULL;
+-	struct mlx4_init_hca_param *hca_param = NULL;
++	struct mlx4_dev_cap	   *dev_cap;
++	struct mlx4_func_cap	   *func_cap;
++	struct mlx4_init_hca_param *hca_param;
+ 
+ 	hca_param = kzalloc(sizeof(*hca_param), GFP_KERNEL);
+ 	func_cap = kzalloc(sizeof(*func_cap), GFP_KERNEL);
+@@ -2294,8 +2294,8 @@ static int mlx4_init_fw(struct mlx4_dev *dev)
+ static int mlx4_init_hca(struct mlx4_dev *dev)
+ {
+ 	struct mlx4_priv	  *priv = mlx4_priv(dev);
+-	struct mlx4_init_hca_param *init_hca = NULL;
+-	struct mlx4_dev_cap	  *dev_cap = NULL;
++	struct mlx4_init_hca_param *init_hca;
++	struct mlx4_dev_cap	  *dev_cap;
+ 	struct mlx4_adapter	   adapter;
+ 	struct mlx4_profile	   profile;
+ 	u64 icm_size;
 -- 
 2.34.1
 
