@@ -2,109 +2,92 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BFCCB76A58E
-	for <lists+linux-rdma@lfdr.de>; Tue,  1 Aug 2023 02:31:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DC8A176A6A4
+	for <lists+linux-rdma@lfdr.de>; Tue,  1 Aug 2023 04:00:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229812AbjHAAbY (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 31 Jul 2023 20:31:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42116 "EHLO
+        id S231991AbjHACAt (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 31 Jul 2023 22:00:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46836 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229722AbjHAAbX (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 31 Jul 2023 20:31:23 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 562BA1999;
-        Mon, 31 Jul 2023 17:31:22 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id DBDC661373;
-        Tue,  1 Aug 2023 00:31:21 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0EFA5C433C7;
-        Tue,  1 Aug 2023 00:31:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1690849881;
-        bh=edKPUxJSfxSwSgMp4ELrc17mhd6XvhBB05dcUDTu8PM=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=o52owDH10zGOWCtUIT8xi646am/uSlnvhQg5alGDBcj6z+WgLHgQr14m1GIENgyko
-         YCmsi6UwSKPXC7H5UCme6ceAfT6mg2qCZwNrxhfhvPhV5FhEMAtNa0LMrkOigaeRNi
-         XTR6LkX+85ifqjNVdK3q2b4/wE0EPneTiOmHgfqx/R9wt+n1Y+4Apn9dxBkwnhDDv+
-         qedsv/MKItKNBFjYfsI/41KDd7LuNjZNg2g+8G3Rq5DEsWapBovfCf1dr33K9NKSmd
-         vIYfqGXElKeaxFaZo2wKq4pgFgsue0aFEu1FydnI+z4eYoBGQv+g71nN+3Qv2BVXHE
-         0ju5++uayZdLg==
-Date:   Mon, 31 Jul 2023 17:31:19 -0700
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Haiyang Zhang <haiyangz@microsoft.com>
-Cc:     linux-hyperv@vger.kernel.org, netdev@vger.kernel.org,
-        decui@microsoft.com, kys@microsoft.com, paulros@microsoft.com,
-        olaf@aepfle.de, vkuznets@redhat.com, davem@davemloft.net,
-        wei.liu@kernel.org, edumazet@google.com, pabeni@redhat.com,
-        leon@kernel.org, longli@microsoft.com, ssengar@linux.microsoft.com,
-        linux-rdma@vger.kernel.org, daniel@iogearbox.net,
-        john.fastabend@gmail.com, bpf@vger.kernel.org, ast@kernel.org,
-        sharmaajay@microsoft.com, hawk@kernel.org, tglx@linutronix.de,
-        shradhagupta@linux.microsoft.com, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH V4,net-next] net: mana: Add page pool for RX buffers
-Message-ID: <20230731173119.3ca14894@kernel.org>
-In-Reply-To: <1690580767-18937-1-git-send-email-haiyangz@microsoft.com>
-References: <1690580767-18937-1-git-send-email-haiyangz@microsoft.com>
+        with ESMTP id S232017AbjHACAq (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 31 Jul 2023 22:00:46 -0400
+Received: from zg8tmtyylji0my4xnjqumte4.icoremail.net (zg8tmtyylji0my4xnjqumte4.icoremail.net [162.243.164.118])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 76A7C1BE2;
+        Mon, 31 Jul 2023 19:00:41 -0700 (PDT)
+Received: from linma$zju.edu.cn ( [42.120.103.60] ) by
+ ajax-webmail-mail-app4 (Coremail) ; Tue, 1 Aug 2023 10:00:01 +0800
+ (GMT+08:00)
+X-Originating-IP: [42.120.103.60]
+Date:   Tue, 1 Aug 2023 10:00:01 +0800 (GMT+08:00)
+X-CM-HeaderCharset: UTF-8
+From:   "Lin Ma" <linma@zju.edu.cn>
+To:     "Jakub Kicinski" <kuba@kernel.org>
+Cc:     davem@davemloft.net, edumazet@google.com, pabeni@redhat.com,
+        fw@strlen.de, yang.lee@linux.alibaba.com, jgg@ziepe.ca,
+        markzhang@nvidia.com, phaddad@nvidia.com, yuancan@huawei.com,
+        ohartoov@nvidia.com, chenzhongjin@huawei.com, aharonl@nvidia.com,
+        leon@kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org
+Subject: Re: [PATCH net v1 1/2] netlink: let len field used to parse
+ type-not-care nested attrs
+X-Priority: 3
+X-Mailer: Coremail Webmail Server Version XT5.0.14 build 20220622(41e5976f)
+ Copyright (c) 2002-2023 www.mailtech.cn
+ mispb-4df6dc2c-e274-4d1c-b502-72c5c3dfa9ce-zj.edu.cn
+In-Reply-To: <20230731120326.6bdd5bf9@kernel.org>
+References: <20230731121247.3972783-1-linma@zju.edu.cn>
+ <20230731120326.6bdd5bf9@kernel.org>
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=UTF-8
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Message-ID: <38179c76.f308d.189aed2db99.Coremail.linma@zju.edu.cn>
+X-Coremail-Locale: zh_CN
+X-CM-TRANSID: cS_KCgBHTQoiZ8hkSOJqCg--.61766W
+X-CM-SenderInfo: qtrwiiyqvtljo62m3hxhgxhubq/1tbiAwUOEmTIYfoAqwAAsG
+X-Coremail-Antispam: 1Ur529EdanIXcx71UUUUU7IcSsGvfJ3iIAIbVAYjsxI4VWxJw
+        CS07vEb4IE77IF4wCS07vE1I0E4x80FVAKz4kxMIAIbVAFxVCaYxvI4VCIwcAKzIAtYxBI
+        daVFxhVjvjDU=
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Fri, 28 Jul 2023 14:46:07 -0700 Haiyang Zhang wrote:
->  static void *mana_get_rxfrag(struct mana_rxq *rxq, struct device *dev,
-> -			     dma_addr_t *da, bool is_napi)
-> +			     dma_addr_t *da, bool *from_pool, bool is_napi)
->  {
->  	struct page *page;
->  	void *va;
->  
-> +	*from_pool = false;
-> +
->  	/* Reuse XDP dropped page if available */
->  	if (rxq->xdp_save_va) {
->  		va = rxq->xdp_save_va;
-> @@ -1533,17 +1543,22 @@ static void *mana_get_rxfrag(struct mana_rxq *rxq, struct device *dev,
->  			return NULL;
->  		}
->  	} else {
-> -		page = dev_alloc_page();
-> +		page = page_pool_dev_alloc_pages(rxq->page_pool);
->  		if (!page)
->  			return NULL;
->  
-> +		*from_pool = true;
->  		va = page_to_virt(page);
->  	}
->  
->  	*da = dma_map_single(dev, va + rxq->headroom, rxq->datasize,
->  			     DMA_FROM_DEVICE);
->  	if (dma_mapping_error(dev, *da)) {
-> -		put_page(virt_to_head_page(va));
-> +		if (*from_pool)
-> +			page_pool_put_full_page(rxq->page_pool, page, is_napi);
-
-AFAICT you only pass the is_napi to recycle in case of error?
-It's fine to always pass in false, passing true enables some
-optimizations but it's not worth trying to optimize error paths.
-
-Otherwise you may be passing in true, even tho budget was 0,
-see the recently added warnings in this doc:
-
-https://www.kernel.org/doc/html/next/networking/napi.html
-
-In general the driver seems to be processing Rx regardless
-of budget? This looks like a bug which should be fixed with
-a separate patch for the net tree..
--- 
-pw-bot: cr
+SGVsbG8gSmFrdWIsCgo+ID4gCj4gPiBIb3dldmVyLCB0aGlzIGlzIHRlZGlvdXMgYW5kIGp1c3Qg
+bGlrZSBMZW9uIHNhaWQ6IGFkZCBhbm90aGVyIGxheWVyIG9mCj4gPiBjYWJhbCBrbm93bGVkZ2Uu
+IFRoZSBiZXR0ZXIgc29sdXRpb24gc2hvdWxkIGxldmVyYWdlIHRoZSBubGFfcG9saWN5IGFuZAo+
+ID4gZGlzY2FyZCBubGF0dHIgd2hvc2UgbGVuZ3RoIGlzIGludmFsaWQgd2hlbiBkb2luZyBwYXJz
+aW5nLiBUaGF0IGlzLCB3ZQo+ID4gc2hvdWxkIGRlZmluZWQgYSBuZXN0ZWRfcG9saWN5IGZvciB0
+aGUgWCBhYm92ZSBsaWtlCj4gCj4gSGFyZCBuby4gUHV0dGluZyBhcnJheSBpbmRleCBpbnRvIGF0
+dHIgdHlwZSBpcyBhbiBhZHZhbmNlZCBjYXNlIGFuZCB0aGUKPiBwYXJzaW5nIGNvZGUgaGFzIHRv
+IGJlIGFibGUgdG8gZGVhbCB3aXRoIGxvdyBsZXZlbCBuZXRsaW5rIGRldGFpbHMuCgpXZWxsLCBJ
+IGp1c3Qga25vd24gdGhhdCB0aGUgdHlwZSBmaWVsZCBmb3IgdGhvc2UgYXR0cmlidXRlcyBpcyB1
+c2VkIGFzIGFycmF5CmluZGV4LgpIZW5jZSwgZm9yIHRoaXMgYWR2YW5jZWQgY2FzZSwgY291bGQg
+d2UgZGVmaW5lIGFub3RoZXIgTkxBIHR5cGUsIG1heWJlIApOTEFfTkVTVEVEX0lEWEFSUkFZIGVu
+dW0/IFRoYXQgbWF5IGJlIG11Y2ggY2xlYXJlciBhZ2FpbnN0IG1vZGlmeWluZyBleGlzdGluZwpj
+b2RlLgoKPiBIaWdoZXIgbGV2ZWwgQVBJIHNob3VsZCByZW1vdmUgdGhlIG5sYV9mb3JfZWFjaF9u
+ZXN0ZWQoKSBjb21wbGV0ZWx5Cj4gd2hpY2ggaXMgcmF0aGVyIGhhcmQgdG8gYWNoaWV2ZSBoZXJl
+LgoKQnkgaW52ZXN0aWdhdGluZyB0aGUgY29kZSB1c2VzIG5sYV9mb3JfZWFjaF9uZXN0ZWQgbWFj
+cm8uIFRoZXJlIGFyZSBiYXNpY2FsbHkKdHdvIHNjZW5hcmlvczoKCjEuIG1hbnVhbGx5IHBhcnNl
+IG5lc3RlZCBhdHRyaWJ1dGVzIHdob3NlIHR5cGUgaXMgbm90IGNhcmVkICh0aGUgYWR2YW5jZSBj
+YXNlCiAgIHVzZSB0eXBlIGFzIGluZGV4IGhlcmUpLgoyLiBtYW51YWxseSBwYXJzZSBuZXN0ZWQg
+YXR0cmlidXRlcyBmb3IgKm9uZSogc3BlY2lmaWMgdHlwZS4gU3VjaCBjb2RlIGRvCiAgIG5sYV90
+eXBlIGNoZWNrLgoKRnJvbSB0aGUgQVBJIHNpZGUsIHRvIGNvbXBsZXRlbHkgcmVtb3ZlIG5sYV9m
+b3JfZWFjaF9uZXN0ZWQgYW5kIGF2b2lkIHRoZQptYW51YWwgIHBhcnNpbmcuIEkgdGhpbmsgd2Ug
+Y2FuIGNob29zZSB0d28gc29sdXRpb25zLgoKU29sdXRpb24tMTogYWRkIGEgcGFyc2luZyBoZWxw
+ZXIgdGhhdCByZWNlaXZlcyBhIGZ1bmN0aW9uIHBvaW50ZXIgYXMgYW4KICAgICAgICAgICAgYXJn
+dW1lbnQsIGl0IHdpbGwgY2FsbCB0aGlzIHBvaW50ZXIgYWZ0ZXIgY2FyZWZ1bGx5IHZlcmlmeSB0
+aGUKICAgICAgICAgICAgdHlwZSBhbmQgbGVuZ3RoIG9mIGFuIGF0dHJpYnV0ZS4KClNvbHV0aW9u
+LTI6IGFkZCBhIHBhcnNpbmcgaGVscGVyIHRoYXQgdHJhdmVyc2VzIHRoaXMgbmVzdGVkIHR3aWNl
+LCB0aGUgZmlyc3QKICAgICAgICAgICAgdGltZSAgdG8gZG8gY291bnRpbmcgc2l6ZSBmb3IgYWxs
+b2NhdGluZyBoZWFwIGJ1ZmZlciAob3Igc3RhY2sKICAgICAgICAgICAgYnVmZmVyIGZyb20gdGhl
+IGNhbGxlciBpZiB0aGUgbWF4IGNvdW50IGlzIGtub3duKS4gVGhlIHNlY29uZAogICAgICAgICAg
+ICB0aW1lIHRvIGZpbGwgdGhpcyBidWZmZXIgd2l0aCBhdHRyaWJ1dGUgcG9pbnRlcnMuCgpXaGlj
+aCBvbmUgaXMgcHJlZmVycmVkPyBQbGVhc2UgZW5saWdodGVuIG1lIGFib3V0IHRoaXMgYW5kIEkg
+Y2FuIHRyeSB0byBwcm9wb3NlCmEgZml4LiAoSSBwZXJzb25hbGx5IGxpa2UgdGhlIHNvbHV0aW9u
+LTIgYXMgaXQgd29ya3MgbGlrZSB0aGUgZXhpc3RpbmcgcGFyc2VycwpsaWtlIG5sYV9wYXJzZSkg
+Cgo+IAo+IE5hY2tlZC1ieTogSmFrdWIgS2ljaW5za2kgPGt1YmFAa2VybmVsLm9yZz4KClRoYW5r
+cwpMaW4=
