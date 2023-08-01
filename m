@@ -2,208 +2,239 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A3D6D76A7C0
-	for <lists+linux-rdma@lfdr.de>; Tue,  1 Aug 2023 06:02:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5AD5476A8BC
+	for <lists+linux-rdma@lfdr.de>; Tue,  1 Aug 2023 08:12:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231842AbjHAECr (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 1 Aug 2023 00:02:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58056 "EHLO
+        id S231390AbjHAGMM (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 1 Aug 2023 02:12:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33284 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231992AbjHAECb (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 1 Aug 2023 00:02:31 -0400
-Received: from mgamail.intel.com (unknown [192.55.52.88])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB6CE1FEE
-        for <linux-rdma@vger.kernel.org>; Mon, 31 Jul 2023 21:02:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1690862550; x=1722398550;
-  h=date:from:to:cc:subject:message-id;
-  bh=mc9lHmxni8CE4w3F4dB3R/PGUjlnKSrubdubYBJcHGY=;
-  b=h9E7yb2zbElczfodBIe7hyX5F8yI19G0OQYDo4eiV5l7G8iwF0iQQ1x0
-   EgXePLopcrhrkGN/vQWyToCLA98ZOxC6bVTTRvliku+ZQBvhgCgFxyC48
-   V7JBbLHsANAwcKzTzB9cihjpUlWFe+VM56Ept0zmf2qvaX3LBmQ8+D4Yo
-   D5aHGzm5L/4ujAyRFeWSlvpwfzNchlm4NQEe7zfUnvP488DV6aum4gPMK
-   qlXt4BCtpIR84lVRMpPMPlipHDSfWQDMMYYagc7czoSK1PNqM5NgtM/rK
-   yIQMSWTbaXl2cd3gNfAeVf2mPfxkf93qu/YJn6kIGtEqRRtY2qt1DVQhj
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10788"; a="400140786"
-X-IronPort-AV: E=Sophos;i="6.01,246,1684825200"; 
-   d="scan'208";a="400140786"
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Jul 2023 21:02:28 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10788"; a="705675386"
-X-IronPort-AV: E=Sophos;i="6.01,246,1684825200"; 
-   d="scan'208";a="705675386"
-Received: from lkp-server02.sh.intel.com (HELO 953e8cd98f7d) ([10.239.97.151])
-  by orsmga006.jf.intel.com with ESMTP; 31 Jul 2023 21:02:26 -0700
-Received: from kbuild by 953e8cd98f7d with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qQgaY-0005bS-0D;
-        Tue, 01 Aug 2023 04:02:26 +0000
-Date:   Tue, 01 Aug 2023 12:01:43 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Leon Romanovsky <leon@kernel.org>
-Cc:     Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg+lists@ziepe.ca>,
-        linux-rdma@vger.kernel.org
-Subject: [rdma:wip/leon-for-next] BUILD SUCCESS
- 272bba19d631e21e47f6ffa5654d3c17c57ea2ac
-Message-ID: <202308011242.anYWBAdy-lkp@intel.com>
-User-Agent: s-nail v14.9.24
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+        with ESMTP id S231359AbjHAGML (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 1 Aug 2023 02:12:11 -0400
+Received: from mg.ssi.bg (mg.ssi.bg [193.238.174.37])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B7E61BCF;
+        Mon, 31 Jul 2023 23:12:07 -0700 (PDT)
+Received: from mg.bb.i.ssi.bg (localhost [127.0.0.1])
+        by mg.bb.i.ssi.bg (Proxmox) with ESMTP id 053B317D48;
+        Tue,  1 Aug 2023 09:12:06 +0300 (EEST)
+Received: from ink.ssi.bg (ink.ssi.bg [193.238.174.40])
+        by mg.bb.i.ssi.bg (Proxmox) with ESMTPS id DF87917D40;
+        Tue,  1 Aug 2023 09:12:05 +0300 (EEST)
+Received: from ja.ssi.bg (unknown [213.16.62.126])
+        by ink.ssi.bg (Postfix) with ESMTPSA id D57A13C043A;
+        Tue,  1 Aug 2023 09:11:40 +0300 (EEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=ssi.bg; s=ink;
+        t=1690870305; bh=K3ToJDSb0mjMB1NLV0BUwfRmPEJudUn9AtuMI5luR6U=;
+        h=Date:From:To:cc:Subject:In-Reply-To:References;
+        b=g8VQ+wTIFGtpegn5u/tW44R2fuNOJ5mdhEOWERlo2uGAwt4jdYY1YoeeDuqFVo4U0
+         aNfo6ZYRdJcjGbVx6zImrYA50NgX00UwUU7zEkwQHrQkNmmicTuRpjV7FrGXxh9JhJ
+         dK2ADIy7PUVpdMu+utC6V/dK7/xavRUlvurILIL0=
+Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
+        by ja.ssi.bg (8.17.1/8.17.1) with ESMTP id 3716BQUG027447;
+        Tue, 1 Aug 2023 09:11:27 +0300
+Date:   Tue, 1 Aug 2023 09:11:26 +0300 (EEST)
+From:   Julian Anastasov <ja@ssi.bg>
+To:     Joel Granados <joel.granados@gmail.com>
+cc:     mcgrof@kernel.org, Catalin Marinas <catalin.marinas@arm.com>,
+        Iurii Zaikin <yzaikin@google.com>,
+        Jozsef Kadlecsik <kadlec@netfilter.org>,
+        Sven Schnelle <svens@linux.ibm.com>,
+        Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>,
+        Steffen Klassert <steffen.klassert@secunet.com>,
+        Kees Cook <keescook@chromium.org>,
+        "D. Wythe" <alibuda@linux.alibaba.com>, mptcp@lists.linux.dev,
+        Jakub Kicinski <kuba@kernel.org>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Paolo Abeni <pabeni@redhat.com>, coreteam@netfilter.org,
+        Jan Karcher <jaka@linux.ibm.com>,
+        Alexander Aring <alex.aring@gmail.com>,
+        Will Deacon <will@kernel.org>,
+        Stefan Schmidt <stefan@datenfreihafen.org>,
+        Matthieu Baerts <matthieu.baerts@tessares.net>,
+        bridge@lists.linux-foundation.org,
+        linux-arm-kernel@lists.infradead.org,
+        Joerg Reuter <jreuter@yaina.de>,
+        David Ahern <dsahern@kernel.org>,
+        netfilter-devel@vger.kernel.org, Wen Gu <guwen@linux.alibaba.com>,
+        linux-kernel@vger.kernel.org,
+        Santosh Shilimkar <santosh.shilimkar@oracle.com>,
+        linux-wpan@vger.kernel.org, lvs-devel@vger.kernel.org,
+        Karsten Graul <kgraul@linux.ibm.com>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        linux-sctp@vger.kernel.org, Tony Lu <tonylu@linux.alibaba.com>,
+        Pablo Neira Ayuso <pablo@netfilter.org>,
+        Ralf Baechle <ralf@linux-mips.org>,
+        Florian Westphal <fw@strlen.de>, willy@infradead.org,
+        Heiko Carstens <hca@linux.ibm.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        linux-rdma@vger.kernel.org, Roopa Prabhu <roopa@nvidia.com>,
+        Alexander Gordeev <agordeev@linux.ibm.com>,
+        Simon Horman <horms@verge.net.au>,
+        Mat Martineau <martineau@kernel.org>, josh@joshtriplett.org,
+        Christian Borntraeger <borntraeger@linux.ibm.com>,
+        Eric Dumazet <edumazet@google.com>, linux-hams@vger.kernel.org,
+        Wenjia Zhang <wenjia@linux.ibm.com>,
+        linux-fsdevel@vger.kernel.org, linux-s390@vger.kernel.org,
+        Xin Long <lucien.xin@gmail.com>,
+        Nikolay Aleksandrov <razor@blackwall.org>,
+        netdev@vger.kernel.org, rds-devel@oss.oracle.com,
+        Joel Granados <j.granados@samsung.com>
+Subject: Re: [PATCH v2 10/14] netfilter: Update to register_net_sysctl_sz
+In-Reply-To: <20230731071728.3493794-11-j.granados@samsung.com>
+Message-ID: <b8564ac4-ab65-6212-2241-0843413e05de@ssi.bg>
+References: <20230731071728.3493794-1-j.granados@samsung.com> <20230731071728.3493794-11-j.granados@samsung.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git wip/leon-for-next
-branch HEAD: 272bba19d631e21e47f6ffa5654d3c17c57ea2ac  RDMA: Remove unnecessary ternary operators
 
-elapsed time: 898m
+	Hello,
 
-configs tested: 129
-configs skipped: 4
+On Mon, 31 Jul 2023, Joel Granados wrote:
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+> Move from register_net_sysctl to register_net_sysctl_sz for all the
+> netfilter related files. Do this while making sure to mirror the NULL
+> assignments with a table_size of zero for the unprivileged users.
+> 
+> We need to move to the new function in preparation for when we change
+> SIZE_MAX to ARRAY_SIZE() in the register_net_sysctl macro. Failing to do
+> so would erroneously allow ARRAY_SIZE() to be called on a pointer. We
+> hold off the SIZE_MAX to ARRAY_SIZE change until we have migrated all
+> the relevant net sysctl registering functions to register_net_sysctl_sz
+> in subsequent commits.
+> 
+> Signed-off-by: Joel Granados <j.granados@samsung.com>
 
-tested configs:
-alpha                            allyesconfig   gcc  
-alpha                               defconfig   gcc  
-alpha                randconfig-r005-20230731   gcc  
-alpha                randconfig-r011-20230731   gcc  
-alpha                randconfig-r033-20230731   gcc  
-arc                              allyesconfig   gcc  
-arc                                 defconfig   gcc  
-arc                  randconfig-r003-20230731   gcc  
-arc                  randconfig-r022-20230731   gcc  
-arc                  randconfig-r036-20230731   gcc  
-arc                  randconfig-r043-20230731   gcc  
-arm                              allmodconfig   gcc  
-arm                              allyesconfig   gcc  
-arm                                 defconfig   gcc  
-arm                  randconfig-r004-20230731   clang
-arm                  randconfig-r023-20230731   gcc  
-arm                  randconfig-r046-20230731   gcc  
-arm64                            allyesconfig   gcc  
-arm64                               defconfig   gcc  
-arm64                randconfig-r013-20230731   clang
-arm64                randconfig-r033-20230731   gcc  
-csky                                defconfig   gcc  
-csky                 randconfig-r016-20230731   gcc  
-hexagon              randconfig-r024-20230731   clang
-hexagon              randconfig-r041-20230731   clang
-hexagon              randconfig-r045-20230731   clang
-i386                             allyesconfig   gcc  
-i386         buildonly-randconfig-r004-20230731   gcc  
-i386         buildonly-randconfig-r005-20230731   gcc  
-i386         buildonly-randconfig-r006-20230731   gcc  
-i386                              debian-10.3   gcc  
-i386                                defconfig   gcc  
-i386                 randconfig-i001-20230731   gcc  
-i386                 randconfig-i002-20230731   gcc  
-i386                 randconfig-i003-20230731   gcc  
-i386                 randconfig-i004-20230731   gcc  
-i386                 randconfig-i005-20230731   gcc  
-i386                 randconfig-i006-20230731   gcc  
-i386                 randconfig-i011-20230731   clang
-i386                 randconfig-i012-20230731   clang
-i386                 randconfig-i013-20230731   clang
-i386                 randconfig-i014-20230731   clang
-i386                 randconfig-i015-20230731   clang
-i386                 randconfig-i016-20230731   clang
-i386                 randconfig-r025-20230731   clang
-loongarch                        allmodconfig   gcc  
-loongarch                         allnoconfig   gcc  
-loongarch                           defconfig   gcc  
-loongarch            randconfig-r016-20230731   gcc  
-loongarch            randconfig-r024-20230731   gcc  
-m68k                             allmodconfig   gcc  
-m68k                             allyesconfig   gcc  
-m68k                                defconfig   gcc  
-m68k                 randconfig-r006-20230731   gcc  
-m68k                 randconfig-r012-20230731   gcc  
-microblaze           randconfig-r013-20230731   gcc  
-microblaze           randconfig-r034-20230731   gcc  
-mips                             allmodconfig   gcc  
-mips                             allyesconfig   gcc  
-mips                 randconfig-r002-20230731   clang
-mips                 randconfig-r032-20230731   clang
-nios2                               defconfig   gcc  
-nios2                randconfig-r005-20230731   gcc  
-nios2                randconfig-r035-20230731   gcc  
-openrisc             randconfig-r014-20230731   gcc  
-openrisc             randconfig-r025-20230731   gcc  
-parisc                           allyesconfig   gcc  
-parisc                              defconfig   gcc  
-parisc               randconfig-r001-20230731   gcc  
-parisc               randconfig-r015-20230731   gcc  
-parisc               randconfig-r021-20230731   gcc  
-parisc               randconfig-r026-20230731   gcc  
-parisc               randconfig-r035-20230731   gcc  
-parisc64                            defconfig   gcc  
-powerpc                          allmodconfig   gcc  
-powerpc                           allnoconfig   gcc  
-powerpc              randconfig-r001-20230731   gcc  
-powerpc              randconfig-r022-20230731   clang
-powerpc              randconfig-r026-20230731   clang
-riscv                            allmodconfig   gcc  
-riscv                             allnoconfig   gcc  
-riscv                            allyesconfig   gcc  
-riscv                               defconfig   gcc  
-riscv                randconfig-r002-20230731   gcc  
-riscv                randconfig-r003-20230731   gcc  
-riscv                randconfig-r032-20230731   gcc  
-riscv                randconfig-r042-20230731   clang
-riscv                          rv32_defconfig   gcc  
-s390                             allmodconfig   gcc  
-s390                             allyesconfig   gcc  
-s390                                defconfig   gcc  
-s390                 randconfig-r044-20230731   clang
-sh                               allmodconfig   gcc  
-sparc                            allyesconfig   gcc  
-sparc                               defconfig   gcc  
-sparc                randconfig-r004-20230731   gcc  
-sparc                randconfig-r034-20230731   gcc  
-sparc64              randconfig-r006-20230731   gcc  
-sparc64              randconfig-r014-20230731   gcc  
-sparc64              randconfig-r015-20230731   gcc  
-sparc64              randconfig-r031-20230731   gcc  
-um                               allmodconfig   clang
-um                                allnoconfig   clang
-um                               allyesconfig   clang
-um                                  defconfig   gcc  
-um                             i386_defconfig   gcc  
-um                   randconfig-r011-20230731   gcc  
-um                           x86_64_defconfig   gcc  
-x86_64                           allyesconfig   gcc  
-x86_64       buildonly-randconfig-r001-20230731   gcc  
-x86_64       buildonly-randconfig-r002-20230731   gcc  
-x86_64       buildonly-randconfig-r003-20230731   gcc  
-x86_64                              defconfig   gcc  
-x86_64                                  kexec   gcc  
-x86_64               randconfig-r036-20230731   gcc  
-x86_64               randconfig-x001-20230731   clang
-x86_64               randconfig-x002-20230731   clang
-x86_64               randconfig-x003-20230731   clang
-x86_64               randconfig-x004-20230731   clang
-x86_64               randconfig-x005-20230731   clang
-x86_64               randconfig-x006-20230731   clang
-x86_64               randconfig-x011-20230731   gcc  
-x86_64               randconfig-x012-20230731   gcc  
-x86_64               randconfig-x013-20230731   gcc  
-x86_64               randconfig-x014-20230731   gcc  
-x86_64               randconfig-x015-20230731   gcc  
-x86_64               randconfig-x016-20230731   gcc  
-x86_64                          rhel-8.3-rust   clang
-x86_64                               rhel-8.3   gcc  
+	The IPVS part in net/netfilter/ipvs/ looks good to me, thanks!
 
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+Acked-by: Julian Anastasov <ja@ssi.bg>
+
+> ---
+>  net/bridge/br_netfilter_hooks.c         |  3 ++-
+>  net/ipv6/netfilter/nf_conntrack_reasm.c |  3 ++-
+>  net/netfilter/ipvs/ip_vs_ctl.c          |  8 ++++++--
+>  net/netfilter/ipvs/ip_vs_lblc.c         | 10 +++++++---
+>  net/netfilter/ipvs/ip_vs_lblcr.c        | 10 +++++++---
+>  net/netfilter/nf_conntrack_standalone.c |  4 +++-
+>  net/netfilter/nf_log.c                  |  7 ++++---
+>  7 files changed, 31 insertions(+), 14 deletions(-)
+> 
+
+...
+
+> --- a/net/netfilter/ipvs/ip_vs_ctl.c
+> +++ b/net/netfilter/ipvs/ip_vs_ctl.c
+> @@ -4266,6 +4266,7 @@ static int __net_init ip_vs_control_net_init_sysctl(struct netns_ipvs *ipvs)
+>  	struct net *net = ipvs->net;
+>  	struct ctl_table *tbl;
+>  	int idx, ret;
+> +	size_t ctl_table_size = ARRAY_SIZE(vs_vars);
+>  
+>  	atomic_set(&ipvs->dropentry, 0);
+>  	spin_lock_init(&ipvs->dropentry_lock);
+> @@ -4282,8 +4283,10 @@ static int __net_init ip_vs_control_net_init_sysctl(struct netns_ipvs *ipvs)
+>  			return -ENOMEM;
+>  
+>  		/* Don't export sysctls to unprivileged users */
+> -		if (net->user_ns != &init_user_ns)
+> +		if (net->user_ns != &init_user_ns) {
+>  			tbl[0].procname = NULL;
+> +			ctl_table_size = 0;
+> +		}
+>  	} else
+>  		tbl = vs_vars;
+>  	/* Initialize sysctl defaults */
+> @@ -4353,7 +4356,8 @@ static int __net_init ip_vs_control_net_init_sysctl(struct netns_ipvs *ipvs)
+>  #endif
+>  
+>  	ret = -ENOMEM;
+> -	ipvs->sysctl_hdr = register_net_sysctl(net, "net/ipv4/vs", tbl);
+> +	ipvs->sysctl_hdr = register_net_sysctl_sz(net, "net/ipv4/vs", tbl,
+> +						  ctl_table_size);
+>  	if (!ipvs->sysctl_hdr)
+>  		goto err;
+>  	ipvs->sysctl_tbl = tbl;
+> diff --git a/net/netfilter/ipvs/ip_vs_lblc.c b/net/netfilter/ipvs/ip_vs_lblc.c
+> index 1b87214d385e..cf78ba4ce5ff 100644
+> --- a/net/netfilter/ipvs/ip_vs_lblc.c
+> +++ b/net/netfilter/ipvs/ip_vs_lblc.c
+> @@ -550,6 +550,7 @@ static struct ip_vs_scheduler ip_vs_lblc_scheduler = {
+>  static int __net_init __ip_vs_lblc_init(struct net *net)
+>  {
+>  	struct netns_ipvs *ipvs = net_ipvs(net);
+> +	size_t vars_table_size = ARRAY_SIZE(vs_vars_table);
+>  
+>  	if (!ipvs)
+>  		return -ENOENT;
+> @@ -562,16 +563,19 @@ static int __net_init __ip_vs_lblc_init(struct net *net)
+>  			return -ENOMEM;
+>  
+>  		/* Don't export sysctls to unprivileged users */
+> -		if (net->user_ns != &init_user_ns)
+> +		if (net->user_ns != &init_user_ns) {
+>  			ipvs->lblc_ctl_table[0].procname = NULL;
+> +			vars_table_size = 0;
+> +		}
+>  
+>  	} else
+>  		ipvs->lblc_ctl_table = vs_vars_table;
+>  	ipvs->sysctl_lblc_expiration = DEFAULT_EXPIRATION;
+>  	ipvs->lblc_ctl_table[0].data = &ipvs->sysctl_lblc_expiration;
+>  
+> -	ipvs->lblc_ctl_header =
+> -		register_net_sysctl(net, "net/ipv4/vs", ipvs->lblc_ctl_table);
+> +	ipvs->lblc_ctl_header = register_net_sysctl_sz(net, "net/ipv4/vs",
+> +						       ipvs->lblc_ctl_table,
+> +						       vars_table_size);
+>  	if (!ipvs->lblc_ctl_header) {
+>  		if (!net_eq(net, &init_net))
+>  			kfree(ipvs->lblc_ctl_table);
+> diff --git a/net/netfilter/ipvs/ip_vs_lblcr.c b/net/netfilter/ipvs/ip_vs_lblcr.c
+> index ad8f5fea6d3a..9eddf118b40e 100644
+> --- a/net/netfilter/ipvs/ip_vs_lblcr.c
+> +++ b/net/netfilter/ipvs/ip_vs_lblcr.c
+> @@ -736,6 +736,7 @@ static struct ip_vs_scheduler ip_vs_lblcr_scheduler =
+>  static int __net_init __ip_vs_lblcr_init(struct net *net)
+>  {
+>  	struct netns_ipvs *ipvs = net_ipvs(net);
+> +	size_t vars_table_size = ARRAY_SIZE(vs_vars_table);
+>  
+>  	if (!ipvs)
+>  		return -ENOENT;
+> @@ -748,15 +749,18 @@ static int __net_init __ip_vs_lblcr_init(struct net *net)
+>  			return -ENOMEM;
+>  
+>  		/* Don't export sysctls to unprivileged users */
+> -		if (net->user_ns != &init_user_ns)
+> +		if (net->user_ns != &init_user_ns) {
+>  			ipvs->lblcr_ctl_table[0].procname = NULL;
+> +			vars_table_size = 0;
+> +		}
+>  	} else
+>  		ipvs->lblcr_ctl_table = vs_vars_table;
+>  	ipvs->sysctl_lblcr_expiration = DEFAULT_EXPIRATION;
+>  	ipvs->lblcr_ctl_table[0].data = &ipvs->sysctl_lblcr_expiration;
+>  
+> -	ipvs->lblcr_ctl_header =
+> -		register_net_sysctl(net, "net/ipv4/vs", ipvs->lblcr_ctl_table);
+> +	ipvs->lblcr_ctl_header = register_net_sysctl_sz(net, "net/ipv4/vs",
+> +							ipvs->lblcr_ctl_table,
+> +							vars_table_size);
+>  	if (!ipvs->lblcr_ctl_header) {
+>  		if (!net_eq(net, &init_net))
+>  			kfree(ipvs->lblcr_ctl_table);
+
+Regards
+
+--
+Julian Anastasov <ja@ssi.bg>
+
