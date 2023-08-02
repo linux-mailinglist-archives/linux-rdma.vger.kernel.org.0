@@ -2,65 +2,64 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A1C0376C9AE
-	for <lists+linux-rdma@lfdr.de>; Wed,  2 Aug 2023 11:44:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2BF3076C9AF
+	for <lists+linux-rdma@lfdr.de>; Wed,  2 Aug 2023 11:44:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232804AbjHBJoe (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 2 Aug 2023 05:44:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48956 "EHLO
+        id S232897AbjHBJog (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 2 Aug 2023 05:44:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48990 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231428AbjHBJob (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 2 Aug 2023 05:44:31 -0400
-Received: from mail-pg1-x529.google.com (mail-pg1-x529.google.com [IPv6:2607:f8b0:4864:20::529])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8BA692114
-        for <linux-rdma@vger.kernel.org>; Wed,  2 Aug 2023 02:44:27 -0700 (PDT)
-Received: by mail-pg1-x529.google.com with SMTP id 41be03b00d2f7-55b22f82ac8so509093a12.1
-        for <linux-rdma@vger.kernel.org>; Wed, 02 Aug 2023 02:44:27 -0700 (PDT)
+        with ESMTP id S233018AbjHBJod (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 2 Aug 2023 05:44:33 -0400
+Received: from mail-pf1-x430.google.com (mail-pf1-x430.google.com [IPv6:2607:f8b0:4864:20::430])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E91F2D62
+        for <linux-rdma@vger.kernel.org>; Wed,  2 Aug 2023 02:44:30 -0700 (PDT)
+Received: by mail-pf1-x430.google.com with SMTP id d2e1a72fcca58-68336d06620so6413810b3a.1
+        for <linux-rdma@vger.kernel.org>; Wed, 02 Aug 2023 02:44:30 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google; t=1690969466; x=1691574266;
+        d=broadcom.com; s=google; t=1690969469; x=1691574269;
         h=references:in-reply-to:message-id:date:subject:cc:to:from:from:to
          :cc:subject:date:message-id:reply-to;
-        bh=1diNXHWMqTBHLRVrjPb9IfiQr/v4rv7f2czfHdP0ui4=;
-        b=OAUTzhSzz0pKF1D94vaGqDVvtiPSVeXrmZfOsDur8Z/SXnOzPziw3ZV3RRjFPun2LS
-         vXc4nUEuwXvK9bLlGTxLzMHbdfig70rd22WpOwcl9CNiXOP9V3wYvY7n7yIkLGB29ebZ
-         TsjKP5GkroJRinX8jFOv9qRd+N4P6tuDfGxxk=
+        bh=SVFLZxE4bi7nIomxkzjosB2yD8XTN0moseuf6EhwKFI=;
+        b=gvx5QcitsG9qFX6Gl22Q9nWCGeNwBEnEz6YrgE2O+sfy7XRB7t4GwXvk4VoTO0czuf
+         CiKXsYBMuU+wv3PPxxneHNtc01xcmyuyEd/GXRmmoa8ktGM28/5wdLZTCG8ctU66jepl
+         JohIxTTgtCPbSdYvvbDt8e7ND0Ls32zEJH2Uo=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690969466; x=1691574266;
+        d=1e100.net; s=20221208; t=1690969469; x=1691574269;
         h=references:in-reply-to:message-id:date:subject:cc:to:from
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=1diNXHWMqTBHLRVrjPb9IfiQr/v4rv7f2czfHdP0ui4=;
-        b=g5KhRAO2oQoRN9tzNHyigsdJZ/6XjalmQkYcs5mcDtn7A3vFc3hSSRWAX88VyofvP7
-         ymom+oyuY1er7ydk5rdoZ7tyhXy0zfetP6BAndtouZPpNYzwbKkTibbLrZy8aC9Bh2O0
-         +mBy+UEuj5P+/w0NhCEvOCbHNxv3pTRsrTu35vHsVuMEAA0X5Lm0b3mFdarrlLi4l8oe
-         L0cTLnZNgc/IBoYqg/+SoxxECDlLn1PMYpoh+ZUDhoxa36fsXEo9IbzNlkRYA1dWf0qF
-         32WoT4vv5Gzl2u6UMYvpC8c9XShmHnAn1uatMg78KrMLWrtaeYh7EhCiuub75S3kPHep
-         Rlvw==
-X-Gm-Message-State: ABy/qLYLZRgbLZsZPM1tSEK62Ca/NIJNjWpjcFXHs5iG/cAKe2Sj/1no
-        0KazJ/HccVoh1rUeACqjG2foqA==
-X-Google-Smtp-Source: APBJJlG1gXx0hhU9CFcl6+SKY6mNHeXwcwEzIcZwcWJZMmyouFjxnOSxnKgfGdLTnFkIsGU7+cCxaQ==
-X-Received: by 2002:a17:90a:be10:b0:268:169e:8497 with SMTP id a16-20020a17090abe1000b00268169e8497mr19042709pjs.13.1690969466441;
-        Wed, 02 Aug 2023 02:44:26 -0700 (PDT)
+        bh=SVFLZxE4bi7nIomxkzjosB2yD8XTN0moseuf6EhwKFI=;
+        b=JQUQXNHj/NXzMBYfjJ3PXZZijIb5iBOMlB/FQTCF1S/RsvMiGROn/5QH8B1aQemb6I
+         hVNY2JT+0pxeI98g4EE7p8cU6RT4/zaVhIOnsA5eGXSiTE/p7M849ysgtVY6uCqlDS9E
+         l2zYUoZmcEqU7UYy0WD12CRIqp+AwJRZDcTCVvEp5Hf0RySrbQ4hIiIKDaHcE4Nf1kNC
+         aM1dWZMOzhF3beyrzbLLmsq8w/ujvxwCXdFZRSSdKLr7YQ3knHpt8TbgjRk5Rgm5i63z
+         MYGzZlB8bCoeW0rHeqNSqHdatlCAiDak0o4+kFnkPsbAhV4abGobO2c+3tE2b6j8xVtq
+         85GQ==
+X-Gm-Message-State: ABy/qLZR+v8i2wj9mWEfB/pOWhklKaiogHSqG8NdFzJsDmkN9m/Gbc1S
+        hNlLL2HZ/6A86M7MVpxuaKf/xw==
+X-Google-Smtp-Source: APBJJlFZKsCCBLgHLerBRnFkwiAANWWO65mfDvO1Ef0AYSywoC+gF1xuzOD66U33eFpKEbV706BcWg==
+X-Received: by 2002:a17:90a:3ec2:b0:268:14a0:f8a with SMTP id k60-20020a17090a3ec200b0026814a00f8amr14729627pjc.39.1690969469282;
+        Wed, 02 Aug 2023 02:44:29 -0700 (PDT)
 Received: from dhcp-10-192-206-197.iig.avagotech.net.net ([192.19.234.250])
-        by smtp.gmail.com with ESMTPSA id 5-20020a17090a000500b00263dfe9b972sm848790pja.0.2023.08.02.02.44.23
+        by smtp.gmail.com with ESMTPSA id 5-20020a17090a000500b00263dfe9b972sm848790pja.0.2023.08.02.02.44.26
         (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 02 Aug 2023 02:44:25 -0700 (PDT)
+        Wed, 02 Aug 2023 02:44:28 -0700 (PDT)
 From:   Selvin Xavier <selvin.xavier@broadcom.com>
 To:     jgg@ziepe.ca, leon@kernel.org
 Cc:     linux-rdma@vger.kernel.org, andrew.gospodarek@broadcom.com,
-        Selvin Xavier <selvin.xavier@broadcom.com>,
-        Kashyap Desai <kashyap.desai@broadcom.com>,
-        Hongguang Gao <hongguang.gao@broadcom.com>
-Subject: [PATCH for-next 3/6] RDMA/bnxt_re: Fix the sideband buffer size handling for FW commands
-Date:   Wed,  2 Aug 2023 02:32:36 -0700
-Message-Id: <1690968759-9142-4-git-send-email-selvin.xavier@broadcom.com>
+        Kalesh AP <kalesh-anakkur.purayil@broadcom.com>,
+        Selvin Xavier <selvin.xavier@broadcom.com>
+Subject: [PATCH for-next 4/6] RDMA/bnxt_re: Cleanup bnxt_re_process_raw_qp_pkt_rx() function
+Date:   Wed,  2 Aug 2023 02:32:37 -0700
+Message-Id: <1690968759-9142-5-git-send-email-selvin.xavier@broadcom.com>
 X-Mailer: git-send-email 2.5.5
 In-Reply-To: <1690968759-9142-1-git-send-email-selvin.xavier@broadcom.com>
 References: <1690968759-9142-1-git-send-email-selvin.xavier@broadcom.com>
 Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
-        boundary="00000000000064c7bb0601ed827b"
+        boundary="00000000000091967e0601ed8281"
 X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        MIME_HEADER_CTYPE_ONLY,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,
+        MIME_HEADER_CTYPE_ONLY,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE,
         T_SCC_BODY_TEXT_LINE,T_TVD_MIME_NO_HEADERS,URIBL_BLOCKED autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -69,298 +68,64 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
---00000000000064c7bb0601ed827b
+--00000000000091967e0601ed8281
 
-bnxt_qplib_rcfw_alloc_sbuf allocates 24 bytes for holding a temporary
-data and it is better to fit them on stack variables. This way we can
-avoid unwanted kmalloc call. Call dma_alloc_coherent directly instead of wrapper
-bnxt_qplib_rcfw_alloc_sbuf.
+From: Kalesh AP <kalesh-anakkur.purayil@broadcom.com>
 
-Also, FW expects the side buffer to be aligned to
-BNXT_QPLIB_CMDQE_UNITS(16B). So align the size to have the
-extra padding data.
+ - Remove unnecessary memset by initializing the variables
+   during declaration itself.
+ - Arranged variable declarartion in RCT order.
 
-Signed-off-by: Kashyap Desai <kashyap.desai@broadcom.com>
-Signed-off-by: Hongguang Gao <hongguang.gao@broadcom.com>
+Signed-off-by: Kalesh AP <kalesh-anakkur.purayil@broadcom.com>
 Signed-off-by: Selvin Xavier <selvin.xavier@broadcom.com>
 ---
- drivers/infiniband/hw/bnxt_re/qplib_fp.c   | 38 +++++++++--------
- drivers/infiniband/hw/bnxt_re/qplib_rcfw.c | 31 --------------
- drivers/infiniband/hw/bnxt_re/qplib_sp.c   | 65 ++++++++++++++----------------
- 3 files changed, 53 insertions(+), 81 deletions(-)
+ drivers/infiniband/hw/bnxt_re/ib_verbs.c | 21 ++++++++-------------
+ 1 file changed, 8 insertions(+), 13 deletions(-)
 
-diff --git a/drivers/infiniband/hw/bnxt_re/qplib_fp.c b/drivers/infiniband/hw/bnxt_re/qplib_fp.c
-index f9dee0d..282e34e 100644
---- a/drivers/infiniband/hw/bnxt_re/qplib_fp.c
-+++ b/drivers/infiniband/hw/bnxt_re/qplib_fp.c
-@@ -709,7 +709,7 @@ int bnxt_qplib_query_srq(struct bnxt_qplib_res *res,
- 	struct bnxt_qplib_rcfw *rcfw = res->rcfw;
- 	struct creq_query_srq_resp resp = {};
- 	struct bnxt_qplib_cmdqmsg msg = {};
--	struct bnxt_qplib_rcfw_sbuf *sbuf;
-+	struct bnxt_qplib_rcfw_sbuf sbuf;
- 	struct creq_query_srq_resp_sb *sb;
- 	struct cmdq_query_srq req = {};
- 	int rc = 0;
-@@ -719,17 +719,20 @@ int bnxt_qplib_query_srq(struct bnxt_qplib_res *res,
- 				 sizeof(req));
- 
- 	/* Configure the request */
--	sbuf = bnxt_qplib_rcfw_alloc_sbuf(rcfw, sizeof(*sb));
--	if (!sbuf)
-+	sbuf.size = ALIGN(sizeof(*sb), BNXT_QPLIB_CMDQE_UNITS);
-+	sbuf.sb = dma_alloc_coherent(&rcfw->pdev->dev, sbuf.size,
-+				     &sbuf.dma_addr, GFP_KERNEL);
-+	if (!sbuf.sb)
- 		return -ENOMEM;
--	req.resp_size = sizeof(*sb) / BNXT_QPLIB_CMDQE_UNITS;
-+	req.resp_size = sbuf.size / BNXT_QPLIB_CMDQE_UNITS;
- 	req.srq_cid = cpu_to_le32(srq->id);
--	sb = sbuf->sb;
--	bnxt_qplib_fill_cmdqmsg(&msg, &req, &resp, sbuf, sizeof(req),
-+	sb = sbuf.sb;
-+	bnxt_qplib_fill_cmdqmsg(&msg, &req, &resp, &sbuf, sizeof(req),
- 				sizeof(resp), 0);
- 	rc = bnxt_qplib_rcfw_send_message(rcfw, &msg);
- 	srq->threshold = le16_to_cpu(sb->srq_limit);
--	bnxt_qplib_rcfw_free_sbuf(rcfw, sbuf);
-+	dma_free_coherent(&rcfw->pdev->dev, sbuf.size,
-+			  sbuf.sb, sbuf.dma_addr);
- 
- 	return rc;
- }
-@@ -1347,24 +1350,26 @@ int bnxt_qplib_query_qp(struct bnxt_qplib_res *res, struct bnxt_qplib_qp *qp)
- 	struct bnxt_qplib_rcfw *rcfw = res->rcfw;
- 	struct creq_query_qp_resp resp = {};
- 	struct bnxt_qplib_cmdqmsg msg = {};
--	struct bnxt_qplib_rcfw_sbuf *sbuf;
-+	struct bnxt_qplib_rcfw_sbuf sbuf;
- 	struct creq_query_qp_resp_sb *sb;
- 	struct cmdq_query_qp req = {};
- 	u32 temp32[4];
- 	int i, rc = 0;
- 
-+	sbuf.size = ALIGN(sizeof(*sb), BNXT_QPLIB_CMDQE_UNITS);
-+	sbuf.sb = dma_alloc_coherent(&rcfw->pdev->dev, sbuf.size,
-+				     &sbuf.dma_addr, GFP_KERNEL);
-+	if (!sbuf.sb)
-+		return -ENOMEM;
-+	sb = sbuf.sb;
-+
- 	bnxt_qplib_rcfw_cmd_prep((struct cmdq_base *)&req,
- 				 CMDQ_BASE_OPCODE_QUERY_QP,
- 				 sizeof(req));
- 
--	sbuf = bnxt_qplib_rcfw_alloc_sbuf(rcfw, sizeof(*sb));
--	if (!sbuf)
--		return -ENOMEM;
--	sb = sbuf->sb;
--
- 	req.qp_cid = cpu_to_le32(qp->id);
--	req.resp_size = sizeof(*sb) / BNXT_QPLIB_CMDQE_UNITS;
--	bnxt_qplib_fill_cmdqmsg(&msg, &req, &resp, sbuf, sizeof(req),
-+	req.resp_size = sbuf.size / BNXT_QPLIB_CMDQE_UNITS;
-+	bnxt_qplib_fill_cmdqmsg(&msg, &req, &resp, &sbuf, sizeof(req),
- 				sizeof(resp), 0);
- 	rc = bnxt_qplib_rcfw_send_message(rcfw, &msg);
- 	if (rc)
-@@ -1423,7 +1428,8 @@ int bnxt_qplib_query_qp(struct bnxt_qplib_res *res, struct bnxt_qplib_qp *qp)
- 	memcpy(qp->smac, sb->src_mac, 6);
- 	qp->vlan_id = le16_to_cpu(sb->vlan_pcp_vlan_dei_vlan_id);
- bail:
--	bnxt_qplib_rcfw_free_sbuf(rcfw, sbuf);
-+	dma_free_coherent(&rcfw->pdev->dev, sbuf.size,
-+			  sbuf.sb, sbuf.dma_addr);
- 	return rc;
- }
- 
-diff --git a/drivers/infiniband/hw/bnxt_re/qplib_rcfw.c b/drivers/infiniband/hw/bnxt_re/qplib_rcfw.c
-index 4842a41..9d26871 100644
---- a/drivers/infiniband/hw/bnxt_re/qplib_rcfw.c
-+++ b/drivers/infiniband/hw/bnxt_re/qplib_rcfw.c
-@@ -1197,34 +1197,3 @@ int bnxt_qplib_enable_rcfw_channel(struct bnxt_qplib_rcfw *rcfw,
- 
- 	return 0;
- }
--
--struct bnxt_qplib_rcfw_sbuf *bnxt_qplib_rcfw_alloc_sbuf(
--		struct bnxt_qplib_rcfw *rcfw,
--		u32 size)
--{
--	struct bnxt_qplib_rcfw_sbuf *sbuf;
--
--	sbuf = kzalloc(sizeof(*sbuf), GFP_KERNEL);
--	if (!sbuf)
--		return NULL;
--
--	sbuf->size = size;
--	sbuf->sb = dma_alloc_coherent(&rcfw->pdev->dev, sbuf->size,
--				      &sbuf->dma_addr, GFP_KERNEL);
--	if (!sbuf->sb)
--		goto bail;
--
--	return sbuf;
--bail:
--	kfree(sbuf);
--	return NULL;
--}
--
--void bnxt_qplib_rcfw_free_sbuf(struct bnxt_qplib_rcfw *rcfw,
--			       struct bnxt_qplib_rcfw_sbuf *sbuf)
--{
--	if (sbuf->sb)
--		dma_free_coherent(&rcfw->pdev->dev, sbuf->size,
--				  sbuf->sb, sbuf->dma_addr);
--	kfree(sbuf);
--}
-diff --git a/drivers/infiniband/hw/bnxt_re/qplib_sp.c b/drivers/infiniband/hw/bnxt_re/qplib_sp.c
-index 89acb66..05ee8fd 100644
---- a/drivers/infiniband/hw/bnxt_re/qplib_sp.c
-+++ b/drivers/infiniband/hw/bnxt_re/qplib_sp.c
-@@ -94,7 +94,7 @@ int bnxt_qplib_get_dev_attr(struct bnxt_qplib_rcfw *rcfw,
- 	struct creq_query_func_resp resp = {};
- 	struct bnxt_qplib_cmdqmsg msg = {};
- 	struct creq_query_func_resp_sb *sb;
--	struct bnxt_qplib_rcfw_sbuf *sbuf;
-+	struct bnxt_qplib_rcfw_sbuf sbuf;
- 	struct cmdq_query_func req = {};
- 	u8 *tqm_alloc;
- 	int i, rc = 0;
-@@ -104,16 +104,14 @@ int bnxt_qplib_get_dev_attr(struct bnxt_qplib_rcfw *rcfw,
- 				 CMDQ_BASE_OPCODE_QUERY_FUNC,
- 				 sizeof(req));
- 
--	sbuf = bnxt_qplib_rcfw_alloc_sbuf(rcfw, sizeof(*sb));
--	if (!sbuf) {
--		dev_err(&rcfw->pdev->dev,
--			"SP: QUERY_FUNC alloc side buffer failed\n");
-+	sbuf.size = ALIGN(sizeof(*sb), BNXT_QPLIB_CMDQE_UNITS);
-+	sbuf.sb = dma_alloc_coherent(&rcfw->pdev->dev, sbuf.size,
-+				     &sbuf.dma_addr, GFP_KERNEL);
-+	if (!sbuf.sb)
- 		return -ENOMEM;
--	}
--
--	sb = sbuf->sb;
--	req.resp_size = sizeof(*sb) / BNXT_QPLIB_CMDQE_UNITS;
--	bnxt_qplib_fill_cmdqmsg(&msg, &req, &resp, sbuf, sizeof(req),
-+	sb = sbuf.sb;
-+	req.resp_size = sbuf.size / BNXT_QPLIB_CMDQE_UNITS;
-+	bnxt_qplib_fill_cmdqmsg(&msg, &req, &resp, &sbuf, sizeof(req),
- 				sizeof(resp), 0);
- 	rc = bnxt_qplib_rcfw_send_message(rcfw, &msg);
- 	if (rc)
-@@ -174,7 +172,8 @@ int bnxt_qplib_get_dev_attr(struct bnxt_qplib_rcfw *rcfw,
- 
- 	attr->is_atomic = bnxt_qplib_is_atomic_cap(rcfw);
- bail:
--	bnxt_qplib_rcfw_free_sbuf(rcfw, sbuf);
-+	dma_free_coherent(&rcfw->pdev->dev, sbuf.size,
-+			  sbuf.sb, sbuf.dma_addr);
- 	return rc;
- }
- 
-@@ -717,23 +716,22 @@ int bnxt_qplib_get_roce_stats(struct bnxt_qplib_rcfw *rcfw,
- 	struct creq_query_roce_stats_resp_sb *sb;
- 	struct cmdq_query_roce_stats req = {};
- 	struct bnxt_qplib_cmdqmsg msg = {};
--	struct bnxt_qplib_rcfw_sbuf *sbuf;
-+	struct bnxt_qplib_rcfw_sbuf sbuf;
- 	int rc = 0;
- 
- 	bnxt_qplib_rcfw_cmd_prep((struct cmdq_base *)&req,
- 				 CMDQ_BASE_OPCODE_QUERY_ROCE_STATS,
- 				 sizeof(req));
- 
--	sbuf = bnxt_qplib_rcfw_alloc_sbuf(rcfw, sizeof(*sb));
--	if (!sbuf) {
--		dev_err(&rcfw->pdev->dev,
--			"SP: QUERY_ROCE_STATS alloc side buffer failed\n");
-+	sbuf.size = ALIGN(sizeof(*sb), BNXT_QPLIB_CMDQE_UNITS);
-+	sbuf.sb = dma_alloc_coherent(&rcfw->pdev->dev, sbuf.size,
-+				     &sbuf.dma_addr, GFP_KERNEL);
-+	if (!sbuf.sb)
- 		return -ENOMEM;
--	}
-+	sb = sbuf.sb;
- 
--	sb = sbuf->sb;
--	req.resp_size = sizeof(*sb) / BNXT_QPLIB_CMDQE_UNITS;
--	bnxt_qplib_fill_cmdqmsg(&msg, &req, &resp, sbuf, sizeof(req),
-+	req.resp_size = sbuf.size / BNXT_QPLIB_CMDQE_UNITS;
-+	bnxt_qplib_fill_cmdqmsg(&msg, &req, &resp, &sbuf, sizeof(req),
- 				sizeof(resp), 0);
- 	rc = bnxt_qplib_rcfw_send_message(rcfw, &msg);
- 	if (rc)
-@@ -789,7 +787,8 @@ int bnxt_qplib_get_roce_stats(struct bnxt_qplib_rcfw *rcfw,
- 	}
- 
- bail:
--	bnxt_qplib_rcfw_free_sbuf(rcfw, sbuf);
-+	dma_free_coherent(&rcfw->pdev->dev, sbuf.size,
-+			  sbuf.sb, sbuf.dma_addr);
- 	return rc;
- }
- 
-@@ -800,34 +799,31 @@ int bnxt_qplib_qext_stat(struct bnxt_qplib_rcfw *rcfw, u32 fid,
- 	struct creq_query_roce_stats_ext_resp_sb *sb;
- 	struct cmdq_query_roce_stats_ext req = {};
- 	struct bnxt_qplib_cmdqmsg msg = {};
--	struct bnxt_qplib_rcfw_sbuf *sbuf;
--	u32 size;
-+	struct bnxt_qplib_rcfw_sbuf sbuf;
+diff --git a/drivers/infiniband/hw/bnxt_re/ib_verbs.c b/drivers/infiniband/hw/bnxt_re/ib_verbs.c
+index c46fd2a..1ce3922 100644
+--- a/drivers/infiniband/hw/bnxt_re/ib_verbs.c
++++ b/drivers/infiniband/hw/bnxt_re/ib_verbs.c
+@@ -3333,26 +3333,21 @@ static int bnxt_re_process_raw_qp_pkt_rx(struct bnxt_re_qp *gsi_qp,
+ 	struct bnxt_re_dev *rdev = gsi_qp->rdev;
+ 	struct bnxt_re_sqp_entries *sqp_entry = NULL;
+ 	struct bnxt_re_qp *gsi_sqp = rdev->gsi_ctx.gsi_sqp;
++	dma_addr_t shrq_hdr_buf_map;
++	struct ib_sge s_sge[2] = {};
++	struct ib_sge r_sge[2] = {};
+ 	struct bnxt_re_ah *gsi_sah;
++	struct ib_recv_wr rwr = {};
++	dma_addr_t rq_hdr_buf_map;
++	struct ib_ud_wr udwr = {};
+ 	struct ib_send_wr *swr;
+-	struct ib_ud_wr udwr;
+-	struct ib_recv_wr rwr;
++	u32 skip_bytes = 0;
+ 	int pkt_type = 0;
+-	u32 tbl_idx;
+ 	void *rq_hdr_buf;
+-	dma_addr_t rq_hdr_buf_map;
+-	dma_addr_t shrq_hdr_buf_map;
+ 	u32 offset = 0;
+-	u32 skip_bytes = 0;
+-	struct ib_sge s_sge[2];
+-	struct ib_sge r_sge[2];
++	u32 tbl_idx;
  	int rc;
  
--	size = ALIGN(sizeof(*sb), BNXT_QPLIB_CMDQE_UNITS);
--	sbuf = bnxt_qplib_rcfw_alloc_sbuf(rcfw, size);
--	if (!sbuf) {
--		dev_err(&rcfw->pdev->dev,
--			"SP: QUERY_ROCE_STATS_EXT alloc sb failed");
-+	sbuf.size = ALIGN(sizeof(*sb), BNXT_QPLIB_CMDQE_UNITS);
-+	sbuf.sb = dma_alloc_coherent(&rcfw->pdev->dev, sbuf.size,
-+				     &sbuf.dma_addr, GFP_KERNEL);
-+	if (!sbuf.sb)
- 		return -ENOMEM;
--	}
- 
-+	sb = sbuf.sb;
- 	bnxt_qplib_rcfw_cmd_prep((struct cmdq_base *)&req,
- 				 CMDQ_QUERY_ROCE_STATS_EXT_OPCODE_QUERY_ROCE_STATS,
- 				 sizeof(req));
- 
--	req.resp_size = size / BNXT_QPLIB_CMDQE_UNITS;
--	req.resp_addr = cpu_to_le64(sbuf->dma_addr);
-+	req.resp_size = sbuf.size / BNXT_QPLIB_CMDQE_UNITS;
-+	req.resp_addr = cpu_to_le64(sbuf.dma_addr);
- 	req.function_id = cpu_to_le32(fid);
- 	req.flags = cpu_to_le16(CMDQ_QUERY_ROCE_STATS_EXT_FLAGS_FUNCTION_ID);
- 
--	bnxt_qplib_fill_cmdqmsg(&msg, &req, &resp, sbuf, sizeof(req),
-+	bnxt_qplib_fill_cmdqmsg(&msg, &req, &resp, &sbuf, sizeof(req),
- 				sizeof(resp), 0);
- 	rc = bnxt_qplib_rcfw_send_message(rcfw, &msg);
- 	if (rc)
- 		goto bail;
- 
--	sb = sbuf->sb;
- 	estat->tx_atomic_req = le64_to_cpu(sb->tx_atomic_req_pkts);
- 	estat->tx_read_req = le64_to_cpu(sb->tx_read_req_pkts);
- 	estat->tx_read_res = le64_to_cpu(sb->tx_read_res_pkts);
-@@ -851,7 +847,8 @@ int bnxt_qplib_qext_stat(struct bnxt_qplib_rcfw *rcfw, u32 fid,
- 	estat->rx_ecn_marked = le64_to_cpu(sb->rx_ecn_marked_pkts);
- 
- bail:
--	bnxt_qplib_rcfw_free_sbuf(rcfw, sbuf);
-+	dma_free_coherent(&rcfw->pdev->dev, sbuf.size,
-+			  sbuf.sb, sbuf.dma_addr);
- 	return rc;
- }
+-	memset(&udwr, 0, sizeof(udwr));
+-	memset(&rwr, 0, sizeof(rwr));
+-	memset(&s_sge, 0, sizeof(s_sge));
+-	memset(&r_sge, 0, sizeof(r_sge));
+-
+ 	swr = &udwr.wr;
+ 	tbl_idx = cqe->wr_id;
  
 -- 
 2.5.5
 
 
---00000000000064c7bb0601ed827b
+--00000000000091967e0601ed8281
 Content-Type: application/pkcs7-signature; name="smime.p7s"
 Content-Transfer-Encoding: base64
 Content-Disposition: attachment; filename="smime.p7s"
@@ -431,14 +196,14 @@ j1Ze9ndr+YDXPpCymOsynmmw0ErHZGGW1OmMpAEt0A+613glWCURLDlP8HONi1wnINV6aDiEf0ad
 9NMGxDsp+YWiRXD3txfo2OMQbpIxM90QfhKKacX8t1J1oAAWxDrLVTJBXBNvz5tr+D1sYwuye93r
 hImmkM1unboxggJtMIICaQIBATBrMFsxCzAJBgNVBAYTAkJFMRkwFwYDVQQKExBHbG9iYWxTaWdu
 IG52LXNhMTEwLwYDVQQDEyhHbG9iYWxTaWduIEdDQyBSMyBQZXJzb25hbFNpZ24gMiBDQSAyMDIw
-Agxy+Cu4x/7lM0zxY7cwDQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIEICS/cpMo++i1
-W5hZ56Py8mF0w9nSB1BHRehyFhk8xmp6MBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZI
-hvcNAQkFMQ8XDTIzMDgwMjA5NDQyNlowaQYJKoZIhvcNAQkPMVwwWjALBglghkgBZQMEASowCwYJ
+Agxy+Cu4x/7lM0zxY7cwDQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIEIKu7n1CRjYOP
+1D9EcdN9t8gJ91XGOQEV7KbgMRjWkRCQMBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZI
+hvcNAQkFMQ8XDTIzMDgwMjA5NDQyOVowaQYJKoZIhvcNAQkPMVwwWjALBglghkgBZQMEASowCwYJ
 YIZIAWUDBAEWMAsGCWCGSAFlAwQBAjAKBggqhkiG9w0DBzALBgkqhkiG9w0BAQowCwYJKoZIhvcN
-AQEHMAsGCWCGSAFlAwQCATANBgkqhkiG9w0BAQEFAASCAQChRT8pO/C0q+4di85FTxS7oNAjNJcZ
-XBewQJqn2Hjp6Kh88azZOm2CICB85mVYYwiSespZMC0hOdcvZEv4tAeOayb+xXBK7hYon33nX/Qf
-LtH3xVcMG1clD0SoqIxHVQwTbuzKrTJhEvld3A83asskCmG9QE3d+VpkJEFwgmcANLb/zUuc7GvE
-tk5XzUlnKxlDG9YOHrIr0dzwNKu26EmStAb4bBlVfuVcdmpDXlKpWVvxvbbVmNu+WlIqtc74E/Bm
-1V6Zg0tLv1Zp2IohH41r8xTaWjaKlp9T8boLI/tQIgNhIKwBmP74yhdoI8tUSqFEeXeu7uKBBqVu
-K95JZkiO
---00000000000064c7bb0601ed827b--
+AQEHMAsGCWCGSAFlAwQCATANBgkqhkiG9w0BAQEFAASCAQB1i68FBp+wbHqmu+NOblfLrJ3l1S+P
+CCzqAPhm6cX57VbfMFgzCgxuywE68pJdU/3Q2wuBs29YjATiqGj1w8YL2Ko5xMPBr8OGD/0so1Az
+xSOF4UJ5/GYUdzU14MEdEP3YrYNkupiMthCZIky9Ds3AGNSZ0sZ5oF0u5d20S/+mgQzKhBCg1cKX
+2oqLWPjJYijnGt9QR7N6SwrdJ3am4KsnrR7Yq8sib5l2Rugf2rkEAeapwJzgr+wg8F8h70mJgn7B
+RUwsrp2+LsV+qlP4OQAwhuaGi+hBv3PdcmU4/gQs9TTD2ByXKv1eZdgZQhAfKQPOymWWRwR63oRr
+EWtL6lsr
+--00000000000091967e0601ed8281--
