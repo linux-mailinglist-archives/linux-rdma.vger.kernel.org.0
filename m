@@ -2,93 +2,55 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8CAD876C133
-	for <lists+linux-rdma@lfdr.de>; Wed,  2 Aug 2023 01:46:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0CD6C76C179
+	for <lists+linux-rdma@lfdr.de>; Wed,  2 Aug 2023 02:26:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229715AbjHAXqH (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 1 Aug 2023 19:46:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38206 "EHLO
+        id S229652AbjHBA0p (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 1 Aug 2023 20:26:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48332 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229628AbjHAXqG (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 1 Aug 2023 19:46:06 -0400
-Received: from mail-qk1-x731.google.com (mail-qk1-x731.google.com [IPv6:2607:f8b0:4864:20::731])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9CDBE1B1
-        for <linux-rdma@vger.kernel.org>; Tue,  1 Aug 2023 16:46:05 -0700 (PDT)
-Received: by mail-qk1-x731.google.com with SMTP id af79cd13be357-76ca7b4782cso212261485a.0
-        for <linux-rdma@vger.kernel.org>; Tue, 01 Aug 2023 16:46:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google; t=1690933565; x=1691538365;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=KBKGP+rOQrE0yI33WFL70QQXfWqUPCJII6/ruXV7a18=;
-        b=SWXVXrgm7uYZHZpxzUnYKGRlHWgX0IK0Rnlpt7cDr5IAkGjYP2UkjUfjYQGOZNR6qJ
-         LJgCwO55lyoYtyX6E3Q4s40xhlJi1dKPH0AZpIy8isp0s8rC0ju8u3sjUbibjy6jNmr+
-         mcJOcMWuV5sswR+4lXv+R2JNNPJMLL1UAxV+nc9eXFABT8+j+4Fr4O92HGXMdw8ZW/cO
-         tYSdLgE9sYsL2LpWr9Lpjtw96tubbaY6Lk9BRgEa7XCIyKeCZkvIgI1OH2+pWauTOwMU
-         tjTG/lngwIPwA8M8k3ptItHteXjaC4SjLv7Eqa1WLuIH7QiFLFw+WP+vp7HZAj1aZd8b
-         Tmdw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690933565; x=1691538365;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=KBKGP+rOQrE0yI33WFL70QQXfWqUPCJII6/ruXV7a18=;
-        b=hnr9QlTn1zqLR83R+bwoGSDOokwfXnpNB9yPlG36g+pnZ1ToiwgqRK4Dyu5kb5SM72
-         uz8YuRS7729WwtBfVGXMf6NiXZTrGvD4oO7kgonBa5yI2QHP/aDwIy6RRqDd5wCuuzKh
-         J/FVkRIzUwswDFRNzTFfRK3H9EbYCwDHnvFUCDbFT6lrgFCulaKHMx26w4SJR/IQx+y0
-         vd6zoRURyV5w4QeHAmUew4o+o5FAsfacamASUxP2nBZro+Seo2ysRNQPJteFBQe+skqI
-         HPiCD85I4+hCE2Ijf6KafcgaC4rvht8Q7KiNZVeX9oMQGkTleu7Gk8u1zY61OvxMK9h9
-         bseA==
-X-Gm-Message-State: ABy/qLZ0CikvxdnkYwXwc9suGJvZQLKzluqnTy/tP32U2sqdFGqD+Wk9
-        SkzFjQ0TZwvzrM94Gdt+VD/LTg==
-X-Google-Smtp-Source: APBJJlGxnpoNiNKnO6qXw0UeYYlZ6fEaFr61aQgxxSleH8rfkxM6Fg0dXraa5FyNSubaYwh/wMlyfw==
-X-Received: by 2002:a05:620a:4010:b0:76c:bf54:70ab with SMTP id h16-20020a05620a401000b0076cbf5470abmr5499429qko.12.1690933564773;
-        Tue, 01 Aug 2023 16:46:04 -0700 (PDT)
-Received: from ziepe.ca (hlfxns017vw-142-68-25-194.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.68.25.194])
-        by smtp.gmail.com with ESMTPSA id q10-20020ae9e40a000000b007676f3859fasm4543814qkc.30.2023.08.01.16.46.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 01 Aug 2023 16:46:04 -0700 (PDT)
-Received: from jgg by wakko with local (Exim 4.95)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1qQz3z-002y3w-GJ;
-        Tue, 01 Aug 2023 20:46:03 -0300
-Date:   Tue, 1 Aug 2023 20:46:03 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Long Li <longli@microsoft.com>
-Cc:     Wei Hu <weh@microsoft.com>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        Ajay Sharma <sharmaajay@microsoft.com>,
-        "leon@kernel.org" <leon@kernel.org>,
-        KY Srinivasan <kys@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        "wei.liu@kernel.org" <wei.liu@kernel.org>,
-        Dexuan Cui <decui@microsoft.com>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "edumazet@google.com" <edumazet@google.com>,
-        "kuba@kernel.org" <kuba@kernel.org>,
-        "pabeni@redhat.com" <pabeni@redhat.com>,
-        vkuznets <vkuznets@redhat.com>,
-        "ssengar@linux.microsoft.com" <ssengar@linux.microsoft.com>,
-        "shradhagupta@linux.microsoft.com" <shradhagupta@linux.microsoft.com>
-Subject: Re: [PATCH v4 1/1] RDMA/mana_ib: Add EQ interrupt support to mana ib
- driver.
-Message-ID: <ZMmZO9IPmXNEB49t@ziepe.ca>
-References: <20230728170749.1888588-1-weh@microsoft.com>
- <ZMP+MH7f/Vk9/J0b@ziepe.ca>
- <PH7PR21MB3263C134979B17F1C53D3E8DCE06A@PH7PR21MB3263.namprd21.prod.outlook.com>
- <ZMQCuQU+b/Ai9HcU@ziepe.ca>
- <PH7PR21MB326396D1782613FE406F616ACE06A@PH7PR21MB3263.namprd21.prod.outlook.com>
- <ZMQLW4elDj0vV1ld@ziepe.ca>
- <PH7PR21MB326367A455B78A1F230C5C34CE0AA@PH7PR21MB3263.namprd21.prod.outlook.com>
+        with ESMTP id S229628AbjHBA0p (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 1 Aug 2023 20:26:45 -0400
+Received: from zju.edu.cn (spam.zju.edu.cn [61.164.42.155])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 4FC972113;
+        Tue,  1 Aug 2023 17:26:42 -0700 (PDT)
+Received: from linma$zju.edu.cn ( [10.181.233.175] ) by
+ ajax-webmail-mail-app3 (Coremail) ; Wed, 2 Aug 2023 08:26:06 +0800
+ (GMT+08:00)
+X-Originating-IP: [10.181.233.175]
+Date:   Wed, 2 Aug 2023 08:26:06 +0800 (GMT+08:00)
+X-CM-HeaderCharset: UTF-8
+From:   "Lin Ma" <linma@zju.edu.cn>
+To:     "Jakub Kicinski" <kuba@kernel.org>
+Cc:     "Leon Romanovsky" <leon@kernel.org>, davem@davemloft.net,
+        edumazet@google.com, pabeni@redhat.com, fw@strlen.de,
+        yang.lee@linux.alibaba.com, jgg@ziepe.ca, markzhang@nvidia.com,
+        phaddad@nvidia.com, yuancan@huawei.com, ohartoov@nvidia.com,
+        chenzhongjin@huawei.com, aharonl@nvidia.com,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-rdma@vger.kernel.org
+Subject: Re: [PATCH net v1 1/2] netlink: let len field used to parse
+ type-not-care nested attrs
+X-Priority: 3
+X-Mailer: Coremail Webmail Server Version XT5.0.14 build 20220622(41e5976f)
+ Copyright (c) 2002-2023 www.mailtech.cn
+ mispb-4df6dc2c-e274-4d1c-b502-72c5c3dfa9ce-zj.edu.cn
+In-Reply-To: <20230801105726.1af6a7e1@kernel.org>
+References: <20230731121247.3972783-1-linma@zju.edu.cn>
+ <20230731120326.6bdd5bf9@kernel.org> <20230801081117.GA53714@unreal>
+ <20230801105726.1af6a7e1@kernel.org>
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=UTF-8
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <PH7PR21MB326367A455B78A1F230C5C34CE0AA@PH7PR21MB3263.namprd21.prod.outlook.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+Message-ID: <385b9766.f63d7.189b3a33c6b.Coremail.linma@zju.edu.cn>
+X-Coremail-Locale: zh_CN
+X-CM-TRANSID: cC_KCgC3v5+foslkxqYjDA--.43974W
+X-CM-SenderInfo: qtrwiiyqvtljo62m3hxhgxhubq/1tbiAwUPEmTIYfoZ3QABsp
+X-Coremail-Antispam: 1Ur529EdanIXcx71UUUUU7IcSsGvfJ3iIAIbVAYjsxI4VWxJw
+        CS07vEb4IE77IF4wCS07vE1I0E4x80FVAKz4kxMIAIbVAFxVCaYxvI4VCIwcAKzIAtYxBI
+        daVFxhVjvjDU=
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -96,20 +58,25 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Tue, Aug 01, 2023 at 07:06:57PM +0000, Long Li wrote:
-
-> The driver interrupt code limits the CPU processing time of each EQ
-> by reading a small batch of EQEs in this interrupt. It guarantees
-> all the EQs are checked on this CPU, and limits the interrupt
-> processing time for any given EQ. In this way, a bad EQ (which is
-> stormed by a bad user doing unreasonable re-arming on the CQ) can't
-> storm other EQs on this CPU.
-
-Of course it can, the bad use just creates a million EQs and pushes a
-bit of work through them constantly. How is that really any different
-from pushing more EQEs into a single EQ?
-
-And how does your EQ multiplexing work anyhow? Do you poll every EQ on
-every interrupt? That itself is a DOS vector.
-
-Jason
+SGVsbG8gdGhlcmUsCgo+IEZvciB0aGUgbG9uZ2VzdCB0aW1lIHRoZXJlIHdhcyBubyBkb2NzIG9y
+IGJlc3QgcHJhY3RpY2VzIGZvciBuZXRsaW5rLgo+IFdlIGhhdmUgdGhlIGRvY3VtZW50YXRpb24g
+YW5kIG1vcmUgaW5mcmFzdHJ1Y3R1cmUgaW4gcGxhY2Ugbm93Lgo+IEkgaG9wZSBpZiB5b3Ugd3Jv
+dGUgdGhlIGNvZGUgdG9kYXkgdGhlIGRpc3RpbmN0aW9uIHdvdWxkIGhhdmUgYmVlbgo+IGNsZWFy
+ZXIuCj4gCj4gSWYgd2Ugc3RhcnQgYWRkaW5nIEFQSXMgZm9yIHZhcmlvdXMgb25lLSh0d28/KS1v
+ZmZzIGZyb20gdGhlIHBhc3QKPiB3ZSdsbCBuZXZlciBkaWcgb3Vyc2VsdmVzIG91dCBvZiB0aGUg
+Im5vIGlkZWEgd2hhdCdzIHRoZSBub3JtYWwgdXNlCj4gb2YgdGhlc2UgQVBJcyIgaG9sZS4uCgpU
+aGlzIGlzIHRydWUuIEFjdHVhbGx5LCB0aG9zZSBjaGVjayBtaXNzaW5nIGNvZGVzIGFyZSBtb3N0
+bHkgb2xkIGNvZGVzIGFuZAptb2Rlcm4gbmV0bGluayBjb25zdW1lcnMgd2lsbCBjaG9vc2UgdGhl
+IGdlbmVyYWwgbmV0bGluayBpbnRlcmZhY2Ugd2hpY2gKY2FuIGF1dG9tYXRpY2FsbHkgZ2V0IGF0
+dHJpYnV0ZXMgZGVzY3JpcHRpb24gZnJvbSBZQU1MIGFuZCBuZXZlciBuZWVkIHRvCmRvIHRoaW5n
+cyBsaWtlICptYW51YWwgcGFyc2luZyogYW55bW9yZS4KCkhvd2V2ZXIsIGFjY29yZGluZyB0byBt
+eSBwcmFjdGljZSBpbiBhdWRpdGluZyB0aGUgY29kZSwgSSBmb3VuZCB0aGVyZSBhcmUKc29tZSBn
+ZW5lcmFsIG5ldGxpbmsgaW50ZXJmYWNlIHVzZXJzIGNvbmZyb250IG90aGVyIGlzc3VlcyBsaWtl
+IGNob29zaW5nCkdFTkxfRE9OVF9WQUxJREFURV9TVFJJQ1Qgd2l0aG91dCB0aGlua2luZyBvciBm
+b3JnZXR0aW5nIGFkZCBhIG5ldwpubGFfcG9saWN5IHdoZW4gaW50cm9kdWNpbmcgbmV3IGF0dHJp
+YnV0ZXMuCgpUbyB0aGlzIGVuZCwgSSdtIGN1cnJlbnRseSB3cml0aW5nIGEgc2ltcGxlIGRvY3Vt
+ZW50YXRpb24gYWJvdXQgTmV0bGluawppbnRlcmZhY2UgYmVzdCBwcmFjdGljZXMgZm9yIHRoZSBr
+ZXJuZWwgZGV2ZWxvcGVyICh0aGUgbmV3bHkgY29taW5nIGRvY3MKYXJlIG1vc3RseSBhYm91dCB0
+aGUgdXNlciBBUEkgcGFydCkuIAoKSSBndWVzcyBJIHdpbGwgcHV0IHRoaXMgZG9jIGluIERvY3Vt
+ZW50YXRpb24vc3RhZ2luZyA6KQphbmQgSSB3aWxsIGZpbmlzaCB0aGUgZHJhZnQgQVNBUC4KClRo
+YW5rcwpMaW4=
