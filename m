@@ -2,65 +2,64 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B6AC76C9AA
-	for <lists+linux-rdma@lfdr.de>; Wed,  2 Aug 2023 11:44:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1BEAE76C9AD
+	for <lists+linux-rdma@lfdr.de>; Wed,  2 Aug 2023 11:44:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232146AbjHBJoX (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 2 Aug 2023 05:44:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48766 "EHLO
+        id S232285AbjHBJob (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 2 Aug 2023 05:44:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48822 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231868AbjHBJoW (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 2 Aug 2023 05:44:22 -0400
-Received: from mail-pg1-x532.google.com (mail-pg1-x532.google.com [IPv6:2607:f8b0:4864:20::532])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B2B6E5C
-        for <linux-rdma@vger.kernel.org>; Wed,  2 Aug 2023 02:44:21 -0700 (PDT)
-Received: by mail-pg1-x532.google.com with SMTP id 41be03b00d2f7-56487a5401bso30827a12.3
-        for <linux-rdma@vger.kernel.org>; Wed, 02 Aug 2023 02:44:21 -0700 (PDT)
+        with ESMTP id S231382AbjHBJo1 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 2 Aug 2023 05:44:27 -0400
+Received: from mail-oo1-xc2a.google.com (mail-oo1-xc2a.google.com [IPv6:2607:f8b0:4864:20::c2a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D3A911BFD
+        for <linux-rdma@vger.kernel.org>; Wed,  2 Aug 2023 02:44:23 -0700 (PDT)
+Received: by mail-oo1-xc2a.google.com with SMTP id 006d021491bc7-56c7eb17945so2704984eaf.2
+        for <linux-rdma@vger.kernel.org>; Wed, 02 Aug 2023 02:44:23 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google; t=1690969460; x=1691574260;
+        d=broadcom.com; s=google; t=1690969463; x=1691574263;
         h=references:in-reply-to:message-id:date:subject:cc:to:from:from:to
          :cc:subject:date:message-id:reply-to;
-        bh=RK5NOuvCbXHxZ9vgKJghGyJRNfx7i3NkG2Mn7R4j0Pg=;
-        b=AMy5LD5y5owfnuQ33qyjyD9qUqnT6G4WY25R+veIs+U63N2u/UBsS4FHOAU9k74xpO
-         C0J2KxRSU4+S5Q4IDowW9Q4M7lDapmFNe3NWkqx16rN2qhyewldp49Ty9YifD4w9UfqM
-         hwtCud92UiqgzuoB020az2vfFKNwmzyAAkAcA=
+        bh=+QN3+M8WXFSAMcffrID+aHf8PDuD0JjAUphGpayU+XU=;
+        b=f6SEsb+VZIVXjT+Zk2R0+KKRMkvaFEVR9WhXkfSC8pPu4TLHswa2VWVww9d8PB0Irx
+         RN+Z6ElrB+ZJn3mv4wxutufHzzTUXa+wB1hgzYpDD+XKlHhn5eICI+ROizJv14oLOpm0
+         W+WWjRdocXpoAjbOLdktSn0cj/uo+gSRe0pBs=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690969460; x=1691574260;
+        d=1e100.net; s=20221208; t=1690969463; x=1691574263;
         h=references:in-reply-to:message-id:date:subject:cc:to:from
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=RK5NOuvCbXHxZ9vgKJghGyJRNfx7i3NkG2Mn7R4j0Pg=;
-        b=Fqg3onLgXnS4387nFtH3Xh/NSCqTAXNh+P55G7W2vleTN85sjfe1Uqk6DOZ3SGHs7l
-         eeaFupyQyOglhafOPhlHUj2VtbHz32ndaOoadCLnbbZjDq2N5LVflTxu4Oxan5a4Yhw6
-         gfSo8x5iXMv/buI5BwskFdTO4bCUnf1TsMQTxaMYWm7uhbsp5Ct7xbL4A1yQOSmvyOt3
-         OBA4Gm1ZD95fv3Sh9mljHM/kdVFG/2sg/gF8846w+0HRo6bUcyjrqL4moJ31faBKWPd+
-         fmp+dBYreKz97zpfqkVeR412MRFF+X41PGkK6Pblu1Vq0Q4MvXaa/N3YVGlusgnGYXlZ
-         49Qw==
-X-Gm-Message-State: ABy/qLaAm8GBTV60stXfjM5t2E4Z/RTSo34wVuJ5XV7V7wd5ewz+9j9B
-        DsSjAs5cU5V0Kd65KkzaQoCX2Q==
-X-Google-Smtp-Source: APBJJlFW51McUJi+DhWCsTJvIAuT2XbXrtiUkLTLzHiH5yIXwJKxFcFwDkI8M6SXQGfl3N6gtFxXBw==
-X-Received: by 2002:a17:90b:17c5:b0:268:4807:eab9 with SMTP id me5-20020a17090b17c500b002684807eab9mr12659002pjb.16.1690969460366;
-        Wed, 02 Aug 2023 02:44:20 -0700 (PDT)
+        bh=+QN3+M8WXFSAMcffrID+aHf8PDuD0JjAUphGpayU+XU=;
+        b=O50BFFUuK3vbGXzqa2DWAP2fKb8NmXqwFTYPmAN9lT4LN4EZ6xPJPep3aqmqNWX+M4
+         jrVV7vpMbPrsZh/esGm3A8bRaJv18Ca4IsHAA9O2qb1d3tmtgnWrEXEwY+7Oeqsjchvd
+         5QtZWDGaDvxTKHO2lbVIx+WWlB2UuWdlEK0HrjawhZKsiivkgRoLr9aKt81vJy4DFpLP
+         cZjqzr7sIGXfrVEtcarxsvtRtM2VMIStyrJAatabSzMXtXr56yqiFTPeIX97qbxt+tfe
+         6UZ3PxPn7hSmfaSshhho+FWhudpptq4KJyKy84ajVWIUMCN729TIi2HaujYIgF8ql38m
+         Fj5g==
+X-Gm-Message-State: ABy/qLZXQ8EjCbH0NJtx7jQBxXjPXg+sQXQixtnaw7w/3KQcIdoDPSmS
+        qGBx+AN239izcRnlSQFRzQm0Ww==
+X-Google-Smtp-Source: APBJJlGPk6C1NzP7sFlDgJA5HZgm8FCUzx/bYG7Y5MmrQT5GMbQOAToOteojIIrjSeu5nV1J5vDhGw==
+X-Received: by 2002:a05:6808:13c9:b0:3a4:225d:8135 with SMTP id d9-20020a05680813c900b003a4225d8135mr18802539oiw.31.1690969463062;
+        Wed, 02 Aug 2023 02:44:23 -0700 (PDT)
 Received: from dhcp-10-192-206-197.iig.avagotech.net.net ([192.19.234.250])
-        by smtp.gmail.com with ESMTPSA id 5-20020a17090a000500b00263dfe9b972sm848790pja.0.2023.08.02.02.44.17
+        by smtp.gmail.com with ESMTPSA id 5-20020a17090a000500b00263dfe9b972sm848790pja.0.2023.08.02.02.44.20
         (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 02 Aug 2023 02:44:19 -0700 (PDT)
+        Wed, 02 Aug 2023 02:44:22 -0700 (PDT)
 From:   Selvin Xavier <selvin.xavier@broadcom.com>
 To:     jgg@ziepe.ca, leon@kernel.org
 Cc:     linux-rdma@vger.kernel.org, andrew.gospodarek@broadcom.com,
         Kalesh AP <kalesh-anakkur.purayil@broadcom.com>,
-        Saravanan Vajravel <saravanan.vajravel@broadcom.com>,
         Selvin Xavier <selvin.xavier@broadcom.com>
-Subject: [PATCH for-next 1/6] RDMA/bnxt_re: Fix max_qp count for virtual functions
-Date:   Wed,  2 Aug 2023 02:32:34 -0700
-Message-Id: <1690968759-9142-2-git-send-email-selvin.xavier@broadcom.com>
+Subject: [PATCH for-next 2/6] RDMA/bnxt_re: Remove a redundant flag
+Date:   Wed,  2 Aug 2023 02:32:35 -0700
+Message-Id: <1690968759-9142-3-git-send-email-selvin.xavier@broadcom.com>
 X-Mailer: git-send-email 2.5.5
 In-Reply-To: <1690968759-9142-1-git-send-email-selvin.xavier@broadcom.com>
 References: <1690968759-9142-1-git-send-email-selvin.xavier@broadcom.com>
 Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
-        boundary="00000000000008fa4f0601ed82b6"
+        boundary="00000000000030eaf70601ed82a4"
 X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        MIME_HEADER_CTYPE_ONLY,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE,
+        MIME_HEADER_CTYPE_ONLY,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,
         T_SCC_BODY_TEXT_LINE,T_TVD_MIME_NO_HEADERS,URIBL_BLOCKED autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -69,93 +68,103 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
---00000000000008fa4f0601ed82b6
+--00000000000030eaf70601ed82a4
 
 From: Kalesh AP <kalesh-anakkur.purayil@broadcom.com>
 
-Driver has not accounted QP1 for virtual functions
-when fetching device attributes and hence max_qp
-count is one less than active_qp count. Fixed driver
-so that it counts QP1 for virtual functions as well
-while fetching device attributes
+After the cited commit, BNXT_RE_FLAG_GOT_MSIX is redundant.
+Remove it.
 
-Fixes: ccd9d0d3dffc ("RDMA/bnxt_re: Enable RoCE on virtual functions")
-Signed-off-by: Saravanan Vajravel <saravanan.vajravel@broadcom.com>
+Fixes: 303432211324 ("bnxt_en: Remove runtime interrupt vector allocation")
 Signed-off-by: Kalesh AP <kalesh-anakkur.purayil@broadcom.com>
 Signed-off-by: Selvin Xavier <selvin.xavier@broadcom.com>
 ---
- drivers/infiniband/hw/bnxt_re/main.c     | 6 ++----
- drivers/infiniband/hw/bnxt_re/qplib_sp.c | 7 +++----
- drivers/infiniband/hw/bnxt_re/qplib_sp.h | 2 +-
- 3 files changed, 6 insertions(+), 9 deletions(-)
+ drivers/infiniband/hw/bnxt_re/bnxt_re.h    | 1 -
+ drivers/infiniband/hw/bnxt_re/main.c       | 5 ++---
+ drivers/infiniband/hw/bnxt_re/qplib_rcfw.c | 3 ++-
+ drivers/infiniband/hw/bnxt_re/qplib_sp.c   | 6 ++++--
+ 4 files changed, 8 insertions(+), 7 deletions(-)
 
+diff --git a/drivers/infiniband/hw/bnxt_re/bnxt_re.h b/drivers/infiniband/hw/bnxt_re/bnxt_re.h
+index 03a1325..9fd9849 100644
+--- a/drivers/infiniband/hw/bnxt_re/bnxt_re.h
++++ b/drivers/infiniband/hw/bnxt_re/bnxt_re.h
+@@ -140,7 +140,6 @@ struct bnxt_re_dev {
+ 	struct list_head		list;
+ 	unsigned long			flags;
+ #define BNXT_RE_FLAG_NETDEV_REGISTERED		0
+-#define BNXT_RE_FLAG_GOT_MSIX			2
+ #define BNXT_RE_FLAG_HAVE_L2_REF		3
+ #define BNXT_RE_FLAG_RCFW_CHANNEL_EN		4
+ #define BNXT_RE_FLAG_QOS_WORK_REG		5
 diff --git a/drivers/infiniband/hw/bnxt_re/main.c b/drivers/infiniband/hw/bnxt_re/main.c
-index d658e67..bbda694 100644
+index bbda694..2fe47b3 100644
 --- a/drivers/infiniband/hw/bnxt_re/main.c
 +++ b/drivers/infiniband/hw/bnxt_re/main.c
-@@ -1152,8 +1152,7 @@ static int bnxt_re_alloc_res(struct bnxt_re_dev *rdev)
- 
- 	/* Configure and allocate resources for qplib */
- 	rdev->qplib_res.rcfw = &rdev->rcfw;
--	rc = bnxt_qplib_get_dev_attr(&rdev->rcfw, &rdev->dev_attr,
--				     rdev->is_virtfn);
-+	rc = bnxt_qplib_get_dev_attr(&rdev->rcfw, &rdev->dev_attr);
- 	if (rc)
- 		goto fail;
- 
-@@ -1531,8 +1530,7 @@ static int bnxt_re_dev_init(struct bnxt_re_dev *rdev, u8 wqe_mode)
- 			rdev->pacing.dbr_pacing = false;
- 		}
+@@ -1422,8 +1422,8 @@ static void bnxt_re_dev_uninit(struct bnxt_re_dev *rdev)
+ 		bnxt_re_net_ring_free(rdev, rdev->rcfw.creq.ring_id, type);
+ 		bnxt_qplib_free_rcfw_channel(&rdev->rcfw);
  	}
--	rc = bnxt_qplib_get_dev_attr(&rdev->rcfw, &rdev->dev_attr,
--				     rdev->is_virtfn);
-+	rc = bnxt_qplib_get_dev_attr(&rdev->rcfw, &rdev->dev_attr);
- 	if (rc)
- 		goto disable_rcfw;
+-	if (test_and_clear_bit(BNXT_RE_FLAG_GOT_MSIX, &rdev->flags))
+-		rdev->num_msix = 0;
++
++	rdev->num_msix = 0;
  
+ 	if (rdev->pacing.dbr_pacing)
+ 		bnxt_re_deinitialize_dbr_pacing(rdev);
+@@ -1480,7 +1480,6 @@ static int bnxt_re_dev_init(struct bnxt_re_dev *rdev, u8 wqe_mode)
+ 	ibdev_dbg(&rdev->ibdev, "Got %d MSI-X vectors\n",
+ 		  rdev->en_dev->ulp_tbl->msix_requested);
+ 	rdev->num_msix = rdev->en_dev->ulp_tbl->msix_requested;
+-	set_bit(BNXT_RE_FLAG_GOT_MSIX, &rdev->flags);
+ 
+ 	bnxt_re_query_hwrm_intf_version(rdev);
+ 
+diff --git a/drivers/infiniband/hw/bnxt_re/qplib_rcfw.c b/drivers/infiniband/hw/bnxt_re/qplib_rcfw.c
+index b30e66b..4842a41 100644
+--- a/drivers/infiniband/hw/bnxt_re/qplib_rcfw.c
++++ b/drivers/infiniband/hw/bnxt_re/qplib_rcfw.c
+@@ -335,7 +335,8 @@ static int __send_message(struct bnxt_qplib_rcfw *rcfw,
+ 					  cpu_to_le64(sbuf->dma_addr));
+ 		__set_cmdq_base_resp_size(msg->req, msg->req_sz,
+ 					  ALIGN(sbuf->size,
+-						BNXT_QPLIB_CMDQE_UNITS));
++						BNXT_QPLIB_CMDQE_UNITS) /
++						BNXT_QPLIB_CMDQE_UNITS);
+ 	}
+ 
+ 	preq = (u8 *)msg->req;
 diff --git a/drivers/infiniband/hw/bnxt_re/qplib_sp.c b/drivers/infiniband/hw/bnxt_re/qplib_sp.c
-index 7e57faa..b77928a 100644
+index b77928a..89acb66 100644
 --- a/drivers/infiniband/hw/bnxt_re/qplib_sp.c
 +++ b/drivers/infiniband/hw/bnxt_re/qplib_sp.c
-@@ -89,7 +89,7 @@ static void bnxt_qplib_query_version(struct bnxt_qplib_rcfw *rcfw,
- }
- 
- int bnxt_qplib_get_dev_attr(struct bnxt_qplib_rcfw *rcfw,
--			    struct bnxt_qplib_dev_attr *attr, bool vf)
-+			    struct bnxt_qplib_dev_attr *attr)
- {
- 	struct creq_query_func_resp resp = {};
+@@ -801,9 +801,11 @@ int bnxt_qplib_qext_stat(struct bnxt_qplib_rcfw *rcfw, u32 fid,
+ 	struct cmdq_query_roce_stats_ext req = {};
  	struct bnxt_qplib_cmdqmsg msg = {};
-@@ -121,9 +121,8 @@ int bnxt_qplib_get_dev_attr(struct bnxt_qplib_rcfw *rcfw,
+ 	struct bnxt_qplib_rcfw_sbuf *sbuf;
++	u32 size;
+ 	int rc;
  
- 	/* Extract the context from the side buffer */
- 	attr->max_qp = le32_to_cpu(sb->max_qp);
--	/* max_qp value reported by FW for PF doesn't include the QP1 for PF */
--	if (!vf)
--		attr->max_qp += 1;
-+	/* max_qp value reported by FW doesn't include the QP1 */
-+	attr->max_qp += 1;
- 	attr->max_qp_rd_atom =
- 		sb->max_qp_rd_atom > BNXT_QPLIB_MAX_OUT_RD_ATOM ?
- 		BNXT_QPLIB_MAX_OUT_RD_ATOM : sb->max_qp_rd_atom;
-diff --git a/drivers/infiniband/hw/bnxt_re/qplib_sp.h b/drivers/infiniband/hw/bnxt_re/qplib_sp.h
-index 264ef3c..d33c78b 100644
---- a/drivers/infiniband/hw/bnxt_re/qplib_sp.h
-+++ b/drivers/infiniband/hw/bnxt_re/qplib_sp.h
-@@ -322,7 +322,7 @@ int bnxt_qplib_update_sgid(struct bnxt_qplib_sgid_tbl *sgid_tbl,
- 			   struct bnxt_qplib_gid *gid, u16 gid_idx,
- 			   const u8 *smac);
- int bnxt_qplib_get_dev_attr(struct bnxt_qplib_rcfw *rcfw,
--			    struct bnxt_qplib_dev_attr *attr, bool vf);
-+			    struct bnxt_qplib_dev_attr *attr);
- int bnxt_qplib_set_func_resources(struct bnxt_qplib_res *res,
- 				  struct bnxt_qplib_rcfw *rcfw,
- 				  struct bnxt_qplib_ctx *ctx);
+-	sbuf = bnxt_qplib_rcfw_alloc_sbuf(rcfw, sizeof(*sb));
++	size = ALIGN(sizeof(*sb), BNXT_QPLIB_CMDQE_UNITS);
++	sbuf = bnxt_qplib_rcfw_alloc_sbuf(rcfw, size);
+ 	if (!sbuf) {
+ 		dev_err(&rcfw->pdev->dev,
+ 			"SP: QUERY_ROCE_STATS_EXT alloc sb failed");
+@@ -814,7 +816,7 @@ int bnxt_qplib_qext_stat(struct bnxt_qplib_rcfw *rcfw, u32 fid,
+ 				 CMDQ_QUERY_ROCE_STATS_EXT_OPCODE_QUERY_ROCE_STATS,
+ 				 sizeof(req));
+ 
+-	req.resp_size = ALIGN(sizeof(*sb), BNXT_QPLIB_CMDQE_UNITS);
++	req.resp_size = size / BNXT_QPLIB_CMDQE_UNITS;
+ 	req.resp_addr = cpu_to_le64(sbuf->dma_addr);
+ 	req.function_id = cpu_to_le32(fid);
+ 	req.flags = cpu_to_le16(CMDQ_QUERY_ROCE_STATS_EXT_FLAGS_FUNCTION_ID);
 -- 
 2.5.5
 
 
---00000000000008fa4f0601ed82b6
+--00000000000030eaf70601ed82a4
 Content-Type: application/pkcs7-signature; name="smime.p7s"
 Content-Transfer-Encoding: base64
 Content-Disposition: attachment; filename="smime.p7s"
@@ -226,14 +235,14 @@ j1Ze9ndr+YDXPpCymOsynmmw0ErHZGGW1OmMpAEt0A+613glWCURLDlP8HONi1wnINV6aDiEf0ad
 9NMGxDsp+YWiRXD3txfo2OMQbpIxM90QfhKKacX8t1J1oAAWxDrLVTJBXBNvz5tr+D1sYwuye93r
 hImmkM1unboxggJtMIICaQIBATBrMFsxCzAJBgNVBAYTAkJFMRkwFwYDVQQKExBHbG9iYWxTaWdu
 IG52LXNhMTEwLwYDVQQDEyhHbG9iYWxTaWduIEdDQyBSMyBQZXJzb25hbFNpZ24gMiBDQSAyMDIw
-Agxy+Cu4x/7lM0zxY7cwDQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIEIAHlxqFV7ubq
-jW75S4zRtQRji7DV73PjzSkyh+VH/YpaMBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZI
-hvcNAQkFMQ8XDTIzMDgwMjA5NDQyMFowaQYJKoZIhvcNAQkPMVwwWjALBglghkgBZQMEASowCwYJ
+Agxy+Cu4x/7lM0zxY7cwDQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIEIDuP8IttzMp/
+O/SHXZH26P5rDZLmj+S850mtBLkVPjqlMBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZI
+hvcNAQkFMQ8XDTIzMDgwMjA5NDQyM1owaQYJKoZIhvcNAQkPMVwwWjALBglghkgBZQMEASowCwYJ
 YIZIAWUDBAEWMAsGCWCGSAFlAwQBAjAKBggqhkiG9w0DBzALBgkqhkiG9w0BAQowCwYJKoZIhvcN
-AQEHMAsGCWCGSAFlAwQCATANBgkqhkiG9w0BAQEFAASCAQAmN4nvHRynND7HYnJ5kbBaVraGhzvp
-zVtaKTbsldhIxVLZEVS2/u96tgmKD16fvVukUQAOF9kBeTzGwmilFuPAzQSupA6OGBqNZQvToGPG
-PlelbmVpfDUECUcbOra25UvBu+lGC5JhQKUX4mokSeP69otbOBL/YLUy5DcHmwdog8YurjYKY8nw
-8rssDIylOek9ebn35sxPwiKI5x4Tw6i8RSAwM6wYJX4ssjDGZepbCiV+BOmqCWxpkw/5MD/rsGEh
-EdOjbzMEYrWwqYPUUPvG4js5M1ve1ZoFK1M/z3uGYXpe/YVTe4spydGI+JrYmiLIh69WIOTQxRQx
-DyTrKGtw
---00000000000008fa4f0601ed82b6--
+AQEHMAsGCWCGSAFlAwQCATANBgkqhkiG9w0BAQEFAASCAQCg6Yq5p5FUPIth+JiR2uANDKplBmvI
+IcQ43YQHSa7YJgQeZ2xcrZ7+6OgS9KHP0ii6fGEijuFBC/JyjTgLjz7FXBOpiz2YLCnetvx77Vnz
+tGlYkkYZEeXNrI/rBKhsB9vhZj/UmGr/sggEj9V11gjUGl71i6C4IJMMNi/XbCiJkypLwJBU303c
+BR+euFTVgdSwFifia/25mcCXF3oAzHNEHhzNSET8v5i4ltRmZub30LHzMDFJ47++g81UUjDJ0A/m
+vp0ZP+5KZpC51V8B4McX0hhwckkvQ8pPi85WNzOm41KBwvyRVtrX3c3xI9KSJuaJ3frjCWICcAR7
+efAeXvmg
+--00000000000030eaf70601ed82a4--
