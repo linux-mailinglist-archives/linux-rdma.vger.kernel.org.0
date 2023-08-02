@@ -2,60 +2,48 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EE99076C1A8
-	for <lists+linux-rdma@lfdr.de>; Wed,  2 Aug 2023 02:53:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A0A4076C2DF
+	for <lists+linux-rdma@lfdr.de>; Wed,  2 Aug 2023 04:27:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229535AbjHBAxm (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 1 Aug 2023 20:53:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54580 "EHLO
+        id S230180AbjHBC1v (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 1 Aug 2023 22:27:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35950 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229485AbjHBAxl (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 1 Aug 2023 20:53:41 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C63A1E52;
-        Tue,  1 Aug 2023 17:53:40 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 5A10D60C25;
-        Wed,  2 Aug 2023 00:53:40 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3DD78C433C8;
-        Wed,  2 Aug 2023 00:53:39 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1690937619;
-        bh=qrzmpZi6hydFeKd9V3EcDQx3aotLvdeCTmPFzSYgycE=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=M6fe6GkBHuOJCyzFdBx46ssTHZwe+rkNZ+m4kl7Bhti+gb5se65t7trtEZOGbu7wn
-         kOkM5oQYETrtpaxCQcenta6yVPWetAFSx6kUjOvLabjYKCwtcT2E19CvQwbI0vQb9o
-         P6l4HOKmuJPA5rTey7nOojgMJ7kThuT/j8U1GrHPxfuN4DDjIHZQeHASxXcz0yKatJ
-         oHZKksU6bz0D9ywUbWzaWMQ/14Y9b9wcXSPz29q5jcPTqBqv2ZAM9+2dbMNUgTtoJN
-         hPjcv1P9swQiPtWGdRzy8d3aSSVhZfE8d3x9PNSF1qOApjiSuHKUOfS3+Fs1j2JUkd
-         gW3a+p0B78LTw==
-Date:   Tue, 1 Aug 2023 17:53:38 -0700
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     "Lin Ma" <linma@zju.edu.cn>
-Cc:     "Leon Romanovsky" <leon@kernel.org>, davem@davemloft.net,
-        edumazet@google.com, pabeni@redhat.com, fw@strlen.de,
-        yang.lee@linux.alibaba.com, jgg@ziepe.ca, markzhang@nvidia.com,
-        phaddad@nvidia.com, yuancan@huawei.com, ohartoov@nvidia.com,
-        chenzhongjin@huawei.com, aharonl@nvidia.com,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-rdma@vger.kernel.org
-Subject: Re: [PATCH net v1 1/2] netlink: let len field used to parse
- type-not-care nested attrs
-Message-ID: <20230801175338.74bc39c2@kernel.org>
-In-Reply-To: <385b9766.f63d7.189b3a33c6b.Coremail.linma@zju.edu.cn>
-References: <20230731121247.3972783-1-linma@zju.edu.cn>
-        <20230731120326.6bdd5bf9@kernel.org>
-        <20230801081117.GA53714@unreal>
-        <20230801105726.1af6a7e1@kernel.org>
-        <385b9766.f63d7.189b3a33c6b.Coremail.linma@zju.edu.cn>
+        with ESMTP id S229696AbjHBC1u (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 1 Aug 2023 22:27:50 -0400
+Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2FADF213E;
+        Tue,  1 Aug 2023 19:27:50 -0700 (PDT)
+Received: from kwepemi500008.china.huawei.com (unknown [172.30.72.57])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4RFwlp5XB4zNmLN;
+        Wed,  2 Aug 2023 10:24:22 +0800 (CST)
+Received: from [10.67.109.254] (10.67.109.254) by
+ kwepemi500008.china.huawei.com (7.221.188.139) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.27; Wed, 2 Aug 2023 10:27:47 +0800
+Message-ID: <dc0cf96a-bd1d-6e00-a074-98029c5d8e3b@huawei.com>
+Date:   Wed, 2 Aug 2023 10:27:47 +0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.2.0
+Subject: Re: [PATCH net-next] net/mlx4: remove many unnecessary NULL values
+Content-Language: en-US
+To:     Simon Horman <horms@kernel.org>
+CC:     <tariqt@nvidia.com>, <davem@davemloft.net>, <edumazet@google.com>,
+        <kuba@kernel.org>, <pabeni@redhat.com>,
+        <linux-rdma@vger.kernel.org>, <netdev@vger.kernel.org>
+References: <20230801123422.374541-1-ruanjinjie@huawei.com>
+ <ZMknUZudTKGwsEpG@kernel.org>
+From:   Ruan Jinjie <ruanjinjie@huawei.com>
+In-Reply-To: <ZMknUZudTKGwsEpG@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+X-Originating-IP: [10.67.109.254]
+X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
+ kwepemi500008.china.huawei.com (7.221.188.139)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -64,21 +52,50 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Wed, 2 Aug 2023 08:26:06 +0800 (GMT+08:00) Lin Ma wrote:
-> This is true. Actually, those check missing codes are mostly old codes and
-> modern netlink consumers will choose the general netlink interface which
-> can automatically get attributes description from YAML and never need to
-> do things like *manual parsing* anymore.
-> 
-> However, according to my practice in auditing the code, I found there are
-> some general netlink interface users confront other issues like choosing
-> GENL_DONT_VALIDATE_STRICT without thinking or forgetting add a new
-> nla_policy when introducing new attributes.
-> 
-> To this end, I'm currently writing a simple documentation about Netlink
-> interface best practices for the kernel developer (the newly coming docs
-> are mostly about the user API part). 
 
-Keep in mind that even most of the genetlink stuff is pretty old
-at this stage. ethtool is probably the first reasonably modern family.
-But do send docs, we'll review and go from there :)
+
+On 2023/8/1 23:40, Simon Horman wrote:
+> On Tue, Aug 01, 2023 at 08:34:22PM +0800, Ruan Jinjie wrote:
+>> Ther are many pointers assigned first, which need not to be initialized, so
+>> remove the NULL assignment.
+> 
+> How about something like:
+> 
+> Don't initialise local variables to NULL which are always
+> set to other values elsewhere in the same function.
+
+I think these NULL assignments can also be removed.
+
+> 
+>> Signed-off-by: Ruan Jinjie <ruanjinjie@huawei.com>
+> 
+> ...
+> 
+>> diff --git a/drivers/net/ethernet/mellanox/mlx4/main.c b/drivers/net/ethernet/mellanox/mlx4/main.c
+> 
+> ...
+> 
+>> @@ -2294,8 +2294,8 @@ static int mlx4_init_fw(struct mlx4_dev *dev)
+>>  static int mlx4_init_hca(struct mlx4_dev *dev)
+>>  {
+>>  	struct mlx4_priv	  *priv = mlx4_priv(dev);
+>> -	struct mlx4_init_hca_param *init_hca = NULL;
+>> -	struct mlx4_dev_cap	  *dev_cap = NULL;
+>> +	struct mlx4_init_hca_param *init_hca;
+>> +	struct mlx4_dev_cap	  *dev_cap;
+>>  	struct mlx4_adapter	   adapter;
+>>  	struct mlx4_profile	   profile;
+>>  	u64 icm_size;
+> 
+> This last hunk doesn't seem correct, as it doesn't
+> seem these aren't always initialised elsewhere in the function
+> before being passed to kfree().
+
+Yes, this kind of situation the NULL assignments should not be removed,I'll
+reserch it more.
+
+> 
+>> -- 
+>> 2.34.1
+>>
+>>
