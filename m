@@ -2,105 +2,160 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7761976E3B8
+	by mail.lfdr.de (Postfix) with ESMTP id C101D76E3B9
 	for <lists+linux-rdma@lfdr.de>; Thu,  3 Aug 2023 10:57:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234875AbjHCI5K (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 3 Aug 2023 04:57:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41736 "EHLO
+        id S231526AbjHCI5L (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 3 Aug 2023 04:57:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41762 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234172AbjHCI5G (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 3 Aug 2023 04:57:06 -0400
-Received: from mail-pf1-x432.google.com (mail-pf1-x432.google.com [IPv6:2607:f8b0:4864:20::432])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BEDA8E46
-        for <linux-rdma@vger.kernel.org>; Thu,  3 Aug 2023 01:57:05 -0700 (PDT)
-Received: by mail-pf1-x432.google.com with SMTP id d2e1a72fcca58-686ba97e4feso642892b3a.0
-        for <linux-rdma@vger.kernel.org>; Thu, 03 Aug 2023 01:57:05 -0700 (PDT)
+        with ESMTP id S234876AbjHCI5K (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 3 Aug 2023 04:57:10 -0400
+Received: from mail-pf1-x430.google.com (mail-pf1-x430.google.com [IPv6:2607:f8b0:4864:20::430])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0995F1716
+        for <linux-rdma@vger.kernel.org>; Thu,  3 Aug 2023 01:57:09 -0700 (PDT)
+Received: by mail-pf1-x430.google.com with SMTP id d2e1a72fcca58-68336d06620so632666b3a.1
+        for <linux-rdma@vger.kernel.org>; Thu, 03 Aug 2023 01:57:09 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google; t=1691053025; x=1691657825;
-        h=message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=+0Gchp5kafpJs8qGvIGnaV4egFnqNvlug7GteUB1cbg=;
-        b=Izy3PxKh3PqfoFUsMm1PQigL4EqgH09GtrL3y7n+Wrjcv0+3jaZL4tsgdwyKkMyEf1
-         ZZYX+yb7AUsOeUc82ZY8EdBWlh1xJwRQUgTbKyiyRRYml9wwv6QGoUlIBNmHJZcIG47P
-         gCCS9XgVM+Fne3R73jzUrL3Pi9kShESEWIsUE=
+        d=broadcom.com; s=google; t=1691053028; x=1691657828;
+        h=references:in-reply-to:message-id:date:subject:cc:to:from:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=l/owDq69CLzMJZAEsvBkDVVPfidzNLIVX2EnZeatcIU=;
+        b=XiUlHqkq4pnhJ7ldeNZiqs2SwvJlsaPwlRK3171/kwshItPv184CG6zUV/CQIDHXZz
+         K1nwME1C/kDySQK25KKqeF9zkGoSuhSdmFwTLVh11AX8eORpCP/j15+WmNIObx1ySQDZ
+         UFmr12B+u6LNbkbLc4C7dbxuN9L9ykRv4JxWE=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691053025; x=1691657825;
-        h=message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=+0Gchp5kafpJs8qGvIGnaV4egFnqNvlug7GteUB1cbg=;
-        b=MrQCEwOzd2nxq3jbgZUtXgZFpH2J/wk7e/JqTkr614vAok+EZB0YjjX06Yl0Bj/ODC
-         h7TnqySt6kiZtjxPmyCzEGnWWOEljz/45+X6tmB0tKLafKDbpR0uFb0TfTDtXF1qhhyh
-         KdQJQ9/r+ac4+0fHa0nx5RUun9lP/pnLATQyCegEKAcTofvn7G2LTjpd0CAsuLb/iabT
-         lLubUtVRG9VlCaInV6f+JQv0Aw7eKDP0r/vk7zZJ7D9TpfNlD1WO7g5TK36OsxfUD5mj
-         7yni8Jw8XSjJnslEkYqDidTqutgXPB+SUmAHs72mjdzLkrwpGmAfogTUAG7eNQLdynz+
-         yTTg==
-X-Gm-Message-State: ABy/qLatgOslEwhm6vo5uzeZYsPcHjYEKTz2DdqNO9FmmqHRw55Bj+jD
-        lpZ3AducCS46tdkcY81TRed5dA==
-X-Google-Smtp-Source: APBJJlGwvnUVhvh2flGbBPg4ys3UvchhBRYkKTQ0nvMrBeRy9Rmh0imd5IdubSOA5d1ujMuJlt4H2A==
-X-Received: by 2002:a05:6a20:12c3:b0:135:26ad:132 with SMTP id v3-20020a056a2012c300b0013526ad0132mr24537812pzg.7.1691053025195;
-        Thu, 03 Aug 2023 01:57:05 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1691053028; x=1691657828;
+        h=references:in-reply-to:message-id:date:subject:cc:to:from
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=l/owDq69CLzMJZAEsvBkDVVPfidzNLIVX2EnZeatcIU=;
+        b=W2eatESGzceGeEIWUo96btrb3s/Al0HQY8yHU7Ik9l+gi6gEG3qFVP60ExqCk8OvGh
+         HNZ+7LskpzKjyj5z0RRPgdcnhpRRkEXBnmgpDiJRrcI9jHXKqBjwlkOuZZ5EPtQorxYY
+         qrgjO8p2GVOoxRl9kRecTbj3R4xoE5al3Hbe1UbX0479VT1tVjeCtezYLPO1n5LJSg7q
+         +2AgJqmAUv1vAnXtGf8HL4lCLMDAGA+5e0jTtWUbPzfvrLQJpcrw+Ba/gKfSfjIPIbbd
+         5ArvgMBBdoH0rtC4d+xzPxDn0PIYC98p136AF4ApblCLt0YMWJBMuSSwCYyYSVw7QpsT
+         Tn6Q==
+X-Gm-Message-State: ABy/qLZjp591dp8RU2giRDJL6MHDtgySJsiavKiTlVcgUU/rgogSroLK
+        zBkYKoUwJ0S2nOVi6Vb6uy84Qw==
+X-Google-Smtp-Source: APBJJlHyaGLr9oLprXXz9a6mQ1fSUHK4Cjoi1mFDZQabD+MkpM0mExHu3j1mroWP7OuxkF3IM7ySug==
+X-Received: by 2002:a05:6a00:1481:b0:687:1aa6:8821 with SMTP id v1-20020a056a00148100b006871aa68821mr19469807pfu.9.1691053028405;
+        Thu, 03 Aug 2023 01:57:08 -0700 (PDT)
 Received: from dhcp-10-192-206-197.iig.avagotech.net.net ([192.19.234.250])
-        by smtp.gmail.com with ESMTPSA id x42-20020a056a000bea00b0068713008f98sm10289035pfu.129.2023.08.03.01.57.02
+        by smtp.gmail.com with ESMTPSA id x42-20020a056a000bea00b0068713008f98sm10289035pfu.129.2023.08.03.01.57.05
         (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 03 Aug 2023 01:57:04 -0700 (PDT)
+        Thu, 03 Aug 2023 01:57:07 -0700 (PDT)
 From:   Selvin Xavier <selvin.xavier@broadcom.com>
 To:     jgg@ziepe.ca, leon@kernel.org
 Cc:     linux-rdma@vger.kernel.org, andrew.gospodarek@broadcom.com,
+        Kalesh AP <kalesh-anakkur.purayil@broadcom.com>,
+        Saravanan Vajravel <saravanan.vajravel@broadcom.com>,
         Selvin Xavier <selvin.xavier@broadcom.com>
-Subject: [PATCH for-next v2 0/6] RDMA/bnxt_re: Driver minor update
-Date:   Thu,  3 Aug 2023 01:45:20 -0700
-Message-Id: <1691052326-32143-1-git-send-email-selvin.xavier@broadcom.com>
+Subject: [PATCH for-next v2 1/6] RDMA/bnxt_re: Fix max_qp count for virtual functions
+Date:   Thu,  3 Aug 2023 01:45:21 -0700
+Message-Id: <1691052326-32143-2-git-send-email-selvin.xavier@broadcom.com>
 X-Mailer: git-send-email 2.5.5
+In-Reply-To: <1691052326-32143-1-git-send-email-selvin.xavier@broadcom.com>
+References: <1691052326-32143-1-git-send-email-selvin.xavier@broadcom.com>
 Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
-        boundary="000000000000e25043060200f64b"
-X-Spam-Status: No, score=-1.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        boundary="00000000000013cd6c060200f713"
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        MIME_HEADER_CTYPE_ONLY,MIME_NO_TEXT,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,T_TVD_MIME_NO_HEADERS
-        autolearn=no autolearn_force=no version=3.4.6
+        MIME_HEADER_CTYPE_ONLY,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE,T_TVD_MIME_NO_HEADERS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
---000000000000e25043060200f64b
+--00000000000013cd6c060200f713
 
-Includes some of the minor cleanup and update on the driver.
-Please review and apply.
+From: Kalesh AP <kalesh-anakkur.purayil@broadcom.com>
 
-Thanks,
-Selvin
+Driver has not accounted QP1 for virtual functions
+when fetching device attributes and hence max_qp
+count is one less than active_qp count. Fixed driver
+so that it counts QP1 for virtual functions as well
+while fetching device attributes
 
-v0 -> v1:
-    - Corrected patch 2 which had unrelated changes belonging to patch 3
+Fixes: ccd9d0d3dffc ("RDMA/bnxt_re: Enable RoCE on virtual functions")
+Signed-off-by: Saravanan Vajravel <saravanan.vajravel@broadcom.com>
+Signed-off-by: Kalesh AP <kalesh-anakkur.purayil@broadcom.com>
+Signed-off-by: Selvin Xavier <selvin.xavier@broadcom.com>
+---
+ drivers/infiniband/hw/bnxt_re/main.c     | 6 ++----
+ drivers/infiniband/hw/bnxt_re/qplib_sp.c | 7 +++----
+ drivers/infiniband/hw/bnxt_re/qplib_sp.h | 2 +-
+ 3 files changed, 6 insertions(+), 9 deletions(-)
 
-Kalesh AP (5):
-  RDMA/bnxt_re: Fix max_qp count for virtual functions
-  RDMA/bnxt_re: Remove a redundant flag
-  RDMA/bnxt_re: Cleanup bnxt_re_process_raw_qp_pkt_rx() function
-  RDMA/bnxt_re: Avoid unnecessary memset
-  RDMA/bnxt_re: Remove unnecessary variable initializations
-
-Selvin Xavier (1):
-  RDMA/bnxt_re: Fix the sideband buffer size handling for FW commands
-
- drivers/infiniband/hw/bnxt_re/bnxt_re.h    |  1 -
- drivers/infiniband/hw/bnxt_re/ib_verbs.c   | 36 ++++++--------
- drivers/infiniband/hw/bnxt_re/main.c       | 35 ++++++--------
- drivers/infiniband/hw/bnxt_re/qplib_fp.c   | 44 +++++++++--------
- drivers/infiniband/hw/bnxt_re/qplib_rcfw.c | 36 ++------------
- drivers/infiniband/hw/bnxt_re/qplib_res.c  |  8 +--
- drivers/infiniband/hw/bnxt_re/qplib_sp.c   | 78 +++++++++++++++---------------
- drivers/infiniband/hw/bnxt_re/qplib_sp.h   |  2 +-
- 8 files changed, 100 insertions(+), 140 deletions(-)
-
+diff --git a/drivers/infiniband/hw/bnxt_re/main.c b/drivers/infiniband/hw/bnxt_re/main.c
+index d658e67..bbda694 100644
+--- a/drivers/infiniband/hw/bnxt_re/main.c
++++ b/drivers/infiniband/hw/bnxt_re/main.c
+@@ -1152,8 +1152,7 @@ static int bnxt_re_alloc_res(struct bnxt_re_dev *rdev)
+ 
+ 	/* Configure and allocate resources for qplib */
+ 	rdev->qplib_res.rcfw = &rdev->rcfw;
+-	rc = bnxt_qplib_get_dev_attr(&rdev->rcfw, &rdev->dev_attr,
+-				     rdev->is_virtfn);
++	rc = bnxt_qplib_get_dev_attr(&rdev->rcfw, &rdev->dev_attr);
+ 	if (rc)
+ 		goto fail;
+ 
+@@ -1531,8 +1530,7 @@ static int bnxt_re_dev_init(struct bnxt_re_dev *rdev, u8 wqe_mode)
+ 			rdev->pacing.dbr_pacing = false;
+ 		}
+ 	}
+-	rc = bnxt_qplib_get_dev_attr(&rdev->rcfw, &rdev->dev_attr,
+-				     rdev->is_virtfn);
++	rc = bnxt_qplib_get_dev_attr(&rdev->rcfw, &rdev->dev_attr);
+ 	if (rc)
+ 		goto disable_rcfw;
+ 
+diff --git a/drivers/infiniband/hw/bnxt_re/qplib_sp.c b/drivers/infiniband/hw/bnxt_re/qplib_sp.c
+index 7e57faa..b77928a 100644
+--- a/drivers/infiniband/hw/bnxt_re/qplib_sp.c
++++ b/drivers/infiniband/hw/bnxt_re/qplib_sp.c
+@@ -89,7 +89,7 @@ static void bnxt_qplib_query_version(struct bnxt_qplib_rcfw *rcfw,
+ }
+ 
+ int bnxt_qplib_get_dev_attr(struct bnxt_qplib_rcfw *rcfw,
+-			    struct bnxt_qplib_dev_attr *attr, bool vf)
++			    struct bnxt_qplib_dev_attr *attr)
+ {
+ 	struct creq_query_func_resp resp = {};
+ 	struct bnxt_qplib_cmdqmsg msg = {};
+@@ -121,9 +121,8 @@ int bnxt_qplib_get_dev_attr(struct bnxt_qplib_rcfw *rcfw,
+ 
+ 	/* Extract the context from the side buffer */
+ 	attr->max_qp = le32_to_cpu(sb->max_qp);
+-	/* max_qp value reported by FW for PF doesn't include the QP1 for PF */
+-	if (!vf)
+-		attr->max_qp += 1;
++	/* max_qp value reported by FW doesn't include the QP1 */
++	attr->max_qp += 1;
+ 	attr->max_qp_rd_atom =
+ 		sb->max_qp_rd_atom > BNXT_QPLIB_MAX_OUT_RD_ATOM ?
+ 		BNXT_QPLIB_MAX_OUT_RD_ATOM : sb->max_qp_rd_atom;
+diff --git a/drivers/infiniband/hw/bnxt_re/qplib_sp.h b/drivers/infiniband/hw/bnxt_re/qplib_sp.h
+index 264ef3c..d33c78b 100644
+--- a/drivers/infiniband/hw/bnxt_re/qplib_sp.h
++++ b/drivers/infiniband/hw/bnxt_re/qplib_sp.h
+@@ -322,7 +322,7 @@ int bnxt_qplib_update_sgid(struct bnxt_qplib_sgid_tbl *sgid_tbl,
+ 			   struct bnxt_qplib_gid *gid, u16 gid_idx,
+ 			   const u8 *smac);
+ int bnxt_qplib_get_dev_attr(struct bnxt_qplib_rcfw *rcfw,
+-			    struct bnxt_qplib_dev_attr *attr, bool vf);
++			    struct bnxt_qplib_dev_attr *attr);
+ int bnxt_qplib_set_func_resources(struct bnxt_qplib_res *res,
+ 				  struct bnxt_qplib_rcfw *rcfw,
+ 				  struct bnxt_qplib_ctx *ctx);
 -- 
 2.5.5
 
 
---000000000000e25043060200f64b
+--00000000000013cd6c060200f713
 Content-Type: application/pkcs7-signature; name="smime.p7s"
 Content-Transfer-Encoding: base64
 Content-Disposition: attachment; filename="smime.p7s"
@@ -171,14 +226,14 @@ j1Ze9ndr+YDXPpCymOsynmmw0ErHZGGW1OmMpAEt0A+613glWCURLDlP8HONi1wnINV6aDiEf0ad
 9NMGxDsp+YWiRXD3txfo2OMQbpIxM90QfhKKacX8t1J1oAAWxDrLVTJBXBNvz5tr+D1sYwuye93r
 hImmkM1unboxggJtMIICaQIBATBrMFsxCzAJBgNVBAYTAkJFMRkwFwYDVQQKExBHbG9iYWxTaWdu
 IG52LXNhMTEwLwYDVQQDEyhHbG9iYWxTaWduIEdDQyBSMyBQZXJzb25hbFNpZ24gMiBDQSAyMDIw
-Agxy+Cu4x/7lM0zxY7cwDQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIEIJipHLJUsRd1
-GNMTnt+WMjmMQRM7A4iOnEsiSOBSitvNMBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZI
-hvcNAQkFMQ8XDTIzMDgwMzA4NTcwNVowaQYJKoZIhvcNAQkPMVwwWjALBglghkgBZQMEASowCwYJ
+Agxy+Cu4x/7lM0zxY7cwDQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIEIAHlxqFV7ubq
+jW75S4zRtQRji7DV73PjzSkyh+VH/YpaMBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZI
+hvcNAQkFMQ8XDTIzMDgwMzA4NTcwOFowaQYJKoZIhvcNAQkPMVwwWjALBglghkgBZQMEASowCwYJ
 YIZIAWUDBAEWMAsGCWCGSAFlAwQBAjAKBggqhkiG9w0DBzALBgkqhkiG9w0BAQowCwYJKoZIhvcN
-AQEHMAsGCWCGSAFlAwQCATANBgkqhkiG9w0BAQEFAASCAQCjxC9sTNpvNFadqBALCik3nCmbmzHm
-Hg32gEJDEN5Yed5Pfmku1RuPCevfP5HKZgAv9SS92cNrOfHsv0JGR2YPijDy6Oklcb/ho4n41DPR
-4DGFJ1V6IyhzAwn0VfQwahZxX290Q/r3uQDQm3AGWKTqG9Zvm3gzmNXp+UBl0Gk26G7L4g5U1fB0
-fYoBaDubz9k8tRP5DQWu1ueUDgwUNcvb99w5rf9ZVp9uwL0ML5ZlumeZuhbHI4Yf+kzZdfqmZzQQ
-rNkVmwoPu6VomDCSp6+oYrNtH3s8BbdsghT+rLEk4RUKHZA3LXIGfaoTBlFn8HXWC+NOz/HKkasf
-sUEu84sk
---000000000000e25043060200f64b--
+AQEHMAsGCWCGSAFlAwQCATANBgkqhkiG9w0BAQEFAASCAQCfQaf01TlWzMrvTmPEIPe2k8d35cV0
+4HLvHEUGBr8uR6WeC1NzHvSshiofBYqd9LfSPDVppMINpWBkuDrUgGvewcSLRDxEhXVu5gyfWBnF
+1IvKbbz8l4re5d5t8p4mXOLCenGlnz17eEJYP2d0pyquiHBZARUpYUBYhVEDU9CUZQdn5mWD6tH9
+vQGtVgTgXiLHoOufS46yiBNpoERg3DqC+HGUsitAlKZMLCrmlwTR63Pu16iSgE2jHYlp5yhNkkcP
+Pb8dVEXSxiUdSdeIcvjvhaec/aP22DHeD96ZJX2DHaUxIFRcfl04xlFvLwLS1Qk+8D18tsZKj8/+
+RCqOS9fK
+--00000000000013cd6c060200f713--
