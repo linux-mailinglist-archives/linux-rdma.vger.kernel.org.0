@@ -2,61 +2,61 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id ABEA976E3BC
-	for <lists+linux-rdma@lfdr.de>; Thu,  3 Aug 2023 10:57:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E87376E3BD
+	for <lists+linux-rdma@lfdr.de>; Thu,  3 Aug 2023 10:57:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234874AbjHCI5W (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 3 Aug 2023 04:57:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41982 "EHLO
+        id S234873AbjHCI51 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 3 Aug 2023 04:57:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42138 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234871AbjHCI5V (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 3 Aug 2023 04:57:21 -0400
-Received: from mail-pf1-x434.google.com (mail-pf1-x434.google.com [IPv6:2607:f8b0:4864:20::434])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 228AD1BF9
-        for <linux-rdma@vger.kernel.org>; Thu,  3 Aug 2023 01:57:18 -0700 (PDT)
-Received: by mail-pf1-x434.google.com with SMTP id d2e1a72fcca58-68336d06620so632774b3a.1
-        for <linux-rdma@vger.kernel.org>; Thu, 03 Aug 2023 01:57:17 -0700 (PDT)
+        with ESMTP id S234872AbjHCI51 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 3 Aug 2023 04:57:27 -0400
+Received: from mail-pf1-x431.google.com (mail-pf1-x431.google.com [IPv6:2607:f8b0:4864:20::431])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 361AB171D
+        for <linux-rdma@vger.kernel.org>; Thu,  3 Aug 2023 01:57:21 -0700 (PDT)
+Received: by mail-pf1-x431.google.com with SMTP id d2e1a72fcca58-686ba97e4feso643052b3a.0
+        for <linux-rdma@vger.kernel.org>; Thu, 03 Aug 2023 01:57:21 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google; t=1691053037; x=1691657837;
+        d=broadcom.com; s=google; t=1691053040; x=1691657840;
         h=references:in-reply-to:message-id:date:subject:cc:to:from:from:to
          :cc:subject:date:message-id:reply-to;
-        bh=nUyHzlyEIRFrBY5X4d4XUtsg15vlwHmjhQ84S+665dM=;
-        b=NELiDRzlDhTe1mbE1piT66Rc5xBDKJQrUo1+jS3Qn+RBE9R3nGekFd9+4pHZO2YQ7Y
-         iO3hC+VnHFaWIvEasPkVtoJK5CP/ed753AQ8zBUDIZtubPDr7437GUJUmKnxfRTIo0nq
-         454Yak/OENoE7Fcs10jDTA2weND/ukW6Tuq/c=
+        bh=pfH3t1hsyk2OMXnzFT8U0rAy+VFps4+PGVaNguhLRRs=;
+        b=ZhHkVuaeyw3K8p8NKxhFJ8Qf0HqNTXK88yH1Fw7L5Z4llhmKR1YPgY71Wzcb5Ci+63
+         9gEz18/ZhapVrB+IKvkLIhE4TocL1lg0IOfo2+WEo2n3fCpOFk4FrPpwF8QXyyPQdgKb
+         UxPDfwNXTrFLg4YnSeUQjXo5zs76QDW8AbglQ=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691053037; x=1691657837;
+        d=1e100.net; s=20221208; t=1691053040; x=1691657840;
         h=references:in-reply-to:message-id:date:subject:cc:to:from
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=nUyHzlyEIRFrBY5X4d4XUtsg15vlwHmjhQ84S+665dM=;
-        b=GBgXmrSXaP1YaDLL1Yt/YXDj521qEZQtvxWlpjIWgB6tEAIWMX7sQEcccP79iAKSr5
-         AJDy8ViwQRgAHkFWPnwPnvJP070ziZ7WM4lToYKqvFMxZoUS+5tKj/toZyCVPSi76ip6
-         o4pekup7FBQgYgveCGgFGDpACvBvZv2nbw0u3cJt68tXUGn6eML9RvTLIgrUl7l5Z3Lk
-         E1oD3VIVEpG1hRYhPdNTdLZvx1sfYIYaz7QZy22BVvKCENylUBBg891AZKmYSFUZT7rT
-         r/1N5dgSjRdfXrK7hMG2sQ94PEyU8w7vKDhB4z7nWYlje/p3XgMkhtAk7KfLI5OAnYz9
-         b+aw==
-X-Gm-Message-State: ABy/qLbJezABRtamYAl/ylDmJBG5YliqtEop02lYhaMh1mLUWBhKllpI
-        91nVYx09oopsVDP+KdJtyFK0ow==
-X-Google-Smtp-Source: APBJJlFAAexc20atguER5ZL3aUu74uXKmZ+yoALpxyZcb0bXc07m1DMhhCePTxXSSOYDGf0hAIFp7A==
-X-Received: by 2002:a05:6a00:3a0d:b0:67a:8fc7:1b61 with SMTP id fj13-20020a056a003a0d00b0067a8fc71b61mr19625837pfb.11.1691053037254;
-        Thu, 03 Aug 2023 01:57:17 -0700 (PDT)
+        bh=pfH3t1hsyk2OMXnzFT8U0rAy+VFps4+PGVaNguhLRRs=;
+        b=dZGyyiwfw+zMo2zMugvYwT0nD/CStibRwoypCU4jrctfW5f8BfkxTVlsIPr5TOTDnC
+         8jaQJcA8dzt+TOE60+rjZFTRDdtDoqn0k4jeXlqY2qvXjQnbdNn+8/tMSZ/LJMCPgToe
+         a2IY3ZzroCxC58Kx5cIKUv5RAcAqq7LUxq98rCFYy+eY+KNStKi+6VrlCzsMbxxzx/uR
+         g+bksYskz6Stk+CojL0GqHRkBe33OyJZ5peAFn0fQ4cqxAcPVoZFprPX2glzZxnMQKMK
+         uRmmXZT9daXOXjk0Bn7ZEU81/4QeTNDgkxrqGDhaZA8CEg9L7hpKHNCXf8NuidPSte0P
+         T05w==
+X-Gm-Message-State: ABy/qLbK1cW6e9v8+OIDlBmhtuDwF77gsgc/wIQX7GVamArbetfDsV3P
+        weg9y4UxbF8+YdsMfg8i6jISmJmV/ATwE5Xm4Yk=
+X-Google-Smtp-Source: APBJJlFav4ppihA+5ktC+1OsnRJUtTW8GOTpzmNoG2IfifFLzwS9owLFpalenNVjU9PKr7Kjg3dWjQ==
+X-Received: by 2002:a05:6a00:14ca:b0:687:22ce:365f with SMTP id w10-20020a056a0014ca00b0068722ce365fmr18373749pfu.29.1691053040055;
+        Thu, 03 Aug 2023 01:57:20 -0700 (PDT)
 Received: from dhcp-10-192-206-197.iig.avagotech.net.net ([192.19.234.250])
-        by smtp.gmail.com with ESMTPSA id x42-20020a056a000bea00b0068713008f98sm10289035pfu.129.2023.08.03.01.57.14
+        by smtp.gmail.com with ESMTPSA id x42-20020a056a000bea00b0068713008f98sm10289035pfu.129.2023.08.03.01.57.17
         (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 03 Aug 2023 01:57:16 -0700 (PDT)
+        Thu, 03 Aug 2023 01:57:19 -0700 (PDT)
 From:   Selvin Xavier <selvin.xavier@broadcom.com>
 To:     jgg@ziepe.ca, leon@kernel.org
 Cc:     linux-rdma@vger.kernel.org, andrew.gospodarek@broadcom.com,
         Kalesh AP <kalesh-anakkur.purayil@broadcom.com>,
         Selvin Xavier <selvin.xavier@broadcom.com>
-Subject: [PATCH for-next v2 4/6] RDMA/bnxt_re: Cleanup bnxt_re_process_raw_qp_pkt_rx() function
-Date:   Thu,  3 Aug 2023 01:45:24 -0700
-Message-Id: <1691052326-32143-5-git-send-email-selvin.xavier@broadcom.com>
+Subject: [PATCH for-next v2 5/6] RDMA/bnxt_re: Avoid unnecessary memset
+Date:   Thu,  3 Aug 2023 01:45:25 -0700
+Message-Id: <1691052326-32143-6-git-send-email-selvin.xavier@broadcom.com>
 X-Mailer: git-send-email 2.5.5
 In-Reply-To: <1691052326-32143-1-git-send-email-selvin.xavier@broadcom.com>
 References: <1691052326-32143-1-git-send-email-selvin.xavier@broadcom.com>
 Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
-        boundary="0000000000009a5e06060200f785"
+        boundary="000000000000c57c12060200f7d2"
 X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         MIME_HEADER_CTYPE_ONLY,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE,
@@ -68,64 +68,100 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
---0000000000009a5e06060200f785
+--000000000000c57c12060200f7d2
 
 From: Kalesh AP <kalesh-anakkur.purayil@broadcom.com>
 
- - Remove unnecessary memset by initializing the variables
-   during declaration itself.
- - Arranged variable declarartion in RCT order.
+Avoid memset by initializing the variables during
+declaration itself.
 
 Signed-off-by: Kalesh AP <kalesh-anakkur.purayil@broadcom.com>
 Signed-off-by: Selvin Xavier <selvin.xavier@broadcom.com>
 ---
- drivers/infiniband/hw/bnxt_re/ib_verbs.c | 21 ++++++++-------------
- 1 file changed, 8 insertions(+), 13 deletions(-)
+ drivers/infiniband/hw/bnxt_re/ib_verbs.c |  1 -
+ drivers/infiniband/hw/bnxt_re/main.c     | 12 ++++--------
+ 2 files changed, 4 insertions(+), 9 deletions(-)
 
 diff --git a/drivers/infiniband/hw/bnxt_re/ib_verbs.c b/drivers/infiniband/hw/bnxt_re/ib_verbs.c
-index c46fd2a..1ce3922 100644
+index 1ce3922..003a07c 100644
 --- a/drivers/infiniband/hw/bnxt_re/ib_verbs.c
 +++ b/drivers/infiniband/hw/bnxt_re/ib_verbs.c
-@@ -3333,26 +3333,21 @@ static int bnxt_re_process_raw_qp_pkt_rx(struct bnxt_re_qp *gsi_qp,
- 	struct bnxt_re_dev *rdev = gsi_qp->rdev;
- 	struct bnxt_re_sqp_entries *sqp_entry = NULL;
- 	struct bnxt_re_qp *gsi_sqp = rdev->gsi_ctx.gsi_sqp;
-+	dma_addr_t shrq_hdr_buf_map;
-+	struct ib_sge s_sge[2] = {};
-+	struct ib_sge r_sge[2] = {};
- 	struct bnxt_re_ah *gsi_sah;
-+	struct ib_recv_wr rwr = {};
-+	dma_addr_t rq_hdr_buf_map;
-+	struct ib_ud_wr udwr = {};
- 	struct ib_send_wr *swr;
--	struct ib_ud_wr udwr;
--	struct ib_recv_wr rwr;
-+	u32 skip_bytes = 0;
- 	int pkt_type = 0;
--	u32 tbl_idx;
- 	void *rq_hdr_buf;
--	dma_addr_t rq_hdr_buf_map;
--	dma_addr_t shrq_hdr_buf_map;
- 	u32 offset = 0;
--	u32 skip_bytes = 0;
--	struct ib_sge s_sge[2];
--	struct ib_sge r_sge[2];
-+	u32 tbl_idx;
+@@ -2797,7 +2797,6 @@ static int bnxt_re_post_recv_shadow_qp(struct bnxt_re_dev *rdev,
+ 	struct bnxt_qplib_swqe wqe;
+ 	int rc = 0;
+ 
+-	memset(&wqe, 0, sizeof(wqe));
+ 	while (wr) {
+ 		/* House keeping */
+ 		memset(&wqe, 0, sizeof(wqe));
+diff --git a/drivers/infiniband/hw/bnxt_re/main.c b/drivers/infiniband/hw/bnxt_re/main.c
+index 2fe47b3..c728694 100644
+--- a/drivers/infiniband/hw/bnxt_re/main.c
++++ b/drivers/infiniband/hw/bnxt_re/main.c
+@@ -395,10 +395,9 @@ static int bnxt_re_hwrm_qcfg(struct bnxt_re_dev *rdev, u32 *db_len,
+ 	struct bnxt_en_dev *en_dev = rdev->en_dev;
+ 	struct hwrm_func_qcfg_output resp = {0};
+ 	struct hwrm_func_qcfg_input req = {0};
+-	struct bnxt_fw_msg fw_msg;
++	struct bnxt_fw_msg fw_msg = {};
  	int rc;
  
--	memset(&udwr, 0, sizeof(udwr));
--	memset(&rwr, 0, sizeof(rwr));
--	memset(&s_sge, 0, sizeof(s_sge));
--	memset(&r_sge, 0, sizeof(r_sge));
--
- 	swr = &udwr.wr;
- 	tbl_idx = cqe->wr_id;
+-	memset(&fw_msg, 0, sizeof(fw_msg));
+ 	bnxt_re_init_hwrm_hdr((void *)&req, HWRM_FUNC_QCFG);
+ 	req.fid = cpu_to_le16(0xffff);
+ 	bnxt_re_fill_fw_msg(&fw_msg, (void *)&req, sizeof(req), (void *)&resp,
+@@ -969,7 +968,7 @@ static int bnxt_re_handle_unaffi_async_event(struct creq_func_event
+ static int bnxt_re_handle_qp_async_event(struct creq_qp_event *qp_event,
+ 					 struct bnxt_re_qp *qp)
+ {
+-	struct ib_event event;
++	struct ib_event event = {};
+ 	unsigned int flags;
  
+ 	if (qp->qplib_qp.state == CMDQ_MODIFY_QP_NEW_STATE_ERR &&
+@@ -979,7 +978,6 @@ static int bnxt_re_handle_qp_async_event(struct creq_qp_event *qp_event,
+ 		bnxt_re_unlock_cqs(qp, flags);
+ 	}
+ 
+-	memset(&event, 0, sizeof(event));
+ 	if (qp->qplib_qp.srq) {
+ 		event.device = &qp->rdev->ibdev;
+ 		event.element.qp = &qp->ib_qp;
+@@ -1299,11 +1297,10 @@ static u32 bnxt_re_get_priority_mask(struct bnxt_re_dev *rdev)
+ {
+ 	u32 prio_map = 0, tmp_map = 0;
+ 	struct net_device *netdev;
+-	struct dcb_app app;
++	struct dcb_app app = {};
+ 
+ 	netdev = rdev->netdev;
+ 
+-	memset(&app, 0, sizeof(app));
+ 	app.selector = IEEE_8021QAZ_APP_SEL_ETHERTYPE;
+ 	app.protocol = ETH_P_IBOE;
+ 	tmp_map = dcb_ieee_getapp_mask(netdev, &app);
+@@ -1445,15 +1442,14 @@ static void bnxt_re_worker(struct work_struct *work)
+ 
+ static int bnxt_re_dev_init(struct bnxt_re_dev *rdev, u8 wqe_mode)
+ {
++	struct bnxt_re_ring_attr rattr = {};
+ 	struct bnxt_qplib_creq_ctx *creq;
+-	struct bnxt_re_ring_attr rattr;
+ 	u32 db_offt;
+ 	int vid;
+ 	u8 type;
+ 	int rc;
+ 
+ 	/* Registered a new RoCE device instance to netdev */
+-	memset(&rattr, 0, sizeof(rattr));
+ 	rc = bnxt_re_register_netdev(rdev);
+ 	if (rc) {
+ 		ibdev_err(&rdev->ibdev,
 -- 
 2.5.5
 
 
---0000000000009a5e06060200f785
+--000000000000c57c12060200f7d2
 Content-Type: application/pkcs7-signature; name="smime.p7s"
 Content-Transfer-Encoding: base64
 Content-Disposition: attachment; filename="smime.p7s"
@@ -196,14 +232,14 @@ j1Ze9ndr+YDXPpCymOsynmmw0ErHZGGW1OmMpAEt0A+613glWCURLDlP8HONi1wnINV6aDiEf0ad
 9NMGxDsp+YWiRXD3txfo2OMQbpIxM90QfhKKacX8t1J1oAAWxDrLVTJBXBNvz5tr+D1sYwuye93r
 hImmkM1unboxggJtMIICaQIBATBrMFsxCzAJBgNVBAYTAkJFMRkwFwYDVQQKExBHbG9iYWxTaWdu
 IG52LXNhMTEwLwYDVQQDEyhHbG9iYWxTaWduIEdDQyBSMyBQZXJzb25hbFNpZ24gMiBDQSAyMDIw
-Agxy+Cu4x/7lM0zxY7cwDQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIEIKu7n1CRjYOP
-1D9EcdN9t8gJ91XGOQEV7KbgMRjWkRCQMBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZI
-hvcNAQkFMQ8XDTIzMDgwMzA4NTcxN1owaQYJKoZIhvcNAQkPMVwwWjALBglghkgBZQMEASowCwYJ
+Agxy+Cu4x/7lM0zxY7cwDQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIEILPHqT6Civ6l
+xclae3ggIlcn07Z29VvdVzmRwXQrpLX1MBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZI
+hvcNAQkFMQ8XDTIzMDgwMzA4NTcyMFowaQYJKoZIhvcNAQkPMVwwWjALBglghkgBZQMEASowCwYJ
 YIZIAWUDBAEWMAsGCWCGSAFlAwQBAjAKBggqhkiG9w0DBzALBgkqhkiG9w0BAQowCwYJKoZIhvcN
-AQEHMAsGCWCGSAFlAwQCATANBgkqhkiG9w0BAQEFAASCAQCLopQ724rfR3tvpdRntIA9ju+O4Uf4
-LoE2RNrCOftsEmiTZ5mtT/egACGt02g3pv3H9/mkF3XxCzfgiPSWm5tZLCekyT2sPzkyxp/9gW6m
-Z07dRIdlRFBRxxZZ/y73SvqIQrOuPN64K97L1pPlBHsmo8ic1MscFM9hBOpuE5p5B3/J4qRSzBht
-gDqxQ24FCnfEMk0Nrdv52/jq7YeYDGbqMe+jKw0EPAnjrTWddX4pKwWzPah0f4jVKhfNU34M3kf/
-P2jQUPfZOMWl/IEKOQHcBn//1/lqgvFTP98kEUmmrBRXZtfLa5GFOE/S3PGf3GTlCDB9rh1D05e+
-QwEuaAow
---0000000000009a5e06060200f785--
+AQEHMAsGCWCGSAFlAwQCATANBgkqhkiG9w0BAQEFAASCAQAOj+y21bl7QAZg5/qudue93KUzY1ej
+VOivAzLiZ5eUkLUtgG1IvDO2+l+zUaUbj4wL3134mhblaCPIiJWvq8CFqE2CzrznqdZkV5aPZUFd
+gk51NFUU2gAex5hjLwppSW9OAVsqwQkaOkSCxfHxRBbzia6tdkN2amlTZFZbGEEebe5S23owqwap
+KrXnwq8Bx0wqCopW9r7BWq5rRloQYVIP0lGlTHyvkr+rQRKYZh3g+ySY4EEwEHIUORqbl7V6psQS
+tBbzaq/qIWmre4Y/YrmIcNKP5djF/UcDfrmCYoc4vsQ88lenYJNRsKz7yAFgoqn8N7EJQURDze2E
+jPzw1571
+--000000000000c57c12060200f7d2--
