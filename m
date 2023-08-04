@@ -2,25 +2,25 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B17A76F896
-	for <lists+linux-rdma@lfdr.de>; Fri,  4 Aug 2023 05:54:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D8B376F899
+	for <lists+linux-rdma@lfdr.de>; Fri,  4 Aug 2023 05:54:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233150AbjHDDyr (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 3 Aug 2023 23:54:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53230 "EHLO
+        id S232883AbjHDDys (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 3 Aug 2023 23:54:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53242 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232844AbjHDDym (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 3 Aug 2023 23:54:42 -0400
+        with ESMTP id S232845AbjHDDyo (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 3 Aug 2023 23:54:44 -0400
 Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1830F2D69;
-        Thu,  3 Aug 2023 20:54:42 -0700 (PDT)
-Received: from kwepemi500008.china.huawei.com (unknown [172.30.72.53])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4RHBdp61jnzrS6X;
-        Fri,  4 Aug 2023 11:53:34 +0800 (CST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C93530C0;
+        Thu,  3 Aug 2023 20:54:43 -0700 (PDT)
+Received: from kwepemi500008.china.huawei.com (unknown [172.30.72.55])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4RHBdr2xFszrS75;
+        Fri,  4 Aug 2023 11:53:36 +0800 (CST)
 Received: from huawei.com (10.90.53.73) by kwepemi500008.china.huawei.com
  (7.221.188.139) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Fri, 4 Aug
- 2023 11:54:38 +0800
+ 2023 11:54:40 +0800
 From:   Ruan Jinjie <ruanjinjie@huawei.com>
 To:     <sgoutham@marvell.com>, <davem@davemloft.net>,
         <edumazet@google.com>, <kuba@kernel.org>, <pabeni@redhat.com>,
@@ -37,9 +37,9 @@ To:     <sgoutham@marvell.com>, <davem@davemloft.net>,
         <linux-wireless@vger.kernel.org>,
         <brcm80211-dev-list.pdl@broadcom.com>,
         <SHA-cyfmac-dev-list@infineon.com>
-Subject: [PATCH -next 2/6] ethernet/intel: Remove unnecessary ternary operators
-Date:   Fri, 4 Aug 2023 11:53:42 +0800
-Message-ID: <20230804035346.2879318-3-ruanjinjie@huawei.com>
+Subject: [PATCH -next 3/6] net/mlx4: Remove an unnecessary ternary operator
+Date:   Fri, 4 Aug 2023 11:53:43 +0800
+Message-ID: <20230804035346.2879318-4-ruanjinjie@huawei.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20230804035346.2879318-1-ruanjinjie@huawei.com>
 References: <20230804035346.2879318-1-ruanjinjie@huawei.com>
@@ -60,41 +60,27 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Ther are a little ternary operators, the true or false judgement
+There is a ternary operator, the true or false judgement
 of which is unnecessary in C language semantics.
 
 Signed-off-by: Ruan Jinjie <ruanjinjie@huawei.com>
 ---
- drivers/net/ethernet/intel/igb/e1000_phy.c | 2 +-
- drivers/net/ethernet/intel/igc/igc_phy.c   | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+ drivers/net/ethernet/mellanox/mlx4/port.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/net/ethernet/intel/igb/e1000_phy.c b/drivers/net/ethernet/intel/igb/e1000_phy.c
-index a018000f7db9..c123c9dd6a49 100644
---- a/drivers/net/ethernet/intel/igb/e1000_phy.c
-+++ b/drivers/net/ethernet/intel/igb/e1000_phy.c
-@@ -1652,7 +1652,7 @@ s32 igb_phy_has_link(struct e1000_hw *hw, u32 iterations,
- 			udelay(usec_interval);
- 	}
+diff --git a/drivers/net/ethernet/mellanox/mlx4/port.c b/drivers/net/ethernet/mellanox/mlx4/port.c
+index 256a06b3c096..1c289488d050 100644
+--- a/drivers/net/ethernet/mellanox/mlx4/port.c
++++ b/drivers/net/ethernet/mellanox/mlx4/port.c
+@@ -176,7 +176,7 @@ static bool mlx4_need_mf_bond(struct mlx4_dev *dev)
+ 	mlx4_foreach_port(i, dev, MLX4_PORT_TYPE_ETH)
+ 		++num_eth_ports;
  
--	*success = (i < iterations) ? true : false;
-+	*success = i < iterations;
- 
- 	return ret_val;
+-	return (num_eth_ports ==  2) ? true : false;
++	return num_eth_ports ==  2;
  }
-diff --git a/drivers/net/ethernet/intel/igc/igc_phy.c b/drivers/net/ethernet/intel/igc/igc_phy.c
-index 53b77c969c85..a553e9d719e7 100644
---- a/drivers/net/ethernet/intel/igc/igc_phy.c
-+++ b/drivers/net/ethernet/intel/igc/igc_phy.c
-@@ -93,7 +93,7 @@ s32 igc_phy_has_link(struct igc_hw *hw, u32 iterations,
- 			udelay(usec_interval);
- 	}
  
--	*success = (i < iterations) ? true : false;
-+	*success = i < iterations;
- 
- 	return ret_val;
- }
+ int __mlx4_register_mac(struct mlx4_dev *dev, u8 port, u64 mac)
 -- 
 2.34.1
 
