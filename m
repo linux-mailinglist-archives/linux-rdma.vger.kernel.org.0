@@ -2,57 +2,58 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 389E37703E5
-	for <lists+linux-rdma@lfdr.de>; Fri,  4 Aug 2023 17:05:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 74024770575
+	for <lists+linux-rdma@lfdr.de>; Fri,  4 Aug 2023 18:01:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229798AbjHDPFr (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 4 Aug 2023 11:05:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45566 "EHLO
+        id S232259AbjHDQBA (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 4 Aug 2023 12:01:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53896 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230061AbjHDPFo (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 4 Aug 2023 11:05:44 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 07D3C49F3;
-        Fri,  4 Aug 2023 08:05:38 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 8ACAB6204A;
-        Fri,  4 Aug 2023 15:05:37 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 652D7C433C8;
-        Fri,  4 Aug 2023 15:05:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1691161536;
-        bh=Lp1Qs8ByJyHcY/oWm72FarFhOl0WVjDkRb6QN+qdPJw=;
-        h=From:To:Cc:Subject:Date:From;
-        b=NC1C5biGN8hoo97HzphtL2XhwO7z3+bwPOD02ABMGlZDqL+tR71B0YxVP9KNNwX1Y
-         SgVOMOj/Gi7k86u8OWy6ladNUVfHGAuOMtESe4pkAfeG4L96Y8a844ot0sQbfI+2Me
-         0WiePtGhwSVjkxS+usxTK88JMge9jQD0LgDjOL44=
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-rdma@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org,
-        Ivan Orlov <ivan.orlov0322@gmail.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Leon Romanovsky <leon@kernel.org>,
-        Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
-        "Md. Haris Iqbal" <haris.iqbal@ionos.com>,
-        Jack Wang <jinpu.wang@ionos.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Yishai Hadas <yishaih@nvidia.com>,
-        Benjamin Tissoires <benjamin.tissoires@redhat.com>
-Subject: [PATCH] infiniband: make all 'class' structures const
-Date:   Fri,  4 Aug 2023 17:05:28 +0200
-Message-ID: <2023080427-commuting-crewless-cbee@gregkh>
-X-Mailer: git-send-email 2.41.0
-MIME-Version: 1.0
-Lines:  420
-X-Developer-Signature: v=1; a=openpgp-sha256; l=13222; i=gregkh@linuxfoundation.org; h=from:subject:message-id; bh=x1TiTpFQGLP2r/d1XyA/DxK+XWsDSrx6Zo2RnD8S76s=; b=owGbwMvMwCRo6H6F97bub03G02pJDClnhbc/klrOasa5XX+u0LQ31clGgvUrNO7mf95r36d2c Mce578XOmJZGASZGGTFFFm+bOM5ur/ikKKXoe1pmDmsTCBDGLg4BWAiEZ8YFjTpbZJ645znNIOL 0+vanpg/U+7+ecIwPzEshoGrb9fmAk+eAi9b4w2LOmfNBAA=
-X-Developer-Key: i=gregkh@linuxfoundation.org; a=openpgp; fpr=F4B60CC5BF78C2214A313DCB3147D40DDB2DFB29
-Content-Transfer-Encoding: 8bit
+        with ESMTP id S232262AbjHDQA5 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 4 Aug 2023 12:00:57 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB5474C0A
+        for <linux-rdma@vger.kernel.org>; Fri,  4 Aug 2023 09:00:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1691164852; x=1722700852;
+  h=date:from:to:cc:subject:message-id;
+  bh=42AfdGtueNkBmVKTEiH7YH6ChvWGMtMCfW2VQR0Id8s=;
+  b=aTFhRCiHX6IbYSCY/L+JgjTI9ACccb5ntEk8oYpD1sayxiEajvE0MYXy
+   F/CnF9cazf3OwBBG0F1s9uwmrFbTsfj6GDjMuyp1JNCGdSC5x6Kl6uKJh
+   X85wk30FNopP0iZBoQvktdBTWjaOOPH5XZsS4ndOOZXkpB0wZ5YdOacJn
+   IXWXlFRWQPvrXz7wFrGUDEZ5Ex4zqSavJvDImCeE497tHt7gxS38EHpl4
+   N7UvsZ3LOBJeA7yenCh23hZyD8pStOaLuQfJ1epWbFuv+3dbs3zbF8obC
+   BvDgEIuxxQnKcm5Y9jZBQoFwgYMc6zD11D3Lec4EQTY5bf550UExheGuJ
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10792"; a="434034154"
+X-IronPort-AV: E=Sophos;i="6.01,255,1684825200"; 
+   d="scan'208";a="434034154"
+Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Aug 2023 09:00:40 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10792"; a="733302240"
+X-IronPort-AV: E=Sophos;i="6.01,255,1684825200"; 
+   d="scan'208";a="733302240"
+Received: from lkp-server01.sh.intel.com (HELO d1ccc7e87e8f) ([10.239.97.150])
+  by fmsmga007.fm.intel.com with ESMTP; 04 Aug 2023 09:00:38 -0700
+Received: from kbuild by d1ccc7e87e8f with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qRxED-0002wx-31;
+        Fri, 04 Aug 2023 16:00:37 +0000
+Date:   Sat, 05 Aug 2023 00:00:18 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Leon Romanovsky <leon@kernel.org>
+Cc:     Doug Ledford <dledford@redhat.com>,
+        Jason Gunthorpe <jgg+lists@ziepe.ca>,
+        linux-rdma@vger.kernel.org
+Subject: [rdma:wip/leon-for-rc] BUILD SUCCESS
+ 4fdfaef71fced490835145631a795497646f4555
+Message-ID: <202308050017.MIvMfbwI-lkp@intel.com>
+User-Agent: s-nail v14.9.24
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -60,426 +61,181 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Ivan Orlov <ivan.orlov0322@gmail.com>
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git wip/leon-for-rc
+branch HEAD: 4fdfaef71fced490835145631a795497646f4555  IB/hfi1: Fix possible panic during hotplug remove
 
-Now that the driver core allows for struct class to be in read-only
-memory, making all 'class' structures to be declared at build time
-placing them into read-only memory, instead of having to be dynamically
-allocated at load time.
+elapsed time: 1264m
 
-Cc: Jason Gunthorpe <jgg@ziepe.ca>
-Cc: Leon Romanovsky <leon@kernel.org>
-Cc: Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>
-Cc: "Md. Haris Iqbal" <haris.iqbal@ionos.com>
-Cc: Jack Wang <jinpu.wang@ionos.com>
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc: Yishai Hadas <yishaih@nvidia.com>
-Cc: Ivan Orlov <ivan.orlov0322@gmail.com>
-Cc: Benjamin Tissoires <benjamin.tissoires@redhat.com>
-Suggested-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Signed-off-by: Ivan Orlov <ivan.orlov0322@gmail.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
----
- drivers/infiniband/core/uverbs_main.c        | 35 +++++-----
- drivers/infiniband/hw/hfi1/device.c          | 72 +++++++++-----------
- drivers/infiniband/hw/qib/qib_file_ops.c     | 17 +++--
- drivers/infiniband/ulp/rtrs/rtrs-clt.c       | 19 +++---
- drivers/infiniband/ulp/rtrs/rtrs-srv-sysfs.c |  2 +-
- drivers/infiniband/ulp/rtrs/rtrs-srv.c       | 15 ++--
- drivers/infiniband/ulp/rtrs/rtrs-srv.h       |  2 +-
- 7 files changed, 79 insertions(+), 83 deletions(-)
+configs tested: 162
+configs skipped: 5
 
-diff --git a/drivers/infiniband/core/uverbs_main.c b/drivers/infiniband/core/uverbs_main.c
-index 7c9c79c13941..bf800f8cb3e4 100644
---- a/drivers/infiniband/core/uverbs_main.c
-+++ b/drivers/infiniband/core/uverbs_main.c
-@@ -72,12 +72,23 @@ enum {
- #define IB_UVERBS_BASE_DEV	MKDEV(IB_UVERBS_MAJOR, IB_UVERBS_BASE_MINOR)
- 
- static dev_t dynamic_uverbs_dev;
--static struct class *uverbs_class;
- 
- static DEFINE_IDA(uverbs_ida);
- static int ib_uverbs_add_one(struct ib_device *device);
- static void ib_uverbs_remove_one(struct ib_device *device, void *client_data);
- 
-+static char *uverbs_devnode(const struct device *dev, umode_t *mode)
-+{
-+	if (mode)
-+		*mode = 0666;
-+	return kasprintf(GFP_KERNEL, "infiniband/%s", dev_name(dev));
-+}
-+
-+static const struct class uverbs_class = {
-+	.name = "infiniband_verbs",
-+	.devnode = uverbs_devnode,
-+};
-+
- /*
-  * Must be called with the ufile->device->disassociate_srcu held, and the lock
-  * must be held until use of the ucontext is finished.
-@@ -1117,7 +1128,7 @@ static int ib_uverbs_add_one(struct ib_device *device)
- 	}
- 
- 	device_initialize(&uverbs_dev->dev);
--	uverbs_dev->dev.class = uverbs_class;
-+	uverbs_dev->dev.class = &uverbs_class;
- 	uverbs_dev->dev.parent = device->dev.parent;
- 	uverbs_dev->dev.release = ib_uverbs_release_dev;
- 	uverbs_dev->groups[0] = &dev_attr_group;
-@@ -1235,13 +1246,6 @@ static void ib_uverbs_remove_one(struct ib_device *device, void *client_data)
- 	put_device(&uverbs_dev->dev);
- }
- 
--static char *uverbs_devnode(const struct device *dev, umode_t *mode)
--{
--	if (mode)
--		*mode = 0666;
--	return kasprintf(GFP_KERNEL, "infiniband/%s", dev_name(dev));
--}
--
- static int __init ib_uverbs_init(void)
- {
- 	int ret;
-@@ -1262,16 +1266,13 @@ static int __init ib_uverbs_init(void)
- 		goto out_alloc;
- 	}
- 
--	uverbs_class = class_create("infiniband_verbs");
--	if (IS_ERR(uverbs_class)) {
--		ret = PTR_ERR(uverbs_class);
-+	ret = class_register(&uverbs_class);
-+	if (ret) {
- 		pr_err("user_verbs: couldn't create class infiniband_verbs\n");
- 		goto out_chrdev;
- 	}
- 
--	uverbs_class->devnode = uverbs_devnode;
--
--	ret = class_create_file(uverbs_class, &class_attr_abi_version.attr);
-+	ret = class_create_file(&uverbs_class, &class_attr_abi_version.attr);
- 	if (ret) {
- 		pr_err("user_verbs: couldn't create abi_version attribute\n");
- 		goto out_class;
-@@ -1286,7 +1287,7 @@ static int __init ib_uverbs_init(void)
- 	return 0;
- 
- out_class:
--	class_destroy(uverbs_class);
-+	class_unregister(&uverbs_class);
- 
- out_chrdev:
- 	unregister_chrdev_region(dynamic_uverbs_dev,
-@@ -1303,7 +1304,7 @@ static int __init ib_uverbs_init(void)
- static void __exit ib_uverbs_cleanup(void)
- {
- 	ib_unregister_client(&uverbs_client);
--	class_destroy(uverbs_class);
-+	class_unregister(&uverbs_class);
- 	unregister_chrdev_region(IB_UVERBS_BASE_DEV,
- 				 IB_UVERBS_NUM_FIXED_MINOR);
- 	unregister_chrdev_region(dynamic_uverbs_dev,
-diff --git a/drivers/infiniband/hw/hfi1/device.c b/drivers/infiniband/hw/hfi1/device.c
-index 05be0d119f79..b0a00b7aaec5 100644
---- a/drivers/infiniband/hw/hfi1/device.c
-+++ b/drivers/infiniband/hw/hfi1/device.c
-@@ -10,8 +10,29 @@
- #include "hfi.h"
- #include "device.h"
- 
--static struct class *class;
--static struct class *user_class;
-+static char *hfi1_devnode(const struct device *dev, umode_t *mode)
-+{
-+	if (mode)
-+		*mode = 0600;
-+	return kasprintf(GFP_KERNEL, "%s", dev_name(dev));
-+}
-+
-+static const struct class class = {
-+	.name = "hfi1",
-+	.devnode = hfi1_devnode,
-+};
-+
-+static char *hfi1_user_devnode(const struct device *dev, umode_t *mode)
-+{
-+	if (mode)
-+		*mode = 0666;
-+	return kasprintf(GFP_KERNEL, "%s", dev_name(dev));
-+}
-+
-+static const struct class user_class = {
-+	.name = "hfi1_user",
-+	.devnode = hfi1_user_devnode,
-+};
- static dev_t hfi1_dev;
- 
- int hfi1_cdev_init(int minor, const char *name,
-@@ -37,9 +58,9 @@ int hfi1_cdev_init(int minor, const char *name,
- 	}
- 
- 	if (user_accessible)
--		device = device_create(user_class, NULL, dev, NULL, "%s", name);
-+		device = device_create(&user_class, NULL, dev, NULL, "%s", name);
- 	else
--		device = device_create(class, NULL, dev, NULL, "%s", name);
-+		device = device_create(&class, NULL, dev, NULL, "%s", name);
- 
- 	if (IS_ERR(device)) {
- 		ret = PTR_ERR(device);
-@@ -72,26 +93,6 @@ const char *class_name(void)
- 	return hfi1_class_name;
- }
- 
--static char *hfi1_devnode(const struct device *dev, umode_t *mode)
--{
--	if (mode)
--		*mode = 0600;
--	return kasprintf(GFP_KERNEL, "%s", dev_name(dev));
--}
--
--static const char *hfi1_class_name_user = "hfi1_user";
--static const char *class_name_user(void)
--{
--	return hfi1_class_name_user;
--}
--
--static char *hfi1_user_devnode(const struct device *dev, umode_t *mode)
--{
--	if (mode)
--		*mode = 0666;
--	return kasprintf(GFP_KERNEL, "%s", dev_name(dev));
--}
--
- int __init dev_init(void)
- {
- 	int ret;
-@@ -102,27 +103,21 @@ int __init dev_init(void)
- 		goto done;
- 	}
- 
--	class = class_create(class_name());
--	if (IS_ERR(class)) {
--		ret = PTR_ERR(class);
-+	ret = class_register(&class);
-+	if (ret) {
- 		pr_err("Could not create device class (err %d)\n", -ret);
- 		unregister_chrdev_region(hfi1_dev, HFI1_NMINORS);
- 		goto done;
- 	}
--	class->devnode = hfi1_devnode;
- 
--	user_class = class_create(class_name_user());
--	if (IS_ERR(user_class)) {
--		ret = PTR_ERR(user_class);
-+	ret = class_register(&user_class);
-+	if (ret) {
- 		pr_err("Could not create device class for user accessible files (err %d)\n",
- 		       -ret);
--		class_destroy(class);
--		class = NULL;
--		user_class = NULL;
-+		class_unregister(&class);
- 		unregister_chrdev_region(hfi1_dev, HFI1_NMINORS);
- 		goto done;
- 	}
--	user_class->devnode = hfi1_user_devnode;
- 
- done:
- 	return ret;
-@@ -130,11 +125,8 @@ int __init dev_init(void)
- 
- void dev_cleanup(void)
- {
--	class_destroy(class);
--	class = NULL;
--
--	class_destroy(user_class);
--	user_class = NULL;
-+	class_unregister(&class);
-+	class_unregister(&user_class);
- 
- 	unregister_chrdev_region(hfi1_dev, HFI1_NMINORS);
- }
-diff --git a/drivers/infiniband/hw/qib/qib_file_ops.c b/drivers/infiniband/hw/qib/qib_file_ops.c
-index ef85bc8d9384..152952127f13 100644
---- a/drivers/infiniband/hw/qib/qib_file_ops.c
-+++ b/drivers/infiniband/hw/qib/qib_file_ops.c
-@@ -2250,7 +2250,9 @@ static ssize_t qib_write_iter(struct kiocb *iocb, struct iov_iter *from)
- 	return qib_user_sdma_writev(rcd, pq, iter_iov(from), from->nr_segs);
- }
- 
--static struct class *qib_class;
-+static const struct class qib_class = {
-+	.name = "ipath",
-+};
- static dev_t qib_dev;
- 
- int qib_cdev_init(int minor, const char *name,
-@@ -2281,7 +2283,7 @@ int qib_cdev_init(int minor, const char *name,
- 		goto err_cdev;
- 	}
- 
--	device = device_create(qib_class, NULL, dev, NULL, "%s", name);
-+	device = device_create(&qib_class, NULL, dev, NULL, "%s", name);
- 	if (!IS_ERR(device))
- 		goto done;
- 	ret = PTR_ERR(device);
-@@ -2325,9 +2327,8 @@ int __init qib_dev_init(void)
- 		goto done;
- 	}
- 
--	qib_class = class_create("ipath");
--	if (IS_ERR(qib_class)) {
--		ret = PTR_ERR(qib_class);
-+	ret = class_register(&qib_class);
-+	if (ret) {
- 		pr_err("Could not create device class (err %d)\n", -ret);
- 		unregister_chrdev_region(qib_dev, QIB_NMINORS);
- 	}
-@@ -2338,10 +2339,8 @@ int __init qib_dev_init(void)
- 
- void qib_dev_cleanup(void)
- {
--	if (qib_class) {
--		class_destroy(qib_class);
--		qib_class = NULL;
--	}
-+	if (class_is_registered(&qib_class))
-+		class_unregister(&qib_class);
- 
- 	unregister_chrdev_region(qib_dev, QIB_NMINORS);
- }
-diff --git a/drivers/infiniband/ulp/rtrs/rtrs-clt.c b/drivers/infiniband/ulp/rtrs/rtrs-clt.c
-index b32941dd67cb..b6ee801fd0ff 100644
---- a/drivers/infiniband/ulp/rtrs/rtrs-clt.c
-+++ b/drivers/infiniband/ulp/rtrs/rtrs-clt.c
-@@ -45,7 +45,9 @@ static struct rtrs_rdma_dev_pd dev_pd = {
- };
- 
- static struct workqueue_struct *rtrs_wq;
--static struct class *rtrs_clt_dev_class;
-+static const struct class rtrs_clt_dev_class = {
-+	.name = "rtrs-client",
-+};
- 
- static inline bool rtrs_clt_is_connected(const struct rtrs_clt_sess *clt)
- {
-@@ -2698,7 +2700,7 @@ static struct rtrs_clt_sess *alloc_clt(const char *sessname, size_t paths_num,
- 		return ERR_PTR(-ENOMEM);
- 	}
- 
--	clt->dev.class = rtrs_clt_dev_class;
-+	clt->dev.class = &rtrs_clt_dev_class;
- 	clt->dev.release = rtrs_clt_dev_release;
- 	uuid_gen(&clt->paths_uuid);
- 	INIT_LIST_HEAD_RCU(&clt->paths_list);
-@@ -3151,16 +3153,17 @@ static const struct rtrs_rdma_dev_pd_ops dev_pd_ops = {
- 
- static int __init rtrs_client_init(void)
- {
--	rtrs_rdma_dev_pd_init(0, &dev_pd);
-+	int ret = 0;
- 
--	rtrs_clt_dev_class = class_create("rtrs-client");
--	if (IS_ERR(rtrs_clt_dev_class)) {
-+	rtrs_rdma_dev_pd_init(0, &dev_pd);
-+	ret = class_register(&rtrs_clt_dev_class);
-+	if (ret) {
- 		pr_err("Failed to create rtrs-client dev class\n");
--		return PTR_ERR(rtrs_clt_dev_class);
-+		return ret;
- 	}
- 	rtrs_wq = alloc_workqueue("rtrs_client_wq", 0, 0);
- 	if (!rtrs_wq) {
--		class_destroy(rtrs_clt_dev_class);
-+		class_unregister(&rtrs_clt_dev_class);
- 		return -ENOMEM;
- 	}
- 
-@@ -3170,7 +3173,7 @@ static int __init rtrs_client_init(void)
- static void __exit rtrs_client_exit(void)
- {
- 	destroy_workqueue(rtrs_wq);
--	class_destroy(rtrs_clt_dev_class);
-+	class_unregister(&rtrs_clt_dev_class);
- 	rtrs_rdma_dev_pd_deinit(&dev_pd);
- }
- 
-diff --git a/drivers/infiniband/ulp/rtrs/rtrs-srv-sysfs.c b/drivers/infiniband/ulp/rtrs/rtrs-srv-sysfs.c
-index 5adba0f754b6..3f305e694fe8 100644
---- a/drivers/infiniband/ulp/rtrs/rtrs-srv-sysfs.c
-+++ b/drivers/infiniband/ulp/rtrs/rtrs-srv-sysfs.c
-@@ -164,7 +164,7 @@ static int rtrs_srv_create_once_sysfs_root_folders(struct rtrs_srv_path *srv_pat
- 		 */
- 		goto unlock;
- 	}
--	srv->dev.class = rtrs_dev_class;
-+	srv->dev.class = &rtrs_dev_class;
- 	err = dev_set_name(&srv->dev, "%s", srv_path->s.sessname);
- 	if (err)
- 		goto unlock;
-diff --git a/drivers/infiniband/ulp/rtrs/rtrs-srv.c b/drivers/infiniband/ulp/rtrs/rtrs-srv.c
-index c38901e2c8f4..75e56604e462 100644
---- a/drivers/infiniband/ulp/rtrs/rtrs-srv.c
-+++ b/drivers/infiniband/ulp/rtrs/rtrs-srv.c
-@@ -27,7 +27,9 @@ MODULE_LICENSE("GPL");
- #define MAX_HDR_SIZE PAGE_SIZE
- 
- static struct rtrs_rdma_dev_pd dev_pd;
--struct class *rtrs_dev_class;
-+const struct class rtrs_dev_class = {
-+	.name = "rtrs-server",
-+};
- static struct rtrs_srv_ib_ctx ib_ctx;
- 
- static int __read_mostly max_chunk_size = DEFAULT_MAX_CHUNK_SIZE;
-@@ -2253,11 +2255,10 @@ static int __init rtrs_server_init(void)
- 		       err);
- 		return err;
- 	}
--	rtrs_dev_class = class_create("rtrs-server");
--	if (IS_ERR(rtrs_dev_class)) {
--		err = PTR_ERR(rtrs_dev_class);
-+	err = class_register(&rtrs_dev_class);
-+	if (err)
- 		goto out_err;
--	}
-+
- 	rtrs_wq = alloc_workqueue("rtrs_server_wq", 0, 0);
- 	if (!rtrs_wq) {
- 		err = -ENOMEM;
-@@ -2267,7 +2268,7 @@ static int __init rtrs_server_init(void)
- 	return 0;
- 
- out_dev_class:
--	class_destroy(rtrs_dev_class);
-+	class_unregister(&rtrs_dev_class);
- out_err:
- 	return err;
- }
-@@ -2275,7 +2276,7 @@ static int __init rtrs_server_init(void)
- static void __exit rtrs_server_exit(void)
- {
- 	destroy_workqueue(rtrs_wq);
--	class_destroy(rtrs_dev_class);
-+	class_unregister(&rtrs_dev_class);
- 	rtrs_rdma_dev_pd_deinit(&dev_pd);
- }
- 
-diff --git a/drivers/infiniband/ulp/rtrs/rtrs-srv.h b/drivers/infiniband/ulp/rtrs/rtrs-srv.h
-index 2f8a638e36fa..5e325b82ff33 100644
---- a/drivers/infiniband/ulp/rtrs/rtrs-srv.h
-+++ b/drivers/infiniband/ulp/rtrs/rtrs-srv.h
-@@ -129,7 +129,7 @@ struct rtrs_srv_ib_ctx {
- 	int			ib_dev_count;
- };
- 
--extern struct class *rtrs_dev_class;
-+extern const struct class rtrs_dev_class;
- 
- void close_path(struct rtrs_srv_path *srv_path);
- 
+The following configs have been built successfully.
+More configs may be tested in the coming days.
+
+tested configs:
+alpha                            allyesconfig   gcc  
+alpha                               defconfig   gcc  
+alpha                randconfig-r023-20230731   gcc  
+arc                              allyesconfig   gcc  
+arc                                 defconfig   gcc  
+arc                  randconfig-r014-20230803   gcc  
+arc                  randconfig-r026-20230731   gcc  
+arc                  randconfig-r032-20230731   gcc  
+arc                  randconfig-r033-20230731   gcc  
+arc                  randconfig-r043-20230802   gcc  
+arm                              allmodconfig   gcc  
+arm                              allyesconfig   gcc  
+arm                                 defconfig   gcc  
+arm                           h3600_defconfig   gcc  
+arm                  randconfig-r024-20230731   gcc  
+arm                  randconfig-r046-20230802   clang
+arm                        realview_defconfig   gcc  
+arm64                            allyesconfig   gcc  
+arm64                               defconfig   gcc  
+arm64                randconfig-r004-20230731   gcc  
+arm64                randconfig-r013-20230803   clang
+arm64                randconfig-r033-20230731   gcc  
+csky                                defconfig   gcc  
+csky                 randconfig-r006-20230801   gcc  
+csky                 randconfig-r036-20230731   gcc  
+hexagon              randconfig-r004-20230801   clang
+hexagon              randconfig-r012-20230731   clang
+hexagon              randconfig-r015-20230731   clang
+hexagon              randconfig-r041-20230802   clang
+hexagon              randconfig-r045-20230802   clang
+i386                             allyesconfig   gcc  
+i386         buildonly-randconfig-r004-20230731   gcc  
+i386         buildonly-randconfig-r004-20230801   gcc  
+i386         buildonly-randconfig-r005-20230731   gcc  
+i386         buildonly-randconfig-r005-20230801   gcc  
+i386         buildonly-randconfig-r006-20230731   gcc  
+i386         buildonly-randconfig-r006-20230801   gcc  
+i386                              debian-10.3   gcc  
+i386                                defconfig   gcc  
+i386                 randconfig-i001-20230731   gcc  
+i386                 randconfig-i002-20230731   gcc  
+i386                 randconfig-i003-20230731   gcc  
+i386                 randconfig-i004-20230731   gcc  
+i386                 randconfig-i005-20230731   gcc  
+i386                 randconfig-i006-20230731   gcc  
+i386                 randconfig-i011-20230731   clang
+i386                 randconfig-i011-20230801   clang
+i386                 randconfig-i012-20230731   clang
+i386                 randconfig-i012-20230801   clang
+i386                 randconfig-i013-20230731   clang
+i386                 randconfig-i013-20230801   clang
+i386                 randconfig-i014-20230731   clang
+i386                 randconfig-i014-20230801   clang
+i386                 randconfig-i015-20230731   clang
+i386                 randconfig-i015-20230801   clang
+i386                 randconfig-i016-20230731   clang
+i386                 randconfig-i016-20230801   clang
+i386                 randconfig-r014-20230731   clang
+i386                 randconfig-r024-20230731   clang
+loongarch                        allmodconfig   gcc  
+loongarch                         allnoconfig   gcc  
+loongarch                           defconfig   gcc  
+m68k                             allmodconfig   gcc  
+m68k                             allyesconfig   gcc  
+m68k                                defconfig   gcc  
+microblaze           randconfig-r002-20230801   gcc  
+microblaze           randconfig-r025-20230731   gcc  
+mips                             allmodconfig   gcc  
+mips                             allyesconfig   gcc  
+mips                  maltasmvp_eva_defconfig   gcc  
+mips                 randconfig-r005-20230801   clang
+mips                 randconfig-r022-20230731   gcc  
+mips                 randconfig-r032-20230731   clang
+mips                 randconfig-r035-20230731   clang
+nios2                               defconfig   gcc  
+nios2                randconfig-r011-20230731   gcc  
+nios2                randconfig-r035-20230731   gcc  
+openrisc             randconfig-r003-20230731   gcc  
+openrisc             randconfig-r012-20230803   gcc  
+openrisc             randconfig-r016-20230803   gcc  
+parisc                           allyesconfig   gcc  
+parisc                              defconfig   gcc  
+parisc               randconfig-r026-20230731   gcc  
+parisc64                            defconfig   gcc  
+powerpc                          allmodconfig   gcc  
+powerpc                           allnoconfig   gcc  
+powerpc                   currituck_defconfig   gcc  
+powerpc                      katmai_defconfig   clang
+powerpc                     mpc83xx_defconfig   gcc  
+powerpc                       ppc64_defconfig   gcc  
+powerpc                     tqm8548_defconfig   gcc  
+riscv                            allmodconfig   gcc  
+riscv                             allnoconfig   gcc  
+riscv                            allyesconfig   gcc  
+riscv                               defconfig   gcc  
+riscv                randconfig-r021-20230731   clang
+riscv                randconfig-r025-20230731   clang
+riscv                randconfig-r034-20230731   gcc  
+riscv                randconfig-r042-20230802   gcc  
+riscv                          rv32_defconfig   gcc  
+s390                             allmodconfig   gcc  
+s390                             allyesconfig   gcc  
+s390                                defconfig   gcc  
+s390                 randconfig-r001-20230801   gcc  
+s390                 randconfig-r021-20230731   clang
+s390                 randconfig-r044-20230802   gcc  
+sh                               allmodconfig   gcc  
+sh                   randconfig-r003-20230801   gcc  
+sh                   randconfig-r005-20230731   gcc  
+sh                          rsk7203_defconfig   gcc  
+sh                        sh7763rdp_defconfig   gcc  
+sparc                            allyesconfig   gcc  
+sparc                               defconfig   gcc  
+sparc                randconfig-r015-20230803   gcc  
+sparc                randconfig-r023-20230731   gcc  
+sparc                randconfig-r034-20230731   gcc  
+sparc64              randconfig-r011-20230803   gcc  
+sparc64              randconfig-r013-20230731   gcc  
+sparc64              randconfig-r016-20230731   gcc  
+um                               allmodconfig   clang
+um                                allnoconfig   clang
+um                               allyesconfig   clang
+um                                  defconfig   gcc  
+um                             i386_defconfig   gcc  
+um                   randconfig-r001-20230731   clang
+um                           x86_64_defconfig   gcc  
+x86_64                           allyesconfig   gcc  
+x86_64       buildonly-randconfig-r001-20230731   gcc  
+x86_64       buildonly-randconfig-r001-20230801   gcc  
+x86_64       buildonly-randconfig-r002-20230731   gcc  
+x86_64       buildonly-randconfig-r002-20230801   gcc  
+x86_64       buildonly-randconfig-r003-20230731   gcc  
+x86_64       buildonly-randconfig-r003-20230801   gcc  
+x86_64                              defconfig   gcc  
+x86_64                                  kexec   gcc  
+x86_64               randconfig-r031-20230731   gcc  
+x86_64               randconfig-r036-20230731   gcc  
+x86_64               randconfig-x001-20230731   clang
+x86_64               randconfig-x001-20230802   gcc  
+x86_64               randconfig-x002-20230731   clang
+x86_64               randconfig-x002-20230802   gcc  
+x86_64               randconfig-x003-20230731   clang
+x86_64               randconfig-x003-20230802   gcc  
+x86_64               randconfig-x004-20230731   clang
+x86_64               randconfig-x004-20230802   gcc  
+x86_64               randconfig-x005-20230731   clang
+x86_64               randconfig-x005-20230802   gcc  
+x86_64               randconfig-x006-20230731   clang
+x86_64               randconfig-x006-20230802   gcc  
+x86_64               randconfig-x011-20230731   gcc  
+x86_64               randconfig-x012-20230731   gcc  
+x86_64               randconfig-x013-20230731   gcc  
+x86_64               randconfig-x014-20230731   gcc  
+x86_64               randconfig-x015-20230731   gcc  
+x86_64               randconfig-x016-20230731   gcc  
+x86_64                           rhel-8.3-bpf   gcc  
+x86_64                          rhel-8.3-func   gcc  
+x86_64                    rhel-8.3-kselftests   gcc  
+x86_64                         rhel-8.3-kunit   gcc  
+x86_64                           rhel-8.3-ltp   gcc  
+x86_64                          rhel-8.3-rust   clang
+x86_64                               rhel-8.3   gcc  
+
 -- 
-2.41.0
-
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
