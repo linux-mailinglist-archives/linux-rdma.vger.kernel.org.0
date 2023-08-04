@@ -2,76 +2,232 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 83672770046
-	for <lists+linux-rdma@lfdr.de>; Fri,  4 Aug 2023 14:31:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E20F770061
+	for <lists+linux-rdma@lfdr.de>; Fri,  4 Aug 2023 14:41:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230061AbjHDMbx (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 4 Aug 2023 08:31:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37010 "EHLO
+        id S229906AbjHDMld (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 4 Aug 2023 08:41:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40196 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229538AbjHDMbw (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 4 Aug 2023 08:31:52 -0400
-Received: from smtp-relay-services-1.canonical.com (smtp-relay-services-1.canonical.com [185.125.188.251])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8150146A8
-        for <linux-rdma@vger.kernel.org>; Fri,  4 Aug 2023 05:31:51 -0700 (PDT)
-Received: from juju-98d295-prod-launchpad-15.localdomain (buildd-manager.lp.internal [10.131.215.202])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-relay-services-1.canonical.com (Postfix) with ESMTPSA id E95013F1FA
-        for <linux-rdma@vger.kernel.org>; Fri,  4 Aug 2023 12:31:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=launchpad.net;
-        s=20210803; t=1691152309;
-        bh=mctJbc0566/HuMeQGyFS3P2imOiyPPujpkYAl44DJeY=;
-        h=Content-Type:MIME-Version:To:From:Subject:Message-Id:Date:
-         Reply-To;
-        b=BWqCj+3DQmhXjev176+Cf9Ymx5fGKlMaVaO11Z0DEGea+GAbbAORB/pyBmYxFlR18
-         Ypuu4yVlVkk4A4xaBCMM5YB68d5pPxZqEjppVn9OFgLLFkAUlSUW8k221IUy/x7CqI
-         8df+fLQVxoJaBPyuM4OKYSLiOdcLOX1Cpvq1ynM15BxieyIFDyFMzFu/Jg7In1glGx
-         b/T4p57Tt5Y+vZrKlWF4V/f6Vcpy5q5KaIAwS5xuiu6YQHRrwbFeZdzgfe2rpcFdwr
-         JBdBHiP6IjRueJhpZrGuSVSDoOCGHotcMkm5z1sO33igkZeJzJPIs62e2BMxQnuV/E
-         96i4S1qzsFRrw==
-Received: from buildd-manager.lp.internal (localhost [127.0.0.1])
-        by juju-98d295-prod-launchpad-15.localdomain (Postfix) with ESMTP id E9BF57E036
-        for <linux-rdma@vger.kernel.org>; Fri,  4 Aug 2023 12:31:48 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
-MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-Launchpad-Message-Rationale: Requester @linux-rdma
-X-Launchpad-Message-For: linux-rdma
-X-Launchpad-Notification-Type: recipe-build-status
-X-Launchpad-Archive: ~linux-rdma/ubuntu/rdma-core-daily
-X-Launchpad-Build-State: MANUALDEPWAIT
-To:     Linux RDMA <linux-rdma@vger.kernel.org>
-From:   noreply@launchpad.net
-Subject: [recipe build #3584058] of ~linux-rdma rdma-core-daily in xenial: Dependency wait
-Message-Id: <169115230893.2513737.7788097414421340972.launchpad@buildd-manager.lp.internal>
-Date:   Fri, 04 Aug 2023 12:31:48 -0000
-Reply-To: noreply@launchpad.net
-Sender: noreply@launchpad.net
-X-Generated-By: Launchpad (canonical.com); Revision="6a25791a70c738891354c9239ccb07c6c99f87b3"; Instance="launchpad-buildd-manager"
-X-Launchpad-Hash: aebb6c35a3626496b85906aa1552a8c516cd9528
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+        with ESMTP id S230121AbjHDMlb (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 4 Aug 2023 08:41:31 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.24])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5399249E1
+        for <linux-rdma@vger.kernel.org>; Fri,  4 Aug 2023 05:41:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1691152888; x=1722688888;
+  h=date:from:to:cc:subject:message-id;
+  bh=9FtPFYQ/DxCAHHHTs2adlSdmQixJIn0n5HKnU7jh51s=;
+  b=nBWx2KuAfboJXeqvf1IyfXZ+FshbJ+ovTCv7OL7dYxccCzlSBS0RZ8JA
+   VosuT/WeI2GxeyOiVWf032dVqJketm+4TW4zu4197iHKrnq438BjqtKvN
+   MNPgTMOWfXJQ3Vv1ehvRidfEpvgDZ/0q207GcJ7KLgxCMcZqv4jHauC60
+   5Od0ovVnKLvNceqmPe8LYsY0poT+qVwtPu1B4ekk0vopQ/V8xcvIFaYUV
+   Pk81CqHASWnUOhCgN6pYWOvq1Gku/hHCmwn29L5Buwa7yvCbf++6CoryM
+   Bqkt6LxFRgcWWJhrHIINsXUsoicyuBwwZz4toXNoiI/3FWCARePUtXQY1
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10792"; a="372890807"
+X-IronPort-AV: E=Sophos;i="6.01,255,1684825200"; 
+   d="scan'208";a="372890807"
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Aug 2023 05:41:26 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10792"; a="853739111"
+X-IronPort-AV: E=Sophos;i="6.01,255,1684825200"; 
+   d="scan'208";a="853739111"
+Received: from lkp-server01.sh.intel.com (HELO d1ccc7e87e8f) ([10.239.97.150])
+  by orsmga004.jf.intel.com with ESMTP; 04 Aug 2023 05:41:25 -0700
+Received: from kbuild by d1ccc7e87e8f with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qRu7Q-0002qg-2i;
+        Fri, 04 Aug 2023 12:41:24 +0000
+Date:   Fri, 04 Aug 2023 20:41:01 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Leon Romanovsky <leon@kernel.org>
+Cc:     Doug Ledford <dledford@redhat.com>,
+        Jason Gunthorpe <jgg+lists@ziepe.ca>,
+        linux-rdma@vger.kernel.org
+Subject: [rdma:wip/leon-for-next] BUILD SUCCESS
+ 38313c6d2a02c28162e06753b01bd885caf9386d
+Message-ID: <202308042059.UYFUUZKy-lkp@intel.com>
+User-Agent: s-nail v14.9.24
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
- * State: Dependency wait
- * Recipe: linux-rdma/rdma-core-daily
- * Archive: ~linux-rdma/ubuntu/rdma-core-daily
- * Distroseries: xenial
- * Duration: 2 minutes
- * Build Log: https://launchpad.net/~linux-rdma/+archive/ubuntu/rdma-core-d=
-aily/+recipebuild/3584058/+files/buildlog.txt.gz
- * Upload Log:=20
- * Builder: https://launchpad.net/builders/lcy02-amd64-039
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git wip/leon-for-next
+branch HEAD: 38313c6d2a02c28162e06753b01bd885caf9386d  RDMA/irdma: Replace one-element array with flexible-array member
 
---=20
-https://launchpad.net/~linux-rdma/+archive/ubuntu/rdma-core-daily/+recipebu=
-ild/3584058
-Your team Linux RDMA is the requester of the build.
+elapsed time: 1065m
 
+configs tested: 153
+configs skipped: 5
+
+The following configs have been built successfully.
+More configs may be tested in the coming days.
+
+tested configs:
+alpha                            allyesconfig   gcc  
+alpha                               defconfig   gcc  
+alpha                randconfig-r034-20230731   gcc  
+arc                              allyesconfig   gcc  
+arc                                 defconfig   gcc  
+arc                  randconfig-r004-20230801   gcc  
+arc                  randconfig-r021-20230803   gcc  
+arc                  randconfig-r036-20230731   gcc  
+arc                  randconfig-r043-20230731   gcc  
+arc                  randconfig-r043-20230802   gcc  
+arm                              allmodconfig   gcc  
+arm                              allyesconfig   gcc  
+arm                                 defconfig   gcc  
+arm                  randconfig-r005-20230801   clang
+arm                  randconfig-r021-20230731   gcc  
+arm                  randconfig-r035-20230731   clang
+arm                  randconfig-r046-20230731   gcc  
+arm                        realview_defconfig   gcc  
+arm64                            allyesconfig   gcc  
+arm64                               defconfig   gcc  
+arm64                randconfig-r004-20230731   gcc  
+arm64                randconfig-r014-20230731   clang
+arm64                randconfig-r023-20230731   clang
+csky                                defconfig   gcc  
+csky                 randconfig-r032-20230731   gcc  
+hexagon              randconfig-r013-20230731   clang
+hexagon              randconfig-r022-20230803   clang
+hexagon              randconfig-r041-20230731   clang
+hexagon              randconfig-r045-20230731   clang
+i386                             allyesconfig   gcc  
+i386         buildonly-randconfig-r004-20230801   gcc  
+i386         buildonly-randconfig-r004-20230802   clang
+i386         buildonly-randconfig-r005-20230801   gcc  
+i386         buildonly-randconfig-r005-20230802   clang
+i386         buildonly-randconfig-r006-20230801   gcc  
+i386         buildonly-randconfig-r006-20230802   clang
+i386                              debian-10.3   gcc  
+i386                                defconfig   gcc  
+i386                 randconfig-i001-20230731   gcc  
+i386                 randconfig-i001-20230802   clang
+i386                 randconfig-i002-20230731   gcc  
+i386                 randconfig-i002-20230802   clang
+i386                 randconfig-i003-20230731   gcc  
+i386                 randconfig-i003-20230802   clang
+i386                 randconfig-i004-20230731   gcc  
+i386                 randconfig-i004-20230802   clang
+i386                 randconfig-i005-20230731   gcc  
+i386                 randconfig-i005-20230802   clang
+i386                 randconfig-i006-20230731   gcc  
+i386                 randconfig-i006-20230802   clang
+i386                 randconfig-i011-20230731   clang
+i386                 randconfig-i012-20230731   clang
+i386                 randconfig-i013-20230731   clang
+i386                 randconfig-i014-20230731   clang
+i386                 randconfig-i015-20230731   clang
+i386                 randconfig-i016-20230731   clang
+i386                 randconfig-r014-20230731   clang
+loongarch                        allmodconfig   gcc  
+loongarch                         allnoconfig   gcc  
+loongarch                           defconfig   gcc  
+loongarch            randconfig-r024-20230803   gcc  
+m68k                             allmodconfig   gcc  
+m68k                             allyesconfig   gcc  
+m68k                                defconfig   gcc  
+microblaze           randconfig-r001-20230801   gcc  
+microblaze           randconfig-r003-20230801   gcc  
+microblaze           randconfig-r011-20230731   gcc  
+mips                             allmodconfig   gcc  
+mips                             allyesconfig   gcc  
+mips                  maltasmvp_eva_defconfig   gcc  
+mips                 randconfig-r002-20230801   clang
+mips                 randconfig-r025-20230803   gcc  
+nios2                               defconfig   gcc  
+nios2                randconfig-r012-20230731   gcc  
+nios2                randconfig-r022-20230731   gcc  
+openrisc             randconfig-r003-20230731   gcc  
+openrisc             randconfig-r013-20230731   gcc  
+openrisc             randconfig-r016-20230731   gcc  
+parisc                           allyesconfig   gcc  
+parisc                              defconfig   gcc  
+parisc               randconfig-r006-20230801   gcc  
+parisc               randconfig-r015-20230731   gcc  
+parisc               randconfig-r023-20230803   gcc  
+parisc64                            defconfig   gcc  
+powerpc                          allmodconfig   gcc  
+powerpc                           allnoconfig   gcc  
+powerpc                      katmai_defconfig   clang
+powerpc                     mpc83xx_defconfig   gcc  
+powerpc                       ppc64_defconfig   gcc  
+riscv                            allmodconfig   gcc  
+riscv                             allnoconfig   gcc  
+riscv                            allyesconfig   gcc  
+riscv                               defconfig   gcc  
+riscv                randconfig-r025-20230731   clang
+riscv                randconfig-r042-20230731   clang
+riscv                randconfig-r042-20230802   gcc  
+riscv                          rv32_defconfig   gcc  
+s390                             allmodconfig   gcc  
+s390                             allyesconfig   gcc  
+s390                                defconfig   gcc  
+s390                 randconfig-r011-20230731   clang
+s390                 randconfig-r015-20230731   clang
+s390                 randconfig-r044-20230731   clang
+s390                 randconfig-r044-20230802   gcc  
+sh                               allmodconfig   gcc  
+sh                   randconfig-r005-20230731   gcc  
+sh                   randconfig-r016-20230731   gcc  
+sh                   randconfig-r024-20230731   gcc  
+sh                          rsk7203_defconfig   gcc  
+sh                        sh7763rdp_defconfig   gcc  
+sparc                            allyesconfig   gcc  
+sparc                               defconfig   gcc  
+sparc                randconfig-r026-20230731   gcc  
+um                               allmodconfig   clang
+um                                allnoconfig   clang
+um                               allyesconfig   clang
+um                                  defconfig   gcc  
+um                             i386_defconfig   gcc  
+um                           x86_64_defconfig   gcc  
+x86_64                           allyesconfig   gcc  
+x86_64       buildonly-randconfig-r001-20230801   gcc  
+x86_64       buildonly-randconfig-r001-20230802   clang
+x86_64       buildonly-randconfig-r002-20230801   gcc  
+x86_64       buildonly-randconfig-r002-20230802   clang
+x86_64       buildonly-randconfig-r003-20230801   gcc  
+x86_64       buildonly-randconfig-r003-20230802   clang
+x86_64                              defconfig   gcc  
+x86_64                                  kexec   gcc  
+x86_64               randconfig-r012-20230731   clang
+x86_64               randconfig-r031-20230731   gcc  
+x86_64               randconfig-x001-20230731   clang
+x86_64               randconfig-x001-20230802   gcc  
+x86_64               randconfig-x002-20230731   clang
+x86_64               randconfig-x002-20230802   gcc  
+x86_64               randconfig-x003-20230731   clang
+x86_64               randconfig-x003-20230802   gcc  
+x86_64               randconfig-x004-20230731   clang
+x86_64               randconfig-x004-20230802   gcc  
+x86_64               randconfig-x005-20230731   clang
+x86_64               randconfig-x005-20230802   gcc  
+x86_64               randconfig-x006-20230731   clang
+x86_64               randconfig-x006-20230802   gcc  
+x86_64               randconfig-x011-20230731   gcc  
+x86_64               randconfig-x012-20230731   gcc  
+x86_64               randconfig-x013-20230731   gcc  
+x86_64               randconfig-x014-20230731   gcc  
+x86_64               randconfig-x015-20230731   gcc  
+x86_64               randconfig-x016-20230731   gcc  
+x86_64                           rhel-8.3-bpf   gcc  
+x86_64                         rhel-8.3-kunit   gcc  
+x86_64                          rhel-8.3-rust   clang
+x86_64                               rhel-8.3   gcc  
+xtensa               randconfig-r026-20230803   gcc  
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
