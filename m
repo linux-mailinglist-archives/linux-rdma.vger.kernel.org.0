@@ -2,88 +2,87 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B8E876FBB1
-	for <lists+linux-rdma@lfdr.de>; Fri,  4 Aug 2023 10:10:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9320476FBD9
+	for <lists+linux-rdma@lfdr.de>; Fri,  4 Aug 2023 10:21:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234418AbjHDIKY (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 4 Aug 2023 04:10:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50762 "EHLO
+        id S231501AbjHDIVu (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 4 Aug 2023 04:21:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56918 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233956AbjHDIKX (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 4 Aug 2023 04:10:23 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B7FE74687;
-        Fri,  4 Aug 2023 01:10:22 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 4825C61F63;
-        Fri,  4 Aug 2023 08:10:22 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id A1DE8C433CB;
-        Fri,  4 Aug 2023 08:10:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1691136621;
-        bh=YZNe9yQeBFUem9NuaEnUAGWF5xNRlgYGY0hSbJMMoVU=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=lWgdqsyRWkHhMBGxNnJlT1TrUkZQ3JoCO8ezc1Rwm12HWnwGfktyiLyiw6845hmwV
-         OYP/liHSaJmwr1C4pJa39aFM8NtD9MmzAJ5XmGX8uBaqhB53dJwniP7Wdz0YvtQdaX
-         E+gmigPhrRyCemggFQiqBr++EAVupUJatvbtMmQ6+0pN8M7MbXwaevrSWx2JqUK61i
-         8nvWvYmnrey5bCh+ionB+VQt3wIJuoIbzBxMvtx7vwJ8PBR8Tyz38eH37gT+3AURwH
-         Yu3y4MF3akGZepWa0Zlpl28ETXztchHPrVR1yWMjf25W8jr8UDoI+CAyAVUa4GhMwT
-         ro9EoPH8W+UdQ==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 8386AC6445B;
-        Fri,  4 Aug 2023 08:10:21 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        with ESMTP id S232767AbjHDIVs (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 4 Aug 2023 04:21:48 -0400
+Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E8D7E6F
+        for <linux-rdma@vger.kernel.org>; Fri,  4 Aug 2023 01:21:47 -0700 (PDT)
+Received: from kwepemi500008.china.huawei.com (unknown [172.30.72.53])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4RHJWJ5yrrztRsG;
+        Fri,  4 Aug 2023 16:18:20 +0800 (CST)
+Received: from huawei.com (10.90.53.73) by kwepemi500008.china.huawei.com
+ (7.221.188.139) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Fri, 4 Aug
+ 2023 16:21:44 +0800
+From:   Ruan Jinjie <ruanjinjie@huawei.com>
+To:     <linux-rdma@vger.kernel.org>, Jason Gunthorpe <jgg@ziepe.ca>,
+        Leon Romanovsky <leon@kernel.org>,
+        Mustafa Ismail <mustafa.ismail@intel.com>,
+        Shiraz Saleem <shiraz.saleem@intel.com>
+CC:     <ruanjinjie@huawei.com>
+Subject: [PATCH -next] RDMA: Remove unnecessary NULL values
+Date:   Fri, 4 Aug 2023 16:21:01 +0800
+Message-ID: <20230804082102.3361961-1-ruanjinjie@huawei.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH V6 net-next] net: mana: Configure hwc timeout from hardware
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <169113662153.21944.15547696025000936680.git-patchwork-notify@kernel.org>
-Date:   Fri, 04 Aug 2023 08:10:21 +0000
-References: <1690974460-15660-1-git-send-email-schakrabarti@linux.microsoft.com>
-In-Reply-To: <1690974460-15660-1-git-send-email-schakrabarti@linux.microsoft.com>
-To:     Souradeep Chakrabarti <schakrabarti@linux.microsoft.com>
-Cc:     kys@microsoft.com, haiyangz@microsoft.com, wei.liu@kernel.org,
-        decui@microsoft.com, davem@davemloft.net, edumazet@google.com,
-        kuba@kernel.org, pabeni@redhat.com, longli@microsoft.com,
-        sharmaajay@microsoft.com, leon@kernel.org, cai.huoqing@linux.dev,
-        ssengar@linux.microsoft.com, vkuznets@redhat.com,
-        tglx@linutronix.de, linux-hyperv@vger.kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-rdma@vger.kernel.org, schakrabarti@microsoft.com
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.90.53.73]
+X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
+ kwepemi500008.china.huawei.com (7.221.188.139)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Hello:
+The NULL initialization of the pointers assigned by kzalloc() first is
+not necessary, because if the kzalloc() failed, the pointers will be
+assigned NULL, otherwise it works as usual. so remove it.
 
-This patch was applied to netdev/net-next.git (main)
-by David S. Miller <davem@davemloft.net>:
+Signed-off-by: Ruan Jinjie <ruanjinjie@huawei.com>
+---
+ drivers/infiniband/core/iwpm_util.c | 2 +-
+ drivers/infiniband/hw/irdma/verbs.c | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
 
-On Wed,  2 Aug 2023 04:07:40 -0700 you wrote:
-> At present hwc timeout value is a fixed value. This patch sets the hwc
-> timeout from the hardware. It now uses a new hardware capability
-> GDMA_DRV_CAP_FLAG_1_HWC_TIMEOUT_RECONFIG to query and set the value
-> in hwc_timeout.
-> 
-> Signed-off-by: Souradeep Chakrabarti <schakrabarti@linux.microsoft.com>
-> 
-> [...]
-
-Here is the summary with links:
-  - [V6,net-next] net: mana: Configure hwc timeout from hardware
-    https://git.kernel.org/netdev/net-next/c/62c1bff593b7
-
-You are awesome, thank you!
+diff --git a/drivers/infiniband/core/iwpm_util.c b/drivers/infiniband/core/iwpm_util.c
+index 358a2db38d23..eecb369898f5 100644
+--- a/drivers/infiniband/core/iwpm_util.c
++++ b/drivers/infiniband/core/iwpm_util.c
+@@ -307,7 +307,7 @@ int iwpm_get_remote_info(struct sockaddr_storage *mapped_loc_addr,
+ struct iwpm_nlmsg_request *iwpm_get_nlmsg_request(__u32 nlmsg_seq,
+ 					u8 nl_client, gfp_t gfp)
+ {
+-	struct iwpm_nlmsg_request *nlmsg_request = NULL;
++	struct iwpm_nlmsg_request *nlmsg_request;
+ 	unsigned long flags;
+ 
+ 	nlmsg_request = kzalloc(sizeof(struct iwpm_nlmsg_request), gfp);
+diff --git a/drivers/infiniband/hw/irdma/verbs.c b/drivers/infiniband/hw/irdma/verbs.c
+index a1a42a7cd783..b250f6ac0eea 100644
+--- a/drivers/infiniband/hw/irdma/verbs.c
++++ b/drivers/infiniband/hw/irdma/verbs.c
+@@ -2826,7 +2826,7 @@ static struct irdma_mr *irdma_alloc_iwmr(struct ib_umem *region,
+ {
+ 	struct irdma_device *iwdev = to_iwdev(pd->device);
+ 	struct irdma_pbl *iwpbl = NULL;
+-	struct irdma_mr *iwmr = NULL;
++	struct irdma_mr *iwmr;
+ 	unsigned long pgsz_bitmap;
+ 
+ 	iwmr = kzalloc(sizeof(*iwmr), GFP_KERNEL);
 -- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
+2.34.1
 
