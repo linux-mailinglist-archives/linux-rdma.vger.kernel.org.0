@@ -2,48 +2,61 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7DB77771354
-	for <lists+linux-rdma@lfdr.de>; Sun,  6 Aug 2023 05:16:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A02A7713DC
+	for <lists+linux-rdma@lfdr.de>; Sun,  6 Aug 2023 09:40:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229756AbjHFDQV (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Sat, 5 Aug 2023 23:16:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56876 "EHLO
+        id S229449AbjHFHkZ (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Sun, 6 Aug 2023 03:40:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50560 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229441AbjHFDQU (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Sat, 5 Aug 2023 23:16:20 -0400
-Received: from out-82.mta0.migadu.com (out-82.mta0.migadu.com [91.218.175.82])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 078FD1FE1
-        for <linux-rdma@vger.kernel.org>; Sat,  5 Aug 2023 20:16:17 -0700 (PDT)
-Message-ID: <4479c1a6-6e9b-b3ff-fda8-b6ef9955637b@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1691291775;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=pRihfOqRfejTmzDaz8aF2eHxOOgyGBGkEWklCNh2sT4=;
-        b=DCVoaFFVlXm9ziqGdv22XpcNckUr69BPUE+1JWEXgQxjR5sVueflRxotdzo0w5SEkDY6O6
-        TYeTTcn1ns9FexGBkkqmDOmi+8gJxAJJkbynFKKP9osa0ouDoZhip8Tz+yC5KV3pRC9JRY
-        1F3jN8J95UiK7wvO6H0LlWqIO6SFeK8=
-Date:   Sun, 6 Aug 2023 11:16:02 +0800
+        with ESMTP id S229436AbjHFHkY (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Sun, 6 Aug 2023 03:40:24 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E07D51BDF;
+        Sun,  6 Aug 2023 00:40:23 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 1558D60FCD;
+        Sun,  6 Aug 2023 07:40:23 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 57B41C433D9;
+        Sun,  6 Aug 2023 07:40:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1691307622;
+        bh=Bam6N1dYm20mOTjZTEj2DEAzIMxdEcmcfrPsLZbH6U0=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=EMF/fh3fkVw3JCZlEJoUyH02FIGagIvDeMSJeXWCYRwbniEbN+eXa4oXkcdtWgK/c
+         80XFJz+SkFLFL9mLeOL6o855y2roYf1mKSLaWyhr088DSaRKiJmkZu6fz+nRy/KDOF
+         F7xVSlXE2YaI9ccJ85LJhyJtdOX52WDKEyevtIP4n5QV7NxFtbzDs54okST56knVNY
+         7mxGePFrNj/HeT7tlLLI37LEufLUOvqQN4zr+CMQfpl0LFOBzo2hZTdPmpA9Nnj/N5
+         2k1PtoWd/SAWTFkjaNWW0JvYfghrhCvYC47Ea1nMO70F3ZBLSYOSitnOm092qmd7Of
+         vxKiGYsRTTygQ==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 352ACC73FE1;
+        Sun,  6 Aug 2023 07:40:22 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Subject: Re: [PATCH net-next 07/10] mlx4: Register mlx4 devices to an
- auxiliary virtual bus
-To:     Petr Pavlu <petr.pavlu@suse.com>, tariqt@nvidia.com,
-        yishaih@nvidia.com, leon@kernel.org
-Cc:     davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
-        pabeni@redhat.com, jgg@ziepe.ca, netdev@vger.kernel.org,
-        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20230804150527.6117-1-petr.pavlu@suse.com>
- <20230804150527.6117-8-petr.pavlu@suse.com>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From:   Zhu Yanjun <yanjun.zhu@linux.dev>
-In-Reply-To: <20230804150527.6117-8-petr.pavlu@suse.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+Subject: Re: [PATCH V6,net-next] net: mana: Add page pool for RX buffers
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <169130762221.9536.13208185445739206217.git-patchwork-notify@kernel.org>
+Date:   Sun, 06 Aug 2023 07:40:22 +0000
+References: <1691181233-25286-1-git-send-email-haiyangz@microsoft.com>
+In-Reply-To: <1691181233-25286-1-git-send-email-haiyangz@microsoft.com>
+To:     Haiyang Zhang <haiyangz@microsoft.com>
+Cc:     linux-hyperv@vger.kernel.org, netdev@vger.kernel.org,
+        decui@microsoft.com, kys@microsoft.com, paulros@microsoft.com,
+        olaf@aepfle.de, vkuznets@redhat.com, davem@davemloft.net,
+        wei.liu@kernel.org, edumazet@google.com, kuba@kernel.org,
+        pabeni@redhat.com, leon@kernel.org, longli@microsoft.com,
+        ssengar@linux.microsoft.com, linux-rdma@vger.kernel.org,
+        daniel@iogearbox.net, john.fastabend@gmail.com,
+        bpf@vger.kernel.org, ast@kernel.org, sharmaajay@microsoft.com,
+        hawk@kernel.org, tglx@linutronix.de,
+        shradhagupta@linux.microsoft.com, linux-kernel@vger.kernel.org
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -51,491 +64,30 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-在 2023/8/4 23:05, Petr Pavlu 写道:
-> Add an auxiliary virtual bus to model the mlx4 driver structure. The
-> code is added along the current custom device management logic.
-> Subsequent patches switch mlx4_en and mlx4_ib to the auxiliary bus and
-> the old interface is then removed.
-> 
-> Structure mlx4_priv gains a new adev dynamic array to keep track of its
-> auxiliary devices. Access to the array is protected by the global
-> mlx4_intf mutex.
-> 
-> Functions mlx4_register_device() and mlx4_unregister_device() are
-> updated to expose auxiliary devices on the bus in order to load mlx4_en
-> and/or mlx4_ib. Functions mlx4_register_auxiliary_driver() and
-> mlx4_unregister_auxiliary_driver() are added to substitute
-> mlx4_register_interface() and mlx4_unregister_interface(), respectively.
-> Function mlx4_do_bond() is adjusted to walk over the adev array and
-> re-adds a specific auxiliary device if its driver sets the
-> MLX4_INTFF_BONDING flag.
-> 
-> Signed-off-by: Petr Pavlu <petr.pavlu@suse.com>
-> Tested-by: Leon Romanovsky <leon@kernel.org>
-> ---
->   drivers/net/ethernet/mellanox/mlx4/Kconfig |   1 +
->   drivers/net/ethernet/mellanox/mlx4/intf.c  | 230 ++++++++++++++++++++-
->   drivers/net/ethernet/mellanox/mlx4/main.c  |  17 +-
->   drivers/net/ethernet/mellanox/mlx4/mlx4.h  |   6 +
->   include/linux/mlx4/device.h                |   7 +
->   include/linux/mlx4/driver.h                |  11 +
->   6 files changed, 268 insertions(+), 4 deletions(-)
-> 
-> diff --git a/drivers/net/ethernet/mellanox/mlx4/Kconfig b/drivers/net/ethernet/mellanox/mlx4/Kconfig
-> index 1b4b1f642317..825e05fb8607 100644
-> --- a/drivers/net/ethernet/mellanox/mlx4/Kconfig
-> +++ b/drivers/net/ethernet/mellanox/mlx4/Kconfig
-> @@ -27,6 +27,7 @@ config MLX4_EN_DCB
->   config MLX4_CORE
->   	tristate
->   	depends on PCI
-> +	select AUXILIARY_BUS
->   	select NET_DEVLINK
->   	default n
->   
-> diff --git a/drivers/net/ethernet/mellanox/mlx4/intf.c b/drivers/net/ethernet/mellanox/mlx4/intf.c
-> index 30aead34ce08..4b1e18e4a682 100644
-> --- a/drivers/net/ethernet/mellanox/mlx4/intf.c
-> +++ b/drivers/net/ethernet/mellanox/mlx4/intf.c
-> @@ -48,6 +48,89 @@ struct mlx4_device_context {
->   static LIST_HEAD(intf_list);
->   static LIST_HEAD(dev_list);
->   static DEFINE_MUTEX(intf_mutex);
-> +static DEFINE_IDA(mlx4_adev_ida);
-> +
-> +static const struct mlx4_adev_device {
-> +	const char *suffix;
-> +	bool (*is_supported)(struct mlx4_dev *dev);
-> +} mlx4_adev_devices[1] = {};
-> +
-> +int mlx4_adev_init(struct mlx4_dev *dev)
-> +{
-> +	struct mlx4_priv *priv = mlx4_priv(dev);
-> +
-> +	priv->adev_idx = ida_alloc(&mlx4_adev_ida, GFP_KERNEL);
-> +	if (priv->adev_idx < 0)
-> +		return priv->adev_idx;
-> +
-> +	priv->adev = kcalloc(ARRAY_SIZE(mlx4_adev_devices),
-> +			     sizeof(struct mlx4_adev *), GFP_KERNEL);
-> +	if (!priv->adev) {
-> +		ida_free(&mlx4_adev_ida, priv->adev_idx);
-> +		return -ENOMEM;
-> +	}
-> +
-> +	return 0;
-> +}
-> +
-> +void mlx4_adev_cleanup(struct mlx4_dev *dev)
-> +{
-> +	struct mlx4_priv *priv = mlx4_priv(dev);
-> +
-> +	kfree(priv->adev);
-> +	ida_free(&mlx4_adev_ida, priv->adev_idx);
-> +}
-> +
-> +static void adev_release(struct device *dev)
-> +{
-> +	struct mlx4_adev *mlx4_adev =
-> +		container_of(dev, struct mlx4_adev, adev.dev);
-> +	struct mlx4_priv *priv = mlx4_priv(mlx4_adev->mdev);
-> +	int idx = mlx4_adev->idx;
-> +
-> +	kfree(mlx4_adev);
-> +	priv->adev[idx] = NULL;
-> +}
-> +
-> +static struct mlx4_adev *add_adev(struct mlx4_dev *dev, int idx)
-> +{
-> +	struct mlx4_priv *priv = mlx4_priv(dev);
-> +	const char *suffix = mlx4_adev_devices[idx].suffix;
-> +	struct auxiliary_device *adev;
-> +	struct mlx4_adev *madev;
-> +	int ret;
-> +
-> +	madev = kzalloc(sizeof(*madev), GFP_KERNEL);
-> +	if (!madev)
-> +		return ERR_PTR(-ENOMEM);
-> +
-> +	adev = &madev->adev;
-> +	adev->id = priv->adev_idx;
-> +	adev->name = suffix;
-> +	adev->dev.parent = &dev->persist->pdev->dev;
-> +	adev->dev.release = adev_release;
-> +	madev->mdev = dev;
-> +	madev->idx = idx;
-> +
-> +	ret = auxiliary_device_init(adev);
-> +	if (ret) {
-> +		kfree(madev);
-> +		return ERR_PTR(ret);
-> +	}
-> +
-> +	ret = auxiliary_device_add(adev);
-> +	if (ret) {
+Hello:
 
-madev is allocated, but it is not handled here when auxiliary_device_add 
-error. It should be freed, too?
-That is, add "kfree(madev);" here?
+This patch was applied to netdev/net-next.git (main)
+by David S. Miller <davem@davemloft.net>:
 
-If madev will be handled in other place, please add some comments here 
-to indicate madev is handled in other place.
+On Fri,  4 Aug 2023 13:33:53 -0700 you wrote:
+> Add page pool for RX buffers for faster buffer cycle and reduce CPU
+> usage.
+> 
+> The standard page pool API is used.
+> 
+> With iperf and 128 threads test, this patch improved the throughput
+> by 12-15%, and decreased the IRQ associated CPU's usage from 99-100% to
+> 10-50%.
+> 
+> [...]
 
-Zhu Yanjun
-> +		auxiliary_device_uninit(adev);
-> +		return ERR_PTR(ret);
-> +	}
-> +	return madev;
-> +}
-> +
-> +static void del_adev(struct auxiliary_device *adev)
-> +{
-> +	auxiliary_device_delete(adev);
-> +	auxiliary_device_uninit(adev);
-> +}
->   
->   static void mlx4_add_device(struct mlx4_interface *intf, struct mlx4_priv *priv)
->   {
-> @@ -120,12 +203,24 @@ void mlx4_unregister_interface(struct mlx4_interface *intf)
->   }
->   EXPORT_SYMBOL_GPL(mlx4_unregister_interface);
->   
-> +int mlx4_register_auxiliary_driver(struct mlx4_adrv *madrv)
-> +{
-> +	return auxiliary_driver_register(&madrv->adrv);
-> +}
-> +EXPORT_SYMBOL_GPL(mlx4_register_auxiliary_driver);
-> +
-> +void mlx4_unregister_auxiliary_driver(struct mlx4_adrv *madrv)
-> +{
-> +	auxiliary_driver_unregister(&madrv->adrv);
-> +}
-> +EXPORT_SYMBOL_GPL(mlx4_unregister_auxiliary_driver);
-> +
->   int mlx4_do_bond(struct mlx4_dev *dev, bool enable)
->   {
->   	struct mlx4_priv *priv = mlx4_priv(dev);
->   	struct mlx4_device_context *dev_ctx = NULL, *temp_dev_ctx;
->   	unsigned long flags;
-> -	int ret;
-> +	int i, ret;
->   	LIST_HEAD(bond_list);
->   
->   	if (!(dev->caps.flags2 & MLX4_DEV_CAP_FLAG2_PORT_REMAP))
-> @@ -177,6 +272,57 @@ int mlx4_do_bond(struct mlx4_dev *dev, bool enable)
->   			 dev_ctx->intf->protocol, enable ?
->   			 "enabled" : "disabled");
->   	}
-> +
-> +	mutex_lock(&intf_mutex);
-> +
-> +	for (i = 0; i < ARRAY_SIZE(mlx4_adev_devices); i++) {
-> +		struct mlx4_adev *madev = priv->adev[i];
-> +		struct mlx4_adrv *madrv;
-> +		enum mlx4_protocol protocol;
-> +
-> +		if (!madev)
-> +			continue;
-> +
-> +		device_lock(&madev->adev.dev);
-> +		if (!madev->adev.dev.driver) {
-> +			device_unlock(&madev->adev.dev);
-> +			continue;
-> +		}
-> +
-> +		madrv = container_of(madev->adev.dev.driver, struct mlx4_adrv,
-> +				     adrv.driver);
-> +		if (!(madrv->flags & MLX4_INTFF_BONDING)) {
-> +			device_unlock(&madev->adev.dev);
-> +			continue;
-> +		}
-> +
-> +		if (mlx4_is_mfunc(dev)) {
-> +			mlx4_dbg(dev,
-> +				 "SRIOV, disabled HA mode for intf proto %d\n",
-> +				 madrv->protocol);
-> +			device_unlock(&madev->adev.dev);
-> +			continue;
-> +		}
-> +
-> +		protocol = madrv->protocol;
-> +		device_unlock(&madev->adev.dev);
-> +
-> +		del_adev(&madev->adev);
-> +		priv->adev[i] = add_adev(dev, i);
-> +		if (IS_ERR(priv->adev[i])) {
-> +			mlx4_warn(dev, "Device[%d] (%s) failed to load\n", i,
-> +				  mlx4_adev_devices[i].suffix);
-> +			priv->adev[i] = NULL;
-> +			continue;
-> +		}
-> +
-> +		mlx4_dbg(dev,
-> +			 "Interface for protocol %d restarted with bonded mode %s\n",
-> +			 protocol, enable ? "enabled" : "disabled");
-> +	}
-> +
-> +	mutex_unlock(&intf_mutex);
-> +
->   	return 0;
->   }
->   
-> @@ -206,10 +352,80 @@ int mlx4_unregister_event_notifier(struct mlx4_dev *dev,
->   }
->   EXPORT_SYMBOL(mlx4_unregister_event_notifier);
->   
-> +static int add_drivers(struct mlx4_dev *dev)
-> +{
-> +	struct mlx4_priv *priv = mlx4_priv(dev);
-> +	int i, ret = 0;
-> +
-> +	for (i = 0; i < ARRAY_SIZE(mlx4_adev_devices); i++) {
-> +		bool is_supported = false;
-> +
-> +		if (priv->adev[i])
-> +			continue;
-> +
-> +		if (mlx4_adev_devices[i].is_supported)
-> +			is_supported = mlx4_adev_devices[i].is_supported(dev);
-> +
-> +		if (!is_supported)
-> +			continue;
-> +
-> +		priv->adev[i] = add_adev(dev, i);
-> +		if (IS_ERR(priv->adev[i])) {
-> +			mlx4_warn(dev, "Device[%d] (%s) failed to load\n", i,
-> +				  mlx4_adev_devices[i].suffix);
-> +			/* We continue to rescan drivers and leave to the caller
-> +			 * to make decision if to release everything or
-> +			 * continue. */
-> +			ret = PTR_ERR(priv->adev[i]);
-> +			priv->adev[i] = NULL;
-> +		}
-> +	}
-> +	return ret;
-> +}
-> +
-> +static void delete_drivers(struct mlx4_dev *dev)
-> +{
-> +	struct mlx4_priv *priv = mlx4_priv(dev);
-> +	bool delete_all;
-> +	int i;
-> +
-> +	delete_all = !(dev->persist->interface_state & MLX4_INTERFACE_STATE_UP);
-> +
-> +	for (i = ARRAY_SIZE(mlx4_adev_devices) - 1; i >= 0; i--) {
-> +		bool is_supported = false;
-> +
-> +		if (!priv->adev[i])
-> +			continue;
-> +
-> +		if (mlx4_adev_devices[i].is_supported && !delete_all)
-> +			is_supported = mlx4_adev_devices[i].is_supported(dev);
-> +
-> +		if (is_supported)
-> +			continue;
-> +
-> +		del_adev(&priv->adev[i]->adev);
-> +		priv->adev[i] = NULL;
-> +	}
-> +}
-> +
-> +/* This function is used after mlx4_dev is reconfigured.
-> + */
-> +static int rescan_drivers_locked(struct mlx4_dev *dev)
-> +{
-> +	lockdep_assert_held(&intf_mutex);
-> +
-> +	delete_drivers(dev);
-> +	if (!(dev->persist->interface_state & MLX4_INTERFACE_STATE_UP))
-> +		return 0;
-> +
-> +	return add_drivers(dev);
-> +}
-> +
->   int mlx4_register_device(struct mlx4_dev *dev)
->   {
->   	struct mlx4_priv *priv = mlx4_priv(dev);
->   	struct mlx4_interface *intf;
-> +	int ret;
->   
->   	mutex_lock(&intf_mutex);
->   
-> @@ -218,10 +434,18 @@ int mlx4_register_device(struct mlx4_dev *dev)
->   	list_for_each_entry(intf, &intf_list, list)
->   		mlx4_add_device(intf, priv);
->   
-> +	ret = rescan_drivers_locked(dev);
-> +
->   	mutex_unlock(&intf_mutex);
-> +
-> +	if (ret) {
-> +		mlx4_unregister_device(dev);
-> +		return ret;
-> +	}
-> +
->   	mlx4_start_catas_poll(dev);
->   
-> -	return 0;
-> +	return ret;
->   }
->   
->   void mlx4_unregister_device(struct mlx4_dev *dev)
-> @@ -253,6 +477,8 @@ void mlx4_unregister_device(struct mlx4_dev *dev)
->   	list_del(&priv->dev_list);
->   	dev->persist->interface_state &= ~MLX4_INTERFACE_STATE_UP;
->   
-> +	rescan_drivers_locked(dev);
-> +
->   	mutex_unlock(&intf_mutex);
->   }
->   
-> diff --git a/drivers/net/ethernet/mellanox/mlx4/main.c b/drivers/net/ethernet/mellanox/mlx4/main.c
-> index 0ed490b99163..c4ec7377aa71 100644
-> --- a/drivers/net/ethernet/mellanox/mlx4/main.c
-> +++ b/drivers/net/ethernet/mellanox/mlx4/main.c
-> @@ -3429,6 +3429,10 @@ static int mlx4_load_one(struct pci_dev *pdev, int pci_dev_data,
->   	INIT_LIST_HEAD(&priv->ctx_list);
->   	spin_lock_init(&priv->ctx_lock);
->   
-> +	err = mlx4_adev_init(dev);
-> +	if (err)
-> +		return err;
-> +
->   	ATOMIC_INIT_NOTIFIER_HEAD(&priv->event_nh);
->   
->   	mutex_init(&priv->port_mutex);
-> @@ -3455,10 +3459,11 @@ static int mlx4_load_one(struct pci_dev *pdev, int pci_dev_data,
->   		err = mlx4_get_ownership(dev);
->   		if (err) {
->   			if (err < 0)
-> -				return err;
-> +				goto err_adev;
->   			else {
->   				mlx4_warn(dev, "Multiple PFs not yet supported - Skipping PF\n");
-> -				return -EINVAL;
-> +				err = -EINVAL;
-> +				goto err_adev;
->   			}
->   		}
->   
-> @@ -3806,6 +3811,9 @@ static int mlx4_load_one(struct pci_dev *pdev, int pci_dev_data,
->   		mlx4_free_ownership(dev);
->   
->   	kfree(dev_cap);
-> +
-> +err_adev:
-> +	mlx4_adev_cleanup(dev);
->   	return err;
->   }
->   
-> @@ -4186,6 +4194,8 @@ static void mlx4_unload_one(struct pci_dev *pdev)
->   	mlx4_slave_destroy_special_qp_cap(dev);
->   	kfree(dev->dev_vfs);
->   
-> +	mlx4_adev_cleanup(dev);
-> +
->   	mlx4_clean_dev(dev);
->   	priv->pci_dev_data = pci_dev_data;
->   	priv->removed = 1;
-> @@ -4573,6 +4583,9 @@ static int __init mlx4_init(void)
->   {
->   	int ret;
->   
-> +	WARN_ONCE(strcmp(MLX4_ADEV_NAME, KBUILD_MODNAME),
-> +		  "mlx4_core name not in sync with kernel module name");
-> +
->   	if (mlx4_verify_params())
->   		return -EINVAL;
->   
-> diff --git a/drivers/net/ethernet/mellanox/mlx4/mlx4.h b/drivers/net/ethernet/mellanox/mlx4/mlx4.h
-> index ece9acb6a869..d5050bfb342f 100644
-> --- a/drivers/net/ethernet/mellanox/mlx4/mlx4.h
-> +++ b/drivers/net/ethernet/mellanox/mlx4/mlx4.h
-> @@ -47,6 +47,7 @@
->   #include <linux/spinlock.h>
->   #include <net/devlink.h>
->   #include <linux/rwsem.h>
-> +#include <linux/auxiliary_bus.h>
->   #include <linux/notifier.h>
->   
->   #include <linux/mlx4/device.h>
-> @@ -884,6 +885,8 @@ struct mlx4_priv {
->   	struct list_head	dev_list;
->   	struct list_head	ctx_list;
->   	spinlock_t		ctx_lock;
-> +	struct mlx4_adev	**adev;
-> +	int			adev_idx;
->   	struct atomic_notifier_head event_nh;
->   
->   	int			pci_dev_data;
-> @@ -1052,6 +1055,9 @@ void mlx4_catas_end(struct mlx4_dev *dev);
->   int mlx4_crdump_init(struct mlx4_dev *dev);
->   void mlx4_crdump_end(struct mlx4_dev *dev);
->   int mlx4_restart_one(struct pci_dev *pdev);
-> +
-> +int mlx4_adev_init(struct mlx4_dev *dev);
-> +void mlx4_adev_cleanup(struct mlx4_dev *dev);
->   int mlx4_register_device(struct mlx4_dev *dev);
->   void mlx4_unregister_device(struct mlx4_dev *dev);
->   void mlx4_dispatch_event(struct mlx4_dev *dev, enum mlx4_dev_event type,
-> diff --git a/include/linux/mlx4/device.h b/include/linux/mlx4/device.h
-> index 049d8a4b044d..27f42f713c89 100644
-> --- a/include/linux/mlx4/device.h
-> +++ b/include/linux/mlx4/device.h
-> @@ -33,6 +33,7 @@
->   #ifndef MLX4_DEVICE_H
->   #define MLX4_DEVICE_H
->   
-> +#include <linux/auxiliary_bus.h>
->   #include <linux/if_ether.h>
->   #include <linux/pci.h>
->   #include <linux/completion.h>
-> @@ -889,6 +890,12 @@ struct mlx4_dev {
->   	u8  uar_page_shift;
->   };
->   
-> +struct mlx4_adev {
-> +	struct auxiliary_device adev;
-> +	struct mlx4_dev *mdev;
-> +	int idx;
-> +};
-> +
->   struct mlx4_clock_params {
->   	u64 offset;
->   	u8 bar;
-> diff --git a/include/linux/mlx4/driver.h b/include/linux/mlx4/driver.h
-> index 781d5a0c2faa..9cf157d381c6 100644
-> --- a/include/linux/mlx4/driver.h
-> +++ b/include/linux/mlx4/driver.h
-> @@ -34,9 +34,12 @@
->   #define MLX4_DRIVER_H
->   
->   #include <net/devlink.h>
-> +#include <linux/auxiliary_bus.h>
->   #include <linux/notifier.h>
->   #include <linux/mlx4/device.h>
->   
-> +#define MLX4_ADEV_NAME "mlx4_core"
-> +
->   struct mlx4_dev;
->   
->   #define MLX4_MAC_MASK	   0xffffffffffffULL
-> @@ -63,8 +66,16 @@ struct mlx4_interface {
->   	int			flags;
->   };
->   
-> +struct mlx4_adrv {
-> +	struct auxiliary_driver	adrv;
-> +	enum mlx4_protocol	protocol;
-> +	int			flags;
-> +};
-> +
->   int mlx4_register_interface(struct mlx4_interface *intf);
->   void mlx4_unregister_interface(struct mlx4_interface *intf);
-> +int mlx4_register_auxiliary_driver(struct mlx4_adrv *madrv);
-> +void mlx4_unregister_auxiliary_driver(struct mlx4_adrv *madrv);
->   
->   int mlx4_register_event_notifier(struct mlx4_dev *dev,
->   				 struct notifier_block *nb);
+Here is the summary with links:
+  - [V6,net-next] net: mana: Add page pool for RX buffers
+    https://git.kernel.org/netdev/net-next/c/b1d13f7a3b53
+
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
 
