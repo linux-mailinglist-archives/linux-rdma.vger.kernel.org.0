@@ -2,36 +2,36 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F30A0771EA1
-	for <lists+linux-rdma@lfdr.de>; Mon,  7 Aug 2023 12:46:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A7BE771EA4
+	for <lists+linux-rdma@lfdr.de>; Mon,  7 Aug 2023 12:46:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231209AbjHGKqC (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 7 Aug 2023 06:46:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60272 "EHLO
+        id S230382AbjHGKqF (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 7 Aug 2023 06:46:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60268 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230123AbjHGKp7 (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 7 Aug 2023 06:45:59 -0400
+        with ESMTP id S231764AbjHGKqC (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 7 Aug 2023 06:46:02 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 502DD173B
-        for <linux-rdma@vger.kernel.org>; Mon,  7 Aug 2023 03:45:26 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D1FE21BE8
+        for <linux-rdma@vger.kernel.org>; Mon,  7 Aug 2023 03:45:27 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 74714617A8
-        for <linux-rdma@vger.kernel.org>; Mon,  7 Aug 2023 10:45:24 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0C9BCC433D9;
-        Mon,  7 Aug 2023 10:45:22 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id B074C617C5
+        for <linux-rdma@vger.kernel.org>; Mon,  7 Aug 2023 10:45:25 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A11CCC433CC;
+        Mon,  7 Aug 2023 10:45:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1691405123;
+        s=k20201202; t=1691405125;
         bh=PONZ6KAAHDRUQddfGuS4AnIVYLmcjnGQRAKUNaKMi80=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Jru1O6H9U00xHVdHF6DlhStn5MgGbnri+7cxpXSFRKRJPPJCeUEF1Wcgp7yK1Y9LG
-         x2QDwpIPz8kmyn3VKmcZ8TOlVaE5EAgArULALrm117nO+R8hg+ynd4rbp8588x3kgV
-         M1I5AjoJ8zFbFOncfMKGOdkZSWHSjJ0QYPDRPfelV+HBUhUDKyekUrtQmHSvbhW6fT
-         HbqXnPIfmApQQbpd6j4YIaQ323PcUG3Hsio0E04WLaiSrEiuuFS3/xzWqzG+V+nmjy
-         6FfPILJMLn+9acO/3ot/wUiAMrNdkyAW6Ao8f7aU5qp89l/EW9hg6SOhnfXHjOsgVq
-         SGPlxpY/PTbAw==
+        b=pRd0Wiw2jisGw0Y5Bf2GOcfzRxsDPfKd3w0ScH5aS6i11FWN8npfhbbyxsiTdxjP1
+         03N2S3lPoN4+PhqKaYb5uwf+n+hHKh0A9SMx2Jk01KRuAGSCfnR4MJo9WVes4+rvkp
+         GdYzC9dndgZEJuq11E06r+xiS3eBcyKWuhzwmZlTj7QqOYLR4kL5WKVB9WFjBSDo5N
+         8ufFknhMZJ9so3M0e++/PSo/8UzzKBhKKk0MF+vOJRJi7Gek4m+ih6C0l5k8nq6iEE
+         zvfGx0bnyV1XJ1RzGKsS2GmXU7wSc4DfGZmzDveWt/wHIUgYucxqLb2/emB5dvABMV
+         wJSuqc9eRLYqQ==
 From:   Leon Romanovsky <leon@kernel.org>
 To:     Jason Gunthorpe <jgg@nvidia.com>, Jakub Kicinski <kuba@kernel.org>
 Cc:     Patrisious Haddad <phaddad@nvidia.com>,
@@ -51,7 +51,7 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
