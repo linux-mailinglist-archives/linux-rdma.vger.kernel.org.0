@@ -2,69 +2,89 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1BAFA771AA0
-	for <lists+linux-rdma@lfdr.de>; Mon,  7 Aug 2023 08:45:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 441D8771C59
+	for <lists+linux-rdma@lfdr.de>; Mon,  7 Aug 2023 10:35:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230190AbjHGGpV (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 7 Aug 2023 02:45:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45898 "EHLO
+        id S230078AbjHGIfP (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 7 Aug 2023 04:35:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60328 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229877AbjHGGpU (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 7 Aug 2023 02:45:20 -0400
-Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3CDB4BA;
-        Sun,  6 Aug 2023 23:45:19 -0700 (PDT)
-Received: from kwepemi500006.china.huawei.com (unknown [172.30.72.57])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4RK6DQ1H42zNmj8;
-        Mon,  7 Aug 2023 14:41:42 +0800 (CST)
-Received: from localhost.localdomain (10.67.165.2) by
- kwepemi500006.china.huawei.com (7.221.188.68) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.27; Mon, 7 Aug 2023 14:45:09 +0800
-From:   Junxian Huang <huangjunxian6@hisilicon.com>
-To:     <jgg@nvidia.com>, <leon@kernel.org>
-CC:     <linux-rdma@vger.kernel.org>, <linuxarm@huawei.com>,
-        <linux-kernel@vger.kernel.org>, <huangjunxian6@hisilicon.com>
-Subject: [PATCH for-rc] MAINTAINERS: Remove maintainer of HiSilicon RoCE
-Date:   Mon, 7 Aug 2023 14:42:28 +0800
-Message-ID: <20230807064228.4032536-1-huangjunxian6@hisilicon.com>
-X-Mailer: git-send-email 2.30.0
+        with ESMTP id S229469AbjHGIfO (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 7 Aug 2023 04:35:14 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3688A10EF;
+        Mon,  7 Aug 2023 01:35:13 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id BEF8861666;
+        Mon,  7 Aug 2023 08:35:12 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8E921C433CC;
+        Mon,  7 Aug 2023 08:35:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1691397312;
+        bh=dQQYVCV202V1fkp+H9UYGcqK9NudKTkhkMb/AaQNtto=;
+        h=Date:Cc:Subject:To:References:From:In-Reply-To:From;
+        b=AHBpwm2yXk/zDdi/IuT5WptLqTuta3FroC6SuurxaOy3UnmeMYJzT2/FD+N7S1K99
+         VhT+tOE4K5IzfA7Fc+lS6dkK72uTWhw9BtgS+9LVnJRUeUxGgPNTMpySIt0JLqlEkV
+         CdHA10dcbgLn97pcYK+cxXKYzI2Ymw5wpMempKkf5GT8ZwG7JJ1iZDVlsBHVt011k1
+         Gy6JhhtpXZkdXr6F+4I6nCoRusAMES8rB2YZYQp3nVyWmkEoEDitjcx+MASrmXOVgu
+         g5mtLIEZOKj9z38imh4oKyzKDQdX+O5vjGrnlWeDICBFLN2uxAMHMj17h9WWWIHlJn
+         q//0thIlNzCyA==
+Message-ID: <6f69bd92-a063-1934-2bd8-42a5950254a7@kernel.org>
+Date:   Mon, 7 Aug 2023 10:35:05 +0200
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.67.165.2]
-X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
- kwepemi500006.china.huawei.com (7.221.188.68)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-5.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Cc:     decui@microsoft.com, kys@microsoft.com, paulros@microsoft.com,
+        olaf@aepfle.de, vkuznets@redhat.com, davem@davemloft.net,
+        wei.liu@kernel.org, edumazet@google.com, kuba@kernel.org,
+        pabeni@redhat.com, leon@kernel.org, longli@microsoft.com,
+        ssengar@linux.microsoft.com, linux-rdma@vger.kernel.org,
+        daniel@iogearbox.net, john.fastabend@gmail.com,
+        bpf@vger.kernel.org, ast@kernel.org, sharmaajay@microsoft.com,
+        hawk@kernel.org, tglx@linutronix.de,
+        shradhagupta@linux.microsoft.com, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH V6,net-next] net: mana: Add page pool for RX buffers
+Content-Language: en-US
+To:     Haiyang Zhang <haiyangz@microsoft.com>,
+        linux-hyperv@vger.kernel.org, netdev@vger.kernel.org
+References: <1691181233-25286-1-git-send-email-haiyangz@microsoft.com>
+From:   Jesper Dangaard Brouer <hawk@kernel.org>
+In-Reply-To: <1691181233-25286-1-git-send-email-haiyangz@microsoft.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-6.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Haoyue no longer maintains the Hisilicon RoCE driver. So remove him
-from MAINTAINERS.
 
-Signed-off-by: Junxian Huang <huangjunxian6@hisilicon.com>
----
- MAINTAINERS | 1 -
- 1 file changed, 1 deletion(-)
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 3be1bdfe8ecc..a65e2f53bffa 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -9364,7 +9364,6 @@ F:	drivers/crypto/hisilicon/sgl.c
- F:	include/linux/hisi_acc_qm.h
- 
- HISILICON ROCE DRIVER
--M:	Haoyue Xu <xuhaoyue1@hisilicon.com>
- M:	Junxian Huang <huangjunxian6@hisilicon.com>
- L:	linux-rdma@vger.kernel.org
- S:	Maintained
--- 
-2.30.0
+On 04/08/2023 22.33, Haiyang Zhang wrote:
+> Add page pool for RX buffers for faster buffer cycle and reduce CPU
+> usage.
+> 
+> The standard page pool API is used.
+> 
+> With iperf and 128 threads test, this patch improved the throughput
+> by 12-15%, and decreased the IRQ associated CPU's usage from 99-100% to
+> 10-50%.
+> 
+> Signed-off-by: Haiyang Zhang<haiyangz@microsoft.com>
+> Reviewed-by: Jesse Brandeburg<jesse.brandeburg@intel.com>
 
+For the record I want to provide my ACK as page_pool maintainer:
+
+Acked-by: Jesper Dangaard Brouer <hawk@kernel.org>
+
+As patch was applied Sunday, my ACK will not reach the git tree
+  https://git.kernel.org/netdev/net-next/c/b1d13f7a3b53
+
+--Jesper
