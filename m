@@ -2,36 +2,36 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 49010771E85
-	for <lists+linux-rdma@lfdr.de>; Mon,  7 Aug 2023 12:45:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B0EFE771E74
+	for <lists+linux-rdma@lfdr.de>; Mon,  7 Aug 2023 12:44:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231773AbjHGKpS (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 7 Aug 2023 06:45:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59360 "EHLO
+        id S231758AbjHGKom (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 7 Aug 2023 06:44:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58886 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231760AbjHGKpJ (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 7 Aug 2023 06:45:09 -0400
+        with ESMTP id S231722AbjHGKok (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 7 Aug 2023 06:44:40 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF09EE70
-        for <linux-rdma@vger.kernel.org>; Mon,  7 Aug 2023 03:44:50 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2429A1703
+        for <linux-rdma@vger.kernel.org>; Mon,  7 Aug 2023 03:44:39 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 05E7B617A7
-        for <linux-rdma@vger.kernel.org>; Mon,  7 Aug 2023 10:44:50 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D8C99C433B6;
-        Mon,  7 Aug 2023 10:44:48 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 74348617AD
+        for <linux-rdma@vger.kernel.org>; Mon,  7 Aug 2023 10:44:38 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5755BC433CC;
+        Mon,  7 Aug 2023 10:44:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1691405089;
-        bh=wviFDRXxE4iiWeUwfSvu6S6+Tr7fneStrPSI+4YrZ8c=;
+        s=k20201202; t=1691405077;
+        bh=FQpnXBy3lpmnpp/A+mHfD0R/otAhVk9p/iMKoBiQYZs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=cBwWIg4WJDJEmMpC4NQRi2pCo1r5DJkfA1uLcvIrQZW705y6Er/J7zSy0LBsz0KE5
-         lFNQmlFOu3ZPZGiSS6vubF3pJLOA9Jb+vhUrA3uH1/z/IYCtGKSTMcS5x72f+Ab+g2
-         Jk2NGoRG4o5UI/odjIl5uB2z2WR7DaQwsQ2UzD7PkfsN6ZQKLg8AjuVScPMTvjfsG+
-         TMgfYWARjaa4yFPQf2Eb4O4DTpvId0UElq0jWyhgXQdhUEvxp2YWbLp5dJYPZsTDU6
-         oCPER93xx7eF/ZowN2HnGZ0ameTWh5bDzwgL4tkUFJ76lF6IGSo5rsKKwWUAzhBVTR
-         EPSiHFAwjWGiw==
+        b=uThEFBFDa/VaG+jbTJ9SooX66CCXOgwFDg+LFOWEGom9yWlgV86tNSPzbPmDtK0f7
+         52FwPjoPA8olONAJsWq0+RFkoORjoPmnb972ThXd/O9scN7usq4pRQ2FvC522ceBh3
+         NqmzO1pm7xmpX0DwJbH4wWOd4tUdIqPICMf8mSEmhF37ULcDqyQontDmm8sV2riYO/
+         VF7gHMJWwcAh50jts2VNDAHtx1jVjEG+d/ALf+zCOxaq1dTUcKCXkTvONvSJPwSKYR
+         koXR8nLComUp88A81hmo/R8nywzASklMQRxdGcVTfnozqeMQ0hvRYbJ9icVdLuNn9N
+         9mgDHiRvX18jQ==
 From:   Leon Romanovsky <leon@kernel.org>
 To:     Jason Gunthorpe <jgg@nvidia.com>, Jakub Kicinski <kuba@kernel.org>
 Cc:     Patrisious Haddad <phaddad@nvidia.com>,
@@ -41,9 +41,9 @@ Cc:     Patrisious Haddad <phaddad@nvidia.com>,
         Mark Zhang <markzhang@nvidia.com>, netdev@vger.kernel.org,
         Paolo Abeni <pabeni@redhat.com>, Raed Salem <raeds@nvidia.com>,
         Saeed Mahameed <saeedm@nvidia.com>
-Subject: [PATCH mlx5-next 02/14] net/mlx5e: Move MACsec flow steering operations to be used as core library
-Date:   Mon,  7 Aug 2023 13:44:11 +0300
-Message-ID: <55c3801810da7280a79d9dc98ad1ba6444c2e7e2.1691403485.git.leon@kernel.org>
+Subject: [PATCH mlx5-next 03/14] net/mlx5: Remove dependency of macsec flow steering on ethernet
+Date:   Mon,  7 Aug 2023 13:44:12 +0300
+Message-ID: <1f979fc87a79b116258534a61d08384a54a4fa06.1691403485.git.leon@kernel.org>
 X-Mailer: git-send-email 2.41.0
 In-Reply-To: <cover.1691403485.git.leon@kernel.org>
 References: <cover.1691403485.git.leon@kernel.org>
@@ -51,7 +51,7 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -61,221 +61,132 @@ X-Mailing-List: linux-rdma@vger.kernel.org
 
 From: Patrisious Haddad <phaddad@nvidia.com>
 
-Move MACsec flow steering operations(macsec_fs) from core/en_accel to
-core/lib, this mandates moving MACsec statistics structure from the
-general MACsec code header(en_accel/macsec.h) to macsec_fs header to
-remove macsec_fs.h dependency over en_accel/macsec.h.
-
-This to lay the ground for RoCE MACsec by moving all the data
-that will need to be accessed by both ethernet MACsec and
-RoCE MACsec to be shared at core.
+Since macsec flow steering was moved to core, it should be independent
+of all ethernet code and structures hence we remove all ethernet header
+includes and redefine ethernet structs internally for macsec_fs usage
+where needed.
 
 Signed-off-by: Patrisious Haddad <phaddad@nvidia.com>
 Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
 ---
- .../net/ethernet/mellanox/mlx5/core/Kconfig   |  2 +-
- .../net/ethernet/mellanox/mlx5/core/Makefile  |  2 +-
- drivers/net/ethernet/mellanox/mlx5/core/en.h  |  2 +-
- .../mellanox/mlx5/core/en_accel/en_accel.h    |  4 ++--
- .../mellanox/mlx5/core/en_accel/macsec.c      |  1 -
- .../mellanox/mlx5/core/en_accel/macsec.h      | 22 +++----------------
- .../ethernet/mellanox/mlx5/core/en_stats.c    |  2 +-
- .../mlx5/core/{en_accel => lib}/macsec_fs.c   |  2 +-
- .../mlx5/core/{en_accel => lib}/macsec_fs.h   | 19 ++++++++++++++--
- 9 files changed, 27 insertions(+), 29 deletions(-)
- rename drivers/net/ethernet/mellanox/mlx5/core/{en_accel => lib}/macsec_fs.c (99%)
- rename drivers/net/ethernet/mellanox/mlx5/core/{en_accel => lib}/macsec_fs.h (65%)
+ .../mellanox/mlx5/core/lib/macsec_fs.c        | 43 +++++++++++++++----
+ 1 file changed, 34 insertions(+), 9 deletions(-)
 
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/Kconfig b/drivers/net/ethernet/mellanox/mlx5/core/Kconfig
-index bb1d7b039a7e..f3b284db1b5b 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/Kconfig
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/Kconfig
-@@ -139,7 +139,7 @@ config MLX5_CORE_IPOIB
- 	help
- 	  MLX5 IPoIB offloads & acceleration support.
- 
--config MLX5_EN_MACSEC
-+config MLX5_MACSEC
- 	bool "Connect-X support for MACSec offload"
- 	depends on MLX5_CORE_EN
- 	depends on MACSEC
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/Makefile b/drivers/net/ethernet/mellanox/mlx5/core/Makefile
-index 63a2f2bb80a6..7d95950eb903 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/Makefile
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/Makefile
-@@ -98,7 +98,7 @@ mlx5_core-$(CONFIG_MLX5_CORE_IPOIB) += ipoib/ipoib.o ipoib/ethtool.o ipoib/ipoib
- #
- mlx5_core-$(CONFIG_MLX5_FPGA) += fpga/cmd.o fpga/core.o fpga/conn.o fpga/sdk.o
- 
--mlx5_core-$(CONFIG_MLX5_EN_MACSEC) += en_accel/macsec.o en_accel/macsec_fs.o \
-+mlx5_core-$(CONFIG_MLX5_MACSEC) += en_accel/macsec.o lib/macsec_fs.o \
- 				      en_accel/macsec_stats.o
- 
- mlx5_core-$(CONFIG_MLX5_EN_IPSEC) += en_accel/ipsec.o en_accel/ipsec_rxtx.o \
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en.h b/drivers/net/ethernet/mellanox/mlx5/core/en.h
-index 0f8f70b91485..955fb2428ba0 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/en.h
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/en.h
-@@ -917,7 +917,7 @@ struct mlx5e_priv {
- 
- 	const struct mlx5e_profile *profile;
- 	void                      *ppriv;
--#ifdef CONFIG_MLX5_EN_MACSEC
-+#ifdef CONFIG_MLX5_MACSEC
- 	struct mlx5e_macsec       *macsec;
- #endif
- #ifdef CONFIG_MLX5_EN_IPSEC
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en_accel/en_accel.h b/drivers/net/ethernet/mellanox/mlx5/core/en_accel/en_accel.h
-index bac4717548c6..caa34b9c161e 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/en_accel/en_accel.h
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/en_accel/en_accel.h
-@@ -138,7 +138,7 @@ static inline bool mlx5e_accel_tx_begin(struct net_device *dev,
- 	}
- #endif
- 
--#ifdef CONFIG_MLX5_EN_MACSEC
-+#ifdef CONFIG_MLX5_MACSEC
- 	if (unlikely(mlx5e_macsec_skb_is_offload(skb))) {
- 		struct mlx5e_priv *priv = netdev_priv(dev);
- 
-@@ -173,7 +173,7 @@ static inline void mlx5e_accel_tx_eseg(struct mlx5e_priv *priv,
- 		mlx5e_ipsec_tx_build_eseg(priv, skb, eseg);
- #endif
- 
--#ifdef CONFIG_MLX5_EN_MACSEC
-+#ifdef CONFIG_MLX5_MACSEC
- 	if (unlikely(mlx5e_macsec_skb_is_offload(skb)))
- 		mlx5e_macsec_tx_build_eseg(priv->macsec, skb, eseg);
- #endif
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en_accel/macsec.c b/drivers/net/ethernet/mellanox/mlx5/core/en_accel/macsec.c
-index 592b165530ff..b26044efdec6 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/en_accel/macsec.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/en_accel/macsec.c
-@@ -10,7 +10,6 @@
- #include "lib/aso.h"
- #include "lib/crypto.h"
- #include "en_accel/macsec.h"
--#include "en_accel/macsec_fs.h"
- 
- #define MLX5_MACSEC_EPN_SCOPE_MID 0x80000000L
- #define MLX5E_MACSEC_ASO_CTX_SZ MLX5_ST_SZ_BYTES(macsec_aso)
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en_accel/macsec.h b/drivers/net/ethernet/mellanox/mlx5/core/en_accel/macsec.h
-index 347380a2cd9c..1f9c4a2723b2 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/en_accel/macsec.h
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/en_accel/macsec.h
-@@ -4,32 +4,16 @@
- #ifndef __MLX5_EN_ACCEL_MACSEC_H__
- #define __MLX5_EN_ACCEL_MACSEC_H__
- 
--#ifdef CONFIG_MLX5_EN_MACSEC
-+#ifdef CONFIG_MLX5_MACSEC
- 
- #include <linux/mlx5/driver.h>
- #include <net/macsec.h>
- #include <net/dst_metadata.h>
--
--/* Bit31 - 30: MACsec marker, Bit15-0: MACsec id */
--#define MLX5_MACEC_RX_FS_ID_MAX USHRT_MAX /* Must be power of two */
--#define MLX5_MACSEC_RX_FS_ID_MASK MLX5_MACEC_RX_FS_ID_MAX
--#define MLX5_MACSEC_METADATA_MARKER(metadata)  ((((metadata) >> 30) & 0x3)  == 0x1)
--#define MLX5_MACSEC_RX_METADAT_HANDLE(metadata)  ((metadata) & MLX5_MACSEC_RX_FS_ID_MASK)
-+#include "lib/macsec_fs.h"
- 
- struct mlx5e_priv;
- struct mlx5e_macsec;
- 
--struct mlx5e_macsec_stats {
--	u64 macsec_rx_pkts;
--	u64 macsec_rx_bytes;
--	u64 macsec_rx_pkts_drop;
--	u64 macsec_rx_bytes_drop;
--	u64 macsec_tx_pkts;
--	u64 macsec_tx_bytes;
--	u64 macsec_tx_pkts_drop;
--	u64 macsec_tx_bytes_drop;
--};
--
- void mlx5e_macsec_build_netdev(struct mlx5e_priv *priv);
- int mlx5e_macsec_init(struct mlx5e_priv *priv);
- void mlx5e_macsec_cleanup(struct mlx5e_priv *priv);
-@@ -68,6 +52,6 @@ static inline void mlx5e_macsec_offload_handle_rx_skb(struct net_device *netdev,
- 						      struct mlx5_cqe64 *cqe)
- {}
- static inline bool mlx5e_is_macsec_device(const struct mlx5_core_dev *mdev) { return false; }
--#endif  /* CONFIG_MLX5_EN_MACSEC */
-+#endif  /* CONFIG_MLX5_MACSEC */
- 
- #endif	/* __MLX5_ACCEL_EN_MACSEC_H__ */
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en_stats.c b/drivers/net/ethernet/mellanox/mlx5/core/en_stats.c
-index 4d77055abd4b..8d7a5a815162 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/en_stats.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/en_stats.c
-@@ -2490,7 +2490,7 @@ mlx5e_stats_grp_t mlx5e_nic_stats_grps[] = {
- 	&MLX5E_STATS_GRP(per_port_buff_congest),
- 	&MLX5E_STATS_GRP(ptp),
- 	&MLX5E_STATS_GRP(qos),
--#ifdef CONFIG_MLX5_EN_MACSEC
-+#ifdef CONFIG_MLX5_MACSEC
- 	&MLX5E_STATS_GRP(macsec_hw),
- #endif
- };
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en_accel/macsec_fs.c b/drivers/net/ethernet/mellanox/mlx5/core/lib/macsec_fs.c
-similarity index 99%
-rename from drivers/net/ethernet/mellanox/mlx5/core/en_accel/macsec_fs.c
-rename to drivers/net/ethernet/mellanox/mlx5/core/lib/macsec_fs.c
-index 414e28584881..46c0af66d72c 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/en_accel/macsec_fs.c
+diff --git a/drivers/net/ethernet/mellanox/mlx5/core/lib/macsec_fs.c b/drivers/net/ethernet/mellanox/mlx5/core/lib/macsec_fs.c
+index 46c0af66d72c..ace6b67f1c97 100644
+--- a/drivers/net/ethernet/mellanox/mlx5/core/lib/macsec_fs.c
 +++ b/drivers/net/ethernet/mellanox/mlx5/core/lib/macsec_fs.c
-@@ -7,7 +7,7 @@
+@@ -6,7 +6,6 @@
+ #include <linux/mlx5/qp.h>
  #include <linux/if_vlan.h>
  #include "fs_core.h"
- #include "en/fs.h"
--#include "en_accel/macsec_fs.h"
-+#include "lib/macsec_fs.h"
+-#include "en/fs.h"
+ #include "lib/macsec_fs.h"
  #include "mlx5_core.h"
  
- /* MACsec TX flow steering */
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en_accel/macsec_fs.h b/drivers/net/ethernet/mellanox/mlx5/core/lib/macsec_fs.h
-similarity index 65%
-rename from drivers/net/ethernet/mellanox/mlx5/core/en_accel/macsec_fs.h
-rename to drivers/net/ethernet/mellanox/mlx5/core/lib/macsec_fs.h
-index b429648d4ee7..b282c0850e16 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/en_accel/macsec_fs.h
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/lib/macsec_fs.h
-@@ -4,9 +4,13 @@
- #ifndef __MLX5_MACSEC_STEERING_H__
- #define __MLX5_MACSEC_STEERING_H__
- 
--#ifdef CONFIG_MLX5_EN_MACSEC
-+#ifdef CONFIG_MLX5_MACSEC
- 
--#include "en_accel/macsec.h"
-+/* Bit31 - 30: MACsec marker, Bit15-0: MACsec id */
-+#define MLX5_MACEC_RX_FS_ID_MAX USHRT_MAX /* Must be power of two */
-+#define MLX5_MACSEC_RX_FS_ID_MASK MLX5_MACEC_RX_FS_ID_MAX
-+#define MLX5_MACSEC_METADATA_MARKER(metadata)  ((((metadata) >> 30) & 0x3)  == 0x1)
-+#define MLX5_MACSEC_RX_METADAT_HANDLE(metadata)  ((metadata) & MLX5_MACSEC_RX_FS_ID_MASK)
- 
- #define MLX5_MACSEC_NUM_OF_SUPPORTED_INTERFACES 16
- 
-@@ -20,6 +24,17 @@ struct mlx5_macsec_rule_attrs {
- 	int action;
+@@ -57,8 +56,14 @@ struct mlx5e_macsec_tx_rule {
+ 	u32 fs_id;
  };
  
-+struct mlx5e_macsec_stats {
-+	u64 macsec_rx_pkts;
-+	u64 macsec_rx_bytes;
-+	u64 macsec_rx_pkts_drop;
-+	u64 macsec_rx_bytes_drop;
-+	u64 macsec_tx_pkts;
-+	u64 macsec_tx_bytes;
-+	u64 macsec_tx_pkts_drop;
-+	u64 macsec_tx_bytes_drop;
++struct mlx5_macsec_flow_table {
++	int num_groups;
++	struct mlx5_flow_table *t;
++	struct mlx5_flow_group **g;
 +};
 +
- enum mlx5_macsec_action {
- 	MLX5_ACCEL_MACSEC_ACTION_ENCRYPT,
- 	MLX5_ACCEL_MACSEC_ACTION_DECRYPT,
+ struct mlx5e_macsec_tables {
+-	struct mlx5e_flow_table ft_crypto;
++	struct mlx5_macsec_flow_table ft_crypto;
+ 	struct mlx5_flow_handle *crypto_miss_rule;
+ 
+ 	struct mlx5_flow_table *ft_check;
+@@ -103,6 +108,26 @@ struct mlx5e_macsec_fs {
+ 	struct mlx5e_macsec_rx *rx_fs;
+ };
+ 
++static void macsec_fs_destroy_groups(struct mlx5_macsec_flow_table *ft)
++{
++	int i;
++
++	for (i = ft->num_groups - 1; i >= 0; i--) {
++		if (!IS_ERR_OR_NULL(ft->g[i]))
++			mlx5_destroy_flow_group(ft->g[i]);
++		ft->g[i] = NULL;
++	}
++	ft->num_groups = 0;
++}
++
++static void macsec_fs_destroy_flow_table(struct mlx5_macsec_flow_table *ft)
++{
++	macsec_fs_destroy_groups(ft);
++	kfree(ft->g);
++	mlx5_destroy_flow_table(ft->t);
++	ft->t = NULL;
++}
++
+ static void macsec_fs_tx_destroy(struct mlx5e_macsec_fs *macsec_fs)
+ {
+ 	struct mlx5e_macsec_tx *tx_fs = macsec_fs->tx_fs;
+@@ -142,10 +167,10 @@ static void macsec_fs_tx_destroy(struct mlx5e_macsec_fs *macsec_fs)
+ 		tx_tables->crypto_miss_rule = NULL;
+ 	}
+ 
+-	mlx5e_destroy_flow_table(&tx_tables->ft_crypto);
++	macsec_fs_destroy_flow_table(&tx_tables->ft_crypto);
+ }
+ 
+-static int macsec_fs_tx_create_crypto_table_groups(struct mlx5e_flow_table *ft)
++static int macsec_fs_tx_create_crypto_table_groups(struct mlx5_macsec_flow_table *ft)
+ {
+ 	int inlen = MLX5_ST_SZ_BYTES(create_flow_group_in);
+ 	int mclen = MLX5_ST_SZ_BYTES(fte_match_param);
+@@ -245,7 +270,7 @@ static int macsec_fs_tx_create(struct mlx5e_macsec_fs *macsec_fs)
+ 	struct mlx5_flow_destination dest = {};
+ 	struct mlx5e_macsec_tables *tx_tables;
+ 	struct mlx5_flow_act flow_act = {};
+-	struct mlx5e_flow_table *ft_crypto;
++	struct mlx5_macsec_flow_table *ft_crypto;
+ 	struct mlx5_flow_table *flow_table;
+ 	struct mlx5_flow_group *flow_group;
+ 	struct mlx5_flow_namespace *ns;
+@@ -734,10 +759,10 @@ static void macsec_fs_rx_destroy(struct mlx5e_macsec_fs *macsec_fs)
+ 		rx_tables->crypto_miss_rule = NULL;
+ 	}
+ 
+-	mlx5e_destroy_flow_table(&rx_tables->ft_crypto);
++	macsec_fs_destroy_flow_table(&rx_tables->ft_crypto);
+ }
+ 
+-static int macsec_fs_rx_create_crypto_table_groups(struct mlx5e_flow_table *ft)
++static int macsec_fs_rx_create_crypto_table_groups(struct mlx5_macsec_flow_table *ft)
+ {
+ 	int inlen = MLX5_ST_SZ_BYTES(create_flow_group_in);
+ 	int mclen = MLX5_ST_SZ_BYTES(fte_match_param);
+@@ -895,10 +920,10 @@ static int macsec_fs_rx_create(struct mlx5e_macsec_fs *macsec_fs)
+ 	int inlen = MLX5_ST_SZ_BYTES(create_flow_group_in);
+ 	struct mlx5e_macsec_rx *rx_fs = macsec_fs->rx_fs;
+ 	struct net_device *netdev = macsec_fs->netdev;
++	struct mlx5_macsec_flow_table *ft_crypto;
+ 	struct mlx5_flow_table_attr ft_attr = {};
+ 	struct mlx5_flow_destination dest = {};
+ 	struct mlx5e_macsec_tables *rx_tables;
+-	struct mlx5e_flow_table *ft_crypto;
+ 	struct mlx5_flow_table *flow_table;
+ 	struct mlx5_flow_group *flow_group;
+ 	struct mlx5_flow_act flow_act = {};
+@@ -1123,11 +1148,11 @@ macsec_fs_rx_add_rule(struct mlx5e_macsec_fs *macsec_fs,
+ 	struct net_device *netdev = macsec_fs->netdev;
+ 	union mlx5e_macsec_rule *macsec_rule = NULL;
+ 	struct mlx5_modify_hdr *modify_hdr = NULL;
++	struct mlx5_macsec_flow_table *ft_crypto;
+ 	struct mlx5_flow_destination dest = {};
+ 	struct mlx5e_macsec_tables *rx_tables;
+ 	struct mlx5e_macsec_rx_rule *rx_rule;
+ 	struct mlx5_flow_act flow_act = {};
+-	struct mlx5e_flow_table *ft_crypto;
+ 	struct mlx5_flow_handle *rule;
+ 	struct mlx5_flow_spec *spec;
+ 	int err = 0;
 -- 
 2.41.0
 
