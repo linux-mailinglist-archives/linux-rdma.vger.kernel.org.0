@@ -2,36 +2,36 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B0EFE771E74
-	for <lists+linux-rdma@lfdr.de>; Mon,  7 Aug 2023 12:44:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 05E1A771E76
+	for <lists+linux-rdma@lfdr.de>; Mon,  7 Aug 2023 12:44:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231758AbjHGKom (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 7 Aug 2023 06:44:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58886 "EHLO
+        id S231717AbjHGKon (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 7 Aug 2023 06:44:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58930 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231722AbjHGKok (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 7 Aug 2023 06:44:40 -0400
+        with ESMTP id S231755AbjHGKol (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 7 Aug 2023 06:44:41 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2429A1703
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30852E76
         for <linux-rdma@vger.kernel.org>; Mon,  7 Aug 2023 03:44:39 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 74348617AD
+        by dfw.source.kernel.org (Postfix) with ESMTPS id A1AE3617A0
         for <linux-rdma@vger.kernel.org>; Mon,  7 Aug 2023 10:44:38 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5755BC433CC;
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8DBBAC433C8;
         Mon,  7 Aug 2023 10:44:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1691405077;
+        s=k20201202; t=1691405078;
         bh=FQpnXBy3lpmnpp/A+mHfD0R/otAhVk9p/iMKoBiQYZs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=uThEFBFDa/VaG+jbTJ9SooX66CCXOgwFDg+LFOWEGom9yWlgV86tNSPzbPmDtK0f7
-         52FwPjoPA8olONAJsWq0+RFkoORjoPmnb972ThXd/O9scN7usq4pRQ2FvC522ceBh3
-         NqmzO1pm7xmpX0DwJbH4wWOd4tUdIqPICMf8mSEmhF37ULcDqyQontDmm8sV2riYO/
-         VF7gHMJWwcAh50jts2VNDAHtx1jVjEG+d/ALf+zCOxaq1dTUcKCXkTvONvSJPwSKYR
-         koXR8nLComUp88A81hmo/R8nywzASklMQRxdGcVTfnozqeMQ0hvRYbJ9icVdLuNn9N
-         9mgDHiRvX18jQ==
+        b=QF4ybXb0yfRqGoktGOFqOTC1ymJcXe7xUTNHWrNQxYg90MJbAHgxjiYbVE8Edit3/
+         v/y0tw9nOGxeqI5XJ1+OwHMsWr4nL9iLXQeMtFQmVRcbXNUZ74o5+YOEFkI/wZWzMM
+         U/CSJ1XRqj58AUfVVZfhX6Fj1Wf7G0QjevHvxCXvr5UDg+WNu/J9NaNOpBeLVYiv4d
+         KVF5Vcz188GV99wFkK0GOIqbBhDfpSb/6JRyw5XcWxMs7JcH5YUuQ4d3VCgtm0tPd3
+         F433KXScJH186Ua4ylnnTlj8nTsk+4z9DnnTI1jS0GBZKjai4IRyFdG8F7d2KMv4LH
+         UnMyYiVkYKiAA==
 From:   Leon Romanovsky <leon@kernel.org>
 To:     Jason Gunthorpe <jgg@nvidia.com>, Jakub Kicinski <kuba@kernel.org>
 Cc:     Patrisious Haddad <phaddad@nvidia.com>,
@@ -51,7 +51,7 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
