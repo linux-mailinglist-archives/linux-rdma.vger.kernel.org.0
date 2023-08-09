@@ -2,36 +2,36 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 35856775557
-	for <lists+linux-rdma@lfdr.de>; Wed,  9 Aug 2023 10:30:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 037A8775555
+	for <lists+linux-rdma@lfdr.de>; Wed,  9 Aug 2023 10:30:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231833AbjHIIat (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 9 Aug 2023 04:30:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60426 "EHLO
+        id S229960AbjHIIap (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 9 Aug 2023 04:30:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60364 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231953AbjHIIas (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 9 Aug 2023 04:30:48 -0400
+        with ESMTP id S231953AbjHIIap (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 9 Aug 2023 04:30:45 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A4D542100
-        for <linux-rdma@vger.kernel.org>; Wed,  9 Aug 2023 01:30:32 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 989D41FF2
+        for <linux-rdma@vger.kernel.org>; Wed,  9 Aug 2023 01:30:31 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 1C0596304A
-        for <linux-rdma@vger.kernel.org>; Wed,  9 Aug 2023 08:30:32 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DD04BC433BC;
-        Wed,  9 Aug 2023 08:30:30 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 1B1B063062
+        for <linux-rdma@vger.kernel.org>; Wed,  9 Aug 2023 08:30:31 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9D5FEC433B8;
+        Wed,  9 Aug 2023 08:30:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1691569831;
+        s=k20201202; t=1691569830;
         bh=UTVZ99+ysFDAzLoGeBnvQlb5LSbbHsFXgSAZFJNP76o=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Yy8Jd0Ql6ZgxTpnMZSfgV8J293IwRcOcKQLhfvZfFvQfPZVPdLofZ5PYMvSzWSfUI
-         Gycdi0s0njD7ihYatpyvTlywTjpBgyLSVDidXZyjilfxKBwYsZcLsuv4c47uKfV9dw
-         y53LC1ERhl80LlwltTUPBV70l7pWkWUrkUQnQ9joKNuvgZ5dJ1NNG8O/ZSo28AcAUq
-         kqkhjRwEjNZXnhtpsBKQzTQrPA5Odn1Mp0+M6bzHd+s8IcGmKJpeurZouXCCCqCo1L
-         pmhbeFWO5pHHJF4bV55sfZeniwO0wYzLYqrs79su2syl64pjMRwnoBqkeM4wS69YKt
-         QkwvJFDhG8z0w==
+        b=C4MxR9V/5Em7lleRnF+nZtFFSc2C1NZ7+9QamiiAkAenaqFMe6Eghd771jMlL6H3S
+         LqxkHfe3SahTzbQA57V+2qCfelAyoPFXlSsIJ+xtpnzLGO5eDUUlIDTFLQEycxEPp8
+         ctC434H+LLSQyQtgn1arq2fla7e50h+oplRrCzCCeMbTg7hy63Ae+/O/Ep9U+Wh2tu
+         DYoB+zCaI4MuIBnqt4qyOmMf/nyT55DkzZEml5Ld49uxgpYNEKDfg76M35jk2xk5Hx
+         JeXnAaaCt9sixMeFnBNG9bMwHNSivUEEKXqu2zJvCTrigEaE1ArFgvVTCoXkVLWqa9
+         f4XDvPYqFvmNA==
 From:   Leon Romanovsky <leon@kernel.org>
 To:     Jason Gunthorpe <jgg@nvidia.com>, Jakub Kicinski <kuba@kernel.org>
 Cc:     Patrisious Haddad <phaddad@nvidia.com>,
@@ -52,8 +52,7 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
