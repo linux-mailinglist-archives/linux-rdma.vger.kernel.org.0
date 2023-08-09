@@ -2,36 +2,36 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E3FB177553F
-	for <lists+linux-rdma@lfdr.de>; Wed,  9 Aug 2023 10:29:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7CC1D775540
+	for <lists+linux-rdma@lfdr.de>; Wed,  9 Aug 2023 10:29:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230025AbjHII35 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 9 Aug 2023 04:29:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42312 "EHLO
+        id S230042AbjHII36 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 9 Aug 2023 04:29:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42370 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230484AbjHII3y (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 9 Aug 2023 04:29:54 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8293E1FDF
-        for <linux-rdma@vger.kernel.org>; Wed,  9 Aug 2023 01:29:52 -0700 (PDT)
+        with ESMTP id S230389AbjHII36 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 9 Aug 2023 04:29:58 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE3181BFA
+        for <linux-rdma@vger.kernel.org>; Wed,  9 Aug 2023 01:29:56 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 10B0E63060
-        for <linux-rdma@vger.kernel.org>; Wed,  9 Aug 2023 08:29:52 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B0BEFC4339A;
-        Wed,  9 Aug 2023 08:29:50 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 5FAF76305B
+        for <linux-rdma@vger.kernel.org>; Wed,  9 Aug 2023 08:29:56 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D665CC43397;
+        Wed,  9 Aug 2023 08:29:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1691569791;
-        bh=1olxSa6/GVEvtf7qOZ8RdeK9nsio98ZgymSUELgiJ2g=;
+        s=k20201202; t=1691569795;
+        bh=UWpOZWor1Z26sBVc3qVvsN0nYxh2LhsFkiQpN6eTQn8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Mih/gmPqDe4dbz5uY/5AFlIqVaAaY/cAQc0Ni80iOv2pwtXLynAOhmqpqFKCt6FpB
-         rnKW8Oprt2SQ5Af8HNpJvnvFsMHbTZi3N6IijV2+oqKy4xOKceSaqwIUdImZlDhO4a
-         /vdrC0TKJijmcDnLjhlEazoy7GJ57oVsC5lyTAhY5tiWOL62STv2pnxumxOVolJfc9
-         +S+YYMF7NdA2ovhf33yNQ5uWWR9jEFIhtjqe0axcpwSH6TYJ509o1WwijnYu/3mUIE
-         BFFzxTs8zMPr56oFbnwMktYXIBVo4N5se2nuceamKshsvdCEYGkLan0qfUVEb8g/7r
-         DlahbYCsAuFvw==
+        b=lcmyaU9PAnlgjuvDGe8YrbhMOMnVYaTzFB0DyLe1w9CW8vsUuqG9igR3G/6yv/71A
+         SiraDXiES4MjJx9JgzaZd9nLVSFK4NKZYEQFzriYR4jn0ZTiPHPR1jCQGPemQHHRI7
+         LXDnnjI8yZe3cbW08cs2vvTML4AYT9F7cbkVEsob7S4neXVScvwr9J1csUo74PXLKZ
+         qGJvMKD6oqQn0YmJ3BOH+mRtTunKulQ2ttgVFBc4KZMQXxPjcdMtGUFv5AiDgiPC6O
+         WPhQ9kWs4Ukz6Pcas2MtORi3u8x1K0Wb81vJATmKliIqRnW0O1/6lBtvsTc6871k5B
+         E3wUhT+VHRAxw==
 From:   Leon Romanovsky <leon@kernel.org>
 To:     Jason Gunthorpe <jgg@nvidia.com>, Jakub Kicinski <kuba@kernel.org>
 Cc:     Patrisious Haddad <phaddad@nvidia.com>,
@@ -42,18 +42,18 @@ Cc:     Patrisious Haddad <phaddad@nvidia.com>,
         Mark Zhang <markzhang@nvidia.com>, netdev@vger.kernel.org,
         Paolo Abeni <pabeni@redhat.com>, Raed Salem <raeds@nvidia.com>,
         Saeed Mahameed <saeedm@nvidia.com>
-Subject: [PATCH mlx5-next v1 05/14] net/mlx5e: Move MACsec flow steering and statistics database from ethernet to core
-Date:   Wed,  9 Aug 2023 11:29:17 +0300
-Message-ID: <db6287e090c4bf0e4208f1419f43c3b829e8188f.1691569414.git.leon@kernel.org>
+Subject: [PATCH mlx5-next v1 06/14] net/mlx5: Remove netdevice from MACsec steering
+Date:   Wed,  9 Aug 2023 11:29:18 +0300
+Message-ID: <9c5d8ea4bf97fab033e7cdd3edb10aa12cab8c29.1691569414.git.leon@kernel.org>
 X-Mailer: git-send-email 2.41.0
 In-Reply-To: <cover.1691569414.git.leon@kernel.org>
 References: <cover.1691569414.git.leon@kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -62,195 +62,497 @@ X-Mailing-List: linux-rdma@vger.kernel.org
 
 From: Patrisious Haddad <phaddad@nvidia.com>
 
-Since now MACsec flow steering (macsec_fs) and MACsec statistics (stats)
-are maintained by the core driver, move their data as well to be saved
-inside core structures instead of staying part of ethernet MACsec database.
-
-In addition cleanup all MACsec stats functions from the ethernet MACsec
-code and move what's needed to be part of macsec_fs instead.
+Since MACsec steering was moved from ethernet private code to core,
+remove the netdevice from the MACsec steering, and use core device
+methods for error reporting instead.
 
 Signed-off-by: Patrisious Haddad <phaddad@nvidia.com>
 Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
 ---
- .../mellanox/mlx5/core/en_accel/macsec.c      | 25 +++----------------
- .../mellanox/mlx5/core/en_accel/macsec.h      |  2 --
- .../mlx5/core/en_accel/macsec_stats.c         |  6 +++--
- .../mellanox/mlx5/core/lib/macsec_fs.c        | 11 ++++++++
- .../mellanox/mlx5/core/lib/macsec_fs.h        |  1 +
- include/linux/mlx5/driver.h                   |  3 +++
- 6 files changed, 23 insertions(+), 25 deletions(-)
+ .../mellanox/mlx5/core/en_accel/macsec.c      |   2 +-
+ .../mellanox/mlx5/core/lib/macsec_fs.c        | 144 +++++++++---------
+ .../mellanox/mlx5/core/lib/macsec_fs.h        |   2 +-
+ 3 files changed, 71 insertions(+), 77 deletions(-)
 
 diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en_accel/macsec.c b/drivers/net/ethernet/mellanox/mlx5/core/en_accel/macsec.c
-index 831d83094abd..5e8ad355c67f 100644
+index 5e8ad355c67f..fb599bacbe30 100644
 --- a/drivers/net/ethernet/mellanox/mlx5/core/en_accel/macsec.c
 +++ b/drivers/net/ethernet/mellanox/mlx5/core/en_accel/macsec.c
-@@ -124,7 +124,6 @@ struct mlx5e_macsec_device {
- struct mlx5e_macsec {
- 	struct list_head macsec_device_list_head;
- 	int num_of_devices;
--	struct mlx5_macsec_fs *macsec_fs;
- 	struct mutex lock; /* Protects mlx5e_macsec internal contexts */
+@@ -1804,7 +1804,7 @@ int mlx5e_macsec_init(struct mlx5e_priv *priv)
  
- 	/* Tx sci -> fs id mapping handling */
-@@ -135,9 +134,6 @@ struct mlx5e_macsec {
+ 	macsec->mdev = mdev;
  
- 	struct mlx5_core_dev *mdev;
- 
--	/* Stats manage */
--	struct mlx5_macsec_stats stats;
--
- 	/* ASO */
- 	struct mlx5e_macsec_aso aso;
- 
-@@ -343,7 +339,7 @@ static void mlx5e_macsec_cleanup_sa(struct mlx5e_macsec *macsec,
- 	if (!sa->macsec_rule)
- 		return;
- 
--	mlx5_macsec_fs_del_rule(macsec->macsec_fs, sa->macsec_rule, action);
-+	mlx5_macsec_fs_del_rule(macsec->mdev->macsec_fs, sa->macsec_rule, action);
- 	mlx5e_macsec_destroy_object(macsec->mdev, sa->macsec_obj_id);
- 	sa->macsec_rule = NULL;
- }
-@@ -386,7 +382,7 @@ static int mlx5e_macsec_init_sa(struct macsec_context *ctx,
- 	rule_attrs.action = (is_tx) ? MLX5_ACCEL_MACSEC_ACTION_ENCRYPT :
- 				      MLX5_ACCEL_MACSEC_ACTION_DECRYPT;
- 
--	macsec_rule = mlx5_macsec_fs_add_rule(macsec->macsec_fs, ctx, &rule_attrs, &sa->fs_id);
-+	macsec_rule = mlx5_macsec_fs_add_rule(mdev->macsec_fs, ctx, &rule_attrs, &sa->fs_id);
- 	if (!macsec_rule) {
+-	macsec_fs = mlx5_macsec_fs_init(mdev, priv->netdev);
++	macsec_fs = mlx5_macsec_fs_init(mdev);
+ 	if (!macsec_fs) {
  		err = -ENOMEM;
- 		goto destroy_macsec_object;
-@@ -1677,19 +1673,6 @@ bool mlx5e_is_macsec_device(const struct mlx5_core_dev *mdev)
- 	return true;
- }
- 
--void mlx5e_macsec_get_stats_fill(struct mlx5e_macsec *macsec, void *macsec_stats)
--{
--	mlx5_macsec_fs_get_stats_fill(macsec->macsec_fs, macsec_stats);
--}
--
--struct mlx5_macsec_stats *mlx5e_macsec_get_stats(struct mlx5e_macsec *macsec)
--{
--	if (!macsec)
--		return NULL;
--
--	return &macsec->stats;
--}
--
- static const struct macsec_ops macsec_offload_ops = {
- 	.mdo_add_txsa = mlx5e_macsec_add_txsa,
- 	.mdo_upd_txsa = mlx5e_macsec_upd_txsa,
-@@ -1827,7 +1810,7 @@ int mlx5e_macsec_init(struct mlx5e_priv *priv)
  		goto err_out;
- 	}
- 
--	macsec->macsec_fs = macsec_fs;
-+	mdev->macsec_fs = macsec_fs;
- 
- 	macsec->nb.notifier_call = macsec_obj_change_event;
- 	mlx5_notifier_register(mdev, &macsec->nb);
-@@ -1857,7 +1840,7 @@ void mlx5e_macsec_cleanup(struct mlx5e_priv *priv)
- 		return;
- 
- 	mlx5_notifier_unregister(mdev, &macsec->nb);
--	mlx5_macsec_fs_cleanup(macsec->macsec_fs);
-+	mlx5_macsec_fs_cleanup(mdev->macsec_fs);
- 	destroy_workqueue(macsec->wq);
- 	mlx5e_macsec_aso_cleanup(&macsec->aso, mdev);
- 	rhashtable_destroy(&macsec->sci_hash);
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en_accel/macsec.h b/drivers/net/ethernet/mellanox/mlx5/core/en_accel/macsec.h
-index 47dc1d4448d9..2ecd769585f4 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/en_accel/macsec.h
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/en_accel/macsec.h
-@@ -37,8 +37,6 @@ static inline bool mlx5e_macsec_is_rx_flow(struct mlx5_cqe64 *cqe)
- void mlx5e_macsec_offload_handle_rx_skb(struct net_device *netdev, struct sk_buff *skb,
- 					struct mlx5_cqe64 *cqe);
- bool mlx5e_is_macsec_device(const struct mlx5_core_dev *mdev);
--void mlx5e_macsec_get_stats_fill(struct mlx5e_macsec *macsec, void *macsec_stats);
--struct mlx5_macsec_stats *mlx5e_macsec_get_stats(struct mlx5e_macsec *macsec);
- 
- #else
- 
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en_accel/macsec_stats.c b/drivers/net/ethernet/mellanox/mlx5/core/en_accel/macsec_stats.c
-index 8326a593b3fb..4559ee16a11a 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/en_accel/macsec_stats.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/en_accel/macsec_stats.c
-@@ -52,6 +52,7 @@ static MLX5E_DECLARE_STATS_GRP_OP_FILL_STRS(macsec_hw)
- 
- static MLX5E_DECLARE_STATS_GRP_OP_FILL_STATS(macsec_hw)
- {
-+	struct mlx5_macsec_fs *macsec_fs;
- 	int i;
- 
- 	if (!priv->macsec)
-@@ -60,9 +61,10 @@ static MLX5E_DECLARE_STATS_GRP_OP_FILL_STATS(macsec_hw)
- 	if (!mlx5e_is_macsec_device(priv->mdev))
- 		return idx;
- 
--	mlx5e_macsec_get_stats_fill(priv->macsec, mlx5e_macsec_get_stats(priv->macsec));
-+	macsec_fs = priv->mdev->macsec_fs;
-+	mlx5_macsec_fs_get_stats_fill(macsec_fs, mlx5_macsec_fs_get_stats(macsec_fs));
- 	for (i = 0; i < NUM_MACSEC_HW_COUNTERS; i++)
--		data[idx++] = MLX5E_READ_CTR64_CPU(mlx5e_macsec_get_stats(priv->macsec),
-+		data[idx++] = MLX5E_READ_CTR64_CPU(mlx5_macsec_fs_get_stats(macsec_fs),
- 						   mlx5e_macsec_hw_stats_desc,
- 						   i);
- 
 diff --git a/drivers/net/ethernet/mellanox/mlx5/core/lib/macsec_fs.c b/drivers/net/ethernet/mellanox/mlx5/core/lib/macsec_fs.c
-index 8feb7db6a220..8c19c6e16ecf 100644
+index 8c19c6e16ecf..afa48b339e4a 100644
 --- a/drivers/net/ethernet/mellanox/mlx5/core/lib/macsec_fs.c
 +++ b/drivers/net/ethernet/mellanox/mlx5/core/lib/macsec_fs.c
-@@ -106,6 +106,9 @@ struct mlx5_macsec_fs {
- 	struct net_device *netdev;
+@@ -2,7 +2,6 @@
+ /* Copyright (c) 2022, NVIDIA CORPORATION & AFFILIATES. All rights reserved. */
+ 
+ #include <net/macsec.h>
+-#include <linux/netdevice.h>
+ #include <linux/mlx5/qp.h>
+ #include <linux/if_vlan.h>
+ #include "fs_core.h"
+@@ -103,7 +102,6 @@ union mlx5_macsec_rule {
+ 
+ struct mlx5_macsec_fs {
+ 	struct mlx5_core_dev *mdev;
+-	struct net_device *netdev;
  	struct mlx5_macsec_tx *tx_fs;
  	struct mlx5_macsec_rx *rx_fs;
-+
-+	/* Stats manage */
-+	struct mlx5_macsec_stats stats;
- };
  
- static void macsec_fs_destroy_groups(struct mlx5_macsec_flow_table *ft)
-@@ -1356,6 +1359,14 @@ void mlx5_macsec_fs_get_stats_fill(struct mlx5_macsec_fs *macsec_fs, void *macse
- 			      &stats->macsec_rx_pkts_drop, &stats->macsec_rx_bytes_drop);
+@@ -268,7 +266,7 @@ static int macsec_fs_tx_create(struct mlx5_macsec_fs *macsec_fs)
+ {
+ 	int inlen = MLX5_ST_SZ_BYTES(create_flow_group_in);
+ 	struct mlx5_macsec_tx *tx_fs = macsec_fs->tx_fs;
+-	struct net_device *netdev = macsec_fs->netdev;
++	struct mlx5_core_dev *mdev = macsec_fs->mdev;
+ 	struct mlx5_flow_table_attr ft_attr = {};
+ 	struct mlx5_flow_destination dest = {};
+ 	struct mlx5_macsec_tables *tx_tables;
+@@ -282,7 +280,7 @@ static int macsec_fs_tx_create(struct mlx5_macsec_fs *macsec_fs)
+ 	u32 *flow_group_in;
+ 	int err;
+ 
+-	ns = mlx5_get_flow_namespace(macsec_fs->mdev, MLX5_FLOW_NAMESPACE_EGRESS_MACSEC);
++	ns = mlx5_get_flow_namespace(mdev, MLX5_FLOW_NAMESPACE_EGRESS_MACSEC);
+ 	if (!ns)
+ 		return -ENOMEM;
+ 
+@@ -307,7 +305,7 @@ static int macsec_fs_tx_create(struct mlx5_macsec_fs *macsec_fs)
+ 	flow_table = mlx5_create_flow_table(ns, &ft_attr);
+ 	if (IS_ERR(flow_table)) {
+ 		err = PTR_ERR(flow_table);
+-		netdev_err(netdev, "Failed to create MACsec Tx crypto table err(%d)\n", err);
++		mlx5_core_err(mdev, "Failed to create MACsec Tx crypto table err(%d)\n", err);
+ 		goto out_flow_group;
+ 	}
+ 	ft_crypto->t = flow_table;
+@@ -315,9 +313,9 @@ static int macsec_fs_tx_create(struct mlx5_macsec_fs *macsec_fs)
+ 	/* Tx crypto table groups */
+ 	err = macsec_fs_tx_create_crypto_table_groups(ft_crypto);
+ 	if (err) {
+-		netdev_err(netdev,
+-			   "Failed to create default flow group for MACsec Tx crypto table err(%d)\n",
+-			   err);
++		mlx5_core_err(mdev,
++			      "Failed to create default flow group for MACsec Tx crypto table err(%d)\n",
++			      err);
+ 		goto err;
+ 	}
+ 
+@@ -331,7 +329,7 @@ static int macsec_fs_tx_create(struct mlx5_macsec_fs *macsec_fs)
+ 	rule = mlx5_add_flow_rules(ft_crypto->t, spec, &flow_act, NULL, 0);
+ 	if (IS_ERR(rule)) {
+ 		err = PTR_ERR(rule);
+-		netdev_err(netdev, "Failed to add MACsec TX MKE rule, err=%d\n", err);
++		mlx5_core_err(mdev, "Failed to add MACsec TX MKE rule, err=%d\n", err);
+ 		goto err;
+ 	}
+ 	tx_fs->crypto_mke_rule = rule;
+@@ -342,7 +340,7 @@ static int macsec_fs_tx_create(struct mlx5_macsec_fs *macsec_fs)
+ 	rule = mlx5_add_flow_rules(ft_crypto->t, NULL, &flow_act, NULL, 0);
+ 	if (IS_ERR(rule)) {
+ 		err = PTR_ERR(rule);
+-		netdev_err(netdev, "Failed to add MACsec Tx table default miss rule %d\n", err);
++		mlx5_core_err(mdev, "Failed to add MACsec Tx table default miss rule %d\n", err);
+ 		goto err;
+ 	}
+ 	tx_tables->crypto_miss_rule = rule;
+@@ -352,7 +350,7 @@ static int macsec_fs_tx_create(struct mlx5_macsec_fs *macsec_fs)
+ 						       TX_CHECK_TABLE_NUM_FTE);
+ 	if (IS_ERR(flow_table)) {
+ 		err = PTR_ERR(flow_table);
+-		netdev_err(netdev, "fail to create MACsec TX check table, err(%d)\n", err);
++		mlx5_core_err(mdev, "Fail to create MACsec TX check table, err(%d)\n", err);
+ 		goto err;
+ 	}
+ 	tx_tables->ft_check = flow_table;
+@@ -364,9 +362,9 @@ static int macsec_fs_tx_create(struct mlx5_macsec_fs *macsec_fs)
+ 	flow_group = mlx5_create_flow_group(tx_tables->ft_check, flow_group_in);
+ 	if (IS_ERR(flow_group)) {
+ 		err = PTR_ERR(flow_group);
+-		netdev_err(netdev,
+-			   "Failed to create default flow group for MACsec Tx crypto table err(%d)\n",
+-			   err);
++		mlx5_core_err(mdev,
++			      "Failed to create default flow group for MACsec Tx crypto table err(%d)\n",
++			      err);
+ 		goto err;
+ 	}
+ 	tx_tables->ft_check_group = flow_group;
+@@ -380,7 +378,7 @@ static int macsec_fs_tx_create(struct mlx5_macsec_fs *macsec_fs)
+ 	rule = mlx5_add_flow_rules(tx_tables->ft_check,  NULL, &flow_act, &dest, 1);
+ 	if (IS_ERR(rule)) {
+ 		err = PTR_ERR(rule);
+-		netdev_err(netdev, "Failed to added MACsec tx check drop rule, err(%d)\n", err);
++		mlx5_core_err(mdev, "Failed to added MACsec tx check drop rule, err(%d)\n", err);
+ 		goto err;
+ 	}
+ 	tx_tables->check_miss_rule = rule;
+@@ -401,7 +399,7 @@ static int macsec_fs_tx_create(struct mlx5_macsec_fs *macsec_fs)
+ 	rule = mlx5_add_flow_rules(tx_tables->ft_check, spec, &flow_act, &dest, 1);
+ 	if (IS_ERR(rule)) {
+ 		err = PTR_ERR(rule);
+-		netdev_err(netdev, "Failed to add MACsec check rule, err=%d\n", err);
++		mlx5_core_err(mdev, "Failed to add MACsec check rule, err=%d\n", err);
+ 		goto err;
+ 	}
+ 	tx_fs->check_rule = rule;
+@@ -549,7 +547,7 @@ macsec_fs_tx_add_rule(struct mlx5_macsec_fs *macsec_fs,
+ 	char reformatbf[MLX5_MACSEC_TAG_LEN + MACSEC_SCI_LEN];
+ 	struct mlx5_pkt_reformat_params reformat_params = {};
+ 	struct mlx5_macsec_tx *tx_fs = macsec_fs->tx_fs;
+-	struct net_device *netdev = macsec_fs->netdev;
++	struct mlx5_core_dev *mdev = macsec_fs->mdev;
+ 	union mlx5_macsec_rule *macsec_rule = NULL;
+ 	struct mlx5_flow_destination dest = {};
+ 	struct mlx5_macsec_tables *tx_tables;
+@@ -589,21 +587,21 @@ macsec_fs_tx_add_rule(struct mlx5_macsec_fs *macsec_fs,
+ 	if (is_vlan_dev(macsec_ctx->netdev))
+ 		reformat_params.param_0 = MLX5_REFORMAT_PARAM_ADD_MACSEC_OFFSET_4_BYTES;
+ 
+-	flow_act.pkt_reformat = mlx5_packet_reformat_alloc(macsec_fs->mdev,
++	flow_act.pkt_reformat = mlx5_packet_reformat_alloc(mdev,
+ 							   &reformat_params,
+ 							   MLX5_FLOW_NAMESPACE_EGRESS_MACSEC);
+ 	if (IS_ERR(flow_act.pkt_reformat)) {
+ 		err = PTR_ERR(flow_act.pkt_reformat);
+-		netdev_err(netdev, "Failed to allocate MACsec Tx reformat context err=%d\n",  err);
++		mlx5_core_err(mdev, "Failed to allocate MACsec Tx reformat context err=%d\n",  err);
+ 		goto err;
+ 	}
+ 	tx_rule->pkt_reformat = flow_act.pkt_reformat;
+ 
+ 	err = macsec_fs_tx_setup_fte(macsec_fs, spec, &flow_act, attrs->macsec_obj_id, &fs_id);
+ 	if (err) {
+-		netdev_err(netdev,
+-			   "Failed to add packet reformat for MACsec TX crypto rule, err=%d\n",
+-			   err);
++		mlx5_core_err(mdev,
++			      "Failed to add packet reformat for MACsec TX crypto rule, err=%d\n",
++			      err);
+ 		goto err;
+ 	}
+ 
+@@ -618,7 +616,7 @@ macsec_fs_tx_add_rule(struct mlx5_macsec_fs *macsec_fs,
+ 	rule = mlx5_add_flow_rules(tx_tables->ft_crypto.t, spec, &flow_act, &dest, 1);
+ 	if (IS_ERR(rule)) {
+ 		err = PTR_ERR(rule);
+-		netdev_err(netdev, "Failed to add MACsec TX crypto rule, err=%d\n", err);
++		mlx5_core_err(mdev, "Failed to add MACsec TX crypto rule, err=%d\n", err);
+ 		goto err;
+ 	}
+ 	tx_rule->rule = rule;
+@@ -645,9 +643,9 @@ static void macsec_fs_tx_cleanup(struct mlx5_macsec_fs *macsec_fs)
+ 
+ 	tx_tables = &tx_fs->tables;
+ 	if (tx_tables->refcnt) {
+-		netdev_err(macsec_fs->netdev,
+-			   "Can't destroy MACsec offload tx_fs, refcnt(%u) isn't 0\n",
+-			   tx_tables->refcnt);
++		mlx5_core_err(mdev,
++			      "Can't destroy MACsec offload tx_fs, refcnt(%u) isn't 0\n",
++			      tx_tables->refcnt);
+ 		return;
+ 	}
+ 
+@@ -669,7 +667,6 @@ static void macsec_fs_tx_cleanup(struct mlx5_macsec_fs *macsec_fs)
+ 
+ static int macsec_fs_tx_init(struct mlx5_macsec_fs *macsec_fs)
+ {
+-	struct net_device *netdev = macsec_fs->netdev;
+ 	struct mlx5_core_dev *mdev = macsec_fs->mdev;
+ 	struct mlx5_macsec_tables *tx_tables;
+ 	struct mlx5_macsec_tx *tx_fs;
+@@ -685,9 +682,9 @@ static int macsec_fs_tx_init(struct mlx5_macsec_fs *macsec_fs)
+ 	flow_counter = mlx5_fc_create(mdev, false);
+ 	if (IS_ERR(flow_counter)) {
+ 		err = PTR_ERR(flow_counter);
+-		netdev_err(netdev,
+-			   "Failed to create MACsec Tx encrypt flow counter, err(%d)\n",
+-			   err);
++		mlx5_core_err(mdev,
++			      "Failed to create MACsec Tx encrypt flow counter, err(%d)\n",
++			      err);
+ 		goto err_encrypt_counter;
+ 	}
+ 	tx_tables->check_rule_counter = flow_counter;
+@@ -695,9 +692,9 @@ static int macsec_fs_tx_init(struct mlx5_macsec_fs *macsec_fs)
+ 	flow_counter = mlx5_fc_create(mdev, false);
+ 	if (IS_ERR(flow_counter)) {
+ 		err = PTR_ERR(flow_counter);
+-		netdev_err(netdev,
+-			   "Failed to create MACsec Tx drop flow counter, err(%d)\n",
+-			   err);
++		mlx5_core_err(mdev,
++			      "Failed to create MACsec Tx drop flow counter, err(%d)\n",
++			      err);
+ 		goto err_drop_counter;
+ 	}
+ 	tx_tables->check_miss_rule_counter = flow_counter;
+@@ -857,7 +854,7 @@ static int macsec_fs_rx_create_check_decap_rule(struct mlx5_macsec_fs *macsec_fs
+ 	u8 mlx5_reformat_buf[MLX5_SECTAG_HEADER_SIZE_WITH_SCI];
+ 	struct mlx5_pkt_reformat_params reformat_params = {};
+ 	struct mlx5_macsec_rx *rx_fs = macsec_fs->rx_fs;
+-	struct net_device *netdev = macsec_fs->netdev;
++	struct mlx5_core_dev *mdev = macsec_fs->mdev;
+ 	struct mlx5_macsec_tables *rx_tables;
+ 	struct mlx5_flow_handle *rule;
+ 	int err = 0;
+@@ -872,12 +869,12 @@ static int macsec_fs_rx_create_check_decap_rule(struct mlx5_macsec_fs *macsec_fs
+ 	reformat_params.type = MLX5_REFORMAT_TYPE_DEL_MACSEC;
+ 	reformat_params.size = reformat_param_size;
+ 	reformat_params.data = mlx5_reformat_buf;
+-	flow_act->pkt_reformat = mlx5_packet_reformat_alloc(macsec_fs->mdev,
++	flow_act->pkt_reformat = mlx5_packet_reformat_alloc(mdev,
+ 							    &reformat_params,
+ 							    MLX5_FLOW_NAMESPACE_KERNEL_RX_MACSEC);
+ 	if (IS_ERR(flow_act->pkt_reformat)) {
+ 		err = PTR_ERR(flow_act->pkt_reformat);
+-		netdev_err(netdev, "Failed to allocate MACsec Rx reformat context err=%d\n", err);
++		mlx5_core_err(mdev, "Failed to allocate MACsec Rx reformat context err=%d\n", err);
+ 		return err;
+ 	}
+ 	rx_fs->check_rule_pkt_reformat[rule_index] = flow_act->pkt_reformat;
+@@ -909,7 +906,7 @@ static int macsec_fs_rx_create_check_decap_rule(struct mlx5_macsec_fs *macsec_fs
+ 	rule = mlx5_add_flow_rules(rx_tables->ft_check, spec, flow_act, dest, 1);
+ 	if (IS_ERR(rule)) {
+ 		err = PTR_ERR(rule);
+-		netdev_err(netdev, "Failed to add MACsec Rx check rule, err=%d\n", err);
++		mlx5_core_err(mdev, "Failed to add MACsec Rx check rule, err=%d\n", err);
+ 		return err;
+ 	}
+ 
+@@ -922,7 +919,7 @@ static int macsec_fs_rx_create(struct mlx5_macsec_fs *macsec_fs)
+ {
+ 	int inlen = MLX5_ST_SZ_BYTES(create_flow_group_in);
+ 	struct mlx5_macsec_rx *rx_fs = macsec_fs->rx_fs;
+-	struct net_device *netdev = macsec_fs->netdev;
++	struct mlx5_core_dev *mdev = macsec_fs->mdev;
+ 	struct mlx5_macsec_flow_table *ft_crypto;
+ 	struct mlx5_flow_table_attr ft_attr = {};
+ 	struct mlx5_flow_destination dest = {};
+@@ -936,7 +933,7 @@ static int macsec_fs_rx_create(struct mlx5_macsec_fs *macsec_fs)
+ 	u32 *flow_group_in;
+ 	int err;
+ 
+-	ns = mlx5_get_flow_namespace(macsec_fs->mdev, MLX5_FLOW_NAMESPACE_KERNEL_RX_MACSEC);
++	ns = mlx5_get_flow_namespace(mdev, MLX5_FLOW_NAMESPACE_KERNEL_RX_MACSEC);
+ 	if (!ns)
+ 		return -ENOMEM;
+ 
+@@ -960,7 +957,7 @@ static int macsec_fs_rx_create(struct mlx5_macsec_fs *macsec_fs)
+ 	flow_table = mlx5_create_flow_table(ns, &ft_attr);
+ 	if (IS_ERR(flow_table)) {
+ 		err = PTR_ERR(flow_table);
+-		netdev_err(netdev, "Failed to create MACsec Rx crypto table err(%d)\n", err);
++		mlx5_core_err(mdev, "Failed to create MACsec Rx crypto table err(%d)\n", err);
+ 		goto out_flow_group;
+ 	}
+ 	ft_crypto->t = flow_table;
+@@ -968,9 +965,9 @@ static int macsec_fs_rx_create(struct mlx5_macsec_fs *macsec_fs)
+ 	/* Rx crypto table groups */
+ 	err = macsec_fs_rx_create_crypto_table_groups(ft_crypto);
+ 	if (err) {
+-		netdev_err(netdev,
+-			   "Failed to create default flow group for MACsec Tx crypto table err(%d)\n",
+-			   err);
++		mlx5_core_err(mdev,
++			      "Failed to create default flow group for MACsec Tx crypto table err(%d)\n",
++			      err);
+ 		goto err;
+ 	}
+ 
+@@ -978,9 +975,9 @@ static int macsec_fs_rx_create(struct mlx5_macsec_fs *macsec_fs)
+ 	rule = mlx5_add_flow_rules(ft_crypto->t, NULL, &flow_act, NULL, 0);
+ 	if (IS_ERR(rule)) {
+ 		err = PTR_ERR(rule);
+-		netdev_err(netdev,
+-			   "Failed to add MACsec Rx crypto table default miss rule %d\n",
+-			   err);
++		mlx5_core_err(mdev,
++			      "Failed to add MACsec Rx crypto table default miss rule %d\n",
++			      err);
+ 		goto err;
+ 	}
+ 	rx_tables->crypto_miss_rule = rule;
+@@ -992,7 +989,7 @@ static int macsec_fs_rx_create(struct mlx5_macsec_fs *macsec_fs)
+ 						       RX_CHECK_TABLE_NUM_FTE);
+ 	if (IS_ERR(flow_table)) {
+ 		err = PTR_ERR(flow_table);
+-		netdev_err(netdev, "fail to create MACsec RX check table, err(%d)\n", err);
++		mlx5_core_err(mdev, "Fail to create MACsec RX check table, err(%d)\n", err);
+ 		goto err;
+ 	}
+ 	rx_tables->ft_check = flow_table;
+@@ -1003,9 +1000,9 @@ static int macsec_fs_rx_create(struct mlx5_macsec_fs *macsec_fs)
+ 	flow_group = mlx5_create_flow_group(rx_tables->ft_check, flow_group_in);
+ 	if (IS_ERR(flow_group)) {
+ 		err = PTR_ERR(flow_group);
+-		netdev_err(netdev,
+-			   "Failed to create default flow group for MACsec Rx check table err(%d)\n",
+-			   err);
++		mlx5_core_err(mdev,
++			      "Failed to create default flow group for MACsec Rx check table err(%d)\n",
++			      err);
+ 		goto err;
+ 	}
+ 	rx_tables->ft_check_group = flow_group;
+@@ -1019,7 +1016,7 @@ static int macsec_fs_rx_create(struct mlx5_macsec_fs *macsec_fs)
+ 	rule = mlx5_add_flow_rules(rx_tables->ft_check,  NULL, &flow_act, &dest, 1);
+ 	if (IS_ERR(rule)) {
+ 		err = PTR_ERR(rule);
+-		netdev_err(netdev, "Failed to added MACsec Rx check drop rule, err(%d)\n", err);
++		mlx5_core_err(mdev, "Failed to added MACsec Rx check drop rule, err(%d)\n", err);
+ 		goto err;
+ 	}
+ 	rx_tables->check_miss_rule = rule;
+@@ -1148,7 +1145,7 @@ macsec_fs_rx_add_rule(struct mlx5_macsec_fs *macsec_fs,
+ {
+ 	u8 action[MLX5_UN_SZ_BYTES(set_add_copy_action_in_auto)] = {};
+ 	struct mlx5_macsec_rx *rx_fs = macsec_fs->rx_fs;
+-	struct net_device *netdev = macsec_fs->netdev;
++	struct mlx5_core_dev *mdev = macsec_fs->mdev;
+ 	union mlx5_macsec_rule *macsec_rule = NULL;
+ 	struct mlx5_modify_hdr *modify_hdr = NULL;
+ 	struct mlx5_macsec_flow_table *ft_crypto;
+@@ -1186,11 +1183,11 @@ macsec_fs_rx_add_rule(struct mlx5_macsec_fs *macsec_fs,
+ 	MLX5_SET(set_action_in, action, offset, 0);
+ 	MLX5_SET(set_action_in, action, length, 32);
+ 
+-	modify_hdr = mlx5_modify_header_alloc(macsec_fs->mdev, MLX5_FLOW_NAMESPACE_KERNEL_RX_MACSEC,
++	modify_hdr = mlx5_modify_header_alloc(mdev, MLX5_FLOW_NAMESPACE_KERNEL_RX_MACSEC,
+ 					      1, action);
+ 	if (IS_ERR(modify_hdr)) {
+ 		err = PTR_ERR(modify_hdr);
+-		netdev_err(netdev, "fail to alloc MACsec set modify_header_id err=%d\n", err);
++		mlx5_core_err(mdev, "Fail to alloc MACsec set modify_header_id err=%d\n", err);
+ 		modify_hdr = NULL;
+ 		goto err;
+ 	}
+@@ -1209,9 +1206,9 @@ macsec_fs_rx_add_rule(struct mlx5_macsec_fs *macsec_fs,
+ 	rule = mlx5_add_flow_rules(ft_crypto->t, spec, &flow_act, &dest, 1);
+ 	if (IS_ERR(rule)) {
+ 		err = PTR_ERR(rule);
+-		netdev_err(netdev,
+-			   "Failed to add SA with SCI rule to Rx crypto rule, err=%d\n",
+-			   err);
++		mlx5_core_err(mdev,
++			      "Failed to add SA with SCI rule to Rx crypto rule, err=%d\n",
++			      err);
+ 		goto err;
+ 	}
+ 	rx_rule->rule[0] = rule;
+@@ -1234,9 +1231,9 @@ macsec_fs_rx_add_rule(struct mlx5_macsec_fs *macsec_fs,
+ 		rule = mlx5_add_flow_rules(ft_crypto->t, spec, &flow_act, &dest, 1);
+ 		if (IS_ERR(rule)) {
+ 			err = PTR_ERR(rule);
+-			netdev_err(netdev,
+-				   "Failed to add SA without SCI rule to Rx crypto rule, err=%d\n",
+-				   err);
++			mlx5_core_err(mdev,
++				      "Failed to add SA without SCI rule to Rx crypto rule, err=%d\n",
++				      err);
+ 			goto err;
+ 		}
+ 		rx_rule->rule[1] = rule;
+@@ -1255,7 +1252,6 @@ macsec_fs_rx_add_rule(struct mlx5_macsec_fs *macsec_fs,
+ 
+ static int macsec_fs_rx_init(struct mlx5_macsec_fs *macsec_fs)
+ {
+-	struct net_device *netdev = macsec_fs->netdev;
+ 	struct mlx5_core_dev *mdev = macsec_fs->mdev;
+ 	struct mlx5_macsec_tables *rx_tables;
+ 	struct mlx5_macsec_rx *rx_fs;
+@@ -1269,9 +1265,9 @@ static int macsec_fs_rx_init(struct mlx5_macsec_fs *macsec_fs)
+ 	flow_counter = mlx5_fc_create(mdev, false);
+ 	if (IS_ERR(flow_counter)) {
+ 		err = PTR_ERR(flow_counter);
+-		netdev_err(netdev,
+-			   "Failed to create MACsec Rx encrypt flow counter, err(%d)\n",
+-			   err);
++		mlx5_core_err(mdev,
++			      "Failed to create MACsec Rx encrypt flow counter, err(%d)\n",
++			      err);
+ 		goto err_encrypt_counter;
+ 	}
+ 
+@@ -1281,9 +1277,9 @@ static int macsec_fs_rx_init(struct mlx5_macsec_fs *macsec_fs)
+ 	flow_counter = mlx5_fc_create(mdev, false);
+ 	if (IS_ERR(flow_counter)) {
+ 		err = PTR_ERR(flow_counter);
+-		netdev_err(netdev,
+-			   "Failed to create MACsec Rx drop flow counter, err(%d)\n",
+-			   err);
++		mlx5_core_err(mdev,
++			      "Failed to create MACsec Rx drop flow counter, err(%d)\n",
++			      err);
+ 		goto err_drop_counter;
+ 	}
+ 	rx_tables->check_miss_rule_counter = flow_counter;
+@@ -1315,9 +1311,9 @@ static void macsec_fs_rx_cleanup(struct mlx5_macsec_fs *macsec_fs)
+ 	rx_tables = &rx_fs->tables;
+ 
+ 	if (rx_tables->refcnt) {
+-		netdev_err(macsec_fs->netdev,
+-			   "Can't destroy MACsec offload rx_fs, refcnt(%u) isn't 0\n",
+-			   rx_tables->refcnt);
++		mlx5_core_err(mdev,
++			      "Can't destroy MACsec offload rx_fs, refcnt(%u) isn't 0\n",
++			      rx_tables->refcnt);
+ 		return;
+ 	}
+ 
+@@ -1395,8 +1391,7 @@ void mlx5_macsec_fs_cleanup(struct mlx5_macsec_fs *macsec_fs)
  }
  
-+struct mlx5_macsec_stats *mlx5_macsec_fs_get_stats(struct mlx5_macsec_fs *macsec_fs)
-+{
-+	if (!macsec_fs)
-+		return NULL;
-+
-+	return &macsec_fs->stats;
-+}
-+
- union mlx5_macsec_rule *
- mlx5_macsec_fs_add_rule(struct mlx5_macsec_fs *macsec_fs,
- 			const struct macsec_context *macsec_ctx,
+ struct mlx5_macsec_fs *
+-mlx5_macsec_fs_init(struct mlx5_core_dev *mdev,
+-		    struct net_device *netdev)
++mlx5_macsec_fs_init(struct mlx5_core_dev *mdev)
+ {
+ 	struct mlx5_macsec_fs *macsec_fs;
+ 	int err;
+@@ -1406,17 +1401,16 @@ mlx5_macsec_fs_init(struct mlx5_core_dev *mdev,
+ 		return NULL;
+ 
+ 	macsec_fs->mdev = mdev;
+-	macsec_fs->netdev = netdev;
+ 
+ 	err = macsec_fs_tx_init(macsec_fs);
+ 	if (err) {
+-		netdev_err(netdev, "MACsec offload: Failed to init tx_fs, err=%d\n", err);
++		mlx5_core_err(mdev, "MACsec offload: Failed to init tx_fs, err=%d\n", err);
+ 		goto err;
+ 	}
+ 
+ 	err = macsec_fs_rx_init(macsec_fs);
+ 	if (err) {
+-		netdev_err(netdev, "MACsec offload: Failed to init tx_fs, err=%d\n", err);
++		mlx5_core_err(mdev, "MACsec offload: Failed to init tx_fs, err=%d\n", err);
+ 		goto tx_cleanup;
+ 	}
+ 
 diff --git a/drivers/net/ethernet/mellanox/mlx5/core/lib/macsec_fs.h b/drivers/net/ethernet/mellanox/mlx5/core/lib/macsec_fs.h
-index 6a749e036e68..c0c28d08eae5 100644
+index c0c28d08eae5..f007c33369c2 100644
 --- a/drivers/net/ethernet/mellanox/mlx5/core/lib/macsec_fs.h
 +++ b/drivers/net/ethernet/mellanox/mlx5/core/lib/macsec_fs.h
-@@ -56,6 +56,7 @@ void mlx5_macsec_fs_del_rule(struct mlx5_macsec_fs *macsec_fs,
- 			     int action);
+@@ -43,7 +43,7 @@ enum mlx5_macsec_action {
+ void mlx5_macsec_fs_cleanup(struct mlx5_macsec_fs *macsec_fs);
  
- void mlx5_macsec_fs_get_stats_fill(struct mlx5_macsec_fs *macsec_fs, void *macsec_stats);
-+struct mlx5_macsec_stats *mlx5_macsec_fs_get_stats(struct mlx5_macsec_fs *macsec_fs);
+ struct mlx5_macsec_fs *
+-mlx5_macsec_fs_init(struct mlx5_core_dev *mdev, struct net_device *netdev);
++mlx5_macsec_fs_init(struct mlx5_core_dev *mdev);
  
- #endif
- 
-diff --git a/include/linux/mlx5/driver.h b/include/linux/mlx5/driver.h
-index fa70c25423b2..541c292373e6 100644
---- a/include/linux/mlx5/driver.h
-+++ b/include/linux/mlx5/driver.h
-@@ -808,6 +808,9 @@ struct mlx5_core_dev {
- 	struct mlx5_thermal	*thermal;
- 	u64			num_block_tc;
- 	u64			num_block_ipsec;
-+#ifdef CONFIG_MLX5_MACSEC
-+	struct mlx5_macsec_fs *macsec_fs;
-+#endif
- };
- 
- struct mlx5_db {
+ union mlx5_macsec_rule *
+ mlx5_macsec_fs_add_rule(struct mlx5_macsec_fs *macsec_fs,
 -- 
 2.41.0
 
