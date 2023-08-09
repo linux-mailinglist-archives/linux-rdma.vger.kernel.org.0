@@ -2,36 +2,36 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 55A44775558
-	for <lists+linux-rdma@lfdr.de>; Wed,  9 Aug 2023 10:30:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 35856775557
+	for <lists+linux-rdma@lfdr.de>; Wed,  9 Aug 2023 10:30:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231951AbjHIIau (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 9 Aug 2023 04:30:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35178 "EHLO
+        id S231833AbjHIIat (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 9 Aug 2023 04:30:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60426 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231955AbjHIIat (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 9 Aug 2023 04:30:49 -0400
+        with ESMTP id S231953AbjHIIas (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 9 Aug 2023 04:30:48 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85DD01BF3
-        for <linux-rdma@vger.kernel.org>; Wed,  9 Aug 2023 01:30:35 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A4D542100
+        for <linux-rdma@vger.kernel.org>; Wed,  9 Aug 2023 01:30:32 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 572786282D
-        for <linux-rdma@vger.kernel.org>; Wed,  9 Aug 2023 08:30:35 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 24111C433CC;
-        Wed,  9 Aug 2023 08:30:33 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 1C0596304A
+        for <linux-rdma@vger.kernel.org>; Wed,  9 Aug 2023 08:30:32 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DD04BC433BC;
+        Wed,  9 Aug 2023 08:30:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1691569834;
-        bh=5X9GkzFeahjhr+v8WuOah3JXr9xMYf4rNiBzcoWu00g=;
+        s=k20201202; t=1691569831;
+        bh=UTVZ99+ysFDAzLoGeBnvQlb5LSbbHsFXgSAZFJNP76o=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=TNIpYi0QUrIq/EBVmxYBbHoh4/th6w5DNP5uIBc2qKejTAJo1nSFAkejZFIosFURj
-         dh4kHaXv0HuSl1fMarFWRI/89GFssQKBuTK/iyYd7+RlDQTC3sCcotnyHCBlIpUseu
-         EjgdzAcIOAc32k1aaejHA3W8wUyVxpLT5DOXhrW4jSjE92CnpCguya8QrvnmhyGe+r
-         bT0tNfhk+Gtc8IJjruFwptE333lcvZXQSkXvM/8o9rMXfwYMauAI6BmYtNaXrsiRFD
-         8iQEDf24veBLvj8ItM0pM3RmEXDA54exKuf/3GuyXSrc6/5UPC5DTgRQxFNhGmnn4G
-         wVD3pouatJTtg==
+        b=Yy8Jd0Ql6ZgxTpnMZSfgV8J293IwRcOcKQLhfvZfFvQfPZVPdLofZ5PYMvSzWSfUI
+         Gycdi0s0njD7ihYatpyvTlywTjpBgyLSVDidXZyjilfxKBwYsZcLsuv4c47uKfV9dw
+         y53LC1ERhl80LlwltTUPBV70l7pWkWUrkUQnQ9joKNuvgZ5dJ1NNG8O/ZSo28AcAUq
+         kqkhjRwEjNZXnhtpsBKQzTQrPA5Odn1Mp0+M6bzHd+s8IcGmKJpeurZouXCCCqCo1L
+         pmhbeFWO5pHHJF4bV55sfZeniwO0wYzLYqrs79su2syl64pjMRwnoBqkeM4wS69YKt
+         QkwvJFDhG8z0w==
 From:   Leon Romanovsky <leon@kernel.org>
 To:     Jason Gunthorpe <jgg@nvidia.com>, Jakub Kicinski <kuba@kernel.org>
 Cc:     Patrisious Haddad <phaddad@nvidia.com>,
@@ -42,9 +42,9 @@ Cc:     Patrisious Haddad <phaddad@nvidia.com>,
         Mark Zhang <markzhang@nvidia.com>, netdev@vger.kernel.org,
         Paolo Abeni <pabeni@redhat.com>, Raed Salem <raeds@nvidia.com>,
         Saeed Mahameed <saeedm@nvidia.com>
-Subject: [PATCH mlx5-next v1 13/14] net/mlx5: Add RoCE MACsec steering infrastructure in core
-Date:   Wed,  9 Aug 2023 11:29:25 +0300
-Message-ID: <ba60937852239a0cf4b11333104fd88103a70fd9.1691569414.git.leon@kernel.org>
+Subject: [PATCH mlx5-next v1 14/14] RDMA/mlx5: Handles RoCE MACsec steering rules addition and deletion
+Date:   Wed,  9 Aug 2023 11:29:26 +0300
+Message-ID: <d81bcacfaa3ab1a82dd5f8f681dccd4a9fc855a2.1691569414.git.leon@kernel.org>
 X-Mailer: git-send-email 2.41.0
 In-Reply-To: <cover.1691569414.git.leon@kernel.org>
 References: <cover.1691569414.git.leon@kernel.org>
@@ -52,7 +52,8 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -61,617 +62,442 @@ X-Mailing-List: linux-rdma@vger.kernel.org
 
 From: Patrisious Haddad <phaddad@nvidia.com>
 
-Adds all the core steering helper functions that are needed in order
-to setup RoCE steering rules which includes both the RX and TX rules
-addition and deletion.
-As well as exporting the function to be ready to use from the IB driver
-where we expose functions to allow deletion of all rules, which is
-needed when a GID is deleted, or a deletion of a specific rule when an SA
-is deleted, and a similar manner for the rules addition.
-
-These functions are used in a later patch by IB driver to trigger the
-rules addition/deletion when needed.
+Add RoCE MACsec rules when a gid is added for the MACsec netdevice and
+handle their cleanup when the gid is removed or the MACsec SA is deleted.
+Also support alias IP for the MACsec device, as long as we don't have
+more ips than what the gid table can hold.
+In addition handle the case where a gid is added but there are still no
+SAs added for the MACsec device, so the rules are added later on when
+the SAs are added.
 
 Signed-off-by: Patrisious Haddad <phaddad@nvidia.com>
 Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
 ---
- .../net/ethernet/mellanox/mlx5/core/fs_cmd.c  |   1 +
- .../mellanox/mlx5/core/lib/macsec_fs.c        | 399 +++++++++++++++++-
- include/linux/mlx5/device.h                   |   2 +
- include/linux/mlx5/driver.h                   |   2 +
- include/linux/mlx5/macsec.h                   |  32 ++
- 5 files changed, 427 insertions(+), 9 deletions(-)
- create mode 100644 include/linux/mlx5/macsec.h
+ drivers/infiniband/hw/mlx5/macsec.c  | 235 +++++++++++++++++++++++++--
+ drivers/infiniband/hw/mlx5/macsec.h  |   8 +-
+ drivers/infiniband/hw/mlx5/main.c    |   6 +-
+ drivers/infiniband/hw/mlx5/mlx5_ib.h |  10 ++
+ include/linux/mlx5/driver.h          |   4 +-
+ 5 files changed, 246 insertions(+), 17 deletions(-)
 
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/fs_cmd.c b/drivers/net/ethernet/mellanox/mlx5/core/fs_cmd.c
-index aab7059bf6e9..51c13d8cc55e 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/fs_cmd.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/fs_cmd.c
-@@ -967,6 +967,7 @@ static int mlx5_cmd_modify_header_alloc(struct mlx5_flow_root_namespace *ns,
- 		max_actions = MLX5_CAP_ESW_INGRESS_ACL(dev, max_modify_header_actions);
- 		table_type = FS_FT_ESW_INGRESS_ACL;
- 		break;
-+	case MLX5_FLOW_NAMESPACE_RDMA_TX_MACSEC:
- 	case MLX5_FLOW_NAMESPACE_RDMA_TX:
- 		max_actions = MLX5_CAP_FLOWTABLE_RDMA_TX(dev, max_modify_header_actions);
- 		table_type = FS_FT_RDMA_TX;
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/lib/macsec_fs.c b/drivers/net/ethernet/mellanox/mlx5/core/lib/macsec_fs.c
-index be909b613288..4a078113e292 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/lib/macsec_fs.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/lib/macsec_fs.c
-@@ -4,6 +4,8 @@
- #include <net/macsec.h>
- #include <linux/mlx5/qp.h>
- #include <linux/if_vlan.h>
-+#include <linux/mlx5/fs_helpers.h>
+diff --git a/drivers/infiniband/hw/mlx5/macsec.c b/drivers/infiniband/hw/mlx5/macsec.c
+index 349ad13af75d..3c56eb5eddf3 100644
+--- a/drivers/infiniband/hw/mlx5/macsec.c
++++ b/drivers/infiniband/hw/mlx5/macsec.c
+@@ -2,13 +2,174 @@
+ /* Copyright (c) 2022, NVIDIA CORPORATION & AFFILIATES. */
+ 
+ #include "macsec.h"
 +#include <linux/mlx5/macsec.h>
- #include "fs_core.h"
- #include "lib/macsec_fs.h"
- #include "mlx5_core.h"
-@@ -46,6 +48,10 @@
- /* MACsec RX flow steering */
- #define MLX5_ETH_WQE_FT_META_MACSEC_MASK 0x3E
  
-+/* MACsec fs_id handling for steering */
-+#define macsec_fs_set_tx_fs_id(fs_id) (MLX5_ETH_WQE_FT_META_MACSEC | (fs_id) << 2)
-+#define macsec_fs_set_rx_fs_id(fs_id) ((fs_id) | BIT(30))
-+
- struct mlx5_sectag_header {
- 	__be16 ethertype;
- 	u8 tci_an;
-@@ -54,6 +60,14 @@ struct mlx5_sectag_header {
- 	u8 sci[MACSEC_SCI_LEN]; /* optional */
- }  __packed;
- 
-+struct mlx5_roce_macsec_tx_rule {
-+	u32 fs_id;
-+	u16 gid_idx;
-+	struct list_head entry;
-+	struct mlx5_flow_handle *rule;
-+	struct mlx5_modify_hdr *meta_modhdr;
-+};
-+
- struct mlx5_macsec_tx_rule {
- 	struct mlx5_flow_handle *rule;
- 	struct mlx5_pkt_reformat *pkt_reformat;
-@@ -104,6 +118,14 @@ struct mlx5_macsec_tx {
- 	struct mlx5_flow_table *ft_rdma_tx;
+ struct mlx5_reserved_gids {
+ 	int macsec_index;
+ 	const struct ib_gid_attr *physical_gid;
  };
  
-+struct mlx5_roce_macsec_rx_rule {
-+	u32 fs_id;
+-int mlx5r_macsec_alloc_gids(struct mlx5_ib_dev *dev)
++struct mlx5_roce_gids {
++	struct list_head roce_gid_list_entry;
 +	u16 gid_idx;
-+	struct mlx5_flow_handle *op;
-+	struct mlx5_flow_handle *ip;
-+	struct list_head entry;
++	union {
++		struct sockaddr_in  sockaddr_in;
++		struct sockaddr_in6 sockaddr_in6;
++	} addr;
 +};
 +
- struct mlx5_macsec_rx_rule {
- 	struct mlx5_flow_handle *rule[RX_NUM_OF_RULES_PER_SA];
- 	struct mlx5_modify_hdr *meta_modhdr;
-@@ -575,7 +597,7 @@ static int macsec_fs_tx_setup_fte(struct mlx5_macsec_fs *macsec_fs,
- 	MLX5_SET(fte_match_param, spec->match_criteria, misc_parameters_2.metadata_reg_a,
- 		 MLX5_ETH_WQE_FT_META_MACSEC_MASK);
- 	MLX5_SET(fte_match_param, spec->match_value, misc_parameters_2.metadata_reg_a,
--		 MLX5_ETH_WQE_FT_META_MACSEC | id << 2);
-+		 macsec_fs_set_tx_fs_id(id));
- 
- 	*fs_id = id;
- 	flow_act->crypto.type = MLX5_FLOW_CONTEXT_ENCRYPT_DECRYPT_TYPE_MACSEC;
-@@ -777,7 +799,7 @@ static void macsec_fs_tx_del_rule(struct mlx5_macsec_fs *macsec_fs,
- static union mlx5_macsec_rule *
- macsec_fs_tx_add_rule(struct mlx5_macsec_fs *macsec_fs,
- 		      const struct macsec_context *macsec_ctx,
--		      struct mlx5_macsec_rule_attrs *attrs)
-+		      struct mlx5_macsec_rule_attrs *attrs, u32 *fs_id)
- {
- 	char reformatbf[MLX5_MACSEC_TAG_LEN + MACSEC_SCI_LEN];
- 	struct mlx5_pkt_reformat_params reformat_params = {};
-@@ -792,7 +814,6 @@ macsec_fs_tx_add_rule(struct mlx5_macsec_fs *macsec_fs,
- 	struct mlx5_flow_spec *spec;
- 	size_t reformat_size;
- 	int err = 0;
--	u32 fs_id;
- 
- 	tx_tables = &tx_fs->tables;
- 
-@@ -832,7 +853,7 @@ macsec_fs_tx_add_rule(struct mlx5_macsec_fs *macsec_fs,
- 	}
- 	tx_rule->pkt_reformat = flow_act.pkt_reformat;
- 
--	err = macsec_fs_tx_setup_fte(macsec_fs, spec, &flow_act, attrs->macsec_obj_id, &fs_id);
-+	err = macsec_fs_tx_setup_fte(macsec_fs, spec, &flow_act, attrs->macsec_obj_id, fs_id);
- 	if (err) {
- 		mlx5_core_err(mdev,
- 			      "Failed to add packet reformat for MACsec TX crypto rule, err=%d\n",
-@@ -840,7 +861,7 @@ macsec_fs_tx_add_rule(struct mlx5_macsec_fs *macsec_fs,
- 		goto err;
- 	}
- 
--	tx_rule->fs_id = fs_id;
-+	tx_rule->fs_id = *fs_id;
- 
- 	flow_act.action = MLX5_FLOW_CONTEXT_ACTION_FWD_DEST |
- 			  MLX5_FLOW_CONTEXT_ACTION_CRYPTO_ENCRYPT |
-@@ -855,7 +876,7 @@ macsec_fs_tx_add_rule(struct mlx5_macsec_fs *macsec_fs,
- 	}
- 	tx_rule->rule = rule;
- 
--	err = macsec_fs_id_add(&macsec_fs->macsec_devices_list, fs_id, macsec_ctx->secy->netdev,
-+	err = macsec_fs_id_add(&macsec_fs->macsec_devices_list, *fs_id, macsec_ctx->secy->netdev,
- 			       &macsec_fs->sci_hash, attrs->sci, true);
- 	if (err) {
- 		mlx5_core_err(mdev, "Failed to save fs_id, err=%d\n", err);
-@@ -1744,7 +1765,7 @@ macsec_fs_rx_add_rule(struct mlx5_macsec_fs *macsec_fs,
- 	/* Set bit[15-0] fs id */
- 	MLX5_SET(set_action_in, action, action_type, MLX5_ACTION_TYPE_SET);
- 	MLX5_SET(set_action_in, action, field, MLX5_ACTION_IN_FIELD_METADATA_REG_B);
--	MLX5_SET(set_action_in, action, data, MLX5_MACSEC_RX_METADAT_HANDLE(fs_id) | BIT(30));
-+	MLX5_SET(set_action_in, action, data, macsec_fs_set_rx_fs_id(fs_id));
- 	MLX5_SET(set_action_in, action, offset, 0);
- 	MLX5_SET(set_action_in, action, length, 32);
- 
-@@ -1903,6 +1924,114 @@ static void macsec_fs_rx_cleanup(struct mlx5_macsec_fs *macsec_fs)
- 	macsec_fs->rx_fs = NULL;
- }
- 
-+static void set_ipaddr_spec_v4(struct sockaddr_in *in, struct mlx5_flow_spec *spec, bool is_dst_ip)
++struct mlx5_macsec_device {
++	struct list_head macsec_devices_list_entry;
++	void *macdev;
++	struct list_head macsec_roce_gids;
++	struct list_head tx_rules_list;
++	struct list_head rx_rules_list;
++};
++
++static void cleanup_macsec_device(struct mlx5_macsec_device *macsec_device)
 +{
-+	MLX5_SET(fte_match_param, spec->match_value,
-+		 outer_headers.ip_version, MLX5_FS_IPV4_VERSION);
-+
-+	if (is_dst_ip) {
-+		MLX5_SET_TO_ONES(fte_match_param, spec->match_criteria,
-+				 outer_headers.dst_ipv4_dst_ipv6.ipv4_layout.ipv4);
-+		memcpy(MLX5_ADDR_OF(fte_match_param, spec->match_value,
-+				    outer_headers.dst_ipv4_dst_ipv6.ipv4_layout.ipv4),
-+		       &in->sin_addr.s_addr, 4);
-+	} else {
-+		MLX5_SET_TO_ONES(fte_match_param, spec->match_criteria,
-+				 outer_headers.src_ipv4_src_ipv6.ipv4_layout.ipv4);
-+		memcpy(MLX5_ADDR_OF(fte_match_param, spec->match_value,
-+				    outer_headers.src_ipv4_src_ipv6.ipv4_layout.ipv4),
-+		       &in->sin_addr.s_addr, 4);
-+	}
-+}
-+
-+static void set_ipaddr_spec_v6(struct sockaddr_in6 *in6, struct mlx5_flow_spec *spec,
-+			       bool is_dst_ip)
-+{
-+	MLX5_SET(fte_match_param, spec->match_value,
-+		 outer_headers.ip_version, MLX5_FS_IPV6_VERSION);
-+
-+	if (is_dst_ip) {
-+		memset(MLX5_ADDR_OF(fte_match_param, spec->match_criteria,
-+				    outer_headers.dst_ipv4_dst_ipv6.ipv6_layout.ipv6),
-+		       0xff, 16);
-+		memcpy(MLX5_ADDR_OF(fte_match_param, spec->match_value,
-+				    outer_headers.dst_ipv4_dst_ipv6.ipv6_layout.ipv6),
-+		       &in6->sin6_addr, 16);
-+	} else {
-+		memset(MLX5_ADDR_OF(fte_match_param, spec->match_criteria,
-+				    outer_headers.src_ipv4_src_ipv6.ipv6_layout.ipv6),
-+		       0xff, 16);
-+		memcpy(MLX5_ADDR_OF(fte_match_param, spec->match_value,
-+				    outer_headers.src_ipv4_src_ipv6.ipv6_layout.ipv6),
-+		       &in6->sin6_addr, 16);
-+	}
-+}
-+
-+static void set_ipaddr_spec(const struct sockaddr *addr,
-+			    struct mlx5_flow_spec *spec, bool is_dst_ip)
-+{
-+	struct sockaddr_in6 *in6;
-+
-+	spec->match_criteria_enable |= MLX5_MATCH_OUTER_HEADERS;
-+	MLX5_SET_TO_ONES(fte_match_param, spec->match_criteria,
-+			 outer_headers.ip_version);
-+
-+	if (addr->sa_family == AF_INET) {
-+		struct sockaddr_in *in = (struct sockaddr_in *)addr;
-+
-+		set_ipaddr_spec_v4(in, spec, is_dst_ip);
-+		return;
-+	}
-+
-+	in6 = (struct sockaddr_in6 *)addr;
-+	set_ipaddr_spec_v6(in6, spec, is_dst_ip);
-+}
-+
-+static void macsec_fs_del_roce_rule_rx(struct mlx5_roce_macsec_rx_rule *rx_rule)
-+{
-+	mlx5_del_flow_rules(rx_rule->op);
-+	mlx5_del_flow_rules(rx_rule->ip);
-+	list_del(&rx_rule->entry);
-+	kfree(rx_rule);
-+}
-+
-+static void macsec_fs_del_roce_rules_rx(struct mlx5_macsec_fs *macsec_fs, u32 fs_id,
-+					struct list_head *rx_rules_list)
-+{
-+	struct mlx5_roce_macsec_rx_rule *rx_rule, *next;
-+
-+	if (!mlx5_is_macsec_roce_supported(macsec_fs->mdev))
++	if (!list_empty(&macsec_device->tx_rules_list) ||
++	    !list_empty(&macsec_device->rx_rules_list) ||
++	    !list_empty(&macsec_device->macsec_roce_gids))
 +		return;
 +
-+	list_for_each_entry_safe(rx_rule, next, rx_rules_list, entry) {
-+		if (rx_rule->fs_id == fs_id)
-+			macsec_fs_del_roce_rule_rx(rx_rule);
-+	}
++	list_del(&macsec_device->macsec_devices_list_entry);
++	kfree(macsec_device);
 +}
 +
-+static void macsec_fs_del_roce_rule_tx(struct mlx5_core_dev *mdev,
-+				       struct mlx5_roce_macsec_tx_rule *tx_rule)
-+{
-+	mlx5_del_flow_rules(tx_rule->rule);
-+	mlx5_modify_header_dealloc(mdev, tx_rule->meta_modhdr);
-+	list_del(&tx_rule->entry);
-+	kfree(tx_rule);
-+}
-+
-+static void macsec_fs_del_roce_rules_tx(struct mlx5_macsec_fs *macsec_fs, u32 fs_id,
-+					struct list_head *tx_rules_list)
-+{
-+	struct mlx5_roce_macsec_tx_rule *tx_rule, *next;
-+
-+	if (!mlx5_is_macsec_roce_supported(macsec_fs->mdev))
-+		return;
-+
-+	list_for_each_entry_safe(tx_rule, next, tx_rules_list, entry) {
-+		if (tx_rule->fs_id == fs_id)
-+			macsec_fs_del_roce_rule_tx(macsec_fs->mdev, tx_rule);
-+	}
-+}
-+
- void mlx5_macsec_fs_get_stats_fill(struct mlx5_macsec_fs *macsec_fs, void *macsec_stats)
- {
- 	struct mlx5_macsec_stats *stats = (struct mlx5_macsec_stats *)macsec_stats;
-@@ -1955,20 +2084,270 @@ mlx5_macsec_fs_add_rule(struct mlx5_macsec_fs *macsec_fs,
- 			struct mlx5_macsec_rule_attrs *attrs,
- 			u32 *sa_fs_id)
- {
--	return (attrs->action == MLX5_ACCEL_MACSEC_ACTION_ENCRYPT) ?
--		macsec_fs_tx_add_rule(macsec_fs, macsec_ctx, attrs) :
-+	struct mlx5_macsec_event_data data = {.macsec_fs = macsec_fs,
-+					      .macdev = macsec_ctx->secy->netdev,
-+					      .is_tx =
-+					      (attrs->action == MLX5_ACCEL_MACSEC_ACTION_ENCRYPT)
-+	};
-+	union mlx5_macsec_rule *macsec_rule;
-+	u32 tx_new_fs_id;
-+
-+	macsec_rule = (attrs->action == MLX5_ACCEL_MACSEC_ACTION_ENCRYPT) ?
-+		macsec_fs_tx_add_rule(macsec_fs, macsec_ctx, attrs, &tx_new_fs_id) :
- 		macsec_fs_rx_add_rule(macsec_fs, macsec_ctx, attrs, *sa_fs_id);
-+
-+	data.fs_id = (data.is_tx) ? tx_new_fs_id : *sa_fs_id;
-+	if (macsec_rule)
-+		blocking_notifier_call_chain(&macsec_fs->mdev->macsec_nh,
-+					     MLX5_DRIVER_EVENT_MACSEC_SA_ADDED,
-+					     &data);
-+
-+	return macsec_rule;
- }
- 
- void mlx5_macsec_fs_del_rule(struct mlx5_macsec_fs *macsec_fs,
- 			     union mlx5_macsec_rule *macsec_rule,
- 			     int action, void *macdev, u32 sa_fs_id)
- {
-+	struct mlx5_macsec_event_data data = {.macsec_fs = macsec_fs,
-+					      .macdev = macdev,
-+					      .is_tx = (action == MLX5_ACCEL_MACSEC_ACTION_ENCRYPT)
-+	};
-+
-+	data.fs_id = (data.is_tx) ? macsec_rule->tx_rule.fs_id : sa_fs_id;
-+	blocking_notifier_call_chain(&macsec_fs->mdev->macsec_nh,
-+				     MLX5_DRIVER_EVENT_MACSEC_SA_DELETED,
-+				     &data);
-+
- 	(action == MLX5_ACCEL_MACSEC_ACTION_ENCRYPT) ?
- 		macsec_fs_tx_del_rule(macsec_fs, &macsec_rule->tx_rule, macdev) :
- 		macsec_fs_rx_del_rule(macsec_fs, &macsec_rule->rx_rule, macdev, sa_fs_id);
- }
- 
-+static int mlx5_macsec_fs_add_roce_rule_rx(struct mlx5_macsec_fs *macsec_fs, u32 fs_id, u16 gid_idx,
-+					   const struct sockaddr *addr,
-+					   struct list_head *rx_rules_list)
-+{
-+	struct mlx5_macsec_rx *rx_fs = macsec_fs->rx_fs;
-+	struct mlx5_roce_macsec_rx_rule *rx_rule;
-+	struct mlx5_flow_destination dest = {};
-+	struct mlx5_flow_act flow_act = {};
-+	struct mlx5_flow_handle *new_rule;
-+	struct mlx5_flow_spec *spec;
-+	int err = 0;
-+
-+	spec = kvzalloc(sizeof(*spec), GFP_KERNEL);
-+	if (!spec)
-+		return -ENOMEM;
-+
-+	rx_rule = kzalloc(sizeof(*rx_rule), GFP_KERNEL);
-+	if (!rx_rule) {
-+		err = -ENOMEM;
-+		goto out;
-+	}
-+
-+	set_ipaddr_spec(addr, spec, true);
-+
-+	flow_act.action = MLX5_FLOW_CONTEXT_ACTION_FWD_DEST;
-+	dest.ft = rx_fs->roce.ft_macsec_op_check;
-+	dest.type = MLX5_FLOW_DESTINATION_TYPE_FLOW_TABLE;
-+	new_rule = mlx5_add_flow_rules(rx_fs->roce.ft_ip_check, spec, &flow_act,
-+				       &dest, 1);
-+	if (IS_ERR(new_rule)) {
-+		err = PTR_ERR(new_rule);
-+		goto ip_rule_err;
-+	}
-+	rx_rule->ip = new_rule;
-+
-+	memset(&flow_act, 0, sizeof(flow_act));
-+	memset(spec, 0, sizeof(*spec));
-+
-+	spec->match_criteria_enable |= MLX5_MATCH_MISC_PARAMETERS_2;
-+	MLX5_SET_TO_ONES(fte_match_param, spec->match_criteria, misc_parameters_2.metadata_reg_c_5);
-+	MLX5_SET(fte_match_param, spec->match_value, misc_parameters_2.metadata_reg_c_5,
-+		 macsec_fs_set_rx_fs_id(fs_id));
-+	flow_act.action = MLX5_FLOW_CONTEXT_ACTION_ALLOW;
-+	new_rule = mlx5_add_flow_rules(rx_fs->roce.ft_macsec_op_check, spec, &flow_act,
-+				       NULL, 0);
-+	if (IS_ERR(new_rule)) {
-+		err = PTR_ERR(new_rule);
-+		goto op_rule_err;
-+	}
-+	rx_rule->op = new_rule;
-+	rx_rule->gid_idx = gid_idx;
-+	rx_rule->fs_id = fs_id;
-+	list_add_tail(&rx_rule->entry, rx_rules_list);
-+
-+	goto out;
-+
-+op_rule_err:
-+	mlx5_del_flow_rules(rx_rule->ip);
-+	rx_rule->ip = NULL;
-+ip_rule_err:
-+	kfree(rx_rule);
-+out:
-+	kvfree(spec);
-+	return err;
-+}
-+
-+static int mlx5_macsec_fs_add_roce_rule_tx(struct mlx5_macsec_fs *macsec_fs, u32 fs_id, u16 gid_idx,
-+					   const struct sockaddr *addr,
-+					   struct list_head *tx_rules_list)
-+{
-+	u8 action[MLX5_UN_SZ_BYTES(set_add_copy_action_in_auto)] = {};
-+	struct mlx5_macsec_tx *tx_fs = macsec_fs->tx_fs;
-+	struct mlx5_core_dev *mdev = macsec_fs->mdev;
-+	struct mlx5_modify_hdr *modify_hdr = NULL;
-+	struct mlx5_roce_macsec_tx_rule *tx_rule;
-+	struct mlx5_flow_destination dest = {};
-+	struct mlx5_flow_act flow_act = {};
-+	struct mlx5_flow_handle *new_rule;
-+	struct mlx5_flow_spec *spec;
-+	int err = 0;
-+
-+	spec = kvzalloc(sizeof(*spec), GFP_KERNEL);
-+	if (!spec)
-+		return -ENOMEM;
-+
-+	tx_rule = kzalloc(sizeof(*tx_rule), GFP_KERNEL);
-+	if (!tx_rule) {
-+		err = -ENOMEM;
-+		goto out;
-+	}
-+
-+	set_ipaddr_spec(addr, spec, false);
-+
-+	MLX5_SET(set_action_in, action, action_type, MLX5_ACTION_TYPE_SET);
-+	MLX5_SET(set_action_in, action, field, MLX5_ACTION_IN_FIELD_METADATA_REG_A);
-+	MLX5_SET(set_action_in, action, data, macsec_fs_set_tx_fs_id(fs_id));
-+	MLX5_SET(set_action_in, action, offset, 0);
-+	MLX5_SET(set_action_in, action, length, 32);
-+
-+	modify_hdr = mlx5_modify_header_alloc(mdev, MLX5_FLOW_NAMESPACE_RDMA_TX_MACSEC,
-+					      1, action);
-+	if (IS_ERR(modify_hdr)) {
-+		err = PTR_ERR(modify_hdr);
-+		mlx5_core_err(mdev, "Fail to alloc ROCE MACsec set modify_header_id err=%d\n",
-+			      err);
-+		modify_hdr = NULL;
-+		goto modify_hdr_err;
-+	}
-+	tx_rule->meta_modhdr = modify_hdr;
-+
-+	flow_act.modify_hdr = modify_hdr;
-+	flow_act.action = MLX5_FLOW_CONTEXT_ACTION_FWD_DEST | MLX5_FLOW_CONTEXT_ACTION_MOD_HDR;
-+
-+	dest.type = MLX5_FLOW_DESTINATION_TYPE_TABLE_TYPE;
-+	dest.ft = tx_fs->tables.ft_crypto.t;
-+	new_rule = mlx5_add_flow_rules(tx_fs->ft_rdma_tx, spec, &flow_act, &dest, 1);
-+	if (IS_ERR(new_rule)) {
-+		err = PTR_ERR(new_rule);
-+		mlx5_core_err(mdev, "Failed to add ROCE TX rule, err=%d\n", err);
-+		goto rule_err;
-+	}
-+	tx_rule->rule = new_rule;
-+	tx_rule->gid_idx = gid_idx;
-+	tx_rule->fs_id = fs_id;
-+	list_add_tail(&tx_rule->entry, tx_rules_list);
-+
-+	goto out;
-+
-+rule_err:
-+	mlx5_modify_header_dealloc(mdev, tx_rule->meta_modhdr);
-+modify_hdr_err:
-+	kfree(tx_rule);
-+out:
-+	kvfree(spec);
-+	return err;
-+}
-+
-+void mlx5_macsec_del_roce_rule(u16 gid_idx, struct mlx5_macsec_fs *macsec_fs,
-+			       struct list_head *tx_rules_list, struct list_head *rx_rules_list)
-+{
-+	struct mlx5_roce_macsec_rx_rule *rx_rule, *next_rx;
-+	struct mlx5_roce_macsec_tx_rule *tx_rule, *next_tx;
-+
-+	list_for_each_entry_safe(tx_rule, next_tx, tx_rules_list, entry) {
-+		if (tx_rule->gid_idx == gid_idx)
-+			macsec_fs_del_roce_rule_tx(macsec_fs->mdev, tx_rule);
-+	}
-+
-+	list_for_each_entry_safe(rx_rule, next_rx, rx_rules_list, entry) {
-+		if (rx_rule->gid_idx == gid_idx)
-+			macsec_fs_del_roce_rule_rx(rx_rule);
-+	}
-+}
-+EXPORT_SYMBOL_GPL(mlx5_macsec_del_roce_rule);
-+
-+int mlx5_macsec_add_roce_rule(void *macdev, const struct sockaddr *addr, u16 gid_idx,
-+			      struct list_head *tx_rules_list, struct list_head *rx_rules_list,
-+			      struct mlx5_macsec_fs *macsec_fs)
++static struct mlx5_macsec_device *get_macsec_device(void *macdev,
++						    struct list_head *macsec_devices_list)
 +{
 +	struct mlx5_macsec_device *iter, *macsec_device = NULL;
-+	struct mlx5_core_dev *mdev = macsec_fs->mdev;
-+	struct mlx5_fs_id *fs_id_iter;
-+	unsigned long index = 0;
-+	int err;
 +
-+	list_for_each_entry(iter, &macsec_fs->macsec_devices_list, macsec_devices_list_entry) {
++	list_for_each_entry(iter, macsec_devices_list, macsec_devices_list_entry) {
 +		if (iter->macdev == macdev) {
 +			macsec_device = iter;
 +			break;
 +		}
 +	}
 +
++	if (macsec_device)
++		return macsec_device;
++
++	macsec_device = kzalloc(sizeof(*macsec_device), GFP_KERNEL);
 +	if (!macsec_device)
-+		return 0;
++		return NULL;
 +
-+	xa_for_each(&macsec_device->tx_id_xa, index, fs_id_iter) {
-+		err = mlx5_macsec_fs_add_roce_rule_tx(macsec_fs, fs_id_iter->id, gid_idx, addr,
-+						      tx_rules_list);
-+		if (err) {
-+			mlx5_core_err(mdev, "MACsec offload: Failed to add roce TX rule\n");
-+			goto out;
++	macsec_device->macdev = macdev;
++	INIT_LIST_HEAD(&macsec_device->tx_rules_list);
++	INIT_LIST_HEAD(&macsec_device->rx_rules_list);
++	INIT_LIST_HEAD(&macsec_device->macsec_roce_gids);
++	list_add(&macsec_device->macsec_devices_list_entry, macsec_devices_list);
++
++	return macsec_device;
++}
++
++static void mlx5_macsec_del_roce_gid(struct mlx5_macsec_device *macsec_device, u16 gid_idx)
++{
++	struct mlx5_roce_gids *current_gid, *next_gid;
++
++	list_for_each_entry_safe(current_gid, next_gid, &macsec_device->macsec_roce_gids,
++				 roce_gid_list_entry)
++		if (current_gid->gid_idx == gid_idx) {
++			list_del(&current_gid->roce_gid_list_entry);
++			kfree(current_gid);
 +		}
++}
++
++static void mlx5_macsec_save_roce_gid(struct mlx5_macsec_device *macsec_device,
++				      const struct sockaddr *addr, u16 gid_idx)
++{
++	struct mlx5_roce_gids *roce_gids;
++
++	roce_gids = kzalloc(sizeof(*roce_gids), GFP_KERNEL);
++	if (!roce_gids)
++		return;
++
++	roce_gids->gid_idx = gid_idx;
++	if (addr->sa_family == AF_INET)
++		memcpy(&roce_gids->addr.sockaddr_in, addr, sizeof(roce_gids->addr.sockaddr_in));
++	else
++		memcpy(&roce_gids->addr.sockaddr_in6, addr, sizeof(roce_gids->addr.sockaddr_in6));
++
++	list_add_tail(&roce_gids->roce_gid_list_entry, &macsec_device->macsec_roce_gids);
++}
++
++static void handle_macsec_gids(struct list_head *macsec_devices_list,
++			       struct mlx5_macsec_event_data *data)
++{
++	struct mlx5_macsec_device *macsec_device;
++	struct mlx5_roce_gids *gid;
++
++	macsec_device = get_macsec_device(data->macdev, macsec_devices_list);
++	if (!macsec_device)
++		return;
++
++	list_for_each_entry(gid, &macsec_device->macsec_roce_gids, roce_gid_list_entry) {
++		mlx5_macsec_add_roce_sa_rules(data->fs_id, (struct sockaddr *)&gid->addr,
++					      gid->gid_idx, &macsec_device->tx_rules_list,
++					      &macsec_device->rx_rules_list, data->macsec_fs,
++					      data->is_tx);
++	}
++}
++
++static void del_sa_roce_rule(struct list_head *macsec_devices_list,
++			     struct mlx5_macsec_event_data *data)
++{
++	struct mlx5_macsec_device *macsec_device;
++
++	macsec_device = get_macsec_device(data->macdev, macsec_devices_list);
++	WARN_ON(!macsec_device);
++
++	mlx5_macsec_del_roce_sa_rules(data->fs_id, data->macsec_fs,
++				      &macsec_device->tx_rules_list,
++				      &macsec_device->rx_rules_list, data->is_tx);
++}
++
++static int macsec_event(struct notifier_block *nb, unsigned long event, void *data)
++{
++	struct mlx5_macsec *macsec = container_of(nb, struct mlx5_macsec, blocking_events_nb);
++
++	mutex_lock(&macsec->lock);
++	switch (event) {
++	case MLX5_DRIVER_EVENT_MACSEC_SA_ADDED:
++		handle_macsec_gids(&macsec->macsec_devices_list, data);
++		break;
++	case MLX5_DRIVER_EVENT_MACSEC_SA_DELETED:
++		del_sa_roce_rule(&macsec->macsec_devices_list, data);
++		break;
++	default:
++		mutex_unlock(&macsec->lock);
++		return NOTIFY_DONE;
++	}
++	mutex_unlock(&macsec->lock);
++	return NOTIFY_OK;
++}
++
++void mlx5r_macsec_event_register(struct mlx5_ib_dev *dev)
++{
++	if (!mlx5_is_macsec_roce_supported(dev->mdev)) {
++		mlx5_ib_dbg(dev, "RoCE MACsec not supported due to capabilities\n");
++		return;
 +	}
 +
-+	index = 0;
-+	xa_for_each(&macsec_device->rx_id_xa, index, fs_id_iter) {
-+		err = mlx5_macsec_fs_add_roce_rule_rx(macsec_fs, fs_id_iter->id, gid_idx, addr,
-+						      rx_rules_list);
-+		if (err) {
-+			mlx5_core_err(mdev, "MACsec offload: Failed to add roce TX rule\n");
-+			goto out;
-+		}
++	dev->macsec.blocking_events_nb.notifier_call = macsec_event;
++	blocking_notifier_chain_register(&dev->mdev->macsec_nh,
++					 &dev->macsec.blocking_events_nb);
++}
++
++void mlx5r_macsec_event_unregister(struct mlx5_ib_dev *dev)
++{
++	if (!mlx5_is_macsec_roce_supported(dev->mdev)) {
++		mlx5_ib_dbg(dev, "RoCE MACsec not supported due to capabilities\n");
++		return;
 +	}
 +
-+	return 0;
-+out:
-+	mlx5_macsec_del_roce_rule(gid_idx, macsec_fs, tx_rules_list, rx_rules_list);
-+	return err;
++	blocking_notifier_chain_unregister(&dev->mdev->macsec_nh,
++					   &dev->macsec.blocking_events_nb);
 +}
-+EXPORT_SYMBOL_GPL(mlx5_macsec_add_roce_rule);
 +
-+void mlx5_macsec_add_roce_sa_rules(u32 fs_id, const struct sockaddr *addr, u16 gid_idx,
-+				   struct list_head *tx_rules_list,
-+				   struct list_head *rx_rules_list,
-+				   struct mlx5_macsec_fs *macsec_fs, bool is_tx)
-+{
-+	(is_tx) ?
-+		mlx5_macsec_fs_add_roce_rule_tx(macsec_fs, fs_id, gid_idx, addr,
-+						tx_rules_list) :
-+		mlx5_macsec_fs_add_roce_rule_rx(macsec_fs, fs_id, gid_idx, addr,
-+						rx_rules_list);
-+}
-+EXPORT_SYMBOL_GPL(mlx5_macsec_add_roce_sa_rules);
-+
-+void mlx5_macsec_del_roce_sa_rules(u32 fs_id, struct mlx5_macsec_fs *macsec_fs,
-+				   struct list_head *tx_rules_list,
-+				   struct list_head *rx_rules_list, bool is_tx)
-+{
-+	(is_tx) ?
-+		macsec_fs_del_roce_rules_tx(macsec_fs, fs_id, tx_rules_list) :
-+		macsec_fs_del_roce_rules_rx(macsec_fs, fs_id, rx_rules_list);
-+}
-+EXPORT_SYMBOL_GPL(mlx5_macsec_del_roce_sa_rules);
-+
- void mlx5_macsec_fs_cleanup(struct mlx5_macsec_fs *macsec_fs)
++int mlx5r_macsec_init_gids_and_devlist(struct mlx5_ib_dev *dev)
  {
- 	macsec_fs_rx_cleanup(macsec_fs);
-@@ -2016,6 +2395,8 @@ mlx5_macsec_fs_init(struct mlx5_core_dev *mdev)
- 		goto tx_cleanup;
+ 	int i, j, max_gids;
+ 
+@@ -29,6 +190,9 @@ int mlx5r_macsec_alloc_gids(struct mlx5_ib_dev *dev)
+ 			dev->port[i].reserved_gids[j].macsec_index = -1;
  	}
  
-+	BLOCKING_INIT_NOTIFIER_HEAD(&mdev->macsec_nh);
++	INIT_LIST_HEAD(&dev->macsec.macsec_devices_list);
++	mutex_init(&dev->macsec.lock);
 +
- 	return macsec_fs;
+ 	return 0;
+ err:
+ 	while (i >= 0) {
+@@ -47,15 +211,22 @@ void mlx5r_macsec_dealloc_gids(struct mlx5_ib_dev *dev)
  
- tx_cleanup:
-diff --git a/include/linux/mlx5/device.h b/include/linux/mlx5/device.h
-index 80cc12a9a531..ca93a5ef9dac 100644
---- a/include/linux/mlx5/device.h
-+++ b/include/linux/mlx5/device.h
-@@ -364,6 +364,8 @@ enum mlx5_event {
- enum mlx5_driver_event {
- 	MLX5_DRIVER_EVENT_TYPE_TRAP = 0,
- 	MLX5_DRIVER_EVENT_UPLINK_NETDEV,
-+	MLX5_DRIVER_EVENT_MACSEC_SA_ADDED,
-+	MLX5_DRIVER_EVENT_MACSEC_SA_DELETED,
- };
+ 	for (i = 0; i < dev->num_ports; i++)
+ 		kfree(dev->port[i].reserved_gids);
++
++	mutex_destroy(&dev->macsec.lock);
+ }
  
- enum {
-diff --git a/include/linux/mlx5/driver.h b/include/linux/mlx5/driver.h
-index c1b88a1112cc..848993823ba5 100644
---- a/include/linux/mlx5/driver.h
-+++ b/include/linux/mlx5/driver.h
-@@ -810,6 +810,8 @@ struct mlx5_core_dev {
- 	u64			num_block_ipsec;
- #ifdef CONFIG_MLX5_MACSEC
- 	struct mlx5_macsec_fs *macsec_fs;
-+	/* MACsec notifier chain to sync MACsec core and IB database */
-+	struct blocking_notifier_head macsec_nh;
+ int mlx5r_add_gid_macsec_operations(const struct ib_gid_attr *attr)
+ {
+ 	struct mlx5_ib_dev *dev = to_mdev(attr->device);
++	struct mlx5_macsec_device *macsec_device;
+ 	const struct ib_gid_attr *physical_gid;
+ 	struct mlx5_reserved_gids *mgids;
+ 	struct net_device *ndev;
+ 	int ret = 0;
++	union {
++		struct sockaddr_in  sockaddr_in;
++		struct sockaddr_in6 sockaddr_in6;
++	} addr;
+ 
+ 	if (attr->gid_type != IB_GID_TYPE_ROCE_UDP_ENCAP)
+ 		return 0;
+@@ -76,34 +247,62 @@ int mlx5r_add_gid_macsec_operations(const struct ib_gid_attr *attr)
+ 		rcu_read_unlock();
+ 		return 0;
+ 	}
++	dev_hold(ndev);
+ 	rcu_read_unlock();
+ 
++	mutex_lock(&dev->macsec.lock);
++	macsec_device = get_macsec_device(ndev, &dev->macsec.macsec_devices_list);
++	if (!macsec_device) {
++		ret = -ENOMEM;
++		goto dev_err;
++	}
++
+ 	physical_gid = rdma_find_gid(attr->device, &attr->gid,
+ 				     attr->gid_type, NULL);
+-	if (IS_ERR(physical_gid))
+-		return 0;
++	if (!IS_ERR(physical_gid)) {
++		ret = set_roce_addr(to_mdev(physical_gid->device),
++				    physical_gid->port_num,
++				    physical_gid->index, NULL,
++				    physical_gid);
++		if (ret)
++			goto gid_err;
+ 
+-	ret = set_roce_addr(to_mdev(physical_gid->device),
+-			    physical_gid->port_num,
+-			    physical_gid->index, NULL,
+-			    physical_gid);
+-	if (ret)
+-		goto gid_err;
++		mgids = &dev->port[attr->port_num - 1].reserved_gids[physical_gid->index];
++		mgids->macsec_index = attr->index;
++		mgids->physical_gid = physical_gid;
++	}
+ 
+-	mgids = &dev->port[attr->port_num - 1].reserved_gids[physical_gid->index];
+-	mgids->macsec_index = attr->index;
+-	mgids->physical_gid = physical_gid;
++	/* Proceed with adding steering rules, regardless if there was gid ambiguity or not.*/
++	rdma_gid2ip((struct sockaddr *)&addr, &attr->gid);
++	ret = mlx5_macsec_add_roce_rule(ndev, (struct sockaddr *)&addr, attr->index,
++					&macsec_device->tx_rules_list,
++					&macsec_device->rx_rules_list, dev->mdev->macsec_fs);
++	if (ret && !IS_ERR(physical_gid))
++		goto rule_err;
+ 
+-	return 0;
++	mlx5_macsec_save_roce_gid(macsec_device, (struct sockaddr *)&addr, attr->index);
++
++	dev_put(ndev);
++	mutex_unlock(&dev->macsec.lock);
++	return ret;
+ 
++rule_err:
++	set_roce_addr(to_mdev(physical_gid->device), physical_gid->port_num,
++		      physical_gid->index, &physical_gid->gid, physical_gid);
++	mgids->macsec_index = -1;
+ gid_err:
+ 	rdma_put_gid_attr(physical_gid);
++	cleanup_macsec_device(macsec_device);
++dev_err:
++	dev_put(ndev);
++	mutex_unlock(&dev->macsec.lock);
+ 	return ret;
+ }
+ 
+ void mlx5r_del_gid_macsec_operations(const struct ib_gid_attr *attr)
+ {
+ 	struct mlx5_ib_dev *dev = to_mdev(attr->device);
++	struct mlx5_macsec_device *macsec_device;
+ 	struct mlx5_reserved_gids *mgids;
+ 	struct net_device *ndev;
+ 	int i, max_gids;
+@@ -134,8 +333,10 @@ void mlx5r_del_gid_macsec_operations(const struct ib_gid_attr *attr)
+ 		rcu_read_unlock();
+ 		return;
+ 	}
++	dev_hold(ndev);
+ 	rcu_read_unlock();
+ 
++	mutex_lock(&dev->macsec.lock);
+ 	max_gids = MLX5_CAP_ROCE(dev->mdev, roce_address_table_size);
+ 	for (i = 0; i < max_gids; i++) { /* Checking if macsec gid has ambiguous IP */
+ 		mgids = &dev->port[attr->port_num - 1].reserved_gids[i];
+@@ -152,4 +353,12 @@ void mlx5r_del_gid_macsec_operations(const struct ib_gid_attr *attr)
+ 			break;
+ 		}
+ 	}
++	macsec_device = get_macsec_device(ndev, &dev->macsec.macsec_devices_list);
++	mlx5_macsec_del_roce_rule(attr->index, dev->mdev->macsec_fs,
++				  &macsec_device->tx_rules_list, &macsec_device->rx_rules_list);
++	mlx5_macsec_del_roce_gid(macsec_device, attr->index);
++	cleanup_macsec_device(macsec_device);
++
++	dev_put(ndev);
++	mutex_unlock(&dev->macsec.lock);
+ }
+diff --git a/drivers/infiniband/hw/mlx5/macsec.h b/drivers/infiniband/hw/mlx5/macsec.h
+index b60f8f046d6f..9b77ba90f0f4 100644
+--- a/drivers/infiniband/hw/mlx5/macsec.h
++++ b/drivers/infiniband/hw/mlx5/macsec.h
+@@ -14,12 +14,16 @@ struct mlx5_reserved_gids;
+ 
+ int mlx5r_add_gid_macsec_operations(const struct ib_gid_attr *attr);
+ void mlx5r_del_gid_macsec_operations(const struct ib_gid_attr *attr);
+-int mlx5r_macsec_alloc_gids(struct mlx5_ib_dev *dev);
++int mlx5r_macsec_init_gids_and_devlist(struct mlx5_ib_dev *dev);
+ void mlx5r_macsec_dealloc_gids(struct mlx5_ib_dev *dev);
++void mlx5r_macsec_event_register(struct mlx5_ib_dev *dev);
++void mlx5r_macsec_event_unregister(struct mlx5_ib_dev *dev);
+ #else
+ static inline int mlx5r_add_gid_macsec_operations(const struct ib_gid_attr *attr) { return 0; }
+ static inline void mlx5r_del_gid_macsec_operations(const struct ib_gid_attr *attr) {}
+-static inline int mlx5r_macsec_alloc_gids(struct mlx5_ib_dev *dev) { return 0; }
++static inline int mlx5r_macsec_init_gids_and_devlist(struct mlx5_ib_dev *dev) { return 0; }
+ static inline void mlx5r_macsec_dealloc_gids(struct mlx5_ib_dev *dev) {}
++static inline void mlx5r_macsec_event_register(struct mlx5_ib_dev *dev) {}
++static inline void mlx5r_macsec_event_unregister(struct mlx5_ib_dev *dev) {}
  #endif
+ #endif /* __MLX5_MACSEC_H__ */
+diff --git a/drivers/infiniband/hw/mlx5/main.c b/drivers/infiniband/hw/mlx5/main.c
+index f463cf8b7501..b4cc16a19757 100644
+--- a/drivers/infiniband/hw/mlx5/main.c
++++ b/drivers/infiniband/hw/mlx5/main.c
+@@ -3684,7 +3684,7 @@ static int mlx5_ib_stage_init_init(struct mlx5_ib_dev *dev)
+ 	if (err)
+ 		return err;
+ 
+-	err = mlx5r_macsec_alloc_gids(dev);
++	err = mlx5r_macsec_init_gids_and_devlist(dev);
+ 	if (err)
+ 		return err;
+ 
+@@ -4125,11 +4125,15 @@ static int mlx5_ib_stage_dev_notifier_init(struct mlx5_ib_dev *dev)
+ {
+ 	dev->mdev_events.notifier_call = mlx5_ib_event;
+ 	mlx5_notifier_register(dev->mdev, &dev->mdev_events);
++
++	mlx5r_macsec_event_register(dev);
++
+ 	return 0;
+ }
+ 
+ static void mlx5_ib_stage_dev_notifier_cleanup(struct mlx5_ib_dev *dev)
+ {
++	mlx5r_macsec_event_unregister(dev);
+ 	mlx5_notifier_unregister(dev->mdev, &dev->mdev_events);
+ }
+ 
+diff --git a/drivers/infiniband/hw/mlx5/mlx5_ib.h b/drivers/infiniband/hw/mlx5/mlx5_ib.h
+index a4b940b5035f..16713baf0d06 100644
+--- a/drivers/infiniband/hw/mlx5/mlx5_ib.h
++++ b/drivers/infiniband/hw/mlx5/mlx5_ib.h
+@@ -1090,6 +1090,12 @@ struct mlx5_special_mkeys {
+ 	__be32 terminate_scatter_list_mkey;
  };
  
-diff --git a/include/linux/mlx5/macsec.h b/include/linux/mlx5/macsec.h
-new file mode 100644
-index 000000000000..f7ff4c2a95d0
---- /dev/null
-+++ b/include/linux/mlx5/macsec.h
-@@ -0,0 +1,32 @@
-+/* SPDX-License-Identifier: GPL-2.0 OR Linux-OpenIB */
-+/* Copyright (c) 2022, NVIDIA CORPORATION & AFFILIATES. */
-+
-+#ifndef MLX5_MACSEC_H
-+#define MLX5_MACSEC_H
-+
-+#ifdef CONFIG_MLX5_MACSEC
-+struct mlx5_macsec_event_data {
-+	struct mlx5_macsec_fs *macsec_fs;
-+	void *macdev;
-+	u32 fs_id;
-+	bool is_tx;
++struct mlx5_macsec {
++	struct mutex lock; /* Protects mlx5_macsec internal contexts */
++	struct list_head macsec_devices_list;
++	struct notifier_block blocking_events_nb;
 +};
 +
-+int mlx5_macsec_add_roce_rule(void *macdev, const struct sockaddr *addr, u16 gid_idx,
-+			      struct list_head *tx_rules_list, struct list_head *rx_rules_list,
-+			      struct mlx5_macsec_fs *macsec_fs);
+ struct mlx5_ib_dev {
+ 	struct ib_device		ib_dev;
+ 	struct mlx5_core_dev		*mdev;
+@@ -1149,6 +1155,10 @@ struct mlx5_ib_dev {
+ 	u16 pkey_table_len;
+ 	u8 lag_ports;
+ 	struct mlx5_special_mkeys mkeys;
 +
-+void mlx5_macsec_del_roce_rule(u16 gid_idx, struct mlx5_macsec_fs *macsec_fs,
-+			       struct list_head *tx_rules_list, struct list_head *rx_rules_list);
-+
-+void mlx5_macsec_add_roce_sa_rules(u32 fs_id, const struct sockaddr *addr, u16 gid_idx,
-+				   struct list_head *tx_rules_list,
-+				   struct list_head *rx_rules_list,
-+				   struct mlx5_macsec_fs *macsec_fs, bool is_tx);
-+
-+void mlx5_macsec_del_roce_sa_rules(u32 fs_id, struct mlx5_macsec_fs *macsec_fs,
-+				   struct list_head *tx_rules_list,
-+				   struct list_head *rx_rules_list, bool is_tx);
-+
++#ifdef CONFIG_MLX5_MACSEC
++	struct mlx5_macsec macsec;
 +#endif
-+#endif /* MLX5_MACSEC_H */
+ };
+ 
+ static inline struct mlx5_ib_cq *to_mibcq(struct mlx5_core_cq *mcq)
+diff --git a/include/linux/mlx5/driver.h b/include/linux/mlx5/driver.h
+index 848993823ba5..38412457c617 100644
+--- a/include/linux/mlx5/driver.h
++++ b/include/linux/mlx5/driver.h
+@@ -1328,6 +1328,7 @@ static inline bool mlx5_get_roce_state(struct mlx5_core_dev *dev)
+ 	return mlx5_is_roce_on(dev);
+ }
+ 
++#ifdef CONFIG_MLX5_MACSEC
+ static inline bool mlx5e_is_macsec_device(const struct mlx5_core_dev *mdev)
+ {
+ 	if (!(MLX5_CAP_GEN_64(mdev, general_obj_types) &
+@@ -1366,11 +1367,12 @@ static inline bool mlx5_is_macsec_roce_supported(struct mlx5_core_dev *mdev)
+ 	if (((MLX5_CAP_GEN_2(mdev, flow_table_type_2_type) &
+ 	     NIC_RDMA_BOTH_DIRS_CAPS) != NIC_RDMA_BOTH_DIRS_CAPS) ||
+ 	     !MLX5_CAP_FLOWTABLE_RDMA_TX(mdev, max_modify_header_actions) ||
+-	     !mlx5e_is_macsec_device(mdev))
++	     !mlx5e_is_macsec_device(mdev) || !mdev->macsec_fs)
+ 		return false;
+ 
+ 	return true;
+ }
++#endif
+ 
+ enum {
+ 	MLX5_OCTWORD = 16,
 -- 
 2.41.0
 
