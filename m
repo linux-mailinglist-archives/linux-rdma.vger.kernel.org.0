@@ -2,110 +2,72 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 999E2775866
-	for <lists+linux-rdma@lfdr.de>; Wed,  9 Aug 2023 12:53:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E60C775AE0
+	for <lists+linux-rdma@lfdr.de>; Wed,  9 Aug 2023 13:12:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232541AbjHIKvq (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 9 Aug 2023 06:51:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40200 "EHLO
+        id S233314AbjHILM2 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 9 Aug 2023 07:12:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60438 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232543AbjHIKu4 (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 9 Aug 2023 06:50:56 -0400
-Received: from mail-lj1-x22e.google.com (mail-lj1-x22e.google.com [IPv6:2a00:1450:4864:20::22e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8810C2137;
-        Wed,  9 Aug 2023 03:50:39 -0700 (PDT)
-Received: by mail-lj1-x22e.google.com with SMTP id 38308e7fff4ca-2b9aa1d3029so105875221fa.2;
-        Wed, 09 Aug 2023 03:50:39 -0700 (PDT)
+        with ESMTP id S233309AbjHILM1 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 9 Aug 2023 07:12:27 -0400
+Received: from mail-wm1-x334.google.com (mail-wm1-x334.google.com [IPv6:2a00:1450:4864:20::334])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5F6F1FD7;
+        Wed,  9 Aug 2023 04:12:22 -0700 (PDT)
+Received: by mail-wm1-x334.google.com with SMTP id 5b1f17b1804b1-3fe5eb84dceso23478625e9.1;
+        Wed, 09 Aug 2023 04:12:22 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1691578238; x=1692183038;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=q2sRNbI2azaNM3epQYqeDbNNvVsnx+uOoBBxcjhRKfE=;
-        b=msEFSbObqY9s8LRvEW0pOyPiCoRYq2OqQ8aFjTaMZp66s9PhBKq77Y9e2V5RWAAEIM
-         9A+oKL3bvIyOMFlQ1PZ1PsE7tBOe+XYywgriqm/pKlDN/VHQQ/ndQfefrtwA9BO7grMn
-         rFSSwL9SpICl8gVA46h6X9EyQ/rbrDfAI1jrBkJ8T1/tFgYZWrqmCHJ9sfcyd34OgJJ1
-         WWFu2ze9vFGpAYum+PC5KqqYb1cTAuOQnLGkolnnwiy1qkFAMphjl6o7RN7pc88mPW67
-         wujo4SNe4ys2qn7qiSiGMeqcr1nqRJRiUNwnC53IV0uMhBehw2NSckriVPDdyv6wB1zr
-         hR1w==
+        d=gmail.com; s=20221208; t=1691579541; x=1692184341;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=2u9xybsbUOSRAB2M9cpPBdGgS/COFb/KNUNOjet7l4I=;
+        b=j5vxLd3JusR2Fryuq/92gPcvkUHdMNsD1Yue0P8ajNw2dWEycci0mvf6KZiRYF8LZc
+         P/+7ZyFD1CNSQgYr8imdxdyFJL7J7kdyOsOOie5uX3IW6TVGsOFudIjd8i7Ii9MlUBQi
+         Eb0k5M3HvgL7B7lS4+SkIqWWT52+EBZOKP4LNm+VPfvlTvGr4GiOcQ1ELWYXiR9J0zsT
+         E58I6OhYyNY7W7tJ73VDWoSU0TRuJP+S00SsGRocIFui2zlOF9jssFzGA1h0SF/KIAfv
+         DsVtNoyP1ETYwqKyn6v51DqTjEG1SfeyjH4kBpmaDuvcseTqrp+zLk33YAN4NV7ZxFrG
+         YG1w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691578238; x=1692183038;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=q2sRNbI2azaNM3epQYqeDbNNvVsnx+uOoBBxcjhRKfE=;
-        b=dI2oxWqvq2mFeMM0OD5nFwNSwu2VTzXxNl1wV03Yv2d0gNZwrntfsfAL5xvxaUG2oF
-         6XhDilvwSNmiBgXQJr/Xyg4k2qkS0eT0skRergUm4PY58NTKhRt3nlgL8+5YspZEzXGW
-         YevhJv8ostG8P4zJ3QSwA0xtoAQRknwwn/XeJjgAtT0M1CWHdwlJB1jJjXeu1T0cHSQ5
-         nwfjI1+67DUWxmr4F+QUkB5L1dNeLdtWdG0v557bXpLFB4tWNHqgmdfmzF0LVk3uK9Ym
-         AZDs0W66nRgMcBGEIFSL1E6wGsF1Zo8l7+lP2MDi7RLU3X2899PfzI21FuIGTIPBIzQK
-         lVqg==
-X-Gm-Message-State: AOJu0YxQ+/yoe715BCmDOP46PF/CH5hAjQDQrCfk2QDjk/+7CUONVZG0
-        vPuszLSVBKWVKlF1JG5UjPc=
-X-Google-Smtp-Source: AGHT+IEqxrPAYJZNCqWU257rXs5ZZv/+krpS60QQC5LVhJec2d7jEsNORJzb93LBbrFFUikrXvNUJQ==
-X-Received: by 2002:a2e:8893:0:b0:2b9:44c5:ac15 with SMTP id k19-20020a2e8893000000b002b944c5ac15mr1510364lji.41.1691578237645;
-        Wed, 09 Aug 2023 03:50:37 -0700 (PDT)
-Received: from localhost ([165.225.194.193])
-        by smtp.gmail.com with ESMTPSA id s13-20020a7bc38d000000b003fbb1a9586esm1620796wmj.15.2023.08.09.03.50.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 09 Aug 2023 03:50:37 -0700 (PDT)
-From:   Joel Granados <joel.granados@gmail.com>
-X-Google-Original-From: Joel Granados <j.granados@samsung.com>
-To:     mcgrof@kernel.org
-Cc:     rds-devel@oss.oracle.com, "David S. Miller" <davem@davemloft.net>,
-        Florian Westphal <fw@strlen.de>, willy@infradead.org,
-        Jan Karcher <jaka@linux.ibm.com>,
-        Wen Gu <guwen@linux.alibaba.com>,
-        Simon Horman <horms@verge.net.au>,
-        Tony Lu <tonylu@linux.alibaba.com>, linux-wpan@vger.kernel.org,
-        Matthieu Baerts <matthieu.baerts@tessares.net>,
-        Christian Borntraeger <borntraeger@linux.ibm.com>,
-        mptcp@lists.linux.dev, Heiko Carstens <hca@linux.ibm.com>,
-        Stefan Schmidt <stefan@datenfreihafen.org>,
-        Will Deacon <will@kernel.org>, Julian Anastasov <ja@ssi.bg>,
-        netfilter-devel@vger.kernel.org, Joerg Reuter <jreuter@yaina.de>,
-        linux-kernel@vger.kernel.org,
-        Alexander Gordeev <agordeev@linux.ibm.com>,
-        linux-sctp@vger.kernel.org, Xin Long <lucien.xin@gmail.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        linux-hams@vger.kernel.org, Vasily Gorbik <gor@linux.ibm.com>,
-        coreteam@netfilter.org, Ralf Baechle <ralf@linux-mips.org>,
-        Steffen Klassert <steffen.klassert@secunet.com>,
-        Pablo Neira Ayuso <pablo@netfilter.org>,
-        keescook@chromium.org, Roopa Prabhu <roopa@nvidia.com>,
-        David Ahern <dsahern@kernel.org>,
-        linux-arm-kernel@lists.infradead.org,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Jozsef Kadlecsik <kadlec@netfilter.org>,
-        Wenjia Zhang <wenjia@linux.ibm.com>, josh@joshtriplett.org,
-        linux-fsdevel@vger.kernel.org,
-        Alexander Aring <alex.aring@gmail.com>,
-        Nikolay Aleksandrov <razor@blackwall.org>,
-        netdev@vger.kernel.org,
-        Santosh Shilimkar <santosh.shilimkar@oracle.com>,
-        linux-s390@vger.kernel.org, Sven Schnelle <svens@linux.ibm.com>,
-        "D. Wythe" <alibuda@linux.alibaba.com>,
-        Eric Dumazet <edumazet@google.com>, lvs-devel@vger.kernel.org,
-        linux-rdma@vger.kernel.org, Paolo Abeni <pabeni@redhat.com>,
-        Iurii Zaikin <yzaikin@google.com>,
-        Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>,
-        bridge@lists.linux-foundation.org,
-        Karsten Graul <kgraul@linux.ibm.com>,
-        Mat Martineau <martineau@kernel.org>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Joel Granados <j.granados@samsung.com>,
-        Jani Nikula <jani.nikula@linux.intel.com>
-Subject: [PATCH v3 14/14] sysctl: Use ctl_table_size as stopping criteria for list macro
-Date:   Wed,  9 Aug 2023 12:50:06 +0200
-Message-Id: <20230809105006.1198165-15-j.granados@samsung.com>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20230809105006.1198165-1-j.granados@samsung.com>
-References: <20230809105006.1198165-1-j.granados@samsung.com>
+        d=1e100.net; s=20221208; t=1691579541; x=1692184341;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=2u9xybsbUOSRAB2M9cpPBdGgS/COFb/KNUNOjet7l4I=;
+        b=RXsTDpW1c9f2JC+BTAY31lX29y7Ol9BeAnJgGbNN/axVCLCA7ZG/GaVsaWxdWU6kCV
+         6GwD16juGRKrOAPDFfYnqEwVsWSX79WpTtZAM+BW8g4UZDW1Bbydx9UpTr4uF8tKGlM7
+         QumjMvvkRchxlc98cvnmwgYH4M0biQ6zr9dNExH8++Gemo4H0DK5ftGGdALuobgXsuTp
+         6Am4GZwCuLPfdChjP6cBIE3acPJxiYyJgZDjh5nVi0jncT9M8x161BQtL+9g0GZFZ+YQ
+         2YV+oBdwfmRsy5MT9gZK0b8AHnXQXm68ksFlSBuD/cHWakD7PgYseE0uhFxksn+f8EQr
+         Qzlg==
+X-Gm-Message-State: AOJu0Yx5ULR2mbhN9UDqoQWerNwyW6QGO52mimjOxrxYHckIhavSfp4z
+        m+jUD2TY4mE/YhrbnAeytio=
+X-Google-Smtp-Source: AGHT+IGbYVbwvxlmviv/YVXhuwz8atUZzkdpGmnlOLVcSWdw4XpCtgPNxAFeMbZ+MmQ4bsd0/SBuUw==
+X-Received: by 2002:a05:600c:2811:b0:3f7:4961:52ad with SMTP id m17-20020a05600c281100b003f7496152admr1945488wmb.3.1691579541026;
+        Wed, 09 Aug 2023 04:12:21 -0700 (PDT)
+Received: from [192.168.0.103] ([77.126.7.132])
+        by smtp.gmail.com with ESMTPSA id y9-20020a1c4b09000000b003fe215e4492sm1659169wma.4.2023.08.09.04.12.19
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 09 Aug 2023 04:12:20 -0700 (PDT)
+Message-ID: <a81b9b4a-d2c3-3136-9113-4568f2a87e97@gmail.com>
+Date:   Wed, 9 Aug 2023 14:12:18 +0300
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH net-next 00/10] Convert mlx4 to use auxiliary bus
+Content-Language: en-US
+To:     Petr Pavlu <petr.pavlu@suse.com>, tariqt@nvidia.com,
+        yishaih@nvidia.com, leon@kernel.org
+Cc:     davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
+        pabeni@redhat.com, jgg@ziepe.ca, netdev@vger.kernel.org,
+        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20230804150527.6117-1-petr.pavlu@suse.com>
+From:   Tariq Toukan <ttoukan.linux@gmail.com>
+In-Reply-To: <20230804150527.6117-1-petr.pavlu@suse.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -114,45 +76,58 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-This is a preparation commit to make it easy to remove the sentinel
-elements (empty end markers) from the ctl_table arrays. It both allows
-the systematic removal of the sentinels and adds the ctl_table_size
-variable to the stopping criteria of the list_for_each_table_entry macro
-that traverses all ctl_table arrays. Once all the sentinels are removed
-by subsequent commits, ctl_table_size will become the only stopping
-criteria in the macro. We don't actually remove any elements in this
-commit, but it sets things up to for the removal process to take place.
 
-By adding header->ctl_table_size as an additional stopping criteria for
-the list_for_each_table_entry macro, it will execute until it finds an
-"empty" ->procname or until the size runs out. Therefore if a ctl_table
-array with a sentinel is passed its size will be too big (by one
-element) but it will stop on the sentinel. On the other hand, if the
-ctl_table array without a sentinel is passed its size will be just write
-and there will be no need for a sentinel.
 
-Signed-off-by: Joel Granados <j.granados@samsung.com>
-Suggested-by: Jani Nikula <jani.nikula@linux.intel.com>
----
- fs/proc/proc_sysctl.c | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+On 04/08/2023 18:05, Petr Pavlu wrote:
+> This series converts the mlx4 drivers to use auxiliary bus, similarly to
+> how mlx5 was converted [1]. The first 6 patches are preparatory changes,
+> the remaining 4 are the final conversion.
+> 
+> Initial motivation for this change was to address a problem related to
+> loading mlx4_en/mlx4_ib by mlx4_core using request_module_nowait(). When
+> doing such a load in initrd, the operation is asynchronous to any init
+> control and can get unexpectedly affected/interrupted by an eventual
+> root switch. Using an auxiliary bus leaves these module loads to udevd
+> which better integrates with systemd processing. [2]
+> 
+> General benefit is to get rid of custom interface logic and instead use
+> a common facility available for this task. An obvious risk is that some
+> new bug is introduced by the conversion.
+> 
+> Leon Romanovsky was kind enough to check for me that the series passes
+> their verification tests.
+> 
+> [1] https://lore.kernel.org/netdev/20201101201542.2027568-1-leon@kernel.org/
+> [2] https://lore.kernel.org/netdev/0a361ac2-c6bd-2b18-4841-b1b991f0635e@suse.com/
+> 
+> Petr Pavlu (10):
+>    mlx4: Get rid of the mlx4_interface.get_dev callback
+>    mlx4: Rename member mlx4_en_dev.nb to netdev_nb
+>    mlx4: Replace the mlx4_interface.event callback with a notifier
+>    mlx4: Get rid of the mlx4_interface.activate callback
+>    mlx4: Move the bond work to the core driver
+>    mlx4: Avoid resetting MLX4_INTFF_BONDING per driver
+>    mlx4: Register mlx4 devices to an auxiliary virtual bus
+>    mlx4: Connect the ethernet part to the auxiliary bus
+>    mlx4: Connect the infiniband part to the auxiliary bus
+>    mlx4: Delete custom device management logic
+> 
+>   drivers/infiniband/hw/mlx4/main.c             | 207 ++++++----
+>   drivers/infiniband/hw/mlx4/mlx4_ib.h          |   2 +
+>   drivers/net/ethernet/mellanox/mlx4/Kconfig    |   1 +
+>   drivers/net/ethernet/mellanox/mlx4/en_main.c  | 141 ++++---
+>   .../net/ethernet/mellanox/mlx4/en_netdev.c    |  64 +---
+>   drivers/net/ethernet/mellanox/mlx4/intf.c     | 361 ++++++++++++------
+>   drivers/net/ethernet/mellanox/mlx4/main.c     | 110 ++++--
+>   drivers/net/ethernet/mellanox/mlx4/mlx4.h     |  16 +-
+>   drivers/net/ethernet/mellanox/mlx4/mlx4_en.h  |   4 +-
+>   include/linux/mlx4/device.h                   |  20 +
+>   include/linux/mlx4/driver.h                   |  42 +-
+>   11 files changed, 572 insertions(+), 396 deletions(-)
+> 
+> 
+> base-commit: 86b7e033d684a9d4ca20ad8e6f8b9300cf99668f
 
-diff --git a/fs/proc/proc_sysctl.c b/fs/proc/proc_sysctl.c
-index 817bc51c58d8..504e847c2a3a 100644
---- a/fs/proc/proc_sysctl.c
-+++ b/fs/proc/proc_sysctl.c
-@@ -19,8 +19,9 @@
- #include <linux/kmemleak.h>
- #include "internal.h"
- 
--#define list_for_each_table_entry(entry, header) \
--	for ((entry) = (header->ctl_table); (entry)->procname; (entry)++)
-+#define list_for_each_table_entry(entry, header)	\
-+	entry = header->ctl_table;			\
-+	for (size_t i = 0 ; i < header->ctl_table_size && entry->procname; ++i, entry++)
- 
- static const struct dentry_operations proc_sys_dentry_operations;
- static const struct file_operations proc_sys_file_operations;
--- 
-2.30.2
+For the series:
+Acked-by: Tariq Toukan <tariqt@nvidia.com>
 
