@@ -2,129 +2,170 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B4BF477561C
-	for <lists+linux-rdma@lfdr.de>; Wed,  9 Aug 2023 11:06:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E030775701
+	for <lists+linux-rdma@lfdr.de>; Wed,  9 Aug 2023 12:22:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230403AbjHIJGK (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 9 Aug 2023 05:06:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59466 "EHLO
+        id S231768AbjHIKW1 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 9 Aug 2023 06:22:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52434 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230020AbjHIJGK (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 9 Aug 2023 05:06:10 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E72D41BD9
-        for <linux-rdma@vger.kernel.org>; Wed,  9 Aug 2023 02:06:06 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 84EC763074
-        for <linux-rdma@vger.kernel.org>; Wed,  9 Aug 2023 09:06:06 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 64DD4C433C8;
-        Wed,  9 Aug 2023 09:06:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1691571965;
-        bh=RM79t+SNr7UI3uPqDta+Mc/XFA0s3SLvHqKLoHPXkL4=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=MX+1CqFhORbsfMVkGA2rRK8Gbfls6JpSzcFOiSHmxuF+XqI5rMeuzjX8xOYU21bnL
-         8/jzdE8+0GKi6rK6n9jp/aCUCFEVXl4dIhzUljSaIqrrql7tU3Vnn12ru9puiw21/7
-         Tcl2Oh2qPTDGtJ2rjK1qXoVFxdarfNbZVzeeFMui73dSd/sWtY86zOH+dSjEiAliyp
-         1PFclO1txaz8GWEgJ0QkzepKaC83/S7fUODYG/t4OBbq6nfImiP9k2dZ+n0++6SHHR
-         4b0wXLympXWCAmqtezviZWjtndodiARiRc5PEN2eIyLA8JwJJML8ClqnREWHGOmrtl
-         hIDPh22RlMl/w==
-Date:   Wed, 9 Aug 2023 12:06:01 +0300
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Selvin Xavier <selvin.xavier@broadcom.com>
-Cc:     jgg@ziepe.ca, linux-rdma@vger.kernel.org,
-        andrew.gospodarek@broadcom.com,
-        Kalesh AP <kalesh-anakkur.purayil@broadcom.com>
-Subject: Re: [PATCH for-next v2] IB/core: Add more speed parsing in
- ib_get_width_and_speed()
-Message-ID: <20230809090601.GS94631@unreal>
-References: <1690966823-8159-1-git-send-email-selvin.xavier@broadcom.com>
- <20230803175842.GF53714@unreal>
- <CA+sbYW14vED8cHzvqO-=06yJegqBZqVd76uDma=w+d-Y+T+PsQ@mail.gmail.com>
- <20230807135250.GB7100@unreal>
- <CA+sbYW0nF3OqMVUyLkq68+R_beDyXuN0-PbhEru31Y+gMA3WaQ@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CA+sbYW0nF3OqMVUyLkq68+R_beDyXuN0-PbhEru31Y+gMA3WaQ@mail.gmail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        with ESMTP id S230146AbjHIKW0 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 9 Aug 2023 06:22:26 -0400
+Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id E1DC698;
+        Wed,  9 Aug 2023 03:22:25 -0700 (PDT)
+Received: by linux.microsoft.com (Postfix, from userid 1099)
+        id 68B4B20FC3E4; Wed,  9 Aug 2023 03:22:25 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 68B4B20FC3E4
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+        s=default; t=1691576545;
+        bh=s/Hd32b4XFC5qXe0hMfXzG8vSHV2xgLG+0kVH3hmJUk=;
+        h=From:To:Cc:Subject:Date:From;
+        b=kyOStzjyWsOPbM5+GPS6YfLyRyueAoJDuK/3FnslrQcYWOMx67IxnAqm9InYveCN0
+         N31+cX0/E8BFYKY20z9QN+dSOWKPYAmjZVsw0D3NXp9IQYlgDaHQQ7o2DDboLeAm++
+         reoj2X8SQKDn/sS5U0H0nmPTzAXXG+J+A7/S6GSI=
+From:   Souradeep Chakrabarti <schakrabarti@linux.microsoft.com>
+To:     kys@microsoft.com, haiyangz@microsoft.com, wei.liu@kernel.org,
+        decui@microsoft.com, davem@davemloft.net, edumazet@google.com,
+        kuba@kernel.org, pabeni@redhat.com, longli@microsoft.com,
+        sharmaajay@microsoft.com, leon@kernel.org, cai.huoqing@linux.dev,
+        ssengar@linux.microsoft.com, vkuznets@redhat.com,
+        tglx@linutronix.de, linux-hyperv@vger.kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-rdma@vger.kernel.org
+Cc:     schakrabarti@microsoft.com,
+        Souradeep Chakrabarti <schakrabarti@linux.microsoft.com>,
+        stable@vger.kernel.org
+Subject: [PATCH V8 net] net: mana: Fix MANA VF unload when hardware is unresponsive
+Date:   Wed,  9 Aug 2023 03:22:05 -0700
+Message-Id: <1691576525-24271-1-git-send-email-schakrabarti@linux.microsoft.com>
+X-Mailer: git-send-email 1.8.3.1
+X-Spam-Status: No, score=-17.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_PASS,SPF_PASS,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Wed, Aug 09, 2023 at 02:24:22PM +0530, Selvin Xavier wrote:
-> On Mon, Aug 7, 2023 at 7:22 PM Leon Romanovsky <leon@kernel.org> wrote:
-> >
-> > On Fri, Aug 04, 2023 at 09:43:28AM +0530, Selvin Xavier wrote:
-> > > On Thu, Aug 3, 2023 at 11:28 PM Leon Romanovsky <leon@kernel.org> wrote:
-> > > >
-> > > > On Wed, Aug 02, 2023 at 02:00:23AM -0700, Selvin Xavier wrote:
-> > > > > From: Kalesh AP <kalesh-anakkur.purayil@broadcom.com>
-> > > > >
-> > > > > When the Ethernet driver does not provide the number of lanes
-> > > > > in the __ethtool_get_link_ksettings() response, the function
-> > > > > ib_get_width_and_speed() does not take consideration of 50G,
-> > > > > 100G and 200G speeds while calculating the IB width and speed.
-> > > > > Update the width and speed for the above netdev speeds.
-> > > > >
-> > > > > Signed-off-by: Kalesh AP <kalesh-anakkur.purayil@broadcom.com>
-> > > > > Signed-off-by: Selvin Xavier <selvin.xavier@broadcom.com>
-> > > > > ---
-> > > > > v1 - v2:
-> > > > >     - Rebased the patch based on the latest changes in ib_get_width_and_speed
-> > > > >     - removed the switch case and use the existing else if check
-> > > > > ---
-> > > > >  drivers/infiniband/core/verbs.c | 11 ++++++++++-
-> > > > >  1 file changed, 10 insertions(+), 1 deletion(-)
-> > > > >
-> > > > > diff --git a/drivers/infiniband/core/verbs.c b/drivers/infiniband/core/verbs.c
-> > > > > index 25367bd..41ff559 100644
-> > > > > --- a/drivers/infiniband/core/verbs.c
-> > > > > +++ b/drivers/infiniband/core/verbs.c
-> > > > > @@ -1899,9 +1899,18 @@ static void ib_get_width_and_speed(u32 netdev_speed, u32 lanes,
-> > > > >               } else if (netdev_speed <= SPEED_40000) {
-> > > > >                       *width = IB_WIDTH_4X;
-> > > > >                       *speed = IB_SPEED_FDR10;
-> > > > > -             } else {
-> > > > > +             } else if (netdev_speed <= SPEED_50000) {
-> > > > > +                     *width = IB_WIDTH_2X;
-> > > > > +                     *speed = IB_SPEED_EDR;
-> > > > > +             } else if (netdev_speed <= SPEED_100000) {
-> > > > >                       *width = IB_WIDTH_4X;
-> > > > >                       *speed = IB_SPEED_EDR;
-> > > > > +             } else if (netdev_speed <= SPEED_200000) {
-> > > > > +                     *width = IB_WIDTH_4X;
-> > > > > +                     *speed = IB_SPEED_HDR;
-> > > >
-> > > >
-> > > > SPEED_50000, SPEED_100000 and SPEED_200000 depends on
-> > > > ClassPortInfo:CapabilityMask2.is* values.
-> > > >
-> > > > For example, SPEED_50000 can b IB_WIDTH_2X/IB_SPEED_EDR and IB_WIDTH_1X/IB_SPEED_HDR.
-> > > Agree with that.
-> > > This reporting can be achieved by the existing code, but the L2 driver
-> > > needs to report non zero values for lanes in
-> > > ethtool_ops->get_link_ksettings.
-> > > Caller of this modified function gets the speed and number of lanes
-> > > from ethtool_ops->get_link_ksettings.
-> > >
-> > > In this patch we are trying to handle the case where ethtool ops
-> > > doesn't provide the lanes.
-> >
-> > Almost all drivers don't support lanes reporting.
-> Agreed. But this patch will at least correct the overall speed
-> reporting. So it's an improvement from the current behavior.
-> If you still feel that this is not needed, you can drop the patch.
+When unloading the MANA driver, mana_dealloc_queues() waits for the MANA
+hardware to complete any inflight packets and set the pending send count
+to zero. But if the hardware has failed, mana_dealloc_queues()
+could wait forever.
 
-I'm ok with the implementation, just waiting to hear second opinion from Jason.
+Fix this by adding a timeout to the wait. Set the timeout to 120 seconds,
+which is a somewhat arbitrary value that is more than long enough for
+functional hardware to complete any sends.
 
-Thanks
+Cc: stable@vger.kernel.org
+Fixes: ca9c54d2d6a5 ("net: mana: Add a driver for Microsoft Azure Network Adapter (MANA)")
+Signed-off-by: Souradeep Chakrabarti <schakrabarti@linux.microsoft.com>
+---
+V7 -> V8:
+* Replaced dev_consume_skb_any with dev_kfree_skb_any.
+* Added extra braces to use assignment as truth value.
+
+V6 -> V7:
+* Optimized the while loop for freeing skb.
+
+V5 -> V6:
+* Added pcie_flr to reset the pci after timeout.
+* Fixed the position of changelog.
+* Removed unused variable like cq.
+
+V4 -> V5:
+* Added fixes tag
+* Changed the usleep_range from static to incremental value.
+* Initialized timeout in the begining.
+
+V3 -> V4:
+* Removed the unnecessary braces from mana_dealloc_queues().
+
+V2 -> V3:
+* Removed the unnecessary braces from mana_dealloc_queues().
+
+V1 -> V2:
+* Added net branch
+* Removed the typecasting to (struct mana_context*) of void pointer
+* Repositioned timeout variable in mana_dealloc_queues()
+* Repositioned vf_unload_timeout in mana_context struct, to utilise the
+ 6 bytes hole
+---
+ drivers/net/ethernet/microsoft/mana/mana_en.c | 37 +++++++++++++++++--
+ 1 file changed, 33 insertions(+), 4 deletions(-)
+
+diff --git a/drivers/net/ethernet/microsoft/mana/mana_en.c b/drivers/net/ethernet/microsoft/mana/mana_en.c
+index a499e460594b..c2ad0921e893 100644
+--- a/drivers/net/ethernet/microsoft/mana/mana_en.c
++++ b/drivers/net/ethernet/microsoft/mana/mana_en.c
+@@ -8,6 +8,7 @@
+ #include <linux/ethtool.h>
+ #include <linux/filter.h>
+ #include <linux/mm.h>
++#include <linux/pci.h>
+ 
+ #include <net/checksum.h>
+ #include <net/ip6_checksum.h>
+@@ -2345,9 +2346,12 @@ int mana_attach(struct net_device *ndev)
+ static int mana_dealloc_queues(struct net_device *ndev)
+ {
+ 	struct mana_port_context *apc = netdev_priv(ndev);
++	unsigned long timeout = jiffies + 120 * HZ;
+ 	struct gdma_dev *gd = apc->ac->gdma_dev;
+ 	struct mana_txq *txq;
++	struct sk_buff *skb;
+ 	int i, err;
++	u32 tsleep;
+ 
+ 	if (apc->port_is_up)
+ 		return -EINVAL;
+@@ -2363,15 +2367,40 @@ static int mana_dealloc_queues(struct net_device *ndev)
+ 	 * to false, but it doesn't matter since mana_start_xmit() drops any
+ 	 * new packets due to apc->port_is_up being false.
+ 	 *
+-	 * Drain all the in-flight TX packets
++	 * Drain all the in-flight TX packets.
++	 * A timeout of 120 seconds for all the queues is used.
++	 * This will break the while loop when h/w is not responding.
++	 * This value of 120 has been decided here considering max
++	 * number of queues.
+ 	 */
++
+ 	for (i = 0; i < apc->num_queues; i++) {
+ 		txq = &apc->tx_qp[i].txq;
+-
+-		while (atomic_read(&txq->pending_sends) > 0)
+-			usleep_range(1000, 2000);
++		tsleep = 1000;
++		while (atomic_read(&txq->pending_sends) > 0 &&
++		       time_before(jiffies, timeout)) {
++			usleep_range(tsleep, tsleep + 1000);
++			tsleep <<= 1;
++		}
++		if (atomic_read(&txq->pending_sends)) {
++			err = pcie_flr(to_pci_dev(gd->gdma_context->dev));
++			if (err) {
++				netdev_err(ndev, "flr failed %d with %d pkts pending in txq %u\n",
++					   err, atomic_read(&txq->pending_sends),
++					   txq->gdma_txq_id);
++			}
++			break;
++		}
+ 	}
+ 
++	for (i = 0; i < apc->num_queues; i++) {
++		txq = &apc->tx_qp[i].txq;
++		while ((skb = skb_dequeue(&txq->pending_skbs))) {
++			mana_unmap_skb(skb, apc);
++			dev_kfree_skb_any(skb);
++		}
++		atomic_set(&txq->pending_sends, 0);
++	}
+ 	/* We're 100% sure the queues can no longer be woken up, because
+ 	 * we're sure now mana_poll_tx_cq() can't be running.
+ 	 */
+-- 
+2.34.1
+
