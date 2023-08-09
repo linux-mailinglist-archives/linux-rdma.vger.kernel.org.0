@@ -2,52 +2,52 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DDCDF775536
-	for <lists+linux-rdma@lfdr.de>; Wed,  9 Aug 2023 10:29:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B459A77553C
+	for <lists+linux-rdma@lfdr.de>; Wed,  9 Aug 2023 10:29:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230079AbjHII3f (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 9 Aug 2023 04:29:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41174 "EHLO
+        id S231473AbjHII3s (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 9 Aug 2023 04:29:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39092 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230025AbjHII3f (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 9 Aug 2023 04:29:35 -0400
+        with ESMTP id S230025AbjHII3s (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 9 Aug 2023 04:29:48 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA1F71B6
-        for <linux-rdma@vger.kernel.org>; Wed,  9 Aug 2023 01:29:34 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CBE801BD9
+        for <linux-rdma@vger.kernel.org>; Wed,  9 Aug 2023 01:29:47 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 5F92863045
-        for <linux-rdma@vger.kernel.org>; Wed,  9 Aug 2023 08:29:34 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 033DCC433C7;
-        Wed,  9 Aug 2023 08:29:32 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 639C563062
+        for <linux-rdma@vger.kernel.org>; Wed,  9 Aug 2023 08:29:47 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 34A92C433B7;
+        Wed,  9 Aug 2023 08:29:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1691569773;
-        bh=r5aNGalsftF+CSH8xAcq2yAnQqa526YZ4R589OJXIMM=;
-        h=From:To:Cc:Subject:Date:From;
-        b=cxiKeup9VLK87DMgxfvsiloql6hmL8wg60m1v/f4n3wmlTdG7hot1JUpEJUFrmwen
-         N3lpDE+tVLR5rTtDhxy4LxRRvMP9swZSkcgrem6EiRr5nTtVjQMTrVSIe75ixvRlNn
-         Q+yMKKZgabQSwCeOLigl0qepqYl9DmfO7K/rSkzKbYjBDZVfmEVcWKkOeP23/z1hEu
-         k1Ui3yEGKbzWPYOexFxmQq6OKwdZgsY5e6CARKqt0Z07EtOWpIjSwxUCBPiVcP9MCa
-         JDZF7eVLig7FJxf128Qu6eWX5BAWhPvzvvNUnzYtWKySq3IgKPUzbSQ/Yf+WASe25L
-         TsppTyv/Dam9A==
+        s=k20201202; t=1691569786;
+        bh=1aEnwy11dk3pN/SydIOG65hSjDquKCZDp+SiD8zbnQU=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=fTGfzcbsaLtciM9Tw4gBdWTRZlGh29jnrZGyHxqySGN23K8HaomV8MTjJLRV13Oj7
+         nUsFjHucemRwhr94dhm/Z7aigBsIEauJea0qYjYeWleaLJ41gFeyn1UaBiaLJz6vya
+         9csQWW6GwYPFUxfU+Chw2waHJhh7f9z601FdoDW8x3gtzI8zJNdszONmBz7eJ7sOJY
+         +AkNJy0mCdLI9fPsCde6uR3XiBqoTeA9MhOE45/gXZdKWF+7opTBYN4tSdKBizwbMA
+         7cIo5BP+qP1oKQa/3ZZ6CGpWmMLB1J8VVnLreojR0GGJbCrHZqQ2iSiiVa5TNUlAt2
+         eEJHhRquL/K5A==
 From:   Leon Romanovsky <leon@kernel.org>
 To:     Jason Gunthorpe <jgg@nvidia.com>, Jakub Kicinski <kuba@kernel.org>
-Cc:     Leon Romanovsky <leonro@nvidia.com>,
+Cc:     Patrisious Haddad <phaddad@nvidia.com>,
+        Leon Romanovsky <leonro@nvidia.com>,
         "David S . Miller" <davem@davemloft.net>,
         Eric Dumazet <edumazet@google.com>, linux-rdma@vger.kernel.org,
         Maor Gottlieb <maorg@nvidia.com>,
         Mark Zhang <markzhang@nvidia.com>, netdev@vger.kernel.org,
-        Paolo Abeni <pabeni@redhat.com>,
-        Patrisious Haddad <phaddad@nvidia.com>,
-        Raed Salem <raeds@nvidia.com>,
-        Saeed Mahameed <saeedm@nvidia.com>,
-        Simon Horman <horms@kernel.org>
-Subject: [PATCH mlx5-next v1 00/14] mlx5 MACsec RoCEv2 support
-Date:   Wed,  9 Aug 2023 11:29:12 +0300
-Message-ID: <cover.1691569414.git.leon@kernel.org>
+        Paolo Abeni <pabeni@redhat.com>, Raed Salem <raeds@nvidia.com>,
+        Saeed Mahameed <saeedm@nvidia.com>
+Subject: [PATCH mlx5-next v1 01/14] macsec: add functions to get macsec real netdevice and check offload
+Date:   Wed,  9 Aug 2023 11:29:13 +0300
+Message-ID: <7f63bb57a0e0d3792e8bd180ad0168d7ffc89b56.1691569414.git.leon@kernel.org>
 X-Mailer: git-send-email 2.41.0
+In-Reply-To: <cover.1691569414.git.leon@kernel.org>
+References: <cover.1691569414.git.leon@kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
@@ -59,98 +59,65 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Leon Romanovsky <leonro@nvidia.com>
+From: Patrisious Haddad <phaddad@nvidia.com>
 
-Changelog:
-v1:
- * Reordered patches
-v0: https://lore.kernel.org/all/cover.1691403485.git.leon@kernel.org
----------------------------------------------------------------------
+Given a macsec net_device add two functions to return the real net_device
+for that device, and check if that macsec device is offloaded or not.
 
-From Patrisious:
+This is needed for auxiliary drivers that implement MACsec offload, but
+have flows which are triggered over the macsec net_device, this allows
+the drivers in such cases to verify if the device is offloaded or not,
+and to access the real device of that macsec device, which would
+belong to the driver, and would be needed for the offload procedure.
 
-This series extends previously added MACsec offload support
-to cover RoCE traffic either.
+Signed-off-by: Patrisious Haddad <phaddad@nvidia.com>
+Reviewed-by: Raed Salem <raeds@nvidia.com>
+Reviewed-by: Mark Zhang <markzhang@nvidia.com>
+Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
+---
+ drivers/net/macsec.c | 15 +++++++++++++++
+ include/net/macsec.h |  2 ++
+ 2 files changed, 17 insertions(+)
 
-In order to achieve that, we need configure MACsec with offload between
-the two endpoints, like below:
-
-REMOTE_MAC=10:70:fd:43:71:c0
-
-* ip addr add 1.1.1.1/16 dev eth2
-* ip link set dev eth2 up
-* ip link add link eth2 macsec0 type macsec encrypt on
-* ip macsec offload macsec0 mac
-* ip macsec add macsec0 tx sa 0 pn 1 on key 00 dffafc8d7b9a43d5b9a3dfbbf6a30c16
-* ip macsec add macsec0 rx port 1 address $REMOTE_MAC
-* ip macsec add macsec0 rx port 1 address $REMOTE_MAC sa 0 pn 1 on key 01 ead3664f508eb06c40ac7104cdae4ce5
-* ip addr add 10.1.0.1/16 dev macsec0
-* ip link set dev macsec0 up
-
-And in a similar manner on the other machine, while noting the keys order
-would be reversed and the MAC address of the other machine.
-
-RDMA traffic is separated through relevant GID entries and in case of IP ambiguity
-issue - meaning we have a physical GIDs and a MACsec GIDs with the same IP/GID, we
-disable our physical GID in order to force the user to only use the MACsec GID.
-
-Thanks
-
-Patrisious Haddad (14):
-  macsec: add functions to get macsec real netdevice and check offload
-  net/mlx5e: Move MACsec flow steering operations to be used as core
-    library
-  net/mlx5: Remove dependency of macsec flow steering on ethernet
-  net/mlx5e: Rename MACsec flow steering functions/parameters to suit
-    core naming style
-  net/mlx5e: Move MACsec flow steering and statistics database from
-    ethernet to core
-  net/mlx5: Remove netdevice from MACsec steering
-  net/mlx5: Maintain fs_id xarray per MACsec device inside macsec
-    steering
-  RDMA/mlx5: Implement MACsec gid addition and deletion
-  net/mlx5: Add MACsec priorities in RDMA namespaces
-  IB/core: Reorder GID delete code for RoCE
-  net/mlx5: Configure MACsec steering for egress RoCEv2 traffic
-  net/mlx5: Configure MACsec steering for ingress RoCEv2 traffic
-  net/mlx5: Add RoCE MACsec steering infrastructure in core
-  RDMA/mlx5: Handles RoCE MACsec steering rules addition and deletion
-
- drivers/infiniband/core/cache.c               |    6 +-
- drivers/infiniband/hw/mlx5/Makefile           |    1 +
- drivers/infiniband/hw/mlx5/macsec.c           |  364 +++
- drivers/infiniband/hw/mlx5/macsec.h           |   29 +
- drivers/infiniband/hw/mlx5/main.c             |   41 +-
- drivers/infiniband/hw/mlx5/mlx5_ib.h          |   17 +
- .../net/ethernet/mellanox/mlx5/core/Kconfig   |    2 +-
- .../net/ethernet/mellanox/mlx5/core/Makefile  |    2 +-
- drivers/net/ethernet/mellanox/mlx5/core/en.h  |    2 +-
- .../mellanox/mlx5/core/en_accel/en_accel.h    |    4 +-
- .../mellanox/mlx5/core/en_accel/macsec.c      |  176 +-
- .../mellanox/mlx5/core/en_accel/macsec.h      |   26 +-
- .../mellanox/mlx5/core/en_accel/macsec_fs.c   | 1394 ----------
- .../mellanox/mlx5/core/en_accel/macsec_fs.h   |   47 -
- .../mlx5/core/en_accel/macsec_stats.c         |   22 +-
- .../ethernet/mellanox/mlx5/core/en_stats.c    |    2 +-
- .../net/ethernet/mellanox/mlx5/core/fs_cmd.c  |    1 +
- .../net/ethernet/mellanox/mlx5/core/fs_core.c |   37 +-
- .../mellanox/mlx5/core/lib/macsec_fs.c        | 2411 +++++++++++++++++
- .../mellanox/mlx5/core/lib/macsec_fs.h        |   64 +
- drivers/net/macsec.c                          |   15 +
- include/linux/mlx5/device.h                   |    2 +
- include/linux/mlx5/driver.h                   |   51 +
- include/linux/mlx5/fs.h                       |    2 +
- include/linux/mlx5/macsec.h                   |   32 +
- include/net/macsec.h                          |    2 +
- 26 files changed, 3122 insertions(+), 1630 deletions(-)
- create mode 100644 drivers/infiniband/hw/mlx5/macsec.c
- create mode 100644 drivers/infiniband/hw/mlx5/macsec.h
- delete mode 100644 drivers/net/ethernet/mellanox/mlx5/core/en_accel/macsec_fs.c
- delete mode 100644 drivers/net/ethernet/mellanox/mlx5/core/en_accel/macsec_fs.h
- create mode 100644 drivers/net/ethernet/mellanox/mlx5/core/lib/macsec_fs.c
- create mode 100644 drivers/net/ethernet/mellanox/mlx5/core/lib/macsec_fs.h
- create mode 100644 include/linux/mlx5/macsec.h
-
+diff --git a/drivers/net/macsec.c b/drivers/net/macsec.c
+index 984dfa5d6c11..ffc421d2de16 100644
+--- a/drivers/net/macsec.c
++++ b/drivers/net/macsec.c
+@@ -4240,6 +4240,21 @@ static struct net *macsec_get_link_net(const struct net_device *dev)
+ 	return dev_net(macsec_priv(dev)->real_dev);
+ }
+ 
++struct net_device *macsec_get_real_dev(const struct net_device *dev)
++{
++	return macsec_priv(dev)->real_dev;
++}
++EXPORT_SYMBOL_GPL(macsec_get_real_dev);
++
++bool macsec_netdev_is_offloaded(struct net_device *dev)
++{
++	if (!dev)
++		return false;
++
++	return macsec_is_offloaded(macsec_priv(dev));
++}
++EXPORT_SYMBOL_GPL(macsec_netdev_is_offloaded);
++
+ static size_t macsec_get_size(const struct net_device *dev)
+ {
+ 	return  nla_total_size_64bit(8) + /* IFLA_MACSEC_SCI */
+diff --git a/include/net/macsec.h b/include/net/macsec.h
+index 441ed8fd4b5f..75a6f4863c83 100644
+--- a/include/net/macsec.h
++++ b/include/net/macsec.h
+@@ -312,6 +312,8 @@ static inline bool macsec_send_sci(const struct macsec_secy *secy)
+ 	return tx_sc->send_sci ||
+ 		(secy->n_rx_sc > 1 && !tx_sc->end_station && !tx_sc->scb);
+ }
++struct net_device *macsec_get_real_dev(const struct net_device *dev);
++bool macsec_netdev_is_offloaded(struct net_device *dev);
+ 
+ static inline void *macsec_netdev_priv(const struct net_device *dev)
+ {
 -- 
 2.41.0
 
