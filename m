@@ -2,36 +2,36 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B459A77553C
-	for <lists+linux-rdma@lfdr.de>; Wed,  9 Aug 2023 10:29:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 09F1077553D
+	for <lists+linux-rdma@lfdr.de>; Wed,  9 Aug 2023 10:29:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231473AbjHII3s (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 9 Aug 2023 04:29:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39092 "EHLO
+        id S229583AbjHII3t (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 9 Aug 2023 04:29:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39100 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230025AbjHII3s (ORCPT
+        with ESMTP id S230484AbjHII3s (ORCPT
         <rfc822;linux-rdma@vger.kernel.org>); Wed, 9 Aug 2023 04:29:48 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CBE801BD9
-        for <linux-rdma@vger.kernel.org>; Wed,  9 Aug 2023 01:29:47 -0700 (PDT)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15E891BF7
+        for <linux-rdma@vger.kernel.org>; Wed,  9 Aug 2023 01:29:48 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 639C563062
+        by dfw.source.kernel.org (Postfix) with ESMTPS id A5A8B6305E
         for <linux-rdma@vger.kernel.org>; Wed,  9 Aug 2023 08:29:47 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 34A92C433B7;
-        Wed,  9 Aug 2023 08:29:45 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 468EDC433CB;
+        Wed,  9 Aug 2023 08:29:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1691569786;
+        s=k20201202; t=1691569787;
         bh=1aEnwy11dk3pN/SydIOG65hSjDquKCZDp+SiD8zbnQU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=fTGfzcbsaLtciM9Tw4gBdWTRZlGh29jnrZGyHxqySGN23K8HaomV8MTjJLRV13Oj7
-         nUsFjHucemRwhr94dhm/Z7aigBsIEauJea0qYjYeWleaLJ41gFeyn1UaBiaLJz6vya
-         9csQWW6GwYPFUxfU+Chw2waHJhh7f9z601FdoDW8x3gtzI8zJNdszONmBz7eJ7sOJY
-         +AkNJy0mCdLI9fPsCde6uR3XiBqoTeA9MhOE45/gXZdKWF+7opTBYN4tSdKBizwbMA
-         7cIo5BP+qP1oKQa/3ZZ6CGpWmMLB1J8VVnLreojR0GGJbCrHZqQ2iSiiVa5TNUlAt2
-         eEJHhRquL/K5A==
+        b=RmaUhPSUKQ505bvwgyWxUt7krxnhU+eD5Hr9TGUA/nkD6JObPUHM4RCvD3SM2nXDg
+         3AHXEs3B5W1pJHx3/P/O3XDtHS9C+g9JyDW/ZoTeoujG8FVSPMwvE5AUqSJsrIW2vp
+         srwewucZnsaYklzUcPYsZNiWqu84l4cpALmDPmxj1bh3uFNTO//MWHEUsTvyRzj1Qk
+         mQi11NlFFYd4EpYg2ZblJhra9lztLBUs/lT/9nFy4GPUdtfcQmNyZWxMGCXc87PwGE
+         qBcqZn4MFk/KjELdRFZJDeH1tfAf/TiFH5xhzLqTWb+RU8j/m3TKVLzL9rIvWmxxtc
+         Z0LKiYsQ8zJ1w==
 From:   Leon Romanovsky <leon@kernel.org>
 To:     Jason Gunthorpe <jgg@nvidia.com>, Jakub Kicinski <kuba@kernel.org>
 Cc:     Patrisious Haddad <phaddad@nvidia.com>,
@@ -50,9 +50,10 @@ In-Reply-To: <cover.1691569414.git.leon@kernel.org>
 References: <cover.1691569414.git.leon@kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
