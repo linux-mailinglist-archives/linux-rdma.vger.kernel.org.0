@@ -2,111 +2,111 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E8B137767F5
-	for <lists+linux-rdma@lfdr.de>; Wed,  9 Aug 2023 21:10:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 04A42776866
+	for <lists+linux-rdma@lfdr.de>; Wed,  9 Aug 2023 21:18:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229632AbjHITKJ (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 9 Aug 2023 15:10:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37808 "EHLO
+        id S230230AbjHITSI (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 9 Aug 2023 15:18:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46842 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229436AbjHITKI (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 9 Aug 2023 15:10:08 -0400
-Received: from NAM12-DM6-obe.outbound.protection.outlook.com (mail-dm6nam12on2057.outbound.protection.outlook.com [40.107.243.57])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26CA610DA
-        for <linux-rdma@vger.kernel.org>; Wed,  9 Aug 2023 12:10:07 -0700 (PDT)
+        with ESMTP id S231426AbjHITR7 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 9 Aug 2023 15:17:59 -0400
+Received: from NAM04-MW2-obe.outbound.protection.outlook.com (mail-mw2nam04on2058.outbound.protection.outlook.com [40.107.101.58])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC7E226BC
+        for <linux-rdma@vger.kernel.org>; Wed,  9 Aug 2023 12:17:46 -0700 (PDT)
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=n6gCwVAqU3c6TPR5RLqzVo5qZ1v7xypKDt5tzg54i79k+vAAV//lHkmgsg0gfbO75nbA+GUHNN07xiDmT4fNAHZQ1dupB267zjlol1AXHUG3Clgab2k1UlF6lADUIj948wMJzW03S5ECtbtDpthmvtYl5N2v4LZWk9H+u+ydaNWdjl8jxosZB/NZssouz13vu4YC/73vKWjCB2bbZ74rM5F2EtL2B8arXErbeAl8tI+bW4R9KCOucWUnvCmGAzKFwKRmarNsNeSvqZR4BMJCUdNOocWXHIUJUelZ8l59e1PxuD131H74GeYP0GgdAdJ5MlaVE/nyt/W2ub06Mq4/4Q==
+ b=mux4O84jp58OEewzxIWJ+Whi4s7929kuJwoVxVYROoZ+r18wTbzfQ3Xuxpbhd7KhI08UNRpMzE/tUrU//dEr+RBKR0DT71FdE1Vyw7qAjDjOkg3ir+nvdaZP7p68txmyPJ9J3dORUklNmgdFykkzGZZD8hiYS4DmGTOI4h1DZqqRbVn7qATo7iwdwsSjRcq/mrgq4ggpgRUSapTuSEJbkt1rmyP9g9QehGD7FVkhh6AbRkJfX/5hDkuQ/fIFRz+39Gu/+sbaeDxn9WhOVqFJUaSzfLsSEgcVMPPJ3NGCQSro+4JWieIgbjf+ar+STfXLPuYbNumSgff8OP59d2Kp7A==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=kxk2pn6AQi7De+gP5Mm+xRk3EkcaIY3ezbIxT+/8w7k=;
- b=Re+nCH2TLuY0bvbJ0DfQgFzT+iQzGvnM9W8O8uwI4z108Abq4iJsldb928GjR+Umymk7dmwjGUwp8B1dKO46YG4ruk67noRNRaLFq2nvpHCB7/wtAF1vGp66w5NfWLc1fPcc95voKHJVw1GX2gOqH2u2cFI5PdLyLeKx6Kd+zJgfH2+b1qClTLfvtWutl6n5Fc+Fv+YPE+w5fteGtN9lHOjPIwPRq+91iQ4RPO6iThSUl7KkOrRvbRG7oikALrmh72+cZHIGCiYSdWyBxRFnixiebwRCpNP+L+gaeiVnxywNSJLxi9IUNSK8+RYPul8AxfGWQdVh+Ca0cSKYV6z7Rg==
+ bh=SWj98LlwWvfKGyz9CEjNtawpvPDqe/AvgXrXaFrp+/o=;
+ b=Y0qBOgECcnS/mFQ25PtAk1uEuhljsdQbQLhqBE2/uwBiQN4rVGoFAPKysTgRbGQ6XBS9c2CSr7QnRmuGJRDVceNGM1JMTTvR8yjNwHqKYQBCPjs9alGa8oxWAri9s2/Up7whA6pxGzh4gMVkED872xdXYlYwdxpktfFhLb1iIZc/vwoTygw5Spyiw0Jlz+cBH2r6FRFqlAXzouv7+Orqrr/MKdOx7JUEUq+4FlbAu49edrQw5SlmtyC5ouoopeC0+beAovoc7C9cbYhFSKLakgabu5Wyx9ePd3TzA1hGftnM9/t4uQLV33E5O0Vciei9ND2+b/m3FDLlU5u5cpHicw==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
  dkim=pass header.d=nvidia.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
  s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=kxk2pn6AQi7De+gP5Mm+xRk3EkcaIY3ezbIxT+/8w7k=;
- b=lzLtjnf+ZSPri0WmpmOaipLoqXSZrPzxxm57i2ZLg8WrcoQsE4zlmEmyaoJ1W9oIxWdag3809e/LfPNDAaALedROesshdCxuGHp3Klp3NqJtGpmgmJ5WWcLb55BEPHxqReOL4Dcnzax6IL9ihv+gWH6SahCOxy8QmmpCBD5zMr6lozYeQ96y+BsGZb9Zwlbcym8OwlOFaFt6gwiO2FOoLatu+FOFeTdEZBvJYcmk1vK2OXVxUtuV6LSCq3TLJAjhVLPPOdfZ6l3thoFMTNMgyhR8GFgfmtuIJQTT86aenmV6xuLUKAgfDdQVos8SKKdLSsqw1OuMu3mA8FY7/RXTfw==
+ bh=SWj98LlwWvfKGyz9CEjNtawpvPDqe/AvgXrXaFrp+/o=;
+ b=RuihVel7cNLp162nHEvBJqTiYMNZqzdE7QFsH0o9ZkL3cSexizYWNAToGZDCYR7yGOgMivwRMsaZPoOyzIi86d9+Mie6u6gpnWg30gwGTN1AM/3HYka716DBzizCinxAFJwSzcg5ui4vWrlM7Eq/SL5A/f1GwSiY+PjorlzKIM6/hnAW+zXVZWpSMNdNBU5Ss2xhlIri2UPgPjudPdRuGdgPKOJCJAEYrnq9h8WPzk63ZUIi4NK1E/HIZfNtKU0YnMEuU5ZuhpXy3G57USi8gP8IOJ4U/MDvwA/P16734IRHNBFDSGS1l1bGGkGC/ebsGWt2Ml8sWurTxPIyZLlYPw==
 Authentication-Results: dkim=none (message not signed)
  header.d=none;dmarc=none action=none header.from=nvidia.com;
 Received: from LV2PR12MB5869.namprd12.prod.outlook.com (2603:10b6:408:176::16)
- by MN0PR12MB6055.namprd12.prod.outlook.com (2603:10b6:208:3cd::20) with
+ by BL1PR12MB5336.namprd12.prod.outlook.com (2603:10b6:208:314::8) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6652.28; Wed, 9 Aug
- 2023 19:10:05 +0000
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6652.30; Wed, 9 Aug
+ 2023 19:17:38 +0000
 Received: from LV2PR12MB5869.namprd12.prod.outlook.com
  ([fe80::5111:16e8:5afe:1da1]) by LV2PR12MB5869.namprd12.prod.outlook.com
  ([fe80::5111:16e8:5afe:1da1%6]) with mapi id 15.20.6652.028; Wed, 9 Aug 2023
- 19:10:05 +0000
-Date:   Wed, 9 Aug 2023 16:10:02 -0300
+ 19:17:37 +0000
+Date:   Wed, 9 Aug 2023 16:17:34 -0300
 From:   Jason Gunthorpe <jgg@nvidia.com>
 To:     Bob Pearson <rpearsonhpe@gmail.com>
 Cc:     leon@kernel.org, zyjzyj2000@gmail.com, linux-rdma@vger.kernel.org,
         jhack@hpe.com
-Subject: Re: [PATCH for-next 1/2] RDMA/core: Support drivers use of rcu
- locking
-Message-ID: <ZNPkik5qUPRzZXAW@nvidia.com>
+Subject: Re: [PATCH for-next 2/2] RDMA/rxe: Enable rcu locking of indexed
+ objects
+Message-ID: <ZNPmTjywkC30MkKR@nvidia.com>
 References: <20230718175943.16734-1-rpearsonhpe@gmail.com>
- <20230718175943.16734-2-rpearsonhpe@gmail.com>
+ <20230718175943.16734-3-rpearsonhpe@gmail.com>
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230718175943.16734-2-rpearsonhpe@gmail.com>
-X-ClientProxiedBy: SJ0PR13CA0214.namprd13.prod.outlook.com
- (2603:10b6:a03:2c1::9) To LV2PR12MB5869.namprd12.prod.outlook.com
+In-Reply-To: <20230718175943.16734-3-rpearsonhpe@gmail.com>
+X-ClientProxiedBy: BY5PR04CA0025.namprd04.prod.outlook.com
+ (2603:10b6:a03:1d0::35) To LV2PR12MB5869.namprd12.prod.outlook.com
  (2603:10b6:408:176::16)
 MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: LV2PR12MB5869:EE_|MN0PR12MB6055:EE_
-X-MS-Office365-Filtering-Correlation-Id: 8f69ccbf-d0e7-4aba-3dbf-08db990c3d51
+X-MS-TrafficTypeDiagnostic: LV2PR12MB5869:EE_|BL1PR12MB5336:EE_
+X-MS-Office365-Filtering-Correlation-Id: 370cfc24-de27-4851-a0f5-08db990d4a9a
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: d9iyxarESvc3m0/L735APgQPUNCrHlr99dhLvZFNGFEELZNkMOHcRz85xf3zoFZcy01wEkbPQtsPA2DlXDDfxDAH7TlNBuHczRKZqkEIYfXvQzHXgaZURJocsBnutm8JX8AeJZnOqAkf3OzNa4VFL3knOAjO3N4Q8JKLBe3HpktcVt25BualXY06yrPHNIZ0LdgBLaG5GLzrwgO9FoQwRCtb4OEO61rovk0mAA98eCe9reLtd2GVIcKr6mIMVD2gK7/sjcrd/RkA47qZpldc2MEVHIrt4eWkRoPXt4uvXnz5XTfFORY/i2+T4HGY1yY1C9atCiijmjiy8n9SkB6PGENjcXwNB3/084tR2ShP+CNchgipLwFY4JhVr75DxHH78VccRBUJsRjWCGLwRZNvJ7zvtUEygSTs4iyBhuJ5jb0lh9sk7sss2pW33ZxmFYhVbPKMzhcSBGZcd9/MtHfbPNrN/qkf1lbpr9Q2azRuHCSZxw7E2Hi3zSbgwQRXMOdRS8z3qOfGzNDQgLRLalBOb5/jycx4JTaOjQsdpDSnu80Rx6uwzPdR8IDlr+1JUDXM
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:LV2PR12MB5869.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(4636009)(366004)(346002)(136003)(39860400002)(376002)(396003)(451199021)(186006)(1800799006)(66899021)(6666004)(6512007)(6506007)(26005)(6486002)(66556008)(8936002)(8676002)(66476007)(316002)(41300700001)(36756003)(83380400001)(38100700002)(86362001)(5660300002)(2906002)(4326008)(6916009)(66946007)(478600001)(2616005);DIR:OUT;SFP:1101;
+X-Microsoft-Antispam-Message-Info: VCSZ6NF9TavkfwFPzdvByJRvzBX0+sYVfegf9bF1KXPkpMxyzdp1O43rcJL69PBPLtxiHd4q5RsM1M1vtqz9EkyddSrgqBpRTeDxY8s9OwdbOQ1iRLQ18yUjDbz4P8f5s5diqi718TuFd7kJhMhw1xA3NIOMUj3DBkMyfr95ZuEgBN4z+xcS6L2Up79832JlEbgD4NHtqH5KB5Wtr/Qgx3tsEAmR/QL+ywubGtAIVn0jp+9eG+yAn6JljmzwEWxlvWjd6a0+GJ7qc5knvUgo9zElW/BwAkPyEItsXMYyuxfe3Ys0bJfbrzP5RTsptBnQtypGSVpdFO96FlsIqidDtw9F2d/+EeElr+mlzpRKfcs3inrwW6cbZXGQXLOCPmhMZDxESJJBgMWzsRqdA8SoDkf8L8U6GbeXViVIYq6NU/OJfczXTbVktBusghY3N3xwXjDgGhvbejQgG9YkVikGk0/dNYdUX+tTdCSNiENtP9FnKpkvVdPNiG5AdBUvLnWkzLIBRtDXZEt1Ur4bxtUxRKRrZavrEW9cANxCKkKFLnEPcXbaJD3fmgbTqP/H58rt
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:LV2PR12MB5869.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(4636009)(396003)(366004)(136003)(376002)(346002)(39860400002)(451199021)(1800799006)(186006)(6486002)(6916009)(66946007)(26005)(66476007)(66556008)(6506007)(6666004)(478600001)(36756003)(83380400001)(2616005)(41300700001)(316002)(4326008)(6512007)(2906002)(86362001)(8676002)(8936002)(5660300002)(38100700002);DIR:OUT;SFP:1101;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?qkQc66xDEUopQhNLphCvI26yzjfHRKCu/wOtPBFwoZHZcbyIWbLSnMdiH8Oe?=
- =?us-ascii?Q?kHOuFFk/zLi5m9A5LfSo4zkZOEE3YREAqW0+fl2V8EXxaZlOIylz+u2DfsnO?=
- =?us-ascii?Q?vUk2qWEKWx4SlCM7kcmKVYXXABqD6khUrY65x/yc0rNDvdM5dAlZGQfYPxs4?=
- =?us-ascii?Q?rW/Qa1soqfS8CQvFmzsNPnlZplTH2q0nkJEW8vPQEyPNO5ccbeqyKopLu7Jq?=
- =?us-ascii?Q?MdcB/eXdTK5+dwTr1e0GRbcyw7mct39I5NMyIhmTdsagbredFB56tVEI1Uxe?=
- =?us-ascii?Q?/qaj781KLPkhltX+CWfiGNsQDYtPb37h9ioti4fLYUSzasCHR1EKLLoPr38t?=
- =?us-ascii?Q?kKI9GxFrbnMbR9gRf9LM3+u0C9zBPZL+Cdia7Ato0yU1Z4L4L5+LRwI810+X?=
- =?us-ascii?Q?lvcaBgtpNacY5M3r6/HGsQWcwtqoVYMj6hat6vg2/RHa7VEZhrkzuOSLJbT1?=
- =?us-ascii?Q?acVCuQNY/mnUrtF37EFznxKXPph+UcSptuG3dKfrpJKrVJw7Txvx3BqSWB1K?=
- =?us-ascii?Q?ysOtDoj9g3jTb7jogz36mWLlqO4K3fxljRlBcI/LKXI9CoWNwM7Dn5qP2vA4?=
- =?us-ascii?Q?Tmgb+KzLyeB7hMw5MyAnpw6/JE+ls+4ZUeU6rANg612i4siM5DydTrZq0qnG?=
- =?us-ascii?Q?/X94p2/WBt+n2Pd+op4EH+0qgnUnsOEzG768xhPnjyCeIOHNak91yWEB9tTe?=
- =?us-ascii?Q?6y37IePAnFgCg/kFV3T+MIr+3UcXvjPtBTeii6UpiI8jbi7GWSNveLMdrMSl?=
- =?us-ascii?Q?Y1UNzXR+lnsPhUckP8Ycl2+jkGMTIo1djvV5jK7UY4x1WxyQ/cGM1y924KfY?=
- =?us-ascii?Q?2WhYOLQmT5wnkfMYgFKlDVkWJN+CsMdim0ebNORPvKqptbvEoDYKFEkO/AJ+?=
- =?us-ascii?Q?pxbLl3pMyOdXr2xUM/QLJe6MZ0gH6E3EFSpXZCOnptHPWZO6ekJNPvN0Qwln?=
- =?us-ascii?Q?oQY90JPQ5uhKiA7wdytA6wWxOasZHiaFxl07BZxKMO+Y/3/ArISyts9OzT5v?=
- =?us-ascii?Q?VjyPQSb6YXXOGVpXeuON/pM6pSukzbyCoB4mwAJSw7XD8jeTmiG/Oa/b9cEr?=
- =?us-ascii?Q?b3D49u/un7mWhafXOVGZC8HCDIhxRWCAgf12kLAk7wWrrNsfS8Cep/xXsqLg?=
- =?us-ascii?Q?oOTLGlTYOAuGvFUclLO4WKT5U0KKBRkGhFUskNyYIr81EYdVUEJQI5WO8kKY?=
- =?us-ascii?Q?NOsiUNMHTgiLGktYiiqKES8jG5rNj0OUWRkx1kLVo+1W4S3PiiT+NXpQ9Oto?=
- =?us-ascii?Q?qPbNkNcPAKxkFIWrALTTO2vZ+y4NiebhqlkA7/QZvXvmLM/SwuA23gVhn1ke?=
- =?us-ascii?Q?kVg7YlKDjo2QIe294UsNBV4Be4DufpjcC6f0O7oJVkJYq2tE6+/Gku2r3ULq?=
- =?us-ascii?Q?f9s6rsHn/KDlw9yx5L0pslTMje4A7F5s6nCgNby9lzvgT7IxcyVVGnk6NsGC?=
- =?us-ascii?Q?87ynL5Mje7s3GJ5ZcgsZiPjg74B7N2ghohPIMMvtaGeMbsmhNPuG8B+AKZp9?=
- =?us-ascii?Q?td6M1sQQHiQuvgU/Hh9vGH3ORHpdzIkzpKmlvcwu2y23QfQmSMw9lWUtywCw?=
- =?us-ascii?Q?IDI5xwtBnPDFGspwxNBPJw8KPox5rA5vWDNJTe88?=
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?V9cnQVu+o/Y7a0ASqvI5MazHYzD//hG9DW4QD+hdNGcEthXfIk1Nh3Fg5vXv?=
+ =?us-ascii?Q?T8Q7j/jGviv9X9WCSuQ53tkH/nEpsDWCgGkzA3fsKcNlBDSkF3PG9pir6LzE?=
+ =?us-ascii?Q?AHbdrHBWYwpsxSsm58liY9NhbJF9a99v18QhUAwwEEUeb2c6w9OIwNNVHjAu?=
+ =?us-ascii?Q?t7r8UpFNFLB+9pixdERGcPZ0aiK/a8mqgmIHYp9C4cfQRRuHmGz15MRlqz6r?=
+ =?us-ascii?Q?MFrnBnQPDYvJa+hf/UWfCZ1D1LQDf5lX7b851m8mNYw4aqUgq5XPWKNOklSa?=
+ =?us-ascii?Q?kH2txg7RFwegIX+SmFXzIe+Zo/GRn4lqmMOFeElhxyakUq6A8MyIyW01QQeG?=
+ =?us-ascii?Q?DMCT3GNON6LkSFxaPhCE/Wxvokd208Qq+Y/+MKaESCfVI5bFd5eIcbZWdxj+?=
+ =?us-ascii?Q?OJqQ3xnpWhx5/pLfmjsCTfB8eRH37Ib32Pb+59Kl4tP5AkuMfYL+IsJLxuKY?=
+ =?us-ascii?Q?YHSLuIrVQr+Z5uB0WLAIHtmpQ5KbCWS849UP/LpuWEUDV2uuuEyvX6/7+D3V?=
+ =?us-ascii?Q?uqcimZWBB5yzdeS7Z/YmVqPwcz+wghr5/jyKIUPsmdpOMc/LcM+eBJSbOZD9?=
+ =?us-ascii?Q?f8Su5sg0lfTe4CWdcW1VFJS05bH6Scww9kmFd50ONAbEPuO8RZGGIdMRWxl4?=
+ =?us-ascii?Q?NdEZ22fjKMMwMIlPPaYm4yPmODXsIv6ab8Oshf3pOJu3cnT+Vhtf25fG7/RU?=
+ =?us-ascii?Q?CCDjhfNliIjCQu3fvHkB3KQBp+mUwNzllhHlAJ8O7n2kvbs+xwVQSWPNZ3YM?=
+ =?us-ascii?Q?/sUg54kZBE/A8bUiH+uHfMsusQCv7CgV4qJvQH+OVXD3lFD5/MIJXw4yxL4f?=
+ =?us-ascii?Q?UKFesAr5C9sTih01qkSldYEDqRxksPPuY9B5Hh7oUu+C+obSQCWz2mW8Swvc?=
+ =?us-ascii?Q?ag7CQSWmqa+S95A++Jse1NmXzEEsf1WlIt5btixXYjenzwmm+/J83pFAMAUo?=
+ =?us-ascii?Q?twS+1pCq4QqZgIkXlgXdCrfLLCvt4Rr33yXpRKcWy8XWE+2BbKkeuq4rcdM9?=
+ =?us-ascii?Q?q1cfxfcPuc859bn2E73umiauk+x8jHp3SAs6W8+Z5Vgq4CSyJyKraL9i4UZ4?=
+ =?us-ascii?Q?bcE/QMw7DWTWScV1MA2GC4xDvXHff0lsV1eiH7DS1oBr2kojsAMtIIAsa7vO?=
+ =?us-ascii?Q?4+tPgoInDwZvvp17tilmW2RLK6V6CohXfhXc9ufgdIcVBt8AB6E9Y+ddgl9y?=
+ =?us-ascii?Q?0o2239/lY/GQdnAblKNHp7Aeb/VZG2qrMjKvi0VFnXMpQ9j+1h1VR/zflt1H?=
+ =?us-ascii?Q?2xGoZ2dMZBP2jMJNPFAxI2r7UYhXW3gtJYVF9eajMmKiwyVAcnXb9Q10bfN5?=
+ =?us-ascii?Q?0Ns8OW6BC7fO9rOzbTI7g2qMYQc4jMATNv0NHupY4rGHM0X/lHMUqT0rkWGZ?=
+ =?us-ascii?Q?MdxeHqwtWjvoknqrSfticlOC+iIkGugOxpWog7jxswMWJEtvCpz33PsA38xk?=
+ =?us-ascii?Q?e9kiMBg7i09o0z+lfePUhc/uOKbXRoiIbLiMSMdGf37Nq+lWVkh1opSJmVsk?=
+ =?us-ascii?Q?SsNLqftjIA0GtRu9cLo5UQiXHvSE0EXOZ24vtmaER4IOS272RoSUfUCVFvXN?=
+ =?us-ascii?Q?yfkl8dtd0adZbioQ3S8C8FOm9YUo4C7XhcNTVBDb?=
 X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 8f69ccbf-d0e7-4aba-3dbf-08db990c3d51
+X-MS-Exchange-CrossTenant-Network-Message-Id: 370cfc24-de27-4851-a0f5-08db990d4a9a
 X-MS-Exchange-CrossTenant-AuthSource: LV2PR12MB5869.namprd12.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 09 Aug 2023 19:10:05.2834
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 09 Aug 2023 19:17:36.9746
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: wpWauhvJiPe5wArbUBuHhxa9mxG36wddnHqy/nPG03DI36HvkcY/SMIcffQiazE8
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN0PR12MB6055
+X-MS-Exchange-CrossTenant-UserPrincipalName: O7ZaRCwGGxrG/0YU1lGHyEcjuZfgsQmvGHqrh1ZPl9cdIELv5EdLRW6UkxbbDOk4
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL1PR12MB5336
 X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
         URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -114,85 +114,72 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Tue, Jul 18, 2023 at 12:59:43PM -0500, Bob Pearson wrote:
-> This patch allows drivers to optionally include struct rcu_head
-> in their private object data structs and have rdma-core use kfree_rcu
-> to free the objects.
-> 
-> The offsets of the rcu_heads are stored in fields in struct
-> ib_device_ops and a macro RDMA_KFREE_RCU is introduced which calls
-> (an open coded) kfree_rcu instead of kfree if the value is non-
-> zero. Currently the supported object types are AH, QP and MW.
+On Tue, Jul 18, 2023 at 12:59:44PM -0500, Bob Pearson wrote:
+> Make rcu_read locking of critical sections with the indexed
+> verbs objects be protected from early freeing of those objects.
+> The AH, QP, MR and MW objects are looked up from their indices
+> contained in received packets or WQEs during I/O processing.
+> Make these objects be freed using kfree_rcu to avoid races.
 > 
 > Signed-off-by: Bob Pearson <rpearsonhpe@gmail.com>
 > ---
->  drivers/infiniband/core/uverbs_main.c |  2 +-
->  drivers/infiniband/core/verbs.c       |  6 +++---
->  include/rdma/ib_verbs.h               | 24 ++++++++++++++++++++++++
->  3 files changed, 28 insertions(+), 4 deletions(-)
+>  drivers/infiniband/sw/rxe/rxe_pool.h  | 1 +
+>  drivers/infiniband/sw/rxe/rxe_verbs.c | 6 +++++-
+>  2 files changed, 6 insertions(+), 1 deletion(-)
 > 
-> diff --git a/drivers/infiniband/core/uverbs_main.c b/drivers/infiniband/core/uverbs_main.c
-> index 7c9c79c13941..50497e550f18 100644
-> --- a/drivers/infiniband/core/uverbs_main.c
-> +++ b/drivers/infiniband/core/uverbs_main.c
-> @@ -112,7 +112,7 @@ int uverbs_dealloc_mw(struct ib_mw *mw)
->  		return ret;
+> diff --git a/drivers/infiniband/sw/rxe/rxe_pool.h b/drivers/infiniband/sw/rxe/rxe_pool.h
+> index b42e26427a70..ef2f6f88e254 100644
+> --- a/drivers/infiniband/sw/rxe/rxe_pool.h
+> +++ b/drivers/infiniband/sw/rxe/rxe_pool.h
+> @@ -25,6 +25,7 @@ struct rxe_pool_elem {
+>  	struct kref		ref_cnt;
+>  	struct list_head	list;
+>  	struct completion	complete;
+> +	struct rcu_head		rcu;
+>  	u32			index;
+>  };
 >  
->  	atomic_dec(&pd->usecnt);
-> -	kfree(mw);
-> +	RDMA_KFREE_RCU(mw);
->  	return ret;
->  }
+> diff --git a/drivers/infiniband/sw/rxe/rxe_verbs.c b/drivers/infiniband/sw/rxe/rxe_verbs.c
+> index 903f0b71447e..b899924b81eb 100644
+> --- a/drivers/infiniband/sw/rxe/rxe_verbs.c
+> +++ b/drivers/infiniband/sw/rxe/rxe_verbs.c
+> @@ -1395,7 +1395,7 @@ static int rxe_dereg_mr(struct ib_mr *ibmr, struct ib_udata *udata)
+>  	if (cleanup_err)
+>  		rxe_err_mr(mr, "cleanup failed, err = %d", cleanup_err);
 >  
-> diff --git a/drivers/infiniband/core/verbs.c b/drivers/infiniband/core/verbs.c
-> index b99b3cc283b6..a49ae8c52c66 100644
-> --- a/drivers/infiniband/core/verbs.c
-> +++ b/drivers/infiniband/core/verbs.c
-> @@ -982,7 +982,7 @@ int rdma_destroy_ah_user(struct ib_ah *ah, u32 flags, struct ib_udata *udata)
->  	if (sgid_attr)
->  		rdma_put_gid_attr(sgid_attr);
->  
-> -	kfree(ah);
-> +	RDMA_KFREE_RCU(ah);
->  	return ret;
->  }
->  EXPORT_SYMBOL(rdma_destroy_ah_user);
-> @@ -1970,7 +1970,7 @@ int ib_close_qp(struct ib_qp *qp)
->  	atomic_dec(&real_qp->usecnt);
->  	if (qp->qp_sec)
->  		ib_close_shared_qp_security(qp->qp_sec);
-> -	kfree(qp);
-> +	RDMA_KFREE_RCU(qp);
->  
+> -	kfree_rcu_mightsleep(mr);
+> +	kfree_rcu(mr, elem.rcu);
 >  	return 0;
->  }
-> @@ -2041,7 +2041,7 @@ int ib_destroy_qp_user(struct ib_qp *qp, struct ib_udata *udata)
->  		ib_destroy_qp_security_end(sec);
 >  
->  	rdma_restrack_del(&qp->res);
-> -	kfree(qp);
-> +	RDMA_KFREE_RCU(qp);
->  	return ret;
->  }
->  EXPORT_SYMBOL(ib_destroy_qp_user);
-> diff --git a/include/rdma/ib_verbs.h b/include/rdma/ib_verbs.h
-> index 1e7774ac808f..616e9e54a733 100644
-> --- a/include/rdma/ib_verbs.h
-> +++ b/include/rdma/ib_verbs.h
-> @@ -2684,8 +2684,32 @@ struct ib_device_ops {
->  	DECLARE_RDMA_OBJ_SIZE(ib_srq);
->  	DECLARE_RDMA_OBJ_SIZE(ib_ucontext);
->  	DECLARE_RDMA_OBJ_SIZE(ib_xrcd);
+>  err_out:
+> @@ -1494,6 +1494,10 @@ static const struct ib_device_ops rxe_dev_ops = {
+>  	INIT_RDMA_OBJ_SIZE(ib_srq, rxe_srq, ibsrq),
+>  	INIT_RDMA_OBJ_SIZE(ib_ucontext, rxe_ucontext, ibuc),
+>  	INIT_RDMA_OBJ_SIZE(ib_mw, rxe_mw, ibmw),
 > +
-> +	/* if non-zero holds offset of rcu_head in object */
-> +	ssize_t rcu_offset_ah;
-> +	ssize_t rcu_offset_qp;
-> +	ssize_t rcu_offset_mw;
+> +	.rcu_offset_ah = offsetof(struct rxe_ah, elem.rcu),
+> +	.rcu_offset_qp = offsetof(struct rxe_qp, elem.rcu),
+> +	.rcu_offset_mw = offsetof(struct rxe_mw, elem.rcu),
+>  };
 
-Just size_t, this isn't negative
+This isn't quite the right calculation.. It works because the ib
+struct is at the top of these structs
 
-> +static inline void __rdma_kfree_rcu(void *obj, ssize_t rcu_offset)
+Do it like this:
 
-Here too
+/*
+ * When used the core will RCU free the object using the driver provided
+ * rcu member.
+ */
+#define INIT_RDMA_OBJ_SIZE_RCU(ib_struct, drv_struct, member, rcu_member)    \
+	.rcu_offset_##ib_struct =                                            \
+		(offsetof(struct drv_struct, rcu_member) -                   \
+		 offsetof(struct drv_struct, member) +                       \
+		 BUILD_BUG_ON_ZERO(offsetof(struct drv_struct, rcu_member) > \
+				   offsetof(struct drv_struct, member))),    \
+	INIT_RDMA_OBJ_SIZE(ib_struct, drv_struct, member),
+
+(and maybe the prior patch could stick with the ssize_t and we could
+remove the BUILD_BUG_ON_ZERO?)
 
 Jason
