@@ -2,61 +2,61 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B6F9F776F4B
-	for <lists+linux-rdma@lfdr.de>; Thu, 10 Aug 2023 06:56:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 38FE2776F4C
+	for <lists+linux-rdma@lfdr.de>; Thu, 10 Aug 2023 06:56:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230168AbjHJE4Z (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 10 Aug 2023 00:56:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42884 "EHLO
+        id S229902AbjHJE42 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 10 Aug 2023 00:56:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42920 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229902AbjHJE4Z (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 10 Aug 2023 00:56:25 -0400
-Received: from mail-ot1-x333.google.com (mail-ot1-x333.google.com [IPv6:2607:f8b0:4864:20::333])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BAEB01BCF
-        for <linux-rdma@vger.kernel.org>; Wed,  9 Aug 2023 21:56:24 -0700 (PDT)
-Received: by mail-ot1-x333.google.com with SMTP id 46e09a7af769-6bcb5df95c5so494374a34.1
-        for <linux-rdma@vger.kernel.org>; Wed, 09 Aug 2023 21:56:24 -0700 (PDT)
+        with ESMTP id S229981AbjHJE41 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 10 Aug 2023 00:56:27 -0400
+Received: from mail-pf1-x430.google.com (mail-pf1-x430.google.com [IPv6:2607:f8b0:4864:20::430])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 532AE2115
+        for <linux-rdma@vger.kernel.org>; Wed,  9 Aug 2023 21:56:27 -0700 (PDT)
+Received: by mail-pf1-x430.google.com with SMTP id d2e1a72fcca58-686ba97e4feso464693b3a.0
+        for <linux-rdma@vger.kernel.org>; Wed, 09 Aug 2023 21:56:27 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google; t=1691643384; x=1692248184;
+        d=broadcom.com; s=google; t=1691643387; x=1692248187;
         h=references:in-reply-to:message-id:date:subject:cc:to:from:from:to
          :cc:subject:date:message-id:reply-to;
-        bh=Gmf/IkFBFukGyxHoRFruSzCiAcIlplQqzDWBnB35TCw=;
-        b=Q8EmfQl+/XZ2HgasKzDDB8dyfEDOAWLwCVu99kbT2R3j/Jf4cZnWaLDhigCflB27g6
-         oHjBzSWIw/0Ef7D3pu71VaKTvYKwFqlI3EEv0JriRMKmWrgdhizafm2mj4PrjdIMkYWJ
-         lWH+ELAk+S58M2z1ZnS6d3DuV6YhN/vDWlErs=
+        bh=O6+mCBB50buflkRqf9h8/y74WZspgWDZq0A4GtX3hCI=;
+        b=IDwiLtV/nGp0be94r334e2eiUKLCwkM6F57xfSMu71Ssc5+tinZxQaW+vPNH5DG/eO
+         GShUXgxJsm9QtxOstIwoM+sGen5O1Clt569EYyj7Gxbh/OARY+/CQ+VMl98eEzZC47wL
+         bjfh68GWPQnay0DrYR+vWQmbJ2Ru5xCzHTkUs=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691643384; x=1692248184;
+        d=1e100.net; s=20221208; t=1691643387; x=1692248187;
         h=references:in-reply-to:message-id:date:subject:cc:to:from
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=Gmf/IkFBFukGyxHoRFruSzCiAcIlplQqzDWBnB35TCw=;
-        b=LCOo6szdKzLGo9Ycm1bzzohiX5l+D29sPH3wqkyYM1Uw9hHz0CYsOBPWThqspafI6V
-         jHzZF+I/lSotPhCVsot0gwJ6LEMXtxk55CvjKQE702aGp6VALhyUEVuQ8ZXD06QMysQB
-         NEAft8rAveMy9C40qQgi9S8QnGVSB/iUPNP+Niv4j0i+tw3TjmwGs1nsuPO1yaHSFJxS
-         7hBR8LLvgg5joSC68PfIGW9umcJLL8AMIcP6uuUoOyo1a9+gd5NpkGR+d661OW4/oN1s
-         HyluQRFrSprRrxRH2f1jA8PXrWbo7rQOpF/CFEQ7iUI8gS+equ1Kd956vJSuIz01n5Rc
-         ivVQ==
-X-Gm-Message-State: AOJu0YxLLNs21fbuGPvTP6JyVwm2L0EajWIxSqWlkYyU+VDLfBHWjH3y
-        GMu5lelkxwF4ATKEeEFpqb2n0w==
-X-Google-Smtp-Source: AGHT+IE0JNPuvHWaV3m2oCa2socF6VLRFWqTWDwnsB9abrR0rl+lXdkLfTVwbAi09GEEHfl5h/O6Dw==
-X-Received: by 2002:a05:6358:9492:b0:135:aed4:99b4 with SMTP id i18-20020a056358949200b00135aed499b4mr1681182rwb.4.1691643383859;
-        Wed, 09 Aug 2023 21:56:23 -0700 (PDT)
+        bh=O6+mCBB50buflkRqf9h8/y74WZspgWDZq0A4GtX3hCI=;
+        b=V6Fwc4Gdy7hjs0c6nLXgEgRw17nzwcs7ZmyWm3MCk4lHi5IkAfZHoR+4z2N2d+ARK+
+         Oi17zK64rdzBvQUCTrHoDR9MuaVg8eCx/idw3rjpXW4Q+ZhNUS8HAuTeub8z8UQZJUyV
+         KW26jpStUIa2Mq1K3X3kbzn3xlaEo+1CjhP3Ld6bDrF24npAChQAt+rgtS0QYrjV+pKd
+         s3OU/H2qBIEvzURsBFf3Yn9Fj8A+m48ZGxKiCI2FGVIV/1Sc4i2Q9eThdbdwJ+by8EPw
+         G8aCkUntPFu0Xo7jHu1jv0pvx5z7BuHxGcgthLGSra305Gr/FATPIZFF5a9B41UD/dAc
+         G26Q==
+X-Gm-Message-State: AOJu0YzTtAP4Lb+oAY5WXxb1ombf1eZl3zTI8B90pPXElsq/AdEOyXUI
+        cNRa/cS0hGr0DuPLK0p+qQBz+Q==
+X-Google-Smtp-Source: AGHT+IElipVCv43VG/Quwx8MT8i+j06Se8hIROkWCLKflCCEWTN43YFzPAj+HqejINwiE7uEGeo4GQ==
+X-Received: by 2002:a05:6a21:7807:b0:13f:cd07:2b40 with SMTP id be7-20020a056a21780700b0013fcd072b40mr1362078pzc.3.1691643386735;
+        Wed, 09 Aug 2023 21:56:26 -0700 (PDT)
 Received: from dhcp-10-192-206-197.iig.avagotech.net.net ([192.19.234.250])
-        by smtp.gmail.com with ESMTPSA id x6-20020a63b346000000b00553b9e0510esm458672pgt.60.2023.08.09.21.56.21
+        by smtp.gmail.com with ESMTPSA id x6-20020a63b346000000b00553b9e0510esm458672pgt.60.2023.08.09.21.56.24
         (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 09 Aug 2023 21:56:23 -0700 (PDT)
+        Wed, 09 Aug 2023 21:56:25 -0700 (PDT)
 From:   Selvin Xavier <selvin.xavier@broadcom.com>
 To:     jgg@ziepe.ca, leon@kernel.org
 Cc:     linux-rdma@vger.kernel.org, andrew.gospodarek@broadcom.com,
-        Kalesh AP <kalesh-anakkur.purayil@broadcom.com>,
+        Kashyap Desai <kashyap.desai@broadcom.com>,
         Selvin Xavier <selvin.xavier@broadcom.com>
-Subject: [PATCH for-rc 2/3] RDMA/bnxt_re: Fix error handling in probe failure path
-Date:   Wed,  9 Aug 2023 21:44:36 -0700
-Message-Id: <1691642677-21369-3-git-send-email-selvin.xavier@broadcom.com>
+Subject: [PATCH for-rc 3/3] RDMA/bnxt_re: Initialize dpi_tbl_lock mutex
+Date:   Wed,  9 Aug 2023 21:44:37 -0700
+Message-Id: <1691642677-21369-4-git-send-email-selvin.xavier@broadcom.com>
 X-Mailer: git-send-email 2.5.5
 In-Reply-To: <1691642677-21369-1-git-send-email-selvin.xavier@broadcom.com>
 References: <1691642677-21369-1-git-send-email-selvin.xavier@broadcom.com>
 Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
-        boundary="00000000000002130c06028a6b67"
+        boundary="0000000000002ccb7f06028a6b1a"
 X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         MIME_HEADER_CTYPE_ONLY,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,
@@ -67,38 +67,36 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
---00000000000002130c06028a6b67
+--0000000000002ccb7f06028a6b1a
 
-From: Kalesh AP <kalesh-anakkur.purayil@broadcom.com>
+From: Kashyap Desai <kashyap.desai@broadcom.com>
 
-During bnxt_re_dev_init(), when bnxt_re_setup_chip_ctx() fails
-unregister with L2 first before bailing out probe.
+Fix the missing dpi_tbl_lock mutex initialization
 
-Fixes: ae8637e13185 ("RDMA/bnxt_re: Add chip context to identify 57500 series")
-Signed-off-by: Kalesh AP <kalesh-anakkur.purayil@broadcom.com>
+Fixes: 0ac20faf5d83 ("RDMA/bnxt_re: Reorg the bar mapping")
+Signed-off-by: Kashyap Desai <kashyap.desai@broadcom.com>
 Signed-off-by: Selvin Xavier <selvin.xavier@broadcom.com>
 ---
- drivers/infiniband/hw/bnxt_re/main.c | 2 ++
- 1 file changed, 2 insertions(+)
+ drivers/infiniband/hw/bnxt_re/qplib_res.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/infiniband/hw/bnxt_re/main.c b/drivers/infiniband/hw/bnxt_re/main.c
-index 1c76460..63e98e2 100644
---- a/drivers/infiniband/hw/bnxt_re/main.c
-+++ b/drivers/infiniband/hw/bnxt_re/main.c
-@@ -1253,6 +1253,8 @@ static int bnxt_re_dev_init(struct bnxt_re_dev *rdev, u8 wqe_mode)
- 
- 	rc = bnxt_re_setup_chip_ctx(rdev, wqe_mode);
- 	if (rc) {
-+		bnxt_unregister_dev(rdev->en_dev);
-+		clear_bit(BNXT_RE_FLAG_NETDEV_REGISTERED, &rdev->flags);
- 		ibdev_err(&rdev->ibdev, "Failed to get chip context\n");
- 		return -EINVAL;
+diff --git a/drivers/infiniband/hw/bnxt_re/qplib_res.c b/drivers/infiniband/hw/bnxt_re/qplib_res.c
+index 5fd8f7c..739d942 100644
+--- a/drivers/infiniband/hw/bnxt_re/qplib_res.c
++++ b/drivers/infiniband/hw/bnxt_re/qplib_res.c
+@@ -819,6 +819,7 @@ static int bnxt_qplib_alloc_dpi_tbl(struct bnxt_qplib_res *res,
  	}
+ 
+ 	memset((u8 *)dpit->tbl, 0xFF, bytes);
++	mutex_init(&res->dpi_tbl_lock);
+ 	dpit->priv_db = dpit->ucreg.bar_reg + dpit->ucreg.offset;
+ 
+ 	return 0;
 -- 
 2.5.5
 
 
---00000000000002130c06028a6b67
+--0000000000002ccb7f06028a6b1a
 Content-Type: application/pkcs7-signature; name="smime.p7s"
 Content-Transfer-Encoding: base64
 Content-Disposition: attachment; filename="smime.p7s"
@@ -169,14 +167,14 @@ j1Ze9ndr+YDXPpCymOsynmmw0ErHZGGW1OmMpAEt0A+613glWCURLDlP8HONi1wnINV6aDiEf0ad
 9NMGxDsp+YWiRXD3txfo2OMQbpIxM90QfhKKacX8t1J1oAAWxDrLVTJBXBNvz5tr+D1sYwuye93r
 hImmkM1unboxggJtMIICaQIBATBrMFsxCzAJBgNVBAYTAkJFMRkwFwYDVQQKExBHbG9iYWxTaWdu
 IG52LXNhMTEwLwYDVQQDEyhHbG9iYWxTaWduIEdDQyBSMyBQZXJzb25hbFNpZ24gMiBDQSAyMDIw
-Agxy+Cu4x/7lM0zxY7cwDQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIEIE5uNwGTRCDM
-S4JQvO9l0qhg1W7776OAySCCMIQ6By5pMBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZI
-hvcNAQkFMQ8XDTIzMDgxMDA0NTYyNFowaQYJKoZIhvcNAQkPMVwwWjALBglghkgBZQMEASowCwYJ
+Agxy+Cu4x/7lM0zxY7cwDQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIEIM0EUL57UoaJ
+UV5wPm15rmvp5T4fW1X2xb+v1PfSI4c7MBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZI
+hvcNAQkFMQ8XDTIzMDgxMDA0NTYyN1owaQYJKoZIhvcNAQkPMVwwWjALBglghkgBZQMEASowCwYJ
 YIZIAWUDBAEWMAsGCWCGSAFlAwQBAjAKBggqhkiG9w0DBzALBgkqhkiG9w0BAQowCwYJKoZIhvcN
-AQEHMAsGCWCGSAFlAwQCATANBgkqhkiG9w0BAQEFAASCAQAvhCdql/AvDXatH+/bJhl3ROI5a5nH
-0ymK7GU3vl6V9RDL2WPpqXt3J523vYlfAJX7sUfHUkxVCAW8Rm48o2fvFC2/lQ1e6Fmt8ibKRUHv
-2qILZsYCQ3Y4VytSZSLSPqQS5qsrpjRops7dFm/mFHfzOEFaDFrP82ZqoBruvdgjdIjh2NlWXTPb
-WV8iX7PG5YBuP3A1QOG5qreyF2cyAXCfQmTOwfOYySufwlL77at1xd0YPZBWiIP/Av1sUTbF2ZBH
-v6BRfZbQOx1jq6pJbrN0quB5Vens7iDra/3F06l5+MSYtH8mAMQVxQdSBnj24wuobx/l9RqpufUv
-1BHB4JDm
---00000000000002130c06028a6b67--
+AQEHMAsGCWCGSAFlAwQCATANBgkqhkiG9w0BAQEFAASCAQDSoD+h9tTGKP3jiMSjB4G01DyRcLnC
+lgqdBFOr5eY9oczmOcEUDnDTiVc0TjzgeRsl5UmEM339Qopu8SniGnIK6fj+Det31F7RrW0BJL+t
+JNSh3uDBB7g7jZgxNRaTFPlSP9GGGxWGSxH1mYk88JkDgqMEc8Yj18TLZrmPRs7tnwtImQIkFAcN
+Nj+FC/oOypvc1QSqMTUWLSWz9zvtBvz0bY6TwG+je657m4vDVZgiGzqa5YcTCHeKsyrUvuNITYap
+XtQ9bgPdAj5lZGu3ggGEVG5EcSv/QRbkAbxzBJsZv5Rmu8jr8b/Dgva9FkjJFTfknXYcYjeYlui7
+fJ3y0zld
+--0000000000002ccb7f06028a6b1a--
