@@ -2,69 +2,61 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4700F777EA3
-	for <lists+linux-rdma@lfdr.de>; Thu, 10 Aug 2023 18:53:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 50018777F49
+	for <lists+linux-rdma@lfdr.de>; Thu, 10 Aug 2023 19:40:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233066AbjHJQxN (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 10 Aug 2023 12:53:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43822 "EHLO
+        id S233106AbjHJRkX (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 10 Aug 2023 13:40:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52392 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229503AbjHJQxN (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 10 Aug 2023 12:53:13 -0400
-Received: from mail-pl1-x62d.google.com (mail-pl1-x62d.google.com [IPv6:2607:f8b0:4864:20::62d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9925A1728
-        for <linux-rdma@vger.kernel.org>; Thu, 10 Aug 2023 09:53:12 -0700 (PDT)
-Received: by mail-pl1-x62d.google.com with SMTP id d9443c01a7336-1bc83a96067so8626355ad.0
-        for <linux-rdma@vger.kernel.org>; Thu, 10 Aug 2023 09:53:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google; t=1691686392; x=1692291192;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=RNX9RZiB9L23oxeNDCtjH+614RITUrM5WpshdQGdNHw=;
-        b=FsIklyiyyD4hcdtdtP3AWLGW8dAgAX6E/NCxDnbnjSblyP+6PQfUZtGcpimkILtqpI
-         iJ09rZ2KjcIcICSEv8RSfKkA1PyD7GpC4w/FpjWl2my/ZdfHnSfVgrR7e9tAKQyHgCqm
-         JW5g9N52S8MHnm2EfNfbdIntKrbbbF7/MX++3yAK0dJXSYuPIPV1xOaVGfVjE2pdhNRj
-         Z346BzFeYPbfijblyYMQ/bCahGbTRa5oNW2IcKWa9rlZ/XklGnk+VNaUnXwGWqHSQ3l5
-         lL/ZEle2JJzn2I8YsrLxfKIStADbhORBReQkTmgnLcviIHtOkXfD4mD+C41NzFzOpHNH
-         KnBw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691686392; x=1692291192;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=RNX9RZiB9L23oxeNDCtjH+614RITUrM5WpshdQGdNHw=;
-        b=IIJTPCTR3Ptj8gB+7xtnfIfEDkoeyRcV57nJTlC71N1YGdBwfylpfyh9k38nSX6T4h
-         jGOLHteQUuUViJ07efr5aofRD2u8+lT4E9KDtN4DuwK9amED5CWzWWjTbkzFmRdubDVp
-         Ynz0jLd2InebKb3wHDVH5FD7pFRLPunJpL9eZogx/Nh+SzpGPAry0va0Rvb7YRkjZ7iU
-         fi1zNKT1lfk9kYXaoXSWkXmDxcrR0TQZZffXckNyZztsHTCbWH/SjPap4SwW9WmKGDzW
-         F9TBjwMvqhpbirespk3uJkpvBZhrOiQD5sswJ08twe6C0ix5BaFu853yAXxBBCeANJOw
-         A8LQ==
-X-Gm-Message-State: AOJu0YxEaSXMQR9vIlGh48xioeyaS6BrR72uhe0qVuJR1/0ZTbu5/V2R
-        pRjGUSRDLCgtbm9c1eIM6/Q0BDQgkfrha5MHRuw=
-X-Google-Smtp-Source: AGHT+IFfpH9qdWT9t0/Os+RcyqPR1mA+RaWZaL1Cy1iQLGMzjq8BicSa+nHCF26mtCXpmOaIgxpMPw==
-X-Received: by 2002:a17:903:644:b0:1bc:54b8:41f6 with SMTP id kh4-20020a170903064400b001bc54b841f6mr2288504plb.52.1691686392078;
-        Thu, 10 Aug 2023 09:53:12 -0700 (PDT)
-Received: from ziepe.ca ([206.223.160.26])
-        by smtp.gmail.com with ESMTPSA id x15-20020a1709027c0f00b001b9ecee9f81sm2015840pll.129.2023.08.10.09.53.11
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 10 Aug 2023 09:53:11 -0700 (PDT)
-Received: from jgg by wakko with local (Exim 4.95)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1qU8uM-005HAC-4m;
-        Thu, 10 Aug 2023 13:53:10 -0300
-Date:   Thu, 10 Aug 2023 13:53:10 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Junxian Huang <huangjunxian6@hisilicon.com>
-Cc:     linux-rdma <linux-rdma@vger.kernel.org>
-Subject: Re: When should positive and negative error codes be used?
-Message-ID: <ZNUV9trKmqggwHPh@ziepe.ca>
-References: <f6aeac31-89a5-1eeb-11a5-2eb545de116d@hisilicon.com>
+        with ESMTP id S231365AbjHJRkW (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 10 Aug 2023 13:40:22 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D36F2700;
+        Thu, 10 Aug 2023 10:40:22 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id BF437619C4;
+        Thu, 10 Aug 2023 17:40:21 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 08B72C433C7;
+        Thu, 10 Aug 2023 17:40:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1691689221;
+        bh=DgGIQxm9T3j5F5GS/tDZyHr6yrkokRMtYqyjFvotMd4=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=qQqjUiW47BPOFQCeCERwTvIkf4E83TbWzVQC/CRQofvOEhCOo4/tYWQbCTpKzmDg6
+         oSw9fW1LGx2qMZovEja3J8zzS68C4bG1TCs2Ri9H93HNCvlVIPPvWF47AL2GW+/WUB
+         MeQW1wjxowULzaKhkpd/NJgRK+lFdrCO4rM6TjViuDGXoBNPS3p414WgwlKXlQZuWA
+         jBiOqAT/B+SOYO4Rfb+lhyjS8vVx+fSHG5DkSC9V8WBemgTaFd7XZx2/ZFt5BhSI/d
+         kzuMp3GXzJHDz6j/COgR5ewWIrx/5EnQsQLAonkbScbwyEKYrIGYkg0pu53US4dvHF
+         /QTk4NgBdwpMw==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id DE717C64459;
+        Thu, 10 Aug 2023 17:40:20 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <f6aeac31-89a5-1eeb-11a5-2eb545de116d@hisilicon.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH V8 net] net: mana: Fix MANA VF unload when hardware is
+ unresponsive
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <169168922090.685.4553491279994848251.git-patchwork-notify@kernel.org>
+Date:   Thu, 10 Aug 2023 17:40:20 +0000
+References: <1691576525-24271-1-git-send-email-schakrabarti@linux.microsoft.com>
+In-Reply-To: <1691576525-24271-1-git-send-email-schakrabarti@linux.microsoft.com>
+To:     Souradeep Chakrabarti <schakrabarti@linux.microsoft.com>
+Cc:     kys@microsoft.com, haiyangz@microsoft.com, wei.liu@kernel.org,
+        decui@microsoft.com, davem@davemloft.net, edumazet@google.com,
+        kuba@kernel.org, pabeni@redhat.com, longli@microsoft.com,
+        sharmaajay@microsoft.com, leon@kernel.org, cai.huoqing@linux.dev,
+        ssengar@linux.microsoft.com, vkuznets@redhat.com,
+        tglx@linutronix.de, linux-hyperv@vger.kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-rdma@vger.kernel.org, schakrabarti@microsoft.com,
+        stable@vger.kernel.org
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -72,19 +64,30 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Thu, Aug 10, 2023 at 02:51:37PM +0800, Junxian Huang wrote:
-> Hi all!
+Hello:
+
+This patch was applied to netdev/net.git (main)
+by Jakub Kicinski <kuba@kernel.org>:
+
+On Wed,  9 Aug 2023 03:22:05 -0700 you wrote:
+> When unloading the MANA driver, mana_dealloc_queues() waits for the MANA
+> hardware to complete any inflight packets and set the pending send count
+> to zero. But if the hardware has failed, mana_dealloc_queues()
+> could wait forever.
 > 
-> I'm wondering if there is a clear rule for the usage of positive and
-> negative values of error codes.
+> Fix this by adding a timeout to the wait. Set the timeout to 120 seconds,
+> which is a somewhat arbitrary value that is more than long enough for
+> functional hardware to complete any sends.
 > 
-> It seems that negative values are uniformly used in kernel space, but
-> both positive and negative values are used in user space. When should
-> positive values be used and when should negative values be used?
+> [...]
 
-We always use negative in the kernel
+Here is the summary with links:
+  - [V8,net] net: mana: Fix MANA VF unload when hardware is unresponsive
+    https://git.kernel.org/netdev/net/c/a7dfeda6fdec
 
-Userspace is supposed to set errno and often return positive err codes
-But we have not done a good job there
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
 
-Jason
+
