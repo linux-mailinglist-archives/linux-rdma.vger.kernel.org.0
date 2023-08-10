@@ -2,59 +2,50 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 50018777F49
-	for <lists+linux-rdma@lfdr.de>; Thu, 10 Aug 2023 19:40:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6629F777FF0
+	for <lists+linux-rdma@lfdr.de>; Thu, 10 Aug 2023 20:08:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233106AbjHJRkX (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 10 Aug 2023 13:40:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52392 "EHLO
+        id S234775AbjHJSIx (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 10 Aug 2023 14:08:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42426 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231365AbjHJRkW (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 10 Aug 2023 13:40:22 -0400
+        with ESMTP id S234100AbjHJSIx (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 10 Aug 2023 14:08:53 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D36F2700;
-        Thu, 10 Aug 2023 10:40:22 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 19D70E48
+        for <linux-rdma@vger.kernel.org>; Thu, 10 Aug 2023 11:08:53 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id BF437619C4;
-        Thu, 10 Aug 2023 17:40:21 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 08B72C433C7;
-        Thu, 10 Aug 2023 17:40:21 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id A8963635E7
+        for <linux-rdma@vger.kernel.org>; Thu, 10 Aug 2023 18:08:52 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 53ADFC433C7;
+        Thu, 10 Aug 2023 18:08:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1691689221;
-        bh=DgGIQxm9T3j5F5GS/tDZyHr6yrkokRMtYqyjFvotMd4=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=qQqjUiW47BPOFQCeCERwTvIkf4E83TbWzVQC/CRQofvOEhCOo4/tYWQbCTpKzmDg6
-         oSw9fW1LGx2qMZovEja3J8zzS68C4bG1TCs2Ri9H93HNCvlVIPPvWF47AL2GW+/WUB
-         MeQW1wjxowULzaKhkpd/NJgRK+lFdrCO4rM6TjViuDGXoBNPS3p414WgwlKXlQZuWA
-         jBiOqAT/B+SOYO4Rfb+lhyjS8vVx+fSHG5DkSC9V8WBemgTaFd7XZx2/ZFt5BhSI/d
-         kzuMp3GXzJHDz6j/COgR5ewWIrx/5EnQsQLAonkbScbwyEKYrIGYkg0pu53US4dvHF
-         /QTk4NgBdwpMw==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id DE717C64459;
-        Thu, 10 Aug 2023 17:40:20 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        s=k20201202; t=1691690932;
+        bh=nZv6E2mt+6uhd16hMnF3qtJLtFMk5Z4Tzk4w0y3UqaU=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=agm4Sm/vogldp/+2Ie18WRECFwuK6sOtUIdCHTJ10qATYLEmoGlr1k8/hMkJkAsia
+         82Oi1AgdNtvJK0mqN8Hr3GjgtLSzLZrOlE6ywlasAQrOfretLl/4N31129eSyJ4gkD
+         g79VTswCxFhO13LDUCHGI4LLoWim9OdTUluVZQzS05/KrsHqK4+yhLu1a2RsTcOQ0u
+         C5DFqFaOMiqXH8BNToeysfjnxv9X7eeMHPSnI4X7IU4U/8k43AqQpHUt66AJwMFMj5
+         PZhUbxFcaIomUY4b0Ak+Yd82Wr2O+gR6OB/o+jbgpjyRzGlf4A0IQKjO1sLgMZzC9D
+         pwGUzfLBrIdrg==
+Date:   Thu, 10 Aug 2023 20:08:48 +0200
+From:   Simon Horman <horms@kernel.org>
+To:     Yue Haibing <yuehaibing@huawei.com>
+Cc:     santosh.shilimkar@oracle.com, davem@davemloft.net,
+        edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
+        netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
+        rds-devel@oss.oracle.com
+Subject: Re: [PATCH net-next] RDS: IB: Remove unused declarations
+Message-ID: <ZNUnsE+SuJ747yn4@vergenet.net>
+References: <20230809141806.46476-1-yuehaibing@huawei.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH V8 net] net: mana: Fix MANA VF unload when hardware is
- unresponsive
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <169168922090.685.4553491279994848251.git-patchwork-notify@kernel.org>
-Date:   Thu, 10 Aug 2023 17:40:20 +0000
-References: <1691576525-24271-1-git-send-email-schakrabarti@linux.microsoft.com>
-In-Reply-To: <1691576525-24271-1-git-send-email-schakrabarti@linux.microsoft.com>
-To:     Souradeep Chakrabarti <schakrabarti@linux.microsoft.com>
-Cc:     kys@microsoft.com, haiyangz@microsoft.com, wei.liu@kernel.org,
-        decui@microsoft.com, davem@davemloft.net, edumazet@google.com,
-        kuba@kernel.org, pabeni@redhat.com, longli@microsoft.com,
-        sharmaajay@microsoft.com, leon@kernel.org, cai.huoqing@linux.dev,
-        ssengar@linux.microsoft.com, vkuznets@redhat.com,
-        tglx@linutronix.de, linux-hyperv@vger.kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-rdma@vger.kernel.org, schakrabarti@microsoft.com,
-        stable@vger.kernel.org
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230809141806.46476-1-yuehaibing@huawei.com>
 X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
@@ -64,30 +55,13 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Hello:
-
-This patch was applied to netdev/net.git (main)
-by Jakub Kicinski <kuba@kernel.org>:
-
-On Wed,  9 Aug 2023 03:22:05 -0700 you wrote:
-> When unloading the MANA driver, mana_dealloc_queues() waits for the MANA
-> hardware to complete any inflight packets and set the pending send count
-> to zero. But if the hardware has failed, mana_dealloc_queues()
-> could wait forever.
+On Wed, Aug 09, 2023 at 10:18:06PM +0800, Yue Haibing wrote:
+> Commit f4f943c958a2 ("RDS: IB: ack more receive completions to improve performance")
+> removed rds_ib_recv_tasklet_fn() implementation but not the declaration.
+> And commit ec16227e1414 ("RDS/IB: Infiniband transport") declared but never implemented
+> the other functions.
 > 
-> Fix this by adding a timeout to the wait. Set the timeout to 120 seconds,
-> which is a somewhat arbitrary value that is more than long enough for
-> functional hardware to complete any sends.
-> 
-> [...]
+> Signed-off-by: Yue Haibing <yuehaibing@huawei.com>
 
-Here is the summary with links:
-  - [V8,net] net: mana: Fix MANA VF unload when hardware is unresponsive
-    https://git.kernel.org/netdev/net/c/a7dfeda6fdec
-
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
+Reviewed-by: Simon Horman <horms@kernel.org>
 
