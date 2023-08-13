@@ -2,42 +2,42 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 20F3B77A720
-	for <lists+linux-rdma@lfdr.de>; Sun, 13 Aug 2023 16:53:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D23A277A71C
+	for <lists+linux-rdma@lfdr.de>; Sun, 13 Aug 2023 16:53:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231419AbjHMOw0 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Sun, 13 Aug 2023 10:52:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60020 "EHLO
+        id S229975AbjHMOwZ (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Sun, 13 Aug 2023 10:52:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50446 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231409AbjHMOwT (ORCPT
+        with ESMTP id S231408AbjHMOwT (ORCPT
         <rfc822;linux-rdma@vger.kernel.org>); Sun, 13 Aug 2023 10:52:19 -0400
 Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC368171D;
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC2B8171A;
         Sun, 13 Aug 2023 07:52:08 -0700 (PDT)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id A6AB221976;
+        by smtp-out1.suse.de (Postfix) with ESMTPS id DC99321972;
         Sun, 13 Aug 2023 14:52:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
         t=1691938325; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=s1HayEWlygkespJ1nUcUnEStXGw5l8zaePkgciVxiOg=;
-        b=kMoB+yLVAiNwQAabZsHRHJqMbQ19XkLCToM61wJWb+ka0YDTubadbGK4IlEl4I7jxmMlbf
-        SJM48izMEHPiHAl4XHo8LJgb6w3/Ev1txWzmsiGRnh74dZWIY+77AUFP2Tupd7HC82pOri
-        tLE+tMGQ/oZx/3ltaWK+Q53XYKvPhic=
+        bh=bVYQLZadpbIHkiHRlc0Nojw7TxPVG8nKYGsIyAJfqiI=;
+        b=MfrE+Cq3EKlLS6SO46s95zHEf51oaOR4LdpjZ8Oeizqqy9aBZ9NcGEjb7jkVuov+d0/4J8
+        aqe22Im6Nu0zYE4ajNazfOyLQv1bI93jbYOsDgD5SU0fjVvXZOuxyYkC11bEPjUqBUycAD
+        8i0nRjnU/PxSPH3psS8gXkv6WyrggCI=
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 6CD0613593;
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id A9AB71322C;
         Sun, 13 Aug 2023 14:52:05 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
         by imap2.suse-dmz.suse.de with ESMTPSA
-        id 0D3YGRXu2GSDFAAAMHmgww
+        id 8JulKBXu2GSDFAAAMHmgww
         (envelope-from <petr.pavlu@suse.com>); Sun, 13 Aug 2023 14:52:05 +0000
 From:   Petr Pavlu <petr.pavlu@suse.com>
 To:     tariqt@nvidia.com, yishaih@nvidia.com, leon@kernel.org
@@ -46,9 +46,9 @@ Cc:     davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
         linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
         Petr Pavlu <petr.pavlu@suse.com>,
         Leon Romanovsky <leonro@nvidia.com>
-Subject: [PATCH net-next v2 07/10] mlx4: Register mlx4 devices to an auxiliary virtual bus
-Date:   Sun, 13 Aug 2023 16:51:24 +0200
-Message-Id: <20230813145127.10653-8-petr.pavlu@suse.com>
+Subject: [PATCH net-next v2 08/10] mlx4: Connect the ethernet part to the auxiliary bus
+Date:   Sun, 13 Aug 2023 16:51:25 +0200
+Message-Id: <20230813145127.10653-9-petr.pavlu@suse.com>
 X-Mailer: git-send-email 2.35.3
 In-Reply-To: <20230813145127.10653-1-petr.pavlu@suse.com>
 References: <20230813145127.10653-1-petr.pavlu@suse.com>
@@ -63,485 +63,190 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Add an auxiliary virtual bus to model the mlx4 driver structure. The
-code is added along the current custom device management logic.
-Subsequent patches switch mlx4_en and mlx4_ib to the auxiliary bus and
-the old interface is then removed.
-
-Structure mlx4_priv gains a new adev dynamic array to keep track of its
-auxiliary devices. Access to the array is protected by the global
-mlx4_intf mutex.
-
-Functions mlx4_register_device() and mlx4_unregister_device() are
-updated to expose auxiliary devices on the bus in order to load mlx4_en
-and/or mlx4_ib. Functions mlx4_register_auxiliary_driver() and
-mlx4_unregister_auxiliary_driver() are added to substitute
-mlx4_register_interface() and mlx4_unregister_interface(), respectively.
-Function mlx4_do_bond() is adjusted to walk over the adev array and
-re-adds a specific auxiliary device if its driver sets the
-MLX4_INTFF_BONDING flag.
+Use the auxiliary bus to perform device management of the ethernet part
+of the mlx4 driver.
 
 Signed-off-by: Petr Pavlu <petr.pavlu@suse.com>
 Tested-by: Leon Romanovsky <leonro@nvidia.com>
 Reviewed-by: Leon Romanovsky <leonro@nvidia.com>
 Acked-by: Tariq Toukan <tariqt@nvidia.com>
 ---
- drivers/net/ethernet/mellanox/mlx4/Kconfig |   1 +
- drivers/net/ethernet/mellanox/mlx4/intf.c  | 230 ++++++++++++++++++++-
- drivers/net/ethernet/mellanox/mlx4/main.c  |  17 +-
- drivers/net/ethernet/mellanox/mlx4/mlx4.h  |   6 +
- include/linux/mlx4/device.h                |   7 +
- include/linux/mlx4/driver.h                |  11 +
- 6 files changed, 268 insertions(+), 4 deletions(-)
+ drivers/net/ethernet/mellanox/mlx4/en_main.c | 65 ++++++++++++++------
+ drivers/net/ethernet/mellanox/mlx4/intf.c    | 13 +++-
+ 2 files changed, 58 insertions(+), 20 deletions(-)
 
-diff --git a/drivers/net/ethernet/mellanox/mlx4/Kconfig b/drivers/net/ethernet/mellanox/mlx4/Kconfig
-index 1b4b1f642317..825e05fb8607 100644
---- a/drivers/net/ethernet/mellanox/mlx4/Kconfig
-+++ b/drivers/net/ethernet/mellanox/mlx4/Kconfig
-@@ -27,6 +27,7 @@ config MLX4_EN_DCB
- config MLX4_CORE
- 	tristate
- 	depends on PCI
-+	select AUXILIARY_BUS
- 	select NET_DEVLINK
- 	default n
+diff --git a/drivers/net/ethernet/mellanox/mlx4/en_main.c b/drivers/net/ethernet/mellanox/mlx4/en_main.c
+index 263f9274927b..8a7e3aabbcfd 100644
+--- a/drivers/net/ethernet/mellanox/mlx4/en_main.c
++++ b/drivers/net/ethernet/mellanox/mlx4/en_main.c
+@@ -222,9 +222,11 @@ static int mlx4_en_event(struct notifier_block *this, unsigned long event,
+ 	return NOTIFY_DONE;
+ }
  
+-static void mlx4_en_remove(struct mlx4_dev *dev, void *endev_ptr)
++static void mlx4_en_remove(struct auxiliary_device *adev)
+ {
+-	struct mlx4_en_dev *mdev = endev_ptr;
++	struct mlx4_adev *madev = container_of(adev, struct mlx4_adev, adev);
++	struct mlx4_dev *dev = madev->mdev;
++	struct mlx4_en_dev *mdev = auxiliary_get_drvdata(adev);
+ 	int i;
+ 
+ 	mlx4_unregister_event_notifier(dev, &mdev->mlx_nb);
+@@ -247,27 +249,36 @@ static void mlx4_en_remove(struct mlx4_dev *dev, void *endev_ptr)
+ 	kfree(mdev);
+ }
+ 
+-static void *mlx4_en_add(struct mlx4_dev *dev)
++static int mlx4_en_probe(struct auxiliary_device *adev,
++			 const struct auxiliary_device_id *id)
+ {
++	struct mlx4_adev *madev = container_of(adev, struct mlx4_adev, adev);
++	struct mlx4_dev *dev = madev->mdev;
+ 	struct mlx4_en_dev *mdev;
+ 	int err, i;
+ 
+ 	printk_once(KERN_INFO "%s", mlx4_en_version);
+ 
+ 	mdev = kzalloc(sizeof(*mdev), GFP_KERNEL);
+-	if (!mdev)
++	if (!mdev) {
++		err = -ENOMEM;
+ 		goto err_free_res;
++	}
+ 
+-	if (mlx4_pd_alloc(dev, &mdev->priv_pdn))
++	err = mlx4_pd_alloc(dev, &mdev->priv_pdn);
++	if (err)
+ 		goto err_free_dev;
+ 
+-	if (mlx4_uar_alloc(dev, &mdev->priv_uar))
++	err = mlx4_uar_alloc(dev, &mdev->priv_uar);
++	if (err)
+ 		goto err_pd;
+ 
+ 	mdev->uar_map = ioremap((phys_addr_t) mdev->priv_uar.pfn << PAGE_SHIFT,
+ 				PAGE_SIZE);
+-	if (!mdev->uar_map)
++	if (!mdev->uar_map) {
++		err = -ENOMEM;
+ 		goto err_uar;
++	}
+ 	spin_lock_init(&mdev->uar_lock);
+ 
+ 	mdev->dev = dev;
+@@ -279,13 +290,15 @@ static void *mlx4_en_add(struct mlx4_dev *dev)
+ 	if (!mdev->LSO_support)
+ 		mlx4_warn(mdev, "LSO not supported, please upgrade to later FW version to enable LSO\n");
+ 
+-	if (mlx4_mr_alloc(mdev->dev, mdev->priv_pdn, 0, ~0ull,
+-			 MLX4_PERM_LOCAL_WRITE |  MLX4_PERM_LOCAL_READ,
+-			 0, 0, &mdev->mr)) {
++	err = mlx4_mr_alloc(mdev->dev, mdev->priv_pdn, 0, ~0ull,
++			    MLX4_PERM_LOCAL_WRITE | MLX4_PERM_LOCAL_READ, 0, 0,
++			    &mdev->mr);
++	if (err) {
+ 		mlx4_err(mdev, "Failed allocating memory region\n");
+ 		goto err_map;
+ 	}
+-	if (mlx4_mr_enable(mdev->dev, &mdev->mr)) {
++	err = mlx4_mr_enable(mdev->dev, &mdev->mr);
++	if (err) {
+ 		mlx4_err(mdev, "Failed enabling memory region\n");
+ 		goto err_mr;
+ 	}
+@@ -305,8 +318,10 @@ static void *mlx4_en_add(struct mlx4_dev *dev)
+ 	 * Note: we cannot use the shared workqueue because of deadlocks caused
+ 	 *       by the rtnl lock */
+ 	mdev->workqueue = create_singlethread_workqueue("mlx4_en");
+-	if (!mdev->workqueue)
++	if (!mdev->workqueue) {
++		err = -ENOMEM;
+ 		goto err_mr;
++	}
+ 
+ 	/* At this stage all non-port specific tasks are complete:
+ 	 * mark the card state as up */
+@@ -334,7 +349,8 @@ static void *mlx4_en_add(struct mlx4_dev *dev)
+ 		mlx4_err(mdev, "Failed to create netdev notifier\n");
+ 	}
+ 
+-	return mdev;
++	auxiliary_set_drvdata(adev, mdev);
++	return 0;
+ 
+ err_mr:
+ 	(void) mlx4_mr_free(dev, &mdev->mr);
+@@ -348,12 +364,23 @@ static void *mlx4_en_add(struct mlx4_dev *dev)
+ err_free_dev:
+ 	kfree(mdev);
+ err_free_res:
+-	return NULL;
++	return err;
+ }
+ 
+-static struct mlx4_interface mlx4_en_interface = {
+-	.add		= mlx4_en_add,
+-	.remove		= mlx4_en_remove,
++static const struct auxiliary_device_id mlx4_en_id_table[] = {
++	{ .name = MLX4_ADEV_NAME ".eth" },
++	{},
++};
++
++MODULE_DEVICE_TABLE(auxiliary, mlx4_en_id_table);
++
++static struct mlx4_adrv mlx4_en_adrv = {
++	.adrv = {
++		.name	= "eth",
++		.probe	= mlx4_en_probe,
++		.remove	= mlx4_en_remove,
++		.id_table = mlx4_en_id_table,
++	},
+ 	.protocol	= MLX4_PROT_ETH,
+ };
+ 
+@@ -383,12 +410,12 @@ static int __init mlx4_en_init(void)
+ 	mlx4_en_verify_params();
+ 	mlx4_en_init_ptys2ethtool_map();
+ 
+-	return mlx4_register_interface(&mlx4_en_interface);
++	return mlx4_register_auxiliary_driver(&mlx4_en_adrv);
+ }
+ 
+ static void __exit mlx4_en_cleanup(void)
+ {
+-	mlx4_unregister_interface(&mlx4_en_interface);
++	mlx4_unregister_auxiliary_driver(&mlx4_en_adrv);
+ }
+ 
+ module_init(mlx4_en_init);
 diff --git a/drivers/net/ethernet/mellanox/mlx4/intf.c b/drivers/net/ethernet/mellanox/mlx4/intf.c
-index 30aead34ce08..4b1e18e4a682 100644
+index 4b1e18e4a682..0a27820ece2e 100644
 --- a/drivers/net/ethernet/mellanox/mlx4/intf.c
 +++ b/drivers/net/ethernet/mellanox/mlx4/intf.c
-@@ -48,6 +48,89 @@ struct mlx4_device_context {
- static LIST_HEAD(intf_list);
- static LIST_HEAD(dev_list);
+@@ -50,10 +50,21 @@ static LIST_HEAD(dev_list);
  static DEFINE_MUTEX(intf_mutex);
-+static DEFINE_IDA(mlx4_adev_ida);
-+
-+static const struct mlx4_adev_device {
-+	const char *suffix;
-+	bool (*is_supported)(struct mlx4_dev *dev);
-+} mlx4_adev_devices[1] = {};
-+
-+int mlx4_adev_init(struct mlx4_dev *dev)
+ static DEFINE_IDA(mlx4_adev_ida);
+ 
++static bool is_eth_supported(struct mlx4_dev *dev)
 +{
-+	struct mlx4_priv *priv = mlx4_priv(dev);
++	for (int port = 1; port <= dev->caps.num_ports; port++)
++		if (dev->caps.port_type[port] == MLX4_PORT_TYPE_ETH)
++			return true;
 +
-+	priv->adev_idx = ida_alloc(&mlx4_adev_ida, GFP_KERNEL);
-+	if (priv->adev_idx < 0)
-+		return priv->adev_idx;
-+
-+	priv->adev = kcalloc(ARRAY_SIZE(mlx4_adev_devices),
-+			     sizeof(struct mlx4_adev *), GFP_KERNEL);
-+	if (!priv->adev) {
-+		ida_free(&mlx4_adev_ida, priv->adev_idx);
-+		return -ENOMEM;
-+	}
-+
-+	return 0;
++	return false;
 +}
 +
-+void mlx4_adev_cleanup(struct mlx4_dev *dev)
-+{
-+	struct mlx4_priv *priv = mlx4_priv(dev);
-+
-+	kfree(priv->adev);
-+	ida_free(&mlx4_adev_ida, priv->adev_idx);
-+}
-+
-+static void adev_release(struct device *dev)
-+{
-+	struct mlx4_adev *mlx4_adev =
-+		container_of(dev, struct mlx4_adev, adev.dev);
-+	struct mlx4_priv *priv = mlx4_priv(mlx4_adev->mdev);
-+	int idx = mlx4_adev->idx;
-+
-+	kfree(mlx4_adev);
-+	priv->adev[idx] = NULL;
-+}
-+
-+static struct mlx4_adev *add_adev(struct mlx4_dev *dev, int idx)
-+{
-+	struct mlx4_priv *priv = mlx4_priv(dev);
-+	const char *suffix = mlx4_adev_devices[idx].suffix;
-+	struct auxiliary_device *adev;
-+	struct mlx4_adev *madev;
-+	int ret;
-+
-+	madev = kzalloc(sizeof(*madev), GFP_KERNEL);
-+	if (!madev)
-+		return ERR_PTR(-ENOMEM);
-+
-+	adev = &madev->adev;
-+	adev->id = priv->adev_idx;
-+	adev->name = suffix;
-+	adev->dev.parent = &dev->persist->pdev->dev;
-+	adev->dev.release = adev_release;
-+	madev->mdev = dev;
-+	madev->idx = idx;
-+
-+	ret = auxiliary_device_init(adev);
-+	if (ret) {
-+		kfree(madev);
-+		return ERR_PTR(ret);
-+	}
-+
-+	ret = auxiliary_device_add(adev);
-+	if (ret) {
-+		auxiliary_device_uninit(adev);
-+		return ERR_PTR(ret);
-+	}
-+	return madev;
-+}
-+
-+static void del_adev(struct auxiliary_device *adev)
-+{
-+	auxiliary_device_delete(adev);
-+	auxiliary_device_uninit(adev);
-+}
- 
- static void mlx4_add_device(struct mlx4_interface *intf, struct mlx4_priv *priv)
- {
-@@ -120,12 +203,24 @@ void mlx4_unregister_interface(struct mlx4_interface *intf)
- }
- EXPORT_SYMBOL_GPL(mlx4_unregister_interface);
- 
-+int mlx4_register_auxiliary_driver(struct mlx4_adrv *madrv)
-+{
-+	return auxiliary_driver_register(&madrv->adrv);
-+}
-+EXPORT_SYMBOL_GPL(mlx4_register_auxiliary_driver);
-+
-+void mlx4_unregister_auxiliary_driver(struct mlx4_adrv *madrv)
-+{
-+	auxiliary_driver_unregister(&madrv->adrv);
-+}
-+EXPORT_SYMBOL_GPL(mlx4_unregister_auxiliary_driver);
-+
- int mlx4_do_bond(struct mlx4_dev *dev, bool enable)
- {
- 	struct mlx4_priv *priv = mlx4_priv(dev);
- 	struct mlx4_device_context *dev_ctx = NULL, *temp_dev_ctx;
- 	unsigned long flags;
--	int ret;
-+	int i, ret;
- 	LIST_HEAD(bond_list);
- 
- 	if (!(dev->caps.flags2 & MLX4_DEV_CAP_FLAG2_PORT_REMAP))
-@@ -177,6 +272,57 @@ int mlx4_do_bond(struct mlx4_dev *dev, bool enable)
- 			 dev_ctx->intf->protocol, enable ?
- 			 "enabled" : "disabled");
- 	}
-+
-+	mutex_lock(&intf_mutex);
-+
-+	for (i = 0; i < ARRAY_SIZE(mlx4_adev_devices); i++) {
-+		struct mlx4_adev *madev = priv->adev[i];
-+		struct mlx4_adrv *madrv;
-+		enum mlx4_protocol protocol;
-+
-+		if (!madev)
-+			continue;
-+
-+		device_lock(&madev->adev.dev);
-+		if (!madev->adev.dev.driver) {
-+			device_unlock(&madev->adev.dev);
-+			continue;
-+		}
-+
-+		madrv = container_of(madev->adev.dev.driver, struct mlx4_adrv,
-+				     adrv.driver);
-+		if (!(madrv->flags & MLX4_INTFF_BONDING)) {
-+			device_unlock(&madev->adev.dev);
-+			continue;
-+		}
-+
-+		if (mlx4_is_mfunc(dev)) {
-+			mlx4_dbg(dev,
-+				 "SRIOV, disabled HA mode for intf proto %d\n",
-+				 madrv->protocol);
-+			device_unlock(&madev->adev.dev);
-+			continue;
-+		}
-+
-+		protocol = madrv->protocol;
-+		device_unlock(&madev->adev.dev);
-+
-+		del_adev(&madev->adev);
-+		priv->adev[i] = add_adev(dev, i);
-+		if (IS_ERR(priv->adev[i])) {
-+			mlx4_warn(dev, "Device[%d] (%s) failed to load\n", i,
-+				  mlx4_adev_devices[i].suffix);
-+			priv->adev[i] = NULL;
-+			continue;
-+		}
-+
-+		mlx4_dbg(dev,
-+			 "Interface for protocol %d restarted with bonded mode %s\n",
-+			 protocol, enable ? "enabled" : "disabled");
-+	}
-+
-+	mutex_unlock(&intf_mutex);
-+
- 	return 0;
- }
- 
-@@ -206,10 +352,80 @@ int mlx4_unregister_event_notifier(struct mlx4_dev *dev,
- }
- EXPORT_SYMBOL(mlx4_unregister_event_notifier);
- 
-+static int add_drivers(struct mlx4_dev *dev)
-+{
-+	struct mlx4_priv *priv = mlx4_priv(dev);
-+	int i, ret = 0;
-+
-+	for (i = 0; i < ARRAY_SIZE(mlx4_adev_devices); i++) {
-+		bool is_supported = false;
-+
-+		if (priv->adev[i])
-+			continue;
-+
-+		if (mlx4_adev_devices[i].is_supported)
-+			is_supported = mlx4_adev_devices[i].is_supported(dev);
-+
-+		if (!is_supported)
-+			continue;
-+
-+		priv->adev[i] = add_adev(dev, i);
-+		if (IS_ERR(priv->adev[i])) {
-+			mlx4_warn(dev, "Device[%d] (%s) failed to load\n", i,
-+				  mlx4_adev_devices[i].suffix);
-+			/* We continue to rescan drivers and leave to the caller
-+			 * to make decision if to release everything or
-+			 * continue. */
-+			ret = PTR_ERR(priv->adev[i]);
-+			priv->adev[i] = NULL;
-+		}
-+	}
-+	return ret;
-+}
-+
-+static void delete_drivers(struct mlx4_dev *dev)
-+{
-+	struct mlx4_priv *priv = mlx4_priv(dev);
-+	bool delete_all;
-+	int i;
-+
-+	delete_all = !(dev->persist->interface_state & MLX4_INTERFACE_STATE_UP);
-+
-+	for (i = ARRAY_SIZE(mlx4_adev_devices) - 1; i >= 0; i--) {
-+		bool is_supported = false;
-+
-+		if (!priv->adev[i])
-+			continue;
-+
-+		if (mlx4_adev_devices[i].is_supported && !delete_all)
-+			is_supported = mlx4_adev_devices[i].is_supported(dev);
-+
-+		if (is_supported)
-+			continue;
-+
-+		del_adev(&priv->adev[i]->adev);
-+		priv->adev[i] = NULL;
-+	}
-+}
-+
-+/* This function is used after mlx4_dev is reconfigured.
-+ */
-+static int rescan_drivers_locked(struct mlx4_dev *dev)
-+{
-+	lockdep_assert_held(&intf_mutex);
-+
-+	delete_drivers(dev);
-+	if (!(dev->persist->interface_state & MLX4_INTERFACE_STATE_UP))
-+		return 0;
-+
-+	return add_drivers(dev);
-+}
-+
- int mlx4_register_device(struct mlx4_dev *dev)
- {
- 	struct mlx4_priv *priv = mlx4_priv(dev);
- 	struct mlx4_interface *intf;
-+	int ret;
- 
- 	mutex_lock(&intf_mutex);
- 
-@@ -218,10 +434,18 @@ int mlx4_register_device(struct mlx4_dev *dev)
- 	list_for_each_entry(intf, &intf_list, list)
- 		mlx4_add_device(intf, priv);
- 
-+	ret = rescan_drivers_locked(dev);
-+
- 	mutex_unlock(&intf_mutex);
-+
-+	if (ret) {
-+		mlx4_unregister_device(dev);
-+		return ret;
-+	}
-+
- 	mlx4_start_catas_poll(dev);
- 
--	return 0;
-+	return ret;
- }
- 
- void mlx4_unregister_device(struct mlx4_dev *dev)
-@@ -253,6 +477,8 @@ void mlx4_unregister_device(struct mlx4_dev *dev)
- 	list_del(&priv->dev_list);
- 	dev->persist->interface_state &= ~MLX4_INTERFACE_STATE_UP;
- 
-+	rescan_drivers_locked(dev);
-+
- 	mutex_unlock(&intf_mutex);
- }
- 
-diff --git a/drivers/net/ethernet/mellanox/mlx4/main.c b/drivers/net/ethernet/mellanox/mlx4/main.c
-index 0ed490b99163..c4ec7377aa71 100644
---- a/drivers/net/ethernet/mellanox/mlx4/main.c
-+++ b/drivers/net/ethernet/mellanox/mlx4/main.c
-@@ -3429,6 +3429,10 @@ static int mlx4_load_one(struct pci_dev *pdev, int pci_dev_data,
- 	INIT_LIST_HEAD(&priv->ctx_list);
- 	spin_lock_init(&priv->ctx_lock);
- 
-+	err = mlx4_adev_init(dev);
-+	if (err)
-+		return err;
-+
- 	ATOMIC_INIT_NOTIFIER_HEAD(&priv->event_nh);
- 
- 	mutex_init(&priv->port_mutex);
-@@ -3455,10 +3459,11 @@ static int mlx4_load_one(struct pci_dev *pdev, int pci_dev_data,
- 		err = mlx4_get_ownership(dev);
- 		if (err) {
- 			if (err < 0)
--				return err;
-+				goto err_adev;
- 			else {
- 				mlx4_warn(dev, "Multiple PFs not yet supported - Skipping PF\n");
--				return -EINVAL;
-+				err = -EINVAL;
-+				goto err_adev;
- 			}
- 		}
- 
-@@ -3806,6 +3811,9 @@ static int mlx4_load_one(struct pci_dev *pdev, int pci_dev_data,
- 		mlx4_free_ownership(dev);
- 
- 	kfree(dev_cap);
-+
-+err_adev:
-+	mlx4_adev_cleanup(dev);
- 	return err;
- }
- 
-@@ -4186,6 +4194,8 @@ static void mlx4_unload_one(struct pci_dev *pdev)
- 	mlx4_slave_destroy_special_qp_cap(dev);
- 	kfree(dev->dev_vfs);
- 
-+	mlx4_adev_cleanup(dev);
-+
- 	mlx4_clean_dev(dev);
- 	priv->pci_dev_data = pci_dev_data;
- 	priv->removed = 1;
-@@ -4573,6 +4583,9 @@ static int __init mlx4_init(void)
- {
- 	int ret;
- 
-+	WARN_ONCE(strcmp(MLX4_ADEV_NAME, KBUILD_MODNAME),
-+		  "mlx4_core name not in sync with kernel module name");
-+
- 	if (mlx4_verify_params())
- 		return -EINVAL;
- 
-diff --git a/drivers/net/ethernet/mellanox/mlx4/mlx4.h b/drivers/net/ethernet/mellanox/mlx4/mlx4.h
-index ece9acb6a869..d5050bfb342f 100644
---- a/drivers/net/ethernet/mellanox/mlx4/mlx4.h
-+++ b/drivers/net/ethernet/mellanox/mlx4/mlx4.h
-@@ -47,6 +47,7 @@
- #include <linux/spinlock.h>
- #include <net/devlink.h>
- #include <linux/rwsem.h>
-+#include <linux/auxiliary_bus.h>
- #include <linux/notifier.h>
- 
- #include <linux/mlx4/device.h>
-@@ -884,6 +885,8 @@ struct mlx4_priv {
- 	struct list_head	dev_list;
- 	struct list_head	ctx_list;
- 	spinlock_t		ctx_lock;
-+	struct mlx4_adev	**adev;
-+	int			adev_idx;
- 	struct atomic_notifier_head event_nh;
- 
- 	int			pci_dev_data;
-@@ -1052,6 +1055,9 @@ void mlx4_catas_end(struct mlx4_dev *dev);
- int mlx4_crdump_init(struct mlx4_dev *dev);
- void mlx4_crdump_end(struct mlx4_dev *dev);
- int mlx4_restart_one(struct pci_dev *pdev);
-+
-+int mlx4_adev_init(struct mlx4_dev *dev);
-+void mlx4_adev_cleanup(struct mlx4_dev *dev);
- int mlx4_register_device(struct mlx4_dev *dev);
- void mlx4_unregister_device(struct mlx4_dev *dev);
- void mlx4_dispatch_event(struct mlx4_dev *dev, enum mlx4_dev_event type,
-diff --git a/include/linux/mlx4/device.h b/include/linux/mlx4/device.h
-index 049d8a4b044d..27f42f713c89 100644
---- a/include/linux/mlx4/device.h
-+++ b/include/linux/mlx4/device.h
-@@ -33,6 +33,7 @@
- #ifndef MLX4_DEVICE_H
- #define MLX4_DEVICE_H
- 
-+#include <linux/auxiliary_bus.h>
- #include <linux/if_ether.h>
- #include <linux/pci.h>
- #include <linux/completion.h>
-@@ -889,6 +890,12 @@ struct mlx4_dev {
- 	u8  uar_page_shift;
- };
- 
-+struct mlx4_adev {
-+	struct auxiliary_device adev;
-+	struct mlx4_dev *mdev;
-+	int idx;
+ static const struct mlx4_adev_device {
+ 	const char *suffix;
+ 	bool (*is_supported)(struct mlx4_dev *dev);
+-} mlx4_adev_devices[1] = {};
++} mlx4_adev_devices[] = {
++	{ "eth", is_eth_supported },
 +};
-+
- struct mlx4_clock_params {
- 	u64 offset;
- 	u8 bar;
-diff --git a/include/linux/mlx4/driver.h b/include/linux/mlx4/driver.h
-index 781d5a0c2faa..9cf157d381c6 100644
---- a/include/linux/mlx4/driver.h
-+++ b/include/linux/mlx4/driver.h
-@@ -34,9 +34,12 @@
- #define MLX4_DRIVER_H
  
- #include <net/devlink.h>
-+#include <linux/auxiliary_bus.h>
- #include <linux/notifier.h>
- #include <linux/mlx4/device.h>
- 
-+#define MLX4_ADEV_NAME "mlx4_core"
-+
- struct mlx4_dev;
- 
- #define MLX4_MAC_MASK	   0xffffffffffffULL
-@@ -63,8 +66,16 @@ struct mlx4_interface {
- 	int			flags;
- };
- 
-+struct mlx4_adrv {
-+	struct auxiliary_driver	adrv;
-+	enum mlx4_protocol	protocol;
-+	int			flags;
-+};
-+
- int mlx4_register_interface(struct mlx4_interface *intf);
- void mlx4_unregister_interface(struct mlx4_interface *intf);
-+int mlx4_register_auxiliary_driver(struct mlx4_adrv *madrv);
-+void mlx4_unregister_auxiliary_driver(struct mlx4_adrv *madrv);
- 
- int mlx4_register_event_notifier(struct mlx4_dev *dev,
- 				 struct notifier_block *nb);
+ int mlx4_adev_init(struct mlx4_dev *dev)
+ {
 -- 
 2.35.3
 
