@@ -2,188 +2,160 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DD59477A580
-	for <lists+linux-rdma@lfdr.de>; Sun, 13 Aug 2023 10:05:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8858877A59B
+	for <lists+linux-rdma@lfdr.de>; Sun, 13 Aug 2023 10:29:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229758AbjHMIC7 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Sun, 13 Aug 2023 04:02:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47924 "EHLO
+        id S229703AbjHMI3f (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Sun, 13 Aug 2023 04:29:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33942 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229522AbjHMIC7 (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Sun, 13 Aug 2023 04:02:59 -0400
-Received: from NAM10-BN7-obe.outbound.protection.outlook.com (mail-bn7nam10on2057.outbound.protection.outlook.com [40.107.92.57])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0267D170C;
-        Sun, 13 Aug 2023 01:03:01 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=T/yHJUm0j0ixjLClpdw7aL2v/B8tKAnSEOnZYyHZxKSf0cPiqAzzkmnbQ/syJeXXa3uW6ggzoaQiHfLVRpI6SYCZpgM6Ans61TcFKCv/Jl2i2nXs2+a4YmnBc3M33sqsnWvAhVhB9uCi7aNe/1FxVkzzlsjWQ41MI5WdO5E+m50cS+6s8VOfWfX+0HDLcwgSvYr4VvCO3ErbA7zZ5hRmiWXY8MjiWUg8BNMQIyykUhygDQ3fCgqY63I31lZc++e5rW30zDPXgK/B8uIjry5KizocbghLpvHxB6/A1W1DbH3AyzPXn1ftRinnYQqVzBAT+Y3UeHMwrEXyAbUS479tbA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=FjWmYOeYVNMiVR1JGIh4AhX7lTxQe8lGXiknCe7Dg9I=;
- b=YZO7bw+OhTFCFXkxtslu5jtrWoZ8Ji7FRn8SINPqayGtErP6L06H1ffXiU6k38LlQRdJDKvjSlsSI72FpLFGHI9Azc31GN5oPlzkeLIADEIGUT/MI6qZAtAFv5H52ETqhJbZLx8LjLlcKeOJNz3uq2I8onTYRcN7lmEKsKaXPCIFBSgBd6owbUEPBIKQjJprK/XAnHzUBwUXeXfqyAcEqi8GjvqprfhOowS0lOpoUpMo27eqUODbcVI178/wEeotHCbg67svd62ZcMymrcWlydUjt0kQQg/NuvwE5wqK8eCSWtA/TxuenipXRduWfkJrHxzIUAP2WJAuC4SO93lAbQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=FjWmYOeYVNMiVR1JGIh4AhX7lTxQe8lGXiknCe7Dg9I=;
- b=hFpvLwAplCjHakkgqyU4NDWaI2QBBcWyHSe8UnafHL1PH5sXVqhfRqoQA0EhIJZCehqzA6fwKqUtNFg6Y/ODvT34lztOzAYiJ8XyOudZOambBruu6aNmmIpcfqYqEzPGaBPxFY83oABgfWRh3f6UyjMakY97bcLIamFH7hjRXir7wCMGQVYKQP7IVd0LyxZnB0SzchZXSqziV/eSSAXRWo2ZfA4oUTtteMtVTgJS0a2AfBk8cVraYklfhU0BTr/WqKV2IQIqHzjVKbTG1mhyAkdPm/ec94oFlHu5ZyS5TCWh2nQ8qc9qriBvUwNGDq7fyB3CnZV66Bt2wyVqk6iiVA==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nvidia.com;
-Received: from CH0PR12MB5330.namprd12.prod.outlook.com (2603:10b6:610:d5::7)
- by DM6PR12MB4417.namprd12.prod.outlook.com (2603:10b6:5:2a4::12) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6678.24; Sun, 13 Aug
- 2023 08:02:58 +0000
-Received: from CH0PR12MB5330.namprd12.prod.outlook.com
- ([fe80::6db5:a0f2:942c:d18]) by CH0PR12MB5330.namprd12.prod.outlook.com
- ([fe80::6db5:a0f2:942c:d18%4]) with mapi id 15.20.6678.022; Sun, 13 Aug 2023
- 08:02:58 +0000
-Message-ID: <82d495bd-18f0-4db3-9940-f96584271080@nvidia.com>
-Date:   Sun, 13 Aug 2023 11:02:47 +0300
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH net-next] net/mlx5: Devcom, only use devcom after NULL
- check in mlx5_devcom_send_event()
-To:     Vadim Fedorenko <vadim.fedorenko@linux.dev>,
-        Li Zetao <lizetao1@huawei.com>, saeedm@nvidia.com,
-        leon@kernel.org, davem@davemloft.net, edumazet@google.com,
-        kuba@kernel.org
-Cc:     pabeni@redhat.com, shayd@nvidia.com, mbloch@nvidia.com,
-        vladbu@nvidia.com, elic@nvidia.com, netdev@vger.kernel.org,
-        linux-rdma@vger.kernel.org
-References: <20230804092636.91357-1-lizetao1@huawei.com>
- <face8e0a-b3f6-85d9-ce1d-8afecdafe2a8@linux.dev>
-Content-Language: en-US
-From:   Roi Dayan <roid@nvidia.com>
-In-Reply-To: <face8e0a-b3f6-85d9-ce1d-8afecdafe2a8@linux.dev>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: FR0P281CA0173.DEUP281.PROD.OUTLOOK.COM
- (2603:10a6:d10:b4::20) To CH0PR12MB5330.namprd12.prod.outlook.com
- (2603:10b6:610:d5::7)
+        with ESMTP id S229616AbjHMI3e (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Sun, 13 Aug 2023 04:29:34 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 32AA510FE
+        for <linux-rdma@vger.kernel.org>; Sun, 13 Aug 2023 01:29:37 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id B24CF62230
+        for <linux-rdma@vger.kernel.org>; Sun, 13 Aug 2023 08:29:36 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 956B9C433C7;
+        Sun, 13 Aug 2023 08:29:35 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1691915376;
+        bh=0wT8Ja0/SArllNt6nXVg/ovVAb8aLVBwsN8wU9eMP7Y=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=R1NN8A3YVUS9MLRfRJ/RQD9B1MabOtMZGkKt4H6+g4z2r+FaIkWjgIFXvXu33z4Oe
+         KZHNozpTd8O5+QrrEkRTNJGntRYq3gvsstkIF0kMaQ4z7egK5hrxEY+P2P85P/XCvm
+         EkpsVleEfX+kh2miTJSSxb/tOjtVLVVc4Qcqv8FvZLouUekyeDuNwFDzrX8p2bzMoF
+         2vhysR+RBRfdwJKxz0LIKRhsymFpBSHv9jARHB3gOyuFm9XwZbCMlXuedArv4N3jNa
+         q3mU5ZVeTlDNbX9igObC7q8ValvvBFaZGH48QjUpjmDuG1a04Ch4/KUKbi0ZKuFS3s
+         wsUbqd6/sIPug==
+Date:   Sun, 13 Aug 2023 11:29:31 +0300
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
+        saravanan.vajravel@broadcom.com
+Cc:     OFED mailing list <linux-rdma@vger.kernel.org>,
+        Ehab Ababneh <ehab.ababneh@cornelisnetworks.com>,
+        Selvin Xavier <selvin.xavier@broadcom.com>,
+        Sagi Grimberg <sagi@grimberg.me>
+Subject: Re: isert patch leaving resources behind
+Message-ID: <20230813082931.GD7707@unreal>
+References: <921cd1d9-2879-f455-1f50-0053fe6a6655@cornelisnetworks.com>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: CH0PR12MB5330:EE_|DM6PR12MB4417:EE_
-X-MS-Office365-Filtering-Correlation-Id: ac6f491f-b74f-43a5-875e-08db9bd3b4fc
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: LjLrV8HIJskAiQd1sZhT60Q1vyc/275kOdLInYajTWY8GVq4qniJ+/DNEumsvs4VVMINISLchMJ2ufnyVtQTBbkvvT8BcdR/0+viBSH4pLIcKa9xLcz4EKO1FTZhEz4TMrZxyiHlALEMoEu5IHPQdLrloWtPcRyKoywpw+BzyEFqtqUx4B8ZEYNPCXn/0BAIipUdbdANrmYQZDEqCAztP+u7h/gg/DkwRBl+q58k0d3wlwyzDQ7RqozCp/2m6w+WAQoOu+1E48bx3h4eiay9qy0vJetc8hStezWTrl0csX5l//KhphCwjWiPxG6GhrMkRncXFW0vS5HkRG2BqalbI2kSPhxy8tn7nt8de+Z0Lc5Wiani7bSp1eYjZRqRdpqPyH9WYO7VhYQRFNaaLacU2EgZaKHZl0+eOFAxzxOLlhIeA33fNi6CieeT/DJVO+cYyfqBGR9tmCLH70C3NDqNrnnvt6aP4U/OWGCuDi7eOJiYvqvy1AGLEvmDKTZz1NgvpB1vBYvkq75qKXiLXTfY12pTHrAnaIZHHShZHEpC9S2AU5lW7+QfDqnYt3nH+HAclDa68UT09pzQ92MmVQlA68ddprLTUKTVi2U1IRN14jA+UL5gPKq7pHRgK+24B8cdnCvfTt1UBnZYL4Ks5po96EjN59oKKTrajgWxvYrmx9jYNoj7U2PpgRPCsc1lR/69
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CH0PR12MB5330.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(366004)(346002)(396003)(136003)(39860400002)(376002)(1800799006)(186006)(451199021)(38100700002)(36756003)(86362001)(31696002)(6512007)(53546011)(6506007)(6486002)(6666004)(478600001)(966005)(2906002)(31686004)(2616005)(26005)(83380400001)(316002)(110136005)(41300700001)(66946007)(66556008)(66476007)(5660300002)(8676002)(8936002)(4326008)(45980500001)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?REFzWmhJN2lFWmlhQThiM1psVVZMQWg4dFB4N0FXZ2xmcjZHdU1pTzd4M0Vu?=
- =?utf-8?B?S3V5a0swSStROW1QeUVpT2lvN05jZjRyYUdXWXJsTFlYNElKT1RBSTZSMTQ0?=
- =?utf-8?B?cWZKNTMzSGxocVNnalFOM1cwKzRQTjNvMUZtamN1ZWpWYnU1ZTNVc1VTZlVX?=
- =?utf-8?B?aGlFSC9SOTVtZ1VKOHB5VjNidjNmRVRtWjIzSXJ2ajNjbE1zNE5UN2dkSElV?=
- =?utf-8?B?RnZqcUhtOUpiTnVicDE2RGljUDJGUVArTEpNMG5NMWdiRFY4WnBwYUZFVmI2?=
- =?utf-8?B?OUl0MWxxbm9FdWpsNldNREVnbzErWC9MNnd3L01ES3RXRlFSNmx0cjB5REVC?=
- =?utf-8?B?L1NGV0hmUWhYRTNjVmtKd0pWSkU4SDBpVTFIc2VaVlFqN1ZXUlZyS3M1NEp3?=
- =?utf-8?B?b21mNnMzczNKSVFyY3VTNXJpSDNMSDdsZzhOTnU0aWVNdmZsL25jMWFWQy9D?=
- =?utf-8?B?aHI2bTA4dzB4cnozV2F3UHFiU05Xc2RScWhrTG5TdmJBZ2VWUzc0L2l3bnZi?=
- =?utf-8?B?anJBOTlpRXpLSTlDYzcyRThiQlF2UStKUlJOTnR0bnkyREdQR3ZUbFljZ1cx?=
- =?utf-8?B?a05XR01MTkNmVHpyQUR4MXE4WkdtSHRkRE9ibXNCOVJCR0dCM3I4ZWY4Zm5q?=
- =?utf-8?B?a0J4UWtWNk1NcVR6eXBGa0xzTkVIUGxPOVUxTU9LM3ZkcytjTGZieVNhTFdY?=
- =?utf-8?B?dmRFd3pFQjRGblR1ZXVReFJVQUlBQmdrYStBaVpwTGNQSFI2Y0ZLU2lvS0w0?=
- =?utf-8?B?SGlkclBxbk9aQ3dzRmI5TlM1T0FkRkM3OVEvT1pQQVlGVDhZUU1pZHloOXpm?=
- =?utf-8?B?Q01zaCtYUldDQ1hpNVB0Z0dINjUwVlJoRGY5MmVDbXdmeVNvWGJOb2sydzZs?=
- =?utf-8?B?dEJXSzYvUTF1YTQycndyS3pSSFRzeVVzRzlBZlVxR0xrS3FFZmJHdUYyd3hq?=
- =?utf-8?B?QTRURGQxOW9oTVgxMm42WTl2QVIvMHVsYnhlcnRiNk9kbUw0UlJCelNNTXJG?=
- =?utf-8?B?dGRsM3ppUXlYR3pUU1NSVEhxVm9hV3NZRUNXMEFvTUJvZ1ROSEc1QktpR3lR?=
- =?utf-8?B?RTRVY1RXL21XbU44dzhteUF6TDRaRGhoejNkNXpwaXpGMUFLRFJkek5TOHc5?=
- =?utf-8?B?aXA1ZWN1WXhzT1RHaFJBampVUnhTcENuajVYNmxpNGxiTExqalcvQ1oraklH?=
- =?utf-8?B?WDAzWGlwL2ZwRng5TXBhQmM4UW5zUmRlN0pINzdORjhLVlhWUXVleVI1ZUpD?=
- =?utf-8?B?RmRsUXNUc3V1Uko3c0g2VzM4bGxsc09YdjJDakpGSFY3RzcrUWcreGkwOGZy?=
- =?utf-8?B?UkRQNEN4SFM2TEUyelpORnVhMUtZaXBjdG03cnZOWEdPclNGUjhKWmxNMGo5?=
- =?utf-8?B?bmRUdE45Qk4xZ2IvQm1GN0drTlJkSkRRd0ZlNGRlR1V2MktJSUIxdVUrNmIz?=
- =?utf-8?B?Tnk0ajAvN3BJNlJWaHVNVlUrSytObDJSeHJRa3RXN2o2UmxidWpsT1dCRTFv?=
- =?utf-8?B?NWVEdld3aWpLNEJySTRqa0FnKzY5eVVOTDErdDVlZ083QTRkbk0xWUdzK28w?=
- =?utf-8?B?QlRmTXpmL0xWUmUwd09zKzY5VXJobTZ2c1QwaStEeW1rM1lPTXJ6aE1YWkN6?=
- =?utf-8?B?VWx0ZFdXUVVMRk5ESWxNa0o1Rk5GSTZwbTNUOTc0MmdOR1o4R1V1dEJCdnpr?=
- =?utf-8?B?SjdLazk0NGdYOUQ5Mk5RZjNxRWhvSkRoMUNFWCtudFZzaVBzdFdTS3VuWnFB?=
- =?utf-8?B?M252Yk5EZjBYeWkrZkZSaVZJbi9TajVqRnhWb3czTFoxcm5QbjBLb3Rvc2Zz?=
- =?utf-8?B?QWJPUm15djVObXZqSUVMT3dlaWE0OUJVaGpUTGRRajA2bHZIUTk3K1hLU1cy?=
- =?utf-8?B?ZzNDUEpjbU95bHhqbUpkMlJ1YkZtT1BPT0NlM2Z0V1NMU2hXa0ZXK3NoallH?=
- =?utf-8?B?OEI5VVE1NmJzS1F0eDdqSXRlUGdQeW5iSmM3a21rK0VEV2ovUkVtZk1NOXdF?=
- =?utf-8?B?dHZSeWpQRUJqZ2ppNE8yTjRqS1Nadm1qUzJ2bjI4RnE2ZkdNWG9xM2Rhb3F1?=
- =?utf-8?B?THBKME9UdE5Nd1NIdTNZVStSRTRaTEE1bW44c1dUZW5KbDRzdzJ4eDkzNlZU?=
- =?utf-8?Q?1eRQC5gI90h6WqGG3Po3tUG8y?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: ac6f491f-b74f-43a5-875e-08db9bd3b4fc
-X-MS-Exchange-CrossTenant-AuthSource: CH0PR12MB5330.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 13 Aug 2023 08:02:58.2856
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 4rB+cI3HzTG2V9KaWIrTiyPUwCQ4SoOSI1mDrxO9jpAzi1dSH19L0ZQ2gzQTKZcx
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR12MB4417
-X-Spam-Status: No, score=0.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE
-        autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <921cd1d9-2879-f455-1f50-0053fe6a6655@cornelisnetworks.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
+On Thu, Aug 10, 2023 at 10:44:00AM -0400, Dennis Dalessandro wrote:
+> Commit: 699826f4e30a ("IB/isert: Fix incorrect release of isert connection") is
+> causing problems on OPA when we try to unload the driver after doing iSCI
+> testing. Reverting this commit causes the problem to go away. Any ideas?
 
 
-On 04/08/2023 23:53, Vadim Fedorenko wrote:
-> On 04/08/2023 10:26, Li Zetao wrote:
->> There is a warning reported by kernel test robot:
->>
->> smatch warnings:
->> drivers/net/ethernet/mellanox/mlx5/core/lib/devcom.c:264
->>      mlx5_devcom_send_event() warn: variable dereferenced before
->>     IS_ERR check devcom (see line 259)
->>
->> The reason for the warning is that the pointer is used before check, put
->> the assignment to comp after devcom check to silence the warning.
->>
->> Fixes: 88d162b47981 ("net/mlx5: Devcom, Infrastructure changes")
->> Reported-by: kernel test robot <lkp@intel.com>
->> Reported-by: Dan Carpenter <error27@gmail.com>
->> Closes: https://lore.kernel.org/r/202308041028.AkXYDwJ6-lkp@intel.com/
->> Signed-off-by: Li Zetao <lizetao1@huawei.com>
->> ---
->>   drivers/net/ethernet/mellanox/mlx5/core/lib/devcom.c | 3 ++-
->>   1 file changed, 2 insertions(+), 1 deletion(-)
->>
->> diff --git a/drivers/net/ethernet/mellanox/mlx5/core/lib/devcom.c b/drivers/net/ethernet/mellanox/mlx5/core/lib/devcom.c
->> index feb62d952643..2bc18274858c 100644
->> --- a/drivers/net/ethernet/mellanox/mlx5/core/lib/devcom.c
->> +++ b/drivers/net/ethernet/mellanox/mlx5/core/lib/devcom.c
->> @@ -256,7 +256,7 @@ int mlx5_devcom_send_event(struct mlx5_devcom_comp_dev *devcom,
->>                  int event, int rollback_event,
->>                  void *event_data)
->>   {
->> -    struct mlx5_devcom_comp *comp = devcom->comp;
->> +    struct mlx5_devcom_comp *comp;
->>       struct mlx5_devcom_comp_dev *pos;
+Saravanan, can you please post kernel logs as you wrote "When a bunch of iSER target
+is cleared, this issue can lead to use-after-free memory issue as isert conn is twice
+released" in the reverted commit?
+
+Thanks
+
+> Was testing done on this patch with removing/hotplugging drivers?
 > 
-> The code should end up with reverse x-mas tree order.
-> The change itself LGTM.
+> [29151.413816] ------------[ cut here ]------------
+> [29151.419086] WARNING: CPU: 52 PID: 2117247 at drivers/infiniband/core/cq.c:359
+> ib_cq_pool_cleanup+0xac/0xb0 [ib_core]
+> [29151.431096] Modules linked in: nfsd nfs_acl target_core_user uio tcm_fc libfc
+> scsi_transport_fc tcm_loop target_core_pscsi target_core_iblock target_core_file
+> rpcsec_gss_krb5 auth_rpcgss nfsv4 dns_resolver nfs lockd grace fscache netfs
+> rfkill rpcrdma rdma_ucm ib_srpt sunrpc ib_isert iscsi_target_mod target_core_mod
+> opa_vnic ib_iser libiscsi ib_umad scsi_transport_iscsi rdma_cm ib_ipoib iw_cm
+> ib_cm hfi1(-) rdmavt ib_uverbs intel_rapl_msr intel_rapl_common sb_edac ib_core
+> x86_pkg_temp_thermal intel_powerclamp coretemp i2c_i801 mxm_wmi rapl iTCO_wdt
+> ipmi_si iTCO_vendor_support mei_me ipmi_devintf mei intel_cstate ioatdma
+> intel_uncore i2c_smbus joydev pcspkr lpc_ich ipmi_msghandler acpi_power_meter
+> acpi_pad xfs libcrc32c sr_mod sd_mod cdrom t10_pi sg crct10dif_pclmul
+> crc32_pclmul crc32c_intel drm_kms_helper drm_shmem_helper ahci libahci
+> ghash_clmulni_intel igb drm libata dca i2c_algo_bit wmi fuse
+> [29151.520056] CPU: 52 PID: 2117247 Comm: modprobe Not tainted 6.5.0-rc1+ #1
+> [29151.527759] Hardware name: Intel Corporation S2600CWR/S2600CW, BIOS
+> SE5C610.86B.01.01.0014.121820151719 12/18/2015
+> [29151.539462] RIP: 0010:ib_cq_pool_cleanup+0xac/0xb0 [ib_core]
+> [29151.545908] Code: ff 48 8b 43 40 48 8d 7b 40 48 83 e8 40 4c 39 e7 75 b3 49 83
+> c4 10 4d 39 fc 75 94 5b 5d 41 5c 41 5d 41 5e 41 5f c3 cc cc cc cc <0f> 0b eb a1
+> 90 90 90 90 90 90 90 90 90 90 90 90 90 90 90 90 0f 1f
+> [29151.567086] RSP: 0018:ffffc10bea13fc80 EFLAGS: 00010206
+> [29151.573040] RAX: 000000000000010c RBX: ffff9bf5c7e66c00 RCX: 000000008020001d
+> [29151.581120] RDX: 000000008020001e RSI: fffff175221f9900 RDI: ffff9bf5c7e67640
+> [29151.589202] RBP: ffff9bf5c7e67600 R08: ffff9bf5c7e64400 R09: 000000008020001d
+> [29151.597280] R10: 0000000040000000 R11: 0000000000000000 R12: ffff9bee4b1e8a18
+> [29151.605360] R13: dead000000000122 R14: dead000000000100 R15: ffff9bee4b1e8a38
+> [29151.613437] FS:  00007ff1e6d38740(0000) GS:ffff9bfd9fb00000(0000)
+> knlGS:0000000000000000
+> [29151.622610] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> [29151.629133] CR2: 00005652044ecc68 CR3: 0000000889b5c005 CR4: 00000000001706e0
+> [29151.637212] Call Trace:
+> [29151.640063]  <TASK>
+> [29151.642500]  ? __warn+0x80/0x130
+> [29151.646209]  ? ib_cq_pool_cleanup+0xac/0xb0 [ib_core]
+> [29151.651997]  ? report_bug+0x195/0x1a0
+> [29151.656191]  ? handle_bug+0x3c/0x70
+> [29151.660190]  ? exc_invalid_op+0x14/0x70
+> [29151.664574]  ? asm_exc_invalid_op+0x16/0x20
+> [29151.669352]  ? ib_cq_pool_cleanup+0xac/0xb0 [ib_core]
+> [29151.675107]  disable_device+0x9d/0x160 [ib_core]
+> [29151.680399]  __ib_unregister_device+0x42/0xb0 [ib_core]
+> [29151.686361]  ib_unregister_device+0x22/0x30 [ib_core]
+> [29151.692128]  rvt_unregister_device+0x20/0x90 [rdmavt]
+> [29151.697889]  hfi1_unregister_ib_device+0x16/0xf0 [hfi1]
+> [29151.703936]  remove_one+0x55/0x1a0 [hfi1]
+> [29151.708588]  pci_device_remove+0x36/0xa0
+> [29151.713076]  device_release_driver_internal+0x193/0x200
+> [29151.719035]  driver_detach+0x44/0x90
+> [29151.723137]  bus_remove_driver+0x69/0xf0
+> [29151.727619]  pci_unregister_driver+0x2a/0xb0
+> [29151.732490]  hfi1_mod_cleanup+0xc/0x3c [hfi1]
+> [29151.737516]  __do_sys_delete_module.constprop.0+0x17a/0x2f0
+> [29151.743844]  ? exit_to_user_mode_prepare+0xc4/0xd0
+> [29151.749298]  ? syscall_trace_enter.constprop.0+0x126/0x1a0
+> [29151.755527]  do_syscall_64+0x5c/0x90
+> [29151.759631]  ? syscall_exit_to_user_mode+0x12/0x30
+> [29151.765089]  ? do_syscall_64+0x69/0x90
+> [29151.769374]  ? syscall_exit_work+0x103/0x130
+> [29151.774243]  ? syscall_exit_to_user_mode+0x12/0x30
+> [29151.779716]  ? do_syscall_64+0x69/0x90
+> [29151.784020]  ? exc_page_fault+0x65/0x150
+> [29151.788499]  entry_SYSCALL_64_after_hwframe+0x6e/0xd8
+> [29151.794245] RIP: 0033:0x7ff1e643f5ab
+> [29151.798336] Code: 73 01 c3 48 8b 0d 75 a8 1b 00 f7 d8 64 89 01 48 83 c8 ff c3
+> 66 2e 0f 1f 84 00 00 00 00 00 90 f3 0f 1e fa b8 b0 00 00 00 0f 05 <48> 3d 01 f0
+> ff ff 73 01 c3 48 8b 0d 45 a8 1b 00 f7 d8 64 89 01 48
+> [29151.819504] RSP: 002b:00007ffec9103cc8 EFLAGS: 00000206 ORIG_RAX:
+> 00000000000000b0
+> [29151.828109] RAX: ffffffffffffffda RBX: 00005615267fdc50 RCX: 00007ff1e643f5ab
+> [29151.837575] RDX: 0000000000000000 RSI: 0000000000000800 RDI: 00005615267fdcb8
+> [29151.845654] RBP: 00005615267fdc50 R08: 0000000000000000 R09: 0000000000000000
+> [29151.853739] R10: 00007ff1e659eac0 R11: 0000000000000206 R12: 00005615267fdcb8
+> [29151.861817] R13: 0000000000000000 R14: 00005615267fdcb8 R15: 00007ffec9105ff8
+> [29151.869896]  </TASK>
+> [29151.872423] ---[ end trace 0000000000000000 ]---
 > 
-
-
-Hi Li,
-
-Are you going to submit v2 ?
-
-Thanks,
-Roi
-
-
->>       int err = 0;
->>       void *data;
->> @@ -264,6 +264,7 @@ int mlx5_devcom_send_event(struct mlx5_devcom_comp_dev *devcom,
->>       if (IS_ERR_OR_NULL(devcom))
->>           return -ENODEV;
->>   +    comp = devcom->comp;
->>       down_write(&comp->sem);
->>       list_for_each_entry(pos, &comp->comp_dev_list_head, list) {
->>           data = rcu_dereference_protected(pos->data, lockdep_is_held(&comp->sem));
+> And...
 > 
+> [29158.533739] restrack: ------------[ cut here ]------------
+> [29158.540002] infiniband hfi1_0: BUG: RESTRACK detected leak of resources
+> [29158.547499] restrack: Kernel PD object allocated by ib_isert is not freed
+> [29158.555193] restrack: Kernel CQ object allocated by ib_core is not freed
+> [29158.562801] restrack: Kernel QP object allocated by rdma_cm is not freed
+> [29158.570395] restrack: ------------[ cut here ]------------
+> 
+> 
+> -Denny
