@@ -2,44 +2,46 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3759777A56C
-	for <lists+linux-rdma@lfdr.de>; Sun, 13 Aug 2023 09:33:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3288E77A581
+	for <lists+linux-rdma@lfdr.de>; Sun, 13 Aug 2023 10:05:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229646AbjHMHdG (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Sun, 13 Aug 2023 03:33:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42070 "EHLO
+        id S229736AbjHMIBe (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Sun, 13 Aug 2023 04:01:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50756 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229614AbjHMHdF (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Sun, 13 Aug 2023 03:33:05 -0400
+        with ESMTP id S229522AbjHMIBe (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Sun, 13 Aug 2023 04:01:34 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AFB509F;
-        Sun, 13 Aug 2023 00:33:08 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D294B1709
+        for <linux-rdma@vger.kernel.org>; Sun, 13 Aug 2023 01:01:36 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 44C76618B8;
-        Sun, 13 Aug 2023 07:33:08 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0174FC433C7;
-        Sun, 13 Aug 2023 07:33:06 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 690E261FE5
+        for <linux-rdma@vger.kernel.org>; Sun, 13 Aug 2023 08:01:36 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 49BC4C433C8;
+        Sun, 13 Aug 2023 08:01:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1691911987;
-        bh=sHq2+uDYLi0Ctdo7hlHB3t4OF3giWNHNdLiy7ov1+4M=;
+        s=k20201202; t=1691913695;
+        bh=QVkueeGKRXD/BYsS2ajgRATh4BEeSmw8C8NN50A24bA=;
         h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-        b=Y5zvZKE2JkSJDux1KO9+OIA2OmYGKfech4KuHbfaOmDv3nvsRMgNOneIOMYZ/M3+3
-         yWMO3oybbOJDR9zHoH315CGEXraMsjP0hyBNQBqsRryWYbJkgp0GjRGBuD9uEG5jx/
-         3DiiiObJUDO68wfSwEO7j1LDhESQpENIlJY7f0BfRN/oMRcuYAlN7zU/vf/0bwZRva
-         JwXMx4Izf2DJ/t9I2C6C9XXAT+gMHolXbIX/qzTJcJFYQ/mRf4RrLEoFIDtS0MmMZo
-         KT2x3nG0SFUYt8MBG/X3n8FtuFDLxC8g2PzlELuqw2t2w4Y6aVWKllGSJ2oVydhaMb
-         K1rIxf1EqbcJQ==
+        b=DSoZeOfFhdI0C01FDDub+yRCsn95UYaVc1cNJfuxt4NAPgppODmvJKGsUg4QeNKAH
+         iuEQ4wfCy1p7gjRb6uLAPskAxvhnXi9ygw/Be/74AZ/OH45HTbz9ahBFG97C0roZNY
+         T+ENgL+yn1VrHMVpTz4rqiuJ5S/QnIEC2rxpJZZ6EZgblnUntFcY+LfqZxQmE0KNUj
+         XpW0SPBV6QElPOiPP5S4Z5/AuDM8vu1WS9iAUo2FHSd9UOeA61cu4rf+LGCi+RyLcw
+         Wx5fvFnZmqI9dKR4xRtyV6gASIygptutqWg0IoFVKic/q39U3RrTgii9yVZBZXO3BO
+         EULJcCE3of5NA==
 From:   Leon Romanovsky <leon@kernel.org>
-To:     jgg@ziepe.ca, Yue Haibing <yuehaibing@huawei.com>
-Cc:     linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org
-In-Reply-To: <20230809142718.42316-1-yuehaibing@huawei.com>
-References: <20230809142718.42316-1-yuehaibing@huawei.com>
-Subject: Re: [PATCH -next] rdma: Remove unused function declarations
-Message-Id: <169191198150.24886.3112976531773136581.b4-ty@kernel.org>
-Date:   Sun, 13 Aug 2023 10:33:01 +0300
+To:     jgg@ziepe.ca, Selvin Xavier <selvin.xavier@broadcom.com>
+Cc:     linux-rdma@vger.kernel.org, andrew.gospodarek@broadcom.com,
+        Kalesh AP <kalesh-anakkur.purayil@broadcom.com>
+In-Reply-To: <1690966823-8159-1-git-send-email-selvin.xavier@broadcom.com>
+References: <1690966823-8159-1-git-send-email-selvin.xavier@broadcom.com>
+Subject: Re: [PATCH for-next v2] IB/core: Add more speed parsing in
+ ib_get_width_and_speed()
+Message-Id: <169191369180.132435.6892241924784835568.b4-ty@kernel.org>
+Date:   Sun, 13 Aug 2023 11:01:31 +0300
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
@@ -54,18 +56,20 @@ List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
 
-On Wed, 09 Aug 2023 22:27:18 +0800, Yue Haibing wrote:
-> Commit c2261dd76b54 ("RDMA/device: Add ib_device_set_netdev() as an alternative to get_netdev")
-> declared but never implemented ib_device_netdev(), remove it.
-> Commit 922a8e9fb2e0 ("RDMA: iWARP Connection Manager.") declared but never implemented
-> iw_cm_unbind_qp() and iw_cm_get_qp().
+On Wed, 02 Aug 2023 02:00:23 -0700, Selvin Xavier wrote:
+> When the Ethernet driver does not provide the number of lanes
+> in the __ethtool_get_link_ksettings() response, the function
+> ib_get_width_and_speed() does not take consideration of 50G,
+> 100G and 200G speeds while calculating the IB width and speed.
+> Update the width and speed for the above netdev speeds.
 > 
 > 
+> [...]
 
 Applied, thanks!
 
-[1/1] rdma: Remove unused function declarations
-      https://git.kernel.org/rdma/rdma/c/40cc695d633521
+[1/1] IB/core: Add more speed parsing in ib_get_width_and_speed()
+      https://git.kernel.org/rdma/rdma/c/ca60fd116c7ee1
 
 Best regards,
 -- 
