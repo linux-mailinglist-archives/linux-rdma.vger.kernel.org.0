@@ -2,100 +2,178 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F140F77BD1A
-	for <lists+linux-rdma@lfdr.de>; Mon, 14 Aug 2023 17:33:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DB18E77BEAE
+	for <lists+linux-rdma@lfdr.de>; Mon, 14 Aug 2023 19:12:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229717AbjHNPcr (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 14 Aug 2023 11:32:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38910 "EHLO
+        id S229777AbjHNRMP (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 14 Aug 2023 13:12:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58906 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233009AbjHNPc2 (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 14 Aug 2023 11:32:28 -0400
-Received: from mail-qv1-xf2a.google.com (mail-qv1-xf2a.google.com [IPv6:2607:f8b0:4864:20::f2a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D313130
-        for <linux-rdma@vger.kernel.org>; Mon, 14 Aug 2023 08:32:27 -0700 (PDT)
-Received: by mail-qv1-xf2a.google.com with SMTP id 6a1803df08f44-6418c819c3cso18324006d6.3
-        for <linux-rdma@vger.kernel.org>; Mon, 14 Aug 2023 08:32:27 -0700 (PDT)
+        with ESMTP id S230046AbjHNRMC (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 14 Aug 2023 13:12:02 -0400
+Received: from mail-pg1-x532.google.com (mail-pg1-x532.google.com [IPv6:2607:f8b0:4864:20::532])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 60E0F10F
+        for <linux-rdma@vger.kernel.org>; Mon, 14 Aug 2023 10:11:59 -0700 (PDT)
+Received: by mail-pg1-x532.google.com with SMTP id 41be03b00d2f7-517ab9a4a13so3502251a12.1
+        for <linux-rdma@vger.kernel.org>; Mon, 14 Aug 2023 10:11:59 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google; t=1692027146; x=1692631946;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=lt2LDf4ezJBvzN1GI+fqdOxS/5lneMAAmBS5PIk0aoU=;
-        b=kwhbTP7wSPUg56HNlDQMtiyqgO5U42AYCBru5X7uXIJT4beinqGSpKn39gORPKbs3e
-         J2jRHxlPU4y8bF+MHicD6TCfNK9XwzOazF9TCFR3CLdrdnbqZnkc1W9MojmffQ9tm1fb
-         RB75zhbw4SrZrWZyYJjL3JbR8pQayzJH2WZTfFMC7exzVnizLij0eqnmzaa8KSFVS7/r
-         cyJQmK0WImKE4NyaBJbB7TPOukOJcZaudJ0fqpEIGDiCZWUJDA0+RqfyzcSTvmkYWRwz
-         vbfsauk52iRfBUJ/vjrN13q4+otwY/oUJmjdXXYBazm5h5uNqvgAwpniMu+IEV6Pk7Cn
-         yGaQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692027146; x=1692631946;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+        d=broadcom.com; s=google; t=1692033119; x=1692637919;
+        h=message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=lt2LDf4ezJBvzN1GI+fqdOxS/5lneMAAmBS5PIk0aoU=;
-        b=f6RZhPSETKxDO6ntsOVjrw1PZJ3XmLnFb8QWYRgjw8bx3oV9ToBfQFeor5G2jF487M
-         DgfveoqsAWu7o1jAc0ZxXsx9B5ZuAk5/Fhv/kx4RiI7lyqhPYe3vFjrsBd7pirQT01Be
-         0DVG8XhqXZW2APfLFfPl3qsLfy8tdQ65kRed2Hf/1RBAldfpUmfEK//di3OXoIzxVmGH
-         UWxc8aF9X/4FKQrfg5Q1bZHp3VCDTPuAtjuPFg9TtVdKye8V2/5Zf/NUK6v34kZlEinH
-         QC3QK0a5JNMJHTmPFpIkUh/yyqx2xUQzLqxak93fYXY1jY7jENXzKBOoHO57cuz+iTbx
-         +9Cg==
-X-Gm-Message-State: AOJu0YyjxsB4Siz/BzAS1UmoRj5GJYOrZUE7mRAAKyBZZAiR5bDcl0vl
-        T7WrGPLIGAA4GdxmugfZS6bWzw==
-X-Google-Smtp-Source: AGHT+IEBmDzptxdvEPD3rf48yXpUWmW3K9VSBofLslCtyTBXHaPVYSAQVUC1PwjUeCimAdzCqFQetw==
-X-Received: by 2002:a0c:e0cc:0:b0:647:1230:ef7c with SMTP id x12-20020a0ce0cc000000b006471230ef7cmr6285793qvk.35.1692027146520;
-        Mon, 14 Aug 2023 08:32:26 -0700 (PDT)
-Received: from ziepe.ca ([206.223.160.26])
-        by smtp.gmail.com with ESMTPSA id r2-20020a0cb282000000b00637abbfaac9sm3490007qve.98.2023.08.14.08.32.25
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 14 Aug 2023 08:32:25 -0700 (PDT)
-Received: from jgg by wakko with local (Exim 4.95)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1qVZYO-006Vb0-Mm;
-        Mon, 14 Aug 2023 12:32:24 -0300
-Date:   Mon, 14 Aug 2023 12:32:24 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Leon Romanovsky <leon@kernel.org>
-Cc:     "St Savage, Shane" <Shane@axiomdatascience.com>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>
-Subject: Re: infiniband-diags can't be installed in Fedora CoreOS due to perl
- dependency
-Message-ID: <ZNpJCGSi7Ei1IN0A@ziepe.ca>
-References: <MW5PR07MB93324BACD6F70B9679E996F9D211A@MW5PR07MB9332.namprd07.prod.outlook.com>
- <20230813103305.GJ7707@unreal>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230813103305.GJ7707@unreal>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        bh=Cq0Q6dNr40nu816cGfuh+G1veEq9TGLTxAQVspqYrI0=;
+        b=MVI0k9ZxesyGddZi5h7b5369WdQIP0M268WstJolzsEePZveapTIBD8Fx7ezoi4OD9
+         3P92Exoh/k4kwnaeT9ioDl/N9uZUnFLfsrgkWpdXlHjC1Tinx8LJIFSzrwGb+Yg7db+1
+         oZUt3oWceszv5bbFycGC2Pkljnuaz+jqK/Cys=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692033119; x=1692637919;
+        h=message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Cq0Q6dNr40nu816cGfuh+G1veEq9TGLTxAQVspqYrI0=;
+        b=bFIfYKsKfpQ8w8i+xXhP0mHyWVJOhR2VO4ZOK9Uv3UD7xtsShTkkslTPjiVO1V12VM
+         cl2YGJvp9Nv43rDVjbHY3pKnajFvfNANlax4nfqGs3dZuCHmtyfi2Y+ZlwAg1QIN+gGR
+         Qmx/UaSet9Q6PWCBpSTwm/fvG7NylDqztKkmQ9PrqlrMRxFLArPw05FTfNIMnIQhtcOs
+         Nj6lPrdXrFaeQ2O6dWq0nU1bHfHQpUHEVHoVuWdO4kh74VhbKZlMh7leaUSqCuITy7lq
+         EYfPj+JPz6QoEZyNdRBqeDZ0hNMktsqiBDXTUERKIw+oOu9jU8+7L001F9pYFflWjRxx
+         U/DQ==
+X-Gm-Message-State: AOJu0YxZSEwGrdSdD7IU8MXPhsNDxlZcgLMR2rOKK77NYei0oAloHVu5
+        HsSuLqVoJ/9ENHTVVmb2ekgisA==
+X-Google-Smtp-Source: AGHT+IHJSNGHe5Cr/FYWhK4UAo/oJn6DC31Bkf+WjMZn2J/ngTNJvjkXoR3HFVsIrBN8cqkgSdFBUQ==
+X-Received: by 2002:a17:90a:5a85:b0:268:b682:23de with SMTP id n5-20020a17090a5a8500b00268b68223demr9730654pji.28.1692033118715;
+        Mon, 14 Aug 2023 10:11:58 -0700 (PDT)
+Received: from dhcp-10-192-206-197.iig.avagotech.net.net ([192.19.234.250])
+        by smtp.gmail.com with ESMTPSA id d3-20020a17090a8d8300b0025bfda134ccsm8409746pjo.16.2023.08.14.10.11.55
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Mon, 14 Aug 2023 10:11:57 -0700 (PDT)
+From:   Selvin Xavier <selvin.xavier@broadcom.com>
+To:     jgg@ziepe.ca, leon@kernel.org
+Cc:     linux-rdma@vger.kernel.org, andrew.gospodarek@broadcom.com,
+        Kashyap Desai <kashyap.desai@broadcom.com>,
+        Selvin Xavier <selvin.xavier@broadcom.com>
+Subject: [PATCH for-next 1/2] RDMA/bnxt_re: Initialize mutex dbq_lock
+Date:   Mon, 14 Aug 2023 10:00:18 -0700
+Message-Id: <1692032419-21680-1-git-send-email-selvin.xavier@broadcom.com>
+X-Mailer: git-send-email 2.5.5
+Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
+        boundary="00000000000003a9c30602e5294b"
+X-Spam-Status: No, score=-1.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        MIME_HEADER_CTYPE_ONLY,MIME_NO_TEXT,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE,T_TVD_MIME_NO_HEADERS autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Sun, Aug 13, 2023 at 01:33:05PM +0300, Leon Romanovsky wrote:
-> On Sat, Aug 12, 2023 at 04:40:57PM +0000, St Savage, Shane wrote:
-> > Hi all,
-> > 
-> > Just wanted to report that infiniband-diags cannot currently be installed in Fedora CoreOS because the perl dependency is explicitly forbidden.
-> > 
-> > https://github.com/coreos/fedora-coreos-config/blob/testing-devel/manifests/fedora-coreos.yaml#L170
-> > 
-> > This is a bit unfortunate because it also prevents usage of all the non-perl utilities (ibstat, etc) included in infiniband-diags.
-> > 
-> > Would it make sense to split the perl utilities to a separate package infiniband-diags-perl so that the C and shell utilities in infiniband-diags can be installed without the perl dependency?
-> 
-> I suggest to remove perl dependency from rdma--core.spec and install
-> perl-dependant scripts only if perl is found on the system.
+--00000000000003a9c30602e5294b
 
-That is not how packaging is supposed to work
+From: Kashyap Desai <kashyap.desai@broadcom.com>
 
-Everything should be installed always
+Fix the missing dbq_lock mutex initialization
 
-This is really a Fedora question, we just follow what they
-decide. Most likely the right answer is to put this kind of stuff in a
-container and not run on the minimal coreos image.
+Fixes: 2ad4e6303a6d ("RDMA/bnxt_re: Implement doorbell pacing algorithm")
+Signed-off-by: Kashyap Desai <kashyap.desai@broadcom.com>
+Signed-off-by: Selvin Xavier <selvin.xavier@broadcom.com>
+---
+ drivers/infiniband/hw/bnxt_re/main.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-Jason
+diff --git a/drivers/infiniband/hw/bnxt_re/main.c b/drivers/infiniband/hw/bnxt_re/main.c
+index f34ce49..061a89b 100644
+--- a/drivers/infiniband/hw/bnxt_re/main.c
++++ b/drivers/infiniband/hw/bnxt_re/main.c
+@@ -920,6 +920,7 @@ static struct bnxt_re_dev *bnxt_re_dev_add(struct bnxt_aux_priv *aux_priv,
+ 	rdev->id = rdev->en_dev->pdev->devfn;
+ 	INIT_LIST_HEAD(&rdev->qp_list);
+ 	mutex_init(&rdev->qp_lock);
++	mutex_init(&rdev->pacing.dbq_lock);
+ 	atomic_set(&rdev->stats.res.qp_count, 0);
+ 	atomic_set(&rdev->stats.res.cq_count, 0);
+ 	atomic_set(&rdev->stats.res.srq_count, 0);
+-- 
+2.5.5
+
+
+--00000000000003a9c30602e5294b
+Content-Type: application/pkcs7-signature; name="smime.p7s"
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename="smime.p7s"
+Content-Description: S/MIME Cryptographic Signature
+
+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
+FYMZp2DojLAq9f4Oi2OBetbnWxo0WGycXpmq/jC4PUx2u9mazQ79i80VLagGRshWniESXuf+SYG8
++zBimjld9ZZnwm7itHAZdtme4YYFxx+EHa4PUxPV8t+hPHhsiIjirPa1pVXPbQIDAQABo4IB2zCC
+AdcwDgYDVR0PAQH/BAQDAgWgMIGjBggrBgEFBQcBAQSBljCBkzBOBggrBgEFBQcwAoZCaHR0cDov
+L3NlY3VyZS5nbG9iYWxzaWduLmNvbS9jYWNlcnQvZ3NnY2NyM3BlcnNvbmFsc2lnbjJjYTIwMjAu
+Y3J0MEEGCCsGAQUFBzABhjVodHRwOi8vb2NzcC5nbG9iYWxzaWduLmNvbS9nc2djY3IzcGVyc29u
+YWxzaWduMmNhMjAyMDBNBgNVHSAERjBEMEIGCisGAQQBoDIBKAowNDAyBggrBgEFBQcCARYmaHR0
+cHM6Ly93d3cuZ2xvYmFsc2lnbi5jb20vcmVwb3NpdG9yeS8wCQYDVR0TBAIwADBJBgNVHR8EQjBA
+MD6gPKA6hjhodHRwOi8vY3JsLmdsb2JhbHNpZ24uY29tL2dzZ2NjcjNwZXJzb25hbHNpZ24yY2Ey
+MDIwLmNybDAlBgNVHREEHjAcgRpzZWx2aW4ueGF2aWVyQGJyb2FkY29tLmNvbTATBgNVHSUEDDAK
+BggrBgEFBQcDBDAfBgNVHSMEGDAWgBSWM9HmWBdbNHWKgVZk1b5I3qGPzzAdBgNVHQ4EFgQU3TaH
+dsgUhTW3LwObmZ20fj+8Xj8wDQYJKoZIhvcNAQELBQADggEBAAbt6Sptp6ZlTnhM2FDhkVXks68/
+iqvfL/e8wSPVdBxOuiP+8EXGLV3E72KfTTJXMbkcmFpK2K11poBDQJhz0xyOGTESjXNnN6Eqq+iX
+hQtF8xG2lzPq8MijKI4qXk5Vy5DYfwsVfcF0qJw5AhC32nU9uuIPJq8/mQbZfqmoanV/yadootGr
+j1Ze9ndr+YDXPpCymOsynmmw0ErHZGGW1OmMpAEt0A+613glWCURLDlP8HONi1wnINV6aDiEf0ad
+9NMGxDsp+YWiRXD3txfo2OMQbpIxM90QfhKKacX8t1J1oAAWxDrLVTJBXBNvz5tr+D1sYwuye93r
+hImmkM1unboxggJtMIICaQIBATBrMFsxCzAJBgNVBAYTAkJFMRkwFwYDVQQKExBHbG9iYWxTaWdu
+IG52LXNhMTEwLwYDVQQDEyhHbG9iYWxTaWduIEdDQyBSMyBQZXJzb25hbFNpZ24gMiBDQSAyMDIw
+Agxy+Cu4x/7lM0zxY7cwDQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIEIJGqFnUcwSLz
+UqIjvw0Gb2FF+x1oWIwxrn9ohFgfCVVGMBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZI
+hvcNAQkFMQ8XDTIzMDgxNDE3MTE1OVowaQYJKoZIhvcNAQkPMVwwWjALBglghkgBZQMEASowCwYJ
+YIZIAWUDBAEWMAsGCWCGSAFlAwQBAjAKBggqhkiG9w0DBzALBgkqhkiG9w0BAQowCwYJKoZIhvcN
+AQEHMAsGCWCGSAFlAwQCATANBgkqhkiG9w0BAQEFAASCAQBAmrD6CKaqd6LObDXrrHXUZXXNSL8Z
+DdrNHAxQSn62QK3mWvjTM24X8hIGgoizVc7D7odr1brZWNHfH2sKHkrgIWttxfWZ9EMdLEQ11TmT
+r2hn6hFFmVq8lT0PkUMAFam3PkuSAVF6nBYuR3/Jcxaw5N6eUHvgEPjHNvBrHq2GuszuczL5jvwk
+FycDUxSGp5qBQ2suYZUqguzGmFkEiU3UN8YW/3GFjK7uRbpitPWdJBSiEHSKuggHTXpuziaFSs5/
+uhQJfuOrKGviyCnI6I37G5LGyOx1KpydfSs5KoWn78jDtjqDFPwif6WtfW9vmMu6If7ke/gLM8QC
+IyhSco88
+--00000000000003a9c30602e5294b--
