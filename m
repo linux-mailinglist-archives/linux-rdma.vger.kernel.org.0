@@ -2,142 +2,141 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 36D5477AF46
-	for <lists+linux-rdma@lfdr.de>; Mon, 14 Aug 2023 03:59:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C241577B119
+	for <lists+linux-rdma@lfdr.de>; Mon, 14 Aug 2023 08:07:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229472AbjHNB6u (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Sun, 13 Aug 2023 21:58:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57020 "EHLO
+        id S232343AbjHNGG7 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 14 Aug 2023 02:06:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55270 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231694AbjHNB6m (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Sun, 13 Aug 2023 21:58:42 -0400
-Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 149E4E54
-        for <linux-rdma@vger.kernel.org>; Sun, 13 Aug 2023 18:58:41 -0700 (PDT)
-Received: from kwepemi500008.china.huawei.com (unknown [172.30.72.53])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4RPHXT06L3ztRdm;
-        Mon, 14 Aug 2023 09:55:04 +0800 (CST)
-Received: from huawei.com (10.90.53.73) by kwepemi500008.china.huawei.com
- (7.221.188.139) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.31; Mon, 14 Aug
- 2023 09:58:38 +0800
-From:   Ruan Jinjie <ruanjinjie@huawei.com>
-To:     <linux-rdma@vger.kernel.org>,
-        Mustafa Ismail <mustafa.ismail@intel.com>,
-        Shiraz Saleem <shiraz.saleem@intel.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Leon Romanovsky <leon@kernel.org>
-CC:     <ruanjinjie@huawei.com>
-Subject: [PATCH -next v2] RDMA/irdma: Silence the warnings in irdma_uk_rdma_write()
-Date:   Mon, 14 Aug 2023 09:58:05 +0800
-Message-ID: <20230814015805.1002656-1-ruanjinjie@huawei.com>
-X-Mailer: git-send-email 2.34.1
+        with ESMTP id S233732AbjHNGGH (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 14 Aug 2023 02:06:07 -0400
+Received: from mx0b-0016f401.pphosted.com (mx0b-0016f401.pphosted.com [67.231.156.173])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2FEF199B;
+        Sun, 13 Aug 2023 23:05:38 -0700 (PDT)
+Received: from pps.filterd (m0045851.ppops.net [127.0.0.1])
+        by mx0b-0016f401.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 37E5dnKn028174;
+        Sun, 13 Aug 2023 23:04:53 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-transfer-encoding :
+ content-type; s=pfpt0220; bh=2e/DgbPH5Z735BTpVc79AFms8kX4Gp8CjDRy+gF54Og=;
+ b=E/8P5/+jNOFDXnIeAK6eLktq00L60xiKYdb2qKHYNE+xCpg5uzwBma5HNeeDm5+xDr/z
+ PtUPN2CVxipoL7xIRglPjHM0nr73ebcCfiBNHKO+ejsrYpyGT1z5owXlVZBvcqnjQTMi
+ xVpi7MTLbBxFyMgVXN2gotRa8b8ZGbhZzCnaie9FgVwAx0KVLDEe3Z0Hs/va3cj30eI3
+ bQep63FV2AJCT9K2ToAglpvTN/WgrwwX8gb7FG8I4boMHs0BV/6m7+XurB6k5AN7oOOW
+ iqus7BoMwgqKR+ia384IF8M69kir+dL0CX57DDgO8auPhc0KzwAXvTjo5NFnI/q/asdB kQ== 
+Received: from dc5-exch02.marvell.com ([199.233.59.182])
+        by mx0b-0016f401.pphosted.com (PPS) with ESMTPS id 3se9kj4xs9-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
+        Sun, 13 Aug 2023 23:04:52 -0700
+Received: from DC5-EXCH02.marvell.com (10.69.176.39) by DC5-EXCH02.marvell.com
+ (10.69.176.39) with Microsoft SMTP Server (TLS) id 15.0.1497.48; Sun, 13 Aug
+ 2023 23:04:50 -0700
+Received: from maili.marvell.com (10.69.176.80) by DC5-EXCH02.marvell.com
+ (10.69.176.39) with Microsoft SMTP Server id 15.0.1497.48 via Frontend
+ Transport; Sun, 13 Aug 2023 23:04:50 -0700
+Received: from marvell-OptiPlex-7090.marvell.com (unknown [10.28.36.165])
+        by maili.marvell.com (Postfix) with ESMTP id A95D13F707E;
+        Sun, 13 Aug 2023 23:04:25 -0700 (PDT)
+From:   Ratheesh Kannoth <rkannoth@marvell.com>
+To:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+CC:     <davem@davemloft.net>, <edumazet@google.com>, <kuba@kernel.org>,
+        <pabeni@redhat.com>, <ast@kernel.org>, <daniel@iogearbox.net>,
+        <hawk@kernel.org>, <john.fastabend@gmail.com>,
+        <jiawenwu@trustnetic.com>, <mengyuanlou@net-swift.com>,
+        <yang.lee@linux.alibaba.com>, <error27@gmail.com>,
+        <linyunsheng@huawei.com>, <linux-hyperv@vger.kernel.org>,
+        <kys@microsoft.com>, <haiyangz@microsoft.com>,
+        <wei.liu@kernel.org>, <decui@microsoft.com>,
+        <longli@microsoft.com>, <shradhagupta@linux.microsoft.com>,
+        <linux-hwmon@vger.kernel.org>, <michael.chan@broadcom.com>,
+        <richardcochran@gmail.com>, <jdelvare@suse.com>,
+        <linux@roeck-us.net>, <yisen.zhuang@huawei.com>,
+        <salil.mehta@huawei.com>, <linux-arm-kernel@lists.infradead.org>,
+        <linux-mediatek@lists.infradead.org>, <nbd@nbd.name>,
+        <john@phrozen.org>, <sean.wang@mediatek.com>,
+        <Mark-MC.Lee@mediatek.com>, <lorenzo@kernel.org>,
+        <matthias.bgg@gmail.com>,
+        <angelogioacchino.delregno@collabora.com>, <linux@armlinux.org.uk>,
+        <linux-rdma@vger.kernel.org>, <saeedm@nvidia.com>,
+        <leon@kernel.org>, <gerhard@engleder-embedded.com>,
+        <maciej.fijalkowski@intel.com>, <alexanderduyck@fb.com>,
+        <wei.fang@nxp.com>, <shenwei.wang@nxp.com>,
+        <xiaoning.wang@nxp.com>, <linux-imx@nxp.com>,
+        <lgirdwood@gmail.com>, <broonie@kernel.org>,
+        <jaswinder.singh@linaro.org>, <ilias.apalodimas@linaro.org>,
+        <UNGLinuxDriver@microchip.com>, <horatiu.vultur@microchip.com>,
+        <linux-omap@vger.kernel.org>, <grygorii.strashko@ti.com>,
+        <simon.horman@corigine.com>, <vladimir.oltean@nxp.com>,
+        <rkannoth@marvell.com>, <aleksander.lobakin@intel.com>,
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        <alexandre.torgue@foss.st.com>, <joabreu@synopsys.com>,
+        <mcoquelin.stm32@gmail.com>, <p.zabel@pengutronix.de>,
+        <thomas.petazzoni@bootlin.com>, <mw@semihalf.com>,
+        <sgoutham@marvell.com>, <gakula@marvell.com>,
+        <sbhatta@marvell.com>, <hkelam@marvell.com>,
+        <xen-devel@lists.xenproject.org>, <jgross@suse.com>,
+        <sstabellini@kernel.org>, <oleksandr_tyshchenko@epam.com>,
+        <linux-wireless@vger.kernel.org>, <ryder.lee@mediatek.com>,
+        <shayne.chen@mediatek.com>, <kvalo@kernel.org>,
+        <andrii@kernel.org>, <martin.lau@linux.dev>, <song@kernel.org>,
+        <yonghong.song@linux.dev>, <kpsingh@kernel.org>, <sdf@google.com>,
+        <haoluo@google.com>, <jolsa@kernel.org>
+Subject: [PATCH v1 net] page_pool: Cap queue size to 32k.
+Date:   Mon, 14 Aug 2023 11:34:11 +0530
+Message-ID: <20230814060411.2401817-1-rkannoth@marvell.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.90.53.73]
-X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
- kwepemi500008.china.huawei.com (7.221.188.139)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-5.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Proofpoint-GUID: aFZU2RAx_UAE8R4K6KZZzbh7PQU3_GNE
+X-Proofpoint-ORIG-GUID: aFZU2RAx_UAE8R4K6KZZzbh7PQU3_GNE
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
+ definitions=2023-08-13_24,2023-08-10_01,2023-05-22_02
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Remove sparse warnings introduced by commit 272bba19d631 ("RDMA: Remove
-unnecessary ternary operators"):
+Clamp to 32k instead of returning error.
 
-drivers/infiniband/hw/irdma/uk.c:285:24: sparse: sparse: incorrect type in assignment (different base types) @@     expected bool [usertype] push_wqe:1 @@     got restricted __le32 [usertype] *push_db @@
-drivers/infiniband/hw/irdma/uk.c:285:24: sparse:     expected bool [usertype] push_wqe:1
-drivers/infiniband/hw/irdma/uk.c:285:24: sparse:     got restricted __le32 [usertype] *push_db
-drivers/infiniband/hw/irdma/uk.c:386:24: sparse: sparse: incorrect type in assignment (different base types) @@     expected bool [usertype] push_wqe:1 @@     got restricted __le32 [usertype] *push_db @@
-drivers/infiniband/hw/irdma/uk.c:386:24: sparse:     expected bool [usertype] push_wqe:1
-drivers/infiniband/hw/irdma/uk.c:386:24: sparse:     got restricted __le32 [usertype] *push_db
-drivers/infiniband/hw/irdma/uk.c:471:24: sparse: sparse: incorrect type in assignment (different base types) @@     expected bool [usertype] push_wqe:1 @@     got restricted __le32 [usertype] *push_db @@
-drivers/infiniband/hw/irdma/uk.c:471:24: sparse:     expected bool [usertype] push_wqe:1
-drivers/infiniband/hw/irdma/uk.c:471:24: sparse:     got restricted __le32 [usertype] *push_db
-drivers/infiniband/hw/irdma/uk.c:723:24: sparse: sparse: incorrect type in assignment (different base types) @@     expected bool [usertype] push_wqe:1 @@     got restricted __le32 [usertype] *push_db @@
-drivers/infiniband/hw/irdma/uk.c:723:24: sparse:     expected bool [usertype] push_wqe:1
-drivers/infiniband/hw/irdma/uk.c:723:24: sparse:     got restricted __le32 [usertype] *push_db
-drivers/infiniband/hw/irdma/uk.c:797:24: sparse: sparse: incorrect type in assignment (different base types) @@     expected bool [usertype] push_wqe:1 @@     got restricted __le32 [usertype] *push_db @@
-drivers/infiniband/hw/irdma/uk.c:797:24: sparse:     expected bool [usertype] push_wqe:1
-drivers/infiniband/hw/irdma/uk.c:797:24: sparse:     got restricted __le32 [usertype] *push_db
-drivers/infiniband/hw/irdma/uk.c:875:24: sparse: sparse: incorrect type in assignment (different base types) @@     expected bool [usertype] push_wqe:1 @@     got restricted __le32 [usertype] *push_db @@
-drivers/infiniband/hw/irdma/uk.c:875:24: sparse:     expected bool [usertype] push_wqe:1
-drivers/infiniband/hw/irdma/uk.c:875:24: sparse:     got restricted __le32 [usertype] *push_db
+Please find discussion at
+https://lore.kernel.org/lkml/
+CY4PR1801MB1911E15D518A77535F6E51E2D308A@CY4PR1801MB1911.
+namprd18.prod.outlook.com/T/
 
-Signed-off-by: Ruan Jinjie <ruanjinjie@huawei.com>
-Reported-by: kernel test robot <lkp@intel.com>
-Closes: https://lore.kernel.org/oe-kbuild-all/202308110251.BV6BcwUR-lkp@intel.com/
+Fixes: ff7d6b27f894 ("page_pool: refurbish version of page_pool code")
+Signed-off-by: Ratheesh Kannoth <rkannoth@marvell.com>
+
 ---
-v2:
-- Use "qp->push_mode" check instead of "qp->push_db"
+ChangeLog:
+v0 -> v1: Rebase && commit message changes
 ---
- drivers/infiniband/hw/irdma/uk.c | 12 ++++++------
- 1 file changed, 6 insertions(+), 6 deletions(-)
+ net/core/page_pool.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/infiniband/hw/irdma/uk.c b/drivers/infiniband/hw/irdma/uk.c
-index a0739503140d..f7150aa75827 100644
---- a/drivers/infiniband/hw/irdma/uk.c
-+++ b/drivers/infiniband/hw/irdma/uk.c
-@@ -282,7 +282,7 @@ int irdma_uk_rdma_write(struct irdma_qp_uk *qp, struct irdma_post_sq_info *info,
- 	bool read_fence = false;
- 	u16 quanta;
+diff --git a/net/core/page_pool.c b/net/core/page_pool.c
+index a3e12a61d456..e9dc8d8966ad 100644
+--- a/net/core/page_pool.c
++++ b/net/core/page_pool.c
+@@ -171,9 +171,10 @@ static int page_pool_init(struct page_pool *pool,
+ 	if (pool->p.pool_size)
+ 		ring_qsize = pool->p.pool_size;
  
--	info->push_wqe = qp->push_db;
-+	info->push_wqe = qp->push_mode;
+-	/* Sanity limit mem that can be pinned down */
++	/* Cap queue size to 32k */
+ 	if (ring_qsize > 32768)
+-		return -E2BIG;
++		ring_qsize = 32768;
++
  
- 	op_info = &info->op.rdma_write;
- 	if (op_info->num_lo_sges > qp->max_sq_frag_cnt)
-@@ -383,7 +383,7 @@ int irdma_uk_rdma_read(struct irdma_qp_uk *qp, struct irdma_post_sq_info *info,
- 	u16 quanta;
- 	u64 hdr;
- 
--	info->push_wqe = qp->push_db;
-+	info->push_wqe = qp->push_mode;
- 
- 	op_info = &info->op.rdma_read;
- 	if (qp->max_sq_frag_cnt < op_info->num_lo_sges)
-@@ -468,7 +468,7 @@ int irdma_uk_send(struct irdma_qp_uk *qp, struct irdma_post_sq_info *info,
- 	bool read_fence = false;
- 	u16 quanta;
- 
--	info->push_wqe = qp->push_db;
-+	info->push_wqe = qp->push_mode;
- 
- 	op_info = &info->op.send;
- 	if (qp->max_sq_frag_cnt < op_info->num_sges)
-@@ -720,7 +720,7 @@ int irdma_uk_inline_rdma_write(struct irdma_qp_uk *qp,
- 	u32 i, total_size = 0;
- 	u16 quanta;
- 
--	info->push_wqe = qp->push_db;
-+	info->push_wqe = qp->push_mode;
- 	op_info = &info->op.rdma_write;
- 
- 	if (unlikely(qp->max_sq_frag_cnt < op_info->num_lo_sges))
-@@ -794,7 +794,7 @@ int irdma_uk_inline_send(struct irdma_qp_uk *qp,
- 	u32 i, total_size = 0;
- 	u16 quanta;
- 
--	info->push_wqe = qp->push_db;
-+	info->push_wqe = qp->push_mode;
- 	op_info = &info->op.send;
- 
- 	if (unlikely(qp->max_sq_frag_cnt < op_info->num_sges))
-@@ -872,7 +872,7 @@ int irdma_uk_stag_local_invalidate(struct irdma_qp_uk *qp,
- 	bool local_fence = false;
- 	struct ib_sge sge = {};
- 
--	info->push_wqe = qp->push_db;
-+	info->push_wqe = qp->push_mode;
- 	op_info = &info->op.inv_local_stag;
- 	local_fence = info->local_fence;
- 
+ 	/* DMA direction is either DMA_FROM_DEVICE or DMA_BIDIRECTIONAL.
+ 	 * DMA_BIDIRECTIONAL is for allowing page used for DMA sending,
 -- 
-2.34.1
+2.25.1
 
