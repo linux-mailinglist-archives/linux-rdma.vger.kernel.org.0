@@ -2,53 +2,49 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9245977B210
-	for <lists+linux-rdma@lfdr.de>; Mon, 14 Aug 2023 09:08:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BF6D777B249
+	for <lists+linux-rdma@lfdr.de>; Mon, 14 Aug 2023 09:24:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233029AbjHNHIQ (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 14 Aug 2023 03:08:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45624 "EHLO
+        id S231357AbjHNHYX (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 14 Aug 2023 03:24:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42444 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234024AbjHNHHt (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 14 Aug 2023 03:07:49 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 00051E63
-        for <linux-rdma@vger.kernel.org>; Mon, 14 Aug 2023 00:07:48 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 88C3762398
-        for <linux-rdma@vger.kernel.org>; Mon, 14 Aug 2023 07:07:48 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7CE1FC433C7;
-        Mon, 14 Aug 2023 07:07:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1691996867;
-        bh=iUYfuhEDYRpoF/VbviZ9fCu4Il2kHSKY8H38vsuSIU0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=n99ZW3DxecbVnyS7z8wz2fYyk5hjy2MHQIsJEH/J+OuguUl6qg/S48joZu6CYBg6S
-         wIFHrRgh94OwPhYTey7vd3ntF/w9bNU31EH7YSYHsVJ5sLBDhglT1QthxjpHbT038h
-         SpqxRSl+yfL/SurbdBl7p5N45wiroCOyv23jYcxFD93RMVodLo+xEpypw4Z0oBIO5o
-         pVMPrwb+cTddcRhJqPTeiT20VyL0aDAABRHPW5r9j0PUljntO8IN/9gOSD4wdC9eZl
-         3DVaWLv04YQ+befZyU2aPwEngwKFsbo0sneSaScCyw9LA3ExjsdwGjsVUtKdz/BXf0
-         BeZAt8YiUE/Pg==
-Date:   Mon, 14 Aug 2023 10:07:44 +0300
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Ruan Jinjie <ruanjinjie@huawei.com>
-Cc:     linux-rdma@vger.kernel.org,
-        Mustafa Ismail <mustafa.ismail@intel.com>,
-        Shiraz Saleem <shiraz.saleem@intel.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>
-Subject: Re: [PATCH -next v2] RDMA/irdma: Silence the warnings in
- irdma_uk_rdma_write()
-Message-ID: <20230814070744.GB3921@unreal>
-References: <20230814015805.1002656-1-ruanjinjie@huawei.com>
+        with ESMTP id S232796AbjHNHYJ (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 14 Aug 2023 03:24:09 -0400
+Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A0E0E73;
+        Mon, 14 Aug 2023 00:24:08 -0700 (PDT)
+Received: from kwepemi500012.china.huawei.com (unknown [172.30.72.54])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4RPQm01tnyzNnMy;
+        Mon, 14 Aug 2023 15:20:32 +0800 (CST)
+Received: from huawei.com (10.90.53.73) by kwepemi500012.china.huawei.com
+ (7.221.188.12) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.31; Mon, 14 Aug
+ 2023 15:24:02 +0800
+From:   Li Zetao <lizetao1@huawei.com>
+To:     <vadim.fedorenko@linux.dev>
+CC:     <davem@davemloft.net>, <edumazet@google.com>, <elic@nvidia.com>,
+        <kuba@kernel.org>, <leon@kernel.org>, <linux-rdma@vger.kernel.org>,
+        <lizetao1@huawei.com>, <mbloch@nvidia.com>,
+        <netdev@vger.kernel.org>, <pabeni@redhat.com>, <roid@nvidia.com>,
+        <saeedm@nvidia.com>, <shayd@nvidia.com>, <vladbu@nvidia.com>,
+        kernel test robot <lkp@intel.com>,
+        Dan Carpenter <error27@gmail.com>
+Subject: [PATCH -next v2] net/mlx5: Devcom, only use devcom after NULL check in mlx5_devcom_send_event()
+Date:   Mon, 14 Aug 2023 15:23:42 +0800
+Message-ID: <20230814072342.189470-1-lizetao1@huawei.com>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <face8e0a-b3f6-85d9-ce1d-8afecdafe2a8@linux.dev>
+References: <face8e0a-b3f6-85d9-ce1d-8afecdafe2a8@linux.dev>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230814015805.1002656-1-ruanjinjie@huawei.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.90.53.73]
+X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
+ kwepemi500012.china.huawei.com (7.221.188.12)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-2.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -56,106 +52,49 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Mon, Aug 14, 2023 at 09:58:05AM +0800, Ruan Jinjie wrote:
-> Remove sparse warnings introduced by commit 272bba19d631 ("RDMA: Remove
-> unnecessary ternary operators"):
-> 
-> drivers/infiniband/hw/irdma/uk.c:285:24: sparse: sparse: incorrect type in assignment (different base types) @@     expected bool [usertype] push_wqe:1 @@     got restricted __le32 [usertype] *push_db @@
-> drivers/infiniband/hw/irdma/uk.c:285:24: sparse:     expected bool [usertype] push_wqe:1
-> drivers/infiniband/hw/irdma/uk.c:285:24: sparse:     got restricted __le32 [usertype] *push_db
-> drivers/infiniband/hw/irdma/uk.c:386:24: sparse: sparse: incorrect type in assignment (different base types) @@     expected bool [usertype] push_wqe:1 @@     got restricted __le32 [usertype] *push_db @@
-> drivers/infiniband/hw/irdma/uk.c:386:24: sparse:     expected bool [usertype] push_wqe:1
-> drivers/infiniband/hw/irdma/uk.c:386:24: sparse:     got restricted __le32 [usertype] *push_db
-> drivers/infiniband/hw/irdma/uk.c:471:24: sparse: sparse: incorrect type in assignment (different base types) @@     expected bool [usertype] push_wqe:1 @@     got restricted __le32 [usertype] *push_db @@
-> drivers/infiniband/hw/irdma/uk.c:471:24: sparse:     expected bool [usertype] push_wqe:1
-> drivers/infiniband/hw/irdma/uk.c:471:24: sparse:     got restricted __le32 [usertype] *push_db
-> drivers/infiniband/hw/irdma/uk.c:723:24: sparse: sparse: incorrect type in assignment (different base types) @@     expected bool [usertype] push_wqe:1 @@     got restricted __le32 [usertype] *push_db @@
-> drivers/infiniband/hw/irdma/uk.c:723:24: sparse:     expected bool [usertype] push_wqe:1
-> drivers/infiniband/hw/irdma/uk.c:723:24: sparse:     got restricted __le32 [usertype] *push_db
-> drivers/infiniband/hw/irdma/uk.c:797:24: sparse: sparse: incorrect type in assignment (different base types) @@     expected bool [usertype] push_wqe:1 @@     got restricted __le32 [usertype] *push_db @@
-> drivers/infiniband/hw/irdma/uk.c:797:24: sparse:     expected bool [usertype] push_wqe:1
-> drivers/infiniband/hw/irdma/uk.c:797:24: sparse:     got restricted __le32 [usertype] *push_db
-> drivers/infiniband/hw/irdma/uk.c:875:24: sparse: sparse: incorrect type in assignment (different base types) @@     expected bool [usertype] push_wqe:1 @@     got restricted __le32 [usertype] *push_db @@
-> drivers/infiniband/hw/irdma/uk.c:875:24: sparse:     expected bool [usertype] push_wqe:1
-> drivers/infiniband/hw/irdma/uk.c:875:24: sparse:     got restricted __le32 [usertype] *push_db
-> 
+There is a warning reported by kernel test robot:
 
-Fixes: 272bba19d631 ("RDMA: Remove unnecessary ternary operators")
+smatch warnings:
+drivers/net/ethernet/mellanox/mlx5/core/lib/devcom.c:264
+	mlx5_devcom_send_event() warn: variable dereferenced before
+		IS_ERR check devcom (see line 259)
 
-> Signed-off-by: Ruan Jinjie <ruanjinjie@huawei.com>
-> Reported-by: kernel test robot <lkp@intel.com>
-> Closes: https://lore.kernel.org/oe-kbuild-all/202308110251.BV6BcwUR-lkp@intel.com/
-> ---
-> v2:
-> - Use "qp->push_mode" check instead of "qp->push_db"
-> ---
->  drivers/infiniband/hw/irdma/uk.c | 12 ++++++------
->  1 file changed, 6 insertions(+), 6 deletions(-)
+The reason for the warning is that the pointer is used before check, put
+the assignment to comp after devcom check to silence the warning.
 
-Let's wait to get Shiraz's opinion about this patch.
-If it is ok, I'll add Fixes line and apply.
+Fixes: 88d162b47981 ("net/mlx5: Devcom, Infrastructure changes")
+Reported-by: kernel test robot <lkp@intel.com>
+Reported-by: Dan Carpenter <error27@gmail.com>
+Closes: https://lore.kernel.org/r/202308041028.AkXYDwJ6-lkp@intel.com/
+Signed-off-by: Li Zetao <lizetao1@huawei.com>
+---
+v1 -> v2: Modify the order of variable declarations to end up with reverse x-mas tree order.
+v1: https://lore.kernel.org/all/20230804092636.91357-1-lizetao1@huawei.com/
 
-Thanks
+ drivers/net/ethernet/mellanox/mlx5/core/lib/devcom.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-> 
-> diff --git a/drivers/infiniband/hw/irdma/uk.c b/drivers/infiniband/hw/irdma/uk.c
-> index a0739503140d..f7150aa75827 100644
-> --- a/drivers/infiniband/hw/irdma/uk.c
-> +++ b/drivers/infiniband/hw/irdma/uk.c
-> @@ -282,7 +282,7 @@ int irdma_uk_rdma_write(struct irdma_qp_uk *qp, struct irdma_post_sq_info *info,
->  	bool read_fence = false;
->  	u16 quanta;
->  
-> -	info->push_wqe = qp->push_db;
-> +	info->push_wqe = qp->push_mode;
->  
->  	op_info = &info->op.rdma_write;
->  	if (op_info->num_lo_sges > qp->max_sq_frag_cnt)
-> @@ -383,7 +383,7 @@ int irdma_uk_rdma_read(struct irdma_qp_uk *qp, struct irdma_post_sq_info *info,
->  	u16 quanta;
->  	u64 hdr;
->  
-> -	info->push_wqe = qp->push_db;
-> +	info->push_wqe = qp->push_mode;
->  
->  	op_info = &info->op.rdma_read;
->  	if (qp->max_sq_frag_cnt < op_info->num_lo_sges)
-> @@ -468,7 +468,7 @@ int irdma_uk_send(struct irdma_qp_uk *qp, struct irdma_post_sq_info *info,
->  	bool read_fence = false;
->  	u16 quanta;
->  
-> -	info->push_wqe = qp->push_db;
-> +	info->push_wqe = qp->push_mode;
->  
->  	op_info = &info->op.send;
->  	if (qp->max_sq_frag_cnt < op_info->num_sges)
-> @@ -720,7 +720,7 @@ int irdma_uk_inline_rdma_write(struct irdma_qp_uk *qp,
->  	u32 i, total_size = 0;
->  	u16 quanta;
->  
-> -	info->push_wqe = qp->push_db;
-> +	info->push_wqe = qp->push_mode;
->  	op_info = &info->op.rdma_write;
->  
->  	if (unlikely(qp->max_sq_frag_cnt < op_info->num_lo_sges))
-> @@ -794,7 +794,7 @@ int irdma_uk_inline_send(struct irdma_qp_uk *qp,
->  	u32 i, total_size = 0;
->  	u16 quanta;
->  
-> -	info->push_wqe = qp->push_db;
-> +	info->push_wqe = qp->push_mode;
->  	op_info = &info->op.send;
->  
->  	if (unlikely(qp->max_sq_frag_cnt < op_info->num_sges))
-> @@ -872,7 +872,7 @@ int irdma_uk_stag_local_invalidate(struct irdma_qp_uk *qp,
->  	bool local_fence = false;
->  	struct ib_sge sge = {};
->  
-> -	info->push_wqe = qp->push_db;
-> +	info->push_wqe = qp->push_mode;
->  	op_info = &info->op.inv_local_stag;
->  	local_fence = info->local_fence;
->  
-> -- 
-> 2.34.1
-> 
+diff --git a/drivers/net/ethernet/mellanox/mlx5/core/lib/devcom.c b/drivers/net/ethernet/mellanox/mlx5/core/lib/devcom.c
+index feb62d952643..00e67910e3ee 100644
+--- a/drivers/net/ethernet/mellanox/mlx5/core/lib/devcom.c
++++ b/drivers/net/ethernet/mellanox/mlx5/core/lib/devcom.c
+@@ -256,14 +256,15 @@ int mlx5_devcom_send_event(struct mlx5_devcom_comp_dev *devcom,
+ 			   int event, int rollback_event,
+ 			   void *event_data)
+ {
+-	struct mlx5_devcom_comp *comp = devcom->comp;
+ 	struct mlx5_devcom_comp_dev *pos;
++	struct mlx5_devcom_comp *comp;
+ 	int err = 0;
+ 	void *data;
+ 
+ 	if (IS_ERR_OR_NULL(devcom))
+ 		return -ENODEV;
+ 
++	comp = devcom->comp;
+ 	down_write(&comp->sem);
+ 	list_for_each_entry(pos, &comp->comp_dev_list_head, list) {
+ 		data = rcu_dereference_protected(pos->data, lockdep_is_held(&comp->sem));
+-- 
+2.34.1
+
