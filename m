@@ -2,305 +2,146 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C479D77B931
-	for <lists+linux-rdma@lfdr.de>; Mon, 14 Aug 2023 15:00:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0159477B9F1
+	for <lists+linux-rdma@lfdr.de>; Mon, 14 Aug 2023 15:28:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229937AbjHNNAK (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 14 Aug 2023 09:00:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34654 "EHLO
+        id S229511AbjHNN1f (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 14 Aug 2023 09:27:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53348 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230260AbjHNM7m (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 14 Aug 2023 08:59:42 -0400
-Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A07B1E5E;
-        Mon, 14 Aug 2023 05:59:39 -0700 (PDT)
-Received: from dggpemm500005.china.huawei.com (unknown [172.30.72.57])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4RPZDv1LdfzTmN3;
-        Mon, 14 Aug 2023 20:57:35 +0800 (CST)
-Received: from localhost.localdomain (10.69.192.56) by
- dggpemm500005.china.huawei.com (7.185.36.74) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.31; Mon, 14 Aug 2023 20:59:37 +0800
-From:   Yunsheng Lin <linyunsheng@huawei.com>
-To:     <davem@davemloft.net>, <kuba@kernel.org>, <pabeni@redhat.com>
-CC:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        Yunsheng Lin <linyunsheng@huawei.com>,
-        Lorenzo Bianconi <lorenzo@kernel.org>,
-        Alexander Duyck <alexander.duyck@gmail.com>,
-        Liang Chen <liangchen.linux@gmail.com>,
-        Alexander Lobakin <aleksander.lobakin@intel.com>,
+        with ESMTP id S231378AbjHNN1d (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 14 Aug 2023 09:27:33 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8205012D;
+        Mon, 14 Aug 2023 06:27:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1692019652; x=1723555652;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=uEAgFuelBW2HgyEvKYz5wAP7z+RpkG1urn+9Q46Dy7I=;
+  b=bk+eyYKuBrFmu+7+0R+2HpsogVQuD8ts7xFdW/Pp6C1EArEkdnu3+4jI
+   19OxaOgzzDCvlgIdF31Qfb81FZ5JC+8hVhXRw2AoiTPVARHq+I/PSLLtT
+   VAo//rcdqEiftiPjRrctjwm1jYol+8CbssBn4+NebN9+jReQd6FxBQ4XC
+   k0Lu5V7ZoKjKnMGQQSStms3U4wqk8jwDZzQXQPKI7YndgjTSV2OTYNlJ7
+   ltntS49aTu0bsbBU1cBTAmYrlTaSLz265XprDPcXdxMZfNQjXxRLXtcD7
+   ZcISf1J/O2BUV3jqCqdGaQFvGLtPfGcMtiQfdeVHCqFhvrucMpD6nDkGD
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10802"; a="458399097"
+X-IronPort-AV: E=Sophos;i="6.01,172,1684825200"; 
+   d="scan'208";a="458399097"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Aug 2023 06:27:31 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10802"; a="768452779"
+X-IronPort-AV: E=Sophos;i="6.01,172,1684825200"; 
+   d="scan'208";a="768452779"
+Received: from lgarello-mobl.ger.corp.intel.com (HELO ijarvine-mobl2.ger.corp.intel.com) ([10.249.40.121])
+  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Aug 2023 06:27:28 -0700
+From:   =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
+To:     Bjorn Helgaas <helgaas@kernel.org>, linux-pci@vger.kernel.org,
         Saeed Mahameed <saeedm@nvidia.com>,
         Leon Romanovsky <leon@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
         Eric Dumazet <edumazet@google.com>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
-        <linux-rdma@vger.kernel.org>
-Subject: [PATCH net-next v6 1/6] page_pool: frag API support for 32-bit arch with 64-bit DMA
-Date:   Mon, 14 Aug 2023 20:56:38 +0800
-Message-ID: <20230814125643.59334-2-linyunsheng@huawei.com>
-X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20230814125643.59334-1-linyunsheng@huawei.com>
-References: <20230814125643.59334-1-linyunsheng@huawei.com>
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Moshe Shemesh <moshe@mellanox.com>, netdev@vger.kernel.org,
+        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
+Subject: [PATCH 1/1] net/mlx5: Convert PCI error values to generic errnos
+Date:   Mon, 14 Aug 2023 16:27:20 +0300
+Message-Id: <20230814132721.26608-1-ilpo.jarvinen@linux.intel.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.69.192.56]
-X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
- dggpemm500005.china.huawei.com (7.185.36.74)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Currently page_pool_alloc_frag() is not supported in 32-bit
-arch with 64-bit DMA because of the overlap issue between
-pp_frag_count and dma_addr_upper in 'struct page' for those
-arches, which seems to be quite common, see [1], which means
-driver may need to handle it when using frag API.
+mlx5_pci_link_toggle() returns mix PCI specific error codes and generic
+errnos.
 
-In order to simplify the driver's work when using frag API
-this patch allows page_pool_alloc_frag() to call
-page_pool_alloc_pages() to return pages for those arches.
+Convert the PCI specific error values to generic errno using
+pcibios_err_to_errno() before returning them.
 
-Add a PP_FLAG_PAGE_SPLIT_IN_DRIVER flag in order to fail the
-page_pool creation for 32-bit arch with 64-bit DMA when driver
-tries to do the page splitting itself.
+Fixes: eabe8e5e88f5 ("net/mlx5: Handle sync reset now event")
+Fixes: 212b4d7251c1 ("net/mlx5: Wait for firmware to enable CRS before pci_restore_state")
+Signed-off-by: Ilpo Järvinen <ilpo.jarvinen@linux.intel.com>
 
-Note that it may aggravate truesize underestimate problem for
-skb as there is no page splitting for those pages, if driver
-need a accurate truesize, it may calculate that according to
-frag size, page order and PAGE_POOL_DMA_USE_PP_FRAG_COUNT
-being true or not. And we may provide a helper for that if it
-turns out to be helpful.
-
-1. https://lore.kernel.org/all/20211117075652.58299-1-linyunsheng@huawei.com/
-
-Signed-off-by: Yunsheng Lin <linyunsheng@huawei.com>
-CC: Lorenzo Bianconi <lorenzo@kernel.org>
-CC: Alexander Duyck <alexander.duyck@gmail.com>
-CC: Liang Chen <liangchen.linux@gmail.com>
-CC: Alexander Lobakin <aleksander.lobakin@intel.com>
 ---
- .../net/ethernet/mellanox/mlx5/core/en_main.c |  3 +-
- include/net/page_pool/helpers.h               | 38 +++++++++++++++--
- include/net/page_pool/types.h                 | 42 ++++++++++++-------
- net/core/page_pool.c                          | 15 +++----
- 4 files changed, 68 insertions(+), 30 deletions(-)
 
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en_main.c b/drivers/net/ethernet/mellanox/mlx5/core/en_main.c
-index bc9d5a5bea01..ec9c5a8cbda6 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/en_main.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/en_main.c
-@@ -834,7 +834,8 @@ static int mlx5e_alloc_rq(struct mlx5e_params *params,
- 		struct page_pool_params pp_params = { 0 };
+Maintainers beware, this will conflict with read+write -> set/clear_word
+fixes in pci.git/pcie-rmw. As such, it might be the easiest for Bjorn to
+take it instead of net people.
+
+
+I wonder if these PCIBIOS_* error codes are useful at all? There's 1:1
+mapping into errno values so no information loss if the functions would just
+return errnos directly. Perhaps this is just legacy nobody has bothered to
+remove? If nobody opposes, I could take a look at getting rid of them.
+
+---
+ drivers/net/ethernet/mellanox/mlx5/core/fw_reset.c | 12 ++++++------
+ 1 file changed, 6 insertions(+), 6 deletions(-)
+
+diff --git a/drivers/net/ethernet/mellanox/mlx5/core/fw_reset.c b/drivers/net/ethernet/mellanox/mlx5/core/fw_reset.c
+index 4804990b7f22..0afd9dbfc471 100644
+--- a/drivers/net/ethernet/mellanox/mlx5/core/fw_reset.c
++++ b/drivers/net/ethernet/mellanox/mlx5/core/fw_reset.c
+@@ -371,7 +371,7 @@ static int mlx5_pci_link_toggle(struct mlx5_core_dev *dev)
  
- 		pp_params.order     = 0;
--		pp_params.flags     = PP_FLAG_DMA_MAP | PP_FLAG_DMA_SYNC_DEV | PP_FLAG_PAGE_FRAG;
-+		pp_params.flags     = PP_FLAG_DMA_MAP | PP_FLAG_DMA_SYNC_DEV |
-+					PP_FLAG_PAGE_SPLIT_IN_DRIVER;
- 		pp_params.pool_size = pool_size;
- 		pp_params.nid       = node;
- 		pp_params.dev       = rq->pdev;
-diff --git a/include/net/page_pool/helpers.h b/include/net/page_pool/helpers.h
-index 94231533a369..cb18de55f239 100644
---- a/include/net/page_pool/helpers.h
-+++ b/include/net/page_pool/helpers.h
-@@ -29,8 +29,12 @@
- #ifndef _NET_PAGE_POOL_HELPERS_H
- #define _NET_PAGE_POOL_HELPERS_H
+ 	err = pci_read_config_word(dev->pdev, PCI_DEVICE_ID, &dev_id);
+ 	if (err)
+-		return err;
++		return pcibios_err_to_errno(err);
+ 	err = mlx5_check_dev_ids(dev, dev_id);
+ 	if (err)
+ 		return err;
+@@ -386,16 +386,16 @@ static int mlx5_pci_link_toggle(struct mlx5_core_dev *dev)
+ 	/* PCI link toggle */
+ 	err = pci_read_config_word(bridge, cap + PCI_EXP_LNKCTL, &reg16);
+ 	if (err)
+-		return err;
++		return pcibios_err_to_errno(err);
+ 	reg16 |= PCI_EXP_LNKCTL_LD;
+ 	err = pci_write_config_word(bridge, cap + PCI_EXP_LNKCTL, reg16);
+ 	if (err)
+-		return err;
++		return pcibios_err_to_errno(err);
+ 	msleep(500);
+ 	reg16 &= ~PCI_EXP_LNKCTL_LD;
+ 	err = pci_write_config_word(bridge, cap + PCI_EXP_LNKCTL, reg16);
+ 	if (err)
+-		return err;
++		return pcibios_err_to_errno(err);
  
-+#include <linux/dma-mapping.h>
- #include <net/page_pool/types.h>
- 
-+#define PAGE_POOL_DMA_USE_PP_FRAG_COUNT	\
-+		(sizeof(dma_addr_t) > sizeof(unsigned long))
-+
- #ifdef CONFIG_PAGE_POOL_STATS
- int page_pool_ethtool_stats_get_count(void);
- u8 *page_pool_ethtool_stats_get_strings(u8 *data);
-@@ -73,6 +77,29 @@ static inline struct page *page_pool_dev_alloc_pages(struct page_pool *pool)
- 	return page_pool_alloc_pages(pool, gfp);
- }
- 
-+static inline struct page *page_pool_alloc_frag(struct page_pool *pool,
-+						unsigned int *offset,
-+						unsigned int size, gfp_t gfp)
-+{
-+	unsigned int max_size = PAGE_SIZE << pool->p.order;
-+
-+	size = ALIGN(size, dma_get_cache_alignment());
-+
-+	if (WARN_ON(size > max_size))
-+		return NULL;
-+
-+	/* Don't allow page splitting and allocate one big frag
-+	 * for 32-bit arch with 64-bit DMA, corresponding to
-+	 * the checking in page_pool_is_last_frag().
-+	 */
-+	if (PAGE_POOL_DMA_USE_PP_FRAG_COUNT) {
-+		*offset = 0;
-+		return page_pool_alloc_pages(pool, gfp);
-+	}
-+
-+	return __page_pool_alloc_frag(pool, offset, size, gfp);
-+}
-+
- static inline struct page *page_pool_dev_alloc_frag(struct page_pool *pool,
- 						    unsigned int *offset,
- 						    unsigned int size)
-@@ -134,8 +161,14 @@ static inline long page_pool_defrag_page(struct page *page, long nr)
- static inline bool page_pool_is_last_frag(struct page_pool *pool,
- 					  struct page *page)
- {
--	/* If fragments aren't enabled or count is 0 we were the last user */
-+	/* We assume we are the last frag user that is still holding
-+	 * on to the page if:
-+	 * 1. Fragments aren't enabled.
-+	 * 2. We are running in 32-bit arch with 64-bit DMA.
-+	 * 3. page_pool_defrag_page() indicate we are the last user.
-+	 */
- 	return !(pool->p.flags & PP_FLAG_PAGE_FRAG) ||
-+	       PAGE_POOL_DMA_USE_PP_FRAG_COUNT ||
- 	       (page_pool_defrag_page(page, 1) == 0);
- }
- 
-@@ -197,9 +230,6 @@ static inline void page_pool_recycle_direct(struct page_pool *pool,
- 	page_pool_put_full_page(pool, page, true);
- }
- 
--#define PAGE_POOL_DMA_USE_PP_FRAG_COUNT	\
--		(sizeof(dma_addr_t) > sizeof(unsigned long))
--
- /**
-  * page_pool_get_dma_addr() - Retrieve the stored DMA address.
-  * @page:	page allocated from a page pool
-diff --git a/include/net/page_pool/types.h b/include/net/page_pool/types.h
-index 887e7946a597..079337c42aa6 100644
---- a/include/net/page_pool/types.h
-+++ b/include/net/page_pool/types.h
-@@ -6,21 +6,29 @@
- #include <linux/dma-direction.h>
- #include <linux/ptr_ring.h>
- 
--#define PP_FLAG_DMA_MAP		BIT(0) /* Should page_pool do the DMA
--					* map/unmap
--					*/
--#define PP_FLAG_DMA_SYNC_DEV	BIT(1) /* If set all pages that the driver gets
--					* from page_pool will be
--					* DMA-synced-for-device according to
--					* the length provided by the device
--					* driver.
--					* Please note DMA-sync-for-CPU is still
--					* device driver responsibility
--					*/
--#define PP_FLAG_PAGE_FRAG	BIT(2) /* for page frag feature */
-+/* Should page_pool do the DMA map/unmap */
-+#define PP_FLAG_DMA_MAP			BIT(0)
-+
-+/* If set all pages that the driver gets from page_pool will be
-+ * DMA-synced-for-device according to the length provided by the device driver.
-+ * Please note DMA-sync-for-CPU is still device driver responsibility
-+ */
-+#define PP_FLAG_DMA_SYNC_DEV		BIT(1)
-+
-+/* for page frag feature */
-+#define PP_FLAG_PAGE_FRAG		BIT(2)
-+
-+/* If set driver will do the page splitting itself. This is used to fail the
-+ * page_pool creation because there is overlap issue between pp_frag_count and
-+ * dma_addr_upper in 'struct page' for some arches with
-+ * PAGE_POOL_DMA_USE_PP_FRAG_COUNT being true.
-+ */
-+#define PP_FLAG_PAGE_SPLIT_IN_DRIVER	BIT(3)
-+
- #define PP_FLAG_ALL		(PP_FLAG_DMA_MAP |\
- 				 PP_FLAG_DMA_SYNC_DEV |\
--				 PP_FLAG_PAGE_FRAG)
-+				 PP_FLAG_PAGE_FRAG |\
-+				 PP_FLAG_PAGE_SPLIT_IN_DRIVER)
- 
- /*
-  * Fast allocation side cache array/stack
-@@ -45,7 +53,8 @@ struct pp_alloc_cache {
- 
- /**
-  * struct page_pool_params - page pool parameters
-- * @flags:	PP_FLAG_DMA_MAP, PP_FLAG_DMA_SYNC_DEV, PP_FLAG_PAGE_FRAG
-+ * @flags:	PP_FLAG_DMA_MAP, PP_FLAG_DMA_SYNC_DEV, PP_FLAG_PAGE_FRAG,
-+ *		PP_FLAG_PAGE_SPLIT_IN_DRIVER
-  * @order:	2^order pages on allocation
-  * @pool_size:	size of the ptr_ring
-  * @nid:	NUMA node id to allocate from pages from
-@@ -183,8 +192,9 @@ struct page_pool {
- };
- 
- struct page *page_pool_alloc_pages(struct page_pool *pool, gfp_t gfp);
--struct page *page_pool_alloc_frag(struct page_pool *pool, unsigned int *offset,
--				  unsigned int size, gfp_t gfp);
-+struct page *__page_pool_alloc_frag(struct page_pool *pool,
-+				    unsigned int *offset, unsigned int size,
-+				    gfp_t gfp);
- struct page_pool *page_pool_create(const struct page_pool_params *params);
- 
- struct xdp_mem_info;
-diff --git a/net/core/page_pool.c b/net/core/page_pool.c
-index 77cb75e63aca..d62c11aaea9a 100644
---- a/net/core/page_pool.c
-+++ b/net/core/page_pool.c
-@@ -14,7 +14,6 @@
- #include <net/xdp.h>
- 
- #include <linux/dma-direction.h>
--#include <linux/dma-mapping.h>
- #include <linux/page-flags.h>
- #include <linux/mm.h> /* for put_page() */
- #include <linux/poison.h>
-@@ -212,7 +211,7 @@ static int page_pool_init(struct page_pool *pool,
- 	}
- 
- 	if (PAGE_POOL_DMA_USE_PP_FRAG_COUNT &&
--	    pool->p.flags & PP_FLAG_PAGE_FRAG)
-+	    pool->p.flags & PP_FLAG_PAGE_SPLIT_IN_DRIVER)
- 		return -EINVAL;
- 
- #ifdef CONFIG_PAGE_POOL_STATS
-@@ -737,18 +736,16 @@ static void page_pool_free_frag(struct page_pool *pool)
- 	page_pool_return_page(pool, page);
- }
- 
--struct page *page_pool_alloc_frag(struct page_pool *pool,
--				  unsigned int *offset,
--				  unsigned int size, gfp_t gfp)
-+struct page *__page_pool_alloc_frag(struct page_pool *pool,
-+				    unsigned int *offset,
-+				    unsigned int size, gfp_t gfp)
- {
- 	unsigned int max_size = PAGE_SIZE << pool->p.order;
- 	struct page *page = pool->frag_page;
- 
--	if (WARN_ON(!(pool->p.flags & PP_FLAG_PAGE_FRAG) ||
--		    size > max_size))
-+	if (WARN_ON(!(pool->p.flags & PP_FLAG_PAGE_FRAG))
- 		return NULL;
- 
--	size = ALIGN(size, dma_get_cache_alignment());
- 	*offset = pool->frag_offset;
- 
- 	if (page && *offset + size > max_size) {
-@@ -781,7 +778,7 @@ struct page *page_pool_alloc_frag(struct page_pool *pool,
- 	alloc_stat_inc(pool, fast);
- 	return page;
- }
--EXPORT_SYMBOL(page_pool_alloc_frag);
-+EXPORT_SYMBOL(__page_pool_alloc_frag);
- 
- static void page_pool_empty_ring(struct page_pool *pool)
- {
+ 	/* Check link */
+ 	if (!bridge->link_active_reporting) {
+@@ -408,7 +408,7 @@ static int mlx5_pci_link_toggle(struct mlx5_core_dev *dev)
+ 	do {
+ 		err = pci_read_config_word(bridge, cap + PCI_EXP_LNKSTA, &reg16);
+ 		if (err)
+-			return err;
++			return pcibios_err_to_errno(err);
+ 		if (reg16 & PCI_EXP_LNKSTA_DLLLA)
+ 			break;
+ 		msleep(20);
+@@ -426,7 +426,7 @@ static int mlx5_pci_link_toggle(struct mlx5_core_dev *dev)
+ 	do {
+ 		err = pci_read_config_word(dev->pdev, PCI_DEVICE_ID, &reg16);
+ 		if (err)
+-			return err;
++			return pcibios_err_to_errno(err);
+ 		if (reg16 == dev_id)
+ 			break;
+ 		msleep(20);
 -- 
-2.33.0
+2.30.2
 
