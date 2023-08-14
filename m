@@ -2,100 +2,188 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DB18E77BEAE
+	by mail.lfdr.de (Postfix) with ESMTP id 8804077BEAD
 	for <lists+linux-rdma@lfdr.de>; Mon, 14 Aug 2023 19:12:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229777AbjHNRMP (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        id S229686AbjHNRMP (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
         Mon, 14 Aug 2023 13:12:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58906 "EHLO
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58916 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230046AbjHNRMC (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 14 Aug 2023 13:12:02 -0400
-Received: from mail-pg1-x532.google.com (mail-pg1-x532.google.com [IPv6:2607:f8b0:4864:20::532])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 60E0F10F
-        for <linux-rdma@vger.kernel.org>; Mon, 14 Aug 2023 10:11:59 -0700 (PDT)
-Received: by mail-pg1-x532.google.com with SMTP id 41be03b00d2f7-517ab9a4a13so3502251a12.1
-        for <linux-rdma@vger.kernel.org>; Mon, 14 Aug 2023 10:11:59 -0700 (PDT)
+        with ESMTP id S230077AbjHNRMD (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 14 Aug 2023 13:12:03 -0400
+Received: from mail-pg1-x534.google.com (mail-pg1-x534.google.com [IPv6:2607:f8b0:4864:20::534])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1752110C1
+        for <linux-rdma@vger.kernel.org>; Mon, 14 Aug 2023 10:12:02 -0700 (PDT)
+Received: by mail-pg1-x534.google.com with SMTP id 41be03b00d2f7-5650ef42f6dso2704821a12.0
+        for <linux-rdma@vger.kernel.org>; Mon, 14 Aug 2023 10:12:02 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google; t=1692033119; x=1692637919;
-        h=message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Cq0Q6dNr40nu816cGfuh+G1veEq9TGLTxAQVspqYrI0=;
-        b=MVI0k9ZxesyGddZi5h7b5369WdQIP0M268WstJolzsEePZveapTIBD8Fx7ezoi4OD9
-         3P92Exoh/k4kwnaeT9ioDl/N9uZUnFLfsrgkWpdXlHjC1Tinx8LJIFSzrwGb+Yg7db+1
-         oZUt3oWceszv5bbFycGC2Pkljnuaz+jqK/Cys=
+        d=broadcom.com; s=google; t=1692033121; x=1692637921;
+        h=references:in-reply-to:message-id:date:subject:cc:to:from:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=RY6rgKv5mQ07lhqwNrIqHRO/ggc4LeX4L9vHQ6hUZrA=;
+        b=hNV4NSQRN8IRgF82f1QWvBP+QEQvYIrEbQ7ruEgyS/Nzu9EwH5wIEbPjDJOcANzmaz
+         htpyLJDokEmea8PRZE2sn0ubZOvOW9aEGreDy1wUb7XdpsPezrAeujQk7DauVEx8zISz
+         KBhyLlSHq46PVSgVHUrAF4teB7aLGmD2BOsOg=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692033119; x=1692637919;
-        h=message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Cq0Q6dNr40nu816cGfuh+G1veEq9TGLTxAQVspqYrI0=;
-        b=bFIfYKsKfpQ8w8i+xXhP0mHyWVJOhR2VO4ZOK9Uv3UD7xtsShTkkslTPjiVO1V12VM
-         cl2YGJvp9Nv43rDVjbHY3pKnajFvfNANlax4nfqGs3dZuCHmtyfi2Y+ZlwAg1QIN+gGR
-         Qmx/UaSet9Q6PWCBpSTwm/fvG7NylDqztKkmQ9PrqlrMRxFLArPw05FTfNIMnIQhtcOs
-         Nj6lPrdXrFaeQ2O6dWq0nU1bHfHQpUHEVHoVuWdO4kh74VhbKZlMh7leaUSqCuITy7lq
-         EYfPj+JPz6QoEZyNdRBqeDZ0hNMktsqiBDXTUERKIw+oOu9jU8+7L001F9pYFflWjRxx
-         U/DQ==
-X-Gm-Message-State: AOJu0YxZSEwGrdSdD7IU8MXPhsNDxlZcgLMR2rOKK77NYei0oAloHVu5
-        HsSuLqVoJ/9ENHTVVmb2ekgisA==
-X-Google-Smtp-Source: AGHT+IHJSNGHe5Cr/FYWhK4UAo/oJn6DC31Bkf+WjMZn2J/ngTNJvjkXoR3HFVsIrBN8cqkgSdFBUQ==
-X-Received: by 2002:a17:90a:5a85:b0:268:b682:23de with SMTP id n5-20020a17090a5a8500b00268b68223demr9730654pji.28.1692033118715;
-        Mon, 14 Aug 2023 10:11:58 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1692033121; x=1692637921;
+        h=references:in-reply-to:message-id:date:subject:cc:to:from
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=RY6rgKv5mQ07lhqwNrIqHRO/ggc4LeX4L9vHQ6hUZrA=;
+        b=liFXqGc2JbsrFq6Udl1EbqxNUUZt5tVEKl1m2FRqT7Hq0bhTGQgfeaoc2joHAjpL1V
+         mbqrERK/i84n6pn2JEtTnvAveSyNmwrx0ZVTBaxwPhHuJCIxpRFcZjn/M9fFOC9YU06B
+         XrQEhpMa+Hdx7irjf/DIiD6r1Qy3psyBHA+lvI7QlAZ9W0CiQdcmPNAfDcvwk9FdyYat
+         cYNKf0TFvy7hxd6gm0IBNNzjRYQkLP747Pt80E4JNeSV8BG1frQRRM9LH35Liu7KhqPE
+         f7CBKTU4SKvqNdLdpDq63z1g14Z/Ii2uHVOpm6yQaxUheVwR2F3Qqbdm70rSPuiZ/gVk
+         w6Kg==
+X-Gm-Message-State: AOJu0YykgY4OQfKKfyh/hqLeHTD8GXY45XvvQ+oWXrI/0tG91HrFS6XG
+        cMNcT93iCEaQ96+quGRXPx/qyA==
+X-Google-Smtp-Source: AGHT+IGqEhn8AizQWSJ9cWBJdf0QR/PMZMkWjeGhWeeQDFjAdTetsPjWyzcOtdgjCQgEvLUNsn9pTg==
+X-Received: by 2002:a17:90b:2344:b0:25e:d013:c22c with SMTP id ms4-20020a17090b234400b0025ed013c22cmr7282289pjb.47.1692033121459;
+        Mon, 14 Aug 2023 10:12:01 -0700 (PDT)
 Received: from dhcp-10-192-206-197.iig.avagotech.net.net ([192.19.234.250])
-        by smtp.gmail.com with ESMTPSA id d3-20020a17090a8d8300b0025bfda134ccsm8409746pjo.16.2023.08.14.10.11.55
+        by smtp.gmail.com with ESMTPSA id d3-20020a17090a8d8300b0025bfda134ccsm8409746pjo.16.2023.08.14.10.11.59
         (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 14 Aug 2023 10:11:57 -0700 (PDT)
+        Mon, 14 Aug 2023 10:12:00 -0700 (PDT)
 From:   Selvin Xavier <selvin.xavier@broadcom.com>
 To:     jgg@ziepe.ca, leon@kernel.org
 Cc:     linux-rdma@vger.kernel.org, andrew.gospodarek@broadcom.com,
-        Kashyap Desai <kashyap.desai@broadcom.com>,
-        Selvin Xavier <selvin.xavier@broadcom.com>
-Subject: [PATCH for-next 1/2] RDMA/bnxt_re: Initialize mutex dbq_lock
-Date:   Mon, 14 Aug 2023 10:00:18 -0700
-Message-Id: <1692032419-21680-1-git-send-email-selvin.xavier@broadcom.com>
+        Selvin Xavier <selvin.xavier@broadcom.com>,
+        Kashyap Desai <kashyap.desai@broadcom.com>
+Subject: [PATCH for-next 2/2] RDMA/bnxt_re: Protect the PD table bitmap
+Date:   Mon, 14 Aug 2023 10:00:19 -0700
+Message-Id: <1692032419-21680-2-git-send-email-selvin.xavier@broadcom.com>
 X-Mailer: git-send-email 2.5.5
+In-Reply-To: <1692032419-21680-1-git-send-email-selvin.xavier@broadcom.com>
+References: <1692032419-21680-1-git-send-email-selvin.xavier@broadcom.com>
 Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
-        boundary="00000000000003a9c30602e5294b"
-X-Spam-Status: No, score=-1.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        boundary="0000000000002ce9b80602e52952"
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        MIME_HEADER_CTYPE_ONLY,MIME_NO_TEXT,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE,T_TVD_MIME_NO_HEADERS autolearn=no
-        autolearn_force=no version=3.4.6
+        MIME_HEADER_CTYPE_ONLY,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,
+        T_TVD_MIME_NO_HEADERS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
---00000000000003a9c30602e5294b
+--0000000000002ce9b80602e52952
 
-From: Kashyap Desai <kashyap.desai@broadcom.com>
+Syncrhonization is required to avoid simultaneous allocation
+of the PD. Add a new mutex lock to handle allocation from
+the PD table.
 
-Fix the missing dbq_lock mutex initialization
-
-Fixes: 2ad4e6303a6d ("RDMA/bnxt_re: Implement doorbell pacing algorithm")
 Signed-off-by: Kashyap Desai <kashyap.desai@broadcom.com>
 Signed-off-by: Selvin Xavier <selvin.xavier@broadcom.com>
 ---
- drivers/infiniband/hw/bnxt_re/main.c | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/infiniband/hw/bnxt_re/ib_verbs.c  |  2 +-
+ drivers/infiniband/hw/bnxt_re/qplib_res.c | 26 ++++++++++++++++++++------
+ drivers/infiniband/hw/bnxt_re/qplib_res.h |  4 +++-
+ 3 files changed, 24 insertions(+), 8 deletions(-)
 
-diff --git a/drivers/infiniband/hw/bnxt_re/main.c b/drivers/infiniband/hw/bnxt_re/main.c
-index f34ce49..061a89b 100644
---- a/drivers/infiniband/hw/bnxt_re/main.c
-+++ b/drivers/infiniband/hw/bnxt_re/main.c
-@@ -920,6 +920,7 @@ static struct bnxt_re_dev *bnxt_re_dev_add(struct bnxt_aux_priv *aux_priv,
- 	rdev->id = rdev->en_dev->pdev->devfn;
- 	INIT_LIST_HEAD(&rdev->qp_list);
- 	mutex_init(&rdev->qp_lock);
-+	mutex_init(&rdev->pacing.dbq_lock);
- 	atomic_set(&rdev->stats.res.qp_count, 0);
- 	atomic_set(&rdev->stats.res.cq_count, 0);
- 	atomic_set(&rdev->stats.res.srq_count, 0);
+diff --git a/drivers/infiniband/hw/bnxt_re/ib_verbs.c b/drivers/infiniband/hw/bnxt_re/ib_verbs.c
+index c0a7181..b19334c 100644
+--- a/drivers/infiniband/hw/bnxt_re/ib_verbs.c
++++ b/drivers/infiniband/hw/bnxt_re/ib_verbs.c
+@@ -619,7 +619,7 @@ int bnxt_re_alloc_pd(struct ib_pd *ibpd, struct ib_udata *udata)
+ 	int rc = 0;
+ 
+ 	pd->rdev = rdev;
+-	if (bnxt_qplib_alloc_pd(&rdev->qplib_res.pd_tbl, &pd->qplib_pd)) {
++	if (bnxt_qplib_alloc_pd(&rdev->qplib_res, &pd->qplib_pd)) {
+ 		ibdev_err(&rdev->ibdev, "Failed to allocate HW PD");
+ 		rc = -ENOMEM;
+ 		goto fail;
+diff --git a/drivers/infiniband/hw/bnxt_re/qplib_res.c b/drivers/infiniband/hw/bnxt_re/qplib_res.c
+index 6f1e8b7..79c43c2 100644
+--- a/drivers/infiniband/hw/bnxt_re/qplib_res.c
++++ b/drivers/infiniband/hw/bnxt_re/qplib_res.c
+@@ -642,31 +642,44 @@ static void bnxt_qplib_init_sgid_tbl(struct bnxt_qplib_sgid_tbl *sgid_tbl,
+ }
+ 
+ /* PDs */
+-int bnxt_qplib_alloc_pd(struct bnxt_qplib_pd_tbl *pdt, struct bnxt_qplib_pd *pd)
++int bnxt_qplib_alloc_pd(struct bnxt_qplib_res  *res, struct bnxt_qplib_pd *pd)
+ {
++	struct bnxt_qplib_pd_tbl *pdt = &res->pd_tbl;
+ 	u32 bit_num;
++	int rc = 0;
+ 
++	mutex_lock(&res->pd_tbl_lock);
+ 	bit_num = find_first_bit(pdt->tbl, pdt->max);
+-	if (bit_num == pdt->max)
+-		return -ENOMEM;
++	if (bit_num == pdt->max) {
++		rc = -ENOMEM;
++		goto exit;
++	}
+ 
+ 	/* Found unused PD */
+ 	clear_bit(bit_num, pdt->tbl);
+ 	pd->id = bit_num;
+-	return 0;
++exit:
++	mutex_unlock(&res->pd_tbl_lock);
++	return rc;
+ }
+ 
+ int bnxt_qplib_dealloc_pd(struct bnxt_qplib_res *res,
+ 			  struct bnxt_qplib_pd_tbl *pdt,
+ 			  struct bnxt_qplib_pd *pd)
+ {
++	int rc = 0;
++
++	mutex_lock(&res->pd_tbl_lock);
+ 	if (test_and_set_bit(pd->id, pdt->tbl)) {
+ 		dev_warn(&res->pdev->dev, "Freeing an unused PD? pdn = %d\n",
+ 			 pd->id);
+-		return -EINVAL;
++		rc = -EINVAL;
++		goto exit;
+ 	}
+ 	pd->id = 0;
+-	return 0;
++exit:
++	mutex_unlock(&res->pd_tbl_lock);
++	return rc;
+ }
+ 
+ static void bnxt_qplib_free_pd_tbl(struct bnxt_qplib_pd_tbl *pdt)
+@@ -691,6 +704,7 @@ static int bnxt_qplib_alloc_pd_tbl(struct bnxt_qplib_res *res,
+ 
+ 	pdt->max = max;
+ 	memset((u8 *)pdt->tbl, 0xFF, bytes);
++	mutex_init(&res->pd_tbl_lock);
+ 
+ 	return 0;
+ }
+diff --git a/drivers/infiniband/hw/bnxt_re/qplib_res.h b/drivers/infiniband/hw/bnxt_re/qplib_res.h
+index 57161d3..5949f00 100644
+--- a/drivers/infiniband/hw/bnxt_re/qplib_res.h
++++ b/drivers/infiniband/hw/bnxt_re/qplib_res.h
+@@ -277,6 +277,8 @@ struct bnxt_qplib_res {
+ 	struct net_device		*netdev;
+ 	struct bnxt_qplib_rcfw		*rcfw;
+ 	struct bnxt_qplib_pd_tbl	pd_tbl;
++	/* To protect the pd table bit map */
++	struct mutex			pd_tbl_lock;
+ 	struct bnxt_qplib_sgid_tbl	sgid_tbl;
+ 	struct bnxt_qplib_dpi_tbl	dpi_tbl;
+ 	/* To protect the dpi table bit map */
+@@ -368,7 +370,7 @@ void bnxt_qplib_free_hwq(struct bnxt_qplib_res *res,
+ 			 struct bnxt_qplib_hwq *hwq);
+ int bnxt_qplib_alloc_init_hwq(struct bnxt_qplib_hwq *hwq,
+ 			      struct bnxt_qplib_hwq_attr *hwq_attr);
+-int bnxt_qplib_alloc_pd(struct bnxt_qplib_pd_tbl *pd_tbl,
++int bnxt_qplib_alloc_pd(struct bnxt_qplib_res *res,
+ 			struct bnxt_qplib_pd *pd);
+ int bnxt_qplib_dealloc_pd(struct bnxt_qplib_res *res,
+ 			  struct bnxt_qplib_pd_tbl *pd_tbl,
 -- 
 2.5.5
 
 
---00000000000003a9c30602e5294b
+--0000000000002ce9b80602e52952
 Content-Type: application/pkcs7-signature; name="smime.p7s"
 Content-Transfer-Encoding: base64
 Content-Disposition: attachment; filename="smime.p7s"
@@ -166,14 +254,14 @@ j1Ze9ndr+YDXPpCymOsynmmw0ErHZGGW1OmMpAEt0A+613glWCURLDlP8HONi1wnINV6aDiEf0ad
 9NMGxDsp+YWiRXD3txfo2OMQbpIxM90QfhKKacX8t1J1oAAWxDrLVTJBXBNvz5tr+D1sYwuye93r
 hImmkM1unboxggJtMIICaQIBATBrMFsxCzAJBgNVBAYTAkJFMRkwFwYDVQQKExBHbG9iYWxTaWdu
 IG52LXNhMTEwLwYDVQQDEyhHbG9iYWxTaWduIEdDQyBSMyBQZXJzb25hbFNpZ24gMiBDQSAyMDIw
-Agxy+Cu4x/7lM0zxY7cwDQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIEIJGqFnUcwSLz
-UqIjvw0Gb2FF+x1oWIwxrn9ohFgfCVVGMBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZI
-hvcNAQkFMQ8XDTIzMDgxNDE3MTE1OVowaQYJKoZIhvcNAQkPMVwwWjALBglghkgBZQMEASowCwYJ
+Agxy+Cu4x/7lM0zxY7cwDQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIEIIhoj392Erx8
+1J6ZCJrRDbxSu7VA0PDxvhRk2XxrISSrMBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZI
+hvcNAQkFMQ8XDTIzMDgxNDE3MTIwMVowaQYJKoZIhvcNAQkPMVwwWjALBglghkgBZQMEASowCwYJ
 YIZIAWUDBAEWMAsGCWCGSAFlAwQBAjAKBggqhkiG9w0DBzALBgkqhkiG9w0BAQowCwYJKoZIhvcN
-AQEHMAsGCWCGSAFlAwQCATANBgkqhkiG9w0BAQEFAASCAQBAmrD6CKaqd6LObDXrrHXUZXXNSL8Z
-DdrNHAxQSn62QK3mWvjTM24X8hIGgoizVc7D7odr1brZWNHfH2sKHkrgIWttxfWZ9EMdLEQ11TmT
-r2hn6hFFmVq8lT0PkUMAFam3PkuSAVF6nBYuR3/Jcxaw5N6eUHvgEPjHNvBrHq2GuszuczL5jvwk
-FycDUxSGp5qBQ2suYZUqguzGmFkEiU3UN8YW/3GFjK7uRbpitPWdJBSiEHSKuggHTXpuziaFSs5/
-uhQJfuOrKGviyCnI6I37G5LGyOx1KpydfSs5KoWn78jDtjqDFPwif6WtfW9vmMu6If7ke/gLM8QC
-IyhSco88
---00000000000003a9c30602e5294b--
+AQEHMAsGCWCGSAFlAwQCATANBgkqhkiG9w0BAQEFAASCAQDIhBFezVzFGdbv/pQdBtkTLdA/8xlc
+p66qdsyjNNRLQXbT9dSDc/ARD9f52S575Z9P1okIlvDPW2pGMFIc14NeP850ZXhJC6uvpbb+xIz/
+9NsZbgKG+Xjj+0W6exH1rb4MhqEPI33BZxvYqBLqUIGPfBLQ4tylcQXEUUWfRHfCg99U8YzG6uEn
+GbnFgl4IqbZphngtcM+qnNdI8M/+3Yxuqq0I4mgKlcZ8QzrYeQePDfHZ+WvVNmKlr0HpLRrPi4Pp
+vYaaOqUJtvzI3+euAK9PMSXIiBWgLO5kwSu+POp3RnSIfsiU3Ufk7HK00rrHAtwDv6kenKyMiQmm
+BnsSoVMO
+--0000000000002ce9b80602e52952--
