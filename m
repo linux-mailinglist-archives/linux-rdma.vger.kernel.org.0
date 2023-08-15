@@ -2,46 +2,46 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CBCF777C745
-	for <lists+linux-rdma@lfdr.de>; Tue, 15 Aug 2023 07:56:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D54E877C862
+	for <lists+linux-rdma@lfdr.de>; Tue, 15 Aug 2023 09:14:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231572AbjHOF4H (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 15 Aug 2023 01:56:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46294 "EHLO
+        id S235440AbjHOHOR (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 15 Aug 2023 03:14:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39002 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233539AbjHOFzr (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 15 Aug 2023 01:55:47 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C57993
-        for <linux-rdma@vger.kernel.org>; Mon, 14 Aug 2023 22:55:46 -0700 (PDT)
+        with ESMTP id S235496AbjHOHNf (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 15 Aug 2023 03:13:35 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C8AC61FC3
+        for <linux-rdma@vger.kernel.org>; Tue, 15 Aug 2023 00:13:11 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id A57E561376
-        for <linux-rdma@vger.kernel.org>; Tue, 15 Aug 2023 05:55:45 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3EF4CC433C7;
-        Tue, 15 Aug 2023 05:55:43 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 5AF7C61462
+        for <linux-rdma@vger.kernel.org>; Tue, 15 Aug 2023 07:13:11 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D952DC433C8;
+        Tue, 15 Aug 2023 07:13:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1692078944;
-        bh=NbGtzLAgTQNJAHNBtuX5Wb0Bxfe0FxRGiig5wSIelV8=;
+        s=k20201202; t=1692083590;
+        bh=i1KPXV4pn+K3x9Hh+ikyP03jgvCUaA4Eo11CSMNa9m8=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=u3VbwgL/FrgGLwdE7oSo5P6UisrSyVOZTOlJmkZinSfRf7a61Zj0Qm7QGs67pyshi
-         SXdEAvVRChLhwb+h6h6R/XLLSRgJG/TC3N8/RJ38lZzGkaEGP5PHyIpiwJ4EN0wTYo
-         wPuDrcvqq855GbbgFSwdWSTLa4LiXOF0OnxxmimQwcVjuyEhCfAE8nWr3T5uxdcDy5
-         Ajh1cIaPIOmg5z9smDxjqFxUELJ+HOZJXeNvrD7mduUhiqRDsocH96tG/9ipNaJKGK
-         IEXjjh0Cuzo7Y+053OoiVu7EtnQ5RWJFH6rXp3RWy9JjoRnWIWOsvdV14l7eXQi4Id
-         ysYmxNKWPFV2w==
-Date:   Tue, 15 Aug 2023 08:55:40 +0300
-From:   Leon Romanovsky <leon@kernel.org>
+        b=IQYVHSU8sVuO7NUhtQt2Pu9+a0/fEVDiAfs+/HS/Z/tEcUhxTZH3ZN5IIAXrqzu+Z
+         uA7SZqcHSgTj5fUfiB7kAnBN5msRcnm0JZw/OPrhJ1Shr+gz0qVEEbwITMpYl/tkLl
+         mBB5PMtqe5+SHg6Tt2Co9zdU7Ie0DlaDg3uRcMYeG/8/5CzdImcz7oHtMkYIU7P9Mw
+         946CJq26zHcJ/qQ0mFD6FbrXzDcyNniclJs1AGrIQkayznEOIEzRPdo8CIf0+whDrF
+         o15O0ne+Aql2vuIG+q8OS0sF6Dd3QBZi8ynDlNQ0RYeLwY2dePWa+dt7rc2OtDHRXB
+         eDrc7q18fvH1Q==
+Date:   Tue, 15 Aug 2023 09:13:05 +0200
+From:   Simon Horman <horms@kernel.org>
 To:     Yue Haibing <yuehaibing@huawei.com>
-Cc:     saeedm@nvidia.com, davem@davemloft.net, edumazet@google.com,
-        kuba@kernel.org, pabeni@redhat.com, borisp@nvidia.com,
-        tariqt@nvidia.com, lkayal@nvidia.com, msanalla@nvidia.com,
-        kliteyn@nvidia.com, valex@nvidia.com, netdev@vger.kernel.org,
-        linux-rdma@vger.kernel.org
+Cc:     saeedm@nvidia.com, leon@kernel.org, davem@davemloft.net,
+        edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
+        borisp@nvidia.com, tariqt@nvidia.com, lkayal@nvidia.com,
+        msanalla@nvidia.com, kliteyn@nvidia.com, valex@nvidia.com,
+        netdev@vger.kernel.org, linux-rdma@vger.kernel.org
 Subject: Re: [PATCH net-next] net/mlx5: Remove unused declaration
-Message-ID: <20230815055540.GD22185@unreal>
+Message-ID: <ZNslgQSTPHh4Ab5M@vergenet.net>
 References: <20230814140804.47660-1-yuehaibing@huawei.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
@@ -79,15 +79,10 @@ On Mon, Aug 14, 2023 at 10:08:04PM +0800, Yue Haibing wrote:
 > removed mlx5_rdma_netdev_alloc() but not its declaration.
 > 
 > Signed-off-by: Yue Haibing <yuehaibing@huawei.com>
-> ---
->  drivers/net/ethernet/mellanox/mlx5/core/en/fs.h    |  1 -
->  .../mellanox/mlx5/core/en_accel/ipsec_rxtx.h       |  1 -
->  drivers/net/ethernet/mellanox/mlx5/core/lib/eq.h   |  1 -
->  .../net/ethernet/mellanox/mlx5/core/mlx5_core.h    |  2 --
->  .../mellanox/mlx5/core/steering/dr_types.h         |  4 ----
->  include/linux/mlx5/driver.h                        | 14 --------------
->  6 files changed, 23 deletions(-)
-> 
 
-Thanks,
-Reviewed-by: Leon Romanovsky <leonro@nvidia.com>
+Thanks Yue Haibing,
+
+I appreciate you grouping these into a single patch.
+
+Reviewed-by: Simon Horman <horms@kernel.org>
+
