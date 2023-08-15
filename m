@@ -2,203 +2,478 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D4C0F77D66F
-	for <lists+linux-rdma@lfdr.de>; Wed, 16 Aug 2023 00:52:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 508E677D6A8
+	for <lists+linux-rdma@lfdr.de>; Wed, 16 Aug 2023 01:30:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240484AbjHOWwA (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 15 Aug 2023 18:52:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40196 "EHLO
+        id S234151AbjHOX3x (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 15 Aug 2023 19:29:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40306 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240528AbjHOWvu (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 15 Aug 2023 18:51:50 -0400
-Received: from DM5PR00CU002.outbound.protection.outlook.com (mail-centralusazon11021024.outbound.protection.outlook.com [52.101.62.24])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 01DAF211C;
-        Tue, 15 Aug 2023 15:51:42 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=E4P2ft47TVbQU4hQNegVJtD6GVJr0Iat+p+3VBd47tnGNkZW6FI66h1kp7MY8z5D5+ws705M1KGblqyrRDxYo4/Wj5sNrknSXOId8ExQzac4pYZvjfgi6NNgnPdagBcnGiruvT1Sj7qdbnOcUm+dsoH+rAf9XzEE8SsDurzBUYVFyd9OjiqsoyL++frKSRKAebM6J6XMIOgCUxVORSFLCuMCtx6qzdOGfqgmu2gEeARL763B19Oh0nYUfkbUola/dOOI8uIEcsjgFiyI77YAx1xCL9x98o92CwZjuvdUhdvFRdDO5D1pR5fsnswt0ahRFte/hTsEtsJg1IzbNlQhrQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=WXPWIDc6L7OeLycBa2Ea1R7dEtx+TYCxKs0yAlbUSAg=;
- b=Rp2Z65Fpwq4Fk/nAR5mvudJtc66ddc9hVSnZgaDuvs7c7D+mkzeLRnpc8MyJYtO0MSgOwQBQ2YAlGBiAZ0Ifg8ooE2pWL8H44Uo5k6W4y9s08sUddOK4x5c+H6R8VEUEZS2tPCONKcXf7nDAazXfG+2s4UytDmA5IDmqFJppb7Xl47VZDvRmvrGfoVPTocsiSUwDhRNDKUQkyIybkKOxj9YYhx2zTRK3VpkIML1KcTQiKd6J+YN8TynHcWwEJ9wH5rmkoteeUtf7hCLxPlMGX3mbs58o9l+D6SzsH2PyUqCIrPopJlgiG7UuFKEv9/ivjlaQ59ARqTpkjk2X0M2TWA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=microsoft.com; dmarc=pass action=none
- header.from=microsoft.com; dkim=pass header.d=microsoft.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=WXPWIDc6L7OeLycBa2Ea1R7dEtx+TYCxKs0yAlbUSAg=;
- b=bsDxX/g4+1W7tNmQF+17lOOmGP6Nr1xZdeZjUGaVBZBkX53GNdZHDAcujp22TSVrfP8XGMOwXcsxqhSOIntgQ6sc0mX9mFDes3FOZNUsZclANc5zK098fh9BFSgk6ZCbW9HFlj7klGE7v+9MsrWS4y1UDGVMsVJkKd6zX+voEy0=
-Received: from PH7PR21MB3263.namprd21.prod.outlook.com (2603:10b6:510:1db::16)
- by CY5PR21MB3684.namprd21.prod.outlook.com (2603:10b6:930:e::15) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6699.9; Tue, 15 Aug
- 2023 22:51:37 +0000
-Received: from PH7PR21MB3263.namprd21.prod.outlook.com
- ([fe80::2020:e1b6:9fd6:af9]) by PH7PR21MB3263.namprd21.prod.outlook.com
- ([fe80::2020:e1b6:9fd6:af9%5]) with mapi id 15.20.6699.009; Tue, 15 Aug 2023
- 22:51:37 +0000
-From:   Long Li <longli@microsoft.com>
-To:     Jason Gunthorpe <jgg@ziepe.ca>,
-        Ajay Sharma <sharmaajay@microsoft.com>
-CC:     Wei Hu <weh@microsoft.com>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        "leon@kernel.org" <leon@kernel.org>,
-        KY Srinivasan <kys@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        "wei.liu@kernel.org" <wei.liu@kernel.org>,
-        Dexuan Cui <decui@microsoft.com>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "edumazet@google.com" <edumazet@google.com>,
-        "kuba@kernel.org" <kuba@kernel.org>,
-        "pabeni@redhat.com" <pabeni@redhat.com>,
-        vkuznets <vkuznets@redhat.com>,
-        "ssengar@linux.microsoft.com" <ssengar@linux.microsoft.com>,
-        "shradhagupta@linux.microsoft.com" <shradhagupta@linux.microsoft.com>
-Subject: RE: [EXTERNAL] Re: [PATCH v4 1/1] RDMA/mana_ib: Add EQ interrupt
- support to mana ib driver.
-Thread-Topic: [EXTERNAL] Re: [PATCH v4 1/1] RDMA/mana_ib: Add EQ interrupt
- support to mana ib driver.
-Thread-Index: AQHZwXaGQzAGQ60n40m8kETKVcWbua/PcwgAgAAA1MCAAASUgIAAA6OQgAAGp4CABPLToIABrC+AgABKHACAAJY2gIAVEP2g
-Date:   Tue, 15 Aug 2023 22:51:37 +0000
-Message-ID: <PH7PR21MB3263AF83AE1DD40F4B5D62EECE14A@PH7PR21MB3263.namprd21.prod.outlook.com>
-References: <20230728170749.1888588-1-weh@microsoft.com>
- <ZMP+MH7f/Vk9/J0b@ziepe.ca>
- <PH7PR21MB3263C134979B17F1C53D3E8DCE06A@PH7PR21MB3263.namprd21.prod.outlook.com>
- <ZMQCuQU+b/Ai9HcU@ziepe.ca>
- <PH7PR21MB326396D1782613FE406F616ACE06A@PH7PR21MB3263.namprd21.prod.outlook.com>
- <ZMQLW4elDj0vV1ld@ziepe.ca>
- <PH7PR21MB326367A455B78A1F230C5C34CE0AA@PH7PR21MB3263.namprd21.prod.outlook.com>
- <ZMmZO9IPmXNEB49t@ziepe.ca>
- <F17A4152-0715-4E73-B276-508354553413@microsoft.com>
- <ZMpVZwh9Y5W1XCsX@ziepe.ca>
-In-Reply-To: <ZMpVZwh9Y5W1XCsX@ziepe.ca>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-msip_labels: MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ActionId=3b8f4580-e3ca-493e-8957-3771874fd867;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ContentBits=0;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Enabled=true;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Method=Standard;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Name=Internal;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SetDate=2023-08-15T22:51:10Z;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SiteId=72f988bf-86f1-41af-91ab-2d7cd011db47;
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=microsoft.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: PH7PR21MB3263:EE_|CY5PR21MB3684:EE_
-x-ms-office365-filtering-correlation-id: 7eab5732-285e-41ce-ddfd-08db9de22edc
-x-ld-processed: 72f988bf-86f1-41af-91ab-2d7cd011db47,ExtAddr
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: +lKVQYT8tvUEhGmjvMtnNvZMOODO0jXTkz0CY/xM760piqF5cn5nJiiksF8sGSA/tcw7yjxFsk4GprEAcsUEK0PCbLFiQXNok5n9quigszb0oGAX9H7SCPTSITuCmR8qiVpdixHFBoVXai5LWBscuHls4TSqgSro7rWa+u1R3uguqQZmmGHBVDNm9W4TBG0MDABdWfN303dVjWUsYcGquFJ2jJc7Co7KliNyexwTB2wpPwQFFTNCkECNBH3O7NOJiKp0z6PXE/i5UEVUm8yRVgTLna2wnoi0rNxd5AOwKadxX7UT+U6lErbv5q3Xn30ZurHnPX72ntVsIJyF0BcGwbXsVJZE4EBXGKgqUyJGwoJfbuRhhexhxHadY/CsNm716SvUntWq2zJcGlC8/BI4vhThcAYnChjuCq0FQ6F30hD3dVnqvVvo3auOG4DMHTVmBGtzF78FhcJRRDAfz0euP9Yc8mGoAIky6kFnoFTac2oIObPBhcxTihoE46bJJPRnn90RjVEZLF1fzfNKkJoq/uYgiip5/w9n++n1mRkKzI4JLL6JnrN+8C2sRZtmQR/fG0b/ZKGOcO4N0uHWx+Gwo71CcAWXLi2fqIdq/cM4gZcN2AuqR4Sb57w+Ig3TvL9vIDrgAYraPuKZw/YpI9Gsbn6DsnEy907qkAh3u2Pg8pnNfBAAqqLXIlqDSabZYIqECN8zUjBWW8JR1IqZnO2pJA==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH7PR21MB3263.namprd21.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(396003)(39860400002)(346002)(136003)(376002)(366004)(1800799009)(186009)(451199024)(12101799020)(9686003)(7696005)(478600001)(55016003)(38100700002)(41300700001)(10290500003)(110136005)(83380400001)(86362001)(316002)(8990500004)(6506007)(38070700005)(2906002)(54906003)(4326008)(107886003)(53546011)(122000001)(26005)(33656002)(66446008)(82950400001)(71200400001)(66556008)(8936002)(5660300002)(64756008)(66476007)(66946007)(6636002)(8676002)(76116006)(82960400001)(52536014)(7416002);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?utf-8?B?ZW8xMlFnOE9iSG90QnpMYnhETE4wcVFHcXVlYlNwNXBJeW9ZMTZPMFZ5eXBZ?=
- =?utf-8?B?TmpVRHQzVHFNTE9VQzZWTzY4cnh4dW9NSWt5K3gySEhEaVI2ZkhJU3VZbDcw?=
- =?utf-8?B?dGNUYkh3aDk4SER1RkFLYmFjc3hSNzY3K1ZyOU4vTVFLSkF1Ym5BWDc2ZjN5?=
- =?utf-8?B?SWhiM093QS9pVjZwd0wrckdQN0pETWRBeC8wZHgzN0JtMEpLWlYzd0RBNmpJ?=
- =?utf-8?B?cDlCdFFGdWxKbnl2OW5QbVBSZUZ5SzdmNXBiQUdwQzFVOFErWFZpbXd3K2Rx?=
- =?utf-8?B?Vm1rSEhBNFJWOXE3U3hkNnJjUjRpUndBWW8zdTc5cFFpQ3pzVm8rUERoUnhS?=
- =?utf-8?B?K0twSm1ZYlhxY1BydHhsM3d4MjRPTEJHUmJOOGpJL3J0S281UW9GVUR3b2pB?=
- =?utf-8?B?REJLR0V3OTVRM2pvSExOeHVnbzN6TENBa0tVbnBjV0xCTnkvRExoR0lVWkhC?=
- =?utf-8?B?SWVaNVEzMnNnY09IRVlxMTJCUWNRaU9HK2FCRm9wU0NwaHB1WEVHSDU3QmxZ?=
- =?utf-8?B?ZElONzYwM05rNzV4TnIrUEdsMjc5eUd5VjhCeXEzWHc1RXVqZVRweW9IbnRO?=
- =?utf-8?B?b0x1b0RESlBxZFpjeGlxZmhXQUNEbXZPaGNCVDVUQ2czYTcrZTIxa2hybEhI?=
- =?utf-8?B?Zm02ZFhUdm9td0FPeFEra0Z2QjdXYjlCTHgvZkpUMURXa2ZZbWNFT0plRTVi?=
- =?utf-8?B?dFB0V2pJK2VHWVQ5MllVK1Q1MnFSSVdQRkNnUnFGUGlXYlZvTkdoS2I0ajIy?=
- =?utf-8?B?MDQ1SWRlSGNrb2NFOEVEZ21RYXNZcm5IVWhQbi9WNktvMElvTFVobzFlcmlp?=
- =?utf-8?B?aVBDSmFFSzM4a2pXdDRVT3VyUjhINGExZk8vK0lpdld2VGFBR0dlNjc0YlVK?=
- =?utf-8?B?NFlacUpFZUh6K0tKUnFwMSt0aHkzbFRXbGdDUzVZbkorWkhvQURrTDVCYXhj?=
- =?utf-8?B?UVFpNVdpb0cvdFg0d1pJNE9sME51WU4yQmdVbm5oNTRVWEp3dlBYZlg0NDRJ?=
- =?utf-8?B?WkpDWlg0ZnRzOTd5WGZjRWhiemQxTkFlRzNJaFA2eEtTdXM5bVAvM2V5ei9I?=
- =?utf-8?B?TDlLdkxaSDJYQVBySGxkQmIxNmpYYVFtaEtlS3RlR2xrT0FlS2pPc1dOSGZF?=
- =?utf-8?B?LzlQcmM1QVZsUk9rcUtkKzdkVE8xOGtGRUpGSlJBMTNTNmMwRXQwOWxNcXUv?=
- =?utf-8?B?VWYxWEtDYVJhM1lPNlMrci80QUEvN3hwM1BucjcrNFZZU21nK2g2dzM5QXJO?=
- =?utf-8?B?MGcyaG02NE1mNCtaMm1VU1h1UzZFWW02MTg3ZU13SVArOFZuTFlzQUlpQng2?=
- =?utf-8?B?dW10Q002QUsrL1ZLQWQ4UFJKalNnaG1hZjN5cEJSdXJpM3kxNXk5YTJZY3M3?=
- =?utf-8?B?bUw2QUhmSUhob3dIOExMRHVObnNvNGphZU1HTk1qVVdGNlBLQlNUODlUajFH?=
- =?utf-8?B?SjUzdld4QXhyeGVReWd4dUFGT1NVdlQrdGx4NlFJdko5dDhKSW12VUE5YWVT?=
- =?utf-8?B?S3Z4RkZ0Uk51bzhCaFpDbzRUTVpyTmNOaUhxR3hJKzd6QUREUElUbWM3RDdh?=
- =?utf-8?B?Ymt0TThqd1Npa2JuVEJLK0h4aGZxaURyVGgrVDZXMC93bm1DdWVQZ240eTM3?=
- =?utf-8?B?TytBQzR5aGxqZXdFSEZIMisrSzRTVHFxN1g3aDdpQVcwUjF0Um41bVJKOUlX?=
- =?utf-8?B?YXozb241MFJoNlhFRHlwV2tLR3NhUWZGQ1JONWFtVktUekE4YmVnMUxQY3ND?=
- =?utf-8?B?NWd5RW9UZHk4MTZqeTJNS1BPaldpWTZJQTJnZkQrdHhpOWRJSWIrbWVCL2U4?=
- =?utf-8?B?L05MUjh6TFZwOUhIK05oMGtHK3hyaFpOUDdnNDBMdGxhVDFFcHp2emd3aW14?=
- =?utf-8?B?LytSZmNaM0VkL1NjWHNKM2lsN3BaNzZ5WjllMlZTNnEzcGdIOEpydDV1b1Yw?=
- =?utf-8?B?citZdXMzTGNIbnhMbGRlUHJSRnQ0bms0bmwvbWNGKzZFRUdEUzhOR1dzWXFa?=
- =?utf-8?B?YmxyU1ZiRWxka2hDY29Qak0yaU1NdG1USHZZNE5uLzBENDdWejBqYUQxZFcv?=
- =?utf-8?B?dDdFQ3RCOTZEZW9Ham9LMWxYMEdTWVRYNFlUOU1GWDdJMlFDN2JSRkZUZ1Zw?=
- =?utf-8?Q?GOWlFUuZk7NzcNRX0bijcYHw0?=
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        with ESMTP id S240684AbjHOX3s (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 15 Aug 2023 19:29:48 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.151])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 16822199A
+        for <linux-rdma@vger.kernel.org>; Tue, 15 Aug 2023 16:29:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1692142187; x=1723678187;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=SXBp5mwAnUSxHvwJZoGsUtuEu/MDM8SVQ6nkaP1fZeg=;
+  b=cYegKHltquhZR6Z5ABssvoXQOQTbKE+WTFeYtY2eTtcEZra4xDMIcaRZ
+   yuYUA9LBJotzZOkVqU5uq2mSKOk96tgyy+c+9MYSN7Pn5q3XAFbVB4Q0P
+   KjZujuaHH/BCWZKBjzYJ2Z8TNdyFdTjPXxvtopO+rpluj/RGNK8cXa4e1
+   HsC5tXLeuDXRdSY1pRiowuHaAryJxtl+vigyz9lYbwIshsv7IAkMCpPYx
+   ern5jw42mvMo2NEmbcRDFuZSroKXeTNu1XPIK9GxeChnlGalB9Jy+x3hf
+   eNM2CnVy4mrzCQScJZwqhKomj6NmTyWRTml6RmP4GE6z+S60/hVJXDp7f
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10803"; a="352727372"
+X-IronPort-AV: E=Sophos;i="6.01,175,1684825200"; 
+   d="scan'208";a="352727372"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Aug 2023 16:29:46 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10803"; a="824022851"
+X-IronPort-AV: E=Sophos;i="6.01,175,1684825200"; 
+   d="scan'208";a="824022851"
+Received: from ssaleem-mobl1.amr.corp.intel.com ([10.93.66.152])
+  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Aug 2023 16:29:46 -0700
+From:   Shiraz Saleem <shiraz.saleem@intel.com>
+To:     jgg@nvidia.com, leon@kernel.org, linux-rdma@vger.kernel.org
+Cc:     Shiraz Saleem <shiraz.saleem@intel.com>,
+        kernel test robot <lkp@intel.com>
+Subject: [PATCH for-next] RDMA/irdma: Drop unused kernel push code
+Date:   Tue, 15 Aug 2023 18:29:31 -0500
+Message-Id: <20230815232931.1690-1-shiraz.saleem@intel.com>
+X-Mailer: git-send-email 2.39.0
 MIME-Version: 1.0
-X-OriginatorOrg: microsoft.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: PH7PR21MB3263.namprd21.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 7eab5732-285e-41ce-ddfd-08db9de22edc
-X-MS-Exchange-CrossTenant-originalarrivaltime: 15 Aug 2023 22:51:37.6974
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 72f988bf-86f1-41af-91ab-2d7cd011db47
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: tXcRZbr3ahamH77QIN4qK+OSYVpCd6dGI8b9b/Gh9Zy+3++iEcVeMfmXv1QQfxo9i40zr7bJ98z71FbwnsnbKQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY5PR21MB3684
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-PiBTdWJqZWN0OiBSZTogW0VYVEVSTkFMXSBSZTogW1BBVENIIHY0IDEvMV0gUkRNQS9tYW5hX2li
-OiBBZGQgRVENCj4gaW50ZXJydXB0IHN1cHBvcnQgdG8gbWFuYSBpYiBkcml2ZXIuDQo+IA0KPiBP
-biBXZWQsIEF1ZyAwMiwgMjAyMyBhdCAwNDoxMToxOEFNICswMDAwLCBBamF5IFNoYXJtYSB3cm90
-ZToNCj4gPg0KPiA+DQo+ID4gPiBPbiBBdWcgMSwgMjAyMywgYXQgNjo0NiBQTSwgSmFzb24gR3Vu
-dGhvcnBlIDxqZ2dAemllcGUuY2E+IHdyb3RlOg0KPiA+ID4NCj4gPiA+IO+7v09uIFR1ZSwgQXVn
-IDAxLCAyMDIzIGF0IDA3OjA2OjU3UE0gKzAwMDAsIExvbmcgTGkgd3JvdGU6DQo+ID4gPg0KPiA+
-ID4+IFRoZSBkcml2ZXIgaW50ZXJydXB0IGNvZGUgbGltaXRzIHRoZSBDUFUgcHJvY2Vzc2luZyB0
-aW1lIG9mIGVhY2ggRVENCj4gPiA+PiBieSByZWFkaW5nIGEgc21hbGwgYmF0Y2ggb2YgRVFFcyBp
-biB0aGlzIGludGVycnVwdC4gSXQgZ3VhcmFudGVlcw0KPiA+ID4+IGFsbCB0aGUgRVFzIGFyZSBj
-aGVja2VkIG9uIHRoaXMgQ1BVLCBhbmQgbGltaXRzIHRoZSBpbnRlcnJ1cHQNCj4gPiA+PiBwcm9j
-ZXNzaW5nIHRpbWUgZm9yIGFueSBnaXZlbiBFUS4gSW4gdGhpcyB3YXksIGEgYmFkIEVRICh3aGlj
-aCBpcw0KPiA+ID4+IHN0b3JtZWQgYnkgYSBiYWQgdXNlciBkb2luZyB1bnJlYXNvbmFibGUgcmUt
-YXJtaW5nIG9uIHRoZSBDUSkgY2FuJ3QNCj4gPiA+PiBzdG9ybSBvdGhlciBFUXMgb24gdGhpcyBD
-UFUuDQo+ID4gPg0KPiA+ID4gT2YgY291cnNlIGl0IGNhbiwgdGhlIGJhZCB1c2UganVzdCBjcmVh
-dGVzIGEgbWlsbGlvbiBFUXMgYW5kIHB1c2hlcw0KPiA+ID4gYSBiaXQgb2Ygd29yayB0aHJvdWdo
-IHRoZW0gY29uc3RhbnRseS4gSG93IGlzIHRoYXQgcmVhbGx5IGFueQ0KPiA+ID4gZGlmZmVyZW50
-IGZyb20gcHVzaGluZyBtb3JlIEVRRXMgaW50byBhIHNpbmdsZSBFUT8NCj4gPiA+DQo+ID4gPiBB
-bmQgaG93IGRvZXMgeW91ciBFUSBtdWx0aXBsZXhpbmcgd29yayBhbnlob3c/IERvIHlvdSBwb2xs
-IGV2ZXJ5IEVRDQo+ID4gPiBvbiBldmVyeSBpbnRlcnJ1cHQ/IFRoYXQgaXRzZWxmIGlzIGEgRE9T
-IHZlY3Rvci4NCj4gPg0KPiA+IFVzZXIgZG9lcyBub3QgY3JlYXRlIGVxcyBkaXJlY3RseSAuIEVR
-IGNyZWF0aW9uIGlzIGJ5IHByb2R1Y3Qgb2YNCj4gPiBvcGVuaW5nIGRldmljZSBpZSBhbGxvY2F0
-aW5nIGNvbnRleHQuDQo+IA0KPiBXaGljaCBpcyBkb25lIGRpcmVjdGx5IGJ5IHRoZSB1c2VyLg0K
-PiANCj4gPiBJIGFtIG5vdCBzdXJlIGlmIHRoZSBzYW1lDQo+ID4gcHJvY2VzcyBpcyBhbGxvd2Vk
-IHRvIG9wZW4gZGV2aWNlIG11bHRpcGxlIHRpbWVzDQo+IA0KPiBPZiBjb3Vyc2UgaXQgY2FuLg0K
-PiANCj4gPiBvZiBsb2NrIGltcGxlbWVudGVkLiBTbyBtaWxsaW9uIGVxcyBhcmUgcHJvYmFibHkg
-ZmFyIGZldGNoZWQgLg0KPiANCj4gVWgsIGhvdyBkbyB5b3UgY29uY2x1ZGUgdGhhdD8NCj4gDQo+
-ID4gIEFzIGZvciBob3cgdGhlIGVxIHNlcnZpY2luZyBpcyBkb25lIC0gb25seSB0aG9zZSBlceKA
-mXMgZm9yIHdoaWNoIHRoZQ0KPiA+IGludGVycnVwdCBpcyByYWlzZWQgYXJlIGNoZWNrZWQuIEFu
-ZCBlYWNoIGVxIGlzIHRpZWQgb25seSBvbmNlIGFuZA0KPiA+IG9ubHkgdG8gYSBzaW5nbGUgaW50
-ZXJydXB0Lg0KPiANCj4gU28geW91IGl0ZXJhdGUgb3ZlciBhIGxpc3Qgb2YgRVFzIGluIGV2ZXJ5
-IGludGVycnVwdD8NCj4gDQo+IEFsbG93aW5nIHVzZXJzcGFjZSB0byBpbmNyZWFzZSB0aGUgbnVt
-YmVyIG9mIEVRcyBvbiBhbiBpbnRlcnJ1cHQgaXMgYSBkaXJlY3QNCj4gRE9TIHZlY3Rvciwgbm8g
-c3BlY2lhbCBmdXNzaW5nIHJlcXVpcmVkLg0KPiANCj4gSWYgeW91IHdhbnQgdGhpcyB0byB3b3Jr
-IHByb3Blcmx5IHlvdSBuZWVkIHRvIGhhdmUgeW91ciBIVyBhcnJhbmdlIHRoaW5ncyBzbw0KPiB0
-aGVyZSBpcyBvbmx5IGV2ZXIgb25lIEVRRSBpbiB0aGUgRVEgZm9yIGEgZ2l2ZW4gQ1EgYXQgYW55
-IHRpbWUuIEFub3RoZXIgRVFFDQo+IGNhbm5vdCBiZSBzdHVmZmVkIGJ5IHRoZSBIVyB1bnRpbCB0
-aGUga2VybmVsIHJlYWRzIHRoZSBmaXJzdCBFUUUgYW5kIGFja3MgaXQNCj4gYmFjay4NCj4gDQo+
-IFlvdSBoYXZlIGFsbW9zdCBnb3QgdGhpcyByaWdodCwgdGhlIG1pc3Rha2UgaXMgdGhhdCB1c2Vy
-c3BhY2UgaXMgdGhlIHRoaW5nIHRoYXQNCj4gYWxsb3dzIHRoZSBIVyB0byBnZW5lcmF0ZSBhIG5l
-dyBFUUUuIElmIHlvdSBjYXJlIGFib3V0IERPUyB0aGVuIHRoaXMgaXMgdGhlDQo+IHdyb25nIGRl
-c2lnbiwgdGhlIGtlcm5lbCBhbmQgb25seSB0aGUga2VybmVsIG11c3QgYmUgYWJsZSB0byB0cmln
-Z2VyIGEgbmV3IEVRRQ0KPiBmb3IgdGhlIENRLg0KPiANCj4gSW4gZWZmZWN0IHlvdSBuZWVkIHR3
-byBDUSBkb29yYmVsbHMsIGEgdXNlcnNwYWNlIG9uZSB0aGF0IHJlLWFybXMgdGhlIENRLCBhbmQN
-Cj4gYSBrZXJuZWwgb25lIHRoYXQgYWxsb3dzIGEgQ1EgdGhhdCB0cmlnZ2VyZWQgb24gQVJNIHRv
-IGdlbmVyYXRlIGFuIEVRRS4NCj4gDQo+IFRodXMgdGhlIGtlcm5lbCBjYW4gc3RyaWN0bHkgbGlt
-aXQgdGhlIGZsb3cgb2YgRVFFcyB0aHJvdWdoIHRoZSBFUXMgc3VjaCB0aGF0IGFuDQo+IEVRIGNh
-biBuZXZlciBvdmVyZmxvdyBhbmQgYSBDUSBjYW4gbmV2ZXIgY29uc3VtZSBtb3JlIHRoYW4gb25l
-IEVRRS4NCj4gDQo+IFlvdSBjYW5ub3QgcmVhbGx5IGZpeCB0aGlzIGhhcmR3YXJlIHByb2JsZW0g
-d2l0aCBhIHNvZnR3YXJlIHNvbHV0aW9uLiBZb3Ugd2lsbA0KPiBhbHdheXMgaGF2ZSBhIERPUyBh
-dCBzb21lIHBvaW50Lg0KDQpXZSdsbCBhZGRyZXNzIHRoZSBjb21tZW50cyBhbmQgc2VuZCBhbm90
-aGVyIHBhdGNoLg0KDQpUaGFua3MsDQoNCkxvbmcNCg==
+The driver has code blocks for kernel push WQEs but does not
+map the doorbell page rendering this mode non functional [1]
+
+Remove code associated with this feature from the kernel fast
+path as there is currently no plan of record to support this.
+
+This also address a sparse issue reported by lkp.
+
+drivers/infiniband/hw/irdma/uk.c:285:24: sparse: sparse: incorrect type in assignment (different base types) @@     expected bool [usertype] push_wqe:1 @@     got restricted __le32 [usertype] *push_db @@
+drivers/infiniband/hw/irdma/uk.c:285:24: sparse:     expected bool [usertype] push_wqe:1
+drivers/infiniband/hw/irdma/uk.c:285:24: sparse:     got restricted __le32 [usertype] *push_db
+drivers/infiniband/hw/irdma/uk.c:386:24: sparse: sparse: incorrect type in assignment (different base types) @@     expected bool [usertype] push_wqe:1 @@     got restricted __le32 [usertype] *push_db @@
+
+[1] https://lore.kernel.org/linux-rdma/20230815051809.GB22185@unreal/T/#t
+
+Fixes: 272bba19d631 ("RDMA: Remove unnecessary ternary operators")
+Fixes: 551c46edc769 ("RDMA/irdma: Add user/kernel shared libraries")
+Reported-by: kernel test robot <lkp@intel.com>
+Closes: https://lore.kernel.org/oe-kbuild-all/202308110251.BV6BcwUR-lkp@intel.com/
+Signed-off-by: Shiraz Saleem <shiraz.saleem@intel.com>
+---
+ drivers/infiniband/hw/irdma/ctrl.c |  12 +---
+ drivers/infiniband/hw/irdma/type.h |   1 -
+ drivers/infiniband/hw/irdma/uk.c   | 115 ++++++-------------------------------
+ drivers/infiniband/hw/irdma/user.h |   8 ---
+ 4 files changed, 19 insertions(+), 117 deletions(-)
+
+diff --git a/drivers/infiniband/hw/irdma/ctrl.c b/drivers/infiniband/hw/irdma/ctrl.c
+index b90abdc85057..b1fdddd2fa1a 100644
+--- a/drivers/infiniband/hw/irdma/ctrl.c
++++ b/drivers/infiniband/hw/irdma/ctrl.c
+@@ -1301,7 +1301,6 @@ int irdma_sc_mr_fast_register(struct irdma_sc_qp *qp,
+ 
+ 	sq_info.wr_id = info->wr_id;
+ 	sq_info.signaled = info->signaled;
+-	sq_info.push_wqe = info->push_wqe;
+ 
+ 	wqe = irdma_qp_get_next_send_wqe(&qp->qp_uk, &wqe_idx,
+ 					 IRDMA_QP_WQE_MIN_QUANTA, 0, &sq_info);
+@@ -1335,7 +1334,6 @@ int irdma_sc_mr_fast_register(struct irdma_sc_qp *qp,
+ 	      FIELD_PREP(IRDMAQPSQ_HPAGESIZE, page_size) |
+ 	      FIELD_PREP(IRDMAQPSQ_STAGRIGHTS, info->access_rights) |
+ 	      FIELD_PREP(IRDMAQPSQ_VABASEDTO, info->addr_type) |
+-	      FIELD_PREP(IRDMAQPSQ_PUSHWQE, (sq_info.push_wqe ? 1 : 0)) |
+ 	      FIELD_PREP(IRDMAQPSQ_READFENCE, info->read_fence) |
+ 	      FIELD_PREP(IRDMAQPSQ_LOCALFENCE, info->local_fence) |
+ 	      FIELD_PREP(IRDMAQPSQ_SIGCOMPL, info->signaled) |
+@@ -1346,13 +1344,9 @@ int irdma_sc_mr_fast_register(struct irdma_sc_qp *qp,
+ 
+ 	print_hex_dump_debug("WQE: FAST_REG WQE", DUMP_PREFIX_OFFSET, 16, 8,
+ 			     wqe, IRDMA_QP_WQE_MIN_SIZE, false);
+-	if (sq_info.push_wqe) {
+-		irdma_qp_push_wqe(&qp->qp_uk, wqe, IRDMA_QP_WQE_MIN_QUANTA,
+-				  wqe_idx, post_sq);
+-	} else {
+-		if (post_sq)
+-			irdma_uk_qp_post_wr(&qp->qp_uk);
+-	}
++
++	if (post_sq)
++		irdma_uk_qp_post_wr(&qp->qp_uk);
+ 
+ 	return 0;
+ }
+diff --git a/drivers/infiniband/hw/irdma/type.h b/drivers/infiniband/hw/irdma/type.h
+index 5ee68604e59f..b49a98c208bf 100644
+--- a/drivers/infiniband/hw/irdma/type.h
++++ b/drivers/infiniband/hw/irdma/type.h
+@@ -1015,7 +1015,6 @@ struct irdma_fast_reg_stag_info {
+ 	bool local_fence:1;
+ 	bool read_fence:1;
+ 	bool signaled:1;
+-	bool push_wqe:1;
+ 	bool use_hmc_fcn_index:1;
+ 	u8 hmc_fcn_index;
+ 	bool use_pf_rid:1;
+diff --git a/drivers/infiniband/hw/irdma/uk.c b/drivers/infiniband/hw/irdma/uk.c
+index 6f9238c4fe20..e803c30d88d9 100644
+--- a/drivers/infiniband/hw/irdma/uk.c
++++ b/drivers/infiniband/hw/irdma/uk.c
+@@ -127,10 +127,7 @@ void irdma_uk_qp_post_wr(struct irdma_qp_uk *qp)
+ 	hw_sq_tail = (u32)FIELD_GET(IRDMA_QP_DBSA_HW_SQ_TAIL, temp);
+ 	sw_sq_head = IRDMA_RING_CURRENT_HEAD(qp->sq_ring);
+ 	if (sw_sq_head != qp->initial_ring.head) {
+-		if (qp->push_dropped) {
+-			writel(qp->qp_id, qp->wqe_alloc_db);
+-			qp->push_dropped = false;
+-		} else if (sw_sq_head != hw_sq_tail) {
++		if (sw_sq_head != hw_sq_tail) {
+ 			if (sw_sq_head > qp->initial_ring.head) {
+ 				if (hw_sq_tail >= qp->initial_ring.head &&
+ 				    hw_sq_tail < sw_sq_head)
+@@ -147,38 +144,6 @@ void irdma_uk_qp_post_wr(struct irdma_qp_uk *qp)
+ }
+ 
+ /**
+- * irdma_qp_ring_push_db -  ring qp doorbell
+- * @qp: hw qp ptr
+- * @wqe_idx: wqe index
+- */
+-static void irdma_qp_ring_push_db(struct irdma_qp_uk *qp, u32 wqe_idx)
+-{
+-	set_32bit_val(qp->push_db, 0,
+-		      FIELD_PREP(IRDMA_WQEALLOC_WQE_DESC_INDEX, wqe_idx >> 3) | qp->qp_id);
+-	qp->initial_ring.head = qp->sq_ring.head;
+-	qp->push_mode = true;
+-	qp->push_dropped = false;
+-}
+-
+-void irdma_qp_push_wqe(struct irdma_qp_uk *qp, __le64 *wqe, u16 quanta,
+-		       u32 wqe_idx, bool post_sq)
+-{
+-	__le64 *push;
+-
+-	if (IRDMA_RING_CURRENT_HEAD(qp->initial_ring) !=
+-		    IRDMA_RING_CURRENT_TAIL(qp->sq_ring) &&
+-	    !qp->push_mode) {
+-		if (post_sq)
+-			irdma_uk_qp_post_wr(qp);
+-	} else {
+-		push = (__le64 *)((uintptr_t)qp->push_wqe +
+-				  (wqe_idx & 0x7) * 0x20);
+-		memcpy(push, wqe, quanta * IRDMA_QP_WQE_MIN_SIZE);
+-		irdma_qp_ring_push_db(qp, wqe_idx);
+-	}
+-}
+-
+-/**
+  * irdma_qp_get_next_send_wqe - pad with NOP if needed, return where next WR should go
+  * @qp: hw qp ptr
+  * @wqe_idx: return wqe index
+@@ -214,9 +179,6 @@ __le64 *irdma_qp_get_next_send_wqe(struct irdma_qp_uk *qp, u32 *wqe_idx,
+ 			irdma_nop_1(qp);
+ 			IRDMA_RING_MOVE_HEAD_NOCHECK(qp->sq_ring);
+ 		}
+-		if (qp->push_db && info->push_wqe)
+-			irdma_qp_push_wqe(qp, qp->sq_base[nop_wqe_idx].elem,
+-					  avail_quanta, nop_wqe_idx, true);
+ 	}
+ 
+ 	*wqe_idx = IRDMA_RING_CURRENT_HEAD(qp->sq_ring);
+@@ -282,8 +244,6 @@ int irdma_uk_rdma_write(struct irdma_qp_uk *qp, struct irdma_post_sq_info *info,
+ 	bool read_fence = false;
+ 	u16 quanta;
+ 
+-	info->push_wqe = qp->push_db;
+-
+ 	op_info = &info->op.rdma_write;
+ 	if (op_info->num_lo_sges > qp->max_sq_frag_cnt)
+ 		return -EINVAL;
+@@ -344,7 +304,6 @@ int irdma_uk_rdma_write(struct irdma_qp_uk *qp, struct irdma_post_sq_info *info,
+ 	      FIELD_PREP(IRDMAQPSQ_IMMDATAFLAG, info->imm_data_valid) |
+ 	      FIELD_PREP(IRDMAQPSQ_REPORTRTT, info->report_rtt) |
+ 	      FIELD_PREP(IRDMAQPSQ_ADDFRAGCNT, addl_frag_cnt) |
+-	      FIELD_PREP(IRDMAQPSQ_PUSHWQE, info->push_wqe) |
+ 	      FIELD_PREP(IRDMAQPSQ_READFENCE, read_fence) |
+ 	      FIELD_PREP(IRDMAQPSQ_LOCALFENCE, info->local_fence) |
+ 	      FIELD_PREP(IRDMAQPSQ_SIGCOMPL, info->signaled) |
+@@ -353,12 +312,9 @@ int irdma_uk_rdma_write(struct irdma_qp_uk *qp, struct irdma_post_sq_info *info,
+ 	dma_wmb(); /* make sure WQE is populated before valid bit is set */
+ 
+ 	set_64bit_val(wqe, 24, hdr);
+-	if (info->push_wqe) {
+-		irdma_qp_push_wqe(qp, wqe, quanta, wqe_idx, post_sq);
+-	} else {
+-		if (post_sq)
+-			irdma_uk_qp_post_wr(qp);
+-	}
++
++	if (post_sq)
++		irdma_uk_qp_post_wr(qp);
+ 
+ 	return 0;
+ }
+@@ -383,8 +339,6 @@ int irdma_uk_rdma_read(struct irdma_qp_uk *qp, struct irdma_post_sq_info *info,
+ 	u16 quanta;
+ 	u64 hdr;
+ 
+-	info->push_wqe = qp->push_db;
+-
+ 	op_info = &info->op.rdma_read;
+ 	if (qp->max_sq_frag_cnt < op_info->num_lo_sges)
+ 		return -EINVAL;
+@@ -431,7 +385,6 @@ int irdma_uk_rdma_read(struct irdma_qp_uk *qp, struct irdma_post_sq_info *info,
+ 	      FIELD_PREP(IRDMAQPSQ_ADDFRAGCNT, addl_frag_cnt) |
+ 	      FIELD_PREP(IRDMAQPSQ_OPCODE,
+ 			 (inv_stag ? IRDMAQP_OP_RDMA_READ_LOC_INV : IRDMAQP_OP_RDMA_READ)) |
+-	      FIELD_PREP(IRDMAQPSQ_PUSHWQE, info->push_wqe) |
+ 	      FIELD_PREP(IRDMAQPSQ_READFENCE, info->read_fence) |
+ 	      FIELD_PREP(IRDMAQPSQ_LOCALFENCE, local_fence) |
+ 	      FIELD_PREP(IRDMAQPSQ_SIGCOMPL, info->signaled) |
+@@ -440,12 +393,9 @@ int irdma_uk_rdma_read(struct irdma_qp_uk *qp, struct irdma_post_sq_info *info,
+ 	dma_wmb(); /* make sure WQE is populated before valid bit is set */
+ 
+ 	set_64bit_val(wqe, 24, hdr);
+-	if (info->push_wqe) {
+-		irdma_qp_push_wqe(qp, wqe, quanta, wqe_idx, post_sq);
+-	} else {
+-		if (post_sq)
+-			irdma_uk_qp_post_wr(qp);
+-	}
++
++	if (post_sq)
++		irdma_uk_qp_post_wr(qp);
+ 
+ 	return 0;
+ }
+@@ -468,8 +418,6 @@ int irdma_uk_send(struct irdma_qp_uk *qp, struct irdma_post_sq_info *info,
+ 	bool read_fence = false;
+ 	u16 quanta;
+ 
+-	info->push_wqe = qp->push_db;
+-
+ 	op_info = &info->op.send;
+ 	if (qp->max_sq_frag_cnt < op_info->num_sges)
+ 		return -EINVAL;
+@@ -530,7 +478,6 @@ int irdma_uk_send(struct irdma_qp_uk *qp, struct irdma_post_sq_info *info,
+ 	      FIELD_PREP(IRDMAQPSQ_REPORTRTT, (info->report_rtt ? 1 : 0)) |
+ 	      FIELD_PREP(IRDMAQPSQ_OPCODE, info->op_type) |
+ 	      FIELD_PREP(IRDMAQPSQ_ADDFRAGCNT, addl_frag_cnt) |
+-	      FIELD_PREP(IRDMAQPSQ_PUSHWQE, info->push_wqe) |
+ 	      FIELD_PREP(IRDMAQPSQ_READFENCE, read_fence) |
+ 	      FIELD_PREP(IRDMAQPSQ_LOCALFENCE, info->local_fence) |
+ 	      FIELD_PREP(IRDMAQPSQ_SIGCOMPL, info->signaled) |
+@@ -541,12 +488,9 @@ int irdma_uk_send(struct irdma_qp_uk *qp, struct irdma_post_sq_info *info,
+ 	dma_wmb(); /* make sure WQE is populated before valid bit is set */
+ 
+ 	set_64bit_val(wqe, 24, hdr);
+-	if (info->push_wqe) {
+-		irdma_qp_push_wqe(qp, wqe, quanta, wqe_idx, post_sq);
+-	} else {
+-		if (post_sq)
+-			irdma_uk_qp_post_wr(qp);
+-	}
++
++	if (post_sq)
++		irdma_uk_qp_post_wr(qp);
+ 
+ 	return 0;
+ }
+@@ -720,7 +664,6 @@ int irdma_uk_inline_rdma_write(struct irdma_qp_uk *qp,
+ 	u32 i, total_size = 0;
+ 	u16 quanta;
+ 
+-	info->push_wqe = qp->push_db;
+ 	op_info = &info->op.rdma_write;
+ 
+ 	if (unlikely(qp->max_sq_frag_cnt < op_info->num_lo_sges))
+@@ -750,7 +693,6 @@ int irdma_uk_inline_rdma_write(struct irdma_qp_uk *qp,
+ 	      FIELD_PREP(IRDMAQPSQ_REPORTRTT, info->report_rtt ? 1 : 0) |
+ 	      FIELD_PREP(IRDMAQPSQ_INLINEDATAFLAG, 1) |
+ 	      FIELD_PREP(IRDMAQPSQ_IMMDATAFLAG, info->imm_data_valid ? 1 : 0) |
+-	      FIELD_PREP(IRDMAQPSQ_PUSHWQE, info->push_wqe ? 1 : 0) |
+ 	      FIELD_PREP(IRDMAQPSQ_READFENCE, read_fence) |
+ 	      FIELD_PREP(IRDMAQPSQ_LOCALFENCE, info->local_fence) |
+ 	      FIELD_PREP(IRDMAQPSQ_SIGCOMPL, info->signaled) |
+@@ -767,12 +709,8 @@ int irdma_uk_inline_rdma_write(struct irdma_qp_uk *qp,
+ 
+ 	set_64bit_val(wqe, 24, hdr);
+ 
+-	if (info->push_wqe) {
+-		irdma_qp_push_wqe(qp, wqe, quanta, wqe_idx, post_sq);
+-	} else {
+-		if (post_sq)
+-			irdma_uk_qp_post_wr(qp);
+-	}
++	if (post_sq)
++		irdma_uk_qp_post_wr(qp);
+ 
+ 	return 0;
+ }
+@@ -794,7 +732,6 @@ int irdma_uk_inline_send(struct irdma_qp_uk *qp,
+ 	u32 i, total_size = 0;
+ 	u16 quanta;
+ 
+-	info->push_wqe = qp->push_db;
+ 	op_info = &info->op.send;
+ 
+ 	if (unlikely(qp->max_sq_frag_cnt < op_info->num_sges))
+@@ -827,7 +764,6 @@ int irdma_uk_inline_send(struct irdma_qp_uk *qp,
+ 			 (info->imm_data_valid ? 1 : 0)) |
+ 	      FIELD_PREP(IRDMAQPSQ_REPORTRTT, (info->report_rtt ? 1 : 0)) |
+ 	      FIELD_PREP(IRDMAQPSQ_INLINEDATAFLAG, 1) |
+-	      FIELD_PREP(IRDMAQPSQ_PUSHWQE, info->push_wqe) |
+ 	      FIELD_PREP(IRDMAQPSQ_READFENCE, read_fence) |
+ 	      FIELD_PREP(IRDMAQPSQ_LOCALFENCE, info->local_fence) |
+ 	      FIELD_PREP(IRDMAQPSQ_SIGCOMPL, info->signaled) |
+@@ -845,12 +781,8 @@ int irdma_uk_inline_send(struct irdma_qp_uk *qp,
+ 
+ 	set_64bit_val(wqe, 24, hdr);
+ 
+-	if (info->push_wqe) {
+-		irdma_qp_push_wqe(qp, wqe, quanta, wqe_idx, post_sq);
+-	} else {
+-		if (post_sq)
+-			irdma_uk_qp_post_wr(qp);
+-	}
++	if (post_sq)
++		irdma_uk_qp_post_wr(qp);
+ 
+ 	return 0;
+ }
+@@ -872,7 +804,6 @@ int irdma_uk_stag_local_invalidate(struct irdma_qp_uk *qp,
+ 	bool local_fence = false;
+ 	struct ib_sge sge = {};
+ 
+-	info->push_wqe = qp->push_db;
+ 	op_info = &info->op.inv_local_stag;
+ 	local_fence = info->local_fence;
+ 
+@@ -889,7 +820,6 @@ int irdma_uk_stag_local_invalidate(struct irdma_qp_uk *qp,
+ 	set_64bit_val(wqe, 16, 0);
+ 
+ 	hdr = FIELD_PREP(IRDMAQPSQ_OPCODE, IRDMA_OP_TYPE_INV_STAG) |
+-	      FIELD_PREP(IRDMAQPSQ_PUSHWQE, info->push_wqe) |
+ 	      FIELD_PREP(IRDMAQPSQ_READFENCE, info->read_fence) |
+ 	      FIELD_PREP(IRDMAQPSQ_LOCALFENCE, local_fence) |
+ 	      FIELD_PREP(IRDMAQPSQ_SIGCOMPL, info->signaled) |
+@@ -899,13 +829,8 @@ int irdma_uk_stag_local_invalidate(struct irdma_qp_uk *qp,
+ 
+ 	set_64bit_val(wqe, 24, hdr);
+ 
+-	if (info->push_wqe) {
+-		irdma_qp_push_wqe(qp, wqe, IRDMA_QP_WQE_MIN_QUANTA, wqe_idx,
+-				  post_sq);
+-	} else {
+-		if (post_sq)
+-			irdma_uk_qp_post_wr(qp);
+-	}
++	if (post_sq)
++		irdma_uk_qp_post_wr(qp);
+ 
+ 	return 0;
+ }
+@@ -1124,7 +1049,6 @@ int irdma_uk_cq_poll_cmpl(struct irdma_cq_uk *cq,
+ 
+ 	info->q_type = (u8)FIELD_GET(IRDMA_CQ_SQ, qword3);
+ 	info->error = (bool)FIELD_GET(IRDMA_CQ_ERROR, qword3);
+-	info->push_dropped = (bool)FIELD_GET(IRDMACQ_PSHDROP, qword3);
+ 	info->ipv4 = (bool)FIELD_GET(IRDMACQ_IPV4, qword3);
+ 	if (info->error) {
+ 		info->major_err = FIELD_GET(IRDMA_CQ_MAJERR, qword3);
+@@ -1213,11 +1137,6 @@ int irdma_uk_cq_poll_cmpl(struct irdma_cq_uk *cq,
+ 				return irdma_uk_cq_poll_cmpl(cq, info);
+ 			}
+ 		}
+-		/*cease posting push mode on push drop*/
+-		if (info->push_dropped) {
+-			qp->push_mode = false;
+-			qp->push_dropped = true;
+-		}
+ 		if (info->comp_status != IRDMA_COMPL_STATUS_FLUSHED) {
+ 			info->wr_id = qp->sq_wrtrk_array[wqe_idx].wrid;
+ 			if (!info->comp_status)
+@@ -1521,7 +1440,6 @@ int irdma_uk_qp_init(struct irdma_qp_uk *qp, struct irdma_qp_uk_init_info *info)
+ 	qp->wqe_alloc_db = info->wqe_alloc_db;
+ 	qp->qp_id = info->qp_id;
+ 	qp->sq_size = info->sq_size;
+-	qp->push_mode = false;
+ 	qp->max_sq_frag_cnt = info->max_sq_frag_cnt;
+ 	sq_ring_size = qp->sq_size << info->sq_shift;
+ 	IRDMA_RING_INIT(qp->sq_ring, sq_ring_size);
+@@ -1616,7 +1534,6 @@ int irdma_nop(struct irdma_qp_uk *qp, u64 wr_id, bool signaled, bool post_sq)
+ 	u32 wqe_idx;
+ 	struct irdma_post_sq_info info = {};
+ 
+-	info.push_wqe = false;
+ 	info.wr_id = wr_id;
+ 	wqe = irdma_qp_get_next_send_wqe(qp, &wqe_idx, IRDMA_QP_WQE_MIN_QUANTA,
+ 					 0, &info);
+diff --git a/drivers/infiniband/hw/irdma/user.h b/drivers/infiniband/hw/irdma/user.h
+index dd145ec72a91..36feca57b274 100644
+--- a/drivers/infiniband/hw/irdma/user.h
++++ b/drivers/infiniband/hw/irdma/user.h
+@@ -216,7 +216,6 @@ struct irdma_post_sq_info {
+ 	bool local_fence:1;
+ 	bool inline_data:1;
+ 	bool imm_data_valid:1;
+-	bool push_wqe:1;
+ 	bool report_rtt:1;
+ 	bool udp_hdr:1;
+ 	bool defer_flag:1;
+@@ -248,7 +247,6 @@ struct irdma_cq_poll_info {
+ 	u8 op_type;
+ 	u8 q_type;
+ 	bool stag_invalid_set:1; /* or L_R_Key set */
+-	bool push_dropped:1;
+ 	bool error:1;
+ 	bool solicited_event:1;
+ 	bool ipv4:1;
+@@ -321,8 +319,6 @@ struct irdma_qp_uk {
+ 	struct irdma_sq_uk_wr_trk_info *sq_wrtrk_array;
+ 	u64 *rq_wrid_array;
+ 	__le64 *shadow_area;
+-	__le32 *push_db;
+-	__le64 *push_wqe;
+ 	struct irdma_ring sq_ring;
+ 	struct irdma_ring rq_ring;
+ 	struct irdma_ring initial_ring;
+@@ -342,8 +338,6 @@ struct irdma_qp_uk {
+ 	u8 rq_wqe_size;
+ 	u8 rq_wqe_size_multiplier;
+ 	bool deferred_flag:1;
+-	bool push_mode:1; /* whether the last post wqe was pushed */
+-	bool push_dropped:1;
+ 	bool first_sq_wq:1;
+ 	bool sq_flush_complete:1; /* Indicates flush was seen and SQ was empty after the flush */
+ 	bool rq_flush_complete:1; /* Indicates flush was seen and RQ was empty after the flush */
+@@ -415,7 +409,5 @@ int irdma_get_sqdepth(struct irdma_uk_attrs *uk_attrs, u32 sq_size, u8 shift,
+ 		      u32 *wqdepth);
+ int irdma_get_rqdepth(struct irdma_uk_attrs *uk_attrs, u32 rq_size, u8 shift,
+ 		      u32 *wqdepth);
+-void irdma_qp_push_wqe(struct irdma_qp_uk *qp, __le64 *wqe, u16 quanta,
+-		       u32 wqe_idx, bool post_sq);
+ void irdma_clr_wqes(struct irdma_qp_uk *qp, u32 qp_wqe_idx);
+ #endif /* IRDMA_USER_H */
+-- 
+1.8.3.1
+
