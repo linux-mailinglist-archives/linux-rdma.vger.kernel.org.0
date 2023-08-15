@@ -2,102 +2,91 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 978F277CCAC
-	for <lists+linux-rdma@lfdr.de>; Tue, 15 Aug 2023 14:32:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 48E3677D163
+	for <lists+linux-rdma@lfdr.de>; Tue, 15 Aug 2023 19:54:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234097AbjHOMb2 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 15 Aug 2023 08:31:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59820 "EHLO
+        id S233724AbjHORxf (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 15 Aug 2023 13:53:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38950 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236484AbjHOMbF (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 15 Aug 2023 08:31:05 -0400
-Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D544D1;
-        Tue, 15 Aug 2023 05:31:04 -0700 (PDT)
-Received: from dggpemm500005.china.huawei.com (unknown [172.30.72.55])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4RQ9ZG3FwtzrSgW;
-        Tue, 15 Aug 2023 20:29:42 +0800 (CST)
-Received: from [10.69.30.204] (10.69.30.204) by dggpemm500005.china.huawei.com
- (7.185.36.74) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.31; Tue, 15 Aug
- 2023 20:31:02 +0800
-Subject: Re: [PATCH net-next v6 1/6] page_pool: frag API support for 32-bit
- arch with 64-bit DMA
-To:     Simon Horman <horms@kernel.org>
-CC:     <davem@davemloft.net>, <kuba@kernel.org>, <pabeni@redhat.com>,
-        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        Lorenzo Bianconi <lorenzo@kernel.org>,
-        Alexander Duyck <alexander.duyck@gmail.com>,
-        Liang Chen <liangchen.linux@gmail.com>,
-        Alexander Lobakin <aleksander.lobakin@intel.com>,
-        Saeed Mahameed <saeedm@nvidia.com>,
+        with ESMTP id S238976AbjHORxZ (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 15 Aug 2023 13:53:25 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A2F4493;
+        Tue, 15 Aug 2023 10:53:24 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 3E80A625F9;
+        Tue, 15 Aug 2023 17:53:24 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 68793C433C8;
+        Tue, 15 Aug 2023 17:53:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1692122003;
+        bh=GOak072BFC7ziggrFR1E9dx0zzdh0OfsZQfwC1s5c9k=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=n7VD8FzJIQvGoiOXutzUdDlv6E+U+upfkoDYtfe90NjhVLE/feuYSIKR107g7/L7w
+         QYN9ItihXlExBQZBS4JVhXyuUJIk8eLARFON1c3CP5i+AOSXeQJbHGxG61yTHhy/R7
+         iTghugWl7Gxdsl00KMiw7pKo1LrsYLD3UhLA1qCEBj/UGypYhEQGwC3WtnwKElWzRi
+         dhDAGIN3//aW5QYslnkkmrCXTlWc5oexK3IVrwr9f0vqYlwTYjdjTTVtZp/VuAOry7
+         KOUYLdT/vSstR9tx9lNWYqg3WjfrIxoc0LKEz/S1XD9MOmYQIFhc0+4DbhdjdQdcJE
+         LDldZfzSTFgxg==
+Date:   Tue, 15 Aug 2023 12:53:21 -0500
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     Ilpo =?iso-8859-1?Q?J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>
+Cc:     linux-pci@vger.kernel.org, Saeed Mahameed <saeedm@nvidia.com>,
         Leon Romanovsky <leon@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
         Eric Dumazet <edumazet@google.com>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
-        <linux-rdma@vger.kernel.org>
-References: <20230814125643.59334-1-linyunsheng@huawei.com>
- <20230814125643.59334-2-linyunsheng@huawei.com>
- <ZNtgfy9KPUclHnLE@vergenet.net>
-From:   Yunsheng Lin <linyunsheng@huawei.com>
-Message-ID: <b497faa8-2e57-a060-1105-24ea6bad0051@huawei.com>
-Date:   Tue, 15 Aug 2023 20:31:01 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
- Thunderbird/52.2.0
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Moshe Shemesh <moshe@mellanox.com>,
+        Netdev <netdev@vger.kernel.org>, linux-rdma@vger.kernel.org,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 1/1] net/mlx5: Convert PCI error values to generic errnos
+Message-ID: <20230815175321.GA232277@bhelgaas>
 MIME-Version: 1.0
-In-Reply-To: <ZNtgfy9KPUclHnLE@vergenet.net>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.69.30.204]
-X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
- dggpemm500005.china.huawei.com (7.185.36.74)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-5.2 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <91ccdd4-797-5d8b-d5c9-5fef5742575@linux.intel.com>
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 2023/8/15 19:24, Simon Horman wrote:
-> On Mon, Aug 14, 2023 at 08:56:38PM +0800, Yunsheng Lin wrote:
-> 
-> ...
-> 
->> diff --git a/net/core/page_pool.c b/net/core/page_pool.c
->> index 77cb75e63aca..d62c11aaea9a 100644
->> --- a/net/core/page_pool.c
->> +++ b/net/core/page_pool.c
-> 
-> ...
-> 
->> @@ -737,18 +736,16 @@ static void page_pool_free_frag(struct page_pool *pool)
->>  	page_pool_return_page(pool, page);
->>  }
->>  
->> -struct page *page_pool_alloc_frag(struct page_pool *pool,
->> -				  unsigned int *offset,
->> -				  unsigned int size, gfp_t gfp)
->> +struct page *__page_pool_alloc_frag(struct page_pool *pool,
->> +				    unsigned int *offset,
->> +				    unsigned int size, gfp_t gfp)
->>  {
->>  	unsigned int max_size = PAGE_SIZE << pool->p.order;
->>  	struct page *page = pool->frag_page;
->>  
->> -	if (WARN_ON(!(pool->p.flags & PP_FLAG_PAGE_FRAG) ||
->> -		    size > max_size))
->> +	if (WARN_ON(!(pool->p.flags & PP_FLAG_PAGE_FRAG))
-> 
-> Hi Yunsheng Lin,
-> 
-> There is a ')' missing on the line above, which results in a build failure.
+On Tue, Aug 15, 2023 at 02:31:05PM +0300, Ilpo Järvinen wrote:
+> On Mon, 14 Aug 2023, Bjorn Helgaas wrote:
+> > On Mon, Aug 14, 2023 at 04:27:20PM +0300, Ilpo Järvinen wrote:
+> > > mlx5_pci_link_toggle() returns mix PCI specific error codes and generic
+> > > errnos.
+> > > ...
 
-Yes, thanks for noticing.
-As the above checking is removed in patch 3, so it is not noticeable in testing
-when the whole patchset is applied.
-
+> > > I wonder if these PCIBIOS_* error codes are useful at all?
+> > > There's 1:1 mapping into errno values so no information loss if
+> > > the functions would just return errnos directly. Perhaps this is
+> > > just legacy nobody has bothered to remove? If nobody opposes, I
+> > > could take a look at getting rid of them.
+> > 
+> > I don't think the PCIBIOS error codes are very useful outside of
+> > arch/x86.  They're returned by x86 PCIBIOS functions, and I think we
+> > still use those calls, but I don't think there's value in exposing the
+> > x86 error codes outside arch/x86.  Looks like a big job to clean it up
+> > though ;)
 > 
+> Hmm... Do you mean pci_bios_read/write() in arch/x86/pci/pcbios.c?
+> ...Because those functions are already inconsistent even with themselves, 
+> returning either -EINVAL or the PCI BIOS error code (or what I assume that 
+> masking of result to yield).
+
+I didn't look up the code; I just think we still use those PCIBIOS
+calls in some cases, so we need to know how to interpret the error
+values returned by the BIOS.  IMHO it would be ideal if those PCIBIOS
+errors got converted to Linux errnos before generic code saw them.
+
+Bjorn
