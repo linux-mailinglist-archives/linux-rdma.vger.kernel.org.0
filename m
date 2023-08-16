@@ -2,91 +2,494 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E3FAA77D6BF
-	for <lists+linux-rdma@lfdr.de>; Wed, 16 Aug 2023 01:43:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B47AC77D6F4
+	for <lists+linux-rdma@lfdr.de>; Wed, 16 Aug 2023 02:13:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240680AbjHOXm6 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 15 Aug 2023 19:42:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33106 "EHLO
+        id S230408AbjHPAMt (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 15 Aug 2023 20:12:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50608 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240681AbjHOXms (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 15 Aug 2023 19:42:48 -0400
-Received: from mail-pl1-x634.google.com (mail-pl1-x634.google.com [IPv6:2607:f8b0:4864:20::634])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 47C22AB
-        for <linux-rdma@vger.kernel.org>; Tue, 15 Aug 2023 16:42:47 -0700 (PDT)
-Received: by mail-pl1-x634.google.com with SMTP id d9443c01a7336-1bc6535027aso50618825ad.2
-        for <linux-rdma@vger.kernel.org>; Tue, 15 Aug 2023 16:42:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1692142967; x=1692747767;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=9HYr1Aa4PHzAugaKMGkSYZ3gAM2S9a9C7k1A47R0zUU=;
-        b=d6NGrT25Uh5WOXqmt/k3/T4Z0t3JfIp1PJ62+ygIXCN5ci1rJ+A8XifHuGgRU+Iinj
-         Qr9iZ9hqVtbpl2cVoQGppUtqUZov0jxiWsP94hmHue3Lc2P1CbT2fG1dfNRU3e1ckeYJ
-         PBkGMadvlxy8iENmndgEj3sybuR7NMWy7B8kA=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692142967; x=1692747767;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=9HYr1Aa4PHzAugaKMGkSYZ3gAM2S9a9C7k1A47R0zUU=;
-        b=XeWUmH+hHKasN8ZXV5RzafLETIuTacF2GCXeQf1w2EpuTz0KiSz6BdH5vD6Zn1/Gqg
-         C+vC5PZCOwcUbJEkhQU2NjcZPHySRVEZKh64HqvH2yWWlQhDvgDHZyXfaAaBdpCb8jKU
-         iP/GCLQinkJjTKLpetIAaX/joUCHfmovYxeCoKLtapC5nh2u0WufMv0lIEGa7/Dtfdpk
-         6v4l8CkzMcAskbUEaoDOuzvySWZCH9NZNhnmlVBtvEUEZxDwbS0aGaP2OB/ClaX+XFZH
-         sRIXsXa8vw8x1TjpNJnaa9QIYXZXrqh3hNa58AiRORd+xoZMpgB8WZzrzkm2nPJnHxAA
-         b67A==
-X-Gm-Message-State: AOJu0Yxz1nnxqq80onCjQ5RD3o3ibiRuYBq0xxYUD9sQRVGWlCcU5RYf
-        v1MyNZlgBZPedFtF72FQmxEejQ==
-X-Google-Smtp-Source: AGHT+IFAOQvRUU8M3Rpb0rD1ZLegHuxAb9k+mwWRNryWePOb5xy8WMyHkXB0HFCAlm3zWl3xYrtXpA==
-X-Received: by 2002:a17:902:e80f:b0:1b8:e41:f43f with SMTP id u15-20020a170902e80f00b001b80e41f43fmr386294plg.27.1692142966793;
-        Tue, 15 Aug 2023 16:42:46 -0700 (PDT)
-Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
-        by smtp.gmail.com with ESMTPSA id x20-20020a170902ea9400b001b9de67285dsm11656216plb.156.2023.08.15.16.42.46
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 15 Aug 2023 16:42:46 -0700 (PDT)
-Date:   Tue, 15 Aug 2023 16:42:45 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     "Gustavo A. R. Silva" <gustavoars@kernel.org>
-Cc:     Yishai Hadas <yishaih@nvidia.com>, Jason Gunthorpe <jgg@ziepe.ca>,
-        Leon Romanovsky <leon@kernel.org>, linux-rdma@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
-Subject: Re: [PATCH][next] RDMA/mlx4: Copy union directly
-Message-ID: <202308151642.794EB1B64@keescook>
-References: <ZNvimeRAPkJ24zRG@work>
+        with ESMTP id S240835AbjHPAMk (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 15 Aug 2023 20:12:40 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.20])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B2F4210C
+        for <linux-rdma@vger.kernel.org>; Tue, 15 Aug 2023 17:12:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1692144740; x=1723680740;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=CbHV2xpi5eI4cLdPdRBSAL/HHO7rUeAOtAn0uqOsEY8=;
+  b=L0keoC1hQr9kDHrLXRifF+HGZesHWjNnH1DR1s93JRRQoRTswaNQlsgL
+   Zl/CteCOTZnheF8nwL5PqrOoRu5WItuzx6PVgXt1NseKc8bWYrDPo/Jfu
+   kF1ddqz3n9i4MLoAe4skOfqKL1difmvcqDGiWhuuJahbb4LY695Jn1hx/
+   T/8cDRm/WiRjZnguJIlWfeN637PLIVegAjF0kc5iM28ZdoNzXnatVIEnh
+   OQfqT3oKNCGu353m7+Hs5tBX4G1zhTgp2AZOVzNfECXs6MZjlc6jyZO97
+   FBW/W3LAx24F4k/Nw5BzZ9axfE1wjdgddllQtHLU/xvr6oImU2QlYemV2
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10803"; a="362555761"
+X-IronPort-AV: E=Sophos;i="6.01,175,1684825200"; 
+   d="scan'208";a="362555761"
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Aug 2023 17:12:20 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10803"; a="683841204"
+X-IronPort-AV: E=Sophos;i="6.01,175,1684825200"; 
+   d="scan'208";a="683841204"
+Received: from ssaleem-mobl1.amr.corp.intel.com ([10.93.66.152])
+  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Aug 2023 17:12:19 -0700
+From:   Shiraz Saleem <shiraz.saleem@intel.com>
+To:     jgg@nvidia.com, leon@kernel.org, linux-rdma@vger.kernel.org
+Cc:     Shiraz Saleem <shiraz.saleem@intel.com>,
+        kernel test robot <lkp@intel.com>
+Subject: [PATCH v1 for-next] RDMA/irdma: Drop unused kernel push code
+Date:   Tue, 15 Aug 2023 19:12:09 -0500
+Message-Id: <20230816001209.1721-1-shiraz.saleem@intel.com>
+X-Mailer: git-send-email 2.39.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZNvimeRAPkJ24zRG@work>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Tue, Aug 15, 2023 at 02:39:53PM -0600, Gustavo A. R. Silva wrote:
-> Copy union directly instead of using memcpy().
-> 
-> Note that in this case, a direct assignment is more readable and
-> consistent with the subsequent assignments.
-> 
-> This addresses the following -Wstringop-overflow warning seen in s390
-> with defconfig:
-> drivers/infiniband/hw/mlx4/main.c:296:33: warning: writing 16 bytes into a region of size 0 [-Wstringop-overflow=]
->   296 |                                 memcpy(&port_gid_table->gids[free].gid,
->       |                                 ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
->   297 |                                        &attr->gid, sizeof(attr->gid));
->       |                                        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+The driver has code blocks for kernel push WQEs but does not
+map the doorbell page rendering this mode non functional [1]
 
-Hm, why did it think the union had a size of 0?
+Remove code associated with this feature from the kernel fast
+path as there is currently no plan of record to support this.
 
-Regardless, it's a nice fix:
+This also address a sparse issue reported by lkp.
 
-Reviewed-by: Kees Cook <keescook@chromium.org>
+drivers/infiniband/hw/irdma/uk.c:285:24: sparse: sparse: incorrect type in assignment (different base types) @@     expected bool [usertype] push_wqe:1 @@     got restricted __le32 [usertype] *push_db @@
+drivers/infiniband/hw/irdma/uk.c:285:24: sparse:     expected bool [usertype] push_wqe:1
+drivers/infiniband/hw/irdma/uk.c:285:24: sparse:     got restricted __le32 [usertype] *push_db
+drivers/infiniband/hw/irdma/uk.c:386:24: sparse: sparse: incorrect type in assignment (different base types) @@     expected bool [usertype] push_wqe:1 @@     got restricted __le32 [usertype] *push_db @@
 
+[1] https://lore.kernel.org/linux-rdma/20230815051809.GB22185@unreal/T/#t
+
+Fixes: 272bba19d631 ("RDMA: Remove unnecessary ternary operators")
+Fixes: 551c46edc769 ("RDMA/irdma: Add user/kernel shared libraries")
+Reported-by: kernel test robot <lkp@intel.com>
+Closes: https://lore.kernel.org/oe-kbuild-all/202308110251.BV6BcwUR-lkp@intel.com/
+Signed-off-by: Shiraz Saleem <shiraz.saleem@intel.com>
+---
+v0->v1:
+*Drop unused nop_wqe_idx variable from irdma_qp_get_next_send_wqe
+
+ drivers/infiniband/hw/irdma/ctrl.c |  12 +---
+ drivers/infiniband/hw/irdma/type.h |   1 -
+ drivers/infiniband/hw/irdma/uk.c   | 117 +++++--------------------------------
+ drivers/infiniband/hw/irdma/user.h |   8 ---
+ 4 files changed, 19 insertions(+), 119 deletions(-)
+
+diff --git a/drivers/infiniband/hw/irdma/ctrl.c b/drivers/infiniband/hw/irdma/ctrl.c
+index b90abdc85057..b1fdddd2fa1a 100644
+--- a/drivers/infiniband/hw/irdma/ctrl.c
++++ b/drivers/infiniband/hw/irdma/ctrl.c
+@@ -1301,7 +1301,6 @@ int irdma_sc_mr_fast_register(struct irdma_sc_qp *qp,
+ 
+ 	sq_info.wr_id = info->wr_id;
+ 	sq_info.signaled = info->signaled;
+-	sq_info.push_wqe = info->push_wqe;
+ 
+ 	wqe = irdma_qp_get_next_send_wqe(&qp->qp_uk, &wqe_idx,
+ 					 IRDMA_QP_WQE_MIN_QUANTA, 0, &sq_info);
+@@ -1335,7 +1334,6 @@ int irdma_sc_mr_fast_register(struct irdma_sc_qp *qp,
+ 	      FIELD_PREP(IRDMAQPSQ_HPAGESIZE, page_size) |
+ 	      FIELD_PREP(IRDMAQPSQ_STAGRIGHTS, info->access_rights) |
+ 	      FIELD_PREP(IRDMAQPSQ_VABASEDTO, info->addr_type) |
+-	      FIELD_PREP(IRDMAQPSQ_PUSHWQE, (sq_info.push_wqe ? 1 : 0)) |
+ 	      FIELD_PREP(IRDMAQPSQ_READFENCE, info->read_fence) |
+ 	      FIELD_PREP(IRDMAQPSQ_LOCALFENCE, info->local_fence) |
+ 	      FIELD_PREP(IRDMAQPSQ_SIGCOMPL, info->signaled) |
+@@ -1346,13 +1344,9 @@ int irdma_sc_mr_fast_register(struct irdma_sc_qp *qp,
+ 
+ 	print_hex_dump_debug("WQE: FAST_REG WQE", DUMP_PREFIX_OFFSET, 16, 8,
+ 			     wqe, IRDMA_QP_WQE_MIN_SIZE, false);
+-	if (sq_info.push_wqe) {
+-		irdma_qp_push_wqe(&qp->qp_uk, wqe, IRDMA_QP_WQE_MIN_QUANTA,
+-				  wqe_idx, post_sq);
+-	} else {
+-		if (post_sq)
+-			irdma_uk_qp_post_wr(&qp->qp_uk);
+-	}
++
++	if (post_sq)
++		irdma_uk_qp_post_wr(&qp->qp_uk);
+ 
+ 	return 0;
+ }
+diff --git a/drivers/infiniband/hw/irdma/type.h b/drivers/infiniband/hw/irdma/type.h
+index 5ee68604e59f..b49a98c208bf 100644
+--- a/drivers/infiniband/hw/irdma/type.h
++++ b/drivers/infiniband/hw/irdma/type.h
+@@ -1015,7 +1015,6 @@ struct irdma_fast_reg_stag_info {
+ 	bool local_fence:1;
+ 	bool read_fence:1;
+ 	bool signaled:1;
+-	bool push_wqe:1;
+ 	bool use_hmc_fcn_index:1;
+ 	u8 hmc_fcn_index;
+ 	bool use_pf_rid:1;
+diff --git a/drivers/infiniband/hw/irdma/uk.c b/drivers/infiniband/hw/irdma/uk.c
+index 6f9238c4fe20..9f84d997e3ab 100644
+--- a/drivers/infiniband/hw/irdma/uk.c
++++ b/drivers/infiniband/hw/irdma/uk.c
+@@ -127,10 +127,7 @@ void irdma_uk_qp_post_wr(struct irdma_qp_uk *qp)
+ 	hw_sq_tail = (u32)FIELD_GET(IRDMA_QP_DBSA_HW_SQ_TAIL, temp);
+ 	sw_sq_head = IRDMA_RING_CURRENT_HEAD(qp->sq_ring);
+ 	if (sw_sq_head != qp->initial_ring.head) {
+-		if (qp->push_dropped) {
+-			writel(qp->qp_id, qp->wqe_alloc_db);
+-			qp->push_dropped = false;
+-		} else if (sw_sq_head != hw_sq_tail) {
++		if (sw_sq_head != hw_sq_tail) {
+ 			if (sw_sq_head > qp->initial_ring.head) {
+ 				if (hw_sq_tail >= qp->initial_ring.head &&
+ 				    hw_sq_tail < sw_sq_head)
+@@ -147,38 +144,6 @@ void irdma_uk_qp_post_wr(struct irdma_qp_uk *qp)
+ }
+ 
+ /**
+- * irdma_qp_ring_push_db -  ring qp doorbell
+- * @qp: hw qp ptr
+- * @wqe_idx: wqe index
+- */
+-static void irdma_qp_ring_push_db(struct irdma_qp_uk *qp, u32 wqe_idx)
+-{
+-	set_32bit_val(qp->push_db, 0,
+-		      FIELD_PREP(IRDMA_WQEALLOC_WQE_DESC_INDEX, wqe_idx >> 3) | qp->qp_id);
+-	qp->initial_ring.head = qp->sq_ring.head;
+-	qp->push_mode = true;
+-	qp->push_dropped = false;
+-}
+-
+-void irdma_qp_push_wqe(struct irdma_qp_uk *qp, __le64 *wqe, u16 quanta,
+-		       u32 wqe_idx, bool post_sq)
+-{
+-	__le64 *push;
+-
+-	if (IRDMA_RING_CURRENT_HEAD(qp->initial_ring) !=
+-		    IRDMA_RING_CURRENT_TAIL(qp->sq_ring) &&
+-	    !qp->push_mode) {
+-		if (post_sq)
+-			irdma_uk_qp_post_wr(qp);
+-	} else {
+-		push = (__le64 *)((uintptr_t)qp->push_wqe +
+-				  (wqe_idx & 0x7) * 0x20);
+-		memcpy(push, wqe, quanta * IRDMA_QP_WQE_MIN_SIZE);
+-		irdma_qp_ring_push_db(qp, wqe_idx);
+-	}
+-}
+-
+-/**
+  * irdma_qp_get_next_send_wqe - pad with NOP if needed, return where next WR should go
+  * @qp: hw qp ptr
+  * @wqe_idx: return wqe index
+@@ -192,7 +157,6 @@ __le64 *irdma_qp_get_next_send_wqe(struct irdma_qp_uk *qp, u32 *wqe_idx,
+ {
+ 	__le64 *wqe;
+ 	__le64 *wqe_0 = NULL;
+-	u32 nop_wqe_idx;
+ 	u16 avail_quanta;
+ 	u16 i;
+ 
+@@ -209,14 +173,10 @@ __le64 *irdma_qp_get_next_send_wqe(struct irdma_qp_uk *qp, u32 *wqe_idx,
+ 			IRDMA_SQ_RING_FREE_QUANTA(qp->sq_ring))
+ 			return NULL;
+ 
+-		nop_wqe_idx = IRDMA_RING_CURRENT_HEAD(qp->sq_ring);
+ 		for (i = 0; i < avail_quanta; i++) {
+ 			irdma_nop_1(qp);
+ 			IRDMA_RING_MOVE_HEAD_NOCHECK(qp->sq_ring);
+ 		}
+-		if (qp->push_db && info->push_wqe)
+-			irdma_qp_push_wqe(qp, qp->sq_base[nop_wqe_idx].elem,
+-					  avail_quanta, nop_wqe_idx, true);
+ 	}
+ 
+ 	*wqe_idx = IRDMA_RING_CURRENT_HEAD(qp->sq_ring);
+@@ -282,8 +242,6 @@ int irdma_uk_rdma_write(struct irdma_qp_uk *qp, struct irdma_post_sq_info *info,
+ 	bool read_fence = false;
+ 	u16 quanta;
+ 
+-	info->push_wqe = qp->push_db;
+-
+ 	op_info = &info->op.rdma_write;
+ 	if (op_info->num_lo_sges > qp->max_sq_frag_cnt)
+ 		return -EINVAL;
+@@ -344,7 +302,6 @@ int irdma_uk_rdma_write(struct irdma_qp_uk *qp, struct irdma_post_sq_info *info,
+ 	      FIELD_PREP(IRDMAQPSQ_IMMDATAFLAG, info->imm_data_valid) |
+ 	      FIELD_PREP(IRDMAQPSQ_REPORTRTT, info->report_rtt) |
+ 	      FIELD_PREP(IRDMAQPSQ_ADDFRAGCNT, addl_frag_cnt) |
+-	      FIELD_PREP(IRDMAQPSQ_PUSHWQE, info->push_wqe) |
+ 	      FIELD_PREP(IRDMAQPSQ_READFENCE, read_fence) |
+ 	      FIELD_PREP(IRDMAQPSQ_LOCALFENCE, info->local_fence) |
+ 	      FIELD_PREP(IRDMAQPSQ_SIGCOMPL, info->signaled) |
+@@ -353,12 +310,9 @@ int irdma_uk_rdma_write(struct irdma_qp_uk *qp, struct irdma_post_sq_info *info,
+ 	dma_wmb(); /* make sure WQE is populated before valid bit is set */
+ 
+ 	set_64bit_val(wqe, 24, hdr);
+-	if (info->push_wqe) {
+-		irdma_qp_push_wqe(qp, wqe, quanta, wqe_idx, post_sq);
+-	} else {
+-		if (post_sq)
+-			irdma_uk_qp_post_wr(qp);
+-	}
++
++	if (post_sq)
++		irdma_uk_qp_post_wr(qp);
+ 
+ 	return 0;
+ }
+@@ -383,8 +337,6 @@ int irdma_uk_rdma_read(struct irdma_qp_uk *qp, struct irdma_post_sq_info *info,
+ 	u16 quanta;
+ 	u64 hdr;
+ 
+-	info->push_wqe = qp->push_db;
+-
+ 	op_info = &info->op.rdma_read;
+ 	if (qp->max_sq_frag_cnt < op_info->num_lo_sges)
+ 		return -EINVAL;
+@@ -431,7 +383,6 @@ int irdma_uk_rdma_read(struct irdma_qp_uk *qp, struct irdma_post_sq_info *info,
+ 	      FIELD_PREP(IRDMAQPSQ_ADDFRAGCNT, addl_frag_cnt) |
+ 	      FIELD_PREP(IRDMAQPSQ_OPCODE,
+ 			 (inv_stag ? IRDMAQP_OP_RDMA_READ_LOC_INV : IRDMAQP_OP_RDMA_READ)) |
+-	      FIELD_PREP(IRDMAQPSQ_PUSHWQE, info->push_wqe) |
+ 	      FIELD_PREP(IRDMAQPSQ_READFENCE, info->read_fence) |
+ 	      FIELD_PREP(IRDMAQPSQ_LOCALFENCE, local_fence) |
+ 	      FIELD_PREP(IRDMAQPSQ_SIGCOMPL, info->signaled) |
+@@ -440,12 +391,9 @@ int irdma_uk_rdma_read(struct irdma_qp_uk *qp, struct irdma_post_sq_info *info,
+ 	dma_wmb(); /* make sure WQE is populated before valid bit is set */
+ 
+ 	set_64bit_val(wqe, 24, hdr);
+-	if (info->push_wqe) {
+-		irdma_qp_push_wqe(qp, wqe, quanta, wqe_idx, post_sq);
+-	} else {
+-		if (post_sq)
+-			irdma_uk_qp_post_wr(qp);
+-	}
++
++	if (post_sq)
++		irdma_uk_qp_post_wr(qp);
+ 
+ 	return 0;
+ }
+@@ -468,8 +416,6 @@ int irdma_uk_send(struct irdma_qp_uk *qp, struct irdma_post_sq_info *info,
+ 	bool read_fence = false;
+ 	u16 quanta;
+ 
+-	info->push_wqe = qp->push_db;
+-
+ 	op_info = &info->op.send;
+ 	if (qp->max_sq_frag_cnt < op_info->num_sges)
+ 		return -EINVAL;
+@@ -530,7 +476,6 @@ int irdma_uk_send(struct irdma_qp_uk *qp, struct irdma_post_sq_info *info,
+ 	      FIELD_PREP(IRDMAQPSQ_REPORTRTT, (info->report_rtt ? 1 : 0)) |
+ 	      FIELD_PREP(IRDMAQPSQ_OPCODE, info->op_type) |
+ 	      FIELD_PREP(IRDMAQPSQ_ADDFRAGCNT, addl_frag_cnt) |
+-	      FIELD_PREP(IRDMAQPSQ_PUSHWQE, info->push_wqe) |
+ 	      FIELD_PREP(IRDMAQPSQ_READFENCE, read_fence) |
+ 	      FIELD_PREP(IRDMAQPSQ_LOCALFENCE, info->local_fence) |
+ 	      FIELD_PREP(IRDMAQPSQ_SIGCOMPL, info->signaled) |
+@@ -541,12 +486,9 @@ int irdma_uk_send(struct irdma_qp_uk *qp, struct irdma_post_sq_info *info,
+ 	dma_wmb(); /* make sure WQE is populated before valid bit is set */
+ 
+ 	set_64bit_val(wqe, 24, hdr);
+-	if (info->push_wqe) {
+-		irdma_qp_push_wqe(qp, wqe, quanta, wqe_idx, post_sq);
+-	} else {
+-		if (post_sq)
+-			irdma_uk_qp_post_wr(qp);
+-	}
++
++	if (post_sq)
++		irdma_uk_qp_post_wr(qp);
+ 
+ 	return 0;
+ }
+@@ -720,7 +662,6 @@ int irdma_uk_inline_rdma_write(struct irdma_qp_uk *qp,
+ 	u32 i, total_size = 0;
+ 	u16 quanta;
+ 
+-	info->push_wqe = qp->push_db;
+ 	op_info = &info->op.rdma_write;
+ 
+ 	if (unlikely(qp->max_sq_frag_cnt < op_info->num_lo_sges))
+@@ -750,7 +691,6 @@ int irdma_uk_inline_rdma_write(struct irdma_qp_uk *qp,
+ 	      FIELD_PREP(IRDMAQPSQ_REPORTRTT, info->report_rtt ? 1 : 0) |
+ 	      FIELD_PREP(IRDMAQPSQ_INLINEDATAFLAG, 1) |
+ 	      FIELD_PREP(IRDMAQPSQ_IMMDATAFLAG, info->imm_data_valid ? 1 : 0) |
+-	      FIELD_PREP(IRDMAQPSQ_PUSHWQE, info->push_wqe ? 1 : 0) |
+ 	      FIELD_PREP(IRDMAQPSQ_READFENCE, read_fence) |
+ 	      FIELD_PREP(IRDMAQPSQ_LOCALFENCE, info->local_fence) |
+ 	      FIELD_PREP(IRDMAQPSQ_SIGCOMPL, info->signaled) |
+@@ -767,12 +707,8 @@ int irdma_uk_inline_rdma_write(struct irdma_qp_uk *qp,
+ 
+ 	set_64bit_val(wqe, 24, hdr);
+ 
+-	if (info->push_wqe) {
+-		irdma_qp_push_wqe(qp, wqe, quanta, wqe_idx, post_sq);
+-	} else {
+-		if (post_sq)
+-			irdma_uk_qp_post_wr(qp);
+-	}
++	if (post_sq)
++		irdma_uk_qp_post_wr(qp);
+ 
+ 	return 0;
+ }
+@@ -794,7 +730,6 @@ int irdma_uk_inline_send(struct irdma_qp_uk *qp,
+ 	u32 i, total_size = 0;
+ 	u16 quanta;
+ 
+-	info->push_wqe = qp->push_db;
+ 	op_info = &info->op.send;
+ 
+ 	if (unlikely(qp->max_sq_frag_cnt < op_info->num_sges))
+@@ -827,7 +762,6 @@ int irdma_uk_inline_send(struct irdma_qp_uk *qp,
+ 			 (info->imm_data_valid ? 1 : 0)) |
+ 	      FIELD_PREP(IRDMAQPSQ_REPORTRTT, (info->report_rtt ? 1 : 0)) |
+ 	      FIELD_PREP(IRDMAQPSQ_INLINEDATAFLAG, 1) |
+-	      FIELD_PREP(IRDMAQPSQ_PUSHWQE, info->push_wqe) |
+ 	      FIELD_PREP(IRDMAQPSQ_READFENCE, read_fence) |
+ 	      FIELD_PREP(IRDMAQPSQ_LOCALFENCE, info->local_fence) |
+ 	      FIELD_PREP(IRDMAQPSQ_SIGCOMPL, info->signaled) |
+@@ -845,12 +779,8 @@ int irdma_uk_inline_send(struct irdma_qp_uk *qp,
+ 
+ 	set_64bit_val(wqe, 24, hdr);
+ 
+-	if (info->push_wqe) {
+-		irdma_qp_push_wqe(qp, wqe, quanta, wqe_idx, post_sq);
+-	} else {
+-		if (post_sq)
+-			irdma_uk_qp_post_wr(qp);
+-	}
++	if (post_sq)
++		irdma_uk_qp_post_wr(qp);
+ 
+ 	return 0;
+ }
+@@ -872,7 +802,6 @@ int irdma_uk_stag_local_invalidate(struct irdma_qp_uk *qp,
+ 	bool local_fence = false;
+ 	struct ib_sge sge = {};
+ 
+-	info->push_wqe = qp->push_db;
+ 	op_info = &info->op.inv_local_stag;
+ 	local_fence = info->local_fence;
+ 
+@@ -889,7 +818,6 @@ int irdma_uk_stag_local_invalidate(struct irdma_qp_uk *qp,
+ 	set_64bit_val(wqe, 16, 0);
+ 
+ 	hdr = FIELD_PREP(IRDMAQPSQ_OPCODE, IRDMA_OP_TYPE_INV_STAG) |
+-	      FIELD_PREP(IRDMAQPSQ_PUSHWQE, info->push_wqe) |
+ 	      FIELD_PREP(IRDMAQPSQ_READFENCE, info->read_fence) |
+ 	      FIELD_PREP(IRDMAQPSQ_LOCALFENCE, local_fence) |
+ 	      FIELD_PREP(IRDMAQPSQ_SIGCOMPL, info->signaled) |
+@@ -899,13 +827,8 @@ int irdma_uk_stag_local_invalidate(struct irdma_qp_uk *qp,
+ 
+ 	set_64bit_val(wqe, 24, hdr);
+ 
+-	if (info->push_wqe) {
+-		irdma_qp_push_wqe(qp, wqe, IRDMA_QP_WQE_MIN_QUANTA, wqe_idx,
+-				  post_sq);
+-	} else {
+-		if (post_sq)
+-			irdma_uk_qp_post_wr(qp);
+-	}
++	if (post_sq)
++		irdma_uk_qp_post_wr(qp);
+ 
+ 	return 0;
+ }
+@@ -1124,7 +1047,6 @@ int irdma_uk_cq_poll_cmpl(struct irdma_cq_uk *cq,
+ 
+ 	info->q_type = (u8)FIELD_GET(IRDMA_CQ_SQ, qword3);
+ 	info->error = (bool)FIELD_GET(IRDMA_CQ_ERROR, qword3);
+-	info->push_dropped = (bool)FIELD_GET(IRDMACQ_PSHDROP, qword3);
+ 	info->ipv4 = (bool)FIELD_GET(IRDMACQ_IPV4, qword3);
+ 	if (info->error) {
+ 		info->major_err = FIELD_GET(IRDMA_CQ_MAJERR, qword3);
+@@ -1213,11 +1135,6 @@ int irdma_uk_cq_poll_cmpl(struct irdma_cq_uk *cq,
+ 				return irdma_uk_cq_poll_cmpl(cq, info);
+ 			}
+ 		}
+-		/*cease posting push mode on push drop*/
+-		if (info->push_dropped) {
+-			qp->push_mode = false;
+-			qp->push_dropped = true;
+-		}
+ 		if (info->comp_status != IRDMA_COMPL_STATUS_FLUSHED) {
+ 			info->wr_id = qp->sq_wrtrk_array[wqe_idx].wrid;
+ 			if (!info->comp_status)
+@@ -1521,7 +1438,6 @@ int irdma_uk_qp_init(struct irdma_qp_uk *qp, struct irdma_qp_uk_init_info *info)
+ 	qp->wqe_alloc_db = info->wqe_alloc_db;
+ 	qp->qp_id = info->qp_id;
+ 	qp->sq_size = info->sq_size;
+-	qp->push_mode = false;
+ 	qp->max_sq_frag_cnt = info->max_sq_frag_cnt;
+ 	sq_ring_size = qp->sq_size << info->sq_shift;
+ 	IRDMA_RING_INIT(qp->sq_ring, sq_ring_size);
+@@ -1616,7 +1532,6 @@ int irdma_nop(struct irdma_qp_uk *qp, u64 wr_id, bool signaled, bool post_sq)
+ 	u32 wqe_idx;
+ 	struct irdma_post_sq_info info = {};
+ 
+-	info.push_wqe = false;
+ 	info.wr_id = wr_id;
+ 	wqe = irdma_qp_get_next_send_wqe(qp, &wqe_idx, IRDMA_QP_WQE_MIN_QUANTA,
+ 					 0, &info);
+diff --git a/drivers/infiniband/hw/irdma/user.h b/drivers/infiniband/hw/irdma/user.h
+index dd145ec72a91..36feca57b274 100644
+--- a/drivers/infiniband/hw/irdma/user.h
++++ b/drivers/infiniband/hw/irdma/user.h
+@@ -216,7 +216,6 @@ struct irdma_post_sq_info {
+ 	bool local_fence:1;
+ 	bool inline_data:1;
+ 	bool imm_data_valid:1;
+-	bool push_wqe:1;
+ 	bool report_rtt:1;
+ 	bool udp_hdr:1;
+ 	bool defer_flag:1;
+@@ -248,7 +247,6 @@ struct irdma_cq_poll_info {
+ 	u8 op_type;
+ 	u8 q_type;
+ 	bool stag_invalid_set:1; /* or L_R_Key set */
+-	bool push_dropped:1;
+ 	bool error:1;
+ 	bool solicited_event:1;
+ 	bool ipv4:1;
+@@ -321,8 +319,6 @@ struct irdma_qp_uk {
+ 	struct irdma_sq_uk_wr_trk_info *sq_wrtrk_array;
+ 	u64 *rq_wrid_array;
+ 	__le64 *shadow_area;
+-	__le32 *push_db;
+-	__le64 *push_wqe;
+ 	struct irdma_ring sq_ring;
+ 	struct irdma_ring rq_ring;
+ 	struct irdma_ring initial_ring;
+@@ -342,8 +338,6 @@ struct irdma_qp_uk {
+ 	u8 rq_wqe_size;
+ 	u8 rq_wqe_size_multiplier;
+ 	bool deferred_flag:1;
+-	bool push_mode:1; /* whether the last post wqe was pushed */
+-	bool push_dropped:1;
+ 	bool first_sq_wq:1;
+ 	bool sq_flush_complete:1; /* Indicates flush was seen and SQ was empty after the flush */
+ 	bool rq_flush_complete:1; /* Indicates flush was seen and RQ was empty after the flush */
+@@ -415,7 +409,5 @@ int irdma_get_sqdepth(struct irdma_uk_attrs *uk_attrs, u32 sq_size, u8 shift,
+ 		      u32 *wqdepth);
+ int irdma_get_rqdepth(struct irdma_uk_attrs *uk_attrs, u32 rq_size, u8 shift,
+ 		      u32 *wqdepth);
+-void irdma_qp_push_wqe(struct irdma_qp_uk *qp, __le64 *wqe, u16 quanta,
+-		       u32 wqe_idx, bool post_sq);
+ void irdma_clr_wqes(struct irdma_qp_uk *qp, u32 qp_wqe_idx);
+ #endif /* IRDMA_USER_H */
 -- 
-Kees Cook
+1.8.3.1
+
