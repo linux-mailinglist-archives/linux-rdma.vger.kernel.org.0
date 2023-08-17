@@ -2,58 +2,51 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D334877EF16
-	for <lists+linux-rdma@lfdr.de>; Thu, 17 Aug 2023 04:30:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B576B77F1E6
+	for <lists+linux-rdma@lfdr.de>; Thu, 17 Aug 2023 10:15:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234908AbjHQC3u (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 16 Aug 2023 22:29:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40752 "EHLO
+        id S1348746AbjHQIO1 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 17 Aug 2023 04:14:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40052 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233755AbjHQC3S (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 16 Aug 2023 22:29:18 -0400
+        with ESMTP id S1348779AbjHQIOB (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 17 Aug 2023 04:14:01 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CCAC426A8
-        for <linux-rdma@vger.kernel.org>; Wed, 16 Aug 2023 19:29:17 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A0DDB2112
+        for <linux-rdma@vger.kernel.org>; Thu, 17 Aug 2023 01:14:00 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 6636C64C4C
-        for <linux-rdma@vger.kernel.org>; Thu, 17 Aug 2023 02:29:17 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 15A01C433C8;
-        Thu, 17 Aug 2023 02:29:16 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 3ED9164B9C
+        for <linux-rdma@vger.kernel.org>; Thu, 17 Aug 2023 08:14:00 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 17DDBC433C8;
+        Thu, 17 Aug 2023 08:13:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1692239356;
-        bh=MU/nBpIEM5zOGcfZKwamin6GRaWleLDz+5CUYP7mSGM=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=cdurCLhpKtLZoGwX5GMSknQNngnVJ4b4ptD7EFr1+Xgz7zMAOHe2YuDntOfSrC9KZ
-         1nn5pnmFHbo0avtQ11QOUmjdsSxcSOUcq+fuwx9ssjl3A7WguUaGDnorq72qgfsgHn
-         2aTge8LuuIB+MuFA7huLjIp42NWDSoNX0ti/P4YTuGhAUJoqYDiTU/DEwQb0Vs/BYx
-         fNr+iJVDDoVn9PojuQ5qwAdn1BtjoJjI8rurqM0DapRW53HY5mh5CPx00z+gEiB5P2
-         3hJbdZrVgyZe8gPQHIXXBdLIvMJ5lioto+WjgrUTR/2CAPkiU1a5dyhVJaZbwBKND4
-         BtEOaYNWycZlw==
-Date:   Wed, 16 Aug 2023 19:29:15 -0700
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Saeed Mahameed <saeed@kernel.org>
-Cc:     Leon Romanovsky <leon@kernel.org>,
-        Jason Gunthorpe <jgg@nvidia.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>, linux-rdma@vger.kernel.org,
-        Maor Gottlieb <maorg@nvidia.com>,
-        Mark Zhang <markzhang@nvidia.com>, netdev@vger.kernel.org,
-        Paolo Abeni <pabeni@redhat.com>,
-        Patrisious Haddad <phaddad@nvidia.com>,
-        Raed Salem <raeds@nvidia.com>,
-        Saeed Mahameed <saeedm@nvidia.com>,
-        Simon Horman <horms@kernel.org>
-Subject: Re: [GIT PULL] Please pull mlx5 MACsec RoCEv2 support
-Message-ID: <20230816192915.7286828c@kernel.org>
-In-Reply-To: <ZN1N6WOpHUkhQspA@x130>
-References: <20230813064703.574082-1-leon@kernel.org>
-        <ZN1N6WOpHUkhQspA@x130>
+        s=k20201202; t=1692260039;
+        bh=wO91H5RA4KceTvtg5KPSjJCtTGNXOMXSK7pecLLr8R0=;
+        h=From:To:Cc:Subject:Date:From;
+        b=bOL2FJZ9+TsLu9M9XN/wDztJtQBDFSs7swgML5OBw46kdJsbR9U75r/R/qLaGO6EE
+         tdbsIyej5H2txdbQjCQiJ5JfEfYTPSIjlWstcZym5oBNiJnVgYuD2AGEXC+wIqsfbF
+         olCvYOn2dpDv+HZYf102WUt9zp/X4kfRuNetFt52+U37WrFtd48Iqp3wP/6Tb9p6/N
+         eChv1FRN/BTPVbK5oX1KW6reu57sncD4BnVKl8XAplvntCtbvDwC9AjgUxoCTbI0vH
+         VdMPq91T3JPLsx/E3VUbnFwfrVokzw8su1BqxwogDb48vXJaJ/F0UY7Da5lclgl6zS
+         b9VLSxpscDZVw==
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Jason Gunthorpe <jgg@nvidia.com>
+Cc:     Leon Romanovsky <leonro@nvidia.com>,
+        kernel test robot <lkp@intel.com>,
+        linux-rdma@vger.kernel.org,
+        Mustafa Ismail <mustafa.ismail@intel.com>,
+        Shiraz Saleem <shiraz.saleem@intel.com>,
+        Sindhu Devale <sindhu.devale@intel.com>,
+        Youvaraj Sagar <youvaraj.sagar@intel.com>
+Subject: [PATCH rdma-next] RDMA/irdma: Add missing kernel-doc in irdma_setup_umode_qp()
+Date:   Thu, 17 Aug 2023 11:13:53 +0300
+Message-ID: <2c9bcd2b773c400a1699bd7973e22bfba1e4b379.1692260011.git.leonro@nvidia.com>
+X-Mailer: git-send-email 2.41.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
@@ -64,15 +57,33 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Wed, 16 Aug 2023 15:30:01 -0700 Saeed Mahameed wrote:
-> Are you planing to pull this into net-next? 
-> 
-> There's a very minor conflict as described below and I a would like to
-> avoid this on merge window.
+From: Leon Romanovsky <leonro@nvidia.com>
 
-I'm not planning not to pull it.
-It's just a matter of trying to work down the queue from the highest
-priority stuff. I have to limit the time I spent on ML & patch mgmt,
-because it can easily consume 24h a day. And then stuff that's not 
-the highest priority gets stuck for a little longer than it would 
-in an ideal world :(
+Fix the following warning reported by kbuild:
+
+drivers/infiniband/hw/irdma/verbs.c:584: warning: Function parameter
+            or member 'udata' not described in 'irdma_setup_umode_qp'
+
+Fixes: 3a8498720450 ("RDMA/irdma: Allow accurate reporting on QP max send/recv WR")
+Reported-by: kernel test robot <lkp@intel.com>
+Closes: https://lore.kernel.org/oe-kbuild-all/202308171620.m4MNACWz-lkp@intel.com/
+Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
+---
+ drivers/infiniband/hw/irdma/verbs.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/drivers/infiniband/hw/irdma/verbs.c b/drivers/infiniband/hw/irdma/verbs.c
+index 660be7f13060..6cffe21558fe 100644
+--- a/drivers/infiniband/hw/irdma/verbs.c
++++ b/drivers/infiniband/hw/irdma/verbs.c
+@@ -573,6 +573,7 @@ static void irdma_setup_virt_qp(struct irdma_device *iwdev,
+ 
+ /**
+  * irdma_setup_umode_qp - setup sq and rq size in user mode qp
++ * @udata: udata
+  * @iwdev: iwarp device
+  * @iwqp: qp ptr (user or kernel)
+  * @info: initialize info to return
+-- 
+2.41.0
+
