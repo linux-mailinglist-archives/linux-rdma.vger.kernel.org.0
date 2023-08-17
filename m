@@ -2,36 +2,76 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E7F877F440
-	for <lists+linux-rdma@lfdr.de>; Thu, 17 Aug 2023 12:22:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7507D77F57F
+	for <lists+linux-rdma@lfdr.de>; Thu, 17 Aug 2023 13:44:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244765AbjHQKWJ (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 17 Aug 2023 06:22:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38122 "EHLO
+        id S1350410AbjHQLoM (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 17 Aug 2023 07:44:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59600 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1348524AbjHQKWC (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 17 Aug 2023 06:22:02 -0400
-Received: from out30-111.freemail.mail.aliyun.com (out30-111.freemail.mail.aliyun.com [115.124.30.111])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 173F2198C
-        for <linux-rdma@vger.kernel.org>; Thu, 17 Aug 2023 03:21:59 -0700 (PDT)
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R901e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046059;MF=chengyou@linux.alibaba.com;NM=1;PH=DS;RN=4;SR=0;TI=SMTPD_---0VpzlsM5_1692267716;
-Received: from localhost(mailfrom:chengyou@linux.alibaba.com fp:SMTPD_---0VpzlsM5_1692267716)
-          by smtp.aliyun-inc.com;
-          Thu, 17 Aug 2023 18:21:57 +0800
-From:   Cheng Xu <chengyou@linux.alibaba.com>
-To:     jgg@ziepe.ca, leon@kernel.org
-Cc:     linux-rdma@vger.kernel.org, KaiShen@linux.alibaba.com
-Subject: [PATCH for-next 3/3] RDMA/erdma: Implement hierachical MTT
-Date:   Thu, 17 Aug 2023 18:21:51 +0800
-Message-Id: <20230817102151.75964-4-chengyou@linux.alibaba.com>
-X-Mailer: git-send-email 2.37.0
-In-Reply-To: <20230817102151.75964-1-chengyou@linux.alibaba.com>
-References: <20230817102151.75964-1-chengyou@linux.alibaba.com>
+        with ESMTP id S1350447AbjHQLnr (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 17 Aug 2023 07:43:47 -0400
+Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 619FC1FF3
+        for <linux-rdma@vger.kernel.org>; Thu, 17 Aug 2023 04:43:45 -0700 (PDT)
+Received: by mail-lf1-x12c.google.com with SMTP id 2adb3069b0e04-4fe21e7f3d1so12311609e87.3
+        for <linux-rdma@vger.kernel.org>; Thu, 17 Aug 2023 04:43:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1692272623; x=1692877423;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=LLeO+5TaiUoPxVlP0JUoWRbfRzZ/YmtwXifoeLeomSw=;
+        b=QU/85fM9AOgYUhGKmHWzwxOONrqcjFUwNSMV05dbHeFFgwbensRUW5GbDTPOL1UW+h
+         LQ7WCl6ZEIicFUXvoJ139LJP23WWdjZmQRAD5R0C419bjY8mrJFAG1PtfNOusHn+HA1M
+         GKS6fQVzA3TsJ1hTX1tjvqvV84zZAu7MQWS7nMBzE777NmatVStX8QXHcfEr0CzsvQHS
+         w7NlKLwad7wab55ppkrNaqAV/76LjAY/AkVshJjY0Q7G41gi+K57qQApluCzxI7F8tcs
+         oI77h387iC5kkFFGC0c5R+3ZHO46P/cUOh4e5vSPOrl6eX+IePdoHO1zZ5ggHHjMFzJe
+         +mqA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692272623; x=1692877423;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=LLeO+5TaiUoPxVlP0JUoWRbfRzZ/YmtwXifoeLeomSw=;
+        b=S5tY5QUIz8sdMnKZuSp/9oPDK1derROuCkN+cBN9l1Bo2+4Vg2jWD1MyDnCIZqSvlG
+         3uQTGPkFB+BNqXtxqRCqd4cRClOJYA41+BB06FOmZ+QthypOLos/eEhJdmSTBKAr+/fF
+         tHRMT2C9rUoKBZ176NEpIsOziv70yAn9MuYkjvQpi9XM4j4tXdXY/llAnP7ejHErwSQs
+         Fs/MgpN0HJl1ZoGvJZrXeV7eeI4wK2qOVROHsWP34zXymrotviCwTCj1VQsv6QGoKaoA
+         o+x5hId9PBrwo6KzZ36tEPFMm2Qthw5zWTtPNYlvgYrE2QuR1VK9iyJHCetWrMSFUY4u
+         aEPQ==
+X-Gm-Message-State: AOJu0Yx58XNG3666KEF0clJoGo5eZ3BslymGByvIZHvQSFi4X+PRaYwq
+        lPnyzIVm+iudwyUznepRIQTjwCtMyno2f5Gx7WQ7WA==
+X-Google-Smtp-Source: AGHT+IEgvPJSYgjV4JyXT4erwkwC00h+Nl59o9Fm0hzlJ68yUqG6GmzKy6oH1Qs90b/uqxnIYfpE5oJjGZWCA7MVYNI=
+X-Received: by 2002:ac2:4836:0:b0:4fe:1e74:3f3e with SMTP id
+ 22-20020ac24836000000b004fe1e743f3emr3473793lft.48.1692272623076; Thu, 17 Aug
+ 2023 04:43:43 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-9.9 required=5.0 tests=BAYES_00,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL autolearn=ham autolearn_force=no
+References: <20230814125643.59334-1-linyunsheng@huawei.com>
+ <20230814125643.59334-2-linyunsheng@huawei.com> <CAC_iWjKMLoUu4bctrWtK46mpyhQ7LoKe4Nm2t8jZVMM0L9O2xA@mail.gmail.com>
+ <06e89203-9eaf-99eb-99de-e5209819b8b3@huawei.com> <CAC_iWjJ4Pi7Pj9Rm13y4aXBB3RsP9pTsfRf_A-OraXKwaO_xGA@mail.gmail.com>
+ <b71d5f5f-0ea1-3a35-8c90-53ef4ae27e79@huawei.com>
+In-Reply-To: <b71d5f5f-0ea1-3a35-8c90-53ef4ae27e79@huawei.com>
+From:   Ilias Apalodimas <ilias.apalodimas@linaro.org>
+Date:   Thu, 17 Aug 2023 14:43:06 +0300
+Message-ID: <CAC_iWjJbrwSTT9OT3VjzXkCTdcwShWWaaPJUVC0aG2hR5sbkWg@mail.gmail.com>
+Subject: Re: [PATCH net-next v6 1/6] page_pool: frag API support for 32-bit
+ arch with 64-bit DMA
+To:     Yunsheng Lin <linyunsheng@huawei.com>
+Cc:     davem@davemloft.net, kuba@kernel.org, pabeni@redhat.com,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Lorenzo Bianconi <lorenzo@kernel.org>,
+        Alexander Duyck <alexander.duyck@gmail.com>,
+        Liang Chen <liangchen.linux@gmail.com>,
+        Alexander Lobakin <aleksander.lobakin@intel.com>,
+        Saeed Mahameed <saeedm@nvidia.com>,
+        Leon Romanovsky <leon@kernel.org>,
+        Eric Dumazet <edumazet@google.com>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        linux-rdma@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -39,418 +79,113 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Hierarchical MTT allows large MR registration without the need of
-continous physical address. This commit add the support of hierachical
-MTT support for erdma.
+On Thu, 17 Aug 2023 at 12:06, Yunsheng Lin <linyunsheng@huawei.com> wrote:
+>
+> On 2023/8/17 1:01, Ilias Apalodimas wrote:
+> > On Wed, 16 Aug 2023 at 15:49, Yunsheng Lin <linyunsheng@huawei.com> wrote:
+> >>
+> >> On 2023/8/16 19:26, Ilias Apalodimas wrote:
+> >>> Hi Yunsheng
+> >>>
+> >>> On Mon, 14 Aug 2023 at 15:59, Yunsheng Lin <linyunsheng@huawei.com> wrote:
+> >>>>
+> >>>> Currently page_pool_alloc_frag() is not supported in 32-bit
+> >>>> arch with 64-bit DMA because of the overlap issue between
+> >>>> pp_frag_count and dma_addr_upper in 'struct page' for those
+> >>>> arches, which seems to be quite common, see [1], which means
+> >>>> driver may need to handle it when using frag API.
+> >>>
+> >>> That wasn't so common. IIRC it was a single TI platform that was breaking?
+> >>
+> >> I am not so sure about that as grepping 'ARM_LPAE' has a long
+> >> list for that.
+> >
+> > Shouldn't we be grepping for CONFIG_ARCH_DMA_ADDR_T_64BIT and
+> > PHYS_ADDR_T_64BIT to find the affected platforms?  Why LPAE?
+>
+>
+> I used the key in the  original report:
+>
+> https://www.spinics.net/lists/netdev/msg779890.html
+>
+> >> Please see the bisection report below about a boot failure on
+> >> rk3288-rock2-square which is pointing to this patch.  The issue
+> >> appears to only happen with CONFIG_ARM_LPAE=y.
+>
+> grepping the 'CONFIG_PHYS_ADDR_T_64BIT' seems to be more common?
+> https://elixir.free-electrons.com/linux/v6.4-rc6/K/ident/CONFIG_PHYS_ADDR_T_64BIT
+>
 
-Signed-off-by: Cheng Xu <chengyou@linux.alibaba.com>
----
- drivers/infiniband/hw/erdma/erdma_hw.h    |  14 +-
- drivers/infiniband/hw/erdma/erdma_verbs.c | 200 +++++++++++++++++++---
- drivers/infiniband/hw/erdma/erdma_verbs.h |   4 +-
- 3 files changed, 194 insertions(+), 24 deletions(-)
+Yes, grepping around a bit uncovered this arch/arm/mm/Kconfig, which
+enables PHYS_ADDR_T_64BIT if ARM_LPAE is enabled.  Then
+ARCH_DMA_ADDR_T_64BIT
+is also enabled from kernel/dma/Kconfig.  But that doesn't mean
+grepping for any of those uncovers all the problematic platforms,
+there are more than Arm platforms.  The ones that will actually fail
+are
+- ARCH_DMA_ADDR_T_64BIT is enabled and it's a 32bit architecture
+- You have a network driver for that platform that uses page pool.
 
-diff --git a/drivers/infiniband/hw/erdma/erdma_hw.h b/drivers/infiniband/hw/erdma/erdma_hw.h
-index 80a78569bc2a..9d316fdc6f9a 100644
---- a/drivers/infiniband/hw/erdma/erdma_hw.h
-+++ b/drivers/infiniband/hw/erdma/erdma_hw.h
-@@ -248,6 +248,7 @@ struct erdma_cmdq_create_cq_req {
- 
- /* regmr/deregmr cfg0 */
- #define ERDMA_CMD_MR_VALID_MASK BIT(31)
-+#define ERDMA_CMD_MR_VERSION_MASK GENMASK(30, 28)
- #define ERDMA_CMD_MR_KEY_MASK GENMASK(27, 20)
- #define ERDMA_CMD_MR_MPT_IDX_MASK GENMASK(19, 0)
- 
-@@ -258,6 +259,7 @@ struct erdma_cmdq_create_cq_req {
- 
- /* regmr cfg2 */
- #define ERDMA_CMD_REGMR_PAGESIZE_MASK GENMASK(31, 27)
-+#define ERDMA_CMD_REGMR_MTT_PAGESIZE_MASK GENMASK(26, 24)
- #define ERDMA_CMD_REGMR_MTT_LEVEL_MASK GENMASK(21, 20)
- #define ERDMA_CMD_REGMR_MTT_CNT_MASK GENMASK(19, 0)
- 
-@@ -268,7 +270,14 @@ struct erdma_cmdq_reg_mr_req {
- 	u64 start_va;
- 	u32 size;
- 	u32 cfg2;
--	u64 phy_addr[4];
-+	union {
-+		u64 phy_addr[4];
-+		struct {
-+			u64 rsvd;
-+			u32 size_h;
-+			u32 mtt_cnt_h;
-+		};
-+	};
- };
- 
- struct erdma_cmdq_dereg_mr_req {
-@@ -309,7 +318,7 @@ struct erdma_cmdq_modify_qp_req {
- /* create qp mtt_cfg */
- #define ERDMA_CMD_CREATE_QP_PAGE_OFFSET_MASK GENMASK(31, 12)
- #define ERDMA_CMD_CREATE_QP_MTT_CNT_MASK GENMASK(11, 1)
--#define ERDMA_CMD_CREATE_QP_MTT_TYPE_MASK BIT(0)
-+#define ERDMA_CMD_CREATE_QP_MTT_LEVEL_MASK BIT(0)
- 
- /* create qp db cfg */
- #define ERDMA_CMD_CREATE_QP_SQDB_CFG_MASK GENMASK(31, 16)
-@@ -364,6 +373,7 @@ struct erdma_cmdq_reflush_req {
- 
- enum {
- 	ERDMA_DEV_CAP_FLAGS_ATOMIC = 1 << 7,
-+	ERDMA_DEV_CAP_FLAGS_MTT_VA = 1 << 5,
- 	ERDMA_DEV_CAP_FLAGS_EXTEND_DB = 1 << 3,
- };
- 
-diff --git a/drivers/infiniband/hw/erdma/erdma_verbs.c b/drivers/infiniband/hw/erdma/erdma_verbs.c
-index 0d272f18256a..dcccb6015232 100644
---- a/drivers/infiniband/hw/erdma/erdma_verbs.c
-+++ b/drivers/infiniband/hw/erdma/erdma_verbs.c
-@@ -26,13 +26,13 @@ static void assemble_qbuf_mtt_for_cmd(struct erdma_mem *mem, u32 *cfg,
- 
- 	if (mem->mtt_nents > ERDMA_MAX_INLINE_MTT_ENTRIES) {
- 		*addr0 = mtt->buf_dma;
--		*cfg |= FIELD_PREP(ERDMA_CMD_CREATE_QP_MTT_TYPE_MASK,
--				   ERDMA_MR_INDIRECT_MTT);
-+		*cfg |= FIELD_PREP(ERDMA_CMD_CREATE_QP_MTT_LEVEL_MASK,
-+				   ERDMA_MR_MTT_1LEVEL);
- 	} else {
- 		*addr0 = mtt->buf[0];
- 		memcpy(addr1, mtt->buf + 1, MTT_SIZE(mem->mtt_nents - 1));
--		*cfg |= FIELD_PREP(ERDMA_CMD_CREATE_QP_MTT_TYPE_MASK,
--				   ERDMA_MR_INLINE_MTT);
-+		*cfg |= FIELD_PREP(ERDMA_CMD_CREATE_QP_MTT_LEVEL_MASK,
-+				   ERDMA_MR_MTT_0LEVEL);
- 	}
- }
- 
-@@ -70,8 +70,8 @@ static int create_qp_cmd(struct erdma_ucontext *uctx, struct erdma_qp *qp)
- 		req.sq_mtt_cfg =
- 			FIELD_PREP(ERDMA_CMD_CREATE_QP_PAGE_OFFSET_MASK, 0) |
- 			FIELD_PREP(ERDMA_CMD_CREATE_QP_MTT_CNT_MASK, 1) |
--			FIELD_PREP(ERDMA_CMD_CREATE_QP_MTT_TYPE_MASK,
--				   ERDMA_MR_INLINE_MTT);
-+			FIELD_PREP(ERDMA_CMD_CREATE_QP_MTT_LEVEL_MASK,
-+				   ERDMA_MR_MTT_0LEVEL);
- 		req.rq_mtt_cfg = req.sq_mtt_cfg;
- 
- 		req.rq_buf_addr = qp->kern_qp.rq_buf_dma_addr;
-@@ -140,12 +140,17 @@ static int regmr_cmd(struct erdma_dev *dev, struct erdma_mr *mr)
- 
- 	if (mr->type == ERDMA_MR_TYPE_FRMR ||
- 	    mr->mem.page_cnt > ERDMA_MAX_INLINE_MTT_ENTRIES) {
--		req.phy_addr[0] = mr->mem.mtt->buf_dma;
--		mtt_level = ERDMA_MR_INDIRECT_MTT;
-+		if (mr->mem.mtt->continuous) {
-+			req.phy_addr[0] = mr->mem.mtt->buf_dma;
-+			mtt_level = ERDMA_MR_MTT_1LEVEL;
-+		} else {
-+			req.phy_addr[0] = sg_dma_address(mr->mem.mtt->sglist);
-+			mtt_level = mr->mem.mtt->level;
-+		}
- 	} else {
- 		memcpy(req.phy_addr, mr->mem.mtt->buf,
- 		       MTT_SIZE(mr->mem.page_cnt));
--		mtt_level = ERDMA_MR_INLINE_MTT;
-+		mtt_level = ERDMA_MR_MTT_0LEVEL;
- 	}
- 
- 	req.cfg0 = FIELD_PREP(ERDMA_CMD_MR_VALID_MASK, mr->valid) |
-@@ -167,6 +172,14 @@ static int regmr_cmd(struct erdma_dev *dev, struct erdma_mr *mr)
- 		req.size = mr->mem.len;
- 	}
- 
-+	if (!mr->mem.mtt->continuous && mr->mem.mtt->level > 1) {
-+		req.cfg0 |= FIELD_PREP(ERDMA_CMD_MR_VERSION_MASK, 1);
-+		req.cfg2 |= FIELD_PREP(ERDMA_CMD_REGMR_MTT_PAGESIZE_MASK,
-+				       PAGE_SHIFT - ERDMA_HW_PAGE_SHIFT);
-+		req.size_h = upper_32_bits(mr->mem.len);
-+		req.mtt_cnt_h = mr->mem.page_cnt >> 20;
-+	}
-+
- post_cmd:
- 	return erdma_post_cmd_wait(&dev->cmdq, &req, sizeof(req), NULL, NULL);
- }
-@@ -194,7 +207,7 @@ static int create_cq_cmd(struct erdma_ucontext *uctx, struct erdma_cq *cq)
- 
- 		req.cfg1 |= FIELD_PREP(ERDMA_CMD_CREATE_CQ_MTT_CNT_MASK, 1) |
- 			    FIELD_PREP(ERDMA_CMD_CREATE_CQ_MTT_LEVEL_MASK,
--				       ERDMA_MR_INLINE_MTT);
-+				       ERDMA_MR_MTT_0LEVEL);
- 
- 		req.first_page_offset = 0;
- 		req.cq_db_info_addr =
-@@ -209,13 +222,13 @@ static int create_cq_cmd(struct erdma_ucontext *uctx, struct erdma_cq *cq)
- 			req.qbuf_addr_h = upper_32_bits(mem->mtt->buf[0]);
- 			req.cfg1 |=
- 				FIELD_PREP(ERDMA_CMD_CREATE_CQ_MTT_LEVEL_MASK,
--					   ERDMA_MR_INLINE_MTT);
-+					   ERDMA_MR_MTT_0LEVEL);
- 		} else {
- 			req.qbuf_addr_l = lower_32_bits(mem->mtt->buf_dma);
- 			req.qbuf_addr_h = upper_32_bits(mem->mtt->buf_dma);
- 			req.cfg1 |=
- 				FIELD_PREP(ERDMA_CMD_CREATE_CQ_MTT_LEVEL_MASK,
--					   ERDMA_MR_INDIRECT_MTT);
-+					   ERDMA_MR_MTT_1LEVEL);
- 		}
- 		req.cfg1 |= FIELD_PREP(ERDMA_CMD_CREATE_CQ_MTT_CNT_MASK,
- 				       mem->mtt_nents);
-@@ -543,7 +556,6 @@ static struct erdma_mtt *erdma_create_cont_mtt(struct erdma_dev *dev,
- 					       size_t size)
- {
- 	struct erdma_mtt *mtt;
--	int ret = -ENOMEM;
- 
- 	mtt = kzalloc(sizeof(*mtt), GFP_KERNEL);
- 	if (!mtt)
-@@ -565,6 +577,104 @@ static struct erdma_mtt *erdma_create_cont_mtt(struct erdma_dev *dev,
- err_free_mtt_buf:
- 	kfree(mtt->buf);
- 
-+err_free_mtt:
-+	kfree(mtt);
-+
-+	return ERR_PTR(-ENOMEM);
-+}
-+
-+static void erdma_destroy_mtt_buf_sg(struct erdma_dev *dev,
-+				     struct erdma_mtt *mtt)
-+{
-+	dma_unmap_sg(&dev->pdev->dev, mtt->sglist, mtt->nsg, DMA_TO_DEVICE);
-+	vfree(mtt->sglist);
-+}
-+
-+static void erdma_destroy_scatter_mtt(struct erdma_dev *dev,
-+				      struct erdma_mtt *mtt)
-+{
-+	erdma_destroy_mtt_buf_sg(dev, mtt);
-+	vfree(mtt->buf);
-+	kfree(mtt);
-+}
-+
-+static void erdma_init_middle_mtt(struct erdma_mtt *mtt,
-+				  struct erdma_mtt *low_mtt)
-+{
-+	struct scatterlist *sg;
-+	u32 idx = 0, i;
-+
-+	for_each_sg(low_mtt->sglist, sg, low_mtt->nsg, i)
-+		mtt->buf[idx++] = sg_dma_address(sg);
-+}
-+
-+static int erdma_create_mtt_buf_sg(struct erdma_dev *dev, struct erdma_mtt *mtt)
-+{
-+	struct scatterlist *sglist;
-+	void *buf = mtt->buf;
-+	u32 npages, i, nsg;
-+	struct page *pg;
-+
-+	/* Failed if buf is not page aligned */
-+	if ((uintptr_t)buf & ~PAGE_MASK)
-+		return -EINVAL;
-+
-+	npages = DIV_ROUND_UP(mtt->size, PAGE_SIZE);
-+	sglist = vzalloc(npages * sizeof(*sglist));
-+	if (!sglist)
-+		return -ENOMEM;
-+
-+	sg_init_table(sglist, npages);
-+	for (i = 0; i < npages; i++) {
-+		pg = vmalloc_to_page(buf);
-+		if (!pg)
-+			goto err;
-+		sg_set_page(&sglist[i], pg, PAGE_SIZE, 0);
-+		buf += PAGE_SIZE;
-+	}
-+
-+	nsg = dma_map_sg(&dev->pdev->dev, sglist, npages, DMA_TO_DEVICE);
-+	if (!nsg)
-+		goto err;
-+
-+	mtt->sglist = sglist;
-+	mtt->nsg = nsg;
-+
-+	return 0;
-+err:
-+	vfree(sglist);
-+
-+	return -ENOMEM;
-+}
-+
-+static struct erdma_mtt *erdma_create_scatter_mtt(struct erdma_dev *dev,
-+						  size_t size)
-+{
-+	struct erdma_mtt *mtt;
-+	int ret = -ENOMEM;
-+
-+	mtt = kzalloc(sizeof(*mtt), GFP_KERNEL);
-+	if (!mtt)
-+		return NULL;
-+
-+	mtt->size = ALIGN(size, PAGE_SIZE);
-+	mtt->buf = vzalloc(mtt->size);
-+	mtt->continuous = false;
-+	if (!mtt->buf)
-+		goto err_free_mtt;
-+
-+	ret = erdma_create_mtt_buf_sg(dev, mtt);
-+	if (ret)
-+		goto err_free_mtt_buf;
-+
-+	ibdev_dbg(&dev->ibdev, "create scatter mtt, size:%lu, nsg:%u\n",
-+		  mtt->size, mtt->nsg);
-+
-+	return mtt;
-+
-+err_free_mtt_buf:
-+	vfree(mtt->buf);
-+
- err_free_mtt:
- 	kfree(mtt);
- 
-@@ -574,28 +684,77 @@ static struct erdma_mtt *erdma_create_cont_mtt(struct erdma_dev *dev,
- static struct erdma_mtt *erdma_create_mtt(struct erdma_dev *dev, size_t size,
- 					  bool force_continuous)
- {
-+	struct erdma_mtt *mtt, *tmp_mtt;
-+	int ret, level = 0;
-+
- 	ibdev_dbg(&dev->ibdev, "create_mtt, size:%lu, force cont:%d\n", size,
- 		  force_continuous);
- 
-+	if (!(dev->attrs.cap_flags & ERDMA_DEV_CAP_FLAGS_MTT_VA))
-+		force_continuous = true;
-+
- 	if (force_continuous)
- 		return erdma_create_cont_mtt(dev, size);
- 
--	return ERR_PTR(-ENOTSUPP);
-+	mtt = erdma_create_scatter_mtt(dev, size);
-+	if (IS_ERR(mtt))
-+		return mtt;
-+	level = 1;
-+
-+	/* convergence the mtt table. */
-+	while (mtt->nsg != 1 && level <= 3) {
-+		tmp_mtt = erdma_create_scatter_mtt(dev, MTT_SIZE(mtt->nsg));
-+		if (IS_ERR(tmp_mtt)) {
-+			ret = PTR_ERR(tmp_mtt);
-+			goto err_free_mtt;
-+		}
-+		erdma_init_middle_mtt(tmp_mtt, mtt);
-+		tmp_mtt->low_level = mtt;
-+		mtt = tmp_mtt;
-+		level++;
-+	}
-+
-+	if (level > 3) {
-+		ret = -ENOMEM;
-+		goto err_free_mtt;
-+	}
-+
-+	mtt->level = level;
-+	ibdev_dbg(&dev->ibdev, "top mtt: level:%d, dma_addr 0x%llx\n",
-+		  mtt->level, mtt->sglist[0].dma_address);
-+
-+	return mtt;
-+err_free_mtt:
-+	while (mtt) {
-+		tmp_mtt = mtt->low_level;
-+		erdma_destroy_scatter_mtt(dev, mtt);
-+		mtt = tmp_mtt;
-+	}
-+
-+	return ERR_PTR(ret);
- }
- 
- static void erdma_destroy_mtt(struct erdma_dev *dev, struct erdma_mtt *mtt)
- {
-+	struct erdma_mtt *tmp_mtt;
-+
- 	if (mtt->continuous) {
- 		dma_unmap_single(&dev->pdev->dev, mtt->buf_dma, mtt->size,
- 				 DMA_TO_DEVICE);
- 		kfree(mtt->buf);
- 		kfree(mtt);
-+	} else {
-+		while (mtt) {
-+			tmp_mtt = mtt->low_level;
-+			erdma_destroy_scatter_mtt(dev, mtt);
-+			mtt = tmp_mtt;
-+		}
- 	}
- }
- 
- static int get_mtt_entries(struct erdma_dev *dev, struct erdma_mem *mem,
- 			   u64 start, u64 len, int access, u64 virt,
--			   unsigned long req_page_size, u8 force_indirect_mtt)
-+			   unsigned long req_page_size, bool force_continuous)
- {
- 	int ret = 0;
- 
-@@ -612,7 +771,8 @@ static int get_mtt_entries(struct erdma_dev *dev, struct erdma_mem *mem,
- 	mem->page_offset = start & (mem->page_size - 1);
- 	mem->mtt_nents = ib_umem_num_dma_blocks(mem->umem, mem->page_size);
- 	mem->page_cnt = mem->mtt_nents;
--	mem->mtt = erdma_create_mtt(dev, MTT_SIZE(mem->page_cnt), true);
-+	mem->mtt = erdma_create_mtt(dev, MTT_SIZE(mem->page_cnt),
-+				    force_continuous);
- 	if (IS_ERR(mem->mtt)) {
- 		ret = PTR_ERR(mem->mtt);
- 		goto error_ret;
-@@ -717,7 +877,7 @@ static int init_user_qp(struct erdma_qp *qp, struct erdma_ucontext *uctx,
- 
- 	ret = get_mtt_entries(qp->dev, &qp->user_qp.sq_mem, va,
- 			      qp->attrs.sq_size << SQEBB_SHIFT, 0, va,
--			      (SZ_1M - SZ_4K), 1);
-+			      (SZ_1M - SZ_4K), true);
- 	if (ret)
- 		return ret;
- 
-@@ -726,7 +886,7 @@ static int init_user_qp(struct erdma_qp *qp, struct erdma_ucontext *uctx,
- 
- 	ret = get_mtt_entries(qp->dev, &qp->user_qp.rq_mem, va + rq_offset,
- 			      qp->attrs.rq_size << RQE_SHIFT, 0, va + rq_offset,
--			      (SZ_1M - SZ_4K), 1);
-+			      (SZ_1M - SZ_4K), true);
- 	if (ret)
- 		goto put_sq_mtt;
- 
-@@ -998,7 +1158,7 @@ struct ib_mr *erdma_reg_user_mr(struct ib_pd *ibpd, u64 start, u64 len,
- 		return ERR_PTR(-ENOMEM);
- 
- 	ret = get_mtt_entries(dev, &mr->mem, start, len, access, virt,
--			      SZ_2G - SZ_4K, 0);
-+			      SZ_2G - SZ_4K, false);
- 	if (ret)
- 		goto err_out_free;
- 
-@@ -1423,7 +1583,7 @@ static int erdma_init_user_cq(struct erdma_ucontext *ctx, struct erdma_cq *cq,
- 
- 	ret = get_mtt_entries(dev, &cq->user_cq.qbuf_mem, ureq->qbuf_va,
- 			      ureq->qbuf_len, 0, ureq->qbuf_va, SZ_64M - SZ_4K,
--			      1);
-+			      true);
- 	if (ret)
- 		return ret;
- 
-diff --git a/drivers/infiniband/hw/erdma/erdma_verbs.h b/drivers/infiniband/hw/erdma/erdma_verbs.h
-index 5f639f27a8a9..eb9c0f92fb6f 100644
---- a/drivers/infiniband/hw/erdma/erdma_verbs.h
-+++ b/drivers/infiniband/hw/erdma/erdma_verbs.h
-@@ -73,8 +73,8 @@ struct erdma_pd {
- #define ERDMA_MR_TYPE_FRMR 1
- #define ERDMA_MR_TYPE_DMA 2
- 
--#define ERDMA_MR_INLINE_MTT 0
--#define ERDMA_MR_INDIRECT_MTT 1
-+#define ERDMA_MR_MTT_0LEVEL 0
-+#define ERDMA_MR_MTT_1LEVEL 1
- 
- #define ERDMA_MR_ACC_RA BIT(0)
- #define ERDMA_MR_ACC_LR BIT(1)
--- 
-2.31.1
+The combination of these shouldn't be that common.  The only one that
+comes to mind is the stmmac driver, which the report was for.
 
+> >
+> >>
+> >>>
+> >>>>
+> >>>> In order to simplify the driver's work when using frag API
+> >>>> this patch allows page_pool_alloc_frag() to call
+> >>>> page_pool_alloc_pages() to return pages for those arches.
+> >>>
+> >>> Do we have any use cases of people needing this?  Those architectures
+> >>> should be long dead and although we have to support them in the
+> >>> kernel,  I don't personally see the advantage of adjusting the API to
+> >>> do that.  Right now we have a very clear separation between allocating
+> >>> pages or fragments.   Why should we hide a page allocation under a
+> >>> frag allocation?  A driver writer can simply allocate pages for those
+> >>> boards.  Am I the only one not seeing a clean win here?
+> >>
+> >> It is also a part of removing the per page_pool PP_FLAG_PAGE_FRAG flag
+> >> in this patchset.
+> >
+> > Yes, that happens *because* of this patchset.  I am not against the
+> > change.  In fact, I'll have a closer look tomorrow.  I am just trying
+> > to figure out if we really need it.  When the recycling patches were
+> > introduced into page pool we had a very specific reason.  Due to the
+> > XDP verifier we *had* to allocate a packet per page.  That was
+>
+> Did you mean a xdp frame containing a frag page can not be passed to the
+> xdp core?
+> What is exact reason why the XDP verifier need a packet per page?
+> Is there a code block that you can point me to?
+
+It's been a while since I looked at this, but doesn't __xdp_return()
+still sync the entire page if the mem type comes from page_pool?
+
+>
+> I wonder if it is still the case for now, as bnxt and mlx5 seems to be
+> supporting frag page and xdp now.
+
+I only looked at bnxt, but that doesnt seem to be entirely true.  That
+code still allocates pages if an XDP prog is installed.  The only case
+where it allocates fragments is if the kernel is compiled with 65k
+pages, but the hardware doesnt support that (check for
+BNXT_RX_PAGE_SHIFT)
+
+
+Thanks
+/Ilias
+>
+> > expensive so we added the recycling capabilities to compensate and get
+> > some performance back. Eventually we added page fragments and had a
+> > very clear separation on the API.
+> >
+> > Regards
+> > /Ilias
+> >>
+> >>>
+> >>> Thanks
+> >>> /Ilias
+> >>>
+> > .
+> >
