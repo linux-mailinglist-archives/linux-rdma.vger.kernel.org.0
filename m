@@ -2,53 +2,59 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B576B77F1E6
-	for <lists+linux-rdma@lfdr.de>; Thu, 17 Aug 2023 10:15:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3CCAF77F2B9
+	for <lists+linux-rdma@lfdr.de>; Thu, 17 Aug 2023 11:06:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348746AbjHQIO1 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 17 Aug 2023 04:14:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40052 "EHLO
+        id S1349255AbjHQJGA (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 17 Aug 2023 05:06:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57722 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1348779AbjHQIOB (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 17 Aug 2023 04:14:01 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A0DDB2112
-        for <linux-rdma@vger.kernel.org>; Thu, 17 Aug 2023 01:14:00 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 3ED9164B9C
-        for <linux-rdma@vger.kernel.org>; Thu, 17 Aug 2023 08:14:00 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 17DDBC433C8;
-        Thu, 17 Aug 2023 08:13:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1692260039;
-        bh=wO91H5RA4KceTvtg5KPSjJCtTGNXOMXSK7pecLLr8R0=;
-        h=From:To:Cc:Subject:Date:From;
-        b=bOL2FJZ9+TsLu9M9XN/wDztJtQBDFSs7swgML5OBw46kdJsbR9U75r/R/qLaGO6EE
-         tdbsIyej5H2txdbQjCQiJ5JfEfYTPSIjlWstcZym5oBNiJnVgYuD2AGEXC+wIqsfbF
-         olCvYOn2dpDv+HZYf102WUt9zp/X4kfRuNetFt52+U37WrFtd48Iqp3wP/6Tb9p6/N
-         eChv1FRN/BTPVbK5oX1KW6reu57sncD4BnVKl8XAplvntCtbvDwC9AjgUxoCTbI0vH
-         VdMPq91T3JPLsx/E3VUbnFwfrVokzw8su1BqxwogDb48vXJaJ/F0UY7Da5lclgl6zS
-         b9VLSxpscDZVw==
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Jason Gunthorpe <jgg@nvidia.com>
-Cc:     Leon Romanovsky <leonro@nvidia.com>,
-        kernel test robot <lkp@intel.com>,
-        linux-rdma@vger.kernel.org,
-        Mustafa Ismail <mustafa.ismail@intel.com>,
-        Shiraz Saleem <shiraz.saleem@intel.com>,
-        Sindhu Devale <sindhu.devale@intel.com>,
-        Youvaraj Sagar <youvaraj.sagar@intel.com>
-Subject: [PATCH rdma-next] RDMA/irdma: Add missing kernel-doc in irdma_setup_umode_qp()
-Date:   Thu, 17 Aug 2023 11:13:53 +0300
-Message-ID: <2c9bcd2b773c400a1699bd7973e22bfba1e4b379.1692260011.git.leonro@nvidia.com>
-X-Mailer: git-send-email 2.41.0
+        with ESMTP id S1349328AbjHQJFt (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 17 Aug 2023 05:05:49 -0400
+Received: from szxga03-in.huawei.com (szxga03-in.huawei.com [45.249.212.189])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7871E7C;
+        Thu, 17 Aug 2023 02:05:47 -0700 (PDT)
+Received: from dggpemm500005.china.huawei.com (unknown [172.30.72.53])
+        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4RRJtZ5Mj7zFr28;
+        Thu, 17 Aug 2023 17:02:46 +0800 (CST)
+Received: from [10.69.30.204] (10.69.30.204) by dggpemm500005.china.huawei.com
+ (7.185.36.74) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.31; Thu, 17 Aug
+ 2023 17:05:45 +0800
+Subject: Re: [PATCH net-next v6 1/6] page_pool: frag API support for 32-bit
+ arch with 64-bit DMA
+To:     Ilias Apalodimas <ilias.apalodimas@linaro.org>
+CC:     <davem@davemloft.net>, <kuba@kernel.org>, <pabeni@redhat.com>,
+        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        Lorenzo Bianconi <lorenzo@kernel.org>,
+        Alexander Duyck <alexander.duyck@gmail.com>,
+        Liang Chen <liangchen.linux@gmail.com>,
+        Alexander Lobakin <aleksander.lobakin@intel.com>,
+        Saeed Mahameed <saeedm@nvidia.com>,
+        Leon Romanovsky <leon@kernel.org>,
+        Eric Dumazet <edumazet@google.com>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        <linux-rdma@vger.kernel.org>
+References: <20230814125643.59334-1-linyunsheng@huawei.com>
+ <20230814125643.59334-2-linyunsheng@huawei.com>
+ <CAC_iWjKMLoUu4bctrWtK46mpyhQ7LoKe4Nm2t8jZVMM0L9O2xA@mail.gmail.com>
+ <06e89203-9eaf-99eb-99de-e5209819b8b3@huawei.com>
+ <CAC_iWjJ4Pi7Pj9Rm13y4aXBB3RsP9pTsfRf_A-OraXKwaO_xGA@mail.gmail.com>
+From:   Yunsheng Lin <linyunsheng@huawei.com>
+Message-ID: <b71d5f5f-0ea1-3a35-8c90-53ef4ae27e79@huawei.com>
+Date:   Thu, 17 Aug 2023 17:05:38 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
+ Thunderbird/52.2.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+In-Reply-To: <CAC_iWjJ4Pi7Pj9Rm13y4aXBB3RsP9pTsfRf_A-OraXKwaO_xGA@mail.gmail.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.69.30.204]
+X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
+ dggpemm500005.china.huawei.com (7.185.36.74)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-5.9 required=5.0 tests=BAYES_00,NICE_REPLY_A,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -57,33 +63,83 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Leon Romanovsky <leonro@nvidia.com>
+On 2023/8/17 1:01, Ilias Apalodimas wrote:
+> On Wed, 16 Aug 2023 at 15:49, Yunsheng Lin <linyunsheng@huawei.com> wrote:
+>>
+>> On 2023/8/16 19:26, Ilias Apalodimas wrote:
+>>> Hi Yunsheng
+>>>
+>>> On Mon, 14 Aug 2023 at 15:59, Yunsheng Lin <linyunsheng@huawei.com> wrote:
+>>>>
+>>>> Currently page_pool_alloc_frag() is not supported in 32-bit
+>>>> arch with 64-bit DMA because of the overlap issue between
+>>>> pp_frag_count and dma_addr_upper in 'struct page' for those
+>>>> arches, which seems to be quite common, see [1], which means
+>>>> driver may need to handle it when using frag API.
+>>>
+>>> That wasn't so common. IIRC it was a single TI platform that was breaking?
+>>
+>> I am not so sure about that as grepping 'ARM_LPAE' has a long
+>> list for that.
+> 
+> Shouldn't we be grepping for CONFIG_ARCH_DMA_ADDR_T_64BIT and
+> PHYS_ADDR_T_64BIT to find the affected platforms?  Why LPAE?
 
-Fix the following warning reported by kbuild:
 
-drivers/infiniband/hw/irdma/verbs.c:584: warning: Function parameter
-            or member 'udata' not described in 'irdma_setup_umode_qp'
+I used the key in the  original report:
 
-Fixes: 3a8498720450 ("RDMA/irdma: Allow accurate reporting on QP max send/recv WR")
-Reported-by: kernel test robot <lkp@intel.com>
-Closes: https://lore.kernel.org/oe-kbuild-all/202308171620.m4MNACWz-lkp@intel.com/
-Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
----
- drivers/infiniband/hw/irdma/verbs.c | 1 +
- 1 file changed, 1 insertion(+)
+https://www.spinics.net/lists/netdev/msg779890.html
 
-diff --git a/drivers/infiniband/hw/irdma/verbs.c b/drivers/infiniband/hw/irdma/verbs.c
-index 660be7f13060..6cffe21558fe 100644
---- a/drivers/infiniband/hw/irdma/verbs.c
-+++ b/drivers/infiniband/hw/irdma/verbs.c
-@@ -573,6 +573,7 @@ static void irdma_setup_virt_qp(struct irdma_device *iwdev,
- 
- /**
-  * irdma_setup_umode_qp - setup sq and rq size in user mode qp
-+ * @udata: udata
-  * @iwdev: iwarp device
-  * @iwqp: qp ptr (user or kernel)
-  * @info: initialize info to return
--- 
-2.41.0
+>> Please see the bisection report below about a boot failure on
+>> rk3288-rock2-square which is pointing to this patch.  The issue
+>> appears to only happen with CONFIG_ARM_LPAE=y.
 
+grepping the 'CONFIG_PHYS_ADDR_T_64BIT' seems to be more common?
+https://elixir.free-electrons.com/linux/v6.4-rc6/K/ident/CONFIG_PHYS_ADDR_T_64BIT
+
+> 
+>>
+>>>
+>>>>
+>>>> In order to simplify the driver's work when using frag API
+>>>> this patch allows page_pool_alloc_frag() to call
+>>>> page_pool_alloc_pages() to return pages for those arches.
+>>>
+>>> Do we have any use cases of people needing this?  Those architectures
+>>> should be long dead and although we have to support them in the
+>>> kernel,  I don't personally see the advantage of adjusting the API to
+>>> do that.  Right now we have a very clear separation between allocating
+>>> pages or fragments.   Why should we hide a page allocation under a
+>>> frag allocation?  A driver writer can simply allocate pages for those
+>>> boards.  Am I the only one not seeing a clean win here?
+>>
+>> It is also a part of removing the per page_pool PP_FLAG_PAGE_FRAG flag
+>> in this patchset.
+> 
+> Yes, that happens *because* of this patchset.  I am not against the
+> change.  In fact, I'll have a closer look tomorrow.  I am just trying
+> to figure out if we really need it.  When the recycling patches were
+> introduced into page pool we had a very specific reason.  Due to the
+> XDP verifier we *had* to allocate a packet per page.  That was
+
+Did you mean a xdp frame containing a frag page can not be passed to the
+xdp core?
+What is exact reason why the XDP verifier need a packet per page?
+Is there a code block that you can point me to?
+
+I wonder if it is still the case for now, as bnxt and mlx5 seems to be
+supporting frag page and xdp now.
+
+> expensive so we added the recycling capabilities to compensate and get
+> some performance back. Eventually we added page fragments and had a
+> very clear separation on the API.
+> 
+> Regards
+> /Ilias
+>>
+>>>
+>>> Thanks
+>>> /Ilias
+>>>
+> .
+> 
