@@ -2,100 +2,175 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 914A378076C
-	for <lists+linux-rdma@lfdr.de>; Fri, 18 Aug 2023 10:47:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 27661780E45
+	for <lists+linux-rdma@lfdr.de>; Fri, 18 Aug 2023 16:49:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242706AbjHRIqo (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 18 Aug 2023 04:46:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51192 "EHLO
+        id S1345499AbjHROtR (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 18 Aug 2023 10:49:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36890 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1358777AbjHRIqV (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 18 Aug 2023 04:46:21 -0400
-Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D36323AAC;
-        Fri, 18 Aug 2023 01:46:06 -0700 (PDT)
-Received: from dggpemm500005.china.huawei.com (unknown [172.30.72.55])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4RRwNb0KLbztSBV;
-        Fri, 18 Aug 2023 16:42:23 +0800 (CST)
-Received: from [10.69.30.204] (10.69.30.204) by dggpemm500005.china.huawei.com
- (7.185.36.74) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.31; Fri, 18 Aug
- 2023 16:46:01 +0800
-Subject: Re: [PATCH net-next v6 1/6] page_pool: frag API support for 32-bit
- arch with 64-bit DMA
-To:     Ilias Apalodimas <ilias.apalodimas@linaro.org>
-CC:     <davem@davemloft.net>, <kuba@kernel.org>, <pabeni@redhat.com>,
-        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        Lorenzo Bianconi <lorenzo@kernel.org>,
-        Alexander Duyck <alexander.duyck@gmail.com>,
-        Liang Chen <liangchen.linux@gmail.com>,
-        Alexander Lobakin <aleksander.lobakin@intel.com>,
-        Saeed Mahameed <saeedm@nvidia.com>,
-        Leon Romanovsky <leon@kernel.org>,
-        Eric Dumazet <edumazet@google.com>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        <linux-rdma@vger.kernel.org>
-References: <20230814125643.59334-1-linyunsheng@huawei.com>
- <20230814125643.59334-2-linyunsheng@huawei.com>
- <CAC_iWjKMLoUu4bctrWtK46mpyhQ7LoKe4Nm2t8jZVMM0L9O2xA@mail.gmail.com>
- <06e89203-9eaf-99eb-99de-e5209819b8b3@huawei.com>
- <CAC_iWjJ4Pi7Pj9Rm13y4aXBB3RsP9pTsfRf_A-OraXKwaO_xGA@mail.gmail.com>
- <b71d5f5f-0ea1-3a35-8c90-53ef4ae27e79@huawei.com>
- <CAC_iWjJbrwSTT9OT3VjzXkCTdcwShWWaaPJUVC0aG2hR5sbkWg@mail.gmail.com>
-From:   Yunsheng Lin <linyunsheng@huawei.com>
-Message-ID: <b8efc2ce-8856-2c9b-2a8c-edf2a819ebe5@huawei.com>
-Date:   Fri, 18 Aug 2023 16:46:01 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
- Thunderbird/52.2.0
+        with ESMTP id S1346049AbjHROtC (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 18 Aug 2023 10:49:02 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.151])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6182830E6
+        for <linux-rdma@vger.kernel.org>; Fri, 18 Aug 2023 07:49:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1692370141; x=1723906141;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=OVKsezXsnA3wIfJqFRV9lnx71PMPzwecLs0cQg830qk=;
+  b=QusP610fYxwdwIAdI5i/bvQMvUxLaNpo3FUlMTMJhrCfvDEii3DPq+vk
+   4cvqIO8agkqLMUM8eMvzRVcNhDhZzDbWz1R8ozoZQ5PJg/Zb/bvuFj8NW
+   Uz7p5houLNBGPBa3/lOe1ohxD4wHLZ/bIGWZWg1sLlKAQ+Addea8YAJuW
+   C8txI6pdNqmUMOBbkuJf+rzsnE55sfNqJe0LKyEgA0wBptGb2+DAdUj8y
+   cLtIHOD7iGdavySksH1jrhqxDE6LrLtpWFVxZbci2nuhqW7pc0sau2pPo
+   08mkFw9JDNLg+cXjCbLKdI7OmDuQ5jAgEI6H1WJuxJxvtJTXT30fPgFxM
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10806"; a="353420637"
+X-IronPort-AV: E=Sophos;i="6.01,183,1684825200"; 
+   d="scan'208";a="353420637"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Aug 2023 07:49:00 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.01,202,1684825200"; 
+   d="scan'208";a="878706168"
+Received: from ssaleem-mobl1.amr.corp.intel.com ([10.93.66.152])
+  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Aug 2023 07:49:04 -0700
+From:   Shiraz Saleem <shiraz.saleem@intel.com>
+To:     jgg@nvidia.com, leon@kernel.org
+Cc:     linux-rdma@vger.kernel.org, ivan.d.barrera@intel.com,
+        Christopher Bednarz <christopher.n.bednarz@intel.com>,
+        Shiraz Saleem <shiraz.saleem@intel.com>
+Subject: [PATCH for-rc] RDMA/irdma: Prevent zero-length STAG registration
+Date:   Fri, 18 Aug 2023 09:48:38 -0500
+Message-Id: <20230818144838.1758-1-shiraz.saleem@intel.com>
+X-Mailer: git-send-email 2.39.0
 MIME-Version: 1.0
-In-Reply-To: <CAC_iWjJbrwSTT9OT3VjzXkCTdcwShWWaaPJUVC0aG2hR5sbkWg@mail.gmail.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.69.30.204]
-X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
- dggpemm500005.china.huawei.com (7.185.36.74)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-5.4 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 2023/8/17 19:43, Ilias Apalodimas wrote:
->>>>>>
->>>>>> In order to simplify the driver's work when using frag API
->>>>>> this patch allows page_pool_alloc_frag() to call
->>>>>> page_pool_alloc_pages() to return pages for those arches.
->>>>>
->>>>> Do we have any use cases of people needing this?  Those architectures
->>>>> should be long dead and although we have to support them in the
->>>>> kernel,  I don't personally see the advantage of adjusting the API to
->>>>> do that.  Right now we have a very clear separation between allocating
->>>>> pages or fragments.   Why should we hide a page allocation under a
->>>>> frag allocation?  A driver writer can simply allocate pages for those
->>>>> boards.  Am I the only one not seeing a clean win here?
->>>>
->>>> It is also a part of removing the per page_pool PP_FLAG_PAGE_FRAG flag
->>>> in this patchset.
->>>
->>> Yes, that happens *because* of this patchset.  I am not against the
->>> change.  In fact, I'll have a closer look tomorrow.  I am just trying
->>> to figure out if we really need it.  When the recycling patches were
->>> introduced into page pool we had a very specific reason.  Due to the
->>> XDP verifier we *had* to allocate a packet per page.  That was
->>
->> Did you mean a xdp frame containing a frag page can not be passed to the
->> xdp core?
->> What is exact reason why the XDP verifier need a packet per page?
->> Is there a code block that you can point me to?
-> 
-> It's been a while since I looked at this, but doesn't __xdp_return()
-> still sync the entire page if the mem type comes from page_pool?
+From: Christopher Bednarz <christopher.n.bednarz@intel.com>
 
-Yes, I checked that too.
-It is supposed to sync the entire page if the mem type comes from page_pool,
-as it depend on the last freed frag to do the sync_for_device operation.
+Currently irdma allows zero-length STAGs to be programmed in HW during
+the kernel mode fast register flow. Zero-length MR or STAG registration
+disable HW memory length checks.
+
+Improve gaps in bounds checking in irdma by preventing zero-length STAG or
+MR registrations except if the IB_PD_UNSAFE_GLOBAL_RKEY is set.
+
+This addresses the disclosure CVE-2023-25775.
+
+Fixes: b48c24c2d710 ("RDMA/irdma: Implement device supported verb APIs")
+Signed-off-by: Christopher Bednarz <christopher.n.bednarz@intel.com>
+Signed-off-by: Shiraz Saleem <shiraz.saleem@intel.com>
+---
+ drivers/infiniband/hw/irdma/ctrl.c  |  6 ++++++
+ drivers/infiniband/hw/irdma/type.h  |  2 ++
+ drivers/infiniband/hw/irdma/verbs.c | 10 ++++++++--
+ 3 files changed, 16 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/infiniband/hw/irdma/ctrl.c b/drivers/infiniband/hw/irdma/ctrl.c
+index d88c9184007e..2bc340deb6bb 100644
+--- a/drivers/infiniband/hw/irdma/ctrl.c
++++ b/drivers/infiniband/hw/irdma/ctrl.c
+@@ -1061,6 +1061,9 @@ static int irdma_sc_alloc_stag(struct irdma_sc_dev *dev,
+ 	u64 hdr;
+ 	enum irdma_page_size page_size;
+ 
++	if (!info->total_len && !info->all_memory)
++		return -EINVAL;
++
+ 	if (info->page_size == 0x40000000)
+ 		page_size = IRDMA_PAGE_SIZE_1G;
+ 	else if (info->page_size == 0x200000)
+@@ -1126,6 +1129,9 @@ static int irdma_sc_mr_reg_non_shared(struct irdma_sc_dev *dev,
+ 	u8 addr_type;
+ 	enum irdma_page_size page_size;
+ 
++	if (!info->total_len && !info->all_memory)
++		return -EINVAL;
++
+ 	if (info->page_size == 0x40000000)
+ 		page_size = IRDMA_PAGE_SIZE_1G;
+ 	else if (info->page_size == 0x200000)
+diff --git a/drivers/infiniband/hw/irdma/type.h b/drivers/infiniband/hw/irdma/type.h
+index 5ee68604e59f..16ada4c2ced0 100644
+--- a/drivers/infiniband/hw/irdma/type.h
++++ b/drivers/infiniband/hw/irdma/type.h
+@@ -969,6 +969,7 @@ struct irdma_allocate_stag_info {
+ 	bool remote_access:1;
+ 	bool use_hmc_fcn_index:1;
+ 	bool use_pf_rid:1;
++	bool all_memory:1;
+ 	u8 hmc_fcn_index;
+ };
+ 
+@@ -996,6 +997,7 @@ struct irdma_reg_ns_stag_info {
+ 	bool use_hmc_fcn_index:1;
+ 	u8 hmc_fcn_index;
+ 	bool use_pf_rid:1;
++	bool all_memory:1;
+ };
+ 
+ struct irdma_fast_reg_stag_info {
+diff --git a/drivers/infiniband/hw/irdma/verbs.c b/drivers/infiniband/hw/irdma/verbs.c
+index a7b82aea4d08..4110cc159bd9 100644
+--- a/drivers/infiniband/hw/irdma/verbs.c
++++ b/drivers/infiniband/hw/irdma/verbs.c
+@@ -2576,7 +2576,8 @@ static int irdma_hw_alloc_stag(struct irdma_device *iwdev,
+ 			       struct irdma_mr *iwmr)
+ {
+ 	struct irdma_allocate_stag_info *info;
+-	struct irdma_pd *iwpd = to_iwpd(iwmr->ibmr.pd);
++	struct ib_pd *pd = iwmr->ibmr.pd;
++	struct irdma_pd *iwpd = to_iwpd(pd);
+ 	int status;
+ 	struct irdma_cqp_request *cqp_request;
+ 	struct cqp_cmds_info *cqp_info;
+@@ -2592,6 +2593,7 @@ static int irdma_hw_alloc_stag(struct irdma_device *iwdev,
+ 	info->stag_idx = iwmr->stag >> IRDMA_CQPSQ_STAG_IDX_S;
+ 	info->pd_id = iwpd->sc_pd.pd_id;
+ 	info->total_len = iwmr->len;
++	info->all_memory = pd->flags & IB_PD_UNSAFE_GLOBAL_RKEY;
+ 	info->remote_access = true;
+ 	cqp_info->cqp_cmd = IRDMA_OP_ALLOC_STAG;
+ 	cqp_info->post_sq = 1;
+@@ -2639,6 +2641,8 @@ static struct ib_mr *irdma_alloc_mr(struct ib_pd *pd, enum ib_mr_type mr_type,
+ 	iwmr->type = IRDMA_MEMREG_TYPE_MEM;
+ 	palloc = &iwpbl->pble_alloc;
+ 	iwmr->page_cnt = max_num_sg;
++	/* Use system PAGE_SIZE as the sg page sizes are unknown at this point */
++	iwmr->len = max_num_sg * PAGE_SIZE;
+ 	err_code = irdma_get_pble(iwdev->rf->pble_rsrc, palloc, iwmr->page_cnt,
+ 				  false);
+ 	if (err_code)
+@@ -2718,7 +2722,8 @@ static int irdma_hwreg_mr(struct irdma_device *iwdev, struct irdma_mr *iwmr,
+ {
+ 	struct irdma_pbl *iwpbl = &iwmr->iwpbl;
+ 	struct irdma_reg_ns_stag_info *stag_info;
+-	struct irdma_pd *iwpd = to_iwpd(iwmr->ibmr.pd);
++	struct ib_pd *pd = iwmr->ibmr.pd;
++	struct irdma_pd *iwpd = to_iwpd(pd);
+ 	struct irdma_pble_alloc *palloc = &iwpbl->pble_alloc;
+ 	struct irdma_cqp_request *cqp_request;
+ 	struct cqp_cmds_info *cqp_info;
+@@ -2737,6 +2742,7 @@ static int irdma_hwreg_mr(struct irdma_device *iwdev, struct irdma_mr *iwmr,
+ 	stag_info->total_len = iwmr->len;
+ 	stag_info->access_rights = irdma_get_mr_access(access);
+ 	stag_info->pd_id = iwpd->sc_pd.pd_id;
++	stag_info->all_memory = pd->flags & IB_PD_UNSAFE_GLOBAL_RKEY;
+ 	if (stag_info->access_rights & IRDMA_ACCESS_FLAGS_ZERO_BASED)
+ 		stag_info->addr_type = IRDMA_ADDR_TYPE_ZERO_BASED;
+ 	else
+-- 
+1.8.3.1
+
