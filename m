@@ -2,81 +2,102 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 843A678135F
-	for <lists+linux-rdma@lfdr.de>; Fri, 18 Aug 2023 21:33:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 966907816F2
+	for <lists+linux-rdma@lfdr.de>; Sat, 19 Aug 2023 05:04:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350114AbjHRTch (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 18 Aug 2023 15:32:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58328 "EHLO
+        id S244496AbjHSDD1 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 18 Aug 2023 23:03:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40618 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1379624AbjHRTc3 (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 18 Aug 2023 15:32:29 -0400
-Received: from mail-io1-xd32.google.com (mail-io1-xd32.google.com [IPv6:2607:f8b0:4864:20::d32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 845874212
-        for <linux-rdma@vger.kernel.org>; Fri, 18 Aug 2023 12:32:28 -0700 (PDT)
-Received: by mail-io1-xd32.google.com with SMTP id ca18e2360f4ac-790a8c74383so41722339f.3
-        for <linux-rdma@vger.kernel.org>; Fri, 18 Aug 2023 12:32:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1692387147; x=1692991947;
-        h=to:subject:message-id:date:from:mime-version:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=VM/48JRgRJrmA8/X3MvupkeS0OjLd7GfIckwsUAbu98=;
-        b=aJGEpi2LTTl886Amcr8VOHva3pTt8hiJJdcr9yddIB0/X1Eii/87PwdksGT51668zX
-         7vC14PqQ2ByPvirvl45Ic9d3pnJ/eh/bAyaGsuAFvFCQUbwFjYAnB+6nexPsVbW/8tAq
-         mg5oTsstRGUNg+w/yRtMeA+FM9ePwoYUGZJDf8q9HIritEAhX5qRFEGkPlWfKv21p70T
-         Kx0YODED4KOa5xrN5ByLD1nsu23Hm0CVWafF0+baNyDbynrPLSSYfn3EgvRvXfFsazzZ
-         ynbkfy4SWIf9Yc9Kxy7HE6WA81Y5OmZgxA2PY9pHNkpMamloSoANf0vTm6KCFy6zOGY3
-         b59A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692387147; x=1692991947;
-        h=to:subject:message-id:date:from:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=VM/48JRgRJrmA8/X3MvupkeS0OjLd7GfIckwsUAbu98=;
-        b=H3kL+qJ8lvurgDLdLjFugsugq4rZ9p1uBH+wau+X6nl4T9NxWe0uoJ2MRUaX2a4yyk
-         BbzUWazJ4+SrTZcEXA0UP6Hki86rYrlQxRm0/gByyfd/XszQ4bC6zJGG5FdXW5SsDUl0
-         XSX8bJ9wlwZmTbR7HM1OhXRsHYqmnpRu7QwRVU7NUx5NC6FXbysMNAuzcN4+zoHHpQJ5
-         ZQJSjdGcCc0g10oolNKeRhGHIqEP6FyQbD7Pcwpdna+AodHIW6WF7Gkzv/iKJnHdHbA4
-         zwoveEtmoLN/Pcl1jVz7ThVc6k4wGaKS9QaLJS4L0P5jrOMDbkAE84N3tdbgVK8a9Hgm
-         FuRQ==
-X-Gm-Message-State: AOJu0YySxuuSrqSND/wEySa4jLz7xifM8xac4809q1wq0+uM4xm4Nijk
-        0Sb/XUORUqWf8SFtx5rZ2s0YkzuYCLLOjj7IZlsPzVbuM6U=
-X-Google-Smtp-Source: AGHT+IHle2dcD8vvudFarbcNoXuq0GcwwtdsL4vcgnwbq1qKU0FHt4HcjBv5f9lKsH4ozVYo/8/tr8vmYbl75anbRxM=
-X-Received: by 2002:a05:6e02:10c1:b0:347:6b30:5bd3 with SMTP id
- s1-20020a056e0210c100b003476b305bd3mr241012ilj.13.1692387147596; Fri, 18 Aug
- 2023 12:32:27 -0700 (PDT)
+        with ESMTP id S244486AbjHSDC5 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 18 Aug 2023 23:02:57 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 19B8F3C34
+        for <linux-rdma@vger.kernel.org>; Fri, 18 Aug 2023 20:02:55 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 9400062A04
+        for <linux-rdma@vger.kernel.org>; Sat, 19 Aug 2023 03:02:55 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 66F5AC433C8;
+        Sat, 19 Aug 2023 03:02:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1692414175;
+        bh=4Mp3u6LMy61z+v290yHzzI8KmbqFO+7XDpQP/RnnSSk=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=IfnAzvNaVSySms6rMDMsU+CaA5rykzLxrIJ2mzfL5QMa62WkRlTe7l5E2bV83TgfB
+         DAoJlVFv5xM2JlGLmK+rfGyPqNqgLScCg4mWZ0uj+oLwv6ob0ucb+xFPLB7LbwaPby
+         B24iwf36RCOpNsZOEJ/b14F7Hxak2IO6JA7p2CZLTW1VB+T0fAMJnntmf/YCP4Kh+s
+         hyUYQjcULDXjSY5T+KcmLH6i/SWuPyVN6idOXJ6sh/WW2ixYHJmq/HWB5nwCUOtgw6
+         n2a7pZXa+lc0rWkTEFXkkhNRJZ7Zzelw/araDrduuhcDugpDLCzTUaY+ShQcOy4oVC
+         4IlpGPFqRH9rA==
+Date:   Fri, 18 Aug 2023 20:02:53 -0700
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Leon Romanovsky <leon@kernel.org>
+Cc:     Jason Gunthorpe <jgg@nvidia.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>, linux-rdma@vger.kernel.org,
+        Maor Gottlieb <maorg@nvidia.com>,
+        Mark Zhang <markzhang@nvidia.com>, netdev@vger.kernel.org,
+        Paolo Abeni <pabeni@redhat.com>,
+        Patrisious Haddad <phaddad@nvidia.com>,
+        Raed Salem <raeds@nvidia.com>,
+        Saeed Mahameed <saeedm@nvidia.com>,
+        Simon Horman <horms@kernel.org>
+Subject: Re: [GIT PULL] Please pull mlx5 MACsec RoCEv2 support
+Message-ID: <20230818200253.0901a66d@kernel.org>
+In-Reply-To: <20230813064703.574082-1-leon@kernel.org>
+References: <20230813064703.574082-1-leon@kernel.org>
 MIME-Version: 1.0
-From:   Abhishek Joshi <abjshprof@gmail.com>
-Date:   Fri, 18 Aug 2023 12:32:01 -0700
-Message-ID: <CAJ6TakGwk6u2m+vgszEyWhCSs9d4ipYhBm8E4+TtV86nDWfDjQ@mail.gmail.com>
-Subject: Confusion regarding RDMA read behavior during retransmission
-To:     linux-rdma@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-The Spec says:
-The PSN of the retried RDMA READ request need not be the same as the
-PSN of the original RDMA READ request. Any retried request must
-correspond exactly to a subset of the original RDMA READ request in
-such a manner that all potential duplicate response packets must have
-identical payload data and PSNs regardless of whether it is a response
-to the original request or a retried request.
+On Sun, 13 Aug 2023 09:47:03 +0300 Leon Romanovsky wrote:
+> This PR is collected from https://lore.kernel.org/all/cover.1691569414.git.leon@kernel.org
+> and contains patches to support mlx5 MACsec RoCEv2.
 
-It seems that a retransmitted READ must return identical data to the original.
++bool macsec_netdev_is_offloaded(struct net_device *dev)
++{
++       if (!dev)
++               return false;
++
++       return macsec_is_offloaded(macsec_priv(dev));
++}
++EXPORT_SYMBOL_GPL(macsec_netdev_is_offloaded);
 
-But consider this scenario
-a READ followed by WRITE followed by the original(retransmitted) READ.
-What is the expected response in this case? I tried this and it
-returns the latest value which is what I would expect.
-My question is why do we not return the original data?
+No defensive programming, please, why are you checking that dev is NULL?
 
+> It is based on -rc4 and such has minor conflict with net-next due to
+> existance of IPsec packet offlosd in eswitch code and the resolution
+> is to take both hunks.
+> 
+> diff --cc include/linux/mlx5/driver.h
+> index 25d0528f9219,3ec8155c405d..000000000000
+> --- a/include/linux/mlx5/driver.h
+> +++ b/include/linux/mlx5/driver.h
+> @@@ -805,6 -806,11 +805,14 @@@ struct mlx5_core_dev 
+>   	u32                      vsc_addr;
+>   	struct mlx5_hv_vhca	*hv_vhca;
+>   	struct mlx5_thermal	*thermal;
+> + 	u64			num_block_tc;
+> + 	u64			num_block_ipsec;
+> + #ifdef CONFIG_MLX5_MACSEC
+> + 	struct mlx5_macsec_fs *macsec_fs;
+> + #endif
+>   };
+>   
+>   struct mlx5_db {
 
-Thanks and Regards,
-Abhishek
+That's not how the resolution looks. Do the merge yourself, then show
+the actual 3-way resolution.
+-- 
+pw-bot: cr
