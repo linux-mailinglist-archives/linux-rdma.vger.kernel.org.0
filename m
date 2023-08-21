@@ -2,103 +2,85 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E163B782A8F
-	for <lists+linux-rdma@lfdr.de>; Mon, 21 Aug 2023 15:33:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 413E1782A90
+	for <lists+linux-rdma@lfdr.de>; Mon, 21 Aug 2023 15:33:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235432AbjHUNdO (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 21 Aug 2023 09:33:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36236 "EHLO
+        id S233331AbjHUNdP (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 21 Aug 2023 09:33:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36244 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233331AbjHUNdO (ORCPT
+        with ESMTP id S233427AbjHUNdO (ORCPT
         <rfc822;linux-rdma@vger.kernel.org>); Mon, 21 Aug 2023 09:33:14 -0400
-Received: from out-59.mta1.migadu.com (out-59.mta1.migadu.com [95.215.58.59])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E17B5B9
-        for <linux-rdma@vger.kernel.org>; Mon, 21 Aug 2023 06:33:11 -0700 (PDT)
+X-Greylist: delayed 554 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Mon, 21 Aug 2023 06:33:13 PDT
+Received: from out-41.mta1.migadu.com (out-41.mta1.migadu.com [IPv6:2001:41d0:203:375::29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26470B1
+        for <linux-rdma@vger.kernel.org>; Mon, 21 Aug 2023 06:33:13 -0700 (PDT)
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1692624790;
+        t=1692624791;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=rxNSkFp1YAOZw7Pe0coDTiQj/P5/g6OPbq/uga2Srvo=;
-        b=Qvk8LsnZIwnepYtATV72q6I6VdgP+rTF4XWdCTD5aDeAfRLnbueyU30vVgP34ORIH1o/iu
-        L1MD0ddD7sGHNe+2biTnfiavtllOcOEfJUHp8RIpM5hunMcCTIEp4xtEIEPhVDjiYG0BLu
-        97YGpPKfpTOVYKdt18g791Rvi7M8ev4=
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=VyIAT3+Jd2Lnu4zWBloKJGIsEQcPyYynSUTyTN7NJV0=;
+        b=EN18w9ViyJMIo6ACZAoI1pA+SHzY9mRD8rqopBuvUlITtSlvjMWt8RVAwNfMPwGnf758bs
+        +fz61YSBZgQDD33CMH9RsvPcnX655cEl3SA21NhopCLlk76C8RE9DjiDB2X+Sif0KkmhCx
+        /L+IMtmd2tGVAf4wMakxSkic9cT1j/c=
 From:   Guoqing Jiang <guoqing.jiang@linux.dev>
 To:     bmt@zurich.ibm.com, jgg@ziepe.ca, leon@kernel.org
 Cc:     linux-rdma@vger.kernel.org
-Subject: [PATCH V3 0/3] Misc changes for siw
-Date:   Mon, 21 Aug 2023 21:32:52 +0800
-Message-Id: <20230821133255.31111-1-guoqing.jiang@linux.dev>
+Subject: [PATCH V3 1/3] RDMA/siw: Balance the reference of cep->kref in the error path
+Date:   Mon, 21 Aug 2023 21:32:53 +0800
+Message-Id: <20230821133255.31111-2-guoqing.jiang@linux.dev>
+In-Reply-To: <20230821133255.31111-1-guoqing.jiang@linux.dev>
+References: <20230821133255.31111-1-guoqing.jiang@linux.dev>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Migadu-Flow: FLOW_OUT
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-V3 changes:
-1. collect tags from Bernard, thanks!
-2. add comment back to the last patch.
+The siw_connect can go to err in below after cep is allocated successfully:
 
-V2 changes:
-1. add Fixes lines for the first two patches per Leon
+1. If siw_cm_alloc_work returns failure. In this case socket is not
+assoicated with cep so siw_cep_put can't be called by siw_socket_disassoc.
+We need to call siw_cep_put twice since cep->kref is increased once after
+it was initialized.
 
-Hi,
+2. If siw_cm_queue_work can't find a work, which means siw_cep_get is not
+called in siw_cm_queue_work, so cep->kref is increased twice by siw_cep_get
+and when associate socket with cep after it was initialized. So we need to
+call siw_cep_put three times (one in siw_socket_disassoc).
 
-The first one fix below calltrace which could happen if siw_connect
-goto error (I manually set rv to -1 after siw_send_mpareqrep to trigger
-it) after cep is allocated.
+3. siw_send_mpareqrep returns error, this scenario is similar as 2.
 
-[   97.341035] ------------[ cut here ]------------
-[   97.341037] WARNING: CPU: 0 PID: 143 at drivers/infiniband/sw/siw/siw_cm.c:444 siw_cep_put+0x1c5/0x1e0 [siw]
-...
-[   97.341126] CPU: 0 PID: 143 Comm: kworker/u4:4 Tainted: G           OE      6.5.0-rc3+ #16
-[   97.341128] Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS rel-1.16.0-0-gd239552c-rebuilt.opensuse.org 04/01/2014
-[   97.341130] Workqueue: rdma_cm cma_work_handler [rdma_cm]
-[   97.341137] RIP: 0010:siw_cep_put+0x1c5/0x1e0 [siw]
-...
-[   97.341159] Call Trace:
-[   97.341160]  <TASK>
-[   97.341162]  ? show_regs+0x72/0x90
-[   97.341166]  ? siw_cep_put+0x1c5/0x1e0 [siw]
-[   97.341170]  ? __warn+0x8d/0x1a0
-[   97.341175]  ? siw_cep_put+0x1c5/0x1e0 [siw]
-[   97.341180]  ? report_bug+0x1f9/0x250
-[   97.341185]  ? handle_bug+0x46/0x90
-[   97.341188]  ? exc_invalid_op+0x19/0x80
-[   97.341190]  ? asm_exc_invalid_op+0x1b/0x20
-[   97.341196]  ? siw_cep_put+0x1c5/0x1e0 [siw]
-[   97.341204]  siw_connect+0x474/0x780 [siw]
-[   97.341211]  iw_cm_connect+0x1ca/0x250 [iw_cm]
-[   97.341216]  rdma_connect_locked+0x1bf/0x940 [rdma_cm]
-[   97.341227]  nvme_rdma_cm_handler+0x5d7/0x9c0 [nvme_rdma]
-[   97.341235]  cma_cm_event_handler+0x4f/0x170 [rdma_cm]
-[   97.341241]  cma_work_handler+0x6a/0xe0 [rdma_cm]
-[   97.341247]  process_one_work+0x2bd/0x590
-...
+So we need to remove one siw_cep_put in the error path.
 
-The second one make the debug message consistent with the condition,
-and the last one cleanup code a bit. Pls help to review them.
+Fixes: 6c52fdc244b5 ("rdma/siw: connection management")
+Signed-off-by: Guoqing Jiang <guoqing.jiang@linux.dev>
+Acked-by: Bernard Metzler <bmt@zurich.ibm.com>
+---
+ drivers/infiniband/sw/siw/siw_cm.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-Thanks,
-Guoqing
-
-Guoqing Jiang (3):
-  RDMA/siw: Balance the reference of cep->kref in the error path
-  RDMA/siw: Correct wrong debug message
-  RDMA/siw: Call llist_reverse_order in siw_run_sq
-
- drivers/infiniband/sw/siw/siw_cm.c    | 1 -
- drivers/infiniband/sw/siw/siw_qp_tx.c | 8 +-------
- drivers/infiniband/sw/siw/siw_verbs.c | 2 +-
- 3 files changed, 2 insertions(+), 9 deletions(-)
-
+diff --git a/drivers/infiniband/sw/siw/siw_cm.c b/drivers/infiniband/sw/siw/siw_cm.c
+index da530c0404da..a2605178f4ed 100644
+--- a/drivers/infiniband/sw/siw/siw_cm.c
++++ b/drivers/infiniband/sw/siw/siw_cm.c
+@@ -1501,7 +1501,6 @@ int siw_connect(struct iw_cm_id *id, struct iw_cm_conn_param *params)
+ 
+ 		cep->cm_id = NULL;
+ 		id->rem_ref(id);
+-		siw_cep_put(cep);
+ 
+ 		qp->cep = NULL;
+ 		siw_cep_put(cep);
 -- 
 2.35.3
 
