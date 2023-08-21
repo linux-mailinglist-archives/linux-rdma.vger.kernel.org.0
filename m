@@ -2,373 +2,108 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D9FFE782A24
-	for <lists+linux-rdma@lfdr.de>; Mon, 21 Aug 2023 15:12:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DD1D0782A66
+	for <lists+linux-rdma@lfdr.de>; Mon, 21 Aug 2023 15:24:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235312AbjHUNM7 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 21 Aug 2023 09:12:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59418 "EHLO
+        id S231941AbjHUNYD (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 21 Aug 2023 09:24:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59274 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235299AbjHUNM5 (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 21 Aug 2023 09:12:57 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB9BCFF;
-        Mon, 21 Aug 2023 06:12:49 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 872EC22183;
-        Mon, 21 Aug 2023 13:12:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1692623563; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:
+        with ESMTP id S232495AbjHUNYC (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 21 Aug 2023 09:24:02 -0400
+Received: from out-23.mta1.migadu.com (out-23.mta1.migadu.com [95.215.58.23])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0FD338F
+        for <linux-rdma@vger.kernel.org>; Mon, 21 Aug 2023 06:24:01 -0700 (PDT)
+Message-ID: <b14d64e6-5972-c0eb-36a5-a35cbd004b9a@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+        t=1692624238;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=rbz4u7oCmPMNJcykidjw87NvSWL/0d2WcDQJ9atnf6U=;
-        b=MBrQKC7AGsE8Y3bUEPoIL8B6H1Qyl+zDFp8IyKqJaM4FKZ1qmczAscraw/2+6OcMW+MuT3
-        u9+PNVQdGOod2zh+2Y1mGPBLYBAQwMSr/Rz+t592m9yElLhlCt9+dk4G+K5VL2W0kdJoF3
-        sT2oYSca9I+CKeYcUl2sUlC0eqjHl+k=
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 3FE5D139BC;
-        Mon, 21 Aug 2023 13:12:43 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id 2BGyDsti42QUVgAAMHmgww
-        (envelope-from <petr.pavlu@suse.com>); Mon, 21 Aug 2023 13:12:43 +0000
-From:   Petr Pavlu <petr.pavlu@suse.com>
-To:     tariqt@nvidia.com, yishaih@nvidia.com, leon@kernel.org
-Cc:     davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
-        pabeni@redhat.com, jgg@ziepe.ca, netdev@vger.kernel.org,
-        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Petr Pavlu <petr.pavlu@suse.com>,
-        Leon Romanovsky <leonro@nvidia.com>
-Subject: [PATCH net-next v3 11/11] mlx4: Delete custom device management logic
-Date:   Mon, 21 Aug 2023 15:12:25 +0200
-Message-Id: <20230821131225.11290-12-petr.pavlu@suse.com>
-X-Mailer: git-send-email 2.35.3
-In-Reply-To: <20230821131225.11290-1-petr.pavlu@suse.com>
-References: <20230821131225.11290-1-petr.pavlu@suse.com>
+        bh=psE5SfPJmT/trhqjxTkTOJ5J0mt82Sper+BIpMZjGSQ=;
+        b=Dsvjs18p3zdJUzgNPwkjTE8I5Ud54Fvm5w1OwHOMw3WFl65xZtBA2K6+N3QPxpxKSuyDym
+        +QNv2vBUmxRsPwySxeZO8FFSZGkCUIruHlmWfoYsbWjGcu5FOoT+j6yR1+GiVwv8gIZe/h
+        QpHYkP4ISkDKG3K8WN2YDafa0PxiqN8=
+Date:   Mon, 21 Aug 2023 21:23:52 +0800
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From:   Guoqing Jiang <guoqing.jiang@linux.dev>
+Subject: Re: [PATCH V2 3/3] RDMA/siw: Call llist_reverse_order in siw_run_sq
+To:     Bernard Metzler <BMT@zurich.ibm.com>,
+        "jgg@ziepe.ca" <jgg@ziepe.ca>, "leon@kernel.org" <leon@kernel.org>
+Cc:     "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>
+References: <20230821084743.6489-1-guoqing.jiang@linux.dev>
+ <20230821084743.6489-4-guoqing.jiang@linux.dev>
+ <SN7PR15MB575541C91E91623AC6D70B3A991EA@SN7PR15MB5755.namprd15.prod.outlook.com>
+Content-Language: en-US
+In-Reply-To: <SN7PR15MB575541C91E91623AC6D70B3A991EA@SN7PR15MB5755.namprd15.prod.outlook.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Migadu-Flow: FLOW_OUT
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-After the conversion to use the auxiliary bus, the custom device
-management is not needed anymore and can be deleted.
 
-Signed-off-by: Petr Pavlu <petr.pavlu@suse.com>
-Tested-by: Leon Romanovsky <leonro@nvidia.com>
-Reviewed-by: Leon Romanovsky <leonro@nvidia.com>
-Acked-by: Tariq Toukan <tariqt@nvidia.com>
----
- drivers/net/ethernet/mellanox/mlx4/intf.c | 125 ----------------------
- drivers/net/ethernet/mellanox/mlx4/main.c |  28 -----
- drivers/net/ethernet/mellanox/mlx4/mlx4.h |   3 -
- include/linux/mlx4/driver.h               |  10 --
- 4 files changed, 166 deletions(-)
 
-diff --git a/drivers/net/ethernet/mellanox/mlx4/intf.c b/drivers/net/ethernet/mellanox/mlx4/intf.c
-index 7579031786ac..a371b970ac1e 100644
---- a/drivers/net/ethernet/mellanox/mlx4/intf.c
-+++ b/drivers/net/ethernet/mellanox/mlx4/intf.c
-@@ -38,15 +38,6 @@
- 
- #include "mlx4.h"
- 
--struct mlx4_device_context {
--	struct list_head	list;
--	struct list_head	bond_list;
--	struct mlx4_interface  *intf;
--	void		       *context;
--};
--
--static LIST_HEAD(intf_list);
--static LIST_HEAD(dev_list);
- static DEFINE_MUTEX(intf_mutex);
- static DEFINE_IDA(mlx4_adev_ida);
- 
-@@ -156,77 +147,6 @@ static void del_adev(struct auxiliary_device *adev)
- 	auxiliary_device_uninit(adev);
- }
- 
--static void mlx4_add_device(struct mlx4_interface *intf, struct mlx4_priv *priv)
--{
--	struct mlx4_device_context *dev_ctx;
--
--	dev_ctx = kmalloc(sizeof(*dev_ctx), GFP_KERNEL);
--	if (!dev_ctx)
--		return;
--
--	dev_ctx->intf    = intf;
--	dev_ctx->context = intf->add(&priv->dev);
--
--	if (dev_ctx->context) {
--		spin_lock_irq(&priv->ctx_lock);
--		list_add_tail(&dev_ctx->list, &priv->ctx_list);
--		spin_unlock_irq(&priv->ctx_lock);
--	} else
--		kfree(dev_ctx);
--
--}
--
--static void mlx4_remove_device(struct mlx4_interface *intf, struct mlx4_priv *priv)
--{
--	struct mlx4_device_context *dev_ctx;
--
--	list_for_each_entry(dev_ctx, &priv->ctx_list, list)
--		if (dev_ctx->intf == intf) {
--			spin_lock_irq(&priv->ctx_lock);
--			list_del(&dev_ctx->list);
--			spin_unlock_irq(&priv->ctx_lock);
--
--			intf->remove(&priv->dev, dev_ctx->context);
--			kfree(dev_ctx);
--			return;
--		}
--}
--
--int mlx4_register_interface(struct mlx4_interface *intf)
--{
--	struct mlx4_priv *priv;
--
--	if (!intf->add || !intf->remove)
--		return -EINVAL;
--
--	mutex_lock(&intf_mutex);
--
--	list_add_tail(&intf->list, &intf_list);
--	list_for_each_entry(priv, &dev_list, dev_list) {
--		mlx4_add_device(intf, priv);
--	}
--
--	mutex_unlock(&intf_mutex);
--
--	return 0;
--}
--EXPORT_SYMBOL_GPL(mlx4_register_interface);
--
--void mlx4_unregister_interface(struct mlx4_interface *intf)
--{
--	struct mlx4_priv *priv;
--
--	mutex_lock(&intf_mutex);
--
--	list_for_each_entry(priv, &dev_list, dev_list)
--		mlx4_remove_device(intf, priv);
--
--	list_del(&intf->list);
--
--	mutex_unlock(&intf_mutex);
--}
--EXPORT_SYMBOL_GPL(mlx4_unregister_interface);
--
- int mlx4_register_auxiliary_driver(struct mlx4_adrv *madrv)
- {
- 	return auxiliary_driver_register(&madrv->adrv);
-@@ -242,10 +162,7 @@ EXPORT_SYMBOL_GPL(mlx4_unregister_auxiliary_driver);
- int mlx4_do_bond(struct mlx4_dev *dev, bool enable)
- {
- 	struct mlx4_priv *priv = mlx4_priv(dev);
--	struct mlx4_device_context *dev_ctx = NULL, *temp_dev_ctx;
--	unsigned long flags;
- 	int i, ret;
--	LIST_HEAD(bond_list);
- 
- 	if (!(dev->caps.flags2 & MLX4_DEV_CAP_FLAG2_PORT_REMAP))
- 		return -EOPNOTSUPP;
-@@ -267,36 +184,6 @@ int mlx4_do_bond(struct mlx4_dev *dev, bool enable)
- 		dev->flags &= ~MLX4_FLAG_BONDED;
- 	}
- 
--	spin_lock_irqsave(&priv->ctx_lock, flags);
--	list_for_each_entry_safe(dev_ctx, temp_dev_ctx, &priv->ctx_list, list) {
--		if (!(dev_ctx->intf->flags & MLX4_INTFF_BONDING))
--			continue;
--
--		if (mlx4_is_mfunc(dev)) {
--			mlx4_dbg(dev,
--				 "SRIOV, disabled HA mode for intf proto %d\n",
--				 dev_ctx->intf->protocol);
--			continue;
--		}
--
--		list_add_tail(&dev_ctx->bond_list, &bond_list);
--		list_del(&dev_ctx->list);
--	}
--	spin_unlock_irqrestore(&priv->ctx_lock, flags);
--
--	list_for_each_entry(dev_ctx, &bond_list, bond_list) {
--		dev_ctx->intf->remove(dev, dev_ctx->context);
--		dev_ctx->context =  dev_ctx->intf->add(dev);
--
--		spin_lock_irqsave(&priv->ctx_lock, flags);
--		list_add_tail(&dev_ctx->list, &priv->ctx_list);
--		spin_unlock_irqrestore(&priv->ctx_lock, flags);
--
--		mlx4_dbg(dev, "Interface for protocol %d restarted with bonded mode %s\n",
--			 dev_ctx->intf->protocol, enable ?
--			 "enabled" : "disabled");
--	}
--
- 	mutex_lock(&intf_mutex);
- 
- 	for (i = 0; i < ARRAY_SIZE(mlx4_adev_devices); i++) {
-@@ -447,16 +334,11 @@ static int rescan_drivers_locked(struct mlx4_dev *dev)
- 
- int mlx4_register_device(struct mlx4_dev *dev)
- {
--	struct mlx4_priv *priv = mlx4_priv(dev);
--	struct mlx4_interface *intf;
- 	int ret;
- 
- 	mutex_lock(&intf_mutex);
- 
- 	dev->persist->interface_state |= MLX4_INTERFACE_STATE_UP;
--	list_add_tail(&priv->dev_list, &dev_list);
--	list_for_each_entry(intf, &intf_list, list)
--		mlx4_add_device(intf, priv);
- 
- 	ret = rescan_drivers_locked(dev);
- 
-@@ -474,9 +356,6 @@ int mlx4_register_device(struct mlx4_dev *dev)
- 
- void mlx4_unregister_device(struct mlx4_dev *dev)
- {
--	struct mlx4_priv *priv = mlx4_priv(dev);
--	struct mlx4_interface *intf;
--
- 	if (!(dev->persist->interface_state & MLX4_INTERFACE_STATE_UP))
- 		return;
- 
-@@ -495,10 +374,6 @@ void mlx4_unregister_device(struct mlx4_dev *dev)
- 	}
- 	mutex_lock(&intf_mutex);
- 
--	list_for_each_entry(intf, &intf_list, list)
--		mlx4_remove_device(intf, priv);
--
--	list_del(&priv->dev_list);
- 	dev->persist->interface_state &= ~MLX4_INTERFACE_STATE_UP;
- 
- 	rescan_drivers_locked(dev);
-diff --git a/drivers/net/ethernet/mellanox/mlx4/main.c b/drivers/net/ethernet/mellanox/mlx4/main.c
-index c4ec7377aa71..2581226836b5 100644
---- a/drivers/net/ethernet/mellanox/mlx4/main.c
-+++ b/drivers/net/ethernet/mellanox/mlx4/main.c
-@@ -42,7 +42,6 @@
- #include <linux/slab.h>
- #include <linux/io-mapping.h>
- #include <linux/delay.h>
--#include <linux/kmod.h>
- #include <linux/etherdevice.h>
- #include <net/devlink.h>
- 
-@@ -1091,27 +1090,6 @@ static int mlx4_slave_cap(struct mlx4_dev *dev)
- 	return err;
- }
- 
--static void mlx4_request_modules(struct mlx4_dev *dev)
--{
--	int port;
--	int has_ib_port = false;
--	int has_eth_port = false;
--#define EN_DRV_NAME	"mlx4_en"
--#define IB_DRV_NAME	"mlx4_ib"
--
--	for (port = 1; port <= dev->caps.num_ports; port++) {
--		if (dev->caps.port_type[port] == MLX4_PORT_TYPE_IB)
--			has_ib_port = true;
--		else if (dev->caps.port_type[port] == MLX4_PORT_TYPE_ETH)
--			has_eth_port = true;
--	}
--
--	if (has_eth_port)
--		request_module_nowait(EN_DRV_NAME);
--	if (has_ib_port || (dev->caps.flags & MLX4_DEV_CAP_FLAG_IBOE))
--		request_module_nowait(IB_DRV_NAME);
--}
--
- /*
-  * Change the port configuration of the device.
-  * Every user of this function must hold the port mutex.
-@@ -1147,7 +1125,6 @@ int mlx4_change_port_types(struct mlx4_dev *dev,
- 			mlx4_err(dev, "Failed to register device\n");
- 			goto out;
- 		}
--		mlx4_request_modules(dev);
- 	}
- 
- out:
-@@ -3426,9 +3403,6 @@ static int mlx4_load_one(struct pci_dev *pdev, int pci_dev_data,
- 	devl_assert_locked(devlink);
- 	dev = &priv->dev;
- 
--	INIT_LIST_HEAD(&priv->ctx_list);
--	spin_lock_init(&priv->ctx_lock);
--
- 	err = mlx4_adev_init(dev);
- 	if (err)
- 		return err;
-@@ -3732,8 +3706,6 @@ static int mlx4_load_one(struct pci_dev *pdev, int pci_dev_data,
- 	if (err)
- 		goto err_port;
- 
--	mlx4_request_modules(dev);
--
- 	mlx4_sense_init(dev);
- 	mlx4_start_sense(dev);
- 
-diff --git a/drivers/net/ethernet/mellanox/mlx4/mlx4.h b/drivers/net/ethernet/mellanox/mlx4/mlx4.h
-index 36de79c8d053..d7d856d1758a 100644
---- a/drivers/net/ethernet/mellanox/mlx4/mlx4.h
-+++ b/drivers/net/ethernet/mellanox/mlx4/mlx4.h
-@@ -882,9 +882,6 @@ enum {
- struct mlx4_priv {
- 	struct mlx4_dev		dev;
- 
--	struct list_head	dev_list;
--	struct list_head	ctx_list;
--	spinlock_t		ctx_lock;
- 	struct mlx4_adev	**adev;
- 	int			adev_idx;
- 	struct atomic_notifier_head event_nh;
-diff --git a/include/linux/mlx4/driver.h b/include/linux/mlx4/driver.h
-index 9cf157d381c6..69825223081f 100644
---- a/include/linux/mlx4/driver.h
-+++ b/include/linux/mlx4/driver.h
-@@ -58,22 +58,12 @@ enum {
- 	MLX4_INTFF_BONDING	= 1 << 0
- };
- 
--struct mlx4_interface {
--	void *			(*add)	 (struct mlx4_dev *dev);
--	void			(*remove)(struct mlx4_dev *dev, void *context);
--	struct list_head	list;
--	enum mlx4_protocol	protocol;
--	int			flags;
--};
--
- struct mlx4_adrv {
- 	struct auxiliary_driver	adrv;
- 	enum mlx4_protocol	protocol;
- 	int			flags;
- };
- 
--int mlx4_register_interface(struct mlx4_interface *intf);
--void mlx4_unregister_interface(struct mlx4_interface *intf);
- int mlx4_register_auxiliary_driver(struct mlx4_adrv *madrv);
- void mlx4_unregister_auxiliary_driver(struct mlx4_adrv *madrv);
- 
--- 
-2.35.3
+On 8/21/23 20:00, Bernard Metzler wrote:
+>
+>> -----Original Message-----
+>> From: Guoqing Jiang <guoqing.jiang@linux.dev>
+>> Sent: Monday, 21 August 2023 10:48
+>> To: Bernard Metzler <BMT@zurich.ibm.com>; jgg@ziepe.ca; leon@kernel.org
+>> Cc: linux-rdma@vger.kernel.org
+>> Subject: [EXTERNAL] [PATCH V2 3/3] RDMA/siw: Call llist_reverse_order in
+>> siw_run_sq
+>>
+>> We can call the function to get fifo list.
+>>
+>> Signed-off-by: Guoqing Jiang <guoqing.jiang@linux.dev>
+>> ---
+>>   drivers/infiniband/sw/siw/siw_qp_tx.c | 12 +-----------
+>>   1 file changed, 1 insertion(+), 11 deletions(-)
+>>
+>> diff --git a/drivers/infiniband/sw/siw/siw_qp_tx.c
+>> b/drivers/infiniband/sw/siw/siw_qp_tx.c
+>> index 4b292e0504f1..eb3d438828e2 100644
+>> --- a/drivers/infiniband/sw/siw/siw_qp_tx.c
+>> +++ b/drivers/infiniband/sw/siw/siw_qp_tx.c
+>> @@ -1229,17 +1229,7 @@ int siw_run_sq(void *data)
+>>   			break;
+>>
+>>   		active = llist_del_all(&tx_task->active);
+>> -		/*
+>> -		 * llist_del_all returns a list with newest entry first.
+>> -		 * Re-order list for fairness among QP's.
+>> -		 */
+>> -		while (active) {
+>> -			struct llist_node *tmp = active;
+>> -
+>> -			active = llist_next(active);
+>> -			tmp->next = fifo_list;
+>> -			fifo_list = tmp;
+>> -		}
+>> +		fifo_list = llist_reverse_order(active);
+>>   		while (fifo_list) {
+>>   			qp = container_of(fifo_list, struct siw_qp, tx_list);
+>>   			fifo_list = llist_next(fifo_list);
+>> --
+>> 2.35.3
+> Oh yes, that function already exists. Many thanks!
+> I'd keep the comment, since it might be not obvious why we
+> reverse the list.
 
+Ok, will add them back.
+
+> Acked-by: Bernard Metzler <bmt@zurich.ibm.com>
+
+Appreciate for your review!
+
+Thanks,
+Guoqing
