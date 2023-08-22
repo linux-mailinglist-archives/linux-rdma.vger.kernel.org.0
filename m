@@ -2,82 +2,106 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 36D73784453
-	for <lists+linux-rdma@lfdr.de>; Tue, 22 Aug 2023 16:32:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C59DB784544
+	for <lists+linux-rdma@lfdr.de>; Tue, 22 Aug 2023 17:20:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232256AbjHVOc3 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 22 Aug 2023 10:32:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38366 "EHLO
+        id S236843AbjHVPUU (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 22 Aug 2023 11:20:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34352 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234790AbjHVOc2 (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 22 Aug 2023 10:32:28 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9543BE6C
-        for <linux-rdma@vger.kernel.org>; Tue, 22 Aug 2023 07:32:06 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id C464B62D4D
-        for <linux-rdma@vger.kernel.org>; Tue, 22 Aug 2023 14:31:58 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 75166C433C7;
-        Tue, 22 Aug 2023 14:31:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1692714718;
-        bh=38rh0bzbUMpqqq/8VXffc5zw1S4gYIb1L+JyGXdqbBc=;
-        h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-        b=JNJmfTQhdvwhvahVqJYJFQQ/UCS0kC5mSygfpoSi/COnY2dnAVdit+mCm/ibEDIwH
-         xEnToDDu5LFW0NbCQraWtUiGkM0eetV/btD/3oZ/APxDluI/5qbZuGt0mHx4hJf/x4
-         0csDyoDtV6WfkinqHHw7ETgP+KO2vh13ewYQIZLjekS7puoa3owU6fa5tKUFTKaOpl
-         V311QD46PxgDTMbAL5OS1QfWDc/XOSUKxDv6PAQ3PUXggyYL1dm1TPRDJs1HV228rq
-         dfsobDb6eYF7sdlIOrjv+dHIaCojlJLaGdI3BlH1dtYnfjIDj2o8lfY/25GSRSL3UT
-         YDwnbAVI348vw==
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Jason Gunthorpe <jgg@ziepe.ca>, Leon Romanovsky <leon@kernel.org>,
-        Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>
-Cc:     Patrick Kelsey <pat.kelsey@cornelisnetworks.com>,
-        Douglas Miller <doug.miller@cornelisnetworks.com>,
-        Brendan Cunningham <bcunningham@cornelisnetworks.com>,
-        linux-rdma@vger.kernel.org
-In-Reply-To: <169271289743.1855761.7584504317823143869.stgit@awfm-02.cornelisnetworks.com>
-References: <169271289743.1855761.7584504317823143869.stgit@awfm-02.cornelisnetworks.com>
-Subject: Re: [PATCH for-next 0/2] Series short description
-Message-Id: <169271471400.43535.1833309467078306989.b4-ty@kernel.org>
-Date:   Tue, 22 Aug 2023 17:31:54 +0300
+        with ESMTP id S234758AbjHVPUT (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 22 Aug 2023 11:20:19 -0400
+Received: from mail-pl1-f180.google.com (mail-pl1-f180.google.com [209.85.214.180])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 92E081BE;
+        Tue, 22 Aug 2023 08:20:17 -0700 (PDT)
+Received: by mail-pl1-f180.google.com with SMTP id d9443c01a7336-1bc8a2f71eeso29462605ad.0;
+        Tue, 22 Aug 2023 08:20:17 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692717617; x=1693322417;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=5P9BwwYkA33/B2ZcfvbxAaA6ffyt2wVBdKLXgh3t5MU=;
+        b=XY+Sbr4tKnhRgdZWTops/Uvsy0KggbGec+8f+smgIK+d5kwmZ2gPojFfQAqPWn67AE
+         I3yk1rw66ITK9ln6xXEus8vAKd7BEowVCJmZ0Mn1iedVOeakROJOwLW8p274pf15xzGa
+         rZCDNhI8Ph4kHo8xohNCPf1hePh9NAf86sWhhq6b9bF6wrjNf/UL4RAGEuJSqLM+oYuz
+         OMGJkbf0L7u8LnHNwfWZrQrv0cSzjaYbqwXjRQlJ+WuryRPb5e5XhHQB5L1z4Y5O5NcN
+         7jeTIuP8Uk/PoyBfjO2Hu9OjjoUQrdSN2SbTGnU9ZRaJF7IBcwD5XMWKC2Be0+iIWqpO
+         Gjjg==
+X-Gm-Message-State: AOJu0Yw/XIZyO51CBlPV7XFHvb5eeRmiSjqkl6Kc4ovN/asGlH6aJ0TS
+        a0Zo6aWi5ppIwSg5UnVQiFGdxoKxTB8=
+X-Google-Smtp-Source: AGHT+IGUw08fbRcL3y3OqZMC573hu/fdt0/l4uMGCv/vpbZXKPt1EskD+nixO9LpaBNoEFmR3HPwcw==
+X-Received: by 2002:a17:902:76c1:b0:1bd:be34:cf5e with SMTP id j1-20020a17090276c100b001bdbe34cf5emr7249577plt.10.1692717616741;
+        Tue, 22 Aug 2023 08:20:16 -0700 (PDT)
+Received: from ?IPV6:2620:15c:211:201:88be:bf57:de29:7cc? ([2620:15c:211:201:88be:bf57:de29:7cc])
+        by smtp.gmail.com with ESMTPSA id c15-20020a170903234f00b001b9be3b94d3sm9187017plh.140.2023.08.22.08.20.15
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 22 Aug 2023 08:20:16 -0700 (PDT)
+Message-ID: <8be8f611-e413-9584-7c2e-2c1abf4147be@acm.org>
+Date:   Tue, 22 Aug 2023 08:20:15 -0700
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.1
+Subject: Re: [bug report] blktests srp/002 hang
+Content-Language: en-US
+To:     Shinichiro Kawasaki <shinichiro.kawasaki@wdc.com>,
+        Bob Pearson <rpearsonhpe@gmail.com>
+Cc:     "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>
+References: <dsg6rd66tyiei32zaxs6ddv5ebefr5vtxjwz6d2ewqrcwisogl@ge7jzan7dg5u>
+ <0c5c732c-283c-b29a-0ac2-c32211fc7e17@gmail.com>
+ <yewvcfcketee5qduraajra2g37t2mpxdlmj7aqny3umf7mkavk@wsm5forumsou>
+From:   Bart Van Assche <bvanassche@acm.org>
+In-Reply-To: <yewvcfcketee5qduraajra2g37t2mpxdlmj7aqny3umf7mkavk@wsm5forumsou>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-Mailer: b4 0.12-dev-a055d
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-3.2 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-
-On Tue, 22 Aug 2023 10:07:47 -0400, Dennis Dalessandro wrote:
-> Much scaled down version of Brendan's previous patches. This doesn't touch uAPI
-> just refactors some code.
+On 8/22/23 03:18, Shinichiro Kawasaki wrote:
+> CC+: Bart,
 > 
-> Small fixup from Doug.
-> 
-> Would have sent a couple weeks ago but had been dealing with the isert
-> regression. Reverting that give us a clean bill of health. If too late
-> for 6.6 can wait another cycle even.
-> 
+> On Aug 21, 2023 / 20:46, Bob Pearson wrote:
 > [...]
+>> Shinichiro,
+> 
+> Hello Bob, thanks for the response.
+> 
+>>
+>> I have been aware for a long time that there is a problem with blktests/srp. I see hangs in
+>> 002 and 011 fairly often.
+> 
+> I repeated the test case srp/011, and observed it hangs. This hang at srp/011
+> also can be recreated in stable manner. I reverted the commit 9b4b7c1f9f54
+> then observed the srp/011 hang disappeared. So, I guess these two hangs have
+> same root cause.
+> 
+>> I have not been able to figure out the root cause but suspect that
+>> there is a timing issue in the srp drivers which cannot handle the slowness of the software
+>> RoCE implemtation. If you can give me any clues about what you are seeing I am happy to help
+>> try to figure this out.
+> 
+> Thanks for sharing your thoughts. I myself do not have srp driver knowledge, and
+> not sure what clue I should provide. If you have any idea of the action I can
+> take, please let me know.
 
-Applied, thanks!
+Hi Shinichiro and Bob,
 
-[1/2] RDMA/hfi1: Move user SDMA system memory pinning code to its own file
-      https://git.kernel.org/rdma/rdma/c/d2c02346345337
-[2/2] IB/hfi1: Reduce printing of errors during driver shut down
-      https://git.kernel.org/rdma/rdma/c/f5acc36b0714b7
+When I initially developed the SRP tests these were working reliably in
+combination with the rdma_rxe driver. Since 2017 I frequently see issues when
+running the SRP tests on top of the rdma_rxe driver, issues that I do not see
+if I run the SRP tests on top of the soft-iWARP driver (siw). How about
+changing the default for the SRP tests from rdma_rxe to siw and to let the
+RDMA community resolve the rdma_rxe issues?
 
-Best regards,
--- 
-Leon Romanovsky <leon@kernel.org>
+Thanks,
+
+Bart.
+
