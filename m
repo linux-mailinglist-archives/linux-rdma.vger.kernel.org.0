@@ -2,79 +2,65 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DA4AC784657
-	for <lists+linux-rdma@lfdr.de>; Tue, 22 Aug 2023 17:55:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 94D357848AB
+	for <lists+linux-rdma@lfdr.de>; Tue, 22 Aug 2023 19:49:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234344AbjHVPze (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 22 Aug 2023 11:55:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46572 "EHLO
+        id S229457AbjHVRtH (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 22 Aug 2023 13:49:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59898 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237369AbjHVPzc (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 22 Aug 2023 11:55:32 -0400
-Received: from mail-vk1-xa34.google.com (mail-vk1-xa34.google.com [IPv6:2607:f8b0:4864:20::a34])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D58E10D9
-        for <linux-rdma@vger.kernel.org>; Tue, 22 Aug 2023 08:54:55 -0700 (PDT)
-Received: by mail-vk1-xa34.google.com with SMTP id 71dfb90a1353d-48d1412c5c5so939598e0c.3
-        for <linux-rdma@vger.kernel.org>; Tue, 22 Aug 2023 08:54:55 -0700 (PDT)
+        with ESMTP id S229527AbjHVRtH (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 22 Aug 2023 13:49:07 -0400
+Received: from mail-pl1-x629.google.com (mail-pl1-x629.google.com [IPv6:2607:f8b0:4864:20::629])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B39EE57;
+        Tue, 22 Aug 2023 10:49:05 -0700 (PDT)
+Received: by mail-pl1-x629.google.com with SMTP id d9443c01a7336-1bf078d5fb7so31509255ad.0;
+        Tue, 22 Aug 2023 10:49:05 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google; t=1692719684; x=1693324484;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=DyWiLtgW4rH+JKJqsR/UwcQBV8o5lraFKhrBSaT+Ps8=;
-        b=NT9JTOvtFdmhasmygeVtSzIJVN74iudjI0QTUJny3AeS7qeldGSDrv7oJDtSS3KAC9
-         0dFApr2PitMRVcwgdL32fVPDHnH8mUAFHixpqtY7+Zj25SkL0AnJQxTqWtRl2cuQ4X9F
-         Odv6PZizpLio4AtEU86+ByynRvlC2NaUeiQ3/Hu5fSOgwVcOc8d0LJBpfm32U9Vwjl9L
-         a5A4saVCGeMgKEIGWXSplEAvDvLFwZHagf3JryhKcg+TBRs+yjve7FL01ECAzu2PK7iV
-         QgYKnAvQDF4+JCzHTOY7KGQgGCsNGzwd78hQjM74mJ9v8RfYdaKIjSOUOsMiXMioPAY5
-         mhIw==
+        d=gmail.com; s=20221208; t=1692726545; x=1693331345;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=i7l0Y6lM+rZGDuv/qHh6OEKTmVEaRqq7cg0ZWSFnohg=;
+        b=j/l6QH7YnV876//kqcJNU/yCXnSduTXioxvp4EqA+Ig/ZKD8XfgCisVax9IJ8YXQr9
+         0ajk38NQfSOjVnzaql1pOCdv4W7llETGc2CE+z55rRGqvnFMJ9VXSwNNF+txdIt3c5Xk
+         V1E4lSoUY4q44997htKjAx8zXL9A3Jm4z70bDA98aL09bZtpowLeb/aXGbrSs7XG4h8s
+         e55FyoQWSiFvlrS4Seq45lJFbS/c5K1DOOiSgoxer8UETCjN+vh7A7O7k3eFIre3zwl7
+         vih4tFd0FZDecufqKTGqa9g2H1ySUrca5gu3EYSNs2EXL3KDPa9kjXkSfUbo9a6Lpewp
+         09Vg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692719684; x=1693324484;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=DyWiLtgW4rH+JKJqsR/UwcQBV8o5lraFKhrBSaT+Ps8=;
-        b=SGG/yRQavkwGIso25AbdiXILNyASCThg6HxQHixw11hsRMJKstkepJ7U3d9aO3N8Fl
-         metiUwMfOqAAUWr8fnyx9e+QBmEW/4eoogaLiE4StWOaahhFtB+7D2dTb14Ws67869pe
-         NcoPB77C9LVm3WNeokg8mWoJcVl6Ffcupjbko4ba4O3W/NZtBSxwGg5g17szeT7fmJb6
-         7QP/mZXF5jGRpj8Q3xJTl2ZxCJi2MuLBwWSUDR7UMifW0bWukd+WHcLhPfK/jpac/7T4
-         91qQ3j4P0bxEPzm2E1xeFzsLztPCarbfw9gviGd9xpA630z4sWVaGHb4v6Hug899U79q
-         KEXQ==
-X-Gm-Message-State: AOJu0YzKp8u6GfGYs5ezdyxiN6YdVV6n2bXGtnHnl9Wy7NDrkuhlNiAn
-        a8MUrTmxlXFXrtNYJsn4wGsaNg==
-X-Google-Smtp-Source: AGHT+IHm+ZQkZnfqa1opBR5Uh1UPr48byTq5NCF+mGziAzbMuhJCaJmtH8trQUCfo/FpvCkPMs7e+Q==
-X-Received: by 2002:a1f:4e45:0:b0:48d:189b:6f3b with SMTP id c66-20020a1f4e45000000b0048d189b6f3bmr5428427vkb.12.1692719684095;
-        Tue, 22 Aug 2023 08:54:44 -0700 (PDT)
-Received: from ziepe.ca (hlfxns017vw-142-68-25-194.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.68.25.194])
-        by smtp.gmail.com with ESMTPSA id c13-20020a0ce14d000000b006472b16d141sm1625144qvl.127.2023.08.22.08.54.43
+        d=1e100.net; s=20221208; t=1692726545; x=1693331345;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=i7l0Y6lM+rZGDuv/qHh6OEKTmVEaRqq7cg0ZWSFnohg=;
+        b=NtmOnq/is6tRAv4Z7/we8ey+2GXL02BsMzbj17qffQhvwOnrp/5ulfVIJxGLHMjuy9
+         rOOgALSJ2MRSN907HPWpDXvg+suku/ykr9CBzAU95Tv4Z/RkDHk7v/TVroJYmssG7otB
+         X9SruZNT8JCQMt5mtoePH9Ei1MmRbyab3Z7cMFiBSJn4b32rzXYE/m/7ScGTdmZBdxuZ
+         kkyp8lqfaxS0GHDk+3g1KHTAS80wSqVDmD+DD16ALeOrxB//teZ0nQ3VI4P4hnxAIT0o
+         kjc/4M6W6IPOYRfqJNKEAW74moFqVcoRN3uFToIu0P+ekstnpllkzV9YaFmz/7X1z5hG
+         OWWA==
+X-Gm-Message-State: AOJu0YxoNA0og/csVx4n9GU1kKiO6GjCSGutN1saenKDv8tcGkLkTQm9
+        eZTtIvJgAPLuyAHRFjkoqcY=
+X-Google-Smtp-Source: AGHT+IEPQWDRP9zbBhwUbVrxWiNRxiSuhMO4/I/o1bLuaZUXyqOMFPqWPYLegSelT0d9COtPh5Smvg==
+X-Received: by 2002:a17:902:c411:b0:1bf:69af:b4e4 with SMTP id k17-20020a170902c41100b001bf69afb4e4mr8945104plk.37.1692726544579;
+        Tue, 22 Aug 2023 10:49:04 -0700 (PDT)
+Received: from XHD-CHAVAN-L1.amd.com ([149.199.50.128])
+        by smtp.gmail.com with ESMTPSA id q6-20020a170902a3c600b001bf095dfb76sm9487025plb.237.2023.08.22.10.49.02
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 22 Aug 2023 08:54:43 -0700 (PDT)
-Received: from jgg by wakko with local (Exim 4.95)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1qYTiM-00FBsa-Rd;
-        Tue, 22 Aug 2023 12:54:42 -0300
-Date:   Tue, 22 Aug 2023 12:54:42 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     sharmaajay@linuxonhyperv.com
-Cc:     Long Li <longli@microsoft.com>, Leon Romanovsky <leon@kernel.org>,
-        Dexuan Cui <decui@microsoft.com>, Wei Liu <wei.liu@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>, linux-rdma@vger.kernel.org,
-        linux-hyperv@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Ajay Sharma <sharmaajay@microsoft.com>
-Subject: Re: [Patch v4 3/4] RDMA/mana_ib : Create adapter and Add error eq
-Message-ID: <ZOTaQt9Mdq4ncTtv@ziepe.ca>
-References: <1692719255-20183-1-git-send-email-sharmaajay@linuxonhyperv.com>
- <1692719255-20183-4-git-send-email-sharmaajay@linuxonhyperv.com>
+        Tue, 22 Aug 2023 10:49:04 -0700 (PDT)
+From:   Rohit Chavan <roheetchavan@gmail.com>
+To:     Jason Gunthorpe <jgg@ziepe.ca>, Leon Romanovsky <leon@kernel.org>,
+        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Rohit Chavan <roheetchavan@gmail.com>
+Subject: [PATCH] RDMA/core: Fix repeated words in comments
+Date:   Tue, 22 Aug 2023 23:18:57 +0530
+Message-Id: <20230822174857.9003-1-roheetchavan@gmail.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1692719255-20183-4-git-send-email-sharmaajay@linuxonhyperv.com>
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -82,28 +68,36 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Tue, Aug 22, 2023 at 08:47:34AM -0700, sharmaajay@linuxonhyperv.com wrote:
+Corrected the repeated words in the documentation for
+rdma_replace_ah_attr and ah_attribute.
 
-> +static void mana_ib_soc_event_handler(void *ctx, struct gdma_queue *queue,
-> +				      struct gdma_event *event)
-> +{
-> +	struct mana_ib_dev *mib_dev = (struct mana_ib_dev *)ctx;
-> +
-> +	switch (event->type) {
-> +	case GDMA_EQE_SOC_EVENT_NOTIFICATION:
-> +		ibdev_dbg(&mib_dev->ib_dev, "Received SOC Notification");
-> +		break;
-> +	case GDMA_EQE_SOC_EVENT_TEST:
-> +		ibdev_dbg(&mib_dev->ib_dev, "Received SoC Test");
-> +		break;
-> +	default:
-> +		ibdev_dbg(&mib_dev->ib_dev, "Received unsolicited evt %d",
-> +			  event->type);
-> +	}
-> +}
+Signed-off-by: Rohit Chavan <roheetchavan@gmail.com>
+---
+ drivers/infiniband/core/verbs.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-Did I miss something? What is the point of all this? Please don't add
-test/dead code to the kernel. Come back when you have an actual use of
-events on this channel.
+diff --git a/drivers/infiniband/core/verbs.c b/drivers/infiniband/core/verbs.c
+index b99b3cc283b6..0c5b24ce3966 100644
+--- a/drivers/infiniband/core/verbs.c
++++ b/drivers/infiniband/core/verbs.c
+@@ -366,7 +366,7 @@ void rdma_copy_ah_attr(struct rdma_ah_attr *dest,
+ EXPORT_SYMBOL(rdma_copy_ah_attr);
 
-Jason
+ /**
+- * rdma_replace_ah_attr - Replace valid ah_attr with new one.
++ * rdma_replace_ah_attr - Replace valid ah_attr with new one.
+  * @old:        Pointer to existing ah_attr which needs to be replaced.
+  *              old is assumed to be valid or zero'd
+  * @new:        Pointer to the new ah_attr.
+@@ -744,7 +744,7 @@ EXPORT_SYMBOL(ib_get_gids_from_rdma_hdr);
+
+ /* Resolve destination mac address and hop limit for unicast destination
+  * GID entry, considering the source GID entry as well.
+- * ah_attribute must have valid port_num, sgid_index.
++ * ah_attribute must have valid port_num, sgid_index.
+  */
+ static int ib_resolve_unicast_gid_dmac(struct ib_device *device,
+ 				       struct rdma_ah_attr *ah_attr)
+--
+2.30.2
+
