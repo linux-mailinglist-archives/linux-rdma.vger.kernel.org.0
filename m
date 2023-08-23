@@ -2,138 +2,231 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 02708785D22
-	for <lists+linux-rdma@lfdr.de>; Wed, 23 Aug 2023 18:19:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8892A7860ED
+	for <lists+linux-rdma@lfdr.de>; Wed, 23 Aug 2023 21:46:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237517AbjHWQTT (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 23 Aug 2023 12:19:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37118 "EHLO
+        id S235922AbjHWTqC (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 23 Aug 2023 15:46:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41662 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237513AbjHWQTS (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 23 Aug 2023 12:19:18 -0400
-Received: from mail-oa1-x33.google.com (mail-oa1-x33.google.com [IPv6:2001:4860:4864:20::33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B536E7F;
-        Wed, 23 Aug 2023 09:19:15 -0700 (PDT)
-Received: by mail-oa1-x33.google.com with SMTP id 586e51a60fabf-1c4b4c40281so3618603fac.1;
-        Wed, 23 Aug 2023 09:19:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1692807555; x=1693412355;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=gGAxAmWrKS9Xwi8s1FfhyzMjJ6aJUXMBgQRbaSFIeM0=;
-        b=Tb9MBQgTkfDShQBc11U9uqkT7ASLLa3oQpX9xh5/aWgnQYWTkz6I5r65ZbFpdwf10m
-         A5x92zxDYSoqkwp8gZnAUBH2kT88BWUeuM3+O5/L4ZN5zguKtJxFkZLUa4j4u3qPBvmW
-         PWTrA1PLwIJ9FW0ELzXaRW2kCfxmsPegRn4ZNqweBL2rpjtJVM6h/28vLRmR8OP8ziVk
-         qTXTlrne2oxE4V+pU0AInKp/DNxXtPsN4doiLB2PkV7zzRqbIqHHt0AUCDf6+LF507Wy
-         bvMK40J4lKmwJuMlyz7P3/UGwWUylHqnIWqmZpxxTkrrDHek+Ue4iFY1b/OGjLuQEe0w
-         ESGg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692807555; x=1693412355;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=gGAxAmWrKS9Xwi8s1FfhyzMjJ6aJUXMBgQRbaSFIeM0=;
-        b=FdD4wuTwq0JYrYevNLbaS6wfVlTLRUug/letrRB+oFuNizlD2ym3vxb8JFroy0sarX
-         OwDOvMjo9mLwM/6ZWDXkEBWl5HCuewZe+WFbYxuMoIkg3NAHY7IZKF4V/gGuSjJstlVr
-         W5RKPqbghrfGI8fYQtTpaW1lawvajwU24aeFlEEKbqfCZnEq5ke/vt1Bd/Oe885DUYQd
-         BXphLbV5cuxzc4pSPekgGEVlEhXHsvBikAYEMRMxtQK53GdyMK2Y1k06uW7PONaF7NgW
-         W/H1uH+eSPRs+8TknbtZ7lYOn7oM7JZwYKXz61Ja28RvOj8vE5fuT75+uMBQyGgpQQ0V
-         W2eA==
-X-Gm-Message-State: AOJu0YxkZyANod8v+05at462AOc7nkSAIc13jAdczTQzfUtklkLczsKi
-        EDD81CIqSu47ktl63WyEHD8=
-X-Google-Smtp-Source: AGHT+IHqEYTDBdKEA4sZnnUWz+fx86MDmHH9uwXOKHGv9dC8V+D+P8mWiP3raxWefmZdt5pPKt/Ndg==
-X-Received: by 2002:a05:6870:d620:b0:1bf:42a8:2cd2 with SMTP id a32-20020a056870d62000b001bf42a82cd2mr7816641oaq.25.1692807554658;
-        Wed, 23 Aug 2023 09:19:14 -0700 (PDT)
-Received: from ?IPV6:2603:8081:140c:1a00:3212:6dcf:4ab0:e410? (2603-8081-140c-1a00-3212-6dcf-4ab0-e410.res6.spectrum.com. [2603:8081:140c:1a00:3212:6dcf:4ab0:e410])
-        by smtp.gmail.com with ESMTPSA id q23-20020a056830019700b006b8ad42654csm5764023ota.0.2023.08.23.09.19.13
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 23 Aug 2023 09:19:14 -0700 (PDT)
-Message-ID: <27e31e00-74a3-6209-5ad5-1783d6e67a0d@gmail.com>
-Date:   Wed, 23 Aug 2023 11:19:13 -0500
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [bug report] blktests srp/002 hang
-To:     Bart Van Assche <bvanassche@acm.org>,
-        Shinichiro Kawasaki <shinichiro.kawasaki@wdc.com>
-Cc:     "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>
-References: <dsg6rd66tyiei32zaxs6ddv5ebefr5vtxjwz6d2ewqrcwisogl@ge7jzan7dg5u>
- <0c5c732c-283c-b29a-0ac2-c32211fc7e17@gmail.com>
- <yewvcfcketee5qduraajra2g37t2mpxdlmj7aqny3umf7mkavk@wsm5forumsou>
- <8be8f611-e413-9584-7c2e-2c1abf4147be@acm.org>
+        with ESMTP id S238384AbjHWTpg (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 23 Aug 2023 15:45:36 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.115])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE18610C4;
+        Wed, 23 Aug 2023 12:45:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1692819934; x=1724355934;
+  h=message-id:date:subject:to:references:from:in-reply-to:
+   content-transfer-encoding:mime-version;
+  bh=Yd9VEieFFlffzurv9/t0dlKZ/+YelF4k3XttafzBi/g=;
+  b=HbWgXOZDke/Vj6bCrT4PxFanSuLmP5uyC4xO++2Zln4auvSt5fS/xLxu
+   Uq8ducNnwji5TMFwLJdnKuo/arZIT6GtBreJy/Dpv3BVCUGySVIV8mPYZ
+   P/xtmAa+ZqhdtuUMp5JGDIX/60SlGnNpvvptR9Yy6LTBIqmy4nDUkLttr
+   DkQfAAZNA8+mznRKkjtPy/MheK0sx7CUmIs5Ralr57DtSPzXzyZmdWUB3
+   yQehCg+bGMXqx+0qwDq8DGItZXRMTmpWOLthGZYBq3IdFBCmTKJ0JFj2R
+   6OlHhgpL6mwzd+wRovUXieaPT080gmLXaBw8J05OW2927XCRRzkx1IOaz
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10811"; a="374233563"
+X-IronPort-AV: E=Sophos;i="6.01,195,1684825200"; 
+   d="scan'208";a="374233563"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Aug 2023 12:45:24 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10811"; a="826846659"
+X-IronPort-AV: E=Sophos;i="6.01,195,1684825200"; 
+   d="scan'208";a="826846659"
+Received: from fmsmsx602.amr.corp.intel.com ([10.18.126.82])
+  by FMSMGA003.fm.intel.com with ESMTP; 23 Aug 2023 12:45:24 -0700
+Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
+ fmsmsx602.amr.corp.intel.com (10.18.126.82) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.27; Wed, 23 Aug 2023 12:45:23 -0700
+Received: from FMSEDG603.ED.cps.intel.com (10.1.192.133) by
+ fmsmsx610.amr.corp.intel.com (10.18.126.90) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.27 via Frontend Transport; Wed, 23 Aug 2023 12:45:23 -0700
+Received: from NAM12-DM6-obe.outbound.protection.outlook.com (104.47.59.175)
+ by edgegateway.intel.com (192.55.55.68) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.27; Wed, 23 Aug 2023 12:45:23 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=ZidxmW6eFPNRxLkXvlk1X9PeGjBLEXYLB+2VVWcwXQBVV96WiR21or6mm/qWd7JBcJPQSErxFSEfohyMn7tk2T83rXXmoUyMlsZMWa6c+ewS7N07ZY37pdzu9lbm7zh24kq4b/Dlf2b1SRhmTlS+lwt6Ig88umJtAA2qzvjtuY/1QBafVBHTioAme6+TGY7KqA/wwfBXNttV7YSVvFNVb4epcRnNnQiTPj2oySrxvJzAbry0m2I44d+S25aWsjkX6X+LX5T7dxBKgZazZcV1nDk5VYPuFcapds4gvXm14TaHODSjQDB5q7tAkT3xYdIKGVA3LvZWXoYcpS/jSluygA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=UVnoHwc/yczs9sHGxTiQd11gYce4Or4xS8TYuTv0HEU=;
+ b=d6R3yB5inutF3X2NW2tDU7EkzgdAoIE+ZbUKAjWJs4F3aUIMR7Bm+J+tN8wQmdQbFgPI4zcDP0C5gfyHY/2eDMfz6xyHPkZbSAGraK7vPjMJLryiHX2rSlclXV0d+0Mq2cuVGvUxH1hGrr3hkIy5Tk5w1ty5++6caqIdf6ks+HwZ38W88PJqhmXgsWNtHuNSkMEfCGuJaSJR0fO5if1FAdlYRCBDmFiBSjLt8tDWOIxxcjYUBE5be4PBHDRFGDGHNxdNhaeslwmYPAyWL6IIXsuk/Ge3hVU5+p7M4RKdH1IfpVaKU5ML86y30XLXQQFay8uJBo3qWktLnDeWeCZGAQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+Received: from CO1PR11MB5089.namprd11.prod.outlook.com (2603:10b6:303:9b::16)
+ by SJ2PR11MB7454.namprd11.prod.outlook.com (2603:10b6:a03:4cc::12) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6699.25; Wed, 23 Aug
+ 2023 19:45:20 +0000
+Received: from CO1PR11MB5089.namprd11.prod.outlook.com
+ ([fe80::6a23:786d:65f7:ef0b]) by CO1PR11MB5089.namprd11.prod.outlook.com
+ ([fe80::6a23:786d:65f7:ef0b%6]) with mapi id 15.20.6699.022; Wed, 23 Aug 2023
+ 19:45:20 +0000
+Message-ID: <414e1ec9-e3a8-d555-3d12-8689a5cc64eb@intel.com>
+Date:   Wed, 23 Aug 2023 12:45:17 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.14.0
+Subject: Re: [PATCH net-next] net/mlx5: Use PTR_ERR_OR_ZERO() to simplify code
 Content-Language: en-US
-From:   Bob Pearson <rpearsonhpe@gmail.com>
-In-Reply-To: <8be8f611-e413-9584-7c2e-2c1abf4147be@acm.org>
-Content-Type: text/plain; charset=UTF-8
+To:     Jinjie Ruan <ruanjinjie@huawei.com>, <netdev@vger.kernel.org>,
+        <linux-rdma@vger.kernel.org>, Saeed Mahameed <saeedm@nvidia.com>,
+        "Leon Romanovsky" <leon@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        "Eric Dumazet" <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>
+References: <20230822062312.3982963-1-ruanjinjie@huawei.com>
+From:   Jacob Keller <jacob.e.keller@intel.com>
+In-Reply-To: <20230822062312.3982963-1-ruanjinjie@huawei.com>
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+X-ClientProxiedBy: MW4P222CA0029.NAMP222.PROD.OUTLOOK.COM
+ (2603:10b6:303:114::34) To CO1PR11MB5089.namprd11.prod.outlook.com
+ (2603:10b6:303:9b::16)
+MIME-Version: 1.0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: CO1PR11MB5089:EE_|SJ2PR11MB7454:EE_
+X-MS-Office365-Filtering-Correlation-Id: 6c6f22e8-b245-4247-b3d3-08dba4117c08
+X-LD-Processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 7TW29oN2nar7h70hd5izKM5uINkeeGAsxRR1Fzbpsiu7a35FEcURG4jjavO+QVbtaOEtdBDPgITyMWCF5GJKUauy69zlMtPNaBfUib3mcggSnU1DQ5suxXCNCPQWleo3UvB/TSJ3FEugsyNkMIMA7nVvYxByprFvFFU8TCSdArMRGaSq32jUydBUUHYCDkdQIgo1Nvkxe/Y8RfC/IvLLPlZwj6PiAdCfRpenmWhS1x8S51IiG5EKBAfNmY4fgJhg0IQ4EoAjGAI9gnKQ/805LX2nkQPKO2SfabBd14bc4SOFzdP95LgYLKFgti7ogQyNb0hqRcQuTLIemvUAAd1E2Nm85zGFKKNTHLAiUPN0eaBvOaGMupcV2H31arzmxUftB/SvghttR2IQsRf/3TeXaUTybb+Gmmc6SpW5Wpp9Ef4FNa1DSw0Dz6uiKnKhbpG6Sv1+b1ifaoT6B4pSJb4J2TXA/nN2LXr/bnxgY/6bd6w7qnbMu6Jj20qDr82jWKIrKiFJnSSkuMuCgdD9xdAQnwpBoNaVwCvTfMictsjebavwha2S4JoMKJ2s+DyCM+lO64/c5vNd09zFkPYwk9TWibYthAtwk3i4C0zTuS7f62odaZL3GtjnUjM/QmDevbb9/aHAty8Gn4DvIyNTM0eVHw==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CO1PR11MB5089.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366004)(39860400002)(376002)(136003)(346002)(396003)(1800799009)(186009)(451199024)(82960400001)(478600001)(6666004)(6486002)(110136005)(6506007)(6512007)(2616005)(2906002)(41300700001)(8936002)(26005)(86362001)(316002)(5660300002)(53546011)(8676002)(66946007)(36756003)(31696002)(66476007)(66556008)(38100700002)(83380400001)(31686004)(43740500002)(45980500001);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?MEpMOXhHREtZS1FEdmgwcE42cVYyRXJOTFRYOHV1c1NDOHduN05PSVZiaUNB?=
+ =?utf-8?B?RC9neEJqYVhESU1oSWQ5bCs3VkkrUXZ5Ni9sQUt0bENncG9sQXJNbmJzRHBx?=
+ =?utf-8?B?SHRyUEFoSURKemZtKy9ZMWtJOUdRV01yT0tXZUNYQm5raFB5eHZsbUR0NjRC?=
+ =?utf-8?B?ZmszWEliYWVHbGhqUEVzL1ZCQVNDQ1cxTk5iYzNuQ0h6NytORElqOWVBeDdi?=
+ =?utf-8?B?UVJCMUE1RUdrZmdGSDBFNWhFUDBPc2dtdjZHOU51ZXh3V2pBYm8yOUovU1p4?=
+ =?utf-8?B?NG1IVTZKZ3FwYnJiaTl0b3JLTXZtejFaWUtWQ3lmU3JIRW4vNVpMbWZlbFI4?=
+ =?utf-8?B?d2pWUmZGa2MzbWV6UGw0bE5FeUc1Sjd1NDg3MGhjejIxMzhGbkNBVzlQUFZ1?=
+ =?utf-8?B?MXNEQWZrY3BkdXhGd1h4QWFVSW1PTzJBbVBLc21QYzVUemp4aWsxcnVPbHpn?=
+ =?utf-8?B?T1NpNktscVVxSEttbzdNMkRjUnBUWnljTXdEYmFHREJoMDF3MmZLSTdVeTNp?=
+ =?utf-8?B?cGNlcGF5YlkrTXRCOE8rTW9sdUFaNjVhM1VtdThYNjRFLzN2QzNqdEJDRzRZ?=
+ =?utf-8?B?Q3lJVXNsUzhLYnY3RzAwQlNuVVJwdEEyYXYzZVFkQWd5VFh5eEc0bFJFQ2Jw?=
+ =?utf-8?B?c1p6cGhpOEtkaDdwQXYrS0NsWk5QdW0xUHUreXBkSmxDdm50K05Tand3eWN2?=
+ =?utf-8?B?K2RZMS85UGhIKzZwRW9VeUxnUHZRZTMwMEpEb3UxcSs2UThwLzlBb2lnRXc2?=
+ =?utf-8?B?VnE1dkRZWlZ1UWUrQjIyTFYydDd0dDFWQi9nOUhFSm1iK1NCTmJLMlJFZ0Nr?=
+ =?utf-8?B?UFNKck81ayt0TFdQWUJvRi9hZUJ5enFNTTZvNXc1dnhURHRFcW1iMEd2VXYy?=
+ =?utf-8?B?NHNIbWdlNFdTOTBVbjJBekNwUkcwUVhGRDhIMFkzN0x4bGxUWWlETkxGK3ZV?=
+ =?utf-8?B?ZlB4MkY1c3d0TURKQjAzNGdSUFJPeG0veWNBMURWRHJyNlFnRFBwb1BmeXBx?=
+ =?utf-8?B?TkNBSm16SUFyVXRqQ1VkTDJDeDRQMW1vaXdFaHdJby85dXl5N2JIcDREUmp2?=
+ =?utf-8?B?aTA5bHc3eEREcnBaRzlWSU9SdjNyT3g1bEJBYkczYU13ODJlRkxBcUFmdnJN?=
+ =?utf-8?B?Rkg2dEJyK1dXWS9sazlvbm41SmRXdUFuVGdoUU9GSFNIQTZzZk5hZDV5MXFI?=
+ =?utf-8?B?MXFEQXVvVitQWTdPczkxQTZQUDloTHE1WHhFOW00MlAzaGh6cEhLWFJLRmR4?=
+ =?utf-8?B?b2dlY3NXL2oyZGpqUlFZM0tvSHlrZHAzMXJMNDNiWk5qNk4rVkNFUGF2VlB5?=
+ =?utf-8?B?aTVIVk0rNXYvYzE4UUY4U2VhTHBKUUpxV2ZGbkFKYmZrKzV3aFFjREJlTkY1?=
+ =?utf-8?B?dUpTMFVkUjJYcHA0cUJVQzFKSnBZckhtYk9BUVd1QlAxWllhSmJsamk5TWd2?=
+ =?utf-8?B?ekNUVkltQTU2NGZUSTBRRFd4S284cWo5Z20wTGt5Z0NJMldmY1FkdW5mTm1l?=
+ =?utf-8?B?N080Mys3c3ZETHZEMTJJTWZsZFdkZmpXM1FOUzBseWlwRHRLYTYza2lFeW1a?=
+ =?utf-8?B?aUQ3ZzVLNWl3R3RJN053RjNUR3dZTkJxYlJmdStuSUQ0RTRsWkN3Ti94UzJJ?=
+ =?utf-8?B?em55bytSOFNsQmRCY3oyM09lTEpraTNyZ2NWOFp1UlFEV0ZUWWQvU3p0Rms0?=
+ =?utf-8?B?K21VTXdXZlM3TEpjU1ZzT3RBWkROTEthdndHSWVhbzB3K3U1aGpPSkowUEY0?=
+ =?utf-8?B?NVBqVzJKZVpoamltTHdwNHFRT0ZlYW9KY05JZFhmcTBrS21vTHVFdmFUSXla?=
+ =?utf-8?B?VHNkYTZMY1lxaUwzRlNySG90bzBBQXQzbllQTy9YQVM5a3VIUERCZGtISGdh?=
+ =?utf-8?B?c1N2VUJpeTJTWmVjVDJkNEJhOHM1UHFTRy8wUDFSamFGaTJRSVQvYW5KeWsr?=
+ =?utf-8?B?dzJGT2VqM2lKeXVxY3NOR1d6WXZJMmhKK2I3L1NGVVhXUS9wZUdtaGJRSkk1?=
+ =?utf-8?B?UkVkZmlxdWtYTGFmc29Tdmk1clFzaldwbjJ4WkZrbkxYeWhicjREMXZ1RGZp?=
+ =?utf-8?B?TGs2b0cxNWd2M0xqVVlYV1Y3MDU3RUxlRG5ZVXE0TkZwRVpwcVVMRjdaOFV0?=
+ =?utf-8?B?ZmZNT1NqV1dQUUdHOFphTmF0WGwvVSs3MEw0T240R3pPNmtQdjRXc1N3WEZs?=
+ =?utf-8?B?Ync9PQ==?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: 6c6f22e8-b245-4247-b3d3-08dba4117c08
+X-MS-Exchange-CrossTenant-AuthSource: CO1PR11MB5089.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 23 Aug 2023 19:45:20.6724
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: czRtxpHQMahBLW0/nF/g6EMyAcr36ehSXh0AoWZAatcTBUH8uOsNFhKF2RW3sYjaOHKNsfqfQL8tNCyiY9eInFmGiIdrG7HEC9OEZuKRIms=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ2PR11MB7454
+X-OriginatorOrg: intel.com
+X-Spam-Status: No, score=-4.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 8/22/23 10:20, Bart Van Assche wrote:
-> On 8/22/23 03:18, Shinichiro Kawasaki wrote:
->> CC+: Bart,
->>
->> On Aug 21, 2023 / 20:46, Bob Pearson wrote:
->> [...]
->>> Shinichiro,
->>
->> Hello Bob, thanks for the response.
->>
->>>
->>> I have been aware for a long time that there is a problem with blktests/srp. I see hangs in
->>> 002 and 011 fairly often.
->>
->> I repeated the test case srp/011, and observed it hangs. This hang at srp/011
->> also can be recreated in stable manner. I reverted the commit 9b4b7c1f9f54
->> then observed the srp/011 hang disappeared. So, I guess these two hangs have
->> same root cause.
->>
->>> I have not been able to figure out the root cause but suspect that
->>> there is a timing issue in the srp drivers which cannot handle the slowness of the software
->>> RoCE implemtation. If you can give me any clues about what you are seeing I am happy to help
->>> try to figure this out.
->>
->> Thanks for sharing your thoughts. I myself do not have srp driver knowledge, and
->> not sure what clue I should provide. If you have any idea of the action I can
->> take, please let me know.
-> 
-> Hi Shinichiro and Bob,
-> 
-> When I initially developed the SRP tests these were working reliably in
-> combination with the rdma_rxe driver. Since 2017 I frequently see issues when
-> running the SRP tests on top of the rdma_rxe driver, issues that I do not see
-> if I run the SRP tests on top of the soft-iWARP driver (siw). How about
-> changing the default for the SRP tests from rdma_rxe to siw and to let the
-> RDMA community resolve the rdma_rxe issues?
-> 
-> Thanks,
-> 
-> Bart.
-> 
 
-Bart,
 
-I have also seen the same hangs in siw. Not as frequently but the same symptoms.
-About every month or so I take another run at trying to find and fix this bug but
-I have not succeeded yet. I haven't seen anything that looks like bad behavior from 
-the rxe side but that doesn't prove anything. I also saw these hangs on my system
-before the WQ patch went in if my memory serves. Out main application for this
-driver at HPE is Lustre which is a little different than SRP but uses the same
-general approach with fast MRs. Currently we are finding the driver to be quite stable
-even under very heavy stress.
+On 8/21/2023 11:23 PM, Jinjie Ruan wrote:
+> Return PTR_ERR_OR_ZERO() instead of return 0 or PTR_ERR() to
+> simplify code.
+> 
+> Signed-off-by: Jinjie Ruan <ruanjinjie@huawei.com>
 
-I would be happy to collaborate with someone (you?) who knows the SRP side well to resolve
-this hang. I think that is the quickest way to fix this. I have no idea what SRP is waiting for.
+Reviewed-by: Jacob Keller <jacob.e.keller@intel.com>
 
-Best regards,
-
-Bob 
+> ---
+>  drivers/net/ethernet/mellanox/mlx5/core/en_fs.c        |  8 ++------
+>  drivers/net/ethernet/mellanox/mlx5/core/lag/port_sel.c | 10 ++--------
+>  2 files changed, 4 insertions(+), 14 deletions(-)
+> 
+> diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en_fs.c b/drivers/net/ethernet/mellanox/mlx5/core/en_fs.c
+> index 934b0d5ce1b3..777d311d44ef 100644
+> --- a/drivers/net/ethernet/mellanox/mlx5/core/en_fs.c
+> +++ b/drivers/net/ethernet/mellanox/mlx5/core/en_fs.c
+> @@ -1283,9 +1283,7 @@ static int mlx5e_create_inner_ttc_table(struct mlx5e_flow_steering *fs,
+>  	mlx5e_set_inner_ttc_params(fs, rx_res, &ttc_params);
+>  	fs->inner_ttc = mlx5_create_inner_ttc_table(fs->mdev,
+>  						    &ttc_params);
+> -	if (IS_ERR(fs->inner_ttc))
+> -		return PTR_ERR(fs->inner_ttc);
+> -	return 0;
+> +	return PTR_ERR_OR_ZERO(fs->inner_ttc);
+>  }
+>  
+>  int mlx5e_create_ttc_table(struct mlx5e_flow_steering *fs,
+> @@ -1295,9 +1293,7 @@ int mlx5e_create_ttc_table(struct mlx5e_flow_steering *fs,
+>  
+>  	mlx5e_set_ttc_params(fs, rx_res, &ttc_params, true);
+>  	fs->ttc = mlx5_create_ttc_table(fs->mdev, &ttc_params);
+> -	if (IS_ERR(fs->ttc))
+> -		return PTR_ERR(fs->ttc);
+> -	return 0;
+> +	return PTR_ERR_OR_ZERO(fs->ttc);
+>  }
+>  
+>  int mlx5e_create_flow_steering(struct mlx5e_flow_steering *fs,
+> diff --git a/drivers/net/ethernet/mellanox/mlx5/core/lag/port_sel.c b/drivers/net/ethernet/mellanox/mlx5/core/lag/port_sel.c
+> index 7d9bbb494d95..101b3bb90863 100644
+> --- a/drivers/net/ethernet/mellanox/mlx5/core/lag/port_sel.c
+> +++ b/drivers/net/ethernet/mellanox/mlx5/core/lag/port_sel.c
+> @@ -507,10 +507,7 @@ static int mlx5_lag_create_ttc_table(struct mlx5_lag *ldev)
+>  
+>  	mlx5_lag_set_outer_ttc_params(ldev, &ttc_params);
+>  	port_sel->outer.ttc = mlx5_create_ttc_table(dev, &ttc_params);
+> -	if (IS_ERR(port_sel->outer.ttc))
+> -		return PTR_ERR(port_sel->outer.ttc);
+> -
+> -	return 0;
+> +	return PTR_ERR_OR_ZERO(port_sel->outer.ttc);
+>  }
+>  
+>  static int mlx5_lag_create_inner_ttc_table(struct mlx5_lag *ldev)
+> @@ -521,10 +518,7 @@ static int mlx5_lag_create_inner_ttc_table(struct mlx5_lag *ldev)
+>  
+>  	mlx5_lag_set_inner_ttc_params(ldev, &ttc_params);
+>  	port_sel->inner.ttc = mlx5_create_inner_ttc_table(dev, &ttc_params);
+> -	if (IS_ERR(port_sel->inner.ttc))
+> -		return PTR_ERR(port_sel->inner.ttc);
+> -
+> -	return 0;
+> +	return PTR_ERR_OR_ZERO(port_sel->inner.ttc);
+>  }
+>  
+>  int mlx5_lag_port_sel_create(struct mlx5_lag *ldev,
