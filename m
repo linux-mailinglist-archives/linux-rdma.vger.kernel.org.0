@@ -2,1249 +2,1735 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EE1447851DA
-	for <lists+linux-rdma@lfdr.de>; Wed, 23 Aug 2023 09:43:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C7D37854DA
+	for <lists+linux-rdma@lfdr.de>; Wed, 23 Aug 2023 12:05:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233516AbjHWHno (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 23 Aug 2023 03:43:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56220 "EHLO
+        id S231675AbjHWKFk (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 23 Aug 2023 06:05:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42266 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233512AbjHWHno (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 23 Aug 2023 03:43:44 -0400
-Received: from out-49.mta1.migadu.com (out-49.mta1.migadu.com [95.215.58.49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C61ECCF1
-        for <linux-rdma@vger.kernel.org>; Wed, 23 Aug 2023 00:43:36 -0700 (PDT)
-Message-ID: <f3f30d46-379a-8730-5797-400a77db61c3@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1692776615;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=M5rzoI6+B23g4ccugUT1/Q8jfD3bDbFz2SulRvZsU+A=;
-        b=IziPWBnMF8h6gW6k65j+9tlMgiatn9cOTu651yikDSvheKLNoyT5pOKPzGjhIz1l+EORL9
-        VU71cx7/g8C5IiE8OOWD31x9kSOcQkw5+cAP0iU/hEANrA5FJ0MbeJ21nnGRAeTekWYKtz
-        BAS2D/+if6yytjlLagK1yYAEtkUYtxQ=
-Date:   Wed, 23 Aug 2023 15:43:20 +0800
+        with ESMTP id S236014AbjHWJiG (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 23 Aug 2023 05:38:06 -0400
+Received: from mail-ej1-x62e.google.com (mail-ej1-x62e.google.com [IPv6:2a00:1450:4864:20::62e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5B545592
+        for <linux-rdma@vger.kernel.org>; Wed, 23 Aug 2023 02:29:59 -0700 (PDT)
+Received: by mail-ej1-x62e.google.com with SMTP id a640c23a62f3a-9a18a4136a9so464510666b.2
+        for <linux-rdma@vger.kernel.org>; Wed, 23 Aug 2023 02:29:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1692782998; x=1693387798;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=b0TqwkN/hcaqdFUQSznWkdfLoYgj/U2wC90bZeCYooY=;
+        b=HYamoQY56UT2UrIbXl5Ik9uVEW5tNQAVzanB9Ro5n1j4vPZ92SGmtPqttDYhUFg0MQ
+         rDBp8SkxEZQ8xOWvo8IixPUOpNnx2iiFKLsJGRDqmdpaC7P95NSUxfcOZLgk4PlE89L+
+         /rrnYkJt/HVitOKn/zdH5dWVKP9Z0b+InNkqw5vRb7gF7moopZvRo3lfVi+Ywv7wlzkx
+         mM3chrXiJgue63QMFlsYWmVMzYwLYWKZph4pK4V0fZ+rzovzd8kYo5zUDtvn5vRoKjVh
+         fSwCji1FXNOTrQvrw0ZpXph0J9+4+Yu5VhbQF9Szea/9Ab0GwZpl6GXxRbl+qeDYeR6i
+         He6A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692782998; x=1693387798;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=b0TqwkN/hcaqdFUQSznWkdfLoYgj/U2wC90bZeCYooY=;
+        b=MTLr0ehbLJkFcC7nV/rsDRt8yz3GuTYnmc5cKQcAZOIjieTr9lTojU5TAX6o7Zkf1r
+         4x5Tju1xsoCnZj4inCQqmNQCufdNWqpwAcPP4nAC+72MY11AjG7oT6B32Jd46dd6TUpf
+         gIqPnjTljC1ZAU3IRLOTJe6/78LCwx2TKtd9aLBzL1Vw7DEh3uXIXu6kwNYJymnva0sP
+         B/gePXhuM0Bt9rejaE9lcVEp0jWauwijvut6163Q9F0Fi9pDRU95WFltIiNoXsmS0B4I
+         t6JUTJodmN1NCWnloo3P6OftUQV9mx025PYTOKkINANNvTRkpQDOA7tbChRaz9IsHqW/
+         7tvA==
+X-Gm-Message-State: AOJu0YxhmSdOuCA9ZIyKaSids8WVK7JNCsb2f3bHL9T/Jq9UQTt4npyp
+        w/rjL3qSxbYpXbNXuNqAcDHGhQ==
+X-Google-Smtp-Source: AGHT+IFbmjVq9DcHOhZKuutJC370BPE/o1tKJGZXFNjGq8jHngXuhBJVOBfAJrMn1ZZpKkP/Utm9Mw==
+X-Received: by 2002:a17:906:31d2:b0:99c:6c29:7871 with SMTP id f18-20020a17090631d200b0099c6c297871mr9871838ejf.65.1692782997413;
+        Wed, 23 Aug 2023 02:29:57 -0700 (PDT)
+Received: from krzk-bin.. ([77.252.47.198])
+        by smtp.gmail.com with ESMTPSA id gq6-20020a170906e24600b0099c53c44083sm9520766ejb.79.2023.08.23.02.29.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 23 Aug 2023 02:29:56 -0700 (PDT)
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+To:     Selvin Xavier <selvin.xavier@broadcom.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Leon Romanovsky <leon@kernel.org>,
+        Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
+        Mustafa Ismail <mustafa.ismail@intel.com>,
+        Shiraz Saleem <shiraz.saleem@intel.com>,
+        Bernard Metzler <bmt@zurich.ibm.com>,
+        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Subject: [PATCH] IB: use capital "OR" for multiple licenses in SPDX
+Date:   Wed, 23 Aug 2023 11:29:12 +0200
+Message-Id: <20230823092912.122674-1-krzysztof.kozlowski@linaro.org>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-Subject: Re: [PATCH v2 1/2] RDMA/rxe: Improve newline in printing messages
-To:     Li Zhijian <lizhijian@fujitsu.com>, linux-rdma@vger.kernel.org,
-        "pmladek@suse.com" <pmladek@suse.com>,
-        "senozhatsky@chromium.org" <senozhatsky@chromium.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        "john.ogness@linutronix.de" <john.ogness@linutronix.de>
-Cc:     zyjzyj2000@gmail.com, jgg@ziepe.ca, leon@kernel.org,
-        linux-kernel@vger.kernel.org, rpearsonhpe@gmail.com,
-        Daisuke Matsuda <matsuda-daisuke@fujitsu.com>
-References: <20230823061141.258864-1-lizhijian@fujitsu.com>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From:   Zhu Yanjun <yanjun.zhu@linux.dev>
-In-Reply-To: <20230823061141.258864-1-lizhijian@fujitsu.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
-        autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-在 2023/8/23 14:11, Li Zhijian 写道:
-> Previously rxe_{dbg,info,err}() macros are appened built-in newline,
-> sut some users will add redundent newline some times. So remove the
-> built-int newline for this macros.
-> 
+Documentation/process/license-rules.rst and checkpatch expect the SPDX
+identifier syntax for multiple licenses to use capital "OR".  Correct it
+to keep consistent format and avoid copy-paste issues.
 
-This commit is based on this statement "A newline help flushing message 
-out.".
+Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+---
+ drivers/infiniband/hw/bnxt_re/qplib_tlv.h   | 2 +-
+ drivers/infiniband/hw/hfi1/affinity.c       | 2 +-
+ drivers/infiniband/hw/hfi1/affinity.h       | 2 +-
+ drivers/infiniband/hw/hfi1/aspm.h           | 2 +-
+ drivers/infiniband/hw/hfi1/chip.c           | 2 +-
+ drivers/infiniband/hw/hfi1/chip.h           | 2 +-
+ drivers/infiniband/hw/hfi1/chip_registers.h | 2 +-
+ drivers/infiniband/hw/hfi1/common.h         | 2 +-
+ drivers/infiniband/hw/hfi1/debugfs.c        | 2 +-
+ drivers/infiniband/hw/hfi1/debugfs.h        | 2 +-
+ drivers/infiniband/hw/hfi1/device.c         | 2 +-
+ drivers/infiniband/hw/hfi1/device.h         | 2 +-
+ drivers/infiniband/hw/hfi1/driver.c         | 2 +-
+ drivers/infiniband/hw/hfi1/efivar.c         | 2 +-
+ drivers/infiniband/hw/hfi1/efivar.h         | 2 +-
+ drivers/infiniband/hw/hfi1/eprom.c          | 2 +-
+ drivers/infiniband/hw/hfi1/eprom.h          | 2 +-
+ drivers/infiniband/hw/hfi1/exp_rcv.c        | 2 +-
+ drivers/infiniband/hw/hfi1/exp_rcv.h        | 2 +-
+ drivers/infiniband/hw/hfi1/fault.c          | 2 +-
+ drivers/infiniband/hw/hfi1/fault.h          | 2 +-
+ drivers/infiniband/hw/hfi1/file_ops.c       | 2 +-
+ drivers/infiniband/hw/hfi1/firmware.c       | 2 +-
+ drivers/infiniband/hw/hfi1/hfi.h            | 2 +-
+ drivers/infiniband/hw/hfi1/init.c           | 2 +-
+ drivers/infiniband/hw/hfi1/intr.c           | 2 +-
+ drivers/infiniband/hw/hfi1/iowait.h         | 2 +-
+ drivers/infiniband/hw/hfi1/mad.c            | 2 +-
+ drivers/infiniband/hw/hfi1/mad.h            | 2 +-
+ drivers/infiniband/hw/hfi1/mmu_rb.c         | 2 +-
+ drivers/infiniband/hw/hfi1/mmu_rb.h         | 2 +-
+ drivers/infiniband/hw/hfi1/opa_compat.h     | 2 +-
+ drivers/infiniband/hw/hfi1/pcie.c           | 2 +-
+ drivers/infiniband/hw/hfi1/pio.c            | 2 +-
+ drivers/infiniband/hw/hfi1/pio.h            | 2 +-
+ drivers/infiniband/hw/hfi1/pio_copy.c       | 2 +-
+ drivers/infiniband/hw/hfi1/platform.c       | 2 +-
+ drivers/infiniband/hw/hfi1/platform.h       | 2 +-
+ drivers/infiniband/hw/hfi1/qp.c             | 2 +-
+ drivers/infiniband/hw/hfi1/qp.h             | 2 +-
+ drivers/infiniband/hw/hfi1/qsfp.c           | 2 +-
+ drivers/infiniband/hw/hfi1/qsfp.h           | 2 +-
+ drivers/infiniband/hw/hfi1/rc.c             | 2 +-
+ drivers/infiniband/hw/hfi1/ruc.c            | 2 +-
+ drivers/infiniband/hw/hfi1/sdma.c           | 2 +-
+ drivers/infiniband/hw/hfi1/sdma.h           | 2 +-
+ drivers/infiniband/hw/hfi1/sdma_txreq.h     | 2 +-
+ drivers/infiniband/hw/hfi1/sysfs.c          | 2 +-
+ drivers/infiniband/hw/hfi1/trace.c          | 2 +-
+ drivers/infiniband/hw/hfi1/trace.h          | 2 +-
+ drivers/infiniband/hw/hfi1/trace_ctxts.h    | 2 +-
+ drivers/infiniband/hw/hfi1/trace_dbg.h      | 2 +-
+ drivers/infiniband/hw/hfi1/trace_ibhdrs.h   | 2 +-
+ drivers/infiniband/hw/hfi1/trace_misc.h     | 2 +-
+ drivers/infiniband/hw/hfi1/trace_mmu.h      | 2 +-
+ drivers/infiniband/hw/hfi1/trace_rc.h       | 2 +-
+ drivers/infiniband/hw/hfi1/trace_rx.h       | 2 +-
+ drivers/infiniband/hw/hfi1/trace_tx.h       | 2 +-
+ drivers/infiniband/hw/hfi1/uc.c             | 2 +-
+ drivers/infiniband/hw/hfi1/ud.c             | 2 +-
+ drivers/infiniband/hw/hfi1/user_exp_rcv.c   | 2 +-
+ drivers/infiniband/hw/hfi1/user_exp_rcv.h   | 2 +-
+ drivers/infiniband/hw/hfi1/user_pages.c     | 2 +-
+ drivers/infiniband/hw/hfi1/user_sdma.c      | 2 +-
+ drivers/infiniband/hw/hfi1/user_sdma.h      | 2 +-
+ drivers/infiniband/hw/hfi1/verbs.c          | 2 +-
+ drivers/infiniband/hw/hfi1/verbs.h          | 2 +-
+ drivers/infiniband/hw/hfi1/verbs_txreq.c    | 2 +-
+ drivers/infiniband/hw/hfi1/verbs_txreq.h    | 2 +-
+ drivers/infiniband/hw/hfi1/vnic.h           | 2 +-
+ drivers/infiniband/hw/hfi1/vnic_main.c      | 2 +-
+ drivers/infiniband/hw/hfi1/vnic_sdma.c      | 2 +-
+ drivers/infiniband/hw/irdma/cm.c            | 2 +-
+ drivers/infiniband/hw/irdma/cm.h            | 2 +-
+ drivers/infiniband/hw/irdma/ctrl.c          | 2 +-
+ drivers/infiniband/hw/irdma/defs.h          | 2 +-
+ drivers/infiniband/hw/irdma/hmc.c           | 2 +-
+ drivers/infiniband/hw/irdma/hmc.h           | 2 +-
+ drivers/infiniband/hw/irdma/hw.c            | 2 +-
+ drivers/infiniband/hw/irdma/i40iw_hw.c      | 2 +-
+ drivers/infiniband/hw/irdma/i40iw_hw.h      | 2 +-
+ drivers/infiniband/hw/irdma/i40iw_if.c      | 2 +-
+ drivers/infiniband/hw/irdma/icrdma_hw.c     | 2 +-
+ drivers/infiniband/hw/irdma/icrdma_hw.h     | 2 +-
+ drivers/infiniband/hw/irdma/irdma.h         | 2 +-
+ drivers/infiniband/hw/irdma/main.c          | 2 +-
+ drivers/infiniband/hw/irdma/main.h          | 2 +-
+ drivers/infiniband/hw/irdma/osdep.h         | 2 +-
+ drivers/infiniband/hw/irdma/pble.c          | 2 +-
+ drivers/infiniband/hw/irdma/pble.h          | 2 +-
+ drivers/infiniband/hw/irdma/protos.h        | 2 +-
+ drivers/infiniband/hw/irdma/puda.c          | 2 +-
+ drivers/infiniband/hw/irdma/puda.h          | 2 +-
+ drivers/infiniband/hw/irdma/trace.c         | 2 +-
+ drivers/infiniband/hw/irdma/trace.h         | 2 +-
+ drivers/infiniband/hw/irdma/trace_cm.h      | 2 +-
+ drivers/infiniband/hw/irdma/type.h          | 2 +-
+ drivers/infiniband/hw/irdma/uda.c           | 2 +-
+ drivers/infiniband/hw/irdma/uda.h           | 2 +-
+ drivers/infiniband/hw/irdma/uda_d.h         | 2 +-
+ drivers/infiniband/hw/irdma/uk.c            | 2 +-
+ drivers/infiniband/hw/irdma/user.h          | 2 +-
+ drivers/infiniband/hw/irdma/utils.c         | 2 +-
+ drivers/infiniband/hw/irdma/verbs.c         | 2 +-
+ drivers/infiniband/hw/irdma/verbs.h         | 2 +-
+ drivers/infiniband/hw/irdma/ws.c            | 2 +-
+ drivers/infiniband/hw/irdma/ws.h            | 2 +-
+ drivers/infiniband/sw/rdmavt/ah.c           | 2 +-
+ drivers/infiniband/sw/rdmavt/ah.h           | 2 +-
+ drivers/infiniband/sw/rdmavt/cq.c           | 2 +-
+ drivers/infiniband/sw/rdmavt/cq.h           | 2 +-
+ drivers/infiniband/sw/rdmavt/mad.c          | 2 +-
+ drivers/infiniband/sw/rdmavt/mad.h          | 2 +-
+ drivers/infiniband/sw/rdmavt/mcast.c        | 2 +-
+ drivers/infiniband/sw/rdmavt/mcast.h        | 2 +-
+ drivers/infiniband/sw/rdmavt/mmap.c         | 2 +-
+ drivers/infiniband/sw/rdmavt/mmap.h         | 2 +-
+ drivers/infiniband/sw/rdmavt/mr.c           | 2 +-
+ drivers/infiniband/sw/rdmavt/mr.h           | 2 +-
+ drivers/infiniband/sw/rdmavt/pd.c           | 2 +-
+ drivers/infiniband/sw/rdmavt/pd.h           | 2 +-
+ drivers/infiniband/sw/rdmavt/qp.c           | 2 +-
+ drivers/infiniband/sw/rdmavt/qp.h           | 2 +-
+ drivers/infiniband/sw/rdmavt/rc.c           | 2 +-
+ drivers/infiniband/sw/rdmavt/srq.c          | 2 +-
+ drivers/infiniband/sw/rdmavt/srq.h          | 2 +-
+ drivers/infiniband/sw/rdmavt/trace.c        | 2 +-
+ drivers/infiniband/sw/rdmavt/trace.h        | 2 +-
+ drivers/infiniband/sw/rdmavt/trace_cq.h     | 2 +-
+ drivers/infiniband/sw/rdmavt/trace_mr.h     | 2 +-
+ drivers/infiniband/sw/rdmavt/trace_qp.h     | 2 +-
+ drivers/infiniband/sw/rdmavt/trace_rc.h     | 2 +-
+ drivers/infiniband/sw/rdmavt/trace_rvt.h    | 2 +-
+ drivers/infiniband/sw/rdmavt/trace_tx.h     | 2 +-
+ drivers/infiniband/sw/rdmavt/vt.c           | 2 +-
+ drivers/infiniband/sw/rdmavt/vt.h           | 2 +-
+ drivers/infiniband/sw/siw/iwarp.h           | 2 +-
+ drivers/infiniband/sw/siw/siw.h             | 2 +-
+ drivers/infiniband/sw/siw/siw_cm.c          | 2 +-
+ drivers/infiniband/sw/siw/siw_cm.h          | 2 +-
+ drivers/infiniband/sw/siw/siw_cq.c          | 2 +-
+ drivers/infiniband/sw/siw/siw_main.c        | 2 +-
+ drivers/infiniband/sw/siw/siw_mem.c         | 2 +-
+ drivers/infiniband/sw/siw/siw_mem.h         | 2 +-
+ drivers/infiniband/sw/siw/siw_qp.c          | 2 +-
+ drivers/infiniband/sw/siw/siw_qp_rx.c       | 2 +-
+ drivers/infiniband/sw/siw/siw_qp_tx.c       | 2 +-
+ drivers/infiniband/sw/siw/siw_verbs.c       | 2 +-
+ drivers/infiniband/sw/siw/siw_verbs.h       | 2 +-
+ include/uapi/rdma/siw-abi.h                 | 2 +-
+ 150 files changed, 150 insertions(+), 150 deletions(-)
 
-All the rxe_xxx log functions will finally call printk.
-
-To pirntk, there is no such statement in kernel document. Not sure if 
-Jason and Leon can decide this statement correct or not.
-
-So I add PRINTK viewer to check this statement "A newline help flushing 
-message out.".
-
-pmladek@suse.com
-senozhatsky@chromium.org
-rostedt@goodmis.org
-john.ogness@linutronix.de
-
-Zhu Yanjun
-
-> In terms of rxe_{dbg,info,err}_xxx() macros, because they don't have
-> built-in newline, append newline when using them.
-> 
-> CC: Daisuke Matsuda <matsuda-daisuke@fujitsu.com>
-> Signed-off-by: Li Zhijian <lizhijian@fujitsu.com>
-> ---
->   I have use below script to verify if all of them are cleanup:
->   git grep -n -E "rxe_info.*\"|rxe_err.*\"|rxe_dbg.*\"" drivers/infiniband/sw/rxe/ | grep -v '\\n'
-> ---
->   drivers/infiniband/sw/rxe/rxe.c       |   6 +-
->   drivers/infiniband/sw/rxe/rxe.h       |   6 +-
->   drivers/infiniband/sw/rxe/rxe_comp.c  |   4 +-
->   drivers/infiniband/sw/rxe/rxe_cq.c    |   4 +-
->   drivers/infiniband/sw/rxe/rxe_mr.c    |  16 +-
->   drivers/infiniband/sw/rxe/rxe_mw.c    |   2 +-
->   drivers/infiniband/sw/rxe/rxe_resp.c  |  12 +-
->   drivers/infiniband/sw/rxe/rxe_task.c  |   4 +-
->   drivers/infiniband/sw/rxe/rxe_verbs.c | 216 +++++++++++++-------------
->   9 files changed, 135 insertions(+), 135 deletions(-)
-> 
-> diff --git a/drivers/infiniband/sw/rxe/rxe.c b/drivers/infiniband/sw/rxe/rxe.c
-> index 54c723a6edda..a086d588e159 100644
-> --- a/drivers/infiniband/sw/rxe/rxe.c
-> +++ b/drivers/infiniband/sw/rxe/rxe.c
-> @@ -161,7 +161,7 @@ void rxe_set_mtu(struct rxe_dev *rxe, unsigned int ndev_mtu)
->   	port->attr.active_mtu = mtu;
->   	port->mtu_cap = ib_mtu_enum_to_int(mtu);
->   
-> -	rxe_info_dev(rxe, "Set mtu to %d", port->mtu_cap);
-> +	rxe_info_dev(rxe, "Set mtu to %d\n", port->mtu_cap);
->   }
->   
->   /* called by ifc layer to create new rxe device.
-> @@ -181,7 +181,7 @@ static int rxe_newlink(const char *ibdev_name, struct net_device *ndev)
->   	int err = 0;
->   
->   	if (is_vlan_dev(ndev)) {
-> -		rxe_err("rxe creation allowed on top of a real device only");
-> +		rxe_err("rxe creation allowed on top of a real device only\n");
->   		err = -EPERM;
->   		goto err;
->   	}
-> @@ -189,7 +189,7 @@ static int rxe_newlink(const char *ibdev_name, struct net_device *ndev)
->   	rxe = rxe_get_dev_from_net(ndev);
->   	if (rxe) {
->   		ib_device_put(&rxe->ib_dev);
-> -		rxe_err_dev(rxe, "already configured on %s", ndev->name);
-> +		rxe_err_dev(rxe, "already configured on %s\n", ndev->name);
->   		err = -EEXIST;
->   		goto err;
->   	}
-> diff --git a/drivers/infiniband/sw/rxe/rxe.h b/drivers/infiniband/sw/rxe/rxe.h
-> index d33dd6cf83d3..d8fb2c7af30a 100644
-> --- a/drivers/infiniband/sw/rxe/rxe.h
-> +++ b/drivers/infiniband/sw/rxe/rxe.h
-> @@ -38,7 +38,7 @@
->   
->   #define RXE_ROCE_V2_SPORT		(0xc000)
->   
-> -#define rxe_dbg(fmt, ...) pr_debug("%s: " fmt "\n", __func__, ##__VA_ARGS__)
-> +#define rxe_dbg(fmt, ...) pr_debug("%s: " fmt, __func__, ##__VA_ARGS__)
->   #define rxe_dbg_dev(rxe, fmt, ...) ibdev_dbg(&(rxe)->ib_dev,		\
->   		"%s: " fmt, __func__, ##__VA_ARGS__)
->   #define rxe_dbg_uc(uc, fmt, ...) ibdev_dbg((uc)->ibuc.device,		\
-> @@ -58,7 +58,7 @@
->   #define rxe_dbg_mw(mw, fmt, ...) ibdev_dbg((mw)->ibmw.device,		\
->   		"mw#%d %s:  " fmt, (mw)->elem.index, __func__, ##__VA_ARGS__)
->   
-> -#define rxe_err(fmt, ...) pr_err_ratelimited("%s: " fmt "\n", __func__, \
-> +#define rxe_err(fmt, ...) pr_err_ratelimited("%s: " fmt, __func__, \
->   					##__VA_ARGS__)
->   #define rxe_err_dev(rxe, fmt, ...) ibdev_err_ratelimited(&(rxe)->ib_dev, \
->   		"%s: " fmt, __func__, ##__VA_ARGS__)
-> @@ -79,7 +79,7 @@
->   #define rxe_err_mw(mw, fmt, ...) ibdev_err_ratelimited((mw)->ibmw.device, \
->   		"mw#%d %s:  " fmt, (mw)->elem.index, __func__, ##__VA_ARGS__)
->   
-> -#define rxe_info(fmt, ...) pr_info_ratelimited("%s: " fmt "\n", __func__, \
-> +#define rxe_info(fmt, ...) pr_info_ratelimited("%s: " fmt, __func__, \
->   					##__VA_ARGS__)
->   #define rxe_info_dev(rxe, fmt, ...) ibdev_info_ratelimited(&(rxe)->ib_dev, \
->   		"%s: " fmt, __func__, ##__VA_ARGS__)
-> diff --git a/drivers/infiniband/sw/rxe/rxe_comp.c b/drivers/infiniband/sw/rxe/rxe_comp.c
-> index 5111735aafae..2810c886cfca 100644
-> --- a/drivers/infiniband/sw/rxe/rxe_comp.c
-> +++ b/drivers/infiniband/sw/rxe/rxe_comp.c
-> @@ -433,7 +433,7 @@ static void make_send_cqe(struct rxe_qp *qp, struct rxe_send_wqe *wqe,
->   		}
->   	} else {
->   		if (wqe->status != IB_WC_WR_FLUSH_ERR)
-> -			rxe_err_qp(qp, "non-flush error status = %d",
-> +			rxe_err_qp(qp, "non-flush error status = %d\n",
->   				wqe->status);
->   	}
->   }
-> @@ -582,7 +582,7 @@ static int flush_send_wqe(struct rxe_qp *qp, struct rxe_send_wqe *wqe)
->   
->   	err = rxe_cq_post(qp->scq, &cqe, 0);
->   	if (err)
-> -		rxe_dbg_cq(qp->scq, "post cq failed, err = %d", err);
-> +		rxe_dbg_cq(qp->scq, "post cq failed, err = %d\n", err);
->   
->   	return err;
->   }
-> diff --git a/drivers/infiniband/sw/rxe/rxe_cq.c b/drivers/infiniband/sw/rxe/rxe_cq.c
-> index d5486cbb3f10..fec87c9030ab 100644
-> --- a/drivers/infiniband/sw/rxe/rxe_cq.c
-> +++ b/drivers/infiniband/sw/rxe/rxe_cq.c
-> @@ -27,7 +27,7 @@ int rxe_cq_chk_attr(struct rxe_dev *rxe, struct rxe_cq *cq,
->   	if (cq) {
->   		count = queue_count(cq->queue, QUEUE_TYPE_TO_CLIENT);
->   		if (cqe < count) {
-> -			rxe_dbg_cq(cq, "cqe(%d) < current # elements in queue (%d)",
-> +			rxe_dbg_cq(cq, "cqe(%d) < current # elements in queue (%d)\n",
->   					cqe, count);
->   			goto err1;
->   		}
-> @@ -96,7 +96,7 @@ int rxe_cq_post(struct rxe_cq *cq, struct rxe_cqe *cqe, int solicited)
->   
->   	full = queue_full(cq->queue, QUEUE_TYPE_TO_CLIENT);
->   	if (unlikely(full)) {
-> -		rxe_err_cq(cq, "queue full");
-> +		rxe_err_cq(cq, "queue full\n");
->   		spin_unlock_irqrestore(&cq->cq_lock, flags);
->   		if (cq->ibcq.event_handler) {
->   			ev.device = cq->ibcq.device;
-> diff --git a/drivers/infiniband/sw/rxe/rxe_mr.c b/drivers/infiniband/sw/rxe/rxe_mr.c
-> index f54042e9aeb2..bc81fde696ee 100644
-> --- a/drivers/infiniband/sw/rxe/rxe_mr.c
-> +++ b/drivers/infiniband/sw/rxe/rxe_mr.c
-> @@ -34,7 +34,7 @@ int mr_check_range(struct rxe_mr *mr, u64 iova, size_t length)
->   	case IB_MR_TYPE_MEM_REG:
->   		if (iova < mr->ibmr.iova ||
->   		    iova + length > mr->ibmr.iova + mr->ibmr.length) {
-> -			rxe_dbg_mr(mr, "iova/length out of range");
-> +			rxe_dbg_mr(mr, "iova/length out of range\n");
->   			return -EINVAL;
->   		}
->   		return 0;
-> @@ -319,7 +319,7 @@ int rxe_mr_copy(struct rxe_mr *mr, u64 iova, void *addr,
->   
->   	err = mr_check_range(mr, iova, length);
->   	if (unlikely(err)) {
-> -		rxe_dbg_mr(mr, "iova out of range");
-> +		rxe_dbg_mr(mr, "iova out of range\n");
->   		return err;
->   	}
->   
-> @@ -477,7 +477,7 @@ int rxe_mr_do_atomic_op(struct rxe_mr *mr, u64 iova, int opcode,
->   	u64 *va;
->   
->   	if (unlikely(mr->state != RXE_MR_STATE_VALID)) {
-> -		rxe_dbg_mr(mr, "mr not in valid state");
-> +		rxe_dbg_mr(mr, "mr not in valid state\n");
->   		return RESPST_ERR_RKEY_VIOLATION;
->   	}
->   
-> @@ -490,7 +490,7 @@ int rxe_mr_do_atomic_op(struct rxe_mr *mr, u64 iova, int opcode,
->   
->   		err = mr_check_range(mr, iova, sizeof(value));
->   		if (err) {
-> -			rxe_dbg_mr(mr, "iova out of range");
-> +			rxe_dbg_mr(mr, "iova out of range\n");
->   			return RESPST_ERR_RKEY_VIOLATION;
->   		}
->   		page_offset = rxe_mr_iova_to_page_offset(mr, iova);
-> @@ -501,7 +501,7 @@ int rxe_mr_do_atomic_op(struct rxe_mr *mr, u64 iova, int opcode,
->   	}
->   
->   	if (unlikely(page_offset & 0x7)) {
-> -		rxe_dbg_mr(mr, "iova not aligned");
-> +		rxe_dbg_mr(mr, "iova not aligned\n");
->   		return RESPST_ERR_MISALIGNED_ATOMIC;
->   	}
->   
-> @@ -534,7 +534,7 @@ int rxe_mr_do_atomic_write(struct rxe_mr *mr, u64 iova, u64 value)
->   
->   	/* See IBA oA19-28 */
->   	if (unlikely(mr->state != RXE_MR_STATE_VALID)) {
-> -		rxe_dbg_mr(mr, "mr not in valid state");
-> +		rxe_dbg_mr(mr, "mr not in valid state\n");
->   		return RESPST_ERR_RKEY_VIOLATION;
->   	}
->   
-> @@ -548,7 +548,7 @@ int rxe_mr_do_atomic_write(struct rxe_mr *mr, u64 iova, u64 value)
->   		/* See IBA oA19-28 */
->   		err = mr_check_range(mr, iova, sizeof(value));
->   		if (unlikely(err)) {
-> -			rxe_dbg_mr(mr, "iova out of range");
-> +			rxe_dbg_mr(mr, "iova out of range\n");
->   			return RESPST_ERR_RKEY_VIOLATION;
->   		}
->   		page_offset = rxe_mr_iova_to_page_offset(mr, iova);
-> @@ -560,7 +560,7 @@ int rxe_mr_do_atomic_write(struct rxe_mr *mr, u64 iova, u64 value)
->   
->   	/* See IBA A19.4.2 */
->   	if (unlikely(page_offset & 0x7)) {
-> -		rxe_dbg_mr(mr, "misaligned address");
-> +		rxe_dbg_mr(mr, "misaligned address\n");
->   		return RESPST_ERR_MISALIGNED_ATOMIC;
->   	}
->   
-> diff --git a/drivers/infiniband/sw/rxe/rxe_mw.c b/drivers/infiniband/sw/rxe/rxe_mw.c
-> index d9312b5c9d20..379e65bfcd49 100644
-> --- a/drivers/infiniband/sw/rxe/rxe_mw.c
-> +++ b/drivers/infiniband/sw/rxe/rxe_mw.c
-> @@ -198,7 +198,7 @@ int rxe_bind_mw(struct rxe_qp *qp, struct rxe_send_wqe *wqe)
->   	}
->   
->   	if (access & ~RXE_ACCESS_SUPPORTED_MW) {
-> -		rxe_err_mw(mw, "access %#x not supported", access);
-> +		rxe_err_mw(mw, "access %#x not supported\n", access);
->   		ret = -EOPNOTSUPP;
->   		goto err_drop_mr;
->   	}
-> diff --git a/drivers/infiniband/sw/rxe/rxe_resp.c b/drivers/infiniband/sw/rxe/rxe_resp.c
-> index 64c64f5f36a8..032bf305a58b 100644
-> --- a/drivers/infiniband/sw/rxe/rxe_resp.c
-> +++ b/drivers/infiniband/sw/rxe/rxe_resp.c
-> @@ -362,18 +362,18 @@ static enum resp_states rxe_resp_check_length(struct rxe_qp *qp,
->   		if ((pkt->mask & RXE_START_MASK) &&
->   		    (pkt->mask & RXE_END_MASK)) {
->   			if (unlikely(payload > mtu)) {
-> -				rxe_dbg_qp(qp, "only packet too long");
-> +				rxe_dbg_qp(qp, "only packet too long\n");
->   				return RESPST_ERR_LENGTH;
->   			}
->   		} else if ((pkt->mask & RXE_START_MASK) ||
->   			   (pkt->mask & RXE_MIDDLE_MASK)) {
->   			if (unlikely(payload != mtu)) {
-> -				rxe_dbg_qp(qp, "first or middle packet not mtu");
-> +				rxe_dbg_qp(qp, "first or middle packet not mtu\n");
->   				return RESPST_ERR_LENGTH;
->   			}
->   		} else if (pkt->mask & RXE_END_MASK) {
->   			if (unlikely((payload == 0) || (payload > mtu))) {
-> -				rxe_dbg_qp(qp, "last packet zero or too long");
-> +				rxe_dbg_qp(qp, "last packet zero or too long\n");
->   				return RESPST_ERR_LENGTH;
->   			}
->   		}
-> @@ -382,7 +382,7 @@ static enum resp_states rxe_resp_check_length(struct rxe_qp *qp,
->   	/* See IBA C9-94 */
->   	if (pkt->mask & RXE_RETH_MASK) {
->   		if (reth_len(pkt) > (1U << 31)) {
-> -			rxe_dbg_qp(qp, "dma length too long");
-> +			rxe_dbg_qp(qp, "dma length too long\n");
->   			return RESPST_ERR_LENGTH;
->   		}
->   	}
-> @@ -1133,7 +1133,7 @@ static enum resp_states do_complete(struct rxe_qp *qp,
->   		}
->   	} else {
->   		if (wc->status != IB_WC_WR_FLUSH_ERR)
-> -			rxe_err_qp(qp, "non-flush error status = %d",
-> +			rxe_err_qp(qp, "non-flush error status = %d\n",
->   				wc->status);
->   	}
->   
-> @@ -1442,7 +1442,7 @@ static int flush_recv_wqe(struct rxe_qp *qp, struct rxe_recv_wqe *wqe)
->   
->   	err = rxe_cq_post(qp->rcq, &cqe, 0);
->   	if (err)
-> -		rxe_dbg_cq(qp->rcq, "post cq failed err = %d", err);
-> +		rxe_dbg_cq(qp->rcq, "post cq failed err = %d\n", err);
->   
->   	return err;
->   }
-> diff --git a/drivers/infiniband/sw/rxe/rxe_task.c b/drivers/infiniband/sw/rxe/rxe_task.c
-> index 1501120d4f52..80332638d9e3 100644
-> --- a/drivers/infiniband/sw/rxe/rxe_task.c
-> +++ b/drivers/infiniband/sw/rxe/rxe_task.c
-> @@ -156,7 +156,7 @@ static void do_task(struct rxe_task *task)
->   
->   		default:
->   			WARN_ON(1);
-> -			rxe_dbg_qp(task->qp, "unexpected task state = %d",
-> +			rxe_dbg_qp(task->qp, "unexpected task state = %d\n",
->   				   task->state);
->   			task->state = TASK_STATE_IDLE;
->   		}
-> @@ -167,7 +167,7 @@ static void do_task(struct rxe_task *task)
->   			if (WARN_ON(task->num_done != task->num_sched))
->   				rxe_dbg_qp(
->   					task->qp,
-> -					"%ld tasks scheduled, %ld tasks done",
-> +					"%ld tasks scheduled, %ld tasks done\n",
->   					task->num_sched, task->num_done);
->   		}
->   		spin_unlock_irqrestore(&task->lock, flags);
-> diff --git a/drivers/infiniband/sw/rxe/rxe_verbs.c b/drivers/infiniband/sw/rxe/rxe_verbs.c
-> index 903f0b71447e..73c283a2d8ed 100644
-> --- a/drivers/infiniband/sw/rxe/rxe_verbs.c
-> +++ b/drivers/infiniband/sw/rxe/rxe_verbs.c
-> @@ -23,7 +23,7 @@ static int rxe_query_device(struct ib_device *ibdev,
->   	int err;
->   
->   	if (udata->inlen || udata->outlen) {
-> -		rxe_dbg_dev(rxe, "malformed udata");
-> +		rxe_dbg_dev(rxe, "malformed udata\n");
->   		err = -EINVAL;
->   		goto err_out;
->   	}
-> @@ -33,7 +33,7 @@ static int rxe_query_device(struct ib_device *ibdev,
->   	return 0;
->   
->   err_out:
-> -	rxe_err_dev(rxe, "returned err = %d", err);
-> +	rxe_err_dev(rxe, "returned err = %d\n", err);
->   	return err;
->   }
->   
-> @@ -45,7 +45,7 @@ static int rxe_query_port(struct ib_device *ibdev,
->   
->   	if (port_num != 1) {
->   		err = -EINVAL;
-> -		rxe_dbg_dev(rxe, "bad port_num = %d", port_num);
-> +		rxe_dbg_dev(rxe, "bad port_num = %d\n", port_num);
->   		goto err_out;
->   	}
->   
-> @@ -67,7 +67,7 @@ static int rxe_query_port(struct ib_device *ibdev,
->   	return ret;
->   
->   err_out:
-> -	rxe_err_dev(rxe, "returned err = %d", err);
-> +	rxe_err_dev(rxe, "returned err = %d\n", err);
->   	return err;
->   }
->   
-> @@ -79,7 +79,7 @@ static int rxe_query_pkey(struct ib_device *ibdev,
->   
->   	if (index != 0) {
->   		err = -EINVAL;
-> -		rxe_dbg_dev(rxe, "bad pkey index = %d", index);
-> +		rxe_dbg_dev(rxe, "bad pkey index = %d\n", index);
->   		goto err_out;
->   	}
->   
-> @@ -87,7 +87,7 @@ static int rxe_query_pkey(struct ib_device *ibdev,
->   	return 0;
->   
->   err_out:
-> -	rxe_err_dev(rxe, "returned err = %d", err);
-> +	rxe_err_dev(rxe, "returned err = %d\n", err);
->   	return err;
->   }
->   
-> @@ -100,7 +100,7 @@ static int rxe_modify_device(struct ib_device *ibdev,
->   	if (mask & ~(IB_DEVICE_MODIFY_SYS_IMAGE_GUID |
->   		     IB_DEVICE_MODIFY_NODE_DESC)) {
->   		err = -EOPNOTSUPP;
-> -		rxe_dbg_dev(rxe, "unsupported mask = 0x%x", mask);
-> +		rxe_dbg_dev(rxe, "unsupported mask = 0x%x\n", mask);
->   		goto err_out;
->   	}
->   
-> @@ -115,7 +115,7 @@ static int rxe_modify_device(struct ib_device *ibdev,
->   	return 0;
->   
->   err_out:
-> -	rxe_err_dev(rxe, "returned err = %d", err);
-> +	rxe_err_dev(rxe, "returned err = %d\n", err);
->   	return err;
->   }
->   
-> @@ -128,14 +128,14 @@ static int rxe_modify_port(struct ib_device *ibdev, u32 port_num,
->   
->   	if (port_num != 1) {
->   		err = -EINVAL;
-> -		rxe_dbg_dev(rxe, "bad port_num = %d", port_num);
-> +		rxe_dbg_dev(rxe, "bad port_num = %d\n", port_num);
->   		goto err_out;
->   	}
->   
->   	//TODO is shutdown useful
->   	if (mask & ~(IB_PORT_RESET_QKEY_CNTR)) {
->   		err = -EOPNOTSUPP;
-> -		rxe_dbg_dev(rxe, "unsupported mask = 0x%x", mask);
-> +		rxe_dbg_dev(rxe, "unsupported mask = 0x%x\n", mask);
->   		goto err_out;
->   	}
->   
-> @@ -149,7 +149,7 @@ static int rxe_modify_port(struct ib_device *ibdev, u32 port_num,
->   	return 0;
->   
->   err_out:
-> -	rxe_err_dev(rxe, "returned err = %d", err);
-> +	rxe_err_dev(rxe, "returned err = %d\n", err);
->   	return err;
->   }
->   
-> @@ -161,14 +161,14 @@ static enum rdma_link_layer rxe_get_link_layer(struct ib_device *ibdev,
->   
->   	if (port_num != 1) {
->   		err = -EINVAL;
-> -		rxe_dbg_dev(rxe, "bad port_num = %d", port_num);
-> +		rxe_dbg_dev(rxe, "bad port_num = %d\n", port_num);
->   		goto err_out;
->   	}
->   
->   	return IB_LINK_LAYER_ETHERNET;
->   
->   err_out:
-> -	rxe_err_dev(rxe, "returned err = %d", err);
-> +	rxe_err_dev(rxe, "returned err = %d\n", err);
->   	return err;
->   }
->   
-> @@ -181,7 +181,7 @@ static int rxe_port_immutable(struct ib_device *ibdev, u32 port_num,
->   
->   	if (port_num != 1) {
->   		err = -EINVAL;
-> -		rxe_dbg_dev(rxe, "bad port_num = %d", port_num);
-> +		rxe_dbg_dev(rxe, "bad port_num = %d\n", port_num);
->   		goto err_out;
->   	}
->   
-> @@ -197,7 +197,7 @@ static int rxe_port_immutable(struct ib_device *ibdev, u32 port_num,
->   	return 0;
->   
->   err_out:
-> -	rxe_err_dev(rxe, "returned err = %d", err);
-> +	rxe_err_dev(rxe, "returned err = %d\n", err);
->   	return err;
->   }
->   
-> @@ -210,7 +210,7 @@ static int rxe_alloc_ucontext(struct ib_ucontext *ibuc, struct ib_udata *udata)
->   
->   	err = rxe_add_to_pool(&rxe->uc_pool, uc);
->   	if (err)
-> -		rxe_err_dev(rxe, "unable to create uc");
-> +		rxe_err_dev(rxe, "unable to create uc\n");
->   
->   	return err;
->   }
-> @@ -222,7 +222,7 @@ static void rxe_dealloc_ucontext(struct ib_ucontext *ibuc)
->   
->   	err = rxe_cleanup(uc);
->   	if (err)
-> -		rxe_err_uc(uc, "cleanup failed, err = %d", err);
-> +		rxe_err_uc(uc, "cleanup failed, err = %d\n", err);
->   }
->   
->   /* pd */
-> @@ -234,14 +234,14 @@ static int rxe_alloc_pd(struct ib_pd *ibpd, struct ib_udata *udata)
->   
->   	err = rxe_add_to_pool(&rxe->pd_pool, pd);
->   	if (err) {
-> -		rxe_dbg_dev(rxe, "unable to alloc pd");
-> +		rxe_dbg_dev(rxe, "unable to alloc pd\n");
->   		goto err_out;
->   	}
->   
->   	return 0;
->   
->   err_out:
-> -	rxe_err_dev(rxe, "returned err = %d", err);
-> +	rxe_err_dev(rxe, "returned err = %d\n", err);
->   	return err;
->   }
->   
-> @@ -252,7 +252,7 @@ static int rxe_dealloc_pd(struct ib_pd *ibpd, struct ib_udata *udata)
->   
->   	err = rxe_cleanup(pd);
->   	if (err)
-> -		rxe_err_pd(pd, "cleanup failed, err = %d", err);
-> +		rxe_err_pd(pd, "cleanup failed, err = %d\n", err);
->   
->   	return 0;
->   }
-> @@ -279,7 +279,7 @@ static int rxe_create_ah(struct ib_ah *ibah,
->   	err = rxe_add_to_pool_ah(&rxe->ah_pool, ah,
->   			init_attr->flags & RDMA_CREATE_AH_SLEEPABLE);
->   	if (err) {
-> -		rxe_dbg_dev(rxe, "unable to create ah");
-> +		rxe_dbg_dev(rxe, "unable to create ah\n");
->   		goto err_out;
->   	}
->   
-> @@ -288,7 +288,7 @@ static int rxe_create_ah(struct ib_ah *ibah,
->   
->   	err = rxe_ah_chk_attr(ah, init_attr->ah_attr);
->   	if (err) {
-> -		rxe_dbg_ah(ah, "bad attr");
-> +		rxe_dbg_ah(ah, "bad attr\n");
->   		goto err_cleanup;
->   	}
->   
-> @@ -298,7 +298,7 @@ static int rxe_create_ah(struct ib_ah *ibah,
->   					 sizeof(uresp->ah_num));
->   		if (err) {
->   			err = -EFAULT;
-> -			rxe_dbg_ah(ah, "unable to copy to user");
-> +			rxe_dbg_ah(ah, "unable to copy to user\n");
->   			goto err_cleanup;
->   		}
->   	} else if (ah->is_user) {
-> @@ -314,9 +314,9 @@ static int rxe_create_ah(struct ib_ah *ibah,
->   err_cleanup:
->   	cleanup_err = rxe_cleanup(ah);
->   	if (cleanup_err)
-> -		rxe_err_ah(ah, "cleanup failed, err = %d", cleanup_err);
-> +		rxe_err_ah(ah, "cleanup failed, err = %d\n", cleanup_err);
->   err_out:
-> -	rxe_err_ah(ah, "returned err = %d", err);
-> +	rxe_err_ah(ah, "returned err = %d\n", err);
->   	return err;
->   }
->   
-> @@ -327,7 +327,7 @@ static int rxe_modify_ah(struct ib_ah *ibah, struct rdma_ah_attr *attr)
->   
->   	err = rxe_ah_chk_attr(ah, attr);
->   	if (err) {
-> -		rxe_dbg_ah(ah, "bad attr");
-> +		rxe_dbg_ah(ah, "bad attr\n");
->   		goto err_out;
->   	}
->   
-> @@ -336,7 +336,7 @@ static int rxe_modify_ah(struct ib_ah *ibah, struct rdma_ah_attr *attr)
->   	return 0;
->   
->   err_out:
-> -	rxe_err_ah(ah, "returned err = %d", err);
-> +	rxe_err_ah(ah, "returned err = %d\n", err);
->   	return err;
->   }
->   
-> @@ -358,7 +358,7 @@ static int rxe_destroy_ah(struct ib_ah *ibah, u32 flags)
->   
->   	err = rxe_cleanup_ah(ah, flags & RDMA_DESTROY_AH_SLEEPABLE);
->   	if (err)
-> -		rxe_err_ah(ah, "cleanup failed, err = %d", err);
-> +		rxe_err_ah(ah, "cleanup failed, err = %d\n", err);
->   
->   	return 0;
->   }
-> @@ -376,7 +376,7 @@ static int rxe_create_srq(struct ib_srq *ibsrq, struct ib_srq_init_attr *init,
->   	if (udata) {
->   		if (udata->outlen < sizeof(*uresp)) {
->   			err = -EINVAL;
-> -			rxe_err_dev(rxe, "malformed udata");
-> +			rxe_err_dev(rxe, "malformed udata\n");
->   			goto err_out;
->   		}
->   		uresp = udata->outbuf;
-> @@ -384,20 +384,20 @@ static int rxe_create_srq(struct ib_srq *ibsrq, struct ib_srq_init_attr *init,
->   
->   	if (init->srq_type != IB_SRQT_BASIC) {
->   		err = -EOPNOTSUPP;
-> -		rxe_dbg_dev(rxe, "srq type = %d, not supported",
-> +		rxe_dbg_dev(rxe, "srq type = %d, not supported\n",
->   				init->srq_type);
->   		goto err_out;
->   	}
->   
->   	err = rxe_srq_chk_init(rxe, init);
->   	if (err) {
-> -		rxe_dbg_dev(rxe, "invalid init attributes");
-> +		rxe_dbg_dev(rxe, "invalid init attributes\n");
->   		goto err_out;
->   	}
->   
->   	err = rxe_add_to_pool(&rxe->srq_pool, srq);
->   	if (err) {
-> -		rxe_dbg_dev(rxe, "unable to create srq, err = %d", err);
-> +		rxe_dbg_dev(rxe, "unable to create srq, err = %d\n", err);
->   		goto err_out;
->   	}
->   
-> @@ -406,7 +406,7 @@ static int rxe_create_srq(struct ib_srq *ibsrq, struct ib_srq_init_attr *init,
->   
->   	err = rxe_srq_from_init(rxe, srq, init, udata, uresp);
->   	if (err) {
-> -		rxe_dbg_srq(srq, "create srq failed, err = %d", err);
-> +		rxe_dbg_srq(srq, "create srq failed, err = %d\n", err);
->   		goto err_cleanup;
->   	}
->   
-> @@ -415,9 +415,9 @@ static int rxe_create_srq(struct ib_srq *ibsrq, struct ib_srq_init_attr *init,
->   err_cleanup:
->   	cleanup_err = rxe_cleanup(srq);
->   	if (cleanup_err)
-> -		rxe_err_srq(srq, "cleanup failed, err = %d", cleanup_err);
-> +		rxe_err_srq(srq, "cleanup failed, err = %d\n", cleanup_err);
->   err_out:
-> -	rxe_err_dev(rxe, "returned err = %d", err);
-> +	rxe_err_dev(rxe, "returned err = %d\n", err);
->   	return err;
->   }
->   
-> @@ -433,34 +433,34 @@ static int rxe_modify_srq(struct ib_srq *ibsrq, struct ib_srq_attr *attr,
->   	if (udata) {
->   		if (udata->inlen < sizeof(cmd)) {
->   			err = -EINVAL;
-> -			rxe_dbg_srq(srq, "malformed udata");
-> +			rxe_dbg_srq(srq, "malformed udata\n");
->   			goto err_out;
->   		}
->   
->   		err = ib_copy_from_udata(&cmd, udata, sizeof(cmd));
->   		if (err) {
->   			err = -EFAULT;
-> -			rxe_dbg_srq(srq, "unable to read udata");
-> +			rxe_dbg_srq(srq, "unable to read udata\n");
->   			goto err_out;
->   		}
->   	}
->   
->   	err = rxe_srq_chk_attr(rxe, srq, attr, mask);
->   	if (err) {
-> -		rxe_dbg_srq(srq, "bad init attributes");
-> +		rxe_dbg_srq(srq, "bad init attributes\n");
->   		goto err_out;
->   	}
->   
->   	err = rxe_srq_from_attr(rxe, srq, attr, mask, &cmd, udata);
->   	if (err) {
-> -		rxe_dbg_srq(srq, "bad attr");
-> +		rxe_dbg_srq(srq, "bad attr\n");
->   		goto err_out;
->   	}
->   
->   	return 0;
->   
->   err_out:
-> -	rxe_err_srq(srq, "returned err = %d", err);
-> +	rxe_err_srq(srq, "returned err = %d\n", err);
->   	return err;
->   }
->   
-> @@ -471,7 +471,7 @@ static int rxe_query_srq(struct ib_srq *ibsrq, struct ib_srq_attr *attr)
->   
->   	if (srq->error) {
->   		err = -EINVAL;
-> -		rxe_dbg_srq(srq, "srq in error state");
-> +		rxe_dbg_srq(srq, "srq in error state\n");
->   		goto err_out;
->   	}
->   
-> @@ -481,7 +481,7 @@ static int rxe_query_srq(struct ib_srq *ibsrq, struct ib_srq_attr *attr)
->   	return 0;
->   
->   err_out:
-> -	rxe_err_srq(srq, "returned err = %d", err);
-> +	rxe_err_srq(srq, "returned err = %d\n", err);
->   	return err;
->   }
->   
-> @@ -505,7 +505,7 @@ static int rxe_post_srq_recv(struct ib_srq *ibsrq, const struct ib_recv_wr *wr,
->   
->   	if (err) {
->   		*bad_wr = wr;
-> -		rxe_err_srq(srq, "returned err = %d", err);
-> +		rxe_err_srq(srq, "returned err = %d\n", err);
->   	}
->   
->   	return err;
-> @@ -518,7 +518,7 @@ static int rxe_destroy_srq(struct ib_srq *ibsrq, struct ib_udata *udata)
->   
->   	err = rxe_cleanup(srq);
->   	if (err)
-> -		rxe_err_srq(srq, "cleanup failed, err = %d", err);
-> +		rxe_err_srq(srq, "cleanup failed, err = %d\n", err);
->   
->   	return 0;
->   }
-> @@ -536,13 +536,13 @@ static int rxe_create_qp(struct ib_qp *ibqp, struct ib_qp_init_attr *init,
->   	if (udata) {
->   		if (udata->inlen) {
->   			err = -EINVAL;
-> -			rxe_dbg_dev(rxe, "malformed udata, err = %d", err);
-> +			rxe_dbg_dev(rxe, "malformed udata, err = %d\n", err);
->   			goto err_out;
->   		}
->   
->   		if (udata->outlen < sizeof(*uresp)) {
->   			err = -EINVAL;
-> -			rxe_dbg_dev(rxe, "malformed udata, err = %d", err);
-> +			rxe_dbg_dev(rxe, "malformed udata, err = %d\n", err);
->   			goto err_out;
->   		}
->   
-> @@ -554,25 +554,25 @@ static int rxe_create_qp(struct ib_qp *ibqp, struct ib_qp_init_attr *init,
->   
->   	if (init->create_flags) {
->   		err = -EOPNOTSUPP;
-> -		rxe_dbg_dev(rxe, "unsupported create_flags, err = %d", err);
-> +		rxe_dbg_dev(rxe, "unsupported create_flags, err = %d\n", err);
->   		goto err_out;
->   	}
->   
->   	err = rxe_qp_chk_init(rxe, init);
->   	if (err) {
-> -		rxe_dbg_dev(rxe, "bad init attr, err = %d", err);
-> +		rxe_dbg_dev(rxe, "bad init attr, err = %d\n", err);
->   		goto err_out;
->   	}
->   
->   	err = rxe_add_to_pool(&rxe->qp_pool, qp);
->   	if (err) {
-> -		rxe_dbg_dev(rxe, "unable to create qp, err = %d", err);
-> +		rxe_dbg_dev(rxe, "unable to create qp, err = %d\n", err);
->   		goto err_out;
->   	}
->   
->   	err = rxe_qp_from_init(rxe, qp, pd, init, uresp, ibqp->pd, udata);
->   	if (err) {
-> -		rxe_dbg_qp(qp, "create qp failed, err = %d", err);
-> +		rxe_dbg_qp(qp, "create qp failed, err = %d\n", err);
->   		goto err_cleanup;
->   	}
->   
-> @@ -582,9 +582,9 @@ static int rxe_create_qp(struct ib_qp *ibqp, struct ib_qp_init_attr *init,
->   err_cleanup:
->   	cleanup_err = rxe_cleanup(qp);
->   	if (cleanup_err)
-> -		rxe_err_qp(qp, "cleanup failed, err = %d", cleanup_err);
-> +		rxe_err_qp(qp, "cleanup failed, err = %d\n", cleanup_err);
->   err_out:
-> -	rxe_err_dev(rxe, "returned err = %d", err);
-> +	rxe_err_dev(rxe, "returned err = %d\n", err);
->   	return err;
->   }
->   
-> @@ -597,20 +597,20 @@ static int rxe_modify_qp(struct ib_qp *ibqp, struct ib_qp_attr *attr,
->   
->   	if (mask & ~IB_QP_ATTR_STANDARD_BITS) {
->   		err = -EOPNOTSUPP;
-> -		rxe_dbg_qp(qp, "unsupported mask = 0x%x, err = %d",
-> +		rxe_dbg_qp(qp, "unsupported mask = 0x%x, err = %d\n",
->   			   mask, err);
->   		goto err_out;
->   	}
->   
->   	err = rxe_qp_chk_attr(rxe, qp, attr, mask);
->   	if (err) {
-> -		rxe_dbg_qp(qp, "bad mask/attr, err = %d", err);
-> +		rxe_dbg_qp(qp, "bad mask/attr, err = %d\n", err);
->   		goto err_out;
->   	}
->   
->   	err = rxe_qp_from_attr(qp, attr, mask, udata);
->   	if (err) {
-> -		rxe_dbg_qp(qp, "modify qp failed, err = %d", err);
-> +		rxe_dbg_qp(qp, "modify qp failed, err = %d\n", err);
->   		goto err_out;
->   	}
->   
-> @@ -622,7 +622,7 @@ static int rxe_modify_qp(struct ib_qp *ibqp, struct ib_qp_attr *attr,
->   	return 0;
->   
->   err_out:
-> -	rxe_err_qp(qp, "returned err = %d", err);
-> +	rxe_err_qp(qp, "returned err = %d\n", err);
->   	return err;
->   }
->   
-> @@ -644,18 +644,18 @@ static int rxe_destroy_qp(struct ib_qp *ibqp, struct ib_udata *udata)
->   
->   	err = rxe_qp_chk_destroy(qp);
->   	if (err) {
-> -		rxe_dbg_qp(qp, "unable to destroy qp, err = %d", err);
-> +		rxe_dbg_qp(qp, "unable to destroy qp, err = %d\n", err);
->   		goto err_out;
->   	}
->   
->   	err = rxe_cleanup(qp);
->   	if (err)
-> -		rxe_err_qp(qp, "cleanup failed, err = %d", err);
-> +		rxe_err_qp(qp, "cleanup failed, err = %d\n", err);
->   
->   	return 0;
->   
->   err_out:
-> -	rxe_err_qp(qp, "returned err = %d", err);
-> +	rxe_err_qp(qp, "returned err = %d\n", err);
->   	return err;
->   }
->   
-> @@ -675,12 +675,12 @@ static int validate_send_wr(struct rxe_qp *qp, const struct ib_send_wr *ibwr,
->   	do {
->   		mask = wr_opcode_mask(ibwr->opcode, qp);
->   		if (!mask) {
-> -			rxe_err_qp(qp, "bad wr opcode for qp type");
-> +			rxe_err_qp(qp, "bad wr opcode for qp type\n");
->   			break;
->   		}
->   
->   		if (num_sge > sq->max_sge) {
-> -			rxe_err_qp(qp, "num_sge > max_sge");
-> +			rxe_err_qp(qp, "num_sge > max_sge\n");
->   			break;
->   		}
->   
-> @@ -689,27 +689,27 @@ static int validate_send_wr(struct rxe_qp *qp, const struct ib_send_wr *ibwr,
->   			length += ibwr->sg_list[i].length;
->   
->   		if (length > (1UL << 31)) {
-> -			rxe_err_qp(qp, "message length too long");
-> +			rxe_err_qp(qp, "message length too long\n");
->   			break;
->   		}
->   
->   		if (mask & WR_ATOMIC_MASK) {
->   			if (length != 8) {
-> -				rxe_err_qp(qp, "atomic length != 8");
-> +				rxe_err_qp(qp, "atomic length != 8\n");
->   				break;
->   			}
->   			if (atomic_wr(ibwr)->remote_addr & 0x7) {
-> -				rxe_err_qp(qp, "misaligned atomic address");
-> +				rxe_err_qp(qp, "misaligned atomic address\n");
->   				break;
->   			}
->   		}
->   		if (ibwr->send_flags & IB_SEND_INLINE) {
->   			if (!(mask & WR_INLINE_MASK)) {
-> -				rxe_err_qp(qp, "opcode doesn't support inline data");
-> +				rxe_err_qp(qp, "opcode doesn't support inline data\n");
->   				break;
->   			}
->   			if (length > sq->max_inline) {
-> -				rxe_err_qp(qp, "inline length too big");
-> +				rxe_err_qp(qp, "inline length too big\n");
->   				break;
->   			}
->   		}
-> @@ -747,7 +747,7 @@ static int init_send_wr(struct rxe_qp *qp, struct rxe_send_wr *wr,
->   		case IB_WR_SEND:
->   			break;
->   		default:
-> -			rxe_err_qp(qp, "bad wr opcode %d for UD/GSI QP",
-> +			rxe_err_qp(qp, "bad wr opcode %d for UD/GSI QP\n",
->   					wr->opcode);
->   			return -EINVAL;
->   		}
-> @@ -795,7 +795,7 @@ static int init_send_wr(struct rxe_qp *qp, struct rxe_send_wr *wr,
->   		case IB_WR_ATOMIC_WRITE:
->   			break;
->   		default:
-> -			rxe_err_qp(qp, "unsupported wr opcode %d",
-> +			rxe_err_qp(qp, "unsupported wr opcode %d\n",
->   					wr->opcode);
->   			return -EINVAL;
->   			break;
-> @@ -871,7 +871,7 @@ static int post_one_send(struct rxe_qp *qp, const struct ib_send_wr *ibwr)
->   
->   	full = queue_full(sq->queue, QUEUE_TYPE_FROM_ULP);
->   	if (unlikely(full)) {
-> -		rxe_err_qp(qp, "send queue full");
-> +		rxe_err_qp(qp, "send queue full\n");
->   		return -ENOMEM;
->   	}
->   
-> @@ -923,14 +923,14 @@ static int rxe_post_send(struct ib_qp *ibqp, const struct ib_send_wr *wr,
->   	/* caller has already called destroy_qp */
->   	if (WARN_ON_ONCE(!qp->valid)) {
->   		spin_unlock_irqrestore(&qp->state_lock, flags);
-> -		rxe_err_qp(qp, "qp has been destroyed");
-> +		rxe_err_qp(qp, "qp has been destroyed\n");
->   		return -EINVAL;
->   	}
->   
->   	if (unlikely(qp_state(qp) < IB_QPS_RTS)) {
->   		spin_unlock_irqrestore(&qp->state_lock, flags);
->   		*bad_wr = wr;
-> -		rxe_err_qp(qp, "qp not ready to send");
-> +		rxe_err_qp(qp, "qp not ready to send\n");
->   		return -EINVAL;
->   	}
->   	spin_unlock_irqrestore(&qp->state_lock, flags);
-> @@ -960,13 +960,13 @@ static int post_one_recv(struct rxe_rq *rq, const struct ib_recv_wr *ibwr)
->   	full = queue_full(rq->queue, QUEUE_TYPE_FROM_ULP);
->   	if (unlikely(full)) {
->   		err = -ENOMEM;
-> -		rxe_dbg("queue full");
-> +		rxe_dbg("queue full\n");
->   		goto err_out;
->   	}
->   
->   	if (unlikely(num_sge > rq->max_sge)) {
->   		err = -EINVAL;
-> -		rxe_dbg("bad num_sge > max_sge");
-> +		rxe_dbg("bad num_sge > max_sge\n");
->   		goto err_out;
->   	}
->   
-> @@ -977,7 +977,7 @@ static int post_one_recv(struct rxe_rq *rq, const struct ib_recv_wr *ibwr)
->   	/* IBA max message size is 2^31 */
->   	if (length >= (1UL<<31)) {
->   		err = -EINVAL;
-> -		rxe_dbg("message length too long");
-> +		rxe_dbg("message length too long\n");
->   		goto err_out;
->   	}
->   
-> @@ -997,7 +997,7 @@ static int post_one_recv(struct rxe_rq *rq, const struct ib_recv_wr *ibwr)
->   	return 0;
->   
->   err_out:
-> -	rxe_dbg("returned err = %d", err);
-> +	rxe_dbg("returned err = %d\n", err);
->   	return err;
->   }
->   
-> @@ -1013,7 +1013,7 @@ static int rxe_post_recv(struct ib_qp *ibqp, const struct ib_recv_wr *wr,
->   	/* caller has already called destroy_qp */
->   	if (WARN_ON_ONCE(!qp->valid)) {
->   		spin_unlock_irqrestore(&qp->state_lock, flags);
-> -		rxe_err_qp(qp, "qp has been destroyed");
-> +		rxe_err_qp(qp, "qp has been destroyed\n");
->   		return -EINVAL;
->   	}
->   
-> @@ -1021,14 +1021,14 @@ static int rxe_post_recv(struct ib_qp *ibqp, const struct ib_recv_wr *wr,
->   	if (unlikely((qp_state(qp) < IB_QPS_INIT))) {
->   		spin_unlock_irqrestore(&qp->state_lock, flags);
->   		*bad_wr = wr;
-> -		rxe_dbg_qp(qp, "qp not ready to post recv");
-> +		rxe_dbg_qp(qp, "qp not ready to post recv\n");
->   		return -EINVAL;
->   	}
->   	spin_unlock_irqrestore(&qp->state_lock, flags);
->   
->   	if (unlikely(qp->srq)) {
->   		*bad_wr = wr;
-> -		rxe_dbg_qp(qp, "qp has srq, use post_srq_recv instead");
-> +		rxe_dbg_qp(qp, "qp has srq, use post_srq_recv instead\n");
->   		return -EINVAL;
->   	}
->   
-> @@ -1066,7 +1066,7 @@ static int rxe_create_cq(struct ib_cq *ibcq, const struct ib_cq_init_attr *attr,
->   	if (udata) {
->   		if (udata->outlen < sizeof(*uresp)) {
->   			err = -EINVAL;
-> -			rxe_dbg_dev(rxe, "malformed udata, err = %d", err);
-> +			rxe_dbg_dev(rxe, "malformed udata, err = %d\n", err);
->   			goto err_out;
->   		}
->   		uresp = udata->outbuf;
-> @@ -1074,26 +1074,26 @@ static int rxe_create_cq(struct ib_cq *ibcq, const struct ib_cq_init_attr *attr,
->   
->   	if (attr->flags) {
->   		err = -EOPNOTSUPP;
-> -		rxe_dbg_dev(rxe, "bad attr->flags, err = %d", err);
-> +		rxe_dbg_dev(rxe, "bad attr->flags, err = %d\n", err);
->   		goto err_out;
->   	}
->   
->   	err = rxe_cq_chk_attr(rxe, NULL, attr->cqe, attr->comp_vector);
->   	if (err) {
-> -		rxe_dbg_dev(rxe, "bad init attributes, err = %d", err);
-> +		rxe_dbg_dev(rxe, "bad init attributes, err = %d\n", err);
->   		goto err_out;
->   	}
->   
->   	err = rxe_add_to_pool(&rxe->cq_pool, cq);
->   	if (err) {
-> -		rxe_dbg_dev(rxe, "unable to create cq, err = %d", err);
-> +		rxe_dbg_dev(rxe, "unable to create cq, err = %d\n", err);
->   		goto err_out;
->   	}
->   
->   	err = rxe_cq_from_init(rxe, cq, attr->cqe, attr->comp_vector, udata,
->   			       uresp);
->   	if (err) {
-> -		rxe_dbg_cq(cq, "create cq failed, err = %d", err);
-> +		rxe_dbg_cq(cq, "create cq failed, err = %d\n", err);
->   		goto err_cleanup;
->   	}
->   
-> @@ -1102,9 +1102,9 @@ static int rxe_create_cq(struct ib_cq *ibcq, const struct ib_cq_init_attr *attr,
->   err_cleanup:
->   	cleanup_err = rxe_cleanup(cq);
->   	if (cleanup_err)
-> -		rxe_err_cq(cq, "cleanup failed, err = %d", cleanup_err);
-> +		rxe_err_cq(cq, "cleanup failed, err = %d\n", cleanup_err);
->   err_out:
-> -	rxe_err_dev(rxe, "returned err = %d", err);
-> +	rxe_err_dev(rxe, "returned err = %d\n", err);
->   	return err;
->   }
->   
-> @@ -1118,7 +1118,7 @@ static int rxe_resize_cq(struct ib_cq *ibcq, int cqe, struct ib_udata *udata)
->   	if (udata) {
->   		if (udata->outlen < sizeof(*uresp)) {
->   			err = -EINVAL;
-> -			rxe_dbg_cq(cq, "malformed udata");
-> +			rxe_dbg_cq(cq, "malformed udata\n");
->   			goto err_out;
->   		}
->   		uresp = udata->outbuf;
-> @@ -1126,20 +1126,20 @@ static int rxe_resize_cq(struct ib_cq *ibcq, int cqe, struct ib_udata *udata)
->   
->   	err = rxe_cq_chk_attr(rxe, cq, cqe, 0);
->   	if (err) {
-> -		rxe_dbg_cq(cq, "bad attr, err = %d", err);
-> +		rxe_dbg_cq(cq, "bad attr, err = %d\n", err);
->   		goto err_out;
->   	}
->   
->   	err = rxe_cq_resize_queue(cq, cqe, uresp, udata);
->   	if (err) {
-> -		rxe_dbg_cq(cq, "resize cq failed, err = %d", err);
-> +		rxe_dbg_cq(cq, "resize cq failed, err = %d\n", err);
->   		goto err_out;
->   	}
->   
->   	return 0;
->   
->   err_out:
-> -	rxe_err_cq(cq, "returned err = %d", err);
-> +	rxe_err_cq(cq, "returned err = %d\n", err);
->   	return err;
->   }
->   
-> @@ -1203,18 +1203,18 @@ static int rxe_destroy_cq(struct ib_cq *ibcq, struct ib_udata *udata)
->   	 */
->   	if (atomic_read(&cq->num_wq)) {
->   		err = -EINVAL;
-> -		rxe_dbg_cq(cq, "still in use");
-> +		rxe_dbg_cq(cq, "still in use\n");
->   		goto err_out;
->   	}
->   
->   	err = rxe_cleanup(cq);
->   	if (err)
-> -		rxe_err_cq(cq, "cleanup failed, err = %d", err);
-> +		rxe_err_cq(cq, "cleanup failed, err = %d\n", err);
->   
->   	return 0;
->   
->   err_out:
-> -	rxe_err_cq(cq, "returned err = %d", err);
-> +	rxe_err_cq(cq, "returned err = %d\n", err);
->   	return err;
->   }
->   
-> @@ -1232,7 +1232,7 @@ static struct ib_mr *rxe_get_dma_mr(struct ib_pd *ibpd, int access)
->   
->   	err = rxe_add_to_pool(&rxe->mr_pool, mr);
->   	if (err) {
-> -		rxe_dbg_dev(rxe, "unable to create mr");
-> +		rxe_dbg_dev(rxe, "unable to create mr\n");
->   		goto err_free;
->   	}
->   
-> @@ -1246,7 +1246,7 @@ static struct ib_mr *rxe_get_dma_mr(struct ib_pd *ibpd, int access)
->   
->   err_free:
->   	kfree(mr);
-> -	rxe_err_pd(pd, "returned err = %d", err);
-> +	rxe_err_pd(pd, "returned err = %d\n", err);
->   	return ERR_PTR(err);
->   }
->   
-> @@ -1260,7 +1260,7 @@ static struct ib_mr *rxe_reg_user_mr(struct ib_pd *ibpd, u64 start,
->   	int err, cleanup_err;
->   
->   	if (access & ~RXE_ACCESS_SUPPORTED_MR) {
-> -		rxe_err_pd(pd, "access = %#x not supported (%#x)", access,
-> +		rxe_err_pd(pd, "access = %#x not supported (%#x)\n", access,
->   				RXE_ACCESS_SUPPORTED_MR);
->   		return ERR_PTR(-EOPNOTSUPP);
->   	}
-> @@ -1271,7 +1271,7 @@ static struct ib_mr *rxe_reg_user_mr(struct ib_pd *ibpd, u64 start,
->   
->   	err = rxe_add_to_pool(&rxe->mr_pool, mr);
->   	if (err) {
-> -		rxe_dbg_pd(pd, "unable to create mr");
-> +		rxe_dbg_pd(pd, "unable to create mr\n");
->   		goto err_free;
->   	}
->   
-> @@ -1281,7 +1281,7 @@ static struct ib_mr *rxe_reg_user_mr(struct ib_pd *ibpd, u64 start,
->   
->   	err = rxe_mr_init_user(rxe, start, length, iova, access, mr);
->   	if (err) {
-> -		rxe_dbg_mr(mr, "reg_user_mr failed, err = %d", err);
-> +		rxe_dbg_mr(mr, "reg_user_mr failed, err = %d\n", err);
->   		goto err_cleanup;
->   	}
->   
-> @@ -1291,10 +1291,10 @@ static struct ib_mr *rxe_reg_user_mr(struct ib_pd *ibpd, u64 start,
->   err_cleanup:
->   	cleanup_err = rxe_cleanup(mr);
->   	if (cleanup_err)
-> -		rxe_err_mr(mr, "cleanup failed, err = %d", cleanup_err);
-> +		rxe_err_mr(mr, "cleanup failed, err = %d\n", cleanup_err);
->   err_free:
->   	kfree(mr);
-> -	rxe_err_pd(pd, "returned err = %d", err);
-> +	rxe_err_pd(pd, "returned err = %d\n", err);
->   	return ERR_PTR(err);
->   }
->   
-> @@ -1311,7 +1311,7 @@ static struct ib_mr *rxe_rereg_user_mr(struct ib_mr *ibmr, int flags,
->   	 * rereg_pd and rereg_access
->   	 */
->   	if (flags & ~RXE_MR_REREG_SUPPORTED) {
-> -		rxe_err_mr(mr, "flags = %#x not supported", flags);
-> +		rxe_err_mr(mr, "flags = %#x not supported\n", flags);
->   		return ERR_PTR(-EOPNOTSUPP);
->   	}
->   
-> @@ -1323,7 +1323,7 @@ static struct ib_mr *rxe_rereg_user_mr(struct ib_mr *ibmr, int flags,
->   
->   	if (flags & IB_MR_REREG_ACCESS) {
->   		if (access & ~RXE_ACCESS_SUPPORTED_MR) {
-> -			rxe_err_mr(mr, "access = %#x not supported", access);
-> +			rxe_err_mr(mr, "access = %#x not supported\n", access);
->   			return ERR_PTR(-EOPNOTSUPP);
->   		}
->   		mr->access = access;
-> @@ -1342,7 +1342,7 @@ static struct ib_mr *rxe_alloc_mr(struct ib_pd *ibpd, enum ib_mr_type mr_type,
->   
->   	if (mr_type != IB_MR_TYPE_MEM_REG) {
->   		err = -EINVAL;
-> -		rxe_dbg_pd(pd, "mr type %d not supported, err = %d",
-> +		rxe_dbg_pd(pd, "mr type %d not supported, err = %d\n",
->   			   mr_type, err);
->   		goto err_out;
->   	}
-> @@ -1361,7 +1361,7 @@ static struct ib_mr *rxe_alloc_mr(struct ib_pd *ibpd, enum ib_mr_type mr_type,
->   
->   	err = rxe_mr_init_fast(max_num_sg, mr);
->   	if (err) {
-> -		rxe_dbg_mr(mr, "alloc_mr failed, err = %d", err);
-> +		rxe_dbg_mr(mr, "alloc_mr failed, err = %d\n", err);
->   		goto err_cleanup;
->   	}
->   
-> @@ -1371,11 +1371,11 @@ static struct ib_mr *rxe_alloc_mr(struct ib_pd *ibpd, enum ib_mr_type mr_type,
->   err_cleanup:
->   	cleanup_err = rxe_cleanup(mr);
->   	if (cleanup_err)
-> -		rxe_err_mr(mr, "cleanup failed, err = %d", err);
-> +		rxe_err_mr(mr, "cleanup failed, err = %d\n", err);
->   err_free:
->   	kfree(mr);
->   err_out:
-> -	rxe_err_pd(pd, "returned err = %d", err);
-> +	rxe_err_pd(pd, "returned err = %d\n", err);
->   	return ERR_PTR(err);
->   }
->   
-> @@ -1387,19 +1387,19 @@ static int rxe_dereg_mr(struct ib_mr *ibmr, struct ib_udata *udata)
->   	/* See IBA 10.6.7.2.6 */
->   	if (atomic_read(&mr->num_mw) > 0) {
->   		err = -EINVAL;
-> -		rxe_dbg_mr(mr, "mr has mw's bound");
-> +		rxe_dbg_mr(mr, "mr has mw's bound\n");
->   		goto err_out;
->   	}
->   
->   	cleanup_err = rxe_cleanup(mr);
->   	if (cleanup_err)
-> -		rxe_err_mr(mr, "cleanup failed, err = %d", cleanup_err);
-> +		rxe_err_mr(mr, "cleanup failed, err = %d\n", cleanup_err);
->   
->   	kfree_rcu_mightsleep(mr);
->   	return 0;
->   
->   err_out:
-> -	rxe_err_mr(mr, "returned err = %d", err);
-> +	rxe_err_mr(mr, "returned err = %d\n", err);
->   	return err;
->   }
->   
+diff --git a/drivers/infiniband/hw/bnxt_re/qplib_tlv.h b/drivers/infiniband/hw/bnxt_re/qplib_tlv.h
+index 402c220734f6..ae96a75d7f31 100644
+--- a/drivers/infiniband/hw/bnxt_re/qplib_tlv.h
++++ b/drivers/infiniband/hw/bnxt_re/qplib_tlv.h
+@@ -1,4 +1,4 @@
+-/* SPDX-License-Identifier: GPL-2.0 or BSD-3-Clause */
++/* SPDX-License-Identifier: GPL-2.0 OR BSD-3-Clause */
+ 
+ #ifndef __QPLIB_TLV_H__
+ #define __QPLIB_TLV_H__
+diff --git a/drivers/infiniband/hw/hfi1/affinity.c b/drivers/infiniband/hw/hfi1/affinity.c
+index 77ee77d4000f..a8b0852cc4da 100644
+--- a/drivers/infiniband/hw/hfi1/affinity.c
++++ b/drivers/infiniband/hw/hfi1/affinity.c
+@@ -1,4 +1,4 @@
+-// SPDX-License-Identifier: GPL-2.0 or BSD-3-Clause
++// SPDX-License-Identifier: GPL-2.0 OR BSD-3-Clause
+ /*
+  * Copyright(c) 2015 - 2020 Intel Corporation.
+  */
+diff --git a/drivers/infiniband/hw/hfi1/affinity.h b/drivers/infiniband/hw/hfi1/affinity.h
+index 00854f21787f..ffdd0d571c7a 100644
+--- a/drivers/infiniband/hw/hfi1/affinity.h
++++ b/drivers/infiniband/hw/hfi1/affinity.h
+@@ -1,4 +1,4 @@
+-/* SPDX-License-Identifier: GPL-2.0 or BSD-3-Clause */
++/* SPDX-License-Identifier: GPL-2.0 OR BSD-3-Clause */
+ /*
+  * Copyright(c) 2015 - 2020 Intel Corporation.
+  */
+diff --git a/drivers/infiniband/hw/hfi1/aspm.h b/drivers/infiniband/hw/hfi1/aspm.h
+index df295f47b315..c8d92dc13daa 100644
+--- a/drivers/infiniband/hw/hfi1/aspm.h
++++ b/drivers/infiniband/hw/hfi1/aspm.h
+@@ -1,4 +1,4 @@
+-/* SPDX-License-Identifier: GPL-2.0 or BSD-3-Clause */
++/* SPDX-License-Identifier: GPL-2.0 OR BSD-3-Clause */
+ /*
+  * Copyright(c) 2015-2017 Intel Corporation.
+  */
+diff --git a/drivers/infiniband/hw/hfi1/chip.c b/drivers/infiniband/hw/hfi1/chip.c
+index baaa4406d5e6..4aa91ac8ae42 100644
+--- a/drivers/infiniband/hw/hfi1/chip.c
++++ b/drivers/infiniband/hw/hfi1/chip.c
+@@ -1,4 +1,4 @@
+-// SPDX-License-Identifier: GPL-2.0 or BSD-3-Clause
++// SPDX-License-Identifier: GPL-2.0 OR BSD-3-Clause
+ /*
+  * Copyright(c) 2015 - 2020 Intel Corporation.
+  * Copyright(c) 2021 Cornelis Networks.
+diff --git a/drivers/infiniband/hw/hfi1/chip.h b/drivers/infiniband/hw/hfi1/chip.h
+index b2d53713da58..d861aa8fc640 100644
+--- a/drivers/infiniband/hw/hfi1/chip.h
++++ b/drivers/infiniband/hw/hfi1/chip.h
+@@ -1,4 +1,4 @@
+-/* SPDX-License-Identifier: GPL-2.0 or BSD-3-Clause */
++/* SPDX-License-Identifier: GPL-2.0 OR BSD-3-Clause */
+ /*
+  * Copyright(c) 2015 - 2020 Intel Corporation.
+  */
+diff --git a/drivers/infiniband/hw/hfi1/chip_registers.h b/drivers/infiniband/hw/hfi1/chip_registers.h
+index 95a8d530d554..d79e25d20fb8 100644
+--- a/drivers/infiniband/hw/hfi1/chip_registers.h
++++ b/drivers/infiniband/hw/hfi1/chip_registers.h
+@@ -1,4 +1,4 @@
+-/* SPDX-License-Identifier: GPL-2.0 or BSD-3-Clause */
++/* SPDX-License-Identifier: GPL-2.0 OR BSD-3-Clause */
+ /*
+  * Copyright(c) 2015, 2016 Intel Corporation.
+  */
+diff --git a/drivers/infiniband/hw/hfi1/common.h b/drivers/infiniband/hw/hfi1/common.h
+index 166ad6b828dc..8abc902b96f3 100644
+--- a/drivers/infiniband/hw/hfi1/common.h
++++ b/drivers/infiniband/hw/hfi1/common.h
+@@ -1,4 +1,4 @@
+-/* SPDX-License-Identifier: GPL-2.0 or BSD-3-Clause */
++/* SPDX-License-Identifier: GPL-2.0 OR BSD-3-Clause */
+ /*
+  * Copyright(c) 2015 - 2020 Intel Corporation.
+  */
+diff --git a/drivers/infiniband/hw/hfi1/debugfs.c b/drivers/infiniband/hw/hfi1/debugfs.c
+index 80ba1e53c068..a1e01b447265 100644
+--- a/drivers/infiniband/hw/hfi1/debugfs.c
++++ b/drivers/infiniband/hw/hfi1/debugfs.c
+@@ -1,4 +1,4 @@
+-// SPDX-License-Identifier: GPL-2.0 or BSD-3-Clause
++// SPDX-License-Identifier: GPL-2.0 OR BSD-3-Clause
+ /*
+  * Copyright(c) 2015-2018 Intel Corporation.
+  */
+diff --git a/drivers/infiniband/hw/hfi1/debugfs.h b/drivers/infiniband/hw/hfi1/debugfs.h
+index 29a5a8de2c41..54d952a4016c 100644
+--- a/drivers/infiniband/hw/hfi1/debugfs.h
++++ b/drivers/infiniband/hw/hfi1/debugfs.h
+@@ -1,4 +1,4 @@
+-/* SPDX-License-Identifier: GPL-2.0 or BSD-3-Clause */
++/* SPDX-License-Identifier: GPL-2.0 OR BSD-3-Clause */
+ /*
+  * Copyright(c) 2015, 2016, 2018 Intel Corporation.
+  */
+diff --git a/drivers/infiniband/hw/hfi1/device.c b/drivers/infiniband/hw/hfi1/device.c
+index b0a00b7aaec5..4250d077b06f 100644
+--- a/drivers/infiniband/hw/hfi1/device.c
++++ b/drivers/infiniband/hw/hfi1/device.c
+@@ -1,4 +1,4 @@
+-// SPDX-License-Identifier: GPL-2.0 or BSD-3-Clause
++// SPDX-License-Identifier: GPL-2.0 OR BSD-3-Clause
+ /*
+  * Copyright(c) 2015, 2016 Intel Corporation.
+  */
+diff --git a/drivers/infiniband/hw/hfi1/device.h b/drivers/infiniband/hw/hfi1/device.h
+index c371b5612b6b..a91bea426ba5 100644
+--- a/drivers/infiniband/hw/hfi1/device.h
++++ b/drivers/infiniband/hw/hfi1/device.h
+@@ -1,4 +1,4 @@
+-/* SPDX-License-Identifier: GPL-2.0 or BSD-3-Clause */
++/* SPDX-License-Identifier: GPL-2.0 OR BSD-3-Clause */
+ /*
+  * Copyright(c) 2015, 2016 Intel Corporation.
+  */
+diff --git a/drivers/infiniband/hw/hfi1/driver.c b/drivers/infiniband/hw/hfi1/driver.c
+index f4492fa407e0..37a6794885d3 100644
+--- a/drivers/infiniband/hw/hfi1/driver.c
++++ b/drivers/infiniband/hw/hfi1/driver.c
+@@ -1,4 +1,4 @@
+-// SPDX-License-Identifier: GPL-2.0 or BSD-3-Clause
++// SPDX-License-Identifier: GPL-2.0 OR BSD-3-Clause
+ /*
+  * Copyright(c) 2015-2020 Intel Corporation.
+  * Copyright(c) 2021 Cornelis Networks.
+diff --git a/drivers/infiniband/hw/hfi1/efivar.c b/drivers/infiniband/hw/hfi1/efivar.c
+index 7741a1d69097..fb06e86da608 100644
+--- a/drivers/infiniband/hw/hfi1/efivar.c
++++ b/drivers/infiniband/hw/hfi1/efivar.c
+@@ -1,4 +1,4 @@
+-// SPDX-License-Identifier: GPL-2.0 or BSD-3-Clause
++// SPDX-License-Identifier: GPL-2.0 OR BSD-3-Clause
+ /*
+  * Copyright(c) 2015, 2016 Intel Corporation.
+  */
+diff --git a/drivers/infiniband/hw/hfi1/efivar.h b/drivers/infiniband/hw/hfi1/efivar.h
+index 5ebc2f07bbef..882240929a4b 100644
+--- a/drivers/infiniband/hw/hfi1/efivar.h
++++ b/drivers/infiniband/hw/hfi1/efivar.h
+@@ -1,4 +1,4 @@
+-/* SPDX-License-Identifier: GPL-2.0 or BSD-3-Clause */
++/* SPDX-License-Identifier: GPL-2.0 OR BSD-3-Clause */
+ /*
+  * Copyright(c) 2015, 2016 Intel Corporation.
+  */
+diff --git a/drivers/infiniband/hw/hfi1/eprom.c b/drivers/infiniband/hw/hfi1/eprom.c
+index fbe958107457..f93a160d8d05 100644
+--- a/drivers/infiniband/hw/hfi1/eprom.c
++++ b/drivers/infiniband/hw/hfi1/eprom.c
+@@ -1,4 +1,4 @@
+-// SPDX-License-Identifier: GPL-2.0 or BSD-3-Clause
++// SPDX-License-Identifier: GPL-2.0 OR BSD-3-Clause
+ /*
+  * Copyright(c) 2015, 2016 Intel Corporation.
+  */
+diff --git a/drivers/infiniband/hw/hfi1/eprom.h b/drivers/infiniband/hw/hfi1/eprom.h
+index 772c516366ce..51648d1afcf1 100644
+--- a/drivers/infiniband/hw/hfi1/eprom.h
++++ b/drivers/infiniband/hw/hfi1/eprom.h
+@@ -1,4 +1,4 @@
+-/* SPDX-License-Identifier: GPL-2.0 or BSD-3-Clause */
++/* SPDX-License-Identifier: GPL-2.0 OR BSD-3-Clause */
+ /*
+  * Copyright(c) 2015, 2016 Intel Corporation.
+  */
+diff --git a/drivers/infiniband/hw/hfi1/exp_rcv.c b/drivers/infiniband/hw/hfi1/exp_rcv.c
+index b86f697c7956..879a66edbded 100644
+--- a/drivers/infiniband/hw/hfi1/exp_rcv.c
++++ b/drivers/infiniband/hw/hfi1/exp_rcv.c
+@@ -1,4 +1,4 @@
+-// SPDX-License-Identifier: GPL-2.0 or BSD-3-Clause
++// SPDX-License-Identifier: GPL-2.0 OR BSD-3-Clause
+ /*
+  * Copyright(c) 2017 Intel Corporation.
+  */
+diff --git a/drivers/infiniband/hw/hfi1/exp_rcv.h b/drivers/infiniband/hw/hfi1/exp_rcv.h
+index 41f7fe5d1839..141413d9fbc7 100644
+--- a/drivers/infiniband/hw/hfi1/exp_rcv.h
++++ b/drivers/infiniband/hw/hfi1/exp_rcv.h
+@@ -1,4 +1,4 @@
+-/* SPDX-License-Identifier: GPL-2.0 or BSD-3-Clause */
++/* SPDX-License-Identifier: GPL-2.0 OR BSD-3-Clause */
+ /*
+  * Copyright(c) 2017 Intel Corporation.
+  */
+diff --git a/drivers/infiniband/hw/hfi1/fault.c b/drivers/infiniband/hw/hfi1/fault.c
+index 3af77a0840ab..35d2382ee618 100644
+--- a/drivers/infiniband/hw/hfi1/fault.c
++++ b/drivers/infiniband/hw/hfi1/fault.c
+@@ -1,4 +1,4 @@
+-// SPDX-License-Identifier: GPL-2.0 or BSD-3-Clause
++// SPDX-License-Identifier: GPL-2.0 OR BSD-3-Clause
+ /*
+  * Copyright(c) 2018 Intel Corporation.
+  */
+diff --git a/drivers/infiniband/hw/hfi1/fault.h b/drivers/infiniband/hw/hfi1/fault.h
+index 7fe7f47219db..51adafe240d7 100644
+--- a/drivers/infiniband/hw/hfi1/fault.h
++++ b/drivers/infiniband/hw/hfi1/fault.h
+@@ -1,4 +1,4 @@
+-/* SPDX-License-Identifier: GPL-2.0 or BSD-3-Clause */
++/* SPDX-License-Identifier: GPL-2.0 OR BSD-3-Clause */
+ /*
+  * Copyright(c) 2018 Intel Corporation.
+  */
+diff --git a/drivers/infiniband/hw/hfi1/file_ops.c b/drivers/infiniband/hw/hfi1/file_ops.c
+index a5ab22cedd41..65c48aa02e3c 100644
+--- a/drivers/infiniband/hw/hfi1/file_ops.c
++++ b/drivers/infiniband/hw/hfi1/file_ops.c
+@@ -1,4 +1,4 @@
+-// SPDX-License-Identifier: GPL-2.0 or BSD-3-Clause
++// SPDX-License-Identifier: GPL-2.0 OR BSD-3-Clause
+ /*
+  * Copyright(c) 2020 Cornelis Networks, Inc.
+  * Copyright(c) 2015-2020 Intel Corporation.
+diff --git a/drivers/infiniband/hw/hfi1/firmware.c b/drivers/infiniband/hw/hfi1/firmware.c
+index 0c0cef5b1e0e..3c228aeaaf81 100644
+--- a/drivers/infiniband/hw/hfi1/firmware.c
++++ b/drivers/infiniband/hw/hfi1/firmware.c
+@@ -1,4 +1,4 @@
+-// SPDX-License-Identifier: GPL-2.0 or BSD-3-Clause
++// SPDX-License-Identifier: GPL-2.0 OR BSD-3-Clause
+ /*
+  * Copyright(c) 2015 - 2017 Intel Corporation.
+  */
+diff --git a/drivers/infiniband/hw/hfi1/hfi.h b/drivers/infiniband/hw/hfi1/hfi.h
+index 7fa9cd39254f..d9597483123e 100644
+--- a/drivers/infiniband/hw/hfi1/hfi.h
++++ b/drivers/infiniband/hw/hfi1/hfi.h
+@@ -1,4 +1,4 @@
+-/* SPDX-License-Identifier: GPL-2.0 or BSD-3-Clause */
++/* SPDX-License-Identifier: GPL-2.0 OR BSD-3-Clause */
+ /*
+  * Copyright(c) 2020 Cornelis Networks, Inc.
+  * Copyright(c) 2015-2020 Intel Corporation.
+diff --git a/drivers/infiniband/hw/hfi1/init.c b/drivers/infiniband/hw/hfi1/init.c
+index 6de37c5d7d27..5ce2215e09c2 100644
+--- a/drivers/infiniband/hw/hfi1/init.c
++++ b/drivers/infiniband/hw/hfi1/init.c
+@@ -1,4 +1,4 @@
+-// SPDX-License-Identifier: GPL-2.0 or BSD-3-Clause
++// SPDX-License-Identifier: GPL-2.0 OR BSD-3-Clause
+ /*
+  * Copyright(c) 2015 - 2020 Intel Corporation.
+  * Copyright(c) 2021 Cornelis Networks.
+diff --git a/drivers/infiniband/hw/hfi1/intr.c b/drivers/infiniband/hw/hfi1/intr.c
+index 70376e6dba33..3737f632d62a 100644
+--- a/drivers/infiniband/hw/hfi1/intr.c
++++ b/drivers/infiniband/hw/hfi1/intr.c
+@@ -1,4 +1,4 @@
+-// SPDX-License-Identifier: GPL-2.0 or BSD-3-Clause
++// SPDX-License-Identifier: GPL-2.0 OR BSD-3-Clause
+ /*
+  * Copyright(c) 2015, 2016 Intel Corporation.
+  */
+diff --git a/drivers/infiniband/hw/hfi1/iowait.h b/drivers/infiniband/hw/hfi1/iowait.h
+index 4df0700cbaba..49805a24bb0a 100644
+--- a/drivers/infiniband/hw/hfi1/iowait.h
++++ b/drivers/infiniband/hw/hfi1/iowait.h
+@@ -1,4 +1,4 @@
+-/* SPDX-License-Identifier: GPL-2.0 or BSD-3-Clause */
++/* SPDX-License-Identifier: GPL-2.0 OR BSD-3-Clause */
+ /*
+  * Copyright(c) 2015 - 2018 Intel Corporation.
+  */
+diff --git a/drivers/infiniband/hw/hfi1/mad.c b/drivers/infiniband/hw/hfi1/mad.c
+index e5e783c45810..a9883295f4af 100644
+--- a/drivers/infiniband/hw/hfi1/mad.c
++++ b/drivers/infiniband/hw/hfi1/mad.c
+@@ -1,4 +1,4 @@
+-// SPDX-License-Identifier: GPL-2.0 or BSD-3-Clause
++// SPDX-License-Identifier: GPL-2.0 OR BSD-3-Clause
+ /*
+  * Copyright(c) 2015-2018 Intel Corporation.
+  */
+diff --git a/drivers/infiniband/hw/hfi1/mad.h b/drivers/infiniband/hw/hfi1/mad.h
+index 1d45a008fa7f..b6e3141253c4 100644
+--- a/drivers/infiniband/hw/hfi1/mad.h
++++ b/drivers/infiniband/hw/hfi1/mad.h
+@@ -1,4 +1,4 @@
+-/* SPDX-License-Identifier: GPL-2.0 or BSD-3-Clause */
++/* SPDX-License-Identifier: GPL-2.0 OR BSD-3-Clause */
+ /*
+  * Copyright(c) 2015 - 2017 Intel Corporation.
+  */
+diff --git a/drivers/infiniband/hw/hfi1/mmu_rb.c b/drivers/infiniband/hw/hfi1/mmu_rb.c
+index 7a51f7d73b61..d4a6acad0e65 100644
+--- a/drivers/infiniband/hw/hfi1/mmu_rb.c
++++ b/drivers/infiniband/hw/hfi1/mmu_rb.c
+@@ -1,4 +1,4 @@
+-// SPDX-License-Identifier: GPL-2.0 or BSD-3-Clause
++// SPDX-License-Identifier: GPL-2.0 OR BSD-3-Clause
+ /*
+  * Copyright(c) 2020 Cornelis Networks, Inc.
+  * Copyright(c) 2016 - 2017 Intel Corporation.
+diff --git a/drivers/infiniband/hw/hfi1/mmu_rb.h b/drivers/infiniband/hw/hfi1/mmu_rb.h
+index 751dc3fe1e02..8e5d05454d70 100644
+--- a/drivers/infiniband/hw/hfi1/mmu_rb.h
++++ b/drivers/infiniband/hw/hfi1/mmu_rb.h
+@@ -1,4 +1,4 @@
+-/* SPDX-License-Identifier: GPL-2.0 or BSD-3-Clause */
++/* SPDX-License-Identifier: GPL-2.0 OR BSD-3-Clause */
+ /*
+  * Copyright(c) 2020 Cornelis Networks, Inc.
+  * Copyright(c) 2016 Intel Corporation.
+diff --git a/drivers/infiniband/hw/hfi1/opa_compat.h b/drivers/infiniband/hw/hfi1/opa_compat.h
+index 31570b0cfd18..49f2da677b03 100644
+--- a/drivers/infiniband/hw/hfi1/opa_compat.h
++++ b/drivers/infiniband/hw/hfi1/opa_compat.h
+@@ -1,4 +1,4 @@
+-/* SPDX-License-Identifier: GPL-2.0 or BSD-3-Clause */
++/* SPDX-License-Identifier: GPL-2.0 OR BSD-3-Clause */
+ /*
+  * Copyright(c) 2015, 2016 Intel Corporation.
+  */
+diff --git a/drivers/infiniband/hw/hfi1/pcie.c b/drivers/infiniband/hw/hfi1/pcie.c
+index 08732e1ac966..c79cc49c6708 100644
+--- a/drivers/infiniband/hw/hfi1/pcie.c
++++ b/drivers/infiniband/hw/hfi1/pcie.c
+@@ -1,4 +1,4 @@
+-// SPDX-License-Identifier: GPL-2.0 or BSD-3-Clause
++// SPDX-License-Identifier: GPL-2.0 OR BSD-3-Clause
+ /*
+  * Copyright(c) 2015 - 2019 Intel Corporation.
+  */
+diff --git a/drivers/infiniband/hw/hfi1/pio.c b/drivers/infiniband/hw/hfi1/pio.c
+index dfea53e0fdeb..68c621ff59d0 100644
+--- a/drivers/infiniband/hw/hfi1/pio.c
++++ b/drivers/infiniband/hw/hfi1/pio.c
+@@ -1,4 +1,4 @@
+-// SPDX-License-Identifier: GPL-2.0 or BSD-3-Clause
++// SPDX-License-Identifier: GPL-2.0 OR BSD-3-Clause
+ /*
+  * Copyright(c) 2015-2018 Intel Corporation.
+  */
+diff --git a/drivers/infiniband/hw/hfi1/pio.h b/drivers/infiniband/hw/hfi1/pio.h
+index ea714008f261..d07cc6ea7c63 100644
+--- a/drivers/infiniband/hw/hfi1/pio.h
++++ b/drivers/infiniband/hw/hfi1/pio.h
+@@ -1,4 +1,4 @@
+-/* SPDX-License-Identifier: GPL-2.0 or BSD-3-Clause */
++/* SPDX-License-Identifier: GPL-2.0 OR BSD-3-Clause */
+ /*
+  * Copyright(c) 2015-2017 Intel Corporation.
+  */
+diff --git a/drivers/infiniband/hw/hfi1/pio_copy.c b/drivers/infiniband/hw/hfi1/pio_copy.c
+index 7690f996d5e3..80fee812a930 100644
+--- a/drivers/infiniband/hw/hfi1/pio_copy.c
++++ b/drivers/infiniband/hw/hfi1/pio_copy.c
+@@ -1,4 +1,4 @@
+-// SPDX-License-Identifier: GPL-2.0 or BSD-3-Clause
++// SPDX-License-Identifier: GPL-2.0 OR BSD-3-Clause
+ /*
+  * Copyright(c) 2015, 2016 Intel Corporation.
+  */
+diff --git a/drivers/infiniband/hw/hfi1/platform.c b/drivers/infiniband/hw/hfi1/platform.c
+index 54cbd8f1a6c1..7bd0e9b6cb50 100644
+--- a/drivers/infiniband/hw/hfi1/platform.c
++++ b/drivers/infiniband/hw/hfi1/platform.c
+@@ -1,4 +1,4 @@
+-// SPDX-License-Identifier: GPL-2.0 or BSD-3-Clause
++// SPDX-License-Identifier: GPL-2.0 OR BSD-3-Clause
+ /*
+  * Copyright(c) 2015, 2016 Intel Corporation.
+  */
+diff --git a/drivers/infiniband/hw/hfi1/platform.h b/drivers/infiniband/hw/hfi1/platform.h
+index 1d51dca1bc30..0631f9bf3a89 100644
+--- a/drivers/infiniband/hw/hfi1/platform.h
++++ b/drivers/infiniband/hw/hfi1/platform.h
+@@ -1,4 +1,4 @@
+-/* SPDX-License-Identifier: GPL-2.0 or BSD-3-Clause */
++/* SPDX-License-Identifier: GPL-2.0 OR BSD-3-Clause */
+ /*
+  * Copyright(c) 2015, 2016 Intel Corporation.
+  */
+diff --git a/drivers/infiniband/hw/hfi1/qp.c b/drivers/infiniband/hw/hfi1/qp.c
+index 6193d48b2c1f..f3d8c0c193ac 100644
+--- a/drivers/infiniband/hw/hfi1/qp.c
++++ b/drivers/infiniband/hw/hfi1/qp.c
+@@ -1,4 +1,4 @@
+-// SPDX-License-Identifier: GPL-2.0 or BSD-3-Clause
++// SPDX-License-Identifier: GPL-2.0 OR BSD-3-Clause
+ /*
+  * Copyright(c) 2015 - 2020 Intel Corporation.
+  */
+diff --git a/drivers/infiniband/hw/hfi1/qp.h b/drivers/infiniband/hw/hfi1/qp.h
+index cdf87bc6ad94..870ff1a6e5c4 100644
+--- a/drivers/infiniband/hw/hfi1/qp.h
++++ b/drivers/infiniband/hw/hfi1/qp.h
+@@ -1,4 +1,4 @@
+-/* SPDX-License-Identifier: GPL-2.0 or BSD-3-Clause */
++/* SPDX-License-Identifier: GPL-2.0 OR BSD-3-Clause */
+ /*
+  * Copyright(c) 2015 - 2018 Intel Corporation.
+  */
+diff --git a/drivers/infiniband/hw/hfi1/qsfp.c b/drivers/infiniband/hw/hfi1/qsfp.c
+index 19d7887a4f10..52cce1c8b76a 100644
+--- a/drivers/infiniband/hw/hfi1/qsfp.c
++++ b/drivers/infiniband/hw/hfi1/qsfp.c
+@@ -1,4 +1,4 @@
+-// SPDX-License-Identifier: GPL-2.0 or BSD-3-Clause
++// SPDX-License-Identifier: GPL-2.0 OR BSD-3-Clause
+ /*
+  * Copyright(c) 2015, 2016 Intel Corporation.
+  */
+diff --git a/drivers/infiniband/hw/hfi1/qsfp.h b/drivers/infiniband/hw/hfi1/qsfp.h
+index 8f14111eaa47..df1389bad86b 100644
+--- a/drivers/infiniband/hw/hfi1/qsfp.h
++++ b/drivers/infiniband/hw/hfi1/qsfp.h
+@@ -1,4 +1,4 @@
+-/* SPDX-License-Identifier: GPL-2.0 or BSD-3-Clause */
++/* SPDX-License-Identifier: GPL-2.0 OR BSD-3-Clause */
+ /*
+  * Copyright(c) 2015, 2016 Intel Corporation.
+  */
+diff --git a/drivers/infiniband/hw/hfi1/rc.c b/drivers/infiniband/hw/hfi1/rc.c
+index acd2b273ea7d..b36242c9d42c 100644
+--- a/drivers/infiniband/hw/hfi1/rc.c
++++ b/drivers/infiniband/hw/hfi1/rc.c
+@@ -1,4 +1,4 @@
+-// SPDX-License-Identifier: GPL-2.0 or BSD-3-Clause
++// SPDX-License-Identifier: GPL-2.0 OR BSD-3-Clause
+ /*
+  * Copyright(c) 2015 - 2018 Intel Corporation.
+  */
+diff --git a/drivers/infiniband/hw/hfi1/ruc.c b/drivers/infiniband/hw/hfi1/ruc.c
+index b0151b7293f5..aafa4e03b179 100644
+--- a/drivers/infiniband/hw/hfi1/ruc.c
++++ b/drivers/infiniband/hw/hfi1/ruc.c
+@@ -1,4 +1,4 @@
+-// SPDX-License-Identifier: GPL-2.0 or BSD-3-Clause
++// SPDX-License-Identifier: GPL-2.0 OR BSD-3-Clause
+ /*
+  * Copyright(c) 2015 - 2018 Intel Corporation.
+  */
+diff --git a/drivers/infiniband/hw/hfi1/sdma.c b/drivers/infiniband/hw/hfi1/sdma.c
+index 26c62162759b..6e5ac2023328 100644
+--- a/drivers/infiniband/hw/hfi1/sdma.c
++++ b/drivers/infiniband/hw/hfi1/sdma.c
+@@ -1,4 +1,4 @@
+-// SPDX-License-Identifier: GPL-2.0 or BSD-3-Clause
++// SPDX-License-Identifier: GPL-2.0 OR BSD-3-Clause
+ /*
+  * Copyright(c) 2015 - 2018 Intel Corporation.
+  */
+diff --git a/drivers/infiniband/hw/hfi1/sdma.h b/drivers/infiniband/hw/hfi1/sdma.h
+index 7fdebab202c4..d77246b48434 100644
+--- a/drivers/infiniband/hw/hfi1/sdma.h
++++ b/drivers/infiniband/hw/hfi1/sdma.h
+@@ -1,4 +1,4 @@
+-/* SPDX-License-Identifier: GPL-2.0 or BSD-3-Clause */
++/* SPDX-License-Identifier: GPL-2.0 OR BSD-3-Clause */
+ /*
+  * Copyright(c) 2015 - 2018 Intel Corporation.
+  */
+diff --git a/drivers/infiniband/hw/hfi1/sdma_txreq.h b/drivers/infiniband/hw/hfi1/sdma_txreq.h
+index 85ae7293c274..5782166d984c 100644
+--- a/drivers/infiniband/hw/hfi1/sdma_txreq.h
++++ b/drivers/infiniband/hw/hfi1/sdma_txreq.h
+@@ -1,4 +1,4 @@
+-/* SPDX-License-Identifier: GPL-2.0 or BSD-3-Clause */
++/* SPDX-License-Identifier: GPL-2.0 OR BSD-3-Clause */
+ /*
+  * Copyright(c) 2016 Intel Corporation.
+  */
+diff --git a/drivers/infiniband/hw/hfi1/sysfs.c b/drivers/infiniband/hw/hfi1/sysfs.c
+index 3b3407dc7c21..d62ba5fdd80c 100644
+--- a/drivers/infiniband/hw/hfi1/sysfs.c
++++ b/drivers/infiniband/hw/hfi1/sysfs.c
+@@ -1,4 +1,4 @@
+-// SPDX-License-Identifier: GPL-2.0 or BSD-3-Clause
++// SPDX-License-Identifier: GPL-2.0 OR BSD-3-Clause
+ /*
+  * Copyright(c) 2015-2017 Intel Corporation.
+  */
+diff --git a/drivers/infiniband/hw/hfi1/trace.c b/drivers/infiniband/hw/hfi1/trace.c
+index 8302469582c6..10290ebf76b2 100644
+--- a/drivers/infiniband/hw/hfi1/trace.c
++++ b/drivers/infiniband/hw/hfi1/trace.c
+@@ -1,4 +1,4 @@
+-// SPDX-License-Identifier: GPL-2.0 or BSD-3-Clause
++// SPDX-License-Identifier: GPL-2.0 OR BSD-3-Clause
+ /*
+  * Copyright(c) 2015 - 2020 Intel Corporation.
+  */
+diff --git a/drivers/infiniband/hw/hfi1/trace.h b/drivers/infiniband/hw/hfi1/trace.h
+index 31e027c5a0c0..bb3cc006bacd 100644
+--- a/drivers/infiniband/hw/hfi1/trace.h
++++ b/drivers/infiniband/hw/hfi1/trace.h
+@@ -1,4 +1,4 @@
+-/* SPDX-License-Identifier: GPL-2.0 or BSD-3-Clause */
++/* SPDX-License-Identifier: GPL-2.0 OR BSD-3-Clause */
+ /*
+  * Copyright(c) 2015 - 2018 Intel Corporation.
+  */
+diff --git a/drivers/infiniband/hw/hfi1/trace_ctxts.h b/drivers/infiniband/hw/hfi1/trace_ctxts.h
+index 1858eaf33b18..76c41bd79071 100644
+--- a/drivers/infiniband/hw/hfi1/trace_ctxts.h
++++ b/drivers/infiniband/hw/hfi1/trace_ctxts.h
+@@ -1,4 +1,4 @@
+-/* SPDX-License-Identifier: GPL-2.0 or BSD-3-Clause */
++/* SPDX-License-Identifier: GPL-2.0 OR BSD-3-Clause */
+ /*
+ * Copyright(c) 2015 - 2020 Intel Corporation.
+ */
+diff --git a/drivers/infiniband/hw/hfi1/trace_dbg.h b/drivers/infiniband/hw/hfi1/trace_dbg.h
+index 489395bfb5b3..75599d5168db 100644
+--- a/drivers/infiniband/hw/hfi1/trace_dbg.h
++++ b/drivers/infiniband/hw/hfi1/trace_dbg.h
+@@ -1,4 +1,4 @@
+-/* SPDX-License-Identifier: GPL-2.0 or BSD-3-Clause */
++/* SPDX-License-Identifier: GPL-2.0 OR BSD-3-Clause */
+ /*
+ * Copyright(c) 2015 - 2018 Intel Corporation.
+ */
+diff --git a/drivers/infiniband/hw/hfi1/trace_ibhdrs.h b/drivers/infiniband/hw/hfi1/trace_ibhdrs.h
+index b33f8f575f8a..b21356abc9ec 100644
+--- a/drivers/infiniband/hw/hfi1/trace_ibhdrs.h
++++ b/drivers/infiniband/hw/hfi1/trace_ibhdrs.h
+@@ -1,4 +1,4 @@
+-/* SPDX-License-Identifier: GPL-2.0 or BSD-3-Clause */
++/* SPDX-License-Identifier: GPL-2.0 OR BSD-3-Clause */
+ /*
+  * Copyright(c) 2015 - 2017 Intel Corporation.
+  */
+diff --git a/drivers/infiniband/hw/hfi1/trace_misc.h b/drivers/infiniband/hw/hfi1/trace_misc.h
+index 742675fa7576..8dc46b6891df 100644
+--- a/drivers/infiniband/hw/hfi1/trace_misc.h
++++ b/drivers/infiniband/hw/hfi1/trace_misc.h
+@@ -1,4 +1,4 @@
+-/* SPDX-License-Identifier: GPL-2.0 or BSD-3-Clause */
++/* SPDX-License-Identifier: GPL-2.0 OR BSD-3-Clause */
+ /*
+ * Copyright(c) 2015, 2016 Intel Corporation.
+ */
+diff --git a/drivers/infiniband/hw/hfi1/trace_mmu.h b/drivers/infiniband/hw/hfi1/trace_mmu.h
+index 82cc12aa3fb8..5a9dfd85e7f5 100644
+--- a/drivers/infiniband/hw/hfi1/trace_mmu.h
++++ b/drivers/infiniband/hw/hfi1/trace_mmu.h
+@@ -1,4 +1,4 @@
+-/* SPDX-License-Identifier: GPL-2.0 or BSD-3-Clause */
++/* SPDX-License-Identifier: GPL-2.0 OR BSD-3-Clause */
+ /*
+  * Copyright(c) 2017 Intel Corporation.
+  */
+diff --git a/drivers/infiniband/hw/hfi1/trace_rc.h b/drivers/infiniband/hw/hfi1/trace_rc.h
+index 7c3a1c77536d..fa254f9b9c42 100644
+--- a/drivers/infiniband/hw/hfi1/trace_rc.h
++++ b/drivers/infiniband/hw/hfi1/trace_rc.h
+@@ -1,4 +1,4 @@
+-/* SPDX-License-Identifier: GPL-2.0 or BSD-3-Clause */
++/* SPDX-License-Identifier: GPL-2.0 OR BSD-3-Clause */
+ /*
+ * Copyright(c) 2015, 2016, 2017 Intel Corporation.
+ */
+diff --git a/drivers/infiniband/hw/hfi1/trace_rx.h b/drivers/infiniband/hw/hfi1/trace_rx.h
+index 0da22f9bc75e..e6904aa80c00 100644
+--- a/drivers/infiniband/hw/hfi1/trace_rx.h
++++ b/drivers/infiniband/hw/hfi1/trace_rx.h
+@@ -1,4 +1,4 @@
+-/* SPDX-License-Identifier: GPL-2.0 or BSD-3-Clause */
++/* SPDX-License-Identifier: GPL-2.0 OR BSD-3-Clause */
+ /*
+  * Copyright(c) 2015 - 2018 Intel Corporation.
+  */
+diff --git a/drivers/infiniband/hw/hfi1/trace_tx.h b/drivers/infiniband/hw/hfi1/trace_tx.h
+index ed1b9e1e4b17..c79856d4fdfb 100644
+--- a/drivers/infiniband/hw/hfi1/trace_tx.h
++++ b/drivers/infiniband/hw/hfi1/trace_tx.h
+@@ -1,4 +1,4 @@
+-/* SPDX-License-Identifier: GPL-2.0 or BSD-3-Clause */
++/* SPDX-License-Identifier: GPL-2.0 OR BSD-3-Clause */
+ /*
+  * Copyright(c) 2015 - 2017 Intel Corporation.
+  */
+diff --git a/drivers/infiniband/hw/hfi1/uc.c b/drivers/infiniband/hw/hfi1/uc.c
+index 4e9d6aa39305..33d2c2a218e2 100644
+--- a/drivers/infiniband/hw/hfi1/uc.c
++++ b/drivers/infiniband/hw/hfi1/uc.c
+@@ -1,4 +1,4 @@
+-// SPDX-License-Identifier: GPL-2.0 or BSD-3-Clause
++// SPDX-License-Identifier: GPL-2.0 OR BSD-3-Clause
+ /*
+  * Copyright(c) 2015 - 2018 Intel Corporation.
+  */
+diff --git a/drivers/infiniband/hw/hfi1/ud.c b/drivers/infiniband/hw/hfi1/ud.c
+index b64b9d7e08f0..89d1bae8f824 100644
+--- a/drivers/infiniband/hw/hfi1/ud.c
++++ b/drivers/infiniband/hw/hfi1/ud.c
+@@ -1,4 +1,4 @@
+-// SPDX-License-Identifier: GPL-2.0 or BSD-3-Clause
++// SPDX-License-Identifier: GPL-2.0 OR BSD-3-Clause
+ /*
+  * Copyright(c) 2015 - 2019 Intel Corporation.
+  */
+diff --git a/drivers/infiniband/hw/hfi1/user_exp_rcv.c b/drivers/infiniband/hw/hfi1/user_exp_rcv.c
+index 96058baf36ed..6419872f95cf 100644
+--- a/drivers/infiniband/hw/hfi1/user_exp_rcv.c
++++ b/drivers/infiniband/hw/hfi1/user_exp_rcv.c
+@@ -1,4 +1,4 @@
+-// SPDX-License-Identifier: GPL-2.0 or BSD-3-Clause
++// SPDX-License-Identifier: GPL-2.0 OR BSD-3-Clause
+ /*
+  * Copyright(c) 2020 Cornelis Networks, Inc.
+  * Copyright(c) 2015-2018 Intel Corporation.
+diff --git a/drivers/infiniband/hw/hfi1/user_exp_rcv.h b/drivers/infiniband/hw/hfi1/user_exp_rcv.h
+index f8ee997d0050..b85de9070aee 100644
+--- a/drivers/infiniband/hw/hfi1/user_exp_rcv.h
++++ b/drivers/infiniband/hw/hfi1/user_exp_rcv.h
+@@ -1,4 +1,4 @@
+-/* SPDX-License-Identifier: GPL-2.0 or BSD-3-Clause */
++/* SPDX-License-Identifier: GPL-2.0 OR BSD-3-Clause */
+ /*
+  * Copyright(c) 2020 - Cornelis Networks, Inc.
+  * Copyright(c) 2015 - 2017 Intel Corporation.
+diff --git a/drivers/infiniband/hw/hfi1/user_pages.c b/drivers/infiniband/hw/hfi1/user_pages.c
+index 36aaedc65145..c77913a7920f 100644
+--- a/drivers/infiniband/hw/hfi1/user_pages.c
++++ b/drivers/infiniband/hw/hfi1/user_pages.c
+@@ -1,4 +1,4 @@
+-// SPDX-License-Identifier: GPL-2.0 or BSD-3-Clause
++// SPDX-License-Identifier: GPL-2.0 OR BSD-3-Clause
+ /*
+  * Copyright(c) 2015-2017 Intel Corporation.
+  */
+diff --git a/drivers/infiniband/hw/hfi1/user_sdma.c b/drivers/infiniband/hw/hfi1/user_sdma.c
+index 02bd62b857b7..8391bbfa90e4 100644
+--- a/drivers/infiniband/hw/hfi1/user_sdma.c
++++ b/drivers/infiniband/hw/hfi1/user_sdma.c
+@@ -1,4 +1,4 @@
+-// SPDX-License-Identifier: GPL-2.0 or BSD-3-Clause
++// SPDX-License-Identifier: GPL-2.0 OR BSD-3-Clause
+ /*
+  * Copyright(c) 2020 - Cornelis Networks, Inc.
+  * Copyright(c) 2015 - 2018 Intel Corporation.
+diff --git a/drivers/infiniband/hw/hfi1/user_sdma.h b/drivers/infiniband/hw/hfi1/user_sdma.h
+index 548347d4c5bc..57e66ae86112 100644
+--- a/drivers/infiniband/hw/hfi1/user_sdma.h
++++ b/drivers/infiniband/hw/hfi1/user_sdma.h
+@@ -1,4 +1,4 @@
+-/* SPDX-License-Identifier: GPL-2.0 or BSD-3-Clause */
++/* SPDX-License-Identifier: GPL-2.0 OR BSD-3-Clause */
+ /*
+  * Copyright(c) 2020 - Cornelis Networks, Inc.
+  * Copyright(c) 2015 - 2018 Intel Corporation.
+diff --git a/drivers/infiniband/hw/hfi1/verbs.c b/drivers/infiniband/hw/hfi1/verbs.c
+index fbdcfecb1768..33af2196ef31 100644
+--- a/drivers/infiniband/hw/hfi1/verbs.c
++++ b/drivers/infiniband/hw/hfi1/verbs.c
+@@ -1,4 +1,4 @@
+-// SPDX-License-Identifier: GPL-2.0 or BSD-3-Clause
++// SPDX-License-Identifier: GPL-2.0 OR BSD-3-Clause
+ /*
+  * Copyright(c) 2015 - 2020 Intel Corporation.
+  */
+diff --git a/drivers/infiniband/hw/hfi1/verbs.h b/drivers/infiniband/hw/hfi1/verbs.h
+index 7f30f32b34dc..070e4f0babe8 100644
+--- a/drivers/infiniband/hw/hfi1/verbs.h
++++ b/drivers/infiniband/hw/hfi1/verbs.h
+@@ -1,4 +1,4 @@
+-/* SPDX-License-Identifier: GPL-2.0 or BSD-3-Clause */
++/* SPDX-License-Identifier: GPL-2.0 OR BSD-3-Clause */
+ /*
+  * Copyright(c) 2015 - 2018 Intel Corporation.
+  */
+diff --git a/drivers/infiniband/hw/hfi1/verbs_txreq.c b/drivers/infiniband/hw/hfi1/verbs_txreq.c
+index cfecc81a27c7..822f0d05bac8 100644
+--- a/drivers/infiniband/hw/hfi1/verbs_txreq.c
++++ b/drivers/infiniband/hw/hfi1/verbs_txreq.c
+@@ -1,4 +1,4 @@
+-// SPDX-License-Identifier: GPL-2.0 or BSD-3-Clause
++// SPDX-License-Identifier: GPL-2.0 OR BSD-3-Clause
+ /*
+  * Copyright(c) 2016 - 2018 Intel Corporation.
+  */
+diff --git a/drivers/infiniband/hw/hfi1/verbs_txreq.h b/drivers/infiniband/hw/hfi1/verbs_txreq.h
+index 2a7e0ae892e9..56353c7676d0 100644
+--- a/drivers/infiniband/hw/hfi1/verbs_txreq.h
++++ b/drivers/infiniband/hw/hfi1/verbs_txreq.h
+@@ -1,4 +1,4 @@
+-/* SPDX-License-Identifier: GPL-2.0 or BSD-3-Clause */
++/* SPDX-License-Identifier: GPL-2.0 OR BSD-3-Clause */
+ /*
+  * Copyright(c) 2016 - 2018 Intel Corporation.
+  */
+diff --git a/drivers/infiniband/hw/hfi1/vnic.h b/drivers/infiniband/hw/hfi1/vnic.h
+index 34f03e7770be..bbafeb5fc0ec 100644
+--- a/drivers/infiniband/hw/hfi1/vnic.h
++++ b/drivers/infiniband/hw/hfi1/vnic.h
+@@ -1,4 +1,4 @@
+-/* SPDX-License-Identifier: GPL-2.0 or BSD-3-Clause */
++/* SPDX-License-Identifier: GPL-2.0 OR BSD-3-Clause */
+ /*
+  * Copyright(c) 2017 - 2020 Intel Corporation.
+  */
+diff --git a/drivers/infiniband/hw/hfi1/vnic_main.c b/drivers/infiniband/hw/hfi1/vnic_main.c
+index 3650fababf25..16a4c297a897 100644
+--- a/drivers/infiniband/hw/hfi1/vnic_main.c
++++ b/drivers/infiniband/hw/hfi1/vnic_main.c
+@@ -1,4 +1,4 @@
+-// SPDX-License-Identifier: GPL-2.0 or BSD-3-Clause
++// SPDX-License-Identifier: GPL-2.0 OR BSD-3-Clause
+ /*
+  * Copyright(c) 2017 - 2020 Intel Corporation.
+  */
+diff --git a/drivers/infiniband/hw/hfi1/vnic_sdma.c b/drivers/infiniband/hw/hfi1/vnic_sdma.c
+index cc6324d2d1dd..6caf01ba0bca 100644
+--- a/drivers/infiniband/hw/hfi1/vnic_sdma.c
++++ b/drivers/infiniband/hw/hfi1/vnic_sdma.c
+@@ -1,4 +1,4 @@
+-// SPDX-License-Identifier: GPL-2.0 or BSD-3-Clause
++// SPDX-License-Identifier: GPL-2.0 OR BSD-3-Clause
+ /*
+  * Copyright(c) 2017 - 2018 Intel Corporation.
+  */
+diff --git a/drivers/infiniband/hw/irdma/cm.c b/drivers/infiniband/hw/irdma/cm.c
+index 42d1e9771066..1ee7a4e0d8d8 100644
+--- a/drivers/infiniband/hw/irdma/cm.c
++++ b/drivers/infiniband/hw/irdma/cm.c
+@@ -1,4 +1,4 @@
+-// SPDX-License-Identifier: GPL-2.0 or Linux-OpenIB
++// SPDX-License-Identifier: GPL-2.0 OR Linux-OpenIB
+ /* Copyright (c) 2015 - 2021 Intel Corporation */
+ #include "main.h"
+ #include "trace.h"
+diff --git a/drivers/infiniband/hw/irdma/cm.h b/drivers/infiniband/hw/irdma/cm.h
+index 7feadb3e1eda..48ee285cf745 100644
+--- a/drivers/infiniband/hw/irdma/cm.h
++++ b/drivers/infiniband/hw/irdma/cm.h
+@@ -1,4 +1,4 @@
+-/* SPDX-License-Identifier: GPL-2.0 or Linux-OpenIB */
++/* SPDX-License-Identifier: GPL-2.0 OR Linux-OpenIB */
+ /* Copyright (c) 2015 - 2021 Intel Corporation */
+ #ifndef IRDMA_CM_H
+ #define IRDMA_CM_H
+diff --git a/drivers/infiniband/hw/irdma/ctrl.c b/drivers/infiniband/hw/irdma/ctrl.c
+index 8a6200e55c54..6aed6169c07d 100644
+--- a/drivers/infiniband/hw/irdma/ctrl.c
++++ b/drivers/infiniband/hw/irdma/ctrl.c
+@@ -1,4 +1,4 @@
+-// SPDX-License-Identifier: GPL-2.0 or Linux-OpenIB
++// SPDX-License-Identifier: GPL-2.0 OR Linux-OpenIB
+ /* Copyright (c) 2015 - 2021 Intel Corporation */
+ #include <linux/etherdevice.h>
+ 
+diff --git a/drivers/infiniband/hw/irdma/defs.h b/drivers/infiniband/hw/irdma/defs.h
+index d06e45d2c23f..8fb752f2eda2 100644
+--- a/drivers/infiniband/hw/irdma/defs.h
++++ b/drivers/infiniband/hw/irdma/defs.h
+@@ -1,4 +1,4 @@
+-/* SPDX-License-Identifier: GPL-2.0 or Linux-OpenIB */
++/* SPDX-License-Identifier: GPL-2.0 OR Linux-OpenIB */
+ /* Copyright (c) 2015 - 2021 Intel Corporation */
+ #ifndef IRDMA_DEFS_H
+ #define IRDMA_DEFS_H
+diff --git a/drivers/infiniband/hw/irdma/hmc.c b/drivers/infiniband/hw/irdma/hmc.c
+index 49307ce8c4da..ac58088a8e41 100644
+--- a/drivers/infiniband/hw/irdma/hmc.c
++++ b/drivers/infiniband/hw/irdma/hmc.c
+@@ -1,4 +1,4 @@
+-// SPDX-License-Identifier: GPL-2.0 or Linux-OpenIB
++// SPDX-License-Identifier: GPL-2.0 OR Linux-OpenIB
+ /* Copyright (c) 2015 - 2021 Intel Corporation */
+ #include "osdep.h"
+ #include "hmc.h"
+diff --git a/drivers/infiniband/hw/irdma/hmc.h b/drivers/infiniband/hw/irdma/hmc.h
+index f5c5dacc7021..415f9e23bbf6 100644
+--- a/drivers/infiniband/hw/irdma/hmc.h
++++ b/drivers/infiniband/hw/irdma/hmc.h
+@@ -1,4 +1,4 @@
+-/* SPDX-License-Identifier: GPL-2.0 or Linux-OpenIB */
++/* SPDX-License-Identifier: GPL-2.0 OR Linux-OpenIB */
+ /* Copyright (c) 2015 - 2020 Intel Corporation */
+ #ifndef IRDMA_HMC_H
+ #define IRDMA_HMC_H
+diff --git a/drivers/infiniband/hw/irdma/hw.c b/drivers/infiniband/hw/irdma/hw.c
+index 7cbdd5433dba..8fa7e4a18e73 100644
+--- a/drivers/infiniband/hw/irdma/hw.c
++++ b/drivers/infiniband/hw/irdma/hw.c
+@@ -1,4 +1,4 @@
+-// SPDX-License-Identifier: GPL-2.0 or Linux-OpenIB
++// SPDX-License-Identifier: GPL-2.0 OR Linux-OpenIB
+ /* Copyright (c) 2015 - 2021 Intel Corporation */
+ #include "main.h"
+ 
+diff --git a/drivers/infiniband/hw/irdma/i40iw_hw.c b/drivers/infiniband/hw/irdma/i40iw_hw.c
+index 638d127fb3e0..ce61a27cb1f6 100644
+--- a/drivers/infiniband/hw/irdma/i40iw_hw.c
++++ b/drivers/infiniband/hw/irdma/i40iw_hw.c
+@@ -1,4 +1,4 @@
+-// SPDX-License-Identifier: GPL-2.0 or Linux-OpenIB
++// SPDX-License-Identifier: GPL-2.0 OR Linux-OpenIB
+ /* Copyright (c) 2015 - 2021 Intel Corporation */
+ #include "osdep.h"
+ #include "type.h"
+diff --git a/drivers/infiniband/hw/irdma/i40iw_hw.h b/drivers/infiniband/hw/irdma/i40iw_hw.h
+index 10afc165f5ea..e1db84d8a62c 100644
+--- a/drivers/infiniband/hw/irdma/i40iw_hw.h
++++ b/drivers/infiniband/hw/irdma/i40iw_hw.h
+@@ -1,4 +1,4 @@
+-/* SPDX-License-Identifier: GPL-2.0 or Linux-OpenIB */
++/* SPDX-License-Identifier: GPL-2.0 OR Linux-OpenIB */
+ /* Copyright (c) 2015 - 2021 Intel Corporation */
+ #ifndef I40IW_HW_H
+ #define I40IW_HW_H
+diff --git a/drivers/infiniband/hw/irdma/i40iw_if.c b/drivers/infiniband/hw/irdma/i40iw_if.c
+index 4053ead32416..91dc4e994eee 100644
+--- a/drivers/infiniband/hw/irdma/i40iw_if.c
++++ b/drivers/infiniband/hw/irdma/i40iw_if.c
+@@ -1,4 +1,4 @@
+-// SPDX-License-Identifier: GPL-2.0 or Linux-OpenIB
++// SPDX-License-Identifier: GPL-2.0 OR Linux-OpenIB
+ /* Copyright (c) 2015 - 2021 Intel Corporation */
+ #include "main.h"
+ #include "i40iw_hw.h"
+diff --git a/drivers/infiniband/hw/irdma/icrdma_hw.c b/drivers/infiniband/hw/irdma/icrdma_hw.c
+index 10ccf4bc3f2d..941d3edffadb 100644
+--- a/drivers/infiniband/hw/irdma/icrdma_hw.c
++++ b/drivers/infiniband/hw/irdma/icrdma_hw.c
+@@ -1,4 +1,4 @@
+-// SPDX-License-Identifier: GPL-2.0 or Linux-OpenIB
++// SPDX-License-Identifier: GPL-2.0 OR Linux-OpenIB
+ /* Copyright (c) 2017 - 2021 Intel Corporation */
+ #include "osdep.h"
+ #include "type.h"
+diff --git a/drivers/infiniband/hw/irdma/icrdma_hw.h b/drivers/infiniband/hw/irdma/icrdma_hw.h
+index 54035a08cc93..697b9572b5c6 100644
+--- a/drivers/infiniband/hw/irdma/icrdma_hw.h
++++ b/drivers/infiniband/hw/irdma/icrdma_hw.h
+@@ -1,4 +1,4 @@
+-/* SPDX-License-Identifier: GPL-2.0 or Linux-OpenIB */
++/* SPDX-License-Identifier: GPL-2.0 OR Linux-OpenIB */
+ /* Copyright (c) 2017 - 2021 Intel Corporation */
+ #ifndef ICRDMA_HW_H
+ #define ICRDMA_HW_H
+diff --git a/drivers/infiniband/hw/irdma/irdma.h b/drivers/infiniband/hw/irdma/irdma.h
+index 3237fa64bc8f..20d2e7393e3d 100644
+--- a/drivers/infiniband/hw/irdma/irdma.h
++++ b/drivers/infiniband/hw/irdma/irdma.h
+@@ -1,4 +1,4 @@
+-/* SPDX-License-Identifier: GPL-2.0 or Linux-OpenIB */
++/* SPDX-License-Identifier: GPL-2.0 OR Linux-OpenIB */
+ /* Copyright (c) 2017 - 2021 Intel Corporation */
+ #ifndef IRDMA_H
+ #define IRDMA_H
+diff --git a/drivers/infiniband/hw/irdma/main.c b/drivers/infiniband/hw/irdma/main.c
+index 514453777e07..9ac48b4dab41 100644
+--- a/drivers/infiniband/hw/irdma/main.c
++++ b/drivers/infiniband/hw/irdma/main.c
+@@ -1,4 +1,4 @@
+-// SPDX-License-Identifier: GPL-2.0 or Linux-OpenIB
++// SPDX-License-Identifier: GPL-2.0 OR Linux-OpenIB
+ /* Copyright (c) 2015 - 2021 Intel Corporation */
+ #include "main.h"
+ #include "../../../net/ethernet/intel/ice/ice.h"
+diff --git a/drivers/infiniband/hw/irdma/main.h b/drivers/infiniband/hw/irdma/main.h
+index 82fc5f5b002c..d66d87bb8bc4 100644
+--- a/drivers/infiniband/hw/irdma/main.h
++++ b/drivers/infiniband/hw/irdma/main.h
+@@ -1,4 +1,4 @@
+-/* SPDX-License-Identifier: GPL-2.0 or Linux-OpenIB */
++/* SPDX-License-Identifier: GPL-2.0 OR Linux-OpenIB */
+ /* Copyright (c) 2015 - 2021 Intel Corporation */
+ #ifndef IRDMA_MAIN_H
+ #define IRDMA_MAIN_H
+diff --git a/drivers/infiniband/hw/irdma/osdep.h b/drivers/infiniband/hw/irdma/osdep.h
+index fc1ba2a3e6fb..e1e3d3ae72b7 100644
+--- a/drivers/infiniband/hw/irdma/osdep.h
++++ b/drivers/infiniband/hw/irdma/osdep.h
+@@ -1,4 +1,4 @@
+-/* SPDX-License-Identifier: GPL-2.0 or Linux-OpenIB */
++/* SPDX-License-Identifier: GPL-2.0 OR Linux-OpenIB */
+ /* Copyright (c) 2015 - 2021 Intel Corporation */
+ #ifndef IRDMA_OSDEP_H
+ #define IRDMA_OSDEP_H
+diff --git a/drivers/infiniband/hw/irdma/pble.c b/drivers/infiniband/hw/irdma/pble.c
+index c0bef11436b9..e7ce6840755f 100644
+--- a/drivers/infiniband/hw/irdma/pble.c
++++ b/drivers/infiniband/hw/irdma/pble.c
+@@ -1,4 +1,4 @@
+-// SPDX-License-Identifier: GPL-2.0 or Linux-OpenIB
++// SPDX-License-Identifier: GPL-2.0 OR Linux-OpenIB
+ /* Copyright (c) 2015 - 2021 Intel Corporation */
+ #include "osdep.h"
+ #include "hmc.h"
+diff --git a/drivers/infiniband/hw/irdma/pble.h b/drivers/infiniband/hw/irdma/pble.h
+index b31b7c5d66fe..160ad728e9fb 100644
+--- a/drivers/infiniband/hw/irdma/pble.h
++++ b/drivers/infiniband/hw/irdma/pble.h
+@@ -1,4 +1,4 @@
+-/* SPDX-License-Identifier: GPL-2.0 or Linux-OpenIB */
++/* SPDX-License-Identifier: GPL-2.0 OR Linux-OpenIB */
+ /* Copyright (c) 2015 - 2019 Intel Corporation */
+ #ifndef IRDMA_PBLE_H
+ #define IRDMA_PBLE_H
+diff --git a/drivers/infiniband/hw/irdma/protos.h b/drivers/infiniband/hw/irdma/protos.h
+index 113096b60323..d7c8ea948bcd 100644
+--- a/drivers/infiniband/hw/irdma/protos.h
++++ b/drivers/infiniband/hw/irdma/protos.h
+@@ -1,4 +1,4 @@
+-/* SPDX-License-Identifier: GPL-2.0 or Linux-OpenIB */
++/* SPDX-License-Identifier: GPL-2.0 OR Linux-OpenIB */
+ /* Copyright (c) 2016 - 2021 Intel Corporation */
+ #ifndef IRDMA_PROTOS_H
+ #define IRDMA_PROTOS_H
+diff --git a/drivers/infiniband/hw/irdma/puda.c b/drivers/infiniband/hw/irdma/puda.c
+index 562531712ea4..7e3f9bca2c23 100644
+--- a/drivers/infiniband/hw/irdma/puda.c
++++ b/drivers/infiniband/hw/irdma/puda.c
+@@ -1,4 +1,4 @@
+-// SPDX-License-Identifier: GPL-2.0 or Linux-OpenIB
++// SPDX-License-Identifier: GPL-2.0 OR Linux-OpenIB
+ /* Copyright (c) 2015 - 2021 Intel Corporation */
+ #include "osdep.h"
+ #include "hmc.h"
+diff --git a/drivers/infiniband/hw/irdma/puda.h b/drivers/infiniband/hw/irdma/puda.h
+index 5f5124db6ddf..bc6d9514c9c1 100644
+--- a/drivers/infiniband/hw/irdma/puda.h
++++ b/drivers/infiniband/hw/irdma/puda.h
+@@ -1,4 +1,4 @@
+-/* SPDX-License-Identifier: GPL-2.0 or Linux-OpenIB */
++/* SPDX-License-Identifier: GPL-2.0 OR Linux-OpenIB */
+ /* Copyright (c) 2015 - 2020 Intel Corporation */
+ #ifndef IRDMA_PUDA_H
+ #define IRDMA_PUDA_H
+diff --git a/drivers/infiniband/hw/irdma/trace.c b/drivers/infiniband/hw/irdma/trace.c
+index b5133f4137e0..fc2f56697741 100644
+--- a/drivers/infiniband/hw/irdma/trace.c
++++ b/drivers/infiniband/hw/irdma/trace.c
+@@ -1,4 +1,4 @@
+-// SPDX-License-Identifier: GPL-2.0 or Linux-OpenIB
++// SPDX-License-Identifier: GPL-2.0 OR Linux-OpenIB
+ /* Copyright (c) 2019 Intel Corporation */
+ #define CREATE_TRACE_POINTS
+ #include "trace.h"
+diff --git a/drivers/infiniband/hw/irdma/trace.h b/drivers/infiniband/hw/irdma/trace.h
+index 702e4efb018d..b8085a66b9f8 100644
+--- a/drivers/infiniband/hw/irdma/trace.h
++++ b/drivers/infiniband/hw/irdma/trace.h
+@@ -1,3 +1,3 @@
+-/* SPDX-License-Identifier: GPL-2.0 or Linux-OpenIB */
++/* SPDX-License-Identifier: GPL-2.0 OR Linux-OpenIB */
+ /* Copyright (c) 2019 Intel Corporation */
+ #include "trace_cm.h"
+diff --git a/drivers/infiniband/hw/irdma/trace_cm.h b/drivers/infiniband/hw/irdma/trace_cm.h
+index f633fb343328..0d1699b55241 100644
+--- a/drivers/infiniband/hw/irdma/trace_cm.h
++++ b/drivers/infiniband/hw/irdma/trace_cm.h
+@@ -1,4 +1,4 @@
+-/* SPDX-License-Identifier: GPL-2.0 or Linux-OpenIB */
++/* SPDX-License-Identifier: GPL-2.0 OR Linux-OpenIB */
+ /* Copyright (c) 2019 - 2021 Intel Corporation */
+ #if !defined(__TRACE_CM_H) || defined(TRACE_HEADER_MULTI_READ)
+ #define __TRACE_CM_H
+diff --git a/drivers/infiniband/hw/irdma/type.h b/drivers/infiniband/hw/irdma/type.h
+index c84ec4dd8536..59b34afa867b 100644
+--- a/drivers/infiniband/hw/irdma/type.h
++++ b/drivers/infiniband/hw/irdma/type.h
+@@ -1,4 +1,4 @@
+-/* SPDX-License-Identifier: GPL-2.0 or Linux-OpenIB */
++/* SPDX-License-Identifier: GPL-2.0 OR Linux-OpenIB */
+ /* Copyright (c) 2015 - 2021 Intel Corporation */
+ #ifndef IRDMA_TYPE_H
+ #define IRDMA_TYPE_H
+diff --git a/drivers/infiniband/hw/irdma/uda.c b/drivers/infiniband/hw/irdma/uda.c
+index 284cec2a74de..84051266d948 100644
+--- a/drivers/infiniband/hw/irdma/uda.c
++++ b/drivers/infiniband/hw/irdma/uda.c
+@@ -1,4 +1,4 @@
+-// SPDX-License-Identifier: GPL-2.0 or Linux-OpenIB
++// SPDX-License-Identifier: GPL-2.0 OR Linux-OpenIB
+ /* Copyright (c) 2016 - 2021 Intel Corporation */
+ #include <linux/etherdevice.h>
+ 
+diff --git a/drivers/infiniband/hw/irdma/uda.h b/drivers/infiniband/hw/irdma/uda.h
+index fe4820ff0cca..27b8701cf21b 100644
+--- a/drivers/infiniband/hw/irdma/uda.h
++++ b/drivers/infiniband/hw/irdma/uda.h
+@@ -1,4 +1,4 @@
+-/* SPDX-License-Identifier: GPL-2.0 or Linux-OpenIB */
++/* SPDX-License-Identifier: GPL-2.0 OR Linux-OpenIB */
+ /* Copyright (c) 2016 - 2021 Intel Corporation */
+ #ifndef IRDMA_UDA_H
+ #define IRDMA_UDA_H
+diff --git a/drivers/infiniband/hw/irdma/uda_d.h b/drivers/infiniband/hw/irdma/uda_d.h
+index bfc81cac2c51..5a9e6eabf032 100644
+--- a/drivers/infiniband/hw/irdma/uda_d.h
++++ b/drivers/infiniband/hw/irdma/uda_d.h
+@@ -1,4 +1,4 @@
+-/* SPDX-License-Identifier: GPL-2.0 or Linux-OpenIB */
++/* SPDX-License-Identifier: GPL-2.0 OR Linux-OpenIB */
+ /* Copyright (c) 2016 - 2021 Intel Corporation */
+ #ifndef IRDMA_UDA_D_H
+ #define IRDMA_UDA_D_H
+diff --git a/drivers/infiniband/hw/irdma/uk.c b/drivers/infiniband/hw/irdma/uk.c
+index d8285ca16293..38c54e59cc2e 100644
+--- a/drivers/infiniband/hw/irdma/uk.c
++++ b/drivers/infiniband/hw/irdma/uk.c
+@@ -1,4 +1,4 @@
+-// SPDX-License-Identifier: GPL-2.0 or Linux-OpenIB
++// SPDX-License-Identifier: GPL-2.0 OR Linux-OpenIB
+ /* Copyright (c) 2015 - 2021 Intel Corporation */
+ #include "osdep.h"
+ #include "defs.h"
+diff --git a/drivers/infiniband/hw/irdma/user.h b/drivers/infiniband/hw/irdma/user.h
+index 36feca57b274..380e4a47aede 100644
+--- a/drivers/infiniband/hw/irdma/user.h
++++ b/drivers/infiniband/hw/irdma/user.h
+@@ -1,4 +1,4 @@
+-/* SPDX-License-Identifier: GPL-2.0 or Linux-OpenIB */
++/* SPDX-License-Identifier: GPL-2.0 OR Linux-OpenIB */
+ /* Copyright (c) 2015 - 2020 Intel Corporation */
+ #ifndef IRDMA_USER_H
+ #define IRDMA_USER_H
+diff --git a/drivers/infiniband/hw/irdma/utils.c b/drivers/infiniband/hw/irdma/utils.c
+index 6cd5cb85dafe..916bfe2a91eb 100644
+--- a/drivers/infiniband/hw/irdma/utils.c
++++ b/drivers/infiniband/hw/irdma/utils.c
+@@ -1,4 +1,4 @@
+-// SPDX-License-Identifier: GPL-2.0 or Linux-OpenIB
++// SPDX-License-Identifier: GPL-2.0 OR Linux-OpenIB
+ /* Copyright (c) 2015 - 2021 Intel Corporation */
+ #include "main.h"
+ 
+diff --git a/drivers/infiniband/hw/irdma/verbs.c b/drivers/infiniband/hw/irdma/verbs.c
+index 3eb7a7a3a975..15ea2f3d48f2 100644
+--- a/drivers/infiniband/hw/irdma/verbs.c
++++ b/drivers/infiniband/hw/irdma/verbs.c
+@@ -1,4 +1,4 @@
+-// SPDX-License-Identifier: GPL-2.0 or Linux-OpenIB
++// SPDX-License-Identifier: GPL-2.0 OR Linux-OpenIB
+ /* Copyright (c) 2015 - 2021 Intel Corporation */
+ #include "main.h"
+ 
+diff --git a/drivers/infiniband/hw/irdma/verbs.h b/drivers/infiniband/hw/irdma/verbs.h
+index 5d7b983f47a2..2789bc973210 100644
+--- a/drivers/infiniband/hw/irdma/verbs.h
++++ b/drivers/infiniband/hw/irdma/verbs.h
+@@ -1,4 +1,4 @@
+-/* SPDX-License-Identifier: GPL-2.0 or Linux-OpenIB */
++/* SPDX-License-Identifier: GPL-2.0 OR Linux-OpenIB */
+ /* Copyright (c) 2015 - 2021 Intel Corporation */
+ #ifndef IRDMA_VERBS_H
+ #define IRDMA_VERBS_H
+diff --git a/drivers/infiniband/hw/irdma/ws.c b/drivers/infiniband/hw/irdma/ws.c
+index 20bc8d0d7f1f..542bc0b1bb03 100644
+--- a/drivers/infiniband/hw/irdma/ws.c
++++ b/drivers/infiniband/hw/irdma/ws.c
+@@ -1,4 +1,4 @@
+-// SPDX-License-Identifier: GPL-2.0 or Linux-OpenIB
++// SPDX-License-Identifier: GPL-2.0 OR Linux-OpenIB
+ /* Copyright (c) 2017 - 2021 Intel Corporation */
+ #include "osdep.h"
+ #include "hmc.h"
+diff --git a/drivers/infiniband/hw/irdma/ws.h b/drivers/infiniband/hw/irdma/ws.h
+index d431e3327d26..45490031a389 100644
+--- a/drivers/infiniband/hw/irdma/ws.h
++++ b/drivers/infiniband/hw/irdma/ws.h
+@@ -1,4 +1,4 @@
+-/* SPDX-License-Identifier: GPL-2.0 or Linux-OpenIB */
++/* SPDX-License-Identifier: GPL-2.0 OR Linux-OpenIB */
+ /* Copyright (c) 2015 - 2020 Intel Corporation */
+ #ifndef IRDMA_WS_H
+ #define IRDMA_WS_H
+diff --git a/drivers/infiniband/sw/rdmavt/ah.c b/drivers/infiniband/sw/rdmavt/ah.c
+index 63999239ed9e..56926617b064 100644
+--- a/drivers/infiniband/sw/rdmavt/ah.c
++++ b/drivers/infiniband/sw/rdmavt/ah.c
+@@ -1,4 +1,4 @@
+-// SPDX-License-Identifier: GPL-2.0 or BSD-3-Clause
++// SPDX-License-Identifier: GPL-2.0 OR BSD-3-Clause
+ /*
+  * Copyright(c) 2016 - 2019 Intel Corporation.
+  */
+diff --git a/drivers/infiniband/sw/rdmavt/ah.h b/drivers/infiniband/sw/rdmavt/ah.h
+index c11fdf637d64..50ddf802bdcc 100644
+--- a/drivers/infiniband/sw/rdmavt/ah.h
++++ b/drivers/infiniband/sw/rdmavt/ah.h
+@@ -1,4 +1,4 @@
+-/* SPDX-License-Identifier: GPL-2.0 or BSD-3-Clause */
++/* SPDX-License-Identifier: GPL-2.0 OR BSD-3-Clause */
+ /*
+  * Copyright(c) 2016 Intel Corporation.
+  */
+diff --git a/drivers/infiniband/sw/rdmavt/cq.c b/drivers/infiniband/sw/rdmavt/cq.c
+index 9fe4dcaa049a..82c3f5932249 100644
+--- a/drivers/infiniband/sw/rdmavt/cq.c
++++ b/drivers/infiniband/sw/rdmavt/cq.c
+@@ -1,4 +1,4 @@
+-// SPDX-License-Identifier: GPL-2.0 or BSD-3-Clause
++// SPDX-License-Identifier: GPL-2.0 OR BSD-3-Clause
+ /*
+  * Copyright(c) 2016 - 2018 Intel Corporation.
+  */
+diff --git a/drivers/infiniband/sw/rdmavt/cq.h b/drivers/infiniband/sw/rdmavt/cq.h
+index b0a948ec760b..d49b6d1a26cb 100644
+--- a/drivers/infiniband/sw/rdmavt/cq.h
++++ b/drivers/infiniband/sw/rdmavt/cq.h
+@@ -1,4 +1,4 @@
+-/* SPDX-License-Identifier: GPL-2.0 or BSD-3-Clause */
++/* SPDX-License-Identifier: GPL-2.0 OR BSD-3-Clause */
+ /*
+  * Copyright(c) 2016 - 2018 Intel Corporation.
+  */
+diff --git a/drivers/infiniband/sw/rdmavt/mad.c b/drivers/infiniband/sw/rdmavt/mad.c
+index 98a8fe3b04ef..846e014ecc55 100644
+--- a/drivers/infiniband/sw/rdmavt/mad.c
++++ b/drivers/infiniband/sw/rdmavt/mad.c
+@@ -1,4 +1,4 @@
+-// SPDX-License-Identifier: GPL-2.0 or BSD-3-Clause
++// SPDX-License-Identifier: GPL-2.0 OR BSD-3-Clause
+ /*
+  * Copyright(c) 2016 Intel Corporation.
+  */
+diff --git a/drivers/infiniband/sw/rdmavt/mad.h b/drivers/infiniband/sw/rdmavt/mad.h
+index 368be29eab37..705a94537b55 100644
+--- a/drivers/infiniband/sw/rdmavt/mad.h
++++ b/drivers/infiniband/sw/rdmavt/mad.h
+@@ -1,4 +1,4 @@
+-/* SPDX-License-Identifier: GPL-2.0 or BSD-3-Clause */
++/* SPDX-License-Identifier: GPL-2.0 OR BSD-3-Clause */
+ /*
+  * Copyright(c) 2016 Intel Corporation.
+  */
+diff --git a/drivers/infiniband/sw/rdmavt/mcast.c b/drivers/infiniband/sw/rdmavt/mcast.c
+index a123874e1ca7..59045bdce2a9 100644
+--- a/drivers/infiniband/sw/rdmavt/mcast.c
++++ b/drivers/infiniband/sw/rdmavt/mcast.c
+@@ -1,4 +1,4 @@
+-// SPDX-License-Identifier: GPL-2.0 or BSD-3-Clause
++// SPDX-License-Identifier: GPL-2.0 OR BSD-3-Clause
+ /*
+  * Copyright(c) 2016 Intel Corporation.
+  */
+diff --git a/drivers/infiniband/sw/rdmavt/mcast.h b/drivers/infiniband/sw/rdmavt/mcast.h
+index b96d86f9625b..7627e0d49d09 100644
+--- a/drivers/infiniband/sw/rdmavt/mcast.h
++++ b/drivers/infiniband/sw/rdmavt/mcast.h
+@@ -1,4 +1,4 @@
+-/* SPDX-License-Identifier: GPL-2.0 or BSD-3-Clause */
++/* SPDX-License-Identifier: GPL-2.0 OR BSD-3-Clause */
+ /*
+  * Copyright(c) 2016 Intel Corporation.
+  */
+diff --git a/drivers/infiniband/sw/rdmavt/mmap.c b/drivers/infiniband/sw/rdmavt/mmap.c
+index 4d2238f3f3c8..46e3b3e0643a 100644
+--- a/drivers/infiniband/sw/rdmavt/mmap.c
++++ b/drivers/infiniband/sw/rdmavt/mmap.c
+@@ -1,4 +1,4 @@
+-// SPDX-License-Identifier: GPL-2.0 or BSD-3-Clause
++// SPDX-License-Identifier: GPL-2.0 OR BSD-3-Clause
+ /*
+  * Copyright(c) 2016 Intel Corporation.
+  */
+diff --git a/drivers/infiniband/sw/rdmavt/mmap.h b/drivers/infiniband/sw/rdmavt/mmap.h
+index 7e92cf28e071..29aaca3e8b83 100644
+--- a/drivers/infiniband/sw/rdmavt/mmap.h
++++ b/drivers/infiniband/sw/rdmavt/mmap.h
+@@ -1,4 +1,4 @@
+-/* SPDX-License-Identifier: GPL-2.0 or BSD-3-Clause */
++/* SPDX-License-Identifier: GPL-2.0 OR BSD-3-Clause */
+ /*
+  * Copyright(c) 2016 Intel Corporation.
+  */
+diff --git a/drivers/infiniband/sw/rdmavt/mr.c b/drivers/infiniband/sw/rdmavt/mr.c
+index 8a1f2e285180..7a9afd5231d5 100644
+--- a/drivers/infiniband/sw/rdmavt/mr.c
++++ b/drivers/infiniband/sw/rdmavt/mr.c
+@@ -1,4 +1,4 @@
+-// SPDX-License-Identifier: GPL-2.0 or BSD-3-Clause
++// SPDX-License-Identifier: GPL-2.0 OR BSD-3-Clause
+ /*
+  * Copyright(c) 2016 Intel Corporation.
+  */
+diff --git a/drivers/infiniband/sw/rdmavt/mr.h b/drivers/infiniband/sw/rdmavt/mr.h
+index d17f1400b5f6..44afe2731741 100644
+--- a/drivers/infiniband/sw/rdmavt/mr.h
++++ b/drivers/infiniband/sw/rdmavt/mr.h
+@@ -1,4 +1,4 @@
+-/* SPDX-License-Identifier: GPL-2.0 or BSD-3-Clause */
++/* SPDX-License-Identifier: GPL-2.0 OR BSD-3-Clause */
+ /*
+  * Copyright(c) 2016 Intel Corporation.
+  */
+diff --git a/drivers/infiniband/sw/rdmavt/pd.c b/drivers/infiniband/sw/rdmavt/pd.c
+index ae62071969fa..3af8081dc6c7 100644
+--- a/drivers/infiniband/sw/rdmavt/pd.c
++++ b/drivers/infiniband/sw/rdmavt/pd.c
+@@ -1,4 +1,4 @@
+-// SPDX-License-Identifier: GPL-2.0 or BSD-3-Clause
++// SPDX-License-Identifier: GPL-2.0 OR BSD-3-Clause
+ /*
+  * Copyright(c) 2016 Intel Corporation.
+  */
+diff --git a/drivers/infiniband/sw/rdmavt/pd.h b/drivers/infiniband/sw/rdmavt/pd.h
+index 42a0ef3b7da3..552adaeb371f 100644
+--- a/drivers/infiniband/sw/rdmavt/pd.h
++++ b/drivers/infiniband/sw/rdmavt/pd.h
+@@ -1,4 +1,4 @@
+-/* SPDX-License-Identifier: GPL-2.0 or BSD-3-Clause */
++/* SPDX-License-Identifier: GPL-2.0 OR BSD-3-Clause */
+ /*
+  * Copyright(c) 2016 Intel Corporation.
+  */
+diff --git a/drivers/infiniband/sw/rdmavt/qp.c b/drivers/infiniband/sw/rdmavt/qp.c
+index dc83d0ac6a38..e6203e26cc06 100644
+--- a/drivers/infiniband/sw/rdmavt/qp.c
++++ b/drivers/infiniband/sw/rdmavt/qp.c
+@@ -1,4 +1,4 @@
+-// SPDX-License-Identifier: GPL-2.0 or BSD-3-Clause
++// SPDX-License-Identifier: GPL-2.0 OR BSD-3-Clause
+ /*
+  * Copyright(c) 2016 - 2020 Intel Corporation.
+  */
+diff --git a/drivers/infiniband/sw/rdmavt/qp.h b/drivers/infiniband/sw/rdmavt/qp.h
+index bd04be80723c..1a201d2bedd6 100644
+--- a/drivers/infiniband/sw/rdmavt/qp.h
++++ b/drivers/infiniband/sw/rdmavt/qp.h
+@@ -1,4 +1,4 @@
+-/* SPDX-License-Identifier: GPL-2.0 or BSD-3-Clause */
++/* SPDX-License-Identifier: GPL-2.0 OR BSD-3-Clause */
+ /*
+  * Copyright(c) 2016 Intel Corporation.
+  */
+diff --git a/drivers/infiniband/sw/rdmavt/rc.c b/drivers/infiniband/sw/rdmavt/rc.c
+index 4e5d4a27633c..7cd473302576 100644
+--- a/drivers/infiniband/sw/rdmavt/rc.c
++++ b/drivers/infiniband/sw/rdmavt/rc.c
+@@ -1,4 +1,4 @@
+-// SPDX-License-Identifier: GPL-2.0 or BSD-3-Clause
++// SPDX-License-Identifier: GPL-2.0 OR BSD-3-Clause
+ /*
+  * Copyright(c) 2016 Intel Corporation.
+  */
+diff --git a/drivers/infiniband/sw/rdmavt/srq.c b/drivers/infiniband/sw/rdmavt/srq.c
+index 14d196bde2a1..fe125bf85b27 100644
+--- a/drivers/infiniband/sw/rdmavt/srq.c
++++ b/drivers/infiniband/sw/rdmavt/srq.c
+@@ -1,4 +1,4 @@
+-// SPDX-License-Identifier: GPL-2.0 or BSD-3-Clause
++// SPDX-License-Identifier: GPL-2.0 OR BSD-3-Clause
+ /*
+  * Copyright(c) 2016 Intel Corporation.
+  */
+diff --git a/drivers/infiniband/sw/rdmavt/srq.h b/drivers/infiniband/sw/rdmavt/srq.h
+index 7d17372cd269..e654a9fa2989 100644
+--- a/drivers/infiniband/sw/rdmavt/srq.h
++++ b/drivers/infiniband/sw/rdmavt/srq.h
+@@ -1,4 +1,4 @@
+-/* SPDX-License-Identifier: GPL-2.0 or BSD-3-Clause */
++/* SPDX-License-Identifier: GPL-2.0 OR BSD-3-Clause */
+ /*
+  * Copyright(c) 2016 Intel Corporation.
+  */
+diff --git a/drivers/infiniband/sw/rdmavt/trace.c b/drivers/infiniband/sw/rdmavt/trace.c
+index 01704b8dd683..e31b9f3e752d 100644
+--- a/drivers/infiniband/sw/rdmavt/trace.c
++++ b/drivers/infiniband/sw/rdmavt/trace.c
+@@ -1,4 +1,4 @@
+-// SPDX-License-Identifier: GPL-2.0 or BSD-3-Clause
++// SPDX-License-Identifier: GPL-2.0 OR BSD-3-Clause
+ /*
+  * Copyright(c) 2016 Intel Corporation.
+  */
+diff --git a/drivers/infiniband/sw/rdmavt/trace.h b/drivers/infiniband/sw/rdmavt/trace.h
+index 30eb4a72ea7d..4341965a5ea7 100644
+--- a/drivers/infiniband/sw/rdmavt/trace.h
++++ b/drivers/infiniband/sw/rdmavt/trace.h
+@@ -1,4 +1,4 @@
+-/* SPDX-License-Identifier: GPL-2.0 or BSD-3-Clause */
++/* SPDX-License-Identifier: GPL-2.0 OR BSD-3-Clause */
+ /*
+  * Copyright(c) 2016, 2017 Intel Corporation.
+  */
+diff --git a/drivers/infiniband/sw/rdmavt/trace_cq.h b/drivers/infiniband/sw/rdmavt/trace_cq.h
+index 30dd1d9bae26..54ce06e10b7f 100644
+--- a/drivers/infiniband/sw/rdmavt/trace_cq.h
++++ b/drivers/infiniband/sw/rdmavt/trace_cq.h
+@@ -1,4 +1,4 @@
+-/* SPDX-License-Identifier: GPL-2.0 or BSD-3-Clause */
++/* SPDX-License-Identifier: GPL-2.0 OR BSD-3-Clause */
+ /*
+  * Copyright(c) 2016 - 2018 Intel Corporation.
+  */
+diff --git a/drivers/infiniband/sw/rdmavt/trace_mr.h b/drivers/infiniband/sw/rdmavt/trace_mr.h
+index 1de7012000cb..0cb8e0a0565e 100644
+--- a/drivers/infiniband/sw/rdmavt/trace_mr.h
++++ b/drivers/infiniband/sw/rdmavt/trace_mr.h
+@@ -1,4 +1,4 @@
+-/* SPDX-License-Identifier: GPL-2.0 or BSD-3-Clause */
++/* SPDX-License-Identifier: GPL-2.0 OR BSD-3-Clause */
+ /*
+  * Copyright(c) 2016 Intel Corporation.
+  */
+diff --git a/drivers/infiniband/sw/rdmavt/trace_qp.h b/drivers/infiniband/sw/rdmavt/trace_qp.h
+index c28c81fcb32a..fa128f16ca3f 100644
+--- a/drivers/infiniband/sw/rdmavt/trace_qp.h
++++ b/drivers/infiniband/sw/rdmavt/trace_qp.h
+@@ -1,4 +1,4 @@
+-/* SPDX-License-Identifier: GPL-2.0 or BSD-3-Clause */
++/* SPDX-License-Identifier: GPL-2.0 OR BSD-3-Clause */
+ /*
+  * Copyright(c) 2016 Intel Corporation.
+  */
+diff --git a/drivers/infiniband/sw/rdmavt/trace_rc.h b/drivers/infiniband/sw/rdmavt/trace_rc.h
+index 833bf778b05d..9919d66c17c3 100644
+--- a/drivers/infiniband/sw/rdmavt/trace_rc.h
++++ b/drivers/infiniband/sw/rdmavt/trace_rc.h
+@@ -1,4 +1,4 @@
+-/* SPDX-License-Identifier: GPL-2.0 or BSD-3-Clause */
++/* SPDX-License-Identifier: GPL-2.0 OR BSD-3-Clause */
+ /*
+  * Copyright(c) 2017 Intel Corporation.
+  */
+diff --git a/drivers/infiniband/sw/rdmavt/trace_rvt.h b/drivers/infiniband/sw/rdmavt/trace_rvt.h
+index 9df6b0b8263b..df33c2ca9710 100644
+--- a/drivers/infiniband/sw/rdmavt/trace_rvt.h
++++ b/drivers/infiniband/sw/rdmavt/trace_rvt.h
+@@ -1,4 +1,4 @@
+-/* SPDX-License-Identifier: GPL-2.0 or BSD-3-Clause */
++/* SPDX-License-Identifier: GPL-2.0 OR BSD-3-Clause */
+ /*
+  * Copyright(c) 2016 Intel Corporation.
+  */
+diff --git a/drivers/infiniband/sw/rdmavt/trace_tx.h b/drivers/infiniband/sw/rdmavt/trace_tx.h
+index ff7d39a30768..dff18baa2765 100644
+--- a/drivers/infiniband/sw/rdmavt/trace_tx.h
++++ b/drivers/infiniband/sw/rdmavt/trace_tx.h
+@@ -1,4 +1,4 @@
+-/* SPDX-License-Identifier: GPL-2.0 or BSD-3-Clause */
++/* SPDX-License-Identifier: GPL-2.0 OR BSD-3-Clause */
+ /*
+  * Copyright(c) 2016 Intel Corporation.
+  */
+diff --git a/drivers/infiniband/sw/rdmavt/vt.c b/drivers/infiniband/sw/rdmavt/vt.c
+index d61f8de7f21c..5499025e8a0a 100644
+--- a/drivers/infiniband/sw/rdmavt/vt.c
++++ b/drivers/infiniband/sw/rdmavt/vt.c
+@@ -1,4 +1,4 @@
+-// SPDX-License-Identifier: GPL-2.0 or BSD-3-Clause
++// SPDX-License-Identifier: GPL-2.0 OR BSD-3-Clause
+ /*
+  * Copyright(c) 2016 - 2018 Intel Corporation.
+  */
+diff --git a/drivers/infiniband/sw/rdmavt/vt.h b/drivers/infiniband/sw/rdmavt/vt.h
+index 461574e3f6a5..4d17333fa90e 100644
+--- a/drivers/infiniband/sw/rdmavt/vt.h
++++ b/drivers/infiniband/sw/rdmavt/vt.h
+@@ -1,4 +1,4 @@
+-/* SPDX-License-Identifier: GPL-2.0 or BSD-3-Clause */
++/* SPDX-License-Identifier: GPL-2.0 OR BSD-3-Clause */
+ /*
+  * Copyright(c) 2016 Intel Corporation.
+  */
+diff --git a/drivers/infiniband/sw/siw/iwarp.h b/drivers/infiniband/sw/siw/iwarp.h
+index 3f1dedb50a0d..8cf69309827d 100644
+--- a/drivers/infiniband/sw/siw/iwarp.h
++++ b/drivers/infiniband/sw/siw/iwarp.h
+@@ -1,4 +1,4 @@
+-/* SPDX-License-Identifier: GPL-2.0 or BSD-3-Clause */
++/* SPDX-License-Identifier: GPL-2.0 OR BSD-3-Clause */
+ 
+ /* Authors: Bernard Metzler <bmt@zurich.ibm.com> */
+ /* Copyright (c) 2008-2019, IBM Corporation */
+diff --git a/drivers/infiniband/sw/siw/siw.h b/drivers/infiniband/sw/siw/siw.h
+index 58dddb143b9f..1c78c1ca7d7a 100644
+--- a/drivers/infiniband/sw/siw/siw.h
++++ b/drivers/infiniband/sw/siw/siw.h
+@@ -1,4 +1,4 @@
+-/* SPDX-License-Identifier: GPL-2.0 or BSD-3-Clause */
++/* SPDX-License-Identifier: GPL-2.0 OR BSD-3-Clause */
+ 
+ /* Authors: Bernard Metzler <bmt@zurich.ibm.com> */
+ /* Copyright (c) 2008-2019, IBM Corporation */
+diff --git a/drivers/infiniband/sw/siw/siw_cm.c b/drivers/infiniband/sw/siw/siw_cm.c
+index da530c0404da..0137e1758692 100644
+--- a/drivers/infiniband/sw/siw/siw_cm.c
++++ b/drivers/infiniband/sw/siw/siw_cm.c
+@@ -1,4 +1,4 @@
+-// SPDX-License-Identifier: GPL-2.0 or BSD-3-Clause
++// SPDX-License-Identifier: GPL-2.0 OR BSD-3-Clause
+ 
+ /* Authors: Bernard Metzler <bmt@zurich.ibm.com> */
+ /*          Fredy Neeser */
+diff --git a/drivers/infiniband/sw/siw/siw_cm.h b/drivers/infiniband/sw/siw/siw_cm.h
+index 8c59cb3e2868..7011c8a8ee7b 100644
+--- a/drivers/infiniband/sw/siw/siw_cm.h
++++ b/drivers/infiniband/sw/siw/siw_cm.h
+@@ -1,4 +1,4 @@
+-/* SPDX-License-Identifier: GPL-2.0 or BSD-3-Clause */
++/* SPDX-License-Identifier: GPL-2.0 OR BSD-3-Clause */
+ 
+ /* Authors: Bernard Metzler <bmt@zurich.ibm.com> */
+ /*          Greg Joyce <greg@opengridcomputing.com> */
+diff --git a/drivers/infiniband/sw/siw/siw_cq.c b/drivers/infiniband/sw/siw/siw_cq.c
+index 403029de6b92..f3c2226aff94 100644
+--- a/drivers/infiniband/sw/siw/siw_cq.c
++++ b/drivers/infiniband/sw/siw/siw_cq.c
+@@ -1,4 +1,4 @@
+-// SPDX-License-Identifier: GPL-2.0 or BSD-3-Clause
++// SPDX-License-Identifier: GPL-2.0 OR BSD-3-Clause
+ 
+ /* Authors: Bernard Metzler <bmt@zurich.ibm.com> */
+ /* Copyright (c) 2008-2019, IBM Corporation */
+diff --git a/drivers/infiniband/sw/siw/siw_main.c b/drivers/infiniband/sw/siw/siw_main.c
+index d4b6e0106851..1ab62982df74 100644
+--- a/drivers/infiniband/sw/siw/siw_main.c
++++ b/drivers/infiniband/sw/siw/siw_main.c
+@@ -1,4 +1,4 @@
+-// SPDX-License-Identifier: GPL-2.0 or BSD-3-Clause
++// SPDX-License-Identifier: GPL-2.0 OR BSD-3-Clause
+ 
+ /* Authors: Bernard Metzler <bmt@zurich.ibm.com> */
+ /* Copyright (c) 2008-2019, IBM Corporation */
+diff --git a/drivers/infiniband/sw/siw/siw_mem.c b/drivers/infiniband/sw/siw/siw_mem.c
+index e6e25f15567d..c5f7f1669d09 100644
+--- a/drivers/infiniband/sw/siw/siw_mem.c
++++ b/drivers/infiniband/sw/siw/siw_mem.c
+@@ -1,4 +1,4 @@
+-// SPDX-License-Identifier: GPL-2.0 or BSD-3-Clause
++// SPDX-License-Identifier: GPL-2.0 OR BSD-3-Clause
+ 
+ /* Authors: Bernard Metzler <bmt@zurich.ibm.com> */
+ /* Copyright (c) 2008-2019, IBM Corporation */
+diff --git a/drivers/infiniband/sw/siw/siw_mem.h b/drivers/infiniband/sw/siw/siw_mem.h
+index f911287576d1..a2835284fe5b 100644
+--- a/drivers/infiniband/sw/siw/siw_mem.h
++++ b/drivers/infiniband/sw/siw/siw_mem.h
+@@ -1,4 +1,4 @@
+-/* SPDX-License-Identifier: GPL-2.0 or BSD-3-Clause */
++/* SPDX-License-Identifier: GPL-2.0 OR BSD-3-Clause */
+ 
+ /* Authors: Bernard Metzler <bmt@zurich.ibm.com> */
+ /* Copyright (c) 2008-2019, IBM Corporation */
+diff --git a/drivers/infiniband/sw/siw/siw_qp.c b/drivers/infiniband/sw/siw/siw_qp.c
+index 47d0197db9a1..26e3904d2f41 100644
+--- a/drivers/infiniband/sw/siw/siw_qp.c
++++ b/drivers/infiniband/sw/siw/siw_qp.c
+@@ -1,4 +1,4 @@
+-// SPDX-License-Identifier: GPL-2.0 or BSD-3-Clause
++// SPDX-License-Identifier: GPL-2.0 OR BSD-3-Clause
+ 
+ /* Authors: Bernard Metzler <bmt@zurich.ibm.com> */
+ /* Copyright (c) 2008-2019, IBM Corporation */
+diff --git a/drivers/infiniband/sw/siw/siw_qp_rx.c b/drivers/infiniband/sw/siw/siw_qp_rx.c
+index 58bbf738e4e5..33e0fdb362ff 100644
+--- a/drivers/infiniband/sw/siw/siw_qp_rx.c
++++ b/drivers/infiniband/sw/siw/siw_qp_rx.c
+@@ -1,4 +1,4 @@
+-// SPDX-License-Identifier: GPL-2.0 or BSD-3-Clause
++// SPDX-License-Identifier: GPL-2.0 OR BSD-3-Clause
+ 
+ /* Authors: Bernard Metzler <bmt@zurich.ibm.com> */
+ /* Copyright (c) 2008-2019, IBM Corporation */
+diff --git a/drivers/infiniband/sw/siw/siw_qp_tx.c b/drivers/infiniband/sw/siw/siw_qp_tx.c
+index 3ff339eceec3..b893bb70f191 100644
+--- a/drivers/infiniband/sw/siw/siw_qp_tx.c
++++ b/drivers/infiniband/sw/siw/siw_qp_tx.c
+@@ -1,4 +1,4 @@
+-// SPDX-License-Identifier: GPL-2.0 or BSD-3-Clause
++// SPDX-License-Identifier: GPL-2.0 OR BSD-3-Clause
+ 
+ /* Authors: Bernard Metzler <bmt@zurich.ibm.com> */
+ /* Copyright (c) 2008-2019, IBM Corporation */
+diff --git a/drivers/infiniband/sw/siw/siw_verbs.c b/drivers/infiniband/sw/siw/siw_verbs.c
+index fadfa70853f3..f73e4d4918ee 100644
+--- a/drivers/infiniband/sw/siw/siw_verbs.c
++++ b/drivers/infiniband/sw/siw/siw_verbs.c
+@@ -1,4 +1,4 @@
+-// SPDX-License-Identifier: GPL-2.0 or BSD-3-Clause
++// SPDX-License-Identifier: GPL-2.0 OR BSD-3-Clause
+ 
+ /* Authors: Bernard Metzler <bmt@zurich.ibm.com> */
+ /* Copyright (c) 2008-2019, IBM Corporation */
+diff --git a/drivers/infiniband/sw/siw/siw_verbs.h b/drivers/infiniband/sw/siw/siw_verbs.h
+index 09964234f8d3..4b57a4fb7237 100644
+--- a/drivers/infiniband/sw/siw/siw_verbs.h
++++ b/drivers/infiniband/sw/siw/siw_verbs.h
+@@ -1,4 +1,4 @@
+-/* SPDX-License-Identifier: GPL-2.0 or BSD-3-Clause */
++/* SPDX-License-Identifier: GPL-2.0 OR BSD-3-Clause */
+ 
+ /* Authors: Bernard Metzler <bmt@zurich.ibm.com> */
+ /* Copyright (c) 2008-2019, IBM Corporation */
+diff --git a/include/uapi/rdma/siw-abi.h b/include/uapi/rdma/siw-abi.h
+index af735f55b291..6df49724954f 100644
+--- a/include/uapi/rdma/siw-abi.h
++++ b/include/uapi/rdma/siw-abi.h
+@@ -1,4 +1,4 @@
+-/* SPDX-License-Identifier: (GPL-2.0 WITH Linux-syscall-note) or BSD-3-Clause */
++/* SPDX-License-Identifier: (GPL-2.0 WITH Linux-syscall-note) OR BSD-3-Clause */
+ 
+ /* Authors: Bernard Metzler <bmt@zurich.ibm.com> */
+ /* Copyright (c) 2008-2019, IBM Corporation */
+-- 
+2.34.1
 
