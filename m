@@ -2,97 +2,95 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 60607786EFE
-	for <lists+linux-rdma@lfdr.de>; Thu, 24 Aug 2023 14:27:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B50AE7871D7
+	for <lists+linux-rdma@lfdr.de>; Thu, 24 Aug 2023 16:39:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232299AbjHXM0n (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 24 Aug 2023 08:26:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41352 "EHLO
+        id S229609AbjHXOie (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 24 Aug 2023 10:38:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56632 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234671AbjHXM0g (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 24 Aug 2023 08:26:36 -0400
-Received: from mail-pg1-x52f.google.com (mail-pg1-x52f.google.com [IPv6:2607:f8b0:4864:20::52f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7CB7410EF
-        for <linux-rdma@vger.kernel.org>; Thu, 24 Aug 2023 05:26:34 -0700 (PDT)
-Received: by mail-pg1-x52f.google.com with SMTP id 41be03b00d2f7-53fa455cd94so3962172a12.2
-        for <linux-rdma@vger.kernel.org>; Thu, 24 Aug 2023 05:26:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1692879994; x=1693484794;
-        h=content-transfer-encoding:to:subject:message-id:date:from:reply-to
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=dihJYoMvRIOzT3oJfAoaHLCXWQeAmEvPvBocuBvJ/0c=;
-        b=eu9P5G+MNmwErGwFI5ZL5j2j7UcqwwaA9Cgn8nZMiUOxPygvtWgESFoVtgLW4H+G+Z
-         ULDtaCKU2ykZUWlJOBzAGfJYA/+G3fvQ3HNE2Y2aY4pHP4Uzx/8uP+/VjTVfRky/gJzT
-         z7i3P66i7PpJlFtdXEvO2xCOZty/Fa5H0Lx//bBm+iEDd5Udt3JFGa9yaqmWoqKBnlVm
-         5fadkWrjKQ8CXUw9DPm6AuL8HnHnjG711GogOk4G6XYfu2IfULVdQj8viumFaUR2+g28
-         W4R1a2Mp1iDXGq1edvhyFcP0TqzqwTVvBXveNZ7obyj1/UxrvMWT6WUTaV5Yh8pWW/p7
-         e7uQ==
+        with ESMTP id S241729AbjHXOiL (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 24 Aug 2023 10:38:11 -0400
+Received: from mail-pl1-f171.google.com (mail-pl1-f171.google.com [209.85.214.171])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4415A1BC9
+        for <linux-rdma@vger.kernel.org>; Thu, 24 Aug 2023 07:38:08 -0700 (PDT)
+Received: by mail-pl1-f171.google.com with SMTP id d9443c01a7336-1bf7423ef3eso32972975ad.3
+        for <linux-rdma@vger.kernel.org>; Thu, 24 Aug 2023 07:38:08 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692879994; x=1693484794;
-        h=content-transfer-encoding:to:subject:message-id:date:from:reply-to
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=dihJYoMvRIOzT3oJfAoaHLCXWQeAmEvPvBocuBvJ/0c=;
-        b=EJDSQjQqqO6iVwTCwXU5CkgcyDkH71V+MXKcUtRB9m0FK0p8lUt8IlPEfdXsu4xFE1
-         OowMukro+U1P+fcp+ecHH6Uhnttq8KHr9DqlsE/O5HcwSgMxUv/Bqq3RKFUcqHZnVy2H
-         7IkpqohaOTrSUN7XJQR+dGq0Ilc4aMIVz2ev6/ebeDbXJ1qU3oJ+X8XFb1yNfsxm8POF
-         QNP/4/WISMWNVtZopbrqBSuJnbFFh1ErhC4kUTsWqdwtjXQXJfoFpYtvhSgXa5tv9PMc
-         Gj8th39BStdIr0xjc+G31XvvlejiEArpIS9xXoAk9w188Zn+ez9lK+YrILo36XRwbrYI
-         bJVg==
-X-Gm-Message-State: AOJu0YxcMdAVDSy4scBzjhpB8KTPTeYSmKE4HeVJn+SfgZrnME7MiNC2
-        bxq2+oDqRYZsym1OZaNtOdBNrE8z0OBAjR+HdWo=
-X-Google-Smtp-Source: AGHT+IGj26XjpZ1/mvaOWzxZbjWMbHvivqTq8oeCtFGTP9YM4rNAhYwmwtCoGaS/3SlEfjq5wWqc/15XkPTSLuj5Eaw=
-X-Received: by 2002:a05:6a21:819f:b0:14b:b42c:349d with SMTP id
- pd31-20020a056a21819f00b0014bb42c349dmr3620209pzb.9.1692879993694; Thu, 24
- Aug 2023 05:26:33 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1692887888; x=1693492688;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=6j/3iapEUONhkVV9sZculefEdMuJO4tSgB4r285xjQQ=;
+        b=UIf3DkWMWnCGkRLst7EWT920aZWRcGTyEYB7g8OnmI5z6DNZWwyY40nF0JAL1ZHg5I
+         kwlAtrAn1LdbawC5fKG4T1NWp/9rGMy1T/oOiLVKHJ4nns1nKIxlwVfh/hmn5novq5ov
+         SLpk62nSiP6fFv1p0S13fNbp5eDMgkXcdRx1vzTWHcQupCwXvXbW5popQXcHvmYF0Xwf
+         BAA4PUgxaTwP6K/oumcik99eBS70ZqvwIkSO3Gz+UmBCFKQHlPBU8GNDqXg3uLDAS6l4
+         Bm2CMNYo7l2IQFeqWzZMyrb+vmPZnpnpCvjIIYFOsOxrCEBuhL02TeQZauujdfKf5bEf
+         c8Cg==
+X-Gm-Message-State: AOJu0Yxpj9PiNv1hbB+8phXkEzDMsnUlxWwUUPui7ad6fshcd4ABUlKa
+        RQaLK1IZxXxPSvW/94fz+0I=
+X-Google-Smtp-Source: AGHT+IHdGHWZGJvMAzqMYI1FC2I3JDpe81euMDxPrVk/V2Zmf0Yh0ajimLnLjXVxxw02okFqawnZEw==
+X-Received: by 2002:a17:902:d507:b0:1bf:3c10:1d70 with SMTP id b7-20020a170902d50700b001bf3c101d70mr15303196plg.6.1692887887572;
+        Thu, 24 Aug 2023 07:38:07 -0700 (PDT)
+Received: from ?IPV6:2620:15c:211:201:e6ec:4683:972:2d78? ([2620:15c:211:201:e6ec:4683:972:2d78])
+        by smtp.gmail.com with ESMTPSA id n14-20020a170902d2ce00b001bde77f3d0esm12941595plc.117.2023.08.24.07.38.06
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 24 Aug 2023 07:38:07 -0700 (PDT)
+Message-ID: <fe540444-8454-4d15-f279-92daad4be001@acm.org>
+Date:   Thu, 24 Aug 2023 07:38:05 -0700
 MIME-Version: 1.0
-Received: by 2002:a05:7022:458d:b0:68:5292:153c with HTTP; Thu, 24 Aug 2023
- 05:26:33 -0700 (PDT)
-Reply-To: osbornemichel438@gmail.com
-From:   john <oyebisij5@gmail.com>
-Date:   Thu, 24 Aug 2023 13:26:33 +0100
-Message-ID: <CAEKbo8vX2GR3U5AfXuw+8_E=gAXhYA7khsscUUjUT5v6bV_eYg@mail.gmail.com>
-Subject: =?UTF-8?Q?Zu_H=C3=A4nden_des_Beg=C3=BCnstigten?=
-To:     osbornemichel438@gmail.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=4.5 required=5.0 tests=BAYES_50,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,FREEMAIL_REPLYTO,FREEMAIL_REPLYTO_END_DIGIT,
-        LOTS_OF_MONEY,MONEY_FREEMAIL_REPTO,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
-        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
-X-Spam-Level: ****
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.1
+Subject: Re: [PATCH] RDMA/srp: Do not call scsi_done() from srp_abort()
+Content-Language: en-US
+To:     Shinichiro Kawasaki <shinichiro.kawasaki@wdc.com>
+Cc:     Jason Gunthorpe <jgg@nvidia.com>,
+        Leon Romanovsky <leonro@nvidia.com>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        Bob Pearson <rpearsonhpe@gmail.com>
+References: <20230823205727.505681-1-bvanassche@acm.org>
+ <a57g4ywpwsldusg3ow2ci5nviikma3p3fcoqeatp7pt63fe2tk@xgisoxtde3tp>
+From:   Bart Van Assche <bvanassche@acm.org>
+In-Reply-To: <a57g4ywpwsldusg3ow2ci5nviikma3p3fcoqeatp7pt63fe2tk@xgisoxtde3tp>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Dieses B=C3=BCro ist ausschlie=C3=9Flich f=C3=BCr die Abwicklung nicht bean=
-spruchter
-und verlorener Gelder von Unternehmen und Privatpersonen zust=C3=A4ndig,
-die aufgrund von Nachl=C3=A4ssigkeit der Apex Bank und schlechter
-Regierungspolitik in Verzug geraten sind.
+On 8/23/23 19:46, Shinichiro Kawasaki wrote:
+> On Aug 23, 2023 / 13:57, Bart Van Assche wrote:
+>> After scmd_eh_abort_handler() has called the SCSI LLD eh_abort_handler
+>> callback, it performs one of the following actions:
+>> * Call scsi_queue_insert().
+>> * Call scsi_finish_command().
+>> * Call scsi_eh_scmd_add().
+>> Hence, SCSI abort handlers must not call scsi_done(). Otherwise all
+>> the above actions would trigger a use-after-free. Hence remove the
+>> scsi_done() call from srp_abort(). Keep the srp_free_req() call
+>> before returning SUCCESS because we may not see the command again if
+>> SUCCESS is returned.
+>>
+>> Cc: Bob Pearson <rpearsonhpe@gmail.com>
+>> Cc: Shinichiro Kawasaki <shinichiro.kawasaki@wdc.com>
+>> Fixes: d8536670916a ("IB/srp: Avoid having aborted requests hang")
+>> Signed-off-by: Bart Van Assche <bvanassche@acm.org>
+> 
+> Thanks Bart. Do you think this patch fixes the hangs at blktests srp/002 and
+> srp/011? I tried this patch and still see the hang at srp/002, but the hang at
+> srp/011 looks disappearing.
 
-Gem=C3=A4=C3=9F der Richtlinie zur Lizenzierung und Aufsicht von Banken wur=
-de
-jedoch eine bestimmte, zu Ihren Gunsten unter Ihrem E-Mail-Konto
-registrierte Datei von den Bundesbeh=C3=B6rden f=C3=BCr das Financial Servi=
-ces
-Compensation Scheme in H=C3=B6he von 1,2 Millionen USD zertifiziert und
-genehmigt.
+I have not yet tried to verify whether the above patch affects any blktests.
+The above patch is a patch that I developed a few weeks ago but that had not
+yet been published on the linux-rdma mailing list.
 
-Sie bitten Kindle, uns Ihre vollst=C3=A4ndige E-Mail zu senden
+Thanks,
 
-Offizieller Name................
-Direktwahltelefon .................................
-und Postanschrift.................... damit wir die Freigabe des
-Geldbetrags zur Bargeldabhebung bei Ihrer =C3=B6rtlichen Bank in Ihrer N=C3=
-=A4he
-bearbeiten k=C3=B6nnen.
-
-Wir bef=C3=A4higen Sie zuerst
-Herr Osborne Michel.
-Schuldenausgleichskommission
-Kabel hinzuf=C3=BCgen: NY 10017 USA.
-osbornemichel438@gmail.com
+Bart.
