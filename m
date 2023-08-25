@@ -2,84 +2,77 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0880E788909
-	for <lists+linux-rdma@lfdr.de>; Fri, 25 Aug 2023 15:53:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B46A3788DF5
+	for <lists+linux-rdma@lfdr.de>; Fri, 25 Aug 2023 19:46:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231549AbjHYNwm (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 25 Aug 2023 09:52:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58566 "EHLO
+        id S238144AbjHYRpv (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 25 Aug 2023 13:45:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50148 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S245295AbjHYNwg (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 25 Aug 2023 09:52:36 -0400
-Received: from mail-pl1-f176.google.com (mail-pl1-f176.google.com [209.85.214.176])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1AD36E4E;
-        Fri, 25 Aug 2023 06:52:35 -0700 (PDT)
-Received: by mail-pl1-f176.google.com with SMTP id d9443c01a7336-1bdbbede5d4so8265915ad.2;
-        Fri, 25 Aug 2023 06:52:35 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692971554; x=1693576354;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=g+KKKdmXIr7nxDya+WfoXRUFgR2fDdErvx83bNTM2sE=;
-        b=WPrRoY2S7Iybo4Yhkxv/bmPVCh5WXEkNoFovq17l1fHh7Pft0CQ6634NDa1vp+OOHO
-         o4BfOXnSxzp66sa7ZWfsiMwgGri3H0RXVfNh1KymLbFM0mNmqfLz56X33WN0mcrOgRUB
-         NH8vVASgZtr+gkblGQhOQrs7ixeTH/oN159m/dtMK6QqRlwEwM35XiDSBvd5THBEObbW
-         ryxxyREZuqKs22MO/8SOiV3yJVxhqaKLgoubRveF1O/yP4jbIZZuk+v5V1qGRvZL2hVI
-         8M2VNWtOzO1E1bweR0lJ2V/LT4DAFahDGppSWAKsoPKR+beBB1jDZCp46WcRmaoFOduy
-         8OVw==
-X-Gm-Message-State: AOJu0YxQcHCZvQzqp4ZOz+vAioVNowA6UfaASu9Vq+ORsM5TJDNQZ9Ny
-        m6lTEO8v+NBk2NsmG4sKhKeS9/rfj/E=
-X-Google-Smtp-Source: AGHT+IHLoOWP7drgMVli/MgnvdGxGEZYqN09nhFU0sfaOPXCiBPKre7D7a4FCoS+qc8SQJClof0OOA==
-X-Received: by 2002:a17:903:447:b0:1b8:971c:b7b7 with SMTP id iw7-20020a170903044700b001b8971cb7b7mr18086520plb.56.1692971554422;
-        Fri, 25 Aug 2023 06:52:34 -0700 (PDT)
-Received: from [192.168.51.14] ([98.51.102.78])
-        by smtp.gmail.com with ESMTPSA id f4-20020a17090274c400b001b891259eddsm1711085plt.197.2023.08.25.06.52.33
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 25 Aug 2023 06:52:33 -0700 (PDT)
-Message-ID: <18a3ae8c-145b-4c7f-a8f5-67840feeb98c@acm.org>
-Date:   Fri, 25 Aug 2023 06:52:31 -0700
+        with ESMTP id S234005AbjHYRpk (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 25 Aug 2023 13:45:40 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5CCFE2128;
+        Fri, 25 Aug 2023 10:45:38 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id F012E62D97;
+        Fri, 25 Aug 2023 17:45:37 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 45C77C433C8;
+        Fri, 25 Aug 2023 17:45:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1692985537;
+        bh=FvFWJfTHnCJBuxAYcJU2vDvioeoRGpbuDc+4qUjlpqE=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=NN+b5k9geYk3K1cJNOm+eHUaw9RzRYKdAr4Uhf7S2hAmpYRTMJhHbj/2am0yxYpJ9
+         bv9j/ZLTkpogSFptzQnG2KHXQaDWzKdECGk4Z3uYsfobS/dEuA9riZB+3nVor+fY1D
+         uisXjvytC7giuKf6N1PFGEfB6HemZ7wAy6HBvvDPRPCV6YjaGbo1ZJQepZhaqixTtg
+         I/FA7A5Sw8ui7n4MWwxa7MvKfPG9q5XF3f4BokNLhGO4P/zp0Ck1/05xcrnuYE81PF
+         ZIko3rkLvjUnBWW2Eff9jzWLfh3GICQJUEZq3TuMkvT+8SNHK8rO/kwhZqPQkCXqf1
+         64m7NywDjaW5A==
+Date:   Fri, 25 Aug 2023 10:45:35 -0700
+From:   Saeed Mahameed <saeed@kernel.org>
+To:     Lukas Bulwahn <lukas.bulwahn@gmail.com>
+Cc:     Saeed Mahameed <saeedm@nvidia.com>,
+        Leon Romanovsky <leon@kernel.org>,
+        Gal Pressman <gal@nvidia.com>,
+        Rahul Rameshbabu <rrameshbabu@nvidia.com>,
+        Tariq Toukan <tariqt@nvidia.com>, netdev@vger.kernel.org,
+        linux-rdma@vger.kernel.org, kernel-janitors@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] net/mlx5: fix config name in Kconfig parameter
+ documentation
+Message-ID: <ZOjov4PvI19Jdgs+@x130>
+References: <20230825125100.26453-1-lukas.bulwahn@gmail.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [bug report] blktests srp/002 hang
-Content-Language: en-US
-To:     Shinichiro Kawasaki <shinichiro.kawasaki@wdc.com>
-Cc:     Bob Pearson <rpearsonhpe@gmail.com>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>
-References: <dsg6rd66tyiei32zaxs6ddv5ebefr5vtxjwz6d2ewqrcwisogl@ge7jzan7dg5u>
- <0c5c732c-283c-b29a-0ac2-c32211fc7e17@gmail.com>
- <yewvcfcketee5qduraajra2g37t2mpxdlmj7aqny3umf7mkavk@wsm5forumsou>
- <8be8f611-e413-9584-7c2e-2c1abf4147be@acm.org>
- <plrbpd5gg32uaferhjj6ibkt4wqybu3v3y32f4rlhvsruc7cu4@2pgrj2542da2>
-From:   Bart Van Assche <bvanassche@acm.org>
-In-Reply-To: <plrbpd5gg32uaferhjj6ibkt4wqybu3v3y32f4rlhvsruc7cu4@2pgrj2542da2>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
-        autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
+In-Reply-To: <20230825125100.26453-1-lukas.bulwahn@gmail.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 8/24/23 18:11, Shinichiro Kawasaki wrote:
-> If it takes time to resolve the issues, it sounds a good idea to make siw driver
-> default, since it will make the hangs less painful for blktests users. Another
-> idea to reduce the pain is to improve srp/002 and srp/011 to detect the hangs
-> and report them as failures.
+On 25 Aug 14:51, Lukas Bulwahn wrote:
+>Commit a12ba19269d7 ("net/mlx5: Update Kconfig parameter documentation")
+>adds documentation on Kconfig options for the mlx5 driver. It refers to the
+>config MLX5_EN_MACSEC for MACSec offloading, but the config is actually
+>called MLX5_MACSEC.
+>
+>Fix the reference to the right config name in the documentation.
+>
+>Fixes: a12ba19269d7 ("net/mlx5: Update Kconfig parameter documentation")
+>Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
+>---
+>Saeed, please pick this quick fix to the documentation.
 
-At this moment we don't know whether the hangs can be converted into failures.
-Answering this question is only possible after we have found the root cause of
-the hang. If the hang would be caused by commands getting stuck in multipathd
-then it can be solved by changing the path configuration (see also the dmsetup
-message commands in blktests). If the hang is caused by a kernel bug then it's
-very well possible that there is no way to recover other than by rebooting the
-system on which the tests are run.
+Thanks applied to net-next-mlx5.
 
-Thanks,
 
-Bart.
