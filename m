@@ -2,165 +2,87 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 76EE67898C2
-	for <lists+linux-rdma@lfdr.de>; Sat, 26 Aug 2023 21:11:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 642CE78A85C
+	for <lists+linux-rdma@lfdr.de>; Mon, 28 Aug 2023 10:57:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229707AbjHZTK4 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Sat, 26 Aug 2023 15:10:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44626 "EHLO
+        id S229449AbjH1I5K (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 28 Aug 2023 04:57:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47726 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229588AbjHZTK3 (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Sat, 26 Aug 2023 15:10:29 -0400
-Received: from mail-lj1-x244.google.com (mail-lj1-x244.google.com [IPv6:2a00:1450:4864:20::244])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E1415E58
-        for <linux-rdma@vger.kernel.org>; Sat, 26 Aug 2023 12:10:26 -0700 (PDT)
-Received: by mail-lj1-x244.google.com with SMTP id 38308e7fff4ca-2bcde83ce9fso29551021fa.1
-        for <linux-rdma@vger.kernel.org>; Sat, 26 Aug 2023 12:10:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1693077025; x=1693681825;
-        h=content-transfer-encoding:to:subject:message-id:date:from:reply-to
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=20PRx02HJnVAIbBegfbEzAt6FGsymy7uvpJpjNQVnno=;
-        b=Bg4LrLAVF8TzvlvvTjeQ88MQEd7LYuRnD3MPBbiVUFVKJRDpg0KAoe6+5tyrBZe/6u
-         6YJ2WLACNPi35gLTN86CXim0tVGZyluePdNVuBhVDVzA7Ma9ocduuISn6pQNFRN9S+Yg
-         ySSWLdakZqUmJN6lGoZQJ86/AwD661fhWoirK+0NhOrt9607tbTgg14k/ph9aegD7RH/
-         wsx0ZKm4ITGGylwvjN+3ivJ26EoaBZgIJLEGyHh6jzT7GaKVmRW/zkZKxsC1fQWyMg5u
-         WignbvwFNTZuKkV1KDLp69Yd7PZzrxtTW2WgVkpUF4NTybtzuo9ZWn7b3hkZ+Yz8aL+I
-         7pJw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693077025; x=1693681825;
-        h=content-transfer-encoding:to:subject:message-id:date:from:reply-to
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=20PRx02HJnVAIbBegfbEzAt6FGsymy7uvpJpjNQVnno=;
-        b=KSHcnaai3atyxMcW68L+hYoiavvJEPRFmAolecfq9Z3aSRQiQTNJn4iafZZ3Viiy6l
-         sgSkoqWjIKuxQxSOZhw2CITxGjZ+EknQLrDcPMW2mGVZX5MaYf9HWyw3wM/xh1hAmIKq
-         YA/J83rwU76pk8e/vAYPH7aA4vzaTvkN3y8erQGQH48W6/21MsMdYqTkxL2sWlPM0A8h
-         /gAbl+6BHZS3eFe3nYBDuVVF2eBP5IX5OMifxamvEMVeEwK6W0ZfJaIRecDPvB1xChf0
-         lRKANGCKQj/zEx9m6wUqFglmdpYF3KRMU+DwEDHA9PshKuKNdslhmSeL1x4r8r/yndUt
-         X41Q==
-X-Gm-Message-State: AOJu0Yxx2V/LNg2gpsDN7H95THpWh32zbark2GZpkIA0vbN8HRIhpeB+
-        9FfsqUJx0QE/+kKDbmblPdP6Y/nj40FO9ngK+xU=
-X-Google-Smtp-Source: AGHT+IGdDP/lUbxvg/9wWU99Pdot7X3MI2aCmviK1hpfATeOg28wucX8WEkxp2Kdbw/2bzKPptdnVsbUVWNgx5IJa7A=
-X-Received: by 2002:a2e:8342:0:b0:2b9:4841:9652 with SMTP id
- l2-20020a2e8342000000b002b948419652mr15640940ljh.25.1693077024598; Sat, 26
- Aug 2023 12:10:24 -0700 (PDT)
+        with ESMTP id S229484AbjH1I4n (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 28 Aug 2023 04:56:43 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1AED3BF;
+        Mon, 28 Aug 2023 01:56:41 -0700 (PDT)
+From:   John Ogness <john.ogness@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1693212998;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=oQceVJwbfnJziP8tGTmnglMv0U/OynJlKuV/VxugPsI=;
+        b=0lpq3q0YURZB4mOKnNPjl4+tDwTJJTA7GtobAxmkr2mrcqOVSOvp9kiBMNCqRWjKNbaVX1
+        iTkKMbcvNRO+Yt3Q3EjovbifZJakn5YCNClS597uSI8O8UYVLXRjyfOhbl81FKCLY88oVr
+        a/Dr0+YYKLHxfI2amIecllE3njEeUBeA8MFeJfixecZm0aIJyc86o442d+5k0HLhhghkwI
+        vHlcekNa6zR72kjk0SCjlyBNvzBVlTpKWsn4KIixmnmedVOq4pdGlOz7x2s9FdoRTU82Pv
+        DSglUhyOGqwbYEygPMlgOLaMhN9dvFgZZiWgNlquBGlmQYZEYafecXnoegrvIw==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1693212998;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=oQceVJwbfnJziP8tGTmnglMv0U/OynJlKuV/VxugPsI=;
+        b=0kTO3nqmWcJUNtqCWg3XJAIxR2LytU5ZEUji5/w9qxDAe7j1rWFs4s2p6MdjrOCLn6IYvi
+        Lxgmz0/jabU+F3Bg==
+To:     Zhu Yanjun <yanjun.zhu@linux.dev>,
+        Li Zhijian <lizhijian@fujitsu.com>, linux-rdma@vger.kernel.org,
+        "pmladek@suse.com" <pmladek@suse.com>,
+        "senozhatsky@chromium.org" <senozhatsky@chromium.org>,
+        Steven Rostedt <rostedt@goodmis.org>
+Cc:     zyjzyj2000@gmail.com, jgg@ziepe.ca, leon@kernel.org,
+        linux-kernel@vger.kernel.org, rpearsonhpe@gmail.com,
+        Daisuke Matsuda <matsuda-daisuke@fujitsu.com>
+Subject: Re: [PATCH v2 1/2] RDMA/rxe: Improve newline in printing messages
+In-Reply-To: <f3f30d46-379a-8730-5797-400a77db61c3@linux.dev>
+References: <20230823061141.258864-1-lizhijian@fujitsu.com>
+ <f3f30d46-379a-8730-5797-400a77db61c3@linux.dev>
+Date:   Mon, 28 Aug 2023 11:02:36 +0206
+Message-ID: <87r0nnczp7.fsf@jogness.linutronix.de>
 MIME-Version: 1.0
-Received: by 2002:a05:6022:607:b0:43:16ec:74c1 with HTTP; Sat, 26 Aug 2023
- 12:10:23 -0700 (PDT)
-Reply-To: hegborkodjov@gmail.com
-From:   hegborkodjov <moritaanderson3@gmail.com>
-Date:   Sat, 26 Aug 2023 19:10:23 +0000
-Message-ID: <CACTmLXMH9aapw-LEmVw_WXmGUzj+Sp-EsdQo7BbVTANgOAZUWw@mail.gmail.com>
-Subject: 
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: base64
-X-Spam-Status: No, score=4.6 required=5.0 tests=BAYES_50,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,FREEMAIL_REPLYTO,FUZZY_XPILL,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,UNDISC_FREEM autolearn=no autolearn_force=no
-        version=3.4.6
-X-Spam-Level: ****
+Content-Type: text/plain
+X-Spam-Status: No, score=-3.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,INVALID_DATE_TZ_ABSURD,
+        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-0JHQuCDQvdOp0YXTqdGA0LvTqdC706nTqSDRgdCw0L3QsNC7INCx0L7Qu9Cz0L7QtiDQsdCw0LnQ
-vdCwLCDRgtCwINC90LDQvNCw0LnQsyDRgdCw0LnRhdCw0L0g0YHRjdGC0LPRjdC70Y3RjdGAINGF
-0q/Qu9GN0Y3Qtg0K0LDQstC90LAg0LPRjdC00Y3Qs9GCINC40YLQs9GN0LYg0LHQsNC50L3QsCwg
-0LHQuCDRgtCw0L3RgtCw0Lkg0YXQvtC70LHQvtC+INCx0LDRgNGM0LYsINCx0LjQtCDQsdC40LUg
-0LHQuNC10LTRjdGNINGF0Y3RgNGF0Y3QvQ0K0YLRg9GB0LDQu9C2INGH0LDQtNCw0YXRi9CzINGF
-0LDRgNCw0YXRi9CzINGI0LDQsNGA0LTRgdCw0L0uINCR0Lgg0LHQvtC7DQrQotGD0YDQutC40LnQ
-vSDRhdCw0YLQsNCz0YLQsNC5INCa0L7QtNC20L7QstC4INCl0LXQs9Cx0L7RgCDQsdC40LQg0YXQ
-vtGR0YAgU3RhbmRhcmRCTlAgQmFuayBMaW1pdGVkDQpUdXJrZXkt0LQg0q7QudC7INCw0LbQuNC7
-0LvQsNCz0LDQsNC90Ysg0YXRjdC70YLRgdC40LnQvSDQtNCw0YDQs9Cw0LDRgCDQsNC20LjQu9C7
-0LDQtNCw0LMuINCt0L3RjSDQsdC+0Lsg0LzQuNC90LjQuQ0K0YLTqdC706nTqdGFINCR0YPRgNGF
-0LDQvdGLINGF0q/RgdGN0Lsg0LPRjdC00Y3Qs9GCINCx0Lgg0LjRgtCz0Y3QtNGN0LMNCtC+0LTQ
-vtC+INGH0LDQvNGC0LDQuSDRgtCw0LDRgNCw0YUg0LPRjdC2INCx0LDQudC90LAuINCR0Lgg0YfR
-g9GF0LDQuyDQsNC20LjQuyDRhdGN0YDQs9C40LnQvSDRj9GA0LjQu9GG0LvQsNCz0LAg0YXQuNC5
-0LYNCtCx0LDQudC90LAsINGN0L3RjSDQvdGMINGC0LDQvdCw0Lkg0YPQu9GB0YvQvSDQvdGN0YDR
-gtGN0Lkg0YXQvtC70LHQvtC+0YLQvtC5INGC0YPQuyDRgtCwINKv0q/QvdGN0Y3RgSDQsNGI0LjQ
-syDRhdKv0YDRgtGN0YUNCtCx0L7Qu9C90L4g0LPRjdC2INCx0L7QtNC+0LYg0LHQsNC50L3QsC4N
-Cg0KMjAxOCDQvtC90LQg0JjQstCw0L0g0LPRjdGFINGC0LDQvdCw0Lkg0YPQu9GB0YvQvSDQuNGA
-0LPRjdC9INGF0YPQsNC90LvQuNC50L0gMzYg0YHQsNGA0YvQvSDRhdGD0LPQsNGG0LDQsNC90LQg
-0LzQsNC90LDQuQ0K0LHQsNC90LrQuNC90LQgOCw0MDAsMDAwLjAwINGE0YPQvdGCINGB0YLQtdGA
-0LvQuNC90LPQuNC50L0g0q/QvdGNINCx0q/RhdC40Lkg0J7RgNGI0LjQvSDRgdGD0YPQs9GHINCx
-0YPRgSDQtNCw0L3RgQ0K0YXQuNC50YHRjdC9LiBUaGUNCtCt0L3RjdGF0q/SryDRhdCw0LTQs9Cw
-0LvQsNC80LbQuNC50L0g0LPRjdGA0Y3RjdC90LjQuSDRhdGD0LPQsNGG0LDQsCAyMDIxINC+0L3R
-iyAxLdGAINGB0LDRgNGL0L0gMTYt0L3RiyDTqdC006nRgA0K0LHQsNC50YHQsNC9LiDQpdCw0YDQ
-sNC80YHQsNC70YLQsNC5INC90Ywg0YLRjdGA0Y3RjdGAINCl0Y/RgtCw0LTQsNC0INGB0LDRj9GF
-0LDQvSDRgtC+0YXQuNC+0LvQtNGB0L7QvSAyMDE5LTIwMjAg0L7QvdGLDQrQmtC+0YDQvtC90LDQ
-ktC40YDRg9GBICjQmtC+0LLQuNC0MTkpINGC0LDRhdC70YvQvSDQtNGN0LPQtNGN0LvRgtC40LnQ
-vSDSr9C10Y3RgCDQvdCw0YEg0LHQsNGA0YHQsNC9INGF0q/QvNKv0q/RgdC40LnQvQ0K0YLQvtC+
-0L3QtCDQsdCw0LPRgtCw0LYsINCx0LjQt9C90LXRgSDQsNGP0LvQsNC70LDQsNGAINGP0LLQtiDQ
-sdCw0LnRhdC00LDQsCDQtNC+0YAg0YXQsNGP0LYgNjgsMDAwINGF0q/QvdC40Lkg0LDQvNC40LnQ
-sw0K0LDQstGHINC+0LTRgdC+0L0uIC4NCg0K0JzQsNC90LDQuSDQsdCw0L3QutC90Ysg0YPQtNC4
-0YDQtNC70LDQs9GD0YPQtCDRgtKv0q/QvdC40Lkg0q/RhdC70LjQudC9INGC0LDQu9Cw0LDRgCDR
-hdCw0YDQsNCw0YXQsNC9INC80Y3QtNGN0Y3Qs9Kv0Lkg0LHQsNC50L3QsCwNCtGC0Y3RgCDQvNC4
-0L3QuNC5INC90LDQudC3INCx0LDQudGB0LDQvSwg0LTQsNC90YEg0L3RjCDQvdGN0Y3Qs9C00Y3R
-hdGN0LQg0LHQuCDRgtKv0q/QvdC40Lkg0LTQsNC90YHQvdGLINCw0LbQuNC70YLQsNC9DQrQsdCw
-0LnRgdCw0L0g0YPRh9GA0LDQsNGBINCx0Lgg0LzRjdC00YHRjdC9Lg0K0L3QsNC80LDQudCzINC0
-0Y3QstGI0LjRhdGN0Y3RgSDTqdC80L3TqSDQvdGN0Y3RhS4g0JPRjdGB0Y3QvSDRhdGN0LTQuNC5
-INGHLCDQvdC+0ZHQvSDQmNCy0LDQvSDQtNCw0L3RgSDQvdGN0Y3Qu9Cz0Y3RhSDSr9C10LQNCtGP
-0LzQsNGAINGHINC00LDRgNCw0LDQs9C40LnQvSDRhdCw0LzQsNCw0YLQsNC9INGB0LDQtNCw0L0v
-INOp0LIg0LfQsNC70LPQsNC80LbQu9Cw0LPRh9C40LnQvSDRgtCw0LvQsNCw0YAg0LTRg9GA0LTQ
-sNCw0LPSr9C5DQrQsdOp0LPTqdOp0LQg0YLRjdGA0Y3RjdGAINCz0Y3RgNC70Y3RjdCz0q/QuSwg
-0LPRjdGA0LvRjdGN0LPSr9C5INCx0LDQudGB0LDQvS4NCtGF0q/Sr9GF0LTSr9Kv0LQuINOo0L3Q
-s9Op0YDRgdOp0L0g0LTQvtC70L7QviDRhdC+0L3QvtCz0YIg0LzQsNC90LDQuSDQsdCw0L3QutC9
-0Ysg0YPQtNC40YDQtNC70LDQs9CwINCz0Y3RgNGN0Y3Qs9GN0Y0NCtGB0YPQvdCz0LDRhdCw0LDR
-gCDQsdC+0LvRgdC+0L0g0YLQvtGF0LjQvtC70LTQvtC70LQg0YLSr9Kv0L3QuNC5INC806nQvdCz
-0LjQudCzINGO0YMg0YXQuNC50YUg0YLQsNC70LDQsNGAINC30LDQsNCy0LDRgNGH0LjQu9Cz0LDQ
-sA0K06nQs9Op0YXQuNC50LMg0YXSr9GB0YHRjdC9Lg0KDQrQmNC50Lwg0LfSr9C50Lsg0LHQvtC7
-0L3QviDQs9GN0LTQs9C40LnQsyDQsdC4INC80Y3QtNGN0LYg0LHQsNC50LPQsNCwINGC0YPQuyDQ
-vdOp0YXRhtOp0Lsg0LHQsNC50LTQu9GL0LMg0LfQvtGF0LjRhtGD0YPQu9Cw0YUNCtCw0YDQs9Cw
-INC30LDQvNGL0LMg0YXQsNC50LYg0LHQsNC50YHQsNC9LCDRg9GH0LjRgCDQvdGMINGF0Y3RgNGN
-0LIg0LzQuNC90LjQuSDQsdCw0L3QutC90Ysg0LfQsNGF0LjRgNC70YPRg9C0INCY0LLQsNC90YvQ
-sw0K0LzRjdC00LLRjdC7DQrQvdCw0YEg0LHQsNGA0YHQsNC9LCDTqdCyINC30LDQu9Cz0LDQvNC2
-0LvQsNCz0YfQs9Kv0LksINGC0Y3QtCDRhdGD0LLQuNC50L0g0YXRjdGA0Y3Qs9GG0Y3RjdC90LQg
-0LfQvtGA0LjRg9C70LYg0YXTqdGA06nQvdCz06nTqQ0K0LDQstCw0YUg0LHQvtC70L3Qviwg0YLQ
-uNC50LzRjdGN0YEg0LHQuCDQuNC50Lwg0LfSr9C50Lsg0LHQvtC70L7QvtGB0L7QuSDQs9GN0LYg
-0YXSr9GB0Y3RhdCz0q/QuSDQsdCw0LnQvdCwLiDQotGN0YAg0q/QtdC0DQrQsdC4INGH0LDQvNCw
-0LnQsyDRhdCw0YDQsNCw0LQg0LHQsNGP0YDRgtCw0Lkg0LHQsNC50YHQsNC9INCx06nQs9Op06nQ
-tCDQvtC00L7QviDRgtCwINGC0q/Sr9C90YLRjdC5INC40LbQuNC7INGD0LvRgdGC0LDQuSwNCtC8
-0LjQvdC40Lkg0LHQsNC90LrQvdGLINGC06nQsiDQvtGE0YTQuNGBINGC0LDQvdC0INC00LDQvdGB
-0YvQsyDTqdCz06nRhSDQsdC+0LvQvdC+LiDQr9C80LDRgCDRhyDRjdGA0YHQtNGN0Lsg0LHQsNC5
-0YXQs9Kv0LkNCtC+0YDQvtC70YbQvtGFOyDQs9Kv0LnQu9Cz0Y3RjSDQvdGMINGC0LDQvdGL0LMg
-0LDQu9C40LLQsNCwINGF0YPRg9C70Ywg0LfTqdGA0YfQu9Op06nRgSDRhdCw0LzQs9Cw0LDQu9Cw
-0YUg0YXRg9GD0LvRjCDRkdGB0L3Riw0K0LfQvtGF0LjRhtGD0YPQu9Cw0LvRgtGL0L0g0LTQsNCz
-0YPRgyDRhdC40LnQs9C00Y3RhSDQsdC+0LvQvdC+Lg0KDQrQkdCw0L3QutC90Ysg0LfQsNGF0LjR
-gNC70YPRg9C00YvQsyDQsNCy0LDRhdGL0LMg0LfTqdCy0YjTqdOp0YDRgdC906nTqdGBINCx0LjQ
-tCDQvNOp0L3Qs9Op06kg0L3RjdGF0Y3QvNC20LjQu9GB0Y3QvSDQvdGMINC00Y3RjdGALA0K0YLR
-jdC0INGF0Y3QtNC40LnQvdGNINCx0LDRj9C9LiDQkdC4INGI0YPQvdCw0LvRgtCw0Lkg0YXSr9C9
-INCx0LjRiCDQsdC+0LvQvtGF0L7QvtGAINCx0LjQtNGN0L3QtCDRgdCw0L3QsNC7INCx0L7Qu9Cz
-0L7Qtg0K0LHQsNC50L3QsA0K0KHQsNC90YXSr9Kv0LPQuNC50L0gNTAvNTAg0YXRg9Cy0LjQudCz
-INGF0L7RkdGAINGC0LDQu9C00LDQsCDRgtGN0L3RhtKv0q8g0YXRg9Cy0LDQsNGFLCDQvNC40L3Q
-uNC5INGF0YPQstGMINC90LDQtNCw0LQNCtOp06nRgNC40LnQvSDQutC+0LzQv9Cw0L3QuNC50LMg
-0LHQsNC50LPRg9GD0LvQtiwg0L7Qu9GB0L7QvSDQvtGA0LvQvtCz0YvQsyDQsdGD0Y/QvdGLINCw
-0LbQuNC70LQg0LfQsNGA0YbRg9GD0LvQsNGF0LDQtA0K0YLRg9GB0LDQu9C90LAuDQrQvNOp0YDT
-qdOp0LTTqdC7Lg0KDQrQnNC40L3QuNC5INGB0LDQvdCw0LvRi9C9INGC0LDQu9Cw0LDRgCDRgdCw
-0L3QsNC7INCx0L7QtNC70L7QviDRhdGN0LvRjdGN0YDRjdC5LCDQvdCw0LTQsNC0INGN0L3RjSDQ
-s9Kv0LnQu9Cz0Y3RjdC90LQg0YLQsNC90YsNCtGC0YPRgdC70LDQvNC2INKv0L3RjdGF0Y3RjdGA
-INGF0Y3RgNGN0LPRgtGN0Lkg0LHQsNC50L3QsCwg0LHQuCDRh9Cw0LzQsNC50LMg06nTqdGA0LjQ
-udC90YXTqdOp0YDTqdOpINCx0LjRiCDQvdCw0LTQsNC0DQrRgtGD0YHQu9Cw0YXQsNCw0YAg0YHQ
-vtC90LPQvtGB0L7QvS4NCtCl0L7QvdCz0L7RgCDQvNC40L3RjCwg0LPRjdGF0LTRjdGNINCx0Lgg
-0YLQsNC90YLQsNC5INGF0L7Qu9Cx0L7QviDQsdCw0YDQuNGF0LDQsNGB0LDQsCDTqdC80L3TqSDR
-jdC90Y0g0YXQsNGA0LjQu9GG0LDQsNC90YsNCtGC0LDQu9Cw0LDRgCDQt9Cw0LvQsdC40YDQsNGF
-INCz0Y3QtiDRhtCw0LMg0LfQsNCy0LDQsCDQs9Cw0YDQs9Cw0YHQvdCw0LAg0LHRg9GA0YXQsNC9
-0LDQsNGBINGC0LAg0LHSr9GF0Y3QvdC0INC80Y3QtNGN0Y3RgdGN0LkNCtCz0Y3QtiDRhdKv0YHR
-hyDQsdCw0LnQvdCwLg0K0K3QvdGNINGC0LDQu9Cw0LDRgCDQsNC90YXQsNCw0YDRhywg0Y3QvdGN
-INC80Y3QtNGN0Y3Qu9C70LjQudCzINCc0JDQqCDQndCj0KPQpiDQs9GN0LYg0q/Qt9C90Y0g0q/S
-ry4g0KLQsNC90Ysg0YXQsNGA0LjRg9CzDQrRhdKv0LvRjdGN0L0g0LDQstGB0L3RiyDQtNCw0YDQ
-sNCwINC80LjQvdC40Lkg0YXRg9Cy0LjQudC9INC40LzRjdC50Lsg0YXQsNGP0LPQsNCw0YAgaGVn
-Ym9ya29kam92QGdtYWlsLmNvbQ0K0LPSr9C50LvQs9GN0Y3QvdC40Lkg0YLQsNC70LDQsNGAINC0
-0Y3Qu9Cz0Y3RgNGN0L3Qs9Kv0Lkg0LzRjdC00Y3RjdC70Y3QuyDTqdCz06nRhSDQsdC+0LvQvdC+
-LiDQnNOp0L0g0YHQsNC90LPQuNC50L0NCtGF0LDQtNCz0LDQu9Cw0LzQttC40LnQvSDQs9GN0YDR
-h9C40LvQs9GN0Y3QvdC40Lkg0YXRg9GD0LvQsdCw0YAsINC806nQvSDQutC+0LzQv9Cw0L3QuNC5
-0LMg0q/Sr9GB0LPRjdC9INCx0LDQudCz0YPRg9C70YHQsNC9DQrQs9GN0YDRh9C40LvQs9GN0Y0N
-CtGB0LDQvdCzINCx0LjQuSDQsdC+0LvQs9C+0YHQvtC9LiDQotCw0L3RiyDRj9Cw0YDQsNC70YLQ
-sNC5INGF0LDRgNC40YMg0LDRgNCz0LAg0YXRjdC80LbRjdGNINCw0LLQsNGF0YvQsyDRhdKv0LvR
-jdGN0LYNCtCx0LDQudCz0LDQsCDRgtGD0Lsg0JHRg9GA0YXQsNC9INC40LLRjdGN0LMNCtCl0q/Q
-vdC00Y3RgtCz0Y3RgdGN0L0NCtCl0LDRgtCw0LPRgtCw0Lkg0JrQvtC00LbQvtCy0Lgg0KXQtdCz
-0LHQvtGADQpoZWdib3Jrb2Rqb3ZAZ21haWwuY29tDQo=
+Hi Zhu,
+
+On 2023-08-23, Zhu Yanjun <yanjun.zhu@linux.dev> wrote:
+>> Previously rxe_{dbg,info,err}() macros are appened built-in newline,
+>> sut some users will add redundent newline some times. So remove the
+>> built-int newline for this macros.
+>
+> This commit is based on this statement "A newline help flushing
+> message out.".
+>
+> All the rxe_xxx log functions will finally call printk.
+>
+> To pirntk, there is no such statement in kernel document. Not sure if
+> Jason and Leon can decide this statement correct or not.
+
+I also could not find any documentation explaining the semantics of
+printk with regard to LOG_CONT and "\n". I suppose this should be added
+somewhere.
+
+However, the above statement is correct. You can see this in the code
+[0]. All printk messages should have a trailing newline unless it is
+only a partial message that will be appended.
+
+John Ogness
+
+[0] https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/kernel/printk/printk.c?h=v6.5#n2254
