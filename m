@@ -2,165 +2,149 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 17C0478B16C
-	for <lists+linux-rdma@lfdr.de>; Mon, 28 Aug 2023 15:15:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8269578B6F6
+	for <lists+linux-rdma@lfdr.de>; Mon, 28 Aug 2023 20:03:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229445AbjH1NO2 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 28 Aug 2023 09:14:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38744 "EHLO
+        id S232965AbjH1SDW (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 28 Aug 2023 14:03:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56980 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231643AbjH1NOR (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 28 Aug 2023 09:14:17 -0400
-Received: from mail-lj1-x231.google.com (mail-lj1-x231.google.com [IPv6:2a00:1450:4864:20::231])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EECE5122
-        for <linux-rdma@vger.kernel.org>; Mon, 28 Aug 2023 06:14:13 -0700 (PDT)
-Received: by mail-lj1-x231.google.com with SMTP id 38308e7fff4ca-2bce552508fso48319661fa.1
-        for <linux-rdma@vger.kernel.org>; Mon, 28 Aug 2023 06:14:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1693228452; x=1693833252;
-        h=content-transfer-encoding:to:subject:message-id:date:from:reply-to
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=20PRx02HJnVAIbBegfbEzAt6FGsymy7uvpJpjNQVnno=;
-        b=Z9R3GhhuAln8sYpS9yPwMwODHqVsQ410Zr/d13kNXJgjWcDQWkFccO4ibK2bAnuJei
-         xdzatWY5luwAQMpTlrEVKEjl5CY7SJ9lu3ZuUIBYnpC+ccYOF6Y035MYjTTl7cgBdufT
-         bTXYBLXUuh/2boOfY5ttMfaFVdtUnoxan/l+42477TcqBmXLYiqwYqURURDELOFkDAdj
-         gewVvTDRqpwShU2jllzkSaiLhlaBWtYCEvEE8T6OgL4jZQ1jHxh4Mu8f/5d6im1+Pp81
-         LUCcCvkW7AQuCl3qiHV2I6/4h8kztNNHn1xgjpTTDYNeGqatEan+BQr4DBJ/V3P4KxGv
-         jsqg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693228452; x=1693833252;
-        h=content-transfer-encoding:to:subject:message-id:date:from:reply-to
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=20PRx02HJnVAIbBegfbEzAt6FGsymy7uvpJpjNQVnno=;
-        b=bMA1qJNuKxbCN9hbBeqrroveu4dVuyExDCYXYUOoYTxYZ3PxYBX/AkI+sDuaHNJ/H5
-         MKlV1S9tr2ibpnblBcq3SgUXZORT5Yu0Y1St6zu+ZDp3Zba4+Il82UBB6QLeJ9RLMTNG
-         M+CO66xWAtQ79EzMmz7EVGM+Lme7xgDWQzcr13rH6/JB7nmL5lBO/qibJ2J/Xhb6s/vY
-         GhKFAgYDE7nTHQu2Sh9/MrUUVZXbhYJpkfWFSqhpDLGu/PyKJcn6l98wP5Yn0ln9wtgX
-         Cc4BBz/Bmw4MgyWBwmiwkAtVN7yOpu6IIxrA+T3GP3eRyQ44k4exVIbdp5Qe7FpVW0tO
-         +72Q==
-X-Gm-Message-State: AOJu0Yzy7m5ZdpjUs2T6u5ix8C3SORtEDt4ZPjKqIhb3tcya9WCPXZAp
-        EZr0S1bRd42jcELSiD4MTR/drslI2A9gdyfciOc=
-X-Google-Smtp-Source: AGHT+IGfbB1I6tZmIfmQBPa22UxN4CSuk3gyEN8lbNhkhKU+/EnlYCm6QvQt3d9S2ZPvyrTOe4Tv/XnuKgVcH6LTXEw=
-X-Received: by 2002:a05:651c:1251:b0:2bd:140c:6d0f with SMTP id
- h17-20020a05651c125100b002bd140c6d0fmr1118175ljh.47.1693228451772; Mon, 28
- Aug 2023 06:14:11 -0700 (PDT)
+        with ESMTP id S232921AbjH1SDS (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 28 Aug 2023 14:03:18 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0893210D;
+        Mon, 28 Aug 2023 11:03:16 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 9BC7A645A0;
+        Mon, 28 Aug 2023 18:03:15 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 84D55C433C7;
+        Mon, 28 Aug 2023 18:03:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1693245795;
+        bh=56VgGQnJgxLhXEe7cwBuaAX3o2oK/hHDJmk8oFYmWUM=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=prGCJo0nyHC8hEQHqXmAzPWQSZFeNCzij3e3IVwxBoGhRSw+iqxWaearLadWk713A
+         RxD6ddaVj5TKSgLvtRHyaU4l85LUQ7qwMFGEnqyaZEJ9DV0Z1po+UQt7WiHEzZPM60
+         fF7dEZ8hVix/Qw9WFxbywRdEFHfx8TmXC87qYGPuI60ZXlzGXe57yItJlEfAXTprh7
+         +GLji62zceQbxHHpLzC3/XwA50zLI89t+9R6nYW8UURh1EUTSE/kuLejZwNtQ7yR2o
+         4wgRG0lw+yyzGpyc10MSS85I6E6req4SQACJPBgB4lJPkzMbD89D/JzcOCrnlD0dXU
+         CinaVi2nKQ2aA==
+Date:   Mon, 28 Aug 2023 21:03:10 +0300
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Junxian Huang <huangjunxian6@hisilicon.com>
+Cc:     jgg@nvidia.com, linux-rdma@vger.kernel.org, linuxarm@huawei.com,
+        linux-kernel@vger.kernel.org,
+        Michael Margolin <mrgolin@amazon.com>,
+        Selvin Xavier <selvin.xavier@broadcom.com>
+Subject: Re: [PATCH for-next 0/3] RDMA/hns: Add more debugging information
+ for rdma-tool
+Message-ID: <20230828180310.GR6029@unreal>
+References: <20230816091812.2899366-1-huangjunxian6@hisilicon.com>
+ <20230819113212.GN22185@unreal>
+ <7c94dd6a-4fab-10dc-b0bb-2d9caa16a148@hisilicon.com>
 MIME-Version: 1.0
-Received: by 2002:a05:6022:516:b0:43:195d:f33 with HTTP; Mon, 28 Aug 2023
- 06:14:11 -0700 (PDT)
-Reply-To: hegborkodjov@gmail.com
-From:   hegborkodjov <kodjovhegbor7@gmail.com>
-Date:   Mon, 28 Aug 2023 13:14:11 +0000
-Message-ID: <CAGoaW21QrQeRmiG4OPt5HjZR-XY71XwmVZ9gmf1zxCHQeSq3=Q@mail.gmail.com>
-Subject: 
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: base64
-X-Spam-Status: No, score=1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,FREEMAIL_REPLYTO,FUZZY_XPILL,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,UNDISC_FREEM autolearn=no autolearn_force=no
-        version=3.4.6
-X-Spam-Level: *
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <7c94dd6a-4fab-10dc-b0bb-2d9caa16a148@hisilicon.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-0JHQuCDQvdOp0YXTqdGA0LvTqdC706nTqSDRgdCw0L3QsNC7INCx0L7Qu9Cz0L7QtiDQsdCw0LnQ
-vdCwLCDRgtCwINC90LDQvNCw0LnQsyDRgdCw0LnRhdCw0L0g0YHRjdGC0LPRjdC70Y3RjdGAINGF
-0q/Qu9GN0Y3Qtg0K0LDQstC90LAg0LPRjdC00Y3Qs9GCINC40YLQs9GN0LYg0LHQsNC50L3QsCwg
-0LHQuCDRgtCw0L3RgtCw0Lkg0YXQvtC70LHQvtC+INCx0LDRgNGM0LYsINCx0LjQtCDQsdC40LUg
-0LHQuNC10LTRjdGNINGF0Y3RgNGF0Y3QvQ0K0YLRg9GB0LDQu9C2INGH0LDQtNCw0YXRi9CzINGF
-0LDRgNCw0YXRi9CzINGI0LDQsNGA0LTRgdCw0L0uINCR0Lgg0LHQvtC7DQrQotGD0YDQutC40LnQ
-vSDRhdCw0YLQsNCz0YLQsNC5INCa0L7QtNC20L7QstC4INCl0LXQs9Cx0L7RgCDQsdC40LQg0YXQ
-vtGR0YAgU3RhbmRhcmRCTlAgQmFuayBMaW1pdGVkDQpUdXJrZXkt0LQg0q7QudC7INCw0LbQuNC7
-0LvQsNCz0LDQsNC90Ysg0YXRjdC70YLRgdC40LnQvSDQtNCw0YDQs9Cw0LDRgCDQsNC20LjQu9C7
-0LDQtNCw0LMuINCt0L3RjSDQsdC+0Lsg0LzQuNC90LjQuQ0K0YLTqdC706nTqdGFINCR0YPRgNGF
-0LDQvdGLINGF0q/RgdGN0Lsg0LPRjdC00Y3Qs9GCINCx0Lgg0LjRgtCz0Y3QtNGN0LMNCtC+0LTQ
-vtC+INGH0LDQvNGC0LDQuSDRgtCw0LDRgNCw0YUg0LPRjdC2INCx0LDQudC90LAuINCR0Lgg0YfR
-g9GF0LDQuyDQsNC20LjQuyDRhdGN0YDQs9C40LnQvSDRj9GA0LjQu9GG0LvQsNCz0LAg0YXQuNC5
-0LYNCtCx0LDQudC90LAsINGN0L3RjSDQvdGMINGC0LDQvdCw0Lkg0YPQu9GB0YvQvSDQvdGN0YDR
-gtGN0Lkg0YXQvtC70LHQvtC+0YLQvtC5INGC0YPQuyDRgtCwINKv0q/QvdGN0Y3RgSDQsNGI0LjQ
-syDRhdKv0YDRgtGN0YUNCtCx0L7Qu9C90L4g0LPRjdC2INCx0L7QtNC+0LYg0LHQsNC50L3QsC4N
-Cg0KMjAxOCDQvtC90LQg0JjQstCw0L0g0LPRjdGFINGC0LDQvdCw0Lkg0YPQu9GB0YvQvSDQuNGA
-0LPRjdC9INGF0YPQsNC90LvQuNC50L0gMzYg0YHQsNGA0YvQvSDRhdGD0LPQsNGG0LDQsNC90LQg
-0LzQsNC90LDQuQ0K0LHQsNC90LrQuNC90LQgOCw0MDAsMDAwLjAwINGE0YPQvdGCINGB0YLQtdGA
-0LvQuNC90LPQuNC50L0g0q/QvdGNINCx0q/RhdC40Lkg0J7RgNGI0LjQvSDRgdGD0YPQs9GHINCx
-0YPRgSDQtNCw0L3RgQ0K0YXQuNC50YHRjdC9LiBUaGUNCtCt0L3RjdGF0q/SryDRhdCw0LTQs9Cw
-0LvQsNC80LbQuNC50L0g0LPRjdGA0Y3RjdC90LjQuSDRhdGD0LPQsNGG0LDQsCAyMDIxINC+0L3R
-iyAxLdGAINGB0LDRgNGL0L0gMTYt0L3RiyDTqdC006nRgA0K0LHQsNC50YHQsNC9LiDQpdCw0YDQ
-sNC80YHQsNC70YLQsNC5INC90Ywg0YLRjdGA0Y3RjdGAINCl0Y/RgtCw0LTQsNC0INGB0LDRj9GF
-0LDQvSDRgtC+0YXQuNC+0LvQtNGB0L7QvSAyMDE5LTIwMjAg0L7QvdGLDQrQmtC+0YDQvtC90LDQ
-ktC40YDRg9GBICjQmtC+0LLQuNC0MTkpINGC0LDRhdC70YvQvSDQtNGN0LPQtNGN0LvRgtC40LnQ
-vSDSr9C10Y3RgCDQvdCw0YEg0LHQsNGA0YHQsNC9INGF0q/QvNKv0q/RgdC40LnQvQ0K0YLQvtC+
-0L3QtCDQsdCw0LPRgtCw0LYsINCx0LjQt9C90LXRgSDQsNGP0LvQsNC70LDQsNGAINGP0LLQtiDQ
-sdCw0LnRhdC00LDQsCDQtNC+0YAg0YXQsNGP0LYgNjgsMDAwINGF0q/QvdC40Lkg0LDQvNC40LnQ
-sw0K0LDQstGHINC+0LTRgdC+0L0uIC4NCg0K0JzQsNC90LDQuSDQsdCw0L3QutC90Ysg0YPQtNC4
-0YDQtNC70LDQs9GD0YPQtCDRgtKv0q/QvdC40Lkg0q/RhdC70LjQudC9INGC0LDQu9Cw0LDRgCDR
-hdCw0YDQsNCw0YXQsNC9INC80Y3QtNGN0Y3Qs9Kv0Lkg0LHQsNC50L3QsCwNCtGC0Y3RgCDQvNC4
-0L3QuNC5INC90LDQudC3INCx0LDQudGB0LDQvSwg0LTQsNC90YEg0L3RjCDQvdGN0Y3Qs9C00Y3R
-hdGN0LQg0LHQuCDRgtKv0q/QvdC40Lkg0LTQsNC90YHQvdGLINCw0LbQuNC70YLQsNC9DQrQsdCw
-0LnRgdCw0L0g0YPRh9GA0LDQsNGBINCx0Lgg0LzRjdC00YHRjdC9Lg0K0L3QsNC80LDQudCzINC0
-0Y3QstGI0LjRhdGN0Y3RgSDTqdC80L3TqSDQvdGN0Y3RhS4g0JPRjdGB0Y3QvSDRhdGN0LTQuNC5
-INGHLCDQvdC+0ZHQvSDQmNCy0LDQvSDQtNCw0L3RgSDQvdGN0Y3Qu9Cz0Y3RhSDSr9C10LQNCtGP
-0LzQsNGAINGHINC00LDRgNCw0LDQs9C40LnQvSDRhdCw0LzQsNCw0YLQsNC9INGB0LDQtNCw0L0v
-INOp0LIg0LfQsNC70LPQsNC80LbQu9Cw0LPRh9C40LnQvSDRgtCw0LvQsNCw0YAg0LTRg9GA0LTQ
-sNCw0LPSr9C5DQrQsdOp0LPTqdOp0LQg0YLRjdGA0Y3RjdGAINCz0Y3RgNC70Y3RjdCz0q/QuSwg
-0LPRjdGA0LvRjdGN0LPSr9C5INCx0LDQudGB0LDQvS4NCtGF0q/Sr9GF0LTSr9Kv0LQuINOo0L3Q
-s9Op0YDRgdOp0L0g0LTQvtC70L7QviDRhdC+0L3QvtCz0YIg0LzQsNC90LDQuSDQsdCw0L3QutC9
-0Ysg0YPQtNC40YDQtNC70LDQs9CwINCz0Y3RgNGN0Y3Qs9GN0Y0NCtGB0YPQvdCz0LDRhdCw0LDR
-gCDQsdC+0LvRgdC+0L0g0YLQvtGF0LjQvtC70LTQvtC70LQg0YLSr9Kv0L3QuNC5INC806nQvdCz
-0LjQudCzINGO0YMg0YXQuNC50YUg0YLQsNC70LDQsNGAINC30LDQsNCy0LDRgNGH0LjQu9Cz0LDQ
-sA0K06nQs9Op0YXQuNC50LMg0YXSr9GB0YHRjdC9Lg0KDQrQmNC50Lwg0LfSr9C50Lsg0LHQvtC7
-0L3QviDQs9GN0LTQs9C40LnQsyDQsdC4INC80Y3QtNGN0LYg0LHQsNC50LPQsNCwINGC0YPQuyDQ
-vdOp0YXRhtOp0Lsg0LHQsNC50LTQu9GL0LMg0LfQvtGF0LjRhtGD0YPQu9Cw0YUNCtCw0YDQs9Cw
-INC30LDQvNGL0LMg0YXQsNC50LYg0LHQsNC50YHQsNC9LCDRg9GH0LjRgCDQvdGMINGF0Y3RgNGN
-0LIg0LzQuNC90LjQuSDQsdCw0L3QutC90Ysg0LfQsNGF0LjRgNC70YPRg9C0INCY0LLQsNC90YvQ
-sw0K0LzRjdC00LLRjdC7DQrQvdCw0YEg0LHQsNGA0YHQsNC9LCDTqdCyINC30LDQu9Cz0LDQvNC2
-0LvQsNCz0YfQs9Kv0LksINGC0Y3QtCDRhdGD0LLQuNC50L0g0YXRjdGA0Y3Qs9GG0Y3RjdC90LQg
-0LfQvtGA0LjRg9C70LYg0YXTqdGA06nQvdCz06nTqQ0K0LDQstCw0YUg0LHQvtC70L3Qviwg0YLQ
-uNC50LzRjdGN0YEg0LHQuCDQuNC50Lwg0LfSr9C50Lsg0LHQvtC70L7QvtGB0L7QuSDQs9GN0LYg
-0YXSr9GB0Y3RhdCz0q/QuSDQsdCw0LnQvdCwLiDQotGN0YAg0q/QtdC0DQrQsdC4INGH0LDQvNCw
-0LnQsyDRhdCw0YDQsNCw0LQg0LHQsNGP0YDRgtCw0Lkg0LHQsNC50YHQsNC9INCx06nQs9Op06nQ
-tCDQvtC00L7QviDRgtCwINGC0q/Sr9C90YLRjdC5INC40LbQuNC7INGD0LvRgdGC0LDQuSwNCtC8
-0LjQvdC40Lkg0LHQsNC90LrQvdGLINGC06nQsiDQvtGE0YTQuNGBINGC0LDQvdC0INC00LDQvdGB
-0YvQsyDTqdCz06nRhSDQsdC+0LvQvdC+LiDQr9C80LDRgCDRhyDRjdGA0YHQtNGN0Lsg0LHQsNC5
-0YXQs9Kv0LkNCtC+0YDQvtC70YbQvtGFOyDQs9Kv0LnQu9Cz0Y3RjSDQvdGMINGC0LDQvdGL0LMg
-0LDQu9C40LLQsNCwINGF0YPRg9C70Ywg0LfTqdGA0YfQu9Op06nRgSDRhdCw0LzQs9Cw0LDQu9Cw
-0YUg0YXRg9GD0LvRjCDRkdGB0L3Riw0K0LfQvtGF0LjRhtGD0YPQu9Cw0LvRgtGL0L0g0LTQsNCz
-0YPRgyDRhdC40LnQs9C00Y3RhSDQsdC+0LvQvdC+Lg0KDQrQkdCw0L3QutC90Ysg0LfQsNGF0LjR
-gNC70YPRg9C00YvQsyDQsNCy0LDRhdGL0LMg0LfTqdCy0YjTqdOp0YDRgdC906nTqdGBINCx0LjQ
-tCDQvNOp0L3Qs9Op06kg0L3RjdGF0Y3QvNC20LjQu9GB0Y3QvSDQvdGMINC00Y3RjdGALA0K0YLR
-jdC0INGF0Y3QtNC40LnQvdGNINCx0LDRj9C9LiDQkdC4INGI0YPQvdCw0LvRgtCw0Lkg0YXSr9C9
-INCx0LjRiCDQsdC+0LvQvtGF0L7QvtGAINCx0LjQtNGN0L3QtCDRgdCw0L3QsNC7INCx0L7Qu9Cz
-0L7Qtg0K0LHQsNC50L3QsA0K0KHQsNC90YXSr9Kv0LPQuNC50L0gNTAvNTAg0YXRg9Cy0LjQudCz
-INGF0L7RkdGAINGC0LDQu9C00LDQsCDRgtGN0L3RhtKv0q8g0YXRg9Cy0LDQsNGFLCDQvNC40L3Q
-uNC5INGF0YPQstGMINC90LDQtNCw0LQNCtOp06nRgNC40LnQvSDQutC+0LzQv9Cw0L3QuNC50LMg
-0LHQsNC50LPRg9GD0LvQtiwg0L7Qu9GB0L7QvSDQvtGA0LvQvtCz0YvQsyDQsdGD0Y/QvdGLINCw
-0LbQuNC70LQg0LfQsNGA0YbRg9GD0LvQsNGF0LDQtA0K0YLRg9GB0LDQu9C90LAuDQrQvNOp0YDT
-qdOp0LTTqdC7Lg0KDQrQnNC40L3QuNC5INGB0LDQvdCw0LvRi9C9INGC0LDQu9Cw0LDRgCDRgdCw
-0L3QsNC7INCx0L7QtNC70L7QviDRhdGN0LvRjdGN0YDRjdC5LCDQvdCw0LTQsNC0INGN0L3RjSDQ
-s9Kv0LnQu9Cz0Y3RjdC90LQg0YLQsNC90YsNCtGC0YPRgdC70LDQvNC2INKv0L3RjdGF0Y3RjdGA
-INGF0Y3RgNGN0LPRgtGN0Lkg0LHQsNC50L3QsCwg0LHQuCDRh9Cw0LzQsNC50LMg06nTqdGA0LjQ
-udC90YXTqdOp0YDTqdOpINCx0LjRiCDQvdCw0LTQsNC0DQrRgtGD0YHQu9Cw0YXQsNCw0YAg0YHQ
-vtC90LPQvtGB0L7QvS4NCtCl0L7QvdCz0L7RgCDQvNC40L3RjCwg0LPRjdGF0LTRjdGNINCx0Lgg
-0YLQsNC90YLQsNC5INGF0L7Qu9Cx0L7QviDQsdCw0YDQuNGF0LDQsNGB0LDQsCDTqdC80L3TqSDR
-jdC90Y0g0YXQsNGA0LjQu9GG0LDQsNC90YsNCtGC0LDQu9Cw0LDRgCDQt9Cw0LvQsdC40YDQsNGF
-INCz0Y3QtiDRhtCw0LMg0LfQsNCy0LDQsCDQs9Cw0YDQs9Cw0YHQvdCw0LAg0LHRg9GA0YXQsNC9
-0LDQsNGBINGC0LAg0LHSr9GF0Y3QvdC0INC80Y3QtNGN0Y3RgdGN0LkNCtCz0Y3QtiDRhdKv0YHR
-hyDQsdCw0LnQvdCwLg0K0K3QvdGNINGC0LDQu9Cw0LDRgCDQsNC90YXQsNCw0YDRhywg0Y3QvdGN
-INC80Y3QtNGN0Y3Qu9C70LjQudCzINCc0JDQqCDQndCj0KPQpiDQs9GN0LYg0q/Qt9C90Y0g0q/S
-ry4g0KLQsNC90Ysg0YXQsNGA0LjRg9CzDQrRhdKv0LvRjdGN0L0g0LDQstGB0L3RiyDQtNCw0YDQ
-sNCwINC80LjQvdC40Lkg0YXRg9Cy0LjQudC9INC40LzRjdC50Lsg0YXQsNGP0LPQsNCw0YAgaGVn
-Ym9ya29kam92QGdtYWlsLmNvbQ0K0LPSr9C50LvQs9GN0Y3QvdC40Lkg0YLQsNC70LDQsNGAINC0
-0Y3Qu9Cz0Y3RgNGN0L3Qs9Kv0Lkg0LzRjdC00Y3RjdC70Y3QuyDTqdCz06nRhSDQsdC+0LvQvdC+
-LiDQnNOp0L0g0YHQsNC90LPQuNC50L0NCtGF0LDQtNCz0LDQu9Cw0LzQttC40LnQvSDQs9GN0YDR
-h9C40LvQs9GN0Y3QvdC40Lkg0YXRg9GD0LvQsdCw0YAsINC806nQvSDQutC+0LzQv9Cw0L3QuNC5
-0LMg0q/Sr9GB0LPRjdC9INCx0LDQudCz0YPRg9C70YHQsNC9DQrQs9GN0YDRh9C40LvQs9GN0Y0N
-CtGB0LDQvdCzINCx0LjQuSDQsdC+0LvQs9C+0YHQvtC9LiDQotCw0L3RiyDRj9Cw0YDQsNC70YLQ
-sNC5INGF0LDRgNC40YMg0LDRgNCz0LAg0YXRjdC80LbRjdGNINCw0LLQsNGF0YvQsyDRhdKv0LvR
-jdGN0LYNCtCx0LDQudCz0LDQsCDRgtGD0Lsg0JHRg9GA0YXQsNC9INC40LLRjdGN0LMNCtCl0q/Q
-vdC00Y3RgtCz0Y3RgdGN0L0NCtCl0LDRgtCw0LPRgtCw0Lkg0JrQvtC00LbQvtCy0Lgg0KXQtdCz
-0LHQvtGADQpoZWdib3Jrb2Rqb3ZAZ21haWwuY29tDQo=
+On Thu, Aug 24, 2023 at 03:58:15PM +0800, Junxian Huang wrote:
+> 
+> 
+> On 2023/8/19 19:32, Leon Romanovsky wrote:
+> > On Wed, Aug 16, 2023 at 05:18:09PM +0800, Junxian Huang wrote:
+> >> 1. #1: The first patch supports dumping QP/CQ/MR context entirely in raw
+> >>        data with rdma-tool.
+> >>
+> >> 2. #2: The second patch supports query of HW stats with rdma-tool.
+> >>
+> >> 3. #3: The last patch supports query of SW stats with rdma-tool.
+> >>
+> >> Chengchang Tang (3):
+> >>   RDMA/hns: Dump whole QP/CQ/MR resource in raw
+> >>   RDMA/hns: Support hns HW stats
+> > 
+> > These two patches generate static analyzer warnings.
+> > ➜  kernel git:(wip/leon-for-next) mkt ci --rev 0a68261bbbe5
+> > 0a68261bbbe5 (HEAD -> build) RDMA/hns: Dump whole QP/CQ/MR resource in raw
+> > WARNING: 'informations' may be misspelled - perhaps 'information'?
+> > #7:
+> > rdma-tool, but these informations are not enough. It is very
+> >                      ^^^^^^^^^^^^
+> > ➜  kernel git:(wip/leon-for-next) mkt ci
+> > 5a87279591a1 (HEAD -> build) RDMA/hns: Support hns HW stats
+> > drivers/infiniband/hw/hns/hns_roce_hw_v2.c:1651:35: warning: restricted __le16 degrades to integer
+> > 
+> 
+> OK，I'll fix them in V2.
+> 
+> >>   RDMA/hns: Support hns SW stats
+> > 
+> > This is not support SW stats, but actually implementation of SW
+> > statistics which you exposed through rdmatool. That tool is
+> 
+> Yes,
+> 
+> > not right place for such information and debugfs will be better
+> > fit.
+> > 
+> > Thanks
+> > 
+> 
+> but from what I have seen, efa and bnxt_re drivers also use rdmatool
+> to expose SW statisics.
+
+I afraid that it was missed in review.
+
+> 
+> And could you please explain why rdmatool is not suitable for this?
+
+IMHO, SW statistics are too broad and too coupled with the code to be
+really useful in rdmatool.
+
+Let's take an example, your newly added counter in modify QP.
+It counts number of failure in hns_roce_modify_qp(), but that
+function returns error in such case and users will see it anyway.
+
+So what will give this newly added counter in addition to already known
+by users? The answer is nothing and that answer is almost always applicable
+to SW statistics.
+
+It is unlikely that we can remove from EFA and bnxt_re already added
+counters, but if we can, it will be great.
+
+Thanks
+
+> 
+> Junxian
+> 
+> >>
+> >>  drivers/infiniband/hw/hns/hns_roce_ah.c       |   6 +-
+> >>  drivers/infiniband/hw/hns/hns_roce_cmd.c      |  19 ++-
+> >>  drivers/infiniband/hw/hns/hns_roce_cq.c       |  15 +-
+> >>  drivers/infiniband/hw/hns/hns_roce_device.h   |  50 ++++++
+> >>  drivers/infiniband/hw/hns/hns_roce_hw_v2.c    |  59 +++++++
+> >>  drivers/infiniband/hw/hns/hns_roce_hw_v2.h    |   1 +
+> >>  drivers/infiniband/hw/hns/hns_roce_main.c     | 152 +++++++++++++++++-
+> >>  drivers/infiniband/hw/hns/hns_roce_mr.c       |  26 ++-
+> >>  drivers/infiniband/hw/hns/hns_roce_pd.c       |  10 +-
+> >>  drivers/infiniband/hw/hns/hns_roce_qp.c       |   8 +-
+> >>  drivers/infiniband/hw/hns/hns_roce_restrack.c |  75 +--------
+> >>  drivers/infiniband/hw/hns/hns_roce_srq.c      |   6 +-
+> >>  12 files changed, 325 insertions(+), 102 deletions(-)
+> >>
+> >> --
+> >> 2.30.0
+> >>
