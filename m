@@ -2,44 +2,72 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9FD5878EDBA
-	for <lists+linux-rdma@lfdr.de>; Thu, 31 Aug 2023 14:55:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C43E178EE0A
+	for <lists+linux-rdma@lfdr.de>; Thu, 31 Aug 2023 15:04:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346315AbjHaMzG (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 31 Aug 2023 08:55:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55352 "EHLO
+        id S242601AbjHaNET (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 31 Aug 2023 09:04:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49016 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346170AbjHaMyk (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 31 Aug 2023 08:54:40 -0400
-Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0F3FCEE;
-        Thu, 31 Aug 2023 05:54:36 -0700 (PDT)
-Received: from kwepemi500006.china.huawei.com (unknown [172.30.72.54])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4Rc1Jj2MzvzVk5D;
-        Thu, 31 Aug 2023 20:52:05 +0800 (CST)
-Received: from localhost.localdomain (10.67.165.2) by
- kwepemi500006.china.huawei.com (7.221.188.68) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.31; Thu, 31 Aug 2023 20:54:32 +0800
-From:   Junxian Huang <huangjunxian6@hisilicon.com>
-To:     <jgg@nvidia.com>, <leon@kernel.org>
-CC:     <linux-rdma@vger.kernel.org>, <linuxarm@huawei.com>,
-        <linux-kernel@vger.kernel.org>, <huangjunxian6@hisilicon.com>
-Subject: [PATCH v2 for-next 2/2] RDMA/hns: Support hns HW stats
-Date:   Thu, 31 Aug 2023 20:51:39 +0800
-Message-ID: <20230831125139.3593067-3-huangjunxian6@hisilicon.com>
-X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20230831125139.3593067-1-huangjunxian6@hisilicon.com>
-References: <20230831125139.3593067-1-huangjunxian6@hisilicon.com>
+        with ESMTP id S232184AbjHaNES (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 31 Aug 2023 09:04:18 -0400
+Received: from mail.bsc.es (mao.bsc.es [84.88.52.34])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6EE01BC
+        for <linux-rdma@vger.kernel.org>; Thu, 31 Aug 2023 06:04:14 -0700 (PDT)
+Received: from hop.home (2.152.176.31.dyn.user.ono.com [2.152.176.31])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.bsc.es (Postfix) with ESMTPSA id E45634061881;
+        Thu, 31 Aug 2023 15:04:11 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bsc.es; s=20191012;
+        t=1693487052;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=NnxB0GUvkZQaEbLDuuy5LWX0sefRL/blbYcvf0bXh7s=;
+        b=f6WE9ggQnOdQP4d/FtvfJWaQOUKygusFkwmvMJzewgouTwG/Ycr8HotJ9Z5cMo8/m4nFLS
+        mUus0HXaTk80YUIbzPw3dII2+d8BHs6IPY1foYOkhwkBIcabDM7kZegj14s7OC7Exn3F0s
+        t5/G4HZGhivBfmime069n7t3AIZ6EGDx2ZPs251UDT3K9uYyHkp4kN4RcJvv6aEndFXI5+
+        kkmTDtHWAiu4E9ACGi/UIoIxtIzyv8o+mRQJPlYwK0uR6/27NjfR6X4QtZVKavR3gQJMtt
+        7Igck7LDiDsANeSfJHzSReMqhUga6DljzAI+0ozCl0ou2wLP0Awhxs1auKrFQQ==
+Date:   Thu, 31 Aug 2023 15:04:10 +0200
+From:   Rodrigo Arias <rodrigo.arias@bsc.es>
+To:     Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>
+Cc:     linux-rdma@vger.kernel.org,
+        "Koch, Kerry" <kerry.a.koch@cornelisnetworks.com>,
+        "Luick, Dean" <dean.luick@cornelisnetworks.com>,
+        "Cunningham, Brendan" <brendan.cunningham@cornelisnetworks.com>,
+        "Miller, Doug" <Doug.Miller@cornelisnetworks.com>,
+        Ehab Ababneh <ehab.ababneh@cornelisnetworks.com>
+Subject: Re: [bug-report] Oops at hfi1_ipoib_send + hfi1_ipoib_sdma_complete
+ IRQ
+Message-ID: <ZPCPynn0HDxSLBzn@hop.home>
+References: <ZO8dWSh5Y9D8FZG9@hop.home>
+ <5868fabe-a45a-3960-aa4b-d81cff8ef6ec@cornelisnetworks.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.67.165.2]
-X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
- kwepemi500006.china.huawei.com (7.221.188.68)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Disposition: inline
+In-Reply-To: <5868fabe-a45a-3960-aa4b-d81cff8ef6ec@cornelisnetworks.com>
+X-Spamd-Result: default: False [-8.38 / 15.00];
+         ARC_NA(0.00)[];
+         FROM_HAS_DN(0.00)[];
+         TO_DN_SOME(0.00)[];
+         TO_MATCH_ENVRCPT_ALL(0.00)[];
+         MIME_GOOD(-0.10)[text/plain];
+         DKIM_SIGNED(0.00)[bsc.es:s=20191012];
+         RCPT_COUNT_SEVEN(0.00)[7];
+         NEURAL_HAM(-0.00)[-1.000];
+         WHITELIST_SENDER_DOMAIN(-5.00)[bsc.es];
+         RCVD_COUNT_ZERO(0.00)[0];
+         FROM_EQ_ENVFROM(0.00)[];
+         MIME_TRACE(0.00)[0:+];
+         ASN(0.00)[asn:6739, ipnet:2.152.0.0/16, country:ES];
+         BAYES_HAM(-3.28)[97.56%]
+X-Copyrighted-Material: Please visit http://www.bsc.es/disclaimer
+X-Rspamd-Server: opsmail02.bsc.es
+X-Rspamd-Queue-Id: E45634061881
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -47,243 +75,19 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Chengchang Tang <tangchengchang@huawei.com>
+Hi Dennis,
 
-Support query hns HW stats for rdma-tool to help debugging.
+>Thanks for the bug report. We will look into this and see what we can 
+>come up with.
 
-Signed-off-by: Chengchang Tang <tangchengchang@huawei.com>
-Signed-off-by: Junxian Huang <huangjunxian6@hisilicon.com>
----
- drivers/infiniband/hw/hns/hns_roce_device.h | 28 ++++++++
- drivers/infiniband/hw/hns/hns_roce_hw_v2.c  | 51 +++++++++++++
- drivers/infiniband/hw/hns/hns_roce_hw_v2.h  |  1 +
- drivers/infiniband/hw/hns/hns_roce_main.c   | 79 +++++++++++++++++++++
- 4 files changed, 159 insertions(+)
+Thank you :-)
 
-diff --git a/drivers/infiniband/hw/hns/hns_roce_device.h b/drivers/infiniband/hw/hns/hns_roce_device.h
-index 9691cfdd7e3d..7f0d0288beb1 100644
---- a/drivers/infiniband/hw/hns/hns_roce_device.h
-+++ b/drivers/infiniband/hw/hns/hns_roce_device.h
-@@ -840,6 +840,32 @@ enum hns_roce_device_state {
- 	HNS_ROCE_DEVICE_STATE_UNINIT,
- };
- 
-+enum hns_roce_hw_pkt_stat_index {
-+	HNS_ROCE_HW_RX_RC_PKT_CNT,
-+	HNS_ROCE_HW_RX_UC_PKT_CNT,
-+	HNS_ROCE_HW_RX_UD_PKT_CNT,
-+	HNS_ROCE_HW_RX_XRC_PKT_CNT,
-+	HNS_ROCE_HW_RX_PKT_CNT,
-+	HNS_ROCE_HW_RX_ERR_PKT_CNT,
-+	HNS_ROCE_HW_RX_CNP_PKT_CNT,
-+	HNS_ROCE_HW_TX_RC_PKT_CNT,
-+	HNS_ROCE_HW_TX_UC_PKT_CNT,
-+	HNS_ROCE_HW_TX_UD_PKT_CNT,
-+	HNS_ROCE_HW_TX_XRC_PKT_CNT,
-+	HNS_ROCE_HW_TX_PKT_CNT,
-+	HNS_ROCE_HW_TX_ERR_PKT_CNT,
-+	HNS_ROCE_HW_TX_CNP_PKT_CNT,
-+	HNS_ROCE_HW_TRP_GET_MPT_ERR_PKT_CNT,
-+	HNS_ROCE_HW_TRP_GET_IRRL_ERR_PKT_CNT,
-+	HNS_ROCE_HW_ECN_DB_CNT,
-+	HNS_ROCE_HW_RX_BUF_CNT,
-+	HNS_ROCE_HW_TRP_RX_SOF_CNT,
-+	HNS_ROCE_HW_CQ_CQE_CNT,
-+	HNS_ROCE_HW_CQ_POE_CNT,
-+	HNS_ROCE_HW_CQ_NOTIFY_CNT,
-+	HNS_ROCE_HW_CNT_TOTAL
-+};
-+
- struct hns_roce_hw {
- 	int (*cmq_init)(struct hns_roce_dev *hr_dev);
- 	void (*cmq_exit)(struct hns_roce_dev *hr_dev);
-@@ -882,6 +908,8 @@ struct hns_roce_hw {
- 	int (*query_cqc)(struct hns_roce_dev *hr_dev, u32 cqn, void *buffer);
- 	int (*query_qpc)(struct hns_roce_dev *hr_dev, u32 qpn, void *buffer);
- 	int (*query_mpt)(struct hns_roce_dev *hr_dev, u32 key, void *buffer);
-+	int (*query_hw_counter)(struct hns_roce_dev *hr_dev,
-+				u64 *stats, u32 port, int *hw_counters);
- 	const struct ib_device_ops *hns_roce_dev_ops;
- 	const struct ib_device_ops *hns_roce_dev_srq_ops;
- };
-diff --git a/drivers/infiniband/hw/hns/hns_roce_hw_v2.c b/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
-index eef143388f65..1b5a7ce67dd1 100644
---- a/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
-+++ b/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
-@@ -1613,6 +1613,56 @@ static int hns_roce_query_func_info(struct hns_roce_dev *hr_dev)
- 	return 0;
- }
- 
-+static int hns_roce_hw_v2_query_counter(struct hns_roce_dev *hr_dev,
-+					u64 *stats, u32 port, int *num_counters)
-+{
-+#define CNT_PER_DESC 3
-+	struct hns_roce_cmq_desc *desc;
-+	int bd_idx, cnt_idx;
-+	__le64 *cnt_data;
-+	int desc_num;
-+	int ret;
-+	int i;
-+
-+	if (port > hr_dev->caps.num_ports)
-+		return -EINVAL;
-+
-+	desc_num = DIV_ROUND_UP(HNS_ROCE_HW_CNT_TOTAL, CNT_PER_DESC);
-+	desc = kcalloc(desc_num, sizeof(*desc), GFP_KERNEL);
-+	if (!desc)
-+		return -ENOMEM;
-+
-+	for (i = 0; i < desc_num; i++) {
-+		hns_roce_cmq_setup_basic_desc(&desc[i],
-+					      HNS_ROCE_OPC_QUERY_COUNTER, true);
-+		if (i != desc_num - 1)
-+			desc[i].flag |= cpu_to_le16(HNS_ROCE_CMD_FLAG_NEXT);
-+	}
-+
-+	ret = hns_roce_cmq_send(hr_dev, desc, desc_num);
-+	if (ret) {
-+		ibdev_err(&hr_dev->ib_dev,
-+			  "failed to get counter, ret = %d.\n", ret);
-+		goto err_out;
-+	}
-+
-+	for (i = 0; i < HNS_ROCE_HW_CNT_TOTAL && i < *num_counters; i++) {
-+		bd_idx = i / CNT_PER_DESC;
-+		if (!(desc[bd_idx].flag & cpu_to_le16(HNS_ROCE_CMD_FLAG_NEXT)) &&
-+		    bd_idx != HNS_ROCE_HW_CNT_TOTAL / CNT_PER_DESC)
-+			break;
-+
-+		cnt_data = (__le64 *)&desc[bd_idx].data[0];
-+		cnt_idx = i % CNT_PER_DESC;
-+		stats[i] = le64_to_cpu(cnt_data[cnt_idx]);
-+	}
-+	*num_counters = i;
-+
-+err_out:
-+	kfree(desc);
-+	return ret;
-+}
-+
- static int hns_roce_config_global_param(struct hns_roce_dev *hr_dev)
- {
- 	struct hns_roce_cmq_desc desc;
-@@ -6582,6 +6632,7 @@ static const struct hns_roce_hw hns_roce_hw_v2 = {
- 	.query_cqc = hns_roce_v2_query_cqc,
- 	.query_qpc = hns_roce_v2_query_qpc,
- 	.query_mpt = hns_roce_v2_query_mpt,
-+	.query_hw_counter = hns_roce_hw_v2_query_counter,
- 	.hns_roce_dev_ops = &hns_roce_v2_dev_ops,
- 	.hns_roce_dev_srq_ops = &hns_roce_v2_dev_srq_ops,
- };
-diff --git a/drivers/infiniband/hw/hns/hns_roce_hw_v2.h b/drivers/infiniband/hw/hns/hns_roce_hw_v2.h
-index d9693f6cc802..cd97cbee682a 100644
---- a/drivers/infiniband/hw/hns/hns_roce_hw_v2.h
-+++ b/drivers/infiniband/hw/hns/hns_roce_hw_v2.h
-@@ -198,6 +198,7 @@ enum hns_roce_opcode_type {
- 	HNS_ROCE_OPC_QUERY_HW_VER			= 0x8000,
- 	HNS_ROCE_OPC_CFG_GLOBAL_PARAM			= 0x8001,
- 	HNS_ROCE_OPC_ALLOC_PF_RES			= 0x8004,
-+	HNS_ROCE_OPC_QUERY_COUNTER			= 0x8206,
- 	HNS_ROCE_OPC_QUERY_PF_RES			= 0x8400,
- 	HNS_ROCE_OPC_ALLOC_VF_RES			= 0x8401,
- 	HNS_ROCE_OPC_CFG_EXT_LLM			= 0x8403,
-diff --git a/drivers/infiniband/hw/hns/hns_roce_main.c b/drivers/infiniband/hw/hns/hns_roce_main.c
-index 9141eadf33d2..d9d546cdef52 100644
---- a/drivers/infiniband/hw/hns/hns_roce_main.c
-+++ b/drivers/infiniband/hw/hns/hns_roce_main.c
-@@ -515,6 +515,83 @@ static void hns_roce_get_fw_ver(struct ib_device *device, char *str)
- 		 sub_minor);
- }
- 
-+#define HNS_ROCE_HW_CNT(ename, cname) \
-+	[HNS_ROCE_HW_##ename##_CNT].name = cname
-+
-+static const struct rdma_stat_desc hns_roce_port_stats_descs[] = {
-+	HNS_ROCE_HW_CNT(RX_RC_PKT, "rx_rc_pkt"),
-+	HNS_ROCE_HW_CNT(RX_UC_PKT, "rx_uc_pkt"),
-+	HNS_ROCE_HW_CNT(RX_UD_PKT, "rx_ud_pkt"),
-+	HNS_ROCE_HW_CNT(RX_XRC_PKT, "rx_xrc_pkt"),
-+	HNS_ROCE_HW_CNT(RX_PKT, "rx_pkt"),
-+	HNS_ROCE_HW_CNT(RX_ERR_PKT, "rx_err_pkt"),
-+	HNS_ROCE_HW_CNT(RX_CNP_PKT, "rx_cnp_pkt"),
-+	HNS_ROCE_HW_CNT(TX_RC_PKT, "tx_rc_pkt"),
-+	HNS_ROCE_HW_CNT(TX_UC_PKT, "tx_uc_pkt"),
-+	HNS_ROCE_HW_CNT(TX_UD_PKT, "tx_ud_pkt"),
-+	HNS_ROCE_HW_CNT(TX_XRC_PKT, "tx_xrc_pkt"),
-+	HNS_ROCE_HW_CNT(TX_PKT, "tx_pkt"),
-+	HNS_ROCE_HW_CNT(TX_ERR_PKT, "tx_err_pkt"),
-+	HNS_ROCE_HW_CNT(TX_CNP_PKT, "tx_cnp_pkt"),
-+	HNS_ROCE_HW_CNT(TRP_GET_MPT_ERR_PKT, "trp_get_mpt_err_pkt"),
-+	HNS_ROCE_HW_CNT(TRP_GET_IRRL_ERR_PKT, "trp_get_irrl_err_pkt"),
-+	HNS_ROCE_HW_CNT(ECN_DB, "ecn_doorbell"),
-+	HNS_ROCE_HW_CNT(RX_BUF, "rx_buffer"),
-+	HNS_ROCE_HW_CNT(TRP_RX_SOF, "trp_rx_sof"),
-+	HNS_ROCE_HW_CNT(CQ_CQE, "cq_cqe"),
-+	HNS_ROCE_HW_CNT(CQ_POE, "cq_poe"),
-+	HNS_ROCE_HW_CNT(CQ_NOTIFY, "cq_notify"),
-+};
-+
-+static struct rdma_hw_stats *hns_roce_alloc_hw_port_stats(
-+				struct ib_device *device, u32 port_num)
-+{
-+	struct hns_roce_dev *hr_dev = to_hr_dev(device);
-+	u32 port = port_num - 1;
-+
-+	if (port > hr_dev->caps.num_ports) {
-+		ibdev_err(device, "invalid port num.\n");
-+		return NULL;
-+	}
-+
-+	if (hr_dev->pci_dev->revision <= PCI_REVISION_ID_HIP08 ||
-+	    hr_dev->is_vf)
-+		return NULL;
-+
-+	return rdma_alloc_hw_stats_struct(hns_roce_port_stats_descs,
-+					  ARRAY_SIZE(hns_roce_port_stats_descs),
-+					  RDMA_HW_STATS_DEFAULT_LIFESPAN);
-+}
-+
-+static int hns_roce_get_hw_stats(struct ib_device *device,
-+				 struct rdma_hw_stats *stats,
-+				 u32 port, int index)
-+{
-+	struct hns_roce_dev *hr_dev = to_hr_dev(device);
-+	int num_counters = HNS_ROCE_HW_CNT_TOTAL;
-+	int ret;
-+
-+	if (port == 0)
-+		return 0;
-+
-+	if (port > hr_dev->caps.num_ports)
-+		return -EINVAL;
-+
-+	if (hr_dev->pci_dev->revision <= PCI_REVISION_ID_HIP08 ||
-+	    hr_dev->is_vf)
-+		return -EOPNOTSUPP;
-+
-+	ret = hr_dev->hw->query_hw_counter(hr_dev, stats->value, port,
-+					   &num_counters);
-+	if (ret) {
-+		ibdev_err(device, "failed to query hw counter, ret = %d\n",
-+			  ret);
-+		return ret;
-+	}
-+
-+	return num_counters;
-+}
-+
- static void hns_roce_unregister_device(struct hns_roce_dev *hr_dev)
- {
- 	struct hns_roce_ib_iboe *iboe = &hr_dev->iboe;
-@@ -557,6 +634,8 @@ static const struct ib_device_ops hns_roce_dev_ops = {
- 	.query_pkey = hns_roce_query_pkey,
- 	.query_port = hns_roce_query_port,
- 	.reg_user_mr = hns_roce_reg_user_mr,
-+	.alloc_hw_port_stats = hns_roce_alloc_hw_port_stats,
-+	.get_hw_stats = hns_roce_get_hw_stats,
- 
- 	INIT_RDMA_OBJ_SIZE(ib_ah, hns_roce_ah, ibah),
- 	INIT_RDMA_OBJ_SIZE(ib_cq, hns_roce_cq, ib_cq),
--- 
-2.30.0
+>I've added some of my engineers to CC. Do you happen to have a 
+>crashdump perchance that you could upload to us?
 
+I don't have, but I will try to reproduce it again and get one.
+
+I was trying to use a simpler using iperf3 but no luck so far. Changing 
+the network from Ethernet to IPoIB in ceph is complicated.
+
+Rodrigo.
