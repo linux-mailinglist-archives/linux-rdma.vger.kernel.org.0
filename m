@@ -2,21 +2,21 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F3A6F78EDBB
+	by mail.lfdr.de (Postfix) with ESMTP id 9FD5878EDBA
 	for <lists+linux-rdma@lfdr.de>; Thu, 31 Aug 2023 14:55:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242207AbjHaMzI (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 31 Aug 2023 08:55:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55344 "EHLO
+        id S1346315AbjHaMzG (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 31 Aug 2023 08:55:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55352 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346132AbjHaMyk (ORCPT
+        with ESMTP id S1346170AbjHaMyk (ORCPT
         <rfc822;linux-rdma@vger.kernel.org>); Thu, 31 Aug 2023 08:54:40 -0400
 Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D1045CF2;
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0F3FCEE;
         Thu, 31 Aug 2023 05:54:36 -0700 (PDT)
 Received: from kwepemi500006.china.huawei.com (unknown [172.30.72.54])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4Rc1Jh6N3tzVk3s;
-        Thu, 31 Aug 2023 20:52:04 +0800 (CST)
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4Rc1Jj2MzvzVk5D;
+        Thu, 31 Aug 2023 20:52:05 +0800 (CST)
 Received: from localhost.localdomain (10.67.165.2) by
  kwepemi500006.china.huawei.com (7.221.188.68) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
@@ -25,9 +25,9 @@ From:   Junxian Huang <huangjunxian6@hisilicon.com>
 To:     <jgg@nvidia.com>, <leon@kernel.org>
 CC:     <linux-rdma@vger.kernel.org>, <linuxarm@huawei.com>,
         <linux-kernel@vger.kernel.org>, <huangjunxian6@hisilicon.com>
-Subject: [PATCH v2 for-next 1/2] RDMA/hns: Dump whole QP/CQ/MR resource in raw
-Date:   Thu, 31 Aug 2023 20:51:38 +0800
-Message-ID: <20230831125139.3593067-2-huangjunxian6@hisilicon.com>
+Subject: [PATCH v2 for-next 2/2] RDMA/hns: Support hns HW stats
+Date:   Thu, 31 Aug 2023 20:51:39 +0800
+Message-ID: <20230831125139.3593067-3-huangjunxian6@hisilicon.com>
 X-Mailer: git-send-email 2.30.0
 In-Reply-To: <20230831125139.3593067-1-huangjunxian6@hisilicon.com>
 References: <20230831125139.3593067-1-huangjunxian6@hisilicon.com>
@@ -49,147 +49,241 @@ X-Mailing-List: linux-rdma@vger.kernel.org
 
 From: Chengchang Tang <tangchengchang@huawei.com>
 
-Currently, some fields in the QP/CQ/MR resource can be dumped by
-rdma-tool, but these information is not enough. It is very
-inconvenient to continue to expand on the current field, and it
-will also introduce some trouble to parse these raw data.
-
-This patch dump whole resource in raw to avoid the above problems.
+Support query hns HW stats for rdma-tool to help debugging.
 
 Signed-off-by: Chengchang Tang <tangchengchang@huawei.com>
 Signed-off-by: Junxian Huang <huangjunxian6@hisilicon.com>
 ---
- drivers/infiniband/hw/hns/hns_roce_restrack.c | 75 +------------------
- 1 file changed, 3 insertions(+), 72 deletions(-)
+ drivers/infiniband/hw/hns/hns_roce_device.h | 28 ++++++++
+ drivers/infiniband/hw/hns/hns_roce_hw_v2.c  | 51 +++++++++++++
+ drivers/infiniband/hw/hns/hns_roce_hw_v2.h  |  1 +
+ drivers/infiniband/hw/hns/hns_roce_main.c   | 79 +++++++++++++++++++++
+ 4 files changed, 159 insertions(+)
 
-diff --git a/drivers/infiniband/hw/hns/hns_roce_restrack.c b/drivers/infiniband/hw/hns/hns_roce_restrack.c
-index 989a2af2e938..081a01de3055 100644
---- a/drivers/infiniband/hw/hns/hns_roce_restrack.c
-+++ b/drivers/infiniband/hw/hns/hns_roce_restrack.c
-@@ -9,8 +9,6 @@
- #include "hns_roce_device.h"
- #include "hns_roce_hw_v2.h"
+diff --git a/drivers/infiniband/hw/hns/hns_roce_device.h b/drivers/infiniband/hw/hns/hns_roce_device.h
+index 9691cfdd7e3d..7f0d0288beb1 100644
+--- a/drivers/infiniband/hw/hns/hns_roce_device.h
++++ b/drivers/infiniband/hw/hns/hns_roce_device.h
+@@ -840,6 +840,32 @@ enum hns_roce_device_state {
+ 	HNS_ROCE_DEVICE_STATE_UNINIT,
+ };
  
--#define MAX_ENTRY_NUM 256
--
- int hns_roce_fill_res_cq_entry(struct sk_buff *msg, struct ib_cq *ib_cq)
++enum hns_roce_hw_pkt_stat_index {
++	HNS_ROCE_HW_RX_RC_PKT_CNT,
++	HNS_ROCE_HW_RX_UC_PKT_CNT,
++	HNS_ROCE_HW_RX_UD_PKT_CNT,
++	HNS_ROCE_HW_RX_XRC_PKT_CNT,
++	HNS_ROCE_HW_RX_PKT_CNT,
++	HNS_ROCE_HW_RX_ERR_PKT_CNT,
++	HNS_ROCE_HW_RX_CNP_PKT_CNT,
++	HNS_ROCE_HW_TX_RC_PKT_CNT,
++	HNS_ROCE_HW_TX_UC_PKT_CNT,
++	HNS_ROCE_HW_TX_UD_PKT_CNT,
++	HNS_ROCE_HW_TX_XRC_PKT_CNT,
++	HNS_ROCE_HW_TX_PKT_CNT,
++	HNS_ROCE_HW_TX_ERR_PKT_CNT,
++	HNS_ROCE_HW_TX_CNP_PKT_CNT,
++	HNS_ROCE_HW_TRP_GET_MPT_ERR_PKT_CNT,
++	HNS_ROCE_HW_TRP_GET_IRRL_ERR_PKT_CNT,
++	HNS_ROCE_HW_ECN_DB_CNT,
++	HNS_ROCE_HW_RX_BUF_CNT,
++	HNS_ROCE_HW_TRP_RX_SOF_CNT,
++	HNS_ROCE_HW_CQ_CQE_CNT,
++	HNS_ROCE_HW_CQ_POE_CNT,
++	HNS_ROCE_HW_CQ_NOTIFY_CNT,
++	HNS_ROCE_HW_CNT_TOTAL
++};
++
+ struct hns_roce_hw {
+ 	int (*cmq_init)(struct hns_roce_dev *hr_dev);
+ 	void (*cmq_exit)(struct hns_roce_dev *hr_dev);
+@@ -882,6 +908,8 @@ struct hns_roce_hw {
+ 	int (*query_cqc)(struct hns_roce_dev *hr_dev, u32 cqn, void *buffer);
+ 	int (*query_qpc)(struct hns_roce_dev *hr_dev, u32 qpn, void *buffer);
+ 	int (*query_mpt)(struct hns_roce_dev *hr_dev, u32 key, void *buffer);
++	int (*query_hw_counter)(struct hns_roce_dev *hr_dev,
++				u64 *stats, u32 port, int *hw_counters);
+ 	const struct ib_device_ops *hns_roce_dev_ops;
+ 	const struct ib_device_ops *hns_roce_dev_srq_ops;
+ };
+diff --git a/drivers/infiniband/hw/hns/hns_roce_hw_v2.c b/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
+index eef143388f65..1b5a7ce67dd1 100644
+--- a/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
++++ b/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
+@@ -1613,6 +1613,56 @@ static int hns_roce_query_func_info(struct hns_roce_dev *hr_dev)
+ 	return 0;
+ }
+ 
++static int hns_roce_hw_v2_query_counter(struct hns_roce_dev *hr_dev,
++					u64 *stats, u32 port, int *num_counters)
++{
++#define CNT_PER_DESC 3
++	struct hns_roce_cmq_desc *desc;
++	int bd_idx, cnt_idx;
++	__le64 *cnt_data;
++	int desc_num;
++	int ret;
++	int i;
++
++	if (port > hr_dev->caps.num_ports)
++		return -EINVAL;
++
++	desc_num = DIV_ROUND_UP(HNS_ROCE_HW_CNT_TOTAL, CNT_PER_DESC);
++	desc = kcalloc(desc_num, sizeof(*desc), GFP_KERNEL);
++	if (!desc)
++		return -ENOMEM;
++
++	for (i = 0; i < desc_num; i++) {
++		hns_roce_cmq_setup_basic_desc(&desc[i],
++					      HNS_ROCE_OPC_QUERY_COUNTER, true);
++		if (i != desc_num - 1)
++			desc[i].flag |= cpu_to_le16(HNS_ROCE_CMD_FLAG_NEXT);
++	}
++
++	ret = hns_roce_cmq_send(hr_dev, desc, desc_num);
++	if (ret) {
++		ibdev_err(&hr_dev->ib_dev,
++			  "failed to get counter, ret = %d.\n", ret);
++		goto err_out;
++	}
++
++	for (i = 0; i < HNS_ROCE_HW_CNT_TOTAL && i < *num_counters; i++) {
++		bd_idx = i / CNT_PER_DESC;
++		if (!(desc[bd_idx].flag & cpu_to_le16(HNS_ROCE_CMD_FLAG_NEXT)) &&
++		    bd_idx != HNS_ROCE_HW_CNT_TOTAL / CNT_PER_DESC)
++			break;
++
++		cnt_data = (__le64 *)&desc[bd_idx].data[0];
++		cnt_idx = i % CNT_PER_DESC;
++		stats[i] = le64_to_cpu(cnt_data[cnt_idx]);
++	}
++	*num_counters = i;
++
++err_out:
++	kfree(desc);
++	return ret;
++}
++
+ static int hns_roce_config_global_param(struct hns_roce_dev *hr_dev)
  {
- 	struct hns_roce_cq *hr_cq = to_hr_cq(ib_cq);
-@@ -47,8 +45,6 @@ int hns_roce_fill_res_cq_entry_raw(struct sk_buff *msg, struct ib_cq *ib_cq)
- 	struct hns_roce_dev *hr_dev = to_hr_dev(ib_cq->device);
- 	struct hns_roce_cq *hr_cq = to_hr_cq(ib_cq);
- 	struct hns_roce_v2_cq_context context;
--	u32 data[MAX_ENTRY_NUM] = {};
--	int offset = 0;
- 	int ret;
- 
- 	if (!hr_dev->hw->query_cqc)
-@@ -58,23 +54,7 @@ int hns_roce_fill_res_cq_entry_raw(struct sk_buff *msg, struct ib_cq *ib_cq)
- 	if (ret)
- 		return -EINVAL;
- 
--	data[offset++] = hr_reg_read(&context, CQC_CQ_ST);
--	data[offset++] = hr_reg_read(&context, CQC_SHIFT);
--	data[offset++] = hr_reg_read(&context, CQC_CQE_SIZE);
--	data[offset++] = hr_reg_read(&context, CQC_CQE_CNT);
--	data[offset++] = hr_reg_read(&context, CQC_CQ_PRODUCER_IDX);
--	data[offset++] = hr_reg_read(&context, CQC_CQ_CONSUMER_IDX);
--	data[offset++] = hr_reg_read(&context, CQC_DB_RECORD_EN);
--	data[offset++] = hr_reg_read(&context, CQC_ARM_ST);
--	data[offset++] = hr_reg_read(&context, CQC_CMD_SN);
--	data[offset++] = hr_reg_read(&context, CQC_CEQN);
--	data[offset++] = hr_reg_read(&context, CQC_CQ_MAX_CNT);
--	data[offset++] = hr_reg_read(&context, CQC_CQ_PERIOD);
--	data[offset++] = hr_reg_read(&context, CQC_CQE_HOP_NUM);
--	data[offset++] = hr_reg_read(&context, CQC_CQE_BAR_PG_SZ);
--	data[offset++] = hr_reg_read(&context, CQC_CQE_BUF_PG_SZ);
--
--	ret = nla_put(msg, RDMA_NLDEV_ATTR_RES_RAW, offset * sizeof(u32), data);
-+	ret = nla_put(msg, RDMA_NLDEV_ATTR_RES_RAW, sizeof(context), &context);
- 
- 	return ret;
+ 	struct hns_roce_cmq_desc desc;
+@@ -6582,6 +6632,7 @@ static const struct hns_roce_hw hns_roce_hw_v2 = {
+ 	.query_cqc = hns_roce_v2_query_cqc,
+ 	.query_qpc = hns_roce_v2_query_qpc,
+ 	.query_mpt = hns_roce_v2_query_mpt,
++	.query_hw_counter = hns_roce_hw_v2_query_counter,
+ 	.hns_roce_dev_ops = &hns_roce_v2_dev_ops,
+ 	.hns_roce_dev_srq_ops = &hns_roce_v2_dev_srq_ops,
+ };
+diff --git a/drivers/infiniband/hw/hns/hns_roce_hw_v2.h b/drivers/infiniband/hw/hns/hns_roce_hw_v2.h
+index d9693f6cc802..cd97cbee682a 100644
+--- a/drivers/infiniband/hw/hns/hns_roce_hw_v2.h
++++ b/drivers/infiniband/hw/hns/hns_roce_hw_v2.h
+@@ -198,6 +198,7 @@ enum hns_roce_opcode_type {
+ 	HNS_ROCE_OPC_QUERY_HW_VER			= 0x8000,
+ 	HNS_ROCE_OPC_CFG_GLOBAL_PARAM			= 0x8001,
+ 	HNS_ROCE_OPC_ALLOC_PF_RES			= 0x8004,
++	HNS_ROCE_OPC_QUERY_COUNTER			= 0x8206,
+ 	HNS_ROCE_OPC_QUERY_PF_RES			= 0x8400,
+ 	HNS_ROCE_OPC_ALLOC_VF_RES			= 0x8401,
+ 	HNS_ROCE_OPC_CFG_EXT_LLM			= 0x8403,
+diff --git a/drivers/infiniband/hw/hns/hns_roce_main.c b/drivers/infiniband/hw/hns/hns_roce_main.c
+index 9141eadf33d2..d9d546cdef52 100644
+--- a/drivers/infiniband/hw/hns/hns_roce_main.c
++++ b/drivers/infiniband/hw/hns/hns_roce_main.c
+@@ -515,6 +515,83 @@ static void hns_roce_get_fw_ver(struct ib_device *device, char *str)
+ 		 sub_minor);
  }
-@@ -118,8 +98,6 @@ int hns_roce_fill_res_qp_entry_raw(struct sk_buff *msg, struct ib_qp *ib_qp)
- 	struct hns_roce_dev *hr_dev = to_hr_dev(ib_qp->device);
- 	struct hns_roce_qp *hr_qp = to_hr_qp(ib_qp);
- 	struct hns_roce_v2_qp_context context;
--	u32 data[MAX_ENTRY_NUM] = {};
--	int offset = 0;
- 	int ret;
  
- 	if (!hr_dev->hw->query_qpc)
-@@ -129,42 +107,7 @@ int hns_roce_fill_res_qp_entry_raw(struct sk_buff *msg, struct ib_qp *ib_qp)
- 	if (ret)
- 		return -EINVAL;
++#define HNS_ROCE_HW_CNT(ename, cname) \
++	[HNS_ROCE_HW_##ename##_CNT].name = cname
++
++static const struct rdma_stat_desc hns_roce_port_stats_descs[] = {
++	HNS_ROCE_HW_CNT(RX_RC_PKT, "rx_rc_pkt"),
++	HNS_ROCE_HW_CNT(RX_UC_PKT, "rx_uc_pkt"),
++	HNS_ROCE_HW_CNT(RX_UD_PKT, "rx_ud_pkt"),
++	HNS_ROCE_HW_CNT(RX_XRC_PKT, "rx_xrc_pkt"),
++	HNS_ROCE_HW_CNT(RX_PKT, "rx_pkt"),
++	HNS_ROCE_HW_CNT(RX_ERR_PKT, "rx_err_pkt"),
++	HNS_ROCE_HW_CNT(RX_CNP_PKT, "rx_cnp_pkt"),
++	HNS_ROCE_HW_CNT(TX_RC_PKT, "tx_rc_pkt"),
++	HNS_ROCE_HW_CNT(TX_UC_PKT, "tx_uc_pkt"),
++	HNS_ROCE_HW_CNT(TX_UD_PKT, "tx_ud_pkt"),
++	HNS_ROCE_HW_CNT(TX_XRC_PKT, "tx_xrc_pkt"),
++	HNS_ROCE_HW_CNT(TX_PKT, "tx_pkt"),
++	HNS_ROCE_HW_CNT(TX_ERR_PKT, "tx_err_pkt"),
++	HNS_ROCE_HW_CNT(TX_CNP_PKT, "tx_cnp_pkt"),
++	HNS_ROCE_HW_CNT(TRP_GET_MPT_ERR_PKT, "trp_get_mpt_err_pkt"),
++	HNS_ROCE_HW_CNT(TRP_GET_IRRL_ERR_PKT, "trp_get_irrl_err_pkt"),
++	HNS_ROCE_HW_CNT(ECN_DB, "ecn_doorbell"),
++	HNS_ROCE_HW_CNT(RX_BUF, "rx_buffer"),
++	HNS_ROCE_HW_CNT(TRP_RX_SOF, "trp_rx_sof"),
++	HNS_ROCE_HW_CNT(CQ_CQE, "cq_cqe"),
++	HNS_ROCE_HW_CNT(CQ_POE, "cq_poe"),
++	HNS_ROCE_HW_CNT(CQ_NOTIFY, "cq_notify"),
++};
++
++static struct rdma_hw_stats *hns_roce_alloc_hw_port_stats(
++				struct ib_device *device, u32 port_num)
++{
++	struct hns_roce_dev *hr_dev = to_hr_dev(device);
++	u32 port = port_num - 1;
++
++	if (port > hr_dev->caps.num_ports) {
++		ibdev_err(device, "invalid port num.\n");
++		return NULL;
++	}
++
++	if (hr_dev->pci_dev->revision <= PCI_REVISION_ID_HIP08 ||
++	    hr_dev->is_vf)
++		return NULL;
++
++	return rdma_alloc_hw_stats_struct(hns_roce_port_stats_descs,
++					  ARRAY_SIZE(hns_roce_port_stats_descs),
++					  RDMA_HW_STATS_DEFAULT_LIFESPAN);
++}
++
++static int hns_roce_get_hw_stats(struct ib_device *device,
++				 struct rdma_hw_stats *stats,
++				 u32 port, int index)
++{
++	struct hns_roce_dev *hr_dev = to_hr_dev(device);
++	int num_counters = HNS_ROCE_HW_CNT_TOTAL;
++	int ret;
++
++	if (port == 0)
++		return 0;
++
++	if (port > hr_dev->caps.num_ports)
++		return -EINVAL;
++
++	if (hr_dev->pci_dev->revision <= PCI_REVISION_ID_HIP08 ||
++	    hr_dev->is_vf)
++		return -EOPNOTSUPP;
++
++	ret = hr_dev->hw->query_hw_counter(hr_dev, stats->value, port,
++					   &num_counters);
++	if (ret) {
++		ibdev_err(device, "failed to query hw counter, ret = %d\n",
++			  ret);
++		return ret;
++	}
++
++	return num_counters;
++}
++
+ static void hns_roce_unregister_device(struct hns_roce_dev *hr_dev)
+ {
+ 	struct hns_roce_ib_iboe *iboe = &hr_dev->iboe;
+@@ -557,6 +634,8 @@ static const struct ib_device_ops hns_roce_dev_ops = {
+ 	.query_pkey = hns_roce_query_pkey,
+ 	.query_port = hns_roce_query_port,
+ 	.reg_user_mr = hns_roce_reg_user_mr,
++	.alloc_hw_port_stats = hns_roce_alloc_hw_port_stats,
++	.get_hw_stats = hns_roce_get_hw_stats,
  
--	data[offset++] = hr_reg_read(&context, QPC_QP_ST);
--	data[offset++] = hr_reg_read(&context, QPC_ERR_TYPE);
--	data[offset++] = hr_reg_read(&context, QPC_CHECK_FLG);
--	data[offset++] = hr_reg_read(&context, QPC_SRQ_EN);
--	data[offset++] = hr_reg_read(&context, QPC_SRQN);
--	data[offset++] = hr_reg_read(&context, QPC_QKEY_XRCD);
--	data[offset++] = hr_reg_read(&context, QPC_TX_CQN);
--	data[offset++] = hr_reg_read(&context, QPC_RX_CQN);
--	data[offset++] = hr_reg_read(&context, QPC_SQ_PRODUCER_IDX);
--	data[offset++] = hr_reg_read(&context, QPC_SQ_CONSUMER_IDX);
--	data[offset++] = hr_reg_read(&context, QPC_RQ_RECORD_EN);
--	data[offset++] = hr_reg_read(&context, QPC_RQ_PRODUCER_IDX);
--	data[offset++] = hr_reg_read(&context, QPC_RQ_CONSUMER_IDX);
--	data[offset++] = hr_reg_read(&context, QPC_SQ_SHIFT);
--	data[offset++] = hr_reg_read(&context, QPC_RQWS);
--	data[offset++] = hr_reg_read(&context, QPC_RQ_SHIFT);
--	data[offset++] = hr_reg_read(&context, QPC_SGE_SHIFT);
--	data[offset++] = hr_reg_read(&context, QPC_SQ_HOP_NUM);
--	data[offset++] = hr_reg_read(&context, QPC_RQ_HOP_NUM);
--	data[offset++] = hr_reg_read(&context, QPC_SGE_HOP_NUM);
--	data[offset++] = hr_reg_read(&context, QPC_WQE_SGE_BA_PG_SZ);
--	data[offset++] = hr_reg_read(&context, QPC_WQE_SGE_BUF_PG_SZ);
--	data[offset++] = hr_reg_read(&context, QPC_RETRY_NUM_INIT);
--	data[offset++] = hr_reg_read(&context, QPC_RETRY_CNT);
--	data[offset++] = hr_reg_read(&context, QPC_SQ_CUR_PSN);
--	data[offset++] = hr_reg_read(&context, QPC_SQ_MAX_PSN);
--	data[offset++] = hr_reg_read(&context, QPC_SQ_FLUSH_IDX);
--	data[offset++] = hr_reg_read(&context, QPC_SQ_MAX_IDX);
--	data[offset++] = hr_reg_read(&context, QPC_SQ_TX_ERR);
--	data[offset++] = hr_reg_read(&context, QPC_SQ_RX_ERR);
--	data[offset++] = hr_reg_read(&context, QPC_RQ_RX_ERR);
--	data[offset++] = hr_reg_read(&context, QPC_RQ_TX_ERR);
--	data[offset++] = hr_reg_read(&context, QPC_RQ_CQE_IDX);
--	data[offset++] = hr_reg_read(&context, QPC_RQ_RTY_TX_ERR);
--
--	ret = nla_put(msg, RDMA_NLDEV_ATTR_RES_RAW, offset * sizeof(u32), data);
-+	ret = nla_put(msg, RDMA_NLDEV_ATTR_RES_RAW, sizeof(context), &context);
- 
- 	return ret;
- }
-@@ -204,8 +147,6 @@ int hns_roce_fill_res_mr_entry_raw(struct sk_buff *msg, struct ib_mr *ib_mr)
- 	struct hns_roce_dev *hr_dev = to_hr_dev(ib_mr->device);
- 	struct hns_roce_mr *hr_mr = to_hr_mr(ib_mr);
- 	struct hns_roce_v2_mpt_entry context;
--	u32 data[MAX_ENTRY_NUM] = {};
--	int offset = 0;
- 	int ret;
- 
- 	if (!hr_dev->hw->query_mpt)
-@@ -215,17 +156,7 @@ int hns_roce_fill_res_mr_entry_raw(struct sk_buff *msg, struct ib_mr *ib_mr)
- 	if (ret)
- 		return -EINVAL;
- 
--	data[offset++] = hr_reg_read(&context, MPT_ST);
--	data[offset++] = hr_reg_read(&context, MPT_PD);
--	data[offset++] = hr_reg_read(&context, MPT_LKEY);
--	data[offset++] = hr_reg_read(&context, MPT_LEN_L);
--	data[offset++] = hr_reg_read(&context, MPT_LEN_H);
--	data[offset++] = hr_reg_read(&context, MPT_PBL_SIZE);
--	data[offset++] = hr_reg_read(&context, MPT_PBL_HOP_NUM);
--	data[offset++] = hr_reg_read(&context, MPT_PBL_BA_PG_SZ);
--	data[offset++] = hr_reg_read(&context, MPT_PBL_BUF_PG_SZ);
--
--	ret = nla_put(msg, RDMA_NLDEV_ATTR_RES_RAW, offset * sizeof(u32), data);
-+	ret = nla_put(msg, RDMA_NLDEV_ATTR_RES_RAW, sizeof(context), &context);
- 
- 	return ret;
- }
+ 	INIT_RDMA_OBJ_SIZE(ib_ah, hns_roce_ah, ibah),
+ 	INIT_RDMA_OBJ_SIZE(ib_cq, hns_roce_cq, ib_cq),
 -- 
 2.30.0
 
