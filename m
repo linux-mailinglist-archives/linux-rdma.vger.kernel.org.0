@@ -2,73 +2,70 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E2F0790FE4
-	for <lists+linux-rdma@lfdr.de>; Mon,  4 Sep 2023 04:06:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 679D0791329
+	for <lists+linux-rdma@lfdr.de>; Mon,  4 Sep 2023 10:19:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344965AbjIDCGy (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Sun, 3 Sep 2023 22:06:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38042 "EHLO
+        id S1346653AbjIDITR (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 4 Sep 2023 04:19:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47670 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1350754AbjIDCGx (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Sun, 3 Sep 2023 22:06:53 -0400
-Received: from mail-qt1-x82f.google.com (mail-qt1-x82f.google.com [IPv6:2607:f8b0:4864:20::82f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F736A9
-        for <linux-rdma@vger.kernel.org>; Sun,  3 Sep 2023 19:06:49 -0700 (PDT)
-Received: by mail-qt1-x82f.google.com with SMTP id d75a77b69052e-4142ca41b89so7774251cf.0
-        for <linux-rdma@vger.kernel.org>; Sun, 03 Sep 2023 19:06:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1693793208; x=1694398008; darn=vger.kernel.org;
-        h=to:subject:message-id:date:from:reply-to:mime-version:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=QEzM+W+OEmpHfEeEaAySJoGydPuqhtpau7d10u77fwA=;
-        b=Kf3xlvTikq/uRKIDynJTD5LfdtJtaND2aUUP7fzD3Wns94ODWeqFnYko+US1/JQtmi
-         SSSLED1IJhkOnf4Hm++rmgh8+e6GkhrL+quBrcJBbOfdZWyMfE7KvAeSUdSqNUmN5CDG
-         F/YpAy2aj4/QMt39tumLXHf81nDqepMmubpJ14rT2g8zpB6c8QIJ8faN+/yMaLVDQ342
-         OQxAs3Vmd2hnZ0W4JxWdUyfOBlalfd2Gqm/VYVtttWq9JWnij2Y3Tr4cMi5Hf+UsBjxr
-         27fLiEI8Dm1+bS/ssSbAc08tJQuQDfPWL1uRMDwiv6PlND3sfvfsfNMDcwrCTVtiZcGC
-         kM1g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693793208; x=1694398008;
-        h=to:subject:message-id:date:from:reply-to:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=QEzM+W+OEmpHfEeEaAySJoGydPuqhtpau7d10u77fwA=;
-        b=PxOmCOPrrnDz/RYTxUsOReLYd6A/5YfaPdpZBmoPOgcJvADAPCQ5WDbPVFb/r9LrDh
-         3OlG+aJHXHbD0dV0vAt0B8/h94wbTsYDn1rw3Mwi3oCc8Xsaep4ijqb8RsMWcqL4vYcs
-         /SacNXCM7MGcyXaFMItLsT4AzxmXvjq3IGvsSGxB35dh5di7G+NuvHDAVg5f8jsO35EB
-         BNPPIhOxWFXFrOGtMtdWlYgxGejhcJjMkrzYGE0dAQpjCNGnRKti0k7GFnKnH1Jw+wiw
-         5YJVTM750y0YuB4iA4gk7ZclPMIJkRvSld6dyV6kWPBcRrxYPG6tZxTZmnX6GhIppuUE
-         3uAA==
-X-Gm-Message-State: AOJu0Yxk5iqNkkqno/82WFFhJyhUfQlC00NOR62AQgAkoUBCW5H7p5Tx
-        bI+Os0doLPEgnwKptepBLyJfVpA2SSvT85Xxslc=
-X-Google-Smtp-Source: AGHT+IHfruWQC12OZTBDVvii1fOAymwQSAxlHmaMJY41lK0KMf3ugUllLO2kVC+Px4736wr5sVgmA67A42Z9cD81DfY=
-X-Received: by 2002:a05:622a:148:b0:412:f12:239f with SMTP id
- v8-20020a05622a014800b004120f12239fmr12778775qtw.5.1693793208188; Sun, 03 Sep
- 2023 19:06:48 -0700 (PDT)
+        with ESMTP id S1344652AbjIDITR (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 4 Sep 2023 04:19:17 -0400
+X-Greylist: delayed 1247 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Mon, 04 Sep 2023 01:19:13 PDT
+Received: from mail.equinoxrise.pl (mail.equinoxrise.pl [217.61.112.157])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C99FD102
+        for <linux-rdma@vger.kernel.org>; Mon,  4 Sep 2023 01:19:13 -0700 (PDT)
+Received: by mail.equinoxrise.pl (Postfix, from userid 1002)
+        id C97168339C; Mon,  4 Sep 2023 09:41:23 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=equinoxrise.pl;
+        s=mail; t=1693813358;
+        bh=v6OgBfK5dN7P5dQ0wCu59rOfZaiqziJeLNblJ8dOcGI=;
+        h=Date:From:To:Subject:From;
+        b=xO7jDSIHyNQPjOGG+s7DxA/P07Nj9VM/q6NMBQ1S9GcNvhvtWSWbo7u2N+Rl/gU1S
+         urWPVHBbfCuiFo5NYrrr4AxgwDyUbV7vUx4MFRkBkrtuCO9ZxJBJgPtXW9XB33zZip
+         ruU1+Q+YzcEB1z0DdQaTGrb7Rt/Db4uHWcj3Yvpn9Y0GNFd4SC5fFyIx6ItZNzucwt
+         hf4qby48XM9PDsgx+3DlAIvaE+Mx/8mQuBdDhJvKV8RHgTcDT3a+pZaOF+GBKQYwK0
+         hqkafcc9u9idQFQRRvADY8SsanmeYpOK6ykvNVTppN5qGoOeRZC5WXgzbKdzAPW5id
+         cFw15X+V6oxzw==
+Received: by mail.equinoxrise.pl for <linux-rdma@vger.kernel.org>; Mon,  4 Sep 2023 07:40:34 GMT
+Message-ID: <20230904084500-0.1.7.r9o.0.yl6el6jh6e@equinoxrise.pl>
+Date:   Mon,  4 Sep 2023 07:40:34 GMT
+From:   "Mateusz Talaga" <mateusz.talaga@equinoxrise.pl>
+To:     <linux-rdma@vger.kernel.org>
+Subject: Prezentacja
+X-Mailer: mail.equinoxrise.pl
 MIME-Version: 1.0
-Received: by 2002:a05:622a:1708:b0:404:12aa:90d7 with HTTP; Sun, 3 Sep 2023
- 19:06:47 -0700 (PDT)
-Reply-To: ava014708@gmail.com
-From:   "Dr. Ava Smith" <profbencarter@gmail.com>
-Date:   Mon, 4 Sep 2023 03:06:47 +0100
-Message-ID: <CAOmSZDbHSwrc=ns8D0hDnNLyicgZfjYjFqThJU=rr76+wggyUQ@mail.gmail.com>
-Subject: Hi
-To:     undisclosed-recipients:;
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=4.5 required=5.0 tests=BAYES_50,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,FREEMAIL_REPLYTO,
-        FREEMAIL_REPLYTO_END_DIGIT,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
-        SPF_PASS,UNDISC_FREEM autolearn=no autolearn_force=no version=3.4.6
-X-Spam-Level: ****
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=3.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_SBL_CSS,SPF_HELO_NONE,SPF_PASS,URIBL_CSS_A,URIBL_DBL_SPAM
+        autolearn=no autolearn_force=no version=3.4.6
+X-Spam-Level: ***
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
--- 
-Hello Dear,
-how are you today? I hope you are fine
-My name is Dr. Ava Smith, I Am an English and French nationality.
-I will give you pictures and more details about me as soon as I hear from you
-Thanks
-Ava
+Dzie=C5=84 dobry!
+
+Czy m=C3=B3g=C5=82bym przedstawi=C4=87 rozwi=C4=85zanie, kt=C3=B3re umo=C5=
+=BCliwia monitoring ka=C5=BCdego auta w czasie rzeczywistym w tym jego po=
+zycj=C4=99, zu=C5=BCycie paliwa i przebieg?
+
+Dodatkowo nasze narz=C4=99dzie minimalizuje koszty utrzymania samochod=C3=
+=B3w, skraca czas przejazd=C3=B3w, a tak=C5=BCe tworzenie planu tras czy =
+dostaw.
+
+Z naszej wiedzy i do=C5=9Bwiadczenia korzysta ju=C5=BC ponad 49 tys. Klie=
+nt=C3=B3w. Monitorujemy 809 000 pojazd=C3=B3w na ca=C5=82ym =C5=9Bwiecie,=
+ co jest nasz=C4=85 najlepsz=C4=85 wizyt=C3=B3wk=C4=85.
+
+Bardzo prosz=C4=99 o e-maila zwrotnego, je=C5=9Bli mogliby=C5=9Bmy wsp=C3=
+=B3lnie om=C3=B3wi=C4=87 potencja=C5=82 wykorzystania takiego rozwi=C4=85=
+zania w Pa=C5=84stwa firmie.
+
+
+Pozdrawiam
+Mateusz Talaga
