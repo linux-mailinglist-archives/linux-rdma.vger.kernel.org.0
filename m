@@ -2,91 +2,146 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E9F097925AD
-	for <lists+linux-rdma@lfdr.de>; Tue,  5 Sep 2023 18:24:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C8B0D7927B1
+	for <lists+linux-rdma@lfdr.de>; Tue,  5 Sep 2023 18:37:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234482AbjIEQBC (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 5 Sep 2023 12:01:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48208 "EHLO
+        id S234440AbjIEQA6 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 5 Sep 2023 12:00:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38042 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1354555AbjIEMhN (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 5 Sep 2023 08:37:13 -0400
-Received: from gw.red-soft.ru (red-soft.ru [188.246.186.2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 43CDC1AD;
-        Tue,  5 Sep 2023 05:37:08 -0700 (PDT)
-Received: from localhost.localdomain (unknown [10.81.81.211])
-        (using TLSv1.2 with cipher AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by gw.red-soft.ru (Postfix) with ESMTPSA id 276823E1A8B;
-        Tue,  5 Sep 2023 15:37:05 +0300 (MSK)
-Date:   Tue, 5 Sep 2023 15:37:03 +0300
-From:   Artem Chernyshev <artem.chernyshev@red-soft.ru>
-To:     Krzysztof Kozlowski <krzk@kernel.org>
-Cc:     Leon Romanovsky <leon@kernel.org>,
-        Potnuri Bharat Teja <bharat@chelsio.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>, linux-rdma@vger.kernel.org,
-        linux-kernel@vger.kernel.org, lvc-project@linuxtesting.org
-Subject: Re: [PATCH] infiniband: cxgb4: cm: Check skb value
-Message-ID: <ZPcg7/QbN73C/OYK@localhost.localdomain>
-References: <20230904115925.261974-1-artem.chernyshev@red-soft.ru>
- <fe404996-6568-e2ad-656d-e75523d96637@kernel.org>
+        with ESMTP id S1354843AbjIEO6f (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 5 Sep 2023 10:58:35 -0400
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AD1E618C
+        for <linux-rdma@vger.kernel.org>; Tue,  5 Sep 2023 07:58:31 -0700 (PDT)
+Received: from pps.filterd (m0353727.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 385ElaVe009144;
+        Tue, 5 Sep 2023 14:58:28 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-transfer-encoding; s=pp1;
+ bh=fRMy/8Alh5GmtLn/p+NwaEY+kS5OuoEWOA99xHkFM9A=;
+ b=f6+Vtezs6ERdI+4y95IphHW4g6JaPgTtJi2DAx5+HFvMz5qBcJG+cj+hBZXcXnq/lKU2
+ MCasVQR17prn/p5kcEJoUIVkI8F5aHMT6kwr2LJPh/gEj0BtK/P9gXzf/ahhvlZouMBQ
+ 5u2d4dveITcJyZV9UV1bnFoV9vroLUXBISTG4311r5OX6s/Jb/DimOpP5sQhfTnAeSLy
+ +vO+a3zAEeCL/ADyv+smqvWTcYkVDKPJ8QBjJ/RI0AdgGFIRwGMFdnGc4tcLc8U/AR7y
+ xy//sofSXT8Mow5+6uAeJp65+TOwm8KrBlxoyPaj/JZ56UZyQLToFcfcc5Dhv07TDsVR fQ== 
+Received: from ppma22.wdc07v.mail.ibm.com (5c.69.3da9.ip4.static.sl-reverse.com [169.61.105.92])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3sx6da0919-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 05 Sep 2023 14:58:27 +0000
+Received: from pps.filterd (ppma22.wdc07v.mail.ibm.com [127.0.0.1])
+        by ppma22.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 385EFeVx021433;
+        Tue, 5 Sep 2023 14:58:26 GMT
+Received: from smtprelay01.fra02v.mail.ibm.com ([9.218.2.227])
+        by ppma22.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3svfrybmek-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 05 Sep 2023 14:58:26 +0000
+Received: from smtpav07.fra02v.mail.ibm.com (smtpav07.fra02v.mail.ibm.com [10.20.54.106])
+        by smtprelay01.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 385EwOGv20447996
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 5 Sep 2023 14:58:24 GMT
+Received: from smtpav07.fra02v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 83A0620043;
+        Tue,  5 Sep 2023 14:58:24 +0000 (GMT)
+Received: from smtpav07.fra02v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 666C320040;
+        Tue,  5 Sep 2023 14:58:24 +0000 (GMT)
+Received: from rims.zurich.ibm.com (unknown [9.4.69.66])
+        by smtpav07.fra02v.mail.ibm.com (Postfix) with ESMTP;
+        Tue,  5 Sep 2023 14:58:24 +0000 (GMT)
+From:   Bernard Metzler <bmt@zurich.ibm.com>
+To:     linux-rdma@vger.kernel.org
+Cc:     jgg@ziepe.ca, leon@kernel.org, Bernard Metzler <bmt@zurich.ibm.com>
+Subject: [PATCH v2] RDMA/siw: Fix connection failure handling
+Date:   Tue,  5 Sep 2023 16:58:22 +0200
+Message-Id: <20230905145822.446263-1-bmt@zurich.ibm.com>
+X-Mailer: git-send-email 2.38.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <fe404996-6568-e2ad-656d-e75523d96637@kernel.org>
-X-KLMS-Rule-ID: 1
-X-KLMS-Message-Action: clean
-X-KLMS-AntiSpam-Lua-Profiles: 179655 [Sep 05 2023]
-X-KLMS-AntiSpam-Version: 5.9.59.0
-X-KLMS-AntiSpam-Envelope-From: artem.chernyshev@red-soft.ru
-X-KLMS-AntiSpam-Rate: 0
-X-KLMS-AntiSpam-Status: not_detected
-X-KLMS-AntiSpam-Method: none
-X-KLMS-AntiSpam-Auth: dkim=none
-X-KLMS-AntiSpam-Info: LuaCore: 529 529 a773548e495283fecef97c3e587259fde2135fef, {Tracking_from_domain_doesnt_match_to}, d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;127.0.0.199:7.1.2;red-soft.ru:7.1.1, FromAlignment: s
-X-MS-Exchange-Organization-SCL: -1
-X-KLMS-AntiSpam-Interceptor-Info: scan successful
-X-KLMS-AntiPhishing: Clean, bases: 2023/09/05 05:09:00
-X-KLMS-AntiVirus: Kaspersky Security for Linux Mail Server, version 8.0.3.30, bases: 2023/09/05 09:52:00 #21801295
-X-KLMS-AntiVirus-Status: Clean, skipped
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: 1Qb4RWFEXN-lwvAg5kXG3yFaEkmsQ23j
+X-Proofpoint-ORIG-GUID: 1Qb4RWFEXN-lwvAg5kXG3yFaEkmsQ23j
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
+ definitions=2023-09-05_10,2023-09-05_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=686 clxscore=1015
+ bulkscore=0 priorityscore=1501 phishscore=0 suspectscore=0 adultscore=0
+ lowpriorityscore=0 mlxscore=0 malwarescore=0 impostorscore=0 spamscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2308100000
+ definitions=main-2309050127
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Mon, Sep 04, 2023 at 10:07:26PM +0200, Krzysztof Kozlowski wrote:
-> On 04/09/2023 13:59, Artem Chernyshev wrote:
-> > get_skb() can't allocate skb in case of OOM.
-> > 
-> > Found by Linux Verification Center (linuxtesting.org) with SVACE.
-> > 
-> > Signed-off-by: Artem Chernyshev <artem.chernyshev@red-soft.ru>
-> > ---
-> >  drivers/infiniband/hw/cxgb4/cm.c | 4 ++++
-> >  1 file changed, 4 insertions(+)
-> > 
-> > diff --git a/drivers/infiniband/hw/cxgb4/cm.c b/drivers/infiniband/hw/cxgb4/cm.c
-> > index ced615b5ea09..775da62b38ec 100644
-> > --- a/drivers/infiniband/hw/cxgb4/cm.c
-> > +++ b/drivers/infiniband/hw/cxgb4/cm.c
-> > @@ -1965,6 +1965,10 @@ static int send_fw_act_open_req(struct c4iw_ep *ep, unsigned int atid)
-> >  	int win;
-> >  
-> >  	skb = get_skb(NULL, sizeof(*req), GFP_KERNEL);
-> > +	if (!skb) {
-> > +		pr_err("%s - cannot alloc skb!\n", __func__);
-> 
-> I don't think we print memory allocation failures.
-> 
-> Best regards,
-> Krzysztof
-> 
+In case immediate MPA request processing fails, the newly
+created endpoint unlinks the listening endpoint and is
+ready to be dropped. This special case was not handled
+correctly by the code handling the later TCP socket close,
+causing a NULL dereference crash in siw_cm_work_handler()
+when dereferencing a NULL listener. We now also cancel
+the useless MPA timeout, if immediate MPA request
+processing fails.
 
-Sure, will fix that in v2
+This patch furthermore simplifies MPA processing in general:
+Scheduling a useless TCP socket read in sk_data_ready() upcall
+is now surpressed, if the socket is already moved out of
+TCP_ESTABLISHED state.
 
-Thanks,
-Artem
+Fixes: 6c52fdc244b5 ("rdma/siw: connection management")
+Signed-off-by: Bernard Metzler <bmt@zurich.ibm.com>
+---
+ChangeLog v1->v2:
+- Move debug message to now conditional listener drop
+---
+ drivers/infiniband/sw/siw/siw_cm.c | 16 ++++++++++++----
+ 1 file changed, 12 insertions(+), 4 deletions(-)
+
+diff --git a/drivers/infiniband/sw/siw/siw_cm.c b/drivers/infiniband/sw/siw/siw_cm.c
+index a2605178f4ed..43e776073f49 100644
+--- a/drivers/infiniband/sw/siw/siw_cm.c
++++ b/drivers/infiniband/sw/siw/siw_cm.c
+@@ -976,6 +976,7 @@ static void siw_accept_newconn(struct siw_cep *cep)
+ 			siw_cep_put(cep);
+ 			new_cep->listen_cep = NULL;
+ 			if (rv) {
++				siw_cancel_mpatimer(new_cep);
+ 				siw_cep_set_free(new_cep);
+ 				goto error;
+ 			}
+@@ -1100,9 +1101,12 @@ static void siw_cm_work_handler(struct work_struct *w)
+ 				/*
+ 				 * Socket close before MPA request received.
+ 				 */
+-				siw_dbg_cep(cep, "no mpareq: drop listener\n");
+-				siw_cep_put(cep->listen_cep);
+-				cep->listen_cep = NULL;
++				if (cep->listen_cep) {
++					siw_dbg_cep(cep,
++						"no mpareq: drop listener\n");
++					siw_cep_put(cep->listen_cep);
++					cep->listen_cep = NULL;
++				}
+ 			}
+ 		}
+ 		release_cep = 1;
+@@ -1227,7 +1231,11 @@ static void siw_cm_llp_data_ready(struct sock *sk)
+ 	if (!cep)
+ 		goto out;
+ 
+-	siw_dbg_cep(cep, "state: %d\n", cep->state);
++	siw_dbg_cep(cep, "cep state: %d, socket state %d\n",
++		    cep->state, sk->sk_state);
++
++	if (sk->sk_state != TCP_ESTABLISHED)
++		goto out;
+ 
+ 	switch (cep->state) {
+ 	case SIW_EPSTATE_RDMA_MODE:
+-- 
+2.38.1
+
