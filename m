@@ -2,48 +2,44 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6557D79250C
-	for <lists+linux-rdma@lfdr.de>; Tue,  5 Sep 2023 18:01:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 19ECE79250E
+	for <lists+linux-rdma@lfdr.de>; Tue,  5 Sep 2023 18:01:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234598AbjIEQBH (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 5 Sep 2023 12:01:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34596 "EHLO
+        id S234622AbjIEQBJ (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 5 Sep 2023 12:01:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35922 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1354230AbjIEKMx (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 5 Sep 2023 06:12:53 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0638818D;
-        Tue,  5 Sep 2023 03:12:50 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id AAA0CB8111D;
-        Tue,  5 Sep 2023 10:12:48 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 13680C433C7;
-        Tue,  5 Sep 2023 10:12:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1693908767;
-        bh=ZjCDQ/N/dcrfzTLkrKNM3dWHoHgfxVCPVZZhdtBTGaM=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=tI8+wR+qV4mjYFjLzphBj49wG/chYfuGnasxMlyP3fuqEoPzAymkLd2UqpMWcqqVt
-         PgIuqHQ7xUoqA3qNZbGUAUNUyhgPYLLKjJ4NxJ8bzEd+X76v15aEae+RENql29M+m1
-         oVfim/R9ifkMKdjrqZjQ2NLorNejz5xr9nvRa/hk=
-Date:   Tue, 5 Sep 2023 11:12:44 +0100
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Konstantin Meskhidze <konstantin.meskhidze@huawei.com>
-Cc:     jgg@ziepe.ca, leon@kernel.org, benjamin.tissoires@redhat.com,
-        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
-        yusongping@huawei.com, artem.kuzin@huawei.com
-Subject: Re: [PATCH] RDMA/uverbs: Fix typo of sizeof argument
-Message-ID: <2023090504-tiny-deceased-980d@gregkh>
-References: <20230905101021.1722796-1-konstantin.meskhidze@huawei.com>
+        with ESMTP id S1354286AbjIEKdL (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 5 Sep 2023 06:33:11 -0400
+Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C858E8;
+        Tue,  5 Sep 2023 03:33:06 -0700 (PDT)
+Received: from lhrpeml500004.china.huawei.com (unknown [172.18.147.201])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4Rg1zs2lvSz6K6K2;
+        Tue,  5 Sep 2023 18:32:57 +0800 (CST)
+Received: from mscphis00759.huawei.com (10.123.66.134) by
+ lhrpeml500004.china.huawei.com (7.191.163.9) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.31; Tue, 5 Sep 2023 11:33:03 +0100
+From:   Konstantin Meskhidze <konstantin.meskhidze@huawei.com>
+To:     <jgg@ziepe.ca>
+CC:     <leon@kernel.org>, <gregkh@linuxfoundation.org>,
+        <benjamin.tissoires@redhat.com>, <linux-rdma@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <yusongping@huawei.com>,
+        <artem.kuzin@huawei.com>
+Subject: [PATCH] RDMA/uverbs: Fix typo of sizeof argument
+Date:   Tue, 5 Sep 2023 18:32:58 +0800
+Message-ID: <20230905103258.1738246-1-konstantin.meskhidze@huawei.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230905101021.1722796-1-konstantin.meskhidze@huawei.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.123.66.134]
+X-ClientProxiedBy: mscpeml500002.china.huawei.com (7.188.26.138) To
+ lhrpeml500004.china.huawei.com (7.191.163.9)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -51,17 +47,31 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Tue, Sep 05, 2023 at 06:10:21PM +0800, Konstantin Meskhidze wrote:
-> Since size of 'hdr' pointer and '*hdr' structure is equal on 64-bit
-> machines issue probably didn't cause any wrong behavior. But anyway,
-> fixing of typo is required.
-> 
-> Fixes: da0f60df7bd5 ("RDMA/uverbs: Prohibit write() calls with too small buffers")
-> Co-developed-by: Ivanov Mikhail <ivanov.mikhail1@huawei-partners.com>
+Since size of 'hdr' pointer and '*hdr' structure is equal on 64-bit
+machines issue probably didn't cause any wrong behavior. But anyway,
+fixing of typo is required.
 
-Please read the documentation for how to use this tag properly (hint,
-you didn't use it properly here...)
+Fixes: da0f60df7bd5 ("RDMA/uverbs: Prohibit write() calls with too small buffers")
+Co-developed-by: Ivanov Mikhail <ivanov.mikhail1@huawei-partners.com>
+Signed-off-by: Ivanov Mikhail <ivanov.mikhail1@huawei-partners.com>
+Signed-off-by: Konstantin Meskhidze <konstantin.meskhidze@huawei.com>
+---
+ drivers/infiniband/core/uverbs_main.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-thanks,
+diff --git a/drivers/infiniband/core/uverbs_main.c b/drivers/infiniband/core/uverbs_main.c
+index 7c9c79c13941..508d6712e14d 100644
+--- a/drivers/infiniband/core/uverbs_main.c
++++ b/drivers/infiniband/core/uverbs_main.c
+@@ -535,7 +535,7 @@ static ssize_t verify_hdr(struct ib_uverbs_cmd_hdr *hdr,
+ 	if (hdr->in_words * 4 != count)
+ 		return -EINVAL;
 
-greg k-h
+-	if (count < method_elm->req_size + sizeof(hdr)) {
++	if (count < method_elm->req_size + sizeof(*hdr)) {
+ 		/*
+ 		 * rdma-core v18 and v19 have a bug where they send DESTROY_CQ
+ 		 * with a 16 byte write instead of 24. Old kernels didn't
+--
+2.34.1
+
