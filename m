@@ -2,53 +2,46 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8699B792509
-	for <lists+linux-rdma@lfdr.de>; Tue,  5 Sep 2023 18:01:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2ED8379260B
+	for <lists+linux-rdma@lfdr.de>; Tue,  5 Sep 2023 18:26:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234523AbjIEQBE (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 5 Sep 2023 12:01:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46574 "EHLO
+        id S234400AbjIEQAz (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 5 Sep 2023 12:00:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52878 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1354562AbjIEMk6 (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 5 Sep 2023 08:40:58 -0400
-Received: from gw.red-soft.ru (red-soft.ru [188.246.186.2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 901041A8;
-        Tue,  5 Sep 2023 05:40:54 -0700 (PDT)
-Received: from localhost.biz (unknown [10.81.81.211])
-        by gw.red-soft.ru (Postfix) with ESMTPA id 3C26F3E1A8C;
-        Tue,  5 Sep 2023 15:40:53 +0300 (MSK)
-From:   Artem Chernyshev <artem.chernyshev@red-soft.ru>
-To:     Krzysztof Kozlowski <krzk@kernel.org>
-Cc:     Artem Chernyshev <artem.chernyshev@red-soft.ru>,
-        Leon Romanovsky <leon@kernel.org>,
-        Potnuri Bharat Teja <bharat@chelsio.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>, linux-rdma@vger.kernel.org,
-        linux-kernel@vger.kernel.org, lvc-project@linuxtesting.org
-Subject: [PATCH v2] infiniband: cxgb4: cm: Check skb value
-Date:   Tue,  5 Sep 2023 15:40:48 +0300
-Message-Id: <20230905124048.284165-1-artem.chernyshev@red-soft.ru>
-X-Mailer: git-send-email 2.37.3
-In-Reply-To: <fe404996-6568-e2ad-656d-e75523d96637@kernel.org>
-References: 
+        with ESMTP id S1345406AbjIEEHd (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 5 Sep 2023 00:07:33 -0400
+Received: from szxga03-in.huawei.com (szxga03-in.huawei.com [45.249.212.189])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C9CFCCB
+        for <linux-rdma@vger.kernel.org>; Mon,  4 Sep 2023 21:07:29 -0700 (PDT)
+Received: from canpemm500010.china.huawei.com (unknown [172.30.72.54])
+        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4RfsMD6JFqzMl6D;
+        Tue,  5 Sep 2023 12:04:08 +0800 (CST)
+Received: from [10.174.176.93] (10.174.176.93) by
+ canpemm500010.china.huawei.com (7.192.105.118) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.31; Tue, 5 Sep 2023 12:07:27 +0800
+Message-ID: <9a9ee4b7-b378-4aeb-6e23-02d2f6dbaa9a@huawei.com>
+Date:   Tue, 5 Sep 2023 12:07:26 +0800
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-KLMS-Rule-ID: 1
-X-KLMS-Message-Action: clean
-X-KLMS-AntiSpam-Lua-Profiles: 179655 [Sep 05 2023]
-X-KLMS-AntiSpam-Version: 5.9.59.0
-X-KLMS-AntiSpam-Envelope-From: artem.chernyshev@red-soft.ru
-X-KLMS-AntiSpam-Rate: 0
-X-KLMS-AntiSpam-Status: not_detected
-X-KLMS-AntiSpam-Method: none
-X-KLMS-AntiSpam-Auth: dkim=none
-X-KLMS-AntiSpam-Info: LuaCore: 529 529 a773548e495283fecef97c3e587259fde2135fef, {Tracking_from_domain_doesnt_match_to}, 127.0.0.199:7.1.2;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;localhost.biz:7.1.1;red-soft.ru:7.1.1, FromAlignment: s
-X-MS-Exchange-Organization-SCL: -1
-X-KLMS-AntiSpam-Interceptor-Info: scan successful
-X-KLMS-AntiPhishing: Clean, bases: 2023/09/05 05:09:00
-X-KLMS-AntiVirus: Kaspersky Security for Linux Mail Server, version 8.0.3.30, bases: 2023/09/05 09:52:00 #21801295
-X-KLMS-AntiVirus-Status: Clean, skipped
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.9.1
+Subject: Re: [PATCH for-rc] RDMA/irdma: Prevent zero-length STAG registration
+To:     Shiraz Saleem <shiraz.saleem@intel.com>, <jgg@nvidia.com>,
+        <leon@kernel.org>
+CC:     <linux-rdma@vger.kernel.org>, <ivan.d.barrera@intel.com>,
+        Christopher Bednarz <christopher.n.bednarz@intel.com>
+References: <20230818144838.1758-1-shiraz.saleem@intel.com>
+From:   "liujian (CE)" <liujian56@huawei.com>
+In-Reply-To: <20230818144838.1758-1-shiraz.saleem@intel.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.176.93]
+X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
+ canpemm500010.china.huawei.com (7.192.105.118)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-5.7 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -56,30 +49,32 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-get_skb() can't allocate skb in case of OOM.
 
-Found by Linux Verification Center (linuxtesting.org) with SVACE.
 
-Signed-off-by: Artem Chernyshev <artem.chernyshev@red-soft.ru>
----
-V2 -> remove pr_err
+On 2023/8/18 22:48, Shiraz Saleem wrote:
+> From: Christopher Bednarz <christopher.n.bednarz@intel.com>
+> 
+> Currently irdma allows zero-length STAGs to be programmed in HW during
+> the kernel mode fast register flow. Zero-length MR or STAG registration
+> disable HW memory length checks.
+> 
+> Improve gaps in bounds checking in irdma by preventing zero-length STAG or
+> MR registrations except if the IB_PD_UNSAFE_GLOBAL_RKEY is set.
+> 
+> This addresses the disclosure CVE-2023-25775.
+> 
+> Fixes: b48c24c2d710 ("RDMA/irdma: Implement device supported verb APIs")
 
- drivers/infiniband/hw/cxgb4/cm.c | 2 ++
- 1 file changed, 2 insertions(+)
+Hello,I would like to consult the CVE. The driver corresponding to the 
+kernel of an earlier version (< 5.14) is i40iw and has similar code 
+logic. Is this CVE also involved?
 
-diff --git a/drivers/infiniband/hw/cxgb4/cm.c b/drivers/infiniband/hw/cxgb4/cm.c
-index ced615b5ea09..54145b33a523 100644
---- a/drivers/infiniband/hw/cxgb4/cm.c
-+++ b/drivers/infiniband/hw/cxgb4/cm.c
-@@ -1965,6 +1965,8 @@ static int send_fw_act_open_req(struct c4iw_ep *ep, unsigned int atid)
- 	int win;
- 
- 	skb = get_skb(NULL, sizeof(*req), GFP_KERNEL);
-+	if (!skb)
-+		return -ENOMEM;
- 	req = __skb_put_zero(skb, sizeof(*req));
- 	req->op_compl = htonl(WR_OP_V(FW_OFLD_CONNECTION_WR));
- 	req->len16_pkd = htonl(FW_WR_LEN16_V(DIV_ROUND_UP(sizeof(*req), 16)));
--- 
-2.37.3
-
+> Signed-off-by: Christopher Bednarz <christopher.n.bednarz@intel.com>
+> Signed-off-by: Shiraz Saleem <shiraz.saleem@intel.com>
+> ---
+>   drivers/infiniband/hw/irdma/ctrl.c  |  6 ++++++
+>   drivers/infiniband/hw/irdma/type.h  |  2 ++
+>   drivers/infiniband/hw/irdma/verbs.c | 10 ++++++++--
+>   3 files changed, 16 insertions(+), 2 deletions(-)
+> 
+[...]
