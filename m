@@ -2,73 +2,64 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 55211793782
-	for <lists+linux-rdma@lfdr.de>; Wed,  6 Sep 2023 10:54:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6DC48793B02
+	for <lists+linux-rdma@lfdr.de>; Wed,  6 Sep 2023 13:24:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233714AbjIFIyd (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 6 Sep 2023 04:54:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58472 "EHLO
+        id S229491AbjIFLYQ (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 6 Sep 2023 07:24:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50346 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230115AbjIFIyc (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 6 Sep 2023 04:54:32 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 882B3E9
-        for <linux-rdma@vger.kernel.org>; Wed,  6 Sep 2023 01:54:28 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 407DE20293;
-        Wed,  6 Sep 2023 08:54:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1693990467; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=eBNWBZeFhh/iXD8952Q1ruU9rljb6K7/zzx/5z/MaMY=;
-        b=UdfAi9hzXY8TguA04qmRopOyjQZYTtcdBFrtUa3d3I93HU6DFe0T9QwBB6VHl9LBg+mGA3
-        pV/JV2dC+BtQ6H5tucZmQUktdRHaqe/iFOo/oJq5eyCtY4x48zSWnz5q9yYjmlQshzjB/Z
-        6V/XjhI0nBHq/I95xoiUsZ1kb8xCl4A=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1693990467;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=eBNWBZeFhh/iXD8952Q1ruU9rljb6K7/zzx/5z/MaMY=;
-        b=ujhp3XYwi8qSAbTfM2maftWVW6Jsg4Qe+i903Cj0bPyD2+HZV/cQKOVcWn2hOTZ27UZxfG
-        KMnVCYen088ucjBA==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 3235F1333E;
-        Wed,  6 Sep 2023 08:54:27 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id loA7DEM++GRGeAAAMHmgww
-        (envelope-from <dwagner@suse.de>); Wed, 06 Sep 2023 08:54:27 +0000
-Date:   Wed, 6 Sep 2023 10:54:56 +0200
-From:   Daniel Wagner <dwagner@suse.de>
-To:     Shinichiro Kawasaki <shinichiro.kawasaki@wdc.com>
-Cc:     Jason Gunthorpe <jgg@ziepe.ca>, Leon Romanovsky <leon@kernel.org>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        "linux-nvme@lists.infradead.org" <linux-nvme@lists.infradead.org>,
-        Damien Le Moal <dlemoal@kernel.org>
-Subject: Re: [PATCH v2] RDMA/cma: prevent rdma id destroy during
- cma_iw_handler
-Message-ID: <sqjbjg7cwcpjx6yn7tmitx6ttxlb4pkutgfbhdgxa2hi4hy6wp@ek7z43bwtkso>
-References: <20230612054237.1855292-1-shinichiro.kawasaki@wdc.com>
- <ZIcpHbV3oqsjuwfz@ziepe.ca>
- <3x4kcccwy5s2yhni5t26brhgejj24kxyk7bnlabp5zw2js26eb@kjwyilm5d4wc>
- <ZIhvfdVOMsN2cXEX@ziepe.ca>
- <20230613180747.GB12152@unreal>
- <iclshorg6eyrorloix2bkfsezzbnkwdepschcn5vhk3m2ionxc@oti3l4kvv4ds>
- <ZIn6ul5jPuxC+uIG@ziepe.ca>
- <l3gjwsd7hlx5dnl74moxo3rvnbsrejjvur6ykdl3pxiwh52wzp@6hfb4xb2tco3>
- <g2lh3wh6e6yossw2ktqmxx2rf63m36mumqmx4qbtzvxuygsr6h@gpgftgfigllv>
+        with ESMTP id S232788AbjIFLYQ (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 6 Sep 2023 07:24:16 -0400
+Received: from mail-wr1-x42a.google.com (mail-wr1-x42a.google.com [IPv6:2a00:1450:4864:20::42a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B1A071986
+        for <linux-rdma@vger.kernel.org>; Wed,  6 Sep 2023 04:23:57 -0700 (PDT)
+Received: by mail-wr1-x42a.google.com with SMTP id ffacd0b85a97d-31de47996c8so3127025f8f.2
+        for <linux-rdma@vger.kernel.org>; Wed, 06 Sep 2023 04:23:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1693999436; x=1694604236; darn=vger.kernel.org;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=YnD5AsR+rQGEikt0Jm0WB+aaQ90cGSQSw3FwinvIwiE=;
+        b=u8DWgxBGaSmNxN+4J36lAeI7U92xFah2GXT1U8iHCl3pvgLrtmeqHekw72KomrVm+u
+         9yMw21S+p5O4APpde1dHu79ox7r93G7mI5cLA3MUP9cejn+7qb2LhKx3IzE43By3584x
+         oUnzVfm50hR+EZl3FhEWPk4yn78Kc6OmCA3C/decnN+T7ZjspRnmFAxmKSRprOmU1nUm
+         prUhwWIgOWfzgGqJfC+PMMc7J1LRo7lQM3mzUuo1TlvW0VNM+eZNqB8gf7YERuqh35du
+         1L3wbvCkTwGPwfYiW45Fd3TBEumCKbefTAxsk5ejIzYdFcsdydjaoHo4D+PhwQUoSZNW
+         HFmw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1693999436; x=1694604236;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=YnD5AsR+rQGEikt0Jm0WB+aaQ90cGSQSw3FwinvIwiE=;
+        b=JF08vbC0Gq5kaPem1wP0e6PIfVwo1IcQq4ajYfzr7z+45AcQ81L67DwUxL87ZuO450
+         jrZOfiMaqWSuV1wKa6DLtg5QCjV5VP+Xd0bJUshk/8rEcWoKnumpxzKBF1tjbqkcUFD0
+         RPFxANNfADcCvcRDMH2ki/5tvijybbvXrb2wQN74TSH+b95IsW9am8FS/ouRqyQck0XU
+         f0ufGg4B7w529AIsIjZHWCfYYuNOGXJlDjVzWfiT6UDH6s4xDYCNUvBLLHEYntKqkK9u
+         /bXyl1P+Q1StSeH2RmhpzOneuVVM0kgd99G8fNORHuYr78DNeLnF6AhXFaBaFLRnqIym
+         O61w==
+X-Gm-Message-State: AOJu0YyFZPgdSOToZixfRfPqJValPrAdWRVw5hkVY8jDcvr0Bjr+cZEm
+        tRCfR4TCdSfcBoMAYWiaU0IVHuDNjt94hDgO2lM=
+X-Google-Smtp-Source: AGHT+IGfYP3zQPLwT2yb30uf2wbJUO0eXJJuYp2woUe5QwMhi7INC4jOkYKyCpdhntKmPZhIYrk5yQ==
+X-Received: by 2002:adf:f4d0:0:b0:317:58e4:e941 with SMTP id h16-20020adff4d0000000b0031758e4e941mr1878533wrp.33.1693999436178;
+        Wed, 06 Sep 2023 04:23:56 -0700 (PDT)
+Received: from localhost ([102.36.222.112])
+        by smtp.gmail.com with ESMTPSA id h8-20020a056000000800b0030647449730sm20357768wrx.74.2023.09.06.04.23.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 06 Sep 2023 04:23:55 -0700 (PDT)
+Date:   Wed, 6 Sep 2023 14:23:52 +0300
+From:   Dan Carpenter <dan.carpenter@linaro.org>
+To:     Cheng Xu <chengyou@linux.alibaba.com>
+Cc:     Kai Shen <kaishen@linux.alibaba.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Leon Romanovsky <leon@kernel.org>, linux-rdma@vger.kernel.org,
+        kernel-janitors@vger.kernel.org
+Subject: [PATCH] RDMA/erdma: Fix error code in erdma_create_scatter_mtt()
+Message-ID: <1eb400d5-d8a3-4a8e-b3da-c43c6c377f86@moroto.mountain>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <g2lh3wh6e6yossw2ktqmxx2rf63m36mumqmx4qbtzvxuygsr6h@gpgftgfigllv>
+X-Mailer: git-send-email haha only kidding
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
@@ -78,14 +69,28 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Tue, Sep 05, 2023 at 12:39:38AM +0000, Shinichiro Kawasaki wrote:
-> Two month ago, the failure had been recreated by repeating the blktests test
-> cases nvme/030 and nvme/031 with SIW tranposrt around 30 times. Now I do not see
-> it when I repeat them 100 times. I suspected some kernel changes between v6.4
-> and v6.5 would have fixed the issue, but even when I use both kernel versions,
-> the failure is no longer seen. I reverted nvme-cli and libnvme to older version,
-> but still do not see the failure. I just guess some change on my test system
-> affected the symptom (Fedora 38 on QEMU).
+The erdma_create_scatter_mtt() function is supposed to return error
+pointers.  Returning NULL will lead to an Oops.
 
-Maybe the refactoring in blktests could also be the reason the tests are
-not working? Just an idea.
+Fixes: ed10435d3583 ("RDMA/erdma: Implement hierarchical MTT")
+Signed-off-by: Dan Carpenter <dan.carpenter@linaro.org>
+---
+ drivers/infiniband/hw/erdma/erdma_verbs.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/infiniband/hw/erdma/erdma_verbs.c b/drivers/infiniband/hw/erdma/erdma_verbs.c
+index dcccb6015232..70eaed59a67c 100644
+--- a/drivers/infiniband/hw/erdma/erdma_verbs.c
++++ b/drivers/infiniband/hw/erdma/erdma_verbs.c
+@@ -655,7 +655,7 @@ static struct erdma_mtt *erdma_create_scatter_mtt(struct erdma_dev *dev,
+ 
+ 	mtt = kzalloc(sizeof(*mtt), GFP_KERNEL);
+ 	if (!mtt)
+-		return NULL;
++		return ERR_PTR(-ENOMEM);
+ 
+ 	mtt->size = ALIGN(size, PAGE_SIZE);
+ 	mtt->buf = vzalloc(mtt->size);
+-- 
+2.39.2
+
