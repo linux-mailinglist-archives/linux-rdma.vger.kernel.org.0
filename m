@@ -2,30 +2,30 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CFD28793E24
-	for <lists+linux-rdma@lfdr.de>; Wed,  6 Sep 2023 15:55:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 72BEA793E26
+	for <lists+linux-rdma@lfdr.de>; Wed,  6 Sep 2023 15:55:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241271AbjIFNzr (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 6 Sep 2023 09:55:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51990 "EHLO
+        id S241253AbjIFNzu (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 6 Sep 2023 09:55:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52018 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241262AbjIFNzr (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 6 Sep 2023 09:55:47 -0400
+        with ESMTP id S239958AbjIFNzu (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 6 Sep 2023 09:55:50 -0400
 Received: from out30-118.freemail.mail.aliyun.com (out30-118.freemail.mail.aliyun.com [115.124.30.118])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50AA61B6;
-        Wed,  6 Sep 2023 06:55:42 -0700 (PDT)
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R171e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046051;MF=alibuda@linux.alibaba.com;NM=1;PH=DS;RN=9;SR=0;TI=SMTPD_---0VrU7-xt_1694008537;
-Received: from j66a10360.sqa.eu95.tbsite.net(mailfrom:alibuda@linux.alibaba.com fp:SMTPD_---0VrU7-xt_1694008537)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09EFBD7;
+        Wed,  6 Sep 2023 06:55:43 -0700 (PDT)
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R221e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046056;MF=alibuda@linux.alibaba.com;NM=1;PH=DS;RN=9;SR=0;TI=SMTPD_---0VrU7-yS_1694008540;
+Received: from j66a10360.sqa.eu95.tbsite.net(mailfrom:alibuda@linux.alibaba.com fp:SMTPD_---0VrU7-yS_1694008540)
           by smtp.aliyun-inc.com;
-          Wed, 06 Sep 2023 21:55:39 +0800
+          Wed, 06 Sep 2023 21:55:41 +0800
 From:   "D. Wythe" <alibuda@linux.alibaba.com>
 To:     kgraul@linux.ibm.com, wenjia@linux.ibm.com, jaka@linux.ibm.com
 Cc:     kuba@kernel.org, davem@davemloft.net, netdev@vger.kernel.org,
         linux-s390@vger.kernel.org, linux-rdma@vger.kernel.org,
         "D. Wythe" <alibuda@linux.alibaba.com>
-Subject: [RFC net-next 1/2] net/smc: refactoring lgr pending lock
-Date:   Wed,  6 Sep 2023 21:55:29 +0800
-Message-Id: <1694008530-85087-2-git-send-email-alibuda@linux.alibaba.com>
+Subject: [RFC net-next 2/2] net/smc: remove locks smc_client_lgr_pending and smc_server_lgr_pending
+Date:   Wed,  6 Sep 2023 21:55:30 +0800
+Message-Id: <1694008530-85087-3-git-send-email-alibuda@linux.alibaba.com>
 X-Mailer: git-send-email 1.8.3.1
 In-Reply-To: <1694008530-85087-1-git-send-email-alibuda@linux.alibaba.com>
 References: <1694008530-85087-1-git-send-email-alibuda@linux.alibaba.com>
@@ -41,159 +41,88 @@ X-Mailing-List: linux-rdma@vger.kernel.org
 
 From: "D. Wythe" <alibuda@linux.alibaba.com>
 
-This patch replaces the locking and unlocking of lgr pending with
-a unified inline function, and since the granularity of lgr pending
-lock is within the lifecycle of init_info, which make it possible
-to record the lock state on init_info. So that other routines can
-unlock lgr pending lock safely.
+This patch attempts to remove locks named smc_client_lgr_pending and
+smc_server_lgr_pending, which aim to serialize the creation of link
+group. However, once link group existed already, those locks are
+meaningless, worse still, they make incoming connections have to be
+queued one after the other.
+
+Before attempting to locking at xxx_lgr_pending, trying to invoke
+smc_conn_create() firstly but does not allow it to create link group.
+Once we found we MUST create link group, then we can make lock on it.
+In that way, we can skip meaningless lock.
 
 Signed-off-by: D. Wythe <alibuda@linux.alibaba.com>
 ---
- net/smc/af_smc.c   | 24 ++++++++++++------------
- net/smc/smc_core.h | 21 +++++++++++++++++++++
- 2 files changed, 33 insertions(+), 12 deletions(-)
+ net/smc/smc_clc.h  |  1 +
+ net/smc/smc_core.c | 28 ++++++++++++++++++++++++++--
+ 2 files changed, 27 insertions(+), 2 deletions(-)
 
-diff --git a/net/smc/af_smc.c b/net/smc/af_smc.c
-index bacdd97..52a987b 100644
---- a/net/smc/af_smc.c
-+++ b/net/smc/af_smc.c
-@@ -1251,10 +1251,10 @@ static int smc_connect_rdma(struct smc_sock *smc,
- 	if (reason_code)
- 		return reason_code;
+diff --git a/net/smc/smc_clc.h b/net/smc/smc_clc.h
+index c5c8e7d..050484a 100644
+--- a/net/smc/smc_clc.h
++++ b/net/smc/smc_clc.h
+@@ -48,6 +48,7 @@
+ #define SMC_CLC_DECL_RELEASEERR	0x03030009  /* release version negotiate failed */
+ #define SMC_CLC_DECL_MAXCONNERR	0x0303000a  /* max connections negotiate failed */
+ #define SMC_CLC_DECL_MAXLINKERR	0x0303000b  /* max links negotiate failed */
++#define SMC_CLC_DECL_REQLGR	0x0303000c  /* required create link grou */
+ #define SMC_CLC_DECL_MODEUNSUPP	0x03040000  /* smc modes do not match (R or D)*/
+ #define SMC_CLC_DECL_RMBE_EC	0x03050000  /* peer has eyecatcher in RMBE    */
+ #define SMC_CLC_DECL_OPTUNSUPP	0x03060000  /* fastopen sockopt not supported */
+diff --git a/net/smc/smc_core.c b/net/smc/smc_core.c
+index bd01dd3..76c82ae 100644
+--- a/net/smc/smc_core.c
++++ b/net/smc/smc_core.c
+@@ -1863,8 +1863,7 @@ static bool smcd_lgr_match(struct smc_link_group *lgr,
+ 	return lgr->peer_gid == peer_gid && lgr->smcd == smcismdev;
+ }
  
--	mutex_lock(&smc_client_lgr_pending);
-+	smc_lgr_pending_lock(ini, &smc_client_lgr_pending);
- 	reason_code = smc_conn_create(smc, ini);
- 	if (reason_code) {
--		mutex_unlock(&smc_client_lgr_pending);
-+		smc_lgr_pending_unlock(ini, &smc_client_lgr_pending);
- 		return reason_code;
- 	}
- 
-@@ -1346,7 +1346,7 @@ static int smc_connect_rdma(struct smc_sock *smc,
- 		if (reason_code)
- 			goto connect_abort;
- 	}
--	mutex_unlock(&smc_client_lgr_pending);
-+	smc_lgr_pending_unlock(ini, &smc_client_lgr_pending);
- 
- 	smc_copy_sock_settings_to_clc(smc);
- 	smc->connect_nonblock = 0;
-@@ -1356,7 +1356,7 @@ static int smc_connect_rdma(struct smc_sock *smc,
- 	return 0;
- connect_abort:
- 	smc_conn_abort(smc, ini->first_contact_local);
--	mutex_unlock(&smc_client_lgr_pending);
-+	smc_lgr_pending_unlock(ini, &smc_client_lgr_pending);
- 	smc->connect_nonblock = 0;
- 
- 	return reason_code;
-@@ -1413,10 +1413,10 @@ static int smc_connect_ism(struct smc_sock *smc,
- 	ini->ism_peer_gid[ini->ism_selected] = aclc->d0.gid;
- 
- 	/* there is only one lgr role for SMC-D; use server lock */
--	mutex_lock(&smc_server_lgr_pending);
-+	smc_lgr_pending_lock(ini, &smc_server_lgr_pending);
- 	rc = smc_conn_create(smc, ini);
- 	if (rc) {
--		mutex_unlock(&smc_server_lgr_pending);
-+		smc_lgr_pending_unlock(ini, &smc_server_lgr_pending);
- 		return rc;
- 	}
- 
-@@ -1443,7 +1443,7 @@ static int smc_connect_ism(struct smc_sock *smc,
- 				  aclc->hdr.version, eid, ini);
- 	if (rc)
- 		goto connect_abort;
--	mutex_unlock(&smc_server_lgr_pending);
-+	smc_lgr_pending_unlock(ini, &smc_server_lgr_pending);
- 
- 	smc_copy_sock_settings_to_clc(smc);
- 	smc->connect_nonblock = 0;
-@@ -1453,7 +1453,7 @@ static int smc_connect_ism(struct smc_sock *smc,
- 	return 0;
- connect_abort:
- 	smc_conn_abort(smc, ini->first_contact_local);
--	mutex_unlock(&smc_server_lgr_pending);
-+	smc_lgr_pending_unlock(ini, &smc_server_lgr_pending);
- 	smc->connect_nonblock = 0;
- 
- 	return rc;
-@@ -2460,7 +2460,7 @@ static void smc_listen_work(struct work_struct *work)
- 	if (rc)
- 		goto out_decl;
- 
--	mutex_lock(&smc_server_lgr_pending);
-+	smc_lgr_pending_lock(ini, &smc_server_lgr_pending);
- 	smc_close_init(new_smc);
- 	smc_rx_init(new_smc);
- 	smc_tx_init(new_smc);
-@@ -2479,7 +2479,7 @@ static void smc_listen_work(struct work_struct *work)
- 
- 	/* SMC-D does not need this lock any more */
- 	if (ini->is_smcd)
--		mutex_unlock(&smc_server_lgr_pending);
-+		smc_lgr_pending_unlock(ini, &smc_server_lgr_pending);
- 
- 	/* receive SMC Confirm CLC message */
- 	memset(buf, 0, sizeof(*buf));
-@@ -2510,7 +2510,7 @@ static void smc_listen_work(struct work_struct *work)
- 					    ini->first_contact_local, ini);
- 		if (rc)
- 			goto out_unlock;
--		mutex_unlock(&smc_server_lgr_pending);
-+		smc_lgr_pending_unlock(ini, &smc_server_lgr_pending);
- 	}
- 	smc_conn_save_peer_info(new_smc, cclc);
- 	smc_listen_out_connected(new_smc);
-@@ -2518,7 +2518,7 @@ static void smc_listen_work(struct work_struct *work)
- 	goto out_free;
- 
- out_unlock:
--	mutex_unlock(&smc_server_lgr_pending);
-+	smc_lgr_pending_unlock(ini, &smc_server_lgr_pending);
- out_decl:
- 	smc_listen_decline(new_smc, rc, ini ? ini->first_contact_local : 0,
- 			   proposal_version);
-diff --git a/net/smc/smc_core.h b/net/smc/smc_core.h
-index 120027d..6f309a3 100644
---- a/net/smc/smc_core.h
-+++ b/net/smc/smc_core.h
-@@ -422,6 +422,8 @@ struct smc_init_info {
- 	u8			ism_offered_cnt; /* # of ISM devices offered */
- 	u8			ism_selected;    /* index of selected ISM dev*/
- 	u8			smcd_version;
-+	/* mutex holding for conn create */
-+	struct mutex *mutex;
- };
- 
- /* Find the connection associated with the given alert token in the link group.
-@@ -589,6 +591,25 @@ struct smc_link *smc_switch_conns(struct smc_link_group *lgr,
- int smcr_nl_get_link(struct sk_buff *skb, struct netlink_callback *cb);
- int smcd_nl_get_lgr(struct sk_buff *skb, struct netlink_callback *cb);
- 
-+static inline void smc_lgr_pending_lock(struct smc_init_info *ini, struct mutex *lock)
-+{
-+	if (unlikely(ini->mutex))
-+		pr_warn_once("smc: lgr pending deadlock dected.");
-+
-+	mutex_lock(lock);
-+	ini->mutex = lock;
-+}
-+
-+static inline void smc_lgr_pending_unlock(struct smc_init_info *ini, struct mutex *lock)
-+{
-+	/* already unlock it */
-+	if (!ini->mutex)
-+		return;
-+
-+	ini->mutex = NULL;
-+	mutex_unlock(lock);
-+}
-+
- static inline struct smc_link_group *smc_get_lgr(struct smc_link *link)
+-/* create a new SMC connection (and a new link group if necessary) */
+-int smc_conn_create(struct smc_sock *smc, struct smc_init_info *ini)
++static int __smc_conn_create(struct smc_sock *smc, struct smc_init_info *ini, bool create_lgr)
  {
- 	return link->lgr;
+ 	struct smc_connection *conn = &smc->conn;
+ 	struct net *net = sock_net(&smc->sk);
+@@ -1927,6 +1926,8 @@ int smc_conn_create(struct smc_sock *smc, struct smc_init_info *ini)
+ 
+ create:
+ 	if (ini->first_contact_local) {
++		if (!create_lgr)
++			return SMC_CLC_DECL_REQLGR;
+ 		rc = smc_lgr_create(smc, ini);
+ 		if (rc)
+ 			goto out;
+@@ -1962,6 +1963,29 @@ int smc_conn_create(struct smc_sock *smc, struct smc_init_info *ini)
+ 	return rc;
+ }
+ 
++/* create a new SMC connection (and a new link group if necessary) */
++int smc_conn_create(struct smc_sock *smc, struct smc_init_info *ini)
++{
++	int rc;
++
++	/* make no impact on SMCD */
++	if (ini->is_smcd)
++		goto locked;
++
++	/* try create conn without create lgr first */
++	rc = __smc_conn_create(smc, ini, /* disallow create lgr */ false);
++	if (!rc) {
++		/* not rely on new lgr, unlock lgr pending lock in advance. */
++		smc_lgr_pending_unlock(ini, ini->mutex);
++		return 0;
++	} else if (rc != SMC_CLC_DECL_REQLGR) {
++		/* that's unexcepted error */
++		return rc;
++	}
++locked:
++	return __smc_conn_create(smc, ini, /* create lgr if needed */ true);
++}
++
+ #define SMCD_DMBE_SIZES		6 /* 0 -> 16KB, 1 -> 32KB, .. 6 -> 1MB */
+ #define SMCR_RMBE_SIZES		5 /* 0 -> 16KB, 1 -> 32KB, .. 5 -> 512KB */
+ 
 -- 
 1.8.3.1
 
