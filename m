@@ -2,75 +2,75 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C8B0D7927B1
-	for <lists+linux-rdma@lfdr.de>; Tue,  5 Sep 2023 18:37:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 55211793782
+	for <lists+linux-rdma@lfdr.de>; Wed,  6 Sep 2023 10:54:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234440AbjIEQA6 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 5 Sep 2023 12:00:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38042 "EHLO
+        id S233714AbjIFIyd (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 6 Sep 2023 04:54:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58472 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1354843AbjIEO6f (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 5 Sep 2023 10:58:35 -0400
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AD1E618C
-        for <linux-rdma@vger.kernel.org>; Tue,  5 Sep 2023 07:58:31 -0700 (PDT)
-Received: from pps.filterd (m0353727.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 385ElaVe009144;
-        Tue, 5 Sep 2023 14:58:28 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
- : date : message-id : mime-version : content-transfer-encoding; s=pp1;
- bh=fRMy/8Alh5GmtLn/p+NwaEY+kS5OuoEWOA99xHkFM9A=;
- b=f6+Vtezs6ERdI+4y95IphHW4g6JaPgTtJi2DAx5+HFvMz5qBcJG+cj+hBZXcXnq/lKU2
- MCasVQR17prn/p5kcEJoUIVkI8F5aHMT6kwr2LJPh/gEj0BtK/P9gXzf/ahhvlZouMBQ
- 5u2d4dveITcJyZV9UV1bnFoV9vroLUXBISTG4311r5OX6s/Jb/DimOpP5sQhfTnAeSLy
- +vO+a3zAEeCL/ADyv+smqvWTcYkVDKPJ8QBjJ/RI0AdgGFIRwGMFdnGc4tcLc8U/AR7y
- xy//sofSXT8Mow5+6uAeJp65+TOwm8KrBlxoyPaj/JZ56UZyQLToFcfcc5Dhv07TDsVR fQ== 
-Received: from ppma22.wdc07v.mail.ibm.com (5c.69.3da9.ip4.static.sl-reverse.com [169.61.105.92])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3sx6da0919-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 05 Sep 2023 14:58:27 +0000
-Received: from pps.filterd (ppma22.wdc07v.mail.ibm.com [127.0.0.1])
-        by ppma22.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 385EFeVx021433;
-        Tue, 5 Sep 2023 14:58:26 GMT
-Received: from smtprelay01.fra02v.mail.ibm.com ([9.218.2.227])
-        by ppma22.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3svfrybmek-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 05 Sep 2023 14:58:26 +0000
-Received: from smtpav07.fra02v.mail.ibm.com (smtpav07.fra02v.mail.ibm.com [10.20.54.106])
-        by smtprelay01.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 385EwOGv20447996
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 5 Sep 2023 14:58:24 GMT
-Received: from smtpav07.fra02v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 83A0620043;
-        Tue,  5 Sep 2023 14:58:24 +0000 (GMT)
-Received: from smtpav07.fra02v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 666C320040;
-        Tue,  5 Sep 2023 14:58:24 +0000 (GMT)
-Received: from rims.zurich.ibm.com (unknown [9.4.69.66])
-        by smtpav07.fra02v.mail.ibm.com (Postfix) with ESMTP;
-        Tue,  5 Sep 2023 14:58:24 +0000 (GMT)
-From:   Bernard Metzler <bmt@zurich.ibm.com>
-To:     linux-rdma@vger.kernel.org
-Cc:     jgg@ziepe.ca, leon@kernel.org, Bernard Metzler <bmt@zurich.ibm.com>
-Subject: [PATCH v2] RDMA/siw: Fix connection failure handling
-Date:   Tue,  5 Sep 2023 16:58:22 +0200
-Message-Id: <20230905145822.446263-1-bmt@zurich.ibm.com>
-X-Mailer: git-send-email 2.38.1
+        with ESMTP id S230115AbjIFIyc (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 6 Sep 2023 04:54:32 -0400
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 882B3E9
+        for <linux-rdma@vger.kernel.org>; Wed,  6 Sep 2023 01:54:28 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 407DE20293;
+        Wed,  6 Sep 2023 08:54:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1693990467; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=eBNWBZeFhh/iXD8952Q1ruU9rljb6K7/zzx/5z/MaMY=;
+        b=UdfAi9hzXY8TguA04qmRopOyjQZYTtcdBFrtUa3d3I93HU6DFe0T9QwBB6VHl9LBg+mGA3
+        pV/JV2dC+BtQ6H5tucZmQUktdRHaqe/iFOo/oJq5eyCtY4x48zSWnz5q9yYjmlQshzjB/Z
+        6V/XjhI0nBHq/I95xoiUsZ1kb8xCl4A=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1693990467;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=eBNWBZeFhh/iXD8952Q1ruU9rljb6K7/zzx/5z/MaMY=;
+        b=ujhp3XYwi8qSAbTfM2maftWVW6Jsg4Qe+i903Cj0bPyD2+HZV/cQKOVcWn2hOTZ27UZxfG
+        KMnVCYen088ucjBA==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 3235F1333E;
+        Wed,  6 Sep 2023 08:54:27 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id loA7DEM++GRGeAAAMHmgww
+        (envelope-from <dwagner@suse.de>); Wed, 06 Sep 2023 08:54:27 +0000
+Date:   Wed, 6 Sep 2023 10:54:56 +0200
+From:   Daniel Wagner <dwagner@suse.de>
+To:     Shinichiro Kawasaki <shinichiro.kawasaki@wdc.com>
+Cc:     Jason Gunthorpe <jgg@ziepe.ca>, Leon Romanovsky <leon@kernel.org>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        "linux-nvme@lists.infradead.org" <linux-nvme@lists.infradead.org>,
+        Damien Le Moal <dlemoal@kernel.org>
+Subject: Re: [PATCH v2] RDMA/cma: prevent rdma id destroy during
+ cma_iw_handler
+Message-ID: <sqjbjg7cwcpjx6yn7tmitx6ttxlb4pkutgfbhdgxa2hi4hy6wp@ek7z43bwtkso>
+References: <20230612054237.1855292-1-shinichiro.kawasaki@wdc.com>
+ <ZIcpHbV3oqsjuwfz@ziepe.ca>
+ <3x4kcccwy5s2yhni5t26brhgejj24kxyk7bnlabp5zw2js26eb@kjwyilm5d4wc>
+ <ZIhvfdVOMsN2cXEX@ziepe.ca>
+ <20230613180747.GB12152@unreal>
+ <iclshorg6eyrorloix2bkfsezzbnkwdepschcn5vhk3m2ionxc@oti3l4kvv4ds>
+ <ZIn6ul5jPuxC+uIG@ziepe.ca>
+ <l3gjwsd7hlx5dnl74moxo3rvnbsrejjvur6ykdl3pxiwh52wzp@6hfb4xb2tco3>
+ <g2lh3wh6e6yossw2ktqmxx2rf63m36mumqmx4qbtzvxuygsr6h@gpgftgfigllv>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: 1Qb4RWFEXN-lwvAg5kXG3yFaEkmsQ23j
-X-Proofpoint-ORIG-GUID: 1Qb4RWFEXN-lwvAg5kXG3yFaEkmsQ23j
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
- definitions=2023-09-05_10,2023-09-05_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=686 clxscore=1015
- bulkscore=0 priorityscore=1501 phishscore=0 suspectscore=0 adultscore=0
- lowpriorityscore=0 mlxscore=0 malwarescore=0 impostorscore=0 spamscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2308100000
- definitions=main-2309050127
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <g2lh3wh6e6yossw2ktqmxx2rf63m36mumqmx4qbtzvxuygsr6h@gpgftgfigllv>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -78,70 +78,14 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-In case immediate MPA request processing fails, the newly
-created endpoint unlinks the listening endpoint and is
-ready to be dropped. This special case was not handled
-correctly by the code handling the later TCP socket close,
-causing a NULL dereference crash in siw_cm_work_handler()
-when dereferencing a NULL listener. We now also cancel
-the useless MPA timeout, if immediate MPA request
-processing fails.
+On Tue, Sep 05, 2023 at 12:39:38AM +0000, Shinichiro Kawasaki wrote:
+> Two month ago, the failure had been recreated by repeating the blktests test
+> cases nvme/030 and nvme/031 with SIW tranposrt around 30 times. Now I do not see
+> it when I repeat them 100 times. I suspected some kernel changes between v6.4
+> and v6.5 would have fixed the issue, but even when I use both kernel versions,
+> the failure is no longer seen. I reverted nvme-cli and libnvme to older version,
+> but still do not see the failure. I just guess some change on my test system
+> affected the symptom (Fedora 38 on QEMU).
 
-This patch furthermore simplifies MPA processing in general:
-Scheduling a useless TCP socket read in sk_data_ready() upcall
-is now surpressed, if the socket is already moved out of
-TCP_ESTABLISHED state.
-
-Fixes: 6c52fdc244b5 ("rdma/siw: connection management")
-Signed-off-by: Bernard Metzler <bmt@zurich.ibm.com>
----
-ChangeLog v1->v2:
-- Move debug message to now conditional listener drop
----
- drivers/infiniband/sw/siw/siw_cm.c | 16 ++++++++++++----
- 1 file changed, 12 insertions(+), 4 deletions(-)
-
-diff --git a/drivers/infiniband/sw/siw/siw_cm.c b/drivers/infiniband/sw/siw/siw_cm.c
-index a2605178f4ed..43e776073f49 100644
---- a/drivers/infiniband/sw/siw/siw_cm.c
-+++ b/drivers/infiniband/sw/siw/siw_cm.c
-@@ -976,6 +976,7 @@ static void siw_accept_newconn(struct siw_cep *cep)
- 			siw_cep_put(cep);
- 			new_cep->listen_cep = NULL;
- 			if (rv) {
-+				siw_cancel_mpatimer(new_cep);
- 				siw_cep_set_free(new_cep);
- 				goto error;
- 			}
-@@ -1100,9 +1101,12 @@ static void siw_cm_work_handler(struct work_struct *w)
- 				/*
- 				 * Socket close before MPA request received.
- 				 */
--				siw_dbg_cep(cep, "no mpareq: drop listener\n");
--				siw_cep_put(cep->listen_cep);
--				cep->listen_cep = NULL;
-+				if (cep->listen_cep) {
-+					siw_dbg_cep(cep,
-+						"no mpareq: drop listener\n");
-+					siw_cep_put(cep->listen_cep);
-+					cep->listen_cep = NULL;
-+				}
- 			}
- 		}
- 		release_cep = 1;
-@@ -1227,7 +1231,11 @@ static void siw_cm_llp_data_ready(struct sock *sk)
- 	if (!cep)
- 		goto out;
- 
--	siw_dbg_cep(cep, "state: %d\n", cep->state);
-+	siw_dbg_cep(cep, "cep state: %d, socket state %d\n",
-+		    cep->state, sk->sk_state);
-+
-+	if (sk->sk_state != TCP_ESTABLISHED)
-+		goto out;
- 
- 	switch (cep->state) {
- 	case SIW_EPSTATE_RDMA_MODE:
--- 
-2.38.1
-
+Maybe the refactoring in blktests could also be the reason the tests are
+not working? Just an idea.
