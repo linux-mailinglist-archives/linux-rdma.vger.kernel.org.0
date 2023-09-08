@@ -2,168 +2,125 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D90E9797C50
-	for <lists+linux-rdma@lfdr.de>; Thu,  7 Sep 2023 20:51:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AA1EE798038
+	for <lists+linux-rdma@lfdr.de>; Fri,  8 Sep 2023 03:35:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238661AbjIGSvQ (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 7 Sep 2023 14:51:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36102 "EHLO
+        id S234997AbjIHBfM (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 7 Sep 2023 21:35:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40316 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231228AbjIGSvN (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 7 Sep 2023 14:51:13 -0400
-Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id AECC31FFE;
-        Thu,  7 Sep 2023 11:50:36 -0700 (PDT)
-Received: by linux.microsoft.com (Postfix, from userid 1174)
-        id 42386212B5BC; Thu,  7 Sep 2023 09:52:50 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 42386212B5BC
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linuxonhyperv.com;
-        s=default; t=1694105570;
-        bh=4zQMQP97jZOnWxiO8SrNZy/IXpzjUCMzd8MtskOqFr4=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=hJuEq3wZYTifPv4qQ3rFFyhahGw7uXYhbGBpHQkUQ4VSMBVB2R51yjczdch5Gg+iW
-         y6onyUrJUs/hglqRFdnOAQqZmw5kA4XC8nO4G5+0hirkSdqpHcSZUPL3cUhs4aZdtP
-         FKabnH53JYKnYBZX1plCfkARZAlg3gE5yFOtRyY0=
-From:   sharmaajay@linuxonhyperv.com
-To:     Long Li <longli@microsoft.com>, Jason Gunthorpe <jgg@ziepe.ca>,
-        Leon Romanovsky <leon@kernel.org>,
-        Dexuan Cui <decui@microsoft.com>, Wei Liu <wei.liu@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>
-Cc:     linux-rdma@vger.kernel.org, linux-hyperv@vger.kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Ajay Sharma <sharmaajay@microsoft.com>
-Subject: [Patch v5 5/5] RDMA/mana_ib : Send event to qp
-Date:   Thu,  7 Sep 2023 09:52:39 -0700
-Message-Id: <1694105559-9465-6-git-send-email-sharmaajay@linuxonhyperv.com>
-X-Mailer: git-send-email 1.8.3.1
-In-Reply-To: <1694105559-9465-1-git-send-email-sharmaajay@linuxonhyperv.com>
-References: <1694105559-9465-1-git-send-email-sharmaajay@linuxonhyperv.com>
-X-Spam-Status: No, score=-9.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,USER_IN_DEF_SPF_WL
-        autolearn=no autolearn_force=no version=3.4.6
+        with ESMTP id S230521AbjIHBfL (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 7 Sep 2023 21:35:11 -0400
+Received: from out-229.mta1.migadu.com (out-229.mta1.migadu.com [95.215.58.229])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 94C4B1BD9
+        for <linux-rdma@vger.kernel.org>; Thu,  7 Sep 2023 18:35:05 -0700 (PDT)
+Message-ID: <332d5cd8-c0ab-3657-513d-0d385fc4bdca@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+        t=1694136903;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=LP/y5xGfIbK4Rs5aCZwdj37gLU9jDNrII6xvBf338hU=;
+        b=jM/p+Cbhhyt3mr1q04p/FPcA9UDDB2wwaC5gqdSxxWawnjGubnquUmFMvFTfVND0Jaz7af
+        RNlKqHPmh1MeqmkJ9QEMrBfoPZin6yHbGpYl4PVfS1g8voSVAhhCXuEFDm9Ln1OsriSAhS
+        e94EG4LSmuA7G9AGyWxqbOBvT/QygIo=
+Date:   Fri, 8 Sep 2023 09:34:54 +0800
+MIME-Version: 1.0
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From:   Guoqing Jiang <guoqing.jiang@linux.dev>
+Subject: Re: [PATCH v2] RDMA/siw: Fix connection failure handling
+To:     Bernard Metzler <bmt@zurich.ibm.com>, linux-rdma@vger.kernel.org
+Cc:     jgg@ziepe.ca, leon@kernel.org
+References: <20230905145822.446263-1-bmt@zurich.ibm.com>
+Content-Language: en-US
+In-Reply-To: <20230905145822.446263-1-bmt@zurich.ibm.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Ajay Sharma <sharmaajay@microsoft.com>
+Hi,
 
-Send the QP fatal error event to only the
-context that created the qp.
+On 9/5/23 22:58, Bernard Metzler wrote:
+> In case immediate MPA request processing fails, the newly
+> created endpoint unlinks the listening endpoint and is
+> ready to be dropped. This special case was not handled
+> correctly by the code handling the later TCP socket close,
+> causing a NULL dereference crash in siw_cm_work_handler()
+> when dereferencing a NULL listener. We now also cancel
+> the useless MPA timeout, if immediate MPA request
+> processing fails.
+>
+> This patch furthermore simplifies MPA processing in general:
+> Scheduling a useless TCP socket read in sk_data_ready() upcall
+> is now surpressed, if the socket is already moved out of
+> TCP_ESTABLISHED state.
+>
+> Fixes: 6c52fdc244b5 ("rdma/siw: connection management")
+> Signed-off-by: Bernard Metzler<bmt@zurich.ibm.com>
+> ---
+> ChangeLog v1->v2:
+> - Move debug message to now conditional listener drop
+> ---
+>   drivers/infiniband/sw/siw/siw_cm.c | 16 ++++++++++++----
+>   1 file changed, 12 insertions(+), 4 deletions(-)
+>
+> diff --git a/drivers/infiniband/sw/siw/siw_cm.c b/drivers/infiniband/sw/siw/siw_cm.c
+> index a2605178f4ed..43e776073f49 100644
+> --- a/drivers/infiniband/sw/siw/siw_cm.c
+> +++ b/drivers/infiniband/sw/siw/siw_cm.c
+> @@ -976,6 +976,7 @@ static void siw_accept_newconn(struct siw_cep *cep)
+>   			siw_cep_put(cep);
+>   			new_cep->listen_cep = NULL;
+>   			if (rv) {
+> +				siw_cancel_mpatimer(new_cep);
 
-Signed-off-by: Ajay Sharma <sharmaajay@microsoft.com>
----
- drivers/infiniband/hw/mana/device.c  |  9 +++++++++
- drivers/infiniband/hw/mana/main.c    |  9 ++++++---
- drivers/infiniband/hw/mana/mana_ib.h | 18 +++++++++---------
- drivers/infiniband/hw/mana/qp.c      |  2 ++
- 4 files changed, 26 insertions(+), 12 deletions(-)
+One question, why siw_cm_work_handler set cep->mpa_timer to NULL instead 
+of call
+siw_cancel_mpatimer like above? Could it be memory leak issue for 
+cep->mpa_timer?
+Let's say mpa_timer is set to NULL before  call siw_cancel_mpatimer.
 
-diff --git a/drivers/infiniband/hw/mana/device.c b/drivers/infiniband/hw/mana/device.c
-index e15da43c73a0..563b5a1e79d2 100644
---- a/drivers/infiniband/hw/mana/device.c
-+++ b/drivers/infiniband/hw/mana/device.c
-@@ -101,6 +101,14 @@ static int mana_ib_probe(struct auxiliary_device *adev,
- 	if (ret)
- 		ibdev_dbg(&mib_dev->ib_dev, "Failed to get caps, use defaults");
- 
-+	mib_dev->rq_to_qp_lookup_table = kzalloc(sizeof(struct mana_ib_qp*) *
-+					  mib_dev->adapter_caps.max_qp_count,
-+					  GFP_KERNEL);
-+	if (!mib_dev->rq_to_qp_lookup_table) {
-+		ibdev_err(&mib_dev->ib_dev, "Failed to allocate rq lookup table");
-+		goto free_error_eq;
-+	}
-+
- 	ret = ib_register_device(&mib_dev->ib_dev, "mana_%d",
- 				 mdev->gdma_context->dev);
- 	if (ret)
-@@ -112,6 +120,7 @@ static int mana_ib_probe(struct auxiliary_device *adev,
- 
- destroy_adapter:
- 	mana_ib_destroy_adapter(mib_dev);
-+	kfree(mib_dev->rq_to_qp_lookup_table);
- free_error_eq:
- 	mana_gd_destroy_queue(mib_dev->gc, mib_dev->fatal_err_eq);
- deregister_device:
-diff --git a/drivers/infiniband/hw/mana/main.c b/drivers/infiniband/hw/mana/main.c
-index 82923475267d..517a2a4f0d76 100644
---- a/drivers/infiniband/hw/mana/main.c
-+++ b/drivers/infiniband/hw/mana/main.c
-@@ -556,13 +556,16 @@ static void mana_ib_critical_event_handler(void *ctx, struct gdma_queue *queue,
- {
- 	struct mana_ib_dev *mib_dev = (struct mana_ib_dev *)ctx;
- 	struct ib_event mib_event;
-+	struct mana_ib_qp *qp;
-+	u64 rq_id;
- 	switch (event->type) {
- 	case GDMA_EQE_SOC_EVENT_NOTIFICATION:
-+		rq_id = event->details[0] & 0xFFFFFF;
-+		qp = mib_dev->rq_to_qp_lookup_table[rq_id];
- 		mib_event.event = IB_EVENT_QP_FATAL;
- 		mib_event.device = &mib_dev->ib_dev;
--		mib_event.element.qp =
--				(struct ib_qp*)(event->details[0] & 0xFFFFFF);
--		ib_dispatch_event(&mib_event);
-+		if (qp && qp->ibqp.event_handler)
-+			qp->ibqp.event_handler(&mib_event, qp->ibqp.qp_context);
- 		ibdev_dbg(&mib_dev->ib_dev, "Received critical notification");
- 		break;
- 	default:
-diff --git a/drivers/infiniband/hw/mana/mana_ib.h b/drivers/infiniband/hw/mana/mana_ib.h
-index 6b9406738cb2..d796b0ed0288 100644
---- a/drivers/infiniband/hw/mana/mana_ib.h
-+++ b/drivers/infiniband/hw/mana/mana_ib.h
-@@ -48,15 +48,6 @@ struct mana_ib_adapter_caps {
- 	u32 max_inline_data_size;
- };
- 
--struct mana_ib_dev {
--	struct ib_device ib_dev;
--	struct gdma_dev *gdma_dev;
--	struct gdma_context *gc;
--	struct gdma_queue *fatal_err_eq;
--	mana_handle_t adapter_handle;
--	struct mana_ib_adapter_caps adapter_caps;
--};
--
- struct mana_ib_wq {
- 	struct ib_wq ibwq;
- 	struct ib_umem *umem;
-@@ -113,6 +104,15 @@ struct mana_ib_ucontext {
- 	u32 doorbell;
- };
- 
-+struct mana_ib_dev {
-+	struct ib_device ib_dev;
-+	struct gdma_dev *gdma_dev;
-+	struct gdma_context *gc;
-+	struct gdma_queue *fatal_err_eq;
-+	mana_handle_t adapter_handle;
-+	struct mana_ib_adapter_caps adapter_caps;
-+	struct mana_ib_qp **rq_to_qp_lookup_table;
-+};
- struct mana_ib_rwq_ind_table {
- 	struct ib_rwq_ind_table ib_ind_table;
- };
-diff --git a/drivers/infiniband/hw/mana/qp.c b/drivers/infiniband/hw/mana/qp.c
-index ef3275ac92a0..bad72c0e8265 100644
---- a/drivers/infiniband/hw/mana/qp.c
-+++ b/drivers/infiniband/hw/mana/qp.c
-@@ -210,6 +210,8 @@ static int mana_ib_create_qp_rss(struct ib_qp *ibqp, struct ib_pd *pd,
- 		wq->id = wq_spec.queue_index;
- 		cq->id = cq_spec.queue_index;
- 
-+		mib_dev->rq_to_qp_lookup_table[wq->id] = qp;
-+
- 		ibdev_dbg(&mib_dev->ib_dev,
- 			  "ret %d rx_object 0x%llx wq id %llu cq id %llu\n",
- 			  ret, wq->rx_object, wq->id, cq->id);
--- 
-2.25.1
+>   				siw_cep_set_free(new_cep);
+>   				goto error;
+>   			}
+> @@ -1100,9 +1101,12 @@ static void siw_cm_work_handler(struct work_struct *w)
+>   				/*
+>   				 * Socket close before MPA request received.
+>   				 */
+> -				siw_dbg_cep(cep, "no mpareq: drop listener\n");
+> -				siw_cep_put(cep->listen_cep);
+> -				cep->listen_cep = NULL;
+> +				if (cep->listen_cep) {
+> +					siw_dbg_cep(cep,
+> +						"no mpareq: drop listener\n");
+> +					siw_cep_put(cep->listen_cep);
+> +					cep->listen_cep = NULL;
+> +				}
+>   			}
+>   		}
+>   		release_cep = 1;
+> @@ -1227,7 +1231,11 @@ static void siw_cm_llp_data_ready(struct sock *sk)
+>   	if (!cep)
+>   		goto out;
+>   
+> -	siw_dbg_cep(cep, "state: %d\n", cep->state);
+> +	siw_dbg_cep(cep, "cep state: %d, socket state %d\n",
+> +		    cep->state, sk->sk_state);
+> +
+> +	if (sk->sk_state != TCP_ESTABLISHED)
+> +		goto out;
+>   
 
+Maybe split above to another patch makes more sense, just my $0.02.
+
+Thanks,
+Guoqing
