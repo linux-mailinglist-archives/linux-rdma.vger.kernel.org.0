@@ -2,139 +2,157 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 944AB79841F
-	for <lists+linux-rdma@lfdr.de>; Fri,  8 Sep 2023 10:34:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B1A7798490
+	for <lists+linux-rdma@lfdr.de>; Fri,  8 Sep 2023 11:10:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237133AbjIHIeg (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 8 Sep 2023 04:34:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39566 "EHLO
+        id S241020AbjIHJKS (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 8 Sep 2023 05:10:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60254 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232704AbjIHIee (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 8 Sep 2023 04:34:34 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B3FF1BEE
-        for <linux-rdma@vger.kernel.org>; Fri,  8 Sep 2023 01:33:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1694162022;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=YqeB+pTrr5cAsMJlHRRYIfDbkrEe51St3WRx29ZRt+8=;
-        b=fDv1uytGnmibHc3tflS/U1TDfP+POtDroWpHfMoAnnjdAydUCuWJdtCO4ie1z1FTsT1OOd
-        TV8moAD7Cw+y3pYzj8XswvHIXa5sHB21J9SshwmCOy+rePP0EddrSjLmxoBbi2z9/tCiF8
-        p6c/06mKh7yXSm8+XEbpS6xY8HhcrWc=
-Received: from mail-pj1-f69.google.com (mail-pj1-f69.google.com
- [209.85.216.69]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-96-Fsl4gbNJN2eHw8JBV-7B2A-1; Fri, 08 Sep 2023 04:33:41 -0400
-X-MC-Unique: Fsl4gbNJN2eHw8JBV-7B2A-1
-Received: by mail-pj1-f69.google.com with SMTP id 98e67ed59e1d1-27359a369ceso2310698a91.1
-        for <linux-rdma@vger.kernel.org>; Fri, 08 Sep 2023 01:33:41 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694162019; x=1694766819;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=YqeB+pTrr5cAsMJlHRRYIfDbkrEe51St3WRx29ZRt+8=;
-        b=dylPoRFeAA29HUtlwPI0I+KYoJaT1rFUzWaRLUDfGkJh98CPzza89VdIqdRCCyGr7C
-         8xfpOv3FLgrWa9xAAXbCaIUmx5k7JyiJunM5+XRZCZXx+lzLhM1wfoO0J91epoM3DsD7
-         nsslPMG8OKU8vMfe+1S8vJ6LwyPuDfJgX1nCQ52bSLgOFvqqVznmlqSYOJ/9yqQR7v2f
-         W88T55AJa7wTnhw23rpZu/nCd9FYULk8Edwf/oAmBPOAXg4w0auct5nF9Niqn2n7EF67
-         UfLzQ/EATP+9NEip34wnTNbfnD0JUD8JW45GSJ7+Kwb+nUTIngIbHSjb4ng036eEZYuZ
-         C6Dg==
-X-Gm-Message-State: AOJu0Yy0aYCh0xVHPMTN6OlONTzws4Cp8lKpQcIPp5GKpRzc4EnbRWkD
-        Hgpaa9welnlz/dzGi7RAEJeQC0Z6frqrxLl4dNxM/uoftH68F27h+MwTTIsC8kUE0QHhQ23fYda
-        bM6KxCVGF21lI6+lVUOtgFj1pnAKV1lMAbp3y1A==
-X-Received: by 2002:a17:90b:1958:b0:26b:698f:dda7 with SMTP id nk24-20020a17090b195800b0026b698fdda7mr2020738pjb.32.1694162019274;
-        Fri, 08 Sep 2023 01:33:39 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IHnxfmKX2g9vghEPKjgyoluc2e9Bckn2aupy7SigWNAC+otlv3y6h8ZCDlvkcm+fPk0NRQjfhuXPyLiFsMDtEw=
-X-Received: by 2002:a17:90b:1958:b0:26b:698f:dda7 with SMTP id
- nk24-20020a17090b195800b0026b698fdda7mr2020727pjb.32.1694162019003; Fri, 08
- Sep 2023 01:33:39 -0700 (PDT)
+        with ESMTP id S240567AbjIHJKR (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 8 Sep 2023 05:10:17 -0400
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A900A1BF1;
+        Fri,  8 Sep 2023 02:10:05 -0700 (PDT)
+Received: from pps.filterd (m0356517.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 38896c9I022792;
+        Fri, 8 Sep 2023 09:10:02 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=HSal6POAnTxn4mXSUvG2CN7NaUOa+qNP4LeSP48EDWM=;
+ b=FsqE/aqh4Htlvy5K5IDfkOdm4dNL0HZj8Ont5o9uhPVs5xfS1LrgKqUSHB7mb0qeLDf/
+ NAfrSNZ8q52U5EB9RjGKSPBP8kNu7/VPtmw+QhHqp73TYc6D6Mf3KbAd2Io1liWnKxRV
+ q2XLqpqSFjevqbPgn9WIq++NToAnzApBPZgc/3oPC+mKwCdVQSsE3MOAa1eRI2p6kTwF
+ ixAEQxPoojdIkHWJxKdc614BZlwJhj5dGvfk6xuj7Rttz41wMDREloL4chySSpIFPsJi
+ d0Yy2F+7fQM+8NyJwhWjrTuyXKwlTjitdW7j42tUVezhu3wT2Ue3rzxBsdd3tWZoEFbd eA== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3t00gw0d2g-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 08 Sep 2023 09:10:01 +0000
+Received: from m0356517.ppops.net (m0356517.ppops.net [127.0.0.1])
+        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 38896t9k025091;
+        Fri, 8 Sep 2023 09:08:23 GMT
+Received: from ppma23.wdc07v.mail.ibm.com (5d.69.3da9.ip4.static.sl-reverse.com [169.61.105.93])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3t00gw0985-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 08 Sep 2023 09:08:22 +0000
+Received: from pps.filterd (ppma23.wdc07v.mail.ibm.com [127.0.0.1])
+        by ppma23.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 3888ipmn006651;
+        Fri, 8 Sep 2023 09:07:41 GMT
+Received: from smtprelay04.fra02v.mail.ibm.com ([9.218.2.228])
+        by ppma23.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3svgvm2ahm-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 08 Sep 2023 09:07:41 +0000
+Received: from smtpav04.fra02v.mail.ibm.com (smtpav04.fra02v.mail.ibm.com [10.20.54.103])
+        by smtprelay04.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 38897bJw45351550
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 8 Sep 2023 09:07:37 GMT
+Received: from smtpav04.fra02v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id CC70920043;
+        Fri,  8 Sep 2023 09:07:37 +0000 (GMT)
+Received: from smtpav04.fra02v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 4349820040;
+        Fri,  8 Sep 2023 09:07:37 +0000 (GMT)
+Received: from [9.171.2.42] (unknown [9.171.2.42])
+        by smtpav04.fra02v.mail.ibm.com (Postfix) with ESMTP;
+        Fri,  8 Sep 2023 09:07:37 +0000 (GMT)
+Message-ID: <794f9f68-4671-5e5e-45e4-2c8a4de568b3@linux.ibm.com>
+Date:   Fri, 8 Sep 2023 11:07:36 +0200
 MIME-Version: 1.0
-References: <20230612054237.1855292-1-shinichiro.kawasaki@wdc.com>
- <ZIcpHbV3oqsjuwfz@ziepe.ca> <3x4kcccwy5s2yhni5t26brhgejj24kxyk7bnlabp5zw2js26eb@kjwyilm5d4wc>
- <ZIhvfdVOMsN2cXEX@ziepe.ca> <20230613180747.GB12152@unreal>
- <iclshorg6eyrorloix2bkfsezzbnkwdepschcn5vhk3m2ionxc@oti3l4kvv4ds>
- <ZIn6ul5jPuxC+uIG@ziepe.ca> <l3gjwsd7hlx5dnl74moxo3rvnbsrejjvur6ykdl3pxiwh52wzp@6hfb4xb2tco3>
- <g2lh3wh6e6yossw2ktqmxx2rf63m36mumqmx4qbtzvxuygsr6h@gpgftgfigllv>
- <sqjbjg7cwcpjx6yn7tmitx6ttxlb4pkutgfbhdgxa2hi4hy6wp@ek7z43bwtkso>
- <3wxdjvmamxdk6s26q4hnxjazuajrp7xynfq7okywc2uzgcdqf4@ydiglvla3k3u>
- <CAHj4cs_mP7kmnKdm--tEkb_yE0saA7A_BBV21E1RQT8a+J7s0g@mail.gmail.com> <a9f6556e-c42b-4be3-819c-06cc302605e7@suse.de>
-In-Reply-To: <a9f6556e-c42b-4be3-819c-06cc302605e7@suse.de>
-From:   Yi Zhang <yi.zhang@redhat.com>
-Date:   Fri, 8 Sep 2023 16:33:27 +0800
-Message-ID: <CAHj4cs97MYvh2DsdaHb+h7XiKNCOHG=ne-88X8CJJ4u1uYB5yw@mail.gmail.com>
-Subject: Re: [PATCH v2] RDMA/cma: prevent rdma id destroy during cma_iw_handler
-To:     Hannes Reinecke <hare@suse.de>
-Cc:     Shinichiro Kawasaki <shinichiro.kawasaki@wdc.com>,
-        Daniel Wagner <dwagner@suse.de>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Leon Romanovsky <leon@kernel.org>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        "linux-nvme@lists.infradead.org" <linux-nvme@lists.infradead.org>,
-        Damien Le Moal <dlemoal@kernel.org>,
-        Guoqing Jiang <guoqing.jiang@linux.dev>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
+ Gecko/20100101 Thunderbird/102.15.0
+Subject: Re: [RFC net-next 0/2] Optimize the parallelism of SMC-R connections
+To:     "D. Wythe" <alibuda@linux.alibaba.com>, kgraul@linux.ibm.com,
+        wenjia@linux.ibm.com, jaka@linux.ibm.com
+Cc:     kuba@kernel.org, davem@davemloft.net, netdev@vger.kernel.org,
+        linux-s390@vger.kernel.org, linux-rdma@vger.kernel.org
+References: <1694008530-85087-1-git-send-email-alibuda@linux.alibaba.com>
+Content-Language: en-US
+From:   Alexandra Winter <wintera@linux.ibm.com>
+In-Reply-To: <1694008530-85087-1-git-send-email-alibuda@linux.alibaba.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: Ep2os8SGSnpKYVSyUgwoH1m4iVvcnAdH
+X-Proofpoint-GUID: ADbQ_6StDG1LXKn67n6JzCEta4tr6Ga-
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
+ definitions=2023-09-08_06,2023-09-05_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0
+ priorityscore=1501 impostorscore=0 malwarescore=0 mlxscore=0 adultscore=0
+ clxscore=1011 bulkscore=0 suspectscore=0 spamscore=0 mlxlogscore=734
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2308100000 definitions=main-2309080083
+X-Spam-Status: No, score=-3.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Fri, Sep 8, 2023 at 3:18=E2=80=AFPM Hannes Reinecke <hare@suse.de> wrote=
-:
->
-> On 9/7/23 09:47, Yi Zhang wrote:
-> > Seems I reproduced this issue[3] when I run [1] on the latest
-> > linux-block/for-next with kernel config[2].
-> >
-> > [1]nvme_trtype=3Drdma ./check nvme/
-> >
-> > [2] https://pastebin.com/u9fh7dbX
-> >
-> But isn't this the same issue as the circular locking discussed earlier?
-
-Sorry, maybe I mixed up the issues here, There are three issues here:
-
-1. "BUG:KASAN: slab-use-after-free at mutex_lock() in
-cma_iw_handler()." which Shin'ichiro mentioned in this patch and
-triggered by nvme/rdma nvme/030 nvme/031 use siw
-
-2. nvme/tcp circular locking on install_queue which could be fixed by:
-https://lore.kernel.org/linux-nvme/20230810132006.129365-1-hare@suse.de/
-https://lore.kernel.org/linux-nvme/20230726142939.10062-1-guoqing.jiang@lin=
-ux.dev/
-
-3. circular locking at rdma_destroy_id+0x17/0x20 [rdma_cm] which was
-already filed last year but still not get one solution:
-https://lore.kernel.org/linux-rdma/CAHj4cs93BfTRgWF6PbuZcfq6AARHgYC2g=3DRQ-=
-7Jgcf1-6h+2SQ@mail.gmail.com/
 
 
->
-> Can you check if the patch
-> 'nvmet-tcp: avoid circular locking dependency on install_queue()'
-> fixes this issue, too?
->
-> Cheers,
->
-> Hannes
-> --
-> Dr. Hannes Reinecke                Kernel Storage Architect
-> hare@suse.de                              +49 911 74053 688
-> SUSE Software Solutions GmbH, Maxfeldstr. 5, 90409 N=C3=BCrnberg
-> HRB 36809 (AG N=C3=BCrnberg), Gesch=C3=A4ftsf=C3=BChrer: Ivo Totev, Andre=
-w
-> Myers, Andrew McDonald, Martje Boudien Moerman
->
---
-Best Regards,
-  Yi Zhang
+On 06.09.23 15:55, D. Wythe wrote:
+> From: "D. Wythe" <alibuda@linux.alibaba.com>
+> 
+> This patchset attempts to optimize the parallelism of SMC-R connections
+> in quite a SIMPLE way, reduce unnecessary blocking on locks.
+> 
+> According to Off-CPU statistics, SMC worker's off-CPU statistics
+> as that: 
+> 
+> smc_listen_work 			(48.17%)
+> 	__mutex_lock.isra.11 		(47.96%)
+> 
+> An ideal SMC-R connection process should only block on the IO events
+> of the network, but it's quite clear that the SMC-R connection now is
+> queued on the lock most of the time.
+> 
+> Before creating a connection, we always try to see if it can be
+> successfully created without allowing the creation of an lgr,
+> if so, it means it does not rely on new link group.
+> In other words, locking on xxx_lgr_pending is not necessary
+> any more.
+> 
+> Noted that removing this lock will not have an immediate effect
+> in the current version, as there are still some concurrency issues
+> in the SMC handshake phase. However, regardless, removing this lock
+> is a prerequisite for other optimizations.
+> 
+> If you have any questions or suggestions, please let me know.
+> 
+> D. Wythe (2):
+>   net/smc: refactoring lgr pending lock
+>   net/smc: remove locks smc_client_lgr_pending and
+>     smc_server_lgr_pending
+> 
+>  net/smc/af_smc.c   | 24 ++++++++++++------------
+>  net/smc/smc_clc.h  |  1 +
+>  net/smc/smc_core.c | 28 ++++++++++++++++++++++++++--
+>  net/smc/smc_core.h | 21 +++++++++++++++++++++
+>  4 files changed, 60 insertions(+), 14 deletions(-)
+> 
+
+
+I have to admit that locking in SMC is quite confusing to me, so this is just my thougths.
+
+Your proposal seems to make things even more complex.
+
+I understand the goal to optimize parallelism.
+Today we have the global smc_server/client_lgr_pending AND smc_lgr_list.lock (and more).
+There seems to be some overlpa in scope..
+Maybe there is some way to reduce the length of the locked paths?
+Or use other mechanisms than the big fat smc_server/client_lgr_pending mutex?
+e.g.
+If you think you can unlock after __smc_conn_create in the re-use-existing_LGR case,
+why is the lock needed until after smc_clc_send_confirm in the new-LGR case??
+
+
+Your use of storing the global lock per ini and then double-freeing it sometimes,
+seems a bit homebrewed, though.
+E.g. I'm afraid the existing lock checking algorithms could not verify this pattern.
 
