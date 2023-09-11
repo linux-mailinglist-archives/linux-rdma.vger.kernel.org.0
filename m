@@ -2,73 +2,102 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 83F6C79BAA5
-	for <lists+linux-rdma@lfdr.de>; Tue, 12 Sep 2023 02:11:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DB88F79BE8C
+	for <lists+linux-rdma@lfdr.de>; Tue, 12 Sep 2023 02:17:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1357882AbjIKWGp (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 11 Sep 2023 18:06:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36266 "EHLO
+        id S1357921AbjIKWGy (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 11 Sep 2023 18:06:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40396 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236731AbjIKLQy (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 11 Sep 2023 07:16:54 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BFC55CDD
-        for <linux-rdma@vger.kernel.org>; Mon, 11 Sep 2023 04:16:50 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E6713C433C8;
-        Mon, 11 Sep 2023 11:16:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1694431010;
-        bh=SL2L7Zw9Gn7+biHqCLNL6iFpm0hJQCJV3Yl8MqoI3WE=;
-        h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-        b=npBTRtSFdXEhgDZAd+UnMoO+UELECSWvSfhyb//pdgRlDSzwGGH2X8Foa6Xng+GQz
-         c6MOudfOAJcaBXP6VTaP93BLUWn2ZSxFGyCWv8RdmsAtXl2WjlsEyNLpjrI87czJgU
-         MnZXaPAig4A1YSN+BAK0MwUR6okMUAfNpAWrKiVxfsTyKW+3RdwT+NhSlrpy+vnH3k
-         rs4heBMZHDPXI31iee5pxggRYWtLwNE2MdpiCNYBjPJgbcuz788qCRKe3XPTPiD/wy
-         0oIKtxch/Y2ulnw6IHh5R4O3Q074E163gKAlD6Z2tQ/PoGjWHY1nN7WtIjmKYjQ9T9
-         WKFPfzbFiPNlw==
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Jason Gunthorpe <jgg@ziepe.ca>, Leon Romanovsky <leon@kernel.org>,
-        Bart Van Assche <bvanassche@acm.org>
-Cc:     linux-rdma@vger.kernel.org, Bob Pearson <rpearsonhpe@gmail.com>,
-        Shinichiro Kawasaki <shinichiro.kawasaki@wdc.com>
-In-Reply-To: <20230823205727.505681-1-bvanassche@acm.org>
-References: <20230823205727.505681-1-bvanassche@acm.org>
-Subject: Re: [PATCH] RDMA/srp: Do not call scsi_done() from srp_abort()
-Message-Id: <169443100708.188090.4269211286002216085.b4-ty@kernel.org>
-Date:   Mon, 11 Sep 2023 14:16:47 +0300
+        with ESMTP id S237207AbjIKMPT (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 11 Sep 2023 08:15:19 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.65])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 59D01198;
+        Mon, 11 Sep 2023 05:15:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1694434515; x=1725970515;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=i3M/qRLC52zinS1Ub+dGO9M7VTVBWgGGC/7YYN8zcDU=;
+  b=MzeGmzY0PNN1POP30aXAL45CTzd6gpo7SdlbuA5hkZwwDToiWxBEii6x
+   0dSqKsGuyOgTI0IafKVckRfrF6e9j7XiFat0cYnT2rrin8PHKLHQ8LtPz
+   WxNNFYOVYz0CdvoP1a/G5fRrfWEB4r3xoApMq+YPfc8HujpMF1lZGcmaq
+   kr7XQqGktZOaT/D3kZskYdtrmHkK2lN7v3wJLgQTEf8au6/NKHqzKSxTP
+   CZ3XNegKY+hjahf3vxcwDMcyQTCxjzmf9uowE5HmuWhck3GhuW4IA5znh
+   3yyt5mpOFzaja+nPgWGzigz+lNjT4mczilCGn3zlZFveSPI//FqQvHqAM
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10830"; a="381863433"
+X-IronPort-AV: E=Sophos;i="6.02,244,1688454000"; 
+   d="scan'208";a="381863433"
+Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Sep 2023 05:15:15 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10830"; a="746383254"
+X-IronPort-AV: E=Sophos;i="6.02,244,1688454000"; 
+   d="scan'208";a="746383254"
+Received: from mzarkov-mobl3.ger.corp.intel.com (HELO ijarvine-mobl2.ger.corp.intel.com) ([10.252.36.200])
+  by fmsmga007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Sep 2023 05:15:12 -0700
+From:   =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
+To:     linux-pci@vger.kernel.org, Bjorn Helgaas <helgaas@kernel.org>,
+        Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Leon Romanovsky <leon@kernel.org>, linux-rdma@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
+Subject: [PATCH 1/8] IB/hfi1: Use FIELD_GET() to extract Link Width
+Date:   Mon, 11 Sep 2023 15:14:54 +0300
+Message-Id: <20230911121501.21910-2-ilpo.jarvinen@linux.intel.com>
+X-Mailer: git-send-email 2.30.2
+In-Reply-To: <20230911121501.21910-1-ilpo.jarvinen@linux.intel.com>
+References: <20230911121501.21910-1-ilpo.jarvinen@linux.intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Mailer: b4 0.12-dev-a055d
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
+Use FIELD_GET() to extract PCIe Negotiated Link Width field instead of
+custom masking and shifting.
 
-On Wed, 23 Aug 2023 13:57:27 -0700, Bart Van Assche wrote:
-> After scmd_eh_abort_handler() has called the SCSI LLD eh_abort_handler
-> callback, it performs one of the following actions:
-> * Call scsi_queue_insert().
-> * Call scsi_finish_command().
-> * Call scsi_eh_scmd_add().
-> Hence, SCSI abort handlers must not call scsi_done(). Otherwise all
-> the above actions would trigger a use-after-free. Hence remove the
-> scsi_done() call from srp_abort(). Keep the srp_free_req() call
-> before returning SUCCESS because we may not see the command again if
-> SUCCESS is returned.
-> 
-> [...]
+While at it, also fix function's comment.
 
-Applied, thanks!
+Signed-off-by: Ilpo Järvinen <ilpo.jarvinen@linux.intel.com>
+---
+ drivers/infiniband/hw/hfi1/pcie.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
-[1/1] RDMA/srp: Do not call scsi_done() from srp_abort()
-      https://git.kernel.org/rdma/rdma/c/e193b7955dfad6
-
-Best regards,
+diff --git a/drivers/infiniband/hw/hfi1/pcie.c b/drivers/infiniband/hw/hfi1/pcie.c
+index 08732e1ac966..d497e4c623c1 100644
+--- a/drivers/infiniband/hw/hfi1/pcie.c
++++ b/drivers/infiniband/hw/hfi1/pcie.c
+@@ -3,6 +3,7 @@
+  * Copyright(c) 2015 - 2019 Intel Corporation.
+  */
+ 
++#include <linux/bitfield.h>
+ #include <linux/pci.h>
+ #include <linux/io.h>
+ #include <linux/delay.h>
+@@ -210,10 +211,10 @@ static u32 extract_speed(u16 linkstat)
+ 	return speed;
+ }
+ 
+-/* return the PCIe link speed from the given link status */
++/* return the PCIe Link Width from the given link status */
+ static u32 extract_width(u16 linkstat)
+ {
+-	return (linkstat & PCI_EXP_LNKSTA_NLW) >> PCI_EXP_LNKSTA_NLW_SHIFT;
++	return FIELD_GET(PCI_EXP_LNKSTA_NLW, linkstat);
+ }
+ 
+ /* read the link status and set dd->{lbus_width,lbus_speed,lbus_info} */
 -- 
-Leon Romanovsky <leon@kernel.org>
+2.30.2
+
