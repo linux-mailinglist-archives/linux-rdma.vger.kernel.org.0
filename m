@@ -2,107 +2,74 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 18E1979F073
-	for <lists+linux-rdma@lfdr.de>; Wed, 13 Sep 2023 19:36:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BDA7D79F32C
+	for <lists+linux-rdma@lfdr.de>; Wed, 13 Sep 2023 22:50:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229913AbjIMRgH (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 13 Sep 2023 13:36:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38858 "EHLO
+        id S232525AbjIMUu1 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 13 Sep 2023 16:50:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59722 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229451AbjIMRgG (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 13 Sep 2023 13:36:06 -0400
-Received: from mail-oi1-x235.google.com (mail-oi1-x235.google.com [IPv6:2607:f8b0:4864:20::235])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6751A8;
-        Wed, 13 Sep 2023 10:36:02 -0700 (PDT)
-Received: by mail-oi1-x235.google.com with SMTP id 5614622812f47-3a9ee3c7dbbso26637b6e.1;
-        Wed, 13 Sep 2023 10:36:02 -0700 (PDT)
+        with ESMTP id S232480AbjIMUu1 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 13 Sep 2023 16:50:27 -0400
+Received: from mail-oo1-xc35.google.com (mail-oo1-xc35.google.com [IPv6:2607:f8b0:4864:20::c35])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 42B751BCC
+        for <linux-rdma@vger.kernel.org>; Wed, 13 Sep 2023 13:50:23 -0700 (PDT)
+Received: by mail-oo1-xc35.google.com with SMTP id 006d021491bc7-57129417cecso164245eaf.1
+        for <linux-rdma@vger.kernel.org>; Wed, 13 Sep 2023 13:50:23 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1694626562; x=1695231362; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=UVrYJV4w5Dg5YDYQoYNIPf+TLoTL3D2orZps/Ab0/MQ=;
-        b=IV8zTrk7yylB9D1LdRYrJlsA8k+qX9YlnNsc5dXMZXWK4TrsvZWU5sH+NYIMN9zdoP
-         Fvhp/pIt12QusOP3Wo4Bwhji5CF9Hwi3BoJ+Q3k4VO8bg3jl+Ni/XTrfV0807XaxdzmT
-         8d9mP+9REcAunUcP1wad7pN+rziH9zO8xa//BVZA85YO8WmKuMwmSJD4BgxZGAx6Z3Y1
-         zBd+aVC2Hlci3DWWIJQWf1AutYPcMGmaE0deTYxuIrmsyg58H7HPbr+zpyLV0miPE9up
-         b71lJidKnSDIswNdtKMcR72slj2Q4S89ynPNyVGUvCNzOlRUefqnG0/yQFTlv5QUwm1I
-         Sbbg==
+        d=gmail.com; s=20221208; t=1694638222; x=1695243022; darn=vger.kernel.org;
+        h=content-transfer-encoding:subject:from:to:content-language
+         :user-agent:mime-version:date:message-id:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=aguaN+51WdZDPVACohdDTe5C+B/dDrAUqoUh7FBR6W8=;
+        b=jKNiH9IgKOHOHyX5JAft+K8O3G8FHQxhhiAv6RJjvBXBdIMAhMxvq4j11Bot/6Ruae
+         HA2vQzCFfE2wagNd7qb9n7+ySYZTSheoGI3Qm3R4VL6jNrbyXvxLFSw0mlS2OPMA55JT
+         R83uIMhJRbzUNh5Uyp/4TkqyWGPu5lsJ457dNCGLYT0d1AyjS5AcJPiBfOIoqnffZG+b
+         INhGJEaHlR93MXurrfugbHRGkjZ3dbBYyVBJdVbNM/nqhtCVBzEqBmDa5Y28l9cJEV3q
+         lytw/e01CzebnUFBwboIi1Jizrrj3YH2FGsnl5PLtpbE8Oy6TYMbN9mgaM93XyJf6Kwm
+         uGsw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694626562; x=1695231362;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=UVrYJV4w5Dg5YDYQoYNIPf+TLoTL3D2orZps/Ab0/MQ=;
-        b=fcSYSpzf5J85a3Rj6AH6r4nodLqFOjxx1p3UqPAFRVZtPiLYNyZ+LjOc/YNybTZPAT
-         H0H2oOS7Bac2y3xlY4FQGfFXk7ELIwa8SbGqr1yIj5n7LrSgDRThAl4z3ygw3CzFZG3J
-         ifbOBJIskiNkI7GkTQHT/QDw8FouQZ7rdbjf/xjWMmp1xUWd0zq84r62OJuiJLO2tKW3
-         1iutE22wYlQJr546GC7qNGWDyyN87vuK7x2XiaK4PbA52eKtAyInep4K402orE2sP3Id
-         dWz3Ht6bQZ9fEZeRTRrjWHFmTTTGWYNa/nMGgtF8WrZ1ts5KW5H3cqLh9AH2Hec3ZqGq
-         Wc5Q==
-X-Gm-Message-State: AOJu0Yw74azOZV0tfPMvOTB+NLFcc5aij84qxjabs6KypMRY4TowH6s5
-        fmV+p+yLGlrVoWybFcSjXxn+uPw8TR0=
-X-Google-Smtp-Source: AGHT+IERssZtsE/Shj9yraXHFHZ5tl/3mIaUX959EBYcb1GpReRkoCku0BYhe0HRZ37soRk0JnUvFQ==
-X-Received: by 2002:a54:4118:0:b0:3ab:83fe:e18f with SMTP id l24-20020a544118000000b003ab83fee18fmr3407340oic.35.1694626562009;
-        Wed, 13 Sep 2023 10:36:02 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1694638222; x=1695243022;
+        h=content-transfer-encoding:subject:from:to:content-language
+         :user-agent:mime-version:date:message-id:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=aguaN+51WdZDPVACohdDTe5C+B/dDrAUqoUh7FBR6W8=;
+        b=VN3eB1uRwJm5/zS1iBviqLDCMILRlKN2zf6qLgLC4+PWkcAdJ4cHbyZfpqAUxv02Z6
+         297rsdYgoeofzNuLnaT27e+X2Ty2jhLMsjygoh1t5ATMcqfykVlkkmMt9k8fc3+d357Z
+         4SsV8BD3XFux/lsiGhug/p2C8X2/1vZrBLRxvSZI7y221L59Z7t3w7sp54yi0IQscHCi
+         pJXnMqx0svz3ILtbCVtT8Bdz30dQ+oLHO1flcePkPbL63KLePHWqYK+SidLquUPgS2rw
+         nTZxub7ozJf10ralN3GtqE5bq1VqGdRiUjRyqRK+FtPxxedLAII4aVc5uSXSs0gUd+pJ
+         MnMg==
+X-Gm-Message-State: AOJu0Yz142HOeAe/Y5UptndQG/MnnXMPNDG8i4aIk0kHSRrD04f0ykaB
+        40GMq3M8Mr1kJW5lnzRh6AY=
+X-Google-Smtp-Source: AGHT+IGaLu8NgJq8VG7N8cE70fTTySBFJIMlYSfXWCHnCpaykPVRgyU8C3YNCye4C8NpDzp8qhIh8w==
+X-Received: by 2002:a4a:919c:0:b0:571:aceb:26d3 with SMTP id d28-20020a4a919c000000b00571aceb26d3mr2520118ooh.4.1694638222531;
+        Wed, 13 Sep 2023 13:50:22 -0700 (PDT)
 Received: from ?IPV6:2603:8081:1405:679b:3305:65ce:78cc:72fb? (2603-8081-1405-679b-3305-65ce-78cc-72fb.res6.spectrum.com. [2603:8081:1405:679b:3305:65ce:78cc:72fb])
-        by smtp.gmail.com with ESMTPSA id z10-20020a056808048a00b003a42c45c109sm5399866oid.2.2023.09.13.10.36.01
+        by smtp.gmail.com with ESMTPSA id v20-20020a4ae6d4000000b00565d41ba4d0sm4635807oot.35.2023.09.13.13.50.21
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 13 Sep 2023 10:36:01 -0700 (PDT)
-Message-ID: <ab93655f-c187-fdab-6c67-3bfb2d9aa516@gmail.com>
-Date:   Wed, 13 Sep 2023 12:36:00 -0500
+        Wed, 13 Sep 2023 13:50:22 -0700 (PDT)
+Message-ID: <1fbe7ebb-6501-10c4-b9eb-8435661f6046@gmail.com>
+Date:   Wed, 13 Sep 2023 15:50:21 -0500
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
  Thunderbird/102.15.0
-Subject: Re: [bug report] blktests srp/002 hang
-To:     Bart Van Assche <bvanassche@acm.org>,
-        Shinichiro Kawasaki <shinichiro.kawasaki@wdc.com>
-Cc:     "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>
-References: <dsg6rd66tyiei32zaxs6ddv5ebefr5vtxjwz6d2ewqrcwisogl@ge7jzan7dg5u>
- <0c5c732c-283c-b29a-0ac2-c32211fc7e17@gmail.com>
- <yewvcfcketee5qduraajra2g37t2mpxdlmj7aqny3umf7mkavk@wsm5forumsou>
- <8be8f611-e413-9584-7c2e-2c1abf4147be@acm.org>
- <plrbpd5gg32uaferhjj6ibkt4wqybu3v3y32f4rlhvsruc7cu4@2pgrj2542da2>
- <18a3ae8c-145b-4c7f-a8f5-67840feeb98c@acm.org>
 Content-Language: en-US
+To:     "lizhijian@fujitsu.com" <lizhijian@fujitsu.com>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        Zhu Yanjun <zyjzyj2000@gmail.com>
 From:   Bob Pearson <rpearsonhpe@gmail.com>
-In-Reply-To: <18a3ae8c-145b-4c7f-a8f5-67840feeb98c@acm.org>
+Subject: newlines in message macros
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 8/25/23 08:52, Bart Van Assche wrote:
-> On 8/24/23 18:11, Shinichiro Kawasaki wrote:
->> If it takes time to resolve the issues, it sounds a good idea to make siw driver
->> default, since it will make the hangs less painful for blktests users. Another
->> idea to reduce the pain is to improve srp/002 and srp/011 to detect the hangs
->> and report them as failures.
-> 
-> At this moment we don't know whether the hangs can be converted into failures.
-> Answering this question is only possible after we have found the root cause of
-> the hang. If the hang would be caused by commands getting stuck in multipathd
-> then it can be solved by changing the path configuration (see also the dmsetup
-> message commands in blktests). If the hang is caused by a kernel bug then it's
-> very well possible that there is no way to recover other than by rebooting the
-> system on which the tests are run.
-> 
-> Thanks,
-> 
-> Bart.
+Li,
 
-Since 6.6.0-rc1 came out I decided to give blktests srp another try with the current
-rdma for-next branch on my Ubuntu (debian) system. For the first time in a very long
-time all the srp test cases run correctly multiple times. I ran each one 3X.
+I see that you removed the built-in newlines in the debug macros in rxe.h which is ok by me. But,
+for some reason the rxe_xxx() macros all still have built-in newlines. Why shouldn't we be consistent
+and make them all the same. (Maybe they don't get used much or at all.)
 
-I had tried to build multipath-tools from source but ran into problems so I reinstalled
-the current Ubuntu packages. I have no idea what was the root cause that finally went
-away but I don't think it was in rxe as there aren't any recent patches related to the
-blktests failures. I did notice that the dmesg traces picked up a couple of lines after
-the place where it used to hang. Something about setting an ALUA timeout to 60 seconds.
-
-Thanks to all who worked on this.
-
-Bob Pearson
+Bob
