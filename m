@@ -2,24 +2,34 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A79F679EE04
-	for <lists+linux-rdma@lfdr.de>; Wed, 13 Sep 2023 18:11:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B9F379EE55
+	for <lists+linux-rdma@lfdr.de>; Wed, 13 Sep 2023 18:35:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230316AbjIMQLC (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 13 Sep 2023 12:11:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46218 "EHLO
+        id S229698AbjIMQfP (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 13 Sep 2023 12:35:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47108 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230143AbjIMQLB (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 13 Sep 2023 12:11:01 -0400
-Received: from netrider.rowland.org (netrider.rowland.org [192.131.102.5])
-        by lindbergh.monkeyblade.net (Postfix) with SMTP id 9AC9C19AF
-        for <linux-rdma@vger.kernel.org>; Wed, 13 Sep 2023 09:10:57 -0700 (PDT)
-Received: (qmail 960084 invoked by uid 1000); 13 Sep 2023 12:10:56 -0400
-Date:   Wed, 13 Sep 2023 12:10:56 -0400
-From:   Alan Stern <stern@rowland.harvard.edu>
+        with ESMTP id S229437AbjIMQfP (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 13 Sep 2023 12:35:15 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1FB82198B;
+        Wed, 13 Sep 2023 09:35:11 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D49C6C433C8;
+        Wed, 13 Sep 2023 16:35:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1694622910;
+        bh=y6U3+knkB2KJUy0K+kKiKi2OQBqhEH8KYPTDWrdy8vw=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=SbSG8Ezy8yFgISuAMQN5RhWrtNTl3QqDSmiZMwwbTg+0oDugBRUdnwQc5j2qkdMD2
+         1s6Rl/XAfLKNgYXUQh0tRfyK/x+EtKE0FbZoD5NKNq9bgy1vK7qgU3p3IEpfCsnpHZ
+         6sTo/2em1zKqbF7iMKZUDjKUtpgdec9ZqPyZZzehDKx+RCrmR+C5zBmghTjK8bFrNZ
+         r10ma5uo2ysAby9XfArHeRQFgLtpllaR49B9Kn8xBTgF/UhNB7g6WBoqm/gf219JAL
+         cAjIovp8gUkGJgrlRCpYXvvezH6CR+ZkRs2Sqgqw/Ym/CEEDVjNCYnrRqY1AYdacqO
+         DegJgzAJU4xUg==
+Date:   Wed, 13 Sep 2023 18:35:03 +0200
+From:   Christian Brauner <brauner@kernel.org>
 To:     Christoph Hellwig <hch@lst.de>
-Cc:     Christian Brauner <brauner@kernel.org>,
-        Al Viro <viro@zeniv.linux.org.uk>,
+Cc:     Al Viro <viro@zeniv.linux.org.uk>,
         Heiko Carstens <hca@linux.ibm.com>,
         Vasily Gorbik <gor@linux.ibm.com>,
         Alexander Gordeev <agordeev@linux.ibm.com>,
@@ -40,81 +50,36 @@ Cc:     Christian Brauner <brauner@kernel.org>,
         linux-s390@vger.kernel.org, linux-rdma@vger.kernel.org,
         linux-nfs@vger.kernel.org, linux-hardening@vger.kernel.org,
         cgroups@vger.kernel.org
-Subject: Re: [PATCH 10/19] USB: gadget/legacy: remove sb_mutex
-Message-ID: <7f839be1-4898-41ad-8eda-10d5a0350bdf@rowland.harvard.edu>
+Subject: Re: [PATCH 01/19] fs: reflow deactivate_locked_super
+Message-ID: <20230913-betuchte-vervollkommnen-0609db0eaab8@brauner>
 References: <20230913111013.77623-1-hch@lst.de>
- <20230913111013.77623-11-hch@lst.de>
+ <20230913111013.77623-2-hch@lst.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20230913111013.77623-11-hch@lst.de>
+In-Reply-To: <20230913111013.77623-2-hch@lst.de>
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Wed, Sep 13, 2023 at 08:10:04AM -0300, Christoph Hellwig wrote:
-> Creating new a new super_block vs freeing the old one for single instance
-> file systems is serialized by the wait for SB_DEAD.
-> 
-> Remove the superfluous sb_mutex.
+On Wed, Sep 13, 2023 at 08:09:55AM -0300, Christoph Hellwig wrote:
+> Return early for the case where the super block isn't cleaned up to
+> reduce level of indentation.
 > 
 > Signed-off-by: Christoph Hellwig <hch@lst.de>
 > ---
-
-You might mention that this is essentially a reversion of commit 
-d18dcfe9860e ("USB: gadgetfs: Fix race between mounting and 
-unmounting").
-
-Alan Stern
-
->  drivers/usb/gadget/legacy/inode.c | 6 ------
->  1 file changed, 6 deletions(-)
+>  fs/super.c | 35 ++++++++++++++++++-----------------
+>  1 file changed, 18 insertions(+), 17 deletions(-)
 > 
-> diff --git a/drivers/usb/gadget/legacy/inode.c b/drivers/usb/gadget/legacy/inode.c
-> index ce9e31f3d26bcc..a203266bc0dc82 100644
-> --- a/drivers/usb/gadget/legacy/inode.c
-> +++ b/drivers/usb/gadget/legacy/inode.c
-> @@ -229,7 +229,6 @@ static void put_ep (struct ep_data *data)
->   */
->  
->  static const char *CHIP;
-> -static DEFINE_MUTEX(sb_mutex);		/* Serialize superblock operations */
->  
->  /*----------------------------------------------------------------------*/
->  
-> @@ -2012,8 +2011,6 @@ gadgetfs_fill_super (struct super_block *sb, struct fs_context *fc)
->  	struct dev_data	*dev;
->  	int		rc;
->  
-> -	mutex_lock(&sb_mutex);
-> -
->  	if (the_device) {
->  		rc = -ESRCH;
->  		goto Done;
-> @@ -2069,7 +2066,6 @@ gadgetfs_fill_super (struct super_block *sb, struct fs_context *fc)
->  	rc = -ENOMEM;
->  
->   Done:
-> -	mutex_unlock(&sb_mutex);
->  	return rc;
->  }
->  
-> @@ -2092,7 +2088,6 @@ static int gadgetfs_init_fs_context(struct fs_context *fc)
->  static void
->  gadgetfs_kill_sb (struct super_block *sb)
->  {
-> -	mutex_lock(&sb_mutex);
->  	kill_litter_super (sb);
->  	if (the_device) {
->  		put_dev (the_device);
-> @@ -2100,7 +2095,6 @@ gadgetfs_kill_sb (struct super_block *sb)
->  	}
->  	kfree(CHIP);
->  	CHIP = NULL;
-> -	mutex_unlock(&sb_mutex);
->  }
->  
->  /*----------------------------------------------------------------------*/
-> -- 
-> 2.39.2
-> 
+> diff --git a/fs/super.c b/fs/super.c
+> index 2d762ce67f6e6c..127a17d958a482 100644
+> --- a/fs/super.c
+> +++ b/fs/super.c
+> @@ -476,27 +476,28 @@ static void kill_super_notify(struct super_block *sb)
+>  void deactivate_locked_super(struct super_block *s)
+
+I wouldn't mind s/s/sb/ here as well. So we stop using @s in some and
+@sb in other places.
+
+Otherwise looks good to me,
+Reviewed-by: Christian Brauner <brauner@kernel.org>
