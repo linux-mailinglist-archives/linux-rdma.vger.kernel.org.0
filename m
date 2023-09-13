@@ -2,213 +2,106 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F244479E637
-	for <lists+linux-rdma@lfdr.de>; Wed, 13 Sep 2023 13:13:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9984279E7F8
+	for <lists+linux-rdma@lfdr.de>; Wed, 13 Sep 2023 14:30:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240342AbjIMLM1 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 13 Sep 2023 07:12:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51844 "EHLO
+        id S240478AbjIMMaU (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 13 Sep 2023 08:30:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33690 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240084AbjIMLMH (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 13 Sep 2023 07:12:07 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA78D1BCE;
-        Wed, 13 Sep 2023 04:11:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-        MIME-Version:References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender
-        :Reply-To:Content-Type:Content-ID:Content-Description;
-        bh=S1SFy87Tal1zjTMpG/B1YzaZjyHevEyx/Ud+hlEwuTk=; b=ZAxP4t/djhRJyUxTiB1g1/4wNn
-        Jy/Xo+IIkj7ixqhSE1v83lesrSKtdCY7mtxiQpdDWaA47Ad++ERcNIAoDq2vVNzeVPvQbWXtvvLM6
-        t/UO4IUIIeR8why07hc075q8lHsrKJI7D7mNsK+en+fXUEiPi0sUSYFaYxchkQ79W/EEUGGmwNJ+x
-        DABx1LwgpU4GjE/l8YtCJy55AK2oNY5aPc3B1GTiJgyFJfms8hvozRaT9sViD54yzQ1nCUczSlOb4
-        CHMuF0drthpu+kXBBjg9uc0tJgUiLZA97kWEUVl45SwGmIFrXSS/HTgtHdzV3aMao1S4jWOC29Yio
-        34Xi/lzw==;
-Received: from [190.210.221.22] (helo=localhost)
-        by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
-        id 1qgNmL-005iD3-11;
-        Wed, 13 Sep 2023 11:11:29 +0000
-From:   Christoph Hellwig <hch@lst.de>
-To:     Christian Brauner <brauner@kernel.org>,
-        Al Viro <viro@zeniv.linux.org.uk>
-Cc:     Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Alexander Gordeev <agordeev@linux.ibm.com>,
-        Fenghua Yu <fenghua.yu@intel.com>,
-        Reinette Chatre <reinette.chatre@intel.com>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Richard Weinberger <richard@nod.at>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
+        with ESMTP id S240480AbjIMMaS (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 13 Sep 2023 08:30:18 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.20])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6ADF419AC;
+        Wed, 13 Sep 2023 05:30:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1694608214; x=1726144214;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=23uguZCvTV5t58r/xj3uv2xYgJi+V730Lx4ND5oIgSM=;
+  b=M/Y3ZMhLF1paZE0jXaNAillNLiN+rry3+dNT750CWmdXm0SZ1CT5KCNv
+   ar6+Z48T4uQ6p2il1XJOwAFRHWqIY/G2ApwzfWjT24R0UHDYiAckFpD0d
+   lPa7HYWXvowzc6RxYERzcOviT6PAKNOtbre7R5ZvhWUo29p4tJwaZ4Aus
+   w+GtN7PSeb9hMbBxdrgtN66j4i08pfuk55otklVu0mhiTO5gEkftCtggp
+   r+EbViIsxMMPY3FxwrrK4ecc7VrTe77C4Nj4tKPqAyicrKZtQNgMTAa6k
+   lCr8CFxXnwyJl++XF8WUi1hGq5tXoOwBzj1lKTtxkL0w4Rva9RgcWGfTE
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10832"; a="368912312"
+X-IronPort-AV: E=Sophos;i="6.02,143,1688454000"; 
+   d="scan'208";a="368912312"
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Sep 2023 05:28:04 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10832"; a="693836605"
+X-IronPort-AV: E=Sophos;i="6.02,143,1688454000"; 
+   d="scan'208";a="693836605"
+Received: from pakurapo-mobl3.ger.corp.intel.com (HELO ijarvine-mobl2.ger.corp.intel.com) ([10.249.45.213])
+  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Sep 2023 05:28:01 -0700
+From:   =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
+To:     Jonathan Cameron <Jonathan.Cameron@Huawei.com>,
+        linux-pci@vger.kernel.org, Bjorn Helgaas <helgaas@kernel.org>,
         Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
-        Tejun Heo <tj@kernel.org>,
-        Trond Myklebust <trond.myklebust@hammerspace.com>,
-        Anna Schumaker <anna@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Damien Le Moal <dlemoal@kernel.org>,
-        Naohiro Aota <naohiro.aota@wdc.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-s390@vger.kernel.org, linux-rdma@vger.kernel.org,
-        linux-nfs@vger.kernel.org, linux-hardening@vger.kernel.org,
-        cgroups@vger.kernel.org
-Subject: [PATCH 19/19] fs: remove ->kill_sb
-Date:   Wed, 13 Sep 2023 08:10:13 -0300
-Message-Id: <20230913111013.77623-20-hch@lst.de>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20230913111013.77623-1-hch@lst.de>
-References: <20230913111013.77623-1-hch@lst.de>
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Leon Romanovsky <leon@kernel.org>, linux-rdma@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
+Subject: [PATCH v2 01/10] IB/hfi1: Use FIELD_GET() to extract Link Width
+Date:   Wed, 13 Sep 2023 15:27:39 +0300
+Message-Id: <20230913122748.29530-2-ilpo.jarvinen@linux.intel.com>
+X-Mailer: git-send-email 2.30.2
+In-Reply-To: <20230913122748.29530-1-ilpo.jarvinen@linux.intel.com>
+References: <20230913122748.29530-1-ilpo.jarvinen@linux.intel.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Now that no instances are left, remove ->kill_sb and mark
-generic_shutdown_super static.
+Use FIELD_GET() to extract PCIe Negotiated Link Width field instead of
+custom masking and shifting, and remove extract_width() which only
+wraps that FIELD_GET().
 
-Signed-off-by: Christoph Hellwig <hch@lst.de>
+Signed-off-by: Ilpo Järvinen <ilpo.jarvinen@linux.intel.com>
 ---
- Documentation/filesystems/locking.rst |  5 -----
- Documentation/filesystems/vfs.rst     |  5 -----
- fs/super.c                            | 25 +++++++++----------------
- include/linux/fs.h                    |  2 --
- 4 files changed, 9 insertions(+), 28 deletions(-)
+ drivers/infiniband/hw/hfi1/pcie.c | 9 ++-------
+ 1 file changed, 2 insertions(+), 7 deletions(-)
 
-diff --git a/Documentation/filesystems/locking.rst b/Documentation/filesystems/locking.rst
-index c33e2f03ed1f69..e4ca99c0828d00 100644
---- a/Documentation/filesystems/locking.rst
-+++ b/Documentation/filesystems/locking.rst
-@@ -221,7 +221,6 @@ prototypes::
- 	struct dentry *(*mount) (struct file_system_type *, int,
- 		       const char *, void *);
- 	void (*shutdown_sb) (struct super_block *);
--	void (*kill_sb) (struct super_block *);
- 	void (*free_sb) (struct super_block *);
- 
- locking rules:
-@@ -231,16 +230,12 @@ ops		may block
- =======		=========
- mount		yes
- shutdown_sb	yes
--kill_sb		yes
- free_sb		yes
- =======		=========
- 
- ->mount() returns ERR_PTR or the root dentry; its superblock should be locked
- on return.
- 
--->kill_sb() takes a write-locked superblock, does all shutdown work on it,
--unlocks and drops the reference.
--
- address_space_operations
- ========================
- prototypes::
-diff --git a/Documentation/filesystems/vfs.rst b/Documentation/filesystems/vfs.rst
-index 1a7c6926c31f34..29513ee1d34ede 100644
---- a/Documentation/filesystems/vfs.rst
-+++ b/Documentation/filesystems/vfs.rst
-@@ -120,7 +120,6 @@ members are defined:
- 		struct dentry *(*mount) (struct file_system_type *, int,
- 			const char *, void *);
- 		void (*shutdown_sb) (struct super_block *);
--		void (*kill_sb) (struct super_block *);
- 		void (*free_sb) (struct super_block *);
- 		struct module *owner;
- 		struct file_system_type * next;
-@@ -164,10 +163,6 @@ members are defined:
- 	Note: dentries and inodes are normally taken care of and do not need
- 	specific handling unless they are pinned by kernel users.
- 
--``kill_sb``
--	the method to call when an instance of this filesystem should be
--	shut down
--
- ``free_sb``
- 	Free file system specific resources like sb->s_fs_info that are
- 	still needed while inodes are freed during umount.
-diff --git a/fs/super.c b/fs/super.c
-index 805ca1dd1e23f2..d9c564e70ffcd5 100644
---- a/fs/super.c
-+++ b/fs/super.c
-@@ -458,6 +458,8 @@ static void kill_super_notify(struct super_block *sb)
- 	super_wake(sb, SB_DEAD);
- }
- 
-+static void generic_shutdown_super(struct super_block *sb);
-+
- /**
-  *	deactivate_locked_super	-	drop an active reference to superblock
-  *	@s: superblock to deactivate
-@@ -480,15 +482,11 @@ void deactivate_locked_super(struct super_block *s)
- 
- 	unregister_shrinker(&s->s_shrink);
- 
--	if (fs->kill_sb) {
--		fs->kill_sb(s);
--	} else {
--		if (fs->shutdown_sb)
--			fs->shutdown_sb(s);
--		generic_shutdown_super(s);
--		if (fs->free_sb)
--			fs->free_sb(s);
--	}
-+	if (fs->shutdown_sb)
-+		fs->shutdown_sb(s);
-+	generic_shutdown_super(s);
-+	if (fs->free_sb)
-+		fs->free_sb(s);
- 
- 	kill_super_notify(s);
- 
-@@ -661,16 +659,13 @@ EXPORT_SYMBOL(retire_super);
-  *	@sb: superblock to kill
-  *
-  *	generic_shutdown_super() does all fs-independent work on superblock
-- *	shutdown.  Typical ->kill_sb() should pick all fs-specific objects
-- *	that need destruction out of superblock, call generic_shutdown_super()
-- *	and release aforementioned objects.  Note: dentries and inodes _are_
-- *	taken care of and do not need specific handling.
-+ *	shutdown. 
-  *
-  *	Upon calling this function, the filesystem may no longer alter or
-  *	rearrange the set of dentries belonging to this super_block, nor may it
-  *	change the attachments of dentries to inodes.
+diff --git a/drivers/infiniband/hw/hfi1/pcie.c b/drivers/infiniband/hw/hfi1/pcie.c
+index 08732e1ac966..c132a9c073bf 100644
+--- a/drivers/infiniband/hw/hfi1/pcie.c
++++ b/drivers/infiniband/hw/hfi1/pcie.c
+@@ -3,6 +3,7 @@
+  * Copyright(c) 2015 - 2019 Intel Corporation.
   */
--void generic_shutdown_super(struct super_block *sb)
-+static void generic_shutdown_super(struct super_block *sb)
- {
- 	const struct super_operations *sop = sb->s_op;
  
-@@ -743,8 +738,6 @@ void generic_shutdown_super(struct super_block *sb)
- 	}
++#include <linux/bitfield.h>
+ #include <linux/pci.h>
+ #include <linux/io.h>
+ #include <linux/delay.h>
+@@ -210,12 +211,6 @@ static u32 extract_speed(u16 linkstat)
+ 	return speed;
  }
  
--EXPORT_SYMBOL(generic_shutdown_super);
+-/* return the PCIe link speed from the given link status */
+-static u32 extract_width(u16 linkstat)
+-{
+-	return (linkstat & PCI_EXP_LNKSTA_NLW) >> PCI_EXP_LNKSTA_NLW_SHIFT;
+-}
 -
- bool mount_capable(struct fs_context *fc)
+ /* read the link status and set dd->{lbus_width,lbus_speed,lbus_info} */
+ static void update_lbus_info(struct hfi1_devdata *dd)
  {
- 	if (!(fc->fs_type->fs_flags & FS_USERNS_MOUNT))
-diff --git a/include/linux/fs.h b/include/linux/fs.h
-index 302be5dfc1a04a..f57d3a27b488f7 100644
---- a/include/linux/fs.h
-+++ b/include/linux/fs.h
-@@ -2340,7 +2340,6 @@ struct file_system_type {
- 	const struct fs_parameter_spec *parameters;
- 	struct dentry *(*mount) (struct file_system_type *, int,
- 		       const char *, void *);
--	void (*kill_sb) (struct super_block *);
- 	void (*shutdown_sb)(struct super_block *sb);
- 	void (*free_sb)(struct super_block *sb);
- 	struct module *owner;
-@@ -2382,7 +2381,6 @@ extern struct dentry *mount_nodev(struct file_system_type *fs_type,
- 	int (*fill_super)(struct super_block *, void *, int));
- extern struct dentry *mount_subtree(struct vfsmount *mnt, const char *path);
- void retire_super(struct super_block *sb);
--void generic_shutdown_super(struct super_block *sb);
- void block_free_sb(struct super_block *sb);
- void litter_shutdown_sb(struct super_block *sb);
- void deactivate_super(struct super_block *sb);
+@@ -228,7 +223,7 @@ static void update_lbus_info(struct hfi1_devdata *dd)
+ 		return;
+ 	}
+ 
+-	dd->lbus_width = extract_width(linkstat);
++	dd->lbus_width = FIELD_GET(PCI_EXP_LNKSTA_NLW, linkstat);
+ 	dd->lbus_speed = extract_speed(linkstat);
+ 	snprintf(dd->lbus_info, sizeof(dd->lbus_info),
+ 		 "PCIe,%uMHz,x%u", dd->lbus_speed, dd->lbus_width);
 -- 
-2.39.2
+2.30.2
 
