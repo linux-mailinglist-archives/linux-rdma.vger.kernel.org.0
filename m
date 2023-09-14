@@ -2,108 +2,140 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B7F8079F593
-	for <lists+linux-rdma@lfdr.de>; Thu, 14 Sep 2023 01:38:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B303C79F5E7
+	for <lists+linux-rdma@lfdr.de>; Thu, 14 Sep 2023 02:33:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233055AbjIMXi0 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 13 Sep 2023 19:38:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55622 "EHLO
+        id S233189AbjINAdM (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 13 Sep 2023 20:33:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47894 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229894AbjIMXiZ (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 13 Sep 2023 19:38:25 -0400
-Received: from out-219.mta0.migadu.com (out-219.mta0.migadu.com [91.218.175.219])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6B0BCE4
-        for <linux-rdma@vger.kernel.org>; Wed, 13 Sep 2023 16:38:21 -0700 (PDT)
-Message-ID: <9dd0aa0a-d696-a95b-095b-f54d6d31a6ab@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1694648299;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=pb7CcDEnpMYykAOYQZ4LzxwBgmHpJP2O/WJ0BPqmLHE=;
-        b=Q5pnPwiR+pia6RjSfDPCV+VB6dHau2sp1GVjWvKZgUJhIeXzBB9rOvuvXGHyG5ZF0hhj2K
-        8l5vOuCwUqIbqZZih9gu7AWJvN71ZDcUr9nV7iFjNekY9+2CB5HuY2iKac3s2Riz5oSBqb
-        r+2fA+Ji6JXIa/BaOeHQjD7tJR4t1M0=
-Date:   Thu, 14 Sep 2023 07:38:13 +0800
+        with ESMTP id S231223AbjINAdL (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 13 Sep 2023 20:33:11 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF2391724;
+        Wed, 13 Sep 2023 17:33:07 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6ADC5C433C7;
+        Thu, 14 Sep 2023 00:33:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1694651587;
+        bh=78IdMo52kj5+6bJlcewfwBX0rNPqip7T68o37Qx9Yr4=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=fsjRpDYSulA9367EFdFAGLUTu0c9nlbpmTLnmUNUWF/Ujr/W3vhKnAVWmlRosElKt
+         i4pEY8n18Q45chLu8k2MsnLto7mITLe3+uU4+oOGe0HUptveFjgJddRHFVT2qBJghq
+         OW8Jj0CdSixK2KBDNQEO9ypNb/74gOs9KJjTtal3fzi9F0XVeh7th4ycIuM74sgwi/
+         zWy5vQt73rtL1m+kY5KAtchyeuTeCH6tQl9STxRRsALiOOAGTLQxoEOjCnbVdYKWKs
+         NdpKSg+jPtGvbF6+MTJVGOypSsPATnvfVPeTuwDr0uPOGJocHhU7pykTWe9IyJ0i6G
+         WFTiSHoplUEVQ==
+Message-ID: <36a333bf-4cc5-e3a6-90fd-34b362f96f83@kernel.org>
+Date:   Thu, 14 Sep 2023 09:33:03 +0900
 MIME-Version: 1.0
-Subject: Re: [bug report] blktests srp/002 hang
-To:     Bob Pearson <rpearsonhpe@gmail.com>,
-        Bart Van Assche <bvanassche@acm.org>,
-        Shinichiro Kawasaki <shinichiro.kawasaki@wdc.com>
-Cc:     "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>
-References: <dsg6rd66tyiei32zaxs6ddv5ebefr5vtxjwz6d2ewqrcwisogl@ge7jzan7dg5u>
- <0c5c732c-283c-b29a-0ac2-c32211fc7e17@gmail.com>
- <yewvcfcketee5qduraajra2g37t2mpxdlmj7aqny3umf7mkavk@wsm5forumsou>
- <8be8f611-e413-9584-7c2e-2c1abf4147be@acm.org>
- <plrbpd5gg32uaferhjj6ibkt4wqybu3v3y32f4rlhvsruc7cu4@2pgrj2542da2>
- <18a3ae8c-145b-4c7f-a8f5-67840feeb98c@acm.org>
- <ab93655f-c187-fdab-6c67-3bfb2d9aa516@gmail.com>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From:   Zhu Yanjun <yanjun.zhu@linux.dev>
-In-Reply-To: <ab93655f-c187-fdab-6c67-3bfb2d9aa516@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH 09/19] zonefs: remove duplicate cleanup in
+ zonefs_fill_super
+Content-Language: en-US
+To:     Christoph Hellwig <hch@lst.de>,
+        Christian Brauner <brauner@kernel.org>,
+        Al Viro <viro@zeniv.linux.org.uk>
+Cc:     Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Alexander Gordeev <agordeev@linux.ibm.com>,
+        Fenghua Yu <fenghua.yu@intel.com>,
+        Reinette Chatre <reinette.chatre@intel.com>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Richard Weinberger <richard@nod.at>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
+        Tejun Heo <tj@kernel.org>,
+        Trond Myklebust <trond.myklebust@hammerspace.com>,
+        Anna Schumaker <anna@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Naohiro Aota <naohiro.aota@wdc.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-s390@vger.kernel.org, linux-rdma@vger.kernel.org,
+        linux-nfs@vger.kernel.org, linux-hardening@vger.kernel.org,
+        cgroups@vger.kernel.org
+References: <20230913111013.77623-1-hch@lst.de>
+ <20230913111013.77623-10-hch@lst.de>
+From:   Damien Le Moal <dlemoal@kernel.org>
+Organization: Western Digital Research
+In-Reply-To: <20230913111013.77623-10-hch@lst.de>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-在 2023/9/14 1:36, Bob Pearson 写道:
-> On 8/25/23 08:52, Bart Van Assche wrote:
->> On 8/24/23 18:11, Shinichiro Kawasaki wrote:
->>> If it takes time to resolve the issues, it sounds a good idea to make siw driver
->>> default, since it will make the hangs less painful for blktests users. Another
->>> idea to reduce the pain is to improve srp/002 and srp/011 to detect the hangs
->>> and report them as failures.
->>
->> At this moment we don't know whether the hangs can be converted into failures.
->> Answering this question is only possible after we have found the root cause of
->> the hang. If the hang would be caused by commands getting stuck in multipathd
->> then it can be solved by changing the path configuration (see also the dmsetup
->> message commands in blktests). If the hang is caused by a kernel bug then it's
->> very well possible that there is no way to recover other than by rebooting the
->> system on which the tests are run.
->>
->> Thanks,
->>
->> Bart.
+On 9/13/23 20:10, Christoph Hellwig wrote:
+> When ->fill_super fails, ->kill_sb is called which already cleans up
+> the inodes and zgroups.
 > 
-> Since 6.6.0-rc1 came out I decided to give blktests srp another try with the current
-> rdma for-next branch on my Ubuntu (debian) system. For the first time in a very long
-> time all the srp test cases run correctly multiple times. I ran each one 3X.
+> Drop the extra cleanup code in zonefs_fill_super.
 > 
-> I had tried to build multipath-tools from source but ran into problems so I reinstalled
-> the current Ubuntu packages. I have no idea what was the root cause that finally went
-> away but I don't think it was in rxe as there aren't any recent patches related to the
-> blktests failures. I did notice that the dmesg traces picked up a couple of lines after
-> the place where it used to hang. Something about setting an ALUA timeout to 60 seconds.
+> Signed-off-by: Christoph Hellwig <hch@lst.de>
+
+Looks good to me.
+
+Acked-by: Damien Le Moal <dlemoal@kernel.org>
+
+> ---
+>  fs/zonefs/super.c | 21 +++++----------------
+>  1 file changed, 5 insertions(+), 16 deletions(-)
 > 
-> Thanks to all who worked on this.
+> diff --git a/fs/zonefs/super.c b/fs/zonefs/super.c
+> index 9d1a9808fbbba6..35b2554ce2ac2e 100644
+> --- a/fs/zonefs/super.c
+> +++ b/fs/zonefs/super.c
+> @@ -1309,13 +1309,12 @@ static int zonefs_fill_super(struct super_block *sb, void *data, int silent)
+>  	/* Initialize the zone groups */
+>  	ret = zonefs_init_zgroups(sb);
+>  	if (ret)
+> -		goto cleanup;
+> +		return ret;
+>  
+>  	/* Create the root directory inode */
+> -	ret = -ENOMEM;
+>  	inode = new_inode(sb);
+>  	if (!inode)
+> -		goto cleanup;
+> +		return -ENOMEM;
+>  
+>  	inode->i_ino = bdev_nr_zones(sb->s_bdev);
+>  	inode->i_mode = S_IFDIR | 0555;
+> @@ -1333,7 +1332,7 @@ static int zonefs_fill_super(struct super_block *sb, void *data, int silent)
+>  
+>  	sb->s_root = d_make_root(inode);
+>  	if (!sb->s_root)
+> -		goto cleanup;
+> +		return -ENOMEM;
+>  
+>  	/*
+>  	 * Take a reference on the zone groups directory inodes
+> @@ -1341,19 +1340,9 @@ static int zonefs_fill_super(struct super_block *sb, void *data, int silent)
+>  	 */
+>  	ret = zonefs_get_zgroup_inodes(sb);
+>  	if (ret)
+> -		goto cleanup;
+> -
+> -	ret = zonefs_sysfs_register(sb);
+> -	if (ret)
+> -		goto cleanup;
+> -
+> -	return 0;
+> -
+> -cleanup:
+> -	zonefs_release_zgroup_inodes(sb);
+> -	zonefs_free_zgroups(sb);
+> +		return ret;
+>  
+> -	return ret;
+> +	return zonefs_sysfs_register(sb);
+>  }
+>  
+>  static struct dentry *zonefs_mount(struct file_system_type *fs_type,
 
-Hi, Bob
-
-About this problem, IIRC, this problem easily occurred on Debian and 
-Fedora 38 and with the commit 9b4b7c1f9f54 ("RDMA/rxe: Add workqueue 
-support for rxe tasks").
-
-And on Debian, with the latest multipathd, this problem seems to disappear.
-
-On Fedora 38, even with the latest multipathd, this problem still can be 
-observed.
-
-On Ubuntu, it is difficult to reproduce this problem.
-
-Perhaps this is why you can not reproduce this problem on Ubuntu.
-
-It seems that this problem is related with linux distribution and the 
-version of multipathd.
-
-If I am missing something, please feel free to let me know.
-
-Zhu Yanjun
-
-> 
-> Bob Pearson
+-- 
+Damien Le Moal
+Western Digital Research
 
