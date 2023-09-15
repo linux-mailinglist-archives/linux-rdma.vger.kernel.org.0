@@ -2,91 +2,135 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E55ED7A1417
-	for <lists+linux-rdma@lfdr.de>; Fri, 15 Sep 2023 04:59:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A2137A1465
+	for <lists+linux-rdma@lfdr.de>; Fri, 15 Sep 2023 05:30:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231680AbjIODAC (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 14 Sep 2023 23:00:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45130 "EHLO
+        id S229554AbjIODaD (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 14 Sep 2023 23:30:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60102 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230497AbjIODAB (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 14 Sep 2023 23:00:01 -0400
-Received: from out-228.mta1.migadu.com (out-228.mta1.migadu.com [95.215.58.228])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7124926B8
-        for <linux-rdma@vger.kernel.org>; Thu, 14 Sep 2023 19:59:57 -0700 (PDT)
-Message-ID: <1c19cdc0-664e-514b-edd0-5cc6f899523b@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1694746795;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=MfFKAGYQM9dzrgcM/WOMG8JEwTGlan+/tFwrZF39G60=;
-        b=Z0rjVKsJptCVUM09Iq68Ndz/kXMMX+5Ga5i5L8wGIS+TY0qrjwNQaDztObWl+vVEsTC2RI
-        Uyh9TT5wtZhVOkY5u8ppfsLmP+3+69ZogQLj3oo9cF7wUgebL1DMbIPZEQJDZ+Z2C1tCWd
-        NmFjep1Lg0MN3obplZ72WMPU0gvSOzs=
-Date:   Fri, 15 Sep 2023 10:59:49 +0800
+        with ESMTP id S230497AbjIODaD (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 14 Sep 2023 23:30:03 -0400
+Received: from mail-pg1-x533.google.com (mail-pg1-x533.google.com [IPv6:2607:f8b0:4864:20::533])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E76982713
+        for <linux-rdma@vger.kernel.org>; Thu, 14 Sep 2023 20:29:58 -0700 (PDT)
+Received: by mail-pg1-x533.google.com with SMTP id 41be03b00d2f7-53fa455cd94so1257783a12.2
+        for <linux-rdma@vger.kernel.org>; Thu, 14 Sep 2023 20:29:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1694748598; x=1695353398; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=foL7uPoELeXThgRtp4NfsBE8jbNLcnM/fz3r3P9dwSA=;
+        b=Xm4TIlGgBMVG7YlREoLQzquxcoBJm/KxFvp+4caFPtBleVC4FkMHfR3D3E91bqlfT/
+         8JTQcWZogEbjgVmxwBBWwpeytVEFWKU8fSUvLfCAWqvbWkvusRhICBKV2nN9n/zu5Xgb
+         8k34S2IJVe19M6JdTfoTUWQmU8JVoaBY9G/sA=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1694748598; x=1695353398;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=foL7uPoELeXThgRtp4NfsBE8jbNLcnM/fz3r3P9dwSA=;
+        b=HgW9QooeaI8I9RFv2TJx3POLbv7xbGTcrlUaDcaeFE8VsqqxYT9Ah2MsmpNqiZHCew
+         j2nXOHI8YmGC9jvaNtfcLsRGTYg4bMypYmtUJYjOHYZUteKcrAnTobRqjP0mrUhOeTyE
+         w7iAFRIJ4kPckMcUjx7f+bc0dv3nPQAqQcodZOy7CYoZ7Q/BNooTa3llEhP7vswM+8Jw
+         Fw94oBG8g7dwRmxlc7Ko5vCjfVF+wpddSGHD07fJlpavN+LDlKfNWxQCw0E/hgj0STJm
+         OoXNing8Mi/HJEc66xgdEEy6qpHGFEokVHJEUEgFNM/1XLYD+TYHWl+jLW+rSysL28wx
+         zSFw==
+X-Gm-Message-State: AOJu0Yzd1clnC1sd3FHNobjIse6a3g6jeS6kjHwUIdoDhI0UnaDh8HjA
+        NDftHPyBGMC3VP1zkAH6fAHeRg==
+X-Google-Smtp-Source: AGHT+IFUiPPqwu1gNzFfL58DjBiKY5tF49qfpn5IiLp2dlsbMFFWxYolo8hGE+rNBbs9Q0R7lVX1cg==
+X-Received: by 2002:a05:6a20:5659:b0:140:a6ec:b56a with SMTP id is25-20020a056a20565900b00140a6ecb56amr602604pzc.3.1694748598402;
+        Thu, 14 Sep 2023 20:29:58 -0700 (PDT)
+Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
+        by smtp.gmail.com with ESMTPSA id h5-20020a170902748500b001a5fccab02dsm2339310pll.177.2023.09.14.20.29.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 14 Sep 2023 20:29:57 -0700 (PDT)
+Date:   Thu, 14 Sep 2023 20:29:57 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     "Gustavo A. R. Silva" <gustavoars@kernel.org>
+Cc:     Jason Gunthorpe <jgg@ziepe.ca>, Leon Romanovsky <leon@kernel.org>,
+        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-hardening@vger.kernel.org
+Subject: Re: [PATCH v2][next] RDMA/core: Use size_{add,mul}() in calls to
+ struct_size()
+Message-ID: <202309142029.D432EEB8C@keescook>
+References: <ZP+if342EMhModzZ@work>
 MIME-Version: 1.0
-Subject: Re: newlines in message macros
-To:     "Zhijian Li (Fujitsu)" <lizhijian@fujitsu.com>,
-        Bob Pearson <rpearsonhpe@gmail.com>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        Zhu Yanjun <zyjzyj2000@gmail.com>
-References: <1fbe7ebb-6501-10c4-b9eb-8435661f6046@gmail.com>
- <20fb88a8-6c68-671c-7791-be1df6f708d6@linux.dev>
- <6a6c3491-5288-83ad-4a51-085797b2358c@fujitsu.com>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From:   Zhu Yanjun <yanjun.zhu@linux.dev>
-In-Reply-To: <6a6c3491-5288-83ad-4a51-085797b2358c@fujitsu.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZP+if342EMhModzZ@work>
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
+On Mon, Sep 11, 2023 at 05:27:59PM -0600, Gustavo A. R. Silva wrote:
+> Harden calls to struct_size() with size_add() and size_mul().
 
-在 2023/9/15 9:38, Zhijian Li (Fujitsu) 写道:
-> Yanjun,
->
-> On 14/09/2023 07:12, Zhu Yanjun wrote:
->> 在 2023/9/14 4:50, Bob Pearson 写道:
->>> Li,
->>>
->>> I see that you removed the built-in newlines in the debug macros in rxe.h which is ok by me. But,
->> I made tests for many times about adding newline speeding up flush messages. With or without new line, I can not find out the difference on flushing messages. Not sure if Li Zhijian found this difference in a specific scenario or not.
->> And even without new line, after output the line, the message still goes to a new line. I suspect if a newline is appended in the PRINTK subsystem.
->
-> When i'm using something like: `dmesg --follow` monitor the dmesg, I can notice that delay clearly.
-> you will see that the timestamp is correct, but the messages don't appear until a next newline.
+Specifically, make sure that open-coded arithmetic cannot cause an
+overflow/wraparound. (i.e. it will stay saturated at SIZE_MAX.)
 
-Thanks. To verify what you said, I made a simple tests. In my test, I 
-output logs with several printk lines without newlines.
+> 
+> Fixes: 467f432a521a ("RDMA/core: Split port and device counter sysfs attributes")
+> Fixes: a4676388e2e2 ("RDMA/core: Simplify how the gid_attrs sysfs is created")
+> Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
 
- From the test result, except the last printk line, the other printk 
-lines can output logs correctly in time.
+Reviewed-by: Kees Cook <keescook@chromium.org>
 
-Perhaps kernel standards add newlines in the format strings. And the 
-last printk without newlines can not output logs in time.
+-Kees
 
-To fix this problem, I add a newline in the last printk line. Then all 
-the printk logs can output correctly in time.
+> ---
+> Changes in v2:
+>  - Update changelog text: remove the part about binary differences (it
+>    was added by mistake).
+> 
+>  drivers/infiniband/core/sysfs.c | 10 +++++-----
+>  1 file changed, 5 insertions(+), 5 deletions(-)
+> 
+> diff --git a/drivers/infiniband/core/sysfs.c b/drivers/infiniband/core/sysfs.c
+> index ee59d7391568..ec5efdc16660 100644
+> --- a/drivers/infiniband/core/sysfs.c
+> +++ b/drivers/infiniband/core/sysfs.c
+> @@ -903,7 +903,7 @@ alloc_hw_stats_device(struct ib_device *ibdev)
+>  	 * Two extra attribue elements here, one for the lifespan entry and
+>  	 * one to NULL terminate the list for the sysfs core code
+>  	 */
+> -	data = kzalloc(struct_size(data, attrs, stats->num_counters + 1),
+> +	data = kzalloc(struct_size(data, attrs, size_add(stats->num_counters, 1)),
+>  		       GFP_KERNEL);
+>  	if (!data)
+>  		goto err_free_stats;
+> @@ -1009,7 +1009,7 @@ alloc_hw_stats_port(struct ib_port *port, struct attribute_group *group)
+>  	 * Two extra attribue elements here, one for the lifespan entry and
+>  	 * one to NULL terminate the list for the sysfs core code
+>  	 */
+> -	data = kzalloc(struct_size(data, attrs, stats->num_counters + 1),
+> +	data = kzalloc(struct_size(data, attrs, size_add(stats->num_counters, 1)),
+>  		       GFP_KERNEL);
+>  	if (!data)
+>  		goto err_free_stats;
+> @@ -1140,7 +1140,7 @@ static int setup_gid_attrs(struct ib_port *port,
+>  	int ret;
+>  
+>  	gid_attr_group = kzalloc(struct_size(gid_attr_group, attrs_list,
+> -					     attr->gid_tbl_len * 2),
+> +					     size_mul(attr->gid_tbl_len, 2)),
+>  				 GFP_KERNEL);
+>  	if (!gid_attr_group)
+>  		return -ENOMEM;
+> @@ -1205,8 +1205,8 @@ static struct ib_port *setup_port(struct ib_core_device *coredev, int port_num,
+>  	int ret;
+>  
+>  	p = kvzalloc(struct_size(p, attrs_list,
+> -				attr->gid_tbl_len + attr->pkey_tbl_len),
+> -		    GFP_KERNEL);
+> +				size_add(attr->gid_tbl_len, attr->pkey_tbl_len)),
+> +		     GFP_KERNEL);
+>  	if (!p)
+>  		return ERR_PTR(-ENOMEM);
+>  	p->ibdev = device;
+> -- 
+> 2.34.1
+> 
 
-I think your commit and Bob's commit have added newlines in RXE.
-
-Thanks.
-
-Zhu Yanjun
-
->
-> Thanks
-> Zhijian
->
->
->
->> Zhu Yanjun
->>
->>> for some reason the rxe_xxx() macros all still have built-in newlines. Why shouldn't we be consistent
->>> and make them all the same. (Maybe they don't get used much or at all.)
->>>
->>> Bob
+-- 
+Kees Cook
