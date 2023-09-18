@@ -2,131 +2,93 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1FE227A4FEB
-	for <lists+linux-rdma@lfdr.de>; Mon, 18 Sep 2023 18:56:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E7D847A4EE6
+	for <lists+linux-rdma@lfdr.de>; Mon, 18 Sep 2023 18:29:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230264AbjIRQ4s (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 18 Sep 2023 12:56:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46734 "EHLO
+        id S229753AbjIRQ30 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 18 Sep 2023 12:29:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40912 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231180AbjIRQ4p (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 18 Sep 2023 12:56:45 -0400
-Received: from szxga03-in.huawei.com (szxga03-in.huawei.com [45.249.212.189])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4DA3F9D;
-        Mon, 18 Sep 2023 09:56:39 -0700 (PDT)
-Received: from kwepemi500006.china.huawei.com (unknown [172.30.72.57])
-        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4Rq4tN1qJgzMl74;
-        Mon, 18 Sep 2023 21:11:08 +0800 (CST)
-Received: from localhost.localdomain (10.67.165.2) by
- kwepemi500006.china.huawei.com (7.221.188.68) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.31; Mon, 18 Sep 2023 21:14:40 +0800
-From:   Junxian Huang <huangjunxian6@hisilicon.com>
-To:     <jgg@ziepe.ca>, <leon@kernel.org>
-CC:     <linux-rdma@vger.kernel.org>, <linuxarm@huawei.com>,
-        <linux-kernel@vger.kernel.org>, <huangjunxian6@hisilicon.com>
-Subject: [PATCH RFC] rdma: Add support to dump SRQ resource in raw format
-Date:   Mon, 18 Sep 2023 21:11:40 +0800
-Message-ID: <20230918131140.4037213-1-huangjunxian6@hisilicon.com>
-X-Mailer: git-send-email 2.30.0
+        with ESMTP id S230107AbjIRQ3G (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 18 Sep 2023 12:29:06 -0400
+Received: from gw.red-soft.ru (red-soft.ru [188.246.186.2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 99651449D;
+        Mon, 18 Sep 2023 09:25:51 -0700 (PDT)
+Received: from localhost.biz (unknown [10.81.81.211])
+        by gw.red-soft.ru (Postfix) with ESMTPA id 5C95F3E19AE;
+        Mon, 18 Sep 2023 16:56:28 +0300 (MSK)
+From:   Artem Chernyshev <artem.chernyshev@red-soft.ru>
+To:     Santosh Shilimkar <santosh.shilimkar@oracle.com>
+Cc:     Artem Chernyshev <artem.chernyshev@red-soft.ru>,
+        "David S . Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>, netdev@vger.kernel.org,
+        linux-rdma@vger.kernel.org, rds-devel@oss.oracle.com,
+        linux-kernel@vger.kernel.org, lvc-project@linuxtesting.org
+Subject: [PATCH] net: rds: Fix possible NULL-pointer dereference
+Date:   Mon, 18 Sep 2023 16:56:23 +0300
+Message-Id: <20230918135623.630654-1-artem.chernyshev@red-soft.ru>
+X-Mailer: git-send-email 2.37.3
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.67.165.2]
-X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
- kwepemi500006.china.huawei.com (7.221.188.68)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-KLMS-Rule-ID: 1
+X-KLMS-Message-Action: clean
+X-KLMS-AntiSpam-Lua-Profiles: 179930 [Sep 18 2023]
+X-KLMS-AntiSpam-Version: 5.9.59.0
+X-KLMS-AntiSpam-Envelope-From: artem.chernyshev@red-soft.ru
+X-KLMS-AntiSpam-Rate: 0
+X-KLMS-AntiSpam-Status: not_detected
+X-KLMS-AntiSpam-Method: none
+X-KLMS-AntiSpam-Auth: dkim=none
+X-KLMS-AntiSpam-Info: LuaCore: 530 530 ecb1547b3f72d1df4c71c0b60e67ba6b4aea5432, {Tracking_from_domain_doesnt_match_to}, d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;red-soft.ru:7.1.1;localhost.biz:7.1.1;127.0.0.199:7.1.2, FromAlignment: s
+X-MS-Exchange-Organization-SCL: -1
+X-KLMS-AntiSpam-Interceptor-Info: scan successful
+X-KLMS-AntiPhishing: Clean, bases: 2023/09/18 10:00:00
+X-KLMS-AntiVirus: Kaspersky Security for Linux Mail Server, version 8.0.3.30, bases: 2023/09/18 03:27:00 #21914376
+X-KLMS-AntiVirus-Status: Clean, skipped
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: wenglianfa <wenglianfa@huawei.com>
+In rds_rdma_cm_event_handler_cmn() check, if conn pointer exists 
+before dereferencing it as rdma_set_service_type() argument
 
-Add support to dump SRQ resource in raw format.
+Found by Linux Verification Center (linuxtesting.org) with SVACE.
 
-This patch relies on the corresponding kernel patch:
-RDMA/core: Add support to dump SRQ resource in RAW format
-
-Example:
-$ rdma res show srq -r
-dev hns3 149000...
-
-$ rdma res show srq -j -r
-[{"ifindex":0,"ifname":"hns3","data":[149,0,0,...]}]
-
-Signed-off-by: wenglianfa <wenglianfa@huawei.com>
+Fixes: fd261ce6a30e ("rds: rdma: update rdma transport for tos")
+Signed-off-by: Artem Chernyshev <artem.chernyshev@red-soft.ru>
 ---
- rdma/include/uapi/rdma/rdma_netlink.h |  2 ++
- rdma/res-srq.c                        | 17 ++++++++++++++++-
- rdma/res.h                            |  2 ++
- 3 files changed, 20 insertions(+), 1 deletion(-)
+ net/rds/rdma_transport.c | 12 +++++++-----
+ 1 file changed, 7 insertions(+), 5 deletions(-)
 
-diff --git a/rdma/include/uapi/rdma/rdma_netlink.h b/rdma/include/uapi/rdma/rdma_netlink.h
-index 92c528a0..84f775be 100644
---- a/rdma/include/uapi/rdma/rdma_netlink.h
-+++ b/rdma/include/uapi/rdma/rdma_netlink.h
-@@ -299,6 +299,8 @@ enum rdma_nldev_command {
+diff --git a/net/rds/rdma_transport.c b/net/rds/rdma_transport.c
+index d36f3f6b4351..b506d9bd215c 100644
+--- a/net/rds/rdma_transport.c
++++ b/net/rds/rdma_transport.c
+@@ -86,11 +86,13 @@ static int rds_rdma_cm_event_handler_cmn(struct rdma_cm_id *cm_id,
+ 		break;
  
- 	RDMA_NLDEV_CMD_STAT_GET_STATUS,
+ 	case RDMA_CM_EVENT_ADDR_RESOLVED:
+-		rdma_set_service_type(cm_id, conn->c_tos);
+-		rdma_set_min_rnr_timer(cm_id, IB_RNR_TIMER_000_32);
+-		/* XXX do we need to clean up if this fails? */
+-		ret = rdma_resolve_route(cm_id,
+-					 RDS_RDMA_RESOLVE_TIMEOUT_MS);
++		if (conn) {
++			rdma_set_service_type(cm_id, conn->c_tos);
++			rdma_set_min_rnr_timer(cm_id, IB_RNR_TIMER_000_32);
++			/* XXX do we need to clean up if this fails? */
++			ret = rdma_resolve_route(cm_id,
++						 RDS_RDMA_RESOLVE_TIMEOUT_MS);
++		}
+ 		break;
  
-+	RDMA_NLDEV_CMD_RES_SRQ_GET_RAW,
-+
- 	RDMA_NLDEV_NUM_OPS
- };
- 
-diff --git a/rdma/res-srq.c b/rdma/res-srq.c
-index 186ae281..d2581a3f 100644
---- a/rdma/res-srq.c
-+++ b/rdma/res-srq.c
-@@ -162,6 +162,20 @@ out:
- 	return -EINVAL;
- }
- 
-+static int res_srq_line_raw(struct rd *rd, const char *name, int idx,
-+			    struct nlattr **nla_line)
-+{
-+	if (!nla_line[RDMA_NLDEV_ATTR_RES_RAW])
-+		return MNL_CB_ERROR;
-+
-+	open_json_object(NULL);
-+	print_dev(rd, idx, name);
-+	print_raw_data(rd, nla_line);
-+	newline(rd);
-+
-+	return MNL_CB_OK;
-+}
-+
- static int res_srq_line(struct rd *rd, const char *name, int idx,
- 			struct nlattr **nla_line)
- {
-@@ -276,7 +290,8 @@ int res_srq_parse_cb(const struct nlmsghdr *nlh, void *data)
- 		if (ret != MNL_CB_OK)
- 			break;
- 
--		ret = res_srq_line(rd, name, idx, nla_line);
-+		ret = (rd->show_raw) ? res_srq_line_raw(rd, name, idx, nla_line) :
-+		       res_srq_line(rd, name, idx, nla_line);
- 		if (ret != MNL_CB_OK)
- 			break;
- 	}
-diff --git a/rdma/res.h b/rdma/res.h
-index 70e51acd..e880c28b 100644
---- a/rdma/res.h
-+++ b/rdma/res.h
-@@ -39,6 +39,8 @@ static inline uint32_t res_get_command(uint32_t command, struct rd *rd)
- 		return RDMA_NLDEV_CMD_RES_CQ_GET_RAW;
- 	case RDMA_NLDEV_CMD_RES_MR_GET:
- 		return RDMA_NLDEV_CMD_RES_MR_GET_RAW;
-+	case RDMA_NLDEV_CMD_RES_SRQ_GET:
-+		return RDMA_NLDEV_CMD_RES_SRQ_GET_RAW;
- 	default:
- 		return command;
- 	}
+ 	case RDMA_CM_EVENT_ROUTE_RESOLVED:
 -- 
-2.30.0
+2.37.3
 
