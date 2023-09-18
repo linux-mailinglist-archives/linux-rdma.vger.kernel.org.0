@@ -2,21 +2,21 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5735B7A4FEA
-	for <lists+linux-rdma@lfdr.de>; Mon, 18 Sep 2023 18:56:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 82D3B7A4FBF
+	for <lists+linux-rdma@lfdr.de>; Mon, 18 Sep 2023 18:51:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231177AbjIRQ4r (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 18 Sep 2023 12:56:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33814 "EHLO
+        id S230187AbjIRQvx (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 18 Sep 2023 12:51:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34864 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231187AbjIRQ4q (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 18 Sep 2023 12:56:46 -0400
-Received: from szxga03-in.huawei.com (szxga03-in.huawei.com [45.249.212.189])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD343AC;
-        Mon, 18 Sep 2023 09:56:39 -0700 (PDT)
-Received: from kwepemi500006.china.huawei.com (unknown [172.30.72.55])
-        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4Rq4sq3Nk8zMl6t;
-        Mon, 18 Sep 2023 21:10:39 +0800 (CST)
+        with ESMTP id S230197AbjIRQvw (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 18 Sep 2023 12:51:52 -0400
+Received: from szxga08-in.huawei.com (szxga08-in.huawei.com [45.249.212.255])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 14BB8B6;
+        Mon, 18 Sep 2023 09:51:45 -0700 (PDT)
+Received: from kwepemi500006.china.huawei.com (unknown [172.30.72.53])
+        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4Rq4vY3rwrz15MP3;
+        Mon, 18 Sep 2023 21:12:09 +0800 (CST)
 Received: from localhost.localdomain (10.67.165.2) by
  kwepemi500006.china.huawei.com (7.221.188.68) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
@@ -25,9 +25,9 @@ From:   Junxian Huang <huangjunxian6@hisilicon.com>
 To:     <jgg@ziepe.ca>, <leon@kernel.org>
 CC:     <linux-rdma@vger.kernel.org>, <linuxarm@huawei.com>,
         <linux-kernel@vger.kernel.org>, <huangjunxian6@hisilicon.com>
-Subject: [PATCH RFC for-next 2/3] RDMA/core: Add support to dump SRQ resource in RAW format
-Date:   Mon, 18 Sep 2023 21:11:09 +0800
-Message-ID: <20230918131110.3987498-3-huangjunxian6@hisilicon.com>
+Subject: [PATCH RFC for-next 3/3] RDMA/hns: Support SRQ restrack ops for hns driver
+Date:   Mon, 18 Sep 2023 21:11:10 +0800
+Message-ID: <20230918131110.3987498-4-huangjunxian6@hisilicon.com>
 X-Mailer: git-send-email 2.30.0
 In-Reply-To: <20230918131110.3987498-1-huangjunxian6@hisilicon.com>
 References: <20230918131110.3987498-1-huangjunxian6@hisilicon.com>
@@ -39,8 +39,8 @@ X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
  kwepemi500006.china.huawei.com (7.221.188.68)
 X-CFilter-Loop: Reflected
 X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -49,104 +49,178 @@ X-Mailing-List: linux-rdma@vger.kernel.org
 
 From: wenglianfa <wenglianfa@huawei.com>
 
-Add support to dump SRQ resource in raw format. It enable drivers to
-return the entire device specific SRQ context without setting each
-field separately.
+The SRQ restrack attributes come from the context maintained by ROCEE.
 
 Example:
-$ rdma res show srq -r
-dev hns3 149000...
+$ rdma res show srq -jp -dd
+[ {
+        "ifindex": 0,
+        "ifname": "hns_0",
+        "srqn": 0,
+        "type": "BASIC",
+        "lqpn": [ "14-15","22-23" ],
+        "pdn": 2,
+        "pid": 1224,
+        "comm": "ib_send_bw",{
+            "drv_srqn": 0,
+            "drv_wqe_cnt": 512,
+            "drv_max_gs": 2,
+            "drv_xrcdn": 0
+        }
+    } ]
 
-$ rdma res show srq -j -r
-[{"ifindex":0,"ifname":"hns3","data":[149,0,0,...]}]
+$ rdma res show srq link hns_0 -jpr
+[ {
+        "ifindex": 0,
+        "ifname": "hns_0",
+        "data": [ 149,0,0,0,0,0,0,0,0,0,0,0,119,101,120,99,0,
+		  46,62,31,0,0,0,0,3,0,0,1,0,58,62,31,0,0,0,0,
+		  30,159,15,0,0,0,64,5,0,0,0,0,0,0,0,0,0,0,0,
+		  9,0,0,0,0,0,0,0,0 ]
+    } ]
 
 Signed-off-by: wenglianfa <wenglianfa@huawei.com>
 ---
- drivers/infiniband/core/device.c |  1 +
- drivers/infiniband/core/nldev.c  | 17 +++++++++++++++++
- include/rdma/ib_verbs.h          |  1 +
- include/uapi/rdma/rdma_netlink.h |  2 ++
- 4 files changed, 21 insertions(+)
+ drivers/infiniband/hw/hns/hns_roce_device.h   |  3 ++
+ drivers/infiniband/hw/hns/hns_roce_hw_v2.c    | 25 ++++++++++
+ drivers/infiniband/hw/hns/hns_roce_main.c     |  2 +
+ drivers/infiniband/hw/hns/hns_roce_restrack.c | 49 +++++++++++++++++++
+ 4 files changed, 79 insertions(+)
 
-diff --git a/drivers/infiniband/core/device.c b/drivers/infiniband/core/device.c
-index 05b37050e842..0cb5459d2c6c 100644
---- a/drivers/infiniband/core/device.c
-+++ b/drivers/infiniband/core/device.c
-@@ -2652,6 +2652,7 @@ void ib_set_device_ops(struct ib_device *dev, const struct ib_device_ops *ops)
- 	SET_DEVICE_OP(dev_ops, fill_res_qp_entry);
- 	SET_DEVICE_OP(dev_ops, fill_res_qp_entry_raw);
- 	SET_DEVICE_OP(dev_ops, fill_res_srq_entry);
-+	SET_DEVICE_OP(dev_ops, fill_res_srq_entry_raw);
- 	SET_DEVICE_OP(dev_ops, fill_stat_mr_entry);
- 	SET_DEVICE_OP(dev_ops, get_dev_fw_str);
- 	SET_DEVICE_OP(dev_ops, get_dma_mr);
-diff --git a/drivers/infiniband/core/nldev.c b/drivers/infiniband/core/nldev.c
-index bebe6adeb533..456545007c14 100644
---- a/drivers/infiniband/core/nldev.c
-+++ b/drivers/infiniband/core/nldev.c
-@@ -850,6 +850,17 @@ static int fill_res_srq_entry(struct sk_buff *msg, bool has_cap_net_admin,
- 	return -EMSGSIZE;
+diff --git a/drivers/infiniband/hw/hns/hns_roce_device.h b/drivers/infiniband/hw/hns/hns_roce_device.h
+index 7f0d0288beb1..2059d90f8f78 100644
+--- a/drivers/infiniband/hw/hns/hns_roce_device.h
++++ b/drivers/infiniband/hw/hns/hns_roce_device.h
+@@ -908,6 +908,7 @@ struct hns_roce_hw {
+ 	int (*query_cqc)(struct hns_roce_dev *hr_dev, u32 cqn, void *buffer);
+ 	int (*query_qpc)(struct hns_roce_dev *hr_dev, u32 qpn, void *buffer);
+ 	int (*query_mpt)(struct hns_roce_dev *hr_dev, u32 key, void *buffer);
++	int (*query_srqc)(struct hns_roce_dev *hr_dev, u32 srqn, void *buffer);
+ 	int (*query_hw_counter)(struct hns_roce_dev *hr_dev,
+ 				u64 *stats, u32 port, int *hw_counters);
+ 	const struct ib_device_ops *hns_roce_dev_ops;
+@@ -1239,6 +1240,8 @@ int hns_roce_fill_res_qp_entry(struct sk_buff *msg, struct ib_qp *ib_qp);
+ int hns_roce_fill_res_qp_entry_raw(struct sk_buff *msg, struct ib_qp *ib_qp);
+ int hns_roce_fill_res_mr_entry(struct sk_buff *msg, struct ib_mr *ib_mr);
+ int hns_roce_fill_res_mr_entry_raw(struct sk_buff *msg, struct ib_mr *ib_mr);
++int hns_roce_fill_res_srq_entry(struct sk_buff *msg, struct ib_srq *ib_srq);
++int hns_roce_fill_res_srq_entry_raw(struct sk_buff *msg, struct ib_srq *ib_srq);
+ struct hns_user_mmap_entry *
+ hns_roce_user_mmap_entry_insert(struct ib_ucontext *ucontext, u64 address,
+ 				size_t length,
+diff --git a/drivers/infiniband/hw/hns/hns_roce_hw_v2.c b/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
+index d82daff2d9bd..3b481e493a6e 100644
+--- a/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
++++ b/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
+@@ -5272,6 +5272,30 @@ static int hns_roce_v2_query_qpc(struct hns_roce_dev *hr_dev, u32 qpn,
+ 	return ret;
  }
  
-+static int fill_res_srq_raw_entry(struct sk_buff *msg, bool has_cap_net_admin,
-+				 struct rdma_restrack_entry *res, uint32_t port)
++static int hns_roce_v2_query_srqc(struct hns_roce_dev *hr_dev, u32 srqn,
++				 void *buffer)
 +{
-+	struct ib_srq *srq = container_of(res, struct ib_srq, res);
-+	struct ib_device *dev = srq->device;
++	struct hns_roce_srq_context *context;
++	struct hns_roce_cmd_mailbox *mailbox;
++	int ret;
 +
-+	if (!dev->ops.fill_res_srq_entry_raw)
-+		return -EINVAL;
-+	return dev->ops.fill_res_srq_entry_raw(msg, srq);
++	mailbox = hns_roce_alloc_cmd_mailbox(hr_dev);
++	if (IS_ERR(mailbox))
++		return PTR_ERR(mailbox);
++
++	context  = mailbox->buf;
++	ret = hns_roce_cmd_mbox(hr_dev, 0, mailbox->dma, HNS_ROCE_CMD_QUERY_SRQC,
++				srqn);
++	if (ret)
++		goto out;
++
++	memcpy(buffer, context, sizeof(*context));
++
++out:
++	hns_roce_free_cmd_mailbox(hr_dev, mailbox);
++	return ret;
 +}
 +
- static int fill_stat_counter_mode(struct sk_buff *msg,
- 				  struct rdma_counter *counter)
+ static u8 get_qp_timeout_attr(struct hns_roce_dev *hr_dev,
+ 			      struct hns_roce_v2_qp_context *context)
  {
-@@ -1659,6 +1670,7 @@ RES_GET_FUNCS(mr_raw, RDMA_RESTRACK_MR);
- RES_GET_FUNCS(counter, RDMA_RESTRACK_COUNTER);
- RES_GET_FUNCS(ctx, RDMA_RESTRACK_CTX);
- RES_GET_FUNCS(srq, RDMA_RESTRACK_SRQ);
-+RES_GET_FUNCS(srq_raw, RDMA_RESTRACK_SRQ);
- 
- static LIST_HEAD(link_ops);
- static DECLARE_RWSEM(link_ops_rwsem);
-@@ -2564,6 +2576,11 @@ static const struct rdma_nl_cbs nldev_cb_table[RDMA_NLDEV_NUM_OPS] = {
- 		.dump = nldev_res_get_mr_raw_dumpit,
- 		.flags = RDMA_NL_ADMIN_PERM,
- 	},
-+	[RDMA_NLDEV_CMD_RES_SRQ_GET_RAW] = {
-+		.doit = nldev_res_get_srq_raw_doit,
-+		.dump = nldev_res_get_srq_raw_dumpit,
-+		.flags = RDMA_NL_ADMIN_PERM,
-+	},
- 	[RDMA_NLDEV_CMD_STAT_GET_STATUS] = {
- 		.doit = nldev_stat_get_counter_status_doit,
- 	},
-diff --git a/include/rdma/ib_verbs.h b/include/rdma/ib_verbs.h
-index 3cbb6141a9ce..e36c0d9aad27 100644
---- a/include/rdma/ib_verbs.h
-+++ b/include/rdma/ib_verbs.h
-@@ -2609,6 +2609,7 @@ struct ib_device_ops {
- 	int (*fill_res_qp_entry_raw)(struct sk_buff *msg, struct ib_qp *ibqp);
- 	int (*fill_res_cm_id_entry)(struct sk_buff *msg, struct rdma_cm_id *id);
- 	int (*fill_res_srq_entry)(struct sk_buff *msg, struct ib_srq *ib_srq);
-+	int (*fill_res_srq_entry_raw)(struct sk_buff *msg, struct ib_srq *ib_srq);
- 
- 	/* Device lifecycle callbacks */
- 	/*
-diff --git a/include/uapi/rdma/rdma_netlink.h b/include/uapi/rdma/rdma_netlink.h
-index e50c357367db..2830695c3556 100644
---- a/include/uapi/rdma/rdma_netlink.h
-+++ b/include/uapi/rdma/rdma_netlink.h
-@@ -299,6 +299,8 @@ enum rdma_nldev_command {
- 
- 	RDMA_NLDEV_CMD_STAT_GET_STATUS,
- 
-+	RDMA_NLDEV_CMD_RES_SRQ_GET_RAW,
-+
- 	RDMA_NLDEV_NUM_OPS
+@@ -6632,6 +6656,7 @@ static const struct hns_roce_hw hns_roce_hw_v2 = {
+ 	.query_cqc = hns_roce_v2_query_cqc,
+ 	.query_qpc = hns_roce_v2_query_qpc,
+ 	.query_mpt = hns_roce_v2_query_mpt,
++	.query_srqc = hns_roce_v2_query_srqc,
+ 	.query_hw_counter = hns_roce_hw_v2_query_counter,
+ 	.hns_roce_dev_ops = &hns_roce_v2_dev_ops,
+ 	.hns_roce_dev_srq_ops = &hns_roce_v2_dev_srq_ops,
+diff --git a/drivers/infiniband/hw/hns/hns_roce_main.c b/drivers/infiniband/hw/hns/hns_roce_main.c
+index d9d546cdef52..cb07c3030124 100644
+--- a/drivers/infiniband/hw/hns/hns_roce_main.c
++++ b/drivers/infiniband/hw/hns/hns_roce_main.c
+@@ -681,6 +681,8 @@ static const struct ib_device_ops hns_roce_dev_restrack_ops = {
+ 	.fill_res_qp_entry_raw = hns_roce_fill_res_qp_entry_raw,
+ 	.fill_res_mr_entry = hns_roce_fill_res_mr_entry,
+ 	.fill_res_mr_entry_raw = hns_roce_fill_res_mr_entry_raw,
++	.fill_res_srq_entry = hns_roce_fill_res_srq_entry,
++	.fill_res_srq_entry_raw = hns_roce_fill_res_srq_entry_raw,
  };
  
+ static int hns_roce_register_device(struct hns_roce_dev *hr_dev)
+diff --git a/drivers/infiniband/hw/hns/hns_roce_restrack.c b/drivers/infiniband/hw/hns/hns_roce_restrack.c
+index 081a01de3055..f7f3c4cc7426 100644
+--- a/drivers/infiniband/hw/hns/hns_roce_restrack.c
++++ b/drivers/infiniband/hw/hns/hns_roce_restrack.c
+@@ -160,3 +160,52 @@ int hns_roce_fill_res_mr_entry_raw(struct sk_buff *msg, struct ib_mr *ib_mr)
+ 
+ 	return ret;
+ }
++
++int hns_roce_fill_res_srq_entry(struct sk_buff *msg, struct ib_srq *ib_srq)
++{
++	struct hns_roce_srq *hr_srq = to_hr_srq(ib_srq);
++	struct nlattr *table_attr;
++
++	table_attr = nla_nest_start(msg, RDMA_NLDEV_ATTR_DRIVER);
++	if (!table_attr)
++		return -EMSGSIZE;
++
++	if (rdma_nl_put_driver_u32_hex(msg, "srqn", hr_srq->srqn))
++		goto err;
++
++	if (rdma_nl_put_driver_u32_hex(msg, "wqe_cnt", hr_srq->wqe_cnt))
++		goto err;
++
++	if (rdma_nl_put_driver_u32_hex(msg, "max_gs", hr_srq->max_gs))
++		goto err;
++
++	if (rdma_nl_put_driver_u32_hex(msg, "xrcdn", hr_srq->xrcdn))
++		goto err;
++
++	nla_nest_end(msg, table_attr);
++
++	return 0;
++
++err:
++	nla_nest_cancel(msg, table_attr);
++	return -EMSGSIZE;
++}
++
++int hns_roce_fill_res_srq_entry_raw(struct sk_buff *msg, struct ib_srq *ib_srq)
++{
++	struct hns_roce_dev *hr_dev = to_hr_dev(ib_srq->device);
++	struct hns_roce_srq *hr_srq = to_hr_srq(ib_srq);
++	struct hns_roce_srq_context context;
++	int ret;
++
++	if (!hr_dev->hw->query_srqc)
++		return -EINVAL;
++
++	ret = hr_dev->hw->query_srqc(hr_dev, hr_srq->srqn, &context);
++	if (ret)
++		return ret;
++
++	ret = nla_put(msg, RDMA_NLDEV_ATTR_RES_RAW, sizeof(context), &context);
++
++	return ret;
++}
 -- 
 2.30.0
 
