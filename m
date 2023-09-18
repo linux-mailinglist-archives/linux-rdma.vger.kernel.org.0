@@ -2,46 +2,49 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 932C17A49D8
-	for <lists+linux-rdma@lfdr.de>; Mon, 18 Sep 2023 14:38:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A79D77A49E7
+	for <lists+linux-rdma@lfdr.de>; Mon, 18 Sep 2023 14:42:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230242AbjIRMiG (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 18 Sep 2023 08:38:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51330 "EHLO
+        id S239928AbjIRMl5 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 18 Sep 2023 08:41:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50220 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241625AbjIRMhc (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 18 Sep 2023 08:37:32 -0400
+        with ESMTP id S240412AbjIRMla (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 18 Sep 2023 08:41:30 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9CA77B8;
-        Mon, 18 Sep 2023 05:37:14 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B282BC433C7;
-        Mon, 18 Sep 2023 12:37:13 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97BD99F;
+        Mon, 18 Sep 2023 05:41:24 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 74DCEC433C8;
+        Mon, 18 Sep 2023 12:41:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1695040634;
-        bh=ZMcEacDejeroowu+VFd3PMtfUMfrBbAw/v4F7FbrE1k=;
+        s=k20201202; t=1695040884;
+        bh=L0kx5zWcm3nLfzQqEDKgwBhllqI/l0iyZyQ1GJ/RMc8=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=iZJ0YPRVQnqfjR6C7g0X/Weng//P0pSKnfANXdTMiENNOMhNlLpvMCPITSiswdn6O
-         27uGVXHcHzFVTlu4h0qb5iK89fDD4B0wLOAe9fzeaJYN9jeR9v7OscVn8bkXL5uHU+
-         7mRkm2R7jlKkoerHD9PJh6vDnEFCc5/uyTbACZUb9OsGUB6f9ObZDrdRtAsLL9X559
-         aypS3x29zU/nf/oBtMMixJbSQFCiQ8wX5nvF8ALzQEdh9+C2ZTGqPY00e4A7zbwp7J
-         cWYGePnQPpeABWAZ5N27tFk2BdViRjSsxCxC/EgS9aAR+xICID5kue2oN42k/J3hfN
-         BbA9m+D5QpqAA==
-Date:   Mon, 18 Sep 2023 15:37:10 +0300
+        b=hnxoIlQalA9WBLb/+g0l4ZE42Oslamk1PsylnXOYXKwDy6+IO4pQAFwSBbjHvj5UX
+         wHLpfQ5vUtOEOd57dH1GD8J/f/1NeSlzgo85xHswPejKHcbu8nxJPkcgCiPa4ShPgL
+         azkergikZqdxrdsPKIRVeBhGGESO3ePD133FZHob8dqQtFDZjNhvdVGTigUSDAyxrU
+         qZZ0T73uKBFPRXgYbcfRRpV5ExIm/DrCt6qQOiSQ0qhEJEZH/U6rRlvzKeQWC9DVeJ
+         hbgAKxOZKiy3P63R3fx/QdaTdGEHfDWwYeXm6FDJQ3Rn+fy0etINQW8ElEw/JAGj7b
+         jl4o1yKUIMxNw==
+Date:   Mon, 18 Sep 2023 15:41:20 +0300
 From:   Leon Romanovsky <leon@kernel.org>
-To:     Li Zhijian <lizhijian@fujitsu.com>
-Cc:     linux-rdma@vger.kernel.org, zyjzyj2000@gmail.com, jgg@ziepe.ca,
-        linux-kernel@vger.kernel.org, rpearsonhpe@gmail.com,
-        Daisuke Matsuda <matsuda-daisuke@fujitsu.com>,
-        Zhu Yanjun <yanjun.zhu@linux.dev>
-Subject: Re: [PATCH for-next v3 2/2] RDMA/rxe: Call rxe_set_mtu after
- rxe_register_device
-Message-ID: <20230918123710.GD103601@unreal>
-References: <20230918020543.473472-1-lizhijian@fujitsu.com>
- <20230918020543.473472-2-lizhijian@fujitsu.com>
+To:     "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+Cc:     Kees Cook <keescook@chromium.org>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        Jason Gunthorpe <jgg@ziepe.ca>, linux-rdma@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
+Subject: Re: [PATCH v2][next] RDMA/core: Use size_{add,mul}() in calls to
+ struct_size()
+Message-ID: <20230918124120.GE103601@unreal>
+References: <ZP+if342EMhModzZ@work>
+ <202309142029.D432EEB8C@keescook>
+ <2594c7ff-0301-90aa-d48c-6b4d674f850e@embeddedor.com>
+ <20230918104938.GD13757@unreal>
+ <4067fb33-2172-b132-e8c4-0ba21c31b42a@embeddedor.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230918020543.473472-2-lizhijian@fujitsu.com>
+In-Reply-To: <4067fb33-2172-b132-e8c4-0ba21c31b42a@embeddedor.com>
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
@@ -51,57 +54,39 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Mon, Sep 18, 2023 at 10:05:43AM +0800, Li Zhijian wrote:
-> rxe_set_mtu() will call rxe_info_dev() to print message, and
-> rxe_info_dev() expects dev_name(rxe->ib_dev->dev) has been assigned.
+On Sun, Sep 17, 2023 at 01:59:26PM -0600, Gustavo A. R. Silva wrote:
 > 
-> Previously since dev_name() is not set, when a new rxe link is being
-> added, 'null' will be used as the dev_name like:
 > 
-> "(null): rxe_set_mtu: Set mtu to 1024"
+> On 9/18/23 04:49, Leon Romanovsky wrote:
+> > On Fri, Sep 15, 2023 at 12:06:21PM -0600, Gustavo A. R. Silva wrote:
+> > > 
+> > > 
+> > > On 9/14/23 21:29, Kees Cook wrote:
+> > > > On Mon, Sep 11, 2023 at 05:27:59PM -0600, Gustavo A. R. Silva wrote:
+> > > > > Harden calls to struct_size() with size_add() and size_mul().
+> > > > 
+> > > > Specifically, make sure that open-coded arithmetic cannot cause an
+> > > > overflow/wraparound. (i.e. it will stay saturated at SIZE_MAX.)
+> > > 
+> > > Yep; I have another patch where I explain this in similar terms.
+> > > 
+> > > I'll send it, shortly.
+> > 
+> > You missed other places with similar arithmetic.
+> > drivers/infiniband/core/device.c:       pdata_rcu = kzalloc(struct_size(pdata_rcu, pdata,
+> > drivers/infiniband/core/device.c-                                       rdma_end_port(device) + 1),
+> > drivers/infiniband/core/device.c-                           GFP_KERNEL);
+> > 
+> > drivers/infiniband/core/sa_query.c:     sa_dev = kzalloc(struct_size(sa_dev, port, e - s + 1), GFP_KERNEL);
+> > drivers/infiniband/core/user_mad.c:     umad_dev = kzalloc(struct_size(umad_dev, ports, e - s + 1), GFP_KERNEL);
 > 
-> Move rxe_register_device() earlier to assign the correct dev_name
-> so that it can be read by rxe_set_mtu() later.
+> I haven't sent all my patches.
 
-I would expect removal of that print line instead of moving
-rxe_register_device().
+Please sent one patch for whole drivers/infiniband/core/ folder as your
+title: "RDMA/core ..." suggests.
 
 Thanks
 
 > 
-> And it's safe to do such change since mtu will not be used during the
-> rxe_register_device()
-> 
-> After this change, the message becomes:
-> "rxe_eth0: rxe_set_mtu: Set mtu to 4096"
-> 
-> Fixes: 9ac01f434a1e ("RDMA/rxe: Extend dbg log messages to err and info")
-> Reviewed-by: Daisuke Matsuda <matsuda-daisuke@fujitsu.com>
-> Reviewed-by: Zhu Yanjun <yanjun.zhu@linux.dev>
-> Signed-off-by: Li Zhijian <lizhijian@fujitsu.com>
-> ---
->  drivers/infiniband/sw/rxe/rxe.c | 5 ++++-
->  1 file changed, 4 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/infiniband/sw/rxe/rxe.c b/drivers/infiniband/sw/rxe/rxe.c
-> index a086d588e159..8a43c0c4f8d8 100644
-> --- a/drivers/infiniband/sw/rxe/rxe.c
-> +++ b/drivers/infiniband/sw/rxe/rxe.c
-> @@ -169,10 +169,13 @@ void rxe_set_mtu(struct rxe_dev *rxe, unsigned int ndev_mtu)
->   */
->  int rxe_add(struct rxe_dev *rxe, unsigned int mtu, const char *ibdev_name)
->  {
-> +	int ret;
-> +
->  	rxe_init(rxe);
-> +	ret = rxe_register_device(rxe, ibdev_name);
->  	rxe_set_mtu(rxe, mtu);
->  
-> -	return rxe_register_device(rxe, ibdev_name);
-> +	return ret;
->  }
->  
->  static int rxe_newlink(const char *ibdev_name, struct net_device *ndev)
-> -- 
-> 2.29.2
-> 
+> --
+> Gustavo
