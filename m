@@ -2,71 +2,116 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6988E7A5B33
-	for <lists+linux-rdma@lfdr.de>; Tue, 19 Sep 2023 09:37:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B46167A5BF3
+	for <lists+linux-rdma@lfdr.de>; Tue, 19 Sep 2023 10:07:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231865AbjISHh5 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 19 Sep 2023 03:37:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44664 "EHLO
+        id S230300AbjISIHT (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 19 Sep 2023 04:07:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37778 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231868AbjISHhx (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 19 Sep 2023 03:37:53 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B1751A4;
-        Tue, 19 Sep 2023 00:37:41 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 84C6FC433C8;
-        Tue, 19 Sep 2023 07:37:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1695109061;
-        bh=UfR3qr+gEqTkf5hjByDzBjQSlVzN5gSNbRNo99YRWLk=;
-        h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-        b=B7wFvb908/MFuPuMo02OH7/XjR3AqA8pTVMo465s+MIAxB9U3c94VOLmoWjK/69uN
-         hZF41rRP8u8AHD9NHNdcwdZnAbcS8zgdlOOZrYtzvEtsKe11EWm52bw0l4FAQvEgzj
-         nir5OOOJzFiRK8RZKesGywwakcq5UEXm0lbtLOkzAGCPnKuh06igI0aHCKmdGt2FFH
-         Xy9TY9dQ2CTzaEpjC0lZ/eZ+WamzWvYeR76QIZ7CxKlVei8dzyCpbA7Lvh+rq1pOZ4
-         37oY3WxLZKVQ8FzOgzKzjQ9tOCQ5xvwRE7l/Sifqav37ze3uIaJiV+1XW+cdAORPlf
-         yYZmrDygcpQUw==
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Jason Gunthorpe <jgg@ziepe.ca>, Parav Pandit <parav@mellanox.com>,
-        Jack Morgenstein <jackm@mellanox.com>,
-        "Gustavo A. R. Silva" <gustavo@embeddedor.com>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>
-Cc:     linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-hardening@vger.kernel.org
-In-Reply-To: <ZQdt4NsJFwwOYxUR@work>
-References: <ZQdt4NsJFwwOYxUR@work>
-Subject: Re: [PATCH v3][next] RDMA/core: Use size_{add,sub,mul}() in calls to
- struct_size()
-Message-Id: <169510905734.14896.2991454817672701344.b4-ty@kernel.org>
-Date:   Tue, 19 Sep 2023 10:37:37 +0300
+        with ESMTP id S229671AbjISIHT (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 19 Sep 2023 04:07:19 -0400
+Received: from out-226.mta1.migadu.com (out-226.mta1.migadu.com [95.215.58.226])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46D6D125
+        for <linux-rdma@vger.kernel.org>; Tue, 19 Sep 2023 01:07:12 -0700 (PDT)
+Message-ID: <5a4efe6f-d8c6-84ce-377e-eb64bcad706c@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+        t=1695110830;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=ZXHK3GWZkIlEJU13b+xE11wlY/8gP4LPqxTUY8gqUTo=;
+        b=fO0/ZDDunDKni//vPs6Yhr9HTxgzjB2cXXteeWVbt5r1C7hiPlh3J+cH47tq1dLeTmYw1v
+        y/jH5vaUdWda/VDEHg2z0NEUUjWKHiUtToOXUUeBk1AB2Zqmfm1B58yQWUfwpKTi3Zjri5
+        IRZMK9DRIEnkrBNuu73pgAX/Ckdur/o=
+Date:   Tue, 19 Sep 2023 16:07:03 +0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Mailer: b4 0.12-dev-a055d
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Subject: Re: [bug report] blktests srp/002 hang
+To:     Shinichiro Kawasaki <shinichiro.kawasaki@wdc.com>
+Cc:     Bob Pearson <rpearsonhpe@gmail.com>,
+        Bart Van Assche <bvanassche@acm.org>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>
+References: <dsg6rd66tyiei32zaxs6ddv5ebefr5vtxjwz6d2ewqrcwisogl@ge7jzan7dg5u>
+ <0c5c732c-283c-b29a-0ac2-c32211fc7e17@gmail.com>
+ <yewvcfcketee5qduraajra2g37t2mpxdlmj7aqny3umf7mkavk@wsm5forumsou>
+ <8be8f611-e413-9584-7c2e-2c1abf4147be@acm.org>
+ <plrbpd5gg32uaferhjj6ibkt4wqybu3v3y32f4rlhvsruc7cu4@2pgrj2542da2>
+ <18a3ae8c-145b-4c7f-a8f5-67840feeb98c@acm.org>
+ <ab93655f-c187-fdab-6c67-3bfb2d9aa516@gmail.com>
+ <9dd0aa0a-d696-a95b-095b-f54d6d31a6ab@linux.dev>
+ <d3205633-0cd2-f87e-1c40-21b8172b6da3@linux.dev>
+ <nqdsj764d7e56kxevcwnq6qoi6ptuu3bi6ntfakb55vm3toda7@eo3ffzzqrot7>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From:   Zhu Yanjun <yanjun.zhu@linux.dev>
+In-Reply-To: <nqdsj764d7e56kxevcwnq6qoi6ptuu3bi6ntfakb55vm3toda7@eo3ffzzqrot7>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-
-On Sun, 17 Sep 2023 15:21:36 -0600, Gustavo A. R. Silva wrote:
-> If, for any reason, the open-coded arithmetic causes a wraparound,
-> the protection that `struct_size()` provides against potential integer
-> overflows is defeated. Fix this by hardening calls to `struct_size()`
-> with `size_add()`, `size_sub()` and `size_mul()`.
+在 2023/9/19 12:14, Shinichiro Kawasaki 写道:
+> On Sep 16, 2023 / 13:59, Zhu Yanjun wrote:
+> [...]
+>> On Debian, with the latest multipathd or revert the commit 9b4b7c1f9f54
+>> ("RDMA/rxe: Add workqueue support for rxe tasks"), this problem will
+>> disappear.
 > 
+> Zhu, thank you for the actions.
 > 
+>> On Fedora 38, if the commit 9b4b7c1f9f54 ("RDMA/rxe: Add workqueue support
+>> for rxe tasks") is reverted, will this problem still appear?
+>> I do not have such test environment. The commit is in the attachment,
+>> can anyone have a test? Please let us know the test result. Thanks.
+> 
+> I tried the latest kernel tag v6.6-rc2 with my Fedora 38 test systems. With the
+> v6.6-rc2 kernel, I still see the hang. I repeated the blktests test case srp/002
+> 30 time or so, then the hang was recreated. Then I reverted the commit
+> 9b4b7c1f9f54 from v6.6-rc2, and the hang disappeared. I repeated the blktests
+> test case 100 times, and did not see the hang.
+> 
+> I confirmed these results under two multipathd conditions: 1) with Fedora latest
+> device-mapper-multipath package v0.9.4, and 2) the latest multipath-tools v0.9.6
+> that I built from source code.
+> 
+> So, when the commit gets reverted, the hang disappears as I reported for
+> v6.5-rcX kernels.
+Thanks, Shinichiro Kawasaki. Your helps are appreciated.
 
-Applied, thanks!
+This problem is related with the followings:
 
-[1/1] RDMA/core: Use size_{add,sub,mul}() in calls to struct_size()
-      https://git.kernel.org/rdma/rdma/c/81760bedc65194
+1). Linux distributions: Ubuntu, Debian and Fedora;
 
-Best regards,
--- 
-Leon Romanovsky <leon@kernel.org>
+2). multipathd;
+
+3). the commits 9b4b7c1f9f54 ("RDMA/rxe: Add workqueue support for rxe 
+tasks")
+
+On Ubuntu, with or without the commit, this problem does not occur.
+
+On Debian, without this commit, this problem does not occur. With this 
+commit, this problem will occur.
+
+On Fedora, without this commit, this problem does not occur. With this 
+commit, this problem will occur.
+
+The commits 9b4b7c1f9f54 ("RDMA/rxe: Add workqueue support for rxe 
+tasks") is from Bob Pearson.
+
+Hi, Bob, do you have any comments about this problem? It seems that this 
+commit is not compatible with blktests.
+
+Hi, Jason and Leon, please comment on this problem.
+
+Thanks a lot.
+
+Zhu Yanjun
