@@ -2,72 +2,92 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F0CB7A74E5
-	for <lists+linux-rdma@lfdr.de>; Wed, 20 Sep 2023 09:52:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BBCA37A7534
+	for <lists+linux-rdma@lfdr.de>; Wed, 20 Sep 2023 10:02:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229988AbjITHwz (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 20 Sep 2023 03:52:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39734 "EHLO
+        id S233641AbjITICv (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 20 Sep 2023 04:02:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45860 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233005AbjITHwy (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 20 Sep 2023 03:52:54 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C797CC9;
-        Wed, 20 Sep 2023 00:52:48 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E780FC433C8;
-        Wed, 20 Sep 2023 07:52:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1695196368;
-        bh=62u1kHdA3u+5f2DiPIhwFBsdAm8AqpipOVWTjK2Fneo=;
-        h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-        b=Cl5JYjK307JpileWUpHlV4alwiR1ADbOoAdNBNvZOcRfh2lGuYxjN5z69popgM4Og
-         zqX4+OpQFyV9wFPBQEnyFNgjor23iuNfuDg3gon0TY6qe9YU1cXl3nzCzCzR/eL77k
-         E9WG2m9LjBVuxb0ZNhlJipmwce8K+ap6LjNdjLk4uSGFIri1fb5WiybQVeXA+BJJ82
-         uUka6oY9QyeogxzXMsG78dz8YsM/DtVeCTHkEAR8HxShalPxi/Nee0fU06PZ1XEgjc
-         OySKGZzBYeIFP5sG6WKv8bX13hxcgwUld3M4XCZPjwYi1LuJUINz1y4J5Q3yYXsbGp
-         49F4r4dOcctyg==
-From:   Leon Romanovsky <leon@kernel.org>
-To:     jgg@ziepe.ca, Junxian Huang <huangjunxian6@hisilicon.com>
-Cc:     linux-rdma@vger.kernel.org, linuxarm@huawei.com,
-        linux-kernel@vger.kernel.org
-In-Reply-To: <20230918131110.3987498-1-huangjunxian6@hisilicon.com>
-References: <20230918131110.3987498-1-huangjunxian6@hisilicon.com>
-Subject: Re: [PATCH RFC for-next 0/3] Add more resource dumping to rdmatool for SRQ
-Message-Id: <169519636442.1045255.875566554954028245.b4-ty@kernel.org>
-Date:   Wed, 20 Sep 2023 10:52:44 +0300
+        with ESMTP id S233376AbjITICs (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 20 Sep 2023 04:02:48 -0400
+X-Greylist: delayed 374 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Wed, 20 Sep 2023 01:02:42 PDT
+Received: from mail.venturelinkage.com (mail.venturelinkage.com [80.211.143.151])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A93F49D
+        for <linux-rdma@vger.kernel.org>; Wed, 20 Sep 2023 01:02:42 -0700 (PDT)
+Received: by mail.venturelinkage.com (Postfix, from userid 1002)
+        id 02ABC827CD; Wed, 20 Sep 2023 09:56:25 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=venturelinkage.com;
+        s=mail; t=1695196587;
+        bh=7iowqdzve/IIiUUjcEwx8j3uMrVqqiE7R9zbOCKRV9Q=;
+        h=Date:From:To:Subject:From;
+        b=HnhlqMp9oUwvVtCVTMK8HfCXmmdt0tNHpozBAQC/Gu5qT8n35/Cli74h7qaonc2bQ
+         gnw5idP4NlP2LGzIXfdWBldgo/XH+TCqPHVhguQ+lElKh45naV/uhEg0zgrEwKV9hi
+         W1DvCtqYyDFArWmiH/BYr1jw6pQiSiB9Vbc5+xow2bda2CB5WDC7SYuO2UfX7Sus2k
+         GOqdnYwjkCZsUxHN9Iw6E4RNRJ62syzvI0FRPonPtNhHrFHGm14jCHcJAaVQACf5eU
+         km7pLGfBDf+lFFU7id8HO4gzR8uEAaBanxy7oQR8Ihrdx4/QdoYHOTmnEMe7D6ShQy
+         4iTe8O3HHI3/w==
+Received: by mail.venturelinkage.com for <linux-rdma@vger.kernel.org>; Wed, 20 Sep 2023 07:56:21 GMT
+Message-ID: <20230920084500-0.1.l.12f5.0.5ck064a8f9@venturelinkage.com>
+Date:   Wed, 20 Sep 2023 07:56:21 GMT
+From:   "Lukas Varga" <lukas.varga@venturelinkage.com>
+To:     <linux-rdma@vger.kernel.org>
+Subject: =?UTF-8?Q?Popt=C3=A1vka?=
+X-Mailer: mail.venturelinkage.com
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Mailer: b4 0.12-dev-a055d
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: Yes, score=6.0 required=5.0 tests=BAYES_05,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FROM_FMBLA_NEWDOM28,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_SBL_CSS,SPF_HELO_NONE,SPF_PASS,
+        URIBL_CSS_A,URIBL_DBL_SPAM autolearn=no autolearn_force=no
+        version=3.4.6
+X-Spam-Report: *  2.5 URIBL_DBL_SPAM Contains a spam URL listed in the Spamhaus DBL
+        *      blocklist
+        *      [URIs: venturelinkage.com]
+        *  3.3 RCVD_IN_SBL_CSS RBL: Received via a relay in Spamhaus SBL-CSS
+        *      [80.211.143.151 listed in zen.spamhaus.org]
+        *  0.1 URIBL_CSS_A Contains URL's A record listed in the Spamhaus CSS
+        *      blocklist
+        *      [URIs: venturelinkage.com]
+        *  0.0 RCVD_IN_DNSWL_BLOCKED RBL: ADMINISTRATOR NOTICE: The query to
+        *      DNSWL was blocked.  See
+        *      http://wiki.apache.org/spamassassin/DnsBlocklists#dnsbl-block
+        *      for more information.
+        *      [80.211.143.151 listed in list.dnswl.org]
+        * -0.5 BAYES_05 BODY: Bayes spam probability is 1 to 5%
+        *      [score: 0.0224]
+        *  0.0 SPF_HELO_NONE SPF: HELO does not publish an SPF Record
+        * -0.0 SPF_PASS SPF: sender matches SPF record
+        * -0.1 DKIM_VALID Message has at least one valid DKIM or DK signature
+        * -0.1 DKIM_VALID_EF Message has a valid DKIM or DK signature from
+        *      envelope-from domain
+        * -0.1 DKIM_VALID_AU Message has a valid DKIM or DK signature from
+        *      author's domain
+        *  0.1 DKIM_SIGNED Message has a DKIM or DK signature, not necessarily
+        *       valid
+        *  0.8 FROM_FMBLA_NEWDOM28 From domain was registered in last 14-28
+        *      days
+X-Spam-Level: ******
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
+Dobr=C3=A9 r=C3=A1no,
 
-On Mon, 18 Sep 2023 21:11:07 +0800, Junxian Huang wrote:
-> Add more resource dumping to rdmatool for SRQ.
-> 
-> wenglianfa (3):
->   RDMA/core: Add dedicated SRQ resource tracker function
->   RDMA/core: Add support to dump SRQ resource in RAW format
->   RDMA/hns: Support SRQ restrack ops for hns driver
-> 
-> [...]
+Dovolil jsem si V=C3=A1s kontaktovat, proto=C5=BEe m=C3=A1m z=C3=A1jem ov=
+=C4=9B=C5=99it mo=C5=BEnost nav=C3=A1z=C3=A1n=C3=AD spolupr=C3=A1ce.
 
-Applied, thanks!
+Podporujeme firmy p=C5=99i z=C3=ADsk=C3=A1v=C3=A1n=C3=AD nov=C3=BDch obch=
+odn=C3=ADch z=C3=A1kazn=C3=ADk=C5=AF.
 
-[1/3] RDMA/core: Add dedicated SRQ resource tracker function
-      https://git.kernel.org/rdma/rdma/c/0e32d7d43b0b2d
-[2/3] RDMA/core: Add support to dump SRQ resource in RAW format
-      https://git.kernel.org/rdma/rdma/c/aebf8145e11a29
-[3/3] RDMA/hns: Support SRQ restrack ops for hns driver
-      https://git.kernel.org/rdma/rdma/c/58c49c097fbf5a
+M=C5=AF=C5=BEeme si promluvit a poskytnout podrobnosti?
 
-Best regards,
--- 
-Leon Romanovsky <leon@kernel.org>
+V p=C5=99=C3=ADpad=C4=9B z=C3=A1jmu V=C3=A1s bude kontaktovat n=C3=A1=C5=A1=
+ anglicky mluv=C3=ADc=C3=AD z=C3=A1stupce.
+
+
+Pozdravy
+Lukas Varga
