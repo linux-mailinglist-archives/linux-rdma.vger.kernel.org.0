@@ -2,48 +2,61 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 258D47A8A7A
-	for <lists+linux-rdma@lfdr.de>; Wed, 20 Sep 2023 19:22:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7639B7A8A9D
+	for <lists+linux-rdma@lfdr.de>; Wed, 20 Sep 2023 19:29:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229493AbjITRWv (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 20 Sep 2023 13:22:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42408 "EHLO
+        id S229445AbjITR3o (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 20 Sep 2023 13:29:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53530 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229471AbjITRWu (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 20 Sep 2023 13:22:50 -0400
-Received: from mail-pl1-f171.google.com (mail-pl1-f171.google.com [209.85.214.171])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45160B4;
-        Wed, 20 Sep 2023 10:22:43 -0700 (PDT)
-Received: by mail-pl1-f171.google.com with SMTP id d9443c01a7336-1c3d8fb23d9so298565ad.0;
-        Wed, 20 Sep 2023 10:22:43 -0700 (PDT)
+        with ESMTP id S229538AbjITR3n (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 20 Sep 2023 13:29:43 -0400
+Received: from mail-oa1-x33.google.com (mail-oa1-x33.google.com [IPv6:2001:4860:4864:20::33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC787CA;
+        Wed, 20 Sep 2023 10:29:37 -0700 (PDT)
+Received: by mail-oa1-x33.google.com with SMTP id 586e51a60fabf-1bba7717d3bso35961fac.1;
+        Wed, 20 Sep 2023 10:29:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1695230977; x=1695835777; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=cw0wwV+AWxUAaPBPNrxXNrrjadB4Sp+CqjdBtpMka38=;
+        b=lQ0qqpt5Mm0ZYW1nPGjuT+d2tzy672JXn3yUeJUGDmVVg9IIk85FfN9Lrj/XIR5foS
+         abu6jX06zHcpRELQHCX9P7IE25L9iq0+wA+R4hOfwvhAkT+QoPJAbR48FCellyrUKze8
+         IyUQ1GIjeZx/b9XT54gSQmOcKCidmlYqGb+WBOvRVwAdXmtp7cd3hw8M+37WF+JlnL/u
+         6Rho/JD/CMWxnMcrA8vKHs23mxl2lcAuPN1r4dcoV4sVdWXsF92UldmVLcnRqSIbQeOR
+         Asl/soQ9zXlIfGV51YjZkDf+1JJxd0YTCM4ihL40gZXwLm5WdryciKfPpBpslRVcwr4c
+         iJTA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695230563; x=1695835363;
+        d=1e100.net; s=20230601; t=1695230977; x=1695835777;
         h=content-transfer-encoding:in-reply-to:from:references:cc:to
          :content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=bYUpaZYOt9TSUHkSBlm9DrJg3aIRvuXrIm9TUOCW25Y=;
-        b=K9UEnkIvK7MUUOvpsdXO88QeZKoLzMYYKjgmKZ3f28SS5mFeT+YUS8E+T/ed6yHwk/
-         aujNtHuSX+CPnDPNEeNR80KWedbr6ilLs4XCYtRH5nPX+6KEdWxgTUPbh/7zsmt8eeAC
-         EoUZ3tQMMbfGNTdf6oykoA8B7RVNlv2xUIAhosI5J1RnNF5pbCSvZjJ9kZL4IiWDW4MY
-         AilYDuj1M1bM4gKo50216GG2L9g1V0+U9l91LmBW7EmmlbEMEESr9kdgK+n5Ek7i6pWc
-         HBSeaYY0gAl05yQUdVi9ULZqMjsUn4f2dhQAG7WRdTORUnEQqzvWMK7Xud9Bx28ReXOJ
-         Uk+g==
-X-Gm-Message-State: AOJu0YzZYfCdgzD4gUez04o3t6tIPEoB8edRXL7A4ogKH+QrXxwS3QCC
-        Qwuy6ZHgloI6OVLm/z/frn0=
-X-Google-Smtp-Source: AGHT+IHH3vsdcjZ2oPQybOhaJnpnykMqLM+dXiEyJinp9/0VBrB13d9bX5sLpMDjVKVKaJGwkU5s0Q==
-X-Received: by 2002:a17:902:a714:b0:1c0:d5c6:748f with SMTP id w20-20020a170902a71400b001c0d5c6748fmr2517035plq.67.1695230562561;
-        Wed, 20 Sep 2023 10:22:42 -0700 (PDT)
-Received: from ?IPV6:2620:15c:211:201:b0c6:e5b6:49ef:e0bd? ([2620:15c:211:201:b0c6:e5b6:49ef:e0bd])
-        by smtp.gmail.com with ESMTPSA id x11-20020a170902ec8b00b001befac3b3cbsm10514293plg.290.2023.09.20.10.22.41
+        bh=cw0wwV+AWxUAaPBPNrxXNrrjadB4Sp+CqjdBtpMka38=;
+        b=IrdGWHOPyDbFBAiuSyEUKscOiIyK2ZD50cf+fEd3d1E10YCwqcOj7jBHWt2bjKoQSN
+         ehA3Gx7RcclW7jCRNwv6rh/HkMG2rO4AnjLq6C6DB48Ln/P9liq4CWz+brPPNK4jKZqu
+         5HeS8PkzYPb97peGT10xZycfIzZHHTa4m5p32RJnue8dKluncFcD2WfgpSZ38HOi0Ibl
+         egxYXJHcWpnN4jona7odibClv11sFpxSB1V0UE+XyDJIbrLstz/a6UifEMa7JjG4D0YZ
+         RXZr0Oeazthh7LJXUqrYibckuk+1lILMP3g/FLzk84/TLNeZoVLb0eE0wpyqs3JUdSRB
+         kvVw==
+X-Gm-Message-State: AOJu0Yw8fvM28/w89xylhfg8qArs9W/QGnVDDf4AAEOAMKWni5hHWAV3
+        sw+SL7/v8KSFoNw/lBiTmZdnhZBIcZ8=
+X-Google-Smtp-Source: AGHT+IFITLjcwqYSu9G9nUVkg60eHr1uVAChDjtJXP76bklwSYNIrxw/PlzOryLNKzrrRpg96rOAPQ==
+X-Received: by 2002:a05:6870:14d5:b0:1d1:425b:802d with SMTP id l21-20020a05687014d500b001d1425b802dmr3807680oab.7.1695230976776;
+        Wed, 20 Sep 2023 10:29:36 -0700 (PDT)
+Received: from ?IPV6:2603:8081:1405:679b:dc02:5dd1:9c21:a1b6? (2603-8081-1405-679b-dc02-5dd1-9c21-a1b6.res6.spectrum.com. [2603:8081:1405:679b:dc02:5dd1:9c21:a1b6])
+        by smtp.gmail.com with ESMTPSA id eg50-20020a05687098b200b001db36673d92sm2743912oab.41.2023.09.20.10.29.36
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 20 Sep 2023 10:22:42 -0700 (PDT)
-Message-ID: <02d7cbf2-b17b-488a-b6e9-ebb728b51c94@acm.org>
-Date:   Wed, 20 Sep 2023 10:22:41 -0700
+        Wed, 20 Sep 2023 10:29:36 -0700 (PDT)
+Message-ID: <b80dae29-3a7c-f039-bc35-08c6e9f91197@gmail.com>
+Date:   Wed, 20 Sep 2023 12:29:35 -0500
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
 Subject: Re: [bug report] blktests srp/002 hang
 Content-Language: en-US
-To:     Bob Pearson <rpearsonhpe@gmail.com>,
+To:     Bart Van Assche <bvanassche@acm.org>,
         Zhu Yanjun <yanjun.zhu@linux.dev>,
         Shinichiro Kawasaki <shinichiro.kawasaki@wdc.com>
 Cc:     "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
@@ -64,34 +77,41 @@ References: <dsg6rd66tyiei32zaxs6ddv5ebefr5vtxjwz6d2ewqrcwisogl@ge7jzan7dg5u>
  <afc98035-1bb8-f75c-451a-8e3e39fb74aa@gmail.com>
  <6fc3b524-af7d-43ce-aa05-5c44ec850b9b@acm.org>
  <b728f4db-bafa-dd0f-e288-7e3f56e6eae8@gmail.com>
-From:   Bart Van Assche <bvanassche@acm.org>
-In-Reply-To: <b728f4db-bafa-dd0f-e288-7e3f56e6eae8@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+ <02d7cbf2-b17b-488a-b6e9-ebb728b51c94@acm.org>
+From:   Bob Pearson <rpearsonhpe@gmail.com>
+In-Reply-To: <02d7cbf2-b17b-488a-b6e9-ebb728b51c94@acm.org>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
-        autolearn=no autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 9/20/23 10:18, Bob Pearson wrote:
-> But I have also seen the same behavior in the siw driver which is
-> completely independent.
+On 9/20/23 12:22, Bart Van Assche wrote:
+> On 9/20/23 10:18, Bob Pearson wrote:
+>> But I have also seen the same behavior in the siw driver which is
+>> completely independent.
+> 
+> Hmm ... I haven't seen any hangs yet with the siw driver.
 
-Hmm ... I haven't seen any hangs yet with the siw driver.
+I was on Ubuntu 6-9 months ago. Currently I don't see hangs on either.
+> 
+>> As mentioned above at the moment Ubuntu is failing rarely. But it used to fail reliably (srp/002 about 75% of the time and srp/011 about 99% of the time.) There haven't been any changes to rxe to explain this.
+> 
+> I think that Zhu mentioned commit 9b4b7c1f9f54 ("RDMA/rxe: Add workqueue
+> support for rxe tasks")?
 
-> As mentioned above at the moment Ubuntu is failing rarely. But it 
-> used to fail reliably (srp/002 about 75% of the time and srp/011 
-> about 99% of the time.) There haven't been any changes to rxe to 
-> explain this.
+That change happened well before the failures went away. I was seeing failures at the same rate with tasklets
+and wqs. But after updating Ubuntu and the kernel at some point they all went away.
 
-I think that Zhu mentioned commit 9b4b7c1f9f54 ("RDMA/rxe: Add workqueue
-support for rxe tasks")?
+> 
+> Thanks,
+> 
+> Bart.
 
-Thanks,
 
-Bart.
