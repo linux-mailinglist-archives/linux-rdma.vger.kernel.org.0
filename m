@@ -2,90 +2,134 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E53E47A7664
-	for <lists+linux-rdma@lfdr.de>; Wed, 20 Sep 2023 10:53:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 384E37A7665
+	for <lists+linux-rdma@lfdr.de>; Wed, 20 Sep 2023 10:53:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233464AbjITIxN (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 20 Sep 2023 04:53:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54968 "EHLO
+        id S233406AbjITIxP (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 20 Sep 2023 04:53:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41590 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232813AbjITIxL (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 20 Sep 2023 04:53:11 -0400
-Received: from mail-pg1-x533.google.com (mail-pg1-x533.google.com [IPv6:2607:f8b0:4864:20::533])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 55B1093
-        for <linux-rdma@vger.kernel.org>; Wed, 20 Sep 2023 01:53:06 -0700 (PDT)
-Received: by mail-pg1-x533.google.com with SMTP id 41be03b00d2f7-577fff1cae6so470372a12.1
-        for <linux-rdma@vger.kernel.org>; Wed, 20 Sep 2023 01:53:06 -0700 (PDT)
+        with ESMTP id S232813AbjITIxP (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 20 Sep 2023 04:53:15 -0400
+Received: from mail-pf1-x432.google.com (mail-pf1-x432.google.com [IPv6:2607:f8b0:4864:20::432])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C1F394
+        for <linux-rdma@vger.kernel.org>; Wed, 20 Sep 2023 01:53:09 -0700 (PDT)
+Received: by mail-pf1-x432.google.com with SMTP id d2e1a72fcca58-690b8859c46so2116358b3a.3
+        for <linux-rdma@vger.kernel.org>; Wed, 20 Sep 2023 01:53:09 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google; t=1695199986; x=1695804786; darn=vger.kernel.org;
-        h=message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=jvjDtYBvNkR4R6W6Ufj3fukCvb5A8Vc375V2Sn2AP1M=;
-        b=UeHTyIa2IjZImaF9sGCFhXOILXg/UAvdGmMHNrTmOd2tVCE134TuCYOMIzYsrnWlsr
-         fFG6lKQGecZ1CuiAZb2opaBb1C4moPD7IOf7AbOJQhMAzXgOKB3VgD86GmxtfejqUHp5
-         I6jZfyLB+6xN76sVPifVX0TpyJ5u6UU0gxIz8=
+        d=broadcom.com; s=google; t=1695199989; x=1695804789; darn=vger.kernel.org;
+        h=references:in-reply-to:message-id:date:subject:cc:to:from:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=4IoBmgwb4Y/zKSNxhQXnlJXuUPoyV9n/NbIMbYX70Us=;
+        b=eY2jAaHwHqllpSm4N2n2zs2Fn0LS73thoi/yRCb8syNEJdM+mdmfcL//pau2NS4QmL
+         7IXKEpRyVp4P/gbTpdTvDgeFh4z2zPtm67MTlZaPdpVxxjIG3cA5xa4fxDsyY2uKEmZb
+         KMNa+sK1/pFBJbDI8J/lybdUuQVP1C2ilgozQ=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695199986; x=1695804786;
-        h=message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=jvjDtYBvNkR4R6W6Ufj3fukCvb5A8Vc375V2Sn2AP1M=;
-        b=WHqr0/bU9G8i6TsbrB1zSJyRyWXNiDVG3jijZCkCy7MEHzX0c1lWYaz2O17gfsJ5SF
-         /plgPnd6jh4YgQqxOZ8s8dUgCa7LAhM0KhbRqgT8H7O/gWZqzzNu+SCmwd5ErmAT4n9o
-         hUP132JHyoLjMhMlQ/VKjcDNqRZc+zXWTh5381F2W5PXiDMVSunze8n3/G47IIut7/Wh
-         6e/fiOfhZG5a8aTQuTaHS3Kp6z+SaH6Wl9DCC+ig9RkSF34/IgnCYSgm4rVyNdXciM4L
-         BURQ2ig0q8ZBUgyyHrm6m6xwcS41bQCQkFWHk/SAbCkFCG5QEBtrf6R0s8N32vtOcbBw
-         Kfjw==
-X-Gm-Message-State: AOJu0YxE2K5ca2uj2qb+POKyQPzfw/ctK2MZb5t421XJJpKNawilLCrb
-        W4mzIH3WOHZqL72hW/A8qIXYvQ==
-X-Google-Smtp-Source: AGHT+IH2HLEbrIoa6rHk7Lyd2bRqdODlo8dUSGrRZZXKko8HlmsD/BRwNMlGosjQvOGo91gyfUaVvA==
-X-Received: by 2002:a17:90b:e8e:b0:274:9be9:7ee3 with SMTP id fv14-20020a17090b0e8e00b002749be97ee3mr2750753pjb.8.1695199985701;
-        Wed, 20 Sep 2023 01:53:05 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1695199989; x=1695804789;
+        h=references:in-reply-to:message-id:date:subject:cc:to:from
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=4IoBmgwb4Y/zKSNxhQXnlJXuUPoyV9n/NbIMbYX70Us=;
+        b=LLNTXcz8rPglsWLtBF5Nhb68FoRgsH6XRr3SKGx0qDzzOROeNWJPp5yPq6pLVncBry
+         dGCcI3qzriI7Bto1HWRNdxiJpOB5NKzyIfdIPP0lLZPC+HZ6fmotvL7+J8VA+PkMiceI
+         fROo7b0KsuYRNZDN32W05zOlB725T5Kn234zJ+f+HQaWtJhext6drgAjKvsJO55wQZgi
+         oecqVan7cwO9J/ajrApbDoiXXqd6p2bpABiazH8A9whoa9IJFm3VvKUbWQ0BRcXa0YTA
+         BoEFJLSS5UUcOatdVzeBtDYhDNAU911bgnNWkIf6vBxnN0mh/HT8zL6VBk6i2xRREABG
+         O7bg==
+X-Gm-Message-State: AOJu0Yzlbdwg3s8e4b2X2aEZPkAxHD8V1CmxdjEhVMsYrgu45o8we1Q7
+        /7Hu8n2ABx7j5cyScnXIHv0pVuspVEIMO8k+Bbo=
+X-Google-Smtp-Source: AGHT+IES+s1vZTtkDGyF2XL66lKGeGEOcnRE65NlfKrU53LIB772hBXvAqpte0J9jCOMpicNQHojrw==
+X-Received: by 2002:a05:6a20:dd87:b0:159:e0b9:bd25 with SMTP id kw7-20020a056a20dd8700b00159e0b9bd25mr1592325pzb.57.1695199988720;
+        Wed, 20 Sep 2023 01:53:08 -0700 (PDT)
 Received: from dhcp-10-192-206-197.iig.avagotech.net.net ([192.19.234.250])
-        by smtp.gmail.com with ESMTPSA id v12-20020a17090ae98c00b00276d039aecasm543099pjy.13.2023.09.20.01.53.02
+        by smtp.gmail.com with ESMTPSA id v12-20020a17090ae98c00b00276d039aecasm543099pjy.13.2023.09.20.01.53.06
         (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 20 Sep 2023 01:53:04 -0700 (PDT)
+        Wed, 20 Sep 2023 01:53:07 -0700 (PDT)
 From:   Selvin Xavier <selvin.xavier@broadcom.com>
 To:     jgg@ziepe.ca, leon@kernel.org
 Cc:     linux-rdma@vger.kernel.org, andrew.gospodarek@broadcom.com,
-        Selvin Xavier <selvin.xavier@broadcom.com>
-Subject: [PATCH for-rc 0/2] RDMA/bnxt_re: Bug fixes
-Date:   Wed, 20 Sep 2023 01:41:18 -0700
-Message-Id: <1695199280-13520-1-git-send-email-selvin.xavier@broadcom.com>
+        Selvin Xavier <selvin.xavier@broadcom.com>,
+        Saravanan Vajravel <saravanan.vajravel@broadcom.com>
+Subject: [PATCH for-rc 1/2] RDMA/bnxt_re: Fix the handling of control path response data
+Date:   Wed, 20 Sep 2023 01:41:19 -0700
+Message-Id: <1695199280-13520-2-git-send-email-selvin.xavier@broadcom.com>
 X-Mailer: git-send-email 2.5.5
+In-Reply-To: <1695199280-13520-1-git-send-email-selvin.xavier@broadcom.com>
+References: <1695199280-13520-1-git-send-email-selvin.xavier@broadcom.com>
 Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
-        boundary="000000000000fe7bd70605c680d0"
-X-Spam-Status: No, score=-1.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        boundary="0000000000002b9b170605c6819f"
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        MIME_HEADER_CTYPE_ONLY,MIME_NO_TEXT,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
-        SPF_NONE,T_TVD_MIME_NO_HEADERS autolearn=no autolearn_force=no
-        version=3.4.6
+        MIME_HEADER_CTYPE_ONLY,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE,
+        T_TVD_MIME_NO_HEADERS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
---000000000000fe7bd70605c680d0
+--0000000000002b9b170605c6819f
 
-Couple of important bug fixes for bnxt_re driver.
-Please review and apply
+Flag that indicate control path command completion should be cleared
+only after copying the command response data. As soon as the is_in_used
+flag is clear, the waiting thread can proceed with wrong response
+data.  This wrong data is causing multiple issues like wrong lkey
+used in data traffic and wrong AH Id etc.
 
-Thanks,
-Selvin Xavier
+Use a memory barrier to ensure that the response data
+is copied and visible to the process waiting on a different
+cpu core before clearing the is_in_used flag.
 
-Selvin Xavier (2):
-  RDMA/bnxt_re: Fix the handling of control path response data
-  RDMA/bnxt_re: Decrement resource stats correctly
+Clear the is_in_used after copying the command response.
 
- drivers/infiniband/hw/bnxt_re/ib_verbs.c   |  4 ++++
+Fixes: bcfee4ce3e01 ("RDMA/bnxt_re: remove redundant cmdq_bitmap")
+Signed-off-by: Saravanan Vajravel <saravanan.vajravel@broadcom.com>
+Signed-off-by: Selvin Xavier <selvin.xavier@broadcom.com>
+---
  drivers/infiniband/hw/bnxt_re/qplib_rcfw.c | 11 +++++++++--
- 2 files changed, 13 insertions(+), 2 deletions(-)
+ 1 file changed, 9 insertions(+), 2 deletions(-)
 
+diff --git a/drivers/infiniband/hw/bnxt_re/qplib_rcfw.c b/drivers/infiniband/hw/bnxt_re/qplib_rcfw.c
+index c8c4017..e47b4ca 100644
+--- a/drivers/infiniband/hw/bnxt_re/qplib_rcfw.c
++++ b/drivers/infiniband/hw/bnxt_re/qplib_rcfw.c
+@@ -665,7 +665,6 @@ static int bnxt_qplib_process_qp_event(struct bnxt_qplib_rcfw *rcfw,
+ 		blocked = cookie & RCFW_CMD_IS_BLOCKING;
+ 		cookie &= RCFW_MAX_COOKIE_VALUE;
+ 		crsqe = &rcfw->crsqe_tbl[cookie];
+-		crsqe->is_in_used = false;
+ 
+ 		if (WARN_ONCE(test_bit(FIRMWARE_STALL_DETECTED,
+ 				       &rcfw->cmdq.flags),
+@@ -681,8 +680,14 @@ static int bnxt_qplib_process_qp_event(struct bnxt_qplib_rcfw *rcfw,
+ 			atomic_dec(&rcfw->timeout_send);
+ 
+ 		if (crsqe->is_waiter_alive) {
+-			if (crsqe->resp)
++			if (crsqe->resp) {
+ 				memcpy(crsqe->resp, qp_event, sizeof(*qp_event));
++				/* Insert write memory barrier to ensure that
++				 * response data is copied before clearing the
++				 * flags
++				 */
++				smp_wmb();
++			}
+ 			if (!blocked)
+ 				wait_cmds++;
+ 		}
+@@ -694,6 +699,8 @@ static int bnxt_qplib_process_qp_event(struct bnxt_qplib_rcfw *rcfw,
+ 		if (!is_waiter_alive)
+ 			crsqe->resp = NULL;
+ 
++		crsqe->is_in_used = false;
++
+ 		hwq->cons += req_size;
+ 
+ 		/* This is a case to handle below scenario -
 -- 
 2.5.5
 
 
---000000000000fe7bd70605c680d0
+--0000000000002b9b170605c6819f
 Content-Type: application/pkcs7-signature; name="smime.p7s"
 Content-Transfer-Encoding: base64
 Content-Disposition: attachment; filename="smime.p7s"
@@ -156,14 +200,14 @@ j1Ze9ndr+YDXPpCymOsynmmw0ErHZGGW1OmMpAEt0A+613glWCURLDlP8HONi1wnINV6aDiEf0ad
 9NMGxDsp+YWiRXD3txfo2OMQbpIxM90QfhKKacX8t1J1oAAWxDrLVTJBXBNvz5tr+D1sYwuye93r
 hImmkM1unboxggJtMIICaQIBATBrMFsxCzAJBgNVBAYTAkJFMRkwFwYDVQQKExBHbG9iYWxTaWdu
 IG52LXNhMTEwLwYDVQQDEyhHbG9iYWxTaWduIEdDQyBSMyBQZXJzb25hbFNpZ24gMiBDQSAyMDIw
-Agxy+Cu4x/7lM0zxY7cwDQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIEIL61kINVOFDT
-4wa+Hl4PJO1dm5YvS670PuQMoxpWVKPWMBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZI
-hvcNAQkFMQ8XDTIzMDkyMDA4NTMwNlowaQYJKoZIhvcNAQkPMVwwWjALBglghkgBZQMEASowCwYJ
+Agxy+Cu4x/7lM0zxY7cwDQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIEINLenAj5mqR3
+8DB/3qlrDofAE7FbOa2mrNnxdMak42eZMBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZI
+hvcNAQkFMQ8XDTIzMDkyMDA4NTMwOVowaQYJKoZIhvcNAQkPMVwwWjALBglghkgBZQMEASowCwYJ
 YIZIAWUDBAEWMAsGCWCGSAFlAwQBAjAKBggqhkiG9w0DBzALBgkqhkiG9w0BAQowCwYJKoZIhvcN
-AQEHMAsGCWCGSAFlAwQCATANBgkqhkiG9w0BAQEFAASCAQBCTNuJMXzPtYX6QKK6UW2gDQEEY8qH
-fhvXvp/ngrw+od4PllsC6vvQA1qaD3eZp6RqFv3H51Y+b/Unq8gIradppDB5NVKNIwjNGfBBzTr0
-dhscQqhi+2ri/MM7H5Cg/1ET3p6NxDHuMOBGxXd15TQXdEKivLoNLyxbbtj6NIR0GCNZeeQjw6+6
-EBURBlc7ssIkk2ik3FEKwRbRkPtwdRUQb5JPidUVtX54VRESnzbaBb88KtoV6UzKmuDWjtifcJMJ
-8YvuHsALrvRyelweUrnY3GdQHkwdI0v0dEj6j/7CSEmDBZDS9R2ysUZqrUy+k1h5xLMjKMUPdHVz
-LEXgO3To
---000000000000fe7bd70605c680d0--
+AQEHMAsGCWCGSAFlAwQCATANBgkqhkiG9w0BAQEFAASCAQCh7lJ73m5Yg1tFwHkVYRDcbfpNvKEW
+009EMOrzd7DP9Aymxm0TOewijn7+RIzT0YhPC2DOZExGcV+bSz3tbHTadCLrHzNORIPinx0psMXo
+OwVVFfk7EAA+qNNlcsI0nwYrbZg8awTHWsX5QTE4+hQheGAuov/ZAKOo/bbvlTsDbZmp1cmJVm6G
+2cYErxQy0qRJoGYU4Yp9/jSiF5zdjBDmzwuzoB4kdXFk5F8CDiplTBDOG9cMgihJ8YZokZHS5Ccn
+rCqMhF6v2ZG9vux0aGpp4IRyMcRwfvkUt857eN9y0gpG3c9v9HVnxanHp12xCLcAPerVewfGmDEJ
+ARkzAn83
+--0000000000002b9b170605c6819f--
