@@ -2,159 +2,111 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 40C8F7A899D
-	for <lists+linux-rdma@lfdr.de>; Wed, 20 Sep 2023 18:36:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ACF117A8A6F
+	for <lists+linux-rdma@lfdr.de>; Wed, 20 Sep 2023 19:18:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234724AbjITQgv (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 20 Sep 2023 12:36:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44960 "EHLO
+        id S229905AbjITRSz (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 20 Sep 2023 13:18:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54698 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234501AbjITQgu (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 20 Sep 2023 12:36:50 -0400
-Received: from NAM10-MW2-obe.outbound.protection.outlook.com (mail-mw2nam10on2052.outbound.protection.outlook.com [40.107.94.52])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A7E269F
-        for <linux-rdma@vger.kernel.org>; Wed, 20 Sep 2023 09:36:44 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=F5EoZdomPCA5K8R9YSaJE1hoCrHbm6sq7SuK7r7WLyI/TCT5UnajmFOPtS47lvPVQQ0NvR992OhTnrGIWVAp49Lwrdsk94hPVvQ5KA7N0hV0GHTrPsWa7rSQa3jWeYEYgx2nH+22MlbHihiZdBokFx9AQyKHhTgZH+A274WA9zpMvLNuJAERYZvni8JCMfrTHh1jeUdzPZytCbqGKSnklB4wStBjcp576dt0Ar1jMjGa6hlrzLXqDy339Ro1O8H/WT8dX1hhvTPmog4obaChqels0HY7nf98bvroPuYC4j3AxMVc/e8ipjAvPq17ErQszuQpS6nYquXjPiOEYllr4g==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=DFAolHrgDdLv92m/WNjYZQistTq9m/RSoI5ZNW0A8bY=;
- b=CBjrx01fF+hSgNVp9ATucqy92pIbHldrLqxmPP2exVMzWeEwI90GyQun37aGwy/Q2n9uthI59cAAZ61aEl3Wzc+QPLgV5vV3GcjaO2Pea4RdvaNoFo/p2cAw0OFq2ygYZJ1fLcEKqHnAXSzB60qFDSB07sxRg8SOnQBaSZw3Y1YfVy9HbBUx5Se02Oszp/IaxF9EetxC5aw/KzufO6ByT3lyRUpcBOkPfXq1hM6U8lBTnd7zC0SSUoN+9IJH1YODzryteKifGqV+rNINnPg9Lybrzx5laQ5J6HwtyS9LAB9VlVdtHyEqIZGPyh3fNufaLQNspBny9lCYh84/Gez4cg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=DFAolHrgDdLv92m/WNjYZQistTq9m/RSoI5ZNW0A8bY=;
- b=Rq4pb0I9L5kBFgnAlC5jam7RbrbQ6UnLABKhDTT3JACwGZ31GoCI1UlrcND2MI86BPO7NOvotVE/2zgPUYDqKdoGW2P2IPtzsqz+mtpAadh3zZnOTZGWhVDknq0ZLxP+MAVwPduIQkpUIJam8rP/EB8+yTQ4pX1ChyUsqitagB2O8WY0EFoSs/HeALcHR8Jv2LvCshyXc/OluyPwQiz746ZE0uT41SB66FbrbDkp9pme2tmB2bWwJOuN8c4glHrWqrxqTzLGSPG8cVhXkfFBeRvAPxkBfbkhcCPbSjQs5fI61+v+EqaNoqG6J/kU6GCF/wQxYI+qUcnFyOJORJycOQ==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nvidia.com;
-Received: from LV2PR12MB5869.namprd12.prod.outlook.com (2603:10b6:408:176::16)
- by CY8PR12MB7434.namprd12.prod.outlook.com (2603:10b6:930:52::20) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6768.35; Wed, 20 Sep
- 2023 16:36:42 +0000
-Received: from LV2PR12MB5869.namprd12.prod.outlook.com
- ([fe80::faf:4cd0:ae27:1073]) by LV2PR12MB5869.namprd12.prod.outlook.com
- ([fe80::faf:4cd0:ae27:1073%6]) with mapi id 15.20.6792.026; Wed, 20 Sep 2023
- 16:36:42 +0000
-Date:   Wed, 20 Sep 2023 13:36:37 -0300
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     Leon Romanovsky <leon@kernel.org>
-Cc:     Shay Drory <shayd@nvidia.com>, linux-rdma@vger.kernel.org
-Subject: Re: [PATCH rdma-next] RDMA/mlx5: Implement mkeys management via LIFO
- queue
-Message-ID: <20230920163637.GE13733@nvidia.com>
-References: <96049c4bd3346a98240483ed2d22c5b1c7155c8a.1695203535.git.leon@kernel.org>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <96049c4bd3346a98240483ed2d22c5b1c7155c8a.1695203535.git.leon@kernel.org>
-X-ClientProxiedBy: SJ0PR13CA0012.namprd13.prod.outlook.com
- (2603:10b6:a03:2c0::17) To LV2PR12MB5869.namprd12.prod.outlook.com
- (2603:10b6:408:176::16)
+        with ESMTP id S229810AbjITRSy (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 20 Sep 2023 13:18:54 -0400
+Received: from mail-oa1-x34.google.com (mail-oa1-x34.google.com [IPv6:2001:4860:4864:20::34])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB870B4;
+        Wed, 20 Sep 2023 10:18:48 -0700 (PDT)
+Received: by mail-oa1-x34.google.com with SMTP id 586e51a60fabf-1d69c93954fso40330fac.0;
+        Wed, 20 Sep 2023 10:18:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1695230328; x=1695835128; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=sg2vWpczoEYs+/bxYrGrdl7eRPhM13SoFtWahG6f/fQ=;
+        b=XSPZW3yJXJfoUqYqOTLABS9uQV6Sz7DoaE5Pit3J5z9y72gPHVz5zFQdGCRV6KRfYA
+         RuuyCrCrnfgeLnDKyBuo3uGhaMnMkw56SRGZaP28u+Rv6+f6UYI0uspCgVSUHJBBA0EH
+         wweBO9m9x6V1nzAJQiLi+6Y5dktEN94Vj3Bf8dZn7672dx2+xxPtaLgUWzYw3euz28kb
+         uzdz8kBXFD2CzOicGKmEsbGAGwUttVatWbtsjY6TThEDnK2aGloYnHJ6q7L940ESlIgR
+         +OJCerlxErepFUZFmt3SRjUiy8BRJ9kGgDk5e9aW3xn1lyrc6ZSUsI+neBGiynjWmGp/
+         8XKw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695230328; x=1695835128;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=sg2vWpczoEYs+/bxYrGrdl7eRPhM13SoFtWahG6f/fQ=;
+        b=u3rdObiL5Xleuk0Nk3d5sUuMStv4qQ0uD3w3HHfxIo5L+Q3FsDw6sjcgSLRd2HNBdT
+         8O8xQs7xoC6ZZt1CvYcd5Auc+J80WuuDw9RZWTS8B83LKE0Cpt6Q50y6uTH/6l7FPJan
+         IVux4VWLkJpakZ7QV4/jgezMyVOeu8EqjqA7813rg/3jxoVAlku9MZrZHV7IiL43C8uY
+         2WgBmpDX3rSDIuZLJUaQklhgseiNxu2LOdh5EQp9bh4fpGbqjJYa7wwBjRCmk58Ct4Bs
+         NK6pOGn/NJTot+PMyu3gs9Y62cvAYpRxRiZ5fzYycd+KXVzQLsr20AqiJvmTLg9Y0XmG
+         dLrw==
+X-Gm-Message-State: AOJu0YxdyY07PVIXGUZUadunHAfm5NjV4/3WiC5PJ8mNFoDPMIzcpT3T
+        Ok3Z4D4+U5E5zxgmKx5DYs0=
+X-Google-Smtp-Source: AGHT+IGFb7L58awwALGn5JpOclNYCfDBDeIH2WriUDA8vetH+0xbXGd+d4JcPZBFaeAIKEj6v2EHAw==
+X-Received: by 2002:a05:6870:9713:b0:1d0:dbdd:2792 with SMTP id n19-20020a056870971300b001d0dbdd2792mr3524498oaq.39.1695230328169;
+        Wed, 20 Sep 2023 10:18:48 -0700 (PDT)
+Received: from ?IPV6:2603:8081:1405:679b:dc02:5dd1:9c21:a1b6? (2603-8081-1405-679b-dc02-5dd1-9c21-a1b6.res6.spectrum.com. [2603:8081:1405:679b:dc02:5dd1:9c21:a1b6])
+        by smtp.gmail.com with ESMTPSA id tz4-20020a0568714a0400b001d666a1c076sm5917258oab.29.2023.09.20.10.18.47
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 20 Sep 2023 10:18:47 -0700 (PDT)
+Message-ID: <b728f4db-bafa-dd0f-e288-7e3f56e6eae8@gmail.com>
+Date:   Wed, 20 Sep 2023 12:18:46 -0500
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: LV2PR12MB5869:EE_|CY8PR12MB7434:EE_
-X-MS-Office365-Filtering-Correlation-Id: d6f8958a-2911-424d-d32f-08dbb9f7c560
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: RCoRhdCL90f9+o0K5xPBwm8zQKgAmYyuKzoSIWIVEwjGiHq2L2fon6/F5KYrhaG3CCeNaF+8j9Y2DDYNuLSUUBDYPn24GySVyfeBKG2gl+eYNmJdi2lK24DmWeeDgT0YCZIOynj1y9HYfo1voKmtp9OTYr0sSVEkgh8sM89i9sBaxV5a0MeVQHUYxIQrttuFFBfX67rp2likT9FsCN+tssjTU08MrjJ5fOhTOJ5Y58JQvETvagCd32T+tJLRC9wghCezwCe1//1YOjeDJ76mqbpAQ46/iyaAt9kcJiDbNfdiMgluFNFszuBJEGtRkfdef4RNXAsw/xbxC+sgWK8wkBOJotjX28stiiHO9fVzAYo3PFE+/haGMnkpQlA6hXPMZLzNm5JJlNkquOklqxFoiLskChUM2UoCokFdt+YjJV2m6MECPogGECZmMLOmfzTV0IHp5Bh+aItmZ76RvEw93YduNpaueVsPTF89UHUVjbg9Gm0iwEe/Pq0KDvFW7EHBojAXHt8wmOCmjEWydfEYQh8EPEMQLYNWrA/JvvRzy8V2dNHp8rkwLnlRctwWufZk
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:LV2PR12MB5869.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376002)(346002)(396003)(136003)(366004)(39860400002)(1800799009)(186009)(451199024)(2906002)(38100700002)(36756003)(86362001)(33656002)(41300700001)(316002)(6512007)(6666004)(66556008)(6916009)(6506007)(6486002)(4326008)(1076003)(66476007)(478600001)(8936002)(83380400001)(26005)(66946007)(2616005)(5660300002)(8676002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?1ekSOqPDVvRBh5nWr2vAbdXZTyCDlR82TQbrHOLTGqB8ZAK8Yts/85qk7sft?=
- =?us-ascii?Q?31pPH95BqAXZujiwE8S/UCr8BtIP1ZybPQHSjT1NeFDwD1G6Sx/c/KSk5nBu?=
- =?us-ascii?Q?65DtEp98iAp3XS891wWHJZROtuw7RDddFCsU0IyZ/9nCMXnzjbeo5zwIHFz0?=
- =?us-ascii?Q?TNiz2FRbq3zQqEzIuO+YjzzC8V0AFucdKjBXjCnyoLLNs4w/ouFUDAULKcdV?=
- =?us-ascii?Q?Ff+KiSC6vHSjJKDnvahAfdMRYXH6cK8AS7jUBYFVBkqvsGUHbIMJVgq3Y2Ww?=
- =?us-ascii?Q?o0Kr/XvkQcWf6AnbHYWu3f8nGQS7n6bi8+BrTjCfIU5u3uxFtJql55gtNzDs?=
- =?us-ascii?Q?5NwiHqWvT5IvL6FKET7EBpwCLtE7u6VLfqMFoRoLS2nQfZuwVzzDHJJfyiq6?=
- =?us-ascii?Q?slfajc3nYB0jM9GRpwKLMe8+Qz5G9EuFAdCV/bT66JX2QjbBTJm4zby4wYtR?=
- =?us-ascii?Q?dQOweQAUesHwfPuGtnyyJgJ8T8K3g4AHtuxG86y0HChcv4dsEFF1+7XeXrdm?=
- =?us-ascii?Q?iLumkb9UmTRwfW4nyx4gvr+xk8cJEl+XxuFW55jA7+71TO8g45kC+0OHUc8S?=
- =?us-ascii?Q?tbmXah9l2TwIYC/sCTAg+T1JFf0XcBVoChlRxehm7miqtdexSsVwvL438kAn?=
- =?us-ascii?Q?C9j5RvXq0NKDAC8JDJaSbgSsxQqizcAfKaWGlzm//VLatK1KgRWStW6ZWJTz?=
- =?us-ascii?Q?egcdf40Z8MhKD8FnQexk7AcCAw+VW/nVoIhW1prCnDFAH+DDtN/j10VLSME4?=
- =?us-ascii?Q?kX4Ulmm6OdicU4o3Wb82s7sdtCl80QQw6z6HpF4Kz9BGpboiTnCb0hcJx1R4?=
- =?us-ascii?Q?1TS5tb7g2RNaixM47GNy9r6CR1cgFPlIMCF/YMX/LG/YmyXUwnVVBNRrGVvh?=
- =?us-ascii?Q?9HEn+mAD44jR8U/fdIveMzcI3a01FCcfGkWsQ9nt2vood1RJVkFGPy60YHa6?=
- =?us-ascii?Q?w8F0NZ0K9DuG9pOzjBVbTdiomNVqF9vcKxvKWFpt09N2wcpfsbJZ4grL6kfp?=
- =?us-ascii?Q?ZlDGMGaEsvl/ia8hEkHm2uqMlR/GD6DpiFiP3UOwEimoc6oZGsQeKSTuCxjH?=
- =?us-ascii?Q?8+Z8kLeJUR/8NgKymFtBn3xx1fOEPW8F1FzI399aMV0zN0vBWcLXvlblBwzR?=
- =?us-ascii?Q?Zf/fgJEJ6SQMD8e/BKbeoq9IQWneMZ1MSejQMmg+LHuv1lAH0YFPTpZCya0g?=
- =?us-ascii?Q?spLbq7NYxy8IC7u9ppNwJnzwWykHVqcP3bH6wMXaIn+iKiv6DbnUMS28mp7X?=
- =?us-ascii?Q?7sZTJ1HW2pL1TUl2/8eJ1bljUfeFCcMYEcK6PW+aS1SNjjln55nN0hkZXMUj?=
- =?us-ascii?Q?8XEa2qughlM5avHezuIZkHaBFwSXUkmIsrLgnQYDZUxmnXJGzG4i6SyC7mN4?=
- =?us-ascii?Q?yot0jBfaXr+zjKF/zLlyte3HOilePBn6EasK6na9DgzlBDDXZLAjtYa5wQ1w?=
- =?us-ascii?Q?V1a/9QvjrUj2LXZ9baiohH2TCiafo6HtTBDJySAt3ued9rlVGAlVlNDYgJmt?=
- =?us-ascii?Q?NO14wbH1YcPtubCxxYiGvU9Lf5/a4DgfvJNUCBeVNDQR5SU+feEINcHeYuW1?=
- =?us-ascii?Q?mbPc2QIZ0Q5v5eWu+evlHlDVb3Ta/JlEMrYoGbZr?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: d6f8958a-2911-424d-d32f-08dbb9f7c560
-X-MS-Exchange-CrossTenant-AuthSource: LV2PR12MB5869.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 20 Sep 2023 16:36:42.3878
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: JD7lL89QbC/x5w+Jbc5HmTKDmCGQ8d73Xcs08BhdFJogqBjQo46T05yrWSKe1bz3
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY8PR12MB7434
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE
-        autolearn=no autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Subject: Re: [bug report] blktests srp/002 hang
+Content-Language: en-US
+To:     Bart Van Assche <bvanassche@acm.org>,
+        Zhu Yanjun <yanjun.zhu@linux.dev>,
+        Shinichiro Kawasaki <shinichiro.kawasaki@wdc.com>
+Cc:     "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>
+References: <dsg6rd66tyiei32zaxs6ddv5ebefr5vtxjwz6d2ewqrcwisogl@ge7jzan7dg5u>
+ <0c5c732c-283c-b29a-0ac2-c32211fc7e17@gmail.com>
+ <yewvcfcketee5qduraajra2g37t2mpxdlmj7aqny3umf7mkavk@wsm5forumsou>
+ <8be8f611-e413-9584-7c2e-2c1abf4147be@acm.org>
+ <plrbpd5gg32uaferhjj6ibkt4wqybu3v3y32f4rlhvsruc7cu4@2pgrj2542da2>
+ <18a3ae8c-145b-4c7f-a8f5-67840feeb98c@acm.org>
+ <ab93655f-c187-fdab-6c67-3bfb2d9aa516@gmail.com>
+ <9dd0aa0a-d696-a95b-095b-f54d6d31a6ab@linux.dev>
+ <d3205633-0cd2-f87e-1c40-21b8172b6da3@linux.dev>
+ <nqdsj764d7e56kxevcwnq6qoi6ptuu3bi6ntfakb55vm3toda7@eo3ffzzqrot7>
+ <5a4efe6f-d8c6-84ce-377e-eb64bcad706c@linux.dev>
+ <f50beb15-2cab-dfb9-3b58-ea66e7f114a6@gmail.com>
+ <fe61fdc5-ca8f-2efc-975d-46b99d66c6f5@linux.dev>
+ <afc98035-1bb8-f75c-451a-8e3e39fb74aa@gmail.com>
+ <6fc3b524-af7d-43ce-aa05-5c44ec850b9b@acm.org>
+From:   Bob Pearson <rpearsonhpe@gmail.com>
+In-Reply-To: <6fc3b524-af7d-43ce-aa05-5c44ec850b9b@acm.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Wed, Sep 20, 2023 at 12:54:56PM +0300, Leon Romanovsky wrote:
-> From: Shay Drory <shayd@nvidia.com>
+On 9/20/23 11:36, Bart Van Assche wrote:
+> On 9/20/23 09:24, Bob Pearson wrote:
+>> The verbs APIs do not make real time commitments. If a ULP fails because of response times it is the problem in the ULP not in the verbs provider.
 > 
-> Currently, mkeys are managed via xarray. This implementation leads to
-> a degradation in cases many MRs are unregistered in parallel, due to xarray
-> internal implementation, for example: deregistration 1M MRs via 64 threads
-> is taking ~15% more time[1].
+> I think there is evidence that the root cause is in the RXE driver. I
+> haven't seen any evidence that there would be any issues in any of the
+> involved ULP drivers. Am I perhaps missing something?
 > 
-> Hence, implement mkeys management via LIFO queue, which solved the
-> degradation.
-> 
-> [1]
-> 2.8us in kernel v5.19 compare to 3.2us in kernel v6.4
-> 
-> Signed-off-by: Shay Drory <shayd@nvidia.com>
-> Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
-> ---
->  drivers/infiniband/hw/mlx5/mlx5_ib.h |  19 +-
->  drivers/infiniband/hw/mlx5/mr.c      | 324 ++++++++++++---------------
->  drivers/infiniband/hw/mlx5/umr.c     |   4 +-
->  3 files changed, 167 insertions(+), 180 deletions(-)
-> 
-> diff --git a/drivers/infiniband/hw/mlx5/mlx5_ib.h b/drivers/infiniband/hw/mlx5/mlx5_ib.h
-> index 16713baf0d06..261c86fe6433 100644
-> --- a/drivers/infiniband/hw/mlx5/mlx5_ib.h
-> +++ b/drivers/infiniband/hw/mlx5/mlx5_ib.h
-> @@ -753,10 +753,23 @@ struct umr_common {
->  	unsigned int state;
->  };
->  
-> +#define NUM_MKEYS_PER_PAGE (PAGE_SIZE / sizeof(u32))
-> +
-> +struct mlx5_mkeys_page {
-> +	u32 mkeys[NUM_MKEYS_PER_PAGE];
-> +	struct list_head list;
-> +};
+> Bart.
 
-Er, isn't the point of this to be PAGE_SIZE big?
+I agree it is definitely possible. But I have also seen the same behavior in the siw driver which is completely
+independent. I have tried but have not been able to figure out what the ULPs are waiting for when the hangs
+occur. If someone who has a good understanding of the ULPs could catch a hang and figure what is missing it
+would give a clue as to what is going on.
 
-Add an
+As mentioned above at the moment Ubuntu is failing rarely. But it used to fail reliably (srp/002 about 75% of
+the time and srp/011 about 99% of the time.) There haven't been any changes to rxe to explain this.
 
-static_assert(sizeof(struct mlx5_mkeys_page) == PAGE_SIZE)
+Bob
 
-And fix it so it is true..
-
-Jason
