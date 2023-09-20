@@ -2,179 +2,737 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B57C77A7667
-	for <lists+linux-rdma@lfdr.de>; Wed, 20 Sep 2023 10:53:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AA1E07A7814
+	for <lists+linux-rdma@lfdr.de>; Wed, 20 Sep 2023 11:55:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233816AbjITIxU (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 20 Sep 2023 04:53:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41660 "EHLO
+        id S234228AbjITJzO (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 20 Sep 2023 05:55:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43886 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233766AbjITIxT (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 20 Sep 2023 04:53:19 -0400
-Received: from mail-pl1-x62c.google.com (mail-pl1-x62c.google.com [IPv6:2607:f8b0:4864:20::62c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6204B0
-        for <linux-rdma@vger.kernel.org>; Wed, 20 Sep 2023 01:53:11 -0700 (PDT)
-Received: by mail-pl1-x62c.google.com with SMTP id d9443c01a7336-1bdf4752c3cso48766725ad.2
-        for <linux-rdma@vger.kernel.org>; Wed, 20 Sep 2023 01:53:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google; t=1695199991; x=1695804791; darn=vger.kernel.org;
-        h=references:in-reply-to:message-id:date:subject:cc:to:from:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=4VYXHqLYEWlYZKnn/2ayWfBsuBMg4dDcdSvatZWnK04=;
-        b=gQCxNoh5aK0mNgHpMYDtt2csKd+4W9VDeIdzQm8V5tk50EbBhTgQM5RarSTWiQ6iYZ
-         rzE+NUZWXniB2egtpRdZ6KkfFu5Gk0LymV1P38NGFDRbgz7jL17J23f1is7RXJAZMkdr
-         sVSx69WLrRwyuuD2WJROylssZXimxqdWKxEHU=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695199991; x=1695804791;
-        h=references:in-reply-to:message-id:date:subject:cc:to:from
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=4VYXHqLYEWlYZKnn/2ayWfBsuBMg4dDcdSvatZWnK04=;
-        b=koCjQTzkSXvTCK3Pmrff0MJOtN+/RE16187wURHsW2LoF2kPjryqyVlL94TWnB1qai
-         iN8/9Tpy+2klnYlj7te3WzSwkjQ2G0HAmDHiaN273mVaYM35+ftebHAByhadOJfepAer
-         lk6h+IEZcHvEptuz3yd61lnC6/00Bz6yuCYuHeGomkQAtmluGB49F9WR5Y6E9l1MC0+/
-         urbCxYgHc4zmWa5Gvid7LxHsyFxsJcsmUKIsw6EkUzCg1Cf6WrzlZc6cBjVLQIEbMnDq
-         fPTqjzMhBWQhbMggaQ40Rwlx7oj5zD1qyw68RijjmCyyt3zv+U8bbDcqOoS76LBre2BJ
-         pW1g==
-X-Gm-Message-State: AOJu0YyY5UWmIFAUJ1LyuOlTp1rQiEnIRaQufQvsswbGjkktaqmzJ7SK
-        rVOcmIfXzCufGFEwH5v9wPNx7g==
-X-Google-Smtp-Source: AGHT+IHUPf0hnbd62dy+aqan6VmJkdqrI38GaD0kYugLPD0GkqHAoMR7ZccR8rGi1gZwBc8q5azA9g==
-X-Received: by 2002:a17:90b:3902:b0:274:9a85:2596 with SMTP id ob2-20020a17090b390200b002749a852596mr2031712pjb.32.1695199991242;
-        Wed, 20 Sep 2023 01:53:11 -0700 (PDT)
-Received: from dhcp-10-192-206-197.iig.avagotech.net.net ([192.19.234.250])
-        by smtp.gmail.com with ESMTPSA id v12-20020a17090ae98c00b00276d039aecasm543099pjy.13.2023.09.20.01.53.09
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 20 Sep 2023 01:53:10 -0700 (PDT)
-From:   Selvin Xavier <selvin.xavier@broadcom.com>
-To:     jgg@ziepe.ca, leon@kernel.org
-Cc:     linux-rdma@vger.kernel.org, andrew.gospodarek@broadcom.com,
-        Selvin Xavier <selvin.xavier@broadcom.com>
-Subject: [PATCH for-rc 2/2] RDMA/bnxt_re: Decrement resource stats correctly
-Date:   Wed, 20 Sep 2023 01:41:20 -0700
-Message-Id: <1695199280-13520-3-git-send-email-selvin.xavier@broadcom.com>
-X-Mailer: git-send-email 2.5.5
-In-Reply-To: <1695199280-13520-1-git-send-email-selvin.xavier@broadcom.com>
-References: <1695199280-13520-1-git-send-email-selvin.xavier@broadcom.com>
-Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
-        boundary="00000000000051706d0605c6811f"
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        MIME_HEADER_CTYPE_ONLY,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE,
-        T_TVD_MIME_NO_HEADERS autolearn=ham autolearn_force=no version=3.4.6
+        with ESMTP id S234271AbjITJzK (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 20 Sep 2023 05:55:10 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2AEDA8F
+        for <linux-rdma@vger.kernel.org>; Wed, 20 Sep 2023 02:55:03 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 41A90C433C9;
+        Wed, 20 Sep 2023 09:55:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1695203702;
+        bh=5BtUS9bhvhDwJ0OpQQJljrHd/8nXILwkA1IbhKoR5rA=;
+        h=From:To:Cc:Subject:Date:From;
+        b=ZUKsR4/lnjY8qgoQEpkk3vJ40au2Mp3ci57LdbquhFJlY1cu1bhrCcDXsRetNBLke
+         zX+vi+9ROoGFVnUV6I/tvfmKbB0iGHgeIWLoiJhyzj2gzSPnZAU4NfQV2C+4LuVbMp
+         ZWDXWR24H+imu5SJTLyn1fvWxq8J1BWhU0lxaUuQStWNlvJL9IyvAboDlJAiSA/ipF
+         7Ap0bzhs042K5/90R59cvQ+WdIL8OMKhRcQRFpRRKyZm14mhdoX1aquEOwzoV3O+bW
+         KIDMqcs3IOq11yJp4ySD8ZoppHFbdyTpnlUG+cqZ9ibq2iPjR19albxi6hwHtZ5gI6
+         QxwdcRpzauhnw==
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Jason Gunthorpe <jgg@nvidia.com>
+Cc:     Shay Drory <shayd@nvidia.com>, linux-rdma@vger.kernel.org
+Subject: [PATCH rdma-next] RDMA/mlx5: Implement mkeys management via LIFO queue
+Date:   Wed, 20 Sep 2023 12:54:56 +0300
+Message-ID: <96049c4bd3346a98240483ed2d22c5b1c7155c8a.1695203535.git.leon@kernel.org>
+X-Mailer: git-send-email 2.41.0
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
---00000000000051706d0605c6811f
+From: Shay Drory <shayd@nvidia.com>
 
-rc_qp_count and ud_qp_count is not decremented during qp destroy.
-Fix this.
+Currently, mkeys are managed via xarray. This implementation leads to
+a degradation in cases many MRs are unregistered in parallel, due to xarray
+internal implementation, for example: deregistration 1M MRs via 64 threads
+is taking ~15% more time[1].
 
-Fixes: cb95709e0dca ("bnxt_re: Update the hw counters for resource stats")
-Signed-off-by: Selvin Xavier <selvin.xavier@broadcom.com>
+Hence, implement mkeys management via LIFO queue, which solved the
+degradation.
+
+[1]
+2.8us in kernel v5.19 compare to 3.2us in kernel v6.4
+
+Signed-off-by: Shay Drory <shayd@nvidia.com>
+Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
 ---
- drivers/infiniband/hw/bnxt_re/ib_verbs.c | 4 ++++
- 1 file changed, 4 insertions(+)
+ drivers/infiniband/hw/mlx5/mlx5_ib.h |  19 +-
+ drivers/infiniband/hw/mlx5/mr.c      | 324 ++++++++++++---------------
+ drivers/infiniband/hw/mlx5/umr.c     |   4 +-
+ 3 files changed, 167 insertions(+), 180 deletions(-)
 
-diff --git a/drivers/infiniband/hw/bnxt_re/ib_verbs.c b/drivers/infiniband/hw/bnxt_re/ib_verbs.c
-index 0848c2c..faa88d1 100644
---- a/drivers/infiniband/hw/bnxt_re/ib_verbs.c
-+++ b/drivers/infiniband/hw/bnxt_re/ib_verbs.c
-@@ -910,6 +910,10 @@ int bnxt_re_destroy_qp(struct ib_qp *ib_qp, struct ib_udata *udata)
- 	list_del(&qp->list);
- 	mutex_unlock(&rdev->qp_lock);
- 	atomic_dec(&rdev->stats.res.qp_count);
-+	if (qp->qplib_qp.type == CMDQ_CREATE_QP_TYPE_RC)
-+		atomic_dec(&rdev->stats.res.rc_qp_count);
-+	else if (qp->qplib_qp.type == CMDQ_CREATE_QP_TYPE_UD)
-+		atomic_dec(&rdev->stats.res.ud_qp_count);
+diff --git a/drivers/infiniband/hw/mlx5/mlx5_ib.h b/drivers/infiniband/hw/mlx5/mlx5_ib.h
+index 16713baf0d06..261c86fe6433 100644
+--- a/drivers/infiniband/hw/mlx5/mlx5_ib.h
++++ b/drivers/infiniband/hw/mlx5/mlx5_ib.h
+@@ -753,10 +753,23 @@ struct umr_common {
+ 	unsigned int state;
+ };
  
- 	ib_umem_release(qp->rumem);
- 	ib_umem_release(qp->sumem);
++#define NUM_MKEYS_PER_PAGE (PAGE_SIZE / sizeof(u32))
++
++struct mlx5_mkeys_page {
++	u32 mkeys[NUM_MKEYS_PER_PAGE];
++	struct list_head list;
++};
++
++struct mlx5_mkeys_queue {
++	struct list_head pages_list;
++	u32 num_pages;
++	unsigned long ci;
++	spinlock_t lock; /* sync list ops */
++};
++
+ struct mlx5_cache_ent {
+-	struct xarray		mkeys;
+-	unsigned long		stored;
+-	unsigned long		reserved;
++	struct mlx5_mkeys_queue	mkeys_queue;
++	u32			pending;
+ 
+ 	char                    name[4];
+ 
+diff --git a/drivers/infiniband/hw/mlx5/mr.c b/drivers/infiniband/hw/mlx5/mr.c
+index 3e345ef380f1..b0fa2d644973 100644
+--- a/drivers/infiniband/hw/mlx5/mr.c
++++ b/drivers/infiniband/hw/mlx5/mr.c
+@@ -143,110 +143,47 @@ static void create_mkey_warn(struct mlx5_ib_dev *dev, int status, void *out)
+ 	mlx5_cmd_out_err(dev->mdev, MLX5_CMD_OP_CREATE_MKEY, 0, out);
+ }
+ 
+-static int push_mkey_locked(struct mlx5_cache_ent *ent, bool limit_pendings,
+-			    void *to_store)
++static int push_mkey_locked(struct mlx5_cache_ent *ent, u32 mkey)
+ {
+-	XA_STATE(xas, &ent->mkeys, 0);
+-	void *curr;
++	unsigned long tmp = ent->mkeys_queue.ci % NUM_MKEYS_PER_PAGE;
++	struct mlx5_mkeys_page *page;
+ 
+-	if (limit_pendings &&
+-	    (ent->reserved - ent->stored) > MAX_PENDING_REG_MR)
+-		return -EAGAIN;
+-
+-	while (1) {
+-		/*
+-		 * This is cmpxchg (NULL, XA_ZERO_ENTRY) however this version
+-		 * doesn't transparently unlock. Instead we set the xas index to
+-		 * the current value of reserved every iteration.
+-		 */
+-		xas_set(&xas, ent->reserved);
+-		curr = xas_load(&xas);
+-		if (!curr) {
+-			if (to_store && ent->stored == ent->reserved)
+-				xas_store(&xas, to_store);
+-			else
+-				xas_store(&xas, XA_ZERO_ENTRY);
+-			if (xas_valid(&xas)) {
+-				ent->reserved++;
+-				if (to_store) {
+-					if (ent->stored != ent->reserved)
+-						__xa_store(&ent->mkeys,
+-							   ent->stored,
+-							   to_store,
+-							   GFP_KERNEL);
+-					ent->stored++;
+-					queue_adjust_cache_locked(ent);
+-					WRITE_ONCE(ent->dev->cache.last_add,
+-						   jiffies);
+-				}
+-			}
+-		}
+-		xa_unlock_irq(&ent->mkeys);
+-
+-		/*
+-		 * Notice xas_nomem() must always be called as it cleans
+-		 * up any cached allocation.
+-		 */
+-		if (!xas_nomem(&xas, GFP_KERNEL))
+-			break;
+-		xa_lock_irq(&ent->mkeys);
++	lockdep_assert_held(&ent->mkeys_queue.lock);
++	if (ent->mkeys_queue.ci >=
++	    ent->mkeys_queue.num_pages * NUM_MKEYS_PER_PAGE) {
++		page = kzalloc(sizeof(*page), GFP_ATOMIC);
++		if (!page)
++			return -ENOMEM;
++		ent->mkeys_queue.num_pages++;
++		list_add_tail(&page->list, &ent->mkeys_queue.pages_list);
++	} else {
++		page = list_last_entry(&ent->mkeys_queue.pages_list,
++				       struct mlx5_mkeys_page, list);
+ 	}
+-	xa_lock_irq(&ent->mkeys);
+-	if (xas_error(&xas))
+-		return xas_error(&xas);
+-	if (WARN_ON(curr))
+-		return -EINVAL;
+-	return 0;
+-}
+-
+-static int push_mkey(struct mlx5_cache_ent *ent, bool limit_pendings,
+-		     void *to_store)
+-{
+-	int ret;
+-
+-	xa_lock_irq(&ent->mkeys);
+-	ret = push_mkey_locked(ent, limit_pendings, to_store);
+-	xa_unlock_irq(&ent->mkeys);
+-	return ret;
+-}
+-
+-static void undo_push_reserve_mkey(struct mlx5_cache_ent *ent)
+-{
+-	void *old;
+-
+-	ent->reserved--;
+-	old = __xa_erase(&ent->mkeys, ent->reserved);
+-	WARN_ON(old);
+-}
+-
+-static void push_to_reserved(struct mlx5_cache_ent *ent, u32 mkey)
+-{
+-	void *old;
+ 
+-	old = __xa_store(&ent->mkeys, ent->stored, xa_mk_value(mkey), 0);
+-	WARN_ON(old);
+-	ent->stored++;
++	page->mkeys[tmp] = mkey;
++	ent->mkeys_queue.ci++;
++	return 0;
+ }
+ 
+-static u32 pop_stored_mkey(struct mlx5_cache_ent *ent)
++static int pop_mkey_locked(struct mlx5_cache_ent *ent)
+ {
+-	void *old, *xa_mkey;
+-
+-	ent->stored--;
+-	ent->reserved--;
++	unsigned long tmp = (ent->mkeys_queue.ci - 1) % NUM_MKEYS_PER_PAGE;
++	struct mlx5_mkeys_page *last_page;
++	u32 mkey;
+ 
+-	if (ent->stored == ent->reserved) {
+-		xa_mkey = __xa_erase(&ent->mkeys, ent->stored);
+-		WARN_ON(!xa_mkey);
+-		return (u32)xa_to_value(xa_mkey);
++	lockdep_assert_held(&ent->mkeys_queue.lock);
++	last_page = list_last_entry(&ent->mkeys_queue.pages_list,
++				    struct mlx5_mkeys_page, list);
++	mkey = last_page->mkeys[tmp];
++	last_page->mkeys[tmp] = 0;
++	ent->mkeys_queue.ci--;
++	if (ent->mkeys_queue.num_pages > 1 && !tmp) {
++		list_del(&last_page->list);
++		ent->mkeys_queue.num_pages--;
++		kfree(last_page);
+ 	}
+-
+-	xa_mkey = __xa_store(&ent->mkeys, ent->stored, XA_ZERO_ENTRY,
+-			     GFP_KERNEL);
+-	WARN_ON(!xa_mkey || xa_is_err(xa_mkey));
+-	old = __xa_erase(&ent->mkeys, ent->reserved);
+-	WARN_ON(old);
+-	return (u32)xa_to_value(xa_mkey);
++	return mkey;
+ }
+ 
+ static void create_mkey_callback(int status, struct mlx5_async_work *context)
+@@ -260,10 +197,10 @@ static void create_mkey_callback(int status, struct mlx5_async_work *context)
+ 	if (status) {
+ 		create_mkey_warn(dev, status, mkey_out->out);
+ 		kfree(mkey_out);
+-		xa_lock_irqsave(&ent->mkeys, flags);
+-		undo_push_reserve_mkey(ent);
++		spin_lock_irqsave(&ent->mkeys_queue.lock, flags);
++		ent->pending--;
+ 		WRITE_ONCE(dev->fill_delay, 1);
+-		xa_unlock_irqrestore(&ent->mkeys, flags);
++		spin_unlock_irqrestore(&ent->mkeys_queue.lock, flags);
+ 		mod_timer(&dev->delay_timer, jiffies + HZ);
+ 		return;
+ 	}
+@@ -272,11 +209,12 @@ static void create_mkey_callback(int status, struct mlx5_async_work *context)
+ 		MLX5_GET(create_mkey_out, mkey_out->out, mkey_index));
+ 	WRITE_ONCE(dev->cache.last_add, jiffies);
+ 
+-	xa_lock_irqsave(&ent->mkeys, flags);
+-	push_to_reserved(ent, mkey_out->mkey);
++	spin_lock_irqsave(&ent->mkeys_queue.lock, flags);
++	push_mkey_locked(ent, mkey_out->mkey);
+ 	/* If we are doing fill_to_high_water then keep going. */
+ 	queue_adjust_cache_locked(ent);
+-	xa_unlock_irqrestore(&ent->mkeys, flags);
++	ent->pending--;
++	spin_unlock_irqrestore(&ent->mkeys_queue.lock, flags);
+ 	kfree(mkey_out);
+ }
+ 
+@@ -332,24 +270,28 @@ static int add_keys(struct mlx5_cache_ent *ent, unsigned int num)
+ 		set_cache_mkc(ent, mkc);
+ 		async_create->ent = ent;
+ 
+-		err = push_mkey(ent, true, NULL);
+-		if (err)
++		spin_lock_irq(&ent->mkeys_queue.lock);
++		if (ent->pending >= MAX_PENDING_REG_MR) {
++			err = -EAGAIN;
+ 			goto free_async_create;
++		}
++		ent->pending++;
++		spin_unlock_irq(&ent->mkeys_queue.lock);
+ 
+ 		err = mlx5_ib_create_mkey_cb(async_create);
+ 		if (err) {
+ 			mlx5_ib_warn(ent->dev, "create mkey failed %d\n", err);
+-			goto err_undo_reserve;
++			goto err_create_mkey;
+ 		}
+ 	}
+ 
+ 	return 0;
+ 
+-err_undo_reserve:
+-	xa_lock_irq(&ent->mkeys);
+-	undo_push_reserve_mkey(ent);
+-	xa_unlock_irq(&ent->mkeys);
++err_create_mkey:
++	spin_lock_irq(&ent->mkeys_queue.lock);
++	ent->pending--;
+ free_async_create:
++	spin_unlock_irq(&ent->mkeys_queue.lock);
+ 	kfree(async_create);
+ 	return err;
+ }
+@@ -382,36 +324,36 @@ static void remove_cache_mr_locked(struct mlx5_cache_ent *ent)
+ {
+ 	u32 mkey;
+ 
+-	lockdep_assert_held(&ent->mkeys.xa_lock);
+-	if (!ent->stored)
++	lockdep_assert_held(&ent->mkeys_queue.lock);
++	if (!ent->mkeys_queue.ci)
+ 		return;
+-	mkey = pop_stored_mkey(ent);
+-	xa_unlock_irq(&ent->mkeys);
++	mkey = pop_mkey_locked(ent);
++	spin_unlock_irq(&ent->mkeys_queue.lock);
+ 	mlx5_core_destroy_mkey(ent->dev->mdev, mkey);
+-	xa_lock_irq(&ent->mkeys);
++	spin_lock_irq(&ent->mkeys_queue.lock);
+ }
+ 
+ static int resize_available_mrs(struct mlx5_cache_ent *ent, unsigned int target,
+ 				bool limit_fill)
+-	 __acquires(&ent->mkeys) __releases(&ent->mkeys)
++	__acquires(&ent->mkeys_queue.lock) __releases(&ent->mkeys_queue.lock)
+ {
+ 	int err;
+ 
+-	lockdep_assert_held(&ent->mkeys.xa_lock);
++	lockdep_assert_held(&ent->mkeys_queue.lock);
+ 
+ 	while (true) {
+ 		if (limit_fill)
+ 			target = ent->limit * 2;
+-		if (target == ent->reserved)
++		if (target == ent->pending + ent->mkeys_queue.ci)
+ 			return 0;
+-		if (target > ent->reserved) {
+-			u32 todo = target - ent->reserved;
++		if (target > ent->pending + ent->mkeys_queue.ci) {
++			u32 todo = target - (ent->pending + ent->mkeys_queue.ci);
+ 
+-			xa_unlock_irq(&ent->mkeys);
++			spin_unlock_irq(&ent->mkeys_queue.lock);
+ 			err = add_keys(ent, todo);
+ 			if (err == -EAGAIN)
+ 				usleep_range(3000, 5000);
+-			xa_lock_irq(&ent->mkeys);
++			spin_lock_irq(&ent->mkeys_queue.lock);
+ 			if (err) {
+ 				if (err != -EAGAIN)
+ 					return err;
+@@ -439,7 +381,7 @@ static ssize_t size_write(struct file *filp, const char __user *buf,
+ 	 * cannot free MRs that are in use. Compute the target value for stored
+ 	 * mkeys.
+ 	 */
+-	xa_lock_irq(&ent->mkeys);
++	spin_lock_irq(&ent->mkeys_queue.lock);
+ 	if (target < ent->in_use) {
+ 		err = -EINVAL;
+ 		goto err_unlock;
+@@ -452,12 +394,12 @@ static ssize_t size_write(struct file *filp, const char __user *buf,
+ 	err = resize_available_mrs(ent, target, false);
+ 	if (err)
+ 		goto err_unlock;
+-	xa_unlock_irq(&ent->mkeys);
++	spin_unlock_irq(&ent->mkeys_queue.lock);
+ 
+ 	return count;
+ 
+ err_unlock:
+-	xa_unlock_irq(&ent->mkeys);
++	spin_unlock_irq(&ent->mkeys_queue.lock);
+ 	return err;
+ }
+ 
+@@ -468,7 +410,8 @@ static ssize_t size_read(struct file *filp, char __user *buf, size_t count,
+ 	char lbuf[20];
+ 	int err;
+ 
+-	err = snprintf(lbuf, sizeof(lbuf), "%ld\n", ent->stored + ent->in_use);
++	err = snprintf(lbuf, sizeof(lbuf), "%ld\n",
++		       ent->mkeys_queue.ci + ent->in_use);
+ 	if (err < 0)
+ 		return err;
+ 
+@@ -497,10 +440,10 @@ static ssize_t limit_write(struct file *filp, const char __user *buf,
+ 	 * Upon set we immediately fill the cache to high water mark implied by
+ 	 * the limit.
+ 	 */
+-	xa_lock_irq(&ent->mkeys);
++	spin_lock_irq(&ent->mkeys_queue.lock);
+ 	ent->limit = var;
+ 	err = resize_available_mrs(ent, 0, true);
+-	xa_unlock_irq(&ent->mkeys);
++	spin_unlock_irq(&ent->mkeys_queue.lock);
+ 	if (err)
+ 		return err;
+ 	return count;
+@@ -536,9 +479,9 @@ static bool someone_adding(struct mlx5_mkey_cache *cache)
+ 	mutex_lock(&cache->rb_lock);
+ 	for (node = rb_first(&cache->rb_root); node; node = rb_next(node)) {
+ 		ent = rb_entry(node, struct mlx5_cache_ent, node);
+-		xa_lock_irq(&ent->mkeys);
+-		ret = ent->stored < ent->limit;
+-		xa_unlock_irq(&ent->mkeys);
++		spin_lock_irq(&ent->mkeys_queue.lock);
++		ret = ent->mkeys_queue.ci < ent->limit;
++		spin_unlock_irq(&ent->mkeys_queue.lock);
+ 		if (ret) {
+ 			mutex_unlock(&cache->rb_lock);
+ 			return true;
+@@ -555,26 +498,26 @@ static bool someone_adding(struct mlx5_mkey_cache *cache)
+  */
+ static void queue_adjust_cache_locked(struct mlx5_cache_ent *ent)
+ {
+-	lockdep_assert_held(&ent->mkeys.xa_lock);
++	lockdep_assert_held(&ent->mkeys_queue.lock);
+ 
+ 	if (ent->disabled || READ_ONCE(ent->dev->fill_delay) || ent->is_tmp)
+ 		return;
+-	if (ent->stored < ent->limit) {
++	if (ent->mkeys_queue.ci < ent->limit) {
+ 		ent->fill_to_high_water = true;
+ 		mod_delayed_work(ent->dev->cache.wq, &ent->dwork, 0);
+ 	} else if (ent->fill_to_high_water &&
+-		   ent->reserved < 2 * ent->limit) {
++		   ent->mkeys_queue.ci + ent->pending < 2 * ent->limit) {
+ 		/*
+ 		 * Once we start populating due to hitting a low water mark
+ 		 * continue until we pass the high water mark.
+ 		 */
+ 		mod_delayed_work(ent->dev->cache.wq, &ent->dwork, 0);
+-	} else if (ent->stored == 2 * ent->limit) {
++	} else if (ent->mkeys_queue.ci == 2 * ent->limit) {
+ 		ent->fill_to_high_water = false;
+-	} else if (ent->stored > 2 * ent->limit) {
++	} else if (ent->mkeys_queue.ci > 2 * ent->limit) {
+ 		/* Queue deletion of excess entries */
+ 		ent->fill_to_high_water = false;
+-		if (ent->stored != ent->reserved)
++		if (ent->pending)
+ 			queue_delayed_work(ent->dev->cache.wq, &ent->dwork,
+ 					   msecs_to_jiffies(1000));
+ 		else
+@@ -588,15 +531,16 @@ static void __cache_work_func(struct mlx5_cache_ent *ent)
+ 	struct mlx5_mkey_cache *cache = &dev->cache;
+ 	int err;
+ 
+-	xa_lock_irq(&ent->mkeys);
++	spin_lock_irq(&ent->mkeys_queue.lock);
+ 	if (ent->disabled)
+ 		goto out;
+ 
+-	if (ent->fill_to_high_water && ent->reserved < 2 * ent->limit &&
++	if (ent->fill_to_high_water &&
++	    ent->mkeys_queue.ci + ent->pending < 2 * ent->limit &&
+ 	    !READ_ONCE(dev->fill_delay)) {
+-		xa_unlock_irq(&ent->mkeys);
++		spin_unlock_irq(&ent->mkeys_queue.lock);
+ 		err = add_keys(ent, 1);
+-		xa_lock_irq(&ent->mkeys);
++		spin_lock_irq(&ent->mkeys_queue.lock);
+ 		if (ent->disabled)
+ 			goto out;
+ 		if (err) {
+@@ -614,7 +558,7 @@ static void __cache_work_func(struct mlx5_cache_ent *ent)
+ 						   msecs_to_jiffies(1000));
+ 			}
+ 		}
+-	} else if (ent->stored > 2 * ent->limit) {
++	} else if (ent->mkeys_queue.ci > 2 * ent->limit) {
+ 		bool need_delay;
+ 
+ 		/*
+@@ -629,11 +573,11 @@ static void __cache_work_func(struct mlx5_cache_ent *ent)
+ 		 * the garbage collection work to try to run in next cycle, in
+ 		 * order to free CPU resources to other tasks.
+ 		 */
+-		xa_unlock_irq(&ent->mkeys);
++		spin_unlock_irq(&ent->mkeys_queue.lock);
+ 		need_delay = need_resched() || someone_adding(cache) ||
+ 			     !time_after(jiffies,
+ 					 READ_ONCE(cache->last_add) + 300 * HZ);
+-		xa_lock_irq(&ent->mkeys);
++		spin_lock_irq(&ent->mkeys_queue.lock);
+ 		if (ent->disabled)
+ 			goto out;
+ 		if (need_delay) {
+@@ -644,7 +588,7 @@ static void __cache_work_func(struct mlx5_cache_ent *ent)
+ 		queue_adjust_cache_locked(ent);
+ 	}
+ out:
+-	xa_unlock_irq(&ent->mkeys);
++	spin_unlock_irq(&ent->mkeys_queue.lock);
+ }
+ 
+ static void delayed_cache_work_func(struct work_struct *work)
+@@ -752,25 +696,25 @@ static struct mlx5_ib_mr *_mlx5_mr_cache_alloc(struct mlx5_ib_dev *dev,
+ 	if (!mr)
+ 		return ERR_PTR(-ENOMEM);
+ 
+-	xa_lock_irq(&ent->mkeys);
++	spin_lock_irq(&ent->mkeys_queue.lock);
+ 	ent->in_use++;
+ 
+-	if (!ent->stored) {
++	if (!ent->mkeys_queue.ci) {
+ 		queue_adjust_cache_locked(ent);
+ 		ent->miss++;
+-		xa_unlock_irq(&ent->mkeys);
++		spin_unlock_irq(&ent->mkeys_queue.lock);
+ 		err = create_cache_mkey(ent, &mr->mmkey.key);
+ 		if (err) {
+-			xa_lock_irq(&ent->mkeys);
++			spin_lock_irq(&ent->mkeys_queue.lock);
+ 			ent->in_use--;
+-			xa_unlock_irq(&ent->mkeys);
++			spin_unlock_irq(&ent->mkeys_queue.lock);
+ 			kfree(mr);
+ 			return ERR_PTR(err);
+ 		}
+ 	} else {
+-		mr->mmkey.key = pop_stored_mkey(ent);
++		mr->mmkey.key = pop_mkey_locked(ent);
+ 		queue_adjust_cache_locked(ent);
+-		xa_unlock_irq(&ent->mkeys);
++		spin_unlock_irq(&ent->mkeys_queue.lock);
+ 	}
+ 	mr->mmkey.cache_ent = ent;
+ 	mr->mmkey.type = MLX5_MKEY_MR;
+@@ -824,14 +768,14 @@ static void clean_keys(struct mlx5_ib_dev *dev, struct mlx5_cache_ent *ent)
+ 	u32 mkey;
+ 
+ 	cancel_delayed_work(&ent->dwork);
+-	xa_lock_irq(&ent->mkeys);
+-	while (ent->stored) {
+-		mkey = pop_stored_mkey(ent);
+-		xa_unlock_irq(&ent->mkeys);
++	spin_lock_irq(&ent->mkeys_queue.lock);
++	while (ent->mkeys_queue.ci) {
++		mkey = pop_mkey_locked(ent);
++		spin_unlock_irq(&ent->mkeys_queue.lock);
+ 		mlx5_core_destroy_mkey(dev->mdev, mkey);
+-		xa_lock_irq(&ent->mkeys);
++		spin_lock_irq(&ent->mkeys_queue.lock);
+ 	}
+-	xa_unlock_irq(&ent->mkeys);
++	spin_unlock_irq(&ent->mkeys_queue.lock);
+ }
+ 
+ static void mlx5_mkey_cache_debugfs_cleanup(struct mlx5_ib_dev *dev)
+@@ -859,7 +803,7 @@ static void mlx5_mkey_cache_debugfs_add_ent(struct mlx5_ib_dev *dev,
+ 	dir = debugfs_create_dir(ent->name, dev->cache.fs_root);
+ 	debugfs_create_file("size", 0600, dir, ent, &size_fops);
+ 	debugfs_create_file("limit", 0600, dir, ent, &limit_fops);
+-	debugfs_create_ulong("cur", 0400, dir, &ent->stored);
++	debugfs_create_ulong("cur", 0400, dir, &ent->mkeys_queue.ci);
+ 	debugfs_create_u32("miss", 0600, dir, &ent->miss);
+ }
+ 
+@@ -881,6 +825,31 @@ static void delay_time_func(struct timer_list *t)
+ 	WRITE_ONCE(dev->fill_delay, 0);
+ }
+ 
++static int mlx5r_mkeys_init(struct mlx5_cache_ent *ent)
++{
++	struct mlx5_mkeys_page *page;
++
++	page = kzalloc(sizeof(*page), GFP_KERNEL);
++	if (!page)
++		return -ENOMEM;
++	INIT_LIST_HEAD(&ent->mkeys_queue.pages_list);
++	spin_lock_init(&ent->mkeys_queue.lock);
++	list_add_tail(&page->list, &ent->mkeys_queue.pages_list);
++	ent->mkeys_queue.num_pages++;
++	return 0;
++}
++
++static void mlx5r_mkeys_uninit(struct mlx5_cache_ent *ent)
++{
++	struct mlx5_mkeys_page *page;
++
++	WARN_ON(ent->mkeys_queue.ci || ent->mkeys_queue.num_pages > 1);
++	page = list_last_entry(&ent->mkeys_queue.pages_list,
++			       struct mlx5_mkeys_page, list);
++	list_del(&page->list);
++	kfree(page);
++}
++
+ struct mlx5_cache_ent *
+ mlx5r_cache_create_ent_locked(struct mlx5_ib_dev *dev,
+ 			      struct mlx5r_cache_rb_key rb_key,
+@@ -894,7 +863,9 @@ mlx5r_cache_create_ent_locked(struct mlx5_ib_dev *dev,
+ 	if (!ent)
+ 		return ERR_PTR(-ENOMEM);
+ 
+-	xa_init_flags(&ent->mkeys, XA_FLAGS_LOCK_IRQ);
++	ret = mlx5r_mkeys_init(ent);
++	if (ret)
++		goto mkeys_err;
+ 	ent->rb_key = rb_key;
+ 	ent->dev = dev;
+ 	ent->is_tmp = !persistent_entry;
+@@ -902,10 +873,8 @@ mlx5r_cache_create_ent_locked(struct mlx5_ib_dev *dev,
+ 	INIT_DELAYED_WORK(&ent->dwork, delayed_cache_work_func);
+ 
+ 	ret = mlx5_cache_ent_insert(&dev->cache, ent);
+-	if (ret) {
+-		kfree(ent);
+-		return ERR_PTR(ret);
+-	}
++	if (ret)
++		goto ent_insert_err;
+ 
+ 	if (persistent_entry) {
+ 		if (rb_key.access_mode == MLX5_MKC_ACCESS_MODE_KSM)
+@@ -928,6 +897,11 @@ mlx5r_cache_create_ent_locked(struct mlx5_ib_dev *dev,
+ 	}
+ 
+ 	return ent;
++ent_insert_err:
++	mlx5r_mkeys_uninit(ent);
++mkeys_err:
++	kfree(ent);
++	return ERR_PTR(ret);
+ }
+ 
+ static void remove_ent_work_func(struct work_struct *work)
+@@ -945,13 +919,13 @@ static void remove_ent_work_func(struct work_struct *work)
+ 		cur = rb_prev(cur);
+ 		mutex_unlock(&cache->rb_lock);
+ 
+-		xa_lock_irq(&ent->mkeys);
++		spin_lock_irq(&ent->mkeys_queue.lock);
+ 		if (!ent->is_tmp) {
+-			xa_unlock_irq(&ent->mkeys);
++			spin_unlock_irq(&ent->mkeys_queue.lock);
+ 			mutex_lock(&cache->rb_lock);
+ 			continue;
+ 		}
+-		xa_unlock_irq(&ent->mkeys);
++		spin_unlock_irq(&ent->mkeys_queue.lock);
+ 
+ 		clean_keys(ent->dev, ent);
+ 		mutex_lock(&cache->rb_lock);
+@@ -1001,9 +975,9 @@ int mlx5_mkey_cache_init(struct mlx5_ib_dev *dev)
+ 	mutex_unlock(&cache->rb_lock);
+ 	for (node = rb_first(root); node; node = rb_next(node)) {
+ 		ent = rb_entry(node, struct mlx5_cache_ent, node);
+-		xa_lock_irq(&ent->mkeys);
++		spin_lock_irq(&ent->mkeys_queue.lock);
+ 		queue_adjust_cache_locked(ent);
+-		xa_unlock_irq(&ent->mkeys);
++		spin_unlock_irq(&ent->mkeys_queue.lock);
+ 	}
+ 
+ 	return 0;
+@@ -1028,9 +1002,9 @@ void mlx5_mkey_cache_cleanup(struct mlx5_ib_dev *dev)
+ 	mutex_lock(&dev->cache.rb_lock);
+ 	for (node = rb_first(root); node; node = rb_next(node)) {
+ 		ent = rb_entry(node, struct mlx5_cache_ent, node);
+-		xa_lock_irq(&ent->mkeys);
++		spin_lock_irq(&ent->mkeys_queue.lock);
+ 		ent->disabled = true;
+-		xa_unlock_irq(&ent->mkeys);
++		spin_unlock_irq(&ent->mkeys_queue.lock);
+ 		cancel_delayed_work_sync(&ent->dwork);
+ 	}
+ 
+@@ -1043,6 +1017,7 @@ void mlx5_mkey_cache_cleanup(struct mlx5_ib_dev *dev)
+ 		node = rb_next(node);
+ 		clean_keys(dev, ent);
+ 		rb_erase(&ent->node, root);
++		mlx5r_mkeys_uninit(ent);
+ 		kfree(ent);
+ 	}
+ 	mutex_unlock(&dev->cache.rb_lock);
+@@ -1815,7 +1790,7 @@ static int cache_ent_find_and_store(struct mlx5_ib_dev *dev,
+ 	int ret;
+ 
+ 	if (mr->mmkey.cache_ent) {
+-		xa_lock_irq(&mr->mmkey.cache_ent->mkeys);
++		spin_lock_irq(&mr->mmkey.cache_ent->mkeys_queue.lock);
+ 		mr->mmkey.cache_ent->in_use--;
+ 		goto end;
+ 	}
+@@ -1829,7 +1804,7 @@ static int cache_ent_find_and_store(struct mlx5_ib_dev *dev,
+ 				return -EOPNOTSUPP;
+ 			}
+ 			mr->mmkey.cache_ent = ent;
+-			xa_lock_irq(&mr->mmkey.cache_ent->mkeys);
++			spin_lock_irq(&mr->mmkey.cache_ent->mkeys_queue.lock);
+ 			mutex_unlock(&cache->rb_lock);
+ 			goto end;
+ 		}
+@@ -1841,12 +1816,11 @@ static int cache_ent_find_and_store(struct mlx5_ib_dev *dev,
+ 		return PTR_ERR(ent);
+ 
+ 	mr->mmkey.cache_ent = ent;
+-	xa_lock_irq(&mr->mmkey.cache_ent->mkeys);
++	spin_lock_irq(&mr->mmkey.cache_ent->mkeys_queue.lock);
+ 
+ end:
+-	ret = push_mkey_locked(mr->mmkey.cache_ent, false,
+-			       xa_mk_value(mr->mmkey.key));
+-	xa_unlock_irq(&mr->mmkey.cache_ent->mkeys);
++	ret = push_mkey_locked(mr->mmkey.cache_ent, mr->mmkey.key);
++	spin_unlock_irq(&mr->mmkey.cache_ent->mkeys_queue.lock);
+ 	return ret;
+ }
+ 
+diff --git a/drivers/infiniband/hw/mlx5/umr.c b/drivers/infiniband/hw/mlx5/umr.c
+index 234bf30db731..e76142f6fa88 100644
+--- a/drivers/infiniband/hw/mlx5/umr.c
++++ b/drivers/infiniband/hw/mlx5/umr.c
+@@ -332,8 +332,8 @@ static int mlx5r_umr_post_send_wait(struct mlx5_ib_dev *dev, u32 mkey,
+ 
+ 		WARN_ON_ONCE(1);
+ 		mlx5_ib_warn(dev,
+-			"reg umr failed (%u). Trying to recover and resubmit the flushed WQEs\n",
+-			umr_context.status);
++			"reg umr failed (%u). Trying to recover and resubmit the flushed WQEs, mkey = %u\n",
++			umr_context.status, mkey);
+ 		mutex_lock(&umrc->lock);
+ 		err = mlx5r_umr_recover(dev);
+ 		mutex_unlock(&umrc->lock);
 -- 
-2.5.5
+2.41.0
 
-
---00000000000051706d0605c6811f
-Content-Type: application/pkcs7-signature; name="smime.p7s"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment; filename="smime.p7s"
-Content-Description: S/MIME Cryptographic Signature
-
-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
-FYMZp2DojLAq9f4Oi2OBetbnWxo0WGycXpmq/jC4PUx2u9mazQ79i80VLagGRshWniESXuf+SYG8
-+zBimjld9ZZnwm7itHAZdtme4YYFxx+EHa4PUxPV8t+hPHhsiIjirPa1pVXPbQIDAQABo4IB2zCC
-AdcwDgYDVR0PAQH/BAQDAgWgMIGjBggrBgEFBQcBAQSBljCBkzBOBggrBgEFBQcwAoZCaHR0cDov
-L3NlY3VyZS5nbG9iYWxzaWduLmNvbS9jYWNlcnQvZ3NnY2NyM3BlcnNvbmFsc2lnbjJjYTIwMjAu
-Y3J0MEEGCCsGAQUFBzABhjVodHRwOi8vb2NzcC5nbG9iYWxzaWduLmNvbS9nc2djY3IzcGVyc29u
-YWxzaWduMmNhMjAyMDBNBgNVHSAERjBEMEIGCisGAQQBoDIBKAowNDAyBggrBgEFBQcCARYmaHR0
-cHM6Ly93d3cuZ2xvYmFsc2lnbi5jb20vcmVwb3NpdG9yeS8wCQYDVR0TBAIwADBJBgNVHR8EQjBA
-MD6gPKA6hjhodHRwOi8vY3JsLmdsb2JhbHNpZ24uY29tL2dzZ2NjcjNwZXJzb25hbHNpZ24yY2Ey
-MDIwLmNybDAlBgNVHREEHjAcgRpzZWx2aW4ueGF2aWVyQGJyb2FkY29tLmNvbTATBgNVHSUEDDAK
-BggrBgEFBQcDBDAfBgNVHSMEGDAWgBSWM9HmWBdbNHWKgVZk1b5I3qGPzzAdBgNVHQ4EFgQU3TaH
-dsgUhTW3LwObmZ20fj+8Xj8wDQYJKoZIhvcNAQELBQADggEBAAbt6Sptp6ZlTnhM2FDhkVXks68/
-iqvfL/e8wSPVdBxOuiP+8EXGLV3E72KfTTJXMbkcmFpK2K11poBDQJhz0xyOGTESjXNnN6Eqq+iX
-hQtF8xG2lzPq8MijKI4qXk5Vy5DYfwsVfcF0qJw5AhC32nU9uuIPJq8/mQbZfqmoanV/yadootGr
-j1Ze9ndr+YDXPpCymOsynmmw0ErHZGGW1OmMpAEt0A+613glWCURLDlP8HONi1wnINV6aDiEf0ad
-9NMGxDsp+YWiRXD3txfo2OMQbpIxM90QfhKKacX8t1J1oAAWxDrLVTJBXBNvz5tr+D1sYwuye93r
-hImmkM1unboxggJtMIICaQIBATBrMFsxCzAJBgNVBAYTAkJFMRkwFwYDVQQKExBHbG9iYWxTaWdu
-IG52LXNhMTEwLwYDVQQDEyhHbG9iYWxTaWduIEdDQyBSMyBQZXJzb25hbFNpZ24gMiBDQSAyMDIw
-Agxy+Cu4x/7lM0zxY7cwDQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIEIBYtIHBes9DZ
-mNE7AfoUhrnoK9Gucixen98sOhMme20OMBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZI
-hvcNAQkFMQ8XDTIzMDkyMDA4NTMxMVowaQYJKoZIhvcNAQkPMVwwWjALBglghkgBZQMEASowCwYJ
-YIZIAWUDBAEWMAsGCWCGSAFlAwQBAjAKBggqhkiG9w0DBzALBgkqhkiG9w0BAQowCwYJKoZIhvcN
-AQEHMAsGCWCGSAFlAwQCATANBgkqhkiG9w0BAQEFAASCAQAX0h3ZXuSme6tyYuNjz3yIOKAv5b0K
-PV4ujbVxc+YvgwioGX5xMD/kkKym/YlkO5VJe6pvzbMT8rBJX/LdDnQbQVcxGSb7T9Gy/7duSmKW
-qooNyz4U3eCsuAQ46kCPIU8J1qKkMGs30VVByTcw0HGUg3R9ENWcgDViWyVdFvEIwa3AK1Rw/a3a
-RQLgdQguTFVIg6rgGHntnUP5uVr+1chNCqNmcJivN0T/HfcaDpuNe8U6c6bfEuqa9bKK7CbBZjnY
-9qx52YyGEbBE+ItvwUJbIEHgJt2FCxZ/iZg2skc+Gkg/X4c9z9f96s9fx59fcv5wehJLBmD5oDBh
-Hagsw437
---00000000000051706d0605c6811f--
