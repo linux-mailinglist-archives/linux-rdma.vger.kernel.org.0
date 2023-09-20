@@ -2,61 +2,60 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 384E37A7665
-	for <lists+linux-rdma@lfdr.de>; Wed, 20 Sep 2023 10:53:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B57C77A7667
+	for <lists+linux-rdma@lfdr.de>; Wed, 20 Sep 2023 10:53:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233406AbjITIxP (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 20 Sep 2023 04:53:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41590 "EHLO
+        id S233816AbjITIxU (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 20 Sep 2023 04:53:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41660 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232813AbjITIxP (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 20 Sep 2023 04:53:15 -0400
-Received: from mail-pf1-x432.google.com (mail-pf1-x432.google.com [IPv6:2607:f8b0:4864:20::432])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C1F394
-        for <linux-rdma@vger.kernel.org>; Wed, 20 Sep 2023 01:53:09 -0700 (PDT)
-Received: by mail-pf1-x432.google.com with SMTP id d2e1a72fcca58-690b8859c46so2116358b3a.3
-        for <linux-rdma@vger.kernel.org>; Wed, 20 Sep 2023 01:53:09 -0700 (PDT)
+        with ESMTP id S233766AbjITIxT (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 20 Sep 2023 04:53:19 -0400
+Received: from mail-pl1-x62c.google.com (mail-pl1-x62c.google.com [IPv6:2607:f8b0:4864:20::62c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6204B0
+        for <linux-rdma@vger.kernel.org>; Wed, 20 Sep 2023 01:53:11 -0700 (PDT)
+Received: by mail-pl1-x62c.google.com with SMTP id d9443c01a7336-1bdf4752c3cso48766725ad.2
+        for <linux-rdma@vger.kernel.org>; Wed, 20 Sep 2023 01:53:11 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google; t=1695199989; x=1695804789; darn=vger.kernel.org;
+        d=broadcom.com; s=google; t=1695199991; x=1695804791; darn=vger.kernel.org;
         h=references:in-reply-to:message-id:date:subject:cc:to:from:from:to
          :cc:subject:date:message-id:reply-to;
-        bh=4IoBmgwb4Y/zKSNxhQXnlJXuUPoyV9n/NbIMbYX70Us=;
-        b=eY2jAaHwHqllpSm4N2n2zs2Fn0LS73thoi/yRCb8syNEJdM+mdmfcL//pau2NS4QmL
-         7IXKEpRyVp4P/gbTpdTvDgeFh4z2zPtm67MTlZaPdpVxxjIG3cA5xa4fxDsyY2uKEmZb
-         KMNa+sK1/pFBJbDI8J/lybdUuQVP1C2ilgozQ=
+        bh=4VYXHqLYEWlYZKnn/2ayWfBsuBMg4dDcdSvatZWnK04=;
+        b=gQCxNoh5aK0mNgHpMYDtt2csKd+4W9VDeIdzQm8V5tk50EbBhTgQM5RarSTWiQ6iYZ
+         rzE+NUZWXniB2egtpRdZ6KkfFu5Gk0LymV1P38NGFDRbgz7jL17J23f1is7RXJAZMkdr
+         sVSx69WLrRwyuuD2WJROylssZXimxqdWKxEHU=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695199989; x=1695804789;
+        d=1e100.net; s=20230601; t=1695199991; x=1695804791;
         h=references:in-reply-to:message-id:date:subject:cc:to:from
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=4IoBmgwb4Y/zKSNxhQXnlJXuUPoyV9n/NbIMbYX70Us=;
-        b=LLNTXcz8rPglsWLtBF5Nhb68FoRgsH6XRr3SKGx0qDzzOROeNWJPp5yPq6pLVncBry
-         dGCcI3qzriI7Bto1HWRNdxiJpOB5NKzyIfdIPP0lLZPC+HZ6fmotvL7+J8VA+PkMiceI
-         fROo7b0KsuYRNZDN32W05zOlB725T5Kn234zJ+f+HQaWtJhext6drgAjKvsJO55wQZgi
-         oecqVan7cwO9J/ajrApbDoiXXqd6p2bpABiazH8A9whoa9IJFm3VvKUbWQ0BRcXa0YTA
-         BoEFJLSS5UUcOatdVzeBtDYhDNAU911bgnNWkIf6vBxnN0mh/HT8zL6VBk6i2xRREABG
-         O7bg==
-X-Gm-Message-State: AOJu0Yzlbdwg3s8e4b2X2aEZPkAxHD8V1CmxdjEhVMsYrgu45o8we1Q7
-        /7Hu8n2ABx7j5cyScnXIHv0pVuspVEIMO8k+Bbo=
-X-Google-Smtp-Source: AGHT+IES+s1vZTtkDGyF2XL66lKGeGEOcnRE65NlfKrU53LIB772hBXvAqpte0J9jCOMpicNQHojrw==
-X-Received: by 2002:a05:6a20:dd87:b0:159:e0b9:bd25 with SMTP id kw7-20020a056a20dd8700b00159e0b9bd25mr1592325pzb.57.1695199988720;
-        Wed, 20 Sep 2023 01:53:08 -0700 (PDT)
+        bh=4VYXHqLYEWlYZKnn/2ayWfBsuBMg4dDcdSvatZWnK04=;
+        b=koCjQTzkSXvTCK3Pmrff0MJOtN+/RE16187wURHsW2LoF2kPjryqyVlL94TWnB1qai
+         iN8/9Tpy+2klnYlj7te3WzSwkjQ2G0HAmDHiaN273mVaYM35+ftebHAByhadOJfepAer
+         lk6h+IEZcHvEptuz3yd61lnC6/00Bz6yuCYuHeGomkQAtmluGB49F9WR5Y6E9l1MC0+/
+         urbCxYgHc4zmWa5Gvid7LxHsyFxsJcsmUKIsw6EkUzCg1Cf6WrzlZc6cBjVLQIEbMnDq
+         fPTqjzMhBWQhbMggaQ40Rwlx7oj5zD1qyw68RijjmCyyt3zv+U8bbDcqOoS76LBre2BJ
+         pW1g==
+X-Gm-Message-State: AOJu0YyY5UWmIFAUJ1LyuOlTp1rQiEnIRaQufQvsswbGjkktaqmzJ7SK
+        rVOcmIfXzCufGFEwH5v9wPNx7g==
+X-Google-Smtp-Source: AGHT+IHUPf0hnbd62dy+aqan6VmJkdqrI38GaD0kYugLPD0GkqHAoMR7ZccR8rGi1gZwBc8q5azA9g==
+X-Received: by 2002:a17:90b:3902:b0:274:9a85:2596 with SMTP id ob2-20020a17090b390200b002749a852596mr2031712pjb.32.1695199991242;
+        Wed, 20 Sep 2023 01:53:11 -0700 (PDT)
 Received: from dhcp-10-192-206-197.iig.avagotech.net.net ([192.19.234.250])
-        by smtp.gmail.com with ESMTPSA id v12-20020a17090ae98c00b00276d039aecasm543099pjy.13.2023.09.20.01.53.06
+        by smtp.gmail.com with ESMTPSA id v12-20020a17090ae98c00b00276d039aecasm543099pjy.13.2023.09.20.01.53.09
         (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 20 Sep 2023 01:53:07 -0700 (PDT)
+        Wed, 20 Sep 2023 01:53:10 -0700 (PDT)
 From:   Selvin Xavier <selvin.xavier@broadcom.com>
 To:     jgg@ziepe.ca, leon@kernel.org
 Cc:     linux-rdma@vger.kernel.org, andrew.gospodarek@broadcom.com,
-        Selvin Xavier <selvin.xavier@broadcom.com>,
-        Saravanan Vajravel <saravanan.vajravel@broadcom.com>
-Subject: [PATCH for-rc 1/2] RDMA/bnxt_re: Fix the handling of control path response data
-Date:   Wed, 20 Sep 2023 01:41:19 -0700
-Message-Id: <1695199280-13520-2-git-send-email-selvin.xavier@broadcom.com>
+        Selvin Xavier <selvin.xavier@broadcom.com>
+Subject: [PATCH for-rc 2/2] RDMA/bnxt_re: Decrement resource stats correctly
+Date:   Wed, 20 Sep 2023 01:41:20 -0700
+Message-Id: <1695199280-13520-3-git-send-email-selvin.xavier@broadcom.com>
 X-Mailer: git-send-email 2.5.5
 In-Reply-To: <1695199280-13520-1-git-send-email-selvin.xavier@broadcom.com>
 References: <1695199280-13520-1-git-send-email-selvin.xavier@broadcom.com>
 Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
-        boundary="0000000000002b9b170605c6819f"
+        boundary="00000000000051706d0605c6811f"
 X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         MIME_HEADER_CTYPE_ONLY,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE,
@@ -67,69 +66,37 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
---0000000000002b9b170605c6819f
+--00000000000051706d0605c6811f
 
-Flag that indicate control path command completion should be cleared
-only after copying the command response data. As soon as the is_in_used
-flag is clear, the waiting thread can proceed with wrong response
-data.  This wrong data is causing multiple issues like wrong lkey
-used in data traffic and wrong AH Id etc.
+rc_qp_count and ud_qp_count is not decremented during qp destroy.
+Fix this.
 
-Use a memory barrier to ensure that the response data
-is copied and visible to the process waiting on a different
-cpu core before clearing the is_in_used flag.
-
-Clear the is_in_used after copying the command response.
-
-Fixes: bcfee4ce3e01 ("RDMA/bnxt_re: remove redundant cmdq_bitmap")
-Signed-off-by: Saravanan Vajravel <saravanan.vajravel@broadcom.com>
+Fixes: cb95709e0dca ("bnxt_re: Update the hw counters for resource stats")
 Signed-off-by: Selvin Xavier <selvin.xavier@broadcom.com>
 ---
- drivers/infiniband/hw/bnxt_re/qplib_rcfw.c | 11 +++++++++--
- 1 file changed, 9 insertions(+), 2 deletions(-)
+ drivers/infiniband/hw/bnxt_re/ib_verbs.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-diff --git a/drivers/infiniband/hw/bnxt_re/qplib_rcfw.c b/drivers/infiniband/hw/bnxt_re/qplib_rcfw.c
-index c8c4017..e47b4ca 100644
---- a/drivers/infiniband/hw/bnxt_re/qplib_rcfw.c
-+++ b/drivers/infiniband/hw/bnxt_re/qplib_rcfw.c
-@@ -665,7 +665,6 @@ static int bnxt_qplib_process_qp_event(struct bnxt_qplib_rcfw *rcfw,
- 		blocked = cookie & RCFW_CMD_IS_BLOCKING;
- 		cookie &= RCFW_MAX_COOKIE_VALUE;
- 		crsqe = &rcfw->crsqe_tbl[cookie];
--		crsqe->is_in_used = false;
+diff --git a/drivers/infiniband/hw/bnxt_re/ib_verbs.c b/drivers/infiniband/hw/bnxt_re/ib_verbs.c
+index 0848c2c..faa88d1 100644
+--- a/drivers/infiniband/hw/bnxt_re/ib_verbs.c
++++ b/drivers/infiniband/hw/bnxt_re/ib_verbs.c
+@@ -910,6 +910,10 @@ int bnxt_re_destroy_qp(struct ib_qp *ib_qp, struct ib_udata *udata)
+ 	list_del(&qp->list);
+ 	mutex_unlock(&rdev->qp_lock);
+ 	atomic_dec(&rdev->stats.res.qp_count);
++	if (qp->qplib_qp.type == CMDQ_CREATE_QP_TYPE_RC)
++		atomic_dec(&rdev->stats.res.rc_qp_count);
++	else if (qp->qplib_qp.type == CMDQ_CREATE_QP_TYPE_UD)
++		atomic_dec(&rdev->stats.res.ud_qp_count);
  
- 		if (WARN_ONCE(test_bit(FIRMWARE_STALL_DETECTED,
- 				       &rcfw->cmdq.flags),
-@@ -681,8 +680,14 @@ static int bnxt_qplib_process_qp_event(struct bnxt_qplib_rcfw *rcfw,
- 			atomic_dec(&rcfw->timeout_send);
- 
- 		if (crsqe->is_waiter_alive) {
--			if (crsqe->resp)
-+			if (crsqe->resp) {
- 				memcpy(crsqe->resp, qp_event, sizeof(*qp_event));
-+				/* Insert write memory barrier to ensure that
-+				 * response data is copied before clearing the
-+				 * flags
-+				 */
-+				smp_wmb();
-+			}
- 			if (!blocked)
- 				wait_cmds++;
- 		}
-@@ -694,6 +699,8 @@ static int bnxt_qplib_process_qp_event(struct bnxt_qplib_rcfw *rcfw,
- 		if (!is_waiter_alive)
- 			crsqe->resp = NULL;
- 
-+		crsqe->is_in_used = false;
-+
- 		hwq->cons += req_size;
- 
- 		/* This is a case to handle below scenario -
+ 	ib_umem_release(qp->rumem);
+ 	ib_umem_release(qp->sumem);
 -- 
 2.5.5
 
 
---0000000000002b9b170605c6819f
+--00000000000051706d0605c6811f
 Content-Type: application/pkcs7-signature; name="smime.p7s"
 Content-Transfer-Encoding: base64
 Content-Disposition: attachment; filename="smime.p7s"
@@ -200,14 +167,14 @@ j1Ze9ndr+YDXPpCymOsynmmw0ErHZGGW1OmMpAEt0A+613glWCURLDlP8HONi1wnINV6aDiEf0ad
 9NMGxDsp+YWiRXD3txfo2OMQbpIxM90QfhKKacX8t1J1oAAWxDrLVTJBXBNvz5tr+D1sYwuye93r
 hImmkM1unboxggJtMIICaQIBATBrMFsxCzAJBgNVBAYTAkJFMRkwFwYDVQQKExBHbG9iYWxTaWdu
 IG52LXNhMTEwLwYDVQQDEyhHbG9iYWxTaWduIEdDQyBSMyBQZXJzb25hbFNpZ24gMiBDQSAyMDIw
-Agxy+Cu4x/7lM0zxY7cwDQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIEINLenAj5mqR3
-8DB/3qlrDofAE7FbOa2mrNnxdMak42eZMBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZI
-hvcNAQkFMQ8XDTIzMDkyMDA4NTMwOVowaQYJKoZIhvcNAQkPMVwwWjALBglghkgBZQMEASowCwYJ
+Agxy+Cu4x/7lM0zxY7cwDQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIEIBYtIHBes9DZ
+mNE7AfoUhrnoK9Gucixen98sOhMme20OMBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZI
+hvcNAQkFMQ8XDTIzMDkyMDA4NTMxMVowaQYJKoZIhvcNAQkPMVwwWjALBglghkgBZQMEASowCwYJ
 YIZIAWUDBAEWMAsGCWCGSAFlAwQBAjAKBggqhkiG9w0DBzALBgkqhkiG9w0BAQowCwYJKoZIhvcN
-AQEHMAsGCWCGSAFlAwQCATANBgkqhkiG9w0BAQEFAASCAQCh7lJ73m5Yg1tFwHkVYRDcbfpNvKEW
-009EMOrzd7DP9Aymxm0TOewijn7+RIzT0YhPC2DOZExGcV+bSz3tbHTadCLrHzNORIPinx0psMXo
-OwVVFfk7EAA+qNNlcsI0nwYrbZg8awTHWsX5QTE4+hQheGAuov/ZAKOo/bbvlTsDbZmp1cmJVm6G
-2cYErxQy0qRJoGYU4Yp9/jSiF5zdjBDmzwuzoB4kdXFk5F8CDiplTBDOG9cMgihJ8YZokZHS5Ccn
-rCqMhF6v2ZG9vux0aGpp4IRyMcRwfvkUt857eN9y0gpG3c9v9HVnxanHp12xCLcAPerVewfGmDEJ
-ARkzAn83
---0000000000002b9b170605c6819f--
+AQEHMAsGCWCGSAFlAwQCATANBgkqhkiG9w0BAQEFAASCAQAX0h3ZXuSme6tyYuNjz3yIOKAv5b0K
+PV4ujbVxc+YvgwioGX5xMD/kkKym/YlkO5VJe6pvzbMT8rBJX/LdDnQbQVcxGSb7T9Gy/7duSmKW
+qooNyz4U3eCsuAQ46kCPIU8J1qKkMGs30VVByTcw0HGUg3R9ENWcgDViWyVdFvEIwa3AK1Rw/a3a
+RQLgdQguTFVIg6rgGHntnUP5uVr+1chNCqNmcJivN0T/HfcaDpuNe8U6c6bfEuqa9bKK7CbBZjnY
+9qx52YyGEbBE+ItvwUJbIEHgJt2FCxZ/iZg2skc+Gkg/X4c9z9f96s9fx59fcv5wehJLBmD5oDBh
+Hagsw437
+--00000000000051706d0605c6811f--
