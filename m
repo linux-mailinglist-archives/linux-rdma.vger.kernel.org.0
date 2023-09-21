@@ -2,91 +2,111 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E9F97A9135
-	for <lists+linux-rdma@lfdr.de>; Thu, 21 Sep 2023 05:20:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D24B47A9779
+	for <lists+linux-rdma@lfdr.de>; Thu, 21 Sep 2023 19:24:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229452AbjIUDUI (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 20 Sep 2023 23:20:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52094 "EHLO
+        id S229877AbjIURYb (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 21 Sep 2023 13:24:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40478 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229445AbjIUDUH (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 20 Sep 2023 23:20:07 -0400
-Received: from out30-97.freemail.mail.aliyun.com (out30-97.freemail.mail.aliyun.com [115.124.30.97])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50E20ED;
-        Wed, 20 Sep 2023 20:20:00 -0700 (PDT)
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R121e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018045168;MF=dust.li@linux.alibaba.com;NM=1;PH=DS;RN=9;SR=0;TI=SMTPD_---0VsWyC7J_1695266396;
-Received: from localhost(mailfrom:dust.li@linux.alibaba.com fp:SMTPD_---0VsWyC7J_1695266396)
-          by smtp.aliyun-inc.com;
-          Thu, 21 Sep 2023 11:19:57 +0800
-Date:   Thu, 21 Sep 2023 11:19:56 +0800
-From:   Dust Li <dust.li@linux.alibaba.com>
-To:     "D. Wythe" <alibuda@linux.alibaba.com>, kgraul@linux.ibm.com,
-        wenjia@linux.ibm.com, jaka@linux.ibm.com
-Cc:     kuba@kernel.org, davem@davemloft.net, netdev@vger.kernel.org,
-        linux-s390@vger.kernel.org, linux-rdma@vger.kernel.org
-Subject: Re: [PATCH net] net/smc: fix panic smc_tcp_syn_recv_sock() while
- closing listen socket
-Message-ID: <20230921031956.GA92403@linux.alibaba.com>
-Reply-To: dust.li@linux.alibaba.com
-References: <1695211714-66958-1-git-send-email-alibuda@linux.alibaba.com>
+        with ESMTP id S229835AbjIURYL (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 21 Sep 2023 13:24:11 -0400
+Received: from out-210.mta1.migadu.com (out-210.mta1.migadu.com [95.215.58.210])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F43424869
+        for <linux-rdma@vger.kernel.org>; Thu, 21 Sep 2023 10:11:31 -0700 (PDT)
+Message-ID: <cd1891e1-75f8-938e-317e-9a9760db7e13@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+        t=1695275225;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=aN+EUH0vaJjZAAWY+RQaRw5xxfN01hvoxcEUTvT6ACw=;
+        b=JxwbhX3i+3E+Yoc0pOM8/UsDWVsL2ZUD7tD7mdZaYMuxw4k2kS/Fi1VEWwLsaSWYwEFnlA
+        QfBhsO+wQTb1ypSJH6uZhrnxYa1Oke1fdEFAEXX4spIsMyhK3zlReAWDvnQ6VLt67nq+zz
+        mZWPPKgt10ZhLl8nrnaWfnoBJE8wrtk=
+Date:   Thu, 21 Sep 2023 13:46:56 +0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1695211714-66958-1-git-send-email-alibuda@linux.alibaba.com>
-X-Spam-Status: No, score=-9.9 required=5.0 tests=BAYES_00,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL autolearn=ham autolearn_force=no
-        version=3.4.6
+Subject: Re: [bug report] blktests srp/002 hang
+To:     Bob Pearson <rpearsonhpe@gmail.com>,
+        Bart Van Assche <bvanassche@acm.org>,
+        Shinichiro Kawasaki <shinichiro.kawasaki@wdc.com>
+Cc:     "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>
+References: <dsg6rd66tyiei32zaxs6ddv5ebefr5vtxjwz6d2ewqrcwisogl@ge7jzan7dg5u>
+ <0c5c732c-283c-b29a-0ac2-c32211fc7e17@gmail.com>
+ <yewvcfcketee5qduraajra2g37t2mpxdlmj7aqny3umf7mkavk@wsm5forumsou>
+ <8be8f611-e413-9584-7c2e-2c1abf4147be@acm.org>
+ <plrbpd5gg32uaferhjj6ibkt4wqybu3v3y32f4rlhvsruc7cu4@2pgrj2542da2>
+ <18a3ae8c-145b-4c7f-a8f5-67840feeb98c@acm.org>
+ <ab93655f-c187-fdab-6c67-3bfb2d9aa516@gmail.com>
+ <9dd0aa0a-d696-a95b-095b-f54d6d31a6ab@linux.dev>
+ <d3205633-0cd2-f87e-1c40-21b8172b6da3@linux.dev>
+ <nqdsj764d7e56kxevcwnq6qoi6ptuu3bi6ntfakb55vm3toda7@eo3ffzzqrot7>
+ <5a4efe6f-d8c6-84ce-377e-eb64bcad706c@linux.dev>
+ <f50beb15-2cab-dfb9-3b58-ea66e7f114a6@gmail.com>
+ <fe61fdc5-ca8f-2efc-975d-46b99d66c6f5@linux.dev>
+ <afc98035-1bb8-f75c-451a-8e3e39fb74aa@gmail.com>
+ <6fc3b524-af7d-43ce-aa05-5c44ec850b9b@acm.org>
+ <b728f4db-bafa-dd0f-e288-7e3f56e6eae8@gmail.com>
+ <02d7cbf2-b17b-488a-b6e9-ebb728b51c94@acm.org>
+ <b80dae29-3a7c-f039-bc35-08c6e9f91197@gmail.com>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From:   Zhu Yanjun <yanjun.zhu@linux.dev>
+In-Reply-To: <b80dae29-3a7c-f039-bc35-08c6e9f91197@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
+X-Spam-Status: No, score=-0.6 required=5.0 tests=BAYES_00,DATE_IN_PAST_06_12,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,
+        SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Wed, Sep 20, 2023 at 08:08:34PM +0800, D. Wythe wrote:
->From: "D. Wythe" <alibuda@linux.alibaba.com>
->
->Consider the following scenarios:
->
->smc_release
->	smc_close_active
->		write_lock_bh(&smc->clcsock->sk->sk_callback_lock);
->		smc->clcsock->sk->sk_user_data = NULL;
->		write_unlock_bh(&smc->clcsock->sk->sk_callback_lock);
->
->smc_tcp_syn_recv_sock
->	smc = smc_clcsock_user_data(sk);
->	/* now */
->	/* smc == NULL */
->
->Hence, we may read the a NULL value in smc_tcp_syn_recv_sock(). And
->since we only unset sk_user_data during smc_release, it's safe to
->drop the incoming tcp reqsock.
->
->Fixes:  ("net/smc: net/smc: Limit backlog connections"
->Signed-off-by: D. Wythe <alibuda@linux.alibaba.com>
->---
-> net/smc/af_smc.c | 2 ++
-> 1 file changed, 2 insertions(+)
->
->diff --git a/net/smc/af_smc.c b/net/smc/af_smc.c
->index bacdd97..b4acf47 100644
->--- a/net/smc/af_smc.c
->+++ b/net/smc/af_smc.c
->@@ -125,6 +125,8 @@ static struct sock *smc_tcp_syn_recv_sock(const struct sock *sk,
-> 	struct sock *child;
-> 
-> 	smc = smc_clcsock_user_data(sk);
->+	if (unlikely(!smc))
->+		goto drop;
 
-Is it possible smc != NULL here
-> 
-> 	if (READ_ONCE(sk->sk_ack_backlog) + atomic_read(&smc->queued_smc_hs) >
-But later turns to NULL in 'atomic_read(&smc->queue_smc_hs)'
-> 				sk->sk_max_ack_backlog)
+在 2023/9/21 1:29, Bob Pearson 写道:
+> On 9/20/23 12:22, Bart Van Assche wrote:
+>> On 9/20/23 10:18, Bob Pearson wrote:
+>>> But I have also seen the same behavior in the siw driver which is
+>>> completely independent.
+>> Hmm ... I haven't seen any hangs yet with the siw driver.
+> I was on Ubuntu 6-9 months ago. Currently I don't see hangs on either.
+>>> As mentioned above at the moment Ubuntu is failing rarely. But it used to fail reliably (srp/002 about 75% of the time and srp/011 about 99% of the time.) There haven't been any changes to rxe to explain this.
+>> I think that Zhu mentioned commit 9b4b7c1f9f54 ("RDMA/rxe: Add workqueue
+>> support for rxe tasks")?
+> That change happened well before the failures went away. I was seeing failures at the same rate with tasklets
+> and wqs. But after updating Ubuntu and the kernel at some point they all went away.
 
-Seems there is still a race ?
+Thanks, Bob. From what you said, in Ubuntu, this problem does not occur 
+now.
 
->-- 
->1.8.3.1
+To now,
+
+On Debian, without the commit 9b4b7c1f9f54 ("RDMA/rxe: Add workqueue 
+support for rxe tasks"), this hang does not occur.
+
+On Fedora, similar to Debian.
+
+On Ubuntu, this problem does not occur now. But not sure if this commit 
+exists or not.
+
+Hi, Bob, can you make tests without the above commit to verify if the 
+same problem occurs or not on Ubuntu?
+
+Can any one who has test environments to verify if this problem still 
+occurs on Ubuntu without this commit?
+
+Jason && Leon, please comment on this.
+
+Thanks a lot.
+
+Zhu Yanjun
+
+>
+>> Thanks,
+>>
+>> Bart.
+>
