@@ -2,104 +2,104 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 189FA7A9775
-	for <lists+linux-rdma@lfdr.de>; Thu, 21 Sep 2023 19:24:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A80B7A970C
+	for <lists+linux-rdma@lfdr.de>; Thu, 21 Sep 2023 19:11:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229495AbjIURYV (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 21 Sep 2023 13:24:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60460 "EHLO
+        id S230200AbjIURLC (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 21 Sep 2023 13:11:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39460 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229499AbjIURYA (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 21 Sep 2023 13:24:00 -0400
-Received: from out-221.mta0.migadu.com (out-221.mta0.migadu.com [91.218.175.221])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 14F0B86AE
-        for <linux-rdma@vger.kernel.org>; Thu, 21 Sep 2023 10:05:32 -0700 (PDT)
-Message-ID: <3b220489-5308-2391-235b-b8391d04e991@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1695290779;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=LdKWJ2w335d7PBbzKmbpoSg/0hYsrVxxlFOpD1xdhXc=;
-        b=q7qzzdnDqBXWNuiUFPM4rLiMbqJQXrC4Ly2a6cIlszg9BdoKpYykGnjzLVas2G+7UHnF1s
-        D2DvaFx3kWhoXRgEfHe9LuuWJdZTvSMvUKBX54CbBRIQUCGDLyX78b0a5e6W9TuLuXrMnt
-        H2/Xgg5hISPBgZfSBbxnqQM89QG1Kmc=
-Date:   Thu, 21 Sep 2023 18:06:13 +0800
+        with ESMTP id S230132AbjIUREx (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 21 Sep 2023 13:04:53 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0DAE1711
+        for <linux-rdma@vger.kernel.org>; Thu, 21 Sep 2023 10:02:35 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 14856C4E663;
+        Thu, 21 Sep 2023 12:10:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1695298243;
+        bh=3zUerJob8LTaLhGfDXM3f8fNe7+0Vp+OP7wcaT6sgF0=;
+        h=From:To:Cc:Subject:Date:From;
+        b=UEI4nhusOGx2X/DJ36lARYRKoo5KvubaseFamdvlR+YELv35D+Ps9pJ9pbXkq3OnP
+         JoWgE04zwdU7oP0s1PH2F+4xjsh3PiJjUsrq95W2FniU4N4yefFdfCebjBlm14j656
+         u5G9eI+SBC/Z/r6nu7TAKyJVraOnhpQqFHa2g08OpZVzghOvPdRAYMRzYaah/SWASA
+         wTzkxCMPIWzbW08MAYVWW7qLf7qia5RLSpKl5wGXbsRprALAgoP09lmURY8WzuWeXb
+         IW6qZpd0km/CXSqxWbJAPFHsjCt6yXB5Xg37vLYeukeIHr4Y/8Hr9Sr/D9cV8hLYPc
+         6tE4GxhLaR64w==
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Jason Gunthorpe <jgg@nvidia.com>
+Cc:     Leon Romanovsky <leonro@nvidia.com>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>, linux-rdma@vger.kernel.org,
+        Mark Bloch <mbloch@nvidia.com>, netdev@vger.kernel.org,
+        Paolo Abeni <pabeni@redhat.com>,
+        Patrisious Haddad <phaddad@nvidia.com>,
+        Saeed Mahameed <saeedm@nvidia.com>,
+        Steffen Klassert <steffen.klassert@secunet.com>,
+        Simon Horman <horms@kernel.org>
+Subject: [PATCH mlx5-next 0/9] Support IPsec packet offload in multiport RoCE devices
+Date:   Thu, 21 Sep 2023 15:10:26 +0300
+Message-ID: <cover.1695296682.git.leon@kernel.org>
+X-Mailer: git-send-email 2.41.0
 MIME-Version: 1.0
-Subject: Re: [bug report] blktests srp/002 hang
-To:     Bob Pearson <rpearsonhpe@gmail.com>,
-        Bart Van Assche <bvanassche@acm.org>,
-        Shinichiro Kawasaki <shinichiro.kawasaki@wdc.com>
-Cc:     "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>
-References: <dsg6rd66tyiei32zaxs6ddv5ebefr5vtxjwz6d2ewqrcwisogl@ge7jzan7dg5u>
- <0c5c732c-283c-b29a-0ac2-c32211fc7e17@gmail.com>
- <yewvcfcketee5qduraajra2g37t2mpxdlmj7aqny3umf7mkavk@wsm5forumsou>
- <8be8f611-e413-9584-7c2e-2c1abf4147be@acm.org>
- <plrbpd5gg32uaferhjj6ibkt4wqybu3v3y32f4rlhvsruc7cu4@2pgrj2542da2>
- <18a3ae8c-145b-4c7f-a8f5-67840feeb98c@acm.org>
- <ab93655f-c187-fdab-6c67-3bfb2d9aa516@gmail.com>
- <9dd0aa0a-d696-a95b-095b-f54d6d31a6ab@linux.dev>
- <d3205633-0cd2-f87e-1c40-21b8172b6da3@linux.dev>
- <nqdsj764d7e56kxevcwnq6qoi6ptuu3bi6ntfakb55vm3toda7@eo3ffzzqrot7>
- <5a4efe6f-d8c6-84ce-377e-eb64bcad706c@linux.dev>
- <f50beb15-2cab-dfb9-3b58-ea66e7f114a6@gmail.com>
- <fe61fdc5-ca8f-2efc-975d-46b99d66c6f5@linux.dev>
- <afc98035-1bb8-f75c-451a-8e3e39fb74aa@gmail.com>
- <6fc3b524-af7d-43ce-aa05-5c44ec850b9b@acm.org>
- <b728f4db-bafa-dd0f-e288-7e3f56e6eae8@gmail.com>
- <02d7cbf2-b17b-488a-b6e9-ebb728b51c94@acm.org>
- <b80dae29-3a7c-f039-bc35-08c6e9f91197@gmail.com>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From:   Zhu Yanjun <yanjun.zhu@linux.dev>
-In-Reply-To: <b80dae29-3a7c-f039-bc35-08c6e9f91197@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
+X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
+        lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
+From: Leon Romanovsky <leonro@nvidia.com>
 
-在 2023/9/21 1:29, Bob Pearson 写道:
-> On 9/20/23 12:22, Bart Van Assche wrote:
->> On 9/20/23 10:18, Bob Pearson wrote:
->>> But I have also seen the same behavior in the siw driver which is
->>> completely independent.
->> Hmm ... I haven't seen any hangs yet with the siw driver.
-> I was on Ubuntu 6-9 months ago. Currently I don't see hangs on either.
->>> As mentioned above at the moment Ubuntu is failing rarely. But it used to fail reliably (srp/002 about 75% of the time and srp/011 about 99% of the time.) There haven't been any changes to rxe to explain this.
->> I think that Zhu mentioned commit 9b4b7c1f9f54 ("RDMA/rxe: Add workqueue
->> support for rxe tasks")?
-> That change happened well before the failures went away. I was seeing failures at the same rate with tasklets
-> and wqs. But after updating Ubuntu and the kernel at some point they all went away.
-Thanks, Bob. From what you said, in Ubuntu, this problem does not occur 
-now.
+Hi,
 
-To now,
+This series from Patrisious extends mlx5 to support IPsec packet offload
+in multiport devices (MPV, see [1] for more details).
 
-On Debian, without the commit 9b4b7c1f9f54 ("RDMA/rxe: Add workqueue 
-support for rxe tasks"), this hang does not occur.
+These devices have single flow steering logic and two netdev interfaces,
+which require extra logic to manage IPsec configurations as they performed
+on netdevs.
 
-On Fedora, similar to Debian.
+Thanks
 
-On Ubuntu, this problem does not occur now. But not sure if this commit 
-exists or not.
+[1] https://lore.kernel.org/linux-rdma/20180104152544.28919-1-leon@kernel.org/
 
-Hi, Bob, can you make tests without the above commit to verify if the 
-same problem occurs or not on Ubuntu?
+Thanks
 
-Can any one who has test environments to verify if this problem still 
-occurs on Ubuntu without this commit?
+Patrisious Haddad (9):
+  RDMA/mlx5: Send events from IB driver about device affiliation state
+  net/mlx5: Register mlx5e priv to devcom in MPV mode
+  net/mlx5: Store devcom pointer inside IPsec RoCE
+  net/mlx5: Add alias flow table bits
+  net/mlx5: Implement alias object allow and create functions
+  net/mlx5: Add create alias flow table function to ipsec roce
+  net/mlx5: Configure IPsec steering for egress RoCEv2 MPV traffic
+  net/mlx5: Configure IPsec steering for ingress RoCEv2 MPV traffic
+  net/mlx5: Handle IPsec steering upon master unbind/bind
 
-Jason && Leon, please comment on this.
+ drivers/infiniband/hw/mlx5/main.c             |  17 +
+ drivers/net/ethernet/mellanox/mlx5/core/cmd.c |  70 +++
+ drivers/net/ethernet/mellanox/mlx5/core/en.h  |   8 +
+ .../mellanox/mlx5/core/en_accel/ipsec.c       |   3 +-
+ .../mellanox/mlx5/core/en_accel/ipsec.h       |  25 +-
+ .../mellanox/mlx5/core/en_accel/ipsec_fs.c    | 122 +++-
+ .../mlx5/core/en_accel/ipsec_offload.c        |   3 +-
+ .../net/ethernet/mellanox/mlx5/core/en_main.c |  63 ++
+ .../net/ethernet/mellanox/mlx5/core/fs_core.c |  10 +-
+ .../ethernet/mellanox/mlx5/core/lib/devcom.h  |   1 +
+ .../mellanox/mlx5/core/lib/ipsec_fs_roce.c    | 542 +++++++++++++++++-
+ .../mellanox/mlx5/core/lib/ipsec_fs_roce.h    |  14 +-
+ .../net/ethernet/mellanox/mlx5/core/main.c    |   6 +
+ .../ethernet/mellanox/mlx5/core/mlx5_core.h   |  22 +
+ include/linux/mlx5/device.h                   |   2 +
+ include/linux/mlx5/driver.h                   |   2 +
+ include/linux/mlx5/mlx5_ifc.h                 |  56 +-
+ 17 files changed, 925 insertions(+), 41 deletions(-)
 
-Thanks a lot.
+-- 
+2.41.0
 
-Zhu Yanjun
->
->> Thanks,
->>
->> Bart.
->
