@@ -2,38 +2,40 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8BAC87A966A
-	for <lists+linux-rdma@lfdr.de>; Thu, 21 Sep 2023 19:10:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CEE857A977B
+	for <lists+linux-rdma@lfdr.de>; Thu, 21 Sep 2023 19:24:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230161AbjIURHK (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 21 Sep 2023 13:07:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58492 "EHLO
+        id S229936AbjIURYc (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 21 Sep 2023 13:24:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60598 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230103AbjIURGe (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 21 Sep 2023 13:06:34 -0400
-Received: from out-227.mta0.migadu.com (out-227.mta0.migadu.com [IPv6:2001:41d0:1004:224b::e3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5202C4495
-        for <linux-rdma@vger.kernel.org>; Thu, 21 Sep 2023 10:04:06 -0700 (PDT)
-Message-ID: <c20343e9-44d2-1fbc-4191-7ef19f71fbb3@linux.dev>
+        with ESMTP id S229493AbjIURYM (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 21 Sep 2023 13:24:12 -0400
+Received: from out-210.mta1.migadu.com (out-210.mta1.migadu.com [95.215.58.210])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 544F42486E
+        for <linux-rdma@vger.kernel.org>; Thu, 21 Sep 2023 10:11:31 -0700 (PDT)
+Message-ID: <3c84da83-cdbb-3326-b3f0-b2dee5f014e0@linux.dev>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1695308920;
+        t=1695309013;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
         bh=M9/SAz1EzoxnJVrN89NE7Xu5/5CKesHUXGlRvXE1pb4=;
-        b=UwCyKM274bp3lyCTckhxDcmosWuCzvGAQi2vbX80FfVhWUdnEpXvsXnQFrr38Xo/jo514Z
-        bpo+sIUDyw6gKP/Vimh9X0ublgA8Yh/tNfEzgqflmOYsi51FWy4X/fe3nRDpsNOFUqrs90
-        m9OIGW5AS1cYBjhA7jAdUlNyGayTmhU=
-Date:   Thu, 21 Sep 2023 23:08:32 +0800
+        b=HF+m8M7iNRj1sdkdOKmUzwFs7Mv7trfEcy3F5aRbyKaOXV+wdYS4FQ7cY8Lr1/BPJOusXe
+        d1f8YpAZnY6+0t9GcErtCDUQc+5FbXukpoufktBSA/JZh5a3HQroSE20Odpb37uWt7qaqA
+        DpThtA917wjzpA/qaOXTI1+I7nhWUgQ=
+Date:   Thu, 21 Sep 2023 23:10:05 +0800
 MIME-Version: 1.0
 Subject: Re: [bug report] blktests srp/002 hang
 To:     Bob Pearson <rpearsonhpe@gmail.com>,
         Rain River <rain.1986.08.12@gmail.com>,
-        Daisuke Matsuda <matsuda-daisuke@fujitsu.com>
+        Daisuke Matsuda <matsuda-daisuke@fujitsu.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        "leon@kernel.org" <leon@kernel.org>
 Cc:     Bart Van Assche <bvanassche@acm.org>,
         Shinichiro Kawasaki <shinichiro.kawasaki@wdc.com>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        RDMA mailing list <linux-rdma@vger.kernel.org>,
         "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>
 References: <dsg6rd66tyiei32zaxs6ddv5ebefr5vtxjwz6d2ewqrcwisogl@ge7jzan7dg5u>
  <8be8f611-e413-9584-7c2e-2c1abf4147be@acm.org>
@@ -59,6 +61,11 @@ In-Reply-To: <8aff9124-85c0-8e3b-dc35-1017b1540037@gmail.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
 X-Migadu-Flow: FLOW_OUT
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
+        lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
