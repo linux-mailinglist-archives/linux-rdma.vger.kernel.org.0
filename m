@@ -2,135 +2,146 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DE71C7A991E
-	for <lists+linux-rdma@lfdr.de>; Thu, 21 Sep 2023 20:11:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D8A687A998A
+	for <lists+linux-rdma@lfdr.de>; Thu, 21 Sep 2023 20:15:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229943AbjIUSLe (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 21 Sep 2023 14:11:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48042 "EHLO
+        id S229984AbjIUSPn (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 21 Sep 2023 14:15:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54562 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229842AbjIUSK7 (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 21 Sep 2023 14:10:59 -0400
-Received: from mail-vs1-xe49.google.com (mail-vs1-xe49.google.com [IPv6:2607:f8b0:4864:20::e49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CEF095A57C
-        for <linux-rdma@vger.kernel.org>; Thu, 21 Sep 2023 10:21:20 -0700 (PDT)
-Received: by mail-vs1-xe49.google.com with SMTP id ada2fe7eead31-45275d9b864so1042051137.0
-        for <linux-rdma@vger.kernel.org>; Thu, 21 Sep 2023 10:21:20 -0700 (PDT)
+        with ESMTP id S230227AbjIUSP0 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 21 Sep 2023 14:15:26 -0400
+Received: from mail-pl1-x630.google.com (mail-pl1-x630.google.com [IPv6:2607:f8b0:4864:20::630])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E33BC55AFB;
+        Thu, 21 Sep 2023 10:17:37 -0700 (PDT)
+Received: by mail-pl1-x630.google.com with SMTP id d9443c01a7336-1c328b53aeaso10363605ad.2;
+        Thu, 21 Sep 2023 10:17:37 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1695316880; x=1695921680; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=yNCF6Zt81nxj8UQ8gNIU503gdPKJ22mbn5cyKbzYsNE=;
-        b=rUKZN1y6VFsVMDZRN0ruLPwSiawSmnpQy2mua2rcX38mZ2sLuJBruUdiINeSDXgWbe
-         bCPjGhOl9INPkU8z8ibAU4HFX6yKBHdoi1P8cP1fQCxS8WIWi+HfhVatrQzwWOLHutq7
-         h0X4F0CNGQaxSc6aYRndoTiJYoXNqD2JldGTTtzLmerIxykovHt1+v/7wP9coCkEn6va
-         a6r6RSmJNcPXR5tJVkeOk5i/bkpuPYJRKC/jZJYd0J9rh51cpDP9gzJRezzVL8gUsZMo
-         58WH+Io54tvv6C4/RK+KZO2SRvO1uDvTnE4LcSEGs+UhI1eRMt4ZeuzzceddUV41ccqw
-         0BxA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695316880; x=1695921680;
-        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
+        d=gmail.com; s=20230601; t=1695316657; x=1695921457; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=yNCF6Zt81nxj8UQ8gNIU503gdPKJ22mbn5cyKbzYsNE=;
-        b=cR1oCJ3YweugTW1BvWZ12tv+JhLBRIpECKZ9yIy1BECCH6mccOwkp4+zT+ptsuBuZK
-         B+9Boi7b3fhdpuBuqNOSa6If2dpBnWc45v49WH/g8IVbUGetdv02VNb7hM01WRpHqIRt
-         e9u2a+xAtPf3d6g67+6LMb7bFV3dcf6sD39ge+4GQ9rdltZ1iyDgo3W9mUmB1ebE81nd
-         dLEoo4GI4omQB06syLHPzp2Stx2IZNRr4KgvuMVMYA/FEk0Y5aQshLuayyNLnC77Pvvy
-         GuW9RKQRKpmurrIa9Jv3cfN2+ssrrP5kOV/k+z8pI6SFabH4S4b+nI14GIGyn03pZOAa
-         hVZw==
-X-Gm-Message-State: AOJu0Yz/+IUQ4UdwI+nb/BMXazSHayzxmKrSmlMEsp3dOmnQ+lMzzLUx
-        F+SNtUVb7s2ClkqStKWFqyQ4K8tKIwGbc+nkRg==
-X-Google-Smtp-Source: AGHT+IG9HZjc3JIk5MEyIpSba4YkGUvBiWvtiXnmfI90PzuqCpAGn0qssQW1hqGUZeqIx/17RfnWLbC0RMIskQMPDg==
-X-Received: from jstitt-linux1.c.googlers.com ([fda3:e722:ac3:cc00:2b:ff92:c0a8:23b5])
- (user=justinstitt job=sendgmr) by 2002:a05:690c:d8f:b0:59b:5a5b:3a91 with
- SMTP id da15-20020a05690c0d8f00b0059b5a5b3a91mr235089ywb.2.1695283130297;
- Thu, 21 Sep 2023 00:58:50 -0700 (PDT)
-Date:   Thu, 21 Sep 2023 07:58:48 +0000
-Mime-Version: 1.0
-X-B4-Tracking: v=1; b=H4sIALf3C2UC/x2NSw7CMAwFr1J5jaXU4VO4CkJVkzjUG1McVIqq3
- p3AYhYzi/dWKGzCBS7NCsazFHlolXbXQBwHvTNKqg7kyLsztVhepnH6YDKZ2QqKZlEJgyYc3/i U8KOv4eSJMOK+S4fQ5aPzzFBXJ+Msy//xetu2Lx6W2eyBAAAA
-X-Developer-Key: i=justinstitt@google.com; a=ed25519; pk=tC3hNkJQTpNX/gLKxTNQKDmiQl6QjBNCGKJINqAdJsE=
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1695283129; l=2260;
- i=justinstitt@google.com; s=20230717; h=from:subject:message-id;
- bh=yG7G6SjuBc3zLcpp7gnhrmEb8A3RYwBew7uUX2315CY=; b=Yl+wEYYRm8WEbB2hhRaqUxc1tVIoc6ZKIs0c9VOUvp7taB3+qAlHxPrlAMZm8qubfP1QqWv9s
- qlGem8Mov1TAxEmbCRIduUctIT2LKxA/mRraFOOFJzFPh6rM/HxWvj/
-X-Mailer: b4 0.12.3
-Message-ID: <20230921-strncpy-drivers-infiniband-hw-qib-qib_iba7322-c-v1-1-373727763f5b@google.com>
-Subject: [PATCH] IB/qib: replace deprecated strncpy
-From:   Justin Stitt <justinstitt@google.com>
-To:     Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Leon Romanovsky <leon@kernel.org>
-Cc:     linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-hardening@vger.kernel.org,
-        Justin Stitt <justinstitt@google.com>
-Content-Type: text/plain; charset="utf-8"
-X-Spam-Status: No, score=-8.1 required=5.0 tests=BAYES_00,DATE_IN_PAST_06_12,
-        DKIMWL_WL_MED,DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
-        autolearn=no autolearn_force=no version=3.4.6
+        bh=bUTWTEvhwTmI9spZVufqCsTCajVPfsOh06nRiT/DqSA=;
+        b=JTLXo5ErKyB5oDjF3Ae0ABIDCZkD/YjKQ5z6M+UJEaN5Nx30ub8HeZ+z/U6B0IDo4N
+         0ReZKpLA/rRju4imdcmKO1Mvi7jp3xsutz6o475vOHh94KS1oRqgr/cdUT39qdJNKZZ7
+         u+3YkYj1iKhts3ZK1+h2MK3AJaEIRjuXwEohk2fNKtqET/J3XVC0zo8AZPkGhoGzBWfw
+         HuzSx0osPbzMMMNilz76KIFLkUh03TijbzUQfNtmlxvLxOvezbGGOv3E5jJcYTvmWk3A
+         bjWD4bg7VWfSGMBnyPr2HeMcl8fQLHuiBRr2qKRLRhS92gQTHyKwyPLlX6r41SviaZGh
+         CcKQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695316657; x=1695921457;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=bUTWTEvhwTmI9spZVufqCsTCajVPfsOh06nRiT/DqSA=;
+        b=ikpPY01JakvvODs/iUFw46+i/lNf4po5k8M5fFEMFyistKSLqxswy30QwgRIozgxWQ
+         dNRMxOlTfMYaVFuheo+IBLrziVWhPuuqUtOeiFkqsrNEts+jAvYycHH3DHwStztI4tAD
+         VYZUeljLhGsoOLyV0d9Hv8ewAZvsYZxoJdRrMR+oyr9u8+c+qoNJISaJmTZTw7mdOshw
+         xOBZi2U24Pi/UBp/gOSAAI4VrXKKDhAEbdI+ZthigR7SBONz8eL1n4zVaERtvDndFuyc
+         P3P9daZXKoWEr5gCJcuUTpTx9SPHEocztfd54OrOQCZbFfO/kt5rGd6hncEukYDlIC6j
+         eEhQ==
+X-Gm-Message-State: AOJu0YwTC8NmV06DC6hDhmRF2vZbJimSZ011Kh1DNVxmNbQziHGvivMf
+        kRASHSlchhsUa/txefMUmmNHn6UMvnY=
+X-Google-Smtp-Source: AGHT+IHJsK2B1N42OTju2WOjLPqH71PpWleq53Hj3J9skkT7LAvWU6Jh9wn4vIVNARWcTwtIv9JYpg==
+X-Received: by 2002:a05:6808:1395:b0:3ae:8a9:e44a with SMTP id c21-20020a056808139500b003ae08a9e44amr1468872oiw.31.1695307180191;
+        Thu, 21 Sep 2023 07:39:40 -0700 (PDT)
+Received: from ?IPV6:2603:8081:1405:679b:2790:d0a7:1c4e:2824? (2603-8081-1405-679b-2790-d0a7-1c4e-2824.res6.spectrum.com. [2603:8081:1405:679b:2790:d0a7:1c4e:2824])
+        by smtp.gmail.com with ESMTPSA id bx9-20020a0568081b0900b003adcaf28f61sm400680oib.41.2023.09.21.07.39.39
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 21 Sep 2023 07:39:39 -0700 (PDT)
+Message-ID: <8aff9124-85c0-8e3b-dc35-1017b1540037@gmail.com>
+Date:   Thu, 21 Sep 2023 09:39:38 -0500
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Subject: Re: [bug report] blktests srp/002 hang
+Content-Language: en-US
+To:     Rain River <rain.1986.08.12@gmail.com>,
+        Daisuke Matsuda <matsuda-daisuke@fujitsu.com>
+Cc:     Bart Van Assche <bvanassche@acm.org>,
+        Zhu Yanjun <yanjun.zhu@linux.dev>,
+        Shinichiro Kawasaki <shinichiro.kawasaki@wdc.com>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>
+References: <dsg6rd66tyiei32zaxs6ddv5ebefr5vtxjwz6d2ewqrcwisogl@ge7jzan7dg5u>
+ <yewvcfcketee5qduraajra2g37t2mpxdlmj7aqny3umf7mkavk@wsm5forumsou>
+ <8be8f611-e413-9584-7c2e-2c1abf4147be@acm.org>
+ <plrbpd5gg32uaferhjj6ibkt4wqybu3v3y32f4rlhvsruc7cu4@2pgrj2542da2>
+ <18a3ae8c-145b-4c7f-a8f5-67840feeb98c@acm.org>
+ <ab93655f-c187-fdab-6c67-3bfb2d9aa516@gmail.com>
+ <9dd0aa0a-d696-a95b-095b-f54d6d31a6ab@linux.dev>
+ <d3205633-0cd2-f87e-1c40-21b8172b6da3@linux.dev>
+ <nqdsj764d7e56kxevcwnq6qoi6ptuu3bi6ntfakb55vm3toda7@eo3ffzzqrot7>
+ <5a4efe6f-d8c6-84ce-377e-eb64bcad706c@linux.dev>
+ <f50beb15-2cab-dfb9-3b58-ea66e7f114a6@gmail.com>
+ <fe61fdc5-ca8f-2efc-975d-46b99d66c6f5@linux.dev>
+ <afc98035-1bb8-f75c-451a-8e3e39fb74aa@gmail.com>
+ <6fc3b524-af7d-43ce-aa05-5c44ec850b9b@acm.org>
+ <b728f4db-bafa-dd0f-e288-7e3f56e6eae8@gmail.com>
+ <02d7cbf2-b17b-488a-b6e9-ebb728b51c94@acm.org>
+ <b80dae29-3a7c-f039-bc35-08c6e9f91197@gmail.com>
+ <CAJr_XRAy4EHueAP-10=WSEa46j2aQBArdzYsq7OqSqR93Ue+ug@mail.gmail.com>
+From:   Bob Pearson <rpearsonhpe@gmail.com>
+In-Reply-To: <CAJr_XRAy4EHueAP-10=WSEa46j2aQBArdzYsq7OqSqR93Ue+ug@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-`strncpy` is deprecated for use on NUL-terminated destination strings [1]
-and as such we should prefer more robust and less ambiguous string
-interfaces.
+On 9/21/23 09:23, Rain River wrote:
+> On Thu, Sep 21, 2023 at 2:53 AM Bob Pearson <rpearsonhpe@gmail.com> wrote:
+>>
+>> On 9/20/23 12:22, Bart Van Assche wrote:
+>>> On 9/20/23 10:18, Bob Pearson wrote:
+>>>> But I have also seen the same behavior in the siw driver which is
+>>>> completely independent.
+>>>
+>>> Hmm ... I haven't seen any hangs yet with the siw driver.
+>>
+>> I was on Ubuntu 6-9 months ago. Currently I don't see hangs on either.
+>>>
+>>>> As mentioned above at the moment Ubuntu is failing rarely. But it used to fail reliably (srp/002 about 75% of the time and srp/011 about 99% of the time.) There haven't been any changes to rxe to explain this.
+>>>
+>>> I think that Zhu mentioned commit 9b4b7c1f9f54 ("RDMA/rxe: Add workqueue
+>>> support for rxe tasks")?
+>>
+>> That change happened well before the failures went away. I was seeing failures at the same rate with tasklets
+>> and wqs. But after updating Ubuntu and the kernel at some point they all went away.
+> 
+> I made tests on the latest Ubuntu with the latest kernel without the
+> commit 9b4b7c1f9f54 ("RDMA/rxe: Add workqueue support for rxe tasks").
+> The latest kernel is v6.6-rc2, the commit 9b4b7c1f9f54 ("RDMA/rxe: Add
+> workqueue support for rxe tasks") is reverted.
+> I made blktest tests for about 30 times, this problem does not occur.
+> 
+> So I confirm that without this commit, this hang problem does not
+> occur on Ubuntu without the commit 9b4b7c1f9f54 ("RDMA/rxe: Add
+> workqueue support for rxe tasks").
+> 
+> Nanthan
+> 
+>>
+>>>
+>>> Thanks,
+>>>
+>>> Bart.
+>>
+>>
 
-We know `txselect_list` is expected to be NUL-terminated based on its
-use in `param_get_string()`:
-| int param_get_string(char *buffer, const struct kernel_param *kp)
-| {
-| 	const struct kparam_string *kps = kp->str;
-| 	return scnprintf(buffer, PAGE_SIZE, "%s\n", kps->string);
-| }
+This commit is very important for several reasons. It is needed for the ODP implementation
+that is in the works from Daisuke Matsuda and also for QP scaling of performance. The work
+queue implementation scales well with increasing qp number while the tasklet implementation
+does not. This is critical for the drivers use in large scale storage applications. So, if
+there is a bug in the work queue implementation it needs to be fixed not reverted.
 
-Note that `txselect_list` is assigned to `kp_txselect`'s string field:
-| static struct kparam_string kp_txselect = {
-| 	.string = txselect_list,
-| 	.maxlen = MAX_ATTEN_LEN
-| };
+I am still hoping that someone will diagnose what is causing the ULPs to hang in terms of
+something missing causing it to wait.
 
-Wherein it is then assigned the set and get methods:
-| module_param_call(txselect, setup_txselect, param_get_string,
-| 		  &kp_txselect, S_IWUSR | S_IRUGO);
-
-Considering the above, a suitable replacement is `strscpy` [2] due to
-the fact that it guarantees NUL-termination on the destination buffer
-without unnecessarily NUL-padding.
-
-Link: https://www.kernel.org/doc/html/latest/process/deprecated.html#strncpy-on-nul-terminated-strings [1]
-Link: https://manpages.debian.org/testing/linux-manual-4.8/strscpy.9.en.html [2]
-Link: https://github.com/KSPP/linux/issues/90
-Cc: linux-hardening@vger.kernel.org
-Signed-off-by: Justin Stitt <justinstitt@google.com>
----
-Note: build-tested
----
- drivers/infiniband/hw/qib/qib_iba7322.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/infiniband/hw/qib/qib_iba7322.c b/drivers/infiniband/hw/qib/qib_iba7322.c
-index 9d2dd135b784..f93906d8fc09 100644
---- a/drivers/infiniband/hw/qib/qib_iba7322.c
-+++ b/drivers/infiniband/hw/qib/qib_iba7322.c
-@@ -6127,7 +6127,7 @@ static int setup_txselect(const char *str, const struct kernel_param *kp)
- 			TXDDS_TABLE_SZ + TXDDS_EXTRA_SZ + TXDDS_MFG_SZ);
- 		return -EINVAL;
- 	}
--	strncpy(txselect_list, str, ARRAY_SIZE(txselect_list) - 1);
-+	strscpy(txselect_list, str, sizeof(txselect_list));
- 
- 	xa_for_each(&qib_dev_table, index, dd)
- 		if (dd->deviceid == PCI_DEVICE_ID_QLOGIC_IB_7322)
-
----
-base-commit: 2cf0f715623872823a72e451243bbf555d10d032
-change-id: 20230921-strncpy-drivers-infiniband-hw-qib-qib_iba7322-c-48d5b8f603ee
-
-Best regards,
---
-Justin Stitt <justinstitt@google.com>
-
+Bob
