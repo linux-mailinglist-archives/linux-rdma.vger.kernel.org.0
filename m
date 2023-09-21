@@ -2,134 +2,90 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CEE857A977B
-	for <lists+linux-rdma@lfdr.de>; Thu, 21 Sep 2023 19:24:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 648A67A961D
+	for <lists+linux-rdma@lfdr.de>; Thu, 21 Sep 2023 19:00:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229936AbjIURYc (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 21 Sep 2023 13:24:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60598 "EHLO
+        id S229660AbjIUQ6a (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 21 Sep 2023 12:58:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44148 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229493AbjIURYM (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 21 Sep 2023 13:24:12 -0400
-Received: from out-210.mta1.migadu.com (out-210.mta1.migadu.com [95.215.58.210])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 544F42486E
-        for <linux-rdma@vger.kernel.org>; Thu, 21 Sep 2023 10:11:31 -0700 (PDT)
-Message-ID: <3c84da83-cdbb-3326-b3f0-b2dee5f014e0@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1695309013;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=M9/SAz1EzoxnJVrN89NE7Xu5/5CKesHUXGlRvXE1pb4=;
-        b=HF+m8M7iNRj1sdkdOKmUzwFs7Mv7trfEcy3F5aRbyKaOXV+wdYS4FQ7cY8Lr1/BPJOusXe
-        d1f8YpAZnY6+0t9GcErtCDUQc+5FbXukpoufktBSA/JZh5a3HQroSE20Odpb37uWt7qaqA
-        DpThtA917wjzpA/qaOXTI1+I7nhWUgQ=
-Date:   Thu, 21 Sep 2023 23:10:05 +0800
+        with ESMTP id S229664AbjIUQ6S (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 21 Sep 2023 12:58:18 -0400
+Received: from mail-ua1-x92d.google.com (mail-ua1-x92d.google.com [IPv6:2607:f8b0:4864:20::92d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E273186
+        for <linux-rdma@vger.kernel.org>; Thu, 21 Sep 2023 09:57:42 -0700 (PDT)
+Received: by mail-ua1-x92d.google.com with SMTP id a1e0cc1a2514c-7a505727e7eso495427241.0
+        for <linux-rdma@vger.kernel.org>; Thu, 21 Sep 2023 09:57:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google; t=1695315446; x=1695920246; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=aj1zPvv2FItd5VuImcsJyg+MhOvALycMYrSdg0qvbNg=;
+        b=Uv0N4xwkAd/3dZ0Dvvts5DelVvQx2gveMtOY5yibtLKDHXLBPTd3XTH+8YOSVG4una
+         WYQqCpypBsYjQ1oZctyefzXrpiJBinUHkLiN9NQOtMDh8CffgIOUTYKv/TNXLsipn4MR
+         A9P2avjW6SYWm+2T/gsU/ZIyT3yit5ue+Bt+PCr5I4DNup7nz2QH105Txl4iiv7t8e2m
+         8798oUZKGShAFnx6ffLIR9TC73UtW+wLnSBeai+d0dIIHRsz3IB7dAC4Vq8u/tg9iPyd
+         z9echE2Nx4jynaT/d+ZWF4S/YtIKDfdv719OtIg15e3aXlgKj6LdZ9YjvaJEJea/zQFD
+         rv4A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695315446; x=1695920246;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=aj1zPvv2FItd5VuImcsJyg+MhOvALycMYrSdg0qvbNg=;
+        b=T57iNxoXGSFExRbFkcRGRRQYey2LDyfF0ZE5wJaU1CRtavIFNB24q+KQ56u7Zs8np0
+         bxp3i1v6bp+QJAiklpk1VN+uVeFssFRup1jnz3I8Q5xdqv3W/+z8VVIhyqAXm+50z9Jz
+         8kaaVmdJE+FKCg+8/FGdPLB2wXaNZbivvNu3iu926hFWtTH/lwZBSLjEcJts21jQ2xvc
+         ToKyq9/iBrB3NFeFe6ibu5bephwp9Ubbffz8jZgJymcDCbVq2V3JjGYSk3ABDw65nS90
+         QagkfTnMffzMlDn4Eg747dhjKN6vNyl6ZNdEVTs9DSWlk/5oghjug8JD85JnyWq436CP
+         KL/w==
+X-Gm-Message-State: AOJu0YyU+ARXDcBdesDCjqVHfsUlGTiFBO9x3V8VuubXjeJ/n2Sm2ZqP
+        2zzxCNtBnPde83XFo+Qx82YRjDgQt2oqnSdXeKo=
+X-Google-Smtp-Source: AGHT+IHbI8AEVfZgjWAuFmaHbINmEu1PodGQn4DmqAe0JmUDJQegpyqGsXCPxuEX3wPXFT17AD3F2w==
+X-Received: by 2002:a05:6a20:6a27:b0:152:6b63:f1e7 with SMTP id p39-20020a056a206a2700b001526b63f1e7mr6948476pzk.1.1695314946547;
+        Thu, 21 Sep 2023 09:49:06 -0700 (PDT)
+Received: from ziepe.ca ([206.223.160.26])
+        by smtp.gmail.com with ESMTPSA id l21-20020a62be15000000b0068fe5a5a566sm1647037pff.142.2023.09.21.09.49.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 21 Sep 2023 09:49:05 -0700 (PDT)
+Received: from jgg by wakko with local (Exim 4.95)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1qjMrQ-000SGu-5J;
+        Thu, 21 Sep 2023 13:49:04 -0300
+Date:   Thu, 21 Sep 2023 13:49:04 -0300
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Maxim Samoylov <max7255@meta.com>
+Cc:     Leon Romanovsky <leon@kernel.org>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
+        Christian Benvenuti <benve@cisco.com>,
+        Bernard Metzler <bmt@zurich.ibm.com>,
+        Vadim Fedorenko <vadim.fedorenko@linux.dev>
+Subject: Re: [PATCH] IB: fix memlock limit handling code
+Message-ID: <20230921164904.GW13795@ziepe.ca>
+References: <20230915200353.1238097-1-max7255@meta.com>
+ <20230918120932.GC103601@unreal>
+ <f83fcbe0-308c-4485-ad96-ede52608e141@meta.com>
 MIME-Version: 1.0
-Subject: Re: [bug report] blktests srp/002 hang
-To:     Bob Pearson <rpearsonhpe@gmail.com>,
-        Rain River <rain.1986.08.12@gmail.com>,
-        Daisuke Matsuda <matsuda-daisuke@fujitsu.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        "leon@kernel.org" <leon@kernel.org>
-Cc:     Bart Van Assche <bvanassche@acm.org>,
-        Shinichiro Kawasaki <shinichiro.kawasaki@wdc.com>,
-        RDMA mailing list <linux-rdma@vger.kernel.org>,
-        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>
-References: <dsg6rd66tyiei32zaxs6ddv5ebefr5vtxjwz6d2ewqrcwisogl@ge7jzan7dg5u>
- <8be8f611-e413-9584-7c2e-2c1abf4147be@acm.org>
- <plrbpd5gg32uaferhjj6ibkt4wqybu3v3y32f4rlhvsruc7cu4@2pgrj2542da2>
- <18a3ae8c-145b-4c7f-a8f5-67840feeb98c@acm.org>
- <ab93655f-c187-fdab-6c67-3bfb2d9aa516@gmail.com>
- <9dd0aa0a-d696-a95b-095b-f54d6d31a6ab@linux.dev>
- <d3205633-0cd2-f87e-1c40-21b8172b6da3@linux.dev>
- <nqdsj764d7e56kxevcwnq6qoi6ptuu3bi6ntfakb55vm3toda7@eo3ffzzqrot7>
- <5a4efe6f-d8c6-84ce-377e-eb64bcad706c@linux.dev>
- <f50beb15-2cab-dfb9-3b58-ea66e7f114a6@gmail.com>
- <fe61fdc5-ca8f-2efc-975d-46b99d66c6f5@linux.dev>
- <afc98035-1bb8-f75c-451a-8e3e39fb74aa@gmail.com>
- <6fc3b524-af7d-43ce-aa05-5c44ec850b9b@acm.org>
- <b728f4db-bafa-dd0f-e288-7e3f56e6eae8@gmail.com>
- <02d7cbf2-b17b-488a-b6e9-ebb728b51c94@acm.org>
- <b80dae29-3a7c-f039-bc35-08c6e9f91197@gmail.com>
- <CAJr_XRAy4EHueAP-10=WSEa46j2aQBArdzYsq7OqSqR93Ue+ug@mail.gmail.com>
- <8aff9124-85c0-8e3b-dc35-1017b1540037@gmail.com>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From:   Zhu Yanjun <yanjun.zhu@linux.dev>
-In-Reply-To: <8aff9124-85c0-8e3b-dc35-1017b1540037@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <f83fcbe0-308c-4485-ad96-ede52608e141@meta.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
+On Thu, Sep 21, 2023 at 04:31:44PM +0000, Maxim Samoylov wrote:
+> Furthermore, it also bumps per-mm VmPin counter over and over without
+> increasing any other memory usage metric,
+> which is probably misguiding from the memory accounting perspective.
 
-在 2023/9/21 22:39, Bob Pearson 写道:
-> On 9/21/23 09:23, Rain River wrote:
->> On Thu, Sep 21, 2023 at 2:53 AM Bob Pearson <rpearsonhpe@gmail.com> wrote:
->>> On 9/20/23 12:22, Bart Van Assche wrote:
->>>> On 9/20/23 10:18, Bob Pearson wrote:
->>>>> But I have also seen the same behavior in the siw driver which is
->>>>> completely independent.
->>>> Hmm ... I haven't seen any hangs yet with the siw driver.
->>> I was on Ubuntu 6-9 months ago. Currently I don't see hangs on either.
->>>>> As mentioned above at the moment Ubuntu is failing rarely. But it used to fail reliably (srp/002 about 75% of the time and srp/011 about 99% of the time.) There haven't been any changes to rxe to explain this.
->>>> I think that Zhu mentioned commit 9b4b7c1f9f54 ("RDMA/rxe: Add workqueue
->>>> support for rxe tasks")?
->>> That change happened well before the failures went away. I was seeing failures at the same rate with tasklets
->>> and wqs. But after updating Ubuntu and the kernel at some point they all went away.
->> I made tests on the latest Ubuntu with the latest kernel without the
->> commit 9b4b7c1f9f54 ("RDMA/rxe: Add workqueue support for rxe tasks").
->> The latest kernel is v6.6-rc2, the commit 9b4b7c1f9f54 ("RDMA/rxe: Add
->> workqueue support for rxe tasks") is reverted.
->> I made blktest tests for about 30 times, this problem does not occur.
->>
->> So I confirm that without this commit, this hang problem does not
->> occur on Ubuntu without the commit 9b4b7c1f9f54 ("RDMA/rxe: Add
->> workqueue support for rxe tasks").
->>
->> Nanthan
->>
->>>> Thanks,
->>>>
->>>> Bart.
->>>
-> This commit is very important for several reasons. It is needed for the ODP implementation
-> that is in the works from Daisuke Matsuda and also for QP scaling of performance. The work
-> queue implementation scales well with increasing qp number while the tasklet implementation
-> does not. This is critical for the drivers use in large scale storage applications. So, if
-> there is a bug in the work queue implementation it needs to be fixed not reverted.
->
-> I am still hoping that someone will diagnose what is causing the ULPs to hang in terms of
-> something missing causing it to wait.
+pinned memory accounting doesn't really work sanely in linux. There
+was a whole dicussion about it that never concluded.
 
-Hi, Bob
-
-
-You submitted this commit 9b4b7c1f9f54 ("RDMA/rxe: Add workqueue support 
-for rxe tasks").
-
-You should be very familiar with this commit.
-
-And this commit causes regression.
-
-So you should delved into the source code to find the root cause, then 
-fix it.
-
-
-Jason && Leon, please comment on this.
-
-
-Best Regards,
-
-Zhu Yanjun
-
->
-> Bob
+Jason
