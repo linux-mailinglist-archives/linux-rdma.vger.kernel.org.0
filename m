@@ -2,78 +2,89 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A42E7AAF80
-	for <lists+linux-rdma@lfdr.de>; Fri, 22 Sep 2023 12:30:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 224F27AB032
+	for <lists+linux-rdma@lfdr.de>; Fri, 22 Sep 2023 13:06:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232498AbjIVKaF (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 22 Sep 2023 06:30:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44902 "EHLO
+        id S233479AbjIVLG4 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 22 Sep 2023 07:06:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57398 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233355AbjIVKaD (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 22 Sep 2023 06:30:03 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6CFBE195;
-        Fri, 22 Sep 2023 03:29:56 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 87E39C433C9;
-        Fri, 22 Sep 2023 10:29:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1695378596;
-        bh=/i1zbZoU5NiY0diHT4erelvkPZqClSw6bwMm0Z9t+t8=;
-        h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-        b=IADJUGviHeBuvuTH9yNkK952Wx+KotbLb4IKe11tLF6OGjsTpcJtU/9jQ/B824Xhu
-         lgcWVGiMsYgB5YJq9W/BdxtiD1xYtR5rm9QX4q2/z+nyq8KKN6V6xBGd0e9G+LnssH
-         6EyEB/dK81Jz4+0JN6PTrreZu4tQUpZA7weSrr9XP0sKy+uraBJa80sykqa1q0Uwy0
-         1c8Nm9RYjTCyr69bwWOMniICTYxAi49F2aUBnvYF2IUnqv5wHcA9JZ0LVYHmCjQfXZ
-         Mf+kRkUX3Z/uVDlR8wIpuMRWrLJFZwEfj3HMsw7QVQakaZlvBdc/WRQFa8aswQAw6H
-         K2x+Z4Lcy27bw==
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Justin Stitt <justinstitt@google.com>
-Cc:     linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-hardening@vger.kernel.org
-In-Reply-To: =?utf-8?q?=3C20230921-strncpy-drivers-infiniband-hw-qib-qib=5Fi?=
- =?utf-8?q?ba7322-c-v1-1-373727763f5b=40google=2Ecom=3E?=
-References: =?utf-8?q?=3C20230921-strncpy-drivers-infiniband-hw-qib-qib=5Fib?=
- =?utf-8?q?a7322-c-v1-1-373727763f5b=40google=2Ecom=3E?=
-Subject: Re: [PATCH] IB/qib: replace deprecated strncpy
-Message-Id: <169537859190.3339131.7912668348878588064.b4-ty@kernel.org>
-Date:   Fri, 22 Sep 2023 13:29:51 +0300
+        with ESMTP id S233331AbjIVLGz (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 22 Sep 2023 07:06:55 -0400
+Received: from wp530.webpack.hosteurope.de (wp530.webpack.hosteurope.de [80.237.130.52])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A452CA;
+        Fri, 22 Sep 2023 04:06:48 -0700 (PDT)
+Received: from [2a02:8108:8980:2478:8cde:aa2c:f324:937e]; authenticated
+        by wp530.webpack.hosteurope.de running ExIM with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        id 1qjdzi-0006uf-UB; Fri, 22 Sep 2023 13:06:46 +0200
+Message-ID: <e8b76fae-780a-470e-8ec4-c6b650793d10@leemhuis.info>
+Date:   Fri, 22 Sep 2023 13:06:46 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Mailer: b4 0.12-dev-a055d
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Reply-To: Linux regressions mailing list <regressions@lists.linux.dev>
+Subject: Re: [bug report] blktests srp/002 hang
+Content-Language: en-US, de-DE
+To:     "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>
+Cc:     Linux kernel regressions list <regressions@lists.linux.dev>
+References: <dsg6rd66tyiei32zaxs6ddv5ebefr5vtxjwz6d2ewqrcwisogl@ge7jzan7dg5u>
+From:   "Linux regression tracking #adding (Thorsten Leemhuis)" 
+        <regressions@leemhuis.info>
+In-Reply-To: <dsg6rd66tyiei32zaxs6ddv5ebefr5vtxjwz6d2ewqrcwisogl@ge7jzan7dg5u>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-bounce-key: webpack.hosteurope.de;regressions@leemhuis.info;1695380809;0523bf7f;
+X-HE-SMSGID: 1qjdzi-0006uf-UB
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
+[TLDR: I'm adding this report to the list of tracked Linux kernel
+regressions; the text you find below is based on a few templates
+paragraphs you might have encountered already in similar form.
+See link in footer if these mails annoy you.]
 
-On Thu, 21 Sep 2023 07:58:48 +0000, Justin Stitt wrote:
-> `strncpy` is deprecated for use on NUL-terminated destination strings [1]
-> and as such we should prefer more robust and less ambiguous string
-> interfaces.
+On 21.08.23 08:46, Shinichiro Kawasaki wrote:
+> I observed a process hang at the blktests test case srp/002 occasionally, using
+> kernel v6.5-rcX. Kernel reported stall of many kworkers [1]. PID 2757 hanged at
+> inode_sleep_on_writeback(). Other kworkers hanged at __inode_wait_for_writeback.
 > 
-> We know `txselect_list` is expected to be NUL-terminated based on its
-> use in `param_get_string()`:
-> | int param_get_string(char *buffer, const struct kernel_param *kp)
-> | {
-> | 	const struct kparam_string *kps = kp->str;
-> | 	return scnprintf(buffer, PAGE_SIZE, "%s\n", kps->string);
-> | }
+> The hang is recreated in stable manner by repeating the test case srp/002 (from
+> 15 times to 30 times).
 > 
-> [...]
+> I bisected and found the commit 9b4b7c1f9f54 ("RDMA/rxe: Add workqueue support
+> for rxe tasks") looks like the trigger commit. When I revert it from the kernel
+> v6.5-rc7, the hang symptom disappears. I'm not sure how the commit relates to
+> the hang. Comments will be welcomed.
+> […]
 
-Applied, thanks!
+Thanks for the report. To be sure the issue doesn't fall through the
+cracks unnoticed, I'm adding it to regzbot, the Linux kernel regression
+tracking bot:
 
-[1/1] IB/qib: replace deprecated strncpy
-      https://git.kernel.org/rdma/rdma/c/cb7ab7854bc709
+#regzbot ^introduced 9b4b7c1f9f54
+#regzbot title RDMA/rxe: occasionally pocess hang at the blktests test
+case srp/002
+#regzbot ignore-activity
 
-Best regards,
--- 
-Leon Romanovsky <leon@kernel.org>
+This isn't a regression? This issue or a fix for it are already
+discussed somewhere else? It was fixed already? You want to clarify when
+the regression started to happen? Or point out I got the title or
+something else totally wrong? Then just reply and tell me -- ideally
+while also telling regzbot about it, as explained by the page listed in
+the footer of this mail.
+
+Developers: When fixing the issue, remember to add 'Link:' tags pointing
+to the report (the parent of this mail). See page linked in footer for
+details.
+
+Ciao, Thorsten (wearing his 'the Linux kernel's regression tracker' hat)
+--
+Everything you wanna know about Linux kernel regression tracking:
+https://linux-regtracking.leemhuis.info/about/#tldr
+That page also explains what to do if mails like this annoy you.
