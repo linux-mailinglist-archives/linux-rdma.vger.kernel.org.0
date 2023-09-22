@@ -2,174 +2,386 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E40C77AB38E
-	for <lists+linux-rdma@lfdr.de>; Fri, 22 Sep 2023 16:25:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E8EF47AB60B
+	for <lists+linux-rdma@lfdr.de>; Fri, 22 Sep 2023 18:32:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234253AbjIVOZz (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 22 Sep 2023 10:25:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56588 "EHLO
+        id S230029AbjIVQch (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 22 Sep 2023 12:32:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48648 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233368AbjIVOZy (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 22 Sep 2023 10:25:54 -0400
-Received: from NAM10-DM6-obe.outbound.protection.outlook.com (mail-dm6nam10on2097.outbound.protection.outlook.com [40.107.93.97])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 41993C6;
-        Fri, 22 Sep 2023 07:25:47 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=i9DUkVSkNDl5HKSVl6wM+MK9dpG2y4Wdr5Y2gmdo9YlcVIO65vxcS3qwucC9AySzPpp121MGaHtCxK2SjwC25u0gW14LGmW1yfJJexffJyyMXEYICf8ySFR9gHoTFJzdDVqK0p1zuypDeCOdIIRXR0fOA1xLER5gg4yd4YBhAUXtDcghW0TFKiCo+82Co4oqdzmmdSq0dmVJLgmHC4QEPmgr7lOD4lUInGewymVfR2hBzbUizLhKYfZBMYxusa+Aub67v8asdbos8NO7FWO8nY/6InXMJk8izlkYu1H1z6MDp+J1XEJtfFtG6kriuVrYBvbqWQKKSzuuKV9mmBuHGA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=NpX7eimeoLzk7Re1nJAR2pc3RCXMGHpbWAghz1PzXTs=;
- b=OGW4vDt3WeflAHelisu4L/sfvhW6LrQVbsw0SCM/fDRflpYv3uRmUE/pCupZubg/WSvqZWpWYnqi4TJQWpy4gSML3CZdKwTT/v8PKgbtcG78XLe2fZi9QhxYBow+ukvqcSk5cMba6Ll246u2QU72YMrj/RK0dUsukSvbdEBILzUrrlxfnjcrgc677lO2U7FYxizpoJ/2DLUQ9i17Ezo+lbj0p5/rmZf/c7oao7T9Ir8O1udE95ZHJ1CctSg///coPIiAnn9zoq+LIrla2WMclRiQl0w+OhGhSbhksbzU1WUJFzyxtSN7M6fuWfxIzuIA9X/eExgLrvo0/N+WiInNHQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=cornelisnetworks.com; dmarc=pass action=none
- header.from=cornelisnetworks.com; dkim=pass header.d=cornelisnetworks.com;
- arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cornelisnetworks.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=NpX7eimeoLzk7Re1nJAR2pc3RCXMGHpbWAghz1PzXTs=;
- b=DSwnP8yVuvM1JH+A3TdIJDmj6tTX8UDE14IiqtWqg0U22xVqVuM+khqBWR4mfurq7QRi2oa/VSMK5sHCxn7RHM2si3JSj4ULpypEGsXIvPuUZ1S4mkqhSZW6ZufqpxGE1t0LVacwhzDPHjYqP30TdZQEb4i4P2J3tOzfMgYSYnmcgIWBAKcpM6j5eyl+ebYc01h6IOBgLTmWq6NJnRDLBiBiqna5D6SyGN7fRerN5C+9k18/pppzWicvtVtWMjffUCxLGss5EfZNTjS2W57VOoMfoF3PBBlVAaJh/e668zp+8MK0kaByzVshF3Agirv9N2u/7PhQmkImXBbaTrR0cg==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=cornelisnetworks.com;
-Received: from BL0PR01MB4131.prod.exchangelabs.com (2603:10b6:208:42::20) by
- BN0PR01MB6943.prod.exchangelabs.com (2603:10b6:408:16b::19) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.6813.23; Fri, 22 Sep 2023 14:25:44 +0000
-Received: from BL0PR01MB4131.prod.exchangelabs.com
- ([fe80::386c:b0e1:bf68:cf1]) by BL0PR01MB4131.prod.exchangelabs.com
- ([fe80::386c:b0e1:bf68:cf1%6]) with mapi id 15.20.6813.017; Fri, 22 Sep 2023
- 14:25:44 +0000
-Message-ID: <2f4bd46c-664e-4253-8d57-16bd46dd3be8@cornelisnetworks.com>
-Date:   Fri, 22 Sep 2023 09:25:39 -0500
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] IB/hfi1: replace deprecated strncpy
-To:     Leon Romanovsky <leon@kernel.org>,
-        Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Justin Stitt <justinstitt@google.com>
-Cc:     linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-hardening@vger.kernel.org
-References: <20230921-strncpy-drivers-infiniband-hw-hfi1-chip-c-v1-1-37afcf4964d9@google.com>
- <169537858725.3339131.15264681410291677148.b4-ty@kernel.org>
-Content-Language: en-US
-From:   Dean Luick <dean.luick@cornelisnetworks.com>
-In-Reply-To: <169537858725.3339131.15264681410291677148.b4-ty@kernel.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-X-ClientProxiedBy: DS7PR05CA0083.namprd05.prod.outlook.com
- (2603:10b6:8:57::29) To BL0PR01MB4131.prod.exchangelabs.com
- (2603:10b6:208:42::20)
+        with ESMTP id S230396AbjIVQcf (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 22 Sep 2023 12:32:35 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.24])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 509E1122;
+        Fri, 22 Sep 2023 09:32:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1695400349; x=1726936349;
+  h=from:to:cc:subject:date:message-id:reply-to:mime-version:
+   content-transfer-encoding;
+  bh=wsqSBlcmNlstCDEqPVOdELheRmNhoWnLK79tcKk10Pc=;
+  b=Q2HiovDBswsuesrEUSgl+hgIV6YpB/GdcDutRj2P4WFqaX7U+ET5omew
+   m3c4gM+VBzqihvsPyrTI977MPiDYr/xD0C1eZ2/23ENC2o7eZaATO/Fzv
+   FFAz2OTV/kPaVnwzmNOFfQBWfO7wz7Ae3TWNT4kNW/5ikirz4fS4OkqkZ
+   KwLXO6pTeCaKL4U52r6v1/IhJjGA+Ut7R+Jjm+MCjRO4N7ZwM091nHNKR
+   JcQ/EfohlHZLNiNzUYi/HNpTAXyKfc+sVSng3k/oS8tSoPKAWTlImk+jO
+   iNLz17berRmoQQiDLaFmpVB5evsETolcWo7ksNNvTR8FjT0Zxd3/tnb1f
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10841"; a="383627745"
+X-IronPort-AV: E=Sophos;i="6.03,167,1694761200"; 
+   d="scan'208";a="383627745"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Sep 2023 09:32:28 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10841"; a="837809359"
+X-IronPort-AV: E=Sophos;i="6.03,167,1694761200"; 
+   d="scan'208";a="837809359"
+Received: from unknown (HELO fedora.bj.intel.com) ([10.238.154.52])
+  by FMSMGA003.fm.intel.com with ESMTP; 22 Sep 2023 09:32:25 -0700
+From:   Zhu Yanjun <yanjun.zhu@intel.com>
+To:     zyjzyj2000@gmail.com, jgg@ziepe.ca, leon@kernel.org,
+        linux-rdma@vger.kernel.org, rpearsonhpe@gmail.com,
+        matsuda-daisuke@fujitsu.com, bvanassche@acm.org,
+        shinichiro.kawasaki@wdc.com, linux-scsi@vger.kernel.org
+Cc:     Zhu Yanjun <yanjun.zhu@linux.dev>
+Subject: [PATCH 1/1] Revert "RDMA/rxe: Add workqueue support for rxe tasks"
+Date:   Fri, 22 Sep 2023 12:32:31 -0400
+Message-Id: <20230922163231.2237811-1-yanjun.zhu@intel.com>
+X-Mailer: git-send-email 2.40.1
+Reply-To: dsg6rd66tyiei32zaxs6ddv5ebefr5vtxjwz6d2ewqrcwisogl@ge7jzan7dg5u
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: BL0PR01MB4131:EE_|BN0PR01MB6943:EE_
-X-MS-Office365-Filtering-Correlation-Id: 33dc326f-0c99-4fb2-a4a4-08dbbb77ce0e
-X-MS-Exchange-AtpMessageProperties: SA
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: /NV8lURWjbf9BUNDhXerdbm7VrytrRkIxYpFhjEo+LhqNevVdOfoeWFZOnSqoY9z6kYTL/s5BDP8YdCbe6BDgpDNBMO3bW3jkw/q5h9iSX0kVlL+A0iZm1HnosLoMKNLofVmwFknsuWA8p1pNhVBFzbYoGjZbkESbGOAoBZ2uU82+VB4zKsJ6tdxSAyLmIH1GC0UfY06XEIGhAqDrZQ6HxanlTM7R9pqZ26h1uGRJN/roqCj+eiFyBjMhldogntrCen1R1wHwmPadWqGYE3i5fEvfxSGNCbreEx0jRM2YcHJI486fQnLe18Ddw7leyDq09TYUgFw/ZkZv/Ir2St+A3dO4EobWQS0nz0BR/9bYGXHaG9gPb63D5/KC0wU94Xgaxgx8qme4MMoc2wSCKwLr9NmCNXoeVmrg+2v/teqKQyLmaMC8RkP3aja69aeLBMLRnKWfy4Fjxftl7ZNxkWqkHgNjleXTEdyxk3U+QH7ABy6oncPBIhz2thfyOPnCTgaq+k9zIGb7MdpeLE4yj0NQLIz6G67KxnmXGf8zdOGze6S4/r/x3LEloRWygE2WOL3/aILp8i0mK863l+AV9l+TO1t16V5tEW4zavHeOomFpogZWVZE/gquca55WSCP+ji
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL0PR01MB4131.prod.exchangelabs.com;PTR:;CAT:NONE;SFS:(13230031)(39840400004)(136003)(346002)(396003)(366004)(376002)(1800799009)(451199024)(186009)(4326008)(6512007)(6506007)(8936002)(316002)(53546011)(8676002)(31686004)(44832011)(966005)(110136005)(66556008)(66476007)(2906002)(66946007)(45080400002)(2616005)(6486002)(6666004)(478600001)(26005)(41300700001)(38100700002)(31696002)(86362001)(36756003)(5660300002)(156123004)(43740500002);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?VEFTc3NxREdKUFVEai9RNmV6aXFzSWF4VkNKU1BRYlEzcWdFTElyTVRwOG50?=
- =?utf-8?B?dW5kUDVZUlR5dFZMUHExVzh5eFRRZWk1QTJQK0lPRC9lNVZjZlE3MjRTdmVj?=
- =?utf-8?B?YzZEamVZOTIvVDBDa2JRYWtzSStKZlNmTlBpUWtBRkkrNHFqY1lpZmZUb3Ay?=
- =?utf-8?B?Nm5RMjVCRUI0WkxIMjNVRE4xc2liczJxWnZhbVJYdEJBd1p1Q2xjcGlETnVx?=
- =?utf-8?B?b2RzM3hvcm9zcHduYW1OaFBsZXNpVENFazNoN2FlRUVlU3FHRFNuMnpiNFlt?=
- =?utf-8?B?QWVhSXFjOHNSU2hyc09sS04yOStGTG11T01RS1BZdjkvaG0wSHJBQkRmdWV0?=
- =?utf-8?B?SFNsRi8xUG11TStuYUtzc3RFaE5oaHU4a2o2RWhXb0Noc2ZGbE1qME4vaWln?=
- =?utf-8?B?SHA2NmZjL2xadzZrOXZ5bHM0cjRTbUtMZHVnMmxBQ2F1Q1p4S2VSclFLWUZZ?=
- =?utf-8?B?RmE2M3R6bUFvcUxKRHNrRlFiYWhGcU5VSW1hTmRObDhuNmJyWUdYV1B0VU1x?=
- =?utf-8?B?aFd0Q3dmRzB4NlJRSGc3djErVXVTdkRmYURWUWhjbjZPTHNUcDYvR0V4OWVX?=
- =?utf-8?B?eWU4TkZEZ3Z4b1VvNjBadk9PcWFKYTU5NWZGWVJSbm45bm9yTUI2YWF6VlVL?=
- =?utf-8?B?Z2Z2aGo4NUNta1lvTlhDUStJMXZlTDZaM2NnVzFOUWJMZFpvWDNMK3VpamVB?=
- =?utf-8?B?REhoZkJOOGpRZFdPelFhSUNCaUJtY3lLZSt3SlYxK2hzVWM4Z1FwOFdSQkZI?=
- =?utf-8?B?QnJEWG5veXVRUFhnMW9CbWFHdUVyeFRtU2w2YnFEODVtZ1h3UXZTbzNydERm?=
- =?utf-8?B?NjR1TEVSRlJMamxOSWRidm91bWVsU1paTGtxTkRCKzMxd2JpZ1NPWThsemZh?=
- =?utf-8?B?M0lMT2J2cUJ4ZVU2OWVUSkZ0WGg2UEtBRHpla0Mwb2pxbG5rQW40UHN4dFFv?=
- =?utf-8?B?WjJZUk56dUI4VitjNlNqSXg5QVpoR0xyZGJoczVKci9keXl3VGVNMDh1VkZq?=
- =?utf-8?B?RHNyK2VmY2E3MWN5VmRoOEY3cHZsUWFQQ0pjNHJaTW9TbDZQRjFiZ3ZXdW92?=
- =?utf-8?B?RWZlcXlWcHNJd3paUkx5YmhuVWt3RjNSYlc2aHl5eE8yQUJNR0s1dFdNRnJx?=
- =?utf-8?B?UTRjeHdmbldCb2srRkRyV0VrMkpGMXJod3FqVW53WlZxNG1VNWlNQ0xUdGZU?=
- =?utf-8?B?d2ZpM0JNZEROcGQxWDkvOUFaSzMrMm9RQ3FyRzd5NmVMNVM0SGNOYm1DQ1ov?=
- =?utf-8?B?UFJNcmRxT2tTbjBuSVFiZHpUVjZwUkRlandhYzlWM28rRlNlcTNRcVptaUMw?=
- =?utf-8?B?N29RTkU1V2x2elAvWmZkdXlhM212RWJTRjNhcGFzbWJxcE45QTQ5bVViNlIx?=
- =?utf-8?B?U2NSMnBVSmFvSmR5Q2Yzd1BwRHhuVUtjMHpudWxHeGFjNHVIZStNVFFkWTky?=
- =?utf-8?B?ZTRXRW4vMlN1czcva29IemVHdlBmQlQ0ZmN3SjhIY2gySHBoTU1hcjBxZ0lB?=
- =?utf-8?B?MThVallncm1LOTVWU0R1b3NkdVR4SzJ2ay93VWpEdDZseHdOYWxuRWZwQUkx?=
- =?utf-8?B?MS9ucU5zM0Y4OWplUVJ2YzVyR29wVHV6UlNNSWpzTFZIb2x6SlpZVTN4UnZH?=
- =?utf-8?B?ZllPNmtCT04xYVNZdElNMVpDUDc4MGROV1UyRml3QVRXYStsNmlKdjJMb3V1?=
- =?utf-8?B?WER2YmpvMjA5VnFGMWJhMVpYdUJxNXBlS2xsZVNkTUhRVFZyV25icDJwUHFU?=
- =?utf-8?B?VklkQXozN0NaM3ZUTWZVdXo1cW5LYlY5bjF3LzhYa3RHaTlxMGgvZk9lQ2xo?=
- =?utf-8?B?b0M3NkdWeFl6RnkyblJWQ2ZoUkQycmxsTk9QeFd3ZXJJMlhuSktCZ09hd09R?=
- =?utf-8?B?WXFlbVBGZnBUVUlzUGIvbGl0bTlVdFNhRDA5NGVrRUQ5OU9IN0oveE40UFRR?=
- =?utf-8?B?VDBETlNZNDhNTHNFUFYxUlQrQk5VWGJxTkd1YWRWSk14VURGeHN0UHZSLy9N?=
- =?utf-8?B?MHN1cU9xSXpENURJaCtDQ2IvK01sYlJEK0VEU1NXbW80Rm1XRk5UN2lHYlUr?=
- =?utf-8?B?NFVzQXhmL2FHbkhqL0xvUkR2TlQ4dkxuVWorQ1JrSWFCUldJVitISTFWMVc3?=
- =?utf-8?B?aFIzNWp0NzdKNFlBaGY5Qm9haHVadkF4c1F2T3pJMDk3WmdDS004NmYrVGZM?=
- =?utf-8?B?NlE9PQ==?=
-X-OriginatorOrg: cornelisnetworks.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 33dc326f-0c99-4fb2-a4a4-08dbbb77ce0e
-X-MS-Exchange-CrossTenant-AuthSource: BL0PR01MB4131.prod.exchangelabs.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 22 Sep 2023 14:25:44.0696
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4dbdb7da-74ee-4b45-8747-ef5ce5ebe68a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: KR9gIQHsX7DgiC1sT44U1FY6hGWVffIeN1BLOKCv/XyQeGpGgoqQ9/ubSNIpfSMl/D0/eiawuae5NFLQoZfQjnqRXc67glTcsCRVGVF/duU=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN0PR01MB6943
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,URIBL_BLOCKED autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 9/22/2023 5:29 AM, Leon Romanovsky wrote:
->
-> On Thu, 21 Sep 2023 07:17:47 +0000, Justin Stitt wrote:
->> `strncpy` is deprecated for use on NUL-terminated destination strings
->> [1] and as such we should prefer more robust and less ambiguous string
->> interfaces.
->>
->> We see that `buf` is expected to be NUL-terminated based on it's use
->> within a trace event wherein `is_misc_err_name` and `is_various_name`
->> map to `is_name` through `is_table`:
->> | TRACE_EVENT(hfi1_interrupt,
->> |        TP_PROTO(struct hfi1_devdata *dd, const struct is_table *is_ent=
-ry,
->> |                 int src),
->> |        TP_ARGS(dd, is_entry, src),
->> |        TP_STRUCT__entry(DD_DEV_ENTRY(dd)
->> |                         __array(char, buf, 64)
->> |                         __field(int, src)
->> |                         ),
->> |        TP_fast_assign(DD_DEV_ASSIGN(dd);
->> |                       is_entry->is_name(__entry->buf, 64,
->> |                                         src - is_entry->start);
->> |                       __entry->src =3D src;
->> |                       ),
->> |        TP_printk("[%s] source: %s [%d]", __get_str(dev), __entry->buf,
->> |                  __entry->src)
->> | );
->>
->> [...]
->
-> Applied, thanks!
+From: Zhu Yanjun <yanjun.zhu@linux.dev>
 
-It is unfortunate that this and the qib patch was accepted so quickly.  The=
- replacement is functionally correct.  However, I was going to suggest usin=
-g strscpy() since the return value is never looked at and all use cases onl=
-y require a NUL-terminated string.  Padding is not needed.
+This reverts commit 9b4b7c1f9f54120940e243251e2b1407767b3381.
 
->
-> [1/1] IB/hfi1: replace deprecated strncpy
->       https://git.kernel.org/rdma/rdma/c/c2d0c5b28a77d5
->
-> Best regards,
+This commit replaces tasklet with workqueue. But this results
+in occasionally pocess hang at the blktests test case srp/002.
+After the discussion in the link[1], this commit is reverted.
 
-External recipient
+Link: https://lore.kernel.org/linux-rdma/e8b76fae-780a-470e-8ec4-c6b650793d10@leemhuis.info/T/#t [1]
+Signed-off-by: Zhu Yanjun <yanjun.zhu@linux.dev>
+CC: rpearsonhpe@gmail.com
+CC: matsuda-daisuke@fujitsu.com
+CC: bvanassche@acm.org
+CC: shinichiro.kawasaki@wdc.com
+---
+ drivers/infiniband/sw/rxe/rxe.c      |   9 +--
+ drivers/infiniband/sw/rxe/rxe_task.c | 110 ++++++++++++---------------
+ drivers/infiniband/sw/rxe/rxe_task.h |   6 +-
+ 3 files changed, 49 insertions(+), 76 deletions(-)
+
+diff --git a/drivers/infiniband/sw/rxe/rxe.c b/drivers/infiniband/sw/rxe/rxe.c
+index 54c723a6edda..7a7e713de52d 100644
+--- a/drivers/infiniband/sw/rxe/rxe.c
++++ b/drivers/infiniband/sw/rxe/rxe.c
+@@ -212,15 +212,9 @@ static int __init rxe_module_init(void)
+ {
+ 	int err;
+ 
+-	err = rxe_alloc_wq();
+-	if (err)
+-		return err;
+-
+ 	err = rxe_net_init();
+-	if (err) {
+-		rxe_destroy_wq();
++	if (err)
+ 		return err;
+-	}
+ 
+ 	rdma_link_register(&rxe_link_ops);
+ 	pr_info("loaded\n");
+@@ -232,7 +226,6 @@ static void __exit rxe_module_exit(void)
+ 	rdma_link_unregister(&rxe_link_ops);
+ 	ib_unregister_driver(RDMA_DRIVER_RXE);
+ 	rxe_net_exit();
+-	rxe_destroy_wq();
+ 
+ 	pr_info("unloaded\n");
+ }
+diff --git a/drivers/infiniband/sw/rxe/rxe_task.c b/drivers/infiniband/sw/rxe/rxe_task.c
+index 1501120d4f52..fb9a6bc8e620 100644
+--- a/drivers/infiniband/sw/rxe/rxe_task.c
++++ b/drivers/infiniband/sw/rxe/rxe_task.c
+@@ -6,24 +6,8 @@
+ 
+ #include "rxe.h"
+ 
+-static struct workqueue_struct *rxe_wq;
+-
+-int rxe_alloc_wq(void)
+-{
+-	rxe_wq = alloc_workqueue("rxe_wq", WQ_UNBOUND, WQ_MAX_ACTIVE);
+-	if (!rxe_wq)
+-		return -ENOMEM;
+-
+-	return 0;
+-}
+-
+-void rxe_destroy_wq(void)
+-{
+-	destroy_workqueue(rxe_wq);
+-}
+-
+ /* Check if task is idle i.e. not running, not scheduled in
+- * work queue and not draining. If so move to busy to
++ * tasklet queue and not draining. If so move to busy to
+  * reserve a slot in do_task() by setting to busy and taking
+  * a qp reference to cover the gap from now until the task finishes.
+  * state will move out of busy if task returns a non zero value
+@@ -37,6 +21,9 @@ static bool __reserve_if_idle(struct rxe_task *task)
+ {
+ 	WARN_ON(rxe_read(task->qp) <= 0);
+ 
++	if (task->tasklet.state & BIT(TASKLET_STATE_SCHED))
++		return false;
++
+ 	if (task->state == TASK_STATE_IDLE) {
+ 		rxe_get(task->qp);
+ 		task->state = TASK_STATE_BUSY;
+@@ -51,7 +38,7 @@ static bool __reserve_if_idle(struct rxe_task *task)
+ }
+ 
+ /* check if task is idle or drained and not currently
+- * scheduled in the work queue. This routine is
++ * scheduled in the tasklet queue. This routine is
+  * called by rxe_cleanup_task or rxe_disable_task to
+  * see if the queue is empty.
+  * Context: caller should hold task->lock.
+@@ -59,7 +46,7 @@ static bool __reserve_if_idle(struct rxe_task *task)
+  */
+ static bool __is_done(struct rxe_task *task)
+ {
+-	if (work_pending(&task->work))
++	if (task->tasklet.state & BIT(TASKLET_STATE_SCHED))
+ 		return false;
+ 
+ 	if (task->state == TASK_STATE_IDLE ||
+@@ -90,23 +77,23 @@ static bool is_done(struct rxe_task *task)
+  * schedules the task. They must call __reserve_if_idle to
+  * move the task to busy before calling or scheduling.
+  * The task can also be moved to drained or invalid
+- * by calls to rxe_cleanup_task or rxe_disable_task.
++ * by calls to rxe-cleanup_task or rxe_disable_task.
+  * In that case tasks which get here are not executed but
+  * just flushed. The tasks are designed to look to see if
+- * there is work to do and then do part of it before returning
++ * there is work to do and do part of it before returning
+  * here with a return value of zero until all the work
+- * has been consumed then it returns a non-zero value.
++ * has been consumed then it retuens a non-zero value.
+  * The number of times the task can be run is limited by
+  * max iterations so one task cannot hold the cpu forever.
+- * If the limit is hit and work remains the task is rescheduled.
+  */
+-static void do_task(struct rxe_task *task)
++static void do_task(struct tasklet_struct *t)
+ {
++	int cont;
++	int ret;
++	struct rxe_task *task = from_tasklet(task, t, tasklet);
+ 	unsigned int iterations;
+ 	unsigned long flags;
+ 	int resched = 0;
+-	int cont;
+-	int ret;
+ 
+ 	WARN_ON(rxe_read(task->qp) <= 0);
+ 
+@@ -128,22 +115,25 @@ static void do_task(struct rxe_task *task)
+ 		} while (ret == 0 && iterations-- > 0);
+ 
+ 		spin_lock_irqsave(&task->lock, flags);
+-		/* we're not done yet but we ran out of iterations.
+-		 * yield the cpu and reschedule the task
+-		 */
+-		if (!ret) {
+-			task->state = TASK_STATE_IDLE;
+-			resched = 1;
+-			goto exit;
+-		}
+-
+ 		switch (task->state) {
+ 		case TASK_STATE_BUSY:
+-			task->state = TASK_STATE_IDLE;
++			if (ret) {
++				task->state = TASK_STATE_IDLE;
++			} else {
++				/* This can happen if the client
++				 * can add work faster than the
++				 * tasklet can finish it.
++				 * Reschedule the tasklet and exit
++				 * the loop to give up the cpu
++				 */
++				task->state = TASK_STATE_IDLE;
++				resched = 1;
++			}
+ 			break;
+ 
+-		/* someone tried to schedule the task while we
+-		 * were running, keep going
++		/* someone tried to run the task since the last time we called
++		 * func, so we will call one more time regardless of the
++		 * return value
+ 		 */
+ 		case TASK_STATE_ARMED:
+ 			task->state = TASK_STATE_BUSY;
+@@ -151,24 +141,22 @@ static void do_task(struct rxe_task *task)
+ 			break;
+ 
+ 		case TASK_STATE_DRAINING:
+-			task->state = TASK_STATE_DRAINED;
++			if (ret)
++				task->state = TASK_STATE_DRAINED;
++			else
++				cont = 1;
+ 			break;
+ 
+ 		default:
+ 			WARN_ON(1);
+-			rxe_dbg_qp(task->qp, "unexpected task state = %d",
+-				   task->state);
+-			task->state = TASK_STATE_IDLE;
++			rxe_info_qp(task->qp, "unexpected task state = %d", task->state);
+ 		}
+ 
+-exit:
+ 		if (!cont) {
+ 			task->num_done++;
+ 			if (WARN_ON(task->num_done != task->num_sched))
+-				rxe_dbg_qp(
+-					task->qp,
+-					"%ld tasks scheduled, %ld tasks done",
+-					task->num_sched, task->num_done);
++				rxe_err_qp(task->qp, "%ld tasks scheduled, %ld tasks done",
++					   task->num_sched, task->num_done);
+ 		}
+ 		spin_unlock_irqrestore(&task->lock, flags);
+ 	} while (cont);
+@@ -181,12 +169,6 @@ static void do_task(struct rxe_task *task)
+ 	rxe_put(task->qp);
+ }
+ 
+-/* wrapper around do_task to fix argument for work queue */
+-static void do_work(struct work_struct *work)
+-{
+-	do_task(container_of(work, struct rxe_task, work));
+-}
+-
+ int rxe_init_task(struct rxe_task *task, struct rxe_qp *qp,
+ 		  int (*func)(struct rxe_qp *))
+ {
+@@ -194,9 +176,11 @@ int rxe_init_task(struct rxe_task *task, struct rxe_qp *qp,
+ 
+ 	task->qp = qp;
+ 	task->func = func;
++
++	tasklet_setup(&task->tasklet, do_task);
++
+ 	task->state = TASK_STATE_IDLE;
+ 	spin_lock_init(&task->lock);
+-	INIT_WORK(&task->work, do_work);
+ 
+ 	return 0;
+ }
+@@ -229,6 +213,8 @@ void rxe_cleanup_task(struct rxe_task *task)
+ 	while (!is_done(task))
+ 		cond_resched();
+ 
++	tasklet_kill(&task->tasklet);
++
+ 	spin_lock_irqsave(&task->lock, flags);
+ 	task->state = TASK_STATE_INVALID;
+ 	spin_unlock_irqrestore(&task->lock, flags);
+@@ -240,7 +226,7 @@ void rxe_cleanup_task(struct rxe_task *task)
+ void rxe_run_task(struct rxe_task *task)
+ {
+ 	unsigned long flags;
+-	bool run;
++	int run;
+ 
+ 	WARN_ON(rxe_read(task->qp) <= 0);
+ 
+@@ -249,11 +235,11 @@ void rxe_run_task(struct rxe_task *task)
+ 	spin_unlock_irqrestore(&task->lock, flags);
+ 
+ 	if (run)
+-		do_task(task);
++		do_task(&task->tasklet);
+ }
+ 
+-/* schedule the task to run later as a work queue entry.
+- * the queue_work call can be called holding
++/* schedule the task to run later as a tasklet.
++ * the tasklet)schedule call can be called holding
+  * the lock.
+  */
+ void rxe_sched_task(struct rxe_task *task)
+@@ -264,7 +250,7 @@ void rxe_sched_task(struct rxe_task *task)
+ 
+ 	spin_lock_irqsave(&task->lock, flags);
+ 	if (__reserve_if_idle(task))
+-		queue_work(rxe_wq, &task->work);
++		tasklet_schedule(&task->tasklet);
+ 	spin_unlock_irqrestore(&task->lock, flags);
+ }
+ 
+@@ -291,9 +277,7 @@ void rxe_disable_task(struct rxe_task *task)
+ 	while (!is_done(task))
+ 		cond_resched();
+ 
+-	spin_lock_irqsave(&task->lock, flags);
+-	task->state = TASK_STATE_DRAINED;
+-	spin_unlock_irqrestore(&task->lock, flags);
++	tasklet_disable(&task->tasklet);
+ }
+ 
+ void rxe_enable_task(struct rxe_task *task)
+@@ -307,7 +291,7 @@ void rxe_enable_task(struct rxe_task *task)
+ 		spin_unlock_irqrestore(&task->lock, flags);
+ 		return;
+ 	}
+-
+ 	task->state = TASK_STATE_IDLE;
++	tasklet_enable(&task->tasklet);
+ 	spin_unlock_irqrestore(&task->lock, flags);
+ }
+diff --git a/drivers/infiniband/sw/rxe/rxe_task.h b/drivers/infiniband/sw/rxe/rxe_task.h
+index a63e258b3d66..facb7c8e3729 100644
+--- a/drivers/infiniband/sw/rxe/rxe_task.h
++++ b/drivers/infiniband/sw/rxe/rxe_task.h
+@@ -22,7 +22,7 @@ enum {
+  * called again.
+  */
+ struct rxe_task {
+-	struct work_struct	work;
++	struct tasklet_struct	tasklet;
+ 	int			state;
+ 	spinlock_t		lock;
+ 	struct rxe_qp		*qp;
+@@ -32,10 +32,6 @@ struct rxe_task {
+ 	long			num_done;
+ };
+ 
+-int rxe_alloc_wq(void);
+-
+-void rxe_destroy_wq(void);
+-
+ /*
+  * init rxe_task structure
+  *	qp  => parameter to pass to func
+-- 
+2.40.1
+
