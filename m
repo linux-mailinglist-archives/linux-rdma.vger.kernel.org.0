@@ -2,164 +2,182 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E81B27AB815
-	for <lists+linux-rdma@lfdr.de>; Fri, 22 Sep 2023 19:50:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 089F47AB8EB
+	for <lists+linux-rdma@lfdr.de>; Fri, 22 Sep 2023 20:14:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233203AbjIVRuD (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 22 Sep 2023 13:50:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34652 "EHLO
+        id S229932AbjIVSOP (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 22 Sep 2023 14:14:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35840 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233225AbjIVRt4 (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 22 Sep 2023 13:49:56 -0400
-Received: from omta036.useast.a.cloudfilter.net (omta036.useast.a.cloudfilter.net [44.202.169.35])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A4E7199
-        for <linux-rdma@vger.kernel.org>; Fri, 22 Sep 2023 10:49:49 -0700 (PDT)
-Received: from eig-obgw-6003a.ext.cloudfilter.net ([10.0.30.151])
-        by cmsmtp with ESMTP
-        id jjUlqYGeCDKaKjkHlqDWLG; Fri, 22 Sep 2023 17:49:49 +0000
-Received: from gator4166.hostgator.com ([108.167.133.22])
-        by cmsmtp with ESMTPS
-        id jkHkqXwYSjTdYjkHkqi1yQ; Fri, 22 Sep 2023 17:49:48 +0000
-X-Authority-Analysis: v=2.4 cv=FJgIesks c=1 sm=1 tr=0 ts=650dd3bc
- a=1YbLdUo/zbTtOZ3uB5T3HA==:117 a=P7XfKmiOJ4/qXqHZrN7ymg==:17
- a=OWjo9vPv0XrRhIrVQ50Ab3nP57M=:19 a=dLZJa+xiwSxG16/P+YVxDGlgEgI=:19
- a=IkcTkHD0fZMA:10 a=zNV7Rl7Rt7sA:10 a=wYkD_t78qR0A:10 a=NEAV23lmAAAA:8
- a=J1Y8HTJGAAAA:8 a=VwQbUJbxAAAA:8 a=1XWaLZrsAAAA:8 a=cm27Pg_UAAAA:8
- a=e5xG7rUhXx-5Dd8OgBAA:9 a=QEXdDO2ut3YA:10 a=y1Q9-5lHfBjTkpIzbSAN:22
- a=AjGcO6oz07-iQ99wixmX:22 a=xmb-EsYY8bH0VWELuYED:22
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=embeddedor.com; s=default; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:Message-ID:Sender
-        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
-        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=71wuTBueWZAsw5Nv2J92OF9IxO/5J5d8n1IYa3AcwDQ=; b=sXOt9XzZabxT+1P2H/GRHGe1Rc
-        WbH0iwTO0N0TYMZ4HxF9EnOlBI0X6kBtalq4UgLcTzS82C1OfcfpsgA530jk25h+vlq4zVmGiFide
-        54Q9XuRULvnVkOCe9i8hnBU+/cmPCvyJnu/Qa0EEJgb47ZwExGP/nzYX9JPoysdAytm8jS1bgPUp8
-        LLeWRwgEbNq8aCupwQWFGoBTpitPuv9glJVfTZ6FEVduSXKDdXSnz4w+w+qsGW6XGV07GhdxCreIB
-        1BFZgDpGum5rMuOwGfNoSNEf4yqN/VrBTcJ09fZ0iztzaCW/izRpjSGkk8cfTChzAdWVjF5x4zEmW
-        ijhhX6ag==;
-Received: from [94.239.20.48] (port=37230 helo=[192.168.1.98])
-        by gator4166.hostgator.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.96)
-        (envelope-from <gustavo@embeddedor.com>)
-        id 1qjkHe-004NOP-25;
-        Fri, 22 Sep 2023 12:49:42 -0500
-Message-ID: <3bc23613-d1d0-5a05-3057-86933b2c844a@embeddedor.com>
-Date:   Fri, 22 Sep 2023 19:50:39 -0600
+        with ESMTP id S229605AbjIVSOP (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 22 Sep 2023 14:14:15 -0400
+Received: from mail-ot1-x335.google.com (mail-ot1-x335.google.com [IPv6:2607:f8b0:4864:20::335])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 132F69F;
+        Fri, 22 Sep 2023 11:14:09 -0700 (PDT)
+Received: by mail-ot1-x335.google.com with SMTP id 46e09a7af769-6c0d6fef60cso1525035a34.1;
+        Fri, 22 Sep 2023 11:14:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1695406448; x=1696011248; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=9lZCZONWwJtY8CIrPX1J7RTlYuqMPAtDTIWjR4/v6hU=;
+        b=LTxKu0TSplBj+1acLVx/HbyVBEcpwwcQK02ZZTiLc8rB3qvJs9gVMz3kwJ/uOebVYy
+         kZ5uyo2r0nMwN6b0z9ENfJ+nYWFoqlZOnjBQoim06C8v/Yho3ntj+yIG6deRaH6QaldC
+         8HtwMV14vSEARkuCC41Ndl7i7Cg0eXui+rwDqM/u9a+0NKGoeKGFiGno38aIih9MY7gW
+         IMziCiCjuJEJn5gCIkPFELO85jADJluIz9W+Al8EsmjxY1V2ZeihAxh0O/Dx5agxe0Qe
+         EkVDEDfEpZjbtoOqUIhdQ7VQRkkj37P+bCpy/i+jISRtyKhkJtUE+2vHVHsjsKn5a8Fh
+         x63g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695406448; x=1696011248;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=9lZCZONWwJtY8CIrPX1J7RTlYuqMPAtDTIWjR4/v6hU=;
+        b=HZnRvxd2SAyp2D459Sgjj3VsKbzeIZ1uVO/OmeWg5uyr6EkgDKZWF/NkMJx8WKgcxA
+         K+jm7dHH9wD87zcWUGiecnttgsl9g4aQctReK1s6/kJL3F09dT5Oeq9MWR7QgU1GNK11
+         Qlz12QBhCsapy3gI9zEOFh0lzyTOBAatINBfmHq1L3XXkQOo8Sr5Qt84HcmnlaVXmurD
+         AZ76ciOE+UmxyLJ5ThdRfwlNF2EsmG+CTLXiVAxvwb7BmFepNj97zfxToRXlZ/eKwQFd
+         ZysHqfUtt/iOac+y7CaH8yk8K843g93ceJ4LjEA4Eldxe7SQ7bkZPWIxSHb93YtfT/i1
+         ljOw==
+X-Gm-Message-State: AOJu0YzjALAnFHzxRiDBbYgs4nK9YB+IAynXBUEN4rp4ZbE4KJTJF8Go
+        jIf7gKKDXbH8Q1rTp6spdJQ=
+X-Google-Smtp-Source: AGHT+IEIXpwBR7K8/nunP75X6ifYAZMsmYFDNphalBrwPipMIArMBY9pSY1JDRvIbO9GVXzWuFl0og==
+X-Received: by 2002:a05:6830:124c:b0:6bd:cf64:d105 with SMTP id s12-20020a056830124c00b006bdcf64d105mr521878otp.12.1695406448231;
+        Fri, 22 Sep 2023 11:14:08 -0700 (PDT)
+Received: from ?IPV6:2603:8081:1405:679b:10c2:687c:3123:14d1? (2603-8081-1405-679b-10c2-687c-3123-14d1.res6.spectrum.com. [2603:8081:1405:679b:10c2:687c:3123:14d1])
+        by smtp.gmail.com with ESMTPSA id q19-20020a9d6653000000b006b753685cc5sm852523otm.79.2023.09.22.11.14.07
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 22 Sep 2023 11:14:07 -0700 (PDT)
+Message-ID: <4e7aac82-f006-aaa7-6769-d1c9691a0cec@gmail.com>
+Date:   Fri, 22 Sep 2023 13:14:06 -0500
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
  Thunderbird/102.15.1
-Subject: Re: [PATCH 02/14] ipv4/igmp: Annotate struct ip_sf_socklist with
- __counted_by
+Subject: Re: [bug report] blktests srp/002 hang
+To:     Zhu Yanjun <yanjun.zhu@linux.dev>,
+        Rain River <rain.1986.08.12@gmail.com>,
+        Daisuke Matsuda <matsuda-daisuke@fujitsu.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        "leon@kernel.org" <leon@kernel.org>
+Cc:     Bart Van Assche <bvanassche@acm.org>,
+        Shinichiro Kawasaki <shinichiro.kawasaki@wdc.com>,
+        RDMA mailing list <linux-rdma@vger.kernel.org>,
+        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>
+References: <dsg6rd66tyiei32zaxs6ddv5ebefr5vtxjwz6d2ewqrcwisogl@ge7jzan7dg5u>
+ <plrbpd5gg32uaferhjj6ibkt4wqybu3v3y32f4rlhvsruc7cu4@2pgrj2542da2>
+ <18a3ae8c-145b-4c7f-a8f5-67840feeb98c@acm.org>
+ <ab93655f-c187-fdab-6c67-3bfb2d9aa516@gmail.com>
+ <9dd0aa0a-d696-a95b-095b-f54d6d31a6ab@linux.dev>
+ <d3205633-0cd2-f87e-1c40-21b8172b6da3@linux.dev>
+ <nqdsj764d7e56kxevcwnq6qoi6ptuu3bi6ntfakb55vm3toda7@eo3ffzzqrot7>
+ <5a4efe6f-d8c6-84ce-377e-eb64bcad706c@linux.dev>
+ <f50beb15-2cab-dfb9-3b58-ea66e7f114a6@gmail.com>
+ <fe61fdc5-ca8f-2efc-975d-46b99d66c6f5@linux.dev>
+ <afc98035-1bb8-f75c-451a-8e3e39fb74aa@gmail.com>
+ <6fc3b524-af7d-43ce-aa05-5c44ec850b9b@acm.org>
+ <b728f4db-bafa-dd0f-e288-7e3f56e6eae8@gmail.com>
+ <02d7cbf2-b17b-488a-b6e9-ebb728b51c94@acm.org>
+ <b80dae29-3a7c-f039-bc35-08c6e9f91197@gmail.com>
+ <CAJr_XRAy4EHueAP-10=WSEa46j2aQBArdzYsq7OqSqR93Ue+ug@mail.gmail.com>
+ <8aff9124-85c0-8e3b-dc35-1017b1540037@gmail.com>
+ <3c84da83-cdbb-3326-b3f0-b2dee5f014e0@linux.dev>
 Content-Language: en-US
-To:     Kees Cook <keescook@chromium.org>, Jakub Kicinski <kuba@kernel.org>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Martin KaFai Lau <martin.lau@kernel.org>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        Eric Dumazet <edumazet@google.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Jamal Hadi Salim <jhs@mojatatu.com>,
-        David Ahern <dsahern@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Yisen Zhuang <yisen.zhuang@huawei.com>,
-        Salil Mehta <salil.mehta@huawei.com>,
-        Claudiu Manoil <claudiu.manoil@nxp.com>,
-        Vladimir Oltean <vladimir.oltean@nxp.com>,
-        "K. Y. Srinivasan" <kys@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        Wei Liu <wei.liu@kernel.org>, Dexuan Cui <decui@microsoft.com>,
-        Long Li <longli@microsoft.com>,
-        Ajay Sharma <sharmaajay@microsoft.com>,
-        Alex Elder <elder@kernel.org>,
-        Pravin B Shelar <pshelar@ovn.org>,
-        Shaokun Zhang <zhangshaokun@hisilicon.com>,
-        Cong Wang <xiyou.wangcong@gmail.com>,
-        Jiri Pirko <jiri@resnulli.us>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Tom Rix <trix@redhat.com>, Simon Horman <horms@kernel.org>,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        linux-hyperv@vger.kernel.org, linux-rdma@vger.kernel.org,
-        dev@openvswitch.org, linux-parisc@vger.kernel.org,
-        llvm@lists.linux.dev, linux-hardening@vger.kernel.org
-References: <20230922172449.work.906-kees@kernel.org>
- <20230922172858.3822653-2-keescook@chromium.org>
-From:   "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-In-Reply-To: <20230922172858.3822653-2-keescook@chromium.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - gator4166.hostgator.com
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - embeddedor.com
-X-BWhitelist: no
-X-Source-IP: 94.239.20.48
-X-Source-L: No
-X-Exim-ID: 1qjkHe-004NOP-25
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
-X-Source-Sender: ([192.168.1.98]) [94.239.20.48]:37230
-X-Source-Auth: gustavo@embeddedor.com
-X-Email-Count: 42
-X-Org:  HG=hgshared;ORG=hostgator;
-X-Source-Cap: Z3V6aWRpbmU7Z3V6aWRpbmU7Z2F0b3I0MTY2Lmhvc3RnYXRvci5jb20=
-X-Local-Domain: yes
-X-CMAE-Envelope: MS4xfCXSb23P/38NVzbghLw9g5+WIbJimHw72tVeNDddw+7RztUD5sSMvUKhAFWU4J3RFpBalrM1IpJ7vDfCvphF1/9apRsl/PEFCQiLlKRtqXixkPYnlBl6
- NSMcz2p9Kub9E+CXbHeaD6BFxsqloEMoUl3rHF6ThwLXbJ40snRYRltGd3HFaU22DBxAD3Pp1rrHTcy9ic+iWsdlV9yuBWn7wCq6PXghRLx/DOWZxpYjedV5
-X-Spam-Status: No, score=-2.3 required=5.0 tests=BAYES_00,DATE_IN_FUTURE_06_12,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_LOW,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
-        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.6
+From:   Bob Pearson <rpearsonhpe@gmail.com>
+In-Reply-To: <3c84da83-cdbb-3326-b3f0-b2dee5f014e0@linux.dev>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-
-
-On 9/22/23 11:28, Kees Cook wrote:
-> Prepare for the coming implementation by GCC and Clang of the __counted_by
-> attribute. Flexible array members annotated with __counted_by can have
-> their accesses bounds-checked at run-time checking via CONFIG_UBSAN_BOUNDS
-> (for array indexing) and CONFIG_FORTIFY_SOURCE (for strcpy/memcpy-family
-> functions).
+On 9/21/23 10:10, Zhu Yanjun wrote:
 > 
-> As found with Coccinelle[1], add __counted_by for struct ip_sf_socklist.
+> 在 2023/9/21 22:39, Bob Pearson 写道:
+>> On 9/21/23 09:23, Rain River wrote:
+>>> On Thu, Sep 21, 2023 at 2:53 AM Bob Pearson <rpearsonhpe@gmail.com> wrote:
+>>>> On 9/20/23 12:22, Bart Van Assche wrote:
+>>>>> On 9/20/23 10:18, Bob Pearson wrote:
+>>>>>> But I have also seen the same behavior in the siw driver which is
+>>>>>> completely independent.
+>>>>> Hmm ... I haven't seen any hangs yet with the siw driver.
+>>>> I was on Ubuntu 6-9 months ago. Currently I don't see hangs on either.
+>>>>>> As mentioned above at the moment Ubuntu is failing rarely. But it used to fail reliably (srp/002 about 75% of the time and srp/011 about 99% of the time.) There haven't been any changes to rxe to explain this.
+>>>>> I think that Zhu mentioned commit 9b4b7c1f9f54 ("RDMA/rxe: Add workqueue
+>>>>> support for rxe tasks")?
+>>>> That change happened well before the failures went away. I was seeing failures at the same rate with tasklets
+>>>> and wqs. But after updating Ubuntu and the kernel at some point they all went away.
+>>> I made tests on the latest Ubuntu with the latest kernel without the
+>>> commit 9b4b7c1f9f54 ("RDMA/rxe: Add workqueue support for rxe tasks").
+>>> The latest kernel is v6.6-rc2, the commit 9b4b7c1f9f54 ("RDMA/rxe: Add
+>>> workqueue support for rxe tasks") is reverted.
+>>> I made blktest tests for about 30 times, this problem does not occur.
+>>>
+>>> So I confirm that without this commit, this hang problem does not
+>>> occur on Ubuntu without the commit 9b4b7c1f9f54 ("RDMA/rxe: Add
+>>> workqueue support for rxe tasks").
+>>>
+>>> Nanthan
+>>>
+>>>>> Thanks,
+>>>>>
+>>>>> Bart.
+>>>>
+>> This commit is very important for several reasons. It is needed for the ODP implementation
+>> that is in the works from Daisuke Matsuda and also for QP scaling of performance. The work
+>> queue implementation scales well with increasing qp number while the tasklet implementation
+>> does not. This is critical for the drivers use in large scale storage applications. So, if
+>> there is a bug in the work queue implementation it needs to be fixed not reverted.
+>>
+>> I am still hoping that someone will diagnose what is causing the ULPs to hang in terms of
+>> something missing causing it to wait.
 > 
-> [1] https://github.com/kees/kernel-tools/blob/trunk/coccinelle/examples/counted_by.cocci
+> Hi, Bob
 > 
-> Cc: "David S. Miller" <davem@davemloft.net>
-> Cc: Martin KaFai Lau <martin.lau@kernel.org>
-> Cc: "Gustavo A. R. Silva" <gustavoars@kernel.org>
-> Cc: Eric Dumazet <edumazet@google.com>
-> Cc: Alexei Starovoitov <ast@kernel.org>
-> Cc: Jakub Kicinski <kuba@kernel.org>
-> Signed-off-by: Kees Cook <keescook@chromium.org>
-
-Reviewed-by: Gustavo A. R. Silva <gustavoars@kernel.org>
-
-Thanks
--- 
-Gustavo
-
-> ---
->   include/linux/igmp.h | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
 > 
-> diff --git a/include/linux/igmp.h b/include/linux/igmp.h
-> index ebf4349a53af..5171231f70a8 100644
-> --- a/include/linux/igmp.h
-> +++ b/include/linux/igmp.h
-> @@ -39,7 +39,7 @@ struct ip_sf_socklist {
->   	unsigned int		sl_max;
->   	unsigned int		sl_count;
->   	struct rcu_head		rcu;
-> -	__be32			sl_addr[];
-> +	__be32			sl_addr[] __counted_by(sl_max);
->   };
->   
->   #define IP_SFBLOCK	10	/* allocate this many at once */
+> You submitted this commit 9b4b7c1f9f54 ("RDMA/rxe: Add workqueue support for rxe tasks").
+> 
+> You should be very familiar with this commit.
+> 
+> And this commit causes regression.
+> 
+> So you should delved into the source code to find the root cause, then fix it.
+
+Zhu,
+
+I have spent tons of time over the months trying to figure out what is happening with blktests.
+As I have mentioned several times I have seen the same exact failure in siw in the past although
+currently that doesn't seem to happen so I had been suspecting that the problem may be in the ULP.
+The challenge is that the blktests represents a huge stack of software much of which I am not
+familiar with. The bug is a hang in layers above the rxe driver and so far no one has been able to
+say with any specificity the rxe driver failed to do something needed to make progress or violated
+expected behavior. Without any clue as to where to look it has been hard to make progress.
+
+My main motivation is making Lustre run on rxe and it does and it's fast enough to meet our needs.
+Lustre is similar to srp as a ULP and in all of our testing we have never seen a similar hang. Other
+hangs to be sure but not this one. I believe that this bug will never get resolved until someone with
+a good understanding of the ulp drivers makes an effort to find out where and why the hang is occurring.
+From there it should be straight forward to fix the problem. I am continuing to investigate and am learning
+the device-manager/multipath/srp/scsi stack but I have a long ways to go.
+
+Bob
+
+
+> 
+> 
+> Jason && Leon, please comment on this.
+> 
+> 
+> Best Regards,
+> 
+> Zhu Yanjun
+> 
+>>
+>> Bob
+
