@@ -2,408 +2,168 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 18F1A7AC6A6
-	for <lists+linux-rdma@lfdr.de>; Sun, 24 Sep 2023 07:23:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3CFA87AC759
+	for <lists+linux-rdma@lfdr.de>; Sun, 24 Sep 2023 11:41:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229641AbjIXFXD (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Sun, 24 Sep 2023 01:23:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34016 "EHLO
+        id S229678AbjIXJln (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Sun, 24 Sep 2023 05:41:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60096 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229437AbjIXFXD (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Sun, 24 Sep 2023 01:23:03 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2BD6F10C;
-        Sat, 23 Sep 2023 22:22:56 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DBA15C433C7;
-        Sun, 24 Sep 2023 05:22:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1695532975;
-        bh=o+1OTq6SjGHqCQXXi5yLfC1e7305nlk4Jy43+92MXXk=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=GKgJmeZi8WPDSCzXV8Vw+lQVhZRF4RoczeoBDKx6F1VvOmgkyYgRF3lIvXu9cl6DE
-         /0xtzNnRgAjz6a/G/2nyaKtmYVrS2EK0zC1OwTMl/XnBYyNa7JG8n1ibHOqMruj1Zo
-         NmE/agu8GoZjWT+i3Xa1GGG5vEkEeDkWDQf1pKxA=
-Date:   Sun, 24 Sep 2023 07:22:53 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Haiyang Zhang <haiyangz@microsoft.com>
-Cc:     linux-hyperv@vger.kernel.org, netdev@vger.kernel.org,
-        decui@microsoft.com, kys@microsoft.com, paulros@microsoft.com,
-        olaf@aepfle.de, vkuznets@redhat.com, davem@davemloft.net,
-        wei.liu@kernel.org, edumazet@google.com, kuba@kernel.org,
-        pabeni@redhat.com, leon@kernel.org, longli@microsoft.com,
-        ssengar@linux.microsoft.com, linux-rdma@vger.kernel.org,
-        daniel@iogearbox.net, john.fastabend@gmail.com,
-        bpf@vger.kernel.org, ast@kernel.org, sharmaajay@microsoft.com,
-        hawk@kernel.org, tglx@linutronix.de,
-        shradhagupta@linux.microsoft.com, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH net, 3/3] net: mana: Fix oversized sge0 for GSO packets
-Message-ID: <2023092439-crescent-sloppy-c212@gregkh>
-References: <1695519107-24139-1-git-send-email-haiyangz@microsoft.com>
- <1695519107-24139-4-git-send-email-haiyangz@microsoft.com>
+        with ESMTP id S229650AbjIXJlm (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Sun, 24 Sep 2023 05:41:42 -0400
+Received: from omta34.uswest2.a.cloudfilter.net (omta34.uswest2.a.cloudfilter.net [35.89.44.33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D31D610C;
+        Sun, 24 Sep 2023 02:41:35 -0700 (PDT)
+Received: from eig-obgw-6003a.ext.cloudfilter.net ([10.0.30.151])
+        by cmsmtp with ESMTP
+        id kGalqlK7LOzKlkLcNqLyVb; Sun, 24 Sep 2023 09:41:35 +0000
+Received: from gator4166.hostgator.com ([108.167.133.22])
+        by cmsmtp with ESMTPS
+        id kLcMqwMxA8SgTkLcMqZzIU; Sun, 24 Sep 2023 09:41:34 +0000
+X-Authority-Analysis: v=2.4 cv=VLTOIvDX c=1 sm=1 tr=0 ts=6510044e
+ a=1YbLdUo/zbTtOZ3uB5T3HA==:117 a=P7XfKmiOJ4/qXqHZrN7ymg==:17
+ a=OWjo9vPv0XrRhIrVQ50Ab3nP57M=:19 a=dLZJa+xiwSxG16/P+YVxDGlgEgI=:19
+ a=IkcTkHD0fZMA:10 a=zNV7Rl7Rt7sA:10 a=wYkD_t78qR0A:10 a=NEAV23lmAAAA:8
+ a=J1Y8HTJGAAAA:8 a=1XWaLZrsAAAA:8 a=VwQbUJbxAAAA:8 a=20KFwNOVAAAA:8
+ a=BTeA3XvPAAAA:8 a=cm27Pg_UAAAA:8 a=YSKGN3ub9cUXa_79IdMA:9 a=QEXdDO2ut3YA:10
+ a=y1Q9-5lHfBjTkpIzbSAN:22 a=AjGcO6oz07-iQ99wixmX:22 a=tafbbOV3vt1XuEhzTjGK:22
+ a=xmb-EsYY8bH0VWELuYED:22
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=embeddedor.com; s=default; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:Message-ID:Sender
+        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
+        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=odgPbAvrwGH+UmmYpTRJgA4yHGpV4Hdbo+oKj5UQnHY=; b=BF5Tz9di81H3pELwZp3VBCFyHU
+        uUNNQ/zbobZcHG93TJTx9zHwXzwtHMZ/SRSoNTJU8sfSUwW1ewC28NOoLbdJuOmQp4jDLT2vXOOr2
+        zMVcpCPBnKCPwpMbSIEmongWUMJx0gQix4ECiCdNET6ghNU1ie+mXfOjkCfNKYOPfB22FGwB8PST4
+        0pIfU71FcAQ9rz/VOybUQ259V8VbgWGbRNxtBN4Flp6TVbj/F/QN2XydwDU81LG/divmgAEbFwE9T
+        12l/w/YWKdP9+RWpoC9EHvBgNHECd9uX39ojSsUh1JbVuZUYC1vdlt55zJLhDPXPKJdRnQPN9BuJt
+        1o7mXEqw==;
+Received: from [94.239.20.48] (port=41972 helo=[192.168.1.98])
+        by gator4166.hostgator.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.96)
+        (envelope-from <gustavo@embeddedor.com>)
+        id 1qjkOE-0006cR-1m;
+        Fri, 22 Sep 2023 12:56:30 -0500
+Message-ID: <ee360342-3f39-73ab-fbc4-22cf3899939a@embeddedor.com>
+Date:   Fri, 22 Sep 2023 19:57:26 -0600
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1695519107-24139-4-git-send-email-haiyangz@microsoft.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Subject: Re: [PATCH 13/14] net: tulip: Annotate struct mediatable with
+ __counted_by
+Content-Language: en-US
+To:     Kees Cook <keescook@chromium.org>, Jakub Kicinski <kuba@kernel.org>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Shaokun Zhang <zhangshaokun@hisilicon.com>,
+        netdev@vger.kernel.org, linux-parisc@vger.kernel.org,
+        Jamal Hadi Salim <jhs@mojatatu.com>,
+        David Ahern <dsahern@kernel.org>,
+        Martin KaFai Lau <martin.lau@kernel.org>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Yisen Zhuang <yisen.zhuang@huawei.com>,
+        Salil Mehta <salil.mehta@huawei.com>,
+        Claudiu Manoil <claudiu.manoil@nxp.com>,
+        Vladimir Oltean <vladimir.oltean@nxp.com>,
+        "K. Y. Srinivasan" <kys@microsoft.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        Wei Liu <wei.liu@kernel.org>, Dexuan Cui <decui@microsoft.com>,
+        Long Li <longli@microsoft.com>,
+        Ajay Sharma <sharmaajay@microsoft.com>,
+        Alex Elder <elder@kernel.org>,
+        Pravin B Shelar <pshelar@ovn.org>,
+        Cong Wang <xiyou.wangcong@gmail.com>,
+        Jiri Pirko <jiri@resnulli.us>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Tom Rix <trix@redhat.com>, Simon Horman <horms@kernel.org>,
+        linux-kernel@vger.kernel.org, linux-hyperv@vger.kernel.org,
+        linux-rdma@vger.kernel.org, dev@openvswitch.org,
+        llvm@lists.linux.dev, linux-hardening@vger.kernel.org
+References: <20230922172449.work.906-kees@kernel.org>
+ <20230922172858.3822653-13-keescook@chromium.org>
+From:   "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+In-Reply-To: <20230922172858.3822653-13-keescook@chromium.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - gator4166.hostgator.com
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - embeddedor.com
+X-BWhitelist: no
+X-Source-IP: 94.239.20.48
+X-Source-L: No
+X-Exim-ID: 1qjkOE-0006cR-1m
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
+X-Source-Sender: ([192.168.1.98]) [94.239.20.48]:41972
+X-Source-Auth: gustavo@embeddedor.com
+X-Email-Count: 0
+X-Org:  HG=hgshared;ORG=hostgator;
+X-Source-Cap: Z3V6aWRpbmU7Z3V6aWRpbmU7Z2F0b3I0MTY2Lmhvc3RnYXRvci5jb20=
+X-Local-Domain: yes
+X-CMAE-Envelope: MS4xfE35Xmr3WOAdQqQHc9iZlMfs2PP5g2rDVR0I4yz7O70Q2O0oRpoVKkroOkzWJoV3+FWgUZNA+u7sXrAGtBviRcDzJ6xYc8gRECzbYaz2Qn9mNFVKNdYg
+ hXiAi9PQ+cOpLhSDeaHYa2fZTjwqOcuTB5dM/vvW09ZD2mLVfpcPk8sl2HCktSDPxjWqMCyea33wBgJwnu50wMTP/0qJoyA9vJ3Q0cWTb3JlQ6kdX92LtlsJ
+ kbm9b31I9bQghj/8CqQ1EctQpKbVXLlPwkeOgQD7LZma+HWkz3+JSUBMGGHSl4SjKgQkyUCav9ZCta3PnoZhQg2mRenZpuohmrvjP/7SsIVprGAmlrAfyBGl
+ 1IMWbr4DkYoswcBzDdb5CH+Cw6Ymw4JhcwYghoyKYMfhUGpNjSzDFgSbZ6ESaLzgg+TgVZ3H
+X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,DATE_IN_FUTURE_06_12,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Sat, Sep 23, 2023 at 06:31:47PM -0700, Haiyang Zhang wrote:
-> Handle the case when GSO SKB linear length is too large.
+
+
+On 9/22/23 11:28, Kees Cook wrote:
+> Prepare for the coming implementation by GCC and Clang of the __counted_by
+> attribute. Flexible array members annotated with __counted_by can have
+> their accesses bounds-checked at run-time checking via CONFIG_UBSAN_BOUNDS
+> (for array indexing) and CONFIG_FORTIFY_SOURCE (for strcpy/memcpy-family
+> functions).
 > 
-> MANA NIC requires GSO packets to put only the header part to SGE0,
-> otherwise the TX queue may stop at the HW level.
+> As found with Coccinelle[1], add __counted_by for struct mediatable.
 > 
-> So, use 2 SGEs for the skb linear part which contains more than the
-> packet header.
+> [1] https://github.com/kees/kernel-tools/blob/trunk/coccinelle/examples/counted_by.cocci
 > 
-> Fixes: ca9c54d2d6a5 ("net: mana: Add a driver for Microsoft Azure Network Adapter (MANA)")
-> Signed-off-by: Haiyang Zhang <haiyangz@microsoft.com>
+> Cc: "David S. Miller" <davem@davemloft.net>
+> Cc: Eric Dumazet <edumazet@google.com>
+> Cc: Jakub Kicinski <kuba@kernel.org>
+> Cc: Paolo Abeni <pabeni@redhat.com>
+> Cc: Shaokun Zhang <zhangshaokun@hisilicon.com>
+> Cc: netdev@vger.kernel.org
+> Cc: linux-parisc@vger.kernel.org
+> Signed-off-by: Kees Cook <keescook@chromium.org>
+
+Reviewed-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+
+Thanks
+-- 
+Gustavo
+
 > ---
->  drivers/net/ethernet/microsoft/mana/mana_en.c | 186 ++++++++++++------
->  include/net/mana/mana.h                       |   5 +-
->  2 files changed, 134 insertions(+), 57 deletions(-)
+>   drivers/net/ethernet/dec/tulip/tulip.h | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
 > 
-> diff --git a/drivers/net/ethernet/microsoft/mana/mana_en.c b/drivers/net/ethernet/microsoft/mana/mana_en.c
-> index 86e724c3eb89..0a3879163b56 100644
-> --- a/drivers/net/ethernet/microsoft/mana/mana_en.c
-> +++ b/drivers/net/ethernet/microsoft/mana/mana_en.c
-> @@ -91,63 +91,136 @@ static unsigned int mana_checksum_info(struct sk_buff *skb)
->  	return 0;
->  }
->  
-> +static inline void mana_add_sge(struct mana_tx_package *tp,
-> +				struct mana_skb_head *ash, int sg_i,
-> +				dma_addr_t da, int sge_len, u32 gpa_mkey)
-> +{
-> +	ash->dma_handle[sg_i] = da;
-> +	ash->size[sg_i] = sge_len;
-> +
-> +	tp->wqe_req.sgl[sg_i].address = da;
-> +	tp->wqe_req.sgl[sg_i].mem_key = gpa_mkey;
-> +	tp->wqe_req.sgl[sg_i].size = sge_len;
-> +}
-> +
->  static int mana_map_skb(struct sk_buff *skb, struct mana_port_context *apc,
-> -			struct mana_tx_package *tp)
-> +			struct mana_tx_package *tp, int gso_hs)
->  {
->  	struct mana_skb_head *ash = (struct mana_skb_head *)skb->head;
-> +	int hsg = 1; /* num of SGEs of linear part */
->  	struct gdma_dev *gd = apc->ac->gdma_dev;
-> +	int skb_hlen = skb_headlen(skb);
-> +	int sge0_len, sge1_len = 0;
->  	struct gdma_context *gc;
->  	struct device *dev;
->  	skb_frag_t *frag;
->  	dma_addr_t da;
-> +	int sg_i;
->  	int i;
->  
->  	gc = gd->gdma_context;
->  	dev = gc->dev;
-> -	da = dma_map_single(dev, skb->data, skb_headlen(skb), DMA_TO_DEVICE);
->  
-> +	if (gso_hs && gso_hs < skb_hlen) {
-> +		sge0_len = gso_hs;
-> +		sge1_len = skb_hlen - gso_hs;
-> +	} else {
-> +		sge0_len = skb_hlen;
-> +	}
-> +
-> +	da = dma_map_single(dev, skb->data, sge0_len, DMA_TO_DEVICE);
->  	if (dma_mapping_error(dev, da))
->  		return -ENOMEM;
->  
-> -	ash->dma_handle[0] = da;
-> -	ash->size[0] = skb_headlen(skb);
-> +	mana_add_sge(tp, ash, 0, da, sge0_len, gd->gpa_mkey);
->  
-> -	tp->wqe_req.sgl[0].address = ash->dma_handle[0];
-> -	tp->wqe_req.sgl[0].mem_key = gd->gpa_mkey;
-> -	tp->wqe_req.sgl[0].size = ash->size[0];
-> +	if (sge1_len) {
-> +		sg_i = 1;
-> +		da = dma_map_single(dev, skb->data + sge0_len, sge1_len,
-> +				    DMA_TO_DEVICE);
-> +		if (dma_mapping_error(dev, da))
-> +			goto frag_err;
-> +
-> +		mana_add_sge(tp, ash, sg_i, da, sge1_len, gd->gpa_mkey);
-> +		hsg = 2;
-> +	}
->  
->  	for (i = 0; i < skb_shinfo(skb)->nr_frags; i++) {
-> +		sg_i = hsg + i;
-> +
->  		frag = &skb_shinfo(skb)->frags[i];
->  		da = skb_frag_dma_map(dev, frag, 0, skb_frag_size(frag),
->  				      DMA_TO_DEVICE);
-> -
->  		if (dma_mapping_error(dev, da))
->  			goto frag_err;
->  
-> -		ash->dma_handle[i + 1] = da;
-> -		ash->size[i + 1] = skb_frag_size(frag);
-> -
-> -		tp->wqe_req.sgl[i + 1].address = ash->dma_handle[i + 1];
-> -		tp->wqe_req.sgl[i + 1].mem_key = gd->gpa_mkey;
-> -		tp->wqe_req.sgl[i + 1].size = ash->size[i + 1];
-> +		mana_add_sge(tp, ash, sg_i, da, skb_frag_size(frag),
-> +			     gd->gpa_mkey);
->  	}
->  
->  	return 0;
->  
->  frag_err:
-> -	for (i = i - 1; i >= 0; i--)
-> -		dma_unmap_page(dev, ash->dma_handle[i + 1], ash->size[i + 1],
-> +	for (i = sg_i - 1; i >= hsg; i--)
-> +		dma_unmap_page(dev, ash->dma_handle[i], ash->size[i],
->  			       DMA_TO_DEVICE);
->  
-> -	dma_unmap_single(dev, ash->dma_handle[0], ash->size[0], DMA_TO_DEVICE);
-> +	for (i = hsg - 1; i >= 0; i--)
-> +		dma_unmap_single(dev, ash->dma_handle[i], ash->size[i],
-> +				 DMA_TO_DEVICE);
->  
->  	return -ENOMEM;
->  }
->  
-> +/* Handle the case when GSO SKB linear length is too large.
-> + * MANA NIC requires GSO packets to put only the packet header to SGE0.
-> + * So, we need 2 SGEs for the skb linear part which contains more than the
-> + * header.
-> + */
-> +static inline int mana_fix_skb_head(struct net_device *ndev,
-> +				    struct sk_buff *skb, int gso_hs,
-> +				    u32 *num_sge)
-> +{
-> +	int skb_hlen = skb_headlen(skb);
-> +
-> +	if (gso_hs < skb_hlen) {
-> +		*num_sge = 2 + skb_shinfo(skb)->nr_frags;
-> +	} else if (gso_hs > skb_hlen) {
-> +		if (net_ratelimit())
-> +			netdev_err(ndev,
-> +				   "TX nonlinear head: hs:%d, skb_hlen:%d\n",
-> +				   gso_hs, skb_hlen);
-> +
-> +		return -EINVAL;
-> +	}
-> +
-> +	return 0;
-> +}
-> +
-> +/* Get the GSO packet's header size */
-> +static inline int mana_get_gso_hs(struct sk_buff *skb)
-> +{
-> +	int gso_hs;
-> +
-> +	if (skb->encapsulation) {
-> +		gso_hs = skb_inner_tcp_all_headers(skb);
-> +	} else {
-> +		if (skb_shinfo(skb)->gso_type & SKB_GSO_UDP_L4) {
-> +			gso_hs = skb_transport_offset(skb) +
-> +				 sizeof(struct udphdr);
-> +		} else {
-> +			gso_hs = skb_tcp_all_headers(skb);
-> +		}
-> +	}
-> +
-> +	return gso_hs;
-> +}
-> +
->  netdev_tx_t mana_start_xmit(struct sk_buff *skb, struct net_device *ndev)
->  {
->  	enum mana_tx_pkt_format pkt_fmt = MANA_SHORT_PKT_FMT;
->  	struct mana_port_context *apc = netdev_priv(ndev);
-> +	int gso_hs = 0; /* zero for non-GSO pkts */
->  	u16 txq_idx = skb_get_queue_mapping(skb);
->  	struct gdma_dev *gd = apc->ac->gdma_dev;
->  	bool ipv4 = false, ipv6 = false;
-> @@ -159,7 +232,6 @@ netdev_tx_t mana_start_xmit(struct sk_buff *skb, struct net_device *ndev)
->  	struct mana_txq *txq;
->  	struct mana_cq *cq;
->  	int err, len;
-> -	u16 ihs;
->  
->  	if (unlikely(!apc->port_is_up))
->  		goto tx_drop;
-> @@ -209,19 +281,6 @@ netdev_tx_t mana_start_xmit(struct sk_buff *skb, struct net_device *ndev)
->  	pkg.wqe_req.client_data_unit = 0;
->  
->  	pkg.wqe_req.num_sge = 1 + skb_shinfo(skb)->nr_frags;
-> -	WARN_ON_ONCE(pkg.wqe_req.num_sge > MAX_TX_WQE_SGL_ENTRIES);
-> -
-> -	if (pkg.wqe_req.num_sge <= ARRAY_SIZE(pkg.sgl_array)) {
-> -		pkg.wqe_req.sgl = pkg.sgl_array;
-> -	} else {
-> -		pkg.sgl_ptr = kmalloc_array(pkg.wqe_req.num_sge,
-> -					    sizeof(struct gdma_sge),
-> -					    GFP_ATOMIC);
-> -		if (!pkg.sgl_ptr)
-> -			goto tx_drop_count;
-> -
-> -		pkg.wqe_req.sgl = pkg.sgl_ptr;
-> -	}
->  
->  	if (skb->protocol == htons(ETH_P_IP))
->  		ipv4 = true;
-> @@ -229,6 +288,23 @@ netdev_tx_t mana_start_xmit(struct sk_buff *skb, struct net_device *ndev)
->  		ipv6 = true;
->  
->  	if (skb_is_gso(skb)) {
-> +		gso_hs = mana_get_gso_hs(skb);
-> +
-> +		if (mana_fix_skb_head(ndev, skb, gso_hs, &pkg.wqe_req.num_sge))
-> +			goto tx_drop_count;
-> +
-> +		if (skb->encapsulation) {
-> +			u64_stats_update_begin(&tx_stats->syncp);
-> +			tx_stats->tso_inner_packets++;
-> +			tx_stats->tso_inner_bytes += skb->len - gso_hs;
-> +			u64_stats_update_end(&tx_stats->syncp);
-> +		} else {
-> +			u64_stats_update_begin(&tx_stats->syncp);
-> +			tx_stats->tso_packets++;
-> +			tx_stats->tso_bytes += skb->len - gso_hs;
-> +			u64_stats_update_end(&tx_stats->syncp);
-> +		}
-> +
->  		pkg.tx_oob.s_oob.is_outer_ipv4 = ipv4;
->  		pkg.tx_oob.s_oob.is_outer_ipv6 = ipv6;
->  
-> @@ -252,26 +328,6 @@ netdev_tx_t mana_start_xmit(struct sk_buff *skb, struct net_device *ndev)
->  						 &ipv6_hdr(skb)->daddr, 0,
->  						 IPPROTO_TCP, 0);
->  		}
-> -
-> -		if (skb->encapsulation) {
-> -			ihs = skb_inner_tcp_all_headers(skb);
-> -			u64_stats_update_begin(&tx_stats->syncp);
-> -			tx_stats->tso_inner_packets++;
-> -			tx_stats->tso_inner_bytes += skb->len - ihs;
-> -			u64_stats_update_end(&tx_stats->syncp);
-> -		} else {
-> -			if (skb_shinfo(skb)->gso_type & SKB_GSO_UDP_L4) {
-> -				ihs = skb_transport_offset(skb) + sizeof(struct udphdr);
-> -			} else {
-> -				ihs = skb_tcp_all_headers(skb);
-> -			}
-> -
-> -			u64_stats_update_begin(&tx_stats->syncp);
-> -			tx_stats->tso_packets++;
-> -			tx_stats->tso_bytes += skb->len - ihs;
-> -			u64_stats_update_end(&tx_stats->syncp);
-> -		}
-> -
->  	} else if (skb->ip_summed == CHECKSUM_PARTIAL) {
->  		csum_type = mana_checksum_info(skb);
->  
-> @@ -294,11 +350,25 @@ netdev_tx_t mana_start_xmit(struct sk_buff *skb, struct net_device *ndev)
->  		} else {
->  			/* Can't do offload of this type of checksum */
->  			if (skb_checksum_help(skb))
-> -				goto free_sgl_ptr;
-> +				goto tx_drop_count;
->  		}
->  	}
->  
-> -	if (mana_map_skb(skb, apc, &pkg)) {
-> +	WARN_ON_ONCE(pkg.wqe_req.num_sge > MAX_TX_WQE_SGL_ENTRIES);
-> +
-> +	if (pkg.wqe_req.num_sge <= ARRAY_SIZE(pkg.sgl_array)) {
-> +		pkg.wqe_req.sgl = pkg.sgl_array;
-> +	} else {
-> +		pkg.sgl_ptr = kmalloc_array(pkg.wqe_req.num_sge,
-> +					    sizeof(struct gdma_sge),
-> +					    GFP_ATOMIC);
-> +		if (!pkg.sgl_ptr)
-> +			goto tx_drop_count;
-> +
-> +		pkg.wqe_req.sgl = pkg.sgl_ptr;
-> +	}
-> +
-> +	if (mana_map_skb(skb, apc, &pkg, gso_hs)) {
->  		u64_stats_update_begin(&tx_stats->syncp);
->  		tx_stats->mana_map_err++;
->  		u64_stats_update_end(&tx_stats->syncp);
-> @@ -1255,12 +1325,18 @@ static void mana_unmap_skb(struct sk_buff *skb, struct mana_port_context *apc)
->  {
->  	struct mana_skb_head *ash = (struct mana_skb_head *)skb->head;
->  	struct gdma_context *gc = apc->ac->gdma_dev->gdma_context;
-> +	int hsg = 1; /* num of SGEs of linear part */
->  	struct device *dev = gc->dev;
->  	int i;
->  
-> -	dma_unmap_single(dev, ash->dma_handle[0], ash->size[0], DMA_TO_DEVICE);
-> +	if (skb_is_gso(skb) && skb_headlen(skb) > ash->size[0])
-> +		hsg = 2;
-> +
-> +	for (i = 0; i < hsg; i++)
-> +		dma_unmap_single(dev, ash->dma_handle[i], ash->size[i],
-> +				 DMA_TO_DEVICE);
->  
-> -	for (i = 1; i < skb_shinfo(skb)->nr_frags + 1; i++)
-> +	for (i = hsg; i < skb_shinfo(skb)->nr_frags + hsg; i++)
->  		dma_unmap_page(dev, ash->dma_handle[i], ash->size[i],
->  			       DMA_TO_DEVICE);
->  }
-> diff --git a/include/net/mana/mana.h b/include/net/mana/mana.h
-> index 9f70b4332238..4d43adf18606 100644
-> --- a/include/net/mana/mana.h
-> +++ b/include/net/mana/mana.h
-> @@ -103,9 +103,10 @@ struct mana_txq {
->  
->  /* skb data and frags dma mappings */
->  struct mana_skb_head {
-> -	dma_addr_t dma_handle[MAX_SKB_FRAGS + 1];
-> +	/* GSO pkts may have 2 SGEs for the linear part*/
-> +	dma_addr_t dma_handle[MAX_SKB_FRAGS + 2];
->  
-> -	u32 size[MAX_SKB_FRAGS + 1];
-> +	u32 size[MAX_SKB_FRAGS + 2];
->  };
->  
->  #define MANA_HEADROOM sizeof(struct mana_skb_head)
-> -- 
-> 2.25.1
-> 
-> 
-
-Hi,
-
-This is the friendly patch-bot of Greg Kroah-Hartman.  You have sent him
-a patch that has triggered this response.  He used to manually respond
-to these common problems, but in order to save his sanity (he kept
-writing the same thing over and over, yet to different people), I was
-created.  Hopefully you will not take offence and will fix the problem
-in your patch and resubmit it so that it can be accepted into the Linux
-kernel tree.
-
-You are receiving this message because of the following common error(s)
-as indicated below:
-
-- You have marked a patch with a "Fixes:" tag for a commit that is in an
-  older released kernel, yet you do not have a cc: stable line in the
-  signed-off-by area at all, which means that the patch will not be
-  applied to any older kernel releases.  To properly fix this, please
-  follow the documented rules in the
-  Documetnation/process/stable-kernel-rules.rst file for how to resolve
-  this.
-
-If you wish to discuss this problem further, or you have questions about
-how to resolve this issue, please feel free to respond to this email and
-Greg will reply once he has dug out from the pending patches received
-from other developers.
-
-thanks,
-
-greg k-h's patch email bot
+> diff --git a/drivers/net/ethernet/dec/tulip/tulip.h b/drivers/net/ethernet/dec/tulip/tulip.h
+> index 0ed598dc7569..bd786dfbc066 100644
+> --- a/drivers/net/ethernet/dec/tulip/tulip.h
+> +++ b/drivers/net/ethernet/dec/tulip/tulip.h
+> @@ -381,7 +381,7 @@ struct mediatable {
+>   	unsigned has_reset:6;
+>   	u32 csr15dir;
+>   	u32 csr15val;		/* 21143 NWay setting. */
+> -	struct medialeaf mleaf[];
+> +	struct medialeaf mleaf[] __counted_by(leafcount);
+>   };
+>   
+>   
