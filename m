@@ -2,167 +2,91 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A9207ABE30
-	for <lists+linux-rdma@lfdr.de>; Sat, 23 Sep 2023 09:01:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C9007ABE15
+	for <lists+linux-rdma@lfdr.de>; Sat, 23 Sep 2023 08:15:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229898AbjIWHBv (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Sat, 23 Sep 2023 03:01:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53814 "EHLO
+        id S229541AbjIWGPg (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Sat, 23 Sep 2023 02:15:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53250 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229541AbjIWHBu (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Sat, 23 Sep 2023 03:01:50 -0400
-Received: from omta034.useast.a.cloudfilter.net (omta034.useast.a.cloudfilter.net [44.202.169.33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7320219B;
-        Sat, 23 Sep 2023 00:01:43 -0700 (PDT)
-Received: from eig-obgw-6008a.ext.cloudfilter.net ([10.0.30.227])
-        by cmsmtp with ESMTP
-        id jnFHqEyp1ez0CjwdiqAXlx; Sat, 23 Sep 2023 07:01:18 +0000
-Received: from gator4166.hostgator.com ([108.167.133.22])
-        by cmsmtp with ESMTPS
-        id jwe4qNGtHsKmijwe5qIZCW; Sat, 23 Sep 2023 07:01:41 +0000
-X-Authority-Analysis: v=2.4 cv=JOMoDuGb c=1 sm=1 tr=0 ts=650e8d55
- a=1YbLdUo/zbTtOZ3uB5T3HA==:117 a=P7XfKmiOJ4/qXqHZrN7ymg==:17
- a=OWjo9vPv0XrRhIrVQ50Ab3nP57M=:19 a=dLZJa+xiwSxG16/P+YVxDGlgEgI=:19
- a=IkcTkHD0fZMA:10 a=zNV7Rl7Rt7sA:10 a=wYkD_t78qR0A:10 a=NEAV23lmAAAA:8
- a=P8mRVJMrAAAA:8 a=J1Y8HTJGAAAA:8 a=1XWaLZrsAAAA:8 a=VwQbUJbxAAAA:8
- a=20KFwNOVAAAA:8 a=SGADynmgAAAA:8 a=cm27Pg_UAAAA:8 a=YSKGN3ub9cUXa_79IdMA:9
- a=QEXdDO2ut3YA:10 a=Vc1QvrjMcIoGonisw6Ob:22 a=y1Q9-5lHfBjTkpIzbSAN:22
- a=AjGcO6oz07-iQ99wixmX:22 a=zIHXHKGEX091kyoLcxqF:22 a=xmb-EsYY8bH0VWELuYED:22
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=embeddedor.com; s=default; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:Message-ID:Sender
-        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
-        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=LgYmmzfODs8y0XPv6zoIUmQUpkw1Ll6bzfBPHyYgdGs=; b=Dt+luo231UAv4RRAqbxdrzRyee
-        dU8/FIBvBI6EhTgYFX3/UdwgVkbKx7VrbEPKerDZagGmCKatNEu4qEDC6cNU8Lzq6iVKYiPE+vwcd
-        iobw+Rzr12mcn+p1AOY49b++XnYBFBF+HXQRiyFmctm8u0rwtiHVe4PCyPPbNNqcpN8dLS3cyqs6b
-        MOgZ1/E+yMMYJB5P9D9g1iUd7pzheavabNwkVfBbZsURYktiKpz+C3LPmF//iwWP/+UHHMQ3tzGu4
-        n5qMqZrWc5dQAFwq6z1Z+9OBeU/dKQRVVBFwL32kYiqlLe8DUYbCncJ3Tu3jFeqWLguStel+UA0AM
-        dnaML4LQ==;
-Received: from [94.239.20.48] (port=35188 helo=[192.168.1.98])
-        by gator4166.hostgator.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.96)
-        (envelope-from <gustavo@embeddedor.com>)
-        id 1qjkNw-000673-1P;
-        Fri, 22 Sep 2023 12:56:12 -0500
-Message-ID: <c9865cdf-98aa-0b7f-d833-80bfa3d67614@embeddedor.com>
-Date:   Fri, 22 Sep 2023 19:57:09 -0600
+        with ESMTP id S229870AbjIWGPf (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Sat, 23 Sep 2023 02:15:35 -0400
+Received: from smtp.smtpout.orange.fr (smtp-28.smtpout.orange.fr [80.12.242.28])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E10E11A6
+        for <linux-rdma@vger.kernel.org>; Fri, 22 Sep 2023 23:15:28 -0700 (PDT)
+Received: from pop-os.home ([86.243.2.178])
+        by smtp.orange.fr with ESMTPA
+        id jvvKqieqFqQHijvvKqqbog; Sat, 23 Sep 2023 08:15:27 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wanadoo.fr;
+        s=t20230301; t=1695449727;
+        bh=G7tAIoMWyx5SK/7lnnnDHZQxV+76Lbl3kc2YAXhhFds=;
+        h=From:To:Cc:Subject:Date;
+        b=MGzImVvYYc5cHEX3tVkaysSdw4wuTrxD6R7sWHjIOZ2qws4JYxELVTHhdQ4eNkF+Y
+         FSRNHfwED57IwVmOLTRF9Jfe4ckoQ5aYFsB8IOx6mhkvSeTpNkEL0Qk9NpdkInRH4k
+         xL920sfyYWK6wUVTAY1hCvKm+Lx2oND0wzQM9br3tNBn0l8hmSb9WbbmPThSL6NBI8
+         6QWE3aRnarN3FP4mEBH+G6AgJZ9k6rzZGNRX3qjNowyYmX8ZyEVtqJ01UyQ/xHjVo4
+         S/UKjvIG4UCmOcp47MV3BK29U2pJvgV7P/rhm7tFO2jlJXDvNDRHdb+9oHdNdr6Hid
+         ntKvus+7XzSxQ==
+X-ME-Helo: pop-os.home
+X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
+X-ME-Date: Sat, 23 Sep 2023 08:15:27 +0200
+X-ME-IP: 86.243.2.178
+From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+To:     Jason Gunthorpe <jgg@ziepe.ca>, Leon Romanovsky <leon@kernel.org>,
+        Matan Barak <matanb@mellanox.com>,
+        Doug Ledford <dledford@redhat.com>
+Cc:     linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+        linux-rdma@vger.kernel.org
+Subject: [PATCH] RDMA/cma: Fix the size of a buffer in add_port_entries()
+Date:   Sat, 23 Sep 2023 08:15:25 +0200
+Message-Id: <91395b73a64c13dfe45c3fd3b088b216ba0c9332.1695449697.git.christophe.jaillet@wanadoo.fr>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Subject: Re: [PATCH 12/14] net: openvswitch: Annotate struct dp_meter with
- __counted_by
-Content-Language: en-US
-To:     Kees Cook <keescook@chromium.org>, Jakub Kicinski <kuba@kernel.org>
-Cc:     Pravin B Shelar <pshelar@ovn.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Paolo Abeni <pabeni@redhat.com>, netdev@vger.kernel.org,
-        dev@openvswitch.org, Jamal Hadi Salim <jhs@mojatatu.com>,
-        David Ahern <dsahern@kernel.org>,
-        Martin KaFai Lau <martin.lau@kernel.org>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Yisen Zhuang <yisen.zhuang@huawei.com>,
-        Salil Mehta <salil.mehta@huawei.com>,
-        Claudiu Manoil <claudiu.manoil@nxp.com>,
-        Vladimir Oltean <vladimir.oltean@nxp.com>,
-        "K. Y. Srinivasan" <kys@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        Wei Liu <wei.liu@kernel.org>, Dexuan Cui <decui@microsoft.com>,
-        Long Li <longli@microsoft.com>,
-        Ajay Sharma <sharmaajay@microsoft.com>,
-        Alex Elder <elder@kernel.org>,
-        Shaokun Zhang <zhangshaokun@hisilicon.com>,
-        Cong Wang <xiyou.wangcong@gmail.com>,
-        Jiri Pirko <jiri@resnulli.us>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Tom Rix <trix@redhat.com>, Simon Horman <horms@kernel.org>,
-        linux-kernel@vger.kernel.org, linux-hyperv@vger.kernel.org,
-        linux-rdma@vger.kernel.org, linux-parisc@vger.kernel.org,
-        llvm@lists.linux.dev, linux-hardening@vger.kernel.org
-References: <20230922172449.work.906-kees@kernel.org>
- <20230922172858.3822653-12-keescook@chromium.org>
-From:   "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-In-Reply-To: <20230922172858.3822653-12-keescook@chromium.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - gator4166.hostgator.com
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - embeddedor.com
-X-BWhitelist: no
-X-Source-IP: 94.239.20.48
-X-Source-L: No
-X-Exim-ID: 1qjkNw-000673-1P
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
-X-Source-Sender: ([192.168.1.98]) [94.239.20.48]:35188
-X-Source-Auth: gustavo@embeddedor.com
-X-Email-Count: 0
-X-Org:  HG=hgshared;ORG=hostgator;
-X-Source-Cap: Z3V6aWRpbmU7Z3V6aWRpbmU7Z2F0b3I0MTY2Lmhvc3RnYXRvci5jb20=
-X-Local-Domain: yes
-X-CMAE-Envelope: MS4xfGQ8mtCPcMlBC1myYUVv4OqxkyU7Xh6Ssi42u/L7kbVuMNUHh2e2nSOmL2q4USpKmdCb6iS/K64b6LYgpcgGd4GfJ/tvWZX1mLKJV5GrKAICqENp4HFY
- dN4AMnRCzp/ridBzY6NoMOwd8F2M0EEBmhaWHCL1S/QIOVh/CBogSuQIsYsSPTjRWKMkVOwfCPa17RmNIUyopmrpUKxQ//wn7pupjRs1rFf9tekrYaMxvS5R
- zfJ7bJYwJucS+d6TMsB7ZtMRA2T4vmuisaP7RIpO8u/pp2671nzamcY1NrlnsHujZI8nmJXtTA1A7x6QqYq4ltj01lYtJMG2eMT9NYVdv/QFHKARE6G0piYx
- CS//ymEczeOXTOjlWFe1grpZR4zrdVvSzHnDtYo31NN/9rOL1E5A6m5wcCh65mtUGMcX6Zqe
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DATE_IN_PAST_03_06,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
+In order to be sure that 'buff' is never truncated, its size should be
+11, not 10.
 
+When building with W=1, this fixes the following warnings:
 
-On 9/22/23 11:28, Kees Cook wrote:
-> Prepare for the coming implementation by GCC and Clang of the __counted_by
-> attribute. Flexible array members annotated with __counted_by can have
-> their accesses bounds-checked at run-time checking via CONFIG_UBSAN_BOUNDS
-> (for array indexing) and CONFIG_FORTIFY_SOURCE (for strcpy/memcpy-family
-> functions).
-> 
-> As found with Coccinelle[1], add __counted_by for struct dp_meter.
-> 
-> [1] https://github.com/kees/kernel-tools/blob/trunk/coccinelle/examples/counted_by.cocci
-> 
-> Cc: Pravin B Shelar <pshelar@ovn.org>
-> Cc: "David S. Miller" <davem@davemloft.net>
-> Cc: Eric Dumazet <edumazet@google.com>
-> Cc: Jakub Kicinski <kuba@kernel.org>
-> Cc: Paolo Abeni <pabeni@redhat.com>
-> Cc: netdev@vger.kernel.org
-> Cc: dev@openvswitch.org
-> Signed-off-by: Kees Cook <keescook@chromium.org>
+  drivers/infiniband/core/cma_configfs.c: In function ‘make_cma_ports’:
+  drivers/infiniband/core/cma_configfs.c:223:57: error: ‘snprintf’ output may be truncated before the last format character [-Werror=format-truncation=]
+    223 |                 snprintf(port_str, sizeof(port_str), "%u", i + 1);
+        |                                                         ^
+  drivers/infiniband/core/cma_configfs.c:223:17: note: ‘snprintf’ output between 2 and 11 bytes into a destination of size 10
+    223 |                 snprintf(port_str, sizeof(port_str), "%u", i + 1);
+        |                 ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Reviewed-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+Fixes: 045959db65c67 ("IB/cma: Add configfs for rdma_cm")
+Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+---
+ drivers/infiniband/core/cma_configfs.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Thanks
+diff --git a/drivers/infiniband/core/cma_configfs.c b/drivers/infiniband/core/cma_configfs.c
+index 7b68b3ea979f..f2fb2d8a6597 100644
+--- a/drivers/infiniband/core/cma_configfs.c
++++ b/drivers/infiniband/core/cma_configfs.c
+@@ -217,7 +217,7 @@ static int make_cma_ports(struct cma_dev_group *cma_dev_group,
+ 		return -ENOMEM;
+ 
+ 	for (i = 0; i < ports_num; i++) {
+-		char port_str[10];
++		char port_str[11];
+ 
+ 		ports[i].port_num = i + 1;
+ 		snprintf(port_str, sizeof(port_str), "%u", i + 1);
 -- 
-Gustavo
+2.34.1
 
-> ---
->   net/openvswitch/meter.h | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/net/openvswitch/meter.h b/net/openvswitch/meter.h
-> index 013de694221f..ed11cd12b512 100644
-> --- a/net/openvswitch/meter.h
-> +++ b/net/openvswitch/meter.h
-> @@ -39,7 +39,7 @@ struct dp_meter {
->   	u32 max_delta_t;
->   	u64 used;
->   	struct ovs_flow_stats stats;
-> -	struct dp_meter_band bands[];
-> +	struct dp_meter_band bands[] __counted_by(n_bands);
->   };
->   
->   struct dp_meter_instance {
