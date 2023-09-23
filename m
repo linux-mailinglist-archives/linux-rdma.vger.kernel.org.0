@@ -2,175 +2,103 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C5B2E7ABDB2
-	for <lists+linux-rdma@lfdr.de>; Sat, 23 Sep 2023 06:21:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B9BA7ABE0A
+	for <lists+linux-rdma@lfdr.de>; Sat, 23 Sep 2023 08:03:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230157AbjIWEVu (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Sat, 23 Sep 2023 00:21:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33942 "EHLO
+        id S229647AbjIWGDj (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Sat, 23 Sep 2023 02:03:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58688 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230118AbjIWEVt (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Sat, 23 Sep 2023 00:21:49 -0400
-Received: from omta38.uswest2.a.cloudfilter.net (omta38.uswest2.a.cloudfilter.net [35.89.44.37])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B71AB1A5;
-        Fri, 22 Sep 2023 21:21:42 -0700 (PDT)
-Received: from eig-obgw-6001a.ext.cloudfilter.net ([10.0.30.140])
-        by cmsmtp with ESMTP
-        id jkvmqHpT9QFHRju9GqtY7n; Sat, 23 Sep 2023 04:21:42 +0000
-Received: from gator4166.hostgator.com ([108.167.133.22])
-        by cmsmtp with ESMTPS
-        id ju9EqJd4RuMYjju9FqyKqP; Sat, 23 Sep 2023 04:21:41 +0000
-X-Authority-Analysis: v=2.4 cv=RtrWkQqK c=1 sm=1 tr=0 ts=650e67d5
- a=1YbLdUo/zbTtOZ3uB5T3HA==:117 a=P7XfKmiOJ4/qXqHZrN7ymg==:17
- a=OWjo9vPv0XrRhIrVQ50Ab3nP57M=:19 a=dLZJa+xiwSxG16/P+YVxDGlgEgI=:19
- a=IkcTkHD0fZMA:10 a=zNV7Rl7Rt7sA:10 a=wYkD_t78qR0A:10 a=NEAV23lmAAAA:8
- a=A7XncKjpAAAA:8 a=pGLkceISAAAA:8 a=J1Y8HTJGAAAA:8 a=1XWaLZrsAAAA:8
- a=VwQbUJbxAAAA:8 a=20KFwNOVAAAA:8 a=cm27Pg_UAAAA:8 a=YSKGN3ub9cUXa_79IdMA:9
- a=QEXdDO2ut3YA:10 a=R9rPLQDAdC6-Ub70kJmZ:22 a=y1Q9-5lHfBjTkpIzbSAN:22
- a=AjGcO6oz07-iQ99wixmX:22 a=xmb-EsYY8bH0VWELuYED:22
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=embeddedor.com; s=default; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:Message-ID:Sender
-        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
-        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=MKm/OOPOcf22wZ8nz9NY4DXdP3SNVO9DxaL+RB5zb6I=; b=Cf8NaSfqBtYUiIQRH8jG9IQ3QY
-        wmY7AUXwtVE9+MR/9t1DBZD0QphKKnaCF8zmDKrmIQVBSO3wOao3nXwtCoq/a3NccU4tE1QvlV+97
-        UZA14F+9HXSXDm+McS141IYXyTOvk+9/UHMRp8IDKu7OnkqOvLxK3eRvvOYyvDPJF/v6pBR3idhkG
-        tUg4V12pJvhVuwPlDTgWtKExcFDc/5pJKfu7QFpdvKbpyjHZKJbjkF3LexkXVfBThEgUD7KYNkw87
-        LPRzrpnlGETvo/rRSSHwdTmmxjlviPpB7OOnLSVyINN/BKstrAboAzzFIrH1Z5+4Yr4ie38fMRzbd
-        CTy+EYnw==;
-Received: from [94.239.20.48] (port=46510 helo=[192.168.1.98])
-        by gator4166.hostgator.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.96)
-        (envelope-from <gustavo@embeddedor.com>)
-        id 1qjkXC-000FdJ-39;
-        Fri, 22 Sep 2023 13:05:47 -0500
-Message-ID: <9b175866-63a5-e057-32df-f008cfe449d7@embeddedor.com>
-Date:   Fri, 22 Sep 2023 20:06:44 -0600
+        with ESMTP id S229541AbjIWGDi (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Sat, 23 Sep 2023 02:03:38 -0400
+X-Greylist: delayed 451 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Fri, 22 Sep 2023 23:03:31 PDT
+Received: from smtp.smtpout.orange.fr (smtp-14.smtpout.orange.fr [80.12.242.14])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id DC021A7
+        for <linux-rdma@vger.kernel.org>; Fri, 22 Sep 2023 23:03:31 -0700 (PDT)
+Received: from pop-os.home ([86.243.2.178])
+        by smtp.orange.fr with ESMTPA
+        id jvcTqd9qqGc65jvcTqO2V0; Sat, 23 Sep 2023 07:55:58 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wanadoo.fr;
+        s=t20230301; t=1695448558;
+        bh=X+CtKcB78+yvu8ZZawbK0NDtaqDQpwnaiaMKGnIwB/U=;
+        h=From:To:Cc:Subject:Date;
+        b=C2HhcJ+R6sDDIHtYI2gXorhU6B3gVMn9SuoGR3X5rIh+wNYt/hPC9jn5cSqBv6Za3
+         vIomc5Wzz6nbuyiGZj1/xfCA09+GMJvzSEacyyi4ya7gK1yfbkboYwJpsZr8xqnOLR
+         qHbgNE74BI6omSY5SVeN1nk35LHdKEAlWR/SpSG33ivD5XAl/zVNuZVPGvjc53bkRE
+         Vtem4eY3t6/oM+zcOhWmlBIlU2YuxQ7pv0ThCUbyldHA+NpmB/xW/iCd8P5wzG/2sB
+         2ObQl0jD+Vs83a5Fz1BODZbAEGG3nKOxe5Yr+EK2+oJpUz6Gbv2CHQNVOtNBB38YTZ
+         uXdZxlta2XWKA==
+X-ME-Helo: pop-os.home
+X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
+X-ME-Date: Sat, 23 Sep 2023 07:55:58 +0200
+X-ME-IP: 86.243.2.178
+From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+To:     Yishai Hadas <yishaih@nvidia.com>, Jason Gunthorpe <jgg@ziepe.ca>,
+        Leon Romanovsky <leon@kernel.org>,
+        Jack Morgenstein <jackm@dev.mellanox.co.il>,
+        Roland Dreier <roland@purestorage.com>
+Cc:     linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+        linux-rdma@vger.kernel.org
+Subject: [PATCH] IB/mlx4: Fix the size of a buffer in add_port_entries()
+Date:   Sat, 23 Sep 2023 07:55:56 +0200
+Message-Id: <0bb1443eb47308bc9be30232cc23004c4d4cf43e.1695448530.git.christophe.jaillet@wanadoo.fr>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Subject: Re: [PATCH 14/14] net: sched: Annotate struct tc_pedit with
- __counted_by
-Content-Language: en-US
-To:     Kees Cook <keescook@chromium.org>, Jakub Kicinski <kuba@kernel.org>
-Cc:     Jamal Hadi Salim <jhs@mojatatu.com>,
-        Cong Wang <xiyou.wangcong@gmail.com>,
-        Jiri Pirko <jiri@resnulli.us>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Paolo Abeni <pabeni@redhat.com>, netdev@vger.kernel.org,
-        David Ahern <dsahern@kernel.org>,
-        Martin KaFai Lau <martin.lau@kernel.org>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Yisen Zhuang <yisen.zhuang@huawei.com>,
-        Salil Mehta <salil.mehta@huawei.com>,
-        Claudiu Manoil <claudiu.manoil@nxp.com>,
-        Vladimir Oltean <vladimir.oltean@nxp.com>,
-        "K. Y. Srinivasan" <kys@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        Wei Liu <wei.liu@kernel.org>, Dexuan Cui <decui@microsoft.com>,
-        Long Li <longli@microsoft.com>,
-        Ajay Sharma <sharmaajay@microsoft.com>,
-        Alex Elder <elder@kernel.org>,
-        Pravin B Shelar <pshelar@ovn.org>,
-        Shaokun Zhang <zhangshaokun@hisilicon.com>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Tom Rix <trix@redhat.com>, Simon Horman <horms@kernel.org>,
-        linux-kernel@vger.kernel.org, linux-hyperv@vger.kernel.org,
-        linux-rdma@vger.kernel.org, dev@openvswitch.org,
-        linux-parisc@vger.kernel.org, llvm@lists.linux.dev,
-        linux-hardening@vger.kernel.org
-References: <20230922172449.work.906-kees@kernel.org>
- <20230922172858.3822653-14-keescook@chromium.org>
-From:   "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-In-Reply-To: <20230922172858.3822653-14-keescook@chromium.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - gator4166.hostgator.com
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - embeddedor.com
-X-BWhitelist: no
-X-Source-IP: 94.239.20.48
-X-Source-L: No
-X-Exim-ID: 1qjkXC-000FdJ-39
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
-X-Source-Sender: ([192.168.1.98]) [94.239.20.48]:46510
-X-Source-Auth: gustavo@embeddedor.com
-X-Email-Count: 0
-X-Org:  HG=hgshared;ORG=hostgator;
-X-Source-Cap: Z3V6aWRpbmU7Z3V6aWRpbmU7Z2F0b3I0MTY2Lmhvc3RnYXRvci5jb20=
-X-Local-Domain: yes
-X-CMAE-Envelope: MS4xfNclrJb83lDO6QqwF85gc6R9U1rCIfIw1mNTqVAYSkrzneJHh4l4m24PrWpbT4a9HIr1ee5BXzn9ENLdNPBfAkdd1RGNpnMkFg0D8lxc8KFhpEhwRSag
- KqlwbDLzI7tc08J7VgJbpx6uTQJdDPskbeMtw2+JNX+iwq0BxRNMfa+IussYJTD6COhm6vz64dOYFYdQCe8lcV/cIAvTapxytsA3iWaNc7dSNcYOGSiDCy/D
- nQjwKGfyZyz9H62EuMI1kxcmGES0Y5OZGIYMwvMHXRTqnW2eiIqs7tKAhlGNIrTftoTDvANmXqSVA9S+sd7+aaZrr3TONRvEdd8gVbRKJ5POKIbPRairB73q
- K4zy9IKnHDj6k+q6MNNJQnXAfDlLMGxz3UhconM14Y4Zxk91EpTItR5usOOtiNEBJ8B/ug1s
-X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
+In order to be sure that 'buff' is never truncated, its size should be
+12, not 11.
 
+When building with W=1, this fixes the following warnings:
 
-On 9/22/23 11:28, Kees Cook wrote:
-> Prepare for the coming implementation by GCC and Clang of the __counted_by
-> attribute. Flexible array members annotated with __counted_by can have
-> their accesses bounds-checked at run-time checking via CONFIG_UBSAN_BOUNDS
-> (for array indexing) and CONFIG_FORTIFY_SOURCE (for strcpy/memcpy-family
-> functions).
-> 
-> As found with Coccinelle[1], add __counted_by for struct tc_pedit.
+  drivers/infiniband/hw/mlx4/sysfs.c: In function ‘add_port_entries’:
+  drivers/infiniband/hw/mlx4/sysfs.c:268:34: error: ‘sprintf’ may write a terminating nul past the end of the destination [-Werror=format-overflow=]
+    268 |                 sprintf(buff, "%d", i);
+        |                                  ^
+  drivers/infiniband/hw/mlx4/sysfs.c:268:17: note: ‘sprintf’ output between 2 and 12 bytes into a destination of size 11
+    268 |                 sprintf(buff, "%d", i);
+        |                 ^~~~~~~~~~~~~~~~~~~~~~
+  drivers/infiniband/hw/mlx4/sysfs.c:286:34: error: ‘sprintf’ may write a terminating nul past the end of the destination [-Werror=format-overflow=]
+    286 |                 sprintf(buff, "%d", i);
+        |                                  ^
+  drivers/infiniband/hw/mlx4/sysfs.c:286:17: note: ‘sprintf’ output between 2 and 12 bytes into a destination of size 11
+    286 |                 sprintf(buff, "%d", i);
+        |                 ^~~~~~~~~~~~~~~~~~~~~~
 
-I think the annotation for struct tc_pedit_sel is missing.
+Fixes: c1e7e466120b ("IB/mlx4: Add iov directory in sysfs under the ib device")
+Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+---
+We could also use snprintf(), but it would just lead to a bigger patch for
+no additional benefit.
+This patch is already certainly more a clean-up than a fix.
+---
+ drivers/infiniband/hw/mlx4/sysfs.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Thanks
---
-Gustavo
+diff --git a/drivers/infiniband/hw/mlx4/sysfs.c b/drivers/infiniband/hw/mlx4/sysfs.c
+index 24ee79aa2122..88f534cf690e 100644
+--- a/drivers/infiniband/hw/mlx4/sysfs.c
++++ b/drivers/infiniband/hw/mlx4/sysfs.c
+@@ -223,7 +223,7 @@ void del_sysfs_port_mcg_attr(struct mlx4_ib_dev *device, int port_num,
+ static int add_port_entries(struct mlx4_ib_dev *device, int port_num)
+ {
+ 	int i;
+-	char buff[11];
++	char buff[12];
+ 	struct mlx4_ib_iov_port *port = NULL;
+ 	int ret = 0 ;
+ 	struct ib_port_attr attr;
+-- 
+2.34.1
 
-> Additionally, since the element count member must be set before accessing
-> the annotated flexible array member, move its initialization earlier.
-> 
-> [1] https://github.com/kees/kernel-tools/blob/trunk/coccinelle/examples/counted_by.cocci
-> 
-> Cc: Jamal Hadi Salim <jhs@mojatatu.com>
-> Cc: Cong Wang <xiyou.wangcong@gmail.com>
-> Cc: Jiri Pirko <jiri@resnulli.us>
-> Cc: "David S. Miller" <davem@davemloft.net>
-> Cc: Eric Dumazet <edumazet@google.com>
-> Cc: Jakub Kicinski <kuba@kernel.org>
-> Cc: Paolo Abeni <pabeni@redhat.com>
-> Cc: netdev@vger.kernel.org
-> Signed-off-by: Kees Cook <keescook@chromium.org>
-> ---
->   net/sched/act_pedit.c | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/net/sched/act_pedit.c b/net/sched/act_pedit.c
-> index 1ef8fcfa9997..77c407eff3b0 100644
-> --- a/net/sched/act_pedit.c
-> +++ b/net/sched/act_pedit.c
-> @@ -515,11 +515,11 @@ static int tcf_pedit_dump(struct sk_buff *skb, struct tc_action *a,
->   		spin_unlock_bh(&p->tcf_lock);
->   		return -ENOBUFS;
->   	}
-> +	opt->nkeys = parms->tcfp_nkeys;
->   
->   	memcpy(opt->keys, parms->tcfp_keys,
->   	       flex_array_size(opt, keys, parms->tcfp_nkeys));
->   	opt->index = p->tcf_index;
-> -	opt->nkeys = parms->tcfp_nkeys;
->   	opt->flags = parms->tcfp_flags;
->   	opt->action = p->tcf_action;
->   	opt->refcnt = refcount_read(&p->tcf_refcnt) - ref;
