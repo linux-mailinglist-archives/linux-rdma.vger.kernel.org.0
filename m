@@ -2,60 +2,61 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A8FC07ABC1A
-	for <lists+linux-rdma@lfdr.de>; Sat, 23 Sep 2023 01:01:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AFF667ABD2C
+	for <lists+linux-rdma@lfdr.de>; Sat, 23 Sep 2023 03:41:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230246AbjIVXBx (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 22 Sep 2023 19:01:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36674 "EHLO
+        id S230383AbjIWBly (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 22 Sep 2023 21:41:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54322 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230239AbjIVXBu (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 22 Sep 2023 19:01:50 -0400
-Received: from omta034.useast.a.cloudfilter.net (omta034.useast.a.cloudfilter.net [44.202.169.33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 81A98AF;
-        Fri, 22 Sep 2023 16:01:43 -0700 (PDT)
-Received: from eig-obgw-5002a.ext.cloudfilter.net ([10.0.29.215])
+        with ESMTP id S230378AbjIWBlv (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 22 Sep 2023 21:41:51 -0400
+Received: from omta040.useast.a.cloudfilter.net (omta040.useast.a.cloudfilter.net [44.202.169.39])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 81FC71AB;
+        Fri, 22 Sep 2023 18:41:45 -0700 (PDT)
+Received: from eig-obgw-6007a.ext.cloudfilter.net ([10.0.30.247])
         by cmsmtp with ESMTP
-        id jjHCqDsdyez0Cjp9Dq8wGM; Fri, 22 Sep 2023 23:01:19 +0000
+        id jjHbq7WX7yYOwjreSqyWYO; Sat, 23 Sep 2023 01:41:44 +0000
 Received: from gator4166.hostgator.com ([108.167.133.22])
         by cmsmtp with ESMTPS
-        id jp9aqUSxwjI4jjp9aqtYmu; Fri, 22 Sep 2023 23:01:43 +0000
-X-Authority-Analysis: v=2.4 cv=Uoxwis8B c=1 sm=1 tr=0 ts=650e1cd7
+        id jreRqje4O43lpjreRq8PIr; Sat, 23 Sep 2023 01:41:43 +0000
+X-Authority-Analysis: v=2.4 cv=d+nmdDvE c=1 sm=1 tr=0 ts=650e4257
  a=1YbLdUo/zbTtOZ3uB5T3HA==:117 a=P7XfKmiOJ4/qXqHZrN7ymg==:17
  a=OWjo9vPv0XrRhIrVQ50Ab3nP57M=:19 a=dLZJa+xiwSxG16/P+YVxDGlgEgI=:19
  a=IkcTkHD0fZMA:10 a=zNV7Rl7Rt7sA:10 a=wYkD_t78qR0A:10 a=NEAV23lmAAAA:8
- a=i0EeH86SAAAA:8 a=J1Y8HTJGAAAA:8 a=1XWaLZrsAAAA:8 a=VwQbUJbxAAAA:8
- a=20KFwNOVAAAA:8 a=cm27Pg_UAAAA:8 a=YSKGN3ub9cUXa_79IdMA:9 a=QEXdDO2ut3YA:10
- a=y1Q9-5lHfBjTkpIzbSAN:22 a=AjGcO6oz07-iQ99wixmX:22 a=xmb-EsYY8bH0VWELuYED:22
+ a=8AirrxEcAAAA:8 a=J1Y8HTJGAAAA:8 a=1XWaLZrsAAAA:8 a=VwQbUJbxAAAA:8
+ a=20KFwNOVAAAA:8 a=cm27Pg_UAAAA:8 a=wH_VP6JpHQxiM5NuicYA:9 a=QEXdDO2ut3YA:10
+ a=ST-jHhOKWsTCqRlWije3:22 a=y1Q9-5lHfBjTkpIzbSAN:22 a=AjGcO6oz07-iQ99wixmX:22
+ a=xmb-EsYY8bH0VWELuYED:22
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
         d=embeddedor.com; s=default; h=Content-Transfer-Encoding:Content-Type:
         In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:Message-ID:Sender
         :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
         Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
         List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=DBDGjSTctz03T3kxqYSvA7eXNQPoYq5wl9a6ycqf3dE=; b=rrlfox9rEpjoN0z0e6OcGu6l3z
-        z45KfH2Ubc2bt/MsuiE8FU1H7AlwXb2f157S4keahk67tqZS3qa1f26ffZ8ybjjXKrCaURX9dS4x7
-        YoxoheMj0rQJrdBXap8rTF3OZUWJv/P+G1qvqIuddqH4Q8bivOAoQ0d4dIvuN7odfkSWn9us2cEB7
-        ELoJwvhGeEwxUWQh+3LlN8+Sg3gSuzmA4B5ss+sWIZ8j3M/15IPv1fgGyc/y4c389vM/CH3710OFZ
-        GqBZd5fQzOCeLMSt2qujFy03jFQ9vsYFBRiyq/JdNSOF/Znuw4BfAIPN/v5i5/GyikiGrd8Yc6pCL
-        ClLpWPug==;
-Received: from [94.239.20.48] (port=51456 helo=[192.168.1.98])
+        bh=MzVmwOfKB5MwMYw1j9M03a/MmO+PWTyuUR8xCl+K+/s=; b=qbuwD3+uHDTnn4bXL6W2KVl9Wl
+        Qi8GHz6cRRQEgeJLXFmpKyQGtH9xrNDv6IdLN4A8lUROSx63oc+UgIPXNn7ODLavpTylUm5oytsVz
+        7qiHE6UkkxYR7riDWB3I1a7blFwCqxfKKHJZ4U8ijgholpaPULo9sRcRYm9rNXAywPwMB/6dkn58k
+        8+VxF5Pa0AaqRHyRYBrW7iAqMXhrVs8I/q0+biL/Qlvca1+Gt4LOToNHChe1gICvXtcbMrEF3g/KQ
+        ea+hEpkSFGm5fq8pX4mehXnHKd89T/UgHuvU+ay4zZRaGIx8/WqRfAjom93zcvgtGLGLofqZyiHcN
+        jIQE407Q==;
+Received: from [94.239.20.48] (port=58636 helo=[192.168.1.98])
         by gator4166.hostgator.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
         (Exim 4.96)
         (envelope-from <gustavo@embeddedor.com>)
-        id 1qjkJt-0001Kq-2J;
-        Fri, 22 Sep 2023 12:52:02 -0500
-Message-ID: <aad8eaeb-2d60-adaa-ee84-7f8b1e7c217c@embeddedor.com>
-Date:   Fri, 22 Sep 2023 19:52:41 -0600
+        id 1qjkNc-0005fN-11;
+        Fri, 22 Sep 2023 12:55:52 -0500
+Message-ID: <9bc8cfed-4577-f303-5186-0369f96cf8a7@embeddedor.com>
+Date:   Fri, 22 Sep 2023 19:56:49 -0600
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
  Thunderbird/102.15.1
-Subject: Re: [PATCH 06/14] net: hisilicon: Annotate struct rcb_common_cb with
+Subject: Re: [PATCH 11/14] net: enetc: Annotate struct enetc_psfp_gate with
  __counted_by
 Content-Language: en-US
 To:     Kees Cook <keescook@chromium.org>, Jakub Kicinski <kuba@kernel.org>
-Cc:     Yisen Zhuang <yisen.zhuang@huawei.com>,
-        Salil Mehta <salil.mehta@huawei.com>,
+Cc:     Claudiu Manoil <claudiu.manoil@nxp.com>,
+        Vladimir Oltean <vladimir.oltean@nxp.com>,
         "David S. Miller" <davem@davemloft.net>,
         Eric Dumazet <edumazet@google.com>,
         Paolo Abeni <pabeni@redhat.com>, netdev@vger.kernel.org,
@@ -64,8 +65,8 @@ Cc:     Yisen Zhuang <yisen.zhuang@huawei.com>,
         Martin KaFai Lau <martin.lau@kernel.org>,
         "Gustavo A. R. Silva" <gustavoars@kernel.org>,
         Alexei Starovoitov <ast@kernel.org>,
-        Claudiu Manoil <claudiu.manoil@nxp.com>,
-        Vladimir Oltean <vladimir.oltean@nxp.com>,
+        Yisen Zhuang <yisen.zhuang@huawei.com>,
+        Salil Mehta <salil.mehta@huawei.com>,
         "K. Y. Srinivasan" <kys@microsoft.com>,
         Haiyang Zhang <haiyangz@microsoft.com>,
         Wei Liu <wei.liu@kernel.org>, Dexuan Cui <decui@microsoft.com>,
@@ -84,9 +85,9 @@ Cc:     Yisen Zhuang <yisen.zhuang@huawei.com>,
         linux-parisc@vger.kernel.org, llvm@lists.linux.dev,
         linux-hardening@vger.kernel.org
 References: <20230922172449.work.906-kees@kernel.org>
- <20230922172858.3822653-6-keescook@chromium.org>
+ <20230922172858.3822653-11-keescook@chromium.org>
 From:   "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-In-Reply-To: <20230922172858.3822653-6-keescook@chromium.org>
+In-Reply-To: <20230922172858.3822653-11-keescook@chromium.org>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
@@ -97,24 +98,24 @@ X-AntiAbuse: Sender Address Domain - embeddedor.com
 X-BWhitelist: no
 X-Source-IP: 94.239.20.48
 X-Source-L: No
-X-Exim-ID: 1qjkJt-0001Kq-2J
+X-Exim-ID: 1qjkNc-0005fN-11
 X-Source: 
 X-Source-Args: 
 X-Source-Dir: 
-X-Source-Sender: ([192.168.1.98]) [94.239.20.48]:51456
+X-Source-Sender: ([192.168.1.98]) [94.239.20.48]:58636
 X-Source-Auth: gustavo@embeddedor.com
 X-Email-Count: 0
 X-Org:  HG=hgshared;ORG=hostgator;
 X-Source-Cap: Z3V6aWRpbmU7Z3V6aWRpbmU7Z2F0b3I0MTY2Lmhvc3RnYXRvci5jb20=
 X-Local-Domain: yes
-X-CMAE-Envelope: MS4xfKexkz8Jfpu3MlXBpAYmOs70tcVTcPzT4z1Qvmz8Rv4p9VyRm+EFiODf1grqzcSx4WK5ju7qmWbmXdlOuuSMG8pffTi8pmWLx99hiNptpC3hTtZgOcr5
- pvfiEdLjsAkU6xwXiK0S5g0nLd96Cb8tHuYQCixHJWx+Ns4O3VWRaxR3eKrAb02PKgMdvUj9aAsFgoL021r97/q3Cug7XgkwKCHS8Qqj8Z0elcwb6i8Iv3Yg
- W6HRC0QEMy4n2DJfhKD4MWU0BA7Lxyz6zykk++5LzPtYX6feaLZmAnvSqBY0FQ78tvOoHKoM42eET6Nlm1pn2CwrPusfwP1qMLwE2ZclTJdOUpkVp18FMm/9
- yaVyuT+y7+VJgkD9yW0orOEXcYECgssUZufmckjwG5rJ6m+YiORn6x9QLZ4h1epmy0E/MMo8
+X-CMAE-Envelope: MS4xfHc2+7/44s/62cxPYuyA5fcVNRoiyG2bKVsWz3fds8iD+EMQw/1fy+5UnlwnseotB+VsnBeYZA0Q9+21dB/N8MwlZIRpEDc5tlYlPZBNgEa9HkipO6C8
+ XDokKC0wErsB/pzLIZr3nEgFYkOE4loFnzMX66f3mVR8mUPa+Ttk4gDzV7AjVu8D/tk8NPY/STm24KHPsVVeuvd1NWXj66HLiNUNAng7PtOWdJK7uahfgXzq
+ ZzvJRm93TOIMTyLpdnqdW7vewxKqGFYjj4TjWqJ11orlfjmms6zLxLsMxnLf43JBplwOoPXBcIafFsnUh37swKyXrSss1SbP6n7k4P0fNxAMKnbQntoy/Bwo
+ 4LH8MYDuE8VVKW5t9A/K1UPX2cSC+uK2Zvk/nfCLrNILqnX0VM430vQ5XsLkOadJQxanRk4a
 X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -130,12 +131,12 @@ On 9/22/23 11:28, Kees Cook wrote:
 > (for array indexing) and CONFIG_FORTIFY_SOURCE (for strcpy/memcpy-family
 > functions).
 > 
-> As found with Coccinelle[1], add __counted_by for struct rcb_common_cb.
+> As found with Coccinelle[1], add __counted_by for struct enetc_psfp_gate.
 > 
 > [1] https://github.com/kees/kernel-tools/blob/trunk/coccinelle/examples/counted_by.cocci
 > 
-> Cc: Yisen Zhuang <yisen.zhuang@huawei.com>
-> Cc: Salil Mehta <salil.mehta@huawei.com>
+> Cc: Claudiu Manoil <claudiu.manoil@nxp.com>
+> Cc: Vladimir Oltean <vladimir.oltean@nxp.com>
 > Cc: "David S. Miller" <davem@davemloft.net>
 > Cc: Eric Dumazet <edumazet@google.com>
 > Cc: Jakub Kicinski <kuba@kernel.org>
@@ -150,19 +151,19 @@ Thanks
 Gustavo
 
 > ---
->   drivers/net/ethernet/hisilicon/hns/hns_dsaf_rcb.h | 2 +-
+>   drivers/net/ethernet/freescale/enetc/enetc_qos.c | 2 +-
 >   1 file changed, 1 insertion(+), 1 deletion(-)
 > 
-> diff --git a/drivers/net/ethernet/hisilicon/hns/hns_dsaf_rcb.h b/drivers/net/ethernet/hisilicon/hns/hns_dsaf_rcb.h
-> index a9f805925699..c1e9b6997853 100644
-> --- a/drivers/net/ethernet/hisilicon/hns/hns_dsaf_rcb.h
-> +++ b/drivers/net/ethernet/hisilicon/hns/hns_dsaf_rcb.h
-> @@ -108,7 +108,7 @@ struct rcb_common_cb {
->   	u32 ring_num;
->   	u32 desc_num; /*  desc num per queue*/
->   
-> -	struct ring_pair_cb ring_pair_cb[];
-> +	struct ring_pair_cb ring_pair_cb[] __counted_by(ring_num);
+> diff --git a/drivers/net/ethernet/freescale/enetc/enetc_qos.c b/drivers/net/ethernet/freescale/enetc/enetc_qos.c
+> index 2513b44056c1..b65da49dd926 100644
+> --- a/drivers/net/ethernet/freescale/enetc/enetc_qos.c
+> +++ b/drivers/net/ethernet/freescale/enetc/enetc_qos.c
+> @@ -443,7 +443,7 @@ struct enetc_psfp_gate {
+>   	u32 num_entries;
+>   	refcount_t refcount;
+>   	struct hlist_node node;
+> -	struct action_gate_entry entries[];
+> +	struct action_gate_entry entries[] __counted_by(num_entries);
 >   };
 >   
->   int hns_rcb_buf_size2type(u32 buf_size);
+>   /* Only enable the green color frame now
