@@ -2,38 +2,52 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 539C97ADA1F
-	for <lists+linux-rdma@lfdr.de>; Mon, 25 Sep 2023 16:31:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EF84B7ADACF
+	for <lists+linux-rdma@lfdr.de>; Mon, 25 Sep 2023 17:00:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232340AbjIYOb2 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 25 Sep 2023 10:31:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57984 "EHLO
+        id S232134AbjIYPAu (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 25 Sep 2023 11:00:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59146 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232295AbjIYOb2 (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 25 Sep 2023 10:31:28 -0400
-Received: from out-199.mta1.migadu.com (out-199.mta1.migadu.com [IPv6:2001:41d0:203:375::c7])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD578111
-        for <linux-rdma@vger.kernel.org>; Mon, 25 Sep 2023 07:31:20 -0700 (PDT)
-Message-ID: <a940c460-af66-df45-f718-b669746880db@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1695652279;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=2WPDNNKA2k7FgBTZSXkdlLEYPrspFocQuEH/mY5D46c=;
-        b=CawFHpxBMboUWp7FcOrs0BcioSySChabYeN/Pddk/lpDBUing2ln7kODyCuQfYS1NRXPEI
-        SE3kaAq0+1osmp2eqw1Mq6tDlDOPVLfXfvaAj40AUqL5iGrpP47NEOcfA6ACQq3b865XQI
-        FSF9usWgaZFMh0T2PKoJxPmlMSnw6zw=
-Date:   Mon, 25 Sep 2023 22:31:06 +0800
+        with ESMTP id S229522AbjIYPAt (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 25 Sep 2023 11:00:49 -0400
+Received: from mail-pg1-f176.google.com (mail-pg1-f176.google.com [209.85.215.176])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3959E101;
+        Mon, 25 Sep 2023 08:00:43 -0700 (PDT)
+Received: by mail-pg1-f176.google.com with SMTP id 41be03b00d2f7-578a44dfa88so3790993a12.0;
+        Mon, 25 Sep 2023 08:00:43 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695654042; x=1696258842;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=6JkCTDlMMy2k3BxcZSwpMg50epH4WzQdM8qZG/svhWE=;
+        b=L5tcDYB26Y1aHCEsTUwhh2+k7S/CygpCgwmUddKQkaysf2dQZi3+Uyfvcfz8zz7ndQ
+         muo9jG5chtIb4rxGK3LpLNy6Rl1/WnFT6AdGlSKvUXKCSrvodnEbcY8uNNtNtOkfBcyb
+         vznHnDI++TvreSJiY40xNi16jidYCGiN1YqdiX0pevZ9hAQImAwcdly6wnttoAyef/NF
+         JglJ+U94yEdt779ULslR6iHsa6zEwxwBT0DS33/0InFkw8IxgxzxtQIlzOFJWUdmZvs6
+         KrebUNDZOZnoXL+u9gTI8EC+xRlcM9ypEOJu5UynSHON73dEtGzEluY8yNUFQcqjInyP
+         VVpg==
+X-Gm-Message-State: AOJu0Yxt6YpIj5C6B2nTW8y7PsGAXRd75tGkoOdcdWXUJ5ja2B0X+D5c
+        N7AmwCxdhEWBEsqii1ooATA=
+X-Google-Smtp-Source: AGHT+IFYrzQfrJ/MBGu6dXPdgGPJ08jYURmS4dvkUJxpRp9+AS3acQbEqGbu6AD5oW1evgqOE+PSOA==
+X-Received: by 2002:a17:90b:4b48:b0:273:e8c0:f9b with SMTP id mi8-20020a17090b4b4800b00273e8c00f9bmr4781184pjb.15.1695654042260;
+        Mon, 25 Sep 2023 08:00:42 -0700 (PDT)
+Received: from [192.168.51.14] (c-73-231-117-72.hsd1.ca.comcast.net. [73.231.117.72])
+        by smtp.gmail.com with ESMTPSA id 9-20020a17090a190900b0026fa1931f66sm8998771pjg.9.2023.09.25.08.00.40
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 25 Sep 2023 08:00:41 -0700 (PDT)
+Message-ID: <29c5de53-cc61-4efc-8e8d-690e27756a16@acm.org>
+Date:   Mon, 25 Sep 2023 08:00:39 -0700
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
 Subject: Re: [bug report] blktests srp/002 hang
+Content-Language: en-US
 To:     "Daisuke Matsuda (Fujitsu)" <matsuda-daisuke@fujitsu.com>,
         'Rain River' <rain.1986.08.12@gmail.com>,
         Bob Pearson <rpearsonhpe@gmail.com>
-Cc:     Jason Gunthorpe <jgg@ziepe.ca>,
+Cc:     Zhu Yanjun <yanjun.zhu@linux.dev>, Jason Gunthorpe <jgg@ziepe.ca>,
         "leon@kernel.org" <leon@kernel.org>,
-        Bart Van Assche <bvanassche@acm.org>,
         Shinichiro Kawasaki <shinichiro.kawasaki@wdc.com>,
         RDMA mailing list <linux-rdma@vger.kernel.org>,
         "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>
@@ -55,142 +69,31 @@ References: <dsg6rd66tyiei32zaxs6ddv5ebefr5vtxjwz6d2ewqrcwisogl@ge7jzan7dg5u>
  <4e7aac82-f006-aaa7-6769-d1c9691a0cec@gmail.com>
  <CAJr_XRCFuv_XO3Zk+pfq6C73CgDsnaJT4-G-jq1ds3bdg76iEA@mail.gmail.com>
  <OS7PR01MB1180450455E624D5CD977C461E5FCA@OS7PR01MB11804.jpnprd01.prod.outlook.com>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From:   Zhu Yanjun <yanjun.zhu@linux.dev>
+From:   Bart Van Assche <bvanassche@acm.org>
 In-Reply-To: <OS7PR01MB1180450455E624D5CD977C461E5FCA@OS7PR01MB11804.jpnprd01.prod.outlook.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
+On 9/24/23 21:47, Daisuke Matsuda (Fujitsu) wrote:
+> As Bob wrote above, nobody has found any logical failure in rxe
+> driver.
 
-在 2023/9/25 12:47, Daisuke Matsuda (Fujitsu) 写道:
-> On Sun, Sep 24, 2023 10:18 AM Rain River wrote:
->> On Sat, Sep 23, 2023 at 2:14 AM Bob Pearson <rpearsonhpe@gmail.com> wrote:
->>> On 9/21/23 10:10, Zhu Yanjun wrote:
->>>> 在 2023/9/21 22:39, Bob Pearson 写道:
->>>>> On 9/21/23 09:23, Rain River wrote:
->>>>>> On Thu, Sep 21, 2023 at 2:53 AM Bob Pearson <rpearsonhpe@gmail.com> wrote:
->>>>>>> On 9/20/23 12:22, Bart Van Assche wrote:
->>>>>>>> On 9/20/23 10:18, Bob Pearson wrote:
->>>>>>>>> But I have also seen the same behavior in the siw driver which is
->>>>>>>>> completely independent.
->>>>>>>> Hmm ... I haven't seen any hangs yet with the siw driver.
->>>>>>> I was on Ubuntu 6-9 months ago. Currently I don't see hangs on either.
->>>>>>>>> As mentioned above at the moment Ubuntu is failing rarely. But it used to fail reliably (srp/002 about 75% of
->> the time and srp/011 about 99% of the time.) There haven't been any changes to rxe to explain this.
->>>>>>>> I think that Zhu mentioned commit 9b4b7c1f9f54 ("RDMA/rxe: Add workqueue
->>>>>>>> support for rxe tasks")?
->>>>>>> That change happened well before the failures went away. I was seeing failures at the same rate with tasklets
->>>>>>> and wqs. But after updating Ubuntu and the kernel at some point they all went away.
->>>>>> I made tests on the latest Ubuntu with the latest kernel without the
->>>>>> commit 9b4b7c1f9f54 ("RDMA/rxe: Add workqueue support for rxe tasks").
->>>>>> The latest kernel is v6.6-rc2, the commit 9b4b7c1f9f54 ("RDMA/rxe: Add
->>>>>> workqueue support for rxe tasks") is reverted.
->>>>>> I made blktest tests for about 30 times, this problem does not occur.
->>>>>>
->>>>>> So I confirm that without this commit, this hang problem does not
->>>>>> occur on Ubuntu without the commit 9b4b7c1f9f54 ("RDMA/rxe: Add
->>>>>> workqueue support for rxe tasks").
->>>>>>
->>>>>> Nanthan
->>>>>>
->>>>>>>> Thanks,
->>>>>>>>
->>>>>>>> Bart.
->>>>> This commit is very important for several reasons. It is needed for the ODP implementation
->>>>> that is in the works from Daisuke Matsuda and also for QP scaling of performance. The work
->>>>> queue implementation scales well with increasing qp number while the tasklet implementation
->>>>> does not. This is critical for the drivers use in large scale storage applications. So, if
->>>>> there is a bug in the work queue implementation it needs to be fixed not reverted.
->>>>>
->>>>> I am still hoping that someone will diagnose what is causing the ULPs to hang in terms of
->>>>> something missing causing it to wait.
->>>> Hi, Bob
->>>>
->>>>
->>>> You submitted this commit 9b4b7c1f9f54 ("RDMA/rxe: Add workqueue support for rxe tasks").
->>>>
->>>> You should be very familiar with this commit.
->>>>
->>>> And this commit causes regression.
->>>>
->>>> So you should delved into the source code to find the root cause, then fix it.
->>> Zhu,
->>>
->>> I have spent tons of time over the months trying to figure out what is happening with blktests.
->>> As I have mentioned several times I have seen the same exact failure in siw in the past although
->>> currently that doesn't seem to happen so I had been suspecting that the problem may be in the ULP.
->>> The challenge is that the blktests represents a huge stack of software much of which I am not
->>> familiar with. The bug is a hang in layers above the rxe driver and so far no one has been able to
->>> say with any specificity the rxe driver failed to do something needed to make progress or violated
->>> expected behavior. Without any clue as to where to look it has been hard to make progress.
->> Bob
->>
->> Work queue will sleep. If work queue sleep for long time, the packets
->> will not be sent to ULP. This is why this hang occurs.
-> In general work queue can sleep, but the workload running in rxe driver
-> should not sleep because it was originally running on tasklet and converted
-> to use work queue. A task can sometime take longer because of IRQs, but
-> the same thing can also happen with tasklet. If there is a difference between
-> the two, I think it would be the overhead of scheduring the work queue.
->
->> Difficult to handle this sleep in work queue. It had better revert
->> this commit in RXE.
-> I am objected to reverting the commit at this stage. As Bob wrote above,
-> nobody has found any logical failure in rxe driver. It is quite possible
-> that the patch is just revealing a latent bug in the higher layers.
+That's wrong. In case you would not yet have noticed my latest email in
+this thread, please take a look at
+https://lore.kernel.org/linux-rdma/e8b76fae-780a-470e-8ec4-c6b650793d10@leemhuis.info/T/#m0fd8ea8a4cbc27b37b042ae4f8e9b024f1871a73. 
+I think the report in that email is a 100% proof that there is a 
+use-after-free issue in the rdma_rxe driver. Use-after-free issues have 
+security implications and also can cause data corruption. I propose to 
+revert the commit that introduced the rdma_rxe use-after-free unless 
+someone comes up with a fix for the rdma_rxe driver.
 
-To now, on Debian and Fedora, all the tests with work queue will hang. 
-And after reverting this commit,
-
-no hang will occur.
-
-Before new test results, it is a reasonable suspect that this commit 
-will result in the hang.
-
->
->> Because work queue sleeps,  ULP can not wait for long time for the
->> packets. If packets can not reach ULPs for long time, many problems
->> will occur to ULPs.
-> I wonder where in the rxe driver does it sleep. BTW, most packets are
-> processed in NET_RX_IRQ context, and work queue is scheduled only
-
-Do you mean NET_RX_SOFTIRQ?
-
-Zhu Yanjun
-
-> when there is already a running context. If your speculation is to the point,
-> the hang will occur more frequently if we change it to use work queue exclusively.
-> My ODP patches include a change to do this.
-> Cf. https://lore.kernel.org/lkml/7699a90bc4af10c33c0a46ef6330ed4bb7e7ace6.1694153251.git.matsuda-daisuke@fujitsu.com/
->
-> Thanks,
-> Daisuke
->
->>> My main motivation is making Lustre run on rxe and it does and it's fast enough to meet our needs.
->>> Lustre is similar to srp as a ULP and in all of our testing we have never seen a similar hang. Other
->>> hangs to be sure but not this one. I believe that this bug will never get resolved until someone with
->>> a good understanding of the ulp drivers makes an effort to find out where and why the hang is occurring.
->>>  From there it should be straight forward to fix the problem. I am continuing to investigate and am learning
->>> the device-manager/multipath/srp/scsi stack but I have a long ways to go.
->>>
->>> Bob
->>>
->>>
->>>>
->>>> Jason && Leon, please comment on this.
->>>>
->>>>
->>>> Best Regards,
->>>>
->>>> Zhu Yanjun
->>>>
->>>>> Bob
+Bart.
