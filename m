@@ -2,57 +2,68 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EF84B7ADACF
-	for <lists+linux-rdma@lfdr.de>; Mon, 25 Sep 2023 17:00:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F6487ADB60
+	for <lists+linux-rdma@lfdr.de>; Mon, 25 Sep 2023 17:26:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232134AbjIYPAu (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 25 Sep 2023 11:00:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59146 "EHLO
+        id S233088AbjIYP0Y (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 25 Sep 2023 11:26:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33326 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229522AbjIYPAt (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 25 Sep 2023 11:00:49 -0400
-Received: from mail-pg1-f176.google.com (mail-pg1-f176.google.com [209.85.215.176])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3959E101;
-        Mon, 25 Sep 2023 08:00:43 -0700 (PDT)
-Received: by mail-pg1-f176.google.com with SMTP id 41be03b00d2f7-578a44dfa88so3790993a12.0;
-        Mon, 25 Sep 2023 08:00:43 -0700 (PDT)
+        with ESMTP id S232971AbjIYP0G (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 25 Sep 2023 11:26:06 -0400
+Received: from mail-oi1-x22e.google.com (mail-oi1-x22e.google.com [IPv6:2607:f8b0:4864:20::22e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0FBC41AB;
+        Mon, 25 Sep 2023 08:25:59 -0700 (PDT)
+Received: by mail-oi1-x22e.google.com with SMTP id 5614622812f47-3ae2f8bf865so2855534b6e.2;
+        Mon, 25 Sep 2023 08:25:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1695655558; x=1696260358; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=8wpoCUgdoZFtwFT0b4ltHNG+sybs4t+IMJlmNFEJUmg=;
+        b=IJuI4nbI/ZIKJKZJDAB09svW1B+4A2zaw2vxIFCFxbVa5heE/fWSZbxcSKL+7Nqr9m
+         WIDB2bjXle9a+frE3q7MYhrzRY4MuQke7KZH6cJ+Wq2zg0/j+hwvTFjpIg8ph/ImuOJr
+         wJcwXxjFjy2BQEjz3cU/joQoW+qml9d/iKpnkjB9XIeljHc77owXyOmBX410+zG0y5eb
+         k7APyh7pZYE7Qe74n30dYVVBjzqX9zy8hGnQmyABMi5o6Ln2+kKgFiQSwTDs2b7IQ7b5
+         ksupvbX30IHW6wQOX+7SR7gABrEEGUzXWAbyiRDmuAgDSVhxt7qxywayz6FVr/m2Tf4T
+         wBYA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695654042; x=1696258842;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
+        d=1e100.net; s=20230601; t=1695655558; x=1696260358;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=6JkCTDlMMy2k3BxcZSwpMg50epH4WzQdM8qZG/svhWE=;
-        b=L5tcDYB26Y1aHCEsTUwhh2+k7S/CygpCgwmUddKQkaysf2dQZi3+Uyfvcfz8zz7ndQ
-         muo9jG5chtIb4rxGK3LpLNy6Rl1/WnFT6AdGlSKvUXKCSrvodnEbcY8uNNtNtOkfBcyb
-         vznHnDI++TvreSJiY40xNi16jidYCGiN1YqdiX0pevZ9hAQImAwcdly6wnttoAyef/NF
-         JglJ+U94yEdt779ULslR6iHsa6zEwxwBT0DS33/0InFkw8IxgxzxtQIlzOFJWUdmZvs6
-         KrebUNDZOZnoXL+u9gTI8EC+xRlcM9ypEOJu5UynSHON73dEtGzEluY8yNUFQcqjInyP
-         VVpg==
-X-Gm-Message-State: AOJu0Yxt6YpIj5C6B2nTW8y7PsGAXRd75tGkoOdcdWXUJ5ja2B0X+D5c
-        N7AmwCxdhEWBEsqii1ooATA=
-X-Google-Smtp-Source: AGHT+IFYrzQfrJ/MBGu6dXPdgGPJ08jYURmS4dvkUJxpRp9+AS3acQbEqGbu6AD5oW1evgqOE+PSOA==
-X-Received: by 2002:a17:90b:4b48:b0:273:e8c0:f9b with SMTP id mi8-20020a17090b4b4800b00273e8c00f9bmr4781184pjb.15.1695654042260;
-        Mon, 25 Sep 2023 08:00:42 -0700 (PDT)
-Received: from [192.168.51.14] (c-73-231-117-72.hsd1.ca.comcast.net. [73.231.117.72])
-        by smtp.gmail.com with ESMTPSA id 9-20020a17090a190900b0026fa1931f66sm8998771pjg.9.2023.09.25.08.00.40
+        bh=8wpoCUgdoZFtwFT0b4ltHNG+sybs4t+IMJlmNFEJUmg=;
+        b=v57K7SlI1BIXeN2lilwmWDwoOA892mwyE2PxThJX6FbOOJhKAEdfCX1mclMbyfDSod
+         ysSlKfi4SpLYJoB+He2lX/Cc5gWOHKsNwIEp3B0wzE9PfPR6GNFOwjHx8AzCK77OIX92
+         fFrCLwNmVnY4It3F/2mvRsIp7PGkBgHYnV7tfQ2GJcLu6f/87Qs3C1XVVZbVHpweLyTX
+         oFxsSaCKD5uX6XPMODIqC/QsOyNF45p/M5edzSLKx7cPi6ZgGDnURSfiDyLL6QXV4Qql
+         il7ggwD2ZVeW9MyVasXV87Na9IgusA8ueeGTbXuUcvK+sIVnH/wtWSmFDoWELM3ewgOE
+         6V7w==
+X-Gm-Message-State: AOJu0Yzc+9bJfjxvdgY9hJi3oEGsHBQjREU3eX8VQkGuAXgzhaN2fgCE
+        p/kW4ibV0UxQt2A1HNc1+Hk=
+X-Google-Smtp-Source: AGHT+IEMe4dIunhAhttYhNYdMsGIg8dZuPZBXRq+aXUvbWlOLolr6MzOtzlIhMQiVHOEu6TBuYkx0Q==
+X-Received: by 2002:a05:6808:2122:b0:3ae:a81:55a9 with SMTP id r34-20020a056808212200b003ae0a8155a9mr10433561oiw.24.1695655558279;
+        Mon, 25 Sep 2023 08:25:58 -0700 (PDT)
+Received: from ?IPV6:2603:8081:1405:679b:740c:28cd:7fdb:8de1? (2603-8081-1405-679b-740c-28cd-7fdb-8de1.res6.spectrum.com. [2603:8081:1405:679b:740c:28cd:7fdb:8de1])
+        by smtp.gmail.com with ESMTPSA id bd15-20020a056808220f00b003a75593746asm1510230oib.57.2023.09.25.08.25.57
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 25 Sep 2023 08:00:41 -0700 (PDT)
-Message-ID: <29c5de53-cc61-4efc-8e8d-690e27756a16@acm.org>
-Date:   Mon, 25 Sep 2023 08:00:39 -0700
+        Mon, 25 Sep 2023 08:25:57 -0700 (PDT)
+Message-ID: <53244849-efeb-a56b-55e1-417a19d2000a@gmail.com>
+Date:   Mon, 25 Sep 2023 10:25:56 -0500
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
 Subject: Re: [bug report] blktests srp/002 hang
-Content-Language: en-US
-To:     "Daisuke Matsuda (Fujitsu)" <matsuda-daisuke@fujitsu.com>,
-        'Rain River' <rain.1986.08.12@gmail.com>,
-        Bob Pearson <rpearsonhpe@gmail.com>
+To:     Bart Van Assche <bvanassche@acm.org>,
+        "Daisuke Matsuda (Fujitsu)" <matsuda-daisuke@fujitsu.com>,
+        'Rain River' <rain.1986.08.12@gmail.com>
 Cc:     Zhu Yanjun <yanjun.zhu@linux.dev>, Jason Gunthorpe <jgg@ziepe.ca>,
         "leon@kernel.org" <leon@kernel.org>,
         Shinichiro Kawasaki <shinichiro.kawasaki@wdc.com>,
         RDMA mailing list <linux-rdma@vger.kernel.org>,
         "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>
 References: <dsg6rd66tyiei32zaxs6ddv5ebefr5vtxjwz6d2ewqrcwisogl@ge7jzan7dg5u>
- <9dd0aa0a-d696-a95b-095b-f54d6d31a6ab@linux.dev>
  <d3205633-0cd2-f87e-1c40-21b8172b6da3@linux.dev>
  <nqdsj764d7e56kxevcwnq6qoi6ptuu3bi6ntfakb55vm3toda7@eo3ffzzqrot7>
  <5a4efe6f-d8c6-84ce-377e-eb64bcad706c@linux.dev>
@@ -69,31 +80,33 @@ References: <dsg6rd66tyiei32zaxs6ddv5ebefr5vtxjwz6d2ewqrcwisogl@ge7jzan7dg5u>
  <4e7aac82-f006-aaa7-6769-d1c9691a0cec@gmail.com>
  <CAJr_XRCFuv_XO3Zk+pfq6C73CgDsnaJT4-G-jq1ds3bdg76iEA@mail.gmail.com>
  <OS7PR01MB1180450455E624D5CD977C461E5FCA@OS7PR01MB11804.jpnprd01.prod.outlook.com>
-From:   Bart Van Assche <bvanassche@acm.org>
-In-Reply-To: <OS7PR01MB1180450455E624D5CD977C461E5FCA@OS7PR01MB11804.jpnprd01.prod.outlook.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+ <29c5de53-cc61-4efc-8e8d-690e27756a16@acm.org>
+Content-Language: en-US
+From:   Bob Pearson <rpearsonhpe@gmail.com>
+In-Reply-To: <29c5de53-cc61-4efc-8e8d-690e27756a16@acm.org>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
-        autolearn=no autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 9/24/23 21:47, Daisuke Matsuda (Fujitsu) wrote:
-> As Bob wrote above, nobody has found any logical failure in rxe
-> driver.
+On 9/25/23 10:00, Bart Van Assche wrote:
+> On 9/24/23 21:47, Daisuke Matsuda (Fujitsu) wrote:
+>> As Bob wrote above, nobody has found any logical failure in rxe
+>> driver.
+> 
+> That's wrong. In case you would not yet have noticed my latest email in
+> this thread, please take a look at
+> https://lore.kernel.org/linux-rdma/e8b76fae-780a-470e-8ec4-c6b650793d10@leemhuis.info/T/#m0fd8ea8a4cbc27b37b042ae4f8e9b024f1871a73. I think the report in that email is a 100% proof that there is a use-after-free issue in the rdma_rxe driver. Use-after-free issues have security implications and also can cause data corruption. I propose to revert the commit that introduced the rdma_rxe use-after-free unless someone comes up with a fix for the rdma_rxe driver.
+> 
+> Bart.
 
-That's wrong. In case you would not yet have noticed my latest email in
-this thread, please take a look at
-https://lore.kernel.org/linux-rdma/e8b76fae-780a-470e-8ec4-c6b650793d10@leemhuis.info/T/#m0fd8ea8a4cbc27b37b042ae4f8e9b024f1871a73. 
-I think the report in that email is a 100% proof that there is a 
-use-after-free issue in the rdma_rxe driver. Use-after-free issues have 
-security implications and also can cause data corruption. I propose to 
-revert the commit that introduced the rdma_rxe use-after-free unless 
-someone comes up with a fix for the rdma_rxe driver.
+Thanks Bart, I missed that. This will give me a better target to try to track this down.
 
-Bart.
+Bob
