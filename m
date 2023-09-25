@@ -2,53 +2,53 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E648A7ACDE0
-	for <lists+linux-rdma@lfdr.de>; Mon, 25 Sep 2023 04:06:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 49D347ACDDB
+	for <lists+linux-rdma@lfdr.de>; Mon, 25 Sep 2023 04:06:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231631AbjIYCFn (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Sun, 24 Sep 2023 22:05:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35932 "EHLO
+        id S229810AbjIYCFq (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Sun, 24 Sep 2023 22:05:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35936 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229810AbjIYCFn (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Sun, 24 Sep 2023 22:05:43 -0400
-Received: from mail-yw1-x1130.google.com (mail-yw1-x1130.google.com [IPv6:2607:f8b0:4864:20::1130])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B1967BD;
-        Sun, 24 Sep 2023 19:05:36 -0700 (PDT)
-Received: by mail-yw1-x1130.google.com with SMTP id 00721157ae682-59f7cc71e2eso10037637b3.0;
-        Sun, 24 Sep 2023 19:05:36 -0700 (PDT)
+        with ESMTP id S231653AbjIYCFp (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Sun, 24 Sep 2023 22:05:45 -0400
+Received: from mail-yw1-x1134.google.com (mail-yw1-x1134.google.com [IPv6:2607:f8b0:4864:20::1134])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69A87C6;
+        Sun, 24 Sep 2023 19:05:38 -0700 (PDT)
+Received: by mail-yw1-x1134.google.com with SMTP id 00721157ae682-59e88a28b98so81466257b3.1;
+        Sun, 24 Sep 2023 19:05:38 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1695607535; x=1696212335; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1695607537; x=1696212337; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=XPAXd9AbKmHdNRTfsq4M17cXn9dGkWOfPxW2lTik09I=;
-        b=e1+qZ34p+Y1xPs7h14RDeJHKNxvyO8f2v9ikIxlr83HVPY2A6kLYhCxO2VmCG1WjWN
-         JQiFuyqmVYQc0MTJwiFDKLehAIzYrZl+tgHIOBD4uQMhClPQwF/lePevDe+gMlxuZ+Nl
-         mH4VAeg/LIkFMxexYSuNYh0oAjmhhhYxxY0iWFVgmY9JH4rUk1JOHCl/wVX2p/FccJxj
-         kv1dqLayPse0P0iHJJj/MieBosfJsJIPLIv1V4atulaYXyr3k3sWMwZl+LvhoaGlmPAi
-         KlkLd/OJPUah5wvirYfC+j72gBfRH+rpWU1vCSnspYgJhDleymFg3x+kJijV5Hyy0on2
-         s4uQ==
+        bh=Pl7WIkiSe4Zaq2jneMkE5sjlyOmEq/BXI+Yuo8w6qpI=;
+        b=lRhDeWns/GH3kj1BIlPy/pkN28VoOLBbzXPEV/OR13sj5n7FUPF+XRcra+BtD7iQT3
+         WGxS9X4GVfqR5pcjR1UV+1WDviSzIPBC4+gw9ZvQRILUVd3VAPQlGjtOkJCyZHhbhW8H
+         vLmke/6hkBRuIxyAd3aL+GcmsU3NR08+fTQ55tFOWXEMjtHJcn2fqk4mHNn2M2oS871l
+         WoISSz88Gi+CZV3mnV32gXadNB7yCloDFP/V2wUGeQ/dBlLQs70HHxVjteQrr9Yem9Y7
+         LWl4ux4TEKFXKjueFUys5NuSZ3iuHkg8YFPp3Fgm+FN+1bt1nE9R+23Ap4o2idGsDHyu
+         Ummw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695607535; x=1696212335;
+        d=1e100.net; s=20230601; t=1695607537; x=1696212337;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=XPAXd9AbKmHdNRTfsq4M17cXn9dGkWOfPxW2lTik09I=;
-        b=DMmMxyBu27TfhERpyCS2ReHAgh3W1yzbABBTK6lmUGO1cU/j7uNNdqkcUZrEbt6hkm
-         YLH7l3POFZ/lWHVNiFSlqDmJBIHNoq7ByX8U3AJlGuErAKi2nbnubcU+uYZPlkzafEBH
-         elqKrsXoPPZ7vPek8bPosAiWz3KINCRmX+xv2Pih1DdxpYPyGbs0Xx1rcDE7qC7Hqxu1
-         SHIRdLvs9EHWGYpf2JksG4E++38OVo8tT5ED9l9rRNgHlpLaKy67OUei4AxDvSeYD+v2
-         3ts+WwhNR3YOjeXb8iv5Rxuzdppzdi5Cgg5aM0lyrtJCs2E0zkouOsvux4B+Hyq7BoPZ
-         Qhcg==
-X-Gm-Message-State: AOJu0Yy1VqS4Xdf5ca6ckGO4k5Pud9H8e0r610bZ6L9ImrtHeURf3EUo
-        tGjGxwkeJ8dFcJfVvSU2ccYB0+mJo7s=
-X-Google-Smtp-Source: AGHT+IH8+eYi14F/2p5M0KFhVc6wMfpNm88zZOHympPW6B300GTbyalXgqm+PukIn00bNFRCPOBWxA==
-X-Received: by 2002:a81:4e42:0:b0:59b:14ca:4316 with SMTP id c63-20020a814e42000000b0059b14ca4316mr5342751ywb.43.1695607535532;
-        Sun, 24 Sep 2023 19:05:35 -0700 (PDT)
+        bh=Pl7WIkiSe4Zaq2jneMkE5sjlyOmEq/BXI+Yuo8w6qpI=;
+        b=XL+fId42YNSDQBnQUBje0Jh0lCMlyeOn01ZjDKqNoFTlnrDfSGSLTcImxv4b7nV+ms
+         Ik/NsrfV0fcdq/EWrmOSDAsQu+LA3qD/51nYit7FaDV6hhziflBAtbwqMG2487LLBImz
+         alx0Fq6aQMPPZquFZBbv1/YjdcEOQrBQ05sivBQvKJxQpHitfcOm72gfVYZexnQEhX+B
+         qo9sKf5xNxbPdA4SGctLlZeA0rltJW9JtGBISI1iO9aJeUPE9NxM8J9xOM9MERW1yLz5
+         AudvzZO46m5ttusnfsBHBjo23TEx5PBLv+r/tynWBA7U7pUm180+mb8qsI54Euqao7wG
+         HtWQ==
+X-Gm-Message-State: AOJu0YzeDQKSfXg5DckaglxGpEC84LYtSex3AV9lDOLkUKdyt39RqcDs
+        bt/0tILMnxIkMhkRR0PzwE9tizkriDM=
+X-Google-Smtp-Source: AGHT+IHZUE2RLaOIC8oHQElyrgZslaVjBNUUZZYSjLlbplvxcmxc9RmbkTE7mdselw6XFPW1qFeQqQ==
+X-Received: by 2002:a81:988b:0:b0:59f:6212:e174 with SMTP id p133-20020a81988b000000b0059f6212e174mr2053672ywg.12.1695607537192;
+        Sun, 24 Sep 2023 19:05:37 -0700 (PDT)
 Received: from localhost ([2607:fb90:3eac:cd78:b6b5:ba0f:9e64:f2e1])
-        by smtp.gmail.com with ESMTPSA id gq10-20020a05690c444a00b0059f5828346csm957265ywb.3.2023.09.24.19.05.34
+        by smtp.gmail.com with ESMTPSA id n185-20020a8172c2000000b0059c01bcc363sm2179591ywc.49.2023.09.24.19.05.36
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 24 Sep 2023 19:05:35 -0700 (PDT)
+        Sun, 24 Sep 2023 19:05:36 -0700 (PDT)
 From:   Yury Norov <yury.norov@gmail.com>
 To:     linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
         linux-rdma@vger.kernel.org
@@ -73,9 +73,9 @@ Cc:     Yury Norov <yury.norov@gmail.com>,
         Pawel Chmielewski <pawel.chmielewski@intel.com>,
         Jacob Keller <jacob.e.keller@intel.com>,
         Yury Norov <ynorov@nvidia.com>
-Subject: [PATCH 1/4] net: mellanox: drop mlx5_cpumask_default_spread()
-Date:   Sun, 24 Sep 2023 19:05:25 -0700
-Message-Id: <20230925020528.777578-2-yury.norov@gmail.com>
+Subject: [PATCH 2/4] Revert "sched/topology: Introduce for_each_numa_hop_mask()"
+Date:   Sun, 24 Sep 2023 19:05:26 -0700
+Message-Id: <20230925020528.777578-3-yury.norov@gmail.com>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20230925020528.777578-1-yury.norov@gmail.com>
 References: <20230925020528.777578-1-yury.norov@gmail.com>
@@ -91,70 +91,44 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-The function duplicates existing cpumask_local_spread(), and it's O(N),
-while cpumask_local_spread() implementation is based on bsearch, and
-thus is O(log n), so drop mlx5_cpumask_default_spread() and use generic
-cpumask_local_spread().
+Now that the only user of for_each_numa_hop_mask() is switched to using
+cpumask_local_spread(), for_each_numa_hop_mask() is a dead code. Thus,
+revert commit 06ac01721f7d ("sched/topology: Introduce
+for_each_numa_hop_mask()").
 
 Signed-off-by: Yury Norov <yury.norov@gmail.com>
 Signed-off-by: Yury Norov <ynorov@nvidia.com>
 ---
- drivers/net/ethernet/mellanox/mlx5/core/eq.c | 28 ++------------------
- 1 file changed, 2 insertions(+), 26 deletions(-)
+ include/linux/topology.h | 18 ------------------
+ 1 file changed, 18 deletions(-)
 
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/eq.c b/drivers/net/ethernet/mellanox/mlx5/core/eq.c
-index ea0405e0a43f..bd9f857cc52d 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/eq.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/eq.c
-@@ -828,30 +828,6 @@ static void comp_irq_release_pci(struct mlx5_core_dev *dev, u16 vecidx)
- 	mlx5_irq_release_vector(irq);
+diff --git a/include/linux/topology.h b/include/linux/topology.h
+index fea32377f7c7..344c2362755a 100644
+--- a/include/linux/topology.h
++++ b/include/linux/topology.h
+@@ -261,22 +261,4 @@ sched_numa_hop_mask(unsigned int node, unsigned int hops)
  }
+ #endif	/* CONFIG_NUMA */
  
--static int mlx5_cpumask_default_spread(int numa_node, int index)
--{
--	const struct cpumask *prev = cpu_none_mask;
--	const struct cpumask *mask;
--	int found_cpu = 0;
--	int i = 0;
--	int cpu;
+-/**
+- * for_each_numa_hop_mask - iterate over cpumasks of increasing NUMA distance
+- *                          from a given node.
+- * @mask: the iteration variable.
+- * @node: the NUMA node to start the search from.
+- *
+- * Requires rcu_lock to be held.
+- *
+- * Yields cpu_online_mask for @node == NUMA_NO_NODE.
+- */
+-#define for_each_numa_hop_mask(mask, node)				       \
+-	for (unsigned int __hops = 0;					       \
+-	     mask = (node != NUMA_NO_NODE || __hops) ?			       \
+-		     sched_numa_hop_mask(node, __hops) :		       \
+-		     cpu_online_mask,					       \
+-	     !IS_ERR_OR_NULL(mask);					       \
+-	     __hops++)
 -
--	rcu_read_lock();
--	for_each_numa_hop_mask(mask, numa_node) {
--		for_each_cpu_andnot(cpu, mask, prev) {
--			if (i++ == index) {
--				found_cpu = cpu;
--				goto spread_done;
--			}
--		}
--		prev = mask;
--	}
--
--spread_done:
--	rcu_read_unlock();
--	return found_cpu;
--}
--
- static struct cpu_rmap *mlx5_eq_table_get_pci_rmap(struct mlx5_core_dev *dev)
- {
- #ifdef CONFIG_RFS_ACCEL
-@@ -873,7 +849,7 @@ static int comp_irq_request_pci(struct mlx5_core_dev *dev, u16 vecidx)
- 	int cpu;
- 
- 	rmap = mlx5_eq_table_get_pci_rmap(dev);
--	cpu = mlx5_cpumask_default_spread(dev->priv.numa_node, vecidx);
-+	cpu = cpumask_local_spread(vecidx, dev->priv.numa_node);
- 	irq = mlx5_irq_request_vector(dev, cpu, vecidx, &rmap);
- 	if (IS_ERR(irq))
- 		return PTR_ERR(irq);
-@@ -1125,7 +1101,7 @@ int mlx5_comp_vector_get_cpu(struct mlx5_core_dev *dev, int vector)
- 	if (mask)
- 		cpu = cpumask_first(mask);
- 	else
--		cpu = mlx5_cpumask_default_spread(dev->priv.numa_node, vector);
-+		cpu = cpumask_local_spread(vector, dev->priv.numa_node);
- 
- 	return cpu;
- }
+ #endif /* _LINUX_TOPOLOGY_H */
 -- 
 2.39.2
 
