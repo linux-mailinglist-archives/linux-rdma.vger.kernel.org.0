@@ -2,58 +2,58 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E69FC7AE1ED
-	for <lists+linux-rdma@lfdr.de>; Tue, 26 Sep 2023 00:53:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EA8E67AE1F2
+	for <lists+linux-rdma@lfdr.de>; Tue, 26 Sep 2023 00:56:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230044AbjIYWxb (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 25 Sep 2023 18:53:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35868 "EHLO
+        id S229882AbjIYW4E (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 25 Sep 2023 18:56:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38252 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229585AbjIYWxb (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 25 Sep 2023 18:53:31 -0400
-Received: from mail-lj1-x22e.google.com (mail-lj1-x22e.google.com [IPv6:2a00:1450:4864:20::22e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC041101;
-        Mon, 25 Sep 2023 15:53:24 -0700 (PDT)
-Received: by mail-lj1-x22e.google.com with SMTP id 38308e7fff4ca-2c131ddfeb8so113976821fa.3;
-        Mon, 25 Sep 2023 15:53:24 -0700 (PDT)
+        with ESMTP id S229585AbjIYW4D (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 25 Sep 2023 18:56:03 -0400
+Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F539101;
+        Mon, 25 Sep 2023 15:55:57 -0700 (PDT)
+Received: by mail-lf1-x131.google.com with SMTP id 2adb3069b0e04-5045cb9c091so5553965e87.3;
+        Mon, 25 Sep 2023 15:55:56 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1695682402; x=1696287202; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1695682555; x=1696287355; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=bTFA7XirNBxx9izY+xP7nJZlF6f4Z4aS9x4DgH10L+w=;
-        b=JOqkatnus5ajmrCEQEebjMr7QGKo3cOwW0b4FGF29eNiGmEPdFlLRKhkzC+XRXfNhk
-         45bWyGKGjHKmMYV6FgV9Vzmy6suYK9SnT23absVd2mn4mHB1Ure4rU7ZjN8R8zape8/n
-         A5kuhKElwwC/9sJm4BDZLCZp5tjOCnWgTtTo5+YpwOMCroEAtnZ565iIDyv5cQx7pFag
-         D/oyJR2B7NoDkcz/Chp7B8qUGDWbscI+GDokeOOayD90dZUTBlD9PIDleN4jLg/KS3hF
-         ygdNg93ID9TOB9HC+qd6vtika5h6HCkzhqx1OGb/cl6zyskAOHbUC6sMHhQfvvmJyln5
-         t69g==
+        bh=Ns7ZEArTE1BO39sjKDu0VPQj937rLVJ+UOWzKiwxhK0=;
+        b=dU8fdycnK6zg32sU5NgvslIrefjuvnuh7HC5eRg71jzxv6kA13y6HD5BN+2xwoT5zI
+         K+HKxFAmANmWo/i0E3qLA6A04r6xvJ8sVfsR9p4QwwLKax3GGIrzVLagqXgppWvEE3DE
+         hG6VL+KCLut1LbFegyfezuxfRPpNGStlhJ7c+cUpxlUOuyg0f0z3YA2RHQEMiV/leY6H
+         RGYEmbOK5QYrUM0Dk6Ua9xfwzcprfEMjzGmHjFNLR5rgMSiAWo7qh5B62ed6cN7GGVQu
+         8JuKqgxIbiLsvOLYZtzO4iHWq3nWc9Sd4aKRM9jg4ASzhE4FR5Sw52AmfTkzVv+zQFG1
+         TUew==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695682402; x=1696287202;
+        d=1e100.net; s=20230601; t=1695682555; x=1696287355;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=bTFA7XirNBxx9izY+xP7nJZlF6f4Z4aS9x4DgH10L+w=;
-        b=q2So6PGqkdPQ3P8h2X7V2GOCiT5xynajPQntX8a3fB+DQoTvLTx3xYuc0nnFRKTGeW
-         Uxs8Sfby5USfMjbknuDILIB+x7pyKugVNgioTw2nD7IN2m1Rku6CZoRxpcv5pnsQKZDC
-         yRFuYnCMoc2Zdr/FIMO5UGIqyYr1mv29Yo+38cxQNZ0+n0+PlkyoGnB4fC7qO8yVgNpV
-         IGcal4wGvINThT5qJdVXmkDlnR29923WjoPugVOQBPXXT0LdEIhIuJI/Ih0nqaUItjpH
-         /lNucCcAYCOX4zbNgVKU1V+HymH6BUoiFINoADe5cxU9N6KFfKK+7Omlui2skuO88bI4
-         NnNw==
-X-Gm-Message-State: AOJu0Yyzo4X921sK5k5Bjw+hKJNqh5wBKgh+taJOrkxe3UqtZLqqPSE4
-        hm/w3Ni2gQrtvSld5NDGsEIomC5p5GLnV3pqNv8=
-X-Google-Smtp-Source: AGHT+IE3p/Ug53ilumG37rIY9wsCWRONmji0077f8KgSsK8jFRtg3RQHJxRz6SpWKAfhT9zEh+9HLkp9rVeABMCd5hg=
-X-Received: by 2002:a2e:960e:0:b0:2c0:21b6:e80c with SMTP id
- v14-20020a2e960e000000b002c021b6e80cmr5797194ljh.35.1695682401626; Mon, 25
- Sep 2023 15:53:21 -0700 (PDT)
+        bh=Ns7ZEArTE1BO39sjKDu0VPQj937rLVJ+UOWzKiwxhK0=;
+        b=jmr9qsEUs+6a9a8Q0ETr1koATy9w4by5tQPsdk1t2W6r9W9ZsFMPTV3MXXhQWEJ25+
+         flfJ3+dAxOt8qLXtWJQQjKEDqGJfGm2tw13er4vLHrCAo0HB9uXmr1sj51IFk8ib2Qg7
+         TMirQ7P9LuJk7PP+qUe5R9eNvOZpo0W0xBVX2cxlxhnINK2OsEsii4vzd3ku4atTYfQ2
+         E9C0oGKPPK2D9dTBAU83rOXizk+clKa6vWBaE10iF8r5G4y6R1ygm5svnEPaf0SC8ULu
+         a3Kevoh9npRZWPcuphHEpB5L0ccV+nVziG6F9cFZnSeATGNWcm48QUj8PfbAz1QivRpy
+         fYzQ==
+X-Gm-Message-State: AOJu0YwUvsDbAZr9rwNfhSjotwh/jrZPHrEOgS1D5CO/dPgBR7uV26Nt
+        Xn5+yVZ7YQv+8PgaPIbOyu8xpuxK7pqsucMC0MM=
+X-Google-Smtp-Source: AGHT+IEoPsnqkNoSwbveI2pV7v6ITpQkKQVTfdMSq6RV6I51JKONyhAkoGY+gDqo8UW32GHv0kFdF+T97NIDzpUc7ac=
+X-Received: by 2002:a19:7009:0:b0:502:adbb:f9db with SMTP id
+ h9-20020a197009000000b00502adbbf9dbmr6403156lfc.65.1695682554861; Mon, 25 Sep
+ 2023 15:55:54 -0700 (PDT)
 MIME-Version: 1.0
-References: <20230925020528.777578-1-yury.norov@gmail.com> <20230925020528.777578-5-yury.norov@gmail.com>
- <dbfd06ab-26f3-7b32-6025-2c55e223c576@intel.com>
-In-Reply-To: <dbfd06ab-26f3-7b32-6025-2c55e223c576@intel.com>
+References: <20230925020528.777578-1-yury.norov@gmail.com> <20230925020528.777578-3-yury.norov@gmail.com>
+ <49c0fa46-3787-99c5-2b8b-3da71ce33216@intel.com>
+In-Reply-To: <49c0fa46-3787-99c5-2b8b-3da71ce33216@intel.com>
 From:   Yury Norov <yury.norov@gmail.com>
-Date:   Mon, 25 Sep 2023 15:53:10 -0700
-Message-ID: <CAAH8bW9azQv=bB0yGVTsMb0icboqsEZhig50d2YFdq0Qmo4g5Q@mail.gmail.com>
-Subject: Re: [PATCH 4/4] lib/cpumask: don't mention for_each_numa_hop_mask in cpumask_local_spread()"
+Date:   Mon, 25 Sep 2023 15:55:43 -0700
+Message-ID: <CAAH8bW_Lu_wk7q6eu6evV-ejVXJZn0s3ikw=e=r_tJfYOvqg0Q@mail.gmail.com>
+Subject: Re: [PATCH 2/4] Revert "sched/topology: Introduce for_each_numa_hop_mask()"
 To:     Jacob Keller <jacob.e.keller@intel.com>
 Cc:     linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
         linux-rdma@vger.kernel.org, Tariq Toukan <ttoukan.linux@gmail.com>,
@@ -87,27 +87,41 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Mon, Sep 25, 2023 at 3:48=E2=80=AFPM Jacob Keller <jacob.e.keller@intel.=
+On Mon, Sep 25, 2023 at 3:46=E2=80=AFPM Jacob Keller <jacob.e.keller@intel.=
 com> wrote:
 >
 >
 >
 > On 9/24/2023 7:05 PM, Yury Norov wrote:
-> > Now that for_each_numa_hop_mask() is reverted, also revert reference to
-> > it in the comment to cpumask_local_spread().
-> >
-> > This partially reverts commit 2ac4980c57f5 ("lib/cpumask: update commen=
-t
-> > for cpumask_local_spread()")
+> > Now that the only user of for_each_numa_hop_mask() is switched to using
+> > cpumask_local_spread(), for_each_numa_hop_mask() is a dead code. Thus,
+> > revert commit 06ac01721f7d ("sched/topology: Introduce
+> > for_each_numa_hop_mask()").
 > >
 > > Signed-off-by: Yury Norov <yury.norov@gmail.com>
 > > Signed-off-by: Yury Norov <ynorov@nvidia.com>
 > > ---
->
-> Interesting to see both sign-offs here. Not sure what that implies here
-> since both represent you :)
+> >  include/linux/topology.h | 18 ------------------
+> >  1 file changed, 18 deletions(-)
+> >
+> > diff --git a/include/linux/topology.h b/include/linux/topology.h
+> > index fea32377f7c7..344c2362755a 100644
+> > --- a/include/linux/topology.h
+> > +++ b/include/linux/topology.h
+> > @@ -261,22 +261,4 @@ sched_numa_hop_mask(unsigned int node, unsigned in=
+t hops)
+> >  }
+> >  #endif       /* CONFIG_NUMA */
+> >
 >
 > Reviewed-by: Jacob Keller <jacob.e.keller@intel.com>
+>
+> I might have squashed all of 2 through 4 into a single patch but not a
+> big deal.
 
-Thanks for the review, Jacob. The 2nd sign-off is nothing interesting,
-just bureaucracy.
+I just wanted to keep the changes more trackable. No objections to squash 2=
+-4,
+whatever maintainers will feel better.
+
+Thanks,
+Yury
