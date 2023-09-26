@@ -2,88 +2,76 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C7F017AEC28
-	for <lists+linux-rdma@lfdr.de>; Tue, 26 Sep 2023 14:09:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BD4CE7AECE8
+	for <lists+linux-rdma@lfdr.de>; Tue, 26 Sep 2023 14:33:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234490AbjIZMJP (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 26 Sep 2023 08:09:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42344 "EHLO
+        id S234624AbjIZMdR (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 26 Sep 2023 08:33:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33248 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230231AbjIZMJO (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 26 Sep 2023 08:09:14 -0400
-Received: from out30-97.freemail.mail.aliyun.com (out30-97.freemail.mail.aliyun.com [115.124.30.97])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6DF89E6;
-        Tue, 26 Sep 2023 05:09:07 -0700 (PDT)
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R721e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018045192;MF=dust.li@linux.alibaba.com;NM=1;PH=DS;RN=18;SR=0;TI=SMTPD_---0VswpDWa_1695730143;
-Received: from localhost(mailfrom:dust.li@linux.alibaba.com fp:SMTPD_---0VswpDWa_1695730143)
-          by smtp.aliyun-inc.com;
-          Tue, 26 Sep 2023 20:09:04 +0800
-Date:   Tue, 26 Sep 2023 20:09:03 +0800
-From:   Dust Li <dust.li@linux.alibaba.com>
-To:     Leon Romanovsky <leon@kernel.org>,
-        Alexandra Winter <wintera@linux.ibm.com>
-Cc:     Albert Huang <huangjie.albert@bytedance.com>,
-        Karsten Graul <kgraul@linux.ibm.com>,
-        Wenjia Zhang <wenjia@linux.ibm.com>,
-        Jan Karcher <jaka@linux.ibm.com>,
-        "D. Wythe" <alibuda@linux.alibaba.com>,
-        Tony Lu <tonylu@linux.alibaba.com>,
-        Wen Gu <guwen@linux.alibaba.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>, linux-s390@vger.kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        RDMA mailing list <linux-rdma@vger.kernel.org>,
-        Jason Gunthorpe <jgg@nvidia.com>
-Subject: Re: [PATCH net-next] net/smc: add support for netdevice in
- containers.
-Message-ID: <20230926120903.GD92403@linux.alibaba.com>
-Reply-To: dust.li@linux.alibaba.com
-References: <20230925023546.9964-1-huangjie.albert@bytedance.com>
- <20230926104831.GJ1642130@unreal>
- <76a74084-a900-d559-1f63-deff84e5848a@linux.ibm.com>
- <20230926114104.GL1642130@unreal>
+        with ESMTP id S229827AbjIZMdR (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 26 Sep 2023 08:33:17 -0400
+Received: from smtp-relay-services-0.canonical.com (smtp-relay-services-0.canonical.com [185.125.188.250])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69173FB
+        for <linux-rdma@vger.kernel.org>; Tue, 26 Sep 2023 05:33:09 -0700 (PDT)
+Received: from juju-98d295-prod-launchpad-15.localdomain (buildd-manager.lp.internal [10.131.215.202])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-relay-services-0.canonical.com (Postfix) with ESMTPSA id 9B92442301
+        for <linux-rdma@vger.kernel.org>; Tue, 26 Sep 2023 12:32:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=launchpad.net;
+        s=20210803; t=1695731566;
+        bh=HxkIZM0+5/DMY/CB92GtpfbI9ulHvLMDyuGWC412x/k=;
+        h=Content-Type:MIME-Version:To:From:Subject:Message-Id:Date:
+         Reply-To;
+        b=N5KZJB2PTac9KqumfU/fc/0xEXkQXG7DabZXVx7UBBnglHvRzgKQHQ/I3n5HzbJI9
+         DrAJeaxFC4pgeywLceBfgIR2x2hQ+fnaPRvCTWQML7PV7M/Rq5R8eA2Bl9KHBhT+Gl
+         wKuqEuJu7zobKLLeNvkRL0i6wVqt2gEUR/In9LNZEzTNYmIRNw8IN1qsU3TFIfzu3G
+         xs0S+E4D7DQbrlsuUH5ZJPfDTg/UwM8h+WJsIBY+Nh6G0xn6ziKPZP/Py8w3M3vz84
+         zltELVNCUKV4YxFooU0p9JBOzSXUxTtj1JdmMKubismdEQnUV84klVxm2MpzPHogWJ
+         1cYoNIoKjZ3Bg==
+Received: from [10.131.215.202] (localhost [127.0.0.1])
+        by juju-98d295-prod-launchpad-15.localdomain (Postfix) with ESMTP id A76157E01A
+        for <linux-rdma@vger.kernel.org>; Tue, 26 Sep 2023 12:32:36 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230926114104.GL1642130@unreal>
-X-Spam-Status: No, score=-9.9 required=5.0 tests=BAYES_00,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Transfer-Encoding: quoted-printable
+X-Launchpad-Message-Rationale: Requester @linux-rdma
+X-Launchpad-Message-For: linux-rdma
+X-Launchpad-Notification-Type: recipe-build-status
+X-Launchpad-Archive: ~linux-rdma/ubuntu/rdma-core-daily
+X-Launchpad-Build-State: MANUALDEPWAIT
+To:     Linux RDMA <linux-rdma@vger.kernel.org>
+From:   noreply@launchpad.net
+Subject: [recipe build #3608236] of ~linux-rdma rdma-core-daily in xenial: Dependency wait
+Message-Id: <169573155667.3355308.18433114899117967694.launchpad@juju-98d295-prod-launchpad-15>
+Date:   Tue, 26 Sep 2023 12:32:36 -0000
+Reply-To: noreply@launchpad.net
+Sender: noreply@launchpad.net
+X-Generated-By: Launchpad (canonical.com); Revision="d47b73632f1fccdd9fdd4e6145a4784874303779"; Instance="launchpad-buildd-manager"
+X-Launchpad-Hash: 848678f55ccb467a3ed0a849fc00afbffa6cdcc9
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Tue, Sep 26, 2023 at 02:41:04PM +0300, Leon Romanovsky wrote:
->On Tue, Sep 26, 2023 at 01:14:04PM +0200, Alexandra Winter wrote:
->> 
->> 
->> On 26.09.23 12:48, Leon Romanovsky wrote:
->> > This patch made me wonder, why doesn't SMC use RDMA-CM like all other
->> > in-kernel ULPs which work over RDMA?
->> > 
->> > Thanks
->> 
->> The idea behind SMC is that it should look an feel to the applications
->> like TCP sockets. So for connection management it uses TCP over IP;
->> RDMA is just used for the data transfer.
->
->I think that it is not different from other ULPs. For example, RDS works
->over sockets and doesn't touch or reimplement GID management logic.
+ * State: Dependency wait
+ * Recipe: linux-rdma/rdma-core-daily
+ * Archive: ~linux-rdma/ubuntu/rdma-core-daily
+ * Distroseries: xenial
+ * Duration: 2 minutes
+ * Build Log: https://launchpad.net/~linux-rdma/+archive/ubuntu/rdma-core-d=
+aily/+recipebuild/3608236/+files/buildlog.txt.gz
+ * Upload Log:=20
+ * Builder: https://launchpad.net/builders/lcy02-amd64-100
 
-I think the difference is SMC socket need to be compatible with TCP
-socket, so it need a tcp socket to fallback when something is not working.
+--=20
+https://launchpad.net/~linux-rdma/+archive/ubuntu/rdma-core-daily/+recipebu=
+ild/3608236
+Your team Linux RDMA is the requester of the build.
 
-If SMC works with rdmacm, it still need a fallback-to-tcp socket, and
-the tcp connection has to be established for each SMC socket before the
-SMC socket got established, that would make rdmacm meaningless.
-
-Best regards,
-Dust
-
->
->Thanks
