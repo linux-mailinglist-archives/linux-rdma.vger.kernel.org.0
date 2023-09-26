@@ -2,63 +2,78 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CADFD7AE8F5
-	for <lists+linux-rdma@lfdr.de>; Tue, 26 Sep 2023 11:24:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 219707AE93E
+	for <lists+linux-rdma@lfdr.de>; Tue, 26 Sep 2023 11:30:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234158AbjIZJZD (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 26 Sep 2023 05:25:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42394 "EHLO
+        id S234086AbjIZJaR (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 26 Sep 2023 05:30:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50068 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233835AbjIZJZC (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 26 Sep 2023 05:25:02 -0400
-Received: from verein.lst.de (verein.lst.de [213.95.11.211])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 07CAABE;
-        Tue, 26 Sep 2023 02:24:56 -0700 (PDT)
-Received: by verein.lst.de (Postfix, from userid 2407)
-        id 17E4968D05; Tue, 26 Sep 2023 11:24:53 +0200 (CEST)
-Date:   Tue, 26 Sep 2023 11:24:52 +0200
-From:   Christoph Hellwig <hch@lst.de>
-To:     Christian Brauner <brauner@kernel.org>
-Cc:     Christoph Hellwig <hch@lst.de>, Al Viro <viro@zeniv.linux.org.uk>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Alexander Gordeev <agordeev@linux.ibm.com>,
-        Fenghua Yu <fenghua.yu@intel.com>,
-        Reinette Chatre <reinette.chatre@intel.com>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Richard Weinberger <richard@nod.at>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
-        Tejun Heo <tj@kernel.org>,
-        Trond Myklebust <trond.myklebust@hammerspace.com>,
-        Anna Schumaker <anna@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Damien Le Moal <dlemoal@kernel.org>,
-        Naohiro Aota <naohiro.aota@wdc.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-s390@vger.kernel.org, linux-rdma@vger.kernel.org,
-        linux-nfs@vger.kernel.org, linux-hardening@vger.kernel.org,
-        cgroups@vger.kernel.org
-Subject: Re: [PATCH 01/19] fs: reflow deactivate_locked_super
-Message-ID: <20230926092452.GD12504@lst.de>
-References: <20230913111013.77623-1-hch@lst.de> <20230913111013.77623-2-hch@lst.de> <20230913-betuchte-vervollkommnen-0609db0eaab8@brauner>
+        with ESMTP id S234187AbjIZJaQ (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 26 Sep 2023 05:30:16 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE21DEB
+        for <linux-rdma@vger.kernel.org>; Tue, 26 Sep 2023 02:30:09 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9A988C433C7;
+        Tue, 26 Sep 2023 09:30:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1695720609;
+        bh=UtA+wsigUc3f5UjpJdMN70XK9Zr4QqgGShC4CLgSbbs=;
+        h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+        b=tcc95ZQA5FWIwB0glCsvCTmWMHMFY7a0EKbEOyHovcXQKdezAS67EbwHAu3m92FGF
+         iY+uluth8r+0cPhlIpOdD1kL7i8Jrc9Ket0w+xv1C7ORgwekmfEajpuw4oYvyIib3D
+         ax1tMLEVZ/IxuBoS1hmcnIUkvob1GLSRp57mw61QJPdwjFF4kx/K6Ogc7q+vlGAw+B
+         Q8VytxUjqxAWhL7vq4UOUKhKuSxq3N+7phPyoLj/zwQFYpvgzhzIkKlAkTL5Gs3awy
+         lJoek1QWFNyZ7YSSc3StB59jAsywB0RddVXNsYPfYR7aTiQYK3oIb/MC5yy7a717mt
+         Rzke/+wXjIk+g==
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Jason Gunthorpe <jgg@ziepe.ca>, Leon Romanovsky <leon@kernel.org>
+Cc:     Edward Srouji <edwards@nvidia.com>, linux-rdma@vger.kernel.org,
+        Maor Gottlieb <maorg@nvidia.com>,
+        Mark Bloch <mbloch@nvidia.com>,
+        Michael Guralnik <michaelgur@nvidia.com>,
+        Shay Drory <shayd@nvidia.com>,
+        Leon Romanovsky <leon@kernel.org>
+In-Reply-To: <cover.1695203958.git.leonro@nvidia.com>
+References: <cover.1695203958.git.leonro@nvidia.com>
+Subject: Re: [PATCH rdma-rc 0/3] Batch of mlx5_ib fixes
+Message-Id: <169572060499.2578714.17084293393659925252.b4-ty@kernel.org>
+Date:   Tue, 26 Sep 2023 12:30:04 +0300
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230913-betuchte-vervollkommnen-0609db0eaab8@brauner>
-User-Agent: Mutt/1.5.17 (2007-11-01)
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
-        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Mailer: b4 0.12-dev-a055d
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Wed, Sep 13, 2023 at 06:35:03PM +0200, Christian Brauner wrote:
-> I wouldn't mind s/s/sb/ here as well. So we stop using @s in some and
-> @sb in other places.
 
-I did that in an earlier version and decided to have some less churn.
-But I can add it back.
+On Wed, 20 Sep 2023 13:01:53 +0300, Leon Romanovsky wrote:
+> From: Leon Romanovsky <leonro@nvidia.com>
+> 
+> Hi,
+> 
+> This patchset is combination of various mlx5_ib fixes.
+> 
+> Thanks
+> 
+> [...]
+
+Applied, thanks!
+
+[1/3] RDMA/mlx5: Fix assigning access flags to cache mkeys
+      https://git.kernel.org/rdma/rdma/c/4f14c6c0213e1d
+[2/3] RDMA/mlx5: Fix mutex unlocking on error flow for steering anchor creation
+      https://git.kernel.org/rdma/rdma/c/2fad8f06a582cd
+[3/3] RDMA/mlx5: Fix NULL string error
+      https://git.kernel.org/rdma/rdma/c/dab994bcc609a1
+
+Best regards,
+-- 
+Leon Romanovsky <leon@kernel.org>
