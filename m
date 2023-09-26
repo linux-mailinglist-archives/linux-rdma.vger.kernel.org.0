@@ -2,47 +2,42 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 219707AE93E
-	for <lists+linux-rdma@lfdr.de>; Tue, 26 Sep 2023 11:30:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A34F7AE940
+	for <lists+linux-rdma@lfdr.de>; Tue, 26 Sep 2023 11:31:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234086AbjIZJaR (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 26 Sep 2023 05:30:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50068 "EHLO
+        id S234207AbjIZJbD (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 26 Sep 2023 05:31:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50310 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234187AbjIZJaQ (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 26 Sep 2023 05:30:16 -0400
+        with ESMTP id S234225AbjIZJbC (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 26 Sep 2023 05:31:02 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE21DEB
-        for <linux-rdma@vger.kernel.org>; Tue, 26 Sep 2023 02:30:09 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9A988C433C7;
-        Tue, 26 Sep 2023 09:30:08 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6EA4712A;
+        Tue, 26 Sep 2023 02:30:50 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6AD69C433C7;
+        Tue, 26 Sep 2023 09:30:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1695720609;
-        bh=UtA+wsigUc3f5UjpJdMN70XK9Zr4QqgGShC4CLgSbbs=;
-        h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-        b=tcc95ZQA5FWIwB0glCsvCTmWMHMFY7a0EKbEOyHovcXQKdezAS67EbwHAu3m92FGF
-         iY+uluth8r+0cPhlIpOdD1kL7i8Jrc9Ket0w+xv1C7ORgwekmfEajpuw4oYvyIib3D
-         ax1tMLEVZ/IxuBoS1hmcnIUkvob1GLSRp57mw61QJPdwjFF4kx/K6Ogc7q+vlGAw+B
-         Q8VytxUjqxAWhL7vq4UOUKhKuSxq3N+7phPyoLj/zwQFYpvgzhzIkKlAkTL5Gs3awy
-         lJoek1QWFNyZ7YSSc3StB59jAsywB0RddVXNsYPfYR7aTiQYK3oIb/MC5yy7a717mt
-         Rzke/+wXjIk+g==
+        s=k20201202; t=1695720649;
+        bh=hj4oxhOkY4q3xTfX5ieHdoLzD+mLcLaLDO8XnC6wpXI=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=kW10MjOWGXCIICnfagr6XcT9Im7CQZjdm9bT1IhfwzLWOa/brK9fo0al2Nmc3o1Wy
+         ric8CucrtnCGkTXN/4oTdNdb5LlIwhyGyk1vbuy3RrP7vx9sUF37yKOmL7Nj3Ab8/0
+         IenBaFbogr9fJvlk84kVZFmZ+INx8iIYrXC2yf0AHqK/7TORqZNvE33vqibQQib6Kt
+         S1FgXH6p30FKqzbHsQduKb1hP7Xah1EwPhQrAsEZWBb3uPcDhpPhhXiTLyIlFoD/Du
+         hjYM8vaaYJr+6/a9/+1QcixYCwGmRglkygFkWh7qtseYDHGqLlU8hUBuhXI6vMLUkd
+         rxiNZhAs9wfoA==
+Date:   Tue, 26 Sep 2023 12:30:46 +0300
 From:   Leon Romanovsky <leon@kernel.org>
-To:     Jason Gunthorpe <jgg@ziepe.ca>, Leon Romanovsky <leon@kernel.org>
-Cc:     Edward Srouji <edwards@nvidia.com>, linux-rdma@vger.kernel.org,
-        Maor Gottlieb <maorg@nvidia.com>,
-        Mark Bloch <mbloch@nvidia.com>,
-        Michael Guralnik <michaelgur@nvidia.com>,
-        Shay Drory <shayd@nvidia.com>,
-        Leon Romanovsky <leon@kernel.org>
-In-Reply-To: <cover.1695203958.git.leonro@nvidia.com>
-References: <cover.1695203958.git.leonro@nvidia.com>
-Subject: Re: [PATCH rdma-rc 0/3] Batch of mlx5_ib fixes
-Message-Id: <169572060499.2578714.17084293393659925252.b4-ty@kernel.org>
-Date:   Tue, 26 Sep 2023 12:30:04 +0300
+To:     Junxian Huang <huangjunxian6@hisilicon.com>
+Cc:     jgg@ziepe.ca, linux-rdma@vger.kernel.org, linuxarm@huawei.com,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH for-next] RDMA/hns: Support SRQ record doorbell
+Message-ID: <20230926093046.GG1642130@unreal>
+References: <20230920033005.1557-1-huangjunxian6@hisilicon.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Mailer: b4 0.12-dev-a055d
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230920033005.1557-1-huangjunxian6@hisilicon.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
@@ -53,27 +48,30 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-
-On Wed, 20 Sep 2023 13:01:53 +0300, Leon Romanovsky wrote:
-> From: Leon Romanovsky <leonro@nvidia.com>
+On Wed, Sep 20, 2023 at 11:30:05AM +0800, Junxian Huang wrote:
+> From: Yangyang Li <liyangyang20@huawei.com>
 > 
-> Hi,
+> Compared with normal doorbell, using record doorbell can shorten the
+> process of ringing the doorbell and reduce the latency.
 > 
-> This patchset is combination of various mlx5_ib fixes.
+> Add a flag HNS_ROCE_CAP_FLAG_SRQ_RECORD_DB to allow FW to
+> enable/disable SRQ record doorbell.
 > 
-> Thanks
+> If the flag above is set, allocate the dma buffer for SRQ record
+> doorbell and write the buffer address into SRQC during SRQ creation.
 > 
-> [...]
+> For userspace SRQ, add a flag HNS_ROCE_RSP_SRQ_CAP_RECORD_DB to notify
+> userspace whether the SRQ record doorbell is enabled.
+> 
+> Signed-off-by: Yangyang Li <liyangyang20@huawei.com>
+> Signed-off-by: Junxian Huang <huangjunxian6@hisilicon.com>
+> ---
+>  drivers/infiniband/hw/hns/hns_roce_device.h |  3 +
+>  drivers/infiniband/hw/hns/hns_roce_hw_v2.c  | 30 ++++++--
+>  drivers/infiniband/hw/hns/hns_roce_srq.c    | 85 ++++++++++++++++++++-
+>  include/uapi/rdma/hns-abi.h                 | 13 +++-
+>  4 files changed, 120 insertions(+), 11 deletions(-)
 
-Applied, thanks!
+Junxian, do you plan to resubmit it this patch to fix kbuild error?
 
-[1/3] RDMA/mlx5: Fix assigning access flags to cache mkeys
-      https://git.kernel.org/rdma/rdma/c/4f14c6c0213e1d
-[2/3] RDMA/mlx5: Fix mutex unlocking on error flow for steering anchor creation
-      https://git.kernel.org/rdma/rdma/c/2fad8f06a582cd
-[3/3] RDMA/mlx5: Fix NULL string error
-      https://git.kernel.org/rdma/rdma/c/dab994bcc609a1
-
-Best regards,
--- 
-Leon Romanovsky <leon@kernel.org>
+Thanks
