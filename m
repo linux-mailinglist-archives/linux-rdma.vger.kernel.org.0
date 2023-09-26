@@ -2,85 +2,79 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 731037AE96E
-	for <lists+linux-rdma@lfdr.de>; Tue, 26 Sep 2023 11:39:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 778D17AE977
+	for <lists+linux-rdma@lfdr.de>; Tue, 26 Sep 2023 11:41:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234143AbjIZJj2 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 26 Sep 2023 05:39:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54548 "EHLO
+        id S234114AbjIZJlm (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 26 Sep 2023 05:41:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39700 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234114AbjIZJjV (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 26 Sep 2023 05:39:21 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 96696120;
-        Tue, 26 Sep 2023 02:39:15 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 78FBDC433C7;
-        Tue, 26 Sep 2023 09:39:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1695721155;
-        bh=AnTJXPiJiPV4M7FfzIw4U1feaoScrcoS51aixAIgF3w=;
-        h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-        b=DP4/3ICboAtuex0rLt47pvfLL3/RpYL6P55AKFzcXmVGZnH0i6TjpWMJrlhHiYn9k
-         MhAXJZRWAp9kThHiH/VTOGUh5AskLNX4OMUIOUStCAqYAJ/tQuLHukGzMdqgpbayHR
-         zmReRYdRUWY18/wvTO9lm8rsdEzMPn6Feb4r06u9zm7pmBgPHy4Ax7zrlY7GDPiV03
-         IMDkQMwDydoyY33amfyXPO9eMuD3bxS9UxxZl1cfLcK6FNpKmuZ1lB7UShYo5P725S
-         ZO1IfpRmkWfsLGQREkgTfxuiqzUkJys4aG4nec+fY6NHcDv/52mBXOZbGdimMUETzh
-         LBUzEWnj+nhkA==
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Jason Gunthorpe <jgg@ziepe.ca>, Leon Romanovsky <leon@kernel.org>
-Cc:     Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>, linux-kernel@vger.kernel.org,
-        linux-rdma@vger.kernel.org, Mark Zhang <markzhang@nvidia.com>,
-        netdev@vger.kernel.org, Or Har-Toov <ohartoov@nvidia.com>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Patrisious Haddad <phaddad@nvidia.com>,
-        Saeed Mahameed <saeedm@nvidia.com>,
-        Leon Romanovsky <leon@kernel.org>
-In-Reply-To: <cover.1695204156.git.leon@kernel.org>
-References: <cover.1695204156.git.leon@kernel.org>
-Subject: Re: [PATCH rdma-next 0/6] Add 800Gb (XDR) speed support
-Message-Id: <169572115099.2612409.2085687465811625783.b4-ty@kernel.org>
-Date:   Tue, 26 Sep 2023 12:39:10 +0300
+        with ESMTP id S233835AbjIZJll (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 26 Sep 2023 05:41:41 -0400
+Received: from verein.lst.de (verein.lst.de [213.95.11.211])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1DAF4B3;
+        Tue, 26 Sep 2023 02:41:35 -0700 (PDT)
+Received: by verein.lst.de (Postfix, from userid 2407)
+        id DEB6468AA6; Tue, 26 Sep 2023 11:41:30 +0200 (CEST)
+Date:   Tue, 26 Sep 2023 11:41:30 +0200
+From:   Christoph Hellwig <hch@lst.de>
+To:     Al Viro <viro@zeniv.linux.org.uk>
+Cc:     Christoph Hellwig <hch@lst.de>,
+        Christian Brauner <brauner@kernel.org>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Alexander Gordeev <agordeev@linux.ibm.com>,
+        Fenghua Yu <fenghua.yu@intel.com>,
+        Reinette Chatre <reinette.chatre@intel.com>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Richard Weinberger <richard@nod.at>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
+        Tejun Heo <tj@kernel.org>,
+        Trond Myklebust <trond.myklebust@hammerspace.com>,
+        Anna Schumaker <anna@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Damien Le Moal <dlemoal@kernel.org>,
+        Naohiro Aota <naohiro.aota@wdc.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-s390@vger.kernel.org, linux-rdma@vger.kernel.org,
+        linux-nfs@vger.kernel.org, linux-hardening@vger.kernel.org,
+        cgroups@vger.kernel.org
+Subject: Re: [PATCH 03/19] fs: release anon dev_t in deactivate_locked_super
+Message-ID: <20230926094130.GC13806@lst.de>
+References: <20230913111013.77623-1-hch@lst.de> <20230913111013.77623-4-hch@lst.de> <20230913232712.GC800259@ZenIV> <20230914023705.GH800259@ZenIV> <20230914053843.GI800259@ZenIV>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Mailer: b4 0.12-dev-a055d
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230914053843.GI800259@ZenIV>
+User-Agent: Mutt/1.5.17 (2007-11-01)
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
+        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
+On Thu, Sep 14, 2023 at 06:38:43AM +0100, Al Viro wrote:
+> It's worse - look at the rationale for 2c18a63b760a "super: wait until
+> we passed kill super".  Basically, "don't remove from the lists
+> until after block device closing".  IOW, we have
 
-On Wed, 20 Sep 2023 13:07:39 +0300, Leon Romanovsky wrote:
-> From: Leon Romanovsky <leonro@nvidia.com>
+As of this stage we don't even touch anything related to block devices..
+
+> That was *NOT* what a recent rework had done.  Block device closing had never
+> been inside ->put_super() - at no point since that (closing, that is) had been
+> introduced back in 0.97 ;-)  ->put_super() predates it (0.95c+).
 > 
-> Hi,
+> The race is real, but the cause is not some kind of move of blkdev_put().
+> Your 2ea6f68932f7 "fs: use the super_block as holder when mounting file
+> systems" is where it actually came from.
 > 
-> This series extends RDMA subsystem and mlx5_ib driver to support 800Gb
-> (XDR) speed which was added to IBTA v1.7 specification.
-> 
-> [...]
+> Christoph, could you explain what the hell do we need that for?  It does
+> create the race in question and AFAICS 2c18a63b760a (and followups trying
+> to plug holes in it) had been nothing but headache.
 
-Applied, thanks!
-
-[1/6] IB/core: Add support for XDR link speed
-      https://git.kernel.org/rdma/rdma/c/703289ce43f740
-[2/6] IB/mlx5: Expose XDR speed through MAD
-      https://git.kernel.org/rdma/rdma/c/561b4a3ac65597
-[3/6] IB/mlx5: Add support for 800G_8X lane speed
-      https://git.kernel.org/rdma/rdma/c/948f0bf5ad6ac1
-[4/6] IB/mlx5: Rename 400G_8X speed to comply to naming convention
-      https://git.kernel.org/rdma/rdma/c/b28ad32442bec2
-[5/6] IB/mlx5: Adjust mlx5 rate mapping to support 800Gb
-      https://git.kernel.org/rdma/rdma/c/4f4db190893fb8
-[6/6] RDMA/ipoib: Add support for XDR speed in ethtool
-      https://git.kernel.org/rdma/rdma/c/8dc0fd2f5693ab
-
-Best regards,
--- 
-Leon Romanovsky <leon@kernel.org>
+Because it allows us to actually get from the bdev to the holder directly,
+someting we've badly neeed for a while.
