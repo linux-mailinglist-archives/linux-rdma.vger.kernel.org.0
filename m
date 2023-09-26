@@ -2,116 +2,217 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3CE487AE3DF
-	for <lists+linux-rdma@lfdr.de>; Tue, 26 Sep 2023 05:01:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 19BC47AE586
+	for <lists+linux-rdma@lfdr.de>; Tue, 26 Sep 2023 08:09:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231163AbjIZDBJ (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 25 Sep 2023 23:01:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49846 "EHLO
+        id S233751AbjIZGJr (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 26 Sep 2023 02:09:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45184 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230200AbjIZDBH (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 25 Sep 2023 23:01:07 -0400
-Received: from out30-98.freemail.mail.aliyun.com (out30-98.freemail.mail.aliyun.com [115.124.30.98])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44044FF;
-        Mon, 25 Sep 2023 20:00:59 -0700 (PDT)
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R151e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046060;MF=alibuda@linux.alibaba.com;NM=1;PH=DS;RN=9;SR=0;TI=SMTPD_---0VsvCxfb_1695697255;
-Received: from 30.221.147.7(mailfrom:alibuda@linux.alibaba.com fp:SMTPD_---0VsvCxfb_1695697255)
-          by smtp.aliyun-inc.com;
-          Tue, 26 Sep 2023 11:00:56 +0800
-Message-ID: <c03dad67-169a-bf6d-1915-a9bb722a7259@linux.alibaba.com>
-Date:   Tue, 26 Sep 2023 11:00:54 +0800
+        with ESMTP id S233762AbjIZGJq (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 26 Sep 2023 02:09:46 -0400
+Received: from out-195.mta1.migadu.com (out-195.mta1.migadu.com [95.215.58.195])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B7484FC
+        for <linux-rdma@vger.kernel.org>; Mon, 25 Sep 2023 23:09:38 -0700 (PDT)
+Message-ID: <02d61fa2-9222-a071-8442-ef43a3aa74a2@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+        t=1695708576;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=nXAnIIVFOKmek0NM+/AbujoVFfy65fiiOMDmpp4GEgA=;
+        b=Caf5NQc2SKLVAA4/LH7hjRWfe6d8li66rftJuOBKP2qoBDPKpMwp/V5QdDXyYKJAJAgK/r
+        LwEhixZfJL2yXFN7jqcT1bPt8A1VZw4nDgCDilLYwfjcySH/Y7VePvcuVDKCJgPdc0wmDs
+        uf8ubZmp6JCLuYs/6umqMu/is5ucgNw=
+Date:   Tue, 26 Sep 2023 14:09:28 +0800
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
- Gecko/20100101 Thunderbird/102.14.0
-Subject: Re: [PATCH net] net/smc: fix panic smc_tcp_syn_recv_sock() while
- closing listen socket
-Content-Language: en-US
-To:     Alexandra Winter <wintera@linux.ibm.com>,
-        Wenjia Zhang <wenjia@linux.ibm.com>, kgraul@linux.ibm.com,
-        jaka@linux.ibm.com
-Cc:     kuba@kernel.org, davem@davemloft.net, netdev@vger.kernel.org,
-        linux-s390@vger.kernel.org, linux-rdma@vger.kernel.org
-References: <1695211714-66958-1-git-send-email-alibuda@linux.alibaba.com>
- <0902f55b-0d51-7f4d-0a9e-4b9423217fcf@linux.ibm.com>
- <ee2a5f8c-4119-c84a-05bc-03015e6c9bea@linux.alibaba.com>
- <3d1b5c12-971f-3464-5f28-79477f1f9eb2@linux.ibm.com>
-From:   "D. Wythe" <alibuda@linux.alibaba.com>
-In-Reply-To: <3d1b5c12-971f-3464-5f28-79477f1f9eb2@linux.ibm.com>
+Subject: Re: [bug report] blktests srp/002 hang
+To:     "Daisuke Matsuda (Fujitsu)" <matsuda-daisuke@fujitsu.com>,
+        'Rain River' <rain.1986.08.12@gmail.com>,
+        Bob Pearson <rpearsonhpe@gmail.com>
+Cc:     Jason Gunthorpe <jgg@ziepe.ca>,
+        "leon@kernel.org" <leon@kernel.org>,
+        Bart Van Assche <bvanassche@acm.org>,
+        Shinichiro Kawasaki <shinichiro.kawasaki@wdc.com>,
+        RDMA mailing list <linux-rdma@vger.kernel.org>,
+        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>
+References: <dsg6rd66tyiei32zaxs6ddv5ebefr5vtxjwz6d2ewqrcwisogl@ge7jzan7dg5u>
+ <5a4efe6f-d8c6-84ce-377e-eb64bcad706c@linux.dev>
+ <f50beb15-2cab-dfb9-3b58-ea66e7f114a6@gmail.com>
+ <fe61fdc5-ca8f-2efc-975d-46b99d66c6f5@linux.dev>
+ <afc98035-1bb8-f75c-451a-8e3e39fb74aa@gmail.com>
+ <6fc3b524-af7d-43ce-aa05-5c44ec850b9b@acm.org>
+ <b728f4db-bafa-dd0f-e288-7e3f56e6eae8@gmail.com>
+ <02d7cbf2-b17b-488a-b6e9-ebb728b51c94@acm.org>
+ <b80dae29-3a7c-f039-bc35-08c6e9f91197@gmail.com>
+ <CAJr_XRAy4EHueAP-10=WSEa46j2aQBArdzYsq7OqSqR93Ue+ug@mail.gmail.com>
+ <8aff9124-85c0-8e3b-dc35-1017b1540037@gmail.com>
+ <3c84da83-cdbb-3326-b3f0-b2dee5f014e0@linux.dev>
+ <4e7aac82-f006-aaa7-6769-d1c9691a0cec@gmail.com>
+ <CAJr_XRCFuv_XO3Zk+pfq6C73CgDsnaJT4-G-jq1ds3bdg76iEA@mail.gmail.com>
+ <OS7PR01MB1180450455E624D5CD977C461E5FCA@OS7PR01MB11804.jpnprd01.prod.outlook.com>
+ <a940c460-af66-df45-f718-b669746880db@linux.dev>
+ <OS7PR01MB11804B7BFCD8A3DF78E51DD5CE5C3A@OS7PR01MB11804.jpnprd01.prod.outlook.com>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From:   Zhu Yanjun <yanjun.zhu@linux.dev>
+In-Reply-To: <OS7PR01MB11804B7BFCD8A3DF78E51DD5CE5C3A@OS7PR01MB11804.jpnprd01.prod.outlook.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-11.4 required=5.0 tests=BAYES_00,
-        ENV_AND_HDR_SPF_MATCH,NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
-        SPF_PASS,UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Migadu-Flow: FLOW_OUT
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-
-
-On 9/25/23 5:43 PM, Alexandra Winter wrote:
-> On 25.09.23 10:29, D. Wythe wrote:
->> Hi Wenjia,
->>
->>> this is unfortunately not sufficient for this fix. You have to make sure that is not a life-time problem. Even so, READ_ONCE() is also needed in this case.
+在 2023/9/26 9:09, Daisuke Matsuda (Fujitsu) 写道:
+> On Mon, Sep 25, 2023 11:31 PM Zhu Yanjun <yanjun.zhu@linux.dev> wrote:
+>> 在 2023/9/25 12:47, Daisuke Matsuda (Fujitsu) 写道:
+>>> On Sun, Sep 24, 2023 10:18 AM Rain River wrote:
+>>>> On Sat, Sep 23, 2023 at 2:14 AM Bob Pearson <rpearsonhpe@gmail.com> wrote:
+>>>>> On 9/21/23 10:10, Zhu Yanjun wrote:
+>>>>>> 在 2023/9/21 22:39, Bob Pearson 写道:
+>>>>>>> On 9/21/23 09:23, Rain River wrote:
+>>>>>>>> On Thu, Sep 21, 2023 at 2:53 AM Bob Pearson <rpearsonhpe@gmail.com> wrote:
+>>>>>>>>> On 9/20/23 12:22, Bart Van Assche wrote:
+>>>>>>>>>> On 9/20/23 10:18, Bob Pearson wrote:
+>>>>>>>>>>> But I have also seen the same behavior in the siw driver which is
+>>>>>>>>>>> completely independent.
+>>>>>>>>>> Hmm ... I haven't seen any hangs yet with the siw driver.
+>>>>>>>>> I was on Ubuntu 6-9 months ago. Currently I don't see hangs on either.
+>>>>>>>>>>> As mentioned above at the moment Ubuntu is failing rarely. But it used to fail reliably (srp/002 about 75%
+>> of
+>>>> the time and srp/011 about 99% of the time.) There haven't been any changes to rxe to explain this.
+>>>>>>>>>> I think that Zhu mentioned commit 9b4b7c1f9f54 ("RDMA/rxe: Add workqueue
+>>>>>>>>>> support for rxe tasks")?
+>>>>>>>>> That change happened well before the failures went away. I was seeing failures at the same rate with tasklets
+>>>>>>>>> and wqs. But after updating Ubuntu and the kernel at some point they all went away.
+>>>>>>>> I made tests on the latest Ubuntu with the latest kernel without the
+>>>>>>>> commit 9b4b7c1f9f54 ("RDMA/rxe: Add workqueue support for rxe tasks").
+>>>>>>>> The latest kernel is v6.6-rc2, the commit 9b4b7c1f9f54 ("RDMA/rxe: Add
+>>>>>>>> workqueue support for rxe tasks") is reverted.
+>>>>>>>> I made blktest tests for about 30 times, this problem does not occur.
+>>>>>>>>
+>>>>>>>> So I confirm that without this commit, this hang problem does not
+>>>>>>>> occur on Ubuntu without the commit 9b4b7c1f9f54 ("RDMA/rxe: Add
+>>>>>>>> workqueue support for rxe tasks").
+>>>>>>>>
+>>>>>>>> Nanthan
+>>>>>>>>
+>>>>>>>>>> Thanks,
+>>>>>>>>>>
+>>>>>>>>>> Bart.
+>>>>>>> This commit is very important for several reasons. It is needed for the ODP implementation
+>>>>>>> that is in the works from Daisuke Matsuda and also for QP scaling of performance. The work
+>>>>>>> queue implementation scales well with increasing qp number while the tasklet implementation
+>>>>>>> does not. This is critical for the drivers use in large scale storage applications. So, if
+>>>>>>> there is a bug in the work queue implementation it needs to be fixed not reverted.
+>>>>>>>
+>>>>>>> I am still hoping that someone will diagnose what is causing the ULPs to hang in terms of
+>>>>>>> something missing causing it to wait.
+>>>>>> Hi, Bob
+>>>>>>
+>>>>>>
+>>>>>> You submitted this commit 9b4b7c1f9f54 ("RDMA/rxe: Add workqueue support for rxe tasks").
+>>>>>>
+>>>>>> You should be very familiar with this commit.
+>>>>>>
+>>>>>> And this commit causes regression.
+>>>>>>
+>>>>>> So you should delved into the source code to find the root cause, then fix it.
+>>>>> Zhu,
+>>>>>
+>>>>> I have spent tons of time over the months trying to figure out what is happening with blktests.
+>>>>> As I have mentioned several times I have seen the same exact failure in siw in the past although
+>>>>> currently that doesn't seem to happen so I had been suspecting that the problem may be in the ULP.
+>>>>> The challenge is that the blktests represents a huge stack of software much of which I am not
+>>>>> familiar with. The bug is a hang in layers above the rxe driver and so far no one has been able to
+>>>>> say with any specificity the rxe driver failed to do something needed to make progress or violated
+>>>>> expected behavior. Without any clue as to where to look it has been hard to make progress.
+>>>> Bob
+>>>>
+>>>> Work queue will sleep. If work queue sleep for long time, the packets
+>>>> will not be sent to ULP. This is why this hang occurs.
+>>> In general work queue can sleep, but the workload running in rxe driver
+>>> should not sleep because it was originally running on tasklet and converted
+>>> to use work queue. A task can sometime take longer because of IRQs, but
+>>> the same thing can also happen with tasklet. If there is a difference between
+>>> the two, I think it would be the overhead of scheduring the work queue.
 >>>
->> Life-time problem? If you means the smc will still be NULL in the future,  I don't really think so, smc is a local variable assigned by smc_clcsock_user_data.
->> it's either NULL or a valid and unchanged value.
+>>>> Difficult to handle this sleep in work queue. It had better revert
+>>>> this commit in RXE.
+>>> I am objected to reverting the commit at this stage. As Bob wrote above,
+>>> nobody has found any logical failure in rxe driver. It is quite possible
+>>> that the patch is just revealing a latent bug in the higher layers.
 >>
->> And READ_ONCE() is needed indeed, considering not make too much change, maybe we can protected following
-> The local variable smc is a pointer to the smc_sock structure, so the question is whether you can just do a READ_ONCE
-> and then continue to use the content of the smc_sock structure, even though e.g. a smc_close_active() may be going on in
-> parallel.
->
->> smc = smc_clcsock_user_data(sk);
+>> To now, on Debian and Fedora, all the tests with work queue will hang.
+>> And after reverting this commit,
 >>
->> with sk_callback_lock， which solves the same problem. What do you think?
-> In af_ops.syn_recv_sock() and thus also in smc_tcp_syn_recv_sock()
-> sk is defined as const. So you cannot simply do take sk_callback_lock, that will create compiler errors.
->   (same for smc_hs_congested() BTW)
->
-> If you are sure the contents of *smc are always valid, then READ_ONCE is all you need.
+>> no hang will occur.
+>>
+>> Before new test results, it is a reasonable suspect that this commit
+>> will result in the hang.
+> 
+> If the hang *always* occurs, then I agree your opinion is correct,
 
+About hang tests, please read through the whole discussion. Several 
+engineers made tests on Debian, Fedora and Ubuntu to confirm these test 
+results.
 
-Hi Alexandra,
+Zhu Yanjun
 
-You are right. The key point is how to ensure the valid of smc sock 
-during the life time of clc sock, If so, READ_ONCE is good
-enough. Unfortunately, I found  that there are no such guarantee, so 
-it's still a life-time problem.  Considering the const, maybe
-we need to do :
-
-1. hold a refcnt of smc_sock for syn_recv_sock to keep smc sock valid 
-during life time of clc sock
-2. put the refcnt of smc_sock in sk_destruct in tcp_sock to release the 
-very smc sock .
-
-In that way, we can always make sure the valid of smc sock during the 
-life time of clc sock. Then we can use READ_ONCE rather
-than lock.  What do you think ?
-
-> Maybe it is better to take a step back and consider what needs to be protected when (lifetime).
-> Just some thoughts (there may be ramifications that I am not aware of):
-> Maybe clcsock->sk->sk_user_data could be set to point to smc_sock as soon as the clc socket is created?
-> Isn't the smc socket always valid as long as the clc socket exists?
-> Then sk_user_data would no longer indicate whether the callback functions were set to smc values, but would that matter?
-> Are there scenarios where it matters whether the old or the new callback function is called?
-> Why are the values restored in smc_close_active() if the clc socket is released shortly after anyhow?
-
-That's a good question, We have discussed internally and found that this 
-is indeed possible. We can completely not to unset sk_user_data,
-which can reduce many unnecessary judgments and locks, and no side 
-effects found. We will try this approach internally and conduct multiple
-rounds of testing. However, in any case, returning to the initial issue, 
-the prerequisite for everything is to ensure the valid of smc sock
-during the life time of clc sock. So we must have a mechanism to work it 
-out. and holding referenced solutions might be a good try, what do you
-think?
-
-Best Wishes,
-D. Wythe
-
-
+> but this one happens occasionally. It is also natural to think that
+> the commit makes it easier to meet the condition of an existing bug.
+> 
+>>
+>>>
+>>>> Because work queue sleeps,  ULP can not wait for long time for the
+>>>> packets. If packets can not reach ULPs for long time, many problems
+>>>> will occur to ULPs.
+>>> I wonder where in the rxe driver does it sleep. BTW, most packets are
+>>> processed in NET_RX_IRQ context, and work queue is scheduled only
+>>
+>> Do you mean NET_RX_SOFTIRQ?
+> 
+> Yes. I am sorry for confusing you.
+> 
+> Thanks,
+> Daisuke
+> 
+>>
+>> Zhu Yanjun
+>>
+>>> when there is already a running context. If your speculation is to the point,
+>>> the hang will occur more frequently if we change it to use work queue exclusively.
+>>> My ODP patches include a change to do this.
+>>> Cf.
+>> https://lore.kernel.org/lkml/7699a90bc4af10c33c0a46ef6330ed4bb7e7ace6.1694153251.git.matsuda-daisuke@fujitsu.c
+>> om/
+>>>
+>>> Thanks,
+>>> Daisuke
+>>>
+>>>>> My main motivation is making Lustre run on rxe and it does and it's fast enough to meet our needs.
+>>>>> Lustre is similar to srp as a ULP and in all of our testing we have never seen a similar hang. Other
+>>>>> hangs to be sure but not this one. I believe that this bug will never get resolved until someone with
+>>>>> a good understanding of the ulp drivers makes an effort to find out where and why the hang is occurring.
+>>>>>   From there it should be straight forward to fix the problem. I am continuing to investigate and am learning
+>>>>> the device-manager/multipath/srp/scsi stack but I have a long ways to go.
+>>>>>
+>>>>> Bob
+>>>>>
+>>>>>
+>>>>>>
+>>>>>> Jason && Leon, please comment on this.
+>>>>>>
+>>>>>>
+>>>>>> Best Regards,
+>>>>>>
+>>>>>> Zhu Yanjun
+>>>>>>
+>>>>>>> Bob
 
