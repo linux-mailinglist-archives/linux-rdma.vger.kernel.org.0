@@ -2,78 +2,69 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F14F27AF307
-	for <lists+linux-rdma@lfdr.de>; Tue, 26 Sep 2023 20:34:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 93E257AF4B0
+	for <lists+linux-rdma@lfdr.de>; Tue, 26 Sep 2023 22:05:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235471AbjIZSeN (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 26 Sep 2023 14:34:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38776 "EHLO
+        id S235803AbjIZUFS (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 26 Sep 2023 16:05:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40036 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235419AbjIZSeM (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 26 Sep 2023 14:34:12 -0400
-Received: from mail-oo1-xc2b.google.com (mail-oo1-xc2b.google.com [IPv6:2607:f8b0:4864:20::c2b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 01F7E10A;
-        Tue, 26 Sep 2023 11:34:06 -0700 (PDT)
-Received: by mail-oo1-xc2b.google.com with SMTP id 006d021491bc7-57babef76deso2990472eaf.0;
-        Tue, 26 Sep 2023 11:34:05 -0700 (PDT)
+        with ESMTP id S235812AbjIZUFS (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 26 Sep 2023 16:05:18 -0400
+Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E9CF136
+        for <linux-rdma@vger.kernel.org>; Tue, 26 Sep 2023 13:05:10 -0700 (PDT)
+Received: by mail-yb1-xb49.google.com with SMTP id 3f1490d57ef6-d8141d6fbe3so14776298276.3
+        for <linux-rdma@vger.kernel.org>; Tue, 26 Sep 2023 13:05:10 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1695753245; x=1696358045; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=1mu1Bd3YR/EVNf3MxOCAO473xXr4bjv6njd4p5rKank=;
-        b=ehsDr7yokwSJ8P72RFWmHAq4UAp5wDxBDXNb2kmfs3mgzmfV8U8GTJ1ySggIyLamT3
-         6UYkxAvLLmS2DlRMT2Bu9uvOyI9hwkaGDpURhu++8N7S1NsnNpqmItbg5+L6KJA8f9zu
-         yS2r0a9YY3z/fmdjMt2NJlVwoMe+httAdxir2nIhCAuEx6+skthxJyStJWLcBKqNeYkf
-         oRe6BOAS/AJNqNMFUKARGyub9jc8sO8DTka9OtdMXO9RD2tzTQjdisAOj1Tc/Pb9Aom1
-         xnsqvmam86lKa5tsK4/w5g6k5YgiSybbUJLZ1kxT9gjnfq2qIOyDHY1lXwPbkQtgw1il
-         zKXQ==
+        d=google.com; s=20230601; t=1695758709; x=1696363509; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=LUHQqKLA03cvxOqIb9LV+319kkd0FdCrPANHPM/IRTw=;
+        b=atLFwbr8blVejomJeCh4lmIxX20DbV2RNAqifweKxAWRvnZExZjZrAw4c31yp0sInI
+         k2Hxy3zQagyqWF2rNcnY093lwRXKqSU94jdl1tb/lHJNSgc6KJZCVmEDBtACX+3RtX5G
+         Y6t8S3aIZJ0R1KvnNPmlwJJ4XmU+XFr25Wy2y3xy6l0SNA1QIT0X5LaFaZRqfOr9Bcbi
+         hAxZPer1LDuotdMLhHuR4h+7lWENJyHmJ5RQ+nCamGDs/YI0eFAAMg3ner6O1UseAx77
+         hwR9F7FEDxieu6VbJniVZ9nA/XvlLgwVHTtpwGBV19bLXmn+bTnETagjXvy+tlbgBUIp
+         RkkA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695753245; x=1696358045;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=1mu1Bd3YR/EVNf3MxOCAO473xXr4bjv6njd4p5rKank=;
-        b=kpzZ9dDGOkSymr+cs0gWI9c8SVEIJ70nPIfxw1MpNAMrEXOifWJzCdR7ehB+COgvIu
-         QgNE/o7XxBg2yObZVc8W32kzPm/7irBs08kzu9u7A5fAuApXT5kw0VoEQNryK15S6FGv
-         3QiusryYyDFNti3HpgZF/xjm2OWCagJyVANm3R8JusqB8987GgjzCHhpDweshb+xrpIt
-         HyVOIOGPG+CQ/wagBq5H2ZsugDiTpWLyDSrwGBO4q7elkXYQWUElVhopJLvWgds3fO2k
-         xIr9rUfZIgjBjBIeLU9KXEDhz0/b/Ht+JquinyJ+bEqLiwwH83S3xZF5NpMDXPl1WIZK
-         bT+w==
-X-Gm-Message-State: AOJu0YzO+cURsw344M4JLx5idI4U2dfjQIdS28DaycAedlk+QtreCe4c
-        OUM7WKT1JLQ/0faTs9dgVbw=
-X-Google-Smtp-Source: AGHT+IFp32R9gGtQLbbRIrsHPq6wNzP6FDQVHmOUjphw+hTJygV8C9o3zjrgZzxYbw2bSesaNK2Hjw==
-X-Received: by 2002:a4a:2552:0:b0:57b:8e13:93c3 with SMTP id v18-20020a4a2552000000b0057b8e1393c3mr10037793ooe.1.1695753245125;
-        Tue, 26 Sep 2023 11:34:05 -0700 (PDT)
-Received: from ?IPV6:2603:8081:1405:679b:1db2:43c5:5dfd:1642? (2603-8081-1405-679b-1db2-43c5-5dfd-1642.res6.spectrum.com. [2603:8081:1405:679b:1db2:43c5:5dfd:1642])
-        by smtp.gmail.com with ESMTPSA id w8-20020a4aa448000000b0057b7edcb118sm1677689ool.32.2023.09.26.11.34.03
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 26 Sep 2023 11:34:04 -0700 (PDT)
-Message-ID: <b7b365e3-dd11-bc66-dace-05478766bf41@gmail.com>
-Date:   Tue, 26 Sep 2023 13:34:02 -0500
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Subject: Re: [PATCH 1/1] Revert "RDMA/rxe: Add workqueue support for rxe
- tasks"
-To:     Bart Van Assche <bvanassche@acm.org>,
-        Leon Romanovsky <leon@kernel.org>, zyjzyj2000@gmail.com,
-        jgg@ziepe.ca, linux-rdma@vger.kernel.org,
-        matsuda-daisuke@fujitsu.com, shinichiro.kawasaki@wdc.com,
-        linux-scsi@vger.kernel.org, Zhu Yanjun <yanjun.zhu@intel.com>
-Cc:     Zhu Yanjun <yanjun.zhu@linux.dev>
-References: <20230922163231.2237811-1-yanjun.zhu@intel.com>
- <169572143704.2702191.3921040309512111011.b4-ty@kernel.org>
- <20230926140656.GM1642130@unreal>
- <d3c05064-a88b-4719-a390-6bf9ae01fba5@acm.org>
-Content-Language: en-US
-From:   Bob Pearson <rpearsonhpe@gmail.com>
-In-Reply-To: <d3c05064-a88b-4719-a390-6bf9ae01fba5@acm.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        d=1e100.net; s=20230601; t=1695758709; x=1696363509;
+        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=LUHQqKLA03cvxOqIb9LV+319kkd0FdCrPANHPM/IRTw=;
+        b=YUrfssnRpE25xc9913MAcMq9OVLex+K9QA+HCPDXMR/0LVPKWfBfmC7TzwzlzHDCgH
+         17VtFsFKqkVNK27SC4mb2iL6Bj1ho9RUGWG6L58L2ds6b5gtCl3zJqdVzq3sjFsBu3OC
+         43LIoiFSiiyCZUT6C6CQZg+6yBKfSRn6AE/BWBgCU47njx3oHjQY18Nf7pN6PXauISf3
+         PBCiP2Nz85cBvm5HmSj+IDqi1EZEh9RGc0thSOjeEmhOvBIGYvkSoE+j2NcVH0IPFhPC
+         IDx4rcs1g7NZs1MOBz4XqdaqjcOGbO2xR1dCk5a2W9V1y1nSqWHrAMFO2+lieBKDyAk/
+         oGcw==
+X-Gm-Message-State: AOJu0YyUErCkE0KhYo97rAGIHWesiJj7O2SCx5/GhM2YSO2sHuEeFUpI
+        gcydoRbJwHkzx14yOgD7By0UD2vaHw==
+X-Google-Smtp-Source: AGHT+IHiar7acMg7OZkqRteQy8u+g7Q3fC4ZlZH6+0avyWJDsbyt98fkghdeToG/rJkXrrHt5fTNug6bGg==
+X-Received: from jrife.c.googlers.com ([fda3:e722:ac3:cc00:2b:ff92:c0a8:9f])
+ (user=jrife job=sendgmr) by 2002:a5b:752:0:b0:d89:4d2c:d846 with SMTP id
+ s18-20020a5b0752000000b00d894d2cd846mr52999ybq.12.1695758709189; Tue, 26 Sep
+ 2023 13:05:09 -0700 (PDT)
+Date:   Tue, 26 Sep 2023 15:05:02 -0500
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.42.0.515.g380fc7ccd1-goog
+Message-ID: <20230926200505.2804266-1-jrife@google.com>
+Subject: [PATCH net v6 0/3] Insulate Kernel Space From SOCK_ADDR Hooks
+From:   Jordan Rife <jrife@google.com>
+To:     davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
+        pabeni@redhat.com, willemdebruijn.kernel@gmail.com,
+        netdev@vger.kernel.org
+Cc:     dborkman@kernel.org, horms@verge.net.au, pablo@netfilter.org,
+        kadlec@netfilter.org, fw@strlen.de, santosh.shilimkar@oracle.com,
+        ast@kernel.org, rdna@fb.com, linux-rdma@vger.kernel.org,
+        rds-devel@oss.oracle.com, coreteam@netfilter.org,
+        netfilter-devel@vger.kernel.org, ja@ssi.bg,
+        lvs-devel@vger.kernel.org, kafai@fb.com, daniel@iogearbox.net,
+        daan.j.demeyer@gmail.com, Jordan Rife <jrife@google.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -81,43 +72,95 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 9/26/23 12:05, Bart Van Assche wrote:
-> On 9/26/23 07:06, Leon Romanovsky wrote:
->> On Tue, Sep 26, 2023 at 12:43:57PM +0300, Leon Romanovsky wrote:
->>>
->>> On Fri, 22 Sep 2023 12:32:31 -0400, Zhu Yanjun wrote:
->>>> This reverts commit 9b4b7c1f9f54120940e243251e2b1407767b3381.
->>>>
->>>> This commit replaces tasklet with workqueue. But this results
->>>> in occasionally pocess hang at the blktests test case srp/002.
->>>> After the discussion in the link[1], this commit is reverted.
->>>>
->>>>
->>>> [...]
->>>
->>> Applied, thanks!
->>>
->>> [1/1] Revert "RDMA/rxe: Add workqueue support for rxe tasks"
->>>        https://git.kernel.org/rdma/rdma/c/e710c390a8f860
->>
->> I applied this patch, but will delay it for some time with a hope that
->> fix will arrive in the near future.
-> 
-> Thank you Leon. With this revert applied on top of the rdma for-next branch, I
-> don't see the KASAN complaint anymore that I reported yesterday. I think this
-> is more evidence that the KASAN complaint was caused by the RXE driver.
-> 
-> Bart.
+==OVERVIEW==
 
-Bart,
+The sock_sendmsg(), kernel_connect(), and kernel_bind() functions
+provide kernel space equivalents to the sendmsg(), connect(), and bind()
+system calls.
 
-I am working to try to reproduce the KASAN warning. Unfortunately, so far I am not able to see it
-in Ubuntu + Linus' kernel (as you described) on metal. The config file is different but copies
-the CONFIG_KASAN_xxx exactly as yours. With KASAN enabled it hangs on every iteration of srp/002
-but without a KASAN warning. I am now building an openSuSE VM for qemu and will see if that
-causes the warning.
+When used in conjunction with BPF SOCK_ADDR hooks that rewrite the send,
+connect, or bind address, callers may observe that the address passed to
+the call is modified. This is a problem not just in theory, but in
+practice, with uninsulated calls to kernel_connect() causing issues with
+broken NFS and CIFS mounts.
 
-Thanks for the support,
+commit 0bdf399342c5 ("net: Avoid address overwrite in kernel_connect")
+ensured that callers to kernel_connect() are insulated from such effects
+by passing a copy of the address parameter down the stack, but did not
+go far enough:
 
-Bob
+- There remain many instances of direct calls to sock->ops->connect()
+  throughout the kernel which do not benefit from the change to
+  kernel_connect().
+- sock_sendmsg() and kernel_bind() remain uninsulated from address
+  rewrites and there exist many direct calls to sock->ops->bind()
+  throughout the kernel.
+
+This patch series is the first step to ensuring all socket operations in
+kernel space are safe to use with BPF SOCK_ADDR hooks. It
+
+1) Wraps direct calls to sock->ops->connect() with kernel_connect() to
+   insulate them.
+2) Introduces an address copy to sock_sendmsg() to insulate both calls
+   to kernel_sendmsg() and sock_sendmsg() in kernel space.
+3) Introduces an address copy to kernel_bind() and wraps direct calls to
+   sock->ops->bind() to insulate them.
+
+Earlier versions of this patch series wrapped all calls to
+sock->ops->conect() and sock->ops->bind() throughout the kernel, but
+this was pared down to instances occuring only in net to avoid merge
+conflicts. A set of patches to various trees will be made as a follow up
+to this series to address this gap.
+
+==CHANGELOG==
+
+V5->V6
+------
+- Preserve original value of msg->msg_namelen in sock_sendmsg() in
+  anticipation of this patch that adds support for SOCK_ADDR hooks to
+  Unix sockets and the ability to modify msg->msg_namelen:
+  - https://lore.kernel.org/bpf/202309231339.L2O0CrMU-lkp@intel.com/T/#m181770af51156bdaa70fd4a4cb013ba11f28e101
+
+V4->V5
+------
+- Removed non-net changes to avoid potential merge conflicts.
+
+V3->V4
+------
+- Removed address length precondition checks from kernel_connect() and
+  kernel_bind().
+- Reordered variable declarations in sock_sendmsg() to maintain reverse
+  xmas tree order.
+
+V2->V3
+------
+- Added "Fixes" tags
+- Added address length precondition checks to kernel_connect() and
+  kernel_bind().
+
+V1->V2
+------
+- Split up single patch into patch series.
+- Wrapped all direct calls to sock->ops->connect() with kernel_connect()
+  instead of pushing the address deeper into the stack to avoid
+  duplication of address copy logic and to encourage a consistent
+  interface.
+- Moved address copy up the stack to sock_sendmsg() to avoid duplication
+  of address copy logic.
+- Introduced address copy to kernel_bind() and insulated direct calls to
+  sock->ops->bind().
+
+Jordan Rife (3):
+  net: replace calls to sock->ops->connect() with kernel_connect()
+  net: prevent rewrite of msg_name and msg_namelen in sock_sendmsg()
+  net: prevent address rewrite in kernel_bind()
+
+ net/netfilter/ipvs/ip_vs_sync.c |  8 ++++----
+ net/rds/tcp_connect.c           |  4 ++--
+ net/rds/tcp_listen.c            |  2 +-
+ net/socket.c                    | 36 ++++++++++++++++++++++++++-------
+ 4 files changed, 36 insertions(+), 14 deletions(-)
+
+-- 
+2.42.0.515.g380fc7ccd1-goog
 
