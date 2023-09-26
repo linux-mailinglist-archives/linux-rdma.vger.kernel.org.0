@@ -2,42 +2,48 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BF68B7AED94
-	for <lists+linux-rdma@lfdr.de>; Tue, 26 Sep 2023 15:03:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F101E7AEF0B
+	for <lists+linux-rdma@lfdr.de>; Tue, 26 Sep 2023 16:58:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230125AbjIZNDl (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 26 Sep 2023 09:03:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52656 "EHLO
+        id S229513AbjIZOHJ (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 26 Sep 2023 10:07:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37680 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232437AbjIZNDk (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 26 Sep 2023 09:03:40 -0400
-Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 254E9F3;
-        Tue, 26 Sep 2023 06:03:33 -0700 (PDT)
-Received: from kwepemi500006.china.huawei.com (unknown [172.30.72.54])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4Rw0GH5x8bzVkgK;
-        Tue, 26 Sep 2023 21:00:23 +0800 (CST)
-Received: from localhost.localdomain (10.67.165.2) by
- kwepemi500006.china.huawei.com (7.221.188.68) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.31; Tue, 26 Sep 2023 21:03:30 +0800
-From:   Junxian Huang <huangjunxian6@hisilicon.com>
-To:     <jgg@ziepe.ca>, <leon@kernel.org>
-CC:     <linux-rdma@vger.kernel.org>, <linuxarm@huawei.com>,
-        <linux-kernel@vger.kernel.org>, <huangjunxian6@hisilicon.com>
-Subject: [PATCH v2 for-next] RDMA/hns: Support SRQ record doorbell
-Date:   Tue, 26 Sep 2023 21:00:26 +0800
-Message-ID: <20230926130026.583088-1-huangjunxian6@hisilicon.com>
-X-Mailer: git-send-email 2.30.0
+        with ESMTP id S229958AbjIZOHI (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 26 Sep 2023 10:07:08 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BFF44116;
+        Tue, 26 Sep 2023 07:07:01 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BF132C433C7;
+        Tue, 26 Sep 2023 14:07:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1695737221;
+        bh=OAf49Bdt77gbFnwJyhomb+AoFJ28mqepEZFPzWrA/fc=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Nw3+BPuYbgdNd3e0V/nwSaYrXyej6Z01Hn1Nt2Sv4UeTdc+Bl+rqAb2bZIJMjqJL5
+         Ep02JsAByoKT3vc0BxH9InkJYYVlHTe5u3xqnxXBV2Pa8OfzUq6obUi3rpIm9pr/SX
+         b4PTd+c4XKtfa5CrGjvn1xyAZFP0/wR9kXTXRnw3UU6Y89BYbsFzgajywpJjbPrOC7
+         WTMsEDCG8pEkiwTN5ZxW7p5sDOhkHNo6NcxxZ/kzc6wJgD8gx65Fxaps7rzVX2Tda1
+         rZHjpSEh5wcV77akFqZmp1IFAgyStRasB4ir5EXIa5Hg0fSpeA6YDYv0ZpLiQCB2+d
+         cnuY3+7wxG5sQ==
+Date:   Tue, 26 Sep 2023 17:06:56 +0300
+From:   Leon Romanovsky <leon@kernel.org>
+To:     zyjzyj2000@gmail.com, jgg@ziepe.ca, linux-rdma@vger.kernel.org,
+        rpearsonhpe@gmail.com, matsuda-daisuke@fujitsu.com,
+        bvanassche@acm.org, shinichiro.kawasaki@wdc.com,
+        linux-scsi@vger.kernel.org, Zhu Yanjun <yanjun.zhu@intel.com>
+Cc:     Zhu Yanjun <yanjun.zhu@linux.dev>
+Subject: Re: [PATCH 1/1] Revert "RDMA/rxe: Add workqueue support for rxe
+ tasks"
+Message-ID: <20230926140656.GM1642130@unreal>
+References: <20230922163231.2237811-1-yanjun.zhu@intel.com>
+ <169572143704.2702191.3921040309512111011.b4-ty@kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.67.165.2]
-X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
- kwepemi500006.china.huawei.com (7.221.188.68)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <169572143704.2702191.3921040309512111011.b4-ty@kernel.org>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -45,284 +51,30 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Yangyang Li <liyangyang20@huawei.com>
+On Tue, Sep 26, 2023 at 12:43:57PM +0300, Leon Romanovsky wrote:
+> 
+> On Fri, 22 Sep 2023 12:32:31 -0400, Zhu Yanjun wrote:
+> > This reverts commit 9b4b7c1f9f54120940e243251e2b1407767b3381.
+> > 
+> > This commit replaces tasklet with workqueue. But this results
+> > in occasionally pocess hang at the blktests test case srp/002.
+> > After the discussion in the link[1], this commit is reverted.
+> > 
+> > 
+> > [...]
+> 
+> Applied, thanks!
+> 
+> [1/1] Revert "RDMA/rxe: Add workqueue support for rxe tasks"
+>       https://git.kernel.org/rdma/rdma/c/e710c390a8f860
 
-Compared with normal doorbell, using record doorbell can shorten the
-process of ringing the doorbell and reduce the latency.
+I applied this patch, but will delay it for some time with a hope that
+fix will arrive in the near future.
 
-Add a flag HNS_ROCE_CAP_FLAG_SRQ_RECORD_DB to allow FW to
-enable/disable SRQ record doorbell.
+Thanks
 
-If the flag above is set, allocate the dma buffer for SRQ record
-doorbell and write the buffer address into SRQC during SRQ creation.
-
-For userspace SRQ, add a flag HNS_ROCE_RSP_SRQ_CAP_RECORD_DB to notify
-userspace whether the SRQ record doorbell is enabled.
-
-Signed-off-by: Yangyang Li <liyangyang20@huawei.com>
-Signed-off-by: Junxian Huang <huangjunxian6@hisilicon.com>
----
- drivers/infiniband/hw/hns/hns_roce_device.h |  3 +
- drivers/infiniband/hw/hns/hns_roce_hw_v2.c  | 31 +++++---
- drivers/infiniband/hw/hns/hns_roce_srq.c    | 85 ++++++++++++++++++++-
- include/uapi/rdma/hns-abi.h                 | 12 ++-
- 4 files changed, 119 insertions(+), 12 deletions(-)
-
-diff --git a/drivers/infiniband/hw/hns/hns_roce_device.h b/drivers/infiniband/hw/hns/hns_roce_device.h
-index 2059d90f8f78..1627f3b0ef28 100644
---- a/drivers/infiniband/hw/hns/hns_roce_device.h
-+++ b/drivers/infiniband/hw/hns/hns_roce_device.h
-@@ -146,6 +146,7 @@ enum {
- 	HNS_ROCE_CAP_FLAG_SDI_MODE		= BIT(14),
- 	HNS_ROCE_CAP_FLAG_STASH			= BIT(17),
- 	HNS_ROCE_CAP_FLAG_CQE_INLINE		= BIT(19),
-+	HNS_ROCE_CAP_FLAG_SRQ_RECORD_DB         = BIT(22),
- };
- 
- #define HNS_ROCE_DB_TYPE_COUNT			2
-@@ -453,6 +454,8 @@ struct hns_roce_srq {
- 	spinlock_t		lock;
- 	struct mutex		mutex;
- 	void (*event)(struct hns_roce_srq *srq, enum hns_roce_event event);
-+	struct hns_roce_db	rdb;
-+	u32			cap_flags;
- };
- 
- struct hns_roce_uar_table {
-diff --git a/drivers/infiniband/hw/hns/hns_roce_hw_v2.c b/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
-index b48f2c7b2fb0..a17bbf29b64b 100644
---- a/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
-+++ b/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
-@@ -941,20 +941,23 @@ static void fill_wqe_idx(struct hns_roce_srq *srq, unsigned int wqe_idx)
- 	idx_que->head++;
- }
- 
--static void update_srq_db(struct hns_roce_v2_db *db, struct hns_roce_srq *srq)
-+static void update_srq_db(struct hns_roce_srq *srq)
- {
--	hr_reg_write(db, DB_TAG, srq->srqn);
--	hr_reg_write(db, DB_CMD, HNS_ROCE_V2_SRQ_DB);
--	hr_reg_write(db, DB_PI, srq->idx_que.head);
-+	struct hns_roce_dev *hr_dev = to_hr_dev(srq->ibsrq.device);
-+	struct hns_roce_v2_db db;
-+
-+	hr_reg_write(&db, DB_TAG, srq->srqn);
-+	hr_reg_write(&db, DB_CMD, HNS_ROCE_V2_SRQ_DB);
-+	hr_reg_write(&db, DB_PI, srq->idx_que.head);
-+
-+	hns_roce_write64(hr_dev, (__le32 *)&db, srq->db_reg);
- }
- 
- static int hns_roce_v2_post_srq_recv(struct ib_srq *ibsrq,
- 				     const struct ib_recv_wr *wr,
- 				     const struct ib_recv_wr **bad_wr)
- {
--	struct hns_roce_dev *hr_dev = to_hr_dev(ibsrq->device);
- 	struct hns_roce_srq *srq = to_hr_srq(ibsrq);
--	struct hns_roce_v2_db srq_db;
- 	unsigned long flags;
- 	int ret = 0;
- 	u32 max_sge;
-@@ -985,9 +988,11 @@ static int hns_roce_v2_post_srq_recv(struct ib_srq *ibsrq,
- 	}
- 
- 	if (likely(nreq)) {
--		update_srq_db(&srq_db, srq);
--
--		hns_roce_write64(hr_dev, (__le32 *)&srq_db, srq->db_reg);
-+		if (srq->cap_flags & HNS_ROCE_SRQ_CAP_RECORD_DB)
-+			*srq->rdb.db_record = srq->idx_que.head &
-+					      V2_DB_PRODUCER_IDX_M;
-+		else
-+			update_srq_db(srq);
- 	}
- 
- 	spin_unlock_irqrestore(&srq->lock, flags);
-@@ -5630,6 +5635,14 @@ static int hns_roce_v2_write_srqc(struct hns_roce_srq *srq, void *mb_buf)
- 	hr_reg_write(ctx, SRQC_WQE_BUF_PG_SZ,
- 		     to_hr_hw_page_shift(srq->buf_mtr.hem_cfg.buf_pg_shift));
- 
-+	if (srq->cap_flags & HNS_ROCE_SRQ_CAP_RECORD_DB) {
-+		hr_reg_enable(ctx, SRQC_DB_RECORD_EN);
-+		hr_reg_write(ctx, SRQC_DB_RECORD_ADDR_L,
-+			     lower_32_bits(srq->rdb.dma) >> 1);
-+		hr_reg_write(ctx, SRQC_DB_RECORD_ADDR_H,
-+			     upper_32_bits(srq->rdb.dma));
-+	}
-+
- 	return hns_roce_v2_write_srqc_index_queue(srq, ctx);
- }
- 
-diff --git a/drivers/infiniband/hw/hns/hns_roce_srq.c b/drivers/infiniband/hw/hns/hns_roce_srq.c
-index 8dae98f827eb..4e2d1c8e164a 100644
---- a/drivers/infiniband/hw/hns/hns_roce_srq.c
-+++ b/drivers/infiniband/hw/hns/hns_roce_srq.c
-@@ -5,6 +5,7 @@
- 
- #include <linux/pci.h>
- #include <rdma/ib_umem.h>
-+#include <rdma/uverbs_ioctl.h>
- #include "hns_roce_device.h"
- #include "hns_roce_cmd.h"
- #include "hns_roce_hem.h"
-@@ -387,6 +388,79 @@ static void free_srq_buf(struct hns_roce_dev *hr_dev, struct hns_roce_srq *srq)
- 	free_srq_idx(hr_dev, srq);
- }
- 
-+static int get_srq_ucmd(struct hns_roce_srq *srq, struct ib_udata *udata,
-+			struct hns_roce_ib_create_srq *ucmd)
-+{
-+	struct ib_device *ibdev = srq->ibsrq.device;
-+	int ret;
-+
-+	ret = ib_copy_from_udata(ucmd, udata, min(udata->inlen, sizeof(*ucmd)));
-+	if (ret) {
-+		ibdev_err(ibdev, "failed to copy SRQ udata, ret = %d.\n", ret);
-+		return ret;
-+	}
-+
-+	return 0;
-+}
-+
-+static void free_srq_db(struct hns_roce_dev *hr_dev, struct hns_roce_srq *srq,
-+			struct ib_udata *udata)
-+{
-+	struct hns_roce_ucontext *uctx;
-+
-+	if (!(srq->cap_flags & HNS_ROCE_SRQ_CAP_RECORD_DB))
-+		return;
-+
-+	srq->cap_flags &= ~HNS_ROCE_SRQ_CAP_RECORD_DB;
-+	if (udata) {
-+		uctx = rdma_udata_to_drv_context(udata,
-+						 struct hns_roce_ucontext,
-+						 ibucontext);
-+		hns_roce_db_unmap_user(uctx, &srq->rdb);
-+	} else {
-+		hns_roce_free_db(hr_dev, &srq->rdb);
-+	}
-+}
-+
-+static int alloc_srq_db(struct hns_roce_dev *hr_dev, struct hns_roce_srq *srq,
-+			struct ib_udata *udata,
-+			struct hns_roce_ib_create_srq_resp *resp)
-+{
-+	struct hns_roce_ib_create_srq ucmd = {};
-+	struct hns_roce_ucontext *uctx;
-+	int ret;
-+
-+	if (udata) {
-+		ret = get_srq_ucmd(srq, udata, &ucmd);
-+		if (ret)
-+			return ret;
-+
-+		if ((hr_dev->caps.flags & HNS_ROCE_CAP_FLAG_SRQ_RECORD_DB) &&
-+		    (ucmd.req_cap_flags & HNS_ROCE_SRQ_CAP_RECORD_DB)) {
-+			uctx = rdma_udata_to_drv_context(udata,
-+					struct hns_roce_ucontext, ibucontext);
-+			ret = hns_roce_db_map_user(uctx, ucmd.db_addr,
-+						   &srq->rdb);
-+			if (ret)
-+				return ret;
-+
-+			srq->cap_flags |= HNS_ROCE_RSP_SRQ_CAP_RECORD_DB;
-+		}
-+	} else {
-+		if (hr_dev->caps.flags & HNS_ROCE_CAP_FLAG_SRQ_RECORD_DB) {
-+			ret = hns_roce_alloc_db(hr_dev, &srq->rdb, 1);
-+			if (ret)
-+				return ret;
-+
-+			*srq->rdb.db_record = 0;
-+			srq->cap_flags |= HNS_ROCE_RSP_SRQ_CAP_RECORD_DB;
-+		}
-+		srq->db_reg = hr_dev->reg_base + SRQ_DB_REG;
-+	}
-+
-+	return 0;
-+}
-+
- int hns_roce_create_srq(struct ib_srq *ib_srq,
- 			struct ib_srq_init_attr *init_attr,
- 			struct ib_udata *udata)
-@@ -407,15 +481,20 @@ int hns_roce_create_srq(struct ib_srq *ib_srq,
- 	if (ret)
- 		return ret;
- 
--	ret = alloc_srqn(hr_dev, srq);
-+	ret = alloc_srq_db(hr_dev, srq, udata, &resp);
- 	if (ret)
- 		goto err_srq_buf;
- 
-+	ret = alloc_srqn(hr_dev, srq);
-+	if (ret)
-+		goto err_srq_db;
-+
- 	ret = alloc_srqc(hr_dev, srq);
- 	if (ret)
- 		goto err_srqn;
- 
- 	if (udata) {
-+		resp.cap_flags = srq->cap_flags;
- 		resp.srqn = srq->srqn;
- 		if (ib_copy_to_udata(udata, &resp,
- 				     min(udata->outlen, sizeof(resp)))) {
-@@ -424,7 +503,6 @@ int hns_roce_create_srq(struct ib_srq *ib_srq,
- 		}
- 	}
- 
--	srq->db_reg = hr_dev->reg_base + SRQ_DB_REG;
- 	srq->event = hns_roce_ib_srq_event;
- 	refcount_set(&srq->refcount, 1);
- 	init_completion(&srq->free);
-@@ -435,6 +513,8 @@ int hns_roce_create_srq(struct ib_srq *ib_srq,
- 	free_srqc(hr_dev, srq);
- err_srqn:
- 	free_srqn(hr_dev, srq);
-+err_srq_db:
-+	free_srq_db(hr_dev, srq, udata);
- err_srq_buf:
- 	free_srq_buf(hr_dev, srq);
- 
-@@ -448,6 +528,7 @@ int hns_roce_destroy_srq(struct ib_srq *ibsrq, struct ib_udata *udata)
- 
- 	free_srqc(hr_dev, srq);
- 	free_srqn(hr_dev, srq);
-+	free_srq_db(hr_dev, srq, udata);
- 	free_srq_buf(hr_dev, srq);
- 	return 0;
- }
-diff --git a/include/uapi/rdma/hns-abi.h b/include/uapi/rdma/hns-abi.h
-index 2e68a8b0c92c..ce0f37f83416 100644
---- a/include/uapi/rdma/hns-abi.h
-+++ b/include/uapi/rdma/hns-abi.h
-@@ -52,15 +52,25 @@ struct hns_roce_ib_create_cq_resp {
- 	__aligned_u64 cap_flags;
- };
- 
-+enum hns_roce_srq_cap_flags {
-+	HNS_ROCE_SRQ_CAP_RECORD_DB = 1 << 0,
-+};
-+
-+enum hns_roce_srq_cap_flags_resp {
-+	HNS_ROCE_RSP_SRQ_CAP_RECORD_DB = 1 << 0,
-+};
-+
- struct hns_roce_ib_create_srq {
- 	__aligned_u64 buf_addr;
- 	__aligned_u64 db_addr;
- 	__aligned_u64 que_addr;
-+	__u32 req_cap_flags; /* Use enum hns_roce_srq_cap_flags */
-+	__u32 reserved;
- };
- 
- struct hns_roce_ib_create_srq_resp {
- 	__u32	srqn;
--	__u32	reserved;
-+	__u32	cap_flags; /* Use enum hns_roce_srq_cap_flags */
- };
- 
- struct hns_roce_ib_create_qp {
--- 
-2.30.0
-
+> 
+> Best regards,
+> -- 
+> Leon Romanovsky <leon@kernel.org>
+> 
