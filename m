@@ -2,99 +2,85 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C5F07AE962
-	for <lists+linux-rdma@lfdr.de>; Tue, 26 Sep 2023 11:38:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 731037AE96E
+	for <lists+linux-rdma@lfdr.de>; Tue, 26 Sep 2023 11:39:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234287AbjIZJis (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 26 Sep 2023 05:38:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49224 "EHLO
+        id S234143AbjIZJj2 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 26 Sep 2023 05:39:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54548 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234260AbjIZJiq (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 26 Sep 2023 05:38:46 -0400
-Received: from verein.lst.de (verein.lst.de [213.95.11.211])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E96EF3;
-        Tue, 26 Sep 2023 02:38:39 -0700 (PDT)
-Received: by verein.lst.de (Postfix, from userid 2407)
-        id B018168AA6; Tue, 26 Sep 2023 11:38:34 +0200 (CEST)
-Date:   Tue, 26 Sep 2023 11:38:34 +0200
-From:   Christoph Hellwig <hch@lst.de>
-To:     Al Viro <viro@zeniv.linux.org.uk>
-Cc:     Christoph Hellwig <hch@lst.de>,
-        Christian Brauner <brauner@kernel.org>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Alexander Gordeev <agordeev@linux.ibm.com>,
-        Fenghua Yu <fenghua.yu@intel.com>,
-        Reinette Chatre <reinette.chatre@intel.com>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Richard Weinberger <richard@nod.at>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
-        Tejun Heo <tj@kernel.org>,
-        Trond Myklebust <trond.myklebust@hammerspace.com>,
-        Anna Schumaker <anna@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Damien Le Moal <dlemoal@kernel.org>,
-        Naohiro Aota <naohiro.aota@wdc.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-s390@vger.kernel.org, linux-rdma@vger.kernel.org,
-        linux-nfs@vger.kernel.org, linux-hardening@vger.kernel.org,
-        cgroups@vger.kernel.org
-Subject: Re: [PATCH 03/19] fs: release anon dev_t in deactivate_locked_super
-Message-ID: <20230926093834.GB13806@lst.de>
-References: <20230913111013.77623-1-hch@lst.de> <20230913111013.77623-4-hch@lst.de> <20230913232712.GC800259@ZenIV>
+        with ESMTP id S234114AbjIZJjV (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 26 Sep 2023 05:39:21 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 96696120;
+        Tue, 26 Sep 2023 02:39:15 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 78FBDC433C7;
+        Tue, 26 Sep 2023 09:39:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1695721155;
+        bh=AnTJXPiJiPV4M7FfzIw4U1feaoScrcoS51aixAIgF3w=;
+        h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+        b=DP4/3ICboAtuex0rLt47pvfLL3/RpYL6P55AKFzcXmVGZnH0i6TjpWMJrlhHiYn9k
+         MhAXJZRWAp9kThHiH/VTOGUh5AskLNX4OMUIOUStCAqYAJ/tQuLHukGzMdqgpbayHR
+         zmReRYdRUWY18/wvTO9lm8rsdEzMPn6Feb4r06u9zm7pmBgPHy4Ax7zrlY7GDPiV03
+         IMDkQMwDydoyY33amfyXPO9eMuD3bxS9UxxZl1cfLcK6FNpKmuZ1lB7UShYo5P725S
+         ZO1IfpRmkWfsLGQREkgTfxuiqzUkJys4aG4nec+fY6NHcDv/52mBXOZbGdimMUETzh
+         LBUzEWnj+nhkA==
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Jason Gunthorpe <jgg@ziepe.ca>, Leon Romanovsky <leon@kernel.org>
+Cc:     Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>, linux-kernel@vger.kernel.org,
+        linux-rdma@vger.kernel.org, Mark Zhang <markzhang@nvidia.com>,
+        netdev@vger.kernel.org, Or Har-Toov <ohartoov@nvidia.com>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Patrisious Haddad <phaddad@nvidia.com>,
+        Saeed Mahameed <saeedm@nvidia.com>,
+        Leon Romanovsky <leon@kernel.org>
+In-Reply-To: <cover.1695204156.git.leon@kernel.org>
+References: <cover.1695204156.git.leon@kernel.org>
+Subject: Re: [PATCH rdma-next 0/6] Add 800Gb (XDR) speed support
+Message-Id: <169572115099.2612409.2085687465811625783.b4-ty@kernel.org>
+Date:   Tue, 26 Sep 2023 12:39:10 +0300
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230913232712.GC800259@ZenIV>
-User-Agent: Mutt/1.5.17 (2007-11-01)
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
-        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Mailer: b4 0.12-dev-a055d
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Thu, Sep 14, 2023 at 12:27:12AM +0100, Al Viro wrote:
-> On Wed, Sep 13, 2023 at 08:09:57AM -0300, Christoph Hellwig wrote:
-> > Releasing an anon dev_t is a very common thing when freeing a
-> > super_block, as that's done for basically any not block based file
-> > system (modulo the odd mtd special case).  So instead of requiring
-> > a special ->kill_sb helper and a lot of boilerplate in more complicated
-> > file systems, just release the anon dev_t in deactivate_locked_super if
-> > the super_block was using one.
-> > 
-> > As the freeing is done after the main call to kill_super_notify, this
-> > removes the need for having two slightly different call sites for it.
+
+On Wed, 20 Sep 2023 13:07:39 +0300, Leon Romanovsky wrote:
+> From: Leon Romanovsky <leonro@nvidia.com>
 > 
-> Huh?  At this stage in your series freeing is still in ->kill_sb()
-> instances, after the calls of kill_anon_super() you've turned into
-> the calls of generic_shutdown_super().
+> Hi,
+> 
+> This series extends RDMA subsystem and mlx5_ib driver to support 800Gb
+> (XDR) speed which was added to IBTA v1.7 specification.
+> 
+> [...]
 
-The above refers to freeing the anon dev_t, which at this stage is done
-right after the kill_super_notify in generic_shutdown_super.
+Applied, thanks!
 
-> You do split it off into a separate method later in the series, but
-> at this point you are reopening the same UAF that had been dealt with
-> in dc3216b14160 "super: ensure valid info".
+[1/6] IB/core: Add support for XDR link speed
+      https://git.kernel.org/rdma/rdma/c/703289ce43f740
+[2/6] IB/mlx5: Expose XDR speed through MAD
+      https://git.kernel.org/rdma/rdma/c/561b4a3ac65597
+[3/6] IB/mlx5: Add support for 800G_8X lane speed
+      https://git.kernel.org/rdma/rdma/c/948f0bf5ad6ac1
+[4/6] IB/mlx5: Rename 400G_8X speed to comply to naming convention
+      https://git.kernel.org/rdma/rdma/c/b28ad32442bec2
+[5/6] IB/mlx5: Adjust mlx5 rate mapping to support 800Gb
+      https://git.kernel.org/rdma/rdma/c/4f4db190893fb8
+[6/6] RDMA/ipoib: Add support for XDR speed in ethtool
+      https://git.kernel.org/rdma/rdma/c/8dc0fd2f5693ab
 
-How?
-
-Old sequence before his patch:
-
-	deactivate_locked_super()
-	  -> kill_anon_super()
-	    -> generic_shutdown_super()
-	    -> kill_super_notify()
-	    -> free_anon_bdev()
-	  -> kill_super_notify()
-
-New sequence with this patch:
-
-	deactivate_locked_super()
-	  -> generic_shutdown_super()
-	    -> kill_super_notify()
-	    -> free_anon_bdev()
-
+Best regards,
+-- 
+Leon Romanovsky <leon@kernel.org>
