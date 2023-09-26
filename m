@@ -2,79 +2,78 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 778D17AE977
-	for <lists+linux-rdma@lfdr.de>; Tue, 26 Sep 2023 11:41:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D95077AE97D
+	for <lists+linux-rdma@lfdr.de>; Tue, 26 Sep 2023 11:43:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234114AbjIZJlm (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 26 Sep 2023 05:41:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39700 "EHLO
+        id S234287AbjIZJni (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 26 Sep 2023 05:43:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33388 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233835AbjIZJll (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 26 Sep 2023 05:41:41 -0400
-Received: from verein.lst.de (verein.lst.de [213.95.11.211])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1DAF4B3;
-        Tue, 26 Sep 2023 02:41:35 -0700 (PDT)
-Received: by verein.lst.de (Postfix, from userid 2407)
-        id DEB6468AA6; Tue, 26 Sep 2023 11:41:30 +0200 (CEST)
-Date:   Tue, 26 Sep 2023 11:41:30 +0200
-From:   Christoph Hellwig <hch@lst.de>
-To:     Al Viro <viro@zeniv.linux.org.uk>
-Cc:     Christoph Hellwig <hch@lst.de>,
-        Christian Brauner <brauner@kernel.org>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Alexander Gordeev <agordeev@linux.ibm.com>,
-        Fenghua Yu <fenghua.yu@intel.com>,
-        Reinette Chatre <reinette.chatre@intel.com>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Richard Weinberger <richard@nod.at>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
-        Tejun Heo <tj@kernel.org>,
-        Trond Myklebust <trond.myklebust@hammerspace.com>,
-        Anna Schumaker <anna@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Damien Le Moal <dlemoal@kernel.org>,
-        Naohiro Aota <naohiro.aota@wdc.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-s390@vger.kernel.org, linux-rdma@vger.kernel.org,
-        linux-nfs@vger.kernel.org, linux-hardening@vger.kernel.org,
-        cgroups@vger.kernel.org
-Subject: Re: [PATCH 03/19] fs: release anon dev_t in deactivate_locked_super
-Message-ID: <20230926094130.GC13806@lst.de>
-References: <20230913111013.77623-1-hch@lst.de> <20230913111013.77623-4-hch@lst.de> <20230913232712.GC800259@ZenIV> <20230914023705.GH800259@ZenIV> <20230914053843.GI800259@ZenIV>
+        with ESMTP id S234133AbjIZJnh (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 26 Sep 2023 05:43:37 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 76905EB;
+        Tue, 26 Sep 2023 02:43:31 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 94144C433C9;
+        Tue, 26 Sep 2023 09:43:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1695721411;
+        bh=62Ms2RdlEUDykhXpqwiq2jDEjnzL81U/ZQEs+uHkKxM=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Ho38iDJqkErZAlYQJAGYYewQFHKBA47CdYXunzVInFmKO29dbWXPohvw1IJWQsIii
+         4gMUji6hWrJoKyIRWGHIkgPxfisKYm4MDfNuRajfQnFBbyHaM66Pd3JOvsyL6ejG8r
+         25WzYYU1pRxslm4f2LzEAzEyba2f3PPktSWd4k0Ie7PiZ3/ASjnnpylDnM7T2E2jCJ
+         1bwBGkZRo/9YQkSIlxW+3aRGJLIVkOeLY+Xzgz3nPp5efEjnmhyjW6ZWeD2Tr0Uspj
+         IccmdORTdbeGz65lA1Sj3mUlnQPFOB16D5x+cSEh7un8izQ6/pwXPoyepTuE3SoPi8
+         50vOP3CPI4hzg==
+Date:   Tue, 26 Sep 2023 12:43:27 +0300
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Bart Van Assche <bvanassche@acm.org>
+Cc:     zyjzyj2000@gmail.com, jgg@ziepe.ca, linux-rdma@vger.kernel.org,
+        rpearsonhpe@gmail.com, matsuda-daisuke@fujitsu.com,
+        shinichiro.kawasaki@wdc.com, linux-scsi@vger.kernel.org,
+        Zhu Yanjun <yanjun.zhu@linux.dev>
+Subject: Re: [PATCH 1/1] Revert "RDMA/rxe: Add workqueue support for rxe
+ tasks"
+Message-ID: <20230926094327.GI1642130@unreal>
+References: <20230922163231.2237811-1-yanjun.zhu@intel.com>
+ <841c0cf2-48f6-4a3c-a991-aaa5a737a9af@acm.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230914053843.GI800259@ZenIV>
-User-Agent: Mutt/1.5.17 (2007-11-01)
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
-        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <841c0cf2-48f6-4a3c-a991-aaa5a737a9af@acm.org>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Thu, Sep 14, 2023 at 06:38:43AM +0100, Al Viro wrote:
-> It's worse - look at the rationale for 2c18a63b760a "super: wait until
-> we passed kill super".  Basically, "don't remove from the lists
-> until after block device closing".  IOW, we have
-
-As of this stage we don't even touch anything related to block devices..
-
-> That was *NOT* what a recent rework had done.  Block device closing had never
-> been inside ->put_super() - at no point since that (closing, that is) had been
-> introduced back in 0.97 ;-)  ->put_super() predates it (0.95c+).
+On Fri, Sep 22, 2023 at 09:42:08AM -0700, Bart Van Assche wrote:
+> On 9/22/23 09:32, Zhu Yanjun wrote:
+> > From: Zhu Yanjun <yanjun.zhu@linux.dev>
+> > 
+> > This reverts commit 9b4b7c1f9f54120940e243251e2b1407767b3381.
+> > 
+> > This commit replaces tasklet with workqueue. But this results
+> > in occasionally pocess hang at the blktests test case srp/002.
+> > After the discussion in the link[1], this commit is reverted.
+> > 
+> > Link: https://lore.kernel.org/linux-rdma/e8b76fae-780a-470e-8ec4-c6b650793d10@leemhuis.info/T/#t [1]
+> > Signed-off-by: Zhu Yanjun <yanjun.zhu@linux.dev>
+> > CC: rpearsonhpe@gmail.com
+> > CC: matsuda-daisuke@fujitsu.com
+> > CC: bvanassche@acm.org
+> > CC: shinichiro.kawasaki@wdc.com
 > 
-> The race is real, but the cause is not some kind of move of blkdev_put().
-> Your 2ea6f68932f7 "fs: use the super_block as holder when mounting file
-> systems" is where it actually came from.
-> 
-> Christoph, could you explain what the hell do we need that for?  It does
-> create the race in question and AFAICS 2c18a63b760a (and followups trying
-> to plug holes in it) had been nothing but headache.
+> Shouldn't the Cc-list occur before the Signed-off-by tag? Anyway:
 
-Because it allows us to actually get from the bdev to the holder directly,
-someting we've badly neeed for a while.
+chackpatch didn't complain, so I took it as is.
+
+> 
+> Reviewed-by: Bart Van Assche <bvanassche@acm.org>
+
+Thanks
