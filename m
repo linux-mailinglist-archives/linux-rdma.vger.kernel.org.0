@@ -2,144 +2,93 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 387FA7AEFCD
-	for <lists+linux-rdma@lfdr.de>; Tue, 26 Sep 2023 17:37:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 33ADB7AF18A
+	for <lists+linux-rdma@lfdr.de>; Tue, 26 Sep 2023 19:05:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235098AbjIZPh5 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 26 Sep 2023 11:37:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34428 "EHLO
+        id S229715AbjIZRF6 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 26 Sep 2023 13:05:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49308 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234874AbjIZPh5 (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 26 Sep 2023 11:37:57 -0400
-Received: from mail-wm1-x330.google.com (mail-wm1-x330.google.com [IPv6:2a00:1450:4864:20::330])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 004A5120;
-        Tue, 26 Sep 2023 08:37:49 -0700 (PDT)
-Received: by mail-wm1-x330.google.com with SMTP id 5b1f17b1804b1-40566f89f6eso61333935e9.3;
-        Tue, 26 Sep 2023 08:37:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1695742668; x=1696347468; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=mTYvK9pH/EJXRHP3ak9Ne9342oDswZw6qnzE3IYoQUw=;
-        b=T+ZCMMeG5dwEoCr0UfBL43NshlTQN7hXNrykwx+eZS89urOTwA5qgRu2ZBCdAERfJt
-         T6VRQ7KFFBBXYVBLwO3OpDU7dCAdXxH2pUcZcApfOGlZaCjfSVjgafmDIDIL0xoUh1V6
-         cIogswGhWBAV03+RFCFnndyuBZmXPV5wRgvRRsTgfOfmU30HJ9oyfezmiY0bGC5lCrzy
-         rlde2hGJ8k8BQp5lB2eK+qDdEoe9/IBrsjhcalbhus7qJb1k8vMkfXHM1duAfRhqjp32
-         B76WAWwAyd6P9YgSY1yjPFOik98dVrh9na04KCTG+HGxNcrp26lpXLer+FikQrfTLlDQ
-         Ut0Q==
+        with ESMTP id S229570AbjIZRF5 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 26 Sep 2023 13:05:57 -0400
+Received: from mail-pf1-f169.google.com (mail-pf1-f169.google.com [209.85.210.169])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE29CE5;
+        Tue, 26 Sep 2023 10:05:50 -0700 (PDT)
+Received: by mail-pf1-f169.google.com with SMTP id d2e1a72fcca58-69101022969so8263045b3a.3;
+        Tue, 26 Sep 2023 10:05:50 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695742668; x=1696347468;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=mTYvK9pH/EJXRHP3ak9Ne9342oDswZw6qnzE3IYoQUw=;
-        b=v1wNVPqE/anuWDXeMl1w454YfERh3gQpec89cHOlPYAyTOeLuz0Q+ctu6jOd/NI9gl
-         1o9dncYPQzQ8fOXaJGY7Godx3KL4rUCOHvgpUGCFgN0B3oJGFOfuA1h+4YbIzVk/+gkw
-         jDfWhHkJqDwDNwOwvwoYA98Dprzq+JgAhmODahjyXyBxB/O0TXom8BxaGrEPNPsVdPeG
-         r+aMgeUzMCPyTrCfuWjNcFMgpc/kTxXxHqbF7rQRgK7MNJhbcpPL3JCAOFv/vpA9Z3ee
-         AXMevE2Vwka/PwenK3U1s791vVAfVmAxVVUlOYl2BokO0duLsbcwuAJV8CpNTLqSSmAs
-         HmEg==
-X-Gm-Message-State: AOJu0YxL2bPDKowVhv4PIolu6vgpJ6Jj3Yo5e9wdMjSAe8DtWt4wThBP
-        ub+jPe2rUo1PXz+aXM/c/vIEAaD7rg+sdWmqoqE=
-X-Google-Smtp-Source: AGHT+IGIvAA9vf46tqgTuoSwI1yLVXfkOJL2ScPNS/SeN+QUpnNWwvD2vjAwoCJfV3eo1gCrvU4e1nJi6newv0RbXNg=
-X-Received: by 2002:a05:600c:895:b0:405:95ae:4aa7 with SMTP id
- l21-20020a05600c089500b0040595ae4aa7mr4333702wmp.10.1695742668157; Tue, 26
- Sep 2023 08:37:48 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1695747950; x=1696352750;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=ciyIL3UJ+mFPGzRDJSNW4K/Q77//MQkL34dUxJQCXb8=;
+        b=ZbvuumQrF3ab4ygjnENd6ng7xo/yb++PfJmlX9DsEeffs5yTJkLuSBn22pUuHjaHem
+         EOuuCgG2HBq1v3F3DBtqaSgsRdTrqkJE8rhCeJS2sidntU/q5Mn4ZMZ/u8Q5fzpkVI23
+         lXAbuvOXpehNc1hizM0+FMmiSBdh6QPE0XtXYdZkN/OHLQ2cZodQHh1LdG/iYML4EP9P
+         3L8BRFuu/QT2JAW1+wgHzyJFlbPkqOpbg/EHvIah0zq+G3aRUdDt5xqXK42qtqHTrJvR
+         QR3qMyQTwpiWDnXDoBt+EhFXsnc1KLVJIOnspOYIapnJFHqVIUH8fKCeoN92XLlX1kuJ
+         6lSw==
+X-Gm-Message-State: AOJu0YwKQhDfa9b9Dd1ZGUl93HBBB7FGkj1O08WPzHO688n4mB9YVWPl
+        PHzG+h2zsp5AZwI7r8K2trQ=
+X-Google-Smtp-Source: AGHT+IEJIczeDGpprRAJrao9yQ5dyRTC3m9+JVYk2bI5mNQlLSsr1U2DxP+wrQAKbvyim9J7gAkmIw==
+X-Received: by 2002:a05:6a00:1ace:b0:691:da6:47a with SMTP id f14-20020a056a001ace00b006910da6047amr12656670pfv.31.1695747949820;
+        Tue, 26 Sep 2023 10:05:49 -0700 (PDT)
+Received: from ?IPV6:2620:15c:211:201:a80d:6f65:53d4:d1bf? ([2620:15c:211:201:a80d:6f65:53d4:d1bf])
+        by smtp.gmail.com with ESMTPSA id x17-20020aa793b1000000b006884549adc8sm10213146pff.29.2023.09.26.10.05.48
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 26 Sep 2023 10:05:48 -0700 (PDT)
+Message-ID: <d3c05064-a88b-4719-a390-6bf9ae01fba5@acm.org>
+Date:   Tue, 26 Sep 2023 10:05:46 -0700
 MIME-Version: 1.0
-References: <dsg6rd66tyiei32zaxs6ddv5ebefr5vtxjwz6d2ewqrcwisogl@ge7jzan7dg5u>
- <d3205633-0cd2-f87e-1c40-21b8172b6da3@linux.dev> <nqdsj764d7e56kxevcwnq6qoi6ptuu3bi6ntfakb55vm3toda7@eo3ffzzqrot7>
- <5a4efe6f-d8c6-84ce-377e-eb64bcad706c@linux.dev> <f50beb15-2cab-dfb9-3b58-ea66e7f114a6@gmail.com>
- <fe61fdc5-ca8f-2efc-975d-46b99d66c6f5@linux.dev> <afc98035-1bb8-f75c-451a-8e3e39fb74aa@gmail.com>
- <6fc3b524-af7d-43ce-aa05-5c44ec850b9b@acm.org> <b728f4db-bafa-dd0f-e288-7e3f56e6eae8@gmail.com>
- <02d7cbf2-b17b-488a-b6e9-ebb728b51c94@acm.org> <b80dae29-3a7c-f039-bc35-08c6e9f91197@gmail.com>
- <CAJr_XRAy4EHueAP-10=WSEa46j2aQBArdzYsq7OqSqR93Ue+ug@mail.gmail.com>
- <8aff9124-85c0-8e3b-dc35-1017b1540037@gmail.com> <3c84da83-cdbb-3326-b3f0-b2dee5f014e0@linux.dev>
- <4e7aac82-f006-aaa7-6769-d1c9691a0cec@gmail.com> <CAJr_XRCFuv_XO3Zk+pfq6C73CgDsnaJT4-G-jq1ds3bdg76iEA@mail.gmail.com>
- <OS7PR01MB1180450455E624D5CD977C461E5FCA@OS7PR01MB11804.jpnprd01.prod.outlook.com>
- <29c5de53-cc61-4efc-8e8d-690e27756a16@acm.org> <114ecd0b-42b0-4c1d-8b58-280e670550be@gmail.com>
-In-Reply-To: <114ecd0b-42b0-4c1d-8b58-280e670550be@gmail.com>
-From:   Rain River <rain.1986.08.12@gmail.com>
-Date:   Tue, 26 Sep 2023 23:36:57 +0800
-Message-ID: <CAJr_XRBFnrtSGeVbybthd80Ro5ykki6NsNYbQ93hLJfCWcnJrQ@mail.gmail.com>
-Subject: Re: [bug report] blktests srp/002 hang
-To:     Bob Pearson <rpearsonhpe@gmail.com>
-Cc:     Bart Van Assche <bvanassche@acm.org>,
-        "Daisuke Matsuda (Fujitsu)" <matsuda-daisuke@fujitsu.com>,
-        Zhu Yanjun <yanjun.zhu@linux.dev>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        "leon@kernel.org" <leon@kernel.org>,
-        Shinichiro Kawasaki <shinichiro.kawasaki@wdc.com>,
-        RDMA mailing list <linux-rdma@vger.kernel.org>,
-        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 1/1] Revert "RDMA/rxe: Add workqueue support for rxe
+ tasks"
+Content-Language: en-US
+To:     Leon Romanovsky <leon@kernel.org>, zyjzyj2000@gmail.com,
+        jgg@ziepe.ca, linux-rdma@vger.kernel.org, rpearsonhpe@gmail.com,
+        matsuda-daisuke@fujitsu.com, shinichiro.kawasaki@wdc.com,
+        linux-scsi@vger.kernel.org, Zhu Yanjun <yanjun.zhu@intel.com>
+Cc:     Zhu Yanjun <yanjun.zhu@linux.dev>
+References: <20230922163231.2237811-1-yanjun.zhu@intel.com>
+ <169572143704.2702191.3921040309512111011.b4-ty@kernel.org>
+ <20230926140656.GM1642130@unreal>
+From:   Bart Van Assche <bvanassche@acm.org>
+In-Reply-To: <20230926140656.GM1642130@unreal>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Tue, Sep 26, 2023 at 3:57=E2=80=AFAM Bob Pearson <rpearsonhpe@gmail.com>=
- wrote:
->
-> On 9/25/23 10:00, Bart Van Assche wrote:
-> > On 9/24/23 21:47, Daisuke Matsuda (Fujitsu) wrote:
-> >> As Bob wrote above, nobody has found any logical failure in rxe
-> >> driver.
-> >
-> > That's wrong. In case you would not yet have noticed my latest email in
-> > this thread, please take a look at
-> > https://lore.kernel.org/linux-rdma/e8b76fae-780a-470e-8ec4-c6b650793d10=
-@leemhuis.info/T/#m0fd8ea8a4cbc27b37b042ae4f8e9b024f1871a73. I think the re=
-port in that email is a 100% proof that there is a use-after-free issue in =
-the rdma_rxe driver. Use-after-free issues have security implications and a=
-lso can cause data corruption. I propose to revert the commit that introduc=
-ed the rdma_rxe use-after-rpearson:src$ git clone git://git.kernel.org/pub/=
-scm/linux/git/rafael/linux-pm
-> Cloning into 'linux-pm'...
-> fatal: remote error: access denied or repository not exported: /pub/scm/l=
-inux/git/rafael/linux-pm
-> free unless someone comes up with a fix for the rdma_rxe driver.
-> >
-> > Bart.
->
-> Bart,
->
-> Having trouble following your recipe. The git repo you mention does not s=
-eem to be available. E.g.
->
-> rpearson:src$ git clone git://git.kernel.org/pub/scm/linux/git/rafael/lin=
-ux-pm
-> Cloning into 'linux-pm'...
-> fatal: remote error: access denied or repository not exported: /pub/scm/l=
-inux/git/rafael/linux-pm
->
-> I am not sure how to obtain the tag if I cannot see the repo.
->
-> If I just try to enable KASAN by setting CONFIG_KASAN=3Dy in .config for =
-the current linux-rdma repo
-> and compile the kernel the kernel won't boot and is caught in some kind o=
-f SRSO hell. If I checkout
-> Linus' v6.4 tag and add CONFIG_KASAN=3Dy to a fresh .config file the kern=
-el builds OK but when I
-> try to boot it, it is unable to chroot to the root file system in boot.
+On 9/26/23 07:06, Leon Romanovsky wrote:
+> On Tue, Sep 26, 2023 at 12:43:57PM +0300, Leon Romanovsky wrote:
+>>
+>> On Fri, 22 Sep 2023 12:32:31 -0400, Zhu Yanjun wrote:
+>>> This reverts commit 9b4b7c1f9f54120940e243251e2b1407767b3381.
+>>>
+>>> This commit replaces tasklet with workqueue. But this results
+>>> in occasionally pocess hang at the blktests test case srp/002.
+>>> After the discussion in the link[1], this commit is reverted.
+>>>
+>>>
+>>> [...]
+>>
+>> Applied, thanks!
+>>
+>> [1/1] Revert "RDMA/rxe: Add workqueue support for rxe tasks"
+>>        https://git.kernel.org/rdma/rdma/c/e710c390a8f860
+> 
+> I applied this patch, but will delay it for some time with a hope that
+> fix will arrive in the near future.
 
-Bob,
+Thank you Leon. With this revert applied on top of the rdma for-next branch, I
+don't see the KASAN complaint anymore that I reported yesterday. I think this
+is more evidence that the KASAN complaint was caused by the RXE driver.
 
-Suggested by a friend who is an expert in process schedule and
-workqueue, I made a test as below.
-On each CPU, a cpu-intensive process runs with high priority. Then run
-rxe with the commit, the rping almost can not work well.
-Without this commit, rping can work with rxe in the same scenario.
-When you fix this problem, consider the above.
-
->
-> Any hints would be appreciated.
->
-> Bob
->
+Bart.
