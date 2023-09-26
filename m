@@ -2,76 +2,86 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A34F7AE940
-	for <lists+linux-rdma@lfdr.de>; Tue, 26 Sep 2023 11:31:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8CB2E7AE944
+	for <lists+linux-rdma@lfdr.de>; Tue, 26 Sep 2023 11:31:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234207AbjIZJbD (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 26 Sep 2023 05:31:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50310 "EHLO
+        id S234173AbjIZJbl (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 26 Sep 2023 05:31:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60658 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234225AbjIZJbC (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 26 Sep 2023 05:31:02 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6EA4712A;
-        Tue, 26 Sep 2023 02:30:50 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6AD69C433C7;
-        Tue, 26 Sep 2023 09:30:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1695720649;
-        bh=hj4oxhOkY4q3xTfX5ieHdoLzD+mLcLaLDO8XnC6wpXI=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=kW10MjOWGXCIICnfagr6XcT9Im7CQZjdm9bT1IhfwzLWOa/brK9fo0al2Nmc3o1Wy
-         ric8CucrtnCGkTXN/4oTdNdb5LlIwhyGyk1vbuy3RrP7vx9sUF37yKOmL7Nj3Ab8/0
-         IenBaFbogr9fJvlk84kVZFmZ+INx8iIYrXC2yf0AHqK/7TORqZNvE33vqibQQib6Kt
-         S1FgXH6p30FKqzbHsQduKb1hP7Xah1EwPhQrAsEZWBb3uPcDhpPhhXiTLyIlFoD/Du
-         hjYM8vaaYJr+6/a9/+1QcixYCwGmRglkygFkWh7qtseYDHGqLlU8hUBuhXI6vMLUkd
-         rxiNZhAs9wfoA==
-Date:   Tue, 26 Sep 2023 12:30:46 +0300
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Junxian Huang <huangjunxian6@hisilicon.com>
-Cc:     jgg@ziepe.ca, linux-rdma@vger.kernel.org, linuxarm@huawei.com,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH for-next] RDMA/hns: Support SRQ record doorbell
-Message-ID: <20230926093046.GG1642130@unreal>
-References: <20230920033005.1557-1-huangjunxian6@hisilicon.com>
+        with ESMTP id S233835AbjIZJbk (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 26 Sep 2023 05:31:40 -0400
+Received: from verein.lst.de (verein.lst.de [213.95.11.211])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 29D50BE;
+        Tue, 26 Sep 2023 02:31:34 -0700 (PDT)
+Received: by verein.lst.de (Postfix, from userid 2407)
+        id 1A2D668AA6; Tue, 26 Sep 2023 11:31:30 +0200 (CEST)
+Date:   Tue, 26 Sep 2023 11:31:29 +0200
+From:   Christoph Hellwig <hch@lst.de>
+To:     Christian Brauner <brauner@kernel.org>
+Cc:     Al Viro <viro@zeniv.linux.org.uk>, Christoph Hellwig <hch@lst.de>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Alexander Gordeev <agordeev@linux.ibm.com>,
+        Fenghua Yu <fenghua.yu@intel.com>,
+        Reinette Chatre <reinette.chatre@intel.com>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Richard Weinberger <richard@nod.at>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
+        Tejun Heo <tj@kernel.org>,
+        Trond Myklebust <trond.myklebust@hammerspace.com>,
+        Anna Schumaker <anna@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Damien Le Moal <dlemoal@kernel.org>,
+        Naohiro Aota <naohiro.aota@wdc.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-s390@vger.kernel.org, linux-rdma@vger.kernel.org,
+        linux-nfs@vger.kernel.org, linux-hardening@vger.kernel.org,
+        cgroups@vger.kernel.org
+Subject: Re: [PATCH 03/19] fs: release anon dev_t in deactivate_locked_super
+Message-ID: <20230926093129.GA13806@lst.de>
+References: <20230913111013.77623-1-hch@lst.de> <20230913111013.77623-4-hch@lst.de> <20230913232712.GC800259@ZenIV> <20230914023705.GH800259@ZenIV> <20230914053843.GI800259@ZenIV> <20230914-zielt-einzog-00389009b293@brauner>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230920033005.1557-1-huangjunxian6@hisilicon.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+In-Reply-To: <20230914-zielt-einzog-00389009b293@brauner>
+User-Agent: Mutt/1.5.17 (2007-11-01)
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
+        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Wed, Sep 20, 2023 at 11:30:05AM +0800, Junxian Huang wrote:
-> From: Yangyang Li <liyangyang20@huawei.com>
+On Thu, Sep 14, 2023 at 09:56:57AM +0200, Christian Brauner wrote:
+> > BTW, this part of commit message in 2c18a63b760a is rather confused:
+> >     Recent rework moved block device closing out of sb->put_super() and into
+> >     sb->kill_sb() to avoid deadlocks as s_umount is held in put_super() and
+> >     blkdev_put() can end up taking s_umount again.
+> > 
+> > That was *NOT* what a recent rework had done.  Block device closing had never
+> > been inside ->put_super() - at no point since that (closing, that is) had been
+> > introduced back in 0.97 ;-)  ->put_super() predates it (0.95c+).
 > 
-> Compared with normal doorbell, using record doorbell can shorten the
-> process of ringing the doorbell and reduce the latency.
-> 
-> Add a flag HNS_ROCE_CAP_FLAG_SRQ_RECORD_DB to allow FW to
-> enable/disable SRQ record doorbell.
-> 
-> If the flag above is set, allocate the dma buffer for SRQ record
-> doorbell and write the buffer address into SRQC during SRQ creation.
-> 
-> For userspace SRQ, add a flag HNS_ROCE_RSP_SRQ_CAP_RECORD_DB to notify
-> userspace whether the SRQ record doorbell is enabled.
-> 
-> Signed-off-by: Yangyang Li <liyangyang20@huawei.com>
-> Signed-off-by: Junxian Huang <huangjunxian6@hisilicon.com>
-> ---
->  drivers/infiniband/hw/hns/hns_roce_device.h |  3 +
->  drivers/infiniband/hw/hns/hns_roce_hw_v2.c  | 30 ++++++--
->  drivers/infiniband/hw/hns/hns_roce_srq.c    | 85 ++++++++++++++++++++-
->  include/uapi/rdma/hns-abi.h                 | 13 +++-
->  4 files changed, 120 insertions(+), 11 deletions(-)
+> I think the commit message probably just isn't clear enough. The main
+> block device of a superblock isn't closed in sb->put_super(). That's
+> always been closed in kill_block_super() after generic_shutdown_super().
 
-Junxian, do you plan to resubmit it this patch to fix kbuild error?
+Yes.
 
-Thanks
+> But afaict filesystem like ext4 and xfs may have additional block
+> devices open exclusively and closed them in sb->put_super():
+> 
+> xfs_fs_put_super()
+> -> xfs_close_devices()
+>    -> xfs_blkdev_put()
+>       -> blkdev_put()
+> 
+> ext4_put_super()
+> -> ext4_blkdev_remove()
+>    -> blkdev_put()
+
+Yes.
