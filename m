@@ -2,158 +2,172 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0BCA77B245A
-	for <lists+linux-rdma@lfdr.de>; Thu, 28 Sep 2023 19:49:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 22CCF7B2466
+	for <lists+linux-rdma@lfdr.de>; Thu, 28 Sep 2023 19:52:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232046AbjI1Rta (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 28 Sep 2023 13:49:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49172 "EHLO
+        id S231857AbjI1Rwh (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 28 Sep 2023 13:52:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44192 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229478AbjI1Rt3 (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 28 Sep 2023 13:49:29 -0400
-Received: from EUR04-HE1-obe.outbound.protection.outlook.com (mail-he1eur04on2057.outbound.protection.outlook.com [40.107.7.57])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E9AA0DD
-        for <linux-rdma@vger.kernel.org>; Thu, 28 Sep 2023 10:49:27 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=b8SBqfF6aGvdwCl0P7FsDmwkpFw3+EN5rqym+H82MImmF/SYK58Qztu3b36ipXPwTVJTKFMP4NYWybyGZkxmGiNQ8C8W/sIEsSswXuNiAfE7LnFbYexlyYw4z4Zvv5ZkCSYTGo07UDs+9F8nCdITlNXyKsO/Jyp+q93S1yWfiJ+RmPI4CsAM25Ipssqhwle6fxumaU64Wg1JzsndUXg53civQy2Qtj2QegbgF0Jm6o8fDg4wIwUOyiA34NJ9MqNVPbiuXw9Q/vIi0JvyP0jdTU/GqQ+MThCoKWaRNZ1CwmwHaGyQ6aIsy+MwB5nGpQqmj/cCdG31cmopQJpTzeiFQw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=2UWnkkgb1FPIHarnTrAjdbEZQK8e7Ou6s1x+kOHkpKo=;
- b=PbGL9I3YybfYzFlblWTsEGzKnLJRnOrksoQjybRTRLLcuUIy/zSKOWoHLAvvP3Ryopy74134LTq4uJRodkXZWd5389VCGiRPaoJGhmOco0CTYX35zh5pJ2iDIRBt9QPirpNtnsn32+/BNp8P6UD82jD9peEN2V02BiQJcuVPbxIoOxnFIDY6rtQ+i+q39jBg9Oa8N0X3IxHnwLREhT4I0RC361cZKsrGcU644qE3vut3zVAZfBbxzYAEEMILnljOeLEwIREpNmtsBSh/ZdGnx7MS72uWV/RG7SgDm7fpZRAFpih2Lethx5+RwV/FegYwbEG0z/pi4Dv2wguHInQnkw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=suse.com; dmarc=pass action=none header.from=suse.com;
- dkim=pass header.d=suse.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=2UWnkkgb1FPIHarnTrAjdbEZQK8e7Ou6s1x+kOHkpKo=;
- b=NGH6kuEPAoBnslZltAA9P/+EMJ58ShaHK9ibVu2Id9uOWcttCxr78Ypgh4JYgIVMYE3cEYcKb3+SIXTcCeoK8MoeAm9sHAaLMkBkk+iY+Z4lsLEHkXQg3N0zCmhCxacd1hOFSqNuUlchQCk0AeP3sWyqghr/E1lS/V1Oy+4f+dHXKdWFjJwYogiI2DbVQ+8LLgCC1G1e38Y+gCkBAvTkLN9dm3IMp4Ks3ywmLtpd6Ybf/i9Kklk7HUYQIhqolGvVbl78rRagd40WQzNIgsIcEyyYOE6mun6tY5IJRehKCiKMy0QYa9kwYPBJm9Z5c1XcWHHES//2J5fJAlKwQLNrKA==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=suse.com;
-Received: from HE1PR04MB2969.eurprd04.prod.outlook.com (2603:10a6:7:1c::23) by
- VE1PR04MB7389.eurprd04.prod.outlook.com (2603:10a6:800:1b1::8) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.6813.28; Thu, 28 Sep 2023 17:49:25 +0000
-Received: from HE1PR04MB2969.eurprd04.prod.outlook.com
- ([fe80::fef6:bde:8f08:e85b]) by HE1PR04MB2969.eurprd04.prod.outlook.com
- ([fe80::fef6:bde:8f08:e85b%5]) with mapi id 15.20.6813.027; Thu, 28 Sep 2023
- 17:49:24 +0000
-Message-ID: <cf5c0c73-46dc-4091-a578-262d7629f85f@suse.com>
-Date:   Thu, 28 Sep 2023 19:49:21 +0200
-User-Agent: Mozilla Thunderbird
-Subject: Re: [ANNOUNCE] rdma-core: new stable releases
-Content-Language: en-US
-To:     Mark Haywood <mark.haywood@oracle.com>, linux-rdma@vger.kernel.org
-References: <4410ebe0-c4cb-98ce-e493-0c6cd9a57b74@suse.com>
- <7659c824-ad3e-eb6c-1928-fd438fa68e70@oracle.com>
-From:   Nicolas Morey <nmorey@suse.com>
-Autocrypt: addr=nmorey@suse.com; keydata=
- xsBNBFjZETwBCADEkoe7QWAXzd9xpSiPbQK6P2F4wKdxyTp6r0aN4I0O+4fc8xWXvmwOrCjF
- UsuoGZ3CxJaHgdB/3ueW/IhMO5Ldz7pylhKVlG/moUh4CBK2eRUdaG7mHID01GyJMtR3VQqu
- 22hJhHPYy0erpYViyr+I4MzQA9QZLoQhSxn4imjZOZPcj20JE+lRfXppNv9g7vQiRLMcXjTi
- KcnrqG5owOi6Cn1sZ201YfdeztGxKA+jvjWO+6absTTlorIlZNGUf85s2+caGDsqa31u2DPs
- hVv5UUTy1g/5aP2wacSWI3Qm4n2MWl1aCnHN2h737PCXXfBk5iGJsgBUnSQULgdgEAt1ABEB
- AAHNH05pY29sYXMgTW9yZXkgPG5tb3JleUBzdXNlLmNvbT7CwI4EEwEIADgWIQRC0lOFwaHA
- K4sbHG+AG924JZiPZAUCY5G8SAIbAwULCQgHAgYVCgkICwIEFgIDAQIeAQIXgAAKCRCAG924
- JZiPZMZiB/9QkcGfH248qvFUWZig3jssK5IgijfOFDKB0YK4e844M5C8LVSuWpu7Z+lM+cql
- 3mbrikW6mlZjPEusrQ/KGvT6TdfOM9VCQWjlshMzt7uiRDdzufHGtE5hhk/67UnkEVjmplpD
- k8cb1O0VsBfGym7e0nySHTlDWqr++9EcwgV3uo4psYYEqm6Aon1yKqjbmj+vfl/C5iW3V4lq
- DhBk8w21AvNS+tdEqJzhruxuXkEDZZ07wYFS7m8OxLNb4sMzn/Nz9x/NXeweBWx2ujIERtAq
- 1e/hh0ZAcoPVR3CfO2QTmfTfrzVdpZrZ8F54337ze3+BUNnrFGObQhlNe26NqNYWzsBNBFjZ
- ETwBCAC9zAzCRlTgzyO9siVLQYwbRUhcL1TUJU/FiOQWQTmL3uDdBc6MgVBs+hp82RwPbbXT
- v4W4rghBYPKdmFXvRN+jvGDLq1f2hsuCSiE1ckTMzFV+sKoWRIEC12tEpw5ncEFGm+1k/rJR
- Lk9eHxuqn+yRjPryN8CK6tK4+b4tZ2urKlP29XG+T3l/mbUSoqfjqvyeKaW6xw7ku89EX2Xo
- QWP/pm92RxUd6VDU9vpVW/T7qPZRl0wtUnDnO2wePoZmvUfEr5Osh3MNvm1myG+v4EV2Hgva
- NT6pa27IptrUq06cA6dDsIKwPtMuThJQp8/xumgl5Q9A/ErQoJTrB9rclIm7ABEBAAHCwF8E
- GAECAAkFAljZETwCGwwACgkQgBvduCWYj2QwNwf/eOIpFB67cKoUJvcm3JWcvnagZOuyasCw
- xwH9a0o9jORcq+nsJoynS/DpjUKGyZagy7+F7sBrF7Xx0cXF2f5Bo42XNNiQDE5P/VLwvgn9
- 62AJ3q0dp4O7oQI8UgNmdsocQhNaBHHCoOabLGrgNobDTaLBeb9zaOZqz8CBuAiZ0bVABEpg
- 50hDEYTHp4jCgWpadhAsp/eCgm93Tc+Y+e1fqtE3FmoOLxyhFa6evhn0Q1iX0kCasMZwlzse
- zqLZjTM1Koqn6+UIHXE3QaULyFKD1GDhisXxyolOB6P2TXsyfvitYdIZ3CCtI7PVDxzmX2Xk
- kvEz9bMtStoMpse9qAsmHQ==
-In-Reply-To: <7659c824-ad3e-eb6c-1928-fd438fa68e70@oracle.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: FR3P281CA0161.DEUP281.PROD.OUTLOOK.COM
- (2603:10a6:d10:a2::20) To HE1PR04MB2969.eurprd04.prod.outlook.com
- (2603:10a6:7:1c::23)
+        with ESMTP id S230349AbjI1Rwg (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 28 Sep 2023 13:52:36 -0400
+Received: from mx0b-002e3701.pphosted.com (mx0b-002e3701.pphosted.com [148.163.143.35])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79E0219D;
+        Thu, 28 Sep 2023 10:52:35 -0700 (PDT)
+Received: from pps.filterd (m0134424.ppops.net [127.0.0.1])
+        by mx0b-002e3701.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 38SHhHiB002198;
+        Thu, 28 Sep 2023 17:51:26 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=hpe.com; h=date : from : to : cc :
+ subject : message-id : references : content-type : in-reply-to :
+ mime-version; s=pps0720; bh=mZrC/t7ae+Z2o86iz704abLpUMsth0bb5IgGpyWjrnM=;
+ b=APaa5kKkE4mpyTjbaPlvnbYIWIT9A784n1fDZhZsP48Q4BO9uSG32bZsfAF52jrU1bOT
+ 1h7DtIZq8CfCoiXJzZq8iCLGpdSe2PlQIjBXHSbzsrerYmN3AzKoVoUge3gno+oOKne0
+ TZt5ZpPcmFxaL8khHe4Ax9IRzjtiszQvxqsciJsyNpAD6ZY84bLt17ZecVDpe5s/3MjB
+ a3q5Nj2zzP41qNl43/8ndPzzA6qoqUz03rp+3yjfOcXzoZpJvReW4KIp/RtMFfifP+Ul
+ Z6IbclgwAUZ5SJhoTsDmi8nxYS4v/OvpF1TAywHM0NXqhjlAEPK6WdmkxzbGRG8AthqO KA== 
+Received: from p1lg14881.it.hpe.com ([16.230.97.202])
+        by mx0b-002e3701.pphosted.com (PPS) with ESMTPS id 3tde4ur2yg-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 28 Sep 2023 17:51:25 +0000
+Received: from p1lg14885.dc01.its.hpecorp.net (unknown [10.119.18.236])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by p1lg14881.it.hpe.com (Postfix) with ESMTPS id A9CF8805E26;
+        Thu, 28 Sep 2023 17:51:23 +0000 (UTC)
+Received: from swahl-home.5wahls.com (unknown [16.231.227.36])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (Client did not present a certificate)
+        by p1lg14885.dc01.its.hpecorp.net (Postfix) with ESMTPS id DAC6681566E;
+        Thu, 28 Sep 2023 17:51:16 +0000 (UTC)
+Date:   Thu, 28 Sep 2023 12:51:15 -0500
+From:   Steve Wahl <steve.wahl@hpe.com>
+To:     j.granados@samsung.com
+Cc:     Luis Chamberlain <mcgrof@kernel.org>, willy@infradead.org,
+        josh@joshtriplett.org, Kees Cook <keescook@chromium.org>,
+        Phillip Potter <phil@philpotter.co.uk>,
+        Clemens Ladisch <clemens@ladisch.de>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Juergen Gross <jgross@suse.com>,
+        Stefano Stabellini <sstabellini@kernel.org>,
+        Oleksandr Tyshchenko <oleksandr_tyshchenko@epam.com>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Doug Gilbert <dgilbert@interlog.com>,
+        Sudip Mukherjee <sudipm.mukherjee@gmail.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Leon Romanovsky <leon@kernel.org>,
+        Corey Minyard <minyard@acm.org>, Theodore Ts'o <tytso@mit.edu>,
+        "Jason A. Donenfeld" <Jason@zx2c4.com>,
+        David Ahern <dsahern@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Robin Holt <robinmholt@gmail.com>,
+        Steve Wahl <steve.wahl@hpe.com>,
+        Russ Weight <russell.h.weight@intel.com>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Song Liu <song@kernel.org>,
+        "K. Y. Srinivasan" <kys@microsoft.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        Wei Liu <wei.liu@kernel.org>, Dexuan Cui <decui@microsoft.com>,
+        Jani Nikula <jani.nikula@linux.intel.com>,
+        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
+        Rodrigo Vivi <rodrigo.vivi@intel.com>,
+        Tvrtko Ursulin <tvrtko.ursulin@linux.intel.com>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>, linux-kernel@vger.kernel.org,
+        xen-devel@lists.xenproject.org, linux-serial@vger.kernel.org,
+        linux-scsi@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        linux-rdma@vger.kernel.org,
+        openipmi-developer@lists.sourceforge.net, netdev@vger.kernel.org,
+        linux-raid@vger.kernel.org, linux-hyperv@vger.kernel.org,
+        intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org
+Subject: Re: [PATCH 11/15] sgi-xp: Remove the now superfluous sentinel
+ element from ctl_table array
+Message-ID: <ZRW9Eywl831h/YhW@swahl-home.5wahls.com>
+References: <20230928-jag-sysctl_remove_empty_elem_drivers-v1-0-e59120fca9f9@samsung.com>
+ <=?utf-8?q?=3C20230928-jag-sysctl=5Fremove=5Fempty=5Felem=5Fdrive?=>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <=?utf-8?q?=3C20230928-jag-sysctl=5Fremove=5Fempty=5Felem=5Fdrive?=>
+X-Proofpoint-GUID: ARXao25-avAoloITuhrfvukM5pXVcFhf
+X-Proofpoint-ORIG-GUID: ARXao25-avAoloITuhrfvukM5pXVcFhf
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: HE1PR04MB2969:EE_|VE1PR04MB7389:EE_
-X-MS-Office365-Filtering-Correlation-Id: d835529b-7bb5-49cc-207c-08dbc04b401d
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: AAXCCGlKpGsTRtxqE1z2ixL8gOJe8WfZHOXqQHwD2Jlddjdk/9zBCAPwfDhBuFR7J8pp9nu/tNzj2Je9lz6SVWwED0YCHyJNl2gofH2sQir+gQ/rAdxCaHqWEVJnWUFuna9Da+Hl9FOHRtZvNwJNuYjLd+tiZHX6w3Fl3BTmJcrPFUHtLjp8vlKcfHKqXKSecqV6YwNt/t381qsMB90P90ktyeFQAa9Eph+dN9Qhff0HjSiXM7yE4TKAUzakFEy0MkfQk3ksFtT1m7gX7pk/0OqaW9kmQf+zOBUvEHaNoqmx3Nq+J4sh8lCyeH1SS2992/lkRnw45ovvIUoAdAuRRcTO7GQHXhGLtTdKo7IkJPBIIalGE53cus0RrkI9P0HFHZ82T2jt9VWEqytIbnruqoponRAhg2HeQMJAZsYIe5FmnNoRCplwZYyvKtf+CHeZ7f8JjgXBlqAgiKH2i9YUNyz9nzQKLV1+KK39P8LH7m7oAdZyvzVPW8LJimILLq8UKIe0n4o8lwANa5fKXe3TjjbThbmZYvF974ektib83Zhd5YasBDpPRcHjYFakDI1/xipGo5F/rzAGGm6ITyStoUnqLau6vs1Lxo4q2LQhzUGVqR2sFIIVv6wYHwYkJ9RktjBEcPp05+CwLlgU/H7yYg==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:HE1PR04MB2969.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(346002)(366004)(376002)(39860400002)(136003)(396003)(230922051799003)(64100799003)(1800799009)(186009)(451199024)(316002)(41300700001)(26005)(2906002)(4744005)(8676002)(5660300002)(478600001)(66476007)(66946007)(8936002)(66556008)(31686004)(6486002)(53546011)(6666004)(6506007)(6512007)(2616005)(36756003)(38100700002)(31696002)(43740500002)(45980500001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?RDZMYndyUGNqb2VVcVFFcDFpMGhMZ1k0MXBlZHhGT2x1WWo4ZW9rTTFSdkFr?=
- =?utf-8?B?N3M0UTFsMGFzK25pT3NRb05JSUpqS1g0UUZ0a1JXZFFCN2xFMlQ4am43VUpt?=
- =?utf-8?B?ay9FOU41bGdibEZlNGE3a296VUNBRU00N1lkeGJNbWh4Mm42WGNlRTQvYmR5?=
- =?utf-8?B?THBTQU1aL05SY05lclFuWkswSjU2VVlwTTdzb3gyYU1zZEVZUThrOEFOSTVw?=
- =?utf-8?B?VE9KTHBoZE85Y3IvYmlXUkN3SFd5V0xwMytxRklzS2s2L1ZwUXNDaUFSR1pZ?=
- =?utf-8?B?NFZwRVJxVEt4SHY3N3ZLUGMwdlhyYk0rc2owZGhvUDJBY1lHY3hqY0RkWWIx?=
- =?utf-8?B?NVhINGdZRDJWUjBob2NWSWg5Wm1oQkIvbVFzaHhWSjhtTEUyaVdGeGVyNUNQ?=
- =?utf-8?B?OGMwSXIvU3RoVWFUVFZheituZE9aYm1scEdLeG1NZkNJcUhwQklsSEx1UWRw?=
- =?utf-8?B?UXYrdnVmVW5KaFEzYzZyYTEwenVNK0RBdVBmVlp6WDRiZHFCQTgzT091ZVNl?=
- =?utf-8?B?eVVndjRxd1pFMTI3aXROeUJvSUwrRFdtelNWcHUxbXBJQithTDNLcklvaTBm?=
- =?utf-8?B?RFRIa0E2WC9tRFdJbzlHK0NzTUhoMmgwTDB0bTZoanNkc2VKaFkxOWh6b1dY?=
- =?utf-8?B?MUlMd0M1dnZyVS9YZFdqV2lhOTZ5SE5vdTRza1p5M3FwM2xiMjFsOVB1VUxW?=
- =?utf-8?B?Sng0UERjV1hZNjR2RjhJWHJWenRmMHFFVjh4QXFudmNkditJMUxNV1I2MTZm?=
- =?utf-8?B?WGhpZ3VEZ1NOWmFvZUdDZTY2c0FTMXZhSGJnNDZ1ZUVxd2dlUkV2RWxDbHAz?=
- =?utf-8?B?Y2dCSGV4Tk4yblcyWmxMWFdEMFQ1bHpUSmFnNXQ3N005dm9aMEVkdHQ2Y2Ni?=
- =?utf-8?B?endacHBjYm5Fdm5hMkdiNlFyWkhUeUVQWDN6Q0NTL29EdmJUSTNTOWVyYmRj?=
- =?utf-8?B?cExLMUlKUXM2ZVBYQmoxMkpScVF5VVd1OVpudjZBcHVLZjV3Uk5pUmYyamRo?=
- =?utf-8?B?djBabHBBL2ZTdWtuM3JyZ3A0VUdtM0MwSkdlTHQwMkdmeld6UHZDdFA5dnZV?=
- =?utf-8?B?aUU1UDJmZ0IyRmFUVit1MVAva0hKSmlBdmdabFZUZ2l2YXZQYVJEOHgvWU1w?=
- =?utf-8?B?MFk5Qm9sK0d3d01WejdEcUkyeWVOT2cwMGFJL29HdHFOTFF1M0wrbFBWYkxa?=
- =?utf-8?B?Z0JYTzBCeXZSRmlwMW1WV0xuMWhHdUlGbW1XYmpsT2E5b1FJVTlPSHFyMEQ2?=
- =?utf-8?B?dnpnT0I0NE9TcHhURFl4cE9IRGJGUlJXMTZjcEhlMGdkaTBhcFFOeUt2dmxS?=
- =?utf-8?B?YjEzVWlXNHN0QkppRmZPWVNIWTNqWHZXNitqVU1HL3RaVUxaTFN2Wi8xZWIw?=
- =?utf-8?B?SkNtazZIL2UrTllQRnB3eEIyWmxmeWt1NVowblBGMkJMdlRRNGFMWWxsL2JJ?=
- =?utf-8?B?WWVocnFaS25KSllEY3VqQ3lSVG93czBHSDdpWnRlVlJlS3pUMGdIT1pvYW1G?=
- =?utf-8?B?QlFPMFNsT2oraFZ0RTNUeFhaSmFOQndxOEYybUFKMXRmcHRveGZJcHdMbXg5?=
- =?utf-8?B?TjE0bGJNN2poYXA3SjdWRlVPM0phM3BoRnZVZTVHeWFhWXdHRnh4Zm81MUJZ?=
- =?utf-8?B?QWlhOE8xYkxFL0RKQThyTkpXbEJEMU41amRjUSs1RytlTmpja3Zra1RUUlUr?=
- =?utf-8?B?YWJqRzFGUkk5eUdwTnpPN0NpdGE4aW5WQ1drNlhYaUxFMUs2OVlFeTJ4NXJx?=
- =?utf-8?B?VnZEUTB5bHFKZHNRWlJOalhrUVVuYTJkaTNVenRvQzBRNXJWbmltdjgzcjhy?=
- =?utf-8?B?alNuY3NNcUErSlFIZ0xnUkUySzNqZkRQZ3VtSGoxKy9kU043RmhSNk55M3Jv?=
- =?utf-8?B?VnAramQybVVPZ3dUamxPMlR1SWgvcVV0cWo0THFYMHJHQ1h6eTF6cC85eWJw?=
- =?utf-8?B?V1ZxMGhzdnBoRWwwTTlCWUd6dkJRWW45ZEhXNloxdXZqaFc2dHJodzJxUHRF?=
- =?utf-8?B?M1JhdVc3OEZGV3lWd2dNWHpJSkhwZU9lT0N2VExWOUtRbUxJUWRXbFF2VXAw?=
- =?utf-8?B?cDcwK3pxRnQ5T2hxbWhEdlRiVHhLWm9IMEhQZ2RFODJPaFpxeFlXVDhjekN2?=
- =?utf-8?Q?82uvcrZlCuFHCGDHd6F6D4dup?=
-X-OriginatorOrg: suse.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: d835529b-7bb5-49cc-207c-08dbc04b401d
-X-MS-Exchange-CrossTenant-AuthSource: HE1PR04MB2969.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 28 Sep 2023 17:49:23.9010
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: f7a17af6-1c5c-4a36-aa8b-f5be247aa4ba
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: Clk4kOtrKYWY4ybye++PzGjdA6+cIA8ABt9m1kqzWbavimH6kpcfpACcHClJySwsiLA6LjrVTIKPyUKg6qImXQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: VE1PR04MB7389
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+X-HPE-SCL: -1
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-09-28_16,2023-09-28_03,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1011 phishscore=0
+ malwarescore=0 adultscore=0 spamscore=0 priorityscore=1501
+ lowpriorityscore=0 suspectscore=0 impostorscore=0 mlxlogscore=999
+ mlxscore=0 bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2309180000 definitions=main-2309280155
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 9/28/23 17:39, Mark Haywood wrote:
-> I see v48.0 was tagged. Is it not a stable release?
+On Thu, Sep 28, 2023 at 03:21:36PM +0200, Joel Granados via B4 Relay wrote:
+> From: Joel Granados <j.granados@samsung.com>
 > 
-> Thanks.
-> Mark
+> This commit comes at the tail end of a greater effort to remove the
+> empty elements at the end of the ctl_table arrays (sentinels) which
+> will reduce the overall build time size of the kernel and run time
+> memory bloat by ~64 bytes per sentinel (further information Link :
+> https://lore.kernel.org/all/ZO5Yx5JFogGi%2FcBo@bombadil.infradead.org/)
+> 
+> Remove sentinel from xpc_sys_xpc_hb and xpc_sys_xpc
+> 
+> Signed-off-by: Joel Granados <j.granados@samsung.com>
+> ---
+>  drivers/misc/sgi-xp/xpc_main.c | 6 ++----
+>  1 file changed, 2 insertions(+), 4 deletions(-)
+> 
+> diff --git a/drivers/misc/sgi-xp/xpc_main.c b/drivers/misc/sgi-xp/xpc_main.c
+> index 6da509d692bb..c898092ff3ac 100644
+> --- a/drivers/misc/sgi-xp/xpc_main.c
+> +++ b/drivers/misc/sgi-xp/xpc_main.c
+> @@ -109,8 +109,7 @@ static struct ctl_table xpc_sys_xpc_hb[] = {
+>  	 .mode = 0644,
+>  	 .proc_handler = proc_dointvec_minmax,
+>  	 .extra1 = &xpc_hb_check_min_interval,
+> -	 .extra2 = &xpc_hb_check_max_interval},
+> -	{}
+> +	 .extra2 = &xpc_hb_check_max_interval}
+>  };
+>  static struct ctl_table xpc_sys_xpc[] = {
+>  	{
+> @@ -120,8 +119,7 @@ static struct ctl_table xpc_sys_xpc[] = {
+>  	 .mode = 0644,
+>  	 .proc_handler = proc_dointvec_minmax,
+>  	 .extra1 = &xpc_disengage_min_timelimit,
+> -	 .extra2 = &xpc_disengage_max_timelimit},
+> -	{}
+> +	 .extra2 = &xpc_disengage_max_timelimit}
+>  };
+>  
+>  static struct ctl_table_header *xpc_sysctl;
+> 
+> -- 
+> 2.30.2
 > 
 
-What is called stable releases here, are released based on a vXX.0 tag where fixes from newer releases are backported.
-But yes, v48.0 is a stable release in the sense it is a working release :)
+I assume you'll match the rest of the changes with regards to the
+trailing comma.
 
-Nicolas
+Reviewed-by: Steve Wahl <steve.wahl@hpe.com>
 
-
+-- 
+Steve Wahl, Hewlett Packard Enterprise
