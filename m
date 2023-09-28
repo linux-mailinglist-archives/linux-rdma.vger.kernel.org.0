@@ -2,42 +2,42 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A3977B1DA3
-	for <lists+linux-rdma@lfdr.de>; Thu, 28 Sep 2023 15:20:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0942C7B1DA8
+	for <lists+linux-rdma@lfdr.de>; Thu, 28 Sep 2023 15:20:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232569AbjI1NUm (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 28 Sep 2023 09:20:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60414 "EHLO
+        id S231774AbjI1NUn (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 28 Sep 2023 09:20:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60448 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231627AbjI1NUl (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 28 Sep 2023 09:20:41 -0400
+        with ESMTP id S232392AbjI1NUm (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 28 Sep 2023 09:20:42 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7321819C;
-        Thu, 28 Sep 2023 06:20:39 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id A692BC116D2;
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A9C31AA;
+        Thu, 28 Sep 2023 06:20:40 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id BED95C193E8;
         Thu, 28 Sep 2023 13:20:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1695907236;
-        bh=037Ze6Oh3D2awDcZtKZjRWRmyXeBya+W4CX5rPaqzIo=;
+        bh=nAi5VbjqEwCdzEJp+fv2i3DZ2flYuZxXsPFVaGvUXhY=;
         h=From:Date:Subject:References:In-Reply-To:To:Cc:Reply-To:From;
-        b=pU3Eq0ijKK73kzmdJ+ylSZryDoz7esCxxiGEWFn0fUyU2pbYj+g3oDo4B2D//OLAZ
-         EAuJqWXLHJcfP/sWHMQ+nq2gXHsF3pmrxsknsc8ipoY9K/BN0UfqX/9i1kOMLV1Gfq
-         UrRqoY6xJOCrvcixf/iiMEBJWk3MIbjU3FQ5Z8bG9O+7EdG9SjPJNzHDhTKSjKYYEP
-         aZBghfVv5ZG9DBNwn9SCgRA9eCm3HTtKRCGg/ekMG4BW0eAP/SYED43uqw/Y2wcHkh
-         nmRagNQKjRUwuozNh1Eh3QCSddVdmyGwZjF7qfCJEWoCpf/ObEWrgp1Z01q+gSHcuI
-         G/cDFVqhlSkVQ==
+        b=OCqp5Ov4BuszVW/bn2+B72ZJ/xR3YaoFzsxv1aU/Z/A6Yiz+vQBMRZYu9gRm50imR
+         K11dYBBDgVq7Y+4mkAEjfyc9Mr2Vddg80rfjalPbMOLCeYjxvJUtGTGjCtMsQDIyZG
+         69ACgpYY7cXbxiYCo8BeXxnyR6MXKMP9H8DMEu8plDx2Klk4byrQhBa6ZGR4w53klP
+         15pmoFTU9JD5o+tjgr5bW2Ty0Kf+493NXvptiLCb5TLwX7ifpFHe46htbDlZMKsRft
+         zFi2JB642EhNoMROZ50HGgRbYl+dJbDORovyFGMJkDrtkq9P9uVJgrhrn2mVRPayZD
+         w/mbiY4QoFQhQ==
 Received: from aws-us-west-2-korg-lkml-1.web.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by smtp.lore.kernel.org (Postfix) with ESMTP id 8C5ADE732D4;
+        by smtp.lore.kernel.org (Postfix) with ESMTP id A3DA3E732D1;
         Thu, 28 Sep 2023 13:20:36 +0000 (UTC)
 From:   Joel Granados via B4 Relay 
         <devnull+j.granados.samsung.com@kernel.org>
-Date:   Thu, 28 Sep 2023 15:21:31 +0200
-Subject: [PATCH 06/15] parport: Remove the now superfluous sentinel element
- from ctl_table array
+Date:   Thu, 28 Sep 2023 15:21:32 +0200
+Subject: [PATCH 07/15] macintosh: Remove the now superfluous sentinel
+ element from ctl_table array
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20230928-jag-sysctl_remove_empty_elem_drivers-v1-6-e59120fca9f9@samsung.com>
+Message-Id: <20230928-jag-sysctl_remove_empty_elem_drivers-v1-7-e59120fca9f9@samsung.com>
 References: <20230928-jag-sysctl_remove_empty_elem_drivers-v1-0-e59120fca9f9@samsung.com>
 In-Reply-To: <20230928-jag-sysctl_remove_empty_elem_drivers-v1-0-e59120fca9f9@samsung.com>
 To:     Luis Chamberlain <mcgrof@kernel.org>, willy@infradead.org,
@@ -85,18 +85,17 @@ Cc:     linux-kernel@vger.kernel.org, xen-devel@lists.xenproject.org,
         intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
         Joel Granados <j.granados@samsung.com>
 X-Mailer: b4 0.13-dev-86aa5
-X-Developer-Signature: v=1; a=openpgp-sha256; l=4351;
- i=j.granados@samsung.com; h=from:subject:message-id;
- bh=WChTYX7s4/WvuQm5SyjCReq4OLhKQc/jMANe9UKK8MA=;
- b=owEB7QES/pANAwAKAbqXzVK3lkFPAcsmYgBlFX3domrs1Rr8nCLu3I2SozBNrKydcRCbph2hu
- qHdrIVsBJGJAbMEAAEKAB0WIQSuRwlXJeYxJc7LJ5C6l81St5ZBTwUCZRV93QAKCRC6l81St5ZB
- T03WDACBmWcNFPTto1zM9apZjylAnDoNPMsUznqyxFf8kY2U9iRHXbIxgeTlIPEo7qZMmu1m5/J
- sX1nwnUwAdUaji0Q4eLEKLDGEOqU473kX4ysJaOf4v81JMRwF5WvaiFXFgI+XQZI5icxGY+mxuG
- iSH+hJofoKo2WdHnnDV+xfcFS5Q7F32a0wY705vontJcNmQsaupkws8MxZar0hCVXyMRkmqk8O2
- 8GrB+kL0MeUKc5ewZtAKuWPCuKSSWXRBOAYXFE9xHFAFAuEucyF++YrG+hYvcLvyHiHl0KXSlft
- AqUwfJSnjFw/kMt/PkFeXArBwIoc1O+dhwm1NflO2GlT+yNZ2I1mOMZSZlvJX6nedNWzXoXlHPd
- +RdWZoKt3uKvrhG2SzZ87drY9N7egpXbrqtlklIO0eBmsm2niO6RJX0PariUYYv6Ca2FPBnsj2o
- 4WEP1Kpo3C5EbdAOfNZiLWtOc0wOabRtggAZzBVqo0lPpwIr5zxOU1TLAXL8njXS696Dg=
+X-Developer-Signature: v=1; a=openpgp-sha256; l=964; i=j.granados@samsung.com;
+ h=from:subject:message-id; bh=ZdDGNSOnPHmccRg9DswRbcjrpwllnv7treH59axwgKs=;
+ b=owEB7QES/pANAwAKAbqXzVK3lkFPAcsmYgBlFX3dFNTsUUB9JSBv/bi9fMcZELcv/Pd6Ielps
+ Tv0fYg6ZTyJAbMEAAEKAB0WIQSuRwlXJeYxJc7LJ5C6l81St5ZBTwUCZRV93QAKCRC6l81St5ZB
+ T86TDACD/olsUJCMaYNGhUK8fOC4ygULgoETxczjsUrJ3FqFvf/W9eYaJd8QqGpcMOYjw1h96ab
+ o9zfYcNrx79mUCqL0BoqwuQuu11iB7mdcubin7N6ctOUnQ8WGw8URbiLP3jjYc91vkQPgtLk2Mk
+ wvNRnAFG9xEe1DMlr4I7VrAIvMnA/9NYZ+Qw9UvC2pl8wNvR52krqU2VCn6kBWoexdWZws8BTQi
+ jxm4KCrIsTy+GCeGsGQLYA2bO8Hc1og/PrMiZ0UzRkQAqsoVN3pdMsPMw9cbOYg+DdC9+C1sfp6
+ Bl28JzSUEdBKn/gw5xOg2CuQYrwFvPIIKyQ5PxT7cnZcGIF8XtUJLAhQ8fbQ+lGxfqRvNEJPWpK
+ FkouzOuPr0ghUqJ7B4QCGC+U0ubZrPdVrUHvniAcEBtCff5KXZJOiMn45G46hZB4ZKH91Egk66L
+ 7ibjw96S82RLY88IHUBdKyX4xWoP14f8vilMOHLoR27kPe4oc4fVlOZcjQtA3ARSiai4o=
 X-Developer-Key: i=j.granados@samsung.com; a=openpgp;
  fpr=F1F8E46D30F0F6C4A45FF4465895FAAC338C6E77
 X-Endpoint-Received: by B4 Relay for j.granados@samsung.com/default with auth_id=70
@@ -120,141 +119,27 @@ will reduce the overall build time size of the kernel and run time
 memory bloat by ~64 bytes per sentinel (further information Link :
 https://lore.kernel.org/all/ZO5Yx5JFogGi%2FcBo@bombadil.infradead.org/)
 
-Remove the unneeded ctl_tables that were used to register intermediate
-parport directories; only the path is needed at this point. From
-parport_device_sysctl_table we removed: devices_root_dir, port_dir,
-parport_dir and dev_dir. From parport_default_sysctl_table we removed:
-default_dir, parport_dir and dev_dir. Reduce the size by one of the
-ctl_table arrays that were not removed
-
-Assign different sizes to the vars array in parport_sysctl_table
-depending on CONFIG_PARPORT_1284; this is necessary now that the sysctl
-register function uses ARRAY_SIZE to calculate the elements within.
-Remove the sentinel element from parport_sysctl_template,
-parport_device_sysctl_table and parport_default_sysctl_table.
+Remove sentinel from mac_hid_files
 
 Signed-off-by: Joel Granados <j.granados@samsung.com>
 ---
- drivers/parport/procfs.c | 42 ++++++++++++++++++------------------------
- 1 file changed, 18 insertions(+), 24 deletions(-)
+ drivers/macintosh/mac_hid.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-diff --git a/drivers/parport/procfs.c b/drivers/parport/procfs.c
-index 4e5b972c3e26..4118b3e52223 100644
---- a/drivers/parport/procfs.c
-+++ b/drivers/parport/procfs.c
-@@ -259,8 +259,12 @@ PARPORT_MAX_SPINTIME_VALUE;
- struct parport_sysctl_table {
- 	struct ctl_table_header *port_header;
- 	struct ctl_table_header *devices_header;
--	struct ctl_table vars[12];
--	struct ctl_table device_dir[2];
-+#ifdef CONFIG_PARPORT_1284
-+	struct ctl_table vars[10];
-+#else
-+	struct ctl_table vars[5];
-+#endif /* IEEE 1284 support */
-+	struct ctl_table device_dir[1];
+diff --git a/drivers/macintosh/mac_hid.c b/drivers/macintosh/mac_hid.c
+index d8c4d5664145..5a228c7d9aeb 100644
+--- a/drivers/macintosh/mac_hid.c
++++ b/drivers/macintosh/mac_hid.c
+@@ -235,8 +235,7 @@ static struct ctl_table mac_hid_files[] = {
+ 		.maxlen		= sizeof(int),
+ 		.mode		= 0644,
+ 		.proc_handler	= proc_dointvec,
+-	},
+-	{ }
++	}
  };
  
- static const struct parport_sysctl_table parport_sysctl_template = {
-@@ -303,9 +307,9 @@ static const struct parport_sysctl_table parport_sysctl_template = {
- 			.maxlen		= 0,
- 			.mode		= 0444,
- 			.proc_handler	= do_hardware_modes
--		},
-+		}
- #ifdef CONFIG_PARPORT_1284
--		{
-+		, {
- 			.procname	= "autoprobe",
- 			.data		= NULL,
- 			.maxlen		= 0,
-@@ -339,9 +343,8 @@ static const struct parport_sysctl_table parport_sysctl_template = {
- 			.maxlen		= 0,
- 			.mode		= 0444,
- 			.proc_handler	= do_autoprobe
--		},
-+		}
- #endif /* IEEE 1284 support */
--		{}
- 	},
- 	{
- 		{
-@@ -350,20 +353,15 @@ static const struct parport_sysctl_table parport_sysctl_template = {
- 			.maxlen		= 0,
- 			.mode		= 0444,
- 			.proc_handler	= do_active_device
--		},
--		{}
-+		}
- 	},
- };
- 
- struct parport_device_sysctl_table
- {
- 	struct ctl_table_header *sysctl_header;
--	struct ctl_table vars[2];
--	struct ctl_table device_dir[2];
--	struct ctl_table devices_root_dir[2];
--	struct ctl_table port_dir[2];
--	struct ctl_table parport_dir[2];
--	struct ctl_table dev_dir[2];
-+	struct ctl_table vars[1];
-+	struct ctl_table device_dir[1];
- };
- 
- static const struct parport_device_sysctl_table
-@@ -378,8 +376,7 @@ parport_device_sysctl_template = {
- 			.proc_handler	= proc_doulongvec_ms_jiffies_minmax,
- 			.extra1		= (void*) &parport_min_timeslice_value,
- 			.extra2		= (void*) &parport_max_timeslice_value
--		},
--		{}
-+		}
- 	},
- 	{
- 		{
-@@ -387,18 +384,14 @@ parport_device_sysctl_template = {
- 			.data		= NULL,
- 			.maxlen		= 0,
- 			.mode		= 0555,
--		},
--		{}
-+		}
- 	}
- };
- 
- struct parport_default_sysctl_table
- {
- 	struct ctl_table_header *sysctl_header;
--	struct ctl_table vars[3];
--	struct ctl_table default_dir[2];
--	struct ctl_table parport_dir[2];
--	struct ctl_table dev_dir[2];
-+	struct ctl_table vars[2];
- };
- 
- static struct parport_default_sysctl_table
-@@ -422,8 +415,7 @@ parport_default_sysctl_table = {
- 			.proc_handler	= proc_dointvec_minmax,
- 			.extra1		= (void*) &parport_min_spintime_value,
- 			.extra2		= (void*) &parport_max_spintime_value
--		},
--		{}
-+		}
- 	}
- };
- 
-@@ -443,7 +435,9 @@ int parport_proc_register(struct parport *port)
- 	t->vars[0].data = &port->spintime;
- 	for (i = 0; i < 5; i++) {
- 		t->vars[i].extra1 = port;
-+#ifdef CONFIG_PARPORT_1284
- 		t->vars[5 + i].extra2 = &port->probe_info[i];
-+#endif /* IEEE 1284 support */
- 	}
- 
- 	port_name_len = strnlen(port->name, PARPORT_NAME_MAX_LEN);
+ static struct ctl_table_header *mac_hid_sysctl_header;
 
 -- 
 2.30.2
