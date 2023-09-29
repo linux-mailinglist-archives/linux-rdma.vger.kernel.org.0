@@ -2,108 +2,261 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 551CA7B3216
-	for <lists+linux-rdma@lfdr.de>; Fri, 29 Sep 2023 14:12:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AEF7D7B321A
+	for <lists+linux-rdma@lfdr.de>; Fri, 29 Sep 2023 14:14:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233061AbjI2MMX (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 29 Sep 2023 08:12:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47400 "EHLO
+        id S233193AbjI2MOA (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 29 Sep 2023 08:14:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59942 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233115AbjI2MMW (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 29 Sep 2023 08:12:22 -0400
-Received: from mail-pg1-x532.google.com (mail-pg1-x532.google.com [IPv6:2607:f8b0:4864:20::532])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D55781AA
-        for <linux-rdma@vger.kernel.org>; Fri, 29 Sep 2023 05:12:19 -0700 (PDT)
-Received: by mail-pg1-x532.google.com with SMTP id 41be03b00d2f7-5780040cb81so11206247a12.1
-        for <linux-rdma@vger.kernel.org>; Fri, 29 Sep 2023 05:12:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1695989539; x=1696594339; darn=vger.kernel.org;
-        h=content-language:content-transfer-encoding:mime-version:user-agent
-         :date:message-id:subject:to:from:reply-to:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=dL45IqGKFINeZXD3V3WGPUqTF0v8lHv/e4pLArJn4Hc=;
-        b=dYJtUaMpT5O0+5mRfRoubk0/8+yORzdSOgLHe9bD74OWsU574/sAeUq94PnQVJSi7j
-         u5DAPDsdAdEyf8VuvlavFSgF11YySAZQo2LAUmVnTeV6Ju2rKcX07mCscix+w7+eigJt
-         oCc3ZM6ah40AyTUD8ohDWkVWFbXLDvKZXkY+zt5tI3YfPJ4+zLVeuQwFcD20OpYx1JBO
-         BMoi23NNI8O48mF/xeL4ngAu55QDbLfR2eimL+JucOhK+4QGTkebWOzIPZXhLUyEucEd
-         xrWtiwMxHpxHjZNaEO9/f7L5Tedr11iOFbg1JHEN6b5eSaxcgeZ2octAkcMens9b1ipr
-         8wCg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695989539; x=1696594339;
-        h=content-language:content-transfer-encoding:mime-version:user-agent
-         :date:message-id:subject:to:from:reply-to:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=dL45IqGKFINeZXD3V3WGPUqTF0v8lHv/e4pLArJn4Hc=;
-        b=tVUWzv9XkhJijtZTBSS1C2C82pYlw88xhQ0d9Vk3tamEY9nAhueUuZ059JvupkGpel
-         7gsApACo7J3tInijMcXtjcmSNBvZOVe4uLwNtFyWkMRpF15IN30ftNUjmV3UDPTyPXED
-         NkWdwEptH2KNPAatsRBMAkiK8OHzw/U9Xu5ObKYrs5kw5T8q22OLFE6FiZoCiamgATJW
-         twSJbBnjn34HYYbqdkjK3K4oArnghaFISuLzElZUWqBflgEglp8c8jUYTv2ZH++pH1wk
-         oHB+wpyskszdjrB77yJLQU0auVDH0i4MxveJ8/K0P/CQtyZWdl2/+SWeYLfacqPNIpgX
-         5QeQ==
-X-Gm-Message-State: AOJu0YzcVMCN5kZL9LgR4AWhxqw9CDWgNgZmm8GJI/bFbYdJ+vN2OW4r
-        T6iXc1beOY8At5e8S4i+gfwi8DmSEVg=
-X-Google-Smtp-Source: AGHT+IGmMi6nw1rlnhFTG0ndh/isS6fjwRJSF1VFU4O5o6QtCzywZZ4ljQQ7L+Bocc6Zk8baXLkMJQ==
-X-Received: by 2002:a17:90b:398:b0:268:dad:2fdc with SMTP id ga24-20020a17090b039800b002680dad2fdcmr3993517pjb.21.1695989539083;
-        Fri, 29 Sep 2023 05:12:19 -0700 (PDT)
-Received: from ?IPv6:2409:4063:6d8e:3a0d:a52b:e67f:d8b3:45d0? ([2409:4063:6d8e:3a0d:a52b:e67f:d8b3:45d0])
-        by smtp.gmail.com with ESMTPSA id n2-20020a17090a394200b0027782f611d1sm1388946pjf.36.2023.09.29.05.12.16
-        for <linux-rdma@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 29 Sep 2023 05:12:18 -0700 (PDT)
-Reply-To: businesssolutionsrocks23@gmail.com
-From:   Ayan Seth <ayansethjk3@gmail.com>
-To:     linux-rdma@vger.kernel.org
-Subject: RE: Meeting request with
-Message-ID: <5d1cd82a-0ef9-fcc0-0846-ea2f9bf46a94@gmail.com>
-Date:   Fri, 29 Sep 2023 17:42:07 +0530
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.1
+        with ESMTP id S233115AbjI2MN7 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 29 Sep 2023 08:13:59 -0400
+Received: from mailout2.w1.samsung.com (mailout2.w1.samsung.com [210.118.77.12])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A3F61AA;
+        Fri, 29 Sep 2023 05:13:57 -0700 (PDT)
+Received: from eucas1p2.samsung.com (unknown [182.198.249.207])
+        by mailout2.w1.samsung.com (KnoxPortal) with ESMTP id 20230929121355euoutp029355d2b77491cadd67994111037d28a5~JXZZf4USK0777807778euoutp02o;
+        Fri, 29 Sep 2023 12:13:55 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.w1.samsung.com 20230929121355euoutp029355d2b77491cadd67994111037d28a5~JXZZf4USK0777807778euoutp02o
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1695989635;
+        bh=8lyq3NbxKETKAT4kssG9Gl7+6++BIm6RujbjJHzxU10=;
+        h=Date:From:To:CC:Subject:In-Reply-To:References:From;
+        b=M88XxnqjOeCFtmJ1iLUvg3cga7VIuTJv+1GqYmT6uofLJq3jgsotPtjN5QZA7t1oZ
+         fs7iWrQBoROVkp7B5E2c/zp8eMYLVW4UMFGtNGm5/jfkl9qXkXZMN/pTuYUUkxDHfR
+         HIDo2xQNUMaOXM4Qdv/qAl1z11RhR58+4jS2E998=
+Received: from eusmges1new.samsung.com (unknown [203.254.199.242]) by
+        eucas1p2.samsung.com (KnoxPortal) with ESMTP id
+        20230929121354eucas1p25742ddebbe1cfa7ed6cca8c8327da2b9~JXZZQ0UAB2204222042eucas1p2F;
+        Fri, 29 Sep 2023 12:13:54 +0000 (GMT)
+Received: from eucas1p2.samsung.com ( [182.198.249.207]) by
+        eusmges1new.samsung.com (EUCPMTA) with SMTP id 96.E4.42423.28FB6156; Fri, 29
+        Sep 2023 13:13:54 +0100 (BST)
+Received: from eusmtrp2.samsung.com (unknown [182.198.249.139]) by
+        eucas1p2.samsung.com (KnoxPortal) with ESMTPA id
+        20230929121353eucas1p222db2685fd99727840771a59abb770ce~JXZYHgAdt1405914059eucas1p2f;
+        Fri, 29 Sep 2023 12:13:53 +0000 (GMT)
+Received: from eusmgms1.samsung.com (unknown [182.198.249.179]) by
+        eusmtrp2.samsung.com (KnoxPortal) with ESMTP id
+        20230929121353eusmtrp2af1af6bf573e1ce71e31c070f88b0d2f~JXZYGNQIA1483714837eusmtrp2R;
+        Fri, 29 Sep 2023 12:13:53 +0000 (GMT)
+X-AuditID: cbfec7f2-a51ff7000002a5b7-c6-6516bf82728c
+Received: from eusmtip1.samsung.com ( [203.254.199.221]) by
+        eusmgms1.samsung.com (EUCPMTA) with SMTP id CD.21.10549.18FB6156; Fri, 29
+        Sep 2023 13:13:53 +0100 (BST)
+Received: from CAMSVWEXC02.scsc.local (unknown [106.1.227.72]) by
+        eusmtip1.samsung.com (KnoxPortal) with ESMTPA id
+        20230929121353eusmtip13974bd648951759583fb359b46754e5e~JXZXzSlko2058220582eusmtip1C;
+        Fri, 29 Sep 2023 12:13:53 +0000 (GMT)
+Received: from localhost (106.210.248.178) by CAMSVWEXC02.scsc.local
+        (2002:6a01:e348::6a01:e348) with Microsoft SMTP Server (TLS) id 15.0.1497.2;
+        Fri, 29 Sep 2023 13:13:52 +0100
+Date:   Fri, 29 Sep 2023 14:14:59 +0200
+From:   Joel Granados <j.granados@samsung.com>
+To:     Steve Wahl <steve.wahl@hpe.com>
+CC:     Luis Chamberlain <mcgrof@kernel.org>, <willy@infradead.org>,
+        <josh@joshtriplett.org>, Kees Cook <keescook@chromium.org>,
+        Phillip Potter <phil@philpotter.co.uk>,
+        Clemens Ladisch <clemens@ladisch.de>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Juergen Gross" <jgross@suse.com>,
+        Stefano Stabellini <sstabellini@kernel.org>,
+        Oleksandr Tyshchenko <oleksandr_tyshchenko@epam.com>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Doug Gilbert <dgilbert@interlog.com>,
+        Sudip Mukherjee <sudipm.mukherjee@gmail.com>,
+        "Jason Gunthorpe" <jgg@ziepe.ca>,
+        Leon Romanovsky <leon@kernel.org>,
+        Corey Minyard <minyard@acm.org>, Theodore Ts'o <tytso@mit.edu>,
+        "Jason A. Donenfeld" <Jason@zx2c4.com>,
+        David Ahern <dsahern@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Robin Holt <robinmholt@gmail.com>,
+        Russ Weight <russell.h.weight@intel.com>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Song Liu <song@kernel.org>,
+        "K. Y. Srinivasan" <kys@microsoft.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        Wei Liu <wei.liu@kernel.org>, Dexuan Cui <decui@microsoft.com>,
+        Jani Nikula <jani.nikula@linux.intel.com>,
+        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
+        Rodrigo Vivi <rodrigo.vivi@intel.com>,
+        Tvrtko Ursulin <tvrtko.ursulin@linux.intel.com>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        <linux-kernel@vger.kernel.org>, <xen-devel@lists.xenproject.org>,
+        <linux-serial@vger.kernel.org>, <linux-scsi@vger.kernel.org>,
+        <linuxppc-dev@lists.ozlabs.org>, <linux-rdma@vger.kernel.org>,
+        <openipmi-developer@lists.sourceforge.net>,
+        <netdev@vger.kernel.org>, <linux-raid@vger.kernel.org>,
+        <linux-hyperv@vger.kernel.org>, <intel-gfx@lists.freedesktop.org>,
+        <dri-devel@lists.freedesktop.org>
+Subject: Re: [PATCH 11/15] sgi-xp: Remove the now superfluous sentinel
+ element from ctl_table array
+Message-ID: <20230929121459.t7dfskyybi6jovjn@localhost>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-GB
-X-Spam-Status: No, score=1.3 required=5.0 tests=BAYES_20,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,FREEMAIL_REPLYTO,FREEMAIL_REPLYTO_END_DIGIT,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=no
-        autolearn_force=no version=3.4.6
-X-Spam-Level: *
+Content-Type: multipart/signed; micalg="pgp-sha512";
+        protocol="application/pgp-signature"; boundary="4w7nhf7oeskaesco"
+Content-Disposition: inline
+In-Reply-To: <ZRW9Eywl831h/YhW@swahl-home.5wahls.com>
+X-Originating-IP: [106.210.248.178]
+X-ClientProxiedBy: CAMSVWEXC01.scsc.local (2002:6a01:e347::6a01:e347) To
+        CAMSVWEXC02.scsc.local (2002:6a01:e348::6a01:e348)
+X-Brightmail-Tracker: H4sIAAAAAAAAA2VTa1BUZRjuO+dwzoKhh9XkG9QsyJzAQBitdxIaDR0PozQ0jkyXGWSV00rJ
+        JZYN0hxBQW4hF2GEVWRBYTc2F1hhlUXBcAMURzRALkLIhqSCiigCEksLB8uZ/j3vc3m/9/nx
+        iUhxD+MgCg6N5CNCJXscaRtKXz/R/P7B2sX86vLkVdDYXkjAVGY9A6cb+wiY1meQcKI5joKa
+        OB2CmpwzNLSOPqZBa4gn4G69iYFDp0ppuHWOg+PpZwlQtZQiuNPmAIUdegJycxoRnOj0gEd5
+        S+FigWWfMgyupYTADf0RK+jXVDKQ9aKIhOyMYRpaDCdoSMg3IBioS6Ugpf08DddOpTIwOWa2
+        AlWDmYCO9LsIktMSENQrF8P45KQVXLjTj+B50xCC7GJXyHuWTYJ6KI+EWsUtBopy1SQ0qKZo
+        0Gh3QG3WLyRcasqyUOa9EP/TBAOXdV0ETI5bHh6rOEqsX8u1tG7hJl9kIu54zE2Kq/i5k+C6
+        i6oQd/G5kuKqFD0Mp9TJOYMhluHOqp25UxfuE9xU0gdc16AXpytJorlxdRrJpRdeQn7Lv7Tx
+        DOL3BH/PR7h9HGiz++TgQyJ8zD7aqLxCxKCMRcnIWoTZNVgzncMkIxuRmFUjfNtYSQjDM4TT
+        9VNzylOE2y6dYV5GShLuk4KgQjjn1zSrf11NjQmUMFQinKpKn41Q7Aqc+fcjNINpdhVuHuom
+        Z/Ai1gkfuds2mybZ0gXYWJNHzwgLWR6bOmY2WYts2Q/xUJWRELAdvpLbP8uTbDQu6iy0YJEF
+        L8Eqs2iGtmbX4ou/mynhVCc8XtZEC3g/vlrRNVsOs4dfx+VZGWgmi9mNOD5znuBZiB80VMzV
+        XIqnq/Ln/EcRrjUPM8KgQbg4dpQQXOtwXGv/XGIDNo1OWglL5+OOh3bCnfNxpv4YKdC2OPGw
+        WHC/izV/DFHpyEnxSjPFK80U/zUT6FVYWT1C/492wcUFg6SAvbBW+5hSIqYE2fNyWYiUl7mH
+        8lGuMkmITB4qdd0VFqJDll/XZG4YOY/yHjxxrUOECNWhdyxhU5nmBnKgQsNCecdFtn23xbzY
+        Nkjyw14+ImxHhHwPL6tDS0SUo72ti9eVXWJWKonkv+X5cD7ipUqIrB1iCDffnR5Kl5vBsbmb
+        JCEfna2TrjBWzQ8yRmnf7vW9GlAm763YF34g4VgXvtcem+Oz2fFG5dPAFP9zLVBa/Z6mt9ok
+        O65IUhV8suC7qEPXD+8L8tYmOo33te6PHtbbpZgrt/odvfdF0/q0nq+2F9ce1L1p9VYnXSD1
+        Wbd5udZvwQaDNHtjoo+fybj65Gvb+gLs/E3bjGHr893m3Xlj2YC2qmQqvnjQ23nU3dPJI3B8
+        59Z+nyVXvZNW+qvVI3KFf7CU+etAu4P50yd1seGRW+w3GwKoxgHjZVtPl+ZlX+foMn7MX3ld
+        ah481l3mtl0/cUH8m/dned01IX8mTnec1n0et8b3m4W7y+WOlGy3xN2ZjJBJ/gHETZrc8AQA
+        AA==
+X-Brightmail-Tracker: H4sIAAAAAAAAA2WTezBcVxzHe+5d9y4zJtulcoa0SZbMtNosK5YfQdK0f9yONG1H2mRobLbc
+        ISlWd5eGSac0VFDP0IlFCRVi1TOejSV0PEpDSWSjdBKDjFBq4rFeq8tOp5npf5/z/X2/33Pm
+        zDlckr9OWXMvhClZeZg0RECZcfr03eOHY9usWEfdvA30PCwiYCuzi4Yfe54QsN2QQULeQBwH
+        NHG1CDTXf6Lg/vICBZUt8QRMdU3QcKW4ioKRRgZy0+sIKB2uQvD4gTUUaRsIyLnegyDvkRPM
+        5++D1huGvkIZ9CeHwmBDqglMqutpyFovISE7428KhlvyKEgoaEEw3ZHCgeSHTRT0F6fQsLGq
+        N4HSbj0B2vQpBElpCQi6Cq1At7FhAnceTyJY6ZtDkH1TCPlL2SSUzeWT0KYaoaEkp4yE7tIt
+        CtSVEmjLqiChvS/LIOmjIf67NRo6a0cJ2NAZNl69fY04LmaG73szG+uZiMmN+Z3D3L71iGDG
+        SpoR07pSyGGaVeM0U1gbwbS0xNJMXZk9U3xnhmC2El2Y0VlPprY8kWJ0ZWkkk17Ujj7c7yv0
+        kMsilOyBYJlC6SnwE4GTUOQGQidnN6HoiOs5dyexwMHLI5ANuRDJyh28zguDf9V9i8KX916a
+        mdymY1CaZRIy5WKeMy5PmCGTkBmXzytBuKEzljYO9uGapQcmRrbAmyNJlNG0iLAuZos2LuoR
+        rsnQoh0Xh3cIZ27O7zLFewsPzI2RO2zJs8WpUztNZlySV7UH39I27ZoseCye0CZwdtic54rn
+        mn8hjK1XCVww02hiHLyMe3Mmd00kLxJ/M7diCHMNbINL9dwd2ZQnxq1Deo7xqLZYV91HGfkr
+        /HxrGqUjC9ULTaoXmlT/NRlle6zVzxD/k9/EN2/Mkkb2xJWVC5xCRJcjSzZCERoUqhAJFdJQ
+        RURYkDBAFlqLDA+/oWutrgn98GxR2IEILupAdobkRLV6EFlzwmRhrMDS/MkffJZvHiiNimbl
+        Mok8IoRVdCCx4RozSOtXAmSGXxSmlIhcHMUiZxc3R7GbyxHBXvP3wq9K+bwgqZL9nGXDWfm/
+        OYJrah1DXPz5GRO1UL+c4Vitno87yifvvREt8beLRy+dS0tM9/b4LOOEpkJz2eO5j04iZGzt
+        lvq9X0VfPHWN9Sw9GdN/xrTouLZq/eNUn9ZAq+oo3pka9+2oPh+xH3tos/MuPiU5fF5SHL2n
+        4q+v0UeXUg6MfzLl9Kem0V9b8K7nta3O7lZMDX868Pa2CA36qZvOXrTxiuwdsmx7f/9rlwVS
+        qaNl8+Lo6bWmu3m+pxtsj6rG6O+PXUHTg/l1X6pcfQtP2r0OfRIdpZtrP+Z+Nr4iIPeew3Lj
+        b4r5Do3/qlqTN3Sqt3tVGJejfMe984O2VnG5iejqevIJq4GDmoPBT5Nmhe4zjrYOAo4iWCqy
+        J+UK6T/T24AkjQQAAA==
+X-CMS-MailID: 20230929121353eucas1p222db2685fd99727840771a59abb770ce
+X-Msg-Generator: CA
+X-RootMTR: 20230928175234eucas1p2c62c48251c66c0016180977783dd2314
+X-EPHeader: CA
+CMS-TYPE: 201P
+X-CMS-RootMailID: 20230928175234eucas1p2c62c48251c66c0016180977783dd2314
+References: <20230928-jag-sysctl_remove_empty_elem_drivers-v1-0-e59120fca9f9@samsung.com>
+        <20230928-jag-sysctl_remove_empty_elem_drive>
+        <CGME20230928175234eucas1p2c62c48251c66c0016180977783dd2314@eucas1p2.samsung.com>
+        <ZRW9Eywl831h/YhW@swahl-home.5wahls.com>
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Hi ,
+--4w7nhf7oeskaesco
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Circling back on my previous email if you have a requirement for Mobile 
-App OR Web App Development service.
+On Thu, Sep 28, 2023 at 12:51:15PM -0500, Steve Wahl wrote:
+> On Thu, Sep 28, 2023 at 03:21:36PM +0200, Joel Granados via B4 Relay wrot=
+e:
+> > From: Joel Granados <j.granados@samsung.com>
+> >=20
+> > This commit comes at the tail end of a greater effort to remove the
+> > empty elements at the end of the ctl_table arrays (sentinels) which
+> > will reduce the overall build time size of the kernel and run time
+> > memory bloat by ~64 bytes per sentinel (further information Link :
+> > https://lore.kernel.org/all/ZO5Yx5JFogGi%2FcBo@bombadil.infradead.org/)
+> >=20
+> > Remove sentinel from xpc_sys_xpc_hb and xpc_sys_xpc
+> >=20
+> > Signed-off-by: Joel Granados <j.granados@samsung.com>
+> > ---
+> >  drivers/misc/sgi-xp/xpc_main.c | 6 ++----
+> >  1 file changed, 2 insertions(+), 4 deletions(-)
+> >=20
+> > diff --git a/drivers/misc/sgi-xp/xpc_main.c b/drivers/misc/sgi-xp/xpc_m=
+ain.c
+> > index 6da509d692bb..c898092ff3ac 100644
+> > --- a/drivers/misc/sgi-xp/xpc_main.c
+> > +++ b/drivers/misc/sgi-xp/xpc_main.c
+> > @@ -109,8 +109,7 @@ static struct ctl_table xpc_sys_xpc_hb[] =3D {
+> >  	 .mode =3D 0644,
+> >  	 .proc_handler =3D proc_dointvec_minmax,
+> >  	 .extra1 =3D &xpc_hb_check_min_interval,
+> > -	 .extra2 =3D &xpc_hb_check_max_interval},
+> > -	{}
+> > +	 .extra2 =3D &xpc_hb_check_max_interval}
+> >  };
+> >  static struct ctl_table xpc_sys_xpc[] =3D {
+> >  	{
+> > @@ -120,8 +119,7 @@ static struct ctl_table xpc_sys_xpc[] =3D {
+> >  	 .mode =3D 0644,
+> >  	 .proc_handler =3D proc_dointvec_minmax,
+> >  	 .extra1 =3D &xpc_disengage_min_timelimit,
+> > -	 .extra2 =3D &xpc_disengage_max_timelimit},
+> > -	{}
+> > +	 .extra2 =3D &xpc_disengage_max_timelimit}
+> >  };
+> > =20
+> >  static struct ctl_table_header *xpc_sysctl;
+> >=20
+> > --=20
+> > 2.30.2
+> >=20
+>=20
+> I assume you'll match the rest of the changes with regards to the
+> trailing comma.
+If you are refering to Greg's comments. yes. I'll send a V2 with the
+trailing comma.
 
-Can we schedule a quick call for Tuesday (3rd october) or Wednesday (4th 
-October)?
+Best
 
-Please suggest a suitable time based on your availability. Please share 
-your contact information to connect.
+>=20
+> Reviewed-by: Steve Wahl <steve.wahl@hpe.com>
+>=20
+> --=20
+> Steve Wahl, Hewlett Packard Enterprise
 
-Best Regards,
-Ayan Seth
+--=20
 
-On Tuesday 22 August 2023 5:43 PM, Ayan Seth wrote:
+Joel Granados
 
+--4w7nhf7oeskaesco
+Content-Type: application/pgp-signature; name="signature.asc"
 
-Hi ,
+-----BEGIN PGP SIGNATURE-----
 
-We are a Software development company creating solutions for many 
-industries across all over the world.
+iQGzBAABCgAdFiEErkcJVyXmMSXOyyeQupfNUreWQU8FAmUWv8IACgkQupfNUreW
+QU9DQwv+Opqxeb0JXEqqCeoSyrjiYyUtb6SlSpGMHgzSUMrdGnvmrA3cDGKGUhGd
+TNgpEJ+tN5ZYPPvQD5O1pqTlaBxf4VZytJ8DonLDtW6cyREdb4WLvjb1yMxn6LJh
+bgJYc7vgcgaK53S2uIm8MJhT3OR33Ft2sAxtR8fuOW59OONGh3vDB+GwxspJ/zaM
+VR21A7Dpj802nQLhSbKzMo2zv2Za22ltVbKjZOhfo/gH3aDaxJ2OnaVXGlR4oLpw
+K7oDpV7SlZzWpia4hixX9z0PeNzNheViN4LmyY0jR11VXnCpOBOM4RUkwtDa5N21
+GwipoG/V/D2rGuyWtcKTKRbHkBl3klgfwyeeN17PPVqllgyafCeMPIflxb7Dnuxk
+24dDkirouJRzNnsF1F7VPr1YGd9MJNFJ+4OB2C/4eOk/b3ql0r9iZXyQUw3A1OH2
+hL977fnUzbzPk/dZYy3qVEFJwj+B1agVRH25sPKRqUNQLD7QnFtgu8xPfKrbuQ0N
+1jFybOz5
+=hyLo
+-----END PGP SIGNATURE-----
 
-We follow the latest development approaches and technologies to build 
-web applications that meet your requirements.
-
-Our development teams only use modern and scalable technologies to 
-deliver a mobile or web application the way you mean it.
-
-Can we have a quick call to discuss if we can be of some assistance to 
-you? Please share your phone number to reach you.
-
-Thanks & Regards,
-Ayan Seth
+--4w7nhf7oeskaesco--
