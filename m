@@ -2,261 +2,219 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AEF7D7B321A
-	for <lists+linux-rdma@lfdr.de>; Fri, 29 Sep 2023 14:14:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F20F7B3237
+	for <lists+linux-rdma@lfdr.de>; Fri, 29 Sep 2023 14:16:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233193AbjI2MOA (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 29 Sep 2023 08:14:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59942 "EHLO
+        id S233207AbjI2MQR (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 29 Sep 2023 08:16:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41404 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233115AbjI2MN7 (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 29 Sep 2023 08:13:59 -0400
-Received: from mailout2.w1.samsung.com (mailout2.w1.samsung.com [210.118.77.12])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A3F61AA;
-        Fri, 29 Sep 2023 05:13:57 -0700 (PDT)
-Received: from eucas1p2.samsung.com (unknown [182.198.249.207])
-        by mailout2.w1.samsung.com (KnoxPortal) with ESMTP id 20230929121355euoutp029355d2b77491cadd67994111037d28a5~JXZZf4USK0777807778euoutp02o;
-        Fri, 29 Sep 2023 12:13:55 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.w1.samsung.com 20230929121355euoutp029355d2b77491cadd67994111037d28a5~JXZZf4USK0777807778euoutp02o
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1695989635;
-        bh=8lyq3NbxKETKAT4kssG9Gl7+6++BIm6RujbjJHzxU10=;
-        h=Date:From:To:CC:Subject:In-Reply-To:References:From;
-        b=M88XxnqjOeCFtmJ1iLUvg3cga7VIuTJv+1GqYmT6uofLJq3jgsotPtjN5QZA7t1oZ
-         fs7iWrQBoROVkp7B5E2c/zp8eMYLVW4UMFGtNGm5/jfkl9qXkXZMN/pTuYUUkxDHfR
-         HIDo2xQNUMaOXM4Qdv/qAl1z11RhR58+4jS2E998=
-Received: from eusmges1new.samsung.com (unknown [203.254.199.242]) by
-        eucas1p2.samsung.com (KnoxPortal) with ESMTP id
-        20230929121354eucas1p25742ddebbe1cfa7ed6cca8c8327da2b9~JXZZQ0UAB2204222042eucas1p2F;
-        Fri, 29 Sep 2023 12:13:54 +0000 (GMT)
-Received: from eucas1p2.samsung.com ( [182.198.249.207]) by
-        eusmges1new.samsung.com (EUCPMTA) with SMTP id 96.E4.42423.28FB6156; Fri, 29
-        Sep 2023 13:13:54 +0100 (BST)
-Received: from eusmtrp2.samsung.com (unknown [182.198.249.139]) by
-        eucas1p2.samsung.com (KnoxPortal) with ESMTPA id
-        20230929121353eucas1p222db2685fd99727840771a59abb770ce~JXZYHgAdt1405914059eucas1p2f;
-        Fri, 29 Sep 2023 12:13:53 +0000 (GMT)
-Received: from eusmgms1.samsung.com (unknown [182.198.249.179]) by
-        eusmtrp2.samsung.com (KnoxPortal) with ESMTP id
-        20230929121353eusmtrp2af1af6bf573e1ce71e31c070f88b0d2f~JXZYGNQIA1483714837eusmtrp2R;
-        Fri, 29 Sep 2023 12:13:53 +0000 (GMT)
-X-AuditID: cbfec7f2-a51ff7000002a5b7-c6-6516bf82728c
-Received: from eusmtip1.samsung.com ( [203.254.199.221]) by
-        eusmgms1.samsung.com (EUCPMTA) with SMTP id CD.21.10549.18FB6156; Fri, 29
-        Sep 2023 13:13:53 +0100 (BST)
-Received: from CAMSVWEXC02.scsc.local (unknown [106.1.227.72]) by
-        eusmtip1.samsung.com (KnoxPortal) with ESMTPA id
-        20230929121353eusmtip13974bd648951759583fb359b46754e5e~JXZXzSlko2058220582eusmtip1C;
-        Fri, 29 Sep 2023 12:13:53 +0000 (GMT)
-Received: from localhost (106.210.248.178) by CAMSVWEXC02.scsc.local
-        (2002:6a01:e348::6a01:e348) with Microsoft SMTP Server (TLS) id 15.0.1497.2;
-        Fri, 29 Sep 2023 13:13:52 +0100
-Date:   Fri, 29 Sep 2023 14:14:59 +0200
-From:   Joel Granados <j.granados@samsung.com>
-To:     Steve Wahl <steve.wahl@hpe.com>
-CC:     Luis Chamberlain <mcgrof@kernel.org>, <willy@infradead.org>,
-        <josh@joshtriplett.org>, Kees Cook <keescook@chromium.org>,
-        Phillip Potter <phil@philpotter.co.uk>,
-        Clemens Ladisch <clemens@ladisch.de>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Juergen Gross" <jgross@suse.com>,
-        Stefano Stabellini <sstabellini@kernel.org>,
-        Oleksandr Tyshchenko <oleksandr_tyshchenko@epam.com>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Doug Gilbert <dgilbert@interlog.com>,
-        Sudip Mukherjee <sudipm.mukherjee@gmail.com>,
-        "Jason Gunthorpe" <jgg@ziepe.ca>,
+        with ESMTP id S233061AbjI2MQQ (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 29 Sep 2023 08:16:16 -0400
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F2D9F195;
+        Fri, 29 Sep 2023 05:16:13 -0700 (PDT)
+Received: from pps.filterd (m0353728.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 38TCF2TC028253;
+        Fri, 29 Sep 2023 12:16:03 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : date : subject :
+ content-type : message-id : to : cc : content-transfer-encoding :
+ mime-version; s=pp1; bh=2IRrVsr0DBM7lCyy9w0jUUTswDVcoTvOjkfj0jpJkYk=;
+ b=D4g/3HJ3p8CuXVNXmRFrDh7/RxiVpXrAGKkGxiYwqRIiUKvkTja1iuQy7dlwdUkKj8TN
+ AuXMV+PQCahsVFD9yS5AKczhpdOlfS+Zp/Ls2MYWM5vFCMeQdj35ZqOS5zJwANhRHcXC
+ PBmIuxb1uZf0EeufAYVWMke7ygJ0mvNxVHKHkgfAZzhmARvSdFeS1sRTtFm907993oJa
+ MS1DN3HDStMVNDJyyw2RREQLr/eAi7nty7n1IUsJj865KQs4a1wWdjLI4lHFCcT7+a+c
+ ZcKzZ8WBhwHwBcBV74bdsUXaqDSwfTmXwUhDHYa5Ebp1YwSJQEtnCYGZJvbQnX55CNMI SQ== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3tdxdwg0ad-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 29 Sep 2023 12:16:03 +0000
+Received: from m0353728.ppops.net (m0353728.ppops.net [127.0.0.1])
+        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 38TCFtek029783;
+        Fri, 29 Sep 2023 12:16:02 GMT
+Received: from ppma22.wdc07v.mail.ibm.com (5c.69.3da9.ip4.static.sl-reverse.com [169.61.105.92])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3tdxdwg0a1-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 29 Sep 2023 12:16:02 +0000
+Received: from pps.filterd (ppma22.wdc07v.mail.ibm.com [127.0.0.1])
+        by ppma22.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 38TC7an1008143;
+        Fri, 29 Sep 2023 12:16:01 GMT
+Received: from smtprelay03.fra02v.mail.ibm.com ([9.218.2.224])
+        by ppma22.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3taar04qng-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 29 Sep 2023 12:16:01 +0000
+Received: from smtpav06.fra02v.mail.ibm.com (smtpav06.fra02v.mail.ibm.com [10.20.54.105])
+        by smtprelay03.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 38TCFvcV19595776
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 29 Sep 2023 12:15:57 GMT
+Received: from smtpav06.fra02v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 9B58020049;
+        Fri, 29 Sep 2023 12:15:57 +0000 (GMT)
+Received: from smtpav06.fra02v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 4FF0720040;
+        Fri, 29 Sep 2023 12:15:57 +0000 (GMT)
+Received: from tuxmaker.boeblingen.de.ibm.com (unknown [9.152.85.9])
+        by smtpav06.fra02v.mail.ibm.com (Postfix) with ESMTP;
+        Fri, 29 Sep 2023 12:15:57 +0000 (GMT)
+From:   Niklas Schnelle <schnelle@linux.ibm.com>
+Date:   Fri, 29 Sep 2023 14:15:49 +0200
+Subject: [PATCH net v2] net/mlx5: fix calling mlx5_cmd_init() before DMA
+ mask is set
+Content-Type: text/plain; charset="utf-8"
+Message-Id: <20230929-mlx5_init_fix-v2-1-51ed2094c9d8@linux.ibm.com>
+X-B4-Tracking: v=1; b=H4sIAPS/FmUC/3WNQQ6DIBREr2L+uhhB0NpV79EYo/Bbf6LQgDU2h
+ ruXsO9y3mTenBDQEwa4FSd43CmQsymISwF6Hu0LGZmUQVSirjpxZetyqIEsbcOTDqZloyalzVi
+ LFtLm7THh7HuAxQ36BGcKm/Pf/LHzXP3R7Zxx1nat7IxUGpvqvpD9HCVNa6ndCn2M8QfHhSkrs
+ wAAAA==
+To:     Saeed Mahameed <saeedm@nvidia.com>,
         Leon Romanovsky <leon@kernel.org>,
-        Corey Minyard <minyard@acm.org>, Theodore Ts'o <tytso@mit.edu>,
-        "Jason A. Donenfeld" <Jason@zx2c4.com>,
-        David Ahern <dsahern@kernel.org>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Matthew Rosato <mjrosato@linux.ibm.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Robin Murphy <robin.murphy@arm.com>,
         "David S. Miller" <davem@davemloft.net>,
         Eric Dumazet <edumazet@google.com>,
         Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Robin Holt <robinmholt@gmail.com>,
-        Russ Weight <russell.h.weight@intel.com>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Song Liu <song@kernel.org>,
-        "K. Y. Srinivasan" <kys@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        Wei Liu <wei.liu@kernel.org>, Dexuan Cui <decui@microsoft.com>,
-        Jani Nikula <jani.nikula@linux.intel.com>,
-        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>,
-        Tvrtko Ursulin <tvrtko.ursulin@linux.intel.com>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        <linux-kernel@vger.kernel.org>, <xen-devel@lists.xenproject.org>,
-        <linux-serial@vger.kernel.org>, <linux-scsi@vger.kernel.org>,
-        <linuxppc-dev@lists.ozlabs.org>, <linux-rdma@vger.kernel.org>,
-        <openipmi-developer@lists.sourceforge.net>,
-        <netdev@vger.kernel.org>, <linux-raid@vger.kernel.org>,
-        <linux-hyperv@vger.kernel.org>, <intel-gfx@lists.freedesktop.org>,
-        <dri-devel@lists.freedesktop.org>
-Subject: Re: [PATCH 11/15] sgi-xp: Remove the now superfluous sentinel
- element from ctl_table array
-Message-ID: <20230929121459.t7dfskyybi6jovjn@localhost>
+        Paolo Abeni <pabeni@redhat.com>, Shay Drory <shayd@nvidia.com>,
+        Moshe Shemesh <moshe@nvidia.com>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Alexander Gordeev <agordeev@linux.ibm.com>
+Cc:     linux-s390@vger.kernel.org, netdev@vger.kernel.org,
+        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Niklas Schnelle <schnelle@linux.ibm.com>
+X-Mailer: b4 0.12.3
+X-Developer-Signature: v=1; a=openpgp-sha256; l=4032;
+ i=schnelle@linux.ibm.com; h=from:subject:message-id;
+ bh=5PX7RQ4rZ7LlMi7ZlrKUxPE33H86Uqi+IiNl4ZDaUdE=;
+ b=owGbwMvMwCH2Wz534YHOJ2GMp9WSGFLF9n/jXXbiZcbnfbsDj22W2nb3rPSOfP1e88MNbcK3O
+ s7JWwQ4d5SyMIhxMMiKKbIs6nL2W1cwxXRPUH8HzBxWJpAhDFycAjCRgP8M/7QW2RybHuOqfZJN
+ UC4zwZQ/56go/4TtR57d3v/c/tbVll2MDJP+rptjcYXDYaVrxJQPUgZTxOfEKQb8Ff5lLymx9KH
+ DfCYA
+X-Developer-Key: i=schnelle@linux.ibm.com; a=openpgp;
+ fpr=9DB000B2D2752030A5F72DDCAFE43F15E8C26090
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: NJICd51ebao6KTLOS6Bx8Xhrjqs8ALjT
+X-Proofpoint-GUID: PhCP7YajQx6e9A1DV-mnWaG9_FLr3mlF
+Content-Transfer-Encoding: 8bit
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg="pgp-sha512";
-        protocol="application/pgp-signature"; boundary="4w7nhf7oeskaesco"
-Content-Disposition: inline
-In-Reply-To: <ZRW9Eywl831h/YhW@swahl-home.5wahls.com>
-X-Originating-IP: [106.210.248.178]
-X-ClientProxiedBy: CAMSVWEXC01.scsc.local (2002:6a01:e347::6a01:e347) To
-        CAMSVWEXC02.scsc.local (2002:6a01:e348::6a01:e348)
-X-Brightmail-Tracker: H4sIAAAAAAAAA2VTa1BUZRjuO+dwzoKhh9XkG9QsyJzAQBitdxIaDR0PozQ0jkyXGWSV00rJ
-        JZYN0hxBQW4hF2GEVWRBYTc2F1hhlUXBcAMURzRALkLIhqSCiigCEksLB8uZ/j3vc3m/9/nx
-        iUhxD+MgCg6N5CNCJXscaRtKXz/R/P7B2sX86vLkVdDYXkjAVGY9A6cb+wiY1meQcKI5joKa
-        OB2CmpwzNLSOPqZBa4gn4G69iYFDp0ppuHWOg+PpZwlQtZQiuNPmAIUdegJycxoRnOj0gEd5
-        S+FigWWfMgyupYTADf0RK+jXVDKQ9aKIhOyMYRpaDCdoSMg3IBioS6Ugpf08DddOpTIwOWa2
-        AlWDmYCO9LsIktMSENQrF8P45KQVXLjTj+B50xCC7GJXyHuWTYJ6KI+EWsUtBopy1SQ0qKZo
-        0Gh3QG3WLyRcasqyUOa9EP/TBAOXdV0ETI5bHh6rOEqsX8u1tG7hJl9kIu54zE2Kq/i5k+C6
-        i6oQd/G5kuKqFD0Mp9TJOYMhluHOqp25UxfuE9xU0gdc16AXpytJorlxdRrJpRdeQn7Lv7Tx
-        DOL3BH/PR7h9HGiz++TgQyJ8zD7aqLxCxKCMRcnIWoTZNVgzncMkIxuRmFUjfNtYSQjDM4TT
-        9VNzylOE2y6dYV5GShLuk4KgQjjn1zSrf11NjQmUMFQinKpKn41Q7Aqc+fcjNINpdhVuHuom
-        Z/Ai1gkfuds2mybZ0gXYWJNHzwgLWR6bOmY2WYts2Q/xUJWRELAdvpLbP8uTbDQu6iy0YJEF
-        L8Eqs2iGtmbX4ou/mynhVCc8XtZEC3g/vlrRNVsOs4dfx+VZGWgmi9mNOD5znuBZiB80VMzV
-        XIqnq/Ln/EcRrjUPM8KgQbg4dpQQXOtwXGv/XGIDNo1OWglL5+OOh3bCnfNxpv4YKdC2OPGw
-        WHC/izV/DFHpyEnxSjPFK80U/zUT6FVYWT1C/492wcUFg6SAvbBW+5hSIqYE2fNyWYiUl7mH
-        8lGuMkmITB4qdd0VFqJDll/XZG4YOY/yHjxxrUOECNWhdyxhU5nmBnKgQsNCecdFtn23xbzY
-        Nkjyw14+ImxHhHwPL6tDS0SUo72ti9eVXWJWKonkv+X5cD7ipUqIrB1iCDffnR5Kl5vBsbmb
-        JCEfna2TrjBWzQ8yRmnf7vW9GlAm763YF34g4VgXvtcem+Oz2fFG5dPAFP9zLVBa/Z6mt9ok
-        O65IUhV8suC7qEPXD+8L8tYmOo33te6PHtbbpZgrt/odvfdF0/q0nq+2F9ce1L1p9VYnXSD1
-        Wbd5udZvwQaDNHtjoo+fybj65Gvb+gLs/E3bjGHr893m3Xlj2YC2qmQqvnjQ23nU3dPJI3B8
-        59Z+nyVXvZNW+qvVI3KFf7CU+etAu4P50yd1seGRW+w3GwKoxgHjZVtPl+ZlX+foMn7MX3ld
-        ah481l3mtl0/cUH8m/dned01IX8mTnec1n0et8b3m4W7y+WOlGy3xN2ZjJBJ/gHETZrc8AQA
-        AA==
-X-Brightmail-Tracker: H4sIAAAAAAAAA2WTezBcVxzHe+5d9y4zJtulcoa0SZbMtNosK5YfQdK0f9yONG1H2mRobLbc
-        ISlWd5eGSac0VFDP0IlFCRVi1TOejSV0PEpDSWSjdBKDjFBq4rFeq8tOp5npf5/z/X2/33Pm
-        zDlckr9OWXMvhClZeZg0RECZcfr03eOHY9usWEfdvA30PCwiYCuzi4Yfe54QsN2QQULeQBwH
-        NHG1CDTXf6Lg/vICBZUt8QRMdU3QcKW4ioKRRgZy0+sIKB2uQvD4gTUUaRsIyLnegyDvkRPM
-        5++D1huGvkIZ9CeHwmBDqglMqutpyFovISE7428KhlvyKEgoaEEw3ZHCgeSHTRT0F6fQsLGq
-        N4HSbj0B2vQpBElpCQi6Cq1At7FhAnceTyJY6ZtDkH1TCPlL2SSUzeWT0KYaoaEkp4yE7tIt
-        CtSVEmjLqiChvS/LIOmjIf67NRo6a0cJ2NAZNl69fY04LmaG73szG+uZiMmN+Z3D3L71iGDG
-        SpoR07pSyGGaVeM0U1gbwbS0xNJMXZk9U3xnhmC2El2Y0VlPprY8kWJ0ZWkkk17Ujj7c7yv0
-        kMsilOyBYJlC6SnwE4GTUOQGQidnN6HoiOs5dyexwMHLI5ANuRDJyh28zguDf9V9i8KX916a
-        mdymY1CaZRIy5WKeMy5PmCGTkBmXzytBuKEzljYO9uGapQcmRrbAmyNJlNG0iLAuZos2LuoR
-        rsnQoh0Xh3cIZ27O7zLFewsPzI2RO2zJs8WpUztNZlySV7UH39I27ZoseCye0CZwdtic54rn
-        mn8hjK1XCVww02hiHLyMe3Mmd00kLxJ/M7diCHMNbINL9dwd2ZQnxq1Deo7xqLZYV91HGfkr
-        /HxrGqUjC9ULTaoXmlT/NRlle6zVzxD/k9/EN2/Mkkb2xJWVC5xCRJcjSzZCERoUqhAJFdJQ
-        RURYkDBAFlqLDA+/oWutrgn98GxR2IEILupAdobkRLV6EFlzwmRhrMDS/MkffJZvHiiNimbl
-        Mok8IoRVdCCx4RozSOtXAmSGXxSmlIhcHMUiZxc3R7GbyxHBXvP3wq9K+bwgqZL9nGXDWfm/
-        OYJrah1DXPz5GRO1UL+c4Vitno87yifvvREt8beLRy+dS0tM9/b4LOOEpkJz2eO5j04iZGzt
-        lvq9X0VfPHWN9Sw9GdN/xrTouLZq/eNUn9ZAq+oo3pka9+2oPh+xH3tos/MuPiU5fF5SHL2n
-        4q+v0UeXUg6MfzLl9Kem0V9b8K7nta3O7lZMDX868Pa2CA36qZvOXrTxiuwdsmx7f/9rlwVS
-        qaNl8+Lo6bWmu3m+pxtsj6rG6O+PXUHTg/l1X6pcfQtP2r0OfRIdpZtrP+Z+Nr4iIPeew3Lj
-        b4r5Do3/qlqTN3Sqt3tVGJejfMe984O2VnG5iejqevIJq4GDmoPBT5Nmhe4zjrYOAo4iWCqy
-        J+UK6T/T24AkjQQAAA==
-X-CMS-MailID: 20230929121353eucas1p222db2685fd99727840771a59abb770ce
-X-Msg-Generator: CA
-X-RootMTR: 20230928175234eucas1p2c62c48251c66c0016180977783dd2314
-X-EPHeader: CA
-CMS-TYPE: 201P
-X-CMS-RootMailID: 20230928175234eucas1p2c62c48251c66c0016180977783dd2314
-References: <20230928-jag-sysctl_remove_empty_elem_drivers-v1-0-e59120fca9f9@samsung.com>
-        <20230928-jag-sysctl_remove_empty_elem_drive>
-        <CGME20230928175234eucas1p2c62c48251c66c0016180977783dd2314@eucas1p2.samsung.com>
-        <ZRW9Eywl831h/YhW@swahl-home.5wahls.com>
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-09-29_10,2023-09-28_03,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=999 adultscore=0
+ spamscore=0 mlxscore=0 lowpriorityscore=0 bulkscore=0 suspectscore=0
+ priorityscore=1501 clxscore=1015 phishscore=0 impostorscore=0
+ malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2309180000 definitions=main-2309290103
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
---4w7nhf7oeskaesco
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Since commit 06cd555f73ca ("net/mlx5: split mlx5_cmd_init() to probe and
+reload routines") mlx5_cmd_init() is called in mlx5_mdev_init() which is
+called in probe_one() before mlx5_pci_init(). This is a problem because
+mlx5_pci_init() is where the DMA and coherent mask is set but
+mlx5_cmd_init() already does a dma_alloc_coherent(). Thus a DMA
+allocation is done during probe before the correct mask is set. This
+causes probe to fail initialization of the cmdif SW structs on s390x
+after that is converted to the common dma-iommu code. This is because on
+s390x DMA addresses below 4 GiB are reserved on current machines and
+unlike the old s390x specific DMA API implementation common code
+enforces DMA masks.
 
-On Thu, Sep 28, 2023 at 12:51:15PM -0500, Steve Wahl wrote:
-> On Thu, Sep 28, 2023 at 03:21:36PM +0200, Joel Granados via B4 Relay wrot=
-e:
-> > From: Joel Granados <j.granados@samsung.com>
-> >=20
-> > This commit comes at the tail end of a greater effort to remove the
-> > empty elements at the end of the ctl_table arrays (sentinels) which
-> > will reduce the overall build time size of the kernel and run time
-> > memory bloat by ~64 bytes per sentinel (further information Link :
-> > https://lore.kernel.org/all/ZO5Yx5JFogGi%2FcBo@bombadil.infradead.org/)
-> >=20
-> > Remove sentinel from xpc_sys_xpc_hb and xpc_sys_xpc
-> >=20
-> > Signed-off-by: Joel Granados <j.granados@samsung.com>
-> > ---
-> >  drivers/misc/sgi-xp/xpc_main.c | 6 ++----
-> >  1 file changed, 2 insertions(+), 4 deletions(-)
-> >=20
-> > diff --git a/drivers/misc/sgi-xp/xpc_main.c b/drivers/misc/sgi-xp/xpc_m=
-ain.c
-> > index 6da509d692bb..c898092ff3ac 100644
-> > --- a/drivers/misc/sgi-xp/xpc_main.c
-> > +++ b/drivers/misc/sgi-xp/xpc_main.c
-> > @@ -109,8 +109,7 @@ static struct ctl_table xpc_sys_xpc_hb[] =3D {
-> >  	 .mode =3D 0644,
-> >  	 .proc_handler =3D proc_dointvec_minmax,
-> >  	 .extra1 =3D &xpc_hb_check_min_interval,
-> > -	 .extra2 =3D &xpc_hb_check_max_interval},
-> > -	{}
-> > +	 .extra2 =3D &xpc_hb_check_max_interval}
-> >  };
-> >  static struct ctl_table xpc_sys_xpc[] =3D {
-> >  	{
-> > @@ -120,8 +119,7 @@ static struct ctl_table xpc_sys_xpc[] =3D {
-> >  	 .mode =3D 0644,
-> >  	 .proc_handler =3D proc_dointvec_minmax,
-> >  	 .extra1 =3D &xpc_disengage_min_timelimit,
-> > -	 .extra2 =3D &xpc_disengage_max_timelimit},
-> > -	{}
-> > +	 .extra2 =3D &xpc_disengage_max_timelimit}
-> >  };
-> > =20
-> >  static struct ctl_table_header *xpc_sysctl;
-> >=20
-> > --=20
-> > 2.30.2
-> >=20
->=20
-> I assume you'll match the rest of the changes with regards to the
-> trailing comma.
-If you are refering to Greg's comments. yes. I'll send a V2 with the
-trailing comma.
+Fix this by moving set_dma_caps() out of mlx5_pci_init() and into
+probe_one() before mlx5_mdev_init(). To match the overall naming scheme
+rename it to mlx5_dma_init().
 
-Best
+Link: https://lore.kernel.org/linux-iommu/cfc9e9128ed5571d2e36421e347301057662a09e.camel@linux.ibm.com/
+Fixes: 06cd555f73ca ("net/mlx5: split mlx5_cmd_init() to probe and reload routines")
+Signed-off-by: Niklas Schnelle <schnelle@linux.ibm.com>
+---
+Note: I ran into this while testing the linked series for converting
+s390x to use dma-iommu. The existing s390x specific DMA API
+implementation doesn't respect DMA masks and is thus not affected
+despite of course also only supporting DMA addresses above 4 GiB.
+---
+Changes in v2:
+- Instead of moving the whole mlx5_pci_init() only move the
+  set_dma_caps() call so as to keep pci_enable_device() after the FW
+  command interface initialization (Leon)
+- Link to v1: https://lore.kernel.org/r/20230928-mlx5_init_fix-v1-1-79749d45ce60@linux.ibm.com
+---
+ drivers/net/ethernet/mellanox/mlx5/core/main.c | 18 +++++++++---------
+ 1 file changed, 9 insertions(+), 9 deletions(-)
 
->=20
-> Reviewed-by: Steve Wahl <steve.wahl@hpe.com>
->=20
-> --=20
-> Steve Wahl, Hewlett Packard Enterprise
+diff --git a/drivers/net/ethernet/mellanox/mlx5/core/main.c b/drivers/net/ethernet/mellanox/mlx5/core/main.c
+index 15561965d2af..f251d233a16c 100644
+--- a/drivers/net/ethernet/mellanox/mlx5/core/main.c
++++ b/drivers/net/ethernet/mellanox/mlx5/core/main.c
+@@ -250,7 +250,7 @@ static void mlx5_set_driver_version(struct mlx5_core_dev *dev)
+ 	mlx5_cmd_exec_in(dev, set_driver_version, in);
+ }
+ 
+-static int set_dma_caps(struct pci_dev *pdev)
++static int mlx5_dma_init(struct pci_dev *pdev)
+ {
+ 	int err;
+ 
+@@ -905,12 +905,6 @@ static int mlx5_pci_init(struct mlx5_core_dev *dev, struct pci_dev *pdev,
+ 
+ 	pci_set_master(pdev);
+ 
+-	err = set_dma_caps(pdev);
+-	if (err) {
+-		mlx5_core_err(dev, "Failed setting DMA capabilities mask, aborting\n");
+-		goto err_clr_master;
+-	}
+-
+ 	if (pci_enable_atomic_ops_to_root(pdev, PCI_EXP_DEVCAP2_ATOMIC_COMP32) &&
+ 	    pci_enable_atomic_ops_to_root(pdev, PCI_EXP_DEVCAP2_ATOMIC_COMP64) &&
+ 	    pci_enable_atomic_ops_to_root(pdev, PCI_EXP_DEVCAP2_ATOMIC_COMP128))
+@@ -1908,9 +1902,15 @@ static int probe_one(struct pci_dev *pdev, const struct pci_device_id *id)
+ 		goto adev_init_err;
+ 	}
+ 
++	err = mlx5_dma_init(pdev);
++	if (err) {
++		mlx5_core_err(dev, "Failed setting DMA capabilities mask, aborting\n");
++		goto dma_init_err;
++	}
++
+ 	err = mlx5_mdev_init(dev, prof_sel);
+ 	if (err)
+-		goto mdev_init_err;
++		goto dma_init_err;
+ 
+ 	err = mlx5_pci_init(dev, pdev, id);
+ 	if (err) {
+@@ -1942,7 +1942,7 @@ static int probe_one(struct pci_dev *pdev, const struct pci_device_id *id)
+ 	mlx5_pci_close(dev);
+ pci_init_err:
+ 	mlx5_mdev_uninit(dev);
+-mdev_init_err:
++dma_init_err:
+ 	mlx5_adev_idx_free(dev->priv.adev_idx);
+ adev_init_err:
+ 	mlx5_devlink_free(devlink);
 
---=20
+---
+base-commit: 6465e260f48790807eef06b583b38ca9789b6072
+change-id: 20230928-mlx5_init_fix-c465b5cda327
 
-Joel Granados
+Best regards,
+-- 
+Niklas Schnelle
+Linux on Z Development
 
---4w7nhf7oeskaesco
-Content-Type: application/pgp-signature; name="signature.asc"
+IBM Deutschland Research & Development GmbH
+Vorsitzender des Aufsichtsrats: Gregor Pillen
+Geschäftsführung: David Faller
+Sitz der Gesellschaft: Böblingen / Registergericht: Amtsgericht Stuttgart, HRB 243294
+IBM Data Privacy Statement - https://www.ibm.com/privacy 
 
------BEGIN PGP SIGNATURE-----
-
-iQGzBAABCgAdFiEErkcJVyXmMSXOyyeQupfNUreWQU8FAmUWv8IACgkQupfNUreW
-QU9DQwv+Opqxeb0JXEqqCeoSyrjiYyUtb6SlSpGMHgzSUMrdGnvmrA3cDGKGUhGd
-TNgpEJ+tN5ZYPPvQD5O1pqTlaBxf4VZytJ8DonLDtW6cyREdb4WLvjb1yMxn6LJh
-bgJYc7vgcgaK53S2uIm8MJhT3OR33Ft2sAxtR8fuOW59OONGh3vDB+GwxspJ/zaM
-VR21A7Dpj802nQLhSbKzMo2zv2Za22ltVbKjZOhfo/gH3aDaxJ2OnaVXGlR4oLpw
-K7oDpV7SlZzWpia4hixX9z0PeNzNheViN4LmyY0jR11VXnCpOBOM4RUkwtDa5N21
-GwipoG/V/D2rGuyWtcKTKRbHkBl3klgfwyeeN17PPVqllgyafCeMPIflxb7Dnuxk
-24dDkirouJRzNnsF1F7VPr1YGd9MJNFJ+4OB2C/4eOk/b3ql0r9iZXyQUw3A1OH2
-hL977fnUzbzPk/dZYy3qVEFJwj+B1agVRH25sPKRqUNQLD7QnFtgu8xPfKrbuQ0N
-1jFybOz5
-=hyLo
------END PGP SIGNATURE-----
-
---4w7nhf7oeskaesco--
