@@ -2,110 +2,72 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F8097B425C
-	for <lists+linux-rdma@lfdr.de>; Sat, 30 Sep 2023 18:52:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 64DB87B42ED
+	for <lists+linux-rdma@lfdr.de>; Sat, 30 Sep 2023 20:16:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234590AbjI3Qw2 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Sat, 30 Sep 2023 12:52:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35368 "EHLO
+        id S234694AbjI3SQd (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Sat, 30 Sep 2023 14:16:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43956 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229788AbjI3QwZ (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Sat, 30 Sep 2023 12:52:25 -0400
-Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com [IPv6:2a00:1450:4864:20::434])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BFAECCF
-        for <linux-rdma@vger.kernel.org>; Sat, 30 Sep 2023 09:52:22 -0700 (PDT)
-Received: by mail-wr1-x434.google.com with SMTP id ffacd0b85a97d-3231df054c4so10938912f8f.0
-        for <linux-rdma@vger.kernel.org>; Sat, 30 Sep 2023 09:52:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=philpotter-co-uk.20230601.gappssmtp.com; s=20230601; t=1696092741; x=1696697541; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=TP49E0lt1lRfwVwEUZNQYaCBfTY4UGz9ptrNHBZhxcM=;
-        b=GODHPJ5OBk5OFYXKYp/AsgCbEs96zHybKMqld2zYIYMA8bWsDO9CD32R4Ve892efWh
-         Rw8h6Qoitfo9fDFRXeGZ1URS0UWu9IJBVx4Vya++BEVhXwx8iJTXEUg7vtyzXuhFlYS7
-         EaYP12e+2yYMGMjH/WAmkF/9TwNHyl/rOxe/+Raw1hFTZ4W/QiD6r+cTfVQujrg4ADiB
-         t0EwhcgT/w1sqCgn4S5QesL/mVLbCPhL0Gs4zfmBWFR0O2+lvC4PwMCbZsvAUBYBpImL
-         7PoPTdEUlEjZSUqF5Cz+l5zBQwpp7snU3QkdNZzBDQG/BZuIT+Nwotv31hy32RoOfd+U
-         mAYQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696092741; x=1696697541;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=TP49E0lt1lRfwVwEUZNQYaCBfTY4UGz9ptrNHBZhxcM=;
-        b=kL7QgkPrUy9yfAQl1A83wGK+dj+9QDzuS64xkEwnK0je6Ug0nQmurLaBFU0fosrWSn
-         KWNuGSOMztSEb98v5tgEdtlMLKjQXKbJuHg6Nyl5WYeVilv0SBbrl39wLzVDzvF5iqys
-         +ysV54F9O9VQf80BYdCGYeRcewEWMysAH92k5O5AMjm6OjcXmaXNlMCL7M95wSRyeb7W
-         sNynJKbgB9NkVIr1ra2Sdzf/3Gp8OhcbAR/F+FjmOB5BeEMwFZeZ4BDhTpc83XWg/cwF
-         MERRsZJ8rQkicjTIwpTE5VGI8xPTQqGWwwsZaNHs8ZbLiquDvrdz4n4hYSFIOexPNttG
-         kynQ==
-X-Gm-Message-State: AOJu0Ywkfz1sBWTQ63kJ7G+Hf75rmOgs9haWRa1N4rWzunBqZnNwYZIb
-        OPrkP733NxAH3ASWS3IWdLiibQ==
-X-Google-Smtp-Source: AGHT+IFufhUosQmDbdYYO0lgqH5WgmabRsKPy1NuiT6FdEpd1klh9Lx806UT3kRvn4yTyQ0Y4WLs9Q==
-X-Received: by 2002:adf:cf0a:0:b0:323:1689:6607 with SMTP id o10-20020adfcf0a000000b0032316896607mr6789063wrj.5.1696092741022;
-        Sat, 30 Sep 2023 09:52:21 -0700 (PDT)
-Received: from equinox (2.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.a.1.e.e.d.f.d.0.b.8.0.1.0.0.2.ip6.arpa. [2001:8b0:dfde:e1a0::2])
-        by smtp.gmail.com with ESMTPSA id u1-20020adfed41000000b003247d3e5d99sm4921066wro.55.2023.09.30.09.52.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 30 Sep 2023 09:52:20 -0700 (PDT)
-Date:   Sat, 30 Sep 2023 17:52:17 +0100
-From:   Phillip Potter <phil@philpotter.co.uk>
-To:     Joel Granados <j.granados@samsung.com>
-Cc:     Luis Chamberlain <mcgrof@kernel.org>, willy@infradead.org,
-        josh@joshtriplett.org, Kees Cook <keescook@chromium.org>,
-        Clemens Ladisch <clemens@ladisch.de>,
-        Arnd Bergmann <arnd@arndb.de>, Juergen Gross <jgross@suse.com>,
-        Stefano Stabellini <sstabellini@kernel.org>,
-        Oleksandr Tyshchenko <oleksandr_tyshchenko@epam.com>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Doug Gilbert <dgilbert@interlog.com>,
-        Sudip Mukherjee <sudipm.mukherjee@gmail.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Leon Romanovsky <leon@kernel.org>,
-        Corey Minyard <minyard@acm.org>, Theodore Ts'o <tytso@mit.edu>,
-        "Jason A. Donenfeld" <Jason@zx2c4.com>,
-        David Ahern <dsahern@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Robin Holt <robinmholt@gmail.com>,
-        Steve Wahl <steve.wahl@hpe.com>,
-        Russ Weight <russell.h.weight@intel.com>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Song Liu <song@kernel.org>,
-        "K. Y. Srinivasan" <kys@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        Wei Liu <wei.liu@kernel.org>, Dexuan Cui <decui@microsoft.com>,
-        Jani Nikula <jani.nikula@linux.intel.com>,
-        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>,
-        Tvrtko Ursulin <tvrtko.ursulin@linux.intel.com>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>, linux-kernel@vger.kernel.org,
-        xen-devel@lists.xenproject.org, linux-serial@vger.kernel.org,
-        linux-scsi@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        linux-rdma@vger.kernel.org,
-        openipmi-developer@lists.sourceforge.net, netdev@vger.kernel.org,
-        linux-raid@vger.kernel.org, linux-hyperv@vger.kernel.org,
-        intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Subject: Re: [PATCH 01/15] cdrom: Remove now superfluous sentinel element
- from ctl_table array
-Message-ID: <ZRhSQaNDJih5xABq@equinox>
-References: <20230928-jag-sysctl_remove_empty_elem_drivers-v1-0-e59120fca9f9@samsung.com>
- <20230928-jag-sysctl_remove_empty_elem_drivers-v1-1-e59120fca9f9@samsung.com>
- <CGME20230928133705eucas1p182bd81a8e6aff530e43f9b0746a24eaa@eucas1p1.samsung.com>
- <2023092855-cultivate-earthy-4d25@gregkh>
- <20230929121730.bwzhrpaptf45smfy@localhost>
+        with ESMTP id S233050AbjI3SQc (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Sat, 30 Sep 2023 14:16:32 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ADA90D3;
+        Sat, 30 Sep 2023 11:16:30 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 755A5C433C8;
+        Sat, 30 Sep 2023 18:16:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1696097790;
+        bh=4KxrdWQII7ZMqg05ZoYUeAYx7P3qwGPcbUzEt9FXv8o=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=lJbU2vc+5yly5IaO2oXd/4pi4tBp5Ef08ulv77sXkiMk25ulICEZnnhOmlKpte9Bi
+         QRNhWkE26HfPQzGpdmtyC5pb1nqnKk2Q+XKmopDUD5vaQwdZsPaqYk+YGgkZekdTNZ
+         aSFYvSeG1gMDiG7FEvfsn/hBi5FYVnv3u0bQkL5jJbqyXQ6DiwkpqN5hacO0akhEDc
+         O+MsPjfqEIC6oNtB1O1d5FeB2mlvGFs1FoEgcpefnUrUVlGlp8oBI60Br+ktff4xt3
+         kN/ZU1GnqufKENMcNBtG5uHe07IuxKYlgvyaTc8yS3u/8F4RN4/f4oGpUT1NswVAph
+         i726jlQVEB7zQ==
+Date:   Sat, 30 Sep 2023 20:16:23 +0200
+From:   Simon Horman <horms@kernel.org>
+To:     Haiyang Zhang <haiyangz@microsoft.com>
+Cc:     "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        Dexuan Cui <decui@microsoft.com>,
+        KY Srinivasan <kys@microsoft.com>,
+        Paul Rosswurm <paulros@microsoft.com>,
+        "olaf@aepfle.de" <olaf@aepfle.de>, vkuznets <vkuznets@redhat.com>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        "wei.liu@kernel.org" <wei.liu@kernel.org>,
+        "edumazet@google.com" <edumazet@google.com>,
+        "kuba@kernel.org" <kuba@kernel.org>,
+        "pabeni@redhat.com" <pabeni@redhat.com>,
+        "leon@kernel.org" <leon@kernel.org>,
+        Long Li <longli@microsoft.com>,
+        "ssengar@linux.microsoft.com" <ssengar@linux.microsoft.com>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        "daniel@iogearbox.net" <daniel@iogearbox.net>,
+        "john.fastabend@gmail.com" <john.fastabend@gmail.com>,
+        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
+        "ast@kernel.org" <ast@kernel.org>,
+        Ajay Sharma <sharmaajay@microsoft.com>,
+        "hawk@kernel.org" <hawk@kernel.org>,
+        "tglx@linutronix.de" <tglx@linutronix.de>,
+        "shradhagupta@linux.microsoft.com" <shradhagupta@linux.microsoft.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "stable@vger.kernel.org" <stable@vger.kernel.org>
+Subject: Re: [PATCH net, 1/3] net: mana: Fix TX CQE error handling
+Message-ID: <20230930181623.GF92317@kernel.org>
+References: <1695519107-24139-1-git-send-email-haiyangz@microsoft.com>
+ <1695519107-24139-2-git-send-email-haiyangz@microsoft.com>
+ <20230929054757.GQ24230@kernel.org>
+ <20230929055030.GS24230@kernel.org>
+ <PH7PR21MB3116CC4A402211384A28F13DCAC0A@PH7PR21MB3116.namprd21.prod.outlook.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230929121730.bwzhrpaptf45smfy@localhost>
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+In-Reply-To: <PH7PR21MB3116CC4A402211384A28F13DCAC0A@PH7PR21MB3116.namprd21.prod.outlook.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -113,59 +75,49 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Fri, Sep 29, 2023 at 02:17:30PM +0200, Joel Granados wrote:
-> On Thu, Sep 28, 2023 at 03:36:55PM +0200, Greg Kroah-Hartman wrote:
-> > On Thu, Sep 28, 2023 at 03:21:26PM +0200, Joel Granados via B4 Relay wrote:
-> > > From: Joel Granados <j.granados@samsung.com>
-> > > 
-> > > This commit comes at the tail end of a greater effort to remove the
-> > > empty elements at the end of the ctl_table arrays (sentinels) which
-> > > will reduce the overall build time size of the kernel and run time
-> > > memory bloat by ~64 bytes per sentinel (further information Link :
-> > > https://lore.kernel.org/all/ZO5Yx5JFogGi%2FcBo@bombadil.infradead.org/)
-> > > 
-> > > Remove sentinel element from cdrom_table
-> > > 
-> > > Signed-off-by: Joel Granados <j.granados@samsung.com>
-> > > ---
-> > >  drivers/cdrom/cdrom.c | 3 +--
-> > >  1 file changed, 1 insertion(+), 2 deletions(-)
-> > > 
-> > > diff --git a/drivers/cdrom/cdrom.c b/drivers/cdrom/cdrom.c
-> > > index cc2839805983..451907ade389 100644
-> > > --- a/drivers/cdrom/cdrom.c
-> > > +++ b/drivers/cdrom/cdrom.c
-> > > @@ -3654,8 +3654,7 @@ static struct ctl_table cdrom_table[] = {
-> > >  		.maxlen		= sizeof(int),
-> > >  		.mode		= 0644,
-> > >  		.proc_handler	= cdrom_sysctl_handler
-> > > -	},
-> > > -	{ }
-> > > +	}
-> > 
-> > You should have the final entry as "}," so as to make any future
-> > additions to the list to only contain that entry, that's long been the
-> > kernel style for lists like this.
-> Will send a V2 with this included. Thx.
+On Fri, Sep 29, 2023 at 03:51:48PM +0000, Haiyang Zhang wrote:
 > 
-> > 
-> > So your patches will just remove one line, not 2 and add 1, making it a
-> > smaller diff.
-> indeed.
 > 
+> > -----Original Message-----
+> > From: Simon Horman <horms@kernel.org>
+> > Sent: Friday, September 29, 2023 1:51 AM
+> > To: Haiyang Zhang <haiyangz@microsoft.com>
+> > Cc: linux-hyperv@vger.kernel.org; netdev@vger.kernel.org; Dexuan Cui
+> > <decui@microsoft.com>; KY Srinivasan <kys@microsoft.com>; Paul Rosswurm
+> > <paulros@microsoft.com>; olaf@aepfle.de; vkuznets
+> > <vkuznets@redhat.com>; davem@davemloft.net; wei.liu@kernel.org;
+> > edumazet@google.com; kuba@kernel.org; pabeni@redhat.com;
+> > leon@kernel.org; Long Li <longli@microsoft.com>;
+> > ssengar@linux.microsoft.com; linux-rdma@vger.kernel.org;
+> > daniel@iogearbox.net; john.fastabend@gmail.com; bpf@vger.kernel.org;
+> > ast@kernel.org; Ajay Sharma <sharmaajay@microsoft.com>;
+> > hawk@kernel.org; tglx@linutronix.de; shradhagupta@linux.microsoft.com;
+> > linux-kernel@vger.kernel.org; stable@vger.kernel.org
+> > Subject: Re: [PATCH net, 1/3] net: mana: Fix TX CQE error handling
 > > 
-> > thanks,
+> > On Fri, Sep 29, 2023 at 07:47:57AM +0200, Simon Horman wrote:
+> > > On Sat, Sep 23, 2023 at 06:31:45PM -0700, Haiyang Zhang wrote:
+> > > > For an unknown TX CQE error type (probably from a newer hardware),
+> > > > still free the SKB, update the queue tail, etc., otherwise the
+> > > > accounting will be wrong.
+> > > >
+> > > > Also, TX errors can be triggered by injecting corrupted packets, so
+> > > > replace the WARN_ONCE to ratelimited error logging, because we don't
+> > > > need stack trace here.
+> > > >
+> > > > Cc: stable@vger.kernel.org
+> > > > Fixes: ca9c54d2d6a5 ("net: mana: Add a driver for Microsoft Azure
+> > Network Adapter (MANA)")
+> > > > Signed-off-by: Haiyang Zhang <haiyangz@microsoft.com>
+> > >
+> > > Reviewed-by: Simon Horman <horms@kernel.org>
 > > 
-> > greg k-h
+> > Sorry, one latent question.
+> > 
+> > The patch replaces WARN_ONCE with a net_ratelimit()'d netdev_err().
+> > But I do wonder if, as a fix, netdev_err_once() would be more appropriate.
 > 
-> -- 
-> 
-> Joel Granados
+> This error may happen with different CQE error types, so I use netdev_err() 
+> to display them, and added rate limit.
 
-Hi Joel,
-
-Thank you for your patch. I look forward to seeing V2, and will be happy
-to review it.
-
-Regards,
-Phil
+Thanks for the clarification.
