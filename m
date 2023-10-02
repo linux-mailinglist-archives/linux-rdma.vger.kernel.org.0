@@ -2,175 +2,132 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0542E7B5C8E
-	for <lists+linux-rdma@lfdr.de>; Mon,  2 Oct 2023 23:42:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EC85F7B5C9A
+	for <lists+linux-rdma@lfdr.de>; Mon,  2 Oct 2023 23:45:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229985AbjJBVmg (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 2 Oct 2023 17:42:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57008 "EHLO
+        id S230006AbjJBVph (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 2 Oct 2023 17:45:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59722 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229650AbjJBVmf (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 2 Oct 2023 17:42:35 -0400
-Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B18B9E;
-        Mon,  2 Oct 2023 14:42:32 -0700 (PDT)
-Received: from pps.filterd (m0353723.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 392Lc35b009233;
-        Mon, 2 Oct 2023 21:41:31 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
- mime-version : subject : to : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=9DoH5Z0FBBn7OOXsdsVMtbrWjPpvQTS37XxZVqX2ya0=;
- b=lxWXuknd3yuLsB86dOCJbRBBlD1v8Gr3EKV5SxMyczpYq9wVkuu9dRTsHmqBPIZEOrxH
- RD5yl7IZRyLRaBM00mbLWa6O6cbBcdU6azN8t6TnT3PDvMgdSBmWA95OCiZUzRMnT1Od
- rDuK07M+9ePTBIr763u/90apwJmDdY1L8gdceYC16fJJY9GDYZ85Nqg0Ch/G1V4h2Z60
- iRaMo6XOEkYreYQBFyDo3oVThvgzs0bjAubGuZ/c0AHqVvxQ4Mq7FBbIldd3qMC/lsHo
- qjIT/lXGdiSENpNgiiQMZRA8yrHTWxQTMCyotLa+Oq306GD7AIKHYwGG6O/qUpRzUthr /w== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3tg5q109ax-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 02 Oct 2023 21:41:31 +0000
-Received: from m0353723.ppops.net (m0353723.ppops.net [127.0.0.1])
-        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 392LcTNL009989;
-        Mon, 2 Oct 2023 21:41:30 GMT
-Received: from ppma12.dal12v.mail.ibm.com (dc.9e.1632.ip4.static.sl-reverse.com [50.22.158.220])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3tg5q109a6-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 02 Oct 2023 21:41:30 +0000
-Received: from pps.filterd (ppma12.dal12v.mail.ibm.com [127.0.0.1])
-        by ppma12.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 392K30kt005924;
-        Mon, 2 Oct 2023 21:41:28 GMT
-Received: from smtprelay02.dal12v.mail.ibm.com ([172.16.1.4])
-        by ppma12.dal12v.mail.ibm.com (PPS) with ESMTPS id 3tex0scxuw-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 02 Oct 2023 21:41:28 +0000
-Received: from smtpav06.wdc07v.mail.ibm.com (smtpav06.wdc07v.mail.ibm.com [10.39.53.233])
-        by smtprelay02.dal12v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 392LfR6B27001512
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 2 Oct 2023 21:41:27 GMT
-Received: from smtpav06.wdc07v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 866195803F;
-        Mon,  2 Oct 2023 21:41:27 +0000 (GMT)
-Received: from smtpav06.wdc07v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 6C15A5804E;
-        Mon,  2 Oct 2023 21:41:23 +0000 (GMT)
-Received: from [9.61.133.200] (unknown [9.61.133.200])
-        by smtpav06.wdc07v.mail.ibm.com (Postfix) with ESMTP;
-        Mon,  2 Oct 2023 21:41:23 +0000 (GMT)
-Message-ID: <406173de-f215-4719-be69-7789869126a0@linux.ibm.com>
-Date:   Mon, 2 Oct 2023 16:41:20 -0500
+        with ESMTP id S229985AbjJBVpg (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 2 Oct 2023 17:45:36 -0400
+Received: from mail-wm1-x335.google.com (mail-wm1-x335.google.com [IPv6:2a00:1450:4864:20::335])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA760CE
+        for <linux-rdma@vger.kernel.org>; Mon,  2 Oct 2023 14:45:31 -0700 (PDT)
+Received: by mail-wm1-x335.google.com with SMTP id 5b1f17b1804b1-406609df1a6so2486095e9.3
+        for <linux-rdma@vger.kernel.org>; Mon, 02 Oct 2023 14:45:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=philpotter-co-uk.20230601.gappssmtp.com; s=20230601; t=1696283130; x=1696887930; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=3dA79LkNYU7asBXwt/uQxW8bheOGwedQNE5Z+nFIVT0=;
+        b=jC4WA2n5N6fh0h+8A80v34J674kTNb/dkqkkQ4wr6AQU33VVyNhBrLJ5fIDHvQkiRC
+         YGLtDdF8yOE+UQ1F9TDhWiCE0v6E1PqR6ceCh6wN4S6/wW6QSdK3FhOoyU/zI1HpFs0O
+         +F8KfczwTGXQlzUVF4ka2LhahMo5RG2sNqhG8NaTCIin4KK5EYb9i1itvP4TT4QtItrG
+         6l81HyN+/AWlJTwrcZBsVzzV6zShJd0lbmT0bslRid9k+F5TLRs7b1Nah9+yNFpY15j8
+         CilWH5jhV7Apb9r2YfgO6KBYqg0XMY4yHLusxDU82pYXfBi6WeD9aJ2bVZr42E3kPHhV
+         fbbw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696283130; x=1696887930;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=3dA79LkNYU7asBXwt/uQxW8bheOGwedQNE5Z+nFIVT0=;
+        b=EBqPqJRtn5pkwjuEI85mzRqOUYkCbsbqdb6HImJTAQ7iVQpEs1D/GZ93Jofd6AWsUM
+         +cYU04AtcjbMEfWYdqHT9QqFSrAQVyPbi8XIHbeJ63aOFBL5ivYDPp1SO5C0wtrQIgzo
+         nco+l9cw3S3hYruYDUIfmjGKmLobhh6a/5YA4hD5lrF4ZY52vrCmBiilnNmIITfqkw9P
+         ArtEZ344p2/JtOeYR7IStfhCdqCaxVdr/a7767nh9j+5ybaI8CvAavTpxVAm0OpPWKwv
+         KZfPaPw+w07fLPEPg0hlD87MAFmongoyU4wAJpx24iWxh1bw6r/4smLIokMxLlLq7i98
+         MKYQ==
+X-Gm-Message-State: AOJu0YwPbLdN2sy2uB61QVJpukHO58hL2unic5yKIvBPaIs8lfM0kz+b
+        8ROdCh1eMcWpsJ1aaMIH8fXjpQ==
+X-Google-Smtp-Source: AGHT+IFQqDHrxS5nLVVcz3uYz3zBoh8PRAUblObfkXMiu+127hGE3d4cKV4jcsCeAwYclm/ssvuz7g==
+X-Received: by 2002:a1c:6a05:0:b0:404:757e:c5ba with SMTP id f5-20020a1c6a05000000b00404757ec5bamr10282866wmc.26.1696283130281;
+        Mon, 02 Oct 2023 14:45:30 -0700 (PDT)
+Received: from localhost.localdomain (3.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.6.1.f.d.0.b.8.0.1.0.0.2.ip6.arpa. [2001:8b0:df16::3])
+        by smtp.gmail.com with ESMTPSA id a11-20020a05600c2d4b00b004065daba6casm7974630wmg.46.2023.10.02.14.45.28
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 02 Oct 2023 14:45:29 -0700 (PDT)
+From:   Phillip Potter <phil@philpotter.co.uk>
+To:     devnull+j.granados.samsung.com@kernel.org
+Cc:     Jason@zx2c4.com, airlied@gmail.com, arnd@arndb.de,
+        clemens@ladisch.de, daniel@ffwll.ch, davem@davemloft.net,
+        decui@microsoft.com, dgilbert@interlog.com,
+        dri-devel@lists.freedesktop.org, dsahern@kernel.org,
+        edumazet@google.com, gregkh@linuxfoundation.org,
+        haiyangz@microsoft.com, intel-gfx@lists.freedesktop.org,
+        j.granados@samsung.com, jani.nikula@linux.intel.com,
+        jejb@linux.ibm.com, jgg@ziepe.ca, jgross@suse.com,
+        jirislaby@kernel.org, joonas.lahtinen@linux.intel.com,
+        josh@joshtriplett.org, keescook@chromium.org, kuba@kernel.org,
+        kys@microsoft.com, leon@kernel.org, linux-hyperv@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-raid@vger.kernel.org,
+        linux-rdma@vger.kernel.org, linux-scsi@vger.kernel.org,
+        linux-serial@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        martin.petersen@oracle.com, mcgrof@kernel.org, minyard@acm.org,
+        netdev@vger.kernel.org, oleksandr_tyshchenko@epam.com,
+        openipmi-developer@lists.sourceforge.net, pabeni@redhat.com,
+        phil@philpotter.co.uk, rafael@kernel.org, robinmholt@gmail.com,
+        rodrigo.vivi@intel.com, russell.h.weight@intel.com,
+        song@kernel.org, sstabellini@kernel.org, steve.wahl@hpe.com,
+        sudipm.mukherjee@gmail.com, tvrtko.ursulin@linux.intel.com,
+        tytso@mit.edu, wei.liu@kernel.org, willy@infradead.org,
+        xen-devel@lists.xenproject.org
+Subject: Re: [PATCH v2 01/15] cdrom: Remove now superfluous sentinel element from ctl_table array
+Date:   Mon,  2 Oct 2023 22:45:28 +0100
+Message-ID: <20231002214528.15529-1-phil@philpotter.co.uk>
+X-Mailer: git-send-email 2.41.0
+In-Reply-To: <20231002-jag-sysctl_remove_empty_elem_drivers-v2-1-02dd0d46f71e@samsung.com>
+References: <20231002-jag-sysctl_remove_empty_elem_drivers-v2-1-02dd0d46f71e@samsung.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [net-next PATCH 3/4] netdev: replace napi_reschedule with
- napi_schedule
-To:     Christian Marangi <ansuelsmth@gmail.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Leon Romanovsky <leon@kernel.org>,
-        Wolfgang Grandegger <wg@grandegger.com>,
-        Marc Kleine-Budde <mkl@pengutronix.de>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Chris Snook <chris.snook@gmail.com>,
-        Raju Rangoju <rajur@chelsio.com>,
-        Jeroen de Borst <jeroendb@google.com>,
-        Praveen Kaligineedi <pkaligineedi@google.com>,
-        Shailend Chand <shailend@google.com>,
-        Douglas Miller <dougmill@linux.ibm.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Haren Myneni <haren@linux.ibm.com>,
-        Rick Lindsley <ricklind@linux.ibm.com>,
-        Dany Madden <danymadden@us.ibm.com>,
-        Thomas Falcon <tlfalcon@linux.ibm.com>,
-        Tariq Toukan <tariqt@nvidia.com>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        Jose Abreu <joabreu@synopsys.com>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Krzysztof Halasa <khalasa@piap.pl>,
-        Kalle Valo <kvalo@kernel.org>,
-        Jeff Johnson <quic_jjohnson@quicinc.com>,
-        Gregory Greenman <gregory.greenman@intel.com>,
-        Chandrashekar Devegowda <chandrashekar.devegowda@intel.com>,
-        Intel Corporation <linuxwwan@intel.com>,
-        Chiranjeevi Rapolu <chiranjeevi.rapolu@linux.intel.com>,
-        Liu Haijun <haijun.liu@mediatek.com>,
-        M Chetan Kumar <m.chetan.kumar@linux.intel.com>,
-        Ricardo Martinez <ricardo.martinez@linux.intel.com>,
-        Loic Poulain <loic.poulain@linaro.org>,
-        Sergey Ryazanov <ryazanov.s.a@gmail.com>,
-        Johannes Berg <johannes@sipsolutions.net>,
-        Yuanjun Gong <ruc_gongyuanjun@163.com>,
-        Wei Fang <wei.fang@nxp.com>, Alex Elder <elder@linaro.org>,
-        Simon Horman <horms@kernel.org>, Rob Herring <robh@kernel.org>,
-        Bailey Forrest <bcf@google.com>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        Junfeng Guo <junfeng.guo@intel.com>,
-        Ziwei Xiao <ziweixiao@google.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Rushil Gupta <rushilg@google.com>,
-        =?UTF-8?Q?Uwe_Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>,
-        Yuri Karpov <YKarpov@ispras.ru>,
-        Zhengchao Shao <shaozhengchao@huawei.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Zheng Zengkai <zhengzengkai@huawei.com>,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
-        Lee Jones <lee@kernel.org>, Dawei Li <set_pte_at@outlook.com>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Benjamin Berg <benjamin.berg@intel.com>,
-        Anjaneyulu <pagadala.yesu.anjaneyulu@intel.com>,
-        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-can@vger.kernel.org, netdev@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org, ath10k@lists.infradead.org,
-        linux-wireless@vger.kernel.org
-References: <20231002151023.4054-1-ansuelsmth@gmail.com>
- <20231002151023.4054-3-ansuelsmth@gmail.com>
-Content-Language: en-US
-From:   Nick Child <nnac123@linux.ibm.com>
-In-Reply-To: <20231002151023.4054-3-ansuelsmth@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: AFJ5CXgaf9gn3Ls0jloeGnb824w-iwMV
-X-Proofpoint-ORIG-GUID: Qz1_8zO7QXXjWE3s-ruwlXCzRrelvADM
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-10-02_15,2023-10-02_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 bulkscore=0
- lowpriorityscore=0 phishscore=0 priorityscore=1501 suspectscore=0
- clxscore=1011 impostorscore=0 adultscore=0 mlxlogscore=829 mlxscore=0
- spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2309180000 definitions=main-2310020167
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-
-
-On 10/2/23 10:10, Christian Marangi wrote:
-> Now that napi_schedule return a bool, we can drop napi_reschedule that
-> does the same exact function. The function comes from a very old commit
-> bfe13f54f502 ("ibm_emac: Convert to use napi_struct independent of struct
-> net_device") and the purpose is actually deprecated in favour of
-> different logic.
-> 
-> Convert every user of napi_reschedule to napi_schedule.
-> 
-> Signed-off-by: Christian Marangi <ansuelsmth@gmail.com>
+> From: Joel Granados <j.granados@samsung.com>
+>
+> This commit comes at the tail end of a greater effort to remove the
+> empty elements at the end of the ctl_table arrays (sentinels) which
+> will reduce the overall build time size of the kernel and run time
+> memory bloat by ~64 bytes per sentinel (further information Link :
+> https://lore.kernel.org/all/ZO5Yx5JFogGi%2FcBo@bombadil.infradead.org/)
+>
+> Remove sentinel element from cdrom_table
+>
+> Signed-off-by: Joel Granados <j.granados@samsung.com>
 > ---
+>  drivers/cdrom/cdrom.c | 1 -
+>  1 file changed, 1 deletion(-)
+>
+> diff --git a/drivers/cdrom/cdrom.c b/drivers/cdrom/cdrom.c
+> index cc2839805983..a5e07270e0d4 100644
+> --- a/drivers/cdrom/cdrom.c
+> +++ b/drivers/cdrom/cdrom.c
+> @@ -3655,7 +3655,6 @@ static struct ctl_table cdrom_table[] = {
+>  		.mode		= 0644,
+>  		.proc_handler	= cdrom_sysctl_handler
+>  	},
+> -	{ }
+>  };
+>  static struct ctl_table_header *cdrom_sysctl_header;
+>
+>
+> -- 
+> 2.30.2
 
-For
->   drivers/net/ethernet/ibm/ibmveth.c                     |  2 +-
->   drivers/net/ethernet/ibm/ibmvnic.c                     |  2 +-
 
-Acked-by: Nick Child <nnac123@linux.ibm.com>
+Hi Joel,
+
+Looks good to me, many thanks. I'll send on for inclusion.
+
+Reviewed-by: Phillip Potter <phil@philpotter.co.uk>
+
+Regards,
+Phil
