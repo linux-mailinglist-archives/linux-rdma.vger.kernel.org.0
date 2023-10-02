@@ -2,55 +2,55 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C65A7B493F
-	for <lists+linux-rdma@lfdr.de>; Sun,  1 Oct 2023 20:40:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A76347B4B9F
+	for <lists+linux-rdma@lfdr.de>; Mon,  2 Oct 2023 08:46:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235278AbjJASka (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Sun, 1 Oct 2023 14:40:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58998 "EHLO
+        id S235539AbjJBGqy (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 2 Oct 2023 02:46:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58384 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229505AbjJASk3 (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Sun, 1 Oct 2023 14:40:29 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA498D9;
-        Sun,  1 Oct 2023 11:40:25 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 73002C433CA;
-        Sun,  1 Oct 2023 18:40:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1696185625;
-        bh=vHpYQw4Xo9ncTL+cTD5bhjtdjFWeRqIriCu/Ce16oc4=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=BEstLtKJIXt0IJ4gCEvv4DRQRrPAiKpdLtX0LWl0eWl3Nty1flLkeAMAk6VoQ3hFH
-         zfw2pT3j66ZWc4mAFtr0hI1r+/FdoaNS5LzyTt6pfQTwiVmIB3ytjv0Jx8v8IPwEBb
-         Lswz85b/WEMSd+P5Aqfm8HJK4pxY7Vc3lDKxHO2ou4ct8H8qk6GPllQmsiRm14NXTE
-         PExldMIYnTMvAOv5UWs9RqqO5bctrk+swoNCnH8Je1QlBthCz46pHYh+NRrdY+sVYa
-         8FInmRSG0tvh+6NaOnjbWMJZ8lSCfrKmpZj7YuRXGfRFBRx+qMZRFTMMqhW2JbMr+k
-         JgyencAyzITyw==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 4CF22C73FE1;
-        Sun,  1 Oct 2023 18:40:25 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        with ESMTP id S235321AbjJBGqx (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 2 Oct 2023 02:46:53 -0400
+Received: from verein.lst.de (verein.lst.de [213.95.11.211])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A6119E;
+        Sun,  1 Oct 2023 23:46:50 -0700 (PDT)
+Received: by verein.lst.de (Postfix, from userid 2407)
+        id BB46A68C7B; Mon,  2 Oct 2023 08:46:46 +0200 (CEST)
+Date:   Mon, 2 Oct 2023 08:46:46 +0200
+From:   Christoph Hellwig <hch@lst.de>
+To:     Al Viro <viro@zeniv.linux.org.uk>
+Cc:     Christoph Hellwig <hch@lst.de>,
+        Christian Brauner <brauner@kernel.org>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Alexander Gordeev <agordeev@linux.ibm.com>,
+        Fenghua Yu <fenghua.yu@intel.com>,
+        Reinette Chatre <reinette.chatre@intel.com>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Richard Weinberger <richard@nod.at>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
+        Tejun Heo <tj@kernel.org>,
+        Trond Myklebust <trond.myklebust@hammerspace.com>,
+        Anna Schumaker <anna@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Damien Le Moal <dlemoal@kernel.org>,
+        Naohiro Aota <naohiro.aota@wdc.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-s390@vger.kernel.org, linux-rdma@vger.kernel.org,
+        linux-nfs@vger.kernel.org, linux-hardening@vger.kernel.org,
+        cgroups@vger.kernel.org
+Subject: Re: [PATCH 03/19] fs: release anon dev_t in deactivate_locked_super
+Message-ID: <20231002064646.GA1799@lst.de>
+References: <20230913111013.77623-1-hch@lst.de> <20230913111013.77623-4-hch@lst.de> <20230913232712.GC800259@ZenIV> <20230926093834.GB13806@lst.de> <20230926212515.GN800259@ZenIV>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH net v6 0/3] Insulate Kernel Space From SOCK_ADDR Hooks
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <169618562530.20334.3438760815048190740.git-patchwork-notify@kernel.org>
-Date:   Sun, 01 Oct 2023 18:40:25 +0000
-References: <20230926200505.2804266-1-jrife@google.com>
-In-Reply-To: <20230926200505.2804266-1-jrife@google.com>
-To:     Jordan Rife <jrife@google.com>
-Cc:     davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
-        pabeni@redhat.com, willemdebruijn.kernel@gmail.com,
-        netdev@vger.kernel.org, dborkman@kernel.org, horms@verge.net.au,
-        pablo@netfilter.org, kadlec@netfilter.org, fw@strlen.de,
-        santosh.shilimkar@oracle.com, ast@kernel.org, rdna@fb.com,
-        linux-rdma@vger.kernel.org, rds-devel@oss.oracle.com,
-        coreteam@netfilter.org, netfilter-devel@vger.kernel.org, ja@ssi.bg,
-        lvs-devel@vger.kernel.org, kafai@fb.com, daniel@iogearbox.net,
-        daan.j.demeyer@gmail.com
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230926212515.GN800259@ZenIV>
+User-Agent: Mutt/1.5.17 (2007-11-01)
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -58,37 +58,25 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Hello:
-
-This series was applied to netdev/net.git (main)
-by David S. Miller <davem@davemloft.net>:
-
-On Tue, 26 Sep 2023 15:05:02 -0500 you wrote:
-> ==OVERVIEW==
+On Tue, Sep 26, 2023 at 10:25:15PM +0100, Al Viro wrote:
+> Before your patch: foo_kill_super() calls kill_anon_super(),
+> which calls kill_super_notify(), which removes the sucker from
+> the list, then frees ->s_fs_info.  After your patch:
+> removal from the lists happens via the call of kill_super_notify()
+> *after* both of your methods had been called, while freeing
+> ->s_fs_info happens from the method call.  IOW, you've restored
+> the situation prior to "super: ensure valid info".  The whole
+> point of that commit had been to make sure that we have nothing
+> in the lists with ->s_fs_info pointing to a freed object.
 > 
-> The sock_sendmsg(), kernel_connect(), and kernel_bind() functions
-> provide kernel space equivalents to the sendmsg(), connect(), and bind()
-> system calls.
-> 
-> When used in conjunction with BPF SOCK_ADDR hooks that rewrite the send,
-> connect, or bind address, callers may observe that the address passed to
-> the call is modified. This is a problem not just in theory, but in
-> practice, with uninsulated calls to kernel_connect() causing issues with
-> broken NFS and CIFS mounts.
-> 
-> [...]
+> It's not about free_anon_bdev(); that part is fine - it's the
+> "we can drop the weird second call site of kill_super_notify()"
+> thing that is broken.
 
-Here is the summary with links:
-  - [net,v6,1/3] net: replace calls to sock->ops->connect() with kernel_connect()
-    https://git.kernel.org/netdev/net/c/26297b4ce1ce
-  - [net,v6,2/3] net: prevent rewrite of msg_name and msg_namelen in sock_sendmsg()
-    (no matching commit)
-  - [net,v6,3/3] net: prevent address rewrite in kernel_bind()
-    https://git.kernel.org/netdev/net/c/c889a99a21bf
+The point has been to only release the anon dev_t after
+kill_super_notify, to prevent two of them beeing reused.
 
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
+Which we do as the free_anon_bdev is done directly in
+deactivate_locked_super.  The new ->free_sb for non-block file systems
+frees resources, but none of them matter for sget.
 
