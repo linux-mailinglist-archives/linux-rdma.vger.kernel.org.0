@@ -2,55 +2,52 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 63FF57B56BC
-	for <lists+linux-rdma@lfdr.de>; Mon,  2 Oct 2023 17:39:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CE2467B5756
+	for <lists+linux-rdma@lfdr.de>; Mon,  2 Oct 2023 18:13:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237914AbjJBPKx (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 2 Oct 2023 11:10:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57218 "EHLO
+        id S232151AbjJBQJw (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 2 Oct 2023 12:09:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39386 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238000AbjJBPKu (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 2 Oct 2023 11:10:50 -0400
-Received: from mail-wm1-x32f.google.com (mail-wm1-x32f.google.com [IPv6:2a00:1450:4864:20::32f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A9F3E101;
-        Mon,  2 Oct 2023 08:10:46 -0700 (PDT)
-Received: by mail-wm1-x32f.google.com with SMTP id 5b1f17b1804b1-406609df1a6so27712595e9.3;
-        Mon, 02 Oct 2023 08:10:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1696259445; x=1696864245; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:to:from:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=6gyQNJ2XnyFpWZfsSOVQ7NTvT9jbamCtiO1RkGRSocs=;
-        b=XnyeWFthWXTSam4+atm+D83C2M/AzlPk+tLjIWfQfx4QLv3obgmIrtDzk+MZ+CeN1q
-         TXKmfqUKInmzJQOZMqx9sFEb+CcY5Si9qicB8ubXo9Kp5RlP+M+x3W16RK0bj1SnoYGV
-         qiwgtd0xKVxBdbe7fUoXcAcrz/R4mIv9Mp9i2o2wDBLgLgIDtj6noqoFQqs+qff6Jlft
-         balwX4hrk1r1Abnifj18pKtnKlZjz1eSXVjBK7rRgBqICDWps2zt0gCDVm0LmQ5KYmXZ
-         u6g13onr3BuMc4hO4f3Jo2SUOYPH1BMM9kS2TpDeG/Inz9JJBb3rDvhbxhZjh98wAiZz
-         GOiw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696259445; x=1696864245;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=6gyQNJ2XnyFpWZfsSOVQ7NTvT9jbamCtiO1RkGRSocs=;
-        b=PNK/LszHaQF7HPhpgkhSqAQ5HmhDTc1gEZ7/ffa0Wzvpmqg00YkHcbDmxBGfpBG/UE
-         1a1/pTXph0xm8dMXQ4H0ONCZ5ni1ORldKqyZaqRQirn3+RqKxq0sv2wSUfmeXGVwBFSb
-         ujCkwp4KT/+qlmoD2uaIt9ayZt3vpF10TPojhOBgkhEVV/SNkLXIfYH39BEAmMUwzuLR
-         91IXNMQNIQmgcbfYu38lQ5tzcCmGOr6xqgEsskzpMHXTaxxPdUJcpjBfGxj2JzTmV76t
-         5VznNo+uRO+mEsUGt8OCL7pPDu8qpHeHJNjKBDmleXGWeKkq3kP4YJ86yfhoCseRPVYs
-         yqRw==
-X-Gm-Message-State: AOJu0Ywu8n/i/OnrRZXiE3puan5SzsGfpEZWZcKXGofKrzxuLbuGzMth
-        6r1M8hPaVAKaoIQrP+T6VfM=
-X-Google-Smtp-Source: AGHT+IHc5YiZnwUBsMAS0VclvrmwyD0ekRYikQ7eali40Cd+T9SQe91Rx4Z4tqTKa7Zvq69Zs0IYGQ==
-X-Received: by 2002:a7b:c397:0:b0:3fe:3004:1ffd with SMTP id s23-20020a7bc397000000b003fe30041ffdmr10304452wmj.4.1696259444747;
-        Mon, 02 Oct 2023 08:10:44 -0700 (PDT)
-Received: from localhost.localdomain (93-34-89-13.ip49.fastwebnet.it. [93.34.89.13])
-        by smtp.googlemail.com with ESMTPSA id t15-20020a1c770f000000b00406408dc788sm7421565wmi.44.2023.10.02.08.10.41
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 02 Oct 2023 08:10:44 -0700 (PDT)
-From:   Christian Marangi <ansuelsmth@gmail.com>
-To:     Jason Gunthorpe <jgg@ziepe.ca>, Leon Romanovsky <leon@kernel.org>,
+        with ESMTP id S238087AbjJBQJv (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 2 Oct 2023 12:09:51 -0400
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2192F91;
+        Mon,  2 Oct 2023 09:09:47 -0700 (PDT)
+Received: from pps.filterd (m0279866.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 392FLAQB027199;
+        Mon, 2 Oct 2023 16:08:20 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
+ mime-version : subject : to : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=qcppdkim1;
+ bh=T9yCwFrS5AoooxlKBeLdSc8An+tppK1rapyiK3ru7OU=;
+ b=HZ3pP6j7Ib+6fTbkOdd8Ly/OEv9HPqy0690lI4jtvxiW25clJXZp+846T/Uz3iu9qHoP
+ N1VAVfU0wfzInuSNVCGo4UUw6GxXIsQpRW1Br5T77nJ4pVicOz/4wOSgjyg0y9yhYjj7
+ c903k8sL3Sh5f9EAk1K34OoQ+tmVgUBBdsnVxoKAfLR0ArjoixzYgTSKSSbSBW8bE3dM
+ kY8YXHvOVs5/sndPD7RsA5I+UMEdiJ0eXwxatpRgGGQjBOurxAC/Ay4jieUrOwwksSsl
+ AeI+uNSauNz++7j96MzLdUc4YYmdQxK4ufjMq9HLzeKWvV4mceIbYHnjCinKHJ7eUDYa jQ== 
+Received: from nalasppmta05.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3tecygbyct-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 02 Oct 2023 16:08:20 +0000
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+        by NALASPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 392G8IMZ026834
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 2 Oct 2023 16:08:18 GMT
+Received: from [10.111.179.185] (10.49.16.6) by nalasex01a.na.qualcomm.com
+ (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.36; Mon, 2 Oct
+ 2023 09:08:16 -0700
+Message-ID: <9a65ff82-e6b0-4253-be86-a0962e673bc4@quicinc.com>
+Date:   Mon, 2 Oct 2023 09:08:14 -0700
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [net-next PATCH 2/4] netdev: make napi_schedule return bool on
+ NAPI successful schedule
+Content-Language: en-US
+To:     Christian Marangi <ansuelsmth@gmail.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Leon Romanovsky <leon@kernel.org>,
         Wolfgang Grandegger <wg@grandegger.com>,
         Marc Kleine-Budde <mkl@pengutronix.de>,
         "David S. Miller" <davem@davemloft.net>,
@@ -77,7 +74,6 @@ To:     Jason Gunthorpe <jgg@ziepe.ca>, Leon Romanovsky <leon@kernel.org>,
         Maxime Coquelin <mcoquelin.stm32@gmail.com>,
         Krzysztof Halasa <khalasa@piap.pl>,
         Kalle Valo <kvalo@kernel.org>,
-        Jeff Johnson <quic_jjohnson@quicinc.com>,
         Gregory Greenman <gregory.greenman@intel.com>,
         Chandrashekar Devegowda <chandrashekar.devegowda@intel.com>,
         Intel Corporation <linuxwwan@intel.com>,
@@ -88,7 +84,6 @@ To:     Jason Gunthorpe <jgg@ziepe.ca>, Leon Romanovsky <leon@kernel.org>,
         Loic Poulain <loic.poulain@linaro.org>,
         Sergey Ryazanov <ryazanov.s.a@gmail.com>,
         Johannes Berg <johannes@sipsolutions.net>,
-        Christian Marangi <ansuelsmth@gmail.com>,
         Yuanjun Gong <ruc_gongyuanjun@163.com>,
         Wei Fang <wei.fang@nxp.com>, Alex Elder <elder@linaro.org>,
         Simon Horman <horms@kernel.org>, Rob Herring <robh@kernel.org>,
@@ -98,8 +93,8 @@ To:     Jason Gunthorpe <jgg@ziepe.ca>, Leon Romanovsky <leon@kernel.org>,
         Ziwei Xiao <ziweixiao@google.com>,
         Thomas Gleixner <tglx@linutronix.de>,
         Rushil Gupta <rushilg@google.com>,
-        =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>, Yuri Karpov <YKarpov@ispras.ru>,
+        =?UTF-8?Q?Uwe_Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>,
+        Yuri Karpov <YKarpov@ispras.ru>,
         Zhengchao Shao <shaozhengchao@huawei.com>,
         Andrew Lunn <andrew@lunn.ch>,
         Zheng Zengkai <zhengzengkai@huawei.com>,
@@ -108,92 +103,78 @@ To:     Jason Gunthorpe <jgg@ziepe.ca>, Leon Romanovsky <leon@kernel.org>,
         Hans de Goede <hdegoede@redhat.com>,
         Benjamin Berg <benjamin.berg@intel.com>,
         Anjaneyulu <pagadala.yesu.anjaneyulu@intel.com>,
-        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-can@vger.kernel.org, netdev@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org, ath10k@lists.infradead.org,
-        linux-wireless@vger.kernel.org
-Subject: [net-next PATCH 4/4] netdev: use napi_schedule bool instead of napi_schedule_prep/__napi_schedule
-Date:   Mon,  2 Oct 2023 17:10:23 +0200
-Message-Id: <20231002151023.4054-4-ansuelsmth@gmail.com>
-X-Mailer: git-send-email 2.40.1
-In-Reply-To: <20231002151023.4054-1-ansuelsmth@gmail.com>
+        <linux-rdma@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-can@vger.kernel.org>, <netdev@vger.kernel.org>,
+        <linuxppc-dev@lists.ozlabs.org>,
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <ath10k@lists.infradead.org>, <linux-wireless@vger.kernel.org>
 References: <20231002151023.4054-1-ansuelsmth@gmail.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+ <20231002151023.4054-2-ansuelsmth@gmail.com>
+From:   Jeff Johnson <quic_jjohnson@quicinc.com>
+In-Reply-To: <20231002151023.4054-2-ansuelsmth@gmail.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.49.16.6]
+X-ClientProxiedBy: nalasex01c.na.qualcomm.com (10.47.97.35) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: OG9E9tRT0CgWmcphKGvEtpMdVBHFNb-n
+X-Proofpoint-ORIG-GUID: OG9E9tRT0CgWmcphKGvEtpMdVBHFNb-n
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-10-02_10,2023-10-02_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1011
+ lowpriorityscore=0 adultscore=0 mlxscore=0 priorityscore=1501
+ suspectscore=0 malwarescore=0 bulkscore=0 phishscore=0 impostorscore=0
+ mlxlogscore=999 spamscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2309180000 definitions=main-2310020123
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Replace if condition of napi_schedule_prep/__napi_schedule and use bool
-from napi_schedule directly where possible.
+On 10/2/2023 8:10 AM, Christian Marangi wrote:
+> Change napi_schedule to return a bool on NAPI successful schedule. This
+> might be useful for some driver to do additional step after a NAPI ahs
 
-Signed-off-by: Christian Marangi <ansuelsmth@gmail.com>
----
- drivers/net/ethernet/atheros/atlx/atl1.c     | 4 +---
- drivers/net/ethernet/toshiba/tc35815.c       | 4 +---
- drivers/net/wireless/intel/iwlwifi/pcie/rx.c | 4 +---
- 3 files changed, 3 insertions(+), 9 deletions(-)
+nit:s/ahs/has/
 
-diff --git a/drivers/net/ethernet/atheros/atlx/atl1.c b/drivers/net/ethernet/atheros/atlx/atl1.c
-index 02aa6fd8ebc2..a9014d7932db 100644
---- a/drivers/net/ethernet/atheros/atlx/atl1.c
-+++ b/drivers/net/ethernet/atheros/atlx/atl1.c
-@@ -2446,7 +2446,7 @@ static int atl1_rings_clean(struct napi_struct *napi, int budget)
- 
- static inline int atl1_sched_rings_clean(struct atl1_adapter* adapter)
- {
--	if (!napi_schedule_prep(&adapter->napi))
-+	if (!napi_schedule(&adapter->napi))
- 		/* It is possible in case even the RX/TX ints are disabled via IMR
- 		 * register the ISR bits are set anyway (but do not produce IRQ).
- 		 * To handle such situation the napi functions used to check is
-@@ -2454,8 +2454,6 @@ static inline int atl1_sched_rings_clean(struct atl1_adapter* adapter)
- 		 */
- 		return 0;
- 
--	__napi_schedule(&adapter->napi);
--
- 	/*
- 	 * Disable RX/TX ints via IMR register if it is
- 	 * allowed. NAPI handler must reenable them in same
-diff --git a/drivers/net/ethernet/toshiba/tc35815.c b/drivers/net/ethernet/toshiba/tc35815.c
-index 14cf6ecf6d0d..a8b8a0e13f9a 100644
---- a/drivers/net/ethernet/toshiba/tc35815.c
-+++ b/drivers/net/ethernet/toshiba/tc35815.c
-@@ -1436,9 +1436,7 @@ static irqreturn_t tc35815_interrupt(int irq, void *dev_id)
- 	if (!(dmactl & DMA_IntMask)) {
- 		/* disable interrupts */
- 		tc_writel(dmactl | DMA_IntMask, &tr->DMA_Ctl);
--		if (napi_schedule_prep(&lp->napi))
--			__napi_schedule(&lp->napi);
--		else {
-+		if (!napi_schedule(&lp->napi)) {
- 			printk(KERN_ERR "%s: interrupt taken in poll\n",
- 			       dev->name);
- 			BUG();
-diff --git a/drivers/net/wireless/intel/iwlwifi/pcie/rx.c b/drivers/net/wireless/intel/iwlwifi/pcie/rx.c
-index 23b5a0adcbd6..146bc7bd14fb 100644
---- a/drivers/net/wireless/intel/iwlwifi/pcie/rx.c
-+++ b/drivers/net/wireless/intel/iwlwifi/pcie/rx.c
-@@ -1660,9 +1660,7 @@ irqreturn_t iwl_pcie_irq_rx_msix_handler(int irq, void *dev_id)
- 	IWL_DEBUG_ISR(trans, "[%d] Got interrupt\n", entry->entry);
- 
- 	local_bh_disable();
--	if (napi_schedule_prep(&rxq->napi))
--		__napi_schedule(&rxq->napi);
--	else
-+	if (!napi_schedule(&rxq->napi))
- 		iwl_pcie_clear_irq(trans, entry->entry);
- 	local_bh_enable();
- 
--- 
-2.40.1
+> been scheduled.
+> 
+> Signed-off-by: Christian Marangi <ansuelsmth@gmail.com>
+> ---
+>   include/linux/netdevice.h | 11 +++++++++--
+>   1 file changed, 9 insertions(+), 2 deletions(-)
+> 
+> diff --git a/include/linux/netdevice.h b/include/linux/netdevice.h
+> index 7e520c14eb8c..2bead8e2a14d 100644
+> --- a/include/linux/netdevice.h
+> +++ b/include/linux/netdevice.h
+> @@ -490,11 +490,18 @@ bool napi_schedule_prep(struct napi_struct *n);
+>    *
+>    * Schedule NAPI poll routine to be called if it is not already
+>    * running.
+> + * Return true if we schedule a NAPI or false if not.
+> + * Refer to napi_schedule_prep() for additional reason on why
+> + * a NAPI might not be scheduled.
+>    */
+> -static inline void napi_schedule(struct napi_struct *n)
+> +static inline bool napi_schedule(struct napi_struct *n)
+>   {
+> -	if (napi_schedule_prep(n))
+> +	if (napi_schedule_prep(n)) {
+>   		__napi_schedule(n);
+> +		return true;
+> +	}
+> +
+> +	return false;
+>   }
+>   
+>   /**
 
