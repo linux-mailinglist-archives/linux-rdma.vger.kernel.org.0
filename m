@@ -2,132 +2,121 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EC85F7B5C9A
-	for <lists+linux-rdma@lfdr.de>; Mon,  2 Oct 2023 23:45:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6FC417B5D0E
+	for <lists+linux-rdma@lfdr.de>; Tue,  3 Oct 2023 00:21:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230006AbjJBVph (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 2 Oct 2023 17:45:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59722 "EHLO
+        id S229458AbjJBWV6 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 2 Oct 2023 18:21:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49052 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229985AbjJBVpg (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 2 Oct 2023 17:45:36 -0400
-Received: from mail-wm1-x335.google.com (mail-wm1-x335.google.com [IPv6:2a00:1450:4864:20::335])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA760CE
-        for <linux-rdma@vger.kernel.org>; Mon,  2 Oct 2023 14:45:31 -0700 (PDT)
-Received: by mail-wm1-x335.google.com with SMTP id 5b1f17b1804b1-406609df1a6so2486095e9.3
-        for <linux-rdma@vger.kernel.org>; Mon, 02 Oct 2023 14:45:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=philpotter-co-uk.20230601.gappssmtp.com; s=20230601; t=1696283130; x=1696887930; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=3dA79LkNYU7asBXwt/uQxW8bheOGwedQNE5Z+nFIVT0=;
-        b=jC4WA2n5N6fh0h+8A80v34J674kTNb/dkqkkQ4wr6AQU33VVyNhBrLJ5fIDHvQkiRC
-         YGLtDdF8yOE+UQ1F9TDhWiCE0v6E1PqR6ceCh6wN4S6/wW6QSdK3FhOoyU/zI1HpFs0O
-         +F8KfczwTGXQlzUVF4ka2LhahMo5RG2sNqhG8NaTCIin4KK5EYb9i1itvP4TT4QtItrG
-         6l81HyN+/AWlJTwrcZBsVzzV6zShJd0lbmT0bslRid9k+F5TLRs7b1Nah9+yNFpY15j8
-         CilWH5jhV7Apb9r2YfgO6KBYqg0XMY4yHLusxDU82pYXfBi6WeD9aJ2bVZr42E3kPHhV
-         fbbw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696283130; x=1696887930;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=3dA79LkNYU7asBXwt/uQxW8bheOGwedQNE5Z+nFIVT0=;
-        b=EBqPqJRtn5pkwjuEI85mzRqOUYkCbsbqdb6HImJTAQ7iVQpEs1D/GZ93Jofd6AWsUM
-         +cYU04AtcjbMEfWYdqHT9QqFSrAQVyPbi8XIHbeJ63aOFBL5ivYDPp1SO5C0wtrQIgzo
-         nco+l9cw3S3hYruYDUIfmjGKmLobhh6a/5YA4hD5lrF4ZY52vrCmBiilnNmIITfqkw9P
-         ArtEZ344p2/JtOeYR7IStfhCdqCaxVdr/a7767nh9j+5ybaI8CvAavTpxVAm0OpPWKwv
-         KZfPaPw+w07fLPEPg0hlD87MAFmongoyU4wAJpx24iWxh1bw6r/4smLIokMxLlLq7i98
-         MKYQ==
-X-Gm-Message-State: AOJu0YwPbLdN2sy2uB61QVJpukHO58hL2unic5yKIvBPaIs8lfM0kz+b
-        8ROdCh1eMcWpsJ1aaMIH8fXjpQ==
-X-Google-Smtp-Source: AGHT+IFQqDHrxS5nLVVcz3uYz3zBoh8PRAUblObfkXMiu+127hGE3d4cKV4jcsCeAwYclm/ssvuz7g==
-X-Received: by 2002:a1c:6a05:0:b0:404:757e:c5ba with SMTP id f5-20020a1c6a05000000b00404757ec5bamr10282866wmc.26.1696283130281;
-        Mon, 02 Oct 2023 14:45:30 -0700 (PDT)
-Received: from localhost.localdomain (3.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.6.1.f.d.0.b.8.0.1.0.0.2.ip6.arpa. [2001:8b0:df16::3])
-        by smtp.gmail.com with ESMTPSA id a11-20020a05600c2d4b00b004065daba6casm7974630wmg.46.2023.10.02.14.45.28
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 02 Oct 2023 14:45:29 -0700 (PDT)
-From:   Phillip Potter <phil@philpotter.co.uk>
-To:     devnull+j.granados.samsung.com@kernel.org
-Cc:     Jason@zx2c4.com, airlied@gmail.com, arnd@arndb.de,
-        clemens@ladisch.de, daniel@ffwll.ch, davem@davemloft.net,
-        decui@microsoft.com, dgilbert@interlog.com,
-        dri-devel@lists.freedesktop.org, dsahern@kernel.org,
-        edumazet@google.com, gregkh@linuxfoundation.org,
-        haiyangz@microsoft.com, intel-gfx@lists.freedesktop.org,
-        j.granados@samsung.com, jani.nikula@linux.intel.com,
-        jejb@linux.ibm.com, jgg@ziepe.ca, jgross@suse.com,
-        jirislaby@kernel.org, joonas.lahtinen@linux.intel.com,
-        josh@joshtriplett.org, keescook@chromium.org, kuba@kernel.org,
-        kys@microsoft.com, leon@kernel.org, linux-hyperv@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-raid@vger.kernel.org,
-        linux-rdma@vger.kernel.org, linux-scsi@vger.kernel.org,
-        linux-serial@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        martin.petersen@oracle.com, mcgrof@kernel.org, minyard@acm.org,
-        netdev@vger.kernel.org, oleksandr_tyshchenko@epam.com,
-        openipmi-developer@lists.sourceforge.net, pabeni@redhat.com,
-        phil@philpotter.co.uk, rafael@kernel.org, robinmholt@gmail.com,
-        rodrigo.vivi@intel.com, russell.h.weight@intel.com,
-        song@kernel.org, sstabellini@kernel.org, steve.wahl@hpe.com,
-        sudipm.mukherjee@gmail.com, tvrtko.ursulin@linux.intel.com,
-        tytso@mit.edu, wei.liu@kernel.org, willy@infradead.org,
-        xen-devel@lists.xenproject.org
-Subject: Re: [PATCH v2 01/15] cdrom: Remove now superfluous sentinel element from ctl_table array
-Date:   Mon,  2 Oct 2023 22:45:28 +0100
-Message-ID: <20231002214528.15529-1-phil@philpotter.co.uk>
-X-Mailer: git-send-email 2.41.0
-In-Reply-To: <20231002-jag-sysctl_remove_empty_elem_drivers-v2-1-02dd0d46f71e@samsung.com>
-References: <20231002-jag-sysctl_remove_empty_elem_drivers-v2-1-02dd0d46f71e@samsung.com>
+        with ESMTP id S229470AbjJBWV5 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 2 Oct 2023 18:21:57 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A155C9;
+        Mon,  2 Oct 2023 15:21:55 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BFC12C433C8;
+        Mon,  2 Oct 2023 22:21:47 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1696285314;
+        bh=CGV3l4m1Fsxjo5KVleucQ9ACIj7qp3IjWnhkCyY4rZo=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=YPx5MEwF/HCg5A6rfAedz2iYizSQOXr/9gtMzV+E2dlwiqJvuiHqVp6YRtAwC9ZlS
+         iOAwE9rZIHCPbdG0ZKTqccGsZvdmJOo/00bYzDZF8QdQBQe94QFgEyvtBE9hUE1ZhX
+         FPhADmeOCjSVgRUmxviHjBL7ROHTUtdiWaeb4uQfNFQMva2lL3M61UoF3ATuxEMgMo
+         Uj/iFCrNIKmeNh9SROF1KxJx/VsHoXbgWm43eAwiShXr57QIf5n+H60C5Q59nRGkQM
+         Fnuq18MhzNA8vdaj3zP3dQsTNCYa/h7xuzPe+Ktf6dcjXsvZ3NikpBFsjOaB3zpmQy
+         FO3A4oVVbVVRw==
+Date:   Mon, 2 Oct 2023 15:21:42 -0700
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Christian Marangi <ansuelsmth@gmail.com>
+Cc:     Jason Gunthorpe <jgg@ziepe.ca>, Leon Romanovsky <leon@kernel.org>,
+        Wolfgang Grandegger <wg@grandegger.com>,
+        Marc Kleine-Budde <mkl@pengutronix.de>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Chris Snook <chris.snook@gmail.com>,
+        Raju Rangoju <rajur@chelsio.com>,
+        Jeroen de Borst <jeroendb@google.com>,
+        Praveen Kaligineedi <pkaligineedi@google.com>,
+        Shailend Chand <shailend@google.com>,
+        Douglas Miller <dougmill@linux.ibm.com>,
+        Nick Child <nnac123@linux.ibm.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Haren Myneni <haren@linux.ibm.com>,
+        Rick Lindsley <ricklind@linux.ibm.com>,
+        Dany Madden <danymadden@us.ibm.com>,
+        Thomas Falcon <tlfalcon@linux.ibm.com>,
+        Tariq Toukan <tariqt@nvidia.com>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        Jose Abreu <joabreu@synopsys.com>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Krzysztof Halasa <khalasa@piap.pl>,
+        Kalle Valo <kvalo@kernel.org>,
+        Jeff Johnson <quic_jjohnson@quicinc.com>,
+        Gregory Greenman <gregory.greenman@intel.com>,
+        Chandrashekar Devegowda <chandrashekar.devegowda@intel.com>,
+        Intel Corporation <linuxwwan@intel.com>,
+        Chiranjeevi Rapolu <chiranjeevi.rapolu@linux.intel.com>,
+        Liu Haijun <haijun.liu@mediatek.com>,
+        M Chetan Kumar <m.chetan.kumar@linux.intel.com>,
+        Ricardo Martinez <ricardo.martinez@linux.intel.com>,
+        Loic Poulain <loic.poulain@linaro.org>,
+        Sergey Ryazanov <ryazanov.s.a@gmail.com>,
+        Johannes Berg <johannes@sipsolutions.net>,
+        Yuanjun Gong <ruc_gongyuanjun@163.com>,
+        Wei Fang <wei.fang@nxp.com>, Alex Elder <elder@linaro.org>,
+        Simon Horman <horms@kernel.org>, Rob Herring <robh@kernel.org>,
+        Bailey Forrest <bcf@google.com>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        Junfeng Guo <junfeng.guo@intel.com>,
+        Ziwei Xiao <ziweixiao@google.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Rushil Gupta <rushilg@google.com>,
+        Uwe =?UTF-8?B?S2xlaW5lLUvDtm5pZw==?= 
+        <u.kleine-koenig@pengutronix.de>, Yuri Karpov <YKarpov@ispras.ru>,
+        Zhengchao Shao <shaozhengchao@huawei.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Zheng Zengkai <zhengzengkai@huawei.com>,
+        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
+        Lee Jones <lee@kernel.org>, Dawei Li <set_pte_at@outlook.com>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Benjamin Berg <benjamin.berg@intel.com>,
+        Anjaneyulu <pagadala.yesu.anjaneyulu@intel.com>,
+        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-can@vger.kernel.org, netdev@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org, ath10k@lists.infradead.org,
+        linux-wireless@vger.kernel.org
+Subject: Re: [net-next PATCH 1/4] netdev: replace simple
+ napi_schedule_prep/__napi_schedule to napi_schedule
+Message-ID: <20231002152142.4e8e2cfb@kernel.org>
+In-Reply-To: <20231002151023.4054-1-ansuelsmth@gmail.com>
+References: <20231002151023.4054-1-ansuelsmth@gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
-        autolearn=unavailable autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-> From: Joel Granados <j.granados@samsung.com>
->
-> This commit comes at the tail end of a greater effort to remove the
-> empty elements at the end of the ctl_table arrays (sentinels) which
-> will reduce the overall build time size of the kernel and run time
-> memory bloat by ~64 bytes per sentinel (further information Link :
-> https://lore.kernel.org/all/ZO5Yx5JFogGi%2FcBo@bombadil.infradead.org/)
->
-> Remove sentinel element from cdrom_table
->
-> Signed-off-by: Joel Granados <j.granados@samsung.com>
-> ---
->  drivers/cdrom/cdrom.c | 1 -
->  1 file changed, 1 deletion(-)
->
-> diff --git a/drivers/cdrom/cdrom.c b/drivers/cdrom/cdrom.c
-> index cc2839805983..a5e07270e0d4 100644
-> --- a/drivers/cdrom/cdrom.c
-> +++ b/drivers/cdrom/cdrom.c
-> @@ -3655,7 +3655,6 @@ static struct ctl_table cdrom_table[] = {
->  		.mode		= 0644,
->  		.proc_handler	= cdrom_sysctl_handler
->  	},
-> -	{ }
->  };
->  static struct ctl_table_header *cdrom_sysctl_header;
->
->
-> -- 
-> 2.30.2
+On Mon,  2 Oct 2023 17:10:20 +0200 Christian Marangi wrote:
+>  			queue_work(priv->xfer_wq, &priv->rx_work);
+> -		else if (napi_schedule_prep(&priv->napi))
+> -			__napi_schedule(&priv->napi);
+> +		else
+> +			napi_schedule(&priv->napi)
 
-
-Hi Joel,
-
-Looks good to me, many thanks. I'll send on for inclusion.
-
-Reviewed-by: Phillip Potter <phil@philpotter.co.uk>
-
-Regards,
-Phil
+Missing semi-colon, please make sure each patch builds cleanly 
+with allmodconfig.
+-- 
+pw-bot: cr
