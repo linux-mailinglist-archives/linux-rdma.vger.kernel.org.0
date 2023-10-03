@@ -2,57 +2,38 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B745E7B67B4
-	for <lists+linux-rdma@lfdr.de>; Tue,  3 Oct 2023 13:18:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D8DA47B6898
+	for <lists+linux-rdma@lfdr.de>; Tue,  3 Oct 2023 14:09:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231337AbjJCLSv (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 3 Oct 2023 07:18:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58872 "EHLO
+        id S232278AbjJCMJM (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 3 Oct 2023 08:09:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56772 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239986AbjJCLSu (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 3 Oct 2023 07:18:50 -0400
-Received: from mail-wm1-x32c.google.com (mail-wm1-x32c.google.com [IPv6:2a00:1450:4864:20::32c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 33CB9BB;
-        Tue,  3 Oct 2023 04:18:39 -0700 (PDT)
-Received: by mail-wm1-x32c.google.com with SMTP id 5b1f17b1804b1-40566f8a093so7475905e9.3;
-        Tue, 03 Oct 2023 04:18:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1696331917; x=1696936717; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:subject:cc
-         :to:from:date:message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=dRmt6j5dxjz0MCUrCJcyD2cXKQxyJFJdm8ATGNw+KGc=;
-        b=XzeQcODl+S0VoX5SHWpA+1Vy+J0EfHQgYFF4wHCFJseWYhVH6qEK29CY9KFGrEzPjN
-         MGKiSrLdgE7kLC97WI3EGNbeHUw6kVmIZ9X38gZuiN6j4MaJzA2Emm2Fzeo33ngodS1N
-         WNr8jbRY2cXpqsZa/pUyFN7dBClcN1c7Y9SeAMMTz8ozcbryByWVH1LwcuCxN97ri5uQ
-         B5zY48CmpkJ5S4Vf9zLqc8vO76Ock9kcn0jqfU4lx17h/eCaOMjRozu70uXcMMhNrwWP
-         /ZeqtOvmBFrwt2Ulg8lBsMQa1tOQcgkWP9jmpgKtRcztp9xnpE8zCsrmfug31HAhU6BL
-         J8MA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696331917; x=1696936717;
-        h=in-reply-to:content-disposition:mime-version:references:subject:cc
-         :to:from:date:message-id:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=dRmt6j5dxjz0MCUrCJcyD2cXKQxyJFJdm8ATGNw+KGc=;
-        b=a9Ls4+Rmk6QWdPBo1Zbm3RxZ1Dvny43CmZSJvHpi8zmVfd7iA2Oa93EpmjS5eQaeNV
-         VJyg5Ps3O1lASUce82bfJM0EluQa/DQG7axyEUvEt19CehAYdK8PomsiNSNlEdI6zu7W
-         15iNR0R29gFcJkc7k8NeP7x6COaEWxaFpHl+jXwf0uOt3PoM5YT+WSS2JN4cmOWhVFQF
-         8W4rccLOedregl31F1bvqH9DV/MneqxSRA7J6ByR0sebzkmf4W8OS7rNtJpxk+tPznCH
-         vwTYZp+KNdD9Ws4sHm6TJgPYY/moJ8bCyDr4wZDYVmJSjTREkrT4HMwJuodccOsrxg1I
-         ppWw==
-X-Gm-Message-State: AOJu0Yz6GZwRoawJH/fa8LBS3FLZCnulP0bCZlb7o2yv3Y1wJw93f2tk
-        CAdIADeZUryISqxojprQMB0=
-X-Google-Smtp-Source: AGHT+IFLbiLzMIjYq17N9d6C9xhiAG+ijgYatVYbYzZACplv9aboPtXUhqao5fQwPpvl9QyVVVJ1HA==
-X-Received: by 2002:a7b:ce89:0:b0:402:f07c:4b48 with SMTP id q9-20020a7bce89000000b00402f07c4b48mr11269565wmj.28.1696331917146;
-        Tue, 03 Oct 2023 04:18:37 -0700 (PDT)
-Received: from Ansuel-xps. (93-34-89-13.ip49.fastwebnet.it. [93.34.89.13])
-        by smtp.gmail.com with ESMTPSA id y24-20020a05600c365800b0040652e8ca13sm9195716wmq.43.2023.10.03.04.18.34
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 03 Oct 2023 04:18:36 -0700 (PDT)
-Message-ID: <651bf88c.050a0220.3a982.31fc@mx.google.com>
-X-Google-Original-Message-ID: <ZRv4iZmOuLubYSiN@Ansuel-xps.>
-Date:   Tue, 3 Oct 2023 13:18:33 +0200
-From:   Christian Marangi <ansuelsmth@gmail.com>
-To:     Marc Kleine-Budde <mkl@pengutronix.de>
+        with ESMTP id S232271AbjJCMJL (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 3 Oct 2023 08:09:11 -0400
+Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [IPv6:2a0a:edc0:2:b01:1d::104])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A0C09A6
+        for <linux-rdma@vger.kernel.org>; Tue,  3 Oct 2023 05:09:08 -0700 (PDT)
+Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
+        by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <mkl@pengutronix.de>)
+        id 1qneCg-0007eJ-Ik; Tue, 03 Oct 2023 14:08:42 +0200
+Received: from [2a0a:edc0:0:b01:1d::7b] (helo=bjornoya.blackshift.org)
+        by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <mkl@pengutronix.de>)
+        id 1qneCb-00Al6F-SV; Tue, 03 Oct 2023 14:08:37 +0200
+Received: from pengutronix.de (unknown [172.20.34.65])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (Client did not present a certificate)
+        (Authenticated sender: mkl-all@blackshift.org)
+        by smtp.blackshift.org (Postfix) with ESMTPSA id D0B6422CC33;
+        Tue,  3 Oct 2023 11:26:49 +0000 (UTC)
+Date:   Tue, 3 Oct 2023 13:26:49 +0200
+From:   Marc Kleine-Budde <mkl@pengutronix.de>
+To:     Christian Marangi <ansuelsmth@gmail.com>
 Cc:     Jason Gunthorpe <jgg@ziepe.ca>, Leon Romanovsky <leon@kernel.org>,
         Wolfgang Grandegger <wg@grandegger.com>,
         "David S. Miller" <davem@davemloft.net>,
@@ -99,7 +80,7 @@ Cc:     Jason Gunthorpe <jgg@ziepe.ca>, Leon Romanovsky <leon@kernel.org>,
         Ziwei Xiao <ziweixiao@google.com>,
         Thomas Gleixner <tglx@linutronix.de>,
         Rushil Gupta <rushilg@google.com>,
-        Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
+        Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= 
         <u.kleine-koenig@pengutronix.de>, Yuri Karpov <YKarpov@ispras.ru>,
         Zhengchao Shao <shaozhengchao@huawei.com>,
         Andrew Lunn <andrew@lunn.ch>,
@@ -117,46 +98,86 @@ Cc:     Jason Gunthorpe <jgg@ziepe.ca>, Leon Romanovsky <leon@kernel.org>,
         linux-wireless@vger.kernel.org
 Subject: Re: [net-next PATCH 3/4] netdev: replace napi_reschedule with
  napi_schedule
+Message-ID: <20231003-struggle-lung-3d7c89eab00b-mkl@pengutronix.de>
 References: <20231002151023.4054-1-ansuelsmth@gmail.com>
  <20231002151023.4054-3-ansuelsmth@gmail.com>
  <20231003-living-seltzer-172ea6aec629-mkl@pengutronix.de>
+ <651bf88c.050a0220.3a982.31fc@mx.google.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="zbzdaj4jqyp54e52"
 Content-Disposition: inline
-In-Reply-To: <20231003-living-seltzer-172ea6aec629-mkl@pengutronix.de>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+In-Reply-To: <651bf88c.050a0220.3a982.31fc@mx.google.com>
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
+X-SA-Exim-Mail-From: mkl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-rdma@vger.kernel.org
+X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_LOW,
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Tue, Oct 03, 2023 at 09:16:33AM +0200, Marc Kleine-Budde wrote:
-> On 02.10.2023 17:10:22, Christian Marangi wrote:
-> > Now that napi_schedule return a bool, we can drop napi_reschedule that
-> > does the same exact function. The function comes from a very old commit
-> > bfe13f54f502 ("ibm_emac: Convert to use napi_struct independent of struct
-> > net_device") and the purpose is actually deprecated in favour of
-> > different logic.
-> > 
-> > Convert every user of napi_reschedule to napi_schedule.
-> > 
-> > Signed-off-by: Christian Marangi <ansuelsmth@gmail.com>
-> > ---
-> >  drivers/infiniband/ulp/ipoib/ipoib_ib.c                |  4 ++--
-> >  drivers/net/can/dev/rx-offload.c                       |  2 +-
-> 
-> Acked-by: Marc Kleine-Budde # for can/dev/rx-offload.c
 
-Just to make sure can I use the correct tag: (you didn't include the
-mail)
+--zbzdaj4jqyp54e52
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+On 03.10.2023 13:18:33, Christian Marangi wrote:
+> On Tue, Oct 03, 2023 at 09:16:33AM +0200, Marc Kleine-Budde wrote:
+> > On 02.10.2023 17:10:22, Christian Marangi wrote:
+> > > Now that napi_schedule return a bool, we can drop napi_reschedule that
+> > > does the same exact function. The function comes from a very old comm=
+it
+> > > bfe13f54f502 ("ibm_emac: Convert to use napi_struct independent of st=
+ruct
+> > > net_device") and the purpose is actually deprecated in favour of
+> > > different logic.
+> > >=20
+> > > Convert every user of napi_reschedule to napi_schedule.
+> > >=20
+> > > Signed-off-by: Christian Marangi <ansuelsmth@gmail.com>
+> > > ---
+> > >  drivers/infiniband/ulp/ipoib/ipoib_ib.c                |  4 ++--
+> > >  drivers/net/can/dev/rx-offload.c                       |  2 +-
+> >=20
+> > Acked-by: Marc Kleine-Budde # for can/dev/rx-offload.c
+>=20
+> Just to make sure can I use the correct tag: (you didn't include the
+> mail)
+
+Doh! Sure.
+
+> Acked-by: Marc Kleine-Budde <mkl@pengutronix.de> # for can/dev/rx-offload=
+=2Ec
 
 Acked-by: Marc Kleine-Budde <mkl@pengutronix.de> # for can/dev/rx-offload.c
 
-?
+Marc
 
--- 
-	Ansuel
+--=20
+Pengutronix e.K.                 | Marc Kleine-Budde          |
+Embedded Linux                   | https://www.pengutronix.de |
+Vertretung N=C3=BCrnberg              | Phone: +49-5121-206917-129 |
+Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-9   |
+
+--zbzdaj4jqyp54e52
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEDs2BvajyNKlf9TJQvlAcSiqKBOgFAmUb+nYACgkQvlAcSiqK
+BOgAwwf9HSZX1sxRgnOHWLXSBACCTpqNm26rDzNrIqPlybJQVie8rNauFCEQbSz+
+cKDZD68pDokwEv+8WajpOBW0d/Zc27B2d7EZtYhlopNFjo0XIPYoYfA6QTXfZ6Qs
+vi22lC87vHoyEwEi37X3yTPapJVY2GDgyGSD+8FsdOliNE679gautzYvZSWLPiRF
+stXo71bRBm15AbVKwCuOqymieHGxKbooQ09lRIYUXdK6oF671CJLKUia6m9Qg42f
+6Itf4TBPlF4XdxS0vqKrvTsg78XduHN1FmuI+RJIPdzULMx9CoUlr8BOSfGomsN3
+eoH9v4s8IDrkLGQifa7oRIgxg9EkFw==
+=72hV
+-----END PGP SIGNATURE-----
+
+--zbzdaj4jqyp54e52--
