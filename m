@@ -2,49 +2,49 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 944E77B7494
-	for <lists+linux-rdma@lfdr.de>; Wed,  4 Oct 2023 01:17:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 03C227B749C
+	for <lists+linux-rdma@lfdr.de>; Wed,  4 Oct 2023 01:18:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232564AbjJCXRe (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 3 Oct 2023 19:17:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47846 "EHLO
+        id S232593AbjJCXRk (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 3 Oct 2023 19:17:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45136 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232491AbjJCXRe (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 3 Oct 2023 19:17:34 -0400
-Received: from mail-pf1-x42c.google.com (mail-pf1-x42c.google.com [IPv6:2607:f8b0:4864:20::42c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0BFC3A6
-        for <linux-rdma@vger.kernel.org>; Tue,  3 Oct 2023 16:17:30 -0700 (PDT)
-Received: by mail-pf1-x42c.google.com with SMTP id d2e1a72fcca58-694ed847889so1245316b3a.2
-        for <linux-rdma@vger.kernel.org>; Tue, 03 Oct 2023 16:17:30 -0700 (PDT)
+        with ESMTP id S232657AbjJCXRk (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 3 Oct 2023 19:17:40 -0400
+Received: from mail-pf1-x429.google.com (mail-pf1-x429.google.com [IPv6:2607:f8b0:4864:20::429])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 947BDB8
+        for <linux-rdma@vger.kernel.org>; Tue,  3 Oct 2023 16:17:35 -0700 (PDT)
+Received: by mail-pf1-x429.google.com with SMTP id d2e1a72fcca58-6907e44665bso1157641b3a.1
+        for <linux-rdma@vger.kernel.org>; Tue, 03 Oct 2023 16:17:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1696375049; x=1696979849; darn=vger.kernel.org;
+        d=chromium.org; s=google; t=1696375055; x=1696979855; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:message-id:date:subject:cc
          :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=pC6/v4iVoFQU1IrJy4nniQew2pnCIehdGbhCmJV0Sik=;
-        b=ofs/0CjFBF8yBfnP9ab3lL0Df1RvL3orhXCX1ITuM0rJ7eEimE4hWAEDheSfQsoay1
-         iwf1xGJngWp5ci9C36sTwJqZzvwFNKH09X6gFWlqJFzOTjB+Br2IgFpMZVt5gE1St82h
-         vTuTqL+IkDLL734sl5hBU+eDEcQjpxb8aky0Y=
+        bh=GoKQpmMqfvqKzHnLxZqD4HyHEsiNZ2wH5iTpRblmiR4=;
+        b=bnTBWeUjdt1I4J/BfeTKPBGkPZW7nlspwaDKA9bzcMMfsegNl3rMUV3+YZPSSADOZ0
+         9KzaGE3DQlUBw0xRfe7iB0QKx8Ys1Q3c+utDuzfk+jvQzYReUHg7GW8nv2ExOqNFz84+
+         lIkBw/BKvDmCGag0CF/zTzLwMOffEU2V0fIuw=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696375049; x=1696979849;
+        d=1e100.net; s=20230601; t=1696375055; x=1696979855;
         h=content-transfer-encoding:mime-version:message-id:date:subject:cc
          :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=pC6/v4iVoFQU1IrJy4nniQew2pnCIehdGbhCmJV0Sik=;
-        b=t97NsZ09PmUSv61SMuvQWdgUbxxdmJ4GrO82QrWa+4BVtB9cYQX9u0cJgAGU0nCW9J
-         q25vb/idJEbfuNwbTJBNT5BaPaXdNAf+9ym43GR3u490yFx4DdqtLn5IVrx/yp1qGzm7
-         xIcPkbKnjg7Cbh8llxSGiOqz148ugyGRXono+JNq8v16FCo3+4yIdHeTnEwR50DzwNxz
-         JjPnbHBjtIOICXknFZ6O6jCo0GrwF6x7fXOqG8+4Ju2pT0D9cUWdmhyLJ/FWAQzwBJJN
-         pTEI2CBviRaap+dWpGa0ibvIUnBKfGmVZqsJA8SD2IqJKaSY23OB3GQwc5iln2GqOOJ8
-         GPAQ==
-X-Gm-Message-State: AOJu0YxBLk2X/F1q55lGqmBQTJ4a4gdUbx1M008v5+qcuv/dxQlwvfud
-        UqHERmGhqmYThRe350ldPcAd8D12ZFlmNheTrxQ=
-X-Google-Smtp-Source: AGHT+IHuGnaJKo/eW/4N6NAvL49m6h5gcj04i+ab7cUtcvywEoaT716ZI5XjapIrHclCSR0v4pBMHg==
-X-Received: by 2002:a05:6a00:179a:b0:68e:4587:3da8 with SMTP id s26-20020a056a00179a00b0068e45873da8mr1129484pfg.21.1696375049514;
-        Tue, 03 Oct 2023 16:17:29 -0700 (PDT)
+        bh=GoKQpmMqfvqKzHnLxZqD4HyHEsiNZ2wH5iTpRblmiR4=;
+        b=wrAh8fsBVtG5WcYva8SK+0Z5BB/pwcVBuEfcX44pPGav4KoDtb58/fRiHWPXH629lI
+         tFXOFGe8K6tzRr//dWiG2AbV5m+hrbfJdFbPJZ2JzUdmh6Cs391MCkUTGtj13K8wRCCz
+         ggPODfHI6IL0wLwRT1jkqISaSKQDQLwcgQ0isDwiNE0T8D/g9Ah2vilq+KslkVGEVDDG
+         ITzExEXxtGg/gls5dzs0j8lFhkl3wvrHOYpqrXqRcAW2FYDvH8G5iVC33QwEfAc2H0Pm
+         zerPaCb74RqgqIjVW1/Ft5jp+5r+6bybxpPXMQxFaHnVIiXhaVmrL6G4L+kDw+O01AAk
+         utYQ==
+X-Gm-Message-State: AOJu0YxqDYJZhhCRMUrrsRzMko6sgX6MKPoCNAGlcg7yDavMoFafcAWq
+        rS2Sa5vTyhEJ0LHBBuIea3hrm+Da9vjea6BVzb0=
+X-Google-Smtp-Source: AGHT+IGHJDUN/6E4AVoGh+IF3RFevWze6T8pc7xq/e7zFBZVKvCx1ePEZLa2oRxMwKGEVJJ01u7crg==
+X-Received: by 2002:a05:6a20:3d13:b0:160:a752:59e with SMTP id y19-20020a056a203d1300b00160a752059emr936572pzi.40.1696375055059;
+        Tue, 03 Oct 2023 16:17:35 -0700 (PDT)
 Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
-        by smtp.gmail.com with ESMTPSA id n7-20020aa78a47000000b00692c5b1a731sm1906278pfa.186.2023.10.03.16.17.28
+        by smtp.gmail.com with ESMTPSA id f11-20020a17090274cb00b001c0c86a5415sm2171759plt.154.2023.10.03.16.17.34
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 03 Oct 2023 16:17:28 -0700 (PDT)
+        Tue, 03 Oct 2023 16:17:34 -0700 (PDT)
 From:   Kees Cook <keescook@chromium.org>
 To:     Saeed Mahameed <saeedm@nvidia.com>
 Cc:     Kees Cook <keescook@chromium.org>,
@@ -59,25 +59,25 @@ Cc:     Kees Cook <keescook@chromium.org>,
         Nick Desaulniers <ndesaulniers@google.com>,
         Tom Rix <trix@redhat.com>, linux-kernel@vger.kernel.org,
         linux-hardening@vger.kernel.org, llvm@lists.linux.dev
-Subject: [PATCH] net/mlx5: Annotate struct mlx5_fc_bulk with __counted_by
-Date:   Tue,  3 Oct 2023 16:17:22 -0700
-Message-Id: <20231003231718.work.679-kees@kernel.org>
+Subject: [PATCH] net/mlx5: Annotate struct mlx5_flow_handle with __counted_by
+Date:   Tue,  3 Oct 2023 16:17:30 -0700
+Message-Id: <20231003231730.work.166-kees@kernel.org>
 X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1504; i=keescook@chromium.org;
- h=from:subject:message-id; bh=+jSITB/6TjSNj+40UA2fLQfGBMphst2NI+EvobKBg1k=;
- b=owEBbQKS/ZANAwAKAYly9N/cbcAmAcsmYgBlHKECE89aWTMpk+BTOLsSMGlsQ5PDBZzFpKrD6
- 7pVALRUNgqJAjMEAAEKAB0WIQSlw/aPIp3WD3I+bhOJcvTf3G3AJgUCZRyhAgAKCRCJcvTf3G3A
- JsAED/9rep0qQL+Uri2yFkaImn8wrEfqCeiUW1dFWN1RYWA57gJIdN2l8m9to7t7t5Qhk8gp0Wl
- TUT/iVzK8etbeuqspeyDrRAJ5ePGg2PGNCBS5ghrevJdY2fImYvh3ARSOdc4e/aFOzqLbqXaKAK
- fwLmjvTj0gcPTX63rT3vW0m3BUBNODkOb0uRZ7Y4D+Jha0Vu1Kmp8zNxpazut9zE9tf31p++P46
- Tl15RjuVZlraJnO25sQCiO2D5kFio2XrIcavvPvIvAVNMCPb8d/+n0v7veeoWKmUhHv2T4+dtBj
- CM/BxQs7ga8vX7Srtu8dFy8KqMYSUvEsWppbZBv7UIvb/+zbdKjVWDcRXwaj0nBoa3aD5vjwoef
- WBv+62w7L34Pq0OBEm87kf5hbU9sawslHfkzscuh1YhbLIwANFe13YToHZy4tXL8/hq15yS9V3g
- O8M8WLXHQISnuGDNigW84R1phmsUt5Xuqq8Gu4Nd6kk0mv2mBUu0bQEVHvKH5glOHkipYjsl+x4
- wbn8hGzVBszGzD8zrQZ5r3UBiPBuM4tSqO5Wb7LQPWIyB3/KvMwK2DGdCY7dQOiD0z+wbHxHrP4
- FFDWH3HyBf9odaSZGGyOFqdaCpNJKZ6RyVW8BSBJrHHwqWjANX+jFn7TODlZ6UKXpA9uWpZEWSf
- SNOYZmX OgJF6EZg==
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1463; i=keescook@chromium.org;
+ h=from:subject:message-id; bh=f4vYnzC3KAMbhe3PqA9dQTWjat9pNjLmhrrK9jgwO8c=;
+ b=owEBbQKS/ZANAwAKAYly9N/cbcAmAcsmYgBlHKEKOBp2oKoOdsMZ42xUeFs28bfpJIdHoC1hr
+ xN+4gwoi/yJAjMEAAEKAB0WIQSlw/aPIp3WD3I+bhOJcvTf3G3AJgUCZRyhCgAKCRCJcvTf3G3A
+ JnVcD/9OO1uAbC5Mu8AdWtl4mv3U7HH3JxWnR+y6OyXqdQtJS6Cqn1dejXUIYRJh44Sq+kT716I
+ FUs0HEhVgknlMkWN4f5Qzy+2LcH9uTSNUfNLCCzXGwLYH2jCbBFVg4HCO1PeqhRYiLubOCll8t1
+ BrZU2+OiuHqIDMcl/M2ll0CnI5J9ORxpkJLspsSGSZQQXrZJALMJ63vZRVMbdgAcrjJ48pwAvzm
+ diGSqJWKqz4gQW0QzsOgFTGNlmGlhIkC96iCF6xO/p8sMi5lC7yIstjF7p8u2ogCfGdYahAgpxt
+ 7jdfIEXFuYZt8z+/+Uy2CjW/dXRfZ1CLVrUq0zX2ixuTNrMe4zhq6mAMONDF8bWpEkVVadzE3td
+ 0nk6Ninq/lCDZhZZ9mwhz10ZorGEeiA1J9YcX0WR0C29P05xurEN6dzy8tKMTFnM9dGLdzEYTpK
+ T6L7TDpI4ySjWf/XhJXCgzhOqwOLmvtJX/328SAFczoH6Cd7ohK0jc3gi3AKjx8uonMDPNDjNzN
+ WmTD8lRClxhacI3z2fQrMBoTlJnLJb5SQ6/r3SeAoYu/7c5Nut6+qdAJQCZTO48A6lrC/d/TfiO
+ /oNfumYbWNf+u/Pdb6IzLiJmcr1Ma2m4WvM2DKw3pyMo0pnEjBQE5vf81ACsuKqcER80i5p9bl+
+ IOPyguL n2YaaogQ==
 X-Developer-Key: i=keescook@chromium.org; a=openpgp; fpr=A5C3F68F229DD60F723E6E138972F4DFDC6DC026
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
@@ -96,7 +96,7 @@ their accesses bounds-checked at run-time via CONFIG_UBSAN_BOUNDS (for
 array indexing) and CONFIG_FORTIFY_SOURCE (for strcpy/memcpy-family
 functions).
 
-As found with Coccinelle[1], add __counted_by for struct mlx5_fc_bulk.
+As found with Coccinelle[1], add __counted_by for struct mlx5_flow_handle.
 
 Cc: Saeed Mahameed <saeedm@nvidia.com>
 Cc: Leon Romanovsky <leon@kernel.org>
@@ -109,22 +109,22 @@ Cc: linux-rdma@vger.kernel.org
 Link: https://github.com/kees/kernel-tools/blob/trunk/coccinelle/examples/counted_by.cocci [1]
 Signed-off-by: Kees Cook <keescook@chromium.org>
 ---
- drivers/net/ethernet/mellanox/mlx5/core/fs_counters.c | 2 +-
+ drivers/net/ethernet/mellanox/mlx5/core/fs_core.h | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/fs_counters.c b/drivers/net/ethernet/mellanox/mlx5/core/fs_counters.c
-index 17fe30a4c06c..0c26d707eed2 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/fs_counters.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/fs_counters.c
-@@ -539,7 +539,7 @@ struct mlx5_fc_bulk {
- 	u32 base_id;
- 	int bulk_len;
- 	unsigned long *bitmask;
--	struct mlx5_fc fcs[];
-+	struct mlx5_fc fcs[] __counted_by(bulk_len);
+diff --git a/drivers/net/ethernet/mellanox/mlx5/core/fs_core.h b/drivers/net/ethernet/mellanox/mlx5/core/fs_core.h
+index 4aed1768b85f..78eb6b7097e1 100644
+--- a/drivers/net/ethernet/mellanox/mlx5/core/fs_core.h
++++ b/drivers/net/ethernet/mellanox/mlx5/core/fs_core.h
+@@ -181,7 +181,7 @@ struct mlx5_flow_rule {
+ 
+ struct mlx5_flow_handle {
+ 	int num_rules;
+-	struct mlx5_flow_rule *rule[];
++	struct mlx5_flow_rule *rule[] __counted_by(num_rules);
  };
  
- static void mlx5_fc_init(struct mlx5_fc *counter, struct mlx5_fc_bulk *bulk,
+ /* Type of children is mlx5_flow_group */
 -- 
 2.34.1
 
