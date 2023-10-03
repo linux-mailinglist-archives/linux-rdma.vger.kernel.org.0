@@ -2,87 +2,126 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4EE4A7B6ADE
-	for <lists+linux-rdma@lfdr.de>; Tue,  3 Oct 2023 15:48:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C4D767B710A
+	for <lists+linux-rdma@lfdr.de>; Tue,  3 Oct 2023 20:36:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237302AbjJCNsh (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 3 Oct 2023 09:48:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46396 "EHLO
+        id S240799AbjJCSgn (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 3 Oct 2023 14:36:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48054 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237311AbjJCNsg (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 3 Oct 2023 09:48:36 -0400
-Received: from mail-pl1-x62c.google.com (mail-pl1-x62c.google.com [IPv6:2607:f8b0:4864:20::62c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE989CE;
-        Tue,  3 Oct 2023 06:48:32 -0700 (PDT)
-Received: by mail-pl1-x62c.google.com with SMTP id d9443c01a7336-1c3bd829b86so7269635ad.0;
-        Tue, 03 Oct 2023 06:48:32 -0700 (PDT)
+        with ESMTP id S240778AbjJCSgm (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 3 Oct 2023 14:36:42 -0400
+Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com [IPv6:2a00:1450:4864:20::434])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E498B0;
+        Tue,  3 Oct 2023 11:36:38 -0700 (PDT)
+Received: by mail-wr1-x434.google.com with SMTP id ffacd0b85a97d-32615eaa312so1177570f8f.2;
+        Tue, 03 Oct 2023 11:36:38 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1696340912; x=1696945712; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=AXx12Xh5OdYtcd2fycn71joB20ZrxlQW7gPZtnETXlo=;
-        b=mKLq2HCLhhDbAHq8pgijmTb4r8AecHT82AFn8KNdFz1t0P78zthCotoMDghTSVLqmz
-         uSBOGDYpxCKtr+AQ5XoqFFYZWpAsa3NtH30Z8WJtAEe/lnStogNVYyZTdClwf1iwkebA
-         /Dsv/vkBHiA3J/A5J/SjJcBaGV8SFtlyYz5gjv9rRSNUUkx3BMxBK8I2rVmHQAg25NLw
-         g5Hsfn2oD2nmlhSonFvRZKZcueAL3RZFoC8/KzjTNGvLoUwSNG/sh3+22+en/nCvrpEF
-         9i04W0Nmp7W1nnraYkd/WZmr6PRBiPIauDzSq+MiVHixrmkbzdT28jL5Z61h3j7otMZK
-         neYw==
+        d=gmail.com; s=20230601; t=1696358197; x=1696962997; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:to
+         :from:from:to:cc:subject:date:message-id:reply-to;
+        bh=Tm9YMom9fHhN1d1zUQG0VRznBhXAxuVYa9i0nGcBxaE=;
+        b=M45hqmBrHR+facBVKRwlzALIL3VyPwJKEZb5FWtZfhGbB8qveTVZC7KETyFWbPzYQT
+         CRhRAKokoqMHP8IGSIaB08PGf+4Yo5KHLdVaIlAcm/gb8BMWS5Qoernr/ymEJ9ucQ9l4
+         kb7wzxz+2TJ0V0ZsOz9gkhBGLQhEposcV/e/kPNFcLC4zktgKhV3AAMejxh4ihXWIQnn
+         /sqvXJwsepJ+oRZQZIVcSe3q8d17PxSs0H+M+aK842c8Yc0kQTpwYXoxTlbI0Z5GzmTm
+         oZKf7klMTdSXnCNUO1ZkUw/rKmARw9HtGK1QtkW03EncSGmSTcVxFr4LYaLtDWhOumkn
+         N46A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696340912; x=1696945712;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=AXx12Xh5OdYtcd2fycn71joB20ZrxlQW7gPZtnETXlo=;
-        b=Q5DF+QGbcFeBQMDDFyRJ+P1gP4KqjFgoh3dKJHtKpHcj40pt9W/hCKtZN+wEgHRFpo
-         KiDYEc1uKRyH4iFaEludd/9d6UmSFzhQ5AkFeg7TLtEE4Sbrxm42N3XmS8u+l2qPyzOU
-         JRLTVI5c0SLYTYyf/yEXVbyF/uhueDI4E2t4drCOmrsV+6smuF+OCnViU1N7ZcsrSTev
-         pRGAG7pVK6Vi+Dw5j9kL82l6cbkCM2AoJLllepJh9D/RXWf/Pz8UcKzq/P02bzT+95Vl
-         EyINWXok5GL6IDW0Sk2zL8fRDp4MtOsgWzeMxG18YmwYtu0iZyndS/X47wQgMYx86mSl
-         on0Q==
-X-Gm-Message-State: AOJu0YyZN2wtLTuBOBSw7Q1lsgfB/Wp2j+Qxx5QaBF3mmDT1O0Fz+p/y
-        1G5gu1T+uWTMSlnZDISdWXA=
-X-Google-Smtp-Source: AGHT+IGtPt1XVtqOzSLe+Y3WiKfioYBDClQ2Vrf/pQc1OE1nxhWQT7+sKkPapeNUz5KRMqBCjwFElA==
-X-Received: by 2002:a17:903:22c7:b0:1bf:3c10:1d70 with SMTP id y7-20020a17090322c700b001bf3c101d70mr14808390plg.6.1696340912142;
-        Tue, 03 Oct 2023 06:48:32 -0700 (PDT)
-Received: from localhost ([216.228.127.131])
-        by smtp.gmail.com with ESMTPSA id v7-20020a170902b7c700b001c627413e87sm1543164plz.290.2023.10.03.06.48.30
+        d=1e100.net; s=20230601; t=1696358197; x=1696962997;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:to
+         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=Tm9YMom9fHhN1d1zUQG0VRznBhXAxuVYa9i0nGcBxaE=;
+        b=qz6fEnW+EfHqEr10i7UkLsStWc45gItp+lEXnvknD8sp1yIOdc5tw+TySWaemrOLmo
+         wwYFrUZFY6qR+yDV3ZvEsSE7bacZ/+VBRcpU8Yprf14Z5L84Sp9HbYFbYfhj6ZNSSwjM
+         sp7QJPc/VigPo66N+2yXyUd74A0fYrXMZIohii3XBdUxFTBvfAmgj1BiNOcBeL8DxPg0
+         fzsMaWUDNdLaAGet0GZbmCcG/G6yt4GbRLZLi5tTyqSUDjAmN9dCjL8/Uzv8zpjm1IUx
+         f9aE54isO6esvOk+EUXXqB6ii3BBqCn38PA18bQiGXPUCSjhKk0am3tQJunT3a2VXmCF
+         Sp1w==
+X-Gm-Message-State: AOJu0YxwN60uxMVYemLPy9mzrbkJjlKGecfcxBW1SOzUk8h5A7VYKl0K
+        em654ODaziGxpNO1eChFeFE=
+X-Google-Smtp-Source: AGHT+IHmCEBSKPg2KzPhN3vxGxKbm3vSVCgg07JJ6ZMfT1RcykDF7kKuvKIwIWmfSE0q+HzXTkP5ww==
+X-Received: by 2002:a5d:460a:0:b0:320:447:3bcc with SMTP id t10-20020a5d460a000000b0032004473bccmr40025wrq.51.1696358196705;
+        Tue, 03 Oct 2023 11:36:36 -0700 (PDT)
+Received: from localhost.localdomain (93-34-89-13.ip49.fastwebnet.it. [93.34.89.13])
+        by smtp.googlemail.com with ESMTPSA id k15-20020a7bc40f000000b004013797efb6sm10147400wmi.9.2023.10.03.11.36.34
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 03 Oct 2023 06:48:31 -0700 (PDT)
-Date:   Tue, 3 Oct 2023 06:46:17 -0700
-From:   Yury Norov <yury.norov@gmail.com>
-To:     Paolo Abeni <pabeni@redhat.com>
-Cc:     linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        linux-rdma@vger.kernel.org, Tariq Toukan <ttoukan.linux@gmail.com>,
-        Valentin Schneider <vschneid@redhat.com>,
-        Maher Sanalla <msanalla@nvidia.com>,
-        Ingo Molnar <mingo@kernel.org>, Mel Gorman <mgorman@suse.de>,
-        Saeed Mahameed <saeedm@nvidia.com>,
-        Leon Romanovsky <leon@kernel.org>,
+        Tue, 03 Oct 2023 11:36:36 -0700 (PDT)
+From:   Christian Marangi <ansuelsmth@gmail.com>
+To:     Jason Gunthorpe <jgg@ziepe.ca>, Leon Romanovsky <leon@kernel.org>,
+        Wolfgang Grandegger <wg@grandegger.com>,
+        Marc Kleine-Budde <mkl@pengutronix.de>,
         "David S. Miller" <davem@davemloft.net>,
         Eric Dumazet <edumazet@google.com>,
         Jakub Kicinski <kuba@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Pawel Chmielewski <pawel.chmielewski@intel.com>,
-        Jacob Keller <jacob.e.keller@intel.com>,
-        Yury Norov <ynorov@nvidia.com>
-Subject: Re: [PATCH 1/4] net: mellanox: drop mlx5_cpumask_default_spread()
-Message-ID: <ZRwbKRnnKY/tDqCF@yury-ThinkPad>
-References: <20230925020528.777578-1-yury.norov@gmail.com>
- <20230925020528.777578-2-yury.norov@gmail.com>
- <2fd12c42d3dd60b2e9b56e9f7dd37d5f994fd9ac.camel@redhat.com>
+        Paolo Abeni <pabeni@redhat.com>,
+        Chris Snook <chris.snook@gmail.com>,
+        Raju Rangoju <rajur@chelsio.com>,
+        Jeroen de Borst <jeroendb@google.com>,
+        Praveen Kaligineedi <pkaligineedi@google.com>,
+        Shailend Chand <shailend@google.com>,
+        Douglas Miller <dougmill@linux.ibm.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Nick Child <nnac123@linux.ibm.com>,
+        Haren Myneni <haren@linux.ibm.com>,
+        Rick Lindsley <ricklind@linux.ibm.com>,
+        Dany Madden <danymadden@us.ibm.com>,
+        Thomas Falcon <tlfalcon@linux.ibm.com>,
+        Tariq Toukan <tariqt@nvidia.com>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        Jose Abreu <joabreu@synopsys.com>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Krzysztof Halasa <khalasa@piap.pl>,
+        Kalle Valo <kvalo@kernel.org>,
+        Jeff Johnson <quic_jjohnson@quicinc.com>,
+        Gregory Greenman <gregory.greenman@intel.com>,
+        Chandrashekar Devegowda <chandrashekar.devegowda@intel.com>,
+        Intel Corporation <linuxwwan@intel.com>,
+        Chiranjeevi Rapolu <chiranjeevi.rapolu@linux.intel.com>,
+        Liu Haijun <haijun.liu@mediatek.com>,
+        M Chetan Kumar <m.chetan.kumar@linux.intel.com>,
+        Ricardo Martinez <ricardo.martinez@linux.intel.com>,
+        Loic Poulain <loic.poulain@linaro.org>,
+        Sergey Ryazanov <ryazanov.s.a@gmail.com>,
+        Johannes Berg <johannes@sipsolutions.net>,
+        Christian Marangi <ansuelsmth@gmail.com>,
+        Yuanjun Gong <ruc_gongyuanjun@163.com>,
+        Simon Horman <horms@kernel.org>, Rob Herring <robh@kernel.org>,
+        Ziwei Xiao <ziweixiao@google.com>,
+        Rushil Gupta <rushilg@google.com>,
+        Coco Li <lixiaoyan@google.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Junfeng Guo <junfeng.guo@intel.com>,
+        =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>, Wei Fang <wei.fang@nxp.com>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        Yuri Karpov <YKarpov@ispras.ru>,
+        Zhengchao Shao <shaozhengchao@huawei.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Zheng Zengkai <zhengzengkai@huawei.com>,
+        Lee Jones <lee@kernel.org>,
+        Maximilian Luz <luzmaximilian@gmail.com>,
+        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
+        Dawei Li <set_pte_at@outlook.com>,
+        Anjaneyulu <pagadala.yesu.anjaneyulu@intel.com>,
+        Benjamin Berg <benjamin.berg@intel.com>,
+        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-can@vger.kernel.org, netdev@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org, ath10k@lists.infradead.org,
+        linux-wireless@vger.kernel.org
+Subject: [net-next PATCH v2 1/4] netdev: replace simple napi_schedule_prep/__napi_schedule to napi_schedule
+Date:   Tue,  3 Oct 2023 16:51:47 +0200
+Message-Id: <20231003145150.2498-1-ansuelsmth@gmail.com>
+X-Mailer: git-send-email 2.40.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <2fd12c42d3dd60b2e9b56e9f7dd37d5f994fd9ac.camel@redhat.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-0.5 required=5.0 tests=BAYES_00,DATE_IN_PAST_03_06,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=no
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -90,81 +129,47 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Tue, Oct 03, 2023 at 12:04:01PM +0200, Paolo Abeni wrote:
-> On Sun, 2023-09-24 at 19:05 -0700, Yury Norov wrote:
-> > The function duplicates existing cpumask_local_spread(), and it's O(N),
-> > while cpumask_local_spread() implementation is based on bsearch, and
-> > thus is O(log n), so drop mlx5_cpumask_default_spread() and use generic
-> > cpumask_local_spread().
-> > 
-> > Signed-off-by: Yury Norov <yury.norov@gmail.com>
-> > Signed-off-by: Yury Norov <ynorov@nvidia.com>
-> > ---
-> >  drivers/net/ethernet/mellanox/mlx5/core/eq.c | 28 ++------------------
-> >  1 file changed, 2 insertions(+), 26 deletions(-)
-> > 
-> > diff --git a/drivers/net/ethernet/mellanox/mlx5/core/eq.c b/drivers/net/ethernet/mellanox/mlx5/core/eq.c
-> > index ea0405e0a43f..bd9f857cc52d 100644
-> > --- a/drivers/net/ethernet/mellanox/mlx5/core/eq.c
-> > +++ b/drivers/net/ethernet/mellanox/mlx5/core/eq.c
-> > @@ -828,30 +828,6 @@ static void comp_irq_release_pci(struct mlx5_core_dev *dev, u16 vecidx)
-> >  	mlx5_irq_release_vector(irq);
-> >  }
-> >  
-> > -static int mlx5_cpumask_default_spread(int numa_node, int index)
-> > -{
-> > -	const struct cpumask *prev = cpu_none_mask;
-> > -	const struct cpumask *mask;
-> > -	int found_cpu = 0;
-> > -	int i = 0;
-> > -	int cpu;
-> > -
-> > -	rcu_read_lock();
-> > -	for_each_numa_hop_mask(mask, numa_node) {
-> > -		for_each_cpu_andnot(cpu, mask, prev) {
-> > -			if (i++ == index) {
-> > -				found_cpu = cpu;
-> > -				goto spread_done;
-> > -			}
-> > -		}
-> > -		prev = mask;
-> > -	}
-> > -
-> > -spread_done:
-> > -	rcu_read_unlock();
-> > -	return found_cpu;
-> > -}
-> > -
-> >  static struct cpu_rmap *mlx5_eq_table_get_pci_rmap(struct mlx5_core_dev *dev)
-> >  {
-> >  #ifdef CONFIG_RFS_ACCEL
-> > @@ -873,7 +849,7 @@ static int comp_irq_request_pci(struct mlx5_core_dev *dev, u16 vecidx)
-> >  	int cpu;
-> >  
-> >  	rmap = mlx5_eq_table_get_pci_rmap(dev);
-> > -	cpu = mlx5_cpumask_default_spread(dev->priv.numa_node, vecidx);
-> > +	cpu = cpumask_local_spread(vecidx, dev->priv.numa_node);
-> >  	irq = mlx5_irq_request_vector(dev, cpu, vecidx, &rmap);
-> >  	if (IS_ERR(irq))
-> >  		return PTR_ERR(irq);
-> > @@ -1125,7 +1101,7 @@ int mlx5_comp_vector_get_cpu(struct mlx5_core_dev *dev, int vector)
-> >  	if (mask)
-> >  		cpu = cpumask_first(mask);
-> >  	else
-> > -		cpu = mlx5_cpumask_default_spread(dev->priv.numa_node, vector);
-> > +		cpu = cpumask_local_spread(vector, dev->priv.numa_node);
-> >  
-> >  	return cpu;
-> >  }
-> 
-> It looks like this series is going to cause some later conflicts
-> regardless of the target tree. I think the whole series could go via
-> the net-next tree, am I missing any relevant point?
+Replace drivers that still use napi_schedule_prep/__napi_schedule
+with napi_schedule helper as it does the same exact check and call.
 
-Hi Paolo,
+Signed-off-by: Christian Marangi <ansuelsmth@gmail.com>
+---
+Changes v2:
+- Add missing semicolon
+---
+ drivers/net/ethernet/ni/nixge.c     | 3 +--
+ drivers/net/ethernet/wiznet/w5100.c | 4 ++--
+ 2 files changed, 3 insertions(+), 4 deletions(-)
 
-Can you elaborate on the conflicts you see? For me it applies cleanly
-on current master, and with some 3-way merging on latest -next...
+diff --git a/drivers/net/ethernet/ni/nixge.c b/drivers/net/ethernet/ni/nixge.c
+index 97f4798f4b42..f71a4f8bbb89 100644
+--- a/drivers/net/ethernet/ni/nixge.c
++++ b/drivers/net/ethernet/ni/nixge.c
+@@ -755,8 +755,7 @@ static irqreturn_t nixge_rx_irq(int irq, void *_ndev)
+ 		cr &= ~(XAXIDMA_IRQ_IOC_MASK | XAXIDMA_IRQ_DELAY_MASK);
+ 		nixge_dma_write_reg(priv, XAXIDMA_RX_CR_OFFSET, cr);
+ 
+-		if (napi_schedule_prep(&priv->napi))
+-			__napi_schedule(&priv->napi);
++		napi_schedule(&priv->napi);
+ 		goto out;
+ 	}
+ 	if (!(status & XAXIDMA_IRQ_ALL_MASK)) {
+diff --git a/drivers/net/ethernet/wiznet/w5100.c b/drivers/net/ethernet/wiznet/w5100.c
+index 341ee2f249fd..b26fd15c25ae 100644
+--- a/drivers/net/ethernet/wiznet/w5100.c
++++ b/drivers/net/ethernet/wiznet/w5100.c
+@@ -930,8 +930,8 @@ static irqreturn_t w5100_interrupt(int irq, void *ndev_instance)
+ 
+ 		if (priv->ops->may_sleep)
+ 			queue_work(priv->xfer_wq, &priv->rx_work);
+-		else if (napi_schedule_prep(&priv->napi))
+-			__napi_schedule(&priv->napi);
++		else
++			napi_schedule(&priv->napi);
+ 	}
+ 
+ 	return IRQ_HANDLED;
+-- 
+2.40.1
 
-Thanks,
-Yury
