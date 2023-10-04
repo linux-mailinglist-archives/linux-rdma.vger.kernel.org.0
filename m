@@ -2,129 +2,88 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C59747B76EB
-	for <lists+linux-rdma@lfdr.de>; Wed,  4 Oct 2023 05:42:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 022747B7767
+	for <lists+linux-rdma@lfdr.de>; Wed,  4 Oct 2023 07:18:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230523AbjJDDmL (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 3 Oct 2023 23:42:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37624 "EHLO
+        id S241333AbjJDFSs convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-rdma@lfdr.de>); Wed, 4 Oct 2023 01:18:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55836 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229815AbjJDDmK (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 3 Oct 2023 23:42:10 -0400
-Received: from out-210.mta0.migadu.com (out-210.mta0.migadu.com [91.218.175.210])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4CB5BA7
-        for <linux-rdma@vger.kernel.org>; Tue,  3 Oct 2023 20:42:07 -0700 (PDT)
-Message-ID: <2fcef3c8-808e-8e6a-b23d-9f1b3f98c1f9@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1696390925;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=DWTwkkFRGjvuCbu2qw8R41rNgetDuelLeU3tWzW8MFg=;
-        b=cndYhDK84SaKAfdlCvLG76VmZBdpiqM00hhfI35SyZCZMC1b/egrGzLOTkINeyNi8yoVOT
-        cTzAUW8d3WXR0e21WZfPk0QZtn7IkTsPxMgr1nVwpiYa3yyYZoOIY88gSOecdMEk5VSR5U
-        YyjFrqzu0GB5NOhxc2san1QZArJzkEw=
-Date:   Wed, 4 Oct 2023 11:41:51 +0800
+        with ESMTP id S241323AbjJDFSr (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 4 Oct 2023 01:18:47 -0400
+Received: from esa2.hc5620-63.iphmx.com (esa2.hc5620-63.iphmx.com [68.232.149.158])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 644E2B0
+        for <linux-rdma@vger.kernel.org>; Tue,  3 Oct 2023 22:18:43 -0700 (PDT)
+X-CSE-ConnectionGUID: g22uUNW0TZSZF12pZtIrhA==
+X-CSE-MsgGUID: pIp6rgUnSfiT/BPAfx2CLA==
+Message-Id: <bc8e20$ot0k@esa2.hc5620-63.iphmx.com>
+X-IronPort-RemoteIP: 185.225.73.120
+X-IronPort-MID: 816148
+X-IronPort-Reputation: -5.6
+X-IronPort-Listener: MailFlow
+X-IronPort-SenderGroup: RELAY_O365
+X-IronPort-MailFlowPolicy: $RELAYED
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from unknown (HELO [185.225.73.120]) ([185.225.73.120])
+  by esa2.hc5620-63.iphmx.com with ESMTP; 04 Oct 2023 01:18:36 -0400
+Content-Type: text/plain; charset="iso-8859-1"
 MIME-Version: 1.0
-Subject: Re: [PATCH 1/1] Revert "RDMA/rxe: Add workqueue support for rxe
- tasks"
-To:     Bart Van Assche <bvanassche@acm.org>,
-        Bob Pearson <rpearsonhpe@gmail.com>,
-        Leon Romanovsky <leon@kernel.org>, zyjzyj2000@gmail.com,
-        jgg@ziepe.ca, linux-rdma@vger.kernel.org,
-        matsuda-daisuke@fujitsu.com, shinichiro.kawasaki@wdc.com,
-        linux-scsi@vger.kernel.org, Zhu Yanjun <yanjun.zhu@intel.com>
-References: <20230922163231.2237811-1-yanjun.zhu@intel.com>
- <169572143704.2702191.3921040309512111011.b4-ty@kernel.org>
- <20230926140656.GM1642130@unreal>
- <d3c05064-a88b-4719-a390-6bf9ae01fba5@acm.org>
- <b7b365e3-dd11-bc66-dace-05478766bf41@gmail.com>
- <2d5e02d7-cf84-4170-b1a3-a65316ac84ee@acm.org>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From:   Zhu Yanjun <yanjun.zhu@linux.dev>
-In-Reply-To: <2d5e02d7-cf84-4170-b1a3-a65316ac84ee@acm.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Transfer-Encoding: 8BIT
+Content-Description: Mail message body
+Subject: REMINDER
+To:     Recipients <test@mail2world.com>
+From:   "Mr. mohd" <test@mail2world.com>
+Date:   Tue, 03 Oct 2023 22:18:30 -0700
+Reply-To: mohamedsafiah47@gmail.com
+X-Spam-Status: Yes, score=5.1 required=5.0 tests=BAYES_50,FREEMAIL_FROM,
+        FREEMAIL_REPLYTO,FREEMAIL_REPLYTO_END_DIGIT,HK_NAME_FM_MR_MRS,
+        MSGID_FROM_MTA_HEADER,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_SBL,SPF_FAIL,
+        SPF_HELO_PASS,SPOOFED_FREEMAIL,SPOOFED_FREEM_REPTO,
+        TO_EQ_FM_DOM_SPF_FAIL,TO_EQ_FM_SPF_FAIL autolearn=no
+        autolearn_force=no version=3.4.6
+X-Spam-Report: *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
+        *      [score: 0.5000]
+        *  0.0 RCVD_IN_DNSWL_BLOCKED RBL: ADMINISTRATOR NOTICE: The query to
+        *      DNSWL was blocked.  See
+        *      http://wiki.apache.org/spamassassin/DnsBlocklists#dnsbl-block
+        *      for more information.
+        *      [68.232.149.158 listed in list.dnswl.org]
+        *  0.1 RCVD_IN_SBL RBL: Received via a relay in Spamhaus SBL
+        *      [185.225.73.120 listed in zen.spamhaus.org]
+        *  0.0 SPF_FAIL SPF: sender does not match SPF record (fail)
+        *      [SPF failed: Please see http://www.openspf.org/Why?s=mfrom;id=test%40mail2world.com;ip=68.232.149.158;r=lindbergh.monkeyblade.net]
+        *  0.2 FREEMAIL_REPLYTO_END_DIGIT Reply-To freemail username ends in
+        *      digit
+        *      [mohamedsafiah47[at]gmail.com]
+        * -0.0 SPF_HELO_PASS SPF: HELO matches SPF record
+        *  0.0 FREEMAIL_FROM Sender email is commonly abused enduser mail
+        *      provider
+        *      [test[at]mail2world.com]
+        *  0.0 MSGID_FROM_MTA_HEADER Message-Id was added by a relay
+        *  1.5 HK_NAME_FM_MR_MRS No description available.
+        *  1.0 FREEMAIL_REPLYTO Reply-To/From or Reply-To/body contain
+        *      different freemails
+        *  0.0 TO_EQ_FM_SPF_FAIL To == From and external SPF failed
+        *  0.0 TO_EQ_FM_DOM_SPF_FAIL To domain == From domain and external SPF
+        *       failed
+        *  0.4 SPOOFED_FREEMAIL No description available.
+        *  1.0 SPOOFED_FREEM_REPTO Forged freemail sender with freemail
+        *      reply-to
+X-Spam-Level: *****
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-在 2023/9/27 4:24, Bart Van Assche 写道:
-> On 9/26/23 11:34, Bob Pearson wrote:
->> I am working to try to reproduce the KASAN warning. Unfortunately,
->> so far I am not able to see it in Ubuntu + Linus' kernel (as you 
->> described) on metal. The config file is different but copies the 
->> CONFIG_KASAN_xxx exactly as yours. With KASAN enabled it hangs on 
->> every iteration of srp/002 but without a KASAN warning. I am now 
->> building an openSuSE VM for qemu and will see if that causes the warning.
-> 
-> Hi Bob,
-> 
-> Did you try to understand the report that I shared? My conclusion from
-> the report is that when using tasklets rxe_completer() only runs after
-> rxe_requester() has finished and also that when using work queues that
-> rxe_completer() may run concurrently with rxe_requester(). This patch
-> seems to fix all issues that I ran into with the rdma_rxe workqueue
-> patch (I have not tried to verify the performance implications of this
-> patch):
-> 
-> diff --git a/drivers/infiniband/sw/rxe/rxe_task.c 
-> b/drivers/infiniband/sw/rxe/rxe_task.c
-> index 1501120d4f52..6cd5d5a7a316 100644
-> --- a/drivers/infiniband/sw/rxe/rxe_task.c
-> +++ b/drivers/infiniband/sw/rxe/rxe_task.c
-> @@ -10,7 +10,7 @@ static struct workqueue_struct *rxe_wq;
-> 
->   int rxe_alloc_wq(void)
->   {
-> -       rxe_wq = alloc_workqueue("rxe_wq", WQ_UNBOUND, WQ_MAX_ACTIVE);
-> +       rxe_wq = alloc_workqueue("rxe_wq", WQ_UNBOUND, 1);
->          if (!rxe_wq)
->                  return -ENOMEM;
 
-Hi, Bart
-
-With the above commit, I still found a similar problem. But the problem 
-occurs very rarely. With the following, to now, the problem does not occur.
-
-diff --git a/drivers/infiniband/sw/rxe/rxe_task.c 
-b/drivers/infiniband/sw/rxe/rxe_task.c
-index 1501120d4f52..3189c3705295 100644
---- a/drivers/infiniband/sw/rxe/rxe_task.c
-+++ b/drivers/infiniband/sw/rxe/rxe_task.c
-@@ -10,7 +10,7 @@ static struct workqueue_struct *rxe_wq;
-
-  int rxe_alloc_wq(void)
-  {
--       rxe_wq = alloc_workqueue("rxe_wq", WQ_UNBOUND, WQ_MAX_ACTIVE);
-+       rxe_wq = alloc_workqueue("rxe_wq", WQ_HIGHPRI | WQ_UNBOUND, 1);
-         if (!rxe_wq)
-                 return -ENOMEM;
+Dear
+My name is Mohamed Abdul I have the capacity to inject a considerable
+amount of capital in any viable project 
+1,cell phone number what-sap
+2,full name
 
 
-And with the tasklet, this problem also does not occur.
-
-With "alloc_workqueue("rxe_wq", WQ_HIGHPRI | WQ_UNBOUND, 1);", an 
-ordered workqueue with high priority is allocated.
-
-To the same number of work item, the ordered workqueue has the same 
-runing time with the tasklet. But the tasklet is based on softirq. Its 
-overhead on scheduling is less than workqueue. So in theory, tasklet's 
-performance should be better than the ordered workqueue.
-
-Best Regards,
-Zhu Yanjun
-
-> 
-> Thanks,
-> 
-> Bart.
-
+yours truly
+Mohamed Abdul Ahmed
