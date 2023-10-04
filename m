@@ -2,154 +2,412 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D18FC7B7F61
-	for <lists+linux-rdma@lfdr.de>; Wed,  4 Oct 2023 14:41:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A01497B8356
+	for <lists+linux-rdma@lfdr.de>; Wed,  4 Oct 2023 17:15:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242382AbjJDMlQ (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 4 Oct 2023 08:41:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49624 "EHLO
+        id S243238AbjJDPPE (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 4 Oct 2023 11:15:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53822 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242348AbjJDMlP (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 4 Oct 2023 08:41:15 -0400
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C78093;
-        Wed,  4 Oct 2023 05:41:12 -0700 (PDT)
-Received: from pps.filterd (m0353729.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 394Ccfa7024330;
-        Wed, 4 Oct 2023 12:40:56 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
- from : to : cc : date : in-reply-to : references : content-type :
- content-transfer-encoding : mime-version; s=pp1;
- bh=jO02TTI3icp5GqFKY5HubwwOJO/kC+XyhSo02aR3Ghw=;
- b=JNGqbCvMZqnn26nJz8qP24+O7T77aViOf+JBwsVfgNP8Dq2dT2X4CYJoBUOmu2WXfpgP
- yPgk8x+BJZABdTqZN8aE/e0ZKZDWRNqWm00AW/AvSs0kueFHj7q2jUK9A7AYyLwEdAI/
- WZaOenAsOToKFCHbUaG1A2qPnIF8opV082la71vA+QUIMQ+YrdGaOetsXDLMZZoDCuOW
- mc7IFMirnTGRJ3LLB2U4I8XMIMKXQvReDc2qO7Sw77LRvzqLIw/bjKjYPgyZsvnOj9yY
- gNDqJF2d3PgL8pJk/7gPkRlonf+ibKFFT7X60kvKbQEDSC0xdPpUpvvK54fu9jTJxbyp wA== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3th81jga3f-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 04 Oct 2023 12:40:55 +0000
-Received: from m0353729.ppops.net (m0353729.ppops.net [127.0.0.1])
-        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 394Cd8Lp025844;
-        Wed, 4 Oct 2023 12:40:54 GMT
-Received: from ppma13.dal12v.mail.ibm.com (dd.9e.1632.ip4.static.sl-reverse.com [50.22.158.221])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3th81jga31-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 04 Oct 2023 12:40:54 +0000
-Received: from pps.filterd (ppma13.dal12v.mail.ibm.com [127.0.0.1])
-        by ppma13.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 394BQADw006698;
-        Wed, 4 Oct 2023 12:40:53 GMT
-Received: from smtprelay07.fra02v.mail.ibm.com ([9.218.2.229])
-        by ppma13.dal12v.mail.ibm.com (PPS) with ESMTPS id 3tf07k3x6a-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 04 Oct 2023 12:40:53 +0000
-Received: from smtpav03.fra02v.mail.ibm.com (smtpav03.fra02v.mail.ibm.com [10.20.54.102])
-        by smtprelay07.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 394Ceoso58982678
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 4 Oct 2023 12:40:50 GMT
-Received: from smtpav03.fra02v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id BFE4D20063;
-        Wed,  4 Oct 2023 12:40:50 +0000 (GMT)
-Received: from smtpav03.fra02v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 8B8512006E;
-        Wed,  4 Oct 2023 12:40:49 +0000 (GMT)
-Received: from [9.171.77.142] (unknown [9.171.77.142])
-        by smtpav03.fra02v.mail.ibm.com (Postfix) with ESMTP;
-        Wed,  4 Oct 2023 12:40:49 +0000 (GMT)
-Message-ID: <1acfaaf12d1d24aa255a4da80882f8e0e98d2046.camel@linux.ibm.com>
-Subject: Re: [PATCH net v2] net/mlx5: fix calling mlx5_cmd_init() before DMA
- mask is set
-From:   Niklas Schnelle <schnelle@linux.ibm.com>
-To:     Leon Romanovsky <leon@kernel.org>, Joerg Roedel <joro@8bytes.org>
-Cc:     Saeed Mahameed <saeedm@nvidia.com>, Jason Gunthorpe <jgg@ziepe.ca>,
-        Matthew Rosato <mjrosato@linux.ibm.com>,
-        Robin Murphy <robin.murphy@arm.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>, Shay Drory <shayd@nvidia.com>,
-        Moshe Shemesh <moshe@nvidia.com>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Alexander Gordeev <agordeev@linux.ibm.com>,
-        linux-s390@vger.kernel.org, netdev@vger.kernel.org,
-        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org
-Date:   Wed, 04 Oct 2023 14:40:49 +0200
-In-Reply-To: <20230930073633.GC1296942@unreal>
-References: <20230929-mlx5_init_fix-v2-1-51ed2094c9d8@linux.ibm.com>
-         <20230930073633.GC1296942@unreal>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.48.4 (3.48.4-1.fc38) 
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: ytJsdJUWEbLsY5TOFmUdtwCz_osZ52Yj
-X-Proofpoint-ORIG-GUID: fLe6_epYdhPrIGVqShq5OY1MPF1KtZTV
-Content-Transfer-Encoding: quoted-printable
-X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+        with ESMTP id S243240AbjJDPPA (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 4 Oct 2023 11:15:00 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.115])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 610E9191
+        for <linux-rdma@vger.kernel.org>; Wed,  4 Oct 2023 08:14:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1696432485; x=1727968485;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=vW3HqQV4oJNpueKDor83qkbeoMXMLFWDeNLohPdv/aw=;
+  b=iwYkVwkwJJAZtzLOj1BZeK2MnAvvpxNAoSnPdiEe6l/gy8BgxUJkkqDO
+   wwKqSD42LTNmvEIfJ61wkGDwHaK+RkxDRlcuTD2Jju8ynWBMZjBo3XMEM
+   mRZjxg+7zZTHZj1ZO0HnxXLP1YMLrxh44ADzJQzXh4P9gR5E16DDloLUz
+   orE+u8pYhKu1WnpmpmKdR73v8mEJXjr6FyLbYujZdCxO9EIpc6afhuLN4
+   QeTTigXty7AgCPw+KBmvI7w3aJ2WdZ3i/AvOrlUCV9i4awK0y+IbNMYmx
+   auNz5CKxcveQU8WmiFU85jHR8xDkuGt9FeZ8R1zoawBqFWjG4SSl70YmZ
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10853"; a="383099928"
+X-IronPort-AV: E=Sophos;i="6.03,200,1694761200"; 
+   d="scan'208";a="383099928"
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Oct 2023 08:13:21 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10853"; a="745005292"
+X-IronPort-AV: E=Sophos;i="6.03,200,1694761200"; 
+   d="scan'208";a="745005292"
+Received: from ssaleem-mobl1.amr.corp.intel.com ([10.93.52.50])
+  by orsmga007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Oct 2023 08:13:20 -0700
+From:   Shiraz Saleem <shiraz.saleem@intel.com>
+To:     nex.sw.ncis.nat.hpm.dev@intel.com, jgg@nvidia.com, leon@kernel.org,
+        linux-rdma@vger.kernel.org
+Cc:     Sindhu Devale <sindhu.devale@intel.com>,
+        Shiraz Saleem <shiraz.saleem@intel.com>
+Subject: [PATCH for-next v1] RDMA/irdma: Add support to re-register a memory region
+Date:   Wed,  4 Oct 2023 10:13:06 -0500
+Message-Id: <20231004151306.228-1-shiraz.saleem@intel.com>
+X-Mailer: git-send-email 2.39.0
 MIME-Version: 1.0
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-10-04_04,2023-10-02_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0 bulkscore=0
- mlxscore=0 lowpriorityscore=0 mlxlogscore=999 priorityscore=1501
- malwarescore=0 impostorscore=0 phishscore=0 suspectscore=0 spamscore=0
- clxscore=1015 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2309180000 definitions=main-2310040091
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Sat, 2023-09-30 at 10:36 +0300, Leon Romanovsky wrote:
-> On Fri, Sep 29, 2023 at 02:15:49PM +0200, Niklas Schnelle wrote:
-> > Since commit 06cd555f73ca ("net/mlx5: split mlx5_cmd_init() to probe and
-> > reload routines") mlx5_cmd_init() is called in mlx5_mdev_init() which is
-> > called in probe_one() before mlx5_pci_init(). This is a problem because
-> > mlx5_pci_init() is where the DMA and coherent mask is set but
-> > mlx5_cmd_init() already does a dma_alloc_coherent(). Thus a DMA
-> > allocation is done during probe before the correct mask is set. This
-> > causes probe to fail initialization of the cmdif SW structs on s390x
-> > after that is converted to the common dma-iommu code. This is because on
-> > s390x DMA addresses below 4 GiB are reserved on current machines and
-> > unlike the old s390x specific DMA API implementation common code
-> > enforces DMA masks.
-> >=20
-> > Fix this by moving set_dma_caps() out of mlx5_pci_init() and into
-> > probe_one() before mlx5_mdev_init(). To match the overall naming scheme
-> > rename it to mlx5_dma_init().
-> >=20
-> > Link: https://lore.kernel.org/linux-iommu/cfc9e9128ed5571d2e36421e34730=
-1057662a09e.camel@linux.ibm.com/
-> > Fixes: 06cd555f73ca ("net/mlx5: split mlx5_cmd_init() to probe and relo=
-ad routines")
-> > Signed-off-by: Niklas Schnelle <schnelle@linux.ibm.com>
-> > ---
-> > Note: I ran into this while testing the linked series for converting
-> > s390x to use dma-iommu. The existing s390x specific DMA API
-> > implementation doesn't respect DMA masks and is thus not affected
-> > despite of course also only supporting DMA addresses above 4 GiB.
-> > ---
-> > Changes in v2:
-> > - Instead of moving the whole mlx5_pci_init() only move the
-> >   set_dma_caps() call so as to keep pci_enable_device() after the FW
-> >   command interface initialization (Leon)
-> > - Link to v1: https://lore.kernel.org/r/20230928-mlx5_init_fix-v1-1-797=
-49d45ce60@linux.ibm.com
-> > ---
-> >  drivers/net/ethernet/mellanox/mlx5/core/main.c | 18 +++++++++---------
-> >  1 file changed, 9 insertions(+), 9 deletions(-)
-> >=20
->=20
-> Thanks,
-> Reviewed-by: Leon Romanovsky <leonro@nvidia.com>
+From: Sindhu Devale <sindhu.devale@intel.com>
 
-Thank you for the review. Assuming the mlx5 tree is included in linux-
-next I think it would be easiest if this goes via that tree thereby
-unbreaking linux-next for s390. Or do you prefer Joerg to take this via
-the IOMMU tree or even some other tree?
+Add support for reregister MR verb API by doing a de-register
+followed by a register MR with the new attributes. Reuse resources
+like iwmr handle and HW stag where possible.
 
-Thanks,
-Niklas
+Signed-off-by: Sindhu Devale <sindhu.devale@intel.com>
+Signed-off-by: Shiraz Saleem <shiraz.saleem@intel.com>
+---
+v0->v1: return int for irdma_rereg_mr_trans()
+
+ drivers/infiniband/hw/irdma/verbs.c | 232 +++++++++++++++++++++++++++++-------
+ drivers/infiniband/hw/irdma/verbs.h |   2 +
+ 2 files changed, 192 insertions(+), 42 deletions(-)
+
+diff --git a/drivers/infiniband/hw/irdma/verbs.c b/drivers/infiniband/hw/irdma/verbs.c
+index 15ea2f3d48f2..cd68f57d0108 100644
+--- a/drivers/infiniband/hw/irdma/verbs.c
++++ b/drivers/infiniband/hw/irdma/verbs.c
+@@ -2649,6 +2649,8 @@ static int irdma_hw_alloc_stag(struct irdma_device *iwdev,
+ 	cqp_info->in.u.alloc_stag.scratch = (uintptr_t)cqp_request;
+ 	status = irdma_handle_cqp_op(iwdev->rf, cqp_request);
+ 	irdma_put_cqp_request(&iwdev->rf->cqp, cqp_request);
++	if (!status)
++		iwmr->is_hwreg = 1;
+ 
+ 	return status;
+ }
+@@ -2816,14 +2818,18 @@ static int irdma_hwreg_mr(struct irdma_device *iwdev, struct irdma_mr *iwmr,
+ 	ret = irdma_handle_cqp_op(iwdev->rf, cqp_request);
+ 	irdma_put_cqp_request(&iwdev->rf->cqp, cqp_request);
+ 
++	if (!ret)
++		iwmr->is_hwreg = 1;
++
+ 	return ret;
+ }
+ 
+-static int irdma_reg_user_mr_type_mem(struct irdma_mr *iwmr, int access)
++static int irdma_reg_user_mr_type_mem(struct irdma_mr *iwmr, int access,
++				      bool create_stag)
+ {
+ 	struct irdma_device *iwdev = to_iwdev(iwmr->ibmr.device);
+ 	struct irdma_pbl *iwpbl = &iwmr->iwpbl;
+-	u32 stag;
++	u32 stag = 0;
+ 	u8 lvl;
+ 	int err;
+ 
+@@ -2842,15 +2848,18 @@ static int irdma_reg_user_mr_type_mem(struct irdma_mr *iwmr, int access)
+ 		}
+ 	}
+ 
+-	stag = irdma_create_stag(iwdev);
+-	if (!stag) {
+-		err = -ENOMEM;
+-		goto free_pble;
++	if (create_stag) {
++		stag = irdma_create_stag(iwdev);
++		if (!stag) {
++			err = -ENOMEM;
++			goto free_pble;
++		}
++
++		iwmr->stag = stag;
++		iwmr->ibmr.rkey = stag;
++		iwmr->ibmr.lkey = stag;
+ 	}
+ 
+-	iwmr->stag = stag;
+-	iwmr->ibmr.rkey = stag;
+-	iwmr->ibmr.lkey = stag;
+ 	err = irdma_hwreg_mr(iwdev, iwmr, access);
+ 	if (err)
+ 		goto err_hwreg;
+@@ -2858,7 +2867,8 @@ static int irdma_reg_user_mr_type_mem(struct irdma_mr *iwmr, int access)
+ 	return 0;
+ 
+ err_hwreg:
+-	irdma_free_stag(iwdev, stag);
++	if (stag)
++		irdma_free_stag(iwdev, stag);
+ 
+ free_pble:
+ 	if (iwpbl->pble_alloc.level != PBLE_LEVEL_0 && iwpbl->pbl_allocated)
+@@ -3033,7 +3043,7 @@ static struct ib_mr *irdma_reg_user_mr(struct ib_pd *pd, u64 start, u64 len,
+ 			goto error;
+ 		break;
+ 	case IRDMA_MEMREG_TYPE_MEM:
+-		err = irdma_reg_user_mr_type_mem(iwmr, access);
++		err = irdma_reg_user_mr_type_mem(iwmr, access, true);
+ 		if (err)
+ 			goto error;
+ 
+@@ -3077,7 +3087,7 @@ static struct ib_mr *irdma_reg_user_mr_dmabuf(struct ib_pd *pd, u64 start,
+ 		goto err_release;
+ 	}
+ 
+-	err = irdma_reg_user_mr_type_mem(iwmr, access);
++	err = irdma_reg_user_mr_type_mem(iwmr, access, true);
+ 	if (err)
+ 		goto err_iwmr;
+ 
+@@ -3092,6 +3102,164 @@ static struct ib_mr *irdma_reg_user_mr_dmabuf(struct ib_pd *pd, u64 start,
+ 	return ERR_PTR(err);
+ }
+ 
++static int irdma_hwdereg_mr(struct ib_mr *ib_mr)
++{
++	struct irdma_device *iwdev = to_iwdev(ib_mr->device);
++	struct irdma_mr *iwmr = to_iwmr(ib_mr);
++	struct irdma_pd *iwpd = to_iwpd(ib_mr->pd);
++	struct irdma_dealloc_stag_info *info;
++	struct irdma_pbl *iwpbl = &iwmr->iwpbl;
++	struct irdma_cqp_request *cqp_request;
++	struct cqp_cmds_info *cqp_info;
++	int status;
++
++	/* Skip HW MR de-register when it is already de-registered
++	 * during an MR re-reregister and the re-registration fails
++	 */
++	if (!iwmr->is_hwreg)
++		return 0;
++
++	cqp_request = irdma_alloc_and_get_cqp_request(&iwdev->rf->cqp, true);
++	if (!cqp_request)
++		return -ENOMEM;
++
++	cqp_info = &cqp_request->info;
++	info = &cqp_info->in.u.dealloc_stag.info;
++	memset(info, 0, sizeof(*info));
++	info->pd_id = iwpd->sc_pd.pd_id;
++	info->stag_idx = ib_mr->rkey >> IRDMA_CQPSQ_STAG_IDX_S;
++	info->mr = true;
++	if (iwpbl->pbl_allocated)
++		info->dealloc_pbl = true;
++
++	cqp_info->cqp_cmd = IRDMA_OP_DEALLOC_STAG;
++	cqp_info->post_sq = 1;
++	cqp_info->in.u.dealloc_stag.dev = &iwdev->rf->sc_dev;
++	cqp_info->in.u.dealloc_stag.scratch = (uintptr_t)cqp_request;
++	status = irdma_handle_cqp_op(iwdev->rf, cqp_request);
++	irdma_put_cqp_request(&iwdev->rf->cqp, cqp_request);
++
++	if (!status)
++		iwmr->is_hwreg = 0;
++
++	return status;
++}
++
++/*
++ * irdma_rereg_mr_trans - Re-register a user MR for a change translation.
++ * @iwmr: ptr of iwmr
++ * @start: virtual start address
++ * @len: length of mr
++ * @virt: virtual address
++ *
++ * Re-register a user memory region when a change translation is requested.
++ * Re-register a new region while reusing the stag from the original registration.
++ */
++static int irdma_rereg_mr_trans(struct irdma_mr *iwmr, u64 start, u64 len,
++				u64 virt)
++{
++	struct irdma_device *iwdev = to_iwdev(iwmr->ibmr.device);
++	struct irdma_pbl *iwpbl = &iwmr->iwpbl;
++	struct ib_pd *pd = iwmr->ibmr.pd;
++	struct ib_umem *region;
++	int err;
++
++	region = ib_umem_get(pd->device, start, len, iwmr->access);
++	if (IS_ERR(region))
++		return PTR_ERR(region);
++
++	iwmr->region = region;
++	iwmr->ibmr.iova = virt;
++	iwmr->ibmr.pd = pd;
++	iwmr->page_size = ib_umem_find_best_pgsz(region,
++				iwdev->rf->sc_dev.hw_attrs.page_size_cap,
++				virt);
++	if (unlikely(!iwmr->page_size)) {
++		err = -EOPNOTSUPP;
++		goto err;
++	}
++
++	iwmr->len = region->length;
++	iwpbl->user_base = virt;
++	iwmr->page_cnt = ib_umem_num_dma_blocks(region, iwmr->page_size);
++
++	err = irdma_reg_user_mr_type_mem(iwmr, iwmr->access, false);
++	if (err)
++		goto err;
++
++	return 0;
++
++err:
++	ib_umem_release(region);
++	return err;
++}
++
++/*
++ *  irdma_rereg_user_mr - Re-Register a user memory region(MR)
++ *  @ibmr: ib mem to access iwarp mr pointer
++ *  @flags: bit mask to indicate which of the attr's of MR modified
++ *  @start: virtual start address
++ *  @len: length of mr
++ *  @virt: virtual address
++ *  @new_access: bit mask of access flags
++ *  @new_pd: ptr of pd
++ *  @udata: user data
++ *
++ *  Return:
++ *  NULL - Success, existing MR updated
++ *  ERR_PTR - error occurred
++ */
++static struct ib_mr *irdma_rereg_user_mr(struct ib_mr *ib_mr, int flags,
++					 u64 start, u64 len, u64 virt,
++					 int new_access, struct ib_pd *new_pd,
++					 struct ib_udata *udata)
++{
++	struct irdma_device *iwdev = to_iwdev(ib_mr->device);
++	struct irdma_mr *iwmr = to_iwmr(ib_mr);
++	struct irdma_pbl *iwpbl = &iwmr->iwpbl;
++	int ret;
++
++	if (len > iwdev->rf->sc_dev.hw_attrs.max_mr_size)
++		return ERR_PTR(-EINVAL);
++
++	if (flags & ~(IB_MR_REREG_TRANS | IB_MR_REREG_PD | IB_MR_REREG_ACCESS))
++		return ERR_PTR(-EOPNOTSUPP);
++
++	ret = irdma_hwdereg_mr(ib_mr);
++	if (ret)
++		return ERR_PTR(ret);
++
++	if (flags & IB_MR_REREG_ACCESS)
++		iwmr->access = new_access;
++
++	if (flags & IB_MR_REREG_PD) {
++		iwmr->ibmr.pd = new_pd;
++		iwmr->ibmr.device = new_pd->device;
++	}
++
++	if (flags & IB_MR_REREG_TRANS) {
++		if (iwpbl->pbl_allocated) {
++			irdma_free_pble(iwdev->rf->pble_rsrc,
++					&iwpbl->pble_alloc);
++			iwpbl->pbl_allocated = false;
++		}
++		if (iwmr->region) {
++			ib_umem_release(iwmr->region);
++			iwmr->region = NULL;
++		}
++
++		ret = irdma_rereg_mr_trans(iwmr, start, len, virt);
++		if (ret)
++			return ERR_PTR(ret);
++	} else {
++		ret = irdma_hwreg_mr(iwdev, iwmr, iwmr->access);
++		if (ret)
++			return ERR_PTR(ret);
++	}
++
++	return NULL;
++}
++
+ /**
+  * irdma_reg_phys_mr - register kernel physical memory
+  * @pd: ibpd pointer
+@@ -3199,16 +3367,10 @@ static void irdma_del_memlist(struct irdma_mr *iwmr,
+  */
+ static int irdma_dereg_mr(struct ib_mr *ib_mr, struct ib_udata *udata)
+ {
+-	struct ib_pd *ibpd = ib_mr->pd;
+-	struct irdma_pd *iwpd = to_iwpd(ibpd);
+ 	struct irdma_mr *iwmr = to_iwmr(ib_mr);
+ 	struct irdma_device *iwdev = to_iwdev(ib_mr->device);
+-	struct irdma_dealloc_stag_info *info;
+ 	struct irdma_pbl *iwpbl = &iwmr->iwpbl;
+-	struct irdma_pble_alloc *palloc = &iwpbl->pble_alloc;
+-	struct irdma_cqp_request *cqp_request;
+-	struct cqp_cmds_info *cqp_info;
+-	int status;
++	int ret;
+ 
+ 	if (iwmr->type != IRDMA_MEMREG_TYPE_MEM) {
+ 		if (iwmr->region) {
+@@ -3222,33 +3384,18 @@ static int irdma_dereg_mr(struct ib_mr *ib_mr, struct ib_udata *udata)
+ 		goto done;
+ 	}
+ 
+-	cqp_request = irdma_alloc_and_get_cqp_request(&iwdev->rf->cqp, true);
+-	if (!cqp_request)
+-		return -ENOMEM;
+-
+-	cqp_info = &cqp_request->info;
+-	info = &cqp_info->in.u.dealloc_stag.info;
+-	memset(info, 0, sizeof(*info));
+-	info->pd_id = iwpd->sc_pd.pd_id;
+-	info->stag_idx = ib_mr->rkey >> IRDMA_CQPSQ_STAG_IDX_S;
+-	info->mr = true;
+-	if (iwpbl->pbl_allocated)
+-		info->dealloc_pbl = true;
+-
+-	cqp_info->cqp_cmd = IRDMA_OP_DEALLOC_STAG;
+-	cqp_info->post_sq = 1;
+-	cqp_info->in.u.dealloc_stag.dev = &iwdev->rf->sc_dev;
+-	cqp_info->in.u.dealloc_stag.scratch = (uintptr_t)cqp_request;
+-	status = irdma_handle_cqp_op(iwdev->rf, cqp_request);
+-	irdma_put_cqp_request(&iwdev->rf->cqp, cqp_request);
+-	if (status)
+-		return status;
++	ret = irdma_hwdereg_mr(ib_mr);
++	if (ret)
++		return ret;
+ 
+ 	irdma_free_stag(iwdev, iwmr->stag);
+ done:
+ 	if (iwpbl->pbl_allocated)
+-		irdma_free_pble(iwdev->rf->pble_rsrc, palloc);
+-	ib_umem_release(iwmr->region);
++		irdma_free_pble(iwdev->rf->pble_rsrc, &iwpbl->pble_alloc);
++
++	if (iwmr->region)
++		ib_umem_release(iwmr->region);
++
+ 	kfree(iwmr);
+ 
+ 	return 0;
+@@ -4578,6 +4725,7 @@ static enum rdma_link_layer irdma_get_link_layer(struct ib_device *ibdev,
+ 	.query_qp = irdma_query_qp,
+ 	.reg_user_mr = irdma_reg_user_mr,
+ 	.reg_user_mr_dmabuf = irdma_reg_user_mr_dmabuf,
++	.rereg_user_mr = irdma_rereg_user_mr,
+ 	.req_notify_cq = irdma_req_notify_cq,
+ 	.resize_cq = irdma_resize_cq,
+ 	INIT_RDMA_OBJ_SIZE(ib_pd, irdma_pd, ibpd),
+diff --git a/drivers/infiniband/hw/irdma/verbs.h b/drivers/infiniband/hw/irdma/verbs.h
+index 2789bc973210..c42ac22de00e 100644
+--- a/drivers/infiniband/hw/irdma/verbs.h
++++ b/drivers/infiniband/hw/irdma/verbs.h
+@@ -100,6 +100,8 @@ struct irdma_mr {
+ 		struct ib_mw ibmw;
+ 	};
+ 	struct ib_umem *region;
++	int access;
++	u8 is_hwreg;
+ 	u16 type;
+ 	u32 page_cnt;
+ 	u64 page_size;
+-- 
+1.8.3.1
+
