@@ -2,113 +2,129 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B4E97B764A
-	for <lists+linux-rdma@lfdr.de>; Wed,  4 Oct 2023 03:31:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C59747B76EB
+	for <lists+linux-rdma@lfdr.de>; Wed,  4 Oct 2023 05:42:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239384AbjJDBbf (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 3 Oct 2023 21:31:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57652 "EHLO
+        id S230523AbjJDDmL (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 3 Oct 2023 23:42:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37624 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230274AbjJDBbf (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 3 Oct 2023 21:31:35 -0400
-Received: from mail-vs1-xe34.google.com (mail-vs1-xe34.google.com [IPv6:2607:f8b0:4864:20::e34])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7113AF;
-        Tue,  3 Oct 2023 18:31:31 -0700 (PDT)
-Received: by mail-vs1-xe34.google.com with SMTP id ada2fe7eead31-452749f6c47so832460137.1;
-        Tue, 03 Oct 2023 18:31:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1696383091; x=1696987891; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=cV+BD3Itq4BhCRKPqTWiBEJr03DwuwhyYqtmmv79ESo=;
-        b=G3mIOH7lIRS7RSIElh4st2pGyWz//e8YWlKlKPlyLFp4SRm9RpH7aQHQgE5n+Pqm2H
-         NGbXx/sxseUsb8pPfB9P1xl67wmHy78joNLHirqp9+ilvexiAAX9sOEOyjsBSAsctQk4
-         8GCxQdltR5l8xRydUGzj8CcGHtupCLYvCcvzCOEQ3IPAJoRuqrpK+l8AViy1Cgf2bPWR
-         DHtMGUOWPoneUWLpC/gDTFsW2Qc38MTZ02Updf1Dig8PVDAjc81dcvduI3+WGtkez7cL
-         WZPqHNk071HSP6x4IyYMZvn88hcl7AcvZHvT5B/+WpDHpJbU0bavH33PEPkqjxc6dsGM
-         4zLg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696383091; x=1696987891;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=cV+BD3Itq4BhCRKPqTWiBEJr03DwuwhyYqtmmv79ESo=;
-        b=SPskSCW8sxE1kPkJoi6v72axO9EPik0PI9Ujc0r+bRbiiuatJTsvTuoczwTjmwCluJ
-         7JOoLFeSPxjj0jexTdaqKaHlLTlhSB20ol8oNPuyf31XIrWieyptgWlvjoarR24Ffudl
-         mb6LYIgmFM2rFZcBomDSJaqtECiqaNsE7DysL0TTYncWF326XFDHGcN8+ONKKUmqONx4
-         Bz18978O2LyANgnR8Vo9c7jd12VrsmKI3Ud+kYQRvvRtKhRmWZ8vZSI8b0IG3oQ8jIit
-         pAt9WcA4ri9XhE3dB+puSr8GQ8GSVBeyEtJCSuBez2uA/NRIYrl5Vn310jOn4boBUk7q
-         mhQA==
-X-Gm-Message-State: AOJu0Yy8MuS5J0ifpF73jPZ3OckkdRiMvhdT+cOpnb9RdirwGjh7k0ZB
-        dryqFUdRuR4IT7UxfOP0MlHDuYOr8OY=
-X-Google-Smtp-Source: AGHT+IGeMBp6m0rTIjRjsfd6YmID2UUcreTdFzgykDkyk+nBYzn3upz1wYDiVgyaAg8QD0xn8mp6ig==
-X-Received: by 2002:a05:6102:14d:b0:452:bfe3:8941 with SMTP id a13-20020a056102014d00b00452bfe38941mr955351vsr.21.1696383090722;
-        Tue, 03 Oct 2023 18:31:30 -0700 (PDT)
-Received: from localhost ([2607:fb90:bea0:d290:37ee:5c3d:1002:8e75])
-        by smtp.gmail.com with ESMTPSA id b20-20020ab00854000000b007ab975b8eb9sm373678uaf.10.2023.10.03.18.31.29
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 03 Oct 2023 18:31:30 -0700 (PDT)
-Date:   Tue, 3 Oct 2023 18:31:28 -0700
-From:   Yury Norov <yury.norov@gmail.com>
-To:     Jakub Kicinski <kuba@kernel.org>
-Cc:     Paolo Abeni <pabeni@redhat.com>, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
-        Tariq Toukan <ttoukan.linux@gmail.com>,
-        Valentin Schneider <vschneid@redhat.com>,
-        Maher Sanalla <msanalla@nvidia.com>,
-        Ingo Molnar <mingo@kernel.org>, Mel Gorman <mgorman@suse.de>,
-        Saeed Mahameed <saeedm@nvidia.com>,
-        Leon Romanovsky <leon@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Pawel Chmielewski <pawel.chmielewski@intel.com>,
-        Jacob Keller <jacob.e.keller@intel.com>,
-        Yury Norov <ynorov@nvidia.com>
-Subject: Re: [PATCH 1/4] net: mellanox: drop mlx5_cpumask_default_spread()
-Message-ID: <ZRzAcJInEJtYuOKi@yury-ThinkPad>
-References: <20230925020528.777578-1-yury.norov@gmail.com>
- <20230925020528.777578-2-yury.norov@gmail.com>
- <2fd12c42d3dd60b2e9b56e9f7dd37d5f994fd9ac.camel@redhat.com>
- <ZRwbKRnnKY/tDqCF@yury-ThinkPad>
- <20231003152030.6615437c@kernel.org>
+        with ESMTP id S229815AbjJDDmK (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 3 Oct 2023 23:42:10 -0400
+Received: from out-210.mta0.migadu.com (out-210.mta0.migadu.com [91.218.175.210])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4CB5BA7
+        for <linux-rdma@vger.kernel.org>; Tue,  3 Oct 2023 20:42:07 -0700 (PDT)
+Message-ID: <2fcef3c8-808e-8e6a-b23d-9f1b3f98c1f9@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+        t=1696390925;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=DWTwkkFRGjvuCbu2qw8R41rNgetDuelLeU3tWzW8MFg=;
+        b=cndYhDK84SaKAfdlCvLG76VmZBdpiqM00hhfI35SyZCZMC1b/egrGzLOTkINeyNi8yoVOT
+        cTzAUW8d3WXR0e21WZfPk0QZtn7IkTsPxMgr1nVwpiYa3yyYZoOIY88gSOecdMEk5VSR5U
+        YyjFrqzu0GB5NOhxc2san1QZArJzkEw=
+Date:   Wed, 4 Oct 2023 11:41:51 +0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231003152030.6615437c@kernel.org>
+Subject: Re: [PATCH 1/1] Revert "RDMA/rxe: Add workqueue support for rxe
+ tasks"
+To:     Bart Van Assche <bvanassche@acm.org>,
+        Bob Pearson <rpearsonhpe@gmail.com>,
+        Leon Romanovsky <leon@kernel.org>, zyjzyj2000@gmail.com,
+        jgg@ziepe.ca, linux-rdma@vger.kernel.org,
+        matsuda-daisuke@fujitsu.com, shinichiro.kawasaki@wdc.com,
+        linux-scsi@vger.kernel.org, Zhu Yanjun <yanjun.zhu@intel.com>
+References: <20230922163231.2237811-1-yanjun.zhu@intel.com>
+ <169572143704.2702191.3921040309512111011.b4-ty@kernel.org>
+ <20230926140656.GM1642130@unreal>
+ <d3c05064-a88b-4719-a390-6bf9ae01fba5@acm.org>
+ <b7b365e3-dd11-bc66-dace-05478766bf41@gmail.com>
+ <2d5e02d7-cf84-4170-b1a3-a65316ac84ee@acm.org>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From:   Zhu Yanjun <yanjun.zhu@linux.dev>
+In-Reply-To: <2d5e02d7-cf84-4170-b1a3-a65316ac84ee@acm.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Tue, Oct 03, 2023 at 03:20:30PM -0700, Jakub Kicinski wrote:
-> On Tue, 3 Oct 2023 06:46:17 -0700 Yury Norov wrote:
-> > Can you elaborate on the conflicts you see? For me it applies cleanly
-> > on current master, and with some 3-way merging on latest -next...
+在 2023/9/27 4:24, Bart Van Assche 写道:
+> On 9/26/23 11:34, Bob Pearson wrote:
+>> I am working to try to reproduce the KASAN warning. Unfortunately,
+>> so far I am not able to see it in Ubuntu + Linus' kernel (as you 
+>> described) on metal. The config file is different but copies the 
+>> CONFIG_KASAN_xxx exactly as yours. With KASAN enabled it hangs on 
+>> every iteration of srp/002 but without a KASAN warning. I am now 
+>> building an openSuSE VM for qemu and will see if that causes the warning.
 > 
-> We're half way thru the release cycle the conflicts can still come in.
+> Hi Bob,
 > 
-> There's no dependency for the first patch. The most normal way to
-> handle this would be to send patch 1 to the networking tree and send
-> the rest in the subsequent merge window.
+> Did you try to understand the report that I shared? My conclusion from
+> the report is that when using tasklets rxe_completer() only runs after
+> rxe_requester() has finished and also that when using work queues that
+> rxe_completer() may run concurrently with rxe_requester(). This patch
+> seems to fix all issues that I ran into with the rdma_rxe workqueue
+> patch (I have not tried to verify the performance implications of this
+> patch):
+> 
+> diff --git a/drivers/infiniband/sw/rxe/rxe_task.c 
+> b/drivers/infiniband/sw/rxe/rxe_task.c
+> index 1501120d4f52..6cd5d5a7a316 100644
+> --- a/drivers/infiniband/sw/rxe/rxe_task.c
+> +++ b/drivers/infiniband/sw/rxe/rxe_task.c
+> @@ -10,7 +10,7 @@ static struct workqueue_struct *rxe_wq;
+> 
+>   int rxe_alloc_wq(void)
+>   {
+> -       rxe_wq = alloc_workqueue("rxe_wq", WQ_UNBOUND, WQ_MAX_ACTIVE);
+> +       rxe_wq = alloc_workqueue("rxe_wq", WQ_UNBOUND, 1);
+>          if (!rxe_wq)
+>                  return -ENOMEM;
 
-Ah, I understand now. I didn't plan to move it in current merge
-window. In fact, I'll be more comfortable to keep it in -next for
-longer and merge it in v6.7.
+Hi, Bart
 
-But it's up to you. If you think it's better, I can resend 1st patch
-separately.
+With the above commit, I still found a similar problem. But the problem 
+occurs very rarely. With the following, to now, the problem does not occur.
 
-Thanks,
-Yury
+diff --git a/drivers/infiniband/sw/rxe/rxe_task.c 
+b/drivers/infiniband/sw/rxe/rxe_task.c
+index 1501120d4f52..3189c3705295 100644
+--- a/drivers/infiniband/sw/rxe/rxe_task.c
++++ b/drivers/infiniband/sw/rxe/rxe_task.c
+@@ -10,7 +10,7 @@ static struct workqueue_struct *rxe_wq;
+
+  int rxe_alloc_wq(void)
+  {
+-       rxe_wq = alloc_workqueue("rxe_wq", WQ_UNBOUND, WQ_MAX_ACTIVE);
++       rxe_wq = alloc_workqueue("rxe_wq", WQ_HIGHPRI | WQ_UNBOUND, 1);
+         if (!rxe_wq)
+                 return -ENOMEM;
+
+
+And with the tasklet, this problem also does not occur.
+
+With "alloc_workqueue("rxe_wq", WQ_HIGHPRI | WQ_UNBOUND, 1);", an 
+ordered workqueue with high priority is allocated.
+
+To the same number of work item, the ordered workqueue has the same 
+runing time with the tasklet. But the tasklet is based on softirq. Its 
+overhead on scheduling is less than workqueue. So in theory, tasklet's 
+performance should be better than the ordered workqueue.
+
+Best Regards,
+Zhu Yanjun
+
+> 
+> Thanks,
+> 
+> Bart.
+
