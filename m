@@ -2,61 +2,61 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AA5D17B9E41
-	for <lists+linux-rdma@lfdr.de>; Thu,  5 Oct 2023 16:03:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 258A97B9F43
+	for <lists+linux-rdma@lfdr.de>; Thu,  5 Oct 2023 16:21:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229449AbjJEODp (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 5 Oct 2023 10:03:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33076 "EHLO
+        id S233887AbjJEOU6 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 5 Oct 2023 10:20:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60228 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229677AbjJEODO (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 5 Oct 2023 10:03:14 -0400
-Received: from mail-pl1-x632.google.com (mail-pl1-x632.google.com [IPv6:2607:f8b0:4864:20::632])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 81F1A55B6
-        for <linux-rdma@vger.kernel.org>; Wed,  4 Oct 2023 22:43:20 -0700 (PDT)
-Received: by mail-pl1-x632.google.com with SMTP id d9443c01a7336-1bd9b4f8e0eso3925715ad.1
-        for <linux-rdma@vger.kernel.org>; Wed, 04 Oct 2023 22:43:20 -0700 (PDT)
+        with ESMTP id S233923AbjJEOS5 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 5 Oct 2023 10:18:57 -0400
+Received: from mail-pl1-x62c.google.com (mail-pl1-x62c.google.com [IPv6:2607:f8b0:4864:20::62c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D3EAB55B8
+        for <linux-rdma@vger.kernel.org>; Wed,  4 Oct 2023 22:43:23 -0700 (PDT)
+Received: by mail-pl1-x62c.google.com with SMTP id d9443c01a7336-1c3bd829b86so4599665ad.0
+        for <linux-rdma@vger.kernel.org>; Wed, 04 Oct 2023 22:43:23 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google; t=1696484600; x=1697089400; darn=vger.kernel.org;
+        d=broadcom.com; s=google; t=1696484603; x=1697089403; darn=vger.kernel.org;
         h=references:in-reply-to:message-id:date:subject:cc:to:from:from:to
          :cc:subject:date:message-id:reply-to;
-        bh=aLrBiV3sQRuVcGhfItk/Vk1o7eOCFjgqwUJn2MnJTRg=;
-        b=ao8f1anxlGWdTbutFplr/GSSYv767ZzJ9wRcRfSMOyFcQLDJTxVxPdSuVvYt7SH/zk
-         28bbU1od7YqZCqbgwxFgQK+qqrJVUowb2VCpgrW0JIROXmlzeKwPk4vs9ZuUh3IBJt1O
-         CQMm3cv7uSXaYDe+LA/UML0BAy2qS1Fb6cpb8=
+        bh=r420GRutCSvvUtoYiNRF3BRRrBITrwqNYaJuk7ybSA0=;
+        b=DSmof6rpgNsguxn049dd6BdgzCm5QSoRUePX+IWiMQUlVZVyidLVhhYB7Lv9TQ+0ZB
+         5jSJKl/dINVq33sTK15bw0wKrVL3gXUENuXFkfDGYzoiJTnMDeYQ8uV6gAAHtloLvVNC
+         vapYZapjQL6D3++1u9XFOjHtbkzbl7iROmyjg=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696484600; x=1697089400;
+        d=1e100.net; s=20230601; t=1696484603; x=1697089403;
         h=references:in-reply-to:message-id:date:subject:cc:to:from
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=aLrBiV3sQRuVcGhfItk/Vk1o7eOCFjgqwUJn2MnJTRg=;
-        b=atCAVzjREmTkxHDKqzJ+d++VCTZM56mfE12/8ss/5LwKg9jqihyrSqxzSBIAg9I2pG
-         3XEcahcz+7A/bP8XyH9L+xz2UvAKAV/6U552SmbGyCHWs3oVHVloWTHbp5btv92fkc1y
-         hIz080vVWvK09FQklotxTbEYNTC/nih7NB8/lBLfRTR7OrQjDTgkqjjBzzwox1XKmRch
-         hXXxDejFM3irUtwKAeCv1EPobi8rqjq3OR/6e2sVBn1h37azOg8pnc+BiLF18kbrRpWD
-         IJDrYSSYIe26a3nIDJhwUxeuOk0jMkP3NX13axnqaaPDKzklW/xOauOcUQMbftKa2lxY
-         HtHA==
-X-Gm-Message-State: AOJu0YyKDDrM1b+6MqGeEuS0Uhx/tGlW6+ywGlxQ3+IpK5GE1gnR/hjQ
-        ofZjUw33m+VKZWNRAO58cLOjAQ==
-X-Google-Smtp-Source: AGHT+IFc81vaP7IBMv3hFHKKW3AxhdkpisF1m7fjzRWDCOPi1QD2e2jdqdcY4Xf0M9X34yndsl5UgQ==
-X-Received: by 2002:a17:902:9891:b0:1c5:bb45:dd22 with SMTP id s17-20020a170902989100b001c5bb45dd22mr4189604plp.22.1696484599820;
-        Wed, 04 Oct 2023 22:43:19 -0700 (PDT)
+        bh=r420GRutCSvvUtoYiNRF3BRRrBITrwqNYaJuk7ybSA0=;
+        b=l7quyJs4K2xQ1TdGUcM9vm8m41rM3rCJEshwj+zpgEc9ja8o5bjaGh4oI7WXyiP3Zr
+         v8V0cJ3bziv1U0AdFafTxH8tZXSEzXJC0d1HnPG+JTUpXvdNhbX9lj9h9oETaRhPVZJq
+         grTuuF1vHBlKBaapyvlXMh5w3eaRMWwwv2f3qvFNnGzGFe2d4pHXoDfx/QTAYMKILAzk
+         pcmQdruLeAWFmhbuNK6vhWIUMcK/5bvFZR7dBX/SsbJ6f2v1O+c2BTZSKvksrLUTc/Mr
+         o9C/unkKRMb8ajUu4eeAfMzHd290m/IoHoJBwYfd4/FcsVy9ZDFV2izN0B4l8vZc+wYE
+         X4/g==
+X-Gm-Message-State: AOJu0Yx0YL3ePtFHZ+RDinI5l4bRSl7Nvl7bKDM8oNGe+Sh58emPegIv
+        tOTsF5Ig+voSfuXBpfdAvesnLA==
+X-Google-Smtp-Source: AGHT+IGrEaNulZXATDICU6GbGCDZTLZcgm/72DUwKB7osWRXCsupvPQ442Zw1TzJto5zAiHLUsIwMQ==
+X-Received: by 2002:a17:902:ef87:b0:1bf:7d3b:4404 with SMTP id iz7-20020a170902ef8700b001bf7d3b4404mr3261810plb.17.1696484602996;
+        Wed, 04 Oct 2023 22:43:22 -0700 (PDT)
 Received: from dhcp-10-192-206-197.iig.avagotech.net.net ([192.19.234.250])
-        by smtp.gmail.com with ESMTPSA id iz2-20020a170902ef8200b001c71ec1866fsm601422plb.258.2023.10.04.22.43.16
+        by smtp.gmail.com with ESMTPSA id iz2-20020a170902ef8200b001c71ec1866fsm601422plb.258.2023.10.04.22.43.20
         (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 04 Oct 2023 22:43:18 -0700 (PDT)
+        Wed, 04 Oct 2023 22:43:22 -0700 (PDT)
 From:   Selvin Xavier <selvin.xavier@broadcom.com>
 To:     jgg@ziepe.ca, leon@kernel.org
 Cc:     linux-rdma@vger.kernel.org, andrew.gospodarek@broadcom.com,
         Chandramohan Akula <chandramohan.akula@broadcom.com>,
         Selvin Xavier <selvin.xavier@broadcom.com>
-Subject: [PATCH for-next 1/3] RDMA/bnxt_re: Update HW interface headers
-Date:   Wed,  4 Oct 2023 22:31:27 -0700
-Message-Id: <1696483889-17427-2-git-send-email-selvin.xavier@broadcom.com>
+Subject: [PATCH for-next 2/3] RDMA/bnxt_re: Report async events and errors
+Date:   Wed,  4 Oct 2023 22:31:28 -0700
+Message-Id: <1696483889-17427-3-git-send-email-selvin.xavier@broadcom.com>
 X-Mailer: git-send-email 2.5.5
 In-Reply-To: <1696483889-17427-1-git-send-email-selvin.xavier@broadcom.com>
 References: <1696483889-17427-1-git-send-email-selvin.xavier@broadcom.com>
 Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
-        boundary="000000000000f67ee00606f1991a"
+        boundary="0000000000002676420606f19a9c"
 X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         MIME_HEADER_CTYPE_ONLY,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE,
@@ -68,105 +68,224 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
---000000000000f67ee00606f1991a
+--0000000000002676420606f19a9c
 
 From: Chandramohan Akula <chandramohan.akula@broadcom.com>
 
-Updating the HW structures for the affiliated event and error
-reporting. Newly added interface structures will be used in the
-followup patch.
+Report QP, SRQ and CQ async events and errors.
 
 Signed-off-by: Chandramohan Akula <chandramohan.akula@broadcom.com>
 Signed-off-by: Selvin Xavier <selvin.xavier@broadcom.com>
 ---
- drivers/infiniband/hw/bnxt_re/roce_hsi.h | 62 ++++++++++++++++++++++++++++++++
- 1 file changed, 62 insertions(+)
+ drivers/infiniband/hw/bnxt_re/main.c | 165 +++++++++++++++++++++++++++++++++--
+ 1 file changed, 156 insertions(+), 9 deletions(-)
 
-diff --git a/drivers/infiniband/hw/bnxt_re/roce_hsi.h b/drivers/infiniband/hw/bnxt_re/roce_hsi.h
-index 4a10303..4196d2b 100644
---- a/drivers/infiniband/hw/bnxt_re/roce_hsi.h
-+++ b/drivers/infiniband/hw/bnxt_re/roce_hsi.h
-@@ -2919,6 +2919,37 @@ struct creq_qp_error_notification {
- 	u8	status;
- 	u8	req_slow_path_state;
- 	u8	req_err_state_reason;
-+	#define CREQ_QP_ERROR_NOTIFICATION_REQ_ERR_STATE_REASON_NO_ERROR                    0X0UL
-+	#define CREQ_QP_ERROR_NOTIFICATION_REQ_ERR_STATE_REASON_REQ_OPCODE_ERROR            0X1UL
-+	#define CREQ_QP_ERROR_NOTIFICATION_REQ_ERR_STATE_REASON_REQ_TIMEOUT_RETRY_LIMIT     0X2UL
-+	#define CREQ_QP_ERROR_NOTIFICATION_REQ_ERR_STATE_REASON_REQ_RNR_TIMEOUT_RETRY_LIMIT 0X3UL
-+	#define CREQ_QP_ERROR_NOTIFICATION_REQ_ERR_STATE_REASON_REQ_NAK_ARRIVAL_1           0X4UL
-+	#define CREQ_QP_ERROR_NOTIFICATION_REQ_ERR_STATE_REASON_REQ_NAK_ARRIVAL_2           0X5UL
-+	#define CREQ_QP_ERROR_NOTIFICATION_REQ_ERR_STATE_REASON_REQ_NAK_ARRIVAL_3           0X6UL
-+	#define CREQ_QP_ERROR_NOTIFICATION_REQ_ERR_STATE_REASON_REQ_NAK_ARRIVAL_4           0X7UL
-+	#define CREQ_QP_ERROR_NOTIFICATION_REQ_ERR_STATE_REASON_REQ_RX_MEMORY_ERROR         0X8UL
-+	#define CREQ_QP_ERROR_NOTIFICATION_REQ_ERR_STATE_REASON_REQ_TX_MEMORY_ERROR         0X9UL
-+	#define CREQ_QP_ERROR_NOTIFICATION_REQ_ERR_STATE_REASON_REQ_READ_RESP_LENGTH        0XAUL
-+	#define CREQ_QP_ERROR_NOTIFICATION_REQ_ERR_STATE_REASON_REQ_INVALID_READ_RESP       0XBUL
-+	#define CREQ_QP_ERROR_NOTIFICATION_REQ_ERR_STATE_REASON_REQ_ILLEGAL_BIND            0XCUL
-+	#define CREQ_QP_ERROR_NOTIFICATION_REQ_ERR_STATE_REASON_REQ_ILLEGAL_FAST_REG        0XDUL
-+	#define CREQ_QP_ERROR_NOTIFICATION_REQ_ERR_STATE_REASON_REQ_ILLEGAL_INVALIDATE      0XEUL
-+	#define CREQ_QP_ERROR_NOTIFICATION_REQ_ERR_STATE_REASON_REQ_CMP_ERROR               0XFUL
-+	#define CREQ_QP_ERROR_NOTIFICATION_REQ_ERR_STATE_REASON_REQ_RETRAN_LOCAL_ERROR      0X10UL
-+	#define CREQ_QP_ERROR_NOTIFICATION_REQ_ERR_STATE_REASON_REQ_WQE_FORMAT_ERROR        0X11UL
-+	#define CREQ_QP_ERROR_NOTIFICATION_REQ_ERR_STATE_REASON_REQ_ORRQ_FORMAT_ERROR       0X12UL
-+	#define CREQ_QP_ERROR_NOTIFICATION_REQ_ERR_STATE_REASON_REQ_INVALID_AVID_ERROR      0X13UL
-+	#define CREQ_QP_ERROR_NOTIFICATION_REQ_ERR_STATE_REASON_REQ_AV_DOMAIN_ERROR         0X14UL
-+	#define CREQ_QP_ERROR_NOTIFICATION_REQ_ERR_STATE_REASON_REQ_CQ_LOAD_ERROR           0X15UL
-+	#define CREQ_QP_ERROR_NOTIFICATION_REQ_ERR_STATE_REASON_REQ_SERV_TYPE_ERROR         0X16UL
-+	#define CREQ_QP_ERROR_NOTIFICATION_REQ_ERR_STATE_REASON_REQ_INVALID_OP_ERROR        0X17UL
-+	#define CREQ_QP_ERROR_NOTIFICATION_REQ_ERR_STATE_REASON_REQ_TX_PCI_ERROR            0X18UL
-+	#define CREQ_QP_ERROR_NOTIFICATION_REQ_ERR_STATE_REASON_REQ_RX_PCI_ERROR            0X19UL
-+	#define CREQ_QP_ERROR_NOTIFICATION_REQ_ERR_STATE_REASON_REQ_PROD_WQE_MSMTCH_ERROR   0X1AUL
-+	#define CREQ_QP_ERROR_NOTIFICATION_REQ_ERR_STATE_REASON_REQ_PSN_RANGE_CHECK_ERROR   0X1BUL
-+	#define CREQ_QP_ERROR_NOTIFICATION_REQ_ERR_STATE_REASON_REQ_RETX_SETUP_ERROR        0X1CUL
-+	#define CREQ_QP_ERROR_NOTIFICATION_REQ_ERR_STATE_REASON_LAST \
-+			CREQ_QP_ERROR_NOTIFICATION_REQ_ERR_STATE_REASON_REQ_RETX_SETUP_ERROR
- 	__le32	xid;
- 	u8	v;
- 	#define CREQ_QP_ERROR_NOTIFICATION_V     0x1UL
-@@ -2928,6 +2959,37 @@ struct creq_qp_error_notification {
- 		CREQ_QP_ERROR_NOTIFICATION_EVENT_QP_ERROR_NOTIFICATION
- 	u8	res_slow_path_state;
- 	u8	res_err_state_reason;
-+	#define CREQ_QP_ERROR_NOTIFICATION_RES_ERR_STATE_REASON_NO_ERROR                      0x0UL
-+	#define CREQ_QP_ERROR_NOTIFICATION_RES_ERR_STATE_REASON_RES_EXCEED_MAX                0x1UL
-+	#define CREQ_QP_ERROR_NOTIFICATION_RES_ERR_STATE_REASON_RES_PAYLOAD_LENGTH_MISMATCH   0x2UL
-+	#define CREQ_QP_ERROR_NOTIFICATION_RES_ERR_STATE_REASON_RES_EXCEEDS_WQE               0x3UL
-+	#define CREQ_QP_ERROR_NOTIFICATION_RES_ERR_STATE_REASON_RES_OPCODE_ERROR              0x4UL
-+	#define CREQ_QP_ERROR_NOTIFICATION_RES_ERR_STATE_REASON_RES_PSN_SEQ_ERROR_RETRY_LIMIT 0x5UL
-+	#define CREQ_QP_ERROR_NOTIFICATION_RES_ERR_STATE_REASON_RES_RX_INVALID_R_KEY          0x6UL
-+	#define CREQ_QP_ERROR_NOTIFICATION_RES_ERR_STATE_REASON_RES_RX_DOMAIN_ERROR           0x7UL
-+	#define CREQ_QP_ERROR_NOTIFICATION_RES_ERR_STATE_REASON_RES_RX_NO_PERMISSION          0x8UL
-+	#define CREQ_QP_ERROR_NOTIFICATION_RES_ERR_STATE_REASON_RES_RX_RANGE_ERROR            0x9UL
-+	#define CREQ_QP_ERROR_NOTIFICATION_RES_ERR_STATE_REASON_RES_TX_INVALID_R_KEY          0xaUL
-+	#define CREQ_QP_ERROR_NOTIFICATION_RES_ERR_STATE_REASON_RES_TX_DOMAIN_ERROR           0xbUL
-+	#define CREQ_QP_ERROR_NOTIFICATION_RES_ERR_STATE_REASON_RES_TX_NO_PERMISSION          0xcUL
-+	#define CREQ_QP_ERROR_NOTIFICATION_RES_ERR_STATE_REASON_RES_TX_RANGE_ERROR            0xdUL
-+	#define CREQ_QP_ERROR_NOTIFICATION_RES_ERR_STATE_REASON_RES_IRRQ_OFLOW                0xeUL
-+	#define CREQ_QP_ERROR_NOTIFICATION_RES_ERR_STATE_REASON_RES_UNSUPPORTED_OPCODE        0xfUL
-+	#define CREQ_QP_ERROR_NOTIFICATION_RES_ERR_STATE_REASON_RES_UNALIGN_ATOMIC            0x10UL
-+	#define CREQ_QP_ERROR_NOTIFICATION_RES_ERR_STATE_REASON_RES_REM_INVALIDATE            0x11UL
-+	#define CREQ_QP_ERROR_NOTIFICATION_RES_ERR_STATE_REASON_RES_MEMORY_ERROR              0x12UL
-+	#define CREQ_QP_ERROR_NOTIFICATION_RES_ERR_STATE_REASON_RES_SRQ_ERROR                 0x13UL
-+	#define CREQ_QP_ERROR_NOTIFICATION_RES_ERR_STATE_REASON_RES_CMP_ERROR                 0x14UL
-+	#define CREQ_QP_ERROR_NOTIFICATION_RES_ERR_STATE_REASON_RES_INVALID_DUP_RKEY          0x15UL
-+	#define CREQ_QP_ERROR_NOTIFICATION_RES_ERR_STATE_REASON_RES_WQE_FORMAT_ERROR          0x16UL
-+	#define CREQ_QP_ERROR_NOTIFICATION_RES_ERR_STATE_REASON_RES_IRRQ_FORMAT_ERROR         0x17UL
-+	#define CREQ_QP_ERROR_NOTIFICATION_RES_ERR_STATE_REASON_RES_CQ_LOAD_ERROR             0x18UL
-+	#define CREQ_QP_ERROR_NOTIFICATION_RES_ERR_STATE_REASON_RES_SRQ_LOAD_ERROR            0x19UL
-+	#define CREQ_QP_ERROR_NOTIFICATION_RES_ERR_STATE_REASON_RES_TX_PCI_ERROR              0x1bUL
-+	#define CREQ_QP_ERROR_NOTIFICATION_RES_ERR_STATE_REASON_RES_RX_PCI_ERROR              0x1cUL
-+	#define CREQ_QP_ERROR_NOTIFICATION_RES_ERR_STATE_REASON_RES_PSN_NOT_FOUND             0x1dUL
-+	#define CREQ_QP_ERROR_NOTIFICATION_RES_ERR_STATE_REASON_LAST \
-+			CREQ_QP_ERROR_NOTIFICATION_RES_ERR_STATE_REASON_RES_PSN_NOT_FOUND
- 	__le16	sq_cons_idx;
- 	__le16	rq_cons_idx;
- };
+diff --git a/drivers/infiniband/hw/bnxt_re/main.c b/drivers/infiniband/hw/bnxt_re/main.c
+index c9066aa..7bd18ec 100644
+--- a/drivers/infiniband/hw/bnxt_re/main.c
++++ b/drivers/infiniband/hw/bnxt_re/main.c
+@@ -970,6 +970,9 @@ static int bnxt_re_handle_unaffi_async_event(struct creq_func_event
+ static int bnxt_re_handle_qp_async_event(struct creq_qp_event *qp_event,
+ 					 struct bnxt_re_qp *qp)
+ {
++	struct bnxt_re_srq *srq = container_of(qp->qplib_qp.srq, struct bnxt_re_srq,
++					       qplib_srq);
++	struct creq_qp_error_notification *err_event;
+ 	struct ib_event event = {};
+ 	unsigned int flags;
+ 
+@@ -980,14 +983,146 @@ static int bnxt_re_handle_qp_async_event(struct creq_qp_event *qp_event,
+ 		bnxt_re_unlock_cqs(qp, flags);
+ 	}
+ 
+-	if (qp->qplib_qp.srq) {
+-		event.device = &qp->rdev->ibdev;
+-		event.element.qp = &qp->ib_qp;
+-		event.event = IB_EVENT_QP_LAST_WQE_REACHED;
++	event.device = &qp->rdev->ibdev;
++	event.element.qp = &qp->ib_qp;
++	event.event = IB_EVENT_QP_FATAL;
++
++	err_event = (struct creq_qp_error_notification *)qp_event;
++
++	switch (err_event->req_err_state_reason) {
++	case CREQ_QP_ERROR_NOTIFICATION_REQ_ERR_STATE_REASON_REQ_OPCODE_ERROR:
++	case CREQ_QP_ERROR_NOTIFICATION_REQ_ERR_STATE_REASON_REQ_TIMEOUT_RETRY_LIMIT:
++	case CREQ_QP_ERROR_NOTIFICATION_REQ_ERR_STATE_REASON_REQ_RNR_TIMEOUT_RETRY_LIMIT:
++	case CREQ_QP_ERROR_NOTIFICATION_REQ_ERR_STATE_REASON_REQ_NAK_ARRIVAL_2:
++	case CREQ_QP_ERROR_NOTIFICATION_REQ_ERR_STATE_REASON_REQ_NAK_ARRIVAL_3:
++	case CREQ_QP_ERROR_NOTIFICATION_REQ_ERR_STATE_REASON_REQ_INVALID_READ_RESP:
++	case CREQ_QP_ERROR_NOTIFICATION_REQ_ERR_STATE_REASON_REQ_ILLEGAL_BIND:
++	case CREQ_QP_ERROR_NOTIFICATION_REQ_ERR_STATE_REASON_REQ_ILLEGAL_FAST_REG:
++	case CREQ_QP_ERROR_NOTIFICATION_REQ_ERR_STATE_REASON_REQ_ILLEGAL_INVALIDATE:
++	case CREQ_QP_ERROR_NOTIFICATION_REQ_ERR_STATE_REASON_REQ_RETRAN_LOCAL_ERROR:
++	case CREQ_QP_ERROR_NOTIFICATION_REQ_ERR_STATE_REASON_REQ_AV_DOMAIN_ERROR:
++	case CREQ_QP_ERROR_NOTIFICATION_REQ_ERR_STATE_REASON_REQ_PROD_WQE_MSMTCH_ERROR:
++	case CREQ_QP_ERROR_NOTIFICATION_REQ_ERR_STATE_REASON_REQ_PSN_RANGE_CHECK_ERROR:
++		event.event = IB_EVENT_QP_ACCESS_ERR;
++		break;
++	case CREQ_QP_ERROR_NOTIFICATION_REQ_ERR_STATE_REASON_REQ_NAK_ARRIVAL_1:
++	case CREQ_QP_ERROR_NOTIFICATION_REQ_ERR_STATE_REASON_REQ_NAK_ARRIVAL_4:
++	case CREQ_QP_ERROR_NOTIFICATION_REQ_ERR_STATE_REASON_REQ_READ_RESP_LENGTH:
++	case CREQ_QP_ERROR_NOTIFICATION_REQ_ERR_STATE_REASON_REQ_WQE_FORMAT_ERROR:
++	case CREQ_QP_ERROR_NOTIFICATION_REQ_ERR_STATE_REASON_REQ_ORRQ_FORMAT_ERROR:
++	case CREQ_QP_ERROR_NOTIFICATION_REQ_ERR_STATE_REASON_REQ_INVALID_AVID_ERROR:
++	case CREQ_QP_ERROR_NOTIFICATION_REQ_ERR_STATE_REASON_REQ_SERV_TYPE_ERROR:
++	case CREQ_QP_ERROR_NOTIFICATION_REQ_ERR_STATE_REASON_REQ_INVALID_OP_ERROR:
++		event.event = IB_EVENT_QP_REQ_ERR;
++		break;
++	case CREQ_QP_ERROR_NOTIFICATION_REQ_ERR_STATE_REASON_REQ_RX_MEMORY_ERROR:
++	case CREQ_QP_ERROR_NOTIFICATION_REQ_ERR_STATE_REASON_REQ_TX_MEMORY_ERROR:
++	case CREQ_QP_ERROR_NOTIFICATION_REQ_ERR_STATE_REASON_REQ_CMP_ERROR:
++	case CREQ_QP_ERROR_NOTIFICATION_REQ_ERR_STATE_REASON_REQ_CQ_LOAD_ERROR:
++	case CREQ_QP_ERROR_NOTIFICATION_REQ_ERR_STATE_REASON_REQ_TX_PCI_ERROR:
++	case CREQ_QP_ERROR_NOTIFICATION_REQ_ERR_STATE_REASON_REQ_RX_PCI_ERROR:
++	case CREQ_QP_ERROR_NOTIFICATION_REQ_ERR_STATE_REASON_REQ_RETX_SETUP_ERROR:
++		event.event = IB_EVENT_QP_FATAL;
++		break;
++
++	default:
++		break;
+ 	}
+ 
+-	if (event.device && qp->ib_qp.event_handler)
++	switch (err_event->res_err_state_reason) {
++	case CREQ_QP_ERROR_NOTIFICATION_RES_ERR_STATE_REASON_RES_EXCEED_MAX:
++	case CREQ_QP_ERROR_NOTIFICATION_RES_ERR_STATE_REASON_RES_PAYLOAD_LENGTH_MISMATCH:
++	case CREQ_QP_ERROR_NOTIFICATION_RES_ERR_STATE_REASON_RES_PSN_SEQ_ERROR_RETRY_LIMIT:
++	case CREQ_QP_ERROR_NOTIFICATION_RES_ERR_STATE_REASON_RES_RX_INVALID_R_KEY:
++	case CREQ_QP_ERROR_NOTIFICATION_RES_ERR_STATE_REASON_RES_RX_DOMAIN_ERROR:
++	case CREQ_QP_ERROR_NOTIFICATION_RES_ERR_STATE_REASON_RES_RX_NO_PERMISSION:
++	case CREQ_QP_ERROR_NOTIFICATION_RES_ERR_STATE_REASON_RES_RX_RANGE_ERROR:
++	case CREQ_QP_ERROR_NOTIFICATION_RES_ERR_STATE_REASON_RES_TX_INVALID_R_KEY:
++	case CREQ_QP_ERROR_NOTIFICATION_RES_ERR_STATE_REASON_RES_TX_DOMAIN_ERROR:
++	case CREQ_QP_ERROR_NOTIFICATION_RES_ERR_STATE_REASON_RES_TX_NO_PERMISSION:
++	case CREQ_QP_ERROR_NOTIFICATION_RES_ERR_STATE_REASON_RES_TX_RANGE_ERROR:
++	case CREQ_QP_ERROR_NOTIFICATION_RES_ERR_STATE_REASON_RES_UNALIGN_ATOMIC:
++	case CREQ_QP_ERROR_NOTIFICATION_RES_ERR_STATE_REASON_RES_PSN_NOT_FOUND:
++	case CREQ_QP_ERROR_NOTIFICATION_RES_ERR_STATE_REASON_RES_INVALID_DUP_RKEY:
++	case CREQ_QP_ERROR_NOTIFICATION_RES_ERR_STATE_REASON_RES_IRRQ_FORMAT_ERROR:
++		event.event = IB_EVENT_QP_ACCESS_ERR;
++		break;
++	case CREQ_QP_ERROR_NOTIFICATION_RES_ERR_STATE_REASON_RES_EXCEEDS_WQE:
++	case CREQ_QP_ERROR_NOTIFICATION_RES_ERR_STATE_REASON_RES_WQE_FORMAT_ERROR:
++	case CREQ_QP_ERROR_NOTIFICATION_RES_ERR_STATE_REASON_RES_UNSUPPORTED_OPCODE:
++	case CREQ_QP_ERROR_NOTIFICATION_RES_ERR_STATE_REASON_RES_REM_INVALIDATE:
++	case CREQ_QP_ERROR_NOTIFICATION_RES_ERR_STATE_REASON_RES_OPCODE_ERROR:
++		event.event = IB_EVENT_QP_REQ_ERR;
++		break;
++	case CREQ_QP_ERROR_NOTIFICATION_RES_ERR_STATE_REASON_RES_IRRQ_OFLOW:
++	case CREQ_QP_ERROR_NOTIFICATION_RES_ERR_STATE_REASON_RES_CMP_ERROR:
++	case CREQ_QP_ERROR_NOTIFICATION_RES_ERR_STATE_REASON_RES_CQ_LOAD_ERROR:
++	case CREQ_QP_ERROR_NOTIFICATION_RES_ERR_STATE_REASON_RES_TX_PCI_ERROR:
++	case CREQ_QP_ERROR_NOTIFICATION_RES_ERR_STATE_REASON_RES_RX_PCI_ERROR:
++	case CREQ_QP_ERROR_NOTIFICATION_RES_ERR_STATE_REASON_RES_MEMORY_ERROR:
++		event.event = IB_EVENT_QP_FATAL;
++		break;
++	case CREQ_QP_ERROR_NOTIFICATION_RES_ERR_STATE_REASON_RES_SRQ_LOAD_ERROR:
++	case CREQ_QP_ERROR_NOTIFICATION_RES_ERR_STATE_REASON_RES_SRQ_ERROR:
++		if (srq)
++			event.event = IB_EVENT_SRQ_ERR;
++		break;
++	default:
++		break;
++	}
++
++	if (err_event->res_err_state_reason || err_event->req_err_state_reason) {
++		dev_err_once(rdev_to_dev(qp->rdev),
++			     "%s %s qp_id: %d cons (%d %d) req (%d %d) res (%d %d)\n",
++			     __func__, rdma_is_kernel_res(&qp->ib_qp.res) ? "kernel" : "user",
++			     qp->qplib_qp.id,
++			     err_event->sq_cons_idx,
++			     err_event->rq_cons_idx,
++			     err_event->req_slow_path_state,
++			     err_event->req_err_state_reason,
++			     err_event->res_slow_path_state,
++			     err_event->res_err_state_reason);
++	} else {
++		if (srq)
++			event.event = IB_EVENT_QP_LAST_WQE_REACHED;
++	}
++
++	if (event.event == IB_EVENT_SRQ_ERR && srq->ib_srq.event_handler)  {
++		(*srq->ib_srq.event_handler)(&event,
++				srq->ib_srq.srq_context);
++	} else if (event.device && qp->ib_qp.event_handler) {
+ 		qp->ib_qp.event_handler(&event, qp->ib_qp.qp_context);
++	}
++
++	return 0;
++}
++
++static int bnxt_re_handle_cq_async_error(void *event, struct bnxt_re_cq *cq)
++{
++	struct creq_cq_error_notification *cqerr;
++	struct ib_event ibevent = {};
++
++	cqerr = event;
++	switch (cqerr->cq_err_reason) {
++	case CREQ_CQ_ERROR_NOTIFICATION_CQ_ERR_REASON_REQ_CQ_INVALID_ERROR:
++	case CREQ_CQ_ERROR_NOTIFICATION_CQ_ERR_REASON_REQ_CQ_OVERFLOW_ERROR:
++	case CREQ_CQ_ERROR_NOTIFICATION_CQ_ERR_REASON_REQ_CQ_LOAD_ERROR:
++	case CREQ_CQ_ERROR_NOTIFICATION_CQ_ERR_REASON_RES_CQ_INVALID_ERROR:
++	case CREQ_CQ_ERROR_NOTIFICATION_CQ_ERR_REASON_RES_CQ_OVERFLOW_ERROR:
++	case CREQ_CQ_ERROR_NOTIFICATION_CQ_ERR_REASON_RES_CQ_LOAD_ERROR:
++		ibevent.event = IB_EVENT_CQ_ERR;
++	default:
++		break;
++	}
++
++	if (ibevent.event == IB_EVENT_CQ_ERR && cq->ib_cq.event_handler) {
++		ibevent.element.cq = &cq->ib_cq;
++		ibevent.device = &cq->rdev->ibdev;
++
++		dev_err_once(rdev_to_dev(cq->rdev),
++			     "%s err reason %d\n", __func__, cqerr->cq_err_reason);
++		cq->ib_cq.event_handler(&ibevent, cq->ib_cq.cq_context);
++	}
+ 
+ 	return 0;
+ }
+@@ -995,6 +1130,10 @@ static int bnxt_re_handle_qp_async_event(struct creq_qp_event *qp_event,
+ static int bnxt_re_handle_affi_async_event(struct creq_qp_event *affi_async,
+ 					   void *obj)
+ {
++	struct bnxt_qplib_qp *lib_qp;
++	struct bnxt_qplib_cq *lib_cq;
++	struct bnxt_re_qp *qp;
++	struct bnxt_re_cq *cq;
+ 	int rc = 0;
+ 	u8 event;
+ 
+@@ -1002,11 +1141,19 @@ static int bnxt_re_handle_affi_async_event(struct creq_qp_event *affi_async,
+ 		return rc; /* QP was already dead, still return success */
+ 
+ 	event = affi_async->event;
+-	if (event == CREQ_QP_EVENT_EVENT_QP_ERROR_NOTIFICATION) {
+-		struct bnxt_qplib_qp *lib_qp = obj;
+-		struct bnxt_re_qp *qp = container_of(lib_qp, struct bnxt_re_qp,
+-						     qplib_qp);
++	switch (event) {
++	case CREQ_QP_EVENT_EVENT_QP_ERROR_NOTIFICATION:
++		lib_qp = obj;
++		qp = container_of(lib_qp, struct bnxt_re_qp, qplib_qp);
+ 		rc = bnxt_re_handle_qp_async_event(affi_async, qp);
++		break;
++	case CREQ_QP_EVENT_EVENT_CQ_ERROR_NOTIFICATION:
++		lib_cq = obj;
++		cq = container_of(lib_cq, struct bnxt_re_cq, qplib_cq);
++		rc = bnxt_re_handle_cq_async_error(affi_async, cq);
++		break;
++	default:
++		rc = -EINVAL;
+ 	}
+ 	return rc;
+ }
 -- 
 2.5.5
 
 
---000000000000f67ee00606f1991a
+--0000000000002676420606f19a9c
 Content-Type: application/pkcs7-signature; name="smime.p7s"
 Content-Transfer-Encoding: base64
 Content-Disposition: attachment; filename="smime.p7s"
@@ -237,14 +356,14 @@ j1Ze9ndr+YDXPpCymOsynmmw0ErHZGGW1OmMpAEt0A+613glWCURLDlP8HONi1wnINV6aDiEf0ad
 9NMGxDsp+YWiRXD3txfo2OMQbpIxM90QfhKKacX8t1J1oAAWxDrLVTJBXBNvz5tr+D1sYwuye93r
 hImmkM1unboxggJtMIICaQIBATBrMFsxCzAJBgNVBAYTAkJFMRkwFwYDVQQKExBHbG9iYWxTaWdu
 IG52LXNhMTEwLwYDVQQDEyhHbG9iYWxTaWduIEdDQyBSMyBQZXJzb25hbFNpZ24gMiBDQSAyMDIw
-Agxy+Cu4x/7lM0zxY7cwDQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIEIGIsNxS9YL9x
-l3Ek88fD3wikY56z4l94Z5hr9fBpWgGVMBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZI
-hvcNAQkFMQ8XDTIzMTAwNTA1NDMyMFowaQYJKoZIhvcNAQkPMVwwWjALBglghkgBZQMEASowCwYJ
+Agxy+Cu4x/7lM0zxY7cwDQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIEIGFTkXGQ0Hw6
+B8Tw8M1PrNOxKaLrMdzm/mGPEP7fIpI/MBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZI
+hvcNAQkFMQ8XDTIzMTAwNTA1NDMyM1owaQYJKoZIhvcNAQkPMVwwWjALBglghkgBZQMEASowCwYJ
 YIZIAWUDBAEWMAsGCWCGSAFlAwQBAjAKBggqhkiG9w0DBzALBgkqhkiG9w0BAQowCwYJKoZIhvcN
-AQEHMAsGCWCGSAFlAwQCATANBgkqhkiG9w0BAQEFAASCAQALaq8Wd/dj1NDZ0Po9/ikfSn/yjeyl
-d2PF6AvkSCs6EBjN1KTUJOsyOTwpJmYNJdIAduVYWUz4eFxW4IKxVX3s9trFvI4EC6/VjAA5supa
-erobED9eRMNw0iPDH4Ldgd2iCL7BBikBsXpVQfdriz9QNWKErUBFYoS4mBcAakb+ChXXi6yLhQK5
-5NI4n61HSgchc7gXs1MRZcXjQu6C3z31M4DYMoDe5s8fP9pgzj7Vv09/fouyC5RkzszAQuL8DrA7
-7vPJow3AebARbLSfcOsiqAn83vUGfNVUhFE2WMPy7nOZq80dPR5WVpefXZOCA11uUjo8H8T2KJ/h
-x7mcM2GI
---000000000000f67ee00606f1991a--
+AQEHMAsGCWCGSAFlAwQCATANBgkqhkiG9w0BAQEFAASCAQBqr1UK4Sz5fa9D0cAS6HL2v57C8nqC
+lQnXYmV/FQpZxPruqN8J6RWo5VBLj5VGpwTj20iYZ6h/d/oAxkdlFeOUopvf9DKN56usZmFZirCW
+ooNQ3lidlE4UhNj8vIj3FCRC2NiwmeLcc+Oo5kvhlQSCFFEm3y3tfdk3TMTcrJnxfUFTKeKtUJBp
+sjCoaF3ZJNo9U9sxsOUvFXWPK0JFsszgNs172FamysASnQyYsmlP/to6dMaUMKbEKYLmldXDBL6L
+J7RnxCm7MyKV+XcmItlgIdakcVyTtVZXjhn46UVqpNGx9yVF3WK7iDUfLQ9qQGLVAGNtfQHhVI3Y
+e9ZDo+ia
+--0000000000002676420606f19a9c--
