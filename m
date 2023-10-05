@@ -2,171 +2,202 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6DFC47BA8AA
-	for <lists+linux-rdma@lfdr.de>; Thu,  5 Oct 2023 20:07:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 065E57BA8DE
+	for <lists+linux-rdma@lfdr.de>; Thu,  5 Oct 2023 20:15:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231332AbjJESH4 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 5 Oct 2023 14:07:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35268 "EHLO
+        id S232064AbjJESPY (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 5 Oct 2023 14:15:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51924 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232135AbjJESHl (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 5 Oct 2023 14:07:41 -0400
-Received: from EUR05-VI1-obe.outbound.protection.outlook.com (mail-vi1eur05on2085.outbound.protection.outlook.com [40.107.21.85])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 820E793;
-        Thu,  5 Oct 2023 11:07:40 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Iu7BWHsSxK77pEZWSyps2nFaqxFYODkBkwn2y2cYVXPT3maJnw+a3FyHACIr+Rb5/oN6P/PIVFXQew4c6WvkY00aId4ZWS7ClEtBxHBCGojMBoRTizrga39TECYOmYPSdArXJXvqc/CSFC0jJmRO6eVVHhTQ/ngTwEzhK/85Mmr7hYrZ16petvvr4OZUlYbd+wKXUhV1VUJW5zn+SzBTWgdwf3WtLKywChgPcmNvGHUB6ebj8OBGwoG1G3quALeVHXA4NWyyObvn1wkaBfXpdzl8E729ltudMQx1GS3f6O25PgTCmaofuYaqGSmmWYypXieYqWqJnovcRSF1XNy2TQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=XPFhBZyLC0qBinCvNIGYq0QFRoz4qNOw8azdrzHJyIs=;
- b=axNn7oUPexSQV6i2mX7jZjBLs5qoTtYiJW998t4T0Hsuvlc7Md3QXwpJqT/AEvuKorgsNuffIj2lJLxamU1LRzFW8WNky9mmOiVz+VwjjNnK/i8YzasMHY0Dku038FKmA4Zp5+zopEw7qwxO6fjtPhACltpw6OBlCOUqdRMWEkemZNlIZTVv7iAUY4CVT9pvogoT4XdKtc/KJoUFyHFuIGStgvSTncEQLtWy0On4+Wq/xl1Wcrkwe721tcCf8QuwBU8voUohlZTYIl8rjgEheNipQHX2I+QJ+zTEHWAwqZn3GfdNs0zSakxFI8+/E9PQ9Yy/pm5FFbaD3vJHGPQoyg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oss.nxp.com; dmarc=pass action=none header.from=oss.nxp.com;
- dkim=pass header.d=oss.nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=NXP1.onmicrosoft.com;
- s=selector2-NXP1-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=XPFhBZyLC0qBinCvNIGYq0QFRoz4qNOw8azdrzHJyIs=;
- b=gFJ2EPNTOHDJKxCEi+9d8ovBasrbgb9hX1YfrexPK27Sw6B7pm3HybJoZGdPIHvmc35OCV2BlU1126lYbeAiRPuroJYz4INSj9Askaug03M2GDhdnsVMYZ/3zq2XDIj007Q/eEYKSQwLdtH54D0tPlpR1xWIfGbrkAZs0JPDqHI=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=oss.nxp.com;
-Received: from AM9PR04MB8954.eurprd04.prod.outlook.com (2603:10a6:20b:409::7)
- by AM8PR04MB7890.eurprd04.prod.outlook.com (2603:10a6:20b:24e::10) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6813.23; Thu, 5 Oct
- 2023 18:07:37 +0000
-Received: from AM9PR04MB8954.eurprd04.prod.outlook.com
- ([fe80::e109:7026:7d76:5617]) by AM9PR04MB8954.eurprd04.prod.outlook.com
- ([fe80::e109:7026:7d76:5617%7]) with mapi id 15.20.6838.033; Thu, 5 Oct 2023
- 18:07:37 +0000
-From:   "Radu Pirea (NXP OSS)" <radu-nicolae.pirea@oss.nxp.com>
-To:     linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        linux-rdma@vger.kernel.org
-Cc:     sgoutham@marvell.com, gakula@marvell.com, sbhatta@marvell.com,
-        hkelam@marvell.com, davem@davemloft.net, edumazet@google.com,
-        kuba@kernel.org, pabeni@redhat.com, borisp@nvidia.com,
-        saeedm@nvidia.com, leon@kernel.org, sd@queasysnail.net,
-        andrew@lunn.ch, hkallweit1@gmail.com, linux@armlinux.org.uk,
-        richardcochran@gmail.com, sebastian.tobuschat@oss.nxp.com,
-        phaddad@nvidia.com, ehakim@nvidia.com, raeds@nvidia.com,
-        atenart@kernel.org,
-        "Radu Pirea (NXP OSS)" <radu-nicolae.pirea@oss.nxp.com>
-Subject: [PATCH net v7 4/4] net/mlx5e: macsec: use update_pn flag instead of PN comparation
-Date:   Thu,  5 Oct 2023 21:06:36 +0300
-Message-Id: <20231005180636.672791-5-radu-nicolae.pirea@oss.nxp.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20231005180636.672791-1-radu-nicolae.pirea@oss.nxp.com>
-References: <20231005180636.672791-1-radu-nicolae.pirea@oss.nxp.com>
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: VI1P194CA0041.EURP194.PROD.OUTLOOK.COM
- (2603:10a6:803:3c::30) To AM9PR04MB8954.eurprd04.prod.outlook.com
- (2603:10a6:20b:409::7)
+        with ESMTP id S232618AbjJESOt (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 5 Oct 2023 14:14:49 -0400
+Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7BBD490;
+        Thu,  5 Oct 2023 11:14:48 -0700 (PDT)
+Received: from pps.filterd (m0356516.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 395IATn3009789;
+        Thu, 5 Oct 2023 18:14:43 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=+L4uBN3V6SGI+UzD1bnXmWtYj0cde2bUpvKlk/TPzJ0=;
+ b=tWknqM8xVf8eXnsHxPcSs+bCLDcGgWUVaAoywcvdi+NpqumGRm6u2ER76g+8LJhBhgw4
+ OJYdN1EwC/la1p66EfxiHo7PeV9F2eprPWnHv3Pydp+fzYpMBIQImVUaiYDL40Z1nwr8
+ cx3HkbvhWb+0rZb//z9023DJpXrHSLw78uO/pd5nr4PVFOMKciJgsR1TrAQINYbnbjJQ
+ XzmM7Wxv3Ny7Op11iKBpjd6N9UwN3IH/392/cWUczoTZCWdXCaEqZfrXFiD+iwu5x5N5
+ xGRmiMM6zj4ug9oz332kRfFKBayGQfa9E8NM1UMRpzCLc3z0y3bEo3V+L9QhuM0h4aaU 2Q== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3tj26h866n-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 05 Oct 2023 18:14:43 +0000
+Received: from m0356516.ppops.net (m0356516.ppops.net [127.0.0.1])
+        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 395IAXfk010416;
+        Thu, 5 Oct 2023 18:14:42 GMT
+Received: from ppma12.dal12v.mail.ibm.com (dc.9e.1632.ip4.static.sl-reverse.com [50.22.158.220])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3tj26h8664-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 05 Oct 2023 18:14:42 +0000
+Received: from pps.filterd (ppma12.dal12v.mail.ibm.com [127.0.0.1])
+        by ppma12.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 395HstF9005868;
+        Thu, 5 Oct 2023 18:14:42 GMT
+Received: from smtprelay03.wdc07v.mail.ibm.com ([172.16.1.70])
+        by ppma12.dal12v.mail.ibm.com (PPS) with ESMTPS id 3tex0tgjug-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 05 Oct 2023 18:14:42 +0000
+Received: from smtpav04.dal12v.mail.ibm.com (smtpav04.dal12v.mail.ibm.com [10.241.53.103])
+        by smtprelay03.wdc07v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 395IEed42622178
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 5 Oct 2023 18:14:40 GMT
+Received: from smtpav04.dal12v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 5E79E58062;
+        Thu,  5 Oct 2023 18:14:40 +0000 (GMT)
+Received: from smtpav04.dal12v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id D9B3B58052;
+        Thu,  5 Oct 2023 18:14:38 +0000 (GMT)
+Received: from [9.171.41.118] (unknown [9.171.41.118])
+        by smtpav04.dal12v.mail.ibm.com (Postfix) with ESMTP;
+        Thu,  5 Oct 2023 18:14:38 +0000 (GMT)
+Message-ID: <b4470cec-7b9b-5ce5-01e0-9270f6564fbb@linux.ibm.com>
+Date:   Thu, 5 Oct 2023 20:14:37 +0200
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: AM9PR04MB8954:EE_|AM8PR04MB7890:EE_
-X-MS-Office365-Filtering-Correlation-Id: 5d2f66ce-6c82-42fc-8351-08dbc5cdf54c
-X-MS-Exchange-SharedMailbox-RoutingAgent-Processed: True
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: uIDjLEGi80KKfLoiKBfPwR6SqRkJ+sSccc8AY7alPd9vphDHJqiL8c1EX7a4oxWxSflCb3TGzhT2L41ko0BFQC3mUi+29PrRt/UPUzjsAZ2vdokL8MyR8hOkaYFRC65GyqN2fcjCQsyeggNsh1vJi0CpscSWP0c7pEEUYP7MIERHbKjoJyDfXRnK43pHQH6+tISaX7unS1c61Sse2lbOYE8WlmMaWjHaZxpgL6ciisVV1UOErPXdrh1GJM/lWUYEpTKXZSNOrPEQRFm8EgCvkYSrVvQZRJTskMgV/818omRH1IMZ/BlmZ57UZFngqDxVBIEGUSwzRgjwFB6YkIyFXYExkpUzV9dyIxM2BlRZ2FqAlOT/Z4rh3TjyXYd+vgrClJx1UCKN8Fz03Goq3aFG839x8Zg9KLR6o8XW9k2X0IVXvvMUaHBZYlTnxfiMbiutb1d4+bZgk4HgEr8PsjUZXtgnRo//voKJFY2zJ839NE1ubJ5xrYfRb3w15NnvnjN1y4hladjgmPsTAl8qy7Dv/qXTyNbz6ppABx8pO4hraRNqp3w2zE20yd0xaA9qvgk2tfRPEdo2sSSvYJh3ZstJ8O8zqQL8XcgvLa4cIbbWpUj09bLUZn1+/YGeizQWV62T
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM9PR04MB8954.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(396003)(39860400002)(346002)(366004)(376002)(136003)(230922051799003)(186009)(1800799009)(64100799003)(451199024)(6512007)(52116002)(6506007)(478600001)(6486002)(83380400001)(26005)(1076003)(7416002)(2906002)(2616005)(15650500001)(316002)(66476007)(66556008)(66946007)(4326008)(41300700001)(8936002)(8676002)(5660300002)(38100700002)(38350700002)(86362001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?w87/Ekzlr9nZCSapRGFAiGe57PVptEovOoBjPVxentKDEHTKqaW26LDgsP5/?=
- =?us-ascii?Q?05CE1hM89lti7rEPgfelnKLyf0CBJk0RBNRau9uswzrA4BKNebKDajCym/1W?=
- =?us-ascii?Q?X0QOo+Pr/HC9mPuM733OgG/VBl2HA+VhHpsBSoq1BpYRU6TbMI2Ri5grcL8o?=
- =?us-ascii?Q?XiiVQVNdNCvQo6cZIkxujqYmZawQzeisOVMCzZI1swSIW/fIOBTw7g1iO1qo?=
- =?us-ascii?Q?su4IDDGVaTmP93ivrbHnywE4BMi8xscPSL9VraVceIXHirBDsICFAkE+LCjc?=
- =?us-ascii?Q?6d6VLTPIPozSjCSSvqKKAYOi1bJjO4AUosy8E51yokuXDbfZGVB8Y5+7xQfc?=
- =?us-ascii?Q?o1FWgn4iHbCLVVorZA/21XvLjDQg2G0X53WTBd2ffEbWAQjmzOciqXxZZf1b?=
- =?us-ascii?Q?f8sfR4VqeasnL7+kosKQfkUPtFkO+6BdQO1023AyvNnbc+d5rmUdb4nCenbf?=
- =?us-ascii?Q?gYIRRBsJQV5YwuijD+YLYm+m83pyJtBORpoy5V6ovqC/lqtssQmFmz04gF8P?=
- =?us-ascii?Q?vcmgeNwgTIQ1Lo0dd7RSFefu9Sua7lzb+TiL++xKNSllXlk4NpT5TGEd8wkN?=
- =?us-ascii?Q?tOXnF4gbMO+4oNyzzq5ABm6P4uWGW5iBw+4212IiZIFPI933+OXRAzjAYGkR?=
- =?us-ascii?Q?zmQFDrp/ABUZMIT9TgNnxBty8WjyFhJVQE890S1Yh9/YyDx0fm+xVSyjrTYR?=
- =?us-ascii?Q?4tjqllnWhdRJHCsbAM3KZKdMLXz1+gOxx82FjSBpbu8C3ilZozP+oqSqDNse?=
- =?us-ascii?Q?iJIgiavhgJSU4s8KK5FTWT8nwzeuPH0RJh10iRqyWGekDDEwpR5ksEVD7lJ5?=
- =?us-ascii?Q?/AC6b1NKVzcUbhWwbzE+qWnJj3QDI4deNytsubLE+K7L0FPBMKJjkoxDnLyA?=
- =?us-ascii?Q?grItrMLbcYBP8pM2O75dKnvTytmnBckIpr38MQ3XHHTD5taprPIcd/yjUHL9?=
- =?us-ascii?Q?fFUXtzw/oBNBPuo3J4tZMDUUD8VIJVt6/eK3RlT4YCAb01vZE4JheQeyfGjO?=
- =?us-ascii?Q?px7I9BJm6JRV7wUPmGXbL4EwePLQ3VMC5ab0r1IGKTROiN+T88YnEWvPg+tP?=
- =?us-ascii?Q?235Wm8sgEY+A9vBCMVE904/ZrD+SWqrLJYux+e8xJ2Kt3LCIPjt/xw6VxLJJ?=
- =?us-ascii?Q?o5BB2r0Qy/QsDrkuwtwXaWX7KuhFiHZpGJISBdUUCMzH4sgbR9n3epQmoZlJ?=
- =?us-ascii?Q?icGYF+482xq59clnDpi0WbcdmibHQGAosB3P8RI+wyUhFtl/78eLAE07RgRa?=
- =?us-ascii?Q?SeXovM/g3k6HZ1DTx0D27udW3HAE/CxaDD04snavPLZdq/QdDmSXuDLy0WPN?=
- =?us-ascii?Q?/DUuFvgbvr66MLwLYJ7DVQySowRNqCSRySDGGYW4bL3D5Tn4C3Oy56nSoDuY?=
- =?us-ascii?Q?xgEyQ73xpj4C0jZ5Svvu/bXClAX+afOwVUN7B2LPKHFcm/ZM0LgAXlUFwVIZ?=
- =?us-ascii?Q?mQCFKu2Jwt8ujq8suhyz0Q/ZOlM9pdPQQxP5m7TzxKusAi08AjS0xO52Czml?=
- =?us-ascii?Q?jrdDPoTqOaTpwCBcMDF3dVgxJxJq/W5CkpoK0hjieNF54fP+MbCD1jva1cSW?=
- =?us-ascii?Q?l8w6kCri1M65F/TO5CxlvG4auZwYH9ktL8Rh+XOyJTIPJD+jmwLWKlAZwSMY?=
- =?us-ascii?Q?Ag=3D=3D?=
-X-OriginatorOrg: oss.nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 5d2f66ce-6c82-42fc-8351-08dbc5cdf54c
-X-MS-Exchange-CrossTenant-AuthSource: AM9PR04MB8954.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 05 Oct 2023 18:07:37.8904
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: LSZwLfTRQRK/jqqYxjWBxJfW+Raot1eWHKbWyyS2y13Ys0VkuSUIJoCKTw5rpDJ3g7SFeTE0TLXOptGQkgYxoZOhHhM341fPRva+Dk8R+gg=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM8PR04MB7890
-X-Spam-Status: No, score=-2.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
+ Gecko/20100101 Thunderbird/102.15.1
+Subject: Re: [PATCH net] net/smc: fix panic smc_tcp_syn_recv_sock() while
+ closing listen socket
+To:     "D. Wythe" <alibuda@linux.alibaba.com>,
+        Alexandra Winter <wintera@linux.ibm.com>
+Cc:     jaka@linux.ibm.com, kgraul@linux.ibm.com, kuba@kernel.org,
+        davem@davemloft.net, netdev@vger.kernel.org,
+        linux-s390@vger.kernel.org, linux-rdma@vger.kernel.org
+References: <1695211714-66958-1-git-send-email-alibuda@linux.alibaba.com>
+ <0902f55b-0d51-7f4d-0a9e-4b9423217fcf@linux.ibm.com>
+ <ee2a5f8c-4119-c84a-05bc-03015e6c9bea@linux.alibaba.com>
+ <3d1b5c12-971f-3464-5f28-79477f1f9eb2@linux.ibm.com>
+ <c03dad67-169a-bf6d-1915-a9bb722a7259@linux.alibaba.com>
+ <d18e1a78-3b3a-8f23-6db1-20c16795d3ef@linux.ibm.com>
+ <ab417654-8aba-f357-8ac5-16c4c2b291e1@linux.alibaba.com>
+From:   Wenjia Zhang <wenjia@linux.ibm.com>
+In-Reply-To: <ab417654-8aba-f357-8ac5-16c4c2b291e1@linux.alibaba.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: wMYgbD3jlaPQC1CoZLS2I20axn_izngw
+X-Proofpoint-GUID: eshURJbDpCklhdltI2Sf_VWvncdgshg7
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-10-05_12,2023-10-05_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0 spamscore=0
+ bulkscore=0 lowpriorityscore=0 impostorscore=0 mlxlogscore=999
+ suspectscore=0 clxscore=1015 phishscore=0 mlxscore=0 priorityscore=1501
+ malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2309180000 definitions=main-2310050137
+X-Spam-Status: No, score=-6.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_MSPIKE_H4,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-When updating the SA, use the new update_pn flags instead of comparing the
-new PN with the initial one.
 
-Comparing the initial PN value with the new value will allow the user
-to update the SA using the initial PN value as a parameter like this:
-$ ip macsec add macsec0 tx sa 0 pn 1 on key 00 \
-ead3664f508eb06c40ac7104cdae4ce5
-$ ip macsec set macsec0 tx sa 0 pn 1 off
 
-Fixes: 8ff0ac5be144 ("net/mlx5: Add MACsec offload Tx command support")
-Fixes: aae3454e4d4c ("net/mlx5e: Add MACsec offload Rx command support")
-Signed-off-by: Radu Pirea (NXP OSS) <radu-nicolae.pirea@oss.nxp.com>
----
-Changes in v7:
-- none
+On 26.09.23 11:06, D. Wythe wrote:
+> 
+> 
+> On 9/26/23 3:18 PM, Alexandra Winter wrote:
+>>
+>> On 26.09.23 05:00, D. Wythe wrote:
+>>> You are right. The key point is how to ensure the valid of smc sock 
+>>> during the life time of clc sock, If so, READ_ONCE is good
+>>> enough. Unfortunately, I found  that there are no such guarantee, so 
+>>> it's still a life-time problem.
+>> Did you discover a scenario, where clc sock could live longer than smc 
+>> sock?
+>> Wouldn't that be a dangerous scenario in itself? I still have some 
+>> hope that the lifetime of an smc socket is by design longer
+>> than that of the corresponding tcp socket.
+> 
+> 
+> Hi Alexandra,
+> 
+> Yes there is. Considering scenario:
+> 
+> tcp_v4_rcv(skb)
+> 
+> /* req sock */
+> reqsk = _inet_lookup_skb(skb)
+> 
+> /* listen sock */
+> sk = reqsk(reqsk)->rsk_listener;
+> sock_hold(sk);
+> tcp_check_req(sk)
+> 
+> 
+>                                                  smc_release /* release 
+> smc listen sock */
+>                                                  __smc_release
+> smc_close_active()         /*  smc_sk->sk_state = SMC_CLOSED; */
+>                                                      if 
+> (smc_sk->sk_state == SMC_CLOSED)
+> smc_clcsock_release();
+> sock_release(clcsk);        /* close clcsock */
+>      sock_put(sk);              /* might not  the final refcnt */
+> 
+> sock_put(smc_sk)    /* might be the final refcnt of smc_sock  */
+> 
+> syn_recv_sock(sk...)
+> /* might be the final refcnt of tcp listen sock */
+> sock_put(sk);
+> 
+> Fortunately, this scenario only affects smc_syn_recv_sock and 
+> smc_hs_congested, as other callbacks already have locks to protect smc,
+> which can guarantee that the sk_user_data is either NULL (set in 
+> smc_close_active) or valid under the lock.
+> I'm kind of confused with this scenario. How could the 
+smc_clcsock_release()->sock_release(clcsk) happen?
+Because the syn_recv_sock happens short prior to accept(), that means 
+that the &smc->tcp_listen_work is already triggered but the real 
+accept() is still not happening. At this moment, the incoming connection 
+is being added into the accept queue. Thus, if the sk->sk_state is 
+changed from SMC_LISTEN to SMC_CLOSED in smc_close_active(), there is 
+still "flush_work(&smc->tcp_listen_work);" after that. That ensures the 
+smc_clcsock_release() should not happen, if smc_clcsock_accept() is not 
+finished. Do you think that the execution of the &smc->tcp_listen_work 
+is already done? Or am I missing something?
 
-Changes in v6:
-- patch added in v6
-
- drivers/net/ethernet/mellanox/mlx5/core/en_accel/macsec.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en_accel/macsec.c b/drivers/net/ethernet/mellanox/mlx5/core/en_accel/macsec.c
-index c9c1db971652..d4ebd8743114 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/en_accel/macsec.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/en_accel/macsec.c
-@@ -580,7 +580,7 @@ static int mlx5e_macsec_upd_txsa(struct macsec_context *ctx)
- 		goto out;
- 	}
- 
--	if (tx_sa->next_pn != ctx_tx_sa->next_pn_halves.lower) {
-+	if (ctx->sa.update_pn) {
- 		netdev_err(netdev, "MACsec offload: update TX sa %d PN isn't supported\n",
- 			   assoc_num);
- 		err = -EINVAL;
-@@ -973,7 +973,7 @@ static int mlx5e_macsec_upd_rxsa(struct macsec_context *ctx)
- 		goto out;
- 	}
- 
--	if (rx_sa->next_pn != ctx_rx_sa->next_pn_halves.lower) {
-+	if (ctx->sa.update_pn) {
- 		netdev_err(ctx->netdev,
- 			   "MACsec offload update RX sa %d PN isn't supported\n",
- 			   assoc_num);
--- 
-2.34.1
-
+>> Considering the const, maybe
+>>> we need to do :
+>>>
+>>> 1. hold a refcnt of smc_sock for syn_recv_sock to keep smc sock valid 
+>>> during life time of clc sock
+>>> 2. put the refcnt of smc_sock in sk_destruct in tcp_sock to release 
+>>> the very smc sock .
+>>>
+>>> In that way, we can always make sure the valid of smc sock during the 
+>>> life time of clc sock. Then we can use READ_ONCE rather
+>>> than lock.  What do you think ?
+>> I am not sure I fully understand the details what you propose to do. 
+>> And it is not only syn_recv_sock(), right?
+>> You need to consider all relations between smc socks and tcp socks; 
+>> fallback to tcp, initial creation, children of listen sockets, 
+>> variants of shutdown, ... Preferrably a single simple mechanism covers 
+>> all situations. Maybe there is such a mechanism already today?
+>> (I don't think clcsock->sk->sk_user_data or sk_callback_lock provide 
+>> this general coverage)
+>> If we really have a gap, a general refcnt'ing on smc sock could be a 
+>> solution, but needs to be designed carefully.
+> 
+> You are right , we need designed it with care, we will try the 
+> referenced solutions internally first, and I will also send some RFCs so 
+> that everyone can track the latest progress
+> and make it can be all agreed.
+>> Many thanks to you and the team to help make smc more stable and robust.
+> 
+> Our pleasure 😁.  The stability of smc is important to us too.
+> 
+> Best wishes,
+> D. Wythe
+> 
+> 
