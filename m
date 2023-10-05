@@ -2,202 +2,170 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 065E57BA8DE
-	for <lists+linux-rdma@lfdr.de>; Thu,  5 Oct 2023 20:15:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 31BF67BA9EC
+	for <lists+linux-rdma@lfdr.de>; Thu,  5 Oct 2023 21:19:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232064AbjJESPY (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 5 Oct 2023 14:15:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51924 "EHLO
+        id S231186AbjJETTb (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 5 Oct 2023 15:19:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57122 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232618AbjJESOt (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 5 Oct 2023 14:14:49 -0400
-Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7BBD490;
-        Thu,  5 Oct 2023 11:14:48 -0700 (PDT)
-Received: from pps.filterd (m0356516.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 395IATn3009789;
-        Thu, 5 Oct 2023 18:14:43 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=+L4uBN3V6SGI+UzD1bnXmWtYj0cde2bUpvKlk/TPzJ0=;
- b=tWknqM8xVf8eXnsHxPcSs+bCLDcGgWUVaAoywcvdi+NpqumGRm6u2ER76g+8LJhBhgw4
- OJYdN1EwC/la1p66EfxiHo7PeV9F2eprPWnHv3Pydp+fzYpMBIQImVUaiYDL40Z1nwr8
- cx3HkbvhWb+0rZb//z9023DJpXrHSLw78uO/pd5nr4PVFOMKciJgsR1TrAQINYbnbjJQ
- XzmM7Wxv3Ny7Op11iKBpjd6N9UwN3IH/392/cWUczoTZCWdXCaEqZfrXFiD+iwu5x5N5
- xGRmiMM6zj4ug9oz332kRfFKBayGQfa9E8NM1UMRpzCLc3z0y3bEo3V+L9QhuM0h4aaU 2Q== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3tj26h866n-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 05 Oct 2023 18:14:43 +0000
-Received: from m0356516.ppops.net (m0356516.ppops.net [127.0.0.1])
-        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 395IAXfk010416;
-        Thu, 5 Oct 2023 18:14:42 GMT
-Received: from ppma12.dal12v.mail.ibm.com (dc.9e.1632.ip4.static.sl-reverse.com [50.22.158.220])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3tj26h8664-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 05 Oct 2023 18:14:42 +0000
-Received: from pps.filterd (ppma12.dal12v.mail.ibm.com [127.0.0.1])
-        by ppma12.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 395HstF9005868;
-        Thu, 5 Oct 2023 18:14:42 GMT
-Received: from smtprelay03.wdc07v.mail.ibm.com ([172.16.1.70])
-        by ppma12.dal12v.mail.ibm.com (PPS) with ESMTPS id 3tex0tgjug-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 05 Oct 2023 18:14:42 +0000
-Received: from smtpav04.dal12v.mail.ibm.com (smtpav04.dal12v.mail.ibm.com [10.241.53.103])
-        by smtprelay03.wdc07v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 395IEed42622178
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 5 Oct 2023 18:14:40 GMT
-Received: from smtpav04.dal12v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 5E79E58062;
-        Thu,  5 Oct 2023 18:14:40 +0000 (GMT)
-Received: from smtpav04.dal12v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id D9B3B58052;
-        Thu,  5 Oct 2023 18:14:38 +0000 (GMT)
-Received: from [9.171.41.118] (unknown [9.171.41.118])
-        by smtpav04.dal12v.mail.ibm.com (Postfix) with ESMTP;
-        Thu,  5 Oct 2023 18:14:38 +0000 (GMT)
-Message-ID: <b4470cec-7b9b-5ce5-01e0-9270f6564fbb@linux.ibm.com>
-Date:   Thu, 5 Oct 2023 20:14:37 +0200
+        with ESMTP id S230216AbjJETTa (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 5 Oct 2023 15:19:30 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF8B4DE
+        for <linux-rdma@vger.kernel.org>; Thu,  5 Oct 2023 12:18:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1696533523;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=2R8nvS1fGysVMS5a70TnQ+euq+3ceDHbf0f2W4kS2b4=;
+        b=HlQjLCnZp007v9OAdV02gKIom7hQk5Nh2TWM43OHXulmzfRus+aL3jLphIRB+d8gw8qmqM
+        K7DzZ5rX4/KeiFRt6AXOJ7K/d4d3tfEbNO5tjrDR9bnlRuBS7t12Ut7sDq2TlLQ33QeGih
+        A0yyQFkgOPrvVhFvKRcjT37DCwUxfmQ=
+Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
+ [209.85.221.72]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-215-bJpXZetPMLuiJIrAJbw7MQ-1; Thu, 05 Oct 2023 15:18:31 -0400
+X-MC-Unique: bJpXZetPMLuiJIrAJbw7MQ-1
+Received: by mail-wr1-f72.google.com with SMTP id ffacd0b85a97d-30e3ee8a42eso1051812f8f.1
+        for <linux-rdma@vger.kernel.org>; Thu, 05 Oct 2023 12:18:31 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696533510; x=1697138310;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=2R8nvS1fGysVMS5a70TnQ+euq+3ceDHbf0f2W4kS2b4=;
+        b=bCRBEzJkMrWTOy2vBXqdizd3K2nEJSBEKMQUfINfNStIx6krzpTgSa/zAl+ozkRP5z
+         wJXm/jRqeakvFSj8wrTgKuPkb1GK4i7c40yzj+Y5BAcmX2/xqisNrXLrn0BXsknFGs9m
+         4XgDnR1v9xklZ7uhXeQoJTCOM47RrT5uB+RqyOUjRypRyziyilOSdHH3Qz5L/rJ3DFC/
+         48XAT7DoBPLVHn8QFzA2l0xw3YhEvFe5p4cOQbUXd/cgsCPGwQhCkC44j1e1RZ+ULpf3
+         CL7gEIsSj/iY99t1EjyyIiiN1wUF4iYz3CcNtPmBs873GbvtlDR9z3mwgJ8aTgBzGuAI
+         xe+g==
+X-Gm-Message-State: AOJu0Yx6jsnuwqb5hWsGzhlrKPLenPo8Ql9FA73Hc/NqqFf5ePNPbYO/
+        W+dCBB1kM1Bv4f/S5q9x9jEGYjfViBQf6x0H0q/VmC2iZEVzdBJRUVDYyj36nHeo/tD7BMtQlaE
+        0bDucNq89FylrOe9f57vy1A==
+X-Received: by 2002:a5d:58c2:0:b0:319:7a9f:c63 with SMTP id o2-20020a5d58c2000000b003197a9f0c63mr5707838wrf.50.1696533510584;
+        Thu, 05 Oct 2023 12:18:30 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IEJSoSJCYUxP/9cvc2Te2pM2upBQSmDoYt/HKnGitt6LjIRBQVlh0qAuXtMDSL56hXqGRauRg==
+X-Received: by 2002:a5d:58c2:0:b0:319:7a9f:c63 with SMTP id o2-20020a5d58c2000000b003197a9f0c63mr5707810wrf.50.1696533510205;
+        Thu, 05 Oct 2023 12:18:30 -0700 (PDT)
+Received: from redhat.com ([2.52.3.174])
+        by smtp.gmail.com with ESMTPSA id e1-20020adffc41000000b003267b4692e5sm2421018wrs.19.2023.10.05.12.18.27
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 05 Oct 2023 12:18:28 -0700 (PDT)
+Date:   Thu, 5 Oct 2023 15:18:25 -0400
+From:   "Michael S. Tsirkin" <mst@redhat.com>
+To:     Dragos Tatulea <dtatulea@nvidia.com>
+Cc:     "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        "xuanzhuo@linux.alibaba.com" <xuanzhuo@linux.alibaba.com>,
+        "virtualization@lists.linux-foundation.org" 
+        <virtualization@lists.linux-foundation.org>,
+        Gal Pressman <gal@nvidia.com>,
+        "eperezma@redhat.com" <eperezma@redhat.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "jasowang@redhat.com" <jasowang@redhat.com>,
+        "leon@kernel.org" <leon@kernel.org>,
+        Saeed Mahameed <saeedm@nvidia.com>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>
+Subject: Re: [PATCH vhost v2 00/16] vdpa: Add support for vq descriptor
+ mappings
+Message-ID: <20231005151812-mutt-send-email-mst@kernel.org>
+References: <20230928164550.980832-2-dtatulea@nvidia.com>
+ <20231005133054-mutt-send-email-mst@kernel.org>
+ <9dfa552011c20a58d8550bd794977de821212df4.camel@nvidia.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
- Gecko/20100101 Thunderbird/102.15.1
-Subject: Re: [PATCH net] net/smc: fix panic smc_tcp_syn_recv_sock() while
- closing listen socket
-To:     "D. Wythe" <alibuda@linux.alibaba.com>,
-        Alexandra Winter <wintera@linux.ibm.com>
-Cc:     jaka@linux.ibm.com, kgraul@linux.ibm.com, kuba@kernel.org,
-        davem@davemloft.net, netdev@vger.kernel.org,
-        linux-s390@vger.kernel.org, linux-rdma@vger.kernel.org
-References: <1695211714-66958-1-git-send-email-alibuda@linux.alibaba.com>
- <0902f55b-0d51-7f4d-0a9e-4b9423217fcf@linux.ibm.com>
- <ee2a5f8c-4119-c84a-05bc-03015e6c9bea@linux.alibaba.com>
- <3d1b5c12-971f-3464-5f28-79477f1f9eb2@linux.ibm.com>
- <c03dad67-169a-bf6d-1915-a9bb722a7259@linux.alibaba.com>
- <d18e1a78-3b3a-8f23-6db1-20c16795d3ef@linux.ibm.com>
- <ab417654-8aba-f357-8ac5-16c4c2b291e1@linux.alibaba.com>
-From:   Wenjia Zhang <wenjia@linux.ibm.com>
-In-Reply-To: <ab417654-8aba-f357-8ac5-16c4c2b291e1@linux.alibaba.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: wMYgbD3jlaPQC1CoZLS2I20axn_izngw
-X-Proofpoint-GUID: eshURJbDpCklhdltI2Sf_VWvncdgshg7
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-10-05_12,2023-10-05_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0 spamscore=0
- bulkscore=0 lowpriorityscore=0 impostorscore=0 mlxlogscore=999
- suspectscore=0 clxscore=1015 phishscore=0 mlxscore=0 priorityscore=1501
- malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2309180000 definitions=main-2310050137
-X-Spam-Status: No, score=-6.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_MSPIKE_H4,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+In-Reply-To: <9dfa552011c20a58d8550bd794977de821212df4.camel@nvidia.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
+On Thu, Oct 05, 2023 at 05:44:01PM +0000, Dragos Tatulea wrote:
+> On Thu, 2023-10-05 at 13:31 -0400, Michael S. Tsirkin wrote:
+> > On Thu, Sep 28, 2023 at 07:45:11PM +0300, Dragos Tatulea wrote:
+> > > This patch series adds support for vq descriptor table mappings which
+> > > are used to improve vdpa live migration downtime. The improvement comes
+> > > from using smaller mappings which take less time to create and destroy
+> > > in hw.
+> > > 
+> > > The first part adds the vdpa core changes from Si-Wei [0].
+> > > 
+> > > The second part adds support in mlx5_vdpa:
+> > > - Refactor the mr code to be able to cleanly add descriptor mappings.
+> > > - Add hardware descriptor mr support.
+> > > - Properly update iotlb for cvq during ASID switch.
+> > > 
+> > > Changes in v2:
+> > > 
+> > > - The "vdpa/mlx5: Enable hw support for vq descriptor mapping" change
+> > >   was split off into two patches to avoid merge conflicts into the tree
+> > >   of Linus.
+> > > 
+> > >   The first patch contains only changes for mlx5_ifc.h. This must be
+> > >   applied into the mlx5-next tree [1] first. Once this patch is applied
+> > >   on mlx5-next, the change has to be pulled fom mlx5-next into the vhost
+> > >   tree and only then the remaining patches can be applied.
+> > 
+> > 
+> > I get it you plan v3?
+> There are some very small improvements (commit message in 13/16 and fix in
+> 16/16) that could make a v3. The latter can be addressed as a separate patch
+> when moving dup_iotlb to vhost/iotlb. What do you think?
 
 
-On 26.09.23 11:06, D. Wythe wrote:
-> 
-> 
-> On 9/26/23 3:18 PM, Alexandra Winter wrote:
->>
->> On 26.09.23 05:00, D. Wythe wrote:
->>> You are right. The key point is how to ensure the valid of smc sock 
->>> during the life time of clc sock, If so, READ_ONCE is good
->>> enough. Unfortunately, I foundÂ  that there are no such guarantee, so 
->>> it's still a life-time problem.
->> Did you discover a scenario, where clc sock could live longer than smc 
->> sock?
->> Wouldn't that be a dangerous scenario in itself? I still have some 
->> hope that the lifetime of an smc socket is by design longer
->> than that of the corresponding tcp socket.
-> 
-> 
-> Hi Alexandra,
-> 
-> Yes there is. Considering scenario:
-> 
-> tcp_v4_rcv(skb)
-> 
-> /* req sock */
-> reqsk = _inet_lookup_skb(skb)
-> 
-> /* listen sock */
-> sk = reqsk(reqsk)->rsk_listener;
-> sock_hold(sk);
-> tcp_check_req(sk)
-> 
-> 
->  Â Â Â  Â Â Â  Â Â Â  Â Â Â  Â Â Â  Â Â Â  Â Â Â  Â Â Â  Â Â Â  Â Â Â  Â Â Â  Â Â Â  smc_release /* release 
-> smc listen sock */
->  Â Â Â  Â Â Â  Â Â Â  Â Â Â  Â Â Â  Â Â Â  Â Â Â  Â Â Â  Â Â Â  Â Â Â  Â Â Â  Â Â Â  __smc_release
-> smc_close_active()Â Â Â  Â Â Â Â  /*Â  smc_sk->sk_state = SMC_CLOSED; */
->  Â Â Â  Â Â Â  Â Â Â  Â Â Â  Â Â Â  Â Â Â  Â Â Â  Â Â Â  Â Â Â  Â Â Â  Â Â Â  Â Â Â  Â Â Â  if 
-> (smc_sk->sk_state == SMC_CLOSED)
-> smc_clcsock_release();
-> sock_release(clcsk);Â Â Â  Â Â Â  /* close clcsock */
->  Â Â Â  sock_put(sk);Â Â Â  Â Â Â  Â Â Â  Â  /* might notÂ  the final refcnt */
-> 
-> sock_put(smc_sk)Â Â Â  /* might be the final refcnt of smc_sockÂ  */
-> 
-> syn_recv_sock(sk...)
-> /* might be the final refcnt of tcp listen sock */
-> sock_put(sk);
-> 
-> Fortunately, this scenario only affects smc_syn_recv_sock and 
-> smc_hs_congested, as other callbacks already have locks to protect smc,
-> which can guarantee that the sk_user_data is either NULL (set in 
-> smc_close_active) or valid under the lock.
-> I'm kind of confused with this scenario. How could the 
-smc_clcsock_release()->sock_release(clcsk) happen?
-Because the syn_recv_sock happens short prior to accept(), that means 
-that the &smc->tcp_listen_work is already triggered but the real 
-accept() is still not happening. At this moment, the incoming connection 
-is being added into the accept queue. Thus, if the sk->sk_state is 
-changed from SMC_LISTEN to SMC_CLOSED in smc_close_active(), there is 
-still "flush_work(&smc->tcp_listen_work);" after that. That ensures the 
-smc_clcsock_release() should not happen, if smc_clcsock_accept() is not 
-finished. Do you think that the execution of the &smc->tcp_listen_work 
-is already done? Or am I missing something?
+if there's a fix by all means post v3.
 
->> Considering the const, maybe
->>> we need to do :
->>>
->>> 1. hold a refcnt of smc_sock for syn_recv_sock to keep smc sock valid 
->>> during life time of clc sock
->>> 2. put the refcnt of smc_sock in sk_destruct in tcp_sock to release 
->>> the very smc sock .
->>>
->>> In that way, we can always make sure the valid of smc sock during the 
->>> life time of clc sock. Then we can use READ_ONCE rather
->>> than lock.Â  What do you think ?
->> I am not sure I fully understand the details what you propose to do. 
->> And it is not only syn_recv_sock(), right?
->> You need to consider all relations between smc socks and tcp socks; 
->> fallback to tcp, initial creation, children of listen sockets, 
->> variants of shutdown, ... Preferrably a single simple mechanism covers 
->> all situations. Maybe there is such a mechanism already today?
->> (I don't think clcsock->sk->sk_user_data or sk_callback_lock provide 
->> this general coverage)
->> If we really have a gap, a general refcnt'ing on smc sock could be a 
->> solution, but needs to be designed carefully.
+> > 
+> > > [0]
+> > > https://lore.kernel.org/virtualization/1694248959-13369-1-git-send-email-si-wei.liu@oracle.com
+> > > [1]
+> > > https://git.kernel.org/pub/scm/linux/kernel/git/mellanox/linux.git/log/?h=mlx5-next
+> > > 
+> > > Dragos Tatulea (13):
+> > >   vdpa/mlx5: Expose descriptor group mkey hw capability
+> > >   vdpa/mlx5: Create helper function for dma mappings
+> > >   vdpa/mlx5: Decouple cvq iotlb handling from hw mapping code
+> > >   vdpa/mlx5: Take cvq iotlb lock during refresh
+> > >   vdpa/mlx5: Collapse "dvq" mr add/delete functions
+> > >   vdpa/mlx5: Rename mr destroy functions
+> > >   vdpa/mlx5: Allow creation/deletion of any given mr struct
+> > >   vdpa/mlx5: Move mr mutex out of mr struct
+> > >   vdpa/mlx5: Improve mr update flow
+> > >   vdpa/mlx5: Introduce mr for vq descriptor
+> > >   vdpa/mlx5: Enable hw support for vq descriptor mapping
+> > >   vdpa/mlx5: Make iotlb helper functions more generic
+> > >   vdpa/mlx5: Update cvq iotlb mapping on ASID change
+> > > 
+> > > Si-Wei Liu (3):
+> > >   vdpa: introduce dedicated descriptor group for virtqueue
+> > >   vhost-vdpa: introduce descriptor group backend feature
+> > >   vhost-vdpa: uAPI to get dedicated descriptor group id
+> > > 
+> > >  drivers/vdpa/mlx5/core/mlx5_vdpa.h |  31 +++--
+> > >  drivers/vdpa/mlx5/core/mr.c        | 191 ++++++++++++++++-------------
+> > >  drivers/vdpa/mlx5/core/resources.c |   6 +-
+> > >  drivers/vdpa/mlx5/net/mlx5_vnet.c  | 100 ++++++++++-----
+> > >  drivers/vhost/vdpa.c               |  27 ++++
+> > >  include/linux/mlx5/mlx5_ifc.h      |   8 +-
+> > >  include/linux/mlx5/mlx5_ifc_vdpa.h |   7 +-
+> > >  include/linux/vdpa.h               |  11 ++
+> > >  include/uapi/linux/vhost.h         |   8 ++
+> > >  include/uapi/linux/vhost_types.h   |   5 +
+> > >  10 files changed, 264 insertions(+), 130 deletions(-)
+> > > 
+> > > -- 
+> > > 2.41.0
+> > 
 > 
-> You are right , we need designed it with care, we will try the 
-> referenced solutions internally first, and I will also send some RFCs so 
-> that everyone can track the latest progress
-> and make it can be all agreed.
->> Many thanks to you and the team to help make smc more stable and robust.
-> 
-> Our pleasure ðŸ˜.Â  The stability of smc is important to us too.
-> 
-> Best wishes,
-> D. Wythe
-> 
-> 
+
