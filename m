@@ -2,70 +2,71 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B70697BBA9A
-	for <lists+linux-rdma@lfdr.de>; Fri,  6 Oct 2023 16:44:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B3607BBA9B
+	for <lists+linux-rdma@lfdr.de>; Fri,  6 Oct 2023 16:44:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232560AbjJFOoM (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        id S231418AbjJFOoM (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
         Fri, 6 Oct 2023 10:44:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60492 "EHLO
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60498 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231418AbjJFOoL (ORCPT
+        with ESMTP id S232506AbjJFOoL (ORCPT
         <rfc822;linux-rdma@vger.kernel.org>); Fri, 6 Oct 2023 10:44:11 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.151])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 491738F
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.24])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3148A6
         for <linux-rdma@vger.kernel.org>; Fri,  6 Oct 2023 07:44:10 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
   t=1696603450; x=1728139450;
   h=date:from:to:cc:subject:message-id;
-  bh=ednHJdzFEKwiXWykOzSclS8I8NK/WYhHcqdHQDXCbA8=;
-  b=DmDX5L8CHgWyb+jRAfBI7GDgJatekND9xusc6OHPS7m/FE4ea7LfbJWC
-   g+cxMW1/mqw//Q1438FqLfsCo7V9ykaPCn3BXbFKZanH7P7Po4tMgZgLP
-   Dy15P0npTK2oCpZLOftLMOgJ3y6xhh2e4l186ELqcAMVTFWooUIJJNPQ9
-   LpTBQDZCvyDPrxNhrm8FLZduhGnYi+9BInFJYs6SRfbnIy0no4Gsd3OAU
-   9azpUqTHnV47VUkVkGgtdtO51O11f3B8fObOAPFvS1mSuMKM75Mmx9Bjd
-   bkxuuSJClWCfWaaxI2/x5dTgsiuHLUG1Choke8KJzkBcRyUfJpBZwL+bE
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10855"; a="364040149"
+  bh=oo9jB6+i+GymbHxZKyPFbIekYFsS8VG06s6c1Nd6A+E=;
+  b=DTQ4pZV0JsyiesLNO8YFu9t72EI86Tb7pR0pxrLSyWFMdEsEgtsv/cDU
+   mW+Y2kcsGVM8fnuwmYBzhfgAqnuHlzdLWMFxUlAtCS0t5DAhDI6JqXdY3
+   t6mXKVW6/qOS0duks71zTnaR/MxvdP01sc5WFrSYvABk2eHM6rvT9YKIl
+   Xm+6CWuV4CjQypttgqfdygvSO94NRlP02Np4VXCaX0ta20pTPISlSTo+3
+   fvgnkIiSvfAHscHJoLivnZ1jTzgiQUxBM4SyDz5ooDK69F/RYk4grDAl4
+   boPjNYek1u0BlnzrkwRF8jqSbSjQQd3+t5tnpdyzNktSVxnL5zxthXPOP
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10855"; a="386588834"
 X-IronPort-AV: E=Sophos;i="6.03,204,1694761200"; 
-   d="scan'208";a="364040149"
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Oct 2023 07:44:09 -0700
+   d="scan'208";a="386588834"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Oct 2023 07:44:10 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10855"; a="755874766"
+X-IronPort-AV: E=McAfee;i="6600,9927,10855"; a="787404019"
 X-IronPort-AV: E=Sophos;i="6.03,204,1694761200"; 
-   d="scan'208";a="755874766"
+   d="scan'208";a="787404019"
 Received: from lkp-server01.sh.intel.com (HELO 8a3a91ad4240) ([10.239.97.150])
-  by fmsmga007.fm.intel.com with ESMTP; 06 Oct 2023 07:44:08 -0700
+  by orsmga001.jf.intel.com with ESMTP; 06 Oct 2023 07:44:08 -0700
 Received: from kbuild by 8a3a91ad4240 with local (Exim 4.96)
         (envelope-from <lkp@intel.com>)
-        id 1qom3i-0001Dj-0m;
+        id 1qom3i-0001Dd-0a;
         Fri, 06 Oct 2023 14:44:06 +0000
-Date:   Fri, 06 Oct 2023 22:43:11 +0800
+Date:   Fri, 06 Oct 2023 22:43:40 +0800
 From:   kernel test robot <lkp@intel.com>
 To:     Leon Romanovsky <leon@kernel.org>
 Cc:     Doug Ledford <dledford@redhat.com>,
         Jason Gunthorpe <jgg+lists@ziepe.ca>,
         linux-rdma@vger.kernel.org
-Subject: [rdma:for-rc] BUILD SUCCESS
- c38d23a54445f9a8aa6831fafc9af0496ba02f9e
-Message-ID: <202310062208.vqn4mRXU-lkp@intel.com>
+Subject: [rdma:wip/leon-for-rc] BUILD SUCCESS
+ 1c66501b71020e70802b0c8b3375fd92df1bb016
+Message-ID: <202310062236.bIJMXTED-lkp@intel.com>
 User-Agent: s-nail v14.9.24
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git for-rc
-branch HEAD: c38d23a54445f9a8aa6831fafc9af0496ba02f9e  RDMA/core: Require admin capabilities to set system parameters
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git wip/leon-for-rc
+branch HEAD: 1c66501b71020e70802b0c8b3375fd92df1bb016  Revert "RDMA/rxe: Add workqueue support for rxe tasks"
 
-elapsed time: 1287m
+elapsed time: 1288m
 
-configs tested: 92
+configs tested: 94
 configs skipped: 2
 
 The following configs have been built successfully.
@@ -79,6 +80,7 @@ arc                              allmodconfig   gcc
 arc                               allnoconfig   gcc  
 arc                              allyesconfig   gcc  
 arc                                 defconfig   gcc  
+arc                   randconfig-001-20231006   gcc  
 arm                              allmodconfig   gcc  
 arm                               allnoconfig   gcc  
 arm                              allyesconfig   gcc  
@@ -106,6 +108,7 @@ loongarch                        allmodconfig   gcc
 loongarch                         allnoconfig   gcc  
 loongarch                        allyesconfig   gcc  
 loongarch                           defconfig   gcc  
+loongarch             randconfig-001-20231006   gcc  
 m68k                             allmodconfig   gcc  
 m68k                              allnoconfig   gcc  
 m68k                             allyesconfig   gcc  
