@@ -2,74 +2,169 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DD5527BB2CD
-	for <lists+linux-rdma@lfdr.de>; Fri,  6 Oct 2023 10:06:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B70697BBA9A
+	for <lists+linux-rdma@lfdr.de>; Fri,  6 Oct 2023 16:44:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230383AbjJFIGJ (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 6 Oct 2023 04:06:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39382 "EHLO
+        id S232560AbjJFOoM (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 6 Oct 2023 10:44:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60492 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230361AbjJFIGJ (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 6 Oct 2023 04:06:09 -0400
-Received: from mail.venturelinkbiz.com (mail.venturelinkbiz.com [51.195.119.142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EDEA9E9
-        for <linux-rdma@vger.kernel.org>; Fri,  6 Oct 2023 01:06:06 -0700 (PDT)
-Received: by mail.venturelinkbiz.com (Postfix, from userid 1002)
-        id A48F04788D; Fri,  6 Oct 2023 08:05:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=venturelinkbiz.com;
-        s=mail; t=1696579565;
-        bh=JBV4b8UUo1MSngn/QBoedt1Dv52bT8rWeq4R22MtJMs=;
-        h=Date:From:To:Subject:From;
-        b=fooTvt+k+CBMLLXyJFAO3oxUX7iqs6YnqO28HTvXKQnb12dzWTSQE9HcERTrXX1wE
-         st0I2+gFLhQDVjFvPx/5hBc5501W24PLrlFO2RyzDsW3ansMgIDg7z/4vy9hI5OuZM
-         YW6TCG5HoO8AJnP259mbhbaPVQKw9j/VEMjfGqKJqZFTJGMCI/fFISE+jSXb37SJMZ
-         WYvNQB+va5/zw7ki3m5IvWhIFxVSW3PioT4bkqOpnWtYc4EwmU4YLx2EQZ4KCSVM/p
-         Iw65IyK/ygvA+Cd1H0pVknnz5N17qTvvhNt7OgPKefTYqV+KdL1XJ2IM1skuW/+lum
-         f4BYXoV4UuWRw==
-Received: by mail.venturelinkbiz.com for <linux-rdma@vger.kernel.org>; Fri,  6 Oct 2023 08:05:47 GMT
-Message-ID: <20231006064500-0.1.2u.7tka.0.1gt8nz76oh@venturelinkbiz.com>
-Date:   Fri,  6 Oct 2023 08:05:47 GMT
-From:   "Michal Rmoutil" <michal.rmoutil@venturelinkbiz.com>
-To:     <linux-rdma@vger.kernel.org>
-Subject: =?UTF-8?Q?Efektivn=C3=AD_sledov=C3=A1n=C3=AD_a_optimalizace_v=C3=BDroby_pro_va=C5=A1i_spole=C4=8Dnost?=
-X-Mailer: mail.venturelinkbiz.com
-MIME-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=3.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_MSPIKE_H2,
-        RCVD_IN_SBL_CSS,SPF_HELO_NONE,SPF_PASS,URIBL_CSS_A,URIBL_DBL_SPAM
-        autolearn=no autolearn_force=no version=3.4.6
-X-Spam-Level: ***
+        with ESMTP id S231418AbjJFOoL (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 6 Oct 2023 10:44:11 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.151])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 491738F
+        for <linux-rdma@vger.kernel.org>; Fri,  6 Oct 2023 07:44:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1696603450; x=1728139450;
+  h=date:from:to:cc:subject:message-id;
+  bh=ednHJdzFEKwiXWykOzSclS8I8NK/WYhHcqdHQDXCbA8=;
+  b=DmDX5L8CHgWyb+jRAfBI7GDgJatekND9xusc6OHPS7m/FE4ea7LfbJWC
+   g+cxMW1/mqw//Q1438FqLfsCo7V9ykaPCn3BXbFKZanH7P7Po4tMgZgLP
+   Dy15P0npTK2oCpZLOftLMOgJ3y6xhh2e4l186ELqcAMVTFWooUIJJNPQ9
+   LpTBQDZCvyDPrxNhrm8FLZduhGnYi+9BInFJYs6SRfbnIy0no4Gsd3OAU
+   9azpUqTHnV47VUkVkGgtdtO51O11f3B8fObOAPFvS1mSuMKM75Mmx9Bjd
+   bkxuuSJClWCfWaaxI2/x5dTgsiuHLUG1Choke8KJzkBcRyUfJpBZwL+bE
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10855"; a="364040149"
+X-IronPort-AV: E=Sophos;i="6.03,204,1694761200"; 
+   d="scan'208";a="364040149"
+Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Oct 2023 07:44:09 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10855"; a="755874766"
+X-IronPort-AV: E=Sophos;i="6.03,204,1694761200"; 
+   d="scan'208";a="755874766"
+Received: from lkp-server01.sh.intel.com (HELO 8a3a91ad4240) ([10.239.97.150])
+  by fmsmga007.fm.intel.com with ESMTP; 06 Oct 2023 07:44:08 -0700
+Received: from kbuild by 8a3a91ad4240 with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qom3i-0001Dj-0m;
+        Fri, 06 Oct 2023 14:44:06 +0000
+Date:   Fri, 06 Oct 2023 22:43:11 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Leon Romanovsky <leon@kernel.org>
+Cc:     Doug Ledford <dledford@redhat.com>,
+        Jason Gunthorpe <jgg+lists@ziepe.ca>,
+        linux-rdma@vger.kernel.org
+Subject: [rdma:for-rc] BUILD SUCCESS
+ c38d23a54445f9a8aa6831fafc9af0496ba02f9e
+Message-ID: <202310062208.vqn4mRXU-lkp@intel.com>
+User-Agent: s-nail v14.9.24
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Dobr=C3=A9 r=C3=A1no,
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git for-rc
+branch HEAD: c38d23a54445f9a8aa6831fafc9af0496ba02f9e  RDMA/core: Require admin capabilities to set system parameters
 
-m=C3=A1te mo=C5=BEnost sledovat stav ka=C5=BEd=C3=A9ho stroje a v=C3=BDro=
-bn=C3=ADho procesu z kancel=C3=A1=C5=99e, konferen=C4=8Dn=C3=AD m=C3=ADst=
-nosti nebo dokonce z domova =C4=8Di na cest=C3=A1ch =E2=80=93 na va=C5=A1=
-em telefonu?
+elapsed time: 1287m
 
-Poskytujeme rychle implementovateln=C3=BD a snadno pou=C5=BEiteln=C3=BD n=
-=C3=A1stroj, kter=C3=BD zachyt=C3=AD i n=C4=9Bkolikasekundov=C3=BD mikrop=
-rostoj a okam=C5=BEit=C4=9B p=C5=99epo=C4=8D=C3=ADt=C3=A1 vyu=C5=BEit=C3=AD=
- stroje v kontextu dan=C3=A9 v=C3=BDrobn=C3=AD zak=C3=A1zky.
+configs tested: 92
+configs skipped: 2
 
-Kdykoli vid=C3=ADte stav objedn=C3=A1vky a jste informov=C3=A1ni o p=C5=99=
-=C3=ADpadn=C3=A9m sn=C3=AD=C5=BEen=C3=AD efektivity. Syst=C3=A9m s=C3=A1m=
- analyzuje data a p=C5=99ipravuje cenn=C3=A9 reporty, co=C5=BE oper=C3=A1=
-tor=C5=AFm umo=C5=BE=C5=88uje soust=C5=99edit se na v=C3=BDrobn=C3=AD c=C3=
-=ADl.
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
-C=C3=ADl je jednoduch=C3=BD: jeden pohled =E2=80=93 cel=C3=A1 tov=C3=A1rn=
-a. =C4=8Cek=C3=A1m na odpov=C4=9B=C4=8F, jestli vid=C3=ADte mo=C5=BEnost =
-vyu=C5=BEit=C3=AD takov=C3=A9ho n=C3=A1stroje ve va=C5=A1=C3=AD firm=C4=9B=
-=2E
+tested configs:
+alpha                             allnoconfig   gcc  
+alpha                            allyesconfig   gcc  
+alpha                               defconfig   gcc  
+arc                              allmodconfig   gcc  
+arc                               allnoconfig   gcc  
+arc                              allyesconfig   gcc  
+arc                                 defconfig   gcc  
+arm                              allmodconfig   gcc  
+arm                               allnoconfig   gcc  
+arm                              allyesconfig   gcc  
+arm                                 defconfig   gcc  
+arm64                            allmodconfig   gcc  
+arm64                             allnoconfig   gcc  
+arm64                            allyesconfig   gcc  
+arm64                               defconfig   gcc  
+csky                             allmodconfig   gcc  
+csky                              allnoconfig   gcc  
+csky                             allyesconfig   gcc  
+csky                                defconfig   gcc  
+i386                             allmodconfig   gcc  
+i386                              allnoconfig   gcc  
+i386                             allyesconfig   gcc  
+i386         buildonly-randconfig-001-20231006   gcc  
+i386         buildonly-randconfig-002-20231006   gcc  
+i386         buildonly-randconfig-003-20231006   gcc  
+i386         buildonly-randconfig-004-20231006   gcc  
+i386         buildonly-randconfig-005-20231006   gcc  
+i386         buildonly-randconfig-006-20231006   gcc  
+i386                              debian-10.3   gcc  
+i386                                defconfig   gcc  
+loongarch                        allmodconfig   gcc  
+loongarch                         allnoconfig   gcc  
+loongarch                        allyesconfig   gcc  
+loongarch                           defconfig   gcc  
+m68k                             allmodconfig   gcc  
+m68k                              allnoconfig   gcc  
+m68k                             allyesconfig   gcc  
+m68k                                defconfig   gcc  
+microblaze                       allmodconfig   gcc  
+microblaze                        allnoconfig   gcc  
+microblaze                       allyesconfig   gcc  
+microblaze                          defconfig   gcc  
+mips                             allmodconfig   gcc  
+mips                              allnoconfig   gcc  
+mips                             allyesconfig   gcc  
+nios2                            allmodconfig   gcc  
+nios2                             allnoconfig   gcc  
+nios2                            allyesconfig   gcc  
+nios2                               defconfig   gcc  
+openrisc                         allmodconfig   gcc  
+openrisc                          allnoconfig   gcc  
+openrisc                         allyesconfig   gcc  
+openrisc                            defconfig   gcc  
+parisc                           allmodconfig   gcc  
+parisc                            allnoconfig   gcc  
+parisc                           allyesconfig   gcc  
+parisc                              defconfig   gcc  
+parisc64                            defconfig   gcc  
+powerpc                          allmodconfig   gcc  
+powerpc                           allnoconfig   gcc  
+powerpc                          allyesconfig   gcc  
+riscv                            allmodconfig   gcc  
+riscv                             allnoconfig   gcc  
+riscv                            allyesconfig   gcc  
+riscv                               defconfig   gcc  
+riscv                          rv32_defconfig   gcc  
+s390                             allmodconfig   gcc  
+s390                              allnoconfig   gcc  
+s390                             allyesconfig   gcc  
+s390                                defconfig   gcc  
+sh                               allmodconfig   gcc  
+sh                                allnoconfig   gcc  
+sh                               allyesconfig   gcc  
+sh                                  defconfig   gcc  
+sparc                            allmodconfig   gcc  
+sparc                             allnoconfig   gcc  
+sparc                            allyesconfig   gcc  
+sparc                               defconfig   gcc  
+sparc64                          allmodconfig   gcc  
+sparc64                          allyesconfig   gcc  
+sparc64                             defconfig   gcc  
+um                               allmodconfig   clang
+um                                allnoconfig   clang
+um                               allyesconfig   clang
+um                                  defconfig   gcc  
+um                             i386_defconfig   gcc  
+um                           x86_64_defconfig   gcc  
+x86_64                            allnoconfig   gcc  
+x86_64                           allyesconfig   gcc  
+x86_64                              defconfig   gcc  
+x86_64                          rhel-8.3-rust   clang
+x86_64                               rhel-8.3   gcc  
 
-
-Pozdravy
-Michal Rmoutil
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
