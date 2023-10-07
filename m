@@ -2,121 +2,69 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 718E67BC48C
-	for <lists+linux-rdma@lfdr.de>; Sat,  7 Oct 2023 06:02:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E6FC7BC97E
+	for <lists+linux-rdma@lfdr.de>; Sat,  7 Oct 2023 20:12:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343523AbjJGECL (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Sat, 7 Oct 2023 00:02:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55036 "EHLO
+        id S234192AbjJGSMf (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Sat, 7 Oct 2023 14:12:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43102 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229510AbjJGECH (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Sat, 7 Oct 2023 00:02:07 -0400
-Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 25EE6BF;
-        Fri,  6 Oct 2023 21:02:05 -0700 (PDT)
-Received: from kwepemi500006.china.huawei.com (unknown [172.30.72.53])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4S2Wk73GQWzVlZk;
-        Sat,  7 Oct 2023 11:58:39 +0800 (CST)
-Received: from localhost.localdomain (10.67.165.2) by
- kwepemi500006.china.huawei.com (7.221.188.68) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.31; Sat, 7 Oct 2023 12:02:02 +0800
-From:   Junxian Huang <huangjunxian6@hisilicon.com>
-To:     <jgg@ziepe.ca>, <leon@kernel.org>, <dsahern@gmail.com>,
-        <stephen@networkplumber.org>
-CC:     <netdev@vger.kernel.org>, <linux-rdma@vger.kernel.org>,
-        <linuxarm@huawei.com>, <linux-kernel@vger.kernel.org>,
-        <huangjunxian6@hisilicon.com>
-Subject: [PATCH iproute2-next 2/2] rdma: Add support to dump SRQ resource in raw format
-Date:   Sat, 7 Oct 2023 11:58:55 +0800
-Message-ID: <20231007035855.2273364-3-huangjunxian6@hisilicon.com>
-X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20231007035855.2273364-1-huangjunxian6@hisilicon.com>
-References: <20231007035855.2273364-1-huangjunxian6@hisilicon.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.67.165.2]
-X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
- kwepemi500006.china.huawei.com (7.221.188.68)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        with ESMTP id S229576AbjJGSMf (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Sat, 7 Oct 2023 14:12:35 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A2DEDA2;
+        Sat,  7 Oct 2023 11:12:34 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 46DC4C433C7;
+        Sat,  7 Oct 2023 18:12:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1696702354;
+        bh=TpOPx/Sr4QN5FpAEkkMwbFCyP1+3zLyqqPbm0foazGU=;
+        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
+        b=IwWwDRSHjlyrpK645TvuKezWbWw46xPYi4cjlYbty45BzAnLYUswnFYogWCuutd69
+         +yofAVb6JgXmw41SGgyPXaQqtYtSa88LAObEEuwTKp3oIdMqYk65mBOy08uzONbzkv
+         f5rYy7+JLkdIFvouaePPnxGHhX9tmv7aMsacKabZ77Vrvi8e/0f1hT7FARCnkTH0gt
+         b57NQKflyPAJJuvo0b3j+W9vYKk+siVn/mPeIl96rOShHZ6RHgjoV6fSgm08/iYSc+
+         wEOOdnc2IhOaaxnlMmlvTijriud7MM2HzxmNa5orU4f6HdXysr4gLYGvmCv88D3jLn
+         +p9PpHexEZ4Jw==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 330A4E632D6;
+        Sat,  7 Oct 2023 18:12:34 +0000 (UTC)
+Subject: Re: [GIT PULL] Please pull RDMA subsystem changes
+From:   pr-tracker-bot@kernel.org
+In-Reply-To: <20231006183028.GA1213337@nvidia.com>
+References: <20231006183028.GA1213337@nvidia.com>
+X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
+X-PR-Tracked-Message-Id: <20231006183028.GA1213337@nvidia.com>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git tags/for-linus
+X-PR-Tracked-Commit-Id: c38d23a54445f9a8aa6831fafc9af0496ba02f9e
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: 8fea9f8f180b1817316e7501e601426a4a067466
+Message-Id: <169670235419.17695.1582861629622808625.pr-tracker-bot@kernel.org>
+Date:   Sat, 07 Oct 2023 18:12:34 +0000
+To:     Jason Gunthorpe <jgg@nvidia.com>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Leon Romanovsky <leonro@nvidia.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: wenglianfa <wenglianfa@huawei.com>
+The pull request you sent on Fri, 6 Oct 2023 15:30:28 -0300:
 
-Add support to dump SRQ resource in raw format.
+> git://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git tags/for-linus
 
-This patch relies on the corresponding kernel commit aebf8145e11a
-("RDMA/core: Add support to dump SRQ resource in RAW format")
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/8fea9f8f180b1817316e7501e601426a4a067466
 
-Example:
-$ rdma res show srq -r
-dev hns3 149000...
+Thank you!
 
-$ rdma res show srq -j -r
-[{"ifindex":0,"ifname":"hns3","data":[149,0,0,...]}]
-
-Signed-off-by: wenglianfa <wenglianfa@huawei.com>
----
- rdma/res-srq.c | 17 ++++++++++++++++-
- rdma/res.h     |  2 ++
- 2 files changed, 18 insertions(+), 1 deletion(-)
-
-diff --git a/rdma/res-srq.c b/rdma/res-srq.c
-index 186ae281..d2581a3f 100644
---- a/rdma/res-srq.c
-+++ b/rdma/res-srq.c
-@@ -162,6 +162,20 @@ out:
- 	return -EINVAL;
- }
- 
-+static int res_srq_line_raw(struct rd *rd, const char *name, int idx,
-+			    struct nlattr **nla_line)
-+{
-+	if (!nla_line[RDMA_NLDEV_ATTR_RES_RAW])
-+		return MNL_CB_ERROR;
-+
-+	open_json_object(NULL);
-+	print_dev(rd, idx, name);
-+	print_raw_data(rd, nla_line);
-+	newline(rd);
-+
-+	return MNL_CB_OK;
-+}
-+
- static int res_srq_line(struct rd *rd, const char *name, int idx,
- 			struct nlattr **nla_line)
- {
-@@ -276,7 +290,8 @@ int res_srq_parse_cb(const struct nlmsghdr *nlh, void *data)
- 		if (ret != MNL_CB_OK)
- 			break;
- 
--		ret = res_srq_line(rd, name, idx, nla_line);
-+		ret = (rd->show_raw) ? res_srq_line_raw(rd, name, idx, nla_line) :
-+		       res_srq_line(rd, name, idx, nla_line);
- 		if (ret != MNL_CB_OK)
- 			break;
- 	}
-diff --git a/rdma/res.h b/rdma/res.h
-index 70e51acd..e880c28b 100644
---- a/rdma/res.h
-+++ b/rdma/res.h
-@@ -39,6 +39,8 @@ static inline uint32_t res_get_command(uint32_t command, struct rd *rd)
- 		return RDMA_NLDEV_CMD_RES_CQ_GET_RAW;
- 	case RDMA_NLDEV_CMD_RES_MR_GET:
- 		return RDMA_NLDEV_CMD_RES_MR_GET_RAW;
-+	case RDMA_NLDEV_CMD_RES_SRQ_GET:
-+		return RDMA_NLDEV_CMD_RES_SRQ_GET_RAW;
- 	default:
- 		return command;
- 	}
 -- 
-2.30.0
-
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
