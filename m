@@ -2,122 +2,153 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CA1D77BD443
-	for <lists+linux-rdma@lfdr.de>; Mon,  9 Oct 2023 09:25:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F7427BD43F
+	for <lists+linux-rdma@lfdr.de>; Mon,  9 Oct 2023 09:25:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345393AbjJIHZg (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 9 Oct 2023 03:25:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54124 "EHLO
+        id S1345400AbjJIHZf (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 9 Oct 2023 03:25:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54096 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345391AbjJIHZe (ORCPT
+        with ESMTP id S1345374AbjJIHZe (ORCPT
         <rfc822;linux-rdma@vger.kernel.org>); Mon, 9 Oct 2023 03:25:34 -0400
-Received: from out-194.mta0.migadu.com (out-194.mta0.migadu.com [IPv6:2001:41d0:1004:224b::c2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 59EE6CA
-        for <linux-rdma@vger.kernel.org>; Mon,  9 Oct 2023 00:25:32 -0700 (PDT)
+Received: from out-205.mta0.migadu.com (out-205.mta0.migadu.com [91.218.175.205])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13EE7AB
+        for <linux-rdma@vger.kernel.org>; Mon,  9 Oct 2023 00:25:31 -0700 (PDT)
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1696835922;
+        t=1696835924;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=Mnb+gGmrjcx+DiyIe1j/ozcPWCSHKPv54GaWtqhVMG0=;
-        b=qttbXwN+P5jgVZkBO1LCbdmnj9I1LKFPe6sDR2nRotUCcr9xJx0U65Pk0qqRAvRNnBKvpk
-        wCkp17zbERfleoS2obm//pjOBPD/4UiKq/k4g/r4kV4LTptCSnw0a12tOtf9bGPAiJRUUS
-        /m6hvR/I1Arq+ko+b6xfhrbRl60dlUY=
+        bh=gl5qHTuqLDGYWhAyLHNhoJmJKVBxFumuNjO3PoAIdw8=;
+        b=K1FGed9FKjvGJOVPhRJ7VIQHg1I2ncoqD6OrN+Jw49r+giOb0JvBmVjPfmspOqynYc8gnk
+        7GT9oKeZUmE58oCRtBaOHdsRSUxTvZp3J25bL5lH/5bib7iHqBqALLDwwBlPvk29HcNtJ9
+        csncC8Y7kQySmscl5LPhzNn8mi2UNlY=
 From:   Guoqing Jiang <guoqing.jiang@linux.dev>
 To:     bmt@zurich.ibm.com, jgg@ziepe.ca, leon@kernel.org
 Cc:     linux-rdma@vger.kernel.org
-Subject: [PATCH 10/19] RDMA/siw: Add one parameter to siw_destroy_cpulist
-Date:   Mon,  9 Oct 2023 15:17:52 +0800
-Message-Id: <20231009071801.10210-11-guoqing.jiang@linux.dev>
+Subject: [PATCH 11/19] RDMA/siw: Introduce siw_cep_set_free_and_put
+Date:   Mon,  9 Oct 2023 15:17:53 +0800
+Message-Id: <20231009071801.10210-12-guoqing.jiang@linux.dev>
 In-Reply-To: <20231009071801.10210-1-guoqing.jiang@linux.dev>
 References: <20231009071801.10210-1-guoqing.jiang@linux.dev>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Migadu-Flow: FLOW_OUT
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-With that we can reuse it in siw_init_cpulist.
+Add the helper which can be used in some places.
 
 Signed-off-by: Guoqing Jiang <guoqing.jiang@linux.dev>
 ---
- drivers/infiniband/sw/siw/siw_main.c | 30 +++++++++++++---------------
- 1 file changed, 14 insertions(+), 16 deletions(-)
+ drivers/infiniband/sw/siw/siw_cm.c | 31 ++++++++++++++----------------
+ 1 file changed, 14 insertions(+), 17 deletions(-)
 
-diff --git a/drivers/infiniband/sw/siw/siw_main.c b/drivers/infiniband/sw/siw/siw_main.c
-index 1ab62982df74..61ad8ca3d1a2 100644
---- a/drivers/infiniband/sw/siw/siw_main.c
-+++ b/drivers/infiniband/sw/siw/siw_main.c
-@@ -109,6 +109,17 @@ static struct {
- 	int num_nodes;
- } siw_cpu_info;
- 
-+static void siw_destroy_cpulist(int number)
-+{
-+	int i = 0;
-+
-+	while (i < number)
-+		kfree(siw_cpu_info.tx_valid_cpus[i++]);
-+
-+	kfree(siw_cpu_info.tx_valid_cpus);
-+	siw_cpu_info.tx_valid_cpus = NULL;
-+}
-+
- static int siw_init_cpulist(void)
- {
- 	int i, num_nodes = nr_node_ids;
-@@ -138,24 +149,11 @@ static int siw_init_cpulist(void)
- 
- out_err:
- 	siw_cpu_info.num_nodes = 0;
--	while (--i >= 0)
--		kfree(siw_cpu_info.tx_valid_cpus[i]);
--	kfree(siw_cpu_info.tx_valid_cpus);
--	siw_cpu_info.tx_valid_cpus = NULL;
-+	siw_destroy_cpulist(i);
- 
- 	return -ENOMEM;
+diff --git a/drivers/infiniband/sw/siw/siw_cm.c b/drivers/infiniband/sw/siw/siw_cm.c
+index c8a9118677d7..2f338bb3a24c 100644
+--- a/drivers/infiniband/sw/siw/siw_cm.c
++++ b/drivers/infiniband/sw/siw/siw_cm.c
+@@ -444,6 +444,12 @@ void siw_cep_put(struct siw_cep *cep)
+ 	kref_put(&cep->ref, __siw_cep_dealloc);
  }
  
--static void siw_destroy_cpulist(void)
--{
--	int i = 0;
--
--	while (i < siw_cpu_info.num_nodes)
--		kfree(siw_cpu_info.tx_valid_cpus[i++]);
--
--	kfree(siw_cpu_info.tx_valid_cpus);
--}
--
- /*
-  * Choose CPU with least number of active QP's from NUMA node of
-  * TX interface.
-@@ -558,7 +556,7 @@ static __init int siw_init_module(void)
- 	pr_info("SoftIWARP attach failed. Error: %d\n", rv);
++static void siw_cep_set_free_and_put(struct siw_cep *cep)
++{
++	siw_cep_set_free(cep);
++	siw_cep_put(cep);
++}
++
+ void siw_cep_get(struct siw_cep *cep)
+ {
+ 	kref_get(&cep->ref);
+@@ -1506,9 +1512,7 @@ int siw_connect(struct iw_cm_id *id, struct iw_cm_conn_param *params)
  
- 	siw_cm_exit();
--	siw_destroy_cpulist();
-+	siw_destroy_cpulist(siw_cpu_info.num_nodes);
+ 		cep->state = SIW_EPSTATE_CLOSED;
+ 
+-		siw_cep_set_free(cep);
+-
+-		siw_cep_put(cep);
++		siw_cep_set_free_and_put(cep);
+ 
+ 	} else if (s) {
+ 		sock_release(s);
+@@ -1556,16 +1560,14 @@ int siw_accept(struct iw_cm_id *id, struct iw_cm_conn_param *params)
+ 	if (cep->state != SIW_EPSTATE_RECVD_MPAREQ) {
+ 		siw_dbg_cep(cep, "out of state\n");
+ 
+-		siw_cep_set_free(cep);
+-		siw_cep_put(cep);
++		siw_cep_set_free_and_put(cep);
+ 
+ 		return -ECONNRESET;
+ 	}
+ 	qp = siw_qp_id2obj(sdev, params->qpn);
+ 	if (!qp) {
+ 		WARN(1, "[QP %d] does not exist\n", params->qpn);
+-		siw_cep_set_free(cep);
+-		siw_cep_put(cep);
++		siw_cep_set_free_and_put(cep);
+ 
+ 		return -EINVAL;
+ 	}
+@@ -1711,8 +1713,7 @@ int siw_accept(struct iw_cm_id *id, struct iw_cm_conn_param *params)
+ 	cep->qp = NULL;
+ 	siw_qp_put(qp);
+ 
+-	siw_cep_set_free(cep);
+-	siw_cep_put(cep);
++	siw_cep_set_free_and_put(cep);
  
  	return rv;
  }
-@@ -573,7 +571,7 @@ static void __exit siw_exit_module(void)
+@@ -1735,8 +1736,7 @@ int siw_reject(struct iw_cm_id *id, const void *pdata, u8 pd_len)
+ 	if (cep->state != SIW_EPSTATE_RECVD_MPAREQ) {
+ 		siw_dbg_cep(cep, "out of state\n");
  
- 	siw_cm_exit();
+-		siw_cep_set_free(cep);
+-		siw_cep_put(cep); /* put last reference */
++		siw_cep_set_free_and_put(cep); /* put last reference */
  
--	siw_destroy_cpulist();
-+	siw_destroy_cpulist(siw_cpu_info.num_nodes);
+ 		return -ECONNRESET;
+ 	}
+@@ -1753,8 +1753,7 @@ int siw_reject(struct iw_cm_id *id, const void *pdata, u8 pd_len)
  
- 	if (siw_crypto_shash)
- 		crypto_free_shash(siw_crypto_shash);
+ 	cep->state = SIW_EPSTATE_CLOSED;
+ 
+-	siw_cep_set_free(cep);
+-	siw_cep_put(cep);
++	siw_cep_set_free_and_put(cep);
+ 
+ 	return 0;
+ }
+@@ -1889,8 +1888,7 @@ int siw_create_listen(struct iw_cm_id *id, int backlog)
+ 		siw_socket_disassoc(s);
+ 		cep->state = SIW_EPSTATE_CLOSED;
+ 
+-		siw_cep_set_free(cep);
+-		siw_cep_put(cep);
++		siw_cep_set_free_and_put(cep);
+ 	}
+ 	sock_release(s);
+ 
+@@ -1924,8 +1922,7 @@ static void siw_drop_listeners(struct iw_cm_id *id)
+ 			cep->sock = NULL;
+ 		}
+ 		cep->state = SIW_EPSTATE_CLOSED;
+-		siw_cep_set_free(cep);
+-		siw_cep_put(cep);
++		siw_cep_set_free_and_put(cep);
+ 	}
+ }
+ 
 -- 
 2.35.3
 
