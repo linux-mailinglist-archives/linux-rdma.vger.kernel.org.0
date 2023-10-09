@@ -2,31 +2,61 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C7937BE828
-	for <lists+linux-rdma@lfdr.de>; Mon,  9 Oct 2023 19:32:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 664727BEB35
+	for <lists+linux-rdma@lfdr.de>; Mon,  9 Oct 2023 22:06:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377964AbjJIRcD (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 9 Oct 2023 13:32:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37684 "EHLO
+        id S1378523AbjJIUGM (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 9 Oct 2023 16:06:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38414 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1376824AbjJIRcC (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 9 Oct 2023 13:32:02 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9869F94;
-        Mon,  9 Oct 2023 10:32:00 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E99C5C433C7;
-        Mon,  9 Oct 2023 17:31:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1696872720;
-        bh=XDeMdfLHaRv+b+MlRUUeKv/nia38YeOU/WDZx5uPdgo=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=n7htfkkYUR12EIz1FfiE1jX2eFvUEHVFPryxLjmFbPuCO63JBXFgzZFBrFSr8POoM
-         nOqBt8Ex9K985cGV6+qhK/D41SCIeSdiXbcUvI9IgH95SuKRTpkX2tFZxU1fggV/Co
-         h4FDmqr5W2gDoU8y1iBRT+VGpOLpUw9MzF+NINbA=
-Date:   Mon, 9 Oct 2023 19:31:56 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Max Kellermann <max.kellermann@ionos.com>
+        with ESMTP id S234593AbjJIUGL (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 9 Oct 2023 16:06:11 -0400
+Received: from mail-lj1-x22a.google.com (mail-lj1-x22a.google.com [IPv6:2a00:1450:4864:20::22a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BCB59DA
+        for <linux-rdma@vger.kernel.org>; Mon,  9 Oct 2023 13:06:08 -0700 (PDT)
+Received: by mail-lj1-x22a.google.com with SMTP id 38308e7fff4ca-2c3e23a818bso17849981fa.0
+        for <linux-rdma@vger.kernel.org>; Mon, 09 Oct 2023 13:06:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ionos.com; s=google; t=1696881966; x=1697486766; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=vntWR/EJpWFamZ/9NMXVbCLlV4xDhJbERcnlqbMN6Xk=;
+        b=BFuMz3FMbhLgkIJi/HkkmJ1VkLf2I7vqp4svyIwG2+yDE+U4S96EGEikgUcb8O02Uo
+         8j8iLlfo7vmxsfcwVcs/qIKkl99xa5dmEeJRo1cSF6V+ygbEal7iO3+v912NQA+dawBz
+         Soy5yco9XA4Rbc4rDCwVGkioAfXZalXRitmVvyF0C2rWZ0Ewe2//XA3FBEsbn52apGZL
+         aRFt/c7Wzbg6QpYPQ0dm8EJR8fe2x3S+duZuFSIP/H5VlRW/FVRYn5HxOETlTJKz3xcb
+         BMDmJLPjWEXQ8IaDm9bc5q/71Ibv+h4ffhs1BXiaAk1KUwUk/S2rUW6zLyroy1Lm1kJC
+         OAGg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696881966; x=1697486766;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=vntWR/EJpWFamZ/9NMXVbCLlV4xDhJbERcnlqbMN6Xk=;
+        b=PeWHSjK3p3uUMBRTK0iNPTMg3XEi9/80WaABhHGCSwP4pseobn5aJfy8rpsOuoUIQ4
+         s5EVwWZV9eOV11aIIU/8E6a1DeGxqP2/hiPGKL6SXuGKhdi9UxM55YORVnkj1rzxBPLR
+         dfPM+TUu1W1uJRewYfpVOQL/rjHxUknlSe4WNycm/pyvuGwfi1qEcgL9Ex1mI3VF5vKs
+         mjkvE1iwPWoU0JkY57hAo8eeOjnQoabli6VxKiaKET6QTezEbJRdqYSgaiA6zKv/UacX
+         cfoNOkq7+9ZVF7+/wEDKZtl8cl7TWL1U0vbMtKSQ/bNENdBbrO7D82zq8gM9dfb/Fb3U
+         bhcw==
+X-Gm-Message-State: AOJu0YwXIm7X8aU3y7esusoAJWdkit9OMjtEhLwsrYdh19MzELVlTH1Q
+        XrDluaRSmeUDIdYtgOx40HhAsSVXvsrDLc4HNjkRiQ==
+X-Google-Smtp-Source: AGHT+IFghqg7b3VfDVvZ+soPEwEaIfxhrwarlOcz2b03PC3KagC0O9BH1UGRNCP79pJ8yT5JMzxC/VoYSKvtKG/y1ws=
+X-Received: by 2002:a2e:870c:0:b0:2b6:cbdb:790c with SMTP id
+ m12-20020a2e870c000000b002b6cbdb790cmr11535962lji.1.1696881966432; Mon, 09
+ Oct 2023 13:06:06 -0700 (PDT)
+MIME-Version: 1.0
+References: <20231009165741.746184-1-max.kellermann@ionos.com>
+ <20231009165741.746184-6-max.kellermann@ionos.com> <264fa39d-aed6-4a54-a085-107997078f8d@roeck-us.net>
+In-Reply-To: <264fa39d-aed6-4a54-a085-107997078f8d@roeck-us.net>
+From:   Max Kellermann <max.kellermann@ionos.com>
+Date:   Mon, 9 Oct 2023 22:05:55 +0200
+Message-ID: <CAKPOu+8k2x1CucWSzoouts0AfMJk+srJXWWf3iWVOeY+fWkOpQ@mail.gmail.com>
+Subject: Re: [PATCH 6/7] fs/sysfs/group: make attribute_group pointers const
+To:     Guenter Roeck <linux@roeck-us.net>
 Cc:     Jens Axboe <axboe@kernel.dk>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         "Rafael J. Wysocki" <rafael@kernel.org>,
         Borislav Petkov <bp@alien8.de>,
         Tony Luck <tony.luck@intel.com>,
@@ -34,7 +64,6 @@ Cc:     Jens Axboe <axboe@kernel.dk>,
         Mauro Carvalho Chehab <mchehab@kernel.org>,
         Robert Richter <rric@kernel.org>,
         Jean Delvare <jdelvare@suse.com>,
-        Guenter Roeck <linux@roeck-us.net>,
         Jason Gunthorpe <jgg@ziepe.ca>,
         Leon Romanovsky <leon@kernel.org>,
         Bart Van Assche <bvanassche@acm.org>,
@@ -82,40 +111,36 @@ Cc:     Jens Axboe <axboe@kernel.dk>,
         linux-perf-users@vger.kernel.org, linux-pm@vger.kernel.org,
         linux-usb@vger.kernel.org, linux-watchdog@vger.kernel.org,
         linux-scsi@vger.kernel.org
-Subject: Re: [PATCH 6/7] fs/sysfs/group: make attribute_group pointers const
-Message-ID: <2023100944-fancied-garter-f09b@gregkh>
-References: <20231009165741.746184-1-max.kellermann@ionos.com>
- <20231009165741.746184-6-max.kellermann@ionos.com>
- <2023100921-that-jasmine-2240@gregkh>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <2023100921-that-jasmine-2240@gregkh>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Mon, Oct 09, 2023 at 07:25:57PM +0200, Greg Kroah-Hartman wrote:
-> On Mon, Oct 09, 2023 at 06:57:39PM +0200, Max Kellermann wrote:
-> > This allows passing arrays of const pointers.  The goal is to make
-> > lots of global variables "const" to allow them to live in the
-> > ".rodata" section.
-> 
-> I'm all for doing this type of work, but this is going to be rough.  You
-> sent patch 6/7 that hit almost all subsystems at once :(
+On Mon, Oct 9, 2023 at 7:24=E2=80=AFPM Guenter Roeck <linux@roeck-us.net> w=
+rote:
+> Also, I don't know why checkpatch is happy with all the
+>
+>         const struct attribute_group *const*groups;
+>
+> instead of
+>
+>         const struct attribute_group *const *groups;
 
-The way to do this right is one-subsystem-at-a-time, right?  Why not
-start there, doing it cleanly, and then at the end, change the driver
-core and then just the subsystem pointers?  That should be much simpler,
-easier to review and verify, and many more changes (and probably take a
-kernel release or two to get through.)
+I found out that checkpatch has no check for this at all; it does
+complain about such lines, but only for local variables. But that
+warning is actually a bug, because this is a check for unary
+operators: it thinks the asterisk is a dereference operator, not a
+pointer declaration, and complains that the unary operator must be
+preceded by a space. Thus warnings on local variable are only correct
+by coincidence, not by design.
 
-thanks,
-
-greg k-h
+Inside structs or parameters (where my coding style violations can be
+found), it's a different context and thus checkpatch doesn't apply the
+rules for unary operators.
