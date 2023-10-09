@@ -2,132 +2,195 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E608A7BEB80
-	for <lists+linux-rdma@lfdr.de>; Mon,  9 Oct 2023 22:20:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 03F0D7BEDA4
+	for <lists+linux-rdma@lfdr.de>; Mon,  9 Oct 2023 23:58:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378629AbjJIUUb (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 9 Oct 2023 16:20:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45138 "EHLO
+        id S1378835AbjJIV6V (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 9 Oct 2023 17:58:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60822 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1378611AbjJIUU2 (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 9 Oct 2023 16:20:28 -0400
-Received: from mail-lj1-x22a.google.com (mail-lj1-x22a.google.com [IPv6:2a00:1450:4864:20::22a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 860F4DA
-        for <linux-rdma@vger.kernel.org>; Mon,  9 Oct 2023 13:20:26 -0700 (PDT)
-Received: by mail-lj1-x22a.google.com with SMTP id 38308e7fff4ca-2c17de836fbso62365991fa.1
-        for <linux-rdma@vger.kernel.org>; Mon, 09 Oct 2023 13:20:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ionos.com; s=google; t=1696882824; x=1697487624; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Y+Vz1bOKclq9QVOuzcbH1aPgn89tmrsRZHycaiZatEw=;
-        b=ZXApSf+xs3DWZi9glvHF1ftND6nJHcuKyZNMhSXqRfpzyjpe56h3jtGPbf0ReTYeIR
-         RoqIRMnNlo5c4iYjSTI3QLMoSrSL3Rs4N1wpJYkT7wNvk55NM8Kj09YWfoihk3uwDV0N
-         j3DLQGPgNtVUZ1Xe3iQddIydsZZGVwfsNomkvREBIGMDV5eJ9Swc92sSWIp/4FFJLqSW
-         cxpBEqBDyMXZseJ7uDuknWrKTq/l6vorjNDBaNeMsX/00U5lU9RwVZ4B+UfgR9Phi2Nn
-         Kmrm7CQdyUv/4Oz1E2zyTUl+ziSyCKtPfjZ+tJ8buhGvk4n7GbHom+dqb86i8kTuCv48
-         ctcQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696882824; x=1697487624;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Y+Vz1bOKclq9QVOuzcbH1aPgn89tmrsRZHycaiZatEw=;
-        b=FBmbaJ8FvolIs89zRl5pI/lya6QzJW7itPSsRnJfaGPz0SsBUAKeHeBjSIBfXbsPc1
-         LRPerNngrknzbwS4eFMY1bKFED44HJCxi8fdcN/ZzYgxwEigynZXE7Wnvy2XZ29hBwZS
-         mkYTybsIboM1E/m1X2McVxkM+7zsooUc2QC+CZ+4oYsXBrWyWow7GQ+dqJK4EFeoUjJq
-         LOZkO7KTUY5lIjV0R2AFQ+ouqwGUEMGvz8E+uQXitlAn1SBy7MvYo2T2Uw88YK/kdSEK
-         qOrVc20QMrEjyfq7r0pIIqpLsQ+iTv58CR3u+nENYGSN+V0wJOKCExQLWBF0GhNRletr
-         3G0g==
-X-Gm-Message-State: AOJu0YzwqKIE0gBwt2d2ivr0srBl3pI7xCJbFEOSnYYMzOPXg/dfCuh6
-        r7IXqmNJsgubZAmODhveJrP9qlup3QTkhoyiju9dCw==
-X-Google-Smtp-Source: AGHT+IEX6TNoPqier59OSFRvkXjcha7x9rPtvBMuDMX6o39QQshLcsk0zSX1nZ378MTMsNUvnOr8e/pohr3AIc4q14M=
-X-Received: by 2002:a05:651c:120e:b0:2bf:fbe7:67dd with SMTP id
- i14-20020a05651c120e00b002bffbe767ddmr14845991lja.28.1696882824611; Mon, 09
- Oct 2023 13:20:24 -0700 (PDT)
+        with ESMTP id S1378789AbjJIV6U (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 9 Oct 2023 17:58:20 -0400
+Received: from zeniv.linux.org.uk (zeniv.linux.org.uk [IPv6:2a03:a000:7:0:5054:ff:fe1c:15ff])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A2B5499;
+        Mon,  9 Oct 2023 14:58:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=linux.org.uk; s=zeniv-20220401; h=Sender:In-Reply-To:Content-Type:
+        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=Uo1EiyojZdAoskTvMvtwCcjNoSWtdzYtyhDVJ0XRCLA=; b=tQPA9yIqHmqNSbhOVvxiucllWR
+        l2tso1BLwh5CGWav21hSNoCV18PYO+IsxWdqSb/pXzM2cPknMXd9P7ke0zHb6UliQGYi6gLyRpPKv
+        U7hiFaveQ7mceuNDQ8jXcyNC9Wn3AkdirOyK8p0NOTO/Oj6yURkgBAyy5W9y7bWeLSH/O6DDIkmyl
+        WCp+Xw1NcUBfI4VrenMtUjHlxEHqjrSYPedcuoxv/CrT5Nzph7SfGqANRPJyxErt/tMNNVW/JgwXK
+        fM0gVUEdTnwkyob+53dTu2ypbGyfYDxKYT5I9ypDKvQN6UcsFeM5PE4elD0hso579aRXCVJbRT5mn
+        T7zz5aAw==;
+Received: from viro by zeniv.linux.org.uk with local (Exim 4.96 #2 (Red Hat Linux))
+        id 1qpyGA-00HK0m-1f;
+        Mon, 09 Oct 2023 21:57:54 +0000
+Date:   Mon, 9 Oct 2023 22:57:54 +0100
+From:   Al Viro <viro@zeniv.linux.org.uk>
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     Christian Brauner <brauner@kernel.org>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Alexander Gordeev <agordeev@linux.ibm.com>,
+        Fenghua Yu <fenghua.yu@intel.com>,
+        Reinette Chatre <reinette.chatre@intel.com>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Richard Weinberger <richard@nod.at>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
+        Tejun Heo <tj@kernel.org>,
+        Trond Myklebust <trond.myklebust@hammerspace.com>,
+        Anna Schumaker <anna@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Damien Le Moal <dlemoal@kernel.org>,
+        Naohiro Aota <naohiro.aota@wdc.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-s390@vger.kernel.org, linux-rdma@vger.kernel.org,
+        linux-nfs@vger.kernel.org, linux-hardening@vger.kernel.org,
+        cgroups@vger.kernel.org
+Subject: Re: [PATCH 03/19] fs: release anon dev_t in deactivate_locked_super
+Message-ID: <20231009215754.GL800259@ZenIV>
+References: <20230913111013.77623-1-hch@lst.de>
+ <20230913111013.77623-4-hch@lst.de>
+ <20230913232712.GC800259@ZenIV>
+ <20230926093834.GB13806@lst.de>
+ <20230926212515.GN800259@ZenIV>
+ <20231002064646.GA1799@lst.de>
 MIME-Version: 1.0
-References: <20231009165741.746184-1-max.kellermann@ionos.com>
- <20231009165741.746184-6-max.kellermann@ionos.com> <2023100921-that-jasmine-2240@gregkh>
-In-Reply-To: <2023100921-that-jasmine-2240@gregkh>
-From:   Max Kellermann <max.kellermann@ionos.com>
-Date:   Mon, 9 Oct 2023 22:20:13 +0200
-Message-ID: <CAKPOu+9=WBabTBExH1GQxhXrNH9xWciceavi6QF1nbfn9cXcig@mail.gmail.com>
-Subject: Re: [PATCH 6/7] fs/sysfs/group: make attribute_group pointers const
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Jens Axboe <axboe@kernel.dk>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Borislav Petkov <bp@alien8.de>,
-        Tony Luck <tony.luck@intel.com>,
-        James Morse <james.morse@arm.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Robert Richter <rric@kernel.org>,
-        Jean Delvare <jdelvare@suse.com>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Leon Romanovsky <leon@kernel.org>,
-        Bart Van Assche <bvanassche@acm.org>,
-        Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Vishal Verma <vishal.l.verma@intel.com>,
-        Dave Jiang <dave.jiang@intel.com>,
-        Ira Weiny <ira.weiny@intel.com>,
-        Keith Busch <kbusch@kernel.org>,
-        Christoph Hellwig <hch@lst.de>,
-        Sagi Grimberg <sagi@grimberg.me>,
-        Alessandro Zummo <a.zummo@towertech.it>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Mike Leach <mike.leach@linaro.org>,
-        James Clark <james.clark@arm.com>,
-        Leo Yan <leo.yan@linaro.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Pavel Machek <pavel@ucw.cz>, Lee Jones <lee@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Ian Rogers <irogers@google.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Sebastian Reichel <sre@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        Wim Van Sebroeck <wim@linux-watchdog.org>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-edac@vger.kernel.org, linux-hwmon@vger.kernel.org,
-        linux-rdma@vger.kernel.org, iommu@lists.linux.dev,
-        nvdimm@lists.linux.dev, linux-nvme@lists.infradead.org,
-        linux-rtc@vger.kernel.org, linux-serial@vger.kernel.org,
-        coresight@lists.linaro.org, linux-arm-kernel@lists.infradead.org,
-        linux-leds@vger.kernel.org, linux-pci@vger.kernel.org,
-        linux-perf-users@vger.kernel.org, linux-pm@vger.kernel.org,
-        linux-usb@vger.kernel.org, linux-watchdog@vger.kernel.org,
-        linux-scsi@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE autolearn=unavailable autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231002064646.GA1799@lst.de>
+Sender: Al Viro <viro@ftp.linux.org.uk>
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Mon, Oct 9, 2023 at 7:26=E2=80=AFPM Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
-> "*const*groups"?   That's a parsing nightmare, really hard for humans to
-> read and understand.  Doesn't checkpatch complain about this?
+On Mon, Oct 02, 2023 at 08:46:46AM +0200, Christoph Hellwig wrote:
+> On Tue, Sep 26, 2023 at 10:25:15PM +0100, Al Viro wrote:
+> > Before your patch: foo_kill_super() calls kill_anon_super(),
+> > which calls kill_super_notify(), which removes the sucker from
+> > the list, then frees ->s_fs_info.  After your patch:
+> > removal from the lists happens via the call of kill_super_notify()
+> > *after* both of your methods had been called, while freeing
+> > ->s_fs_info happens from the method call.  IOW, you've restored
+> > the situation prior to "super: ensure valid info".  The whole
+> > point of that commit had been to make sure that we have nothing
+> > in the lists with ->s_fs_info pointing to a freed object.
+> > 
+> > It's not about free_anon_bdev(); that part is fine - it's the
+> > "we can drop the weird second call site of kill_super_notify()"
+> > thing that is broken.
+> 
+> The point has been to only release the anon dev_t after
+> kill_super_notify, to prevent two of them beeing reused.
+> 
+> Which we do as the free_anon_bdev is done directly in
+> deactivate_locked_super.  The new ->free_sb for non-block file systems
+> frees resources, but none of them matter for sget.
 
-No, checkpatch does not implement a check/warning for this style (see
-my other email). There's no rule for this in coding-style.rst. Should
-there be one?
+We keep talking past each other...  Let me try again:
+at the tip of your branch you have
+
+static struct file_system_type ubifs_fs_type = {
+        .name    = "ubifs",
+	.owner   = THIS_MODULE,
+	.mount   = ubifs_mount,
+	.free_sb = ubifs_free_sb,
+};
+
+static void ubifs_free_sb(struct super_block *s)
+{
+        kfree(s->s_fs_info);
+}
+
+static struct dentry *ubifs_mount(struct file_system_type *fs_type, int flags,
+                        const char *name, void *data)
+{
+	...
+        sb = sget(fs_type, sb_test, sb_set, flags, c);
+	...
+}
+
+static int sb_test(struct super_block *sb, void *data)
+{
+        struct ubifs_info *c1 = data;
+        struct ubifs_info *c = sb->s_fs_info;
+
+        return c->vi.cdev == c1->vi.cdev;
+}
+
+See the problem?  Mainline has
+
+static void kill_ubifs_super(struct super_block *s)
+{
+        struct ubifs_info *c = s->s_fs_info;
+        kill_anon_super(s);
+        kfree(c);
+}
+and
+void kill_anon_super(struct super_block *sb)
+{
+        dev_t dev = sb->s_dev;
+        generic_shutdown_super(sb);
+        kill_super_notify(sb);
+        free_anon_bdev(dev);
+}
+
+That removes the superblock from the list of instances before its
+->s_fs_info is freed.  In your branch removal happens here:
+
+        if (fs->shutdown_sb)
+                fs->shutdown_sb(s);
+        generic_shutdown_super(s);
+        if (fs->free_sb)
+                fs->free_sb(s);
+
+        kill_super_notify(s);
+
+That comes *after* ubifs_free_sb() has freed ->s_fs_info.  And there's
+nothing to stop ubifs_mount() (on a completely unrelated device) to get
+called right at that moment.  Doing the sget() call quoted above.  Now,
+in sget() we have
+                hlist_for_each_entry(old, &type->fs_supers, s_instances) {
+                        if (!test(old, data))
+and that will hit sb_test(old, data), with old being a superblock still
+in ->fs_supers, but with ->s_fs_info already freed.  So in sb_test()
+we have c equal to old->s_fs_info and
+        return c->vi.cdev == c1->vi.cdev;
+is a bloody use after free.
+
+Here we are unlikely to get fucked over - it's a plain fetch from freed
+object.  If you look at e.g. nfs, you'll see a lot more than that -
+pointer chasing from freed (and possibly reused) object.  The only
+difference is that there you have sget_fc() instead of sget() - same
+loop anyway.
+
+The bottom line: in the form it is posted, your series reintroduces the
+class of UAF that had been added by taking removal from the instances
+list out of generic_shutdown_super() and then papered over by adding
+that kill_super_notify() into kill_anon_super().
+
+And frankly, I believe that the root cause is the insistence that
+list removal should happen after generic_shutdown_super().  Sure, you
+want the superblock to serve as bdev holder, which leads to fun
+with -EBUSY if mount comes while umount still hadn't closed the
+device.  I suspect that it would make a lot more sense to
+introduce an intermediate state - "held, but will be released
+in a short while".  You already have something similar, but
+only for the entire disk ->bd_claiming stuff.
+
+Add a new primitive (will_release_bdev()), so that attempts to
+claim the sucker will wait until it gets released instead of
+failing with -EBUSY.  And do *that* before generic_shutdown_super()
+when unmounting something that is block-based.  Allows to bring
+the list removal back where it used to be, no UAF at all...
+
+IMO that direction is a lot more promising.
