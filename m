@@ -2,85 +2,85 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A3B67BD310
-	for <lists+linux-rdma@lfdr.de>; Mon,  9 Oct 2023 08:10:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F80D7BD435
+	for <lists+linux-rdma@lfdr.de>; Mon,  9 Oct 2023 09:23:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345168AbjJIGKs (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 9 Oct 2023 02:10:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59736 "EHLO
+        id S234369AbjJIHXf (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 9 Oct 2023 03:23:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41326 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345128AbjJIGKr (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 9 Oct 2023 02:10:47 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6684C9E
-        for <linux-rdma@vger.kernel.org>; Sun,  8 Oct 2023 23:10:43 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7E6B9C433C9;
-        Mon,  9 Oct 2023 06:10:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1696831843;
-        bh=65v6++6oPlHP2u710xTu9/OHaiW4em/A840mljzzcU8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=qscuviVPbOZgUQtE9x5FbBZDVgshIk6Lgjvq9vXACGt9FDiLGwDVj00oRCO4A2j8k
-         DbqFPBhmHGEk4DcOGOe3Ez/LNZ7z9IcuDR12F7uTpfkASBZj7s4/OOLCaLYoLfoF2Y
-         PJmnMkbWtHILJFB4Eo51xjbbJ75svxXt7W7+GFU+PZBu3yDI3O7rgFb98S+LiVZ+fx
-         CzY2fCfYCHQ7KF++WNdpiw6hMTYKuwEMqXR01t1l2QAGV4RZfYctsn81spDM6fN1lA
-         xhCFC0jKdBS/+HYeLiYHJ1tSKjjzPPssQ0ri5WkFgTNvgj+oJvjlJ5/UpxkTdEYRJR
-         PClofrJw8dFuA==
-Date:   Mon, 9 Oct 2023 09:10:38 +0300
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Selvin Xavier <selvin.xavier@broadcom.com>
-Cc:     jgg@ziepe.ca, linux-rdma@vger.kernel.org,
-        andrew.gospodarek@broadcom.com,
-        Chandramohan Akula <chandramohan.akula@broadcom.com>
-Subject: Re: [PATCH for-next 2/3] RDMA/bnxt_re: Report async events and errors
-Message-ID: <20231009061038.GB5042@unreal>
-References: <1696483889-17427-1-git-send-email-selvin.xavier@broadcom.com>
- <1696483889-17427-3-git-send-email-selvin.xavier@broadcom.com>
+        with ESMTP id S232625AbjJIHXe (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 9 Oct 2023 03:23:34 -0400
+Received: from out-205.mta0.migadu.com (out-205.mta0.migadu.com [91.218.175.205])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 858F3B9
+        for <linux-rdma@vger.kernel.org>; Mon,  9 Oct 2023 00:23:31 -0700 (PDT)
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+        t=1696835892;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=+lheCq8ZM2QEF1ECu825TM2cRZFC6Ta1+9zqncEZZ8E=;
+        b=CNnd3THvkkoP/fRYshLGbsRYusGqgV/XUr4z92yaCRdtCpFiLJ/JtSnVKrhApxJw20kdpS
+        HA4SAfdd3SHVjvqLZ23jGgaN6ehWyI8xTOjsxbk2rimU1XNHz5PgByjAp0bAYtJOOJIW5p
+        kQDmPel7W41GAl85GFC296d0eGHqJS4=
+From:   Guoqing Jiang <guoqing.jiang@linux.dev>
+To:     bmt@zurich.ibm.com, jgg@ziepe.ca, leon@kernel.org
+Cc:     linux-rdma@vger.kernel.org
+Subject: [PATCH 00/19] Cleanup for siw
+Date:   Mon,  9 Oct 2023 15:17:42 +0800
+Message-Id: <20231009071801.10210-1-guoqing.jiang@linux.dev>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1696483889-17427-3-git-send-email-selvin.xavier@broadcom.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Wed, Oct 04, 2023 at 10:31:28PM -0700, Selvin Xavier wrote:
-> From: Chandramohan Akula <chandramohan.akula@broadcom.com>
-> 
-> Report QP, SRQ and CQ async events and errors.
-> 
-> Signed-off-by: Chandramohan Akula <chandramohan.akula@broadcom.com>
-> Signed-off-by: Selvin Xavier <selvin.xavier@broadcom.com>
-> ---
->  drivers/infiniband/hw/bnxt_re/main.c | 165 +++++++++++++++++++++++++++++++++--
->  1 file changed, 156 insertions(+), 9 deletions(-)
+Hi,
 
-<...>
+This series aim to cleanup siw code, please review and comment!
 
-> +	if (err_event->res_err_state_reason || err_event->req_err_state_reason) {
-> +		dev_err_once(rdev_to_dev(qp->rdev),
-> +			     "%s %s qp_id: %d cons (%d %d) req (%d %d) res (%d %d)\n",
-> +			     __func__, rdma_is_kernel_res(&qp->ib_qp.res) ? "kernel" : "user",
-> +			     qp->qplib_qp.id,
-> +			     err_event->sq_cons_idx,
-> +			     err_event->rq_cons_idx,
-> +			     err_event->req_slow_path_state,
-> +			     err_event->req_err_state_reason,
-> +			     err_event->res_slow_path_state,
-> +			     err_event->res_err_state_reason);
+Thanks,
+Guoqing
 
-<...>
+Guoqing Jiang (19):
+  RDMA/siw: Introduce siw_get_page
+  RDMA/siw: Introduce siw_srx_update_skb
+  RDMA/siw: Use iov.iov_len in kernel_sendmsg
+  RDMA/siw: Remove goto lable in siw_mmap
+  RDMA/siw: Remove rcu from siw_qp
+  RDMA/siw: No need to check term_info.valid before call
+    siw_send_terminate
+  RDMA/siw: Also goto out_sem_up if pin_user_pages returns 0
+  RDMA/siw: Factor out siw_generic_rx helper
+  RDMA/siw: Introduce SIW_STAG_MAX_INDEX
+  RDMA/siw: Add one parameter to siw_destroy_cpulist
+  RDMA/siw: Introduce siw_cep_set_free_and_put
+  RDMA/siw: Introduce siw_free_cm_id
+  RDMA/siw: Simplify siw_qp_id2obj
+  RDMA/siw: Simplify siw_mem_id2obj
+  RDMA/siw: Cleanup siw_accept
+  RDMA/siw: Remove siw_sk_assign_cm_upcalls
+  RDMA/siw: Fix typo
+  RDMA/siw: Only check attrs->cap.max_send_wr in siw_create_qp
+  RDMA/siw: Introduce siw_destroy_cep_sock
 
-> +		dev_err_once(rdev_to_dev(cq->rdev),
-> +			     "%s err reason %d\n", __func__, cqerr->cq_err_reason);
-> +		cq->ib_cq.event_handler(&ibevent, cq->ib_cq.cq_context);
+ drivers/infiniband/sw/siw/siw.h       |   9 +-
+ drivers/infiniband/sw/siw/siw_cm.c    | 154 +++++++++++---------------
+ drivers/infiniband/sw/siw/siw_main.c  |  30 +++--
+ drivers/infiniband/sw/siw/siw_mem.c   |  22 ++--
+ drivers/infiniband/sw/siw/siw_qp.c    |   2 +-
+ drivers/infiniband/sw/siw/siw_qp_rx.c |  84 ++++++--------
+ drivers/infiniband/sw/siw/siw_qp_tx.c |  34 +++---
+ drivers/infiniband/sw/siw/siw_verbs.c |  23 +---
+ 8 files changed, 142 insertions(+), 216 deletions(-)
 
-ibdev_*() prints please.
+-- 
+2.35.3
 
-Thanks
