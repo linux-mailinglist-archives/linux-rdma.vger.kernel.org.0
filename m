@@ -2,114 +2,113 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 99C1F7BD7BD
-	for <lists+linux-rdma@lfdr.de>; Mon,  9 Oct 2023 11:55:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 476DB7BD8E3
+	for <lists+linux-rdma@lfdr.de>; Mon,  9 Oct 2023 12:41:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345980AbjJIJzw (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 9 Oct 2023 05:55:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36980 "EHLO
+        id S1345876AbjJIKl3 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 9 Oct 2023 06:41:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47894 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345989AbjJIJzv (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 9 Oct 2023 05:55:51 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.126])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 37B99C5
-        for <linux-rdma@vger.kernel.org>; Mon,  9 Oct 2023 02:55:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1696845348; x=1728381348;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=JVNqKkR5qwbo2qWTMUgh18TU2knKIf7RNluIkUMDHyA=;
-  b=mL1rj1PdKbtaTS8o4XSQLhqfbSFw+rB0mFTXoiU7h9uFo7S7YWCtqD7f
-   l/QFf8SYlw9v1gC9zRiWP+Rzk7qiM525PYTaAIHkrEMrlERJTRSbFqVSB
-   nviZvQsGC62BT+3kKAhA0iU4HiH2pXvmSDZ3hTFRooxTXzZWQ710M0ucA
-   R7rS22TuVP0Mv2kJ6ABUWvujnn5aiZ7jt+ONqfpIj4loBU/6+6EXlkq1f
-   u5af75zCbvL9WcBaPDDM8qOe+xSo9RM15Jhp1tatC+hJ3mT1DwC5vfIRP
-   DoTRhVVIXg9rdSyxd+88mB3iqYf887A/k3dUq8qBHlul3x8T3byG8Du5G
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10857"; a="369171903"
-X-IronPort-AV: E=Sophos;i="6.03,210,1694761200"; 
-   d="scan'208";a="369171903"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Oct 2023 02:55:36 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10857"; a="843644504"
-X-IronPort-AV: E=Sophos;i="6.03,210,1694761200"; 
-   d="scan'208";a="843644504"
-Received: from lkp-server02.sh.intel.com (HELO 4ed589823ba4) ([10.239.97.151])
-  by FMSMGA003.fm.intel.com with ESMTP; 09 Oct 2023 02:55:35 -0700
-Received: from kbuild by 4ed589823ba4 with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qpmz6-00004q-2G;
-        Mon, 09 Oct 2023 09:55:32 +0000
-Date:   Mon, 9 Oct 2023 17:54:55 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Guoqing Jiang <guoqing.jiang@linux.dev>, bmt@zurich.ibm.com,
-        jgg@ziepe.ca, leon@kernel.org
-Cc:     oe-kbuild-all@lists.linux.dev, linux-rdma@vger.kernel.org
-Subject: Re: [PATCH 19/19] RDMA/siw: Introduce siw_destroy_cep_sock
-Message-ID: <202310091735.oG7bTvLR-lkp@intel.com>
-References: <20231009071801.10210-20-guoqing.jiang@linux.dev>
+        with ESMTP id S1345755AbjJIKl3 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 9 Oct 2023 06:41:29 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A674F99
+        for <linux-rdma@vger.kernel.org>; Mon,  9 Oct 2023 03:41:27 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B355EC433C7;
+        Mon,  9 Oct 2023 10:41:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1696848087;
+        bh=5Gg3iMTnKkHu+w2A9YVl5NgI6z16kr8gLSi8nmw6a2A=;
+        h=From:To:Cc:Subject:Date:From;
+        b=XXleZucoMuDoYKKTB+et4AcovzvNBYIF2oXuU6BSk6WrQCEP0GrKzRumLjPKJ9A2o
+         P/DotRkJbZopZuV5uAylEywS/ghReYh6MI1SUlSQngB1U5DG0xBoRMOg67KxwUhhpr
+         9WDWZ0ZoIaoAMjONesl1EjnMY2+F/UAZgJvADXERvJiDCWHNrjYa3dUwqkHS109pw2
+         +XOkSso/+cGP/V+kl/TSwtkX/SpBI1fgaHpLgBpWlqITiEIOP/7Wl9YMHrvj4ESeyb
+         ZqpqR7mPjuSBpZhYC3EAcBfcgX+Jy37wv3qJaCI4iXXJ7YoK2GgfpamNkKs4akdRd7
+         b8Uwv7qabru5Q==
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Jason Gunthorpe <jgg@nvidia.com>
+Cc:     Patrisious Haddad <phaddad@nvidia.com>, linux-rdma@vger.kernel.org,
+        Mark Zhang <markzhang@nvidia.com>
+Subject: [PATCH rdma-next] IB/mlx5: Fix rdma counter binding for RAW QP
+Date:   Mon,  9 Oct 2023 13:41:20 +0300
+Message-ID: <2e5ab6713784a8fe997d19c508187a0dfecf2dfc.1696847964.git.leon@kernel.org>
+X-Mailer: git-send-email 2.41.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231009071801.10210-20-guoqing.jiang@linux.dev>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Hi Guoqing,
+From: Patrisious Haddad <phaddad@nvidia.com>
 
-kernel test robot noticed the following build warnings:
+Previously when we had a RAW QP, we bound a counter to it when it moved
+to INIT state, using the counter context inside RQC.
 
-[auto build test WARNING on rdma/for-next]
-[also build test WARNING on linus/master v6.6-rc5 next-20231009]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
+But when we try to modify that counter later in RTS state we used
+modify QP which tries to change the counter inside QPC instead of RQC.
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Guoqing-Jiang/RDMA-siw-Introduce-siw_get_page/20231009-152705
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git for-next
-patch link:    https://lore.kernel.org/r/20231009071801.10210-20-guoqing.jiang%40linux.dev
-patch subject: [PATCH 19/19] RDMA/siw: Introduce siw_destroy_cep_sock
-config: m68k-allyesconfig (https://download.01.org/0day-ci/archive/20231009/202310091735.oG7bTvLR-lkp@intel.com/config)
-compiler: m68k-linux-gcc (GCC) 13.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231009/202310091735.oG7bTvLR-lkp@intel.com/reproduce)
+Now we correctly modify the counter set_id inside of RQC instead of QPC
+for the RAW QP.
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202310091735.oG7bTvLR-lkp@intel.com/
+Fixes: d14133dd4161 ("IB/mlx5: Support set qp counter")
+Signed-off-by: Patrisious Haddad <phaddad@nvidia.com>
+Reviewed-by: Mark Zhang <markzhang@nvidia.com>
+Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
+---
+ drivers/infiniband/hw/mlx5/qp.c | 27 +++++++++++++++++++++++++++
+ 1 file changed, 27 insertions(+)
 
-All warnings (new ones prefixed by >>):
-
-   drivers/infiniband/sw/siw/siw_cm.c:360:6: warning: no previous prototype for 'siw_free_cm_id' [-Wmissing-prototypes]
-     360 | void siw_free_cm_id(struct siw_cep *cep, bool put_cep)
-         |      ^~~~~~~~~~~~~~
->> drivers/infiniband/sw/siw/siw_cm.c:371:6: warning: no previous prototype for 'siw_destroy_cep_sock' [-Wmissing-prototypes]
-     371 | void siw_destroy_cep_sock(struct siw_cep *cep)
-         |      ^~~~~~~~~~~~~~~~~~~~
-
-
-vim +/siw_destroy_cep_sock +371 drivers/infiniband/sw/siw/siw_cm.c
-
-   370	
- > 371	void siw_destroy_cep_sock(struct siw_cep *cep)
-   372	{
-   373		if (cep->sock) {
-   374			siw_socket_disassoc(cep->sock);
-   375			sock_release(cep->sock);
-   376			cep->sock = NULL;
-   377		}
-   378	}
-   379	
-
+diff --git a/drivers/infiniband/hw/mlx5/qp.c b/drivers/infiniband/hw/mlx5/qp.c
+index c047c5d66737..83727bde54f5 100644
+--- a/drivers/infiniband/hw/mlx5/qp.c
++++ b/drivers/infiniband/hw/mlx5/qp.c
+@@ -4047,6 +4047,30 @@ static unsigned int get_tx_affinity(struct ib_qp *qp,
+ 	return tx_affinity;
+ }
+ 
++static int __mlx5_ib_qp_set_raw_qp_counter(struct mlx5_ib_qp *qp, u32 set_id,
++					   struct mlx5_core_dev *mdev)
++{
++	struct mlx5_ib_raw_packet_qp *raw_packet_qp = &qp->raw_packet_qp;
++	struct mlx5_ib_rq *rq = &raw_packet_qp->rq;
++	u32 in[MLX5_ST_SZ_DW(modify_rq_in)] = {};
++	void *rqc;
++
++	if (!qp->rq.wqe_cnt)
++		return 0;
++
++	MLX5_SET(modify_rq_in, in, rq_state, rq->state);
++	MLX5_SET(modify_rq_in, in, uid, to_mpd(qp->ibqp.pd)->uid);
++
++	rqc = MLX5_ADDR_OF(modify_rq_in, in, ctx);
++	MLX5_SET(rqc, rqc, state, MLX5_RQC_STATE_RDY);
++
++	MLX5_SET64(modify_rq_in, in, modify_bitmask,
++		   MLX5_MODIFY_RQ_IN_MODIFY_BITMASK_RQ_COUNTER_SET_ID);
++	MLX5_SET(rqc, rqc, counter_set_id, set_id);
++
++	return mlx5_core_modify_rq(mdev, rq->base.mqp.qpn, in);
++}
++
+ static int __mlx5_ib_qp_set_counter(struct ib_qp *qp,
+ 				    struct rdma_counter *counter)
+ {
+@@ -4062,6 +4086,9 @@ static int __mlx5_ib_qp_set_counter(struct ib_qp *qp,
+ 	else
+ 		set_id = mlx5_ib_get_counters_id(dev, mqp->port - 1);
+ 
++	if (mqp->type == IB_QPT_RAW_PACKET)
++		return __mlx5_ib_qp_set_raw_qp_counter(mqp, set_id, dev->mdev);
++
+ 	base = &mqp->trans_qp.base;
+ 	MLX5_SET(rts2rts_qp_in, in, opcode, MLX5_CMD_OP_RTS2RTS_QP);
+ 	MLX5_SET(rts2rts_qp_in, in, qpn, base->mqp.qpn);
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+2.41.0
+
