@@ -2,131 +2,86 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 46B807BF50A
-	for <lists+linux-rdma@lfdr.de>; Tue, 10 Oct 2023 09:58:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 84D797BF551
+	for <lists+linux-rdma@lfdr.de>; Tue, 10 Oct 2023 10:09:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1442662AbjJJH6l (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 10 Oct 2023 03:58:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49752 "EHLO
+        id S1346714AbjJJIJq (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 10 Oct 2023 04:09:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34484 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1442653AbjJJH6j (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 10 Oct 2023 03:58:39 -0400
-Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A0229F;
-        Tue, 10 Oct 2023 00:58:38 -0700 (PDT)
-Received: from kwepemi500006.china.huawei.com (unknown [172.30.72.56])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4S4Sq34TDvzNnxh;
-        Tue, 10 Oct 2023 15:54:39 +0800 (CST)
-Received: from localhost.localdomain (10.67.165.2) by
- kwepemi500006.china.huawei.com (7.221.188.68) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.31; Tue, 10 Oct 2023 15:58:34 +0800
-From:   Junxian Huang <huangjunxian6@hisilicon.com>
-To:     <jgg@ziepe.ca>, <leon@kernel.org>, <dsahern@gmail.com>,
-        <stephen@networkplumber.org>
-CC:     <netdev@vger.kernel.org>, <linux-rdma@vger.kernel.org>,
-        <linuxarm@huawei.com>, <linux-kernel@vger.kernel.org>,
-        <huangjunxian6@hisilicon.com>
-Subject: [PATCH v2 iproute2-next 2/2] rdma: Add support to dump SRQ resource in raw format
-Date:   Tue, 10 Oct 2023 15:55:26 +0800
-Message-ID: <20231010075526.3860869-3-huangjunxian6@hisilicon.com>
-X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20231010075526.3860869-1-huangjunxian6@hisilicon.com>
-References: <20231010075526.3860869-1-huangjunxian6@hisilicon.com>
+        with ESMTP id S1346700AbjJJIJq (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 10 Oct 2023 04:09:46 -0400
+Received: from us-smtp-delivery-44.mimecast.com (us-smtp-delivery-44.mimecast.com [205.139.111.44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD71FA4
+        for <linux-rdma@vger.kernel.org>; Tue, 10 Oct 2023 01:09:44 -0700 (PDT)
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-288-qRlSN9UqOC2zM01Za9DlmA-1; Tue, 10 Oct 2023 04:09:32 -0400
+X-MC-Unique: qRlSN9UqOC2zM01Za9DlmA-1
+Received: from smtp.corp.redhat.com (int-mx10.intmail.prod.int.rdu2.redhat.com [10.11.54.10])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id A86F3185A79B;
+        Tue, 10 Oct 2023 08:09:30 +0000 (UTC)
+Received: from hog (unknown [10.45.225.250])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 83FF8400F36;
+        Tue, 10 Oct 2023 08:09:26 +0000 (UTC)
+Date:   Tue, 10 Oct 2023 10:09:24 +0200
+From:   Sabrina Dubroca <sd@queasysnail.net>
+To:     "Radu Pirea (NXP OSS)" <radu-nicolae.pirea@oss.nxp.com>
+Cc:     linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        linux-rdma@vger.kernel.org, sgoutham@marvell.com,
+        gakula@marvell.com, sbhatta@marvell.com, hkelam@marvell.com,
+        davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
+        pabeni@redhat.com, borisp@nvidia.com, saeedm@nvidia.com,
+        leon@kernel.org, andrew@lunn.ch, hkallweit1@gmail.com,
+        linux@armlinux.org.uk, richardcochran@gmail.com,
+        sebastian.tobuschat@oss.nxp.com, phaddad@nvidia.com,
+        ehakim@nvidia.com, raeds@nvidia.com, atenart@kernel.org
+Subject: Re: [PATCH net v7 0/4] Add update_pn flag
+Message-ID: <ZSUGtMn6hl2Ua8qx@hog>
+References: <20231005180636.672791-1-radu-nicolae.pirea@oss.nxp.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.67.165.2]
-X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
- kwepemi500006.china.huawei.com (7.221.188.68)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20231005180636.672791-1-radu-nicolae.pirea@oss.nxp.com>
+X-Scanned-By: MIMEDefang 3.1 on 10.11.54.10
+X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_LOW,
+        SPF_HELO_NONE,SPF_NONE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: wenglianfa <wenglianfa@huawei.com>
+2023-10-05, 21:06:32 +0300, Radu Pirea (NXP OSS) wrote:
+> Patches extracted from
+> https://lore.kernel.org/all/20230928084430.1882670-1-radu-nicolae.pirea@oss.nxp.com/
+> Update_pn flag will let the offloaded MACsec implementations to know when
+> the PN is updated.
+> 
+> Radu P.
+> 
+> Radu Pirea (NXP OSS) (4):
+>   net: macsec: indicate next pn update when offloading
+>   octeontx2-pf: mcs: update PN only when update_pn is true
+>   net: phy: mscc: macsec: reject PN update requests
+>   net/mlx5e: macsec: use update_pn flag instead of PN comparation
 
-Add support to dump SRQ resource in raw format.
+Thanks Radu! For the series:
+Reviewed-by: Sabrina Dubroca <sd@queasysnail.net>
 
-This patch relies on the corresponding kernel commit aebf8145e11a
-("RDMA/core: Add support to dump SRQ resource in RAW format")
 
-Example:
-$ rdma res show srq -r
-dev hns3 149000...
+While reviewing this, I noticed that octeon can leave the HW in an
+inconsistent state during upd_txsa and upd_rxsa: these ops do 2
+separate changes that can both fail, and if the 2nd change fails, we
+don't roll back the first change. This is an older issue (not
+introduced by this patch) and can be looked at later (I don't know
+what happens to the HW and why setting the PN would fail, maybe it's
+not recoverable at that point).
 
-$ rdma res show srq -j -r
-[{"ifindex":0,"ifname":"hns3","data":[149,0,0,...]}]
-
-Signed-off-by: wenglianfa <wenglianfa@huawei.com>
----
- rdma/res-srq.c | 20 ++++++++++++++++++--
- rdma/res.h     |  2 ++
- 2 files changed, 20 insertions(+), 2 deletions(-)
-
-diff --git a/rdma/res-srq.c b/rdma/res-srq.c
-index 186ae281..cf9209d7 100644
---- a/rdma/res-srq.c
-+++ b/rdma/res-srq.c
-@@ -162,6 +162,20 @@ out:
- 	return -EINVAL;
- }
- 
-+static int res_srq_line_raw(struct rd *rd, const char *name, int idx,
-+			    struct nlattr **nla_line)
-+{
-+	if (!nla_line[RDMA_NLDEV_ATTR_RES_RAW])
-+		return MNL_CB_ERROR;
-+
-+	open_json_object(NULL);
-+	print_dev(rd, idx, name);
-+	print_raw_data(rd, nla_line);
-+	newline(rd);
-+
-+	return MNL_CB_OK;
-+}
-+
- static int res_srq_line(struct rd *rd, const char *name, int idx,
- 			struct nlattr **nla_line)
- {
-@@ -248,7 +262,8 @@ int res_srq_idx_parse_cb(const struct nlmsghdr *nlh, void *data)
- 	name = mnl_attr_get_str(tb[RDMA_NLDEV_ATTR_DEV_NAME]);
- 	idx = mnl_attr_get_u32(tb[RDMA_NLDEV_ATTR_DEV_INDEX]);
- 
--	return res_srq_line(rd, name, idx, tb);
-+	return (rd->show_raw) ? res_srq_line_raw(rd, name, idx, tb) :
-+		res_srq_line(rd, name, idx, tb);
- }
- 
- int res_srq_parse_cb(const struct nlmsghdr *nlh, void *data)
-@@ -276,7 +291,8 @@ int res_srq_parse_cb(const struct nlmsghdr *nlh, void *data)
- 		if (ret != MNL_CB_OK)
- 			break;
- 
--		ret = res_srq_line(rd, name, idx, nla_line);
-+		ret = (rd->show_raw) ? res_srq_line_raw(rd, name, idx, nla_line) :
-+		       res_srq_line(rd, name, idx, nla_line);
- 		if (ret != MNL_CB_OK)
- 			break;
- 	}
-diff --git a/rdma/res.h b/rdma/res.h
-index 70e51acd..e880c28b 100644
---- a/rdma/res.h
-+++ b/rdma/res.h
-@@ -39,6 +39,8 @@ static inline uint32_t res_get_command(uint32_t command, struct rd *rd)
- 		return RDMA_NLDEV_CMD_RES_CQ_GET_RAW;
- 	case RDMA_NLDEV_CMD_RES_MR_GET:
- 		return RDMA_NLDEV_CMD_RES_MR_GET_RAW;
-+	case RDMA_NLDEV_CMD_RES_SRQ_GET:
-+		return RDMA_NLDEV_CMD_RES_SRQ_GET_RAW;
- 	default:
- 		return command;
- 	}
 -- 
-2.30.0
+Sabrina
 
