@@ -2,31 +2,33 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 271737BF388
-	for <lists+linux-rdma@lfdr.de>; Tue, 10 Oct 2023 08:58:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B33787BF37A
+	for <lists+linux-rdma@lfdr.de>; Tue, 10 Oct 2023 08:58:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1442384AbjJJG6q convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-rdma@lfdr.de>); Tue, 10 Oct 2023 02:58:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47426 "EHLO
+        id S1442368AbjJJG6D (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 10 Oct 2023 02:58:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36172 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1442319AbjJJG6p (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 10 Oct 2023 02:58:45 -0400
-X-Greylist: delayed 602 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Mon, 09 Oct 2023 23:58:43 PDT
-Received: from relay.hostedemail.com (smtprelay0011.hostedemail.com [216.40.44.11])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8DB0499;
-        Mon,  9 Oct 2023 23:58:43 -0700 (PDT)
-Received: from omf06.hostedemail.com (a10.router.float.18 [10.200.18.1])
-        by unirelay08.hostedemail.com (Postfix) with ESMTP id 9C649140199;
-        Tue, 10 Oct 2023 06:48:39 +0000 (UTC)
-Received: from [HIDDEN] (Authenticated sender: joe@perches.com) by omf06.hostedemail.com (Postfix) with ESMTPA id 379272000F;
-        Tue, 10 Oct 2023 06:48:11 +0000 (UTC)
-Message-ID: <f511170fe61d7e7214a3a062661cf4103980dad6.camel@perches.com>
-Subject: Re: [PATCH 6/7] fs/sysfs/group: make attribute_group pointers const
-From:   Joe Perches <joe@perches.com>
-To:     Max Kellermann <max.kellermann@ionos.com>,
-        Guenter Roeck <linux@roeck-us.net>
-Cc:     Jens Axboe <axboe@kernel.dk>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        with ESMTP id S1442363AbjJJG6B (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 10 Oct 2023 02:58:01 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 697D59F;
+        Mon,  9 Oct 2023 23:57:59 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C42CCC433C8;
+        Tue, 10 Oct 2023 06:57:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1696921079;
+        bh=EYuUNIt6jJRwYBy0E3p0Vk5Y1cHFfh6ehg6kHTfAyUU=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=zzQU1pwcQ/CneY+FW5FxMonJkZiI86OeSlFhEhdRj/hvvySkkTG2K8Sk51p8M1RuX
+         NA8xXufVqn3K4h0T1GP7rVOn7ryC3K4n6YeVOhjVhWQYEIJa6ayQXO2ZChu8j2BCF+
+         i7dawBqEH7KL0R9NbBls/UV6Yg3YejnrOELbQ5Mk=
+Date:   Tue, 10 Oct 2023 08:57:55 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Joe Perches <joe@perches.com>
+Cc:     Max Kellermann <max.kellermann@ionos.com>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Jens Axboe <axboe@kernel.dk>,
         "Rafael J. Wysocki" <rafael@kernel.org>,
         Borislav Petkov <bp@alien8.de>,
         Tony Luck <tony.luck@intel.com>,
@@ -81,70 +83,53 @@ Cc:     Jens Axboe <axboe@kernel.dk>,
         linux-perf-users@vger.kernel.org, linux-pm@vger.kernel.org,
         linux-usb@vger.kernel.org, linux-watchdog@vger.kernel.org,
         linux-scsi@vger.kernel.org
-Date:   Mon, 09 Oct 2023 23:48:10 -0700
-In-Reply-To: <CAKPOu+8k2x1CucWSzoouts0AfMJk+srJXWWf3iWVOeY+fWkOpQ@mail.gmail.com>
+Subject: Re: [PATCH 6/7] fs/sysfs/group: make attribute_group pointers const
+Message-ID: <2023101041-giggle-refried-5b8c@gregkh>
 References: <20231009165741.746184-1-max.kellermann@ionos.com>
-         <20231009165741.746184-6-max.kellermann@ionos.com>
-         <264fa39d-aed6-4a54-a085-107997078f8d@roeck-us.net>
-         <CAKPOu+8k2x1CucWSzoouts0AfMJk+srJXWWf3iWVOeY+fWkOpQ@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-User-Agent: Evolution 3.48.4 (3.48.4-1.fc38) 
+ <20231009165741.746184-6-max.kellermann@ionos.com>
+ <264fa39d-aed6-4a54-a085-107997078f8d@roeck-us.net>
+ <CAKPOu+8k2x1CucWSzoouts0AfMJk+srJXWWf3iWVOeY+fWkOpQ@mail.gmail.com>
+ <f511170fe61d7e7214a3a062661cf4103980dad6.camel@perches.com>
 MIME-Version: 1.0
-X-Stat-Signature: x66gji9pr8zwbank5ef871m9qoojjjfr
-X-Rspamd-Server: rspamout04
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
-        UNPARSEABLE_RELAY autolearn=unavailable autolearn_force=no
-        version=3.4.6
-X-Rspamd-Queue-Id: 379272000F
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Session-ID: U2FsdGVkX19bm9nHqj2XrX3TKwatvC/C1GajNvD5h9I=
-X-HE-Tag: 1696920491-749924
-X-HE-Meta: U2FsdGVkX1/+029EmPc9sKVNFK2VRUjBCte/A2E+5y43hxFCP+MAKFoIxkcikfn6Jucu52vLqnvIqQDvdm6WvqlwnI8PH42O3yPwjrf6/Rk44z8SFUR40tWN1QdYZq3HPOEvKn0PLMPTqRRMr7zlpFwkMW85ySQYIyr+J8E4OP6W/LoiP3zYhR+0cmnV5ToftIwEMltweE+g/zUx+NL1fSjTbqk3Sf4w33VMSw7k9oncskJ8CUN/bQZEOiHhpNbgGpLqoQJ7ob3InQymsj8a//o/6ldtQbuoxFCk/RnYuGfC0EahOFEMbfIs5+kJ0g+hK4chvkcdMx/L2QmQgmCvPhqiadvx8BYdkeJ2IpCV5Y5g+W85x67f7ON0uqOVXWab
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <f511170fe61d7e7214a3a062661cf4103980dad6.camel@perches.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Mon, 2023-10-09 at 22:05 +0200, Max Kellermann wrote:
-> On Mon, Oct 9, 2023 at 7:24 PM Guenter Roeck <linux@roeck-us.net> wrote:
-> > Also, I don't know why checkpatch is happy with all the
+On Mon, Oct 09, 2023 at 11:48:10PM -0700, Joe Perches wrote:
+> On Mon, 2023-10-09 at 22:05 +0200, Max Kellermann wrote:
+> > On Mon, Oct 9, 2023 at 7:24 PM Guenter Roeck <linux@roeck-us.net> wrote:
+> > > Also, I don't know why checkpatch is happy with all the
+> > > 
+> > >         const struct attribute_group *const*groups;
+> > > 
+> > > instead of
+> > > 
+> > >         const struct attribute_group *const *groups;
 > > 
-> >         const struct attribute_group *const*groups;
+> > I found out that checkpatch has no check for this at all; it does
+> > complain about such lines, but only for local variables. But that
+> > warning is actually a bug, because this is a check for unary
+> > operators: it thinks the asterisk is a dereference operator, not a
+> > pointer declaration, and complains that the unary operator must be
+> > preceded by a space. Thus warnings on local variable are only correct
+> > by coincidence, not by design.
 > > 
-> > instead of
-> > 
-> >         const struct attribute_group *const *groups;
+> > Inside structs or parameters (where my coding style violations can be
+> > found), it's a different context and thus checkpatch doesn't apply the
+> > rules for unary operators.
 > 
-> I found out that checkpatch has no check for this at all; it does
-> complain about such lines, but only for local variables. But that
-> warning is actually a bug, because this is a check for unary
-> operators: it thinks the asterisk is a dereference operator, not a
-> pointer declaration, and complains that the unary operator must be
-> preceded by a space. Thus warnings on local variable are only correct
-> by coincidence, not by design.
-> 
-> Inside structs or parameters (where my coding style violations can be
-> found), it's a different context and thus checkpatch doesn't apply the
-> rules for unary operators.
+> My opinion is that const use in the kernel should almost
+> always have whitespace before and after it except when
+> preceded by a open parenthesis or a newline.
 
-My opinion is that const use in the kernel should almost
-always have whitespace before and after it except when
-preceded by a open parenthesis or a newline.
-
-$ git grep -wh const -- '*.[ch]' | \
-  grep -oP "[ \*\(]?const[ \*]?" | \
-  sort | uniq -c | sort -rn
- 222438  const 
-  83386 const 
-  51667 (const 
-   2766 *const 
-    834 const
-    442  const
-    343  const*
-     88 *const
-     37 (const
-      4 *const*
-
+I totally agree.
