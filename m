@@ -2,66 +2,53 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 22E5B7BF657
-	for <lists+linux-rdma@lfdr.de>; Tue, 10 Oct 2023 10:44:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D1547BF672
+	for <lists+linux-rdma@lfdr.de>; Tue, 10 Oct 2023 10:50:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231192AbjJJIo0 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 10 Oct 2023 04:44:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58518 "EHLO
+        id S229849AbjJJIub (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 10 Oct 2023 04:50:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49254 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230294AbjJJIoT (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 10 Oct 2023 04:44:19 -0400
+        with ESMTP id S229796AbjJJIu3 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 10 Oct 2023 04:50:29 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B439BB6;
-        Tue, 10 Oct 2023 01:44:17 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id BE21CC433CA;
-        Tue, 10 Oct 2023 08:44:11 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E08A97;
+        Tue, 10 Oct 2023 01:50:27 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 9079DC433D9;
+        Tue, 10 Oct 2023 08:50:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1696927457;
-        bh=AklOIwjkDmHZ1qM9UpDtEjm30BDgtD6wXE6WJ8v7kog=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=G7lOH156oFDWcy0YvnnmfIKiP+AA04u9jmSgZxeP9pFQRuB0xFOH6pNBpaqYfXqXp
-         3mRaPYMrIgET9ngpczaZP0eVoEh95kzdTZCqkxCAPKxJ3wVR6Hnp+M54eurWuP+0M7
-         wI8veqWTWaeqQcFbsSYLer/c5CfeMXYbxgK5GftSIl81sle/8orkomjomDP87716vQ
-         AFyueGH7t8whd7YDB0EZIy3ggPZhJ4A6fI5v7mN/OpVjaq0V0yxfi4XHPHkIhAnYPx
-         QNcZ4vokyqRLryzgaVzAPFzsRGCqCgub/0GMZWBX6BEbdxvLT75NoesRd06HwSJNdg
-         Dly9CwNw/fNSw==
-Date:   Tue, 10 Oct 2023 10:44:09 +0200
-From:   Christian Brauner <brauner@kernel.org>
-To:     Al Viro <viro@zeniv.linux.org.uk>
-Cc:     Christoph Hellwig <hch@lst.de>, Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Alexander Gordeev <agordeev@linux.ibm.com>,
-        Fenghua Yu <fenghua.yu@intel.com>,
-        Reinette Chatre <reinette.chatre@intel.com>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Richard Weinberger <richard@nod.at>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
-        Tejun Heo <tj@kernel.org>,
-        Trond Myklebust <trond.myklebust@hammerspace.com>,
-        Anna Schumaker <anna@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Damien Le Moal <dlemoal@kernel.org>,
-        Naohiro Aota <naohiro.aota@wdc.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-s390@vger.kernel.org, linux-rdma@vger.kernel.org,
-        linux-nfs@vger.kernel.org, linux-hardening@vger.kernel.org,
-        cgroups@vger.kernel.org
-Subject: Re: [PATCH 03/19] fs: release anon dev_t in deactivate_locked_super
-Message-ID: <20231010-zulagen-bisschen-9657746c1fc0@brauner>
-References: <20230913111013.77623-1-hch@lst.de>
- <20230913111013.77623-4-hch@lst.de>
- <20230913232712.GC800259@ZenIV>
- <20230926093834.GB13806@lst.de>
- <20230926212515.GN800259@ZenIV>
- <20231002064646.GA1799@lst.de>
- <20231009215754.GL800259@ZenIV>
+        s=k20201202; t=1696927826;
+        bh=BWYz99hPfOyV0YYy1JV3gaQkQ3l1oiI/vIyh35+qab0=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=sRPm4PmDPvy5hdYY0p1OlEV0Jk52dUl9+w4gwy+zywmyDd7Y9XX9ymxsKlJqU8CZc
+         OUm8rHfLKf9j7otgLFR86hLH3Yq+Zfh9q40EzeCtP+UNghaxIhBR7D2SwLRCTAR3gU
+         vEVxDKfQV/8/vY30GHYBe9/UCaJ0rvh5mo5o4fi+jhXiguZvfNFUfdN0xLFlat0BDu
+         JLco5/m3Y9KwLlz4qQdOlBOAFDTpDkb1LMg/V7l2lhf64bnJ1LKdIY6gL7BapjGNw/
+         00lYWrf7+0XCkBzbDNUIraq1HWfsmjQ3MQTwaUaiMXYnKzqzhQnld3jpRdhU6G9x2Y
+         S5mZ6T2jkU23g==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 686C0C595C5;
+        Tue, 10 Oct 2023 08:50:26 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20231009215754.GL800259@ZenIV>
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH net v7 0/4] Add update_pn flag
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <169692782642.27521.12623155757527966309.git-patchwork-notify@kernel.org>
+Date:   Tue, 10 Oct 2023 08:50:26 +0000
+References: <20231005180636.672791-1-radu-nicolae.pirea@oss.nxp.com>
+In-Reply-To: <20231005180636.672791-1-radu-nicolae.pirea@oss.nxp.com>
+To:     Radu Pirea (NXP OSS) <radu-nicolae.pirea@oss.nxp.com>
+Cc:     linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        linux-rdma@vger.kernel.org, sgoutham@marvell.com,
+        gakula@marvell.com, sbhatta@marvell.com, hkelam@marvell.com,
+        davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
+        pabeni@redhat.com, borisp@nvidia.com, saeedm@nvidia.com,
+        leon@kernel.org, sd@queasysnail.net, andrew@lunn.ch,
+        hkallweit1@gmail.com, linux@armlinux.org.uk,
+        richardcochran@gmail.com, sebastian.tobuschat@oss.nxp.com,
+        phaddad@nvidia.com, ehakim@nvidia.com, raeds@nvidia.com,
+        atenart@kernel.org
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
@@ -71,20 +58,34 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-> list removal should happen after generic_shutdown_super().  Sure, you
-> want the superblock to serve as bdev holder, which leads to fun
-> with -EBUSY if mount comes while umount still hadn't closed the
-> device.  I suspect that it would make a lot more sense to
-> introduce an intermediate state - "held, but will be released
-> in a short while".  You already have something similar, but
-> only for the entire disk ->bd_claiming stuff.
-> 
-> Add a new primitive (will_release_bdev()), so that attempts to
-> claim the sucker will wait until it gets released instead of
-> failing with -EBUSY.  And do *that* before generic_shutdown_super()
-> when unmounting something that is block-based.  Allows to bring
-> the list removal back where it used to be, no UAF at all...
+Hello:
 
-This is essentially equivalent to what is done right now. Only that this
-would then happen in the block layer. I'm not sure it would buy us that
-much. In all likelyhood we just get a range of other issues to fix.
+This series was applied to netdev/net.git (main)
+by Paolo Abeni <pabeni@redhat.com>:
+
+On Thu,  5 Oct 2023 21:06:32 +0300 you wrote:
+> Patches extracted from
+> https://lore.kernel.org/all/20230928084430.1882670-1-radu-nicolae.pirea@oss.nxp.com/
+> Update_pn flag will let the offloaded MACsec implementations to know when
+> the PN is updated.
+> 
+> Radu P.
+> 
+> [...]
+
+Here is the summary with links:
+  - [net,v7,1/4] net: macsec: indicate next pn update when offloading
+    https://git.kernel.org/netdev/net/c/0412cc846a1e
+  - [net,v7,2/4] octeontx2-pf: mcs: update PN only when update_pn is true
+    https://git.kernel.org/netdev/net/c/4dcf38ae3ca1
+  - [net,v7,3/4] net: phy: mscc: macsec: reject PN update requests
+    https://git.kernel.org/netdev/net/c/e0a8c918daa5
+  - [net,v7,4/4] net/mlx5e: macsec: use update_pn flag instead of PN comparation
+    https://git.kernel.org/netdev/net/c/fde2f2d7f23d
+
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
+
