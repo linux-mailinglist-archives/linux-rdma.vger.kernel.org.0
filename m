@@ -2,86 +2,89 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 84D797BF551
-	for <lists+linux-rdma@lfdr.de>; Tue, 10 Oct 2023 10:09:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 22E5B7BF657
+	for <lists+linux-rdma@lfdr.de>; Tue, 10 Oct 2023 10:44:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346714AbjJJIJq (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 10 Oct 2023 04:09:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34484 "EHLO
+        id S231192AbjJJIo0 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 10 Oct 2023 04:44:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58518 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346700AbjJJIJq (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 10 Oct 2023 04:09:46 -0400
-Received: from us-smtp-delivery-44.mimecast.com (us-smtp-delivery-44.mimecast.com [205.139.111.44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD71FA4
-        for <linux-rdma@vger.kernel.org>; Tue, 10 Oct 2023 01:09:44 -0700 (PDT)
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-288-qRlSN9UqOC2zM01Za9DlmA-1; Tue, 10 Oct 2023 04:09:32 -0400
-X-MC-Unique: qRlSN9UqOC2zM01Za9DlmA-1
-Received: from smtp.corp.redhat.com (int-mx10.intmail.prod.int.rdu2.redhat.com [10.11.54.10])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id A86F3185A79B;
-        Tue, 10 Oct 2023 08:09:30 +0000 (UTC)
-Received: from hog (unknown [10.45.225.250])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 83FF8400F36;
-        Tue, 10 Oct 2023 08:09:26 +0000 (UTC)
-Date:   Tue, 10 Oct 2023 10:09:24 +0200
-From:   Sabrina Dubroca <sd@queasysnail.net>
-To:     "Radu Pirea (NXP OSS)" <radu-nicolae.pirea@oss.nxp.com>
-Cc:     linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        linux-rdma@vger.kernel.org, sgoutham@marvell.com,
-        gakula@marvell.com, sbhatta@marvell.com, hkelam@marvell.com,
-        davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
-        pabeni@redhat.com, borisp@nvidia.com, saeedm@nvidia.com,
-        leon@kernel.org, andrew@lunn.ch, hkallweit1@gmail.com,
-        linux@armlinux.org.uk, richardcochran@gmail.com,
-        sebastian.tobuschat@oss.nxp.com, phaddad@nvidia.com,
-        ehakim@nvidia.com, raeds@nvidia.com, atenart@kernel.org
-Subject: Re: [PATCH net v7 0/4] Add update_pn flag
-Message-ID: <ZSUGtMn6hl2Ua8qx@hog>
-References: <20231005180636.672791-1-radu-nicolae.pirea@oss.nxp.com>
+        with ESMTP id S230294AbjJJIoT (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 10 Oct 2023 04:44:19 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B439BB6;
+        Tue, 10 Oct 2023 01:44:17 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BE21CC433CA;
+        Tue, 10 Oct 2023 08:44:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1696927457;
+        bh=AklOIwjkDmHZ1qM9UpDtEjm30BDgtD6wXE6WJ8v7kog=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=G7lOH156oFDWcy0YvnnmfIKiP+AA04u9jmSgZxeP9pFQRuB0xFOH6pNBpaqYfXqXp
+         3mRaPYMrIgET9ngpczaZP0eVoEh95kzdTZCqkxCAPKxJ3wVR6Hnp+M54eurWuP+0M7
+         wI8veqWTWaeqQcFbsSYLer/c5CfeMXYbxgK5GftSIl81sle/8orkomjomDP87716vQ
+         AFyueGH7t8whd7YDB0EZIy3ggPZhJ4A6fI5v7mN/OpVjaq0V0yxfi4XHPHkIhAnYPx
+         QNcZ4vokyqRLryzgaVzAPFzsRGCqCgub/0GMZWBX6BEbdxvLT75NoesRd06HwSJNdg
+         Dly9CwNw/fNSw==
+Date:   Tue, 10 Oct 2023 10:44:09 +0200
+From:   Christian Brauner <brauner@kernel.org>
+To:     Al Viro <viro@zeniv.linux.org.uk>
+Cc:     Christoph Hellwig <hch@lst.de>, Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Alexander Gordeev <agordeev@linux.ibm.com>,
+        Fenghua Yu <fenghua.yu@intel.com>,
+        Reinette Chatre <reinette.chatre@intel.com>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Richard Weinberger <richard@nod.at>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
+        Tejun Heo <tj@kernel.org>,
+        Trond Myklebust <trond.myklebust@hammerspace.com>,
+        Anna Schumaker <anna@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Damien Le Moal <dlemoal@kernel.org>,
+        Naohiro Aota <naohiro.aota@wdc.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-s390@vger.kernel.org, linux-rdma@vger.kernel.org,
+        linux-nfs@vger.kernel.org, linux-hardening@vger.kernel.org,
+        cgroups@vger.kernel.org
+Subject: Re: [PATCH 03/19] fs: release anon dev_t in deactivate_locked_super
+Message-ID: <20231010-zulagen-bisschen-9657746c1fc0@brauner>
+References: <20230913111013.77623-1-hch@lst.de>
+ <20230913111013.77623-4-hch@lst.de>
+ <20230913232712.GC800259@ZenIV>
+ <20230926093834.GB13806@lst.de>
+ <20230926212515.GN800259@ZenIV>
+ <20231002064646.GA1799@lst.de>
+ <20231009215754.GL800259@ZenIV>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20231005180636.672791-1-radu-nicolae.pirea@oss.nxp.com>
-X-Scanned-By: MIMEDefang 3.1 on 10.11.54.10
-X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_LOW,
-        SPF_HELO_NONE,SPF_NONE autolearn=unavailable autolearn_force=no
-        version=3.4.6
+In-Reply-To: <20231009215754.GL800259@ZenIV>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-2023-10-05, 21:06:32 +0300, Radu Pirea (NXP OSS) wrote:
-> Patches extracted from
-> https://lore.kernel.org/all/20230928084430.1882670-1-radu-nicolae.pirea@oss.nxp.com/
-> Update_pn flag will let the offloaded MACsec implementations to know when
-> the PN is updated.
+> list removal should happen after generic_shutdown_super().  Sure, you
+> want the superblock to serve as bdev holder, which leads to fun
+> with -EBUSY if mount comes while umount still hadn't closed the
+> device.  I suspect that it would make a lot more sense to
+> introduce an intermediate state - "held, but will be released
+> in a short while".  You already have something similar, but
+> only for the entire disk ->bd_claiming stuff.
 > 
-> Radu P.
-> 
-> Radu Pirea (NXP OSS) (4):
->   net: macsec: indicate next pn update when offloading
->   octeontx2-pf: mcs: update PN only when update_pn is true
->   net: phy: mscc: macsec: reject PN update requests
->   net/mlx5e: macsec: use update_pn flag instead of PN comparation
+> Add a new primitive (will_release_bdev()), so that attempts to
+> claim the sucker will wait until it gets released instead of
+> failing with -EBUSY.  And do *that* before generic_shutdown_super()
+> when unmounting something that is block-based.  Allows to bring
+> the list removal back where it used to be, no UAF at all...
 
-Thanks Radu! For the series:
-Reviewed-by: Sabrina Dubroca <sd@queasysnail.net>
-
-
-While reviewing this, I noticed that octeon can leave the HW in an
-inconsistent state during upd_txsa and upd_rxsa: these ops do 2
-separate changes that can both fail, and if the 2nd change fails, we
-don't roll back the first change. This is an older issue (not
-introduced by this patch) and can be looked at later (I don't know
-what happens to the HW and why setting the PN would fail, maybe it's
-not recoverable at that point).
-
--- 
-Sabrina
-
+This is essentially equivalent to what is done right now. Only that this
+would then happen in the block layer. I'm not sure it would buy us that
+much. In all likelyhood we just get a range of other issues to fix.
