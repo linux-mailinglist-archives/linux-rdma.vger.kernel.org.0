@@ -2,35 +2,37 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F9857BF509
-	for <lists+linux-rdma@lfdr.de>; Tue, 10 Oct 2023 09:58:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D5337BF512
+	for <lists+linux-rdma@lfdr.de>; Tue, 10 Oct 2023 09:58:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1442640AbjJJH6j (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 10 Oct 2023 03:58:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49740 "EHLO
+        id S1442622AbjJJH6l (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 10 Oct 2023 03:58:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49772 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1442622AbjJJH6i (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 10 Oct 2023 03:58:38 -0400
-Received: from szxga03-in.huawei.com (szxga03-in.huawei.com [45.249.212.189])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 832D592;
-        Tue, 10 Oct 2023 00:58:37 -0700 (PDT)
-Received: from kwepemi500006.china.huawei.com (unknown [172.30.72.54])
-        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4S4Sq15MqWzkY0f;
-        Tue, 10 Oct 2023 15:54:37 +0800 (CST)
+        with ESMTP id S1442657AbjJJH6k (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 10 Oct 2023 03:58:40 -0400
+Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 86B7891;
+        Tue, 10 Oct 2023 00:58:38 -0700 (PDT)
+Received: from kwepemi500006.china.huawei.com (unknown [172.30.72.53])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4S4SpG6zFMztT7V;
+        Tue, 10 Oct 2023 15:53:58 +0800 (CST)
 Received: from localhost.localdomain (10.67.165.2) by
  kwepemi500006.china.huawei.com (7.221.188.68) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.31; Tue, 10 Oct 2023 15:58:33 +0800
+ 15.1.2507.31; Tue, 10 Oct 2023 15:58:34 +0800
 From:   Junxian Huang <huangjunxian6@hisilicon.com>
 To:     <jgg@ziepe.ca>, <leon@kernel.org>, <dsahern@gmail.com>,
         <stephen@networkplumber.org>
 CC:     <netdev@vger.kernel.org>, <linux-rdma@vger.kernel.org>,
         <linuxarm@huawei.com>, <linux-kernel@vger.kernel.org>,
         <huangjunxian6@hisilicon.com>
-Subject: [PATCH v2 iproute2-next 0/2] rdma: Support dumping SRQ resource in raw format
-Date:   Tue, 10 Oct 2023 15:55:24 +0800
-Message-ID: <20231010075526.3860869-1-huangjunxian6@hisilicon.com>
+Subject: [PATCH v2 iproute2-next 1/2] rdma: Update uapi headers
+Date:   Tue, 10 Oct 2023 15:55:25 +0800
+Message-ID: <20231010075526.3860869-2-huangjunxian6@hisilicon.com>
 X-Mailer: git-send-email 2.30.0
+In-Reply-To: <20231010075526.3860869-1-huangjunxian6@hisilicon.com>
+References: <20231010075526.3860869-1-huangjunxian6@hisilicon.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7BIT
 Content-Type:   text/plain; charset=US-ASCII
@@ -47,23 +49,28 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-This patchset adds support to dump SRQ resource in raw format with
-rdmatool. The corresponding kernel commit is aebf8145e11a
+Update rdma_netlink.h file upto kernel commit aebf8145e11a
 ("RDMA/core: Add support to dump SRQ resource in RAW format")
 
-v2 adds the missing change in res_srq_idx_parse_cb().
+Signed-off-by: wenglianfa <wenglianfa@huawei.com>
+Signed-off-by: Junxian Huang <huangjunxian6@hisilicon.com>
+---
+ rdma/include/uapi/rdma/rdma_netlink.h | 2 ++
+ 1 file changed, 2 insertions(+)
 
-Junxian Huang (1):
-  rdma: Update uapi headers
-
-wenglianfa (1):
-  rdma: Add support to dump SRQ resource in raw format
-
- rdma/include/uapi/rdma/rdma_netlink.h |  2 ++
- rdma/res-srq.c                        | 20 ++++++++++++++++++--
- rdma/res.h                            |  2 ++
- 3 files changed, 22 insertions(+), 2 deletions(-)
-
---
+diff --git a/rdma/include/uapi/rdma/rdma_netlink.h b/rdma/include/uapi/rdma/rdma_netlink.h
+index 92c528a0..84f775be 100644
+--- a/rdma/include/uapi/rdma/rdma_netlink.h
++++ b/rdma/include/uapi/rdma/rdma_netlink.h
+@@ -299,6 +299,8 @@ enum rdma_nldev_command {
+ 
+ 	RDMA_NLDEV_CMD_STAT_GET_STATUS,
+ 
++	RDMA_NLDEV_CMD_RES_SRQ_GET_RAW,
++
+ 	RDMA_NLDEV_NUM_OPS
+ };
+ 
+-- 
 2.30.0
 
