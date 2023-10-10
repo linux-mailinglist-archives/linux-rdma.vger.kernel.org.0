@@ -2,48 +2,197 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2622E7BF0E6
-	for <lists+linux-rdma@lfdr.de>; Tue, 10 Oct 2023 04:30:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 302D27BF207
+	for <lists+linux-rdma@lfdr.de>; Tue, 10 Oct 2023 06:55:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1379358AbjJJCaA (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 9 Oct 2023 22:30:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58488 "EHLO
+        id S234623AbjJJEzN (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 10 Oct 2023 00:55:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43290 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1379403AbjJJC37 (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 9 Oct 2023 22:29:59 -0400
-Received: from out-200.mta1.migadu.com (out-200.mta1.migadu.com [IPv6:2001:41d0:203:375::c8])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 12F309E
-        for <linux-rdma@vger.kernel.org>; Mon,  9 Oct 2023 19:29:55 -0700 (PDT)
-Message-ID: <3b7fcf81-dc30-40e0-b70e-63b8b55eb25d@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1696904993;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=zD0RAFni/q/SLQJzvJS5dA9gSdSVyw/y2G2Ib6S4rkE=;
-        b=WpHguAjYPOpo71bB8ychv80ZNWXLFPCUFRhjzK9lZcAX2Xj9xMDoUaCYGvHJq8kCtH42Gg
-        jHvWMamAwpgFp4Ufncb863areSdGo5bAVaKu/e90h3VpsRmF2NpNAlFiVGp2u+EYzVqFlr
-        wVgTq9k/5euhS3o3J8ktCXHsg4JG7Jc=
-Date:   Tue, 10 Oct 2023 10:29:46 +0800
+        with ESMTP id S234617AbjJJEzJ (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 10 Oct 2023 00:55:09 -0400
+X-Greylist: delayed 64 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Mon, 09 Oct 2023 21:55:06 PDT
+Received: from esa5.fujitsucc.c3s2.iphmx.com (esa5.fujitsucc.c3s2.iphmx.com [68.232.159.76])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B2F9A3;
+        Mon,  9 Oct 2023 21:55:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=fujitsu.com; i=@fujitsu.com; q=dns/txt; s=fj1;
+  t=1696913706; x=1728449706;
+  h=from:to:cc:subject:date:message-id:references:
+   in-reply-to:content-transfer-encoding:mime-version;
+  bh=iIo/yNTLNp99CUR98k+GKJYJNiGPACWPPIpPbFXSyxU=;
+  b=K58rEdBSMo370EXgZY04qcZnMMvLlzUKY9AhnVKrabihwdsvxT5y0aeS
+   WsQvwtAaaGtMaPg6ms+MvfySXQDIB40G7ho2gmew2VBaN4+A7L+TlCud+
+   6iabRh5wlo5ze5kZjXbwc9GsVkv7Yad5VnU36etj55iEstYGtEoQ+Exvo
+   HXtMGFr982EjWCujYQQLJyyQ9tGa8wolmDdultNpHZkDCz4mgSVaBHbrc
+   tVyi5bvMJcOdef0W/+HAJVPl41f67+bCLEF85Dm92317BdFvm3t5vU1ux
+   LTfWFRUSuGl09UEcMp4z1XnZ2choC36F896gQRuWugUwGWfJH0Rij8rV9
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10858"; a="98799530"
+X-IronPort-AV: E=Sophos;i="6.03,211,1694703600"; 
+   d="scan'208";a="98799530"
+Received: from mail-tycjpn01lp2169.outbound.protection.outlook.com (HELO JPN01-TYC-obe.outbound.protection.outlook.com) ([104.47.23.169])
+  by ob1.fujitsucc.c3s2.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Oct 2023 13:53:58 +0900
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=kS+0D8yinWJanbresgTjADdUKfWmJcf4+lzNhxB1ErdeEp0hiKqENe4ZI6ObAnSeXxbnb1eRIaynkt07iH3MSFsWuTp0LuXg3wKI0sD+w6obcFGaPsovmjd/kpHZmtG7wi5al21NXj1DuckGcr5YsDbrIn75OeoDM1KMY9aCDzRl/9ExFOjaGKOrdyJW4I5TXtlYeBYtUkQR1Je0G52wZDq3Od5NarTkBKkc4ixN2NAvI8UHJvSv1a5NWmgnQiq36BS3IZS9WrVRXqp1EY04Z7T06wuiQong3ABFrS7u8wSI0hoWFBhUhiTFw7Cbf87rNWs3xKnRXDjydGWRPVGvqw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=RUM9TZ2MGR54qWZVPdpHu/Oy7IV/I41r1y/VaT4SmYs=;
+ b=DhiMpdCK0Z0KKK7eN6p6/na9HAuy1tUqfbmr4D/UkJUp93Iw511HwkV4P/oJq3DTf5cHUdFVR/434M6i6mYcZ+1A19zm00IitGsGpBWd/9A5h9Lq4yF522ugSDCDYpuv0agv2gaMqy3VQTJfXHOiY7cLoanlh9YryiBJGOjifpYZA5bfG1sCDjwh1f8tw9PQc5Y0vk6LP6fGMtA5Q5n3UIfw4TgQwLYYGz+7eHf2rZWY6sVYBgo2FwF5fbEPvtC0n3qrPMsdgONXZJYya+SQqzSDnRDHikoaD0qthDyO3yzM+h+koCgAKlkZemP317ulqw6jJQnx7NYgPHapTgP5Ag==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=fujitsu.com; dmarc=pass action=none header.from=fujitsu.com;
+ dkim=pass header.d=fujitsu.com; arc=none
+Received: from OS3PR01MB9865.jpnprd01.prod.outlook.com (2603:1096:604:1ec::9)
+ by OS3PR01MB5671.jpnprd01.prod.outlook.com (2603:1096:604:c4::6) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6863.38; Tue, 10 Oct
+ 2023 04:53:55 +0000
+Received: from OS3PR01MB9865.jpnprd01.prod.outlook.com
+ ([fe80::6ade:12b9:4e6:eb2a]) by OS3PR01MB9865.jpnprd01.prod.outlook.com
+ ([fe80::6ade:12b9:4e6:eb2a%4]) with mapi id 15.20.6863.032; Tue, 10 Oct 2023
+ 04:53:55 +0000
+From:   "Daisuke Matsuda (Fujitsu)" <matsuda-daisuke@fujitsu.com>
+To:     'Zhu Yanjun' <yanjun.zhu@linux.dev>,
+        Bart Van Assche <bvanassche@acm.org>,
+        Jason Gunthorpe <jgg@ziepe.ca>
+CC:     Bob Pearson <rpearsonhpe@gmail.com>,
+        Leon Romanovsky <leon@kernel.org>,
+        "zyjzyj2000@gmail.com" <zyjzyj2000@gmail.com>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        "shinichiro.kawasaki@wdc.com" <shinichiro.kawasaki@wdc.com>,
+        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
+        Zhu Yanjun <yanjun.zhu@intel.com>
+Subject: RE: [PATCH 1/1] Revert "RDMA/rxe: Add workqueue support for rxe
+ tasks"
+Thread-Topic: [PATCH 1/1] Revert "RDMA/rxe: Add workqueue support for rxe
+ tasks"
+Thread-Index: AQHZ7XJmnT5Q4k7SiE+q92h7ng8TwrAs4QuAgABJegCAADH3AIAAGKoAgAAe9oCAC3pqgIAA6xwAgAAPYgCAAPfagIAAUsoAgAAIAgCABMrggIACLuVw
+Date:   Tue, 10 Oct 2023 04:53:55 +0000
+Message-ID: <OS3PR01MB9865F9BEB1A90DDCAEEBFC8BE5CDA@OS3PR01MB9865.jpnprd01.prod.outlook.com>
+References: <20230922163231.2237811-1-yanjun.zhu@intel.com>
+ <169572143704.2702191.3921040309512111011.b4-ty@kernel.org>
+ <20230926140656.GM1642130@unreal>
+ <d3c05064-a88b-4719-a390-6bf9ae01fba5@acm.org>
+ <b7b365e3-dd11-bc66-dace-05478766bf41@gmail.com>
+ <2d5e02d7-cf84-4170-b1a3-a65316ac84ee@acm.org>
+ <2fcef3c8-808e-8e6a-b23d-9f1b3f98c1f9@linux.dev>
+ <552f2342-e800-43bc-b859-d73297ce940f@acm.org>
+ <20231004183824.GQ13795@ziepe.ca>
+ <c0665377-d2be-e4b6-3d25-727ef303d26e@linux.dev>
+ <20231005142148.GA970053@ziepe.ca>
+ <6a730dad-9d81-46d9-8adc-764d00745b01@acm.org>
+ <a8453889-3f5f-49ff-89f2-ec0ef929d915@linux.dev>
+In-Reply-To: <a8453889-3f5f-49ff-89f2-ec0ef929d915@linux.dev>
+Accept-Language: ja-JP, en-US
+Content-Language: ja-JP
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+msip_labels: =?iso-2022-jp?B?TVNJUF9MYWJlbF9hNzI5NWNjMS1kMjc5LTQyYWMtYWI0ZC0zYjBmNGZl?=
+ =?iso-2022-jp?B?Y2UwNTBfQWN0aW9uSWQ9YzcwODAzZmQtYTllMy00NDMyLThiYWUtNWQ4?=
+ =?iso-2022-jp?B?OWM0MmYwMGJiO01TSVBfTGFiZWxfYTcyOTVjYzEtZDI3OS00MmFjLWFi?=
+ =?iso-2022-jp?B?NGQtM2IwZjRmZWNlMDUwX0NvbnRlbnRCaXRzPTA7TVNJUF9MYWJlbF9h?=
+ =?iso-2022-jp?B?NzI5NWNjMS1kMjc5LTQyYWMtYWI0ZC0zYjBmNGZlY2UwNTBfRW5hYmxl?=
+ =?iso-2022-jp?B?ZD10cnVlO01TSVBfTGFiZWxfYTcyOTVjYzEtZDI3OS00MmFjLWFiNGQt?=
+ =?iso-2022-jp?B?M2IwZjRmZWNlMDUwX01ldGhvZD1TdGFuZGFyZDtNU0lQX0xhYmVsX2E3?=
+ =?iso-2022-jp?B?Mjk1Y2MxLWQyNzktNDJhYy1hYjRkLTNiMGY0ZmVjZTA1MF9OYW1lPUZV?=
+ =?iso-2022-jp?B?SklUU1UtUkVTVFJJQ1RFRBskQiJMJT8lUhsoQjtNU0lQX0xhYmVsX2E3?=
+ =?iso-2022-jp?B?Mjk1Y2MxLWQyNzktNDJhYy1hYjRkLTNiMGY0ZmVjZTA1MF9TZXREYXRl?=
+ =?iso-2022-jp?B?PTIwMjMtMTAtMTBUMDE6MjE6NThaO01TSVBfTGFiZWxfYTcyOTVjYzEt?=
+ =?iso-2022-jp?B?ZDI3OS00MmFjLWFiNGQtM2IwZjRmZWNlMDUwX1NpdGVJZD1hMTlmMTIx?=
+ =?iso-2022-jp?B?ZC04MWUxLTQ4NTgtYTlkOC03MzZlMjY3ZmQ0Yzc7?=
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=fujitsu.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: OS3PR01MB9865:EE_|OS3PR01MB5671:EE_
+x-ms-office365-filtering-correlation-id: b7436c97-ab03-4e6c-350a-08dbc94ce835
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: oXYAAJBipzVUvLNB3rUgnxKvaS30apEA6DKHZaLva8gl7F0o2FwSaTYnbFwuwrJePSuxhQEvVPFP8arW0aTNuYRWrcUEst7KeDXSrPlYAh5vEbQvNfqT+yx8yzFSrcift50gQ0PrmCdp1gEQVK9TuCymtqKZiL9v/WXfiD8kQ0SLrJg3dSAj+h3rHWEtFtKjVghSNg8a7BCHEQlJtfxEIicS6VQOPCDyaM8kH/fGXzvdKMBADgUn/ByaSS2Qisk+gl2ZODkF4NzmLdIgnDHo2jR0pqhq0IayOj2S4F9ooY/gje9T44P83hGrWslj+c7vAEDAnwYwB8qBllCQze3tHSQaotrONUSzc9e5LpkqtXH8JzTemw4LrJIt8GOKD4vZFEIH/RfQfVJ7kqQONywkj39lkW8DrbQZubgCwbZJv9X/1n2R4XidOSVJZ3Cj4DbZruMIuHVHmj5OWmHEKcZxgR+uvk345oQ9hHCylyjn4sAU3Lm8+pz0HokIwMKwevJemg0FV7mdbsMICJoWjlUuei7Eq5+/Rquj19DORw+V8rCrzTKN/x+mDcBQ+7tJpc7oU5Ha2AlgkpMyz4xfIyaXt5+GV3BG96Qy1L1Kad64jz4MAJnJt/VIxJH1+ZCYM/ANqjVMwkRBbejACrLZb3Mm7QxcA/n3yUC+Pqj6mFAAw1U=
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:OS3PR01MB9865.jpnprd01.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(346002)(39860400002)(366004)(396003)(136003)(376002)(230922051799003)(64100799003)(1590799021)(186009)(451199024)(1800799009)(76116006)(110136005)(8936002)(5660300002)(4326008)(966005)(66946007)(66476007)(66556008)(8676002)(64756008)(316002)(54906003)(66446008)(52536014)(7416002)(38070700005)(1580799018)(41300700001)(2906002)(122000001)(83380400001)(82960400001)(55016003)(26005)(86362001)(53546011)(33656002)(38100700002)(9686003)(7696005)(478600001)(85182001)(71200400001)(6506007);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?iso-2022-jp?B?cG05U0RsekIydHB4ZUNYY3NSRjVlWGZacmNxeGVTUUl1czltUlJicTBH?=
+ =?iso-2022-jp?B?RXMwSHpUOWh2V2V1bWt2L3BlTnRpOUxBZVNDNmJEdEJpb0VqNmY0ZjJD?=
+ =?iso-2022-jp?B?djl6aGJBVWl3YWN5aXFxR1dyVVo0eWk2T1NaVjByMTJVdGpCZ0k2VjJh?=
+ =?iso-2022-jp?B?VUh2UWkybmVkL2RKa05jaUpDTjdYZlF2QzlEaSs2Mkx1Y3hkV0ZnUmN2?=
+ =?iso-2022-jp?B?S1BadDBCQzE3bkwzbXF2dnNNU2xQRitkQ1NDVmNjeVVMVnZKUWJoYm1J?=
+ =?iso-2022-jp?B?TkplU2hSVjUya2hHenppdGpla2NvcXBFbW42TUpiVUxJQzYrZ3FIcCs5?=
+ =?iso-2022-jp?B?YUVIbEI5WTJ0YmNWNXlMcm53UzdnUHEwOHFsK3BDS1NxdE9SWkZTVFRK?=
+ =?iso-2022-jp?B?MDlCN3BmMVQvc251RXVna2xRdnJWZjFQNTg0WEhhOGpsUXQySFlKWGZN?=
+ =?iso-2022-jp?B?Skc2dGVKRGxKK3NKZlBORzRVR3ZuSWU0N2NRaFNQUEI1a2pOME5sNVR2?=
+ =?iso-2022-jp?B?SWg0Q2dlbHowUGlMSkdGZlVkeVg5c0t4RTcrOVJVZ01Vd1dnMWlXQWJu?=
+ =?iso-2022-jp?B?RzRZTDYzQ1dLbzByTVJQU1pDWTZVV2ErWUtzeFNGQ0J4eWxnVTdWRXZE?=
+ =?iso-2022-jp?B?UlE0bFFNTXUrZUlYZTFCVlJHZk82V1hsKy9SZ0ozRE1sUmNOZXc3L2dl?=
+ =?iso-2022-jp?B?b0NrMnVjS1gzcWZjT2Y4V05RSEs0cU43aEJKaHhYN2VhSE84c25WR0RF?=
+ =?iso-2022-jp?B?OWIxcWg4bGY0NUJuYUlyWmFXbHJNYUgxT29PN1VDMmZLWGZnS01HbFlE?=
+ =?iso-2022-jp?B?NWdnUUN3NWdwWHZsYU9KV09GZUU3eHMxUmgvR2pFbzEzclJObGFISGJa?=
+ =?iso-2022-jp?B?WTQraEpOZkhYeWdnZDcvVUJ3d2U0dDZaTkpXVXYwc0pOdjJIcm5FTVZ6?=
+ =?iso-2022-jp?B?ZEtpVWJFTlVFcVoyNWNQOGI0MGd0eDhrS283b2ZxY015aFJseGl3YTgv?=
+ =?iso-2022-jp?B?bGxTejlwdjdMMnBRNnpkOUQ3SStCbkdtU081L2NuSjFNU25RdStQSjhG?=
+ =?iso-2022-jp?B?OFUyRFJWZ2hwQ3pTUlRIbENjVFBhdXpKZUxYZGZlaGY3cXozQkFlME1M?=
+ =?iso-2022-jp?B?cFp5ODRPR2o1bWMwTndNMENIU1ExN0RxWkNlMTJhdjNyb21NSytRT3l6?=
+ =?iso-2022-jp?B?R3prdW5kRU1qK3ZpR21GUTUxa1RWVFZ2R2taRHpvUGdvN005amNROHVj?=
+ =?iso-2022-jp?B?SGl0aVFuQ29Oc2RLQmN5Rkh2QkVyaC9WY3RXaGcvRFh3QzZFTmJJaTZr?=
+ =?iso-2022-jp?B?ZWdEaFpVa29vMkdPTmZUNWhyaVVtV2JxbXptZjdCSXNkUHBwTEkrOElN?=
+ =?iso-2022-jp?B?Z0sxaTFrT3ZpZ2NxWm90OHJwQndEdlUrZm9qYmFHVzBXdlozZlFVYlVX?=
+ =?iso-2022-jp?B?UGpzL091YkJ6WEIyellJZ1JRZUhaZ2tJSFhabERzSW4xdVlMSXlFTitC?=
+ =?iso-2022-jp?B?UVdOcVEwN2p2ZTI0TU5TTGdTVEFvNXhXRGYxSVQvYWtMalV5RjBXL09D?=
+ =?iso-2022-jp?B?cUtHL1JOR0FmYUFHa3J6V2RUcHZBcSt5bDVjNXpGdTYzSnNjMTdoU1Ux?=
+ =?iso-2022-jp?B?SlBnQWd1K1NYOXlKQnhTMUg5dDhrMmp1VUZNZjhJVmJHTDY1bHBtQ2VG?=
+ =?iso-2022-jp?B?M2hsak9uVmhmMXhZTUlueEdtdi84QVZyWGJ5MmxuaU0rUzFlUlF2cGEz?=
+ =?iso-2022-jp?B?N3lxS0dzQXFCTFBmYXBLdldTMlpvZmVHSm5VMGtGcHlyM3kwTUZ5azU2?=
+ =?iso-2022-jp?B?Q2xnYmcwckFFRnpWVm1kdmZQMUxkemRqcnNFL0pZbk9UbU1GeXRvbmVs?=
+ =?iso-2022-jp?B?UVVhMDNEMHJlNUs0Sk8rdVVRd2NIZDJYVDhFVFFxQUtDQzVKUmdNRVNG?=
+ =?iso-2022-jp?B?SVloaTRsekpwMVR2THN6Nnh0TUpjUDNlUHlYM09oclIvelMyVERjdmpP?=
+ =?iso-2022-jp?B?c0sxS3o0Y0RoR3BuUVdTWUxvNzg5bUpGR29YM0g4aFRZTGdnL2JKdW8r?=
+ =?iso-2022-jp?B?Z3c5eEhVWnY5NVZHYWhrVnlCOWFMdE00YmYzQmFnS2Mvc3FYL3hZcjZ5?=
+ =?iso-2022-jp?B?NlFKTFV1QzFJZ090Vkd5S1JGVnIyYTRhVndZa0p4Z2phdThaNnZyOUFO?=
+ =?iso-2022-jp?B?QnN2RnFLd0FHZW5McWRKOFJhcVVpVXFLa3pVdmRwTS9BVU1nTWhheXRq?=
+ =?iso-2022-jp?B?Z29hNEo5TVNiaUtpdm52cVdiUTliQjhRc0R6d2hISnBSY2RaZi9rUmRv?=
+ =?iso-2022-jp?B?QlV4cmdVdWhwaGhQU01ZbGdCNE85aE5waEE9PQ==?=
+Content-Type: text/plain; charset="iso-2022-jp"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Subject: Re: [bug report][bisected] rdma_rxe: blktests srp lead kernel panic
- with 64k page size
-To:     Yi Zhang <yi.zhang@redhat.com>,
-        RDMA mailing list <linux-rdma@vger.kernel.org>,
-        Bob Pearson <rpearsonhpe@gmail.com>
-Cc:     Robert Pearson <rpearsonhpe@gmail.com>,
-        Jason Gunthorpe <jgg@nvidia.com>
-References: <CAHj4cs8hVFz=3OkVBrfZ3PCHU3fWN=+GpH40PvAs49CZ3-pJvg@mail.gmail.com>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From:   Zhu Yanjun <yanjun.zhu@linux.dev>
-In-Reply-To: <CAHj4cs8hVFz=3OkVBrfZ3PCHU3fWN=+GpH40PvAs49CZ3-pJvg@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: =?iso-2022-jp?B?MEY4dGRhVlNOamRzNVBKSjFTZGZTUURnOVd2WnVxUklGUVV5N0NTWnpO?=
+ =?iso-2022-jp?B?RTZyQ0lpL2R2UXJFR0xwYWZqTzRaOFBZT01DS3dlamFIdVhGdElvY09X?=
+ =?iso-2022-jp?B?Y1YwVlc0NUdqUmlYMHRWNTZTUTY0bUdsNHBKbCs3ZDczNkV0Q0Y3Vzhi?=
+ =?iso-2022-jp?B?VnFrdk43UkhNckxBYlhRZUxVRDZjazJHZ0NlWGorak9VQi9oRzgxcTF2?=
+ =?iso-2022-jp?B?ajBMRUh6djdFbHJoS2ZHMjI4eGZaUm1HODdLd0loWXZENTNLcEZYSmhP?=
+ =?iso-2022-jp?B?U2J4ME5tWjdKZ2xFOUtpYWpPc2NpU0ZtcHAydENUcjdYL2RZaitJdm5Z?=
+ =?iso-2022-jp?B?dnFYRDRzZG8wclYySFhpdVU3SWsxSUFweE5iZGNBYTRtKzdoamVHYnE2?=
+ =?iso-2022-jp?B?UjlvVndFcGhUWndjOUVwL3NwazhOd0ZKNDF6YTVHY1hJbE4zWk90Si8x?=
+ =?iso-2022-jp?B?SVAveHRHUkFZVXBaUCtFaGw4OHdDTmtJK0YyeUQxTnYrMmNSRFpNYUt4?=
+ =?iso-2022-jp?B?QnlyamJMZUVUV2huU0ZFZ3ppZ3k2NU9VVGs0dFBoM1JVY0I1MTVzSG5L?=
+ =?iso-2022-jp?B?cUFRcmIxQ3pwYzduMzhUN1I4WVc0ZW94RWwzUHRXS2owMDYyVWVlZnM5?=
+ =?iso-2022-jp?B?MDJQRmZxOE1QM210T2tUUGlzMTExU1lORHQva2xONms3QndWODVqODJu?=
+ =?iso-2022-jp?B?cDVWdmRyZmUvRFBoVTk2WTVNS0YxRk9uQldLSEx3SkhWWENPVzgzUnQ5?=
+ =?iso-2022-jp?B?L0ZwangzcXZXSyt6eVY3SlJoS002anRqZ1FQQkVVT0hyaytLbEhuVERs?=
+ =?iso-2022-jp?B?QlNWL1Y0bE40TXN0R3dqUU5aZlhaQ3hhc0JVNTR1ZkNja3phWGRaZ1VH?=
+ =?iso-2022-jp?B?Q0lHdVhzdE9pQkFUL0k0VDNEY3dSZEg0dGFaVVRqY1B1THRVVDVpWldR?=
+ =?iso-2022-jp?B?dDdkT1dnK29VMEhRZCtFV21za2N0eHRuQjNCVi9sR09mOEdYVW5TT0pH?=
+ =?iso-2022-jp?B?b05UUTZwdlE0RWFkTFRobWNzUG0yLzVVMHRTcTA2KytDaXlZZldPckFp?=
+ =?iso-2022-jp?B?STMxT2hpakw0RHBwMS9FS1pMa0dKZXlLSGFWUEJYUUtXTXNqNUlXQWhi?=
+ =?iso-2022-jp?B?dXVMYm1nQWxZNEVQa1NhRTRkdEdoRGNCd2d6d3kvT2ZKOW83Sm5tZ1RF?=
+ =?iso-2022-jp?B?QnNQZkdOMS9Nb3hzSlBjc2lxNThwZTFPK090Yms4OEwwdlYreU5DSlZr?=
+ =?iso-2022-jp?B?aWNNQnFzUHZ2Rjh6UGczSCtPWmkzZWpXOWl3aXl1YlZPcHNMNVhpazVF?=
+ =?iso-2022-jp?B?ekJHV1d6a29LVmVnc0FncFM1MnRIYmFqTVJQTkpoeGlwZU1LSWtjM2Rz?=
+ =?iso-2022-jp?B?MU1FUlpvNnMyUjZLL3M4dz09?=
+X-OriginatorOrg: fujitsu.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: OS3PR01MB9865.jpnprd01.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: b7436c97-ab03-4e6c-350a-08dbc94ce835
+X-MS-Exchange-CrossTenant-originalarrivaltime: 10 Oct 2023 04:53:55.3180
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: a19f121d-81e1-4858-a9d8-736e267fd4c7
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: PVSScNb724JoxhjUIrQ93dK35hQFLNR0qjZFPa8LOjKcAZ9op/YyjITxQ5tSaLzkoftZWfJcqTC5baGXoMJfmjDs37K+Cq7XCt95qQ+TQgI=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: OS3PR01MB5671
+X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,DKIM_INVALID,
+        DKIM_SIGNED,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_PASS,SPF_NONE,URIBL_BLOCKED autolearn=no autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -51,213 +200,67 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-在 2023/10/9 12:35, Yi Zhang 写道:
-> Hello
-> 
-> blktests srp lead kernel panic[2] on aarch64 when the kernel enabled
-> CONFIG_ARM64_64K_PAGES, bisect shows it was introduced from commit[1],
-> pls help check it and let me know if you need any info/testing for it, thanks.
-> 
-> [1]
-> commit 325a7eb85199ec9c5b5a7af812f43ea16b735569
-> Author: Bob Pearson <rpearsonhpe@gmail.com>
-> Date:   Thu Jan 19 17:59:36 2023 -0600
-> 
->      RDMA/rxe: Cleanup page variables in rxe_mr.c
-> 
->      Cleanup usage of mr->page_shift and mr->page_mask and introduce
->      an extractor for mr->ibmr.page_size. Normal usage in the kernel
->      has page_mask masking out offset in page rather than masking out
->      the page number. The rxe driver had reversed that which was confusing.
->      Implicitly there can be a per mr page_size which was not uniformly
->      supported.
-> 
->      Link: https://lore.kernel.org/r/20230119235936.19728-6-rpearsonhpe@gmail.com
->      Signed-off-by: Bob Pearson <rpearsonhpe@gmail.com>
->      Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
+On Mon, Oct 9, 2023 1:02 AM Zhu Yanjun wrote:
+> =1B$B:_=1B(B 2023/10/5 22:50, Bart Van Assche =1B$B<LF;=1B(B:
+> > On 10/5/23 07:21, Jason Gunthorpe wrote:
+> >> Which is why it shows there are locking problems in this code.
+> >
+> > Hi Jason,
+> >
+> > Since the locking problems have not yet been root-caused, do you
+> > agree that it is safer to revert patch "RDMA/rxe: Add workqueue
+> > support for rxe tasks" rather than trying to fix it?
+>=20
+> Hi, Jason && Leon
+>=20
+> I spent a lot of time on this problem. It seems that it is a very
+> difficult problem.
+>=20
+> So I agree with Bart. Can we revert patch "RDMA/rxe: Add workqueue
+> support for rxe tasks" rather than trying to fix it? Then Bob can apply
+> his new patch to a stable RXE?
 
-Hi，Bob
+Cf. https://lore.kernel.org/lkml/f15b06b934aa0ace8b28dc046022e5507458eb99.1=
+694153251.git.matsuda-daisuke@fujitsu.com/
+I have ODP patches that is fully dependent on "RDMA/rxe: Add workqueue
+support for rxe tasks". So I personally prefer preserving workqueue to reve=
+rting
+the workqueue patch.
 
- From bisect, it seems that it is related with your commit 325a7eb85199 
-("RDMA/rxe: Cleanup page variables in rxe_mr.c").
+Each developer here has different motive and interest. I think the rxe driv=
+er should
+take in new specs and new features actively so that it can be used by devel=
+opers
+without access to HCAs. I believe workqueue is better suited for this purpo=
+se.
+Additionally, the disadvantages of tasklet are documented as follows:
+https://lwn.net/Articles/830964/
+However, stability is very important, so I will not insist on my opinion.
 
-Would you like to check this problem?
+I agree it is very difficult to find the root cause of the locking problem.=
+ It cannot
+be helped that we will somehow hide the issue for now so that it will not b=
+other
+actual users of the driver. Perhaps, there are three choices to do this.
 
- From the description, this problem occurred on ARM64 host with the 
-kernel option CONFIG_ARM64_64K_PAGES enabled.
+Solution 1: Reverting "RDMA/rxe: Add workqueue support for rxe tasks"
+I see this is supported by Zhu, Bart and approved by Leon.
+
+Solution 2: Serializing execution of work items
+> -       rxe_wq =3D alloc_workqueue("rxe_wq", WQ_UNBOUND, WQ_MAX_ACTIVE);
+> +       rxe_wq =3D alloc_workqueue("rxe_wq", WQ_HIGHPRI | WQ_UNBOUND, 1);
+
+Solution 3: Merging requester and completer (not yet submitted/tested)
+https://lore.kernel.org/all/93c8ad67-f008-4352-8887-099723c2f4ec@gmail.com/
+Not clear to me if we should call this a new feature or a fix.
+If it can eliminate the hang issue, it could be an ultimate solution.
+
+It is understandable some people do not want to wait for solution 3 to be s=
+ubmitted and verified.
+Is there any problem if we adopt solution 2?
+If so, then I agree to going with solution 1.
+If not, solution 2 is better to me.
 
 Thanks,
-Zhu Yanjun
-
-> 
-> [2] dmesg:
-> [ 1120.381103] run blktests srp/001 at 2023-10-08 21:02:34
-> [ 1120.647692] null_blk: module loaded
-> [ 1120.675092] null_blk: disk nullb0 created
-> [ 1120.683950] null_blk: disk nullb1 created
-> [ 1121.053881] rdma_rxe: loaded
-> [ 1121.071624] (null): rxe_set_mtu: Set mtu to 1024
-> [ 1121.080184] infiniband enP2p1s0v0_rxe: set active
-> [ 1121.080194] infiniband enP2p1s0v0_rxe: added enP2p1s0v0
-> [ 1121.128323] scsi_debug:sdebug_add_store: dif_storep 524288 bytes @
-> ffff80009a460000
-> [ 1121.129215] scsi_debug:sdebug_driver_probe: scsi_debug: trim
-> poll_queues to 0. poll_q/nr_hw = (0/1)
-> [ 1121.138297] scsi_debug:sdebug_driver_probe: host protection DIF3 DIX3
-> [ 1121.138310] scsi host4: scsi_debug: version 0191 [20210520]
->    dev_size_mb=32, opts=0x0, submit_queues=1, statistics=0
-> [ 1121.138813] scsi 4:0:0:0: Direct-Access     Linux    scsi_debug
->    0191 PQ: 0 ANSI: 7
-> [ 1121.139134] scsi 4:0:0:0: Power-on or device reset occurred
-> [ 1121.145365] sd 4:0:0:0: Attached scsi generic sg1 type 0
-> [ 1121.145439] sd 4:0:0:0: [sdb] 65536 512-byte logical blocks: (33.6
-> MB/32.0 MiB)
-> [ 1121.145501] sd 4:0:0:0: [sdb] Write Protect is off
-> [ 1121.145513] sd 4:0:0:0: [sdb] Mode Sense: 73 00 10 08
-> [ 1121.145601] sd 4:0:0:0: [sdb] Write cache: enabled, read cache:
-> enabled, supports DPO and FUA
-> [ 1121.145758] sd 4:0:0:0: [sdb] Enabling DIX T10-DIF-TYPE3-CRC,
-> application tag size 6 bytes
-> [ 1121.145769] sd 4:0:0:0: [sdb] Enabling DIF Type 3 protection
-> [ 1121.145777] sd 4:0:0:0: [sdb] Preferred minimum I/O size 512 bytes
-> [ 1121.145784] sd 4:0:0:0: [sdb] Optimal transfer size 524288 bytes
-> [ 1121.148475] sd 4:0:0:0: [sdb] Attached SCSI disk
-> [ 1121.552336] Rounding down aligned max_sectors from 4294967295 to 4294967168
-> [ 1121.602229] ib_srpt:srpt_add_one: ib_srpt device = 000000000a5842dc
-> [ 1121.602256] ib_srpt:srpt_use_srq: ib_srpt
-> srpt_use_srq(enP2p1s0v0_rxe): use_srq = 0; ret = 0
-> [ 1121.602266] ib_srpt:srpt_add_one: ib_srpt Target login info:
-> id_ext=1e1b0dfffe9f67ae,ioc_guid=1e1b0dfffe9f67ae,pkey=ffff,service_id=1e1b0dfffe9f67ae
-> [ 1121.602290] ib_srpt:srpt_add_one: ib_srpt added enP2p1s0v0_rxe.
-> [ 1121.920615] Rounding down aligned max_sectors from 255 to 128
-> [ 1121.948272] Rounding down aligned max_sectors from 255 to 128
-> [ 1121.975917] Rounding down aligned max_sectors from 4294967295 to 4294967168
-> [ 1122.487117] ib_srp:srp_add_one: ib_srp: srp_add_one:
-> 18446744073709551615 / 4096 = 4503599627370495 <> 512
-> [ 1122.487136] ib_srp:srp_add_one: ib_srp: enP2p1s0v0_rxe:
-> mr_page_shift = 12, device->max_mr_size = 0xffffffffffffffff,
-> device->max_fast_reg_page_list_len = 512, max_pages_per_mr = 512,
-> mr_max_size = 0x200000
-> [ 1122.539669] ib_srp:srp_parse_in: ib_srp: 10.19.240.81 -> 10.19.240.81:0
-> [ 1122.539691] ib_srp:srp_parse_in: ib_srp: 10.19.240.81:5555 ->
-> 10.19.240.81:5555
-> [ 1122.539700] ib_srp:add_target_store: ib_srp: max_sectors = 1024;
-> max_pages_per_mr = 512; mr_page_size = 4096; max_sectors_per_mr =
-> 4096; mr_per_cmd = 2
-> [ 1122.539710] ib_srp:srp_max_it_iu_len: ib_srp: max_iu_len = 8260
-> [ 1122.544979] ib_srpt Received SRP_LOGIN_REQ with i_port_id
-> fe80:0000:0000:0000:1e1b:0dff:fe9f:67ae, t_port_id
-> 1e1b:0dff:fe9f:67ae:1e1b:0dff:fe9f:67ae and it_iu_len 8260 on port 1
-> (guid=fe80:0000:0000:0000:1e1b:0dff:fe9f:67ae); pkey 0xffff
-> [ 1122.545168] ib_srpt:srpt_cm_req_recv: ib_srpt imm_data_offset = 68
-> [ 1122.546622] ib_srpt:srpt_create_ch_ib: ib_srpt srpt_create_ch_ib:
-> max_cqe= 8191 max_sge= 32 sq_size = 8191 ch= 000000007ddb8927
-> [ 1122.546726] ib_srpt:srpt_cm_req_recv: ib_srpt registering src addr
-> 10.19.240.81 or i_port_id 0xfe800000000000001e1b0dfffe9f67ae
-> [ 1122.546780] ib_srpt:srpt_cm_req_recv: ib_srpt Establish connection
-> sess=00000000f393b6f7 name=10.19.240.81 ch=000000007ddb8927
-> [ 1122.546973] ib_srp:srp_max_it_iu_len: ib_srp: max_iu_len = 8260
-> [ 1122.546988] scsi host5: ib_srp: using immediate data
-> [ 1122.547044] ib_srpt:srpt_zerolength_write: ib_srpt 10.19.240.81-18:
-> queued zerolength write
-> [ 1122.547127] ib_srpt:srpt_zerolength_write_done: ib_srpt
-> 10.19.240.81-18 wc->status 0
-> [ 1122.552276] ib_srpt Received SRP_LOGIN_REQ with i_port_id
-> fe80:0000:0000:0000:1e1b:0dff:fe9f:67ae, t_port_id
-> 1e1b:0dff:fe9f:67ae:1e1b:0dff:fe9f:67ae and it_iu_len 8260 on port 1
-> (guid=fe80:0000:0000:0000:1e1b:0dff:fe9f:67ae); pkey 0xffff
-> [ 1122.552527] ib_srpt:srpt_cm_req_recv: ib_srpt imm_data_offset = 68
-> [ 1122.552969] ib_srpt:srpt_create_ch_ib: ib_srpt srpt_create_ch_ib:
-> max_cqe= 8191 max_sge= 32 sq_size = 8191 ch= 00000000080908b6
-> [ 1122.553054] ib_srpt:srpt_cm_req_recv: ib_srpt registering src addr
-> 10.19.240.81 or i_port_id 0xfe800000000000001e1b0dfffe9f67ae
-> [ 1122.553095] ib_srpt:srpt_cm_req_recv: ib_srpt Establish connection
-> sess=000000005db9b14f name=10.19.240.81 ch=00000000080908b6
-> [ 1122.553204] ib_srp:srp_max_it_iu_len: ib_srp: max_iu_len = 8260
-> [ 1122.553216] scsi host5: ib_srp: using immediate data
-> [ 1122.553267] ib_srpt:srpt_zerolength_write: ib_srpt 10.19.240.81-20:
-> queued zerolength write
-> [ 1122.553346] ib_srpt:srpt_zerolength_write_done: ib_srpt
-> 10.19.240.81-20 wc->status 0
-> [ 1122.558431] ib_srpt Received SRP_LOGIN_REQ with i_port_id
-> fe80:0000:0000:0000:1e1b:0dff:fe9f:67ae, t_port_id
-> 1e1b:0dff:fe9f:67ae:1e1b:0dff:fe9f:67ae and it_iu_len 8260 on port 1
-> (guid=fe80:0000:0000:0000:1e1b:0dff:fe9f:67ae); pkey 0xffff
-> [ 1122.558665] ib_srpt:srpt_cm_req_recv: ib_srpt imm_data_offset = 68
-> [ 1122.559112] ib_srpt:srpt_create_ch_ib: ib_srpt srpt_create_ch_ib:
-> max_cqe= 8191 max_sge= 32 sq_size = 8191 ch= 000000005bf29d9f
-> [ 1122.559196] ib_srpt:srpt_cm_req_recv: ib_srpt registering src addr
-> 10.19.240.81 or i_port_id 0xfe800000000000001e1b0dfffe9f67ae
-> [ 1122.559235] ib_srpt:srpt_cm_req_recv: ib_srpt Establish connection
-> sess=00000000496e5c2f name=10.19.240.81 ch=000000005bf29d9f
-> [ 1122.559342] ib_srp:srp_max_it_iu_len: ib_srp: max_iu_len = 8260
-> [ 1122.559352] scsi host5: ib_srp: using immediate data
-> [ 1122.559390] Unable to handle kernel paging request at virtual
-> address 001bb829281c2fb8
-> [ 1122.559406] ib_srpt:srpt_zerolength_write: ib_srpt 10.19.240.81-22:
-> queued zerolength write
-> [ 1122.567320] Mem abort info:
-> [ 1122.567323]   ESR = 0x0000000096000004
-> [ 1122.567326]   EC = 0x25: DABT (current EL), IL = 32 bits
-> [ 1122.567330]   SET = 0, FnV = 0
-> [ 1122.567332]   EA = 0, S1PTW = 0
-> [ 1122.567335]   FSC = 0x04: level 0 translation fault
-> [ 1122.567338] Data abort info:
-> [ 1122.567340]   ISV = 0, ISS = 0x00000004, ISS2 = 0x00000000
-> [ 1122.567343]   CM = 0, WnR = 0, TnD = 0, TagAccess = 0
-> [ 1122.567347]   GCS = 0, Overlay = 0, DirtyBit = 0, Xs = 0
-> [ 1122.567351] [001bb829281c2fb8] address between user and kernel address ranges
-> [ 1122.567356] Internal error: Oops: 0000000096000004 [#1] SMP
-> [ 1122.567361] Modules linked in: ib_srp scsi_transport_srp target_core_user
-> [ 1122.575766] ib_srpt:srpt_zerolength_write_done: ib_srpt
-> 10.19.240.81-22 wc->status 0
-> [ 1122.578490]  uio target_core_pscsi target_core_file ib_srpt
-> target_core_iblock target_core_mod rdma_cm iw_cm ib_cm scsi_debug
-> rdma_rxe ib_uverbs ip6_udp_tunnel udp_tunnel null_blk dm_service_time
-> ib_umad crc32_generic ib_core rfkill sunrpc vfat fat dm_multipath
-> cavium_rng_vf thunderx_edac cavium_rng ipmi_ssif ipmi_devintf
-> ipmi_msghandler drm fuse xfs libcrc32c nicvf cavium_ptp crct10dif_ce
-> ghash_ce sha2_ce sha256_arm64 sha1_ce nicpf thunder_bgx i2c_thunderx
-> thunder_xcv mdio_thunder mdio_cavium sg dm_mirror dm_region_hash
-> dm_log dm_mod [last unloaded: null_blk]
-> [ 1122.694324] CPU: 6 PID: 216 Comm: kworker/6:1 Kdump: loaded Not
-> tainted 6.6.0-rc4+ #3
-> [ 1122.709550] Workqueue: ib_cm cm_work_handler [ib_cm]
-> [ 1122.714576] pstate: 60000005 (nZCv daif -PAN -UAO -TCO -DIT -SSBS BTYPE=--)
-> [ 1122.721537] pc : __kmem_cache_alloc_node+0x100/0x2c0
-> [ 1122.726506] lr : __kmem_cache_alloc_node+0xb4/0x2c0
-> [ 1122.731382] sp : ffff800087bcfa10
-> [ 1122.734692] x29: ffff800087bcfa10 x28: 0000000000000000 x27: b71eb439291cd087
-> [ 1122.741835] x26: ffff80007cd82774 x25: 00000000ffffffff x24: 0000000000000068
-> [ 1122.748977] x23: ffff8000820ba000 x22: f71bb829281c2f78 x21: 0000000000000000
-> [ 1122.756119] x20: 0000000000000cc0 x19: ffff000100010700 x18: ffffffffffffffff
-> [ 1122.763261] x17: 7a20646575657571 x16: 203a30322d31382e x15: ffff8000826feeff
-> [ 1122.770403] x14: 0000000000000001 x13: 6174616420657461 x12: 6964656d6d692067
-> [ 1122.777545] x11: 00000000ffff7fff x10: 00000000ffff7fff x9 : ffff800080398a00
-> [ 1122.784688] x8 : ffff000148a5c000 x7 : 0000000000000000 x6 : 000000000000007f
-> [ 1122.791829] x5 : ffff000107bac8c0 x4 : ffff80007cd82774 x3 : 000000000010f006
-> [ 1122.798971] x2 : b82f1c2829b81bf7 x1 : f71bb829281c2f78 x0 : 0000000000000040
-> [ 1122.806113] Call trace:
-> [ 1122.808555]  __kmem_cache_alloc_node+0x100/0x2c0
-> [ 1122.813178]  kmalloc_trace+0x40/0x110
-> [ 1122.816842]  srp_alloc_iu.constprop.0+0x3c/0x168 [ib_srp]
-> [ 1122.822268]  srp_alloc_iu_bufs+0xa0/0x240 [ib_srp]
-> [ 1122.827072]  srp_cm_rep_handler+0x2a4/0x2d8 [ib_srp]
-> [ 1122.832049]  srp_rdma_cm_handler+0x104/0x2c0 [ib_srp]
-> [ 1122.837113]  cma_cm_event_handler+0x34/0x140 [rdma_cm]
-> [ 1122.842306]  cma_ib_handler+0x98/0x310 [rdma_cm]
-> [ 1122.846955]  cm_process_work+0x2c/0x1e8 [ib_cm]
-> [ 1122.851517]  cm_queue_work_unlock+0x50/0x138 [ib_cm]
-> [ 1122.856514]  cm_rep_handler+0x250/0x550 [ib_cm]
-> [ 1122.861075]  cm_work_handler+0x2d8/0x3b8 [ib_cm]
-> [ 1122.865724]  process_one_work+0x174/0x3c8
-> [ 1122.869734]  worker_thread+0x2c8/0x3e0
-> [ 1122.873481]  kthread+0x100/0x110
-> [ 1122.876707]  ret_from_fork+0x10/0x20
-> [ 1122.880286] Code: aa1603e1 f9405e7b 8b0002c2 dac00c42 (f8606ac4)
-> [ 1122.886391] SMP: stopping secondary CPUs
-> [ 1122.891420] Starting crashdump kernel...
-> [ 1122.895341] Bye!
-> 
-> 
+Daisuke Matsuda
 
