@@ -2,227 +2,199 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C65257BF45A
-	for <lists+linux-rdma@lfdr.de>; Tue, 10 Oct 2023 09:33:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 16E4F7BF4F0
+	for <lists+linux-rdma@lfdr.de>; Tue, 10 Oct 2023 09:54:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1442419AbjJJHdg (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 10 Oct 2023 03:33:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34760 "EHLO
+        id S1442624AbjJJHyn (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 10 Oct 2023 03:54:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51628 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1442324AbjJJHdf (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 10 Oct 2023 03:33:35 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.20])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20C5292
-        for <linux-rdma@vger.kernel.org>; Tue, 10 Oct 2023 00:33:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1696923214; x=1728459214;
-  h=date:from:to:cc:subject:message-id;
-  bh=9SINteqyJqHvKfRlW3xtOyPEwbzpgxQH5+HMA1vowWY=;
-  b=PvWHsGQZROaLnbb6YPTIz1nWlWPx2QIkZf/PDPfzEvRyT/2rusZlog7S
-   iqdbheEm+R434aec6ZzmpyvoxWjnP2s88VX3I9lBZQKzIkaPSi9ppCfZP
-   xSHBtegw1BUO3Xy6aaaF/LG9W1UBj7BerJjWP6RqaCVmTAE0/xy5R4STc
-   RI2BFMoVgk+slQt15GTjvJ82IYz/AMHuQSqJQoWR07HRFvZ67XbZE3hs5
-   8902PV4O8OvRFbw4AKiKnIfJ3883Zg9fXPMqi5uzYWe9YAhmnjeu3+RPA
-   z6CjeqfNd2RNVRrD5a+JRgZmj7WMWdvHJ0hWGOmaunCJjifabwhbTYNd1
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10858"; a="374674101"
-X-IronPort-AV: E=Sophos;i="6.03,212,1694761200"; 
-   d="scan'208";a="374674101"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Oct 2023 00:33:03 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10858"; a="819130118"
-X-IronPort-AV: E=Sophos;i="6.03,212,1694761200"; 
-   d="scan'208";a="819130118"
-Received: from lkp-server02.sh.intel.com (HELO f64821696465) ([10.239.97.151])
-  by fmsmga008.fm.intel.com with ESMTP; 10 Oct 2023 00:32:50 -0700
-Received: from kbuild by f64821696465 with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qq7EV-0000A5-0k;
-        Tue, 10 Oct 2023 07:32:47 +0000
-Date:   Tue, 10 Oct 2023 15:32:21 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Leon Romanovsky <leon@kernel.org>
-Cc:     Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg+lists@ziepe.ca>,
-        linux-rdma@vger.kernel.org
-Subject: [rdma:wip/leon-for-next] BUILD SUCCESS
- 5ac388db27c443dadfbb0b8b23fa7ccf429d901a
-Message-ID: <202310101517.cF8Fl15n-lkp@intel.com>
-User-Agent: s-nail v14.9.24
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+        with ESMTP id S1442619AbjJJHyi (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 10 Oct 2023 03:54:38 -0400
+Received: from mail-wm1-x32b.google.com (mail-wm1-x32b.google.com [IPv6:2a00:1450:4864:20::32b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A0EBA4;
+        Tue, 10 Oct 2023 00:54:37 -0700 (PDT)
+Received: by mail-wm1-x32b.google.com with SMTP id 5b1f17b1804b1-405497850dbso49741515e9.0;
+        Tue, 10 Oct 2023 00:54:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1696924476; x=1697529276; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=iwwM7auPgZJMU7dH/X5o56/hwua6iH2A1QFl6/0EOd0=;
+        b=V6xfKpPBZTbS6eVz4iMpEXFUchDmqhSn0Cwyc05jiqi3vR+WJlu8pppJilTXDdPlph
+         PRxCD+95LLdqprM9L1zKPOhVed3FZHHu1oWgnQg3WkR0M4yReUcuvDRnv9JQBNeoGckW
+         Trxpvnb4FViHX7Ws50B1yqA7K7dNiR25T8QMYuTcw46j5kkULb8f+PiyMBHUbqGScWbb
+         IonN3Fuh3o4WZgOBRyGGm+B9Z+Cj+go1Bm9XMqfETtq+st9KexgWqleHNIMzyAx6kjYg
+         PoLoq+UqBNbtRvLOkVQTSpyXjbrokXX0trbGwxFfttb9WUziBJ0lPLN6NeHtIfi9xQhg
+         toxA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696924476; x=1697529276;
+        h=content-transfer-encoding:in-reply-to:from:references:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=iwwM7auPgZJMU7dH/X5o56/hwua6iH2A1QFl6/0EOd0=;
+        b=CxsH1TWc3e06dq6V0BkWtT6qZOjCbTU0dGwcEVsPhw7KncaukXjg3PuTdBexUE0qK0
+         DXrPwcPibKKRFOuqIpbnhV4Emr9/S/L5Swr9hX00dRhzRacW9P9dBOar5vz5vQzsuVsv
+         xGZtL2450/dF6HW6e4B03HEk2rO7uENJv2lP87LsKI7617r6szi4AaFXjyMESx+YQO2J
+         GoYAJpJYUYJolOorlTioQTpEtU4ETQ7rPnvXIQHWG2qFmGTVdPsqksUwobh8fNPvHkQ9
+         znp017v7yGsNzt5QrgZaZOOO9PPa93tfcbqFUzx3/6sENdHllkMAQReU/NnlnvvVoiKV
+         knjw==
+X-Gm-Message-State: AOJu0YzD0SP6pFdT8kBmlaolcwJLo3aPHrLWbC1LWs0fufkCwPaa10sA
+        u/lRZ/lCna9ymacsAFMfAvI=
+X-Google-Smtp-Source: AGHT+IFoXHF3xhB1R1QbXfa6gtatnLXym3Q5nnEunh6zFeATAVA0tqJjWKSQ447yVOYMirHfwQlOJg==
+X-Received: by 2002:a5d:500b:0:b0:319:8a66:f695 with SMTP id e11-20020a5d500b000000b003198a66f695mr13345455wrt.55.1696924475419;
+        Tue, 10 Oct 2023 00:54:35 -0700 (PDT)
+Received: from [192.168.0.101] ([77.126.80.27])
+        by smtp.gmail.com with ESMTPSA id z3-20020a056000110300b0031c6581d55esm11802488wrw.91.2023.10.10.00.54.30
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 10 Oct 2023 00:54:35 -0700 (PDT)
+Message-ID: <f288a1cd-0e15-4301-8522-d46840dd2d93@gmail.com>
+Date:   Tue, 10 Oct 2023 10:54:26 +0300
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [net-next v3 3/5] netdev: replace napi_reschedule with
+ napi_schedule
+Content-Language: en-US
+To:     Christian Marangi <ansuelsmth@gmail.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Leon Romanovsky <leon@kernel.org>,
+        Wolfgang Grandegger <wg@grandegger.com>,
+        Marc Kleine-Budde <mkl@pengutronix.de>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Chris Snook <chris.snook@gmail.com>,
+        Raju Rangoju <rajur@chelsio.com>,
+        Jeroen de Borst <jeroendb@google.com>,
+        Praveen Kaligineedi <pkaligineedi@google.com>,
+        Shailend Chand <shailend@google.com>,
+        Douglas Miller <dougmill@linux.ibm.com>,
+        Nick Child <nnac123@linux.ibm.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Haren Myneni <haren@linux.ibm.com>,
+        Rick Lindsley <ricklind@linux.ibm.com>,
+        Dany Madden <danymadden@us.ibm.com>,
+        Thomas Falcon <tlfalcon@linux.ibm.com>,
+        Tariq Toukan <tariqt@nvidia.com>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        Jose Abreu <joabreu@synopsys.com>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Krzysztof Halasa <khalasa@piap.pl>,
+        Kalle Valo <kvalo@kernel.org>,
+        Jeff Johnson <quic_jjohnson@quicinc.com>,
+        Gregory Greenman <gregory.greenman@intel.com>,
+        Chandrashekar Devegowda <chandrashekar.devegowda@intel.com>,
+        Intel Corporation <linuxwwan@intel.com>,
+        Chiranjeevi Rapolu <chiranjeevi.rapolu@linux.intel.com>,
+        Liu Haijun <haijun.liu@mediatek.com>,
+        M Chetan Kumar <m.chetan.kumar@linux.intel.com>,
+        Ricardo Martinez <ricardo.martinez@linux.intel.com>,
+        Loic Poulain <loic.poulain@linaro.org>,
+        Sergey Ryazanov <ryazanov.s.a@gmail.com>,
+        Johannes Berg <johannes@sipsolutions.net>,
+        Yuanjun Gong <ruc_gongyuanjun@163.com>,
+        Alex Elder <elder@linaro.org>,
+        Bhupesh Sharma <bhupesh.sharma@linaro.org>,
+        Simon Horman <horms@kernel.org>, Rob Herring <robh@kernel.org>,
+        Bailey Forrest <bcf@google.com>,
+        Junfeng Guo <junfeng.guo@intel.com>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        Ziwei Xiao <ziweixiao@google.com>,
+        Rushil Gupta <rushilg@google.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        =?UTF-8?Q?Uwe_Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        Yuri Karpov <YKarpov@ispras.ru>, Andrew Lunn <andrew@lunn.ch>,
+        Zheng Zengkai <zhengzengkai@huawei.com>,
+        Dawei Li <set_pte_at@outlook.com>,
+        Anjaneyulu <pagadala.yesu.anjaneyulu@intel.com>,
+        Benjamin Berg <benjamin.berg@intel.com>,
+        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-can@vger.kernel.org, netdev@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org, ath10k@lists.infradead.org,
+        linux-wireless@vger.kernel.org
+References: <20231009133754.9834-1-ansuelsmth@gmail.com>
+ <20231009133754.9834-3-ansuelsmth@gmail.com>
+From:   Tariq Toukan <ttoukan.linux@gmail.com>
+In-Reply-To: <20231009133754.9834-3-ansuelsmth@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git wip/leon-for-next
-branch HEAD: 5ac388db27c443dadfbb0b8b23fa7ccf429d901a  RDMA/irdma: Add support to re-register a memory region
 
-elapsed time: 1479m
 
-configs tested: 148
-configs skipped: 2
+On 09/10/2023 16:37, Christian Marangi wrote:
+> Now that napi_schedule return a bool, we can drop napi_reschedule that
+> does the same exact function. The function comes from a very old commit
+> bfe13f54f502 ("ibm_emac: Convert to use napi_struct independent of struct
+> net_device") and the purpose is actually deprecated in favour of
+> different logic.
+> 
+> Convert every user of napi_reschedule to napi_schedule.
+> 
+> Signed-off-by: Christian Marangi <ansuelsmth@gmail.com>
+> Acked-by: Jeff Johnson <quic_jjohnson@quicinc.com> # ath10k
+> Acked-by: Nick Child <nnac123@linux.ibm.com> # ibm
+> Acked-by: Marc Kleine-Budde <mkl@pengutronix.de> # for can/dev/rx-offload.c
+> Reviewed-by: Eric Dumazet <edumazet@google.com>
+> ---
+> Changes v3:
+> - Add Reviewed-by tag
+> Changes v2:
+> - Add ack tag
+> ---
+>   drivers/infiniband/ulp/ipoib/ipoib_ib.c                |  4 ++--
+>   drivers/net/can/dev/rx-offload.c                       |  2 +-
+>   drivers/net/ethernet/chelsio/cxgb4/sge.c               |  2 +-
+>   drivers/net/ethernet/chelsio/cxgb4vf/sge.c             |  2 +-
+>   drivers/net/ethernet/ezchip/nps_enet.c                 |  2 +-
+>   drivers/net/ethernet/google/gve/gve_main.c             |  2 +-
+>   drivers/net/ethernet/ibm/ehea/ehea_main.c              |  2 +-
+>   drivers/net/ethernet/ibm/emac/mal.c                    |  2 +-
+>   drivers/net/ethernet/ibm/ibmveth.c                     |  2 +-
+>   drivers/net/ethernet/ibm/ibmvnic.c                     |  2 +-
+>   drivers/net/ethernet/mellanox/mlx4/en_rx.c             |  2 +-
+>   drivers/net/ethernet/ni/nixge.c                        |  2 +-
+>   drivers/net/ethernet/stmicro/stmmac/stmmac_selftests.c |  2 +-
+>   drivers/net/ethernet/xscale/ixp4xx_eth.c               |  4 ++--
+>   drivers/net/fjes/fjes_main.c                           |  2 +-
+>   drivers/net/wan/ixp4xx_hss.c                           |  4 ++--
+>   drivers/net/wireless/ath/ath10k/pci.c                  |  2 +-
+>   drivers/net/wwan/t7xx/t7xx_hif_dpmaif_rx.c             |  2 +-
+>   include/linux/netdevice.h                              | 10 ----------
+>   19 files changed, 21 insertions(+), 31 deletions(-)
+> 
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+...
 
-tested configs:
-alpha                             allnoconfig   gcc  
-alpha                            allyesconfig   gcc  
-alpha                               defconfig   gcc  
-arc                              allmodconfig   gcc  
-arc                               allnoconfig   gcc  
-arc                              allyesconfig   gcc  
-arc                      axs103_smp_defconfig   gcc  
-arc                                 defconfig   gcc  
-arc                            hsdk_defconfig   gcc  
-arc                   randconfig-001-20231009   gcc  
-arm                              allmodconfig   gcc  
-arm                               allnoconfig   gcc  
-arm                              allyesconfig   gcc  
-arm                                 defconfig   gcc  
-arm                        multi_v5_defconfig   clang
-arm                   randconfig-001-20231009   gcc  
-arm                           sama7_defconfig   clang
-arm                           sunxi_defconfig   gcc  
-arm64                            allmodconfig   gcc  
-arm64                             allnoconfig   gcc  
-arm64                            allyesconfig   gcc  
-arm64                               defconfig   gcc  
-csky                             allmodconfig   gcc  
-csky                              allnoconfig   gcc  
-csky                             allyesconfig   gcc  
-csky                                defconfig   gcc  
-i386                             allmodconfig   gcc  
-i386                              allnoconfig   gcc  
-i386                             allyesconfig   gcc  
-i386         buildonly-randconfig-001-20231009   gcc  
-i386         buildonly-randconfig-002-20231009   gcc  
-i386         buildonly-randconfig-003-20231009   gcc  
-i386         buildonly-randconfig-004-20231009   gcc  
-i386         buildonly-randconfig-005-20231009   gcc  
-i386         buildonly-randconfig-006-20231009   gcc  
-i386                              debian-10.3   gcc  
-i386                                defconfig   gcc  
-i386                  randconfig-001-20231009   gcc  
-i386                  randconfig-002-20231009   gcc  
-i386                  randconfig-003-20231009   gcc  
-i386                  randconfig-004-20231009   gcc  
-i386                  randconfig-005-20231009   gcc  
-i386                  randconfig-006-20231009   gcc  
-i386                  randconfig-016-20231009   gcc  
-loongarch                         allnoconfig   gcc  
-loongarch                        allyesconfig   gcc  
-loongarch                           defconfig   gcc  
-loongarch             randconfig-001-20231009   gcc  
-m68k                             allmodconfig   gcc  
-m68k                              allnoconfig   gcc  
-m68k                             allyesconfig   gcc  
-m68k                                defconfig   gcc  
-microblaze                       allmodconfig   gcc  
-microblaze                        allnoconfig   gcc  
-microblaze                       allyesconfig   gcc  
-microblaze                          defconfig   gcc  
-mips                             allmodconfig   gcc  
-mips                              allnoconfig   gcc  
-mips                             allyesconfig   gcc  
-mips                          ath25_defconfig   clang
-mips                      bmips_stb_defconfig   clang
-mips                     decstation_defconfig   gcc  
-mips                           gcw0_defconfig   gcc  
-mips                          malta_defconfig   clang
-nios2                            allmodconfig   gcc  
-nios2                             allnoconfig   gcc  
-nios2                            allyesconfig   gcc  
-nios2                               defconfig   gcc  
-openrisc                         allmodconfig   gcc  
-openrisc                          allnoconfig   gcc  
-openrisc                         allyesconfig   gcc  
-openrisc                            defconfig   gcc  
-parisc                           alldefconfig   gcc  
-parisc                           allmodconfig   gcc  
-parisc                            allnoconfig   gcc  
-parisc                           allyesconfig   gcc  
-parisc                              defconfig   gcc  
-parisc64                            defconfig   gcc  
-powerpc                          allmodconfig   gcc  
-powerpc                           allnoconfig   gcc  
-powerpc                          allyesconfig   gcc  
-powerpc                       holly_defconfig   gcc  
-powerpc                   microwatt_defconfig   clang
-riscv                            allmodconfig   gcc  
-riscv                             allnoconfig   gcc  
-riscv                            allyesconfig   gcc  
-riscv                               defconfig   gcc  
-riscv                 randconfig-001-20231009   gcc  
-riscv                          rv32_defconfig   gcc  
-s390                             allmodconfig   gcc  
-s390                              allnoconfig   gcc  
-s390                             allyesconfig   gcc  
-s390                                defconfig   gcc  
-s390                  randconfig-001-20231009   gcc  
-sh                               allmodconfig   gcc  
-sh                                allnoconfig   gcc  
-sh                               allyesconfig   gcc  
-sh                                  defconfig   gcc  
-sh                          landisk_defconfig   gcc  
-sh                          rsk7201_defconfig   gcc  
-sh                          rsk7203_defconfig   gcc  
-sh                             shx3_defconfig   gcc  
-sparc                            allmodconfig   gcc  
-sparc                             allnoconfig   gcc  
-sparc                            allyesconfig   gcc  
-sparc                               defconfig   gcc  
-sparc64                          alldefconfig   gcc  
-sparc64                          allmodconfig   gcc  
-sparc64                          allyesconfig   gcc  
-sparc64                             defconfig   gcc  
-um                               allmodconfig   clang
-um                                allnoconfig   clang
-um                               allyesconfig   clang
-um                                  defconfig   gcc  
-um                             i386_defconfig   gcc  
-um                           x86_64_defconfig   gcc  
-x86_64                            allnoconfig   gcc  
-x86_64                           allyesconfig   gcc  
-x86_64       buildonly-randconfig-001-20231009   gcc  
-x86_64       buildonly-randconfig-002-20231009   gcc  
-x86_64       buildonly-randconfig-003-20231009   gcc  
-x86_64       buildonly-randconfig-004-20231009   gcc  
-x86_64       buildonly-randconfig-005-20231009   gcc  
-x86_64       buildonly-randconfig-006-20231009   gcc  
-x86_64                              defconfig   gcc  
-x86_64                randconfig-001-20231009   gcc  
-x86_64                randconfig-002-20231009   gcc  
-x86_64                randconfig-003-20231009   gcc  
-x86_64                randconfig-004-20231009   gcc  
-x86_64                randconfig-005-20231009   gcc  
-x86_64                randconfig-006-20231009   gcc  
-x86_64                randconfig-011-20231009   gcc  
-x86_64                randconfig-012-20231009   gcc  
-x86_64                randconfig-013-20231009   gcc  
-x86_64                randconfig-014-20231009   gcc  
-x86_64                randconfig-015-20231009   gcc  
-x86_64                randconfig-016-20231009   gcc  
-x86_64                randconfig-071-20231009   gcc  
-x86_64                randconfig-072-20231009   gcc  
-x86_64                randconfig-073-20231009   gcc  
-x86_64                randconfig-074-20231009   gcc  
-x86_64                randconfig-075-20231009   gcc  
-x86_64                randconfig-076-20231009   gcc  
-x86_64                          rhel-8.3-rust   clang
-x86_64                               rhel-8.3   gcc  
-xtensa                            allnoconfig   gcc  
-xtensa                       common_defconfig   gcc  
-xtensa                              defconfig   gcc  
+> diff --git a/drivers/net/ethernet/mellanox/mlx4/en_rx.c b/drivers/net/ethernet/mellanox/mlx4/en_rx.c
+> index 332472fe4990..a09b6e05337d 100644
+> --- a/drivers/net/ethernet/mellanox/mlx4/en_rx.c
+> +++ b/drivers/net/ethernet/mellanox/mlx4/en_rx.c
+> @@ -400,7 +400,7 @@ void mlx4_en_recover_from_oom(struct mlx4_en_priv *priv)
+>   	for (ring = 0; ring < priv->rx_ring_num; ring++) {
+>   		if (mlx4_en_is_ring_empty(priv->rx_ring[ring])) {
+>   			local_bh_disable();
+> -			napi_reschedule(&priv->rx_cq[ring]->napi);
+> +			napi_schedule(&priv->rx_cq[ring]->napi);
+>   			local_bh_enable();
+>   		}
+>   	}
 
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+For mlx4 part:
+Acked-by: Tariq Toukan <tariqt@nvidia.com>
+
