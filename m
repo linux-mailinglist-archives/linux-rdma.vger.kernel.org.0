@@ -2,60 +2,60 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 61E087C4F86
-	for <lists+linux-rdma@lfdr.de>; Wed, 11 Oct 2023 12:04:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 64D037C4F87
+	for <lists+linux-rdma@lfdr.de>; Wed, 11 Oct 2023 12:05:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230238AbjJKKEg (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 11 Oct 2023 06:04:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35464 "EHLO
+        id S231157AbjJKKFJ (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 11 Oct 2023 06:05:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44196 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231157AbjJKKEf (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 11 Oct 2023 06:04:35 -0400
-Received: from mail-yw1-x1134.google.com (mail-yw1-x1134.google.com [IPv6:2607:f8b0:4864:20::1134])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C03292
-        for <linux-rdma@vger.kernel.org>; Wed, 11 Oct 2023 03:04:33 -0700 (PDT)
-Received: by mail-yw1-x1134.google.com with SMTP id 00721157ae682-5a7b91faf40so25643127b3.1
-        for <linux-rdma@vger.kernel.org>; Wed, 11 Oct 2023 03:04:33 -0700 (PDT)
+        with ESMTP id S231215AbjJKKFI (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 11 Oct 2023 06:05:08 -0400
+Received: from mail-yw1-x1131.google.com (mail-yw1-x1131.google.com [IPv6:2607:f8b0:4864:20::1131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B8EA9D
+        for <linux-rdma@vger.kernel.org>; Wed, 11 Oct 2023 03:05:05 -0700 (PDT)
+Received: by mail-yw1-x1131.google.com with SMTP id 00721157ae682-5a7b91faf40so25648317b3.1
+        for <linux-rdma@vger.kernel.org>; Wed, 11 Oct 2023 03:05:05 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google; t=1697018672; x=1697623472; darn=vger.kernel.org;
+        d=broadcom.com; s=google; t=1697018704; x=1697623504; darn=vger.kernel.org;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=7YB3f9PIpLIO8QrZq/J5R1XOR9Y+Peshh17cYJjzlhM=;
-        b=QCGtLES+EOpbUML+Wf9twU7IwC8xBbrhxA7fDl5OAfp1oYc04u9lKEGU6HjW0X7MSg
-         DPjbVDl66jTgiY4mGiuQabv6y6QGAOJ5eBaCJHeZIAI3EpYLsdKMHccDJgeUkqW5DmJ3
-         wrW63PkKfrG2xiPvH/Mw2LHXDePMLSXNa8Mgo=
+        bh=B4jem9nFxYLRDrFIHb7vPuTkzlBRXYSTsUrv6ZUTgF4=;
+        b=hfftWmdbWBg38p/aw6fRLwz3+TeWhMsus4rVSD3YLqubOWDZBaLecijICCIpgSwr3x
+         /9vXNFxo1NQ6XkbOA/Z57HYmhz/eyX9UKAUh9NdJ9l4aLLTG6HtBTEfYLv1Xrw4p/8Zv
+         iGi0L1ZMDhfI9lVuUBst5oTUXnSaAlLIgyBcc=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697018672; x=1697623472;
+        d=1e100.net; s=20230601; t=1697018704; x=1697623504;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=7YB3f9PIpLIO8QrZq/J5R1XOR9Y+Peshh17cYJjzlhM=;
-        b=cqKKgoxFDP2O92QNaTMZC6JNeIRXMCd8loBx6ERFDVOVeL0SJz/II9IXq8t/g21Jxn
-         qCx8r8JR6/Zdcer5Qmkwl0B9BqfiEkl4xaukDf3Cdb08srfNKnRC4Z1umH1Yis5uT4s0
-         MvW/LftSghIaOfCS8uQQEOCCJzJAIKI/+KlYHhvy9p1mDq8C08SWC016csEOgXxf7GaG
-         xs/fOQgaDPrHwUDz7/v+2t4XvwPZ9pyGcQ6KnD4Z3SQNe8k7By5+p71kG8col/FNnc7O
-         7Bu2x2UJk9AjsTejanaJz7llQoqJiQWdPVxTq6l3Qv+Na3JmadlBJhr24o/0W8GJe0aC
-         v1oA==
-X-Gm-Message-State: AOJu0Yzx5fadSQJ+9u/KChhjA9oVJ87BXDO/VeWVFF2ZXOITJ3+ytaSz
-        2bKubGESocPvsrf4Dl4f3gxiIUt2TG4wWI0nwP4Nyg==
-X-Google-Smtp-Source: AGHT+IEDRv4w1zf9HW/C4aN/Pjh3bFyjDmpNUIgROlQJgx66kHln/BI5TKR822JnPD4Puu9JDdXzzbvgfxi7DWVdUnQ=
-X-Received: by 2002:a25:641:0:b0:d86:74e5:9469 with SMTP id
- 62-20020a250641000000b00d8674e59469mr17010779ybg.16.1697018672484; Wed, 11
- Oct 2023 03:04:32 -0700 (PDT)
+        bh=B4jem9nFxYLRDrFIHb7vPuTkzlBRXYSTsUrv6ZUTgF4=;
+        b=TRkwHLE1RNsSshNppCDhFs5rUU90kjBKINK2ChwZGL7nvkjD4p+PV7syCrGWwmH1g1
+         EHJbB9TMDmYAdGZB7J3S65mwpm1qx8ofuwTlqyCdmLtdkuwg7xBCFq/1uQOEmUZBIEUC
+         7BBG7KaSaWbtjD9bbcmggsG8zprm+nD77+qkk3gKUN147LA0xvaQpaa8RC1sn2VszMgl
+         OWcpR87SXh7kpw9NE9G4L6Q13I+El3a+r52beGOmFFPQ9NRpRJbwZNAeHcgYA7oyzPW2
+         YU8wS6wJqo79kVUOh667E2nNRxcRuTzuhJo7Y46qHoSgGSFil7B0ngNXrkerZmWh5P/n
+         fX0Q==
+X-Gm-Message-State: AOJu0YxzhfkpiiwoK+LN1Fncur4uyB4r/2An/0TZlxq5m468ydz1hNBV
+        vilL+89UDY8hV/G6XN9xTPLPo1mEbby3W4O1So8j9jBgfPTj617m
+X-Google-Smtp-Source: AGHT+IEVyqVbdhWuH2+28gIJyx1YNB6mowYnVaFUhJY4IDD+G/qZwHCKUpUSVYuEgXQcLJH8SqkNKerWi30xUMOspGQ=
+X-Received: by 2002:a25:938b:0:b0:d15:e204:a7be with SMTP id
+ a11-20020a25938b000000b00d15e204a7bemr19866672ybm.8.1697018704404; Wed, 11
+ Oct 2023 03:05:04 -0700 (PDT)
 MIME-Version: 1.0
 References: <1696483889-17427-1-git-send-email-selvin.xavier@broadcom.com>
- <1696483889-17427-2-git-send-email-selvin.xavier@broadcom.com> <20231009060915.GA5042@unreal>
-In-Reply-To: <20231009060915.GA5042@unreal>
+ <1696483889-17427-3-git-send-email-selvin.xavier@broadcom.com> <20231009061038.GB5042@unreal>
+In-Reply-To: <20231009061038.GB5042@unreal>
 From:   Selvin Xavier <selvin.xavier@broadcom.com>
-Date:   Wed, 11 Oct 2023 15:34:19 +0530
-Message-ID: <CA+sbYW2MW5Sy8E4nZWRnyppNwJ5B7BzO-vVk3_wVmDV9+H=mZw@mail.gmail.com>
-Subject: Re: [PATCH for-next 1/3] RDMA/bnxt_re: Update HW interface headers
+Date:   Wed, 11 Oct 2023 15:34:52 +0530
+Message-ID: <CA+sbYW3ksPYXRqWv2zO6SKG1tTyKJXh3CAZF3oig_8iuZK374g@mail.gmail.com>
+Subject: Re: [PATCH for-next 2/3] RDMA/bnxt_re: Report async events and errors
 To:     Leon Romanovsky <leon@kernel.org>
 Cc:     jgg@ziepe.ca, linux-rdma@vger.kernel.org,
         andrew.gospodarek@broadcom.com,
         Chandramohan Akula <chandramohan.akula@broadcom.com>
 Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
-        boundary="0000000000002bc13b06076df3c9"
+        boundary="00000000000012e90506076df559"
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED
@@ -66,58 +66,55 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
---0000000000002bc13b06076df3c9
+--00000000000012e90506076df559
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Mon, Oct 9, 2023 at 11:39=E2=80=AFAM Leon Romanovsky <leon@kernel.org> w=
+On Mon, Oct 9, 2023 at 11:40=E2=80=AFAM Leon Romanovsky <leon@kernel.org> w=
 rote:
 >
-> On Wed, Oct 04, 2023 at 10:31:27PM -0700, Selvin Xavier wrote:
+> On Wed, Oct 04, 2023 at 10:31:28PM -0700, Selvin Xavier wrote:
 > > From: Chandramohan Akula <chandramohan.akula@broadcom.com>
 > >
-> > Updating the HW structures for the affiliated event and error
-> > reporting. Newly added interface structures will be used in the
-> > followup patch.
+> > Report QP, SRQ and CQ async events and errors.
 > >
 > > Signed-off-by: Chandramohan Akula <chandramohan.akula@broadcom.com>
 > > Signed-off-by: Selvin Xavier <selvin.xavier@broadcom.com>
 > > ---
-> >  drivers/infiniband/hw/bnxt_re/roce_hsi.h | 62 ++++++++++++++++++++++++=
-++++++++
-> >  1 file changed, 62 insertions(+)
+> >  drivers/infiniband/hw/bnxt_re/main.c | 165 +++++++++++++++++++++++++++=
+++++++--
+> >  1 file changed, 156 insertions(+), 9 deletions(-)
 >
 > <...>
 >
-> > +     #define CREQ_QP_ERROR_NOTIFICATION_REQ_ERR_STATE_REASON_LAST \
-> > +                     CREQ_QP_ERROR_NOTIFICATION_REQ_ERR_STATE_REASON_R=
-EQ_RETX_SETUP_ERROR
-> >       __le32  xid;
+> > +     if (err_event->res_err_state_reason || err_event->req_err_state_r=
+eason) {
+> > +             dev_err_once(rdev_to_dev(qp->rdev),
+> > +                          "%s %s qp_id: %d cons (%d %d) req (%d %d) re=
+s (%d %d)\n",
+> > +                          __func__, rdma_is_kernel_res(&qp->ib_qp.res)=
+ ? "kernel" : "user",
+> > +                          qp->qplib_qp.id,
+> > +                          err_event->sq_cons_idx,
+> > +                          err_event->rq_cons_idx,
+> > +                          err_event->req_slow_path_state,
+> > +                          err_event->req_err_state_reason,
+> > +                          err_event->res_slow_path_state,
+> > +                          err_event->res_err_state_reason);
 >
 > <...>
 >
-> > +     #define CREQ_QP_ERROR_NOTIFICATION_RES_ERR_STATE_REASON_LAST \
-> > +                     CREQ_QP_ERROR_NOTIFICATION_RES_ERR_STATE_REASON_R=
-ES_PSN_NOT_FOUND
+> > +             dev_err_once(rdev_to_dev(cq->rdev),
+> > +                          "%s err reason %d\n", __func__, cqerr->cq_er=
+r_reason);
+> > +             cq->ib_cq.event_handler(&ibevent, cq->ib_cq.cq_context);
 >
-> These defines are not used.
-These defines are from an autogenerated file and it indicates the LAST
-define from this set. It won't be used. I will remove it from this
-patch
-Thanks
+> ibdev_*() prints please.
+will do
 >
 > Thanks
->
-> >       __le16  sq_cons_idx;
-> >       __le16  rq_cons_idx;
-> >  };
-> > --
-> > 2.5.5
-> >
->
->
 
---0000000000002bc13b06076df3c9
+--00000000000012e90506076df559
 Content-Type: application/pkcs7-signature; name="smime.p7s"
 Content-Transfer-Encoding: base64
 Content-Disposition: attachment; filename="smime.p7s"
@@ -188,14 +185,14 @@ j1Ze9ndr+YDXPpCymOsynmmw0ErHZGGW1OmMpAEt0A+613glWCURLDlP8HONi1wnINV6aDiEf0ad
 9NMGxDsp+YWiRXD3txfo2OMQbpIxM90QfhKKacX8t1J1oAAWxDrLVTJBXBNvz5tr+D1sYwuye93r
 hImmkM1unboxggJtMIICaQIBATBrMFsxCzAJBgNVBAYTAkJFMRkwFwYDVQQKExBHbG9iYWxTaWdu
 IG52LXNhMTEwLwYDVQQDEyhHbG9iYWxTaWduIEdDQyBSMyBQZXJzb25hbFNpZ24gMiBDQSAyMDIw
-Agxy+Cu4x/7lM0zxY7cwDQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIEIICzQiu9ZpbK
-m9a5/tPSIX4tovczScts149CyJz22jBFMBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZI
-hvcNAQkFMQ8XDTIzMTAxMTEwMDQzMlowaQYJKoZIhvcNAQkPMVwwWjALBglghkgBZQMEASowCwYJ
+Agxy+Cu4x/7lM0zxY7cwDQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIEIFpCQAvRN/O3
+vEI+Q1FAEq+wneBNbCCJ+J8J1jAjeD55MBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZI
+hvcNAQkFMQ8XDTIzMTAxMTEwMDUwNFowaQYJKoZIhvcNAQkPMVwwWjALBglghkgBZQMEASowCwYJ
 YIZIAWUDBAEWMAsGCWCGSAFlAwQBAjAKBggqhkiG9w0DBzALBgkqhkiG9w0BAQowCwYJKoZIhvcN
-AQEHMAsGCWCGSAFlAwQCATANBgkqhkiG9w0BAQEFAASCAQCxuZ/V8zFNKpz/JeXrOpEb1CCld15D
-XnIIHZiGgfGzAaCrC83s0MdTJgEzkJpzNmqM0TYqLYOTeIUnhGzdoWwzSZipgqrqNCyUMZzoMrmK
-uGZVlZXlZnJbilXX6zRen3oxd/WJ2IMHAbHJdfc1f8CHC/bVtznSUJHGkEiDp/oftBG6G37kbzkF
-zLMe7l4EV+HR6eazIw+dsqAlA/w5vpfBsHv5gcv9da4xm6eMMhd9gD/MlwJTzT2tk8KnTIczeTdp
-gtLq2o1vvNpV0o4izdMda4PdzBDdATut4dke0CvxjYGlwr/vhbMBu41Tjsbk3yhz82bu7t93AXNI
-o9Lm3hrZ
---0000000000002bc13b06076df3c9--
+AQEHMAsGCWCGSAFlAwQCATANBgkqhkiG9w0BAQEFAASCAQBBbZb9W75yg/fed8zd+tWy3/OckEVy
+MNJgizzHihgpd0g12AtEWSr9mf3DzWj1PRjla3fdv5TUuXzu5ec5ZpcEEEh9Z9z0dfFSHk+AR88C
+NW/LDlcogvOAdralXCRMoVtQh1Ugus4Qg/vnnnuf0Eb6tpMiVMj0hfbR9rzwfxoPmkU2W/cNq8Il
+y/wo83YbDyD03DzgSnC/RFBruKAKcTZLYJ6yRIOHIa2NpgDpV9y49Q68xMFKpyYyXG1aiyRy4hHX
+dD5WZjbwAgkAOxrF6KQpoZ7TtdI6fDDbyqf1bPztH2kKtXwQw4N+Pe3V3WPGcHHrKSoEF6Nj7ad0
+GDX68laM
+--00000000000012e90506076df559--
