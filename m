@@ -2,197 +2,222 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 64D037C4F87
-	for <lists+linux-rdma@lfdr.de>; Wed, 11 Oct 2023 12:05:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8992D7C559E
+	for <lists+linux-rdma@lfdr.de>; Wed, 11 Oct 2023 15:40:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231157AbjJKKFJ (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 11 Oct 2023 06:05:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44196 "EHLO
+        id S231849AbjJKNkZ (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 11 Oct 2023 09:40:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42788 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231215AbjJKKFI (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 11 Oct 2023 06:05:08 -0400
-Received: from mail-yw1-x1131.google.com (mail-yw1-x1131.google.com [IPv6:2607:f8b0:4864:20::1131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B8EA9D
-        for <linux-rdma@vger.kernel.org>; Wed, 11 Oct 2023 03:05:05 -0700 (PDT)
-Received: by mail-yw1-x1131.google.com with SMTP id 00721157ae682-5a7b91faf40so25648317b3.1
-        for <linux-rdma@vger.kernel.org>; Wed, 11 Oct 2023 03:05:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google; t=1697018704; x=1697623504; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=B4jem9nFxYLRDrFIHb7vPuTkzlBRXYSTsUrv6ZUTgF4=;
-        b=hfftWmdbWBg38p/aw6fRLwz3+TeWhMsus4rVSD3YLqubOWDZBaLecijICCIpgSwr3x
-         /9vXNFxo1NQ6XkbOA/Z57HYmhz/eyX9UKAUh9NdJ9l4aLLTG6HtBTEfYLv1Xrw4p/8Zv
-         iGi0L1ZMDhfI9lVuUBst5oTUXnSaAlLIgyBcc=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697018704; x=1697623504;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=B4jem9nFxYLRDrFIHb7vPuTkzlBRXYSTsUrv6ZUTgF4=;
-        b=TRkwHLE1RNsSshNppCDhFs5rUU90kjBKINK2ChwZGL7nvkjD4p+PV7syCrGWwmH1g1
-         EHJbB9TMDmYAdGZB7J3S65mwpm1qx8ofuwTlqyCdmLtdkuwg7xBCFq/1uQOEmUZBIEUC
-         7BBG7KaSaWbtjD9bbcmggsG8zprm+nD77+qkk3gKUN147LA0xvaQpaa8RC1sn2VszMgl
-         OWcpR87SXh7kpw9NE9G4L6Q13I+El3a+r52beGOmFFPQ9NRpRJbwZNAeHcgYA7oyzPW2
-         YU8wS6wJqo79kVUOh667E2nNRxcRuTzuhJo7Y46qHoSgGSFil7B0ngNXrkerZmWh5P/n
-         fX0Q==
-X-Gm-Message-State: AOJu0YxzhfkpiiwoK+LN1Fncur4uyB4r/2An/0TZlxq5m468ydz1hNBV
-        vilL+89UDY8hV/G6XN9xTPLPo1mEbby3W4O1So8j9jBgfPTj617m
-X-Google-Smtp-Source: AGHT+IEVyqVbdhWuH2+28gIJyx1YNB6mowYnVaFUhJY4IDD+G/qZwHCKUpUSVYuEgXQcLJH8SqkNKerWi30xUMOspGQ=
-X-Received: by 2002:a25:938b:0:b0:d15:e204:a7be with SMTP id
- a11-20020a25938b000000b00d15e204a7bemr19866672ybm.8.1697018704404; Wed, 11
- Oct 2023 03:05:04 -0700 (PDT)
+        with ESMTP id S232202AbjJKNkY (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 11 Oct 2023 09:40:24 -0400
+Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3455B90;
+        Wed, 11 Oct 2023 06:40:22 -0700 (PDT)
+Received: from pps.filterd (m0353723.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 39BDdFK1031865;
+        Wed, 11 Oct 2023 13:40:17 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
+ mime-version : subject : from : to : cc : references : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=/90o0hhysJ2dZfkY8PrUixl+/WqjqmE0aM1GMqw2c7w=;
+ b=E9O1snVVipWPvrj4FYzQGyNN/seYY8CkGCxjRKZyqoPZvDK3zsH2BYnCnTz792/shDOc
+ kS+zAIxtfX+40gDeHtx3QMiK28MRCzNt4Ri1X06/Sn5jopvXqJwwKeY26hQok6naz11Z
+ WaOAVdft7/M63s0traNn2HA3cf+5TyJ48n4/pEWFY2yeP6tSOsDOkJFS3tWF0OfRai2R
+ +l+kLxYeirPaHbDJnp5+aENqYKvU5VDeOAUtO6l2xNF5IcxWHhZM+SgTH0Mtq86We9fY
+ C66uxC7KAWrUkOlsSO3A1zsAc+H9fyuJY5V47GJ+ojMvmFK2xgBNzLJIMsN8WGKMIT24 1A== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3tnvmd88sp-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 11 Oct 2023 13:40:15 +0000
+Received: from m0353723.ppops.net (m0353723.ppops.net [127.0.0.1])
+        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 39BDdUHb001580;
+        Wed, 11 Oct 2023 13:39:56 GMT
+Received: from ppma21.wdc07v.mail.ibm.com (5b.69.3da9.ip4.static.sl-reverse.com [169.61.105.91])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3tnvmd86x0-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 11 Oct 2023 13:39:51 +0000
+Received: from pps.filterd (ppma21.wdc07v.mail.ibm.com [127.0.0.1])
+        by ppma21.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 39BBI8rQ025907;
+        Wed, 11 Oct 2023 12:39:25 GMT
+Received: from smtprelay04.wdc07v.mail.ibm.com ([172.16.1.71])
+        by ppma21.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3tkjnnfygg-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 11 Oct 2023 12:39:25 +0000
+Received: from smtpav05.wdc07v.mail.ibm.com (smtpav05.wdc07v.mail.ibm.com [10.39.53.232])
+        by smtprelay04.wdc07v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 39BCdP4r50004436
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 11 Oct 2023 12:39:25 GMT
+Received: from smtpav05.wdc07v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id EB7F35805D;
+        Wed, 11 Oct 2023 12:39:24 +0000 (GMT)
+Received: from smtpav05.wdc07v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 333AD5805F;
+        Wed, 11 Oct 2023 12:39:23 +0000 (GMT)
+Received: from [9.171.29.13] (unknown [9.171.29.13])
+        by smtpav05.wdc07v.mail.ibm.com (Postfix) with ESMTP;
+        Wed, 11 Oct 2023 12:39:23 +0000 (GMT)
+Message-ID: <a86a0aff-803d-478c-b26b-d42cb5301070@linux.ibm.com>
+Date:   Wed, 11 Oct 2023 14:39:22 +0200
 MIME-Version: 1.0
-References: <1696483889-17427-1-git-send-email-selvin.xavier@broadcom.com>
- <1696483889-17427-3-git-send-email-selvin.xavier@broadcom.com> <20231009061038.GB5042@unreal>
-In-Reply-To: <20231009061038.GB5042@unreal>
-From:   Selvin Xavier <selvin.xavier@broadcom.com>
-Date:   Wed, 11 Oct 2023 15:34:52 +0530
-Message-ID: <CA+sbYW3ksPYXRqWv2zO6SKG1tTyKJXh3CAZF3oig_8iuZK374g@mail.gmail.com>
-Subject: Re: [PATCH for-next 2/3] RDMA/bnxt_re: Report async events and errors
-To:     Leon Romanovsky <leon@kernel.org>
-Cc:     jgg@ziepe.ca, linux-rdma@vger.kernel.org,
-        andrew.gospodarek@broadcom.com,
-        Chandramohan Akula <chandramohan.akula@broadcom.com>
-Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
-        boundary="00000000000012e90506076df559"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH net] net/smc: fix panic smc_tcp_syn_recv_sock() while
+ closing listen socket
+From:   Wenjia Zhang <wenjia@linux.ibm.com>
+To:     "D. Wythe" <alibuda@linux.alibaba.com>,
+        Alexandra Winter <wintera@linux.ibm.com>
+Cc:     jaka@linux.ibm.com, kgraul@linux.ibm.com, kuba@kernel.org,
+        davem@davemloft.net, netdev@vger.kernel.org,
+        linux-s390@vger.kernel.org, linux-rdma@vger.kernel.org
+References: <1695211714-66958-1-git-send-email-alibuda@linux.alibaba.com>
+ <0902f55b-0d51-7f4d-0a9e-4b9423217fcf@linux.ibm.com>
+ <ee2a5f8c-4119-c84a-05bc-03015e6c9bea@linux.alibaba.com>
+ <3d1b5c12-971f-3464-5f28-79477f1f9eb2@linux.ibm.com>
+ <c03dad67-169a-bf6d-1915-a9bb722a7259@linux.alibaba.com>
+ <d18e1a78-3b3a-8f23-6db1-20c16795d3ef@linux.ibm.com>
+ <ab417654-8aba-f357-8ac5-16c4c2b291e1@linux.alibaba.com>
+ <b4470cec-7b9b-5ce5-01e0-9270f6564fbb@linux.ibm.com>
+Content-Language: en-GB
+In-Reply-To: <b4470cec-7b9b-5ce5-01e0-9270f6564fbb@linux.ibm.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: 8JmgypN6CUuRdZmEpe8JLx2eBwaAd5gN
+X-Proofpoint-ORIG-GUID: Q55UimvUzsBVm5Vb8hBivFtTsU47jCly
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-10-11_09,2023-10-11_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 malwarescore=0
+ clxscore=1011 priorityscore=1501 spamscore=0 suspectscore=0 bulkscore=0
+ lowpriorityscore=0 impostorscore=0 mlxlogscore=999 adultscore=0
+ phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2309180000 definitions=main-2310110120
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
---00000000000012e90506076df559
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 
-On Mon, Oct 9, 2023 at 11:40=E2=80=AFAM Leon Romanovsky <leon@kernel.org> w=
-rote:
->
-> On Wed, Oct 04, 2023 at 10:31:28PM -0700, Selvin Xavier wrote:
-> > From: Chandramohan Akula <chandramohan.akula@broadcom.com>
-> >
-> > Report QP, SRQ and CQ async events and errors.
-> >
-> > Signed-off-by: Chandramohan Akula <chandramohan.akula@broadcom.com>
-> > Signed-off-by: Selvin Xavier <selvin.xavier@broadcom.com>
-> > ---
-> >  drivers/infiniband/hw/bnxt_re/main.c | 165 +++++++++++++++++++++++++++=
-++++++--
-> >  1 file changed, 156 insertions(+), 9 deletions(-)
->
-> <...>
->
-> > +     if (err_event->res_err_state_reason || err_event->req_err_state_r=
-eason) {
-> > +             dev_err_once(rdev_to_dev(qp->rdev),
-> > +                          "%s %s qp_id: %d cons (%d %d) req (%d %d) re=
-s (%d %d)\n",
-> > +                          __func__, rdma_is_kernel_res(&qp->ib_qp.res)=
- ? "kernel" : "user",
-> > +                          qp->qplib_qp.id,
-> > +                          err_event->sq_cons_idx,
-> > +                          err_event->rq_cons_idx,
-> > +                          err_event->req_slow_path_state,
-> > +                          err_event->req_err_state_reason,
-> > +                          err_event->res_slow_path_state,
-> > +                          err_event->res_err_state_reason);
->
-> <...>
->
-> > +             dev_err_once(rdev_to_dev(cq->rdev),
-> > +                          "%s err reason %d\n", __func__, cqerr->cq_er=
-r_reason);
-> > +             cq->ib_cq.event_handler(&ibevent, cq->ib_cq.cq_context);
->
-> ibdev_*() prints please.
-will do
->
-> Thanks
 
---00000000000012e90506076df559
-Content-Type: application/pkcs7-signature; name="smime.p7s"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment; filename="smime.p7s"
-Content-Description: S/MIME Cryptographic Signature
+On 05.10.23 20:14, Wenjia Zhang wrote:
+>> 
+>> 
+>> On 26.09.23 11:06, D. Wythe wrote:
+>>>
+>>>
+>>> On 9/26/23 3:18 PM, Alexandra Winter wrote:
+>>>>
+>>>> On 26.09.23 05:00, D. Wythe wrote:
+>>>>> You are right. The key point is how to ensure the valid of smc sock 
+>>>>> during the life time of clc sock, If so, READ_ONCE is good
+>>>>> enough. Unfortunately, I found  that there are no such guarantee, so 
+>>>>> it's still a life-time problem.
+>>>> Did you discover a scenario, where clc sock could live longer than 
+>>>> smc sock?
+>>>> Wouldn't that be a dangerous scenario in itself? I still have some 
+>>>> hope that the lifetime of an smc socket is by design longer
+>>>> than that of the corresponding tcp socket.
+>>>
+>>>
+>>> Hi Alexandra,
+>>>
+>>> Yes there is. Considering scenario:
+>>>
+>>> tcp_v4_rcv(skb)
+>>>
+>>> /* req sock */
+>>> reqsk = _inet_lookup_skb(skb)
+>>>
+>>> /* listen sock */
+>>> sk = reqsk(reqsk)->rsk_listener;
+>>> sock_hold(sk);
+>>> tcp_check_req(sk)
+>>>
+>>>
+>>>                                                  smc_release /* 
+>>> release smc listen sock */
+>>>                                                  __smc_release
+>>> smc_close_active()         /*  smc_sk->sk_state = SMC_CLOSED; */
+>>>                                                      if 
+>>> (smc_sk->sk_state == SMC_CLOSED)
+>>> smc_clcsock_release();
+>>> sock_release(clcsk);        /* close clcsock */
+>>>      sock_put(sk);              /* might not  the final refcnt */
+>>>
+>>> sock_put(smc_sk)    /* might be the final refcnt of smc_sock  */
+>>>
+>>> syn_recv_sock(sk...)
+>>> /* might be the final refcnt of tcp listen sock */
+>>> sock_put(sk);
+>>>
+>>> Fortunately, this scenario only affects smc_syn_recv_sock and 
+>>> smc_hs_congested, as other callbacks already have locks to protect smc,
+>>> which can guarantee that the sk_user_data is either NULL (set in 
+>>> smc_close_active) or valid under the lock.
+>>> I'm kind of confused with this scenario. How could the 
+>> smc_clcsock_release()->sock_release(clcsk) happen?
+>> Because the syn_recv_sock happens short prior to accept(), that means 
+>> that the &smc->tcp_listen_work is already triggered but the real 
+>> accept() is still not happening. At this moment, the incoming connection 
+>> is being added into the accept queue. Thus, if the sk->sk_state is 
+>> changed from SMC_LISTEN to SMC_CLOSED in smc_close_active(), there is 
+>> still "flush_work(&smc->tcp_listen_work);" after that. That ensures the 
+>> smc_clcsock_release() should not happen, if smc_clcsock_accept() is not 
+>> finished. Do you think that the execution of the &smc->tcp_listen_work 
+>> is already done? Or am I missing something?
+>>  > Hi wenjia,
+ >
+ > Sorry for late reply, we have just returned from vacation.
+ >
+ > The smc_clcsock_release here release the listen clcsock rather than
+ > the child clcsock.
+ > So the flush_work might not be helpful for this scenario.
+ >
+ > Best wishes,
+ > D. Wythe
 
-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
-FYMZp2DojLAq9f4Oi2OBetbnWxo0WGycXpmq/jC4PUx2u9mazQ79i80VLagGRshWniESXuf+SYG8
-+zBimjld9ZZnwm7itHAZdtme4YYFxx+EHa4PUxPV8t+hPHhsiIjirPa1pVXPbQIDAQABo4IB2zCC
-AdcwDgYDVR0PAQH/BAQDAgWgMIGjBggrBgEFBQcBAQSBljCBkzBOBggrBgEFBQcwAoZCaHR0cDov
-L3NlY3VyZS5nbG9iYWxzaWduLmNvbS9jYWNlcnQvZ3NnY2NyM3BlcnNvbmFsc2lnbjJjYTIwMjAu
-Y3J0MEEGCCsGAQUFBzABhjVodHRwOi8vb2NzcC5nbG9iYWxzaWduLmNvbS9nc2djY3IzcGVyc29u
-YWxzaWduMmNhMjAyMDBNBgNVHSAERjBEMEIGCisGAQQBoDIBKAowNDAyBggrBgEFBQcCARYmaHR0
-cHM6Ly93d3cuZ2xvYmFsc2lnbi5jb20vcmVwb3NpdG9yeS8wCQYDVR0TBAIwADBJBgNVHR8EQjBA
-MD6gPKA6hjhodHRwOi8vY3JsLmdsb2JhbHNpZ24uY29tL2dzZ2NjcjNwZXJzb25hbHNpZ24yY2Ey
-MDIwLmNybDAlBgNVHREEHjAcgRpzZWx2aW4ueGF2aWVyQGJyb2FkY29tLmNvbTATBgNVHSUEDDAK
-BggrBgEFBQcDBDAfBgNVHSMEGDAWgBSWM9HmWBdbNHWKgVZk1b5I3qGPzzAdBgNVHQ4EFgQU3TaH
-dsgUhTW3LwObmZ20fj+8Xj8wDQYJKoZIhvcNAQELBQADggEBAAbt6Sptp6ZlTnhM2FDhkVXks68/
-iqvfL/e8wSPVdBxOuiP+8EXGLV3E72KfTTJXMbkcmFpK2K11poBDQJhz0xyOGTESjXNnN6Eqq+iX
-hQtF8xG2lzPq8MijKI4qXk5Vy5DYfwsVfcF0qJw5AhC32nU9uuIPJq8/mQbZfqmoanV/yadootGr
-j1Ze9ndr+YDXPpCymOsynmmw0ErHZGGW1OmMpAEt0A+613glWCURLDlP8HONi1wnINV6aDiEf0ad
-9NMGxDsp+YWiRXD3txfo2OMQbpIxM90QfhKKacX8t1J1oAAWxDrLVTJBXBNvz5tr+D1sYwuye93r
-hImmkM1unboxggJtMIICaQIBATBrMFsxCzAJBgNVBAYTAkJFMRkwFwYDVQQKExBHbG9iYWxTaWdu
-IG52LXNhMTEwLwYDVQQDEyhHbG9iYWxTaWduIEdDQyBSMyBQZXJzb25hbFNpZ24gMiBDQSAyMDIw
-Agxy+Cu4x/7lM0zxY7cwDQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIEIFpCQAvRN/O3
-vEI+Q1FAEq+wneBNbCCJ+J8J1jAjeD55MBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZI
-hvcNAQkFMQ8XDTIzMTAxMTEwMDUwNFowaQYJKoZIhvcNAQkPMVwwWjALBglghkgBZQMEASowCwYJ
-YIZIAWUDBAEWMAsGCWCGSAFlAwQBAjAKBggqhkiG9w0DBzALBgkqhkiG9w0BAQowCwYJKoZIhvcN
-AQEHMAsGCWCGSAFlAwQCATANBgkqhkiG9w0BAQEFAASCAQBBbZb9W75yg/fed8zd+tWy3/OckEVy
-MNJgizzHihgpd0g12AtEWSr9mf3DzWj1PRjla3fdv5TUuXzu5ec5ZpcEEEh9Z9z0dfFSHk+AR88C
-NW/LDlcogvOAdralXCRMoVtQh1Ugus4Qg/vnnnuf0Eb6tpMiVMj0hfbR9rzwfxoPmkU2W/cNq8Il
-y/wo83YbDyD03DzgSnC/RFBruKAKcTZLYJ6yRIOHIa2NpgDpV9y49Q68xMFKpyYyXG1aiyRy4hHX
-dD5WZjbwAgkAOxrF6KQpoZ7TtdI6fDDbyqf1bPztH2kKtXwQw4N+Pe3V3WPGcHHrKSoEF6Nj7ad0
-GDX68laM
---00000000000012e90506076df559--
+It seems like that I lost some mails these days :-( Just saw your answer.
+
+Maybe I didn't describe my thought clearly. Following data flow is your 
+scenario, right?
+			–
+(sk_state == SMC_LISTEN)|
+tcp_check_req()		| smc_release()
+			| ->__smc_release()
+			|   -> smc_close_active()
+			|     -> sk->sk_state = SMC_CLOSED;
+			|     -> ...
+			|     -> smc->clcsock->sk->sk_user_data = NULL;
+			|     -> ...
+			|*1)  -> flush_work(&smc->tcp_listen_work);
+			|*4)
+			|	-> smc_clcsock_accept()
+	    		|         -> kernel_accept()
+			| 	    -> inet_csk_accept()
+			|*5)
+			|   if (sk->sk_state == SMC_CLOSED)
+			|*3)-> smc_clcsock_release()
+-> syn_recv_sock()   *2)|
+			|
+			v
+My question is how the smc_clcsock_release() could happen after the 
+syn_recv_sock()?
+IMO, the syn_recv_sock() should be called during the 
+&smc->tcp_listen_work, which is corresponding to lsmc (listen smc). And 
+in smc_clcsock_accept(), the lsmc->clcsock as the listening socket goes 
+on to be used to accept a new connection. If the &smc->tcp_listen_work 
+is not finished, *1) will wait for its finishing. It can only happen in 
+following situation:
+*4) sk_state is SMC_CLOSED, then no connection is accepted.
+*5) old sk_state is SMC_LISTEN, TCP accept is successful. But current 
+sk_state is SMC_CLOSED. Thus, no new smc connection.
+
+What do you think? Please let me know if I have any lapse of thought.
+
+Thanks,
+Wenjia
