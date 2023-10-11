@@ -2,290 +2,112 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 56C727C5B7A
-	for <lists+linux-rdma@lfdr.de>; Wed, 11 Oct 2023 20:43:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0CB8F7C5B7B
+	for <lists+linux-rdma@lfdr.de>; Wed, 11 Oct 2023 20:43:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233052AbjJKSnY (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 11 Oct 2023 14:43:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54092 "EHLO
+        id S232571AbjJKSn0 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 11 Oct 2023 14:43:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54160 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232571AbjJKSnY (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 11 Oct 2023 14:43:24 -0400
-Received: from mail-pg1-x531.google.com (mail-pg1-x531.google.com [IPv6:2607:f8b0:4864:20::531])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C4EC9D
-        for <linux-rdma@vger.kernel.org>; Wed, 11 Oct 2023 11:43:22 -0700 (PDT)
-Received: by mail-pg1-x531.google.com with SMTP id 41be03b00d2f7-5890aa0573aso101522a12.1
-        for <linux-rdma@vger.kernel.org>; Wed, 11 Oct 2023 11:43:22 -0700 (PDT)
+        with ESMTP id S232496AbjJKSnZ (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 11 Oct 2023 14:43:25 -0400
+Received: from mail-pl1-x62c.google.com (mail-pl1-x62c.google.com [IPv6:2607:f8b0:4864:20::62c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C290594
+        for <linux-rdma@vger.kernel.org>; Wed, 11 Oct 2023 11:43:24 -0700 (PDT)
+Received: by mail-pl1-x62c.google.com with SMTP id d9443c01a7336-1c9d7a98abbso1178735ad.1
+        for <linux-rdma@vger.kernel.org>; Wed, 11 Oct 2023 11:43:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google; t=1697049801; x=1697654601; darn=vger.kernel.org;
-        h=references:in-reply-to:message-id:date:subject:cc:to:from:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=Vg/xjbrnQlXQaNfVawYRQ/bp6zjEMWaCsv6j7nmAoxA=;
-        b=R38dRf9uX6XO1IDDBfI8UMHWqV2a1/PXrnt4OliXaZaKwuqITSkvyXwh+C1jkb3YTa
-         6GX1dKfmfJNcSUiOoTHPeTAie9MHHAVzTfhllHMT1wmvC/JQEXSNT5qzl/z+SBucoVhe
-         4P1YMJaOeTyoaxUMkZAt0dC/0R+gESJFWPJB8=
+        d=broadcom.com; s=google; t=1697049804; x=1697654604; darn=vger.kernel.org;
+        h=mime-version:references:in-reply-to:message-id:date:subject:cc:to
+         :from:from:to:cc:subject:date:message-id:reply-to;
+        bh=ucTF3XQVAaVTeTqYQhM+UzWxKAWhu0a7HlGrCcLFr3Q=;
+        b=Au3Q2hARL7e97ea8XrPRiyNhHKDTR9x/CNZCasQrM8aFFM0lACtDtmsBAaKX5+klHq
+         +3y5FFQGFm0N05eow2lzbQk25yNZZZNtMh5h1lzTEX0HLmNzeApNkiAH8xY7lfgB2iGg
+         AqtJHnk9N6B0bNvuZacfOl69MKl/S1xFC8rSg=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697049801; x=1697654601;
-        h=references:in-reply-to:message-id:date:subject:cc:to:from
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=Vg/xjbrnQlXQaNfVawYRQ/bp6zjEMWaCsv6j7nmAoxA=;
-        b=vGAnJKk2UjRVU7jHuLuZFbk4AzckTgcDKxy3I+GHx3Lw59ZEojtDw52WwRBzVdp1m/
-         V4IJVisG+Npn+Ra41UD1TxlLsKcIkaNQjbgW7mc6yoRYoayA00egjS5bgSReru8w61JV
-         vFrZHZd8uwWfbyhcHHGz/LNYW/HzzO0k+TCc6na4qA8eJlL625AnRAgmpS9dubFP8JAj
-         0Hv7D7jyWr34Klot4IlFYQHqhz3YHF5FtTX+2pQQgnaAo+o0iyuFE9qcvKI7RKVGCHoj
-         6OvZ29zAS+mOTUJYw7p/Lgil6eOiLnPulpjYt6Zc1WCKdFpu3BVZNZGp5jo+B6TVGZGI
-         dUMw==
-X-Gm-Message-State: AOJu0Yw2m1gTxca2K4YEWALW6uYgUinOtoqodca6duhAqmpotKcHchN7
-        fIql86dHfmqe08szzrHoJxXYxA==
-X-Google-Smtp-Source: AGHT+IEkSzI4R8dSCjKV1sGqA0M645jLv9yIcCB9eXi+Gv1fWe48h2lCD2Ka0feo8bJ/vRjfOfmooA==
-X-Received: by 2002:a05:6a21:9986:b0:160:cf09:8019 with SMTP id ve6-20020a056a21998600b00160cf098019mr22166536pzb.32.1697049801536;
-        Wed, 11 Oct 2023 11:43:21 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1697049804; x=1697654604;
+        h=mime-version:references:in-reply-to:message-id:date:subject:cc:to
+         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=ucTF3XQVAaVTeTqYQhM+UzWxKAWhu0a7HlGrCcLFr3Q=;
+        b=T6t90YDAx06RPfreMYBTcmxFKAVh/UoXEiIKow/TKFTYHrflzMHw2TOONn/QzzJX9B
+         Wl6LDQZhrDzYGqF4lsWkV+NEdW6C5zUxDZmJk6JKbbElaqsq8qfFJvTS0ZMeLzQBi+ot
+         c/E/9F7m76WLBgRhmdxDZS1r90vbITG7teGsjtB6UhKhiqhJa7dyInkYXESREgbvi3hl
+         VBqXpIJfEFZoiOGmaONGxaV7eujssMmqHj55xZZPP5knxKjBDAnmZdgQ4YOTm7HPOsVn
+         GfIXN4KGQobtZn9+CTTe9mcIhibGB80yJkGikJ9yeoekZ+ToLW4Ve+BH0x4d6c8ALQCB
+         Uy8Q==
+X-Gm-Message-State: AOJu0YxEYyaAo9j6RdRZa5EgnMUgclW/qjspvXdUFZMoPdbN1b/rV6vQ
+        sREIA0M/ZiZd5RKcBFuHXAEpHw==
+X-Google-Smtp-Source: AGHT+IGFIEwWEy7bGFkp3f7fIt25aU4L+W8L45CWMhmqTD8YJBCgeTv0zYgzLfnUC+AJteG5Hy0uAw==
+X-Received: by 2002:a17:902:e3d1:b0:1c9:d90b:c3e4 with SMTP id r17-20020a170902e3d100b001c9d90bc3e4mr955766ple.10.1697049804200;
+        Wed, 11 Oct 2023 11:43:24 -0700 (PDT)
 Received: from dhcp-10-192-206-197.iig.avagotech.net.net ([192.19.234.250])
-        by smtp.gmail.com with ESMTPSA id b4-20020a170902ed0400b001b89466a5f4sm178887pld.105.2023.10.11.11.43.19
+        by smtp.gmail.com with ESMTPSA id b4-20020a170902ed0400b001b89466a5f4sm178887pld.105.2023.10.11.11.43.21
         (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 11 Oct 2023 11:43:20 -0700 (PDT)
+        Wed, 11 Oct 2023 11:43:23 -0700 (PDT)
 From:   Selvin Xavier <selvin.xavier@broadcom.com>
 To:     jgg@ziepe.ca, leon@kernel.org
 Cc:     linux-rdma@vger.kernel.org, andrew.gospodarek@broadcom.com,
         Chandramohan Akula <chandramohan.akula@broadcom.com>,
         Selvin Xavier <selvin.xavier@broadcom.com>
-Subject: [PATCH for-next v2 2/3] RDMA/bnxt_re: Report async events and errors
-Date:   Wed, 11 Oct 2023 11:31:36 -0700
-Message-Id: <1697049097-31992-3-git-send-email-selvin.xavier@broadcom.com>
+Subject: [PATCH for-next v2 3/3] RDMA/bnxt_re: Do not report SRQ error in srq  notification
+Date:   Wed, 11 Oct 2023 11:31:37 -0700
+Message-Id: <1697049097-31992-4-git-send-email-selvin.xavier@broadcom.com>
 X-Mailer: git-send-email 2.5.5
 In-Reply-To: <1697049097-31992-1-git-send-email-selvin.xavier@broadcom.com>
 References: <1697049097-31992-1-git-send-email-selvin.xavier@broadcom.com>
+MIME-Version: 1.0
 Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
-        boundary="0000000000009b521006077532b3"
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        boundary="000000000000c4695206077532f4"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        MIME_HEADER_CTYPE_ONLY,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,
-        T_TVD_MIME_NO_HEADERS,UPPERCASE_50_75,URIBL_BLOCKED autolearn=no
-        autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
---0000000000009b521006077532b3
+--000000000000c4695206077532f4
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
 From: Chandramohan Akula <chandramohan.akula@broadcom.com>
 
-Report QP, SRQ and CQ async events and errors.
+In the SRQ notification handler, do not report the SRQ_ERROR
+in the default event case, as there was no error.
 
 Signed-off-by: Chandramohan Akula <chandramohan.akula@broadcom.com>
 Signed-off-by: Selvin Xavier <selvin.xavier@broadcom.com>
 ---
- drivers/infiniband/hw/bnxt_re/main.c | 165 +++++++++++++++++++++++++++++++++--
- 1 file changed, 156 insertions(+), 9 deletions(-)
+ drivers/infiniband/hw/bnxt_re/main.c | 7 ++-----
+ 1 file changed, 2 insertions(+), 5 deletions(-)
 
 diff --git a/drivers/infiniband/hw/bnxt_re/main.c b/drivers/infiniband/hw/bnxt_re/main.c
-index c9066aa..ae72207 100644
+index ae72207..bd3deb2 100644
 --- a/drivers/infiniband/hw/bnxt_re/main.c
 +++ b/drivers/infiniband/hw/bnxt_re/main.c
-@@ -970,6 +970,9 @@ static int bnxt_re_handle_unaffi_async_event(struct creq_func_event
- static int bnxt_re_handle_qp_async_event(struct creq_qp_event *qp_event,
- 					 struct bnxt_re_qp *qp)
- {
-+	struct bnxt_re_srq *srq = container_of(qp->qplib_qp.srq, struct bnxt_re_srq,
-+					       qplib_srq);
-+	struct creq_qp_error_notification *err_event;
- 	struct ib_event event = {};
- 	unsigned int flags;
+@@ -1187,13 +1187,10 @@ static int bnxt_re_srqn_handler(struct bnxt_qplib_nq *nq,
  
-@@ -980,14 +983,146 @@ static int bnxt_re_handle_qp_async_event(struct creq_qp_event *qp_event,
- 		bnxt_re_unlock_cqs(qp, flags);
+ 	ib_event.device = &srq->rdev->ibdev;
+ 	ib_event.element.srq = &srq->ib_srq;
+-	if (event == NQ_SRQ_EVENT_EVENT_SRQ_THRESHOLD_EVENT)
+-		ib_event.event = IB_EVENT_SRQ_LIMIT_REACHED;
+-	else
+-		ib_event.event = IB_EVENT_SRQ_ERR;
+ 
+ 	if (srq->ib_srq.event_handler) {
+-		/* Lock event_handler? */
++		if (event == NQ_SRQ_EVENT_EVENT_SRQ_THRESHOLD_EVENT)
++			ib_event.event = IB_EVENT_SRQ_LIMIT_REACHED;
+ 		(*srq->ib_srq.event_handler)(&ib_event,
+ 					     srq->ib_srq.srq_context);
  	}
- 
--	if (qp->qplib_qp.srq) {
--		event.device = &qp->rdev->ibdev;
--		event.element.qp = &qp->ib_qp;
--		event.event = IB_EVENT_QP_LAST_WQE_REACHED;
-+	event.device = &qp->rdev->ibdev;
-+	event.element.qp = &qp->ib_qp;
-+	event.event = IB_EVENT_QP_FATAL;
-+
-+	err_event = (struct creq_qp_error_notification *)qp_event;
-+
-+	switch (err_event->req_err_state_reason) {
-+	case CREQ_QP_ERROR_NOTIFICATION_REQ_ERR_STATE_REASON_REQ_OPCODE_ERROR:
-+	case CREQ_QP_ERROR_NOTIFICATION_REQ_ERR_STATE_REASON_REQ_TIMEOUT_RETRY_LIMIT:
-+	case CREQ_QP_ERROR_NOTIFICATION_REQ_ERR_STATE_REASON_REQ_RNR_TIMEOUT_RETRY_LIMIT:
-+	case CREQ_QP_ERROR_NOTIFICATION_REQ_ERR_STATE_REASON_REQ_NAK_ARRIVAL_2:
-+	case CREQ_QP_ERROR_NOTIFICATION_REQ_ERR_STATE_REASON_REQ_NAK_ARRIVAL_3:
-+	case CREQ_QP_ERROR_NOTIFICATION_REQ_ERR_STATE_REASON_REQ_INVALID_READ_RESP:
-+	case CREQ_QP_ERROR_NOTIFICATION_REQ_ERR_STATE_REASON_REQ_ILLEGAL_BIND:
-+	case CREQ_QP_ERROR_NOTIFICATION_REQ_ERR_STATE_REASON_REQ_ILLEGAL_FAST_REG:
-+	case CREQ_QP_ERROR_NOTIFICATION_REQ_ERR_STATE_REASON_REQ_ILLEGAL_INVALIDATE:
-+	case CREQ_QP_ERROR_NOTIFICATION_REQ_ERR_STATE_REASON_REQ_RETRAN_LOCAL_ERROR:
-+	case CREQ_QP_ERROR_NOTIFICATION_REQ_ERR_STATE_REASON_REQ_AV_DOMAIN_ERROR:
-+	case CREQ_QP_ERROR_NOTIFICATION_REQ_ERR_STATE_REASON_REQ_PROD_WQE_MSMTCH_ERROR:
-+	case CREQ_QP_ERROR_NOTIFICATION_REQ_ERR_STATE_REASON_REQ_PSN_RANGE_CHECK_ERROR:
-+		event.event = IB_EVENT_QP_ACCESS_ERR;
-+		break;
-+	case CREQ_QP_ERROR_NOTIFICATION_REQ_ERR_STATE_REASON_REQ_NAK_ARRIVAL_1:
-+	case CREQ_QP_ERROR_NOTIFICATION_REQ_ERR_STATE_REASON_REQ_NAK_ARRIVAL_4:
-+	case CREQ_QP_ERROR_NOTIFICATION_REQ_ERR_STATE_REASON_REQ_READ_RESP_LENGTH:
-+	case CREQ_QP_ERROR_NOTIFICATION_REQ_ERR_STATE_REASON_REQ_WQE_FORMAT_ERROR:
-+	case CREQ_QP_ERROR_NOTIFICATION_REQ_ERR_STATE_REASON_REQ_ORRQ_FORMAT_ERROR:
-+	case CREQ_QP_ERROR_NOTIFICATION_REQ_ERR_STATE_REASON_REQ_INVALID_AVID_ERROR:
-+	case CREQ_QP_ERROR_NOTIFICATION_REQ_ERR_STATE_REASON_REQ_SERV_TYPE_ERROR:
-+	case CREQ_QP_ERROR_NOTIFICATION_REQ_ERR_STATE_REASON_REQ_INVALID_OP_ERROR:
-+		event.event = IB_EVENT_QP_REQ_ERR;
-+		break;
-+	case CREQ_QP_ERROR_NOTIFICATION_REQ_ERR_STATE_REASON_REQ_RX_MEMORY_ERROR:
-+	case CREQ_QP_ERROR_NOTIFICATION_REQ_ERR_STATE_REASON_REQ_TX_MEMORY_ERROR:
-+	case CREQ_QP_ERROR_NOTIFICATION_REQ_ERR_STATE_REASON_REQ_CMP_ERROR:
-+	case CREQ_QP_ERROR_NOTIFICATION_REQ_ERR_STATE_REASON_REQ_CQ_LOAD_ERROR:
-+	case CREQ_QP_ERROR_NOTIFICATION_REQ_ERR_STATE_REASON_REQ_TX_PCI_ERROR:
-+	case CREQ_QP_ERROR_NOTIFICATION_REQ_ERR_STATE_REASON_REQ_RX_PCI_ERROR:
-+	case CREQ_QP_ERROR_NOTIFICATION_REQ_ERR_STATE_REASON_REQ_RETX_SETUP_ERROR:
-+		event.event = IB_EVENT_QP_FATAL;
-+		break;
-+
-+	default:
-+		break;
- 	}
- 
--	if (event.device && qp->ib_qp.event_handler)
-+	switch (err_event->res_err_state_reason) {
-+	case CREQ_QP_ERROR_NOTIFICATION_RES_ERR_STATE_REASON_RES_EXCEED_MAX:
-+	case CREQ_QP_ERROR_NOTIFICATION_RES_ERR_STATE_REASON_RES_PAYLOAD_LENGTH_MISMATCH:
-+	case CREQ_QP_ERROR_NOTIFICATION_RES_ERR_STATE_REASON_RES_PSN_SEQ_ERROR_RETRY_LIMIT:
-+	case CREQ_QP_ERROR_NOTIFICATION_RES_ERR_STATE_REASON_RES_RX_INVALID_R_KEY:
-+	case CREQ_QP_ERROR_NOTIFICATION_RES_ERR_STATE_REASON_RES_RX_DOMAIN_ERROR:
-+	case CREQ_QP_ERROR_NOTIFICATION_RES_ERR_STATE_REASON_RES_RX_NO_PERMISSION:
-+	case CREQ_QP_ERROR_NOTIFICATION_RES_ERR_STATE_REASON_RES_RX_RANGE_ERROR:
-+	case CREQ_QP_ERROR_NOTIFICATION_RES_ERR_STATE_REASON_RES_TX_INVALID_R_KEY:
-+	case CREQ_QP_ERROR_NOTIFICATION_RES_ERR_STATE_REASON_RES_TX_DOMAIN_ERROR:
-+	case CREQ_QP_ERROR_NOTIFICATION_RES_ERR_STATE_REASON_RES_TX_NO_PERMISSION:
-+	case CREQ_QP_ERROR_NOTIFICATION_RES_ERR_STATE_REASON_RES_TX_RANGE_ERROR:
-+	case CREQ_QP_ERROR_NOTIFICATION_RES_ERR_STATE_REASON_RES_UNALIGN_ATOMIC:
-+	case CREQ_QP_ERROR_NOTIFICATION_RES_ERR_STATE_REASON_RES_PSN_NOT_FOUND:
-+	case CREQ_QP_ERROR_NOTIFICATION_RES_ERR_STATE_REASON_RES_INVALID_DUP_RKEY:
-+	case CREQ_QP_ERROR_NOTIFICATION_RES_ERR_STATE_REASON_RES_IRRQ_FORMAT_ERROR:
-+		event.event = IB_EVENT_QP_ACCESS_ERR;
-+		break;
-+	case CREQ_QP_ERROR_NOTIFICATION_RES_ERR_STATE_REASON_RES_EXCEEDS_WQE:
-+	case CREQ_QP_ERROR_NOTIFICATION_RES_ERR_STATE_REASON_RES_WQE_FORMAT_ERROR:
-+	case CREQ_QP_ERROR_NOTIFICATION_RES_ERR_STATE_REASON_RES_UNSUPPORTED_OPCODE:
-+	case CREQ_QP_ERROR_NOTIFICATION_RES_ERR_STATE_REASON_RES_REM_INVALIDATE:
-+	case CREQ_QP_ERROR_NOTIFICATION_RES_ERR_STATE_REASON_RES_OPCODE_ERROR:
-+		event.event = IB_EVENT_QP_REQ_ERR;
-+		break;
-+	case CREQ_QP_ERROR_NOTIFICATION_RES_ERR_STATE_REASON_RES_IRRQ_OFLOW:
-+	case CREQ_QP_ERROR_NOTIFICATION_RES_ERR_STATE_REASON_RES_CMP_ERROR:
-+	case CREQ_QP_ERROR_NOTIFICATION_RES_ERR_STATE_REASON_RES_CQ_LOAD_ERROR:
-+	case CREQ_QP_ERROR_NOTIFICATION_RES_ERR_STATE_REASON_RES_TX_PCI_ERROR:
-+	case CREQ_QP_ERROR_NOTIFICATION_RES_ERR_STATE_REASON_RES_RX_PCI_ERROR:
-+	case CREQ_QP_ERROR_NOTIFICATION_RES_ERR_STATE_REASON_RES_MEMORY_ERROR:
-+		event.event = IB_EVENT_QP_FATAL;
-+		break;
-+	case CREQ_QP_ERROR_NOTIFICATION_RES_ERR_STATE_REASON_RES_SRQ_LOAD_ERROR:
-+	case CREQ_QP_ERROR_NOTIFICATION_RES_ERR_STATE_REASON_RES_SRQ_ERROR:
-+		if (srq)
-+			event.event = IB_EVENT_SRQ_ERR;
-+		break;
-+	default:
-+		break;
-+	}
-+
-+	if (err_event->res_err_state_reason || err_event->req_err_state_reason) {
-+		ibdev_dbg(&qp->rdev->ibdev,
-+			  "%s %s qp_id: %d cons (%d %d) req (%d %d) res (%d %d)\n",
-+			   __func__, rdma_is_kernel_res(&qp->ib_qp.res) ? "kernel" : "user",
-+			   qp->qplib_qp.id,
-+			   err_event->sq_cons_idx,
-+			   err_event->rq_cons_idx,
-+			   err_event->req_slow_path_state,
-+			   err_event->req_err_state_reason,
-+			   err_event->res_slow_path_state,
-+			   err_event->res_err_state_reason);
-+	} else {
-+		if (srq)
-+			event.event = IB_EVENT_QP_LAST_WQE_REACHED;
-+	}
-+
-+	if (event.event == IB_EVENT_SRQ_ERR && srq->ib_srq.event_handler)  {
-+		(*srq->ib_srq.event_handler)(&event,
-+				srq->ib_srq.srq_context);
-+	} else if (event.device && qp->ib_qp.event_handler) {
- 		qp->ib_qp.event_handler(&event, qp->ib_qp.qp_context);
-+	}
-+
-+	return 0;
-+}
-+
-+static int bnxt_re_handle_cq_async_error(void *event, struct bnxt_re_cq *cq)
-+{
-+	struct creq_cq_error_notification *cqerr;
-+	struct ib_event ibevent = {};
-+
-+	cqerr = event;
-+	switch (cqerr->cq_err_reason) {
-+	case CREQ_CQ_ERROR_NOTIFICATION_CQ_ERR_REASON_REQ_CQ_INVALID_ERROR:
-+	case CREQ_CQ_ERROR_NOTIFICATION_CQ_ERR_REASON_REQ_CQ_OVERFLOW_ERROR:
-+	case CREQ_CQ_ERROR_NOTIFICATION_CQ_ERR_REASON_REQ_CQ_LOAD_ERROR:
-+	case CREQ_CQ_ERROR_NOTIFICATION_CQ_ERR_REASON_RES_CQ_INVALID_ERROR:
-+	case CREQ_CQ_ERROR_NOTIFICATION_CQ_ERR_REASON_RES_CQ_OVERFLOW_ERROR:
-+	case CREQ_CQ_ERROR_NOTIFICATION_CQ_ERR_REASON_RES_CQ_LOAD_ERROR:
-+		ibevent.event = IB_EVENT_CQ_ERR;
-+	default:
-+		break;
-+	}
-+
-+	if (ibevent.event == IB_EVENT_CQ_ERR && cq->ib_cq.event_handler) {
-+		ibevent.element.cq = &cq->ib_cq;
-+		ibevent.device = &cq->rdev->ibdev;
-+
-+		ibdev_dbg(&cq->rdev->ibdev,
-+			  "%s err reason %d\n", __func__, cqerr->cq_err_reason);
-+		cq->ib_cq.event_handler(&ibevent, cq->ib_cq.cq_context);
-+	}
- 
- 	return 0;
- }
-@@ -995,6 +1130,10 @@ static int bnxt_re_handle_qp_async_event(struct creq_qp_event *qp_event,
- static int bnxt_re_handle_affi_async_event(struct creq_qp_event *affi_async,
- 					   void *obj)
- {
-+	struct bnxt_qplib_qp *lib_qp;
-+	struct bnxt_qplib_cq *lib_cq;
-+	struct bnxt_re_qp *qp;
-+	struct bnxt_re_cq *cq;
- 	int rc = 0;
- 	u8 event;
- 
-@@ -1002,11 +1141,19 @@ static int bnxt_re_handle_affi_async_event(struct creq_qp_event *affi_async,
- 		return rc; /* QP was already dead, still return success */
- 
- 	event = affi_async->event;
--	if (event == CREQ_QP_EVENT_EVENT_QP_ERROR_NOTIFICATION) {
--		struct bnxt_qplib_qp *lib_qp = obj;
--		struct bnxt_re_qp *qp = container_of(lib_qp, struct bnxt_re_qp,
--						     qplib_qp);
-+	switch (event) {
-+	case CREQ_QP_EVENT_EVENT_QP_ERROR_NOTIFICATION:
-+		lib_qp = obj;
-+		qp = container_of(lib_qp, struct bnxt_re_qp, qplib_qp);
- 		rc = bnxt_re_handle_qp_async_event(affi_async, qp);
-+		break;
-+	case CREQ_QP_EVENT_EVENT_CQ_ERROR_NOTIFICATION:
-+		lib_cq = obj;
-+		cq = container_of(lib_cq, struct bnxt_re_cq, qplib_cq);
-+		rc = bnxt_re_handle_cq_async_error(affi_async, cq);
-+		break;
-+	default:
-+		rc = -EINVAL;
- 	}
- 	return rc;
- }
 -- 
 2.5.5
 
 
---0000000000009b521006077532b3
+--000000000000c4695206077532f4
 Content-Type: application/pkcs7-signature; name="smime.p7s"
 Content-Transfer-Encoding: base64
 Content-Disposition: attachment; filename="smime.p7s"
@@ -356,14 +178,14 @@ j1Ze9ndr+YDXPpCymOsynmmw0ErHZGGW1OmMpAEt0A+613glWCURLDlP8HONi1wnINV6aDiEf0ad
 9NMGxDsp+YWiRXD3txfo2OMQbpIxM90QfhKKacX8t1J1oAAWxDrLVTJBXBNvz5tr+D1sYwuye93r
 hImmkM1unboxggJtMIICaQIBATBrMFsxCzAJBgNVBAYTAkJFMRkwFwYDVQQKExBHbG9iYWxTaWdu
 IG52LXNhMTEwLwYDVQQDEyhHbG9iYWxTaWduIEdDQyBSMyBQZXJzb25hbFNpZ24gMiBDQSAyMDIw
-Agxy+Cu4x/7lM0zxY7cwDQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIEII5xATZDZvPe
-x2rHdU8XF+RFy9+r5SBmR71frhbzM2z3MBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZI
-hvcNAQkFMQ8XDTIzMTAxMTE4NDMyMVowaQYJKoZIhvcNAQkPMVwwWjALBglghkgBZQMEASowCwYJ
+Agxy+Cu4x/7lM0zxY7cwDQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIEIEv0/kqDK5u3
+E7qYelwjpKn2ibO/jMmS14vKEArBtDNbMBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZI
+hvcNAQkFMQ8XDTIzMTAxMTE4NDMyNFowaQYJKoZIhvcNAQkPMVwwWjALBglghkgBZQMEASowCwYJ
 YIZIAWUDBAEWMAsGCWCGSAFlAwQBAjAKBggqhkiG9w0DBzALBgkqhkiG9w0BAQowCwYJKoZIhvcN
-AQEHMAsGCWCGSAFlAwQCATANBgkqhkiG9w0BAQEFAASCAQA7kBxiUMppUM6ifegDiAldZs7yX0IE
-NWlNQQs2uYyxYfnLExjwFQqWIoGv0oU/DIHDwSXvXi4DNadrM/ydAPbsAHqY91zRHmEyUlqkfMEd
-rn4OUfxDoadw4cjb0tq6hy52rE8Gf3QZzYhN+PU6dRjhZBmHl5WvhwQxyfonPR3PqP6mW41fx3zl
-W1JuafInA9zTU3N3AznMe/InBuVDKbrYpairDZMG98QLVeTi7O1O85w4c/RZpTgZyPWcFHiDNSIK
-/wUMO+Gew6B0ECV7TgrRVBzItCWqIza2ANos9S0yS1o1ammr0Gtg5mvpvoXgYIFj74JaGP/0br0c
-Dj5lNTu0
---0000000000009b521006077532b3--
+AQEHMAsGCWCGSAFlAwQCATANBgkqhkiG9w0BAQEFAASCAQBsAY1adxhucRFkJsBmOzcBBzTKMSVW
+UMyJ417K/KUMAIA+uG/nZARYkDEyNp2XTcUtdxUybej59DZYdj59WUjz49YOtOsRDu9iCzfpifD9
+lUIBNcz632lcH2oIBKZCnBXF3eKcgkc+g1iH06foywg/daumGQNdhWHL89q/g0kYYGJBuxwiW2yN
+vl7oTT7R9K8XX6OIyC0T/po9HUVQiveyscxNC1zNg4iujhJwXDgQfQWR/F4QA9YHgKxc+jvDlYho
+2Wo6lEqzoQcrJSr7rZoQcRvTDtBnEqe2TVLYG7VIhQ0IFV7vE/7HRmpE4vQE/f8szPVctboBCmTi
+FCcBU5YL
+--000000000000c4695206077532f4--
