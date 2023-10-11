@@ -2,103 +2,137 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3BDB37C5D37
-	for <lists+linux-rdma@lfdr.de>; Wed, 11 Oct 2023 20:56:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F28A7C5DAA
+	for <lists+linux-rdma@lfdr.de>; Wed, 11 Oct 2023 21:32:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235159AbjJKS41 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 11 Oct 2023 14:56:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47092 "EHLO
+        id S233231AbjJKTcL (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 11 Oct 2023 15:32:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35704 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235163AbjJKS4Y (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 11 Oct 2023 14:56:24 -0400
+        with ESMTP id S233109AbjJKTcK (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 11 Oct 2023 15:32:10 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15EB2123;
-        Wed, 11 Oct 2023 11:56:06 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3D25EC433C8;
-        Wed, 11 Oct 2023 18:56:06 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4251C8F;
+        Wed, 11 Oct 2023 12:32:09 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9236BC433C7;
+        Wed, 11 Oct 2023 19:32:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1697050566;
-        bh=p5Aqye/cIt07/FsEkeTy4ySuRidXLXrlLwhsHjfE6s8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Ig89jjbS+S/Y6rn7rilEv05EonKQ7QJVCBTnsmEEOd7KF50WQrJX/EqqLg0EEFD33
-         Q1Vc/EkXLs8+j7JhixfAG9Id5XBPsvgxzxElbJbn43ToUMcibkSl1HlhwZb2N+hrwY
-         NNQZesN3ux5oYyQyIZ6pdd7kEbs4Eu0yNP0ZmQHwX9Q7KpWN37IyAMcqvEqc+NwE9Q
-         N7S7T30w1DDWI9TSFFSEO13RR5WHL5KhuZr2tFah2IZM8sssuNL1XbgEqMTQ6lpV7E
-         hcALxsrieoUdmLTjKbXeLxTO2HaDe58/NmhvWcSwNnSx7iLVL1wnJwadfUIQ5NRZu0
-         doYihVvW1stuQ==
-Date:   Wed, 11 Oct 2023 11:56:05 -0700
-From:   Saeed Mahameed <saeed@kernel.org>
-To:     Niklas Schnelle <schnelle@linux.ibm.com>
-Cc:     Saeed Mahameed <saeedm@nvidia.com>,
-        Leon Romanovsky <leon@kernel.org>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Matthew Rosato <mjrosato@linux.ibm.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Robin Murphy <robin.murphy@arm.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>, Shay Drory <shayd@nvidia.com>,
-        Moshe Shemesh <moshe@nvidia.com>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Alexander Gordeev <agordeev@linux.ibm.com>,
-        linux-s390@vger.kernel.org, netdev@vger.kernel.org,
-        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Jacob Keller <jacob.e.keller@intel.com>
-Subject: Re: [PATCH net v3] net/mlx5: fix calling mlx5_cmd_init() before DMA
- mask is set
-Message-ID: <ZSbvxeLKS8zHltdg@x130>
-References: <20231011-mlx5_init_fix-v3-1-787ffb9183c6@linux.ibm.com>
- <ZSbnUlJT1u3xUIqY@x130>
+        s=k20201202; t=1697052728;
+        bh=4k1m5qmcSDaP+SZOYD02LNDbpXJtj+6QzJq4iZ0fBT4=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=PkSkfYndzZuEdhim2WqdUnaFkJa6/ULgDeXVhLamNMtNqjpEjDLFAOpinVDtpOf9t
+         AUQ8IuXuDRsbGSvvuJcBOkesPKE+B6LOW3w499tPS1H5C+DTTGZEpqDhTJv73Rngtf
+         R8n/q+wpIprV9354P5kNeMO1/5OdiCJZC921zzltoOp4qhTV4cqy8e0kXbMRCaqp4/
+         wgSGTdLCtZ0E1cvfJh/3oqFSKgGnYoWCp1qvbc5VbvIvmnclEI+2/Ls3QSTesrpdOn
+         1i9kPgcJmtJ/9DGNbL1W+mb7/ZJBeiArthYq4x+V47gI24Zx4H0qwEfuzJhfUtgURt
+         hjOYzB4aN6mlQ==
+Date:   Wed, 11 Oct 2023 14:32:06 -0500
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     Ilpo =?utf-8?B?SsOkcnZpbmVu?= <ilpo.jarvinen@linux.intel.com>
+Cc:     linux-pci@vger.kernel.org,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Rob Herring <robh@kernel.org>,
+        Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
+        Lukas Wunner <lukas@wunner.de>,
+        "Rafael J . Wysocki" <rafael@kernel.org>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Emmanuel Grumbach <emmanuel.grumbach@intel.com>,
+        linux-kernel@vger.kernel.org, Bjorn Helgaas <bhelgaas@google.com>,
+        ath10k@lists.infradead.org, ath11k@lists.infradead.org,
+        ath12k@lists.infradead.org, intel-wired-lan@lists.osuosl.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-bluetooth@vger.kernel.org,
+        linux-mediatek@lists.infradead.org, linux-rdma@vger.kernel.org,
+        linux-wireless@vger.kernel.org, netdev@vger.kernel.org
+Subject: Re: [PATCH v2 04/13] PCI/ASPM: Move L0S/L1/sub states mask
+ calculation into a helper
+Message-ID: <20231011193206.GA1039708@bhelgaas>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <ZSbnUlJT1u3xUIqY@x130>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20230918131103.24119-5-ilpo.jarvinen@linux.intel.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 11 Oct 11:20, Saeed Mahameed wrote:
->On 11 Oct 09:57, Niklas Schnelle wrote:
->>Since commit 06cd555f73ca ("net/mlx5: split mlx5_cmd_init() to probe and
->>reload routines") mlx5_cmd_init() is called in mlx5_mdev_init() which is
->>called in probe_one() before mlx5_pci_init(). This is a problem because
->>mlx5_pci_init() is where the DMA and coherent mask is set but
->>mlx5_cmd_init() already does a dma_alloc_coherent(). Thus a DMA
->>allocation is done during probe before the correct mask is set. This
->>causes probe to fail initialization of the cmdif SW structs on s390x
->>after that is converted to the common dma-iommu code. This is because on
->>s390x DMA addresses below 4 GiB are reserved on current machines and
->>unlike the old s390x specific DMA API implementation common code
->>enforces DMA masks.
->>
->>Fix this by moving set_dma_caps() out of mlx5_pci_init() and into
->>probe_one() before mlx5_mdev_init(). To match the overall naming scheme
->>rename it to mlx5_dma_init().
->
->How about we just call mlx5_pci_init() before mlx5_mdev_init(), instead of
->breaking it apart ?
+On Mon, Sep 18, 2023 at 04:10:54PM +0300, Ilpo Järvinen wrote:
+> ASPM service driver does the same L0S / L1S / sub states allowed
+> calculation in __pci_disable_link_state() and
+> pci_set_default_link_state().
 
-I just posted this RFC patch [1]:
+Is there a typo or something here?  This patch only adds a call to
+__pci_disable_link_state(), not to pci_set_default_link_state().
 
-I am working in very limited conditions these days, and I don't have strong
-opinion on which approach to take, Leon, Niklas, please advise.
-
-The three possible solutions:
-
-1) mlx5_pci_init() before mlx5_mdev_init(), I don't think enabling pci
-before initializing cmd dma would be a problem.
-
-2) This patch.
-
-3) Shay's patch from the link below:
-[1] https://patchwork.kernel.org/project/netdevbpf/patch/20231011184511.19818-1-saeed@kernel.org/
-
-Thanks,
-Saeed.
+> Create a helper to calculate the mask for the allowed states.
+> 
+> Signed-off-by: Ilpo Järvinen <ilpo.jarvinen@linux.intel.com>
+> ---
+>  drivers/pci/pcie/aspm.c | 33 +++++++++++++++++++++------------
+>  1 file changed, 21 insertions(+), 12 deletions(-)
+> 
+> diff --git a/drivers/pci/pcie/aspm.c b/drivers/pci/pcie/aspm.c
+> index ec6d7a092ac1..91dc95aca90f 100644
+> --- a/drivers/pci/pcie/aspm.c
+> +++ b/drivers/pci/pcie/aspm.c
+> @@ -1034,6 +1034,26 @@ static struct pcie_link_state *pcie_aspm_get_link(struct pci_dev *pdev)
+>  	return bridge->link_state;
+>  }
+>  
+> +static u8 pci_link_state_mask(int state)
+> +{
+> +	u8 result = 0;
+> +
+> +	if (state & PCIE_LINK_STATE_L0S)
+> +		result |= ASPM_STATE_L0S;
+> +	if (state & PCIE_LINK_STATE_L1)
+> +		result |= ASPM_STATE_L1;
+> +	if (state & PCIE_LINK_STATE_L1_1)
+> +		result |= ASPM_STATE_L1_1;
+> +	if (state & PCIE_LINK_STATE_L1_2)
+> +		result |= ASPM_STATE_L1_2;
+> +	if (state & PCIE_LINK_STATE_L1_1_PCIPM)
+> +		result |= ASPM_STATE_L1_1_PCIPM;
+> +	if (state & PCIE_LINK_STATE_L1_2_PCIPM)
+> +		result |= ASPM_STATE_L1_2_PCIPM;
+> +
+> +	return result;
+> +}
+> +
+>  static int __pci_disable_link_state(struct pci_dev *pdev, int state, bool sem)
+>  {
+>  	struct pcie_link_state *link = pcie_aspm_get_link(pdev);
+> @@ -1063,18 +1083,7 @@ static int __pci_disable_link_state(struct pci_dev *pdev, int state, bool sem)
+>  	if (sem)
+>  		down_read(&pci_bus_sem);
+>  	mutex_lock(&aspm_lock);
+> -	if (state & PCIE_LINK_STATE_L0S)
+> -		link->aspm_disable |= ASPM_STATE_L0S;
+> -	if (state & PCIE_LINK_STATE_L1)
+> -		link->aspm_disable |= ASPM_STATE_L1;
+> -	if (state & PCIE_LINK_STATE_L1_1)
+> -		link->aspm_disable |= ASPM_STATE_L1_1;
+> -	if (state & PCIE_LINK_STATE_L1_2)
+> -		link->aspm_disable |= ASPM_STATE_L1_2;
+> -	if (state & PCIE_LINK_STATE_L1_1_PCIPM)
+> -		link->aspm_disable |= ASPM_STATE_L1_1_PCIPM;
+> -	if (state & PCIE_LINK_STATE_L1_2_PCIPM)
+> -		link->aspm_disable |= ASPM_STATE_L1_2_PCIPM;
+> +	link->aspm_disable |= pci_link_state_mask(state);
+>  	pcie_config_aspm_link(link, policy_to_aspm_state(link));
+>  
+>  	if (state & PCIE_LINK_STATE_CLKPM)
+> -- 
+> 2.30.2
+> 
+> 
+> _______________________________________________
+> linux-arm-kernel mailing list
+> linux-arm-kernel@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
