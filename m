@@ -2,32 +2,31 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E4C67C4BE7
-	for <lists+linux-rdma@lfdr.de>; Wed, 11 Oct 2023 09:33:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 850B87C4BEE
+	for <lists+linux-rdma@lfdr.de>; Wed, 11 Oct 2023 09:33:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344927AbjJKHdh (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 11 Oct 2023 03:33:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38750 "EHLO
+        id S1344995AbjJKHdk (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 11 Oct 2023 03:33:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38756 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344839AbjJKHdh (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 11 Oct 2023 03:33:37 -0400
-Received: from out30-118.freemail.mail.aliyun.com (out30-118.freemail.mail.aliyun.com [115.124.30.118])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B8CD91;
+        with ESMTP id S1344868AbjJKHdi (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 11 Oct 2023 03:33:38 -0400
+Received: from out30-131.freemail.mail.aliyun.com (out30-131.freemail.mail.aliyun.com [115.124.30.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27A1EA7;
         Wed, 11 Oct 2023 00:33:33 -0700 (PDT)
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R301e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046056;MF=alibuda@linux.alibaba.com;NM=1;PH=DS;RN=11;SR=0;TI=SMTPD_---0VtvoMDz_1697009610;
-Received: from j66a10360.sqa.eu95.tbsite.net(mailfrom:alibuda@linux.alibaba.com fp:SMTPD_---0VtvoMDz_1697009610)
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R181e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018045192;MF=alibuda@linux.alibaba.com;NM=1;PH=DS;RN=10;SR=0;TI=SMTPD_---0VtvoMEO_1697009611;
+Received: from j66a10360.sqa.eu95.tbsite.net(mailfrom:alibuda@linux.alibaba.com fp:SMTPD_---0VtvoMEO_1697009611)
           by smtp.aliyun-inc.com;
-          Wed, 11 Oct 2023 15:33:30 +0800
+          Wed, 11 Oct 2023 15:33:31 +0800
 From:   "D. Wythe" <alibuda@linux.alibaba.com>
 To:     kgraul@linux.ibm.com, wenjia@linux.ibm.com, jaka@linux.ibm.com,
         wintera@linux.ibm.com
 Cc:     kuba@kernel.org, davem@davemloft.net, netdev@vger.kernel.org,
         linux-s390@vger.kernel.org, linux-rdma@vger.kernel.org,
-        "D. Wythe" <alibuda@linux.alibaba.com>,
-        Heiko Carstens <hca@linux.ibm.com>
-Subject: [PATCH net 2/5] net/smc: fix incorrect barrier usage
-Date:   Wed, 11 Oct 2023 15:33:17 +0800
-Message-Id: <1697009600-22367-3-git-send-email-alibuda@linux.alibaba.com>
+        "D. Wythe" <alibuda@linux.alibaba.com>
+Subject: [PATCH net 3/5] net/smc: allow cdc msg send rather than drop it with NULL sndbuf_desc
+Date:   Wed, 11 Oct 2023 15:33:18 +0800
+Message-Id: <1697009600-22367-4-git-send-email-alibuda@linux.alibaba.com>
 X-Mailer: git-send-email 1.8.3.1
 In-Reply-To: <1697009600-22367-1-git-send-email-alibuda@linux.alibaba.com>
 References: <1697009600-22367-1-git-send-email-alibuda@linux.alibaba.com>
@@ -43,67 +42,55 @@ X-Mailing-List: linux-rdma@vger.kernel.org
 
 From: "D. Wythe" <alibuda@linux.alibaba.com>
 
-This patch add explicit CPU barrier to ensure memory
-consistency rather than compiler barrier.
+This patch re-fix the issues memtianed by commit 22a825c541d7
+("net/smc: fix NULL sndbuf_desc in smc_cdc_tx_handler()").
 
-Besides, the atomicity between READ_ONCE and cmpxhcg cannot
-be guaranteed, so we need to use atomic ops. The simple way
-is to replace READ_ONCE with xchg.
+Blocking sending message do solve the issues though, but it also
+prevents the peer to receive the final message. Besides, in logic,
+whether the sndbuf_desc is NULL or not have no impact on the processing
+of cdc message sending.
 
-Fixes: 475f9ff63ee8 ("net/smc: fix application data exception")
-Co-developed-by: Heiko Carstens <hca@linux.ibm.com>
-Signed-off-by: Heiko Carstens <hca@linux.ibm.com>
+Hence that, this patch allow the cdc message sending but to check the
+sndbuf_desc with care in smc_cdc_tx_handler().
+
+Fixes: 22a825c541d7 ("net/smc: fix NULL sndbuf_desc in smc_cdc_tx_handler()")
 Signed-off-by: D. Wythe <alibuda@linux.alibaba.com>
-Links: https://lore.kernel.org/netdev/1b7c95be-d3d9-53c3-3152-cd835314d37c@linux.ibm.com/T/
 ---
- net/smc/smc_core.c | 21 +++++++++++++--------
- 1 file changed, 13 insertions(+), 8 deletions(-)
+ net/smc/smc_cdc.c | 9 ++++-----
+ 1 file changed, 4 insertions(+), 5 deletions(-)
 
-diff --git a/net/smc/smc_core.c b/net/smc/smc_core.c
-index d520ee6..cc7d72e 100644
---- a/net/smc/smc_core.c
-+++ b/net/smc/smc_core.c
-@@ -1133,9 +1133,10 @@ static void smcr_buf_unuse(struct smc_buf_desc *buf_desc, bool is_rmb,
+diff --git a/net/smc/smc_cdc.c b/net/smc/smc_cdc.c
+index 01bdb79..3c06625 100644
+--- a/net/smc/smc_cdc.c
++++ b/net/smc/smc_cdc.c
+@@ -28,13 +28,15 @@ static void smc_cdc_tx_handler(struct smc_wr_tx_pend_priv *pnd_snd,
+ {
+ 	struct smc_cdc_tx_pend *cdcpend = (struct smc_cdc_tx_pend *)pnd_snd;
+ 	struct smc_connection *conn = cdcpend->conn;
++	struct smc_buf_desc *sndbuf_desc;
+ 	struct smc_sock *smc;
+ 	int diff;
  
- 		smc_buf_free(lgr, is_rmb, buf_desc);
- 	} else {
--		/* memzero_explicit provides potential memory barrier semantics */
--		memzero_explicit(buf_desc->cpu_addr, buf_desc->len);
--		WRITE_ONCE(buf_desc->used, 0);
-+		memset(buf_desc->cpu_addr, 0, buf_desc->len);
-+		/* make sure buf_desc->used not be reordered ahead */
-+		smp_mb__before_atomic();
-+		xchg(&buf_desc->used, 0);
- 	}
- }
++	sndbuf_desc = conn->sndbuf_desc;
+ 	smc = container_of(conn, struct smc_sock, conn);
+ 	bh_lock_sock(&smc->sk);
+-	if (!wc_status) {
+-		diff = smc_curs_diff(cdcpend->conn->sndbuf_desc->len,
++	if (!wc_status && sndbuf_desc) {
++		diff = smc_curs_diff(sndbuf_desc->len,
+ 				     &cdcpend->conn->tx_curs_fin,
+ 				     &cdcpend->cursor);
+ 		/* sndbuf_space is decreased in smc_sendmsg */
+@@ -114,9 +116,6 @@ int smc_cdc_msg_send(struct smc_connection *conn,
+ 	union smc_host_cursor cfed;
+ 	int rc;
  
-@@ -1146,17 +1147,21 @@ static void smc_buf_unuse(struct smc_connection *conn,
- 		if (!lgr->is_smcd && conn->sndbuf_desc->is_vm) {
- 			smcr_buf_unuse(conn->sndbuf_desc, false, lgr);
- 		} else {
--			memzero_explicit(conn->sndbuf_desc->cpu_addr, conn->sndbuf_desc->len);
--			WRITE_ONCE(conn->sndbuf_desc->used, 0);
-+			memset(conn->sndbuf_desc->cpu_addr, 0, conn->sndbuf_desc->len);
-+			/* make sure buf_desc->used not be reordered ahead */
-+			smp_mb__before_atomic();
-+			xchg(&conn->sndbuf_desc->used, 0);
- 		}
- 	}
- 	if (conn->rmb_desc) {
- 		if (!lgr->is_smcd) {
- 			smcr_buf_unuse(conn->rmb_desc, true, lgr);
- 		} else {
--			memzero_explicit(conn->rmb_desc->cpu_addr,
--					 conn->rmb_desc->len + sizeof(struct smcd_cdc_msg));
--			WRITE_ONCE(conn->rmb_desc->used, 0);
-+			memset(conn->rmb_desc->cpu_addr, 0,
-+			       conn->rmb_desc->len + sizeof(struct smcd_cdc_msg));
-+			/* make sure buf_desc->used not be reordered ahead */
-+			smp_mb__before_atomic();
-+			xchg(&conn->rmb_desc->used, 0);
- 		}
- 	}
- }
+-	if (unlikely(!READ_ONCE(conn->sndbuf_desc)))
+-		return -ENOBUFS;
+-
+ 	smc_cdc_add_pending_send(conn, pend);
+ 
+ 	conn->tx_cdc_seq++;
 -- 
 1.8.3.1
 
