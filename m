@@ -2,154 +2,127 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7BE5D7C5E83
-	for <lists+linux-rdma@lfdr.de>; Wed, 11 Oct 2023 22:37:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F3F9A7C5EDA
+	for <lists+linux-rdma@lfdr.de>; Wed, 11 Oct 2023 23:04:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233398AbjJKUhr (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 11 Oct 2023 16:37:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45174 "EHLO
+        id S233339AbjJKVEl (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 11 Oct 2023 17:04:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57122 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233318AbjJKUhr (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 11 Oct 2023 16:37:47 -0400
-Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F8A790;
-        Wed, 11 Oct 2023 13:37:45 -0700 (PDT)
-Received: from pps.filterd (m0353722.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 39BKK6oJ006249;
-        Wed, 11 Oct 2023 20:37:41 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=9isG40MYYrMsVcHuFQAN5p4+9+E7ozxEC7n2qA1qXeA=;
- b=XI9FEHqcH478I2vjzWC9uLn1fzr24vCmGXylKcXNQqktbm9fyL7s/m07KWQUT/ZZEUyZ
- moedajqfz4xAz8wnBviW9qIybM8CrE1hHLt3nTnZHZ4aDA8TUcBUDUYkpO/VzkdKC091
- wpHClRxVP1k0CpWxTDbIc0gBprJ4nOxWKeht48y5j/Swu5hCyl2X/85RT7WqGOH9ffhr
- uf7D1PynIR8WhE7/tOrcEETK8jslQ4UWVc9jh6hvU2TEw5iSUv4KcP4UPoQ+wofwWrRM
- Uw791d2AnEOaI6yxUPXsjNjbqyJtulTtsYvCkvniTqdWL7zWGib0eygwCaMzPl0VrQ8f 9w== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3tp2ga8vpe-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 11 Oct 2023 20:37:40 +0000
-Received: from m0353722.ppops.net (m0353722.ppops.net [127.0.0.1])
-        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 39BKZsux000525;
-        Wed, 11 Oct 2023 20:37:40 GMT
-Received: from ppma23.wdc07v.mail.ibm.com (5d.69.3da9.ip4.static.sl-reverse.com [169.61.105.93])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3tp2ga8vn8-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 11 Oct 2023 20:37:40 +0000
-Received: from pps.filterd (ppma23.wdc07v.mail.ibm.com [127.0.0.1])
-        by ppma23.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 39BJGWIB000693;
-        Wed, 11 Oct 2023 20:37:39 GMT
-Received: from smtprelay02.dal12v.mail.ibm.com ([172.16.1.4])
-        by ppma23.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3tkk5ktn5k-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 11 Oct 2023 20:37:39 +0000
-Received: from smtpav01.wdc07v.mail.ibm.com (smtpav01.wdc07v.mail.ibm.com [10.39.53.228])
-        by smtprelay02.dal12v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 39BKbcRh29033204
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 11 Oct 2023 20:37:38 GMT
-Received: from smtpav01.wdc07v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id F29755805B;
-        Wed, 11 Oct 2023 20:37:37 +0000 (GMT)
-Received: from smtpav01.wdc07v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 243BE5804B;
-        Wed, 11 Oct 2023 20:37:36 +0000 (GMT)
-Received: from [9.171.29.13] (unknown [9.171.29.13])
-        by smtpav01.wdc07v.mail.ibm.com (Postfix) with ESMTP;
-        Wed, 11 Oct 2023 20:37:35 +0000 (GMT)
-Message-ID: <5e2efb4b-1d26-4159-a2c7-b0107cb6381c@linux.ibm.com>
-Date:   Wed, 11 Oct 2023 22:37:35 +0200
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH net 3/5] net/smc: allow cdc msg send rather than drop it
- with NULL sndbuf_desc
-Content-Language: en-GB
-To:     "D. Wythe" <alibuda@linux.alibaba.com>, kgraul@linux.ibm.com,
-        jaka@linux.ibm.com, wintera@linux.ibm.com
-Cc:     kuba@kernel.org, davem@davemloft.net, netdev@vger.kernel.org,
-        linux-s390@vger.kernel.org, linux-rdma@vger.kernel.org
-References: <1697009600-22367-1-git-send-email-alibuda@linux.alibaba.com>
- <1697009600-22367-4-git-send-email-alibuda@linux.alibaba.com>
-From:   Wenjia Zhang <wenjia@linux.ibm.com>
-In-Reply-To: <1697009600-22367-4-git-send-email-alibuda@linux.alibaba.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: 4O3lQcSlKbjw33V-zRiqaqoy55qReCp7
-X-Proofpoint-GUID: Y2fu8aWMw6eAr7szU0arHfILivWUZgM-
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-10-11_15,2023-10-11_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 suspectscore=0
- mlxlogscore=999 bulkscore=0 impostorscore=0 phishscore=0 malwarescore=0
- spamscore=0 priorityscore=1501 mlxscore=0 adultscore=0 lowpriorityscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2309180000
- definitions=main-2310110180
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        with ESMTP id S233306AbjJKVEk (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 11 Oct 2023 17:04:40 -0400
+Received: from mail-yw1-x114a.google.com (mail-yw1-x114a.google.com [IPv6:2607:f8b0:4864:20::114a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7EDB9A9
+        for <linux-rdma@vger.kernel.org>; Wed, 11 Oct 2023 14:04:39 -0700 (PDT)
+Received: by mail-yw1-x114a.google.com with SMTP id 00721157ae682-59f7d109926so4111777b3.2
+        for <linux-rdma@vger.kernel.org>; Wed, 11 Oct 2023 14:04:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1697058278; x=1697663078; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=BxaWGDSeY2dIkY2twK1W0ApQNsW9w47t9mTViMZ06zU=;
+        b=pTRnspRKfDoJ3DiY2sGbABeR0vRBs5KytRvmTbcy4qcz8mCnaD0IYssPeKUbiiHpet
+         3OKQFgagX6LnyqJvGsspp6CmB1ev/hyu70aR9Bg7E4iy76wnfgiQMTyR+zr3M68bdgaB
+         OZLQGZYPp9LgUn7FlK5ZhhXyso8TtDFDi8JE077S1FM1ZpBvhQHIcUOReZ7swkbcrw/F
+         f+vM/4grWm0UNcGJ8BGaIOtuJ2daMqvGjm4pnFCYc5/76L54TyiLe0uw1i/Rq0ygVWah
+         35FfXP2T51hzFniuT/KAJbhXuFwXVhp5QNhQMmkDELd1TLjqPQV4VB4dbyJHD2E4Xrm2
+         /qXg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697058278; x=1697663078;
+        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=BxaWGDSeY2dIkY2twK1W0ApQNsW9w47t9mTViMZ06zU=;
+        b=JNbR1lveHKSaQtNuTsLWUH68QfXiN24JGYftSIGZo7h10tns7XdB/UVCNXMYd2ozVr
+         Uyw4M767PsyTA1AitV4qXHHyDpQz+N+4PfFRGHJU11pfMxLDpxrHac+a5HIPcaL8PQGZ
+         n4NBAdnrnNJW5+2s2lY8Q1o8MyEAjYwffM8AlLcfRL6Ng7kewOYrKhlke38vL1wPJ33W
+         vfrIlQLPCEjPD4MdFuZ4H0Uy4whH3J2Ft9zK/pPnlOmYqo9Aw38GiZGXedzcrenS39nq
+         ipQXcLtckZR8now9YdROlYDrFjnhFR2m0AdXmVpYLYEWhYEbrbft7tQ/a7EtDv4lUKdT
+         bq6w==
+X-Gm-Message-State: AOJu0Yy9ox2ooZyLRU/TR+XDbSByfR8OH+H+OF79MgBMyEkG4MfMNHr/
+        V4/NSppw/4l6BMhQC4yRqgrke9aWjnwGS3buJA==
+X-Google-Smtp-Source: AGHT+IEwQ2LwAmN3p2AyQxhcz2QzPlunl9q2EyaOioXCheByednY9g118PcUomxF897RqpVZ2rL7NqiTzxx+BrIMzg==
+X-Received: from jstitt-linux1.c.googlers.com ([fda3:e722:ac3:cc00:2b:ff92:c0a8:23b5])
+ (user=justinstitt job=sendgmr) by 2002:a81:a909:0:b0:59b:e97e:f7e3 with SMTP
+ id g9-20020a81a909000000b0059be97ef7e3mr403659ywh.2.1697058278584; Wed, 11
+ Oct 2023 14:04:38 -0700 (PDT)
+Date:   Wed, 11 Oct 2023 21:04:37 +0000
+Mime-Version: 1.0
+X-B4-Tracking: v=1; b=H4sIAOUNJ2UC/x2NQQ6CMBAAv0L27CYtiopfIR6adpFNykK2DdYQ/
+ m71NnOZ2SGRMiV4NDsobZx4kSr21ICfnLwIOVSH1rRna6zFlFX8+sGgvJEmFMpIeSL9wUwxOlk KzrFccHyjx+vtbvqu60OwDmp1VRq5/I/D8zi+U+4EDIEAAAA=
+X-Developer-Key: i=justinstitt@google.com; a=ed25519; pk=tC3hNkJQTpNX/gLKxTNQKDmiQl6QjBNCGKJINqAdJsE=
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1697058277; l=1896;
+ i=justinstitt@google.com; s=20230717; h=from:subject:message-id;
+ bh=iM4RgTWWhWZP4eA/MAnbDxA0QWNmel85KFAk0bSECCw=; b=Mi1kOWdyu5N3mq/FWAZBWweOspZuCsbEWolDFFAMzhwq3MN2xlS5N+hX0SBc+sEuxPp+FXaxs
+ S1P44k6m1RVCBibuSe6W6nXbwXsKcpeyoPtF3ALMhXIAUT5jMNiVGKY
+X-Mailer: b4 0.12.3
+Message-ID: <20231011-strncpy-drivers-net-ethernet-mellanox-mlx4-fw-c-v1-1-4d7b5d34c933@google.com>
+Subject: [PATCH] net/mlx4_core: replace deprecated strncpy with strscpy
+From:   Justin Stitt <justinstitt@google.com>
+To:     Tariq Toukan <tariqt@nvidia.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>
+Cc:     netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org,
+        Justin Stitt <justinstitt@google.com>
+Content-Type: text/plain; charset="utf-8"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
+`strncpy` is deprecated for use on NUL-terminated destination strings
+[1] and as such we should prefer more robust and less ambiguous string
+interfaces.
 
+We expect `dst` to be NUL-terminated based on its use with format
+strings:
+|       mlx4_dbg(dev, "Reporting Driver Version to FW: %s\n", dst);
 
-On 11.10.23 09:33, D. Wythe wrote:
-> From: "D. Wythe" <alibuda@linux.alibaba.com>
-> 
-> This patch re-fix the issues memtianed by commit 22a825c541d7
-> ("net/smc: fix NULL sndbuf_desc in smc_cdc_tx_handler()").
-> 
-> Blocking sending message do solve the issues though, but it also
-> prevents the peer to receive the final message. Besides, in logic,
-> whether the sndbuf_desc is NULL or not have no impact on the processing
-> of cdc message sending.
-> 
-Agree.
+Moreover, NUL-padding is not required.
 
-> Hence that, this patch allow the cdc message sending but to check the
-> sndbuf_desc with care in smc_cdc_tx_handler().
-> 
-> Fixes: 22a825c541d7 ("net/smc: fix NULL sndbuf_desc in smc_cdc_tx_handler()")
-> Signed-off-by: D. Wythe <alibuda@linux.alibaba.com>
-> ---
->   net/smc/smc_cdc.c | 9 ++++-----
->   1 file changed, 4 insertions(+), 5 deletions(-)
-> 
-> diff --git a/net/smc/smc_cdc.c b/net/smc/smc_cdc.c
-> index 01bdb79..3c06625 100644
-> --- a/net/smc/smc_cdc.c
-> +++ b/net/smc/smc_cdc.c
-> @@ -28,13 +28,15 @@ static void smc_cdc_tx_handler(struct smc_wr_tx_pend_priv *pnd_snd,
->   {
->   	struct smc_cdc_tx_pend *cdcpend = (struct smc_cdc_tx_pend *)pnd_snd;
->   	struct smc_connection *conn = cdcpend->conn;
-> +	struct smc_buf_desc *sndbuf_desc;
->   	struct smc_sock *smc;
->   	int diff;
->   
-> +	sndbuf_desc = conn->sndbuf_desc;
->   	smc = container_of(conn, struct smc_sock, conn);
->   	bh_lock_sock(&smc->sk);
-> -	if (!wc_status) {
-> -		diff = smc_curs_diff(cdcpend->conn->sndbuf_desc->len,
-> +	if (!wc_status && sndbuf_desc) {
-> +		diff = smc_curs_diff(sndbuf_desc->len,
-How could this guarantee that the sndbuf_desc would not be NULL?
+Considering the above, a suitable replacement is `strscpy` [2] due to
+the fact that it guarantees NUL-termination on the destination buffer
+without unnecessarily NUL-padding.
 
->   				     &cdcpend->conn->tx_curs_fin,
->   				     &cdcpend->cursor);
->   		/* sndbuf_space is decreased in smc_sendmsg */
-> @@ -114,9 +116,6 @@ int smc_cdc_msg_send(struct smc_connection *conn,
->   	union smc_host_cursor cfed;
->   	int rc;
->   
-> -	if (unlikely(!READ_ONCE(conn->sndbuf_desc)))
-> -		return -ENOBUFS;
-> -
->   	smc_cdc_add_pending_send(conn, pend);
->   
->   	conn->tx_cdc_seq++;
+Link: https://www.kernel.org/doc/html/latest/process/deprecated.html#strncpy-on-nul-terminated-strings [1]
+Link: https://manpages.debian.org/testing/linux-manual-4.8/strscpy.9.en.html [2]
+Link: https://github.com/KSPP/linux/issues/90
+Cc: linux-hardening@vger.kernel.org
+Signed-off-by: Justin Stitt <justinstitt@google.com>
+---
+Note: build-tested only.
+
+Found with: $ rg "strncpy\("
+---
+ drivers/net/ethernet/mellanox/mlx4/fw.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/net/ethernet/mellanox/mlx4/fw.c b/drivers/net/ethernet/mellanox/mlx4/fw.c
+index fe48d20d6118..0005d9e2c2d6 100644
+--- a/drivers/net/ethernet/mellanox/mlx4/fw.c
++++ b/drivers/net/ethernet/mellanox/mlx4/fw.c
+@@ -1967,7 +1967,7 @@ int mlx4_INIT_HCA(struct mlx4_dev *dev, struct mlx4_init_hca_param *param)
+ 	if (dev->caps.flags2 & MLX4_DEV_CAP_FLAG2_DRIVER_VERSION_TO_FW) {
+ 		u8 *dst = (u8 *)(inbox + INIT_HCA_DRIVER_VERSION_OFFSET / 4);
+ 
+-		strncpy(dst, DRV_NAME_FOR_FW, INIT_HCA_DRIVER_VERSION_SZ - 1);
++		strscpy(dst, DRV_NAME_FOR_FW, INIT_HCA_DRIVER_VERSION_SZ);
+ 		mlx4_dbg(dev, "Reporting Driver Version to FW: %s\n", dst);
+ 	}
+ 
+
+---
+base-commit: cbf3a2cb156a2c911d8f38d8247814b4c07f49a2
+change-id: 20231011-strncpy-drivers-net-ethernet-mellanox-mlx4-fw-c-67809559dd1a
+
+Best regards,
+--
+Justin Stitt <justinstitt@google.com>
+
