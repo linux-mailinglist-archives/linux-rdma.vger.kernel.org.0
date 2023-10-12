@@ -2,51 +2,47 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D6A1E7C7724
-	for <lists+linux-rdma@lfdr.de>; Thu, 12 Oct 2023 21:46:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4191C7C7729
+	for <lists+linux-rdma@lfdr.de>; Thu, 12 Oct 2023 21:47:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1442181AbjJLTqL (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 12 Oct 2023 15:46:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41706 "EHLO
+        id S1442222AbjJLTrQ (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 12 Oct 2023 15:47:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55184 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1442179AbjJLTqK (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 12 Oct 2023 15:46:10 -0400
+        with ESMTP id S1442211AbjJLTrQ (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 12 Oct 2023 15:47:16 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA656BB;
-        Thu, 12 Oct 2023 12:46:08 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5BDC0C433C8;
-        Thu, 12 Oct 2023 19:46:08 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3AD72C0;
+        Thu, 12 Oct 2023 12:47:15 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C8BF2C433C8;
+        Thu, 12 Oct 2023 19:47:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1697139968;
-        bh=Hb8YWFSOkX0NCFe664tfyCaUwbxDGI6uksbPYrW075k=;
+        s=k20201202; t=1697140034;
+        bh=7n2CxZhl+eoS8X8gkxaqlmbFhLFf2ISZBlRCSOTo8i0=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=kZocO850l59r8X57kjE5ZHEhxS1ourUskkUlbF9XsHMaxFYfv7tk1JfGUIilQ95Fm
-         OhT1xN/ZJw+n7cLMGtmRZ7BZynxXKq1JSfN26i+yT3m1yAxRtbCZ/E7aHhpuxNh1+O
-         iZr9TxNVSICEyrmyiII3/f34h+0qIM72vwFfOaKClFKF0BR6hfWLCEmY2YGXDe4rDm
-         46t5P4lPwm75/s1ZQLQsxzNerThKAs0wWIFCEBlIVREWghjP6K9H6MbtSbWrU0JFEO
-         TvK6dJgsOTMm/VBvksJJ8x6WBFNuAEzY0X0GQ55+axRVirzOFdYJQ7X7cxha/5ZOfm
-         TWBAkonvsJMjQ==
-Date:   Thu, 12 Oct 2023 12:46:07 -0700
+        b=t98Na4Tqm6qoMJQAufLVj6nJ6iFLbGgx2eGh14SC1P6FLTqHA5bE5KPc0esQLMsP5
+         hEVhvOuw51n1fIopmRchWfoYWkn+QswLVoT8Ben4KBJ7S0DKgKpTEZb7b3ee1fkDXG
+         HagesHhRuMHkIL7C95Gg9EYg1hAHkRjqpfzrVbe6snwhh6Y06IQ3TLswu7+svqA39l
+         iiAjwir8z5gk2n5VfliHc4OVXOuLnBKQwAtAJyyo3y6G2G9aDlD5LUM+UK78evnqhX
+         PesFF3sm+22h+QRjvQNoPkacmpudmd4srs/8hyIdEqhLkM3poYDFXNN+Lk6socaVxT
+         9qw/byiPHhc9w==
+Date:   Thu, 12 Oct 2023 12:47:14 -0700
 From:   Saeed Mahameed <saeed@kernel.org>
-To:     Kees Cook <keescook@chromium.org>
-Cc:     Justin Stitt <justinstitt@google.com>,
-        Saeed Mahameed <saeedm@nvidia.com>,
-        Leon Romanovsky <leon@kernel.org>,
+To:     Justin Stitt <justinstitt@google.com>
+Cc:     Tariq Toukan <tariqt@nvidia.com>,
         "David S. Miller" <davem@davemloft.net>,
         Eric Dumazet <edumazet@google.com>,
         Jakub Kicinski <kuba@kernel.org>,
         Paolo Abeni <pabeni@redhat.com>, netdev@vger.kernel.org,
         linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
         linux-hardening@vger.kernel.org
-Subject: Re: [PATCH] net/mlx5: simplify mlx5_set_driver_version string
- assignments
-Message-ID: <ZShM/7mNuBhFTqrm@x130>
-References: <20231011-strncpy-drivers-net-ethernet-mellanox-mlx5-core-main-c-v1-1-90fa39998bb2@google.com>
- <202310111433.9BCCADED@keescook>
+Subject: Re: [PATCH] net/mlx4_core: replace deprecated strncpy with strscpy
+Message-ID: <ZShNQuRWSDiw2bF7@x130>
+References: <20231011-strncpy-drivers-net-ethernet-mellanox-mlx4-fw-c-v1-1-4d7b5d34c933@google.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Disposition: inline
-In-Reply-To: <202310111433.9BCCADED@keescook>
+In-Reply-To: <20231011-strncpy-drivers-net-ethernet-mellanox-mlx4-fw-c-v1-1-4d7b5d34c933@google.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
@@ -57,30 +53,56 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 11 Oct 14:34, Kees Cook wrote:
->On Wed, Oct 11, 2023 at 09:29:57PM +0000, Justin Stitt wrote:
->> In total, just assigning this version string takes:
->> (1) strncpy()'s
->> (5) strlen()'s
->> (3) strncat()'s
->> (1) snprintf()'s
->> (4) max_t()'s
->>
->> Moreover, `strncpy` is deprecated [1] and `strncat` really shouldn't be
->> used either [2]. With this in mind, let's simply use a single
->> `snprintf`.
+On 11 Oct 21:04, Justin Stitt wrote:
+>`strncpy` is deprecated for use on NUL-terminated destination strings
+>[1] and as such we should prefer more robust and less ambiguous string
+>interfaces.
 >
->Yes, please! readability++
+>We expect `dst` to be NUL-terminated based on its use with format
+>strings:
+>|       mlx4_dbg(dev, "Reporting Driver Version to FW: %s\n", dst);
 >
->>
->> Link: https://www.kernel.org/doc/html/latest/process/deprecated.html#strncpy-on-nul-terminated-strings [1]
->> Link: https://elixir.bootlin.com/linux/v6.6-rc5/source/include/linux/fortify-string.h#L448 [2]
->> Link: https://github.com/KSPP/linux/issues/90
->> Cc: linux-hardening@vger.kernel.org
->> Cc: Kees Cook <keescook@chromium.org>
->> Signed-off-by: Justin Stitt <justinstitt@google.com>
+>Moreover, NUL-padding is not required.
 >
->Reviewed-by: Kees Cook <keescook@chromium.org>
+>Considering the above, a suitable replacement is `strscpy` [2] due to
+>the fact that it guarantees NUL-termination on the destination buffer
+>without unnecessarily NUL-padding.
+>
+>Link: https://www.kernel.org/doc/html/latest/process/deprecated.html#strncpy-on-nul-terminated-strings [1]
+>Link: https://manpages.debian.org/testing/linux-manual-4.8/strscpy.9.en.html [2]
+>Link: https://github.com/KSPP/linux/issues/90
+>Cc: linux-hardening@vger.kernel.org
+>Signed-off-by: Justin Stitt <justinstitt@google.com>
+>---
+>Note: build-tested only.
+>
+>Found with: $ rg "strncpy\("
+>---
+> drivers/net/ethernet/mellanox/mlx4/fw.c | 2 +-
+> 1 file changed, 1 insertion(+), 1 deletion(-)
+>
+>diff --git a/drivers/net/ethernet/mellanox/mlx4/fw.c b/drivers/net/ethernet/mellanox/mlx4/fw.c
+>index fe48d20d6118..0005d9e2c2d6 100644
+>--- a/drivers/net/ethernet/mellanox/mlx4/fw.c
+>+++ b/drivers/net/ethernet/mellanox/mlx4/fw.c
+>@@ -1967,7 +1967,7 @@ int mlx4_INIT_HCA(struct mlx4_dev *dev, struct mlx4_init_hca_param *param)
+> 	if (dev->caps.flags2 & MLX4_DEV_CAP_FLAG2_DRIVER_VERSION_TO_FW) {
+> 		u8 *dst = (u8 *)(inbox + INIT_HCA_DRIVER_VERSION_OFFSET / 4);
+>
+>-		strncpy(dst, DRV_NAME_FOR_FW, INIT_HCA_DRIVER_VERSION_SZ - 1);
+>+		strscpy(dst, DRV_NAME_FOR_FW, INIT_HCA_DRIVER_VERSION_SZ);
+> 		mlx4_dbg(dev, "Reporting Driver Version to FW: %s\n", dst);
+> 	}
+>
+>
+>---
+>base-commit: cbf3a2cb156a2c911d8f38d8247814b4c07f49a2
+>change-id: 20231011-strncpy-drivers-net-ethernet-mellanox-mlx4-fw-c-67809559dd1a
+>
+>Best regards,
+>--
+>Justin Stitt <justinstitt@google.com>
+>
 
-Applied to net-next-mlx5.
+Reviewed-by: Saeed Mahameed <saeedm@nvidia.com>
 
