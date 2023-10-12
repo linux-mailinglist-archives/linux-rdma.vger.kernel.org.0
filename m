@@ -2,172 +2,145 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 847717C712D
-	for <lists+linux-rdma@lfdr.de>; Thu, 12 Oct 2023 17:15:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 37AD77C71B1
+	for <lists+linux-rdma@lfdr.de>; Thu, 12 Oct 2023 17:38:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233578AbjJLPPh (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 12 Oct 2023 11:15:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51176 "EHLO
+        id S235697AbjJLPio (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 12 Oct 2023 11:38:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40752 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1347171AbjJLPPc (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 12 Oct 2023 11:15:32 -0400
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F385C0;
-        Thu, 12 Oct 2023 08:15:30 -0700 (PDT)
-Received: from pps.filterd (m0360083.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 39CFC6fs014877;
-        Thu, 12 Oct 2023 15:15:21 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=cu4OWlFcSkzAgQ1ZSUgowb6rWlcfQOprHpsTpGYe/I0=;
- b=Zzp61f7SDD20yZHSnGWqesTlBhZRuuPoLqAjpRrWTbkF/dRS10ZY1wbaObTb/RaF2PRB
- xGy8gFA9BclT6cTXjwSs3yQqcaNzgl7D78zUi3SHETVJYJEMcvCKFESBF09SdpTxKCNl
- Hk7NKJyOiLpbFKoZ0VIzCwjH2Q2BXL8sWV7RBk5ZbOMpPh2ufPugW3VLu3FDpGpZ1sZO
- BVHohNuDINuQuc+J48gvU4h1tAOQ1+7cos3J0FbrPFFvF8Eo7nw4ij4PfwK2sAng8enT
- 7DdHNm/fz1swRhq8aD+EqFetZO3g07VtiU3+9Gws8O8YvC/4eUJbj1FF3k5kmHIZAguR 8w== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3tpk8084cp-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 12 Oct 2023 15:15:20 +0000
-Received: from m0360083.ppops.net (m0360083.ppops.net [127.0.0.1])
-        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 39CFDFJs019790;
-        Thu, 12 Oct 2023 15:15:20 GMT
-Received: from ppma22.wdc07v.mail.ibm.com (5c.69.3da9.ip4.static.sl-reverse.com [169.61.105.92])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3tpk8084bs-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 12 Oct 2023 15:15:20 +0000
-Received: from pps.filterd (ppma22.wdc07v.mail.ibm.com [127.0.0.1])
-        by ppma22.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 39CFCslU028188;
-        Thu, 12 Oct 2023 15:15:19 GMT
-Received: from smtprelay05.dal12v.mail.ibm.com ([172.16.1.7])
-        by ppma22.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3tkj1ygf6p-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 12 Oct 2023 15:15:19 +0000
-Received: from smtpav02.wdc07v.mail.ibm.com (smtpav02.wdc07v.mail.ibm.com [10.39.53.229])
-        by smtprelay05.dal12v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 39CFFHUv17891842
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 12 Oct 2023 15:15:18 GMT
-Received: from smtpav02.wdc07v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id CAA1958058;
-        Thu, 12 Oct 2023 15:15:17 +0000 (GMT)
-Received: from smtpav02.wdc07v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 1423458059;
-        Thu, 12 Oct 2023 15:15:16 +0000 (GMT)
-Received: from [9.171.29.13] (unknown [9.171.29.13])
-        by smtpav02.wdc07v.mail.ibm.com (Postfix) with ESMTP;
-        Thu, 12 Oct 2023 15:15:15 +0000 (GMT)
-Message-ID: <bf52b502-6be0-467d-bf0a-5ae0e8d84fe8@linux.ibm.com>
-Date:   Thu, 12 Oct 2023 17:15:15 +0200
+        with ESMTP id S233879AbjJLPin (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 12 Oct 2023 11:38:43 -0400
+Received: from mail-ot1-x331.google.com (mail-ot1-x331.google.com [IPv6:2607:f8b0:4864:20::331])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9DA4FC6;
+        Thu, 12 Oct 2023 08:38:42 -0700 (PDT)
+Received: by mail-ot1-x331.google.com with SMTP id 46e09a7af769-6c0b8f42409so722457a34.0;
+        Thu, 12 Oct 2023 08:38:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1697125122; x=1697729922; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=fQsZLjycUl+urrXsHz/1jrROvxxrkNzW4ZQyWKE/Drs=;
+        b=ZaN5lXqo4OJBjQGTp7oLfXVXne+knZViDVdvm8uIkfu7sf25E9qaVDF2lwmAmgWY0s
+         JnFHx/o/VaTWzT7baQAx5xWWvpMyKDzlLLrL2MdbLeHXhuhLcIcxnS7vZplGabuvQqtV
+         +DcMUWvDg6tgklYus4EuMaOFVW34PaSyUHWO+RiUc23l8oaCxB4Bi6AWaE94VtxFH399
+         2izl8+dFvQVzwfoIgG0sihfwJTjitIytsvXIWcPpARgUa2Vo2+XRj6mv2At23KbLhvFp
+         W1oPCLY8qcspRiVrV6kG5pOT4NuoLS9esbktJH1B0cqeFVA72IbeXspgSv2xoILDLJEn
+         Ps7Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697125122; x=1697729922;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=fQsZLjycUl+urrXsHz/1jrROvxxrkNzW4ZQyWKE/Drs=;
+        b=nrNw9l3Zz9q5JFtYUZ5IVQPacDSBhJNgGbzdtZUB5DpHQBF3Bu6nNzk/pCAZsujH4s
+         VtlP7OXk5eWp/EjT0IfISKio1ElCK79NTrA0IBn1uwpGIpvsU3FoJ0TqEIqxzDjssN/b
+         5agAuEV6Ygf6W5WO0aJD21OaLFxVzcbmILj3hzHIxhrQa+BfX+BrPuOcS5Fk9+dXyycg
+         nViuTXOkJIU3dV1LYBN4y+AWgx6MwtwEVBwIR5/6pJwEh0FDIp+mAcZAB6L1tiJGww3k
+         j0EKF4kyzAxkt9ulK2Qhk3gmlBy9FtZLT48KGhdvt5FKK94s3VMsnSqlWFjkSxiZHDnL
+         StHg==
+X-Gm-Message-State: AOJu0YxaMAUSCAOqavIwMiVdoHh1bP1r8fSlq7phuyPvEbSfHROkxe5z
+        +2Zl35Q2Nmf6MwU3BJglm28=
+X-Google-Smtp-Source: AGHT+IGoAOkLQsca0vD7Og6sKBQe//S6LKK5mmMD7ypyaH9Dlm/CmutTzYed/TTEp0MaxG0fRceFkQ==
+X-Received: by 2002:a05:6830:1b6e:b0:6b8:f730:7ab4 with SMTP id d14-20020a0568301b6e00b006b8f7307ab4mr26779263ote.0.1697125121850;
+        Thu, 12 Oct 2023 08:38:41 -0700 (PDT)
+Received: from ?IPV6:2603:8081:1405:679b:658d:e60e:7bda:b251? (2603-8081-1405-679b-658d-e60e-7bda-b251.res6.spectrum.com. [2603:8081:1405:679b:658d:e60e:7bda:b251])
+        by smtp.gmail.com with ESMTPSA id x21-20020a9d6d95000000b006c65f431799sm341934otp.23.2023.10.12.08.38.40
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 12 Oct 2023 08:38:41 -0700 (PDT)
+Message-ID: <b3a8d1f8-512c-4520-8841-06d54f483f4f@gmail.com>
+Date:   Thu, 12 Oct 2023 10:38:39 -0500
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH net 3/5] net/smc: allow cdc msg send rather than drop it
- with NULL sndbuf_desc
-Content-Language: en-GB
-To:     "D. Wythe" <alibuda@linux.alibaba.com>, kgraul@linux.ibm.com,
-        jaka@linux.ibm.com, wintera@linux.ibm.com
-Cc:     kuba@kernel.org, davem@davemloft.net, netdev@vger.kernel.org,
-        linux-s390@vger.kernel.org, linux-rdma@vger.kernel.org
-References: <1697009600-22367-1-git-send-email-alibuda@linux.alibaba.com>
- <1697009600-22367-4-git-send-email-alibuda@linux.alibaba.com>
- <5e2efb4b-1d26-4159-a2c7-b0107cb6381c@linux.ibm.com>
- <9f8f7a96-fcb0-3088-6d2f-d7e7d0fc83a1@linux.alibaba.com>
-From:   Wenjia Zhang <wenjia@linux.ibm.com>
-In-Reply-To: <9f8f7a96-fcb0-3088-6d2f-d7e7d0fc83a1@linux.alibaba.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Subject: Re: [PATCH 1/1] Revert "RDMA/rxe: Add workqueue support for rxe
+ tasks"
+To:     Zhu Yanjun <yanjun.zhu@linux.dev>, Jason Gunthorpe <jgg@ziepe.ca>,
+        Bart Van Assche <bvanassche@acm.org>
+Cc:     "Daisuke Matsuda (Fujitsu)" <matsuda-daisuke@fujitsu.com>,
+        Leon Romanovsky <leon@kernel.org>,
+        "zyjzyj2000@gmail.com" <zyjzyj2000@gmail.com>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        "shinichiro.kawasaki@wdc.com" <shinichiro.kawasaki@wdc.com>,
+        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
+        Zhu Yanjun <yanjun.zhu@intel.com>
+References: <20231004183824.GQ13795@ziepe.ca>
+ <c0665377-d2be-e4b6-3d25-727ef303d26e@linux.dev>
+ <20231005142148.GA970053@ziepe.ca>
+ <6a730dad-9d81-46d9-8adc-764d00745b01@acm.org>
+ <a8453889-3f5f-49ff-89f2-ec0ef929d915@linux.dev>
+ <OS3PR01MB9865F9BEB1A90DDCAEEBFC8BE5CDA@OS3PR01MB9865.jpnprd01.prod.outlook.com>
+ <20231010160919.GC55194@ziepe.ca>
+ <a4808fa6-5bd5-4a64-a437-6a7e89ca7e9f@acm.org>
+ <20231011155104.GF55194@ziepe.ca>
+ <70191324-018e-4cfe-9c1d-0bd3d17fb437@acm.org>
+ <20231011231201.GH55194@ziepe.ca>
+ <fe0fbdd9-93a2-4478-b1ef-9b2420c0d76e@linux.dev>
+Content-Language: en-US
+From:   Bob Pearson <rpearsonhpe@gmail.com>
+In-Reply-To: <fe0fbdd9-93a2-4478-b1ef-9b2420c0d76e@linux.dev>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: q7HZO0k_fuPjYd-RATOmZrt8Lv4X_j76
-X-Proofpoint-ORIG-GUID: c0urxwtWFHVgYYKy7AKzynSqeqhVINgp
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-10-12_05,2023-10-12_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0 phishscore=0
- spamscore=0 lowpriorityscore=0 mlxscore=0 malwarescore=0
- priorityscore=1501 bulkscore=0 clxscore=1015 adultscore=0 mlxlogscore=999
- impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2309180000 definitions=main-2310120125
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-
-
-On 12.10.23 04:49, D. Wythe wrote:
-> 
-> 
-> On 10/12/23 4:37 AM, Wenjia Zhang wrote:
+On 10/12/23 06:49, Zhu Yanjun wrote:
+> 在 2023/10/12 7:12, Jason Gunthorpe 写道:
+>> On Wed, Oct 11, 2023 at 01:14:16PM -0700, Bart Van Assche wrote:
+>>> On 10/11/23 08:51, Jason Gunthorpe wrote:
+>>>> If we revert it then rxe will probably just stop development
+>>>> entirely. Daisuke's ODP work will be blocked and if Bob was able to
+>>>> fix it he would have done so already. Which mean's Bobs ongoing work
+>>>> is lost too.
+>>>
+>>> If Daisuke's work depends on the RXE changes then Daisuke may decide
+>>> to help with the RXE changes.
+>>>
+>>> Introducing regressions while refactoring code is not acceptable.
 >>
+>> Generally, but I don't view rxe as a production part of the kernel so
+>> I prefer to give time to resolve it.
 >>
->> On 11.10.23 09:33, D. Wythe wrote:
->>> From: "D. Wythe" <alibuda@linux.alibaba.com>
->>>
->>> This patch re-fix the issues memtianed by commit 22a825c541d7
->>> ("net/smc: fix NULL sndbuf_desc in smc_cdc_tx_handler()").
->>>
->>> Blocking sending message do solve the issues though, but it also
->>> prevents the peer to receive the final message. Besides, in logic,
->>> whether the sndbuf_desc is NULL or not have no impact on the processing
->>> of cdc message sending.
->>>
->> Agree.
->>
->>> Hence that, this patch allow the cdc message sending but to check the
->>> sndbuf_desc with care in smc_cdc_tx_handler().
->>>
->>> Fixes: 22a825c541d7 ("net/smc: fix NULL sndbuf_desc in 
->>> smc_cdc_tx_handler()")
->>> Signed-off-by: D. Wythe <alibuda@linux.alibaba.com>
->>> ---
->>>   net/smc/smc_cdc.c | 9 ++++-----
->>>   1 file changed, 4 insertions(+), 5 deletions(-)
->>>
->>> diff --git a/net/smc/smc_cdc.c b/net/smc/smc_cdc.c
->>> index 01bdb79..3c06625 100644
->>> --- a/net/smc/smc_cdc.c
->>> +++ b/net/smc/smc_cdc.c
->>> @@ -28,13 +28,15 @@ static void smc_cdc_tx_handler(struct 
->>> smc_wr_tx_pend_priv *pnd_snd,
->>>   {
->>>       struct smc_cdc_tx_pend *cdcpend = (struct smc_cdc_tx_pend 
->>> *)pnd_snd;
->>>       struct smc_connection *conn = cdcpend->conn;
->>> +    struct smc_buf_desc *sndbuf_desc;
->>>       struct smc_sock *smc;
->>>       int diff;
->>>   +    sndbuf_desc = conn->sndbuf_desc;
->>>       smc = container_of(conn, struct smc_sock, conn);
->>>       bh_lock_sock(&smc->sk);
->>> -    if (!wc_status) {
->>> -        diff = smc_curs_diff(cdcpend->conn->sndbuf_desc->len,
->>> +    if (!wc_status && sndbuf_desc) {
->>> +        diff = smc_curs_diff(sndbuf_desc->len,
->> How could this guarantee that the sndbuf_desc would not be NULL?
->>
+>>> I don't have enough spare time to help with the RXE driver.
 > 
-> It can not guarantee he sndbuf_desc would not be NULL, but it will prevents
-> the smc_cdc_tx_handler() to access a NULL sndbuf_desc. So that we
-> can avoid the panic descried in commit 22a825c541d7
-> ("net/smc: fix NULL sndbuf_desc in smc_cdc_tx_handler()").
+> commit 11ab7cc7ee32d6c3e16ac74c34c4bbdbf8f99292
+> Author: Bart Van Assche <bvanassche@acm.org>
+> Date:   Tue Aug 22 09:57:07 2023 -0700
 > 
-got it, thanks!
+>     Change the default RDMA driver from rdma_rxe to siw
+> 
+>     Since the siw driver is more stable than the rdma_rxe driver, change the
+>     default into siw. See e.g.
+> 
+> https://lore.kernel.org/all/c3d1a966-b9b0-d015-38ec-86270b5045fc@acm.org/.
+> 
+>     Signed-off-by: Bart Van Assche <bvanassche@acm.org>
+>     Signed-off-by: Shin'ichiro Kawasaki <shinichiro.kawasaki@wdc.com>
+> 
+> 
+>>
+>> Nor I
+>>
+>> Jason
+> 
+All,
 
-Reviewed-by: Wenjia Zhang <wenjia@linux.ibm.com>
+I have spent the past several weeks working on trying to resolve this issue. The one thing I can say
+for sure is that the failures or their rates are very sensitive to small timing changes. I totally agree
+Jason that the bug has always been there and most of the suggested changes are just masking or unmasking
+it. I have been running under all the kernel lock checking I can set and have not seen any warnings
+so I doubt the error is a deadlock. My suspicion remains that the root cause of the hang is loss of
+a completion or a timeout before a late completion leading to the transport state machine death. There
+are surely other bugs in the driver and they may show up in parallel with this hang. I see the hang
+consistently from 1-2% to 30-40% of the time when running srp/002 depending on various changes I have
+tried but I have not been able to reproduce the KASAN bug yet. Because the hang is easy to reproduce
+I have focused on that.
 
->>> &cdcpend->conn->tx_curs_fin,
->>>                        &cdcpend->cursor);
->>>           /* sndbuf_space is decreased in smc_sendmsg */
->>> @@ -114,9 +116,6 @@ int smc_cdc_msg_send(struct smc_connection *conn,
->>>       union smc_host_cursor cfed;
->>>       int rc;
->>>   -    if (unlikely(!READ_ONCE(conn->sndbuf_desc)))
->>> -        return -ENOBUFS;
->>> -
->>>       smc_cdc_add_pending_send(conn, pend);
->>>         conn->tx_cdc_seq++;
-> 
+Bob
