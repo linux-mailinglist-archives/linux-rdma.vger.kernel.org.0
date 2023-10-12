@@ -2,116 +2,183 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 40F7A7C61E7
-	for <lists+linux-rdma@lfdr.de>; Thu, 12 Oct 2023 02:40:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8FED77C6300
+	for <lists+linux-rdma@lfdr.de>; Thu, 12 Oct 2023 04:47:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376623AbjJLAkc (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 11 Oct 2023 20:40:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50828 "EHLO
+        id S234107AbjJLCrP (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 11 Oct 2023 22:47:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58730 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233886AbjJLAkb (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 11 Oct 2023 20:40:31 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE0FC9E;
-        Wed, 11 Oct 2023 17:40:29 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 83BDBC433CD;
-        Thu, 12 Oct 2023 00:40:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1697071229;
-        bh=wGHJyiALp3GFYTvWaoHxyso+f2Vuj4QGs+ejJHlDf/k=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=VE5CUTDPsvYyqkldEDqOEXMVmFtYsTPZSIVSOrPhdqUiu+qC0gTSFu6e4mo37ejhQ
-         /nJHSRLR/5Uq37Vk7V8G+nOXlNvk8vH6E7h/jFJuVqHPRQONGS0TzuyWGyPhojUAH7
-         Y4urAQ4NY7DQHqZIv7DL90hwQTF8/SrBLn8tcK2EKIaO4+tESHK8SoJsiMlOStfslk
-         O/7RUIjozO0FXUzHR0diff2R+Z5LRSigjR9sS4lydG4rj6L1lOXawWzS/iyDrc3/8u
-         ubZ2+bqVueHFdmEqJE9Vi1b+9kyKU6EIaNcULLSEz66GZICCGoNPjSU3dE+Xj/HwlZ
-         8gXY0TDIzUzzA==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 5A538E21ED9;
-        Thu, 12 Oct 2023 00:40:29 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        with ESMTP id S233040AbjJLCrO (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 11 Oct 2023 22:47:14 -0400
+Received: from out30-130.freemail.mail.aliyun.com (out30-130.freemail.mail.aliyun.com [115.124.30.130])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56515A9;
+        Wed, 11 Oct 2023 19:47:11 -0700 (PDT)
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R311e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018045192;MF=alibuda@linux.alibaba.com;NM=1;PH=DS;RN=9;SR=0;TI=SMTPD_---0Vtyo4xT_1697078827;
+Received: from 30.221.149.75(mailfrom:alibuda@linux.alibaba.com fp:SMTPD_---0Vtyo4xT_1697078827)
+          by smtp.aliyun-inc.com;
+          Thu, 12 Oct 2023 10:47:08 +0800
+Message-ID: <0490cd90-1ec9-9d10-90fc-8fd0cf4a1a9c@linux.alibaba.com>
+Date:   Thu, 12 Oct 2023 10:47:07 +0800
 MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
+ Gecko/20100101 Thunderbird/102.15.1
+Subject: Re: [PATCH net 1/5] net/smc: fix dangling sock under state
+ SMC_APPFINCLOSEWAIT
+Content-Language: en-US
+To:     Wenjia Zhang <wenjia@linux.ibm.com>, kgraul@linux.ibm.com,
+        jaka@linux.ibm.com, wintera@linux.ibm.com
+Cc:     kuba@kernel.org, davem@davemloft.net, netdev@vger.kernel.org,
+        linux-s390@vger.kernel.org, linux-rdma@vger.kernel.org
+References: <1697009600-22367-1-git-send-email-alibuda@linux.alibaba.com>
+ <1697009600-22367-2-git-send-email-alibuda@linux.alibaba.com>
+ <e63b546f-b993-4e42-8269-e4d9afa5b845@linux.ibm.com>
+From:   "D. Wythe" <alibuda@linux.alibaba.com>
+In-Reply-To: <e63b546f-b993-4e42-8269-e4d9afa5b845@linux.ibm.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-Subject: Re: [net-next v3 1/5] netdev: replace simple
- napi_schedule_prep/__napi_schedule to napi_schedule
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <169707122936.23011.6924255297609142862.git-patchwork-notify@kernel.org>
-Date:   Thu, 12 Oct 2023 00:40:29 +0000
-References: <20231009133754.9834-1-ansuelsmth@gmail.com>
-In-Reply-To: <20231009133754.9834-1-ansuelsmth@gmail.com>
-To:     Christian Marangi <ansuelsmth@gmail.com>
-Cc:     jgg@ziepe.ca, leon@kernel.org, wg@grandegger.com,
-        mkl@pengutronix.de, davem@davemloft.net, edumazet@google.com,
-        kuba@kernel.org, pabeni@redhat.com, chris.snook@gmail.com,
-        rajur@chelsio.com, jeroendb@google.com, pkaligineedi@google.com,
-        shailend@google.com, dougmill@linux.ibm.com, nnac123@linux.ibm.com,
-        mpe@ellerman.id.au, npiggin@gmail.com, christophe.leroy@csgroup.eu,
-        haren@linux.ibm.com, ricklind@linux.ibm.com, danymadden@us.ibm.com,
-        tlfalcon@linux.ibm.com, tariqt@nvidia.com,
-        alexandre.torgue@foss.st.com, joabreu@synopsys.com,
-        mcoquelin.stm32@gmail.com, khalasa@piap.pl, kvalo@kernel.org,
-        quic_jjohnson@quicinc.com, gregory.greenman@intel.com,
-        chandrashekar.devegowda@intel.com, linuxwwan@intel.com,
-        chiranjeevi.rapolu@linux.intel.com, haijun.liu@mediatek.com,
-        m.chetan.kumar@linux.intel.com, ricardo.martinez@linux.intel.com,
-        loic.poulain@linaro.org, ryazanov.s.a@gmail.com,
-        johannes@sipsolutions.net, ruc_gongyuanjun@163.com,
-        elder@linaro.org, bhupesh.sharma@linaro.org, horms@kernel.org,
-        robh@kernel.org, bcf@google.com, junfeng.guo@intel.com,
-        gustavoars@kernel.org, ziweixiao@google.com, rushilg@google.com,
-        tglx@linutronix.de, u.kleine-koenig@pengutronix.de,
-        krzysztof.kozlowski@linaro.org, YKarpov@ispras.ru, andrew@lunn.ch,
-        zhengzengkai@huawei.com, set_pte_at@outlook.com,
-        pagadala.yesu.anjaneyulu@intel.com, benjamin.berg@intel.com,
-        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-can@vger.kernel.org, netdev@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org, ath10k@lists.infradead.org,
-        linux-wireless@vger.kernel.org
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-13.2 required=5.0 tests=BAYES_00,
+        ENV_AND_HDR_SPF_MATCH,NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
+        SPF_PASS,UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Hello:
 
-This series was applied to netdev/net-next.git (main)
-by Jakub Kicinski <kuba@kernel.org>:
 
-On Mon,  9 Oct 2023 15:37:50 +0200 you wrote:
-> Replace drivers that still use napi_schedule_prep/__napi_schedule
-> with napi_schedule helper as it does the same exact check and call.
-> 
-> Signed-off-by: Christian Marangi <ansuelsmth@gmail.com>
-> Reviewed-by: Eric Dumazet <edumazet@google.com>
-> ---
-> Changes v3:
-> - Add Reviewed-by tag
-> Changes v2:
-> - Add missing semicolon
-> 
-> [...]
+On 10/12/23 4:31 AM, Wenjia Zhang wrote:
+>
+>
+> On 11.10.23 09:33, D. Wythe wrote:
+>> From: "D. Wythe" <alibuda@linux.alibaba.com>
+>>
+>> Considering scenario:
+>>
+>>                 smc_cdc_rx_handler_rwwi
+>> __smc_release
+>>                 sock_set_flag
+>> smc_close_active()
+>> sock_set_flag
+>>
+>> __set_bit(DEAD)            __set_bit(DONE)
+>>
+>> Dues to __set_bit is not atomic, the DEAD or DONE might be lost.
+>> if the DEAD flag lost, the state SMC_CLOSED  will be never be reached
+>> in smc_close_passive_work:
+>>
+>> if (sock_flag(sk, SOCK_DEAD) &&
+>>     smc_close_sent_any_close(conn)) {
+>>     sk->sk_state = SMC_CLOSED;
+>> } else {
+>>     /* just shutdown, but not yet closed locally */
+>>     sk->sk_state = SMC_APPFINCLOSEWAIT;
+>> }
+>>
+>> Replace sock_set_flags or __set_bit to set_bit will fix this problem.
+>> Since set_bit is atomic.
+>>
+> I didn't really understand the scenario. What is 
+> smc_cdc_rx_handler_rwwi()? What does it do? Don't it get the lock 
+> during the runtime?
+>
 
-Here is the summary with links:
-  - [net-next,v3,1/5] netdev: replace simple napi_schedule_prep/__napi_schedule to napi_schedule
-    https://git.kernel.org/netdev/net-next/c/ef724517b596
-  - [net-next,v3,2/5] netdev: make napi_schedule return bool on NAPI successful schedule
-    https://git.kernel.org/netdev/net-next/c/0a779003213b
-  - [net-next,v3,3/5] netdev: replace napi_reschedule with napi_schedule
-    https://git.kernel.org/netdev/net-next/c/73382e919f3d
-  - [net-next,v3,4/5] net: tc35815: rework network interface interrupt logic
-    https://git.kernel.org/netdev/net-next/c/be176234d0a8
-  - [net-next,v3,5/5] netdev: use napi_schedule bool instead of napi_schedule_prep/__napi_schedule
-    https://git.kernel.org/netdev/net-next/c/d1fea38f01ac
+Hi Wenjia,
 
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
+Sorry for that, It is not smc_cdc_rx_handler_rwwi() but 
+smc_cdc_rx_handler();
 
+Following is a more specific description of the issues
+
+
+lock_sock()
+__smc_release
+
+smc_cdc_rx_handler()
+smc_cdc_msg_recv()
+bh_lock_sock()
+smc_cdc_msg_recv_action()
+sock_set_flag(DONE) sock_set_flag(DEAD)
+__set_bit __set_bit
+bh_unlock_sock()
+release_sock()
+
+
+Note :  bh_lock_sock and lock_sock are not mutually exclusive.
+They are actually used for different purposes and contexts.
+
+
+>> Signed-off-by: D. Wythe <alibuda@linux.alibaba.com>
+>> ---
+>>   net/smc/af_smc.c    | 4 ++--
+>>   net/smc/smc.h       | 5 +++++
+>>   net/smc/smc_cdc.c   | 2 +-
+>>   net/smc/smc_close.c | 2 +-
+>>   4 files changed, 9 insertions(+), 4 deletions(-)
+>>
+>> diff --git a/net/smc/af_smc.c b/net/smc/af_smc.c
+>> index bacdd97..5ad2a9f 100644
+>> --- a/net/smc/af_smc.c
+>> +++ b/net/smc/af_smc.c
+>> @@ -275,7 +275,7 @@ static int __smc_release(struct smc_sock *smc)
+>>         if (!smc->use_fallback) {
+>>           rc = smc_close_active(smc);
+>> -        sock_set_flag(sk, SOCK_DEAD);
+>> +        smc_sock_set_flag(sk, SOCK_DEAD);
+>>           sk->sk_shutdown |= SHUTDOWN_MASK;
+>>       } else {
+>>           if (sk->sk_state != SMC_CLOSED) {
+>> @@ -1742,7 +1742,7 @@ static int smc_clcsock_accept(struct smc_sock 
+>> *lsmc, struct smc_sock **new_smc)
+>>           if (new_clcsock)
+>>               sock_release(new_clcsock);
+>>           new_sk->sk_state = SMC_CLOSED;
+>> -        sock_set_flag(new_sk, SOCK_DEAD);
+>> +        smc_sock_set_flag(new_sk, SOCK_DEAD);
+>>           sock_put(new_sk); /* final */
+>>           *new_smc = NULL;
+>>           goto out;
+>> diff --git a/net/smc/smc.h b/net/smc/smc.h
+>> index 24745fd..e377980 100644
+>> --- a/net/smc/smc.h
+>> +++ b/net/smc/smc.h
+>> @@ -377,4 +377,9 @@ void smc_fill_gid_list(struct smc_link_group *lgr,
+>>   int smc_nl_enable_hs_limitation(struct sk_buff *skb, struct 
+>> genl_info *info);
+>>   int smc_nl_disable_hs_limitation(struct sk_buff *skb, struct 
+>> genl_info *info);
+>>   +static inline void smc_sock_set_flag(struct sock *sk, enum 
+>> sock_flags flag)
+>> +{
+>> +    set_bit(flag, &sk->sk_flags);
+>> +}
+>> +
+>>   #endif    /* __SMC_H */
+>> diff --git a/net/smc/smc_cdc.c b/net/smc/smc_cdc.c
+>> index 89105e9..01bdb79 100644
+>> --- a/net/smc/smc_cdc.c
+>> +++ b/net/smc/smc_cdc.c
+>> @@ -385,7 +385,7 @@ static void smc_cdc_msg_recv_action(struct 
+>> smc_sock *smc,
+>>           smc->sk.sk_shutdown |= RCV_SHUTDOWN;
+>>           if (smc->clcsock && smc->clcsock->sk)
+>>               smc->clcsock->sk->sk_shutdown |= RCV_SHUTDOWN;
+>> -        sock_set_flag(&smc->sk, SOCK_DONE);
+>> +        smc_sock_set_flag(&smc->sk, SOCK_DONE);
+>>           sock_hold(&smc->sk); /* sock_put in close_work */
+>>           if (!queue_work(smc_close_wq, &conn->close_work))
+>>               sock_put(&smc->sk);
+>> diff --git a/net/smc/smc_close.c b/net/smc/smc_close.c
+>> index dbdf03e..449ef45 100644
+>> --- a/net/smc/smc_close.c
+>> +++ b/net/smc/smc_close.c
+>> @@ -173,7 +173,7 @@ void smc_close_active_abort(struct smc_sock *smc)
+>>           break;
+>>       }
+>>   -    sock_set_flag(sk, SOCK_DEAD);
+>> +    smc_sock_set_flag(sk, SOCK_DEAD);
+>>       sk->sk_state_change(sk);
+>>         if (release_clcsock) {
 
