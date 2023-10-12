@@ -2,169 +2,183 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AFAEB7C6BA7
-	for <lists+linux-rdma@lfdr.de>; Thu, 12 Oct 2023 12:56:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6056C7C6C8A
+	for <lists+linux-rdma@lfdr.de>; Thu, 12 Oct 2023 13:40:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235709AbjJLK4a (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 12 Oct 2023 06:56:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37078 "EHLO
+        id S1378046AbjJLLkJ (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 12 Oct 2023 07:40:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40926 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235696AbjJLK40 (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 12 Oct 2023 06:56:26 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.9])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E182CF;
-        Thu, 12 Oct 2023 03:56:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1697108185; x=1728644185;
-  h=date:from:to:cc:subject:in-reply-to:message-id:
-   references:mime-version;
-  bh=ncUYHUPUudbeDBu1X+DbOYSPV06JH2dv47rcK32PQ+0=;
-  b=CYclsOvOPtH3Q8m1wMMmDYUHx/L6vQrIQRlGlDiTpobaSJ/SD8nZa1yQ
-   lmY9YqnctCNWpDlmbqOQfO8u3cwjxe1sBLbcfgWfX7nJ+ZrNDZ4y23gAX
-   HbkMANv6j4C80UF4fY2QznF81/dmYLkDw/KG2IiTPs7jbdaRuZ4TdQFxh
-   wlLZwCWV8LmydShMWfIj8HsKLUGGxyKHhIL2h8Yd4USZuVsQsWxWUShau
-   izP+1118O9PObYimo3ulINXAXq9pIBJWoqzKEwS/rGrv3vJAdEgdjHiSQ
-   VeVAmvpuDHBN7XAu6gEJd7JD4Cb/HMGDGmdPiPIXwKpyDJUTvWKLeg2qw
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10860"; a="3483256"
-X-IronPort-AV: E=Sophos;i="6.03,218,1694761200"; 
-   d="scan'208";a="3483256"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by orvoesa101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Oct 2023 03:56:24 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10860"; a="789349717"
-X-IronPort-AV: E=Sophos;i="6.03,218,1694761200"; 
-   d="scan'208";a="789349717"
-Received: from asroczyn-mobl.ger.corp.intel.com ([10.249.36.107])
-  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Oct 2023 03:56:18 -0700
-Date:   Thu, 12 Oct 2023 13:56:16 +0300 (EEST)
-From:   =?ISO-8859-15?Q?Ilpo_J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>
-To:     Bjorn Helgaas <helgaas@kernel.org>,
-        "Rafael J . Wysocki" <rafael@kernel.org>
-cc:     linux-pci@vger.kernel.org,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Rob Herring <robh@kernel.org>,
-        =?ISO-8859-2?Q?Krzysztof_Wilczy=F1ski?= <kw@linux.com>,
-        Lukas Wunner <lukas@wunner.de>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Emmanuel Grumbach <emmanuel.grumbach@intel.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        ath10k@lists.infradead.org, ath11k@lists.infradead.org,
-        ath12k@lists.infradead.org, intel-wired-lan@lists.osuosl.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-bluetooth@vger.kernel.org,
-        linux-mediatek@lists.infradead.org, linux-rdma@vger.kernel.org,
-        linux-wireless@vger.kernel.org, Netdev <netdev@vger.kernel.org>
-Subject: Re: [PATCH v2 03/13] PCI/ASPM: Disable ASPM when driver requests
- it
-In-Reply-To: <20231011212206.GA1043224@bhelgaas>
-Message-ID: <aa3386a4-c22d-6d5d-112d-f36b22cda6d3@linux.intel.com>
-References: <20231011212206.GA1043224@bhelgaas>
+        with ESMTP id S1343824AbjJLLkI (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 12 Oct 2023 07:40:08 -0400
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D191D94;
+        Thu, 12 Oct 2023 04:40:06 -0700 (PDT)
+Received: from pps.filterd (m0360083.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 39CBWcGi021017;
+        Thu, 12 Oct 2023 11:39:56 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
+ from : to : cc : date : in-reply-to : references : content-type :
+ content-transfer-encoding : mime-version; s=pp1;
+ bh=KRRc0CLfwbsoimO3IEq2LdfPo0KBY1KcHZ90MPhU3Zs=;
+ b=mYQSWdfFNrCQcmC9h+WHUuF4dB6hCwMZFzvuTbseUquG+dAP2eON/wGtBRo/S3+nxFbi
+ 6ClX4/Wd9a9DjCoZd+YtKjI3d4rIPHfVEHm9wWmYldx3aknBlNtz6LvI9+4FtjNrvIr0
+ 9nT+Qrcf81wAP6e/1hUpJxSXQH3ARdqGtdzHODXr94gouTyqbly1/fw969xZXDXJ7kUV
+ /v2F9VZVfcza2Ln0Ak87Nk6He2VASjJWD3QQC5qhCYe/WT0B+GNYmCn6aq1X4f2kAPFw
+ t4LbKtUQuUL6zPdDyNoS2kPBc94ato30hAFj/ZhvDMe0O+BNfeIjn68D4etMb7UjqSL8 zQ== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3tpg1005u7-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 12 Oct 2023 11:39:56 +0000
+Received: from m0360083.ppops.net (m0360083.ppops.net [127.0.0.1])
+        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 39CBXDnk025196;
+        Thu, 12 Oct 2023 11:39:55 GMT
+Received: from ppma13.dal12v.mail.ibm.com (dd.9e.1632.ip4.static.sl-reverse.com [50.22.158.221])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3tpg1005tt-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 12 Oct 2023 11:39:55 +0000
+Received: from pps.filterd (ppma13.dal12v.mail.ibm.com [127.0.0.1])
+        by ppma13.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 39CBO55h001147;
+        Thu, 12 Oct 2023 11:39:54 GMT
+Received: from smtprelay03.fra02v.mail.ibm.com ([9.218.2.224])
+        by ppma13.dal12v.mail.ibm.com (PPS) with ESMTPS id 3tkkvk6rw8-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 12 Oct 2023 11:39:54 +0000
+Received: from smtpav01.fra02v.mail.ibm.com (smtpav01.fra02v.mail.ibm.com [10.20.54.100])
+        by smtprelay03.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 39CBdpnD3670758
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 12 Oct 2023 11:39:51 GMT
+Received: from smtpav01.fra02v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 5668520040;
+        Thu, 12 Oct 2023 11:39:51 +0000 (GMT)
+Received: from smtpav01.fra02v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 38A972004B;
+        Thu, 12 Oct 2023 11:39:50 +0000 (GMT)
+Received: from [9.171.78.5] (unknown [9.171.78.5])
+        by smtpav01.fra02v.mail.ibm.com (Postfix) with ESMTP;
+        Thu, 12 Oct 2023 11:39:50 +0000 (GMT)
+Message-ID: <ead14a91ffaec7b9e818edf735dbc18510d7915e.camel@linux.ibm.com>
+Subject: Re: [PATCH net v3] net/mlx5: fix calling mlx5_cmd_init() before DMA
+ mask is set
+From:   Niklas Schnelle <schnelle@linux.ibm.com>
+To:     Saeed Mahameed <saeed@kernel.org>
+Cc:     Saeed Mahameed <saeedm@nvidia.com>,
+        Leon Romanovsky <leon@kernel.org>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Matthew Rosato <mjrosato@linux.ibm.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Robin Murphy <robin.murphy@arm.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>, Shay Drory <shayd@nvidia.com>,
+        Moshe Shemesh <moshe@nvidia.com>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Alexander Gordeev <agordeev@linux.ibm.com>,
+        linux-s390@vger.kernel.org, netdev@vger.kernel.org,
+        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Jacob Keller <jacob.e.keller@intel.com>
+Date:   Thu, 12 Oct 2023 13:39:49 +0200
+In-Reply-To: <5e7ec86d690ec5337052742ca75ad2ade23f291e.camel@linux.ibm.com>
+References: <20231011-mlx5_init_fix-v3-1-787ffb9183c6@linux.ibm.com>
+         <ZSbnUlJT1u3xUIqY@x130> <ZSbvxeLKS8zHltdg@x130>
+         <5e7ec86d690ec5337052742ca75ad2ade23f291e.camel@linux.ibm.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.48.4 (3.48.4-1.fc38) 
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: 7irmok6IoAPkFE5HGoyWPJ6omQ6CrC4W
+X-Proofpoint-ORIG-GUID: L2ll_4_bO2zBzV8YBz-DpUr5GbsGWqDX
+Content-Transfer-Encoding: quoted-printable
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="8323329-1326969328-1697108183=:1692"
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-10-12_05,2023-10-12_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0 mlxscore=0
+ bulkscore=0 clxscore=1015 priorityscore=1501 malwarescore=0 suspectscore=0
+ phishscore=0 lowpriorityscore=0 spamscore=0 mlxlogscore=999 adultscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2309180000
+ definitions=main-2310120094
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-  This message is in MIME format.  The first part should be readable text,
-  while the remaining parts are likely unreadable without MIME-aware tools.
+On Thu, 2023-10-12 at 12:53 +0200, Niklas Schnelle wrote:
+> On Wed, 2023-10-11 at 11:56 -0700, Saeed Mahameed wrote:
+> > On 11 Oct 11:20, Saeed Mahameed wrote:
+> > > On 11 Oct 09:57, Niklas Schnelle wrote:
+> > > > Since commit 06cd555f73ca ("net/mlx5: split mlx5_cmd_init() to prob=
+e and
+> > > > reload routines") mlx5_cmd_init() is called in mlx5_mdev_init() whi=
+ch is
+> > > > called in probe_one() before mlx5_pci_init(). This is a problem bec=
+ause
+> > > > mlx5_pci_init() is where the DMA and coherent mask is set but
+> > > > mlx5_cmd_init() already does a dma_alloc_coherent(). Thus a DMA
+> > > > allocation is done during probe before the correct mask is set. This
+> > > > causes probe to fail initialization of the cmdif SW structs on s390x
+> > > > after that is converted to the common dma-iommu code. This is becau=
+se on
+> > > > s390x DMA addresses below 4 GiB are reserved on current machines and
+> > > > unlike the old s390x specific DMA API implementation common code
+> > > > enforces DMA masks.
+> > > >=20
+> > > > Fix this by moving set_dma_caps() out of mlx5_pci_init() and into
+> > > > probe_one() before mlx5_mdev_init(). To match the overall naming sc=
+heme
+> > > > rename it to mlx5_dma_init().
+> > >=20
+> > > How about we just call mlx5_pci_init() before mlx5_mdev_init(), inste=
+ad of
+> > > breaking it apart ?
+> >=20
+> > I just posted this RFC patch [1]:
+>=20
+> This patch works to solve the problem as well.
+>=20
+> >=20
+> > I am working in very limited conditions these days, and I don't have st=
+rong
+> > opinion on which approach to take, Leon, Niklas, please advise.
+> >=20
+> > The three possible solutions:
+> >=20
+> > 1) mlx5_pci_init() before mlx5_mdev_init(), I don't think enabling pci
+> > before initializing cmd dma would be a problem.
+> >=20
+> > 2) This patch.
+> >=20
+> > 3) Shay's patch from the link below:
+> > [1] https://patchwork.kernel.org/project/netdevbpf/patch/20231011184511=
+.19818-1-saeed@kernel.org/
+> >=20
+> > Thanks,
+> > Saeed.
+>=20
+> My first gut feeling was option 1) but I'm just as happy with 2) or 3).
+> For me option 2 is the least invasive but not by much.
+>=20
+> For me the important thing is what Jason also said yesterday. We need
+> to merge something now to unbreak linux-next on s390x and to make sure
+> we don't end up with a broken v6.7-rc1. This is already hampering our
+> CI tests with linux-next. So let's do whatever can be merged the
+> quickest and then feel free to do any refactoring ideas that this
+> discussion might have spawned on top of that. My guess for this
+> criteria would be 2).
+>=20
+> Thanks,
+> Niklas
+>=20
 
---8323329-1326969328-1697108183=:1692
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8BIT
+Looking closer at the patch from Shay I do like that it changes the
+order in the disable/tear down path too. So since that also fixes a PPC
+issue I guess that may indeed be the best solution if we can get it
+merged quickly. I'll comment with my Tested-by there too.
 
-On Wed, 11 Oct 2023, Bjorn Helgaas wrote:
-
-> On Mon, Sep 18, 2023 at 04:10:53PM +0300, Ilpo Järvinen wrote:
-> > PCI core/ASPM service driver allows controlling ASPM state through
-> > pci_disable_link_state() and pci_enable_link_state() API. It was
-> > decided earlier (see the Link below), to not allow ASPM changes when OS
-> > does not have control over it but only log a warning about the problem
-> > (commit 2add0ec14c25 ("PCI/ASPM: Warn when driver asks to disable ASPM,
-> > but we can't do it")). Similarly, if ASPM is not enabled through
-> > config, ASPM cannot be disabled.
-> > ...
-> 
-> > +#ifndef CONFIG_PCIEASPM
-> > +/*
-> > + * Always disable ASPM when requested, even when CONFIG_PCIEASPM is
-> > + * not build to avoid drivers adding code to do it on their own
-> > + * which caused issues when core does not know about the out-of-band
-> > + * ASPM state changes.
-> > + */
-> > +int pci_disable_link_state_locked(struct pci_dev *pdev, int state)
-> > +{
-> > +	struct pci_dev *parent = pdev->bus->self;
-> > +	struct pci_bus *linkbus = pdev->bus;
-> > +	struct pci_dev *child;
-> > +	u16 aspm_enabled, linkctl;
-> > +	int ret;
-> > +
-> > +	if (!parent)
-> > +		return -ENODEV;
-> 
-> P.S. I think this should look the same to the user (same dmesg log and
-> same taint, if we do that) as the CONFIG_PCIEASPM=y case.
-
-Okay.
-
-> > +	ret = pcie_capability_read_word(parent, PCI_EXP_LNKCTL, &linkctl);
-> > +	if (ret != PCIBIOS_SUCCESSFUL)
-> > +		return pcibios_err_to_errno(ret);
-> > +	aspm_enabled = linkctl & PCI_EXP_LNKCTL_ASPMC;
-> > +
-> > +	ret = pcie_capability_read_word(pdev, PCI_EXP_LNKCTL, &linkctl);
-> > +	if (ret != PCIBIOS_SUCCESSFUL)
-> > +		return pcibios_err_to_errno(ret);
-> > +	aspm_enabled |= linkctl & PCI_EXP_LNKCTL_ASPMC;
-> > +
-> > +	/* If no states need to be disabled, don't touch LNKCTL */
-> > +	if (state & aspm_enabled)
-> > +		return 0;
-> > +
-> > +	ret = pcie_capability_clear_word(parent, PCI_EXP_LNKCTL, PCI_EXP_LNKCTL_ASPMC);
-> > +	if (ret != PCIBIOS_SUCCESSFUL)
-> > +		return pcibios_err_to_errno(ret);
-> > +	list_for_each_entry(child, &linkbus->devices, bus_list)
-> > +		pcie_capability_clear_word(child, PCI_EXP_LNKCTL, PCI_EXP_LNKCTL_ASPMC);
-> 
-> This disables *all* ASPM states, unlike the version when
-> CONFIG_PCIEASPM is enabled.  I suppose there's a reason, and maybe a
-> comment could elaborate on it?
->
-> When CONFIG_PCIEASPM is not enabled, I don't think we actively
-> *disable* ASPM in the hardware; we just leave it as-is, so firmware
-> might have left it enabled.
-
-This whole trickery is intended for drivers that do not want to have ASPM 
-because the devices are broken with it. So leaving it as-is is not really 
-an option (as demonstrated by the custom workarounds).
-
-> > +
-> > +	return 0;
-> > +}
-> 
-> Conceptually it seems like the LNKCTL updates here should be the same
-> whether CONFIG_PCIEASPM is enabled or not (subject to the question
-> above).
-> 
-> When CONFIG_PCIEASPM is enabled, we might need to do more stuff, but
-> it seems like the core should be the same.
-
-So you think it's safer to partially disable ASPM (as per driver's 
-request) rather than disable it completely? I got the impression that the 
-latter might be safer from what Rafael said earlier but I suppose I might 
-have misinterpreted him since he didn't exactly say that it might be safer 
-to _completely_ disable it.
-
--- 
- i.
-
---8323329-1326969328-1697108183=:1692--
+Thanks,
+Niklas
