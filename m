@@ -2,181 +2,114 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D75CB7C9BA6
-	for <lists+linux-rdma@lfdr.de>; Sun, 15 Oct 2023 22:57:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F284D7C9D5F
+	for <lists+linux-rdma@lfdr.de>; Mon, 16 Oct 2023 04:23:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229910AbjJOU5u (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Sun, 15 Oct 2023 16:57:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34026 "EHLO
+        id S230451AbjJPCXN (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Sun, 15 Oct 2023 22:23:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33934 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229518AbjJOU5t (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Sun, 15 Oct 2023 16:57:49 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.9])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 29FDAAB
-        for <linux-rdma@vger.kernel.org>; Sun, 15 Oct 2023 13:57:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1697403468; x=1728939468;
-  h=date:from:to:cc:subject:message-id;
-  bh=dfUZZc16/akjGQu2c1fNtusgZNwNVLIaS0H50Ih4XsQ=;
-  b=FgpWWDrokxs6kV1iraKayKRXVEcC7QdtV6kXukFmVwKTChtfRGbew97n
-   Z5xWfIzl/Kc+r1nvaUNF/ZhszfHQsUGGLCR2kVB2I2ovxasXYSTIJSknU
-   l1ijD2dtZvP2gQ0hr0WFlvLd9O07+mMtLY6moeIWvAcAVJ01R3AdRJg0U
-   cnAojmQQmStiMC44hpR/yvpxIj4RdUcNDVO6poYeOC1Lup8ktMgGqM4Kz
-   RnQlKOC0txTcvJAReb9UmmB/7ScmKuEtT9QgVjU77vMb3MEy9YhNLKxUy
-   eFx5L3TkI8+12dRX3XxXU6CZyOQG8Odp5RkUEaPhIUELW7z2y2h8EN027
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10863"; a="4026761"
-X-IronPort-AV: E=Sophos;i="6.03,226,1694761200"; 
-   d="scan'208";a="4026761"
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by orvoesa101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Oct 2023 13:57:48 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10863"; a="879207117"
-X-IronPort-AV: E=Sophos;i="6.03,226,1694761200"; 
-   d="scan'208";a="879207117"
-Received: from lkp-server02.sh.intel.com (HELO f64821696465) ([10.239.97.151])
-  by orsmga004.jf.intel.com with ESMTP; 15 Oct 2023 13:57:46 -0700
-Received: from kbuild by f64821696465 with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qs8BD-0007nr-1N;
-        Sun, 15 Oct 2023 20:57:43 +0000
-Date:   Mon, 16 Oct 2023 04:56:59 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Leon Romanovsky <leon@kernel.org>
-Cc:     Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg+lists@ziepe.ca>,
-        linux-rdma@vger.kernel.org
-Subject: [rdma:wip/leon-for-next] BUILD SUCCESS
- 45cfa8864cd3ae228ddb17bf2316a0ab3284f70d
-Message-ID: <202310160456.raTFKSsX-lkp@intel.com>
-User-Agent: s-nail v14.9.24
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,
-        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+        with ESMTP id S229600AbjJPCXN (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Sun, 15 Oct 2023 22:23:13 -0400
+Received: from out-201.mta1.migadu.com (out-201.mta1.migadu.com [95.215.58.201])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F3E0AB
+        for <linux-rdma@vger.kernel.org>; Sun, 15 Oct 2023 19:23:11 -0700 (PDT)
+Message-ID: <16e04d5b-a860-0d67-19f7-9efeedebf704@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+        t=1697422987;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=I0XyxhpdLNmNOn2gRxOqHSHgBWiUys/lWFvxBQjTWMU=;
+        b=B7V5zCKzUFPSikN147QKlCLHMwm/1lI0nX6Wp1e6PHfcUgcnkgSAtt7cPIhEudj1Lo3bb2
+        zXKYFBAJRbwvjQXplC+YmfgR9T4/RqE9I+OaEHP19H1fSb4BvztgSji76msKCmAJztzX7x
+        H6kdsBonu9kVlqQve7srNGyU59UizQc=
+Date:   Mon, 16 Oct 2023 10:22:59 +0800
+MIME-Version: 1.0
+Subject: Re: [PATCH 00/19] Cleanup for siw
+To:     Bernard Metzler <BMT@zurich.ibm.com>,
+        "jgg@ziepe.ca" <jgg@ziepe.ca>, "leon@kernel.org" <leon@kernel.org>
+Cc:     "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>
+References: <20231009071801.10210-1-guoqing.jiang@linux.dev>
+ <SN7PR15MB5755F8C0177A3D305F98C2E699D2A@SN7PR15MB5755.namprd15.prod.outlook.com>
+Content-Language: en-US
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From:   Guoqing Jiang <guoqing.jiang@linux.dev>
+In-Reply-To: <SN7PR15MB5755F8C0177A3D305F98C2E699D2A@SN7PR15MB5755.namprd15.prod.outlook.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git wip/leon-for-next
-branch HEAD: 45cfa8864cd3ae228ddb17bf2316a0ab3284f70d  RDMA/bnxt_re: Do not report SRQ error in srq notification
+Hi  Bernard,
 
-elapsed time: 722m
+On 10/13/23 23:45, Bernard Metzler wrote:
+>> -----Original Message-----
+>> From: Guoqing Jiang <guoqing.jiang@linux.dev>
+>> Sent: Monday, October 9, 2023 9:18 AM
+>> To: Bernard Metzler <BMT@zurich.ibm.com>; jgg@ziepe.ca; leon@kernel.org
+>> Cc: linux-rdma@vger.kernel.org
+>> Subject: [EXTERNAL] [PATCH 00/19] Cleanup for siw
+>>
+>> Hi,
+>>
+>> This series aim to cleanup siw code, please review and comment!
+>>
+>> Thanks,
+>> Guoqing
+>>
+>> Guoqing Jiang (19):
+>>    RDMA/siw: Introduce siw_get_page
+>>    RDMA/siw: Introduce siw_srx_update_skb
+>>    RDMA/siw: Use iov.iov_len in kernel_sendmsg
+>>    RDMA/siw: Remove goto lable in siw_mmap
+>>    RDMA/siw: Remove rcu from siw_qp
+>>    RDMA/siw: No need to check term_info.valid before call
+>>      siw_send_terminate
+>>    RDMA/siw: Also goto out_sem_up if pin_user_pages returns 0
+>>    RDMA/siw: Factor out siw_generic_rx helper
+>>    RDMA/siw: Introduce SIW_STAG_MAX_INDEX
+>>    RDMA/siw: Add one parameter to siw_destroy_cpulist
+>>    RDMA/siw: Introduce siw_cep_set_free_and_put
+>>    RDMA/siw: Introduce siw_free_cm_id
+>>    RDMA/siw: Simplify siw_qp_id2obj
+>>    RDMA/siw: Simplify siw_mem_id2obj
+>>    RDMA/siw: Cleanup siw_accept
+>>    RDMA/siw: Remove siw_sk_assign_cm_upcalls
+>>    RDMA/siw: Fix typo
+>>    RDMA/siw: Only check attrs->cap.max_send_wr in siw_create_qp
+>>    RDMA/siw: Introduce siw_destroy_cep_sock
+>>
+>>   drivers/infiniband/sw/siw/siw.h       |   9 +-
+>>   drivers/infiniband/sw/siw/siw_cm.c    | 154 +++++++++++---------------
+>>   drivers/infiniband/sw/siw/siw_main.c  |  30 +++--
+>>   drivers/infiniband/sw/siw/siw_mem.c   |  22 ++--
+>>   drivers/infiniband/sw/siw/siw_qp.c    |   2 +-
+>>   drivers/infiniband/sw/siw/siw_qp_rx.c |  84 ++++++--------
+>>   drivers/infiniband/sw/siw/siw_qp_tx.c |  34 +++---
+>>   drivers/infiniband/sw/siw/siw_verbs.c |  23 +---
+>>   8 files changed, 142 insertions(+), 216 deletions(-)
+>>
+>> --
+>> 2.35.3
+> Hi Guoqing,
+>
+> I'll have a look later next week. Currently on vacation.
+> Thanks, Bernard.
 
-configs tested: 104
-configs skipped: 2
+No hurry, enjoy your vacation first :)
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+BTW, v2 is here.
 
-tested configs:
-alpha                             allnoconfig   gcc  
-alpha                            allyesconfig   gcc  
-alpha                               defconfig   gcc  
-arc                              allmodconfig   gcc  
-arc                               allnoconfig   gcc  
-arc                              allyesconfig   gcc  
-arc                                 defconfig   gcc  
-arc                   randconfig-001-20231015   gcc  
-arm                              allmodconfig   gcc  
-arm                               allnoconfig   gcc  
-arm                              allyesconfig   gcc  
-arm                                 defconfig   gcc  
-arm                   randconfig-001-20231015   gcc  
-arm64                            allmodconfig   gcc  
-arm64                             allnoconfig   gcc  
-arm64                            allyesconfig   gcc  
-arm64                               defconfig   gcc  
-csky                             allmodconfig   gcc  
-csky                              allnoconfig   gcc  
-csky                             allyesconfig   gcc  
-csky                                defconfig   gcc  
-i386                             allmodconfig   gcc  
-i386                              allnoconfig   gcc  
-i386                             allyesconfig   gcc  
-i386                              debian-10.3   gcc  
-i386                                defconfig   gcc  
-i386                  randconfig-001-20231015   gcc  
-i386                  randconfig-002-20231015   gcc  
-i386                  randconfig-003-20231015   gcc  
-i386                  randconfig-004-20231015   gcc  
-i386                  randconfig-005-20231015   gcc  
-i386                  randconfig-006-20231015   gcc  
-loongarch                        allmodconfig   gcc  
-loongarch                         allnoconfig   gcc  
-loongarch                        allyesconfig   gcc  
-loongarch                           defconfig   gcc  
-loongarch             randconfig-001-20231015   gcc  
-m68k                             allmodconfig   gcc  
-m68k                              allnoconfig   gcc  
-m68k                             allyesconfig   gcc  
-m68k                                defconfig   gcc  
-microblaze                       allmodconfig   gcc  
-microblaze                        allnoconfig   gcc  
-microblaze                       allyesconfig   gcc  
-microblaze                          defconfig   gcc  
-mips                             allmodconfig   gcc  
-mips                              allnoconfig   gcc  
-mips                             allyesconfig   gcc  
-nios2                            allmodconfig   gcc  
-nios2                             allnoconfig   gcc  
-nios2                            allyesconfig   gcc  
-nios2                               defconfig   gcc  
-openrisc                         allmodconfig   gcc  
-openrisc                          allnoconfig   gcc  
-openrisc                         allyesconfig   gcc  
-openrisc                            defconfig   gcc  
-parisc                           allmodconfig   gcc  
-parisc                            allnoconfig   gcc  
-parisc                           allyesconfig   gcc  
-parisc                              defconfig   gcc  
-parisc64                            defconfig   gcc  
-powerpc                          allmodconfig   gcc  
-powerpc                           allnoconfig   gcc  
-powerpc                          allyesconfig   gcc  
-riscv                            allmodconfig   gcc  
-riscv                             allnoconfig   gcc  
-riscv                            allyesconfig   gcc  
-riscv                               defconfig   gcc  
-riscv                 randconfig-001-20231015   gcc  
-riscv                          rv32_defconfig   gcc  
-s390                             allmodconfig   gcc  
-s390                              allnoconfig   gcc  
-s390                             allyesconfig   gcc  
-s390                                defconfig   gcc  
-s390                  randconfig-001-20231015   gcc  
-sh                               allmodconfig   gcc  
-sh                                allnoconfig   gcc  
-sh                               allyesconfig   gcc  
-sh                                  defconfig   gcc  
-sparc                            allmodconfig   gcc  
-sparc                             allnoconfig   gcc  
-sparc                            allyesconfig   gcc  
-sparc                               defconfig   gcc  
-sparc                 randconfig-001-20231015   gcc  
-sparc64                          allmodconfig   gcc  
-sparc64                          allyesconfig   gcc  
-sparc64                             defconfig   gcc  
-um                               allmodconfig   clang
-um                                allnoconfig   clang
-um                               allyesconfig   clang
-um                                  defconfig   gcc  
-um                             i386_defconfig   gcc  
-um                           x86_64_defconfig   gcc  
-x86_64                            allnoconfig   gcc  
-x86_64                           allyesconfig   gcc  
-x86_64                              defconfig   gcc  
-x86_64                randconfig-001-20231015   gcc  
-x86_64                randconfig-002-20231015   gcc  
-x86_64                randconfig-003-20231015   gcc  
-x86_64                randconfig-004-20231015   gcc  
-x86_64                randconfig-005-20231015   gcc  
-x86_64                randconfig-006-20231015   gcc  
-x86_64                          rhel-8.3-rust   clang
-x86_64                               rhel-8.3   gcc  
+https://lore.kernel.org/linux-rdma/20231013020053.2120-1-guoqing.jiang@linux.dev/T/#t
 
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+Thanks,
+Guoqing
