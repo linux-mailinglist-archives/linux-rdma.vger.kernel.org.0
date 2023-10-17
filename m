@@ -2,127 +2,324 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CA1527CC3BD
-	for <lists+linux-rdma@lfdr.de>; Tue, 17 Oct 2023 14:56:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3825E7CC964
+	for <lists+linux-rdma@lfdr.de>; Tue, 17 Oct 2023 19:03:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343715AbjJQM4E (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 17 Oct 2023 08:56:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34154 "EHLO
+        id S231444AbjJQRDQ (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 17 Oct 2023 13:03:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53354 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343667AbjJQM4C (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 17 Oct 2023 08:56:02 -0400
-Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 312DAFE;
-        Tue, 17 Oct 2023 05:55:57 -0700 (PDT)
-Received: from kwepemi500006.china.huawei.com (unknown [172.30.72.56])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4S8v5C1r9KzVldb;
-        Tue, 17 Oct 2023 20:52:15 +0800 (CST)
-Received: from localhost.localdomain (10.67.165.2) by
- kwepemi500006.china.huawei.com (7.221.188.68) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.31; Tue, 17 Oct 2023 20:55:53 +0800
-From:   Junxian Huang <huangjunxian6@hisilicon.com>
-To:     <jgg@ziepe.ca>, <leon@kernel.org>
-CC:     <linux-rdma@vger.kernel.org>, <linuxarm@huawei.com>,
-        <linux-kernel@vger.kernel.org>, <huangjunxian6@hisilicon.com>
-Subject: [PATCH for-rc 7/7] RDMA/hns: Fix init failure of RoCE VF and HIP08
-Date:   Tue, 17 Oct 2023 20:52:39 +0800
-Message-ID: <20231017125239.164455-8-huangjunxian6@hisilicon.com>
-X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20231017125239.164455-1-huangjunxian6@hisilicon.com>
-References: <20231017125239.164455-1-huangjunxian6@hisilicon.com>
+        with ESMTP id S229459AbjJQRDP (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 17 Oct 2023 13:03:15 -0400
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BABFDAB;
+        Tue, 17 Oct 2023 10:03:13 -0700 (PDT)
+Received: from pps.filterd (m0353729.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 39HH2Fj5026481;
+        Tue, 17 Oct 2023 17:03:08 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=8/Zwfj6R1eK4/u/hdrrJ9mdLcyQSnZZX0l+rS01es1E=;
+ b=G5x5TKzYlpXaT7yw/g/356gObOCTDxNQdPXflJSxwlUp4pJE3Z+0IRt+AN2pW1w404vp
+ x6HaVt2bRS1sLpTgqG40452DNyrj2n2DCoiS5sdXv7M0tAqkNdBtZD8oHsuzjOBI7nFw
+ OYmYRRytkdiDDS6IrP7Am3tS28EdRv0UHBiSDklRGtAa9cuAHQsYMiNH15YVe717PGB2
+ ZMVDIrWuVHQOewUat/Ju//A0iJeIt99oxB8G8/GdRxbkPgSYZdi2WU2Ts3vbFOMiVbWu
+ 4ePLbvijLklo+EJmqkW7+I/1YiVVSncICFk2LwsPfa1LBC6QUBXviGEVc/6wb2PLIu2T 5g== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3tsxakg15u-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 17 Oct 2023 17:03:07 +0000
+Received: from m0353729.ppops.net (m0353729.ppops.net [127.0.0.1])
+        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 39HH2jKo028820;
+        Tue, 17 Oct 2023 17:03:07 GMT
+Received: from ppma23.wdc07v.mail.ibm.com (5d.69.3da9.ip4.static.sl-reverse.com [169.61.105.93])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3tsxakg13k-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 17 Oct 2023 17:03:07 +0000
+Received: from pps.filterd (ppma23.wdc07v.mail.ibm.com [127.0.0.1])
+        by ppma23.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 39HEpNBO027177;
+        Tue, 17 Oct 2023 17:03:06 GMT
+Received: from smtprelay05.wdc07v.mail.ibm.com ([172.16.1.72])
+        by ppma23.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3tr6tka737-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 17 Oct 2023 17:03:06 +0000
+Received: from smtpav04.wdc07v.mail.ibm.com (smtpav04.wdc07v.mail.ibm.com [10.39.53.231])
+        by smtprelay05.wdc07v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 39HH35SU18940424
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 17 Oct 2023 17:03:05 GMT
+Received: from smtpav04.wdc07v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 2BA8058045;
+        Tue, 17 Oct 2023 17:03:05 +0000 (GMT)
+Received: from smtpav04.wdc07v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 192F958050;
+        Tue, 17 Oct 2023 17:03:03 +0000 (GMT)
+Received: from [9.171.53.134] (unknown [9.171.53.134])
+        by smtpav04.wdc07v.mail.ibm.com (Postfix) with ESMTP;
+        Tue, 17 Oct 2023 17:03:02 +0000 (GMT)
+Message-ID: <2a72918a-2782-4d21-be50-2c3931957f16@linux.ibm.com>
+Date:   Tue, 17 Oct 2023 19:03:02 +0200
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.67.165.2]
-X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
- kwepemi500006.china.huawei.com (7.221.188.68)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH net 1/5] net/smc: fix dangling sock under state
+ SMC_APPFINCLOSEWAIT
+To:     "D. Wythe" <alibuda@linux.alibaba.com>, dust.li@linux.alibaba.com,
+        kgraul@linux.ibm.com, jaka@linux.ibm.com, wintera@linux.ibm.com
+Cc:     kuba@kernel.org, davem@davemloft.net, netdev@vger.kernel.org,
+        linux-s390@vger.kernel.org, linux-rdma@vger.kernel.org
+References: <1697009600-22367-1-git-send-email-alibuda@linux.alibaba.com>
+ <1697009600-22367-2-git-send-email-alibuda@linux.alibaba.com>
+ <e63b546f-b993-4e42-8269-e4d9afa5b845@linux.ibm.com>
+ <f8089b26-bb11-f82d-8070-222b1f8c1db1@linux.alibaba.com>
+ <745d3174-f497-4d6a-ba13-1074128ad99d@linux.ibm.com>
+ <20231013053214.GT92403@linux.alibaba.com>
+ <6666db42-a4de-425e-a96d-bfa899ab265e@linux.ibm.com>
+ <20231013122729.GU92403@linux.alibaba.com>
+ <2eabf3fb-9613-1b96-3ce9-993f94ef081d@linux.alibaba.com>
+Content-Language: en-GB
+From:   Wenjia Zhang <wenjia@linux.ibm.com>
+In-Reply-To: <2eabf3fb-9613-1b96-3ce9-993f94ef081d@linux.alibaba.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: hqL54ccYXCtVdEAN9ZPfqccg0NAweWIG
+X-Proofpoint-GUID: 6vJuSgZiWss-CRFjdwk3GNIGvQeVx1Eb
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-10-17_03,2023-10-17_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 mlxlogscore=999
+ impostorscore=0 lowpriorityscore=0 spamscore=0 suspectscore=0 bulkscore=0
+ clxscore=1015 adultscore=0 phishscore=0 malwarescore=0 priorityscore=1501
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2309180000
+ definitions=main-2310170144
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-During device init, a struct for HW stats will be allocated. As HW
-stats are not supported for VF and HIP08, currently
-hns_roce_alloc_hw_port_stats() returns NULL in this case. However,
-ib-core considers the returned NULL pointer as memory allocation
-failure and returns ENOMEM, eventually leading to the failure of VF
-and HIP08 init.
 
-In the case where the driver does not support the .alloc_hw_port_stats()
-ops, ib-core will return EOPNOTSUPP and ignore this error code in the
-upper layer function. So for VF and HIP08, just don't set the HW stats
-ops to ib-core.
 
-Fixes: 5a87279591a1 ("RDMA/hns: Support hns HW stats")
-Signed-off-by: Junxian Huang <huangjunxian6@hisilicon.com>
----
- drivers/infiniband/hw/hns/hns_roce_main.c | 19 +++++++++----------
- 1 file changed, 9 insertions(+), 10 deletions(-)
-
-diff --git a/drivers/infiniband/hw/hns/hns_roce_main.c b/drivers/infiniband/hw/hns/hns_roce_main.c
-index e1a88f2d51b6..4a9cd4d21bc9 100644
---- a/drivers/infiniband/hw/hns/hns_roce_main.c
-+++ b/drivers/infiniband/hw/hns/hns_roce_main.c
-@@ -553,10 +553,6 @@ static struct rdma_hw_stats *hns_roce_alloc_hw_port_stats(
- 		return NULL;
- 	}
- 
--	if (hr_dev->pci_dev->revision <= PCI_REVISION_ID_HIP08 ||
--	    hr_dev->is_vf)
--		return NULL;
--
- 	return rdma_alloc_hw_stats_struct(hns_roce_port_stats_descs,
- 					  ARRAY_SIZE(hns_roce_port_stats_descs),
- 					  RDMA_HW_STATS_DEFAULT_LIFESPAN);
-@@ -576,10 +572,6 @@ static int hns_roce_get_hw_stats(struct ib_device *device,
- 	if (port > hr_dev->caps.num_ports)
- 		return -EINVAL;
- 
--	if (hr_dev->pci_dev->revision <= PCI_REVISION_ID_HIP08 ||
--	    hr_dev->is_vf)
--		return -EOPNOTSUPP;
--
- 	ret = hr_dev->hw->query_hw_counter(hr_dev, stats->value, port,
- 					   &num_counters);
- 	if (ret) {
-@@ -633,8 +625,6 @@ static const struct ib_device_ops hns_roce_dev_ops = {
- 	.query_pkey = hns_roce_query_pkey,
- 	.query_port = hns_roce_query_port,
- 	.reg_user_mr = hns_roce_reg_user_mr,
--	.alloc_hw_port_stats = hns_roce_alloc_hw_port_stats,
--	.get_hw_stats = hns_roce_get_hw_stats,
- 
- 	INIT_RDMA_OBJ_SIZE(ib_ah, hns_roce_ah, ibah),
- 	INIT_RDMA_OBJ_SIZE(ib_cq, hns_roce_cq, ib_cq),
-@@ -643,6 +633,11 @@ static const struct ib_device_ops hns_roce_dev_ops = {
- 	INIT_RDMA_OBJ_SIZE(ib_ucontext, hns_roce_ucontext, ibucontext),
- };
- 
-+static const struct ib_device_ops hns_roce_dev_hw_stats_ops = {
-+	.alloc_hw_port_stats = hns_roce_alloc_hw_port_stats,
-+	.get_hw_stats = hns_roce_get_hw_stats,
-+};
-+
- static const struct ib_device_ops hns_roce_dev_mr_ops = {
- 	.rereg_user_mr = hns_roce_rereg_user_mr,
- };
-@@ -719,6 +714,10 @@ static int hns_roce_register_device(struct hns_roce_dev *hr_dev)
- 	if (hr_dev->caps.flags & HNS_ROCE_CAP_FLAG_XRC)
- 		ib_set_device_ops(ib_dev, &hns_roce_dev_xrcd_ops);
- 
-+	if (hr_dev->pci_dev->revision >= PCI_REVISION_ID_HIP09 &&
-+	    !hr_dev->is_vf)
-+		ib_set_device_ops(ib_dev, &hns_roce_dev_hw_stats_ops);
-+
- 	ib_set_device_ops(ib_dev, hr_dev->hw->hns_roce_dev_ops);
- 	ib_set_device_ops(ib_dev, &hns_roce_dev_ops);
- 	ib_set_device_ops(ib_dev, &hns_roce_dev_restrack_ops);
--- 
-2.30.0
-
+On 17.10.23 04:00, D. Wythe wrote:
+> 
+> 
+> On 10/13/23 8:27 PM, Dust Li wrote:
+>> On Fri, Oct 13, 2023 at 01:52:09PM +0200, Wenjia Zhang wrote:
+>>>
+>>> On 13.10.23 07:32, Dust Li wrote:
+>>>> On Thu, Oct 12, 2023 at 01:51:54PM +0200, Wenjia Zhang wrote:
+>>>>>
+>>>>> On 12.10.23 04:37, D. Wythe wrote:
+>>>>>>
+>>>>>> On 10/12/23 4:31 AM, Wenjia Zhang wrote:
+>>>>>>>
+>>>>>>> On 11.10.23 09:33, D. Wythe wrote:
+>>>>>>>> From: "D. Wythe" <alibuda@linux.alibaba.com>
+>>>>>>>>
+>>>>>>>> Considering scenario:
+>>>>>>>>
+>>>>>>>>                   smc_cdc_rx_handler_rwwi
+>>>>>>>> __smc_release
+>>>>>>>>                   sock_set_flag
+>>>>>>>> smc_close_active()
+>>>>>>>> sock_set_flag
+>>>>>>>>
+>>>>>>>> __set_bit(DEAD)            __set_bit(DONE)
+>>>>>>>>
+>>>>>>>> Dues to __set_bit is not atomic, the DEAD or DONE might be lost.
+>>>>>>>> if the DEAD flag lost, the state SMC_CLOSED  will be never be 
+>>>>>>>> reached
+>>>>>>>> in smc_close_passive_work:
+>>>>>>>>
+>>>>>>>> if (sock_flag(sk, SOCK_DEAD) &&
+>>>>>>>>       smc_close_sent_any_close(conn)) {
+>>>>>>>>       sk->sk_state = SMC_CLOSED;
+>>>>>>>> } else {
+>>>>>>>>       /* just shutdown, but not yet closed locally */
+>>>>>>>>       sk->sk_state = SMC_APPFINCLOSEWAIT;
+>>>>>>>> }
+>>>>>>>>
+>>>>>>>> Replace sock_set_flags or __set_bit to set_bit will fix this 
+>>>>>>>> problem.
+>>>>>>>> Since set_bit is atomic.
+>>>>>>>>
+>>>>>>> I didn't really understand the scenario. What is
+>>>>>>> smc_cdc_rx_handler_rwwi()? What does it do? Don't it get the lock
+>>>>>>> during the runtime?
+>>>>>>>
+>>>>>> Hi Wenjia,
+>>>>>>
+>>>>>> Sorry for that, It is not smc_cdc_rx_handler_rwwi() but
+>>>>>> smc_cdc_rx_handler();
+>>>>>>
+>>>>>> Following is a more specific description of the issues
+>>>>>>
+>>>>>>
+>>>>>> lock_sock()
+>>>>>> __smc_release
+>>>>>>
+>>>>>> smc_cdc_rx_handler()
+>>>>>> smc_cdc_msg_recv()
+>>>>>> bh_lock_sock()
+>>>>>> smc_cdc_msg_recv_action()
+>>>>>> sock_set_flag(DONE) sock_set_flag(DEAD)
+>>>>>> __set_bit __set_bit
+>>>>>> bh_unlock_sock()
+>>>>>> release_sock()
+>>>>>>
+>>>>>>
+>>>>>>
+>>>>>> Note : |bh_lock_sock|and |lock_sock|are not mutually exclusive. 
+>>>>>> They are
+>>>>>> actually used for different purposes and contexts.
+>>>>>>
+>>>>>>
+>>>>> ok, that's true that |bh_lock_sock|and |lock_sock|are not really 
+>>>>> mutually
+>>>>> exclusive. However, since bh_lock_sock() is used, this scenario you 
+>>>>> described
+>>>>> above should not happen, because that gets the sk_lock.slock. 
+>>>>> Following this
+>>>>> scenarios, IMO, only the following situation can happen.
+>>>>>
+>>>>> lock_sock()
+>>>>> __smc_release
+>>>>>
+>>>>> smc_cdc_rx_handler()
+>>>>> smc_cdc_msg_recv()
+>>>>> bh_lock_sock()
+>>>>> smc_cdc_msg_recv_action()
+>>>>> sock_set_flag(DONE)
+>>>>> bh_unlock_sock()
+>>>>> sock_set_flag(DEAD)
+>>>>> release_sock()
+>>>> Hi wenjia,
+>>>>
+>>>> I think I know what D. Wythe means now, and I think he is right on 
+>>>> this.
+>>>>
+>>>> IIUC, in process context, lock_sock() won't respect bh_lock_sock() 
+>>>> if it
+>>>> acquires the lock before bh_lock_sock(). This is how the sock lock 
+>>>> works.
+>>>>
+>>>>       PROCESS CONTEXT                                 INTERRUPT CONTEXT
+>>>> ------------------------------------------------------------------------
+>>>> lock_sock()
+>>>>       spin_lock_bh(&sk->sk_lock.slock);
+>>>>       ...
+>>>>       sk->sk_lock.owned = 1;
+>>>>       // here the spinlock is released
+>>>>       spin_unlock_bh(&sk->sk_lock.slock);
+>>>> __smc_release()
+>>>>                                                      
+>>>> bh_lock_sock(&smc->sk);
+>>>>                                                      
+>>>> smc_cdc_msg_recv_action(smc, cdc);
+>>>>                                                          
+>>>> sock_set_flag(&smc->sk, SOCK_DONE);
+>>>>                                                      
+>>>> bh_unlock_sock(&smc->sk);
+>>>>
+>>>>       sock_set_flag(DEAD)  <-- Can be before or after 
+>>>> sock_set_flag(DONE)
+>>>> release_sock()
+>>>>
+>>>> The bh_lock_sock() only spins on sk->sk_lock.slock, which is already 
+>>>> released
+>>>> after lock_sock() return. Therefor, there is actually no lock between
+>>>> the code after lock_sock() and before release_sock() with 
+>>>> bh_lock_sock()...bh_unlock_sock().
+>>>> Thus, sock_set_flag(DEAD) won't respect bh_lock_sock() at all, and 
+>>>> might be
+>>>> before or after sock_set_flag(DONE).
+>>>>
+>>>>
+>>>> Actually, in TCP, the interrupt context will check 
+>>>> sock_owned_by_user().
+>>>> If it returns true, the softirq just defer the process to backlog, 
+>>>> and process
+>>>> that in release_sock(). Which avoid the race between softirq and 
+>>>> process
+>>>> when visiting the 'struct sock'.
+>>>>
+>>>> tcp_v4_rcv()
+>>>>            bh_lock_sock_nested(sk);
+>>>>            tcp_segs_in(tcp_sk(sk), skb);
+>>>>            ret = 0;
+>>>>            if (!sock_owned_by_user(sk)) {
+>>>>                    ret = tcp_v4_do_rcv(sk, skb);
+>>>>            } else {
+>>>>                    if (tcp_add_backlog(sk, skb, &drop_reason))
+>>>>                            goto discard_and_relse;
+>>>>            }
+>>>>            bh_unlock_sock(sk);
+>>>>
+>>>>
+>>>> But in SMC we don't have a backlog, that means fields in 'struct sock'
+>>>> might all have race, and this sock_set_flag() is just one of the cases.
+>>>>
+>>>> Best regards,
+>>>> Dust
+>>>>
+>>> I agree on your description above.
+>>> Sure, the following case 1) can also happen
+>>>
+>>> case 1)
+>>> -------
+>>> lock_sock()
+>>> __smc_release
+>>>
+>>> sock_set_flag(DEAD)
+>>> bh_lock_sock()
+>>> smc_cdc_msg_recv_action()
+>>> sock_set_flag(DONE)
+>>> bh_unlock_sock()
+>>> release_sock()
+>>>
+>>> case 2)
+>>> -------
+>>> lock_sock()
+>>> __smc_release
+>>>
+>>> bh_lock_sock()
+>>> smc_cdc_msg_recv_action()
+>>> sock_set_flag(DONE) sock_set_flag(DEAD)
+>>> __set_bit __set_bit
+>>> bh_unlock_sock()
+>>> release_sock()
+>>>
+>>> My point here is that case2) can never happen. i.e that 
+>>> sock_set_flag(DONE)
+>>> and sock_set_flag(DEAD) can not happen concurrently. Thus, how could
+>>> the atomic set help make sure that the Dead flag would not be 
+>>> overwritten
+>>> with DONE?
+>> I agree with you on this. I also don't see using atomic can
+>> solve the problem of overwriting the DEAD flag with DONE.
+>>
+>> I think we need some mechanisms to ensure that sk_flags and other
+>> struct sock related fields are not modified simultaneously.
+>>
+>> Best regards,
+>> Dust
+> 
+> It seems that everyone has agrees on that case 2 is impossible. I'm a 
+> bit confused, why that
+> sock_set_flag(DONE) and sock_set_flag(DEAD) can not happen concurrently. 
+> What mechanism
+> prevents their parallel execution?
+> 
+> Best wishes,
+> D. Wythe
+> 
+>>
+> 
+In the smc_cdc_rx_handler(), if bh_lock_sock() is got, how could the 
+sock_set_flag(DEAD) in the __smc_release() modify the flag concurrently? 
+As I said, that could be just kind of lapse of my thought, but I still 
+want to make it clarify.
