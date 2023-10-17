@@ -2,145 +2,253 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BE7967CBD05
-	for <lists+linux-rdma@lfdr.de>; Tue, 17 Oct 2023 10:02:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9003B7CBDE6
+	for <lists+linux-rdma@lfdr.de>; Tue, 17 Oct 2023 10:39:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234698AbjJQICg (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 17 Oct 2023 04:02:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52018 "EHLO
+        id S234751AbjJQIjv (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 17 Oct 2023 04:39:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41970 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232134AbjJQICe (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 17 Oct 2023 04:02:34 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A9235AB
-        for <linux-rdma@vger.kernel.org>; Tue, 17 Oct 2023 01:01:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1697529713;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=LQ117M2jgWxUnJUj7fuhzPSTEiiTZHHq+ID/a06/KdQ=;
-        b=UXcE9gxz1SUEV4CbSN78iJQTYe3cXRy5Z5YcqPHzqKri8F4jiSTar8DBl3NWe88Jnvg6oG
-        CMKrGpPqbkbcbYr2elbbvwV5lhomIHwpBWFPgIbnxwB35wSK8IZK/CysjVuIR7+aHobGWH
-        tu76oJobxDPZ/8d9puZbHiXVmR85Txg=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-592-MoCXtgqUP5m-Iakgk_dpRQ-1; Tue, 17 Oct 2023 04:01:43 -0400
-X-MC-Unique: MoCXtgqUP5m-Iakgk_dpRQ-1
-Received: from smtp.corp.redhat.com (int-mx09.intmail.prod.int.rdu2.redhat.com [10.11.54.9])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 34334185A797;
-        Tue, 17 Oct 2023 08:01:43 +0000 (UTC)
-Received: from blackfin.pond.sub.org (unknown [10.39.193.56])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id EE234492BF3;
-        Tue, 17 Oct 2023 08:01:42 +0000 (UTC)
-Received: by blackfin.pond.sub.org (Postfix, from userid 1000)
-        id A799421E6A1F; Tue, 17 Oct 2023 10:01:41 +0200 (CEST)
-From:   Markus Armbruster <armbru@redhat.com>
-To:     Li Zhijian <lizhijian@fujitsu.com>
-Cc:     linux-rdma@vger.kernel.org, jgg@ziepe.ca
-Subject: Re: [PATCH rdma-core] libibverbs/man/ibv_reg_mr.3: Document errno
- on failure
-References: <20231017053738.226069-1-lizhijian@fujitsu.com>
-Date:   Tue, 17 Oct 2023 10:01:41 +0200
-In-Reply-To: <20231017053738.226069-1-lizhijian@fujitsu.com> (Li Zhijian's
-        message of "Tue, 17 Oct 2023 13:37:37 +0800")
-Message-ID: <874jipd6e2.fsf@pond.sub.org>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/28.2 (gnu/linux)
+        with ESMTP id S234746AbjJQIju (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 17 Oct 2023 04:39:50 -0400
+Received: from out30-100.freemail.mail.aliyun.com (out30-100.freemail.mail.aliyun.com [115.124.30.100])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 04D39FB;
+        Tue, 17 Oct 2023 01:39:46 -0700 (PDT)
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R141e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018045176;MF=dust.li@linux.alibaba.com;NM=1;PH=DS;RN=10;SR=0;TI=SMTPD_---0VuMbDuC_1697531983;
+Received: from localhost(mailfrom:dust.li@linux.alibaba.com fp:SMTPD_---0VuMbDuC_1697531983)
+          by smtp.aliyun-inc.com;
+          Tue, 17 Oct 2023 16:39:44 +0800
+Date:   Tue, 17 Oct 2023 16:39:42 +0800
+From:   Dust Li <dust.li@linux.alibaba.com>
+To:     "D. Wythe" <alibuda@linux.alibaba.com>,
+        Wenjia Zhang <wenjia@linux.ibm.com>, kgraul@linux.ibm.com,
+        jaka@linux.ibm.com, wintera@linux.ibm.com
+Cc:     kuba@kernel.org, davem@davemloft.net, netdev@vger.kernel.org,
+        linux-s390@vger.kernel.org, linux-rdma@vger.kernel.org
+Subject: Re: [PATCH net 1/5] net/smc: fix dangling sock under state
+ SMC_APPFINCLOSEWAIT
+Message-ID: <20231017083942.GW92403@linux.alibaba.com>
+Reply-To: dust.li@linux.alibaba.com
+References: <1697009600-22367-1-git-send-email-alibuda@linux.alibaba.com>
+ <1697009600-22367-2-git-send-email-alibuda@linux.alibaba.com>
+ <e63b546f-b993-4e42-8269-e4d9afa5b845@linux.ibm.com>
+ <f8089b26-bb11-f82d-8070-222b1f8c1db1@linux.alibaba.com>
+ <745d3174-f497-4d6a-ba13-1074128ad99d@linux.ibm.com>
+ <20231013053214.GT92403@linux.alibaba.com>
+ <6666db42-a4de-425e-a96d-bfa899ab265e@linux.ibm.com>
+ <20231013122729.GU92403@linux.alibaba.com>
+ <2eabf3fb-9613-1b96-3ce9-993f94ef081d@linux.alibaba.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.9
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <2eabf3fb-9613-1b96-3ce9-993f94ef081d@linux.alibaba.com>
+X-Spam-Status: No, score=-9.9 required=5.0 tests=BAYES_00,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Li Zhijian <lizhijian@fujitsu.com> writes:
-
-> 'errno' is being widely used by applications when ibv_reg_mr returns NULL.
-> They all believe errno indicates the error on failure, so let's document
-> it explicitly.
-
-Similar issue with ibv_open_device() .  Possibly more.
-
-> Reported-by: Markus Armbruster <armbru@redhat.com>
-> Signed-off-by: Li Zhijian <lizhijian@fujitsu.com>
-> ---
->  libibverbs/man/ibv_reg_mr.3 | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+On Tue, Oct 17, 2023 at 10:00:28AM +0800, D. Wythe wrote:
 >
-> diff --git a/libibverbs/man/ibv_reg_mr.3 b/libibverbs/man/ibv_reg_mr.3
-> index 8f323891..d43799c5 100644
-> --- a/libibverbs/man/ibv_reg_mr.3
-> +++ b/libibverbs/man/ibv_reg_mr.3
-> @@ -103,7 +103,7 @@ deregisters the MR
->  .I mr\fR.
->  .SH "RETURN VALUE"
->  .B ibv_reg_mr() / ibv_reg_mr_iova() / ibv_reg_dmabuf_mr()
-> -returns a pointer to the registered MR, or NULL if the request fails.
-> +returns a pointer to the registered MR, or NULL if the request fails (and sets errno to indicate the failure reason).
->  The local key (\fBL_Key\fR) field
->  .B lkey
->  is used as the lkey field of struct ibv_sge when posting buffers with
+>
+>On 10/13/23 8:27 PM, Dust Li wrote:
+>> On Fri, Oct 13, 2023 at 01:52:09PM +0200, Wenjia Zhang wrote:
+>> > 
+>> > On 13.10.23 07:32, Dust Li wrote:
+>> > > On Thu, Oct 12, 2023 at 01:51:54PM +0200, Wenjia Zhang wrote:
+>> > > > 
+>> > > > On 12.10.23 04:37, D. Wythe wrote:
+>> > > > > 
+>> > > > > On 10/12/23 4:31 AM, Wenjia Zhang wrote:
+>> > > > > > 
+>> > > > > > On 11.10.23 09:33, D. Wythe wrote:
+>> > > > > > > From: "D. Wythe" <alibuda@linux.alibaba.com>
+>> > > > > > > 
+>> > > > > > > Considering scenario:
+>> > > > > > > 
+>> > > > > > >                   smc_cdc_rx_handler_rwwi
+>> > > > > > > __smc_release
+>> > > > > > >                   sock_set_flag
+>> > > > > > > smc_close_active()
+>> > > > > > > sock_set_flag
+>> > > > > > > 
+>> > > > > > > __set_bit(DEAD)            __set_bit(DONE)
+>> > > > > > > 
+>> > > > > > > Dues to __set_bit is not atomic, the DEAD or DONE might be lost.
+>> > > > > > > if the DEAD flag lost, the state SMC_CLOSED  will be never be reached
+>> > > > > > > in smc_close_passive_work:
+>> > > > > > > 
+>> > > > > > > if (sock_flag(sk, SOCK_DEAD) &&
+>> > > > > > >       smc_close_sent_any_close(conn)) {
+>> > > > > > >       sk->sk_state = SMC_CLOSED;
+>> > > > > > > } else {
+>> > > > > > >       /* just shutdown, but not yet closed locally */
+>> > > > > > >       sk->sk_state = SMC_APPFINCLOSEWAIT;
+>> > > > > > > }
+>> > > > > > > 
+>> > > > > > > Replace sock_set_flags or __set_bit to set_bit will fix this problem.
+>> > > > > > > Since set_bit is atomic.
+>> > > > > > > 
+>> > > > > > I didn't really understand the scenario. What is
+>> > > > > > smc_cdc_rx_handler_rwwi()? What does it do? Don't it get the lock
+>> > > > > > during the runtime?
+>> > > > > > 
+>> > > > > Hi Wenjia,
+>> > > > > 
+>> > > > > Sorry for that, It is not smc_cdc_rx_handler_rwwi() but
+>> > > > > smc_cdc_rx_handler();
+>> > > > > 
+>> > > > > Following is a more specific description of the issues
+>> > > > > 
+>> > > > > 
+>> > > > > lock_sock()
+>> > > > > __smc_release
+>> > > > > 
+>> > > > > smc_cdc_rx_handler()
+>> > > > > smc_cdc_msg_recv()
+>> > > > > bh_lock_sock()
+>> > > > > smc_cdc_msg_recv_action()
+>> > > > > sock_set_flag(DONE) sock_set_flag(DEAD)
+>> > > > > __set_bit __set_bit
+>> > > > > bh_unlock_sock()
+>> > > > > release_sock()
+>> > > > > 
+>> > > > > 
+>> > > > > 
+>> > > > > Note : |bh_lock_sock|and |lock_sock|are not mutually exclusive. They are
+>> > > > > actually used for different purposes and contexts.
+>> > > > > 
+>> > > > > 
+>> > > > ok, that's true that |bh_lock_sock|and |lock_sock|are not really mutually
+>> > > > exclusive. However, since bh_lock_sock() is used, this scenario you described
+>> > > > above should not happen, because that gets the sk_lock.slock. Following this
+>> > > > scenarios, IMO, only the following situation can happen.
+>> > > > 
+>> > > > lock_sock()
+>> > > > __smc_release
+>> > > > 
+>> > > > smc_cdc_rx_handler()
+>> > > > smc_cdc_msg_recv()
+>> > > > bh_lock_sock()
+>> > > > smc_cdc_msg_recv_action()
+>> > > > sock_set_flag(DONE)
+>> > > > bh_unlock_sock()
+>> > > > sock_set_flag(DEAD)
+>> > > > release_sock()
+>> > > Hi wenjia,
+>> > > 
+>> > > I think I know what D. Wythe means now, and I think he is right on this.
+>> > > 
+>> > > IIUC, in process context, lock_sock() won't respect bh_lock_sock() if it
+>> > > acquires the lock before bh_lock_sock(). This is how the sock lock works.
+>> > > 
+>> > >       PROCESS CONTEXT                                 INTERRUPT CONTEXT
+>> > > ------------------------------------------------------------------------
+>> > > lock_sock()
+>> > >       spin_lock_bh(&sk->sk_lock.slock);
+>> > >       ...
+>> > >       sk->sk_lock.owned = 1;
+>> > >       // here the spinlock is released
+>> > >       spin_unlock_bh(&sk->sk_lock.slock);
+>> > > __smc_release()
+>> > >                                                      bh_lock_sock(&smc->sk);
+>> > >                                                      smc_cdc_msg_recv_action(smc, cdc);
+>> > >                                                          sock_set_flag(&smc->sk, SOCK_DONE);
+>> > >                                                      bh_unlock_sock(&smc->sk);
+>> > > 
+>> > >       sock_set_flag(DEAD)  <-- Can be before or after sock_set_flag(DONE)
+>> > > release_sock()
+>> > > 
+>> > > The bh_lock_sock() only spins on sk->sk_lock.slock, which is already released
+>> > > after lock_sock() return. Therefor, there is actually no lock between
+>> > > the code after lock_sock() and before release_sock() with bh_lock_sock()...bh_unlock_sock().
+>> > > Thus, sock_set_flag(DEAD) won't respect bh_lock_sock() at all, and might be
+>> > > before or after sock_set_flag(DONE).
+>> > > 
+>> > > 
+>> > > Actually, in TCP, the interrupt context will check sock_owned_by_user().
+>> > > If it returns true, the softirq just defer the process to backlog, and process
+>> > > that in release_sock(). Which avoid the race between softirq and process
+>> > > when visiting the 'struct sock'.
+>> > > 
+>> > > tcp_v4_rcv()
+>> > >            bh_lock_sock_nested(sk);
+>> > >            tcp_segs_in(tcp_sk(sk), skb);
+>> > >            ret = 0;
+>> > >            if (!sock_owned_by_user(sk)) {
+>> > >                    ret = tcp_v4_do_rcv(sk, skb);
+>> > >            } else {
+>> > >                    if (tcp_add_backlog(sk, skb, &drop_reason))
+>> > >                            goto discard_and_relse;
+>> > >            }
+>> > >            bh_unlock_sock(sk);
+>> > > 
+>> > > 
+>> > > But in SMC we don't have a backlog, that means fields in 'struct sock'
+>> > > might all have race, and this sock_set_flag() is just one of the cases.
+>> > > 
+>> > > Best regards,
+>> > > Dust
+>> > > 
+>> > I agree on your description above.
+>> > Sure, the following case 1) can also happen
+>> > 
+>> > case 1)
+>> > -------
+>> > lock_sock()
+>> > __smc_release
+>> > 
+>> > sock_set_flag(DEAD)
+>> > bh_lock_sock()
+>> > smc_cdc_msg_recv_action()
+>> > sock_set_flag(DONE)
+>> > bh_unlock_sock()
+>> > release_sock()
+>> > 
+>> > case 2)
+>> > -------
+>> > lock_sock()
+>> > __smc_release
+>> > 
+>> > bh_lock_sock()
+>> > smc_cdc_msg_recv_action()
+>> > sock_set_flag(DONE) sock_set_flag(DEAD)
+>> > __set_bit __set_bit
+>> > bh_unlock_sock()
+>> > release_sock()
+>> > 
+>> > My point here is that case2) can never happen. i.e that sock_set_flag(DONE)
+>> > and sock_set_flag(DEAD) can not happen concurrently. Thus, how could
+>> > the atomic set help make sure that the Dead flag would not be overwritten
+>> > with DONE?
+>> I agree with you on this. I also don't see using atomic can
+>> solve the problem of overwriting the DEAD flag with DONE.
+>> 
+>> I think we need some mechanisms to ensure that sk_flags and other
+>> struct sock related fields are not modified simultaneously.
+>> 
+>> Best regards,
+>> Dust
+>
+>It seems that everyone has agrees on that case 2 is impossible. I'm a bit
+>confused, why that
+>sock_set_flag(DONE) and sock_set_flag(DEAD) can not happen concurrently. What
+>mechanism
+>prevents their parallel execution?
 
-We should double-check errno is set on all failures.  I doubt it is.
+Upon reviewing the code again, I realize that my previous understanding
+was incorrect. I mistakenly believed that the DEAD and DONE flags would
+overwrite each other, without realizing that sk_flags is actually used
+as a bitmap.
 
-ibv_reg_mr() is a macro:
+So, I think you are right, using atomic will ensure that the DEAD flag is
+always set.
 
-    #define ibv_reg_mr(pd, addr, length, access)                                   \
-            __ibv_reg_mr(pd, addr, length, access,                                 \
-                         __builtin_constant_p(				       \
-                                 ((int)(access) & IBV_ACCESS_OPTIONAL_RANGE) == 0))
-
-__ibv_reg_mr() may call ibv_reg_mr_iova2():
-
-    __attribute__((__always_inline__)) static inline struct ibv_mr *
-    __ibv_reg_mr(struct ibv_pd *pd, void *addr, size_t length, unsigned int access,
-                 int is_access_const)
-    {
-            if (is_access_const && (access & IBV_ACCESS_OPTIONAL_RANGE) == 0)
-                    return ibv_reg_mr(pd, addr, length, (int)access);
-            else
-                    return ibv_reg_mr_iova2(pd, addr, length, (uintptr_t)addr,
-                                            access);
-    }
-
-ibv_reg_mr_iova2() doesn't seem to set errno at --->:
-
-    struct ibv_mr *ibv_reg_mr_iova2(struct ibv_pd *pd, void *addr, size_t length,
-                                    uint64_t iova, unsigned int access)
-    {
-            struct verbs_device *device = verbs_get_device(pd->context->device);
-            bool odp_mr = access & IBV_ACCESS_ON_DEMAND;
-            struct ibv_mr *mr;
-
-            if (!(device->core_support & IB_UVERBS_CORE_SUPPORT_OPTIONAL_MR_ACCESS))
-                    access &= ~IBV_ACCESS_OPTIONAL_RANGE;
-
-            if (!odp_mr && ibv_dontfork_range(addr, length))
---->                return NULL;
-
-            mr = get_ops(pd->context)->reg_mr(pd, addr, length, iova, access);
-            if (mr) {
-                    mr->context = pd->context;
-                    mr->pd      = pd;
-                    mr->addr    = addr;
-                    mr->length  = length;
-            } else {
-                    if (!odp_mr)
-                            ibv_dofork_range(addr, length);
-            }
-
-            return mr;
-    }
-
-
-Thanks!
+Best regards,
+Dust
 
