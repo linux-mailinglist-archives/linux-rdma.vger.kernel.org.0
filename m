@@ -2,61 +2,48 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A534F7CCF63
-	for <lists+linux-rdma@lfdr.de>; Tue, 17 Oct 2023 23:39:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C59987CD013
+	for <lists+linux-rdma@lfdr.de>; Wed, 18 Oct 2023 00:43:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231149AbjJQVjm (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 17 Oct 2023 17:39:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42132 "EHLO
+        id S230056AbjJQWnC (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 17 Oct 2023 18:43:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45376 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229459AbjJQVjm (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 17 Oct 2023 17:39:42 -0400
-Received: from mail-ot1-x331.google.com (mail-ot1-x331.google.com [IPv6:2607:f8b0:4864:20::331])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A4F2AA4;
-        Tue, 17 Oct 2023 14:39:40 -0700 (PDT)
-Received: by mail-ot1-x331.google.com with SMTP id 46e09a7af769-6c65d096c96so3215845a34.1;
-        Tue, 17 Oct 2023 14:39:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1697578780; x=1698183580; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=n3xdp/ZSQK3Nv/gEEqmJto72JS6hZd7fcXkPOCgmNpc=;
-        b=Ti1ulYFohFLcKc5Qc/pSb+N4eFc4WvmmsitZ0LsabviYRD0AtIaQhdTVOGqeh1qpIp
-         sTY8dBStB4W29PMElJUQs+ZlwU3Uluyji1j5JwR9MvJzhlpfyz8RWHZb58sXsApTEHhs
-         4WKfJwhY4AuvtDLG29lrAcXlMh/XF8OfqUqUWLYGA8U8UwJNFTOOreU7w5GHd6bZb6J3
-         WetYGeEa2jOVSyzZhS2oXChAFas/OMo4b1wVnXmB+THTE0v6r7owDsEG8KnSpe1z8F7N
-         uuS2/blptBICcvFzGhvhJCln4UpLNdj9+qOyIuF0CD4Gib9J6oGFAMrilrmP8xu8mufK
-         SgNA==
+        with ESMTP id S229459AbjJQWnB (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 17 Oct 2023 18:43:01 -0400
+Received: from mail-pl1-f182.google.com (mail-pl1-f182.google.com [209.85.214.182])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9293DC6;
+        Tue, 17 Oct 2023 15:43:00 -0700 (PDT)
+Received: by mail-pl1-f182.google.com with SMTP id d9443c01a7336-1c9d407bb15so52418135ad.0;
+        Tue, 17 Oct 2023 15:43:00 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697578780; x=1698183580;
+        d=1e100.net; s=20230601; t=1697582580; x=1698187380;
         h=content-transfer-encoding:in-reply-to:from:references:cc:to
          :content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=n3xdp/ZSQK3Nv/gEEqmJto72JS6hZd7fcXkPOCgmNpc=;
-        b=Zk3UYOLmpJ4fDgPP2A4nuJ6MGPu3kGGY28T8PJJPWvCnDzJ3Yg9DglU/gQXHV1WfoB
-         dtnlzYwwiKos/taOQ2Nz2Q2dTAxrE29AkwGZX5kvtrWt5DuBMEi4xTwSICx4eN9Ge2Cj
-         DKaMLnizZeUA8kRu9OgV1qGryFa5h1PMzNVzwgzuqrXHfmeogaK+xxdPyWLbrvALioso
-         a+TMSQPRL44uhZ3Q+oz7eBic574fpTBwtxKpwpkUP9NYTtzbyxshYes28wk8d2JFY/XJ
-         2jkz85tfRI/IMEa4r8atxyeSHfrJGusiRtam+1qJjC1XgK7wWIN6mZaKq3ZiAkQGhZQZ
-         2FWQ==
-X-Gm-Message-State: AOJu0YxL8LprBflJ9gWyQIPbcswYlzGYxJj3YfUKZ88Nw7m/ZNp1aP8Z
-        kGY/B496/b12jcBjnAuUqZA=
-X-Google-Smtp-Source: AGHT+IEc3GNADKeS3gDlFFVsA2zEoh7AthUIfOxc3NagYC3NpYqfJFEAzSwYdy8EBm63uCmDVO6Rfg==
-X-Received: by 2002:a05:6830:33c9:b0:6bd:9e1c:93a6 with SMTP id q9-20020a05683033c900b006bd9e1c93a6mr1971032ott.0.1697578779859;
-        Tue, 17 Oct 2023 14:39:39 -0700 (PDT)
-Received: from ?IPV6:2603:8081:1405:679b:1392:8eda:4bf:b7e5? (2603-8081-1405-679b-1392-8eda-04bf-b7e5.res6.spectrum.com. [2603:8081:1405:679b:1392:8eda:4bf:b7e5])
-        by smtp.gmail.com with ESMTPSA id h6-20020a9d3e46000000b006ba864f5b37sm406382otg.12.2023.10.17.14.39.38
+        bh=qA/CJbPoGdWoJZcG4YdRHMYpbxeSagOoqg60ZPsmRXs=;
+        b=H/zkW6tiMehxTzAXE9q+AoUiVZgC9YM1YqKlmWtL+N0nIsWfo5RprxvOj+xMDISKlG
+         MDA/9zv1WJteajvbYX8Yh751KLxNF6OJRPwNrllR3Eqxe/9ByyfIT2injKoLYSzAZy9A
+         /7LZP+YbTMLmmtejokgCnw+WFb/r4qCHPQaQFdG1cWfX/jy8A+STYqEyDWkTni2UTS7G
+         0yDuEam/Q60ELGtMp5u5SqKbj/ld7VNfVrtmM6roP/lK+L+yn7sUeX5nOnQH2w6Kia0H
+         FmHaReafjnUTtlXecvv8S1ByxtiVlf0xrFJH6pOgE41LoJVAbGX9r9Y9A0/rteU5eai6
+         nYNQ==
+X-Gm-Message-State: AOJu0YwTgH27+4AhdtkfYnT+TrcbF29MY/k1c9xsYMNBw5GjIYoFxRi5
+        HUXJFVnxPpHx8OUk2DLkFiU=
+X-Google-Smtp-Source: AGHT+IGIThTl+39yky+2mrlw0uX5joN3+viEGcXHgW0bQJT3qH1zgyge2UZdGjwzXflo4klLC1k9yg==
+X-Received: by 2002:a17:902:e401:b0:1c9:cc3a:7b3 with SMTP id m1-20020a170902e40100b001c9cc3a07b3mr3011840ple.54.1697582579800;
+        Tue, 17 Oct 2023 15:42:59 -0700 (PDT)
+Received: from [192.168.51.14] (c-73-231-117-72.hsd1.ca.comcast.net. [73.231.117.72])
+        by smtp.gmail.com with ESMTPSA id x4-20020a170902ea8400b001c3be750900sm2113447plb.163.2023.10.17.15.42.58
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 17 Oct 2023 14:39:39 -0700 (PDT)
-Message-ID: <bf2705ff-716a-45b5-bcc4-8710ea0fb98e@gmail.com>
-Date:   Tue, 17 Oct 2023 16:39:38 -0500
+        Tue, 17 Oct 2023 15:42:59 -0700 (PDT)
+Message-ID: <65b871ef-dd93-4bfb-bae9-c147a87c64d0@acm.org>
+Date:   Tue, 17 Oct 2023 15:42:57 -0700
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
 Subject: Re: [bug report] blktests srp/002 hang
 Content-Language: en-US
-To:     Bart Van Assche <bvanassche@acm.org>,
-        Jason Gunthorpe <jgg@ziepe.ca>
+To:     Bob Pearson <rpearsonhpe@gmail.com>, Jason Gunthorpe <jgg@ziepe.ca>
 Cc:     "Daisuke Matsuda (Fujitsu)" <matsuda-daisuke@fujitsu.com>,
         'Rain River' <rain.1986.08.12@gmail.com>,
         Zhu Yanjun <yanjun.zhu@linux.dev>,
@@ -81,39 +68,45 @@ References: <8aff9124-85c0-8e3b-dc35-1017b1540037@gmail.com>
  <02cd10fd-fd4a-4ad7-9b1d-6d37b070aacf@acm.org>
  <5c6e69b3-f83b-461d-a08a-37bfbd82f995@gmail.com>
  <cad2fee4-9359-4614-b36b-c2599dc12358@acm.org>
-From:   Bob Pearson <rpearsonhpe@gmail.com>
-In-Reply-To: <cad2fee4-9359-4614-b36b-c2599dc12358@acm.org>
-Content-Type: text/plain; charset=UTF-8
+ <bf2705ff-716a-45b5-bcc4-8710ea0fb98e@gmail.com>
+From:   Bart Van Assche <bvanassche@acm.org>
+In-Reply-To: <bf2705ff-716a-45b5-bcc4-8710ea0fb98e@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 10/17/23 16:30, Bart Van Assche wrote:
+On 10/17/23 14:39, Bob Pearson wrote:
+> On 10/17/23 16:30, Bart Van Assche wrote:
+>>
+>> On 10/17/23 14:23, Bob Pearson wrote:
+>>> Not really, but stuck could mean it died (no threads active) or it is
+>>> in a loop or waiting to be scheduled. It looks dead. The lower layers are
+>>> waiting to get kicked into action by some event but it hasn't happened.
+>>> This is conjecture on my part though.
+>>
+>> This call stack means that I/O has been submitted by the block layer and
+>> that it did not get completed. Which I/O request got stuck can be
+>> verified by e.g. running the list-pending-block-requests script that I
+>> posted some time ago. See also
+>> https://lore.kernel.org/all/55c0fe61-a091-b351-11b4-fa7f668e49d7@acm.org/.
 > 
-> On 10/17/23 14:23, Bob Pearson wrote:
->> Not really, but stuck could mean it died (no threads active) or it is
->> in a loop or waiting to be scheduled. It looks dead. The lower layers are
->> waiting to get kicked into action by some event but it hasn't happened.
->> This is conjecture on my part though.
-> 
-> This call stack means that I/O has been submitted by the block layer and
-> that it did not get completed. Which I/O request got stuck can be
-> verified by e.g. running the list-pending-block-requests script that I
-> posted some time ago. See also
-> https://lore.kernel.org/all/55c0fe61-a091-b351-11b4-fa7f668e49d7@acm.org/.
-> 
-> Thanks,
-> 
-> Bart.
+> Thanks. Would this run on the side of a hung blktests or would I need to
+> setup an srp-srpt file system?
 
-Thanks. Would this run on the side of a hung blktests or would I need to
-setup an srp-srpt file system?
+I propose to analyze the source code of the component(s) that you
+suspect of causing the hang. The output of the list-pending-block-
+requests script is not sufficient to reveal which of the following
+drivers is causing the hang: ib_srp, rdma_rxe, ib_srpt, ...
 
-Bob
+Thanks,
+
+Bart.
+
