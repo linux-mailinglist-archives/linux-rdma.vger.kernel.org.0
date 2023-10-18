@@ -2,53 +2,94 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D5A3C7CD7A0
-	for <lists+linux-rdma@lfdr.de>; Wed, 18 Oct 2023 11:15:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 855D97CE672
+	for <lists+linux-rdma@lfdr.de>; Wed, 18 Oct 2023 20:29:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229657AbjJRJPx (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 18 Oct 2023 05:15:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45836 "EHLO
+        id S231194AbjJRS3Y (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 18 Oct 2023 14:29:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57068 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229690AbjJRJPw (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 18 Oct 2023 05:15:52 -0400
-Received: from mail-oa1-f80.google.com (mail-oa1-f80.google.com [209.85.160.80])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B66F10B
-        for <linux-rdma@vger.kernel.org>; Wed, 18 Oct 2023 02:15:50 -0700 (PDT)
-Received: by mail-oa1-f80.google.com with SMTP id 586e51a60fabf-1d66b019a27so8863046fac.0
-        for <linux-rdma@vger.kernel.org>; Wed, 18 Oct 2023 02:15:50 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697620550; x=1698225350;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+        with ESMTP id S232691AbjJRS3V (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 18 Oct 2023 14:29:21 -0400
+Received: from mail-oi1-x236.google.com (mail-oi1-x236.google.com [IPv6:2607:f8b0:4864:20::236])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5BE36132;
+        Wed, 18 Oct 2023 11:29:19 -0700 (PDT)
+Received: by mail-oi1-x236.google.com with SMTP id 5614622812f47-3add37de892so3938119b6e.1;
+        Wed, 18 Oct 2023 11:29:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1697653758; x=1698258558; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=rnf7mxU5ljq5PJpqjMzySXNNyUScoKkMxLEuUfdA8+0=;
-        b=hM3gYmN5oZv1blk+yQOdHQrG6w3tE2pGxHiiRnyNpjvSpdn2TneJr1jInOGXyrAvBF
-         9+6fheHE/NqWASmGu+A6AEA6mw+jGr4iugev/wlZEq3gNvBz3ZXa98ru2yH4j1afkX+u
-         P765Gwzr4JvUUX5HN7K+atyGTO4d/Qw/lU1eC10VkXxz9TM5xxcqHwaSxrnYwEHz0NMK
-         2H29fpHYyE3vdfdmczkq5U82hEfvRaH+Z1xb0JT0GsDVBw372ekvZA0qtCTrgzuzuKbd
-         bcZQU0g+iZ3fN0sxrgh8EdfIF40kvj1jqQtHRDhu2eot5XUePWfkSth/1Tp2qf0YwUD7
-         HAVA==
-X-Gm-Message-State: AOJu0YyjFtYhYkabfR1egDnEP+gow8gWkOTO8GjrhlGEUjrly+ZUe6Io
-        kVBwxup+IU2MUN1hGjHw14fhMtENHgPulKdPHTaH/goF8aoL
-X-Google-Smtp-Source: AGHT+IEVyOpzK0ciUkUl8pn15LkIrJ8+nZaZyVv+YpJTW6P3ZFsyCiCzeN+C9hCwesLkD1y4lMba0bHLzEuoXGWcYMP7LQdzCAk6
+        bh=aQOvZtuibLSkGmRbO42pWVDTIb0Cub+AQsJn2NWBZxQ=;
+        b=YTmq0RnK3TUrHf2q/Q7k5MwTqMLFA9kWjgytFl6Vqzl14TMFogjtYDxjkI9ciIAtDQ
+         J5zPbVBPNRGPK1kwh4p727pwu6m2ncJLtcEnc9RPhzR8/M1e4+DwI1hRX68vQqis7cZU
+         hC7yS53PQVaiftokWyXKejq8a6F+UmlqAqtIBBhOZ9muzzIErXEVece+GTxY/Edg1Yfj
+         EO19Pddl55OAmKHSgalV+fopYI7a7o3+5n6676ca8vSAP+OsdnAhFpSICWtxvKgmG8tz
+         lYwSamShTi1/Woia+UVWfRDW7lLPqZTIgYXwPqpDozav7sakUflCss4brPapF9y920ke
+         x47w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697653758; x=1698258558;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=aQOvZtuibLSkGmRbO42pWVDTIb0Cub+AQsJn2NWBZxQ=;
+        b=NPz0KvpXzpEbLKeNha3INpSHYOtBIMx1CLAT43dccF7GppSTVz68MivGrZXsDOU5kG
+         93SbM93Nw/B02e7gnBLHlA6Wmxbs7EVg8W4zM/KW9dMLDOmwv73d2Hy1jM29tCLDqTUq
+         vGQmoxUJ/XC79yPCGhb3MVtKyeyEIizjllsGvMtcHbK2ER9yGVT77S9s/Ze2UiJRFA0K
+         QO2KWl7s5HrR73Gx728ZN/6KlDWUosKiQ+kvsLlB9DoIvpmG05UsH4OF+zz9zeIdysWN
+         7AKxMGLP9OZUvbo7+RA4RS7lKX03JfeAsR/qI0RnTBMzacV6qyfcDO6NlfpXfJqzxl0C
+         /MPA==
+X-Gm-Message-State: AOJu0Yy3uaGfIbki2eEDTEEmAusARRDwwLHo+9rZDpVyPNjFIfM3gN68
+        x1bSfgUYNiY1X+Lg27f99qjE5OQSifE=
+X-Google-Smtp-Source: AGHT+IE0Zipsf5Rf98DZ4PEcBJhTe/O42MPJ24DEEOGvQ7Ww0+IvSvWbg4we2PaTMDSZad1sGk4Maw==
+X-Received: by 2002:a05:6808:1b12:b0:3b2:f5be:4fd5 with SMTP id bx18-20020a0568081b1200b003b2f5be4fd5mr1149oib.14.1697653758532;
+        Wed, 18 Oct 2023 11:29:18 -0700 (PDT)
+Received: from ?IPV6:2603:8081:1405:679b:c49f:728c:9f77:79f? (2603-8081-1405-679b-c49f-728c-9f77-079f.res6.spectrum.com. [2603:8081:1405:679b:c49f:728c:9f77:79f])
+        by smtp.gmail.com with ESMTPSA id p12-20020a9d4e0c000000b006b1570a7674sm731827otf.29.2023.10.18.11.29.17
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 18 Oct 2023 11:29:17 -0700 (PDT)
+Message-ID: <dbd9f019-693f-476c-aa4c-739746753d2b@gmail.com>
+Date:   Wed, 18 Oct 2023 13:29:16 -0500
 MIME-Version: 1.0
-X-Received: by 2002:a05:6870:6586:b0:1e1:2f43:1dc6 with SMTP id
- fp6-20020a056870658600b001e12f431dc6mr2262117oab.1.1697620549825; Wed, 18 Oct
- 2023 02:15:49 -0700 (PDT)
-Date:   Wed, 18 Oct 2023 02:15:49 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000d5fbc80607fa152b@google.com>
-Subject: [syzbot] [rds?] KCSAN: data-race in rds_sendmsg / rds_sendmsg
-From:   syzbot <syzbot+00563755980a79a575f6@syzkaller.appspotmail.com>
-To:     davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
-        linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
-        netdev@vger.kernel.org, pabeni@redhat.com,
-        rds-devel@oss.oracle.com, santosh.shilimkar@oracle.com,
-        syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=0.9 required=5.0 tests=BAYES_00,FROM_LOCAL_DIGITS,
-        FROM_LOCAL_HEX,HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H2,SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS autolearn=no
+User-Agent: Mozilla Thunderbird
+Subject: Re: [bug report] blktests srp/002 hang
+To:     Bart Van Assche <bvanassche@acm.org>,
+        Jason Gunthorpe <jgg@ziepe.ca>
+Cc:     "Daisuke Matsuda (Fujitsu)" <matsuda-daisuke@fujitsu.com>,
+        'Rain River' <rain.1986.08.12@gmail.com>,
+        Zhu Yanjun <yanjun.zhu@linux.dev>,
+        "leon@kernel.org" <leon@kernel.org>,
+        Shinichiro Kawasaki <shinichiro.kawasaki@wdc.com>,
+        RDMA mailing list <linux-rdma@vger.kernel.org>,
+        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>
+References: <8aff9124-85c0-8e3b-dc35-1017b1540037@gmail.com>
+ <3c84da83-cdbb-3326-b3f0-b2dee5f014e0@linux.dev>
+ <4e7aac82-f006-aaa7-6769-d1c9691a0cec@gmail.com>
+ <CAJr_XRCFuv_XO3Zk+pfq6C73CgDsnaJT4-G-jq1ds3bdg76iEA@mail.gmail.com>
+ <OS7PR01MB1180450455E624D5CD977C461E5FCA@OS7PR01MB11804.jpnprd01.prod.outlook.com>
+ <29c5de53-cc61-4efc-8e8d-690e27756a16@acm.org>
+ <OS7PR01MB118045AD711E93D223DCD6F17E5C3A@OS7PR01MB11804.jpnprd01.prod.outlook.com>
+ <a3be5e98-e783-4108-a690-acc8a5cc5981@gmail.com>
+ <20231017175821.GG282036@ziepe.ca>
+ <8801fc68-0e8e-4bb1-acaa-597bf72a567d@gmail.com>
+ <20231017185139.GA691768@ziepe.ca>
+ <c65f92b2-9821-4349-b1f5-7dc2a287946a@gmail.com>
+ <08a8d947-25b5-434c-9ba3-282d298b5bfd@acm.org>
+ <e3d91c4f-b124-4031-9f92-fcb61973a645@gmail.com>
+ <02cd10fd-fd4a-4ad7-9b1d-6d37b070aacf@acm.org>
+ <5c6e69b3-f83b-461d-a08a-37bfbd82f995@gmail.com>
+ <cad2fee4-9359-4614-b36b-c2599dc12358@acm.org>
+ <bf2705ff-716a-45b5-bcc4-8710ea0fb98e@gmail.com>
+ <65b871ef-dd93-4bfb-bae9-c147a87c64d0@acm.org>
+Content-Language: en-US
+From:   Bob Pearson <rpearsonhpe@gmail.com>
+In-Reply-To: <65b871ef-dd93-4bfb-bae9-c147a87c64d0@acm.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -56,83 +97,42 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Hello,
+On 10/17/23 17:42, Bart Van Assche wrote:
+> On 10/17/23 14:39, Bob Pearson wrote:
+>> On 10/17/23 16:30, Bart Van Assche wrote:
+>>>
+>>> On 10/17/23 14:23, Bob Pearson wrote:
+>>>> Not really, but stuck could mean it died (no threads active) or it is
+>>>> in a loop or waiting to be scheduled. It looks dead. The lower layers are
+>>>> waiting to get kicked into action by some event but it hasn't happened.
+>>>> This is conjecture on my part though.
+>>>
+>>> This call stack means that I/O has been submitted by the block layer and
+>>> that it did not get completed. Which I/O request got stuck can be
+>>> verified by e.g. running the list-pending-block-requests script that I
+>>> posted some time ago. See also
+>>> https://lore.kernel.org/all/55c0fe61-a091-b351-11b4-fa7f668e49d7@acm.org/.
+>>
+>> Thanks. Would this run on the side of a hung blktests or would I need to
+>> setup an srp-srpt file system?
+> 
+> I propose to analyze the source code of the component(s) that you
+> suspect of causing the hang. The output of the list-pending-block-
+> requests script is not sufficient to reveal which of the following
+> drivers is causing the hang: ib_srp, rdma_rxe, ib_srpt, ...
+> 
+> Thanks,
+> 
+> Bart.
+> 
 
-syzbot found the following issue on:
+Bart,
 
-HEAD commit:    401644852d0b Merge tag 'fs_for_v6.6-rc6' of git://git.kern..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=10bbf9ce680000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=70d8e328e7a4e377
-dashboard link: https://syzkaller.appspot.com/bug?extid=00563755980a79a575f6
-compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
+Another data point. I had seen (months ago) that both the rxe and siw drivers could cause blktests srp
+hangs. More recently when I configure my kernel to run lots of tests (lockdep, memory leaks, kasan, ubsan,
+etc.), which definitely slows performance and adds delays, the % of srp/002 runs which hang on the rxe driver
+has gone from 10%+- to a solid 100%. This suggested retrying the siw driver on the debug kernel since it
+has the reputation of always running successfully. I now find that siw also hangs solidly on srp/002.
+This is another hint that we are seeing a timing issue.
 
-Unfortunately, I don't have any reproducer for this issue yet.
-
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/32193fa290fa/disk-40164485.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/45596bbf452b/vmlinux-40164485.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/930999dd8dfc/bzImage-40164485.xz
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+00563755980a79a575f6@syzkaller.appspotmail.com
-
-==================================================================
-BUG: KCSAN: data-race in rds_sendmsg / rds_sendmsg
-
-write to 0xffff8881039110f8 of 8 bytes by task 15969 on cpu 0:
- rds_sendmsg+0xbc6/0x1410 net/rds/send.c:1304
- sock_sendmsg_nosec net/socket.c:730 [inline]
- __sock_sendmsg net/socket.c:745 [inline]
- ____sys_sendmsg+0x37c/0x4d0 net/socket.c:2558
- ___sys_sendmsg net/socket.c:2612 [inline]
- __sys_sendmsg+0x1e9/0x270 net/socket.c:2641
- __do_sys_sendmsg net/socket.c:2650 [inline]
- __se_sys_sendmsg net/socket.c:2648 [inline]
- __x64_sys_sendmsg+0x46/0x50 net/socket.c:2648
- do_syscall_x64 arch/x86/entry/common.c:50 [inline]
- do_syscall_64+0x41/0xc0 arch/x86/entry/common.c:80
- entry_SYSCALL_64_after_hwframe+0x63/0xcd
-
-read to 0xffff8881039110f8 of 8 bytes by task 15973 on cpu 1:
- rds_sendmsg+0xa51/0x1410 net/rds/send.c:1291
- sock_sendmsg_nosec net/socket.c:730 [inline]
- __sock_sendmsg net/socket.c:745 [inline]
- ____sys_sendmsg+0x37c/0x4d0 net/socket.c:2558
- ___sys_sendmsg net/socket.c:2612 [inline]
- __sys_sendmsg+0x1e9/0x270 net/socket.c:2641
- __do_sys_sendmsg net/socket.c:2650 [inline]
- __se_sys_sendmsg net/socket.c:2648 [inline]
- __x64_sys_sendmsg+0x46/0x50 net/socket.c:2648
- do_syscall_x64 arch/x86/entry/common.c:50 [inline]
- do_syscall_64+0x41/0xc0 arch/x86/entry/common.c:80
- entry_SYSCALL_64_after_hwframe+0x63/0xcd
-
-value changed: 0x0000000000000000 -> 0xffff888137df17e8
-
-Reported by Kernel Concurrency Sanitizer on:
-CPU: 1 PID: 15973 Comm: syz-executor.0 Not tainted 6.6.0-rc5-syzkaller-00072-g401644852d0b #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 09/06/2023
-==================================================================
-
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-
-If the bug is already fixed, let syzbot know by replying with:
-#syz fix: exact-commit-title
-
-If you want to overwrite bug's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
-
-If the bug is a duplicate of another bug, reply with:
-#syz dup: exact-subject-of-another-report
-
-If you want to undo deduplication, reply with:
-#syz undup
+Bob 
