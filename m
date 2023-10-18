@@ -2,219 +2,137 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 936F57CD6AE
-	for <lists+linux-rdma@lfdr.de>; Wed, 18 Oct 2023 10:34:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D5A3C7CD7A0
+	for <lists+linux-rdma@lfdr.de>; Wed, 18 Oct 2023 11:15:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344700AbjJRIes (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 18 Oct 2023 04:34:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57826 "EHLO
+        id S229657AbjJRJPx (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 18 Oct 2023 05:15:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45836 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344691AbjJRIer (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 18 Oct 2023 04:34:47 -0400
-Received: from out-193.mta1.migadu.com (out-193.mta1.migadu.com [IPv6:2001:41d0:203:375::c1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A6E7B6
-        for <linux-rdma@vger.kernel.org>; Wed, 18 Oct 2023 01:34:44 -0700 (PDT)
-Message-ID: <12bc6723-6048-4aa6-ba3e-ad6ff2403196@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1697618082;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=u5vnWj75Nr/9+G6RunE3aeZ1c5zit+rA7ylI2oO6A0k=;
-        b=pCAhTYcbm58pknEgEQHxG67AX1vuIXHti/ckdAT3hLYyqxZ60B7bzEMWxmJx8MkE9YLK+Z
-        JngyAItnDse1HeuQh8rwzTad/PVr2zfwvi4ak1YJXBPPwNEHz21mSVEftu2ZAJZAck2hZy
-        Q51u6uKwt6G3isLkUfzJnGmlmMyZ6Uw=
-Date:   Wed, 18 Oct 2023 16:34:35 +0800
+        with ESMTP id S229690AbjJRJPw (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 18 Oct 2023 05:15:52 -0400
+Received: from mail-oa1-f80.google.com (mail-oa1-f80.google.com [209.85.160.80])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B66F10B
+        for <linux-rdma@vger.kernel.org>; Wed, 18 Oct 2023 02:15:50 -0700 (PDT)
+Received: by mail-oa1-f80.google.com with SMTP id 586e51a60fabf-1d66b019a27so8863046fac.0
+        for <linux-rdma@vger.kernel.org>; Wed, 18 Oct 2023 02:15:50 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697620550; x=1698225350;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=rnf7mxU5ljq5PJpqjMzySXNNyUScoKkMxLEuUfdA8+0=;
+        b=hM3gYmN5oZv1blk+yQOdHQrG6w3tE2pGxHiiRnyNpjvSpdn2TneJr1jInOGXyrAvBF
+         9+6fheHE/NqWASmGu+A6AEA6mw+jGr4iugev/wlZEq3gNvBz3ZXa98ru2yH4j1afkX+u
+         P765Gwzr4JvUUX5HN7K+atyGTO4d/Qw/lU1eC10VkXxz9TM5xxcqHwaSxrnYwEHz0NMK
+         2H29fpHYyE3vdfdmczkq5U82hEfvRaH+Z1xb0JT0GsDVBw372ekvZA0qtCTrgzuzuKbd
+         bcZQU0g+iZ3fN0sxrgh8EdfIF40kvj1jqQtHRDhu2eot5XUePWfkSth/1Tp2qf0YwUD7
+         HAVA==
+X-Gm-Message-State: AOJu0YyjFtYhYkabfR1egDnEP+gow8gWkOTO8GjrhlGEUjrly+ZUe6Io
+        kVBwxup+IU2MUN1hGjHw14fhMtENHgPulKdPHTaH/goF8aoL
+X-Google-Smtp-Source: AGHT+IEVyOpzK0ciUkUl8pn15LkIrJ8+nZaZyVv+YpJTW6P3ZFsyCiCzeN+C9hCwesLkD1y4lMba0bHLzEuoXGWcYMP7LQdzCAk6
 MIME-Version: 1.0
-Subject: Re: [PATCH 1/1] RDMA/rxe: Fix blktests srp lead kernel panic with 64k
- page size
-To:     "Daisuke Matsuda (Fujitsu)" <matsuda-daisuke@fujitsu.com>,
-        'Rain River' <rain.1986.08.12@gmail.com>
-Cc:     Zhu Yanjun <yanjun.zhu@intel.com>,
-        "yi.zhang@redhat.com" <yi.zhang@redhat.com>,
-        "jgg@ziepe.ca" <jgg@ziepe.ca>, "leon@kernel.org" <leon@kernel.org>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        "zyjzyj2000@gmail.com" <zyjzyj2000@gmail.com>
-References: <20231013011803.70474-1-yanjun.zhu@intel.com>
- <OS3PR01MB98651C7454C46841B8A78F11E5D2A@OS3PR01MB9865.jpnprd01.prod.outlook.com>
- <6f155aa3-8e75-40c5-9686-cad9f9ac0d81@linux.dev>
- <OS3PR01MB986557755D5DE20BB7BD60ECE5D2A@OS3PR01MB9865.jpnprd01.prod.outlook.com>
- <CAJr_XRD+3Hk66OSoS_HfGe4Z7B1oVK6JbXj1qb5h4vXg1ah5Qg@mail.gmail.com>
- <OS3PR01MB9865A90A3FD2B9D3096E6E2CE5D7A@OS3PR01MB9865.jpnprd01.prod.outlook.com>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From:   Zhu Yanjun <yanjun.zhu@linux.dev>
-In-Reply-To: <OS3PR01MB9865A90A3FD2B9D3096E6E2CE5D7A@OS3PR01MB9865.jpnprd01.prod.outlook.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-Received: by 2002:a05:6870:6586:b0:1e1:2f43:1dc6 with SMTP id
+ fp6-20020a056870658600b001e12f431dc6mr2262117oab.1.1697620549825; Wed, 18 Oct
+ 2023 02:15:49 -0700 (PDT)
+Date:   Wed, 18 Oct 2023 02:15:49 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000d5fbc80607fa152b@google.com>
+Subject: [syzbot] [rds?] KCSAN: data-race in rds_sendmsg / rds_sendmsg
+From:   syzbot <syzbot+00563755980a79a575f6@syzkaller.appspotmail.com>
+To:     davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
+        linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
+        netdev@vger.kernel.org, pabeni@redhat.com,
+        rds-devel@oss.oracle.com, santosh.shilimkar@oracle.com,
+        syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=0.9 required=5.0 tests=BAYES_00,FROM_LOCAL_DIGITS,
+        FROM_LOCAL_HEX,HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H2,SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-在 2023/10/16 14:07, Daisuke Matsuda (Fujitsu) 写道:
-> On Fri, Oct 13, 2023 10:44 PM Rain River <rain.1986.08.12@gmail.com> wrote:
->>> On Friday, October 13, 2023 9:29 PM Zhu Yanjun:
->>>> 在 2023/10/13 20:01, Daisuke Matsuda (Fujitsu) 写道:
->>>>> On Fri, Oct 13, 2023 10:18 AM Zhu Yanjun wrote:
->>>>>> From: Zhu Yanjun <yanjun.zhu@linux.dev>
->>>>>>
->>>>>> The page_size of mr is set in infiniband core originally. In the commit
->>>>>> 325a7eb85199 ("RDMA/rxe: Cleanup page variables in rxe_mr.c"), the
->>>>>> page_size is also set. Sometime this will cause conflict.
->>>>>
->>>>> I appreciate your prompt action, but I do not think this commit deals with
->>>>> the root cause. I agree that the problem lies in rxe driver, but what is wrong
->>>>> with assigning actual page size to ibmr.page_size?
->>>>
->>>> Please check the source code. ibmr.page_size is assigned in
->>>> infiniband/core. And then it is assigned in rxe.
->>>> When the 2 are different, the problem will occur.
->>>
->>> In the first place, the two must always be equal.
->>> Is there any situation there are two different page sizes for a MR?
->>> I think I have explained the value assigned in the core layer is wrong
->>> when the PAGE_SIZE is bigger than 4k, and that is why they are inconsistent.
->>>
->>> As I have no environment to test the kernel panic, it remains speculative,
->>> but I have provided enough information for everyone to rebut my argument.
->>> It is possible I am wrong. I hope someone will tell me specifically where
->>> my guess is wrong, or Yi would kindly take the trouble to verify it.
->>
->> I made a quick test.
->>
->> With Zhu's patch, the problem fixed.
->> With your patch, this problem exists. And other problems occur. I do
->> not know why.
->> Will continue to make tests.
-> 
-> Thank you for your time and work.
-> I will try to find out why there were two different page sizes from
-> different perspectives. This may take a while because I am busy
-> with other projects now. If anybody need the driver without the crash
-> issue right now, I do not object to partially undoing "RDMA/rxe: Cleanup
-> page variables in rxe_mr.c" as Zhu suggests, but that should be interim
-> and not a final solution.
+Hello,
 
-Sorry, it is late to reply.
+syzbot found the following issue on:
 
-This is a difficult and complicated problem because it involves rdma and 
-block/blktests. This commit is based on the fact that the commit 
-325a7eb85199 ("RDMA/rxe: Cleanup page variables in rxe_mr.c") causes 
-this problem.
+HEAD commit:    401644852d0b Merge tag 'fs_for_v6.6-rc6' of git://git.kern..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=10bbf9ce680000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=70d8e328e7a4e377
+dashboard link: https://syzkaller.appspot.com/bug?extid=00563755980a79a575f6
+compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
 
-So I delved into this commit. In this commit, the core part is to change 
-the size of ibmr.page_size.
- From this, I checked the source code. I found that this page_size is 
-also set in infiniband/core. So I try to remove the change of 
-ibmr.page_size.
+Unfortunately, I don't have any reproducer for this issue yet.
 
-I will continue to delve into this problem and the source code to find 
-the root cause that you also agree with.
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/32193fa290fa/disk-40164485.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/45596bbf452b/vmlinux-40164485.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/930999dd8dfc/bzImage-40164485.xz
 
-Zhu Yanjun
-> 
-> Thanks,
-> Daisuke
-> 
->>
->>>
->>> Thanks,
->>> Daisuke Matsuda
->>>
->>>> Please add logs to infiniband/core and rxe to check them.
->>>>
->>>> Zhu Yanjun
->>>>
->>>>>
->>>>> IMO, the problem comes from the device attribute of rxe driver, which is used
->>>>> in ulp/srp layer to calculate the page_size.
->>>>> =====
->>>>> static int srp_add_one(struct ib_device *device)
->>>>> {
->>>>>           struct srp_device *srp_dev;
->>>>>           struct ib_device_attr *attr = &device->attrs;
->>>>> <...>
->>>>>           /*
->>>>>            * Use the smallest page size supported by the HCA, down to a
->>>>>            * minimum of 4096 bytes. We're unlikely to build large sglists
->>>>>            * out of smaller entries.
->>>>>            */
->>>>>           mr_page_shift           = max(12, ffs(attr->page_size_cap) - 1);
->>>>>           srp_dev->mr_page_size   = 1 << mr_page_shift;
->>>>> =====
->>>>> On initialization of srp driver, mr_page_size is calculated here.
->>>>> Note that the device attribute is used to calculate the value of page shift
->>>>> when the device is trying to use a page size larger than 4096. Since Yi specified
->>>>> CONFIG_ARM64_64K_PAGES, the system naturally met the condition.
->>>>>
->>>>> =====
->>>>> static int srp_map_finish_fr(struct srp_map_state *state,
->>>>>                                struct srp_request *req,
->>>>>                                struct srp_rdma_ch *ch, int sg_nents,
->>>>>                                unsigned int *sg_offset_p)
->>>>> {
->>>>>           struct srp_target_port *target = ch->target;
->>>>>           struct srp_device *dev = target->srp_host->srp_dev;
->>>>> <...>
->>>>>           n = ib_map_mr_sg(desc->mr, state->sg, sg_nents, sg_offset_p,
->>>>>                            dev->mr_page_size);
->>>>> =====
->>>>> After that, mr_page_size is presumably passed to ib_core layer.
->>>>>
->>>>> =====
->>>>> int ib_map_mr_sg(struct ib_mr *mr, struct scatterlist *sg, int sg_nents,
->>>>>                    unsigned int *sg_offset, unsigned int page_size)
->>>>> {
->>>>>           if (unlikely(!mr->device->ops.map_mr_sg))
->>>>>                   return -EOPNOTSUPP;
->>>>>
->>>>>           mr->page_size = page_size;
->>>>>
->>>>>           return mr->device->ops.map_mr_sg(mr, sg, sg_nents, sg_offset);
->>>>> }
->>>>> EXPORT_SYMBOL(ib_map_mr_sg);
->>>>> =====
->>>>> Consequently, the page size calculated in srp driver is set to ibmr.page_size.
->>>>>
->>>>> Coming back to rxe, the device attribute is set here:
->>>>> =====
->>>>> rxe.c
->>>>> <...>
->>>>> /* initialize rxe device parameters */
->>>>> static void rxe_init_device_param(struct rxe_dev *rxe)
->>>>> {
->>>>>           rxe->max_inline_data                    = RXE_MAX_INLINE_DATA;
->>>>>
->>>>>           rxe->attr.vendor_id                     = RXE_VENDOR_ID;
->>>>>           rxe->attr.max_mr_size                   = RXE_MAX_MR_SIZE;
->>>>>           rxe->attr.page_size_cap                 = RXE_PAGE_SIZE_CAP;
->>>>>           rxe->attr.max_qp                        = RXE_MAX_QP;
->>>>> ---
->>>>> rxe_param.h
->>>>> <...>
->>>>> /* default/initial rxe device parameter settings */
->>>>> enum rxe_device_param {
->>>>>           RXE_MAX_MR_SIZE                 = -1ull,
->>>>>           RXE_PAGE_SIZE_CAP               = 0xfffff000,
->>>>>           RXE_MAX_QP_WR                   = DEFAULT_MAX_VALUE,
->>>>> =====
->>>>> rxe_init_device_param() sets the attributes to rxe_dev->attr, and it is later copied
->>>>> to ib_device->attrs in setup_device()@core/device.c.
->>>>> See that the page size cap is hardcoded to 4096 bytes. I suspect this led to
->>>>> incorrect page_size being set to ibmr.page_size, resulting in the kernel crash.
->>>>>
->>>>> I think rxe driver is made to be able to handle arbitrary page sizes.
->>>>> Probably, we can just modify RXE_PAGE_SIZE_CAP to fix the issue.
->>>>> What do you guys think?
->>>>>
->>>>> Thanks,
->>>>> Daisuke Matsuda
->>>>>
->>>
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+00563755980a79a575f6@syzkaller.appspotmail.com
 
+==================================================================
+BUG: KCSAN: data-race in rds_sendmsg / rds_sendmsg
+
+write to 0xffff8881039110f8 of 8 bytes by task 15969 on cpu 0:
+ rds_sendmsg+0xbc6/0x1410 net/rds/send.c:1304
+ sock_sendmsg_nosec net/socket.c:730 [inline]
+ __sock_sendmsg net/socket.c:745 [inline]
+ ____sys_sendmsg+0x37c/0x4d0 net/socket.c:2558
+ ___sys_sendmsg net/socket.c:2612 [inline]
+ __sys_sendmsg+0x1e9/0x270 net/socket.c:2641
+ __do_sys_sendmsg net/socket.c:2650 [inline]
+ __se_sys_sendmsg net/socket.c:2648 [inline]
+ __x64_sys_sendmsg+0x46/0x50 net/socket.c:2648
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x41/0xc0 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x63/0xcd
+
+read to 0xffff8881039110f8 of 8 bytes by task 15973 on cpu 1:
+ rds_sendmsg+0xa51/0x1410 net/rds/send.c:1291
+ sock_sendmsg_nosec net/socket.c:730 [inline]
+ __sock_sendmsg net/socket.c:745 [inline]
+ ____sys_sendmsg+0x37c/0x4d0 net/socket.c:2558
+ ___sys_sendmsg net/socket.c:2612 [inline]
+ __sys_sendmsg+0x1e9/0x270 net/socket.c:2641
+ __do_sys_sendmsg net/socket.c:2650 [inline]
+ __se_sys_sendmsg net/socket.c:2648 [inline]
+ __x64_sys_sendmsg+0x46/0x50 net/socket.c:2648
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x41/0xc0 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x63/0xcd
+
+value changed: 0x0000000000000000 -> 0xffff888137df17e8
+
+Reported by Kernel Concurrency Sanitizer on:
+CPU: 1 PID: 15973 Comm: syz-executor.0 Not tainted 6.6.0-rc5-syzkaller-00072-g401644852d0b #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 09/06/2023
+==================================================================
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+
+If the bug is already fixed, let syzbot know by replying with:
+#syz fix: exact-commit-title
+
+If you want to overwrite bug's subsystems, reply with:
+#syz set subsystems: new-subsystem
+(See the list of subsystem names on the web dashboard)
+
+If the bug is a duplicate of another bug, reply with:
+#syz dup: exact-subject-of-another-report
+
+If you want to undo deduplication, reply with:
+#syz undup
