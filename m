@@ -2,45 +2,96 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A3FC7CFFD7
-	for <lists+linux-rdma@lfdr.de>; Thu, 19 Oct 2023 18:43:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D68FA7D00CC
+	for <lists+linux-rdma@lfdr.de>; Thu, 19 Oct 2023 19:41:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233233AbjJSQnS (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 19 Oct 2023 12:43:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56660 "EHLO
+        id S235496AbjJSRlK (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 19 Oct 2023 13:41:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33228 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233146AbjJSQnR (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 19 Oct 2023 12:43:17 -0400
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 47F5D126
-        for <linux-rdma@vger.kernel.org>; Thu, 19 Oct 2023 09:43:15 -0700 (PDT)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 892062F4;
-        Thu, 19 Oct 2023 09:43:55 -0700 (PDT)
-Received: from [10.1.196.40] (e121345-lin.cambridge.arm.com [10.1.196.40])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 0AD7E3F762;
-        Thu, 19 Oct 2023 09:43:12 -0700 (PDT)
-Message-ID: <3f5d24f0-5e06-42d5-8e73-d874dd5ffa3d@arm.com>
-Date:   Thu, 19 Oct 2023 17:43:11 +0100
+        with ESMTP id S235491AbjJSRlI (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 19 Oct 2023 13:41:08 -0400
+Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 045E2CF;
+        Thu, 19 Oct 2023 10:41:06 -0700 (PDT)
+Received: from pps.filterd (m0353725.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 39JHNp5h017916;
+        Thu, 19 Oct 2023 17:40:55 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=XNxuSWlmwFpqmROgKJVOTG1Nz3hnSDWsr+Z+rZVP7lo=;
+ b=cxTD0TFaWM/zkb98jUifI8qBrJi5k0q9QFvPjbgbiYj1nmZTKlZ+g3fshLAyVoQ7/Dm5
+ WDUMUHXfS9qvY6biW8/o3GgMCvAh5CCuOglTnai25Gl9U5EwI7jB545XNFAZGXvZ+EoF
+ 9XDyWsNlGyb6GZkf1NnB0+DtcHxQTeQvbQPUC3kPO0DDctqelFPEOX82BNzvLVpC4CHR
+ UHWPwXwuIVv4mVHDp4xgTufULRYJrVFaKI0h3272it9OTEl8vbVoSa0E7ZhIafBMWOlv
+ flgPUDkt/YyZJhJJrixcgoGf4GEGPJaPrVU+9BzHHm94c3eHfeMo2+84Gj9ol4qXYHv9 7Q== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3tu8pd0nuv-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 19 Oct 2023 17:40:55 +0000
+Received: from m0353725.ppops.net (m0353725.ppops.net [127.0.0.1])
+        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 39JHeHEw004606;
+        Thu, 19 Oct 2023 17:40:54 GMT
+Received: from ppma11.dal12v.mail.ibm.com (db.9e.1632.ip4.static.sl-reverse.com [50.22.158.219])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3tu8pd0nuh-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 19 Oct 2023 17:40:54 +0000
+Received: from pps.filterd (ppma11.dal12v.mail.ibm.com [127.0.0.1])
+        by ppma11.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 39JFVHgP019700;
+        Thu, 19 Oct 2023 17:40:54 GMT
+Received: from smtprelay04.dal12v.mail.ibm.com ([172.16.1.6])
+        by ppma11.dal12v.mail.ibm.com (PPS) with ESMTPS id 3tr8121yrc-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 19 Oct 2023 17:40:54 +0000
+Received: from smtpav05.dal12v.mail.ibm.com (smtpav05.dal12v.mail.ibm.com [10.241.53.104])
+        by smtprelay04.dal12v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 39JHerKK20644464
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 19 Oct 2023 17:40:53 GMT
+Received: from smtpav05.dal12v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 5E27258065;
+        Thu, 19 Oct 2023 17:40:53 +0000 (GMT)
+Received: from smtpav05.dal12v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 418D458052;
+        Thu, 19 Oct 2023 17:40:47 +0000 (GMT)
+Received: from [9.179.18.71] (unknown [9.179.18.71])
+        by smtpav05.dal12v.mail.ibm.com (Postfix) with ESMTP;
+        Thu, 19 Oct 2023 17:40:47 +0000 (GMT)
+Message-ID: <990a6b09-135a-41fb-a375-c37ffec6fe99@linux.ibm.com>
+Date:   Thu, 19 Oct 2023 19:40:46 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH RFC 0/9] Exploring biovec support in (R)DMA API
+Subject: Re: [PATCH net 5/5] net/smc: put sk reference if close work was
+ canceled
 Content-Language: en-GB
-To:     Chuck Lever <cel@kernel.org>
-Cc:     Marek Szyprowski <m.szyprowski@samsung.com>,
-        Chuck Lever <chuck.lever@oracle.com>,
-        Alexander Potapenko <glider@google.com>, linux-mm@kvack.org,
-        linux-rdma@vger.kernel.org, Jens Axboe <axboe@kernel.dk>,
-        kasan-dev@googlegroups.com, David Howells <dhowells@redhat.com>,
-        iommu@lists.linux.dev, Christoph Hellwig <hch@lst.de>,
-        Jason Gunthorpe <jgg@nvidia.com>
-References: <169772852492.5232.17148564580779995849.stgit@klimt.1015granger.net>
-From:   Robin Murphy <robin.murphy@arm.com>
-In-Reply-To: <169772852492.5232.17148564580779995849.stgit@klimt.1015granger.net>
+To:     "D. Wythe" <alibuda@linux.alibaba.com>, kgraul@linux.ibm.com,
+        jaka@linux.ibm.com, wintera@linux.ibm.com
+Cc:     kuba@kernel.org, davem@davemloft.net, netdev@vger.kernel.org,
+        linux-s390@vger.kernel.org, linux-rdma@vger.kernel.org
+References: <1697009600-22367-1-git-send-email-alibuda@linux.alibaba.com>
+ <1697009600-22367-6-git-send-email-alibuda@linux.alibaba.com>
+ <bdcb307f-d2a8-4aef-bb7d-dd87e56ff740@linux.ibm.com>
+ <ee641ca5-104b-d1ec-5b2a-e20237c5378a@linux.alibaba.com>
+ <ad5e4191-227e-4a62-a110-472618ef7de1@linux.ibm.com>
+ <305c7ae2-a902-3e30-5e67-b590d848d0ba@linux.alibaba.com>
+From:   Wenjia Zhang <wenjia@linux.ibm.com>
+In-Reply-To: <305c7ae2-a902-3e30-5e67-b590d848d0ba@linux.alibaba.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: C0quyvYEP4WhzEn6KStJRDVYT6ASe0AI
+X-Proofpoint-ORIG-GUID: vYMkW1jrXkGUBppO7mOHdx9bREvSSiN0
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-10-19_16,2023-10-19_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 suspectscore=0
+ mlxscore=0 adultscore=0 impostorscore=0 lowpriorityscore=0 bulkscore=0
+ spamscore=0 priorityscore=1501 mlxlogscore=999 phishscore=0 malwarescore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2309180000
+ definitions=main-2310190148
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -48,78 +99,127 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 19/10/2023 4:25 pm, Chuck Lever wrote:
-> The SunRPC stack manages pages (and eventually, folios) via an
-> array of struct biovec items within struct xdr_buf. We have not
-> fully committed to replacing the struct page array in xdr_buf
-> because, although the socket API supports biovec arrays, the RDMA
-> stack uses struct scatterlist rather than struct biovec.
-> 
-> This (incomplete) series explores what it might look like if the
-> RDMA core API could support struct biovec array arguments. The
-> series compiles on x86, but I haven't tested it further. I'm posting
-> early in hopes of starting further discussion.
-> 
-> Are there other upper layer API consumers, besides SunRPC, who might
-> prefer the use of biovec over scatterlist?
-> 
-> Besides handling folios as well as single pages in bv_page, what
-> other work might be needed in the DMA layer?
 
-Eww, please no. It's already well established that the scatterlist 
-design is horrible and we want to move to something sane and actually 
-suitable for modern DMA scenarios. Something where callers can pass a 
-set of pages/physical address ranges in, and get a (separate) set of DMA 
-ranges out. Without any bonkers packing of different-length lists into 
-the same list structure. IIRC Jason did a bit of prototyping a while 
-back, but it may be looking for someone else to pick up the idea and 
-give it some more attention.
 
-What we definitely don't what at this point is a copy-paste of the same 
-bad design with all the same problems. I would have to NAK patch 8 on 
-principle, because the existing iommu_dma_map_sg() stuff has always been 
-utterly mad, but it had to be to work around the limitations of the 
-existing scatterlist design while bridging between two other established 
-APIs; there's no good excuse for having *two* copies of all that to 
-maintain if one doesn't have an existing precedent to fit into.
+On 19.10.23 09:33, D. Wythe wrote:
+> 
+> 
+> On 10/19/23 4:26 AM, Wenjia Zhang wrote:
+>>
+>>
+>> On 17.10.23 04:06, D. Wythe wrote:
+>>>
+>>>
+>>> On 10/13/23 3:04 AM, Wenjia Zhang wrote:
+>>>>
+>>>>
+>>>> On 11.10.23 09:33, D. Wythe wrote:
+>>>>> From: "D. Wythe" <alibuda@linux.alibaba.com>
+>>>>>
+>>>>> Note that we always hold a reference to sock when attempting
+>>>>> to submit close_work. 
+>>>> yes
+>>>> Therefore, if we have successfully
+>>>>> canceled close_work from pending, we MUST release that reference
+>>>>> to avoid potential leaks.
+>>>>>
+>>>> Isn't the corresponding reference already released inside the 
+>>>> smc_close_passive_work()?
+>>>>
+>>>
+>>> Hi Wenjia,
+>>>
+>>> If we successfully cancel the close work from the pending state,
+>>> it means that smc_close_passive_work() has never been executed.
+>>>
+>>> You can find more details here.
+>>>
+>>> /**
+>>> * cancel_work_sync - cancel a work and wait for it to finish
+>>> * @work:the work to cancel
+>>> *
+>>> * Cancel @work and wait for its execution to finish. This function
+>>> * can be used even if the work re-queues itself or migrates to
+>>> * another workqueue. On return from this function, @work is
+>>> * guaranteed to be not pending or executing on any CPU.
+>>> *
+>>> * cancel_work_sync(&delayed_work->work) must not be used for
+>>> * delayed_work's. Use cancel_delayed_work_sync() instead.
+>>> *
+>>> * The caller must ensure that the workqueue on which @work was last
+>>> * queued can't be destroyed before this function returns.
+>>> *
+>>> * Return:
+>>> * %true if @work was pending, %false otherwise.
+>>> */
+>>> boolcancel_work_sync(structwork_struct *work)
+>>> {
+>>> return__cancel_work_timer(work, false);
+>>> }
+>>>
+>>> Best wishes,
+>>> D. Wythe
+>> As I understand, queue_work() would wake up the work if the work is 
+>> not already on the queue. And the sock_hold() is just prio to the 
+>> queue_work(). That means, cancel_work_sync() would cancel the work 
+>> either before its execution or after. If your fix refers to the former 
+>> case, at this moment, I don't think the reference can be hold, thus it 
+>> is unnecessary to put it.
+>>>
+> 
+> I am quite confuse about why you think when we cancel the work before 
+> its execution,
+> the reference can not be hold ?
+> 
+> 
+> Perhaps the following diagram can describe the problem in better way :
+> 
+> smc_close_cancel_work
+> smc_cdc_msg_recv_action
+> 
+> 
+> sock_hold
+> queue_work
+>                                                                 if 
+> (cancel_work_sync())        // successfully cancel before execution
+> sock_put()                        //  need to put it since we already 
+> hold a ref before   queue_work()
+> 
+> 
+ha, I already thought you might ask such question:P
 
-Thanks,
-Robin.
+I think here two Problems need to be clarified:
 
-> What RDMA core APIs should be converted? IMO a DMA mapping and
-> registration API for biovecs would be needed. Maybe RDMA Read and
-> Write too?
+1) Do you think the bh_lock_sock/bh_unlock_sock in the smc_cdc_msg_recv 
+does not protect the smc_cdc_msg_recv_action() from cancel_work_sync()?
+Maybe that would go back to the discussion in the other patch on the 
+behaviors of the locks.
+
+2) If the queue_work returns true, as I said in the last main, the work 
+should be (being) executed. How could the cancel_work_sync() cancel the 
+work before execution successgully?
+
+>>>>> Fixes: 42bfba9eaa33 ("net/smc: immediate termination for SMCD link 
+>>>>> groups")
+>>>>> Signed-off-by: D. Wythe <alibuda@linux.alibaba.com>
+>>>>> ---
+>>>>>   net/smc/smc_close.c | 3 ++-
+>>>>>   1 file changed, 2 insertions(+), 1 deletion(-)
+>>>>>
+>>>>> diff --git a/net/smc/smc_close.c b/net/smc/smc_close.c
+>>>>> index 449ef45..10219f5 100644
+>>>>> --- a/net/smc/smc_close.c
+>>>>> +++ b/net/smc/smc_close.c
+>>>>> @@ -116,7 +116,8 @@ static void smc_close_cancel_work(struct 
+>>>>> smc_sock *smc)
+>>>>>       struct sock *sk = &smc->sk;
+>>>>>         release_sock(sk);
+>>>>> -    cancel_work_sync(&smc->conn.close_work);
+>>>>> +    if (cancel_work_sync(&smc->conn.close_work))
+>>>>> +        sock_put(sk);
+>>>>>       cancel_delayed_work_sync(&smc->conn.tx_work);
+>>>>>       lock_sock(sk);
+>>>>>   }
+>>>
 > 
-> ---
-> 
-> Chuck Lever (9):
->        dma-debug: Fix a typo in a debugging eye-catcher
->        bvec: Add bio_vec fields to manage DMA mapping
->        dma-debug: Add dma_debug_ helpers for mapping bio_vec arrays
->        mm: kmsan: Add support for DMA mapping bio_vec arrays
->        dma-direct: Support direct mapping bio_vec arrays
->        DMA-API: Add dma_sync_bvecs_for_cpu() and dma_sync_bvecs_for_device()
->        DMA: Add dma_map_bvecs_attrs()
->        iommu/dma: Support DMA-mapping a bio_vec array
->        RDMA: Add helpers for DMA-mapping an array of bio_vecs
-> 
-> 
->   drivers/iommu/dma-iommu.c   | 368 ++++++++++++++++++++++++++++++++++++
->   drivers/iommu/iommu.c       |  58 ++++++
->   include/linux/bvec.h        | 143 ++++++++++++++
->   include/linux/dma-map-ops.h |   8 +
->   include/linux/dma-mapping.h |   9 +
->   include/linux/iommu.h       |   4 +
->   include/linux/kmsan.h       |  20 ++
->   include/rdma/ib_verbs.h     |  29 +++
->   kernel/dma/debug.c          | 165 +++++++++++++++-
->   kernel/dma/debug.h          |  38 ++++
->   kernel/dma/direct.c         |  92 +++++++++
->   kernel/dma/direct.h         |  17 ++
->   kernel/dma/mapping.c        |  93 +++++++++
->   mm/kmsan/hooks.c            |  13 ++
->   14 files changed, 1056 insertions(+), 1 deletion(-)
-> 
-> --
-> Chuck Lever
 > 
