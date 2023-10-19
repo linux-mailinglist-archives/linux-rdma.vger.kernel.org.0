@@ -2,37 +2,37 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 917A97CFDC6
-	for <lists+linux-rdma@lfdr.de>; Thu, 19 Oct 2023 17:25:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B918A7CFDC7
+	for <lists+linux-rdma@lfdr.de>; Thu, 19 Oct 2023 17:25:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345550AbjJSPZt (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 19 Oct 2023 11:25:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46016 "EHLO
+        id S1345812AbjJSPZ4 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 19 Oct 2023 11:25:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46128 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345747AbjJSPZt (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 19 Oct 2023 11:25:49 -0400
+        with ESMTP id S1345747AbjJSPZz (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 19 Oct 2023 11:25:55 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4FBB6132
-        for <linux-rdma@vger.kernel.org>; Thu, 19 Oct 2023 08:25:47 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 74A8FC433C8;
-        Thu, 19 Oct 2023 15:25:46 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF9F412D
+        for <linux-rdma@vger.kernel.org>; Thu, 19 Oct 2023 08:25:53 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 395E2C433C7;
+        Thu, 19 Oct 2023 15:25:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1697729146;
-        bh=rHw641BxoEniSZKS3TqYaiuJRFAhMpJhe6yrKgKV3tA=;
+        s=k20201202; t=1697729153;
+        bh=uRB/mEHfqFq0/byWOeHcx/c9OoEQMOSFmfHR/6Welrw=;
         h=Subject:From:Cc:Date:In-Reply-To:References:From;
-        b=BnlHbiv/wGrZr62VlehUMM5I7UG1UFVZkdo7FRvv4kGbpL6WpDAEzXH3ZQn0OBn9a
-         ir40Aj9VBGeoL46O7FHBrW+tfz0NqfpfQm0lDRtoRTyF+HqDR6Wd1qBJ2/6w5zVznB
-         RRuBsjIx5RA+wqJIo943V2DU3wwKRLOvWq6q9C5ltYgLfansfJDlTJ2/VuEyJEk6c6
-         xIL0OcMC5QOyms4UtJvxWRzM4qMMAumwYAQFvK66m2GpN/8BzU1Ebwlno9DVs+PybA
-         M3K1OQnVM37n7wmH3RaqFhdD3B+AzpBw99ZrRUbvCyrwN7W/VG/dGajR1e9i6auu43
-         ZOhcgbm9tvzdg==
-Subject: [PATCH RFC 2/9] bvec: Add bio_vec fields to manage DMA mapping
+        b=pBszrRJEaabi/HAj3x4dLEgnsXeaQstPQgO5SWx8hri66P7BPSMLEddMGoMgwk8Rb
+         vYsJsz/31e9umLykgtY6i2FT5B5l6uBrEEbOkDzb76vzzuzuxkvm54OGulXNog38fA
+         A52O3hiGE8pcK2UsjjuxnjwTBv965Nf8MzB2m7AJKIi2TqzBIQPWKYdId8ojwp8BYG
+         dyQuwOaj5EcLrwyukTvpe9a+NQ4S0d5M25wZitveCajb8Qe0DIS0j0QkTzXq+TMg00
+         cNI2S46YGgysF5R/Z5QBFj/snPaHptT5YHKd7siTEcd3+aB0vuyct3jLirrfEZKqRZ
+         DHl3s80M+58VA==
+Subject: [PATCH RFC 3/9] dma-debug: Add dma_debug_ helpers for mapping bio_vec
+ arrays
 From:   Chuck Lever <cel@kernel.org>
-Cc:     Jens Axboe <axboe@kernel.dk>, Christoph Hellwig <hch@lst.de>,
-        David Howells <dhowells@redhat.com>, iommu@lists.linux.dev,
-        linux-rdma@vger.kernel.org, Chuck Lever <chuck.lever@oracle.com>
-Date:   Thu, 19 Oct 2023 11:25:45 -0400
-Message-ID: <169772914548.5232.12015170784207638561.stgit@klimt.1015granger.net>
+Cc:     iommu@lists.linux.dev, linux-rdma@vger.kernel.org,
+        Chuck Lever <chuck.lever@oracle.com>
+Date:   Thu, 19 Oct 2023 11:25:52 -0400
+Message-ID: <169772915215.5232.10127407258544978465.stgit@klimt.1015granger.net>
 In-Reply-To: <169772852492.5232.17148564580779995849.stgit@klimt.1015granger.net>
 References: <169772852492.5232.17148564580779995849.stgit@klimt.1015granger.net>
 User-Agent: StGit/1.5
@@ -52,191 +52,304 @@ X-Mailing-List: linux-rdma@vger.kernel.org
 
 From: Chuck Lever <chuck.lever@oracle.com>
 
-These are roughly equivalent to the fields used for managing
-scatterlist DMA mapping.
-
-Cc: Jens Axboe <axboe@kernel.dk>
-Cc: Christoph Hellwig <hch@lst.de>
-Cc: David Howells <dhowells@redhat.com>
 Cc: iommu@lists.linux.dev
 Cc: linux-rdma@vger.kernel.org
 Signed-off-by: Chuck Lever <chuck.lever@oracle.com>
 ---
- include/linux/bvec.h |  143 ++++++++++++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 143 insertions(+)
+ include/linux/dma-mapping.h |    1 
+ kernel/dma/debug.c          |  163 +++++++++++++++++++++++++++++++++++++++++++
+ kernel/dma/debug.h          |   38 ++++++++++
+ 3 files changed, 202 insertions(+)
 
-diff --git a/include/linux/bvec.h b/include/linux/bvec.h
-index 555aae5448ae..1074f34a4e8f 100644
---- a/include/linux/bvec.h
-+++ b/include/linux/bvec.h
-@@ -13,6 +13,7 @@
- #include <linux/limits.h>
- #include <linux/minmax.h>
- #include <linux/types.h>
-+#include <asm/io.h>
+diff --git a/include/linux/dma-mapping.h b/include/linux/dma-mapping.h
+index f0ccca16a0ac..f511ec546f4d 100644
+--- a/include/linux/dma-mapping.h
++++ b/include/linux/dma-mapping.h
+@@ -9,6 +9,7 @@
+ #include <linux/err.h>
+ #include <linux/dma-direction.h>
+ #include <linux/scatterlist.h>
++#include <linux/bvec.h>
+ #include <linux/bug.h>
+ #include <linux/mem_encrypt.h>
  
- struct page;
- 
-@@ -32,6 +33,13 @@ struct bio_vec {
- 	struct page	*bv_page;
- 	unsigned int	bv_len;
- 	unsigned int	bv_offset;
-+	dma_addr_t	bv_dma_address;
-+#ifdef CONFIG_NEED_SG_DMA_LENGTH
-+	unsigned int	bv_dma_length;
-+#endif
-+#ifdef CONFIG_NEED_SG_DMA_FLAGS
-+	unsigned int	bv_dma_flags;
-+#endif
+diff --git a/kernel/dma/debug.c b/kernel/dma/debug.c
+index 3de494375b7b..efb4a2eaf9a0 100644
+--- a/kernel/dma/debug.c
++++ b/kernel/dma/debug.c
+@@ -39,6 +39,7 @@ enum {
+ 	dma_debug_sg,
+ 	dma_debug_coherent,
+ 	dma_debug_resource,
++	dma_debug_bv,
  };
  
- /**
-@@ -74,6 +82,24 @@ static inline void bvec_set_virt(struct bio_vec *bv, void *vaddr,
- 	bvec_set_page(bv, virt_to_page(vaddr), len, offset_in_page(vaddr));
+ enum map_err_types {
+@@ -142,6 +143,7 @@ static const char *type2name[] = {
+ 	[dma_debug_sg] = "scatter-gather",
+ 	[dma_debug_coherent] = "coherent",
+ 	[dma_debug_resource] = "resource",
++	[dma_debug_bv] = "bio-vec",
+ };
+ 
+ static const char *dir2name[] = {
+@@ -1189,6 +1191,32 @@ static void check_sg_segment(struct device *dev, struct scatterlist *sg)
+ #endif
  }
  
-+/**
-+ * bv_phys - return physical address of a bio_vec
-+ * @bv:		bio_vec
-+ */
-+static inline dma_addr_t bv_phys(struct bio_vec *bv)
++static void check_bv_segment(struct device *dev, struct bio_vec *bv)
 +{
-+	return page_to_phys(bv->bv_page) + bv->bv_offset;
-+}
++#ifdef CONFIG_DMA_API_DEBUG_SG
++	unsigned int max_seg = dma_get_max_seg_size(dev);
++	u64 start, end, boundary = dma_get_seg_boundary(dev);
 +
-+/**
-+ * bv_virt - return virtual address of a bio_vec
-+ * @bv:		bio_vec
-+ */
-+static inline void *bv_virt(struct bio_vec *bv)
-+{
-+	return page_address(bv->bv_page) + bv->bv_offset;
-+}
-+
- struct bvec_iter {
- 	sector_t		bi_sector;	/* device address in 512 byte
- 						   sectors */
-@@ -280,4 +306,121 @@ static inline void *bvec_virt(struct bio_vec *bvec)
- 	return page_address(bvec->bv_page) + bvec->bv_offset;
- }
- 
-+/*
-+ * These macros should be used after a dma_map_bvecs call has been done
-+ * to get bus addresses of each of the bio_vec array entries and their
-+ * lengths. You should work only with the number of bio_vec array entries
-+ * dma_map_bvecs returns, or alternatively stop on the first bv_dma_len(bv)
-+ * which is 0.
-+ */
-+#define bv_dma_address(bv)	((bv)->bv_dma_address)
-+
-+#ifdef CONFIG_NEED_SG_DMA_LENGTH
-+#define bv_dma_len(bv)		((bv)->bv_dma_length)
-+#else
-+#define bv_dma_len(bv)		((bv)->bv_len)
++	/*
++	 * Either the driver forgot to set dma_parms appropriately, or
++	 * whoever generated the list forgot to check them.
++	 */
++	if (bv->length > max_seg)
++		err_printk(dev, NULL, "mapping bv entry longer than device claims to support [len=%u] [max=%u]\n",
++			   bv->length, max_seg);
++	/*
++	 * In some cases this could potentially be the DMA API
++	 * implementation's fault, but it would usually imply that
++	 * the scatterlist was built inappropriately to begin with.
++	 */
++	start = bv_dma_address(bv);
++	end = start + bv_dma_len(bv) - 1;
++	if ((start ^ end) & ~boundary)
++		err_printk(dev, NULL, "mapping bv entry across boundary [start=0x%016llx] [end=0x%016llx] [boundary=0x%016llx]\n",
++			   start, end, boundary);
 +#endif
-+
-+/*
-+ * On 64-bit architectures there is a 4-byte padding in struct scatterlist
-+ * (assuming also CONFIG_NEED_SG_DMA_LENGTH is set). Use this padding for DMA
-+ * flags bits to indicate when a specific dma address is a bus address or the
-+ * buffer may have been bounced via SWIOTLB.
-+ */
-+#ifdef CONFIG_NEED_SG_DMA_FLAGS
-+
-+#define BV_DMA_BUS_ADDRESS	BIT(0)
-+#define BV_DMA_SWIOTLB		BIT(1)
-+
-+/**
-+ * bv_dma_is_bus_address - Return whether a given segment was marked
-+ *			   as a bus address
-+ * @bv:		 bio_vec array entry
-+ *
-+ * Description:
-+ *   Returns true if bv_dma_mark_bus_address() has been called on
-+ *   this bio_vec.
-+ **/
-+static inline bool bv_dma_is_bus_address(struct bio_vec *bv)
-+{
-+	return bv->bv_dma_flags & BV_DMA_BUS_ADDRESS;
 +}
 +
-+/**
-+ * bv_dma_mark_bus_address - Mark the bio_vec entry as a bus address
-+ * @bv:		 bio_vec array entry
-+ *
-+ * Description:
-+ *   Marks the passed-in bv entry to indicate that the dma_address is
-+ *   a bus address and doesn't need to be unmapped. This should only be
-+ *   used by dma_map_bvecs() implementations to mark bus addresses
-+ *   so they can be properly cleaned up in dma_unmap_bvecs().
-+ **/
-+static inline void bv_dma_mark_bus_address(struct bio_vec *bv)
+ void debug_dma_map_single(struct device *dev, const void *addr,
+ 			    unsigned long len)
+ {
+@@ -1333,6 +1361,47 @@ void debug_dma_map_sg(struct device *dev, struct scatterlist *sg,
+ 	}
+ }
+ 
++void debug_dma_map_bvecs(struct device *dev, struct bio_vec *bvecs,
++			 int nents, int mapped_ents, int direction,
++			 unsigned long attrs)
 +{
-+	bv->bv_dma_flags |= BV_DMA_BUS_ADDRESS;
++	struct dma_debug_entry *entry;
++	struct bio_vec *bv;
++	int i;
++
++	if (unlikely(dma_debug_disabled()))
++		return;
++
++	for (i = 0; i < nents; i++) {
++		bv = &bvecs[i];
++		check_for_stack(dev, bv_page(bv), bv->offset);
++		if (!PageHighMem(bv_page(bv)))
++			check_for_illegal_area(dev, bv_virt(bv), bv->length);
++	}
++
++	for (i = 0; i < nents; i++) {
++		bv = &bvecs[i];
++
++		entry = dma_entry_alloc();
++		if (!entry)
++			return;
++
++		entry->type           = dma_debug_bv;
++		entry->dev            = dev;
++		entry->pfn	      = page_to_pfn(bv_page(bv));
++		entry->offset	      = bv->offset;
++		entry->size           = bv_dma_len(bv);
++		entry->dev_addr       = bv_dma_address(bv);
++		entry->direction      = direction;
++		entry->sg_call_ents   = nents;
++		entry->sg_mapped_ents = mapped_ents;
++
++		check_bv_segment(dev, bv);
++
++		add_dma_entry(entry, attrs);
++	}
 +}
 +
-+/**
-+ * bv_unmark_bus_address - Unmark the bio_vec entry as a bus address
-+ * @bv:		 bio_vec array entry
-+ *
-+ * Description:
-+ *   Clears the bus address mark.
-+ **/
-+static inline void bv_dma_unmark_bus_address(struct bio_vec *bv)
+ static int get_nr_mapped_entries(struct device *dev,
+ 				 struct dma_debug_entry *ref)
+ {
+@@ -1384,6 +1453,37 @@ void debug_dma_unmap_sg(struct device *dev, struct scatterlist *sglist,
+ 	}
+ }
+ 
++void debug_dma_unmap_bvecs(struct device *dev, struct bio_vec *bvecs,
++			   int nelems, int dir)
 +{
-+	bv->bv_dma_flags &= ~BV_DMA_BUS_ADDRESS;
++	int mapped_ents = 0, i;
++
++	if (unlikely(dma_debug_disabled()))
++		return;
++
++	for (i = 0; i < nents; i++) {
++		struct bio_vec *bv = &bvecs[i];
++		struct dma_debug_entry ref = {
++			.type           = dma_debug_bv,
++			.dev            = dev,
++			.pfn		= page_to_pfn(bv_page(bv)),
++			.offset		= bv->offset,
++			.dev_addr       = bv_dma_address(bv),
++			.size           = bv_dma_len(bv),
++			.direction      = dir,
++			.sg_call_ents   = nelems,
++		};
++
++		if (mapped_ents && i >= mapped_ents)
++			break;
++
++		if (!i)
++			mapped_ents = get_nr_mapped_entries(dev, &ref);
++
++		check_unmap(&ref);
++	}
 +}
 +
-+/**
-+ * bv_dma_is_swiotlb - Return whether the bio_vec was marked for SWIOTLB
-+ *		       bouncing
-+ * @bv:		bio_vec array entry
-+ *
-+ * Description:
-+ *   Returns true if the bio_vec was marked for SWIOTLB bouncing. Not all
-+ *   elements may have been bounced, so the caller would have to check
-+ *   individual BV entries with is_swiotlb_buffer().
-+ */
-+static inline bool bv_dma_is_swiotlb(struct bio_vec *bv)
+ void debug_dma_alloc_coherent(struct device *dev, size_t size,
+ 			      dma_addr_t dma_addr, void *virt,
+ 			      unsigned long attrs)
+@@ -1588,6 +1688,69 @@ void debug_dma_sync_sg_for_device(struct device *dev, struct scatterlist *sg,
+ 	}
+ }
+ 
++void debug_dma_sync_bvecs_for_cpu(struct device *dev, struct bio_vec *bvecs,
++				  int nelems, int direction)
 +{
-+	return bv->bv_dma_flags & BV_DMA_SWIOTLB;
++	int mapped_ents = 0, i;
++	struct bio_vec *bv;
++
++	if (unlikely(dma_debug_disabled()))
++		return;
++
++	for (i = 0; i < nents; i++) {
++		struct bio_vec *bv = &bvecs[i];
++		struct dma_debug_entry ref = {
++			.type           = dma_debug_bv,
++			.dev            = dev,
++			.pfn		= page_to_pfn(bv->bv_page),
++			.offset		= bv->bv_offset,
++			.dev_addr       = bv_dma_address(bv),
++			.size           = bv_dma_len(bv),
++			.direction      = direction,
++			.sg_call_ents   = nelems,
++		};
++
++		if (!i)
++			mapped_ents = get_nr_mapped_entries(dev, &ref);
++
++		if (i >= mapped_ents)
++			break;
++
++		check_sync(dev, &ref, true);
++	}
 +}
 +
-+/**
-+ * bv_dma_mark_swiotlb - Mark the bio_vec for SWIOTLB bouncing
-+ * @bv:		bio_vec array entry
-+ *
-+ * Description:
-+ *   Marks a a bio_vec for SWIOTLB bounce. Not all bio_vec entries may
-+ *   be bounced.
-+ */
-+static inline void bv_dma_mark_swiotlb(struct bio_vec *bv)
++void debug_dma_sync_bvecs_for_device(struct device *dev, struct bio_vec *bvecs,
++				     int nelems, int direction)
 +{
-+	bv->bv_dma_flags |= BV_DMA_SWIOTLB;
++	int mapped_ents = 0, i;
++	struct bio_vec *bv;
++
++	if (unlikely(dma_debug_disabled()))
++		return;
++
++	for (i = 0; i < nents; i++) {
++		struct bio_vec *bv = &bvecs[i];
++		struct dma_debug_entry ref = {
++			.type           = dma_debug_bv,
++			.dev            = dev,
++			.pfn		= page_to_pfn(bv->bv_page),
++			.offset		= bv->bv_offset,
++			.dev_addr       = bv_dma_address(bv),
++			.size           = bv_dma_len(bv),
++			.direction      = direction,
++			.sg_call_ents   = nelems,
++		};
++		if (!i)
++			mapped_ents = get_nr_mapped_entries(dev, &ref);
++
++		if (i >= mapped_ents)
++			break;
++
++		check_sync(dev, &ref, false);
++	}
 +}
 +
-+#else
+ static int __init dma_debug_driver_setup(char *str)
+ {
+ 	int i;
+diff --git a/kernel/dma/debug.h b/kernel/dma/debug.h
+index f525197d3cae..dff7e8a2f594 100644
+--- a/kernel/dma/debug.h
++++ b/kernel/dma/debug.h
+@@ -24,6 +24,13 @@ extern void debug_dma_map_sg(struct device *dev, struct scatterlist *sg,
+ extern void debug_dma_unmap_sg(struct device *dev, struct scatterlist *sglist,
+ 			       int nelems, int dir);
+ 
++extern void debug_dma_map_bvecs(struct device *dev, struct bio_vec *bvecs,
++				int nents, int mapped_ents, int direction,
++				unsigned long attrs);
 +
-+static inline bool bv_dma_is_bus_address(struct bio_vec *bv)
-+{
-+	return false;
-+}
-+static inline void bv_dma_mark_bus_address(struct bio_vec *bv)
-+{
-+}
-+static inline void bv_dma_unmark_bus_address(struct bio_vec *bv)
-+{
-+}
-+static inline bool bv_dma_is_swiotlb(struct bio_vec *bv)
-+{
-+	return false;
-+}
-+static inline void bv_dma_mark_swiotlb(struct bio_vec *bv)
++extern void debug_dma_unmap_bvecs(struct device *dev, struct bio_vec *bvecs,
++				  int nelems, int dir);
++
+ extern void debug_dma_alloc_coherent(struct device *dev, size_t size,
+ 				     dma_addr_t dma_addr, void *virt,
+ 				     unsigned long attrs);
+@@ -54,6 +61,14 @@ extern void debug_dma_sync_sg_for_cpu(struct device *dev,
+ extern void debug_dma_sync_sg_for_device(struct device *dev,
+ 					 struct scatterlist *sg,
+ 					 int nelems, int direction);
++
++extern void debug_dma_sync_bvecs_for_cpu(struct device *dev,
++					 struct bio_vec *bvecs,
++					 int nelems, int direction);
++
++extern void debug_dma_sync_bvecs_for_device(struct device *dev,
++					    struct bio_vec *bvecs,
++					    int nelems, int direction);
+ #else /* CONFIG_DMA_API_DEBUG */
+ static inline void debug_dma_map_page(struct device *dev, struct page *page,
+ 				      size_t offset, size_t size,
+@@ -79,6 +94,17 @@ static inline void debug_dma_unmap_sg(struct device *dev,
+ {
+ }
+ 
++static inline void debug_dma_map_bvecs(struct device *dev, struct bio_vec *bvecs,
++				       int nents, int mapped_ents, int direction,
++				       unsigned long attrs)
 +{
 +}
 +
-+#endif	/* CONFIG_NEED_SG_DMA_FLAGS */
++static inline void debug_dma_unmap_bvecs(struct device *dev, struct bio_vec *bvecs,
++					 int nelems, int dir)
++{
++}
 +
- #endif /* __LINUX_BVEC_H */
+ static inline void debug_dma_alloc_coherent(struct device *dev, size_t size,
+ 					    dma_addr_t dma_addr, void *virt,
+ 					    unsigned long attrs)
+@@ -126,5 +152,17 @@ static inline void debug_dma_sync_sg_for_device(struct device *dev,
+ 						int nelems, int direction)
+ {
+ }
++
++static inline void debug_dma_sync_bvecs_for_cpu(struct device *dev,
++						struct bio_vec *bvecs,
++						int nelems, int direction)
++{
++}
++
++static inline void debug_dma_sync_bvecs_for_device(struct device *dev,
++						   struct bio_vec *bvecs,
++						   int nelems, int direction)
++{
++}
+ #endif /* CONFIG_DMA_API_DEBUG */
+ #endif /* _KERNEL_DMA_DEBUG_H */
 
 
