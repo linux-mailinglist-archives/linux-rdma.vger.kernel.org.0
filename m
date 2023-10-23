@@ -2,109 +2,85 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5CED37D3EC4
-	for <lists+linux-rdma@lfdr.de>; Mon, 23 Oct 2023 20:15:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B9B7B7D3EF3
+	for <lists+linux-rdma@lfdr.de>; Mon, 23 Oct 2023 20:18:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231210AbjJWSPC (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 23 Oct 2023 14:15:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54194 "EHLO
+        id S230501AbjJWSSS (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 23 Oct 2023 14:18:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38018 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229829AbjJWSPC (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 23 Oct 2023 14:15:02 -0400
-Received: from mail-ot1-x332.google.com (mail-ot1-x332.google.com [IPv6:2607:f8b0:4864:20::332])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27CBDBE
-        for <linux-rdma@vger.kernel.org>; Mon, 23 Oct 2023 11:15:00 -0700 (PDT)
-Received: by mail-ot1-x332.google.com with SMTP id 46e09a7af769-6ce2ea3a944so2537251a34.1
-        for <linux-rdma@vger.kernel.org>; Mon, 23 Oct 2023 11:15:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google; t=1698084899; x=1698689699; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=EEHshj4ZGLSNUd1/3J7uLikUiQYUKL38M7lUB087fzk=;
-        b=pLl4V02x1g+KaWGkeoEaRAtGZ4uvxAvbsXh3RWA4MZd7Z3mKpeTNMUpsoRIW6SQgjD
-         vjHHrsnCuycG0Jtxh8hmDTAQsZAGUOzvvVwOnlw164sgcOLjJ1m987eZfDtTpxbf+nH2
-         KA5p7fjDTEBiLjpqY3jiu3aD8HMxm9sizINmLH2UxnoYXOYmPJ55iLgr8AIDVt9+507a
-         KCQRYRlpk0g7+T6RWrtU16Bt8h1Xy+1kIV8RUoBFBJeG6CbQN/1EKQHO9up4HEBBUa8I
-         FHQybkh7ecT33SFnaaMYpF4PBcqb3NK00CSwIof4FV2yUskciQNw2f3sTrXrxaSiub63
-         RQRw==
+        with ESMTP id S233669AbjJWSSL (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 23 Oct 2023 14:18:11 -0400
+Received: from mail-pf1-f172.google.com (mail-pf1-f172.google.com [209.85.210.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AD03D8E
+        for <linux-rdma@vger.kernel.org>; Mon, 23 Oct 2023 11:18:09 -0700 (PDT)
+Received: by mail-pf1-f172.google.com with SMTP id d2e1a72fcca58-6bee11456baso2777895b3a.1
+        for <linux-rdma@vger.kernel.org>; Mon, 23 Oct 2023 11:18:09 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698084899; x=1698689699;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=EEHshj4ZGLSNUd1/3J7uLikUiQYUKL38M7lUB087fzk=;
-        b=DscID/c/U2Iicqhcc6sNquLluESn90aO+L+qtMCuvWkO3B5brD06vYv0WxlRyaANEj
-         T4qU7JnLGxQGAR23r4fbGnpRJG/ZETuyJr5vMRoRvPPPIToZr0ktg3OlAUj8UFb3+G2/
-         hg1Pk+J4iV9PIZDXl5woQFB3jwDD4YdwKbf1FKRvN/zMeoTyzmyZpyTdlWQiL8/T4LTE
-         hRDNE26QSKGeDKphnAmLjyOb7iTQ/ODWKYHqMoqVcTXzt1mW5wB3iZl8UeuNrouzLT44
-         omtFNxQDzP2SLJwJiLGcvVx0VbzHnv+yPL1fbooe1zQZsVPw9vmELkWshx3kX+nUgcxZ
-         Dd8w==
-X-Gm-Message-State: AOJu0YzAhPgrZLuK2cvNpEtL/6e1y8GhfPwwkPs4O8hEn1ezJNSGilo6
-        0nEg50VneJHadRSJstgaCcuL5lTGKa4M2IOqvTQ=
-X-Google-Smtp-Source: AGHT+IETjW4KVURL38sAuytMhqq9oI5+G8qJObbDoigH6JMmCgE8pXkkrgDDG3XrQXmZN4EUlkVEng==
-X-Received: by 2002:a05:6830:2702:b0:6be:e447:da3 with SMTP id j2-20020a056830270200b006bee4470da3mr9821558otu.28.1698084899393;
-        Mon, 23 Oct 2023 11:14:59 -0700 (PDT)
-Received: from ziepe.ca (hlfxns017vw-142-68-26-201.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.68.26.201])
-        by smtp.gmail.com with ESMTPSA id k14-20020a056830168e00b006ce2e464a45sm1530719otr.29.2023.10.23.11.14.58
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 23 Oct 2023 11:14:58 -0700 (PDT)
-Received: from jgg by wakko with local (Exim 4.95)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1quzS5-003jNB-IG;
-        Mon, 23 Oct 2023 15:14:57 -0300
-Date:   Mon, 23 Oct 2023 15:14:57 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     sharmaajay@linuxonhyperv.com
-Cc:     Long Li <longli@microsoft.com>, Leon Romanovsky <leon@kernel.org>,
-        Dexuan Cui <decui@microsoft.com>, Wei Liu <wei.liu@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>, linux-rdma@vger.kernel.org,
-        linux-hyperv@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Ajay Sharma <sharmaajay@microsoft.com>
-Subject: Re: [Patch v7 1/5] RDMA/mana_ib: Rename all mana_ib_dev type
- variables to mib_dev
-Message-ID: <20231023181457.GI691768@ziepe.ca>
-References: <1697494322-26814-1-git-send-email-sharmaajay@linuxonhyperv.com>
- <1697494322-26814-2-git-send-email-sharmaajay@linuxonhyperv.com>
+        d=1e100.net; s=20230601; t=1698085089; x=1698689889;
+        h=content-transfer-encoding:in-reply-to:from:references:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=5yA1VrtkEFLjoX+BPtsqCfLCbiPhncsCTQbrxfk0mG0=;
+        b=n3u7CmREoZhjauvBdXy2F+fM1H+3qWeixxvgWI3duN5VTYFKp9DeLgHVCL5yXTWuCk
+         nsa/UGaFX9ZdXXVTB2+mcrjOyopWPGTZnnd0hyGIhKU0UdHIbq5fH7KOataHMHoDBX/v
+         eJqA10Vwag33wR2aOzUD3a2NBdLpoJBnUXDGk2lUQ5xaZggiTH2AY819RFHcmJF1JnVH
+         qIbdMlPeFOwmBM7/ozUg/KZgdfU+boAfBTklerDBJY1NgCFqHUOAbO9pnav3opQ8lpP5
+         CDoa8FvLje7bWBwjSxTHNz7xt62nKHS0av2Dg1Qcis4Ldn+lcxtmuCvCo9P1pbiKLUIb
+         RCWA==
+X-Gm-Message-State: AOJu0YyL+AaWBZiDuOkGPkHNdRk26yPlXfXsaw7Bve7gGE21qTZkFe9V
+        5X2VQNK42qkzanTtc7lZGgE=
+X-Google-Smtp-Source: AGHT+IFXLCCNPCDI8Ngs1iCIkCL0NaoKBt10O9zxiovFtG/sUnJXBFP/e5pPJE6jUzG+TaYN2SkL7Q==
+X-Received: by 2002:a05:6a20:1606:b0:17b:62ae:a8aa with SMTP id l6-20020a056a20160600b0017b62aea8aamr473883pzj.6.1698085088852;
+        Mon, 23 Oct 2023 11:18:08 -0700 (PDT)
+Received: from ?IPV6:2620:15c:211:201:14f9:170e:9304:1c4e? ([2620:15c:211:201:14f9:170e:9304:1c4e])
+        by smtp.gmail.com with ESMTPSA id d6-20020aa797a6000000b006b225011ee5sm6414999pfq.6.2023.10.23.11.18.07
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 23 Oct 2023 11:18:07 -0700 (PDT)
+Message-ID: <06229821-6d93-4f74-95ef-af352f101b7f@acm.org>
+Date:   Mon, 23 Oct 2023 11:18:06 -0700
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1697494322-26814-2-git-send-email-sharmaajay@linuxonhyperv.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: srp/002 hang in blktests
+Content-Language: en-US
+To:     Bob Pearson <rpearsonhpe@gmail.com>, linux-rdma@vger.kernel.org
+References: <b549a186-9c80-47e7-a54c-cd64d8cae9b7@gmail.com>
+From:   Bart Van Assche <bvanassche@acm.org>
+In-Reply-To: <b549a186-9c80-47e7-a54c-cd64d8cae9b7@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Mon, Oct 16, 2023 at 03:11:58PM -0700, sharmaajay@linuxonhyperv.com wrote:
-> From: Ajay Sharma <sharmaajay@microsoft.com>
-> 
-> This patch does not introduce any functional changes. It
-> creates naming convention to distinguish especially when
-> used in the same function.Renaming all mana_ib_dev type
-> variables to mib_dev to have clean separation between
-> eth dev and ibdev variables.
 
-> Signed-off-by: Ajay Sharma <sharmaajay@microsoft.com>
-> ---
->  drivers/infiniband/hw/mana/cq.c      | 12 ++--
->  drivers/infiniband/hw/mana/device.c  | 34 +++++------
->  drivers/infiniband/hw/mana/main.c    | 87 ++++++++++++++--------------
->  drivers/infiniband/hw/mana/mana_ib.h |  9 +--
->  drivers/infiniband/hw/mana/mr.c      | 29 +++++-----
->  drivers/infiniband/hw/mana/qp.c      | 84 +++++++++++++--------------
->  drivers/infiniband/hw/mana/wq.c      | 21 +++----
->  7 files changed, 141 insertions(+), 135 deletions(-)
+On 10/20/23 15:48, Bob Pearson wrote:
+> Latest efforts. I completely reinstalled my machine. New Ubuntu 23.10 
+> including multipath-tools-0.9.4-5ubuntu3, new rdma-linux git clone, new 
+> blktests clone, etc. (Lost lots of Thunderbird state.) Ran srp/002 a few 
+> times. It still hung on the third try. The dmsetup hack you sent still 
+> un-hangs the stuck run.
 
-Please no, don't create pointless giant churn like this. It only hurts
-backporters
+Hi Bob,
 
-Maybe just target the functions with more than one type
+Thanks for the detailed report. I installed Ubuntu 23.10 server into a
+new VM and also all packages that are needed to build the kernel and run
+blktests. This is how I ran the srp/002 test:
 
-Jason
+# (cd .../blktests && i=0 && while true; do ((i++)); echo ==== $i; 
+./check srp/002; done)
+
+With kernel v6.5-rc7, 40 iterations ran fine without triggering any
+hang. I haven't found any kernel commits between v6.5-rc3 and v6.5-rc7
+that could explain a behavior change for the SRP tests so I'm not sure
+why we are seeing different results on our test setups ...
+
+Thanks,
+
+Bart.
