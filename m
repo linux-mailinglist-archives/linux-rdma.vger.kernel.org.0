@@ -2,316 +2,205 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C09767D2FDC
-	for <lists+linux-rdma@lfdr.de>; Mon, 23 Oct 2023 12:28:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 315C27D304F
+	for <lists+linux-rdma@lfdr.de>; Mon, 23 Oct 2023 12:46:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230392AbjJWK2a (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 23 Oct 2023 06:28:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48480 "EHLO
+        id S229476AbjJWKqr (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 23 Oct 2023 06:46:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42602 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231136AbjJWK22 (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 23 Oct 2023 06:28:28 -0400
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C6E6D79;
-        Mon, 23 Oct 2023 03:28:25 -0700 (PDT)
-Received: from pps.filterd (m0360083.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 39NAHJJv026438;
-        Mon, 23 Oct 2023 10:28:22 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=fpYWhfGZJIbxbu2Kjyhz4Grm6wytg0wX8wN0sqL73QY=;
- b=mTTUA0RpHrzv0BcXz40Aj4SGdIiefSkw1sByoNBSkhn7ZVEYRJeBWDgzPt/F5CtG3x8A
- 705TkKKdPrk4WHfol9zDz7OHiiyVmvzCOoB/nf06fKIu7ujPBsoPscx58lzFnNCvpUBb
- 1HCX+j86K3nSg0XTiC09lcfyWK/hOuq8reTOKaYqJAdcNMPaaaIY08QzFdrJenSsXwDG
- lIzsezP6EcjcH7MnCMEB+E69MmYO+XIGBjQMKUw7GIArWxVg5fgdzq1gdOkuKl+smzxd
- jiGFpBabak13w9djR0ZBprlg7u8c/py8mFH9oEkMEdT6WiCnNhpPF5KsWSo+RurBlsiG eg== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3twpxpgavy-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 23 Oct 2023 10:28:22 +0000
-Received: from m0360083.ppops.net (m0360083.ppops.net [127.0.0.1])
-        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 39NAI2GB029798;
-        Mon, 23 Oct 2023 10:28:21 GMT
-Received: from ppma12.dal12v.mail.ibm.com (dc.9e.1632.ip4.static.sl-reverse.com [50.22.158.220])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3twpxpgavf-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 23 Oct 2023 10:28:21 +0000
-Received: from pps.filterd (ppma12.dal12v.mail.ibm.com [127.0.0.1])
-        by ppma12.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 39N94VaA023834;
-        Mon, 23 Oct 2023 10:28:20 GMT
-Received: from smtprelay05.wdc07v.mail.ibm.com ([172.16.1.72])
-        by ppma12.dal12v.mail.ibm.com (PPS) with ESMTPS id 3tvrysr97a-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 23 Oct 2023 10:28:20 +0000
-Received: from smtpav02.dal12v.mail.ibm.com (smtpav02.dal12v.mail.ibm.com [10.241.53.101])
-        by smtprelay05.wdc07v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 39NASJl420775632
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 23 Oct 2023 10:28:19 GMT
-Received: from smtpav02.dal12v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 3376F58051;
-        Mon, 23 Oct 2023 10:28:19 +0000 (GMT)
-Received: from smtpav02.dal12v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id A6BD458065;
-        Mon, 23 Oct 2023 10:28:17 +0000 (GMT)
-Received: from [9.171.5.241] (unknown [9.171.5.241])
-        by smtpav02.dal12v.mail.ibm.com (Postfix) with ESMTP;
-        Mon, 23 Oct 2023 10:28:17 +0000 (GMT)
-Message-ID: <ea0dcf7d-8406-476c-b027-145af207873a@linux.ibm.com>
-Date:   Mon, 23 Oct 2023 12:28:16 +0200
+        with ESMTP id S229448AbjJWKqq (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 23 Oct 2023 06:46:46 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F90BD65
+        for <linux-rdma@vger.kernel.org>; Mon, 23 Oct 2023 03:45:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1698057957;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=vB3jHXoS16KapdNQZUIduLuNHsVuuyVYThzRJF/d9P8=;
+        b=g31bGn26a2o6s6/1tLJhLmhab5ZmL+VzAWXuoDvZbfk9nVw1nCLCgla2FHa2OA7WIPddDy
+        TidCHgOdO1aYcDzG3HQtxrLA+zqoD83eDYtIELkKE2X1kr42JkoOpxQ52SRLyg3Z/YyD98
+        mrvGvFAor4XKkcS+fWxM18qcpoSTRWM=
+Received: from mail-pg1-f200.google.com (mail-pg1-f200.google.com
+ [209.85.215.200]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-624-2jGBNaRUOu2nLwJzPizfag-1; Mon, 23 Oct 2023 06:45:55 -0400
+X-MC-Unique: 2jGBNaRUOu2nLwJzPizfag-1
+Received: by mail-pg1-f200.google.com with SMTP id 41be03b00d2f7-5a4d04a8a5cso1748076a12.0
+        for <linux-rdma@vger.kernel.org>; Mon, 23 Oct 2023 03:45:55 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698057954; x=1698662754;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=vB3jHXoS16KapdNQZUIduLuNHsVuuyVYThzRJF/d9P8=;
+        b=UdsL1t4B4Ucj9CMWuJfxtTv1XGEstp79pr819zw6ZtAlCtplAnGvGvHhKZ2JLBBD2U
+         5J21giL9IYji1PbbQVXo9LjlPW+EE9f/JcG4VkFYQGjph3H1yoMxMIiYGDHJCmEYw6kx
+         UHBrUuoEDs0z7ov8Ng4kL+T5buTvE9fNxOuk5ju36cAtbaQ1S5D049R9DqYfiEgBot6O
+         oNDl/Rbx/JmXBprb7gH5FoaQMpWtomI/cCHgVcZbaco/aeGjOlCd0od1pixDK6wAhS2l
+         t2ZKtEFPWK6jtK8IUf7jq01FXg22+6ukIimcUzdnvMg+xlqyGovzQ+LSIetQcx7BN4ov
+         PbXA==
+X-Gm-Message-State: AOJu0Yzj8xBeLXVz0Fuq/Sn7R8teVjSvZU9le38dJot4tOJVXZ3xvRZj
+        umuFlUp6A2rYsDRGtviS1DrHa7e/8T2y3MHNRsnycLTbPYJtFZGOIBV3pFae0y+6ZZTRIy9V6YO
+        2Z30IkSSw5H5jMtpKMlVQ8QnmJFm7NcrgDFm4U62bEEpEszEj
+X-Received: by 2002:a05:6a21:9988:b0:13f:c40c:379 with SMTP id ve8-20020a056a21998800b0013fc40c0379mr8306048pzb.13.1698057954175;
+        Mon, 23 Oct 2023 03:45:54 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IF2crgPuAi+kwPKwj11yeEEB5IQRmGSwKDaOjsTTm/N7OaIHczV5B9+v8FJ0goNG3zk3xWTclfit+9tFcecSj0=
+X-Received: by 2002:a05:6a21:9988:b0:13f:c40c:379 with SMTP id
+ ve8-20020a056a21998800b0013fc40c0379mr8306031pzb.13.1698057953866; Mon, 23
+ Oct 2023 03:45:53 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH net 5/5] net/smc: put sk reference if close work was
- canceled
-Content-Language: en-GB
-To:     "D. Wythe" <alibuda@linux.alibaba.com>, kgraul@linux.ibm.com,
-        jaka@linux.ibm.com, wintera@linux.ibm.com
-Cc:     kuba@kernel.org, davem@davemloft.net, netdev@vger.kernel.org,
-        linux-s390@vger.kernel.org, linux-rdma@vger.kernel.org
-References: <1697009600-22367-1-git-send-email-alibuda@linux.alibaba.com>
- <1697009600-22367-6-git-send-email-alibuda@linux.alibaba.com>
- <bdcb307f-d2a8-4aef-bb7d-dd87e56ff740@linux.ibm.com>
- <ee641ca5-104b-d1ec-5b2a-e20237c5378a@linux.alibaba.com>
- <ad5e4191-227e-4a62-a110-472618ef7de1@linux.ibm.com>
- <305c7ae2-a902-3e30-5e67-b590d848d0ba@linux.alibaba.com>
- <990a6b09-135a-41fb-a375-c37ffec6fe99@linux.ibm.com>
- <94f89147-cedc-b8b2-415f-942ec14cd670@linux.alibaba.com>
- <83476aac-a2f6-4705-8aec-762b1f165210@linux.ibm.com>
- <567c792e-33e0-9ff6-f5c2-0eae356c7eb1@linux.alibaba.com>
-From:   Wenjia Zhang <wenjia@linux.ibm.com>
-In-Reply-To: <567c792e-33e0-9ff6-f5c2-0eae356c7eb1@linux.alibaba.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: -uvqdCW3UUCvUE7dzYuhwZhSmIGZhtob
-X-Proofpoint-ORIG-GUID: TooYV33VuxTfBE8kYI2MVLcst3Esjq1A
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-10-23_09,2023-10-19_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0 adultscore=0
- malwarescore=0 clxscore=1015 impostorscore=0 mlxlogscore=999
- lowpriorityscore=0 phishscore=0 spamscore=0 bulkscore=0 priorityscore=1501
- mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2310170001 definitions=main-2310230090
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+References: <20231013011803.70474-1-yanjun.zhu@intel.com> <OS3PR01MB98651C7454C46841B8A78F11E5D2A@OS3PR01MB9865.jpnprd01.prod.outlook.com>
+ <a6e4efa6-0623-4afa-9b57-969aaf346081@fujitsu.com> <20231020140139.GF691768@ziepe.ca>
+ <6c57cf0d-c7a7-4aac-9eb2-d8bb1d832232@fujitsu.com>
+In-Reply-To: <6c57cf0d-c7a7-4aac-9eb2-d8bb1d832232@fujitsu.com>
+From:   Yi Zhang <yi.zhang@redhat.com>
+Date:   Mon, 23 Oct 2023 18:45:40 +0800
+Message-ID: <CAHj4cs86fFi+1LMMAzjcdGg1g1gbQwy6QgksC0kYVmNgghLV_w@mail.gmail.com>
+Subject: Re: [PATCH 1/1] RDMA/rxe: Fix blktests srp lead kernel panic with 64k
+ page size
+To:     "Zhijian Li (Fujitsu)" <lizhijian@fujitsu.com>
+Cc:     Jason Gunthorpe <jgg@ziepe.ca>,
+        "Daisuke Matsuda (Fujitsu)" <matsuda-daisuke@fujitsu.com>,
+        Zhu Yanjun <yanjun.zhu@intel.com>,
+        Zhu Yanjun <yanjun.zhu@linux.dev>,
+        "leon@kernel.org" <leon@kernel.org>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        "zyjzyj2000@gmail.com" <zyjzyj2000@gmail.com>,
+        Bart Van Assche <bvanassche@acm.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
+On Mon, Oct 23, 2023 at 11:52=E2=80=AFAM Zhijian Li (Fujitsu)
+<lizhijian@fujitsu.com> wrote:
+>
+>
+>
+> On 20/10/2023 22:01, Jason Gunthorpe wrote:
+> > On Fri, Oct 20, 2023 at 03:47:05AM +0000, Zhijian Li (Fujitsu) wrote:
+> >> CC Bart
+> >>
+> >> On 13/10/2023 20:01, Daisuke Matsuda (Fujitsu) wrote:
+> >>> On Fri, Oct 13, 2023 10:18 AM Zhu Yanjun wrote:
+> >>>> From: Zhu Yanjun<yanjun.zhu@linux.dev>
+> >>>>
+> >>>> The page_size of mr is set in infiniband core originally. In the com=
+mit
+> >>>> 325a7eb85199 ("RDMA/rxe: Cleanup page variables in rxe_mr.c"), the
+> >>>> page_size is also set. Sometime this will cause conflict.
+> >>> I appreciate your prompt action, but I do not think this commit deals=
+ with
+> >>> the root cause. I agree that the problem lies in rxe driver, but what=
+ is wrong
+> >>> with assigning actual page size to ibmr.page_size?
+> >>>
+> >>> IMO, the problem comes from the device attribute of rxe driver, which=
+ is used
+> >>> in ulp/srp layer to calculate the page_size.
+> >>> =3D=3D=3D=3D=3D
+> >>> static int srp_add_one(struct ib_device *device)
+> >>> {
+> >>>           struct srp_device *srp_dev;
+> >>>           struct ib_device_attr *attr =3D &device->attrs;
+> >>> <...>
+> >>>           /*
+> >>>            * Use the smallest page size supported by the HCA, down to=
+ a
+> >>>            * minimum of 4096 bytes. We're unlikely to build large sgl=
+ists
+> >>>            * out of smaller entries.
+> >>>            */
+> >>>           mr_page_shift           =3D max(12, ffs(attr->page_size_cap=
+) - 1);
+> >>
+> >>
+> >> You light me up.
+> >> RXE provides attr.page_size_cap(RXE_PAGE_SIZE_CAP) which means it can =
+support 4K-2G page size
+> >
+> > That doesn't seem right even in concept.>
+> > I think the multi-size support in the new xarray code does not work
+> > right, just looking at it makes me think it does not work right. It
+> > looks like it can do less than PAGE_SIZE but more than PAGE_SIZE will
+> > explode because kmap_local_page() does only 4K.
+> >
+> > If RXE_PAGE_SIZE_CAP =3D=3D PAGE_SIZE  will everything work?
+> >
+>
+> Yeah, this should work(even though i only verified hardcoding mr_page_shi=
+ft to PAGE_SHIFT).
+
+Hi Zhijian
+
+Did you try blktests nvme/rdma use_rxe on your environment, it still
+failed on my side.
+
+# use_rxe=3D1 nvme_trtype=3Drdma  ./check nvme/003
+nvme/003 (test if we're sending keep-alives to a discovery controller) [fai=
+led]
+    runtime  12.179s  ...  11.941s
+    --- tests/nvme/003.out 2023-10-22 10:54:43.041749537 -0400
+    +++ /root/blktests/results/nodev/nvme/003.out.bad 2023-10-23
+05:52:27.882759168 -0400
+    @@ -1,3 +1,3 @@
+     Running nvme/003
+    -NQN:nqn.2014-08.org.nvmexpress.discovery disconnected 1 controller(s)
+    +NQN:nqn.2014-08.org.nvmexpress.discovery disconnected 0 controller(s)
+     Test complete
+
+[ 7033.431910] rdma_rxe: loaded
+[ 7033.456341] run blktests nvme/003 at 2023-10-23 05:52:15
+[ 7033.502306] (null): rxe_set_mtu: Set mtu to 1024
+[ 7033.510969] infiniband enP2p1s0v0_rxe: set active
+[ 7033.510980] infiniband enP2p1s0v0_rxe: added enP2p1s0v0
+[ 7033.549301] loop0: detected capacity change from 0 to 2097152
+[ 7033.556966] nvmet: adding nsid 1 to subsystem blktests-subsystem-1
+[ 7033.566711] nvmet_rdma: enabling port 0 (10.19.240.81:4420)
+[ 7033.588605] nvmet: connect attempt for invalid controller ID 0x808
+[ 7033.594909] nvme nvme0: Connect Invalid Data Parameter, cntlid: 65535
+[ 7033.601504] nvme nvme0: failed to connect queue: 0 ret=3D16770
+[ 7046.317861] rdma_rxe: unloaded
 
 
-On 23.10.23 10:52, D. Wythe wrote:
-> 
-> 
-> On 10/23/23 4:19 PM, Wenjia Zhang wrote:
->>
->>
->> On 20.10.23 04:41, D. Wythe wrote:
->>>
->>>
->>> On 10/20/23 1:40 AM, Wenjia Zhang wrote:
->>>>
->>>>
->>>> On 19.10.23 09:33, D. Wythe wrote:
->>>>>
->>>>>
->>>>> On 10/19/23 4:26 AM, Wenjia Zhang wrote:
->>>>>>
->>>>>>
->>>>>> On 17.10.23 04:06, D. Wythe wrote:
->>>>>>>
->>>>>>>
->>>>>>> On 10/13/23 3:04 AM, Wenjia Zhang wrote:
->>>>>>>>
->>>>>>>>
->>>>>>>> On 11.10.23 09:33, D. Wythe wrote:
->>>>>>>>> From: "D. Wythe" <alibuda@linux.alibaba.com>
->>>>>>>>>
->>>>>>>>> Note that we always hold a reference to sock when attempting
->>>>>>>>> to submit close_work. 
->>>>>>>> yes
->>>>>>>> Therefore, if we have successfully
->>>>>>>>> canceled close_work from pending, we MUST release that reference
->>>>>>>>> to avoid potential leaks.
->>>>>>>>>
->>>>>>>> Isn't the corresponding reference already released inside the 
->>>>>>>> smc_close_passive_work()?
->>>>>>>>
->>>>>>>
->>>>>>> Hi Wenjia,
->>>>>>>
->>>>>>> If we successfully cancel the close work from the pending state,
->>>>>>> it means that smc_close_passive_work() has never been executed.
->>>>>>>
->>>>>>> You can find more details here.
->>>>>>>
->>>>>>> /**
->>>>>>> * cancel_work_sync - cancel a work and wait for it to finish
->>>>>>> * @work:the work to cancel
->>>>>>> *
->>>>>>> * Cancel @work and wait for its execution to finish. This function
->>>>>>> * can be used even if the work re-queues itself or migrates to
->>>>>>> * another workqueue. On return from this function, @work is
->>>>>>> * guaranteed to be not pending or executing on any CPU.
->>>>>>> *
->>>>>>> * cancel_work_sync(&delayed_work->work) must not be used for
->>>>>>> * delayed_work's. Use cancel_delayed_work_sync() instead.
->>>>>>> *
->>>>>>> * The caller must ensure that the workqueue on which @work was last
->>>>>>> * queued can't be destroyed before this function returns.
->>>>>>> *
->>>>>>> * Return:
->>>>>>> * %true if @work was pending, %false otherwise.
->>>>>>> */
->>>>>>> boolcancel_work_sync(structwork_struct *work)
->>>>>>> {
->>>>>>> return__cancel_work_timer(work, false);
->>>>>>> }
->>>>>>>
->>>>>>> Best wishes,
->>>>>>> D. Wythe
->>>>>> As I understand, queue_work() would wake up the work if the work 
->>>>>> is not already on the queue. And the sock_hold() is just prio to 
->>>>>> the queue_work(). That means, cancel_work_sync() would cancel the 
->>>>>> work either before its execution or after. If your fix refers to 
->>>>>> the former case, at this moment, I don't think the reference can 
->>>>>> be hold, thus it is unnecessary to put it.
->>>>>>>
->>>>>
->>>>> I am quite confuse about why you think when we cancel the work 
->>>>> before its execution,
->>>>> the reference can not be hold ?
->>>>>
->>>>>
->>>>> Perhaps the following diagram can describe the problem in better way :
->>>>>
->>>>> smc_close_cancel_work
->>>>> smc_cdc_msg_recv_action
->>>>>
->>>>>
->>>>> sock_hold
->>>>> queue_work
->>>>> if (cancel_work_sync())        // successfully cancel before execution
->>>>> sock_put()                        //  need to put it since we 
->>>>> already hold a ref before   queue_work()
->>>>>
->>>>>
->>>> ha, I already thought you might ask such question:P
->>>>
->>>> I think here two Problems need to be clarified:
->>>>
->>>> 1) Do you think the bh_lock_sock/bh_unlock_sock in the 
->>>> smc_cdc_msg_recv does not protect the smc_cdc_msg_recv_action() from 
->>>> cancel_work_sync()?
->>>> Maybe that would go back to the discussion in the other patch on the 
->>>> behaviors of the locks.
->>>>
->>>
->>> Yes. bh_lock_sock/bh_unlock_sock can not block code execution 
->>> protected by lock_sock/unlock(). That is to say, they are not exclusive.
->>>
->> No, the logic of the inference is very vague to me. My understand is 
->> completely different. That is what I read from the kernel code. They 
->> are not *completely* exclusive, because while the bottom half context 
->> holds the lock i.e. bh_lock_sock, the process context can not get the 
->> lock by lock_sock. (This is actually my main point of my argument for 
->> these fixes, and I didn't see any clarify from you). However, while 
->> the process context holds the lock by lock_sock, the bottom half 
->> context can still get it by bh_lock_sock, this is just like what you 
->> showed in the code in lock_sock. Once it gets the ownership, it 
->> release the spinlock.
->>
-> 
-> “ while the process context holds the lock by lock_sock, the bottom half 
-> context can still get it by bh_lock_sock,  ”
-> 
-> You already got that, so why that sock_set_flag(DONE) and 
-> sock_set_flag(DEAD) can not happen concurrently ?
-> 
+>
+> >>> import ctypes
+> >>> libc =3D ctypes.cdll.LoadLibrary('libc.so.6')
+> >>> hex(65536)
+> '0x10000'
+> >>> libc.ffs(0x10000) - 1
+> 16
+> >>> 1 << 16
+> 65536
+>
+> so
+> mr_page_shift =3D max(12, ffs(attr->page_size_cap) - 1) =3D max(12, 16) =
+=3D 16;
+>
+>
+> So I think Daisuke's patch should work as well.
+>
+> https://lore.kernel.org/linux-rdma/OS3PR01MB98652B2EC2E85DAEC6DDE484E5D2A=
+@OS3PR01MB9865.jpnprd01.prod.outlook.com/T/#md133060414f0ba6a3dbaf7b4ad2374=
+c8a347cfd1
+>
+>
+> > Jason
 
-Then I'd ask how do you understand this sentence I wrote? "while the 
-bottom half context holds the lock i.e. bh_lock_sock, the process 
-context can not get the lock by lock_sock."
-> 
->>> We can use a very simple example to infer that since bh_lock_sock is 
->>> type of spin-lock, if bh_lock_sock/bh_unlock_sock can block 
->>> lock_sock/unlock(),
->>> then lock_sock/unlock() can also block bh_lock_sock/bh_unlock_sock.
->>>
->>> If this is true, when the process context already lock_sock(), the 
->>> interrupt context must wait for the process to call
->>> release_sock(). Obviously, this is very unreasonable.
->>>
->>>
->>>> 2) If the queue_work returns true, as I said in the last main, the 
->>>> work should be (being) executed. How could the cancel_work_sync() 
->>>> cancel the work before execution successgully?
->>>
->>> No, that's not true. In fact, if queue_work returns true, it simply 
->>> means that we have added the task to the queue and may schedule a 
->>> worker to execute it,
->>> but it does not guarantee that the task will be executed or is being 
->>> executed when it returns true,
->>> the task might still in the list and waiting some worker to execute it.
->>>
->>> We can make a simple inference,
->>>
->>> 1. A known fact is that if no special flag (WORK_UNBOUND) is given, 
->>> tasks submitted will eventually be executed on the CPU where they 
->>> were submitted.
->>>
->>> 2. If the queue_work returns true, the work should be or is being 
->>> executed
->>>
->>> If all of the above are true, when we invoke queue_work in an 
->>> interrupt context, does it mean that the submitted task will be 
->>> executed in the interrupt context?
->>>
->>>
->>> Best wishes,
->>> D. Wythe
->>>
->> If you say the thread is not gauranteed to be waken up in then 
->> queue_work to execute the work, please explain what the kick_pool 
->> function does.
-> 
-> I never said that.
-> 
-What do you understand on the kick_pool there?
->>
->> However, the spin_lock understanding is still the key problem in the 
->> cases. As I said, if it is not get clarify, we don't really need to go 
->> on to disucss this.
->>
->>>>
->>>>>>>>> Fixes: 42bfba9eaa33 ("net/smc: immediate termination for SMCD 
->>>>>>>>> link groups")
->>>>>>>>> Signed-off-by: D. Wythe <alibuda@linux.alibaba.com>
->>>>>>>>> ---
->>>>>>>>>   net/smc/smc_close.c | 3 ++-
->>>>>>>>>   1 file changed, 2 insertions(+), 1 deletion(-)
->>>>>>>>>
->>>>>>>>> diff --git a/net/smc/smc_close.c b/net/smc/smc_close.c
->>>>>>>>> index 449ef45..10219f5 100644
->>>>>>>>> --- a/net/smc/smc_close.c
->>>>>>>>> +++ b/net/smc/smc_close.c
->>>>>>>>> @@ -116,7 +116,8 @@ static void smc_close_cancel_work(struct 
->>>>>>>>> smc_sock *smc)
->>>>>>>>>       struct sock *sk = &smc->sk;
->>>>>>>>>         release_sock(sk);
->>>>>>>>> -    cancel_work_sync(&smc->conn.close_work);
->>>>>>>>> +    if (cancel_work_sync(&smc->conn.close_work))
->>>>>>>>> +        sock_put(sk);
->>>>>>>>> cancel_delayed_work_sync(&smc->conn.tx_work);
->>>>>>>>>       lock_sock(sk);
->>>>>>>>>   }
->>>>>>>
->>>>>
->>>>>
->>>
-> 
+
+
+--
+Best Regards,
+  Yi Zhang
+
