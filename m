@@ -2,86 +2,70 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EE99D7D414A
-	for <lists+linux-rdma@lfdr.de>; Mon, 23 Oct 2023 23:00:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D98327D441E
+	for <lists+linux-rdma@lfdr.de>; Tue, 24 Oct 2023 02:38:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229879AbjJWU7k (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 23 Oct 2023 16:59:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59874 "EHLO
+        id S230119AbjJXAiY (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 23 Oct 2023 20:38:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51384 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229441AbjJWU7k (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 23 Oct 2023 16:59:40 -0400
-Received: from mail-pg1-f182.google.com (mail-pg1-f182.google.com [209.85.215.182])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9EF7F9D
-        for <linux-rdma@vger.kernel.org>; Mon, 23 Oct 2023 13:59:38 -0700 (PDT)
-Received: by mail-pg1-f182.google.com with SMTP id 41be03b00d2f7-564b6276941so2964232a12.3
-        for <linux-rdma@vger.kernel.org>; Mon, 23 Oct 2023 13:59:38 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698094778; x=1698699578;
-        h=content-transfer-encoding:in-reply-to:from:references:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=TGnWpvtqUI0UJUFwbqlImZnkJ/qsDB05bgKbbS/nCpE=;
-        b=e5vhueTSNW2jS/h7x4LLBTCowC3pNnQBcJAx8nrWrj8qlCYmGhIoAx8Xe48D03aORA
-         UncxR2HhTaXvG+QqZupJhY2a9PYTZFkCyjURL3wIuhqepLTLjcP5l1aziVvVmF39fi01
-         GHBDKaQTbGQpWuJhJMJCRK57RpE0M17zWBB0PO0DyuN+cPpO6BUhKObMzkJkv27Wy8AB
-         fnaiI6zxwQbGJSNU5/lu3yyyFR3ypMkrVRsOhJOV32qPVojYqXPoYYc2fsrPC5FY7rz3
-         8/KsxEOylFK5ZB4GG+nMvH+5Q2yC4o0E9L+W/CRj4D08lC5JMDmx/iZh9+xPp3X6xb7E
-         FwLQ==
-X-Gm-Message-State: AOJu0YxFRgWjnVr6+lkA6i2HDHtbWoV7WwqA0DhyaJe/2gAWuLqeAqTF
-        MOZBab9BHLMfJHFuA4kF9l+/ZGUTCYM=
-X-Google-Smtp-Source: AGHT+IFts/CtXN0yjEknykyc6SEr9n8T+j4wlzHHCPzhSQ3uDCEZSzsQqGLKxQwO3+JxvnDoyD2OuQ==
-X-Received: by 2002:a17:902:e88f:b0:1c7:23c9:a7db with SMTP id w15-20020a170902e88f00b001c723c9a7dbmr10831582plg.26.1698094777913;
-        Mon, 23 Oct 2023 13:59:37 -0700 (PDT)
-Received: from ?IPV6:2620:15c:211:201:14f9:170e:9304:1c4e? ([2620:15c:211:201:14f9:170e:9304:1c4e])
-        by smtp.gmail.com with ESMTPSA id i11-20020a17090332cb00b001b0358848b0sm6353690plr.161.2023.10.23.13.59.37
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 23 Oct 2023 13:59:37 -0700 (PDT)
-Message-ID: <f561804c-41c8-48af-ab2b-45f54bd117b6@acm.org>
-Date:   Mon, 23 Oct 2023 13:59:36 -0700
+        with ESMTP id S229679AbjJXAiX (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 23 Oct 2023 20:38:23 -0400
+Received: from out30-113.freemail.mail.aliyun.com (out30-113.freemail.mail.aliyun.com [115.124.30.113])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 86C1290;
+        Mon, 23 Oct 2023 17:38:20 -0700 (PDT)
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R171e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018045192;MF=yang.lee@linux.alibaba.com;NM=1;PH=DS;RN=6;SR=0;TI=SMTPD_---0Vuo32gS_1698107896;
+Received: from localhost(mailfrom:yang.lee@linux.alibaba.com fp:SMTPD_---0Vuo32gS_1698107896)
+          by smtp.aliyun-inc.com;
+          Tue, 24 Oct 2023 08:38:17 +0800
+From:   Yang Li <yang.lee@linux.alibaba.com>
+To:     jgg@ziepe.ca, leon@kernel.org
+Cc:     linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Yang Li <yang.lee@linux.alibaba.com>,
+        Abaci Robot <abaci@linux.alibaba.com>
+Subject: [PATCH -next] RDMA/core: Remove NULL check before dev_{put, hold}
+Date:   Tue, 24 Oct 2023 08:38:15 +0800
+Message-Id: <20231024003815.89742-1-yang.lee@linux.alibaba.com>
+X-Mailer: git-send-email 2.20.1.7.g153144c
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: srp/002 hang in blktests
-Content-Language: en-US
-To:     Bob Pearson <rpearsonhpe@gmail.com>, linux-rdma@vger.kernel.org,
-        jgg@nvidia.com
-References: <b549a186-9c80-47e7-a54c-cd64d8cae9b7@gmail.com>
- <06229821-6d93-4f74-95ef-af352f101b7f@acm.org>
- <3e2191b7-56de-4654-936e-46fbc5828122@gmail.com>
- <53ede78a-f73d-44cd-a555-f8ff36bd9c55@acm.org>
- <b4071c0b-aebe-4fdf-a788-442215e17d88@gmail.com>
-From:   Bart Van Assche <bvanassche@acm.org>
-In-Reply-To: <b4071c0b-aebe-4fdf-a788-442215e17d88@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
-        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-9.9 required=5.0 tests=BAYES_00,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 10/23/23 13:41, Bob Pearson wrote:
-> On 10/23/23 15:21, Bart Van Assche wrote:
->> On 10/23/23 11:29, Bob Pearson wrote:
->>> Lots of work. Thanks!! Did you mean 6.6 instead of 6.5? I assume
->>> you are running an Ubuntu 23.10 VM and not bare metal while I am
->>> not.
->>
->> Yes, I meant 6.6 instead of 6.5. I'm indeed running Ubuntu 23.10 
->> inside a VM. BTW, the test is still running and has just reached 231 
->> iterations
->> ...
-> 
-> Very good news! Maybe we can let rxe out of the doghouse.
+The call netdev_{put, hold} of dev_{put, hold} will check NULL,
+so there is no need to check before using dev_{put, hold},
+remove it to silence the warning:
 
-Is there perhaps a misunderstanding? I ran my tests with the soft-iWARP 
-driver. Did you run your tests with the RXE driver?
+./drivers/infiniband/core/nldev.c:375:2-9: WARNING: NULL check before dev_{put, hold} functions is not needed.
 
-Thanks,
+Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+Closes: https://bugzilla.openanolis.cn/show_bug.cgi?id=7047
+Signed-off-by: Yang Li <yang.lee@linux.alibaba.com>
+---
+ drivers/infiniband/core/nldev.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-Bart.
+diff --git a/drivers/infiniband/core/nldev.c b/drivers/infiniband/core/nldev.c
+index 87b8cd657fb3..4900a0848124 100644
+--- a/drivers/infiniband/core/nldev.c
++++ b/drivers/infiniband/core/nldev.c
+@@ -371,8 +371,7 @@ static int fill_port_info(struct sk_buff *msg,
+ 	}
+ 
+ out:
+-	if (netdev)
+-		dev_put(netdev);
++	dev_put(netdev);
+ 	return ret;
+ }
+ 
+-- 
+2.20.1.7.g153144c
 
