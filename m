@@ -2,40 +2,39 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B0F057D5527
-	for <lists+linux-rdma@lfdr.de>; Tue, 24 Oct 2023 17:16:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 258717D552F
+	for <lists+linux-rdma@lfdr.de>; Tue, 24 Oct 2023 17:17:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343537AbjJXPQn (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 24 Oct 2023 11:16:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52580 "EHLO
+        id S1343556AbjJXPRI (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 24 Oct 2023 11:17:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34542 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234653AbjJXPQg (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 24 Oct 2023 11:16:36 -0400
+        with ESMTP id S234740AbjJXPRE (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 24 Oct 2023 11:17:04 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F9A910E2;
-        Tue, 24 Oct 2023 08:16:34 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3EB1DC433CA;
-        Tue, 24 Oct 2023 15:16:32 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D7623D7A;
+        Tue, 24 Oct 2023 08:16:38 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DF0BAC433BB;
+        Tue, 24 Oct 2023 15:16:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1698160593;
-        bh=0NrY7joD0QN8CxuK5EACBmNxwYvhzcOzcKThmxRZNkU=;
+        s=k20201202; t=1698160598;
+        bh=O1ZQCaqr3Y1gpsxkAzqO3ZiSI5a5sR0bznxgzARpojM=;
         h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-        b=nuZL7NOyiyiqkrkofBG2HosMFLnJYDVGVarFuZ7gZsj/cR104ZqZJ9p9X8fXzoKyI
-         LFOX0Ia03tmGiJPftM/iaxhNQT3mlHltnMWjsT6O2I8k5OzvFgfofAPJQvmrfhDrVT
-         ciRQur3lQPgzWZJqHDaBcom3dAJunSXIPVQy+iiQpFr9sVRIZ4nbnm4957oQJUzDT3
-         VTg2pVLl4jQ1Y69zNL2iMU21m5jBrR3yW3sAN2t4GBjET8uoOJhzxFAP3W0q8TvOUz
-         jfC2p4lFwR4/cgmE1twmFvxtmHi+uF/vYTGCGKLtC6pxULkPQPNjorEWhY8i311Z+i
-         7fJeirFgVqvyw==
+        b=CjnFzzFaAwyXeG6ral0ZKqu5lkYMzvX0J9a2PcXdRWZYsOYCfsPindrt34PP+RY3r
+         81AWQ0mWDZI3IEJ2BfLeEcIxCvc1lOPt+0Qy5ISeODiYV//yeL+4cZPNJQsD+bxcLY
+         UkMe04C0isuVLemO/DVmCC3oAAeOU37v6oltFq+2DPFLzuc1HnhcveGbmWziglOyLe
+         5VqPADI+QZtoeryfKv8KarmHB7k/WNA+Kd2ml3Zj0nacSJqBxThePVJ6lmgvLzG9bk
+         uooaZatXH0ckPWsQKYy0fnfUNssV7Is/fQxDRdPUdvGPYtrNvPHhDuQoIhO6sgg788
+         a4ogzvivw36+A==
 From:   Leon Romanovsky <leon@kernel.org>
-To:     Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>, linux-rdma@vger.kernel.org,
-        Colin Ian King <colin.i.king@gmail.com>
-Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-In-Reply-To: <20231023141733.667807-1-colin.i.king@gmail.com>
-References: <20231023141733.667807-1-colin.i.king@gmail.com>
-Subject: Re: [PATCH] RDMA/hfi1: remove redundant assignment to pointer ppd
-Message-Id: <169816058968.2308077.4145972998710819648.b4-ty@kernel.org>
-Date:   Tue, 24 Oct 2023 18:16:29 +0300
+To:     jgg@ziepe.ca, Yang Li <yang.lee@linux.alibaba.com>
+Cc:     linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Abaci Robot <abaci@linux.alibaba.com>
+In-Reply-To: <20231024003815.89742-1-yang.lee@linux.alibaba.com>
+References: <20231024003815.89742-1-yang.lee@linux.alibaba.com>
+Subject: Re: [PATCH -next] RDMA/core: Remove NULL check before dev_{put, hold}
+Message-Id: <169816059429.2308077.13679053435060636033.b4-ty@kernel.org>
+Date:   Tue, 24 Oct 2023 18:16:34 +0300
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
@@ -51,20 +50,20 @@ List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
 
-On Mon, 23 Oct 2023 15:17:33 +0100, Colin Ian King wrote:
-> Pointer ppd is being assigned a value in a for-loop however it
-> is never read. The assignment is redundant and can be removed.
-> Cleans up clang scan build warning:
+On Tue, 24 Oct 2023 08:38:15 +0800, Yang Li wrote:
+> The call netdev_{put, hold} of dev_{put, hold} will check NULL,
+> so there is no need to check before using dev_{put, hold},
+> remove it to silence the warning:
 > 
-> drivers/infiniband/hw/hfi1/init.c:1030:3: warning: Value stored
-> to 'ppd' is never read [deadcode.DeadStores]
+> ./drivers/infiniband/core/nldev.c:375:2-9: WARNING: NULL check before dev_{put, hold} functions is not needed.
+> 
 > 
 > [...]
 
 Applied, thanks!
 
-[1/1] RDMA/hfi1: remove redundant assignment to pointer ppd
-      https://git.kernel.org/rdma/rdma/c/b55706366c5ed6
+[1/1] RDMA/core: Remove NULL check before dev_{put, hold}
+      https://git.kernel.org/rdma/rdma/c/7a1c2abf9a2be7
 
 Best regards,
 -- 
