@@ -2,100 +2,109 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7EC207D5860
-	for <lists+linux-rdma@lfdr.de>; Tue, 24 Oct 2023 18:31:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 670BF7D5949
+	for <lists+linux-rdma@lfdr.de>; Tue, 24 Oct 2023 19:02:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343880AbjJXQb1 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 24 Oct 2023 12:31:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57602 "EHLO
+        id S233233AbjJXRC0 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 24 Oct 2023 13:02:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60166 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343892AbjJXQb0 (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 24 Oct 2023 12:31:26 -0400
-Received: from mail-pl1-f171.google.com (mail-pl1-f171.google.com [209.85.214.171])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3CDC693
-        for <linux-rdma@vger.kernel.org>; Tue, 24 Oct 2023 09:31:24 -0700 (PDT)
-Received: by mail-pl1-f171.google.com with SMTP id d9443c01a7336-1c9a1762b43so39162205ad.1
-        for <linux-rdma@vger.kernel.org>; Tue, 24 Oct 2023 09:31:24 -0700 (PDT)
+        with ESMTP id S234835AbjJXRCY (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 24 Oct 2023 13:02:24 -0400
+Received: from mail-io1-xd32.google.com (mail-io1-xd32.google.com [IPv6:2607:f8b0:4864:20::d32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CAF8F122;
+        Tue, 24 Oct 2023 10:02:22 -0700 (PDT)
+Received: by mail-io1-xd32.google.com with SMTP id ca18e2360f4ac-7a66a7fc2d4so176736839f.0;
+        Tue, 24 Oct 2023 10:02:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1698166942; x=1698771742; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=hy3+CRPCNWCZ0YKD6OUXTpD5Qmway7xYPuUglUxE3qo=;
+        b=ZYziswNj+BpZnF7wRZzwPKEYIuw2ZSnd//0KRfExFWFgKKWn7ywuBBCCRKF2CNmz4H
+         hUbRO+A3oXdV8Pr0vDAyF4te6oK/HvKY0FhZ179zz2/flYnA4O/ftkGLrQHlTjpzRLLJ
+         QcFjZG+lvi0MrwGPSvv3wnBiva7iQ5ToCEvgOTOGTyPNu+wyVwMz4zKVcPfZRg6AvV2O
+         ZVEo+X5+Tqn/edtOD/JYVgGMv7VfluMHzW8gPfq/+0sbXBNhO9l+GS09HSGiGk94L3Zm
+         iLIu5qd6Hy7YVsxKHTPlWnlJxVtbRIdJkUXpAlBH/Mh2zR/O9d+EkeTbBuftIQFUc+83
+         N8sQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698165083; x=1698769883;
-        h=content-transfer-encoding:in-reply-to:references:to:from
-         :content-language:subject:user-agent:mime-version:date:message-id
+        d=1e100.net; s=20230601; t=1698166942; x=1698771742;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=RUSUTyAbuWT+P92768BKYcxPW5p/tEFYJboDQvLFMVM=;
-        b=G5ZW//AFcvmUxvlnaZsmH+Qwjd6sL0mgyPLf57xbGVDTEjf4uswe3SzjS1peMC1ihX
-         qYFvOgDy9eXNCIfF/0DpvODjJDdIh0he5vaQJVzihR3cTAR8t8TJaGkvWhQkrHsi7q8Y
-         P3KtqTzdZq+87PAlz+WyanJD6RwjHugNjWKONdclMOWYhkNRG4mIcUcGPtRCfH8RcoBS
-         MUtv175a6ix0N72/c8QVo0pWp4RA+ChUkQID41lkU8xBhAm4iBahn0sdcC7G+NcbJ1fh
-         Kfrtv7IJoijdsVSaPoVYUPz8dzYCDQO3XrpAirsPSAUMPCmBuOXYxPtekGMiDUONIr1q
-         YjhA==
-X-Gm-Message-State: AOJu0Yy9Dld8FdlRTK/F4MSj6LXtpQ1rQzVqeXdlOzPffFwGIgLSOLEu
-        9gBM/jOGrdH3w6jJECPmwryanWJUFwo=
-X-Google-Smtp-Source: AGHT+IH+gsxhnytbIUb7uNx6wX85h6LUUXtucEuz3Q537spLaiCSTB15flc8nGEITX5o2Vtf1VH1QQ==
-X-Received: by 2002:a17:902:d081:b0:1b8:a19e:a3d3 with SMTP id v1-20020a170902d08100b001b8a19ea3d3mr10559969plv.52.1698165083509;
-        Tue, 24 Oct 2023 09:31:23 -0700 (PDT)
-Received: from ?IPV6:2620:15c:211:201:b089:b200:3b6d:bf8? ([2620:15c:211:201:b089:b200:3b6d:bf8])
-        by smtp.gmail.com with ESMTPSA id g10-20020a1709026b4a00b001a80ad9c599sm7609277plt.294.2023.10.24.09.31.21
+        bh=hy3+CRPCNWCZ0YKD6OUXTpD5Qmway7xYPuUglUxE3qo=;
+        b=faXm3DWuhmAEhXmMYwseSdopw6BM0qNejFJQTKy1FsCECBQgVORCcRGBnoceaOYprd
+         mmN3tqVWEzDSoIMpyDYo/ugjL7WpsxIeYUhq6LtF3bTmtc0fzLZxJbZfhlQ+ybih2Asy
+         FPdyfe29wJN7IJ4149EHZDK+2M/GtZONxNjD6KVidnZpNI0hojje/RRwI9jH+zNJQnYs
+         2q6yBYOyEtxt5iKs0frtTc7E/Q12U7a9NCyh0mRxESvSRteAo1xV4Jcyh0wYFCGpXc/a
+         2sZRxqfMM9eTlg9r2FIi5rZmC+XQvfMu8tdxkwLhVzqsbwsU0A1KRMBA5yqGa5fkBwzP
+         dD/w==
+X-Gm-Message-State: AOJu0YwkiftbYSMXW7vx4YvOegcWUPUwcnR5lCR1mN2C1cOfxJ63EvXn
+        RraV6UytY6VhepJE6jD/ggo=
+X-Google-Smtp-Source: AGHT+IHI4V/n+ADLtBEqfl2xmuUrCXu2vYEW+5AUBwfIlb3BtAEb99Q1BMOcudP1tfe86Fwy00bnWw==
+X-Received: by 2002:a05:6602:15c2:b0:791:1e87:b47e with SMTP id f2-20020a05660215c200b007911e87b47emr18096321iow.15.1698166942029;
+        Tue, 24 Oct 2023 10:02:22 -0700 (PDT)
+Received: from ?IPV6:2601:284:8200:b700:d8d6:5f8f:cf7b:edca? ([2601:284:8200:b700:d8d6:5f8f:cf7b:edca])
+        by smtp.googlemail.com with ESMTPSA id y16-20020a6be510000000b0076ffebfc9fasm3202921ioc.47.2023.10.24.10.02.21
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 24 Oct 2023 09:31:21 -0700 (PDT)
-Message-ID: <119304fc-a61d-4567-8d23-edb69676fad5@acm.org>
-Date:   Tue, 24 Oct 2023 09:31:19 -0700
+        Tue, 24 Oct 2023 10:02:21 -0700 (PDT)
+Message-ID: <6a1632a4-28fd-4fdd-b9ff-34dd2f0bba88@gmail.com>
+Date:   Tue, 24 Oct 2023 11:02:20 -0600
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: srp/002 hang in blktests
+Subject: Re: [PATCH v2 iproute2-next 2/3] rdma: Add an option to set
+ privileged QKEY parameter
+To:     Patrisious Haddad <phaddad@nvidia.com>, jgg@ziepe.ca,
+        leon@kernel.org, stephen@networkplumber.org
+Cc:     netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
+        linuxarm@huawei.com, linux-kernel@vger.kernel.org,
+        huangjunxian6@hisilicon.com, michaelgur@nvidia.com
+References: <20231023112217.3439-1-phaddad@nvidia.com>
+ <20231023112217.3439-3-phaddad@nvidia.com>
 Content-Language: en-US
-From:   Bart Van Assche <bvanassche@acm.org>
-To:     Bob Pearson <rpearsonhpe@gmail.com>, linux-rdma@vger.kernel.org,
-        jgg@nvidia.com
-References: <b549a186-9c80-47e7-a54c-cd64d8cae9b7@gmail.com>
- <06229821-6d93-4f74-95ef-af352f101b7f@acm.org>
- <3e2191b7-56de-4654-936e-46fbc5828122@gmail.com>
- <53ede78a-f73d-44cd-a555-f8ff36bd9c55@acm.org>
- <b4071c0b-aebe-4fdf-a788-442215e17d88@gmail.com>
- <f561804c-41c8-48af-ab2b-45f54bd117b6@acm.org>
-In-Reply-To: <f561804c-41c8-48af-ab2b-45f54bd117b6@acm.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+From:   David Ahern <dsahern@gmail.com>
+In-Reply-To: <20231023112217.3439-3-phaddad@nvidia.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
-        autolearn=no autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 10/23/23 13:59, Bart Van Assche wrote:
-> On 10/23/23 13:41, Bob Pearson wrote:
->> On 10/23/23 15:21, Bart Van Assche wrote:
->>> On 10/23/23 11:29, Bob Pearson wrote:
->>>> Lots of work. Thanks!! Did you mean 6.6 instead of 6.5? I assume
->>>> you are running an Ubuntu 23.10 VM and not bare metal while I am
->>>> not.
->>>
->>> Yes, I meant 6.6 instead of 6.5. I'm indeed running Ubuntu 23.10 
->>> inside a VM. BTW, the test is still running and has just reached 231 
->>> iterations
->>> ...
->>
->> Very good news! Maybe we can let rxe out of the doghouse.
-> 
-> Is there perhaps a misunderstanding? I ran my tests with the soft-iWARP 
-> driver. Did you run your tests with the RXE driver?
+On 10/23/23 5:22 AM, Patrisious Haddad wrote:
+> diff --git a/rdma/sys.c b/rdma/sys.c
+> index fd785b25..db34cb41 100644
+> --- a/rdma/sys.c
+> +++ b/rdma/sys.c
+> @@ -40,6 +40,17 @@ static int sys_show_parse_cb(const struct nlmsghdr *nlh, void *data)
+>  				   mode_str);
+>  	}
+>  
+> +	if (tb[RDMA_NLDEV_SYS_ATTR_PRIVILEGED_QKEY_MODE]) {
+> +		uint8_t pqkey_mode;
+> +
+> +		pqkey_mode =
+> +			mnl_attr_get_u8(tb[RDMA_NLDEV_SYS_ATTR_PRIVILEGED_QKEY_MODE]);
 
-(replying to my own email)
+just make it mode so it fits on one line.
 
-With the RXE driver I see a hang after 143 iterations in the same VM
-(Ubuntu 23.10 VM, v6.6-rc7 kernel with kernel debugging disabled). No
-SRP paths are available so the hang is not caused by a multipathd bug:
+40 characters for an attribute name .... I will never understand this
+fascination with writing a sentence for an attribute name.
 
-# lsscsi
-[0:0:0:0]    cd/dvd  QEMU     QEMU DVD-ROM     2.5+  /dev/sr0
-[6:0:0:0]    disk    Linux    scsi_debug       0191  /dev/sda
+> +
+> +		print_color_on_off(PRINT_ANY, COLOR_NONE, "privileged-qkey",
+> +				   "privileged-qkey %s ", pqkey_mode);
+> +
+> +	}
+> +
+>  	if (tb[RDMA_NLDEV_SYS_ATTR_COPY_ON_FORK])
+>  		cof = mnl_attr_get_u8(tb[RDMA_NLDEV_SYS_ATTR_COPY_ON_FORK]);
+>  
 
-I couldn't obtain more information because kernel debugging is disabled.
-But it is suspicious that this hang happens with the RXE driver and not
-with the soft-iWARP driver.
-
-Bart.
-
+keep Petr's reviewed-by tag on the respin.
