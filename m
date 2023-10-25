@@ -2,65 +2,65 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5837E7D6BC1
-	for <lists+linux-rdma@lfdr.de>; Wed, 25 Oct 2023 14:32:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 301817D6BBE
+	for <lists+linux-rdma@lfdr.de>; Wed, 25 Oct 2023 14:32:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343974AbjJYMbn (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 25 Oct 2023 08:31:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54952 "EHLO
+        id S234862AbjJYMcF (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 25 Oct 2023 08:32:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45864 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234858AbjJYMbm (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 25 Oct 2023 08:31:42 -0400
-Received: from NAM11-DM6-obe.outbound.protection.outlook.com (mail-dm6nam11on2072.outbound.protection.outlook.com [40.107.223.72])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C375CC;
-        Wed, 25 Oct 2023 05:31:40 -0700 (PDT)
+        with ESMTP id S234869AbjJYMcD (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 25 Oct 2023 08:32:03 -0400
+Received: from NAM11-CO1-obe.outbound.protection.outlook.com (mail-co1nam11on2089.outbound.protection.outlook.com [40.107.220.89])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D02C2D56;
+        Wed, 25 Oct 2023 05:31:54 -0700 (PDT)
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=kAL+oW9ncaQ74owdrDOYwHP1a5osPlin1RXw+WUiykFu1X0VUWxS8lVeCyu3ep4MFf0SKHAkP1bOrMKksf1bJRf3sYAPPPs1VW7JOG7/BOrdST46rtp9PMOV1+7xtQBZ0NtSr5tIfCb+1iAcyegLj4WCqKWAjb3tW+zQHtPUK89h3uDJ19fq+Or3l/xrbX4W/lW5x1UH+zF3B9KDpNaRz4iJSEynYq45ZXvsjZAsHJlyQLNRcY7kAuIemuJXWeEQDbosllyPHhuCoz7wPRJrx4Dpv/ILXz01d7FLEgwo59FHq/jjmojIqeykQ6S6ue03z11/Pr4OrvYPxyarep477A==
+ b=DD8nhEgQzPIWEP4HHqIXCYflQRkvHydxW0/rqZOH15iIRd97w4XVkx0SyyELnLIIW5fJwO52mPH/xEOQiFhB8MN0fotE98gkxEGMZ/jwFsnGsCuIEdhZQ9fVQsZuCXnj12uc+EPmFgRxYw0TA/uAxPdTU46O2IJmqM70MeE+AqNkUs/ALWW/89YJ8wHk/OL15m7+Z+P7IjSl9orREBhYhuClCHzErRtzC5WTVkr0Iv9uFgKBx6EBLJ//EpmcLX/T82VvW5kdui8d00g1dp107gQDGBcEFeQ2FZyX8XU6KXgeATg9smPAV1tLZPoxD48+6OAHO0qGeOcJSIgGAi+LAQ==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=WkVKxfmoB0VNoib7/jND40Wtz6CtYAiB7WoZEfedF8U=;
- b=DUg5x6AndMHmKEhVEASCjQcXRJlXBKnfq9osZeX09wQ+jJBYHHCgrqneeOYnYyRr6lCRAdgk5/AUu3ShiMuf9yySvSfAA0MArkS2e3jyX6FgGLeIBncyMM46crHSHA1aSQqpRXm4hQ3I6rXST4hD7GnulFjhfdpM8ztBeAHFH4ySiFuvIDfTbWKF2uZtnSq8iRNlJnewRdg41mWuIRXq0wU+PDbS/Y+XRkEoxoDfgEe48lqf0ixjIUkaZoOYtmhv/vUCbozYj03Oy0SDTDiLI0OjgwefWggSFltbXbnykS9dvdsgtUB34RC1n6VXrAY4gevf2rMlYPkH4pgEBx5e7w==
+ bh=gbxp6D/DKnZ0Oew9TOM+2l9VjiIXoaDDWmFTIFBmeLY=;
+ b=LAJtAI1qeb63E1nN4Zn7HtW1KHmfaTaNbPc2Zs76sZ+qZ8Kk4C7CdAf/IYrH1ZtTZ3m/tF+oc21mBsGubx328XT+xhMP0z3VPQjbI7y+3YdCkp0Hcw349MHcgLsPmDwXR7aLkFWvoC2aqSHaK4wy7J/G/t7wuxaYAC7mxOEHW6MRpZCIdSfuryAI/NwOMZHfnblEpTpRSD8E7F9HKAE1tPOs6Enzs+TexYH4hBFBqTiOwhvua/8Ld+6SauYBRrb8C9slc0lrIu5mzcCnG0YqPL0+2BZKAs9Ik4ZEF0hdY7r9oZHTyuAeWEz/kT/jERFMsqZQI1jc8Hcu8rsWoWC+Ag==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 216.228.118.232) smtp.rcpttodomain=ziepe.ca smtp.mailfrom=nvidia.com;
+ 216.228.118.233) smtp.rcpttodomain=ziepe.ca smtp.mailfrom=nvidia.com;
  dmarc=pass (p=reject sp=reject pct=100) action=none header.from=nvidia.com;
- dkim=none (message not signed); arc=none
+ dkim=none (message not signed); arc=none (0)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
  s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=WkVKxfmoB0VNoib7/jND40Wtz6CtYAiB7WoZEfedF8U=;
- b=nC+GR/vBci5DFgnZXfjAjm8sPdcv6o1LcMX7J/bV/AEqjUU/ixcD0DuiiipFSHwXqLWBiO+WOIG6Ln0ACx8/rciTga/6frCpqeC5qkV/szhFy4hdIi+2j6QV8aRGDGNrJzLzTv+A6JqHeeE+0zsYUNOCWJDCw7nqZFMyIO55gn5qr0X66gaklNSVYHWPh2+fAUJOLq31TglEtpcAbaXXCPMvjip9riyQC0KrWJivjMfKM/Uzk/ii/P0EOlUKOfw4gQ90iuhcjO8MJlmQVD0AAU0njowdAeaypvr1GKtHOlCsnwNgvCzAovosgBmp6j6E4aq30M/fEHIwjsdqKDHXhg==
-Received: from DM6PR13CA0069.namprd13.prod.outlook.com (2603:10b6:5:134::46)
- by CH0PR12MB5028.namprd12.prod.outlook.com (2603:10b6:610:e3::7) with
+ bh=gbxp6D/DKnZ0Oew9TOM+2l9VjiIXoaDDWmFTIFBmeLY=;
+ b=qQn6nVd56U1d7wtuUO99jHRY/iM8EsslN4jichA9wThEKxH7bb8qMZu4K0zEpp8Kh8FUso8dYP68cIFGg67ww83SIqIfI/FDh/lG1+HdofxROaXuoSZpnM4/iN/holGtz2drOOdW5QoNsplnlBhM5fKKASpEhR8RKXhjqrINi97uvZ8nQjNmLDaG7yHXcfc7ht5/c9ZXJ2CFsdc9u4iWpunNdsdECpqw8VnBcdTcebdEpx4g32U6gsFR8I8OxHSEh+o5MUGJeZ8WlVsFDDbC3b8T3qu4//Z0xfLqDl3ojt994cOaHmlM3F5fWJmkUnqiDHf366x50V4rnXWMxbaitA==
+Received: from PA7P264CA0112.FRAP264.PROD.OUTLOOK.COM (2603:10a6:102:34c::15)
+ by SA0PR12MB4573.namprd12.prod.outlook.com (2603:10b6:806:9c::24) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6907.33; Wed, 25 Oct
- 2023 12:31:36 +0000
-Received: from CY4PEPF0000E9DB.namprd05.prod.outlook.com
- (2603:10b6:5:134:cafe::5c) by DM6PR13CA0069.outlook.office365.com
- (2603:10b6:5:134::46) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6933.19 via Frontend
- Transport; Wed, 25 Oct 2023 12:31:36 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.118.232)
+ 2023 12:31:50 +0000
+Received: from SN1PEPF00026367.namprd02.prod.outlook.com
+ (2603:10a6:102:34c:cafe::45) by PA7P264CA0112.outlook.office365.com
+ (2603:10a6:102:34c::15) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6907.33 via Frontend
+ Transport; Wed, 25 Oct 2023 12:31:49 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.118.233)
  smtp.mailfrom=nvidia.com; dkim=none (message not signed)
  header.d=none;dmarc=pass action=none header.from=nvidia.com;
 Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
- 216.228.118.232 as permitted sender) receiver=protection.outlook.com;
- client-ip=216.228.118.232; helo=mail.nvidia.com; pr=C
-Received: from mail.nvidia.com (216.228.118.232) by
- CY4PEPF0000E9DB.mail.protection.outlook.com (10.167.241.81) with Microsoft
+ 216.228.118.233 as permitted sender) receiver=protection.outlook.com;
+ client-ip=216.228.118.233; helo=mail.nvidia.com; pr=C
+Received: from mail.nvidia.com (216.228.118.233) by
+ SN1PEPF00026367.mail.protection.outlook.com (10.167.241.132) with Microsoft
  SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.6933.15 via Frontend Transport; Wed, 25 Oct 2023 12:31:36 +0000
+ 15.20.6933.15 via Frontend Transport; Wed, 25 Oct 2023 12:31:49 +0000
 Received: from drhqmail203.nvidia.com (10.126.190.182) by mail.nvidia.com
- (10.127.129.5) with Microsoft SMTP Server (version=TLS1_2,
+ (10.127.129.6) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.41; Wed, 25 Oct
- 2023 05:31:16 -0700
+ 2023 05:31:20 -0700
 Received: from drhqmail202.nvidia.com (10.126.190.181) by
  drhqmail203.nvidia.com (10.126.190.182) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.986.41; Wed, 25 Oct 2023 05:31:16 -0700
+ 15.2.986.41; Wed, 25 Oct 2023 05:31:19 -0700
 Received: from vdi.nvidia.com (10.127.8.11) by mail.nvidia.com
  (10.126.190.181) with Microsoft SMTP Server id 15.2.986.41 via Frontend
- Transport; Wed, 25 Oct 2023 05:31:13 -0700
+ Transport; Wed, 25 Oct 2023 05:31:16 -0700
 From:   Patrisious Haddad <phaddad@nvidia.com>
 To:     <jgg@ziepe.ca>, <leon@kernel.org>, <dsahern@gmail.com>,
         <stephen@networkplumber.org>
@@ -68,9 +68,9 @@ CC:     Patrisious Haddad <phaddad@nvidia.com>, <netdev@vger.kernel.org>,
         <linux-rdma@vger.kernel.org>, <linuxarm@huawei.com>,
         <linux-kernel@vger.kernel.org>, <huangjunxian6@hisilicon.com>,
         <michaelgur@nvidia.com>
-Subject: [PATCH v3 iproute2-next 2/3] rdma: Add an option to set privileged QKEY parameter
-Date:   Wed, 25 Oct 2023 15:31:01 +0300
-Message-ID: <20231025123102.27784-3-phaddad@nvidia.com>
+Subject: [PATCH v3 iproute2-next 3/3] rdma: Adjust man page for rdma system set privileged-qkey command
+Date:   Wed, 25 Oct 2023 15:31:02 +0300
+Message-ID: <20231025123102.27784-4-phaddad@nvidia.com>
 X-Mailer: git-send-email 2.18.1
 In-Reply-To: <20231025123102.27784-1-phaddad@nvidia.com>
 References: <20231025123102.27784-1-phaddad@nvidia.com>
@@ -79,26 +79,26 @@ Content-Type: text/plain
 X-NV-OnPremToCloud: ExternallySecured
 X-EOPAttributedMessage: 0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: CY4PEPF0000E9DB:EE_|CH0PR12MB5028:EE_
-X-MS-Office365-Filtering-Correlation-Id: 381ad323-bd09-435d-52ce-08dbd556548b
+X-MS-TrafficTypeDiagnostic: SN1PEPF00026367:EE_|SA0PR12MB4573:EE_
+X-MS-Office365-Filtering-Correlation-Id: 12906306-f095-411d-b081-08dbd5565c4a
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: mcLLbB1OsKzMxhYQ+TMJ74Wc2eHNHNHwtn9y7pPGw/c6TyKkodEcEnMsUN2F3OSXNHtAxuMfO8aaIlwF2U35Jfp4EVGWVS26u/yFlL7rHOkQAM1Y3ePaRHIjYpUW0Wq6e/9xEB2rfZPz+LIvwqVMq93gJmakT/Vs08T0wqoxAuuDpJVhVYLM6mvGmPOzWtHZSxbyvWw2C4kXZ+bWPPN/HXYND4xppW1aefeM1Xon+QTh1zTvFs+ywdLNTbRD1JKPCfdUEK1piAo4WS3TZte8RRH10u9DUa1v7655fL3NYPrRgey5FNBXQbw88mSQntMHZTZN4MH92ohSAWNsHD+vi0zXgu/XSgQBQY2i2qiMJBovK/uMoLbrhH5Vmpiipb2ndsakY8jHNsaV5UPEYkSv2lznOJ+Yteq/k8Zratz+UxIeUHZD2q9Jy0CtJNQ6j5pApMJkYW/PiaSNIpUosmCmffHpirJ47Eoggb80rw24v1jgZX2gDnA8lqB5CWVgeYHCAQijDhoIlS0ZxMOJ7tfT1ZYEoWh5kMx9m1apUDie/VxqnB6gA1i8+2XYgaoBLd+83tewcUSXUCtOF2it266oIqhoISgh6ct4uHm40EmAX7W1D84heaeHvRn5e0ndZKskKRVXYoZH8j9y9K8ckO5HltquraEzJJ5s9+V2T4uYPVbXlYat+d83N5S4JAx1AlxGhfeCcFHxWsGMO4PUB5DJbPdbneP1Rw07HiXCWJbMkr0+r8QpqyjdVtdJmXo+lSVW
-X-Forefront-Antispam-Report: CIP:216.228.118.232;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc7edge1.nvidia.com;CAT:NONE;SFS:(13230031)(4636009)(396003)(346002)(136003)(376002)(39860400002)(230922051799003)(1800799009)(64100799003)(82310400011)(451199024)(186009)(40470700004)(46966006)(36840700001)(2906002)(86362001)(41300700001)(82740400003)(54906003)(316002)(110136005)(70586007)(6666004)(7696005)(478600001)(107886003)(70206006)(1076003)(7636003)(426003)(47076005)(83380400001)(356005)(40480700001)(336012)(36860700001)(40460700003)(5660300002)(36756003)(4326008)(2616005)(8676002)(8936002)(26005);DIR:OUT;SFP:1101;
+X-Microsoft-Antispam-Message-Info: r2m1yphTw8UwqM+/N/M6EwM2motpHbTKndaaTNd/7eQOqXDekC2mJ4GLnJ1dqF3xEcwGlYnKm3zQhcNnrrU5NitpmoVqw8sB+1oyq2LTrEHSngCHUHaVXuxB8eKqirQZpbSpk4R1yWwGMulG9qvdW4KD88EV4H4WLr0XGoqKOO+mRt/OYjA3TdfURK9nTtOePTdEWG1e9VdAkd+CQOkRhWqmcDMAMWW46CH46FCuZ3CAGlRwXc9ovFt+ZB0PdFGQ9C+5xqCkERfn6EYOtHK2A9CWAO4L/24XrSBhzMsQt9hmIzOeg9zYmoKix/trsQ8Ljd3DbHDsN00GtrnO5NMBAqwgy1k6hdYsp3IuPQQqozq3krdWnKdylLeWWObUEGeZTpsSzU1AUrZJJSiTIrWMyABNAUAti3vpJ79K36wDV5x35UKMJX5RE0Hc8yNpdh1Bm/ndKv1LJYwpzeZ1fO3UPEZcp9cUkynaF59AarDX62aoj6KLgYIR/fKQLqbE+gQftvwW47+3oOtF8hE4xcuqcQIVEjvOtYAqI5whWxCfpjOOzZhp5vZxPgid5rXnCGp+L4ROKRENiFQvbk+pI17Q+LbQXDliyahrUIECi8oQ6ggV7Cp9QhR6xTYPhHw+xnmaFBgaPKhRIFgQxAZxiK8PIZz/hluzrQt757CXGGWjIBOiqeMWD80PIRJWhw8lR33GsKlo66gHiishbtEzwLy5RrS9qkzfARQm8VcC1O3vorfjGdmBsx0RnZS/j1HmATGq
+X-Forefront-Antispam-Report: CIP:216.228.118.233;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc7edge2.nvidia.com;CAT:NONE;SFS:(13230031)(4636009)(396003)(346002)(39860400002)(136003)(376002)(230922051799003)(82310400011)(451199024)(1800799009)(186009)(64100799003)(40470700004)(46966006)(36840700001)(7696005)(36860700001)(40480700001)(5660300002)(6666004)(2906002)(40460700003)(26005)(426003)(1076003)(83380400001)(336012)(41300700001)(107886003)(36756003)(2616005)(82740400003)(356005)(7636003)(47076005)(86362001)(478600001)(110136005)(54906003)(70586007)(316002)(70206006)(8936002)(8676002)(4326008);DIR:OUT;SFP:1101;
 X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 25 Oct 2023 12:31:36.4283
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 25 Oct 2023 12:31:49.3172
  (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 381ad323-bd09-435d-52ce-08dbd556548b
+X-MS-Exchange-CrossTenant-Network-Message-Id: 12906306-f095-411d-b081-08dbd5565c4a
 X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.118.232];Helo=[mail.nvidia.com]
-X-MS-Exchange-CrossTenant-AuthSource: CY4PEPF0000E9DB.namprd05.prod.outlook.com
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.118.233];Helo=[mail.nvidia.com]
+X-MS-Exchange-CrossTenant-AuthSource: SN1PEPF00026367.namprd02.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Anonymous
 X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH0PR12MB5028
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA0PR12MB4573
 X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE
         autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -106,140 +106,80 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Enrich rdmatool with an option to enable or disable privileged QKEY.
-When enabled, non-privileged users will be allowed to specify a
-controlled QKEY.
-
-By default this parameter is disabled in order to comply with IB spec.
-According to the IB specification rel-1.6, section 3.5.3:
-"QKEYs with the most significant bit set are considered controlled
-QKEYs, and a HCA does not allow a consumer to arbitrarily specify a
-controlled QKEY."
-
-This allows old applications which existed before the kernel commit:
-0cadb4db79e1 ("RDMA/uverbs: Restrict usage of privileged QKEYs")
-they can use privileged QKEYs without being a privileged user to now
-be able to work again without being privileged granted they turn on this
-parameter.
-
-rdma tool command examples and output.
-
-$ rdma system show
-netns shared privileged-qkey off copy-on-fork on
-
-$ rdma system set privileged-qkey on
-
-$ rdma system show
-netns shared privileged-qkey on copy-on-fork on
-
 Signed-off-by: Patrisious Haddad <phaddad@nvidia.com>
 Reviewed-by: Michael Guralnik <michaelgur@nvidia.com>
 Reviewed-by: Petr Machata <petrm@nvidia.com>
 ---
- rdma/sys.c   | 45 +++++++++++++++++++++++++++++++++++++++++++--
- rdma/utils.c |  1 +
- 2 files changed, 44 insertions(+), 2 deletions(-)
+ man/man8/rdma-system.8 | 32 +++++++++++++++++++++++++++++---
+ 1 file changed, 29 insertions(+), 3 deletions(-)
 
-diff --git a/rdma/sys.c b/rdma/sys.c
-index fd785b25..3e369553 100644
---- a/rdma/sys.c
-+++ b/rdma/sys.c
-@@ -40,6 +40,16 @@ static int sys_show_parse_cb(const struct nlmsghdr *nlh, void *data)
- 				   mode_str);
- 	}
+diff --git a/man/man8/rdma-system.8 b/man/man8/rdma-system.8
+index ab1d89fd..554938eb 100644
+--- a/man/man8/rdma-system.8
++++ b/man/man8/rdma-system.8
+@@ -26,13 +26,20 @@ rdma-system \- RDMA subsystem configuration
+ .BR netns
+ .BR NEWMODE
  
-+	if (tb[RDMA_NLDEV_SYS_ATTR_PRIVILEGED_QKEY_MODE]) {
-+		uint8_t mode;
++.ti -8
++.B rdma system set
++.BR privileged-qkey
++.BR NEWSTATE
 +
-+		mode = mnl_attr_get_u8(tb[RDMA_NLDEV_SYS_ATTR_PRIVILEGED_QKEY_MODE]);
-+
-+		print_color_on_off(PRINT_ANY, COLOR_NONE, "privileged-qkey",
-+				   "privileged-qkey %s ", mode);
-+
-+	}
-+
- 	if (tb[RDMA_NLDEV_SYS_ATTR_COPY_ON_FORK])
- 		cof = mnl_attr_get_u8(tb[RDMA_NLDEV_SYS_ATTR_COPY_ON_FORK]);
+ .ti -8
+ .B rdma system help
  
-@@ -67,8 +77,9 @@ static int sys_show_no_args(struct rd *rd)
- static int sys_show(struct rd *rd)
- {
- 	const struct rd_cmd cmds[] = {
--		{ NULL,		sys_show_no_args},
--		{ "netns",	sys_show_no_args},
-+		{ NULL,			sys_show_no_args},
-+		{ "netns",		sys_show_no_args},
-+		{ "privileged-qkey",	sys_show_no_args},
- 		{ 0 }
- 	};
+ .SH "DESCRIPTION"
+-.SS rdma system set - set RDMA subsystem network namespace mode
++.SS rdma system set - set RDMA subsystem network namespace mode or
++privileged qkey mode
  
-@@ -86,6 +97,17 @@ static int sys_set_netns_cmd(struct rd *rd, bool enable)
- 	return rd_sendrecv_msg(rd, seq);
- }
+-.SS rdma system show - display RDMA subsystem network namespace mode
++.SS rdma system show - display RDMA subsystem network namespace mode and
++privileged qkey state
  
-+static int sys_set_privileged_qkey_cmd(struct rd *rd, bool enable)
-+{
-+	uint32_t seq;
-+
-+	rd_prepare_msg(rd, RDMA_NLDEV_CMD_SYS_SET,
-+		       &seq, (NLM_F_REQUEST | NLM_F_ACK));
-+	mnl_attr_put_u8(rd->nlh, RDMA_NLDEV_SYS_ATTR_PRIVILEGED_QKEY_MODE, enable);
-+
-+	return rd_sendrecv_msg(rd, seq);
-+}
-+
- static bool sys_valid_netns_cmd(const char *cmd)
- {
- 	int i;
-@@ -111,10 +133,28 @@ static int sys_set_netns_args(struct rd *rd)
- 	return sys_set_netns_cmd(rd, cmd);
- }
+ .PP
+ .I "NEWMODE"
+@@ -49,12 +56,18 @@ network namespaces is not needed, shared mode can be used.
  
-+static int sys_set_privileged_qkey_args(struct rd *rd)
-+{
-+	bool cmd;
-+	int ret;
-+
-+	if (rd_no_arg(rd)) {
-+		pr_err("valid options are: { on | off }\n");
-+		return -EINVAL;
-+	}
-+
-+	cmd = parse_on_off("privileged-qkey", rd_argv(rd), &ret);
-+	if (ret)
-+		return -EINVAL;
-+
-+	return sys_set_privileged_qkey_cmd(rd, cmd);
-+}
-+
- static int sys_set_help(struct rd *rd)
- {
- 	pr_out("Usage: %s system set [PARAM] value\n", rd->filename);
- 	pr_out("            system set netns { shared | exclusive }\n");
-+	pr_out("            system set privileged-qkey { on | off }\n");
- 	return 0;
- }
+ It is preferred to not change the subsystem mode when there is active
+ RDMA traffic running, even though it is supported.
++.PP
++.I "NEWSTATE"
++- Specifies the new state of the privileged-qkey parameter, either on or off.
++This parameter determines whether a non-privileged user is allowed to specify a
++controlled QKEY or not.
  
-@@ -124,6 +164,7 @@ static int sys_set(struct rd *rd)
- 		{ NULL,			sys_set_help },
- 		{ "help",		sys_set_help },
- 		{ "netns",		sys_set_netns_args},
-+		{ "privileged-qkey",	sys_set_privileged_qkey_args},
- 		{ 0 }
- 	};
+ .SH "EXAMPLES"
+ .PP
+ rdma system show
+ .RS 4
+-Shows the state of RDMA subsystem network namespace mode on the system.
++Shows the state of RDMA subsystem network namespace mode on the system and
++the state of privileged qkey parameter.
+ .RE
+ .PP
+ rdma system set netns exclusive
+@@ -69,6 +82,19 @@ Sets the RDMA subsystem in network namespace shared mode. In this mode RDMA devi
+ are shared among network namespaces.
+ .RE
+ .PP
++.PP
++rdma system set privileged-qkey on
++.RS 4
++Sets the privileged-qkey parameter to on. In this state non-privileged user
++is allowed to specify a controlled QKEY.
++.RE
++.PP
++rdma system set privileged-qkey off
++.RS 4
++Sets the privileged-qkey parameter to off. In this state non-privileged user
++is *not* allowed to specify a controlled QKEY.
++.RE
++.PP
  
-diff --git a/rdma/utils.c b/rdma/utils.c
-index 8a091c05..09985069 100644
---- a/rdma/utils.c
-+++ b/rdma/utils.c
-@@ -473,6 +473,7 @@ static const enum mnl_attr_data_type nldev_policy[RDMA_NLDEV_ATTR_MAX] = {
- 	[RDMA_NLDEV_ATTR_STAT_AUTO_MODE_MASK] = MNL_TYPE_U32,
- 	[RDMA_NLDEV_ATTR_DEV_DIM] = MNL_TYPE_U8,
- 	[RDMA_NLDEV_ATTR_RES_RAW] = MNL_TYPE_BINARY,
-+	[RDMA_NLDEV_SYS_ATTR_PRIVILEGED_QKEY_MODE] = MNL_TYPE_U8,
- };
- 
- static int rd_attr_check(const struct nlattr *attr, int *typep)
+ .SH SEE ALSO
+ .BR rdma (8),
 -- 
 2.18.1
 
