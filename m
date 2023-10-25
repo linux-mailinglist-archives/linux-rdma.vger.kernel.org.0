@@ -2,44 +2,46 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DC6E57D64A8
-	for <lists+linux-rdma@lfdr.de>; Wed, 25 Oct 2023 10:13:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C52EE7D64AA
+	for <lists+linux-rdma@lfdr.de>; Wed, 25 Oct 2023 10:14:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232270AbjJYINp (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 25 Oct 2023 04:13:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50878 "EHLO
+        id S230147AbjJYIOR (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 25 Oct 2023 04:14:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58200 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230147AbjJYINo (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 25 Oct 2023 04:13:44 -0400
+        with ESMTP id S232657AbjJYIOQ (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 25 Oct 2023 04:14:16 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C1363A4;
-        Wed, 25 Oct 2023 01:13:42 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C133DC433C8;
-        Wed, 25 Oct 2023 08:13:41 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6DB8CE
+        for <linux-rdma@vger.kernel.org>; Wed, 25 Oct 2023 01:14:11 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D5F1AC433C8;
+        Wed, 25 Oct 2023 08:14:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1698221622;
-        bh=1GcjG9cCqbf1tvjBQVqQu2CUA6//8bHC0TltsUTfCeI=;
+        s=k20201202; t=1698221651;
+        bh=3kJo+uMBK6IspUX9ziPN59elgAAynzljeRz79LcWHwQ=;
         h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-        b=blqCd77Kehr3Nm5Zm4QHrxt18Zt8TM5Hfl3wuhkajGq2WVC7CZfx5DsIR1JYCZdy5
-         hnDHN5s1AT9f8GR4Iq2IBFzvCqJgLFS2zZEIdZg95vpyeVeV2cqE1hJWHXdp67mjYi
-         yOWErRCYLMeFT+gwVDuavDyalDUM2LztQQJd2oXGGzlwJK1luzbEg5OnM8grPECE5c
-         t6IIqQNUEY9XsWQdOsoMzD33u8R3ZTBpJkRVAmMOHTyH9btqgbQ46Wkw1eC+rEpEm5
-         R1lC54nUpfLEsD+fwpPpdaaF8fH1sq2+MMuAQu4RoFfG3uKnh28IOSSewMuyjGBHfs
-         OUTL27Mv4vlYw==
+        b=EUSODjfdAao3k5G1ZB5zclPNO40S/CF0uXZx+jYcgDaWZQhdxyPzg8d/Vn59AnoKB
+         xuyQoWhVlsi6PWnlneaAsOPl3vhp67D8Pg/iTbrx3jR+xvkCpdIstnUyOJHKJ1agyu
+         Qhv8/7P8Y8PKVy8Vs7LSWOrJABosRQ/hsncFYTGFFvVxT+kNcJ6mgx6ez3vq6k1oN5
+         GzK0rp8VsSbxCwfJe5LBLmhLJx5Tim9iN3E/OZmQEaWm0HvKNfxg2pPetYavYi+WOS
+         ZN/TryNfZQsMXGisk+VXAis32ywuaNOhfGgk222tumXd0Ud4jhvaRK5Cr2RVVw0/9a
+         1MrBSbx5Z71mw==
 From:   Leon Romanovsky <leon@kernel.org>
-To:     dennis.dalessandro@cornelisnetworks.com, jgg@ziepe.ca,
-        dean.luick@cornelisnetworks.com,
-        Chengfeng Ye <dg573847474@gmail.com>
-Cc:     linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org
-In-Reply-To: <20230926101116.2797-1-dg573847474@gmail.com>
-References: <20230926101116.2797-1-dg573847474@gmail.com>
-Subject: Re: [PATCH] IB/hfi1: Fix potential deadlock on &irq_src_lock and
- &dd->uctxt_lock
-Message-Id: <169822161706.2969904.18279817075628417467.b4-ty@kernel.org>
-Date:   Wed, 25 Oct 2023 11:13:37 +0300
+To:     Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Leon Romanovsky <leon@kernel.org>
+Cc:     Easwar Hariharan <easwar.hariharan@intel.com>,
+        linux-rdma@vger.kernel.org,
+        Sebastian Sanchez <sebastian.sanchez@intel.com>,
+        Leon Romanovsky <leon@kernel.org>
+In-Reply-To: <238fa39a8fd60e87a5ad7e1ca6584fcdf32e9519.1698159993.git.leonro@nvidia.com>
+References: <238fa39a8fd60e87a5ad7e1ca6584fcdf32e9519.1698159993.git.leonro@nvidia.com>
+Subject: Re: [PATCH rdma-next] RDMA/hfi1: Workaround truncation compilation error
+Message-Id: <169822164718.2970544.7616881804161231471.b4-ty@kernel.org>
+Date:   Wed, 25 Oct 2023 11:14:07 +0300
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 X-Mailer: b4 0.12-dev-a055d
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
@@ -51,39 +53,32 @@ List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
 
-On Tue, 26 Sep 2023 10:11:16 +0000, Chengfeng Ye wrote:
-> handle_receive_interrupt_napi_sp() running inside interrupt handler
-> could introduce inverse lock ordering between &dd->irq_src_lock
-> and &dd->uctxt_lock, if read_mod_write() is preempted by the isr.
+On Tue, 24 Oct 2023 18:07:31 +0300, Leon Romanovsky wrote:
+> Increase name array to be large enough to overcome the following
+> compilation error.
 > 
->           [CPU0]                                        |          [CPU1]
-> hfi1_ipoib_dev_open()                                   |
-> --> hfi1_netdev_enable_queues()                         |
-> --> enable_queues(rx)                                   |
-> --> hfi1_rcvctrl()                                      |
-> --> set_intr_bits()                                     |
-> --> read_mod_write()                                    |
-> --> spin_lock(&dd->irq_src_lock)                        |
->                                                         | hfi1_poll()
->                                                         | --> poll_next()
->                                                         | --> spin_lock_irq(&dd->uctxt_lock)
->                                                         |
->                                                         | --> hfi1_rcvctrl()
->                                                         | --> set_intr_bits()
->                                                         | --> read_mod_write()
->                                                         | --> spin_lock(&dd->irq_src_lock)
-> <interrupt>                                             |
->    --> handle_receive_interrupt_napi_sp()               |
->    --> set_all_fastpath()                               |
->    --> hfi1_rcd_get_by_index()                          |
->    --> spin_lock_irqsave(&dd->uctxt_lock)               |
+> drivers/infiniband/hw/hfi1/efivar.c: In function ‘read_hfi1_efi_var’:
+> drivers/infiniband/hw/hfi1/efivar.c:124:44: error: ‘snprintf’ output may be truncated before the last format character [-Werror=format-truncation=]
+>   124 |         snprintf(name, sizeof(name), "%s-%s", prefix_name, kind);
+>       |                                            ^
+> drivers/infiniband/hw/hfi1/efivar.c:124:9: note: ‘snprintf’ output 2 or more bytes (assuming 65) into a destination of size 64
+>   124 |         snprintf(name, sizeof(name), "%s-%s", prefix_name, kind);
+>       |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+> drivers/infiniband/hw/hfi1/efivar.c:133:52: error: ‘snprintf’ output may be truncated before the last format character [-Werror=format-truncation=]
+>   133 |                 snprintf(name, sizeof(name), "%s-%s", prefix_name, kind);
+>       |                                                    ^
+> drivers/infiniband/hw/hfi1/efivar.c:133:17: note: ‘snprintf’ output 2 or more bytes (assuming 65) into a destination of size 64
+>   133 |                 snprintf(name, sizeof(name), "%s-%s", prefix_name, kind);
+>       |                 ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+> cc1: all warnings being treated as errors
+> make[6]: *** [scripts/Makefile.build:243: drivers/infiniband/hw/hfi1/efivar.o] Error 1
 > 
 > [...]
 
 Applied, thanks!
 
-[1/1] IB/hfi1: Fix potential deadlock on &irq_src_lock and &dd->uctxt_lock
-      https://git.kernel.org/rdma/rdma/c/2f19c4b8395ccb
+[1/1] RDMA/hfi1: Workaround truncation compilation error
+      https://git.kernel.org/rdma/rdma/c/d4b2d165714c0c
 
 Best regards,
 -- 
