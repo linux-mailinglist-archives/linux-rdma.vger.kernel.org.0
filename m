@@ -2,173 +2,95 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2210C7D8A0B
-	for <lists+linux-rdma@lfdr.de>; Thu, 26 Oct 2023 23:07:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BB7A27D8AE1
+	for <lists+linux-rdma@lfdr.de>; Thu, 26 Oct 2023 23:48:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229668AbjJZVH2 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 26 Oct 2023 17:07:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36218 "EHLO
+        id S1344764AbjJZVso (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 26 Oct 2023 17:48:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42062 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229501AbjJZVH2 (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 26 Oct 2023 17:07:28 -0400
-Received: from BN3PR00CU001.outbound.protection.outlook.com (mail-eastus2azon11020002.outbound.protection.outlook.com [52.101.56.2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A06D93;
-        Thu, 26 Oct 2023 14:07:25 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=ddNk+nr3U4yH87aAL/eoEVzuukcOX5whkyGJWFm7NaQrHTKYvmKyybyKWV8Eob7Zg5dFlT/wxvrx4QdeyXoGo9TZlXmlUeaLcB09UQdecFmaSNkzFiS7LH1YpzIhr3m743/E97AwQUujHW7l03b/ScolGKiSm0pB18UtP/2oUflcKKuX1SZuENW0rB5B8HXo5Ro/Spd4tS1nqiCBxatcX+89cru1K1wI6TvhvwH7vrJ6KMWqb83MeOg4o6wKT1AXCqE9XINX0JBbdsSprlyP0TsUXdwOucdb/veOP2gXZq9b+7/kNqR44AQofzovljyZNje2nA1iWaKp6Yt+vJ9riQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=JPs8eP6IieOQhnqR6klzGP5pDCVR/FSn6BN6LKQyDDE=;
- b=nij0ovTqzjO+UVXpU/2dNggo4ooo8FHRqXw1Q1gScnShUEU7wi+W8CsKejsySY9rZwehHKUkmR+rU4xE6E0XK222RHIxDQvBflHCsIHUtUolDdg1wjKv2WKaZmEd0OD2b+PrsKvxzf8qouZdQroNCdBmXhkZGV++CBG3R5FyCqalvz+PUm3n2EIPZmPUaNlZRw59DlAArtZ9cS8BpauDtx6ZyWH5kME6OulYzpiQTsoXB7R6W+ssOSBDvKSiduPnPGFeKKQjrPrFECkA/WarB3Z/miGdW/xeLG444vXX2Fz0RseV5gXLKJndC4TewY5wGEc4bT9U6zkg396xi+eoDw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=microsoft.com; dmarc=pass action=none
- header.from=microsoft.com; dkim=pass header.d=microsoft.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=JPs8eP6IieOQhnqR6klzGP5pDCVR/FSn6BN6LKQyDDE=;
- b=X100ac6qJaUkvRT2hgsAPCo+MtmNdhsRjELLiJCYMzcZjXBN/DVd65+fRfR1fjxFWBIBaZ7PwY8Y3KxW/k56Ys5O6sfjVHAr6toXOV6UcdC9S9Y3t1X/mJ2tm6srNpVVXc7cfc8E/jfDahq0FeSAyyurf6Ey2+QI+uPbdf6QsX0=
-Received: from MN0PR21MB3264.namprd21.prod.outlook.com (2603:10b6:208:37c::19)
- by BL1PR21MB3306.namprd21.prod.outlook.com (2603:10b6:208:39b::6) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6954.6; Thu, 26 Oct
- 2023 21:07:22 +0000
-Received: from MN0PR21MB3264.namprd21.prod.outlook.com
- ([fe80::9f51:f462:e8d2:d242]) by MN0PR21MB3264.namprd21.prod.outlook.com
- ([fe80::9f51:f462:e8d2:d242%5]) with mapi id 15.20.6954.005; Thu, 26 Oct 2023
- 21:07:22 +0000
-From:   Long Li <longli@microsoft.com>
-To:     Stephen Hemminger <stephen@networkplumber.org>,
-        "longli@linuxonhyperv.com" <longli@linuxonhyperv.com>
-CC:     KY Srinivasan <kys@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        Wei Liu <wei.liu@kernel.org>, Dexuan Cui <decui@microsoft.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>
-Subject: RE: [PATCH] hv_netvsc: Mark VF as slave before exposing it to
- user-mode
-Thread-Topic: [PATCH] hv_netvsc: Mark VF as slave before exposing it to
- user-mode
-Thread-Index: AQHaB5W4U0Kx/aurvkOjV7lIJbHFdbBcSWCAgABHzdA=
-Date:   Thu, 26 Oct 2023 21:07:22 +0000
-Message-ID: <MN0PR21MB32641FE761E83A68CC627FFCCEDDA@MN0PR21MB3264.namprd21.prod.outlook.com>
-References: <1698274250-653-1-git-send-email-longli@linuxonhyperv.com>
- <20231026094841.39f01d26@hermes.local>
-In-Reply-To: <20231026094841.39f01d26@hermes.local>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-msip_labels: MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ActionId=a803e39c-7cff-470d-8f4d-d1e0f795ac24;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ContentBits=0;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Enabled=true;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Method=Standard;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Name=Internal;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SetDate=2023-10-26T21:05:39Z;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SiteId=72f988bf-86f1-41af-91ab-2d7cd011db47;
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=microsoft.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: MN0PR21MB3264:EE_|BL1PR21MB3306:EE_
-x-ms-office365-filtering-correlation-id: 599e9ca4-451e-4766-eae7-08dbd6678c27
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: HACY+LjmapsxBbR9uGNyCCXmmfnM70wzKhxWCH8hIuI/eW3qTvZbLEDyW8WvdSl7nWgHLoVcKY6UiASF8xpTU73zWl6Fasw0v5hjBFilwf19jKsONzXROI3qrGTG+sKnG+qud9yNXKwIrV6cL28r0uNQ2+pfRu2RtVitMmkFt7hlg9HUZud8zi8dOozNpgowC8t+sALZmAD3SfkW/zT8yFaTFMEDzN/f2uHPHscw/Ce00ERclEQWrJi8t1Vbt40Ibh8cOW518CYbDULPo5mCdPU0HSD8AaS2VRxMGaPPIahFZ9YZZqqSLyI9j75Mid/gmz1mNW7oYuFnNWIISFZ6805uc+p2xOlmIzOHWEVMH5qRnz7gsGL+HLd7e379Diec7Hey+t71Dbe051ZSO9bd5mN9IQCUbCqEPrnSwLpMSICvNPPC7RR+kU0H+Tn+IcajJc37osjj3UW977eQGKUOKwfvS8dBnqlS/viLsQil58HLh6pOKaiWGj+S39SWz0Kakishrke7EIg6aIR3cNn9uTFZWGV+He5fJ6zN0P2QPQQdaeka6743pr5bzmf9wJdRzyAqs6shI79mWXMc5ioD88wvsv9kofMxpsodyX74iow0+ckEgRtl1SqGZtjmxEuc2+WMOiiRIGJH4jCmmwi6lbp1os2Hj3If2LlNa7QPmKY=
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN0PR21MB3264.namprd21.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(39860400002)(376002)(346002)(136003)(366004)(396003)(230922051799003)(186009)(64100799003)(1800799009)(451199024)(66556008)(8990500004)(66946007)(83380400001)(316002)(10290500003)(54906003)(38100700002)(76116006)(64756008)(66446008)(110136005)(7696005)(9686003)(82950400001)(26005)(6506007)(66476007)(71200400001)(7416002)(41300700001)(2906002)(8936002)(86362001)(122000001)(4326008)(82960400001)(8676002)(5660300002)(33656002)(478600001)(52536014)(38070700009)(55016003);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?0nnY3Cyh1YOJIV2FpYGEVBjzr55fxlNhOTJAL+aZ+t+P5mAHlSfsncNJ9xYM?=
- =?us-ascii?Q?cbzZ8dEVoXyHSn7g0VAIlmGnNK8aAzpoV7cxCiQapKQx3pUTX+7cFf7/SvFf?=
- =?us-ascii?Q?B8/H6q4HJsQyv9YvtKwpqsIW17mnZ3AjJiLrd9AgKT+Zk5G3ei6ZosAZdJ0a?=
- =?us-ascii?Q?u63vYGgE7GUW3NBjjA/oNZqn3C4Ygcs7KDNny7P40qOU7p9aKGHFkx2vw1QI?=
- =?us-ascii?Q?M4r1tHGtX0Z+fzjuniHHpjdJQtI3VWGExKYX3F0clrFRrTcb+4z+H8/gEttn?=
- =?us-ascii?Q?OmrHBxpWPCO2dCKL7UmnP+z/2QlksRzGQaG3WI+cPyiSLEtWbNNGB5sL9/4W?=
- =?us-ascii?Q?QCY8qevqXG6jUYPoFquDJ6t4IKLL64yEjSRkc9T8H2VIrA1+iYcYr760eESD?=
- =?us-ascii?Q?ZnffyZkOMPPkcoM6K8RzVHLmMgvkMSx5PBC6cUkOFvUZVXz+DUXuc/zKWaI8?=
- =?us-ascii?Q?F1Eaf7aisbFHZyV0QaMC8uuAobDLnFrFunEZSzJKnZiMG3TIpltaQuI6X/fL?=
- =?us-ascii?Q?fvCJ3FX2LQQ6vH1hX/Lao3B57B0DE2E2HuFP/USBJ5NqxwKyNW/z7Idif2yk?=
- =?us-ascii?Q?Vvu7aY136OByIBofE9fPsEZCT1fqEpQooLINW7hPAl58R6PMFAT38lxKf9xw?=
- =?us-ascii?Q?AhdTN8XQpz78JV5N5IuwQHIdejdlRppV4do068DskUBOEFkg9DLRsGacJGJx?=
- =?us-ascii?Q?9dbilT+r0JKb0fqb7rvdU0eK+XMgTfy6QLcpXp0wsb495s6XeChDlsLUULxS?=
- =?us-ascii?Q?lq13HkwRudkuOPpow/LglnB8IVYiJkg6VZERRJMiQ60Fp6ROZJT099P/Bhsj?=
- =?us-ascii?Q?xZC1jxhyd9IzbvVleENzxvPcyHEiUOK79D63VvK0iBP50BODIx8iiyxoly4C?=
- =?us-ascii?Q?NvkuF+kz0KipsEpI/rcqgAp/7enDoc+Cl7C3h6fITDKcoKMOPnk1uSL04JMc?=
- =?us-ascii?Q?pNraQzuHEGmqyqu7aUmzQ1gkQkn+7yYWLwgQmrnp6LGXJVw/EmCopulwiZol?=
- =?us-ascii?Q?phEaQEV7rzSTCPBbefuVxENu6zgtTmU7ZvA7a5NFiiiZ/9gaviz5Ziwnwdxn?=
- =?us-ascii?Q?Fv2RBmbGDP3qlM8YcYFEpO41ISZdj2t246l2to1xzMFu5gGiB63tdFOCJnDk?=
- =?us-ascii?Q?J8vaQlzhlpcFuYacw91JqJRrF5qbxEj9Nagn/i2EjHSiBQ8wqGQlTqZMaiXa?=
- =?us-ascii?Q?eOoQuq3193d+nzUTrGH3IBBYl3fdBXWuibQHK258NuM1h3aRUPaZFRPYmErw?=
- =?us-ascii?Q?c5IiW5prWZ7pjPVOoaYS9dkPBeWvvmAiVqejgqi7ZlQ4lJjm0GWSnEhzctcQ?=
- =?us-ascii?Q?d7BVnn/AREzlmGYhUbs3KI6dyzAQ97XOETdpDvW6iF5HllEU3bUxlVOI8ELg?=
- =?us-ascii?Q?8T/ifJrQtzUg1iAPJKfFcRLi7lhVKVHs0HQH98s544/FFbGF9m+mTA9fDrmC?=
- =?us-ascii?Q?IyNlP35it5xzAwgR8TiKQDSu59zupDuDma0WxVnkwu0761XrvjJj3op6kp94?=
- =?us-ascii?Q?YmsCWVJnN2XdyCBeVfQ9UunH0dCnzat+R6VpsIPoWMf9QF6yq3daEGg0hxTV?=
- =?us-ascii?Q?0uTfGYqLhrNcc24Ep6fzvZbcXOcSZ4wGRzjGm3B3?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        with ESMTP id S1344860AbjJZVsn (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 26 Oct 2023 17:48:43 -0400
+Received: from mail-pl1-x636.google.com (mail-pl1-x636.google.com [IPv6:2607:f8b0:4864:20::636])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4548DDC
+        for <linux-rdma@vger.kernel.org>; Thu, 26 Oct 2023 14:48:41 -0700 (PDT)
+Received: by mail-pl1-x636.google.com with SMTP id d9443c01a7336-1ca72f8ff3aso11813895ad.0
+        for <linux-rdma@vger.kernel.org>; Thu, 26 Oct 2023 14:48:41 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698356861; x=1698961661;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=xBEXPJf7tMHYWl+JoHWXx5+TdN83WmNP3Ny+LhlpYdE=;
+        b=S8fOm/U5SHNLIz4UQmV8aP1A5xkERyXZIM6CWyVc7iF5tOHBPSOxou0be87xauxdWH
+         vretJvvFerfc2QF9lzF8wTR+kyxM3CYx5VNxAGpq3XaAVhVx+cMSSPxvL+L8q9+NIsCa
+         tH7TnzSlEnhX2jO6lpN9m4U6iEutAe6ozZMLsFfjwDB4tiVvRHYAiKD7dDy8eM8+cLPP
+         1ZiG2u88yBrrCk9wudPgKacmLEzfIrY0x3HMforOSrkjC+O7MBC3few6ahBhPSHXrkCD
+         wSgzh6Q7wgBKrr90HkGszQEuiTz8Q2x8obFxTg+hoyrMD/MZeu3n+f3RumLLxk5iLlkF
+         GB+w==
+X-Gm-Message-State: AOJu0YyxepsvPfRTHDzUmzfowk72JYv80mxSSFBcP9HCz18bCnkWnnyR
+        fFMWMbAPGbt+vgXRR7xnk8I=
+X-Google-Smtp-Source: AGHT+IF8GlDjhCTAo6k0V9B8I2/TpcDh1zx2BqxOD4qndWr6SSeVauHOsxeoZFVLOALgAVKlR3UmTQ==
+X-Received: by 2002:a17:902:ab1b:b0:1ca:b820:74ed with SMTP id ik27-20020a170902ab1b00b001cab82074edmr822407plb.14.1698356860630;
+        Thu, 26 Oct 2023 14:47:40 -0700 (PDT)
+Received: from ?IPV6:2620:15c:211:201:de84:df0e:e310:eaf1? ([2620:15c:211:201:de84:df0e:e310:eaf1])
+        by smtp.gmail.com with ESMTPSA id x4-20020a170902ea8400b001c9e4eb6676sm150008plb.192.2023.10.26.14.47.39
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 26 Oct 2023 14:47:40 -0700 (PDT)
+Message-ID: <fa4fab22-4d59-43f8-883c-d5a70a69a964@acm.org>
+Date:   Thu, 26 Oct 2023 14:47:38 -0700
 MIME-Version: 1.0
-X-OriginatorOrg: microsoft.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: MN0PR21MB3264.namprd21.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 599e9ca4-451e-4766-eae7-08dbd6678c27
-X-MS-Exchange-CrossTenant-originalarrivaltime: 26 Oct 2023 21:07:22.1711
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 72f988bf-86f1-41af-91ab-2d7cd011db47
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: OrQT2virXgk9Py4XH8gVVUSgbYk+wbUQiAs9p7KoapFlBnjzumFUD79hwz5nXTggkU3lV9acRzRrhZfbr7IV6w==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL1PR21MB3306
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE
-        autolearn=no autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 1/1] RDMA/rxe: Fix blktests srp lead kernel panic with 64k
+ page size
+Content-Language: en-US
+To:     Bob Pearson <rpearsonhpe@gmail.com>
+Cc:     Jason Gunthorpe <jgg@ziepe.ca>,
+        "Zhijian Li (Fujitsu)" <lizhijian@fujitsu.com>,
+        Yi Zhang <yi.zhang@redhat.com>,
+        "Daisuke Matsuda (Fujitsu)" <matsuda-daisuke@fujitsu.com>,
+        Zhu Yanjun <yanjun.zhu@intel.com>,
+        Zhu Yanjun <yanjun.zhu@linux.dev>,
+        "leon@kernel.org" <leon@kernel.org>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        "zyjzyj2000@gmail.com" <zyjzyj2000@gmail.com>
+References: <20231013011803.70474-1-yanjun.zhu@intel.com>
+ <OS3PR01MB98651C7454C46841B8A78F11E5D2A@OS3PR01MB9865.jpnprd01.prod.outlook.com>
+ <a6e4efa6-0623-4afa-9b57-969aaf346081@fujitsu.com>
+ <20231020140139.GF691768@ziepe.ca>
+ <6c57cf0d-c7a7-4aac-9eb2-d8bb1d832232@fujitsu.com>
+ <CAHj4cs86fFi+1LMMAzjcdGg1g1gbQwy6QgksC0kYVmNgghLV_w@mail.gmail.com>
+ <1ffaeaa4-4ac2-4531-8e0c-586e13c14c97@fujitsu.com>
+ <366da960-6036-49c5-ad47-3ae3f4e55452@fujitsu.com>
+ <8f705223-6fde-4b29-880b-570349f40db8@fujitsu.com>
+ <143f03b7-08ba-411c-a7ad-580141c06cfe@acm.org>
+ <20231026134300.GV691768@ziepe.ca>
+From:   Bart Van Assche <bvanassche@acm.org>
+In-Reply-To: <20231026134300.GV691768@ziepe.ca>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-> Subject: Re: [PATCH] hv_netvsc: Mark VF as slave before exposing it to us=
-er-mode
->=20
-> On Wed, 25 Oct 2023 15:50:50 -0700
-> longli@linuxonhyperv.com wrote:
->=20
-> > @@ -2347,6 +2342,12 @@ static int netvsc_register_vf(struct net_device
-> *vf_netdev)
-> >  	if (!ndev)
-> >  		return NOTIFY_DONE;
-> >
-> > +	if (event =3D=3D NETDEV_POST_INIT) {
-> > +		/* set slave flag before open to prevent IPv6 addrconf */
-> > +		vf_netdev->flags |=3D IFF_SLAVE;
-> > +		return NOTIFY_DONE;
-> > +	}
-> > +
-> >  	net_device_ctx =3D netdev_priv(ndev);
-> >  	netvsc_dev =3D rtnl_dereference(net_device_ctx->nvdev);
-> >  	if (!netvsc_dev || rtnl_dereference(net_device_ctx->vf_netdev))
-> > @@ -2753,8 +2754,9 @@ static int netvsc_netdev_event(struct notifier_bl=
-ock
-> *this,
-> >  		return NOTIFY_DONE;
-> >
-> >  	switch (event) {
-> > +	case NETDEV_POST_INIT:
-> >  	case NETDEV_REGISTER:
-> > -		return netvsc_register_vf(event_dev);
-> > +		return netvsc_register_vf(event_dev, event);
->=20
-> Although correct, this is an awkward way to write this.
-> There are two events which call register_vf() but the post init one short=
- circuits
-> and doesn't really register the VF.
->=20
-> The code is clearer if flag is set in switch statement.
->=20
+On 10/26/23 06:43, Jason Gunthorpe wrote:
+> On Thu, Oct 26, 2023 at 06:28:37AM -0700, Bart Van Assche wrote:
+>> If the rxe driver only supports mr.page_size == PAGE_SIZE, does this
+>> mean that RXE_PAGE_SIZE_CAP should be changed from
+>> 0xfffff000 into PAGE_SHIFT?
+> 
+> Yes
 
-I will add a dedicated function to handle NETDEV_POST_INIT.
+Bob, do you plan to convert the above change into a patch or do you
+perhaps expect me to do that?
 
 Thanks,
-Long
+
+Bart.
+
