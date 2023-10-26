@@ -2,44 +2,45 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 55A6E7D7CFB
-	for <lists+linux-rdma@lfdr.de>; Thu, 26 Oct 2023 08:45:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 29D237D7D15
+	for <lists+linux-rdma@lfdr.de>; Thu, 26 Oct 2023 08:55:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229653AbjJZGpv (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 26 Oct 2023 02:45:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38422 "EHLO
+        id S229836AbjJZGzT (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 26 Oct 2023 02:55:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50188 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229518AbjJZGpu (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 26 Oct 2023 02:45:50 -0400
-Received: from out-170.mta1.migadu.com (out-170.mta1.migadu.com [95.215.58.170])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B7E3AC
-        for <linux-rdma@vger.kernel.org>; Wed, 25 Oct 2023 23:45:48 -0700 (PDT)
-Message-ID: <88297e58-6da5-3dfd-549d-0c36f4e014bc@linux.dev>
+        with ESMTP id S229518AbjJZGzS (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 26 Oct 2023 02:55:18 -0400
+Received: from out-183.mta0.migadu.com (out-183.mta0.migadu.com [IPv6:2001:41d0:1004:224b::b7])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7DD2B129
+        for <linux-rdma@vger.kernel.org>; Wed, 25 Oct 2023 23:55:15 -0700 (PDT)
+Message-ID: <fae6fdff-6437-b24d-1427-8e954153c32f@linux.dev>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1698302746;
+        t=1698303313;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=c6B5B2PZer5KRwC5FJhyTcDNBwl4ijj4ugnRbwh4icA=;
-        b=egAG5yXUN56KNzunIkC5H8awZ+uiir2IccYjBpM0jRaLfakfNMzklTA8m89pShBrBX5omx
-        xFxiV4E3Ikrq1vEbSGSqN/nfxRZMsVVIC7JxEhozMDweR8UWmBopNJISunwONKxqAoJORP
-        OidUk6MSL+XLgCcr1mbZDb4hIof+0cE=
-Date:   Thu, 26 Oct 2023 14:45:43 +0800
+        bh=fdhnJsWeFpYrU8SmRX64910JlFd78VNRKO/cPWdAIh4=;
+        b=wSEQowGawhkX5M6lcyddt4kaoY79NCHb/UUWhzY+EUWt5hn0rx25GVyaZft91+cYghyqUY
+        Lzmswmtw4GkUs4yX+phgjBGONq8F8WoWX9SyuUVqgSDpeICwa2eaICRlq0bvGXglFj37Xr
+        ekE5LY6bwjkOfGpY2S+v65hto+e5W6Q=
+Date:   Thu, 26 Oct 2023 14:55:08 +0800
 MIME-Version: 1.0
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 From:   Guoqing Jiang <guoqing.jiang@linux.dev>
-Subject: Re: [PATCH 16/19] RDMA/siw: Remove siw_sk_assign_cm_upcalls
+Subject: Re: [PATCH V2 18/20] RDMA/siw: Only check attrs->cap.max_send_wr in
+ siw_create_qp
 To:     Bernard Metzler <BMT@zurich.ibm.com>,
         "jgg@ziepe.ca" <jgg@ziepe.ca>, "leon@kernel.org" <leon@kernel.org>
 Cc:     "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>
-References: <20231009071801.10210-1-guoqing.jiang@linux.dev>
- <20231009071801.10210-17-guoqing.jiang@linux.dev>
- <SN7PR15MB5755801084BA9B601315A31699DEA@SN7PR15MB5755.namprd15.prod.outlook.com>
+References: <20231013020053.2120-1-guoqing.jiang@linux.dev>
+ <20231013020053.2120-19-guoqing.jiang@linux.dev>
+ <SN7PR15MB57558847D886D3A0F1882B7099DEA@SN7PR15MB5755.namprd15.prod.outlook.com>
 Content-Language: en-US
-In-Reply-To: <SN7PR15MB5755801084BA9B601315A31699DEA@SN7PR15MB5755.namprd15.prod.outlook.com>
+In-Reply-To: <SN7PR15MB57558847D886D3A0F1882B7099DEA@SN7PR15MB5755.namprd15.prod.outlook.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 X-Migadu-Flow: FLOW_OUT
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
@@ -53,82 +54,82 @@ X-Mailing-List: linux-rdma@vger.kernel.org
 
 
 
-On 10/25/23 21:19, Bernard Metzler wrote:
+On 10/25/23 21:27, Bernard Metzler wrote:
 >> -----Original Message-----
 >> From: Guoqing Jiang<guoqing.jiang@linux.dev>
->> Sent: Monday, October 9, 2023 9:18 AM
+>> Sent: Friday, October 13, 2023 4:01 AM
 >> To: Bernard Metzler<BMT@zurich.ibm.com>;jgg@ziepe.ca;leon@kernel.org
 >> Cc:linux-rdma@vger.kernel.org
->> Subject: [EXTERNAL] [PATCH 16/19] RDMA/siw: Remove siw_sk_assign_cm_upcalls
->>
->> Let's move it into siw_sk_save_upcalls, then we only need to
->> get sk_callback_lock once. Also rename siw_sk_save_upcalls
->> to better align with the new code.
+>> Subject: [EXTERNAL] [PATCH V2 18/20] RDMA/siw: Only check attrs-
+>>> cap.max_send_wr in siw_create_qp
+>> We can just check max_send_wr here given both max_send_wr and
+>> max_recv_wr are defined as u32 type, and we also need to ensure
+>> num_sqe (derived from max_send_wr) shouldn't be zero.
 >>
 >> Signed-off-by: Guoqing Jiang<guoqing.jiang@linux.dev>
 >> ---
->>   drivers/infiniband/sw/siw/siw_cm.c | 19 ++++++-------------
->>   1 file changed, 6 insertions(+), 13 deletions(-)
+>>   drivers/infiniband/sw/siw/siw_verbs.c | 18 +++++-------------
+>>   1 file changed, 5 insertions(+), 13 deletions(-)
 >>
->> diff --git a/drivers/infiniband/sw/siw/siw_cm.c
->> b/drivers/infiniband/sw/siw/siw_cm.c
->> index c3aa5533e75d..6866ec80473c 100644
->> --- a/drivers/infiniband/sw/siw/siw_cm.c
->> +++ b/drivers/infiniband/sw/siw/siw_cm.c
->> @@ -39,17 +39,7 @@ static void siw_cm_llp_error_report(struct sock *s);
->>   static int siw_cm_upcall(struct siw_cep *cep, enum iw_cm_event_type
->> reason,
->>   			 int status);
+>> diff --git a/drivers/infiniband/sw/siw/siw_verbs.c
+>> b/drivers/infiniband/sw/siw/siw_verbs.c
+>> index dcd69fc01176..ef149ed98946 100644
+>> --- a/drivers/infiniband/sw/siw/siw_verbs.c
+>> +++ b/drivers/infiniband/sw/siw/siw_verbs.c
+>> @@ -333,11 +333,10 @@ int siw_create_qp(struct ib_qp *ibqp, struct
+>> ib_qp_init_attr *attrs,
+>>   		goto err_atomic;
+>>   	}
+>>   	/*
+>> -	 * NOTE: we allow for zero element SQ and RQ WQE's SGL's
+>> -	 * but not for a QP unable to hold any WQE (SQ + RQ)
+>> +	 * NOTE: we don't allow for a QP unable to hold any SQ WQE
+>>   	 */
+>> -	if (attrs->cap.max_send_wr + attrs->cap.max_recv_wr == 0) {
+>> -		siw_dbg(base_dev, "QP must have send or receive queue\n");
+>> +	if (attrs->cap.max_send_wr == 0) {
+>> +		siw_dbg(base_dev, "QP must have send queue\n");
+>>   		rv = -EINVAL;
+>>   		goto err_atomic;
+>>   	}
+>> @@ -357,21 +356,14 @@ int siw_create_qp(struct ib_qp *ibqp, struct
+>> ib_qp_init_attr *attrs,
+>>   	if (rv)
+>>   		goto err_atomic;
 >>
->> -static void siw_sk_assign_cm_upcalls(struct sock *sk)
->> -{
->> -	write_lock_bh(&sk->sk_callback_lock);
->> -	sk->sk_state_change = siw_cm_llp_state_change;
->> -	sk->sk_data_ready = siw_cm_llp_data_ready;
->> -	sk->sk_write_space = siw_cm_llp_write_space;
->> -	sk->sk_error_report = siw_cm_llp_error_report;
->> -	write_unlock_bh(&sk->sk_callback_lock);
->> -}
->> -
->> -static void siw_sk_save_upcalls(struct sock *sk)
-> To simplify, I'd suggest doing it the other way around,
-> so having siw_sk_assign_cm_upcalls() including the
-> functionality of siw_sk_save_upcalls() first.
+>> -	num_sqe = attrs->cap.max_send_wr;
+>> -	num_rqe = attrs->cap.max_recv_wr;
+>>
+>>   	/* All queue indices are derived from modulo operations
+>>   	 * on a free running 'get' (consumer) and 'put' (producer)
+>>   	 * unsigned counter. Having queue sizes at power of two
+>>   	 * avoids handling counter wrap around.
+>>   	 */
+>> -	if (num_sqe)
+>> -		num_sqe = roundup_pow_of_two(num_sqe);
+>> -	else {
+>> -		/* Zero sized SQ is not supported */
+>> -		rv = -EINVAL;
+>> -		goto err_out_xa;
+>> -	}
+>> +	num_sqe = roundup_pow_of_two(attrs->cap.max_send_wr);
+>> +	num_rqe = attrs->cap.max_recv_wr;
+>>   	if (num_rqe)
+>>   		num_rqe = roundup_pow_of_two(num_rqe);
+>>
+>> --
+>> 2.35.3
+> No the original code allows for a QP which cannot send but
+> just receive or vice versa. A QP which cannot send should be allowed.
+> Only a QP which cannot do anything should be refused to be created.
+> Keep it as is.
 
-I guess you mean below. If so, I will update it in v3.
+Seems it is not consistent with the original code, because Zero sized SQ
+(num_seq = 0) is not supported, also num_seq is got from max_send_wr,
+which means a QP without sq is not permitted here.
 
-  static void siw_sk_assign_cm_upcalls(struct sock *sk)
--{
--       write_lock_bh(&sk->sk_callback_lock);
--       sk->sk_state_change = siw_cm_llp_state_change;
--       sk->sk_data_ready = siw_cm_llp_data_ready;
--       sk->sk_write_space = siw_cm_llp_write_space;
--       sk->sk_error_report = siw_cm_llp_error_report;
--       write_unlock_bh(&sk->sk_callback_lock);
--}
--
--static void siw_sk_save_upcalls(struct sock *sk)
-  {
-         struct siw_cep *cep = sk_to_cep(sk);
+But I probably misunderstood something.
 
-@@ -58,6 +48,11 @@ static void siw_sk_save_upcalls(struct sock *sk)
-         cep->sk_data_ready = sk->sk_data_ready;
-         cep->sk_write_space = sk->sk_write_space;
-         cep->sk_error_report = sk->sk_error_report;
-+
-+       sk->sk_state_change = siw_cm_llp_state_change;
-+       sk->sk_data_ready = siw_cm_llp_data_ready;
-+       sk->sk_write_space = siw_cm_llp_write_space;
-+       sk->sk_error_report = siw_cm_llp_error_report;
-         write_unlock_bh(&sk->sk_callback_lock);
-  }
-
-> There is another function siw_sk_assign_rtr_upcalls(),
-> which re-assigns the upcalls for special handling of
-> an explicit RTR->RTS handshake if requested later during
-> connection setup.
-
-Ah, one is assign rtr upcall and another is assign cm upcall.
-Thanks for the explanation.
-
+Thanks,
 Guoqing
+
