@@ -2,133 +2,152 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 102A07D86F1
-	for <lists+linux-rdma@lfdr.de>; Thu, 26 Oct 2023 18:48:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 37CA67D8A04
+	for <lists+linux-rdma@lfdr.de>; Thu, 26 Oct 2023 23:04:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231422AbjJZQsq (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 26 Oct 2023 12:48:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57096 "EHLO
+        id S231861AbjJZVEx (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 26 Oct 2023 17:04:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48524 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230078AbjJZQsp (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 26 Oct 2023 12:48:45 -0400
-Received: from mail-pf1-x42d.google.com (mail-pf1-x42d.google.com [IPv6:2607:f8b0:4864:20::42d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 574A41A1
-        for <linux-rdma@vger.kernel.org>; Thu, 26 Oct 2023 09:48:43 -0700 (PDT)
-Received: by mail-pf1-x42d.google.com with SMTP id d2e1a72fcca58-6bb4abb8100so1096429b3a.2
-        for <linux-rdma@vger.kernel.org>; Thu, 26 Oct 2023 09:48:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=networkplumber-org.20230601.gappssmtp.com; s=20230601; t=1698338923; x=1698943723; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:subject:cc:to:from:date:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=gsvtzZhaeGLEaz4oteU5Hnb+KWT4Jz2r9xbtXdijvP0=;
-        b=va5WiXQZDKYe65Gw2TFpRu4zBvCBCD51aEQYvhjAzeLBgr/LBqOVqDxjCCgKuGIyLD
-         nNAibJoSuebMviMvk6YhFiYoJxXyjiE/NatkbdAZQczMTxtQQPWndImWoanEgpM/2LdX
-         /dLmFOE58Q5+deDGBuIdtr35SaDrXuvXbxj/OfbQPtkxeSkiEaXAmjyfWFD8NtuFVHj5
-         AhhvkMuVBYUg78HWH73F2NSR6gcUQvm71G8tO1n8K7cqCcFNymzFve2vQ/pDUVYlgKS7
-         mNUVLgAGqUPEbzHT9StdtYTO+Tt+xyUXw0p1vDwep4xzkKwVq5eGzT3A+AbqtsR01jpG
-         SwBA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698338923; x=1698943723;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=gsvtzZhaeGLEaz4oteU5Hnb+KWT4Jz2r9xbtXdijvP0=;
-        b=ET5os+Xb7YB5YhKqKx8qunx0FGzidqAnIuM1C7aio0P6iEO3nbqMOwVegoOypHv5Q1
-         2LkqZksWXY9weSUe2aZwwhg80Ed4kdaJ5JnG64x3tDLUI/gGRQkmZWj7pQ1SRPhdth2B
-         KHuTAhSyqs/sMRQGK9BK3NGew4iq6jnJvBF+Bhs+UEL3pvhRRc+5+DR3gYDkkshrLdFO
-         5A64IZXnc9eVi+p8DWQ0qHJtBEjFVzDk6b31xaOEFlJxVlgnkMrIb5+dNeAmDftJGEQ0
-         cTj7BiWXienq2zsJ9o+Re+Y4uh6u4MZ6QztI6IUZfUwa/Yj6RI3DFzgOzlIl3VUCZn+G
-         f4rQ==
-X-Gm-Message-State: AOJu0YxoV9/jCBBsnbLDPbY9in3rzGbaK9ESyXpgWTtd0j1EoI4ZIkRa
-        M3SVFUrR3fWDFfCxJvVxWvWORQ==
-X-Google-Smtp-Source: AGHT+IHbvOMnCphFZ0wNNkpM6jLDJMcgLAP1gCu3oFnu8OZ6vA3KZjiKKUu8/g1ZFm0ACGNRGoqEUA==
-X-Received: by 2002:a05:6a20:9189:b0:156:e1ce:d4a1 with SMTP id v9-20020a056a20918900b00156e1ced4a1mr449257pzd.9.1698338922779;
-        Thu, 26 Oct 2023 09:48:42 -0700 (PDT)
-Received: from hermes.local (204-195-126-68.wavecable.com. [204.195.126.68])
-        by smtp.gmail.com with ESMTPSA id s188-20020a625ec5000000b0068fb9f98467sm11919892pfb.107.2023.10.26.09.48.42
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 26 Oct 2023 09:48:42 -0700 (PDT)
-Date:   Thu, 26 Oct 2023 09:48:41 -0700
-From:   Stephen Hemminger <stephen@networkplumber.org>
-To:     longli@linuxonhyperv.com
-Cc:     "K. Y. Srinivasan" <kys@microsoft.com>,
+        with ESMTP id S229501AbjJZVEw (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 26 Oct 2023 17:04:52 -0400
+Received: from BN3PR00CU001.outbound.protection.outlook.com (mail-eastus2azon11020003.outbound.protection.outlook.com [52.101.56.3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BFA3093;
+        Thu, 26 Oct 2023 14:04:49 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=iRQR6MX1wKUtoPiaZ6WhV9LnvSwVbahzvhYsObFE8ma34XMgAcTmRoOA5GOoieW5v2HDGSesn+XDIlnlQLF7OSs2Q++SEEd5bHyi+xmRpV/vwak5lSC1ClU9YgOCWytrrAH4cOPR99Y5WqS1PfYx/skOVh3fdX0WsVcgzOFgLVYoTzwx8F2Xube2KBBg9fQ/ePeo9TG0OG60dPOKf/jDpeoNMtqs4n5k4l5FHlqb/lLIDiV4NzKjBqO8gupn5IYzo/mNA0eqvSSFe19tuBJeTb7MLp07jIdq1dFcA85pLmUY7T6oQaFHgpw5neZEal91k5CZxyyKkoICpvr2HNYtZQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=DOkExkBFsJbVMSx7K889g30PSBmC7cm9s584MhEmJjQ=;
+ b=CT+hCJtwZR2FxUsvwYu8j2Sq9n4pdf9KpV1lTbW9U0MFFUd9NjKIZGM5iiVqAs2LELqm7ja1BP5u6yJtNmdcbMsCOlUz96DzbVyP+rZ/RsFBZWkRI8hru98NFi5iy4x4wVw+7HW/+quuCrzb5FFgaZURUPd80R5KIfu0qaMygb7OubeJBBD7hUQaQEQhhMaikOB6rd7tDrYumQtLIoGG6WCnStTt0SVLh6nOxdK9BATuegZk8kXReBYZptmD4hyCG4fJj3aA8ERY6R/kM1zjKPwDFEcPHMTWGD45pfwIJaPAu/Jo0ViefCF/njedhXiH5Q3JbOVAhevbTP93VrfgSQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=microsoft.com; dmarc=pass action=none
+ header.from=microsoft.com; dkim=pass header.d=microsoft.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=DOkExkBFsJbVMSx7K889g30PSBmC7cm9s584MhEmJjQ=;
+ b=IgWwhsm1I7e4pQQcfFLbuYgdu3bvdXyKlOJeqL319weOYqIwdFFjSvx6Voz7GOzC/tHgHhMBq3RxoBvBPvKvnuNAq/44TiZWsibxpyLxEZOLbDg/CDq00ROg/Mo/+IfQLmxwCIxPlpRNO39+MLkxDdFA78X9WmKud3MVTzHmQs0=
+Received: from MN0PR21MB3264.namprd21.prod.outlook.com (2603:10b6:208:37c::19)
+ by DM4PR21MB3440.namprd21.prod.outlook.com (2603:10b6:8:ad::14) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6954.8; Thu, 26 Oct
+ 2023 21:04:46 +0000
+Received: from MN0PR21MB3264.namprd21.prod.outlook.com
+ ([fe80::9f51:f462:e8d2:d242]) by MN0PR21MB3264.namprd21.prod.outlook.com
+ ([fe80::9f51:f462:e8d2:d242%5]) with mapi id 15.20.6954.005; Thu, 26 Oct 2023
+ 21:04:46 +0000
+From:   Long Li <longli@microsoft.com>
+To:     Stephen Hemminger <stephen@networkplumber.org>,
+        "longli@linuxonhyperv.com" <longli@linuxonhyperv.com>
+CC:     KY Srinivasan <kys@microsoft.com>,
         Haiyang Zhang <haiyangz@microsoft.com>,
         Wei Liu <wei.liu@kernel.org>, Dexuan Cui <decui@microsoft.com>,
         "David S. Miller" <davem@davemloft.net>,
         Eric Dumazet <edumazet@google.com>,
         Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>, linux-hyperv@vger.kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-rdma@vger.kernel.org, Long Li <longli@microsoft.com>
-Subject: Re: [PATCH] hv_netvsc: Mark VF as slave before exposing it to
+        Paolo Abeni <pabeni@redhat.com>,
+        "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>
+Subject: RE: [PATCH] hv_netvsc: Mark VF as slave before exposing it to
  user-mode
-Message-ID: <20231026094841.39f01d26@hermes.local>
-In-Reply-To: <1698274250-653-1-git-send-email-longli@linuxonhyperv.com>
+Thread-Topic: [PATCH] hv_netvsc: Mark VF as slave before exposing it to
+ user-mode
+Thread-Index: AQHaB5W4U0Kx/aurvkOjV7lIJbHFdbBcSP+AgABHWaA=
+Date:   Thu, 26 Oct 2023 21:04:46 +0000
+Message-ID: <MN0PR21MB32649DAC2B9A6CE863B320B1CEDDA@MN0PR21MB3264.namprd21.prod.outlook.com>
 References: <1698274250-653-1-git-send-email-longli@linuxonhyperv.com>
+ <20231026094719.04cace95@hermes.local>
+In-Reply-To: <20231026094719.04cace95@hermes.local>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+msip_labels: MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ActionId=8f76e82a-7240-44a4-8a38-e096edef6efb;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ContentBits=0;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Enabled=true;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Method=Standard;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Name=Internal;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SetDate=2023-10-26T21:02:41Z;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SiteId=72f988bf-86f1-41af-91ab-2d7cd011db47;
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=microsoft.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: MN0PR21MB3264:EE_|DM4PR21MB3440:EE_
+x-ms-office365-filtering-correlation-id: 9b306999-15ac-43a9-e8e6-08dbd6672f32
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: xkYdZjGgg5BN/cC9oHbXKA7YFS+OPJIbSlGToagttNfWj18QMJl3Pf22vJfm22mUMNMXGT5D/fwy8GSg/944r9yzrTWJYAtiY2Te3/hWrDxGelG3bmEtN4wDNtLwUO7r6kfEgYJCB5Ygwzx1FQ73GOu8S2mrmc2SFUxoicSx4hFLn9Q9V3HY7HyFmeCxIbBW94Om2w3jfg1iuulI45ZawiVsILHFILahfLuGSeSr1M0lAlCwkovgUJUqxIdVwyDiH4244sY8sCUhtwgKutqXWCIUD5/bqPAn/KIqcMeaMvweRmER+vYDCXIYjhr+TgghT3LVUbtIbY/X3i0RCNXnj+TSMFA/FCgbkzqX/ft2b2d3JwK86HNrSfQpYcgnTbFZzlOhOleOzvyz16su+0VJRuIYuleKxB7JDdg6YCWA227Vcmhf5/3N94o9mRB6SrdufCwkKYk0upRFF3zzGvB2L/gjYTwOgd5j/cEtFkYDdYfQZqpnyB4bFoETVFtmHFK1H1TdG0DBIEorayvLQQhswTqWwn22NKEf6httvBVgua3GS6qTmkKa520kAVb0YYCibrPWR7M/zEUBBGPa/CUjw9uv5fSMHSnub84QMchSWorjA4NOr/5iODTc38LRdFRphEA/BbVmG3FRLQunERg5Fay9DuFs72fGOPvUVKXHs18=
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN0PR21MB3264.namprd21.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366004)(396003)(136003)(346002)(376002)(39860400002)(230922051799003)(64100799003)(1800799009)(451199024)(186009)(55016003)(71200400001)(7696005)(9686003)(6506007)(478600001)(10290500003)(66476007)(66556008)(38100700002)(33656002)(5660300002)(122000001)(82960400001)(86362001)(82950400001)(4744005)(41300700001)(7416002)(2906002)(66446008)(8990500004)(66946007)(76116006)(64756008)(83380400001)(26005)(38070700009)(316002)(52536014)(8676002)(110136005)(54906003)(4326008)(8936002);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?4tFp36DBMufgm8HU8mAX2TUWoehcQp5sQPDYfhwszefvqGFWulnMKor4dsFh?=
+ =?us-ascii?Q?RiWSPR30S+d0xuD9zjmQ/8l0VTzFxDGbMUzw7Ru9/bH438yBqxPFCheqZbiG?=
+ =?us-ascii?Q?BqURibeEmnMjpyV5Zwr5+K0Kd5X+VdrRwYQjlDGYr8/w4HXjNdmWZriom8mI?=
+ =?us-ascii?Q?6B92UYd7EspKSchYJkTwWRY+dfOa79TOHFPckCVNZB6bvNYGmkN70SmYkV/z?=
+ =?us-ascii?Q?bumlJSlee6vhrPhtZ5ILdn3pTxAfQpKqY5hirjZBjPjl87Cn82OhsP/lpG4X?=
+ =?us-ascii?Q?Ch/946RZNcbk/5cgiv5o/2yZuIL6qGB93SEL0/qYuz20rIxgfYnZZ8eEEKWK?=
+ =?us-ascii?Q?4ObeTkVQolQcfv9s3rGsNVi0m3V155qn7GenMaU9k6Jl8E8Uy4nYetpF+dhF?=
+ =?us-ascii?Q?My/KdlBmwwH+1ih30Gp0YzR70x5XeX71o6Z6lAB/uLpFmdruJyd+4qHyBui6?=
+ =?us-ascii?Q?f8Dr8c2bZPZTmS2RmLiCMELAt47b/CzSYH8qRWiYJkKThQDEZI6xCsIZnySL?=
+ =?us-ascii?Q?k1n6KzNoZbbYIMNCKV1heHHte0DDYLhVAvYsc7Mt1ML5Z7W36YDtL0wvkcx9?=
+ =?us-ascii?Q?zUwYOpgF3iXM89wifOFAD4XePxmnOQzDYWP1x22Bz9tzRpevbtaS+bm2xzBj?=
+ =?us-ascii?Q?Ch7KZ8wOsZZH5UibVbs0K9rPw80/lAsMMQOmALZSMkipRY68odXdRWMwu4YQ?=
+ =?us-ascii?Q?CgArhn1OUzaXR9VWAAFR2jQzd8GUhOElXbiMCSRxbvJtBN727MrpIaflMU+C?=
+ =?us-ascii?Q?7DGrLrZY9Hky3W03TN8BzvhRVZ3crvm7IHVc4fISDTw6EIMQ5FsrUO5cN+4B?=
+ =?us-ascii?Q?6VDw3CrHhOQyNnoPt8ING9sHNffj784ydc7a7zwo2Mt/0vG3ncTN0H+S1aGR?=
+ =?us-ascii?Q?pTlHKk9dvM9+03/Fp7slA+M/n3Bk5VTqn96ZGd/ngfwF+rxhmhYPfBMfmPcy?=
+ =?us-ascii?Q?5M9i7+SE8Zohcc0xU8OXoOdwd0ZPV5J50VqP8v1RFZU2+nNNBw7McJ472r5F?=
+ =?us-ascii?Q?9SEWBH7hRqce2QM/SMtg7QJIK1zAgU4B1Wf5CAwayR6A0ey5g4EZ8TJ3cGgT?=
+ =?us-ascii?Q?OehR22lnEwcY8t/xUdPumT7xVPlud9UscqcHjoJjBmZjEBnPW9DnzJghF6y9?=
+ =?us-ascii?Q?amaOkxLsMc+T1Vuckip4OxQaWu5Ob4nZygTULTDwgX40Bv8acTaqZcige8M5?=
+ =?us-ascii?Q?chPfa5E3+sjWNVS229tMycAywfunbMO6YXO56SX/YxFfaPZYQqVtYcevSfYK?=
+ =?us-ascii?Q?6GGQax0WCx42ZVmsWUUMDNFh9Ks44UyTRDauo2U0V303Lg4igTd8eM2n+TJy?=
+ =?us-ascii?Q?TfE/3ys6XiJyBxtVe8+U1A7XTuqZCZ5CLyRQGmuozxy121xy5wOgOXXoyLjQ?=
+ =?us-ascii?Q?/DJR1IORizmz7TMkmMFhWVhDNoNuKXIxUE8yUN5CoerrEEIYf93tbcpb5teY?=
+ =?us-ascii?Q?XfBWHtHRL155hWlGL+WG0RLzVO6njhVAIFxKqbRY05f1l/oiazAIXLIu8yCP?=
+ =?us-ascii?Q?SGuxmz1PznEzjEF/BtsA5skJTO2akYXuYGK2K7LpYqF2v2t32ouLV0nbgsLZ?=
+ =?us-ascii?Q?ySZpW+HwUy004ccO7mtsuS8RyK+5fgj9/MPqSQeL?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
-        autolearn=unavailable autolearn_force=no version=3.4.6
+X-OriginatorOrg: microsoft.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: MN0PR21MB3264.namprd21.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 9b306999-15ac-43a9-e8e6-08dbd6672f32
+X-MS-Exchange-CrossTenant-originalarrivaltime: 26 Oct 2023 21:04:46.4422
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 72f988bf-86f1-41af-91ab-2d7cd011db47
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: vVJsWPo630wTRN5f4TZXN2KWPjm7cbaI6ljH3axYDyfARIlB2BTdaivoQZ9rXgIq5GLQdkeNmBTQRAhNO/8KKg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM4PR21MB3440
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Wed, 25 Oct 2023 15:50:50 -0700
-longli@linuxonhyperv.com wrote:
+> Subject: Re: [PATCH] hv_netvsc: Mark VF as slave before exposing it to us=
+er-mode
+>=20
+> On Wed, 25 Oct 2023 15:50:50 -0700
+> longli@linuxonhyperv.com wrote:
+>=20
+> > 	list_for_each_entry(ndev_ctx, &netvsc_dev_list, list) {
+> >  		ndev =3D hv_get_drvdata(ndev_ctx->device_ctx);
+> > -		if (ether_addr_equal(vf_netdev->perm_addr, ndev->perm_addr))
+> {
+> > -			netdev_notice(vf_netdev,
+> > -				      "falling back to mac addr based
+> matching\n");
+> > +		if (ether_addr_equal(vf_netdev->perm_addr, ndev->perm_addr)
+> ||
+> > +		    ether_addr_equal(vf_netdev->dev_addr, ndev->perm_addr))
+>=20
+> This part looks like unrelated change.
+> The VF mac address shouldn't change, but if it did don't look at i.
 
-> @@ -2347,6 +2342,12 @@ static int netvsc_register_vf(struct net_device *vf_netdev)
->  	if (!ndev)
->  		return NOTIFY_DONE;
->  
-> +	if (event == NETDEV_POST_INIT) {
-> +		/* set slave flag before open to prevent IPv6 addrconf */
-> +		vf_netdev->flags |= IFF_SLAVE;
-> +		return NOTIFY_DONE;
-> +	}
-> +
->  	net_device_ctx = netdev_priv(ndev);
->  	netvsc_dev = rtnl_dereference(net_device_ctx->nvdev);
->  	if (!netvsc_dev || rtnl_dereference(net_device_ctx->vf_netdev))
-> @@ -2753,8 +2754,9 @@ static int netvsc_netdev_event(struct notifier_block *this,
->  		return NOTIFY_DONE;
->  
->  	switch (event) {
-> +	case NETDEV_POST_INIT:
->  	case NETDEV_REGISTER:
-> -		return netvsc_register_vf(event_dev);
-> +		return netvsc_register_vf(event_dev, event);
-
-Although correct, this is an awkward way to write this.
-There are two events which call register_vf() but the post init
-one short circuits and doesn't really register the VF.
-
-The code is clearer if flag is set in switch statement.
-
-@@ -2206,9 +2206,6 @@ static int netvsc_vf_join(struct net_device *vf_netdev,
- 		goto upper_link_failed;
- 	}
- 
--	/* set slave flag before open to prevent IPv6 addrconf */
--	vf_netdev->flags |= IFF_SLAVE;
--
- 	schedule_delayed_work(&ndev_ctx->vf_takeover, VF_TAKEOVER_INT);
- 
- 	call_netdevice_notifiers(NETDEV_JOIN, vf_netdev);
-@@ -2753,6 +2750,10 @@ static int netvsc_netdev_event(struct notifier_block *this,
- 		return NOTIFY_DONE;
- 
- 	switch (event) {
-+	case NETDEV_POST_INIT:
-+		/* set slave flag before open to prevent IPv6 addrconf */
-+		vf_netdev->flags |= IFF_SLAVE;
-+		return NOTIFY_DONE;
- 	case NETDEV_REGISTER:
- 		return netvsc_register_vf(event_dev);
- 	case NETDEV_UNREGISTER:
-
-
+At the time of NETDEV_POST_INIT, the perm_addr is not assigned yet (last it=
+ was copied from dev_addr when device is registered).
