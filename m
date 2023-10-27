@@ -2,35 +2,35 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 27FE27D8D20
-	for <lists+linux-rdma@lfdr.de>; Fri, 27 Oct 2023 04:33:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 14E117D8D21
+	for <lists+linux-rdma@lfdr.de>; Fri, 27 Oct 2023 04:33:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229600AbjJ0Cdv (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 26 Oct 2023 22:33:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51046 "EHLO
+        id S232306AbjJ0Cdw (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 26 Oct 2023 22:33:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51070 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232306AbjJ0Cdu (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 26 Oct 2023 22:33:50 -0400
-Received: from out-181.mta1.migadu.com (out-181.mta1.migadu.com [IPv6:2001:41d0:203:375::b5])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C2F51AD
-        for <linux-rdma@vger.kernel.org>; Thu, 26 Oct 2023 19:33:48 -0700 (PDT)
+        with ESMTP id S229644AbjJ0Cdw (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 26 Oct 2023 22:33:52 -0400
+Received: from out-178.mta1.migadu.com (out-178.mta1.migadu.com [IPv6:2001:41d0:203:375::b2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE9AC1AC
+        for <linux-rdma@vger.kernel.org>; Thu, 26 Oct 2023 19:33:49 -0700 (PDT)
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1698374026;
+        t=1698374028;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=fS2SgGtzS/q8vEZnIMkkXViqG9Rs1/e3TL6GH2Jg6FQ=;
-        b=aSiDwaOTy21Ctc3OgbopN36SqhWdyki4Fk7vyrjwO4NyupauuPkrHZgZQPgkXIatnyKVbU
-        dyUuxJE0zv+gp/iuyadnrx1aAlMg5bRAPCY6QOx0/VfjBi40iUjrElIVzDxs7++jhaGTR+
-        drZlD0bQ26y4Pzuj2lwva7wYzRZ41Jk=
+        bh=dXCo7obIKr4cN5luExDLz7kHRzEJHi4LQT1yu9jd0j8=;
+        b=J/1aWEV0qtCSnqpM+YRO9tBq230dAmVMH3fLxSOKglTmfpMrr/xGn43Hr/8tVcFEiWQJh/
+        6LM1hqbkfwERR4s0kLUY8V0MJs0UXg5LEiOUBxtzl0KMko2GTZ4SdR/K2bkDzFRTkz92od
+        DFQ1dpnP/lQwXbuiP78gP8+WFCVBeBE=
 From:   Guoqing Jiang <guoqing.jiang@linux.dev>
 To:     bmt@zurich.ibm.com, jgg@ziepe.ca, leon@kernel.org
 Cc:     linux-rdma@vger.kernel.org
-Subject: [PATCH V3 03/18] RDMA/siw: Use iov.iov_len in kernel_sendmsg
-Date:   Fri, 27 Oct 2023 10:33:13 +0800
-Message-Id: <20231027023328.30347-4-guoqing.jiang@linux.dev>
+Subject: [PATCH V3 04/18] RDMA/siw: Remove goto lable in siw_mmap
+Date:   Fri, 27 Oct 2023 10:33:14 +0800
+Message-Id: <20231027023328.30347-5-guoqing.jiang@linux.dev>
 In-Reply-To: <20231027023328.30347-1-guoqing.jiang@linux.dev>
 References: <20231027023328.30347-1-guoqing.jiang@linux.dev>
 MIME-Version: 1.0
@@ -46,28 +46,33 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-We can pass iov.iov_len here.
+Let's remove it since the failure case only falls through
+to the useless label.
 
 Acked-by: Bernard Metzler <bmt@zurich.ibm.com>
 Signed-off-by: Guoqing Jiang <guoqing.jiang@linux.dev>
 ---
- drivers/infiniband/sw/siw/siw_qp_tx.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ drivers/infiniband/sw/siw/siw_verbs.c | 5 +----
+ 1 file changed, 1 insertion(+), 4 deletions(-)
 
-diff --git a/drivers/infiniband/sw/siw/siw_qp_tx.c b/drivers/infiniband/sw/siw/siw_qp_tx.c
-index 6a24e08356e9..2e055b6dcd42 100644
---- a/drivers/infiniband/sw/siw/siw_qp_tx.c
-+++ b/drivers/infiniband/sw/siw/siw_qp_tx.c
-@@ -296,8 +296,7 @@ static int siw_tx_ctrl(struct siw_iwarp_tx *c_tx, struct socket *s,
- 				    (char *)&c_tx->pkt.ctrl + c_tx->ctrl_sent,
- 			    .iov_len = c_tx->ctrl_len - c_tx->ctrl_sent };
+diff --git a/drivers/infiniband/sw/siw/siw_verbs.c b/drivers/infiniband/sw/siw/siw_verbs.c
+index c5c27db9c2fe..dcd69fc01176 100644
+--- a/drivers/infiniband/sw/siw/siw_verbs.c
++++ b/drivers/infiniband/sw/siw/siw_verbs.c
+@@ -66,12 +66,9 @@ int siw_mmap(struct ib_ucontext *ctx, struct vm_area_struct *vma)
+ 	entry = to_siw_mmap_entry(rdma_entry);
  
--	int rv = kernel_sendmsg(s, &msg, &iov, 1,
--				c_tx->ctrl_len - c_tx->ctrl_sent);
-+	int rv = kernel_sendmsg(s, &msg, &iov, 1, iov.iov_len);
+ 	rv = remap_vmalloc_range(vma, entry->address, 0);
+-	if (rv) {
++	if (rv)
+ 		pr_warn("remap_vmalloc_range failed: %lu, %zu\n", vma->vm_pgoff,
+ 			size);
+-		goto out;
+-	}
+-out:
+ 	rdma_user_mmap_entry_put(rdma_entry);
  
- 	if (rv >= 0) {
- 		c_tx->ctrl_sent += rv;
+ 	return rv;
 -- 
 2.35.3
 
