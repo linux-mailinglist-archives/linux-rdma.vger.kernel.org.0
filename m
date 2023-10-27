@@ -2,35 +2,35 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 15BDC7D8D26
-	for <lists+linux-rdma@lfdr.de>; Fri, 27 Oct 2023 04:33:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B610B7D8D27
+	for <lists+linux-rdma@lfdr.de>; Fri, 27 Oct 2023 04:34:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345174AbjJ0Cd7 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 26 Oct 2023 22:33:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37058 "EHLO
+        id S1345178AbjJ0CeA (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 26 Oct 2023 22:34:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37182 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345175AbjJ0Cd6 (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 26 Oct 2023 22:33:58 -0400
-Received: from out-171.mta1.migadu.com (out-171.mta1.migadu.com [IPv6:2001:41d0:203:375::ab])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8E119D
-        for <linux-rdma@vger.kernel.org>; Thu, 26 Oct 2023 19:33:55 -0700 (PDT)
+        with ESMTP id S1345189AbjJ0Cd7 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 26 Oct 2023 22:33:59 -0400
+Received: from out-170.mta1.migadu.com (out-170.mta1.migadu.com [IPv6:2001:41d0:203:375::aa])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C528AD40
+        for <linux-rdma@vger.kernel.org>; Thu, 26 Oct 2023 19:33:56 -0700 (PDT)
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1698374034;
+        t=1698374035;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=ovgXxy/ML0BWla1vuZb25JRttuC95QIdQTgtm/CHEBs=;
-        b=VPnRycKSAd2o+WW1gVc6tcZ2/ZIizyIKyUOlFuATA+0goDqoCtdxgnXoaek0JUyB1AvtoZ
-        u8Qm/uH74nhGRKnaVTM2//0QU7opEi4VvtLvXAvg3dDqDIsZ8hI9WSePqf0tY0fOSvPOh3
-        DUM0O3qePp2Sdmo+eOC5APp336GAZ4o=
+        bh=Mnb+gGmrjcx+DiyIe1j/ozcPWCSHKPv54GaWtqhVMG0=;
+        b=CUWHygUNi49Swc6VST3x2wiXcwhJ03D0dWWqECoJw+CKjfKbjlo/wM4kODZurLbpXCN9NZ
+        jtoCr7coj3pZfQwsM/uCr8TWbGaCyTj+x3ZDQ4PL3cy9rp81pjSsOAHi+iw00lrx7pqdE6
+        u14WzsItrPzBbh7Ak5LildJWzqtwhVg=
 From:   Guoqing Jiang <guoqing.jiang@linux.dev>
 To:     bmt@zurich.ibm.com, jgg@ziepe.ca, leon@kernel.org
 Cc:     linux-rdma@vger.kernel.org
-Subject: [PATCH V3 09/18] RDMA/siw: Introduce SIW_STAG_MAX_INDEX
-Date:   Fri, 27 Oct 2023 10:33:19 +0800
-Message-Id: <20231027023328.30347-10-guoqing.jiang@linux.dev>
+Subject: [PATCH V3 10/18] RDMA/siw: Add one parameter to siw_destroy_cpulist
+Date:   Fri, 27 Oct 2023 10:33:20 +0800
+Message-Id: <20231027023328.30347-11-guoqing.jiang@linux.dev>
 In-Reply-To: <20231027023328.30347-1-guoqing.jiang@linux.dev>
 References: <20231027023328.30347-1-guoqing.jiang@linux.dev>
 MIME-Version: 1.0
@@ -46,60 +46,79 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Add the macro to remove magic number in the code.
+With that we can reuse it in siw_init_cpulist.
 
-Acked-by: Bernard Metzler <bmt@zurich.ibm.com>
 Signed-off-by: Guoqing Jiang <guoqing.jiang@linux.dev>
 ---
- drivers/infiniband/sw/siw/siw_mem.c | 12 +++++++-----
- 1 file changed, 7 insertions(+), 5 deletions(-)
+ drivers/infiniband/sw/siw/siw_main.c | 30 +++++++++++++---------------
+ 1 file changed, 14 insertions(+), 16 deletions(-)
 
-diff --git a/drivers/infiniband/sw/siw/siw_mem.c b/drivers/infiniband/sw/siw/siw_mem.c
-index 92c5776a9eed..ac4502fb0a96 100644
---- a/drivers/infiniband/sw/siw/siw_mem.c
-+++ b/drivers/infiniband/sw/siw/siw_mem.c
-@@ -13,18 +13,20 @@
- #include "siw.h"
- #include "siw_mem.h"
+diff --git a/drivers/infiniband/sw/siw/siw_main.c b/drivers/infiniband/sw/siw/siw_main.c
+index 1ab62982df74..61ad8ca3d1a2 100644
+--- a/drivers/infiniband/sw/siw/siw_main.c
++++ b/drivers/infiniband/sw/siw/siw_main.c
+@@ -109,6 +109,17 @@ static struct {
+ 	int num_nodes;
+ } siw_cpu_info;
  
-+/* Stag lookup is based on its index part only (24 bits). */
-+#define SIW_STAG_MAX_INDEX	0x00ffffff
++static void siw_destroy_cpulist(int number)
++{
++	int i = 0;
 +
++	while (i < number)
++		kfree(siw_cpu_info.tx_valid_cpus[i++]);
++
++	kfree(siw_cpu_info.tx_valid_cpus);
++	siw_cpu_info.tx_valid_cpus = NULL;
++}
++
+ static int siw_init_cpulist(void)
+ {
+ 	int i, num_nodes = nr_node_ids;
+@@ -138,24 +149,11 @@ static int siw_init_cpulist(void)
+ 
+ out_err:
+ 	siw_cpu_info.num_nodes = 0;
+-	while (--i >= 0)
+-		kfree(siw_cpu_info.tx_valid_cpus[i]);
+-	kfree(siw_cpu_info.tx_valid_cpus);
+-	siw_cpu_info.tx_valid_cpus = NULL;
++	siw_destroy_cpulist(i);
+ 
+ 	return -ENOMEM;
+ }
+ 
+-static void siw_destroy_cpulist(void)
+-{
+-	int i = 0;
+-
+-	while (i < siw_cpu_info.num_nodes)
+-		kfree(siw_cpu_info.tx_valid_cpus[i++]);
+-
+-	kfree(siw_cpu_info.tx_valid_cpus);
+-}
+-
  /*
-- * Stag lookup is based on its index part only (24 bits).
-  * The code avoids special Stag of zero and tries to randomize
-  * STag values between 1 and SIW_STAG_MAX_INDEX.
-  */
- int siw_mem_add(struct siw_device *sdev, struct siw_mem *m)
- {
--	struct xa_limit limit = XA_LIMIT(1, 0x00ffffff);
-+	struct xa_limit limit = XA_LIMIT(1, SIW_STAG_MAX_INDEX);
- 	u32 id, next;
+  * Choose CPU with least number of active QP's from NUMA node of
+  * TX interface.
+@@ -558,7 +556,7 @@ static __init int siw_init_module(void)
+ 	pr_info("SoftIWARP attach failed. Error: %d\n", rv);
  
- 	get_random_bytes(&next, 4);
--	next &= 0x00ffffff;
-+	next &= SIW_STAG_MAX_INDEX;
+ 	siw_cm_exit();
+-	siw_destroy_cpulist();
++	siw_destroy_cpulist(siw_cpu_info.num_nodes);
  
- 	if (xa_alloc_cyclic(&sdev->mem_xa, &id, m, limit, &next,
- 	    GFP_KERNEL) < 0)
-@@ -91,7 +93,7 @@ int siw_mr_add_mem(struct siw_mr *mr, struct ib_pd *pd, void *mem_obj,
- {
- 	struct siw_device *sdev = to_siw_dev(pd->device);
- 	struct siw_mem *mem = kzalloc(sizeof(*mem), GFP_KERNEL);
--	struct xa_limit limit = XA_LIMIT(1, 0x00ffffff);
-+	struct xa_limit limit = XA_LIMIT(1, SIW_STAG_MAX_INDEX);
- 	u32 id, next;
+ 	return rv;
+ }
+@@ -573,7 +571,7 @@ static void __exit siw_exit_module(void)
  
- 	if (!mem)
-@@ -107,7 +109,7 @@ int siw_mr_add_mem(struct siw_mr *mr, struct ib_pd *pd, void *mem_obj,
- 	kref_init(&mem->ref);
+ 	siw_cm_exit();
  
- 	get_random_bytes(&next, 4);
--	next &= 0x00ffffff;
-+	next &= SIW_STAG_MAX_INDEX;
+-	siw_destroy_cpulist();
++	siw_destroy_cpulist(siw_cpu_info.num_nodes);
  
- 	if (xa_alloc_cyclic(&sdev->mem_xa, &id, mem, limit, &next,
- 	    GFP_KERNEL) < 0) {
+ 	if (siw_crypto_shash)
+ 		crypto_free_shash(siw_crypto_shash);
 -- 
 2.35.3
 
