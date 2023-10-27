@@ -2,35 +2,35 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E23D7D99C3
-	for <lists+linux-rdma@lfdr.de>; Fri, 27 Oct 2023 15:27:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C4A257D99C5
+	for <lists+linux-rdma@lfdr.de>; Fri, 27 Oct 2023 15:27:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345933AbjJ0N12 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 27 Oct 2023 09:27:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44098 "EHLO
+        id S1345945AbjJ0N1b (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 27 Oct 2023 09:27:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56994 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345954AbjJ0N10 (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 27 Oct 2023 09:27:26 -0400
-Received: from out-174.mta0.migadu.com (out-174.mta0.migadu.com [91.218.175.174])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26D56C9
-        for <linux-rdma@vger.kernel.org>; Fri, 27 Oct 2023 06:27:24 -0700 (PDT)
+        with ESMTP id S1345942AbjJ0N13 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 27 Oct 2023 09:27:29 -0400
+Received: from out-171.mta0.migadu.com (out-171.mta0.migadu.com [91.218.175.171])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08F5B1B3
+        for <linux-rdma@vger.kernel.org>; Fri, 27 Oct 2023 06:27:25 -0700 (PDT)
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1698413242;
+        t=1698413244;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=uLn2u6wUgj/lyfQUi+MW/ePaZllF1vTxUbcxgcZjoJg=;
-        b=Iyj6zGIfPtTsGCcAi8zKC7e4cqB2lY2iEeexfsCZPzlxDxmJheR88ECkecis0qth85W0Kf
-        CcIndj83iso12zBB6G9WVThmUpmi2a7cNr0n0L/rxWkuRoM4BnsDC+PfTPhJ67357+rmJw
-        wDfh41BRBj1YKCFJYd9YBGmPrMoC/EI=
+        bh=xqzVk0g8Y9DUsu/VIvpsvRUP/n+3u1R+XtNNJGrn9B8=;
+        b=MFmrFB7aDk4ou2YgQC41mzQKGK6oDERjI4FPvDISy3sxbQt3nG1Vd//ZeJnS4eKFmB5FGt
+        DdU6+3QjhL95vs3gGYX2nrB2Sc2L1SnkMkBN44aDIRMoveqWdTYGCbdM8WLt/kmYRCUVDn
+        uVxs5SMVbjIJbstDH9XdWRg6GzemF/8=
 From:   Guoqing Jiang <guoqing.jiang@linux.dev>
 To:     bmt@zurich.ibm.com, jgg@ziepe.ca, leon@kernel.org
 Cc:     linux-rdma@vger.kernel.org
-Subject: [PATCH V4 14/18] RDMA/siw: Remove siw_sk_save_upcalls
-Date:   Fri, 27 Oct 2023 21:26:40 +0800
-Message-Id: <20231027132644.29347-15-guoqing.jiang@linux.dev>
+Subject: [PATCH V4 15/18] RDMA/siw: Fix typo
+Date:   Fri, 27 Oct 2023 21:26:41 +0800
+Message-Id: <20231027132644.29347-16-guoqing.jiang@linux.dev>
 In-Reply-To: <20231027132644.29347-1-guoqing.jiang@linux.dev>
 References: <20231027132644.29347-1-guoqing.jiang@linux.dev>
 MIME-Version: 1.0
@@ -45,56 +45,27 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Let's move it into siw_sk_assign_cm_upcalls, then we only
-need to get sk_callback_lock once.
+Replace ORRQ with ORQ.
 
 Acked-by: Bernard Metzler <bmt@zurich.ibm.com>
 Signed-off-by: Guoqing Jiang <guoqing.jiang@linux.dev>
 ---
- drivers/infiniband/sw/siw/siw_cm.c | 16 +++++-----------
- 1 file changed, 5 insertions(+), 11 deletions(-)
+ drivers/infiniband/sw/siw/siw_qp.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/infiniband/sw/siw/siw_cm.c b/drivers/infiniband/sw/siw/siw_cm.c
-index 4d518b7482f7..84882a8c75d1 100644
---- a/drivers/infiniband/sw/siw/siw_cm.c
-+++ b/drivers/infiniband/sw/siw/siw_cm.c
-@@ -40,16 +40,6 @@ static int siw_cm_upcall(struct siw_cep *cep, enum iw_cm_event_type reason,
- 			 int status);
- 
- static void siw_sk_assign_cm_upcalls(struct sock *sk)
--{
--	write_lock_bh(&sk->sk_callback_lock);
--	sk->sk_state_change = siw_cm_llp_state_change;
--	sk->sk_data_ready = siw_cm_llp_data_ready;
--	sk->sk_write_space = siw_cm_llp_write_space;
--	sk->sk_error_report = siw_cm_llp_error_report;
--	write_unlock_bh(&sk->sk_callback_lock);
--}
--
--static void siw_sk_save_upcalls(struct sock *sk)
- {
- 	struct siw_cep *cep = sk_to_cep(sk);
- 
-@@ -58,6 +48,11 @@ static void siw_sk_save_upcalls(struct sock *sk)
- 	cep->sk_data_ready = sk->sk_data_ready;
- 	cep->sk_write_space = sk->sk_write_space;
- 	cep->sk_error_report = sk->sk_error_report;
-+
-+	sk->sk_state_change = siw_cm_llp_state_change;
-+	sk->sk_data_ready = siw_cm_llp_data_ready;
-+	sk->sk_write_space = siw_cm_llp_write_space;
-+	sk->sk_error_report = siw_cm_llp_error_report;
- 	write_unlock_bh(&sk->sk_callback_lock);
- }
- 
-@@ -156,7 +151,6 @@ static void siw_cep_socket_assoc(struct siw_cep *cep, struct socket *s)
- 	siw_cep_get(cep);
- 	s->sk->sk_user_data = cep;
- 
--	siw_sk_save_upcalls(s->sk);
- 	siw_sk_assign_cm_upcalls(s->sk);
- }
- 
+diff --git a/drivers/infiniband/sw/siw/siw_qp.c b/drivers/infiniband/sw/siw/siw_qp.c
+index 26e3904d2f41..da92cfa2073d 100644
+--- a/drivers/infiniband/sw/siw/siw_qp.c
++++ b/drivers/infiniband/sw/siw/siw_qp.c
+@@ -1183,7 +1183,7 @@ int siw_rqe_complete(struct siw_qp *qp, struct siw_rqe *rqe, u32 bytes,
+ /*
+  * siw_sq_flush()
+  *
+- * Flush SQ and ORRQ entries to CQ.
++ * Flush SQ and ORQ entries to CQ.
+  *
+  * Must be called with QP state write lock held.
+  * Therefore, SQ and ORQ lock must not be taken.
 -- 
 2.35.3
 
