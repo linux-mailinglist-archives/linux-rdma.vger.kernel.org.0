@@ -2,35 +2,35 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AECD57D8D1F
-	for <lists+linux-rdma@lfdr.de>; Fri, 27 Oct 2023 04:33:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 27FE27D8D20
+	for <lists+linux-rdma@lfdr.de>; Fri, 27 Oct 2023 04:33:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230307AbjJ0Cdu (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 26 Oct 2023 22:33:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51030 "EHLO
+        id S229600AbjJ0Cdv (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 26 Oct 2023 22:33:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51046 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229600AbjJ0Cdt (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 26 Oct 2023 22:33:49 -0400
-Received: from out-184.mta1.migadu.com (out-184.mta1.migadu.com [95.215.58.184])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A4961AA
-        for <linux-rdma@vger.kernel.org>; Thu, 26 Oct 2023 19:33:47 -0700 (PDT)
+        with ESMTP id S232306AbjJ0Cdu (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 26 Oct 2023 22:33:50 -0400
+Received: from out-181.mta1.migadu.com (out-181.mta1.migadu.com [IPv6:2001:41d0:203:375::b5])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C2F51AD
+        for <linux-rdma@vger.kernel.org>; Thu, 26 Oct 2023 19:33:48 -0700 (PDT)
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1698374025;
+        t=1698374026;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=Q6DvSfVgEFn6xqCuUudUpRz0A5FK6W5hxgFfXc51uWA=;
-        b=uO3zTdi4ngbSzhyf+8Aw6cpo4HG87hDDpGdMdJ/FZfDqG9zvHi4H4q2GAROhJl1jwVRFpv
-        iYQE+ehOdF15XICIe02tkzWLsPGskMkI2ferRLKbdUOqvlCa2AU8eGANqeeyKkMNdyQGIN
-        lE6NDnT54qho11kIY/8Kd/hj2D2+GgM=
+        bh=fS2SgGtzS/q8vEZnIMkkXViqG9Rs1/e3TL6GH2Jg6FQ=;
+        b=aSiDwaOTy21Ctc3OgbopN36SqhWdyki4Fk7vyrjwO4NyupauuPkrHZgZQPgkXIatnyKVbU
+        dyUuxJE0zv+gp/iuyadnrx1aAlMg5bRAPCY6QOx0/VfjBi40iUjrElIVzDxs7++jhaGTR+
+        drZlD0bQ26y4Pzuj2lwva7wYzRZ41Jk=
 From:   Guoqing Jiang <guoqing.jiang@linux.dev>
 To:     bmt@zurich.ibm.com, jgg@ziepe.ca, leon@kernel.org
 Cc:     linux-rdma@vger.kernel.org
-Subject: [PATCH V3 02/18] RDMA/siw: Introduce siw_update_skb_rcvd
-Date:   Fri, 27 Oct 2023 10:33:12 +0800
-Message-Id: <20231027023328.30347-3-guoqing.jiang@linux.dev>
+Subject: [PATCH V3 03/18] RDMA/siw: Use iov.iov_len in kernel_sendmsg
+Date:   Fri, 27 Oct 2023 10:33:13 +0800
+Message-Id: <20231027023328.30347-4-guoqing.jiang@linux.dev>
 In-Reply-To: <20231027023328.30347-1-guoqing.jiang@linux.dev>
 References: <20231027023328.30347-1-guoqing.jiang@linux.dev>
 MIME-Version: 1.0
@@ -46,96 +46,28 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-There are some places share the same logic, factor a common
-helper for it.
+We can pass iov.iov_len here.
 
+Acked-by: Bernard Metzler <bmt@zurich.ibm.com>
 Signed-off-by: Guoqing Jiang <guoqing.jiang@linux.dev>
 ---
-Changes from previous verison:
-1. s/siw_srx_update_skb/siw_update_skb_rcvd
+ drivers/infiniband/sw/siw/siw_qp_tx.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
- drivers/infiniband/sw/siw/siw_qp_rx.c | 31 +++++++++++----------------
- 1 file changed, 12 insertions(+), 19 deletions(-)
-
-diff --git a/drivers/infiniband/sw/siw/siw_qp_rx.c b/drivers/infiniband/sw/siw/siw_qp_rx.c
-index 33e0fdb362ff..10805a7d0487 100644
---- a/drivers/infiniband/sw/siw/siw_qp_rx.c
-+++ b/drivers/infiniband/sw/siw/siw_qp_rx.c
-@@ -881,6 +881,13 @@ int siw_proc_rresp(struct siw_qp *qp)
- 	return rv;
- }
+diff --git a/drivers/infiniband/sw/siw/siw_qp_tx.c b/drivers/infiniband/sw/siw/siw_qp_tx.c
+index 6a24e08356e9..2e055b6dcd42 100644
+--- a/drivers/infiniband/sw/siw/siw_qp_tx.c
++++ b/drivers/infiniband/sw/siw/siw_qp_tx.c
+@@ -296,8 +296,7 @@ static int siw_tx_ctrl(struct siw_iwarp_tx *c_tx, struct socket *s,
+ 				    (char *)&c_tx->pkt.ctrl + c_tx->ctrl_sent,
+ 			    .iov_len = c_tx->ctrl_len - c_tx->ctrl_sent };
  
-+static void siw_update_skb_rcvd(struct siw_rx_stream *srx, u16 length)
-+{
-+	srx->skb_offset += length;
-+	srx->skb_new -= length;
-+	srx->skb_copied += length;
-+}
-+
- int siw_proc_terminate(struct siw_qp *qp)
- {
- 	struct siw_rx_stream *srx = &qp->rx_stream;
-@@ -925,9 +932,7 @@ int siw_proc_terminate(struct siw_qp *qp)
- 		goto out;
+-	int rv = kernel_sendmsg(s, &msg, &iov, 1,
+-				c_tx->ctrl_len - c_tx->ctrl_sent);
++	int rv = kernel_sendmsg(s, &msg, &iov, 1, iov.iov_len);
  
- 	infop += to_copy;
--	srx->skb_offset += to_copy;
--	srx->skb_new -= to_copy;
--	srx->skb_copied += to_copy;
-+	siw_update_skb_rcvd(srx, to_copy);
- 	srx->fpdu_part_rcvd += to_copy;
- 	srx->fpdu_part_rem -= to_copy;
- 
-@@ -949,9 +954,7 @@ int siw_proc_terminate(struct siw_qp *qp)
- 			   term->flag_m ? "valid" : "invalid");
- 	}
- out:
--	srx->skb_new -= to_copy;
--	srx->skb_offset += to_copy;
--	srx->skb_copied += to_copy;
-+	siw_update_skb_rcvd(srx, to_copy);
- 	srx->fpdu_part_rcvd += to_copy;
- 	srx->fpdu_part_rem -= to_copy;
- 
-@@ -970,9 +973,7 @@ static int siw_get_trailer(struct siw_qp *qp, struct siw_rx_stream *srx)
- 
- 	skb_copy_bits(skb, srx->skb_offset, tbuf, avail);
- 
--	srx->skb_new -= avail;
--	srx->skb_offset += avail;
--	srx->skb_copied += avail;
-+	siw_update_skb_rcvd(srx, avail);
- 	srx->fpdu_part_rem -= avail;
- 
- 	if (srx->fpdu_part_rem)
-@@ -1023,12 +1024,8 @@ static int siw_get_hdr(struct siw_rx_stream *srx)
- 		skb_copy_bits(skb, srx->skb_offset,
- 			      (char *)c_hdr + srx->fpdu_part_rcvd, bytes);
- 
-+		siw_update_skb_rcvd(srx, bytes);
- 		srx->fpdu_part_rcvd += bytes;
--
--		srx->skb_new -= bytes;
--		srx->skb_offset += bytes;
--		srx->skb_copied += bytes;
--
- 		if (srx->fpdu_part_rcvd < MIN_DDP_HDR)
- 			return -EAGAIN;
- 
-@@ -1091,12 +1088,8 @@ static int siw_get_hdr(struct siw_rx_stream *srx)
- 		skb_copy_bits(skb, srx->skb_offset,
- 			      (char *)c_hdr + srx->fpdu_part_rcvd, bytes);
- 
-+		siw_update_skb_rcvd(srx, bytes);
- 		srx->fpdu_part_rcvd += bytes;
--
--		srx->skb_new -= bytes;
--		srx->skb_offset += bytes;
--		srx->skb_copied += bytes;
--
- 		if (srx->fpdu_part_rcvd < hdrlen)
- 			return -EAGAIN;
- 	}
+ 	if (rv >= 0) {
+ 		c_tx->ctrl_sent += rv;
 -- 
 2.35.3
 
