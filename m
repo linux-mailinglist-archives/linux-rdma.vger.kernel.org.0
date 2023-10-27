@@ -2,35 +2,35 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id ABADD7D99BB
-	for <lists+linux-rdma@lfdr.de>; Fri, 27 Oct 2023 15:27:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B75E7D99BC
+	for <lists+linux-rdma@lfdr.de>; Fri, 27 Oct 2023 15:27:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345919AbjJ0N1Q (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 27 Oct 2023 09:27:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39166 "EHLO
+        id S1345927AbjJ0N1R (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 27 Oct 2023 09:27:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39222 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345916AbjJ0N1P (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 27 Oct 2023 09:27:15 -0400
-Received: from out-174.mta0.migadu.com (out-174.mta0.migadu.com [91.218.175.174])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B165D1B1
-        for <linux-rdma@vger.kernel.org>; Fri, 27 Oct 2023 06:27:12 -0700 (PDT)
+        with ESMTP id S1345931AbjJ0N1Q (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 27 Oct 2023 09:27:16 -0400
+Received: from out-175.mta0.migadu.com (out-175.mta0.migadu.com [IPv6:2001:41d0:1004:224b::af])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51CDDD6
+        for <linux-rdma@vger.kernel.org>; Fri, 27 Oct 2023 06:27:14 -0700 (PDT)
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1698413231;
+        t=1698413232;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=co3iSMBTjCdWI/+NYYtXFHWnv4nbGP0DHcfzC/xvAXY=;
-        b=Og5IyfkM0H0ydWBTPuvP9GHKJPt5UMeQqm6vvrCxyZwfaian6U0/EBhV+nGoQ/XNTiT809
-        BLQeyDSMOFybDsg1BpM/uDI4nW3gDq2pJtGXQdx1nbtsQZl8hwDg219M9Umo47HU3m/0Z1
-        /LNy05SGtJdKvo9Lqej6XDSqnCxh5QM=
+        bh=vjSXmmTc0Teonn139UWL84hazaLoraGfpbtnxsf2zjQ=;
+        b=kACNhUypAS+SLwGt0G+sQsOEdzcnlGyHm1FWDOPjOBRWnw3p9rmbTI6Wkw2YwtkQZnxfyF
+        gIQyoE6QsBuacGzXFlwJobA5OtDNIJvprI76/32buS3nt0pvn6I9ZvBK2zUwKP8C/Fsfvd
+        wc4o/SyqXJbceMVyTMIWTTVZraMXzG0=
 From:   Guoqing Jiang <guoqing.jiang@linux.dev>
 To:     bmt@zurich.ibm.com, jgg@ziepe.ca, leon@kernel.org
 Cc:     linux-rdma@vger.kernel.org
-Subject: [PATCH V4 06/18] RDMA/siw: No need to check term_info.valid before call siw_send_terminate
-Date:   Fri, 27 Oct 2023 21:26:32 +0800
-Message-Id: <20231027132644.29347-7-guoqing.jiang@linux.dev>
+Subject: [PATCH V4 07/18] RDMA/siw: Also goto out_sem_up if pin_user_pages returns 0
+Date:   Fri, 27 Oct 2023 21:26:33 +0800
+Message-Id: <20231027132644.29347-8-guoqing.jiang@linux.dev>
 In-Reply-To: <20231027132644.29347-1-guoqing.jiang@linux.dev>
 References: <20231027132644.29347-1-guoqing.jiang@linux.dev>
 MIME-Version: 1.0
@@ -45,37 +45,28 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Remove the redundate checking since siw_send_terminate check it inside.
+Since it is legitimate for pin_user_pages returns 0, which
+means it might be dead loop here.
 
 Acked-by: Bernard Metzler <bmt@zurich.ibm.com>
 Signed-off-by: Guoqing Jiang <guoqing.jiang@linux.dev>
 ---
- drivers/infiniband/sw/siw/siw_cm.c | 5 ++---
- 1 file changed, 2 insertions(+), 3 deletions(-)
+ drivers/infiniband/sw/siw/siw_mem.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/infiniband/sw/siw/siw_cm.c b/drivers/infiniband/sw/siw/siw_cm.c
-index 0a1525d76ba1..c8a9118677d7 100644
---- a/drivers/infiniband/sw/siw/siw_cm.c
-+++ b/drivers/infiniband/sw/siw/siw_cm.c
-@@ -393,8 +393,7 @@ void siw_qp_cm_drop(struct siw_qp *qp, int schedule)
- 		}
- 		siw_dbg_cep(cep, "immediate close, state %d\n", cep->state);
+diff --git a/drivers/infiniband/sw/siw/siw_mem.c b/drivers/infiniband/sw/siw/siw_mem.c
+index c5f7f1669d09..92c5776a9eed 100644
+--- a/drivers/infiniband/sw/siw/siw_mem.c
++++ b/drivers/infiniband/sw/siw/siw_mem.c
+@@ -423,7 +423,7 @@ struct siw_umem *siw_umem_get(u64 start, u64 len, bool writable)
+ 		while (nents) {
+ 			rv = pin_user_pages(first_page_va, nents, foll_flags,
+ 					    plist);
+-			if (rv < 0)
++			if (rv <= 0)
+ 				goto out_sem_up;
  
--		if (qp->term_info.valid)
--			siw_send_terminate(qp);
-+		siw_send_terminate(qp);
- 
- 		if (cep->cm_id) {
- 			switch (cep->state) {
-@@ -1060,7 +1059,7 @@ static void siw_cm_work_handler(struct work_struct *w)
- 		/*
- 		 * QP scheduled LLP close
- 		 */
--		if (cep->qp && cep->qp->term_info.valid)
-+		if (cep->qp)
- 			siw_send_terminate(cep->qp);
- 
- 		if (cep->cm_id)
+ 			umem->num_pages += rv;
 -- 
 2.35.3
 
