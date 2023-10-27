@@ -2,56 +2,55 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EE3807DA294
-	for <lists+linux-rdma@lfdr.de>; Fri, 27 Oct 2023 23:46:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 524BB7DA29B
+	for <lists+linux-rdma@lfdr.de>; Fri, 27 Oct 2023 23:47:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230451AbjJ0VqU (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 27 Oct 2023 17:46:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33262 "EHLO
+        id S232025AbjJ0Vrg (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 27 Oct 2023 17:47:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58652 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229712AbjJ0VqT (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 27 Oct 2023 17:46:19 -0400
-Received: from mail-pl1-f173.google.com (mail-pl1-f173.google.com [209.85.214.173])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B3E06129;
-        Fri, 27 Oct 2023 14:46:17 -0700 (PDT)
-Received: by mail-pl1-f173.google.com with SMTP id d9443c01a7336-1cc30bf9e22so1433705ad.1;
-        Fri, 27 Oct 2023 14:46:17 -0700 (PDT)
+        with ESMTP id S1346611AbjJ0Vrd (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 27 Oct 2023 17:47:33 -0400
+Received: from mail-pl1-f179.google.com (mail-pl1-f179.google.com [209.85.214.179])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 99F57D7F;
+        Fri, 27 Oct 2023 14:47:30 -0700 (PDT)
+Received: by mail-pl1-f179.google.com with SMTP id d9443c01a7336-1c9d407bb15so23198555ad.0;
+        Fri, 27 Oct 2023 14:47:30 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698443177; x=1699047977;
+        d=1e100.net; s=20230601; t=1698443250; x=1699048050;
         h=content-transfer-encoding:in-reply-to:from:references:cc:to
          :content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=OqWYhZdOBKN0vuVuVk6oSf3RWtos4En+IaVgzSnRbmo=;
-        b=qm6VKbBVjoq5rSN7BtIwckjRc/dFg2Okf1H57mk1SwTy1TWX+qK/ezL1MWHsPNW6eq
-         Pp5zi7WcpDqhAFmpd+g0WWnJJHZ+VRUjISATeSJORPJ3cFxX35SdOqpZ6VUtkAkXqySV
-         FBAAI49kaVM1/OcyeoiOsmxGcSsHh655H9au0AhF2JfEgFRJHrUQlEhMCUOz8NPQ3Y9j
-         AAQkZJww9I4t985o7KydTZfw642LhPD7BzBF90MaVCDBo6R1gVnC5Ejnt1OPS0LVnIRX
-         WTlHV+OerhPGCApIyuK7PuaT5r+7wPPCi/HMcZ7szLVibAeO3c5fuauAXMv49Hq4ALor
-         rgxg==
-X-Gm-Message-State: AOJu0Yy8iD5ZXbZoiUcYPjv0Ji5S6u/g+QQymtapPlLYMBPHI81okzuP
-        95rePgikf16eGhL2ZK6l3M8=
-X-Google-Smtp-Source: AGHT+IEqQVCKyAK6PoNXccrAGq1QX8X86RlikVytazJ0trsS/NzCRLw1zLhUtPA9bbXNotIm8oKywg==
-X-Received: by 2002:a17:902:c94f:b0:1ca:eb17:b51a with SMTP id i15-20020a170902c94f00b001caeb17b51amr9024077pla.27.1698443177065;
-        Fri, 27 Oct 2023 14:46:17 -0700 (PDT)
+        bh=d9C2uMQY3gPOITkkV1qWxC4PQ2GSEW3yaZLRSMMWF1E=;
+        b=THftEffewox/CkCSvQ/YjCyDh9abAt2IKARS0nU40rBOgf6RlMeQvZASvPuQKZHa8N
+         AU7uxG2r6/77z1wQlmvaiVaRZAI7Wd4r0GqUqWO1TH034j8FKtfDBXQk9zJ7Grfv5cAa
+         H8tYdkexvWXzsUVJk/hYwJJpfwA9Bu2EXaxYsEyWYS77K5gSVdFK4cEJLxgWDqEShD6n
+         uh/oCt9bdRsWpUpQog6vT2QM+FU12Mw2LjrdktGnb0yd1n2us+PbT/a1V7tp5273mKO3
+         QnDqwXVA0v6b7/K4QJNNtdp2U2tPxjxO2uTZfByTGrtYxTEqJQW9fCcLRMbEJdLcwBI5
+         bFdA==
+X-Gm-Message-State: AOJu0YzMf/cinpN+6Y/s98jRKHSSgNLWApmOEFzVOfiW7kI7XhEhoCoF
+        Lg/Tzdv6RRNT0x/LbabrxyQ=
+X-Google-Smtp-Source: AGHT+IG0JuujmHuhY30rCBEAwB9oCDpz6rvc3u2cXhre2PDbE+vOXqqiFVzKsYTNPxIuBO/udNrTRg==
+X-Received: by 2002:a17:902:f54c:b0:1c9:cc88:5029 with SMTP id h12-20020a170902f54c00b001c9cc885029mr4548420plf.32.1698443249670;
+        Fri, 27 Oct 2023 14:47:29 -0700 (PDT)
 Received: from ?IPV6:2601:647:4d7e:54f3:667:4981:ffa1:7be1? ([2601:647:4d7e:54f3:667:4981:ffa1:7be1])
-        by smtp.gmail.com with ESMTPSA id f12-20020a170902684c00b001b9f032bb3dsm2084436pln.3.2023.10.27.14.46.15
+        by smtp.gmail.com with ESMTPSA id f12-20020a170902684c00b001b9f032bb3dsm2084436pln.3.2023.10.27.14.47.28
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 27 Oct 2023 14:46:16 -0700 (PDT)
-Message-ID: <adad4ee6-ceef-4e45-a13d-048a1377e86f@acm.org>
-Date:   Fri, 27 Oct 2023 14:46:14 -0700
+        Fri, 27 Oct 2023 14:47:29 -0700 (PDT)
+Message-ID: <7f568746-5de3-4de7-b367-9cc869cab0a2@acm.org>
+Date:   Fri, 27 Oct 2023 14:47:28 -0700
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH RFC 1/2] RDMA/rxe: don't allow registering !PAGE_SIZE mr
+Subject: Re: [PATCH RFC 2/2] RDMA/rxe: set RXE_PAGE_SIZE_CAP to PAGE_SIZE
 Content-Language: en-US
-To:     Zhu Yanjun <yanjun.zhu@linux.dev>,
-        Li Zhijian <lizhijian@fujitsu.com>, zyjzyj2000@gmail.com,
+To:     Li Zhijian <lizhijian@fujitsu.com>, zyjzyj2000@gmail.com,
         jgg@ziepe.ca, leon@kernel.org, linux-rdma@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, rpearsonhpe@gmail.com,
         matsuda-daisuke@fujitsu.com
 References: <20231027054154.2935054-1-lizhijian@fujitsu.com>
- <53c18b2a-c3b2-4936-b654-12cb5f914622@linux.dev>
+ <20231027054154.2935054-2-lizhijian@fujitsu.com>
 From:   Bart Van Assche <bvanassche@acm.org>
-In-Reply-To: <53c18b2a-c3b2-4936-b654-12cb5f914622@linux.dev>
+In-Reply-To: <20231027054154.2935054-2-lizhijian@fujitsu.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
@@ -64,12 +63,19 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 10/27/23 01:17, Zhu Yanjun wrote:
-> When ULP uses folio or compound page, ULP can not work well with RXE 
-> after this commit is applied.
+On 10/26/23 22:41, Li Zhijian wrote:
+> diff --git a/drivers/infiniband/sw/rxe/rxe_param.h b/drivers/infiniband/sw/rxe/rxe_param.h
+> index d2f57ead78ad..b1cf1e1c0ce1 100644
+> --- a/drivers/infiniband/sw/rxe/rxe_param.h
+> +++ b/drivers/infiniband/sw/rxe/rxe_param.h
+> @@ -38,7 +38,7 @@ static inline enum ib_mtu eth_mtu_int_to_enum(int mtu)
+>   /* default/initial rxe device parameter settings */
+>   enum rxe_device_param {
+>   	RXE_MAX_MR_SIZE			= -1ull,
+> -	RXE_PAGE_SIZE_CAP		= 0xfffff000,
+> +	RXE_PAGE_SIZE_CAP		= PAGE_SIZE,
+>   	RXE_MAX_QP_WR			= DEFAULT_MAX_VALUE,
+>   	RXE_DEVICE_CAP_FLAGS		= IB_DEVICE_BAD_PKEY_CNTR
+>   					| IB_DEVICE_BAD_QKEY_CNTR
 
-Isn't it the responsibility of the DMA mapping code to build an sg-list
-for folios? Drivers like ib_srp see an sg-list, whether that comes from
-a folio or from something else.
-
-Bart.
+Reviewed-by: Bart Van Assche <bvanassche@acm.org>
