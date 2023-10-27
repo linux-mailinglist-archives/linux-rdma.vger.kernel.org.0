@@ -2,35 +2,35 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B610B7D8D27
-	for <lists+linux-rdma@lfdr.de>; Fri, 27 Oct 2023 04:34:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B0C17D8D28
+	for <lists+linux-rdma@lfdr.de>; Fri, 27 Oct 2023 04:34:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345178AbjJ0CeA (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 26 Oct 2023 22:34:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37182 "EHLO
+        id S1345179AbjJ0CeB (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 26 Oct 2023 22:34:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37124 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345189AbjJ0Cd7 (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 26 Oct 2023 22:33:59 -0400
-Received: from out-170.mta1.migadu.com (out-170.mta1.migadu.com [IPv6:2001:41d0:203:375::aa])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C528AD40
-        for <linux-rdma@vger.kernel.org>; Thu, 26 Oct 2023 19:33:56 -0700 (PDT)
+        with ESMTP id S1345183AbjJ0CeA (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 26 Oct 2023 22:34:00 -0400
+Received: from out-178.mta1.migadu.com (out-178.mta1.migadu.com [95.215.58.178])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1DD84D47
+        for <linux-rdma@vger.kernel.org>; Thu, 26 Oct 2023 19:33:58 -0700 (PDT)
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1698374035;
+        t=1698374036;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=Mnb+gGmrjcx+DiyIe1j/ozcPWCSHKPv54GaWtqhVMG0=;
-        b=CUWHygUNi49Swc6VST3x2wiXcwhJ03D0dWWqECoJw+CKjfKbjlo/wM4kODZurLbpXCN9NZ
-        jtoCr7coj3pZfQwsM/uCr8TWbGaCyTj+x3ZDQ4PL3cy9rp81pjSsOAHi+iw00lrx7pqdE6
-        u14WzsItrPzBbh7Ak5LildJWzqtwhVg=
+        bh=1jSFT4fntDaYPd1/zNCF4ayN4hq13Ydav47ZPIMKbPY=;
+        b=cXSvpZpecqHn4SH282QJ4QZM+AKNv3xO5WPLSYaHD+8GPEsfVxNKcthax5LR7QebhJulJt
+        nbpxMF/ZLzSPY1BgjaSKs+B5+udANOKOaNNevsEU9h2m/HbLUlGAg5Ptt3pn9x5Tsrrc50
+        NkxJqpdZWeMcTN7d1Ltb2yyO8XoEYGw=
 From:   Guoqing Jiang <guoqing.jiang@linux.dev>
 To:     bmt@zurich.ibm.com, jgg@ziepe.ca, leon@kernel.org
 Cc:     linux-rdma@vger.kernel.org
-Subject: [PATCH V3 10/18] RDMA/siw: Add one parameter to siw_destroy_cpulist
-Date:   Fri, 27 Oct 2023 10:33:20 +0800
-Message-Id: <20231027023328.30347-11-guoqing.jiang@linux.dev>
+Subject: [PATCH V3 11/18] RDMA/siw: Introduce siw_cep_set_free_and_put
+Date:   Fri, 27 Oct 2023 10:33:21 +0800
+Message-Id: <20231027023328.30347-12-guoqing.jiang@linux.dev>
 In-Reply-To: <20231027023328.30347-1-guoqing.jiang@linux.dev>
 References: <20231027023328.30347-1-guoqing.jiang@linux.dev>
 MIME-Version: 1.0
@@ -46,79 +46,111 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-With that we can reuse it in siw_init_cpulist.
+Add the helper which can be used in some places.
 
+Acked-by: Bernard Metzler <bmt@zurich.ibm.com>
 Signed-off-by: Guoqing Jiang <guoqing.jiang@linux.dev>
 ---
- drivers/infiniband/sw/siw/siw_main.c | 30 +++++++++++++---------------
- 1 file changed, 14 insertions(+), 16 deletions(-)
+ drivers/infiniband/sw/siw/siw_cm.c | 31 ++++++++++++++----------------
+ 1 file changed, 14 insertions(+), 17 deletions(-)
 
-diff --git a/drivers/infiniband/sw/siw/siw_main.c b/drivers/infiniband/sw/siw/siw_main.c
-index 1ab62982df74..61ad8ca3d1a2 100644
---- a/drivers/infiniband/sw/siw/siw_main.c
-+++ b/drivers/infiniband/sw/siw/siw_main.c
-@@ -109,6 +109,17 @@ static struct {
- 	int num_nodes;
- } siw_cpu_info;
- 
-+static void siw_destroy_cpulist(int number)
-+{
-+	int i = 0;
-+
-+	while (i < number)
-+		kfree(siw_cpu_info.tx_valid_cpus[i++]);
-+
-+	kfree(siw_cpu_info.tx_valid_cpus);
-+	siw_cpu_info.tx_valid_cpus = NULL;
-+}
-+
- static int siw_init_cpulist(void)
- {
- 	int i, num_nodes = nr_node_ids;
-@@ -138,24 +149,11 @@ static int siw_init_cpulist(void)
- 
- out_err:
- 	siw_cpu_info.num_nodes = 0;
--	while (--i >= 0)
--		kfree(siw_cpu_info.tx_valid_cpus[i]);
--	kfree(siw_cpu_info.tx_valid_cpus);
--	siw_cpu_info.tx_valid_cpus = NULL;
-+	siw_destroy_cpulist(i);
- 
- 	return -ENOMEM;
+diff --git a/drivers/infiniband/sw/siw/siw_cm.c b/drivers/infiniband/sw/siw/siw_cm.c
+index c8a9118677d7..2f338bb3a24c 100644
+--- a/drivers/infiniband/sw/siw/siw_cm.c
++++ b/drivers/infiniband/sw/siw/siw_cm.c
+@@ -444,6 +444,12 @@ void siw_cep_put(struct siw_cep *cep)
+ 	kref_put(&cep->ref, __siw_cep_dealloc);
  }
  
--static void siw_destroy_cpulist(void)
--{
--	int i = 0;
--
--	while (i < siw_cpu_info.num_nodes)
--		kfree(siw_cpu_info.tx_valid_cpus[i++]);
--
--	kfree(siw_cpu_info.tx_valid_cpus);
--}
--
- /*
-  * Choose CPU with least number of active QP's from NUMA node of
-  * TX interface.
-@@ -558,7 +556,7 @@ static __init int siw_init_module(void)
- 	pr_info("SoftIWARP attach failed. Error: %d\n", rv);
++static void siw_cep_set_free_and_put(struct siw_cep *cep)
++{
++	siw_cep_set_free(cep);
++	siw_cep_put(cep);
++}
++
+ void siw_cep_get(struct siw_cep *cep)
+ {
+ 	kref_get(&cep->ref);
+@@ -1506,9 +1512,7 @@ int siw_connect(struct iw_cm_id *id, struct iw_cm_conn_param *params)
  
- 	siw_cm_exit();
--	siw_destroy_cpulist();
-+	siw_destroy_cpulist(siw_cpu_info.num_nodes);
+ 		cep->state = SIW_EPSTATE_CLOSED;
+ 
+-		siw_cep_set_free(cep);
+-
+-		siw_cep_put(cep);
++		siw_cep_set_free_and_put(cep);
+ 
+ 	} else if (s) {
+ 		sock_release(s);
+@@ -1556,16 +1560,14 @@ int siw_accept(struct iw_cm_id *id, struct iw_cm_conn_param *params)
+ 	if (cep->state != SIW_EPSTATE_RECVD_MPAREQ) {
+ 		siw_dbg_cep(cep, "out of state\n");
+ 
+-		siw_cep_set_free(cep);
+-		siw_cep_put(cep);
++		siw_cep_set_free_and_put(cep);
+ 
+ 		return -ECONNRESET;
+ 	}
+ 	qp = siw_qp_id2obj(sdev, params->qpn);
+ 	if (!qp) {
+ 		WARN(1, "[QP %d] does not exist\n", params->qpn);
+-		siw_cep_set_free(cep);
+-		siw_cep_put(cep);
++		siw_cep_set_free_and_put(cep);
+ 
+ 		return -EINVAL;
+ 	}
+@@ -1711,8 +1713,7 @@ int siw_accept(struct iw_cm_id *id, struct iw_cm_conn_param *params)
+ 	cep->qp = NULL;
+ 	siw_qp_put(qp);
+ 
+-	siw_cep_set_free(cep);
+-	siw_cep_put(cep);
++	siw_cep_set_free_and_put(cep);
  
  	return rv;
  }
-@@ -573,7 +571,7 @@ static void __exit siw_exit_module(void)
+@@ -1735,8 +1736,7 @@ int siw_reject(struct iw_cm_id *id, const void *pdata, u8 pd_len)
+ 	if (cep->state != SIW_EPSTATE_RECVD_MPAREQ) {
+ 		siw_dbg_cep(cep, "out of state\n");
  
- 	siw_cm_exit();
+-		siw_cep_set_free(cep);
+-		siw_cep_put(cep); /* put last reference */
++		siw_cep_set_free_and_put(cep); /* put last reference */
  
--	siw_destroy_cpulist();
-+	siw_destroy_cpulist(siw_cpu_info.num_nodes);
+ 		return -ECONNRESET;
+ 	}
+@@ -1753,8 +1753,7 @@ int siw_reject(struct iw_cm_id *id, const void *pdata, u8 pd_len)
  
- 	if (siw_crypto_shash)
- 		crypto_free_shash(siw_crypto_shash);
+ 	cep->state = SIW_EPSTATE_CLOSED;
+ 
+-	siw_cep_set_free(cep);
+-	siw_cep_put(cep);
++	siw_cep_set_free_and_put(cep);
+ 
+ 	return 0;
+ }
+@@ -1889,8 +1888,7 @@ int siw_create_listen(struct iw_cm_id *id, int backlog)
+ 		siw_socket_disassoc(s);
+ 		cep->state = SIW_EPSTATE_CLOSED;
+ 
+-		siw_cep_set_free(cep);
+-		siw_cep_put(cep);
++		siw_cep_set_free_and_put(cep);
+ 	}
+ 	sock_release(s);
+ 
+@@ -1924,8 +1922,7 @@ static void siw_drop_listeners(struct iw_cm_id *id)
+ 			cep->sock = NULL;
+ 		}
+ 		cep->state = SIW_EPSTATE_CLOSED;
+-		siw_cep_set_free(cep);
+-		siw_cep_put(cep);
++		siw_cep_set_free_and_put(cep);
+ 	}
+ }
+ 
 -- 
 2.35.3
 
