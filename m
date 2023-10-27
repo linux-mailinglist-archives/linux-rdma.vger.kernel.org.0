@@ -2,50 +2,52 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B56E7DA34E
-	for <lists+linux-rdma@lfdr.de>; Sat, 28 Oct 2023 00:20:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 401497DA3A6
+	for <lists+linux-rdma@lfdr.de>; Sat, 28 Oct 2023 00:40:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232520AbjJ0WU3 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 27 Oct 2023 18:20:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55830 "EHLO
+        id S232827AbjJ0Wkp (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 27 Oct 2023 18:40:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49978 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229712AbjJ0WU2 (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 27 Oct 2023 18:20:28 -0400
+        with ESMTP id S230451AbjJ0Wko (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 27 Oct 2023 18:40:44 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 25A0F1B6
-        for <linux-rdma@vger.kernel.org>; Fri, 27 Oct 2023 15:20:25 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 93CB6C433B6;
-        Fri, 27 Oct 2023 22:20:24 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D9C2D4A;
+        Fri, 27 Oct 2023 15:40:42 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 08947C433C8;
+        Fri, 27 Oct 2023 22:40:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1698445224;
-        bh=zvXd7pFUQNTRC+R6e2nxdu7t0YyF3Z07Sc/sSGBOShU=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=kkVWsRAYSuXyrl7WTxA/7ACDOSjlbmlf9Q+OXfY/TgClg0s21vNDqPaQ0zuACrDv8
-         xEuGwij3sWFDzr2tpiF9xbtBHZx/KxLM0VnjeMhZdfEOZkglYXzFMCLUCMe2wbejRi
-         vgNl+Jk2iAB6kYDymOZ+7O416iXHfeD503RvjL4a9qzdut3tz1h4D2RxT425u4hDRm
-         ISxbOwb8iCOB9ivpwij+CdhQwKjpKfs0syQnymOEkWdnAzdYL9zWcbqos1NaHt07si
-         p+yPWf2uFmJMN/mptryxvbcsjauKPVOCOca8Yzbkvj8xFwdegQ/Dbs8rNDR8yrh+r/
-         zL4XYxI4f1Vdg==
-From:   Saeed Mahameed <saeed@kernel.org>
-To:     "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Eric Dumazet <edumazet@google.com>
-Cc:     Saeed Mahameed <saeedm@nvidia.com>, netdev@vger.kernel.org,
-        Tariq Toukan <tariqt@nvidia.com>,
-        Kees Cook <keescook@chromium.org>,
-        Leon Romanovsky <leon@kernel.org>, linux-rdma@vger.kernel.org,
-        Justin Stitt <justinstitt@google.com>,
-        "Gustavo A . R . Silva" <gustavoars@kernel.org>,
-        Leon Romanovsky <leonro@nvidia.com>
-Subject: [net-next 09/11] net/mlx5: Annotate struct mlx5_flow_handle with __counted_by
-Date:   Fri, 27 Oct 2023 15:20:04 -0700
-Message-ID: <20231027222006.115999-10-saeed@kernel.org>
-X-Mailer: git-send-email 2.41.0
-In-Reply-To: <20231027222006.115999-1-saeed@kernel.org>
-References: <20231027222006.115999-1-saeed@kernel.org>
+        s=k20201202; t=1698446441;
+        bh=2rCIRtKFM+3RMPf0ZVAQKOeUDSTXWIOHQEyehpzPDsk=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=IzrjaEBEkG0Xr84XrZyxlM92yU5kvrfPjNlirqcNGfPwVB8TrAG9V8DgOvpXBR57R
+         UDRhz4p0tOe9MTFTUoRPkTnzuOnNWCDJtWj2+6RKOz1LLf9Pt0DDDv/q839q+9rBnd
+         eSTMvp7fDmb0SVCmVQwSfMU9w/PHq7sN0pt65bBHiK798Wf8ybEHMuUdwucNsxScV3
+         kjBX7BgZCqR6q88chkGsLqhFV73/SMLfy/i4HgufpkQISoCPJUPgKIBUVm7uqgkle4
+         zGMg7cpLZwmR1hNJNpMa8pGDVMdYanqAS/YLtfBoOlkU1LZhjLgoNx/ulLsaOekk5G
+         XQv6mPx1pfWUg==
+Date:   Fri, 27 Oct 2023 15:40:40 -0700
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Haiyang Zhang <haiyangz@microsoft.com>
+Cc:     linux-hyperv@vger.kernel.org, netdev@vger.kernel.org,
+        decui@microsoft.com, stephen@networkplumber.org, kys@microsoft.com,
+        paulros@microsoft.com, olaf@aepfle.de, vkuznets@redhat.com,
+        davem@davemloft.net, wei.liu@kernel.org, edumazet@google.com,
+        pabeni@redhat.com, leon@kernel.org, longli@microsoft.com,
+        ssengar@linux.microsoft.com, linux-rdma@vger.kernel.org,
+        daniel@iogearbox.net, john.fastabend@gmail.com,
+        bpf@vger.kernel.org, ast@kernel.org, sharmaajay@microsoft.com,
+        hawk@kernel.org, tglx@linutronix.de,
+        shradhagupta@linux.microsoft.com, linux-kernel@vger.kernel.org,
+        Konstantin Taranov <kotaranov@microsoft.com>
+Subject: Re: [PATCH net-next] Use xdp_set_features_flag instead of direct
+ assignment
+Message-ID: <20231027154040.58e5b09d@kernel.org>
+In-Reply-To: <1698430011-21562-1-git-send-email-haiyangz@microsoft.com>
+References: <1698430011-21562-1-git-send-email-haiyangz@microsoft.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
@@ -55,47 +57,15 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Kees Cook <keescook@chromium.org>
+On Fri, 27 Oct 2023 11:06:51 -0700 Haiyang Zhang wrote:
+> From: Konstantin Taranov <kotaranov@microsoft.com>
+> 
+> This patch uses a helper function for assignment of xdp_features.
+> This change simplifies backports.
 
-Prepare for the coming implementation by GCC and Clang of the __counted_by
-attribute. Flexible array members annotated with __counted_by can have
-their accesses bounds-checked at run-time via CONFIG_UBSAN_BOUNDS (for
-array indexing) and CONFIG_FORTIFY_SOURCE (for strcpy/memcpy-family
-functions).
+Generally making backports is not a strong enough reason to change
+upstream code, but using the helper seems like a good idea.
 
-As found with Coccinelle[1], add __counted_by for struct mlx5_flow_handle.
-
-Cc: Saeed Mahameed <saeedm@nvidia.com>
-Cc: Leon Romanovsky <leon@kernel.org>
-Cc: "David S. Miller" <davem@davemloft.net>
-Cc: Eric Dumazet <edumazet@google.com>
-Cc: Jakub Kicinski <kuba@kernel.org>
-Cc: Paolo Abeni <pabeni@redhat.com>
-Cc: netdev@vger.kernel.org
-Cc: linux-rdma@vger.kernel.org
-Link: https://github.com/kees/kernel-tools/blob/trunk/coccinelle/examples/counted_by.cocci [1]
-Signed-off-by: Kees Cook <keescook@chromium.org>
-Reviewed-by: Justin Stitt <justinstitt@google.com>
-Reviewed-by: Gustavo A. R. Silva <gustavoars@kernel.org>
-Reviewed-by: Leon Romanovsky <leonro@nvidia.com>
-Signed-off-by: Saeed Mahameed <saeedm@nvidia.com>
----
- drivers/net/ethernet/mellanox/mlx5/core/fs_core.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/fs_core.h b/drivers/net/ethernet/mellanox/mlx5/core/fs_core.h
-index 4aed1768b85f..78eb6b7097e1 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/fs_core.h
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/fs_core.h
-@@ -181,7 +181,7 @@ struct mlx5_flow_rule {
- 
- struct mlx5_flow_handle {
- 	int num_rules;
--	struct mlx5_flow_rule *rule[];
-+	struct mlx5_flow_rule *rule[] __counted_by(num_rules);
- };
- 
- /* Type of children is mlx5_flow_group */
+I touched up the white space and title when applying, thanks!
 -- 
-2.41.0
-
+pw-bot: applied
