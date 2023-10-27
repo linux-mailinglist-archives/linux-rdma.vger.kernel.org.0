@@ -2,122 +2,97 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B7B37D8DB0
-	for <lists+linux-rdma@lfdr.de>; Fri, 27 Oct 2023 06:02:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 007C07D8E3E
+	for <lists+linux-rdma@lfdr.de>; Fri, 27 Oct 2023 07:42:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229501AbjJ0ECF (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 27 Oct 2023 00:02:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54144 "EHLO
+        id S232148AbjJ0FmW (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 27 Oct 2023 01:42:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34334 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229644AbjJ0ECE (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 27 Oct 2023 00:02:04 -0400
-Received: from out-188.mta1.migadu.com (out-188.mta1.migadu.com [IPv6:2001:41d0:203:375::bc])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 156231B1
-        for <linux-rdma@vger.kernel.org>; Thu, 26 Oct 2023 21:02:01 -0700 (PDT)
-Message-ID: <2330d7dc-d17d-45d5-a162-f8f95c24c051@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1698379319;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=KmZIlIgeBgTMR/LylELOvOh63Y9R9P3fD5Vn3rJ9tKo=;
-        b=KMRAXuUwb5Og+yQ5ou2j9NoYstrsJEAgWX68f5gjcNTXTz+Yo+VKav5XlckR9f6BFaODGq
-        UdYvAikatwFacHD7pyIhzeR2nC6tYqceUXYX65M0E7MK1QYUKKTm9iqcNtxGY11NqrV1GR
-        nTBUsHdyqACgO2oKHXVBh8bgA2RLUWw=
-Date:   Fri, 27 Oct 2023 12:01:47 +0800
+        with ESMTP id S229590AbjJ0FmV (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 27 Oct 2023 01:42:21 -0400
+Received: from esa1.hc1455-7.c3s2.iphmx.com (esa1.hc1455-7.c3s2.iphmx.com [207.54.90.47])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8FAAC1A7;
+        Thu, 26 Oct 2023 22:42:19 -0700 (PDT)
+X-IronPort-AV: E=McAfee;i="6600,9927,10875"; a="137517268"
+X-IronPort-AV: E=Sophos;i="6.03,255,1694703600"; 
+   d="scan'208";a="137517268"
+Received: from unknown (HELO yto-r2.gw.nic.fujitsu.com) ([218.44.52.218])
+  by esa1.hc1455-7.c3s2.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Oct 2023 14:42:11 +0900
+Received: from yto-m4.gw.nic.fujitsu.com (yto-nat-yto-m4.gw.nic.fujitsu.com [192.168.83.67])
+        by yto-r2.gw.nic.fujitsu.com (Postfix) with ESMTP id 7D2C1D6186;
+        Fri, 27 Oct 2023 14:42:08 +0900 (JST)
+Received: from kws-ab3.gw.nic.fujitsu.com (kws-ab3.gw.nic.fujitsu.com [192.51.206.21])
+        by yto-m4.gw.nic.fujitsu.com (Postfix) with ESMTP id AF8D5D3F3B;
+        Fri, 27 Oct 2023 14:42:07 +0900 (JST)
+Received: from edo.cn.fujitsu.com (edo.cn.fujitsu.com [10.167.33.5])
+        by kws-ab3.gw.nic.fujitsu.com (Postfix) with ESMTP id 43BD72007471E;
+        Fri, 27 Oct 2023 14:42:07 +0900 (JST)
+Received: from FNSTPC.g08.fujitsu.local (unknown [10.167.226.45])
+        by edo.cn.fujitsu.com (Postfix) with ESMTP id 682921A0070;
+        Fri, 27 Oct 2023 13:42:06 +0800 (CST)
+From:   Li Zhijian <lizhijian@fujitsu.com>
+To:     zyjzyj2000@gmail.com, jgg@ziepe.ca, leon@kernel.org,
+        linux-rdma@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, rpearsonhpe@gmail.com,
+        matsuda-daisuke@fujitsu.com, bvanassche@acm.org,
+        Li Zhijian <lizhijian@fujitsu.com>
+Subject: [PATCH RFC 1/2] RDMA/rxe: don't allow registering !PAGE_SIZE mr
+Date:   Fri, 27 Oct 2023 13:41:53 +0800
+Message-ID: <20231027054154.2935054-1-lizhijian@fujitsu.com>
+X-Mailer: git-send-email 2.41.0
 MIME-Version: 1.0
-Subject: Re: [PATCH 1/1] RDMA/rxe: Fix blktests srp lead kernel panic with 64k
- page size
-To:     Jason Gunthorpe <jgg@ziepe.ca>
-Cc:     "Zhijian Li (Fujitsu)" <lizhijian@fujitsu.com>,
-        Yi Zhang <yi.zhang@redhat.com>,
-        "Daisuke Matsuda (Fujitsu)" <matsuda-daisuke@fujitsu.com>,
-        Zhu Yanjun <yanjun.zhu@intel.com>,
-        "leon@kernel.org" <leon@kernel.org>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        "zyjzyj2000@gmail.com" <zyjzyj2000@gmail.com>,
-        Bart Van Assche <bvanassche@acm.org>
-References: <OS3PR01MB98651C7454C46841B8A78F11E5D2A@OS3PR01MB9865.jpnprd01.prod.outlook.com>
- <a6e4efa6-0623-4afa-9b57-969aaf346081@fujitsu.com>
- <20231020140139.GF691768@ziepe.ca>
- <6c57cf0d-c7a7-4aac-9eb2-d8bb1d832232@fujitsu.com>
- <CAHj4cs86fFi+1LMMAzjcdGg1g1gbQwy6QgksC0kYVmNgghLV_w@mail.gmail.com>
- <1ffaeaa4-4ac2-4531-8e0c-586e13c14c97@fujitsu.com>
- <366da960-6036-49c5-ad47-3ae3f4e55452@fujitsu.com>
- <8f705223-6fde-4b29-880b-570349f40db8@fujitsu.com>
- <20231026114221.GT691768@ziepe.ca>
- <2374eb54-6a7e-4a56-b7e9-3aa5c9048fa1@linux.dev>
- <20231026232327.GZ691768@ziepe.ca>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From:   Zhu Yanjun <yanjun.zhu@linux.dev>
-In-Reply-To: <20231026232327.GZ691768@ziepe.ca>
-Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+X-TM-AS-GCONF: 00
+X-TM-AS-Product-Ver: IMSS-9.1.0.1417-9.0.0.1002-27960.005
+X-TM-AS-User-Approved-Sender: Yes
+X-TMASE-Version: IMSS-9.1.0.1417-9.0.1002-27960.005
+X-TMASE-Result: 10--2.709700-10.000000
+X-TMASE-MatchedRID: 362T4rQL1OeMCPk/lvFUOp13aYUE0ivy2FA7wK9mP9dHpEd1UrzmFcyY
+        +KNsy3oNEtuR7TIdaKXplZ0MI+xAXtAy2LXTI7g3EXjPIvKd74BMkOX0UoduuZBz1ZAU7t9T5s7
+        uzWaKyAzi8zVgXoAltr8hWd4lAsFlC24oEZ6SpSmcfuxsiY4QFAusc5H1417CXea3jCa2pjxA+d
+        r4vevoQ6AYfsZo2EAGB3zb8qgE6aUTkfXrC6tp/rLvgdRTF0C9JtAM880Fc9lxfsHyeP4fXJsNE
+        GpLafrrLM/nEDLP056e+TDiyH/49wxfkLAfkNNSaAZk0sEcY14=
+X-TMASE-SNAP-Result: 1.821001.0001-0-1-22:0,33:0,34:0-0
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
+mr->page_list only encodes *page without page offset, when
+page_size != PAGE_SIZE, we cannot restore the address with a wrong
+page_offset.
 
-在 2023/10/27 7:23, Jason Gunthorpe 写道:
-> On Thu, Oct 26, 2023 at 08:59:34PM +0800, Zhu Yanjun wrote:
->> 在 2023/10/26 19:42, Jason Gunthorpe 写道:
->>> On Thu, Oct 26, 2023 at 09:05:52AM +0000, Zhijian Li (Fujitsu) wrote:
->>>> The root cause is that
->>>>
->>>> rxe:rxe_set_page() gets wrong when mr.page_size != PAGE_SIZE where it only stores the *page to xarray.
->>>> So the offset will get lost.
->>>>
->>>> For example,
->>>> store process:
->>>> page_size = 0x1000;
->>>> PAGE_SIZE = 0x10000;
->>>> va0 = 0xffff000020651000;
->>>> page_offset = 0 = va & (page_size - 1);
->>>> page = va_to_page(va);
->>>> xa_store(&mr->page_list, mr->nbuf, page, GFP_KERNEL);
->>>>
->>>> load_process:
->>>> page = xa_load(&mr->page_list, index);
->>>> page_va = kmap_local_page(page) --> it must be a PAGE_SIZE align value, assume it as 0xffff000020650000
->>>> va1 = page_va + page_offset = 0xffff000020650000 + 0 = 0xffff000020650000;
->>>>
->>>> Obviously, *va0 != va1*, page_offset get lost.
->>>>
->>>>
->>>> How to fix:
->>>> - revert 325a7eb85199 ("RDMA/rxe: Cleanup page variables in rxe_mr.c")
->>>> - don't allow ulp registering mr.page_size != PAGE_SIZE ?
->>> Lets do the second one please. Most devices only support PAGE_SIZE anyhow.
->> Normally page_size is PAGE_SIZE or the size of the whole compound page (in
->> the latest kernel version, it is the size of folio). When compound page or
->> folio is taken into account, the page_size is not equal to
->> PAGE_SIZE.
-> folios are always multiples of PAGE_SIZE. rxe splits everything into
-> PAGE_SIZE units in the xarray.
->
->> If the ULP uses the compound page or folio, the similar problem will occur
->> again.
-> No, it won't. We never store folios in the xarray.
+Note that this patch will break some ULPs that try to register 4K
+MR when PAGE_SIZE is not 4K.
+SRP and nvme over RXE is known to be impacted.
 
-Sure.
+Signed-off-by: Li Zhijian <lizhijian@fujitsu.com>
+---
+ drivers/infiniband/sw/rxe/rxe_mr.c | 6 ++++++
+ 1 file changed, 6 insertions(+)
 
-I mean, in ULP, if folio is used, the page size is set to multiple 
-PAGE_SIZE, but in RXE, the page size is set to PAGE_SIZE.
+diff --git a/drivers/infiniband/sw/rxe/rxe_mr.c b/drivers/infiniband/sw/rxe/rxe_mr.c
+index f54042e9aeb2..61a136ea1d91 100644
+--- a/drivers/infiniband/sw/rxe/rxe_mr.c
++++ b/drivers/infiniband/sw/rxe/rxe_mr.c
+@@ -234,6 +234,12 @@ int rxe_map_mr_sg(struct ib_mr *ibmr, struct scatterlist *sgl,
+ 	struct rxe_mr *mr = to_rmr(ibmr);
+ 	unsigned int page_size = mr_page_size(mr);
+ 
++	if (page_size != PAGE_SIZE) {
++		rxe_info_mr(mr, "Unsupported MR with page_size %u, expect %lu\n",
++			   page_size, PAGE_SIZE);
++		return -EOPNOTSUPP;
++	}
++
+ 	mr->nbuf = 0;
+ 	mr->page_shift = ilog2(page_size);
+ 	mr->page_mask = ~((u64)page_size - 1);
+-- 
+2.41.0
 
-So the page size in ULP is different with the page size in RXE.
-
-I am not sure whether this similar problem still occur or not.
-
-I hope this problem will not occur even with folio.
-
-Zhu Yanjun
-
->
-> Jason
