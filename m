@@ -2,35 +2,35 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DADDE7D99B6
-	for <lists+linux-rdma@lfdr.de>; Fri, 27 Oct 2023 15:27:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A0C8F7D99B7
+	for <lists+linux-rdma@lfdr.de>; Fri, 27 Oct 2023 15:27:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345918AbjJ0N1J (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 27 Oct 2023 09:27:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39074 "EHLO
+        id S1345882AbjJ0N1K (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 27 Oct 2023 09:27:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39060 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345882AbjJ0N1I (ORCPT
+        with ESMTP id S1345916AbjJ0N1I (ORCPT
         <rfc822;linux-rdma@vger.kernel.org>); Fri, 27 Oct 2023 09:27:08 -0400
-Received: from out-177.mta0.migadu.com (out-177.mta0.migadu.com [91.218.175.177])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 21D36D6
+Received: from out-189.mta0.migadu.com (out-189.mta0.migadu.com [91.218.175.189])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1BCC7C9
         for <linux-rdma@vger.kernel.org>; Fri, 27 Oct 2023 06:27:06 -0700 (PDT)
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1698413222;
+        t=1698413224;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=P92n84d/ePW97KQqbG+s+E6bBBjLQYBpPhf0+b8dy4w=;
-        b=rkYorX3OR6kq52jd3kgnDOEpr+XdKK75lhF8jzXKf4AP8Uh6RFnv6JA7/IMY2iZzWSGGVp
-        n48EazwLsKMudyTLRdlMYAm4WMJQHmIXRhostvTFaH09g5gupIJ2TOrPMDlNSQIPXQmSJI
-        kpgXbN+Xydbe11vhosyRfvD/6uPvDr4=
+        bh=lW6xKA7lk8LPvUuS36L5YpE9vbweRiC7xaznmVeTsCs=;
+        b=lGpKxG61zZtzXqjYQAQgi13Xr6PBcwl8KYpqSe9iRpC6fMqISWMIczlpT7H91lQcEHpkEM
+        xgeoaYC3EPLFjpBWSIC0znAeepAT8xV93RIycDOIvLdKilv6/pHWrb5pxhE9OyJ6stEdxw
+        tRLNgEnzq6JlMqd95KFHvFnQYTeNf8c=
 From:   Guoqing Jiang <guoqing.jiang@linux.dev>
 To:     bmt@zurich.ibm.com, jgg@ziepe.ca, leon@kernel.org
 Cc:     linux-rdma@vger.kernel.org
-Subject: [PATCH V4 01/18] RDMA/siw: Introduce siw_get_page
-Date:   Fri, 27 Oct 2023 21:26:27 +0800
-Message-Id: <20231027132644.29347-2-guoqing.jiang@linux.dev>
+Subject: [PATCH V4 02/18] RDMA/siw: Introduce siw_update_skb_rcvd
+Date:   Fri, 27 Oct 2023 21:26:28 +0800
+Message-Id: <20231027132644.29347-3-guoqing.jiang@linux.dev>
 In-Reply-To: <20231027132644.29347-1-guoqing.jiang@linux.dev>
 References: <20231027132644.29347-1-guoqing.jiang@linux.dev>
 MIME-Version: 1.0
@@ -45,76 +45,93 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Add the wrapper function to get either pbl page or umem page.
+There are some places share the same logic, factor a common
+helper for it.
 
 Signed-off-by: Guoqing Jiang <guoqing.jiang@linux.dev>
 ---
- drivers/infiniband/sw/siw/siw_qp_tx.c | 31 +++++++++++----------------
+ drivers/infiniband/sw/siw/siw_qp_rx.c | 31 +++++++++++----------------
  1 file changed, 12 insertions(+), 19 deletions(-)
 
-diff --git a/drivers/infiniband/sw/siw/siw_qp_tx.c b/drivers/infiniband/sw/siw/siw_qp_tx.c
-index b2c06100cf01..6a24e08356e9 100644
---- a/drivers/infiniband/sw/siw/siw_qp_tx.c
-+++ b/drivers/infiniband/sw/siw/siw_qp_tx.c
-@@ -34,6 +34,15 @@ static struct page *siw_get_pblpage(struct siw_mem *mem, u64 addr, int *idx)
- 	return NULL;
+diff --git a/drivers/infiniband/sw/siw/siw_qp_rx.c b/drivers/infiniband/sw/siw/siw_qp_rx.c
+index 33e0fdb362ff..10805a7d0487 100644
+--- a/drivers/infiniband/sw/siw/siw_qp_rx.c
++++ b/drivers/infiniband/sw/siw/siw_qp_rx.c
+@@ -881,6 +881,13 @@ int siw_proc_rresp(struct siw_qp *qp)
+ 	return rv;
  }
  
-+static struct page *siw_get_page(struct siw_mem *mem, struct siw_sge *sge,
-+				 unsigned long offset, int *pbl_idx)
++static void siw_update_skb_rcvd(struct siw_rx_stream *srx, u16 length)
 +{
-+	if (!mem->is_pbl)
-+		return siw_get_upage(mem->umem, sge->laddr + offset);
-+	else
-+		return siw_get_pblpage(mem, sge->laddr + offset, pbl_idx);
++	srx->skb_offset += length;
++	srx->skb_new -= length;
++	srx->skb_copied += length;
 +}
 +
- /*
-  * Copy short payload at provided destination payload address
-  */
-@@ -67,11 +76,7 @@ static int siw_try_1seg(struct siw_iwarp_tx *c_tx, void *paddr)
- 			char *buffer;
- 			int pbl_idx = 0;
+ int siw_proc_terminate(struct siw_qp *qp)
+ {
+ 	struct siw_rx_stream *srx = &qp->rx_stream;
+@@ -925,9 +932,7 @@ int siw_proc_terminate(struct siw_qp *qp)
+ 		goto out;
  
--			if (!mem->is_pbl)
--				p = siw_get_upage(mem->umem, sge->laddr);
--			else
--				p = siw_get_pblpage(mem, sge->laddr, &pbl_idx);
+ 	infop += to_copy;
+-	srx->skb_offset += to_copy;
+-	srx->skb_new -= to_copy;
+-	srx->skb_copied += to_copy;
++	siw_update_skb_rcvd(srx, to_copy);
+ 	srx->fpdu_part_rcvd += to_copy;
+ 	srx->fpdu_part_rem -= to_copy;
+ 
+@@ -949,9 +954,7 @@ int siw_proc_terminate(struct siw_qp *qp)
+ 			   term->flag_m ? "valid" : "invalid");
+ 	}
+ out:
+-	srx->skb_new -= to_copy;
+-	srx->skb_offset += to_copy;
+-	srx->skb_copied += to_copy;
++	siw_update_skb_rcvd(srx, to_copy);
+ 	srx->fpdu_part_rcvd += to_copy;
+ 	srx->fpdu_part_rem -= to_copy;
+ 
+@@ -970,9 +973,7 @@ static int siw_get_trailer(struct siw_qp *qp, struct siw_rx_stream *srx)
+ 
+ 	skb_copy_bits(skb, srx->skb_offset, tbuf, avail);
+ 
+-	srx->skb_new -= avail;
+-	srx->skb_offset += avail;
+-	srx->skb_copied += avail;
++	siw_update_skb_rcvd(srx, avail);
+ 	srx->fpdu_part_rem -= avail;
+ 
+ 	if (srx->fpdu_part_rem)
+@@ -1023,12 +1024,8 @@ static int siw_get_hdr(struct siw_rx_stream *srx)
+ 		skb_copy_bits(skb, srx->skb_offset,
+ 			      (char *)c_hdr + srx->fpdu_part_rcvd, bytes);
+ 
++		siw_update_skb_rcvd(srx, bytes);
+ 		srx->fpdu_part_rcvd += bytes;
 -
-+			p = siw_get_page(mem, sge, 0, &pbl_idx);
- 			if (unlikely(!p))
- 				return -EFAULT;
+-		srx->skb_new -= bytes;
+-		srx->skb_offset += bytes;
+-		srx->skb_copied += bytes;
+-
+ 		if (srx->fpdu_part_rcvd < MIN_DDP_HDR)
+ 			return -EAGAIN;
  
-@@ -85,13 +90,7 @@ static int siw_try_1seg(struct siw_iwarp_tx *c_tx, void *paddr)
- 				memcpy(paddr, buffer + off, part);
- 				kunmap_local(buffer);
+@@ -1091,12 +1088,8 @@ static int siw_get_hdr(struct siw_rx_stream *srx)
+ 		skb_copy_bits(skb, srx->skb_offset,
+ 			      (char *)c_hdr + srx->fpdu_part_rcvd, bytes);
  
--				if (!mem->is_pbl)
--					p = siw_get_upage(mem->umem,
--							  sge->laddr + part);
--				else
--					p = siw_get_pblpage(mem,
--							    sge->laddr + part,
--							    &pbl_idx);
-+				p = siw_get_page(mem, sge, part, &pbl_idx);
- 				if (unlikely(!p))
- 					return -EFAULT;
- 
-@@ -502,13 +501,7 @@ static int siw_tx_hdt(struct siw_iwarp_tx *c_tx, struct socket *s)
- 			if (!is_kva) {
- 				struct page *p;
- 
--				if (mem->is_pbl)
--					p = siw_get_pblpage(
--						mem, sge->laddr + sge_off,
--						&pbl_idx);
--				else
--					p = siw_get_upage(mem->umem,
--							  sge->laddr + sge_off);
-+				p = siw_get_page(mem, sge, sge_off, &pbl_idx);
- 				if (unlikely(!p)) {
- 					siw_unmap_pages(iov, kmap_mask, seg);
- 					wqe->processed -= c_tx->bytes_unsent;
++		siw_update_skb_rcvd(srx, bytes);
+ 		srx->fpdu_part_rcvd += bytes;
+-
+-		srx->skb_new -= bytes;
+-		srx->skb_offset += bytes;
+-		srx->skb_copied += bytes;
+-
+ 		if (srx->fpdu_part_rcvd < hdrlen)
+ 			return -EAGAIN;
+ 	}
 -- 
 2.35.3
 
