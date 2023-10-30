@@ -2,74 +2,82 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E5DF07DBA01
-	for <lists+linux-rdma@lfdr.de>; Mon, 30 Oct 2023 13:40:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 993ED7DBA04
+	for <lists+linux-rdma@lfdr.de>; Mon, 30 Oct 2023 13:42:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233288AbjJ3Mku (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 30 Oct 2023 08:40:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60560 "EHLO
+        id S233266AbjJ3MmJ (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 30 Oct 2023 08:42:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58214 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233240AbjJ3Mkp (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 30 Oct 2023 08:40:45 -0400
-Received: from mail-qk1-x729.google.com (mail-qk1-x729.google.com [IPv6:2607:f8b0:4864:20::729])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EBF3BB7
-        for <linux-rdma@vger.kernel.org>; Mon, 30 Oct 2023 05:40:42 -0700 (PDT)
-Received: by mail-qk1-x729.google.com with SMTP id af79cd13be357-778925998cbso320111285a.0
-        for <linux-rdma@vger.kernel.org>; Mon, 30 Oct 2023 05:40:42 -0700 (PDT)
+        with ESMTP id S233212AbjJ3MmH (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 30 Oct 2023 08:42:07 -0400
+Received: from mail-qv1-xf30.google.com (mail-qv1-xf30.google.com [IPv6:2607:f8b0:4864:20::f30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A960DB7
+        for <linux-rdma@vger.kernel.org>; Mon, 30 Oct 2023 05:42:02 -0700 (PDT)
+Received: by mail-qv1-xf30.google.com with SMTP id 6a1803df08f44-672f5fb0b39so4614856d6.2
+        for <linux-rdma@vger.kernel.org>; Mon, 30 Oct 2023 05:42:02 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google; t=1698669642; x=1699274442; darn=vger.kernel.org;
+        d=ziepe.ca; s=google; t=1698669722; x=1699274522; darn=vger.kernel.org;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=molrN2bMHZh5oor/TkmRjLj+0zRtggCfyjqWbE6KD7Y=;
-        b=TWUljpkKBRQDSdiZrDj91bhZlj0iyh5unbJp/nTN5ubk02zM5gf3U6QkOMxVqaBHDG
-         0wtbrwENeLw3wozE/ODscMrpnH8VDwkcRMSY7LFgAa9G3eCxzHKKJExJH8Yc5rkQO4lt
-         9CGsaFw+ej/fjuz/+Om2eWPux0h1dzkSySdtHMSXECVIRk/uvi8dBgxt3Y1rTFQ7WVCs
-         0q729rVn7BqyzhERyjJypAA7+OMvobRJKJbW6HGF3KHGt8ViND6tr/EsZTLwnICFjaov
-         ShBiryzG/SMsBVCk2x7TAtrDxTWmpqRnaIW8mk48MuPdzBssExWrFf6MKVuLFhgGd43n
-         Niiw==
+        bh=DaVImc0dkBy3Z9VTY5Zc/APOkE9bH1O0oC3xdyopltQ=;
+        b=b2VjK9lYfopeqoSMxqnpGF1Z7qPRaXlTZt4hG+CzcTOrrSAtsnjeeF79xLDAVhtQ0m
+         ymnruuu84qnPeBvB8KSb6Bo4VOLsy1dmN9iTEMeWOCB3ddSMku3/QNP8wIi3YKcW8HKs
+         XpnOqGg+DwRjfRwMfK5BfKxiR9GdlLS/SAiXGrZOPYldPNzB+Sft/YMuG5l+1CAft3dN
+         xsc8TTXKMArFYX5ROH2dOJwi2iM5EJZymzm4LHfxKjq0sQchIUO6JsFrZxyANbBWWPLf
+         R5jqgBLVPKFQVUmYcKEsKQbOYkNDiWkFVUSibu3U9p1TY36kLEMfcT54+MUHn3+YLC5Z
+         +NUQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698669642; x=1699274442;
+        d=1e100.net; s=20230601; t=1698669722; x=1699274522;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=molrN2bMHZh5oor/TkmRjLj+0zRtggCfyjqWbE6KD7Y=;
-        b=T+86PjBz+Jb02CYlKBHRA11cHPhaxgf+R9YXmoNhyzCJbgZXbOd22CBA+OtYbpPwK9
-         FQSykyeIPvWSaBcxGgUG0B5ddMp9TCE70KCgAJpPQSXBEFU2Fbh7Ahf9jBlw1RV5a3YY
-         QAL73EoaMBseBWWVewrWlwPl0X0wFl111Rre2z9Ik5I/yATWfCdhe5K/1yKHuutPiMXS
-         GwzY/C7A9J4DqsHBueuJARRjtrjoouxSXljyWyvhL9oL05uZ+w2h3PggVVkSpXas1dq9
-         xpHu8MZGL6wUmgGRBtUY68i+bZRRxN82OqMg8ZfMat8olD5dGXpfpvgMb6eLeEYUuSZT
-         mGoA==
-X-Gm-Message-State: AOJu0Yztn20brQMFi14HXRCxCxq4hGPTbFaaUJTQDL4PDiUKd3e6rzRP
-        ANKhmU+O1t3yU58TW38nkH42Ug==
-X-Google-Smtp-Source: AGHT+IFQiTGf+DpYZI6/KAqgrSYdCWdsolhWJXAygY+kM8KIkHic0hv7QBHipjDqmxhiqJNkm+vWyg==
-X-Received: by 2002:a05:620a:3953:b0:778:ba89:2fbd with SMTP id qs19-20020a05620a395300b00778ba892fbdmr9362026qkn.36.1698669642074;
-        Mon, 30 Oct 2023 05:40:42 -0700 (PDT)
+        bh=DaVImc0dkBy3Z9VTY5Zc/APOkE9bH1O0oC3xdyopltQ=;
+        b=ehlmmhzf1e6x5HgKBt9BwGfKsrnCULJjcd/qX0UkvbjAsNuAEdal3HOD5cwdCy2qeJ
+         8QlYnHoE3+DMImqrM0GmBz56j87krcEsx186TLeeTDIAa/MJv6Yjow8VmX1Roy+Sgobx
+         8tzmomcm5zcEz0zKyKrXUNtFG6crMoaNxHLHeQEGCGTNhC7voRkAn3DWcBuTEJI8kbEb
+         kfhHms9FNa820xPEs5n+dZ/t+wCEnwLX7ybYbs4Zps1bzvUsoUSVpPsCcRszvkhmSGL4
+         RQcErKjwak1dZRXYW1FQ/PYe/3osulfyy9Al3NVa5JKONxHuULbQjG5XYV0hGX6GmO9x
+         BVNg==
+X-Gm-Message-State: AOJu0YwNdhRtyWLeVhGiexEem4pRv9HU410ZAquFuFaugcR5BsEHIlLP
+        qYO6LVaBR6Q+Zy89Mrq99guV0g==
+X-Google-Smtp-Source: AGHT+IEOz8S23BFi1wdI4YLJqyV/rMmzVLc6eQlLZ2YijSllB3dRYQ7TQWi1PVTb30pu0Qc98Y61Sw==
+X-Received: by 2002:a0c:cd0f:0:b0:66d:6544:8eae with SMTP id b15-20020a0ccd0f000000b0066d65448eaemr10074472qvm.34.1698669721602;
+        Mon, 30 Oct 2023 05:42:01 -0700 (PDT)
 Received: from ziepe.ca (hlfxns017vw-142-68-26-201.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.68.26.201])
-        by smtp.gmail.com with ESMTPSA id a11-20020a05620a124b00b0076cbcf8ad3bsm3234305qkl.55.2023.10.30.05.40.41
+        by smtp.gmail.com with ESMTPSA id w10-20020a0562140b2a00b00656e2464719sm3390314qvj.92.2023.10.30.05.42.00
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 30 Oct 2023 05:40:41 -0700 (PDT)
+        Mon, 30 Oct 2023 05:42:01 -0700 (PDT)
 Received: from jgg by wakko with local (Exim 4.95)
         (envelope-from <jgg@ziepe.ca>)
-        id 1qxRZR-006euh-5R;
-        Mon, 30 Oct 2023 09:40:41 -0300
-Date:   Mon, 30 Oct 2023 09:40:41 -0300
+        id 1qxRai-006ev4-JC;
+        Mon, 30 Oct 2023 09:42:00 -0300
+Date:   Mon, 30 Oct 2023 09:42:00 -0300
 From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     "Zhijian Li (Fujitsu)" <lizhijian@fujitsu.com>
-Cc:     "zyjzyj2000@gmail.com" <zyjzyj2000@gmail.com>,
-        "leon@kernel.org" <leon@kernel.org>,
+To:     Long Li <longli@microsoft.com>
+Cc:     Ajay Sharma <sharmaajay@microsoft.com>,
+        "sharmaajay@linuxonhyperv.com" <sharmaajay@linuxonhyperv.com>,
+        Leon Romanovsky <leon@kernel.org>,
+        Dexuan Cui <decui@microsoft.com>, Wei Liu <wei.liu@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
         "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "rpearsonhpe@gmail.com" <rpearsonhpe@gmail.com>,
-        "Daisuke Matsuda (Fujitsu)" <matsuda-daisuke@fujitsu.com>,
-        "bvanassche@acm.org" <bvanassche@acm.org>
-Subject: Re: [PATCH RFC 1/2] RDMA/rxe: don't allow registering !PAGE_SIZE mr
-Message-ID: <20231030124041.GE691768@ziepe.ca>
-References: <20231027054154.2935054-1-lizhijian@fujitsu.com>
- <4da48f85-a72f-4f6b-900f-fc293d63b5ae@fujitsu.com>
+        "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [EXTERNAL] Re: [Patch v7 5/5] RDMA/mana_ib: Send event to qp
+Message-ID: <20231030124200.GF691768@ziepe.ca>
+References: <1697494322-26814-1-git-send-email-sharmaajay@linuxonhyperv.com>
+ <1697494322-26814-6-git-send-email-sharmaajay@linuxonhyperv.com>
+ <20231023182332.GL691768@ziepe.ca>
+ <MN0PR21MB36067E337A53C3BAF8B648E5D6DEA@MN0PR21MB3606.namprd21.prod.outlook.com>
+ <MN0PR21MB32641E489F378F0C5B357795CEDCA@MN0PR21MB3264.namprd21.prod.outlook.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <4da48f85-a72f-4f6b-900f-fc293d63b5ae@fujitsu.com>
+In-Reply-To: <MN0PR21MB32641E489F378F0C5B357795CEDCA@MN0PR21MB3264.namprd21.prod.outlook.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
@@ -80,39 +88,60 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Mon, Oct 30, 2023 at 07:51:41AM +0000, Zhijian Li (Fujitsu) wrote:
-> 
-> 
-> On 27/10/2023 13:41, Li Zhijian wrote:
-> > mr->page_list only encodes *page without page offset, when
-> > page_size != PAGE_SIZE, we cannot restore the address with a wrong
-> > page_offset.
+On Fri, Oct 27, 2023 at 09:35:05PM +0000, Long Li wrote:
+> > Subject: RE: [EXTERNAL] Re: [Patch v7 5/5] RDMA/mana_ib: Send event to qp
 > > 
-> > Note that this patch will break some ULPs that try to register 4K
-> > MR when PAGE_SIZE is not 4K.
-> > SRP and nvme over RXE is known to be impacted.
 > > 
-> > Signed-off-by: Li Zhijian <lizhijian@fujitsu.com>
-> > ---
-> >   drivers/infiniband/sw/rxe/rxe_mr.c | 6 ++++++
-> >   1 file changed, 6 insertions(+)
+> > > -----Original Message-----
+> > > From: Jason Gunthorpe <jgg@ziepe.ca>
+> > > Sent: Monday, October 23, 2023 11:24 AM
+> > > To: sharmaajay@linuxonhyperv.com
+> > > Cc: Long Li <longli@microsoft.com>; Leon Romanovsky <leon@kernel.org>;
+> > > Dexuan Cui <decui@microsoft.com>; Wei Liu <wei.liu@kernel.org>; David S.
+> > > Miller <davem@davemloft.net>; Eric Dumazet <edumazet@google.com>;
+> > > Jakub Kicinski <kuba@kernel.org>; Paolo Abeni <pabeni@redhat.com>;
+> > > linux- rdma@vger.kernel.org; linux-hyperv@vger.kernel.org;
+> > > netdev@vger.kernel.org; linux-kernel@vger.kernel.org; Ajay Sharma
+> > > <sharmaajay@microsoft.com>
+> > > Subject: [EXTERNAL] Re: [Patch v7 5/5] RDMA/mana_ib: Send event to qp
+> > >
+> > > On Mon, Oct 16, 2023 at 03:12:02PM -0700,
+> > sharmaajay@linuxonhyperv.com
+> > > wrote:
+> > >
+> > > > diff --git a/drivers/infiniband/hw/mana/qp.c
+> > > > b/drivers/infiniband/hw/mana/qp.c index ef3275ac92a0..19fae28985c3
+> > > > 100644
+> > > > --- a/drivers/infiniband/hw/mana/qp.c
+> > > > +++ b/drivers/infiniband/hw/mana/qp.c
+> > > > @@ -210,6 +210,8 @@ static int mana_ib_create_qp_rss(struct ib_qp
+> > > *ibqp, struct ib_pd *pd,
+> > > >  		wq->id = wq_spec.queue_index;
+> > > >  		cq->id = cq_spec.queue_index;
+> > > >
+> > > > +		xa_store(&mib_dev->rq_to_qp_lookup_table, wq->id, qp,
+> > > GFP_KERNEL);
+> > > > +
+> > >
+> > > A store with no erase?
+> > >
+> > > A load with no locking?
+> > >
+> > > This can't be right
+> > >
+> > > Jason
 > > 
-> > diff --git a/drivers/infiniband/sw/rxe/rxe_mr.c b/drivers/infiniband/sw/rxe/rxe_mr.c
-> > index f54042e9aeb2..61a136ea1d91 100644
-> > --- a/drivers/infiniband/sw/rxe/rxe_mr.c
-> > +++ b/drivers/infiniband/sw/rxe/rxe_mr.c
-> > @@ -234,6 +234,12 @@ int rxe_map_mr_sg(struct ib_mr *ibmr, struct scatterlist *sgl,
-> >   	struct rxe_mr *mr = to_rmr(ibmr);
-> >   	unsigned int page_size = mr_page_size(mr);
-> >   
-> > +	if (page_size != PAGE_SIZE) {
+> > This wq->id is assigned from the HW and is guaranteed to be unique. May be I
+> > am not following why do we need a lock here. Can you please explain ?
+> > Ajay
 > 
-> It seems this condition is too strict, it should be:
-> 	if (!IS_ALIGNED(page_size, PAGE_SIZE))
+> I think we need to check the return value of xa_store(), and call xa_erase() in mana_ib_destroy_qp().
 > 
-> So that, page_size with (N * PAGE_SIZE) can work as previously.
-> Because the offset(mr.iova & page_mask) will get lost only when !IS_ALIGNED(page_size, PAGE_SIZE)
+> wq->id is generated by the hardware. If we believe in hardware
+> always behaves in good manner, we don't need a lock.
 
-That makes sense
+It has nothing to do with how the ID is created, you need to explain
+how the missing erase can't race with any loads, in a comment above
+the unlocked xa_load.
 
 Jason
