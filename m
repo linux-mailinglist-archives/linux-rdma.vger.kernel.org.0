@@ -2,252 +2,328 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C4757DF40F
-	for <lists+linux-rdma@lfdr.de>; Thu,  2 Nov 2023 14:41:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C1157DF98C
+	for <lists+linux-rdma@lfdr.de>; Thu,  2 Nov 2023 19:06:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235129AbjKBNlO (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 2 Nov 2023 09:41:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50980 "EHLO
+        id S234266AbjKBSGs (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 2 Nov 2023 14:06:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55860 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235130AbjKBNlN (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 2 Nov 2023 09:41:13 -0400
+        with ESMTP id S232280AbjKBSGr (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 2 Nov 2023 14:06:47 -0400
 Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BDFEB13E
-        for <linux-rdma@vger.kernel.org>; Thu,  2 Nov 2023 06:41:03 -0700 (PDT)
-Received: from pps.filterd (m0353723.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3A2DeVfv016981;
-        Thu, 2 Nov 2023 13:40:46 GMT
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D311326BB
+        for <linux-rdma@vger.kernel.org>; Thu,  2 Nov 2023 11:05:41 -0700 (PDT)
+Received: from pps.filterd (m0360072.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3A2HeWva018515;
+        Thu, 2 Nov 2023 18:03:45 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
- : date : message-id : references : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=pp1;
- bh=jBO9UndAs4yqI+PdtP72/ojUID39oGxNawFQrrj6Lf0=;
- b=H1NDP8dCB7tQO6RD9jEt1Ti7nVOh5lhh1ML53v1Vn9cddIA0bFBXAv4RWi39KruzKfng
- ftRvENe2Pv+igGVQvc06pdXi7T78ImaJl2jhrtiJX4zfIOugHpG3THxt3P/FAKsnVKO6
- QazVg9pwo2jwE1IeSYBJn1p/IvIdRx6KPl090wQjBdVbC+hSwc4krAoJ4/B6SK9Z9qDU
- KYVVqVQ+bmmeLLvQN+ATWzfjU02+KsbZPhjef2hSM3N4JqszuDlo1Ar60NzwBjERmMPf
- Gmg+k+5+7wP14sxttOCF+v41uYHCuhMIZqG+nxTaHNPc+S2t2PArGNxJYFSjQYm9OscV xg== 
-Received: from nam04-mw2-obe.outbound.protection.outlook.com (mail-mw2nam04lp2169.outbound.protection.outlook.com [104.47.73.169])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3u4cuw80fs-1
+ : date : message-id : mime-version : content-transfer-encoding; s=pp1;
+ bh=StR7ad4RCKWqVJ15NypTT3yJdeJ8b4e9hMeH8/FuGKE=;
+ b=DBuEVZWo4bhhBOVQ6XY3ZnImcs1E2jGozoK2FFeIGFGTmi5czUUdFq4TrLzfaSCbPmRx
+ QlGfExIX2ODuM+c1U9FcaOUL9mN1Ho2hBA07+8ABU3SQ2hvrIfx2A4MaLDa1ux2F7lNJ
+ AtDGtyKLEVkIEcUg3syCDiiRTpQ5A+ChfjKXcKWiIs8AEFUrG0OFi3a4T9ByGhMPVvBv
+ V10sguCffOKZIMtF1Qk6wuR1b25hHP5wfy2W/ZJgTxIPLZPhhUM9DySVsLkpIqz54pO6
+ fA8FSyU7eY1dIYxzG7x91MZPrZUe5EUUbMLLoAh2nLQNJDx3WBumXIVO7fS1RAl5ld0z Tg== 
+Received: from ppma13.dal12v.mail.ibm.com (dd.9e.1632.ip4.static.sl-reverse.com [50.22.158.221])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3u4gcegvp3-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 02 Nov 2023 13:40:45 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Sotuwm7s7mDUhjn8GwpI6fl6uKkSlcsoG/V47wvlE3a+KmTvzCFXUCTEOUc77V/EAkwiZZTvNkb6Jgl5iVJqGmcxlgvrlgeiDNB6OhlNdqcTuVVgrRMV9oCrmYVh9biidzQjVnx95n0zX9/ML12XY4HCc9NFHBDul+qd/q5K1un75kbXR8aPHMKdo81FJwXn7Lvgs3es+c9PluQ55u1qS1U+N9lC49bhcxTcemMMlEtNEQuEhaGHdSKs18TjeRHyC0oJgueHQd1q8KNP7fVHHdwuYSUsYV/5CQXCfT1Digr8yjf7lZJYIrV99Key0YdHcBeWr5hgd792co7T/SbNTA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=jBO9UndAs4yqI+PdtP72/ojUID39oGxNawFQrrj6Lf0=;
- b=cqd2HuvahXuIFishfSCskKo65DDaYbaeeZexFivsJ/DeEhjOOttz5DGdH2MFQ7EUMR1/4Tu3w772JQqnjyxTfvTw1XrcVUOgyaNqAan6CiBEs30fvN28pmvw/Bal+mPQf32DKADBmfTFCMbJs4o2b8Ycg2A2kZ0JMPzKiegmzD4ipyMdRtEMtIEyRNLmYsa8HzYBfMIb+/CN3O4C8gU9ED95pjcjw3yYwTHS1imJRTwcr3uEaoon+UGLMKH6FYmH5kJwKK7dLw3e40WqZcpUzevrMeXS/e6nFlQ/su6l7mjVv31vBKGhKoqrjWtUltv8NlurEK1FQlQxEC3ylWOlIQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=zurich.ibm.com; dmarc=pass action=none
- header.from=zurich.ibm.com; dkim=pass header.d=zurich.ibm.com; arc=none
-Received: from SN7PR15MB5755.namprd15.prod.outlook.com (2603:10b6:806:349::10)
- by DM6PR15MB3797.namprd15.prod.outlook.com (2603:10b6:5:2b7::24) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6954.19; Thu, 2 Nov
- 2023 13:40:43 +0000
-Received: from SN7PR15MB5755.namprd15.prod.outlook.com
- ([fe80::878d:d9bd:7ce3:8445]) by SN7PR15MB5755.namprd15.prod.outlook.com
- ([fe80::878d:d9bd:7ce3:8445%5]) with mapi id 15.20.6933.019; Thu, 2 Nov 2023
- 13:40:43 +0000
-From:   Bernard Metzler <BMT@zurich.ibm.com>
-To:     Leon Romanovsky <leon@kernel.org>,
-        Maxim Samoylov <max7255@meta.com>,
-        Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>
-CC:     Guoqing Jiang <guoqing.jiang@linux.dev>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Christian Benvenuti <benve@cisco.com>,
-        Vadim Fedorenko <vadim.fedorenko@linux.dev>
-Subject: RE: Re: [PATCH v2] IB: rework memlock limit handling code
-Thread-Topic: Re: [PATCH v2] IB: rework memlock limit handling code
-Thread-Index: AQHaDZIsVzb/o7ftxU+QTlY8Ef0SRg==
-Date:   Thu, 2 Nov 2023 13:40:43 +0000
-Message-ID: <SN7PR15MB5755D39BAFA9A91584F1415099A6A@SN7PR15MB5755.namprd15.prod.outlook.com>
-References: <20231012082921.546114-1-max7255@meta.com>
- <20231015091959.GC25776@unreal>
- <5fcf502d-71fb-123d-f6ff-f3ffb7c3ba1a@linux.dev>
- <20231023055229.GB10551@unreal>
- <bbefb351-92a2-409f-8bda-f6b5eef8cedc@meta.com>
- <20231102123216.GF5885@unreal>
-In-Reply-To: <20231102123216.GF5885@unreal>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: SN7PR15MB5755:EE_|DM6PR15MB3797:EE_
-x-ms-office365-filtering-correlation-id: 2c687f23-23ad-46cd-30c6-08dbdba94f69
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: USEz+EBx3XRcdg+nMh1Xy6q/+5KhBj9TsuQlpu7LynaMLeADty9nFx0yI8lhyHLPmH80JErYIvkfo59sKxmtuf8KFzWacOSR2e5vjdSDEXbIMd/AUUXan/dtxwMdivZ84TTe1cF88Yo6DU7h9JHQg6aKXB9keAEo4igFC5u+wdl0TcJh+Mu/RM2hkeAor4FqP7yTizBr03zp0SHTg87R5JHUKamnXux/lgUEUiX7CYj12+ZUPcXxAjuAV/QoeNyZ5OabmLY0Obac2BrBXJISKCpeP8y1NH8mZEjSujW8MtmQlEd4L79tdTgia3SqxUuhipgHiluPcGMgVBRHsjdmf5NGwVtJuMbCLRLyTul4WK6UPmhjDWCob3GFlDQ0Vs4BOEq7Y4AShotawF2iR6RsRg9mDMr7NrAcuWSLjEldVBXWjdZBvb4brvJYUsOinMuCd7xoE6Rw0txusNjcTwQuSWNZGHA7Hdn8O2reLM39vVPlu+IlmkkGSiirAN3V3rnuFvoL73iNCb5qbRo/9eUmpyhr1hB11HA7dRp2Pm4BrUQmCrtN02ofzRhIqFLHYkoHJ5rEOIK6syzg+xrDfvcl05u4en+UoB/VLworAvGvFRUGtDzfIfFE6NH3rXUV/Tgw6v/njFxkNQmnJEVdiv7PHay689TVt20FVASGm174LPY=
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN7PR15MB5755.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(396003)(366004)(39860400002)(346002)(376002)(136003)(230173577357003)(230922051799003)(230273577357003)(1800799009)(64100799003)(186009)(451199024)(38070700009)(33656002)(55016003)(66556008)(8676002)(66476007)(8936002)(83380400001)(4326008)(64756008)(66446008)(110136005)(66946007)(5660300002)(76116006)(316002)(71200400001)(2906002)(54906003)(52536014)(41300700001)(478600001)(7696005)(6506007)(53546011)(122000001)(9686003)(86362001)(38100700002);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?utf-8?B?b29JSGJDN3c1cGl3b1hqSVpvZXBjM0FZaVlrVDNud1FxblZsUjZPSWdMMDBS?=
- =?utf-8?B?aGJON3hMaTZaZy83Rkl1SkFyZlJkdEVDSlhSUFIrU3ZEdWtnbnJlQXlpUkxv?=
- =?utf-8?B?T1JOYUlnSjdHNG9sUFZoS1J2ckM3eURNOXN5RmJkNEhocEdkK1h2OVlVK0ZV?=
- =?utf-8?B?TXpXZm4vRG1XWkxQTkcrdE1weUlhWXc3WTc2Um1remZUWXREUU5mMmEzTk8w?=
- =?utf-8?B?V05rNXZiTUc0TVZNOEpOaDFKTUZiS0s5ekFCQ3lIMkhHM3V6MFo1K01FZU8w?=
- =?utf-8?B?UDBCUmQ1TVJybUluSmNaSDZGYnlaUVoraUFUWmUzSDhEcWowNUtMZVgweWpz?=
- =?utf-8?B?dW45eGdmaDFqYXN6Zm5CWkFaaXZPdnl5R0RQK1FwUVVhTU1DTEdYWXFVNHEx?=
- =?utf-8?B?a3Bac1EvS2hvRUJUai9vQjZhWHhlc1dheERUbDE3S0lpYVZJUXgzeVRzSnA1?=
- =?utf-8?B?RTJ4Tm43UHlXdVEwdEJtaUtoaVRWcEF0ODZLMWc0UHplbTFTaXJ4ejVxNGIz?=
- =?utf-8?B?NXBJWW05dU1FbUFxZHpCQmhjdWFnWkU1VkVEZ1U2MG9oTStWWjIzMVdjNTlW?=
- =?utf-8?B?aGdkRVVNWEp5ajAvUC91REorVnpmd0VkZ2twUUNEQmMwSG5GYWZZVG5mOXha?=
- =?utf-8?B?OFZ3TGZUL3Nlc09wZUxhWFRjOW1DRGZDV2djbmVvdGhSczhrSnVPeDVmWWQy?=
- =?utf-8?B?dTlEQUJQaGxwN0tZUGFJRHFoR2pUS1JaemhJaXd2c1hxaDIxMlMwbzJkckZh?=
- =?utf-8?B?bVU1YTFWSkQ1S0pQbVk0bUxLYUdIVHFuaWJabHRrZGEwRFMway8yUGxCdFBF?=
- =?utf-8?B?WmM0L1VRb3BoTytkaU1xS2lndU1adXBRMTlUdTBQKzN0L3RxR0JkMTQyMEhl?=
- =?utf-8?B?a1NjazYwL3pKa1ZraEx3b29OdkJtZU5CREoyMmJwU3hLTGRXN25TV0ZzY0s4?=
- =?utf-8?B?c3ZPRzVsekRPcHFxdkdvajZLOHVPSit2Q1Q5dDQvQTdEdXRtVHdsUVhidGJY?=
- =?utf-8?B?VTFOZmU2M3JqUXpWVVRUSGpHeHFlamY4N1JGeTBrQU5QTjlBY1FUdFVCdjFo?=
- =?utf-8?B?OXp5K3QrY09mZDAyRXBIcVdxN1l3NG9VUVdidGhGbFRiVnRXUmd3eHFTTU50?=
- =?utf-8?B?aDZUZGRxUTRQellYU0NXTllMaVpqVjU1TExDNDNGVTg0V3dWWW03bEJjL3dW?=
- =?utf-8?B?VFQ4emliUkFiUmZJN3o3WEJEdzVJRXp5UFRhMGp1QWJIOHNPdXhPMXJ3bGlq?=
- =?utf-8?B?cXlYcHF4YzlDMWh3MlRsYVRML0xhay9KM1RaL2tQODU0UEovejBKcEpuKzY2?=
- =?utf-8?B?Sm1VT1JvbkM5MU5SVnN1MkMvWmZjRFF6Z2svc05PZnV6QUREYTV3czNkRlNZ?=
- =?utf-8?B?MVhweGF2T3gzWDVnN0NORlkyZUhuUytONnBRWWFuYytEY3FtSDV2cWlsMmI5?=
- =?utf-8?B?eEVsMGxtcTA1WkpwVSsySk1qaHlLdEorVWZSWmk4NEJUK2NZajJmM05iNHdn?=
- =?utf-8?B?ZEYzQzBvYzU4VzZDMytYZUEzZzh6MkxXYkwvQ00vQm90K1kzcUdCTyswOEZ2?=
- =?utf-8?B?N2xOdHQxVDBjWmlNdzZJVnRQcWEwT3pEdXZ1OVdVUUVzOVQvNGRpdDhxUmRM?=
- =?utf-8?B?RGhiaVVONzVacFA3Y0JDOVFCM1ZLQkg0VWEyQjhQbFV1dnVYQ0NjanU2d3Vn?=
- =?utf-8?B?MTRGYlFjRGI2YVg1Ny9TRDgvNlc3VEV3ek0vQWhnaDM2N05GNnRHWi80V2pn?=
- =?utf-8?B?Slg5UXdQNjhsL3VwajZyd2NydXQ5Z2pkeWJlMlorYjRHeWhLRWswc0NIY3dK?=
- =?utf-8?B?TDlxWDRBUm5Fa2dubEIydld5dEU2a09FMVgySFplS2VUcitYYkZSVDhJRXZo?=
- =?utf-8?B?cTc0SzhlZXh4MG1LSldGdGNmMFdIOEZ0VTJ0UVU2aWtUcSt4TUQ1T1RUTlVx?=
- =?utf-8?B?UDV1L0pnRkRwdkNtZnN4SXFQdzN0T3ByNnk4aFRVSGxJZkxjWEIxbCtNYk5Y?=
- =?utf-8?B?bVhOVElydDVQY1U2UVludzJnN2lsUllMWGttMDdqZVRFc0h0c1V4Mzh1SWdk?=
- =?utf-8?B?bjZIRXdFQld6Y2FoRllxUjlCRktSdDlsNkdHUmFEQXdoN1JMV25wWndERkQ2?=
- =?utf-8?B?cVkzcVFkSkVpWXg2Y1JvY0pwNzdzTUowbEMvZW1mcGRVWkZOVGsrRWxwNmhs?=
- =?utf-8?Q?5mNgZvz41CbbsJtHT6972+M=3D?=
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        Thu, 02 Nov 2023 18:03:45 +0000
+Received: from pps.filterd (ppma13.dal12v.mail.ibm.com [127.0.0.1])
+        by ppma13.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 3A2GMDUI011389;
+        Thu, 2 Nov 2023 18:03:44 GMT
+Received: from smtprelay03.fra02v.mail.ibm.com ([9.218.2.224])
+        by ppma13.dal12v.mail.ibm.com (PPS) with ESMTPS id 3u1eukg2s7-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 02 Nov 2023 18:03:44 +0000
+Received: from smtpav06.fra02v.mail.ibm.com (smtpav06.fra02v.mail.ibm.com [10.20.54.105])
+        by smtprelay03.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 3A2I3gxB393914
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 2 Nov 2023 18:03:42 GMT
+Received: from smtpav06.fra02v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id B72C020040;
+        Thu,  2 Nov 2023 18:03:42 +0000 (GMT)
+Received: from smtpav06.fra02v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 77BE920049;
+        Thu,  2 Nov 2023 18:03:42 +0000 (GMT)
+Received: from spoke.zurich.ibm.com (unknown [9.4.68.71])
+        by smtpav06.fra02v.mail.ibm.com (Postfix) with ESMTP;
+        Thu,  2 Nov 2023 18:03:42 +0000 (GMT)
+From:   Bernard Metzler <bmt@zurich.ibm.com>
+To:     linux-rdma@vger.kernel.org
+Cc:     jgg@ziepe.ca, leon@kernel.org, max7255@meta.com,
+        dennis.dalessandro@cornelisnetworks.com, guoqing.jiang@linux.dev,
+        benve@cisco.com, vadim.fedorenko@linux.dev,
+        Bernard Metzler <bmt@zurich.ibm.com>
+Subject: [PATCH for-next] RDMA/siw: Use ib_umem_get() to pin user pages
+Date:   Thu,  2 Nov 2023 19:03:36 +0100
+Message-Id: <20231102180336.95364-1-bmt@zurich.ibm.com>
+X-Mailer: git-send-email 2.38.1
 MIME-Version: 1.0
-X-OriginatorOrg: Zurich.ibm.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: SN7PR15MB5755.namprd15.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 2c687f23-23ad-46cd-30c6-08dbdba94f69
-X-MS-Exchange-CrossTenant-originalarrivaltime: 02 Nov 2023 13:40:43.1070
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: fcf67057-50c9-4ad4-98f3-ffca64add9e9
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: e/oZvj7VxZj17nPJc7IDJSKb1G0BnE4xzzCJBztkv1LryaIQmCUMqIulpDAKcEW37RQVUzbOBFa4EYb27xmGtA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR15MB3797
-X-Proofpoint-GUID: ovOGo5et3XV17-CvYL0_du95ak8uvYTc
-X-Proofpoint-ORIG-GUID: ovOGo5et3XV17-CvYL0_du95ak8uvYTc
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: wDjPvrRDYQZYzHLRHHJ4_6z4LrdYy7lw
+X-Proofpoint-GUID: wDjPvrRDYQZYzHLRHHJ4_6z4LrdYy7lw
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-11-02_03,2023-11-02_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0 mlxscore=0
- lowpriorityscore=0 malwarescore=0 adultscore=0 impostorscore=0 spamscore=0
- clxscore=1011 phishscore=0 priorityscore=1501 mlxlogscore=652 bulkscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2310240000
- definitions=main-2311020109
+ definitions=2023-11-02_07,2023-11-02_03,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 mlxscore=0
+ phishscore=0 bulkscore=0 impostorscore=0 priorityscore=1501
+ lowpriorityscore=0 malwarescore=0 mlxlogscore=673 spamscore=0 adultscore=0
+ suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2310240000 definitions=main-2311020146
 X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-DQoNCj4gLS0tLS1PcmlnaW5hbCBNZXNzYWdlLS0tLS0NCj4gRnJvbTogTGVvbiBSb21hbm92c2t5
-IDxsZW9uQGtlcm5lbC5vcmc+DQo+IFNlbnQ6IFRodXJzZGF5LCBOb3ZlbWJlciAyLCAyMDIzIDE6
-MzIgUE0NCj4gVG86IE1heGltIFNhbW95bG92IDxtYXg3MjU1QG1ldGEuY29tPjsgQmVybmFyZCBN
-ZXR6bGVyDQo+IDxCTVRAenVyaWNoLmlibS5jb20+OyBEZW5uaXMgRGFsZXNzYW5kcm8NCj4gPGRl
-bm5pcy5kYWxlc3NhbmRyb0Bjb3JuZWxpc25ldHdvcmtzLmNvbT4NCj4gQ2M6IEd1b3FpbmcgSmlh
-bmcgPGd1b3FpbmcuamlhbmdAbGludXguZGV2PjsgbGludXgtcmRtYUB2Z2VyLmtlcm5lbC5vcmc7
-DQo+IEphc29uIEd1bnRob3JwZSA8amdnQHppZXBlLmNhPjsgQ2hyaXN0aWFuIEJlbnZlbnV0aSA8
-YmVudmVAY2lzY28uY29tPjsNCj4gVmFkaW0gRmVkb3JlbmtvIDx2YWRpbS5mZWRvcmVua29AbGlu
-dXguZGV2Pg0KPiBTdWJqZWN0OiBbRVhURVJOQUxdIFJlOiBbUEFUQ0ggdjJdIElCOiByZXdvcmsg
-bWVtbG9jayBsaW1pdCBoYW5kbGluZyBjb2RlDQo+IA0KPiBPbiBUdWUsIE9jdCAzMSwgMjAyMyBh
-dCAwMTozMDoyN1BNICswMDAwLCBNYXhpbSBTYW1veWxvdiB3cm90ZToNCj4gPiBPbiAyMy8xMC8y
-MDIzIDA3OjUyLCBMZW9uIFJvbWFub3Zza3kgd3JvdGU6DQo+ID4gPiBPbiBNb24sIE9jdCAyMywg
-MjAyMyBhdCAwOTo0MDoxNkFNICswODAwLCBHdW9xaW5nIEppYW5nIHdyb3RlOg0KPiA+ID4+DQo+
-ID4gPj4NCj4gPiA+PiBPbiAxMC8xNS8yMyAxNzoxOSwgTGVvbiBSb21hbm92c2t5IHdyb3RlOg0K
-PiA+ID4+PiBPbiBUaHUsIE9jdCAxMiwgMjAyMyBhdCAwMToyOToyMUFNIC0wNzAwLCBNYXhpbSBT
-YW1veWxvdiB3cm90ZToNCj4gPiA+Pj4+IFRoaXMgcGF0Y2ggcHJvdmlkZXMgdGhlIHVuaWZvcm0g
-aGFuZGxpbmcgZm9yIFJMSU1fSU5GSU5JVFkgdmFsdWUNCj4gPiA+Pj4+IGFjcm9zcyB0aGUgaW5m
-aW5pYmFuZC9yZG1hIHN1YnN5c3RlbS4NCj4gPiA+Pj4+DQo+ID4gPj4+PiBDdXJyZW50bHkgaW4g
-c29tZSBjYXNlcyB0aGUgaW5maW5pdHkgY29uc3RhbnQgaXMgdHJlYXRlZA0KPiA+ID4+Pj4gYXMg
-YW4gYWN0dWFsIGxpbWl0IHZhbHVlLCB3aGljaCBjb3VsZCBiZSBtaXNsZWFkaW5nLg0KPiA+ID4+
-Pj4NCj4gPiA+Pj4+IExldCdzIGFsc28gcHJvdmlkZSB0aGUgc2luZ2xlIGhlbHBlciB0byBjaGVj
-ayBhZ2FpbnN0IHByb2Nlc3MNCj4gPiA+Pj4+IE1FTUxPQ0sgbGltaXQgd2hpbGUgcmVnaXN0ZXJp
-bmcgdXNlciBtZW1vcnkgcmVnaW9uIG1hcHBpbmdzLg0KPiA+ID4+Pj4NCj4gPiA+Pj4+IFNpZ25l
-ZC1vZmYtYnk6IE1heGltIFNhbW95bG92PG1heDcyNTVAbWV0YS5jb20+DQo+ID4gPj4+PiAtLS0N
-Cj4gPiA+Pj4+DQo+ID4gPj4+PiB2MSAtPiB2MjogcmV3cml0dGVuIGNvbW1pdCBtZXNzYWdlLCBy
-ZWJhc2VkIG9uIHJlY2VudCB1cHN0cmVhbQ0KPiA+ID4+Pj4NCj4gPiA+Pj4+ICAgIGRyaXZlcnMv
-aW5maW5pYmFuZC9jb3JlL3VtZW0uYyAgICAgICAgICAgICB8ICA3ICsrLS0tLS0NCj4gPiA+Pj4+
-ICAgIGRyaXZlcnMvaW5maW5pYmFuZC9ody9xaWIvcWliX3VzZXJfcGFnZXMuYyB8ICA3ICsrKy0t
-LS0NCj4gPiA+Pj4+ICAgIGRyaXZlcnMvaW5maW5pYmFuZC9ody91c25pYy91c25pY191aW9tLmMg
-ICB8ICA2ICsrLS0tLQ0KPiA+ID4+Pj4gICAgZHJpdmVycy9pbmZpbmliYW5kL3N3L3Npdy9zaXdf
-bWVtLmMgICAgICAgIHwgIDYgKysrLS0tDQo+ID4gPj4+PiAgICBkcml2ZXJzL2luZmluaWJhbmQv
-c3cvc2l3L3Npd192ZXJicy5jICAgICAgfCAyMyArKysrKysrKysrLS0tLS0tLQ0KPiAtLS0tLQ0K
-PiA+ID4+Pj4gICAgaW5jbHVkZS9yZG1hL2liX3VtZW0uaCAgICAgICAgICAgICAgICAgICAgIHwg
-MTEgKysrKysrKysrKysNCj4gPiA+Pj4+ICAgIDYgZmlsZXMgY2hhbmdlZCwgMzEgaW5zZXJ0aW9u
-cygrKSwgMjkgZGVsZXRpb25zKC0pDQo+ID4gPj4+IDwuLi4+DQo+ID4gPj4+DQo+ID4gPj4+PiBA
-QCAtMTMyMSw4ICsxMzIyLDggQEAgc3RydWN0IGliX21yICpzaXdfcmVnX3VzZXJfbXIoc3RydWN0
-IGliX3BkDQo+ICpwZCwgdTY0IHN0YXJ0LCB1NjQgbGVuLA0KPiA+ID4+Pj4gICAgCXN0cnVjdCBz
-aXdfdW1lbSAqdW1lbSA9IE5VTEw7DQo+ID4gPj4+PiAgICAJc3RydWN0IHNpd191cmVxX3JlZ19t
-ciB1cmVxOw0KPiA+ID4+Pj4gICAgCXN0cnVjdCBzaXdfZGV2aWNlICpzZGV2ID0gdG9fc2l3X2Rl
-dihwZC0+ZGV2aWNlKTsNCj4gPiA+Pj4+IC0NCj4gPiA+Pj4+IC0JdW5zaWduZWQgbG9uZyBtZW1f
-bGltaXQgPSBybGltaXQoUkxJTUlUX01FTUxPQ0spOw0KPiA+ID4+Pj4gKwl1bnNpZ25lZCBsb25n
-IG51bV9wYWdlcyA9DQo+ID4gPj4+PiArCQkoUEFHRV9BTElHTihsZW4gKyAoc3RhcnQgJiB+UEFH
-RV9NQVNLKSkpID4+IFBBR0VfU0hJRlQ7DQo+ID4gPj4+PiAgICAJaW50IHJ2Ow0KPiA+ID4+Pj4g
-ICAgCXNpd19kYmdfcGQocGQsICJzdGFydDogMHglcEssIHZhOiAweCVwSywgbGVuOiAlbGx1XG4i
-LA0KPiA+ID4+Pj4gQEAgLTEzMzgsMTkgKzEzMzksMTUgQEAgc3RydWN0IGliX21yICpzaXdfcmVn
-X3VzZXJfbXIoc3RydWN0IGliX3BkDQo+ICpwZCwgdTY0IHN0YXJ0LCB1NjQgbGVuLA0KPiA+ID4+
-Pj4gICAgCQlydiA9IC1FSU5WQUw7DQo+ID4gPj4+PiAgICAJCWdvdG8gZXJyX291dDsNCj4gPiA+
-Pj4+ICAgIAl9DQo+ID4gPj4+PiAtCWlmIChtZW1fbGltaXQgIT0gUkxJTV9JTkZJTklUWSkgew0K
-PiA+ID4+Pj4gLQkJdW5zaWduZWQgbG9uZyBudW1fcGFnZXMgPQ0KPiA+ID4+Pj4gLQkJCShQQUdF
-X0FMSUdOKGxlbiArIChzdGFydCAmIH5QQUdFX01BU0spKSkgPj4NCj4gUEFHRV9TSElGVDsNCj4g
-PiA+Pj4+IC0JCW1lbV9saW1pdCA+Pj0gUEFHRV9TSElGVDsNCj4gPiA+Pj4+IC0JCWlmIChudW1f
-cGFnZXMgPiBtZW1fbGltaXQgLSBjdXJyZW50LT5tbS0+bG9ja2VkX3ZtKSB7DQo+ID4gPj4+PiAt
-CQkJc2l3X2RiZ19wZChwZCwgInBhZ2VzIHJlcSAlbHUsIG1heCAlbHUsIGxvY2sgJWx1XG4iLA0K
-PiA+ID4+Pj4gLQkJCQkgICBudW1fcGFnZXMsIG1lbV9saW1pdCwNCj4gPiA+Pj4+IC0JCQkJICAg
-Y3VycmVudC0+bW0tPmxvY2tlZF92bSk7DQo+ID4gPj4+PiAtCQkJcnYgPSAtRU5PTUVNOw0KPiA+
-ID4+Pj4gLQkJCWdvdG8gZXJyX291dDsNCj4gPiA+Pj4+IC0JCX0NCj4gPiA+Pj4+ICsJaWYgKCFp
-Yl91bWVtX2NoZWNrX3JsaW1pdF9tZW1sb2NrKG51bV9wYWdlcyArIGN1cnJlbnQtPm1tLQ0KPiA+
-bG9ja2VkX3ZtKSkgew0KPiA+ID4+Pj4gKwkJc2l3X2RiZ19wZChwZCwgInBhZ2VzIHJlcSAlbHUs
-IG1heCAlbHUsIGxvY2sgJWx1XG4iLA0KPiA+ID4+Pj4gKwkJCQludW1fcGFnZXMsIHJsaW1pdChS
-TElNSVRfTUVNTE9DSyksDQo+ID4gPj4+PiArCQkJCWN1cnJlbnQtPm1tLT5sb2NrZWRfdm0pOw0K
-PiA+ID4+Pj4gKwkJcnYgPSAtRU5PTUVNOw0KPiA+ID4+Pj4gKwkJZ290byBlcnJfb3V0Ow0KPiA+
-ID4+Pj4gICAgCX0NCj4gPiA+Pj4gU29ycnkgZm9yIGxhdGUgcmVzcG9uc2UsIGJ1dCB3aHkgZG9l
-cyB0aGlzIGh1bmsgZXhpc3QgaW4gZmlyc3QgcGxhY2U/DQo+ID4gPj4+DQo+ID4NCj4gPiBUcmFp
-bGluZyBuZXdsaW5lLCB3aWxsIGRlZmluaXRlbHkgZHJvcCBpdC4NCj4gPg0KPiA+ID4+Pj4gKw0K
-PiA+ID4+Pj4gICAgCXVtZW0gPSBzaXdfdW1lbV9nZXQoc3RhcnQsIGxlbiwgaWJfYWNjZXNzX3dy
-aXRhYmxlKHJpZ2h0cykpOw0KPiA+ID4+PiBUaGlzIHNob3VsZCBiZSBpYl91bWVtX2dldCgpLg0K
-PiA+ID4+DQo+ID4gPj4gSU1PLCBpdCBkZXNlcnZlcyBhIHNlcGFyYXRlIHBhdGNoLCBhbmQgcmVw
-bGFjZSBzaXdfdW1lbV9nZXQgd2l0aA0KPiBpYl91bWVtX2dldA0KPiA+ID4+IGlzIG5vdCBzdHJh
-aWdodGZvcndhcmQgZ2l2ZW4gc2l3X21lbSBoYXMgdHdvIHR5cGVzIG9mIG1lbW9yeSAocGJsIGFu
-ZA0KPiB1bWVtKS4NCj4gPiA+DQo+ID4gPiBUaGUgdGhpbmcgaXMgdGhhdCBvbmNlIHlvdSBjb252
-aW5jZSB5b3Vyc2VsZiB0aGF0IFNJVyBzaG91bGQgdXNlDQo+IGliX3VtZW1fZ2V0KCksDQo+ID4g
-PiB0aGUgc2FtZSBxdWVzdGlvbiB3aWxsIGFyaXNlIGZvciBvdGhlciBwYXJ0cyBvZiB0aGlzIHBh
-dGNoIHdoZXJlDQo+ID4gPiBpYl91bWVtX2NoZWNrX3JsaW1pdF9tZW1sb2NrKCkgaXMgdXNlZC4N
-Cj4gPiA+DQo+ID4gPiBBbmQgaWYgd2UgZWxpbWluYXRlIHRoZW0gYWxsLCB0aGVyZSB3b24ndCBi
-ZSBhIG5lZWQgZm9yIHRoaXMgbmV3IEFQSQ0KPiBjYWxsIGF0IGFsbC4NCj4gPiA+DQo+ID4gPiBU
-aGFua3MNCj4gPiA+DQo+ID4NCj4gPiBIaSENCj4gPg0KPiA+IFNvLCBhcyBmb3IgMzEuMTAuMjAy
-MyBJIHN0aWxsIHNlZSBzaXdfdW1lbV9nZXQoKSBjYWxsIHVzZWQgaW4NCj4gPiBsaW51eC1yZG1h
-IHJlcG8gaW4gImZvci1uZXh0IiBicmFuY2guDQo+IA0KPiBJIGhvcGVkIHRvIGhlYXIgc29tZSBm
-ZWVkYmFjayBmcm9tIEJlcm5hcmQgYW5kIERlbm5pcy4NCg0KU29ycnkgZm9yIHRoZSBsYXRlIHJl
-cGx5Lg0KDQpOb3QgdXNpbmcgaWJfdW1lbV9nZXQoKSwgc2l3IGludGVudGlvbmFsbHkgaW1wbGVt
-ZW50cyBhIHNpbXBsZXIgcm91dGluZQ0KdG8gZ2V0IGl0cyB1c2VyIHBhZ2VzIHBpbm5lZCBhbmQg
-b3JnYW5pemVkIGFzIGEgdHdvIGRpbWVuc2lvbmFsDQpsaXN0LiBJdCBub3Qgb25seSBzYXZlcyBt
-ZW1vcnkgZm9yIHRoZSBzdHJ1Y3R1cmUgaG9sZGluZyB0aGUgcGFnZXMsDQpidXQgYWxzbyBtYWtl
-cyBpdCB2ZXJ5IGVhc3kgdG8gcmVzdW1lIHNlbmRpbmcgb3IgcmVjZWl2aW5nIGRhdGEgYXQNCmFu
-eSBhZGRyZXNzIHdpdGhvdXQgdHJhdmVyc2luZyBpYl91bWVtIGxpbmVhcmx5Lg0KV2hhdCB3ZSBj
-b3VsZCBkbyBpcyB1c2luZyBpYl91bWVtX2dldCgpIHRvIGdldCB0aGUgcGFnZSBsaXN0IGFuZCB1
-c2UNCnRoYXQgbGlzdCB0byBvcmdhbml6ZSBwYWdlcyBtb3JlIGVmZmljaWVudGx5IGZvciBhIHNv
-ZnR3YXJlIHJkbWENCmRyaXZlci4gSSB0aGluayB0aGlzIGlzIHdoYXQgcnhlIGltcGxlbWVudHMg
-dG9kYXkuDQpJdCBjb21lcyB3aXRoIHRoZSBwZW5hbHR5IG9mIGV4dHJhIGRhdGEgc3RydWN0dXJl
-cyBiZWluZyBhbGxvY2F0ZWQNCmEgc29mdHdhcmUgcmRtYSBkcml2ZXIgZG9lcyBub3QgY2FyZSBh
-Ym91dC4NCg0KDQo+IA0KPiA+DQo+ID4gQUZBSVUgdGhpcyBoZWxwZXIgY2FsbCBpcyB1c2VkIG9u
-bHkgaW4gYSBzaW5nbGUgcGxhY2UgYW5kIGNvdWxkDQo+ID4gcG90ZW50aWFsbHkgYmUgcmVwbGFj
-ZWQgd2l0aCBpYl91bWVtX2dldCgpIGFzIExlb24gc3VnZ2VzdHMuDQo+ID4NCj4gPiBCdXQgc2hv
-dWxkIHdlIHBlcmZvcm0gaXQgcmlnaHQgaW5zaWRlIHRoaXMgbWVtbG9jayBoZWxwZXIgcGF0Y2g/
-DQo+ID4NCj4gPiBJIGNhbiBzdWJtaXQgbGF0ZXIgYW5vdGhlciBwYXRjaCB3aXRoIHNpd191bWVt
-X2dldCgpIHJlcGxhY2VkDQo+ID4gaWYgbmVjZXNzYXJ5Lg0KPiA+DQo+ID4NCj4gPiA+Pg0KPiA+
-ID4+IFRoYW5rcywNCj4gPiA+PiBHdW9xaW5nDQo+ID4NCg==
+Abandon siw private code to pin user pages during user
+memory registration, but use ib_umem_get() instead.
+This will help maintaining the driver in case of changes
+to the memory subsystem.
+
+Signed-off-by: Bernard Metzler <bmt@zurich.ibm.com>
+---
+ drivers/infiniband/sw/siw/siw.h       |   3 +-
+ drivers/infiniband/sw/siw/siw_mem.c   | 109 ++++++++++----------------
+ drivers/infiniband/sw/siw/siw_mem.h   |   5 +-
+ drivers/infiniband/sw/siw/siw_verbs.c |   4 +-
+ 4 files changed, 47 insertions(+), 74 deletions(-)
+
+diff --git a/drivers/infiniband/sw/siw/siw.h b/drivers/infiniband/sw/siw/siw.h
+index 58dddb143b9f..6930586109d4 100644
+--- a/drivers/infiniband/sw/siw/siw.h
++++ b/drivers/infiniband/sw/siw/siw.h
+@@ -121,11 +121,10 @@ struct siw_page_chunk {
+ };
+ 
+ struct siw_umem {
++	struct ib_umem *base_mem;
+ 	struct siw_page_chunk *page_chunk;
+ 	int num_pages;
+-	bool writable;
+ 	u64 fp_addr; /* First page base address */
+-	struct mm_struct *owning_mm;
+ };
+ 
+ struct siw_pble {
+diff --git a/drivers/infiniband/sw/siw/siw_mem.c b/drivers/infiniband/sw/siw/siw_mem.c
+index e6e25f15567d..6cc44df2ece5 100644
+--- a/drivers/infiniband/sw/siw/siw_mem.c
++++ b/drivers/infiniband/sw/siw/siw_mem.c
+@@ -5,6 +5,7 @@
+ 
+ #include <linux/gfp.h>
+ #include <rdma/ib_verbs.h>
++#include <rdma/ib_umem.h>
+ #include <linux/dma-mapping.h>
+ #include <linux/slab.h>
+ #include <linux/sched/mm.h>
+@@ -60,28 +61,17 @@ struct siw_mem *siw_mem_id2obj(struct siw_device *sdev, int stag_index)
+ 	return NULL;
+ }
+ 
+-static void siw_free_plist(struct siw_page_chunk *chunk, int num_pages,
+-			   bool dirty)
++void siw_umem_release(struct siw_umem *umem)
+ {
+-	unpin_user_pages_dirty_lock(chunk->plist, num_pages, dirty);
+-}
+-
+-void siw_umem_release(struct siw_umem *umem, bool dirty)
+-{
+-	struct mm_struct *mm_s = umem->owning_mm;
+ 	int i, num_pages = umem->num_pages;
+ 
+-	for (i = 0; num_pages; i++) {
+-		int to_free = min_t(int, PAGES_PER_CHUNK, num_pages);
++	if (umem->base_mem)
++		ib_umem_release(umem->base_mem);
+ 
+-		siw_free_plist(&umem->page_chunk[i], to_free,
+-			       umem->writable && dirty);
++	for (i = 0; num_pages > 0; i++) {
+ 		kfree(umem->page_chunk[i].plist);
+-		num_pages -= to_free;
++		num_pages -= PAGES_PER_CHUNK;
+ 	}
+-	atomic64_sub(umem->num_pages, &mm_s->pinned_vm);
+-
+-	mmdrop(mm_s);
+ 	kfree(umem->page_chunk);
+ 	kfree(umem);
+ }
+@@ -145,7 +135,7 @@ void siw_free_mem(struct kref *ref)
+ 
+ 	if (!mem->is_mw && mem->mem_obj) {
+ 		if (mem->is_pbl == 0)
+-			siw_umem_release(mem->umem, true);
++			siw_umem_release(mem->umem);
+ 		else
+ 			kfree(mem->pbl);
+ 	}
+@@ -362,18 +352,16 @@ struct siw_pbl *siw_pbl_alloc(u32 num_buf)
+ 	return pbl;
+ }
+ 
+-struct siw_umem *siw_umem_get(u64 start, u64 len, bool writable)
++struct siw_umem *siw_umem_get(struct ib_device *base_dev, u64 start,
++			      u64 len, int rights)
+ {
+ 	struct siw_umem *umem;
+-	struct mm_struct *mm_s;
++	struct ib_umem *base_mem;
++	struct sg_page_iter sg_iter;
++	struct sg_table *sgt;
+ 	u64 first_page_va;
+-	unsigned long mlock_limit;
+-	unsigned int foll_flags = FOLL_LONGTERM;
+ 	int num_pages, num_chunks, i, rv = 0;
+ 
+-	if (!can_do_mlock())
+-		return ERR_PTR(-EPERM);
+-
+ 	if (!len)
+ 		return ERR_PTR(-EINVAL);
+ 
+@@ -385,65 +373,50 @@ struct siw_umem *siw_umem_get(u64 start, u64 len, bool writable)
+ 	if (!umem)
+ 		return ERR_PTR(-ENOMEM);
+ 
+-	mm_s = current->mm;
+-	umem->owning_mm = mm_s;
+-	umem->writable = writable;
+-
+-	mmgrab(mm_s);
+-
+-	if (writable)
+-		foll_flags |= FOLL_WRITE;
+-
+-	mmap_read_lock(mm_s);
+-
+-	mlock_limit = rlimit(RLIMIT_MEMLOCK) >> PAGE_SHIFT;
+-
+-	if (atomic64_add_return(num_pages, &mm_s->pinned_vm) > mlock_limit) {
+-		rv = -ENOMEM;
+-		goto out_sem_up;
+-	}
+-	umem->fp_addr = first_page_va;
+-
+ 	umem->page_chunk =
+ 		kcalloc(num_chunks, sizeof(struct siw_page_chunk), GFP_KERNEL);
+ 	if (!umem->page_chunk) {
+ 		rv = -ENOMEM;
+-		goto out_sem_up;
++		goto err_out;
+ 	}
+-	for (i = 0; num_pages; i++) {
++	base_mem = ib_umem_get(base_dev, start, len, rights);
++	if (IS_ERR(base_mem)) {
++		rv = PTR_ERR(base_mem);
++		siw_dbg(base_dev, "Cannot pin user memory: %d\n", rv);
++		goto err_out;
++	}
++	umem->fp_addr = first_page_va;
++	umem->base_mem = base_mem;
++
++	sgt = &base_mem->sgt_append.sgt;
++	__sg_page_iter_start(&sg_iter, sgt->sgl, sgt->orig_nents, 0);
++
++	if (!__sg_page_iter_next(&sg_iter)) {
++		rv = -EINVAL;
++		goto err_out;
++	}
++	for (i = 0; num_pages > 0; i++) {
+ 		int nents = min_t(int, num_pages, PAGES_PER_CHUNK);
+ 		struct page **plist =
+ 			kcalloc(nents, sizeof(struct page *), GFP_KERNEL);
+ 
+ 		if (!plist) {
+ 			rv = -ENOMEM;
+-			goto out_sem_up;
++			goto err_out;
+ 		}
+ 		umem->page_chunk[i].plist = plist;
+-		while (nents) {
+-			rv = pin_user_pages(first_page_va, nents, foll_flags,
+-					    plist);
+-			if (rv < 0)
+-				goto out_sem_up;
+-
+-			umem->num_pages += rv;
+-			first_page_va += rv * PAGE_SIZE;
+-			plist += rv;
+-			nents -= rv;
+-			num_pages -= rv;
++		while (nents--) {
++			*plist = sg_page_iter_page(&sg_iter);
++			umem->num_pages++;
++			num_pages--;
++			plist++;
++			if (!__sg_page_iter_next(&sg_iter))
++				break;
+ 		}
+ 	}
+-out_sem_up:
+-	mmap_read_unlock(mm_s);
+-
+-	if (rv > 0)
+-		return umem;
+-
+-	/* Adjust accounting for pages not pinned */
+-	if (num_pages)
+-		atomic64_sub(num_pages, &mm_s->pinned_vm);
+-
+-	siw_umem_release(umem, false);
++	return umem;
++err_out:
++	siw_umem_release(umem);
+ 
+ 	return ERR_PTR(rv);
+ }
+diff --git a/drivers/infiniband/sw/siw/siw_mem.h b/drivers/infiniband/sw/siw/siw_mem.h
+index f911287576d1..562a693f7662 100644
+--- a/drivers/infiniband/sw/siw/siw_mem.h
++++ b/drivers/infiniband/sw/siw/siw_mem.h
+@@ -6,8 +6,9 @@
+ #ifndef _SIW_MEM_H
+ #define _SIW_MEM_H
+ 
+-struct siw_umem *siw_umem_get(u64 start, u64 len, bool writable);
+-void siw_umem_release(struct siw_umem *umem, bool dirty);
++struct siw_umem *siw_umem_get(struct ib_device *base_dave, u64 start,
++			      u64 len, int rights);
++void siw_umem_release(struct siw_umem *umem);
+ struct siw_pbl *siw_pbl_alloc(u32 num_buf);
+ dma_addr_t siw_pbl_get_buffer(struct siw_pbl *pbl, u64 off, int *len, int *idx);
+ struct siw_mem *siw_mem_id2obj(struct siw_device *sdev, int stag_index);
+diff --git a/drivers/infiniband/sw/siw/siw_verbs.c b/drivers/infiniband/sw/siw/siw_verbs.c
+index fdbef3254e30..293b51caf67e 100644
+--- a/drivers/infiniband/sw/siw/siw_verbs.c
++++ b/drivers/infiniband/sw/siw/siw_verbs.c
+@@ -1351,7 +1351,7 @@ struct ib_mr *siw_reg_user_mr(struct ib_pd *pd, u64 start, u64 len,
+ 			goto err_out;
+ 		}
+ 	}
+-	umem = siw_umem_get(start, len, ib_access_writable(rights));
++	umem = siw_umem_get(pd->device, start, len, rights);
+ 	if (IS_ERR(umem)) {
+ 		rv = PTR_ERR(umem);
+ 		siw_dbg_pd(pd, "getting user memory failed: %d\n", rv);
+@@ -1404,7 +1404,7 @@ struct ib_mr *siw_reg_user_mr(struct ib_pd *pd, u64 start, u64 len,
+ 		kfree_rcu(mr, rcu);
+ 	} else {
+ 		if (umem)
+-			siw_umem_release(umem, false);
++			siw_umem_release(umem);
+ 	}
+ 	return ERR_PTR(rv);
+ }
+-- 
+2.38.1
+
