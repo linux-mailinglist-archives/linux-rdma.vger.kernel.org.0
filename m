@@ -2,58 +2,57 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CB61D7E0058
-	for <lists+linux-rdma@lfdr.de>; Fri,  3 Nov 2023 11:29:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C88B7E0064
+	for <lists+linux-rdma@lfdr.de>; Fri,  3 Nov 2023 11:29:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347633AbjKCKOX (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 3 Nov 2023 06:14:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51448 "EHLO
+        id S1347755AbjKCKRy (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 3 Nov 2023 06:17:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37766 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1347768AbjKCKOW (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 3 Nov 2023 06:14:22 -0400
-Received: from mail-pg1-x52c.google.com (mail-pg1-x52c.google.com [IPv6:2607:f8b0:4864:20::52c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C9E8D45;
-        Fri,  3 Nov 2023 03:14:20 -0700 (PDT)
-Received: by mail-pg1-x52c.google.com with SMTP id 41be03b00d2f7-5b9a453d3d3so1483321a12.0;
-        Fri, 03 Nov 2023 03:14:20 -0700 (PDT)
+        with ESMTP id S1347710AbjKCKRx (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 3 Nov 2023 06:17:53 -0400
+Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10F12BD;
+        Fri,  3 Nov 2023 03:17:51 -0700 (PDT)
+Received: by mail-pj1-x102f.google.com with SMTP id 98e67ed59e1d1-27d0e3d823fso1689732a91.1;
+        Fri, 03 Nov 2023 03:17:51 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1699006460; x=1699611260; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1699006670; x=1699611470; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=i+65RYNQvrsYrl13TceHEcGyzemoLF4Zru1PnHMz1K0=;
-        b=JN/mzlqVVL/9mkVYtjPLsDAAqIR5JIBrKqxQP9BtZiQs1VCHZF1QGXTWjPjWjz6f0m
-         zHqF/bc6a445reEQ+7pzhX0zgz2qteNEZDHZMkrEdJWp2HVygTef7nTDtlW5WouyyOtZ
-         seitizdWBPUIx3Fe4RxadyJ430i1PNhjdIm2xHcz1S4k1Oplt5JLoUtFWvFOhcHsSmDH
-         EN2R9TX78mnih06ObNuHx5N25B+W9AuXyBPuKT9OYCZQf0/jy0QdBTOUGikkRIQiO7RP
-         Xgy1cG+rzhJ8nq5QSrwKajdN89Cg6EudpuA4j/HfkSxQpeiS+q4brfq3E9JY9+0b6H+o
-         oyAA==
+        bh=MhxTJQGMh8ltKKPnPVtqpBjXF5p/wr+ULWRQ+shWLIs=;
+        b=lt5HKvyQj6tb1dLamowGMDbzs+Pzo13FDT4fHgNs0kGdM9P+c3G+q43PuyCs+H1364
+         QnzkCN3IbRj7Zdv0xpNwNSixv6WzUX1wKv9X0+uOCoGWtySAlYdwdbhtwXBCl57NZMb9
+         Irr9N2d0AGkfzFI7sOQFD2zZWAOxpyrcZfFSPyqETyEz+n/WfTlnI1WqSqh494q6RQUx
+         5qLxKUD2if6mLV3FtV1T+qYZ2dk+7ypT000lIe9+XA545hsyjYI8G3asRiHjYviMB/LL
+         cfoJyHPVHYzg/aabpAb8TmIQl23CeCukTL3y7zME/8MtFh290ySvad6j4l8DJDXollUt
+         KtOA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699006460; x=1699611260;
+        d=1e100.net; s=20230601; t=1699006670; x=1699611470;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=i+65RYNQvrsYrl13TceHEcGyzemoLF4Zru1PnHMz1K0=;
-        b=SqcKWJ44A6FKJofE/0oqLTvDhBUIlOK4ClqCcqdR+EMGmx7HKcOIHOeNE8+2socMne
-         XNmnWtemHN8V9uAYnIjpxi948oc6geq93uXtwgF65KT7FwogSTe3vBeYmhCTIpj0/eCM
-         8oIjEvEWAad1qz/mpefHeKH7xoRcNt7NDnFycjZGF4dqt77aL4Xqb14o5tSdJ90FbC7I
-         DZqUn/cftoTZcGOB8byWCs4b3J1EruMS+kOSBNqTu3XTnVNKLLsay3LaaX7vaetuRMo4
-         nsUxIsbV2FXyO7OaDYnRh7jmWV97mUO789z+f19jDAudM2xU6Pj2pMixvQ4hp1WLgMmT
-         4ATw==
-X-Gm-Message-State: AOJu0YzaT5zbiTx90RrxGwA0KgXQjNi0fx1VXRfvWVU5pILoOg/32XOZ
-        YFtibEoRebUMEEJ6NXtEjnvoBdKJ+prQZoFW4tM=
-X-Google-Smtp-Source: AGHT+IEfXBZkMD60Ek69aexCEMY0kuPUwQUkokIY0a8ul1daeS5gkXGiQtacM1dJw2OBh7enk1ei3a+HfozZN6rDsE0=
-X-Received: by 2002:a17:90a:4b07:b0:27f:f260:ceaf with SMTP id
- g7-20020a17090a4b0700b0027ff260ceafmr17099164pjh.10.1699006459735; Fri, 03
- Nov 2023 03:14:19 -0700 (PDT)
+        bh=MhxTJQGMh8ltKKPnPVtqpBjXF5p/wr+ULWRQ+shWLIs=;
+        b=BgNwao285TxlRraB440DtxkLmbOl1yFdJaMgg4Hj9osE8uudZYD0vINUg/8UNmHheQ
+         Rywq1QIoPNta+miT2ajbPg6tpVZLkuFk32yZoPXaPtlQWJ+Lnj4W6r84/pixw2cOlVsz
+         85YRVK9xGa9fGArrlKIW4Ta0aB4lgyHJsnbKDy2+KzMRhsU5+SRYvRJ33v5Yrb2TCs/j
+         TdOsxfMyWFFKnli6O05KH4rrT6Sjtf3Dvu8XvwB8dx1r1xNAKbMpO2Btb7DsVVry1FWC
+         j/OVtNyUgG3ZNLcCTLK6Mba551HoLluKyMZV4FRS6MrCqc0VXrtNRqXrOT9qLPx+aMUw
+         wP+Q==
+X-Gm-Message-State: AOJu0YxwUBbV1iQQQDWdQVe83TXM+1cL4HMCes29jBYnh08Q5lhipcYm
+        IDocexVWTaBxzrzuzmOPvH7e7Sw6c4Eb++LYv+k=
+X-Google-Smtp-Source: AGHT+IF4Y6zyjw+lVjE6TYLYP5fZ9dRGR/tj0oc+OyQfakp3GSURHGqozYGj/Ftl8MK9cqcBG2P8vlBeMCLvp4joVSo=
+X-Received: by 2002:a17:90a:bf07:b0:27d:1df4:26f3 with SMTP id
+ c7-20020a17090abf0700b0027d1df426f3mr17225360pjs.15.1699006669939; Fri, 03
+ Nov 2023 03:17:49 -0700 (PDT)
 MIME-Version: 1.0
-References: <20231103095549.490744-1-lizhijian@fujitsu.com> <20231103095549.490744-2-lizhijian@fujitsu.com>
-In-Reply-To: <20231103095549.490744-2-lizhijian@fujitsu.com>
+References: <20231103095549.490744-1-lizhijian@fujitsu.com>
+In-Reply-To: <20231103095549.490744-1-lizhijian@fujitsu.com>
 From:   Greg Sword <gregsword0@gmail.com>
-Date:   Fri, 3 Nov 2023 18:14:09 +0800
-Message-ID: <CAEz=Lcu012KvkJbEC=ZeTFZk1vg51B2h66E6Hoh0JOcez58a=w@mail.gmail.com>
-Subject: Re: [PATCH RFC V2 1/6] RDMA/rxe: RDMA/rxe: don't allow registering
- !PAGE_SIZE mr
+Date:   Fri, 3 Nov 2023 18:17:39 +0800
+Message-ID: <CAEz=LcvrztPxSZj5uiaDe-mdC0qD4km07d8aFuVPOb5dgnHNug@mail.gmail.com>
+Subject: Re: [PATCH RFC V2 0/6] rxe_map_mr_sg() fix cleanup and refactor
 To:     Li Zhijian <lizhijian@fujitsu.com>
 Cc:     zyjzyj2000@gmail.com, jgg@ziepe.ca, leon@kernel.org,
         linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
@@ -71,67 +70,45 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Fri, Nov 3, 2023 at 5:56=E2=80=AFPM Li Zhijian <lizhijian@fujitsu.com> w=
+On Fri, Nov 3, 2023 at 5:58=E2=80=AFPM Li Zhijian <lizhijian@fujitsu.com> w=
 rote:
 >
-> rxe_set_page() only store one PAGE_SIZE page by the step of page_size.
-> when page_size !=3D PAGE_SIZE, we cannot restore the address with wrong
-> index and page_offset.
+> I don't collect the Reviewed-by to the patch1-2 this time, since i
+> think we can make it better.
 >
-> Let's take a look how current the xarray is being used.
->
-> 0. offset =3D iova & (page_size -1); // offset is less than page_size
->                                       but may not PAGE_SIZE
-> 1. index =3D (iova - mr.iova) >> page_shift;
-> 2. page =3D xa_load(&mr->page_list, index);
-> 3. page_va =3D kmap_local_page(page) // map one page only, that means onl=
-y
->                                       memory [page_va, page_va + PAGE_SIZ=
-E)
->                                       is valid for this mapping.
-> 4. memcpy(addr, page_va + offset, bytes);
->
-> - when page_size > PAGE_SIZE, the offset could be beyond PAGE_SIZE,
->   then page_va + offset may be invalid.
-> - when page_size < PAGE_SIZE, the offset may get lost.
->
-> Note that this patch will break some ULPs that try to register 4K
-> MR when PAGE_SIZE is not 4K. SRP and nvme over RXE is known to be
-> impacted.
->
-> Signed-off-by: Li Zhijian <lizhijian@fujitsu.com>
->
-> ---
-> ---
->  drivers/infiniband/sw/rxe/rxe_mr.c | 6 ++++++
->  1 file changed, 6 insertions(+)
->
-> diff --git a/drivers/infiniband/sw/rxe/rxe_mr.c b/drivers/infiniband/sw/r=
-xe/rxe_mr.c
-> index f54042e9aeb2..3755e530e6dc 100644
-> --- a/drivers/infiniband/sw/rxe/rxe_mr.c
-> +++ b/drivers/infiniband/sw/rxe/rxe_mr.c
-> @@ -234,6 +234,12 @@ int rxe_map_mr_sg(struct ib_mr *ibmr, struct scatter=
-list *sgl,
->         struct rxe_mr *mr =3D to_rmr(ibmr);
->         unsigned int page_size =3D mr_page_size(mr);
->
-> +       if (page_size !=3D PAGE_SIZE) {
-> +               rxe_err_mr(mr, "Unsupport mr page size %x, expect PAGE_SI=
-ZE(%lx)\n",
-> +                          page_size, PAGE_SIZE);
-> +               return -EINVAL;
-> +       }
+> Patch1-2: Fix kernel panic[1] and benifit to make srp work again.
+>           Almost nothing change from V1.
+> Patch3-5: cleanups # newly add
+> Patch6: make RXE support PAGE_SIZE aligned mr # newly add, but not fully =
+tested
 
-Are you kidding us? What problem you are fixing? Do you make tests in your =
-host?
+Do some work. Do not use these rubbish patch to waste our time.
 
-A  rubbish patch.
-
-> +
->         mr->nbuf =3D 0;
->         mr->page_shift =3D ilog2(page_size);
->         mr->page_mask =3D ~((u64)page_size - 1);
+>
+> My bad arm64 mechine offten hangs when doing blktests even though i use t=
+he
+> default siw driver.
+>
+> - nvme and ULPs(rtrs, iser) always registers 4K mr still don't supported =
+yet.
+>
+> [1] https://lore.kernel.org/all/CAHj4cs9XRqE25jyVw9rj9YugffLn5+f=3D1znaBE=
+nu1usLOciD+g@mail.gmail.com/T/
+>
+> Li Zhijian (6):
+>   RDMA/rxe: RDMA/rxe: don't allow registering !PAGE_SIZE mr
+>   RDMA/rxe: set RXE_PAGE_SIZE_CAP to PAGE_SIZE
+>   RDMA/rxe: remove unused rxe_mr.page_shift
+>   RDMA/rxe: Use PAGE_SIZE and PAGE_SHIFT to extract address from
+>     page_list
+>   RDMA/rxe: cleanup rxe_mr.{page_size,page_shift}
+>   RDMA/rxe: Support PAGE_SIZE aligned MR
+>
+>  drivers/infiniband/sw/rxe/rxe_mr.c    | 80 ++++++++++++++++-----------
+>  drivers/infiniband/sw/rxe/rxe_param.h |  2 +-
+>  drivers/infiniband/sw/rxe/rxe_verbs.h |  9 ---
+>  3 files changed, 48 insertions(+), 43 deletions(-)
+>
 > --
 > 2.41.0
 >
