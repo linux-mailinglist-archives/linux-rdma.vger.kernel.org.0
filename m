@@ -2,130 +2,191 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F6C07E007E
+	by mail.lfdr.de (Postfix) with ESMTP id 07CB57E007D
 	for <lists+linux-rdma@lfdr.de>; Fri,  3 Nov 2023 11:30:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234659AbjKCIN4 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 3 Nov 2023 04:13:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46930 "EHLO
+        id S1347302AbjKCJwA (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 3 Nov 2023 05:52:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38774 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235490AbjKCINy (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 3 Nov 2023 04:13:54 -0400
-Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 73F1D131;
-        Fri,  3 Nov 2023 01:13:51 -0700 (PDT)
-Received: from pps.filterd (m0353723.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3A37sfe0014915;
-        Fri, 3 Nov 2023 08:13:47 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=zMP5Blu3Ei7JyRR3CHb7v8/yp0ZTd6P7rHplart82eg=;
- b=iszAVqIcUgVWLLcg83jES5zs43kk3pTLO2aPWxVFyxfDl885gQzKYTWHStTgS708ZVrN
- rxxzph1EmI2jFEuaO2025hWqSvQp7AvIyq/y3aSc6lY7Ms77YpRbvp/uANWDZjgMyQ0V
- KE4/MAWbdQy/x9nKnmv/6q4tbMYOMPbkudCy1I5f48USKXBN9kEvkhHtIm05rqwLMkxb
- 5MR/vqEVBMPSJ8loj7DuFhPxPL1csNmWaOkSLn/RvvUF0p1Xf/j2/WZNxSIS6CQFWhvR
- itbBmwgxzkaz/FQrAzpbm06x39hWFqX7cbpAurGOwfJyQz11vJ0SYZYT8yymy9iJwC8j Jg== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3u4vvt8dct-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 03 Nov 2023 08:13:46 +0000
-Received: from m0353723.ppops.net (m0353723.ppops.net [127.0.0.1])
-        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 3A38BCXM002545;
-        Fri, 3 Nov 2023 08:13:46 GMT
-Received: from ppma11.dal12v.mail.ibm.com (db.9e.1632.ip4.static.sl-reverse.com [50.22.158.219])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3u4vvt8dcf-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 03 Nov 2023 08:13:46 +0000
-Received: from pps.filterd (ppma11.dal12v.mail.ibm.com [127.0.0.1])
-        by ppma11.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 3A3815s7031388;
-        Fri, 3 Nov 2023 08:13:45 GMT
-Received: from smtprelay05.wdc07v.mail.ibm.com ([172.16.1.72])
-        by ppma11.dal12v.mail.ibm.com (PPS) with ESMTPS id 3u1fb2m2n3-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 03 Nov 2023 08:13:45 +0000
-Received: from smtpav03.wdc07v.mail.ibm.com (smtpav03.wdc07v.mail.ibm.com [10.39.53.230])
-        by smtprelay05.wdc07v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 3A38Disg26673708
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 3 Nov 2023 08:13:44 GMT
-Received: from smtpav03.wdc07v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 091815805C;
-        Fri,  3 Nov 2023 08:13:44 +0000 (GMT)
-Received: from smtpav03.wdc07v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 48A4358054;
-        Fri,  3 Nov 2023 08:13:42 +0000 (GMT)
-Received: from [9.171.80.36] (unknown [9.171.80.36])
-        by smtpav03.wdc07v.mail.ibm.com (Postfix) with ESMTP;
-        Fri,  3 Nov 2023 08:13:42 +0000 (GMT)
-Message-ID: <d4bf228b-3f58-4c1a-97fb-ae6ceb25f544@linux.ibm.com>
-Date:   Fri, 3 Nov 2023 09:13:41 +0100
-MIME-Version: 1.0
+        with ESMTP id S1347292AbjKCJv7 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 3 Nov 2023 05:51:59 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.65])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E827191;
+        Fri,  3 Nov 2023 02:51:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1699005113; x=1730541113;
+  h=message-id:date:subject:to:cc:references:from:
+   in-reply-to:content-transfer-encoding:mime-version;
+  bh=WkknRm6nX90QgIdELr5uYwNuyX74IPpsNdDO/DJVRrc=;
+  b=R8Us7/cAVE3Tw8fzW2MpQ4gReoXOCRnMqSf3vo0y1PhGehcQcGp4nNiZ
+   9WrAfjo3quiqye24PhEUUhvfQh3bKNEOXgrPAfVoZF4vZDGQXppy6OhYb
+   uaPjnm5U1RoqpRoVuxt95zv7IrgSQeeHVlhkIuDi+mpOlcZs47xiSondd
+   QrWeBiN+VjBjWXp1ZWyqi44vuuvpDxKqeBWBaw7ZzC/iIfWhOWcghHvd/
+   BFA1lPrcfBKWEL5LZD4ngv6yGvlGFNGxs0KIKr9SMVQpAuQ552xnWZaZz
+   PeBQ58hIizzlsub9d2ilWcOQnvF/kgFlP7TM1EU/iN6uv86xTo4DT9P6M
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10882"; a="392798338"
+X-IronPort-AV: E=Sophos;i="6.03,273,1694761200"; 
+   d="scan'208";a="392798338"
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Nov 2023 02:51:53 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10882"; a="1008765882"
+X-IronPort-AV: E=Sophos;i="6.03,273,1694761200"; 
+   d="scan'208";a="1008765882"
+Received: from orsmsx603.amr.corp.intel.com ([10.22.229.16])
+  by fmsmga006.fm.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 03 Nov 2023 02:51:52 -0700
+Received: from orsmsx612.amr.corp.intel.com (10.22.229.25) by
+ ORSMSX603.amr.corp.intel.com (10.22.229.16) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.34; Fri, 3 Nov 2023 02:51:51 -0700
+Received: from ORSEDG602.ED.cps.intel.com (10.7.248.7) by
+ orsmsx612.amr.corp.intel.com (10.22.229.25) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.34 via Frontend Transport; Fri, 3 Nov 2023 02:51:51 -0700
+Received: from NAM12-BN8-obe.outbound.protection.outlook.com (104.47.55.168)
+ by edgegateway.intel.com (134.134.137.103) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.34; Fri, 3 Nov 2023 02:51:51 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=LTpLiE+kV+E39Kx6wHVuni9COdpwDGcw/kuhQfAgjHm8PS+dduriDX1XkCxzi3WeOeL9PsQrkXt3S/8/5jrBstb1N/T83IXOrDhA4upYlvaN5rW9UKYfXJYdLWeUc7DKLQT2QRsoDfsxYcsjknm69ySx7ApcCh7zv1/RT4j9g+baUSfHxKwAIn3k1MLBFFyQ+crISjmr49CeUptDID3DypBNqCjmzTa+fH+cQ+nvqRp1HXAoE6ZQtoapxfgWf+XEMx67AfDxtzyNy19US5ErnHjfUVwIEiIjRmhmiYesCAyXGoOkf3JrtFZz2uYSphjvHyxmFpi9RA+Dar4J4jyuuA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=lCBhppvveEjBlYn3PbAy+MOPAWqbtVRIMG7NTLR7vAo=;
+ b=Kx8aVlHSr9/GCeU9//1paKcCmquU5wOMOi4LlNgKU6ujcvjlt23TQsv0E2ZNDBGIXyHq+dgCCZuur7yRidcGqgKCGwdaEhvde36xgjey/8mzG9FcPO+d9jsCCVtO/HWq5FJ0qUrurHcXkfhOWEP1lw9sKYJtn7TtwViX76kJoQUIdgl/MehnBihmzuDpjZuAkvlhjaq6+AxgFajFbs39xqAdPtx80y7Jflq4SlbvV7nTTAmHD2SSsGmm0/EYPtQxv14ahQ48iZPtye15dHscypCfiaBbzJndX9R3q5q4w5MLTW1k5kOpQKOh+PzMTvWZguQZs3bubr03uk85R8XxEA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+Received: from MW4PR11MB5776.namprd11.prod.outlook.com (2603:10b6:303:183::9)
+ by DM4PR11MB6309.namprd11.prod.outlook.com (2603:10b6:8:a8::22) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6954.21; Fri, 3 Nov
+ 2023 09:51:48 +0000
+Received: from MW4PR11MB5776.namprd11.prod.outlook.com
+ ([fe80::71a7:70c4:9046:9b8a]) by MW4PR11MB5776.namprd11.prod.outlook.com
+ ([fe80::71a7:70c4:9046:9b8a%5]) with mapi id 15.20.6933.029; Fri, 3 Nov 2023
+ 09:51:47 +0000
+Message-ID: <62aa411f-b848-44d3-9b2c-7173b86edbd2@intel.com>
+Date:   Fri, 3 Nov 2023 10:51:40 +0100
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH net v2 0/3] bugfixs for smc
-Content-Language: en-GB
-To:     "D. Wythe" <alibuda@linux.alibaba.com>, kgraul@linux.ibm.com,
-        jaka@linux.ibm.com, wintera@linux.ibm.com
-Cc:     kuba@kernel.org, davem@davemloft.net, netdev@vger.kernel.org,
-        linux-s390@vger.kernel.org, linux-rdma@vger.kernel.org
-References: <1698991660-82957-1-git-send-email-alibuda@linux.alibaba.com>
-From:   Wenjia Zhang <wenjia@linux.ibm.com>
-In-Reply-To: <1698991660-82957-1-git-send-email-alibuda@linux.alibaba.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Subject: Re: [PATCH net] net/mlx5: Fix a NULL vs IS_ERR() check
+To:     Dan Carpenter <dan.carpenter@linaro.org>,
+        Saeed Mahameed <saeedm@nvidia.com>
+CC:     Leon Romanovsky <leon@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>, Eli Cohen <elic@nvidia.com>,
+        <netdev@vger.kernel.org>, <linux-rdma@vger.kernel.org>,
+        <kernel-janitors@vger.kernel.org>
+References: <4ee5fbea-7807-42dd-a9b8-738ac23249d0@moroto.mountain>
+Content-Language: en-US
+From:   Wojciech Drewek <wojciech.drewek@intel.com>
+In-Reply-To: <4ee5fbea-7807-42dd-a9b8-738ac23249d0@moroto.mountain>
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: ZzL5E2iQc1qFo8EX5qy2w19ae3ZhD_pr
-X-Proofpoint-GUID: OCuD6J1ndabIgZe3Er32Q0S3wzBTViCt
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-11-03_07,2023-11-02_03,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0 bulkscore=0
- malwarescore=0 clxscore=1015 mlxlogscore=999 priorityscore=1501
- phishscore=0 impostorscore=0 mlxscore=0 lowpriorityscore=0 adultscore=0
- spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2310240000 definitions=main-2311030066
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-ClientProxiedBy: FR0P281CA0073.DEUP281.PROD.OUTLOOK.COM
+ (2603:10a6:d10:1e::13) To MW4PR11MB5776.namprd11.prod.outlook.com
+ (2603:10b6:303:183::9)
+MIME-Version: 1.0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: MW4PR11MB5776:EE_|DM4PR11MB6309:EE_
+X-MS-Office365-Filtering-Correlation-Id: 89c613d5-0575-48f9-4431-08dbdc527ecd
+X-LD-Processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: JNGMeNiEZ2bdBU8eX6TfkV86sDN1NcFFJhL9ZSIoY6hLZ1V+9hMbfj6YfFyTJpApibnaqo57xqVaT97r1iFrRZjutXhmipIdYUe+uK3g47LkHFUl6DXEgqAcXmX+9cL9L8l9uKbSSeitsjreaGGIDLgzNI+NU5gXAKn7algmYg1uOWXrHw6q3vsh9FfSBrQUC5acp5Wghrl/AECK6yBiS5mP7T06zGAOiHcXPSdE7o0RfTM7AByPMVriCRN8hrTRB8gyJGaJCdC19XOMxZ/t+rXKhHVBtYUb3TT71uqa0GJkSFLz/5kcYZg5+RlkKYoo1Ldp2PfX54q+Wdfso/s+yStec1hit90T0EICIG2fPWTm9qz6mkXiF8YCq4oKjtVCa6JqBL30I7/cOfbAup4Btc5cL10aUdmFaokI2POgAvQ8miuiFBlU5UhkQ9acyJ3zSmZLOBnvYDN3XA8fPSJI0tF7Rr6eWYRuQCBp4/vdigQBvZqmG3/beVd6GFJB8p6EdMBzULmClauUxrsnJMhwc1kBHtvoEdxWcflnRot4NcjRGxa8C3uD9AgaYKqMWAzfWXItaLZ4nin30UVtBsn0lCxI8EY+u5p8YFOfGTqyH5v30WXzyWmUnnwzQ/O8oi9UeNpJwO2DyU5GAWrz/2nEzA==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MW4PR11MB5776.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(39860400002)(346002)(376002)(396003)(366004)(136003)(230922051799003)(1800799009)(64100799003)(186009)(451199024)(31686004)(83380400001)(53546011)(38100700002)(2616005)(5660300002)(6486002)(86362001)(7416002)(82960400001)(4326008)(8676002)(2906002)(41300700001)(31696002)(44832011)(66476007)(8936002)(6506007)(6512007)(6666004)(66946007)(316002)(66556008)(478600001)(36756003)(54906003)(110136005)(26005)(43740500002)(45980500001);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?QVZYb3hjb2xPOUhvaXBkUGx3R1J6R2VhQVdPN3VjbGVLQTdKMHRPMFhINjBt?=
+ =?utf-8?B?Vm15cjBJaEJDKzhHa3pYZnd3dkZ4ZkI1Yk5scE84YzVabHdqY2Fic2NVS3lV?=
+ =?utf-8?B?SW1kNmFEL2UvUUF1MVV6eGpyQlZGeHl3dmtkRXdjQ3IrRmJtNHVBY3A5OG05?=
+ =?utf-8?B?d0t1Yi8zNFRKUjFYdE9nK0VpbmcxQ0FPeTVmaVlpblNIdjNTYkQvMmc5UnIw?=
+ =?utf-8?B?T2tDTmczUEZjbmJ6bVdLRlY5SVNqUXV3dGwzZlI4aHVGN2NTOENJcDFyRit4?=
+ =?utf-8?B?TUJabmtBaVdnOEZ5VUJ5MUQrZGYrSVo2Q05IakdnVXI5QzZIVGNFbmgxL09y?=
+ =?utf-8?B?aDB3RGtvZ2xUM2RGZUZHRkJ1M1NHU2hpRUJqNFNVd2JxVWZINjRaSDd1ZUZz?=
+ =?utf-8?B?eGIwM09HSFJXcVFFODRlcVdTb0x2SXJlNVZVN084YnpGUU16cHJINUpLVkR6?=
+ =?utf-8?B?VjZSa0FIV0pwMGMvbHB5QlBZamFHdjNkMVB5Z25ieWR6c0JocjFsaFZobjd3?=
+ =?utf-8?B?a3BqVW5MVEJOV3lwczdyUnVEeVNaSUEzVmIwUlV4c04va094UkJ3QVpFSTRJ?=
+ =?utf-8?B?QnMrV2JONERjZFVMOXp2cmhsWkh0TTlGc1ZQM3VoRkpXNUtVUFlqalpyK240?=
+ =?utf-8?B?dldQbm9IaUFWNVJRRzU4ZWZiT2dCT0NhbjFQUC9HTG9vVzB3dDhUODZVRHNU?=
+ =?utf-8?B?MnNwWDMvU0h6WmgyRHc4WjlmS0NXU1Zxc2NUUEVjcklJazZJTUNHSkZBVDlh?=
+ =?utf-8?B?MksxVU5zM202LzVoNllNdnFLMldZQ3A5UTJSbXFoRERqMkw2elh6T3N1K0ZB?=
+ =?utf-8?B?TFA3YXMzWHlxOHVUeVVqYWZqQlNCNDAwZnNzUSs1cmZCL1pvR1ZRRWdVL2sz?=
+ =?utf-8?B?MmdwRWxPdnNzeTVBTnJpM3RmVElKSGI3bW4yTmhPL2paek5UZzBpT1BjUldR?=
+ =?utf-8?B?RC9WZzRJcncwUXo3TXIrT1diSFM1cU85M3JrNWR4UkM2N3NTcFNRZlhJdVBP?=
+ =?utf-8?B?MHByRzRvNzhQZi8vSEtIaVBrWEtrUTVtbkRuMXJFOHN6d05jU0d2ckh3TUlz?=
+ =?utf-8?B?cTkzY0cxVUdVMjlISzJ1WENZUENvb29aYUQ3cmlBTmI4djZzMmlzamloN2pv?=
+ =?utf-8?B?OE9EaU1yeWtxMFgxUTZiaEp5YmNqbmg4eUlCdkIxNmVCQUxoa2hVL1dEay9n?=
+ =?utf-8?B?ZHpHSTdMQWRVQ3NQQkNPaUl6eklWMUdhSjZ0V01oS0liSi9WSzlWYUxuejRL?=
+ =?utf-8?B?WUF0Mi9JWG95TVZjMmZhZGRyT3RNM2gxY0JWU0Y3bjZxc2h4cWRvd2NYeWVP?=
+ =?utf-8?B?cTVQNk1PZlo0YTZFY2NaMmR1aVdFbFAycWExdlZsd2tBRFgwb1JHZTlHZVN3?=
+ =?utf-8?B?RSttOG54bDZQakJUZGgrWFRsNEMxQWU1SUQvOEVKbFpUQ2E0dHJIbWNEdis1?=
+ =?utf-8?B?RU9KaStxZHJxUEZKTW9zN2lkTG84Q2gybmNrR0pRY09IQkExeVRUZHVHNDZk?=
+ =?utf-8?B?WGFzTlk5dWYyRmR3Z1ZPS2ZkNW5LWGlvYjNhV2YyUUxGQ2Iva2dTSFNMVkVL?=
+ =?utf-8?B?cXhXOE00V09kQlMzNDh5ZU9zMkFvck5zbndXUmUwVGxQMGFwYjBROTlkTmRK?=
+ =?utf-8?B?T0VxbnlCNmlocDF3eE9wbVhBb21lY295enNPWWNVNS9BRm5INjBKYjl2TkR2?=
+ =?utf-8?B?dTNQQThRZmV3amlCVHZYcjVFOFBLYWN4bTVKQVFMT09Valhza291aThqMVJ4?=
+ =?utf-8?B?Tm9Ic3M0citudDdzRTZmMVBxN0FPck5oQzlMR0tGTzlJY2ZpOU0yWFN5Ukxj?=
+ =?utf-8?B?dnd1V21qaWppQmVBWkN5V3hRK0JlZGxPZ1Y2YU5oZHpIZTlxb2ZrNWNIQysr?=
+ =?utf-8?B?N0w5NWxXeUZ3dy9YaWpRNTBydk83b2MrL05RZkZsNzdZd0FzdGhRNU9JR2k5?=
+ =?utf-8?B?SEpacUs3KzQ3SHpqQXJIQTlxZHEzOWp3eE1kb1VLWk1zblNJZ0FzTW12VElK?=
+ =?utf-8?B?NUw2RUdibDJmbGhIck12aWRRM0pXVHBMQ1dzVXE0TkR3WFdLODBZT0RQS2ta?=
+ =?utf-8?B?T1FRVHNESlNmbTRGVXFYeUNxalFPWHZuTlg3eXB4VTVwcGp3cjRmeG5NR3Nq?=
+ =?utf-8?B?dTFHTTVoMmpJSndKWisyOVFOV01zdENOYnNLaTlwdWdCTFk0aDZKNXMyTDlL?=
+ =?utf-8?B?SkE9PQ==?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: 89c613d5-0575-48f9-4431-08dbdc527ecd
+X-MS-Exchange-CrossTenant-AuthSource: MW4PR11MB5776.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 03 Nov 2023 09:51:47.8624
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: w2h7IiGEx+Rx54BbLSeMq0KN8sxH6UJSkJnFNUkRrpakQUheh4wUFfGmimls4jnn2jUAwLYpMNhAOvd7zrvN9kDOHdL2cytO5sUMsL2ff4E=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM4PR11MB6309
+X-OriginatorOrg: intel.com
+X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
+On 03.11.2023 07:36, Dan Carpenter wrote:
+> The mlx5_esw_offloads_devlink_port() function returns error pointers, not
+> NULL.
+> 
+> Fixes: 7bef147a6ab6 ("net/mlx5: Don't skip vport check")
+> Signed-off-by: Dan Carpenter <dan.carpenter@linaro.org>
+> ---
+> I *think* these normally go through the mellanox tree and not net.
 
+Reviewed-by: Wojciech Drewek <wojciech.drewek@intel.com>
 
-On 03.11.23 07:07, D. Wythe wrote:
-> From: "D. Wythe" <alibuda@linux.alibaba.com>
 > 
-> This patches includes bugfix following:
+>  drivers/net/ethernet/mellanox/mlx5/core/en_rep.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 > 
-> 1. hung state
-> 2. sock leak
-> 3. potential panic
-> 
-> We have been testing these patches for some time, but
-> if you have any questions, please let us know.
-> 
-> --
-> v1:
-> Fix spelling errors and incorrect function names in descriptions
-> 
-> v2->v1:
-> Add fix tags for bugfix patch
-> 
-> D. Wythe (3):
->    net/smc: fix dangling sock under state SMC_APPFINCLOSEWAIT
->    net/smc: allow cdc msg send rather than drop it with NULL sndbuf_desc
->    net/smc: put sk reference if close work was canceled
-> 
->   net/smc/af_smc.c    |  4 ++--
->   net/smc/smc.h       |  5 +++++
->   net/smc/smc_cdc.c   | 11 +++++------
->   net/smc/smc_close.c |  5 +++--
->   4 files changed, 15 insertions(+), 10 deletions(-)
-> 
-
-Thank you for the fixes, LGTM! For all of the 3 pathces:
-
-Reviewed-by: Wenjia Zhang <wenjia@linux.ibm.com>
+> diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en_rep.c b/drivers/net/ethernet/mellanox/mlx5/core/en_rep.c
+> index 693e55b010d9..5c569d4bfd00 100644
+> --- a/drivers/net/ethernet/mellanox/mlx5/core/en_rep.c
+> +++ b/drivers/net/ethernet/mellanox/mlx5/core/en_rep.c
+> @@ -1493,7 +1493,7 @@ mlx5e_vport_vf_rep_load(struct mlx5_core_dev *dev, struct mlx5_eswitch_rep *rep)
+>  
+>  	dl_port = mlx5_esw_offloads_devlink_port(dev->priv.eswitch,
+>  						 rpriv->rep->vport);
+> -	if (dl_port) {
+> +	if (!IS_ERR(dl_port)) {
+>  		SET_NETDEV_DEVLINK_PORT(netdev, dl_port);
+>  		mlx5e_rep_vnic_reporter_create(priv, dl_port);
+>  	}
