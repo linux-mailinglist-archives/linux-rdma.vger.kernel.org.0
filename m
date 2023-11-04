@@ -2,76 +2,76 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 290157E0A81
-	for <lists+linux-rdma@lfdr.de>; Fri,  3 Nov 2023 21:50:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E40F7E0E40
+	for <lists+linux-rdma@lfdr.de>; Sat,  4 Nov 2023 08:57:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229576AbjKCUub (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 3 Nov 2023 16:50:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43090 "EHLO
+        id S231199AbjKDH5H (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Sat, 4 Nov 2023 03:57:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59408 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229484AbjKCUua (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 3 Nov 2023 16:50:30 -0400
+        with ESMTP id S229509AbjKDH5G (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Sat, 4 Nov 2023 03:57:06 -0400
 Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE92B1BF
-        for <linux-rdma@vger.kernel.org>; Fri,  3 Nov 2023 13:50:27 -0700 (PDT)
-Received: from pps.filterd (m0353726.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3A3KbGHV031142;
-        Fri, 3 Nov 2023 20:50:11 GMT
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0921819D
+        for <linux-rdma@vger.kernel.org>; Sat,  4 Nov 2023 00:57:03 -0700 (PDT)
+Received: from pps.filterd (m0353728.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3A46jSah006624;
+        Sat, 4 Nov 2023 07:56:49 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
  : date : message-id : mime-version : content-transfer-encoding; s=pp1;
  bh=/u8xU//gSNUGMM9Nw3Ti0OZRiyr3SQTjMOyPUOZsFto=;
- b=abXg5yvBuvN04IHMMp88ldi2SJRpVUuGpx7R6x+7aKc8xsWkkWGYSAdLargW3Bn2pbRp
- p+Fz2itnEdDARrrPJcZIGpF5AkNSkk/V0IH0pfRZoFK+dPCDl5cEiU7bdsx3H8SAvvmQ
- RHkzkUBu+oc3RFUCNm3pon2l1oRdAfAZGFv0lx4jKjd1od48w6m8q+o9XILXsqts5U0v
- mMOhQJuArfTXcZa5f6k2YocOKh1OHimQuBQPuRibnTOmz8Ox151ZL9bijpKU+vg5yFOk
- G0NJvEeRmMQztGI2NbIc8u3YSXs2AgVI2FiaV/OBbdtLubpf5hC6MZNzoP6jw3B8t72+ Rg== 
-Received: from ppma13.dal12v.mail.ibm.com (dd.9e.1632.ip4.static.sl-reverse.com [50.22.158.221])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3u582b87w4-1
+ b=SWdVFC/OAPmDwZMOvxee386H3SC2Qw0LAXszl2UuMUMpGKALQ+pBeaf8jGoRgxUexFP0
+ TAFm6tl2+a5cCfaJl5AVwSv3GgzJxIE2w4eQkSMYhiI3N4oiaX5Eq2Z9k0RBt+cj+WX9
+ lOHkgdK0ZATFnOFDXuNOLEpPIwfTOSlDcrQmvlQLykIJN5O2lXTrP74H+VXVpsM25uGy
+ 5+gQTIppzPwYZBvh62ysck22xcUo8pyaYhTT+OVg2L6zrpCW3uk0xgzWaBkT7K5Cpk9c
+ EeCDUWRG3VajHNkZcq+BOfhMoOd890ZO7CGrVHSJVUH9TnCqUJq7LlSfyE8uH68cfwWC 8Q== 
+Received: from ppma11.dal12v.mail.ibm.com (db.9e.1632.ip4.static.sl-reverse.com [50.22.158.219])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3u5gy9h54s-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 03 Nov 2023 20:50:10 +0000
-Received: from pps.filterd (ppma13.dal12v.mail.ibm.com [127.0.0.1])
-        by ppma13.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 3A3IuZ7a011291;
-        Fri, 3 Nov 2023 20:50:09 GMT
-Received: from smtprelay05.fra02v.mail.ibm.com ([9.218.2.225])
-        by ppma13.dal12v.mail.ibm.com (PPS) with ESMTPS id 3u1eukrab4-1
+        Sat, 04 Nov 2023 07:56:49 +0000
+Received: from pps.filterd (ppma11.dal12v.mail.ibm.com [127.0.0.1])
+        by ppma11.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 3A47DICB006891;
+        Sat, 4 Nov 2023 07:56:48 GMT
+Received: from smtprelay02.fra02v.mail.ibm.com ([9.218.2.226])
+        by ppma11.dal12v.mail.ibm.com (PPS) with ESMTPS id 3u1fb2tykw-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 03 Nov 2023 20:50:09 +0000
-Received: from smtpav04.fra02v.mail.ibm.com (smtpav04.fra02v.mail.ibm.com [10.20.54.103])
-        by smtprelay05.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 3A3Ko7WK21561978
+        Sat, 04 Nov 2023 07:56:48 +0000
+Received: from smtpav01.fra02v.mail.ibm.com (smtpav01.fra02v.mail.ibm.com [10.20.54.100])
+        by smtprelay02.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 3A47ukrl5636696
         (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 3 Nov 2023 20:50:07 GMT
-Received: from smtpav04.fra02v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 71CB320040;
-        Fri,  3 Nov 2023 20:50:07 +0000 (GMT)
-Received: from smtpav04.fra02v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 2B9CF20043;
-        Fri,  3 Nov 2023 20:50:07 +0000 (GMT)
+        Sat, 4 Nov 2023 07:56:46 GMT
+Received: from smtpav01.fra02v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 4F9C82004B;
+        Sat,  4 Nov 2023 07:56:46 +0000 (GMT)
+Received: from smtpav01.fra02v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 0722D20040;
+        Sat,  4 Nov 2023 07:56:46 +0000 (GMT)
 Received: from spoke.zurich.ibm.com (unknown [9.4.68.71])
-        by smtpav04.fra02v.mail.ibm.com (Postfix) with ESMTP;
-        Fri,  3 Nov 2023 20:50:07 +0000 (GMT)
+        by smtpav01.fra02v.mail.ibm.com (Postfix) with ESMTP;
+        Sat,  4 Nov 2023 07:56:45 +0000 (GMT)
 From:   Bernard Metzler <bmt@zurich.ibm.com>
 To:     linux-rdma@vger.kernel.org
 Cc:     jgg@ziepe.ca, leon@kernel.org, max7255@meta.com,
         dennis.dalessandro@cornelisnetworks.com, guoqing.jiang@linux.dev,
         benve@cisco.com, vadim.fedorenko@linux.dev,
         Bernard Metzler <bmt@zurich.ibm.com>
-Subject: [PATCH for-next] RDMA/siw: Use ib_umem_get() to pin user pages
-Date:   Fri,  3 Nov 2023 21:49:56 +0100
-Message-Id: <20231103204956.165515-1-bmt@zurich.ibm.com>
+Subject: [PATCH for-next v2] RDMA/siw: Use ib_umem_get() to pin user pages
+Date:   Sat,  4 Nov 2023 08:56:43 +0100
+Message-Id: <20231104075643.195186-1-bmt@zurich.ibm.com>
 X-Mailer: git-send-email 2.38.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: XNtKJiJPBC55Si-asxcV5fK82XK0UhJD
-X-Proofpoint-ORIG-GUID: XNtKJiJPBC55Si-asxcV5fK82XK0UhJD
+X-Proofpoint-GUID: jOkgSmOKl40Xzhr-0SeVzPWfObs7c7kY
+X-Proofpoint-ORIG-GUID: jOkgSmOKl40Xzhr-0SeVzPWfObs7c7kY
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-11-03_20,2023-11-02_03,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0 malwarescore=0
- spamscore=0 lowpriorityscore=0 mlxscore=0 mlxlogscore=734 adultscore=0
- priorityscore=1501 clxscore=1015 impostorscore=0 bulkscore=0 phishscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2310240000
- definitions=main-2311030175
+ definitions=2023-11-04_05,2023-11-02_03,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 phishscore=0
+ suspectscore=0 bulkscore=0 spamscore=0 adultscore=0 clxscore=1015
+ priorityscore=1501 lowpriorityscore=0 malwarescore=0 impostorscore=0
+ mlxlogscore=737 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2310240000 definitions=main-2311040064
 X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_EF,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
