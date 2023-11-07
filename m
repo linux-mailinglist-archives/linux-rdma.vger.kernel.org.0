@@ -2,30 +2,30 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3838D7E4532
-	for <lists+linux-rdma@lfdr.de>; Tue,  7 Nov 2023 17:03:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A03E7E454B
+	for <lists+linux-rdma@lfdr.de>; Tue,  7 Nov 2023 17:04:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343791AbjKGQDD (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 7 Nov 2023 11:03:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34814 "EHLO
+        id S234885AbjKGQEY (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 7 Nov 2023 11:04:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46138 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344406AbjKGQCl (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 7 Nov 2023 11:02:41 -0500
+        with ESMTP id S235338AbjKGQD1 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 7 Nov 2023 11:03:27 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D51C28A6F;
-        Tue,  7 Nov 2023 07:53:48 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 61E1BC433C9;
-        Tue,  7 Nov 2023 15:53:47 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 91707385F;
+        Tue,  7 Nov 2023 07:54:35 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 37604C433CA;
+        Tue,  7 Nov 2023 15:54:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1699372428;
-        bh=r02ZMxDIEew8bZyoZOGjAAvJ4LsIu5rIFKk0TRNrS7g=;
+        s=k20201202; t=1699372475;
+        bh=AItuZb+SXkbKmApNqTYCd4YMjP51UQDwlL7rRwb4iHM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=tHA1Te/oA+VMg8FFx8p3M4w1jC8x4K9C/a3rKvZubJ/391we0ZSqPRciZfas/YXAv
-         nfdplhkr0wIIcRuIQEv/HnjB0hV0dhk0/pakawcsBX2t2DXr5sqcLq5JO00mcL/zME
-         XidZgVb40ZLUXjVx+l0SMCexMhw2qUbm9MTtRPKHhhTPc9wbVNzfkoQJlyFxwuqr3D
-         L/e6/ls+bawsTk0RNbsmHZC+RLA6OwsAusGl4aXzYECTOcQLML+efBtPIN+56g6jBL
-         v5c2KvUm3AhYSeTJv34JaUKPVPKI45NhcgjAyy0ryW/UXOVWyij/zuZCyyycWxbxag
-         I2iXFi20Ev7Hg==
+        b=uPi7nA3W99BpjIN5CL6xYTYVk99lkWw0RI4HAMv+P8gnyNYhSZ6ddHcS7UpcM/Quw
+         Y4JIOcv7G2+i70UZYcjN/G1HtYPmSshOVwQGQDixsB0ufb8QezNTsUQl8ZsIH2Nu6n
+         gpIRhq3MSeQPmXZXJslWPPwgVxG1If0tEIwhXjo52KAUFSUHo4GwKeEw5BGJjKGTCt
+         Yg2Q6OUwQlOXOkx5N8F/zInXy+H20BLBfC45/ZdQo3NUCqYTS4gGFKPl7KcyImyAdo
+         oyuRL7Np36BjH2ymMLMCQl9w9tGNGl/EPwyiE1eQOdnmNY8bpAbQ7mGPC8b40QR+5J
+         NQaqhsKsZG3gQ==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Cc:     =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>,
@@ -34,17 +34,17 @@ Cc:     =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>,
         Leon Romanovsky <leon@kernel.org>,
         Sasha Levin <sashal@kernel.org>,
         dennis.dalessandro@cornelisnetworks.com, linux-rdma@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.4 02/12] RDMA/hfi1: Use FIELD_GET() to extract Link Width
-Date:   Tue,  7 Nov 2023 10:53:20 -0500
-Message-ID: <20231107155343.3768464-2-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 4.19 02/11] RDMA/hfi1: Use FIELD_GET() to extract Link Width
+Date:   Tue,  7 Nov 2023 10:54:10 -0500
+Message-ID: <20231107155430.3768779-2-sashal@kernel.org>
 X-Mailer: git-send-email 2.42.0
-In-Reply-To: <20231107155343.3768464-1-sashal@kernel.org>
-References: <20231107155343.3768464-1-sashal@kernel.org>
+In-Reply-To: <20231107155430.3768779-1-sashal@kernel.org>
+References: <20231107155430.3768779-1-sashal@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 X-stable: review
 X-Patchwork-Hint: Ignore
-X-stable-base: Linux 5.4.259
+X-stable-base: Linux 4.19.297
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
@@ -69,7 +69,7 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  1 file changed, 2 insertions(+), 7 deletions(-)
 
 diff --git a/drivers/infiniband/hw/hfi1/pcie.c b/drivers/infiniband/hw/hfi1/pcie.c
-index 61362bd6d3ced..111705e6609c9 100644
+index a8dd12e525f81..e1b6da7775584 100644
 --- a/drivers/infiniband/hw/hfi1/pcie.c
 +++ b/drivers/infiniband/hw/hfi1/pcie.c
 @@ -45,6 +45,7 @@
@@ -80,7 +80,7 @@ index 61362bd6d3ced..111705e6609c9 100644
  #include <linux/pci.h>
  #include <linux/io.h>
  #include <linux/delay.h>
-@@ -261,12 +262,6 @@ static u32 extract_speed(u16 linkstat)
+@@ -273,12 +274,6 @@ static u32 extract_speed(u16 linkstat)
  	return speed;
  }
  
@@ -93,7 +93,7 @@ index 61362bd6d3ced..111705e6609c9 100644
  /* read the link status and set dd->{lbus_width,lbus_speed,lbus_info} */
  static void update_lbus_info(struct hfi1_devdata *dd)
  {
-@@ -279,7 +274,7 @@ static void update_lbus_info(struct hfi1_devdata *dd)
+@@ -291,7 +286,7 @@ static void update_lbus_info(struct hfi1_devdata *dd)
  		return;
  	}
  
