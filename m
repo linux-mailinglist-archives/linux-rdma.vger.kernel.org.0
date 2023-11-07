@@ -2,94 +2,62 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CA72E7E4C68
-	for <lists+linux-rdma@lfdr.de>; Wed,  8 Nov 2023 00:03:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8DFEB7E4955
+	for <lists+linux-rdma@lfdr.de>; Tue,  7 Nov 2023 20:40:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234038AbjKGXDv (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 7 Nov 2023 18:03:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42128 "EHLO
+        id S234007AbjKGTkW convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-rdma@lfdr.de>); Tue, 7 Nov 2023 14:40:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51880 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234175AbjKGXDu (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 7 Nov 2023 18:03:50 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.10])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B682910C3
-        for <linux-rdma@vger.kernel.org>; Tue,  7 Nov 2023 15:03:48 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1699398229; x=1730934229;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=e0fl2w4yaEynuxUISdpEx4g/L2QywUcE/5FfdKlJ4Bo=;
-  b=T9zOPGPwkyeigZIT6+KxF51m0JFbsZ8hdxKiGauUCzEnXngZ9Cc33G1y
-   isBQQyMlNZ+qUbhT1ST/TwrzihMrmI92rTPf9dX0eeadxz4HwSSzintp6
-   dQ/wTfldf9dlWV/H/KlviUfWE7Pvr7PzSTd9MD4p/kUVHcxJVSs2Etyqt
-   vFHQaN28waweIx/Um2j8Mfwbv7T0fxROTifXVKJfN/6zmn07flJZmV6JY
-   0A0CcR1eD7HSK2jBPyMD8n5goHCJsYVoen15iTo5SZZmq+6fk1rQCUGFu
-   q+0uZpYWOyU+IUxVyETLwHpsMOKEdo7JyW8AatIfCPYhWw8QkcpA2ULRQ
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10887"; a="2656608"
-X-IronPort-AV: E=Sophos;i="6.03,284,1694761200"; 
-   d="scan'208";a="2656608"
-Received: from orviesa002.jf.intel.com ([10.64.159.142])
-  by orvoesa102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Nov 2023 15:03:49 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.03,284,1694761200"; 
-   d="scan'208";a="3993190"
-Received: from lkp-server01.sh.intel.com (HELO 17d9e85e5079) ([10.239.97.150])
-  by orviesa002.jf.intel.com with ESMTP; 07 Nov 2023 15:03:46 -0800
-Received: from kbuild by 17d9e85e5079 with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1r0V6l-0007Se-1o;
-        Tue, 07 Nov 2023 23:03:44 +0000
-Date:   Wed, 8 Nov 2023 07:03:35 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Bob Pearson <rpearsonhpe@gmail.com>, jgg@nvidia.com,
-        yanjun.zhu@linux.dev, linux-rdma@vger.kernel.org
-Cc:     oe-kbuild-all@lists.linux.dev, Bob Pearson <rpearsonhpe@gmail.com>
-Subject: Re: [PATCH for-next v2 6/6] RDMA/rxe: Cleanup mcg lifetime
-Message-ID: <202311080628.qKudDtHK-lkp@intel.com>
-References: <20231106152928.47869-7-rpearsonhpe@gmail.com>
+        with ESMTP id S234715AbjKGTkV (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 7 Nov 2023 14:40:21 -0500
+X-Greylist: delayed 4602 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Tue, 07 Nov 2023 11:40:19 PST
+Received: from mail.ideal-manta.com (ideal-manta.com [190.57.164.194])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 68F7A10C3
+        for <linux-rdma@vger.kernel.org>; Tue,  7 Nov 2023 11:40:19 -0800 (PST)
+Received: from localhost (localhost [127.0.0.1])
+        by mail.ideal-manta.com (Postfix) with ESMTP id F1DF62E7F61;
+        Tue,  7 Nov 2023 11:20:28 -0500 (-05)
+Received: from mail.ideal-manta.com ([127.0.0.1])
+ by localhost (mail.ideal-manta.com [127.0.0.1]) (amavis, port 10032)
+ with ESMTP id 72lZ2puXD8la; Tue,  7 Nov 2023 11:20:28 -0500 (-05)
+Received: from localhost (localhost [127.0.0.1])
+        by mail.ideal-manta.com (Postfix) with ESMTP id 68ED52E71B6;
+        Tue,  7 Nov 2023 11:20:28 -0500 (-05)
+X-Virus-Scanned: amavis at ideal-manta.com
+Received: from mail.ideal-manta.com ([127.0.0.1])
+ by localhost (mail.ideal-manta.com [127.0.0.1]) (amavis, port 10026)
+ with ESMTP id wwBNWqJxowCm; Tue,  7 Nov 2023 11:20:28 -0500 (-05)
+Received: from [87.120.84.204] (unknown [192.168.2.10])
+        by mail.ideal-manta.com (Postfix) with ESMTP id 90FB22E7A20;
+        Tue,  7 Nov 2023 11:20:06 -0500 (-05)
+Content-Type: text/plain; charset="iso-8859-1"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231106152928.47869-7-rpearsonhpe@gmail.com>
+Content-Transfer-Encoding: 8BIT
+Content-Description: Mail message body
+Subject: Can you handle this project?
+To:     Recipients <mrgeoffreyonyeama6837777@gmail.com>
+From:   ",Mr Geoffrey Onyeama" <mrgeoffreyonyeama6837777@gmail.com>
+Date:   Tue, 07 Nov 2023 15:19:42 -0800
+Reply-To: mrgeoffreyonyeama683@gmail.com
+Message-Id: <20231107162006.90FB22E7A20@mail.ideal-manta.com>
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Hi Bob,
+ATTN: Sir,
 
-kernel test robot noticed the following build errors:
+I have a proposition for you, this however is not mandatory nor will I in any manner compel you to honor against your will. Let me start by introducing myself. I am Mr Geoffrey Onyeama, Minister of Foreign Affairs Nigeria. I have a mutually beneficial business suggestion for you.
 
-[auto build test ERROR on rdma/for-next]
-[also build test ERROR on linus/master v6.6 next-20231107]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
+1.  Can I give you this trust ?
+2.  Can you handle this project?
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Bob-Pearson/RDMA-rxe-Cleanup-rxe_ah-av_chk_attr/20231107-005913
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git for-next
-patch link:    https://lore.kernel.org/r/20231106152928.47869-7-rpearsonhpe%40gmail.com
-patch subject: [PATCH for-next v2 6/6] RDMA/rxe: Cleanup mcg lifetime
-config: csky-randconfig-002-20231107 (https://download.01.org/0day-ci/archive/20231108/202311080628.qKudDtHK-lkp@intel.com/config)
-compiler: csky-linux-gcc (GCC) 13.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231108/202311080628.qKudDtHK-lkp@intel.com/reproduce)
+Absolute confidentiality is required from you. Besides, I want to use my connection/office to get documentation back up for the exit of $27.5M over invoiced contract payment into your bank account.
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202311080628.qKudDtHK-lkp@intel.com/
+If you AGREE to work with me for the exit of these unclaimed funds to your account, l will advise you on the next line of action immediately the Fund transfer will commence without further delay, as I would proceed to fix your name on the Payment schedule instantly to meet the 10 working days.
 
-All errors (new ones prefixed by >>):
+I wait to hear from you.
 
-   csky-linux-ld: drivers/infiniband/sw/rxe/rxe_mcast.o: in function `rxe_mcast_add':
-   rxe_mcast.c:(.text+0x42): undefined reference to `ipv6_sock_mc_join'
-   csky-linux-ld: rxe_mcast.c:(.text+0xa6): undefined reference to `ipv6_sock_mc_drop'
-   csky-linux-ld: drivers/infiniband/sw/rxe/rxe_mcast.o: in function `rxe_cleanup_mcg':
-   rxe_mcast.c:(.text+0x1a4): undefined reference to `ipv6_sock_mc_drop'
->> csky-linux-ld: rxe_mcast.c:(.text+0x1b8): undefined reference to `ipv6_sock_mc_join'
-   csky-linux-ld: rxe_mcast.c:(.text+0x1c4): undefined reference to `ipv6_sock_mc_drop'
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+Regards.
+Mr Geoffrey Onyeama
+(Hon. Min. of Foreign Affairs) 
