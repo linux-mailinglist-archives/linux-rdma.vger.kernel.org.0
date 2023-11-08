@@ -2,103 +2,156 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C7E917E5F7F
-	for <lists+linux-rdma@lfdr.de>; Wed,  8 Nov 2023 21:55:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DAACD7E5F84
+	for <lists+linux-rdma@lfdr.de>; Wed,  8 Nov 2023 21:56:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229885AbjKHUzJ (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 8 Nov 2023 15:55:09 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40428 "EHLO
+        id S229722AbjKHU4g (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 8 Nov 2023 15:56:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44168 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229506AbjKHUzJ (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 8 Nov 2023 15:55:09 -0500
-Received: from NAM11-CO1-obe.outbound.protection.outlook.com (mail-co1nam11on2064.outbound.protection.outlook.com [40.107.220.64])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80FDA2113
-        for <linux-rdma@vger.kernel.org>; Wed,  8 Nov 2023 12:55:06 -0800 (PST)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=K7OXzPocYMX9OFizUQpD0KatiwoRDA47WLjawFfmDXK4tEXCgqVJIyrDIc/xGv9p+2qqkmWYo90U/VKYTLNvMA/jM+rZgrDXffE6Dbv5BlWE6ltC8j2q5dstt1DW+FFLpU72Kb4cj9VbBiCUX7FcqFEREzGgjmt+x2qTxCzDeTSfAkpQ1lDv6mtzvjdgpASjVOt1PkcnK8YSGjIG5cglZbg9vPvZ8M/E32fBpw59WDHxUh1r5bgyW1WqP9xdh/SRd2PD1lKWptGY5ZM4eAEpg7ty0l31UhDRQpOw02GkYYBaVSMIQIidyhbTkL/h+hEAYKk0LiuUCurm20AfNWw5OA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=+O08z54mvPSqvPAAQGEKHXyyVBA/A9PwERI3ChK1M6I=;
- b=DprWk5zO1RUZNimvjKAd590LioyoyArG+nOUrJA29G8muW2HtrY/cjQB0ZuczBzklwAyd5Ixy/Mnm0ZcFeoS3Iy6QVBpNDnmXCFFpqaC1NjYKgJ6LV2MTrV1otI7USmfDnUBRp8ONdnlraRjEXGP2pToNpr8aMaJxCWGx9TGX4ROuugvtWRAxapK+41JCEFoEAAPfcuHIxK/RT5PPsKUnoWjuEIaJ/rGxefioWpi8V+TfIWFkdXu7HjOyBn3npFjIjXzG6RjdiFVkDecVppO5K2k8/vTHMDZ2/tRX3AEVKDFD97wNG9nXve86ERg9NC8r8lqHmPN8dGYOONMB0FuLg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 216.228.117.161) smtp.rcpttodomain=redhat.com smtp.mailfrom=nvidia.com;
- dmarc=pass (p=reject sp=reject pct=100) action=none header.from=nvidia.com;
- dkim=none (message not signed); arc=none (0)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=+O08z54mvPSqvPAAQGEKHXyyVBA/A9PwERI3ChK1M6I=;
- b=eLqz+eOOL+nhIcN6xMCVtp7h/6OThqS0+K/nmM8SUgXXXWnHgaLV0ee891230GGwTJp9XXbb/ep5lQjtKuKUor1QgztkWZqs3sYUwV9aRPj7e2zQm8vuN5vW/6rtidXi+tXR45WZ8wizCCd6TmscKv/YD3Ot7tizuWbDJsV7TMhHVsPv5AeLNWOQ7V9otpE6jTTfHtsydfnTzuJOxNzHVaCI5+5zLIYV20lF1sO03RmuCkZMb+/+KS9vLhamzgbuvYblpgMN8lCIKyKx0Uw32g3LEx8DHNtVrA7E5S1zUWJyIoD5wX0vNK9k1EdDZ2bk0PFdcDWLUHSIOvKYFuCZ+Q==
-Received: from DS7PR05CA0064.namprd05.prod.outlook.com (2603:10b6:8:57::26) by
- MN0PR12MB5908.namprd12.prod.outlook.com (2603:10b6:208:37c::14) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6954.28; Wed, 8 Nov
- 2023 20:55:02 +0000
-Received: from CY4PEPF0000EE34.namprd05.prod.outlook.com
- (2603:10b6:8:57:cafe::47) by DS7PR05CA0064.outlook.office365.com
- (2603:10b6:8:57::26) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6977.18 via Frontend
- Transport; Wed, 8 Nov 2023 20:55:02 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.117.161)
- smtp.mailfrom=nvidia.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=nvidia.com;
-Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
- 216.228.117.161 as permitted sender) receiver=protection.outlook.com;
- client-ip=216.228.117.161; helo=mail.nvidia.com; pr=C
-Received: from mail.nvidia.com (216.228.117.161) by
- CY4PEPF0000EE34.mail.protection.outlook.com (10.167.242.40) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.6977.19 via Frontend Transport; Wed, 8 Nov 2023 20:55:01 +0000
-Received: from rnnvmail201.nvidia.com (10.129.68.8) by mail.nvidia.com
- (10.129.200.67) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.41; Wed, 8 Nov 2023
- 12:54:50 -0800
-Received: from dev.nvidia.com (10.126.231.35) by rnnvmail201.nvidia.com
- (10.129.68.8) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.41; Wed, 8 Nov 2023
- 12:54:49 -0800
-From:   Chaitanya Kulkarni <kch@nvidia.com>
-To:     <loberman@redhat.com>
-CC:     <keith.busch@intel.com>, <linux-rdma@vger.kernel.org>,
-        <kch@nvidia.com>, <linux-nvme@lists.infradead.org>
-Subject: Mellanox CX6 and nvmet connectivity failure, happens on RHEL9.2 kernels and latest 6.6 upstream
-Date:   Wed, 8 Nov 2023 12:54:34 -0800
-Message-ID: <20231108205434.5284-1-kch@nvidia.com>
-X-Mailer: git-send-email 2.40.0
-In-Reply-To: <475a37e920badad12a0d71fff65e817979417594.camel@redhat.com>
+        with ESMTP id S229506AbjKHU4f (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 8 Nov 2023 15:56:35 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF46F2113
+        for <linux-rdma@vger.kernel.org>; Wed,  8 Nov 2023 12:55:47 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1699476946;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=L0bdxggE2E6/3xhZA/HOZuteyNb9BWW87tXjb8tIPik=;
+        b=JxBniBiGlS/3ycOp2/j5ZjaWpz4Y3gRFos4uCNxeHfHFXR2ARkyRx3kW9PARgGoytZ1cfm
+        a4ukKzxV6mSttzVgexLtZazCCpP0a8VKbEyJxg+dxvzRp7rgKz7s13M1hWx8Iw5BXSfaLW
+        w0Scm/Cq9vlVt0yIl09xqBmsjyFN5p8=
+Received: from mail-ot1-f71.google.com (mail-ot1-f71.google.com
+ [209.85.210.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-587-8h6EL0WNM8C4BrnNgGShqg-1; Wed, 08 Nov 2023 15:55:45 -0500
+X-MC-Unique: 8h6EL0WNM8C4BrnNgGShqg-1
+Received: by mail-ot1-f71.google.com with SMTP id 46e09a7af769-6ce25ad9ef2so71810a34.3
+        for <linux-rdma@vger.kernel.org>; Wed, 08 Nov 2023 12:55:45 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1699476944; x=1700081744;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=L0bdxggE2E6/3xhZA/HOZuteyNb9BWW87tXjb8tIPik=;
+        b=uTd3AcRIwECH/9e8GknL+Hsj//47ADhkyMYCI3M4cEDxmP+PaAeCHCeTJuHfS4oKRY
+         6gU4y6fWx/7SGJU84EF6k8BYL4Pl2+mXhsNxpWPUVFVxCDAeEWs4q1VLkaThqzy9Z1sA
+         OjkkLpsC85O2nwImm1R/epnA0zQW0AzRnCaGgWxcONEInbp3nmYI6QXdpYq6yGNSptuo
+         +7BiEYXXnFObRfInSpJ+blBWmBJS6YDzwuIZKHpPGvndetQ76mFs5tZvpNzfWsPZvuAl
+         pMUmBhgsi5+vEdWJ6qkf0OrkB3GmZRI2UPasDl6MIRHIGuC6+6JcGL6ktonG5AxmrrkF
+         WQwg==
+X-Gm-Message-State: AOJu0YxR2rysrc3NJ6anXKhXjTX1rvuZCcGgWKoZAQHnccvnI5lJZSMm
+        xGIDdrf/DgOhwneFJDLN++VfvapO7nnGNlTpdNiMhB34+c2ha7qNLj9AM06LJddePAMncQCkKkJ
+        15JQWvrpaL6tCKvOC3e7duA==
+X-Received: by 2002:a9d:7c95:0:b0:6c4:897a:31c4 with SMTP id q21-20020a9d7c95000000b006c4897a31c4mr2702378otn.29.1699476944342;
+        Wed, 08 Nov 2023 12:55:44 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IFB+Aql6S1shLyEYfYSPWwaq2p/J9LNwwJauXWan0U4h4thD5uXVBWEUdauwH1+YzhWzxrNxg==
+X-Received: by 2002:a9d:7c95:0:b0:6c4:897a:31c4 with SMTP id q21-20020a9d7c95000000b006c4897a31c4mr2702370otn.29.1699476944042;
+        Wed, 08 Nov 2023 12:55:44 -0800 (PST)
+Received: from ?IPv6:2600:6c64:4e7f:603b:2613:173:a68a:fce8? ([2600:6c64:4e7f:603b:2613:173:a68a:fce8])
+        by smtp.gmail.com with ESMTPSA id t2-20020a05622a180200b0041812703b7esm1273372qtc.52.2023.11.08.12.55.43
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 08 Nov 2023 12:55:43 -0800 (PST)
+Message-ID: <58dae256881123291880b1df49d99fe9ceb01944.camel@redhat.com>
+Subject: Re: Mellanox CX6 and nvmet connectivity failure, happens on RHEL9.2
+ kernels and latest 6.6 upstream
+From:   Laurence Oberman <loberman@redhat.com>
+To:     Mark Lehrer <lehrer@gmail.com>, jpittman@redhat.com
+Cc:     linux-rdma <linux-rdma@vger.kernel.org>
+Date:   Wed, 08 Nov 2023 15:55:43 -0500
+In-Reply-To: <27ebfe1ffb5b9e1983466f6ad3a1726b66fc0799.camel@redhat.com>
 References: <475a37e920badad12a0d71fff65e817979417594.camel@redhat.com>
+         <CADvaNzW1GYMDnD5ffTbB0wgbmWF1HNwgkikbL1=48=B2ouVGHw@mail.gmail.com>
+         <27ebfe1ffb5b9e1983466f6ad3a1726b66fc0799.camel@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.46.4 (3.46.4-1.fc37) 
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Originating-IP: [10.126.231.35]
-X-ClientProxiedBy: rnnvmail201.nvidia.com (10.129.68.8) To
- rnnvmail201.nvidia.com (10.129.68.8)
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: CY4PEPF0000EE34:EE_|MN0PR12MB5908:EE_
-X-MS-Office365-Filtering-Correlation-Id: 125531b4-41d9-4a0d-1e4c-08dbe09cfa3d
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: prMIe4v0hU5c2grX/wuAPFAVq5zX/nX5efYmBPhJmMC79rieZNGgvj/Zu1IAet9oHvk+unhxE5cbmg4gjWSIVBkV2TYtfvR8i3jeiwOTzeFZ/KZp+0c+cPi+GZeE1nIIPDAWxud6yrYZRzWlIJicjx0bxBf8lMshM0jH6gEz4UcE8uR6472h81qSwmWvUTv1IlxEOOSoItJ2X66cMCKEDlA9IV62+VkcUmSHqpiY3MDsIJ9cDLxJN2i8Zqkmn80RG9m2C/8lg1d3qd0A1ti8M4AQOUoVK+vtONT5HXLAUidx0AWwvHV57rv3+9PObsNjjZ5JxP7O5FfVPfqiKoSdCD7i0/jz+AgKww/2AePIvCJMcuBdFIq20gNd9zildyoXZ+lowagvVWLkhIK+Pa5F+tPfsNsDi1vh0989zNM3b/t9H+0bJmEnn8xQwT/h7coDuZBiV7c0emPMbRc/z9CZCwlnj30K3aFcEfUNN0Qz0tDX4Hy0wkSXUNuQcfEUSJcFJWVmi3HRcQjF1/2v0LpaXveiuYpl/CKweRzlkWBsCd2o2+0CpQiYByGWHLdDtlLlJT6Tc9T4f3Cbhwm8Kl5zQSQXWfNLCafPGqittUhSlMv+BFbVASzGBZejos1yB85qKLs2E+MiYPy9ABJw9uyoksDeXZenlwatTZybaEw9n+R+MyWVBfBOfdNHYwJQ6T+sYSJ3++SNk9uuxROVBXtYm3nf8t9/EbrL1smMN8VYqqO3/N9oG+RdE85vXPXlVw64
-X-Forefront-Antispam-Report: CIP:216.228.117.161;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc6edge2.nvidia.com;CAT:NONE;SFS:(13230031)(4636009)(39860400002)(346002)(396003)(136003)(376002)(230922051799003)(451199024)(64100799003)(82310400011)(186009)(1800799009)(46966006)(36840700001)(40470700004)(19618925003)(40480700001)(40460700003)(41300700001)(16526019)(1076003)(4270600006)(426003)(7696005)(47076005)(2616005)(6666004)(336012)(26005)(7636003)(36756003)(356005)(82740400003)(8676002)(5660300002)(4326008)(8936002)(2906002)(558084003)(316002)(36860700001)(54906003)(6916009)(70586007)(478600001)(70206006);DIR:OUT;SFP:1101;
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 08 Nov 2023 20:55:01.8855
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 125531b4-41d9-4a0d-1e4c-08dbe09cfa3d
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.117.161];Helo=[mail.nvidia.com]
-X-MS-Exchange-CrossTenant-AuthSource: CY4PEPF0000EE34.namprd05.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN0PR12MB5908
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-adding linux-nvme to the discussion
+On Wed, 2023-11-08 at 15:07 -0500, Laurence Oberman wrote:
+> On Wed, 2023-11-08 at 12:57 -0700, Mark Lehrer wrote:
+> > > [=C2=A0 286.547112] nvme nvme4: Connect Invalid Data Parameter,
+> > > cntlid:
+> > > 1
+> > > [=C2=A0 286.555181] nvme nvme4: failed to connect queue: 1 ret=3D1677=
+0
+> >=20
+> > It looks like the admin queue pair (0) worked at least.=C2=A0 The code
+> > path
+> > for the two is a bit different.
+> >=20
+> > This error sounds familiar.=C2=A0 I wonder if there's an error code
+> > 16xxx
+> > cheat sheet out there.
+> >=20
+> > We recently had to downgrade a ConnectX firmware version to fix a
+> > similar issue, but on a CX7.=C2=A0 I can't remember the firmware
+> > versions
+> > involved but I could probably dig it up.
+> >=20
+> > Have you tried TCP mode?=C2=A0 Whether TCP works or not will be useful
+> > information for debugging.
+> >=20
+>=20
+> Hi MArk
+>=20
+> I landed up changing the default kato from 5s to 30 and its working
+> now
+> We don't jump ship too early anymore and it connects fine.
+> See prior response where I answered my own message
+>=20
+> diff -Nurp linux-5.14.0-284.25.1.el9_2.orig/drivers/nvme/host/nvme.h
+> linux-5.14.0-284.25.1.el9_2/drivers/nvme/host/nvme.h
+> --- linux-5.14.0-284.25.1.el9_2.orig/drivers/nvme/host/nvme.h=C2=A0=C2=A0=
+=C2=A02023-
+> 07-20 08:42:08.000000000 -0400
+> +++ linux-5.14.0-284.25.1.el9_2/drivers/nvme/host/nvme.h=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A02023-
+> 11-08 14:16:37.924155469 -0500
+> @@ -25,7 +25,7 @@ extern unsigned int nvme_io_timeout;
+> =C2=A0extern unsigned int admin_timeout;
+> =C2=A0#define NVME_ADMIN_TIMEOUT=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0(admin_time=
+out * HZ)
+> =C2=A0
+> -#define NVME_DEFAULT_KATO=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A05
+> +#define NVME_DEFAULT_KATO=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A030
+> =C2=A0
+> =C2=A0#ifdef CONFIG_ARCH_NO_SG_CHAIN
+> =C2=A0#define=C2=A0 NVME_INLINE_SG_CNT=C2=A0 0
+>=20
+>=20
+> I will wait for Sagi and Keith and then send a patch
+> I had the wrong email for Keith
+>=20
+> Thanks a lot
+> Laurence
+>=20
 
--ck
+Hello
+
+No fix needed, I was unaware of the -k option in the nvme connect.
+My colleague showed it to me.
+This works now to give the CX6 longer to handle the connection
+
+#!/bin/bash
+modprobe nvme-fc
+nvme connect -t rdma -n nqn.2023-10.org.dell -a  172.18.60.2  -s 4420 -
+k 30
+
+
+Thanks
+So a Heads up for these newer cards I guess, need more time
+
+Regards
+Laurence
+
+
+
 
 
