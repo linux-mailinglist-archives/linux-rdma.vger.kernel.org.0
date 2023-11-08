@@ -2,160 +2,184 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 74D827E5568
-	for <lists+linux-rdma@lfdr.de>; Wed,  8 Nov 2023 12:25:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 603517E57AD
+	for <lists+linux-rdma@lfdr.de>; Wed,  8 Nov 2023 14:04:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235660AbjKHLZd (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 8 Nov 2023 06:25:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52986 "EHLO
+        id S1344634AbjKHNEY (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 8 Nov 2023 08:04:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52024 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344652AbjKHLZR (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 8 Nov 2023 06:25:17 -0500
-Received: from out30-133.freemail.mail.aliyun.com (out30-133.freemail.mail.aliyun.com [115.124.30.133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 214781BE9;
-        Wed,  8 Nov 2023 03:25:13 -0800 (PST)
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R231e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046049;MF=alibuda@linux.alibaba.com;NM=1;PH=DS;RN=9;SR=0;TI=SMTPD_---0Vvy6hR._1699442703;
-Received: from j66a10360.sqa.eu95.tbsite.net(mailfrom:alibuda@linux.alibaba.com fp:SMTPD_---0Vvy6hR._1699442703)
-          by smtp.aliyun-inc.com;
-          Wed, 08 Nov 2023 19:25:09 +0800
-From:   "D. Wythe" <alibuda@linux.alibaba.com>
-To:     kgraul@linux.ibm.com, wenjia@linux.ibm.com, jaka@linux.ibm.com,
-        wintera@linux.ibm.com
+        with ESMTP id S1344771AbjKHNEO (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 8 Nov 2023 08:04:14 -0500
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5375D1FD7;
+        Wed,  8 Nov 2023 05:04:11 -0800 (PST)
+Received: from pps.filterd (m0356517.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3A8Cf27k012360;
+        Wed, 8 Nov 2023 13:04:09 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=5Nn8m0Am600Bnx9YKqymeN1ILa5QqX61g+i3Sxs3PbY=;
+ b=TlNJ9OUorHAnP+uE2ZimFj1rpcPwCg4ZSLLMi4Yy0BjVUyG0/ATHOQYK8+wrZCTgEtRS
+ szwKVaFBjbETJnQsyabuhnLjbTyX6h6N/tgETMBXVZGECL2tuKSI7KkTerwp7gYyhDzH
+ 5OhPrDCLjJ1sJuA/LqmdF61GfQkkJ54hrDnH8hgnFRlQ4cMr64/joMws7pkCYfc1gnjx
+ akgWmvzWaUlEmJP4pvmqY65UobAT1IFSa24dJJTwKzNBs43pqs1ZPHJwrsT2kJ1gxqaR
+ 4naoU86uBRlLwNLTObmdnrXhfEgHJ37hKh0HAthR2BDyylDmWrBU1jFyUFYlcyy7r62a 9A== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3u8abph46f-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 08 Nov 2023 13:04:07 +0000
+Received: from m0356517.ppops.net (m0356517.ppops.net [127.0.0.1])
+        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 3A8CfpaT015654;
+        Wed, 8 Nov 2023 13:01:06 GMT
+Received: from ppma13.dal12v.mail.ibm.com (dd.9e.1632.ip4.static.sl-reverse.com [50.22.158.221])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3u8abph41e-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 08 Nov 2023 13:01:06 +0000
+Received: from pps.filterd (ppma13.dal12v.mail.ibm.com [127.0.0.1])
+        by ppma13.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 3A8BeKYn003435;
+        Wed, 8 Nov 2023 13:01:02 GMT
+Received: from smtprelay04.wdc07v.mail.ibm.com ([172.16.1.71])
+        by ppma13.dal12v.mail.ibm.com (PPS) with ESMTPS id 3u7w21vsq3-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 08 Nov 2023 13:01:02 +0000
+Received: from smtpav05.wdc07v.mail.ibm.com (smtpav05.wdc07v.mail.ibm.com [10.39.53.232])
+        by smtprelay04.wdc07v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 3A8D102Z41877762
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 8 Nov 2023 13:01:01 GMT
+Received: from smtpav05.wdc07v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id DD54558043;
+        Wed,  8 Nov 2023 13:01:00 +0000 (GMT)
+Received: from smtpav05.wdc07v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 3DF6758053;
+        Wed,  8 Nov 2023 13:00:59 +0000 (GMT)
+Received: from [9.155.210.178] (unknown [9.155.210.178])
+        by smtpav05.wdc07v.mail.ibm.com (Postfix) with ESMTP;
+        Wed,  8 Nov 2023 13:00:59 +0000 (GMT)
+Message-ID: <05c29431-c941-45d1-8e14-0527accc3993@linux.ibm.com>
+Date:   Wed, 8 Nov 2023 14:00:58 +0100
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH net v1] net/smc: avoid data corruption caused by decline
+Content-Language: en-GB
+To:     "D. Wythe" <alibuda@linux.alibaba.com>, kgraul@linux.ibm.com,
+        jaka@linux.ibm.com, wintera@linux.ibm.com
 Cc:     kuba@kernel.org, davem@davemloft.net, netdev@vger.kernel.org,
         linux-s390@vger.kernel.org, linux-rdma@vger.kernel.org
-Subject: [RFC PATCH net-next] net/smc: Introduce IPPROTO_SMC for smc
-Date:   Wed,  8 Nov 2023 19:25:03 +0800
-Message-Id: <1699442703-25015-1-git-send-email-alibuda@linux.alibaba.com>
-X-Mailer: git-send-email 1.8.3.1
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+References: <1699436909-22767-1-git-send-email-alibuda@linux.alibaba.com>
+From:   Wenjia Zhang <wenjia@linux.ibm.com>
+In-Reply-To: <1699436909-22767-1-git-send-email-alibuda@linux.alibaba.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: IX57UdHS1tUn_gPYZ3-gU-vI3BQ-VaBu
+X-Proofpoint-GUID: A9BPy8xGtgNW8-vhtwnwMx9Cf7Xa7WtR
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-11-08_01,2023-11-08_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
+ impostorscore=0 suspectscore=0 clxscore=1015 adultscore=0
+ priorityscore=1501 mlxscore=0 mlxlogscore=999 spamscore=0 phishscore=0
+ bulkscore=0 malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2311060000 definitions=main-2311080109
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: "D. Wythe" <alibuda@linux.alibaba.com>
 
-This patch attempts to initiate a discussion on creating smc socket
-via AF_INET, similar to the following code snippet:
 
-/* create v4 smc sock */
-v4 = socket(AF_INET, SOCK_STREAM, IPPROTO_SMC);
+On 08.11.23 10:48, D. Wythe wrote:
+> From: "D. Wythe" <alibuda@linux.alibaba.com>
+> 
+> We found a data corruption issue during testing of SMC-R on Redis
+> applications.
+> 
+> The benchmark has a low probability of reporting a strange error as
+> shown below.
+> 
+> "Error: Protocol error, got "\xe2" as reply type byte"
+> 
+> Finally, we found that the retrieved error data was as follows:
+> 
+> 0xE2 0xD4 0xC3 0xD9 0x04 0x00 0x2C 0x20 0xA6 0x56 0x00 0x16 0x3E 0x0C
+> 0xCB 0x04 0x02 0x01 0x00 0x00 0x20 0x00 0x00 0x00 0x00 0x00 0x00 0x00
+> 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0xE2
+> 
+> It is quite obvious that this is a SMC DECLINE message, which means that
+> the applications received SMC protocol message.
+> We found that this was caused by the following situations:
+> 
+> client			server
+> 	   proposal
+> 	------------->
+> 	   accept
+> 	<-------------
+> 	   confirm
+> 	------------->
+> wait confirm
+> 
+> 	 failed llc confirm
+> 	    x------
+> (after 2s)timeout
+> 			wait rsp
+> 
+> wait decline
+> 
+> (after 1s) timeout
+> 			(after 2s) timeout
+> 	    decline
+> 	-------------->
+> 	    decline
+> 	<--------------
+> 
+> As a result, a decline message was sent in the implementation, and this
+> message was read from TCP by the already-fallback connection.
+> 
+> This patch double the client timeout as 2x of the server value,
+> With this simple change, the Decline messages should never cross or
+> collide (during Confirm link timeout).
+> 
+> This issue requires an immediate solution, since the protocol updates
+> involve a more long-term solution.
+> 
+> Fixes: 0fb0b02bd6fd ("net/smc: adapt SMC client code to use the LLC flow")
+> Signed-off-by: D. Wythe <alibuda@linux.alibaba.com>
+> ---
+>   net/smc/af_smc.c | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/net/smc/af_smc.c b/net/smc/af_smc.c
+> index abd2667..5b91f55 100644
+> --- a/net/smc/af_smc.c
+> +++ b/net/smc/af_smc.c
+> @@ -599,7 +599,7 @@ static int smcr_clnt_conf_first_link(struct smc_sock *smc)
+>   	int rc;
+>   
+>   	/* receive CONFIRM LINK request from server over RoCE fabric */
+> -	qentry = smc_llc_wait(link->lgr, NULL, SMC_LLC_WAIT_TIME,
+> +	qentry = smc_llc_wait(link->lgr, NULL, 2 * SMC_LLC_WAIT_TIME,
+>   			      SMC_LLC_CONFIRM_LINK);
+>   	if (!qentry) {
+>   		struct smc_clc_msg_decline dclc;
+I'm wondering if the double time (if sufficient) of timeout could be for 
+waiting for CLC_DECLINE on the client's side. i.e.
 
-/* create v6 smc sock */
-v6 = socket(AF_INET6, SOCK_STREAM, IPPROTO_SMC);
+diff --git a/net/smc/af_smc.c b/net/smc/af_smc.c
+index 35ddebae8894..9b1feef1013d 100644
+--- a/net/smc/af_smc.c
++++ b/net/smc/af_smc.c
+@@ -605,7 +605,7 @@ static int smcr_clnt_conf_first_link(struct smc_sock 
+*smc)
+                 struct smc_clc_msg_decline dclc;
 
-As we all know, the way we currently create an SMC socket as
-follows.
+                 rc = smc_clc_wait_msg(smc, &dclc, sizeof(dclc),
+-                                     SMC_CLC_DECLINE, CLC_WAIT_TIME_SHORT);
++                                     SMC_CLC_DECLINE, 2 * 
+CLC_WAIT_TIME_SHORT);
+                 return rc == -EAGAIN ? SMC_CLC_DECL_TIMEOUT_CL : rc;
+         }
+         smc_llc_save_peer_uid(qentry);
 
-/* create v4 smc sock */
-v4 = socket(AF_SMC, SOCK_STREAM, SMCPROTO_SMC);
-
-/* create v6 smc sock */
-v6 = socket(AF_SMC, SOCK_STREAM, SMCPROTO_SMC6);
-
-Note: This is not to suggest removing the SMC path, but rather to propose
-adding a new path (inet path).
-
-There are several reasons why we believe it is much better than AF_SMC:
-
-Semantics:
-
-SMC extends the TCP protocol and switches it's data path to RDMA path if
-RDMA link is ready. Otherwise, SMC should always try its best to degrade to
-TCP. From this perspective, SMC is a protocol derived from TCP and can also
-fallback to TCP, It should be considered as part of the same protocol
-family as TCP (AF_INET and AF_INET6).
-
-Compatibility & Scalability:
-
-Due to the presence of fallback, we needs to handle it very carefully to
-keep the consistent with the TCP sockets. SMC has done a lot of work to
-ensure that, but still, there are quite a few issues left, such as:
-
-1. The "ss" command cannot display the process name and ID associated with
-the fallback socket.
-
-2. The linger option is ineffective when user try’s to close the fallback
-socket.
-
-3. Some eBPF attach points related to INET_SOCK are ineffective under
-fallback socket, such as BPF_CGROUP_INET_SOCK_RELEASE.
-
-4. SO_PEEK_OFF is a un-supported sock option for fallback sockets, while
-it’s of course supported for tcp sockets.
-
-Of course, we can fix each issue one by one, but it is not a fundamental
-solution. Any changes on the inet path may require re-synchronization,
-including bug fixes, security fixes, tracing, new features and more. For
-example, there is a commit which we think is very valueable:
-
-commit 0dd061a6a115 ("bpf: Add update_socket_protocol hook")
-
-This commit allows users to modify dynamically the protocol before socket
-created through eBPF programs, which provides a more flexible approach
-than smc_run (LP_PRELOAD). It does not require the process restart
-and allows for controlling replacement at the connection level, whereas
-smc_run operates at the process level.
-
-However, to benefit from it under the SMC path requires additional
-code submission while nothing changes requires to do under inet path.
-
-I'm not saying that these issues cannot be fixed under smc path, however,
-the solution for these issues often involves duplicating work that already
-done on inet path. Thats to say, if we can be under the inet path, we can
-easily reuse the existing infrastructure.
-
-Performance:
-
-In order to ensure consistency between fallback sockets and TCP sockets,
-SMC creates an additional TCP socket. This introduces additional overhead
-of approximately 15%-20% for the establishment and destruction of fallback
-sockets. In fact, for the users we have contacted who have shown interest
-in SMC, ensuring consistency in performance between fallback and TCP has
-always been their top priority. Since no one can guarantee the
-availability of RDMA links, support for SMC on both sides, or if the
-user's environment is 100% suitable for SMC. Fallback is the only way to
-address those issues, but the additional performance overhead is
-unacceptable, as fallback cannot provide the benefits of RDMA and only
-brings burden right now.
-
-In inet path, we can embed TCP sock into SMC sock, when fallback occurs,
-the socket behaves exactly like a TCP socket. In our POC, the performance
-of fallback socket under inet path is almost indistinguishable from of
-tcp socket, with less than 1% loss. Additionally, and more importantly,
-it has full feature compatibility with TCP socket.
-
-Of course, it is also possible under smc path, but in that way, it
-would require a significant amount of work to ensure compatibility with
-tcp sockets, which most of them has already been done in inet path.
-And still, any changes in inet path may require re-synchronization.
-
-I also noticed that there have been some discussions on this issue before.
-
-Link: https://lore.kernel.org/stable/4a873ea1-ba83-1506-9172-e955d5f9ae16@redhat.com/
-
-And I saw some supportive opinions here, maybe it is time to continue
-discussing this matter now.
-
-Signed-off-by: D. Wythe <alibuda@linux.alibaba.com>
----
- include/uapi/linux/in.h | 2 ++
- 1 file changed, 2 insertions(+)
-
-diff --git a/include/uapi/linux/in.h b/include/uapi/linux/in.h
-index e682ab6..0c6322b 100644
---- a/include/uapi/linux/in.h
-+++ b/include/uapi/linux/in.h
-@@ -83,6 +83,8 @@ enum {
- #define IPPROTO_RAW		IPPROTO_RAW
-   IPPROTO_MPTCP = 262,		/* Multipath TCP connection		*/
- #define IPPROTO_MPTCP		IPPROTO_MPTCP
-+  IPPROTO_SMC = 263,		/* Shared Memory Communications		*/
-+#define IPPROTO_SMC		IPPROTO_SMC
-   IPPROTO_MAX
- };
- #endif
--- 
-1.8.3.1
+Because the purpose is to let the server have the control to deline.
 
