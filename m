@@ -2,183 +2,155 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9107E7E6364
-	for <lists+linux-rdma@lfdr.de>; Thu,  9 Nov 2023 06:47:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 34BDF7E63F2
+	for <lists+linux-rdma@lfdr.de>; Thu,  9 Nov 2023 07:36:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232613AbjKIFrR (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 9 Nov 2023 00:47:17 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39766 "EHLO
+        id S232459AbjKIGgR (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 9 Nov 2023 01:36:17 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53860 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232589AbjKIFq7 (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 9 Nov 2023 00:46:59 -0500
-X-Greylist: delayed 65 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Wed, 08 Nov 2023 21:46:50 PST
-Received: from esa5.hc1455-7.c3s2.iphmx.com (esa5.hc1455-7.c3s2.iphmx.com [68.232.139.130])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D60002709;
-        Wed,  8 Nov 2023 21:46:50 -0800 (PST)
-X-IronPort-AV: E=McAfee;i="6600,9927,10888"; a="138532744"
-X-IronPort-AV: E=Sophos;i="6.03,288,1694703600"; 
-   d="scan'208";a="138532744"
-Received: from unknown (HELO oym-r2.gw.nic.fujitsu.com) ([210.162.30.90])
-  by esa5.hc1455-7.c3s2.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Nov 2023 14:45:44 +0900
-Received: from oym-m1.gw.nic.fujitsu.com (oym-nat-oym-m1.gw.nic.fujitsu.com [192.168.87.58])
-        by oym-r2.gw.nic.fujitsu.com (Postfix) with ESMTP id 11D7CDC146;
-        Thu,  9 Nov 2023 14:45:41 +0900 (JST)
-Received: from m3003.s.css.fujitsu.com (sqmail-3003.b.css.fujitsu.com [10.128.233.114])
-        by oym-m1.gw.nic.fujitsu.com (Postfix) with ESMTP id 4537FD9C60;
-        Thu,  9 Nov 2023 14:45:40 +0900 (JST)
-Received: from localhost.localdomain (unknown [10.118.237.107])
-        by m3003.s.css.fujitsu.com (Postfix) with ESMTP id 006152005323;
-        Thu,  9 Nov 2023 14:45:39 +0900 (JST)
-From:   Daisuke Matsuda <matsuda-daisuke@fujitsu.com>
-To:     linux-rdma@vger.kernel.org, leon@kernel.org, jgg@ziepe.ca,
-        zyjzyj2000@gmail.com
-Cc:     linux-kernel@vger.kernel.org, rpearsonhpe@gmail.com,
-        yangx.jy@fujitsu.com, lizhijian@fujitsu.com, y-goto@fujitsu.com,
-        Daisuke Matsuda <matsuda-daisuke@fujitsu.com>
-Subject: [PATCH for-next v7 7/7] RDMA/rxe: Add support for the traditional Atomic operations with ODP
-Date:   Thu,  9 Nov 2023 14:44:52 +0900
-Message-Id: <c7e0ca1c26a9225638bc9fd8f8b463c6595ebdfa.1699503619.git.matsuda-daisuke@fujitsu.com>
-X-Mailer: git-send-email 2.39.1
-In-Reply-To: <cover.1699503619.git.matsuda-daisuke@fujitsu.com>
-References: <cover.1699503619.git.matsuda-daisuke@fujitsu.com>
+        with ESMTP id S231234AbjKIGgR (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 9 Nov 2023 01:36:17 -0500
+Received: from out-175.mta0.migadu.com (out-175.mta0.migadu.com [IPv6:2001:41d0:1004:224b::af])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6B4F26B1
+        for <linux-rdma@vger.kernel.org>; Wed,  8 Nov 2023 22:36:14 -0800 (PST)
+Message-ID: <8d78d1d8-85e7-41b6-9ba0-f18c2cb94427@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+        t=1699511772;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=dQeTuG/d1jTRxBIJaHmdqmi6OeHpWS7JPZsZS9fBp/4=;
+        b=aa8BWohLbAhw02n9QYFHUOC2+sWcbckgNiTM55rtVutnZ6wDkp2y3YVJKFSONtJhGgQSXs
+        pPsCJkYRFLaLxdSaDIo4eRqOEXYdOqI1BdzJ35IRIx6baOz6ltiALON/BlVwZkZ/9nmycc
+        Ggx+y0ZifeeDEreqv3S4Y30W13cZWdQ=
+Date:   Thu, 9 Nov 2023 14:36:02 +0800
 MIME-Version: 1.0
+Subject: Re: [PATCH RFC V2 0/6] rxe_map_mr_sg() fix cleanup and refactor
+To:     "Zhijian Li (Fujitsu)" <lizhijian@fujitsu.com>,
+        "zyjzyj2000@gmail.com" <zyjzyj2000@gmail.com>,
+        "jgg@ziepe.ca" <jgg@ziepe.ca>, "leon@kernel.org" <leon@kernel.org>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>
+Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "rpearsonhpe@gmail.com" <rpearsonhpe@gmail.com>,
+        "Daisuke Matsuda (Fujitsu)" <matsuda-daisuke@fujitsu.com>,
+        "bvanassche@acm.org" <bvanassche@acm.org>,
+        "yi.zhang@redhat.com" <yi.zhang@redhat.com>
+References: <20231103095549.490744-1-lizhijian@fujitsu.com>
+ <d838620b-51df-4216-864e-1c793dae7721@linux.dev>
+ <a256a01d-1572-427a-80df-46f2079af967@fujitsu.com>
+ <c736ddff-8523-463a-aa9a-3c8542486d69@linux.dev>
+ <037148c3-c15b-4859-9b82-8349fcb54d0a@fujitsu.com>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From:   Zhu Yanjun <yanjun.zhu@linux.dev>
+In-Reply-To: <037148c3-c15b-4859-9b82-8349fcb54d0a@fujitsu.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
+X-Migadu-Flow: FLOW_OUT
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Enable 'fetch and add' and 'compare and swap' operations to be used with
-ODP. This is comprised of the following steps:
- 1. Verify that the page is present with write permission.
- 2. If OK, execute the operation and exit.
- 3. If not, then trigger page fault to map the page.
- 4. Update the entry in the MR xarray.
- 5. Execute the operation.
 
-Signed-off-by: Daisuke Matsuda <matsuda-daisuke@fujitsu.com>
----
- drivers/infiniband/sw/rxe/rxe.c      |  1 +
- drivers/infiniband/sw/rxe/rxe_loc.h  |  9 ++++++++
- drivers/infiniband/sw/rxe/rxe_mr.c   |  7 +++++-
- drivers/infiniband/sw/rxe/rxe_odp.c  | 33 ++++++++++++++++++++++++++++
- drivers/infiniband/sw/rxe/rxe_resp.c |  5 ++++-
- 5 files changed, 53 insertions(+), 2 deletions(-)
+在 2023/11/9 10:24, Zhijian Li (Fujitsu) 写道:
+>
+> On 06/11/2023 21:58, Zhu Yanjun wrote:
+>> 在 2023/11/6 12:07, Zhijian Li (Fujitsu) 写道:
+>>>
+>>> On 03/11/2023 21:00, Zhu Yanjun wrote:
+>>>> 在 2023/11/3 17:55, Li Zhijian 写道:
+>>>>> I don't collect the Reviewed-by to the patch1-2 this time, since i
+>>>>> think we can make it better.
+>>>>>
+>>>>> Patch1-2: Fix kernel panic[1] and benifit to make srp work again.
+>>>>>              Almost nothing change from V1.
+>>>>> Patch3-5: cleanups # newly add
+>>>>> Patch6: make RXE support PAGE_SIZE aligned mr # newly add, but not fully tested
+>>>>>
+>>>>> My bad arm64 mechine offten hangs when doing blktests even though i use the
+>>>>> default siw driver.
+>>>>>
+>>>>> - nvme and ULPs(rtrs, iser) always registers 4K mr still don't supported yet.
+>>>> Zhijian
+>>>>
+>>>> Please read carefully the whole discussion about this problem. You will find a lot of valuable suggestions, especially suggestions from Jason.
+>>> Okay, i will read it again. If you can tell me which thread, that would be better.
+>>>
+>>>
+>>>>    From the whole discussion, it seems that the root cause is very clear.
+>>>> We need to fix this prolem. Please do not send this kind of commits again.
+>>>>
+>>> Let's think about what's our goal first.
+>>>
+>>> - 1) Fix the panic[1] and only support PAGE_SIZE MR
+>>> - 2) support PAGE_SIZE aligned MR
+>>> - 3) support any page_size MR.
+>>>
+>>> I'm sorry i'm not familiar with the linux MM subsystem. It seem it's safe/correct to access
+>>> address/memory across pages start from the return of kmap_loca_page(page).
+>>> In other words, 2) is already native supported, right?
+>> Yes. Please read the comments from Jason, Leon and Bart. They shared a lot of good advice.
+> I read the whole discussion again, but I believed i still missed a lost.
+>
+>
+>>  From them, we can know the root cause and how to fix this problem.
+> I don't think i misunderstood the root cause:
+> RXE splits memory into PAGE_SIZE units in the xarray. As a result, when we extract an address from the xarray,
+> we should not access address beyond a PAGE_SIZE window.
 
-diff --git a/drivers/infiniband/sw/rxe/rxe.c b/drivers/infiniband/sw/rxe/rxe.c
-index 207a022156f0..abd3267c2873 100644
---- a/drivers/infiniband/sw/rxe/rxe.c
-+++ b/drivers/infiniband/sw/rxe/rxe.c
-@@ -88,6 +88,7 @@ static void rxe_init_device_param(struct rxe_dev *rxe)
- 		rxe->attr.odp_caps.per_transport_caps.rc_odp_caps |= IB_ODP_SUPPORT_RECV;
- 		rxe->attr.odp_caps.per_transport_caps.rc_odp_caps |= IB_ODP_SUPPORT_WRITE;
- 		rxe->attr.odp_caps.per_transport_caps.rc_odp_caps |= IB_ODP_SUPPORT_READ;
-+		rxe->attr.odp_caps.per_transport_caps.rc_odp_caps |= IB_ODP_SUPPORT_ATOMIC;
- 		rxe->attr.odp_caps.per_transport_caps.rc_odp_caps |= IB_ODP_SUPPORT_SRQ_RECV;
- 	}
- }
-diff --git a/drivers/infiniband/sw/rxe/rxe_loc.h b/drivers/infiniband/sw/rxe/rxe_loc.h
-index eeaeff8a1398..0bae9044f362 100644
---- a/drivers/infiniband/sw/rxe/rxe_loc.h
-+++ b/drivers/infiniband/sw/rxe/rxe_loc.h
-@@ -194,6 +194,9 @@ int rxe_odp_mr_init_user(struct rxe_dev *rxe, u64 start, u64 length,
- 			 u64 iova, int access_flags, struct rxe_mr *mr);
- int rxe_odp_mr_copy(struct rxe_mr *mr, u64 iova, void *addr, int length,
- 		    enum rxe_mr_copy_dir dir);
-+int rxe_odp_mr_atomic_op(struct rxe_mr *mr, u64 iova, int opcode,
-+			 u64 compare, u64 swap_add, u64 *orig_val);
-+
- #else /* CONFIG_INFINIBAND_ON_DEMAND_PAGING */
- static inline int
- rxe_odp_mr_init_user(struct rxe_dev *rxe, u64 start, u64 length, u64 iova,
-@@ -207,6 +210,12 @@ rxe_odp_mr_copy(struct rxe_mr *mr, u64 iova, void *addr,
- {
- 	return -EOPNOTSUPP;
- }
-+static inline int
-+rxe_odp_mr_atomic_op(struct rxe_mr *mr, u64 iova, int opcode,
-+		     u64 compare, u64 swap_add, u64 *orig_val)
-+{
-+	return RESPST_ERR_UNSUPPORTED_OPCODE;
-+}
- 
- #endif /* CONFIG_INFINIBAND_ON_DEMAND_PAGING */
- 
-diff --git a/drivers/infiniband/sw/rxe/rxe_mr.c b/drivers/infiniband/sw/rxe/rxe_mr.c
-index f0ce87c0fc7d..0dc452ab772b 100644
---- a/drivers/infiniband/sw/rxe/rxe_mr.c
-+++ b/drivers/infiniband/sw/rxe/rxe_mr.c
-@@ -498,7 +498,12 @@ int rxe_mr_do_atomic_op(struct rxe_mr *mr, u64 iova, int opcode,
- 		}
- 		page_offset = rxe_mr_iova_to_page_offset(mr, iova);
- 		index = rxe_mr_iova_to_index(mr, iova);
--		page = xa_load(&mr->page_list, index);
-+
-+		if (mr->umem->is_odp)
-+			page = xa_untag_pointer(xa_load(&mr->page_list, index));
-+		else
-+			page = xa_load(&mr->page_list, index);
-+
- 		if (!page)
- 			return RESPST_ERR_RKEY_VIOLATION;
- 	}
-diff --git a/drivers/infiniband/sw/rxe/rxe_odp.c b/drivers/infiniband/sw/rxe/rxe_odp.c
-index 5aa09b9c1095..45b54ba15210 100644
---- a/drivers/infiniband/sw/rxe/rxe_odp.c
-+++ b/drivers/infiniband/sw/rxe/rxe_odp.c
-@@ -254,3 +254,36 @@ int rxe_odp_mr_copy(struct rxe_mr *mr, u64 iova, void *addr, int length,
- 
- 	return err;
- }
-+
-+int rxe_odp_mr_atomic_op(struct rxe_mr *mr, u64 iova, int opcode,
-+			 u64 compare, u64 swap_add, u64 *orig_val)
-+{
-+	struct ib_umem_odp *umem_odp = to_ib_umem_odp(mr->umem);
-+	int err;
-+
-+	spin_lock(&mr->page_list.xa_lock);
-+
-+	/* Atomic operations manipulate a single char. */
-+	if (rxe_odp_check_pages(mr, iova, sizeof(char), 0)) {
-+		spin_unlock(&mr->page_list.xa_lock);
-+
-+		/* umem_mutex is locked on success */
-+		err = rxe_odp_do_pagefault_and_lock(mr, iova, sizeof(char), 0);
-+		if (err < 0)
-+			return err;
-+
-+		/*
-+		 * The spinlock is always locked under mutex_lock except
-+		 * for MR initialization. No worry about deadlock.
-+		 */
-+		spin_lock(&mr->page_list.xa_lock);
-+		mutex_unlock(&umem_odp->umem_mutex);
-+	}
-+
-+	err = rxe_mr_do_atomic_op(mr, iova, opcode, compare,
-+				  swap_add, orig_val);
-+
-+	spin_unlock(&mr->page_list.xa_lock);
-+
-+	return err;
-+}
-diff --git a/drivers/infiniband/sw/rxe/rxe_resp.c b/drivers/infiniband/sw/rxe/rxe_resp.c
-index 9159f1bdfc6f..af3e669679a0 100644
---- a/drivers/infiniband/sw/rxe/rxe_resp.c
-+++ b/drivers/infiniband/sw/rxe/rxe_resp.c
-@@ -693,7 +693,10 @@ static enum resp_states atomic_reply(struct rxe_qp *qp,
- 		u64 iova = qp->resp.va + qp->resp.offset;
- 
- 		if (mr->umem->is_odp)
--			err = RESPST_ERR_UNSUPPORTED_OPCODE;
-+			err = rxe_odp_mr_atomic_op(mr, iova, pkt->opcode,
-+						   atmeth_comp(pkt),
-+						   atmeth_swap_add(pkt),
-+						   &res->atomic.orig_val);
- 		else
- 			err = rxe_mr_do_atomic_op(mr, iova, pkt->opcode,
- 						  atmeth_comp(pkt),
--- 
-2.39.1
+This is a complicated problem and it is deeply involved with memory 
+management.
 
+A guy who is very familiar with linux MM is to provide a better solution 
+to this problem.
+
+I expect a whole perfect solution to this problem.
+
+Zhu Yanjun
+
+>
+> IIUC, then how to fix it?
+> - I'm not going to "removing page_size set", it's out of this patch scope.
+>     Feel free to do the cleanup separately.
+> - I'm not going to fix the NVMe/rtrs etc problems in this patch set when 64K page is enabled.
+>     But RXE will tell its callers explicitly "RXE don't don't support such page_size"
+> - I didn't state RXE supports PAGE_SIZE aligned page_size MR before refactoring rxe_map_mr_sg(),
+>     because I worry about it was not correct to access address beyond the PAGE_SIZE window.
+>
+> What I should do next?
+> Just state "RXE support PAGE_SIZE aligned MR" ? Then patches become
+> RDMA/rxe: RDMA/rxe: don't allow registering !PAGE_SIZE aligned MR
+> RDMA/rxe: set RXE_PAGE_SIZE_CAP to starting from PAGE_SIZE
+>
+> Or just keep we have done in the V1
+>
+> Thanks
+>
+>
+>> Good Luck.
+>>
+>> Zhu Yanjun
+>>
+>>> I get totally confused now.
+>>>
+>>>
+>>>
+>>>> Zhu Yanjun
+>>>>
+>>>>> [1] https://lore.kernel.org/all/CAHj4cs9XRqE25jyVw9rj9YugffLn5+f=1znaBEnu1usLOciD+g@mail.gmail.com/T/
+>>>>>
+>>>>> Li Zhijian (6):
+>>>>>      RDMA/rxe: RDMA/rxe: don't allow registering !PAGE_SIZE mr
+>>>>>      RDMA/rxe: set RXE_PAGE_SIZE_CAP to PAGE_SIZE
+>>>>>      RDMA/rxe: remove unused rxe_mr.page_shift
+>>>>>      RDMA/rxe: Use PAGE_SIZE and PAGE_SHIFT to extract address from
+>>>>>        page_list
+>>>>>      RDMA/rxe: cleanup rxe_mr.{page_size,page_shift}
+>>>>>      RDMA/rxe: Support PAGE_SIZE aligned MR
+>>>>>
+>>>>>     drivers/infiniband/sw/rxe/rxe_mr.c    | 80 ++++++++++++++++-----------
+>>>>>     drivers/infiniband/sw/rxe/rxe_param.h |  2 +-
+>>>>>     drivers/infiniband/sw/rxe/rxe_verbs.h |  9 ---
+>>>>>     3 files changed, 48 insertions(+), 43 deletions(-)
+>>>>>
