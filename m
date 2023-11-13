@@ -2,242 +2,104 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1FB2F7E9A98
-	for <lists+linux-rdma@lfdr.de>; Mon, 13 Nov 2023 11:58:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F09F47E9B8E
+	for <lists+linux-rdma@lfdr.de>; Mon, 13 Nov 2023 12:57:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229595AbjKMK6H (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 13 Nov 2023 05:58:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55062 "EHLO
+        id S229706AbjKML5j (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 13 Nov 2023 06:57:39 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39728 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229470AbjKMK6G (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 13 Nov 2023 05:58:06 -0500
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39A87CB;
-        Mon, 13 Nov 2023 02:58:03 -0800 (PST)
-Received: from pps.filterd (m0353728.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3ADAMInx022325;
-        Mon, 13 Nov 2023 10:57:54 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=mO9wHnLHdy2du+X37iMKlBJstawyD+g6Bim8ZoWChSo=;
- b=CBgae9CnrymhtSKaTgjF+8R6vm+bywT12Nga2x2cDXI7ktWtqFz1h1xJk4t1Qs4/lAHR
- 5ZQ4kkuzky2v2o+cGVu5PpItlOhc2bN6zBbnqqswr35IaUSsQJ/wQL8oHG/D1k8TAw+F
- FSUYq/L+kHPoU1OUkwS0AuxN8OGQ3VM9R64RAbkqkTx/oq9jeGWRncsxh1xZ1aiu0Ss5
- tOrnZMaaWGJkgCLbQe13qZq870PEqcZzJsXS2CY8eIquCVWMZ0uA1MWdUn9l8Gf86VVK
- vfXO8nBMI3PI/f+2wGOcuwGtCekIHDpYyDt2zaO6cif3YbAJe/8CBnjqeUrZtpWAWrX4 dg== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3ubj038pw8-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 13 Nov 2023 10:57:54 +0000
-Received: from m0353728.ppops.net (m0353728.ppops.net [127.0.0.1])
-        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 3ADAsmxu021993;
-        Mon, 13 Nov 2023 10:57:54 GMT
-Received: from ppma11.dal12v.mail.ibm.com (db.9e.1632.ip4.static.sl-reverse.com [50.22.158.219])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3ubj038pw1-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 13 Nov 2023 10:57:54 +0000
-Received: from pps.filterd (ppma11.dal12v.mail.ibm.com [127.0.0.1])
-        by ppma11.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 3ADA41cE015483;
-        Mon, 13 Nov 2023 10:57:53 GMT
-Received: from smtprelay03.dal12v.mail.ibm.com ([172.16.1.5])
-        by ppma11.dal12v.mail.ibm.com (PPS) with ESMTPS id 3uapn17xax-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 13 Nov 2023 10:57:53 +0000
-Received: from smtpav03.wdc07v.mail.ibm.com (smtpav03.wdc07v.mail.ibm.com [10.39.53.230])
-        by smtprelay03.dal12v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 3ADAvqJq60490032
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 13 Nov 2023 10:57:52 GMT
-Received: from smtpav03.wdc07v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 1DB205805D;
-        Mon, 13 Nov 2023 10:57:52 +0000 (GMT)
-Received: from smtpav03.wdc07v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 640965805C;
-        Mon, 13 Nov 2023 10:57:50 +0000 (GMT)
-Received: from [9.171.9.165] (unknown [9.171.9.165])
-        by smtpav03.wdc07v.mail.ibm.com (Postfix) with ESMTP;
-        Mon, 13 Nov 2023 10:57:50 +0000 (GMT)
-Message-ID: <d099d572-3feb-44a0-8b63-60a18af28943@linux.ibm.com>
-Date:   Mon, 13 Nov 2023 11:57:49 +0100
+        with ESMTP id S229970AbjKML5i (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 13 Nov 2023 06:57:38 -0500
+Received: from out-180.mta1.migadu.com (out-180.mta1.migadu.com [95.215.58.180])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7243ED75
+        for <linux-rdma@vger.kernel.org>; Mon, 13 Nov 2023 03:57:35 -0800 (PST)
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+        t=1699876653;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=HDqZPB0eiiRmTMEY486ZpVhnofu11YZsxXLxypoPhRc=;
+        b=BAv0+VX54KtLpVOA9zLM32DlC4CerSzG/eBFE9JlDIN2uCO2T42SHSviTWuDY9cy+DovkA
+        jUmb4ltLQuj7bFUStJf1wy7Xu1OQs0ypWAa1bxOfLZ2ty3p2bUYfHTFlOkfEvH6qc79rhl
+        qjoiutq8foxaWa38Xjx/Jfj7/8r9Ar4=
+From:   Guoqing Jiang <guoqing.jiang@linux.dev>
+To:     bmt@zurich.ibm.com, jgg@ziepe.ca, leon@kernel.org
+Cc:     linux-rdma@vger.kernel.org
+Subject: [PATCH V5 00/17] Cleanup for siw
+Date:   Mon, 13 Nov 2023 19:57:09 +0800
+Message-Id: <20231113115726.12762-1-guoqing.jiang@linux.dev>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH net v1] net/smc: avoid data corruption caused by decline
-Content-Language: en-GB
-To:     "D. Wythe" <alibuda@linux.alibaba.com>, kgraul@linux.ibm.com,
-        jaka@linux.ibm.com, wintera@linux.ibm.com
-Cc:     kuba@kernel.org, davem@davemloft.net, netdev@vger.kernel.org,
-        linux-s390@vger.kernel.org, linux-rdma@vger.kernel.org
-References: <1699436909-22767-1-git-send-email-alibuda@linux.alibaba.com>
- <05c29431-c941-45d1-8e14-0527accc3993@linux.ibm.com>
- <b3ce2dfe-ece9-919b-024d-051cd66609ed@linux.alibaba.com>
- <3f3080e2-cb2c-16f4-02b1-ca17394d2813@linux.alibaba.com>
-From:   Wenjia Zhang <wenjia@linux.ibm.com>
-In-Reply-To: <3f3080e2-cb2c-16f4-02b1-ca17394d2813@linux.alibaba.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: 8xuwEe4VKcs5traCjvrjp9rPpvbJMH2D
-X-Proofpoint-ORIG-GUID: sjbnbvJX7Re9-DiFR1uJwPSf-IPzJv7t
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-11-12_24,2023-11-09_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0 adultscore=0
- malwarescore=0 spamscore=0 phishscore=0 suspectscore=0 lowpriorityscore=0
- priorityscore=1501 bulkscore=0 mlxscore=0 clxscore=1015 mlxlogscore=999
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2311060000
- definitions=main-2311130090
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Migadu-Flow: FLOW_OUT
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
+V5 changes:
+1.  add Acked-by tags.
+2.  rebase to latest rdma tree and remove one obsolete patch.
+
+V4 changes:
+1. add Acked-by tags.
+2. update patch 3 and patch 12 per Bernard's review.
+3. update patch header in patch 18.
+
+V3 changes:
+1. add Acked-by tags.
+2. drop 2 patches and address other comments.
+
+Appreciate for Bernard's review!
+
+V2 changes:
+1. address W=1 warning in patch 12 and 19 per the report from lkp.
+2. add one more patch (20th).
+
+Hi,
+
+This series aim to cleanup siw code, please review and comment!
+
+Thanks,
+Guoqing
+
+Guoqing Jiang (17):
+  RDMA/siw: Introduce siw_get_page
+  RDMA/siw: Introduce siw_update_skb_rcvd
+  RDMA/siw: Use iov.iov_len in kernel_sendmsg
+  RDMA/siw: Remove goto lable in siw_mmap
+  RDMA/siw: Remove rcu from siw_qp
+  RDMA/siw: No need to check term_info.valid before call
+    siw_send_terminate
+  RDMA/siw: Factor out siw_rx_data helper
+  RDMA/siw: Introduce SIW_STAG_MAX_INDEX
+  RDMA/siw: Add one parameter to siw_destroy_cpulist
+  RDMA/siw: Introduce siw_cep_set_free_and_put
+  RDMA/siw: Introduce siw_free_cm_id
+  RDMA/siw: Cleanup siw_accept
+  RDMA/siw: Remove siw_sk_save_upcalls
+  RDMA/siw: Fix typo
+  RDMA/siw: Only check attrs->cap.max_send_wr in siw_create_qp
+  RDMA/siw: Introduce siw_destroy_cep_sock
+  RDMA/siw: Update comments for siw_qp_sq_process
+
+ drivers/infiniband/sw/siw/siw.h       |   1 -
+ drivers/infiniband/sw/siw/siw_cm.c    | 145 +++++++++++---------------
+ drivers/infiniband/sw/siw/siw_main.c  |  30 +++---
+ drivers/infiniband/sw/siw/siw_mem.c   |  12 ++-
+ drivers/infiniband/sw/siw/siw_qp.c    |   2 +-
+ drivers/infiniband/sw/siw/siw_qp_rx.c |  84 ++++++---------
+ drivers/infiniband/sw/siw/siw_qp_tx.c |  39 +++----
+ drivers/infiniband/sw/siw/siw_verbs.c |  23 ++--
+ 8 files changed, 134 insertions(+), 202 deletions(-)
 
 
-On 13.11.23 03:50, D. Wythe wrote:
-> 
-> 
-> On 11/10/23 10:51 AM, D. Wythe wrote:
->>
->>
->> On 11/8/23 9:00 PM, Wenjia Zhang wrote:
->>>
->>>
->>> On 08.11.23 10:48, D. Wythe wrote:
->>>> From: "D. Wythe" <alibuda@linux.alibaba.com>
->>>>
->>>> We found a data corruption issue during testing of SMC-R on Redis
->>>> applications.
->>>>
->>>> The benchmark has a low probability of reporting a strange error as
->>>> shown below.
->>>>
->>>> "Error: Protocol error, got "\xe2" as reply type byte"
->>>>
->>>> Finally, we found that the retrieved error data was as follows:
->>>>
->>>> 0xE2 0xD4 0xC3 0xD9 0x04 0x00 0x2C 0x20 0xA6 0x56 0x00 0x16 0x3E 0x0C
->>>> 0xCB 0x04 0x02 0x01 0x00 0x00 0x20 0x00 0x00 0x00 0x00 0x00 0x00 0x00
->>>> 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0xE2
->>>>
->>>> It is quite obvious that this is a SMC DECLINE message, which means 
->>>> that
->>>> the applications received SMC protocol message.
->>>> We found that this was caused by the following situations:
->>>>
->>>> client            server
->>>>        proposal
->>>>     ------------->
->>>>        accept
->>>>     <-------------
->>>>        confirm
->>>>     ------------->
->>>> wait confirm
->>>>
->>>>      failed llc confirm
->>>>         x------
->>>> (after 2s)timeout
->>>>             wait rsp
->>>>
->>>> wait decline
->>>>
->>>> (after 1s) timeout
->>>>             (after 2s) timeout
->>>>         decline
->>>>     -------------->
->>>>         decline
->>>>     <--------------
->>>>
->>>> As a result, a decline message was sent in the implementation, and this
->>>> message was read from TCP by the already-fallback connection.
->>>>
->>>> This patch double the client timeout as 2x of the server value,
->>>> With this simple change, the Decline messages should never cross or
->>>> collide (during Confirm link timeout).
->>>>
->>>> This issue requires an immediate solution, since the protocol updates
->>>> involve a more long-term solution.
->>>>
->>>> Fixes: 0fb0b02bd6fd ("net/smc: adapt SMC client code to use the LLC 
->>>> flow")
->>>> Signed-off-by: D. Wythe <alibuda@linux.alibaba.com>
->>>> ---
->>>>   net/smc/af_smc.c | 2 +-
->>>>   1 file changed, 1 insertion(+), 1 deletion(-)
->>>>
->>>> diff --git a/net/smc/af_smc.c b/net/smc/af_smc.c
->>>> index abd2667..5b91f55 100644
->>>> --- a/net/smc/af_smc.c
->>>> +++ b/net/smc/af_smc.c
->>>> @@ -599,7 +599,7 @@ static int smcr_clnt_conf_first_link(struct 
->>>> smc_sock *smc)
->>>>       int rc;
->>>>         /* receive CONFIRM LINK request from server over RoCE fabric */
->>>> -    qentry = smc_llc_wait(link->lgr, NULL, SMC_LLC_WAIT_TIME,
->>>> +    qentry = smc_llc_wait(link->lgr, NULL, 2 * SMC_LLC_WAIT_TIME,
->>>>                     SMC_LLC_CONFIRM_LINK);
->>>>       if (!qentry) {
->>>>           struct smc_clc_msg_decline dclc;
->>> I'm wondering if the double time (if sufficient) of timeout could be 
->>> for waiting for CLC_DECLINE on the client's side. i.e.
->>>
->>
->> It depends. We can indeed introduce a sysctl to allow server to 
->> manager their Confirm Link timeout,
->> but if there will be protocol updates, this introduction will no 
->> longer be necessary, and we will
->> have to maintain it continuously.
->>
-no, I don't think, either, that we need a sysctl for that.
->> I believe the core of the solution is to ensure that decline messages 
->> never cross or collide. Increasing
->> the client's timeout by twice as much as the server's timeout can 
->> temporarily solve this problem.
+base-commit: 057a30168175048be9e9b30f0cafd26f5043eb07
+-- 
+2.35.3
 
-I have no objection with that, but my question is why you don't increase 
-the timeout waiting for CLC_DECLINE instead of waiting LLC_Confirm_Link? 
-Shouldn't they have the same effect?
-
->> If Jerry's proposed protocol updates are too complex or if there won't 
->> be any future protocol updates,
->> it's still not late to let server manager their Confirm Link timeout 
->> then.
->>
->> Best wishes,
->> D. Wythe
->>
-> 
-> FYI:
-> 
-> It seems that my email was not successfully delivered due to some 
-> reasons. Sorry
-> for that.
-> 
-> D. Wythe
-> 
-> 
-
->>> diff --git a/net/smc/af_smc.c b/net/smc/af_smc.c
->>> index 35ddebae8894..9b1feef1013d 100644
->>> --- a/net/smc/af_smc.c
->>> +++ b/net/smc/af_smc.c
->>> @@ -605,7 +605,7 @@ static int smcr_clnt_conf_first_link(struct 
->>> smc_sock *smc)
->>>                 struct smc_clc_msg_decline dclc;
->>>
->>>                 rc = smc_clc_wait_msg(smc, &dclc, sizeof(dclc),
->>> -                                     SMC_CLC_DECLINE, 
->>> CLC_WAIT_TIME_SHORT);
->>> +                                     SMC_CLC_DECLINE, 2 * 
->>> CLC_WAIT_TIME_SHORT);
->>>                 return rc == -EAGAIN ? SMC_CLC_DECL_TIMEOUT_CL : rc;
->>>         }
->>>         smc_llc_save_peer_uid(qentry);
->>>
->>> Because the purpose is to let the server have the control to deline.
->>
-> 
