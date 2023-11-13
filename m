@@ -2,45 +2,58 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 064567E9D7D
-	for <lists+linux-rdma@lfdr.de>; Mon, 13 Nov 2023 14:43:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E41E7EA52E
+	for <lists+linux-rdma@lfdr.de>; Mon, 13 Nov 2023 22:01:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231441AbjKMNnt (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 13 Nov 2023 08:43:49 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44196 "EHLO
+        id S229715AbjKMVBB (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 13 Nov 2023 16:01:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35016 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231440AbjKMNns (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 13 Nov 2023 08:43:48 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6C0D132;
-        Mon, 13 Nov 2023 05:43:45 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1591DC433C9;
-        Mon, 13 Nov 2023 13:43:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1699883025;
-        bh=zNd+G+1IihzPTwhS+TvIhUCeqzB2pnsHXfpvmHRUUfw=;
-        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-        b=k2KRH7Kg/+ShKnngqSKXVdUQdUAZmpdX0EN55yMkX/2bsPqwQ6Ca94s/rvnBuFvi8
-         U9YKDUuSHtTuZTRykQTLOZ8Ugcifa9P7NXtNOMb+WzfktDqI5Cpz1NIQwloBPZBpCd
-         mBslipUCaAFqFIiPN6mxWxEz5K8gY49TXhepJQX5Qs/bPblZiVx9RWn8mYL/e654No
-         IziDiJTr1YwzaYeEePZGJxzBWKkpUedzuzEZ8t4J25121keHmjFgKT7bPn0xHkATGl
-         KGNMI0t9axO1jrCOaLUsziiB8GLQgTH94Wqb+v2nSJuUGCsj9cHMsun/yqRLys+Hc1
-         /h/6ALNYPOhTQ==
-Subject: [PATCH v1 7/7] svcrdma: Move Send CQ to SOFTIRQ context
-From:   Chuck Lever <cel@kernel.org>
-To:     linux-nfs@vger.kernel.org, linux-rdma@vger.kernel.org
-Cc:     tom@talpey.com
-Date:   Mon, 13 Nov 2023 08:43:44 -0500
-Message-ID: <169988302403.6417.12005628146945923629.stgit@bazille.1015granger.net>
-In-Reply-To: <169988267843.6417.17927133323277523958.stgit@bazille.1015granger.net>
-References: <169988267843.6417.17927133323277523958.stgit@bazille.1015granger.net>
-User-Agent: StGit/1.5
-MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+        with ESMTP id S229677AbjKMVBA (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 13 Nov 2023 16:01:00 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.100])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1BDBD57
+        for <linux-rdma@vger.kernel.org>; Mon, 13 Nov 2023 13:00:56 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1699909256; x=1731445256;
+  h=date:from:to:cc:subject:message-id;
+  bh=4RtSyn6A/CUF1eJBuna5shZqYjUczdLujdOd7xDIV3Y=;
+  b=QamGUNO+dlURsjI4choBjsLsUXDUB0YG1T1CaUY2e7Z5hkn6sQWKvF6f
+   WjW+bJ+FFfMBLSQlF//cZzuvXm57KajkEAQcG7Qn+zcaqyDvBWkz4r03Q
+   LFt2gFcHh4ynHkbig46gQC2CO5fjSBEpf+DaX0tbD0ThgLqGsq7tawkDY
+   V1aHTQVO+7axhIaLb02oB4slbNkjGQdJokDEp52aRNu0dPAD5EPKZloel
+   0kZWkiwqsDiuwmRCvkb7kVKhDcDawbf5HdfBEutRcL3gqQ8rI689V5qVy
+   AUzlyd4NJ5t3Uf0q16EbLLVOcTdnG2QmwBVxoI8BWEoIBYTPDQZfYmpqI
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10893"; a="457007145"
+X-IronPort-AV: E=Sophos;i="6.03,299,1694761200"; 
+   d="scan'208";a="457007145"
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Nov 2023 13:00:56 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10893"; a="1095863009"
+X-IronPort-AV: E=Sophos;i="6.03,299,1694761200"; 
+   d="scan'208";a="1095863009"
+Received: from lkp-server01.sh.intel.com (HELO 17d9e85e5079) ([10.239.97.150])
+  by fmsmga005.fm.intel.com with ESMTP; 13 Nov 2023 13:00:54 -0800
+Received: from kbuild by 17d9e85e5079 with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1r2e3A-000CTx-0A;
+        Mon, 13 Nov 2023 21:00:52 +0000
+Date:   Tue, 14 Nov 2023 05:00:45 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Leon Romanovsky <leon@kernel.org>
+Cc:     Doug Ledford <dledford@redhat.com>,
+        Jason Gunthorpe <jgg+lists@ziepe.ca>,
+        linux-rdma@vger.kernel.org
+Subject: [rdma:wip/leon-for-next] BUILD SUCCESS
+ 057a30168175048be9e9b30f0cafd26f5043eb07
+Message-ID: <202311140543.0jhuSnO9-lkp@intel.com>
+User-Agent: s-nail v14.9.24
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -48,85 +61,195 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Chuck Lever <chuck.lever@oracle.com>
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git wip/leon-for-next
+branch HEAD: 057a30168175048be9e9b30f0cafd26f5043eb07  RDMA/irdma: Use crypto_shash_digest() in irdma_ieq_check_mpacrc()
 
-I've noticed that using the ib-comp-wq workqueue delays Send
-Completions anywhere between 5us and 3 or more milliseconds.
+elapsed time: 723m
 
-For RDMA Write and Send completions, this is not a terribly
-significant issue, since these just release resources. They do not
-contribute to RPC round-trip time.
+configs tested: 176
+configs skipped: 2
 
-However, for RDMA Read completions, it delays the start of NFS
-WRITE operations, adding round-trip latency.
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
-For small to moderate NFS WRITEs, using soft IRQ completion means
-up to 5us better latency per NFS WRITE -- this is a significant
-portion of average RTT for small NFS WRITEs, which is 40-75us.
+tested configs:
+alpha                             allnoconfig   gcc  
+alpha                            allyesconfig   gcc  
+alpha                               defconfig   gcc  
+arc                              allmodconfig   gcc  
+arc                               allnoconfig   gcc  
+arc                              allyesconfig   gcc  
+arc                                 defconfig   gcc  
+arc                   randconfig-001-20231113   gcc  
+arc                   randconfig-002-20231113   gcc  
+arm                              allmodconfig   gcc  
+arm                               allnoconfig   gcc  
+arm                              allyesconfig   gcc  
+arm                                 defconfig   gcc  
+arm                   randconfig-001-20231113   gcc  
+arm                   randconfig-002-20231113   gcc  
+arm                   randconfig-003-20231113   gcc  
+arm                   randconfig-004-20231113   gcc  
+arm                          sp7021_defconfig   clang
+arm64                            allmodconfig   gcc  
+arm64                             allnoconfig   gcc  
+arm64                            allyesconfig   gcc  
+arm64                               defconfig   gcc  
+arm64                 randconfig-001-20231113   gcc  
+arm64                 randconfig-002-20231113   gcc  
+arm64                 randconfig-003-20231113   gcc  
+arm64                 randconfig-004-20231113   gcc  
+csky                             allmodconfig   gcc  
+csky                              allnoconfig   gcc  
+csky                             allyesconfig   gcc  
+csky                                defconfig   gcc  
+csky                  randconfig-001-20231113   gcc  
+csky                  randconfig-002-20231113   gcc  
+i386                             allmodconfig   gcc  
+i386                              allnoconfig   gcc  
+i386                             allyesconfig   gcc  
+i386         buildonly-randconfig-001-20231113   gcc  
+i386         buildonly-randconfig-002-20231113   gcc  
+i386         buildonly-randconfig-003-20231113   gcc  
+i386         buildonly-randconfig-004-20231113   gcc  
+i386         buildonly-randconfig-005-20231113   gcc  
+i386         buildonly-randconfig-006-20231113   gcc  
+i386                                defconfig   gcc  
+i386                  randconfig-001-20231113   gcc  
+i386                  randconfig-002-20231113   gcc  
+i386                  randconfig-003-20231113   gcc  
+i386                  randconfig-004-20231113   gcc  
+i386                  randconfig-005-20231113   gcc  
+i386                  randconfig-006-20231113   gcc  
+i386                  randconfig-011-20231113   gcc  
+i386                  randconfig-012-20231113   gcc  
+i386                  randconfig-013-20231113   gcc  
+i386                  randconfig-014-20231113   gcc  
+i386                  randconfig-015-20231113   gcc  
+i386                  randconfig-016-20231113   gcc  
+loongarch                        allmodconfig   gcc  
+loongarch                         allnoconfig   gcc  
+loongarch                        allyesconfig   gcc  
+loongarch                           defconfig   gcc  
+loongarch             randconfig-001-20231113   gcc  
+loongarch             randconfig-002-20231113   gcc  
+m68k                             allmodconfig   gcc  
+m68k                              allnoconfig   gcc  
+m68k                             allyesconfig   gcc  
+m68k                                defconfig   gcc  
+m68k                       m5249evb_defconfig   gcc  
+microblaze                       allmodconfig   gcc  
+microblaze                        allnoconfig   gcc  
+microblaze                       allyesconfig   gcc  
+microblaze                          defconfig   gcc  
+mips                             allmodconfig   gcc  
+mips                              allnoconfig   gcc  
+mips                             allyesconfig   gcc  
+mips                          ath79_defconfig   clang
+mips                        bcm47xx_defconfig   gcc  
+mips                         cobalt_defconfig   gcc  
+mips                        vocore2_defconfig   gcc  
+nios2                            allmodconfig   gcc  
+nios2                             allnoconfig   gcc  
+nios2                            allyesconfig   gcc  
+nios2                               defconfig   gcc  
+nios2                 randconfig-001-20231113   gcc  
+nios2                 randconfig-002-20231113   gcc  
+openrisc                         allmodconfig   gcc  
+openrisc                          allnoconfig   gcc  
+openrisc                         allyesconfig   gcc  
+openrisc                            defconfig   gcc  
+parisc                           allmodconfig   gcc  
+parisc                            allnoconfig   gcc  
+parisc                           allyesconfig   gcc  
+parisc                              defconfig   gcc  
+parisc                randconfig-001-20231113   gcc  
+parisc                randconfig-002-20231113   gcc  
+parisc64                            defconfig   gcc  
+powerpc                          allmodconfig   gcc  
+powerpc                           allnoconfig   gcc  
+powerpc                          allyesconfig   gcc  
+powerpc                   motionpro_defconfig   gcc  
+powerpc               randconfig-001-20231113   gcc  
+powerpc               randconfig-002-20231113   gcc  
+powerpc               randconfig-003-20231113   gcc  
+powerpc                     tqm8548_defconfig   gcc  
+powerpc64             randconfig-001-20231113   gcc  
+powerpc64             randconfig-002-20231113   gcc  
+powerpc64             randconfig-003-20231113   gcc  
+riscv                            allmodconfig   gcc  
+riscv                             allnoconfig   gcc  
+riscv                            allyesconfig   gcc  
+riscv                               defconfig   gcc  
+riscv                 randconfig-001-20231113   gcc  
+riscv                 randconfig-002-20231113   gcc  
+riscv                          rv32_defconfig   gcc  
+s390                             allmodconfig   gcc  
+s390                              allnoconfig   gcc  
+s390                             allyesconfig   gcc  
+s390                                defconfig   gcc  
+s390                  randconfig-001-20231113   gcc  
+s390                  randconfig-002-20231113   gcc  
+sh                               allmodconfig   gcc  
+sh                                allnoconfig   gcc  
+sh                               allyesconfig   gcc  
+sh                                  defconfig   gcc  
+sh                    randconfig-001-20231113   gcc  
+sh                    randconfig-002-20231113   gcc  
+sh                        sh7763rdp_defconfig   gcc  
+sh                        sh7785lcr_defconfig   gcc  
+sh                              ul2_defconfig   gcc  
+sparc                            allmodconfig   gcc  
+sparc                             allnoconfig   gcc  
+sparc                            allyesconfig   gcc  
+sparc                               defconfig   gcc  
+sparc                 randconfig-001-20231113   gcc  
+sparc                 randconfig-002-20231113   gcc  
+sparc64                          allmodconfig   gcc  
+sparc64                          allyesconfig   gcc  
+sparc64                             defconfig   gcc  
+sparc64               randconfig-001-20231113   gcc  
+sparc64               randconfig-002-20231113   gcc  
+um                               allmodconfig   clang
+um                                allnoconfig   clang
+um                               allyesconfig   clang
+um                                  defconfig   gcc  
+um                             i386_defconfig   gcc  
+um                    randconfig-001-20231113   gcc  
+um                    randconfig-002-20231113   gcc  
+um                           x86_64_defconfig   gcc  
+x86_64                            allnoconfig   gcc  
+x86_64                           allyesconfig   gcc  
+x86_64       buildonly-randconfig-001-20231113   gcc  
+x86_64       buildonly-randconfig-002-20231113   gcc  
+x86_64       buildonly-randconfig-003-20231113   gcc  
+x86_64       buildonly-randconfig-004-20231113   gcc  
+x86_64       buildonly-randconfig-005-20231113   gcc  
+x86_64       buildonly-randconfig-006-20231113   gcc  
+x86_64                              defconfig   gcc  
+x86_64                randconfig-001-20231113   gcc  
+x86_64                randconfig-002-20231113   gcc  
+x86_64                randconfig-003-20231113   gcc  
+x86_64                randconfig-004-20231113   gcc  
+x86_64                randconfig-005-20231113   gcc  
+x86_64                randconfig-006-20231113   gcc  
+x86_64                randconfig-011-20231113   gcc  
+x86_64                randconfig-012-20231113   gcc  
+x86_64                randconfig-013-20231113   gcc  
+x86_64                randconfig-014-20231113   gcc  
+x86_64                randconfig-015-20231113   gcc  
+x86_64                randconfig-016-20231113   gcc  
+x86_64                randconfig-071-20231113   gcc  
+x86_64                randconfig-072-20231113   gcc  
+x86_64                randconfig-073-20231113   gcc  
+x86_64                randconfig-074-20231113   gcc  
+x86_64                randconfig-075-20231113   gcc  
+x86_64                randconfig-076-20231113   gcc  
+x86_64                          rhel-8.3-rust   clang
+x86_64                               rhel-8.3   gcc  
+xtensa                randconfig-001-20231113   gcc  
+xtensa                randconfig-002-20231113   gcc  
 
-Signed-off-by: Chuck Lever <chuck.lever@oracle.com>
----
- net/sunrpc/xprtrdma/svc_rdma_rw.c        |    4 ++--
- net/sunrpc/xprtrdma/svc_rdma_sendto.c    |    6 +++---
- net/sunrpc/xprtrdma/svc_rdma_transport.c |    2 +-
- 3 files changed, 6 insertions(+), 6 deletions(-)
-
-diff --git a/net/sunrpc/xprtrdma/svc_rdma_rw.c b/net/sunrpc/xprtrdma/svc_rdma_rw.c
-index e460e25a1d6d..ada164c027bc 100644
---- a/net/sunrpc/xprtrdma/svc_rdma_rw.c
-+++ b/net/sunrpc/xprtrdma/svc_rdma_rw.c
-@@ -56,9 +56,9 @@ svc_rdma_get_rw_ctxt(struct svcxprt_rdma *rdma, unsigned int sges)
- 	struct svc_rdma_rw_ctxt *ctxt;
- 	struct llist_node *node;
- 
--	spin_lock(&rdma->sc_rw_ctxt_lock);
-+	spin_lock_bh(&rdma->sc_rw_ctxt_lock);
- 	node = llist_del_first(&rdma->sc_rw_ctxts);
--	spin_unlock(&rdma->sc_rw_ctxt_lock);
-+	spin_unlock_bh(&rdma->sc_rw_ctxt_lock);
- 	if (node) {
- 		ctxt = llist_entry(node, struct svc_rdma_rw_ctxt, rw_node);
- 	} else {
-diff --git a/net/sunrpc/xprtrdma/svc_rdma_sendto.c b/net/sunrpc/xprtrdma/svc_rdma_sendto.c
-index e27345af6289..49a9f409bc8e 100644
---- a/net/sunrpc/xprtrdma/svc_rdma_sendto.c
-+++ b/net/sunrpc/xprtrdma/svc_rdma_sendto.c
-@@ -198,12 +198,13 @@ struct svc_rdma_send_ctxt *svc_rdma_send_ctxt_get(struct svcxprt_rdma *rdma)
- 	struct svc_rdma_send_ctxt *ctxt;
- 	struct llist_node *node;
- 
--	spin_lock(&rdma->sc_send_lock);
-+	spin_lock_bh(&rdma->sc_send_lock);
- 	node = llist_del_first(&rdma->sc_send_ctxts);
-+	spin_unlock_bh(&rdma->sc_send_lock);
- 	if (!node)
- 		goto out_empty;
-+
- 	ctxt = llist_entry(node, struct svc_rdma_send_ctxt, sc_node);
--	spin_unlock(&rdma->sc_send_lock);
- 
- out:
- 	rpcrdma_set_xdrlen(&ctxt->sc_hdrbuf, 0);
-@@ -216,7 +217,6 @@ struct svc_rdma_send_ctxt *svc_rdma_send_ctxt_get(struct svcxprt_rdma *rdma)
- 	return ctxt;
- 
- out_empty:
--	spin_unlock(&rdma->sc_send_lock);
- 	ctxt = svc_rdma_send_ctxt_alloc(rdma);
- 	if (!ctxt)
- 		return NULL;
-diff --git a/net/sunrpc/xprtrdma/svc_rdma_transport.c b/net/sunrpc/xprtrdma/svc_rdma_transport.c
-index 7bd50efeeb4e..8de32927cd7d 100644
---- a/net/sunrpc/xprtrdma/svc_rdma_transport.c
-+++ b/net/sunrpc/xprtrdma/svc_rdma_transport.c
-@@ -430,7 +430,7 @@ static struct svc_xprt *svc_rdma_accept(struct svc_xprt *xprt)
- 		goto errout;
- 	}
- 	newxprt->sc_sq_cq = ib_alloc_cq_any(dev, newxprt, newxprt->sc_sq_depth,
--					    IB_POLL_WORKQUEUE);
-+					    IB_POLL_SOFTIRQ);
- 	if (IS_ERR(newxprt->sc_sq_cq))
- 		goto errout;
- 	newxprt->sc_rq_cq = ib_alloc_cq_any(dev, newxprt, rq_depth,
-
-
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
