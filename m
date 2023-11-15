@@ -2,62 +2,61 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D68E7EC72C
-	for <lists+linux-rdma@lfdr.de>; Wed, 15 Nov 2023 16:28:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0AE0A7EC72D
+	for <lists+linux-rdma@lfdr.de>; Wed, 15 Nov 2023 16:28:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231895AbjKOP2H (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        id S229646AbjKOP2H (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
         Wed, 15 Nov 2023 10:28:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37960 "EHLO
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38060 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231641AbjKOP2E (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 15 Nov 2023 10:28:04 -0500
-Received: from mail-ej1-x62a.google.com (mail-ej1-x62a.google.com [IPv6:2a00:1450:4864:20::62a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61603101
-        for <linux-rdma@vger.kernel.org>; Wed, 15 Nov 2023 07:28:01 -0800 (PST)
-Received: by mail-ej1-x62a.google.com with SMTP id a640c23a62f3a-9c603e2354fso197391666b.1
+        with ESMTP id S229989AbjKOP2F (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 15 Nov 2023 10:28:05 -0500
+Received: from mail-ed1-x535.google.com (mail-ed1-x535.google.com [IPv6:2a00:1450:4864:20::535])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0174419D
+        for <linux-rdma@vger.kernel.org>; Wed, 15 Nov 2023 07:28:02 -0800 (PST)
+Received: by mail-ed1-x535.google.com with SMTP id 4fb4d7f45d1cf-5409bc907edso10590265a12.0
         for <linux-rdma@vger.kernel.org>; Wed, 15 Nov 2023 07:28:01 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=ionos.com; s=google; t=1700062080; x=1700666880; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=5pS2yg4z7QyRI3Eox8JCayMQqgQn/h9ZIZWLeABnOtg=;
-        b=CA0emUV58/S1kb+vDX1/YVeOeXlW8HG/105BtAONiJtxLeW31hgFZveyB8w5rEozkp
-         EQIybMSih9mtc2L9n1T9NxEIIjOSsn0sbHWsq6cpUIz7AIyl6Kq6AvRq0LbLDlxMeF7B
-         zPNZIk4lrinE5azuWN2DnaOwQw0T3qWmzFnSEW5jzWHRvDxt+7aszNolAjy2tBVFcPbB
-         4w5gjQvSVzfc0nZRuJU6tBrYmxy7ZFPL2R3W0awstxxpnKj0hf2/ZdyiCafb1PHoRInQ
-         8UrqKi0ZbBZGgRHnC1V/9yUl66sNY/nu5o6q4ySV22dIgO7zlMdIqdlRS+LIDkE0wU1o
-         VtuA==
+        bh=jW7bALUgNM17QBq2CNcnNNwpzrRY3Ezp5tcU/Q9UywY=;
+        b=efIk6KZyckCv46IfwFBOjwPd5rw4YGVFnhW0baWn8x29ZCSE/YTjJl40w2WWZG7ulz
+         HeD39T/omyEvtCdmHQzA2l728pv1CoUhcjMlJl2hERSghzKA2h8hn9rs7cGn68GF3t67
+         IPG10CfrRX7Ed+5TWYYFzDdiHE115mZ8FaIbgfTPMBmOWpcXNAMOTyxJFs6ahTu7me+X
+         Rr84GdobUiYdgpX8A6MqjotiXKqwbCtLrMZn4QZBxu5zLLQ6A/6y0CjViIrntWmy2mj3
+         5SqZ77nEvTcvNaMxt+CX35iNoABLeb8idIG+/v/FQudZgr3gbJIWmL4JaB50VMDWzm4E
+         Cqcg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20230601; t=1700062080; x=1700666880;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=5pS2yg4z7QyRI3Eox8JCayMQqgQn/h9ZIZWLeABnOtg=;
-        b=T9vIWv7t+oy2mEWguvE4iasipQErjJh/YURJ2k+MBateJXBc0egH3MSLYMAeUFGpPv
-         L0R/EvTTFpRbBx07lYV0e9cDqFlwyMSBbGbBCYf/u5cUtsChMn2/9k69yipBoVxSoFl1
-         +93hPAUBgc6MJd4nenrlta+sJZhGGYM4HN8yu+mBApRVAQgamzHi1qhNtvgIem9wLmjF
-         ZT4g1dx/Ar64eWdBxSZFMn8Nq1aXnKQOki1owlvk1Jk1ppn5EDbVShgL4FUOQ8hMM/Qu
-         3eT9Mgpn7GahrkBG7cgaMPxtndXjPE/cHll0Xy0m5T1YTII7pr5oAhszL5uaRKKncf0k
-         Xtvw==
-X-Gm-Message-State: AOJu0YzGZifPRrwp8nrWx+pIORgJ5Q/ifZxcXyyKt64zLqBP4nbyx+WO
-        ojAzsTZyn9POlK2U0kydsZmft+8kAgL0gtOvBj0=
-X-Google-Smtp-Source: AGHT+IHczSDIxRj6Xa3wpKd5AcelE5lcYLtzBYtcQQ1NUOwank5S2LZR7tMOrC8xocbWLGyFtDN7MA==
-X-Received: by 2002:a17:907:868e:b0:9ae:5a56:be32 with SMTP id qa14-20020a170907868e00b009ae5a56be32mr5528013ejc.38.1700062079893;
-        Wed, 15 Nov 2023 07:27:59 -0800 (PST)
+        bh=jW7bALUgNM17QBq2CNcnNNwpzrRY3Ezp5tcU/Q9UywY=;
+        b=va2dMdZLOpaHyQgq1fv7dxeouw8YYNAUFuD9TMLqpnX6ylmZzdeTy9+yNSwMmioVCO
+         l25gJQL88FjAzErXC2ZGIugw/pD8lGMH7Bny04ZS4sNcdnorzgLQaxr2SNDgWqmImdSj
+         XXqhB01/6Esj/H1ErLDqJugKDNBbJQBD2liMhCuS+bG95cs0gr6rxs5zhCm7m+ucCdVU
+         DrEGexdYfI/2kt5ygjGpEUaH/a9B7tq8dtm5TQPwkwPHyD1BepBT4G0yDLiRlsl0r8O+
+         +B7W2EsbQxT1tklJQQtKJuLFGboBOu/1HocMXFzak73fnaYkWJ5nbTTUDaqzlaDfcfN/
+         lbtw==
+X-Gm-Message-State: AOJu0Yw9DmELtYUsbcLrKvtieo6SSsPxTfwgmp42e3COjB8dW7D3Kxrg
+        9m2oUEV5IE5rKCmcgnAROjCBYHpxoCPm+D5QLls=
+X-Google-Smtp-Source: AGHT+IGY3wozw7Qqci1EWIIG01Xmokcqppl1xVnIv4T8Nj+r/fYY5N5keHZf462VJ0kReqXdUhv4Ug==
+X-Received: by 2002:aa7:d8d2:0:b0:53e:5957:aa4e with SMTP id k18-20020aa7d8d2000000b0053e5957aa4emr10425072eds.20.1700062080515;
+        Wed, 15 Nov 2023 07:28:00 -0800 (PST)
 Received: from lb01533.fkb.profitbricks.net ([212.227.34.98])
         by smtp.gmail.com with ESMTPSA id u6-20020a056402064600b00542da55a716sm6577349edx.90.2023.11.15.07.27.59
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 15 Nov 2023 07:27:59 -0800 (PST)
+        Wed, 15 Nov 2023 07:28:00 -0800 (PST)
 From:   Md Haris Iqbal <haris.iqbal@ionos.com>
 To:     linux-rdma@vger.kernel.org
 Cc:     bvanassche@acm.org, leon@kernel.org, jgg@ziepe.ca,
         haris.iqbal@ionos.com, jinpu.wang@ionos.com,
-        Santosh Kumar Pradhan <santosh.pradhan@ionos.com>,
         Grzegorz Prajsner <grzegorz.prajsner@ionos.com>
-Subject: [PATCH for-next 6/9] RDMA/rtrs-srv: Destroy path files after making sure no IOs in-flight
-Date:   Wed, 15 Nov 2023 16:27:46 +0100
-Message-Id: <20231115152749.424301-7-haris.iqbal@ionos.com>
+Subject: [PATCH for-next 7/9] RDMA/rtrs-clt: Fix the max_send_wr setting
+Date:   Wed, 15 Nov 2023 16:27:47 +0100
+Message-Id: <20231115152749.424301-8-haris.iqbal@ionos.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20231115152749.424301-1-haris.iqbal@ionos.com>
 References: <20231115152749.424301-1-haris.iqbal@ionos.com>
@@ -73,47 +72,31 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Destroying path files may lead to the freeing of rdma_stats. This creates
-the following race.
+From: Jack Wang <jinpu.wang@ionos.com>
 
-An IO is in-flight, or has just passed the session state check in
-process_read/process_write. The close_work gets triggered and the function
-rtrs_srv_close_work() starts and does destroy path which frees the
-rdma_stats. After this the function process_read/process_write resumes and
-tries to update the stats through the function rtrs_srv_update_rdma_stats
+For each write request, we need Request, Response Memory Registration,
+Local Invalidate.
 
-This commit solves the problem by moving the destroy path function to a
-later point. This point makes sure any inflights are completed. This is
-done by qp drain, and waiting for all in-flights through ops_id.
-
-Signed-off-by: Md Haris Iqbal <haris.iqbal@ionos.com>
-Signed-off-by: Santosh Kumar Pradhan <santosh.pradhan@ionos.com>
+Signed-off-by: Jack Wang <jinpu.wang@ionos.com>
+Reviewed-by: Md Haris Iqbal <haris.iqbal@ionos.com>
 Signed-off-by: Grzegorz Prajsner <grzegorz.prajsner@ionos.com>
 ---
- drivers/infiniband/ulp/rtrs/rtrs-srv.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ drivers/infiniband/ulp/rtrs/rtrs-clt.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/infiniband/ulp/rtrs/rtrs-srv.c b/drivers/infiniband/ulp/rtrs/rtrs-srv.c
-index 925b71481c62..1d33efb8fb03 100644
---- a/drivers/infiniband/ulp/rtrs/rtrs-srv.c
-+++ b/drivers/infiniband/ulp/rtrs/rtrs-srv.c
-@@ -1532,7 +1532,6 @@ static void rtrs_srv_close_work(struct work_struct *work)
- 
- 	srv_path = container_of(work, typeof(*srv_path), close_work);
- 
--	rtrs_srv_destroy_path_files(srv_path);
- 	rtrs_srv_stop_hb(srv_path);
- 
- 	for (i = 0; i < srv_path->s.con_num; i++) {
-@@ -1552,6 +1551,8 @@ static void rtrs_srv_close_work(struct work_struct *work)
- 	/* Wait for all completion */
- 	wait_for_completion(&srv_path->complete_done);
- 
-+	rtrs_srv_destroy_path_files(srv_path);
-+
- 	/* Notify upper layer if we are the last path */
- 	rtrs_srv_path_down(srv_path);
- 
+diff --git a/drivers/infiniband/ulp/rtrs/rtrs-clt.c b/drivers/infiniband/ulp/rtrs/rtrs-clt.c
+index 83ebd9be760e..df10d29c3fe9 100644
+--- a/drivers/infiniband/ulp/rtrs/rtrs-clt.c
++++ b/drivers/infiniband/ulp/rtrs/rtrs-clt.c
+@@ -1699,7 +1699,7 @@ static int create_con_cq_qp(struct rtrs_clt_con *con)
+ 		clt_path->s.dev_ref++;
+ 		max_send_wr = min_t(int, wr_limit,
+ 			      /* QD * (REQ + RSP + FR REGS or INVS) + drain */
+-			      clt_path->queue_depth * 3 + 1);
++			      clt_path->queue_depth * 4 + 1);
+ 		max_recv_wr = min_t(int, wr_limit,
+ 			      clt_path->queue_depth * 3 + 1);
+ 		max_send_sge = 2;
 -- 
 2.25.1
 
