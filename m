@@ -2,43 +2,42 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D8E17EC51C
-	for <lists+linux-rdma@lfdr.de>; Wed, 15 Nov 2023 15:26:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 92D9A7EC55E
+	for <lists+linux-rdma@lfdr.de>; Wed, 15 Nov 2023 15:32:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344116AbjKOO0W (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 15 Nov 2023 09:26:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60910 "EHLO
+        id S1344065AbjKOOcB (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 15 Nov 2023 09:32:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46220 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344185AbjKOO0V (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 15 Nov 2023 09:26:21 -0500
+        with ESMTP id S1344057AbjKOOcB (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 15 Nov 2023 09:32:01 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 12ACCE7;
-        Wed, 15 Nov 2023 06:26:18 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 18E9BC433C7;
-        Wed, 15 Nov 2023 14:26:16 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7A7B12E
+        for <linux-rdma@vger.kernel.org>; Wed, 15 Nov 2023 06:31:57 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 04430C433C8;
+        Wed, 15 Nov 2023 14:31:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1700058377;
-        bh=i+fNJ/Tm8f6CULGHTu6mifl+Pse6PCwH1Lncgf+r01E=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=K03ScaPQTlBNPfR4SG8Sm3QxReki9UYIIGvktDSa/PZYwu8CgAeyUAiE9J4MOmisL
-         eaxdG6Z8xZ2pdt786M5/wKLSx8UhKomJ04oScNHjo1xuWdBY1RIFWAP1pq47A1Gcx+
-         Qvtid6EJRXDXJuSDrl+xfWbkMR0zdmNKNQwrb1UA9lCKHRlgCpAum/l7bcy8FqavD5
-         YS05LNTH1fWkb6rHcx2+u2PX5uNejd/PjgK4iSSRik+wXf1hxHsxSLlfAoMVsVe/JR
-         HC13u0quLTDV2qeiJnfs+2gFTvtyLpIxD+U4l+s24A6oi7LZGroxP+5CJkCDfs78PC
-         pMGgW/6GtvN6w==
-Date:   Wed, 15 Nov 2023 16:26:13 +0200
+        s=k20201202; t=1700058717;
+        bh=1uAwP0IougIfm6D1I6ee5aG4+/K+uRjqCORqs0UDOkk=;
+        h=From:To:In-Reply-To:References:Subject:Date:From;
+        b=gutNfrQgeROVwTUXtiuHc67pv9+/jhVcVOcMIGtlmetuwsKe9wiuu5prov2Al03Hp
+         F/uGAZMhAwXgTyE5cIkcBOcf6Klllmks1lvb/J/9pbM9ar3MZmbm25LoD2F8GLeD6R
+         apJC0LiLtqKI+ya0Ju77Ug4B3+QnqFHxvix/+ZjSi5yfXVOcuCnjyhmAakC0Mnk9h3
+         Y7gC8Lk99Mr5hqNw9eLHs3VZT25gljrOKqn+bfSe3GBqFJ+Gsq8Vv7Nc4KySlRWaJG
+         bLTW7/S1j434OvcVhM2OMZ000gSq07/egW7WKWw+WBUMqsxVqcYD1TctCVxKyOzmj0
+         i22OZsi0Fz3fA==
 From:   Leon Romanovsky <leon@kernel.org>
-To:     Junxian Huang <huangjunxian6@hisilicon.com>
-Cc:     jgg@ziepe.ca, linux-rdma@vger.kernel.org, linuxarm@huawei.com,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH for-next 3/3] RDMA/hns: Support SW stats with debugfs
-Message-ID: <20231115142613.GD51912@unreal>
-References: <20231114123449.1106162-1-huangjunxian6@hisilicon.com>
- <20231114123449.1106162-4-huangjunxian6@hisilicon.com>
+To:     linux-rdma@vger.kernel.org, Jason Gunthorpe <jgg@ziepe.ca>,
+        Shiraz Saleem <shiraz.saleem@intel.com>
+In-Reply-To: <20231114170246.238-1-shiraz.saleem@intel.com>
+References: <20231114170246.238-1-shiraz.saleem@intel.com>
+Subject: Re: [PATCH for-rc 0/2] irdma SQD fixes
+Message-Id: <170005871254.837026.14830911574144868016.b4-ty@kernel.org>
+Date:   Wed, 15 Nov 2023 16:31:52 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231114123449.1106162-4-huangjunxian6@hisilicon.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Mailer: b4 0.12-dev-a055d
 X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
@@ -49,39 +48,24 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Tue, Nov 14, 2023 at 08:34:49PM +0800, Junxian Huang wrote:
-> Support SW stats with debugfs.
+
+On Tue, 14 Nov 2023 11:02:44 -0600, Shiraz Saleem wrote:
+> This series addresses a couple of minor fixes related to SQD flow
+> in irdma.
 > 
-> Query output:
-> $ cat /sys/kernel/debug/hns_roce/hns_0/sw_stat/sw_stat
-> aeqe                 --- 3341
-> ceqe                 --- 0
-> cmds                 --- 6764
-> cmds_err             --- 0
-> posted_mbx           --- 3344
-> polled_mbx           --- 3
-> mbx_event            --- 3341
-> qp_create_err        --- 0
-> qp_modify_err        --- 0
-> cq_create_err        --- 0
-> cq_modify_err        --- 0
-> srq_create_err       --- 0
-> srq_modify_err       --- 0
-> xrcd_alloc_err       --- 0
-> mr_reg_err           --- 0
-> mr_rereg_err         --- 0
-> ah_create_err        --- 0
-> mmap_err             --- 0
-> uctx_alloc_err       --- 0
+> Mustafa Ismail (2):
+>   RDMA/irdma: Do not modify to SQD on error
+>   RDMA/irdma: Add wait for suspend on SQD
+> 
+> [...]
 
-From one side, 
-Everything will be much easier if you use one file == one value. It will
-remove the need in seq_* calls. Your "cat ../sw_stat" is not atomic and
-doesn't present snapshot anyway.
+Applied, thanks!
 
-From another,
-It is debugfs and it is upto you.
+[1/2] RDMA/irdma: Do not modify to SQD on error
+      https://git.kernel.org/rdma/rdma/c/ba12ab66aa83a2
+[2/2] RDMA/irdma: Add wait for suspend on SQD
+      https://git.kernel.org/rdma/rdma/c/bd6da690c27d75
 
-Let's wait a couple of days more and if no one complains, I'll apply it as is.
-
-Thanks
+Best regards,
+-- 
+Leon Romanovsky <leon@kernel.org>
