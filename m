@@ -2,169 +2,362 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 50F637F0036
-	for <lists+linux-rdma@lfdr.de>; Sat, 18 Nov 2023 15:59:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 099BE7F0061
+	for <lists+linux-rdma@lfdr.de>; Sat, 18 Nov 2023 16:51:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229691AbjKRO7q (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Sat, 18 Nov 2023 09:59:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38650 "EHLO
+        id S230028AbjKRPvQ (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Sat, 18 Nov 2023 10:51:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37178 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229536AbjKRO7p (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Sat, 18 Nov 2023 09:59:45 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.151])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B01CEA2
-        for <linux-rdma@vger.kernel.org>; Sat, 18 Nov 2023 06:59:42 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1700319582; x=1731855582;
-  h=from:to:subject:date:message-id:references:in-reply-to:
-   content-transfer-encoding:mime-version;
-  bh=cyKrxfWIi/DnoecwIUfGvr9wbO5Z9PxANGspIfW/GpY=;
-  b=V2Br8AwDzc0nWer/VJkaBTHYSv/t3sw0Hb9i9Fl/pdmeEMlzn1uYZ/vN
-   iq+b5m13uMtVac0bPlK5PCKX4B2QjbLOi8r4WOimCMFeDysrVvgEUgHlg
-   TE/Gy3gx7YFgn/MxuPkw5Mx5N/f2NlnUkUsnv6KL2eAN9Uz9GbsKwt8ep
-   CKJ516EbrR4dYKH6MODmUlzchJ57hyX/7sn8AY8YkdaGsqKBYjx5CK42P
-   wBtwsyGtrM8GpGPlW0WiYuwkXkYhAGumyQV/KhngZ1SDXLsNs0pDVGyn2
-   +fGDNwJixA3LuHY2/ubU6W0r9Sqk0PsL6HzyezvkuR+CJAY7VSwYU9D6p
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10898"; a="371607969"
-X-IronPort-AV: E=Sophos;i="6.04,209,1695711600"; 
-   d="scan'208";a="371607969"
-Received: from orviesa002.jf.intel.com ([10.64.159.142])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Nov 2023 06:59:42 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.04,209,1695711600"; 
-   d="scan'208";a="7125425"
-Received: from orsmsx602.amr.corp.intel.com ([10.22.229.15])
-  by orviesa002.jf.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 18 Nov 2023 06:59:42 -0800
-Received: from orsmsx610.amr.corp.intel.com (10.22.229.23) by
- ORSMSX602.amr.corp.intel.com (10.22.229.15) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.34; Sat, 18 Nov 2023 06:59:41 -0800
-Received: from orsmsx610.amr.corp.intel.com (10.22.229.23) by
- ORSMSX610.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.34; Sat, 18 Nov 2023 06:59:41 -0800
-Received: from ORSEDG601.ED.cps.intel.com (10.7.248.6) by
- orsmsx610.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.34 via Frontend Transport; Sat, 18 Nov 2023 06:59:41 -0800
-Received: from NAM11-DM6-obe.outbound.protection.outlook.com (104.47.57.169)
- by edgegateway.intel.com (134.134.137.102) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.34; Sat, 18 Nov 2023 06:59:41 -0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=DlAczSirk6ZrvtNdFhW+aaBygX9HsWBGilnthNBNH7X6fUGQwkaIlrL3vFmZ+FXVw82sz4RwFTxoxHf/ffzEyAbWT4TO/zthgicAwV6Eo9gf7OgvIppPbzYg5MqAZDf18r59932hRpODHmHXiYwi8qXIayvpc7mZe0wJYMTek0iWIluEc3L/r3t9gtu9Yb8xPCcdmC1VcK/w6n9qJ04U91NP5XbYoPVZ4A590TpNMnWRA8FxG3ILXZdRrd5xpNwBRRQmoPEsL2blNbHJ77y8ND/9X3bPfAAS/nOuKBYY9LE+cl4gCR5QzpIhxOgRKs222agN2Alf9TXzu2SqrOjlig==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=cyKrxfWIi/DnoecwIUfGvr9wbO5Z9PxANGspIfW/GpY=;
- b=eD4enzyKSdAKWjCz+t1xUasQ3OZfiTgi/TYANtAuvMT7G4IOHRLCcU8t8skcTUupK3cXxmpZ6aWtY+F9E35lQve7wa8lzX1fkCQVm2sOZj7NtU95byxGWQSyAlYrWJ/38eI6fBaO7FSLwWse52hCU//QC0bCpw8/nqIRUPzE41Xip/BgRMWIBcmILjdP8lmZLZSDDrCZPoOdj2pYALqHeBXV4oQu0WswxTD1+iSwY5bQQr6OXjx0LxCJAGdM6rzZocgZjKIwT4Z2Dxd/N4NXutcUXn360tiApyDeoWd8YcvwNxy1GOPiIejjXwa1ZyPxGt53+skh/5sUNjlgasQo+w==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Received: from SA1PR11MB6895.namprd11.prod.outlook.com (2603:10b6:806:2b2::20)
- by SJ2PR11MB7426.namprd11.prod.outlook.com (2603:10b6:a03:4c4::8) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7002.25; Sat, 18 Nov
- 2023 14:59:39 +0000
-Received: from SA1PR11MB6895.namprd11.prod.outlook.com
- ([fe80::8a71:5126:4858:e1cb]) by SA1PR11MB6895.namprd11.prod.outlook.com
- ([fe80::8a71:5126:4858:e1cb%7]) with mapi id 15.20.7002.025; Sat, 18 Nov 2023
- 14:59:39 +0000
-From:   "Marciniszyn, Mike" <mike.marciniszyn@intel.com>
-To:     "Marciniszyn, Mike" <mike.marciniszyn@intel.com>,
-        Zhu Yanjun <yanjun.zhu@linux.dev>,
-        "Saleem, Shiraz" <shiraz.saleem@intel.com>,
-        "jgg@nvidia.com" <jgg@nvidia.com>,
-        "leon@kernel.org" <leon@kernel.org>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>
-Subject: RE: [PATCH for-rc 1/3] RDMA/core: Fix umem iterator when PAGE_SIZE is
- greater then HCA pgsz
-Thread-Topic: [PATCH for-rc 1/3] RDMA/core: Fix umem iterator when PAGE_SIZE
- is greater then HCA pgsz
-Thread-Index: AQHaF/h9mIGliMQYi0WcvhC4HtkgjLB+bxYAgAG4MxCAAAhFQA==
-Date:   Sat, 18 Nov 2023 14:59:39 +0000
-Message-ID: <SA1PR11MB6895EEF12064285FADA8142686B6A@SA1PR11MB6895.namprd11.prod.outlook.com>
-References: <20231115191752.266-1-shiraz.saleem@intel.com>
- <20231115191752.266-2-shiraz.saleem@intel.com>
- <093f16a6-2948-4103-8d27-ea349aa6909c@linux.dev>
- <SA1PR11MB6895E230B7CFE2D293DAFAA886B6A@SA1PR11MB6895.namprd11.prod.outlook.com>
-In-Reply-To: <SA1PR11MB6895E230B7CFE2D293DAFAA886B6A@SA1PR11MB6895.namprd11.prod.outlook.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: SA1PR11MB6895:EE_|SJ2PR11MB7426:EE_
-x-ms-office365-filtering-correlation-id: bbed1d2b-1c6f-410a-511a-08dbe846fd05
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: i9hunqol3a82NP6WJt9V8q4c2pxDX95E7z/EyujcMFXdrFp2e6aF0MV9Z8zOc10ju1p30vg/cIJrussQZ7nz07rJ+ntas6yA1wOiQaG4jDrvcuS0h7C2iUmtscyQvHOwo7KxxXmzZ/IaW1/2ngU/YIChjV90ewuXFmxiOhDYMRr4kkrZd/GSQ+PiYEQ4Aktr34aPwzy08qyfY1Asp+z3dYrGHrT+IbJz8nr8vWrz5fm8CuyhiXg+a8jyH+XoaAu1ay0H0DzC9aM3tk4lF/9Rf9IdFsm34KI/Oxj9RFu4Qgcc0AJg7MtjxAzEM+AAm3JYfZ6QxUCRGd2ZwqpYMrZnj2+9C7QyL6MGmWlIAir6FMwslt7uHgK2WKGSxo6hNJtjSswtdgj/z1WaivHv0P9HlLEdOPWaIrgVnWsCspg58jsp7nM++Rgeyg4wDYWcvWRfPzuFXUoQImAu5plOSXHXc6dIuPTZcWenbYb6hnNMEDmRKtjJ+Zhrtj10zyfQCRoDN0PdISytL/ngB6BCrvdMwtEVdrrbRKmkoZN7pbHto4DJJrkexqK9xn47zwNCICQi4/Gk3OsFSQQYk+/jPx7OFlJ6a8gcKJfAFKMZVVHRdAWIFaZ7gFnIQonCmkyapDls
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SA1PR11MB6895.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(136003)(396003)(39860400002)(346002)(366004)(376002)(230922051799003)(451199024)(64100799003)(186009)(1800799012)(5660300002)(2906002)(122000001)(82960400001)(38100700002)(38070700009)(86362001)(558084003)(33656002)(2940100002)(9686003)(6506007)(26005)(7696005)(478600001)(71200400001)(41300700001)(8676002)(8936002)(52536014)(76116006)(66556008)(66946007)(110136005)(316002)(64756008)(66476007)(66446008)(55016003);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?utf-8?B?dTIxNU0yczBVTkpTNXdMUFdOUURyMUlNS21nNVVya2RndlN2UE5YcUVBOW5r?=
- =?utf-8?B?WnZkam5vN1gvMnE1anFFRXgyVUVIRGNtdTd5akYyM1lHd1B4cUZwTVRsaWtR?=
- =?utf-8?B?TVZraW5teXZZZUxqS2xpa2xXWERsSjJ0ckloMmtONmFQeE9UQmVkVGkyTEJy?=
- =?utf-8?B?NVdHeUMyT3NQRGdnS0U4aUhXVWQzQlVGRENYQVZiYmV1OEZsTHNMSGozL0My?=
- =?utf-8?B?OVd4K3oyTWsvMHIvK0JvbWFETmd6amhEa3VmVXMzVG01WkFOaFVFejR2TDg2?=
- =?utf-8?B?TFlBd1ZIWkYyZDMwK1o2amtCVE5qR1c3K0owaGVKSGFQTHArOGJXYVZTV2ZO?=
- =?utf-8?B?S2FDRmVENUs3cjhkMnZKaHFNekl1b2d5bVFUU3lZMi9RcUZPNytjMmEzMU1D?=
- =?utf-8?B?YnoxejhTQzJjV0tDY3FQRk05RmU0dk1EQ01jUTRxd3ZXd3ZESE5BVlBSYmZF?=
- =?utf-8?B?TFRKUy9hMldaTTM0R2tWOXFnN2hiNUJWSEljTDFJSHB1MTlST0hORGQ2NnBr?=
- =?utf-8?B?R2hxdlNWYlEwTUkraDBIV0tDRW9hTE5SL2FCaVI3NUVIVThsYm4vcWU4YTZv?=
- =?utf-8?B?ekJvNWc1a1BKckhxQmg1MUtqZkIyb0dHczVKWmpOWkZ2N2tSYmVaaDJqZXky?=
- =?utf-8?B?SDJhejZmMGpLWVQxb1k2SE8ycDV6c2lVRTdHMEVlU25UbW5ObitmNUZKT2Zl?=
- =?utf-8?B?eGkxRTlkNzdVMnJPcnlLN3N5RC93RDlFY2JJUGdCaGRmbkM1OHhpeWJNTGdX?=
- =?utf-8?B?NkdCRjBCQWxkZ1hXQU1NcEJhcmVmSytzQW53TWlqdnhONDFFSFlHbTl2Nnli?=
- =?utf-8?B?THArMDFsSGR5TnF4Qnc3eEZZUW82OVR3N1NhaVFrbFVYUlJ2TDdQaHdMK2lT?=
- =?utf-8?B?NnBlVDd0RE5hT2J3ZVNhMWhqTHRuNVNIYlpUdzJJTFhpZWtGVUw0dUluNmFW?=
- =?utf-8?B?bUVoek12TU1NcFJ4S0RuMTB4dHJpejBEanlkVmV1dGI2bGlBZzhiQ1c0azVQ?=
- =?utf-8?B?M0lJS29ibURNQlBWSG90aGhHMDBvd3lMTkVJM1dzUkx1Z0JHV2R4NzRTdzVF?=
- =?utf-8?B?NVA2a1NnYVk5YWZIM3VtUHBnZHpaN3NYaFBlYnhxM3VPdHJ2cU9JL1VzRzJs?=
- =?utf-8?B?NU5FVmNCdFRTRGhuU3FYcUtXdFpqQ2praStLYWZHY2E5dmJveThjUEpSN0RB?=
- =?utf-8?B?b0dNWXB4WVJNSzFSYS9UaXFWaEtzdWh6dXN5MWVtVDZDc1EwRWZDdVFvNSsz?=
- =?utf-8?B?LzZYSyt4YmprakVtbllDV2xWNkdOT080aG1CalJZaUhPMFVYbVJzeWQrZnhq?=
- =?utf-8?B?Y1k4cFpRMFlTdS8yZ1p1MWdNQVRwZlZ5Uzl4NHZFQnArZmRuMGdZRkZpZWR1?=
- =?utf-8?B?WC9QKzdBTVRYY2srZVpURENhRnpMdmJTYlo0R1hBb1EwbkhoZjlLbTlIWHZB?=
- =?utf-8?B?WnR6a0NwelBZSW1OT3dUK2xMMlBVU3hrOVhTTzFHREpVbURsVE5COVVudCts?=
- =?utf-8?B?N2ZOWmdSdW11dDRlZVR5VG96OHVDQzBPRFlib2tldWVNeXR6UVdJRk1MeStm?=
- =?utf-8?B?TVNYdGlJaDlUYStNZzE1KzBBRlVtWVB3azU0aGZvWUpjREREbDU3NHlqaGFQ?=
- =?utf-8?B?THR1Wi9ZNmpHOThYUWhkbnRhODAxN1pnUlpDMmo3TDZuejFvaDJlRDR6UjNk?=
- =?utf-8?B?U2twcm1BMkhVaDcrWDBkN2FkY2N4Q3VoUWhYTmRFRVpLdHhCMEp2dm9EL3lX?=
- =?utf-8?B?SVZ0RHFVTEdIY2pOTzFiMEd5ZjJJSm1VbjZKVi9yVG5JUVBZdHpLaHZGVVMx?=
- =?utf-8?B?WFArWEszWGl4azhNbnM3cEhzZTMrZE51SEFCK2R1SmVUQU9raXcvM1NOVmZJ?=
- =?utf-8?B?ZXozQlFFV2Z3Y2dMSzZJY0FJN2kwdVlXZmxtaGs3TmlaV2txbTNmY2gwOEVV?=
- =?utf-8?B?WU9mV2F2eXYvOUw1a0dlYW10YmlUM2JYVlVibW9GV0RYL0diaXJzL0JhK256?=
- =?utf-8?B?Vm00ZlBxRk5rUWM3WEJJcTQyeE9xSm1KZk5LODdSTDRhYzNtTXNORHlkays4?=
- =?utf-8?B?Z0JVK3dZdzhGbjc3TklXTHZYQ1paTXE1cjJublhyRWJhak9uN1BBUE4zNUgv?=
- =?utf-8?Q?lofr7B6KC7s+GASwclmTkG+vH?=
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        with ESMTP id S229892AbjKRPvO (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Sat, 18 Nov 2023 10:51:14 -0500
+Received: from mail-yb1-xb36.google.com (mail-yb1-xb36.google.com [IPv6:2607:f8b0:4864:20::b36])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C9CCCD57;
+        Sat, 18 Nov 2023 07:51:09 -0800 (PST)
+Received: by mail-yb1-xb36.google.com with SMTP id 3f1490d57ef6-daec4e4c5eeso2803482276.1;
+        Sat, 18 Nov 2023 07:51:09 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1700322668; x=1700927468; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=T8JQkwQPDN0/NjJdMvrO5YDf2Mt9RQuRmPZfqlcyPOc=;
+        b=GYSJGYNBF2n5sW5UXqCkkhcF3eAK216KQH4YTBhWSPOZ93FAZaF+G0jrldUj74Poj/
+         m8SWsPWSeK7V5vkY/5KsVt1gGmuMsFGhtqsn7RYa7tg/vQ8uU/+1/I5qP9WOld5QnP4Z
+         sWqT2OTR2KlFcBoDQ1N2Bv2sWfvEeBEef+CJhZS0nhOswUQvck9ZhRz/GM5i/A1AD1o3
+         0ny+/PSnoY8i+tvXzpqriUJg10hrCyZWPX3fMmcK0IVIYM5/o5ISoCJWfw3kuueja0Za
+         HFezDhgGMyN+Rq72e86ybWeQbVRtoT6oyiPgJUlNcCYVnx4YEZzqYq9HO9s9YE85H57l
+         tXjQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1700322668; x=1700927468;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=T8JQkwQPDN0/NjJdMvrO5YDf2Mt9RQuRmPZfqlcyPOc=;
+        b=RIC+48dT86rDKj/uBU3beXkCrFN+qo7wiuVQH+Yd190dIeNhJfPwD2eN9K1ROV4/mo
+         WFLjLLfbm34Kn5RgrpUZfdNeQYLhQF7gtrRBH18rOByZhDd3o/y51k7J1Su7/43PwBor
+         ZMfWkJAlnAWVhM3vUNFgC/0Ty2hMidEyx23d5uHgKDTknPPZWfZNGsdZmoVS969bmy7r
+         Qd2AJNrcJ2KSzvcxSwhITLBK/bTEif8DhIUZh1RsmISFKIJyuHnfxh9FHI2Flh0NfcQd
+         5zXIA5SLf7opnEshNmrCaxNiYjBdRdTIV22aJOoYelw9EqUVfk9iaR+ihnznRpDi8Ab9
+         3jKg==
+X-Gm-Message-State: AOJu0YxTAIFecY4pQYWOxJYGsl3VBUzhv/7CSCLwwuUbbXgSaNfRUKGn
+        CKvsfXktUDtqxoCIzoHablVa58Ym9PXcAjAC
+X-Google-Smtp-Source: AGHT+IFJx/lrMq78Aql9lHzoh+xOXvS0ldCsOe1bBN/nC+9100pFEpSDPw9twx0lzyc1pTk6s9pz2Q==
+X-Received: by 2002:a25:5883:0:b0:da3:ab41:31f3 with SMTP id m125-20020a255883000000b00da3ab4131f3mr2199131ybb.8.1700322667764;
+        Sat, 18 Nov 2023 07:51:07 -0800 (PST)
+Received: from localhost ([2601:344:8301:57f0:48a9:bd4c:868d:dc97])
+        by smtp.gmail.com with ESMTPSA id 195-20020a2502cc000000b00d7497467d36sm1001026ybc.45.2023.11.18.07.51.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 18 Nov 2023 07:51:07 -0800 (PST)
+From:   Yury Norov <yury.norov@gmail.com>
+To:     linux-kernel@vger.kernel.org,
+        "David S. Miller" <davem@davemloft.net>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "K. Y. Srinivasan" <kys@microsoft.com>,
+        "Md. Haris Iqbal" <haris.iqbal@ionos.com>,
+        Akinobu Mita <akinobu.mita@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Borislav Petkov <bp@alien8.de>,
+        Chaitanya Kulkarni <kch@nvidia.com>,
+        Christian Brauner <brauner@kernel.org>,
+        Damien Le Moal <damien.lemoal@opensource.wdc.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        David Disseldorp <ddiss@suse.de>,
+        Edward Cree <ecree.xilinx@gmail.com>,
+        Eric Dumazet <edumazet@google.com>,
+        Fenghua Yu <fenghua.yu@intel.com>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Gregory Greenman <gregory.greenman@intel.com>,
+        Hans Verkuil <hverkuil@xs4all.nl>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Hugh Dickins <hughd@google.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Jason Gunthorpe <jgg@ziepe.ca>, Jens Axboe <axboe@kernel.dk>,
+        Jiri Pirko <jiri@resnulli.us>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        Kalle Valo <kvalo@kernel.org>,
+        Karsten Graul <kgraul@linux.ibm.com>,
+        Karsten Keil <isdn@linux-pingi.de>,
+        Kees Cook <keescook@chromium.org>,
+        Leon Romanovsky <leon@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Martin Habets <habetsm.xilinx@gmail.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Michal Simek <monstr@monstr.eu>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Oliver Neukum <oneukum@suse.com>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ping-Ke Shih <pkshih@realtek.com>,
+        Rich Felker <dalias@libc.org>, Rob Herring <robh@kernel.org>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Sathya Prakash Veerichetty <sathya.prakash@broadcom.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Shuai Xue <xueshuai@linux.alibaba.com>,
+        Stanislaw Gruszka <stf_xl@wp.pl>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Valentin Schneider <vschneid@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wenjia Zhang <wenjia@linux.ibm.com>,
+        Will Deacon <will@kernel.org>,
+        Yoshinori Sato <ysato@users.sourceforge.jp>,
+        GR-QLogic-Storage-Upstream@marvell.com,
+        alsa-devel@alsa-project.org, ath10k@lists.infradead.org,
+        dmaengine@vger.kernel.org, iommu@lists.linux.dev,
+        kvm@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-arm-msm@vger.kernel.org, linux-block@vger.kernel.org,
+        linux-bluetooth@vger.kernel.org, linux-hyperv@vger.kernel.org,
+        linux-m68k@lists.linux-m68k.org, linux-media@vger.kernel.org,
+        linux-mips@vger.kernel.org, linux-net-drivers@amd.com,
+        linux-pci@vger.kernel.org, linux-rdma@vger.kernel.org,
+        linux-s390@vger.kernel.org, linux-scsi@vger.kernel.org,
+        linux-serial@vger.kernel.org, linux-sh@vger.kernel.org,
+        linux-sound@vger.kernel.org, linux-usb@vger.kernel.org,
+        linux-wireless@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        mpi3mr-linuxdrv.pdl@broadcom.com, netdev@vger.kernel.org,
+        sparclinux@vger.kernel.org, x86@kernel.org
+Cc:     Yury Norov <yury.norov@gmail.com>, Jan Kara <jack@suse.cz>,
+        Mirsad Todorovac <mirsad.todorovac@alu.unizg.hr>,
+        Matthew Wilcox <willy@infradead.org>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Maxim Kuvyrkov <maxim.kuvyrkov@linaro.org>,
+        Alexey Klimov <klimov.linux@gmail.com>
+Subject: [PATCH 00/34] biops: add atomig find_bit() operations
+Date:   Sat, 18 Nov 2023 07:50:31 -0800
+Message-Id: <20231118155105.25678-1-yury.norov@gmail.com>
+X-Mailer: git-send-email 2.40.1
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: SA1PR11MB6895.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: bbed1d2b-1c6f-410a-511a-08dbe846fd05
-X-MS-Exchange-CrossTenant-originalarrivaltime: 18 Nov 2023 14:59:39.3072
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: J86O+fAZfyPfAJ4QjQGY0AxYvNmlggGKsodY7SbPaIqVJQLCppHgDLt2D5nhpijpS3m9Ostu1WSMDfW5KMFOecko912nxuxJ1LKluz4mRkg=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ2PR11MB7426
-X-OriginatorOrg: intel.com
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-PiANCj4gVGhlIGtlcm5lbCBjb25maWd1cmF0aW9uIGNhbiBzZWxlY3QgZnJvbQ0KPiANCg0KLi4u
-IG11bHRpcGxlIHBhZ2Ugc2l6ZXMuDQoNCk1pa2UNCg==
+Add helpers around test_and_{set,clear}_bit() that allow to search for
+clear or set bits and flip them atomically.
+
+The target patterns may look like this:
+
+	for (idx = 0; idx < nbits; idx++)
+		if (test_and_clear_bit(idx, bitmap))
+			do_something(idx);
+
+Or like this:
+
+	do {
+		bit = find_first_bit(bitmap, nbits);
+		if (bit >= nbits)
+			return nbits;
+	} while (!test_and_clear_bit(bit, bitmap));
+	return bit;
+
+In both cases, the opencoded loop may be converted to a single function
+or iterator call. Correspondingly:
+
+	for_each_test_and_clear_bit(idx, bitmap, nbits)
+		do_something(idx);
+
+Or:
+	return find_and_clear_bit(bitmap, nbits);
+
+Obviously, the less routine code people have write themself, the less
+probability to make a mistake. Patch #31 of this series fixes one such
+error in perf/m1 codebase.
+
+Those are not only handy helpers but also resolve a non-trivial
+issue of using non-atomic find_bit() together with atomic
+test_and_{set,clear)_bit().
+
+The trick is that find_bit() implies that the bitmap is a regular
+non-volatile piece of memory, and compiler is allowed to use such
+optimization techniques like re-fetching memory instead of caching it.
+
+For example, find_first_bit() is implemented like this:
+
+      for (idx = 0; idx * BITS_PER_LONG < sz; idx++) {
+              val = addr[idx];
+              if (val) {
+                      sz = min(idx * BITS_PER_LONG + __ffs(val), sz);
+                      break;
+              }
+      }
+
+On register-memory architectures, like x86, compiler may decide to
+access memory twice - first time to compare against 0, and second time
+to fetch its value to pass it to __ffs().
+
+When running find_first_bit() on volatile memory, the memory may get
+changed in-between, and for instance, it may lead to passing 0 to
+__ffs(), which is undefined. This is a potentially dangerous call.
+
+find_and_clear_bit() as a wrapper around test_and_clear_bit()
+naturally treats underlying bitmap as a volatile memory and prevents
+compiler from such optimizations.
+
+Now that KCSAN is catching exactly this type of situations and warns on
+undercover memory modifications. We can use it to reveal improper usage
+of find_bit(), and convert it to atomic find_and_*_bit() as appropriate.
+
+The 1st patch of the series adds the following atomic primitives:
+
+	find_and_set_bit(addr, nbits);
+	find_and_set_next_bit(addr, nbits, start);
+	...
+
+Here find_and_{set,clear} part refers to the corresponding
+test_and_{set,clear}_bit function, and suffixes like _wrap or _lock
+derive semantics from corresponding find() or test() functions.
+
+For brevity, the naming omits the fact that we search for zero bit in
+find_and_set, and correspondingly, search for set bit in find_and_clear
+functions.
+
+The patch also adds iterators with atomic semantics, like
+for_each_test_and_set_bit(). Here, the naming rule is to simply prefix
+corresponding atomic operation with 'for_each'.
+
+This series is a result of discussion [1]. All find_bit() functions imply
+exclusive access to the bitmaps. However, KCSAN reports quite a number
+of warnings related to find_bit() API. Some of them are not pointing
+to real bugs because in many situations people intentionally allow
+concurrent bitmap operations.
+
+If so, find_bit() can be annotated such that KCSAN will ignore it:
+
+	bit = data_race(find_first_bit(bitmap, nbits));
+
+This series addresses the other important case where people really need
+atomic find ops. As the following patches show, the resulting code
+looks safer and more verbose comparing to opencoded loops followed by
+atomic bit flips.
+
+In [1] Mirsad reported 2% slowdown in a single-thread search test when
+switching find_bit() function to treat bitmaps as volatile arrays. On
+the other hand, kernel robot in the same thread reported +3.7% to the
+performance of will-it-scale.per_thread_ops test.
+
+Assuming that our compilers are sane and generate better code against
+properly annotated data, the above discrepancy doesn't look weird. When
+running on non-volatile bitmaps, plain find_bit() outperforms atomic
+find_and_bit(), and vice-versa.
+
+So, all users of find_bit() API, where heavy concurrency is expected,
+are encouraged to switch to atomic find_and_bit() as appropriate.
+
+1st patch of this series adds atomic find_and_bit() API, and all the
+following patches spread it over the kernel. They can be applied
+separately from each other on per-subsystems basis, or I can pull them
+in bitmap tree, as appropriate.
+
+[1] https://lore.kernel.org/lkml/634f5fdf-e236-42cf-be8d-48a581c21660@alu.unizg.hr/T/#m3e7341eb3571753f3acf8fe166f3fb5b2c12e615 
+
+Yury Norov (34):
+  lib/find: add atomic find_bit() primitives
+  lib/sbitmap; make __sbitmap_get_word() using find_and_set_bit()
+  watch_queue: use atomic find_bit() in post_one_notification()
+  sched: add cpumask_find_and_set() and use it in __mm_cid_get()
+  mips: sgi-ip30: rework heart_alloc_int()
+  sparc: fix opencoded find_and_set_bit() in alloc_msi()
+  perf/arm: optimize opencoded atomic find_bit() API
+  drivers/perf: optimize ali_drw_get_counter_idx() by using find_bit()
+  dmaengine: idxd: optimize perfmon_assign_event()
+  ath10k: optimize ath10k_snoc_napi_poll() by using find_bit()
+  wifi: rtw88: optimize rtw_pci_tx_kick_off() by using find_bit()
+  wifi: intel: use atomic find_bit() API where appropriate
+  KVM: x86: hyper-v: optimize and cleanup kvm_hv_process_stimers()
+  PCI: hv: switch hv_get_dom_num() to use atomic find_bit()
+  scsi: use atomic find_bit() API where appropriate
+  powerpc: use atomic find_bit() API where appropriate
+  iommu: use atomic find_bit() API where appropriate
+  media: radio-shark: use atomic find_bit() API where appropriate
+  sfc: switch to using atomic find_bit() API where appropriate
+  tty: nozomi: optimize interrupt_handler()
+  usb: cdc-acm: optimize acm_softint()
+  block: null_blk: fix opencoded find_and_set_bit() in get_tag()
+  RDMA/rtrs: fix opencoded find_and_set_bit_lock() in
+    __rtrs_get_permit()
+  mISDN: optimize get_free_devid()
+  media: em28xx: cx231xx: fix opencoded find_and_set_bit()
+  ethernet: rocker: optimize ofdpa_port_internal_vlan_id_get()
+  serial: sc12is7xx: optimize sc16is7xx_alloc_line()
+  bluetooth: optimize cmtp_alloc_block_id()
+  net: smc: fix opencoded find_and_set_bit() in
+    smc_wr_tx_get_free_slot_index()
+  ALSA: use atomic find_bit() functions where applicable
+  drivers/perf: optimize m1_pmu_get_event_idx() by using find_bit() API
+  m68k: rework get_mmu_context()
+  microblaze: rework get_mmu_context()
+  sh: rework ilsel_enable()
+
+ arch/m68k/include/asm/mmu_context.h           |  11 +-
+ arch/microblaze/include/asm/mmu_context_mm.h  |  11 +-
+ arch/mips/sgi-ip30/ip30-irq.c                 |  12 +-
+ arch/powerpc/mm/book3s32/mmu_context.c        |  10 +-
+ arch/powerpc/platforms/pasemi/dma_lib.c       |  45 +--
+ arch/powerpc/platforms/powernv/pci-sriov.c    |  12 +-
+ arch/sh/boards/mach-x3proto/ilsel.c           |   4 +-
+ arch/sparc/kernel/pci_msi.c                   |   9 +-
+ arch/x86/kvm/hyperv.c                         |  39 ++-
+ drivers/block/null_blk/main.c                 |  41 +--
+ drivers/dma/idxd/perfmon.c                    |   8 +-
+ drivers/infiniband/ulp/rtrs/rtrs-clt.c        |  15 +-
+ drivers/iommu/arm/arm-smmu/arm-smmu.h         |  10 +-
+ drivers/iommu/msm_iommu.c                     |  18 +-
+ drivers/isdn/mISDN/core.c                     |   9 +-
+ drivers/media/radio/radio-shark.c             |   5 +-
+ drivers/media/radio/radio-shark2.c            |   5 +-
+ drivers/media/usb/cx231xx/cx231xx-cards.c     |  16 +-
+ drivers/media/usb/em28xx/em28xx-cards.c       |  37 +--
+ drivers/net/ethernet/rocker/rocker_ofdpa.c    |  11 +-
+ drivers/net/ethernet/sfc/rx_common.c          |   4 +-
+ drivers/net/ethernet/sfc/siena/rx_common.c    |   4 +-
+ drivers/net/ethernet/sfc/siena/siena_sriov.c  |  14 +-
+ drivers/net/wireless/ath/ath10k/snoc.c        |   9 +-
+ .../net/wireless/intel/iwlegacy/4965-mac.c    |   7 +-
+ drivers/net/wireless/intel/iwlegacy/common.c  |   8 +-
+ drivers/net/wireless/intel/iwlwifi/dvm/sta.c  |   8 +-
+ drivers/net/wireless/intel/iwlwifi/dvm/tx.c   |  19 +-
+ drivers/net/wireless/realtek/rtw88/pci.c      |   5 +-
+ drivers/net/wireless/realtek/rtw89/pci.c      |   5 +-
+ drivers/pci/controller/pci-hyperv.c           |   7 +-
+ drivers/perf/alibaba_uncore_drw_pmu.c         |  10 +-
+ drivers/perf/apple_m1_cpu_pmu.c               |   8 +-
+ drivers/perf/arm-cci.c                        |  23 +-
+ drivers/perf/arm-ccn.c                        |  10 +-
+ drivers/perf/arm_dmc620_pmu.c                 |   9 +-
+ drivers/perf/arm_pmuv3.c                      |   8 +-
+ drivers/scsi/mpi3mr/mpi3mr_os.c               |  21 +-
+ drivers/scsi/qedi/qedi_main.c                 |   9 +-
+ drivers/scsi/scsi_lib.c                       |   5 +-
+ drivers/tty/nozomi.c                          |   5 +-
+ drivers/tty/serial/sc16is7xx.c                |   8 +-
+ drivers/usb/class/cdc-acm.c                   |   5 +-
+ include/linux/cpumask.h                       |  12 +
+ include/linux/find.h                          | 289 ++++++++++++++++++
+ kernel/sched/sched.h                          |  52 +---
+ kernel/watch_queue.c                          |   6 +-
+ lib/find_bit.c                                |  85 ++++++
+ lib/sbitmap.c                                 |  46 +--
+ net/bluetooth/cmtp/core.c                     |  10 +-
+ net/smc/smc_wr.c                              |  10 +-
+ sound/pci/hda/hda_codec.c                     |   7 +-
+ sound/usb/caiaq/audio.c                       |  13 +-
+ 53 files changed, 588 insertions(+), 481 deletions(-)
+
+-- 
+2.39.2
+
