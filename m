@@ -2,121 +2,99 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C5A977F1422
-	for <lists+linux-rdma@lfdr.de>; Mon, 20 Nov 2023 14:15:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 79F597F179D
+	for <lists+linux-rdma@lfdr.de>; Mon, 20 Nov 2023 16:41:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232128AbjKTNNV (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 20 Nov 2023 08:13:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60536 "EHLO
+        id S233688AbjKTPlz (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 20 Nov 2023 10:41:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56384 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231961AbjKTNNU (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 20 Nov 2023 08:13:20 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 956EEF2;
-        Mon, 20 Nov 2023 05:13:17 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B035CC433C7;
-        Mon, 20 Nov 2023 13:13:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1700485997;
-        bh=EdLuhwM7Jtz2SU14padLa5AJv5bzwq3E/Djcv5K11gQ=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=qsNq/mpBUNNeEZJh168u3w41TsczwfkNL5GVNI0206KdYZvP8FjbVlO2Y/tH1pI0L
-         OeZUkTuYA962aukwWdPtNsLrBnSJYSc+f4n1A4JQCHOFqZE63Vl7snEUztuAPdFuR7
-         7Pl5oWEq2LVlJBwqM/2PdsAdWyt4mPtgVnXIxOhO7ca1uOgVJD4fu7U8OhmAjw9Mb5
-         q4fOieTxKXfcWR5SBPjhpAb/k7h8LbAGwIg4IhctZTqH/U4aFFMOBqoJG7Z4FYNrmO
-         hktx7i45Qwx/lqS6IkXGpb2Stbncd/cObXmGi54blCz+0N48oERzQl6qnDUzIFQQ3B
-         4Yq5PfltWGpNw==
-Date:   Mon, 20 Nov 2023 15:13:12 +0200
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Shifeng Li <lishifeng1992@126.com>
-Cc:     mustafa.ismail@intel.com, shiraz.saleem@intel.com, jgg@ziepe.ca,
-        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
-        dinghui@sangfor.com.cn
-Subject: Re: [PATCH v2] RDMA/irdma: Fix UAF in irdma_sc_ccq_get_cqe_info()
-Message-ID: <20231120131312.GC15293@unreal>
-References: <20231120024940.17321-1-lishifeng1992@126.com>
+        with ESMTP id S232135AbjKTPly (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 20 Nov 2023 10:41:54 -0500
+Received: from mail-wm1-x333.google.com (mail-wm1-x333.google.com [IPv6:2a00:1450:4864:20::333])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 627ACCD
+        for <linux-rdma@vger.kernel.org>; Mon, 20 Nov 2023 07:41:50 -0800 (PST)
+Received: by mail-wm1-x333.google.com with SMTP id 5b1f17b1804b1-40906fc54fdso17403725e9.0
+        for <linux-rdma@vger.kernel.org>; Mon, 20 Nov 2023 07:41:50 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ionos.com; s=google; t=1700494909; x=1701099709; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=+ew3aX+40gHu+GBvaQN0qcsLyWwoBfaO3pa0r+TG8mM=;
+        b=YLPJpFExm+nmseVZYjBdxRliak2pfIn4KGlHeBV4jXipXlpcvcNyzViQN6HuBA3CnI
+         +7BcbJ6SGCQU3a5/6FoeYVBxYU0b8OpOAu//uZSP4cI2dJNOPzAhyCBW9NcOGHrdvKx+
+         AI5MZhUPP2A5nhWhhu1MkzS+Gjg2ySbvCYg7JRl+Y6MMb/6jgXcLAJffQFDUtkeNBGOp
+         ARJkzeLQEq6rvAeXSBXdUX6XkJRWRGx3hqOR5b1mnn/IaSAuubdzB5mOG8kPW5foWxUx
+         HO0LFFrpUUcLyynbQ5nkYvdaDgp7g6ZItq4thQTKI+D4WnK3eJhdNU27YYoIpw+HY8rI
+         187Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1700494909; x=1701099709;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=+ew3aX+40gHu+GBvaQN0qcsLyWwoBfaO3pa0r+TG8mM=;
+        b=HvMel1CGrn4XIica2D6K+J8z/UPXzABly+liT3MFDF+OQW8DpwmSSCtDiIV6dLoG7Q
+         cRWBR1nEFKu1HMo2aN4ErSAQqhHdJq2gDbRchwB5LqGoR4krj9nC9Pkse3Ic3QitCyh8
+         Xlfm1h8xR8YhOiHOOicGDqNEm604Vf194xLuDja9yEvYKpXu+BGQgUKU97TvFJpic9i9
+         ZbgLeEGMMWANSzreMeITfmbxo9ElqUClSwFfxKPGl+5ALpt3hlAZxM6sc7emfTccaN5D
+         ZK7xYOw4ePIyqNtmQToSvtgzrrCzZTEB3GWL9i24AqufEtG32GtZnhn54qtQs+LRBJJs
+         oHtA==
+X-Gm-Message-State: AOJu0YwfTE5uObhIUyJHKj/6J6e++Obqdg7LycUhmVYRWcQ/zDTQPB1m
+        dE/qb7eGATzjTeO6+u/SW+DOnUX0FIYDveToVbc=
+X-Google-Smtp-Source: AGHT+IGtwIegdW7r27EC74xNlgByNnneEYLKXUwU6jn0WlHGuZp0hZrvTiryvSAbqSv3VnrC1wvzqw==
+X-Received: by 2002:a05:6000:1449:b0:331:6ad1:81f7 with SMTP id v9-20020a056000144900b003316ad181f7mr6042489wrx.2.1700494908757;
+        Mon, 20 Nov 2023 07:41:48 -0800 (PST)
+Received: from lb01533.fkb.profitbricks.net (p200300f00f4ce2a470fb6777c650c5ae.dip0.t-ipconnect.de. [2003:f0:f4c:e2a4:70fb:6777:c650:c5ae])
+        by smtp.gmail.com with ESMTPSA id k6-20020a5d66c6000000b0031c52e81490sm11611461wrw.72.2023.11.20.07.41.47
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 20 Nov 2023 07:41:48 -0800 (PST)
+From:   Md Haris Iqbal <haris.iqbal@ionos.com>
+To:     linux-rdma@vger.kernel.org
+Cc:     bvanassche@acm.org, leon@kernel.org, jgg@ziepe.ca,
+        haris.iqbal@ionos.com, jinpu.wang@ionos.com
+Subject: [PATCH v2 for-next 0/9] Misc patches for RTRS
+Date:   Mon, 20 Nov 2023 16:41:37 +0100
+Message-Id: <20231120154146.920486-1-haris.iqbal@ionos.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231120024940.17321-1-lishifeng1992@126.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Sun, Nov 19, 2023 at 06:49:40PM -0800, Shifeng Li wrote:
-> When removing the irdma driver or unplugging its aux device, the ccq
-> queue is released before destorying the cqp_cmpl_wq queue.
-> But in the window, there may still be completion events for wqes. That
-> will cause a UAF in irdma_sc_ccq_get_cqe_info().
-> 
-> [34693.333191] BUG: KASAN: use-after-free in irdma_sc_ccq_get_cqe_info+0x82f/0x8c0 [irdma]
-> [34693.333194] Read of size 8 at addr ffff889097f80818 by task kworker/u67:1/26327
-> [34693.333194]
-> [34693.333199] CPU: 9 PID: 26327 Comm: kworker/u67:1 Kdump: loaded Tainted: G           O     --------- -t - 4.18.0 #1
-> [34693.333200] Hardware name: SANGFOR Inspur/NULL, BIOS 4.1.13 08/01/2016
-> [34693.333211] Workqueue: cqp_cmpl_wq cqp_compl_worker [irdma]
-> [34693.333213] Call Trace:
-> [34693.333220]  dump_stack+0x71/0xab
-> [34693.333226]  print_address_description+0x6b/0x290
-> [34693.333238]  ? irdma_sc_ccq_get_cqe_info+0x82f/0x8c0 [irdma]
-> [34693.333240]  kasan_report+0x14a/0x2b0
-> [34693.333251]  irdma_sc_ccq_get_cqe_info+0x82f/0x8c0 [irdma]
-> [34693.333264]  ? irdma_free_cqp_request+0x151/0x1e0 [irdma]
-> [34693.333274]  irdma_cqp_ce_handler+0x1fb/0x3b0 [irdma]
-> [34693.333285]  ? irdma_ctrl_init_hw+0x2c20/0x2c20 [irdma]
-> [34693.333290]  ? __schedule+0x836/0x1570
-> [34693.333293]  ? strscpy+0x83/0x180
-> [34693.333296]  process_one_work+0x56a/0x11f0
-> [34693.333298]  worker_thread+0x8f/0xf40
-> [34693.333301]  ? __kthread_parkme+0x78/0xf0
-> [34693.333303]  ? rescuer_thread+0xc50/0xc50
-> [34693.333305]  kthread+0x2a0/0x390
-> [34693.333308]  ? kthread_destroy_worker+0x90/0x90
-> [34693.333310]  ret_from_fork+0x1f/0x40
-> 
-> Fixes: 44d9e52977a1 ("RDMA/irdma: Implement device initialization definitions")
-> Signed-off-by: Shifeng Li <lishifeng1992@126.com>
-> Acked-by: Shiraz Saleem <shiraz.saleem@intel.com>
-> ---
->  drivers/infiniband/hw/irdma/hw.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
-> ---
-> v1->v2: add Fixes line.
+Hi Jason, hi Leon,
 
-This patch doesn't apply cleanly due to this patch.
-https://lore.kernel.org/all/20230725155505.1069-3-shiraz.saleem@intel.com/
+Please consider to include following changes to the next merge window.
 
-Thanks
+Changes in V2 for all patches:
+	Add Fixes: tag
 
-> 
-> diff --git a/drivers/infiniband/hw/irdma/hw.c b/drivers/infiniband/hw/irdma/hw.c
-> index ab246447520b..de7337a6a874 100644
-> --- a/drivers/infiniband/hw/irdma/hw.c
-> +++ b/drivers/infiniband/hw/irdma/hw.c
-> @@ -570,8 +570,6 @@ static void irdma_destroy_cqp(struct irdma_pci_f *rf, bool free_hwcqp)
->  	struct irdma_cqp *cqp = &rf->cqp;
->  	int status = 0;
->  
-> -	if (rf->cqp_cmpl_wq)
-> -		destroy_workqueue(rf->cqp_cmpl_wq);
->  	if (free_hwcqp)
->  		status = irdma_sc_cqp_destroy(dev->cqp);
->  	if (status)
-> @@ -737,6 +735,8 @@ static void irdma_destroy_ccq(struct irdma_pci_f *rf)
->  	struct irdma_ccq *ccq = &rf->ccq;
->  	int status = 0;
->  
-> +	if (rf->cqp_cmpl_wq)
-> +		destroy_workqueue(rf->cqp_cmpl_wq);
->  	if (!rf->reset)
->  		status = irdma_sc_ccq_destroy(dev->ccq, 0, true);
->  	if (status)
-> -- 
-> 2.25.1
-> 
+Jack Wang (4):
+  RDMA/rtrs-srv: Do not unconditionally enable irq
+  RDMA/rtrs-clt: Start hb after path_up
+  RDMA/rtrs-clt: Fix the max_send_wr setting
+  RDMA/rtrs-clt: Remove the warnings for req in_use check
+
+Md Haris Iqbal (3):
+  RDMA/rtrs-srv: Check return values while processing info request
+  RDMA/rtrs-srv: Free srv_mr iu only when always_invalidate is true
+  RDMA/rtrs-srv: Destroy path files after making sure no IOs in-flight
+
+Supriti Singh (2):
+  RDMA/rtrs-clt: use %pe to print errors
+  RDMA/rtrs: use %pe to print errors
+
+ drivers/infiniband/ulp/rtrs/rtrs-clt.c | 13 +++++----
+ drivers/infiniband/ulp/rtrs/rtrs-srv.c | 37 +++++++++++++++++++-------
+ drivers/infiniband/ulp/rtrs/rtrs.c     |  4 +--
+ 3 files changed, 35 insertions(+), 19 deletions(-)
+
+-- 
+2.25.1
+
