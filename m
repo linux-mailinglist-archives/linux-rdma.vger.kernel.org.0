@@ -1,227 +1,272 @@
-Return-Path: <linux-rdma+bounces-13-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-14-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 913F97F2DDF
-	for <lists+linux-rdma@lfdr.de>; Tue, 21 Nov 2023 14:03:32 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 49AB27F2FE3
+	for <lists+linux-rdma@lfdr.de>; Tue, 21 Nov 2023 14:54:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C6DD7B21865
-	for <lists+linux-rdma@lfdr.de>; Tue, 21 Nov 2023 13:03:29 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id F3206281B4E
+	for <lists+linux-rdma@lfdr.de>; Tue, 21 Nov 2023 13:54:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3D3E2487B6;
-	Tue, 21 Nov 2023 13:03:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 98F8651C37;
+	Tue, 21 Nov 2023 13:54:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ionos.com header.i=@ionos.com header.b="NktQzhjm"
+	dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b="F4nAeQAd"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-wm1-x336.google.com (mail-wm1-x336.google.com [IPv6:2a00:1450:4864:20::336])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CFF27D54
-	for <linux-rdma@vger.kernel.org>; Tue, 21 Nov 2023 05:03:21 -0800 (PST)
-Received: by mail-wm1-x336.google.com with SMTP id 5b1f17b1804b1-4094301d505so23010705e9.2
-        for <linux-rdma@vger.kernel.org>; Tue, 21 Nov 2023 05:03:21 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ionos.com; s=google; t=1700571800; x=1701176600; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=5N5diH3NzTwu+Z+b9bfOmp1JRsDBa4qDlybGDABjlCw=;
-        b=NktQzhjmNFmpRRvpA3BeROE2x3D8GXWqIEa03zji2RcHw0hUDb1CYL7aq1JH3k0T1P
-         ZFYMh5nfH7lFCpihWHcd3jCHFFywEQxrkCCCr8yOTcSCsmfv3GNR4rFfV9u7rizfrT3a
-         VK9eShHxS/fRhJeyH/pFVWeG5Q6H10Fvq/WME97+kmRETUd15Oy32TmEaSNbiH5ntzxk
-         vQn9gkWwpLtfbeWhNgLxfka+WZ2zTMHqn2RtZtt9jMM1RW9I3lxPN6HRcJ9We6qPykN7
-         V70HYjMX0Lcqo8xTTicXuumFE5QXBFFDbHZCWy2bACaSbbHLgg/agNdKZfnPickHvEG+
-         b59g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700571800; x=1701176600;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=5N5diH3NzTwu+Z+b9bfOmp1JRsDBa4qDlybGDABjlCw=;
-        b=USibW53/gt5mdYRpgdcZcIetq1+rIatOsmQY4/l6sl8sPPfP7yS9nidBGcXN01H6MD
-         eVBzJiYPisnBiszJphHtYhAI7xWiMZGmOduwNDpsOoFO6d0JLlLVbxRKlJkZixjzOa5z
-         4pO2nN5d8FqK80DrE2P5XWLGnGrjrB2HwH9KW3cfVkRjR+yOjwiNV5SGcAiSFuR8KAEQ
-         URZk70xIfkX1Vkp85yYKPZQOBJ9ljjt7/iudomW46Ec31Z8W7gRn46+rV7gjb3qvAQa0
-         Rz6Wi+ebixwK1ehjK3OKSx+KVFFeU9U2DFmabTeMvdvdYCa4dw1PnlpPz9ZfOu4Dn+Yq
-         dH5A==
-X-Gm-Message-State: AOJu0YzzWX64IXLcWysRZrl4YQCSq+1tIp27/bGZL90fsLiKQrclfadu
-	OVBbTiqCXv2edY92+dFlAJX4jBgQAnmVwE9Ute0=
-X-Google-Smtp-Source: AGHT+IGu2vDTm36Nm0viBuIUY9zVnO3L2VRIjLimrK6U+1vO/sdOoGLFoSjE5VrXPBTKwHh/B5el/A==
-X-Received: by 2002:a05:600c:5106:b0:409:7b62:f694 with SMTP id o6-20020a05600c510600b004097b62f694mr8539938wms.11.1700571800030;
-        Tue, 21 Nov 2023 05:03:20 -0800 (PST)
-Received: from lb02065.fritz.box ([2001:9e8:1427:de00:2523:9f30:fa95:ba54])
-        by smtp.gmail.com with ESMTPSA id bg3-20020a05600c3c8300b004077219aed5sm21949606wmb.6.2023.11.21.05.03.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 21 Nov 2023 05:03:18 -0800 (PST)
-From: Jack Wang <jinpu.wang@ionos.com>
-To: linux-rdma@vger.kernel.org
-Cc: leon@kernel.org,
-	jgg@ziepe.ca
-Subject: [PATCHv2 2/2] ipoib: Add tx timeout work to recover queue stop situation
-Date: Tue, 21 Nov 2023 14:03:16 +0100
-Message-Id: <20231121130316.126364-3-jinpu.wang@ionos.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20231121130316.126364-1-jinpu.wang@ionos.com>
-References: <20231121130316.126364-1-jinpu.wang@ionos.com>
+Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTP id 1554CD6A;
+	Tue, 21 Nov 2023 05:54:39 -0800 (PST)
+Received: by linux.microsoft.com (Postfix, from userid 1099)
+	id 72E1520B74C0; Tue, 21 Nov 2023 05:54:38 -0800 (PST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 72E1520B74C0
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+	s=default; t=1700574878;
+	bh=4d/Tj40I/q17k+/4xRhGk5Qv/cyNpSEcakEe1Oqoli0=;
+	h=From:To:Cc:Subject:Date:From;
+	b=F4nAeQAd5kyOcVSyw99btyLgSRxMu13uOqYGPWIWoERH9t4JBazZb6wjLfuc1OScB
+	 eRMnIe0A3w5npnpV3XgO2YfH+R++1Yyq8bQ7RJAz//olGn/UoXNdnhCeRSE4v6QM2R
+	 5UxTz7+VHkfPQ3jesFSw1IKiQfkJfCUNzj+utm/Q=
+From: Souradeep Chakrabarti <schakrabarti@linux.microsoft.com>
+To: kys@microsoft.com,
+	haiyangz@microsoft.com,
+	wei.liu@kernel.org,
+	decui@microsoft.com,
+	davem@davemloft.net,
+	edumazet@google.com,
+	kuba@kernel.org,
+	pabeni@redhat.com,
+	longli@microsoft.com,
+	sharmaajay@microsoft.com,
+	leon@kernel.org,
+	cai.huoqing@linux.dev,
+	ssengar@linux.microsoft.com,
+	vkuznets@redhat.com,
+	tglx@linutronix.de,
+	linux-hyperv@vger.kernel.org,
+	netdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	linux-rdma@vger.kernel.org
+Cc: schakrabarti@microsoft.com,
+	paulros@microsoft.com,
+	Souradeep Chakrabarti <schakrabarti@linux.microsoft.com>
+Subject: [PATCH V2 net-next] net: mana: Assigning IRQ affinity on HT cores
+Date: Tue, 21 Nov 2023 05:54:37 -0800
+Message-Id: <1700574877-6037-1-git-send-email-schakrabarti@linux.microsoft.com>
+X-Mailer: git-send-email 1.8.3.1
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
 
-As we sometime run into tx timeout from ipoib, queue seems stopped
-and can't recover. Diff with mellanox OFED show
-mellanox driver has timeout work to recover in such case.
+Existing MANA design assigns IRQ to every CPUs, including sibling hyper-threads
+in a core. This causes multiple IRQs to work on same CPU and may reduce the network
+performance with RSS.
 
-Add tx timeout work/napi work to recover such case.
+Improve the performance by adhering the configuration for RSS, which assigns IRQ
+on HT cores.
 
-Also increase the watchdog_timeo to 10 seconds, so more tolerant to
-error.
-
-Signed-off-by: Jack Wang <jinpu.wang@ionos.com>
+Signed-off-by: Souradeep Chakrabarti <schakrabarti@linux.microsoft.com>
 ---
- drivers/infiniband/ulp/ipoib/ipoib.h      |  4 +++
- drivers/infiniband/ulp/ipoib/ipoib_ib.c   | 26 +++++++++++++++++-
- drivers/infiniband/ulp/ipoib/ipoib_main.c | 33 +++++++++++++++++++++--
- 3 files changed, 60 insertions(+), 3 deletions(-)
+V1 -> V2:
+* Simplified the code by removing filter_mask_list and using avail_cpus.
+* Addressed infinite loop issue when there are numa nodes with no CPUs.
+* Addressed uses of local numa node instead of 0 to start.
+* Removed uses of BUG_ON.
+* Placed cpus_read_lock in parent function to avoid num_online_cpus
+  to get changed before function finishes the affinity assignment.
+---
+ .../net/ethernet/microsoft/mana/gdma_main.c   | 134 ++++++++++++++++--
+ 1 file changed, 123 insertions(+), 11 deletions(-)
 
-diff --git a/drivers/infiniband/ulp/ipoib/ipoib.h b/drivers/infiniband/ulp/ipoib/ipoib.h
-index 35e9c8a330e2..963e936da5e3 100644
---- a/drivers/infiniband/ulp/ipoib/ipoib.h
-+++ b/drivers/infiniband/ulp/ipoib/ipoib.h
-@@ -351,10 +351,12 @@ struct ipoib_dev_priv {
- 	struct workqueue_struct *wq;
- 	struct delayed_work mcast_task;
- 	struct work_struct carrier_on_task;
-+	struct work_struct reschedule_napi_work;
- 	struct work_struct flush_light;
- 	struct work_struct flush_normal;
- 	struct work_struct flush_heavy;
- 	struct work_struct restart_task;
-+	struct work_struct tx_timeout_work;
- 	struct delayed_work ah_reap_task;
- 	struct delayed_work neigh_reap_task;
- 	struct ib_device *ca;
-@@ -499,6 +501,7 @@ int ipoib_send(struct net_device *dev, struct sk_buff *skb,
- 	       struct ib_ah *address, u32 dqpn);
- void ipoib_reap_ah(struct work_struct *work);
- 
-+void ipoib_napi_schedule_work(struct work_struct *work);
- struct ipoib_path *__path_find(struct net_device *dev, void *gid);
- void ipoib_mark_paths_invalid(struct net_device *dev);
- void ipoib_flush_paths(struct net_device *dev);
-@@ -510,6 +513,7 @@ void ipoib_ib_tx_timer_func(struct timer_list *t);
- void ipoib_ib_dev_flush_light(struct work_struct *work);
- void ipoib_ib_dev_flush_normal(struct work_struct *work);
- void ipoib_ib_dev_flush_heavy(struct work_struct *work);
-+void ipoib_ib_tx_timeout_work(struct work_struct *work);
- void ipoib_pkey_event(struct work_struct *work);
- void ipoib_ib_dev_cleanup(struct net_device *dev);
- 
-diff --git a/drivers/infiniband/ulp/ipoib/ipoib_ib.c b/drivers/infiniband/ulp/ipoib/ipoib_ib.c
-index 7f84d9866cef..5cde275daa94 100644
---- a/drivers/infiniband/ulp/ipoib/ipoib_ib.c
-+++ b/drivers/infiniband/ulp/ipoib/ipoib_ib.c
-@@ -531,11 +531,35 @@ void ipoib_ib_rx_completion(struct ib_cq *cq, void *ctx_ptr)
- 	napi_schedule(&priv->recv_napi);
+diff --git a/drivers/net/ethernet/microsoft/mana/gdma_main.c b/drivers/net/ethernet/microsoft/mana/gdma_main.c
+index 6367de0c2c2e..8177502ffbd9 100644
+--- a/drivers/net/ethernet/microsoft/mana/gdma_main.c
++++ b/drivers/net/ethernet/microsoft/mana/gdma_main.c
+@@ -1243,15 +1243,120 @@ void mana_gd_free_res_map(struct gdma_resource *r)
+ 	r->size = 0;
  }
  
-+/* The function will force napi_schedule */
-+void ipoib_napi_schedule_work(struct work_struct *work)
++static int irq_setup(int *irqs, int nvec, int start_numa_node)
 +{
-+	struct ipoib_dev_priv *priv =
-+		container_of(work, struct ipoib_dev_priv, reschedule_napi_work);
-+	bool ret;
++	unsigned int *core_id_list;
++	cpumask_var_t filter_mask, avail_cpus;
++	int i, core_count = 0, cpu_count = 0, err = 0, node_count = 0;
++	unsigned int cpu_first, cpu, irq_start, cores = 0, numa_node = start_numa_node;
 +
-+	do {
-+		ret = napi_schedule(&priv->send_napi);
-+		if (!ret)
-+			msleep(3);
-+	} while (!ret && netif_queue_stopped(priv->dev) &&
-+		 test_bit(IPOIB_FLAG_INITIALIZED, &priv->flags));
-+}
-+
- void ipoib_ib_tx_completion(struct ib_cq *cq, void *ctx_ptr)
- {
- 	struct ipoib_dev_priv *priv = ctx_ptr;
-+	bool ret;
- 
--	napi_schedule(&priv->send_napi);
-+	ret = napi_schedule(&priv->send_napi);
-+	/*
-+	 * if the queue is closed the driver must be able to schedule napi,
-+	 * otherwise we can end with closed queue forever, because no new
-+	 * packets to send and napi callback might not get new event after
-+	 * its re-arm of the napi.
++	if(!alloc_cpumask_var(&filter_mask, GFP_KERNEL)
++			     || !alloc_cpumask_var(&avail_cpus, GFP_KERNEL)) {
++		err = -ENOMEM;
++		goto free_irq;
++	}
++	cpumask_copy(filter_mask, cpu_online_mask);
++	cpumask_copy(avail_cpus, cpu_online_mask);
++	/* count the number of cores
 +	 */
-+	if (!ret && netif_queue_stopped(priv->dev))
-+		schedule_work(&priv->reschedule_napi_work);
- }
- 
- static inline int post_send(struct ipoib_dev_priv *priv,
-diff --git a/drivers/infiniband/ulp/ipoib/ipoib_main.c b/drivers/infiniband/ulp/ipoib/ipoib_main.c
-index 967004ccad98..7a5be705d718 100644
---- a/drivers/infiniband/ulp/ipoib/ipoib_main.c
-+++ b/drivers/infiniband/ulp/ipoib/ipoib_main.c
-@@ -1200,7 +1200,34 @@ static void ipoib_timeout(struct net_device *dev, unsigned int txqueue)
- 		   netif_queue_stopped(dev), priv->tx_head, priv->tx_tail,
- 		   priv->global_tx_head, priv->global_tx_tail);
- 
--	/* XXX reset QP, etc. */
-+
-+	schedule_work(&priv->tx_timeout_work);
-+}
-+
-+void ipoib_ib_tx_timeout_work(struct work_struct *work)
-+{
-+	struct ipoib_dev_priv *priv = container_of(work,
-+						   struct ipoib_dev_priv,
-+						   tx_timeout_work);
-+	int err;
-+
-+	rtnl_lock();
-+
-+	if (!test_bit(IPOIB_FLAG_ADMIN_UP, &priv->flags))
-+		goto unlock;
-+
-+	ipoib_stop(priv->dev);
-+	err = ipoib_open(priv->dev);
-+	if (err) {
-+		ipoib_warn(priv, "ipoib_open failed recovering from a tx_timeout, err(%d).\n",
-+				err);
-+		goto unlock;
++	for_each_cpu(cpu, filter_mask) {
++		cpumask_andnot(filter_mask, filter_mask, topology_sibling_cpumask(cpu));
++		cores++;
++	}
++	core_id_list = kcalloc(cores, sizeof(unsigned int), GFP_KERNEL);
++	cpumask_copy(filter_mask, cpu_online_mask);
++	/* initialize core_id_list array */
++	for_each_cpu(cpu, filter_mask) {
++		core_id_list[core_count] = cpu;
++		cpumask_andnot(filter_mask, filter_mask, topology_sibling_cpumask(cpu));
++		core_count++;
 +	}
 +
-+	netif_tx_wake_all_queues(priv->dev);
-+unlock:
-+	rtnl_unlock();
++	/* if number of cpus are equal to max_queues per port, then
++	 * one extra interrupt for the hardware channel communication.
++	 */
++	if (nvec - 1 == num_online_cpus()) {
++		irq_start = 1;
++		cpu_first = cpumask_first(cpu_online_mask);
++		irq_set_affinity_and_hint(irqs[0], cpumask_of(cpu_first));
++	} else {
++		irq_start = 0;
++	}
 +
- }
++	/* reset the core_count and num_node to 0.
++	 */
++	core_count = 0;
++
++	/* for each interrupt find the cpu of a particular
++	 * sibling set and if it belongs to the specific numa
++	 * then assign irq to it and clear the cpu bit from
++	 * the corresponding avail_cpus.
++	 * Increase the cpu_count for that node.
++	 * Once all cpus for a numa node is assigned, then
++	 * move to different numa node and continue the same.
++	 */
++	for (i = irq_start; i < nvec; ) {
++
++		/* check if the numa node has cpu or not
++		 * to avoid infinite loop.
++		 */
++		if (cpumask_empty(cpumask_of_node(numa_node))) {
++			numa_node++;
++			if (++node_count == num_online_nodes()) {
++				err = -EAGAIN;
++				goto free_irq;
++			}
++		}
++		cpu_first = cpumask_first_and(avail_cpus,
++					     topology_sibling_cpumask(core_id_list[core_count]));
++		if (cpu_first < nr_cpu_ids && cpu_to_node(cpu_first) == numa_node) {
++			irq_set_affinity_and_hint(irqs[i], cpumask_of(cpu_first));
++			cpumask_clear_cpu(cpu_first, avail_cpus);
++			cpu_count = cpu_count + 1;
++			i = i + 1;
++
++			/* checking if all the cpus are used from the
++			 * particular node.
++			 */
++			if (cpu_count == nr_cpus_node(numa_node)) {
++				numa_node = numa_node + 1;
++				if (numa_node == num_online_nodes())
++					numa_node = 0;
++
++				/* wrap around once numa nodes
++				 * are traversed.
++				 */
++				if (numa_node == start_numa_node) {
++					node_count = 0;
++					cpumask_copy(avail_cpus, cpu_online_mask);
++				}
++				cpu_count = 0;
++				core_count = 0;
++				continue;
++			}
++		}
++		if (++core_count == cores)
++			core_count = 0;
++	}
++free_irq:
++	free_cpumask_var(filter_mask);
++	free_cpumask_var(avail_cpus);
++	if (core_id_list)
++		kfree(core_id_list);
++	return err;
++}
++
+ static int mana_gd_setup_irqs(struct pci_dev *pdev)
+ {
+-	unsigned int max_queues_per_port = num_online_cpus();
++	unsigned int max_queues_per_port;
+ 	struct gdma_context *gc = pci_get_drvdata(pdev);
+ 	struct gdma_irq_context *gic;
+-	unsigned int max_irqs, cpu;
+-	int nvec, irq;
++	unsigned int max_irqs;
++	int nvec, *irqs, irq;
+ 	int err, i = 0, j;
  
- static int ipoib_hard_header(struct sk_buff *skb,
-@@ -2112,7 +2139,7 @@ void ipoib_setup_common(struct net_device *dev)
++	cpus_read_lock();
++	max_queues_per_port = num_online_cpus();
+ 	if (max_queues_per_port > MANA_MAX_NUM_QUEUES)
+ 		max_queues_per_port = MANA_MAX_NUM_QUEUES;
  
- 	ipoib_set_ethtool_ops(dev);
+@@ -1261,6 +1366,11 @@ static int mana_gd_setup_irqs(struct pci_dev *pdev)
+ 	nvec = pci_alloc_irq_vectors(pdev, 2, max_irqs, PCI_IRQ_MSIX);
+ 	if (nvec < 0)
+ 		return nvec;
++	irqs = kmalloc_array(nvec, sizeof(int), GFP_KERNEL);
++	if (!irqs) {
++		err = -ENOMEM;
++		goto free_irq_vector;
++	}
  
--	dev->watchdog_timeo	 = HZ;
-+	dev->watchdog_timeo	 = 10 * HZ;
+ 	gc->irq_contexts = kcalloc(nvec, sizeof(struct gdma_irq_context),
+ 				   GFP_KERNEL);
+@@ -1281,27 +1391,27 @@ static int mana_gd_setup_irqs(struct pci_dev *pdev)
+ 			snprintf(gic->name, MANA_IRQ_NAME_SZ, "mana_q%d@pci:%s",
+ 				 i - 1, pci_name(pdev));
  
- 	dev->flags		|= IFF_BROADCAST | IFF_MULTICAST;
+-		irq = pci_irq_vector(pdev, i);
+-		if (irq < 0) {
+-			err = irq;
++		irqs[i] = pci_irq_vector(pdev, i);
++		if (irqs[i] < 0) {
++			err = irqs[i];
+ 			goto free_irq;
+ 		}
  
-@@ -2150,10 +2177,12 @@ static void ipoib_build_priv(struct net_device *dev)
+-		err = request_irq(irq, mana_gd_intr, 0, gic->name, gic);
++		err = request_irq(irqs[i], mana_gd_intr, 0, gic->name, gic);
+ 		if (err)
+ 			goto free_irq;
+-
+-		cpu = cpumask_local_spread(i, gc->numa_node);
+-		irq_set_affinity_and_hint(irq, cpumask_of(cpu));
+ 	}
  
- 	INIT_DELAYED_WORK(&priv->mcast_task,   ipoib_mcast_join_task);
- 	INIT_WORK(&priv->carrier_on_task, ipoib_mcast_carrier_on_task);
-+	INIT_WORK(&priv->reschedule_napi_work, ipoib_napi_schedule_work);
- 	INIT_WORK(&priv->flush_light,   ipoib_ib_dev_flush_light);
- 	INIT_WORK(&priv->flush_normal,   ipoib_ib_dev_flush_normal);
- 	INIT_WORK(&priv->flush_heavy,   ipoib_ib_dev_flush_heavy);
- 	INIT_WORK(&priv->restart_task, ipoib_mcast_restart_task);
-+	INIT_WORK(&priv->tx_timeout_work, ipoib_ib_tx_timeout_work);
- 	INIT_DELAYED_WORK(&priv->ah_reap_task, ipoib_reap_ah);
- 	INIT_DELAYED_WORK(&priv->neigh_reap_task, ipoib_reap_neigh);
++	err = irq_setup(irqs, nvec, gc->numa_node);
++	if (err)
++		goto free_irq;
+ 	err = mana_gd_alloc_res_map(nvec, &gc->msix_resource);
+ 	if (err)
+ 		goto free_irq;
+ 
+ 	gc->max_num_msix = nvec;
+ 	gc->num_msix_usable = nvec;
+-
++	cpus_read_unlock();
+ 	return 0;
+ 
+ free_irq:
+@@ -1314,8 +1424,10 @@ static int mana_gd_setup_irqs(struct pci_dev *pdev)
+ 	}
+ 
+ 	kfree(gc->irq_contexts);
++	kfree(irqs);
+ 	gc->irq_contexts = NULL;
+ free_irq_vector:
++	cpus_read_unlock();
+ 	pci_free_irq_vectors(pdev);
+ 	return err;
  }
 -- 
 2.34.1
