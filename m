@@ -1,160 +1,106 @@
-Return-Path: <linux-rdma+bounces-10-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-11-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id C11067F2DDC
-	for <lists+linux-rdma@lfdr.de>; Tue, 21 Nov 2023 14:02:54 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C56EC7F2DDD
+	for <lists+linux-rdma@lfdr.de>; Tue, 21 Nov 2023 14:03:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7BD1D2829B2
-	for <lists+linux-rdma@lfdr.de>; Tue, 21 Nov 2023 13:02:53 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 65FE5B21860
+	for <lists+linux-rdma@lfdr.de>; Tue, 21 Nov 2023 13:03:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 91CFA482D8;
-	Tue, 21 Nov 2023 13:02:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C2D81482F5;
+	Tue, 21 Nov 2023 13:03:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ionos.com header.i=@ionos.com header.b="hHfJuFgz"
+	dkim=pass (2048-bit key) header.d=ionos.com header.i=@ionos.com header.b="amDMPq7C"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-ed1-x52f.google.com (mail-ed1-x52f.google.com [IPv6:2a00:1450:4864:20::52f])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B3DE01A2
-	for <linux-rdma@vger.kernel.org>; Tue, 21 Nov 2023 05:02:45 -0800 (PST)
-Received: by mail-ed1-x52f.google.com with SMTP id 4fb4d7f45d1cf-543923af573so8053904a12.0
-        for <linux-rdma@vger.kernel.org>; Tue, 21 Nov 2023 05:02:45 -0800 (PST)
+Received: from mail-wm1-x330.google.com (mail-wm1-x330.google.com [IPv6:2a00:1450:4864:20::330])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 65374D52
+	for <linux-rdma@vger.kernel.org>; Tue, 21 Nov 2023 05:03:19 -0800 (PST)
+Received: by mail-wm1-x330.google.com with SMTP id 5b1f17b1804b1-4084095722aso27600795e9.1
+        for <linux-rdma@vger.kernel.org>; Tue, 21 Nov 2023 05:03:19 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ionos.com; s=google; t=1700571764; x=1701176564; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=TFt6n5rHbI0HwULfr/KukpjbYH4NiemjaACC6ffhpus=;
-        b=hHfJuFgz2J3zyPdVJThzkpVtJ0MM+EuFBoFcTqwTorA52EG6lesfFSBVwcQPOWUoLT
-         c0rmNFM7kwYb3QKh56EiDRPYnCJQAR16QQi5P8qYN8hbVMJjBflO+E0K9GT4EaNkZ22i
-         ORz6EnEtGx5Qir9NyRDgHeo15OPzt4v/bSHHAcMaGiwU09CoFFbJB/jRPXarhMJj2sMJ
-         nVGyA3H7Nn5eAAsOimOowpiO/ezK8HZzDnjpFmkRhEJaAdZ5n7pTH9x5UGYUGpnJ9dEt
-         3oGGJVqwsPdvYnBFmBdnA2nQsNp+/ISpmGJMUFaUIq0Lp28CIiC/8vVlUs0METC1RwzG
-         NIHA==
+        d=ionos.com; s=google; t=1700571797; x=1701176597; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=SRodHR+0DxLQ8tzFCB2jJC9b0bDxDXgeAV1aIIOqc5w=;
+        b=amDMPq7CCC8pH5CTvY/TveZgvKHy0/8sUoMk65ZACYbvBllGPX8ilWQFKJEyckYpkK
+         EVKYyrQHI0yhzKrWDBARfsf5UitZ9fzvDu+jauiIi0U2QwcHYMpttr67E+C3EzZKP+Gu
+         0bAst68O+uyAbIWyNk3QnPG6OZRNn1BwV80kk3gsGbFOTw81U40oPKLxVlUkbNayI+0u
+         AJKAYWGaHs4VQhXWjEVY93+eZVlB62/y0klV+vNDwlFQXPLhJoxr9Hqa4zC/gx6ffhYz
+         Pfe1+Uu9eMKvPNJj57XbNghWoPMqfOQE9AdSM+oBhyoWnvUPpNpSF05j4nua/AQ3kMaf
+         uA/Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700571764; x=1701176564;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=TFt6n5rHbI0HwULfr/KukpjbYH4NiemjaACC6ffhpus=;
-        b=lLmNJgfkiQhUaEDUKMNvJtv74MC/6LLOo+a2bJG5cAwjx3DiadzhsNh8yOFmWuWqHX
-         el0bWCayPuO5aYpaxsGpCujvUL/NLePgAdj4wdPdTxH1TRtY024hSy+TMnwqaSGGp0d3
-         kP0iWVfdOotJgG6rzkGF8k2QPA7kAebbQw9Iak+rOCqa8ZCbZYXbrb/mu/wxMpbPVi8k
-         WCRlx1P3UJ/Jn3N/OcqcKQPschfoSFYTCJKxhguxOCmOMcPegARqdiOKh2d4MMzTITIA
-         10Ocmw0FI+xn6ffSnjs6Qe9PlssNxI58dHYt4uDIgjhTgRJ+h8IpoMclu+/vF10OfGCz
-         rVCg==
-X-Gm-Message-State: AOJu0Yz7QroeX2yoGXtchaF52UlkvwvXZCv+cKdk9IOT8rEFDHcGNNYj
-	egkmG8hhfQuHXXq27GrgCGGW5xCw5eryOfPjnoF+HsevTNF7xEHU
-X-Google-Smtp-Source: AGHT+IGWGL0ZoI3Y+EkYJuJkGe/XxfyZtINkiB3Q4u85Bfvlhn4jfqmJoJjqU5tpja2B4eDAnbNjnLwl8MUCkZi7uD4=
-X-Received: by 2002:a05:6402:518a:b0:544:1fb7:d5e8 with SMTP id
- q10-20020a056402518a00b005441fb7d5e8mr2352828edd.0.1700571764003; Tue, 21 Nov
- 2023 05:02:44 -0800 (PST)
+        d=1e100.net; s=20230601; t=1700571797; x=1701176597;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=SRodHR+0DxLQ8tzFCB2jJC9b0bDxDXgeAV1aIIOqc5w=;
+        b=SVJgYOhnydpoitTYZquddW59gJbDNFF2eLC2BnpYj9WZORNpIC0b4WB5cnH9nKfVx7
+         8m60U8plAkffBA1sFxC/kxT8amnrd2j9aBgUXdSCX7iEapFTmigAVBfJb0XDe7pdsdIO
+         2aO/wGwqsBWrPecwvLnHpWGIDVarJPuDdOCQBv6YDDePXyjWVqX2K1J/5r+oGISyN3ID
+         OTg5yW2UPkxRua8Jy2oJZdiffnoYt6EfSDWZD1BGtfubJojvJ2mTiJn3WEWmBsydaiyZ
+         UgbD1LS703GFgUyypOnA2mIJqB4lrGBJ/5k+ljzZr/CiApNsDg/G20xwv6Y+38mYhx8T
+         MyLw==
+X-Gm-Message-State: AOJu0YxftU1FwWvYR2Pxe+4m8bxXumo229o6OqsN/362il3mYWpaYLE+
+	lXqba40Gr2xarLTDaWJGkeCA/fIgmMWHh6JZtV4=
+X-Google-Smtp-Source: AGHT+IGYQEYf3TRssfXbw33GyGgNNZPovDowMWJBvyFCvOvXsG/L9pwTy4YgKPu04ru+16URCgsQog==
+X-Received: by 2002:a05:600c:354f:b0:40b:2b86:c88a with SMTP id i15-20020a05600c354f00b0040b2b86c88amr859937wmq.2.1700571797430;
+        Tue, 21 Nov 2023 05:03:17 -0800 (PST)
+Received: from lb02065.fritz.box ([2001:9e8:1427:de00:2523:9f30:fa95:ba54])
+        by smtp.gmail.com with ESMTPSA id bg3-20020a05600c3c8300b004077219aed5sm21949606wmb.6.2023.11.21.05.03.16
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 21 Nov 2023 05:03:17 -0800 (PST)
+From: Jack Wang <jinpu.wang@ionos.com>
+To: linux-rdma@vger.kernel.org
+Cc: leon@kernel.org,
+	jgg@ziepe.ca
+Subject: [PATCHv2 0/2] ipoib bugfix
+Date: Tue, 21 Nov 2023 14:03:14 +0100
+Message-Id: <20231121130316.126364-1-jinpu.wang@ionos.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231120203501.321587-1-jinpu.wang@ionos.com> <20231121001640.GG10140@ziepe.ca>
-In-Reply-To: <20231121001640.GG10140@ziepe.ca>
-From: Jinpu Wang <jinpu.wang@ionos.com>
-Date: Tue, 21 Nov 2023 14:02:32 +0100
-Message-ID: <CAMGffE=joZidAC1+VbymTqLuBs=PzCCXv9w14yaAxzzcLZJPFQ@mail.gmail.com>
-Subject: Re: [PATCH 0/2] bugfix for ipoib
-To: Jason Gunthorpe <jgg@ziepe.ca>
-Cc: linux-rdma@vger.kernel.org, leon@kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 
-Hi Jason.
+We run into queue timeout often with call trace as such:
+NETDEV WATCHDOG: ib0.beef (): transmit queue 26 timed out
+Call Trace:
+call_timer_fn+0x27/0x100
+__run_timers.part.0+0x1be/0x230
+? mlx5_cq_tasklet_cb+0x6d/0x140 [mlx5_core]
+run_timer_softirq+0x26/0x50
+__do_softirq+0xbc/0x26d
+asm_call_irq_on_stack+0xf/0x20
+ib0.beef: transmit timeout: latency 10 msecs
+ib0.beef: queue stopped 0, tx_head 0, tx_tail 0, global_tx_head 0, global_tx_tail 0
 
-On Tue, Nov 21, 2023 at 1:16=E2=80=AFAM Jason Gunthorpe <jgg@ziepe.ca> wrot=
-e:
->
-> On Mon, Nov 20, 2023 at 09:34:59PM +0100, Jack Wang wrote:
-> > We run into queue timeout often with call trace as such:
-> > NETDEV WATCHDOG: ib0.beef (): transmit queue 26 timed out
-> > Call Trace:
-> > call_timer_fn+0x27/0x100
-> > __run_timers.part.0+0x1be/0x230
-> > ? mlx5_cq_tasklet_cb+0x6d/0x140 [mlx5_core]
-> > run_timer_softirq+0x26/0x50
-> > __do_softirq+0xbc/0x26d
-> > asm_call_irq_on_stack+0xf/0x20
-> > ib0.beef: transmit timeout: latency 10 msecs
-> > ib0.beef: queue stopped 0, tx_head 0, tx_tail 0, global_tx_head 0, glob=
-al_tx_tail 0
-> >
-> > The last two message repeated for days.
->
-> You shouldn't get tx timeouts and fully stuck queues like that, it
-> suggests something else is very wrong in that system.
-We hit such warnings from time to time over years in different
-locations, but can't reproduce at will in staging environment.
+The last two message repeated for days.
 
-There are problems around.
->
-> > After cross check with Mellanox OFED, I noticed some bugfix are missing=
- in
-> > upstream, hence I take the liberty to send them out.
->
-> Recovery is recovery, it is just RAS
+After cross check with Mellanox OFED, I noticed some bugfix are missing in
+upstream, hence I take the liberty to send them out.
 
-I managed to trigger the situation by an extra debug interface
+Thx!
 
- static DEVICE_ATTR_RW(umcast);
+v2:
+Fix the build error due to napi api change in v6.7
 
-+static ssize_t timeout_store(struct device *dev, struct device_attribute *=
-attr,
-+                            const char *buf, size_t count)
-+{
-+       unsigned long val =3D simple_strtoul(buf, NULL, 0);
-+
-+       netif_stop_queue(to_net_dev(dev));
-+       ipoib_timeout(to_net_dev(dev), val);
-+
-+       return count;
-+}
-+
- int ipoib_add_umcast_attr(struct net_device *dev)
- {
-        return device_create_file(&dev->dev, &dev_attr_umcast);
- }
+Jack Wang (2):
+  ipoib: Fix error code return in ipoib_mcast_join
+  ipoib: Add tx timeout work to recover queue stop situation
 
-+static DEVICE_ATTR_WO(timeout);
-+
-+int ipoib_add_timeout_attr(struct net_device *dev)
-+{
-+       return device_create_file(&dev->dev, &dev_attr_timeout);
-+}
-+
- static void set_base_guid(struct ipoib_dev_priv *priv, union ib_gid *gid)
- {
-        struct ipoib_dev_priv *child_priv;
-diff --git a/drivers/infiniband/ulp/ipoib/ipoib_vlan.c
-b/drivers/infiniband/ulp/ipoib/ipoib_vlan.c
-index 0322dc75396f..9b5dd628da2e 100644
---- a/drivers/infiniband/ulp/ipoib/ipoib_vlan.c
-+++ b/drivers/infiniband/ulp/ipoib/ipoib_vlan.c
-@@ -148,6 +148,8 @@ int __ipoib_vlan_add(struct ipoib_dev_priv *ppriv,
-struct ipoib_dev_priv *priv,
-                        goto sysfs_failed;
-                if (ipoib_add_umcast_attr(ndev))
-                        goto sysfs_failed;
-+               if (ipoib_add_timeout_attr(ndev))
-+                       goto sysfs_failed;
+ drivers/infiniband/ulp/ipoib/ipoib.h          |  4 +++
+ drivers/infiniband/ulp/ipoib/ipoib_ib.c       | 26 ++++++++++++++-
+ drivers/infiniband/ulp/ipoib/ipoib_main.c     | 33 +++++++++++++++++--
+ .../infiniband/ulp/ipoib/ipoib_multicast.c    |  1 +
+ 4 files changed, 61 insertions(+), 3 deletions(-)
 
-                if (device_create_file(&ndev->dev, &dev_attr_parent))
-                        goto sysfs_failed;
+-- 
+2.34.1
 
-
-
-running iperf3 on child interface, and trigger the timeout via sysfs,
-I'm able to trigger the WATCHDOG and timeout without the recover
-patch, but can't trigger it with the fix.
-
-I will send v2 version for the napi api change reported by bot.
->
-> Jason
 
