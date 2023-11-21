@@ -1,440 +1,245 @@
-Return-Path: <linux-rdma+bounces-27-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-28-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5B3437F3683
-	for <lists+linux-rdma@lfdr.de>; Tue, 21 Nov 2023 19:51:56 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 41F237F3983
+	for <lists+linux-rdma@lfdr.de>; Tue, 21 Nov 2023 23:52:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A0B08B21271
-	for <lists+linux-rdma@lfdr.de>; Tue, 21 Nov 2023 18:51:53 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CCE6D282A81
+	for <lists+linux-rdma@lfdr.de>; Tue, 21 Nov 2023 22:52:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E470755C38;
-	Tue, 21 Nov 2023 18:51:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 44D205B216;
+	Tue, 21 Nov 2023 22:52:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=outlook.com header.i=@outlook.com header.b="oIBf+5pt"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="h5UhmADJ"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from NAM02-SN1-obe.outbound.protection.outlook.com (mail-sn1nam02olkn2046.outbound.protection.outlook.com [40.92.44.46])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71CC8B9;
-	Tue, 21 Nov 2023 10:51:42 -0800 (PST)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=aNrGi8ADNw0+KgtufEhXIx5d1zomzeIlOEUQV8Kr9IgLiYx4xRbXwaPBfbAHKrteBbARBINuXLFKmiFFx70NCsKyHLUFquZd83tUg44CWcmVMz/m+f553+Ac5aab6YJynYiApevzdXXKIUv8gNDNbeBGSS0CUX86nM4VIAPLNVgEQN1McMkdM2uClQzaWUU3zGYg7Bwt6lQrPWgctNm2YjTeV4plCnY66pagBW2EkcrOF7JKUD3+4ckJ+AOb3WUle+8qo/ELheKjFizW8Pj4vrJQI88kvKvlq7CfDx0wLODTQeF7OmL0W5tdSicdxva9AuDuVQiYUBBwc6wtMjywbQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=Jff/d8V2H5Id5/j2eEkbUHH4GrxdxlPtmPq7rGpx3q0=;
- b=V04B5NavATkHSBtvkz37xieXI+fQ6aGw8FfonYPu0Fvy4drOw2EhNeVTDf0X6dv8i3o2UKr9EYiPn50TIjKM/ImoWTnfoC2Wvrxmb7N7oZqrSTm1ChdDulGXgUx3fp0aR1gL1Inc5QUqHgY1onLnbr0Bb4BSEsIY4mgWHQrvEgbUcMNpnLDckO0gmkTZ9OaFxchLI5Al/oqHy5bGg7ZnWfPGvde9U1suaMsU8HrKDYV5q5h0T1fvcWFslp4u/zd3fXABFuRB7voCmELA7RTPVjY5RJ3HDAOCK0SNNEOWx/gIUd+ZguLwort9YHroDF/BH8utKHvPOcSGXpHhU0/eyA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
- dkim=none; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=outlook.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Jff/d8V2H5Id5/j2eEkbUHH4GrxdxlPtmPq7rGpx3q0=;
- b=oIBf+5ptQn3rUcBNuqMqds0hLskUZO1wYql+ZH6W8jdYI066omNFFCPduT7hh7UCeoYcM0I2iYW+yK8Ma8OGP+Vlucm28YVxQYyDdEIi+qSXKOb1v5HPFVF8spkWDjqN6GVc2aRQ7rAbEBauKB8+GkRdAMi/P3eMBjDHIaF9lZMYuk6rtsUWytfDMx0pOo2K4ugSY/fMYDuMSlqeILMSh5hCqJyhAfZS0c5+moDRgemto4DjZr+YGT8DoRwcfr/8f2KH1CrViJrIlNuofWGlV7EkVUXIlQyFJABgkLk28r3OnysoiRFOmxClzI0WVq/cBxPGADDuYfpZkEPoQdApIg==
-Received: from SN6PR02MB4157.namprd02.prod.outlook.com (2603:10b6:805:33::23)
- by BL0PR02MB6482.namprd02.prod.outlook.com (2603:10b6:208:1ce::15) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7025.18; Tue, 21 Nov
- 2023 18:51:39 +0000
-Received: from SN6PR02MB4157.namprd02.prod.outlook.com
- ([fe80::54e5:928f:135c:6190]) by SN6PR02MB4157.namprd02.prod.outlook.com
- ([fe80::54e5:928f:135c:6190%7]) with mapi id 15.20.7002.027; Tue, 21 Nov 2023
- 18:51:39 +0000
-From: Michael Kelley <mhklinux@outlook.com>
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.136])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D9D0ED51;
+	Tue, 21 Nov 2023 14:52:26 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1700607146; x=1732143146;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=Td2JHfbNsKOAb89T6hM4eAx8IpnMCzx9WqWHq/PDql4=;
+  b=h5UhmADJQTvEteGaP30lVbl6fGOg8w50009t+RBhfEpu3oNxcE3nrWCu
+   wMFqIwiOdkwZiIf/0ECy0cuMBlFRSQRmS/bATmATzJMqMu5RJtCyyqClR
+   OBi3F2BtY7Nvg1jGw3/tBun8dgeCbcIws9ykpIaDKcYo2IP/Lgy5MA8/R
+   4UoN8b1lgiwaGVUHWvI6f4S0XxG3gLclcvOX8oPAtUHi/WUNEpFQV9wD5
+   T0xeZlZdbzbdS7B3eSrwNnEE4PG795UOqcH3OCywQ8mLnU8CKN9j4NDp6
+   /hDWgf9kuy4s77hi7//wwk4pXTnIpfBJu+xEgGW/MLse2GyRdS+lfUG08
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10901"; a="371290752"
+X-IronPort-AV: E=Sophos;i="6.04,217,1695711600"; 
+   d="scan'208";a="371290752"
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Nov 2023 14:52:26 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10901"; a="837191861"
+X-IronPort-AV: E=Sophos;i="6.04,217,1695711600"; 
+   d="scan'208";a="837191861"
+Received: from lkp-server02.sh.intel.com (HELO b8de5498638e) ([10.239.97.151])
+  by fmsmga004.fm.intel.com with ESMTP; 21 Nov 2023 14:52:20 -0800
+Received: from kbuild by b8de5498638e with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1r5ZbO-0008Mt-1Y;
+	Tue, 21 Nov 2023 22:52:18 +0000
+Date: Wed, 22 Nov 2023 06:51:57 +0800
+From: kernel test robot <lkp@intel.com>
 To: Souradeep Chakrabarti <schakrabarti@linux.microsoft.com>,
-	"kys@microsoft.com" <kys@microsoft.com>, "haiyangz@microsoft.com"
-	<haiyangz@microsoft.com>, "wei.liu@kernel.org" <wei.liu@kernel.org>,
-	"decui@microsoft.com" <decui@microsoft.com>, "davem@davemloft.net"
-	<davem@davemloft.net>, "edumazet@google.com" <edumazet@google.com>,
-	"kuba@kernel.org" <kuba@kernel.org>, "pabeni@redhat.com" <pabeni@redhat.com>,
-	"longli@microsoft.com" <longli@microsoft.com>, "sharmaajay@microsoft.com"
-	<sharmaajay@microsoft.com>, "leon@kernel.org" <leon@kernel.org>,
-	"cai.huoqing@linux.dev" <cai.huoqing@linux.dev>,
-	"ssengar@linux.microsoft.com" <ssengar@linux.microsoft.com>,
-	"vkuznets@redhat.com" <vkuznets@redhat.com>, "tglx@linutronix.de"
-	<tglx@linutronix.de>, "linux-hyperv@vger.kernel.org"
-	<linux-hyperv@vger.kernel.org>, "netdev@vger.kernel.org"
-	<netdev@vger.kernel.org>, "linux-kernel@vger.kernel.org"
-	<linux-kernel@vger.kernel.org>, "linux-rdma@vger.kernel.org"
-	<linux-rdma@vger.kernel.org>
-CC: "schakrabarti@microsoft.com" <schakrabarti@microsoft.com>,
-	"paulros@microsoft.com" <paulros@microsoft.com>
-Subject: RE: [PATCH V2 net-next] net: mana: Assigning IRQ affinity on HT cores
-Thread-Topic: [PATCH V2 net-next] net: mana: Assigning IRQ affinity on HT
- cores
-Thread-Index: AQHaHIJLYSaGF4VzakKKvvUoGccXXrCFCyqA
-Date: Tue, 21 Nov 2023 18:51:39 +0000
-Message-ID:
- <SN6PR02MB41572F7E6D18E91A76EED137D4BBA@SN6PR02MB4157.namprd02.prod.outlook.com>
-References:
- <1700574877-6037-1-git-send-email-schakrabarti@linux.microsoft.com>
-In-Reply-To:
- <1700574877-6037-1-git-send-email-schakrabarti@linux.microsoft.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach:
-X-MS-TNEF-Correlator:
-x-tmn: [Q9sGraZ8zl+nxMUoSP+32Xr5SPw1ZxyD]
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: SN6PR02MB4157:EE_|BL0PR02MB6482:EE_
-x-ms-office365-filtering-correlation-id: a508ad3c-5861-4bb9-a3ed-08dbeac2e584
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info:
- dVFdg3nmIL5pPBpm6zny56Db3B1G6CCeq8iIUGZ/w0rfPL1n0+0uBS578gQk1I86NtiSVu4GfzhkQbKpU97x9NxuF2G+7PJ42suE8IP49ipsqzwf3c2oOqiu5+hKJJ16jVFp6SMMVidgA/xfmLtIborMPtzh5/nKjjlYc3svKotBloIdbe2A7eWZUD5yFeGwniI5GB24L6Oi14yTwiMRhe7F0FvbXHzMBUCEOYECNbzf0wxIQtx9qTqY2kCw7umPV0mdV6nLu7ivSrlBbS8BPYXauz9wJQ8MmWvIPH6qja/qMQ4nxktAdvQd7GIMpIp8pX4Ugq9cj+prMxgCCDlrENtCpTtRS9VPe2q+SFJg7NvjIB5oTwvNQm0X8YFpVbD23svQQs3ZvrPoPyCWGM9DeLzp/cQrz/1H5JMqZCs9TgJy3JTM/TEmBZ0z9sGtzDH6MmEs2NcmyQLG4gWp75A9jTWMXLRjs70CH1XvtEouytSwyHBh5YqpT706KG+A9uSkyR9kxtAhf3HImXzI7XSJGoSUMgNpnEQvY6xJYA6yzqt5rICceKqV5G0S7HgALS04
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0:
- =?us-ascii?Q?C7Nrcofp8KCPfUVN1t413++yXnt6JGF/ziF3927bls6ZAXELZRU0o7/Jl78u?=
- =?us-ascii?Q?fDvnMi3d9cHe9Pk2iru1n8iEPM0kMOaOlVDXypP2ok3zDEfwJdINqnfrZlXL?=
- =?us-ascii?Q?+CNKIAjmFiDV2dzU5C92roLsXNklmgrji89XKZE2MHu/WrTZtSHQ4ac9QJ6m?=
- =?us-ascii?Q?IrrpPc77hf/d509fbDi/qFWKHx1RlyKPujZKcYUAb7wjLe3klHffCASZZGQt?=
- =?us-ascii?Q?nP1Rfq0E+SXiDqvYkbjcy7Y42sU6LMQdH5xSxtNf5kdV9NZ4cjLWEpBWFr7l?=
- =?us-ascii?Q?m1zGT/Cti4qS9xP4oViGrW72CcmTYCPVHewzp5XEsxoK6cOHF7vDCFP4Vsw5?=
- =?us-ascii?Q?4o1PkkAUn03oQyQtg9opsAhqUf0xxxOj5COj2E4GaQqGztTKd4u7mMTo4vbn?=
- =?us-ascii?Q?9B3iVzm1PFlPT/F1jG6jaPwBVnWXjnfvMgGNp2usZ00JRXKXuc0kOn11DCx5?=
- =?us-ascii?Q?IHS320w8Hzaa7NwAB9FXBO0hqrQEOVggQfcaFoy29HxDt6hgkKx1Ory8v5iX?=
- =?us-ascii?Q?XK2dOACs2hvxYhSFluDhWyPZU723u09585b0AICMhfhvqWYms321r6nselnw?=
- =?us-ascii?Q?JBJBVqyzgn1yvgiKjbTULE15M+s2V22xTSzhfZ1/LDoL+EtX8tz/T6zsQNzy?=
- =?us-ascii?Q?hRCM/mMIB1svtpOSjdhbQ24S3CgH//kiUpH27fETrBHRBaWo2X6ZNANJZuCD?=
- =?us-ascii?Q?SgXX3rfXmW5lK1ky6RdqOa6nr3KYqmCagqfqueDfP8uWF60V/xHyuFV2Pvlw?=
- =?us-ascii?Q?vkWUuZLiAvf1/F+l+JfDrgmtYIoORgDJLHsxQCFY3C4P7seJis5vuoEl8La0?=
- =?us-ascii?Q?E1NPatdtT6V1re+5S8wuCT51dL1pqEj2nZqg+SOHoAAVp0MJfKI+/I8iP/Ke?=
- =?us-ascii?Q?53Edxncm9RhvcgatsOZjH78o5AEXYbakokRVjQqRK+LleyiZUDGLpoKGqNS8?=
- =?us-ascii?Q?heW1QWnzMURGvHG+rZECL1feK1yVtiCALYR02VFlmUMBznUMkTDHbIEVCbHg?=
- =?us-ascii?Q?m6Wu+Fk55W3/sAtfosoEzRSCLGTjGGowxJMTXD2K8hZLQlQP+XyYSG7Oe7bO?=
- =?us-ascii?Q?HaD90lwTP5qbMna4futfYUkLFuoBlpEMR6XCyb38U09GEoGaMq6YKbA7seE0?=
- =?us-ascii?Q?PCdaX9efJltlooRr1lw8kCtJ3y1X+aeCN5VsVCT99OdEnzoRy1bqXbgj6z6T?=
- =?us-ascii?Q?pgXF1LTlOPNSJJKm?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+	kys@microsoft.com, haiyangz@microsoft.com, wei.liu@kernel.org,
+	decui@microsoft.com, davem@davemloft.net, edumazet@google.com,
+	kuba@kernel.org, pabeni@redhat.com, longli@microsoft.com,
+	sharmaajay@microsoft.com, leon@kernel.org, cai.huoqing@linux.dev,
+	ssengar@linux.microsoft.com, vkuznets@redhat.com,
+	tglx@linutronix.de, linux-hyperv@vger.kernel.org,
+	netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-rdma@vger.kernel.org
+Cc: llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
+	schakrabarti@microsoft.com, paulros@microsoft.com,
+	Souradeep Chakrabarti <schakrabarti@linux.microsoft.com>
+Subject: Re: [PATCH V2 net-next] net: mana: Assigning IRQ affinity on HT cores
+Message-ID: <202311220507.k0uewCr0-lkp@intel.com>
+References: <1700574877-6037-1-git-send-email-schakrabarti@linux.microsoft.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-OriginatorOrg: outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: SN6PR02MB4157.namprd02.prod.outlook.com
-X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg: 00000000-0000-0000-0000-000000000000
-X-MS-Exchange-CrossTenant-Network-Message-Id: a508ad3c-5861-4bb9-a3ed-08dbeac2e584
-X-MS-Exchange-CrossTenant-rms-persistedconsumerorg: 00000000-0000-0000-0000-000000000000
-X-MS-Exchange-CrossTenant-originalarrivaltime: 21 Nov 2023 18:51:39.8056
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL0PR02MB6482
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1700574877-6037-1-git-send-email-schakrabarti@linux.microsoft.com>
 
-From: Souradeep Chakrabarti <schakrabarti@linux.microsoft.com> Sent: Tuesda=
-y, November 21, 2023 5:55 AM
->=20
-> Existing MANA design assigns IRQ to every CPUs, including sibling hyper-t=
-hreads
+Hi Souradeep,
 
-"assigns IRQs to every CPU"
+kernel test robot noticed the following build warnings:
 
-> in a core. This causes multiple IRQs to work on same CPU and may reduce t=
-he network
+[auto build test WARNING on net-next/main]
 
-"This may cause multiple IRQs to be active simultaneously in the same core
-  and may reduce the network"
+url:    https://github.com/intel-lab-lkp/linux/commits/Souradeep-Chakrabarti/net-mana-Assigning-IRQ-affinity-on-HT-cores/20231121-215912
+base:   net-next/main
+patch link:    https://lore.kernel.org/r/1700574877-6037-1-git-send-email-schakrabarti%40linux.microsoft.com
+patch subject: [PATCH V2 net-next] net: mana: Assigning IRQ affinity on HT cores
+config: x86_64-allyesconfig (https://download.01.org/0day-ci/archive/20231122/202311220507.k0uewCr0-lkp@intel.com/config)
+compiler: clang version 16.0.4 (https://github.com/llvm/llvm-project.git ae42196bc493ffe877a7e3dff8be32035dea4d07)
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231122/202311220507.k0uewCr0-lkp@intel.com/reproduce)
 
-> performance with RSS.
->=20
-> Improve the performance by adhering the configuration for RSS, which assi=
-gns
-> IRQ on HT cores.
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202311220507.k0uewCr0-lkp@intel.com/
 
-This sentence still doesn't make any sense to me.
+All warnings (new ones prefixed by >>):
 
->=20
-> Signed-off-by: Souradeep Chakrabarti <schakrabarti@linux.microsoft.com>
-> ---
-> V1 -> V2:
-> * Simplified the code by removing filter_mask_list and using avail_cpus.
-> * Addressed infinite loop issue when there are numa nodes with no CPUs.
-> * Addressed uses of local numa node instead of 0 to start.
-> * Removed uses of BUG_ON.
-> * Placed cpus_read_lock in parent function to avoid num_online_cpus
->   to get changed before function finishes the affinity assignment.
-> ---
->  .../net/ethernet/microsoft/mana/gdma_main.c   | 134 ++++++++++++++++-
-> -
->  1 file changed, 123 insertions(+), 11 deletions(-)
->=20
-> diff --git a/drivers/net/ethernet/microsoft/mana/gdma_main.c
-> b/drivers/net/ethernet/microsoft/mana/gdma_main.c
-> index 6367de0c2c2e..8177502ffbd9 100644
-> --- a/drivers/net/ethernet/microsoft/mana/gdma_main.c
-> +++ b/drivers/net/ethernet/microsoft/mana/gdma_main.c
-> @@ -1243,15 +1243,120 @@ void mana_gd_free_res_map(struct
-> gdma_resource *r)
->  	r->size =3D 0;
->  }
->=20
-> +static int irq_setup(int *irqs, int nvec, int start_numa_node)
-> +{
-> +	unsigned int *core_id_list;
-> +	cpumask_var_t filter_mask, avail_cpus;
-> +	int i, core_count =3D 0, cpu_count =3D 0, err =3D 0, node_count =3D 0;
-> +	unsigned int cpu_first, cpu, irq_start, cores =3D 0, numa_node =3D star=
-t_numa_node;
-> +
-> +	if(!alloc_cpumask_var(&filter_mask, GFP_KERNEL)
-> +			     || !alloc_cpumask_var(&avail_cpus, GFP_KERNEL)) {
+>> drivers/net/ethernet/microsoft/mana/gdma_main.c:1253:5: warning: variable 'avail_cpus' is used uninitialized whenever '||' condition is true [-Wsometimes-uninitialized]
+           if(!alloc_cpumask_var(&filter_mask, GFP_KERNEL)
+              ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   drivers/net/ethernet/microsoft/mana/gdma_main.c:1343:19: note: uninitialized use occurs here
+           free_cpumask_var(avail_cpus);
+                            ^~~~~~~~~~
+   drivers/net/ethernet/microsoft/mana/gdma_main.c:1253:5: note: remove the '||' if its condition is always false
+           if(!alloc_cpumask_var(&filter_mask, GFP_KERNEL)
+              ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   drivers/net/ethernet/microsoft/mana/gdma_main.c:1249:39: note: initialize the variable 'avail_cpus' to silence this warning
+           cpumask_var_t filter_mask, avail_cpus;
+                                                ^
+                                                 = NULL
+>> drivers/net/ethernet/microsoft/mana/gdma_main.c:1253:5: warning: variable 'core_id_list' is used uninitialized whenever 'if' condition is true [-Wsometimes-uninitialized]
+           if(!alloc_cpumask_var(&filter_mask, GFP_KERNEL)
+              ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   drivers/net/ethernet/microsoft/mana/gdma_main.c:1344:6: note: uninitialized use occurs here
+           if (core_id_list)
+               ^~~~~~~~~~~~
+   drivers/net/ethernet/microsoft/mana/gdma_main.c:1253:2: note: remove the 'if' if its condition is always false
+           if(!alloc_cpumask_var(&filter_mask, GFP_KERNEL)
+           ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+>> drivers/net/ethernet/microsoft/mana/gdma_main.c:1253:5: warning: variable 'core_id_list' is used uninitialized whenever '||' condition is true [-Wsometimes-uninitialized]
+           if(!alloc_cpumask_var(&filter_mask, GFP_KERNEL)
+              ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   drivers/net/ethernet/microsoft/mana/gdma_main.c:1344:6: note: uninitialized use occurs here
+           if (core_id_list)
+               ^~~~~~~~~~~~
+   drivers/net/ethernet/microsoft/mana/gdma_main.c:1253:5: note: remove the '||' if its condition is always false
+           if(!alloc_cpumask_var(&filter_mask, GFP_KERNEL)
+              ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   drivers/net/ethernet/microsoft/mana/gdma_main.c:1248:28: note: initialize the variable 'core_id_list' to silence this warning
+           unsigned int *core_id_list;
+                                     ^
+                                      = NULL
+   3 warnings generated.
 
-I think it's the case that you don't really need both filter_mask and avail=
-_cpus.
-filter_mask is used to count the number of cores and set up core_id_list.  =
- But
-it isn't used anymore when the code starts working with avail_cpus.  So a s=
-ingle
-allocated cpumask_var_t variable could serve both purposes.
 
-> +		err =3D -ENOMEM;
-> +		goto free_irq;
+vim +1253 drivers/net/ethernet/microsoft/mana/gdma_main.c
 
-This error path will check if core_id_list is NULL to decide if the
-core_id_list memory needs to be freed.  But core_id_list is uninitialized
-at this point.
+  1245	
+  1246	static int irq_setup(int *irqs, int nvec, int start_numa_node)
+  1247	{
+  1248		unsigned int *core_id_list;
+  1249		cpumask_var_t filter_mask, avail_cpus;
+  1250		int i, core_count = 0, cpu_count = 0, err = 0, node_count = 0;
+  1251		unsigned int cpu_first, cpu, irq_start, cores = 0, numa_node = start_numa_node;
+  1252	
+> 1253		if(!alloc_cpumask_var(&filter_mask, GFP_KERNEL)
+  1254				     || !alloc_cpumask_var(&avail_cpus, GFP_KERNEL)) {
+  1255			err = -ENOMEM;
+  1256			goto free_irq;
+  1257		}
+  1258		cpumask_copy(filter_mask, cpu_online_mask);
+  1259		cpumask_copy(avail_cpus, cpu_online_mask);
+  1260		/* count the number of cores
+  1261		 */
+  1262		for_each_cpu(cpu, filter_mask) {
+  1263			cpumask_andnot(filter_mask, filter_mask, topology_sibling_cpumask(cpu));
+  1264			cores++;
+  1265		}
+  1266		core_id_list = kcalloc(cores, sizeof(unsigned int), GFP_KERNEL);
+  1267		cpumask_copy(filter_mask, cpu_online_mask);
+  1268		/* initialize core_id_list array */
+  1269		for_each_cpu(cpu, filter_mask) {
+  1270			core_id_list[core_count] = cpu;
+  1271			cpumask_andnot(filter_mask, filter_mask, topology_sibling_cpumask(cpu));
+  1272			core_count++;
+  1273		}
+  1274	
+  1275		/* if number of cpus are equal to max_queues per port, then
+  1276		 * one extra interrupt for the hardware channel communication.
+  1277		 */
+  1278		if (nvec - 1 == num_online_cpus()) {
+  1279			irq_start = 1;
+  1280			cpu_first = cpumask_first(cpu_online_mask);
+  1281			irq_set_affinity_and_hint(irqs[0], cpumask_of(cpu_first));
+  1282		} else {
+  1283			irq_start = 0;
+  1284		}
+  1285	
+  1286		/* reset the core_count and num_node to 0.
+  1287		 */
+  1288		core_count = 0;
+  1289	
+  1290		/* for each interrupt find the cpu of a particular
+  1291		 * sibling set and if it belongs to the specific numa
+  1292		 * then assign irq to it and clear the cpu bit from
+  1293		 * the corresponding avail_cpus.
+  1294		 * Increase the cpu_count for that node.
+  1295		 * Once all cpus for a numa node is assigned, then
+  1296		 * move to different numa node and continue the same.
+  1297		 */
+  1298		for (i = irq_start; i < nvec; ) {
+  1299	
+  1300			/* check if the numa node has cpu or not
+  1301			 * to avoid infinite loop.
+  1302			 */
+  1303			if (cpumask_empty(cpumask_of_node(numa_node))) {
+  1304				numa_node++;
+  1305				if (++node_count == num_online_nodes()) {
+  1306					err = -EAGAIN;
+  1307					goto free_irq;
+  1308				}
+  1309			}
+  1310			cpu_first = cpumask_first_and(avail_cpus,
+  1311						     topology_sibling_cpumask(core_id_list[core_count]));
+  1312			if (cpu_first < nr_cpu_ids && cpu_to_node(cpu_first) == numa_node) {
+  1313				irq_set_affinity_and_hint(irqs[i], cpumask_of(cpu_first));
+  1314				cpumask_clear_cpu(cpu_first, avail_cpus);
+  1315				cpu_count = cpu_count + 1;
+  1316				i = i + 1;
+  1317	
+  1318				/* checking if all the cpus are used from the
+  1319				 * particular node.
+  1320				 */
+  1321				if (cpu_count == nr_cpus_node(numa_node)) {
+  1322					numa_node = numa_node + 1;
+  1323					if (numa_node == num_online_nodes())
+  1324						numa_node = 0;
+  1325	
+  1326					/* wrap around once numa nodes
+  1327					 * are traversed.
+  1328					 */
+  1329					if (numa_node == start_numa_node) {
+  1330						node_count = 0;
+  1331						cpumask_copy(avail_cpus, cpu_online_mask);
+  1332					}
+  1333					cpu_count = 0;
+  1334					core_count = 0;
+  1335					continue;
+  1336				}
+  1337			}
+  1338			if (++core_count == cores)
+  1339				core_count = 0;
+  1340		}
+  1341	free_irq:
+  1342		free_cpumask_var(filter_mask);
+  1343		free_cpumask_var(avail_cpus);
+  1344		if (core_id_list)
+  1345			kfree(core_id_list);
+  1346		return err;
+  1347	}
+  1348	
 
-> +	}
-> +	cpumask_copy(filter_mask, cpu_online_mask);
-> +	cpumask_copy(avail_cpus, cpu_online_mask);
-> +	/* count the number of cores
-> +	 */
-> +	for_each_cpu(cpu, filter_mask) {
-> +		cpumask_andnot(filter_mask, filter_mask, topology_sibling_cpumask(cpu)=
-);
-> +		cores++;
-> +	}
-> +	core_id_list =3D kcalloc(cores, sizeof(unsigned int), GFP_KERNEL);
-
-Need to check for memory allocation failure.
-
-> +	cpumask_copy(filter_mask, cpu_online_mask);
-> +	/* initialize core_id_list array */
-> +	for_each_cpu(cpu, filter_mask) {
-> +		core_id_list[core_count] =3D cpu;
-> +		cpumask_andnot(filter_mask, filter_mask, topology_sibling_cpumask(cpu)=
-);
-> +		core_count++;
-> +	}
-> +
-> +	/* if number of cpus are equal to max_queues per port, then
-> +	 * one extra interrupt for the hardware channel communication.
-> +	 */
-
-The "then" part of the above comment is missing some wording.  I think
-what you are saying is that in this case, irq[0] is in the IRQ for the hard=
-ware
-communication channel and is treated specially by assigning it to the first
-online CPU.  That IRQ then does not participate in the IRQ assignment algor=
-ithm
-that is implemented by the remaining code in this function.
-
-> +	if (nvec - 1 =3D=3D num_online_cpus()) {
-> +		irq_start =3D 1;
-> +		cpu_first =3D cpumask_first(cpu_online_mask);
-> +		irq_set_affinity_and_hint(irqs[0], cpumask_of(cpu_first));
-> +	} else {
-> +		irq_start =3D 0;
-> +	}
-> +
-> +	/* reset the core_count and num_node to 0.
-> +	 */
-
-This comment seems out-of-date since num_node is gone.
-
-> +	core_count =3D 0;
-> +
-> +	/* for each interrupt find the cpu of a particular
-> +	 * sibling set and if it belongs to the specific numa
-> +	 * then assign irq to it and clear the cpu bit from
-> +	 * the corresponding avail_cpus.
-> +	 * Increase the cpu_count for that node.
-> +	 * Once all cpus for a numa node is assigned, then
-> +	 * move to different numa node and continue the same.
-> +	 */
-> +	for (i =3D irq_start; i < nvec; ) {
-> +
-> +		/* check if the numa node has cpu or not
-> +		 * to avoid infinite loop.
-> +		 */
-> +		if (cpumask_empty(cpumask_of_node(numa_node))) {
-> +			numa_node++;
-
-This doesn't work correctly.  Just incrementing numa_node could
-produce a value that needs to wrap-around to zero or has wrapped
-back to the initial numa node.  Also, the next numa node selected
-could *also* have zero CPUs and the code below would still get stuck
-in an infinite loop.
-
-This also seems like the wrong place to make this check as this
-check is executed every time through the loop, including when
-only moving to the next core.  You really want to make this check
-in two places:  1) the initial NUMA node that is passed in as
-an argument, and 2) whenever the NUMA node is updated
-below.
-
-A suggestion:  create a helper function "get_next_numa_node()".
-This function would do the following:
-1) Wrap-around back to NUMA node 0 if appropriate
-2) Then check for having visited all NUMA nodes -- i.e.,
-having wrapped back to the initial NUMA node
-3) Check for no CPUs in the selected NUMA node.  If that's
-the case, increment the numa node, then retry starting at Step #1.
-
-This helper function would be called before starting the main "for"
-loop and again when all CPUs in a node are used.
-
-I haven't coded the above suggestion, so you'll have to see if
-it really works out.  But I think getting all of the numa node
-selection code in one place would help make sure it is right.
-
-> +			if (++node_count =3D=3D num_online_nodes()) {
-> +				err =3D -EAGAIN;
-> +				goto free_irq;
-
-I don't understand what the above code is doing.  What is the
-situation where you could "run out" of NUMA nodes and need to
-return an error?  There always must be at least one NUMA node
-with CPUs.
-
-> +			}
-> +		}
-> +		cpu_first =3D cpumask_first_and(avail_cpus,
-> +				topology_sibling_cpumask(core_id_list[core_count]));
-> +		if (cpu_first < nr_cpu_ids && cpu_to_node(cpu_first) =3D=3D numa_node)=
- {
-> +			irq_set_affinity_and_hint(irqs[i], cpumask_of(cpu_first));
-> +			cpumask_clear_cpu(cpu_first, avail_cpus);
-
-This looks good.  Getting rid of filter_mask_list worked out well. :-)
-
-> +			cpu_count =3D cpu_count + 1;
-> +			i =3D i + 1;
-
-Nit:  Stylistically, "C" usually writes the above as just:
-
-			cpu_count++;
-			i++;
-
-> +
-> +			/* checking if all the cpus are used from the
-> +			 * particular node.
-> +			 */
-> +			if (cpu_count =3D=3D nr_cpus_node(numa_node)) {
-> +				numa_node =3D numa_node + 1;
-
-Same here:  just numa_node++
-
-> +				if (numa_node =3D=3D num_online_nodes())
-> +					numa_node =3D 0;
-> +
-> +				/* wrap around once numa nodes
-> +				 * are traversed.
-> +				 */
-> +				if (numa_node =3D=3D start_numa_node) {
-> +					node_count =3D 0;
-> +					cpumask_copy(avail_cpus, cpu_online_mask);
-> +				}
-> +				cpu_count =3D 0;
-> +				core_count =3D 0;
-> +				continue;
-> +			}
-> +		}
-> +		if (++core_count =3D=3D cores)
-> +			core_count =3D 0;
-> +	}
-> +free_irq:
-> +	free_cpumask_var(filter_mask);
-> +	free_cpumask_var(avail_cpus);
-> +	if (core_id_list)
-> +		kfree(core_id_list);
-> +	return err;
-> +}
-> +
->  static int mana_gd_setup_irqs(struct pci_dev *pdev)
->  {
-> -	unsigned int max_queues_per_port =3D num_online_cpus();
-> +	unsigned int max_queues_per_port;
->  	struct gdma_context *gc =3D pci_get_drvdata(pdev);
->  	struct gdma_irq_context *gic;
-> -	unsigned int max_irqs, cpu;
-> -	int nvec, irq;
-> +	unsigned int max_irqs;
-> +	int nvec, *irqs, irq;
->  	int err, i =3D 0, j;
->=20
-> +	cpus_read_lock();
-> +	max_queues_per_port =3D num_online_cpus();
->  	if (max_queues_per_port > MANA_MAX_NUM_QUEUES)
->  		max_queues_per_port =3D MANA_MAX_NUM_QUEUES;
->=20
-> @@ -1261,6 +1366,11 @@ static int mana_gd_setup_irqs(struct pci_dev *pdev=
-)
->  	nvec =3D pci_alloc_irq_vectors(pdev, 2, max_irqs, PCI_IRQ_MSIX);
->  	if (nvec < 0)
->  		return nvec;
-> +	irqs =3D kmalloc_array(nvec, sizeof(int), GFP_KERNEL);
-> +	if (!irqs) {
-> +		err =3D -ENOMEM;
-> +		goto free_irq_vector;
-> +	}
->=20
->  	gc->irq_contexts =3D kcalloc(nvec, sizeof(struct gdma_irq_context),
->  				   GFP_KERNEL);
-> @@ -1281,27 +1391,27 @@ static int mana_gd_setup_irqs(struct pci_dev *pde=
-v)
->  			snprintf(gic->name, MANA_IRQ_NAME_SZ, "mana_q%d@pci:%s",
->  				 i - 1, pci_name(pdev));
->=20
-> -		irq =3D pci_irq_vector(pdev, i);
-> -		if (irq < 0) {
-> -			err =3D irq;
-> +		irqs[i] =3D pci_irq_vector(pdev, i);
-> +		if (irqs[i] < 0) {
-> +			err =3D irqs[i];
->  			goto free_irq;
->  		}
->=20
-> -		err =3D request_irq(irq, mana_gd_intr, 0, gic->name, gic);
-> +		err =3D request_irq(irqs[i], mana_gd_intr, 0, gic->name, gic);
->  		if (err)
->  			goto free_irq;
-> -
-> -		cpu =3D cpumask_local_spread(i, gc->numa_node);
-> -		irq_set_affinity_and_hint(irq, cpumask_of(cpu));
->  	}
->=20
-> +	err =3D irq_setup(irqs, nvec, gc->numa_node);
-> +	if (err)
-> +		goto free_irq;
->  	err =3D mana_gd_alloc_res_map(nvec, &gc->msix_resource);
->  	if (err)
->  		goto free_irq;
->=20
->  	gc->max_num_msix =3D nvec;
->  	gc->num_msix_usable =3D nvec;
-> -
-> +	cpus_read_unlock();
->  	return 0;
->=20
->  free_irq:
-> @@ -1314,8 +1424,10 @@ static int mana_gd_setup_irqs(struct pci_dev *pdev=
-)
->  	}
->=20
->  	kfree(gc->irq_contexts);
-> +	kfree(irqs);
->  	gc->irq_contexts =3D NULL;
->  free_irq_vector:
-> +	cpus_read_unlock();
->  	pci_free_irq_vectors(pdev);
->  	return err;
->  }
-> --
-> 2.34.1
-
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
