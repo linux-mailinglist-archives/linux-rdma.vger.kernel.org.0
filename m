@@ -1,58 +1,58 @@
-Return-Path: <linux-rdma+bounces-16-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-17-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9C1EA7F301D
-	for <lists+linux-rdma@lfdr.de>; Tue, 21 Nov 2023 15:02:51 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9A9557F32AA
+	for <lists+linux-rdma@lfdr.de>; Tue, 21 Nov 2023 16:48:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3AFDA282B80
-	for <lists+linux-rdma@lfdr.de>; Tue, 21 Nov 2023 14:02:50 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E9E08B21E4A
+	for <lists+linux-rdma@lfdr.de>; Tue, 21 Nov 2023 15:48:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AAB965381D;
-	Tue, 21 Nov 2023 14:02:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2C57258124;
+	Tue, 21 Nov 2023 15:47:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="bE2zDrse"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="QKeNLqeJ"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.93])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46A00D72
-	for <linux-rdma@vger.kernel.org>; Tue, 21 Nov 2023 06:02:41 -0800 (PST)
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.20])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8044597
+	for <linux-rdma@vger.kernel.org>; Tue, 21 Nov 2023 07:47:52 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1700575361; x=1732111361;
+  t=1700581672; x=1732117672;
   h=date:from:to:cc:subject:message-id;
-  bh=1CU4Ig7nAlppntTh5K+T5sAcVxaPpkTO+GtbVu6erWA=;
-  b=bE2zDrsed01wuPxIOwV+Evqjb8fP2j5JVmfVpeYNDX6UisTyHS5ljoSB
-   lpVemb94GKJ5RDPlwIDgxi0tBFQkB3DFaDiiaQgVUdyPAr9Q6kyfjfKu8
-   sFBseGHu6ya5drSRmKBK8pvP45tmFICe7HORn/E2ldyngfLbCdsgihH4j
-   thxoaoLPgktb3jCelkipJXYluPoOQ8Xp9t1FYJ8hNE+1/Nhj3gC/0Gaqa
-   a0V0QXjsTbK0RRibhLn4Wtj00Y2ACBOwq0K2Bb4pT5u8idD/LwJQEEAQK
-   xUV9ET4Ct9LcD2UD56q0Yz9nuDvZqEmIEWX+NAJ6i69JZcYzvLw78p4ZV
+  bh=kX8BaYH64yptxm/5eA/jiFpj1bQUJz/DZJ4s8jsdDVM=;
+  b=QKeNLqeJJnR0SB89GZU+fX6AIBdTDI1g0RGtc69W43209ATh1yMgAq+g
+   aMdlIs/8oQnbJe8w2epiMjCcmn6Tym5g26hEI84c5DWcgNZejavMUExzc
+   8e24YzsNuHuPFdMh8o6uREWF6cl/1+2lcFGu++LY1UblCgqkTHod6+nrs
+   cD+sSnoY7iysiDlvfkW4MASWcZvombPMRNYnH4NjWP22bfO6fFPvvNu8c
+   Mk3d0U+P9RS21C2PLvLKkWv79KyW+94JK+a6tjAI4JAV2igOKbtLo0tuD
+   LrsbVxc8h4UhUbLkcKd9dNsvA0VoeGgO/m7OrPYwolEZ/rhG/3JgaK27+
    w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10901"; a="388992013"
+X-IronPort-AV: E=McAfee;i="6600,9927,10901"; a="382259851"
 X-IronPort-AV: E=Sophos;i="6.04,215,1695711600"; 
-   d="scan'208";a="388992013"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Nov 2023 06:02:40 -0800
+   d="scan'208";a="382259851"
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Nov 2023 07:47:50 -0800
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10901"; a="884222796"
+X-IronPort-AV: E=McAfee;i="6600,9927,10901"; a="1013942410"
 X-IronPort-AV: E=Sophos;i="6.04,215,1695711600"; 
-   d="scan'208";a="884222796"
+   d="scan'208";a="1013942410"
 Received: from lkp-server02.sh.intel.com (HELO b8de5498638e) ([10.239.97.151])
-  by fmsmga002.fm.intel.com with ESMTP; 21 Nov 2023 06:02:39 -0800
+  by fmsmga006.fm.intel.com with ESMTP; 21 Nov 2023 07:47:45 -0800
 Received: from kbuild by b8de5498638e with local (Exim 4.96)
 	(envelope-from <lkp@intel.com>)
-	id 1r5RKm-0007tT-3C;
-	Tue, 21 Nov 2023 14:02:36 +0000
-Date: Tue, 21 Nov 2023 22:01:44 +0800
+	id 1r5SyU-0007yU-0T;
+	Tue, 21 Nov 2023 15:47:42 +0000
+Date: Tue, 21 Nov 2023 23:47:21 +0800
 From: kernel test robot <lkp@intel.com>
 To: Leon Romanovsky <leon@kernel.org>
 Cc: Doug Ledford <dledford@redhat.com>,
  Jason Gunthorpe <jgg+lists@ziepe.ca>, linux-rdma@vger.kernel.org
-Subject: [rdma:for-rc] BUILD SUCCESS
- b6f09b16558f31d93cdcda3cab90a2d309a7c823
-Message-ID: <202311212242.FD68xliE-lkp@intel.com>
+Subject: [rdma:wip/leon-for-next] BUILD SUCCESS
+ 0529e26d8b7b51da99c9d7234700f4041d20c0e4
+Message-ID: <202311212319.jmyqh5DR-lkp@intel.com>
 User-Agent: s-nail v14.9.24
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
@@ -60,12 +60,12 @@ List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git for-rc
-branch HEAD: b6f09b16558f31d93cdcda3cab90a2d309a7c823  MAINTAINERS: Add Chengchang Tang as Hisilicon RoCE maintainer
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git wip/leon-for-next
+branch HEAD: 0529e26d8b7b51da99c9d7234700f4041d20c0e4  RDMA/rtrs-clt: Add warning logs for RDMA events
 
-elapsed time: 2888m
+elapsed time: 3031m
 
-configs tested: 326
+configs tested: 327
 configs skipped: 3
 
 The following configs have been built successfully.
@@ -131,6 +131,7 @@ arm64                 randconfig-004-20231120   clang
 arm64                 randconfig-004-20231121   gcc  
 csky                             allmodconfig   gcc  
 csky                              allnoconfig   gcc  
+csky                             allyesconfig   gcc  
 csky                                defconfig   gcc  
 csky                  randconfig-001-20231119   gcc  
 csky                  randconfig-001-20231120   gcc  
