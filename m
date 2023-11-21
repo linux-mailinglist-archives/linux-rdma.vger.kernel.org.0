@@ -1,171 +1,122 @@
-Return-Path: <linux-rdma+bounces-3-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-4-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6E5497F237D
-	for <lists+linux-rdma@lfdr.de>; Tue, 21 Nov 2023 03:02:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 0D56C7F24CD
+	for <lists+linux-rdma@lfdr.de>; Tue, 21 Nov 2023 05:20:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 96EA61C216AD
-	for <lists+linux-rdma@lfdr.de>; Tue, 21 Nov 2023 02:02:52 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3D4A31C2168F
+	for <lists+linux-rdma@lfdr.de>; Tue, 21 Nov 2023 04:20:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EA9881172D;
-	Tue, 21 Nov 2023 02:02:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A2D52182AE;
+	Tue, 21 Nov 2023 04:20:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=126.com header.i=@126.com header.b="LGktvv6A"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="dAf94ejG"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from m15.mail.126.com (m15.mail.126.com [45.254.50.224])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTP id 2923ECF;
-	Mon, 20 Nov 2023 18:02:42 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=126.com;
-	s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=JGU6K
-	FKruZOeFPVjR6IpK0hLwoBGgsH3T/tqFT/aOhU=; b=LGktvv6AGKieT73AWCqGb
-	dT1GP1D4TZ3yWgg/ZgH18DRqGn9NWEhQ4fLsK9w28fFPRRbQwJfB+WGrB3DNuIPT
-	jAIrj0hJJRf155ZpRLbYvNQCpjiabFPPsKjuKioKzKrGrud7jql0MqTIvovFYPq/
-	L6UI47JWP840pROXz5hIro=
-Received: from ubuntu.localdomain (unknown [111.222.250.119])
-	by zwqz-smtp-mta-g0-0 (Coremail) with SMTP id _____wB3_9UnD1xltn6HAw--.26642S2;
-	Tue, 21 Nov 2023 10:00:16 +0800 (CST)
-From: Shifeng Li <lishifeng1992@126.com>
-To: saeedm@nvidia.com,
-	leon@kernel.org,
-	davem@davemloft.net,
-	edumazet@google.com,
-	kuba@kernel.org,
-	pabeni@redhat.com,
-	eli@mellanox.com,
-	ogerlitz@mellanox.com,
-	jackm@dev.mellanox.co.il,
-	roland@purestorage.com
-Cc: netdev@vger.kernel.org,
-	linux-rdma@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	dinghui@sangfor.com.cn,
-	Shifeng Li <lishifeng1992@126.com>
-Subject: [PATCH] net/mlx5e: Fix a race in command alloc flow
-Date: Mon, 20 Nov 2023 18:00:04 -0800
-Message-Id: <20231121020004.115815-1-lishifeng1992@126.com>
-X-Mailer: git-send-email 2.25.1
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.24])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C35CFD9
+	for <linux-rdma@vger.kernel.org>; Mon, 20 Nov 2023 20:20:33 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1700540433; x=1732076433;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=mSsmE4qN3g0cbfA3Bxr8Xu3a9KltYcO5b9GJVL+pKpA=;
+  b=dAf94ejGp19kdSRg1iQY2b0PJNuE88q+arCEpbtcGEvhrAbIOBKyzWIn
+   DRYgfJV4j2j3RXz7u+g2FcsoW8yc2Qstrk0GupgLu13jPwqMT3Iy7uJRF
+   OZYkH+W4D3SeWUEpseIApxJW+zCFUwMqKQopbjCUt5fpGOKTPo8cogRxL
+   YhT6b1UI1xjs2tR7d8xyRepSyZB8JOmtwQzzlx7ClDehdCNAp2OQTM2+4
+   1PiOAJJaXCcb/3OgYNBUf1GOCZpEkcgFpx9o8GTHqsV6DVBLGIQNuE2GK
+   e74MfGqmwhlTjsH/N9IeYphc4Rzx3IOaCrv5fUgKeK6rdotbun89S9LRL
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10900"; a="394603415"
+X-IronPort-AV: E=Sophos;i="6.04,215,1695711600"; 
+   d="scan'208";a="394603415"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Nov 2023 20:20:33 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10900"; a="795668319"
+X-IronPort-AV: E=Sophos;i="6.04,215,1695711600"; 
+   d="scan'208";a="795668319"
+Received: from lkp-server02.sh.intel.com (HELO b8de5498638e) ([10.239.97.151])
+  by orsmga008.jf.intel.com with ESMTP; 20 Nov 2023 20:20:31 -0800
+Received: from kbuild by b8de5498638e with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1r5IFQ-0007Hw-2S;
+	Tue, 21 Nov 2023 04:20:28 +0000
+Date: Tue, 21 Nov 2023 12:20:21 +0800
+From: kernel test robot <lkp@intel.com>
+To: Jack Wang <jinpu.wang@ionos.com>, linux-rdma@vger.kernel.org
+Cc: oe-kbuild-all@lists.linux.dev, leon@kernel.org, jgg@ziepe.ca
+Subject: Re: [PATCH 2/2] ipoib: Add tx timeout work to recover queue stop
+ situation
+Message-ID: <202311211231.oyOBtdMM-lkp@intel.com>
+References: <20231120203501.321587-3-jinpu.wang@ionos.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:_____wB3_9UnD1xltn6HAw--.26642S2
-X-Coremail-Antispam: 1Uf129KBjvJXoWxWrWkKw1kKFy5GF1UZryDAwb_yoWrtFWrpF
-	W7W343AF4kGa1q9r40vF40v3W8A39Fg3srGF1I93Z3W3Z8A34kAa4DJFyjgryUuFW8tFy7
-	JFWDt3W8Ars3XF7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07U-zVbUUUUU=
-X-Originating-IP: [111.222.250.119]
-X-CM-SenderInfo: xolvxx5ihqwiqzzsqiyswou0bp/1tbi1xsur153c1R7WAABsh
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231120203501.321587-3-jinpu.wang@ionos.com>
 
-Fix a cmd->ent use after free due to a race on command entry.
-Such race occurs when one of the commands releases its last refcount and
-frees its index and entry while another process running command flush
-flow takes refcount to this command entry. The process which handles
-commands flush may see this command as needed to be flushed if the other
-process allocated a ent->idx but didn't set ent to cmd->ent_arr in
-cmd_work_handler(). Fix it by moving the assignment of cmd->ent_arr into
-the spin lock.
+Hi Jack,
 
-[70013.081955] BUG: KASAN: use-after-free in mlx5_cmd_trigger_completions+0x1e2/0x4c0 [mlx5_core]
-[70013.081967] Write of size 4 at addr ffff88880b1510b4 by task kworker/26:1/1433361
-[70013.081968]
-[70013.081989] CPU: 26 PID: 1433361 Comm: kworker/26:1 Kdump: loaded Tainted: G           OE     4.19.90-25.17.v2101.osc.sfc.6.10.0.0030.ky10.x86_64+debug #1
-[70013.082001] Hardware name: SANGFOR 65N32-US/ASERVER-G-2605, BIOS SSSS5203 08/19/2020
-[70013.082028] Workqueue: events aer_isr
-[70013.082053] Call Trace:
-[70013.082067]  dump_stack+0x8b/0xbb
-[70013.082086]  print_address_description+0x6a/0x270
-[70013.082102]  kasan_report+0x179/0x2c0
-[70013.082133]  ? mlx5_cmd_trigger_completions+0x1e2/0x4c0 [mlx5_core]
-[70013.082173]  mlx5_cmd_trigger_completions+0x1e2/0x4c0 [mlx5_core]
-[70013.082213]  ? mlx5_cmd_use_polling+0x20/0x20 [mlx5_core]
-[70013.082223]  ? kmem_cache_free+0x1ad/0x1e0
-[70013.082267]  mlx5_cmd_flush+0x80/0x180 [mlx5_core]
-[70013.082304]  mlx5_enter_error_state+0x106/0x1d0 [mlx5_core]
-[70013.082338]  mlx5_try_fast_unload+0x2ea/0x4d0 [mlx5_core]
-[70013.082377]  remove_one+0x200/0x2b0 [mlx5_core]
-[70013.082390]  ? __pm_runtime_resume+0x58/0x70
-[70013.082409]  pci_device_remove+0xf3/0x280
-[70013.082426]  ? pcibios_free_irq+0x10/0x10
-[70013.082439]  device_release_driver_internal+0x1c3/0x470
-[70013.082453]  pci_stop_bus_device+0x109/0x160
-[70013.082468]  pci_stop_and_remove_bus_device+0xe/0x20
-[70013.082485]  pcie_do_fatal_recovery+0x167/0x550
-[70013.082493]  aer_isr+0x7d2/0x960
-[70013.082510]  ? aer_get_device_error_info+0x420/0x420
-[70013.082526]  ? __schedule+0x821/0x2040
-[70013.082536]  ? strscpy+0x85/0x180
-[70013.082543]  process_one_work+0x65f/0x12d0
-[70013.082556]  worker_thread+0x87/0xb50
-[70013.082563]  ? __kthread_parkme+0x82/0xf0
-[70013.082569]  ? process_one_work+0x12d0/0x12d0
-[70013.082571]  kthread+0x2e9/0x3a0
-[70013.082579]  ? kthread_create_worker_on_cpu+0xc0/0xc0
-[70013.082592]  ret_from_fork+0x1f/0x40
+kernel test robot noticed the following build errors:
 
-Fixes: e126ba97dba9 ("mlx5: Add driver for Mellanox Connect-IB adapters")
-Signed-off-by: Shifeng Li <lishifeng1992@126.com>
----
- drivers/net/ethernet/mellanox/mlx5/core/cmd.c | 12 +++++++-----
- 1 file changed, 7 insertions(+), 5 deletions(-)
+[auto build test ERROR on rdma/for-next]
+[also build test ERROR on linus/master v6.7-rc2 next-20231120]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
 
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/cmd.c b/drivers/net/ethernet/mellanox/mlx5/core/cmd.c
-index d3ca745d107d..1f9c09065249 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/cmd.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/cmd.c
-@@ -115,15 +115,18 @@ static u8 alloc_token(struct mlx5_cmd *cmd)
- 	return token;
- }
- 
--static int cmd_alloc_index(struct mlx5_cmd *cmd)
-+static int cmd_alloc_index(struct mlx5_cmd *cmd, struct mlx5_cmd_work_ent *ent)
- {
- 	unsigned long flags;
- 	int ret;
- 
- 	spin_lock_irqsave(&cmd->alloc_lock, flags);
- 	ret = find_first_bit(&cmd->bitmask, cmd->max_reg_cmds);
--	if (ret < cmd->max_reg_cmds)
-+	if (ret < cmd->max_reg_cmds) {
- 		clear_bit(ret, &cmd->bitmask);
-+		ent->idx = ret;
-+		cmd->ent_arr[ent->idx] = ent;
-+	}
- 	spin_unlock_irqrestore(&cmd->alloc_lock, flags);
- 
- 	return ret < cmd->max_reg_cmds ? ret : -ENOMEM;
-@@ -957,7 +960,7 @@ static void cmd_work_handler(struct work_struct *work)
- 	sem = ent->page_queue ? &cmd->pages_sem : &cmd->sem;
- 	down(sem);
- 	if (!ent->page_queue) {
--		alloc_ret = cmd_alloc_index(cmd);
-+		alloc_ret = cmd_alloc_index(cmd, ent);
- 		if (alloc_ret < 0) {
- 			mlx5_core_err_rl(dev, "failed to allocate command entry\n");
- 			if (ent->callback) {
-@@ -972,15 +975,14 @@ static void cmd_work_handler(struct work_struct *work)
- 			up(sem);
- 			return;
- 		}
--		ent->idx = alloc_ret;
- 	} else {
- 		ent->idx = cmd->max_reg_cmds;
- 		spin_lock_irqsave(&cmd->alloc_lock, flags);
- 		clear_bit(ent->idx, &cmd->bitmask);
-+		cmd->ent_arr[ent->idx] = ent;
- 		spin_unlock_irqrestore(&cmd->alloc_lock, flags);
- 	}
- 
--	cmd->ent_arr[ent->idx] = ent;
- 	lay = get_inst(cmd, ent->idx);
- 	ent->lay = lay;
- 	memset(lay, 0, sizeof(*lay));
+url:    https://github.com/intel-lab-lkp/linux/commits/Jack-Wang/ipoib-Fix-error-code-return-in-ipoib_mcast_join/20231121-044240
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git for-next
+patch link:    https://lore.kernel.org/r/20231120203501.321587-3-jinpu.wang%40ionos.com
+patch subject: [PATCH 2/2] ipoib: Add tx timeout work to recover queue stop situation
+config: x86_64-buildonly-randconfig-001-20231121 (https://download.01.org/0day-ci/archive/20231121/202311211231.oyOBtdMM-lkp@intel.com/config)
+compiler: gcc-9 (Debian 9.3.0-22) 9.3.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231121/202311211231.oyOBtdMM-lkp@intel.com/reproduce)
+
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202311211231.oyOBtdMM-lkp@intel.com/
+
+All errors (new ones prefixed by >>):
+
+   drivers/infiniband/ulp/ipoib/ipoib_ib.c: In function 'ipoib_napi_schedule_work':
+>> drivers/infiniband/ulp/ipoib/ipoib_ib.c:542:9: error: implicit declaration of function 'napi_reschedule'; did you mean 'napi_schedule'? [-Werror=implicit-function-declaration]
+     542 |   ret = napi_reschedule(&priv->send_napi);
+         |         ^~~~~~~~~~~~~~~
+         |         napi_schedule
+   cc1: some warnings being treated as errors
+
+
+vim +542 drivers/infiniband/ulp/ipoib/ipoib_ib.c
+
+   533	
+   534	/* The function will force napi_schedule */
+   535	void ipoib_napi_schedule_work(struct work_struct *work)
+   536	{
+   537		struct ipoib_dev_priv *priv =
+   538			container_of(work, struct ipoib_dev_priv, reschedule_napi_work);
+   539		bool ret;
+   540	
+   541		do {
+ > 542			ret = napi_reschedule(&priv->send_napi);
+   543			if (!ret)
+   544				msleep(3);
+   545		} while (!ret && netif_queue_stopped(priv->dev) &&
+   546			 test_bit(IPOIB_FLAG_INITIALIZED, &priv->flags));
+   547	}
+   548	
+
 -- 
-2.25.1
-
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
