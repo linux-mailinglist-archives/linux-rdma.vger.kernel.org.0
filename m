@@ -1,208 +1,116 @@
-Return-Path: <linux-rdma+bounces-50-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-51-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id CE3027F554B
-	for <lists+linux-rdma@lfdr.de>; Thu, 23 Nov 2023 01:26:20 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id DFF177F5663
+	for <lists+linux-rdma@lfdr.de>; Thu, 23 Nov 2023 03:23:31 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CA32E1C20B59
-	for <lists+linux-rdma@lfdr.de>; Thu, 23 Nov 2023 00:26:19 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8430D281684
+	for <lists+linux-rdma@lfdr.de>; Thu, 23 Nov 2023 02:23:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9955C15A2;
-	Thu, 23 Nov 2023 00:26:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 063854423;
+	Thu, 23 Nov 2023 02:23:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="a0RMRtdr"
+	dkim=pass (1024-bit key) header.d=126.com header.i=@126.com header.b="pOZl2CHy"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.93])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3AAFA1B3;
-	Wed, 22 Nov 2023 16:26:04 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1700699164; x=1732235164;
-  h=date:from:to:cc:subject:message-id:reply-to:references:
-   mime-version:in-reply-to;
-  bh=kMJqNQrPFkouBUmP1tIxtozSsYheDkR/LnL4F11wiis=;
-  b=a0RMRtdr45SnsHLYk3kiLIfZs2Z292eQtCjDOGkSajq4kJgqoPyPz1Z8
-   xhWoNH51ino8oe9+Nmimsn7SFdTQgw8cA/qSM06asNrV9XlVmhWFA6efE
-   bx/KJxGEkz9CgKaAcRip2AVvQj244oSCMbQ2SV3R4DIR0CTNKXPPkI00S
-   8UPzwDbKGWrNEIvyOLU2GF23JoceIic+G88FMkrhNsWS/7MACg0sIjNMf
-   ijDW0ytrIcjGYvd6MSyu2liYjeaUIruC6bgfya5Y7v4Nc28NcFQbnBBQQ
-   f0zW1UCdi/Sb7g9NYp8o9b8iKurHqbTYEdk8doLf35VPgtN8OmhSA3u25
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10902"; a="389323011"
-X-IronPort-AV: E=Sophos;i="6.04,220,1695711600"; 
-   d="asc'?scan'208";a="389323011"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Nov 2023 16:26:03 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10902"; a="716903060"
-X-IronPort-AV: E=Sophos;i="6.04,220,1695711600"; 
-   d="asc'?scan'208";a="716903060"
-Received: from debian-skl.sh.intel.com (HELO debian-skl) ([10.239.160.45])
-  by orsmga003.jf.intel.com with ESMTP; 22 Nov 2023 16:25:45 -0800
-Date: Thu, 23 Nov 2023 08:24:24 +0800
-From: Zhenyu Wang <zhenyuw@linux.intel.com>
-To: Christian Brauner <brauner@kernel.org>
-Cc: linux-fsdevel@vger.kernel.org, Christoph Hellwig <hch@lst.de>,
-	Jan Kara <jack@suse.cz>, Vitaly Kuznetsov <vkuznets@redhat.com>,
-	Sean Christopherson <seanjc@google.com>,
-	Paolo Bonzini <pbonzini@redhat.com>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-	Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
-	David Woodhouse <dwmw2@infradead.org>, Paul Durrant <paul@xen.org>,
-	Oded Gabbay <ogabbay@kernel.org>, Wu Hao <hao.wu@intel.com>,
-	Tom Rix <trix@redhat.com>, Moritz Fischer <mdf@kernel.org>,
-	Xu Yilun <yilun.xu@intel.com>,
-	Zhenyu Wang <zhenyuw@linux.intel.com>,
-	Zhi Wang <zhi.a.wang@intel.com>,
-	Jani Nikula <jani.nikula@linux.intel.com>,
-	Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-	Rodrigo Vivi <rodrigo.vivi@intel.com>,
-	Tvrtko Ursulin <tvrtko.ursulin@linux.intel.com>,
-	David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
-	Leon Romanovsky <leon@kernel.org>, Jason Gunthorpe <jgg@ziepe.ca>,
-	Frederic Barrat <fbarrat@linux.ibm.com>,
-	Andrew Donnellan <ajd@linux.ibm.com>, Arnd Bergmann <arnd@arndb.de>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	Eric Farman <farman@linux.ibm.com>,
-	Matthew Rosato <mjrosato@linux.ibm.com>,
-	Halil Pasic <pasic@linux.ibm.com>,
-	Vineeth Vijayan <vneethv@linux.ibm.com>,
-	Peter Oberparleiter <oberpar@linux.ibm.com>,
-	Heiko Carstens <hca@linux.ibm.com>,
-	Vasily Gorbik <gor@linux.ibm.com>,
-	Alexander Gordeev <agordeev@linux.ibm.com>,
-	Christian Borntraeger <borntraeger@linux.ibm.com>,
-	Sven Schnelle <svens@linux.ibm.com>,
-	Tony Krowiak <akrowiak@linux.ibm.com>,
-	Jason Herne <jjherne@linux.ibm.com>,
-	Harald Freudenberger <freude@linux.ibm.com>,
-	"Michael S. Tsirkin" <mst@redhat.com>,
-	Jason Wang <jasowang@redhat.com>,
-	Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
-	Diana Craciun <diana.craciun@oss.nxp.com>,
-	Alex Williamson <alex.williamson@redhat.com>,
-	Eric Auger <eric.auger@redhat.com>, Fei Li <fei1.li@intel.com>,
-	Benjamin LaHaise <bcrl@kvack.org>,
-	Johannes Weiner <hannes@cmpxchg.org>,
-	Michal Hocko <mhocko@kernel.org>,
-	Roman Gushchin <roman.gushchin@linux.dev>,
-	Shakeel Butt <shakeelb@google.com>,
-	Muchun Song <muchun.song@linux.dev>,
-	Kirti Wankhede <kwankhede@nvidia.com>, kvm@vger.kernel.org,
-	linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
-	linux-fpga@vger.kernel.org, intel-gvt-dev@lists.freedesktop.org,
-	intel-gfx@lists.freedesktop.org, linux-rdma@vger.kernel.org,
-	linuxppc-dev@lists.ozlabs.org, linux-s390@vger.kernel.org,
-	linux-usb@vger.kernel.org,
-	virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
-	linux-aio@kvack.org, cgroups@vger.kernel.org, linux-mm@kvack.org,
-	Jens Axboe <axboe@kernel.dk>,
-	Pavel Begunkov <asml.silence@gmail.com>, io-uring@vger.kernel.org
-Subject: Re: [PATCH v2 1/4] i915: make inject_virtual_interrupt() void
-Message-ID: <ZV6buHrQy2+CJ7xX@debian-scheme>
-Reply-To: Zhenyu Wang <zhenyuw@linux.intel.com>
-References: <20231122-vfs-eventfd-signal-v2-0-bd549b14ce0c@kernel.org>
- <20231122-vfs-eventfd-signal-v2-1-bd549b14ce0c@kernel.org>
+Received: from m126.mail.126.com (m126.mail.126.com [220.181.12.26])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTP id 2D52B112;
+	Wed, 22 Nov 2023 18:23:19 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=126.com;
+	s=s110527; h=Message-ID:Date:MIME-Version:Subject:From:
+	Content-Type; bh=UlxvLHjBs0+KVhlcvFETRh+wWbRujxcqONaLwY9ZXkY=;
+	b=pOZl2CHy15CILlb/xweooyqCmAppWfRvdwQNMDPqEadI6gqKwPiZphD9h5UR6u
+	eI88+VXUshcG0fwFS2LtIEMRk3QuVvjpCex3rfvHpKl9lMcuQZJplkkVnrvjs9UA
+	TIlSnT0E6/HxLUbqeGfm2TzAUUtnK9wuMP72snhyFeb9M=
+Received: from [172.23.69.7] (unknown [121.32.254.149])
+	by zwqz-smtp-mta-g3-0 (Coremail) with SMTP id _____wD3XznVtl5lJaXiCw--.59075S2;
+	Thu, 23 Nov 2023 10:20:07 +0800 (CST)
+Message-ID: <3cfe509b-ca24-47a7-931c-fe620c2dab7c@126.com>
+Date: Thu, 23 Nov 2023 10:20:03 +0800
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="ehCOKC0wDaVXxQlM"
-Content-Disposition: inline
-In-Reply-To: <20231122-vfs-eventfd-signal-v2-1-bd549b14ce0c@kernel.org>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2] net/mlx5e: Fix a race in command alloc flow
+To: Leon Romanovsky <leon@kernel.org>
+Cc: saeedm@nvidia.com, davem@davemloft.net, edumazet@google.com,
+ kuba@kernel.org, pabeni@redhat.com, jackm@dev.mellanox.co.il,
+ ogerlitz@mellanox.com, roland@purestorage.com, eli@mellanox.com,
+ dinghui@sangfor.com.cn, netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+References: <20231121115251.588436-1-lishifeng1992@126.com>
+ <20231122120245.GC4760@unreal>
+From: Shifeng Li <lishifeng1992@126.com>
+In-Reply-To: <20231122120245.GC4760@unreal>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-CM-TRANSID:_____wD3XznVtl5lJaXiCw--.59075S2
+X-Coremail-Antispam: 1Uf129KBjvJXoWxGryfAF4xGr45WFy8CFW3KFg_yoW5Cw45pr
+	yxGw47AFn5Krsxtrn7Xw4jq3W8J397Kw15GF1v9r1xWwsaya4kAa4Ikr4jg34UX3yjqa47
+	JayDKFy8Xr4fX3JanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07jeD73UUUUU=
+X-CM-SenderInfo: xolvxx5ihqwiqzzsqiyswou0bp/1tbi1xgxr153c3k9gwABsN
 
+On 2023/11/22 20:02, Leon Romanovsky wrote:
+> On Tue, Nov 21, 2023 at 03:52:51AM -0800, Shifeng Li wrote:
+>> Fix a cmd->ent use after free due to a race on command entry.
+>> Such race occurs when one of the commands releases its last refcount and
+>> frees its index and entry while another process running command flush
+>> flow takes refcount to this command entry. The process which handles
+>> commands flush may see this command as needed to be flushed if the other
+>> process allocated a ent->idx but didn't set ent to cmd->ent_arr in
+>> cmd_work_handler(). Fix it by moving the assignment of cmd->ent_arr into
+>> the spin lock.
+>>
+>> [70013.081955] BUG: KASAN: use-after-free in mlx5_cmd_trigger_completions+0x1e2/0x4c0 [mlx5_core]
+>> [70013.081967] Write of size 4 at addr ffff88880b1510b4 by task kworker/26:1/1433361
+>> [70013.081968]
+>> [70013.081989] CPU: 26 PID: 1433361 Comm: kworker/26:1 Kdump: loaded Tainted: G           OE     4.19.90-25.17.v2101.osc.sfc.6.10.0.0030.ky10.x86_64+debug #1
+>> [70013.082001] Hardware name: SANGFOR 65N32-US/ASERVER-G-2605, BIOS SSSS5203 08/19/2020
+>> [70013.082028] Workqueue: events aer_isr
+>> [70013.082053] Call Trace:
+>> [70013.082067]  dump_stack+0x8b/0xbb
+>> [70013.082086]  print_address_description+0x6a/0x270
+>> [70013.082102]  kasan_report+0x179/0x2c0
+>> [70013.082133]  ? mlx5_cmd_trigger_completions+0x1e2/0x4c0 [mlx5_core]
+>> [70013.082173]  mlx5_cmd_trigger_completions+0x1e2/0x4c0 [mlx5_core]
+>> [70013.082213]  ? mlx5_cmd_use_polling+0x20/0x20 [mlx5_core]
+>> [70013.082223]  ? kmem_cache_free+0x1ad/0x1e0
+>> [70013.082267]  mlx5_cmd_flush+0x80/0x180 [mlx5_core]
+>> [70013.082304]  mlx5_enter_error_state+0x106/0x1d0 [mlx5_core]
+>> [70013.082338]  mlx5_try_fast_unload+0x2ea/0x4d0 [mlx5_core]
+>> [70013.082377]  remove_one+0x200/0x2b0 [mlx5_core]
+>> [70013.082390]  ? __pm_runtime_resume+0x58/0x70
+>> [70013.082409]  pci_device_remove+0xf3/0x280
+>> [70013.082426]  ? pcibios_free_irq+0x10/0x10
+>> [70013.082439]  device_release_driver_internal+0x1c3/0x470
+>> [70013.082453]  pci_stop_bus_device+0x109/0x160
+>> [70013.082468]  pci_stop_and_remove_bus_device+0xe/0x20
+>> [70013.082485]  pcie_do_fatal_recovery+0x167/0x550
+>> [70013.082493]  aer_isr+0x7d2/0x960
+>> [70013.082510]  ? aer_get_device_error_info+0x420/0x420
+>> [70013.082526]  ? __schedule+0x821/0x2040
+>> [70013.082536]  ? strscpy+0x85/0x180
+>> [70013.082543]  process_one_work+0x65f/0x12d0
+>> [70013.082556]  worker_thread+0x87/0xb50
+>> [70013.082563]  ? __kthread_parkme+0x82/0xf0
+>> [70013.082569]  ? process_one_work+0x12d0/0x12d0
+>> [70013.082571]  kthread+0x2e9/0x3a0
+>> [70013.082579]  ? kthread_create_worker_on_cpu+0xc0/0xc0
+>> [70013.082592]  ret_from_fork+0x1f/0x40
+> 
+> I'm curious how did you get this error? I would expect to see some sort
+> of lock in upper level which prevents it.
+> 
+Just inject AER unrecoverable error to pci BDF device corresponding to 
+the network card constantly and I get this error.
 
---ehCOKC0wDaVXxQlM
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Thanks
+> Thanks
 
-On 2023.11.22 13:48:22 +0100, Christian Brauner wrote:
-> The single caller of inject_virtual_interrupt() ignores the return value
-> anyway. This allows us to simplify eventfd_signal() in follow-up
-> patches.
->=20
-> Signed-off-by: Christian Brauner <brauner@kernel.org>
-> ---
->  drivers/gpu/drm/i915/gvt/interrupt.c | 14 +++++++-------
->  1 file changed, 7 insertions(+), 7 deletions(-)
->=20
-> diff --git a/drivers/gpu/drm/i915/gvt/interrupt.c b/drivers/gpu/drm/i915/=
-gvt/interrupt.c
-> index de3f5903d1a7..9665876b4b13 100644
-> --- a/drivers/gpu/drm/i915/gvt/interrupt.c
-> +++ b/drivers/gpu/drm/i915/gvt/interrupt.c
-> @@ -422,7 +422,7 @@ static void init_irq_map(struct intel_gvt_irq *irq)
->  #define MSI_CAP_DATA(offset) (offset + 8)
->  #define MSI_CAP_EN 0x1
-> =20
-> -static int inject_virtual_interrupt(struct intel_vgpu *vgpu)
-> +static void inject_virtual_interrupt(struct intel_vgpu *vgpu)
->  {
->  	unsigned long offset =3D vgpu->gvt->device_info.msi_cap_offset;
->  	u16 control, data;
-> @@ -434,10 +434,10 @@ static int inject_virtual_interrupt(struct intel_vg=
-pu *vgpu)
-> =20
->  	/* Do not generate MSI if MSIEN is disabled */
->  	if (!(control & MSI_CAP_EN))
-> -		return 0;
-> +		return;
-> =20
->  	if (WARN(control & GENMASK(15, 1), "only support one MSI format\n"))
-> -		return -EINVAL;
-> +		return;
-> =20
->  	trace_inject_msi(vgpu->id, addr, data);
-> =20
-> @@ -451,10 +451,10 @@ static int inject_virtual_interrupt(struct intel_vg=
-pu *vgpu)
->  	 * returned and don't inject interrupt into guest.
->  	 */
->  	if (!test_bit(INTEL_VGPU_STATUS_ATTACHED, vgpu->status))
-> -		return -ESRCH;
-> -	if (vgpu->msi_trigger && eventfd_signal(vgpu->msi_trigger, 1) !=3D 1)
-> -		return -EFAULT;
-> -	return 0;
-> +		return;
-> +	if (!vgpu->msi_trigger)
-> +		return;
-> +	eventfd_signal(vgpu->msi_trigger, 1);
->  }
-
-I think it's a little simpler to write as
-    if (vgpu->msi_trigger)
-            eventfd_signal(vgpu->msi_trigger, 1);
-
-Looks fine with me.
-
-Reviewed-by: Zhenyu Wang <zhenyuw@linux.intel.com>
-
-Thanks!
-
-> =20
->  static void propagate_event(struct intel_gvt_irq *irq,
->=20
-> --=20
-> 2.42.0
->=20
-
---ehCOKC0wDaVXxQlM
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iF0EARECAB0WIQTXuabgHDW6LPt9CICxBBozTXgYJwUCZV6bswAKCRCxBBozTXgY
-JySHAJ4qE2jv0i0ZauQv+Bv/bGwHt0ZrbACeJadIIL6gQC6kmoICLhyqplCwOeo=
-=1+t0
------END PGP SIGNATURE-----
-
---ehCOKC0wDaVXxQlM--
 
