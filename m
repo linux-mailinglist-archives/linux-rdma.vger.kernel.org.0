@@ -1,165 +1,176 @@
-Return-Path: <linux-rdma+bounces-65-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-66-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id F31557F6D25
-	for <lists+linux-rdma@lfdr.de>; Fri, 24 Nov 2023 08:48:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 8A2447F7115
+	for <lists+linux-rdma@lfdr.de>; Fri, 24 Nov 2023 11:16:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 092741C20E83
-	for <lists+linux-rdma@lfdr.de>; Fri, 24 Nov 2023 07:48:49 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BC2561C20A16
+	for <lists+linux-rdma@lfdr.de>; Fri, 24 Nov 2023 10:16:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EF6E4945A;
-	Fri, 24 Nov 2023 07:48:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="cgJMC0Yj"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 74CD918B09;
+	Fri, 24 Nov 2023 10:16:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dkim=none
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 52A108C18;
-	Fri, 24 Nov 2023 07:48:36 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 96C4BC433C7;
-	Fri, 24 Nov 2023 07:48:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1700812116;
-	bh=wuXwn6H3IYOQTJYurH/LAKoS23w/GwU7ryzU1+Vs8b4=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=cgJMC0Yj3JRcUDF8O8XpdEdYA/5STjclZLwUWXfVMJwJnFCmcyrJDVup7Rscs2p84
-	 1lIevByzmjhiYL9n/DPGwW0r1qVsQ45xdWW1cCKjcoubJ/Np/IRSX/dXnPPAZi1lyB
-	 ETOprEE5xY+akdxk7DWnyVkIziLf3Nu7PWCfTmFB985JDwr0PPgc9yJ4BLOQhlh8Nx
-	 7J3VH6h2rRYlPJhbqQ9tIol8mM/LtKts+YBDNQd03tji9lqn5ZFKRzSp7zz5eJxPSA
-	 m4YJmobEWMvUVEr6S2NJRsz4v9jSzMIYOHwn/4yZmgFOE0FpvuIzzDTt4O8YISu59u
-	 jwN2CAG1O1gvw==
-From: Christian Brauner <brauner@kernel.org>
-To: linux-fsdevel@vger.kernel.org,
-	Christian Brauner <brauner@kernel.org>
-Cc: Christoph Hellwig <hch@lst.de>,
-	Jan Kara <jack@suse.cz>,
-	Vitaly Kuznetsov <vkuznets@redhat.com>,
-	Sean Christopherson <seanjc@google.com>,
-	Paolo Bonzini <pbonzini@redhat.com>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Ingo Molnar <mingo@redhat.com>,
-	Borislav Petkov <bp@alien8.de>,
-	Dave Hansen <dave.hansen@linux.intel.com>,
-	x86@kernel.org,
-	David Woodhouse <dwmw2@infradead.org>,
-	Paul Durrant <paul@xen.org>,
-	Oded Gabbay <ogabbay@kernel.org>,
-	Wu Hao <hao.wu@intel.com>,
-	Tom Rix <trix@redhat.com>,
-	Moritz Fischer <mdf@kernel.org>,
-	Xu Yilun <yilun.xu@intel.com>,
-	Zhenyu Wang <zhenyuw@linux.intel.com>,
-	Zhi Wang <zhi.a.wang@intel.com>,
-	Jani Nikula <jani.nikula@linux.intel.com>,
-	Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-	Rodrigo Vivi <rodrigo.vivi@intel.com>,
-	Tvrtko Ursulin <tvrtko.ursulin@linux.intel.com>,
-	David Airlie <airlied@gmail.com>,
-	Daniel Vetter <daniel@ffwll.ch>,
-	Leon Romanovsky <leon@kernel.org>,
-	Jason Gunthorpe <jgg@ziepe.ca>,
-	Frederic Barrat <fbarrat@linux.ibm.com>,
-	Andrew Donnellan <ajd@linux.ibm.com>,
-	Arnd Bergmann <arnd@arndb.de>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	Eric Farman <farman@linux.ibm.com>,
-	Matthew Rosato <mjrosato@linux.ibm.com>,
-	Halil Pasic <pasic@linux.ibm.com>,
-	Vineeth Vijayan <vneethv@linux.ibm.com>,
-	Peter Oberparleiter <oberpar@linux.ibm.com>,
-	Heiko Carstens <hca@linux.ibm.com>,
-	Vasily Gorbik <gor@linux.ibm.com>,
-	Alexander Gordeev <agordeev@linux.ibm.com>,
-	Christian Borntraeger <borntraeger@linux.ibm.com>,
-	Sven Schnelle <svens@linux.ibm.com>,
-	Tony Krowiak <akrowiak@linux.ibm.com>,
-	Jason Herne <jjherne@linux.ibm.com>,
-	Harald Freudenberger <freude@linux.ibm.com>,
-	"Michael S. Tsirkin" <mst@redhat.com>,
-	Jason Wang <jasowang@redhat.com>,
-	Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
-	Diana Craciun <diana.craciun@oss.nxp.com>,
-	Alex Williamson <alex.williamson@redhat.com>,
-	Eric Auger <eric.auger@redhat.com>,
-	Fei Li <fei1.li@intel.com>,
-	Benjamin LaHaise <bcrl@kvack.org>,
-	Johannes Weiner <hannes@cmpxchg.org>,
-	Michal Hocko <mhocko@kernel.org>,
-	Roman Gushchin <roman.gushchin@linux.dev>,
-	Shakeel Butt <shakeelb@google.com>,
-	Muchun Song <muchun.song@linux.dev>,
-	Kirti Wankhede <kwankhede@nvidia.com>,
-	kvm@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	dri-devel@lists.freedesktop.org,
-	linux-fpga@vger.kernel.org,
-	intel-gvt-dev@lists.freedesktop.org,
-	intel-gfx@lists.freedesktop.org,
-	linux-rdma@vger.kernel.org,
-	linuxppc-dev@lists.ozlabs.org,
-	linux-s390@vger.kernel.org,
-	linux-usb@vger.kernel.org,
-	virtualization@lists.linux-foundation.org,
-	netdev@vger.kernel.org,
-	linux-aio@kvack.org,
-	cgroups@vger.kernel.org,
-	linux-mm@kvack.org,
-	Jens Axboe <axboe@kernel.dk>,
-	Pavel Begunkov <asml.silence@gmail.com>,
-	io-uring@vger.kernel.org
-Subject: Re: [PATCH v2 0/4] eventfd: simplify signal helpers
-Date: Fri, 24 Nov 2023 08:47:57 +0100
-Message-ID: <20231124-traurig-halunken-6defdd66e8f2@brauner>
-X-Mailer: git-send-email 2.42.0
-In-Reply-To: <20231122-vfs-eventfd-signal-v2-0-bd549b14ce0c@kernel.org>
-References: <20231122-vfs-eventfd-signal-v2-0-bd549b14ce0c@kernel.org>
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTP id 1F6B7BB;
+	Fri, 24 Nov 2023 02:16:20 -0800 (PST)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 536F21063;
+	Fri, 24 Nov 2023 02:17:06 -0800 (PST)
+Received: from FVFF77S0Q05N (unknown [10.57.42.51])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 07E0D3F7A6;
+	Fri, 24 Nov 2023 02:16:17 -0800 (PST)
+Date: Fri, 24 Nov 2023 10:16:15 +0000
+From: Mark Rutland <mark.rutland@arm.com>
+To: Leon Romanovsky <leon@kernel.org>
+Cc: Jason Gunthorpe <jgg@nvidia.com>, Arnd Bergmann <arnd@arndb.de>,
+	Catalin Marinas <catalin.marinas@arm.com>,
+	linux-arch@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+	linux-rdma@vger.kernel.org, llvm@lists.linux.dev,
+	Michael Guralnik <michaelgur@mellanox.com>,
+	Nathan Chancellor <nathan@kernel.org>,
+	Nick Desaulniers <ndesaulniers@google.com>,
+	Will Deacon <will@kernel.org>
+Subject: Re: [PATCH rdma-next 1/2] arm64/io: add memcpy_toio_64
+Message-ID: <ZWB373y5XuZDultf@FVFF77S0Q05N>
+References: <cover.1700766072.git.leon@kernel.org>
+ <c3ae87aea7660c3d266905c19d10d8de0f9fb779.1700766072.git.leon@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1378; i=brauner@kernel.org; h=from:subject:message-id; bh=wuXwn6H3IYOQTJYurH/LAKoS23w/GwU7ryzU1+Vs8b4=; b=owGbwMvMwCU28Zj0gdSKO4sYT6slMaQmhOr8Nb88ObVn73mvUyobyi/8m/y5yi2fL80o6/sb9 3cTN/yd21HKwiDGxSArpsji0G4SLrecp2KzUaYGzBxWJpAhDFycAjCR7iBGhq1L7YSDDTVSee+x X1xccNDei/91c9MuqdqsiYtj7lg17WdkWCP3faH/qkmK79OnL3ut4/Vo+e0nB564XJ5mY6ruNdX 4JgMA
-X-Developer-Key: i=brauner@kernel.org; a=openpgp; fpr=4880B8C9BD0E5106FC070F4F7B3C391EFEA93624
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <c3ae87aea7660c3d266905c19d10d8de0f9fb779.1700766072.git.leon@kernel.org>
 
-On Wed, 22 Nov 2023 13:48:21 +0100, Christian Brauner wrote:
-> Hey everyone,
+On Thu, Nov 23, 2023 at 09:04:31PM +0200, Leon Romanovsky wrote:
+> From: Jason Gunthorpe <jgg@nvidia.com>
 > 
-> This simplifies the eventfd_signal() and eventfd_signal_mask() helpers
-> significantly. They can be made void and not take any unnecessary
-> arguments.
+> The kernel supports write combining IO memory which is commonly used to
+> generate 64 byte TLPs in a PCIe environment. On many CPUs this mechanism
+> is pretty tolerant and a simple C loop will suffice to generate a 64 byte
+> TLP.
 > 
-> I've added a few more simplifications based on Sean's suggestion.
+> However modern ARM64 CPUs are quite sensitive and a compiler generated
+> loop is not enough to reliably generate a 64 byte TLP. Especially given
+> the ARM64 issue that writel() does not codegen anything other than "[xN]"
+> as the address calculation.
 > 
-> [...]
+> These newer CPUs require an orderly consecutive block of stores to work
+> reliably. This is best done with four STP integer instructions (perhaps
+> ST64B in future), or a single ST4 vector instruction.
+> 
+> Provide a new generic function memcpy_toio_64() which should reliably
+> generate the needed instructions for the architecture, assuming address
+> alignment. As the usual need for this operation is performance sensitive a
+> fast inline implementation is preferred.
 
-Applied to the vfs.misc branch of the vfs/vfs.git tree.
-Patches in the vfs.misc branch should appear in linux-next soon.
+There is *no* architectural sequence that is guaranteed to reliably generate a
+64-byte TLP, and this sequence won't guarnatee that (e.g. even if the CPU
+*always* merged adjacent stores, we can take an interrupt mid-sequence that
+would prevent that).
 
-Please report any outstanding bugs that were missed during review in a
-new review to the original patch series allowing us to drop it.
+What's the actual requirement here? Is this just for performance?
 
-It's encouraged to provide Acked-bys and Reviewed-bys even though the
-patch has now been applied. If possible patch trailers will be updated.
+Mark.
 
-Note that commit hashes shown below are subject to change due to rebase,
-trailer updates or similar. If in doubt, please check the listed branch.
-
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/vfs/vfs.git
-branch: vfs.misc
-
-[1/4] i915: make inject_virtual_interrupt() void
-      https://git.kernel.org/vfs/vfs/c/858848719210
-[2/4] eventfd: simplify eventfd_signal()
-      https://git.kernel.org/vfs/vfs/c/ded0f31f825f
-[3/4] eventfd: simplify eventfd_signal_mask()
-      https://git.kernel.org/vfs/vfs/c/45ee1c990e88
-[4/4] eventfd: make eventfd_signal{_mask}() void
-      https://git.kernel.org/vfs/vfs/c/37d5d473e749
+> Implement an optimized version on ARM that is a block of 4 STP
+> instructions.
+> 
+> The generic implementation is just a simple loop. x86-64 (clang 16)
+> compiles this into an unrolled loop of 16 movq pairs.
+> 
+> Cc: Arnd Bergmann <arnd@arndb.de>
+> Cc: Catalin Marinas <catalin.marinas@arm.com>
+> Cc: Will Deacon <will@kernel.org>
+> Cc: linux-arch@vger.kernel.org
+> Cc: linux-arm-kernel@lists.infradead.org
+> Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
+> Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
+> ---
+>  arch/arm64/include/asm/io.h | 20 ++++++++++++++++++++
+>  include/asm-generic/io.h    | 30 ++++++++++++++++++++++++++++++
+>  2 files changed, 50 insertions(+)
+> 
+> diff --git a/arch/arm64/include/asm/io.h b/arch/arm64/include/asm/io.h
+> index 3b694511b98f..73ab91913790 100644
+> --- a/arch/arm64/include/asm/io.h
+> +++ b/arch/arm64/include/asm/io.h
+> @@ -135,6 +135,26 @@ extern void __memset_io(volatile void __iomem *, int, size_t);
+>  #define memcpy_fromio(a,c,l)	__memcpy_fromio((a),(c),(l))
+>  #define memcpy_toio(c,a,l)	__memcpy_toio((c),(a),(l))
+>  
+> +static inline void __memcpy_toio_64(volatile void __iomem *to, const void *from)
+> +{
+> +	const u64 *from64 = from;
+> +
+> +	/*
+> +	 * Newer ARM core have sensitive write combining buffers, it is
+> +	 * important that the stores be contiguous blocks of store instructions.
+> +	 * Normal memcpy does not work reliably.
+> +	 */
+> +	asm volatile("stp %x0, %x1, [%8, #16 * 0]\n"
+> +		     "stp %x2, %x3, [%8, #16 * 1]\n"
+> +		     "stp %x4, %x5, [%8, #16 * 2]\n"
+> +		     "stp %x6, %x7, [%8, #16 * 3]\n"
+> +		     :
+> +		     : "rZ"(from64[0]), "rZ"(from64[1]), "rZ"(from64[2]),
+> +		       "rZ"(from64[3]), "rZ"(from64[4]), "rZ"(from64[5]),
+> +		       "rZ"(from64[6]), "rZ"(from64[7]), "r"(to));
+> +}
+> +#define memcpy_toio_64(to, from) __memcpy_toio_64(to, from)
+> +
+>  /*
+>   * I/O memory mapping functions.
+>   */
+> diff --git a/include/asm-generic/io.h b/include/asm-generic/io.h
+> index bac63e874c7b..2d6d60ed2128 100644
+> --- a/include/asm-generic/io.h
+> +++ b/include/asm-generic/io.h
+> @@ -1202,6 +1202,36 @@ static inline void memcpy_toio(volatile void __iomem *addr, const void *buffer,
+>  }
+>  #endif
+>  
+> +#ifndef memcpy_toio_64
+> +#define memcpy_toio_64 memcpy_toio_64
+> +/**
+> + * memcpy_toio_64	Copy 64 bytes of data into I/O memory
+> + * @dst:		The (I/O memory) destination for the copy
+> + * @src:		The (RAM) source for the data
+> + * @count:		The number of bytes to copy
+> + *
+> + * dst and src must be aligned to 8 bytes. This operation copies exactly 64
+> + * bytes. It is intended to be used for write combining IO memory. The
+> + * architecture should provide an implementation that has a high chance of
+> + * generating a single combined transaction.
+> + */
+> +static inline void memcpy_toio_64(volatile void __iomem *addr,
+> +				  const void *buffer)
+> +{
+> +	unsigned int i = 0;
+> +
+> +#if BITS_PER_LONG == 64
+> +	for (; i != 8; i++)
+> +		__raw_writeq(((const u64 *)buffer)[i],
+> +			     ((u64 __iomem *)addr) + i);
+> +#else
+> +	for (; i != 16; i++)
+> +		__raw_writel(((const u32 *)buffer)[i],
+> +			     ((u32 __iomem *)addr) + i);
+> +#endif
+> +}
+> +#endif
+> +
+>  extern int devmem_is_allowed(unsigned long pfn);
+>  
+>  #endif /* __KERNEL__ */
+> -- 
+> 2.42.0
+> 
+> 
 
