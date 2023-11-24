@@ -1,176 +1,192 @@
-Return-Path: <linux-rdma+bounces-66-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-67-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8A2447F7115
-	for <lists+linux-rdma@lfdr.de>; Fri, 24 Nov 2023 11:16:29 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id D9AC97F727F
+	for <lists+linux-rdma@lfdr.de>; Fri, 24 Nov 2023 12:13:01 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BC2561C20A16
-	for <lists+linux-rdma@lfdr.de>; Fri, 24 Nov 2023 10:16:28 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AE1891C20E32
+	for <lists+linux-rdma@lfdr.de>; Fri, 24 Nov 2023 11:13:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 74CD918B09;
-	Fri, 24 Nov 2023 10:16:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dkim=none
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C2D101B271;
+	Fri, 24 Nov 2023 11:12:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="GRuKjKrs"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTP id 1F6B7BB;
-	Fri, 24 Nov 2023 02:16:20 -0800 (PST)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 536F21063;
-	Fri, 24 Nov 2023 02:17:06 -0800 (PST)
-Received: from FVFF77S0Q05N (unknown [10.57.42.51])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 07E0D3F7A6;
-	Fri, 24 Nov 2023 02:16:17 -0800 (PST)
-Date: Fri, 24 Nov 2023 10:16:15 +0000
-From: Mark Rutland <mark.rutland@arm.com>
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.8])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC455D59
+	for <linux-rdma@vger.kernel.org>; Fri, 24 Nov 2023 03:12:53 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1700824374; x=1732360374;
+  h=date:from:to:cc:subject:message-id;
+  bh=ARhHsVXy/pIeS/yomvIKht4u1s8/Q+/0IQod08rjRFc=;
+  b=GRuKjKrsPP/RbZBoY2WHb4eKKYAcIURrKRcShPkgHH1KjZcmaGfMcz6u
+   sLXn+b6uUV6nXDOLPx2fD17sQM9S45zX5tz3WqrxEQz0WPsMlCv1W2HcT
+   Lo13BpTB7QW6kzPvWKjEuXHM2t9OWXMheqz8gFSv33e1tSZyy3240s07A
+   vMimFTGlVccVXJMh7PHtamVfQjBpcTKYA+o930mgZo9QHs/vTpoml6P/w
+   TRGam6fRCBJ1+cWz6uVRfo6ZfABOWA/ElrxGhjHU5GEVaDUt71M9IUFZQ
+   8FTcY3HRQbpvbUVpEm5NEEBg3/SIetJiK9w5vqxNkxaByKm/biP9CGoWB
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10902"; a="5563424"
+X-IronPort-AV: E=Sophos;i="6.04,223,1695711600"; 
+   d="scan'208";a="5563424"
+Received: from fmviesa002.fm.intel.com ([10.60.135.142])
+  by fmvoesa102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Nov 2023 03:12:26 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.04,223,1695711600"; 
+   d="scan'208";a="9106783"
+Received: from lkp-server01.sh.intel.com (HELO d584ee6ebdcc) ([10.239.97.150])
+  by fmviesa002.fm.intel.com with ESMTP; 24 Nov 2023 03:12:24 -0800
+Received: from kbuild by d584ee6ebdcc with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1r6U6g-0002gF-1C;
+	Fri, 24 Nov 2023 11:12:22 +0000
+Date: Fri, 24 Nov 2023 19:11:38 +0800
+From: kernel test robot <lkp@intel.com>
 To: Leon Romanovsky <leon@kernel.org>
-Cc: Jason Gunthorpe <jgg@nvidia.com>, Arnd Bergmann <arnd@arndb.de>,
-	Catalin Marinas <catalin.marinas@arm.com>,
-	linux-arch@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-	linux-rdma@vger.kernel.org, llvm@lists.linux.dev,
-	Michael Guralnik <michaelgur@mellanox.com>,
-	Nathan Chancellor <nathan@kernel.org>,
-	Nick Desaulniers <ndesaulniers@google.com>,
-	Will Deacon <will@kernel.org>
-Subject: Re: [PATCH rdma-next 1/2] arm64/io: add memcpy_toio_64
-Message-ID: <ZWB373y5XuZDultf@FVFF77S0Q05N>
-References: <cover.1700766072.git.leon@kernel.org>
- <c3ae87aea7660c3d266905c19d10d8de0f9fb779.1700766072.git.leon@kernel.org>
+Cc: Doug Ledford <dledford@redhat.com>,
+ Jason Gunthorpe <jgg+lists@ziepe.ca>, linux-rdma@vger.kernel.org
+Subject: [rdma:wip/leon-for-next] BUILD SUCCESS
+ 640233258e5b61fed10b382af691b6a852f00392
+Message-ID: <202311241935.MkqDCnqd-lkp@intel.com>
+User-Agent: s-nail v14.9.24
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <c3ae87aea7660c3d266905c19d10d8de0f9fb779.1700766072.git.leon@kernel.org>
 
-On Thu, Nov 23, 2023 at 09:04:31PM +0200, Leon Romanovsky wrote:
-> From: Jason Gunthorpe <jgg@nvidia.com>
-> 
-> The kernel supports write combining IO memory which is commonly used to
-> generate 64 byte TLPs in a PCIe environment. On many CPUs this mechanism
-> is pretty tolerant and a simple C loop will suffice to generate a 64 byte
-> TLP.
-> 
-> However modern ARM64 CPUs are quite sensitive and a compiler generated
-> loop is not enough to reliably generate a 64 byte TLP. Especially given
-> the ARM64 issue that writel() does not codegen anything other than "[xN]"
-> as the address calculation.
-> 
-> These newer CPUs require an orderly consecutive block of stores to work
-> reliably. This is best done with four STP integer instructions (perhaps
-> ST64B in future), or a single ST4 vector instruction.
-> 
-> Provide a new generic function memcpy_toio_64() which should reliably
-> generate the needed instructions for the architecture, assuming address
-> alignment. As the usual need for this operation is performance sensitive a
-> fast inline implementation is preferred.
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git wip/leon-for-next
+branch HEAD: 640233258e5b61fed10b382af691b6a852f00392  RDMA/rtrs: Use %pe to print errors
 
-There is *no* architectural sequence that is guaranteed to reliably generate a
-64-byte TLP, and this sequence won't guarnatee that (e.g. even if the CPU
-*always* merged adjacent stores, we can take an interrupt mid-sequence that
-would prevent that).
+elapsed time: 2737m
 
-What's the actual requirement here? Is this just for performance?
+configs tested: 114
+configs skipped: 1
 
-Mark.
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
-> Implement an optimized version on ARM that is a block of 4 STP
-> instructions.
-> 
-> The generic implementation is just a simple loop. x86-64 (clang 16)
-> compiles this into an unrolled loop of 16 movq pairs.
-> 
-> Cc: Arnd Bergmann <arnd@arndb.de>
-> Cc: Catalin Marinas <catalin.marinas@arm.com>
-> Cc: Will Deacon <will@kernel.org>
-> Cc: linux-arch@vger.kernel.org
-> Cc: linux-arm-kernel@lists.infradead.org
-> Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
-> Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
-> ---
->  arch/arm64/include/asm/io.h | 20 ++++++++++++++++++++
->  include/asm-generic/io.h    | 30 ++++++++++++++++++++++++++++++
->  2 files changed, 50 insertions(+)
-> 
-> diff --git a/arch/arm64/include/asm/io.h b/arch/arm64/include/asm/io.h
-> index 3b694511b98f..73ab91913790 100644
-> --- a/arch/arm64/include/asm/io.h
-> +++ b/arch/arm64/include/asm/io.h
-> @@ -135,6 +135,26 @@ extern void __memset_io(volatile void __iomem *, int, size_t);
->  #define memcpy_fromio(a,c,l)	__memcpy_fromio((a),(c),(l))
->  #define memcpy_toio(c,a,l)	__memcpy_toio((c),(a),(l))
->  
-> +static inline void __memcpy_toio_64(volatile void __iomem *to, const void *from)
-> +{
-> +	const u64 *from64 = from;
-> +
-> +	/*
-> +	 * Newer ARM core have sensitive write combining buffers, it is
-> +	 * important that the stores be contiguous blocks of store instructions.
-> +	 * Normal memcpy does not work reliably.
-> +	 */
-> +	asm volatile("stp %x0, %x1, [%8, #16 * 0]\n"
-> +		     "stp %x2, %x3, [%8, #16 * 1]\n"
-> +		     "stp %x4, %x5, [%8, #16 * 2]\n"
-> +		     "stp %x6, %x7, [%8, #16 * 3]\n"
-> +		     :
-> +		     : "rZ"(from64[0]), "rZ"(from64[1]), "rZ"(from64[2]),
-> +		       "rZ"(from64[3]), "rZ"(from64[4]), "rZ"(from64[5]),
-> +		       "rZ"(from64[6]), "rZ"(from64[7]), "r"(to));
-> +}
-> +#define memcpy_toio_64(to, from) __memcpy_toio_64(to, from)
-> +
->  /*
->   * I/O memory mapping functions.
->   */
-> diff --git a/include/asm-generic/io.h b/include/asm-generic/io.h
-> index bac63e874c7b..2d6d60ed2128 100644
-> --- a/include/asm-generic/io.h
-> +++ b/include/asm-generic/io.h
-> @@ -1202,6 +1202,36 @@ static inline void memcpy_toio(volatile void __iomem *addr, const void *buffer,
->  }
->  #endif
->  
-> +#ifndef memcpy_toio_64
-> +#define memcpy_toio_64 memcpy_toio_64
-> +/**
-> + * memcpy_toio_64	Copy 64 bytes of data into I/O memory
-> + * @dst:		The (I/O memory) destination for the copy
-> + * @src:		The (RAM) source for the data
-> + * @count:		The number of bytes to copy
-> + *
-> + * dst and src must be aligned to 8 bytes. This operation copies exactly 64
-> + * bytes. It is intended to be used for write combining IO memory. The
-> + * architecture should provide an implementation that has a high chance of
-> + * generating a single combined transaction.
-> + */
-> +static inline void memcpy_toio_64(volatile void __iomem *addr,
-> +				  const void *buffer)
-> +{
-> +	unsigned int i = 0;
-> +
-> +#if BITS_PER_LONG == 64
-> +	for (; i != 8; i++)
-> +		__raw_writeq(((const u64 *)buffer)[i],
-> +			     ((u64 __iomem *)addr) + i);
-> +#else
-> +	for (; i != 16; i++)
-> +		__raw_writel(((const u32 *)buffer)[i],
-> +			     ((u32 __iomem *)addr) + i);
-> +#endif
-> +}
-> +#endif
-> +
->  extern int devmem_is_allowed(unsigned long pfn);
->  
->  #endif /* __KERNEL__ */
-> -- 
-> 2.42.0
-> 
-> 
+tested configs:
+arc                   randconfig-001-20231123   gcc  
+arc                   randconfig-002-20231123   gcc  
+arm                   randconfig-001-20231123   gcc  
+arm                   randconfig-002-20231123   gcc  
+arm                   randconfig-003-20231123   gcc  
+arm                   randconfig-004-20231123   gcc  
+arm64                 randconfig-001-20231123   gcc  
+arm64                 randconfig-002-20231123   gcc  
+arm64                 randconfig-003-20231123   gcc  
+arm64                 randconfig-004-20231123   gcc  
+csky                  randconfig-001-20231123   gcc  
+csky                  randconfig-002-20231123   gcc  
+hexagon               randconfig-001-20231123   clang
+hexagon               randconfig-002-20231123   clang
+i386                             allmodconfig   clang
+i386                              allnoconfig   clang
+i386                             allyesconfig   clang
+i386         buildonly-randconfig-001-20231123   gcc  
+i386         buildonly-randconfig-002-20231123   gcc  
+i386         buildonly-randconfig-003-20231123   gcc  
+i386         buildonly-randconfig-004-20231123   gcc  
+i386         buildonly-randconfig-005-20231123   gcc  
+i386         buildonly-randconfig-006-20231123   gcc  
+i386                                defconfig   gcc  
+i386                  randconfig-001-20231123   gcc  
+i386                  randconfig-002-20231123   gcc  
+i386                  randconfig-003-20231123   gcc  
+i386                  randconfig-004-20231123   gcc  
+i386                  randconfig-005-20231123   gcc  
+i386                  randconfig-006-20231123   gcc  
+i386                  randconfig-011-20231123   clang
+i386                  randconfig-012-20231123   clang
+i386                  randconfig-013-20231123   clang
+i386                  randconfig-014-20231123   clang
+i386                  randconfig-015-20231123   clang
+i386                  randconfig-016-20231123   clang
+loongarch                        allmodconfig   gcc  
+loongarch             randconfig-001-20231123   gcc  
+loongarch             randconfig-002-20231123   gcc  
+m68k                             allmodconfig   gcc  
+m68k                             allyesconfig   gcc  
+microblaze                       allmodconfig   gcc  
+microblaze                       allyesconfig   gcc  
+mips                             allyesconfig   gcc  
+nios2                            allmodconfig   gcc  
+nios2                            allyesconfig   gcc  
+nios2                 randconfig-001-20231123   gcc  
+nios2                 randconfig-002-20231123   gcc  
+openrisc                         allmodconfig   gcc  
+openrisc                          allnoconfig   gcc  
+openrisc                         allyesconfig   gcc  
+openrisc                            defconfig   gcc  
+parisc                           allmodconfig   gcc  
+parisc                            allnoconfig   gcc  
+parisc                           allyesconfig   gcc  
+parisc                              defconfig   gcc  
+parisc                randconfig-001-20231123   gcc  
+parisc                randconfig-002-20231123   gcc  
+parisc64                            defconfig   gcc  
+powerpc                          allmodconfig   clang
+powerpc                           allnoconfig   gcc  
+powerpc                          allyesconfig   clang
+powerpc               randconfig-001-20231123   gcc  
+powerpc               randconfig-002-20231123   gcc  
+powerpc               randconfig-003-20231123   gcc  
+powerpc64             randconfig-001-20231123   gcc  
+powerpc64             randconfig-002-20231123   gcc  
+powerpc64             randconfig-003-20231123   gcc  
+riscv                            allmodconfig   gcc  
+riscv                             allnoconfig   clang
+riscv                            allyesconfig   gcc  
+riscv                               defconfig   gcc  
+riscv                 randconfig-001-20231123   gcc  
+riscv                 randconfig-002-20231123   gcc  
+riscv                          rv32_defconfig   clang
+s390                  randconfig-001-20231123   clang
+s390                  randconfig-002-20231123   clang
+sh                               allmodconfig   gcc  
+sh                    randconfig-001-20231123   gcc  
+sh                    randconfig-002-20231123   gcc  
+sparc64               randconfig-001-20231123   gcc  
+sparc64               randconfig-002-20231123   gcc  
+um                    randconfig-001-20231123   gcc  
+um                    randconfig-002-20231123   gcc  
+x86_64                            allnoconfig   gcc  
+x86_64                           allyesconfig   clang
+x86_64       buildonly-randconfig-001-20231123   gcc  
+x86_64       buildonly-randconfig-002-20231123   gcc  
+x86_64       buildonly-randconfig-003-20231123   gcc  
+x86_64       buildonly-randconfig-004-20231123   gcc  
+x86_64       buildonly-randconfig-005-20231123   gcc  
+x86_64       buildonly-randconfig-006-20231123   gcc  
+x86_64                              defconfig   gcc  
+x86_64                randconfig-001-20231123   clang
+x86_64                randconfig-002-20231123   clang
+x86_64                randconfig-003-20231123   clang
+x86_64                randconfig-004-20231123   clang
+x86_64                randconfig-005-20231123   clang
+x86_64                randconfig-006-20231123   clang
+x86_64                randconfig-011-20231123   gcc  
+x86_64                randconfig-012-20231123   gcc  
+x86_64                randconfig-013-20231123   gcc  
+x86_64                randconfig-014-20231123   gcc  
+x86_64                randconfig-015-20231123   gcc  
+x86_64                randconfig-016-20231123   gcc  
+x86_64                randconfig-071-20231123   gcc  
+x86_64                randconfig-072-20231123   gcc  
+x86_64                randconfig-073-20231123   gcc  
+x86_64                randconfig-074-20231123   gcc  
+x86_64                randconfig-075-20231123   gcc  
+x86_64                randconfig-076-20231123   gcc  
+x86_64                          rhel-8.3-rust   clang
+xtensa                randconfig-001-20231123   gcc  
+xtensa                randconfig-002-20231123   gcc  
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
