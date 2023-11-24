@@ -1,169 +1,296 @@
-Return-Path: <linux-rdma+bounces-69-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-70-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0894B7F746E
-	for <lists+linux-rdma@lfdr.de>; Fri, 24 Nov 2023 13:58:24 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A30DC7F747E
+	for <lists+linux-rdma@lfdr.de>; Fri, 24 Nov 2023 14:02:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B5E27281ECE
-	for <lists+linux-rdma@lfdr.de>; Fri, 24 Nov 2023 12:58:22 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B450DB213EB
+	for <lists+linux-rdma@lfdr.de>; Fri, 24 Nov 2023 13:02:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F0EAC250F9;
-	Fri, 24 Nov 2023 12:58:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dkim=none
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CDD2228374;
+	Fri, 24 Nov 2023 13:02:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b="KrWzD5zr"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTP id DB1A310E4;
-	Fri, 24 Nov 2023 04:58:15 -0800 (PST)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 54BF31063;
-	Fri, 24 Nov 2023 04:59:01 -0800 (PST)
-Received: from [10.1.196.40] (e121345-lin.cambridge.arm.com [10.1.196.40])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 4BDAF3F6C4;
-	Fri, 24 Nov 2023 04:58:13 -0800 (PST)
-Message-ID: <2fccdb30-aad0-4334-89d1-d4c86d17c9fc@arm.com>
-Date: Fri, 24 Nov 2023 12:58:11 +0000
+Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTP id 4987FD71;
+	Fri, 24 Nov 2023 05:02:34 -0800 (PST)
+Received: by linux.microsoft.com (Postfix, from userid 1134)
+	id B9DFE20B74C0; Fri, 24 Nov 2023 05:02:33 -0800 (PST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com B9DFE20B74C0
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+	s=default; t=1700830953;
+	bh=oUUcHPDbwiQWqdpjeEFamPkOoIRmJ8dJ3B1qE8X71Tw=;
+	h=From:To:Cc:Subject:Date:From;
+	b=KrWzD5zrra0XtuAcOwhw8Wg/wIbe78MJuHqPOdIcz/V/dLNZTuUCVsf4rjEH0ub6+
+	 xZ87XmwTlv7tTVw2Cbxy6NwSWRYg731Z2PKMj9xRkxzd4UpG8YKRO7Opuz02+rUx2P
+	 q2x/Wq6zeBG0SRAfXZ3dPrna0clE/U0vlqff8y0E=
+From: Shradha Gupta <shradhagupta@linux.microsoft.com>
+To: linux-kernel@vger.kernel.org,
+	linux-hyperv@vger.kernel.org,
+	linux-rdma@vger.kernel.org,
+	netdev@vger.kernel.org
+Cc: Shradha Gupta <shradhagupta@linux.microsoft.com>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>,
+	Paolo Abeni <pabeni@redhat.com>,
+	Ajay Sharma <sharmaajay@microsoft.com>,
+	Leon Romanovsky <leon@kernel.org>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+	"K. Y. Srinivasan" <kys@microsoft.com>,
+	Haiyang Zhang <haiyangz@microsoft.com>,
+	Wei Liu <wei.liu@kernel.org>,
+	Dexuan Cui <decui@microsoft.com>,
+	Long Li <longli@microsoft.com>,
+	Michael Kelley <mikelley@microsoft.com>,
+	Shradha Gupta <shradhagupta@microsoft.com>
+Subject: [PATCH] net :mana :Add remaining GDMA stats for MANA to ethtool
+Date: Fri, 24 Nov 2023 05:02:30 -0800
+Message-Id: <1700830950-803-1-git-send-email-shradhagupta@linux.microsoft.com>
+X-Mailer: git-send-email 1.8.3.1
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH rdma-next 1/2] arm64/io: add memcpy_toio_64
-Content-Language: en-GB
-To: Leon Romanovsky <leon@kernel.org>, Jason Gunthorpe <jgg@nvidia.com>
-Cc: Arnd Bergmann <arnd@arndb.de>, Catalin Marinas <catalin.marinas@arm.com>,
- linux-arch@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
- linux-rdma@vger.kernel.org, llvm@lists.linux.dev,
- Michael Guralnik <michaelgur@mellanox.com>,
- Nathan Chancellor <nathan@kernel.org>,
- Nick Desaulniers <ndesaulniers@google.com>, Will Deacon <will@kernel.org>
-References: <cover.1700766072.git.leon@kernel.org>
- <c3ae87aea7660c3d266905c19d10d8de0f9fb779.1700766072.git.leon@kernel.org>
-From: Robin Murphy <robin.murphy@arm.com>
-In-Reply-To: <c3ae87aea7660c3d266905c19d10d8de0f9fb779.1700766072.git.leon@kernel.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
 
-On 23/11/2023 7:04 pm, Leon Romanovsky wrote:
-> From: Jason Gunthorpe <jgg@nvidia.com>
-> 
-> The kernel supports write combining IO memory which is commonly used to
-> generate 64 byte TLPs in a PCIe environment. On many CPUs this mechanism
-> is pretty tolerant and a simple C loop will suffice to generate a 64 byte
-> TLP.
-> 
-> However modern ARM64 CPUs are quite sensitive and a compiler generated
-> loop is not enough to reliably generate a 64 byte TLP. Especially given
-> the ARM64 issue that writel() does not codegen anything other than "[xN]"
-> as the address calculation.
-> 
-> These newer CPUs require an orderly consecutive block of stores to work
-> reliably. This is best done with four STP integer instructions (perhaps
-> ST64B in future), or a single ST4 vector instruction.
-> 
-> Provide a new generic function memcpy_toio_64() which should reliably
-> generate the needed instructions for the architecture, assuming address
-> alignment. As the usual need for this operation is performance sensitive a
-> fast inline implementation is preferred.
-> 
-> Implement an optimized version on ARM that is a block of 4 STP
-> instructions.
-> 
-> The generic implementation is just a simple loop. x86-64 (clang 16)
-> compiles this into an unrolled loop of 16 movq pairs.
-> 
-> Cc: Arnd Bergmann <arnd@arndb.de>
-> Cc: Catalin Marinas <catalin.marinas@arm.com>
-> Cc: Will Deacon <will@kernel.org>
-> Cc: linux-arch@vger.kernel.org
-> Cc: linux-arm-kernel@lists.infradead.org
-> Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
-> Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
-> ---
->   arch/arm64/include/asm/io.h | 20 ++++++++++++++++++++
->   include/asm-generic/io.h    | 30 ++++++++++++++++++++++++++++++
->   2 files changed, 50 insertions(+)
-> 
-> diff --git a/arch/arm64/include/asm/io.h b/arch/arm64/include/asm/io.h
-> index 3b694511b98f..73ab91913790 100644
-> --- a/arch/arm64/include/asm/io.h
-> +++ b/arch/arm64/include/asm/io.h
-> @@ -135,6 +135,26 @@ extern void __memset_io(volatile void __iomem *, int, size_t);
->   #define memcpy_fromio(a,c,l)	__memcpy_fromio((a),(c),(l))
->   #define memcpy_toio(c,a,l)	__memcpy_toio((c),(a),(l))
->   
-> +static inline void __memcpy_toio_64(volatile void __iomem *to, const void *from)
-> +{
-> +	const u64 *from64 = from;
-> +
-> +	/*
-> +	 * Newer ARM core have sensitive write combining buffers, it is
-> +	 * important that the stores be contiguous blocks of store instructions.
-> +	 * Normal memcpy does not work reliably.
-> +	 */
-> +	asm volatile("stp %x0, %x1, [%8, #16 * 0]\n"
-> +		     "stp %x2, %x3, [%8, #16 * 1]\n"
-> +		     "stp %x4, %x5, [%8, #16 * 2]\n"
-> +		     "stp %x6, %x7, [%8, #16 * 3]\n"
-> +		     :
-> +		     : "rZ"(from64[0]), "rZ"(from64[1]), "rZ"(from64[2]),
-> +		       "rZ"(from64[3]), "rZ"(from64[4]), "rZ"(from64[5]),
-> +		       "rZ"(from64[6]), "rZ"(from64[7]), "r"(to));
+Extend performance counter stats in 'ethtool -S <interface>'
+for MANA VF to include all GDMA stat counter.
 
-Is this correct for big-endian? LDP/STP are kinda tricksy in that regard.
+Tested-on: Ubuntu22
+Testcases:
+1. LISA testcase:
+PERF-NETWORK-TCP-THROUGHPUT-MULTICONNECTION-NTTTCP-Synthetic
+2. LISA testcase:
+PERF-NETWORK-TCP-THROUGHPUT-MULTICONNECTION-NTTTCP-SRIOV
 
-Thanks,
-Robin.
+Signed-off-by: Shradha Gupta <shradhagupta@linux.microsoft.com>
+---
+ drivers/net/ethernet/microsoft/mana/mana_en.c | 49 ++++++++++++++++++-
+ .../ethernet/microsoft/mana/mana_ethtool.c    | 40 +++++++++++++++
+ include/net/mana/mana.h                       | 46 ++++++++++++-----
+ 3 files changed, 120 insertions(+), 15 deletions(-)
 
-> +}
-> +#define memcpy_toio_64(to, from) __memcpy_toio_64(to, from)
-> +
->   /*
->    * I/O memory mapping functions.
->    */
-> diff --git a/include/asm-generic/io.h b/include/asm-generic/io.h
-> index bac63e874c7b..2d6d60ed2128 100644
-> --- a/include/asm-generic/io.h
-> +++ b/include/asm-generic/io.h
-> @@ -1202,6 +1202,36 @@ static inline void memcpy_toio(volatile void __iomem *addr, const void *buffer,
->   }
->   #endif
->   
-> +#ifndef memcpy_toio_64
-> +#define memcpy_toio_64 memcpy_toio_64
-> +/**
-> + * memcpy_toio_64	Copy 64 bytes of data into I/O memory
-> + * @dst:		The (I/O memory) destination for the copy
-> + * @src:		The (RAM) source for the data
-> + * @count:		The number of bytes to copy
-> + *
-> + * dst and src must be aligned to 8 bytes. This operation copies exactly 64
-> + * bytes. It is intended to be used for write combining IO memory. The
-> + * architecture should provide an implementation that has a high chance of
-> + * generating a single combined transaction.
-> + */
-> +static inline void memcpy_toio_64(volatile void __iomem *addr,
-> +				  const void *buffer)
-> +{
-> +	unsigned int i = 0;
-> +
-> +#if BITS_PER_LONG == 64
-> +	for (; i != 8; i++)
-> +		__raw_writeq(((const u64 *)buffer)[i],
-> +			     ((u64 __iomem *)addr) + i);
-> +#else
-> +	for (; i != 16; i++)
-> +		__raw_writel(((const u32 *)buffer)[i],
-> +			     ((u32 __iomem *)addr) + i);
-> +#endif
-> +}
-> +#endif
-> +
->   extern int devmem_is_allowed(unsigned long pfn);
->   
->   #endif /* __KERNEL__ */
+diff --git a/drivers/net/ethernet/microsoft/mana/mana_en.c b/drivers/net/ethernet/microsoft/mana/mana_en.c
+index fc3d2903a80f..6b857188b9da 100644
+--- a/drivers/net/ethernet/microsoft/mana/mana_en.c
++++ b/drivers/net/ethernet/microsoft/mana/mana_en.c
+@@ -2385,13 +2385,33 @@ void mana_query_gf_stats(struct mana_port_context *apc)
+ 
+ 	mana_gd_init_req_hdr(&req.hdr, MANA_QUERY_GF_STAT,
+ 			     sizeof(req), sizeof(resp));
+-	req.req_stats = STATISTICS_FLAGS_HC_TX_BYTES |
++	req.req_stats = STATISTICS_FLAGS_RX_DISCARDS_NO_WQE |
++			STATISTICS_FLAGS_RX_ERRORS_VPORT_DISABLED |
++			STATISTICS_FLAGS_HC_RX_BYTES |
++			STATISTICS_FLAGS_HC_RX_UCAST_PACKETS |
++			STATISTICS_FLAGS_HC_RX_UCAST_BYTES |
++			STATISTICS_FLAGS_HC_RX_MCAST_PACKETS |
++			STATISTICS_FLAGS_HC_RX_MCAST_BYTES |
++			STATISTICS_FLAGS_HC_RX_BCAST_PACKETS |
++			STATISTICS_FLAGS_HC_RX_BCAST_BYTES |
++			STATISTICS_FLAGS_TX_ERRORS_GF_DISABLED |
++			STATISTICS_FLAGS_TX_ERRORS_VPORT_DISABLED |
++			STATISTICS_FLAGS_TX_ERRORS_INVAL_VPORT_OFFSET_PACKETS |
++			STATISTICS_FLAGS_TX_ERRORS_VLAN_ENFORCEMENT |
++			STATISTICS_FLAGS_TX_ERRORS_ETH_TYPE_ENFORCEMENT |
++			STATISTICS_FLAGS_TX_ERRORS_SA_ENFORCEMENT |
++			STATISTICS_FLAGS_TX_ERRORS_SQPDID_ENFORCEMENT |
++			STATISTICS_FLAGS_TX_ERRORS_CQPDID_ENFORCEMENT |
++			STATISTICS_FLAGS_TX_ERRORS_MTU_VIOLATION |
++			STATISTICS_FLAGS_TX_ERRORS_INVALID_OOB |
++			STATISTICS_FLAGS_HC_TX_BYTES |
+ 			STATISTICS_FLAGS_HC_TX_UCAST_PACKETS |
+ 			STATISTICS_FLAGS_HC_TX_UCAST_BYTES |
+ 			STATISTICS_FLAGS_HC_TX_MCAST_PACKETS |
+ 			STATISTICS_FLAGS_HC_TX_MCAST_BYTES |
+ 			STATISTICS_FLAGS_HC_TX_BCAST_PACKETS |
+-			STATISTICS_FLAGS_HC_TX_BCAST_BYTES;
++			STATISTICS_FLAGS_HC_TX_BCAST_BYTES |
++			STATISTICS_FLAGS_TX_ERRORS_GDMA_ERROR;
+ 
+ 	err = mana_send_request(apc->ac, &req, sizeof(req), &resp,
+ 				sizeof(resp));
+@@ -2407,6 +2427,30 @@ void mana_query_gf_stats(struct mana_port_context *apc)
+ 		return;
+ 	}
+ 
++	apc->eth_stats.hc_rx_discards_no_wqe = resp.rx_discards_nowqe;
++	apc->eth_stats.hc_rx_err_vport_disabled = resp.rx_err_vport_disabled;
++	apc->eth_stats.hc_rx_bytes = resp.hc_rx_bytes;
++	apc->eth_stats.hc_rx_ucast_pkts = resp.hc_rx_ucast_pkts;
++	apc->eth_stats.hc_rx_ucast_bytes = resp.hc_rx_ucast_bytes;
++	apc->eth_stats.hc_rx_bcast_pkts = resp.hc_rx_bcast_pkts;
++	apc->eth_stats.hc_rx_bcast_bytes = resp.hc_rx_bcast_bytes;
++	apc->eth_stats.hc_rx_mcast_pkts = resp.hc_rx_mcast_pkts;
++	apc->eth_stats.hc_rx_mcast_bytes = resp.hc_rx_mcast_bytes;
++	apc->eth_stats.hc_tx_err_gf_disabled = resp.tx_err_gf_disabled;
++	apc->eth_stats.hc_tx_err_vport_disabled = resp.tx_err_vport_disabled;
++	apc->eth_stats.hc_tx_err_inval_vportoffset_pkt =
++					     resp.tx_err_inval_vport_offset_pkt;
++	apc->eth_stats.hc_tx_err_vlan_enforcement =
++					     resp.tx_err_vlan_enforcement;
++	apc->eth_stats.hc_tx_err_eth_type_enforcement =
++					     resp.tx_err_ethtype_enforcement;
++	apc->eth_stats.hc_tx_err_sa_enforcement = resp.tx_err_SA_enforcement;
++	apc->eth_stats.hc_tx_err_sqpdid_enforecement =
++					     resp.tx_err_SQPDID_enforcement;
++	apc->eth_stats.hc_tx_err_cqpdid_enforcement =
++					     resp.tx_err_CQPDID_enforcement;
++	apc->eth_stats.hc_tx_err_mtu_violation = resp.tx_err_mtu_violation;
++	apc->eth_stats.hc_tx_err_inval_oob = resp.tx_err_inval_oob;
+ 	apc->eth_stats.hc_tx_bytes = resp.hc_tx_bytes;
+ 	apc->eth_stats.hc_tx_ucast_pkts = resp.hc_tx_ucast_pkts;
+ 	apc->eth_stats.hc_tx_ucast_bytes = resp.hc_tx_ucast_bytes;
+@@ -2414,6 +2458,7 @@ void mana_query_gf_stats(struct mana_port_context *apc)
+ 	apc->eth_stats.hc_tx_bcast_bytes = resp.hc_tx_bcast_bytes;
+ 	apc->eth_stats.hc_tx_mcast_pkts = resp.hc_tx_mcast_pkts;
+ 	apc->eth_stats.hc_tx_mcast_bytes = resp.hc_tx_mcast_bytes;
++	apc->eth_stats.hc_tx_err_gdma = resp.tx_err_gdma;
+ }
+ 
+ static int mana_init_port(struct net_device *ndev)
+diff --git a/drivers/net/ethernet/microsoft/mana/mana_ethtool.c b/drivers/net/ethernet/microsoft/mana/mana_ethtool.c
+index 607150165ab4..7077d647d99a 100644
+--- a/drivers/net/ethernet/microsoft/mana/mana_ethtool.c
++++ b/drivers/net/ethernet/microsoft/mana/mana_ethtool.c
+@@ -13,6 +13,46 @@ static const struct {
+ } mana_eth_stats[] = {
+ 	{"stop_queue", offsetof(struct mana_ethtool_stats, stop_queue)},
+ 	{"wake_queue", offsetof(struct mana_ethtool_stats, wake_queue)},
++	{"hc_rx_discards_no_wqe", offsetof(struct mana_ethtool_stats,
++					   hc_rx_discards_no_wqe)},
++	{"hc_rx_err_vport_disabled", offsetof(struct mana_ethtool_stats,
++					      hc_rx_err_vport_disabled)},
++	{"hc_rx_bytes", offsetof(struct mana_ethtool_stats, hc_rx_bytes)},
++	{"hc_rx_ucast_pkts", offsetof(struct mana_ethtool_stats,
++				      hc_rx_ucast_pkts)},
++	{"hc_rx_ucast_bytes", offsetof(struct mana_ethtool_stats,
++				       hc_rx_ucast_bytes)},
++	{"hc_rx_bcast_pkts", offsetof(struct mana_ethtool_stats,
++				      hc_rx_bcast_pkts)},
++	{"hc_rx_bcast_bytes", offsetof(struct mana_ethtool_stats,
++				       hc_rx_bcast_bytes)},
++	{"hc_rx_mcast_pkts", offsetof(struct mana_ethtool_stats,
++			hc_rx_mcast_pkts)},
++	{"hc_rx_mcast_bytes", offsetof(struct mana_ethtool_stats,
++				       hc_rx_mcast_bytes)},
++	{"hc_tx_err_gf_disabled", offsetof(struct mana_ethtool_stats,
++					   hc_tx_err_gf_disabled)},
++	{"hc_tx_err_vport_disabled", offsetof(struct mana_ethtool_stats,
++					      hc_tx_err_vport_disabled)},
++	{"hc_tx_err_inval_vportoffset_pkt",
++	 offsetof(struct mana_ethtool_stats,
++		  hc_tx_err_inval_vportoffset_pkt)},
++	{"hc_tx_err_vlan_enforcement", offsetof(struct mana_ethtool_stats,
++						hc_tx_err_vlan_enforcement)},
++	{"hc_tx_err_eth_type_enforcement",
++	 offsetof(struct mana_ethtool_stats, hc_tx_err_eth_type_enforcement)},
++	{"hc_tx_err_sa_enforcement", offsetof(struct mana_ethtool_stats,
++					      hc_tx_err_sa_enforcement)},
++	{"hc_tx_err_sqpdid_enforecement",
++	 offsetof(struct mana_ethtool_stats, hc_tx_err_sqpdid_enforecement)},
++	{"hc_tx_err_cqpdid_enforcement",
++	 offsetof(struct mana_ethtool_stats, hc_tx_err_cqpdid_enforcement)},
++	{"hc_tx_err_mtu_violation", offsetof(struct mana_ethtool_stats,
++					     hc_tx_err_mtu_violation)},
++	{"hc_tx_err_inval_oob", offsetof(struct mana_ethtool_stats,
++					 hc_tx_err_inval_oob)},
++	{"hc_tx_err_gdma", offsetof(struct mana_ethtool_stats,
++				    hc_tx_err_gdma)},
+ 	{"hc_tx_bytes", offsetof(struct mana_ethtool_stats, hc_tx_bytes)},
+ 	{"hc_tx_ucast_pkts", offsetof(struct mana_ethtool_stats,
+ 					hc_tx_ucast_pkts)},
+diff --git a/include/net/mana/mana.h b/include/net/mana/mana.h
+index 6e3e9c1363db..5567f5bc8eb6 100644
+--- a/include/net/mana/mana.h
++++ b/include/net/mana/mana.h
+@@ -353,6 +353,25 @@ struct mana_tx_qp {
+ struct mana_ethtool_stats {
+ 	u64 stop_queue;
+ 	u64 wake_queue;
++	u64 hc_rx_discards_no_wqe;
++	u64 hc_rx_err_vport_disabled;
++	u64 hc_rx_bytes;
++	u64 hc_rx_ucast_pkts;
++	u64 hc_rx_ucast_bytes;
++	u64 hc_rx_bcast_pkts;
++	u64 hc_rx_bcast_bytes;
++	u64 hc_rx_mcast_pkts;
++	u64 hc_rx_mcast_bytes;
++	u64 hc_tx_err_gf_disabled;
++	u64 hc_tx_err_vport_disabled;
++	u64 hc_tx_err_inval_vportoffset_pkt;
++	u64 hc_tx_err_vlan_enforcement;
++	u64 hc_tx_err_eth_type_enforcement;
++	u64 hc_tx_err_sa_enforcement;
++	u64 hc_tx_err_sqpdid_enforecement;
++	u64 hc_tx_err_cqpdid_enforcement;
++	u64 hc_tx_err_mtu_violation;
++	u64 hc_tx_err_inval_oob;
+ 	u64 hc_tx_bytes;
+ 	u64 hc_tx_ucast_pkts;
+ 	u64 hc_tx_ucast_bytes;
+@@ -360,6 +379,7 @@ struct mana_ethtool_stats {
+ 	u64 hc_tx_bcast_bytes;
+ 	u64 hc_tx_mcast_pkts;
+ 	u64 hc_tx_mcast_bytes;
++	u64 hc_tx_err_gdma;
+ 	u64 tx_cqe_err;
+ 	u64 tx_cqe_unknown_type;
+ 	u64 rx_coalesced_err;
+@@ -602,8 +622,8 @@ struct mana_query_gf_stat_resp {
+ 	struct gdma_resp_hdr hdr;
+ 	u64 reported_stats;
+ 	/* rx errors/discards */
+-	u64 discard_rx_nowqe;
+-	u64 err_rx_vport_disabled;
++	u64 rx_discards_nowqe;
++	u64 rx_err_vport_disabled;
+ 	/* rx bytes/packets */
+ 	u64 hc_rx_bytes;
+ 	u64 hc_rx_ucast_pkts;
+@@ -613,16 +633,16 @@ struct mana_query_gf_stat_resp {
+ 	u64 hc_rx_mcast_pkts;
+ 	u64 hc_rx_mcast_bytes;
+ 	/* tx errors */
+-	u64 err_tx_gf_disabled;
+-	u64 err_tx_vport_disabled;
+-	u64 err_tx_inval_vport_offset_pkt;
+-	u64 err_tx_vlan_enforcement;
+-	u64 err_tx_ethtype_enforcement;
+-	u64 err_tx_SA_enforecement;
+-	u64 err_tx_SQPDID_enforcement;
+-	u64 err_tx_CQPDID_enforcement;
+-	u64 err_tx_mtu_violation;
+-	u64 err_tx_inval_oob;
++	u64 tx_err_gf_disabled;
++	u64 tx_err_vport_disabled;
++	u64 tx_err_inval_vport_offset_pkt;
++	u64 tx_err_vlan_enforcement;
++	u64 tx_err_ethtype_enforcement;
++	u64 tx_err_SA_enforcement;
++	u64 tx_err_SQPDID_enforcement;
++	u64 tx_err_CQPDID_enforcement;
++	u64 tx_err_mtu_violation;
++	u64 tx_err_inval_oob;
+ 	/* tx bytes/packets */
+ 	u64 hc_tx_bytes;
+ 	u64 hc_tx_ucast_pkts;
+@@ -632,7 +652,7 @@ struct mana_query_gf_stat_resp {
+ 	u64 hc_tx_mcast_pkts;
+ 	u64 hc_tx_mcast_bytes;
+ 	/* tx error */
+-	u64 err_tx_gdma;
++	u64 tx_err_gdma;
+ }; /* HW DATA */
+ 
+ /* Configure vPort Rx Steering */
+-- 
+2.34.1
+
 
