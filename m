@@ -1,165 +1,153 @@
-Return-Path: <linux-rdma+bounces-98-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-99-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 305957FA694
-	for <lists+linux-rdma@lfdr.de>; Mon, 27 Nov 2023 17:34:05 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id E340D7FA844
+	for <lists+linux-rdma@lfdr.de>; Mon, 27 Nov 2023 18:46:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C7337B212CA
-	for <lists+linux-rdma@lfdr.de>; Mon, 27 Nov 2023 16:34:02 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9DC0A281665
+	for <lists+linux-rdma@lfdr.de>; Mon, 27 Nov 2023 17:46:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E28E336AEA;
-	Mon, 27 Nov 2023 16:33:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3FC343A8E9;
+	Mon, 27 Nov 2023 17:46:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="JafuWhO9"
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="feIF0PY5"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9E632374D9;
-	Mon, 27 Nov 2023 16:33:51 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2327BC433C8;
-	Mon, 27 Nov 2023 16:33:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1701102831;
-	bh=0xwrsVsqBTI3G+nXyOC3xn+wjwZZsJXyDBKhcdM8ygk=;
-	h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-	b=JafuWhO9elbsU5TZ7bD8awq/xNudOE7+OWZctpq4k+utlLGpJ5g5jsJ+5tqiV11yU
-	 XSd8IdCRvC8MLODOaclC+zCxLlqDmprKcPlLfzL18JBCBHSTc33dAnVlPOCjtpKG4Y
-	 mJhPZrZEHIvfMwfgmrZ9wliO0dQ2QqwM9X9ND596S7lfUagtSR3zX32WgM4uG1EQH5
-	 VGk7HOrUt41D1Xzxh9qVuRKtFBpyiRXWqsvkwYDUe9rcap9/6c2C/DshNx+37bZ6Z+
-	 ugl/UWtT02TI9RQYCOjG8AwBDOeNSHzLBFG6HzG97yOBAbK6eQCx3GCWaNS3nAM3bR
-	 nR70nrTHtpSuw==
-Subject: [PATCH v1 5/5] svcrdma: Update some svcrdma DMA-related tracepoints
-From: Chuck Lever <cel@kernel.org>
-To: linux-nfs@vger.kernel.org, linux-rdma@vger.kernel.org
-Cc: Chuck Lever <chuck.lever@oracle.com>, tom@talpey.com
-Date: Mon, 27 Nov 2023 11:33:50 -0500
-Message-ID: 
- <170110283021.49524.4951369507516981349.stgit@bazille.1015granger.net>
-In-Reply-To: 
- <170110267835.49524.14512830016966273991.stgit@bazille.1015granger.net>
-References: 
- <170110267835.49524.14512830016966273991.stgit@bazille.1015granger.net>
-User-Agent: StGit/1.5
+Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5FE02111;
+	Mon, 27 Nov 2023 09:46:06 -0800 (PST)
+Received: from pps.filterd (m0353725.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3ARHed0U001128;
+	Mon, 27 Nov 2023 17:45:48 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
+ from : to : cc : date : in-reply-to : references : content-type :
+ content-transfer-encoding : mime-version; s=pp1;
+ bh=lzqj58I3IPFrtKe4S8rNaZ4kZ62EXnfUaMFKX5my+LU=;
+ b=feIF0PY5+um4MebiA8jlFX3aHG2Ss612jVt0ln8mqQnDDxOl8SfctHc0x954bYkr+kv0
+ CrFXhe3FWqtpNe/Gy0yWJ/T5Vr9UNpqTn3VoQBZxkEG6IKGNaBOJSWDi53B5DeBYK65W
+ crDbe+xSTUpKM88r4rZELhkYKIx1hlQDP2S53I4mOekJ9U8e3Wq5UNKKdBUG35hMx8TB
+ TjqNC7hTIxf7pUbdNVmQvdZahzrevJogueSGunAssN9gkNsCNtVq96pkRYuZaTxlqGiU
+ IgNJ4J8+vCgyex8P8naDKu6A0VPoZ3i/83jcYeVoXLjMK6qHhtS5GjAAMZn3enq0mWYe 9g== 
+Received: from pps.reinject (localhost [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3umxd52vr0-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 27 Nov 2023 17:45:48 +0000
+Received: from m0353725.ppops.net (m0353725.ppops.net [127.0.0.1])
+	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 3ARGqxI1010012;
+	Mon, 27 Nov 2023 17:45:47 GMT
+Received: from ppma22.wdc07v.mail.ibm.com (5c.69.3da9.ip4.static.sl-reverse.com [169.61.105.92])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3umxd52vhf-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 27 Nov 2023 17:45:47 +0000
+Received: from pps.filterd (ppma22.wdc07v.mail.ibm.com [127.0.0.1])
+	by ppma22.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 3ARGtRpk009198;
+	Mon, 27 Nov 2023 17:43:14 GMT
+Received: from smtprelay01.fra02v.mail.ibm.com ([9.218.2.227])
+	by ppma22.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3ukumyaftk-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 27 Nov 2023 17:43:14 +0000
+Received: from smtpav05.fra02v.mail.ibm.com (smtpav05.fra02v.mail.ibm.com [10.20.54.104])
+	by smtprelay01.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 3ARHhCIC20185812
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Mon, 27 Nov 2023 17:43:12 GMT
+Received: from smtpav05.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 61DD42004B;
+	Mon, 27 Nov 2023 17:43:12 +0000 (GMT)
+Received: from smtpav05.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 7E09820040;
+	Mon, 27 Nov 2023 17:43:11 +0000 (GMT)
+Received: from [9.179.10.95] (unknown [9.179.10.95])
+	by smtpav05.fra02v.mail.ibm.com (Postfix) with ESMTP;
+	Mon, 27 Nov 2023 17:43:11 +0000 (GMT)
+Message-ID: <637dcc4d69c380bd939dfdd1b14a5c82c2ddfaa4.camel@linux.ibm.com>
+Subject: Re: [PATCH rdma-next 1/2] arm64/io: add memcpy_toio_64
+From: Niklas Schnelle <schnelle@linux.ibm.com>
+To: Jason Gunthorpe <jgg@nvidia.com>
+Cc: Leon Romanovsky <leon@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
+        Catalin Marinas <catalin.marinas@arm.com>, linux-arch@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-rdma@vger.kernel.org,
+        llvm@lists.linux.dev, Michael Guralnik <michaelgur@mellanox.com>,
+        Nathan
+ Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Will Deacon <will@kernel.org>, Gerd Bayer <gbayer@linux.ibm.com>
+Date: Mon, 27 Nov 2023 18:43:11 +0100
+In-Reply-To: <20231124160627.GH436702@nvidia.com>
+References: <cover.1700766072.git.leon@kernel.org>
+	 <c3ae87aea7660c3d266905c19d10d8de0f9fb779.1700766072.git.leon@kernel.org>
+	 <c102bdef10b280f47f5fe4538eb168ac730d7644.camel@linux.ibm.com>
+	 <20231124142049.GF436702@nvidia.com>
+	 <14103e31e0c47c0594e7479126ce7fe34f2de467.camel@linux.ibm.com>
+	 <20231124145529.GG436702@nvidia.com>
+	 <b3250b9a9af2f29ee3d06830746fb6e8ac49271d.camel@linux.ibm.com>
+	 <20231124160627.GH436702@nvidia.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.48.4 (3.48.4-1.fc38) 
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: _M3XpV3w84E_3d-YkVQ8I7sJh5H0Q7He
+X-Proofpoint-GUID: lQohcn7e8AuOM97Z7HR6-FkciDH-UZJt
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-11-27_16,2023-11-27_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 phishscore=0
+ mlxlogscore=566 impostorscore=0 spamscore=0 adultscore=0
+ priorityscore=1501 mlxscore=0 malwarescore=0 bulkscore=0
+ lowpriorityscore=0 suspectscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2311060000 definitions=main-2311270122
 
-From: Chuck Lever <chuck.lever@oracle.com>
+On Fri, 2023-11-24 at 12:06 -0400, Jason Gunthorpe wrote:
+> On Fri, Nov 24, 2023 at 04:59:38PM +0100, Niklas Schnelle wrote:
+> =20
+> > This should be as easy as adding
+> >=20
+> > #define memcpy_toio_64(to, from) zpci_memcpy_toio(to, from, 64)
+> >=20
+> > to arch/s390/include/asm/io.h. I'm wondering if we should do that as
+> > part of this series. It's not as good as a special case but probably
+> > better than the existing loop.
+>=20
+> Makes sense
 
-A send/recv_ctxt already records transport-related information
-in the cq.id, thus there is no need to record the IP addresses of
-the transport endpoints.
+Ok, I overlooked the obvious. Let's make that:
 
-Signed-off-by: Chuck Lever <chuck.lever@oracle.com>
----
- include/trace/events/rpcrdma.h        |   21 +++++++++++----------
- net/sunrpc/xprtrdma/svc_rdma_sendto.c |   10 +++++-----
- 2 files changed, 16 insertions(+), 15 deletions(-)
+#define memcpy_toio_64(dst, src)       zpci_write_block(dst, src, 64)
 
-diff --git a/include/trace/events/rpcrdma.h b/include/trace/events/rpcrdma.h
-index bba758e5fb1d..9a3fc6eb09a8 100644
---- a/include/trace/events/rpcrdma.h
-+++ b/include/trace/events/rpcrdma.h
-@@ -1762,29 +1762,29 @@ DEFINE_ERROR_EVENT(chunk);
- 
- DECLARE_EVENT_CLASS(svcrdma_dma_map_class,
- 	TP_PROTO(
--		const struct svcxprt_rdma *rdma,
-+		const struct rpc_rdma_cid *cid,
- 		u64 dma_addr,
- 		u32 length
- 	),
- 
--	TP_ARGS(rdma, dma_addr, length),
-+	TP_ARGS(cid, dma_addr, length),
- 
- 	TP_STRUCT__entry(
-+		__field(u32, cq_id)
-+		__field(int, completion_id)
- 		__field(u64, dma_addr)
- 		__field(u32, length)
--		__string(device, rdma->sc_cm_id->device->name)
--		__string(addr, rdma->sc_xprt.xpt_remotebuf)
- 	),
- 
- 	TP_fast_assign(
-+		__entry->cq_id = cid->ci_queue_id;
-+		__entry->completion_id = cid->ci_completion_id;
- 		__entry->dma_addr = dma_addr;
- 		__entry->length = length;
--		__assign_str(device, rdma->sc_cm_id->device->name);
--		__assign_str(addr, rdma->sc_xprt.xpt_remotebuf);
- 	),
- 
--	TP_printk("addr=%s device=%s dma_addr=%llu length=%u",
--		__get_str(addr), __get_str(device),
-+	TP_printk("cq.id=%u cid=%d dma_addr=%llu length=%u",
-+		__entry->cq_id, __entry->completion_id,
- 		__entry->dma_addr, __entry->length
- 	)
- );
-@@ -1792,11 +1792,12 @@ DECLARE_EVENT_CLASS(svcrdma_dma_map_class,
- #define DEFINE_SVC_DMA_EVENT(name)					\
- 		DEFINE_EVENT(svcrdma_dma_map_class, svcrdma_##name,	\
- 				TP_PROTO(				\
--					const struct svcxprt_rdma *rdma,\
-+					const struct rpc_rdma_cid *cid, \
- 					u64 dma_addr,			\
- 					u32 length			\
- 				),					\
--				TP_ARGS(rdma, dma_addr, length))
-+				TP_ARGS(cid, dma_addr, length)		\
-+		)
- 
- DEFINE_SVC_DMA_EVENT(dma_map_page);
- DEFINE_SVC_DMA_EVENT(dma_map_err);
-diff --git a/net/sunrpc/xprtrdma/svc_rdma_sendto.c b/net/sunrpc/xprtrdma/svc_rdma_sendto.c
-index 2ee691c45b85..9571ed4a74d4 100644
---- a/net/sunrpc/xprtrdma/svc_rdma_sendto.c
-+++ b/net/sunrpc/xprtrdma/svc_rdma_sendto.c
-@@ -237,13 +237,13 @@ static void svc_rdma_send_ctxt_release(struct svcxprt_rdma *rdma,
- 	 * remains mapped until @ctxt is destroyed.
- 	 */
- 	for (i = 1; i < ctxt->sc_send_wr.num_sge; i++) {
-+		trace_svcrdma_dma_unmap_page(&ctxt->sc_cid,
-+					     ctxt->sc_sges[i].addr,
-+					     ctxt->sc_sges[i].length);
- 		ib_dma_unmap_page(device,
- 				  ctxt->sc_sges[i].addr,
- 				  ctxt->sc_sges[i].length,
- 				  DMA_TO_DEVICE);
--		trace_svcrdma_dma_unmap_page(rdma,
--					     ctxt->sc_sges[i].addr,
--					     ctxt->sc_sges[i].length);
- 	}
- 
- 	llist_add(&ctxt->sc_node, &rdma->sc_send_ctxts);
-@@ -550,14 +550,14 @@ static int svc_rdma_page_dma_map(void *data, struct page *page,
- 	if (ib_dma_mapping_error(dev, dma_addr))
- 		goto out_maperr;
- 
--	trace_svcrdma_dma_map_page(rdma, dma_addr, len);
-+	trace_svcrdma_dma_map_page(&ctxt->sc_cid, dma_addr, len);
- 	ctxt->sc_sges[ctxt->sc_cur_sge_no].addr = dma_addr;
- 	ctxt->sc_sges[ctxt->sc_cur_sge_no].length = len;
- 	ctxt->sc_send_wr.num_sge++;
- 	return 0;
- 
- out_maperr:
--	trace_svcrdma_dma_map_err(rdma, dma_addr, len);
-+	trace_svcrdma_dma_map_err(&ctxt->sc_cid, dma_addr, len);
- 	return -EIO;
- }
- 
+>=20
+> > I don't think we have any existing in-kernel users of memcpy_toio() on
+> > s390 so far though so I'd like to give this some extra testing. Could
+> > you share instructions on how to exercise the code path of patch 2 on a
+> > ConnectX-5 or 6? Is this exercised e.g. when using NVMe-oF RDMA?
+>=20
+> Simply boot and look at pr_debug from mlx5 to see if writecombining is
+> on or off - you want to see on.
+>=20
+> Thanks,
+> Jason
 
+With the above zpci_write_block(dst, src, 64) we get a PCI store block
+without any extra alignment treatment i.e. exactly what we want for
+memcpy_toio_64(). If the alignment is wrong the PCI store block
+instruction will fail the PCI function will be isolated and we log an
+error so I don't see a need for checks there either. On an aside it
+looks like our zpci_memcpy_toio() is wrongly looking for tighter than 8
+byte alignment on the source address and would issue a series of 8
+stores. Still looking into that. I also tested this with our only
+privileged (kernel only) PCI stores and that works too.
+
+Also it turns out the writeq() loop we had so far does not produce the
+needed 64 byte TLP on s390 either so this actually makes us newly pass
+this test.
+
+Thanks,
+Niklas
 
 
