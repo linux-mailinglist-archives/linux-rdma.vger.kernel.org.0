@@ -1,90 +1,89 @@
-Return-Path: <linux-rdma+bounces-87-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-88-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 250977F9F6D
-	for <lists+linux-rdma@lfdr.de>; Mon, 27 Nov 2023 13:20:32 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5CCCD7F9FD3
+	for <lists+linux-rdma@lfdr.de>; Mon, 27 Nov 2023 13:42:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 547C81C20CEB
-	for <lists+linux-rdma@lfdr.de>; Mon, 27 Nov 2023 12:20:31 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8DA951C20D73
+	for <lists+linux-rdma@lfdr.de>; Mon, 27 Nov 2023 12:42:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6DD931DDD3;
-	Mon, 27 Nov 2023 12:20:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="tYVnsgfu"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1DDB318E11;
+	Mon, 27 Nov 2023 12:42:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dkim=none
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 233D51DFC1;
-	Mon, 27 Nov 2023 12:20:25 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 93D7AC433C9;
-	Mon, 27 Nov 2023 12:20:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1701087625;
-	bh=2xL/uJq6qI8TQ3qq2PiEINw1Ueax4X6ay/YZyvpjaWI=;
-	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=tYVnsgfuHt1Z2m4uLjWHgJmiqHaFj0WJ6yLBScYenEScmFpLZxk7nGC8pct1Cn4om
-	 f8+6yCkpwuv3nyo0Pz5Okc03wFiZbSH5Nbo8DcQvtiJfW1Gmu3QsnH25pQ9m+EOyh+
-	 oIxhBcyisB41B8n3phJyKyfy+HtjEwbjgSBSsaXa7EErWQrITQsnCUuPZOHJx2sS+d
-	 T9+V3pDxMWIYVKRFkIDItYG8rbszq47W0FwpSNlHEjQrGbH+KuynX/OZGIyeVmilTS
-	 OQUAlPwK+cSgQF5iAKoX9i8kePY01KCG/Eu+EBIBXj4vxw6W6hQ6VLkl2rPsA+kufB
-	 V6HD1jVgXIJfw==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 786E7E1F66D;
-	Mon, 27 Nov 2023 12:20:25 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C8643C8C4;
+	Mon, 27 Nov 2023 12:42:46 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 07870C433C9;
+	Mon, 27 Nov 2023 12:42:43 +0000 (UTC)
+Date: Mon, 27 Nov 2023 12:42:41 +0000
+From: Catalin Marinas <catalin.marinas@arm.com>
+To: Jason Gunthorpe <jgg@nvidia.com>
+Cc: Mark Rutland <mark.rutland@arm.com>, Leon Romanovsky <leon@kernel.org>,
+	Arnd Bergmann <arnd@arndb.de>, linux-arch@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org, linux-rdma@vger.kernel.org,
+	llvm@lists.linux.dev, Michael Guralnik <michaelgur@mellanox.com>,
+	Nathan Chancellor <nathan@kernel.org>,
+	Nick Desaulniers <ndesaulniers@google.com>,
+	Will Deacon <will@kernel.org>
+Subject: Re: [PATCH rdma-next 1/2] arm64/io: add memcpy_toio_64
+Message-ID: <ZWSOwT2OyMXD1lmo@arm.com>
+References: <cover.1700766072.git.leon@kernel.org>
+ <c3ae87aea7660c3d266905c19d10d8de0f9fb779.1700766072.git.leon@kernel.org>
+ <ZWB373y5XuZDultf@FVFF77S0Q05N>
+ <20231124122352.GB436702@nvidia.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH] net :mana :Add remaining GDMA stats for MANA to ethtool
-From: patchwork-bot+netdevbpf@kernel.org
-Message-Id: 
- <170108762548.32093.15380933168923149331.git-patchwork-notify@kernel.org>
-Date: Mon, 27 Nov 2023 12:20:25 +0000
-References: <1700830950-803-1-git-send-email-shradhagupta@linux.microsoft.com>
-In-Reply-To: <1700830950-803-1-git-send-email-shradhagupta@linux.microsoft.com>
-To: Shradha Gupta <shradhagupta@linux.microsoft.com>
-Cc: linux-kernel@vger.kernel.org, linux-hyperv@vger.kernel.org,
- linux-rdma@vger.kernel.org, netdev@vger.kernel.org, edumazet@google.com,
- kuba@kernel.org, pabeni@redhat.com, sharmaajay@microsoft.com,
- leon@kernel.org, tglx@linutronix.de, bigeasy@linutronix.de,
- kys@microsoft.com, haiyangz@microsoft.com, wei.liu@kernel.org,
- decui@microsoft.com, longli@microsoft.com, mikelley@microsoft.com,
- shradhagupta@microsoft.com
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231124122352.GB436702@nvidia.com>
 
-Hello:
-
-This patch was applied to netdev/net-next.git (main)
-by Paolo Abeni <pabeni@redhat.com>:
-
-On Fri, 24 Nov 2023 05:02:30 -0800 you wrote:
-> Extend performance counter stats in 'ethtool -S <interface>'
-> for MANA VF to include all GDMA stat counter.
+On Fri, Nov 24, 2023 at 08:23:52AM -0400, Jason Gunthorpe wrote:
+> On Fri, Nov 24, 2023 at 10:16:15AM +0000, Mark Rutland wrote:
+> > On Thu, Nov 23, 2023 at 09:04:31PM +0200, Leon Romanovsky wrote:
+> > > From: Jason Gunthorpe <jgg@nvidia.com>
+[...]
+> > > Provide a new generic function memcpy_toio_64() which should reliably
+> > > generate the needed instructions for the architecture, assuming address
+> > > alignment. As the usual need for this operation is performance sensitive a
+> > > fast inline implementation is preferred.
+> > 
+> > There is *no* architectural sequence that is guaranteed to reliably generate a
+> > 64-byte TLP, and this sequence won't guarnatee that (e.g. even if the CPU
+> > *always* merged adjacent stores, we can take an interrupt mid-sequence that
+> > would prevent that).
 > 
-> Tested-on: Ubuntu22
-> Testcases:
-> 1. LISA testcase:
-> PERF-NETWORK-TCP-THROUGHPUT-MULTICONNECTION-NTTTCP-Synthetic
-> 2. LISA testcase:
-> PERF-NETWORK-TCP-THROUGHPUT-MULTICONNECTION-NTTTCP-SRIOV
+> WC is not guaranteed on any arch, that is well known.
 > 
-> [...]
+> The HW has means to handle fragmented TLPs, it just hurts performance
+> when it happens. "reliable" here means we'd like to see something like
+> a > 90% chance of the large TLP instead of the < 1% chance with the C
+> loop.
+> 
+> Future ARM CPUs have the ST64B instruction which does provide the
+> architectural guarantee, and x86 has a similar guaranteed instruction
+> now too. 
+> 
+> > What's the actual requirement here? Is this just for performance?
+> 
+> Yes, just performance.
 
-Here is the summary with links:
-  - net :mana :Add remaining GDMA stats for MANA to ethtool
-    https://git.kernel.org/netdev/net-next/c/e1df5202e879
+Do you have any rough numbers (percentage)? It's highly
+microarchitecture-dependent until we get the ST64B instruction.
 
-You are awesome, thank you!
+More of a bike-shedding, I wonder whether the __iowrite*_copy()
+semantics are better suited for what you need in terms of ordering (not
+that mempcy_toio() to Normal NC memory gives us any ordering).
+
 -- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
-
+Catalin
 
