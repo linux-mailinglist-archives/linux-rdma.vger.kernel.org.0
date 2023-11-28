@@ -1,139 +1,119 @@
-Return-Path: <linux-rdma+bounces-113-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-114-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id C89D67FB654
-	for <lists+linux-rdma@lfdr.de>; Tue, 28 Nov 2023 10:53:19 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7B9D07FB664
+	for <lists+linux-rdma@lfdr.de>; Tue, 28 Nov 2023 10:55:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6A454B21444
-	for <lists+linux-rdma@lfdr.de>; Tue, 28 Nov 2023 09:53:17 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A88A01C210DF
+	for <lists+linux-rdma@lfdr.de>; Tue, 28 Nov 2023 09:55:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E37944B5D2;
-	Tue, 28 Nov 2023 09:53:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 533C34B5DC;
+	Tue, 28 Nov 2023 09:55:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="MrLWDHI5"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="lk536cTw"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-lj1-x22e.google.com (mail-lj1-x22e.google.com [IPv6:2a00:1450:4864:20::22e])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A0BF4DA;
-	Tue, 28 Nov 2023 01:53:07 -0800 (PST)
-Received: by mail-lj1-x22e.google.com with SMTP id 38308e7fff4ca-2c88b7e69dfso63588591fa.0;
-        Tue, 28 Nov 2023 01:53:07 -0800 (PST)
+Received: from mail-wm1-x32f.google.com (mail-wm1-x32f.google.com [IPv6:2a00:1450:4864:20::32f])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7899BA8;
+	Tue, 28 Nov 2023 01:55:12 -0800 (PST)
+Received: by mail-wm1-x32f.google.com with SMTP id 5b1f17b1804b1-40b4a8db331so5910335e9.3;
+        Tue, 28 Nov 2023 01:55:12 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1701165186; x=1701769986; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=8fnuFAM44FHAY/l2SxhpvzrWnwI14D3DgP24AAWT9I4=;
-        b=MrLWDHI5BIxiO3gGNzKi3sXMcBhJpBddr0YEyqfNwFixYWVdKKIBIZdIA3GnA7siQ2
-         jqNWlD/nb1chFR5bOeZqLAzu2gLd+z6OggYrIb10QvLqa4B/fETmooLVpjB2nAZjmd7h
-         U9ESZqLNzd5smjWzGyFHpUVlrDHbg7TmVxEdWR0p9NXXEQl9U6+htJt56Kvp4v8K3IDK
-         /r3z/3NRMln+XvZHcDKbjH36+rqfqy4vohOI8A4hXTKu3ktXvNPm84BB21yixUtDwfQT
-         UmZZYbN85Dm669alWrDNC+AdWJHSeb50FFbgKcyHrOlcGYBc2ylU18ZFdZmQpRLVShBg
-         lM+Q==
+        d=gmail.com; s=20230601; t=1701165311; x=1701770111; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=uNtK1TPISezcj213wu4/hg3WdfzJ6KpGq/90DAKkCkQ=;
+        b=lk536cTwukYfEqlMjAgQH6keBmEZ0B2hnV6sFD7UGXt6qkswf/WOPlOqj+ZHtCPrNj
+         uJumn1+Aq3oL36orwKZkFs4z4nYKFYnhfuG8HhXEsDs3gMcPrFhEghUHU+X6Lvlfb7ji
+         h450oOQjxqAqGQBoQed2yEE0jd2Ict+RGdjsX8tMg5npgJt5i/g7ysTmp/uqu3bT3bAJ
+         UNsXI2ksBCH0Rb6ajhB4PXymr4RMlJV5/2O+GHa4HcBMPrlGgLOpnDQRd6T7FuVlim06
+         3eiZ5ycdeYKa85PTSFwK5lURIfpMHPQ5VMBkblkPH/CBSw7iLXdgo2vTQKpOLCQjgJcA
+         6/XA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701165186; x=1701769986;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=8fnuFAM44FHAY/l2SxhpvzrWnwI14D3DgP24AAWT9I4=;
-        b=sA5f5kpbu0CkiDObPZGNpcdOexS9+tKFNK+fq3a5/BIYDGxk3RI/oaYFXMH6Zt58D3
-         y5yGlinucHQ8Garp1eOhT4wTgHvf2SqjpjUyciguRIla7NVFaPR6cCKHxORNIPoDzyIp
-         rC8TvklwNZ7uzbV7SdLaQsb44BS1dNW195MRIVJE8G6uyYs7pFRkfimmsqbJ+d5HyaY0
-         EcBTaGEXaAbL0ooQ3sXyuDMKz6A3i+muz5dPJiuCNSwI/MANzcUFZDMYnOsuM9orI9hB
-         U6poaqbBKuM5O3HVK2xxfxB7FTFLnSjMheWOwCZOYpd3WZNtJmAbgXbQ+jl9DW2el/BM
-         8WgQ==
-X-Gm-Message-State: AOJu0YwDLTi7UhsNv7Lg7MvrZG0XrvWfY+Cg7kspYT7Hd/EUjlVE7pyC
-	jDBrvMBajlL7JcneO+8XfqI=
-X-Google-Smtp-Source: AGHT+IHjPhheeQIjuEYzvtN0rYQsl7JEiqKv3b5VJmvijk95YzymIXyVAjVdPxK6e+Z/7WGEZAL1KA==
-X-Received: by 2002:a2e:9bc7:0:b0:2c7:610:2dd1 with SMTP id w7-20020a2e9bc7000000b002c706102dd1mr8630005ljj.47.1701165185572;
-        Tue, 28 Nov 2023 01:53:05 -0800 (PST)
-Received: from localhost (cpc154979-craw9-2-0-cust193.16-3.cable.virginm.net. [80.193.200.194])
-        by smtp.gmail.com with ESMTPSA id h8-20020a05600c314800b0040b3937833dsm14695341wmo.3.2023.11.28.01.53.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 28 Nov 2023 01:53:05 -0800 (PST)
-From: Colin Ian King <colin.i.king@gmail.com>
-To: "K . Y . Srinivasan" <kys@microsoft.com>,
-	Haiyang Zhang <haiyangz@microsoft.com>,
-	Wei Liu <wei.liu@kernel.org>,
-	Dexuan Cui <decui@microsoft.com>,
-	"David S . Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>,
-	Paolo Abeni <pabeni@redhat.com>,
-	Long Li <longli@microsoft.com>,
-	Ajay Sharma <sharmaajay@microsoft.com>,
-	Shradha Gupta <shradhagupta@linux.microsoft.com>,
-	linux-hyperv@vger.kernel.org,
-	netdev@vger.kernel.org,
-	linux-rdma@vger.kernel.org
-Cc: kernel-janitors@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH][next] net: mana: Fix spelling mistake "enforecement" -> "enforcement"
-Date: Tue, 28 Nov 2023 09:53:04 +0000
-Message-Id: <20231128095304.515492-1-colin.i.king@gmail.com>
-X-Mailer: git-send-email 2.39.2
+        d=1e100.net; s=20230601; t=1701165311; x=1701770111;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=uNtK1TPISezcj213wu4/hg3WdfzJ6KpGq/90DAKkCkQ=;
+        b=NBLqhE9u0x37B15GtEgnUr/YkXyFsEolyR/CrtXFJBtG2oMv9m3/pF9zkrqNT/Qmrf
+         Zmu2tQZu9bAV+s0B3PrRZsaFx3LOQG3Oh8HiRFYT95CtUxP6SBHV7S5B/3o1JPtfVnJ+
+         pgnUAbrDi17R9nTuUrZDsZMb+jWjsndci+3E9XImxxsGvv+abkS8zFvc2AXagV4eKX1K
+         78gq9VVViryZJbjrlBEmlHnB2NVZ8HTC08481V4ZZRHdqWMWpG5dtFSGDW2QArCyeHMM
+         NyCeKrlaHOX85pNX4c3G79mrLp+OmQACttdLO6yU55sa+hQmvAm8latuxJEfgSax/hvQ
+         3rLQ==
+X-Gm-Message-State: AOJu0YznIF0hP5l19BqK+8IC+bzGX1azv7LqFwkZWHLAL084w210nWCy
+	ANpOyo63fUYOPsc8JkMkPMk=
+X-Google-Smtp-Source: AGHT+IEESw4Dcx8wGaG7me+4i6Y2E1BWo5BBLayfLNo/Pid/KFDP8lnXULskXK5rzZYBU8BsjCBJeg==
+X-Received: by 2002:a05:600c:474d:b0:40b:3802:6ef8 with SMTP id w13-20020a05600c474d00b0040b38026ef8mr10185277wmo.34.1701165310650;
+        Tue, 28 Nov 2023 01:55:10 -0800 (PST)
+Received: from [172.27.56.182] ([193.47.165.251])
+        by smtp.gmail.com with ESMTPSA id p3-20020a1c7403000000b003feea62440bsm16482424wmc.43.2023.11.28.01.55.08
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 28 Nov 2023 01:55:10 -0800 (PST)
+Message-ID: <89b8f461-84f9-4f43-bf16-308a72daa9f1@gmail.com>
+Date: Tue, 28 Nov 2023 11:55:07 +0200
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] [v2] net/mlx5e: fix a potential double-free in
+ fs_udp_create_groups
+Content-Language: en-US
+To: Dinghao Liu <dinghao.liu@zju.edu.cn>
+Cc: Saeed Mahameed <saeedm@nvidia.com>, Leon Romanovsky <leon@kernel.org>,
+ "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
+ Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+ Zhengchao Shao <shaozhengchao@huawei.com>, Simon Horman <horms@kernel.org>,
+ Rahul Rameshbabu <rrameshbabu@nvidia.com>, Aya Levin <ayal@nvidia.com>,
+ Tariq Toukan <tariqt@nvidia.com>, netdev@vger.kernel.org,
+ linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
+ Tariq Toukan <tariqt@nvidia.com>
+References: <20231128094055.5561-1-dinghao.liu@zju.edu.cn>
+From: Tariq Toukan <ttoukan.linux@gmail.com>
+In-Reply-To: <20231128094055.5561-1-dinghao.liu@zju.edu.cn>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-There is a spelling mistake in struct field hc_tx_err_sqpdid_enforecement.
-Fix it.
 
-Signed-off-by: Colin Ian King <colin.i.king@gmail.com>
----
- drivers/net/ethernet/microsoft/mana/mana_en.c      | 2 +-
- drivers/net/ethernet/microsoft/mana/mana_ethtool.c | 4 ++--
- include/net/mana/mana.h                            | 2 +-
- 3 files changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/net/ethernet/microsoft/mana/mana_en.c b/drivers/net/ethernet/microsoft/mana/mana_en.c
-index 6b857188b9da..bc65cc83b662 100644
---- a/drivers/net/ethernet/microsoft/mana/mana_en.c
-+++ b/drivers/net/ethernet/microsoft/mana/mana_en.c
-@@ -2445,7 +2445,7 @@ void mana_query_gf_stats(struct mana_port_context *apc)
- 	apc->eth_stats.hc_tx_err_eth_type_enforcement =
- 					     resp.tx_err_ethtype_enforcement;
- 	apc->eth_stats.hc_tx_err_sa_enforcement = resp.tx_err_SA_enforcement;
--	apc->eth_stats.hc_tx_err_sqpdid_enforecement =
-+	apc->eth_stats.hc_tx_err_sqpdid_enforcement =
- 					     resp.tx_err_SQPDID_enforcement;
- 	apc->eth_stats.hc_tx_err_cqpdid_enforcement =
- 					     resp.tx_err_CQPDID_enforcement;
-diff --git a/drivers/net/ethernet/microsoft/mana/mana_ethtool.c b/drivers/net/ethernet/microsoft/mana/mana_ethtool.c
-index 7077d647d99a..777e65b8223d 100644
---- a/drivers/net/ethernet/microsoft/mana/mana_ethtool.c
-+++ b/drivers/net/ethernet/microsoft/mana/mana_ethtool.c
-@@ -43,8 +43,8 @@ static const struct {
- 	 offsetof(struct mana_ethtool_stats, hc_tx_err_eth_type_enforcement)},
- 	{"hc_tx_err_sa_enforcement", offsetof(struct mana_ethtool_stats,
- 					      hc_tx_err_sa_enforcement)},
--	{"hc_tx_err_sqpdid_enforecement",
--	 offsetof(struct mana_ethtool_stats, hc_tx_err_sqpdid_enforecement)},
-+	{"hc_tx_err_sqpdid_enforcement",
-+	 offsetof(struct mana_ethtool_stats, hc_tx_err_sqpdid_enforcement)},
- 	{"hc_tx_err_cqpdid_enforcement",
- 	 offsetof(struct mana_ethtool_stats, hc_tx_err_cqpdid_enforcement)},
- 	{"hc_tx_err_mtu_violation", offsetof(struct mana_ethtool_stats,
-diff --git a/include/net/mana/mana.h b/include/net/mana/mana.h
-index 5567f5bc8eb6..76147feb0d10 100644
---- a/include/net/mana/mana.h
-+++ b/include/net/mana/mana.h
-@@ -368,7 +368,7 @@ struct mana_ethtool_stats {
- 	u64 hc_tx_err_vlan_enforcement;
- 	u64 hc_tx_err_eth_type_enforcement;
- 	u64 hc_tx_err_sa_enforcement;
--	u64 hc_tx_err_sqpdid_enforecement;
-+	u64 hc_tx_err_sqpdid_enforcement;
- 	u64 hc_tx_err_cqpdid_enforcement;
- 	u64 hc_tx_err_mtu_violation;
- 	u64 hc_tx_err_inval_oob;
--- 
-2.39.2
+On 28/11/2023 11:40, Dinghao Liu wrote:
+> When kcalloc() for ft->g succeeds but kvzalloc() for in fails,
+> fs_udp_create_groups() will free ft->g. However, its caller
+> fs_udp_create_table() will free ft->g again through calling
+> mlx5e_destroy_flow_table(), which will lead to a double-free.
+> Fix this by setting ft->g to NULL in fs_udp_create_groups().
+> 
+> Fixes: 1c80bd684388 ("net/mlx5e: Introduce Flow Steering UDP API")
+> Signed-off-by: Dinghao Liu <dinghao.liu@zju.edu.cn>
+> ---
+> 
+> Changelog:
+> 
+> v2: Setting ft->g to NULL instead of removing the kfree().
+> ---
+>   drivers/net/ethernet/mellanox/mlx5/core/en/fs_tt_redirect.c | 1 +
+>   1 file changed, 1 insertion(+)
+> 
+> diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en/fs_tt_redirect.c b/drivers/net/ethernet/mellanox/mlx5/core/en/fs_tt_redirect.c
+> index be83ad9db82a..e1283531e0b8 100644
+> --- a/drivers/net/ethernet/mellanox/mlx5/core/en/fs_tt_redirect.c
+> +++ b/drivers/net/ethernet/mellanox/mlx5/core/en/fs_tt_redirect.c
+> @@ -154,6 +154,7 @@ static int fs_udp_create_groups(struct mlx5e_flow_table *ft, enum fs_udp_type ty
+>   	in = kvzalloc(inlen, GFP_KERNEL);
+>   	if  (!in || !ft->g) {
+>   		kfree(ft->g);
+> +		ft->g = NULL;
+>   		kvfree(in);
+>   		return -ENOMEM;
+>   	}
 
+
+Thanks for your patch.
+Reviewed-by: Tariq Toukan <tariqt@nvidia.com>
 
