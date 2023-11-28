@@ -1,94 +1,115 @@
-Return-Path: <linux-rdma+bounces-108-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-109-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 48DCF7FB48A
-	for <lists+linux-rdma@lfdr.de>; Tue, 28 Nov 2023 09:44:30 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 94F237FB502
+	for <lists+linux-rdma@lfdr.de>; Tue, 28 Nov 2023 09:58:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7B2781C2106E
-	for <lists+linux-rdma@lfdr.de>; Tue, 28 Nov 2023 08:44:29 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 26D0CB216EC
+	for <lists+linux-rdma@lfdr.de>; Tue, 28 Nov 2023 08:58:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 623EF19460;
-	Tue, 28 Nov 2023 08:44:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dkim=none
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 015B62E3F2;
+	Tue, 28 Nov 2023 08:58:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="QMZ0Vrsl"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from zju.edu.cn (mail.zju.edu.cn [61.164.42.155])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTP id 0EF4CAA;
-	Tue, 28 Nov 2023 00:44:20 -0800 (PST)
-Received: from localhost.localdomain (unknown [10.190.69.212])
-	by mail-app2 (Coremail) with SMTP id by_KCgBnb9c2qGVlliAiAA--.38429S4;
-	Tue, 28 Nov 2023 16:43:41 +0800 (CST)
-From: Dinghao Liu <dinghao.liu@zju.edu.cn>
-To: dinghao.liu@zju.edu.cn
-Cc: Saeed Mahameed <saeedm@nvidia.com>,
-	Leon Romanovsky <leon@kernel.org>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>,
-	Paolo Abeni <pabeni@redhat.com>,
-	Simon Horman <horms@kernel.org>,
-	Zhengchao Shao <shaozhengchao@huawei.com>,
-	Rahul Rameshbabu <rrameshbabu@nvidia.com>,
-	Tariq Toukan <tariqt@nvidia.com>,
-	Aya Levin <ayal@nvidia.com>,
-	netdev@vger.kernel.org,
-	linux-rdma@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH] net/mlx5e: fix a potential double-free in fs_udp_create_groups
-Date: Tue, 28 Nov 2023 16:43:00 +0800
-Message-Id: <20231128084303.27227-1-dinghao.liu@zju.edu.cn>
-X-Mailer: git-send-email 2.17.1
-X-CM-TRANSID:by_KCgBnb9c2qGVlliAiAA--.38429S4
-X-Coremail-Antispam: 1UD129KBjvJXoWrZFyUAFWrZF45tw13ur1fXrb_yoW8Jr45pF
-	sYkr92gF1fJw18Ww4DXrW8Zr1rCay8t3yF93WSv3ySqwn8tF4xJr1ruFW7ZF42kF43JF4Y
-	q348Aw1xAF4DJwUanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUvm1xkIjI8I6I8E6xAIw20EY4v20xvaj40_Wr0E3s1l1IIY67AE
-	w4v_Jr0_Jr4l8cAvFVAK0II2c7xJM28CjxkF64kEwVA0rcxSw2x7M28EF7xvwVC0I7IYx2
-	IY67AKxVWDJVCq3wA2z4x0Y4vE2Ix0cI8IcVCY1x0267AKxVWxJr0_GcWl84ACjcxK6I8E
-	87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_GcCE3s1le2I262IYc4CY6c
-	8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_Jr0_
-	Jr4lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvY0x0EwI
-	xGrwACjI8F5VA0II8E6IAqYI8I648v4I1lFIxGxcIEc7CjxVA2Y2ka0xkIwI1l42xK82IY
-	c2Ij64vIr41l42xK82IY6x8ErcxFaVAv8VW8uw4UJr1UMxC20s026xCaFVCjc4AY6r1j6r
-	4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF
-	67AKxVWUtVW8ZwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2I
-	x0cI8IcVCY1x0267AKxVW8JVWxJwCI42IY6xAIw20EY4v20xvaj40_Jr0_JF4lIxAIcVC2
-	z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnU
-	UI43ZEXa7VUbXdbUUUUUU==
-X-CM-SenderInfo: qrrzjiaqtzq6lmxovvfxof0/1tbiAgsIBmVfIgMaAQAdsa
+Received: from mail-ed1-x52f.google.com (mail-ed1-x52f.google.com [IPv6:2a00:1450:4864:20::52f])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 42C73F4;
+	Tue, 28 Nov 2023 00:58:14 -0800 (PST)
+Received: by mail-ed1-x52f.google.com with SMTP id 4fb4d7f45d1cf-54a945861c6so7133404a12.3;
+        Tue, 28 Nov 2023 00:58:14 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1701161893; x=1701766693; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=7eThDWl/p719tUnMNV7tBdoRpTLwA6GR+r/kwIo8Uvw=;
+        b=QMZ0VrslsocHnaDUxbJ9hJ1Mi8HVpLisOjj7iB+jmbmTLVo9/9BOTF/ZSm4MzXmDPv
+         t/6bqlWbqVULF5K1CB3KX8xUlFju9Holt0MDX05h8JoyKvZ98jtS7CS9GmzWo1o8El5z
+         8MmZRmAyLaxX6TPb2crEVMXVCKiKav6xD/9VK5b/NvlLVMyRVbr4+ooc2+NkG+1plGvr
+         6w6Hy2GPzieTzIX2yyXq9cU6TR2/N3GqUfKBNc731s+iKrDEqpYh9o5T9fvdFe65zijt
+         BHpWV5uuJpNkKSBIYdzkKilP+Oi4G3yx2SOsKDKX4RGPsbzmpto1gl+LSsZxIfgqfHec
+         FcQQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701161893; x=1701766693;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=7eThDWl/p719tUnMNV7tBdoRpTLwA6GR+r/kwIo8Uvw=;
+        b=veuMsuEFbbdIjaB+Pq7BcSJxLXAGLqKIEIMTr8qgFZzLkdr1t2Tu0xQB1wDy1wb2Na
+         k9gGu9k1VV/4pBb9rKvz3J3vdzQftMHxe+sLhnXukjr78JWBYHjWGyBwyeSDSKN6sKDO
+         LA1OTP0bVcHgW6jcegAJ+HY9PRUGIf4kPoa92XWiCV/GpHDjbFOnUJJ+CCgPc2ageVuU
+         mwkVM/tuMsEIHeF4UuRp2bAgBr80WOMa+jX18HKz75YXFLeVjVpteYCZknRXFqgdus61
+         uZO2Yg1QME4plStx8aByiJYnpljixJ1oIltMxXnb0+K4XuKdcxMJYO5QZnSjhkT8PQ3I
+         9C1w==
+X-Gm-Message-State: AOJu0Yz5ARoskIiZn3+GWKOHd49Epzvjp2Dh653yx9mYcDfQPNaJodHR
+	RxL9J5I8cu2VqFT1Q+xvF+U=
+X-Google-Smtp-Source: AGHT+IFR5RnA5vAR+1Mvjlycnu2h0GtN0a4lFsYU5ANWlySGynJdKlWATFHR8EF2K/rPwT6dWGJYig==
+X-Received: by 2002:a05:6402:290b:b0:54b:9817:bf91 with SMTP id ee11-20020a056402290b00b0054b9817bf91mr1811570edb.7.1701161892405;
+        Tue, 28 Nov 2023 00:58:12 -0800 (PST)
+Received: from [172.27.56.182] ([193.47.165.251])
+        by smtp.gmail.com with ESMTPSA id e7-20020a056402104700b00542db304680sm6058243edu.63.2023.11.28.00.58.06
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 28 Nov 2023 00:58:12 -0800 (PST)
+Message-ID: <3d3b6a1f-40b6-45b5-a899-d01acb91213d@gmail.com>
+Date: Tue, 28 Nov 2023 10:58:04 +0200
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] net/mlx5e: fix a potential double-free in
+ fs_any_create_groups
+Content-Language: en-US
+To: Dinghao Liu <dinghao.liu@zju.edu.cn>
+Cc: Saeed Mahameed <saeedm@nvidia.com>, Leon Romanovsky <leon@kernel.org>,
+ "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
+ Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+ Zhengchao Shao <shaozhengchao@huawei.com>,
+ Rahul Rameshbabu <rrameshbabu@nvidia.com>, Simon Horman <horms@kernel.org>,
+ Tariq Toukan <tariqt@nvidia.com>, Aya Levin <ayal@nvidia.com>,
+ netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
+ linux-kernel@vger.kernel.org, Tariq Toukan <tariqt@nvidia.com>
+References: <20231128082812.24483-1-dinghao.liu@zju.edu.cn>
+From: Tariq Toukan <ttoukan.linux@gmail.com>
+In-Reply-To: <20231128082812.24483-1-dinghao.liu@zju.edu.cn>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-When kcalloc() for ft->g succeeds but kvzalloc() for in fails,
-fs_udp_create_groups() will free ft->g. However, its caller
-fs_udp_create_table() will free ft->g again through calling
-mlx5e_destroy_flow_table(), which will lead to a double-free.
-Fix this by removing the kfree(ft->g) in fs_udp_create_groups().
 
-Fixes: 1c80bd684388 ("net/mlx5e: Introduce Flow Steering UDP API")
-Signed-off-by: Dinghao Liu <dinghao.liu@zju.edu.cn>
----
- drivers/net/ethernet/mellanox/mlx5/core/en/fs_tt_redirect.c | 1 -
- 1 file changed, 1 deletion(-)
 
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en/fs_tt_redirect.c b/drivers/net/ethernet/mellanox/mlx5/core/en/fs_tt_redirect.c
-index be83ad9db82a..806a5093ff63 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/en/fs_tt_redirect.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/en/fs_tt_redirect.c
-@@ -153,7 +153,6 @@ static int fs_udp_create_groups(struct mlx5e_flow_table *ft, enum fs_udp_type ty
- 	ft->g = kcalloc(MLX5E_FS_UDP_NUM_GROUPS, sizeof(*ft->g), GFP_KERNEL);
- 	in = kvzalloc(inlen, GFP_KERNEL);
- 	if  (!in || !ft->g) {
--		kfree(ft->g);
- 		kvfree(in);
- 		return -ENOMEM;
- 	}
--- 
-2.17.1
+On 28/11/2023 10:28, Dinghao Liu wrote:
+> When kcalloc() for ft->g succeeds but kvzalloc() for in fails,
+> fs_any_create_groups() will free ft->g. However, its caller
+> fs_any_create_table() will free ft->g again through calling
+> mlx5e_destroy_flow_table(), which will lead to a double-free.
+> Fix this by removing the kfree(ft->g) in fs_any_create_groups().
+> 
+> Fixes: 0f575c20bf06 ("net/mlx5e: Introduce Flow Steering ANY API")
+> Signed-off-by: Dinghao Liu <dinghao.liu@zju.edu.cn>
+> ---
+>   drivers/net/ethernet/mellanox/mlx5/core/en/fs_tt_redirect.c | 1 -
+>   1 file changed, 1 deletion(-)
+> 
+> diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en/fs_tt_redirect.c b/drivers/net/ethernet/mellanox/mlx5/core/en/fs_tt_redirect.c
+> index be83ad9db82a..b222d23bfb9a 100644
+> --- a/drivers/net/ethernet/mellanox/mlx5/core/en/fs_tt_redirect.c
+> +++ b/drivers/net/ethernet/mellanox/mlx5/core/en/fs_tt_redirect.c
+> @@ -434,7 +434,6 @@ static int fs_any_create_groups(struct mlx5e_flow_table *ft)
+>   	ft->g = kcalloc(MLX5E_FS_UDP_NUM_GROUPS, sizeof(*ft->g), GFP_KERNEL);
+>   	in = kvzalloc(inlen, GFP_KERNEL);
+>   	if  (!in || !ft->g) {
+> -		kfree(ft->g);
+>   		kvfree(in);
+>   		return -ENOMEM;
+>   	}
 
+Function fs_any_create_groups should not return failure without cleaning 
+itself up. This is not the right fix.
+Freeing ft->g and setting it to NULL will do it, and will avoid the 
+double free.
 
