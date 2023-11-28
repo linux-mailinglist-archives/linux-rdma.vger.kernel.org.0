@@ -1,115 +1,156 @@
-Return-Path: <linux-rdma+bounces-123-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-124-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id CA6B77FBC88
-	for <lists+linux-rdma@lfdr.de>; Tue, 28 Nov 2023 15:16:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id E252B7FBF31
+	for <lists+linux-rdma@lfdr.de>; Tue, 28 Nov 2023 17:29:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D7343B21C58
-	for <lists+linux-rdma@lfdr.de>; Tue, 28 Nov 2023 14:16:49 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 71376B2157C
+	for <lists+linux-rdma@lfdr.de>; Tue, 28 Nov 2023 16:29:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6F0B35ABB5;
-	Tue, 28 Nov 2023 14:16:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1A57E4E1CA;
+	Tue, 28 Nov 2023 16:29:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b="UKCi5/sf"
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="L9B36PfU"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTP id 5293AC1;
-	Tue, 28 Nov 2023 06:16:42 -0800 (PST)
-Received: by linux.microsoft.com (Postfix, from userid 1134)
-	id 992F520B74C0; Tue, 28 Nov 2023 06:16:40 -0800 (PST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 992F520B74C0
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-	s=default; t=1701181000;
-	bh=JTSxRPuPoUMjGKOv3Wz11crg13aNlR7BOqiwlqR1PEQ=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=UKCi5/sfTOxnwV6M5bYGvN5xrkLW8IQAo8zEC7Dfk1v6x8yFX3yagSJQO5KGTD2jj
-	 R9uRLfJdqAFPYYWdDtDqO7BCcRJhoqcqnMMnTubLI51O+uyHrdZaM5ruYXwfcqFUuQ
-	 +iqQq8vkJ3zEHg64X47Mv2VTo5Q1h+7AJfEAu0BY=
-Date: Tue, 28 Nov 2023 06:16:40 -0800
-From: Shradha Gupta <shradhagupta@linux.microsoft.com>
-To: Colin Ian King <colin.i.king@gmail.com>
-Cc: "K . Y . Srinivasan" <kys@microsoft.com>,
-	Haiyang Zhang <haiyangz@microsoft.com>,
-	Wei Liu <wei.liu@kernel.org>, Dexuan Cui <decui@microsoft.com>,
-	"David S . Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	Long Li <longli@microsoft.com>,
-	Ajay Sharma <sharmaajay@microsoft.com>,
-	linux-hyperv@vger.kernel.org, netdev@vger.kernel.org,
-	linux-rdma@vger.kernel.org, kernel-janitors@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH][next] net: mana: Fix spelling mistake "enforecement" ->
- "enforcement"
-Message-ID: <20231128141640.GA29976@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
-References: <20231128095304.515492-1-colin.i.king@gmail.com>
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D2ADFD51;
+	Tue, 28 Nov 2023 08:29:02 -0800 (PST)
+Received: from pps.filterd (m0353728.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3ASGRmKO022842;
+	Tue, 28 Nov 2023 16:28:41 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
+ from : to : cc : date : in-reply-to : references : content-type :
+ content-transfer-encoding : mime-version; s=pp1;
+ bh=v5tUjc7w7x68+zEuTzqQmhFsKGO6AZKfikkoXHbnbHo=;
+ b=L9B36PfUGkfRryzE1WIAX6LaAKndsaRdl67ogsFzbWhtc9ZsOZanaIdlUgwbTLZqETRd
+ eHjByrr72BmSVvhW2xLS0Qt/JHk9T5XqmXUhRZ0vZlNmxCQqMLW7zEghjgQ6cLMNjNQd
+ RqmViHyEmcGv+z7/XTStkBiCdes7wBfa9wT+Tgt6vqROzYohi0TnXX+p5m0gJY7kqtzu
+ WdmzkT6luoF6iLRVm3ppbQSx9EjhbbTeRue3nWkvAulb2KIiPYT/Vd8FQ0eAkqUOO3Aj
+ lYF7OufxrrTlBBiNDh/nei9CkO0cCq2m00DmsG5VxFZIaCWnHgAvRDrtu1owCKDtMzDr 5g== 
+Received: from pps.reinject (localhost [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3unknq871e-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 28 Nov 2023 16:28:41 +0000
+Received: from m0353728.ppops.net (m0353728.ppops.net [127.0.0.1])
+	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 3ASGSeHf028034;
+	Tue, 28 Nov 2023 16:28:40 GMT
+Received: from ppma21.wdc07v.mail.ibm.com (5b.69.3da9.ip4.static.sl-reverse.com [169.61.105.91])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3unknq86yx-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 28 Nov 2023 16:28:40 +0000
+Received: from pps.filterd (ppma21.wdc07v.mail.ibm.com [127.0.0.1])
+	by ppma21.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 3ASG8Ap9028313;
+	Tue, 28 Nov 2023 16:28:38 GMT
+Received: from smtprelay01.fra02v.mail.ibm.com ([9.218.2.227])
+	by ppma21.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3ukv8ngw6u-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 28 Nov 2023 16:28:38 +0000
+Received: from smtpav07.fra02v.mail.ibm.com (smtpav07.fra02v.mail.ibm.com [10.20.54.106])
+	by smtprelay01.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 3ASGSa0P18678504
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Tue, 28 Nov 2023 16:28:36 GMT
+Received: from smtpav07.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 782B92004B;
+	Tue, 28 Nov 2023 16:28:36 +0000 (GMT)
+Received: from smtpav07.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 36CCF20043;
+	Tue, 28 Nov 2023 16:28:36 +0000 (GMT)
+Received: from [9.152.212.236] (unknown [9.152.212.236])
+	by smtpav07.fra02v.mail.ibm.com (Postfix) with ESMTP;
+	Tue, 28 Nov 2023 16:28:36 +0000 (GMT)
+Message-ID: <002043477bba726f7dfb38573bf33990e38e3a51.camel@linux.ibm.com>
+Subject: Re: [PATCH rdma-next 1/2] arm64/io: add memcpy_toio_64
+From: Niklas Schnelle <schnelle@linux.ibm.com>
+To: Jason Gunthorpe <jgg@nvidia.com>
+Cc: Leon Romanovsky <leon@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
+        Catalin Marinas <catalin.marinas@arm.com>, linux-arch@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-rdma@vger.kernel.org,
+        llvm@lists.linux.dev, Michael Guralnik <michaelgur@mellanox.com>,
+        Nathan
+ Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Will Deacon <will@kernel.org>, Gerd Bayer <gbayer@linux.ibm.com>
+Date: Tue, 28 Nov 2023 17:28:36 +0100
+In-Reply-To: <20231127175115.GC1165737@nvidia.com>
+References: <cover.1700766072.git.leon@kernel.org>
+	 <c3ae87aea7660c3d266905c19d10d8de0f9fb779.1700766072.git.leon@kernel.org>
+	 <c102bdef10b280f47f5fe4538eb168ac730d7644.camel@linux.ibm.com>
+	 <20231124142049.GF436702@nvidia.com>
+	 <14103e31e0c47c0594e7479126ce7fe34f2de467.camel@linux.ibm.com>
+	 <20231124145529.GG436702@nvidia.com>
+	 <b3250b9a9af2f29ee3d06830746fb6e8ac49271d.camel@linux.ibm.com>
+	 <20231124160627.GH436702@nvidia.com>
+	 <637dcc4d69c380bd939dfdd1b14a5c82c2ddfaa4.camel@linux.ibm.com>
+	 <20231127175115.GC1165737@nvidia.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.48.4 (3.48.4-1.fc38) 
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231128095304.515492-1-colin.i.king@gmail.com>
-User-Agent: Mutt/1.5.21 (2010-09-15)
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: m3GuGqo-WfsgSfsHxk8AUvi0qc6ugx63
+X-Proofpoint-ORIG-GUID: 9gK5zH9ByTU6i2fZHiPVrOhbnpNNm5mL
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-11-28_18,2023-11-27_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 lowpriorityscore=0
+ spamscore=0 priorityscore=1501 clxscore=1015 malwarescore=0
+ mlxlogscore=598 suspectscore=0 phishscore=0 impostorscore=0 adultscore=0
+ bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2311060000 definitions=main-2311280131
 
-On Tue, Nov 28, 2023 at 09:53:04AM +0000, Colin Ian King wrote:
-> There is a spelling mistake in struct field hc_tx_err_sqpdid_enforecement.
-> Fix it.
-> 
-> Signed-off-by: Colin Ian King <colin.i.king@gmail.com>
-> ---
->  drivers/net/ethernet/microsoft/mana/mana_en.c      | 2 +-
->  drivers/net/ethernet/microsoft/mana/mana_ethtool.c | 4 ++--
->  include/net/mana/mana.h                            | 2 +-
->  3 files changed, 4 insertions(+), 4 deletions(-)
-> 
-> diff --git a/drivers/net/ethernet/microsoft/mana/mana_en.c b/drivers/net/ethernet/microsoft/mana/mana_en.c
-> index 6b857188b9da..bc65cc83b662 100644
-> --- a/drivers/net/ethernet/microsoft/mana/mana_en.c
-> +++ b/drivers/net/ethernet/microsoft/mana/mana_en.c
-> @@ -2445,7 +2445,7 @@ void mana_query_gf_stats(struct mana_port_context *apc)
->  	apc->eth_stats.hc_tx_err_eth_type_enforcement =
->  					     resp.tx_err_ethtype_enforcement;
->  	apc->eth_stats.hc_tx_err_sa_enforcement = resp.tx_err_SA_enforcement;
-> -	apc->eth_stats.hc_tx_err_sqpdid_enforecement =
-> +	apc->eth_stats.hc_tx_err_sqpdid_enforcement =
->  					     resp.tx_err_SQPDID_enforcement;
->  	apc->eth_stats.hc_tx_err_cqpdid_enforcement =
->  					     resp.tx_err_CQPDID_enforcement;
-> diff --git a/drivers/net/ethernet/microsoft/mana/mana_ethtool.c b/drivers/net/ethernet/microsoft/mana/mana_ethtool.c
-> index 7077d647d99a..777e65b8223d 100644
-> --- a/drivers/net/ethernet/microsoft/mana/mana_ethtool.c
-> +++ b/drivers/net/ethernet/microsoft/mana/mana_ethtool.c
-> @@ -43,8 +43,8 @@ static const struct {
->  	 offsetof(struct mana_ethtool_stats, hc_tx_err_eth_type_enforcement)},
->  	{"hc_tx_err_sa_enforcement", offsetof(struct mana_ethtool_stats,
->  					      hc_tx_err_sa_enforcement)},
-> -	{"hc_tx_err_sqpdid_enforecement",
-> -	 offsetof(struct mana_ethtool_stats, hc_tx_err_sqpdid_enforecement)},
-> +	{"hc_tx_err_sqpdid_enforcement",
-> +	 offsetof(struct mana_ethtool_stats, hc_tx_err_sqpdid_enforcement)},
->  	{"hc_tx_err_cqpdid_enforcement",
->  	 offsetof(struct mana_ethtool_stats, hc_tx_err_cqpdid_enforcement)},
->  	{"hc_tx_err_mtu_violation", offsetof(struct mana_ethtool_stats,
-> diff --git a/include/net/mana/mana.h b/include/net/mana/mana.h
-> index 5567f5bc8eb6..76147feb0d10 100644
-> --- a/include/net/mana/mana.h
-> +++ b/include/net/mana/mana.h
-> @@ -368,7 +368,7 @@ struct mana_ethtool_stats {
->  	u64 hc_tx_err_vlan_enforcement;
->  	u64 hc_tx_err_eth_type_enforcement;
->  	u64 hc_tx_err_sa_enforcement;
-> -	u64 hc_tx_err_sqpdid_enforecement;
-> +	u64 hc_tx_err_sqpdid_enforcement;
->  	u64 hc_tx_err_cqpdid_enforcement;
->  	u64 hc_tx_err_mtu_violation;
->  	u64 hc_tx_err_inval_oob;
-> -- 
-> 2.39.2
-Signed-off-by: Shradha Gupta <shradhagupta@linux.microsoft.com>
+On Mon, 2023-11-27 at 13:51 -0400, Jason Gunthorpe wrote:
+> On Mon, Nov 27, 2023 at 06:43:11PM +0100, Niklas Schnelle wrote:
+>=20
+> > Also it turns out the writeq() loop we had so far does not produce the
+> > needed 64 byte TLP on s390 either so this actually makes us newly pass
+> > this test.
+>=20
+> Ooh, that is a significant problem - the userspace code won't be used
+> unless this test passes. So we need this on S390 to fix a bug as well
+> :\
+>=20
+> Thanks,
+> Jason
+>=20
+
+Yes ;-(
+
+In the meantime I also found out that zpci_write_block(dst, src, 64) is
+not correct for all cases because the PCI store block requires the
+(pseudo-)MMIO write not to cross a 4K boundary and we need src/dst to
+be double word aligned. In rdma-core this is neatly handled by the
+get_max_write_size() but the kernel variant of that
+zpci_get_max_write_size() isn't just a lot harder to read and likely
+less efficient but also too strict thus breaking the 64 byte write up
+needlessly.
+
+In total we have 5 conditions for the PCI block stores:
+
+1. The dst+len must not cross a 4K boundary in the (pseudo-)MMIO space
+2. The length must not exceed the maximum write size
+3. The length must be a multiple of 8
+4. The src needs to be double word aligned
+5. The dst needs to be double word aligned
+
+So I think a good solution would be to improve zpci_memcpy_toio() with
+an enhanced zpci_get_max_write_size() based on the code in rdma-core
+extended to also handle the alignment and length restrictions which in
+rdma-core are already assumed (see comment there).=C2=A0Then we can use
+zpci_memcpy_toio(dst, src, 64) for memcpy_toio_64() and rely on the
+compiler to optimize out the unnecessary checks (2, 3 and possibly 4,
+5).
+
+So yeah this is getting a bit more  complicated than originally
+thought. Let me cook up a patch.
+
+Thanks,
+Niklas
 
