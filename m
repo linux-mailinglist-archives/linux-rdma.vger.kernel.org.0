@@ -1,179 +1,169 @@
-Return-Path: <linux-rdma+bounces-136-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-137-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2EA067FD32C
-	for <lists+linux-rdma@lfdr.de>; Wed, 29 Nov 2023 10:48:26 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 603D97FD3C5
+	for <lists+linux-rdma@lfdr.de>; Wed, 29 Nov 2023 11:14:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DD706283031
-	for <lists+linux-rdma@lfdr.de>; Wed, 29 Nov 2023 09:48:24 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 16FDA2833A4
+	for <lists+linux-rdma@lfdr.de>; Wed, 29 Nov 2023 10:14:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CC8DF18E13;
-	Wed, 29 Nov 2023 09:48:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dkim=none
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A5775199DC;
+	Wed, 29 Nov 2023 10:14:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="j4RfxldF"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from szxga03-in.huawei.com (szxga03-in.huawei.com [45.249.212.189])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C719719BC;
-	Wed, 29 Nov 2023 01:48:11 -0800 (PST)
-Received: from kwepemi500006.china.huawei.com (unknown [172.30.72.54])
-	by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4SgDsL5CSTzMnVg;
-	Wed, 29 Nov 2023 17:43:18 +0800 (CST)
-Received: from localhost.localdomain (10.67.165.2) by
- kwepemi500006.china.huawei.com (7.221.188.68) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Wed, 29 Nov 2023 17:48:09 +0800
-From: Junxian Huang <huangjunxian6@hisilicon.com>
-To: <jgg@ziepe.ca>, <leon@kernel.org>
-CC: <linux-rdma@vger.kernel.org>, <linuxarm@huawei.com>,
-	<linux-kernel@vger.kernel.org>, <huangjunxian6@hisilicon.com>
-Subject: [PATCH for-rc 6/6] RDMA/hns: Improve the readability of free mr uninit
-Date: Wed, 29 Nov 2023 17:44:34 +0800
-Message-ID: <20231129094434.134528-7-huangjunxian6@hisilicon.com>
-X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20231129094434.134528-1-huangjunxian6@hisilicon.com>
-References: <20231129094434.134528-1-huangjunxian6@hisilicon.com>
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 66E461A282
+	for <linux-rdma@vger.kernel.org>; Wed, 29 Nov 2023 10:14:38 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 64A58C433C7;
+	Wed, 29 Nov 2023 10:14:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1701252878;
+	bh=x3EsyBCyTPvX/m9MXNOcgKDKbuv2rGH9gFcXsxJcg8k=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=j4RfxldFxov7IXn9fDbe0YkCvsaqJnB0QlWgOFoalPjzF4RBpo5NQzn+8RkYId4dp
+	 x7GwjoCEoSII52tOLVXpqg+DiryX5LDdjIzBJDnc/NcD5R1BSFZaHNdXnniUWmkla0
+	 yjH+maTWEmKOO2wSNuQdyxhlCNiktVdQ2ngiSgMAPJa47O2T8VXmsl5+2+DIgPWFWb
+	 hH4hZJWJYZDUaGer5aN0l0jOS56M6zmnKQAXjcfE3kZoLQGt3zPIGC1U/Yqs77qwb5
+	 NOdt5O2SzblHMI2YE5a8V1ZIKKL6OxlsEfijb1BnVcV00hayJTmVk4EopIOkZ+S5sR
+	 c1SRDb29cPA1A==
+Date: Wed, 29 Nov 2023 12:14:33 +0200
+From: Leon Romanovsky <leon@kernel.org>
+To: Shifeng Li <lishifeng1992@126.com>
+Cc: "Ismail, Mustafa" <mustafa.ismail@intel.com>,
+	"Saleem, Shiraz" <shiraz.saleem@intel.com>,
+	"jgg@ziepe.ca" <jgg@ziepe.ca>,
+	"linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+	"Ding, Hui" <dinghui@sangfor.com.cn>
+Subject: Re: [PATCH] RDMA/irdma: Avoid free the non-cqp_request scratch
+Message-ID: <20231129101433.GC6535@unreal>
+References: <20231120083122.78532-1-lishifeng1992@126.com>
+ <PH7PR11MB6403F06E4A2984375BF121758BBBA@PH7PR11MB6403.namprd11.prod.outlook.com>
+ <15f80347-e9e9-49f9-bcab-784974856332@126.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
- kwepemi500006.china.huawei.com (7.221.188.68)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <15f80347-e9e9-49f9-bcab-784974856332@126.com>
 
-From: Chengchang Tang <tangchengchang@huawei.com>
+On Fri, Nov 24, 2023 at 10:28:58PM +0800, Shifeng Li wrote:
+> On 2023/11/22 1:25, Ismail, Mustafa wrote:
+> > > -----Original Message-----
+> > > From: Shifeng Li <lishifeng1992@126.com>
+> > > Sent: Monday, November 20, 2023 2:31 AM
+> > > To: Ismail, Mustafa <mustafa.ismail@intel.com>
+> > > Cc: Saleem, Shiraz <shiraz.saleem@intel.com>; jgg@ziepe.ca;
+> > > leon@kernel.org; linux-rdma@vger.kernel.org; linux-kernel@vger.kernel.org;
+> > > Ding, Hui <dinghui@sangfor.com.cn>; Shifeng Li <lishifeng1992@126.com>
+> > > Subject: [PATCH] RDMA/irdma: Avoid free the non-cqp_request scratch
+> > > 
+> > > When creating ceq_0 during probing irdma, cqp.sc_cqp will be sent as a
+> > > cqp_request to cqp->sc_cqp.sq_ring. If the request is pending when removing
+> > > the irdma driver or unplugging its aux device, cqp.sc_cqp will be dereferenced
+> > > as wrong struct in irdma_free_pending_cqp_request().
+> > > 
+> > > crash> bt 3669
+> > > PID: 3669   TASK: ffff88aef892c000  CPU: 28  COMMAND: "kworker/28:0"
+> > >   #0 [fffffe0000549e38] crash_nmi_callback at ffffffff810e3a34
+> > >   #1 [fffffe0000549e40] nmi_handle at ffffffff810788b2
+> > >   #2 [fffffe0000549ea0] default_do_nmi at ffffffff8107938f
+> > >   #3 [fffffe0000549eb8] do_nmi at ffffffff81079582
+> > >   #4 [fffffe0000549ef0] end_repeat_nmi at ffffffff82e016b4
+> > >      [exception RIP: native_queued_spin_lock_slowpath+1291]
+> > >      RIP: ffffffff8127e72b  RSP: ffff88aa841ef778  RFLAGS: 00000046
+> > >      RAX: 0000000000000000  RBX: ffff88b01f849700  RCX: ffffffff8127e47e
+> > >      RDX: 0000000000000000  RSI: 0000000000000004  RDI: ffffffff83857ec0
+> > >      RBP: ffff88afe3e4efc8   R8: ffffed15fc7c9dfa   R9: ffffed15fc7c9dfa
+> > >      R10: 0000000000000001  R11: ffffed15fc7c9df9  R12: 0000000000740000
+> > >      R13: ffff88b01f849708  R14: 0000000000000003  R15: ffffed1603f092e1
+> > >      ORIG_RAX: ffffffffffffffff  CS: 0010  SS: 0000
+> > > --- <NMI exception stack> ---
+> > >   #5 [ffff88aa841ef778] native_queued_spin_lock_slowpath at ffffffff8127e72b
+> > >   #6 [ffff88aa841ef7b0] _raw_spin_lock_irqsave at ffffffff82c22aa4
+> > >   #7 [ffff88aa841ef7c8] __wake_up_common_lock at ffffffff81257363
+> > >   #8 [ffff88aa841ef888] irdma_free_pending_cqp_request at ffffffffa0ba12cc
+> > > [irdma]
+> > >   #9 [ffff88aa841ef958] irdma_cleanup_pending_cqp_op at ffffffffa0ba1469
+> > > [irdma]
+> > >   #10 [ffff88aa841ef9c0] irdma_ctrl_deinit_hw at ffffffffa0b2989f [irdma]
+> > >   #11 [ffff88aa841efa28] irdma_remove at ffffffffa0b252df [irdma]
+> > >   #12 [ffff88aa841efae8] auxiliary_bus_remove at ffffffff8219afdb
+> > >   #13 [ffff88aa841efb00] device_release_driver_internal at ffffffff821882e6
+> > >   #14 [ffff88aa841efb38] bus_remove_device at ffffffff82184278
+> > >   #15 [ffff88aa841efb88] device_del at ffffffff82179d23
+> > >   #16 [ffff88aa841efc48] ice_unplug_aux_dev at ffffffffa0eb1c14 [ice]
+> > >   #17 [ffff88aa841efc68] ice_service_task at ffffffffa0d88201 [ice]
+> > >   #18 [ffff88aa841efde8] process_one_work at ffffffff811c589a
+> > >   #19 [ffff88aa841efe60] worker_thread at ffffffff811c71ff
+> > >   #20 [ffff88aa841eff10] kthread at ffffffff811d87a0
+> > >   #21 [ffff88aa841eff50] ret_from_fork at ffffffff82e0022f
+> > > 
+> > > Fixes: 44d9e52977a1 ("RDMA/irdma: Implement device initialization
+> > > definitions")
+> > > Signed-off-by: Shifeng Li <lishifeng1992@126.com>
+> > > ---
+> > >   drivers/infiniband/hw/irdma/utils.c | 2 +-
+> > >   1 file changed, 1 insertion(+), 1 deletion(-)
+> > > 
+> > > diff --git a/drivers/infiniband/hw/irdma/utils.c
+> > > b/drivers/infiniband/hw/irdma/utils.c
+> > > index 445e69e86409..222ec1f761a1 100644
+> > > --- a/drivers/infiniband/hw/irdma/utils.c
+> > > +++ b/drivers/infiniband/hw/irdma/utils.c
+> > > @@ -541,7 +541,7 @@ void irdma_cleanup_pending_cqp_op(struct
+> > > irdma_pci_f *rf)
+> > >   	for (i = 0; i < pending_work; i++) {
+> > >   		cqp_request = (struct irdma_cqp_request *)(unsigned long)
+> > >   				      cqp->scratch_array[wqe_idx];
+> > > -		if (cqp_request)
+> > > +		if (cqp_request && cqp_request != (struct irdma_cqp_request
+> > > +*)&cqp->sc_cqp)
+> > >   			irdma_free_pending_cqp_request(cqp, cqp_request);
+> > >   		wqe_idx = (wqe_idx + 1) % IRDMA_RING_SIZE(cqp-
+> > > > sc_cqp.sq_ring);
+> > >   	}
+> > > --
+> > > 2.25.1
+> > 
+> > Hi Li,
+> > 
+> > Could you describe how you hit this issue? It seems like the probe would not have completed successfully if the create cceq request was still pending.
+> > 
+> > A better fix might be to set the scratch to 0 in this case: In irdma_create_ceq(), pass 0 for scratch in call to irdma_sc_cceq_create(&iwceq->sc_ceq, 0), since it doesn't appear to be used in this case. Is it possible to test this fix? Thanks!
+> 
+> 1. The firmware of net card or the hardware may enter into some kind of error state. And I observed
+> that the sq_ring of sc_cqp is full through crash. This means that all the 2048 cqp_requests were pending.
+> 
+> crash> struct irdma_cqp.sc_cqp ffff88afe3e4eee8
+>   sc_cqp = {
+>     ...
+>     sq_ring = {
+>       head = 91,  (The queue head caught up with the queue tail.)
+>       tail = 92,
+>       size = 2048
+>     },
+>     ...
+>   }
+> 
+> 2. The issue is not reproducible. But I have tested the solution that pass 0 for scratch in
+> call to irdma_sc_cceq_create(&iwceq->sc_ceq, 0) in irdma_create_ceq(). It works well.
 
-Extract uninit functions of free mr qp, cq and pd to improve
-readability.
+Will you submit v2?
 
-Signed-off-by: Chengchang Tang <tangchengchang@huawei.com>
-Signed-off-by: Junxian Huang <huangjunxian6@hisilicon.com>
----
- drivers/infiniband/hw/hns/hns_roce_hw_v2.c | 73 ++++++++++++++--------
- 1 file changed, 47 insertions(+), 26 deletions(-)
+Thanks
 
-diff --git a/drivers/infiniband/hw/hns/hns_roce_hw_v2.c b/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
-index 538f3e8949fc..be02034a8818 100644
---- a/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
-+++ b/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
-@@ -2573,6 +2573,19 @@ static struct ib_pd *free_mr_init_pd(struct hns_roce_dev *hr_dev)
- 	return pd;
- }
- 
-+static void free_mr_uninit_pd(struct hns_roce_dev *hr_dev)
-+{
-+	struct hns_roce_v2_priv *priv = hr_dev->priv;
-+	struct hns_roce_v2_free_mr *free_mr = &priv->free_mr;
-+
-+	if (!free_mr->rsv_pd)
-+		return;
-+
-+	hns_roce_dealloc_pd(&free_mr->rsv_pd->ibpd, NULL);
-+	kfree(free_mr->rsv_pd);
-+	free_mr->rsv_pd = NULL;
-+}
-+
- static struct ib_cq *free_mr_init_cq(struct hns_roce_dev *hr_dev)
- {
- 	struct hns_roce_v2_priv *priv = hr_dev->priv;
-@@ -2607,6 +2620,19 @@ static struct ib_cq *free_mr_init_cq(struct hns_roce_dev *hr_dev)
- 	return cq;
- }
- 
-+static void free_mr_uninit_cq(struct hns_roce_dev *hr_dev)
-+{
-+	struct hns_roce_v2_priv *priv = hr_dev->priv;
-+	struct hns_roce_v2_free_mr *free_mr = &priv->free_mr;
-+
-+	if (!free_mr->rsv_cq)
-+		return;
-+
-+	hns_roce_destroy_cq(&free_mr->rsv_cq->ib_cq, NULL);
-+	kfree(free_mr->rsv_cq);
-+	free_mr->rsv_cq = NULL;
-+}
-+
- static int free_mr_init_qp(struct hns_roce_dev *hr_dev, struct ib_cq *cq,
- 			   struct ib_qp_init_attr *init_attr, int i)
- {
-@@ -2638,6 +2664,19 @@ static int free_mr_init_qp(struct hns_roce_dev *hr_dev, struct ib_cq *cq,
- 	return 0;
- }
- 
-+static void free_mr_uninit_qp(struct hns_roce_dev *hr_dev, int i)
-+{
-+	struct hns_roce_v2_priv *priv = hr_dev->priv;
-+	struct hns_roce_v2_free_mr *free_mr = &priv->free_mr;
-+
-+	if (!free_mr->rsv_qp[i])
-+		return;
-+
-+	hns_roce_v2_destroy_qp(&free_mr->rsv_qp[i]->ibqp, NULL);
-+	kfree(free_mr->rsv_qp[i]);
-+	free_mr->rsv_qp[i] = NULL;
-+}
-+
- static void free_mr_exit(struct hns_roce_dev *hr_dev)
- {
- 	struct hns_roce_v2_priv *priv = hr_dev->priv;
-@@ -2645,26 +2684,12 @@ static void free_mr_exit(struct hns_roce_dev *hr_dev)
- 	struct ib_qp *qp;
- 	int i;
- 
--	for (i = 0; i < ARRAY_SIZE(free_mr->rsv_qp); i++) {
--		if (free_mr->rsv_qp[i]) {
--			qp = &free_mr->rsv_qp[i]->ibqp;
--			hns_roce_v2_destroy_qp(qp, NULL);
--			kfree(free_mr->rsv_qp[i]);
--			free_mr->rsv_qp[i] = NULL;
--		}
--	}
-+	for (i = 0; i < ARRAY_SIZE(free_mr->rsv_qp); i++)
-+		free_mr_uninit_qp(hr_dev, i);
- 
--	if (free_mr->rsv_cq) {
--		hns_roce_destroy_cq(&free_mr->rsv_cq->ib_cq, NULL);
--		kfree(free_mr->rsv_cq);
--		free_mr->rsv_cq = NULL;
--	}
-+	free_mr_uninit_cq(hr_dev);
- 
--	if (free_mr->rsv_pd) {
--		hns_roce_dealloc_pd(&free_mr->rsv_pd->ibpd, NULL);
--		kfree(free_mr->rsv_pd);
--		free_mr->rsv_pd = NULL;
--	}
-+	free_mr_uninit_pd(hr_dev);
- }
- 
- static int free_mr_alloc_res(struct hns_roce_dev *hr_dev)
-@@ -2705,16 +2730,12 @@ static int free_mr_alloc_res(struct hns_roce_dev *hr_dev)
- 	return 0;
- 
- create_failed_qp:
--	for (i--; i >= 0; i--) {
--		hns_roce_v2_destroy_qp(&free_mr->rsv_qp[i]->ibqp, NULL);
--		kfree(free_mr->rsv_qp[i]);
--	}
--	hns_roce_destroy_cq(cq, NULL);
--	kfree(cq);
-+	for (i--; i >= 0; i--)
-+		free_mr_uninit_qp(hr_dev, i);
-+	free_mr_uninit_cq(hr_dev);
- 
- create_failed_cq:
--	hns_roce_dealloc_pd(pd, NULL);
--	kfree(pd);
-+	free_mr_uninit_pd(hr_dev);
- 
- 	return ret;
- }
--- 
-2.30.0
-
+> 
+> Thanks!
+> 
+> 
 
