@@ -1,45 +1,37 @@
-Return-Path: <linux-rdma+bounces-129-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-131-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E02DA7FCD7A
-	for <lists+linux-rdma@lfdr.de>; Wed, 29 Nov 2023 04:25:24 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2E32C7FD324
+	for <lists+linux-rdma@lfdr.de>; Wed, 29 Nov 2023 10:48:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1D7FC1C2107B
-	for <lists+linux-rdma@lfdr.de>; Wed, 29 Nov 2023 03:25:24 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5FBB31C20970
+	for <lists+linux-rdma@lfdr.de>; Wed, 29 Nov 2023 09:48:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6AA37523D;
-	Wed, 29 Nov 2023 03:25:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="fXv/l5me"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4396D18E1C;
+	Wed, 29 Nov 2023 09:48:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dkim=none
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from out-175.mta0.migadu.com (out-175.mta0.migadu.com [91.218.175.175])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6098C1AD
-	for <linux-rdma@vger.kernel.org>; Tue, 28 Nov 2023 19:25:20 -0800 (PST)
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1701228318;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=0ZNnDj3gZH8Ja7vN1CAquuuBpN9vbVWfJ2FqrFhLWGc=;
-	b=fXv/l5me5xpZAVGzgVhZ8SLPM62JoKdD2WyjS7OJsBgJzv3F7K6YZYZONQtBy2RhX6F5W8
-	3eSnJEU3e0NEOsxAQTjK8FEowNub6At4vF2j88C1aOFMTTV5gtlKyOgjA/BzTtDgWEv3dF
-	uxa2cwegwWqqZsPgoE0tqaIidNwkvqc=
-From: Guoqing Jiang <guoqing.jiang@linux.dev>
-To: bmt@zurich.ibm.com,
-	jgg@ziepe.ca,
-	leon@kernel.org
-Cc: linux-rdma@vger.kernel.org,
-	guoqing.jiang@linux.dev
-Subject: [PATCH 4/4] RDMA/siw: Call orq_get_current if possible
-Date: Wed, 29 Nov 2023 11:24:18 +0800
-Message-Id: <20231129032418.26705-5-guoqing.jiang@linux.dev>
-In-Reply-To: <20231129032418.26705-1-guoqing.jiang@linux.dev>
-References: <20231129032418.26705-1-guoqing.jiang@linux.dev>
+Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0679819AE;
+	Wed, 29 Nov 2023 01:48:10 -0800 (PST)
+Received: from kwepemi500006.china.huawei.com (unknown [172.30.72.54])
+	by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4SgDy33z5hzWhp0;
+	Wed, 29 Nov 2023 17:47:23 +0800 (CST)
+Received: from localhost.localdomain (10.67.165.2) by
+ kwepemi500006.china.huawei.com (7.221.188.68) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Wed, 29 Nov 2023 17:48:07 +0800
+From: Junxian Huang <huangjunxian6@hisilicon.com>
+To: <jgg@ziepe.ca>, <leon@kernel.org>
+CC: <linux-rdma@vger.kernel.org>, <linuxarm@huawei.com>,
+	<linux-kernel@vger.kernel.org>, <huangjunxian6@hisilicon.com>
+Subject: [PATCH for-rc 0/6] Bugfixes and improvements for hns RoCE
+Date: Wed, 29 Nov 2023 17:44:28 +0800
+Message-ID: <20231129094434.134528-1-huangjunxian6@hisilicon.com>
+X-Mailer: git-send-email 2.30.0
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
@@ -47,29 +39,30 @@ List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
+Content-Type: text/plain
+X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
+ kwepemi500006.china.huawei.com (7.221.188.68)
+X-CFilter-Loop: Reflected
 
-We can call it in siw_orq_empty.
+Here are several bugfixes and improvements for hns RoCE.
 
-Signed-off-by: Guoqing Jiang <guoqing.jiang@linux.dev>
----
- drivers/infiniband/sw/siw/siw.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Chengchang Tang (4):
+  RDMA/hns: Rename the interrupts
+  RDMA/hns: Remove unnecessary checks for NULL in mtr_alloc_bufs()
+  RDMA/hns: Fix memory leak in free_mr_init()
+  RDMA/hns: Improve the readability of free mr uninit
 
-diff --git a/drivers/infiniband/sw/siw/siw.h b/drivers/infiniband/sw/siw/siw.h
-index 2edba2a864bb..75253f2b3e3d 100644
---- a/drivers/infiniband/sw/siw/siw.h
-+++ b/drivers/infiniband/sw/siw/siw.h
-@@ -657,7 +657,7 @@ static inline struct siw_sqe *orq_get_free(struct siw_qp *qp)
- 
- static inline int siw_orq_empty(struct siw_qp *qp)
- {
--	return qp->orq[qp->orq_get % qp->attrs.orq_size].flags == 0 ? 1 : 0;
-+	return orq_get_current(qp)->flags == 0 ? 1 : 0;
- }
- 
- static inline struct siw_sqe *irq_alloc_free(struct siw_qp *qp)
--- 
-2.35.3
+Junxian Huang (2):
+  RDMA/hns: Response dmac to userspace
+  RDMA/hns: Add a max length of gid table
+
+ drivers/infiniband/hw/hns/hns_roce_ah.c    |  7 ++
+ drivers/infiniband/hw/hns/hns_roce_hw_v2.c | 87 +++++++++++++++-------
+ drivers/infiniband/hw/hns/hns_roce_mr.c    |  2 +-
+ include/uapi/rdma/hns-abi.h                |  5 ++
+ 4 files changed, 73 insertions(+), 28 deletions(-)
+
+--
+2.30.0
 
 
