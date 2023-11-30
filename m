@@ -1,267 +1,141 @@
-Return-Path: <linux-rdma+bounces-163-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-164-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id CF0EE7FEAC6
-	for <lists+linux-rdma@lfdr.de>; Thu, 30 Nov 2023 09:34:19 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id BA1B17FEACF
+	for <lists+linux-rdma@lfdr.de>; Thu, 30 Nov 2023 09:35:01 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3DFBA2841DD
-	for <lists+linux-rdma@lfdr.de>; Thu, 30 Nov 2023 08:34:18 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EB60A1C20DFD
+	for <lists+linux-rdma@lfdr.de>; Thu, 30 Nov 2023 08:35:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C52D51A27F;
-	Thu, 30 Nov 2023 08:34:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 31C872FE30;
+	Thu, 30 Nov 2023 08:34:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="k0biSUnC"
+	dkim=pass (1024-bit key) header.d=126.com header.i=@126.com header.b="V3nZmbrZ"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-ed1-x52d.google.com (mail-ed1-x52d.google.com [IPv6:2a00:1450:4864:20::52d])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C0929A
-	for <linux-rdma@vger.kernel.org>; Thu, 30 Nov 2023 00:34:13 -0800 (PST)
-Received: by mail-ed1-x52d.google.com with SMTP id 4fb4d7f45d1cf-54b0c368d98so6847a12.1
-        for <linux-rdma@vger.kernel.org>; Thu, 30 Nov 2023 00:34:13 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1701333251; x=1701938051; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=qXo48++PN4J59kZEwmuXxhgLqro/JnSA9tOip05A0qQ=;
-        b=k0biSUnCR5D85d+2eDg6LAIQrS5drIxEEoIDpFMy6TWS8xEwux6ZImjS0cUb9mZGSc
-         XAora9qRc2XbJxPYFierVjRLmP4yv++XjZU9DiaBepiyelO0M30z67IAEmpJpVNJPmaf
-         P4fHUhBQUTLvhFwv6a38Ds83p7YFwkOzG1d/b4GvNGECywEydNm2yBUdicvpL3LE1aNn
-         u9mUis6L0bRasZH138u7l4OFYAVoLEWDipUloK9whcoK7t98u/weQf1nN88tbJDv6IN8
-         Smk0FbmtA1SYF57Jc198WkabzX5omWAOo25tCZkJTOyYrSfbzyQ4RRop8qUybg1/BJth
-         coGg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701333251; x=1701938051;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=qXo48++PN4J59kZEwmuXxhgLqro/JnSA9tOip05A0qQ=;
-        b=X52OPV/rZ9XzGVbt+KIPHwJ1i0Qjljw+bAMr93MOFeFBrsGZtpaeTRNyMjBL+zUbI5
-         eKg/+P9S8B45By0bh3eitpqxsoVlFMtU/tCfxqhB0rR+6STIDAjV/iSBG62l5dgKjHPY
-         E+yweZp0CDc1O6LKPEm1tUAD7hv+Lbfc2Fey6ASQa+3rg1B5Lla/s+nNu6OmcNdXpzv7
-         kZ+uUPj4pjqY/sMX+CQ/TNd1HaUmhMUemXlmZrirdCutXrZEh7yb3AjNg1YmbIOsjm8E
-         PISxGURl3txJhR7XtE6hbcfcgIlLWacFIz81iuCugTb0WzWN0pVi8qeCpJYOLiApvZBz
-         C3Sw==
-X-Gm-Message-State: AOJu0YyipMr4Vv2EZNbSxuKI+QChKVLagYuxDRcDlBi00+DhyP80CLLF
-	hcsdS1i5HCXPhTqb84yhQSeOTrSzjNtPki8tzQbw3Q==
-X-Google-Smtp-Source: AGHT+IECQzIfXr6OtTMX8MsFCuGNv7SQ2HOnhHMKdAxvpMo5DrLlhbNHWwNXL+iPnSmW+RqEspz3TrOglZ4jk+YeSBc=
-X-Received: by 2002:a05:6402:1cae:b0:54b:81ba:93b2 with SMTP id
- cz14-20020a0564021cae00b0054b81ba93b2mr113958edb.2.1701333251299; Thu, 30 Nov
- 2023 00:34:11 -0800 (PST)
+Received: from m126.mail.126.com (m126.mail.126.com [220.181.12.37])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTP id 9285D10E3;
+	Thu, 30 Nov 2023 00:34:54 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=126.com;
+	s=s110527; h=Message-ID:Date:MIME-Version:Subject:From:
+	Content-Type; bh=pwyyFXR5L70ZJ8FPQyXi6jY077+aCkzfGDt1mqIwdzE=;
+	b=V3nZmbrZ5q6LG1K/fZBVt1dEMxCb2xjK6w29EzrqRE273tW7gwPG5mOlIKkqAd
+	dlHZXCZJnEzrWUvl2R0mtWEBjNz+y9iz8gc0R/MRSuZHPDytGuk+tAUmqkyf5GYl
+	TIYKn0IKQBq6oCYD/sw18IBGt5BZsjr1fcfhRrpk7A8O0=
+Received: from [172.23.69.7] (unknown [121.32.254.146])
+	by zwqz-smtp-mta-g5-1 (Coremail) with SMTP id _____wBXf+oRSWhlh50DDQ--.64943S2;
+	Thu, 30 Nov 2023 16:34:26 +0800 (CST)
+Message-ID: <3f16610f-31bb-4b78-8fb0-96fd1eacd6f9@126.com>
+Date: Thu, 30 Nov 2023 16:34:22 +0800
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <CABOYnLwSO7zLH+KVwTUJnV2_Hk+u+5+g8DPanTfLeEg05tFEQQ@mail.gmail.com>
- <CANn89iL8wmUf+G5nafMH1aCyeBDkoZ8micsAdECj6ktS-koG5w@mail.gmail.com>
-In-Reply-To: <CANn89iL8wmUf+G5nafMH1aCyeBDkoZ8micsAdECj6ktS-koG5w@mail.gmail.com>
-From: Eric Dumazet <edumazet@google.com>
-Date: Thu, 30 Nov 2023 09:34:00 +0100
-Message-ID: <CANn89iLNH3NgZr=5eZ22_wL2xOf179UnHU2YVL91L5QgzRmEeQ@mail.gmail.com>
-Subject: Re: WARNING in cleanup_net
-To: xingwei lee <xrivendell7@gmail.com>
-Cc: linux-kernel@vger.kernel.org, santosh.shilimkar@oracle.com, 
-	davem@davemloft.net, kuba@kernel.org, pabeni@redhat.com, 
-	netdev@vger.kernel.org, linux-rdma@vger.kernel.org, rds-devel@oss.oracle.com, 
-	syzkaller@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2] RDMA/irdma: Avoid free the non-cqp_request scratch
+To: Shifeng Li <lishifeng@sangfor.com.cn>, mustafa.ismail@intel.com,
+ shiraz.saleem@intel.com, jgg@ziepe.ca, leon@kernel.org, gustavoars@kernel.org
+Cc: linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
+ dinghui@sangfor.com.cn
+References: <20231130081415.891006-1-lishifeng@sangfor.com.cn>
+From: Shifeng Li <lishifeng1992@126.com>
+In-Reply-To: <20231130081415.891006-1-lishifeng@sangfor.com.cn>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-CM-TRANSID:_____wBXf+oRSWhlh50DDQ--.64943S2
+X-Coremail-Antispam: 1Uf129KBjvJXoWxCrykurW3Wr4fZF47uFyDZFb_yoWrWw47pr
+	WUJry2krZYyrWUGw1UC398JFy5JF1jyasrXFsFy34ft3W7u3WYvF1UJrWkursxAr15Ja17
+	Jr1qqFsY9r1akaUanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07j8cTPUUUUU=
+X-CM-SenderInfo: xolvxx5ihqwiqzzsqiyswou0bp/1S2mtgs4r1pD4YBZCQABsD
 
-On Thu, Nov 30, 2023 at 9:24=E2=80=AFAM Eric Dumazet <edumazet@google.com> =
-wrote:
->
-> On Thu, Nov 30, 2023 at 9:19=E2=80=AFAM xingwei lee <xrivendell7@gmail.co=
-m> wrote:
-> >
-> > Hi
-> > I found a bug with syzkaller titled "WARNING in cleanup_net" in the
-> > last upstream.
-> > =3D* BUG DETAILS =3D*
-> > kernel commit: 3b47bc037bd44f142ac09848e8d3ecccc726be99
-> > kernel config: https://syzkaller.appspot.com/text?tag=3DKernelConfig&x=
-=3Df2a9d08825f82ef3
-> > repro.c/repro.txt:
-> > https://gist.github.com/xrivendell7/44780af4a9dededc5ff7a7c0583ce3f1
-> > the crash report=EF=BC=9A
-> > [ 8584.181281][T11719] bond0 (unregistering): Released all slaves
-> > [ 8585.839049][T11719] ref_tracker: net notrefcnt@ffff888021ba0220 has
-> > 1/1 users at
-> > [ 8585.839049][T11719]   sk_alloc+0xaf0/0xbf0
-> > [ 8585.839049][T11719]   inet6_create+0x39b/0x1300
-> > [ 8585.839049][T11719]   __sock_create+0x34f/0x850
-> > [ 8585.839049][T11719]   rds_tcp_listen_init+0xda/0x4f0
-> > [ 8585.839049][T11719]   rds_tcp_init_net+0x147/0x400
-> > [ 8585.839049][T11719]   ops_init+0xc4/0x680
-> > [ 8585.839049][T11719]   setup_net+0x431/0xa80
-> > [ 8585.839049][T11719]   copy_net_ns+0x313/0x6b0
-> > [ 8585.839049][T11719]   create_new_namespaces+0x3fb/0xb60
-> > [ 8585.839049][T11719]   unshare_nsproxy_namespaces+0xd0/0x200
-> > [ 8585.839049][T11719]   ksys_unshare+0x47c/0xa30
-> > [ 8585.839049][T11719]   __x64_sys_unshare+0x36/0x50
-> > [ 8585.839049][T11719]   do_syscall_64+0x40/0x110
-> > [ 8585.839049][T11719]   entry_SYSCALL_64_after_hwframe+0x63/0x6b
-> > [ 8585.839049][T11719]
-> > [ 8585.858614][T11719] ------------[ cut here ]------------
-> > [ 8585.860037][T11719] WARNING: CPU: 3 PID: 11719 at
-> > lib/ref_tracker.c:179 ref_tracker_dir_exit+0x3fa/0x6a0
-> > [ 8585.862152][T11719] Modules linked in:
-> > [ 8585.863038][T11719] CPU: 3 PID: 11719 Comm: kworker/u8:3 Not
-> > tainted 6.7.0-rc1-g7475e51b8796-dirty #2
-> > [ 8585.865268][T11719] Hardware name: QEMU Standard PC (i440FX + PIIX,
-> > 1996), BIOS 1.16.2-1.fc38 04/01/2014
-> > [ 8585.867345][T11719] Workqueue: netns cleanup_net
-> > [ 8585.868401][T11719] RIP: 0010:ref_tracker_dir_exit+0x3fa/0x6a0
-> > [ 8585.869426][T11719] Code: 00 00 4d 39 f5 49 8b 06 4d 89 f7 0f 85 08
-> > ff ff ff 48 8b 2c 24 31 ff e8 c4 09 d6 fc 48 8b 74 24 18 48 89 ef e8
-> > 67 13 32 06 90 <0f> 0b 90 48 8d 5d 44 31 ff e8 a8 09 d6 fc be 04 00 00
-> > 00 48 89 df
-> > [ 8585.872786][T11719] RSP: 0018:ffffc9000386fb78 EFLAGS: 00010286
-> > [ 8585.873790][T11719] RAX: 0000000080000000 RBX: dffffc0000000000
-> > RCX: 0000000000000000
-> > [ 8585.875085][T11719] RDX: 0000000000000001 RSI: ffffffff8b2cb900
-> > RDI: 0000000000000001
-> > [ 8585.876394][T11719] RBP: ffff888021ba0220 R08: 0000000000000001
-> > R09: fffffbfff24a13e9
-> > [ 8585.877808][T11719] R10: ffffffff92509f4f R11: 0000000000000003
-> > R12: ffff888021ba0270
-> > [ 8585.879138][T11719] R13: ffff888021ba0270 R14: ffff888021ba0270
-> > R15: ffff888021ba0270
-> > [ 8585.880481][T11719] FS: 0000000000000000(0000)
-> > GS:ffff88823bd00000(0000) knlGS:0000000000000000
-> > [ 8585.881965][T11719] CS: 0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> > [ 8585.882719][T11719] CR2: 00007f00c5cd79f0 CR3: 000000000d377000
-> > CR4: 0000000000750ef0
-> > [ 8585.883536][T11719] PKRU: 55555554
-> > [ 8585.883901][T11719] Call Trace:
-> > [ 8585.884247][T11719] <TASK>
-> > [ 8585.884561][T11719] ? show_regs+0x9a/0xb0
-> > [ 8585.885005][T11719] ? __warn+0xf5/0x3c0
-> > [ 8585.885423][T11719] ? report_bug+0x506/0x5f0
-> > [ 8585.885900][T11719] ? ref_tracker_dir_exit+0x3fa/0x6a0
-> > [ 8585.886466][T11719] ? report_bug+0x41c/0x5f0
-> > [ 8585.886939][T11719] ? handle_bug+0x3d/0x70
-> > [ 8585.887609][T11719] ? exc_invalid_op+0x17/0x40
-> > [ 8585.888104][T11719] ? asm_exc_invalid_op+0x1a/0x20
-> > [ 8585.888646][T11719] ? ref_tracker_dir_exit+0x3fa/0x6a0
-> > [ 8585.889203][T11719] ? ref_tracker_dir_exit+0x3f9/0x6a0
-> > [ 8585.889900][T11719] ? ref_tracker_dir_snprint+0xe0/0xe0
-> > [ 8585.890465][T11719] ? __kmem_cache_free+0xc0/0x180
-> > [ 8585.890989][T11719] cleanup_net+0x927/0xb70
-> > [ 8585.891462][T11719] ? unregister_pernet_device+0x80/0x80
-> > [ 8585.892038][T11719] process_one_work+0x8ab/0x1730
-> > [ 8585.892564][T11719] ? unregister_pernet_device+0x80/0x80
-> > [ 8585.893137][T11719] ? workqueue_congested+0x320/0x320
-> > [ 8585.893692][T11719] ? assign_work+0x1b7/0x260
-> > [ 8585.894177][T11719] worker_thread+0x931/0x1380
-> > [ 8585.894683][T11719] ? process_one_work+0x1730/0x1730
-> > [ 8585.895224][T11719] kthread+0x2d3/0x3b0
-> > [ 8585.895664][T11719] ? _raw_spin_unlock_irq+0x23/0x50
-> > [ 8585.896191][T11719] ? kthread_complete_and_exit+0x40/0x40
-> > [ 8585.896779][T11719] ret_from_fork+0x4e/0x80
-> > [ 8585.897245][T11719] ? kthread_complete_and_exit+0x40/0x40
-> > [ 8585.897863][T11719] ret_from_fork_asm+0x11/0x20
-> > [ 8585.898371][T11719] </TASK>
-> > [ 8585.898702][T11719] Kernel panic - not syncing: kernel: panic_on_war=
-n set ...
-> > [ 8585.899428][T11719] CPU: 3 PID: 11719 Comm: kworker/u8:3 Not
-> > tainted 6.7.0-rc1-g7475e51b8796-dirty #2
-> > [ 8585.900572][T11719] Hardware name: QEMU Standard PC (i440FX + PIIX,
-> > 1996), BIOS 1.16.2-1.fc38 04/01/2014
-> > [ 8585.901550][T11719] Workqueue: netns cleanup_net
-> > [ 8585.902038][T11719] Call Trace:
-> > [ 8585.902377][T11719] <TASK>
-> > [ 8585.902693][T11719] dump_stack_lvl+0xee/0x1e0
-> > [ 8585.903170][T11719] panic+0x754/0x810
-> > [ 8585.903805][T11719] ? panic_smp_self_stop+0xa0/0xa0
-> > [ 8585.904377][T11719] ? show_trace_log_lvl+0x394/0x540
-> > [ 8585.905159][T11719] ? check_panic_on_warn+0xa4/0xc0
-> > [ 8585.905742][T11719] ? ref_tracker_dir_exit+0x3fa/0x6a0
-> > [ 8585.906532][T11719] check_panic_on_warn+0xb8/0xc0
-> > [ 8585.907108][T11719] __warn+0x101/0x3c0
-> > [ 8585.907577][T11719] ? report_bug+0x506/0x5f0
-> > [ 8585.908317][T11719] ? ref_tracker_dir_exit+0x3fa/0x6a0
-> > [ 8585.909080][T11719] report_bug+0x41c/0x5f0
-> > [ 8585.909599][T11719] handle_bug+0x3d/0x70
-> > [ 8585.910089][T11719] exc_invalid_op+0x17/0x40
-> > [ 8585.910571][T11719] asm_exc_invalid_op+0x1a/0x20
-> > [ 8585.911115][T11719] RIP: 0010:ref_tracker_dir_exit+0x3fa/0x6a0
-> > [ 8585.911798][T11719] Code: 00 00 4d 39 f5 49 8b 06 4d 89 f7 0f 85 08
-> > ff ff ff 48 8b 2c 24 31 ff e8 c4 09 d6 fc 48 8b 74 24 18 48 89 ef e8
-> > 67 13 32 06 90 <0f> 0b 90 48 8d 5d 44 31 ff e8 a8 09 d6 fc be 04 00 00
-> > 00 48 89 df
-> > [ 8585.914135][T11719] RSP: 0018:ffffc9000386fb78 EFLAGS: 00010286
-> > [ 8585.914813][T11719] RAX: 0000000080000000 RBX: dffffc0000000000
-> > RCX: 0000000000000000
-> > [ 8585.915654][T11719] RDX: 0000000000000001 RSI: ffffffff8b2cb900
-> > RDI: 0000000000000001
-> > [ 8585.916556][T11719] RBP: ffff888021ba0220 R08: 0000000000000001
-> > R09: fffffbfff24a13e9
-> > [ 8585.917647][T11719] R10: ffffffff92509f4f R11: 0000000000000003
-> > R12: ffff888021ba0270
-> > [ 8585.918692][T11719] R13: ffff888021ba0270 R14: ffff888021ba0270
-> > R15: ffff888021ba0270
-> > [ 8585.919598][T11719] ? ref_tracker_dir_exit+0x3f9/0x6a0
-> > [ 8585.920188][T11719] ? ref_tracker_dir_snprint+0xe0/0xe0
-> > [ 8585.920803][T11719] ? __kmem_cache_free+0xc0/0x180
-> > [ 8585.921387][T11719] cleanup_net+0x927/0xb70
-> > [ 8585.921891][T11719] ? unregister_pernet_device+0x80/0x80
-> > [ 8585.922481][T11719] process_one_work+0x8ab/0x1730
-> > [ 8585.923093][T11719] ? unregister_pernet_device+0x80/0x80
-> > [ 8585.923781][T11719] ? workqueue_congested+0x320/0x320
-> > [ 8585.924385][T11719] ? assign_work+0x1b7/0x260
-> > [ 8585.924923][T11719] worker_thread+0x931/0x1380
-> > [ 8585.925467][T11719] ? process_one_work+0x1730/0x1730
-> > [ 8585.926079][T11719] kthread+0x2d3/0x3b0
-> > [ 8585.926538][T11719] ? _raw_spin_unlock_irq+0x23/0x50
-> > [ 8585.927138][T11719] ? kthread_complete_and_exit+0x40/0x40
-> > [ 8585.927763][T11719] ret_from_fork+0x4e/0x80
-> > [ 8585.928256][T11719] ? kthread_complete_and_exit+0x40/0x40
-> > [ 8585.928903][T11719] ret_from_fork_asm+0x11/0x20
-> > [ 8585.929470][T11719] </TASK>
-> > [ 8585.930023][T11719] Kernel Offset: disabled
-> > [ 8585.930517][T11719] Rebooting in 86400 seconds..
-> > =3D* OTHERS =3D*
-> > I noticed syzbot has two similar bugs named WARNING in cleanup_net=EF=
-=BC=9A
-> > https://syzkaller.appspot.com/bug?extid=3D7e1e1bdb852961150198
-> > https://syzkaller.appspot.com/bug?id=3D14c45b4081250ebeb4a9000f3774da82=
-9f7e43b4
-> >
-> > However, these two seem fixed and not related to this.
-> > Without in-depth analysis, I guess it's maybe a race condition bug and
-> > the import part may be the refcnt_tracker in socket$rds not handled
-> > properly but I'm not sure.
-> >
-> > [ 8585.839049][T11719] ref_tracker: net notrefcnt@ffff888021ba0220 has
-> > 1/1 users at
-> > [ 8585.839049][T11719]   sk_alloc+0xaf0/0xbf0
-> > [ 8585.839049][T11719]   inet6_create+0x39b/0x1300
-> > [ 8585.839049][T11719]   __sock_create+0x34f/0x850
-> > [ 8585.839049][T11719]   rds_tcp_listen_init+0xda/0x4f0
-> > [ 8585.839049][T11719]   rds_tcp_init_net+0x147/0x400
-> > [ 8585.839049][T11719]   ops_init+0xc4/0x680
-> > [ 8585.839049][T11719]   setup_net+0x431/0xa80
-> > [ 8585.839049][T11719]   copy_net_ns+0x313/0x6b0
-> > [ 8585.839049][T11719]   create_new_namespaces+0x3fb/0xb60
-> > [ 8585.839049][T11719]   unshare_nsproxy_namespaces+0xd0/0x200
-> > [ 8585.839049][T11719]   ksys_unshare+0x47c/0xa30
-> > [ 8585.839049][T11719]   __x64_sys_unshare+0x36/0x50
-> > [ 8585.839049][T11719]   do_syscall_64+0x40/0x110
-> > [ 8585.839049][T11719]   entry_SYSCALL_64_after_hwframe+0x63/0x6b
->
-> I have a similar syzbot  bug in my triage queue I will release right now.
->
+On 2023/11/30 16:14, Shifeng Li wrote:
+> When creating ceq_0 during probing irdma, cqp.sc_cqp will be sent as
+> a cqp_request to cqp->sc_cqp.sq_ring. If the request is pending when
+> removing the irdma driver or unplugging its aux device, cqp.sc_cqp
+> will be dereferenced as wrong struct in irdma_free_pending_cqp_request().
+> 
+> crash> bt 3669
+> PID: 3669   TASK: ffff88aef892c000  CPU: 28  COMMAND: "kworker/28:0"
+>   #0 [fffffe0000549e38] crash_nmi_callback at ffffffff810e3a34
+>   #1 [fffffe0000549e40] nmi_handle at ffffffff810788b2
+>   #2 [fffffe0000549ea0] default_do_nmi at ffffffff8107938f
+>   #3 [fffffe0000549eb8] do_nmi at ffffffff81079582
+>   #4 [fffffe0000549ef0] end_repeat_nmi at ffffffff82e016b4
+>      [exception RIP: native_queued_spin_lock_slowpath+1291]
+>      RIP: ffffffff8127e72b  RSP: ffff88aa841ef778  RFLAGS: 00000046
+>      RAX: 0000000000000000  RBX: ffff88b01f849700  RCX: ffffffff8127e47e
+>      RDX: 0000000000000000  RSI: 0000000000000004  RDI: ffffffff83857ec0
+>      RBP: ffff88afe3e4efc8   R8: ffffed15fc7c9dfa   R9: ffffed15fc7c9dfa
+>      R10: 0000000000000001  R11: ffffed15fc7c9df9  R12: 0000000000740000
+>      R13: ffff88b01f849708  R14: 0000000000000003  R15: ffffed1603f092e1
+>      ORIG_RAX: ffffffffffffffff  CS: 0010  SS: 0000
+> --- <NMI exception stack> ---
+>   #5 [ffff88aa841ef778] native_queued_spin_lock_slowpath at ffffffff8127e72b
+>   #6 [ffff88aa841ef7b0] _raw_spin_lock_irqsave at ffffffff82c22aa4
+>   #7 [ffff88aa841ef7c8] __wake_up_common_lock at ffffffff81257363
+>   #8 [ffff88aa841ef888] irdma_free_pending_cqp_request at ffffffffa0ba12cc [irdma]
+>   #9 [ffff88aa841ef958] irdma_cleanup_pending_cqp_op at ffffffffa0ba1469 [irdma]
+>   #10 [ffff88aa841ef9c0] irdma_ctrl_deinit_hw at ffffffffa0b2989f [irdma]
+>   #11 [ffff88aa841efa28] irdma_remove at ffffffffa0b252df [irdma]
+>   #12 [ffff88aa841efae8] auxiliary_bus_remove at ffffffff8219afdb
+>   #13 [ffff88aa841efb00] device_release_driver_internal at ffffffff821882e6
+>   #14 [ffff88aa841efb38] bus_remove_device at ffffffff82184278
+>   #15 [ffff88aa841efb88] device_del at ffffffff82179d23
+>   #16 [ffff88aa841efc48] ice_unplug_aux_dev at ffffffffa0eb1c14 [ice]
+>   #17 [ffff88aa841efc68] ice_service_task at ffffffffa0d88201 [ice]
+>   #18 [ffff88aa841efde8] process_one_work at ffffffff811c589a
+>   #19 [ffff88aa841efe60] worker_thread at ffffffff811c71ff
+>   #20 [ffff88aa841eff10] kthread at ffffffff811d87a0
+>   #21 [ffff88aa841eff50] ret_from_fork at ffffffff82e0022f
+> 
+> Fixes: 44d9e52977a1 ("RDMA/irdma: Implement device initialization definitions")
+> Suggested-by: Leon Romanovsky <leon@kernel.org>
 
-This is the "[syzbot] [net?] WARNING in cleanup_net (3)"  thread.
+The Suggested-by should be "Ismail, Mustafa" <mustafa.ismail@intel.com>.
+Could you help me correct it?
 
-> I already worked on a solution.
+Thanks.
 
-But was waiting for a repro...
+> Signed-off-by: Shifeng Li <lishifeng@sangfor.com.cn>
+> ---
+>   drivers/infiniband/hw/irdma/hw.c | 4 +---
+>   1 file changed, 1 insertion(+), 3 deletions(-)
+> 
+> ---
+> v1->v2: replace fix solution and massage the git log.
+> 
+> diff --git a/drivers/infiniband/hw/irdma/hw.c b/drivers/infiniband/hw/irdma/hw.c
+> index 8fa7e4a18e73..df6259c73d28 100644
+> --- a/drivers/infiniband/hw/irdma/hw.c
+> +++ b/drivers/infiniband/hw/irdma/hw.c
+> @@ -1180,7 +1180,6 @@ static int irdma_create_ceq(struct irdma_pci_f *rf, struct irdma_ceq *iwceq,
+>   	int status;
+>   	struct irdma_ceq_init_info info = {};
+>   	struct irdma_sc_dev *dev = &rf->sc_dev;
+> -	u64 scratch;
+>   	u32 ceq_size;
+>   
+>   	info.ceq_id = ceq_id;
+> @@ -1201,14 +1200,13 @@ static int irdma_create_ceq(struct irdma_pci_f *rf, struct irdma_ceq *iwceq,
+>   	iwceq->sc_ceq.ceq_id = ceq_id;
+>   	info.dev = dev;
+>   	info.vsi = vsi;
+> -	scratch = (uintptr_t)&rf->cqp.sc_cqp;
+>   	status = irdma_sc_ceq_init(&iwceq->sc_ceq, &info);
+>   	if (!status) {
+>   		if (dev->ceq_valid)
+>   			status = irdma_cqp_ceq_cmd(&rf->sc_dev, &iwceq->sc_ceq,
+>   						   IRDMA_OP_CEQ_CREATE);
+>   		else
+> -			status = irdma_sc_cceq_create(&iwceq->sc_ceq, scratch);
+> +			status = irdma_sc_cceq_create(&iwceq->sc_ceq, 0);
+>   	}
+>   
+>   	if (status) {
 
->
-> Thanks.
 
