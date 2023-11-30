@@ -1,209 +1,199 @@
-Return-Path: <linux-rdma+bounces-166-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-167-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 371877FEE8C
-	for <lists+linux-rdma@lfdr.de>; Thu, 30 Nov 2023 13:05:20 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 148ED7FEEB1
+	for <lists+linux-rdma@lfdr.de>; Thu, 30 Nov 2023 13:15:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4E4121C20DC7
-	for <lists+linux-rdma@lfdr.de>; Thu, 30 Nov 2023 12:05:19 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B3841281A9F
+	for <lists+linux-rdma@lfdr.de>; Thu, 30 Nov 2023 12:15:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3E02645BE6;
-	Thu, 30 Nov 2023 12:05:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D93F845C17;
+	Thu, 30 Nov 2023 12:15:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b="Bpt7p/4H"
+	dkim=pass (2048-bit key) header.d=purestorage.com header.i=@purestorage.com header.b="ImkDuXNZ"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTP id CB16BD46;
-	Thu, 30 Nov 2023 04:05:12 -0800 (PST)
-Received: by linux.microsoft.com (Postfix, from userid 1099)
-	id 1AF5C20B74C0; Thu, 30 Nov 2023 04:05:12 -0800 (PST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 1AF5C20B74C0
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-	s=default; t=1701345912;
-	bh=/rVuqlYYpLzwGHq/EK9NytP0xWQESkkc0TlDS3zxqY4=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=Bpt7p/4HhHDo6dYClHRLdHCut/FjhKTk6mGeZB+9C5QBTqhDefLDJZszOOxWnf74K
-	 khFcWy3czqcJIXDdbr6llkD8Ic6HzwBpTBpnCLFwf3UXFQ2bOstrSz+QR8JwTmoGnO
-	 jGgGYdAqsWiKEO2EKytfiLc+FYSb9ihaSt+rwXXc=
-Date: Thu, 30 Nov 2023 04:05:12 -0800
-From: Souradeep Chakrabarti <schakrabarti@linux.microsoft.com>
-To: Yury Norov <yury.norov@gmail.com>
-Cc: Souradeep Chakrabarti <schakrabarti@microsoft.com>,
-	Jakub Kicinski <kuba@kernel.org>, KY Srinivasan <kys@microsoft.com>,
-	Haiyang Zhang <haiyangz@microsoft.com>,
-	"wei.liu@kernel.org" <wei.liu@kernel.org>,
-	Dexuan Cui <decui@microsoft.com>,
-	"davem@davemloft.net" <davem@davemloft.net>,
-	"edumazet@google.com" <edumazet@google.com>,
-	"pabeni@redhat.com" <pabeni@redhat.com>,
-	Long Li <longli@microsoft.com>,
-	"sharmaajay@microsoft.com" <sharmaajay@microsoft.com>,
-	"leon@kernel.org" <leon@kernel.org>,
-	"cai.huoqing@linux.dev" <cai.huoqing@linux.dev>,
-	"ssengar@linux.microsoft.com" <ssengar@linux.microsoft.com>,
-	"vkuznets@redhat.com" <vkuznets@redhat.com>,
-	"tglx@linutronix.de" <tglx@linutronix.de>,
-	"linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
-	"netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	"linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-	Paul Rosswurm <paulros@microsoft.com>
-Subject: Re: [EXTERNAL] Re: [PATCH V2 net-next] net: mana: Assigning IRQ
- affinity on HT cores
-Message-ID: <20231130120512.GA15408@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
-References: <1700574877-6037-1-git-send-email-schakrabarti@linux.microsoft.com>
- <20231121154841.7fc019c8@kernel.org>
- <PUZP153MB0788476CD22D5AA2ECDC11ABCCBDA@PUZP153MB0788.APCP153.PROD.OUTLOOK.COM>
- <ZWfwcYPLVo+4V8Ps@yury-ThinkPad>
+Received: from mail-vk1-xa2a.google.com (mail-vk1-xa2a.google.com [IPv6:2607:f8b0:4864:20::a2a])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F4B6D40
+	for <linux-rdma@vger.kernel.org>; Thu, 30 Nov 2023 04:15:35 -0800 (PST)
+Received: by mail-vk1-xa2a.google.com with SMTP id 71dfb90a1353d-4b2a92f9f06so12753e0c.3
+        for <linux-rdma@vger.kernel.org>; Thu, 30 Nov 2023 04:15:35 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=purestorage.com; s=google2022; t=1701346534; x=1701951334; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=M61bJMFcEoPmZwdh+zExToswuuNacooU7Mgdyy9VbVk=;
+        b=ImkDuXNZ7PAaksxD7cjSwvUGRVOY5P9QMlN0bwOwMYcEiXJnCCRIBniVm2nYpI1Xb2
+         3xaswJj9XQhOMwVQKypo/ZfVr86px1pFRgLue70hF4lYi2arf4wHgwMczSh2FDaRM+RS
+         PyisvfTA9N+vBDAmwt+HgLRSx2UZKOGzzAwALPgFnc7SayRMZ65miQbPTDOq0MKb/55A
+         /2K5XUewaaKAzjD7kmZs2BcjC13+//zOT03HO2EVo7rnAMZT6Wi7rotYNIsVU1Pd44Dz
+         y+HCk0NItTcP8+3az0EzRvSf7a+tftKKqZ7qt3+Y418ZCieAGXghDGkW3XvWEn3XQqNA
+         8iAQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701346534; x=1701951334;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=M61bJMFcEoPmZwdh+zExToswuuNacooU7Mgdyy9VbVk=;
+        b=HcVizRq13OX8JpKd5r/7B4gUOWEEYUIivlG6k6UdUYlgrX2B2KB/kIK4VcFoSazp+D
+         ep+4gq9I/hCmR3kd0yLBvqyJBbLdsFGc94Yw88tl6pA1P2h1BvhLz3Iv8VyxfJl0f2cy
+         hZgrjMunMOHER4zilSDDyizFiQp9vWTuVBmaB29HwrfCE0qsIOFextf6Y/1hN+7fK1ym
+         ALlx4soeGMk2EkxagRBts1TwYP+FS1GStQbbuGsW2r99bz6OVMvRsC8n8Sww9GMiI8Oj
+         t5NEvTXrCW8sE0v91j+lrdXMVNfrdVfOCKdgR69Vh87eIAzYbX04uRw/BxAOwyNSVB+I
+         HWhQ==
+X-Gm-Message-State: AOJu0YzgIgIQOiKmTvknyGr0Mgp3g3TPx9nXK3ZXotfar6ttQwjAExTw
+	f9zxyltdCHqlWMXCpUd5SyTOMaGDMGEFIKygauYEKA==
+X-Google-Smtp-Source: AGHT+IHPabZKTDDXwTcSKIkEvfnr3XmDLEDQrQATuqTFW2BX8WeHedcshhSSAdoYN3nnlsrNC2DI9+694trRrfl9ri0=
+X-Received: by 2002:a05:6122:794:b0:4b2:a40b:87df with SMTP id
+ k20-20020a056122079400b004b2a40b87dfmr856163vkr.15.1701346534529; Thu, 30 Nov
+ 2023 04:15:34 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZWfwcYPLVo+4V8Ps@yury-ThinkPad>
-User-Agent: Mutt/1.5.21 (2010-09-15)
+References: <CAMyEAb9XbL55taNXD_MrTxJz62s6ByDWiK8m1Nxj1_G3pg-M6A@mail.gmail.com>
+ <ZWg7gGnvVOYjIhx1@archie.me>
+In-Reply-To: <ZWg7gGnvVOYjIhx1@archie.me>
+From: "Sukruth Sridharan (he/him)" <susridharan@purestorage.com>
+Date: Thu, 30 Nov 2023 17:45:23 +0530
+Message-ID: <CAMyEAb9aAMwKByOx38VJP1+N0+d12sDF5FiEx-aCMdOnEF_sww@mail.gmail.com>
+Subject: Re: Hung task panic as part of NFS RDMA Disconnect due to possible
+ bug on 6.2.0-34-generic client
+To: Bagas Sanjaya <bagasdotme@gmail.com>
+Cc: Linux Network File System <linux-nfs@vger.kernel.org>, Linux RDMA <linux-rdma@vger.kernel.org>, 
+	Chuck Lever <chuck.lever@oracle.com>, Jeff Layton <jlayton@kernel.org>, Neil Brown <neilb@suse.de>, 
+	Olga Kornievskaia <kolga@netapp.com>, Dai Ngo <Dai.Ngo@oracle.com>, Tom Talpey <tom@talpey.com>, 
+	Saeed Mahameed <saeedm@nvidia.com>, Leon Romanovsky <leonro@nvidia.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Wed, Nov 29, 2023 at 06:16:17PM -0800, Yury Norov wrote:
-> On Mon, Nov 27, 2023 at 09:36:38AM +0000, Souradeep Chakrabarti wrote:
-> > 
-> > 
-> > >-----Original Message-----
-> > >From: Jakub Kicinski <kuba@kernel.org>
-> > >Sent: Wednesday, November 22, 2023 5:19 AM
-> > >To: Souradeep Chakrabarti <schakrabarti@linux.microsoft.com>
-> > >Cc: KY Srinivasan <kys@microsoft.com>; Haiyang Zhang
-> > ><haiyangz@microsoft.com>; wei.liu@kernel.org; Dexuan Cui
-> > ><decui@microsoft.com>; davem@davemloft.net; edumazet@google.com;
-> > >pabeni@redhat.com; Long Li <longli@microsoft.com>;
-> > >sharmaajay@microsoft.com; leon@kernel.org; cai.huoqing@linux.dev;
-> > >ssengar@linux.microsoft.com; vkuznets@redhat.com; tglx@linutronix.de; linux-
-> > >hyperv@vger.kernel.org; netdev@vger.kernel.org; linux-kernel@vger.kernel.org;
-> > >linux-rdma@vger.kernel.org; Souradeep Chakrabarti
-> > ><schakrabarti@microsoft.com>; Paul Rosswurm <paulros@microsoft.com>
-> > >Subject: [EXTERNAL] Re: [PATCH V2 net-next] net: mana: Assigning IRQ affinity on
-> > >HT cores
-> > >
-> > >On Tue, 21 Nov 2023 05:54:37 -0800 Souradeep Chakrabarti wrote:
-> > >> Existing MANA design assigns IRQ to every CPUs, including sibling
-> > >> hyper-threads in a core. This causes multiple IRQs to work on same CPU
-> > >> and may reduce the network performance with RSS.
-> > >>
-> > >> Improve the performance by adhering the configuration for RSS, which
-> > >> assigns IRQ on HT cores.
-> > >
-> > >Drivers should not have to carry 120 LoC for something as basic as spreading IRQs.
-> > >Please take a look at include/linux/topology.h and if there's nothing that fits your
-> > >needs there - add it. That way other drivers can reuse it.
-> > Because of the current design idea, it is easier to keep things inside
-> > the mana driver code here. As the idea of IRQ distribution here is :
-> > 1)Loop through interrupts to assign CPU
-> > 2)Find non sibling online CPU from local NUMA and assign the IRQs
-> > on them.
-> > 3)If number of IRQs is more than number of non-sibling CPU in that
-> > NUMA node, then assign on sibling CPU of that node.
-> > 4)Keep doing it till all the online CPUs are used or no more IRQs.
-> > 5)If all CPUs in that node are used, goto next NUMA node with CPU.
-> > Keep doing 2 and 3.
-> > 6) If all CPUs in all NUMA nodes are used, but still there are IRQs
-> > then wrap over from first local NUMA node and continue
-> > doing 2, 3 4 till all IRQs are assigned.
-> 
-> Hi Souradeep,
-> 
-> (Thanks Jakub for sharing this thread with me)
-> 
-> If I understand your intention right, you can leverage the existing
-> cpumask_local_spread().
-> 
-> But I think I've got something better for you. The below series adds
-> a for_each_numa_cpu() iterator, which may help you doing most of the
-> job without messing with nodes internals.
-> 
-> https://lore.kernel.org/netdev/ZD3l6FBnUh9vTIGc@yury-ThinkPad/T/
+The issue has been seen once in the past few weeks.
+Unfortunately, we're yet to see a repro of the same.
+We will try to repro it on the latest kernel.
+Curious if there's any improvements gone in that you suspect would
+have resolved the issue?
+
+Thanks,
+Sukruth
+
+
+On Thu, Nov 30, 2023 at 1:06=E2=80=AFPM Bagas Sanjaya <bagasdotme@gmail.com=
+> wrote:
 >
-Thanks Yur and Jakub. I was trying to find this patch, but unable to find it on that thread.
-Also in net-next I am unable to find it. Can you please tell, if it has been committed?
-If not can you please point me out the correct patch for this macro. It will be
-really helpful.
-> By using it, the pseudocode implementing your algorithm may look
-> like this:
-> 
->         unsigned int cpu, hop;
->         unsigned int irq = 0;
-> 
-> again:
->         cpu = get_cpu();
->         node = cpu_to_node(cpu);
->         cpumask_copy(cpus, cpu_online_mask);
-> 
->         for_each_numa_cpu(cpu, hop, node, cpus) {
->                 /* All siblings are the same for IRQ spreading purpose */
->                 irq_set_affinity_and_hint(irq, topology_sibling_cpumask());
-> 
->                 /* One IRQ per sibling group */
->                 cpumask_andnot(cpus, cpus, topology_sibling_cpumask());
-> 
->                 if (++irq == num_irqs)
->                         break;
->         }
-> 
->         if (irq < num_irqs)
->                 goto again;
-> 
-> (Completely not tested, just an idea.)
+> On Thu, Nov 30, 2023 at 10:52:59AM +0530, Sukruth Sridharan (he/him) wrot=
+e:
+> > I notice the following hung task panic on 6.2.0-34 kernel during RDMA d=
+isconnect
+> >
+> > [Wed Nov  1 08:03:54 2023] INFO: task kworker/u16:5:2274646 blocked
+> > for more than 120 seconds.
+> > [Wed Nov  1 08:03:55 2023]       Tainted: G        W  OE
+> > 6.2.0-34-generic #34-Ubuntu
+> > [Wed Nov  1 08:03:55 2023] "echo 0 >
+> > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
+> > [Wed Nov  1 08:03:55 2023] task:kworker/u16:5   state:D stack:0
+> > pid:2274646 ppid:2      flags:0x00004000
+> > [Wed Nov  1 08:03:55 2023] Workqueue: xprtiod xprt_autoclose [sunrpc]
+> > [Wed Nov  1 08:03:55 2023] Call Trace:
+> > [Wed Nov  1 08:03:55 2023]  <TASK>
+> > [Wed Nov  1 08:03:55 2023]  __schedule+0x2aa/0x610
+> > [Wed Nov  1 08:03:55 2023]  schedule+0x63/0x110
+> > [Wed Nov  1 08:03:55 2023]  schedule_timeout+0x157/0x170
+> > [Wed Nov  1 08:03:55 2023]  wait_for_completion+0x88/0x150
+> > [Wed Nov  1 08:03:55 2023]  rpcrdma_xprt_disconnect+0x33f/0x350 [rpcrdm=
+a]
+> > [Wed Nov  1 08:03:55 2023]  xprt_rdma_close+0x12/0x40 [rpcrdma]
+> > [Wed Nov  1 08:03:55 2023]  xprt_autoclose+0x5c/0x120 [sunrpc]
+> > [Wed Nov  1 08:03:55 2023]  process_one_work+0x225/0x430
+> > [Wed Nov  1 08:03:55 2023]  worker_thread+0x50/0x3e0
+> > [Wed Nov  1 08:03:55 2023]  ? __pfx_worker_thread+0x10/0x10
+> > [Wed Nov  1 08:03:55 2023]  kthread+0xe9/0x110
+> > [Wed Nov  1 08:03:55 2023]  ? __pfx_kthread+0x10/0x10
+> > [Wed Nov  1 08:03:55 2023]  ret_from_fork+0x2c/0x50
+> > [Wed Nov  1 08:03:55 2023]  </TASK>
+> >
+> > The flow which induced the bug is as follows:
+> > 1. Client initiates connection
+> > 2. Server hands off the response to the first RPC on the connection to
+> > the NIC (Mellanox ConnectX-5)
+> > 3. NIC tries to send the response around 6 times and fails the response=
+ with RNR
+> > 4. Client issues disconnect (possibly because it didn't receive a respo=
+nse)
+> > 5. Server cleans up the connection state
+> > 6. Client runs into the above panic as part of disconnect while drainin=
+g the IOs
+> >
+> > It looks like re_receiving is set only in rpcrdma_post_recvs, and the
+> > reason why it wouldn't be reset is if memory-region allocation code
+> > fails.
+> > That is possible if disconnect on the client somehow blocks allocation.
+> >
+> > void rpcrdma_post_recvs(struct rpcrdma_xprt *r_xprt, int needed, bool t=
+emp)
+> > {
+> >         // ... (some initialization code)
+> >
+> >     if (atomic_inc_return(&ep->re_receiving) > 1)
+> >         goto out;
+> >
+> >         // ... (some allocation code)
+> >
+> >     if (!wr) // <<<<<<<<<<<<<<<<<< PROBLEM HERE >>>>>>>>>>>>>>>>>>>
+> >         goto out;
+> >
+> >         // ... (post recv code, and some error handling)
+> >
+> >     if (atomic_dec_return(&ep->re_receiving) > 0)
+> >         complete(&ep->re_done);
+> >
+> > out:
+> >     trace_xprtrdma_post_recvs(r_xprt, count);
+> >     ep->re_receive_count +=3D count;
+> >     return;
+> > }
+> >
+> > static void rpcrdma_xprt_drain(struct rpcrdma_xprt *r_xprt)
+> > {
+> >     struct rpcrdma_ep *ep =3D r_xprt->rx_ep;
+> >     struct rdma_cm_id *id =3D ep->re_id;
+> >
+> >     /* Wait for rpcrdma_post_recvs() to leave its critical
+> >      * section.
+> >      */
+> >     if (atomic_inc_return(&ep->re_receiving) > 1) //
+> > <<<<<<<<<<<<<<<<<<< This is not reset, so wait gets stuck
+> > >>>>>>>>>>>>>>>>>
+> >         wait_for_completion(&ep->re_done);
+> >
+> >     /* Flush Receives, then wait for deferred Reply work
+> >      * to complete.
+> >      */
+> >     ib_drain_rq(id->qp);
+> >
+> >     /* Deferred Reply processing might have scheduled
+> >      * local invalidations.
+> >      */
+> >     ib_drain_sq(id->qp);
+> >
+> >     rpcrdma_ep_put(ep);
+> > }
+> >
+> > Can you help conclude if the above theory around the bug being in the
+> > client code is right? If not, can you help with steps/data points
+> > required to debug this further?
+> >
 >
-I have done similar kind of change for our driver, but constraint here is that total number of IRQs
-can be equal to the total number of online CPUs, in some setup. It is either equal
-to the number of online CPUs or maximum 64 IRQs if online CPUs are more than that.
-So my proposed change is following:
-
-+static int irq_setup(int *irqs, int nvec, int start_numa_node)
-+{
-+       cpumask_var_t node_cpumask;
-+       int i, cpu, err = 0;
-+       unsigned int  next_node;
-+       cpumask_t visited_cpus;
-+       unsigned int start_node = start_numa_node;
-+       i = 0;
-+       if (!alloc_cpumask_var(&node_cpumask, GFP_KERNEL)) {
-+               err = -ENOMEM;
-+               goto free_mask;
-+       }
-+       cpumask_andnot(&visited_cpus, &visited_cpus, &visited_cpus);
-+       start_node = 1;
-+       for_each_next_node_with_cpus(start_node, next_node) {
-+               cpumask_copy(node_cpumask, cpumask_of_node(next_node));
-+               for_each_cpu(cpu, node_cpumask) {
-+                       cpumask_andnot(node_cpumask, node_cpumask,
-+                                      topology_sibling_cpumask(cpu));
-+                       irq_set_affinity_and_hint(irqs[i], cpumask_of(cpu));
-+                       if(++i == nvec)
-+                               goto free_mask;
-+                       cpumask_set_cpu(cpu, &visited_cpus);
-+                       if (cpumask_empty(node_cpumask) && cpumask_weight(&visited_cpus) <
-+                           nr_cpus_node(next_node)) {
-+                               cpumask_copy(node_cpumask, cpumask_of_node(next_node));
-+                               cpumask_andnot(node_cpumask, node_cpumask, &visited_cpus);
-+                               cpu = cpumask_first(node_cpumask);
-+                       }
-+               }
-+               if (next_online_node(next_node) == MAX_NUMNODES)
-+                       next_node = first_online_node;
-+       }
-+free_mask:
-+       free_cpumask_var(node_cpumask);
-+       return err;
-+} 
-
-I can definitely use the for_each_numa_cpu() instead of my proposed for_each_next_node_with_cpus()
-macro here and that will make it cleaner.
-Thanks for the suggestion.
-> Thanks,
-> Yury
+> Can you verify that the bug still occurs with latest vanilla kernel
+> (currently v6.7-rc3)?
+>
+> Thanks.
+>
+> --
+> An old man doll... just what I always wanted! - Clara
 
