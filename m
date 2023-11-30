@@ -1,141 +1,105 @@
-Return-Path: <linux-rdma+bounces-164-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-165-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id BA1B17FEACF
-	for <lists+linux-rdma@lfdr.de>; Thu, 30 Nov 2023 09:35:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 8264A7FEC5B
+	for <lists+linux-rdma@lfdr.de>; Thu, 30 Nov 2023 10:57:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EB60A1C20DFD
-	for <lists+linux-rdma@lfdr.de>; Thu, 30 Nov 2023 08:35:00 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 868661C20DF4
+	for <lists+linux-rdma@lfdr.de>; Thu, 30 Nov 2023 09:57:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 31C872FE30;
-	Thu, 30 Nov 2023 08:34:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=126.com header.i=@126.com header.b="V3nZmbrZ"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D926D3AC25;
+	Thu, 30 Nov 2023 09:57:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dkim=none
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from m126.mail.126.com (m126.mail.126.com [220.181.12.37])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTP id 9285D10E3;
-	Thu, 30 Nov 2023 00:34:54 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=126.com;
-	s=s110527; h=Message-ID:Date:MIME-Version:Subject:From:
-	Content-Type; bh=pwyyFXR5L70ZJ8FPQyXi6jY077+aCkzfGDt1mqIwdzE=;
-	b=V3nZmbrZ5q6LG1K/fZBVt1dEMxCb2xjK6w29EzrqRE273tW7gwPG5mOlIKkqAd
-	dlHZXCZJnEzrWUvl2R0mtWEBjNz+y9iz8gc0R/MRSuZHPDytGuk+tAUmqkyf5GYl
-	TIYKn0IKQBq6oCYD/sw18IBGt5BZsjr1fcfhRrpk7A8O0=
-Received: from [172.23.69.7] (unknown [121.32.254.146])
-	by zwqz-smtp-mta-g5-1 (Coremail) with SMTP id _____wBXf+oRSWhlh50DDQ--.64943S2;
-	Thu, 30 Nov 2023 16:34:26 +0800 (CST)
-Message-ID: <3f16610f-31bb-4b78-8fb0-96fd1eacd6f9@126.com>
-Date: Thu, 30 Nov 2023 16:34:22 +0800
+X-Greylist: delayed 573 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Thu, 30 Nov 2023 01:57:03 PST
+Received: from mail-m25476.xmail.ntesmail.com (mail-m25476.xmail.ntesmail.com [103.129.254.76])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1E859A;
+	Thu, 30 Nov 2023 01:57:03 -0800 (PST)
+Received: from ubuntu.localdomain (unknown [111.222.250.119])
+	by mail-m12750.qiye.163.com (Hmail) with ESMTPA id 5D1DAF20542;
+	Thu, 30 Nov 2023 17:46:59 +0800 (CST)
+From: Shifeng Li <lishifeng@sangfor.com.cn>
+To: saeedm@nvidia.com,
+	leon@kernel.org,
+	davem@davemloft.net,
+	edumazet@google.com,
+	kuba@kernel.org,
+	pabeni@redhat.com,
+	ogerlitz@mellanox.com
+Cc: netdev@vger.kernel.org,
+	linux-rdma@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	dinghui@sangfor.com.cn,
+	lishifeng1992@126.com,
+	Shifeng Li <lishifeng@sangfor.com.cn>
+Subject: [PATCH] net/mlx5e: Fix slab-out-of-bounds in mlx5_query_nic_vport_mac_list()
+Date: Thu, 30 Nov 2023 01:46:56 -0800
+Message-Id: <20231130094656.894412-1-lishifeng@sangfor.com.cn>
+X-Mailer: git-send-email 2.25.1
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2] RDMA/irdma: Avoid free the non-cqp_request scratch
-To: Shifeng Li <lishifeng@sangfor.com.cn>, mustafa.ismail@intel.com,
- shiraz.saleem@intel.com, jgg@ziepe.ca, leon@kernel.org, gustavoars@kernel.org
-Cc: linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
- dinghui@sangfor.com.cn
-References: <20231130081415.891006-1-lishifeng@sangfor.com.cn>
-From: Shifeng Li <lishifeng1992@126.com>
-In-Reply-To: <20231130081415.891006-1-lishifeng@sangfor.com.cn>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-CM-TRANSID:_____wBXf+oRSWhlh50DDQ--.64943S2
-X-Coremail-Antispam: 1Uf129KBjvJXoWxCrykurW3Wr4fZF47uFyDZFb_yoWrWw47pr
-	WUJry2krZYyrWUGw1UC398JFy5JF1jyasrXFsFy34ft3W7u3WYvF1UJrWkursxAr15Ja17
-	Jr1qqFsY9r1akaUanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07j8cTPUUUUU=
-X-CM-SenderInfo: xolvxx5ihqwiqzzsqiyswou0bp/1S2mtgs4r1pD4YBZCQABsD
+Content-Transfer-Encoding: 8bit
+X-HM-Spam-Status: e1kfGhgUHx5ZQUpXWQgPGg8OCBgUHx5ZQUlOS1dZFg8aDwILHllBWSg2Ly
+	tZV1koWUFITzdXWS1ZQUlXWQ8JGhUIEh9ZQVlCSBhOVkkdQ0pPTEhNTRlISlUTARMWGhIXJBQOD1
+	lXWRgSC1lBWUpKSlVJSUlVSU5LVUpKQllXWRYaDxIVHRRZQVlPS0hVSk1PSUxOVUpLS1VKQktLWQ
+	Y+
+X-HM-Tid: 0a8c1f9fddd3b21dkuuu5d1daf20542
+X-HM-MType: 1
+X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6OjI6Sjo4Sjw#HhA3HgsVIS5L
+	OTowCzFVSlVKTEtKSEhMTUlLT0NMVTMWGhIXVRcSCBMSHR4VHDsIGhUcHRQJVRgUFlUYFUVZV1kS
+	C1lBWUpKSlVJSUlVSU5LVUpKQllXWQgBWUFISEpNNwY+
 
-On 2023/11/30 16:14, Shifeng Li wrote:
-> When creating ceq_0 during probing irdma, cqp.sc_cqp will be sent as
-> a cqp_request to cqp->sc_cqp.sq_ring. If the request is pending when
-> removing the irdma driver or unplugging its aux device, cqp.sc_cqp
-> will be dereferenced as wrong struct in irdma_free_pending_cqp_request().
-> 
-> crash> bt 3669
-> PID: 3669   TASK: ffff88aef892c000  CPU: 28  COMMAND: "kworker/28:0"
->   #0 [fffffe0000549e38] crash_nmi_callback at ffffffff810e3a34
->   #1 [fffffe0000549e40] nmi_handle at ffffffff810788b2
->   #2 [fffffe0000549ea0] default_do_nmi at ffffffff8107938f
->   #3 [fffffe0000549eb8] do_nmi at ffffffff81079582
->   #4 [fffffe0000549ef0] end_repeat_nmi at ffffffff82e016b4
->      [exception RIP: native_queued_spin_lock_slowpath+1291]
->      RIP: ffffffff8127e72b  RSP: ffff88aa841ef778  RFLAGS: 00000046
->      RAX: 0000000000000000  RBX: ffff88b01f849700  RCX: ffffffff8127e47e
->      RDX: 0000000000000000  RSI: 0000000000000004  RDI: ffffffff83857ec0
->      RBP: ffff88afe3e4efc8   R8: ffffed15fc7c9dfa   R9: ffffed15fc7c9dfa
->      R10: 0000000000000001  R11: ffffed15fc7c9df9  R12: 0000000000740000
->      R13: ffff88b01f849708  R14: 0000000000000003  R15: ffffed1603f092e1
->      ORIG_RAX: ffffffffffffffff  CS: 0010  SS: 0000
-> --- <NMI exception stack> ---
->   #5 [ffff88aa841ef778] native_queued_spin_lock_slowpath at ffffffff8127e72b
->   #6 [ffff88aa841ef7b0] _raw_spin_lock_irqsave at ffffffff82c22aa4
->   #7 [ffff88aa841ef7c8] __wake_up_common_lock at ffffffff81257363
->   #8 [ffff88aa841ef888] irdma_free_pending_cqp_request at ffffffffa0ba12cc [irdma]
->   #9 [ffff88aa841ef958] irdma_cleanup_pending_cqp_op at ffffffffa0ba1469 [irdma]
->   #10 [ffff88aa841ef9c0] irdma_ctrl_deinit_hw at ffffffffa0b2989f [irdma]
->   #11 [ffff88aa841efa28] irdma_remove at ffffffffa0b252df [irdma]
->   #12 [ffff88aa841efae8] auxiliary_bus_remove at ffffffff8219afdb
->   #13 [ffff88aa841efb00] device_release_driver_internal at ffffffff821882e6
->   #14 [ffff88aa841efb38] bus_remove_device at ffffffff82184278
->   #15 [ffff88aa841efb88] device_del at ffffffff82179d23
->   #16 [ffff88aa841efc48] ice_unplug_aux_dev at ffffffffa0eb1c14 [ice]
->   #17 [ffff88aa841efc68] ice_service_task at ffffffffa0d88201 [ice]
->   #18 [ffff88aa841efde8] process_one_work at ffffffff811c589a
->   #19 [ffff88aa841efe60] worker_thread at ffffffff811c71ff
->   #20 [ffff88aa841eff10] kthread at ffffffff811d87a0
->   #21 [ffff88aa841eff50] ret_from_fork at ffffffff82e0022f
-> 
-> Fixes: 44d9e52977a1 ("RDMA/irdma: Implement device initialization definitions")
-> Suggested-by: Leon Romanovsky <leon@kernel.org>
+Out_sz that the size of out buffer is calculated using query_nic_vport
+_context_in structure when driver query the MAC list. However query_nic
+_vport_context_in structure is smaller than query_nic_vport_context_out.
+When allowed_list_size is greater than 96, calling ether_addr_copy() will
+trigger an slab-out-of-bounds.
 
-The Suggested-by should be "Ismail, Mustafa" <mustafa.ismail@intel.com>.
-Could you help me correct it?
+[ 1170.055866] BUG: KASAN: slab-out-of-bounds in mlx5_query_nic_vport_mac_list+0x481/0x4d0 [mlx5_core]
+[ 1170.055869] Read of size 4 at addr ffff88bdbc57d912 by task kworker/u128:1/461
+[ 1170.055870]
+[ 1170.055932] Workqueue: mlx5_esw_wq esw_vport_change_handler [mlx5_core]
+[ 1170.055936] Call Trace:
+[ 1170.055949]  dump_stack+0x8b/0xbb
+[ 1170.055958]  print_address_description+0x6a/0x270
+[ 1170.055961]  kasan_report+0x179/0x2c0
+[ 1170.056061]  mlx5_query_nic_vport_mac_list+0x481/0x4d0 [mlx5_core]
+[ 1170.056162]  esw_update_vport_addr_list+0x2c5/0xcd0 [mlx5_core]
+[ 1170.056257]  esw_vport_change_handle_locked+0xd08/0x1a20 [mlx5_core]
+[ 1170.056377]  esw_vport_change_handler+0x6b/0x90 [mlx5_core]
+[ 1170.056381]  process_one_work+0x65f/0x12d0
+[ 1170.056383]  worker_thread+0x87/0xb50
+[ 1170.056390]  kthread+0x2e9/0x3a0
+[ 1170.056394]  ret_from_fork+0x1f/0x40
 
-Thanks.
+Fixes: e16aea2744ab ("net/mlx5: Introduce access functions to modify/query vport mac lists")
+Cc: Ding Hui <dinghui@sangfor.com.cn>
+Signed-off-by: Shifeng Li <lishifeng@sangfor.com.cn>
+---
+ drivers/net/ethernet/mellanox/mlx5/core/vport.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-> Signed-off-by: Shifeng Li <lishifeng@sangfor.com.cn>
-> ---
->   drivers/infiniband/hw/irdma/hw.c | 4 +---
->   1 file changed, 1 insertion(+), 3 deletions(-)
-> 
-> ---
-> v1->v2: replace fix solution and massage the git log.
-> 
-> diff --git a/drivers/infiniband/hw/irdma/hw.c b/drivers/infiniband/hw/irdma/hw.c
-> index 8fa7e4a18e73..df6259c73d28 100644
-> --- a/drivers/infiniband/hw/irdma/hw.c
-> +++ b/drivers/infiniband/hw/irdma/hw.c
-> @@ -1180,7 +1180,6 @@ static int irdma_create_ceq(struct irdma_pci_f *rf, struct irdma_ceq *iwceq,
->   	int status;
->   	struct irdma_ceq_init_info info = {};
->   	struct irdma_sc_dev *dev = &rf->sc_dev;
-> -	u64 scratch;
->   	u32 ceq_size;
->   
->   	info.ceq_id = ceq_id;
-> @@ -1201,14 +1200,13 @@ static int irdma_create_ceq(struct irdma_pci_f *rf, struct irdma_ceq *iwceq,
->   	iwceq->sc_ceq.ceq_id = ceq_id;
->   	info.dev = dev;
->   	info.vsi = vsi;
-> -	scratch = (uintptr_t)&rf->cqp.sc_cqp;
->   	status = irdma_sc_ceq_init(&iwceq->sc_ceq, &info);
->   	if (!status) {
->   		if (dev->ceq_valid)
->   			status = irdma_cqp_ceq_cmd(&rf->sc_dev, &iwceq->sc_ceq,
->   						   IRDMA_OP_CEQ_CREATE);
->   		else
-> -			status = irdma_sc_cceq_create(&iwceq->sc_ceq, scratch);
-> +			status = irdma_sc_cceq_create(&iwceq->sc_ceq, 0);
->   	}
->   
->   	if (status) {
+diff --git a/drivers/net/ethernet/mellanox/mlx5/core/vport.c b/drivers/net/ethernet/mellanox/mlx5/core/vport.c
+index 5a31fb47ffa5..21753f327868 100644
+--- a/drivers/net/ethernet/mellanox/mlx5/core/vport.c
++++ b/drivers/net/ethernet/mellanox/mlx5/core/vport.c
+@@ -277,7 +277,7 @@ int mlx5_query_nic_vport_mac_list(struct mlx5_core_dev *dev,
+ 		req_list_size = max_list_size;
+ 	}
+ 
+-	out_sz = MLX5_ST_SZ_BYTES(query_nic_vport_context_in) +
++	out_sz = MLX5_ST_SZ_BYTES(query_nic_vport_context_out) +
+ 			req_list_size * MLX5_ST_SZ_BYTES(mac_address_layout);
+ 
+ 	out = kvzalloc(out_sz, GFP_KERNEL);
+-- 
+2.25.1
 
 
