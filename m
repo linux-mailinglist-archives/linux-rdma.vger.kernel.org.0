@@ -1,210 +1,136 @@
-Return-Path: <linux-rdma+bounces-159-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-162-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id AA5F37FE9CD
-	for <lists+linux-rdma@lfdr.de>; Thu, 30 Nov 2023 08:36:48 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id CCDD47FEAAF
+	for <lists+linux-rdma@lfdr.de>; Thu, 30 Nov 2023 09:32:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 13AC4B20E02
-	for <lists+linux-rdma@lfdr.de>; Thu, 30 Nov 2023 07:36:46 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id F15471C20C09
+	for <lists+linux-rdma@lfdr.de>; Thu, 30 Nov 2023 08:32:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 82F131F939;
-	Thu, 30 Nov 2023 07:36:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="W7eNMvhm"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 42FF220DE6;
+	Thu, 30 Nov 2023 08:32:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dkim=none
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-pg1-x532.google.com (mail-pg1-x532.google.com [IPv6:2607:f8b0:4864:20::532])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C81B5B9;
-	Wed, 29 Nov 2023 23:36:38 -0800 (PST)
-Received: by mail-pg1-x532.google.com with SMTP id 41be03b00d2f7-5c61d135d74so559563a12.1;
-        Wed, 29 Nov 2023 23:36:38 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1701329798; x=1701934598; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=HM3L3d4uonNU2AVbKULv9ZZVZaX9Pb4OKKv/DOGQIic=;
-        b=W7eNMvhm4u6vKTT5BE/Pz3yRs4aVtjM4vv9aUQdqRx404Aj5iGW6+kcS8X4LfN0lz2
-         OqX+qQlcotajMvEHIGgBeMQqso1xtyPp/TnDwsLw64QkbDAJMNRuiRT98J7UQRMY9h+r
-         QkjqEYoThH2ab2q7Ohatfq0vLB15zk0jyjVbc8k4zv6LrrKtkEDPlKRfusGtKIGE5PqX
-         zQ+thn3dg1XY1jBpXg73Kik4o5jYK12DiDabtkkWQqFTJ9L2yU8isfhLbs73/rWZFkQg
-         cc0H77D3Q10c1ywnYFOaU89zU2+Mhn4LVk0fBIlaDFbOlgLE0JJ0lrhCpv7eG3TKoy/8
-         EnDw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701329798; x=1701934598;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=HM3L3d4uonNU2AVbKULv9ZZVZaX9Pb4OKKv/DOGQIic=;
-        b=LNwoWNKhRaGJGiT/pksRyWiHoGkhfRfpX5mHIdMbP7X6YgG/jus1gAhfiSTUAp6ful
-         qw8g0ABQTFnoxujQ32AmUdnG6JF6bCjWQXVk5Hz94rZsx7wLClBfzEzrLLo5gcLD/B2P
-         LvfETSfCilPr6SVudE3eiwlYPWhOimZSm2xfHTwi/aqbH6ddGRmpBqiVeBqdT7LAFNth
-         KOi/yc1f07RdU6N7bwm/XFyS8KT3YwndxO8hWIdhT6MXBqsRs2c+1ts0n0jlCjrCc4Nu
-         hAAVilW4vk6BSl0j/jjAfzXPOFN/cAxge7q8KH62Ef4UvoA/BPavQtKBFT5N56KclSs9
-         KwaQ==
-X-Gm-Message-State: AOJu0YwvW2nGNSYKq9c9Yelrg3eUYQm5/uTlhKNsKN/fsHXIFXwNmpJQ
-	a8okoxwN+6b1wC+0/kE1tZk=
-X-Google-Smtp-Source: AGHT+IFxMyt3kyViwLPrfAUE/MZ6AbR0oHhQ4e/bUk7EU2otfLkDAJKxYx/bFHBLQfbx7Nwe8f5BEQ==
-X-Received: by 2002:a05:6a20:3d13:b0:18c:177d:2122 with SMTP id y19-20020a056a203d1300b0018c177d2122mr20170491pzi.2.1701329798177;
-        Wed, 29 Nov 2023 23:36:38 -0800 (PST)
-Received: from archie.me ([103.131.18.64])
-        by smtp.gmail.com with ESMTPSA id y8-20020a17090322c800b001cfc4d8eddesm623597plg.180.2023.11.29.23.36.37
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 29 Nov 2023 23:36:37 -0800 (PST)
-Received: by archie.me (Postfix, from userid 1000)
-	id 9444D10FB5154; Thu, 30 Nov 2023 14:36:34 +0700 (WIB)
-Date: Thu, 30 Nov 2023 14:36:32 +0700
-From: Bagas Sanjaya <bagasdotme@gmail.com>
-To: "Sukruth Sridharan (he/him)" <susridharan@purestorage.com>,
-	Linux Network File System <linux-nfs@vger.kernel.org>,
-	Linux RDMA <linux-rdma@vger.kernel.org>
-Cc: Chuck Lever <chuck.lever@oracle.com>, Jeff Layton <jlayton@kernel.org>,
-	Neil Brown <neilb@suse.de>, Olga Kornievskaia <kolga@netapp.com>,
-	Dai Ngo <Dai.Ngo@oracle.com>, Tom Talpey <tom@talpey.com>,
-	Saeed Mahameed <saeedm@nvidia.com>,
-	Leon Romanovsky <leonro@nvidia.com>
-Subject: Re: Hung task panic as part of NFS RDMA Disconnect due to possible
- bug on 6.2.0-34-generic client
-Message-ID: <ZWg7gGnvVOYjIhx1@archie.me>
-References: <CAMyEAb9XbL55taNXD_MrTxJz62s6ByDWiK8m1Nxj1_G3pg-M6A@mail.gmail.com>
+X-Greylist: delayed 598 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Thu, 30 Nov 2023 00:31:55 PST
+Received: from mail-m17209.xmail.ntesmail.com (mail-m17209.xmail.ntesmail.com [45.195.17.209])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0C1F7198E;
+	Thu, 30 Nov 2023 00:31:55 -0800 (PST)
+Received: from ubuntu.localdomain (unknown [111.222.250.119])
+	by mail-m12750.qiye.163.com (Hmail) with ESMTPA id C1E3FF2061A;
+	Thu, 30 Nov 2023 16:14:19 +0800 (CST)
+From: Shifeng Li <lishifeng@sangfor.com.cn>
+To: mustafa.ismail@intel.com,
+	shiraz.saleem@intel.com,
+	jgg@ziepe.ca,
+	leon@kernel.org,
+	gustavoars@kernel.org
+Cc: linux-kernel@vger.kernel.org,
+	linux-rdma@vger.kernel.org,
+	dinghui@sangfor.com.cn,
+	lishifeng1992@126.com,
+	Shifeng Li <lishifeng@sangfor.com.cn>
+Subject: [PATCH v2] RDMA/irdma: Avoid free the non-cqp_request scratch
+Date: Thu, 30 Nov 2023 00:14:15 -0800
+Message-Id: <20231130081415.891006-1-lishifeng@sangfor.com.cn>
+X-Mailer: git-send-email 2.25.1
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="Bj68ANcoh+ILJN6F"
-Content-Disposition: inline
-In-Reply-To: <CAMyEAb9XbL55taNXD_MrTxJz62s6ByDWiK8m1Nxj1_G3pg-M6A@mail.gmail.com>
+Content-Transfer-Encoding: 8bit
+X-HM-Spam-Status: e1kfGhgUHx5ZQUpXWQgPGg8OCBgUHx5ZQUlOS1dZFg8aDwILHllBWSg2Ly
+	tZV1koWUFITzdXWS1ZQUlXWQ8JGhUIEh9ZQVkZQ09JVkwfSkpCTUNIGEkfS1UTARMWGhIXJBQOD1
+	lXWRgSC1lBWUpKSlVJSUlVSU5LVUpKQllXWRYaDxIVHRRZQVlPS0hVSk1PSUxOVUpLS1VKQktLWQ
+	Y+
+X-HM-Tid: 0a8c1f4b0834b21dkuuuc1e3ff2061a
+X-HM-MType: 1
+X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6NQw6DQw4DjwrKBA5Mh0aKjNI
+	SgxPCk5VSlVKTEtKSEhJS01KSk9PVTMWGhIXVRcSCBMSHR4VHDsIGhUcHRQJVRgUFlUYFUVZV1kS
+	C1lBWUpKSlVJSUlVSU5LVUpKQllXWQgBWUFPTEJINwY+
 
+When creating ceq_0 during probing irdma, cqp.sc_cqp will be sent as
+a cqp_request to cqp->sc_cqp.sq_ring. If the request is pending when
+removing the irdma driver or unplugging its aux device, cqp.sc_cqp
+will be dereferenced as wrong struct in irdma_free_pending_cqp_request().
 
---Bj68ANcoh+ILJN6F
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+crash> bt 3669
+PID: 3669   TASK: ffff88aef892c000  CPU: 28  COMMAND: "kworker/28:0"
+ #0 [fffffe0000549e38] crash_nmi_callback at ffffffff810e3a34
+ #1 [fffffe0000549e40] nmi_handle at ffffffff810788b2
+ #2 [fffffe0000549ea0] default_do_nmi at ffffffff8107938f
+ #3 [fffffe0000549eb8] do_nmi at ffffffff81079582
+ #4 [fffffe0000549ef0] end_repeat_nmi at ffffffff82e016b4
+    [exception RIP: native_queued_spin_lock_slowpath+1291]
+    RIP: ffffffff8127e72b  RSP: ffff88aa841ef778  RFLAGS: 00000046
+    RAX: 0000000000000000  RBX: ffff88b01f849700  RCX: ffffffff8127e47e
+    RDX: 0000000000000000  RSI: 0000000000000004  RDI: ffffffff83857ec0
+    RBP: ffff88afe3e4efc8   R8: ffffed15fc7c9dfa   R9: ffffed15fc7c9dfa
+    R10: 0000000000000001  R11: ffffed15fc7c9df9  R12: 0000000000740000
+    R13: ffff88b01f849708  R14: 0000000000000003  R15: ffffed1603f092e1
+    ORIG_RAX: ffffffffffffffff  CS: 0010  SS: 0000
+--- <NMI exception stack> ---
+ #5 [ffff88aa841ef778] native_queued_spin_lock_slowpath at ffffffff8127e72b
+ #6 [ffff88aa841ef7b0] _raw_spin_lock_irqsave at ffffffff82c22aa4
+ #7 [ffff88aa841ef7c8] __wake_up_common_lock at ffffffff81257363
+ #8 [ffff88aa841ef888] irdma_free_pending_cqp_request at ffffffffa0ba12cc [irdma]
+ #9 [ffff88aa841ef958] irdma_cleanup_pending_cqp_op at ffffffffa0ba1469 [irdma]
+ #10 [ffff88aa841ef9c0] irdma_ctrl_deinit_hw at ffffffffa0b2989f [irdma]
+ #11 [ffff88aa841efa28] irdma_remove at ffffffffa0b252df [irdma]
+ #12 [ffff88aa841efae8] auxiliary_bus_remove at ffffffff8219afdb
+ #13 [ffff88aa841efb00] device_release_driver_internal at ffffffff821882e6
+ #14 [ffff88aa841efb38] bus_remove_device at ffffffff82184278
+ #15 [ffff88aa841efb88] device_del at ffffffff82179d23
+ #16 [ffff88aa841efc48] ice_unplug_aux_dev at ffffffffa0eb1c14 [ice]
+ #17 [ffff88aa841efc68] ice_service_task at ffffffffa0d88201 [ice]
+ #18 [ffff88aa841efde8] process_one_work at ffffffff811c589a
+ #19 [ffff88aa841efe60] worker_thread at ffffffff811c71ff
+ #20 [ffff88aa841eff10] kthread at ffffffff811d87a0
+ #21 [ffff88aa841eff50] ret_from_fork at ffffffff82e0022f
 
-On Thu, Nov 30, 2023 at 10:52:59AM +0530, Sukruth Sridharan (he/him) wrote:
-> I notice the following hung task panic on 6.2.0-34 kernel during RDMA dis=
-connect
->=20
-> [Wed Nov  1 08:03:54 2023] INFO: task kworker/u16:5:2274646 blocked
-> for more than 120 seconds.
-> [Wed Nov  1 08:03:55 2023]       Tainted: G        W  OE
-> 6.2.0-34-generic #34-Ubuntu
-> [Wed Nov  1 08:03:55 2023] "echo 0 >
-> /proc/sys/kernel/hung_task_timeout_secs" disables this message.
-> [Wed Nov  1 08:03:55 2023] task:kworker/u16:5   state:D stack:0
-> pid:2274646 ppid:2      flags:0x00004000
-> [Wed Nov  1 08:03:55 2023] Workqueue: xprtiod xprt_autoclose [sunrpc]
-> [Wed Nov  1 08:03:55 2023] Call Trace:
-> [Wed Nov  1 08:03:55 2023]  <TASK>
-> [Wed Nov  1 08:03:55 2023]  __schedule+0x2aa/0x610
-> [Wed Nov  1 08:03:55 2023]  schedule+0x63/0x110
-> [Wed Nov  1 08:03:55 2023]  schedule_timeout+0x157/0x170
-> [Wed Nov  1 08:03:55 2023]  wait_for_completion+0x88/0x150
-> [Wed Nov  1 08:03:55 2023]  rpcrdma_xprt_disconnect+0x33f/0x350 [rpcrdma]
-> [Wed Nov  1 08:03:55 2023]  xprt_rdma_close+0x12/0x40 [rpcrdma]
-> [Wed Nov  1 08:03:55 2023]  xprt_autoclose+0x5c/0x120 [sunrpc]
-> [Wed Nov  1 08:03:55 2023]  process_one_work+0x225/0x430
-> [Wed Nov  1 08:03:55 2023]  worker_thread+0x50/0x3e0
-> [Wed Nov  1 08:03:55 2023]  ? __pfx_worker_thread+0x10/0x10
-> [Wed Nov  1 08:03:55 2023]  kthread+0xe9/0x110
-> [Wed Nov  1 08:03:55 2023]  ? __pfx_kthread+0x10/0x10
-> [Wed Nov  1 08:03:55 2023]  ret_from_fork+0x2c/0x50
-> [Wed Nov  1 08:03:55 2023]  </TASK>
->=20
-> The flow which induced the bug is as follows:
-> 1. Client initiates connection
-> 2. Server hands off the response to the first RPC on the connection to
-> the NIC (Mellanox ConnectX-5)
-> 3. NIC tries to send the response around 6 times and fails the response w=
-ith RNR
-> 4. Client issues disconnect (possibly because it didn't receive a respons=
-e)
-> 5. Server cleans up the connection state
-> 6. Client runs into the above panic as part of disconnect while draining =
-the IOs
->=20
-> It looks like re_receiving is set only in rpcrdma_post_recvs, and the
-> reason why it wouldn't be reset is if memory-region allocation code
-> fails.
-> That is possible if disconnect on the client somehow blocks allocation.
->=20
-> void rpcrdma_post_recvs(struct rpcrdma_xprt *r_xprt, int needed, bool tem=
-p)
-> {
->         // ... (some initialization code)
->=20
->     if (atomic_inc_return(&ep->re_receiving) > 1)
->         goto out;
->=20
->         // ... (some allocation code)
->=20
->     if (!wr) // <<<<<<<<<<<<<<<<<< PROBLEM HERE >>>>>>>>>>>>>>>>>>>
->         goto out;
->=20
->         // ... (post recv code, and some error handling)
->=20
->     if (atomic_dec_return(&ep->re_receiving) > 0)
->         complete(&ep->re_done);
->=20
-> out:
->     trace_xprtrdma_post_recvs(r_xprt, count);
->     ep->re_receive_count +=3D count;
->     return;
-> }
->=20
-> static void rpcrdma_xprt_drain(struct rpcrdma_xprt *r_xprt)
-> {
->     struct rpcrdma_ep *ep =3D r_xprt->rx_ep;
->     struct rdma_cm_id *id =3D ep->re_id;
->=20
->     /* Wait for rpcrdma_post_recvs() to leave its critical
->      * section.
->      */
->     if (atomic_inc_return(&ep->re_receiving) > 1) //
-> <<<<<<<<<<<<<<<<<<< This is not reset, so wait gets stuck
-> >>>>>>>>>>>>>>>>>
->         wait_for_completion(&ep->re_done);
->=20
->     /* Flush Receives, then wait for deferred Reply work
->      * to complete.
->      */
->     ib_drain_rq(id->qp);
->=20
->     /* Deferred Reply processing might have scheduled
->      * local invalidations.
->      */
->     ib_drain_sq(id->qp);
->=20
->     rpcrdma_ep_put(ep);
-> }
->=20
-> Can you help conclude if the above theory around the bug being in the
-> client code is right? If not, can you help with steps/data points
-> required to debug this further?
->=20
+Fixes: 44d9e52977a1 ("RDMA/irdma: Implement device initialization definitions")
+Suggested-by: Leon Romanovsky <leon@kernel.org>
+Signed-off-by: Shifeng Li <lishifeng@sangfor.com.cn>
+---
+ drivers/infiniband/hw/irdma/hw.c | 4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
 
-Can you verify that the bug still occurs with latest vanilla kernel
-(currently v6.7-rc3)?
+---
+v1->v2: replace fix solution and massage the git log.
 
-Thanks.
+diff --git a/drivers/infiniband/hw/irdma/hw.c b/drivers/infiniband/hw/irdma/hw.c
+index 8fa7e4a18e73..df6259c73d28 100644
+--- a/drivers/infiniband/hw/irdma/hw.c
++++ b/drivers/infiniband/hw/irdma/hw.c
+@@ -1180,7 +1180,6 @@ static int irdma_create_ceq(struct irdma_pci_f *rf, struct irdma_ceq *iwceq,
+ 	int status;
+ 	struct irdma_ceq_init_info info = {};
+ 	struct irdma_sc_dev *dev = &rf->sc_dev;
+-	u64 scratch;
+ 	u32 ceq_size;
+ 
+ 	info.ceq_id = ceq_id;
+@@ -1201,14 +1200,13 @@ static int irdma_create_ceq(struct irdma_pci_f *rf, struct irdma_ceq *iwceq,
+ 	iwceq->sc_ceq.ceq_id = ceq_id;
+ 	info.dev = dev;
+ 	info.vsi = vsi;
+-	scratch = (uintptr_t)&rf->cqp.sc_cqp;
+ 	status = irdma_sc_ceq_init(&iwceq->sc_ceq, &info);
+ 	if (!status) {
+ 		if (dev->ceq_valid)
+ 			status = irdma_cqp_ceq_cmd(&rf->sc_dev, &iwceq->sc_ceq,
+ 						   IRDMA_OP_CEQ_CREATE);
+ 		else
+-			status = irdma_sc_cceq_create(&iwceq->sc_ceq, scratch);
++			status = irdma_sc_cceq_create(&iwceq->sc_ceq, 0);
+ 	}
+ 
+ 	if (status) {
+-- 
+2.25.1
 
---=20
-An old man doll... just what I always wanted! - Clara
-
---Bj68ANcoh+ILJN6F
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYKAB0WIQSSYQ6Cy7oyFNCHrUH2uYlJVVFOowUCZWg7ewAKCRD2uYlJVVFO
-o2LoAQD/DycCySM1guMz6DbpdVpzp3oHU+m/0FMWHT5Vu0QIJQEAv1BMp5IzPAne
-zyv7DbEj1tZecHdsHzqVgA6taXIhvAU=
-=yVp9
------END PGP SIGNATURE-----
-
---Bj68ANcoh+ILJN6F--
 
