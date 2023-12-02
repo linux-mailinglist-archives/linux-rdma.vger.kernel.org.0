@@ -1,106 +1,103 @@
-Return-Path: <linux-rdma+bounces-180-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-181-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id CEBC28010E8
-	for <lists+linux-rdma@lfdr.de>; Fri,  1 Dec 2023 18:15:10 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 572B0801A04
+	for <lists+linux-rdma@lfdr.de>; Sat,  2 Dec 2023 03:28:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C9B541C20FD2
-	for <lists+linux-rdma@lfdr.de>; Fri,  1 Dec 2023 17:15:09 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B7391281F17
+	for <lists+linux-rdma@lfdr.de>; Sat,  2 Dec 2023 02:28:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C8D2A4E1B3;
-	Fri,  1 Dec 2023 17:15:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="McSw4rfD"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 291C3613E;
+	Sat,  2 Dec 2023 02:28:04 +0000 (UTC)
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7774F4E1A5;
-	Fri,  1 Dec 2023 17:15:05 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5705DC433C8;
-	Fri,  1 Dec 2023 17:15:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1701450904;
-	bh=9imA+PjoLqrLOoxVi5/Iuh+gS6tq7jj9z41mCaKLv/A=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=McSw4rfDke1GqvtRIDhNNjX31uBPm9qmLH+CAeZwguyMrSxef3daTaF+FmgfBin0u
-	 9Yr+z1+Mima2f5S3LXQFZ9DufF/fA65MVsRxDsi3ScXv0gLI+SCvBzIx0t+7HGF6kW
-	 R6hrYBRFwF/A/pyLDtd5awdUfy0KvNW9oOhsM8eKOcjUax++UdjgUqAvM8b0emAfCU
-	 TtA8KavuqwoR1534313VAMu1Q+EsVR/1E/vzMA02wQFjV5RRr/L+tl9B/d3HFdbAyg
-	 bTnKVAu6YwYhUFVN8kK8TeQx5X8mjuS9b+P/aM/k/ZYMQJfotmPtzL5BtTO/I84gGZ
-	 fHFZOq7fDrqnw==
-Date: Fri, 1 Dec 2023 19:15:00 +0200
-From: Leon Romanovsky <leon@kernel.org>
-To: Simon Horman <horms@kernel.org>
-Cc: Jason Gunthorpe <jgg@nvidia.com>, Shun Hao <shunh@nvidia.com>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, linux-rdma@vger.kernel.org,
-	netdev@vger.kernel.org, Paolo Abeni <pabeni@redhat.com>,
-	Saeed Mahameed <saeedm@nvidia.com>
-Subject: Re: [PATCH mlx5-next 2/5] net/mlx5: Manage ICM type of SW encap
-Message-ID: <20231201171500.GD6535@unreal>
-References: <cover.1701172481.git.leon@kernel.org>
- <37dc4fd78dfa3374ff53aa602f038a2ec76eb069.1701172481.git.leon@kernel.org>
- <20231130181611.GL32077@kernel.org>
+X-Greylist: delayed 346 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Fri, 01 Dec 2023 18:27:56 PST
+Received: from mail-m12810.netease.com (mail-m12810.netease.com [103.209.128.10])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA638132;
+	Fri,  1 Dec 2023 18:27:56 -0800 (PST)
+Received: from [0.0.0.0] (unknown [IPV6:240e:3b7:3271:7f20:4433:b746:c1de:367])
+	by mail-m12773.qiye.163.com (Hmail) with ESMTPA id ABC322C027E;
+	Sat,  2 Dec 2023 10:21:37 +0800 (CST)
+Message-ID: <db0f5324-a4a8-3ae7-58f5-e82dd24643a9@sangfor.com.cn>
+Date: Sat, 2 Dec 2023 10:21:37 +0800
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231130181611.GL32077@kernel.org>
+User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Subject: Re: [PATCH v3] net/mlx5e: Fix a race in command alloc flow
+Content-Language: en-US
+To: Shifeng Li <lishifeng@sangfor.com.cn>, saeedm@nvidia.com,
+ leon@kernel.org, davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
+ pabeni@redhat.com, eranbe@mellanox.com, moshe@mellanox.com
+Cc: netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
+ linux-kernel@vger.kernel.org, lishifeng1992@126.com,
+ Moshe Shemesh <moshe@nvidia.com>
+References: <20231130030559.622165-1-lishifeng@sangfor.com.cn>
+From: Ding Hui <dinghui@sangfor.com.cn>
+In-Reply-To: <20231130030559.622165-1-lishifeng@sangfor.com.cn>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-HM-Spam-Status: e1kfGhgUHx5ZQUpXWQgPGg8OCBgUHx5ZQUlOS1dZFg8aDwILHllBWSg2Ly
+	tZV1koWUFITzdXWS1ZQUlXWQ8JGhUIEh9ZQVlCS05LVh9DHU9DTk0fSUsaT1UTARMWGhIXJBQOD1
+	lXWRgSC1lBWUlPSx5BSBlMQUhJTEpBTB1JS0FPT0hIQRlMT01BGEofHkFITUxZV1kWGg8SFR0UWU
+	FZT0tIVUpNT0lOSVVKS0tVSkJZBg++
+X-HM-Tid: 0a8c2854d8aeb249kuuuabc322c027e
+X-HM-MType: 1
+X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6M1E6CCo*DDw4CgstLSwyMkNM
+	SDIaFE1VSlVKTEtKT0NITUJDQk9KVTMWGhIXVR8SFRwTDhI7CBoVHB0UCVUYFBZVGBVFWVdZEgtZ
+	QVlJT0seQUgZTEFISUxKQUwdSUtBT09ISEEZTE9NQRhKHx5BSE1MWVdZCAFZQUhDTkI3Bg++
 
-On Thu, Nov 30, 2023 at 06:16:11PM +0000, Simon Horman wrote:
-> On Tue, Nov 28, 2023 at 02:29:46PM +0200, Leon Romanovsky wrote:
-> > From: Shun Hao <shunh@nvidia.com>
-> > 
-> > Support allocate/deallocate the new SW encap ICM type memory.
-> > The new ICM type is used for encap context allocation managed by SW,
-> > instead FW. It can increase encap context maximum number and allocation
-> > speed
-> > 
-> > Signed-off-by: Shun Hao <shunh@nvidia.com>
-> > Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
+On 2023/11/30 11:05, Shifeng Li wrote:
+> Fix a cmd->ent use after free due to a race on command entry.
+> Such race occurs when one of the commands releases its last refcount and
+> frees its index and entry while another process running command flush
+> flow takes refcount to this command entry. The process which handles
+> commands flush may see this command as needed to be flushed if the other
+> process allocated a ent->idx but didn't set ent to cmd->ent_arr in
+> cmd_work_handler(). Fix it by moving the assignment of cmd->ent_arr into
+> the spin lock.
 > 
-> ...
+> [70013.081955] BUG: KASAN: use-after-free in mlx5_cmd_trigger_completions+0x1e2/0x4c0 [mlx5_core]
+> [70013.081967] Write of size 4 at addr ffff88880b1510b4 by task kworker/26:1/1433361
+> [70013.081968]
+> [70013.082028] Workqueue: events aer_isr
+> [70013.082053] Call Trace:
+> [70013.082067]  dump_stack+0x8b/0xbb
+> [70013.082086]  print_address_description+0x6a/0x270
+> [70013.082102]  kasan_report+0x179/0x2c0
+> [70013.082173]  mlx5_cmd_trigger_completions+0x1e2/0x4c0 [mlx5_core]
+> [70013.082267]  mlx5_cmd_flush+0x80/0x180 [mlx5_core]
+> [70013.082304]  mlx5_enter_error_state+0x106/0x1d0 [mlx5_core]
+> [70013.082338]  mlx5_try_fast_unload+0x2ea/0x4d0 [mlx5_core]
+> [70013.082377]  remove_one+0x200/0x2b0 [mlx5_core]
+> [70013.082409]  pci_device_remove+0xf3/0x280
+> [70013.082439]  device_release_driver_internal+0x1c3/0x470
+> [70013.082453]  pci_stop_bus_device+0x109/0x160
+> [70013.082468]  pci_stop_and_remove_bus_device+0xe/0x20
+> [70013.082485]  pcie_do_fatal_recovery+0x167/0x550
+> [70013.082493]  aer_isr+0x7d2/0x960
+> [70013.082543]  process_one_work+0x65f/0x12d0
+> [70013.082556]  worker_thread+0x87/0xb50
+> [70013.082571]  kthread+0x2e9/0x3a0
+> [70013.082592]  ret_from_fork+0x1f/0x40
 > 
-> > @@ -164,6 +188,13 @@ int mlx5_dm_sw_icm_alloc(struct mlx5_core_dev *dev, enum mlx5_sw_icm_type type,
-> >  						log_header_modify_pattern_sw_icm_size);
-> >  		block_map = dm->header_modify_pattern_sw_icm_alloc_blocks;
-> >  		break;
-> > +	case MLX5_SW_ICM_TYPE_SW_ENCAP:
-> > +		icm_start_addr = MLX5_CAP64_DEV_MEM(dev,
-> > +						    indirect_encap_sw_icm_start_address);
-> > +		log_icm_size = MLX5_CAP_DEV_MEM(dev,
-> > +						log_indirect_encap_sw_icm_size);
-> > +		block_map = dm->header_encap_sw_icm_alloc_blocks;
-> > +		break;
-> >  	default:
-> >  		return -EINVAL;
-> >  	}
-> > @@ -242,6 +273,11 @@ int mlx5_dm_sw_icm_dealloc(struct mlx5_core_dev *dev, enum mlx5_sw_icm_type type
-> >  						    header_modify_pattern_sw_icm_start_address);
-> >  		block_map = dm->header_modify_pattern_sw_icm_alloc_blocks;
-> >  		break;
-> > +	case MLX5_SW_ICM_TYPE_SW_ENCAP:
-> > +		icm_start_addr = MLX5_CAP64_DEV_MEM(dev,
-> > +						    indirect_encap_sw_icm_start_address);
-> > +		block_map = dm->header_encap_sw_icm_alloc_blocks;
-> > +		break;
-> >  	default:
-> >  		return -EINVAL;
-> >  	}
-> 
-> Hi Leon and Shun,
-> 
-> a minor nit from my side: this patch uses MLX5_SW_ICM_TYPE_SW_ENCAP,
-> but that enum value isn't present until the following patch.
 
-Thanks, it was my mistake to reorder patches, will change to right order
-and resubmit.
+It is better if you also put the diagram [1] in the commit log, that is easy to understand.
+
+[1] https://www.spinics.net/lists/netdev/msg951955.html
+
+> Fixes: 50b2412b7e78 ("net/mlx5: Avoid possible free of command entry while timeout comp handler")
+> Reviewed-by: Moshe Shemesh <moshe@nvidia.com>
+> Signed-off-by: Shifeng Li <lishifeng@sangfor.com.cn>
+
+-- 
+Thanks,
+- Ding Hui
+
 
