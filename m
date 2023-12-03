@@ -1,101 +1,82 @@
-Return-Path: <linux-rdma+bounces-183-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-184-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6F08C80222D
-	for <lists+linux-rdma@lfdr.de>; Sun,  3 Dec 2023 10:15:49 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id B86CC80223B
+	for <lists+linux-rdma@lfdr.de>; Sun,  3 Dec 2023 10:27:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0E77F1F20F55
-	for <lists+linux-rdma@lfdr.de>; Sun,  3 Dec 2023 09:15:49 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CAC481C208BE
+	for <lists+linux-rdma@lfdr.de>; Sun,  3 Dec 2023 09:27:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1A1A36FB9;
-	Sun,  3 Dec 2023 09:15:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DF8B479E0;
+	Sun,  3 Dec 2023 09:27:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="IZYSaXAq"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="Dwx4bOk+"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from out-177.mta0.migadu.com (out-177.mta0.migadu.com [IPv6:2001:41d0:1004:224b::b1])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A269ACD
-	for <linux-rdma@vger.kernel.org>; Sun,  3 Dec 2023 01:15:38 -0800 (PST)
-Message-ID: <1d9842b1-76b1-636d-cb71-87d2becf552c@linux.dev>
+Received: from out-174.mta1.migadu.com (out-174.mta1.migadu.com [IPv6:2001:41d0:203:375::ae])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E3724E7
+	for <linux-rdma@vger.kernel.org>; Sun,  3 Dec 2023 01:27:35 -0800 (PST)
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1701594935;
+	t=1701595652;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=GZuFEVGZeVZAulyZzSnoDuiiGMju7wOvAj1PIpgzQ3Q=;
-	b=IZYSaXAqPTAYUizsVmmf0a4W65rCFZoGXVii8Owq+Mgw4d/f0R+vsTvDh622CUgtZt+Cgc
-	ohRUMv8pFstEqlwa5orJnF8svKRcdLryjXKS1dgyQo1oOllxpf5VE3Wh88EFI/p7RHjExx
-	eJzo3okRGSEdTEEenqbEQbkQDklqmt0=
-Date: Sun, 3 Dec 2023 17:15:03 +0800
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=s0TikuCYyL5y892f4EYxpW1CHdKFinNLwfVUKbsLwRA=;
+	b=Dwx4bOk+uBiPNkKBdKWSZrYY+Zj29gAxvL9xjjedz4ZbDr7cnCJKWXg7U64mXabSBL3ceC
+	RcW57DZpiD//cDS5KOJoF3Ad4JMsDW9v6jwW2CabAvsbT9MG0ReP21qtyHJGsVvIdwYipT
+	RFBjwGULQOc1dU8245nUF/+kk1wIk5k=
+From: Guoqing Jiang <guoqing.jiang@linux.dev>
+To: bmt@zurich.ibm.com,
+	jgg@ziepe.ca,
+	leon@kernel.org
+Cc: linux-rdma@vger.kernel.org,
+	guoqing.jiang@linux.dev
+Subject: [PATCH V2 0/4] Misc changes for siw
+Date: Sun,  3 Dec 2023 17:26:51 +0800
+Message-Id: <20231203092655.28102-1-guoqing.jiang@linux.dev>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH 4/4] RDMA/siw: Call orq_get_current if possible
-To: Bernard Metzler <BMT@zurich.ibm.com>, "jgg@ziepe.ca" <jgg@ziepe.ca>,
- "leon@kernel.org" <leon@kernel.org>
-Cc: "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>
-References: <20231129032418.26705-1-guoqing.jiang@linux.dev>
- <20231129032418.26705-5-guoqing.jiang@linux.dev>
- <BY5PR15MB3602DEB9CA3010A31907C67D9981A@BY5PR15MB3602.namprd15.prod.outlook.com>
-Content-Language: en-US
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Guoqing Jiang <guoqing.jiang@linux.dev>
-In-Reply-To: <BY5PR15MB3602DEB9CA3010A31907C67D9981A@BY5PR15MB3602.namprd15.prod.outlook.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 X-Migadu-Flow: FLOW_OUT
 
+V2 changes:
+1. Collect tags from Bernard.
+2. Use SIW_QP_STATE_COUNT for siw_qp_state_to_ib_qp_state.
+3. Update commite message for the last patch.
 
+Thanks for Bernard's review!
 
-On 12/1/23 23:47, Bernard Metzler wrote:
->
->> -----Original Message-----
->> From: Guoqing Jiang <guoqing.jiang@linux.dev>
->> Sent: Wednesday, November 29, 2023 4:24 AM
->> To: Bernard Metzler <BMT@zurich.ibm.com>; jgg@ziepe.ca; leon@kernel.org
->> Cc: linux-rdma@vger.kernel.org; guoqing.jiang@linux.dev
->> Subject: [EXTERNAL] [PATCH 4/4] RDMA/siw: Call orq_get_current if possible
->>
->> We can call it in siw_orq_empty.
->>
->> Signed-off-by: Guoqing Jiang <guoqing.jiang@linux.dev>
->> ---
->>   drivers/infiniband/sw/siw/siw.h | 2 +-
->>   1 file changed, 1 insertion(+), 1 deletion(-)
->>
->> diff --git a/drivers/infiniband/sw/siw/siw.h
->> b/drivers/infiniband/sw/siw/siw.h
->> index 2edba2a864bb..75253f2b3e3d 100644
->> --- a/drivers/infiniband/sw/siw/siw.h
->> +++ b/drivers/infiniband/sw/siw/siw.h
->> @@ -657,7 +657,7 @@ static inline struct siw_sqe *orq_get_free(struct
->> siw_qp *qp)
->>
->>   static inline int siw_orq_empty(struct siw_qp *qp)
->>   {
->> -	return qp->orq[qp->orq_get % qp->attrs.orq_size].flags == 0 ? 1 : 0;
->> +	return orq_get_current(qp)->flags == 0 ? 1 : 0;
->>   }
->>
->>   static inline struct siw_sqe *irq_alloc_free(struct siw_qp *qp)
->> --
->> 2.35.3
-> Please change the commit message. Something like
-> 'Use orq_get_current() in siw_orq_empty()'.
+Hi,
 
-Ok, will do.
+The first two patches try to reduce memory usage, the third
+one fix test_query_rc_qp failure, and the last one clean up
+code a bit.
 
-> Otherwise looks good!
->
-> Acked-by: Bernard Metzler <bmt@zurich.ibm.com>
+Please review.
 
-Thanks for your review!
-
+Thanks,
 Guoqing
+
+Guoqing Jiang (4):
+  RDMA/siw: Move tx_cpu ahead
+  RDMA/siw: Reduce memory usage of struct siw_rx_stream
+  RDMA/siw: Set qp_state in siw_query_qp
+  RDMA/siw: Call orq_get_current if possible
+
+ drivers/infiniband/sw/siw/siw.h       | 10 +++++-----
+ drivers/infiniband/sw/siw/siw_verbs.c | 10 ++++++++++
+ 2 files changed, 15 insertions(+), 5 deletions(-)
+
+
+base-commit: 50af5d12f7e24b85fc10270d7700f4aa1b20b8e4
+-- 
+2.35.3
+
 
