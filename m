@@ -1,244 +1,223 @@
-Return-Path: <linux-rdma+bounces-226-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-227-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3EDD1803C61
-	for <lists+linux-rdma@lfdr.de>; Mon,  4 Dec 2023 19:07:38 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0DB80803CBC
+	for <lists+linux-rdma@lfdr.de>; Mon,  4 Dec 2023 19:23:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E77A3281184
-	for <lists+linux-rdma@lfdr.de>; Mon,  4 Dec 2023 18:07:36 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BBE7A281179
+	for <lists+linux-rdma@lfdr.de>; Mon,  4 Dec 2023 18:23:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1C93C2F864;
-	Mon,  4 Dec 2023 18:07:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 48A502F854;
+	Mon,  4 Dec 2023 18:23:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Sbzk/cJa"
+	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="rqSuQiiE"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-pf1-x42a.google.com (mail-pf1-x42a.google.com [IPv6:2607:f8b0:4864:20::42a])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 816DD129;
-	Mon,  4 Dec 2023 10:07:10 -0800 (PST)
-Received: by mail-pf1-x42a.google.com with SMTP id d2e1a72fcca58-6ce46470647so821732b3a.1;
-        Mon, 04 Dec 2023 10:07:10 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1701713230; x=1702318030; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=vnKGL9rVmaXJ0k7UQTGGb8qgGBw3yaFYXulmlj0ClVk=;
-        b=Sbzk/cJarJS+HKABhyq9ZXjIKHReZXRZD2BmG6K1tjWjkQP6qWn2M1Hej+A0irmaku
-         MiQQibihKqnyE5TVi9uvaP+TQXi4717965Cj5SWoxsFXT08rL/dq7gcQha9HMJ+iJ6E4
-         BVSsykoGX1GtN128YVvHFOLoVXyY9pSvbwxF1qFD/Yff8eCGgX7GFA1jKFa07niVVpY4
-         d9OCXuF3WhLpOcz+yEjCxARi6Zebpvmf8U8x8xjf+1Jj/H4bG5JnvtbOkN1l+9J9gmEl
-         oiEG7ELXzD08vZaeO7QyUcVFM2Rqj1v3KKn+P22m3559f6bBVfzqLvxbIyP1mZuhfgJK
-         shBw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701713230; x=1702318030;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=vnKGL9rVmaXJ0k7UQTGGb8qgGBw3yaFYXulmlj0ClVk=;
-        b=AYyMCAiofwW1w8/LKfRAUteUMOKs3IGWzjKZ81HOLm4Qog7YCel+I5tMBELYkYd3Ic
-         C4T4qpkFlGZeeXP+bncCihQfhjeGD3TsJFVqGBXi/XIjoPO4B2kA2Qlk2CwoPwhDujan
-         +NNUBj2hdZwzJF+J3y4w2hEVmDWduaQnATolFiBBR9nrKzAorPwLhVN5eBryUxtqzHrX
-         V+Fk7vGMXsTDRx7WiPSB9OD38PTNnbefsY008s69lgAXGCZSuKzQm1is49s8RxAW7uOj
-         fmc91cbZIRseHKFcBH1ZvFv+pbAs/b98BwWxq9xVaO3s3RAhfCBsGBSyGFZhNwjbcZOo
-         v/lw==
-X-Gm-Message-State: AOJu0YygE6uwIjeYYcpP+0PeLWzLwNjgGit6simtM/p2Q2tE1GHwtNrK
-	68fyZnN9/CqU4w30ZC6sDjE=
-X-Google-Smtp-Source: AGHT+IGDIGeeBa7UWPj4E4w2SIGHBjZgGz8oxGqwAWzNb+KD7mpnEvIno4bt3NIHORxil3wMtNwC4w==
-X-Received: by 2002:a05:6a20:1448:b0:18c:374c:6e64 with SMTP id a8-20020a056a20144800b0018c374c6e64mr27716780pzi.36.1701713229690;
-        Mon, 04 Dec 2023 10:07:09 -0800 (PST)
-Received: from localhost ([2620:10d:c090:400::4:27ef])
-        by smtp.gmail.com with ESMTPSA id u2-20020a056a00158200b006cdd507ca2esm7943470pfk.167.2023.12.04.10.07.08
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 04 Dec 2023 10:07:09 -0800 (PST)
-Sender: Tejun Heo <htejun@gmail.com>
-Date: Mon, 4 Dec 2023 08:07:07 -1000
-From: Tejun Heo <tj@kernel.org>
-To: Naohiro Aota <Naohiro.Aota@wdc.com>
-Cc: Lai Jiangshan <jiangshanlai@gmail.com>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	"linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>,
-	"ceph-devel@vger.kernel.org" <ceph-devel@vger.kernel.org>,
-	"cgroups@vger.kernel.org" <cgroups@vger.kernel.org>,
-	"coreteam@netfilter.org" <coreteam@netfilter.org>,
-	"dm-devel@lists.linux.dev" <dm-devel@lists.linux.dev>,
-	"dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
-	"gfs2@lists.linux.dev" <gfs2@lists.linux.dev>,
-	"intel-gfx@lists.freedesktop.org" <intel-gfx@lists.freedesktop.org>,
-	"iommu@lists.linux.dev" <iommu@lists.linux.dev>,
-	"linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>,
-	"linux-bcachefs@vger.kernel.org" <linux-bcachefs@vger.kernel.org>,
-	"linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
-	"linux-cachefs@redhat.com" <linux-cachefs@redhat.com>,
-	"linux-cifs@vger.kernel.org" <linux-cifs@vger.kernel.org>,
-	"linux-crypto@vger.kernel.org" <linux-crypto@vger.kernel.org>,
-	"linux-erofs@lists.ozlabs.org" <linux-erofs@lists.ozlabs.org>,
-	"linux-f2fs-devel@lists.sourceforge.net" <linux-f2fs-devel@lists.sourceforge.net>,
-	"linux-fscrypt@vger.kernel.org" <linux-fscrypt@vger.kernel.org>,
-	"linux-media@vger.kernel.org" <linux-media@vger.kernel.org>,
-	"linux-mediatek@lists.infradead.org" <linux-mediatek@lists.infradead.org>,
-	"linux-mm@kvack.org" <linux-mm@kvack.org>,
-	"linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
-	"linux-nfs@vger.kernel.org" <linux-nfs@vger.kernel.org>,
-	"linux-nvme@lists.infradead.org" <linux-nvme@lists.infradead.org>,
-	"linux-raid@vger.kernel.org" <linux-raid@vger.kernel.org>,
-	"linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-	"linux-remoteproc@vger.kernel.org" <linux-remoteproc@vger.kernel.org>,
-	"linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
-	"linux-trace-kernel@vger.kernel.org" <linux-trace-kernel@vger.kernel.org>,
-	"linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>,
-	"linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>,
-	"linux-xfs@vger.kernel.org" <linux-xfs@vger.kernel.org>,
-	"nbd@other.debian.org" <nbd@other.debian.org>,
-	"netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-	"ntb@lists.linux.dev" <ntb@lists.linux.dev>,
-	"open-iscsi@googlegroups.com" <open-iscsi@googlegroups.com>,
-	"oss-drivers@corigine.com" <oss-drivers@corigine.com>,
-	"platform-driver-x86@vger.kernel.org" <platform-driver-x86@vger.kernel.org>,
-	"samba-technical@lists.samba.org" <samba-technical@lists.samba.org>,
-	"target-devel@vger.kernel.org" <target-devel@vger.kernel.org>,
-	"virtualization@lists.linux.dev" <virtualization@lists.linux.dev>,
-	"wireguard@lists.zx2c4.com" <wireguard@lists.zx2c4.com>
-Subject: Re: Performance drop due to alloc_workqueue() misuse and recent
- change
-Message-ID: <ZW4VS3Z0auYCjg-W@slm.duckdns.org>
-References: <dbu6wiwu3sdhmhikb2w6lns7b27gbobfavhjj57kwi2quafgwl@htjcc5oikcr3>
+Received: from NAM12-BN8-obe.outbound.protection.outlook.com (mail-bn8nam12on2058.outbound.protection.outlook.com [40.107.237.58])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C2F51D2;
+	Mon,  4 Dec 2023 10:23:34 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=h8EnppaaCDzp+6bsgGhEvnbahuF7onF/5Sfdz7EHvvp7YnhdWk4kjs7s1zwsFMWlsrmt3ZpYk4wyqHMqiMGOiBjcPSkdfAOKyhVYrhgW9qI2wgbnLvRUDWwcLDxsX7DOvTjQUyMrW/f/0sTXb0tEFY4+2ddnvOP6gRoc3nn9WpH2Oz87JQNgL3/qtUD2oDwpDNcoZqCAHBI1fa+CC2mGXncMqQja+2Mrl4AWJuHAXUcSMVOJN5tV3joJvzMKjPyOaxr5Y2yiVR3zBL8wY1GFxOPeP8Sbz0u/RrSZEpYmaeJQmO/XTF+eCHt9Q8HNV+JWm1ICaTcQhiCx/Rv6POd8Ng==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=QwHKL8gPgwUexhx3IdpKyoewR0Gf7jNHmT+LPsPRKjA=;
+ b=gIo0emulyouLAw5wrTZiPB5L7NBkL2BbqKUdLS5XnXikDhxMKviBfNqfCHhhuLQw2PApXXYBoIzYLQ0c1xmuuDsmAt+J0EhMkIu0RorR9kwgIqHcVNvAZfeX5LacTQiqfXgd3fjEqsUF75S5MKhYI/zc1wnPVbOuLzZp+mpx+/+ft2yddSBnQLl9y2OSpFnHx/K3KDHhnRpP0A5joW4of373KfdaswPutogK0h3wZbH01s2+F7Naj+S3PHH3d2bXBPQxSNswVGClRPDk/BuCII8fK8um5MY8B6i8RuVYymZfgwACmV5DB3XKaS99r5TamK1Z4rriG0xVb1+nR+qC3g==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=QwHKL8gPgwUexhx3IdpKyoewR0Gf7jNHmT+LPsPRKjA=;
+ b=rqSuQiiExaRA+31r5IQRPEhG9TzOkhXYMhL6HWBYv1cjjUB6l/coEp8k8OdOYshhIDwPZyivdZtIFb6Xl2ogau7M7XJf8QWP2HUSvrWk6Wt3vSfCIFnX4x1ISbyCHmN0rELsO3FSXIhF/WSHSDY0E5PmXFO01FBSTA6werQR5CKw7HIP8LUOa4Ev89jquEiSmicrlybQ8RJikc8fsNYARvEQXiPbCVEwKD8OEBgrN0z2kpbtKADtJoU0FCwgDJirJqcRpOi+6LeR4gSpuq3SQ0eogsFiLXlSGJOqtH3U8xHfy5tY6IlDTbtOkiMM6iu8IGkALZWEt2aEl91Qt/cZ4Q==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nvidia.com;
+Received: from LV2PR12MB5869.namprd12.prod.outlook.com (2603:10b6:408:176::16)
+ by SJ2PR12MB7944.namprd12.prod.outlook.com (2603:10b6:a03:4c5::16) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7046.33; Mon, 4 Dec
+ 2023 18:23:31 +0000
+Received: from LV2PR12MB5869.namprd12.prod.outlook.com
+ ([fe80::60d4:c1e3:e1aa:8f93]) by LV2PR12MB5869.namprd12.prod.outlook.com
+ ([fe80::60d4:c1e3:e1aa:8f93%4]) with mapi id 15.20.7046.033; Mon, 4 Dec 2023
+ 18:23:31 +0000
+Date: Mon, 4 Dec 2023 14:23:30 -0400
+From: Jason Gunthorpe <jgg@nvidia.com>
+To: Catalin Marinas <catalin.marinas@arm.com>
+Cc: Mark Rutland <mark.rutland@arm.com>, Leon Romanovsky <leon@kernel.org>,
+	Arnd Bergmann <arnd@arndb.de>, linux-arch@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org, linux-rdma@vger.kernel.org,
+	llvm@lists.linux.dev, Michael Guralnik <michaelgur@mellanox.com>,
+	Nathan Chancellor <nathan@kernel.org>,
+	Nick Desaulniers <ndesaulniers@google.com>,
+	Will Deacon <will@kernel.org>
+Subject: Re: [PATCH rdma-next 1/2] arm64/io: add memcpy_toio_64
+Message-ID: <20231204182330.GK1493156@nvidia.com>
+References: <cover.1700766072.git.leon@kernel.org>
+ <c3ae87aea7660c3d266905c19d10d8de0f9fb779.1700766072.git.leon@kernel.org>
+ <ZWB373y5XuZDultf@FVFF77S0Q05N>
+ <20231124122352.GB436702@nvidia.com>
+ <ZWSOwT2OyMXD1lmo@arm.com>
+ <20231127134505.GI436702@nvidia.com>
+ <ZW4NAzI_jvwoq8dL@arm.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZW4NAzI_jvwoq8dL@arm.com>
+X-ClientProxiedBy: BL1PR13CA0024.namprd13.prod.outlook.com
+ (2603:10b6:208:256::29) To LV2PR12MB5869.namprd12.prod.outlook.com
+ (2603:10b6:408:176::16)
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <dbu6wiwu3sdhmhikb2w6lns7b27gbobfavhjj57kwi2quafgwl@htjcc5oikcr3>
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: LV2PR12MB5869:EE_|SJ2PR12MB7944:EE_
+X-MS-Office365-Filtering-Correlation-Id: 61d715ec-8854-4736-0405-08dbf4f61e6a
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	1DCVlp4weC6qk9BenTtcHKkif1qYAWtujGTYj5wlmEpAHxBw25kDTRsBE4bsKsJQYXtLGeetm/q6lD/bDk5u1xRxsy/E4570oOwcODxuAt7NzkOn7ueCM5qkSAh5sfNbSGtRz0a7KPPY+qAJf86iMGmaBYVP+hAMvjiH3qBb2CNElzoiVfIksl3VA6kZFWSAzNPJ8NdR++0uL4MX/9Li+go845vvbJ27qjvl7yOgVCEEGOShk21OpeV0IAZ8H0TNC/LWEf0f8GKvLddYhRbDsk/7WLRyaxWZPFs6x8b2CJZrDvzrSiBWatECBRiFz3XIB/hLCd7oD27Lkq2c2jgE04u3/yGh4JGJcpHJAbTV++Q1irQwVQTrzfn2L61zymlw2IdcVXZ3vryVaEAv0cSNHx5QECa6/IgAbdNlvudrzQVuzNkmcw6D+TIHCR/wJXsV7u2lKDrU9fugNkomA//Z5qmSCdcy/6wNkPWcqqlb7nrOwsxnhOWLTF7jbbzkzI3RaU/0wow0phya6nAT7Zm1sjW9Ck13WKOEHbLu20w2V3tdnp5OlU25yTs3rqXrJUxO
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:LV2PR12MB5869.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366004)(396003)(376002)(346002)(136003)(39860400002)(230922051799003)(186009)(451199024)(64100799003)(1800799012)(66556008)(316002)(66476007)(6916009)(54906003)(66946007)(6486002)(478600001)(7416002)(5660300002)(36756003)(41300700001)(2906002)(33656002)(8676002)(8936002)(4326008)(86362001)(1076003)(83380400001)(2616005)(26005)(6512007)(6506007)(38100700002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?us-ascii?Q?Q95FVFVtwIZQKRT0GIHn7ZN8z0anmA18I734GPJsMQ9psSixmnf2Kk7MX4Be?=
+ =?us-ascii?Q?BxmkP/U3I511dyhLPDXBoTzsEMK7WKEtSt30vm8zHjDZsENG05m3cNtrPB6G?=
+ =?us-ascii?Q?XW6n+vODOwSG4Te98Ijf0nE/l/7WIPWHOlLjX6CHOCVO+CT1tSOkNbCjga6b?=
+ =?us-ascii?Q?ERITPORyj4VdKGn4gdBBDBL5CZG6pZAUZqBYI2sf5P+Gjw1mS5TMAaUgkmOT?=
+ =?us-ascii?Q?PYBDuUWAgWj7tVDu4Q5YYArXUuvQYpXlEZDs2hg9GQDhYCW9t7A8+ZqlW7KM?=
+ =?us-ascii?Q?Sahj15kT55gZbxiFFFJBBabxm2FHnlxeoLfnMXh1hyFi22lb77w7hqG8whrs?=
+ =?us-ascii?Q?0NQcZui90I0BqCcDZppkOQODcMf2etB7iIpierRgRQtSZ45U2Ejbwgt+f87M?=
+ =?us-ascii?Q?BpPvmgKmDxyQxELTxLAqf1dk3xj4jSfWQd+dDnVOaQNYSwtaBtqJZYvNxB/v?=
+ =?us-ascii?Q?+pWIlx/rzLGnxhIAmdg7zZd2r0G6xin544N4znd0jpn6+uaPoLb7hGlIlm21?=
+ =?us-ascii?Q?mbFbyzpP2OfkLqcEpeTAy2yWFE6lKyFfBTMFq/DLrPhFeNpeSErCXGpyyyDJ?=
+ =?us-ascii?Q?1iKi7nvfLr43eVla/q3ShTfzuvrVYjI3m9/h+LCX1zYq2Duqe2w21RH3Vzej?=
+ =?us-ascii?Q?++FZijDaIsAJqgpv6Q5yX2Bp7FJg8IWo+cEkvuyznI0FrWB2Shcub9wd7wSV?=
+ =?us-ascii?Q?r57azmBeIDwJnrgtRr7r57PvbUtvl11fZmT+rCstPIZ8AhKuoK53b9Pi5mjN?=
+ =?us-ascii?Q?SSg4v7M1f5NxIGmbcZdqwT7O+lUcXvUL8l+NZv+ugNDKUGIS2zHVvoG7mXe5?=
+ =?us-ascii?Q?mjwURZOdAyQwW2IrA/P7yy35LlnP3YgeoK3/673L6hjZ4LwW055CkhMbCOt8?=
+ =?us-ascii?Q?NKrR5QRGUK7w59lZ6K9Dvz1E11glUJW9kW9lVfzVmMcIG+7YhiOY23wcTnmv?=
+ =?us-ascii?Q?0dyf8hsIlYlBbA3j2nReOxEmIOiPFenucPO8ysRqqnvUze2QzHVHXwTndu53?=
+ =?us-ascii?Q?4xkKazNGab68imF3J89iYFzEurOK1Jjsj4nCa1C0i9IyGvOHGRpzgrbZ15aY?=
+ =?us-ascii?Q?Pg8+7ofaAxHQDzebifL6/LZLLoWkrdOE/RXPXZK5BlKxSCj+/gghyj1MpA9/?=
+ =?us-ascii?Q?7s9mMU0wvJ3yEXHgRxMAroSs/pNHy/SMGpfJS6kdScyVKvrw6Q62H/w3djWN?=
+ =?us-ascii?Q?Ke9DcHGHKdTJiiqnE5MSb2YblOONvijFqMA6lK/23gW/7nPHwCB2N3GGkNx2?=
+ =?us-ascii?Q?nnBUhjz2g3oaINo6/SQLyhjZKHBveWts2b23eV3ZGVL2QCIM1wT331EWa7V3?=
+ =?us-ascii?Q?InuBfnp/LTYZjvLqzrAz0VrXYkIbN3dxtTzwsxD6Vx6zVvFzwrkw4BCjC5zu?=
+ =?us-ascii?Q?B/0u8q2fPlYCKwzsZZCAzjT4sCld35LrmY0TS4zy8V4zfN3fPuVOVbYiPg1Y?=
+ =?us-ascii?Q?PcESP2ohFllYB3EnKZN5AN9sj/78ie1HWGAOD+/qHyqlK1Dg5oYHA8+pT1xA?=
+ =?us-ascii?Q?SsI1Bv/Ac52IjvSo+ZJRiScyzSO8rJxTnVQ5wskMfzAXvp5xBJ295qu5mdxd?=
+ =?us-ascii?Q?QRvMDLaukGMNOJVO2CHtDQnf9U7LQ3uPEuD7vXRn?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 61d715ec-8854-4736-0405-08dbf4f61e6a
+X-MS-Exchange-CrossTenant-AuthSource: LV2PR12MB5869.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 04 Dec 2023 18:23:31.3948
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: EzAxsFBjRGy4E2ONC43rMPdN24UU2tEtT/CTIgGFsiHR423uQCcBmPs+465utFiM
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ2PR12MB7944
 
-Hello,
+On Mon, Dec 04, 2023 at 05:31:47PM +0000, Catalin Marinas wrote:
+> On Mon, Nov 27, 2023 at 09:45:05AM -0400, Jason Gunthorpe wrote:
+> > On Mon, Nov 27, 2023 at 12:42:41PM +0000, Catalin Marinas wrote:
+> > > > > What's the actual requirement here? Is this just for performance?
+> > > > 
+> > > > Yes, just performance.
+> > > 
+> > > Do you have any rough numbers (percentage)? It's highly
+> > > microarchitecture-dependent until we get the ST64B instruction.
+> > 
+> > The current C code is an open coded store loop. The kernel does 250
+> > tries and measures if any one of them succeeds to combine.
+> > 
+> > On x86, and older ARM cores we see that 100% of the time at least 1 in
+> > 250 tries succeeds.
+> > 
+> > With the new CPU cores we see more like 9 out of 10 time there are 0
+> > in 250 tries that succeed. Ie we can go thousands of times without
+> > seeing any successful WC combine.
+> > 
+> > The STP block brings it back to 100% of the time 1 in 250 succeed.
+> 
+> That's a bit confusing to me: 1 in 250 succeeding is still pretty rare.
+> But I guess what your benchmark says is that at least 1 succeeded to
+> write-combine and it might as well be all 250 tries. It's more
+> interesting to see if there's actual performance gain in real-world
+> traffic, not just some artificial benchmark (I may have misunderstood
+> your numbers above).
 
-On Mon, Dec 04, 2023 at 04:03:47PM +0000, Naohiro Aota wrote:
-> Recently, commit 636b927eba5b ("workqueue: Make unbound workqueues to use
-> per-cpu pool_workqueues") changed WQ_UNBOUND workqueue's behavior. It
-> changed the meaning of alloc_workqueue()'s max_active from an upper limit
-> imposed per NUMA node to a limit per CPU. As a result, massive number of
-> workers can be running at the same time, especially if the workqueue user
-> thinks the max_active is a global limit.
-> 
-> Actually, it is already written it is per-CPU limit in the documentation
-> before the commit. However, several callers seem to misuse max_active,
-> maybe thinking it is a global limit. It is an unexpected behavior change
-> for them.
+Yes, I just don't have better data available to say that 250/250
+succeeded, but we expect that is the case.
 
-Right, and the behavior has been like that for a very long time and there
-was no other way to achieve reasonable level of concurrency, so the current
-situation is expected.
+We have now something like 20 years experiance with write combining
+performance on x86 systems. It brings real world gains in real word
+HPC applications.
 
-> For example, these callers set max_active = num_online_cpus(), which is a
-> suspicious limit applying to per-CPU. This config means we can have nr_cpu
-> * nr_cpu active tasks working at the same time.
+Indeed, the reason this even came up was because one of our existing
+applications was performing unexpectedly badly on these ARM64 servers.
 
-Yeah, that sounds like a good indicator.
+We even have data showing that having the CPU do all the write
+combining steps and then fail to get writecombining is notably slower
+than just assuming no write combining. It is why we go through the
+trouble to test the physical HW.
 
-> fs/f2fs/data.c: sbi->post_read_wq = alloc_workqueue("f2fs_post_read_wq",
-> fs/f2fs/data.c-                                          WQ_UNBOUND | WQ_HIGHPRI,
-> fs/f2fs/data.c-                                          num_online_cpus());
+> > However, in userspace we have long been using ST4 to create a
+> > single-instruction 64 byte store on ARM64. As far as I know this is
+> > highly reliable. I don't have direct data on the STP configuration.
 > 
-> fs/crypto/crypto.c:     fscrypt_read_workqueue = alloc_workqueue("fscrypt_read_queue",
-> fs/crypto/crypto.c-                                              WQ_UNBOUND | WQ_HIGHPRI,
-> fs/crypto/crypto.c-                                              num_online_cpus());
-> 
-> fs/verity/verify.c:     fsverity_read_workqueue = alloc_workqueue("fsverity_read_queue",
-> fs/verity/verify.c-                                               WQ_HIGHPRI,
-> fs/verity/verify.c-                                               num_online_cpus());
-> 
-> drivers/crypto/hisilicon/qm.c:  qm->wq = alloc_workqueue("%s", WQ_HIGHPRI | WQ_MEM_RECLAIM |
-> drivers/crypto/hisilicon/qm.c-                           WQ_UNBOUND, num_online_cpus(),
-> drivers/crypto/hisilicon/qm.c-                           pci_name(qm->pdev));
-> 
-> block/blk-crypto-fallback.c:    blk_crypto_wq = alloc_workqueue("blk_crypto_wq",
-> block/blk-crypto-fallback.c-                                    WQ_UNBOUND | WQ_HIGHPRI |
-> block/blk-crypto-fallback.c-                                    WQ_MEM_RECLAIM, num_online_cpus());
-> 
-> drivers/md/dm-crypt.c:          cc->crypt_queue = alloc_workqueue("kcryptd/%s",
-> drivers/md/dm-crypt.c-                                            WQ_CPU_INTENSIVE | WQ_MEM_RECLAIM | WQ_UNBOUND,
-> drivers/md/dm-crypt.c-                                            num_online_cpus(), devname);
+> Personally I'd optimise the mempcy_toio() arm64 implementation to do
+> STPs if the alignment is right (like we do for classic memcpy()).
+> There's a slight overhead for alignment checking but I suspect it would
+> be lost as long as you can get the write-combining. Not sure whether the
+> interspersed reads in memcpy_toio() would somehow prevent the
+> write-combining.
 
-Most of these work items are CPU bound but not completley so. e.g.
-kcrypt_crypt_write_continue() does wait_for_completion(), so setting
-max_active to 1 likely isn't what they want either. They mostly want some
-reasonable system-wide concurrency limit w.r.t. the CPU count while keeping
-some level of flexibility in terms of task placement.
+I understand on these new CPUs anything other than a block of
+contiguous STPs is risky to break the WC. I was told we should not
+have any loads between them.
 
-The previous max_active wasn't great for this because its meaning changed
-depending on the number of nodes. Now, the meaning doesn't change but it's
-not really useful for the above purpose. It's only useful for avoiding
-melting the system completely.
+So we can't just update memcpy_toio to optimize a 128 bit store
+variant like memcpy might. We actually need a special case just for 64
+byte.
 
-One way to go about it is to declare that concurrency level management for
-unbound workqueue is on users but that seems not ideal given many use cases
-would want it anyway.
+IMHO it does not look good as the chance any existing callers can use
+this optmized 64B path is probably small, but everyone has to pay the
+costs to check for it.
 
-Let me think it over but I think the right way to go about it is going the
-other direction - ie. making max_active apply to the whole system regardless
-of the number of nodes / ccx's / whatever.
+I also would not do this on x86 - Pathscale apparently decided the
+needed special __iowrite*_copy() things to actually make this work on
+xome x86 systems - I'm very leary to change x86 stuff away from the 64
+bit copy loopw we know works already on x86.
 
-> Furthermore, the change affects performance in a certain case.
-> 
-> Btrfs creates several WQ_UNBOUND workqueues with a default max_active =
-> min(NRCPUS + 2, 8). As my machine has 96 CPUs with NUMA disabled, this
-> max_active config allows running over 700 active works. Before the commit,
-> it is limited to 8 if NUMA is disabled or limited to 16 if NUMA nodes is 2.
-> 
-> I reverted the workqueue code back to before the commit, and I ran the
-> following fio command on RAID0 btrfs on 6 SSDs.
-> 
-> fio --group_reporting --eta=always --eta-interval=30s --eta-newline=30s \
->     --rw=write --fallocate=none \
->     --direct=1 --ioengine=libaio --iodepth=32 \
->     --filesize=100G \
->     --blocksize=64k \
->     --time_based --runtime=300s \
->     --end_fsync=1 \
->     --directory=${MNT} \
->     --name=writer --numjobs=32
-> 
-> By changing workqueue's max_active, the result varies.
-> 
-> - wq max_active=8   (intended limit by btrfs?)
->   WRITE: bw=2495MiB/s (2616MB/s), 2495MiB/s-2495MiB/s (2616MB/s-2616MB/s), io=753GiB (808GB), run=308953-308953msec
-> - wq max_active=16  (actual limit on 2 NUMA nodes setup)
->   WRITE: bw=1736MiB/s (1820MB/s), 1736MiB/s-1736MiB/s (1820MB/s-1820MB/s), io=670GiB (720GB), run=395532-395532msec
-> - wq max_active=768 (simulating current limit)
->   WRITE: bw=1276MiB/s (1338MB/s), 1276MiB/s-1276MiB/s (1338MB/s-1338MB/s), io=375GiB (403GB), run=300984-300984msec
-> 
-> The current performance is slower than the previous limit (max_active=16)
-> by 27%, or it is 50% slower than the intended limit.  The performance drop
-> might be due to contention of the btrfs-endio-write works. There are over
-> 700 kworker instances were created and 100 works are on the 'D' state
-> competing for a lock.
-> 
-> More specifically, I tested the same workload on the commit.
-> 
-> - At commit 636b927eba5b ("workqueue: Make unbound workqueues to use per-cpu pool_workqueues")
->   WRITE: bw=1191MiB/s (1249MB/s), 1191MiB/s-1191MiB/s (1249MB/s-1249MB/s), io=350GiB (376GB), run=300714-300714msec
-> - At the previous commit = 4cbfd3de73 ("workqueue: Call wq_update_unbound_numa() on all CPUs in NUMA node on CPU hotplug")
->   WRITE: bw=1747MiB/s (1832MB/s), 1747MiB/s-1747MiB/s (1832MB/s-1832MB/s), io=748GiB (803GB), run=438134-438134msec
-> 
-> So, it is -31.8% performance down with the commit.
-> 
-> In summary, we misuse max_active, considering it is a global limit. And,
-> the recent commit introduced a huge performance drop in some cases.  We
-> need to review alloc_workqueue() usage to check if its max_active setting
-> is proper or not.
+IMHO encoding the alignment expectation in the API is best, especially
+since this is typically a performance path.
 
-Thanks a lot for the report. I think it's a lot more reasonable to assume
-that max_active is global for unbound workqueues. The current workqueue
-behavior is not very intuitive or useful. I'll try to find something more
-reasonable. Thanks for the report and analysis. Much appreciated.
+> A memcpy_toio_64() can use the new ST64B instruction if available or
+> fall back to memcpy_toio() on arm64. It should also have the DGH
+> instruction (io_stop_wc()) but only if falling back to classic
+> memcpy_toio(). We don't need DGH with ST64B.
 
-Thanks.
+I'm told it is problematic, something about ST64B not working with
+NORMAL_NC.
 
--- 
-tejun
+We could fold the DGH into the helper though. IHMO I'd like to see how
+ST64B actually gets implemented before doing that. If the note about
+the NORMAL_NC is true then we need a lot more infrastructure to
+actually use it.
+
+Also in a future ST64B world we are going to see HW start relying on
+large TLPs, not just being an optional performance win. To my mind it
+makes more sense that there is an API that guarantees a large TLP or
+oops. We really don't want an automatic fallback to memcpy.
+
+Jason
 
