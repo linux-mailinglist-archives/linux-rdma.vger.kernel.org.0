@@ -1,386 +1,256 @@
-Return-Path: <linux-rdma+bounces-196-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-197-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id D0447802E61
-	for <lists+linux-rdma@lfdr.de>; Mon,  4 Dec 2023 10:18:19 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id BBA118033E0
+	for <lists+linux-rdma@lfdr.de>; Mon,  4 Dec 2023 14:08:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 36FFEB209D7
-	for <lists+linux-rdma@lfdr.de>; Mon,  4 Dec 2023 09:18:17 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4B2C81F210CC
+	for <lists+linux-rdma@lfdr.de>; Mon,  4 Dec 2023 13:08:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E154E14F94;
-	Mon,  4 Dec 2023 09:18:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B9C6224B44;
+	Mon,  4 Dec 2023 13:07:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=microsoft.com header.i=@microsoft.com header.b="P86MHjwH"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="glYuk8RX"
 X-Original-To: linux-rdma@vger.kernel.org
-X-Greylist: delayed 951 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Mon, 04 Dec 2023 01:18:06 PST
-Received: from HK2P15301CU002.outbound.protection.outlook.com (unknown [52.101.128.11])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 91E61CD;
-	Mon,  4 Dec 2023 01:18:06 -0800 (PST)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=bFhx9EE1qlIX+Q7Zyf2D4ZpCzZMNr3lRbCIKNwsDTtJJM87BAH8zaAnoNt51L0PxpUgNGQ6zCNqbma3SLPM0s1s0hWbBfkG8BrI/lvUcLgRjYbt/7OZUwHXgBXkh8en77OT95TxuFa449qZCqPGPi0qqVVdj3Svw6FQ700tMKMoniOudvKi0LSdsEu2PxeRvQbBtCqoLNJV1MqkVucV5EJaeIgQO6akkv7d0+egWQEwllddGSRnja2kd9HosN5Z1Xm1RCc00ESydsNyX9iAcLwF8MPsyFPvR95HqrA2oHqiw6Nl1VkFIfw+xRWewBLALmEhHLIPO4DYHbxshw796jA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=FPRXQ7jqmtZEeskhRlZXacQginW086HeJwETaGRIRxk=;
- b=jD0Q+UqaV7BdLrdc29FMYpA8rWOICQYTJg8jZjKOg0GORtISmBV7ySUvdzz2SBFXYr0ApWaUilLJHOar2gngkPBucVNncIB8BPTtw4G3NkPMIbFMuU4t/gORiXiD9yFSUCP5INDqeeoUv6e6/PZkjVRFY8t2HMceSul5yJZnaNcqaTLj5uQFv+r88VxudpKlymx872iuaYGkt+svt3jedpEhI0ymLCQ6lhs+/NW2d/6XWgatdnL1Bja7HDyyWFWo+ZLGfLqJSWPP74YIjrz/QzjMog8d8brYZWjpyePUTLQuH6OJ1cn3KPs7DoTBQWQWnEmnfk0MeRdYrL6V2hSaqg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=microsoft.com; dmarc=pass action=none
- header.from=microsoft.com; dkim=pass header.d=microsoft.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=FPRXQ7jqmtZEeskhRlZXacQginW086HeJwETaGRIRxk=;
- b=P86MHjwHSLnKhJreAOndXGb4UtB+iqaMRFXl+0uXKywffS5JpEy8bXkX89lUNRd/DqGtkXrqVqP/IhDH0aCxVIzBExhtKAHGYBesBR+7nsnpTGpoZydZlqFlZqVdYsWAGGS8boBUo4p4YEN/8oDxrjUdDJmMyaC/DFqV91IknBk=
-Received: from PUZP153MB0788.APCP153.PROD.OUTLOOK.COM (2603:1096:301:fc::10)
- by SI2P153MB0656.APCP153.PROD.OUTLOOK.COM (2603:1096:4:1fb::6) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.7091.5; Mon, 4 Dec 2023 09:02:09 +0000
-Received: from PUZP153MB0788.APCP153.PROD.OUTLOOK.COM
- ([fe80::a516:f38b:f94e:b77a]) by PUZP153MB0788.APCP153.PROD.OUTLOOK.COM
- ([fe80::a516:f38b:f94e:b77a%7]) with mapi id 15.20.7091.001; Mon, 4 Dec 2023
- 09:02:08 +0000
-From: Souradeep Chakrabarti <schakrabarti@microsoft.com>
-To: Yury Norov <yury.norov@gmail.com>, Souradeep Chakrabarti
-	<schakrabarti@linux.microsoft.com>
-CC: Jakub Kicinski <kuba@kernel.org>, KY Srinivasan <kys@microsoft.com>,
-	Haiyang Zhang <haiyangz@microsoft.com>, "wei.liu@kernel.org"
-	<wei.liu@kernel.org>, Dexuan Cui <decui@microsoft.com>, "davem@davemloft.net"
-	<davem@davemloft.net>, "edumazet@google.com" <edumazet@google.com>,
-	"pabeni@redhat.com" <pabeni@redhat.com>, Long Li <longli@microsoft.com>,
-	"sharmaajay@microsoft.com" <sharmaajay@microsoft.com>, "leon@kernel.org"
-	<leon@kernel.org>, "cai.huoqing@linux.dev" <cai.huoqing@linux.dev>,
-	"ssengar@linux.microsoft.com" <ssengar@linux.microsoft.com>,
-	"vkuznets@redhat.com" <vkuznets@redhat.com>, "tglx@linutronix.de"
-	<tglx@linutronix.de>, "linux-hyperv@vger.kernel.org"
-	<linux-hyperv@vger.kernel.org>, "netdev@vger.kernel.org"
-	<netdev@vger.kernel.org>, "linux-kernel@vger.kernel.org"
-	<linux-kernel@vger.kernel.org>, "linux-rdma@vger.kernel.org"
-	<linux-rdma@vger.kernel.org>, Paul Rosswurm <paulros@microsoft.com>
-Subject: RE: [EXTERNAL] Re: [PATCH V2 net-next] net: mana: Assigning IRQ
- affinity on HT cores
-Thread-Topic: [EXTERNAL] Re: [PATCH V2 net-next] net: mana: Assigning IRQ
- affinity on HT cores
-Thread-Index:
- AQHaHIJKVWtqOkYgZ0uGtD+z/VnogLCFcX6AgAh9zECABD4XgIAApIsAgABRp4CABcJ08A==
-Date: Mon, 4 Dec 2023 09:02:08 +0000
-Message-ID:
- <PUZP153MB078896BF398A5879FC4B3E61CC86A@PUZP153MB0788.APCP153.PROD.OUTLOOK.COM>
-References:
- <1700574877-6037-1-git-send-email-schakrabarti@linux.microsoft.com>
- <20231121154841.7fc019c8@kernel.org>
- <PUZP153MB0788476CD22D5AA2ECDC11ABCCBDA@PUZP153MB0788.APCP153.PROD.OUTLOOK.COM>
- <ZWfwcYPLVo+4V8Ps@yury-ThinkPad>
- <20231130120512.GA15408@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
- <ZWi+94B+N03pItJl@yury-ThinkPad>
-In-Reply-To: <ZWi+94B+N03pItJl@yury-ThinkPad>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach:
-X-MS-TNEF-Correlator:
-msip_labels:
- MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ActionId=070f56b3-0de0-4fd4-8c66-df808ea91856;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ContentBits=0;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Enabled=true;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Method=Standard;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Name=Internal;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SetDate=2023-12-04T08:54:43Z;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SiteId=72f988bf-86f1-41af-91ab-2d7cd011db47;
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=microsoft.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: PUZP153MB0788:EE_|SI2P153MB0656:EE_
-x-ms-office365-filtering-correlation-id: 5b4fe50c-633d-402f-d335-08dbf4a7b1d3
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info:
- 4/ih3uNkuqIOS8zbfvbRD+W6oUtjJjT07PXR3m4nRN3NsZacoep6pw6rIL2qvfsd0XZjRifTgyxUoJg+X3B46gCmT3U/bdG5UaGcHmyBtCGaDoJWQTVY0ugNqDvkTIeXzj5nNnmUiYEKG4jKgkl68qhbFdor6qmnASZs2l/L+71qSWmyQqIhqKTG05lAxTx+UU7rpBWPx7REW07tZbQVPrTvHq2dqrGdZneSWG5BR9tC+sRq67Y50IUMkF3nBCqQthejjMvPOwjHTRBKtJ7K+nc41sCtrEBHNKUhYlj7hXqgRCitvI/Aw4jmOtXQs1perhQuxYmGjFBPkslVjy+snFnonDDxxWSsNtszXWLcYmDsqzk3hY077Y8bKC2U9nrtJNkWbFXeZdXMgg34UlxVwyoEDRiBKjBHlnH/blPifk7IgTjTcPS0+SyAoRoajTkrTMK+2jid+hHnmfaMsi6Ss7DdEBOseqb4rovZSl9cSPBt1Z8KTQciiWbVKA/Kr6uO+6RX26Jq3zpumaApOyAgphIMsl9Y/MKzMnaLdlIFOZoojKmYDI4ueS3q+vjj8WN/7i1jxv11bIhT1SuYi3ZRU0W/jEEaWLWneBCwk87uXvJ46lDf2myqsyUEOlk22SEgoFzhhdv9GrxgvoxTpgIoq2jt5+BtWneYnCLiF4oCXDeeIk8j67CKFr/EUmKWcWmMaWcMxYinEwPZMtArsHtrvTDAwStTWEOuzvZ3vzLgp/qiEMQ/uf/YHQIHEgHDcFbx
-x-forefront-antispam-report:
- CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PUZP153MB0788.APCP153.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(13230031)(39860400002)(396003)(376002)(366004)(346002)(136003)(230173577357003)(230273577357003)(230373577357003)(230922051799003)(230473577357003)(1800799012)(186009)(64100799003)(451199024)(55016003)(6506007)(9686003)(7696005)(33656002)(86362001)(966005)(10290500003)(38070700009)(83380400001)(478600001)(107886003)(54906003)(316002)(64756008)(110136005)(76116006)(66556008)(66476007)(66446008)(66946007)(71200400001)(52536014)(8936002)(8676002)(4326008)(7416002)(41300700001)(5660300002)(122000001)(8990500004)(2906002)(38100700002)(82950400001)(82960400001);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0:
- =?us-ascii?Q?5pu/+Kuj0ocApqRNTubJ6YkA28nKo/lcDn6K7usHpo66FfHDTzdthEDC5Ntf?=
- =?us-ascii?Q?zdSMKV8D927s4cMwCK9hy5xUfRsZKdca1cvhbhGmWM2KFRALwirvZgzl2OCL?=
- =?us-ascii?Q?gjpAF5KpTutslu+5ZHi1KT0F4jvZXY7590HZ9BT/6MLQxnGgBBnQtgwQ0tH4?=
- =?us-ascii?Q?iZj70h4EO+4EJJcUf9GML7KI64vLFpL6npCZMUqpbpZY6KAM3HKAJmQNAl/Q?=
- =?us-ascii?Q?Qy2Sl+R4oW3A4ZXH6ehcfw9Fwr7wwQBPi1JGzaOCkfqDQupLANHDvzoADb5P?=
- =?us-ascii?Q?yyHL4m3o+HGZLwReG08ZTB3lw8iw6+6SQA+pipGBPO3Nmm7AXtH0UH6Idsmr?=
- =?us-ascii?Q?QTFY5XMMHwz9orZG9xlqhmO42FVKmDM8NcekcSgueDgsn88vLbR+e0s4vPk2?=
- =?us-ascii?Q?zQenGSc+QmzoIOEobxE51pC1ZYifT0D3wOXQqY2N67VqAMKiUmNj0KtYFVyz?=
- =?us-ascii?Q?ip4nR0YTbv03xEf704887MQap6FSeI17qe47a94DcYv1dzkgH5iXr1oN2zBS?=
- =?us-ascii?Q?qO9o01lV/xUDVk+HM+/vCSyC3VTd6CjE/hNg0/qpdB3oKJx09EruITZcyPLr?=
- =?us-ascii?Q?cnzUQv6PvhIH541ePFR3zDuuvxQGpLfr7DBdNiC+pOl2R2hEYv/pJMGbgYo1?=
- =?us-ascii?Q?ndvoIFOhAgSNmhNfqfoF8MQ0tbgVCWzr4Ga+qux0vsCvB19tqosuZE2CJO8S?=
- =?us-ascii?Q?5uKgHyUSLWkD1vhgiHzPBBQV8RnH1WVg8lrssgNCKnX3PegUJpTS0wQdS4gs?=
- =?us-ascii?Q?N3ZHW3SA7t1ifBlLyITB6iKK4s+n3t8u0jc4ry2w0EbIkpl5Wx3Ip5TKkL9R?=
- =?us-ascii?Q?fxtLE6pYt1c5or3I37VB+h1eu2Swi5vmll9BIrgfyaiGH63yOwarMVmIh1//?=
- =?us-ascii?Q?XrFomZbV4ZSp6uFrbokiZ/OkuvKrUejUmf/a/aLELnUnbW3dH1+h5KGwD4s8?=
- =?us-ascii?Q?p0HZwg2acLcXtldkcOFj6xP87Qz38wUePiJagZ6UzX1X5R027laNUawtnqEu?=
- =?us-ascii?Q?CMMn1WbEVfFbuZm2bK4SOeD59WgbBQETo/+Trtf8dEaBmowLZvBNeKS2cbUA?=
- =?us-ascii?Q?GIXwOW9UCTrC5kt8vclXtYZEmBjctWxfXcdTYy/ytrgjgF/ywA2oR5P6Lqze?=
- =?us-ascii?Q?SRFKqwnW7AcmvoWHI7tIaRe8UgtX9J7Rojyf4kpeEPuGAy5DOTy21ovP85zV?=
- =?us-ascii?Q?ShswwkQ/59jljjvIIpg1vWADDWxLBj26XmMfNKnDJ6MVqQRAW0YpzZmCJrP+?=
- =?us-ascii?Q?pxth7vok9twn1s0IDgjXSYjySEdmi3wg902TZHoWUNd3dKJWTsgGOXMmLEK7?=
- =?us-ascii?Q?EX53lf9vWjU8jOG3cSFLnUI1oU9DVh9lnhzWHKm3qCZOXB0jclmDwnAbn80P?=
- =?us-ascii?Q?G2j2vdjPuVHxQDoVX94ZBVBAmkDrLmYTBkxdLOd+Hp6wGH3/jgi/CP72J89x?=
- =?us-ascii?Q?KxT4zIdw9fgJ8o2e4XZxztAjGH9T8qZibwhVBik7mVHjIE9tVQlH6J+9NcuO?=
- =?us-ascii?Q?AlJhubPwcbwvPMsJoz2UVFhxKQPjOi5l5Zbr5wP9Tmj/4/eFaNyNIQw0vPKY?=
- =?us-ascii?Q?bFMt7nkCnN1PLtQGtUCf5O1bBL1H/GelcfsUD9zq?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.7])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A384A7;
+	Mon,  4 Dec 2023 05:07:44 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1701695265; x=1733231265;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=UpKiTiLV03HLrMK8OyY7m+bGEMtR9L95NOiQzYClrhU=;
+  b=glYuk8RXPb0XnOqDmmVCjrF7jpJ9zshznGYsBwZnW6Lp6N9UB3wcJAfW
+   RcyKoR3vcNfNkawEw6PplM/CnnVsbAPCOO3ye8XRT4rN3XSwOLz9sb1hU
+   7C+6cD/D1sePV5R/GegF2Oygln5+FP4LpN8LETCbSj5emh7LU/EmbTFtR
+   dAUdaO++oeIOhU9+SvMmDwUTY7pfPCIkRyf2unXDWTJ2pYQAWOK2AA2Mv
+   93RpGe0s7/IwqU+loGPDWvrNJMvLWXNCZjdCDCe8Q32LqxnYlkjlPcodB
+   VrGEtbgUe6WUs5DZVI6UwsLf1e6rvg4sOZtvRq/3Q28morjoDvQUepAYu
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10913"; a="15275177"
+X-IronPort-AV: E=Sophos;i="6.04,249,1695711600"; 
+   d="scan'208";a="15275177"
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by fmvoesa101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Dec 2023 05:07:37 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10913"; a="763935696"
+X-IronPort-AV: E=Sophos;i="6.04,249,1695711600"; 
+   d="scan'208";a="763935696"
+Received: from smile.fi.intel.com ([10.237.72.54])
+  by orsmga007.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Dec 2023 05:07:13 -0800
+Received: from andy by smile.fi.intel.com with local (Exim 4.97)
+	(envelope-from <andriy.shevchenko@linux.intel.com>)
+	id 1rA8fA-00000001kqj-2oCl;
+	Mon, 04 Dec 2023 15:07:04 +0200
+Date: Mon, 4 Dec 2023 15:07:04 +0200
+From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To: Yury Norov <yury.norov@gmail.com>
+Cc: linux-kernel@vger.kernel.org, "David S. Miller" <davem@davemloft.net>,
+	"H. Peter Anvin" <hpa@zytor.com>,
+	"James E.J. Bottomley" <jejb@linux.ibm.com>,
+	"K. Y. Srinivasan" <kys@microsoft.com>,
+	"Md. Haris Iqbal" <haris.iqbal@ionos.com>,
+	Akinobu Mita <akinobu.mita@gmail.com>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Bjorn Andersson <andersson@kernel.org>,
+	Borislav Petkov <bp@alien8.de>, Chaitanya Kulkarni <kch@nvidia.com>,
+	Christian Brauner <brauner@kernel.org>,
+	Damien Le Moal <damien.lemoal@opensource.wdc.com>,
+	Dave Hansen <dave.hansen@linux.intel.com>,
+	David Disseldorp <ddiss@suse.de>,
+	Edward Cree <ecree.xilinx@gmail.com>,
+	Eric Dumazet <edumazet@google.com>,
+	Fenghua Yu <fenghua.yu@intel.com>,
+	Geert Uytterhoeven <geert@linux-m68k.org>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	Gregory Greenman <gregory.greenman@intel.com>,
+	Hans Verkuil <hverkuil@xs4all.nl>,
+	Hans de Goede <hdegoede@redhat.com>,
+	Hugh Dickins <hughd@google.com>, Ingo Molnar <mingo@redhat.com>,
+	Jakub Kicinski <kuba@kernel.org>, Jaroslav Kysela <perex@perex.cz>,
+	Jason Gunthorpe <jgg@ziepe.ca>, Jens Axboe <axboe@kernel.dk>,
+	Jiri Pirko <jiri@resnulli.us>, Jiri Slaby <jirislaby@kernel.org>,
+	Kalle Valo <kvalo@kernel.org>, Karsten Graul <kgraul@linux.ibm.com>,
+	Karsten Keil <isdn@linux-pingi.de>,
+	Kees Cook <keescook@chromium.org>,
+	Leon Romanovsky <leon@kernel.org>,
+	Mark Rutland <mark.rutland@arm.com>,
+	Martin Habets <habetsm.xilinx@gmail.com>,
+	Mauro Carvalho Chehab <mchehab@kernel.org>,
+	Michael Ellerman <mpe@ellerman.id.au>,
+	Michal Simek <monstr@monstr.eu>,
+	Nicholas Piggin <npiggin@gmail.com>,
+	Oliver Neukum <oneukum@suse.com>, Paolo Abeni <pabeni@redhat.com>,
+	Paolo Bonzini <pbonzini@redhat.com>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Ping-Ke Shih <pkshih@realtek.com>, Rich Felker <dalias@libc.org>,
+	Rob Herring <robh@kernel.org>, Robin Murphy <robin.murphy@arm.com>,
+	Sean Christopherson <seanjc@google.com>,
+	Shuai Xue <xueshuai@linux.alibaba.com>,
+	Stanislaw Gruszka <stf_xl@wp.pl>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Valentin Schneider <vschneid@redhat.com>,
+	Vitaly Kuznetsov <vkuznets@redhat.com>,
+	Wenjia Zhang <wenjia@linux.ibm.com>, Will Deacon <will@kernel.org>,
+	Yoshinori Sato <ysato@users.sourceforge.jp>,
+	GR-QLogic-Storage-Upstream@marvell.com, alsa-devel@alsa-project.org,
+	ath10k@lists.infradead.org, dmaengine@vger.kernel.org,
+	iommu@lists.linux.dev, kvm@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org, linux-arm-msm@vger.kernel.org,
+	linux-block@vger.kernel.org, linux-bluetooth@vger.kernel.org,
+	linux-hyperv@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
+	linux-media@vger.kernel.org, linux-mips@vger.kernel.org,
+	linux-net-drivers@amd.com, linux-pci@vger.kernel.org,
+	linux-rdma@vger.kernel.org, linux-s390@vger.kernel.org,
+	linux-scsi@vger.kernel.org, linux-serial@vger.kernel.org,
+	linux-sh@vger.kernel.org, linux-sound@vger.kernel.org,
+	linux-usb@vger.kernel.org, linux-wireless@vger.kernel.org,
+	linuxppc-dev@lists.ozlabs.org, mpi3mr-linuxdrv.pdl@broadcom.com,
+	netdev@vger.kernel.org, sparclinux@vger.kernel.org, x86@kernel.org,
+	Jan Kara <jack@suse.cz>,
+	Mirsad Todorovac <mirsad.todorovac@alu.unizg.hr>,
+	Matthew Wilcox <willy@infradead.org>,
+	Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+	Maxim Kuvyrkov <maxim.kuvyrkov@linaro.org>,
+	Alexey Klimov <klimov.linux@gmail.com>,
+	Bart Van Assche <bvanassche@acm.org>,
+	Sergey Shtylyov <s.shtylyov@omp.ru>
+Subject: Re: [PATCH v2 00/35] bitops: add atomic find_bit() operations
+Message-ID: <ZW3O-P_98eubKxMU@smile.fi.intel.com>
+References: <20231203192422.539300-1-yury.norov@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-OriginatorOrg: microsoft.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: PUZP153MB0788.APCP153.PROD.OUTLOOK.COM
-X-MS-Exchange-CrossTenant-Network-Message-Id: 5b4fe50c-633d-402f-d335-08dbf4a7b1d3
-X-MS-Exchange-CrossTenant-originalarrivaltime: 04 Dec 2023 09:02:08.2929
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 72f988bf-86f1-41af-91ab-2d7cd011db47
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: Swgt/7UqyRojm2u5X+YsNbwD7XjnjvD3474LTn8lu0HYXdAgaF8tq9YSQdbFAzaCsXmWfQBJOb2QAChnEw+ip8eFC/cijYzfp57LLiZDwYs=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SI2P153MB0656
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231203192422.539300-1-yury.norov@gmail.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+
+On Sun, Dec 03, 2023 at 11:23:47AM -0800, Yury Norov wrote:
+> Add helpers around test_and_{set,clear}_bit() that allow to search for
+> clear or set bits and flip them atomically.
+> 
+> The target patterns may look like this:
+> 
+> 	for (idx = 0; idx < nbits; idx++)
+> 		if (test_and_clear_bit(idx, bitmap))
+> 			do_something(idx);
+> 
+> Or like this:
+> 
+> 	do {
+> 		bit = find_first_bit(bitmap, nbits);
+> 		if (bit >= nbits)
+> 			return nbits;
+> 	} while (!test_and_clear_bit(bit, bitmap));
+> 	return bit;
+> 
+> In both cases, the opencoded loop may be converted to a single function
+> or iterator call. Correspondingly:
+> 
+> 	for_each_test_and_clear_bit(idx, bitmap, nbits)
+> 		do_something(idx);
+> 
+> Or:
+> 	return find_and_clear_bit(bitmap, nbits);
+> 
+> Obviously, the less routine code people have to write themself, the
+> less probability to make a mistake.
+> 
+> Those are not only handy helpers but also resolve a non-trivial
+> issue of using non-atomic find_bit() together with atomic
+> test_and_{set,clear)_bit().
+> 
+> The trick is that find_bit() implies that the bitmap is a regular
+> non-volatile piece of memory, and compiler is allowed to use such
+> optimization techniques like re-fetching memory instead of caching it.
+> 
+> For example, find_first_bit() is implemented like this:
+> 
+>       for (idx = 0; idx * BITS_PER_LONG < sz; idx++) {
+>               val = addr[idx];
+>               if (val) {
+>                       sz = min(idx * BITS_PER_LONG + __ffs(val), sz);
+>                       break;
+>               }
+>       }
+> 
+> On register-memory architectures, like x86, compiler may decide to
+> access memory twice - first time to compare against 0, and second time
+> to fetch its value to pass it to __ffs().
+> 
+> When running find_first_bit() on volatile memory, the memory may get
+> changed in-between, and for instance, it may lead to passing 0 to
+> __ffs(), which is undefined. This is a potentially dangerous call.
+> 
+> find_and_clear_bit() as a wrapper around test_and_clear_bit()
+> naturally treats underlying bitmap as a volatile memory and prevents
+> compiler from such optimizations.
+> 
+> Now that KCSAN is catching exactly this type of situations and warns on
+> undercover memory modifications. We can use it to reveal improper usage
+> of find_bit(), and convert it to atomic find_and_*_bit() as appropriate.
+> 
+> The 1st patch of the series adds the following atomic primitives:
+> 
+> 	find_and_set_bit(addr, nbits);
+> 	find_and_set_next_bit(addr, nbits, start);
+> 	...
+> 
+> Here find_and_{set,clear} part refers to the corresponding
+> test_and_{set,clear}_bit function. Suffixes like _wrap or _lock
+> derive their semantics from corresponding find() or test() functions.
+> 
+> For brevity, the naming omits the fact that we search for zero bit in
+> find_and_set, and correspondingly search for set bit in find_and_clear
+> functions.
+> 
+> The patch also adds iterators with atomic semantics, like
+> for_each_test_and_set_bit(). Here, the naming rule is to simply prefix
+> corresponding atomic operation with 'for_each'.
+> 
+> This series is a result of discussion [1]. All find_bit() functions imply
+> exclusive access to the bitmaps. However, KCSAN reports quite a number
+> of warnings related to find_bit() API. Some of them are not pointing
+> to real bugs because in many situations people intentionally allow
+> concurrent bitmap operations.
+> 
+> If so, find_bit() can be annotated such that KCSAN will ignore it:
+> 
+>         bit = data_race(find_first_bit(bitmap, nbits));
+> 
+> This series addresses the other important case where people really need
+> atomic find ops. As the following patches show, the resulting code
+> looks safer and more verbose comparing to opencoded loops followed by
+> atomic bit flips.
+> 
+> In [1] Mirsad reported 2% slowdown in a single-thread search test when
+> switching find_bit() function to treat bitmaps as volatile arrays. On
+> the other hand, kernel robot in the same thread reported +3.7% to the
+> performance of will-it-scale.per_thread_ops test.
+> 
+> Assuming that our compilers are sane and generate better code against
+> properly annotated data, the above discrepancy doesn't look weird. When
+> running on non-volatile bitmaps, plain find_bit() outperforms atomic
+> find_and_bit(), and vice-versa.
+
+...
+
+In some cases the better improvements can be achieved by switching
+the (very) old code to utilise IDA framework.
+
+-- 
+With Best Regards,
+Andy Shevchenko
 
 
-
->-----Original Message-----
->From: Yury Norov <yury.norov@gmail.com>
->Sent: Thursday, November 30, 2023 10:27 PM
->To: Souradeep Chakrabarti <schakrabarti@linux.microsoft.com>
->Cc: Souradeep Chakrabarti <schakrabarti@microsoft.com>; Jakub Kicinski
-><kuba@kernel.org>; KY Srinivasan <kys@microsoft.com>; Haiyang Zhang
-><haiyangz@microsoft.com>; wei.liu@kernel.org; Dexuan Cui
-><decui@microsoft.com>; davem@davemloft.net; edumazet@google.com;
->pabeni@redhat.com; Long Li <longli@microsoft.com>;
->sharmaajay@microsoft.com; leon@kernel.org; cai.huoqing@linux.dev;
->ssengar@linux.microsoft.com; vkuznets@redhat.com; tglx@linutronix.de;
->linux-hyperv@vger.kernel.org; netdev@vger.kernel.org; linux-
->kernel@vger.kernel.org; linux-rdma@vger.kernel.org; Paul Rosswurm
-><paulros@microsoft.com>
->Subject: Re: [EXTERNAL] Re: [PATCH V2 net-next] net: mana: Assigning IRQ
->affinity on HT cores
->
->[You don't often get email from yury.norov@gmail.com. Learn why this is
->important at https://aka.ms/LearnAboutSenderIdentification ]
->
->On Thu, Nov 30, 2023 at 04:05:12AM -0800, Souradeep Chakrabarti wrote:
->> On Wed, Nov 29, 2023 at 06:16:17PM -0800, Yury Norov wrote:
->> > On Mon, Nov 27, 2023 at 09:36:38AM +0000, Souradeep Chakrabarti
->wrote:
->> > >
->> > >
->> > > >-----Original Message-----
->> > > >From: Jakub Kicinski <kuba@kernel.org>
->> > > >Sent: Wednesday, November 22, 2023 5:19 AM
->> > > >To: Souradeep Chakrabarti <schakrabarti@linux.microsoft.com>
->> > > >Cc: KY Srinivasan <kys@microsoft.com>; Haiyang Zhang
->> > > ><haiyangz@microsoft.com>; wei.liu@kernel.org; Dexuan Cui
->> > > ><decui@microsoft.com>; davem@davemloft.net;
->edumazet@google.com;
->> > > >pabeni@redhat.com; Long Li <longli@microsoft.com>;
->> > > >sharmaajay@microsoft.com; leon@kernel.org; cai.huoqing@linux.dev;
->> > > >ssengar@linux.microsoft.com; vkuznets@redhat.com;
->> > > >tglx@linutronix.de; linux- hyperv@vger.kernel.org;
->> > > >netdev@vger.kernel.org; linux-kernel@vger.kernel.org;
->> > > >linux-rdma@vger.kernel.org; Souradeep Chakrabarti
->> > > ><schakrabarti@microsoft.com>; Paul Rosswurm
->> > > ><paulros@microsoft.com>
->> > > >Subject: [EXTERNAL] Re: [PATCH V2 net-next] net: mana: Assigning
->> > > >IRQ affinity on HT cores
->> > > >
->> > > >On Tue, 21 Nov 2023 05:54:37 -0800 Souradeep Chakrabarti wrote:
->> > > >> Existing MANA design assigns IRQ to every CPUs, including
->> > > >> sibling hyper-threads in a core. This causes multiple IRQs to
->> > > >> work on same CPU and may reduce the network performance with RSS.
->> > > >>
->> > > >> Improve the performance by adhering the configuration for RSS,
->> > > >> which assigns IRQ on HT cores.
->> > > >
->> > > >Drivers should not have to carry 120 LoC for something as basic as
->spreading IRQs.
->> > > >Please take a look at include/linux/topology.h and if there's
->> > > >nothing that fits your needs there - add it. That way other drivers=
- can
->reuse it.
->> > > Because of the current design idea, it is easier to keep things
->> > > inside the mana driver code here. As the idea of IRQ distribution he=
-re is :
->> > > 1)Loop through interrupts to assign CPU 2)Find non sibling online
->> > > CPU from local NUMA and assign the IRQs on them.
->> > > 3)If number of IRQs is more than number of non-sibling CPU in that
->> > > NUMA node, then assign on sibling CPU of that node.
->> > > 4)Keep doing it till all the online CPUs are used or no more IRQs.
->> > > 5)If all CPUs in that node are used, goto next NUMA node with CPU.
->> > > Keep doing 2 and 3.
->> > > 6) If all CPUs in all NUMA nodes are used, but still there are
->> > > IRQs then wrap over from first local NUMA node and continue doing
->> > > 2, 3 4 till all IRQs are assigned.
->> >
->> > Hi Souradeep,
->> >
->> > (Thanks Jakub for sharing this thread with me)
->> >
->> > If I understand your intention right, you can leverage the existing
->> > cpumask_local_spread().
->> >
->> > But I think I've got something better for you. The below series adds
->> > a for_each_numa_cpu() iterator, which may help you doing most of the
->> > job without messing with nodes internals.
->> >
->> > https://nam06.safelinks.protection.outlook.com/?url=3Dhttps%3A%2F%2Flo
->> > re.kernel.org%2Fnetdev%2FZD3l6FBnUh9vTIGc%40yury-
->ThinkPad%2FT%2F&dat
->> >
->a=3D05%7C01%7Cschakrabarti%40microsoft.com%7C79dfb421db6f463627250
->8dbf
->> >
->1c5c19e%7C72f988bf86f141af91ab2d7cd011db47%7C1%7C0%7C6383696
->04095521
->> >
->996%7CUnknown%7CTWFpbGZsb3d8eyJWIjoiMC4wLjAwMDAiLCJQIjoiV2lu
->MzIiLCJB
->> >
->TiI6Ik1haWwiLCJXVCI6Mn0%3D%7C2000%7C%7C%7C&sdata=3DpDUpYWo3K7
->uoz2q50GQ
->> > 1UKuPF2PwFagiT5pwrXhQXPk%3D&reserved=3D0
->> >
->> Thanks Yur and Jakub. I was trying to find this patch, but unable to fin=
-d it on
->that thread.
->> Also in net-next I am unable to find it. Can you please tell, if it has =
-been
->committed?
->> If not can you please point me out the correct patch for this macro.
->> It will be really helpful.
->
->Try this branch. I just rebased it on top of bitmap-for-next, but didn't r=
-e-test.
->You may need to exclude the "sched: drop for_each_numa_hop_mask()" patch.
->
->https://nam06.safelinks.protection.outlook.com/?url=3Dhttps%3A%2F%2Fgithu
->b.com%2Fnorov%2Flinux%2Fcommits%2Ffor_each_numa_cpu&data=3D05%7C0
->1%7Cschakrabarti%40microsoft.com%7C79dfb421db6f4636272508dbf1c5c1
->9e%7C72f988bf86f141af91ab2d7cd011db47%7C1%7C0%7C638369604095
->529277%7CUnknown%7CTWFpbGZsb3d8eyJWIjoiMC4wLjAwMDAiLCJQIjoiV
->2luMzIiLCJBTiI6Ik1haWwiLCJXVCI6Mn0%3D%7C2000%7C%7C%7C&sdata=3DW
->wmd%2BvQS7YHIwFKyL9OLd8iYttJ4ZIqQyxU3Ex8UOkY%3D&reserved=3D0
->
->> > By using it, the pseudocode implementing your algorithm may look
->> > like this:
->> >
->> >         unsigned int cpu, hop;
->> >         unsigned int irq =3D 0;
->> >
->> > again:
->> >         cpu =3D get_cpu();
->> >         node =3D cpu_to_node(cpu);
->> >         cpumask_copy(cpus, cpu_online_mask);
->> >
->> >         for_each_numa_cpu(cpu, hop, node, cpus) {
->> >                 /* All siblings are the same for IRQ spreading purpose=
- */
->> >                 irq_set_affinity_and_hint(irq,
->> > topology_sibling_cpumask());
->> >
->> >                 /* One IRQ per sibling group */
->> >                 cpumask_andnot(cpus, cpus,
->> > topology_sibling_cpumask());
->> >
->> >                 if (++irq =3D=3D num_irqs)
->> >                         break;
->> >         }
->> >
->> >         if (irq < num_irqs)
->> >                 goto again;
->> >
->> > (Completely not tested, just an idea.)
->> >
->> I have done similar kind of change for our driver, but constraint here
->> is that total number of IRQs can be equal to the total number of
->> online CPUs, in some setup. It is either equal to the number of online C=
-PUs or
->maximum 64 IRQs if online CPUs are more than that.
->
->Not sure I understand you. If you're talking about my proposal, there's
->seemingly no constraints on number of CPUs/IRQs.
->
->> So my proposed change is following:
->>
->> +static int irq_setup(int *irqs, int nvec, int start_numa_node) {
->> +       cpumask_var_t node_cpumask;
->> +       int i, cpu, err =3D 0;
->> +       unsigned int  next_node;
->> +       cpumask_t visited_cpus;
->> +       unsigned int start_node =3D start_numa_node;
->> +       i =3D 0;
->> +       if (!alloc_cpumask_var(&node_cpumask, GFP_KERNEL)) {
->> +               err =3D -ENOMEM;
->> +               goto free_mask;
->> +       }
->> +       cpumask_andnot(&visited_cpus, &visited_cpus, &visited_cpus);
->> +       start_node =3D 1;
->> +       for_each_next_node_with_cpus(start_node, next_node) {
->
->If your goal is to maximize locality, this doesn't seem to be correct.
->for_each_next_node_with_cpus() is based on next_node(), and so enumerates
->nodes in a numerically increasing order. On real machines, it's possible t=
-hat
->numerically adjacent node is not the topologically nearest.
->
->To approach that, for every node kernel maintains a list of equally distan=
-t nodes
->grouped into hops. You may likely want to use for_each_numa_hop_mask
->iterator, which iterated over hops in increasing distance order, instead o=
-f
->NUMA node numbers.
->
->But I would like to see for_each_numa_cpu() finally merged as a simpler an=
-d
->nicer alternative.
->
->> +               cpumask_copy(node_cpumask, cpumask_of_node(next_node));
->> +               for_each_cpu(cpu, node_cpumask) {
->> +                       cpumask_andnot(node_cpumask, node_cpumask,
->> +                                      topology_sibling_cpumask(cpu));
->> +                       irq_set_affinity_and_hint(irqs[i], cpumask_of(cp=
-u));
->> +                       if(++i =3D=3D nvec)
->> +                               goto free_mask;
->> +                       cpumask_set_cpu(cpu, &visited_cpus);
->> +                       if (cpumask_empty(node_cpumask) &&
->cpumask_weight(&visited_cpus) <
->> +                           nr_cpus_node(next_node)) {
->> +                               cpumask_copy(node_cpumask,
->cpumask_of_node(next_node));
->> +                               cpumask_andnot(node_cpumask, node_cpumas=
-k,
->&visited_cpus);
->> +                               cpu =3D cpumask_first(node_cpumask);
->> +                       }
->> +               }
->> +               if (next_online_node(next_node) =3D=3D MAX_NUMNODES)
->> +                       next_node =3D first_online_node;
->> +       }
->> +free_mask:
->> +       free_cpumask_var(node_cpumask);
->> +       return err;
->> +}
->>
->> I can definitely use the for_each_numa_cpu() instead of my proposed
->> for_each_next_node_with_cpus() macro here and that will make it cleaner.
->> Thanks for the suggestion.
->
->Sure.
->
->Can you please share performance measurements for a solution you'll finall=
-y
->choose? Would be interesting to compare different approaches.
-I have compared spreading IRQs across numa  with IRQs spread inside local
-NUMA, and the performance was 14 percent better for later.
-I have shared the V4 patch with for_each_numa_hop_mask() macro.
->
->Thanks,
->Yury
 
