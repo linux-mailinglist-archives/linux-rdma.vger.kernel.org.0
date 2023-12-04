@@ -1,223 +1,247 @@
-Return-Path: <linux-rdma+bounces-227-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-228-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0DB80803CBC
-	for <lists+linux-rdma@lfdr.de>; Mon,  4 Dec 2023 19:23:43 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 41FAF803D7E
+	for <lists+linux-rdma@lfdr.de>; Mon,  4 Dec 2023 19:51:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BBE7A281179
-	for <lists+linux-rdma@lfdr.de>; Mon,  4 Dec 2023 18:23:41 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 64A821C20B36
+	for <lists+linux-rdma@lfdr.de>; Mon,  4 Dec 2023 18:51:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 48A502F854;
-	Mon,  4 Dec 2023 18:23:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="rqSuQiiE"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 733C92FC4E;
+	Mon,  4 Dec 2023 18:51:09 +0000 (UTC)
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from NAM12-BN8-obe.outbound.protection.outlook.com (mail-bn8nam12on2058.outbound.protection.outlook.com [40.107.237.58])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C2F51D2;
-	Mon,  4 Dec 2023 10:23:34 -0800 (PST)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=h8EnppaaCDzp+6bsgGhEvnbahuF7onF/5Sfdz7EHvvp7YnhdWk4kjs7s1zwsFMWlsrmt3ZpYk4wyqHMqiMGOiBjcPSkdfAOKyhVYrhgW9qI2wgbnLvRUDWwcLDxsX7DOvTjQUyMrW/f/0sTXb0tEFY4+2ddnvOP6gRoc3nn9WpH2Oz87JQNgL3/qtUD2oDwpDNcoZqCAHBI1fa+CC2mGXncMqQja+2Mrl4AWJuHAXUcSMVOJN5tV3joJvzMKjPyOaxr5Y2yiVR3zBL8wY1GFxOPeP8Sbz0u/RrSZEpYmaeJQmO/XTF+eCHt9Q8HNV+JWm1ICaTcQhiCx/Rv6POd8Ng==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=QwHKL8gPgwUexhx3IdpKyoewR0Gf7jNHmT+LPsPRKjA=;
- b=gIo0emulyouLAw5wrTZiPB5L7NBkL2BbqKUdLS5XnXikDhxMKviBfNqfCHhhuLQw2PApXXYBoIzYLQ0c1xmuuDsmAt+J0EhMkIu0RorR9kwgIqHcVNvAZfeX5LacTQiqfXgd3fjEqsUF75S5MKhYI/zc1wnPVbOuLzZp+mpx+/+ft2yddSBnQLl9y2OSpFnHx/K3KDHhnRpP0A5joW4of373KfdaswPutogK0h3wZbH01s2+F7Naj+S3PHH3d2bXBPQxSNswVGClRPDk/BuCII8fK8um5MY8B6i8RuVYymZfgwACmV5DB3XKaS99r5TamK1Z4rriG0xVb1+nR+qC3g==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=QwHKL8gPgwUexhx3IdpKyoewR0Gf7jNHmT+LPsPRKjA=;
- b=rqSuQiiExaRA+31r5IQRPEhG9TzOkhXYMhL6HWBYv1cjjUB6l/coEp8k8OdOYshhIDwPZyivdZtIFb6Xl2ogau7M7XJf8QWP2HUSvrWk6Wt3vSfCIFnX4x1ISbyCHmN0rELsO3FSXIhF/WSHSDY0E5PmXFO01FBSTA6werQR5CKw7HIP8LUOa4Ev89jquEiSmicrlybQ8RJikc8fsNYARvEQXiPbCVEwKD8OEBgrN0z2kpbtKADtJoU0FCwgDJirJqcRpOi+6LeR4gSpuq3SQ0eogsFiLXlSGJOqtH3U8xHfy5tY6IlDTbtOkiMM6iu8IGkALZWEt2aEl91Qt/cZ4Q==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nvidia.com;
-Received: from LV2PR12MB5869.namprd12.prod.outlook.com (2603:10b6:408:176::16)
- by SJ2PR12MB7944.namprd12.prod.outlook.com (2603:10b6:a03:4c5::16) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7046.33; Mon, 4 Dec
- 2023 18:23:31 +0000
-Received: from LV2PR12MB5869.namprd12.prod.outlook.com
- ([fe80::60d4:c1e3:e1aa:8f93]) by LV2PR12MB5869.namprd12.prod.outlook.com
- ([fe80::60d4:c1e3:e1aa:8f93%4]) with mapi id 15.20.7046.033; Mon, 4 Dec 2023
- 18:23:31 +0000
-Date: Mon, 4 Dec 2023 14:23:30 -0400
-From: Jason Gunthorpe <jgg@nvidia.com>
-To: Catalin Marinas <catalin.marinas@arm.com>
-Cc: Mark Rutland <mark.rutland@arm.com>, Leon Romanovsky <leon@kernel.org>,
-	Arnd Bergmann <arnd@arndb.de>, linux-arch@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org, linux-rdma@vger.kernel.org,
-	llvm@lists.linux.dev, Michael Guralnik <michaelgur@mellanox.com>,
-	Nathan Chancellor <nathan@kernel.org>,
-	Nick Desaulniers <ndesaulniers@google.com>,
-	Will Deacon <will@kernel.org>
-Subject: Re: [PATCH rdma-next 1/2] arm64/io: add memcpy_toio_64
-Message-ID: <20231204182330.GK1493156@nvidia.com>
-References: <cover.1700766072.git.leon@kernel.org>
- <c3ae87aea7660c3d266905c19d10d8de0f9fb779.1700766072.git.leon@kernel.org>
- <ZWB373y5XuZDultf@FVFF77S0Q05N>
- <20231124122352.GB436702@nvidia.com>
- <ZWSOwT2OyMXD1lmo@arm.com>
- <20231127134505.GI436702@nvidia.com>
- <ZW4NAzI_jvwoq8dL@arm.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZW4NAzI_jvwoq8dL@arm.com>
-X-ClientProxiedBy: BL1PR13CA0024.namprd13.prod.outlook.com
- (2603:10b6:208:256::29) To LV2PR12MB5869.namprd12.prod.outlook.com
- (2603:10b6:408:176::16)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2a07:de40:b251:101:10:150:64:2])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D096AF;
+	Mon,  4 Dec 2023 10:51:04 -0800 (PST)
+Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:98])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 14A361FE6A;
+	Mon,  4 Dec 2023 18:51:02 +0000 (UTC)
+Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id F113513B65;
+	Mon,  4 Dec 2023 18:51:01 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([10.150.64.162])
+	by imap2.dmz-prg2.suse.org with ESMTPSA
+	id dGqaOpUfbmXlYQAAn2gu4w
+	(envelope-from <jack@suse.cz>); Mon, 04 Dec 2023 18:51:01 +0000
+Received: by quack3.suse.cz (Postfix, from userid 1000)
+	id 6870FA07DB; Mon,  4 Dec 2023 19:51:01 +0100 (CET)
+Date: Mon, 4 Dec 2023 19:51:01 +0100
+From: Jan Kara <jack@suse.cz>
+To: Yury Norov <yury.norov@gmail.com>
+Cc: linux-kernel@vger.kernel.org, "David S. Miller" <davem@davemloft.net>,
+	"H. Peter Anvin" <hpa@zytor.com>,
+	"James E.J. Bottomley" <jejb@linux.ibm.com>,
+	"K. Y. Srinivasan" <kys@microsoft.com>,
+	"Md. Haris Iqbal" <haris.iqbal@ionos.com>,
+	Akinobu Mita <akinobu.mita@gmail.com>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Bjorn Andersson <andersson@kernel.org>,
+	Borislav Petkov <bp@alien8.de>, Chaitanya Kulkarni <kch@nvidia.com>,
+	Christian Brauner <brauner@kernel.org>,
+	Damien Le Moal <damien.lemoal@opensource.wdc.com>,
+	Dave Hansen <dave.hansen@linux.intel.com>,
+	David Disseldorp <ddiss@suse.de>,
+	Edward Cree <ecree.xilinx@gmail.com>,
+	Eric Dumazet <edumazet@google.com>,
+	Fenghua Yu <fenghua.yu@intel.com>,
+	Geert Uytterhoeven <geert@linux-m68k.org>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	Gregory Greenman <gregory.greenman@intel.com>,
+	Hans Verkuil <hverkuil@xs4all.nl>,
+	Hans de Goede <hdegoede@redhat.com>,
+	Hugh Dickins <hughd@google.com>, Ingo Molnar <mingo@redhat.com>,
+	Jakub Kicinski <kuba@kernel.org>, Jaroslav Kysela <perex@perex.cz>,
+	Jason Gunthorpe <jgg@ziepe.ca>, Jens Axboe <axboe@kernel.dk>,
+	Jiri Pirko <jiri@resnulli.us>, Jiri Slaby <jirislaby@kernel.org>,
+	Kalle Valo <kvalo@kernel.org>, Karsten Graul <kgraul@linux.ibm.com>,
+	Karsten Keil <isdn@linux-pingi.de>,
+	Kees Cook <keescook@chromium.org>,
+	Leon Romanovsky <leon@kernel.org>,
+	Mark Rutland <mark.rutland@arm.com>,
+	Martin Habets <habetsm.xilinx@gmail.com>,
+	Mauro Carvalho Chehab <mchehab@kernel.org>,
+	Michael Ellerman <mpe@ellerman.id.au>,
+	Michal Simek <monstr@monstr.eu>,
+	Nicholas Piggin <npiggin@gmail.com>,
+	Oliver Neukum <oneukum@suse.com>, Paolo Abeni <pabeni@redhat.com>,
+	Paolo Bonzini <pbonzini@redhat.com>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Ping-Ke Shih <pkshih@realtek.com>, Rich Felker <dalias@libc.org>,
+	Rob Herring <robh@kernel.org>, Robin Murphy <robin.murphy@arm.com>,
+	Sean Christopherson <seanjc@google.com>,
+	Shuai Xue <xueshuai@linux.alibaba.com>,
+	Stanislaw Gruszka <stf_xl@wp.pl>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Valentin Schneider <vschneid@redhat.com>,
+	Vitaly Kuznetsov <vkuznets@redhat.com>,
+	Wenjia Zhang <wenjia@linux.ibm.com>, Will Deacon <will@kernel.org>,
+	Yoshinori Sato <ysato@users.sourceforge.jp>,
+	GR-QLogic-Storage-Upstream@marvell.com, alsa-devel@alsa-project.org,
+	ath10k@lists.infradead.org, dmaengine@vger.kernel.org,
+	iommu@lists.linux.dev, kvm@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org, linux-arm-msm@vger.kernel.org,
+	linux-block@vger.kernel.org, linux-bluetooth@vger.kernel.org,
+	linux-hyperv@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
+	linux-media@vger.kernel.org, linux-mips@vger.kernel.org,
+	linux-net-drivers@amd.com, linux-pci@vger.kernel.org,
+	linux-rdma@vger.kernel.org, linux-s390@vger.kernel.org,
+	linux-scsi@vger.kernel.org, linux-serial@vger.kernel.org,
+	linux-sh@vger.kernel.org, linux-sound@vger.kernel.org,
+	linux-usb@vger.kernel.org, linux-wireless@vger.kernel.org,
+	linuxppc-dev@lists.ozlabs.org, mpi3mr-linuxdrv.pdl@broadcom.com,
+	netdev@vger.kernel.org, sparclinux@vger.kernel.org, x86@kernel.org,
+	Jan Kara <jack@suse.cz>,
+	Mirsad Todorovac <mirsad.todorovac@alu.unizg.hr>,
+	Matthew Wilcox <willy@infradead.org>,
+	Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+	Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+	Maxim Kuvyrkov <maxim.kuvyrkov@linaro.org>,
+	Alexey Klimov <klimov.linux@gmail.com>,
+	Bart Van Assche <bvanassche@acm.org>,
+	Sergey Shtylyov <s.shtylyov@omp.ru>
+Subject: Re: [PATCH v2 00/35] bitops: add atomic find_bit() operations
+Message-ID: <20231204185101.ddmkvsr2xxsmoh2u@quack3>
+References: <20231203192422.539300-1-yury.norov@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: LV2PR12MB5869:EE_|SJ2PR12MB7944:EE_
-X-MS-Office365-Filtering-Correlation-Id: 61d715ec-8854-4736-0405-08dbf4f61e6a
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	1DCVlp4weC6qk9BenTtcHKkif1qYAWtujGTYj5wlmEpAHxBw25kDTRsBE4bsKsJQYXtLGeetm/q6lD/bDk5u1xRxsy/E4570oOwcODxuAt7NzkOn7ueCM5qkSAh5sfNbSGtRz0a7KPPY+qAJf86iMGmaBYVP+hAMvjiH3qBb2CNElzoiVfIksl3VA6kZFWSAzNPJ8NdR++0uL4MX/9Li+go845vvbJ27qjvl7yOgVCEEGOShk21OpeV0IAZ8H0TNC/LWEf0f8GKvLddYhRbDsk/7WLRyaxWZPFs6x8b2CJZrDvzrSiBWatECBRiFz3XIB/hLCd7oD27Lkq2c2jgE04u3/yGh4JGJcpHJAbTV++Q1irQwVQTrzfn2L61zymlw2IdcVXZ3vryVaEAv0cSNHx5QECa6/IgAbdNlvudrzQVuzNkmcw6D+TIHCR/wJXsV7u2lKDrU9fugNkomA//Z5qmSCdcy/6wNkPWcqqlb7nrOwsxnhOWLTF7jbbzkzI3RaU/0wow0phya6nAT7Zm1sjW9Ck13WKOEHbLu20w2V3tdnp5OlU25yTs3rqXrJUxO
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:LV2PR12MB5869.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366004)(396003)(376002)(346002)(136003)(39860400002)(230922051799003)(186009)(451199024)(64100799003)(1800799012)(66556008)(316002)(66476007)(6916009)(54906003)(66946007)(6486002)(478600001)(7416002)(5660300002)(36756003)(41300700001)(2906002)(33656002)(8676002)(8936002)(4326008)(86362001)(1076003)(83380400001)(2616005)(26005)(6512007)(6506007)(38100700002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?us-ascii?Q?Q95FVFVtwIZQKRT0GIHn7ZN8z0anmA18I734GPJsMQ9psSixmnf2Kk7MX4Be?=
- =?us-ascii?Q?BxmkP/U3I511dyhLPDXBoTzsEMK7WKEtSt30vm8zHjDZsENG05m3cNtrPB6G?=
- =?us-ascii?Q?XW6n+vODOwSG4Te98Ijf0nE/l/7WIPWHOlLjX6CHOCVO+CT1tSOkNbCjga6b?=
- =?us-ascii?Q?ERITPORyj4VdKGn4gdBBDBL5CZG6pZAUZqBYI2sf5P+Gjw1mS5TMAaUgkmOT?=
- =?us-ascii?Q?PYBDuUWAgWj7tVDu4Q5YYArXUuvQYpXlEZDs2hg9GQDhYCW9t7A8+ZqlW7KM?=
- =?us-ascii?Q?Sahj15kT55gZbxiFFFJBBabxm2FHnlxeoLfnMXh1hyFi22lb77w7hqG8whrs?=
- =?us-ascii?Q?0NQcZui90I0BqCcDZppkOQODcMf2etB7iIpierRgRQtSZ45U2Ejbwgt+f87M?=
- =?us-ascii?Q?BpPvmgKmDxyQxELTxLAqf1dk3xj4jSfWQd+dDnVOaQNYSwtaBtqJZYvNxB/v?=
- =?us-ascii?Q?+pWIlx/rzLGnxhIAmdg7zZd2r0G6xin544N4znd0jpn6+uaPoLb7hGlIlm21?=
- =?us-ascii?Q?mbFbyzpP2OfkLqcEpeTAy2yWFE6lKyFfBTMFq/DLrPhFeNpeSErCXGpyyyDJ?=
- =?us-ascii?Q?1iKi7nvfLr43eVla/q3ShTfzuvrVYjI3m9/h+LCX1zYq2Duqe2w21RH3Vzej?=
- =?us-ascii?Q?++FZijDaIsAJqgpv6Q5yX2Bp7FJg8IWo+cEkvuyznI0FrWB2Shcub9wd7wSV?=
- =?us-ascii?Q?r57azmBeIDwJnrgtRr7r57PvbUtvl11fZmT+rCstPIZ8AhKuoK53b9Pi5mjN?=
- =?us-ascii?Q?SSg4v7M1f5NxIGmbcZdqwT7O+lUcXvUL8l+NZv+ugNDKUGIS2zHVvoG7mXe5?=
- =?us-ascii?Q?mjwURZOdAyQwW2IrA/P7yy35LlnP3YgeoK3/673L6hjZ4LwW055CkhMbCOt8?=
- =?us-ascii?Q?NKrR5QRGUK7w59lZ6K9Dvz1E11glUJW9kW9lVfzVmMcIG+7YhiOY23wcTnmv?=
- =?us-ascii?Q?0dyf8hsIlYlBbA3j2nReOxEmIOiPFenucPO8ysRqqnvUze2QzHVHXwTndu53?=
- =?us-ascii?Q?4xkKazNGab68imF3J89iYFzEurOK1Jjsj4nCa1C0i9IyGvOHGRpzgrbZ15aY?=
- =?us-ascii?Q?Pg8+7ofaAxHQDzebifL6/LZLLoWkrdOE/RXPXZK5BlKxSCj+/gghyj1MpA9/?=
- =?us-ascii?Q?7s9mMU0wvJ3yEXHgRxMAroSs/pNHy/SMGpfJS6kdScyVKvrw6Q62H/w3djWN?=
- =?us-ascii?Q?Ke9DcHGHKdTJiiqnE5MSb2YblOONvijFqMA6lK/23gW/7nPHwCB2N3GGkNx2?=
- =?us-ascii?Q?nnBUhjz2g3oaINo6/SQLyhjZKHBveWts2b23eV3ZGVL2QCIM1wT331EWa7V3?=
- =?us-ascii?Q?InuBfnp/LTYZjvLqzrAz0VrXYkIbN3dxtTzwsxD6Vx6zVvFzwrkw4BCjC5zu?=
- =?us-ascii?Q?B/0u8q2fPlYCKwzsZZCAzjT4sCld35LrmY0TS4zy8V4zfN3fPuVOVbYiPg1Y?=
- =?us-ascii?Q?PcESP2ohFllYB3EnKZN5AN9sj/78ie1HWGAOD+/qHyqlK1Dg5oYHA8+pT1xA?=
- =?us-ascii?Q?SsI1Bv/Ac52IjvSo+ZJRiScyzSO8rJxTnVQ5wskMfzAXvp5xBJ295qu5mdxd?=
- =?us-ascii?Q?QRvMDLaukGMNOJVO2CHtDQnf9U7LQ3uPEuD7vXRn?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 61d715ec-8854-4736-0405-08dbf4f61e6a
-X-MS-Exchange-CrossTenant-AuthSource: LV2PR12MB5869.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 04 Dec 2023 18:23:31.3948
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: EzAxsFBjRGy4E2ONC43rMPdN24UU2tEtT/CTIgGFsiHR423uQCcBmPs+465utFiM
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ2PR12MB7944
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231203192422.539300-1-yury.norov@gmail.com>
+X-Spamd-Bar: ++++++++++++++
+X-Spam-Score: 14.88
+X-Rspamd-Server: rspamd1
+Authentication-Results: smtp-out2.suse.de;
+	dkim=none;
+	spf=softfail (smtp-out2.suse.de: 2a07:de40:b281:104:10:150:64:98 is neither permitted nor denied by domain of jack@suse.cz) smtp.mailfrom=jack@suse.cz;
+	dmarc=none
+X-Rspamd-Queue-Id: 14A361FE6A
+X-Spamd-Result: default: False [14.88 / 50.00];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:98:from];
+	 TO_DN_SOME(0.00)[];
+	 R_SPF_SOFTFAIL(4.60)[~all];
+	 RCVD_COUNT_THREE(0.00)[3];
+	 MX_GOOD(-0.01)[];
+	 RCPT_COUNT_GT_50(0.00)[100];
+	 FREEMAIL_TO(0.00)[gmail.com];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 R_DKIM_NA(2.20)[];
+	 MIME_TRACE(0.00)[0:+];
+	 FORGED_RECIPIENTS(2.00)[m:yury.norov@gmail.com,m:davem@davemloft.net,m:jejb@linux.ibm.com,m:haris.iqbal@ionos.com,m:akinobu.mita@gmail.com,m:akpm@linux-foundation.org,m:andersson@kernel.org,m:bp@alien8.de,m:brauner@kernel.org,m:dave.hansen@linux.intel.com,m:ecree.xilinx@gmail.com,m:edumazet@google.com,m:fenghua.yu@intel.com,m:geert@linux-m68k.org,m:gregory.greenman@intel.com,m:hughd@google.com,m:kuba@kernel.org,m:axboe@kernel.dk,m:jirislaby@kernel.org,m:kvalo@kernel.org,m:kgraul@linux.ibm.com,m:isdn@linux-pingi.de,m:keescook@chromium.org,m:leon@kernel.org,m:mark.rutland@arm.com,m:habetsm.xilinx@gmail.com,m:mchehab@kernel.org,m:mpe@ellerman.id.au,m:npiggin@gmail.com,m:peterz@infradead.org,m:dalias@libc.org,m:robh@kernel.org,m:robin.murphy@arm.com,m:seanjc@google.com,m:xueshuai@linux.alibaba.com,m:rostedt@goodmis.org,m:tsbogend@alpha.franken.de,m:tglx@linutronix.de,m:wenjia@linux.ibm.com,m:will@kernel.org,m:alsa-devel@alsa-project.org,m:linux-net-drivers@amd.com,m:mpi3mr-linuxdrv.pdl
+ @broadcom.com,m:x86@kernel.org,m:mirsad.todorovac@alu.unizg.hr,m:willy@infradead.org,m:andriy.shevchenko@linux.intel.com,m:maxim.kuvyrkov@linaro.org,m:klimov.linux@gmail.com,m:bvanassche@acm.org,s:s.shtylyov@omp.ru];
+	 BAYES_HAM(-3.00)[100.00%];
+	 ARC_NA(0.00)[];
+	 FROM_HAS_DN(0.00)[];
+	 FREEMAIL_ENVRCPT(0.00)[wp.pl,xs4all.nl];
+	 NEURAL_SPAM_SHORT(2.49)[0.832];
+	 TAGGED_RCPT(0.00)[];
+	 MIME_GOOD(-0.10)[text/plain];
+	 DMARC_NA(1.20)[suse.cz];
+	 TO_MATCH_ENVRCPT_SOME(0.00)[];
+	 NEURAL_SPAM_LONG(3.50)[1.000];
+	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 MID_RHS_NOT_FQDN(0.50)[];
+	 FREEMAIL_CC(0.00)[vger.kernel.org,davemloft.net,zytor.com,linux.ibm.com,microsoft.com,ionos.com,gmail.com,linux-foundation.org,kernel.org,alien8.de,nvidia.com,opensource.wdc.com,linux.intel.com,suse.de,google.com,intel.com,linux-m68k.org,linuxfoundation.org,xs4all.nl,redhat.com,perex.cz,ziepe.ca,kernel.dk,resnulli.us,linux-pingi.de,chromium.org,arm.com,ellerman.id.au,monstr.eu,suse.com,infradead.org,realtek.com,libc.org,linux.alibaba.com,wp.pl,goodmis.org,alpha.franken.de,linutronix.de,users.sourceforge.jp,marvell.com,alsa-project.org,lists.infradead.org,lists.linux.dev,lists.linux-m68k.org,amd.com,lists.ozlabs.org,broadcom.com,suse.cz,alu.unizg.hr,rasmusvillemoes.dk,linaro.org,acm.org,omp.ru];
+	 RCVD_TLS_ALL(0.00)[];
+	 SUSPICIOUS_RECIPS(1.50)[]
 
-On Mon, Dec 04, 2023 at 05:31:47PM +0000, Catalin Marinas wrote:
-> On Mon, Nov 27, 2023 at 09:45:05AM -0400, Jason Gunthorpe wrote:
-> > On Mon, Nov 27, 2023 at 12:42:41PM +0000, Catalin Marinas wrote:
-> > > > > What's the actual requirement here? Is this just for performance?
-> > > > 
-> > > > Yes, just performance.
-> > > 
-> > > Do you have any rough numbers (percentage)? It's highly
-> > > microarchitecture-dependent until we get the ST64B instruction.
-> > 
-> > The current C code is an open coded store loop. The kernel does 250
-> > tries and measures if any one of them succeeds to combine.
-> > 
-> > On x86, and older ARM cores we see that 100% of the time at least 1 in
-> > 250 tries succeeds.
-> > 
-> > With the new CPU cores we see more like 9 out of 10 time there are 0
-> > in 250 tries that succeed. Ie we can go thousands of times without
-> > seeing any successful WC combine.
-> > 
-> > The STP block brings it back to 100% of the time 1 in 250 succeed.
+Hello Yury!
+
+On Sun 03-12-23 11:23:47, Yury Norov wrote:
+> Add helpers around test_and_{set,clear}_bit() that allow to search for
+> clear or set bits and flip them atomically.
 > 
-> That's a bit confusing to me: 1 in 250 succeeding is still pretty rare.
-> But I guess what your benchmark says is that at least 1 succeeded to
-> write-combine and it might as well be all 250 tries. It's more
-> interesting to see if there's actual performance gain in real-world
-> traffic, not just some artificial benchmark (I may have misunderstood
-> your numbers above).
-
-Yes, I just don't have better data available to say that 250/250
-succeeded, but we expect that is the case.
-
-We have now something like 20 years experiance with write combining
-performance on x86 systems. It brings real world gains in real word
-HPC applications.
-
-Indeed, the reason this even came up was because one of our existing
-applications was performing unexpectedly badly on these ARM64 servers.
-
-We even have data showing that having the CPU do all the write
-combining steps and then fail to get writecombining is notably slower
-than just assuming no write combining. It is why we go through the
-trouble to test the physical HW.
-
-> > However, in userspace we have long been using ST4 to create a
-> > single-instruction 64 byte store on ARM64. As far as I know this is
-> > highly reliable. I don't have direct data on the STP configuration.
+> The target patterns may look like this:
 > 
-> Personally I'd optimise the mempcy_toio() arm64 implementation to do
-> STPs if the alignment is right (like we do for classic memcpy()).
-> There's a slight overhead for alignment checking but I suspect it would
-> be lost as long as you can get the write-combining. Not sure whether the
-> interspersed reads in memcpy_toio() would somehow prevent the
-> write-combining.
+> 	for (idx = 0; idx < nbits; idx++)
+> 		if (test_and_clear_bit(idx, bitmap))
+> 			do_something(idx);
+> 
+> Or like this:
+> 
+> 	do {
+> 		bit = find_first_bit(bitmap, nbits);
+> 		if (bit >= nbits)
+> 			return nbits;
+> 	} while (!test_and_clear_bit(bit, bitmap));
+> 	return bit;
+> 
+> In both cases, the opencoded loop may be converted to a single function
+> or iterator call. Correspondingly:
+> 
+> 	for_each_test_and_clear_bit(idx, bitmap, nbits)
+> 		do_something(idx);
+> 
+> Or:
+> 	return find_and_clear_bit(bitmap, nbits);
 
-I understand on these new CPUs anything other than a block of
-contiguous STPs is risky to break the WC. I was told we should not
-have any loads between them.
+These are fine cleanups but they actually don't address the case that has
+triggered all these changes - namely the xarray use of find_next_bit() in
+xas_find_chunk().
 
-So we can't just update memcpy_toio to optimize a 128 bit store
-variant like memcpy might. We actually need a special case just for 64
-byte.
+...
+> This series is a result of discussion [1]. All find_bit() functions imply
+> exclusive access to the bitmaps. However, KCSAN reports quite a number
+> of warnings related to find_bit() API. Some of them are not pointing
+> to real bugs because in many situations people intentionally allow
+> concurrent bitmap operations.
+> 
+> If so, find_bit() can be annotated such that KCSAN will ignore it:
+> 
+>         bit = data_race(find_first_bit(bitmap, nbits));
 
-IMHO it does not look good as the chance any existing callers can use
-this optmized 64B path is probably small, but everyone has to pay the
-costs to check for it.
+No, this is not a correct thing to do. If concurrent bitmap changes can
+happen, find_first_bit() as it is currently implemented isn't ever a safe
+choice because it can call __ffs(0) which is dangerous as you properly note
+above. I proposed adding READ_ONCE() into find_first_bit() / find_next_bit()
+implementation to fix this issue but you disliked that. So other option we
+have is adding find_first_bit() and find_next_bit() variants that take
+volatile 'addr' and we have to use these in code like xas_find_chunk()
+which cannot be converted to your new helpers.
 
-I also would not do this on x86 - Pathscale apparently decided the
-needed special __iowrite*_copy() things to actually make this work on
-xome x86 systems - I'm very leary to change x86 stuff away from the 64
-bit copy loopw we know works already on x86.
+> This series addresses the other important case where people really need
+> atomic find ops. As the following patches show, the resulting code
+> looks safer and more verbose comparing to opencoded loops followed by
+> atomic bit flips.
+> 
+> In [1] Mirsad reported 2% slowdown in a single-thread search test when
+> switching find_bit() function to treat bitmaps as volatile arrays. On
+> the other hand, kernel robot in the same thread reported +3.7% to the
+> performance of will-it-scale.per_thread_ops test.
 
-IMHO encoding the alignment expectation in the API is best, especially
-since this is typically a performance path.
+It was actually me who reported the regression here [2] but whatever :)
 
-> A memcpy_toio_64() can use the new ST64B instruction if available or
-> fall back to memcpy_toio() on arm64. It should also have the DGH
-> instruction (io_stop_wc()) but only if falling back to classic
-> memcpy_toio(). We don't need DGH with ST64B.
+[2] https://lore.kernel.org/all/20231011150252.32737-1-jack@suse.cz
 
-I'm told it is problematic, something about ST64B not working with
-NORMAL_NC.
+> Assuming that our compilers are sane and generate better code against
+> properly annotated data, the above discrepancy doesn't look weird. When
+> running on non-volatile bitmaps, plain find_bit() outperforms atomic
+> find_and_bit(), and vice-versa.
+> 
+> So, all users of find_bit() API, where heavy concurrency is expected,
+> are encouraged to switch to atomic find_and_bit() as appropriate.
 
-We could fold the DGH into the helper though. IHMO I'd like to see how
-ST64B actually gets implemented before doing that. If the note about
-the NORMAL_NC is true then we need a lot more infrastructure to
-actually use it.
+Well, all users where any concurrency can happen should switch. Otherwise
+they are prone to the (admittedly mostly theoretical) data race issue.
 
-Also in a future ST64B world we are going to see HW start relying on
-large TLPs, not just being an optional performance win. To my mind it
-makes more sense that there is an API that guarantees a large TLP or
-oops. We really don't want an automatic fallback to memcpy.
-
-Jason
+								Honza
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
 
