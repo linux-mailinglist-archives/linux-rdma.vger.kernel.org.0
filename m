@@ -1,66 +1,69 @@
-Return-Path: <linux-rdma+bounces-252-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-253-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 613DC804356
-	for <lists+linux-rdma@lfdr.de>; Tue,  5 Dec 2023 01:26:33 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 840BD80435A
+	for <lists+linux-rdma@lfdr.de>; Tue,  5 Dec 2023 01:26:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 836501C20BAA
-	for <lists+linux-rdma@lfdr.de>; Tue,  5 Dec 2023 00:26:32 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2E8511F21331
+	for <lists+linux-rdma@lfdr.de>; Tue,  5 Dec 2023 00:26:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7DD7C393;
-	Tue,  5 Dec 2023 00:26:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 766A5392;
+	Tue,  5 Dec 2023 00:26:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Gsk3ZZEw"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="dhmZGWiz"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-oa1-x35.google.com (mail-oa1-x35.google.com [IPv6:2001:4860:4864:20::35])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 136A9AC
-	for <linux-rdma@vger.kernel.org>; Mon,  4 Dec 2023 16:26:25 -0800 (PST)
-Received: by mail-oa1-x35.google.com with SMTP id 586e51a60fabf-1faf152a1dbso2827166fac.0
-        for <linux-rdma@vger.kernel.org>; Mon, 04 Dec 2023 16:26:25 -0800 (PST)
+Received: from mail-ot1-x331.google.com (mail-ot1-x331.google.com [IPv6:2607:f8b0:4864:20::331])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E964FF
+	for <linux-rdma@vger.kernel.org>; Mon,  4 Dec 2023 16:26:37 -0800 (PST)
+Received: by mail-ot1-x331.google.com with SMTP id 46e09a7af769-6d986a75337so1214979a34.1
+        for <linux-rdma@vger.kernel.org>; Mon, 04 Dec 2023 16:26:37 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1701735984; x=1702340784; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=VyY4gAFnlXRgWPxP9SMwMMju7nkj3UkGC1u3lDyzCZM=;
-        b=Gsk3ZZEw87vjA677ZkxTHY0dJg1H5WgGCKHBcCOG7QED2gilD/t/0MkfyA87pEYdvW
-         wY6+4ByUlw6/adjlHPYpMzTq5ITy7eUdLUq5odeoK4DIuczOB6z8xMtLSuam36c1w4gf
-         r6/KrHjNXS8hYPOE4GjATORaoA6kIhsrZZvi25Ms5lFQgSozSAVgYgdE67643NazOujl
-         Os2Zr0xlqEDnT5bCHBoK9KkBaCE//jMFIfxOIV8wGpA+nWcPHESH08Q7J9WGcvTmsBbK
-         PS2O1q+q9hkxEUFoeTmplZx0DTRzOODSOYllq7WfLyarhgnBOLawYnpya+0UdJZhpbpA
-         NwFw==
+        d=gmail.com; s=20230601; t=1701735996; x=1702340796; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=uj0PU7uEjCTBczW0/yievyQR0AIrXN2P5Hcurk7TtSE=;
+        b=dhmZGWizEpgZhq+Htdpurc7DZT1LRh9lX/uiTkMm1V7ZL4JWc+Pvr7wDRvHc5nM8d5
+         HDpRsd5YICdGG5oJ5gNZVSiJgGotVpylfP1JHRr9FOj/fLI7FbnllkHpThu6biQLcwmW
+         cYnOE29JeW1QDv8XO6vsm7maABGWJFHf61Rh9Id+O3+NSAf73t9ya48EQgSMoVeY7LI8
+         +sPUGTb+JEZJMRavDnhWTXwkntC0GQEtJ8fTSTpc+iScFMHWQkeO+nroN2i+JrcTzf/w
+         ACxyaC5zHDJHC3qft4wdjXVySAUJ9xGdI53QdWrm7z8ika4vkHr7UFkEHWUkz1U8GCHG
+         NkZA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701735984; x=1702340784;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=VyY4gAFnlXRgWPxP9SMwMMju7nkj3UkGC1u3lDyzCZM=;
-        b=QKzDOFJj488mHkHUc1f3OH4E+98a6Tp4Xrced4TZN3+27jsxnGV7KNnB2WWnH+G+cP
-         qt7Wn+1Ub4ro8LK40ju/SswVf1f2qzfvThBclebYYrhpLY177dF/sE60tykBn0zpfoEx
-         V+vJuugj7HH7B9si78PEBLgWIwO0Gni/8BwkfLYZgfxTkRsA5r5HAZN8Vkcto15jlEgR
-         FHsdAS9NWOYaciqEAk/SYUNXadEh565+Bdd9KDWca00P60qJsKkgiGeODclJpZg7iCaV
-         kSrSh+wAsAaUJMMEnlqmXcx0ZutGIa2FA+ZJODpcs0HfTAciIWq1PtYNnt+1IV5OTIOK
-         gJhg==
-X-Gm-Message-State: AOJu0Yw+mf75t8vFvZ2JJd52KkOLR8+hk9NN+Hy2vebYFgrrzo+LqeMT
-	efpB5klKo6SkJFEstanEiHE=
-X-Google-Smtp-Source: AGHT+IE93HZSVo63t0aN+7n3ld/EEJzR/l4T0BurpalCp5d/MV/kXDj9aUwMvj8rHFjcBE3ya0+EVQ==
-X-Received: by 2002:a05:6870:d621:b0:1fb:75b:2fb7 with SMTP id a33-20020a056870d62100b001fb075b2fb7mr5933156oaq.78.1701735984111;
-        Mon, 04 Dec 2023 16:26:24 -0800 (PST)
+        d=1e100.net; s=20230601; t=1701735996; x=1702340796;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=uj0PU7uEjCTBczW0/yievyQR0AIrXN2P5Hcurk7TtSE=;
+        b=uRTjZCJO43osno4iKlwKPV9A0rA8T8CeXrU9G2oH+KoHuTwgw9S3azFv+/TQNAGxIa
+         GA2sQNfCVDemy0iMQxEOrpFYSDWr1UZ5vZG6mIdNlZOjToi6MqoM6oRh24J/6WggH2/1
+         AHChpNwyubvBFQkYtOGgUnh36F867Eyno61lS6gvbnCKTc9l5ZGP6Wo37KUxbq/xIOlc
+         NsNkwtUrEO+doVkOUMKqN6gIJ2zW5f8C7vV6cUSiy3H+iuuPjbQI7uid/bt4p/zP9efv
+         jvXHKQXUZJv30LJ80Z3738yKM8uWINm7Z2C2xxc6X5QQi3a0eo22R1qk83jRjrs7lwMa
+         7EFg==
+X-Gm-Message-State: AOJu0YxiUWQZMFzQLVpj/6XwsqrP9cfpco2NikADynv+1kM5meB8DITK
+	ZHvqU/Cd2gqBZCn/JCQujPU=
+X-Google-Smtp-Source: AGHT+IEmrDLD3lDXg9MkyEqLEb7IMMTElHH2N53S8C4REFmlmN7GlnsONMC/mQWGSu5Cj1DZx9UbPQ==
+X-Received: by 2002:a05:6871:6a9:b0:1fa:e7f8:efd5 with SMTP id l41-20020a05687106a900b001fae7f8efd5mr5695080oao.34.1701735996392;
+        Mon, 04 Dec 2023 16:26:36 -0800 (PST)
 Received: from bob-3900x.lan (2603-8081-1405-679b-e463-fe8f-1aa8-6edb.res6.spectrum.com. [2603:8081:1405:679b:e463:fe8f:1aa8:6edb])
-        by smtp.gmail.com with ESMTPSA id se6-20020a05687122c600b001faf09f0899sm2524844oab.24.2023.12.04.16.26.23
+        by smtp.gmail.com with ESMTPSA id se6-20020a05687122c600b001faf09f0899sm2524844oab.24.2023.12.04.16.26.35
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 04 Dec 2023 16:26:23 -0800 (PST)
+        Mon, 04 Dec 2023 16:26:35 -0800 (PST)
 From: Bob Pearson <rpearsonhpe@gmail.com>
 To: jgg@nvidia.com,
 	yanjun.zhu@linux.dev,
 	linux-rdma@vger.kernel.org
 Cc: Bob Pearson <rpearsonhpe@gmail.com>
-Subject: [PATCH for-next v5 3/7] RDMA/rxe: Register IP mcast address
-Date: Mon,  4 Dec 2023 18:26:10 -0600
-Message-Id: <20231205002613.10219-1-rpearsonhpe@gmail.com>
+Subject: [PATCH for-next v5 4/7] RDMA/rxe: Let rxe_lookup_mcg use rcu_read_lock
+Date: Mon,  4 Dec 2023 18:26:11 -0600
+Message-Id: <20231205002613.10219-2-rpearsonhpe@gmail.com>
 X-Mailer: git-send-email 2.40.1
+In-Reply-To: <20231205002613.10219-1-rpearsonhpe@gmail.com>
+References: <20231205002613.10219-1-rpearsonhpe@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
@@ -69,223 +72,146 @@ List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Currently the rdma_rxe driver does not receive mcast packets at all.
+Change locking of read side operations of the mcast group
+red-black tree to use rcu read locking. This will allow changing
+the mcast lock in the next patch to be a mutex without
+breaking rxe_recv.c which runs in an atomic state. It is also a
+better implementation than the current use of a spin-lock per
+rdma device since receiving mcast packets will be much more
+common than registering/deregistering mcast groups.
 
-Add code to rxe_mcast_add() and rxe_mcast_del() to register/deregister
-the IP mcast address. This is required for mcast traffic to reach the
-rxe driver when coming from an external source.
-
-Fixes: 8700e3e7c485 ("Soft RoCE driver")
 Signed-off-by: Bob Pearson <rpearsonhpe@gmail.com>
 ---
- drivers/infiniband/sw/rxe/rxe_mcast.c | 119 +++++++++++++++++++++-----
- drivers/infiniband/sw/rxe/rxe_net.c   |   2 +-
- drivers/infiniband/sw/rxe/rxe_net.h   |   1 +
- drivers/infiniband/sw/rxe/rxe_verbs.h |   1 +
- 4 files changed, 102 insertions(+), 21 deletions(-)
+ drivers/infiniband/sw/rxe/rxe_mcast.c | 59 +++++++++------------------
+ drivers/infiniband/sw/rxe/rxe_verbs.h |  1 +
+ 2 files changed, 21 insertions(+), 39 deletions(-)
 
 diff --git a/drivers/infiniband/sw/rxe/rxe_mcast.c b/drivers/infiniband/sw/rxe/rxe_mcast.c
-index 86cc2e18a7fd..54735d07cee5 100644
+index 54735d07cee5..44948f9cb02b 100644
 --- a/drivers/infiniband/sw/rxe/rxe_mcast.c
 +++ b/drivers/infiniband/sw/rxe/rxe_mcast.c
-@@ -19,38 +19,116 @@
-  * mcast packets in the rxe receive path.
-  */
+@@ -151,13 +151,18 @@ static void __rxe_insert_mcg(struct rxe_mcg *mcg)
+ 		tmp = rb_entry(node, struct rxe_mcg, node);
  
-+#include <linux/igmp.h>
-+
- #include "rxe.h"
+ 		cmp = memcmp(&tmp->mgid, &mcg->mgid, sizeof(mcg->mgid));
+-		if (cmp > 0)
++		if (cmp > 0) {
+ 			link = &(*link)->rb_left;
+-		else
++		} else if (cmp < 0) {
+ 			link = &(*link)->rb_right;
++		} else {
++			/* we must delete the old mcg before adding one */
++			WARN_ON_ONCE(1);
++			return;
++		}
+ 	}
  
--/**
-- * rxe_mcast_add - add multicast address to rxe device
-- * @rxe: rxe device object
-- * @mgid: multicast address as a gid
-- *
-- * Returns 0 on success else an error
-- */
--static int rxe_mcast_add(struct rxe_dev *rxe, union ib_gid *mgid)
-+static int rxe_mcast_add6(struct rxe_dev *rxe, union ib_gid *mgid)
- {
-+	struct in6_addr *addr6 = (struct in6_addr *)mgid;
-+	struct sock *sk = recv_sockets.sk6->sk;
- 	unsigned char ll_addr[ETH_ALEN];
-+	int err;
-+
-+	spin_lock_bh(&sk->sk_lock.slock);
-+	rtnl_lock();
-+	err = ipv6_sock_mc_join(sk, rxe->ndev->ifindex, addr6);
-+	rtnl_unlock();
-+	spin_unlock_bh(&sk->sk_lock.slock);
-+	if (err && err != -EADDRINUSE)
-+		goto err_out;
+-	rb_link_node(&mcg->node, node, link);
++	rb_link_node_rcu(&mcg->node, node, link);
+ 	rb_insert_color(&mcg->node, tree);
+ }
  
- 	ipv6_eth_mc_map((struct in6_addr *)mgid->raw, ll_addr);
-+	err = dev_mc_add(rxe->ndev, ll_addr);
-+	if (err)
-+		goto err_drop;
-+
-+	return 0;
- 
--	return dev_mc_add(rxe->ndev, ll_addr);
-+err_drop:
-+	spin_lock_bh(&sk->sk_lock.slock);
-+	rtnl_lock();
-+	ipv6_sock_mc_drop(sk, rxe->ndev->ifindex, addr6);
-+	rtnl_unlock();
-+	spin_unlock_bh(&sk->sk_lock.slock);
-+err_out:
-+	return err;
+@@ -172,15 +177,11 @@ static void __rxe_remove_mcg(struct rxe_mcg *mcg)
+ 	rb_erase(&mcg->node, &mcg->rxe->mcg_tree);
  }
  
 -/**
-- * rxe_mcast_del - delete multicast address from rxe device
+- * __rxe_lookup_mcg - lookup mcg in rxe->mcg_tree while holding lock
 - * @rxe: rxe device object
-- * @mgid: multicast address as a gid
+- * @mgid: multicast IP address
 - *
-- * Returns 0 on success else an error
-- */
--static int rxe_mcast_del(struct rxe_dev *rxe, union ib_gid *mgid)
-+static int rxe_mcast_add(struct rxe_mcg *mcg)
+- * Context: caller must hold rxe->mcg_lock
+- * Returns: mcg on success and takes a ref to mcg else NULL
++/*
++ * Lookup mgid in the multicast group red-black tree and try to
++ * get a ref on it. Return mcg on success else NULL.
+  */
+-static struct rxe_mcg *__rxe_lookup_mcg(struct rxe_dev *rxe,
++struct rxe_mcg *rxe_lookup_mcg(struct rxe_dev *rxe,
+ 					union ib_gid *mgid)
  {
-+	struct rxe_dev *rxe = mcg->rxe;
-+	union ib_gid *mgid = &mcg->mgid;
- 	unsigned char ll_addr[ETH_ALEN];
-+	struct ip_mreqn imr = {};
-+	int err;
-+
-+	if (mcg->is_ipv6)
-+		return rxe_mcast_add6(rxe, mgid);
-+
-+	imr.imr_multiaddr = *(struct in_addr *)(mgid->raw + 12);
-+	imr.imr_ifindex = rxe->ndev->ifindex;
-+	rtnl_lock();
-+	err = ip_mc_join_group(recv_sockets.sk4->sk, &imr);
-+	rtnl_unlock();
-+	if (err && err != -EADDRINUSE)
-+		goto err_out;
-+
-+	ip_eth_mc_map(imr.imr_multiaddr.s_addr, ll_addr);
-+	err = dev_mc_add(rxe->ndev, ll_addr);
-+	if (err)
-+		goto err_leave;
-+
-+	return 0;
-+
-+err_leave:
-+	rtnl_lock();
-+	ip_mc_leave_group(recv_sockets.sk4->sk, &imr);
-+	rtnl_unlock();
-+err_out:
-+	return err;
-+}
-+
-+static int rxe_mcast_del6(struct rxe_dev *rxe, union ib_gid *mgid)
-+{
-+	struct sock *sk = recv_sockets.sk6->sk;
-+	unsigned char ll_addr[ETH_ALEN];
-+	int err, err2;
+ 	struct rb_root *tree = &rxe->mcg_tree;
+@@ -188,7 +189,8 @@ static struct rxe_mcg *__rxe_lookup_mcg(struct rxe_dev *rxe,
+ 	struct rb_node *node;
+ 	int cmp;
  
- 	ipv6_eth_mc_map((struct in6_addr *)mgid->raw, ll_addr);
-+	err = dev_mc_del(rxe->ndev, ll_addr);
-+
-+	spin_lock_bh(&sk->sk_lock.slock);
-+	rtnl_lock();
-+	err2 = ipv6_sock_mc_drop(sk, rxe->ndev->ifindex,
-+			(struct in6_addr *)mgid);
-+	rtnl_unlock();
-+	spin_unlock_bh(&sk->sk_lock.slock);
-+
-+	return err ?: err2;
-+}
-+
-+static int rxe_mcast_del(struct rxe_mcg *mcg)
-+{
-+	struct rxe_dev *rxe = mcg->rxe;
-+	union ib_gid *mgid = &mcg->mgid;
-+	unsigned char ll_addr[ETH_ALEN];
-+	struct ip_mreqn imr = {};
-+	int err, err2;
-+
-+	if (mcg->is_ipv6)
-+		return rxe_mcast_del6(rxe, mgid);
-+
-+	imr.imr_multiaddr = *(struct in_addr *)(mgid->raw + 12);
-+	imr.imr_ifindex = rxe->ndev->ifindex;
-+	ip_eth_mc_map(imr.imr_multiaddr.s_addr, ll_addr);
-+	err = dev_mc_del(rxe->ndev, ll_addr);
-+
-+	rtnl_lock();
-+	err2 = ip_mc_leave_group(recv_sockets.sk4->sk, &imr);
-+	rtnl_unlock();
+-	node = tree->rb_node;
++	rcu_read_lock();
++	node = rcu_dereference_raw(tree->rb_node);
  
--	return dev_mc_del(rxe->ndev, ll_addr);
-+	return err ?: err2;
+ 	while (node) {
+ 		mcg = rb_entry(node, struct rxe_mcg, node);
+@@ -196,35 +198,14 @@ static struct rxe_mcg *__rxe_lookup_mcg(struct rxe_dev *rxe,
+ 		cmp = memcmp(&mcg->mgid, mgid, sizeof(*mgid));
+ 
+ 		if (cmp > 0)
+-			node = node->rb_left;
++			node = rcu_dereference_raw(node->rb_left);
+ 		else if (cmp < 0)
+-			node = node->rb_right;
++			node = rcu_dereference_raw(node->rb_right);
+ 		else
+ 			break;
+ 	}
+-
+-	if (node) {
+-		kref_get(&mcg->ref_cnt);
+-		return mcg;
+-	}
+-
+-	return NULL;
+-}
+-
+-/**
+- * rxe_lookup_mcg - lookup up mcg in red-back tree
+- * @rxe: rxe device object
+- * @mgid: multicast IP address
+- *
+- * Returns: mcg if found else NULL
+- */
+-struct rxe_mcg *rxe_lookup_mcg(struct rxe_dev *rxe, union ib_gid *mgid)
+-{
+-	struct rxe_mcg *mcg;
+-
+-	spin_lock_bh(&rxe->mcg_lock);
+-	mcg = __rxe_lookup_mcg(rxe, mgid);
+-	spin_unlock_bh(&rxe->mcg_lock);
++	mcg = (node && kref_get_unless_zero(&mcg->ref_cnt)) ? mcg : NULL;
++	rcu_read_unlock();
+ 
+ 	return mcg;
+ }
+@@ -292,7 +273,7 @@ static struct rxe_mcg *rxe_get_mcg(struct rxe_dev *rxe, union ib_gid *mgid)
+ 
+ 	spin_lock_bh(&rxe->mcg_lock);
+ 	/* re-check to see if someone else just added it */
+-	tmp = __rxe_lookup_mcg(rxe, mgid);
++	tmp = rxe_lookup_mcg(rxe, mgid);
+ 	if (tmp) {
+ 		spin_unlock_bh(&rxe->mcg_lock);
+ 		atomic_dec(&rxe->mcg_num);
+@@ -322,7 +303,7 @@ void rxe_cleanup_mcg(struct kref *kref)
+ {
+ 	struct rxe_mcg *mcg = container_of(kref, typeof(*mcg), ref_cnt);
+ 
+-	kfree(mcg);
++	kfree_rcu(mcg, rcu);
  }
  
  /**
-@@ -164,6 +242,7 @@ static void __rxe_init_mcg(struct rxe_dev *rxe, union ib_gid *mgid,
- {
- 	kref_init(&mcg->ref_cnt);
- 	memcpy(&mcg->mgid, mgid, sizeof(mcg->mgid));
-+	mcg->is_ipv6 = !ipv6_addr_v4mapped((struct in6_addr *)mgid);
- 	INIT_LIST_HEAD(&mcg->qp_list);
- 	mcg->rxe = rxe;
- 
-@@ -225,7 +304,7 @@ static struct rxe_mcg *rxe_get_mcg(struct rxe_dev *rxe, union ib_gid *mgid)
- 	spin_unlock_bh(&rxe->mcg_lock);
- 
- 	/* add mcast address outside of lock */
--	err = rxe_mcast_add(rxe, mgid);
-+	err = rxe_mcast_add(mcg);
- 	if (!err)
- 		return mcg;
- 
-@@ -273,7 +352,7 @@ static void __rxe_destroy_mcg(struct rxe_mcg *mcg)
- static void rxe_destroy_mcg(struct rxe_mcg *mcg)
- {
- 	/* delete mcast address outside of lock */
--	rxe_mcast_del(mcg->rxe, &mcg->mgid);
-+	rxe_mcast_del(mcg);
- 
- 	spin_lock_bh(&mcg->rxe->mcg_lock);
- 	__rxe_destroy_mcg(mcg);
-diff --git a/drivers/infiniband/sw/rxe/rxe_net.c b/drivers/infiniband/sw/rxe/rxe_net.c
-index 58c3f3759bf0..b481f8da2002 100644
---- a/drivers/infiniband/sw/rxe/rxe_net.c
-+++ b/drivers/infiniband/sw/rxe/rxe_net.c
-@@ -18,7 +18,7 @@
- #include "rxe_net.h"
- #include "rxe_loc.h"
- 
--static struct rxe_recv_sockets recv_sockets;
-+struct rxe_recv_sockets recv_sockets;
- 
- static struct dst_entry *rxe_find_route4(struct rxe_qp *qp,
- 					 struct net_device *ndev,
-diff --git a/drivers/infiniband/sw/rxe/rxe_net.h b/drivers/infiniband/sw/rxe/rxe_net.h
-index 45d80d00f86b..89cee7d5340f 100644
---- a/drivers/infiniband/sw/rxe/rxe_net.h
-+++ b/drivers/infiniband/sw/rxe/rxe_net.h
-@@ -15,6 +15,7 @@ struct rxe_recv_sockets {
- 	struct socket *sk4;
- 	struct socket *sk6;
- };
-+extern struct rxe_recv_sockets recv_sockets;
- 
- int rxe_net_add(const char *ibdev_name, struct net_device *ndev);
- 
 diff --git a/drivers/infiniband/sw/rxe/rxe_verbs.h b/drivers/infiniband/sw/rxe/rxe_verbs.h
-index ccb9d19ffe8a..7be9e6232dd9 100644
+index 7be9e6232dd9..8058e5039322 100644
 --- a/drivers/infiniband/sw/rxe/rxe_verbs.h
 +++ b/drivers/infiniband/sw/rxe/rxe_verbs.h
-@@ -352,6 +352,7 @@ struct rxe_mcg {
- 	atomic_t		qp_num;
- 	u32			qkey;
- 	u16			pkey;
-+	bool			is_ipv6;
- };
+@@ -345,6 +345,7 @@ struct rxe_mw {
  
- struct rxe_mca {
+ struct rxe_mcg {
+ 	struct rb_node		node;
++	struct rcu_head		rcu;
+ 	struct kref		ref_cnt;
+ 	struct rxe_dev		*rxe;
+ 	struct list_head	qp_list;
 -- 
 2.40.1
 
