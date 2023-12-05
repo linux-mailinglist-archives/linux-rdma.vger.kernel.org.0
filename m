@@ -1,48 +1,45 @@
-Return-Path: <linux-rdma+bounces-268-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-269-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9F96B80516E
-	for <lists+linux-rdma@lfdr.de>; Tue,  5 Dec 2023 12:01:50 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8BF84805B0E
+	for <lists+linux-rdma@lfdr.de>; Tue,  5 Dec 2023 18:21:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E90D4B20968
-	for <lists+linux-rdma@lfdr.de>; Tue,  5 Dec 2023 11:01:47 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 43D5EB210BD
+	for <lists+linux-rdma@lfdr.de>; Tue,  5 Dec 2023 17:21:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 332374CDFA;
-	Tue,  5 Dec 2023 11:01:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b="OxTUsQE/"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 83034692BF;
+	Tue,  5 Dec 2023 17:21:32 +0000 (UTC)
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTP id 7359F11F;
-	Tue,  5 Dec 2023 03:01:39 -0800 (PST)
-Received: by linux.microsoft.com (Postfix, from userid 1099)
-	id D05B820B74C0; Tue,  5 Dec 2023 03:01:38 -0800 (PST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com D05B820B74C0
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-	s=default; t=1701774098;
-	bh=GsHAagPrkVzK5MMXoA+rCitnNZnBfvTsUscahErxJ+0=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=OxTUsQE/l55VpHHuoETMIIiTQ9P3eXzRuFvbMIpJMFnvPXyRQZALjqshXPtlSwsrf
-	 lmqw9kPm3C0+TGRLbAGMVJayOcG2eoSKJEM76jK8iTE7jm8/9v7gUbKtI2XwHskYUL
-	 1voMo98zUfGMlmXN0U0M4y+KUx0j/TZt61LZVG4k=
-Date: Tue, 5 Dec 2023 03:01:38 -0800
-From: Souradeep Chakrabarti <schakrabarti@linux.microsoft.com>
-To: Yury Norov <yury.norov@gmail.com>
-Cc: kys@microsoft.com, haiyangz@microsoft.com, wei.liu@kernel.org,
-	decui@microsoft.com, davem@davemloft.net, edumazet@google.com,
-	kuba@kernel.org, pabeni@redhat.com, longli@microsoft.com,
-	leon@kernel.org, cai.huoqing@linux.dev, ssengar@linux.microsoft.com,
-	vkuznets@redhat.com, tglx@linutronix.de,
-	linux-hyperv@vger.kernel.org, netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
-	sch^Crabarti@microsoft.com, paulros@microsoft.com
-Subject: Re: [PATCH V4 net-next] net: mana: Assigning IRQ affinity on HT cores
-Message-ID: <20231205110138.GA31232@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
-References: <1701679841-9359-1-git-send-email-schakrabarti@linux.microsoft.com>
- <ZW3om2dfA4U0lhVY@yury-ThinkPad>
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4B0CC692B9;
+	Tue,  5 Dec 2023 17:21:31 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6E461C433C8;
+	Tue,  5 Dec 2023 17:21:29 +0000 (UTC)
+Date: Tue, 5 Dec 2023 17:21:27 +0000
+From: Catalin Marinas <catalin.marinas@arm.com>
+To: Jason Gunthorpe <jgg@nvidia.com>
+Cc: Mark Rutland <mark.rutland@arm.com>, Leon Romanovsky <leon@kernel.org>,
+	Arnd Bergmann <arnd@arndb.de>, linux-arch@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org, linux-rdma@vger.kernel.org,
+	llvm@lists.linux.dev, Michael Guralnik <michaelgur@mellanox.com>,
+	Nathan Chancellor <nathan@kernel.org>,
+	Nick Desaulniers <ndesaulniers@google.com>,
+	Will Deacon <will@kernel.org>
+Subject: Re: [PATCH rdma-next 1/2] arm64/io: add memcpy_toio_64
+Message-ID: <ZW9cF0ALVwgvcQMy@arm.com>
+References: <cover.1700766072.git.leon@kernel.org>
+ <c3ae87aea7660c3d266905c19d10d8de0f9fb779.1700766072.git.leon@kernel.org>
+ <ZWB373y5XuZDultf@FVFF77S0Q05N>
+ <20231124122352.GB436702@nvidia.com>
+ <ZWSOwT2OyMXD1lmo@arm.com>
+ <20231127134505.GI436702@nvidia.com>
+ <ZW4NAzI_jvwoq8dL@arm.com>
+ <20231204182330.GK1493156@nvidia.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
@@ -51,254 +48,68 @@ List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <ZW3om2dfA4U0lhVY@yury-ThinkPad>
-User-Agent: Mutt/1.5.21 (2010-09-15)
+In-Reply-To: <20231204182330.GK1493156@nvidia.com>
 
-On Mon, Dec 04, 2023 at 06:56:27AM -0800, Yury Norov wrote:
-> On Mon, Dec 04, 2023 at 12:50:41AM -0800, Souradeep Chakrabarti wrote:
-> > Existing MANA design assigns IRQ to every CPU, including sibling
-> > hyper-threads. This may cause multiple IRQs to be active simultaneously
-> > in the same core and may reduce the network performance with RSS.
-> > 
-> > Improve the performance by assigning IRQ to non sibling CPUs in local
-> > NUMA node.
-> > 
-> > Signed-off-by: Souradeep Chakrabarti <schakrabarti@linux.microsoft.com>
-> > ---
-> > V3 -> V4:
-> > * Used for_each_numa_hop_mask() macro and simplified the code.
-> > Thanks to Yury Norov for the suggestion.
+On Mon, Dec 04, 2023 at 02:23:30PM -0400, Jason Gunthorpe wrote:
+> On Mon, Dec 04, 2023 at 05:31:47PM +0000, Catalin Marinas wrote:
+> > Personally I'd optimise the mempcy_toio() arm64 implementation to do
+> > STPs if the alignment is right (like we do for classic memcpy()).
+> > There's a slight overhead for alignment checking but I suspect it would
+> > be lost as long as you can get the write-combining. Not sure whether the
+> > interspersed reads in memcpy_toio() would somehow prevent the
+> > write-combining.
 > 
-> We've got a special tag for this:
-> 
-> Suggested-by: Yury Norov <yury.norov@gmali.com>
-> 
-> > * Added code to assign hwc irq separately in mana_gd_setup_irqs.
-> > 
-> > V2 -> V3:
-> > * Created a helper function to get the next NUMA with CPU.
-> > * Added some error checks for unsuccessful memory allocation.
-> > * Fixed some comments on the code.
-> > 
-> > V1 -> V2:
-> > * Simplified the code by removing filter_mask_list and using avail_cpus.
-> > * Addressed infinite loop issue when there are numa nodes with no CPUs.
-> > * Addressed uses of local numa node instead of 0 to start.
-> > * Removed uses of BUG_ON.
-> > * Placed cpus_read_lock in parent function to avoid num_online_cpus
-> >   to get changed before function finishes the affinity assignment.
-> > ---
-> >  .../net/ethernet/microsoft/mana/gdma_main.c   | 70 +++++++++++++++++--
-> >  1 file changed, 63 insertions(+), 7 deletions(-)
-> > 
-> > diff --git a/drivers/net/ethernet/microsoft/mana/gdma_main.c b/drivers/net/ethernet/microsoft/mana/gdma_main.c
-> > index 6367de0c2c2e..2194a53cce10 100644
-> > --- a/drivers/net/ethernet/microsoft/mana/gdma_main.c
-> > +++ b/drivers/net/ethernet/microsoft/mana/gdma_main.c
-> > @@ -1243,15 +1243,57 @@ void mana_gd_free_res_map(struct gdma_resource *r)
-> >  	r->size = 0;
-> >  }
-> >  
-> > +static int irq_setup(int *irqs, int nvec, int start_numa_node)
-> > +{
-> > +	int i = 0, cpu, err = 0;
-> > +	const struct cpumask *node_cpumask;
-> > +	unsigned int  next_node = start_numa_node;
-> > +	cpumask_var_t visited_cpus, node_cpumask_temp;
-> > +
-> > +	if (!zalloc_cpumask_var(&visited_cpus, GFP_KERNEL)) {
-> > +		err = ENOMEM;
-> > +		return err;
-> > +	}
-> > +	if (!zalloc_cpumask_var(&node_cpumask_temp, GFP_KERNEL)) {
-> > +		err = -ENOMEM;
-> > +		return err;
-> > +	}
-> 
-> Can you add a bit more of vertical spacing?
-> 
-> > +	rcu_read_lock();
-> > +	for_each_numa_hop_mask(node_cpumask, next_node) {
-> > +		cpumask_copy(node_cpumask_temp, node_cpumask);
-> > +		for_each_cpu(cpu, node_cpumask_temp) {
-> > +			cpumask_andnot(node_cpumask_temp, node_cpumask_temp,
-> > +				       topology_sibling_cpumask(cpu));
-> > +			irq_set_affinity_and_hint(irqs[i], cpumask_of(cpu));
-> > +			if (++i == nvec)
-> > +				goto free_mask;
-> > +			cpumask_set_cpu(cpu, visited_cpus);
-> > +			if (cpumask_empty(node_cpumask_temp)) {
-> > +				cpumask_copy(node_cpumask_temp, node_cpumask);
-> > +				cpumask_andnot(node_cpumask_temp, node_cpumask_temp,
-> > +					       visited_cpus);
-> > +				cpu = 0;
-> > +			}
-> 
-> It feels like you can calculate number of sibling groups in a hop in
-> advance, so that you'll know how many IRQs you want to assign per each
-> hop, and avoid resetting the node_cpumask_temp and spinning in inner
-> loop for more than once...
-> 
-> Can you print your topology, and describe how you want to spread IRQs
-> on it, and how your existing code does spread them?
->
-The topology of one system is
-> numactl -H
-available: 2 nodes (0-1)
-node 0 cpus: 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31
-32 33 34 35 36 37 38 39 40 41 42 43 44 45 46 47 48 49 50 51 52 53 54 55 56 57 58 59 60 61 62 63 64
-65 66 67 68 69 70 71 72 73 74 75 76 77 78 79 80 81 82 83 84 85 86 87 88 89 90 91 92 93 94 95
-node 0 size: 459521 MB
-node 0 free: 456316 MB
-node 1 cpus: 96 97 98 99 100 101 102 103 104 105 106 107 108 109 110 111 112 113 114 115 116 117 118
-119 120 121 122 123 124 125 126 127 128 129 130 131 132 133 134 135 136 137 138 139 140 141 142 143
-144 145 146 147 148 149 150 151 152 153 154 155 156 157 158 159 160 161 162 163 164 165 166 167 168
-169 170 171 172 173 174 175 176 177 178 179 180 181 182 183 184 185 186 187 188 189 190 191
-node 1 size: 459617 MB
-node 1 free: 456864 MB
-node distances:
-node   0   1
-  0:  10  21
-  1:  21  10
-and I want to spread the IRQs in numa0 node first with 
-CPU0 - IRQ0
-CPU2 - IRQ1
-CPU4 - IRQ2
-CPU6 - IRQ3
----
----
----
-CPU94 - IRQ47
-then
-CPU1 - IRQ48
-CPU3 - IRQ49
-CPU32 - IRQ64
+> I understand on these new CPUs anything other than a block of
+> contiguous STPs is risky to break the WC. I was told we should not
+> have any loads between them.
 
-In a topology where NUMA0 has 20 cores and NUMA1 has 20 cores, with total 80 CPUS, there I want
-CPU0 - IRQ0
-CPU2 - IRQ1
-CPU4 - IRQ2
----
----
----
-CPU38 - IRQ19
-Then
-CPU1 - IRQ20
-CPU3 - IRQ21
----
----
-CPU39 - IRQ39
-Node1
-CPU40 - IRQ40
-CPU42 - IRQ41
-CPU44 - IRQ42
----
-CPU78 - IRQ58
-CPU41 - IRQ59
-CPU43 - IRQ60
----
----
-CPU49 - IRQ64
- 
+Classic memcpy does similar tricks with four LDPs in a row before
+starting to issue the STPs (though there are new LDPs for the next
+data in-between). But that was tuned for cacheable memory, not sure
+if something similar would behave well on Normal-NC memory.
 
-Exisitng code : 
-https://github.com/torvalds/linux/blob/master/drivers/net/ethernet/microsoft/mana/gdma_main.c#L1246
+> So we can't just update memcpy_toio to optimize a 128 bit store
+> variant like memcpy might. We actually need a special case just for 64
+> byte.
+> 
+> IMHO it does not look good as the chance any existing callers can use
+> this optmized 64B path is probably small, but everyone has to pay the
+> costs to check for it.
 
-This uses cpumask_local_spread, so in a system where node has 64 cores, it spreads all 64+1 IRQs on
-33 cores, rather than spreading it only on HT cores.
+I don't think the cost of the check is noticeable and there are several
+places where the copy goes beyond 64 bytes. It may be worth a try.
 
-> Please add performance results in the commit message.
+> I also would not do this on x86 - Pathscale apparently decided the
+> needed special __iowrite*_copy() things to actually make this work on
+> xome x86 systems - I'm very leary to change x86 stuff away from the 64
+> bit copy loopw we know works already on x86.
 > 
-> I feel like this may be a useful code for other kernel folks, and if
-> so, we'd invest in it for more and make it a generic API, similar to
-> cpumaks_local_spread()...
+> IMHO encoding the alignment expectation in the API is best, especially
+> since this is typically a performance path.
+
+The slight downside of a __iowrite512_copy() API is that, if we follow
+the 32/64 semantics, it would need the source buffer aligned. Maybe we
+can document it to 64-bit alignment only rather than 512.
+
+> > A memcpy_toio_64() can use the new ST64B instruction if available or
+> > fall back to memcpy_toio() on arm64. It should also have the DGH
+> > instruction (io_stop_wc()) but only if falling back to classic
+> > memcpy_toio(). We don't need DGH with ST64B.
 > 
-> > +		}
-> > +	}
-> > +free_mask:
-> > +	rcu_read_unlock();
-> > +	free_cpumask_var(visited_cpus);
-> > +	free_cpumask_var(node_cpumask_temp);
-> > +	return err;
-> > +}
-> > +
-> >  static int mana_gd_setup_irqs(struct pci_dev *pdev)
-> >  {
-> > -	unsigned int max_queues_per_port = num_online_cpus();
-> >  	struct gdma_context *gc = pci_get_drvdata(pdev);
-> > +	unsigned int max_queues_per_port;
-> >  	struct gdma_irq_context *gic;
-> >  	unsigned int max_irqs, cpu;
-> > -	int nvec, irq;
-> > +	int nvec, *irqs, irq;
-> >  	int err, i = 0, j;
-> >  
-> > +	cpus_read_lock();
-> > +	max_queues_per_port = num_online_cpus();
-> >  	if (max_queues_per_port > MANA_MAX_NUM_QUEUES)
-> >  		max_queues_per_port = MANA_MAX_NUM_QUEUES;
-> >  
-> > @@ -1261,6 +1303,11 @@ static int mana_gd_setup_irqs(struct pci_dev *pdev)
-> >  	nvec = pci_alloc_irq_vectors(pdev, 2, max_irqs, PCI_IRQ_MSIX);
-> >  	if (nvec < 0)
-> >  		return nvec;
-> > +	irqs = kmalloc_array(max_queues_per_port, sizeof(int), GFP_KERNEL);
-> > +	if (!irqs) {
-> > +		err = -ENOMEM;
-> > +		goto free_irq_vector;
-> > +	}
-> >  
-> >  	gc->irq_contexts = kcalloc(nvec, sizeof(struct gdma_irq_context),
-> >  				   GFP_KERNEL);
-> > @@ -1287,21 +1334,28 @@ static int mana_gd_setup_irqs(struct pci_dev *pdev)
-> >  			goto free_irq;
-> >  		}
-> >  
-> > -		err = request_irq(irq, mana_gd_intr, 0, gic->name, gic);
-> > +		if (!i) {
-> > +			err = request_irq(irq, mana_gd_intr, 0, gic->name, gic);
-> > +			cpu = cpumask_local_spread(i, gc->numa_node);
-> 
-> If i == 0, you can simplify it because you just need the 1st CPU from
-> a given node.
-> 
-> > +			irq_set_affinity_and_hint(irq, cpumask_of(cpu));
-> > +		} else {
-> > +			irqs[i - 1] = irq;
-> > +			err = request_irq(irqs[i - 1], mana_gd_intr, 0, gic->name, gic);
-> > +		}
-> >  		if (err)
-> >  			goto free_irq;
-> > -
-> > -		cpu = cpumask_local_spread(i, gc->numa_node);
-> > -		irq_set_affinity_and_hint(irq, cpumask_of(cpu));
-> >  	}
-> >  
-> > +	err = irq_setup(irqs, max_queues_per_port, gc->numa_node);
-> > +	if (err)
-> > +		goto free_irq;
-> >  	err = mana_gd_alloc_res_map(nvec, &gc->msix_resource);
-> >  	if (err)
-> >  		goto free_irq;
-> >  
-> >  	gc->max_num_msix = nvec;
-> >  	gc->num_msix_usable = nvec;
-> > -
-> > +	cpus_read_unlock();
-> >  	return 0;
-> >  
-> >  free_irq:
-> > @@ -1314,8 +1368,10 @@ static int mana_gd_setup_irqs(struct pci_dev *pdev)
-> >  	}
-> >  
-> >  	kfree(gc->irq_contexts);
-> > +	kfree(irqs);
-> >  	gc->irq_contexts = NULL;
-> >  free_irq_vector:
-> > +	cpus_read_unlock();
-> >  	pci_free_irq_vectors(pdev);
-> >  	return err;
-> >  }
-> > -- 
-> > 2.34.1
+> I'm told it is problematic, something about ST64B not working with
+> NORMAL_NC.
+
+Last time I checked it was meant to work on Normal-NC (not cacheable
+though). That's on page 285 of the Arm ARM J.a.
+
+> Also in a future ST64B world we are going to see HW start relying on
+> large TLPs, not just being an optional performance win. To my mind it
+> makes more sense that there is an API that guarantees a large TLP or
+> oops. We really don't want an automatic fallback to memcpy.
+
+We can't guarantee those large TLPs without the ST64B instructions, so
+it needs to be more of a QoS aspect than correctness.
+
+-- 
+Catalin
 
