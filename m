@@ -1,37 +1,37 @@
-Return-Path: <linux-rdma+bounces-282-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-283-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 353AD80719A
-	for <lists+linux-rdma@lfdr.de>; Wed,  6 Dec 2023 15:02:07 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4A6D580719D
+	for <lists+linux-rdma@lfdr.de>; Wed,  6 Dec 2023 15:02:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 96180B20E88
-	for <lists+linux-rdma@lfdr.de>; Wed,  6 Dec 2023 14:02:04 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 01D971F21692
+	for <lists+linux-rdma@lfdr.de>; Wed,  6 Dec 2023 14:02:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B677D3D396;
-	Wed,  6 Dec 2023 14:01:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 454863DB87;
+	Wed,  6 Dec 2023 14:02:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Pb0/H/8z"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="AAV2pGGc"
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 661143C46C;
-	Wed,  6 Dec 2023 14:01:55 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5D00CC433CB;
-	Wed,  6 Dec 2023 14:01:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E5AC83C46C;
+	Wed,  6 Dec 2023 14:01:59 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D7605C433C9;
+	Wed,  6 Dec 2023 14:01:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1701871314;
-	bh=u0ZAwcbliV7EY/YM1uCFqSS4XX+prKe43jKs26Lzh0k=;
+	s=k20201202; t=1701871319;
+	bh=FqRs+n2vyKD4g05NJ+vvDrUy0df4FL7mrdN+0I3HKWM=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=Pb0/H/8zyoMGz6YrAomE9djEkQuy9irf07diOlkRh8GppVtab+yoVnK8uwlgAsGWt
-	 OjqytUoX2Qh91ueGvHe3n+Kj2oVeUOviZ7SD7roXHupsdNQ8fy9kEFQblIUuccGJnM
-	 nygU0VMcZMqhN1CcQobLAYRqhtdzug9pLLU8TNku8s4KTFpHfYDt0083R2Pvkvpx34
-	 /xkWgPJ5c78O40ywdKbWPK88yV0unpHOKws2QaUPFtBC0leKMsYXiYm0W5cxfRKH+l
-	 j96mtAT1MOOuvXoHvDuJTh9qqPUk1SIZkuJutTCYedRCAZPLgaxGVCbxxCMeWBNHH2
-	 CraGDg30cIA1g==
+	b=AAV2pGGcpqDR9HBdxLO7RBO7UF0Yb1KFiV1cDuZZAVUbxb8z/+d6MbEimNWXxOpBT
+	 z71QMc7xNQXi+H9B6lZuhS0TmVcyPjnyHSBa5CxCQZX7TX5ikoeQdO/KuAk1nCshL5
+	 DLkvxb5/eR86whMEo0FOk50twJqvCOZtBxwfzlvF6zh/YtbUnJLT2wsv9mcPnwB5i4
+	 zZVV8VjLwOSSsrxtW4ZrtBVINKd+iLNxCl7eAs5ZMNakNtnAsu/KZSDQBrq/nkzoqT
+	 IyTfqPgWVXbU8HKnUOWZ48uU5I9zRK1hEg1uY5EQBi5190z11EfcDhNTGLagalX5ZA
+	 tRW1fTR8kanNQ==
 From: Leon Romanovsky <leon@kernel.org>
 To: Jason Gunthorpe <jgg@nvidia.com>
 Cc: Shun Hao <shunh@nvidia.com>,
@@ -41,9 +41,9 @@ Cc: Shun Hao <shunh@nvidia.com>,
 	netdev@vger.kernel.org,
 	Paolo Abeni <pabeni@redhat.com>,
 	Saeed Mahameed <saeedm@nvidia.com>
-Subject: [PATCH mlx5-next v1 2/5] RDMA/mlx5: Support handling of SW encap ICM area
-Date: Wed,  6 Dec 2023 16:01:35 +0200
-Message-ID: <546fe43fc700240709e30acf7713ec6834d652bd.1701871118.git.leon@kernel.org>
+Subject: [PATCH mlx5-next v1 3/5] net/mlx5: Manage ICM type of SW encap
+Date: Wed,  6 Dec 2023 16:01:36 +0200
+Message-ID: <bed5121255918eb132a1334141c76a0594df8143.1701871118.git.leon@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <cover.1701871118.git.leon@kernel.org>
 References: <cover.1701871118.git.leon@kernel.org>
@@ -57,92 +57,110 @@ Content-Transfer-Encoding: 8bit
 
 From: Shun Hao <shunh@nvidia.com>
 
-New type for this ICM area, now the user can allocate/deallocate
-the new type of SW encap ICM memory, to store the encap header data
-which are managed by SW.
+Support allocate/deallocate the new SW encap ICM type memory.
+The new ICM type is used for encap context allocation managed by SW,
+instead FW. It can increase encap context maximum number and allocation
+speed
 
 Signed-off-by: Shun Hao <shunh@nvidia.com>
 Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
 ---
- drivers/infiniband/hw/mlx5/dm.c           | 5 +++++
- drivers/infiniband/hw/mlx5/mr.c           | 1 +
- include/linux/mlx5/driver.h               | 1 +
- include/uapi/rdma/mlx5_user_ioctl_verbs.h | 1 +
- 4 files changed, 8 insertions(+)
+ .../net/ethernet/mellanox/mlx5/core/lib/dm.c  | 38 ++++++++++++++++++-
+ 1 file changed, 37 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/infiniband/hw/mlx5/dm.c b/drivers/infiniband/hw/mlx5/dm.c
-index 3669c90b2dad..b4c97fb62abf 100644
---- a/drivers/infiniband/hw/mlx5/dm.c
-+++ b/drivers/infiniband/hw/mlx5/dm.c
-@@ -341,6 +341,8 @@ static enum mlx5_sw_icm_type get_icm_type(int uapi_type)
- 		return MLX5_SW_ICM_TYPE_HEADER_MODIFY;
- 	case MLX5_IB_UAPI_DM_TYPE_HEADER_MODIFY_PATTERN_SW_ICM:
- 		return MLX5_SW_ICM_TYPE_HEADER_MODIFY_PATTERN;
-+	case MLX5_IB_UAPI_DM_TYPE_ENCAP_SW_ICM:
-+		return MLX5_SW_ICM_TYPE_SW_ENCAP;
- 	case MLX5_IB_UAPI_DM_TYPE_STEERING_SW_ICM:
- 	default:
- 		return MLX5_SW_ICM_TYPE_STEERING;
-@@ -364,6 +366,7 @@ static struct ib_dm *handle_alloc_dm_sw_icm(struct ib_ucontext *ctx,
- 	switch (type) {
- 	case MLX5_IB_UAPI_DM_TYPE_STEERING_SW_ICM:
- 	case MLX5_IB_UAPI_DM_TYPE_HEADER_MODIFY_SW_ICM:
-+	case MLX5_IB_UAPI_DM_TYPE_ENCAP_SW_ICM:
- 		if (!(MLX5_CAP_FLOWTABLE_NIC_RX(dev, sw_owner) ||
- 		      MLX5_CAP_FLOWTABLE_NIC_TX(dev, sw_owner) ||
- 		      MLX5_CAP_FLOWTABLE_NIC_RX(dev, sw_owner_v2) ||
-@@ -438,6 +441,7 @@ struct ib_dm *mlx5_ib_alloc_dm(struct ib_device *ibdev,
- 	case MLX5_IB_UAPI_DM_TYPE_STEERING_SW_ICM:
- 	case MLX5_IB_UAPI_DM_TYPE_HEADER_MODIFY_SW_ICM:
- 	case MLX5_IB_UAPI_DM_TYPE_HEADER_MODIFY_PATTERN_SW_ICM:
-+	case MLX5_IB_UAPI_DM_TYPE_ENCAP_SW_ICM:
- 		return handle_alloc_dm_sw_icm(context, attr, attrs, type);
- 	default:
- 		return ERR_PTR(-EOPNOTSUPP);
-@@ -491,6 +495,7 @@ static int mlx5_ib_dealloc_dm(struct ib_dm *ibdm,
- 	case MLX5_IB_UAPI_DM_TYPE_STEERING_SW_ICM:
- 	case MLX5_IB_UAPI_DM_TYPE_HEADER_MODIFY_SW_ICM:
- 	case MLX5_IB_UAPI_DM_TYPE_HEADER_MODIFY_PATTERN_SW_ICM:
-+	case MLX5_IB_UAPI_DM_TYPE_ENCAP_SW_ICM:
- 		return mlx5_dm_icm_dealloc(ctx, to_icm(ibdm));
- 	default:
- 		return -EOPNOTSUPP;
-diff --git a/drivers/infiniband/hw/mlx5/mr.c b/drivers/infiniband/hw/mlx5/mr.c
-index 7b7891116b89..12bca6ca4760 100644
---- a/drivers/infiniband/hw/mlx5/mr.c
-+++ b/drivers/infiniband/hw/mlx5/mr.c
-@@ -1349,6 +1349,7 @@ struct ib_mr *mlx5_ib_reg_dm_mr(struct ib_pd *pd, struct ib_dm *dm,
- 	case MLX5_IB_UAPI_DM_TYPE_STEERING_SW_ICM:
- 	case MLX5_IB_UAPI_DM_TYPE_HEADER_MODIFY_SW_ICM:
- 	case MLX5_IB_UAPI_DM_TYPE_HEADER_MODIFY_PATTERN_SW_ICM:
-+	case MLX5_IB_UAPI_DM_TYPE_ENCAP_SW_ICM:
- 		if (attr->access_flags & ~MLX5_IB_DM_SW_ICM_ALLOWED_ACCESS)
- 			return ERR_PTR(-EINVAL);
- 
-diff --git a/include/linux/mlx5/driver.h b/include/linux/mlx5/driver.h
-index 4c576d19d927..cfcfa06bae18 100644
---- a/include/linux/mlx5/driver.h
-+++ b/include/linux/mlx5/driver.h
-@@ -688,6 +688,7 @@ enum mlx5_sw_icm_type {
- 	MLX5_SW_ICM_TYPE_STEERING,
- 	MLX5_SW_ICM_TYPE_HEADER_MODIFY,
- 	MLX5_SW_ICM_TYPE_HEADER_MODIFY_PATTERN,
-+	MLX5_SW_ICM_TYPE_SW_ENCAP,
+diff --git a/drivers/net/ethernet/mellanox/mlx5/core/lib/dm.c b/drivers/net/ethernet/mellanox/mlx5/core/lib/dm.c
+index 9482e51ac82a..7c5516b0a844 100644
+--- a/drivers/net/ethernet/mellanox/mlx5/core/lib/dm.c
++++ b/drivers/net/ethernet/mellanox/mlx5/core/lib/dm.c
+@@ -13,11 +13,13 @@ struct mlx5_dm {
+ 	unsigned long *steering_sw_icm_alloc_blocks;
+ 	unsigned long *header_modify_sw_icm_alloc_blocks;
+ 	unsigned long *header_modify_pattern_sw_icm_alloc_blocks;
++	unsigned long *header_encap_sw_icm_alloc_blocks;
  };
  
- #define MLX5_MAX_RESERVED_GIDS 8
-diff --git a/include/uapi/rdma/mlx5_user_ioctl_verbs.h b/include/uapi/rdma/mlx5_user_ioctl_verbs.h
-index 7af9e09ea556..3189c7f08d17 100644
---- a/include/uapi/rdma/mlx5_user_ioctl_verbs.h
-+++ b/include/uapi/rdma/mlx5_user_ioctl_verbs.h
-@@ -64,6 +64,7 @@ enum mlx5_ib_uapi_dm_type {
- 	MLX5_IB_UAPI_DM_TYPE_STEERING_SW_ICM,
- 	MLX5_IB_UAPI_DM_TYPE_HEADER_MODIFY_SW_ICM,
- 	MLX5_IB_UAPI_DM_TYPE_HEADER_MODIFY_PATTERN_SW_ICM,
-+	MLX5_IB_UAPI_DM_TYPE_ENCAP_SW_ICM,
- };
+ struct mlx5_dm *mlx5_dm_create(struct mlx5_core_dev *dev)
+ {
+ 	u64 header_modify_pattern_icm_blocks = 0;
++	u64 header_sw_encap_icm_blocks = 0;
+ 	u64 header_modify_icm_blocks = 0;
+ 	u64 steering_icm_blocks = 0;
+ 	struct mlx5_dm *dm;
+@@ -54,6 +56,17 @@ struct mlx5_dm *mlx5_dm_create(struct mlx5_core_dev *dev)
+ 			goto err_modify_hdr;
+ 	}
  
- enum mlx5_ib_uapi_devx_create_event_channel_flags {
++	if (MLX5_CAP_DEV_MEM(dev, log_indirect_encap_sw_icm_size)) {
++		header_sw_encap_icm_blocks =
++			BIT(MLX5_CAP_DEV_MEM(dev, log_indirect_encap_sw_icm_size) -
++			    MLX5_LOG_SW_ICM_BLOCK_SIZE(dev));
++
++		dm->header_encap_sw_icm_alloc_blocks =
++			bitmap_zalloc(header_sw_encap_icm_blocks, GFP_KERNEL);
++		if (!dm->header_encap_sw_icm_alloc_blocks)
++			goto err_pattern;
++	}
++
+ 	support_v2 = MLX5_CAP_FLOWTABLE_NIC_RX(dev, sw_owner_v2) &&
+ 		     MLX5_CAP_FLOWTABLE_NIC_TX(dev, sw_owner_v2) &&
+ 		     MLX5_CAP64_DEV_MEM(dev, header_modify_pattern_sw_icm_start_address);
+@@ -66,11 +79,14 @@ struct mlx5_dm *mlx5_dm_create(struct mlx5_core_dev *dev)
+ 		dm->header_modify_pattern_sw_icm_alloc_blocks =
+ 			bitmap_zalloc(header_modify_pattern_icm_blocks, GFP_KERNEL);
+ 		if (!dm->header_modify_pattern_sw_icm_alloc_blocks)
+-			goto err_pattern;
++			goto err_sw_encap;
+ 	}
+ 
+ 	return dm;
+ 
++err_sw_encap:
++	bitmap_free(dm->header_encap_sw_icm_alloc_blocks);
++
+ err_pattern:
+ 	bitmap_free(dm->header_modify_sw_icm_alloc_blocks);
+ 
+@@ -105,6 +121,14 @@ void mlx5_dm_cleanup(struct mlx5_core_dev *dev)
+ 		bitmap_free(dm->header_modify_sw_icm_alloc_blocks);
+ 	}
+ 
++	if (dm->header_encap_sw_icm_alloc_blocks) {
++		WARN_ON(!bitmap_empty(dm->header_encap_sw_icm_alloc_blocks,
++				      BIT(MLX5_CAP_DEV_MEM(dev,
++							   log_indirect_encap_sw_icm_size) -
++				      MLX5_LOG_SW_ICM_BLOCK_SIZE(dev))));
++		bitmap_free(dm->header_encap_sw_icm_alloc_blocks);
++	}
++
+ 	if (dm->header_modify_pattern_sw_icm_alloc_blocks) {
+ 		WARN_ON(!bitmap_empty(dm->header_modify_pattern_sw_icm_alloc_blocks,
+ 				      BIT(MLX5_CAP_DEV_MEM(dev,
+@@ -164,6 +188,13 @@ int mlx5_dm_sw_icm_alloc(struct mlx5_core_dev *dev, enum mlx5_sw_icm_type type,
+ 						log_header_modify_pattern_sw_icm_size);
+ 		block_map = dm->header_modify_pattern_sw_icm_alloc_blocks;
+ 		break;
++	case MLX5_SW_ICM_TYPE_SW_ENCAP:
++		icm_start_addr = MLX5_CAP64_DEV_MEM(dev,
++						    indirect_encap_sw_icm_start_address);
++		log_icm_size = MLX5_CAP_DEV_MEM(dev,
++						log_indirect_encap_sw_icm_size);
++		block_map = dm->header_encap_sw_icm_alloc_blocks;
++		break;
+ 	default:
+ 		return -EINVAL;
+ 	}
+@@ -242,6 +273,11 @@ int mlx5_dm_sw_icm_dealloc(struct mlx5_core_dev *dev, enum mlx5_sw_icm_type type
+ 						    header_modify_pattern_sw_icm_start_address);
+ 		block_map = dm->header_modify_pattern_sw_icm_alloc_blocks;
+ 		break;
++	case MLX5_SW_ICM_TYPE_SW_ENCAP:
++		icm_start_addr = MLX5_CAP64_DEV_MEM(dev,
++						    indirect_encap_sw_icm_start_address);
++		block_map = dm->header_encap_sw_icm_alloc_blocks;
++		break;
+ 	default:
+ 		return -EINVAL;
+ 	}
 -- 
 2.43.0
 
