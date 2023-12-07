@@ -1,267 +1,187 @@
-Return-Path: <linux-rdma+bounces-299-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-300-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5CA7A808451
-	for <lists+linux-rdma@lfdr.de>; Thu,  7 Dec 2023 10:22:21 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id BE0F7808650
+	for <lists+linux-rdma@lfdr.de>; Thu,  7 Dec 2023 12:04:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 116CB281A9B
-	for <lists+linux-rdma@lfdr.de>; Thu,  7 Dec 2023 09:22:20 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D983E1C21EBF
+	for <lists+linux-rdma@lfdr.de>; Thu,  7 Dec 2023 11:04:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1B01933CE3;
-	Thu,  7 Dec 2023 09:22:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3321A364DD;
+	Thu,  7 Dec 2023 11:04:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b="PN0UhXPk"
+	dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b="gO3B98Hv"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTP id 3627F2114;
-	Thu,  7 Dec 2023 01:22:10 -0800 (PST)
-Received: by linux.microsoft.com (Postfix, from userid 1099)
-	id 31E0E20B74C0; Thu,  7 Dec 2023 01:22:09 -0800 (PST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 31E0E20B74C0
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-	s=default; t=1701940929;
-	bh=4uHX88aun/PPuF/sUNPOuDrWsfmV1wMV1IjTk3tvv+U=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=PN0UhXPkwUrWg8ZoABpfJ6USVncJkcRFgnpTNYqwCle8x6fcnR/siLINPXpGCdEjN
-	 h/+Cp7RHF1MEoSBYM4GeIX1iV/9q6tYGkKdCUZGl6XXsRcWtNljbFmDH1SgPNeGVfL
-	 kuzYjH0vMrqhTAKLB+NduIKNR6MD0/jPzzbgliqs=
-Date: Thu, 7 Dec 2023 01:22:09 -0800
-From: Souradeep Chakrabarti <schakrabarti@linux.microsoft.com>
-To: Yury Norov <yury.norov@gmail.com>
-Cc: kys@microsoft.com, haiyangz@microsoft.com, wei.liu@kernel.org,
-	decui@microsoft.com, davem@davemloft.net, edumazet@google.com,
-	kuba@kernel.org, pabeni@redhat.com, longli@microsoft.com,
-	leon@kernel.org, cai.huoqing@linux.dev, ssengar@linux.microsoft.com,
-	vkuznets@redhat.com, tglx@linutronix.de,
-	linux-hyperv@vger.kernel.org, netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
-	sch^Crabarti@microsoft.com, paulros@microsoft.com
-Subject: Re: [PATCH V4 net-next] net: mana: Assigning IRQ affinity on HT cores
-Message-ID: <20231207092209.GA22375@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
-References: <1701679841-9359-1-git-send-email-schakrabarti@linux.microsoft.com>
- <ZW3om2dfA4U0lhVY@yury-ThinkPad>
- <20231205110138.GA31232@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
- <ZW+plvYrNvdcSFCB@yury-ThinkPad>
+Received: from mail-pg1-x534.google.com (mail-pg1-x534.google.com [IPv6:2607:f8b0:4864:20::534])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F2CC7D1
+	for <linux-rdma@vger.kernel.org>; Thu,  7 Dec 2023 03:04:21 -0800 (PST)
+Received: by mail-pg1-x534.google.com with SMTP id 41be03b00d2f7-5c210e34088so583565a12.2
+        for <linux-rdma@vger.kernel.org>; Thu, 07 Dec 2023 03:04:21 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=broadcom.com; s=google; t=1701947061; x=1702551861; darn=vger.kernel.org;
+        h=message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=ra1cNVgZTidRxKQXQP2Ec5ZKq/MpP+dU17MzQYmoaYM=;
+        b=gO3B98HvOHOVdPLwpjrhjUiy+o9Mafhrp2zak0FUPOgrRLlGGoXnGkeSRHWXiJqfRD
+         CQrZEw5+MlrXFib+M+C1/h/5KXYU+o4ReE1BoXJ90CKtUjUDW0mJgWhetM2ynK7clNLK
+         aro/BG/Eu5yKi3e3wCampByVs3tNuvMx9MbQA=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701947061; x=1702551861;
+        h=message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=ra1cNVgZTidRxKQXQP2Ec5ZKq/MpP+dU17MzQYmoaYM=;
+        b=iqtta2SUFZ6t0Wl/llYgw6fH/GUVLbw0izDIZAf4p6hAv2JVEhHFfVO56Z/bsX2vhA
+         99gqAV77aC+Vm2hSyE345IJZ0dCG0GTTrt4ehOV0tmLXOZyyvDPYgcldEqaPood95Pjb
+         qPIXcF6gLpzr5ORwjv5yT+laqUzfJps8vHBRf98Q9W3MaL1HK7nlKXLF9dQfYWmdVB6W
+         zGAfQ389b/2SohdH2pqDjOjrLvS+R6QykD5nDJIHxcpHFQAWGQ9nSwY9YSqpuVPIdNy2
+         VjPSWjlM+4JN+uynUm8XbIJ1sxvC5GTExOfQNRLHcYK5qaOGaBUs7m1jcZi5W1BUSbX+
+         wmZA==
+X-Gm-Message-State: AOJu0YxSxTfW+NeRiurFRHEp1UOWTxF6ZVmYjsnmX7hZzLAMfHVaaeZG
+	BP/ghqpK8Xf7aaNcVwJyCtgc8g==
+X-Google-Smtp-Source: AGHT+IGV6I64flKg2LRfWHE/xpGcRVfTJcjnlYvM83eppxm8okqIg6QPMd5/8lvCWwuVv8eRemIorw==
+X-Received: by 2002:a05:6a20:3cac:b0:18f:ee28:510 with SMTP id b44-20020a056a203cac00b0018fee280510mr1983004pzj.67.1701947061358;
+        Thu, 07 Dec 2023 03:04:21 -0800 (PST)
+Received: from dhcp-10-192-206-197.iig.avagotech.net.net ([192.19.234.250])
+        by smtp.gmail.com with ESMTPSA id pm2-20020a17090b3c4200b00285db538b17sm1034254pjb.41.2023.12.07.03.04.16
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Thu, 07 Dec 2023 03:04:20 -0800 (PST)
+From: Selvin Xavier <selvin.xavier@broadcom.com>
+To: leon@kernel.org,
+	jgg@ziepe.ca
+Cc: linux-rdma@vger.kernel.org,
+	Selvin Xavier <selvin.xavier@broadcom.com>
+Subject: [PATCH for-next 0/6] RDMA/bnxt_re: Initial support for GenP7 adapters
+Date: Thu,  7 Dec 2023 02:47:34 -0800
+Message-Id: <1701946060-13931-1-git-send-email-selvin.xavier@broadcom.com>
+X-Mailer: git-send-email 2.5.5
+Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
+	boundary="0000000000000aafb5060be96ec8"
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZW+plvYrNvdcSFCB@yury-ThinkPad>
-User-Agent: Mutt/1.5.21 (2010-09-15)
 
-On Tue, Dec 05, 2023 at 02:52:06PM -0800, Yury Norov wrote:
-> On Tue, Dec 05, 2023 at 03:01:38AM -0800, Souradeep Chakrabarti wrote:
-> > > > diff --git a/drivers/net/ethernet/microsoft/mana/gdma_main.c b/drivers/net/ethernet/microsoft/mana/gdma_main.c
-> > > > index 6367de0c2c2e..2194a53cce10 100644
-> > > > --- a/drivers/net/ethernet/microsoft/mana/gdma_main.c
-> > > > +++ b/drivers/net/ethernet/microsoft/mana/gdma_main.c
-> > > > @@ -1243,15 +1243,57 @@ void mana_gd_free_res_map(struct gdma_resource *r)
-> > > >  	r->size = 0;
-> > > >  }
-> > > >  
-> > > > +static int irq_setup(int *irqs, int nvec, int start_numa_node)
-> > > > +{
-> > > > +	int i = 0, cpu, err = 0;
-> > > > +	const struct cpumask *node_cpumask;
-> > > > +	unsigned int  next_node = start_numa_node;
-> > > > +	cpumask_var_t visited_cpus, node_cpumask_temp;
-> > > > +
-> > > > +	if (!zalloc_cpumask_var(&visited_cpus, GFP_KERNEL)) {
-> > > > +		err = ENOMEM;
-> > > > +		return err;
-> > > > +	}
-> > > > +	if (!zalloc_cpumask_var(&node_cpumask_temp, GFP_KERNEL)) {
-> > > > +		err = -ENOMEM;
-> > > > +		return err;
-> > > > +	}
-> > > 
-> > > Can you add a bit more of vertical spacing?
-> > > 
-> > > > +	rcu_read_lock();
-> > > > +	for_each_numa_hop_mask(node_cpumask, next_node) {
-> > > > +		cpumask_copy(node_cpumask_temp, node_cpumask);
-> > > > +		for_each_cpu(cpu, node_cpumask_temp) {
-> > > > +			cpumask_andnot(node_cpumask_temp, node_cpumask_temp,
-> > > > +				       topology_sibling_cpumask(cpu));
-> > > > +			irq_set_affinity_and_hint(irqs[i], cpumask_of(cpu));
-> > > > +			if (++i == nvec)
-> > > > +				goto free_mask;
-> > > > +			cpumask_set_cpu(cpu, visited_cpus);
-> > > > +			if (cpumask_empty(node_cpumask_temp)) {
-> > > > +				cpumask_copy(node_cpumask_temp, node_cpumask);
-> > > > +				cpumask_andnot(node_cpumask_temp, node_cpumask_temp,
-> > > > +					       visited_cpus);
-> > > > +				cpu = 0;
-> > > > +			}
-> > > 
-> > > It feels like you can calculate number of sibling groups in a hop in
-> > > advance, so that you'll know how many IRQs you want to assign per each
-> > > hop, and avoid resetting the node_cpumask_temp and spinning in inner
-> > > loop for more than once...
-> > > 
-> > > Can you print your topology, and describe how you want to spread IRQs
-> > > on it, and how your existing code does spread them?
-> > >
-> > The topology of one system is
-> > > numactl -H
-> > available: 2 nodes (0-1)
-> > node 0 cpus: 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31
-> > 32 33 34 35 36 37 38 39 40 41 42 43 44 45 46 47 48 49 50 51 52 53 54 55 56 57 58 59 60 61 62 63 64
-> > 65 66 67 68 69 70 71 72 73 74 75 76 77 78 79 80 81 82 83 84 85 86 87 88 89 90 91 92 93 94 95
-> > node 0 size: 459521 MB
-> > node 0 free: 456316 MB
-> > node 1 cpus: 96 97 98 99 100 101 102 103 104 105 106 107 108 109 110 111 112 113 114 115 116 117 118
-> > 119 120 121 122 123 124 125 126 127 128 129 130 131 132 133 134 135 136 137 138 139 140 141 142 143
-> > 144 145 146 147 148 149 150 151 152 153 154 155 156 157 158 159 160 161 162 163 164 165 166 167 168
-> > 169 170 171 172 173 174 175 176 177 178 179 180 181 182 183 184 185 186 187 188 189 190 191
-> > node 1 size: 459617 MB
-> > node 1 free: 456864 MB
-> > node distances:
-> > node   0   1
-> >   0:  10  21
-> >   1:  21  10
-> > and I want to spread the IRQs in numa0 node first with 
-> > CPU0 - IRQ0
-> > CPU2 - IRQ1
-> > CPU4 - IRQ2
-> > CPU6 - IRQ3
-> > ---
-> > ---
-> > ---
-> > CPU94 - IRQ47
-> > then
-> > CPU1 - IRQ48
-> > CPU3 - IRQ49
-> > CPU32 - IRQ64
-> > 
-> > In a topology where NUMA0 has 20 cores and NUMA1 has 20 cores, with total 80 CPUS, there I want
-> > CPU0 - IRQ0
-> > CPU2 - IRQ1
-> > CPU4 - IRQ2
-> > ---
-> > ---
-> > ---
-> > CPU38 - IRQ19
-> > Then
-> > CPU1 - IRQ20
-> > CPU3 - IRQ21
-> > ---
-> > ---
-> > CPU39 - IRQ39
-> > Node1
-> > CPU40 - IRQ40
-> > CPU42 - IRQ41
-> > CPU44 - IRQ42
-> > ---
-> > CPU78 - IRQ58
-> > CPU41 - IRQ59
-> > CPU43 - IRQ60
-> > ---
-> > ---
-> > CPU49 - IRQ64
-> >  
-> > 
-> > Exisitng code : 
-> > https://github.com/torvalds/linux/blob/master/drivers/net/ethernet/microsoft/mana/gdma_main.c#L1246
-> > 
-> > This uses cpumask_local_spread, so in a system where node has 64 cores, it spreads all 64+1 IRQs on
-> > 33 cores, rather than spreading it only on HT cores.
-> 
-> So from what you said, it looks like you're trying to implement the
-> following heuristics:
-> 
-> 1. No more than one IRQ per CPU, if possible;
-> 2. NUMA locality is the second priority;
-> 3. Sibling dislocality is the last priority;
-> 
-> Can you confirm that?
-> 
-The idea is pretty similar, only change is that if there are enough cpu
-cores in the NUMA node, then no more than one IRQ per core, if possible.
-So the behaviour will be :
-1. no more than one IRQ per core, if possible.
-2. No more than one IRQ per CPU, if possible
-3. NUMA locality is the second priority;
-4. Sibling dislocality is the last priority;
-> If the above correct, your code is quite close to what you want except
-> that for every new hop (outer loop) you have to clear CPUs belonging to
-> previous hop, which is in you case the same as visited_cpus mask.
-> 
-> But I think you can do it even better if just account the number of
-> assigned IRQs. That way you can get rid of the most of housekeeping
-> code.
-> 
-> const struct cpumask *next, *prev = cpu_none_mask;
-> 
-> for_each_numa_hop_mask(next, node) {
->         cpumask_and_not(curr, next, prev);
-> 
->         for (w = cpumask_weight(curr), cnt = 0; cnt < w; cnt++)
->                 cpumask_copy(cpus, curr);
->                 for_each_cpu(cpu, cpus) {
->                         if (i++ == nvec)
->                                 goto done;
-> 
->                         cpumask_andnot(cpus, cpus, topology_sibling_cpumask(cpu));
->                         irq_set_affinity_and_hint(irqs[i], topology_sibling_cpumask(cpu)); // [*]
->                 }
->         }
->         prev = next;
-> }
-> 
-> [*] I already mentioned that in v3, and also asking here: if you're saying
-> that wrt IRQs distribution, all CPUs belonging to the same sibling group
-> are the same, why don't you assign all the group to the IRQ. It gives the
-> system flexibility to balance workload better.
-> 
-> Let's consider this topology:
-> 
-> Node            0               1
-> Core        0       1       2       3
-> CPU       0   1   2   3   4   5   6   7
-> 
-> The code above should create the following mapping for the IRQs:
-> IRQ     Nodes   Cores   CPUs
-> 0       1       0       0-1
-> 1       1       1       2-3
-> 2       1       0       0-1
-> 3       1       1       2-3
-> 4       2       2       4-5
-> 5       2       3       6-7
-> 6       2       2       4-5
-> 7       2       3       6-7
-> 
-Thanks for the suggestion, but as mentioned by me above, that if enough
-cores are available in a numa noed, then will assign one IRQ per core, rather
-than each CPU. That is the reason we are moving away from using cpumask_local_spread().
-As it assign in every cpu in the numa, irrespective of if there are enough cores
-to accomodate the IRQs. That is why I am first trying to assign one irq per core
-till all the cores in the NUMA node are used.
-> This is pretty close to what I proposed in v3, except that it flips
-> priorities of NUMA locality vs sibling dislocality. My original
-> suggestion is simpler in implementation and aligns with my natural
-> feeling of 'fair' IRQ distribution.
-> 
-> Can you make sure that your heuristics are the best wrt performance?
-> 
-Yes, I had done multiple perf analysis using ntttcp and we got approximately
-12-15 percent improvement.
-> Regarding the rest of the discussion, I think that for_each_numa_hop_mask() 
-> together with some basic cpumaks operations results quite a readable
-> and maintainable code, and we don't need any more generic API to
-> support this type of distribution tasks.
->
-I will share the V5 patch soon, which does fix the mask issue from V4 and
-also tries to assign IRQ0 to separate CPU if enough CPUs are available. 
-> What do you think guys?
-> 
-> Thanks,
-> Yury
+--0000000000000aafb5060be96ec8
+
+This is the first series for adding support for Gen P7 Adapters. Includes
+the basic changes to detect the device and load. Adds the Doorbell changes
+for the new adapter and MSN capability to enable the FW initialization
+of the adapter.
+
+Please review and apply.
+
+Thanks,
+Selvin Xavier
+
+Selvin Xavier (6):
+  RDMA/bnxt_re: Support new 5760X P7 devices
+  RDMA/bnxt_re: Update the BAR offsets
+  RDMA/bnxt_re: Update the HW interface definitions
+  RDMA/bnxt_re: Get the toggle bits from CQ completions
+  RDMA/bnxt_re: Doorbell changes
+  RDMA/bnxt_re: Adds MSN table capability for Gen P7 adapters
+
+ drivers/infiniband/hw/bnxt_re/hw_counters.c |  4 +-
+ drivers/infiniband/hw/bnxt_re/ib_verbs.c    | 10 ++--
+ drivers/infiniband/hw/bnxt_re/main.c        | 33 +++++--------
+ drivers/infiniband/hw/bnxt_re/qplib_fp.c    | 77 ++++++++++++++++++++++++++---
+ drivers/infiniband/hw/bnxt_re/qplib_fp.h    | 15 ++++++
+ drivers/infiniband/hw/bnxt_re/qplib_rcfw.c  |  4 +-
+ drivers/infiniband/hw/bnxt_re/qplib_res.c   |  2 +-
+ drivers/infiniband/hw/bnxt_re/qplib_res.h   | 76 ++++++++++++++++++++++------
+ drivers/infiniband/hw/bnxt_re/qplib_sp.c    | 11 +++--
+ drivers/infiniband/hw/bnxt_re/roce_hsi.h    | 67 +++++++++++++++++++++----
+ include/uapi/rdma/bnxt_re-abi.h             |  1 +
+ 11 files changed, 234 insertions(+), 66 deletions(-)
+
+-- 
+2.5.5
+
+
+--0000000000000aafb5060be96ec8
+Content-Type: application/pkcs7-signature; name="smime.p7s"
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename="smime.p7s"
+Content-Description: S/MIME Cryptographic Signature
+
+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
+FYMZp2DojLAq9f4Oi2OBetbnWxo0WGycXpmq/jC4PUx2u9mazQ79i80VLagGRshWniESXuf+SYG8
++zBimjld9ZZnwm7itHAZdtme4YYFxx+EHa4PUxPV8t+hPHhsiIjirPa1pVXPbQIDAQABo4IB2zCC
+AdcwDgYDVR0PAQH/BAQDAgWgMIGjBggrBgEFBQcBAQSBljCBkzBOBggrBgEFBQcwAoZCaHR0cDov
+L3NlY3VyZS5nbG9iYWxzaWduLmNvbS9jYWNlcnQvZ3NnY2NyM3BlcnNvbmFsc2lnbjJjYTIwMjAu
+Y3J0MEEGCCsGAQUFBzABhjVodHRwOi8vb2NzcC5nbG9iYWxzaWduLmNvbS9nc2djY3IzcGVyc29u
+YWxzaWduMmNhMjAyMDBNBgNVHSAERjBEMEIGCisGAQQBoDIBKAowNDAyBggrBgEFBQcCARYmaHR0
+cHM6Ly93d3cuZ2xvYmFsc2lnbi5jb20vcmVwb3NpdG9yeS8wCQYDVR0TBAIwADBJBgNVHR8EQjBA
+MD6gPKA6hjhodHRwOi8vY3JsLmdsb2JhbHNpZ24uY29tL2dzZ2NjcjNwZXJzb25hbHNpZ24yY2Ey
+MDIwLmNybDAlBgNVHREEHjAcgRpzZWx2aW4ueGF2aWVyQGJyb2FkY29tLmNvbTATBgNVHSUEDDAK
+BggrBgEFBQcDBDAfBgNVHSMEGDAWgBSWM9HmWBdbNHWKgVZk1b5I3qGPzzAdBgNVHQ4EFgQU3TaH
+dsgUhTW3LwObmZ20fj+8Xj8wDQYJKoZIhvcNAQELBQADggEBAAbt6Sptp6ZlTnhM2FDhkVXks68/
+iqvfL/e8wSPVdBxOuiP+8EXGLV3E72KfTTJXMbkcmFpK2K11poBDQJhz0xyOGTESjXNnN6Eqq+iX
+hQtF8xG2lzPq8MijKI4qXk5Vy5DYfwsVfcF0qJw5AhC32nU9uuIPJq8/mQbZfqmoanV/yadootGr
+j1Ze9ndr+YDXPpCymOsynmmw0ErHZGGW1OmMpAEt0A+613glWCURLDlP8HONi1wnINV6aDiEf0ad
+9NMGxDsp+YWiRXD3txfo2OMQbpIxM90QfhKKacX8t1J1oAAWxDrLVTJBXBNvz5tr+D1sYwuye93r
+hImmkM1unboxggJtMIICaQIBATBrMFsxCzAJBgNVBAYTAkJFMRkwFwYDVQQKExBHbG9iYWxTaWdu
+IG52LXNhMTEwLwYDVQQDEyhHbG9iYWxTaWduIEdDQyBSMyBQZXJzb25hbFNpZ24gMiBDQSAyMDIw
+Agxy+Cu4x/7lM0zxY7cwDQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIEIC5D9e/F7LVC
+s2bDgACpuwPxoUtDit4fmSUkH20DbSLuMBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZI
+hvcNAQkFMQ8XDTIzMTIwNzExMDQyMVowaQYJKoZIhvcNAQkPMVwwWjALBglghkgBZQMEASowCwYJ
+YIZIAWUDBAEWMAsGCWCGSAFlAwQBAjAKBggqhkiG9w0DBzALBgkqhkiG9w0BAQowCwYJKoZIhvcN
+AQEHMAsGCWCGSAFlAwQCATANBgkqhkiG9w0BAQEFAASCAQA3hgDvr1oPrQRRBDk86WnwMlsl1Phi
+5Ymy8PO8WYJlTjHNAMQ8sFCICMxu+K8Nm4Mxo8e3/SWemc98J6HCRFKtXFEX2EPQfI+UqxqgW5sf
+KgTOObyA/HId6Lss0Rq1VX2sBi51ApXAX8E9zsppbPSvd284KVxWtz0ZhJNxfD5LYwOFRp7kDW4o
+0wL2eelFEb2+77iMTH9aCJ2C5dXXyBeEwQ/DvD+icSTY4I6afcj8/SVR7YcRl3a34S3nQoX4fSxm
+lR7xYl9a/l89BLJ23anDuTnWAEFn7tiDZ9X0Uq3xzHEZZsSDzOJ2PM03uMkwI7BarScmlLSB1xjW
+VT9cjMEz
+--0000000000000aafb5060be96ec8--
 
