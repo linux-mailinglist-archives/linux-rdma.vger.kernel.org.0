@@ -1,58 +1,58 @@
-Return-Path: <linux-rdma+bounces-319-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-320-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B840B809151
-	for <lists+linux-rdma@lfdr.de>; Thu,  7 Dec 2023 20:30:44 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C0F36809153
+	for <lists+linux-rdma@lfdr.de>; Thu,  7 Dec 2023 20:30:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B9CA81C209ED
-	for <lists+linux-rdma@lfdr.de>; Thu,  7 Dec 2023 19:30:43 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 1F22DB20BBC
+	for <lists+linux-rdma@lfdr.de>; Thu,  7 Dec 2023 19:30:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5FE414F8B1;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CE3624F8BA;
 	Thu,  7 Dec 2023 19:30:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="TqNpJanj"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="erpPWC/C"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-oa1-x29.google.com (mail-oa1-x29.google.com [IPv6:2001:4860:4864:20::29])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E392A1722;
-	Thu,  7 Dec 2023 11:30:18 -0800 (PST)
-Received: by mail-oa1-x29.google.com with SMTP id 586e51a60fabf-1fb9a22b4a7so787313fac.3;
-        Thu, 07 Dec 2023 11:30:18 -0800 (PST)
+Received: from mail-oo1-xc29.google.com (mail-oo1-xc29.google.com [IPv6:2607:f8b0:4864:20::c29])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 63FC11709;
+	Thu,  7 Dec 2023 11:30:19 -0800 (PST)
+Received: by mail-oo1-xc29.google.com with SMTP id 006d021491bc7-5906c569a1fso484843eaf.1;
+        Thu, 07 Dec 2023 11:30:19 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1701977417; x=1702582217; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1701977418; x=1702582218; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=XAo9Voy4RzHWA16EdVudg5saPOZLVlTIEuxiR5JPPMk=;
-        b=TqNpJanje8kkQVMPKrLidQ738NHVW3WDmhI7totVpeNpT1a3xIBe4E6ZLeEv6lzPqo
-         bOHMQjdTI950dEv2GqnlxNp3UJ66AAn0xo85NhtgnUeV3hzbD3O0g4NMX1IVCwcAB8MH
-         drkvzWgdtGPlbut47n7uflG8usco/RSmlGkJ6C5/IijWt+V5cVQQbhn0GF40qDfuqWta
-         5B6IY+tZenRch2Z/IhuWceQenGr/NZjDOQnDHCkzoaidlm4gWZBM7+Kmoj0pW+Uv9DOy
-         iKHlYiGLftPavg/5OYCDq1SyONEt392KELJL2wsdCMX2gnaTGI9LzxWlXwYDv80hXRkP
-         hgJg==
+        bh=cCo25qT9AtztM6NlEg7BzkQzG2uRIBLOVHP87eaH1kE=;
+        b=erpPWC/CktsiZevgUN7TBFNb2j9aycgWXDWiYpG9ITJLj6l+2d7J93Gvb/eUjGIOxT
+         N8U6mjS1zO8sGHtipCTDq33d8r8MhnppifhOb9X7okRnsOpgKaXhPQ9eYGL1TakXti9G
+         OKMlHE2XBMZf/gBGjXfMgHoKVW9zecWs6DPcIHPEC7peM/kerrKN118xD9/SuYpjBkAa
+         XlfR5ZcjO3AMKrIKNQWm/l4mgp7ghAvt7d0iErW1d8HVBjRDshOScnwNkgWTPZ2zTZuK
+         ydnZ1BS82ug/06AqpgEmV0PRXd9/aozGSRJLPW5VZA9tQy3ScyL4wlNLcjZc37GIKNAi
+         ZLPA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701977417; x=1702582217;
+        d=1e100.net; s=20230601; t=1701977418; x=1702582218;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=XAo9Voy4RzHWA16EdVudg5saPOZLVlTIEuxiR5JPPMk=;
-        b=t2TrpWEbJoFMh0S65eySx7x/pVYGgJE8YUSMshLRNjhUUo9Iamc9lm5FIY7RvM0xVo
-         92R9axn/X4d2+chuAVlLtEyHQnRHVOWIHq9rsGLHgeNPxHZre/soI3OsCaMP9YBnjN8q
-         8IZoZO+EPznFtlLOmbq8pxW0WP75RG64x/Hr5PCnjCPM39JrApDdjXxql8/Ls6cTAzde
-         wAVU1pcp9sIisDwwghC36gynnUEy0rEIr59yO8XQXM+B/fkoWhuBQ6AjlfIleJFEvD3v
-         CYHtgSkvOahueRW5KjhO/kdvwkNdaJdAHbJLcs/CGVgrbOkDy6Vo6OM/M40bl+HJDvwg
-         rtSg==
-X-Gm-Message-State: AOJu0YxaIKTVu87wWyAuGjTUKv6hGSWa8fH5RC9ouA2P1rDOGwOOqs/8
-	e4xwrrgFzHovCoZkEpttYsg=
-X-Google-Smtp-Source: AGHT+IEVAmegguGtfNHWli3NSVAd9B1FfQ+9wHqXSwq9t0bBPjvI+hoO179TRxj0kIglx8x1lsh1LQ==
-X-Received: by 2002:a05:6870:1f16:b0:1fb:75b:99bd with SMTP id pd22-20020a0568701f1600b001fb075b99bdmr3526861oab.108.1701977417514;
-        Thu, 07 Dec 2023 11:30:17 -0800 (PST)
+        bh=cCo25qT9AtztM6NlEg7BzkQzG2uRIBLOVHP87eaH1kE=;
+        b=fUCUvcVYw0N17A2yLjzAiigTcT7quuGydoOFHVNZ9IsZhDEuagS5gez5F3RVXm3zFl
+         lGICneU6Q4sujjFROc8hDxDqPkO8ziCTgiVtTkxoC0unAJL1ErTiT7Q6FNas4Wq9kr9y
+         uk6waxGLcyuHEXjyWuGoFZZ9Nbun9/K2+bK2UonMkTLuWlqFa4SFCl5dOPsiabjGMDPN
+         U8TOokJHW0RV+p8+avN1msgkKOmkSt+m9u/ryBMAFeIXUgDMiKcHxX9bTl9gVHKMeoBZ
+         eRPiyfRGs2n3iX1E4qoLncDNj7sGDh2EPxF2PjSFjlW8qyjbAcYKLb+4QWwrwR4gMY3a
+         yXLQ==
+X-Gm-Message-State: AOJu0Yy2J3xECCdGMTIG7yv5dDb471QcoQChroMuunA0jdV6Z4aM2bU8
+	co2A6T00T4QrSRAYWMTWK42TnruXkfY=
+X-Google-Smtp-Source: AGHT+IGhBJASZsmYPKpG4D+3+g59MiW5kLirD/JA8XkbLAxYoGEwXgqs9hOVLuf23DdweQppuoN/cg==
+X-Received: by 2002:a05:6870:d8d0:b0:1fa:fadc:4d25 with SMTP id of16-20020a056870d8d000b001fafadc4d25mr1555789oac.22.1701977418689;
+        Thu, 07 Dec 2023 11:30:18 -0800 (PST)
 Received: from bob-3900x.lan (2603-8081-1405-679b-ca1f-53fd-59c8-8b84.res6.spectrum.com. [2603:8081:1405:679b:ca1f:53fd:59c8:8b84])
-        by smtp.gmail.com with ESMTPSA id mp23-20020a056871329700b001fb634b546dsm92347oac.14.2023.12.07.11.30.16
+        by smtp.gmail.com with ESMTPSA id mp23-20020a056871329700b001fb634b546dsm92347oac.14.2023.12.07.11.30.17
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 07 Dec 2023 11:30:16 -0800 (PST)
+        Thu, 07 Dec 2023 11:30:17 -0800 (PST)
 From: Bob Pearson <rpearsonhpe@gmail.com>
 To: jgg@nvidia.com,
 	yanjun.zhu@linux.dev,
@@ -61,9 +61,9 @@ To: jgg@nvidia.com,
 	dsahern@kernel.org,
 	rain.1986.08.12@gmail.com
 Cc: Bob Pearson <rpearsonhpe@gmail.com>
-Subject: [PATCH for-next v6 2/7] RDMA/rxe: Fix sending of mcast packets
-Date: Thu,  7 Dec 2023 13:29:03 -0600
-Message-Id: <20231207192907.10113-3-rpearsonhpe@gmail.com>
+Subject: [PATCH for-next v6 3/7] RDMA/rxe: Register IP mcast address
+Date: Thu,  7 Dec 2023 13:29:04 -0600
+Message-Id: <20231207192907.10113-4-rpearsonhpe@gmail.com>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <20231207192907.10113-1-rpearsonhpe@gmail.com>
 References: <20231207192907.10113-1-rpearsonhpe@gmail.com>
@@ -75,126 +75,223 @@ List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Currently the rdma_rxe driver does not send mcast packets correctly.
-It uses the wrong qp number for the packets.
+Currently the rdma_rxe driver does not receive mcast packets at all.
 
-Add a mask bit to indicate that a multicast packet has been locally
-sent and use to set the correct qpn for multicast packets and
-identify mcast packets when sending.
+Add code to rxe_mcast_add() and rxe_mcast_del() to register/deregister
+the IP mcast address. This is required for mcast traffic to reach the
+rxe driver when coming from an external source.
 
 Fixes: 8700e3e7c485 ("Soft RoCE driver")
 Signed-off-by: Bob Pearson <rpearsonhpe@gmail.com>
 ---
- drivers/infiniband/sw/rxe/rxe_av.c     |  7 +++++++
- drivers/infiniband/sw/rxe/rxe_loc.h    |  1 +
- drivers/infiniband/sw/rxe/rxe_net.c    |  4 +++-
- drivers/infiniband/sw/rxe/rxe_opcode.h |  2 +-
- drivers/infiniband/sw/rxe/rxe_recv.c   |  4 ++++
- drivers/infiniband/sw/rxe/rxe_req.c    | 11 +++++++++--
- 6 files changed, 25 insertions(+), 4 deletions(-)
+ drivers/infiniband/sw/rxe/rxe_mcast.c | 119 +++++++++++++++++++++-----
+ drivers/infiniband/sw/rxe/rxe_net.c   |   2 +-
+ drivers/infiniband/sw/rxe/rxe_net.h   |   1 +
+ drivers/infiniband/sw/rxe/rxe_verbs.h |   1 +
+ 4 files changed, 102 insertions(+), 21 deletions(-)
 
-diff --git a/drivers/infiniband/sw/rxe/rxe_av.c b/drivers/infiniband/sw/rxe/rxe_av.c
-index 4ac17b8def28..022173eb5d75 100644
---- a/drivers/infiniband/sw/rxe/rxe_av.c
-+++ b/drivers/infiniband/sw/rxe/rxe_av.c
-@@ -7,6 +7,13 @@
- #include "rxe.h"
- #include "rxe_loc.h"
+diff --git a/drivers/infiniband/sw/rxe/rxe_mcast.c b/drivers/infiniband/sw/rxe/rxe_mcast.c
+index 86cc2e18a7fd..5236761892dd 100644
+--- a/drivers/infiniband/sw/rxe/rxe_mcast.c
++++ b/drivers/infiniband/sw/rxe/rxe_mcast.c
+@@ -19,38 +19,116 @@
+  * mcast packets in the rxe receive path.
+  */
  
-+bool rxe_is_mcast_av(struct rxe_av *av)
-+{
-+	struct in6_addr *daddr = (struct in6_addr *)av->grh.dgid.raw;
++#include <linux/igmp.h>
 +
-+	return rdma_is_multicast_addr(daddr);
+ #include "rxe.h"
+ 
+-/**
+- * rxe_mcast_add - add multicast address to rxe device
+- * @rxe: rxe device object
+- * @mgid: multicast address as a gid
+- *
+- * Returns 0 on success else an error
+- */
+-static int rxe_mcast_add(struct rxe_dev *rxe, union ib_gid *mgid)
++static int rxe_mcast_add6(struct rxe_dev *rxe, union ib_gid *mgid)
+ {
++	struct in6_addr *addr6 = (struct in6_addr *)mgid;
++	struct sock *sk = recv_sockets.sk6->sk;
+ 	unsigned char ll_addr[ETH_ALEN];
++	int err;
++
++	lock_sock(sk);
++	rtnl_lock();
++	err = ipv6_sock_mc_join(sk, rxe->ndev->ifindex, addr6);
++	rtnl_unlock();
++	release_sock(sk);
++	if (err && err != -EADDRINUSE)
++		goto err_out;
+ 
+ 	ipv6_eth_mc_map((struct in6_addr *)mgid->raw, ll_addr);
++	err = dev_mc_add(rxe->ndev, ll_addr);
++	if (err)
++		goto err_drop;
++
++	return 0;
+ 
+-	return dev_mc_add(rxe->ndev, ll_addr);
++err_drop:
++	lock_sock(sk);
++	rtnl_lock();
++	ipv6_sock_mc_drop(sk, rxe->ndev->ifindex, addr6);
++	rtnl_unlock();
++	release_sock(sk);
++err_out:
++	return err;
+ }
+ 
+-/**
+- * rxe_mcast_del - delete multicast address from rxe device
+- * @rxe: rxe device object
+- * @mgid: multicast address as a gid
+- *
+- * Returns 0 on success else an error
+- */
+-static int rxe_mcast_del(struct rxe_dev *rxe, union ib_gid *mgid)
++static int rxe_mcast_add(struct rxe_mcg *mcg)
+ {
++	struct rxe_dev *rxe = mcg->rxe;
++	union ib_gid *mgid = &mcg->mgid;
+ 	unsigned char ll_addr[ETH_ALEN];
++	struct ip_mreqn imr = {};
++	int err;
++
++	if (mcg->is_ipv6)
++		return rxe_mcast_add6(rxe, mgid);
++
++	imr.imr_multiaddr = *(struct in_addr *)(mgid->raw + 12);
++	imr.imr_ifindex = rxe->ndev->ifindex;
++	rtnl_lock();
++	err = ip_mc_join_group(recv_sockets.sk4->sk, &imr);
++	rtnl_unlock();
++	if (err && err != -EADDRINUSE)
++		goto err_out;
++
++	ip_eth_mc_map(imr.imr_multiaddr.s_addr, ll_addr);
++	err = dev_mc_add(rxe->ndev, ll_addr);
++	if (err)
++		goto err_leave;
++
++	return 0;
++
++err_leave:
++	rtnl_lock();
++	ip_mc_leave_group(recv_sockets.sk4->sk, &imr);
++	rtnl_unlock();
++err_out:
++	return err;
 +}
 +
- void rxe_init_av(struct rdma_ah_attr *attr, struct rxe_av *av)
- {
- 	rxe_av_from_attr(rdma_ah_get_port_num(attr), av, attr);
-diff --git a/drivers/infiniband/sw/rxe/rxe_loc.h b/drivers/infiniband/sw/rxe/rxe_loc.h
-index 3d2504a0ae56..62b2b25903fc 100644
---- a/drivers/infiniband/sw/rxe/rxe_loc.h
-+++ b/drivers/infiniband/sw/rxe/rxe_loc.h
-@@ -8,6 +8,7 @@
- #define RXE_LOC_H
++static int rxe_mcast_del6(struct rxe_dev *rxe, union ib_gid *mgid)
++{
++	struct sock *sk = recv_sockets.sk6->sk;
++	unsigned char ll_addr[ETH_ALEN];
++	int err, err2;
  
- /* rxe_av.c */
-+bool rxe_is_mcast_av(struct rxe_av *av);
- void rxe_init_av(struct rdma_ah_attr *attr, struct rxe_av *av);
- int rxe_chk_ah_attr(struct rxe_dev *rxe, struct rdma_ah_attr *attr);
- void rxe_av_from_attr(u8 port_num, struct rxe_av *av,
+ 	ipv6_eth_mc_map((struct in6_addr *)mgid->raw, ll_addr);
++	err = dev_mc_del(rxe->ndev, ll_addr);
++
++	lock_sock(sk);
++	rtnl_lock();
++	err2 = ipv6_sock_mc_drop(sk, rxe->ndev->ifindex,
++			(struct in6_addr *)mgid);
++	rtnl_unlock();
++	release_sock(sk);
++
++	return err ?: err2;
++}
++
++static int rxe_mcast_del(struct rxe_mcg *mcg)
++{
++	struct rxe_dev *rxe = mcg->rxe;
++	union ib_gid *mgid = &mcg->mgid;
++	unsigned char ll_addr[ETH_ALEN];
++	struct ip_mreqn imr = {};
++	int err, err2;
++
++	if (mcg->is_ipv6)
++		return rxe_mcast_del6(rxe, mgid);
++
++	imr.imr_multiaddr = *(struct in_addr *)(mgid->raw + 12);
++	imr.imr_ifindex = rxe->ndev->ifindex;
++	ip_eth_mc_map(imr.imr_multiaddr.s_addr, ll_addr);
++	err = dev_mc_del(rxe->ndev, ll_addr);
++
++	rtnl_lock();
++	err2 = ip_mc_leave_group(recv_sockets.sk4->sk, &imr);
++	rtnl_unlock();
+ 
+-	return dev_mc_del(rxe->ndev, ll_addr);
++	return err ?: err2;
+ }
+ 
+ /**
+@@ -164,6 +242,7 @@ static void __rxe_init_mcg(struct rxe_dev *rxe, union ib_gid *mgid,
+ {
+ 	kref_init(&mcg->ref_cnt);
+ 	memcpy(&mcg->mgid, mgid, sizeof(mcg->mgid));
++	mcg->is_ipv6 = !ipv6_addr_v4mapped((struct in6_addr *)mgid);
+ 	INIT_LIST_HEAD(&mcg->qp_list);
+ 	mcg->rxe = rxe;
+ 
+@@ -225,7 +304,7 @@ static struct rxe_mcg *rxe_get_mcg(struct rxe_dev *rxe, union ib_gid *mgid)
+ 	spin_unlock_bh(&rxe->mcg_lock);
+ 
+ 	/* add mcast address outside of lock */
+-	err = rxe_mcast_add(rxe, mgid);
++	err = rxe_mcast_add(mcg);
+ 	if (!err)
+ 		return mcg;
+ 
+@@ -273,7 +352,7 @@ static void __rxe_destroy_mcg(struct rxe_mcg *mcg)
+ static void rxe_destroy_mcg(struct rxe_mcg *mcg)
+ {
+ 	/* delete mcast address outside of lock */
+-	rxe_mcast_del(mcg->rxe, &mcg->mgid);
++	rxe_mcast_del(mcg);
+ 
+ 	spin_lock_bh(&mcg->rxe->mcg_lock);
+ 	__rxe_destroy_mcg(mcg);
 diff --git a/drivers/infiniband/sw/rxe/rxe_net.c b/drivers/infiniband/sw/rxe/rxe_net.c
-index cd59666158b1..58c3f3759bf0 100644
+index 58c3f3759bf0..b481f8da2002 100644
 --- a/drivers/infiniband/sw/rxe/rxe_net.c
 +++ b/drivers/infiniband/sw/rxe/rxe_net.c
-@@ -431,7 +431,9 @@ int rxe_xmit_packet(struct rxe_qp *qp, struct rxe_pkt_info *pkt,
+@@ -18,7 +18,7 @@
+ #include "rxe_net.h"
+ #include "rxe_loc.h"
  
- 	rxe_icrc_generate(skb, pkt);
+-static struct rxe_recv_sockets recv_sockets;
++struct rxe_recv_sockets recv_sockets;
  
--	if (pkt->mask & RXE_LOOPBACK_MASK)
-+	if (pkt->mask & RXE_MCAST_MASK)
-+		err = rxe_send(skb, pkt);
-+	else if (pkt->mask & RXE_LOOPBACK_MASK)
- 		err = rxe_loopback(skb, pkt);
- 	else
- 		err = rxe_send(skb, pkt);
-diff --git a/drivers/infiniband/sw/rxe/rxe_opcode.h b/drivers/infiniband/sw/rxe/rxe_opcode.h
-index 5686b691d6b8..c4cf672ea26d 100644
---- a/drivers/infiniband/sw/rxe/rxe_opcode.h
-+++ b/drivers/infiniband/sw/rxe/rxe_opcode.h
-@@ -85,7 +85,7 @@ enum rxe_hdr_mask {
- 	RXE_END_MASK		= BIT(NUM_HDR_TYPES + 11),
+ static struct dst_entry *rxe_find_route4(struct rxe_qp *qp,
+ 					 struct net_device *ndev,
+diff --git a/drivers/infiniband/sw/rxe/rxe_net.h b/drivers/infiniband/sw/rxe/rxe_net.h
+index 45d80d00f86b..89cee7d5340f 100644
+--- a/drivers/infiniband/sw/rxe/rxe_net.h
++++ b/drivers/infiniband/sw/rxe/rxe_net.h
+@@ -15,6 +15,7 @@ struct rxe_recv_sockets {
+ 	struct socket *sk4;
+ 	struct socket *sk6;
+ };
++extern struct rxe_recv_sockets recv_sockets;
  
- 	RXE_LOOPBACK_MASK	= BIT(NUM_HDR_TYPES + 12),
--
-+	RXE_MCAST_MASK		= BIT(NUM_HDR_TYPES + 13),
- 	RXE_ATOMIC_WRITE_MASK   = BIT(NUM_HDR_TYPES + 14),
+ int rxe_net_add(const char *ibdev_name, struct net_device *ndev);
  
- 	RXE_READ_OR_ATOMIC_MASK	= (RXE_READ_MASK | RXE_ATOMIC_MASK),
-diff --git a/drivers/infiniband/sw/rxe/rxe_recv.c b/drivers/infiniband/sw/rxe/rxe_recv.c
-index 5861e4244049..7153de0799fc 100644
---- a/drivers/infiniband/sw/rxe/rxe_recv.c
-+++ b/drivers/infiniband/sw/rxe/rxe_recv.c
-@@ -217,6 +217,10 @@ static void rxe_rcv_mcast_pkt(struct rxe_dev *rxe, struct sk_buff *skb)
- 	list_for_each_entry(mca, &mcg->qp_list, qp_list) {
- 		qp = mca->qp;
+diff --git a/drivers/infiniband/sw/rxe/rxe_verbs.h b/drivers/infiniband/sw/rxe/rxe_verbs.h
+index ccb9d19ffe8a..7be9e6232dd9 100644
+--- a/drivers/infiniband/sw/rxe/rxe_verbs.h
++++ b/drivers/infiniband/sw/rxe/rxe_verbs.h
+@@ -352,6 +352,7 @@ struct rxe_mcg {
+ 	atomic_t		qp_num;
+ 	u32			qkey;
+ 	u16			pkey;
++	bool			is_ipv6;
+ };
  
-+		/* don't reply packet to sender if locally sent */
-+		if (pkt->mask & RXE_MCAST_MASK && qp_num(qp) == deth_sqp(pkt))
-+			continue;
-+
- 		/* validate qp for incoming packet */
- 		err = check_type_state(rxe, pkt, qp);
- 		if (err)
-diff --git a/drivers/infiniband/sw/rxe/rxe_req.c b/drivers/infiniband/sw/rxe/rxe_req.c
-index d8c41fd626a9..599bec88cb54 100644
---- a/drivers/infiniband/sw/rxe/rxe_req.c
-+++ b/drivers/infiniband/sw/rxe/rxe_req.c
-@@ -442,8 +442,12 @@ static struct sk_buff *init_req_packet(struct rxe_qp *qp,
- 			(pkt->mask & (RXE_WRITE_MASK | RXE_IMMDT_MASK)) ==
- 			(RXE_WRITE_MASK | RXE_IMMDT_MASK));
- 
--	qp_num = (pkt->mask & RXE_DETH_MASK) ? ibwr->wr.ud.remote_qpn :
--					 qp->attr.dest_qp_num;
-+	if (pkt->mask & RXE_MCAST_MASK)
-+		qp_num = IB_MULTICAST_QPN;
-+	else if (pkt->mask & RXE_DETH_MASK)
-+		qp_num = ibwr->wr.ud.remote_qpn;
-+	else
-+		qp_num = qp->attr.dest_qp_num;
- 
- 	ack_req = ((pkt->mask & RXE_END_MASK) ||
- 		(qp->req.noack_pkts++ > RXE_MAX_PKT_PER_ACK));
-@@ -809,6 +813,9 @@ int rxe_requester(struct rxe_qp *qp)
- 		goto err;
- 	}
- 
-+	if (rxe_is_mcast_av(av))
-+		pkt.mask |= RXE_MCAST_MASK;
-+
- 	skb = init_req_packet(qp, av, wqe, opcode, payload, &pkt);
- 	if (unlikely(!skb)) {
- 		rxe_dbg_qp(qp, "Failed allocating skb\n");
+ struct rxe_mca {
 -- 
 2.40.1
 
