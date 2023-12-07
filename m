@@ -1,144 +1,187 @@
-Return-Path: <linux-rdma+bounces-304-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-305-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 90A66808653
-	for <lists+linux-rdma@lfdr.de>; Thu,  7 Dec 2023 12:04:42 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 33965808655
+	for <lists+linux-rdma@lfdr.de>; Thu,  7 Dec 2023 12:04:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 482102839C7
-	for <lists+linux-rdma@lfdr.de>; Thu,  7 Dec 2023 11:04:41 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 62E8B1C21F4C
+	for <lists+linux-rdma@lfdr.de>; Thu,  7 Dec 2023 11:04:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 52233374E7;
-	Thu,  7 Dec 2023 11:04:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BECED35299;
+	Thu,  7 Dec 2023 11:04:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b="UkyR6+9E"
+	dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b="XQHOkoGE"
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28914D1
-	for <linux-rdma@vger.kernel.org>; Thu,  7 Dec 2023 03:04:35 -0800 (PST)
-Received: by mail-pj1-x1036.google.com with SMTP id 98e67ed59e1d1-289d988a947so369136a91.0
-        for <linux-rdma@vger.kernel.org>; Thu, 07 Dec 2023 03:04:35 -0800 (PST)
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6384FD1
+	for <linux-rdma@vger.kernel.org>; Thu,  7 Dec 2023 03:04:38 -0800 (PST)
+Received: by mail-pj1-x1036.google.com with SMTP id 98e67ed59e1d1-2865742e256so663331a91.0
+        for <linux-rdma@vger.kernel.org>; Thu, 07 Dec 2023 03:04:38 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google; t=1701947074; x=1702551874; darn=vger.kernel.org;
+        d=broadcom.com; s=google; t=1701947078; x=1702551878; darn=vger.kernel.org;
         h=references:in-reply-to:message-id:date:subject:cc:to:from:from:to
          :cc:subject:date:message-id:reply-to;
-        bh=yzHd2QHTh8VD8MyJhl5d5YFVvrurch7g3IJHWkhJxsw=;
-        b=UkyR6+9EnTeyd/jsk88sOKvKrswkDn+endhWxfzxIMr0flMgx6Eua/CuRO61Q41m46
-         /1vvMKH7YhxcRRSsimUXntlOKCFCI1an37jtfPg0Kmav68RoVYijwu9hJQlqrDXPde4c
-         LJIhjiLjOvtGJli2b8hxX5UlY7YbUKPoiBDMk=
+        bh=6hloazeFIBBTLjbVcky69qKJPQLVODn5hmZGYfWnCzI=;
+        b=XQHOkoGEhNRvwPR0vXOddDKzgAX9+yFYuPINmpX4f8snakYFPDuPxSKq09+Wjoh/v8
+         vFjpTNMv602F1fLDKuijx2+5ANlzwdKjiVl9xHRRfvysZNaMSsCIW8koeyNiKr+G1Rcs
+         cWxHxil7PP+e6cQ42EL6hbKimt3t8m5tN8bgQ=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701947074; x=1702551874;
+        d=1e100.net; s=20230601; t=1701947078; x=1702551878;
         h=references:in-reply-to:message-id:date:subject:cc:to:from
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=yzHd2QHTh8VD8MyJhl5d5YFVvrurch7g3IJHWkhJxsw=;
-        b=v48NusasC8kaJrP8qffkOkO/sUcVCsI/nBtEkICUUt52PZdqswHCkQLmYxfzKDsTWp
-         9c4Yz5OVygDNfGxh0+q02vIlvy925tguCekzcImN0W4s16PO3TYvAfdsJ0UO61meW+b9
-         g9GLOYqstN7PUuvMdEoPSJf9hp1fV+ebF0MDwfMO7OGgQgc6sBBisE4H6R1bfqlKQq8O
-         dhQV4dzYEJqKvRgV1dj+Q6i4gu5fp2Us1ZI9BuXNrE5liLW1lKvZv6gyH6quOjO/YZgc
-         yIs/R6uO8Cra9MYiXRchYG4zvj47SLjUmF7lwz57kpMvL8RU42DuiMV6ulwftmFZOnhk
-         l+5Q==
-X-Gm-Message-State: AOJu0YycLhrtnU9MMiKrnzS6BD5bw5b9NnlfEAzj0c7JZOAgpyJcuIxQ
-	h9Z54qrqJxhClrdzH7vTtiK0bg==
-X-Google-Smtp-Source: AGHT+IF/8kAH6WSaFoAlXgXvbtZIbh+14PzCgZkg2HRJkFA743tMpRHGsj+aojf1hvB5AseHFCv+0A==
-X-Received: by 2002:a17:90b:1d0b:b0:286:7ec2:df40 with SMTP id on11-20020a17090b1d0b00b002867ec2df40mr1865362pjb.2.1701947074542;
-        Thu, 07 Dec 2023 03:04:34 -0800 (PST)
+        bh=6hloazeFIBBTLjbVcky69qKJPQLVODn5hmZGYfWnCzI=;
+        b=HjrJM22NVlpPJeBYklj0t95rgwr52jmriSAdSGA8rv2n0cjzEI9MAtwlC6GO47IE0V
+         kfvqvlSAQQ/gVF/D1pLlShaelUFk4vBvlL/fH1Y3TnGN1tS/bBDjLcUh9GeqAo3p3Rnt
+         DaGSSLllHuUi/KgXAW5B7X+Om0Q3zHyN6xnGzfaxNNF/cjTJmFAR61Pi99iucQeey9cy
+         d7bka/SG6anGdAmtzmBZA5kG/pd2sSS+5IhHe5CX/iksG5JU+lEXjX/NuLxMpKRBtakC
+         aqv6/9shbR6cM51mT5QAgM2gu0VZh4MllB75DZHR6YCzF/k/btUyxbYYLcOHrPrx8nGr
+         3TKQ==
+X-Gm-Message-State: AOJu0YyDAHs0X8tnSOgWe1bGcsmkQYzUdmEFOlKV5ECi/Rvz3JnP4L9b
+	GoB2g4NWV5MYEQtRxAzjODmuhg==
+X-Google-Smtp-Source: AGHT+IF6D0vJjfsX/woVF5fxZd4fOWGYVjWqAckHu/W97SCKu4DmkIVE9q08Htf12cKDyKXBZlu9zg==
+X-Received: by 2002:a17:90a:7064:b0:286:ec45:d397 with SMTP id f91-20020a17090a706400b00286ec45d397mr1847588pjk.26.1701947077714;
+        Thu, 07 Dec 2023 03:04:37 -0800 (PST)
 Received: from dhcp-10-192-206-197.iig.avagotech.net.net ([192.19.234.250])
-        by smtp.gmail.com with ESMTPSA id pm2-20020a17090b3c4200b00285db538b17sm1034254pjb.41.2023.12.07.03.04.32
+        by smtp.gmail.com with ESMTPSA id pm2-20020a17090b3c4200b00285db538b17sm1034254pjb.41.2023.12.07.03.04.35
         (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 07 Dec 2023 03:04:34 -0800 (PST)
+        Thu, 07 Dec 2023 03:04:37 -0800 (PST)
 From: Selvin Xavier <selvin.xavier@broadcom.com>
 To: leon@kernel.org,
 	jgg@ziepe.ca
 Cc: linux-rdma@vger.kernel.org,
 	Selvin Xavier <selvin.xavier@broadcom.com>
-Subject: [PATCH for-next 4/6] RDMA/bnxt_re: Get the toggle bits from CQ completions
-Date: Thu,  7 Dec 2023 02:47:38 -0800
-Message-Id: <1701946060-13931-5-git-send-email-selvin.xavier@broadcom.com>
+Subject: [PATCH for-next 5/6] RDMA/bnxt_re: Doorbell changes
+Date: Thu,  7 Dec 2023 02:47:39 -0800
+Message-Id: <1701946060-13931-6-git-send-email-selvin.xavier@broadcom.com>
 X-Mailer: git-send-email 2.5.5
 In-Reply-To: <1701946060-13931-1-git-send-email-selvin.xavier@broadcom.com>
 References: <1701946060-13931-1-git-send-email-selvin.xavier@broadcom.com>
 Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
-	boundary="000000000000d3c041060be96e16"
+	boundary="000000000000054d72060be96fc8"
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 
---000000000000d3c041060be96e16
+--000000000000054d72060be96fc8
 
-Get the toggle bits from CQ completions. For older adapters
-these values are 0.
+Update the Doorbell routines to support the latest HW
+definitions. Use common routine to prepare the Doorbell
+key.
 
 Signed-off-by: Selvin Xavier <selvin.xavier@broadcom.com>
 ---
- drivers/infiniband/hw/bnxt_re/qplib_fp.c  | 6 ++++++
- drivers/infiniband/hw/bnxt_re/qplib_fp.h  | 1 +
- drivers/infiniband/hw/bnxt_re/qplib_res.h | 1 +
- 3 files changed, 8 insertions(+)
+ drivers/infiniband/hw/bnxt_re/qplib_res.h | 46 +++++++++++++++++++++++--------
+ 1 file changed, 35 insertions(+), 11 deletions(-)
 
-diff --git a/drivers/infiniband/hw/bnxt_re/qplib_fp.c b/drivers/infiniband/hw/bnxt_re/qplib_fp.c
-index 1b7e950..177c6c1 100644
---- a/drivers/infiniband/hw/bnxt_re/qplib_fp.c
-+++ b/drivers/infiniband/hw/bnxt_re/qplib_fp.c
-@@ -330,6 +330,9 @@ static void bnxt_qplib_service_nq(struct tasklet_struct *t)
- 			cq = (struct bnxt_qplib_cq *)(unsigned long)q_handle;
- 			if (!cq)
- 				break;
-+			cq->toggle = (le16_to_cpu(nqe->info10_type) &
-+					NQ_CN_TOGGLE_MASK) >> NQ_CN_TOGGLE_SFT;
-+			cq->dbinfo.toggle = cq->toggle;
- 			bnxt_qplib_armen_db(&cq->dbinfo,
- 					    DBC_DBC_TYPE_CQ_ARMENA);
- 			spin_lock_bh(&cq->compl_lock);
-@@ -2124,6 +2127,8 @@ int bnxt_qplib_create_cq(struct bnxt_qplib_res *res, struct bnxt_qplib_cq *cq)
- 	cq->dbinfo.xid = cq->id;
- 	cq->dbinfo.db = cq->dpi->dbr;
- 	cq->dbinfo.priv_db = res->dpi_tbl.priv_db;
-+	cq->dbinfo.flags = 0;
-+	cq->dbinfo.toggle = 0;
- 
- 	bnxt_qplib_armen_db(&cq->dbinfo, DBC_DBC_TYPE_CQ_ARMENA);
- 
-@@ -3018,6 +3023,7 @@ int bnxt_qplib_poll_cq(struct bnxt_qplib_cq *cq, struct bnxt_qplib_cqe *cqe,
- 
- void bnxt_qplib_req_notify_cq(struct bnxt_qplib_cq *cq, u32 arm_type)
- {
-+	cq->dbinfo.toggle = cq->toggle;
- 	if (arm_type)
- 		bnxt_qplib_ring_db(&cq->dbinfo, arm_type);
- 	/* Using cq->arm_state variable to track whether to issue cq handler */
-diff --git a/drivers/infiniband/hw/bnxt_re/qplib_fp.h b/drivers/infiniband/hw/bnxt_re/qplib_fp.h
-index 23c27cb..8a6bea20 100644
---- a/drivers/infiniband/hw/bnxt_re/qplib_fp.h
-+++ b/drivers/infiniband/hw/bnxt_re/qplib_fp.h
-@@ -418,6 +418,7 @@ struct bnxt_qplib_cq {
- 	bool				resize_in_progress;
- 	struct bnxt_qplib_sg_info	sg_info;
- 	u64				cq_handle;
-+	u8				toggle;
- 
- #define CQ_RESIZE_WAIT_TIME_MS		500
- 	unsigned long			flags;
 diff --git a/drivers/infiniband/hw/bnxt_re/qplib_res.h b/drivers/infiniband/hw/bnxt_re/qplib_res.h
-index 397846b..7e6d907 100644
+index 7e6d907..c228870 100644
 --- a/drivers/infiniband/hw/bnxt_re/qplib_res.h
 +++ b/drivers/infiniband/hw/bnxt_re/qplib_res.h
-@@ -190,6 +190,7 @@ struct bnxt_qplib_db_info {
- 	u32			xid;
- 	u32			max_slot;
- 	u32                     flags;
-+	u8			toggle;
+@@ -47,6 +47,9 @@ extern const struct bnxt_qplib_gid bnxt_qplib_gid_zero;
+ #define CHIP_NUM_58818          0xd818
+ #define CHIP_NUM_57608          0x1760
+ 
++#define BNXT_QPLIB_DBR_VALID		(0x1UL << 26)
++#define BNXT_QPLIB_DBR_EPOCH_SHIFT	24
++#define BNXT_QPLIB_DBR_TOGGLE_SHIFT	25
+ 
+ struct bnxt_qplib_drv_modes {
+ 	u8	wqe_mode;
+@@ -200,6 +203,11 @@ enum bnxt_qplib_db_info_flags_mask {
+ 	BNXT_QPLIB_FLAG_EPOCH_PROD_MASK         = 0x2UL,
  };
  
- enum bnxt_qplib_db_info_flags_mask {
++enum bnxt_qplib_db_epoch_flag_shift {
++	BNXT_QPLIB_DB_EPOCH_CONS_SHIFT  = BNXT_QPLIB_DBR_EPOCH_SHIFT,
++	BNXT_QPLIB_DB_EPOCH_PROD_SHIFT  = (BNXT_QPLIB_DBR_EPOCH_SHIFT - 1),
++};
++
+ /* Tables */
+ struct bnxt_qplib_pd_tbl {
+ 	unsigned long			*tbl;
+@@ -453,14 +461,27 @@ static inline void bnxt_qplib_ring_db32(struct bnxt_qplib_db_info *info,
+ 	writel(key, info->db);
+ }
+ 
++#define BNXT_QPLIB_INIT_DBHDR(xid, type, indx, toggle) \
++	(((u64)(((xid) & DBC_DBC_XID_MASK) | DBC_DBC_PATH_ROCE |  \
++		(type) | BNXT_QPLIB_DBR_VALID) << 32) | (indx) |  \
++	 (((u32)(toggle)) << (BNXT_QPLIB_DBR_TOGGLE_SHIFT)))
++
+ static inline void bnxt_qplib_ring_db(struct bnxt_qplib_db_info *info,
+ 				      u32 type)
+ {
+ 	u64 key = 0;
++	u32 indx;
++	u8 toggle = 0;
++
++	if (type == DBC_DBC_TYPE_CQ_ARMALL ||
++	    type == DBC_DBC_TYPE_CQ_ARMSE)
++		toggle = info->toggle;
++
++	indx = (info->hwq->cons & DBC_DBC_INDEX_MASK) |
++	       ((info->flags & BNXT_QPLIB_FLAG_EPOCH_CONS_MASK) <<
++		 BNXT_QPLIB_DB_EPOCH_CONS_SHIFT);
+ 
+-	key = (info->xid & DBC_DBC_XID_MASK) | DBC_DBC_PATH_ROCE | type;
+-	key <<= 32;
+-	key |= (info->hwq->cons & DBC_DBC_INDEX_MASK);
++	key =  BNXT_QPLIB_INIT_DBHDR(info->xid, type, indx, toggle);
+ 	writeq(key, info->db);
+ }
+ 
+@@ -468,10 +489,12 @@ static inline void bnxt_qplib_ring_prod_db(struct bnxt_qplib_db_info *info,
+ 					   u32 type)
+ {
+ 	u64 key = 0;
++	u32 indx;
+ 
+-	key = (info->xid & DBC_DBC_XID_MASK) | DBC_DBC_PATH_ROCE | type;
+-	key <<= 32;
+-	key |= ((info->hwq->prod / info->max_slot)) & DBC_DBC_INDEX_MASK;
++	indx = (((info->hwq->prod / info->max_slot) & DBC_DBC_INDEX_MASK) |
++		((info->flags & BNXT_QPLIB_FLAG_EPOCH_PROD_MASK) <<
++		 BNXT_QPLIB_DB_EPOCH_PROD_SHIFT));
++	key = BNXT_QPLIB_INIT_DBHDR(info->xid, type, indx, 0);
+ 	writeq(key, info->db);
+ }
+ 
+@@ -479,9 +502,12 @@ static inline void bnxt_qplib_armen_db(struct bnxt_qplib_db_info *info,
+ 				       u32 type)
+ {
+ 	u64 key = 0;
++	u8 toggle = 0;
+ 
+-	key = (info->xid & DBC_DBC_XID_MASK) | DBC_DBC_PATH_ROCE | type;
+-	key <<= 32;
++	if (type == DBC_DBC_TYPE_CQ_ARMENA || type == DBC_DBC_TYPE_SRQ_ARMENA)
++		toggle = info->toggle;
++	/* Index always at 0 */
++	key = BNXT_QPLIB_INIT_DBHDR(info->xid, type, 0, toggle);
+ 	writeq(key, info->priv_db);
+ }
+ 
+@@ -490,9 +516,7 @@ static inline void bnxt_qplib_srq_arm_db(struct bnxt_qplib_db_info *info,
+ {
+ 	u64 key = 0;
+ 
+-	key = (info->xid & DBC_DBC_XID_MASK) | DBC_DBC_PATH_ROCE | th;
+-	key <<= 32;
+-	key |=  th & DBC_DBC_INDEX_MASK;
++	key = BNXT_QPLIB_INIT_DBHDR(info->xid, DBC_DBC_TYPE_SRQ_ARM, th, info->toggle);
+ 	writeq(key, info->priv_db);
+ }
+ 
 -- 
 2.5.5
 
 
---000000000000d3c041060be96e16
+--000000000000054d72060be96fc8
 Content-Type: application/pkcs7-signature; name="smime.p7s"
 Content-Transfer-Encoding: base64
 Content-Disposition: attachment; filename="smime.p7s"
@@ -209,15 +252,15 @@ j1Ze9ndr+YDXPpCymOsynmmw0ErHZGGW1OmMpAEt0A+613glWCURLDlP8HONi1wnINV6aDiEf0ad
 9NMGxDsp+YWiRXD3txfo2OMQbpIxM90QfhKKacX8t1J1oAAWxDrLVTJBXBNvz5tr+D1sYwuye93r
 hImmkM1unboxggJtMIICaQIBATBrMFsxCzAJBgNVBAYTAkJFMRkwFwYDVQQKExBHbG9iYWxTaWdu
 IG52LXNhMTEwLwYDVQQDEyhHbG9iYWxTaWduIEdDQyBSMyBQZXJzb25hbFNpZ24gMiBDQSAyMDIw
-Agxy+Cu4x/7lM0zxY7cwDQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIEIM7OAiS26GZe
-UsZtG96a6stsWupIrdhEkdG5dWV19p74MBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZI
-hvcNAQkFMQ8XDTIzMTIwNzExMDQzNFowaQYJKoZIhvcNAQkPMVwwWjALBglghkgBZQMEASowCwYJ
+Agxy+Cu4x/7lM0zxY7cwDQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIEINaqy20f4cG8
+Z7sRh7YuOdqFY0nwZhMcu48hQGOzHXkGMBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZI
+hvcNAQkFMQ8XDTIzMTIwNzExMDQzOFowaQYJKoZIhvcNAQkPMVwwWjALBglghkgBZQMEASowCwYJ
 YIZIAWUDBAEWMAsGCWCGSAFlAwQBAjAKBggqhkiG9w0DBzALBgkqhkiG9w0BAQowCwYJKoZIhvcN
-AQEHMAsGCWCGSAFlAwQCATANBgkqhkiG9w0BAQEFAASCAQBWhtkS9FoG8CDqgNE3l6zg1dGESb6a
-yj4OiMYwe/TD2svUPaUS3nx8iZ7r0av0C7wuoxIPD6yYQktQx8Z3tP64GXIu6Sn7ZE/4q/nV9wBo
-NmmYMRxPT4mNoeNblBcJ8RYcjibcEXsT36f9SYTG2cu/cR2dyCGaaLAXtqnUKqW1uQxcxgBtkEcG
-uc93ye863SoTkiWRKaEm4tOCDvQLGyqXrTm/NqduvrTZX4E3O1xEpx5rF5FEROlg3SraZK4v3Sc/
-eNrcd157lCLAvl/V4J/aWDJO3m08KO2LEsMGqf60zBIfA2xDn78kIEpmDY29EDqYn8afpTKTxGRw
-rpIz8Y/3
---000000000000d3c041060be96e16--
+AQEHMAsGCWCGSAFlAwQCATANBgkqhkiG9w0BAQEFAASCAQCyyzWk88za3rIEfGY4HmzUBnWZfcqq
+Qmd+yvXBxdQ78sk1EU1s9WkZ14ZwdUzYCrnI16IXvp7uT5HRfL8Efm0/Mp/qT1uk2BYTRCfxIRy6
+TGE2cJjBuJP9FlVyPJRPYvfZn7dmLS6ST8jPAVK6fFsh0F1Mnt/uDOFqzkB96bVPI16AxunAn630
+CHhNjvDMypFWtodBibZ/NVgg6P/p9Nlu0jwfNW0i1SrxZm6wG2ckv+lQosCnwY0g3+k5BQ7WJh61
+dmmAJiRkE7HbOjlK8suc054paQhuxggKeVwzYrlUKfNdnyFffyUV9wSQjCuUxKhbJf6rtl/3IAR9
+aHiCDd9J
+--000000000000054d72060be96fc8--
 
