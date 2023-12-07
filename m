@@ -1,213 +1,144 @@
-Return-Path: <linux-rdma+bounces-303-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-304-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8C829808654
-	for <lists+linux-rdma@lfdr.de>; Thu,  7 Dec 2023 12:04:43 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 90A66808653
+	for <lists+linux-rdma@lfdr.de>; Thu,  7 Dec 2023 12:04:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C563BB21C3B
-	for <lists+linux-rdma@lfdr.de>; Thu,  7 Dec 2023 11:04:40 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 482102839C7
+	for <lists+linux-rdma@lfdr.de>; Thu,  7 Dec 2023 11:04:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1647E35299;
-	Thu,  7 Dec 2023 11:04:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 52233374E7;
+	Thu,  7 Dec 2023 11:04:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b="cxTJQM0C"
+	dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b="UkyR6+9E"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-pf1-x42b.google.com (mail-pf1-x42b.google.com [IPv6:2607:f8b0:4864:20::42b])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 64535E9
-	for <linux-rdma@vger.kernel.org>; Thu,  7 Dec 2023 03:04:32 -0800 (PST)
-Received: by mail-pf1-x42b.google.com with SMTP id d2e1a72fcca58-6ceb27ec331so310888b3a.1
-        for <linux-rdma@vger.kernel.org>; Thu, 07 Dec 2023 03:04:32 -0800 (PST)
+Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28914D1
+	for <linux-rdma@vger.kernel.org>; Thu,  7 Dec 2023 03:04:35 -0800 (PST)
+Received: by mail-pj1-x1036.google.com with SMTP id 98e67ed59e1d1-289d988a947so369136a91.0
+        for <linux-rdma@vger.kernel.org>; Thu, 07 Dec 2023 03:04:35 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google; t=1701947072; x=1702551872; darn=vger.kernel.org;
+        d=broadcom.com; s=google; t=1701947074; x=1702551874; darn=vger.kernel.org;
         h=references:in-reply-to:message-id:date:subject:cc:to:from:from:to
          :cc:subject:date:message-id:reply-to;
-        bh=zzCQeHLuoeLY5ZfB67n9INmQOtUGRlDHsW9mPBULmz8=;
-        b=cxTJQM0CWkJ4nGLuCdrlaJtB/18EpzzVOJ9O6/U34t7Huj+E2OhWSv++x66JG32JGu
-         XCvWQCsztDJGcfbA0wnXnM+gwuEcM3YTpdiNickwlgMLyiYRxhlZ6f/rA5Stj76vq42K
-         QcW2+eoGlWf1/TMivYy6iI17kzNhq1AGwhMYk=
+        bh=yzHd2QHTh8VD8MyJhl5d5YFVvrurch7g3IJHWkhJxsw=;
+        b=UkyR6+9EnTeyd/jsk88sOKvKrswkDn+endhWxfzxIMr0flMgx6Eua/CuRO61Q41m46
+         /1vvMKH7YhxcRRSsimUXntlOKCFCI1an37jtfPg0Kmav68RoVYijwu9hJQlqrDXPde4c
+         LJIhjiLjOvtGJli2b8hxX5UlY7YbUKPoiBDMk=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701947072; x=1702551872;
+        d=1e100.net; s=20230601; t=1701947074; x=1702551874;
         h=references:in-reply-to:message-id:date:subject:cc:to:from
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=zzCQeHLuoeLY5ZfB67n9INmQOtUGRlDHsW9mPBULmz8=;
-        b=lrpzgbN9rJgElq5Y514/cHKW3JOLAvg23rznVM4IxL4kzZBSZALAdAwsQtYX3aU9uA
-         J5TLiEd3se4PL5HM6uqbTQyyeCu1gnSCu+/fedWe8tQp8TPDPHZmhyNLq76jxx2g2pCM
-         8K5Wi7XK5JTVOaozTWVBeseWJadij9mMmPOhmx6DhdxrXL8AaPhHQCsQbJgRk2BUo07e
-         rlGa1F9pn6LkglqFppyEpUGK/X1jeXg9xXvBcEF+C+Mz577adpB8NhnZSjeFRqo92LVF
-         c7d2SqfhVDrAOpI4SK/EoxhX0Msc61L8Mw9g+B5BmKLqmdOLM8Pfu0jExRFs4t8fioKK
-         flxg==
-X-Gm-Message-State: AOJu0YxOLN7UUF2QIcT1SZFQRvq2ChdLnVg3Q79674jkN4+PZKPESzVX
-	qu+snp6K1cE5KhxlYSi5ttKI5g==
-X-Google-Smtp-Source: AGHT+IE+/gopdCeRqX2ZLTiEmHD7EyIZA7Be3leEJNgA57snVIb7lSjmSVBIiwYaqPEsVcNn/g1Isg==
-X-Received: by 2002:a05:6a20:42aa:b0:18f:97c:b9e9 with SMTP id o42-20020a056a2042aa00b0018f097cb9e9mr2313051pzj.67.1701947071778;
-        Thu, 07 Dec 2023 03:04:31 -0800 (PST)
+        bh=yzHd2QHTh8VD8MyJhl5d5YFVvrurch7g3IJHWkhJxsw=;
+        b=v48NusasC8kaJrP8qffkOkO/sUcVCsI/nBtEkICUUt52PZdqswHCkQLmYxfzKDsTWp
+         9c4Yz5OVygDNfGxh0+q02vIlvy925tguCekzcImN0W4s16PO3TYvAfdsJ0UO61meW+b9
+         g9GLOYqstN7PUuvMdEoPSJf9hp1fV+ebF0MDwfMO7OGgQgc6sBBisE4H6R1bfqlKQq8O
+         dhQV4dzYEJqKvRgV1dj+Q6i4gu5fp2Us1ZI9BuXNrE5liLW1lKvZv6gyH6quOjO/YZgc
+         yIs/R6uO8Cra9MYiXRchYG4zvj47SLjUmF7lwz57kpMvL8RU42DuiMV6ulwftmFZOnhk
+         l+5Q==
+X-Gm-Message-State: AOJu0YycLhrtnU9MMiKrnzS6BD5bw5b9NnlfEAzj0c7JZOAgpyJcuIxQ
+	h9Z54qrqJxhClrdzH7vTtiK0bg==
+X-Google-Smtp-Source: AGHT+IF/8kAH6WSaFoAlXgXvbtZIbh+14PzCgZkg2HRJkFA743tMpRHGsj+aojf1hvB5AseHFCv+0A==
+X-Received: by 2002:a17:90b:1d0b:b0:286:7ec2:df40 with SMTP id on11-20020a17090b1d0b00b002867ec2df40mr1865362pjb.2.1701947074542;
+        Thu, 07 Dec 2023 03:04:34 -0800 (PST)
 Received: from dhcp-10-192-206-197.iig.avagotech.net.net ([192.19.234.250])
-        by smtp.gmail.com with ESMTPSA id pm2-20020a17090b3c4200b00285db538b17sm1034254pjb.41.2023.12.07.03.04.28
+        by smtp.gmail.com with ESMTPSA id pm2-20020a17090b3c4200b00285db538b17sm1034254pjb.41.2023.12.07.03.04.32
         (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 07 Dec 2023 03:04:31 -0800 (PST)
+        Thu, 07 Dec 2023 03:04:34 -0800 (PST)
 From: Selvin Xavier <selvin.xavier@broadcom.com>
 To: leon@kernel.org,
 	jgg@ziepe.ca
 Cc: linux-rdma@vger.kernel.org,
 	Selvin Xavier <selvin.xavier@broadcom.com>
-Subject: [PATCH for-next 3/6] RDMA/bnxt_re: Update the HW interface definitions
-Date: Thu,  7 Dec 2023 02:47:37 -0800
-Message-Id: <1701946060-13931-4-git-send-email-selvin.xavier@broadcom.com>
+Subject: [PATCH for-next 4/6] RDMA/bnxt_re: Get the toggle bits from CQ completions
+Date: Thu,  7 Dec 2023 02:47:38 -0800
+Message-Id: <1701946060-13931-5-git-send-email-selvin.xavier@broadcom.com>
 X-Mailer: git-send-email 2.5.5
 In-Reply-To: <1701946060-13931-1-git-send-email-selvin.xavier@broadcom.com>
 References: <1701946060-13931-1-git-send-email-selvin.xavier@broadcom.com>
 Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
-	boundary="000000000000a9cea6060be96e95"
+	boundary="000000000000d3c041060be96e16"
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 
---000000000000a9cea6060be96e95
+--000000000000d3c041060be96e16
 
-Adds HW interface definitions to support the new
-chip revision.
+Get the toggle bits from CQ completions. For older adapters
+these values are 0.
 
 Signed-off-by: Selvin Xavier <selvin.xavier@broadcom.com>
 ---
- drivers/infiniband/hw/bnxt_re/roce_hsi.h | 67 +++++++++++++++++++++++++++-----
- 1 file changed, 57 insertions(+), 10 deletions(-)
+ drivers/infiniband/hw/bnxt_re/qplib_fp.c  | 6 ++++++
+ drivers/infiniband/hw/bnxt_re/qplib_fp.h  | 1 +
+ drivers/infiniband/hw/bnxt_re/qplib_res.h | 1 +
+ 3 files changed, 8 insertions(+)
 
-diff --git a/drivers/infiniband/hw/bnxt_re/roce_hsi.h b/drivers/infiniband/hw/bnxt_re/roce_hsi.h
-index 84b5acd..605c946 100644
---- a/drivers/infiniband/hw/bnxt_re/roce_hsi.h
-+++ b/drivers/infiniband/hw/bnxt_re/roce_hsi.h
-@@ -555,7 +555,12 @@ struct cmdq_modify_qp {
- 	__le16	flags;
- 	__le16	cookie;
- 	u8	resp_size;
--	u8	reserved8;
-+	u8	qp_type;
-+	#define CMDQ_MODIFY_QP_QP_TYPE_RC            0x2UL
-+	#define CMDQ_MODIFY_QP_QP_TYPE_UD            0x4UL
-+	#define CMDQ_MODIFY_QP_QP_TYPE_RAW_ETHERTYPE 0x6UL
-+	#define CMDQ_MODIFY_QP_QP_TYPE_GSI           0x7UL
-+	#define CMDQ_MODIFY_QP_QP_TYPE_LAST         CMDQ_MODIFY_QP_QP_TYPE_GSI
- 	__le64	resp_addr;
- 	__le32	modify_mask;
- 	#define CMDQ_MODIFY_QP_MODIFY_MASK_STATE                   0x1UL
-@@ -611,14 +616,12 @@ struct cmdq_modify_qp {
- 	#define CMDQ_MODIFY_QP_NETWORK_TYPE_ROCEV2_IPV6  (0x3UL << 6)
- 	#define CMDQ_MODIFY_QP_NETWORK_TYPE_LAST        CMDQ_MODIFY_QP_NETWORK_TYPE_ROCEV2_IPV6
- 	u8	access;
--	#define CMDQ_MODIFY_QP_ACCESS_REMOTE_ATOMIC_REMOTE_READ_REMOTE_WRITE_LOCAL_WRITE_MASK \
--		0xffUL
--	#define CMDQ_MODIFY_QP_ACCESS_REMOTE_ATOMIC_REMOTE_READ_REMOTE_WRITE_LOCAL_WRITE_SFT	\
--		0
--	#define CMDQ_MODIFY_QP_ACCESS_LOCAL_WRITE	0x1UL
--	#define CMDQ_MODIFY_QP_ACCESS_REMOTE_WRITE	0x2UL
--	#define CMDQ_MODIFY_QP_ACCESS_REMOTE_READ	0x4UL
--	#define CMDQ_MODIFY_QP_ACCESS_REMOTE_ATOMIC	0x8UL
-+	#define CMDQ_MODIFY_QP_ACCESS_REMOTE_ATOMIC_REMOTE_READ_REMOTE_WRITE_LOCAL_WRITE_MASK 0xffUL
-+	#define CMDQ_MODIFY_QP_ACCESS_REMOTE_ATOMIC_REMOTE_READ_REMOTE_WRITE_LOCAL_WRITE_SFT 0
-+	#define CMDQ_MODIFY_QP_ACCESS_LOCAL_WRITE   0x1UL
-+	#define CMDQ_MODIFY_QP_ACCESS_REMOTE_WRITE  0x2UL
-+	#define CMDQ_MODIFY_QP_ACCESS_REMOTE_READ   0x4UL
-+	#define CMDQ_MODIFY_QP_ACCESS_REMOTE_ATOMIC 0x8UL
- 	__le16	pkey;
- 	__le32	qkey;
- 	__le32	dgid[4];
-@@ -673,6 +676,13 @@ struct cmdq_modify_qp {
- 	#define CMDQ_MODIFY_QP_VLAN_PCP_SFT 13
- 	__le64	irrq_addr;
- 	__le64	orrq_addr;
-+	__le32	ext_modify_mask;
-+	#define CMDQ_MODIFY_QP_EXT_MODIFY_MASK_EXT_STATS_CTX     0x1UL
-+	#define CMDQ_MODIFY_QP_EXT_MODIFY_MASK_SCHQ_ID_VALID     0x2UL
-+	__le32	ext_stats_ctx_id;
-+	__le16	schq_id;
-+	__le16	unused_0;
-+	__le32	reserved32;
+diff --git a/drivers/infiniband/hw/bnxt_re/qplib_fp.c b/drivers/infiniband/hw/bnxt_re/qplib_fp.c
+index 1b7e950..177c6c1 100644
+--- a/drivers/infiniband/hw/bnxt_re/qplib_fp.c
++++ b/drivers/infiniband/hw/bnxt_re/qplib_fp.c
+@@ -330,6 +330,9 @@ static void bnxt_qplib_service_nq(struct tasklet_struct *t)
+ 			cq = (struct bnxt_qplib_cq *)(unsigned long)q_handle;
+ 			if (!cq)
+ 				break;
++			cq->toggle = (le16_to_cpu(nqe->info10_type) &
++					NQ_CN_TOGGLE_MASK) >> NQ_CN_TOGGLE_SFT;
++			cq->dbinfo.toggle = cq->toggle;
+ 			bnxt_qplib_armen_db(&cq->dbinfo,
+ 					    DBC_DBC_TYPE_CQ_ARMENA);
+ 			spin_lock_bh(&cq->compl_lock);
+@@ -2124,6 +2127,8 @@ int bnxt_qplib_create_cq(struct bnxt_qplib_res *res, struct bnxt_qplib_cq *cq)
+ 	cq->dbinfo.xid = cq->id;
+ 	cq->dbinfo.db = cq->dpi->dbr;
+ 	cq->dbinfo.priv_db = res->dpi_tbl.priv_db;
++	cq->dbinfo.flags = 0;
++	cq->dbinfo.toggle = 0;
+ 
+ 	bnxt_qplib_armen_db(&cq->dbinfo, DBC_DBC_TYPE_CQ_ARMENA);
+ 
+@@ -3018,6 +3023,7 @@ int bnxt_qplib_poll_cq(struct bnxt_qplib_cq *cq, struct bnxt_qplib_cqe *cqe,
+ 
+ void bnxt_qplib_req_notify_cq(struct bnxt_qplib_cq *cq, u32 arm_type)
+ {
++	cq->dbinfo.toggle = cq->toggle;
+ 	if (arm_type)
+ 		bnxt_qplib_ring_db(&cq->dbinfo, arm_type);
+ 	/* Using cq->arm_state variable to track whether to issue cq handler */
+diff --git a/drivers/infiniband/hw/bnxt_re/qplib_fp.h b/drivers/infiniband/hw/bnxt_re/qplib_fp.h
+index 23c27cb..8a6bea20 100644
+--- a/drivers/infiniband/hw/bnxt_re/qplib_fp.h
++++ b/drivers/infiniband/hw/bnxt_re/qplib_fp.h
+@@ -418,6 +418,7 @@ struct bnxt_qplib_cq {
+ 	bool				resize_in_progress;
+ 	struct bnxt_qplib_sg_info	sg_info;
+ 	u64				cq_handle;
++	u8				toggle;
+ 
+ #define CQ_RESIZE_WAIT_TIME_MS		500
+ 	unsigned long			flags;
+diff --git a/drivers/infiniband/hw/bnxt_re/qplib_res.h b/drivers/infiniband/hw/bnxt_re/qplib_res.h
+index 397846b..7e6d907 100644
+--- a/drivers/infiniband/hw/bnxt_re/qplib_res.h
++++ b/drivers/infiniband/hw/bnxt_re/qplib_res.h
+@@ -190,6 +190,7 @@ struct bnxt_qplib_db_info {
+ 	u32			xid;
+ 	u32			max_slot;
+ 	u32                     flags;
++	u8			toggle;
  };
  
- /* creq_modify_qp_resp (size:128b/16B) */
-@@ -3075,6 +3085,17 @@ struct sq_psn_search_ext {
- 	__le32	reserved32;
- };
- 
-+/* sq_msn_search (size:64b/8B) */
-+struct sq_msn_search {
-+	__le64	start_idx_next_psn_start_psn;
-+	#define SQ_MSN_SEARCH_START_PSN_MASK 0xffffffUL
-+	#define SQ_MSN_SEARCH_START_PSN_SFT 0
-+	#define SQ_MSN_SEARCH_NEXT_PSN_MASK 0xffffff000000ULL
-+	#define SQ_MSN_SEARCH_NEXT_PSN_SFT  24
-+	#define SQ_MSN_SEARCH_START_IDX_MASK 0xffff000000000000ULL
-+	#define SQ_MSN_SEARCH_START_IDX_SFT 48
-+};
-+
- /* sq_send (size:1024b/128B) */
- struct sq_send {
- 	u8	wqe_type;
-@@ -3763,13 +3784,35 @@ struct cq_base {
- 	#define CQ_BASE_CQE_TYPE_RES_UD          (0x2UL << 1)
- 	#define CQ_BASE_CQE_TYPE_RES_RAWETH_QP1  (0x3UL << 1)
- 	#define CQ_BASE_CQE_TYPE_RES_UD_CFA      (0x4UL << 1)
-+	#define CQ_BASE_CQE_TYPE_REQ_V3             (0x8UL << 1)
-+	#define CQ_BASE_CQE_TYPE_RES_RC_V3          (0x9UL << 1)
-+	#define CQ_BASE_CQE_TYPE_RES_UD_V3          (0xaUL << 1)
-+	#define CQ_BASE_CQE_TYPE_RES_RAWETH_QP1_V3  (0xbUL << 1)
-+	#define CQ_BASE_CQE_TYPE_RES_UD_CFA_V3      (0xcUL << 1)
- 	#define CQ_BASE_CQE_TYPE_NO_OP           (0xdUL << 1)
- 	#define CQ_BASE_CQE_TYPE_TERMINAL        (0xeUL << 1)
- 	#define CQ_BASE_CQE_TYPE_CUT_OFF         (0xfUL << 1)
- 	#define CQ_BASE_CQE_TYPE_LAST           CQ_BASE_CQE_TYPE_CUT_OFF
- 	u8	status;
-+	#define CQ_BASE_STATUS_OK                         0x0UL
-+	#define CQ_BASE_STATUS_BAD_RESPONSE_ERR           0x1UL
-+	#define CQ_BASE_STATUS_LOCAL_LENGTH_ERR           0x2UL
-+	#define CQ_BASE_STATUS_HW_LOCAL_LENGTH_ERR        0x3UL
-+	#define CQ_BASE_STATUS_LOCAL_QP_OPERATION_ERR     0x4UL
-+	#define CQ_BASE_STATUS_LOCAL_PROTECTION_ERR       0x5UL
-+	#define CQ_BASE_STATUS_LOCAL_ACCESS_ERROR         0x6UL
-+	#define CQ_BASE_STATUS_MEMORY_MGT_OPERATION_ERR   0x7UL
-+	#define CQ_BASE_STATUS_REMOTE_INVALID_REQUEST_ERR 0x8UL
-+	#define CQ_BASE_STATUS_REMOTE_ACCESS_ERR          0x9UL
-+	#define CQ_BASE_STATUS_REMOTE_OPERATION_ERR       0xaUL
-+	#define CQ_BASE_STATUS_RNR_NAK_RETRY_CNT_ERR      0xbUL
-+	#define CQ_BASE_STATUS_TRANSPORT_RETRY_CNT_ERR    0xcUL
-+	#define CQ_BASE_STATUS_WORK_REQUEST_FLUSHED_ERR   0xdUL
-+	#define CQ_BASE_STATUS_HW_FLUSH_ERR               0xeUL
-+	#define CQ_BASE_STATUS_OVERFLOW_ERR               0xfUL
-+	#define CQ_BASE_STATUS_LAST                      CQ_BASE_STATUS_OVERFLOW_ERR
- 	__le16	reserved16;
--	__le32	reserved32;
-+	__le32	opaque;
- };
- 
- /* cq_req (size:256b/32B) */
-@@ -4384,6 +4427,8 @@ struct cq_cutoff {
- 	#define CQ_CUTOFF_CQE_TYPE_SFT    1
- 	#define CQ_CUTOFF_CQE_TYPE_CUT_OFF  (0xfUL << 1)
- 	#define CQ_CUTOFF_CQE_TYPE_LAST    CQ_CUTOFF_CQE_TYPE_CUT_OFF
-+	#define CQ_CUTOFF_RESIZE_TOGGLE_MASK 0x60UL
-+	#define CQ_CUTOFF_RESIZE_TOGGLE_SFT 5
- 	u8	status;
- 	#define CQ_CUTOFF_STATUS_OK 0x0UL
- 	#define CQ_CUTOFF_STATUS_LAST CQ_CUTOFF_STATUS_OK
-@@ -4435,6 +4480,8 @@ struct nq_srq_event {
- 	#define NQ_SRQ_EVENT_TYPE_SFT      0
- 	#define NQ_SRQ_EVENT_TYPE_SRQ_EVENT  0x32UL
- 	#define NQ_SRQ_EVENT_TYPE_LAST      NQ_SRQ_EVENT_TYPE_SRQ_EVENT
-+	#define NQ_SRQ_EVENT_TOGGLE_MASK   0xc0UL
-+	#define NQ_SRQ_EVENT_TOGGLE_SFT    6
- 	u8	event;
- 	#define NQ_SRQ_EVENT_EVENT_SRQ_THRESHOLD_EVENT 0x1UL
- 	#define NQ_SRQ_EVENT_EVENT_LAST               NQ_SRQ_EVENT_EVENT_SRQ_THRESHOLD_EVENT
+ enum bnxt_qplib_db_info_flags_mask {
 -- 
 2.5.5
 
 
---000000000000a9cea6060be96e95
+--000000000000d3c041060be96e16
 Content-Type: application/pkcs7-signature; name="smime.p7s"
 Content-Transfer-Encoding: base64
 Content-Disposition: attachment; filename="smime.p7s"
@@ -278,15 +209,15 @@ j1Ze9ndr+YDXPpCymOsynmmw0ErHZGGW1OmMpAEt0A+613glWCURLDlP8HONi1wnINV6aDiEf0ad
 9NMGxDsp+YWiRXD3txfo2OMQbpIxM90QfhKKacX8t1J1oAAWxDrLVTJBXBNvz5tr+D1sYwuye93r
 hImmkM1unboxggJtMIICaQIBATBrMFsxCzAJBgNVBAYTAkJFMRkwFwYDVQQKExBHbG9iYWxTaWdu
 IG52LXNhMTEwLwYDVQQDEyhHbG9iYWxTaWduIEdDQyBSMyBQZXJzb25hbFNpZ24gMiBDQSAyMDIw
-Agxy+Cu4x/7lM0zxY7cwDQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIEIPN0nJYRjbS1
-MCDBi/dRMjNKcVb6wNVU+eQyaCEIPAyTMBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZI
-hvcNAQkFMQ8XDTIzMTIwNzExMDQzMlowaQYJKoZIhvcNAQkPMVwwWjALBglghkgBZQMEASowCwYJ
+Agxy+Cu4x/7lM0zxY7cwDQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIEIM7OAiS26GZe
+UsZtG96a6stsWupIrdhEkdG5dWV19p74MBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZI
+hvcNAQkFMQ8XDTIzMTIwNzExMDQzNFowaQYJKoZIhvcNAQkPMVwwWjALBglghkgBZQMEASowCwYJ
 YIZIAWUDBAEWMAsGCWCGSAFlAwQBAjAKBggqhkiG9w0DBzALBgkqhkiG9w0BAQowCwYJKoZIhvcN
-AQEHMAsGCWCGSAFlAwQCATANBgkqhkiG9w0BAQEFAASCAQBu0U1jeO6bLMADmy5K4eWSpd0tOAS4
-Z6Vj5kg/AK7NfpxKyKWWYiuBfAVhTTs+ki+z5KkgM5uERjmOLR97HSjOMQJVwLjKRzn8eI8jr7tA
-iRZJggELHWyUBcjcJxxFNSaG15BB6cYvjscBN90tMfNjRJ3ZFCQXhdoq7zOIte+Am7aXprjJNfgf
-5WeYJBnwldiOf6mNe86H5iwuowCc+MWP1/5RVt8lPcKU3vEJZG9VykIVXoRGHfCBd9INoSe0p0Pb
-HnC4oQjG+TYn0Aku2gAt6hLlbhT5VJ1NhV4fpKVn+ZZtX8w5SQxGzrDmeJPzuojlWNyH8OP/gYgf
-fJWdsnlk
---000000000000a9cea6060be96e95--
+AQEHMAsGCWCGSAFlAwQCATANBgkqhkiG9w0BAQEFAASCAQBWhtkS9FoG8CDqgNE3l6zg1dGESb6a
+yj4OiMYwe/TD2svUPaUS3nx8iZ7r0av0C7wuoxIPD6yYQktQx8Z3tP64GXIu6Sn7ZE/4q/nV9wBo
+NmmYMRxPT4mNoeNblBcJ8RYcjibcEXsT36f9SYTG2cu/cR2dyCGaaLAXtqnUKqW1uQxcxgBtkEcG
+uc93ye863SoTkiWRKaEm4tOCDvQLGyqXrTm/NqduvrTZX4E3O1xEpx5rF5FEROlg3SraZK4v3Sc/
+eNrcd157lCLAvl/V4J/aWDJO3m08KO2LEsMGqf60zBIfA2xDn78kIEpmDY29EDqYn8afpTKTxGRw
+rpIz8Y/3
+--000000000000d3c041060be96e16--
 
