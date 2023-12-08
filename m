@@ -1,272 +1,293 @@
-Return-Path: <linux-rdma+bounces-328-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-329-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8CAA280A350
-	for <lists+linux-rdma@lfdr.de>; Fri,  8 Dec 2023 13:35:22 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9C54880A4D3
+	for <lists+linux-rdma@lfdr.de>; Fri,  8 Dec 2023 14:53:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 446221F21381
-	for <lists+linux-rdma@lfdr.de>; Fri,  8 Dec 2023 12:35:22 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0A2461F21486
+	for <lists+linux-rdma@lfdr.de>; Fri,  8 Dec 2023 13:53:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 26B2F14265;
-	Fri,  8 Dec 2023 12:35:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 37DFA1DA44;
+	Fri,  8 Dec 2023 13:53:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b="FIAXYAdb"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="aptfQnTQ"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTP id AABDD1985;
-	Fri,  8 Dec 2023 04:35:14 -0800 (PST)
-Received: from linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net (linux.microsoft.com [13.77.154.182])
-	by linux.microsoft.com (Postfix) with ESMTPSA id 09A8220B74C0;
-	Fri,  8 Dec 2023 04:35:14 -0800 (PST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 09A8220B74C0
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-	s=default; t=1702038914;
-	bh=7mA0Nk9JABJbzejc00vimgy7KH2zEY/kLfO3nzNRrOU=;
-	h=From:To:Cc:Subject:Date:From;
-	b=FIAXYAdbbG7wXaKNZ9umrETLQ81Gi/K/zSK47IYj1vgWGJ5wPChtLP5AXt23/FtWY
-	 Eed/zyw783mRLv952yR/g0zTgvi2jm0zK+97NfdWxtx/r//fSeEYv89DQ8v0jy0xvl
-	 zz/u6tAppPcxRi7D9M5NaAdHiXObeQokUStsOePs=
-From: Konstantin Taranov <kotaranov@linux.microsoft.com>
-To: kotaranov@microsoft.com,
-	kys@microsoft.com,
-	haiyangz@microsoft.com,
-	wei.liu@kernel.org,
-	kuba@kernel.org,
-	leon@kernel.org,
-	decui@microsoft.com,
-	edumazet@google.com,
-	cai.huoqing@linux.dev,
-	pabeni@redhat.com,
-	davem@davemloft.net,
-	longli@microsoft.com
-Cc: linux-hyperv@vger.kernel.org,
-	netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	linux-rdma@vger.kernel.org
-Subject: [PATCH] net: mana: add msix index sharing between EQs
-Date: Fri,  8 Dec 2023 04:35:05 -0800
-Message-Id: <1702038905-29520-1-git-send-email-kotaranov@linux.microsoft.com>
-X-Mailer: git-send-email 1.8.3.1
+Received: from out-172.mta1.migadu.com (out-172.mta1.migadu.com [95.215.58.172])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 14BEE1BD4
+	for <linux-rdma@vger.kernel.org>; Fri,  8 Dec 2023 05:52:45 -0800 (PST)
+Message-ID: <488bcc6a-2198-4fbc-a12d-329a378d6ea2@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1702043563;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=5Z85trHRZcyPum1HZSsGr24/+U3xUXO7x+86BxCOLa8=;
+	b=aptfQnTQf6gizEkoK/IXpS5wtxyIHLfcyJSexlvep3BJ+eFGXYXtsxcDqj02YGCbqRU4md
+	R6pFz9z0HbM0Sje6yfYUvN/UFPhNZoAoK7jIMz7ZYOxDA9kecQ/cSWGtjmg5EeGzgMSD4N
+	3Q9nWpAPKF4SRqplM0aLnu+wfGEjC9U=
+Date: Fri, 8 Dec 2023 21:52:36 +0800
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+Subject: Re: [PATCH for-next v6 3/7] RDMA/rxe: Register IP mcast address
+To: Bob Pearson <rpearsonhpe@gmail.com>, jgg@nvidia.com,
+ linux-rdma@vger.kernel.org, netdev@vger.kernel.org, dsahern@kernel.org,
+ rain.1986.08.12@gmail.com
+References: <20231207192907.10113-1-rpearsonhpe@gmail.com>
+ <20231207192907.10113-4-rpearsonhpe@gmail.com>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Zhu Yanjun <yanjun.zhu@linux.dev>
+In-Reply-To: <20231207192907.10113-4-rpearsonhpe@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
 
-From: Konstantin Taranov <kotaranov@microsoft.com>
 
-This patch allows to assign and poll more than 1 EQ on the same msix index.
-It is achieved by introducing a list of attached EQs in each IRQ context.
-This patch export symbols for creating EQs from other MANA kernel modules.
+在 2023/12/8 3:29, Bob Pearson 写道:
+> Currently the rdma_rxe driver does not receive mcast packets at all.
+>
+> Add code to rxe_mcast_add() and rxe_mcast_del() to register/deregister
+> the IP mcast address. This is required for mcast traffic to reach the
+> rxe driver when coming from an external source.
+>
+> Fixes: 8700e3e7c485 ("Soft RoCE driver")
+> Signed-off-by: Bob Pearson <rpearsonhpe@gmail.com>
+> ---
+>   drivers/infiniband/sw/rxe/rxe_mcast.c | 119 +++++++++++++++++++++-----
+>   drivers/infiniband/sw/rxe/rxe_net.c   |   2 +-
+>   drivers/infiniband/sw/rxe/rxe_net.h   |   1 +
+>   drivers/infiniband/sw/rxe/rxe_verbs.h |   1 +
+>   4 files changed, 102 insertions(+), 21 deletions(-)
+>
+> diff --git a/drivers/infiniband/sw/rxe/rxe_mcast.c b/drivers/infiniband/sw/rxe/rxe_mcast.c
+> index 86cc2e18a7fd..5236761892dd 100644
+> --- a/drivers/infiniband/sw/rxe/rxe_mcast.c
+> +++ b/drivers/infiniband/sw/rxe/rxe_mcast.c
+> @@ -19,38 +19,116 @@
+>    * mcast packets in the rxe receive path.
+>    */
+>   
+> +#include <linux/igmp.h>
+> +
+>   #include "rxe.h"
+>   
+> -/**
+> - * rxe_mcast_add - add multicast address to rxe device
+> - * @rxe: rxe device object
+> - * @mgid: multicast address as a gid
+> - *
+> - * Returns 0 on success else an error
+> - */
+> -static int rxe_mcast_add(struct rxe_dev *rxe, union ib_gid *mgid)
+> +static int rxe_mcast_add6(struct rxe_dev *rxe, union ib_gid *mgid)
+>   {
+> +	struct in6_addr *addr6 = (struct in6_addr *)mgid;
+> +	struct sock *sk = recv_sockets.sk6->sk;
+>   	unsigned char ll_addr[ETH_ALEN];
+> +	int err;
+> +
+> +	lock_sock(sk);
+> +	rtnl_lock();
+> +	err = ipv6_sock_mc_join(sk, rxe->ndev->ifindex, addr6);
+> +	rtnl_unlock();
+> +	release_sock(sk);
+> +	if (err && err != -EADDRINUSE)
+> +		goto err_out;
+>   
+>   	ipv6_eth_mc_map((struct in6_addr *)mgid->raw, ll_addr);
+> +	err = dev_mc_add(rxe->ndev, ll_addr);
+> +	if (err)
+> +		goto err_drop;
+> +
+> +	return 0;
+>   
+> -	return dev_mc_add(rxe->ndev, ll_addr);
+> +err_drop:
+> +	lock_sock(sk);
+> +	rtnl_lock();
+> +	ipv6_sock_mc_drop(sk, rxe->ndev->ifindex, addr6);
+> +	rtnl_unlock();
+> +	release_sock(sk);
+> +err_out:
+> +	return err;
+>   }
+>   
+> -/**
+> - * rxe_mcast_del - delete multicast address from rxe device
+> - * @rxe: rxe device object
+> - * @mgid: multicast address as a gid
+> - *
+> - * Returns 0 on success else an error
+> - */
+> -static int rxe_mcast_del(struct rxe_dev *rxe, union ib_gid *mgid)
+> +static int rxe_mcast_add(struct rxe_mcg *mcg)
+>   {
+> +	struct rxe_dev *rxe = mcg->rxe;
+> +	union ib_gid *mgid = &mcg->mgid;
+>   	unsigned char ll_addr[ETH_ALEN];
+> +	struct ip_mreqn imr = {};
+> +	int err;
+> +
+> +	if (mcg->is_ipv6)
+> +		return rxe_mcast_add6(rxe, mgid);
+> +
+> +	imr.imr_multiaddr = *(struct in_addr *)(mgid->raw + 12);
+> +	imr.imr_ifindex = rxe->ndev->ifindex;
+> +	rtnl_lock();
+> +	err = ip_mc_join_group(recv_sockets.sk4->sk, &imr);
+> +	rtnl_unlock();
 
-Signed-off-by: Konstantin Taranov <kotaranov@microsoft.com>
----
- .../net/ethernet/microsoft/mana/gdma_main.c   | 55 ++++++++++++++-----
- .../net/ethernet/microsoft/mana/hw_channel.c  |  1 +
- drivers/net/ethernet/microsoft/mana/mana_en.c |  1 +
- include/net/mana/gdma.h                       |  4 +-
- 4 files changed, 45 insertions(+), 16 deletions(-)
+Hi, David Ahern
 
-diff --git a/drivers/net/ethernet/microsoft/mana/gdma_main.c b/drivers/net/ethernet/microsoft/mana/gdma_main.c
-index 6367de0..82a4534 100644
---- a/drivers/net/ethernet/microsoft/mana/gdma_main.c
-+++ b/drivers/net/ethernet/microsoft/mana/gdma_main.c
-@@ -401,6 +401,9 @@ static void mana_gd_process_eq_events(void *arg)
- 	u32 head, num_eqe;
- 	int i;
- 
-+	if (eq->id == INVALID_QUEUE_ID)
-+		return;
-+
- 	gc = eq->gdma_dev->gdma_context;
- 
- 	num_eqe = eq->queue_size / GDMA_EQE_SIZE;
-@@ -414,8 +417,12 @@ static void mana_gd_process_eq_events(void *arg)
- 
- 		old_bits = (eq->head / num_eqe - 1) & GDMA_EQE_OWNER_MASK;
- 		/* No more entries */
--		if (owner_bits == old_bits)
-+		if (owner_bits == old_bits) {
-+			/* return here without ringing the doorbell */
-+			if (i == 0)
-+				return;
- 			break;
-+		}
- 
- 		new_bits = (eq->head / num_eqe) & GDMA_EQE_OWNER_MASK;
- 		if (owner_bits != new_bits) {
-@@ -457,12 +464,16 @@ static int mana_gd_register_irq(struct gdma_queue *queue,
- 
- 	spin_lock_irqsave(&r->lock, flags);
- 
--	msi_index = find_first_zero_bit(r->map, r->size);
-+	if (queue->eq.msix_index == INVALID_PCI_MSIX_INDEX)
-+		queue->eq.msix_index = find_first_zero_bit(r->map, r->size);
-+
-+	msi_index = queue->eq.msix_index;
-+
- 	if (msi_index >= r->size || msi_index >= gc->num_msix_usable) {
- 		err = -ENOSPC;
-+		queue->eq.msix_index = INVALID_PCI_MSIX_INDEX;
- 	} else {
- 		bitmap_set(r->map, msi_index, 1);
--		queue->eq.msix_index = msi_index;
- 	}
- 
- 	spin_unlock_irqrestore(&r->lock, flags);
-@@ -476,9 +487,7 @@ static int mana_gd_register_irq(struct gdma_queue *queue,
- 
- 	gic = &gc->irq_contexts[msi_index];
- 
--	WARN_ON(gic->handler || gic->arg);
--
--	gic->arg = queue;
-+	list_add_rcu(&queue->entry, &gic->eq_list);
- 
- 	gic->handler = mana_gd_process_eq_events;
- 
-@@ -493,6 +502,7 @@ static void mana_gd_deregiser_irq(struct gdma_queue *queue)
- 	struct gdma_resource *r;
- 	unsigned int msix_index;
- 	unsigned long flags;
-+	struct gdma_queue *eq;
- 
- 	gc = gd->gdma_context;
- 	r = &gc->msix_resource;
-@@ -502,12 +512,19 @@ static void mana_gd_deregiser_irq(struct gdma_queue *queue)
- 	if (WARN_ON(msix_index >= gc->num_msix_usable))
- 		return;
- 
--	gic = &gc->irq_contexts[msix_index];
--	gic->handler = NULL;
--	gic->arg = NULL;
--
- 	spin_lock_irqsave(&r->lock, flags);
--	bitmap_clear(r->map, msix_index, 1);
-+	gic = &gc->irq_contexts[msix_index];
-+	list_for_each_entry_rcu(eq, &gic->eq_list, entry) {
-+		if (queue == eq) {
-+			list_del_rcu(&eq->entry);
-+			synchronize_rcu();
-+			break;
-+		}
-+	}
-+	if (list_empty(&gic->eq_list)) {
-+		gic->handler = NULL;
-+		bitmap_clear(r->map, msix_index, 1);
-+	}
- 	spin_unlock_irqrestore(&r->lock, flags);
- 
- 	queue->eq.msix_index = INVALID_PCI_MSIX_INDEX;
-@@ -587,7 +604,8 @@ static int mana_gd_create_eq(struct gdma_dev *gd,
- 	u32 log2_num_entries;
- 	int err;
- 
--	queue->eq.msix_index = INVALID_PCI_MSIX_INDEX;
-+	queue->eq.msix_index = spec->eq.msix_index;
-+	queue->id = INVALID_QUEUE_ID;
- 
- 	log2_num_entries = ilog2(queue->queue_size / GDMA_EQE_SIZE);
- 
-@@ -819,6 +837,7 @@ free_q:
- 	kfree(queue);
- 	return err;
- }
-+EXPORT_SYMBOL_NS(mana_gd_create_mana_eq, NET_MANA);
- 
- int mana_gd_create_mana_wq_cq(struct gdma_dev *gd,
- 			      const struct gdma_queue_spec *spec,
-@@ -895,6 +914,7 @@ void mana_gd_destroy_queue(struct gdma_context *gc, struct gdma_queue *queue)
- 	mana_gd_free_memory(gmi);
- 	kfree(queue);
- }
-+EXPORT_SYMBOL_NS(mana_gd_destroy_queue, NET_MANA);
- 
- int mana_gd_verify_vf_version(struct pci_dev *pdev)
- {
-@@ -1217,9 +1237,14 @@ int mana_gd_poll_cq(struct gdma_queue *cq, struct gdma_comp *comp, int num_cqe)
- static irqreturn_t mana_gd_intr(int irq, void *arg)
- {
- 	struct gdma_irq_context *gic = arg;
-+	struct list_head *eq_list = &gic->eq_list;
-+	struct gdma_queue *eq;
- 
--	if (gic->handler)
--		gic->handler(gic->arg);
-+	if (gic->handler) {
-+		list_for_each_entry_rcu(eq, eq_list, entry) {
-+			gic->handler(eq);
-+		}
-+	}
- 
- 	return IRQ_HANDLED;
- }
-@@ -1272,7 +1297,7 @@ static int mana_gd_setup_irqs(struct pci_dev *pdev)
- 	for (i = 0; i < nvec; i++) {
- 		gic = &gc->irq_contexts[i];
- 		gic->handler = NULL;
--		gic->arg = NULL;
-+		INIT_LIST_HEAD(&gic->eq_list);
- 
- 		if (!i)
- 			snprintf(gic->name, MANA_IRQ_NAME_SZ, "mana_hwc@pci:%s",
-diff --git a/drivers/net/ethernet/microsoft/mana/hw_channel.c b/drivers/net/ethernet/microsoft/mana/hw_channel.c
-index 9d1cd3b..0a5fc39 100644
---- a/drivers/net/ethernet/microsoft/mana/hw_channel.c
-+++ b/drivers/net/ethernet/microsoft/mana/hw_channel.c
-@@ -300,6 +300,7 @@ static int mana_hwc_create_gdma_eq(struct hw_channel_context *hwc,
- 	spec.eq.context = ctx;
- 	spec.eq.callback = cb;
- 	spec.eq.log2_throttle_limit = DEFAULT_LOG2_THROTTLING_FOR_ERROR_EQ;
-+	spec.eq.msix_index = INVALID_PCI_MSIX_INDEX;
- 
- 	return mana_gd_create_hwc_queue(hwc->gdma_dev, &spec, queue);
- }
-diff --git a/drivers/net/ethernet/microsoft/mana/mana_en.c b/drivers/net/ethernet/microsoft/mana/mana_en.c
-index fc3d290..8718c04 100644
---- a/drivers/net/ethernet/microsoft/mana/mana_en.c
-+++ b/drivers/net/ethernet/microsoft/mana/mana_en.c
-@@ -1242,6 +1242,7 @@ static int mana_create_eq(struct mana_context *ac)
- 	spec.eq.callback = NULL;
- 	spec.eq.context = ac->eqs;
- 	spec.eq.log2_throttle_limit = LOG2_EQ_THROTTLE;
-+	spec.eq.msix_index = INVALID_PCI_MSIX_INDEX;
- 
- 	for (i = 0; i < gc->max_num_queues; i++) {
- 		err = mana_gd_create_mana_eq(gd, &spec, &ac->eqs[i].eq);
-diff --git a/include/net/mana/gdma.h b/include/net/mana/gdma.h
-index 88b6ef7..8d6569d 100644
---- a/include/net/mana/gdma.h
-+++ b/include/net/mana/gdma.h
-@@ -293,6 +293,7 @@ struct gdma_queue {
- 
- 	u32 head;
- 	u32 tail;
-+	struct list_head entry;
- 
- 	/* Extra fields specific to EQ/CQ. */
- 	union {
-@@ -328,6 +329,7 @@ struct gdma_queue_spec {
- 			void *context;
- 
- 			unsigned long log2_throttle_limit;
-+			unsigned int msix_index;
- 		} eq;
- 
- 		struct {
-@@ -344,7 +346,7 @@ struct gdma_queue_spec {
- 
- struct gdma_irq_context {
- 	void (*handler)(void *arg);
--	void *arg;
-+	struct list_head eq_list;
- 	char name[MANA_IRQ_NAME_SZ];
- };
- 
--- 
-2.43.0
+About the functions ip_mc_join_group, ipv6_sock_mc_drop, 
+ipv6_sock_mc_drop and ip_mc_leave_group,
 
+Can you share your advice about them?
+
+In the following, lock_sock is used. Can you help us to check them?
+
+./net/ipv4/devinet.c-634-       lock_sock(sk);
+
+./net/ipv4/devinet.c-635-       if (join)
+./net/ipv4/devinet.c:636:               ret = ip_mc_join_group(sk, &mreq);
+./net/ipv4/devinet.c-637-       else
+./net/ipv4/devinet.c-638-               ret = ip_mc_leave_group(sk, &mreq);
+./net/ipv4/devinet.c-639-       release_sock(sk);
+
+Thanks a lot.
+
+Zhu Yanjun
+
+> +	if (err && err != -EADDRINUSE)
+> +		goto err_out;
+> +
+> +	ip_eth_mc_map(imr.imr_multiaddr.s_addr, ll_addr);
+> +	err = dev_mc_add(rxe->ndev, ll_addr);
+> +	if (err)
+> +		goto err_leave;
+> +
+> +	return 0;
+> +
+> +err_leave:
+> +	rtnl_lock();
+> +	ip_mc_leave_group(recv_sockets.sk4->sk, &imr);
+> +	rtnl_unlock();
+> +err_out:
+> +	return err;
+> +}
+> +
+> +static int rxe_mcast_del6(struct rxe_dev *rxe, union ib_gid *mgid)
+> +{
+> +	struct sock *sk = recv_sockets.sk6->sk;
+> +	unsigned char ll_addr[ETH_ALEN];
+> +	int err, err2;
+>   
+>   	ipv6_eth_mc_map((struct in6_addr *)mgid->raw, ll_addr);
+> +	err = dev_mc_del(rxe->ndev, ll_addr);
+> +
+> +	lock_sock(sk);
+> +	rtnl_lock();
+> +	err2 = ipv6_sock_mc_drop(sk, rxe->ndev->ifindex,
+> +			(struct in6_addr *)mgid);
+> +	rtnl_unlock();
+> +	release_sock(sk);
+> +
+> +	return err ?: err2;
+> +}
+> +
+> +static int rxe_mcast_del(struct rxe_mcg *mcg)
+> +{
+> +	struct rxe_dev *rxe = mcg->rxe;
+> +	union ib_gid *mgid = &mcg->mgid;
+> +	unsigned char ll_addr[ETH_ALEN];
+> +	struct ip_mreqn imr = {};
+> +	int err, err2;
+> +
+> +	if (mcg->is_ipv6)
+> +		return rxe_mcast_del6(rxe, mgid);
+> +
+> +	imr.imr_multiaddr = *(struct in_addr *)(mgid->raw + 12);
+> +	imr.imr_ifindex = rxe->ndev->ifindex;
+> +	ip_eth_mc_map(imr.imr_multiaddr.s_addr, ll_addr);
+> +	err = dev_mc_del(rxe->ndev, ll_addr);
+> +
+> +	rtnl_lock();
+> +	err2 = ip_mc_leave_group(recv_sockets.sk4->sk, &imr);
+> +	rtnl_unlock();
+>   
+> -	return dev_mc_del(rxe->ndev, ll_addr);
+> +	return err ?: err2;
+>   }
+>   
+>   /**
+> @@ -164,6 +242,7 @@ static void __rxe_init_mcg(struct rxe_dev *rxe, union ib_gid *mgid,
+>   {
+>   	kref_init(&mcg->ref_cnt);
+>   	memcpy(&mcg->mgid, mgid, sizeof(mcg->mgid));
+> +	mcg->is_ipv6 = !ipv6_addr_v4mapped((struct in6_addr *)mgid);
+>   	INIT_LIST_HEAD(&mcg->qp_list);
+>   	mcg->rxe = rxe;
+>   
+> @@ -225,7 +304,7 @@ static struct rxe_mcg *rxe_get_mcg(struct rxe_dev *rxe, union ib_gid *mgid)
+>   	spin_unlock_bh(&rxe->mcg_lock);
+>   
+>   	/* add mcast address outside of lock */
+> -	err = rxe_mcast_add(rxe, mgid);
+> +	err = rxe_mcast_add(mcg);
+>   	if (!err)
+>   		return mcg;
+>   
+> @@ -273,7 +352,7 @@ static void __rxe_destroy_mcg(struct rxe_mcg *mcg)
+>   static void rxe_destroy_mcg(struct rxe_mcg *mcg)
+>   {
+>   	/* delete mcast address outside of lock */
+> -	rxe_mcast_del(mcg->rxe, &mcg->mgid);
+> +	rxe_mcast_del(mcg);
+>   
+>   	spin_lock_bh(&mcg->rxe->mcg_lock);
+>   	__rxe_destroy_mcg(mcg);
+> diff --git a/drivers/infiniband/sw/rxe/rxe_net.c b/drivers/infiniband/sw/rxe/rxe_net.c
+> index 58c3f3759bf0..b481f8da2002 100644
+> --- a/drivers/infiniband/sw/rxe/rxe_net.c
+> +++ b/drivers/infiniband/sw/rxe/rxe_net.c
+> @@ -18,7 +18,7 @@
+>   #include "rxe_net.h"
+>   #include "rxe_loc.h"
+>   
+> -static struct rxe_recv_sockets recv_sockets;
+> +struct rxe_recv_sockets recv_sockets;
+>   
+>   static struct dst_entry *rxe_find_route4(struct rxe_qp *qp,
+>   					 struct net_device *ndev,
+> diff --git a/drivers/infiniband/sw/rxe/rxe_net.h b/drivers/infiniband/sw/rxe/rxe_net.h
+> index 45d80d00f86b..89cee7d5340f 100644
+> --- a/drivers/infiniband/sw/rxe/rxe_net.h
+> +++ b/drivers/infiniband/sw/rxe/rxe_net.h
+> @@ -15,6 +15,7 @@ struct rxe_recv_sockets {
+>   	struct socket *sk4;
+>   	struct socket *sk6;
+>   };
+> +extern struct rxe_recv_sockets recv_sockets;
+>   
+>   int rxe_net_add(const char *ibdev_name, struct net_device *ndev);
+>   
+> diff --git a/drivers/infiniband/sw/rxe/rxe_verbs.h b/drivers/infiniband/sw/rxe/rxe_verbs.h
+> index ccb9d19ffe8a..7be9e6232dd9 100644
+> --- a/drivers/infiniband/sw/rxe/rxe_verbs.h
+> +++ b/drivers/infiniband/sw/rxe/rxe_verbs.h
+> @@ -352,6 +352,7 @@ struct rxe_mcg {
+>   	atomic_t		qp_num;
+>   	u32			qkey;
+>   	u16			pkey;
+> +	bool			is_ipv6;
+>   };
+>   
+>   struct rxe_mca {
 
