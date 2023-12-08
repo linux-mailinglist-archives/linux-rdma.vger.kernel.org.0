@@ -1,293 +1,263 @@
-Return-Path: <linux-rdma+bounces-329-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-330-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9C54880A4D3
-	for <lists+linux-rdma@lfdr.de>; Fri,  8 Dec 2023 14:53:09 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id E005480A511
+	for <lists+linux-rdma@lfdr.de>; Fri,  8 Dec 2023 15:03:50 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0A2461F21486
-	for <lists+linux-rdma@lfdr.de>; Fri,  8 Dec 2023 13:53:09 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9220028182D
+	for <lists+linux-rdma@lfdr.de>; Fri,  8 Dec 2023 14:03:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 37DFA1DA44;
-	Fri,  8 Dec 2023 13:53:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 18DD81DDCD;
+	Fri,  8 Dec 2023 14:03:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="aptfQnTQ"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="fOm59JhL"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from out-172.mta1.migadu.com (out-172.mta1.migadu.com [95.215.58.172])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 14BEE1BD4
-	for <linux-rdma@vger.kernel.org>; Fri,  8 Dec 2023 05:52:45 -0800 (PST)
-Message-ID: <488bcc6a-2198-4fbc-a12d-329a378d6ea2@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1702043563;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=5Z85trHRZcyPum1HZSsGr24/+U3xUXO7x+86BxCOLa8=;
-	b=aptfQnTQf6gizEkoK/IXpS5wtxyIHLfcyJSexlvep3BJ+eFGXYXtsxcDqj02YGCbqRU4md
-	R6pFz9z0HbM0Sje6yfYUvN/UFPhNZoAoK7jIMz7ZYOxDA9kecQ/cSWGtjmg5EeGzgMSD4N
-	3Q9nWpAPKF4SRqplM0aLnu+wfGEjC9U=
-Date: Fri, 8 Dec 2023 21:52:36 +0800
+Received: from mail-yw1-x1130.google.com (mail-yw1-x1130.google.com [IPv6:2607:f8b0:4864:20::1130])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 81A48F9;
+	Fri,  8 Dec 2023 06:03:41 -0800 (PST)
+Received: by mail-yw1-x1130.google.com with SMTP id 00721157ae682-5d7346442d4so20489317b3.2;
+        Fri, 08 Dec 2023 06:03:41 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1702044220; x=1702649020; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=Vq1VOSqoVjxWvcT4zuInZBLiz41JyrThxjwY/ZgTFVU=;
+        b=fOm59JhL+2qGq1LVM/oE7xTxCeolcamuek9FFvbLaWLe4NVCqnHOaiVQhKQzAbVsoO
+         8IOmOPOlq7Q0yht44wUKi4kNMwRPC4DLYD2C08HJLcUUQobnJAyyGtSHxMpOxS1sEPez
+         JvF0VliM4q4O0OtjjEOdCIHczQnwk+yJXMLRQqox/fX005f5MujtxgNX8ehpSzD69pm3
+         3OrsaUzHggAftxtzzQOwUXB25F0DMBVfmICKfwkN+uqqDfdOXg3W8pR77Yz0Ul2owgNp
+         as4i3JA9fNIo7Z8lhE/91GSA3k1PqeP5deuzdKeVAcQdnihO1tO4swsWNS8MqHtY0II2
+         m/zw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702044220; x=1702649020;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Vq1VOSqoVjxWvcT4zuInZBLiz41JyrThxjwY/ZgTFVU=;
+        b=vghIf+iSQPkZp/iD9ZbzF5dwrkjw/2Xg8igEnM78VBLrp+CKqzfD7ns4d4o/+Aahit
+         MMgOekHIMHE1Tif1hCFULeNozUXWjrRNHYxFqsrtiyHM6SJpt92rfr5FlEAYwh1H7gyJ
+         uBH1IO8KljYaFAlmF1d/qDQZpEWfev0tTupINxK02U8WfqTrRCuxA3ec5kcAlrFYD0Pr
+         1u3u05D/cVnvvoKPPZjQewRDh2dQoeyAzLLv4WlAvNIDT0GsANjZR6YEuS9xsmpoapSs
+         IMIMyuJRbuK2us3SmpqQ61klGSSu3L4xuymKypTFscHWheTuj4DVnMkyl7FhwY3fxMl8
+         FWjg==
+X-Gm-Message-State: AOJu0YyFUbZPMjRajwIs3MI0JBOQOIA5+lbDzuHdXEzyXH5hh/wt22vG
+	+FpqJmaP5Iz1brAYyTOh4xw=
+X-Google-Smtp-Source: AGHT+IFZPGq/PPeI2SQ4w5pXqgaG1TPzCcDB20LoxYTWV05p7WatZaKHyKzuZMA8VTYLe7M1JHSKGw==
+X-Received: by 2002:a81:4990:0:b0:5d7:1941:3579 with SMTP id w138-20020a814990000000b005d719413579mr3614832ywa.96.1702044220488;
+        Fri, 08 Dec 2023 06:03:40 -0800 (PST)
+Received: from localhost ([2601:344:8301:57f0:cd3e:7dc3:93ad:7de2])
+        by smtp.gmail.com with ESMTPSA id o130-20020a0dcc88000000b005d392d15725sm676865ywd.94.2023.12.08.06.03.39
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 08 Dec 2023 06:03:40 -0800 (PST)
+Date: Fri, 8 Dec 2023 06:03:39 -0800
+From: Yury Norov <yury.norov@gmail.com>
+To: Souradeep Chakrabarti <schakrabarti@linux.microsoft.com>
+Cc: kys@microsoft.com, haiyangz@microsoft.com, wei.liu@kernel.org,
+	decui@microsoft.com, davem@davemloft.net, edumazet@google.com,
+	kuba@kernel.org, pabeni@redhat.com, longli@microsoft.com,
+	leon@kernel.org, cai.huoqing@linux.dev, ssengar@linux.microsoft.com,
+	vkuznets@redhat.com, tglx@linutronix.de,
+	linux-hyperv@vger.kernel.org, netdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
+	schakrabarti@microsoft.com, paulros@microsoft.com
+Subject: Re: [PATCH V5 net-next] net: mana: Assigning IRQ affinity on HT cores
+Message-ID: <ZXMiOwK3sOJNXHxd@yury-ThinkPad>
+References: <1702029754-6520-1-git-send-email-schakrabarti@linux.microsoft.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH for-next v6 3/7] RDMA/rxe: Register IP mcast address
-To: Bob Pearson <rpearsonhpe@gmail.com>, jgg@nvidia.com,
- linux-rdma@vger.kernel.org, netdev@vger.kernel.org, dsahern@kernel.org,
- rain.1986.08.12@gmail.com
-References: <20231207192907.10113-1-rpearsonhpe@gmail.com>
- <20231207192907.10113-4-rpearsonhpe@gmail.com>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Zhu Yanjun <yanjun.zhu@linux.dev>
-In-Reply-To: <20231207192907.10113-4-rpearsonhpe@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1702029754-6520-1-git-send-email-schakrabarti@linux.microsoft.com>
 
+On Fri, Dec 08, 2023 at 02:02:34AM -0800, Souradeep Chakrabarti wrote:
+> Existing MANA design assigns IRQ to every CPU, including sibling
+> hyper-threads. This may cause multiple IRQs to be active simultaneously
+> in the same core and may reduce the network performance with RSS.
 
-在 2023/12/8 3:29, Bob Pearson 写道:
-> Currently the rdma_rxe driver does not receive mcast packets at all.
->
-> Add code to rxe_mcast_add() and rxe_mcast_del() to register/deregister
-> the IP mcast address. This is required for mcast traffic to reach the
-> rxe driver when coming from an external source.
->
-> Fixes: 8700e3e7c485 ("Soft RoCE driver")
-> Signed-off-by: Bob Pearson <rpearsonhpe@gmail.com>
+Can you add an IRQ distribution diagram to compare before/after
+behavior, similarly to what I did in the other email?
+
+> Improve the performance by assigning IRQ to non sibling CPUs in local
+> NUMA node. The performance improvement we are getting using ntttcp with
+> following patch is around 15 percent with existing design and approximately
+> 11 percent, when trying to assign one IRQ in each core across NUMA nodes,
+> if enough cores are present.
+
+How did you measure it? In the other email you said you used perf, can
+you show your procedure in details?
+
+> Suggested-by: Yury Norov <yury.norov@gmali.com>
+> Signed-off-by: Souradeep Chakrabarti <schakrabarti@linux.microsoft.com>
 > ---
->   drivers/infiniband/sw/rxe/rxe_mcast.c | 119 +++++++++++++++++++++-----
->   drivers/infiniband/sw/rxe/rxe_net.c   |   2 +-
->   drivers/infiniband/sw/rxe/rxe_net.h   |   1 +
->   drivers/infiniband/sw/rxe/rxe_verbs.h |   1 +
->   4 files changed, 102 insertions(+), 21 deletions(-)
->
-> diff --git a/drivers/infiniband/sw/rxe/rxe_mcast.c b/drivers/infiniband/sw/rxe/rxe_mcast.c
-> index 86cc2e18a7fd..5236761892dd 100644
-> --- a/drivers/infiniband/sw/rxe/rxe_mcast.c
-> +++ b/drivers/infiniband/sw/rxe/rxe_mcast.c
-> @@ -19,38 +19,116 @@
->    * mcast packets in the rxe receive path.
->    */
->   
-> +#include <linux/igmp.h>
+
+[...]
+
+>  .../net/ethernet/microsoft/mana/gdma_main.c   | 92 +++++++++++++++++--
+>  1 file changed, 83 insertions(+), 9 deletions(-)
+> 
+> diff --git a/drivers/net/ethernet/microsoft/mana/gdma_main.c b/drivers/net/ethernet/microsoft/mana/gdma_main.c
+> index 6367de0c2c2e..18e8908c5d29 100644
+> --- a/drivers/net/ethernet/microsoft/mana/gdma_main.c
+> +++ b/drivers/net/ethernet/microsoft/mana/gdma_main.c
+> @@ -1243,15 +1243,56 @@ void mana_gd_free_res_map(struct gdma_resource *r)
+>  	r->size = 0;
+>  }
+>  
+> +static int irq_setup(int *irqs, int nvec, int start_numa_node)
+> +{
+> +	int w, cnt, cpu, err = 0, i = 0;
+> +	int next_node = start_numa_node;
+
+What for this?
+
+> +	const struct cpumask *next, *prev = cpu_none_mask;
+> +	cpumask_var_t curr, cpus;
 > +
->   #include "rxe.h"
->   
-> -/**
-> - * rxe_mcast_add - add multicast address to rxe device
-> - * @rxe: rxe device object
-> - * @mgid: multicast address as a gid
-> - *
-> - * Returns 0 on success else an error
-> - */
-> -static int rxe_mcast_add(struct rxe_dev *rxe, union ib_gid *mgid)
-> +static int rxe_mcast_add6(struct rxe_dev *rxe, union ib_gid *mgid)
->   {
-> +	struct in6_addr *addr6 = (struct in6_addr *)mgid;
-> +	struct sock *sk = recv_sockets.sk6->sk;
->   	unsigned char ll_addr[ETH_ALEN];
-> +	int err;
+> +	if (!zalloc_cpumask_var(&curr, GFP_KERNEL)) {
+> +		err = -ENOMEM;
+> +		return err;
+> +	}
+> +	if (!zalloc_cpumask_var(&cpus, GFP_KERNEL)) {
+
+                free(curr);
+
+> +		err = -ENOMEM;
+> +		return err;
+> +	}
 > +
-> +	lock_sock(sk);
-> +	rtnl_lock();
-> +	err = ipv6_sock_mc_join(sk, rxe->ndev->ifindex, addr6);
-> +	rtnl_unlock();
-> +	release_sock(sk);
-> +	if (err && err != -EADDRINUSE)
-> +		goto err_out;
->   
->   	ipv6_eth_mc_map((struct in6_addr *)mgid->raw, ll_addr);
-> +	err = dev_mc_add(rxe->ndev, ll_addr);
-> +	if (err)
-> +		goto err_drop;
-> +
-> +	return 0;
->   
-> -	return dev_mc_add(rxe->ndev, ll_addr);
-> +err_drop:
-> +	lock_sock(sk);
-> +	rtnl_lock();
-> +	ipv6_sock_mc_drop(sk, rxe->ndev->ifindex, addr6);
-> +	rtnl_unlock();
-> +	release_sock(sk);
-> +err_out:
-> +	return err;
->   }
->   
-> -/**
-> - * rxe_mcast_del - delete multicast address from rxe device
-> - * @rxe: rxe device object
-> - * @mgid: multicast address as a gid
-> - *
-> - * Returns 0 on success else an error
-> - */
-> -static int rxe_mcast_del(struct rxe_dev *rxe, union ib_gid *mgid)
-> +static int rxe_mcast_add(struct rxe_mcg *mcg)
->   {
-> +	struct rxe_dev *rxe = mcg->rxe;
-> +	union ib_gid *mgid = &mcg->mgid;
->   	unsigned char ll_addr[ETH_ALEN];
-> +	struct ip_mreqn imr = {};
-> +	int err;
-> +
-> +	if (mcg->is_ipv6)
-> +		return rxe_mcast_add6(rxe, mgid);
-> +
-> +	imr.imr_multiaddr = *(struct in_addr *)(mgid->raw + 12);
-> +	imr.imr_ifindex = rxe->ndev->ifindex;
-> +	rtnl_lock();
-> +	err = ip_mc_join_group(recv_sockets.sk4->sk, &imr);
-> +	rtnl_unlock();
+> +	rcu_read_lock();
+> +	for_each_numa_hop_mask(next, next_node) {
+> +		cpumask_andnot(curr, next, prev);
+> +		for (w = cpumask_weight(curr), cnt = 0; cnt < w; ) {
+> +			cpumask_copy(cpus, curr);
+> +			for_each_cpu(cpu, cpus) {
+> +				irq_set_affinity_and_hint(irqs[i], topology_sibling_cpumask(cpu));
+> +				if (++i == nvec)
+> +					goto done;
 
-Hi, David Ahern
+Think what if you're passed with irq_setup(NULL, 0, 0).
+That's why I suggested to place this check at the beginning.
 
-About the functions ip_mc_join_group, ipv6_sock_mc_drop, 
-ipv6_sock_mc_drop and ip_mc_leave_group,
 
-Can you share your advice about them?
-
-In the following, lock_sock is used. Can you help us to check them?
-
-./net/ipv4/devinet.c-634-       lock_sock(sk);
-
-./net/ipv4/devinet.c-635-       if (join)
-./net/ipv4/devinet.c:636:               ret = ip_mc_join_group(sk, &mreq);
-./net/ipv4/devinet.c-637-       else
-./net/ipv4/devinet.c-638-               ret = ip_mc_leave_group(sk, &mreq);
-./net/ipv4/devinet.c-639-       release_sock(sk);
-
-Thanks a lot.
-
-Zhu Yanjun
-
-> +	if (err && err != -EADDRINUSE)
-> +		goto err_out;
-> +
-> +	ip_eth_mc_map(imr.imr_multiaddr.s_addr, ll_addr);
-> +	err = dev_mc_add(rxe->ndev, ll_addr);
-> +	if (err)
-> +		goto err_leave;
-> +
-> +	return 0;
-> +
-> +err_leave:
-> +	rtnl_lock();
-> +	ip_mc_leave_group(recv_sockets.sk4->sk, &imr);
-> +	rtnl_unlock();
-> +err_out:
+> +				cpumask_andnot(cpus, cpus, topology_sibling_cpumask(cpu));
+> +				++cnt;
+> +			}
+> +		}
+> +		prev = next;
+> +	}
+> +done:
+> +	rcu_read_unlock();
+> +	free_cpumask_var(curr);
+> +	free_cpumask_var(cpus);
 > +	return err;
 > +}
 > +
-> +static int rxe_mcast_del6(struct rxe_dev *rxe, union ib_gid *mgid)
-> +{
-> +	struct sock *sk = recv_sockets.sk6->sk;
-> +	unsigned char ll_addr[ETH_ALEN];
-> +	int err, err2;
->   
->   	ipv6_eth_mc_map((struct in6_addr *)mgid->raw, ll_addr);
-> +	err = dev_mc_del(rxe->ndev, ll_addr);
+>  static int mana_gd_setup_irqs(struct pci_dev *pdev)
+>  {
+> -	unsigned int max_queues_per_port = num_online_cpus();
+>  	struct gdma_context *gc = pci_get_drvdata(pdev);
+> +	unsigned int max_queues_per_port;
+>  	struct gdma_irq_context *gic;
+>  	unsigned int max_irqs, cpu;
+> -	int nvec, irq;
+> +	int start_irq_index = 1;
+> +	int nvec, *irqs, irq;
+>  	int err, i = 0, j;
+>  
+> +	cpus_read_lock();
+> +	max_queues_per_port = num_online_cpus();
+>  	if (max_queues_per_port > MANA_MAX_NUM_QUEUES)
+>  		max_queues_per_port = MANA_MAX_NUM_QUEUES;
+>  
+> @@ -1261,6 +1302,14 @@ static int mana_gd_setup_irqs(struct pci_dev *pdev)
+>  	nvec = pci_alloc_irq_vectors(pdev, 2, max_irqs, PCI_IRQ_MSIX);
+>  	if (nvec < 0)
+>  		return nvec;
+> +	if (nvec <= num_online_cpus())
+> +		start_irq_index = 0;
 > +
-> +	lock_sock(sk);
-> +	rtnl_lock();
-> +	err2 = ipv6_sock_mc_drop(sk, rxe->ndev->ifindex,
-> +			(struct in6_addr *)mgid);
-> +	rtnl_unlock();
-> +	release_sock(sk);
+> +	irqs = kmalloc_array((nvec - start_irq_index), sizeof(int), GFP_KERNEL);
+> +	if (!irqs) {
+> +		err = -ENOMEM;
+> +		goto free_irq_vector;
+> +	}
+>  
+>  	gc->irq_contexts = kcalloc(nvec, sizeof(struct gdma_irq_context),
+>  				   GFP_KERNEL);
+> @@ -1287,21 +1336,44 @@ static int mana_gd_setup_irqs(struct pci_dev *pdev)
+>  			goto free_irq;
+>  		}
+>  
+> -		err = request_irq(irq, mana_gd_intr, 0, gic->name, gic);
+> -		if (err)
+> -			goto free_irq;
+> -
+> -		cpu = cpumask_local_spread(i, gc->numa_node);
+> -		irq_set_affinity_and_hint(irq, cpumask_of(cpu));
+> +		if (!i) {
+> +			err = request_irq(irq, mana_gd_intr, 0, gic->name, gic);
+> +			if (err)
+> +				goto free_irq;
 > +
-> +	return err ?: err2;
-> +}
-> +
-> +static int rxe_mcast_del(struct rxe_mcg *mcg)
-> +{
-> +	struct rxe_dev *rxe = mcg->rxe;
-> +	union ib_gid *mgid = &mcg->mgid;
-> +	unsigned char ll_addr[ETH_ALEN];
-> +	struct ip_mreqn imr = {};
-> +	int err, err2;
-> +
-> +	if (mcg->is_ipv6)
-> +		return rxe_mcast_del6(rxe, mgid);
-> +
-> +	imr.imr_multiaddr = *(struct in_addr *)(mgid->raw + 12);
-> +	imr.imr_ifindex = rxe->ndev->ifindex;
-> +	ip_eth_mc_map(imr.imr_multiaddr.s_addr, ll_addr);
-> +	err = dev_mc_del(rxe->ndev, ll_addr);
-> +
-> +	rtnl_lock();
-> +	err2 = ip_mc_leave_group(recv_sockets.sk4->sk, &imr);
-> +	rtnl_unlock();
->   
-> -	return dev_mc_del(rxe->ndev, ll_addr);
-> +	return err ?: err2;
->   }
->   
->   /**
-> @@ -164,6 +242,7 @@ static void __rxe_init_mcg(struct rxe_dev *rxe, union ib_gid *mgid,
->   {
->   	kref_init(&mcg->ref_cnt);
->   	memcpy(&mcg->mgid, mgid, sizeof(mcg->mgid));
-> +	mcg->is_ipv6 = !ipv6_addr_v4mapped((struct in6_addr *)mgid);
->   	INIT_LIST_HEAD(&mcg->qp_list);
->   	mcg->rxe = rxe;
->   
-> @@ -225,7 +304,7 @@ static struct rxe_mcg *rxe_get_mcg(struct rxe_dev *rxe, union ib_gid *mgid)
->   	spin_unlock_bh(&rxe->mcg_lock);
->   
->   	/* add mcast address outside of lock */
-> -	err = rxe_mcast_add(rxe, mgid);
-> +	err = rxe_mcast_add(mcg);
->   	if (!err)
->   		return mcg;
->   
-> @@ -273,7 +352,7 @@ static void __rxe_destroy_mcg(struct rxe_mcg *mcg)
->   static void rxe_destroy_mcg(struct rxe_mcg *mcg)
->   {
->   	/* delete mcast address outside of lock */
-> -	rxe_mcast_del(mcg->rxe, &mcg->mgid);
-> +	rxe_mcast_del(mcg);
->   
->   	spin_lock_bh(&mcg->rxe->mcg_lock);
->   	__rxe_destroy_mcg(mcg);
-> diff --git a/drivers/infiniband/sw/rxe/rxe_net.c b/drivers/infiniband/sw/rxe/rxe_net.c
-> index 58c3f3759bf0..b481f8da2002 100644
-> --- a/drivers/infiniband/sw/rxe/rxe_net.c
-> +++ b/drivers/infiniband/sw/rxe/rxe_net.c
-> @@ -18,7 +18,7 @@
->   #include "rxe_net.h"
->   #include "rxe_loc.h"
->   
-> -static struct rxe_recv_sockets recv_sockets;
-> +struct rxe_recv_sockets recv_sockets;
->   
->   static struct dst_entry *rxe_find_route4(struct rxe_qp *qp,
->   					 struct net_device *ndev,
-> diff --git a/drivers/infiniband/sw/rxe/rxe_net.h b/drivers/infiniband/sw/rxe/rxe_net.h
-> index 45d80d00f86b..89cee7d5340f 100644
-> --- a/drivers/infiniband/sw/rxe/rxe_net.h
-> +++ b/drivers/infiniband/sw/rxe/rxe_net.h
-> @@ -15,6 +15,7 @@ struct rxe_recv_sockets {
->   	struct socket *sk4;
->   	struct socket *sk6;
->   };
-> +extern struct rxe_recv_sockets recv_sockets;
->   
->   int rxe_net_add(const char *ibdev_name, struct net_device *ndev);
->   
-> diff --git a/drivers/infiniband/sw/rxe/rxe_verbs.h b/drivers/infiniband/sw/rxe/rxe_verbs.h
-> index ccb9d19ffe8a..7be9e6232dd9 100644
-> --- a/drivers/infiniband/sw/rxe/rxe_verbs.h
-> +++ b/drivers/infiniband/sw/rxe/rxe_verbs.h
-> @@ -352,6 +352,7 @@ struct rxe_mcg {
->   	atomic_t		qp_num;
->   	u32			qkey;
->   	u16			pkey;
-> +	bool			is_ipv6;
->   };
->   
->   struct rxe_mca {
+> +			/* If number of IRQ is one extra than number of online CPUs,
+> +			 * then we need to assign IRQ0 (hwc irq) and IRQ1 to
+> +			 * same CPU.
+> +			 * Else we will use different CPUs for IRQ0 and IRQ1.
+> +			 * Also we are using cpumask_local_spread instead of
+> +			 * cpumask_first for the node, because the node can be
+> +			 * mem only.
+> +			 */
+> +			if (start_irq_index) {
+> +				cpu = cpumask_local_spread(i, gc->numa_node);
+
+I already mentioned that: if i == 0, you don't need to spread, just
+pick 1st cpu from node.
+
+> +				irq_set_affinity_and_hint(irq, cpumask_of(cpu));
+> +			} else {
+> +				irqs[start_irq_index] = irq;
+> +			}
+> +		} else {
+> +			irqs[i - start_irq_index] = irq;
+> +			err = request_irq(irqs[i - start_irq_index], mana_gd_intr, 0,
+> +					  gic->name, gic);
+> +			if (err)
+> +				goto free_irq;
+> +		}
+>  	}
+>  
+> +	err = irq_setup(irqs, (nvec - start_irq_index), gc->numa_node);
+> +	if (err)
+> +		goto free_irq;
+>  	err = mana_gd_alloc_res_map(nvec, &gc->msix_resource);
+>  	if (err)
+>  		goto free_irq;
+>  
+>  	gc->max_num_msix = nvec;
+>  	gc->num_msix_usable = nvec;
+> -
+> +	cpus_read_unlock();
+>  	return 0;
+>  
+>  free_irq:
+> @@ -1314,8 +1386,10 @@ static int mana_gd_setup_irqs(struct pci_dev *pdev)
+>  	}
+>  
+>  	kfree(gc->irq_contexts);
+> +	kfree(irqs);
+>  	gc->irq_contexts = NULL;
+>  free_irq_vector:
+> +	cpus_read_unlock();
+>  	pci_free_irq_vectors(pdev);
+>  	return err;
+>  }
+> -- 
+> 2.34.1
 
