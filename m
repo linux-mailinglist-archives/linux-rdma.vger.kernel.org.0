@@ -1,144 +1,138 @@
-Return-Path: <linux-rdma+bounces-356-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-357-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 017E980CC6C
-	for <lists+linux-rdma@lfdr.de>; Mon, 11 Dec 2023 15:01:01 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id B908480CDF2
+	for <lists+linux-rdma@lfdr.de>; Mon, 11 Dec 2023 15:15:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 85426B20F18
-	for <lists+linux-rdma@lfdr.de>; Mon, 11 Dec 2023 14:00:58 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6FEA91F21912
+	for <lists+linux-rdma@lfdr.de>; Mon, 11 Dec 2023 14:15:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 18B73482CB;
-	Mon, 11 Dec 2023 14:00:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 92C1349F7F;
+	Mon, 11 Dec 2023 14:09:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="IZ+Q1ocQ"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="R92vx2g1"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-yw1-x1132.google.com (mail-yw1-x1132.google.com [IPv6:2607:f8b0:4864:20::1132])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA4934C1F;
-	Mon, 11 Dec 2023 06:00:25 -0800 (PST)
-Received: by mail-yw1-x1132.google.com with SMTP id 00721157ae682-5e180547bdeso1458317b3.1;
-        Mon, 11 Dec 2023 06:00:25 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1702303225; x=1702908025; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=LNTv7V3EOxu8et+zxKRKRD7xOGYn8t55trHPfKfBcwo=;
-        b=IZ+Q1ocQvf0EqoQJMZXvl9CRIrLkCY6CYBMV5lgvT66wedCAAJppYZb3DjQlMCmbu8
-         J8jjzu0nmdf6uK8Q8RO7RP+4qjVTNZKM9QCgDjDeUjCBkPnXxcY4VZjackjUhy0kWNZW
-         yERJ+A9HEmCayllSlY142FulW0EGKwmUB9bPw95ZnDTF3XWsdH33enaRUa2kUktPFwTo
-         HxIS3aawvm2IIHF1d5Mf38J/Yl1fgIqYDsIoZuIiU3HOwKUjyTo37ypqvmDPKIwzMLzN
-         tXaY+QnrYDbrh/phk6+Y3ekSI+ao6CtT8w6pKMv8fZOPKH7vwoWNhv5i0Fngg1DpYJJF
-         EkOQ==
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 580892733
+	for <linux-rdma@vger.kernel.org>; Mon, 11 Dec 2023 06:09:55 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1702303794;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=vAAvf3xWNdiA5yQ9F9boRppGC66yI7jkgPgymNCWcs8=;
+	b=R92vx2g1hnIfX/zQAobP/qqL87O/PCGxvERK8tK5LgP8YqNmBhXR+Xzbbs820f92560POo
+	IELifdkvHQRCx3iIxL2TI2wIJ3PuQRRmCgfhgd/jzHvRbHQzk5leAU4cqRTXGdGKVbDkDH
+	KBQ95ZXe7b0jnOtixzl/0OtSn9SNHaQ=
+Received: from mail-pg1-f198.google.com (mail-pg1-f198.google.com
+ [209.85.215.198]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-81-y5lZoxzZMvaIOGuVlE_RUg-1; Mon, 11 Dec 2023 09:09:51 -0500
+X-MC-Unique: y5lZoxzZMvaIOGuVlE_RUg-1
+Received: by mail-pg1-f198.google.com with SMTP id 41be03b00d2f7-5c644341390so2237076a12.2
+        for <linux-rdma@vger.kernel.org>; Mon, 11 Dec 2023 06:09:51 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702303225; x=1702908025;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=LNTv7V3EOxu8et+zxKRKRD7xOGYn8t55trHPfKfBcwo=;
-        b=N+qzxX8CAPXo2FDt41QceFBuxHpL2V++3+o1fK/RPGPS4ty30uUaEwNtGI7wLpCYMp
-         DryWHj8R3soNjkz3S6EdIqz2OKK0zeA6pg+B5QiDYED2+bmyx2ttnSGINtf0MzTv3pLq
-         /8BSfgZY5pHcgV6GvOFFmyj5MOKkj97qdLMzVdEUCnAC4LMRlLENTIrmqRx38IdoE0/Q
-         MAcD3D44BkkCblJUIpcC4yO5mwbkmCfQHdFg8k4cIyZLdiMSwJpsbvSPhTv9nLUJa5N3
-         br5Hm/nxlnf22UnACSUaAUeBAteYb3G+rEcNTGeeh+nsDAlXjCZLRxlaJvu0GvxExtvT
-         vzgg==
-X-Gm-Message-State: AOJu0YytMVsS83ZiByk2VA+DCcjGFaljHlCM3/gssarfegmNHS7g45wE
-	2uc2dLBKXNAE+Jj2xgtaQBg=
-X-Google-Smtp-Source: AGHT+IGLhyIF/d5QvpkeI4/4kwHQ1QkLNBHHxOYgnuqRp9V6jzQy+pH/7dtnS4EyBFrob/ltOoRX4g==
-X-Received: by 2002:a5b:784:0:b0:d9a:d8bd:7b9c with SMTP id b4-20020a5b0784000000b00d9ad8bd7b9cmr2783952ybq.11.1702303224510;
-        Mon, 11 Dec 2023 06:00:24 -0800 (PST)
-Received: from localhost ([2601:344:8301:57f0:f798:e824:429f:84b0])
-        by smtp.gmail.com with ESMTPSA id k18-20020a258c12000000b00d9cbf2aabc6sm2514846ybl.14.2023.12.11.06.00.23
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 11 Dec 2023 06:00:23 -0800 (PST)
-Date: Mon, 11 Dec 2023 06:00:22 -0800
-From: Yury Norov <yury.norov@gmail.com>
-To: Souradeep Chakrabarti <schakrabarti@linux.microsoft.com>
-Cc: kys@microsoft.com, haiyangz@microsoft.com, wei.liu@kernel.org,
-	decui@microsoft.com, davem@davemloft.net, edumazet@google.com,
-	kuba@kernel.org, pabeni@redhat.com, longli@microsoft.com,
-	leon@kernel.org, cai.huoqing@linux.dev, ssengar@linux.microsoft.com,
-	vkuznets@redhat.com, tglx@linutronix.de,
-	linux-hyperv@vger.kernel.org, netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
-	schakrabarti@microsoft.com, paulros@microsoft.com
-Subject: Re: [PATCH V5 net-next] net: mana: Assigning IRQ affinity on HT cores
-Message-ID: <ZXcV9pXmg+GE2BCF@yury-ThinkPad>
-References: <1702029754-6520-1-git-send-email-schakrabarti@linux.microsoft.com>
- <ZXMiOwK3sOJNXHxd@yury-ThinkPad>
- <ZXOQb+3R0YAT/rAm@yury-ThinkPad>
- <20231211065323.GB4977@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
+        d=1e100.net; s=20230601; t=1702303790; x=1702908590;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=vAAvf3xWNdiA5yQ9F9boRppGC66yI7jkgPgymNCWcs8=;
+        b=jfPk7DiPdWqfhb4jzTjF2uNEfdBOVSJzB296XEdcG5SVeJMGqPuo35HnbCnn4ZAwA0
+         gnK4jmaOrEDsbfyp3b9XEE2eGbGGXePz7R6xhbzf8mqoj5wpEfb8kRlxaexCv/mnQcDz
+         MkvYauls+z4KeC+fWc+iZ5cPSSyfd1rE8ZAmNoRk+QSaDDYIxqVrWEcYkT1VM+VjUibJ
+         LDDoqb/W3EbuKP0R9dWTb+HX/Bo8EtHzWzMYCOe1PpE0jg++1A3WbzGQWYBPvf9Q0M7m
+         McBCPoLIXNqsL43Izhai+pVplk/fnYlxQ89ca4CxU7o4ssrXLyzueWK1E98iGwmOFYzJ
+         Rh5A==
+X-Gm-Message-State: AOJu0YyhNQ1f26X6aneZBEdGdh0KegH+mWf7TZOvBKHLcQJiusF4UBSU
+	p2F79natjlP/AU4YMx+YfSyaUpa/gpNbf8wGT7OJxQyJYQ03uIy+hOdcZ0dtLaZPW4fa2y3Z0Ni
+	qbR4sGjEK1ccEa2nnFcFKOViWOQmKOL36ZGCQbg==
+X-Received: by 2002:a17:90a:6e42:b0:286:6cc1:2cb1 with SMTP id s2-20020a17090a6e4200b002866cc12cb1mr1793349pjm.59.1702303790639;
+        Mon, 11 Dec 2023 06:09:50 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IGR/6GiM7/0vFHkDfHn1IFcQktjWuh0v87SXtOh2Gg4WrYU1x0CHfs0k8+lUvJEjfRLnRGu0eSx98AeHk6CVWU=
+X-Received: by 2002:a17:90a:6e42:b0:286:6cc1:2cb1 with SMTP id
+ s2-20020a17090a6e4200b002866cc12cb1mr1793339pjm.59.1702303790367; Mon, 11 Dec
+ 2023 06:09:50 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231211065323.GB4977@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
+References: <20231211131051.1500834-1-neelx@redhat.com> <20231211132217.GF4870@unreal>
+ <20231211132522.GY1489931@ziepe.ca>
+In-Reply-To: <20231211132522.GY1489931@ziepe.ca>
+From: Daniel Vacek <neelx@redhat.com>
+Date: Mon, 11 Dec 2023 15:09:13 +0100
+Message-ID: <CACjP9X8+CgoQRjs2Y9A+OwWCVxMhKyqzLhEjaguxMavHsy8VRg@mail.gmail.com>
+Subject: Re: [PATCH] IB/ipoib: No need to hold the lock while printing the warning
+To: Jason Gunthorpe <jgg@ziepe.ca>
+Cc: Leon Romanovsky <leon@kernel.org>, linux-rdma@vger.kernel.org, 
+	linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Sun, Dec 10, 2023 at 10:53:23PM -0800, Souradeep Chakrabarti wrote:
-> On Fri, Dec 08, 2023 at 01:53:51PM -0800, Yury Norov wrote:
-> > Few more nits
-> > 
-> > On Fri, Dec 08, 2023 at 06:03:40AM -0800, Yury Norov wrote:
-> > > On Fri, Dec 08, 2023 at 02:02:34AM -0800, Souradeep Chakrabarti wrote:
-> > > > Existing MANA design assigns IRQ to every CPU, including sibling
-> > > > hyper-threads. This may cause multiple IRQs to be active simultaneously
-> > > > in the same core and may reduce the network performance with RSS.
-> > > 
-> > > Can you add an IRQ distribution diagram to compare before/after
-> > > behavior, similarly to what I did in the other email?
-> > > 
-> > > > Improve the performance by assigning IRQ to non sibling CPUs in local
-> > > > NUMA node. The performance improvement we are getting using ntttcp with
-> > > > following patch is around 15 percent with existing design and approximately
-> > > > 11 percent, when trying to assign one IRQ in each core across NUMA nodes,
-> > > > if enough cores are present.
-> > > 
-> > > How did you measure it? In the other email you said you used perf, can
-> > > you show your procedure in details?
-> > > 
-> > > > Suggested-by: Yury Norov <yury.norov@gmali.com>
-> > > > Signed-off-by: Souradeep Chakrabarti <schakrabarti@linux.microsoft.com>
-> > > > ---
-> > > 
-> > > [...]
-> > > 
-> > > >  .../net/ethernet/microsoft/mana/gdma_main.c   | 92 +++++++++++++++++--
-> > > >  1 file changed, 83 insertions(+), 9 deletions(-)
-> > > > 
-> > > > diff --git a/drivers/net/ethernet/microsoft/mana/gdma_main.c b/drivers/net/ethernet/microsoft/mana/gdma_main.c
-> > > > index 6367de0c2c2e..18e8908c5d29 100644
-> > > > --- a/drivers/net/ethernet/microsoft/mana/gdma_main.c
-> > > > +++ b/drivers/net/ethernet/microsoft/mana/gdma_main.c
-> > > > @@ -1243,15 +1243,56 @@ void mana_gd_free_res_map(struct gdma_resource *r)
-> > > >  	r->size = 0;
-> > > >  }
-> > > >  
-> > > > +static int irq_setup(int *irqs, int nvec, int start_numa_node)
-> > > > +{
-> > > > +	int w, cnt, cpu, err = 0, i = 0;
-> > > > +	int next_node = start_numa_node;
-> > > 
-> > > What for this?
-> > > 
-> > > > +	const struct cpumask *next, *prev = cpu_none_mask;
-> > > > +	cpumask_var_t curr, cpus;
-> > > > +
-> > > > +	if (!zalloc_cpumask_var(&curr, GFP_KERNEL)) {
-> > 
-> > alloc_cpumask_var() here and below, because you initialize them by
-> > copying
-> I have used zalloc here as prev gets initialized after the first hop, before that
-> it may contain unwanted values, which may impact cpumask_andnot(curr, next, prev).
-> Regarding curr I will change it to alloc_cpumask_var().
-> Please let me know if that sounds right.
+On Mon, Dec 11, 2023 at 2:25=E2=80=AFPM Jason Gunthorpe <jgg@ziepe.ca> wrot=
+e:
+>
+> On Mon, Dec 11, 2023 at 03:22:17PM +0200, Leon Romanovsky wrote:
+>
+> > Please fill some text in commit message.
+>
+> Yes, explain *why* you are doing this
 
-What? prev is initialized at declaration:
-        
-        const struct cpumask *next, *prev = cpu_none_mask;
+Oh, sorry. I did not mention it but there's no particular reason
+really. The @Subject says it all. There should be no logical or
+functional change other than reducing the span of that critical
+section. In other words, just nitpicking, not a big deal.
+
+While checking the code (and past changes) related to the other issue
+I also sent today I just noticed the way 08bc327629cbd added the
+spin_lock before returning from this function and it appeared to me
+it's clearer the way I'm proposing here.
+
+Honestly, I was not looking into why the lock is released for that
+completion. And I'm not changing that logic.
+
+If this complete() can be called with priv->lock held, the cleanup
+would look different, of course.
+
+That said, If you'd like to keep this patch I can send a v2 with the
+above details in the message body. Otherwise feel free to drop this.
+
+--nX
+
+> > > diff --git a/drivers/infiniband/ulp/ipoib/ipoib_multicast.c b/drivers=
+/infiniband/ulp/ipoib/ipoib_multicast.c
+> > > index 5b3154503bf4..ae2c05806dcc 100644
+> > > --- a/drivers/infiniband/ulp/ipoib/ipoib_multicast.c
+> > > +++ b/drivers/infiniband/ulp/ipoib/ipoib_multicast.c
+> > > @@ -536,17 +536,17 @@ static int ipoib_mcast_join(struct net_device *=
+dev, struct ipoib_mcast *mcast)
+> > >     multicast =3D ib_sa_join_multicast(&ipoib_sa_client, priv->ca, pr=
+iv->port,
+> > >                                      &rec, comp_mask, GFP_KERNEL,
+> > >                                      ipoib_mcast_join_complete, mcast=
+);
+> > > -   spin_lock_irq(&priv->lock);
+> > >     if (IS_ERR(multicast)) {
+> > >             ret =3D PTR_ERR(multicast);
+> > >             ipoib_warn(priv, "ib_sa_join_multicast failed, status %d\=
+n", ret);
+> > > +           spin_lock_irq(&priv->lock);
+> > >             /* Requeue this join task with a backoff delay */
+> > >             __ipoib_mcast_schedule_join_thread(priv, mcast, 1);
+> > >             clear_bit(IPOIB_MCAST_FLAG_BUSY, &mcast->flags);
+> > >             spin_unlock_irq(&priv->lock);
+> > >             complete(&mcast->done);
+> > > -           spin_lock_irq(&priv->lock);
+>
+> It is super weird to unlock just around complete.
+>
+> Jason
+>
 
 
