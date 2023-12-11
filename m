@@ -1,118 +1,111 @@
-Return-Path: <linux-rdma+bounces-368-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-369-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4B5A480CF72
-	for <lists+linux-rdma@lfdr.de>; Mon, 11 Dec 2023 16:24:58 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id CFD4780CF76
+	for <lists+linux-rdma@lfdr.de>; Mon, 11 Dec 2023 16:25:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 03DCC281FE3
-	for <lists+linux-rdma@lfdr.de>; Mon, 11 Dec 2023 15:24:57 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8CC88281955
+	for <lists+linux-rdma@lfdr.de>; Mon, 11 Dec 2023 15:25:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AA3834AF8F;
-	Mon, 11 Dec 2023 15:24:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6E48A4AF91;
+	Mon, 11 Dec 2023 15:25:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="LMVQ+r4P"
+	dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b="Qw3tWCYT"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 685BD3B184;
-	Mon, 11 Dec 2023 15:24:55 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A4BFCC433C7;
-	Mon, 11 Dec 2023 15:24:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1702308294;
-	bh=jdchVgDmsZtECwiFg6aF5OPF0Qz+GiqmuHEdpGSnXtE=;
-	h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-	b=LMVQ+r4PcRjJfACop+BPqRzcPR4AiDY7LSQeZNUzqHVZs0sFie/08jBpstRqYFJPz
-	 rWYLIByCaMe6gUKdjkjkmBW4mFUngugfrVMf+ckcTcyzzojtikcVcFgWSYew4tZQd7
-	 LbK9zq/fMoXi8vvC89qQ93w5IyQ9vK4VXmgec9Td8FBU5EDdtjdZ+fNt5rbFtQpWn9
-	 LTWLH+xqQSC5+2WgJJzH8pDvGvS8ve+gNTVb0mk/K0yz2KL5IuRlbIJ3ER6Pk8Lk6C
-	 y92m3icsxa3m57RHuELpCvRiRfriTdE7n67i/zg8O9Z/qPcl9rfYtyqvDbmRtRwSvM
-	 sfOiDgNGKSuew==
-Subject: [PATCH v1 8/8] svcrdma: Increase the per-transport rw_ctx count
-From: Chuck Lever <cel@kernel.org>
-To: linux-nfs@vger.kernel.org, linux-rdma@vger.kernel.org
-Cc: tom@talpey.com
-Date: Mon, 11 Dec 2023 10:24:53 -0500
-Message-ID: 
- <170230829373.90242.11114271955743181616.stgit@bazille.1015granger.net>
-In-Reply-To: 
- <170230788373.90242.9421368360904462120.stgit@bazille.1015granger.net>
-References: 
- <170230788373.90242.9421368360904462120.stgit@bazille.1015granger.net>
-User-Agent: StGit/1.5
+Received: from mail-qv1-xf2a.google.com (mail-qv1-xf2a.google.com [IPv6:2607:f8b0:4864:20::f2a])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 14AA1E5
+	for <linux-rdma@vger.kernel.org>; Mon, 11 Dec 2023 07:25:49 -0800 (PST)
+Received: by mail-qv1-xf2a.google.com with SMTP id 6a1803df08f44-67adea83ea6so33701256d6.0
+        for <linux-rdma@vger.kernel.org>; Mon, 11 Dec 2023 07:25:49 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google; t=1702308348; x=1702913148; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=RnKL4o3KpZTzZRDhq/XTXx5OFfjh8+mhbmJEdr3M1y0=;
+        b=Qw3tWCYTVCmHsEU/ecpIiA77ZnRoFsjRZU6l9F60D8lK45gOU30O9+A8bO+ODYDVAb
+         lYUWm4HroeMVwJRQN3VXBeYNAvT03XoiKlJDdfV2sv4fusIBU5a9cp0yBuSnV3faWz1k
+         jHNuxmVwM0TfOCZrOu3/MrN9sN5My8NcZa7Mx7ZN7JaYWo/BHDgaZYlDz+tJgoyDnW+e
+         9westBZEwRltyXDdocp9R7n8W7wxxeha7cFGp9wrOx3kMV7z79yL13trfDZnAD9Zwm2Q
+         1lZhjD6CPLTWTy4f9Yr7jqW8MYLd1amxm5y305IyCEypfLouZaWnYJt89fbHLFxsmmGC
+         b/PA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702308348; x=1702913148;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=RnKL4o3KpZTzZRDhq/XTXx5OFfjh8+mhbmJEdr3M1y0=;
+        b=Ico38H2Ve6JbnANcp2zJqaCR3rWuAYzAthd6LkpcP2RZkRxZdcKOELzBb5dwCG4WXY
+         cq0IuVtIbmWsXUPXks9qwjiKbFZ42Jwl86JQsq8Ejg9E8jP5vDC183Vjcvd63YYN8LOO
+         oxV/gKeIvehkkUuTUp6L3oPDkFYLGH0AhANnDa7I2eGpHdy7hPBf+sw+0y7Rc7fA7tdG
+         d7LxiNjXAta5Es+rggI6hvFTG9HznnuB/5sbfbUyjCrhUyTAmkVRjS9Z08hXIthTF1Nk
+         Cobj2sfI7kaDRtQfZD4jgUsEsC02eepco9gq6+xykwIDRZFK1PVF56q966+LtUfnPIZx
+         m/6g==
+X-Gm-Message-State: AOJu0YyCR8FLAT6J2vvEs6jAPg3grzW5B48iF+07mSJIggqB93dqx07I
+	G5yoqbOQ5LRJc9RjnHpPJ6V2jA==
+X-Google-Smtp-Source: AGHT+IFBH7z3tXGGZRNgqPM/RvL+eXBGFEzwI0RePPMz6tIXVpWnP6XXwq3tI51ih5ycUdf1eDukDw==
+X-Received: by 2002:ad4:5761:0:b0:67a:a721:b193 with SMTP id r1-20020ad45761000000b0067aa721b193mr7280280qvx.78.1702308348225;
+        Mon, 11 Dec 2023 07:25:48 -0800 (PST)
+Received: from ziepe.ca (hlfxns017vw-142-134-23-187.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.134.23.187])
+        by smtp.gmail.com with ESMTPSA id dd18-20020ad45812000000b0067a34a4dd3asm3365383qvb.130.2023.12.11.07.25.47
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 11 Dec 2023 07:25:47 -0800 (PST)
+Received: from jgg by wakko with local (Exim 4.95)
+	(envelope-from <jgg@ziepe.ca>)
+	id 1rCiAF-00CcR7-Aw;
+	Mon, 11 Dec 2023 11:25:47 -0400
+Date: Mon, 11 Dec 2023 11:25:47 -0400
+From: Jason Gunthorpe <jgg@ziepe.ca>
+To: Daniel Vacek <neelx@redhat.com>
+Cc: Leon Romanovsky <leon@kernel.org>, linux-rdma@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] IB/ipoib: No need to hold the lock while printing the
+ warning
+Message-ID: <20231211152547.GC1489931@ziepe.ca>
+References: <20231211131051.1500834-1-neelx@redhat.com>
+ <20231211132217.GF4870@unreal>
+ <20231211132522.GY1489931@ziepe.ca>
+ <CACjP9X8+CgoQRjs2Y9A+OwWCVxMhKyqzLhEjaguxMavHsy8VRg@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CACjP9X8+CgoQRjs2Y9A+OwWCVxMhKyqzLhEjaguxMavHsy8VRg@mail.gmail.com>
 
-From: Chuck Lever <chuck.lever@oracle.com>
+On Mon, Dec 11, 2023 at 03:09:13PM +0100, Daniel Vacek wrote:
+> On Mon, Dec 11, 2023 at 2:25 PM Jason Gunthorpe <jgg@ziepe.ca> wrote:
+> >
+> > On Mon, Dec 11, 2023 at 03:22:17PM +0200, Leon Romanovsky wrote:
+> >
+> > > Please fill some text in commit message.
+> >
+> > Yes, explain *why* you are doing this
+> 
+> Oh, sorry. I did not mention it but there's no particular reason
+> really. The @Subject says it all. There should be no logical or
+> functional change other than reducing the span of that critical
+> section. In other words, just nitpicking, not a big deal.
+> 
+> While checking the code (and past changes) related to the other issue
+> I also sent today I just noticed the way 08bc327629cbd added the
+> spin_lock before returning from this function and it appeared to me
+> it's clearer the way I'm proposing here.
+> 
+> Honestly, I was not looking into why the lock is released for that
+> completion. And I'm not changing that logic.
+> 
+> If this complete() can be called with priv->lock held, the cleanup
+> would look different, of course.
 
-rdma_rw_mr_factor() returns the smallest number of MRs needed to
-move a particular number of pages. svcrdma currently asks for the
-number of MRs needed to move RPCSVC_MAXPAGES (a little over one
-megabyte), as that is the number of pages in the largest r/wsize
-the server supports.
+complete() can be called under spinlocks just fine, AFAIK..
 
-This call assumes that the client's NIC can bundle a full one
-megabyte payload in a single rdma_segment. In fact, most NICs cannot
-handle a full megabyte with a single rkey / rdma_segment. Clients
-will typically split even a single Read chunk into many segments.
-
-The server needs one MR to read each rdma_segment in a Read chunk,
-and thus each one needs an rw_ctx.
-
-svcrdma has been vastly underestimating the number of rw_ctxs needed
-to handle 64 RPC requests with large Read chunks using small
-rdma_segments.
-
-Unfortunately there doesn't seem to be a good way to estimate this
-number without knowing the client NIC's capabilities. Even then,
-the client RPC/RDMA implementation is still free to split a chunk
-into smaller segments (for example, it might be using physical
-registration, which needs an rdma_segment per page).
-
-The best we can do for now is choose a number that will guarantee
-forward progress in the worst case (one page per segment).
-
-At some later point, we could add some mechanisms to make this
-much less of a problem:
-- Add a core API to add more rw_ctxs to an already-established QP
-- svcrdma could treat rw_ctx exhaustion as a temporary error and
-  try again
-- Limit the number of Reads in flight
-
-Signed-off-by: Chuck Lever <chuck.lever@oracle.com>
----
- net/sunrpc/xprtrdma/svc_rdma_transport.c |    8 ++++++--
- 1 file changed, 6 insertions(+), 2 deletions(-)
-
-diff --git a/net/sunrpc/xprtrdma/svc_rdma_transport.c b/net/sunrpc/xprtrdma/svc_rdma_transport.c
-index 790841864153..0ceb2817ca4d 100644
---- a/net/sunrpc/xprtrdma/svc_rdma_transport.c
-+++ b/net/sunrpc/xprtrdma/svc_rdma_transport.c
-@@ -422,8 +422,12 @@ static struct svc_xprt *svc_rdma_accept(struct svc_xprt *xprt)
- 		newxprt->sc_max_bc_requests = 2;
- 	}
- 
--	ctxts = rdma_rw_mr_factor(dev, newxprt->sc_port_num, RPCSVC_MAXPAGES);
--	ctxts *= newxprt->sc_max_requests;
-+	/* Arbitrarily estimate the number of rw_ctxs needed for
-+	 * this transport. This is enough rw_ctxs to make forward
-+	 * progress even if the client is using one rkey per page
-+	 * in each Read chunk.
-+	 */
-+	ctxts = 3 * RPCSVC_MAXPAGES;
- 
- 	sq_depth = newxprt->sc_max_requests + newxprt->sc_max_bc_requests + 1;
- 	if (sq_depth > dev->attrs.max_qp_wr)
-
-
+Jason
 
