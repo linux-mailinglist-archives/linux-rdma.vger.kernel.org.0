@@ -1,383 +1,159 @@
-Return-Path: <linux-rdma+bounces-374-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-375-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 49FB980D460
-	for <lists+linux-rdma@lfdr.de>; Mon, 11 Dec 2023 18:47:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id D3F8A80D476
+	for <lists+linux-rdma@lfdr.de>; Mon, 11 Dec 2023 18:50:31 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id CA7FB1F21A15
-	for <lists+linux-rdma@lfdr.de>; Mon, 11 Dec 2023 17:47:31 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 82E6C1F219E2
+	for <lists+linux-rdma@lfdr.de>; Mon, 11 Dec 2023 17:50:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7F2AE4EB20;
-	Mon, 11 Dec 2023 17:47:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8B1FF4EB35;
+	Mon, 11 Dec 2023 17:50:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=amazon.com header.i=@amazon.com header.b="fSyfPg2F"
+	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="N4Sz1OLj"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from smtp-fw-2101.amazon.com (smtp-fw-2101.amazon.com [72.21.196.25])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD44CC8
-	for <linux-rdma@vger.kernel.org>; Mon, 11 Dec 2023 09:47:22 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1702316843; x=1733852843;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=thC8WoEMwnQKwx4Raln/gQLZ0eRZ1zokwKn9I5gAHcI=;
-  b=fSyfPg2FJmKmm93dvJBzXIVAyrigP6k4N9uSPuVm2KnMsluu463Yfh1H
-   3hwr3oPc+eaT0J5X1n7KOdq3EHhnPW0EQfNUQGIc6kb57JITM29ZPCmat
-   93R0P+j5DfqStLUcb+2BMT+SsMxXbK0caCPhW07Izie2KJwxqvmd/POC/
-   c=;
-X-IronPort-AV: E=Sophos;i="6.04,268,1695686400"; 
-   d="scan'208";a="367810334"
-Received: from iad12-co-svc-p1-lb1-vlan3.amazon.com (HELO email-inbound-relay-iad-1e-m6i4x-0aba4706.us-east-1.amazon.com) ([10.43.8.6])
-  by smtp-border-fw-2101.iad2.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Dec 2023 17:47:20 +0000
-Received: from smtpout.prod.us-west-2.prod.farcaster.email.amazon.dev (iad7-ws-svc-p70-lb3-vlan2.iad.amazon.com [10.32.235.34])
-	by email-inbound-relay-iad-1e-m6i4x-0aba4706.us-east-1.amazon.com (Postfix) with ESMTPS id 907CBA43F6;
-	Mon, 11 Dec 2023 17:47:19 +0000 (UTC)
-Received: from EX19MTAEUC001.ant.amazon.com [10.0.43.254:52879]
- by smtpin.naws.eu-west-1.prod.farcaster.email.amazon.dev [10.0.22.100:2525] with esmtp (Farcaster)
- id aba99d19-6979-42f9-88ed-84c22171cf9e; Mon, 11 Dec 2023 17:47:18 +0000 (UTC)
-X-Farcaster-Flow-ID: aba99d19-6979-42f9-88ed-84c22171cf9e
-Received: from EX19D019EUA001.ant.amazon.com (10.252.50.210) by
- EX19MTAEUC001.ant.amazon.com (10.252.51.193) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.40; Mon, 11 Dec 2023 17:47:17 +0000
-Received: from EX19MTAUWB001.ant.amazon.com (10.250.64.248) by
- EX19D019EUA001.ant.amazon.com (10.252.50.210) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.40; Mon, 11 Dec 2023 17:47:17 +0000
-Received: from dev-dsk-mrgolin-1c-b2091117.eu-west-1.amazon.com
- (10.253.103.172) by mail-relay.amazon.com (10.250.64.254) with Microsoft SMTP
- Server id 15.2.1118.40 via Frontend Transport; Mon, 11 Dec 2023 17:47:15
- +0000
-From: Michael Margolin <mrgolin@amazon.com>
-To: <jgg@nvidia.com>, <leon@kernel.org>, <linux-rdma@vger.kernel.org>
-CC: <sleybo@amazon.com>, <matua@amazon.com>, <gal.pressman@linux.dev>, "Anas
- Mousa" <anasmous@amazon.com>, Firas Jahjah <firasj@amazon.com>
-Subject: [PATCH for-next v3] RDMA/efa: Add EFA query MR support
-Date: Mon, 11 Dec 2023 17:47:15 +0000
-Message-ID: <20231211174715.7369-1-mrgolin@amazon.com>
-X-Mailer: git-send-email 2.40.1
+Received: from NAM10-MW2-obe.outbound.protection.outlook.com (mail-mw2nam10on2068.outbound.protection.outlook.com [40.107.94.68])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8DA75C3
+	for <linux-rdma@vger.kernel.org>; Mon, 11 Dec 2023 09:50:23 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=ORtrjpYy+Fa6Rr8w+vAlgIRXlvCxtwAzK+OWzStMo+OjyBvYgeAJr4zPSRMq6f7gWSA70gCSujW2PBnNx0vSipR1iTbuZjURJ5/h/9n85dBaXUUvid9J5RQ8jQoZWbvzocGhDJyWfU8nUbpnyw4GN1OUogOjUantU4ZXcxq/pran1edYviGcH+GZQNE7S4vbr/c+vrWMWNpV996ktUJ226dPyffVfDqfMMXpuxkM1jAs5K9osZYvajaT8X9I9J87rUkSy9ATffzKtsvca9Wr2nnyctVbG3ZNRZyK5RNWSmuoMFSBnWouBQ5C5Lc85cT919Lx8+CbaTJ+VPHvTutu/g==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=BZExjXhgRt001j0tR4EuiQdSHtJLkoDyIRm6z6s2dog=;
+ b=Xk8z3cT5Ow53NshWGK5T25uNteWc9HYw/jdVnLPbMGtHt0BrK/3aFPV9q9lUJj9vgnmHdplJ8SZYI2UVVPIvMPc5xyfmslCAJtotKd6/6EQIfscyJ/EfKaCqkIp/bUE0ZGYrmbNSmOSihHen+A46Xu55OahlLOE+jUB/A96V0sWoPCLzbwO4Tz0/6phE0YC5INq0L25kcC6PTeBSMD95e9yPgBDChnffDLVoLdGAvXOCJ9r37kge8kG23oMFnCVOqIUXFSQHNpMRdUJM96ZuBDvq+6PKT5fYN6QTGvDuxKwjdiHIF3BUXWNGNuj8nt+DPmIeyx3PKXm7OG25JU5Hmg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=BZExjXhgRt001j0tR4EuiQdSHtJLkoDyIRm6z6s2dog=;
+ b=N4Sz1OLjwTm+ATQs6Ba0Gefaz0gFZr99v2GWNxZ+caoOFnuH7sUTt/Tza8JaPWbFb3BuUoWf05y2sCNk3THQGzjZ7BEBG/B6fEYb2CAgxWyeT78HKO10BqYm9qLwHrBU87FGJi/PR5HwryzvZ2gAG3gciKff7zxz8mN1gialyXTa/JJ7OlP5Gbcc8VArbstG7ZqwvHSTshGFQiJYkqLxAeDg1Wdc6xzpJ6PRVg2qSgp9rOliIEay3c8c2gB5eCydX+17I4JLAomg2srIg9+boWc/61rmIm80mSN82z8riy1t9vLWOxopdoI89yrQqlNZEQYPmIsklYFgHdMEEAhT4Q==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nvidia.com;
+Received: from LV2PR12MB5869.namprd12.prod.outlook.com (2603:10b6:408:176::16)
+ by SA0PR12MB4544.namprd12.prod.outlook.com (2603:10b6:806:70::21) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7068.33; Mon, 11 Dec
+ 2023 17:50:20 +0000
+Received: from LV2PR12MB5869.namprd12.prod.outlook.com
+ ([fe80::60d4:c1e3:e1aa:8f93]) by LV2PR12MB5869.namprd12.prod.outlook.com
+ ([fe80::60d4:c1e3:e1aa:8f93%4]) with mapi id 15.20.7068.031; Mon, 11 Dec 2023
+ 17:50:20 +0000
+Date: Mon, 11 Dec 2023 13:50:19 -0400
+From: Jason Gunthorpe <jgg@nvidia.com>
+To: Michael Margolin <mrgolin@amazon.com>
+Cc: leon@kernel.org, linux-rdma@vger.kernel.org, sleybo@amazon.com,
+	matua@amazon.com, gal.pressman@linux.dev,
+	Anas Mousa <anasmous@amazon.com>, Firas Jahjah <firasj@amazon.com>
+Subject: Re: [PATCH for-next v3] RDMA/efa: Add EFA query MR support
+Message-ID: <20231211175019.GK2944114@nvidia.com>
+References: <20231211174715.7369-1-mrgolin@amazon.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231211174715.7369-1-mrgolin@amazon.com>
+X-ClientProxiedBy: BL1PR13CA0369.namprd13.prod.outlook.com
+ (2603:10b6:208:2c0::14) To LV2PR12MB5869.namprd12.prod.outlook.com
+ (2603:10b6:408:176::16)
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: LV2PR12MB5869:EE_|SA0PR12MB4544:EE_
+X-MS-Office365-Filtering-Correlation-Id: 22b0a752-6fbd-4ed6-1b31-08dbfa71a4a9
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	Se5BIwKe9mWM23HdRieptYXSiprRrWYYUVHO5BiHMiKWqXmwYWy1sdWVhYuzwPMVD8GFurorJPEkfbEeSTc6gs4YC9EggKO7QxTYs/A0bjTwI5vqtOzAsJ/fptsKXNx6DugqOMFPDLMRAhk9g+n5xZfSqwBeKIyo/9d7oy3EmkILnnML1dYxnl3RLtZp+GKNmmHzxRKOqd9mqfpa67cyg36zL1WYJ/r37x7K7ko9OZTs8ybm0qlaFbKvoDCvWr0NebnzPd6/Ex/YCprndNoohJ4N4GapoF1Q0juTeWy7dMb/cH1HoHA+tj2ybI+F3OJASnawACSegaY230gHSCe7Sw4mrxvXNXz98Q/XQ5IzNMpvY1o4YF+Xj01/ZoeOjEZSBWwrbwfkmuoZGXNpfFL5tB97oj91DGH/vqlXDVN40czfDJzTir9wHLU1HYF7kBaZYPF8L4vFy1yNK5FJGYzxzTr+jqij8UmYLvlDCf2ESBPJ+3vHxP7iNSnU3Ur3wejnMEezxusRaiEF3Lwg7Scgqg4AndD//Y+x/84APAj3yAl8RRQCDpTaSeR08zg5wTZi
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:LV2PR12MB5869.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366004)(346002)(376002)(396003)(39860400002)(136003)(230922051799003)(64100799003)(1800799012)(186009)(451199024)(38100700002)(86362001)(316002)(33656002)(66556008)(66476007)(41300700001)(26005)(83380400001)(2616005)(1076003)(6486002)(6512007)(6506007)(36756003)(2906002)(478600001)(66946007)(6916009)(54906003)(8936002)(4326008)(8676002)(5660300002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?us-ascii?Q?Nx/OvM5oL6CcBOwayzaUzrAPzeL2t2nTxDCk0FlB4TTeshBj4+Z5sD8Jhc4A?=
+ =?us-ascii?Q?OT5xiI4Z1oAI4MvJyp++ls602CgRl1ku/HuRl/Fybxja2WsuQHN0NepxP59m?=
+ =?us-ascii?Q?66PjCAzN3caN2xOcA+kiKOQ9STXI5jFEBZ++dTV6zuI8nihru0hbcCMnpjpH?=
+ =?us-ascii?Q?LcBFWRkz+ctN17rUYiloJQsbcFp2IK9grUYvv2dpEBM+XHvOhA+1qYhcoZmT?=
+ =?us-ascii?Q?AexkQvVg0IclMXvIzD42lOyn/ThYjF01q1lpZTPe8Y4Y0M6Q92P7gUpE4iYq?=
+ =?us-ascii?Q?Grg72QH9gulPgA+XMjI3m7tblgajPLK1lbM3QVTom2h8c2uW0+SSfnBla3tA?=
+ =?us-ascii?Q?hDckGy7SrPIMAkg8YIwxZgPZz9KeOhGMWx6MdZnyRAKc07a/yqOnwhSqhssw?=
+ =?us-ascii?Q?rV1hUIkW7KAmNH75dVWT2KxVHyYRcBPGLnL0pkiRI/D95dtjrB0GD9bjo/3c?=
+ =?us-ascii?Q?d/8SXCeSO1UoT5vrrZuWXAK4Ui6uR/ELJFjm4eNFUVnYht/nJkz4aG6YlYMb?=
+ =?us-ascii?Q?rYkvNuqHFVLOhBqIvjn5LVTRHs6fmmaW5AA92A1b/OS20U1zIrtrI2fOlAd4?=
+ =?us-ascii?Q?C6Typib/HzrzaAaQxqgoVO30LkKNE04Z7a6OYNEEkh+L8PFUMEYqxVK+Kr7M?=
+ =?us-ascii?Q?ZPHi98qck5fyKj7fn+4BrKr3XXRrA75pcAQ3H8zWxfA6SyITr+6H1MrJwtP1?=
+ =?us-ascii?Q?aUZxPAYUa/id5prd62rDtsRwecbnIMvc4W4bClIQeg73FprX/+/yDPerK+oo?=
+ =?us-ascii?Q?3yWZ8CnZcRcymfw6n+KeSkzl1lxCluj+ji/5tYEErHhZACrnCxwo+F7UP7c8?=
+ =?us-ascii?Q?ZLFlifhQO7p7UpAfQmy8nV4XF7NLsHJLykygRFz/7mxoQKa2ahAhVS2tyxI/?=
+ =?us-ascii?Q?HpBuXgQ+ECCo2b74jDQ5rtsQdCckEtLlrnzQonx50LsbpFmZna8vkqcFHz0P?=
+ =?us-ascii?Q?qO0FQSk0m/rrTEHRUVv2W0w2vDQss36rv+kqN3VZrm4+i6DMSXrGplMx0M7+?=
+ =?us-ascii?Q?GpOqS1Hej/ujJviHOpihOrvBcKn7onTrybxyQK6wOOnByLyKPZ9KmH6f7LZQ?=
+ =?us-ascii?Q?/owbrqzSy+mnkCqSreuAUdjkv/eC+wT2Uf6voDaRP9mA42wQvD+B+yVoULeW?=
+ =?us-ascii?Q?zFuInZE1VhII/Dc8d3y1MykmIzaral7CrLCObd3AStRq2GnYFwgpTf82BQ4M?=
+ =?us-ascii?Q?loKu4zg0SZA7S98WCPMM9f2aFqgltcNF/if9vF9NgkZ690EyRnWRAZKRzxdp?=
+ =?us-ascii?Q?FejiaZnKGju8ocB42A41wE2QeiPfND9BZO3hod75ZHyClw8Ih6MgVqMtX2eh?=
+ =?us-ascii?Q?/DxgH+9GRKcBvG9q5jLbl43e2nDZaGUmZF0AeqPAo/xVHVJQAj/DhH+IFdfJ?=
+ =?us-ascii?Q?hhWfXGcszKLwgv14BqYEtNi56UIVurQgCZFZ63lOFHHa458fL77FCsgirQHW?=
+ =?us-ascii?Q?N/XMThWL3iQCzfgVzzBHbYSocdp2tgahS0k3/DpQoF4dAdSe5KQSaYMSSMmE?=
+ =?us-ascii?Q?GnZFiI/obq18qAI/9o+Sj2zX+orOE0ocrkzqqijlqoej9L+u7iE5r2b0qV17?=
+ =?us-ascii?Q?oCjUDmAWxBohpadywHfYkOlqPf0PXwq6vDT6TIN3?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 22b0a752-6fbd-4ed6-1b31-08dbfa71a4a9
+X-MS-Exchange-CrossTenant-AuthSource: LV2PR12MB5869.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 11 Dec 2023 17:50:20.5062
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: IgCQ8sb1zAZGa27DB0/lDVjxBA0IwWmoSa1eAAVCr+CXdx2e8XTlk9Pf6rZ9TY1Q
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA0PR12MB4544
 
-Add EFA driver uapi definitions and register a new query MR method that
-currently returns the physical PCI buses' IDs the device is using to
-reach the MR. Update admin definitions and efa-abi accordingly.
+On Mon, Dec 11, 2023 at 05:47:15PM +0000, Michael Margolin wrote:
+> diff --git a/drivers/infiniband/hw/efa/efa_admin_cmds_defs.h b/drivers/infiniband/hw/efa/efa_admin_cmds_defs.h
+> index 9c65bd27bae0..597f7ca6f31d 100644
+> --- a/drivers/infiniband/hw/efa/efa_admin_cmds_defs.h
+> +++ b/drivers/infiniband/hw/efa/efa_admin_cmds_defs.h
+> @@ -415,6 +415,32 @@ struct efa_admin_reg_mr_resp {
+>  	 * memory region
+>  	 */
+>  	u32 r_key;
+> +
+> +	/*
+> +	 * Mask indicating which fields have valid values
+> +	 * 0 : recv_pci_bus_id
+> +	 * 1 : rdma_read_pci_bus_id
+> +	 * 2 : rdma_recv_pci_bus_id
+> +	 */
+> +	u8 validity;
+> +
+> +	/*
+> +	 * Physical PCIe bus used by the device to reach the MR for receive
+> +	 * operation
+> +	 */
+> +	u8 recv_pci_bus_id;
+> +
+> +	/*
+> +	 * Physical PCIe bus used by the device to reach the MR for RDMA read
+> +	 * operation
+> +	 */
+> +	u8 rdma_read_pci_bus_id;
+> +
+> +	/*
+> +	 * Physical PCIe bus used by the device to reach the MR for RDMA write
+> +	 * receive
+> +	 */
+> +	u8 rdma_recv_pci_bus_id;
 
-Reviewed-by: Anas Mousa <anasmous@amazon.com>
-Reviewed-by: Firas Jahjah <firasj@amazon.com>
-Signed-off-by: Michael Margolin <mrgolin@amazon.com>
----
- drivers/infiniband/hw/efa/efa.h               | 12 +++-
- .../infiniband/hw/efa/efa_admin_cmds_defs.h   | 31 +++++++++
- drivers/infiniband/hw/efa/efa_com_cmd.c       |  9 +++
- drivers/infiniband/hw/efa/efa_com_cmd.h       | 10 +++
- drivers/infiniband/hw/efa/efa_main.c          |  5 ++
- drivers/infiniband/hw/efa/efa_verbs.c         | 69 +++++++++++++++++++
- include/uapi/rdma/efa-abi.h                   | 19 +++++
- 7 files changed, 154 insertions(+), 1 deletion(-)
+What driver is bound to this other PCIe bus and how did the iommu get
+setup for it?
 
-diff --git a/drivers/infiniband/hw/efa/efa.h b/drivers/infiniband/hw/efa/efa.h
-index 7352a1f5d811..81f5aaf07091 100644
---- a/drivers/infiniband/hw/efa/efa.h
-+++ b/drivers/infiniband/hw/efa/efa.h
-@@ -1,6 +1,6 @@
- /* SPDX-License-Identifier: GPL-2.0 OR BSD-2-Clause */
- /*
-- * Copyright 2018-2021 Amazon.com, Inc. or its affiliates. All rights reserved.
-+ * Copyright 2018-2023 Amazon.com, Inc. or its affiliates. All rights reserved.
-  */
- 
- #ifndef _EFA_H_
-@@ -80,9 +80,19 @@ struct efa_pd {
- 	u16 pdn;
- };
- 
-+struct efa_mr_pci_info {
-+	u16 recv_pci_bus_id;
-+	u16 rdma_read_pci_bus_id;
-+	u16 rdma_recv_pci_bus_id;
-+	u8 recv_pci_bus_id_valid : 1;
-+	u8 rdma_read_pci_bus_id_valid : 1;
-+	u8 rdma_recv_pci_bus_id_valid : 1;
-+};
-+
- struct efa_mr {
- 	struct ib_mr ibmr;
- 	struct ib_umem *umem;
-+	struct efa_mr_pci_info pci_info;
- };
- 
- struct efa_cq {
-diff --git a/drivers/infiniband/hw/efa/efa_admin_cmds_defs.h b/drivers/infiniband/hw/efa/efa_admin_cmds_defs.h
-index 9c65bd27bae0..597f7ca6f31d 100644
---- a/drivers/infiniband/hw/efa/efa_admin_cmds_defs.h
-+++ b/drivers/infiniband/hw/efa/efa_admin_cmds_defs.h
-@@ -415,6 +415,32 @@ struct efa_admin_reg_mr_resp {
- 	 * memory region
- 	 */
- 	u32 r_key;
-+
-+	/*
-+	 * Mask indicating which fields have valid values
-+	 * 0 : recv_pci_bus_id
-+	 * 1 : rdma_read_pci_bus_id
-+	 * 2 : rdma_recv_pci_bus_id
-+	 */
-+	u8 validity;
-+
-+	/*
-+	 * Physical PCIe bus used by the device to reach the MR for receive
-+	 * operation
-+	 */
-+	u8 recv_pci_bus_id;
-+
-+	/*
-+	 * Physical PCIe bus used by the device to reach the MR for RDMA read
-+	 * operation
-+	 */
-+	u8 rdma_read_pci_bus_id;
-+
-+	/*
-+	 * Physical PCIe bus used by the device to reach the MR for RDMA write
-+	 * receive
-+	 */
-+	u8 rdma_recv_pci_bus_id;
- };
- 
- struct efa_admin_dereg_mr_cmd {
-@@ -999,6 +1025,11 @@ struct efa_admin_host_info {
- #define EFA_ADMIN_REG_MR_CMD_REMOTE_WRITE_ENABLE_MASK       BIT(1)
- #define EFA_ADMIN_REG_MR_CMD_REMOTE_READ_ENABLE_MASK        BIT(2)
- 
-+/* reg_mr_resp */
-+#define EFA_ADMIN_REG_MR_RESP_RECV_PCI_BUS_ID_MASK          BIT(0)
-+#define EFA_ADMIN_REG_MR_RESP_RDMA_READ_PCI_BUS_ID_MASK     BIT(1)
-+#define EFA_ADMIN_REG_MR_RESP_RDMA_RECV_PCI_BUS_ID_MASK     BIT(2)
-+
- /* create_cq_cmd */
- #define EFA_ADMIN_CREATE_CQ_CMD_INTERRUPT_MODE_ENABLED_MASK BIT(5)
- #define EFA_ADMIN_CREATE_CQ_CMD_VIRT_MASK                   BIT(6)
-diff --git a/drivers/infiniband/hw/efa/efa_com_cmd.c b/drivers/infiniband/hw/efa/efa_com_cmd.c
-index 576811885d59..4801640f9f4f 100644
---- a/drivers/infiniband/hw/efa/efa_com_cmd.c
-+++ b/drivers/infiniband/hw/efa/efa_com_cmd.c
-@@ -270,6 +270,15 @@ int efa_com_register_mr(struct efa_com_dev *edev,
- 
- 	result->l_key = cmd_completion.l_key;
- 	result->r_key = cmd_completion.r_key;
-+	result->pci_info.recv_pci_bus_id = cmd_completion.recv_pci_bus_id;
-+	result->pci_info.rdma_read_pci_bus_id = cmd_completion.rdma_read_pci_bus_id;
-+	result->pci_info.rdma_recv_pci_bus_id = cmd_completion.rdma_recv_pci_bus_id;
-+	result->pci_info.recv_pci_bus_id_valid = EFA_GET(&cmd_completion.validity,
-+							 EFA_ADMIN_REG_MR_RESP_RECV_PCI_BUS_ID);
-+	result->pci_info.rdma_read_pci_bus_id_valid = EFA_GET(&cmd_completion.validity,
-+							      EFA_ADMIN_REG_MR_RESP_RDMA_READ_PCI_BUS_ID);
-+	result->pci_info.rdma_recv_pci_bus_id_valid = EFA_GET(&cmd_completion.validity,
-+							      EFA_ADMIN_REG_MR_RESP_RDMA_RECV_PCI_BUS_ID);
- 
- 	return 0;
- }
-diff --git a/drivers/infiniband/hw/efa/efa_com_cmd.h b/drivers/infiniband/hw/efa/efa_com_cmd.h
-index fc97f37bb39b..00635575c3b0 100644
---- a/drivers/infiniband/hw/efa/efa_com_cmd.h
-+++ b/drivers/infiniband/hw/efa/efa_com_cmd.h
-@@ -199,6 +199,15 @@ struct efa_com_reg_mr_params {
- 	u8 indirect;
- };
- 
-+struct efa_com_mr_pci_info {
-+	u16 recv_pci_bus_id;
-+	u16 rdma_read_pci_bus_id;
-+	u16 rdma_recv_pci_bus_id;
-+	u8 recv_pci_bus_id_valid : 1;
-+	u8 rdma_read_pci_bus_id_valid : 1;
-+	u8 rdma_recv_pci_bus_id_valid : 1;
-+};
-+
- struct efa_com_reg_mr_result {
- 	/*
- 	 * To be used in conjunction with local buffers references in SQ and
-@@ -210,6 +219,7 @@ struct efa_com_reg_mr_result {
- 	 * accessed memory region
- 	 */
- 	u32 r_key;
-+	struct efa_com_mr_pci_info pci_info;
- };
- 
- struct efa_com_dereg_mr_params {
-diff --git a/drivers/infiniband/hw/efa/efa_main.c b/drivers/infiniband/hw/efa/efa_main.c
-index 15ee92081118..da4f378c7c16 100644
---- a/drivers/infiniband/hw/efa/efa_main.c
-+++ b/drivers/infiniband/hw/efa/efa_main.c
-@@ -9,6 +9,7 @@
- #include <linux/version.h>
- 
- #include <rdma/ib_user_verbs.h>
-+#include <rdma/uverbs_ioctl.h>
- 
- #include "efa.h"
- 
-@@ -36,6 +37,8 @@ MODULE_DEVICE_TABLE(pci, efa_pci_tbl);
- 	(BIT(EFA_ADMIN_FATAL_ERROR) | BIT(EFA_ADMIN_WARNING) | \
- 	 BIT(EFA_ADMIN_NOTIFICATION) | BIT(EFA_ADMIN_KEEP_ALIVE))
- 
-+extern const struct uapi_definition efa_uapi_defs[];
-+
- /* This handler will called for unknown event group or unimplemented handlers */
- static void unimplemented_aenq_handler(void *data,
- 				       struct efa_admin_aenq_entry *aenq_e)
-@@ -432,6 +435,8 @@ static int efa_ib_device_add(struct efa_dev *dev)
- 
- 	ib_set_device_ops(&dev->ibdev, &efa_dev_ops);
- 
-+	dev->ibdev.driver_def = efa_uapi_defs;
-+
- 	err = ib_register_device(&dev->ibdev, "efa_%d", &pdev->dev);
- 	if (err)
- 		goto err_destroy_eqs;
-diff --git a/drivers/infiniband/hw/efa/efa_verbs.c b/drivers/infiniband/hw/efa/efa_verbs.c
-index 0f8ca99d0827..408dc7fa3a4a 100644
---- a/drivers/infiniband/hw/efa/efa_verbs.c
-+++ b/drivers/infiniband/hw/efa/efa_verbs.c
-@@ -13,6 +13,9 @@
- #include <rdma/ib_user_verbs.h>
- #include <rdma/ib_verbs.h>
- #include <rdma/uverbs_ioctl.h>
-+#define UVERBS_MODULE_NAME efa_ib
-+#include <rdma/uverbs_named_ioctl.h>
-+#include <rdma/ib_user_ioctl_cmds.h>
- 
- #include "efa.h"
- #include "efa_io_defs.h"
-@@ -1653,6 +1656,12 @@ static int efa_register_mr(struct ib_pd *ibpd, struct efa_mr *mr, u64 start,
- 	mr->ibmr.lkey = result.l_key;
- 	mr->ibmr.rkey = result.r_key;
- 	mr->ibmr.length = length;
-+	mr->pci_info.recv_pci_bus_id = result.pci_info.recv_pci_bus_id;
-+	mr->pci_info.rdma_read_pci_bus_id = result.pci_info.rdma_read_pci_bus_id;
-+	mr->pci_info.rdma_recv_pci_bus_id = result.pci_info.rdma_recv_pci_bus_id;
-+	mr->pci_info.recv_pci_bus_id_valid = result.pci_info.recv_pci_bus_id_valid;
-+	mr->pci_info.rdma_read_pci_bus_id_valid = result.pci_info.rdma_read_pci_bus_id_valid;
-+	mr->pci_info.rdma_recv_pci_bus_id_valid = result.pci_info.rdma_recv_pci_bus_id_valid;
- 	ibdev_dbg(&dev->ibdev, "Registered mr[%d]\n", mr->ibmr.lkey);
- 
- 	return 0;
-@@ -1735,6 +1744,39 @@ struct ib_mr *efa_reg_mr(struct ib_pd *ibpd, u64 start, u64 length,
- 	return ERR_PTR(err);
- }
- 
-+static int UVERBS_HANDLER(EFA_IB_METHOD_MR_QUERY)(struct uverbs_attr_bundle *attrs)
-+{
-+	struct ib_mr *ibmr = uverbs_attr_get_obj(attrs, EFA_IB_ATTR_QUERY_MR_HANDLE);
-+	struct efa_mr *mr = to_emr(ibmr);
-+	u16 pci_bus_id_validity;
-+	int ret;
-+
-+	ret = uverbs_copy_to(attrs, EFA_IB_ATTR_QUERY_MR_RESP_RECV_PCI_BUS_ID,
-+			     &mr->pci_info.recv_pci_bus_id, sizeof(mr->pci_info.recv_pci_bus_id));
-+	if (ret)
-+		return ret;
-+
-+	ret = uverbs_copy_to(attrs, EFA_IB_ATTR_QUERY_MR_RESP_RDMA_READ_PCI_BUS_ID,
-+			     &mr->pci_info.rdma_read_pci_bus_id, sizeof(mr->pci_info.rdma_read_pci_bus_id));
-+	if (ret)
-+		return ret;
-+
-+	ret = uverbs_copy_to(attrs, EFA_IB_ATTR_QUERY_MR_RESP_RDMA_RECV_PCI_BUS_ID,
-+			     &mr->pci_info.rdma_recv_pci_bus_id, sizeof(mr->pci_info.rdma_recv_pci_bus_id));
-+	if (ret)
-+		return ret;
-+
-+	pci_bus_id_validity = (mr->pci_info.recv_pci_bus_id_valid ?
-+			       EFA_QUERY_MR_VALIDITY_RECV_PCI_BUS_ID : 0) |
-+			      (mr->pci_info.rdma_read_pci_bus_id_valid ?
-+			       EFA_QUERY_MR_VALIDITY_RDMA_READ_PCI_BUS_ID : 0) |
-+			      (mr->pci_info.rdma_recv_pci_bus_id_valid ?
-+			       EFA_QUERY_MR_VALIDITY_RDMA_RECV_PCI_BUS_ID : 0);
-+
-+	return uverbs_copy_to(attrs, EFA_IB_ATTR_QUERY_MR_RESP_PCI_BUS_ID_VALIDITY,
-+			      &pci_bus_id_validity, sizeof(pci_bus_id_validity));
-+}
-+
- int efa_dereg_mr(struct ib_mr *ibmr, struct ib_udata *udata)
- {
- 	struct efa_dev *dev = to_edev(ibmr->device);
-@@ -2157,3 +2199,30 @@ enum rdma_link_layer efa_port_link_layer(struct ib_device *ibdev,
- 	return IB_LINK_LAYER_UNSPECIFIED;
- }
- 
-+DECLARE_UVERBS_NAMED_METHOD(EFA_IB_METHOD_MR_QUERY,
-+			    UVERBS_ATTR_IDR(EFA_IB_ATTR_QUERY_MR_HANDLE,
-+					    UVERBS_OBJECT_MR,
-+					    UVERBS_ACCESS_READ,
-+					    UA_MANDATORY),
-+			    UVERBS_ATTR_PTR_OUT(EFA_IB_ATTR_QUERY_MR_RESP_PCI_BUS_ID_VALIDITY,
-+						UVERBS_ATTR_TYPE(u16),
-+						UA_MANDATORY),
-+			    UVERBS_ATTR_PTR_OUT(EFA_IB_ATTR_QUERY_MR_RESP_RECV_PCI_BUS_ID,
-+						UVERBS_ATTR_TYPE(u16),
-+						UA_MANDATORY),
-+			    UVERBS_ATTR_PTR_OUT(EFA_IB_ATTR_QUERY_MR_RESP_RDMA_READ_PCI_BUS_ID,
-+						UVERBS_ATTR_TYPE(u16),
-+						UA_MANDATORY),
-+			    UVERBS_ATTR_PTR_OUT(EFA_IB_ATTR_QUERY_MR_RESP_RDMA_RECV_PCI_BUS_ID,
-+						UVERBS_ATTR_TYPE(u16),
-+						UA_MANDATORY));
-+
-+ADD_UVERBS_METHODS(efa_mr,
-+		   UVERBS_OBJECT_MR,
-+		   &UVERBS_METHOD(EFA_IB_METHOD_MR_QUERY));
-+
-+const struct uapi_definition efa_uapi_defs[] = {
-+	UAPI_DEF_CHAIN_OBJ_TREE(UVERBS_OBJECT_MR,
-+				&efa_mr),
-+	{},
-+};
-diff --git a/include/uapi/rdma/efa-abi.h b/include/uapi/rdma/efa-abi.h
-index d94c32f28804..7ced04ca2ad9 100644
---- a/include/uapi/rdma/efa-abi.h
-+++ b/include/uapi/rdma/efa-abi.h
-@@ -7,6 +7,7 @@
- #define EFA_ABI_USER_H
- 
- #include <linux/types.h>
-+#include <rdma/ib_user_ioctl_cmds.h>
- 
- /*
-  * Increment this value if any changes that break userspace ABI
-@@ -134,4 +135,22 @@ struct efa_ibv_ex_query_device_resp {
- 	__u32 device_caps;
- };
- 
-+enum {
-+	EFA_QUERY_MR_VALIDITY_RECV_PCI_BUS_ID = 1 << 0,
-+	EFA_QUERY_MR_VALIDITY_RDMA_READ_PCI_BUS_ID = 1 << 1,
-+	EFA_QUERY_MR_VALIDITY_RDMA_RECV_PCI_BUS_ID = 1 << 2,
-+};
-+
-+enum efa_query_mr_attrs {
-+	EFA_IB_ATTR_QUERY_MR_HANDLE = (1U << UVERBS_ID_NS_SHIFT),
-+	EFA_IB_ATTR_QUERY_MR_RESP_PCI_BUS_ID_VALIDITY,
-+	EFA_IB_ATTR_QUERY_MR_RESP_RECV_PCI_BUS_ID,
-+	EFA_IB_ATTR_QUERY_MR_RESP_RDMA_READ_PCI_BUS_ID,
-+	EFA_IB_ATTR_QUERY_MR_RESP_RDMA_RECV_PCI_BUS_ID,
-+};
-+
-+enum efa_mr_methods {
-+	EFA_IB_METHOD_MR_QUERY = (1U << UVERBS_ID_NS_SHIFT),
-+};
-+
- #endif /* EFA_ABI_USER_H */
--- 
-2.40.1
-
+Jason
 
