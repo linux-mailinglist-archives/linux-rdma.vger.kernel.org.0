@@ -1,111 +1,280 @@
-Return-Path: <linux-rdma+bounces-369-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-370-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id CFD4780CF76
-	for <lists+linux-rdma@lfdr.de>; Mon, 11 Dec 2023 16:25:57 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 845E080CF90
+	for <lists+linux-rdma@lfdr.de>; Mon, 11 Dec 2023 16:31:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8CC88281955
-	for <lists+linux-rdma@lfdr.de>; Mon, 11 Dec 2023 15:25:56 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 4BB19B212CE
+	for <lists+linux-rdma@lfdr.de>; Mon, 11 Dec 2023 15:31:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6E48A4AF91;
-	Mon, 11 Dec 2023 15:25:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 80A444B5C4;
+	Mon, 11 Dec 2023 15:30:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b="Qw3tWCYT"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="mCUeV7Kz"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-qv1-xf2a.google.com (mail-qv1-xf2a.google.com [IPv6:2607:f8b0:4864:20::f2a])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 14AA1E5
-	for <linux-rdma@vger.kernel.org>; Mon, 11 Dec 2023 07:25:49 -0800 (PST)
-Received: by mail-qv1-xf2a.google.com with SMTP id 6a1803df08f44-67adea83ea6so33701256d6.0
-        for <linux-rdma@vger.kernel.org>; Mon, 11 Dec 2023 07:25:49 -0800 (PST)
+Received: from mail-yb1-xb35.google.com (mail-yb1-xb35.google.com [IPv6:2607:f8b0:4864:20::b35])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74799E5;
+	Mon, 11 Dec 2023 07:30:49 -0800 (PST)
+Received: by mail-yb1-xb35.google.com with SMTP id 3f1490d57ef6-db4422fff15so3624794276.1;
+        Mon, 11 Dec 2023 07:30:49 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google; t=1702308348; x=1702913148; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=RnKL4o3KpZTzZRDhq/XTXx5OFfjh8+mhbmJEdr3M1y0=;
-        b=Qw3tWCYTVCmHsEU/ecpIiA77ZnRoFsjRZU6l9F60D8lK45gOU30O9+A8bO+ODYDVAb
-         lYUWm4HroeMVwJRQN3VXBeYNAvT03XoiKlJDdfV2sv4fusIBU5a9cp0yBuSnV3faWz1k
-         jHNuxmVwM0TfOCZrOu3/MrN9sN5My8NcZa7Mx7ZN7JaYWo/BHDgaZYlDz+tJgoyDnW+e
-         9westBZEwRltyXDdocp9R7n8W7wxxeha7cFGp9wrOx3kMV7z79yL13trfDZnAD9Zwm2Q
-         1lZhjD6CPLTWTy4f9Yr7jqW8MYLd1amxm5y305IyCEypfLouZaWnYJt89fbHLFxsmmGC
-         b/PA==
+        d=gmail.com; s=20230601; t=1702308648; x=1702913448; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=AJli/Fl4nQv2y3bmONq0d38NoKPmHuZ4V9AFdDvJZ+M=;
+        b=mCUeV7KzaOPJ5y+Q25Xdn67U+Lr4fhNbBjF2k2cth2D6BAezIbdwOLdbx6R55gyu6V
+         qLDhwybSBOd6UfYBJujtyn4wuX7mJ9fU9DExExGefnw/TymEx1HtKeydzFmaB5W3+eUL
+         cQ++UhnmZwvJLzGt5RtG4leUysIwStkJX6qVMpIZtUQ3MK3uW+3hO6k1MNTLBLQuRlxk
+         CjaknEswwtZWMftAQrJp0R5TmVZGtokehPz4GN9H3VsRWXwt6T9N11yaH4XHfEwu9XOf
+         r+zZBW2f0j1aKio3uWg4Pzg8xq4xw6h/z/7mdWT/8pAzIVWMa98gnfxbVC49j2sgTYiA
+         29uw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702308348; x=1702913148;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=RnKL4o3KpZTzZRDhq/XTXx5OFfjh8+mhbmJEdr3M1y0=;
-        b=Ico38H2Ve6JbnANcp2zJqaCR3rWuAYzAthd6LkpcP2RZkRxZdcKOELzBb5dwCG4WXY
-         cq0IuVtIbmWsXUPXks9qwjiKbFZ42Jwl86JQsq8Ejg9E8jP5vDC183Vjcvd63YYN8LOO
-         oxV/gKeIvehkkUuTUp6L3oPDkFYLGH0AhANnDa7I2eGpHdy7hPBf+sw+0y7Rc7fA7tdG
-         d7LxiNjXAta5Es+rggI6hvFTG9HznnuB/5sbfbUyjCrhUyTAmkVRjS9Z08hXIthTF1Nk
-         Cobj2sfI7kaDRtQfZD4jgUsEsC02eepco9gq6+xykwIDRZFK1PVF56q966+LtUfnPIZx
-         m/6g==
-X-Gm-Message-State: AOJu0YyCR8FLAT6J2vvEs6jAPg3grzW5B48iF+07mSJIggqB93dqx07I
-	G5yoqbOQ5LRJc9RjnHpPJ6V2jA==
-X-Google-Smtp-Source: AGHT+IFBH7z3tXGGZRNgqPM/RvL+eXBGFEzwI0RePPMz6tIXVpWnP6XXwq3tI51ih5ycUdf1eDukDw==
-X-Received: by 2002:ad4:5761:0:b0:67a:a721:b193 with SMTP id r1-20020ad45761000000b0067aa721b193mr7280280qvx.78.1702308348225;
-        Mon, 11 Dec 2023 07:25:48 -0800 (PST)
-Received: from ziepe.ca (hlfxns017vw-142-134-23-187.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.134.23.187])
-        by smtp.gmail.com with ESMTPSA id dd18-20020ad45812000000b0067a34a4dd3asm3365383qvb.130.2023.12.11.07.25.47
+        d=1e100.net; s=20230601; t=1702308648; x=1702913448;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=AJli/Fl4nQv2y3bmONq0d38NoKPmHuZ4V9AFdDvJZ+M=;
+        b=o/xNmYjyfVP11J9b9uyfdfeUeHu/C8hAGwow+UcvA2StTMSvqjTBEpifhtFFD/mpfn
+         tCiLj1qVcB7sRdFSaLpYLGXhMezrnB8tQrBgkJcECz4RhKkmNlGMTHKa47Afg7eNynx5
+         dCdZUU3R/i9xYMwG5cbItUTCMC5MLNJIr1VucP5f92l4V33n1QJr0rH4AG94car2JqcJ
+         580RJiHeGJoNT10kPJpz5Mb0E/+KrqkgYu2qXikon67pQ5FRm3Qzi/3Bx6gWRuBi78p1
+         dZqAWn7iumwveei/OKhsIeSS6M5O3Cyf/FMDwsQs8SPtiDPoW8rbUw51deNz7nsLip06
+         wUqg==
+X-Gm-Message-State: AOJu0YxMPIWbi62xG0Fc1H3Kt1PwFQv6tLSH3Vr25b2/bEwdxCsQ+cSt
+	M4BP7mfaqbVV73c7fH9eu/E=
+X-Google-Smtp-Source: AGHT+IEJtgcUac+Z3n31MvZ7wAHTIEJmsqKX5zPJpOSYLbbdmRzecf65IMrJ+9fZl7eV4jXjOkuvSw==
+X-Received: by 2002:a25:cacf:0:b0:dbc:514f:d76 with SMTP id a198-20020a25cacf000000b00dbc514f0d76mr2515227ybg.101.1702308648363;
+        Mon, 11 Dec 2023 07:30:48 -0800 (PST)
+Received: from localhost ([2601:344:8301:57f0:f798:e824:429f:84b0])
+        by smtp.gmail.com with ESMTPSA id k15-20020a5b0a0f000000b00db54cf1383esm2558799ybq.10.2023.12.11.07.30.47
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 11 Dec 2023 07:25:47 -0800 (PST)
-Received: from jgg by wakko with local (Exim 4.95)
-	(envelope-from <jgg@ziepe.ca>)
-	id 1rCiAF-00CcR7-Aw;
-	Mon, 11 Dec 2023 11:25:47 -0400
-Date: Mon, 11 Dec 2023 11:25:47 -0400
-From: Jason Gunthorpe <jgg@ziepe.ca>
-To: Daniel Vacek <neelx@redhat.com>
-Cc: Leon Romanovsky <leon@kernel.org>, linux-rdma@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] IB/ipoib: No need to hold the lock while printing the
- warning
-Message-ID: <20231211152547.GC1489931@ziepe.ca>
-References: <20231211131051.1500834-1-neelx@redhat.com>
- <20231211132217.GF4870@unreal>
- <20231211132522.GY1489931@ziepe.ca>
- <CACjP9X8+CgoQRjs2Y9A+OwWCVxMhKyqzLhEjaguxMavHsy8VRg@mail.gmail.com>
+        Mon, 11 Dec 2023 07:30:47 -0800 (PST)
+Date: Mon, 11 Dec 2023 07:30:46 -0800
+From: Yury Norov <yury.norov@gmail.com>
+To: Souradeep Chakrabarti <schakrabarti@linux.microsoft.com>
+Cc: kys@microsoft.com, haiyangz@microsoft.com, wei.liu@kernel.org,
+	decui@microsoft.com, davem@davemloft.net, edumazet@google.com,
+	kuba@kernel.org, pabeni@redhat.com, longli@microsoft.com,
+	leon@kernel.org, cai.huoqing@linux.dev, ssengar@linux.microsoft.com,
+	vkuznets@redhat.com, tglx@linutronix.de,
+	linux-hyperv@vger.kernel.org, netdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
+	schakrabarti@microsoft.com, paulros@microsoft.com
+Subject: Re: [PATCH V5 net-next] net: mana: Assigning IRQ affinity on HT cores
+Message-ID: <ZXcrHc5QGPTZtXKf@yury-ThinkPad>
+References: <1702029754-6520-1-git-send-email-schakrabarti@linux.microsoft.com>
+ <ZXMiOwK3sOJNXHxd@yury-ThinkPad>
+ <20231211063726.GA4977@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CACjP9X8+CgoQRjs2Y9A+OwWCVxMhKyqzLhEjaguxMavHsy8VRg@mail.gmail.com>
+In-Reply-To: <20231211063726.GA4977@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
 
-On Mon, Dec 11, 2023 at 03:09:13PM +0100, Daniel Vacek wrote:
-> On Mon, Dec 11, 2023 at 2:25 PM Jason Gunthorpe <jgg@ziepe.ca> wrote:
-> >
-> > On Mon, Dec 11, 2023 at 03:22:17PM +0200, Leon Romanovsky wrote:
-> >
-> > > Please fill some text in commit message.
-> >
-> > Yes, explain *why* you are doing this
-> 
-> Oh, sorry. I did not mention it but there's no particular reason
-> really. The @Subject says it all. There should be no logical or
-> functional change other than reducing the span of that critical
-> section. In other words, just nitpicking, not a big deal.
-> 
-> While checking the code (and past changes) related to the other issue
-> I also sent today I just noticed the way 08bc327629cbd added the
-> spin_lock before returning from this function and it appeared to me
-> it's clearer the way I'm proposing here.
-> 
-> Honestly, I was not looking into why the lock is released for that
-> completion. And I'm not changing that logic.
-> 
-> If this complete() can be called with priv->lock held, the cleanup
-> would look different, of course.
+On Sun, Dec 10, 2023 at 10:37:26PM -0800, Souradeep Chakrabarti wrote:
+> On Fri, Dec 08, 2023 at 06:03:39AM -0800, Yury Norov wrote:
+> > On Fri, Dec 08, 2023 at 02:02:34AM -0800, Souradeep Chakrabarti wrote:
+> > > Existing MANA design assigns IRQ to every CPU, including sibling
+> > > hyper-threads. This may cause multiple IRQs to be active simultaneously
+> > > in the same core and may reduce the network performance with RSS.
+> > 
+> > Can you add an IRQ distribution diagram to compare before/after
+> > behavior, similarly to what I did in the other email?
+> > 
+> Let's consider this topology:
 
-complete() can be called under spinlocks just fine, AFAIK..
+Not here - in commit message, please.
 
-Jason
+> 
+> Node            0               1
+> Core        0       1       2       3
+> CPU       0   1   2   3   4   5   6   7
+> 
+>  Before  
+>  IRQ     Nodes   Cores   CPUs
+>  0       1       0       0
+>  1       1       1       2
+>  2       1       0       1
+>  3       1       1       3
+>  4       2       2       4
+>  5       2       3       6
+>  6       2       2       5
+>  7       2       3       7
+>  
+>  Now
+>  IRQ     Nodes   Cores   CPUs
+>  0       1       0       0-1
+>  1       1       1       2-3
+>  2       1       0       0-1
+>  3       1       1       2-3
+>  4       2       2       4-5
+>  5       2       3       6-7
+>  6       2       2       4-5
+>  7       2       3       6-7
+
+If you decided to take my wording, please give credits.
+
+> > > Improve the performance by assigning IRQ to non sibling CPUs in local
+> > > NUMA node. The performance improvement we are getting using ntttcp with
+> > > following patch is around 15 percent with existing design and approximately
+> > > 11 percent, when trying to assign one IRQ in each core across NUMA nodes,
+> > > if enough cores are present.
+> > 
+> > How did you measure it? In the other email you said you used perf, can
+> > you show your procedure in details?
+> I have used ntttcp for performance analysis, by perf I had meant performance
+> analysis. I have used ntttcp with following parameters
+> ntttcp -r -m 64 <receiver> 
+> 
+> ntttcp -s <receiver side ip address>  -m 64 <sender>
+> Both the VMs are in same Azure subnet and private IP address is used.
+> MTU and tcp buffer is set accordingly and number of channels are set using ethtool
+> accordingly for best performance. Also irqbalance was disabled.
+> https://github.com/microsoft/ntttcp-for-linux
+> https://learn.microsoft.com/en-us/azure/virtual-network/virtual-network-bandwidth-testing?tabs=linux
+
+OK. Can you also print the before/after outputs of ntttcp that demonstrate
++15%?
+
+> > > Suggested-by: Yury Norov <yury.norov@gmali.com>
+> > > Signed-off-by: Souradeep Chakrabarti <schakrabarti@linux.microsoft.com>
+> > > ---
+> > 
+> > [...]
+> > 
+> > >  .../net/ethernet/microsoft/mana/gdma_main.c   | 92 +++++++++++++++++--
+> > >  1 file changed, 83 insertions(+), 9 deletions(-)
+> > > 
+> > > diff --git a/drivers/net/ethernet/microsoft/mana/gdma_main.c b/drivers/net/ethernet/microsoft/mana/gdma_main.c
+> > > index 6367de0c2c2e..18e8908c5d29 100644
+> > > --- a/drivers/net/ethernet/microsoft/mana/gdma_main.c
+> > > +++ b/drivers/net/ethernet/microsoft/mana/gdma_main.c
+> > > @@ -1243,15 +1243,56 @@ void mana_gd_free_res_map(struct gdma_resource *r)
+> > >  	r->size = 0;
+> > >  }
+> > >  
+> > > +static int irq_setup(int *irqs, int nvec, int start_numa_node)
+
+Is it intentional that irqs and nvec are signed? If not, please make
+them unsigned.
+
+> > > +{
+> > > +	int w, cnt, cpu, err = 0, i = 0;
+> > > +	int next_node = start_numa_node;
+> > 
+> > What for this?
+> This is the local numa node, from where to start hopping.
+> Please see how we are calling irq_setup(). We are passing the array of allocated irqs, total
+> number of irqs allocated, and the local numa node to the device.
+
+I'll ask again: you copy parameter (start_numa_node) to a local
+variable (next_node), and never use start_numa_node after that.
+
+You can just use the parameter, and avoid creating local variable at
+all, so what for the latter exist?
+
+The naming is confusing. I think just 'node' is OK here.
+
+> > > +	const struct cpumask *next, *prev = cpu_none_mask;
+> > > +	cpumask_var_t curr, cpus;
+> > > +
+> > > +	if (!zalloc_cpumask_var(&curr, GFP_KERNEL)) {
+> > > +		err = -ENOMEM;
+> > > +		return err;
+> > > +	}
+> > > +	if (!zalloc_cpumask_var(&cpus, GFP_KERNEL)) {
+> > 
+> >                 free(curr);
+> Will fix it in next version. Thanks for pointing.
+
+And also drop 'err' - just 'return -ENOMEM'.
+
+> > 
+> > > +		err = -ENOMEM;
+> > > +		return err;
+> > > +	}
+> > > +
+> > > +	rcu_read_lock();
+> > > +	for_each_numa_hop_mask(next, next_node) {
+> > > +		cpumask_andnot(curr, next, prev);
+> > > +		for (w = cpumask_weight(curr), cnt = 0; cnt < w; ) {
+> > > +			cpumask_copy(cpus, curr);
+> > > +			for_each_cpu(cpu, cpus) {
+> > > +				irq_set_affinity_and_hint(irqs[i], topology_sibling_cpumask(cpu));
+> > > +				if (++i == nvec)
+> > > +					goto done;
+> > 
+> > Think what if you're passed with irq_setup(NULL, 0, 0).
+> > That's why I suggested to place this check at the beginning.
+> > 
+> irq_setup() is a helper function for mana_gd_setup_irqs(), which already takes
+> care of no NULL pointer for irqs, and 0 number of interrupts can not be passed.
+> 
+> nvec = pci_alloc_irq_vectors(pdev, 2, max_irqs, PCI_IRQ_MSIX);
+> if (nvec < 0)
+> 	return nvec;
+
+I know that. But still it's a bug. The common convention is that if a
+0-length array is passed to a function, it should not dereference the
+pointer.
+
+...
+
+> > > @@ -1287,21 +1336,44 @@ static int mana_gd_setup_irqs(struct pci_dev *pdev)
+> > >  			goto free_irq;
+> > >  		}
+> > >  
+> > > -		err = request_irq(irq, mana_gd_intr, 0, gic->name, gic);
+> > > -		if (err)
+> > > -			goto free_irq;
+> > > -
+> > > -		cpu = cpumask_local_spread(i, gc->numa_node);
+> > > -		irq_set_affinity_and_hint(irq, cpumask_of(cpu));
+> > > +		if (!i) {
+> > > +			err = request_irq(irq, mana_gd_intr, 0, gic->name, gic);
+> > > +			if (err)
+> > > +				goto free_irq;
+> > > +
+> > > +			/* If number of IRQ is one extra than number of online CPUs,
+> > > +			 * then we need to assign IRQ0 (hwc irq) and IRQ1 to
+> > > +			 * same CPU.
+> > > +			 * Else we will use different CPUs for IRQ0 and IRQ1.
+> > > +			 * Also we are using cpumask_local_spread instead of
+> > > +			 * cpumask_first for the node, because the node can be
+> > > +			 * mem only.
+> > > +			 */
+> > > +			if (start_irq_index) {
+> > > +				cpu = cpumask_local_spread(i, gc->numa_node);
+> > 
+> > I already mentioned that: if i == 0, you don't need to spread, just
+> > pick 1st cpu from node.
+> The reason I have picked cpumask_local_spread here, is that, the gc->numa_node 
+> can be a memory only node, in that case we need to jump to next node to get the CPU.
+> Which cpumask_local_spread() using sched_numa_find_nth_cpu() takes care off.
+
+OK, makes sense.
+
+What if you need to distribute more IRQs than the number of CPUs? In
+that case you'd call the function many times. But because you return
+0, user has no chance catch that. I think you should handle it inside
+the helper, or do like this:
+
+        while (nvec) {
+                distributed = irq_setup(irqs, nvec, node);
+                if (distributed < 0)
+                        break;
+
+                irq += distributed;
+                nvec -= distributed;
+        }
+
+Thanks,
+Yury
 
