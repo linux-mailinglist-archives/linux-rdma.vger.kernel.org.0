@@ -1,123 +1,187 @@
-Return-Path: <linux-rdma+bounces-386-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-387-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 262DA80E4C1
-	for <lists+linux-rdma@lfdr.de>; Tue, 12 Dec 2023 08:20:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 0BD8880E579
+	for <lists+linux-rdma@lfdr.de>; Tue, 12 Dec 2023 09:08:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D16251F22CD1
-	for <lists+linux-rdma@lfdr.de>; Tue, 12 Dec 2023 07:20:53 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0D7B81F21027
+	for <lists+linux-rdma@lfdr.de>; Tue, 12 Dec 2023 08:08:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 048FF16431;
-	Tue, 12 Dec 2023 07:20:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CB11F179B8;
+	Tue, 12 Dec 2023 08:08:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="qTWObTxw"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="combx/Cs"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 58C39DE
+	for <linux-rdma@vger.kernel.org>; Tue, 12 Dec 2023 00:08:00 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1702368479;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=WXqf2vh/WJNQMCP9P3WEFWf2Hyjzd2SEqm/uvxIkz6Y=;
+	b=combx/CsHrh+k8BWFHkVZa/4UotYcSkmjJ/gw0Fwp7Y8x8TTXPUX1MvlfLK6l7gP1bt8eF
+	42d74sbcCM131OyuEO1oSP+UpIgWKg9xOS4wkEbefV/J0uvwUfQAskec6J9xCXp97n2U+m
+	t2VnmRvp4hLLkknq1lsR15eFd7L06zg=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-28-0rMprEnIO2CiBXKl6z94Hg-1; Tue, 12 Dec 2023 03:07:56 -0500
+X-MC-Unique: 0rMprEnIO2CiBXKl6z94Hg-1
+Received: from smtp.corp.redhat.com (int-mx10.intmail.prod.int.rdu2.redhat.com [10.11.54.10])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B568815AF5
-	for <linux-rdma@vger.kernel.org>; Tue, 12 Dec 2023 07:20:48 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 65A7DC433C7;
-	Tue, 12 Dec 2023 07:20:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1702365648;
-	bh=j0MFmRZIveokNQ2WYne6lAGwE8bUkMpXx0vVfZZNOGM=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=qTWObTxwgs63uGgAbwyGBDp2jTXD35kovEop2NRFpP+LDWj1/HIvB4JqmAIdfADcX
-	 aCIRLwj3/tI4HcW6WlNw0Wh076GBJRVSje9CCaXzA6NySa89mlbFze3zKCCKKikgBl
-	 ayw44pZey6lNWr10galq6Ug0NDYJi9w9BP91oo8WR9IwgZ1sfuIDVCQFFBAJ6hAwYV
-	 Ej+T0eFXCshgaGLQbMfH/95nAJB8euYOQMMRi8uUvHP1NdC3RxlnwKcf67W5R7GXY0
-	 sCOgEKhZisWr4bkT7s/chBTxP9c6XC/67e4AlOfjrEh/QiPqLfdUUEiZn2MUncibTU
-	 +hU8DSNh4roVw==
-Date: Tue, 12 Dec 2023 09:20:43 +0200
-From: Leon Romanovsky <leon@kernel.org>
-To: "Margolin, Michael" <mrgolin@amazon.com>
-Cc: jgg@nvidia.com, linux-rdma@vger.kernel.org, sleybo@amazon.com,
-	matua@amazon.com, gal.pressman@linux.dev,
-	Anas Mousa <anasmous@amazon.com>, Firas Jahjah <firasj@amazon.com>
-Subject: Re: [PATCH for-next v2] RDMA/efa: Add EFA query MR support
-Message-ID: <20231212072043.GK4870@unreal>
-References: <20231207142748.10345-1-mrgolin@amazon.com>
- <20231211081032.GB4870@unreal>
- <c9bfd0e3-3640-46da-8a9b-4391c90ed1aa@amazon.com>
- <20231211112623.GE4870@unreal>
- <f0c9275f-130a-478e-86d2-865349606bcf@amazon.com>
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id B41AA85A588;
+	Tue, 12 Dec 2023 08:07:55 +0000 (UTC)
+Received: from metal.redhat.com (unknown [10.45.224.23])
+	by smtp.corp.redhat.com (Postfix) with ESMTP id 17ECD492BE6;
+	Tue, 12 Dec 2023 08:07:53 +0000 (UTC)
+From: Daniel Vacek <neelx@redhat.com>
+To: Jason Gunthorpe <jgg@ziepe.ca>,
+	Leon Romanovsky <leon@kernel.org>
+Cc: linux-rdma@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Daniel Vacek <neelx@redhat.com>,
+	Yuya Fujita-bishamonten <fj-lsoft-rh-driver@dl.jp.fujitsu.com>
+Subject: [PATCH v2] IB/ipoib: Fix mcast list locking
+Date: Tue, 12 Dec 2023 09:07:45 +0100
+Message-ID: <20231212080746.1528802-1-neelx@redhat.com>
+In-Reply-To: <20231211130426.1500427-1-neelx@redhat.com>
+References: <20231211130426.1500427-1-neelx@redhat.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <f0c9275f-130a-478e-86d2-865349606bcf@amazon.com>
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.10
 
-On Mon, Dec 11, 2023 at 07:46:40PM +0200, Margolin, Michael wrote:
-> 
-> On 12/11/2023 1:26 PM, Leon Romanovsky wrote:
-> > CAUTION: This email originated from outside of the organization. Do not click links or open attachments unless you can confirm the sender and know the content is safe.
-> >
-> >
-> >
-> > On Mon, Dec 11, 2023 at 12:35:34PM +0200, Margolin, Michael wrote:
-> >> On 12/11/2023 10:10 AM, Leon Romanovsky wrote:
-> >>> CAUTION: This email originated from outside of the organization. Do not click links or open attachments unless you can confirm the sender and know the content is safe.
-> >>>
-> >>>
-> >>>
-> >>> On Thu, Dec 07, 2023 at 02:27:48PM +0000, Michael Margolin wrote:
-> >>>> Add EFA driver uapi definitions and register a new query MR method that
-> >>>> currently returns the physical PCI buses' IDs the device is using to
-> >>>> reach the MR. Update admin definitions and efa-abi accordingly.
-> >>>>
-> >>>> Reviewed-by: Anas Mousa <anasmous@amazon.com>
-> >>>> Reviewed-by: Firas Jahjah <firasj@amazon.com>
-> >>>> Signed-off-by: Michael Margolin <mrgolin@amazon.com>
-> >>>> ---
-> >>>>  drivers/infiniband/hw/efa/efa.h               |  5 +-
-> >>>>  .../infiniband/hw/efa/efa_admin_cmds_defs.h   | 31 ++++++++
-> >>>>  drivers/infiniband/hw/efa/efa_com_cmd.c       |  6 ++
-> >>>>  drivers/infiniband/hw/efa/efa_com_cmd.h       |  4 +
-> >>>>  drivers/infiniband/hw/efa/efa_main.c          |  5 ++
-> >>>>  drivers/infiniband/hw/efa/efa_verbs.c         | 77 +++++++++++++++++++
-> >>>>  include/uapi/rdma/efa-abi.h                   | 19 +++++
-> >>>>  7 files changed, 146 insertions(+), 1 deletion(-)
-> >>> <...>
-> >>>
-> >>>> +     /*
-> >>>> +      * Mask indicating which fields have valid values
-> >>>> +      * 0 : recv_pci_bus_id
-> >>>> +      * 1 : rdma_read_pci_bus_id
-> >>>> +      * 2 : rdma_recv_pci_bus_id
-> >>>> +      */
-> >>>> +     u8 validity;
-> >>> <...>
-> >>>
-> >>>>  #define EFA_GID_SIZE 16
-> >>>> +#define EFA_INVALID_PCI_BUS_ID 0xffff
-> >>> Is 0xffff value guaranteed by PCI subsystem to be invalid? Why don't you
-> >>> provide "validity" field to userspace instead?
-> >> The 0xffff value in only used internally in the driver to indicate an
-> >> invalid id and isn't exposed to userspace. For userspace there is a
-> >> validity field as you suggested:
-> >>
-> >> +       return uverbs_copy_to(attrs,
-> >> EFA_IB_ATTR_QUERY_MR_RESP_PCI_BUS_ID_VALIDITY,
-> >> +                             &pci_bus_id_validity,
-> >> sizeof(pci_bus_id_validity));
-> > So please rely on your EFA_GET(&cmd_completion.validity, EFA_ADMIN_XXX_PCI_BUS_ID)
-> > checks when you fill pci_bus_id_validity and not on 0xffff value which can be
-> > valid from PCI perspective.
-> >
-> > Thanks
-> 
-> 0xffff can't practically be a valid PCI id in this context, 
+Releasing the `priv->lock` while iterating the `priv->multicast_list` in
+`ipoib_mcast_join_task()` opens a window for `ipoib_mcast_dev_flush()` to
+remove the items while in the middle of iteration. If the mcast is removed
+while the lock was dropped, the for loop spins forever resulting in a hard
+lockup (as was reported on RHEL 4.18.0-372.75.1.el8_6 kernel):
 
-As long as PCI subsystem doesn't declare 0xffff as invalid, we can't
-assume it too.
+    Task A (kworker/u72:2 below)       | Task B (kworker/u72:0 below)
+    -----------------------------------+-----------------------------------
+    ipoib_mcast_join_task(work)        | ipoib_ib_dev_flush_light(work)
+      spin_lock_irq(&priv->lock)       | __ipoib_ib_dev_flush(priv, ...)
+      list_for_each_entry(mcast,       | ipoib_mcast_dev_flush(dev = priv->dev)
+          &priv->multicast_list, list) |
+        ipoib_mcast_join(dev, mcast)   |
+          spin_unlock_irq(&priv->lock) |
+                                       |   spin_lock_irqsave(&priv->lock, flags)
+                                       |   list_for_each_entry_safe(mcast, tmcast,
+                                       |                  &priv->multicast_list, list)
+                                       |     list_del(&mcast->list);
+                                       |     list_add_tail(&mcast->list, &remove_list)
+                                       |   spin_unlock_irqrestore(&priv->lock, flags)
+          spin_lock_irq(&priv->lock)   |
+                                       |   ipoib_mcast_remove_list(&remove_list)
+   (Here, `mcast` is no longer on the  |     list_for_each_entry_safe(mcast, tmcast,
+    `priv->multicast_list` and we keep |                            remove_list, list)
+    spinning on the `remove_list` of   |  >>>  wait_for_completion(&mcast->done)
+    the other thread which is blocked  |
+    and the list is still valid on     |
+    it's stack.)
 
-Thanks
+Fix this by keeping the lock held and changing to GFP_ATOMIC to prevent
+eventual sleeps.
+Unfortunately we could not reproduce the lockup and confirm this fix but
+based on the code review I think this fix should address such lockups.
+
+crash> bc 31
+PID: 747      TASK: ff1c6a1a007e8000  CPU: 31   COMMAND: "kworker/u72:2"
+--
+    [exception RIP: ipoib_mcast_join_task+0x1b1]
+    RIP: ffffffffc0944ac1  RSP: ff646f199a8c7e00  RFLAGS: 00000002
+    RAX: 0000000000000000  RBX: ff1c6a1a04dc82f8  RCX: 0000000000000000
+                                  work (&priv->mcast_task{,.work})
+    RDX: ff1c6a192d60ac68  RSI: 0000000000000286  RDI: ff1c6a1a04dc8000
+           &mcast->list
+    RBP: ff646f199a8c7e90   R8: ff1c699980019420   R9: ff1c6a1920c9a000
+    R10: ff646f199a8c7e00  R11: ff1c6a191a7d9800  R12: ff1c6a192d60ac00
+                                                         mcast
+    R13: ff1c6a1d82200000  R14: ff1c6a1a04dc8000  R15: ff1c6a1a04dc82d8
+           dev                    priv (&priv->lock)     &priv->multicast_list (aka head)
+    ORIG_RAX: ffffffffffffffff  CS: 0010  SS: 0018
+--- <NMI exception stack> ---
+ #5 [ff646f199a8c7e00] ipoib_mcast_join_task+0x1b1 at ffffffffc0944ac1 [ib_ipoib]
+ #6 [ff646f199a8c7e98] process_one_work+0x1a7 at ffffffff9bf10967
+
+crash> rx ff646f199a8c7e68
+ff646f199a8c7e68:  ff1c6a1a04dc82f8 <<< work = &priv->mcast_task.work
+
+crash> list -hO ipoib_dev_priv.multicast_list ff1c6a1a04dc8000
+(empty)
+
+crash> ipoib_dev_priv.mcast_task.work.func,mcast_mutex.owner.counter ff1c6a1a04dc8000
+  mcast_task.work.func = 0xffffffffc0944910 <ipoib_mcast_join_task>,
+  mcast_mutex.owner.counter = 0xff1c69998efec000
+
+crash> b 8
+PID: 8        TASK: ff1c69998efec000  CPU: 33   COMMAND: "kworker/u72:0"
+--
+ #3 [ff646f1980153d50] wait_for_completion+0x96 at ffffffff9c7d7646
+ #4 [ff646f1980153d90] ipoib_mcast_remove_list+0x56 at ffffffffc0944dc6 [ib_ipoib]
+ #5 [ff646f1980153de8] ipoib_mcast_dev_flush+0x1a7 at ffffffffc09455a7 [ib_ipoib]
+ #6 [ff646f1980153e58] __ipoib_ib_dev_flush+0x1a4 at ffffffffc09431a4 [ib_ipoib]
+ #7 [ff646f1980153e98] process_one_work+0x1a7 at ffffffff9bf10967
+
+crash> rx ff646f1980153e68
+ff646f1980153e68:  ff1c6a1a04dc83f0 <<< work = &priv->flush_light
+
+crash> ipoib_dev_priv.flush_light.func,broadcast ff1c6a1a04dc8000
+  flush_light.func = 0xffffffffc0943820 <ipoib_ib_dev_flush_light>,
+  broadcast = 0x0,
+
+The mcast(s) on the `remove_list` (the remaining part of the ex `priv->multicast_list`):
+
+crash> list -s ipoib_mcast.done.done ipoib_mcast.list -H ff646f1980153e10 | paste - -
+ff1c6a192bd0c200	  done.done = 0x0,
+ff1c6a192d60ac00	  done.done = 0x0,
+
+Reported-by: Yuya Fujita-bishamonten <fj-lsoft-rh-driver@dl.jp.fujitsu.com>
+Signed-off-by: Daniel Vacek <neelx@redhat.com>
+---
+ drivers/infiniband/ulp/ipoib/ipoib_multicast.c | 6 +-----
+ 1 file changed, 1 insertion(+), 5 deletions(-)
+
+diff --git a/drivers/infiniband/ulp/ipoib/ipoib_multicast.c b/drivers/infiniband/ulp/ipoib/ipoib_multicast.c
+index 5b3154503bf4..bca80fe07584 100644
+--- a/drivers/infiniband/ulp/ipoib/ipoib_multicast.c
++++ b/drivers/infiniband/ulp/ipoib/ipoib_multicast.c
+@@ -531,21 +531,17 @@ static int ipoib_mcast_join(struct net_device *dev, struct ipoib_mcast *mcast)
+ 		if (test_bit(IPOIB_MCAST_FLAG_SENDONLY, &mcast->flags))
+ 			rec.join_state = SENDONLY_FULLMEMBER_JOIN;
+ 	}
+-	spin_unlock_irq(&priv->lock);
+ 
+ 	multicast = ib_sa_join_multicast(&ipoib_sa_client, priv->ca, priv->port,
+-					 &rec, comp_mask, GFP_KERNEL,
++					 &rec, comp_mask, GFP_ATOMIC,
+ 					 ipoib_mcast_join_complete, mcast);
+-	spin_lock_irq(&priv->lock);
+ 	if (IS_ERR(multicast)) {
+ 		ret = PTR_ERR(multicast);
+ 		ipoib_warn(priv, "ib_sa_join_multicast failed, status %d\n", ret);
+ 		/* Requeue this join task with a backoff delay */
+ 		__ipoib_mcast_schedule_join_thread(priv, mcast, 1);
+ 		clear_bit(IPOIB_MCAST_FLAG_BUSY, &mcast->flags);
+-		spin_unlock_irq(&priv->lock);
+ 		complete(&mcast->done);
+-		spin_lock_irq(&priv->lock);
+ 	}
+ 	return 0;
+ }
+-- 
+2.43.0
+
 
