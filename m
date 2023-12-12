@@ -1,209 +1,135 @@
-Return-Path: <linux-rdma+bounces-392-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-393-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C4FB580F4C4
-	for <lists+linux-rdma@lfdr.de>; Tue, 12 Dec 2023 18:40:18 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 39A5980F536
+	for <lists+linux-rdma@lfdr.de>; Tue, 12 Dec 2023 19:07:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0215E1C20CCB
-	for <lists+linux-rdma@lfdr.de>; Tue, 12 Dec 2023 17:40:18 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C76CE281ED2
+	for <lists+linux-rdma@lfdr.de>; Tue, 12 Dec 2023 18:07:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 610B37D8AC;
-	Tue, 12 Dec 2023 17:40:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CEB8B7E76C;
+	Tue, 12 Dec 2023 18:07:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="MiEDnXLl"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="KDfDBBP8"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-yw1-x1134.google.com (mail-yw1-x1134.google.com [IPv6:2607:f8b0:4864:20::1134])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5965983;
-	Tue, 12 Dec 2023 09:40:07 -0800 (PST)
-Received: by mail-yw1-x1134.google.com with SMTP id 00721157ae682-5de93b677f4so40779567b3.2;
-        Tue, 12 Dec 2023 09:40:07 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1702402806; x=1703007606; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=ITfpyvT+yTSAKPf02SD+zR8L+CboQOJw9W17Y7lhgTk=;
-        b=MiEDnXLlBbVXhuEbvCL7UB3cd1JRmvKpiKgnV1xalgIlZYhgEIQ0MLzsm3LoC6j5QC
-         P3Yad5igxpvdGv0X+Wun6+iX3lSrCJ8IpSci74fXvpo2bK/LIjJj3SQerSV4c0zGcmhz
-         VGcEcFDYf6ni5CH8IYFRsmHtPRduVOX+eabx1oKprm/zcTSJBJYR+7lx4n3CAix9ztLJ
-         juAfcEEMHLk5FXNkczlkmTmvabUn/R2OV/rCu2ls2PJb+YCIDL2zNfzVNyuVNaUOAvJ5
-         I3Rmdz+M4MIsRrddGuPjJqu3FySLWtl1lzj35MsdvdWNQRqoMX7p0KEJxrKDhOmzmrDd
-         aZpg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702402806; x=1703007606;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=ITfpyvT+yTSAKPf02SD+zR8L+CboQOJw9W17Y7lhgTk=;
-        b=ra2iGIJRgdmjDpaLySL/QusBZ+8079dCJRoXTYy5GwnUadSPZHQEDip+jsJe2fA2Nc
-         D7PgMWkpgrV2y5TmPfCMs6yNK1yPRWaNKH4PJAn0aQ0Rb2zvAEJLULi4uMi5DMR6e/6T
-         cf0m5jAEGIAL6gB/apvIXwws6aj/rPV0lbq7xoElyw5c21bEq7KXmlQafZHv5CfSNx4a
-         eIGzZiswoC+fEac3mUBArOlTOMHN8+6Ul9WpIPQOETfG0hW4j6eBuSpjFa+nv3PGgIPH
-         qrd9pjeaxziYcGVqQoJv52VU3OIiiemVWYgeuny3N44uZbKPKWpkPGojCPhN84bXlzLL
-         oogQ==
-X-Gm-Message-State: AOJu0YxNG06pf6c64vO+i0XFGzg7ifMfQpgbym2TjkFW6cS5gvrlLTdz
-	xDf45uzF7y1hICE9sGy710I=
-X-Google-Smtp-Source: AGHT+IHZegAjNqkB+GIWw3B413cDU8EGl5b0I2oVSZ+rPLJ5//rOzR/8TbRJ6dMtw9/6NoigVqUwTA==
-X-Received: by 2002:a81:4e0c:0:b0:5e1:ea5d:ba8e with SMTP id c12-20020a814e0c000000b005e1ea5dba8emr1214190ywb.6.1702402806314;
-        Tue, 12 Dec 2023 09:40:06 -0800 (PST)
-Received: from localhost ([2601:344:8301:57f0:38aa:1c88:df05:9b73])
-        by smtp.gmail.com with ESMTPSA id fg2-20020a05690c324200b005d997db3b2fsm904517ywb.23.2023.12.12.09.40.05
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 12 Dec 2023 09:40:05 -0800 (PST)
-Date: Tue, 12 Dec 2023 09:40:05 -0800
-From: Yury Norov <yury.norov@gmail.com>
-To: Souradeep Chakrabarti <schakrabarti@microsoft.com>
-Cc: Souradeep Chakrabarti <schakrabarti@linux.microsoft.com>,
-	KY Srinivasan <kys@microsoft.com>,
-	Haiyang Zhang <haiyangz@microsoft.com>,
-	"wei.liu@kernel.org" <wei.liu@kernel.org>,
-	Dexuan Cui <decui@microsoft.com>,
-	"davem@davemloft.net" <davem@davemloft.net>,
-	"edumazet@google.com" <edumazet@google.com>,
-	"kuba@kernel.org" <kuba@kernel.org>,
-	"pabeni@redhat.com" <pabeni@redhat.com>,
-	Long Li <longli@microsoft.com>, "leon@kernel.org" <leon@kernel.org>,
-	"cai.huoqing@linux.dev" <cai.huoqing@linux.dev>,
-	"ssengar@linux.microsoft.com" <ssengar@linux.microsoft.com>,
-	"vkuznets@redhat.com" <vkuznets@redhat.com>,
-	"tglx@linutronix.de" <tglx@linutronix.de>,
-	"linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
-	"netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	"linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-	Paul Rosswurm <paulros@microsoft.com>
-Subject: Re: [EXTERNAL] Re: [PATCH V5 net-next] net: mana: Assigning IRQ
- affinity on HT cores
-Message-ID: <ZXia9UVgWfV/7cEW@yury-ThinkPad>
-References: <1702029754-6520-1-git-send-email-schakrabarti@linux.microsoft.com>
- <ZXMiOwK3sOJNXHxd@yury-ThinkPad>
- <20231211063726.GA4977@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
- <ZXcrHc5QGPTZtXKf@yury-ThinkPad>
- <20231212113856.GA17123@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
- <ZXiLetPnY5TlAQGY@yury-ThinkPad>
- <PUZP153MB07885B197469B61D8907B1E3CC8EA@PUZP153MB0788.APCP153.PROD.OUTLOOK.COM>
+Received: from out-171.mta1.migadu.com (out-171.mta1.migadu.com [IPv6:2001:41d0:203:375::ab])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A7E4FA6
+	for <linux-rdma@vger.kernel.org>; Tue, 12 Dec 2023 10:07:49 -0800 (PST)
+Message-ID: <c2414371-d638-4ac3-9658-30a07bc514e0@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1702404468;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=pjHvklEiRYn38NAVGIhmPply2jge2dAXbNrhR9YNbxw=;
+	b=KDfDBBP8OS88ybhY0Noij+1BLRxbvrokZ5pkpj3W0HHc6YjTWH/vHx1Gcuevsqr7AhyJVC
+	3a1SXjlhZ76/uG20XUZtNrmY5L/35R1SUSmqb5uG6p0Kf6SfILdKleOMtTYpRcVg9w9ZBB
+	PLix8+tA3ZFP+jci774QOru/wAf18qg=
+Date: Wed, 13 Dec 2023 02:07:40 +0800
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <PUZP153MB07885B197469B61D8907B1E3CC8EA@PUZP153MB0788.APCP153.PROD.OUTLOOK.COM>
+Subject: Re: [PATCH for-next v7 0/7] On-Demand Paging on SoftRoCE
+To: "Daisuke Matsuda (Fujitsu)" <matsuda-daisuke@fujitsu.com>,
+ Jason Gunthorpe <jgg@nvidia.com>
+Cc: "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+ "leon@kernel.org" <leon@kernel.org>,
+ "zyjzyj2000@gmail.com" <zyjzyj2000@gmail.com>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ "rpearsonhpe@gmail.com" <rpearsonhpe@gmail.com>,
+ "Xiao Yang (Fujitsu)" <yangx.jy@fujitsu.com>,
+ "Zhijian Li (Fujitsu)" <lizhijian@fujitsu.com>,
+ "Yasunori Gotou (Fujitsu)" <y-goto@fujitsu.com>
+References: <cover.1699503619.git.matsuda-daisuke@fujitsu.com>
+ <20231205001139.GA2772824@nvidia.com>
+ <d639b4e3-e12a-47e8-9b03-2398b076fdbf@linux.dev>
+ <OS3PR01MB98659C7691D5DFB98D98D2BDE58BA@OS3PR01MB9865.jpnprd01.prod.outlook.com>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Zhu Yanjun <yanjun.zhu@linux.dev>
+In-Reply-To: <OS3PR01MB98659C7691D5DFB98D98D2BDE58BA@OS3PR01MB9865.jpnprd01.prod.outlook.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
 
-On Tue, Dec 12, 2023 at 05:18:31PM +0000, Souradeep Chakrabarti wrote:
+在 2023/12/7 14:37, Daisuke Matsuda (Fujitsu) 写道:
+> On Tue, Dec 5, 2023 10:51 AM Zhu Yanjun wrote:
+>>
+>> 在 2023/12/5 8:11, Jason Gunthorpe 写道:
+>>> On Thu, Nov 09, 2023 at 02:44:45PM +0900, Daisuke Matsuda wrote:
+>>>>
+>>>> Daisuke Matsuda (7):
+>>>>     RDMA/rxe: Always defer tasks on responder and completer to workqueue
+>>>>     RDMA/rxe: Make MR functions accessible from other rxe source code
+>>>>     RDMA/rxe: Move resp_states definition to rxe_verbs.h
+>>>>     RDMA/rxe: Add page invalidation support
+>>>>     RDMA/rxe: Allow registering MRs for On-Demand Paging
+>>>>     RDMA/rxe: Add support for Send/Recv/Write/Read with ODP
+>>>>     RDMA/rxe: Add support for the traditional Atomic operations with ODP
+>>>
+>>> What is the current situation with rxe? I don't recall seeing the bugs
+>>> that were reported get fixed?
+> 
+> Well, I suppose Jason is mentioning "blktests srp/002 hang".
+> cf. https://lore.kernel.org/linux-rdma/dsg6rd66tyiei32zaxs6ddv5ebefr5vtxjwz6d2ewqrcwisogl@ge7jzan7dg5u/T/
+> 
+> It is likely to be a timing issue. Bob reported that "siw hangs with the debug kernel",
+> so the hang looks not specific to rxe.
+> cf. https://lore.kernel.org/all/53ede78a-f73d-44cd-a555-f8ff36bd9c55@acm.org/T/
+> I think we need to decide whether to continue to block patches to rxe since nobody has successfully fixed the issue.
 > 
 > 
-> >-----Original Message-----
-> >From: Yury Norov <yury.norov@gmail.com>
-> >Sent: Tuesday, December 12, 2023 10:04 PM
-> >To: Souradeep Chakrabarti <schakrabarti@linux.microsoft.com>
-> >Cc: KY Srinivasan <kys@microsoft.com>; Haiyang Zhang
-> ><haiyangz@microsoft.com>; wei.liu@kernel.org; Dexuan Cui
-> ><decui@microsoft.com>; davem@davemloft.net; edumazet@google.com;
-> >kuba@kernel.org; pabeni@redhat.com; Long Li <longli@microsoft.com>;
-> >leon@kernel.org; cai.huoqing@linux.dev; ssengar@linux.microsoft.com;
-> >vkuznets@redhat.com; tglx@linutronix.de; linux-hyperv@vger.kernel.org;
-> >netdev@vger.kernel.org; linux-kernel@vger.kernel.org; linux-
-> >rdma@vger.kernel.org; Souradeep Chakrabarti <schakrabarti@microsoft.com>;
-> >Paul Rosswurm <paulros@microsoft.com>
-> >Subject: [EXTERNAL] Re: [PATCH V5 net-next] net: mana: Assigning IRQ affinity on
-> >HT cores
-> >
-> >[Some people who received this message don't often get email from
-> >yury.norov@gmail.com. Learn why this is important at
-> >https://aka.ms/LearnAboutSenderIdentification ]
-> >
-> >> > > > > +     rcu_read_lock();
-> >> > > > > +     for_each_numa_hop_mask(next, next_node) {
-> >> > > > > +             cpumask_andnot(curr, next, prev);
-> >> > > > > +             for (w = cpumask_weight(curr), cnt = 0; cnt < w; ) {
-> >> > > > > +                     cpumask_copy(cpus, curr);
-> >> > > > > +                     for_each_cpu(cpu, cpus) {
-> >> > > > > +                             irq_set_affinity_and_hint(irqs[i],
-> >topology_sibling_cpumask(cpu));
-> >> > > > > +                             if (++i == nvec)
-> >> > > > > +                                     goto done;
-> >> > > >
-> >> > > > Think what if you're passed with irq_setup(NULL, 0, 0).
-> >> > > > That's why I suggested to place this check at the beginning.
-> >> > > >
-> >> > > irq_setup() is a helper function for mana_gd_setup_irqs(), which
-> >> > > already takes care of no NULL pointer for irqs, and 0 number of interrupts can
-> >not be passed.
-> >> > >
-> >> > > nvec = pci_alloc_irq_vectors(pdev, 2, max_irqs, PCI_IRQ_MSIX); if
-> >> > > (nvec < 0)
-> >> > >   return nvec;
-> >> >
-> >> > I know that. But still it's a bug. The common convention is that if
-> >> > a 0-length array is passed to a function, it should not dereference
-> >> > the pointer.
-> >> >
-> >> I will add one if check in the begining of irq_setup() to verify the
-> >> pointer and the nvec number.
-> >
-> >Yes you can, but what for? This is an error anyways, and you don't care about early
-> >return. So instead of adding and bearing extra logic, I'd just swap 2 lines of existing
-> >code.
-> Problem with the code you had proposed is shown below:
+> There is another issue that causes kernel panic.
+> [bug report][bisected] rdma_rxe: blktests srp lead kernel panic with 64k page size
+> cf. https://lore.kernel.org/all/CAHj4cs9XRqE25jyVw9rj9YugffLn5+f=1znaBEnu1usLOciD+g@mail.gmail.com/T/
 > 
-> > ./a.out
->  i is 1
->  i is 2
->  i is 3
->  i is 4
->  i is 5
->  i is 6
->  i is 7
->  i is 8
->  i is 9
->  i is 10
-> in done
-> lisatest ~
-> > cat test3.c
-> #include<stdio.h>
+> https://patchwork.kernel.org/project/linux-rdma/list/?series=798592&state=*
+> Zhijian has submitted patches to fix this, and he got some comments.
+> It looks he is involved in CXL driver intensively these days.
+> I guess he is still working on it.
 > 
-> main() {
->         int i = 0, cur, nvec = 10;
->         for (cur = 0; cur < 20; cur++) {
->                 if (i++ == nvec)
->                         goto done;
->                 printf(" i is %d\n", i);
->         }
-> done:                                                                                                                                                                                                                                                                                  
-> printf("in done\n");
-> }
+>>
+>> Exactly. A problem is reported in the link
+>> https://www.spinics.net/lists/linux-rdma/msg120947.html
+>>
+>> It seems that a variable 'entry' set but not used
+>> [-Wunused-but-set-variable]
 > 
-> So now it is because post increment operator in i++,
-> For that reason in the posposed code we will hit irqs[nvec], which may cause crash, as size of
-> irqs is nvec.
+> Yeah, I can revise the patch anytime.
 > 
-> Now if we preincrement, then we will loop correctly, but nvec == 0 check will not happen.
+>>
+>> And ODP is an important feature. Should we suggest to add a test case
+>> about this ODP in rdma-core to verify this ODP feature?
 > 
-> Like here with preincrement in above code we are not hitting (i == nvec) .
-> > ./a.out
->  i is 1
->  i is 2
->  i is 3
->  i is 4
->  i is 5
->  i is 6
->  i is 7
->  i is 8
->  i is 9
-> in done
-> 
-> So with preincrement if we want the check for nvec == 0, we will need the check with extra if condition
-> before the loop.
+> Rxe can share the same tests with mlx5.
+> I added test cases for Write, Read and Atomic operations with ODP,
+> and we can add more tests if there are any suggestions.
+> Cf. https://github.com/linux-rdma/rdma-core/blob/master/tests/test_odp.py
 
-OK, I see. Then just separate it:
+Thanks a lot.
+Do you make tests with blktests after your patches are applied with the 
+latest kernel?
 
-         for (cur = 0; cur < 20; cur++) {
-                 if (i == nvec)
-                         goto done;
-                 printf(" i is %d\n", i++);
+Zhu Yanjun
+
+> 
+> Thanks,
+> Daisuke Matsuda
+> 
+>>
+>> Zhu Yanjun
+>>
+>>>
+>>> I'm reluctant to dig a deeper hold until it is done?
+>>>
+>>> Thanks,
+>>> Jason
+> 
+
 
