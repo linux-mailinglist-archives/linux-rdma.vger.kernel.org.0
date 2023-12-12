@@ -1,187 +1,72 @@
-Return-Path: <linux-rdma+bounces-387-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-388-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0BD8880E579
-	for <lists+linux-rdma@lfdr.de>; Tue, 12 Dec 2023 09:08:33 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 105ED80E624
+	for <lists+linux-rdma@lfdr.de>; Tue, 12 Dec 2023 09:29:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0D7B81F21027
-	for <lists+linux-rdma@lfdr.de>; Tue, 12 Dec 2023 08:08:32 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id AC51F1F21910
+	for <lists+linux-rdma@lfdr.de>; Tue, 12 Dec 2023 08:29:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CB11F179B8;
-	Tue, 12 Dec 2023 08:08:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B1B9118AEF;
+	Tue, 12 Dec 2023 08:29:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="combx/Cs"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="VPIgkCUS"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 58C39DE
-	for <linux-rdma@vger.kernel.org>; Tue, 12 Dec 2023 00:08:00 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1702368479;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=WXqf2vh/WJNQMCP9P3WEFWf2Hyjzd2SEqm/uvxIkz6Y=;
-	b=combx/CsHrh+k8BWFHkVZa/4UotYcSkmjJ/gw0Fwp7Y8x8TTXPUX1MvlfLK6l7gP1bt8eF
-	42d74sbcCM131OyuEO1oSP+UpIgWKg9xOS4wkEbefV/J0uvwUfQAskec6J9xCXp97n2U+m
-	t2VnmRvp4hLLkknq1lsR15eFd7L06zg=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-28-0rMprEnIO2CiBXKl6z94Hg-1; Tue, 12 Dec 2023 03:07:56 -0500
-X-MC-Unique: 0rMprEnIO2CiBXKl6z94Hg-1
-Received: from smtp.corp.redhat.com (int-mx10.intmail.prod.int.rdu2.redhat.com [10.11.54.10])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id B41AA85A588;
-	Tue, 12 Dec 2023 08:07:55 +0000 (UTC)
-Received: from metal.redhat.com (unknown [10.45.224.23])
-	by smtp.corp.redhat.com (Postfix) with ESMTP id 17ECD492BE6;
-	Tue, 12 Dec 2023 08:07:53 +0000 (UTC)
-From: Daniel Vacek <neelx@redhat.com>
-To: Jason Gunthorpe <jgg@ziepe.ca>,
-	Leon Romanovsky <leon@kernel.org>
-Cc: linux-rdma@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Daniel Vacek <neelx@redhat.com>,
-	Yuya Fujita-bishamonten <fj-lsoft-rh-driver@dl.jp.fujitsu.com>
-Subject: [PATCH v2] IB/ipoib: Fix mcast list locking
-Date: Tue, 12 Dec 2023 09:07:45 +0100
-Message-ID: <20231212080746.1528802-1-neelx@redhat.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 75C77182A8
+	for <linux-rdma@vger.kernel.org>; Tue, 12 Dec 2023 08:29:36 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9FFA5C433C8;
+	Tue, 12 Dec 2023 08:29:35 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1702369776;
+	bh=vHjfn2BQPRZ2rrdN6+fIB1WMP3nGWTkfEKZYxRvs6o4=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+	b=VPIgkCUSlJYWd6EVmfo6CLJ+RAW4I6rMQ63h0+7bn6w8odIKL6IGWMS1IPu45J4mP
+	 1m9xCm+QNxHv0FgqxP6yt7IT9BtwAeO4jTPvJTeuCDs4ayynDv7Ih0I8ao1NK4mafj
+	 zlIYlhTCNcYwbbSGPgMxxmvlaAw97EZoUuJm1VP9tGVR9jop623EVxNan9brDU7ELw
+	 73PxTLrjmeUuo+H+FJavHK+prWM2vWZM6HwQt8PTtwnCVkozOhM/BNOV42QSJ2AmhN
+	 cv4tLpaPx/61xDuxl16//iMww+UqGJuKsIbUISVQAS+9mIyiNoWm1SujwD5TrwV4qU
+	 SQonCo9AFgZ4g==
+From: Leon Romanovsky <leon@kernel.org>
+To: Jason Gunthorpe <jgg@ziepe.ca>, Daniel Vacek <neelx@redhat.com>
+Cc: linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org
 In-Reply-To: <20231211130426.1500427-1-neelx@redhat.com>
 References: <20231211130426.1500427-1-neelx@redhat.com>
+Subject: Re: [PATCH 0/2] IB/ipoib fixes
+Message-Id: <170236977177.265346.10129245400198931968.b4-ty@kernel.org>
+Date: Tue, 12 Dec 2023 10:29:31 +0200
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.10
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Mailer: b4 0.12-dev-a055d
 
-Releasing the `priv->lock` while iterating the `priv->multicast_list` in
-`ipoib_mcast_join_task()` opens a window for `ipoib_mcast_dev_flush()` to
-remove the items while in the middle of iteration. If the mcast is removed
-while the lock was dropped, the for loop spins forever resulting in a hard
-lockup (as was reported on RHEL 4.18.0-372.75.1.el8_6 kernel):
 
-    Task A (kworker/u72:2 below)       | Task B (kworker/u72:0 below)
-    -----------------------------------+-----------------------------------
-    ipoib_mcast_join_task(work)        | ipoib_ib_dev_flush_light(work)
-      spin_lock_irq(&priv->lock)       | __ipoib_ib_dev_flush(priv, ...)
-      list_for_each_entry(mcast,       | ipoib_mcast_dev_flush(dev = priv->dev)
-          &priv->multicast_list, list) |
-        ipoib_mcast_join(dev, mcast)   |
-          spin_unlock_irq(&priv->lock) |
-                                       |   spin_lock_irqsave(&priv->lock, flags)
-                                       |   list_for_each_entry_safe(mcast, tmcast,
-                                       |                  &priv->multicast_list, list)
-                                       |     list_del(&mcast->list);
-                                       |     list_add_tail(&mcast->list, &remove_list)
-                                       |   spin_unlock_irqrestore(&priv->lock, flags)
-          spin_lock_irq(&priv->lock)   |
-                                       |   ipoib_mcast_remove_list(&remove_list)
-   (Here, `mcast` is no longer on the  |     list_for_each_entry_safe(mcast, tmcast,
-    `priv->multicast_list` and we keep |                            remove_list, list)
-    spinning on the `remove_list` of   |  >>>  wait_for_completion(&mcast->done)
-    the other thread which is blocked  |
-    and the list is still valid on     |
-    it's stack.)
+On Mon, 11 Dec 2023 14:04:23 +0100, Daniel Vacek wrote:
+> The first patch (hopefully) fixes a real issue while the second is an
+> unrelated cleanup. But it shares a context so sending as a series.
+> 
+> Daniel Vacek (2):
+>   IB/ipoib: Fix mcast list locking
+>   IB/ipoib: Clean up redundant netif_addr_lock
+> 
+> [...]
 
-Fix this by keeping the lock held and changing to GFP_ATOMIC to prevent
-eventual sleeps.
-Unfortunately we could not reproduce the lockup and confirm this fix but
-based on the code review I think this fix should address such lockups.
+Applied, thanks!
 
-crash> bc 31
-PID: 747      TASK: ff1c6a1a007e8000  CPU: 31   COMMAND: "kworker/u72:2"
---
-    [exception RIP: ipoib_mcast_join_task+0x1b1]
-    RIP: ffffffffc0944ac1  RSP: ff646f199a8c7e00  RFLAGS: 00000002
-    RAX: 0000000000000000  RBX: ff1c6a1a04dc82f8  RCX: 0000000000000000
-                                  work (&priv->mcast_task{,.work})
-    RDX: ff1c6a192d60ac68  RSI: 0000000000000286  RDI: ff1c6a1a04dc8000
-           &mcast->list
-    RBP: ff646f199a8c7e90   R8: ff1c699980019420   R9: ff1c6a1920c9a000
-    R10: ff646f199a8c7e00  R11: ff1c6a191a7d9800  R12: ff1c6a192d60ac00
-                                                         mcast
-    R13: ff1c6a1d82200000  R14: ff1c6a1a04dc8000  R15: ff1c6a1a04dc82d8
-           dev                    priv (&priv->lock)     &priv->multicast_list (aka head)
-    ORIG_RAX: ffffffffffffffff  CS: 0010  SS: 0018
---- <NMI exception stack> ---
- #5 [ff646f199a8c7e00] ipoib_mcast_join_task+0x1b1 at ffffffffc0944ac1 [ib_ipoib]
- #6 [ff646f199a8c7e98] process_one_work+0x1a7 at ffffffff9bf10967
+[1/1] IB/ipoib: Fix mcast list locking
+      https://git.kernel.org/rdma/rdma/c/4f973e211b3b1c
 
-crash> rx ff646f199a8c7e68
-ff646f199a8c7e68:  ff1c6a1a04dc82f8 <<< work = &priv->mcast_task.work
-
-crash> list -hO ipoib_dev_priv.multicast_list ff1c6a1a04dc8000
-(empty)
-
-crash> ipoib_dev_priv.mcast_task.work.func,mcast_mutex.owner.counter ff1c6a1a04dc8000
-  mcast_task.work.func = 0xffffffffc0944910 <ipoib_mcast_join_task>,
-  mcast_mutex.owner.counter = 0xff1c69998efec000
-
-crash> b 8
-PID: 8        TASK: ff1c69998efec000  CPU: 33   COMMAND: "kworker/u72:0"
---
- #3 [ff646f1980153d50] wait_for_completion+0x96 at ffffffff9c7d7646
- #4 [ff646f1980153d90] ipoib_mcast_remove_list+0x56 at ffffffffc0944dc6 [ib_ipoib]
- #5 [ff646f1980153de8] ipoib_mcast_dev_flush+0x1a7 at ffffffffc09455a7 [ib_ipoib]
- #6 [ff646f1980153e58] __ipoib_ib_dev_flush+0x1a4 at ffffffffc09431a4 [ib_ipoib]
- #7 [ff646f1980153e98] process_one_work+0x1a7 at ffffffff9bf10967
-
-crash> rx ff646f1980153e68
-ff646f1980153e68:  ff1c6a1a04dc83f0 <<< work = &priv->flush_light
-
-crash> ipoib_dev_priv.flush_light.func,broadcast ff1c6a1a04dc8000
-  flush_light.func = 0xffffffffc0943820 <ipoib_ib_dev_flush_light>,
-  broadcast = 0x0,
-
-The mcast(s) on the `remove_list` (the remaining part of the ex `priv->multicast_list`):
-
-crash> list -s ipoib_mcast.done.done ipoib_mcast.list -H ff646f1980153e10 | paste - -
-ff1c6a192bd0c200	  done.done = 0x0,
-ff1c6a192d60ac00	  done.done = 0x0,
-
-Reported-by: Yuya Fujita-bishamonten <fj-lsoft-rh-driver@dl.jp.fujitsu.com>
-Signed-off-by: Daniel Vacek <neelx@redhat.com>
----
- drivers/infiniband/ulp/ipoib/ipoib_multicast.c | 6 +-----
- 1 file changed, 1 insertion(+), 5 deletions(-)
-
-diff --git a/drivers/infiniband/ulp/ipoib/ipoib_multicast.c b/drivers/infiniband/ulp/ipoib/ipoib_multicast.c
-index 5b3154503bf4..bca80fe07584 100644
---- a/drivers/infiniband/ulp/ipoib/ipoib_multicast.c
-+++ b/drivers/infiniband/ulp/ipoib/ipoib_multicast.c
-@@ -531,21 +531,17 @@ static int ipoib_mcast_join(struct net_device *dev, struct ipoib_mcast *mcast)
- 		if (test_bit(IPOIB_MCAST_FLAG_SENDONLY, &mcast->flags))
- 			rec.join_state = SENDONLY_FULLMEMBER_JOIN;
- 	}
--	spin_unlock_irq(&priv->lock);
- 
- 	multicast = ib_sa_join_multicast(&ipoib_sa_client, priv->ca, priv->port,
--					 &rec, comp_mask, GFP_KERNEL,
-+					 &rec, comp_mask, GFP_ATOMIC,
- 					 ipoib_mcast_join_complete, mcast);
--	spin_lock_irq(&priv->lock);
- 	if (IS_ERR(multicast)) {
- 		ret = PTR_ERR(multicast);
- 		ipoib_warn(priv, "ib_sa_join_multicast failed, status %d\n", ret);
- 		/* Requeue this join task with a backoff delay */
- 		__ipoib_mcast_schedule_join_thread(priv, mcast, 1);
- 		clear_bit(IPOIB_MCAST_FLAG_BUSY, &mcast->flags);
--		spin_unlock_irq(&priv->lock);
- 		complete(&mcast->done);
--		spin_lock_irq(&priv->lock);
- 	}
- 	return 0;
- }
+Best regards,
 -- 
-2.43.0
-
+Leon Romanovsky <leon@kernel.org>
 
