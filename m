@@ -1,127 +1,148 @@
-Return-Path: <linux-rdma+bounces-414-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-415-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 567E8811A63
-	for <lists+linux-rdma@lfdr.de>; Wed, 13 Dec 2023 18:06:05 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 62F39811F51
+	for <lists+linux-rdma@lfdr.de>; Wed, 13 Dec 2023 20:49:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7AE94281060
-	for <lists+linux-rdma@lfdr.de>; Wed, 13 Dec 2023 17:06:01 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 00F1C2822DF
+	for <lists+linux-rdma@lfdr.de>; Wed, 13 Dec 2023 19:49:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EB09C3A28E;
-	Wed, 13 Dec 2023 17:05:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 71E5C7316C;
+	Wed, 13 Dec 2023 19:49:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=amazon.com header.i=@amazon.com header.b="So0zNrRw"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="U+XgiCcU"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from smtp-fw-9102.amazon.com (smtp-fw-9102.amazon.com [207.171.184.29])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AEBEAF3
-	for <linux-rdma@vger.kernel.org>; Wed, 13 Dec 2023 09:05:54 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1702487155; x=1734023155;
-  h=message-id:date:mime-version:to:cc:references:from:
-   in-reply-to:content-transfer-encoding:subject;
-  bh=/+LYKQuxTh5lPh3DEQNUwPRNxzcNkwApILOs9WLJc44=;
-  b=So0zNrRwHNoEMKGpC8FL4w1ygjMlmylIA7JcUHlGs9ivZVqtefpFP2iw
-   BzL6COSqgJRSlyPRGq0G2Bvm/UBd2Rr7Nyq/aJckbzQqqXMRhrUmQMSfy
-   vOrZm+iAfQK5hdhBcLTcZ5RXC2F/9BbXeZcRGsp9G+qw8jHadzu7qs5ra
-   o=;
-X-IronPort-AV: E=Sophos;i="6.04,273,1695686400"; 
-   d="scan'208";a="382710510"
-Subject: Re: [PATCH for-next v3] RDMA/efa: Add EFA query MR support
-Received: from pdx4-co-svc-p1-lb2-vlan3.amazon.com (HELO email-inbound-relay-pdx-2b-m6i4x-f253a3a3.us-west-2.amazon.com) ([10.25.36.214])
-  by smtp-border-fw-9102.sea19.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Dec 2023 17:05:36 +0000
-Received: from smtpout.prod.us-east-1.prod.farcaster.email.amazon.dev (pdx2-ws-svc-p26-lb5-vlan2.pdx.amazon.com [10.39.38.66])
-	by email-inbound-relay-pdx-2b-m6i4x-f253a3a3.us-west-2.amazon.com (Postfix) with ESMTPS id AEB9A895A6;
-	Wed, 13 Dec 2023 17:05:34 +0000 (UTC)
-Received: from EX19MTAEUA001.ant.amazon.com [10.0.43.254:20096]
- by smtpin.naws.eu-west-1.prod.farcaster.email.amazon.dev [10.0.6.151:2525] with esmtp (Farcaster)
- id 96edc5f9-5b6b-4696-8808-2becafdadfa4; Wed, 13 Dec 2023 17:05:32 +0000 (UTC)
-X-Farcaster-Flow-ID: 96edc5f9-5b6b-4696-8808-2becafdadfa4
-Received: from EX19D031EUB003.ant.amazon.com (10.252.61.88) by
- EX19MTAEUA001.ant.amazon.com (10.252.50.223) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.40; Wed, 13 Dec 2023 17:05:32 +0000
-Received: from [192.168.67.49] (10.85.143.175) by
- EX19D031EUB003.ant.amazon.com (10.252.61.88) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.40; Wed, 13 Dec 2023 17:05:29 +0000
-Message-ID: <c9790d7c-e904-4014-a238-343f376a08b9@amazon.com>
-Date: Wed, 13 Dec 2023 19:05:24 +0200
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.24])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 564A49C
+	for <linux-rdma@vger.kernel.org>; Wed, 13 Dec 2023 11:49:14 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1702496954; x=1734032954;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=AsC/bkFxnvGz28yB18zGRCfVJtAAcMt1vR1R3uw0LSs=;
+  b=U+XgiCcUAx8Gs0IKG0N77Q6gvJzkYFzVeZiwFCa8ZCAcI54P/AB/PbRW
+   uuQEF4UAFZo+WLbmX6N06TUNQPex6iU303p1sS5Y/GTkOl2B8Exh38NMH
+   gz1WnTP2HJ9WN6lYkru4WPQXs5LRRhOlPR2Mjhvjm3e8lvTgfIWM3YBQB
+   Ujl6KmP51fBN6wOMOR1jUWhm3A31TO+vj+NYIZ8+phu8K9VC3UraTZJou
+   j/ORwlFBCLgnHpjqrIWvpbzydyj/a+VluGpTEpZ8Dl8d1syWS4Qr3+hUg
+   KLLTG7GcywH8GxrRq6LKtDjvIqxyP4TJTq9j65BqXyyxJRaVMucFCEX8V
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10923"; a="397801793"
+X-IronPort-AV: E=Sophos;i="6.04,273,1695711600"; 
+   d="scan'208";a="397801793"
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Dec 2023 11:49:13 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10923"; a="774064431"
+X-IronPort-AV: E=Sophos;i="6.04,273,1695711600"; 
+   d="scan'208";a="774064431"
+Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
+  by orsmga002.jf.intel.com with ESMTP; 13 Dec 2023 11:49:12 -0800
+Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1rDVED-000L4t-22;
+	Wed, 13 Dec 2023 19:49:09 +0000
+Date: Thu, 14 Dec 2023 03:48:20 +0800
+From: kernel test robot <lkp@intel.com>
+To: Selvin Xavier <selvin.xavier@broadcom.com>, leon@kernel.org,
+	jgg@ziepe.ca
+Cc: llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
+	linux-rdma@vger.kernel.org,
+	Selvin Xavier <selvin.xavier@broadcom.com>
+Subject: Re: [PATCH for-next 2/2] RDMA/bnxt_re: Share a page to expose per CQ
+ info with userspace
+Message-ID: <202312140331.djKEJ9zR-lkp@intel.com>
+References: <1702438411-23530-3-git-send-email-selvin.xavier@broadcom.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Content-Language: en-US
-To: Jason Gunthorpe <jgg@nvidia.com>
-CC: <leon@kernel.org>, <linux-rdma@vger.kernel.org>, <sleybo@amazon.com>,
-	<matua@amazon.com>, <gal.pressman@linux.dev>, Anas Mousa
-	<anasmous@amazon.com>, Firas Jahjah <firasj@amazon.com>
-References: <20231211174715.7369-1-mrgolin@amazon.com>
- <20231211175019.GK2944114@nvidia.com>
-From: "Margolin, Michael" <mrgolin@amazon.com>
-In-Reply-To: <20231211175019.GK2944114@nvidia.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: EX19D035UWB004.ant.amazon.com (10.13.138.104) To
- EX19D031EUB003.ant.amazon.com (10.252.61.88)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1702438411-23530-3-git-send-email-selvin.xavier@broadcom.com>
+
+Hi Selvin,
+
+kernel test robot noticed the following build warnings:
+
+[auto build test WARNING on rdma/for-next]
+[also build test WARNING on next-20231213]
+[cannot apply to linus/master v6.7-rc5]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
+
+url:    https://github.com/intel-lab-lkp/linux/commits/Selvin-Xavier/RDMA-bnxt_re-Add-UAPI-to-share-a-page-with-user-space/20231213-115222
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git for-next
+patch link:    https://lore.kernel.org/r/1702438411-23530-3-git-send-email-selvin.xavier%40broadcom.com
+patch subject: [PATCH for-next 2/2] RDMA/bnxt_re: Share a page to expose per CQ info with userspace
+config: x86_64-allyesconfig (https://download.01.org/0day-ci/archive/20231214/202312140331.djKEJ9zR-lkp@intel.com/config)
+compiler: clang version 16.0.4 (https://github.com/llvm/llvm-project.git ae42196bc493ffe877a7e3dff8be32035dea4d07)
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231214/202312140331.djKEJ9zR-lkp@intel.com/reproduce)
+
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202312140331.djKEJ9zR-lkp@intel.com/
+
+All warnings (new ones prefixed by >>):
+
+>> drivers/infiniband/hw/bnxt_re/ib_verbs.c:4236:20: warning: no previous prototype for function 'bnxt_re_search_for_cq' [-Wmissing-prototypes]
+   struct bnxt_re_cq *bnxt_re_search_for_cq(struct bnxt_re_dev *rdev, u32 cq_id)
+                      ^
+   drivers/infiniband/hw/bnxt_re/ib_verbs.c:4236:1: note: declare 'static' if the function is not intended to be used outside of this translation unit
+   struct bnxt_re_cq *bnxt_re_search_for_cq(struct bnxt_re_dev *rdev, u32 cq_id)
+   ^
+   static 
+   drivers/infiniband/hw/bnxt_re/ib_verbs.c:4473:30: warning: variable 'cctx' set but not used [-Wunused-but-set-variable]
+           struct bnxt_qplib_chip_ctx *cctx;
+                                       ^
+>> drivers/infiniband/hw/bnxt_re/ib_verbs.c:4510:7: warning: variable 'addr' is used uninitialized whenever switch case is taken [-Wsometimes-uninitialized]
+           case BNXT_RE_SRQ_TOGGLE_MEM:
+                ^~~~~~~~~~~~~~~~~~~~~~
+   drivers/infiniband/hw/bnxt_re/ib_verbs.c:4517:42: note: uninitialized use occurs here
+           entry = bnxt_re_mmap_entry_insert(uctx, addr, mmap_flag, &mem_offset);
+                                                   ^~~~
+   drivers/infiniband/hw/bnxt_re/ib_verbs.c:4481:10: note: initialize the variable 'addr' to silence this warning
+           u64 addr;
+                   ^
+                    = 0
+>> drivers/infiniband/hw/bnxt_re/ib_verbs.c:4510:7: warning: variable 'mmap_flag' is used uninitialized whenever switch case is taken [-Wsometimes-uninitialized]
+           case BNXT_RE_SRQ_TOGGLE_MEM:
+                ^~~~~~~~~~~~~~~~~~~~~~
+   drivers/infiniband/hw/bnxt_re/ib_verbs.c:4517:48: note: uninitialized use occurs here
+           entry = bnxt_re_mmap_entry_insert(uctx, addr, mmap_flag, &mem_offset);
+                                                         ^~~~~~~~~
+   drivers/infiniband/hw/bnxt_re/ib_verbs.c:4472:2: note: variable 'mmap_flag' is declared here
+           enum bnxt_re_mmap_flag mmap_flag;
+           ^
+   4 warnings generated.
 
 
-On 12/11/2023 7:50 PM, Jason Gunthorpe wrote:
-> CAUTION: This email originated from outside of the organization. Do not click links or open attachments unless you can confirm the sender and know the content is safe.
->
->
->
-> On Mon, Dec 11, 2023 at 05:47:15PM +0000, Michael Margolin wrote:
->> diff --git a/drivers/infiniband/hw/efa/efa_admin_cmds_defs.h b/drivers/infiniband/hw/efa/efa_admin_cmds_defs.h
->> index 9c65bd27bae0..597f7ca6f31d 100644
->> --- a/drivers/infiniband/hw/efa/efa_admin_cmds_defs.h
->> +++ b/drivers/infiniband/hw/efa/efa_admin_cmds_defs.h
->> @@ -415,6 +415,32 @@ struct efa_admin_reg_mr_resp {
->>        * memory region
->>        */
->>       u32 r_key;
->> +
->> +     /*
->> +      * Mask indicating which fields have valid values
->> +      * 0 : recv_pci_bus_id
->> +      * 1 : rdma_read_pci_bus_id
->> +      * 2 : rdma_recv_pci_bus_id
->> +      */
->> +     u8 validity;
->> +
->> +     /*
->> +      * Physical PCIe bus used by the device to reach the MR for receive
->> +      * operation
->> +      */
->> +     u8 recv_pci_bus_id;
->> +
->> +     /*
->> +      * Physical PCIe bus used by the device to reach the MR for RDMA read
->> +      * operation
->> +      */
->> +     u8 rdma_read_pci_bus_id;
->> +
->> +     /*
->> +      * Physical PCIe bus used by the device to reach the MR for RDMA write
->> +      * receive
->> +      */
->> +     u8 rdma_recv_pci_bus_id;
-> What driver is bound to this other PCIe bus and how did the iommu get
-> setup for it?
->
-> Jason
+vim +/bnxt_re_search_for_cq +4236 drivers/infiniband/hw/bnxt_re/ib_verbs.c
 
-It's internal bus that is not directly exposed to the host. Addresses
-mapping is acquired from accelerator's driver as for any MR residing in
-accelerator memory, and the translation is owned by devices on that bus.
+  4235	
+> 4236	struct bnxt_re_cq *bnxt_re_search_for_cq(struct bnxt_re_dev *rdev, u32 cq_id)
+  4237	{
+  4238		struct bnxt_re_cq *cq = NULL, *tmp_cq;
+  4239	
+  4240		hash_for_each_possible(rdev->cq_hash, tmp_cq, hash_entry, cq_id) {
+  4241			if (tmp_cq->qplib_cq.id == cq_id) {
+  4242				cq = tmp_cq;
+  4243				break;
+  4244			}
+  4245		}
+  4246		return cq;
+  4247	}
+  4248	
 
-
-Michael
-
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
