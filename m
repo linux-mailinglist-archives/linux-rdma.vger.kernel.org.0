@@ -1,105 +1,279 @@
-Return-Path: <linux-rdma+bounces-422-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-423-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7D8BF81286D
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9519381286E
 	for <lists+linux-rdma@lfdr.de>; Thu, 14 Dec 2023 07:47:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D4A94B20B11
-	for <lists+linux-rdma@lfdr.de>; Thu, 14 Dec 2023 06:47:45 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E386C2828D1
+	for <lists+linux-rdma@lfdr.de>; Thu, 14 Dec 2023 06:47:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 237DCD293;
-	Thu, 14 Dec 2023 06:47:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 77B37D2E9;
+	Thu, 14 Dec 2023 06:47:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b="PClQ413Q"
+	dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b="ZaV3Q0T6"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-oi1-x229.google.com (mail-oi1-x229.google.com [IPv6:2607:f8b0:4864:20::229])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C97C910F
-	for <linux-rdma@vger.kernel.org>; Wed, 13 Dec 2023 22:47:35 -0800 (PST)
-Received: by mail-oi1-x229.google.com with SMTP id 5614622812f47-3b9dbbaa9a9so6483345b6e.2
-        for <linux-rdma@vger.kernel.org>; Wed, 13 Dec 2023 22:47:35 -0800 (PST)
+Received: from mail-pf1-x435.google.com (mail-pf1-x435.google.com [IPv6:2607:f8b0:4864:20::435])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 526DCF5
+	for <linux-rdma@vger.kernel.org>; Wed, 13 Dec 2023 22:47:38 -0800 (PST)
+Received: by mail-pf1-x435.google.com with SMTP id d2e1a72fcca58-6ce7632b032so4274471b3a.1
+        for <linux-rdma@vger.kernel.org>; Wed, 13 Dec 2023 22:47:38 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google; t=1702536455; x=1703141255; darn=vger.kernel.org;
-        h=message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=LN2+smBc3LfbZWakGdA/teH9pr0cMQzCKxmghfC7n1Y=;
-        b=PClQ413QarPOxc4ZtMPesftvN34+yx6j61gpRrY45x+xwgv0KbdvWnN1S8fMNmDRqY
-         u/IOq5DMMqVmGHTHjqnJFIc/lpgu+OlPoocw0g/yobbhbV79N5XtwBQ7HdWMEmfOLAa/
-         n/pklaU+sgNbunguHq1ei9bAfTuJ9jyIArvmo=
+        d=broadcom.com; s=google; t=1702536458; x=1703141258; darn=vger.kernel.org;
+        h=references:in-reply-to:message-id:date:subject:cc:to:from:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=Q9rxkYfNtW6a+ygjik/7+7zDA4LH9B3XCG0rfbdUhb8=;
+        b=ZaV3Q0T68aQW0wMJ42fDFafbK5aEZfSfVxmLn6o9eZDO4FD5eJxyFpzjKLa1eX2tCL
+         dYDaMxgyxbYo3hpGY0gAnBl6oABbvEJNBsqbaUjqextnfvaQtiyGD4spvV3BJSTdf23t
+         XWoecSmjyOQxB5/8GwjR4pdsCpML7nBLH8JmI=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702536455; x=1703141255;
-        h=message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=LN2+smBc3LfbZWakGdA/teH9pr0cMQzCKxmghfC7n1Y=;
-        b=BVJGcDDGL6xVagBDfvmyWALiWFe/TGjwIt88QjqZY4ocpsJjnBKpHBElrS7Q8BhcOu
-         Nsqzl1q57PLMyW0c7ntgYTHAJGQGby3IoyvWfphzstAJj/ul5HEZYX9V3vhWWIpb2Sqj
-         pq6HTiiCxERGh/b/6Iy1KG1PfV8NPWKdJDMahylOquSVAh29LG1scCgNCQDXW4lo5TLa
-         Amfb0uKmd6tdPzWqrnKrvlaSwe08D3bBAnSJYMUaTAoy7I/j0j8YEIUDtXycizMZCOyJ
-         f6rjHT/LkBLcAMFV8gr2Lwp5KZ9gIXL4L86LzzKT/bK6vvpsr2KGqzegjdACYlTd7mVy
-         P3YQ==
-X-Gm-Message-State: AOJu0Yz0JqdwHqV4GB4owOPpcXttHvLXS0XkRtUqhFasfrq4WzLyRR5O
-	KesLeldWh3LflrJVvef/xnFAeg==
-X-Google-Smtp-Source: AGHT+IHdXKJ6O0Q8+moPM70wMqlDAIRm7pEP2OMr9uMOMFvXbCDno3fpvrlhT60+Q9ocfZokNDtuMw==
-X-Received: by 2002:a05:6808:3a16:b0:3b8:6422:5891 with SMTP id gr22-20020a0568083a1600b003b864225891mr14410847oib.20.1702536455080;
-        Wed, 13 Dec 2023 22:47:35 -0800 (PST)
+        d=1e100.net; s=20230601; t=1702536458; x=1703141258;
+        h=references:in-reply-to:message-id:date:subject:cc:to:from
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=Q9rxkYfNtW6a+ygjik/7+7zDA4LH9B3XCG0rfbdUhb8=;
+        b=rrVMJQtOCu2rwTJO/UvXL2Mz/HTWZjsD+DM1to795NQD7MGmVmyjgOtAks+W37KE+A
+         8YJHFdZRdsAnF+BA5TfCd2dWsFBdUTQySyEYEOeWJ4SCr6Ehc+/1wZ+xx/YnGx4t85Kv
+         vZy2Qb4RtJg364GXda4BL7cCU+htMPZ/ZMpg2iyD89AysBzzVK7fV1Uxycgp5u+oNBEt
+         GZ5jMqJfY2gOEwsiNWgF/3mKSimp8ZVjGznAFF0nap3F8KVz3CmE4ZsRrBT4tYY8/bLl
+         ztZPEH4MvHtiW8N2k2SWb5K8lmCphkQMinC1mxLE/veHUQiCh7C+wZ7mMm7+VkfGVWpg
+         0ljA==
+X-Gm-Message-State: AOJu0YzrcrU/vIzp3T94gUxiGWIS+jXHCRNFafDnxkOq0+u/Bsn7RtBH
+	l4WNBfwPTBhMcaf0+/GKgtzKMA==
+X-Google-Smtp-Source: AGHT+IFKaezXaphXDZ5iMoydTZmTJ8MSXnwVE7RjYnA6zRMh1YRY9WNSm5H0ZDjMfbCOkreshYjhxg==
+X-Received: by 2002:a05:6a20:158b:b0:18f:97c:5b8e with SMTP id h11-20020a056a20158b00b0018f097c5b8emr4635759pzj.92.1702536457645;
+        Wed, 13 Dec 2023 22:47:37 -0800 (PST)
 Received: from dhcp-10-192-206-197.iig.avagotech.net.net ([192.19.234.250])
-        by smtp.gmail.com with ESMTPSA id w13-20020a170902a70d00b001cf6453b237sm11637446plq.236.2023.12.13.22.47.32
+        by smtp.gmail.com with ESMTPSA id w13-20020a170902a70d00b001cf6453b237sm11637446plq.236.2023.12.13.22.47.35
         (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 13 Dec 2023 22:47:33 -0800 (PST)
+        Wed, 13 Dec 2023 22:47:37 -0800 (PST)
 From: Selvin Xavier <selvin.xavier@broadcom.com>
 To: leon@kernel.org,
 	jgg@ziepe.ca
 Cc: linux-rdma@vger.kernel.org,
 	andrew.gospodarek@broadcom.com,
 	Selvin Xavier <selvin.xavier@broadcom.com>
-Subject: [PATCH for-next v2 0/2] RDMA/bnxt_re: Share the CQ pages for GenP7 adapters
-Date: Wed, 13 Dec 2023 22:31:22 -0800
-Message-Id: <1702535484-26844-1-git-send-email-selvin.xavier@broadcom.com>
+Subject: [PATCH for-next v2 1/2] RDMA/bnxt_re: Add UAPI to share a page with user space
+Date: Wed, 13 Dec 2023 22:31:23 -0800
+Message-Id: <1702535484-26844-2-git-send-email-selvin.xavier@broadcom.com>
 X-Mailer: git-send-email 2.5.5
+In-Reply-To: <1702535484-26844-1-git-send-email-selvin.xavier@broadcom.com>
+References: <1702535484-26844-1-git-send-email-selvin.xavier@broadcom.com>
 Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
-	boundary="000000000000a3bf78060c72a8e9"
+	boundary="000000000000cd3ece060c72a80b"
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 
---000000000000a3bf78060c72a8e9
+--000000000000cd3ece060c72a80b
 
-This is the follow up series that adds support for GenP7
-Adapters. Implements mechanism to share the toggle bits
-received from the HW to user space. Adds a new UAPI routine as
-the toggle bit is required for both CQ and SRQ. Current
-patch series is adding support for only CQ.
+Gen P7 adapters require to share a toggle value for CQ
+and SRQ. This is received by the driver as part of
+interrupt notifications and needs to be shared with the
+user space. Add a new UAPI infrastructure to get the
+shared page for CQ and SRQ.
 
-Please review and apply. Will be posting the user lib changes soon.
+Signed-off-by: Selvin Xavier <selvin.xavier@broadcom.com>
+---
+ drivers/infiniband/hw/bnxt_re/ib_verbs.c | 105 +++++++++++++++++++++++++++++++
+ drivers/infiniband/hw/bnxt_re/ib_verbs.h |   1 +
+ include/uapi/rdma/bnxt_re-abi.h          |  26 ++++++++
+ 3 files changed, 132 insertions(+)
 
-Thanks,
-Selvin Xavier
-
-v1 - v2:
-	- Fixes the issues reported by Kernel test robot
-	- Addressed review comments from Leon
-
-Selvin Xavier (2):
-  RDMA/bnxt_re: Add UAPI to share a page with user space
-  RDMA/bnxt_re: Share a page to expose per CQ info with userspace
-
- drivers/infiniband/hw/bnxt_re/bnxt_re.h   |   3 +
- drivers/infiniband/hw/bnxt_re/ib_verbs.c  | 166 ++++++++++++++++++++++++++++--
- drivers/infiniband/hw/bnxt_re/ib_verbs.h  |   3 +
- drivers/infiniband/hw/bnxt_re/main.c      |  10 +-
- drivers/infiniband/hw/bnxt_re/qplib_res.h |   6 ++
- include/uapi/rdma/bnxt_re-abi.h           |  31 ++++++
- 6 files changed, 211 insertions(+), 8 deletions(-)
-
+diff --git a/drivers/infiniband/hw/bnxt_re/ib_verbs.c b/drivers/infiniband/hw/bnxt_re/ib_verbs.c
+index e7ef099..758ea02 100644
+--- a/drivers/infiniband/hw/bnxt_re/ib_verbs.c
++++ b/drivers/infiniband/hw/bnxt_re/ib_verbs.c
+@@ -567,6 +567,7 @@ bnxt_re_mmap_entry_insert(struct bnxt_re_ucontext *uctx, u64 mem_offset,
+ 	case BNXT_RE_MMAP_WC_DB:
+ 	case BNXT_RE_MMAP_DBR_BAR:
+ 	case BNXT_RE_MMAP_DBR_PAGE:
++	case BNXT_RE_MMAP_TOGGLE_PAGE:
+ 		ret = rdma_user_mmap_entry_insert(&uctx->ib_uctx,
+ 						  &entry->rdma_entry, PAGE_SIZE);
+ 		break;
+@@ -4254,6 +4255,7 @@ int bnxt_re_mmap(struct ib_ucontext *ib_uctx, struct vm_area_struct *vma)
+ 					rdma_entry);
+ 		break;
+ 	case BNXT_RE_MMAP_DBR_PAGE:
++	case BNXT_RE_MMAP_TOGGLE_PAGE:
+ 		/* Driver doesn't expect write access for user space */
+ 		if (vma->vm_flags & VM_WRITE)
+ 			return -EFAULT;
+@@ -4430,8 +4432,111 @@ DECLARE_UVERBS_NAMED_METHOD(BNXT_RE_METHOD_NOTIFY_DRV);
+ DECLARE_UVERBS_GLOBAL_METHODS(BNXT_RE_OBJECT_NOTIFY_DRV,
+ 			      &UVERBS_METHOD(BNXT_RE_METHOD_NOTIFY_DRV));
+ 
++/* Toggle MEM */
++static int UVERBS_HANDLER(BNXT_RE_METHOD_GET_TOGGLE_MEM)(struct uverbs_attr_bundle *attrs)
++{
++	struct ib_uobject *uobj = uverbs_attr_get_uobject(attrs, BNXT_RE_TOGGLE_MEM_HANDLE);
++	enum bnxt_re_mmap_flag mmap_flag = BNXT_RE_MMAP_TOGGLE_PAGE;
++	enum bnxt_re_get_toggle_mem_type res_type;
++	struct bnxt_re_user_mmap_entry *entry;
++	struct bnxt_re_ucontext *uctx;
++	struct ib_ucontext *ib_uctx;
++	struct bnxt_re_dev *rdev;
++	u64 mem_offset;
++	u64 addr = 0;
++	u32 length;
++	u32 offset;
++	int err;
++
++	ib_uctx = ib_uverbs_get_ucontext(attrs);
++	if (IS_ERR(ib_uctx))
++		return PTR_ERR(ib_uctx);
++
++	err = uverbs_get_const(&res_type, attrs, BNXT_RE_TOGGLE_MEM_TYPE);
++	if (err)
++		return err;
++
++	uctx = container_of(ib_uctx, struct bnxt_re_ucontext, ib_uctx);
++	rdev = uctx->rdev;
++
++	switch (res_type) {
++	case BNXT_RE_CQ_TOGGLE_MEM:
++	case BNXT_RE_SRQ_TOGGLE_MEM:
++		break;
++
++	default:
++		return -EOPNOTSUPP;
++	}
++
++	entry = bnxt_re_mmap_entry_insert(uctx, addr, mmap_flag, &mem_offset);
++	if (!entry)
++		return -ENOMEM;
++
++	uobj->object = entry;
++	uverbs_finalize_uobj_create(attrs, BNXT_RE_TOGGLE_MEM_HANDLE);
++	err = uverbs_copy_to(attrs, BNXT_RE_TOGGLE_MEM_MMAP_PAGE,
++			     &mem_offset, sizeof(mem_offset));
++	if (err)
++		return err;
++
++	err = uverbs_copy_to(attrs, BNXT_RE_TOGGLE_MEM_MMAP_LENGTH,
++			     &length, sizeof(length));
++	if (err)
++		return err;
++
++	err = uverbs_copy_to(attrs, BNXT_RE_TOGGLE_MEM_MMAP_OFFSET,
++			     &offset, sizeof(length));
++	if (err)
++		return err;
++
++	return 0;
++}
++
++static int get_toggle_mem_obj_cleanup(struct ib_uobject *uobject,
++				      enum rdma_remove_reason why,
++				      struct uverbs_attr_bundle *attrs)
++{
++	struct  bnxt_re_user_mmap_entry *entry = uobject->object;
++
++	rdma_user_mmap_entry_remove(&entry->rdma_entry);
++	return 0;
++}
++
++DECLARE_UVERBS_NAMED_METHOD(BNXT_RE_METHOD_GET_TOGGLE_MEM,
++			    UVERBS_ATTR_IDR(BNXT_RE_TOGGLE_MEM_HANDLE,
++					    BNXT_RE_OBJECT_GET_TOGGLE_MEM,
++					    UVERBS_ACCESS_NEW,
++					    UA_MANDATORY),
++			    UVERBS_ATTR_CONST_IN(BNXT_RE_TOGGLE_MEM_TYPE,
++						 enum bnxt_re_get_toggle_mem_type,
++						 UA_MANDATORY),
++			    UVERBS_ATTR_PTR_IN(BNXT_RE_TOGGLE_MEM_RES_ID,
++					       UVERBS_ATTR_TYPE(u32),
++					       UA_MANDATORY),
++			    UVERBS_ATTR_PTR_OUT(BNXT_RE_TOGGLE_MEM_MMAP_PAGE,
++						UVERBS_ATTR_TYPE(u64),
++						UA_MANDATORY),
++			    UVERBS_ATTR_PTR_OUT(BNXT_RE_TOGGLE_MEM_MMAP_OFFSET,
++						UVERBS_ATTR_TYPE(u32),
++						UA_MANDATORY),
++			    UVERBS_ATTR_PTR_OUT(BNXT_RE_TOGGLE_MEM_MMAP_LENGTH,
++						UVERBS_ATTR_TYPE(u32),
++						UA_MANDATORY));
++
++DECLARE_UVERBS_NAMED_METHOD_DESTROY(BNXT_RE_METHOD_RELEASE_TOGGLE_MEM,
++				    UVERBS_ATTR_IDR(BNXT_RE_RELEASE_TOGGLE_MEM_HANDLE,
++						    BNXT_RE_OBJECT_GET_TOGGLE_MEM,
++						    UVERBS_ACCESS_DESTROY,
++						    UA_MANDATORY));
++
++DECLARE_UVERBS_NAMED_OBJECT(BNXT_RE_OBJECT_GET_TOGGLE_MEM,
++			    UVERBS_TYPE_ALLOC_IDR(get_toggle_mem_obj_cleanup),
++			    &UVERBS_METHOD(BNXT_RE_METHOD_GET_TOGGLE_MEM),
++			    &UVERBS_METHOD(BNXT_RE_METHOD_RELEASE_TOGGLE_MEM));
++
+ const struct uapi_definition bnxt_re_uapi_defs[] = {
+ 	UAPI_DEF_CHAIN_OBJ_TREE_NAMED(BNXT_RE_OBJECT_ALLOC_PAGE),
+ 	UAPI_DEF_CHAIN_OBJ_TREE_NAMED(BNXT_RE_OBJECT_NOTIFY_DRV),
++	UAPI_DEF_CHAIN_OBJ_TREE_NAMED(BNXT_RE_OBJECT_GET_TOGGLE_MEM),
+ 	{}
+ };
+diff --git a/drivers/infiniband/hw/bnxt_re/ib_verbs.h b/drivers/infiniband/hw/bnxt_re/ib_verbs.h
+index 98baea9..da3fe01 100644
+--- a/drivers/infiniband/hw/bnxt_re/ib_verbs.h
++++ b/drivers/infiniband/hw/bnxt_re/ib_verbs.h
+@@ -149,6 +149,7 @@ enum bnxt_re_mmap_flag {
+ 	BNXT_RE_MMAP_WC_DB,
+ 	BNXT_RE_MMAP_DBR_PAGE,
+ 	BNXT_RE_MMAP_DBR_BAR,
++	BNXT_RE_MMAP_TOGGLE_PAGE,
+ };
+ 
+ struct bnxt_re_user_mmap_entry {
+diff --git a/include/uapi/rdma/bnxt_re-abi.h b/include/uapi/rdma/bnxt_re-abi.h
+index 3342276..9b9eb10 100644
+--- a/include/uapi/rdma/bnxt_re-abi.h
++++ b/include/uapi/rdma/bnxt_re-abi.h
+@@ -143,6 +143,7 @@ enum bnxt_re_shpg_offt {
+ enum bnxt_re_objects {
+ 	BNXT_RE_OBJECT_ALLOC_PAGE = (1U << UVERBS_ID_NS_SHIFT),
+ 	BNXT_RE_OBJECT_NOTIFY_DRV,
++	BNXT_RE_OBJECT_GET_TOGGLE_MEM,
+ };
+ 
+ enum bnxt_re_alloc_page_type {
+@@ -171,4 +172,29 @@ enum bnxt_re_alloc_page_methods {
+ enum bnxt_re_notify_drv_methods {
+ 	BNXT_RE_METHOD_NOTIFY_DRV = (1U << UVERBS_ID_NS_SHIFT),
+ };
++
++/* Toggle mem */
++
++enum bnxt_re_get_toggle_mem_type {
++	BNXT_RE_CQ_TOGGLE_MEM = 0,
++	BNXT_RE_SRQ_TOGGLE_MEM,
++};
++
++enum bnxt_re_var_toggle_mem_attrs {
++	BNXT_RE_TOGGLE_MEM_HANDLE = (1U << UVERBS_ID_NS_SHIFT),
++	BNXT_RE_TOGGLE_MEM_TYPE,
++	BNXT_RE_TOGGLE_MEM_RES_ID,
++	BNXT_RE_TOGGLE_MEM_MMAP_PAGE,
++	BNXT_RE_TOGGLE_MEM_MMAP_OFFSET,
++	BNXT_RE_TOGGLE_MEM_MMAP_LENGTH,
++};
++
++enum bnxt_re_toggle_mem_attrs {
++	BNXT_RE_RELEASE_TOGGLE_MEM_HANDLE = (1U << UVERBS_ID_NS_SHIFT),
++};
++
++enum bnxt_re_toggle_mem_methods {
++	BNXT_RE_METHOD_GET_TOGGLE_MEM = (1U << UVERBS_ID_NS_SHIFT),
++	BNXT_RE_METHOD_RELEASE_TOGGLE_MEM,
++};
+ #endif /* __BNXT_RE_UVERBS_ABI_H__*/
 -- 
 2.5.5
 
 
---000000000000a3bf78060c72a8e9
+--000000000000cd3ece060c72a80b
 Content-Type: application/pkcs7-signature; name="smime.p7s"
 Content-Transfer-Encoding: base64
 Content-Disposition: attachment; filename="smime.p7s"
@@ -170,15 +344,15 @@ j1Ze9ndr+YDXPpCymOsynmmw0ErHZGGW1OmMpAEt0A+613glWCURLDlP8HONi1wnINV6aDiEf0ad
 9NMGxDsp+YWiRXD3txfo2OMQbpIxM90QfhKKacX8t1J1oAAWxDrLVTJBXBNvz5tr+D1sYwuye93r
 hImmkM1unboxggJtMIICaQIBATBrMFsxCzAJBgNVBAYTAkJFMRkwFwYDVQQKExBHbG9iYWxTaWdu
 IG52LXNhMTEwLwYDVQQDEyhHbG9iYWxTaWduIEdDQyBSMyBQZXJzb25hbFNpZ24gMiBDQSAyMDIw
-Agxy+Cu4x/7lM0zxY7cwDQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIEIGsfo+zkip/S
-bNTSR+HnN14B3ltJQf0xRCbOPxAB7iivMBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZI
-hvcNAQkFMQ8XDTIzMTIxNDA2NDczNVowaQYJKoZIhvcNAQkPMVwwWjALBglghkgBZQMEASowCwYJ
+Agxy+Cu4x/7lM0zxY7cwDQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIEIF0/cf+bbUt1
+mYfEvS6tySbyPVMtqnMGM+Bm4aC8A/VfMBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZI
+hvcNAQkFMQ8XDTIzMTIxNDA2NDczOFowaQYJKoZIhvcNAQkPMVwwWjALBglghkgBZQMEASowCwYJ
 YIZIAWUDBAEWMAsGCWCGSAFlAwQBAjAKBggqhkiG9w0DBzALBgkqhkiG9w0BAQowCwYJKoZIhvcN
-AQEHMAsGCWCGSAFlAwQCATANBgkqhkiG9w0BAQEFAASCAQBPYbd3gcFQeoX/cvLuhjRQ2Z8tpzRE
-ZGQLn01FnYe3cRwCgS5Hjm8L0qeZrUDwbddT4Z6B6cItDKxQMzz392h6D/R+M2551raiYx3akRMS
-gxDPPzxoXmGl5nmiVADVTvBtXs3NiZ6psVjDzEk5UdX1W5tJusUwNC6d6WdwMFcDsnjAv5lUkDyz
-24HS2e9bDnNUm7v6OPwqyDJt+ecIMDEGMIGE1vlkhsugBgP+8zmbA2FPwDo3pRU1yk1whtIY5goc
-G4xwgS5hwC6HBqJSMDR9LZdnfgi//uETbZGEw/FBJne6PfGNs2w+4cOymUI8XdCkDWRc6NUxyGqY
-RYMlkajM
---000000000000a3bf78060c72a8e9--
+AQEHMAsGCWCGSAFlAwQCATANBgkqhkiG9w0BAQEFAASCAQApxskvy4AmtGSv1FFC8qPDX5MVd3+k
+qYKdFHjO9slvWfvBfHpSYTBNsSqPTvB1tDT6QNjLKNVp0X4NVRrd0GbYEFQSSWJ/abblVND5NYIZ
+MgfqxqvFadkBmlWexJ5yQHDkmVfWKollE5qhnbGqbDiugjFfQDke3vVDpshkXd55IKdiG2uy28Id
+OY1eTauYWPV0GsrYqOa+0FgTK3TWQr9UHUGyDXzS6jS38pLnOY/YhpFmBBpjpTLPxNI44fe+GV2T
+Mr7C11udMWwI20GKrWU+A88vWqymDFfK3WXEC4B2CmPiqmA/Tf/bYATOvEZ2M7jh0v6e81l6PrCp
+u5DCoOiT
+--000000000000cd3ece060c72a80b--
 
