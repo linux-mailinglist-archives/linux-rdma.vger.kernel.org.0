@@ -1,347 +1,277 @@
-Return-Path: <linux-rdma+bounces-432-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-433-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id AC55E81563E
-	for <lists+linux-rdma@lfdr.de>; Sat, 16 Dec 2023 03:05:48 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 73D1B815BF5
+	for <lists+linux-rdma@lfdr.de>; Sat, 16 Dec 2023 22:48:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B7DA51C21D5A
-	for <lists+linux-rdma@lfdr.de>; Sat, 16 Dec 2023 02:05:47 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id DCED21F2255D
+	for <lists+linux-rdma@lfdr.de>; Sat, 16 Dec 2023 21:48:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 52BB66AD8;
-	Sat, 16 Dec 2023 02:04:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D0D48364CE;
+	Sat, 16 Dec 2023 21:48:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linuxonhyperv.com header.i=@linuxonhyperv.com header.b="fIxNxRAI"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Q7RglJ/t"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AB6F04A3B;
-	Sat, 16 Dec 2023 02:04:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linuxonhyperv.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.microsoft.com
-Received: by linux.microsoft.com (Postfix, from userid 1004)
-	id 5936E20B3CC2; Fri, 15 Dec 2023 18:04:54 -0800 (PST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 5936E20B3CC2
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linuxonhyperv.com;
-	s=default; t=1702692294;
-	bh=oXMnlI7MQDRN/wc74JqrTIqbsjJKf7ERKN2E0qIRbZ0=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=fIxNxRAIc6O0Nt1z5QnqQDgIkcYjuNR/4GOPaYwyZD9HeB9kclsZGk5suo+SQ/p7C
-	 Ss15ms45kut7u84sr25I90bg9T1my1YuHbj6NI9lUkmGMTVtgrrYtKIOtR23kUtYqO
-	 Djn6/q3A4iHP6HEAGHMoDdGjw9Nan57MVeIZvYN8=
-From: longli@linuxonhyperv.com
-To: Jason Gunthorpe <jgg@ziepe.ca>,
-	Leon Romanovsky <leon@kernel.org>,
-	Ajay Sharma <sharmaajay@microsoft.com>,
-	Dexuan Cui <decui@microsoft.com>,
+Received: from mail-oi1-f173.google.com (mail-oi1-f173.google.com [209.85.167.173])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0274F35291;
+	Sat, 16 Dec 2023 21:48:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-oi1-f173.google.com with SMTP id 5614622812f47-3ba3cf9aa13so1434628b6e.2;
+        Sat, 16 Dec 2023 13:48:21 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1702763300; x=1703368100; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=NUQpZPD/c05+/8BhIN1J/cQeLxUmIOzSz7QCay9VzCE=;
+        b=Q7RglJ/tHxE1i6ClcuY+szeRsD1QYSEKFzW0gxpAhFNqtVH3MT7BnY0e38GKQmyqtl
+         xLs0tLzcixBDTvcTLJh45nZ1mwkpxLv4SjBJAJ02mOx1dXKZclEa2hfBgCaKOSoBv09Q
+         gtkwUvpq6KmgMCt2MbaJaS8YIS7cTVyM+ZYkt7Xm+Cnj3Nw3iMTOvxQbc+5uNVhfH6IV
+         PSH1AKpRU2+7bp4pmEf/m+4axbCGeo8tNoORuxPywslSWZtxid8foaxHa0czWGdwKPHJ
+         Bp61j5YeGumGVFtkVvNljQ+PtW1uBfBpY6kNUP1pjqrqNUrC6cz9yMSRq6lefTsXCEzM
+         6QEg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702763300; x=1703368100;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=NUQpZPD/c05+/8BhIN1J/cQeLxUmIOzSz7QCay9VzCE=;
+        b=Wp3fsbro1PCJ9eqNLaWxlNkary9SH++X+zOf4Y3NJoJ+TnqZX1Wfd3eSjqXzeAY5eD
+         tLlrhWQQPpcShlJDsy6boAocUCeeK419TGSQ6ihZ+KsWItjbrRTZbLD6glNMC502QG0m
+         C696W8e7scpJ6PsmGqLAHzf5okdZnYwVKc9T8SXmz15us+zAI4+HiOm5/avh2dAjA6bH
+         21fhkuiiorjS3iFauE1hZaJGYtV4ioRMod1Un+4nWQnY4ayKQYSthq71jYPbY9ycn3Qn
+         OnL/86Otv02JfNnMVVRgCwbl+bIWrH7eVWmIc+EnsblG/Q8xdIPf4YeQy3w4Wq167Sy7
+         f1Ug==
+X-Gm-Message-State: AOJu0Yzgw4JL5XarvJZV0wgybBIwLyGQ2/YtcbtXPPAAx6wpcFNf/oxx
+	4pSzQvGdRJTzaWZsP5Ov+3C0sHttvzwlkQ==
+X-Google-Smtp-Source: AGHT+IFAZquuH097Av+/ztaIvHAct5BHBdf+5D2NTKxYyfNfNcV2HR26lQ0bCSd6CXKBysIoEd8l8w==
+X-Received: by 2002:a05:6808:1819:b0:3b8:b063:6658 with SMTP id bh25-20020a056808181900b003b8b0636658mr13429212oib.79.1702763299744;
+        Sat, 16 Dec 2023 13:48:19 -0800 (PST)
+Received: from localhost ([2601:344:8301:57f0:4a5e:2f67:f6d1:4a98])
+        by smtp.gmail.com with ESMTPSA id l6-20020a25bcc6000000b00dbd22a3eb4fsm60955ybm.51.2023.12.16.13.48.18
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 16 Dec 2023 13:48:19 -0800 (PST)
+Date: Sat, 16 Dec 2023 13:48:18 -0800
+From: Yury Norov <yury.norov@gmail.com>
+To: linux-kernel@vger.kernel.org, "David S. Miller" <davem@davemloft.net>,
+	"H. Peter Anvin" <hpa@zytor.com>,
+	"James E.J. Bottomley" <jejb@linux.ibm.com>,
 	"K. Y. Srinivasan" <kys@microsoft.com>,
-	Haiyang Zhang <haiyangz@microsoft.com>,
-	Wei Liu <wei.liu@kernel.org>,
-	"David S. Miller" <davem@davemloft.net>,
+	"Md. Haris Iqbal" <haris.iqbal@ionos.com>,
+	Akinobu Mita <akinobu.mita@gmail.com>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Bjorn Andersson <andersson@kernel.org>,
+	Borislav Petkov <bp@alien8.de>, Chaitanya Kulkarni <kch@nvidia.com>,
+	Christian Brauner <brauner@kernel.org>,
+	Damien Le Moal <damien.lemoal@opensource.wdc.com>,
+	Dave Hansen <dave.hansen@linux.intel.com>,
+	David Disseldorp <ddiss@suse.de>,
+	Edward Cree <ecree.xilinx@gmail.com>,
 	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>,
-	Paolo Abeni <pabeni@redhat.com>
-Cc: linux-rdma@vger.kernel.org,
-	linux-hyperv@vger.kernel.org,
-	netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Long Li <longli@microsoft.com>
-Subject: [Patch v4 3/3] RDMA/mana_ib: Add CQ interrupt support for RAW QP
-Date: Fri, 15 Dec 2023 18:04:15 -0800
-Message-Id: <1702692255-23640-4-git-send-email-longli@linuxonhyperv.com>
-X-Mailer: git-send-email 1.8.3.1
-In-Reply-To: <1702692255-23640-1-git-send-email-longli@linuxonhyperv.com>
-References: <1702692255-23640-1-git-send-email-longli@linuxonhyperv.com>
+	Fenghua Yu <fenghua.yu@intel.com>,
+	Geert Uytterhoeven <geert@linux-m68k.org>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	Gregory Greenman <gregory.greenman@intel.com>,
+	Hans Verkuil <hverkuil@xs4all.nl>,
+	Hans de Goede <hdegoede@redhat.com>,
+	Hugh Dickins <hughd@google.com>, Ingo Molnar <mingo@redhat.com>,
+	Jakub Kicinski <kuba@kernel.org>, Jaroslav Kysela <perex@perex.cz>,
+	Jason Gunthorpe <jgg@ziepe.ca>, Jens Axboe <axboe@kernel.dk>,
+	Jiri Pirko <jiri@resnulli.us>, Jiri Slaby <jirislaby@kernel.org>,
+	Kalle Valo <kvalo@kernel.org>, Karsten Graul <kgraul@linux.ibm.com>,
+	Karsten Keil <isdn@linux-pingi.de>,
+	Kees Cook <keescook@chromium.org>,
+	Leon Romanovsky <leon@kernel.org>,
+	Mark Rutland <mark.rutland@arm.com>,
+	Martin Habets <habetsm.xilinx@gmail.com>,
+	Mauro Carvalho Chehab <mchehab@kernel.org>,
+	Michael Ellerman <mpe@ellerman.id.au>,
+	Michal Simek <monstr@monstr.eu>,
+	Nicholas Piggin <npiggin@gmail.com>,
+	Oliver Neukum <oneukum@suse.com>, Paolo Abeni <pabeni@redhat.com>,
+	Paolo Bonzini <pbonzini@redhat.com>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Ping-Ke Shih <pkshih@realtek.com>, Rich Felker <dalias@libc.org>,
+	Rob Herring <robh@kernel.org>, Robin Murphy <robin.murphy@arm.com>,
+	Sean Christopherson <seanjc@google.com>,
+	Shuai Xue <xueshuai@linux.alibaba.com>,
+	Stanislaw Gruszka <stf_xl@wp.pl>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Valentin Schneider <vschneid@redhat.com>,
+	Vitaly Kuznetsov <vkuznets@redhat.com>,
+	Wenjia Zhang <wenjia@linux.ibm.com>, Will Deacon <will@kernel.org>,
+	Yoshinori Sato <ysato@users.sourceforge.jp>,
+	GR-QLogic-Storage-Upstream@marvell.com, alsa-devel@alsa-project.org,
+	ath10k@lists.infradead.org, dmaengine@vger.kernel.org,
+	iommu@lists.linux.dev, kvm@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org, linux-arm-msm@vger.kernel.org,
+	linux-block@vger.kernel.org, linux-bluetooth@vger.kernel.org,
+	linux-hyperv@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
+	linux-media@vger.kernel.org, linux-mips@vger.kernel.org,
+	linux-net-drivers@amd.com, linux-pci@vger.kernel.org,
+	linux-rdma@vger.kernel.org, linux-s390@vger.kernel.org,
+	linux-scsi@vger.kernel.org, linux-serial@vger.kernel.org,
+	linux-sh@vger.kernel.org, linux-sound@vger.kernel.org,
+	linux-usb@vger.kernel.org, linux-wireless@vger.kernel.org,
+	linuxppc-dev@lists.ozlabs.org, mpi3mr-linuxdrv.pdl@broadcom.com,
+	netdev@vger.kernel.org, sparclinux@vger.kernel.org, x86@kernel.org
+Cc: Jan Kara <jack@suse.cz>,
+	Mirsad Todorovac <mirsad.todorovac@alu.unizg.hr>,
+	Matthew Wilcox <willy@infradead.org>,
+	Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+	Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+	Maxim Kuvyrkov <maxim.kuvyrkov@linaro.org>,
+	Alexey Klimov <klimov.linux@gmail.com>,
+	Bart Van Assche <bvanassche@acm.org>,
+	Sergey Shtylyov <s.shtylyov@omp.ru>
+Subject: Re: [PATCH v3 00/35] bitops: add atomic find_bit() operations
+Message-ID: <ZX4bIisLzpW8c4WM@yury-ThinkPad>
+References: <20231212022749.625238-1-yury.norov@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231212022749.625238-1-yury.norov@gmail.com>
 
-From: Long Li <longli@microsoft.com>
+On Mon, Dec 11, 2023 at 06:27:14PM -0800, Yury Norov wrote:
+> Add helpers around test_and_{set,clear}_bit() that allow to search for
+> clear or set bits and flip them atomically.
+> 
+> The target patterns may look like this:
+> 
+> 	for (idx = 0; idx < nbits; idx++)
+> 		if (test_and_clear_bit(idx, bitmap))
+> 			do_something(idx);
+> 
+> Or like this:
+> 
+> 	do {
+> 		bit = find_first_bit(bitmap, nbits);
+> 		if (bit >= nbits)
+> 			return nbits;
+> 	} while (!test_and_clear_bit(bit, bitmap));
+> 	return bit;
+> 
+> In both cases, the opencoded loop may be converted to a single function
+> or iterator call. Correspondingly:
+> 
+> 	for_each_test_and_clear_bit(idx, bitmap, nbits)
+> 		do_something(idx);
+> 
+> Or:
+> 	return find_and_clear_bit(bitmap, nbits);
+> 
+> Obviously, the less routine code people have to write themself, the
+> less probability to make a mistake.
+> 
+> Those are not only handy helpers but also resolve a non-trivial
+> issue of using non-atomic find_bit() together with atomic
+> test_and_{set,clear)_bit().
+> 
+> The trick is that find_bit() implies that the bitmap is a regular
+> non-volatile piece of memory, and compiler is allowed to use such
+> optimization techniques like re-fetching memory instead of caching it.
+> 
+> For example, find_first_bit() is implemented like this:
+> 
+>       for (idx = 0; idx * BITS_PER_LONG < sz; idx++) {
+>               val = addr[idx];
+>               if (val) {
+>                       sz = min(idx * BITS_PER_LONG + __ffs(val), sz);
+>                       break;
+>               }
+>       }
+> 
+> On register-memory architectures, like x86, compiler may decide to
+> access memory twice - first time to compare against 0, and second time
+> to fetch its value to pass it to __ffs().
+> 
+> When running find_first_bit() on volatile memory, the memory may get
+> changed in-between, and for instance, it may lead to passing 0 to
+> __ffs(), which is undefined. This is a potentially dangerous call.
+> 
+> find_and_clear_bit() as a wrapper around test_and_clear_bit()
+> naturally treats underlying bitmap as a volatile memory and prevents
+> compiler from such optimizations.
+> 
+> Now that KCSAN is catching exactly this type of situations and warns on
+> undercover memory modifications. We can use it to reveal improper usage
+> of find_bit(), and convert it to atomic find_and_*_bit() as appropriate.
+> 
+> In some cases concurrent operations with plain find_bit() are acceptable.
+> For example:
+> 
+>  - two threads running find_*_bit(): safe wrt ffs(0) and returns correct
+>    value, because underlying bitmap is unchanged;
+>  - find_next_bit() in parallel with set or clear_bit(), when modifying
+>    a bit prior to the start bit to search: safe and correct;
+>  - find_first_bit() in parallel with set_bit(): safe, but may return wrong
+>    bit number;
+>  - find_first_zero_bit() in parallel with clear_bit(): same as above.
+> 
+> In last 2 cases find_bit() may not return a correct bit number, but
+> it may be OK if caller requires any (not exactly the first) set or clear
+> bit, correspondingly.
+> 
+> In such cases, KCSAN may be safely silenced with data_race(). But in most
+> cases where KCSAN detects concurrency people should carefully review their
+> code and likely protect critical sections or switch to atomic
+> find_and_bit(), as appropriate.
+> 
+> The 1st patch of the series adds the following atomic primitives:
+> 
+> 	find_and_set_bit(addr, nbits);
+> 	find_and_set_next_bit(addr, nbits, start);
+> 	...
+> 
+> Here find_and_{set,clear} part refers to the corresponding
+> test_and_{set,clear}_bit function. Suffixes like _wrap or _lock
+> derive their semantics from corresponding find() or test() functions.
+> 
+> For brevity, the naming omits the fact that we search for zero bit in
+> find_and_set, and correspondingly search for set bit in find_and_clear
+> functions.
+> 
+> The patch also adds iterators with atomic semantics, like
+> for_each_test_and_set_bit(). Here, the naming rule is to simply prefix
+> corresponding atomic operation with 'for_each'.
+> 
+> In [1] Jan reported 2% slowdown in a single-thread search test when
+> switching find_bit() function to treat bitmaps as volatile arrays. On
+> the other hand, kernel robot in the same thread reported +3.7% to the
+> performance of will-it-scale.per_thread_ops test.
+> 
+> Assuming that our compilers are sane and generate better code against
+> properly annotated data, the above discrepancy doesn't look weird. When
+> running on non-volatile bitmaps, plain find_bit() outperforms atomic
+> find_and_bit(), and vice-versa.
+> 
+> So, all users of find_bit() API, where heavy concurrency is expected,
+> are encouraged to switch to atomic find_and_bit() as appropriate.
+> 
+> The 1st patch of this series adds atomic find_and_bit() API, 2nd adds
+> a basic test for new API, and all the following patches spread it over
+> the kernel.
+> 
+> They can be applied separately from each other on per-subsystems basis,
+> or I can pull them in bitmap tree, as appropriate.
+> 
+> [1] https://lore.kernel.org/lkml/634f5fdf-e236-42cf-be8d-48a581c21660@alu.unizg.hr/T/#m3e7341eb3571753f3acf8fe166f3fb5b2c12e615
+ 
+Thank you all for reviews and comments. Now moving the series to
+bitmap-for-next for testing.
 
-At probing time, the MANA core code allocates EQs for supporting interrupts
-on Ethernet queues. The same interrupt mechanisum is used by RAW QP.
-
-Use the same EQs for delivering interrupts on the CQ for the RAW QP.
-
-Signed-off-by: Long Li <longli@microsoft.com>
----
-
-Change in v3:
-Removed unused varaible mana_ucontext in mana_ib_create_qp_rss().
-Simplified error handling in mana_ib_create_qp_rss() on failure to allocate queues for rss table.
-
- drivers/infiniband/hw/mana/cq.c      | 32 +++++++++++-
- drivers/infiniband/hw/mana/mana_ib.h |  3 ++
- drivers/infiniband/hw/mana/qp.c      | 73 ++++++++++++++++++++++++++--
- 3 files changed, 102 insertions(+), 6 deletions(-)
-
-diff --git a/drivers/infiniband/hw/mana/cq.c b/drivers/infiniband/hw/mana/cq.c
-index 09a2c263e39b..83ebd070535a 100644
---- a/drivers/infiniband/hw/mana/cq.c
-+++ b/drivers/infiniband/hw/mana/cq.c
-@@ -12,13 +12,20 @@ int mana_ib_create_cq(struct ib_cq *ibcq, const struct ib_cq_init_attr *attr,
- 	struct ib_device *ibdev = ibcq->device;
- 	struct mana_ib_create_cq ucmd = {};
- 	struct mana_ib_dev *mdev;
-+	struct gdma_context *gc;
- 	int err;
- 
- 	mdev = container_of(ibdev, struct mana_ib_dev, ib_dev);
-+	gc = mdev->gdma_dev->gdma_context;
- 
- 	if (udata->inlen < sizeof(ucmd))
- 		return -EINVAL;
- 
-+	if (attr->comp_vector > gc->max_num_queues)
-+		return -EINVAL;
-+
-+	cq->comp_vector = attr->comp_vector;
-+
- 	err = ib_copy_from_udata(&ucmd, udata, min(sizeof(ucmd), udata->inlen));
- 	if (err) {
- 		ibdev_dbg(ibdev,
-@@ -56,6 +63,7 @@ int mana_ib_create_cq(struct ib_cq *ibcq, const struct ib_cq_init_attr *attr,
- 	/*
- 	 * The CQ ID is not known at this time. The ID is generated at create_qp
- 	 */
-+	cq->id = INVALID_QUEUE_ID;
- 
- 	return 0;
- 
-@@ -69,11 +77,33 @@ int mana_ib_destroy_cq(struct ib_cq *ibcq, struct ib_udata *udata)
- 	struct mana_ib_cq *cq = container_of(ibcq, struct mana_ib_cq, ibcq);
- 	struct ib_device *ibdev = ibcq->device;
- 	struct mana_ib_dev *mdev;
-+	struct gdma_context *gc;
-+	int err;
- 
- 	mdev = container_of(ibdev, struct mana_ib_dev, ib_dev);
-+	gc = mdev->gdma_dev->gdma_context;
-+
-+	err = mana_ib_gd_destroy_dma_region(mdev, cq->gdma_region);
-+	if (err) {
-+		ibdev_dbg(ibdev,
-+			  "Failed to destroy dma region, %d\n", err);
-+		return err;
-+	}
-+
-+	if (cq->id != INVALID_QUEUE_ID) {
-+		kfree(gc->cq_table[cq->id]);
-+		gc->cq_table[cq->id] = NULL;
-+	}
- 
--	mana_ib_gd_destroy_dma_region(mdev, cq->gdma_region);
- 	ib_umem_release(cq->umem);
- 
- 	return 0;
- }
-+
-+void mana_ib_cq_handler(void *ctx, struct gdma_queue *gdma_cq)
-+{
-+	struct mana_ib_cq *cq = ctx;
-+
-+	if (cq->ibcq.comp_handler)
-+		cq->ibcq.comp_handler(&cq->ibcq, cq->ibcq.cq_context);
-+}
-diff --git a/drivers/infiniband/hw/mana/mana_ib.h b/drivers/infiniband/hw/mana/mana_ib.h
-index 3329eaacc94e..6bdc0f5498d5 100644
---- a/drivers/infiniband/hw/mana/mana_ib.h
-+++ b/drivers/infiniband/hw/mana/mana_ib.h
-@@ -86,6 +86,7 @@ struct mana_ib_cq {
- 	int cqe;
- 	u64 gdma_region;
- 	u64 id;
-+	u32 comp_vector;
- };
- 
- struct mana_ib_qp {
-@@ -209,4 +210,6 @@ int mana_ib_query_gid(struct ib_device *ibdev, u32 port, int index,
- void mana_ib_disassociate_ucontext(struct ib_ucontext *ibcontext);
- 
- int mana_ib_gd_query_adapter_caps(struct mana_ib_dev *mdev);
-+
-+void mana_ib_cq_handler(void *ctx, struct gdma_queue *gdma_cq);
- #endif
-diff --git a/drivers/infiniband/hw/mana/qp.c b/drivers/infiniband/hw/mana/qp.c
-index 4667b18ec1dd..19998082a376 100644
---- a/drivers/infiniband/hw/mana/qp.c
-+++ b/drivers/infiniband/hw/mana/qp.c
-@@ -102,21 +102,26 @@ static int mana_ib_create_qp_rss(struct ib_qp *ibqp, struct ib_pd *pd,
- 	struct ib_rwq_ind_table *ind_tbl = attr->rwq_ind_tbl;
- 	struct mana_ib_create_qp_rss_resp resp = {};
- 	struct mana_ib_create_qp_rss ucmd = {};
-+	struct gdma_queue **gdma_cq_allocated;
- 	mana_handle_t *mana_ind_table;
- 	struct mana_port_context *mpc;
-+	struct gdma_queue *gdma_cq;
- 	unsigned int ind_tbl_size;
- 	struct mana_context *mc;
- 	struct net_device *ndev;
-+	struct gdma_context *gc;
- 	struct mana_ib_cq *cq;
- 	struct mana_ib_wq *wq;
- 	struct gdma_dev *gd;
-+	struct mana_eq *eq;
- 	struct ib_cq *ibcq;
- 	struct ib_wq *ibwq;
- 	int i = 0;
- 	u32 port;
- 	int ret;
- 
--	gd = &mdev->gdma_dev->gdma_context->mana;
-+	gc = mdev->gdma_dev->gdma_context;
-+	gd = &gc->mana;
- 	mc = gd->driver_data;
- 
- 	if (!udata || udata->inlen < sizeof(ucmd))
-@@ -179,6 +184,13 @@ static int mana_ib_create_qp_rss(struct ib_qp *ibqp, struct ib_pd *pd,
- 		goto fail;
- 	}
- 
-+	gdma_cq_allocated = kcalloc(ind_tbl_size, sizeof(*gdma_cq_allocated),
-+				    GFP_KERNEL);
-+	if (!gdma_cq_allocated) {
-+		ret = -ENOMEM;
-+		goto fail;
-+	}
-+
- 	qp->port = port;
- 
- 	for (i = 0; i < ind_tbl_size; i++) {
-@@ -197,12 +209,16 @@ static int mana_ib_create_qp_rss(struct ib_qp *ibqp, struct ib_pd *pd,
- 		cq_spec.gdma_region = cq->gdma_region;
- 		cq_spec.queue_size = cq->cqe * COMP_ENTRY_SIZE;
- 		cq_spec.modr_ctx_id = 0;
--		cq_spec.attached_eq = GDMA_CQ_NO_EQ;
-+		eq = &mc->eqs[cq->comp_vector % gc->max_num_queues];
-+		cq_spec.attached_eq = eq->eq->id;
- 
- 		ret = mana_create_wq_obj(mpc, mpc->port_handle, GDMA_RQ,
- 					 &wq_spec, &cq_spec, &wq->rx_object);
--		if (ret)
-+		if (ret) {
-+			/* Do cleanup starting with index i-1 */
-+			i--;
- 			goto fail;
-+		}
- 
- 		/* The GDMA regions are now owned by the WQ object */
- 		wq->gdma_region = GDMA_INVALID_DMA_REGION;
-@@ -219,6 +235,21 @@ static int mana_ib_create_qp_rss(struct ib_qp *ibqp, struct ib_pd *pd,
- 		resp.entries[i].wqid = wq->id;
- 
- 		mana_ind_table[i] = wq->rx_object;
-+
-+		/* Create CQ table entry */
-+		WARN_ON(gc->cq_table[cq->id]);
-+		gdma_cq = kzalloc(sizeof(*gdma_cq), GFP_KERNEL);
-+		if (!gdma_cq) {
-+			ret = -ENOMEM;
-+			goto fail;
-+		}
-+		gdma_cq_allocated[i] = gdma_cq;
-+
-+		gdma_cq->cq.context = cq;
-+		gdma_cq->type = GDMA_CQ;
-+		gdma_cq->cq.callback = mana_ib_cq_handler;
-+		gdma_cq->id = cq->id;
-+		gc->cq_table[cq->id] = gdma_cq;
- 	}
- 	resp.num_entries = i;
- 
-@@ -238,6 +269,7 @@ static int mana_ib_create_qp_rss(struct ib_qp *ibqp, struct ib_pd *pd,
- 		goto fail;
- 	}
- 
-+	kfree(gdma_cq_allocated);
- 	kfree(mana_ind_table);
- 
- 	return 0;
-@@ -245,10 +277,17 @@ static int mana_ib_create_qp_rss(struct ib_qp *ibqp, struct ib_pd *pd,
- fail:
- 	while (i-- > 0) {
- 		ibwq = ind_tbl->ind_tbl[i];
-+		ibcq = ibwq->cq;
- 		wq = container_of(ibwq, struct mana_ib_wq, ibwq);
-+		cq = container_of(ibcq, struct mana_ib_cq, ibcq);
-+
-+		gc->cq_table[cq->id] = NULL;
-+		kfree(gdma_cq_allocated[i]);
-+
- 		mana_destroy_wq_obj(mpc, GDMA_RQ, wq->rx_object);
- 	}
- 
-+	kfree(gdma_cq_allocated);
- 	kfree(mana_ind_table);
- 
- 	return ret;
-@@ -270,14 +309,17 @@ static int mana_ib_create_qp_raw(struct ib_qp *ibqp, struct ib_pd *ibpd,
- 	struct gdma_dev *gd = &mdev->gdma_dev->gdma_context->mana;
- 	struct mana_ib_create_qp_resp resp = {};
- 	struct mana_ib_create_qp ucmd = {};
-+	struct gdma_queue *gdma_cq = NULL;
- 	struct mana_obj_spec wq_spec = {};
- 	struct mana_obj_spec cq_spec = {};
- 	struct mana_port_context *mpc;
- 	struct mana_context *mc;
- 	struct net_device *ndev;
- 	struct ib_umem *umem;
--	int err;
-+	struct mana_eq *eq;
-+	int eq_vec;
- 	u32 port;
-+	int err;
- 
- 	mc = gd->driver_data;
- 
-@@ -354,7 +396,9 @@ static int mana_ib_create_qp_raw(struct ib_qp *ibqp, struct ib_pd *ibpd,
- 	cq_spec.gdma_region = send_cq->gdma_region;
- 	cq_spec.queue_size = send_cq->cqe * COMP_ENTRY_SIZE;
- 	cq_spec.modr_ctx_id = 0;
--	cq_spec.attached_eq = GDMA_CQ_NO_EQ;
-+	eq_vec = send_cq->comp_vector % gd->gdma_context->max_num_queues;
-+	eq = &mc->eqs[eq_vec];
-+	cq_spec.attached_eq = eq->eq->id;
- 
- 	err = mana_create_wq_obj(mpc, mpc->port_handle, GDMA_SQ, &wq_spec,
- 				 &cq_spec, &qp->tx_object);
-@@ -372,6 +416,20 @@ static int mana_ib_create_qp_raw(struct ib_qp *ibqp, struct ib_pd *ibpd,
- 	qp->sq_id = wq_spec.queue_index;
- 	send_cq->id = cq_spec.queue_index;
- 
-+	/* Create CQ table entry */
-+	WARN_ON(gd->gdma_context->cq_table[send_cq->id]);
-+	gdma_cq = kzalloc(sizeof(*gdma_cq), GFP_KERNEL);
-+	if (!gdma_cq) {
-+		err = -ENOMEM;
-+		goto err_destroy_wq_obj;
-+	}
-+
-+	gdma_cq->cq.context = send_cq;
-+	gdma_cq->type = GDMA_CQ;
-+	gdma_cq->cq.callback = mana_ib_cq_handler;
-+	gdma_cq->id = send_cq->id;
-+	gd->gdma_context->cq_table[send_cq->id] = gdma_cq;
-+
- 	ibdev_dbg(&mdev->ib_dev,
- 		  "ret %d qp->tx_object 0x%llx sq id %llu cq id %llu\n", err,
- 		  qp->tx_object, qp->sq_id, send_cq->id);
-@@ -391,6 +449,11 @@ static int mana_ib_create_qp_raw(struct ib_qp *ibqp, struct ib_pd *ibpd,
- 	return 0;
- 
- err_destroy_wq_obj:
-+	if (gdma_cq) {
-+		kfree(gdma_cq);
-+		gd->gdma_context->cq_table[send_cq->id] = NULL;
-+	}
-+
- 	mana_destroy_wq_obj(mpc, GDMA_SQ, qp->tx_object);
- 
- err_destroy_dma_region:
--- 
-2.25.1
-
+Thanks,
+Yury
 
