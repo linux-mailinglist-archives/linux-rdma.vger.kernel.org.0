@@ -1,44 +1,55 @@
-Return-Path: <linux-rdma+bounces-435-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-436-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1DCD8815F1A
-	for <lists+linux-rdma@lfdr.de>; Sun, 17 Dec 2023 13:55:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id C8A61815F5D
+	for <lists+linux-rdma@lfdr.de>; Sun, 17 Dec 2023 14:25:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4FC931C20BA3
-	for <lists+linux-rdma@lfdr.de>; Sun, 17 Dec 2023 12:55:16 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C51001C20EAD
+	for <lists+linux-rdma@lfdr.de>; Sun, 17 Dec 2023 13:25:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6A7C342AB4;
-	Sun, 17 Dec 2023 12:55:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A475D44378;
+	Sun, 17 Dec 2023 13:25:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Ok0JDuV1"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="DIuNjv9h"
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 34A8E4314E
-	for <linux-rdma@vger.kernel.org>; Sun, 17 Dec 2023 12:55:11 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2E608C433C7;
-	Sun, 17 Dec 2023 12:55:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6029744368;
+	Sun, 17 Dec 2023 13:25:52 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 49778C433C7;
+	Sun, 17 Dec 2023 13:25:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1702817711;
-	bh=nBxZSdqzWtNmnLzsRGgz00yCRokKKrZ3TqNAa7nPdK4=;
+	s=k20201202; t=1702819552;
+	bh=ylkP0Dm94uUDf3yvVALYoxZUe7EaLIQ0d83lxLefEUo=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=Ok0JDuV1dEPAX1OMO+1bpdNy4EUa72i/XS9XvE3dPArTk7I4lUBB7ZmRYQ7RaveGj
-	 DJ+PGR05+PaKWg9VCtYnaC1gfzEyMEcNFx9JH22+E2Of3zOLPFXeEGTD3zuJq+lo9a
-	 8JqoYOJrHzIKRjkvOTRd4y9XHK3aRU35OmwB+9dZY72cGOXOUKE2xtn5ARYlBeTQpV
-	 h2KtNP4ZKFTqEygVHnSkpZy3dDopy5M2HkOuGDKuErZ2Jymgxqg2cVKDAZaiIzp4uZ
-	 b/mwtWPOrbsM8AkdvEjD5W1Lb2ELgL0JeBKOHyPDrGvrmJ7VBB1ACACH186LSrUToJ
-	 DctCEVh2s3ZNA==
-Date: Sun, 17 Dec 2023 14:55:07 +0200
+	b=DIuNjv9hrBVuqmVA5anmfzAhDISWcDsG0wjgXPiHzfbJTjtGaRWVvFHndHjbZBEp5
+	 lWO+mBBt7paDQETPAIQWrVAFLKynu4btxNZCQHtm1xhGyoQiZSjvSjshpKu9PZRE3o
+	 Wj7vmyYCV1OYD8rjKjcXxi45QT2+8gSk+HclvdyoASibPIxrhmDUsVslOORJFF2vcX
+	 lhNIwXzkYUfE0Aw1CajRa4cBqM8LASUCWnvgk1KflCAFZdwvlmxFF0k1WsQ1tWZkoh
+	 FnDwQ6vmVSSU0txXEwYeMqxNuTjdHWCUGg4/VNWVfA1apgIfEca6L3EfAlPM/8F2yE
+	 UjyJErf5FifCQ==
+Date: Sun, 17 Dec 2023 15:25:48 +0200
 From: Leon Romanovsky <leon@kernel.org>
-To: Arka Sharma <arka.sw1988@gmail.com>
-Cc: linux-rdma@vger.kernel.org
-Subject: Re: ENOMEM returned by ibp_post_recv
-Message-ID: <20231217125507.GB4886@unreal>
-References: <CAPO=kN2giA5U9kkmag_jXHP-WAUquWktqa_arVdrRRqY0XTXSg@mail.gmail.com>
+To: longli@linuxonhyperv.com
+Cc: Jason Gunthorpe <jgg@ziepe.ca>, Ajay Sharma <sharmaajay@microsoft.com>,
+	Dexuan Cui <decui@microsoft.com>,
+	"K. Y. Srinivasan" <kys@microsoft.com>,
+	Haiyang Zhang <haiyangz@microsoft.com>,
+	Wei Liu <wei.liu@kernel.org>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	linux-rdma@vger.kernel.org, linux-hyperv@vger.kernel.org,
+	netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+	Long Li <longli@microsoft.com>
+Subject: Re: [Patch v4 0/3] Register with RDMA SOC interface and support for
+ CQ
+Message-ID: <20231217132548.GC4886@unreal>
+References: <1702692255-23640-1-git-send-email-longli@linuxonhyperv.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
@@ -47,26 +58,47 @@ List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAPO=kN2giA5U9kkmag_jXHP-WAUquWktqa_arVdrRRqY0XTXSg@mail.gmail.com>
+In-Reply-To: <1702692255-23640-1-git-send-email-longli@linuxonhyperv.com>
 
-On Wed, Dec 13, 2023 at 09:37:19PM +0530, Arka Sharma wrote:
-> Hi,
+On Fri, Dec 15, 2023 at 06:04:12PM -0800, longli@linuxonhyperv.com wrote:
+> From: Long Li <longli@microsoft.com>
 > 
-> I am using MT28908 Connectx-6, and running on Ubuntu 22.04 with
-> libmlx.so.1.22.39. From my application which is posting a receive work
-> request I have no outstanding requests with the rnic, and I am
-> attempting to post a receive work request, I sometimes get ENOMEM,
-> which based on the verbs docs indicates queue full. I tried running
-> dump from the mellanox firmware tool but couldn't get much hint. Any
-> pointers would be appreciated.
+> This patchset add support for registering a RDMA device with SoC for
+> support of querying device capabilities, upcoming RC queue pairs and
+> CQ interrupts.
+> 
+> This patchset is partially based on Ajay Sharma's work:
+> https://lore.kernel.org/netdev/1697494322-26814-1-git-send-email-sharmaajay@linuxonhyperv.com
+> 
+> Changes in v2:
+> Dropped the patches to create EQs for RC QP. They will be implemented with
+> RC patches.
 
-Please approach your Nvidia customer representative, they probably will
-help you better than us.
+You sent twice v2, never sent v3 and two days later sent v4 without even
+explaining why.
 
-Thanks
+Can you please invest time and write more detailed changelog which will
+include v2, v3 and v4 changes?
+
+Tanks
 
 > 
-> Regards,
-> Arka
+> 
+> Long Li (3):
+>   RDMA/mana_ib: register RDMA device with GDMA
+>   RDMA/mana_ib: query device capabilities
+>   RDMA/mana_ib: Add CQ interrupt support for RAW QP
+> 
+>  drivers/infiniband/hw/mana/cq.c               | 34 ++++++-
+>  drivers/infiniband/hw/mana/device.c           | 31 +++++--
+>  drivers/infiniband/hw/mana/main.c             | 69 ++++++++++----
+>  drivers/infiniband/hw/mana/mana_ib.h          | 53 +++++++++++
+>  drivers/infiniband/hw/mana/qp.c               | 90 ++++++++++++++++---
+>  .../net/ethernet/microsoft/mana/gdma_main.c   |  5 ++
+>  include/net/mana/gdma.h                       |  5 ++
+>  7 files changed, 252 insertions(+), 35 deletions(-)
+> 
+> -- 
+> 2.25.1
 > 
 
