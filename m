@@ -1,192 +1,269 @@
-Return-Path: <linux-rdma+bounces-456-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-457-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id C9948818775
-	for <lists+linux-rdma@lfdr.de>; Tue, 19 Dec 2023 13:28:10 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5241181894D
+	for <lists+linux-rdma@lfdr.de>; Tue, 19 Dec 2023 15:04:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 459BCB2359E
-	for <lists+linux-rdma@lfdr.de>; Tue, 19 Dec 2023 12:28:08 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C4B981F24A25
+	for <lists+linux-rdma@lfdr.de>; Tue, 19 Dec 2023 14:04:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0416917980;
-	Tue, 19 Dec 2023 12:28:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 145921A731;
+	Tue, 19 Dec 2023 14:03:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b="ctBPvQCR"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="mzeCKHXF"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-pf1-f180.google.com (mail-pf1-f180.google.com [209.85.210.180])
+Received: from mail-yw1-f175.google.com (mail-yw1-f175.google.com [209.85.128.175])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3373C18626
-	for <linux-rdma@vger.kernel.org>; Tue, 19 Dec 2023 12:27:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=broadcom.com
-Received: by mail-pf1-f180.google.com with SMTP id d2e1a72fcca58-6d099d316a8so4123626b3a.0
-        for <linux-rdma@vger.kernel.org>; Tue, 19 Dec 2023 04:27:59 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 44CF41BDC5;
+	Tue, 19 Dec 2023 14:03:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-yw1-f175.google.com with SMTP id 00721157ae682-5c85e8fdd2dso37563547b3.2;
+        Tue, 19 Dec 2023 06:03:52 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google; t=1702988879; x=1703593679; darn=vger.kernel.org;
-        h=message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=vGiZf2OI1ZKO2SeKbdJEUQHb5hKSthTwpEjL5cWKYUo=;
-        b=ctBPvQCRgSxaKPtLBGdroqJf8wnNYrzkW7/17p61Bj9Y1JfOMBR113Nwv40/eW81At
-         l7Cjpt68fmfxXk3FaUGQe6r+SbDkbe+JfsJ8Pui3ENmHg8k2QPiv/M3+6A5hoD/McEZ4
-         iTDnTcUBBsBWVXsE/1jOEsvblA06pFYFCuAGU=
+        d=gmail.com; s=20230601; t=1702994631; x=1703599431; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=N37HHPKxfmv+voKC+TVPQoiu8z8zuuw9kS6/ar7EHYI=;
+        b=mzeCKHXFd12KBTIpoblLWSFGnXhIcjzol8TzMqzOKNfoFq7sywrGQKYWgCONzNSVtk
+         CVVpz/EdM59MZz7OYbHNrkVR73kMp3gh1O5iSEBZUdbErj9sHSz+V9UT/6PuMSLBPD0n
+         C0veaDDVILinW74gPOazSgk2kDUBiy7iF5H79201tTN6+wkfUU1/8IXRLmCKyOjfBJET
+         bAgokIDVYVnPKK8cOdO5tTim0j/Ho8FN0xJQxs4fqDfgfIYd0TGbaI97poTrQo4pTWLV
+         wmfj7qRlobWrDq2JMBuRKmhg60Zf1g+CSsg6OyvDmym6YgoQv4KqcrF9Xj/KZHmwWF3Z
+         dDbA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702988879; x=1703593679;
-        h=message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=vGiZf2OI1ZKO2SeKbdJEUQHb5hKSthTwpEjL5cWKYUo=;
-        b=dY7BgUNShqkVZmWVfW3FPpEkjKBlAK2wM0f3Gf6bsiIU86LIPO0tBJc/wRAEjktbzW
-         phsi+Nn9QsBxwUFvJMKuvcSLCbAaJxbdjTr7uTAJXFa8EzWzkJTRYhxWDUZK9xO8Pdpb
-         154RamNCWgkC1fxUpxErIPp9fRqEtmoxLqtyojnIFjieGldpbh6VZqqjVFCFntBhCG50
-         URZm6lgH/usE0IxIz9q/noXSYi+Vx6JQrjAsm40yCYaJt9uDhRyt1X56vJonteZ62ZIn
-         svs2/S8ilvLePSjwDGDyri+vwahyEKuBePqEd+uzLgJCbCxms1cYVnuYxlnb+yiY7T6P
-         I7JA==
-X-Gm-Message-State: AOJu0YxRYrRz7ZHbSna4B8Wr6342RSKFu+1VjCvDGtRwqa0qEdcZjHZE
-	W0rdeLpK7cmLxfhdpei1L0A3Zw==
-X-Google-Smtp-Source: AGHT+IHhaz2dgR5z+vF8nVMuRpNeKt5YB3i48TOsWmez7TeTw82CThj4IZ+TJh2MotDyAL/gs7dXoQ==
-X-Received: by 2002:a05:6a20:2593:b0:190:8c90:c317 with SMTP id k19-20020a056a20259300b001908c90c317mr21528066pzd.79.1702988879323;
-        Tue, 19 Dec 2023 04:27:59 -0800 (PST)
-Received: from dhcp-10-192-206-197.iig.avagotech.net.net ([192.19.252.250])
-        by smtp.gmail.com with ESMTPSA id gu20-20020a056a004e5400b006d68dfa1b45sm4276679pfb.153.2023.12.19.04.27.56
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 19 Dec 2023 04:27:58 -0800 (PST)
-From: Selvin Xavier <selvin.xavier@broadcom.com>
-To: leon@kernel.org,
-	jgg@ziepe.ca
-Cc: linux-rdma@vger.kernel.org,
-	andrew.gospodarek@broadcom.com,
-	Selvin Xavier <selvin.xavier@broadcom.com>
-Subject: [PATCH for-next] RDMA/bnxt_re: Fix the offset for GenP7 adapters for user applications
-Date: Tue, 19 Dec 2023 04:11:40 -0800
-Message-Id: <1702987900-5363-1-git-send-email-selvin.xavier@broadcom.com>
-X-Mailer: git-send-email 2.5.5
-Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
-	boundary="0000000000003c8219060cdbfffa"
+        d=1e100.net; s=20230601; t=1702994631; x=1703599431;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=N37HHPKxfmv+voKC+TVPQoiu8z8zuuw9kS6/ar7EHYI=;
+        b=pnXY1m2Nn7WXSDaAcXWNXfag/G6n9hKpfa6L7+JO10jI7MCg8dGA8JtSI5H4wN5hNw
+         rX7Jtcq5auh6L5t+g43tEJriVvk75hDcE4NI9lh8PEHvoLbt2qClI6Z1yzrBMIbMll31
+         cZCRiOgFYbdBYUIyPXg1GKXAAJbXhVsBQ27Yde92CCm5tkKLHkk2Ix+wQ6v1PyPkACPJ
+         0UY1ynYkAfH+zht1lM1CzuzTxKy+yK4aqcKeH7kwiPjKaFolH0S+OtDzAK+/rVtPCrXe
+         mfrC4qZa7HTQbkHcMjW4npc6sc8o2tI5TsORw7L5pCPGLfuYESGQU8wSiOGS6rYKJCUw
+         L8iw==
+X-Gm-Message-State: AOJu0Yy1uC4fKSH6pCka55qGwXyDi0Gj4JpAWvHHzXBj+lL24hr+pOLz
+	yISoqFaeKC5HYLUVmqELLh4=
+X-Google-Smtp-Source: AGHT+IGtbbcT+HOqheXBPJrTeTn0hzXCbnmkPnP4vqy+fi2iNE2ryURfR7AMC8YRKDn1tPDJpotNmQ==
+X-Received: by 2002:a0d:df09:0:b0:5e7:d4c6:ab0a with SMTP id i9-20020a0ddf09000000b005e7d4c6ab0amr520400ywe.46.1702994630969;
+        Tue, 19 Dec 2023 06:03:50 -0800 (PST)
+Received: from localhost ([2601:344:8301:57f0:5e78:6e9c:6a86:dd49])
+        by smtp.gmail.com with ESMTPSA id v4-20020a818504000000b005d9729068f5sm9755526ywf.42.2023.12.19.06.03.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 19 Dec 2023 06:03:50 -0800 (PST)
+Date: Tue, 19 Dec 2023 06:03:49 -0800
+From: Yury Norov <yury.norov@gmail.com>
+To: Souradeep Chakrabarti <schakrabarti@microsoft.com>
+Cc: Souradeep Chakrabarti <schakrabarti@linux.microsoft.com>,
+	KY Srinivasan <kys@microsoft.com>,
+	Haiyang Zhang <haiyangz@microsoft.com>,
+	"wei.liu@kernel.org" <wei.liu@kernel.org>,
+	Dexuan Cui <decui@microsoft.com>,
+	"davem@davemloft.net" <davem@davemloft.net>,
+	"edumazet@google.com" <edumazet@google.com>,
+	"kuba@kernel.org" <kuba@kernel.org>,
+	"pabeni@redhat.com" <pabeni@redhat.com>,
+	Long Li <longli@microsoft.com>, "leon@kernel.org" <leon@kernel.org>,
+	"cai.huoqing@linux.dev" <cai.huoqing@linux.dev>,
+	"ssengar@linux.microsoft.com" <ssengar@linux.microsoft.com>,
+	"vkuznets@redhat.com" <vkuznets@redhat.com>,
+	"tglx@linutronix.de" <tglx@linutronix.de>,
+	"linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
+	"netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+	"linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+	Paul Rosswurm <paulros@microsoft.com>
+Subject: Re: [EXTERNAL] [PATCH 3/3] net: mana: add a function to spread IRQs
+ per CPUs
+Message-ID: <ZYGixTdW4PYF3RjR@yury-ThinkPad>
+References: <20231217213214.1905481-1-yury.norov@gmail.com>
+ <20231217213214.1905481-4-yury.norov@gmail.com>
+ <PUZP153MB07886CE88351F6B7A2AA0096CC97A@PUZP153MB0788.APCP153.PROD.OUTLOOK.COM>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <PUZP153MB07886CE88351F6B7A2AA0096CC97A@PUZP153MB0788.APCP153.PROD.OUTLOOK.COM>
 
---0000000000003c8219060cdbfffa
+On Tue, Dec 19, 2023 at 10:18:49AM +0000, Souradeep Chakrabarti wrote:
+> 
+> 
+> >-----Original Message-----
+> >From: Yury Norov <yury.norov@gmail.com>
+> >Sent: Monday, December 18, 2023 3:02 AM
+> >To: Souradeep Chakrabarti <schakrabarti@linux.microsoft.com>; KY Srinivasan
+> ><kys@microsoft.com>; Haiyang Zhang <haiyangz@microsoft.com>;
+> >wei.liu@kernel.org; Dexuan Cui <decui@microsoft.com>; davem@davemloft.net;
+> >edumazet@google.com; kuba@kernel.org; pabeni@redhat.com; Long Li
+> ><longli@microsoft.com>; yury.norov@gmail.com; leon@kernel.org;
+> >cai.huoqing@linux.dev; ssengar@linux.microsoft.com; vkuznets@redhat.com;
+> >tglx@linutronix.de; linux-hyperv@vger.kernel.org; netdev@vger.kernel.org; linux-
+> >kernel@vger.kernel.org; linux-rdma@vger.kernel.org
+> >Cc: Souradeep Chakrabarti <schakrabarti@microsoft.com>; Paul Rosswurm
+> ><paulros@microsoft.com>
+> >Subject: [EXTERNAL] [PATCH 3/3] net: mana: add a function to spread IRQs per
+> >CPUs
+> >
+> >[Some people who received this message don't often get email from
+> >yury.norov@gmail.com. Learn why this is important at
+> >https://aka.ms/LearnAboutSenderIdentification ]
+> >
+> >Souradeep investigated that the driver performs faster if IRQs are spread on CPUs
+> >with the following heuristics:
+> >
+> >1. No more than one IRQ per CPU, if possible; 2. NUMA locality is the second
+> >priority; 3. Sibling dislocality is the last priority.
+> >
+> >Let's consider this topology:
+> >
+> >Node            0               1
+> >Core        0       1       2       3
+> >CPU       0   1   2   3   4   5   6   7
+> >
+> >The most performant IRQ distribution based on the above topology and heuristics
+> >may look like this:
+> >
+> >IRQ     Nodes   Cores   CPUs
+> >0       1       0       0-1
+> >1       1       1       2-3
+> >2       1       0       0-1
+> >3       1       1       2-3
+> >4       2       2       4-5
+> >5       2       3       6-7
+> >6       2       2       4-5
+> >7       2       3       6-7
+> >
+> >The irq_setup() routine introduced in this patch leverages the
+> >for_each_numa_hop_mask() iterator and assigns IRQs to sibling groups as
+> >described above.
+> >
+> >According to [1], for NUMA-aware but sibling-ignorant IRQ distribution based on
+> >cpumask_local_spread() performance test results look like this:
+> >
+> >./ntttcp -r -m 16
+> >NTTTCP for Linux 1.4.0
+> >---------------------------------------------------------
+> >08:05:20 INFO: 17 threads created
+> >08:05:28 INFO: Network activity progressing...
+> >08:06:28 INFO: Test run completed.
+> >08:06:28 INFO: Test cycle finished.
+> >08:06:28 INFO: #####  Totals:  #####
+> >08:06:28 INFO: test duration    :60.00 seconds
+> >08:06:28 INFO: total bytes      :630292053310
+> >08:06:28 INFO:   throughput     :84.04Gbps
+> >08:06:28 INFO:   retrans segs   :4
+> >08:06:28 INFO: cpu cores        :192
+> >08:06:28 INFO:   cpu speed      :3799.725MHz
+> >08:06:28 INFO:   user           :0.05%
+> >08:06:28 INFO:   system         :1.60%
+> >08:06:28 INFO:   idle           :96.41%
+> >08:06:28 INFO:   iowait         :0.00%
+> >08:06:28 INFO:   softirq        :1.94%
+> >08:06:28 INFO:   cycles/byte    :2.50
+> >08:06:28 INFO: cpu busy (all)   :534.41%
+> >
+> >For NUMA- and sibling-aware IRQ distribution, the same test works 15% faster:
+> >
+> >./ntttcp -r -m 16
+> >NTTTCP for Linux 1.4.0
+> >---------------------------------------------------------
+> >08:08:51 INFO: 17 threads created
+> >08:08:56 INFO: Network activity progressing...
+> >08:09:56 INFO: Test run completed.
+> >08:09:56 INFO: Test cycle finished.
+> >08:09:56 INFO: #####  Totals:  #####
+> >08:09:56 INFO: test duration    :60.00 seconds
+> >08:09:56 INFO: total bytes      :741966608384
+> >08:09:56 INFO:   throughput     :98.93Gbps
+> >08:09:56 INFO:   retrans segs   :6
+> >08:09:56 INFO: cpu cores        :192
+> >08:09:56 INFO:   cpu speed      :3799.791MHz
+> >08:09:56 INFO:   user           :0.06%
+> >08:09:56 INFO:   system         :1.81%
+> >08:09:56 INFO:   idle           :96.18%
+> >08:09:56 INFO:   iowait         :0.00%
+> >08:09:56 INFO:   softirq        :1.95%
+> >08:09:56 INFO:   cycles/byte    :2.25
+> >08:09:56 INFO: cpu busy (all)   :569.22%
+> >
+> >[1]
+> >https://lore.kernel/
+> >.org%2Fall%2F20231211063726.GA4977%40linuxonhyperv3.guj3yctzbm1etfxqx2v
+> >ob5hsef.xx.internal.cloudapp.net%2F&data=05%7C02%7Cschakrabarti%40micros
+> >oft.com%7Ca385a5a5d661458219c208dbff47a7ab%7C72f988bf86f141af91ab2d7
+> >cd011db47%7C1%7C0%7C638384455520036393%7CUnknown%7CTWFpbGZsb3d
+> >8eyJWIjoiMC4wLjAwMDAiLCJQIjoiV2luMzIiLCJBTiI6Ik1haWwiLCJXVCI6Mn0%3D%
+> >7C3000%7C%7C%7C&sdata=kzoalzSu6frB0GIaUM5VWsz04%2FsB%2FBdXwXKb26
+> >IhqkE%3D&reserved=0
+> >
+> >Signed-off-by: Yury Norov <yury.norov@gmail.com>
+> >Co-developed-by: Souradeep Chakrabarti <schakrabarti@linux.microsoft.com>
+> >---
+> > .../net/ethernet/microsoft/mana/gdma_main.c   | 28 +++++++++++++++++++
+> > 1 file changed, 28 insertions(+)
+> >
+> >diff --git a/drivers/net/ethernet/microsoft/mana/gdma_main.c
+> >b/drivers/net/ethernet/microsoft/mana/gdma_main.c
+> >index 6367de0c2c2e..11e64e42e3b2 100644
+> >--- a/drivers/net/ethernet/microsoft/mana/gdma_main.c
+> >+++ b/drivers/net/ethernet/microsoft/mana/gdma_main.c
+> >@@ -1243,6 +1243,34 @@ void mana_gd_free_res_map(struct gdma_resource
+> >*r)
+> >        r->size = 0;
+> > }
+> >
+> >+static __maybe_unused int irq_setup(unsigned int *irqs, unsigned int
+> >+len, int node) {
+> >+       const struct cpumask *next, *prev = cpu_none_mask;
+> >+       cpumask_var_t cpus __free(free_cpumask_var);
+> >+       int cpu, weight;
+> >+
+> >+       if (!alloc_cpumask_var(&cpus, GFP_KERNEL))
+> >+               return -ENOMEM;
+> >+
+> >+       rcu_read_lock();
+> >+       for_each_numa_hop_mask(next, node) {
+> >+               weight = cpumask_weight_andnot(next, prev);
+> >+               while (weight-- > 0) {
+> Make it while (weight > 0) {
+> >+                       cpumask_andnot(cpus, next, prev);
+> >+                       for_each_cpu(cpu, cpus) {
+> >+                               if (len-- == 0)
+> >+                                       goto done;
+> >+                               irq_set_affinity_and_hint(*irqs++,
+> >topology_sibling_cpumask(cpu));
+> >+                               cpumask_andnot(cpus, cpus, topology_sibling_cpumask(cpu));
+> Here do --weight, else this code will traverse the same node N^2 times, where each
+> node has N cpus .
 
-User Doorbell page indexes start at an offset for GenP7 adapters.
-Fix the offset that will be used for user doorbell page indexes.
+Sure.
 
-Fixes: a62d68581441 ("RDMA/bnxt_re: Update the BAR offsets")
-Signed-off-by: Selvin Xavier <selvin.xavier@broadcom.com>
----
- drivers/infiniband/hw/bnxt_re/main.c | 8 +++++---
- 1 file changed, 5 insertions(+), 3 deletions(-)
+When building your series on top of this, can you please fix it
+inplace?
 
-diff --git a/drivers/infiniband/hw/bnxt_re/main.c b/drivers/infiniband/hw/bnxt_re/main.c
-index eb03eba..f022c922 100644
---- a/drivers/infiniband/hw/bnxt_re/main.c
-+++ b/drivers/infiniband/hw/bnxt_re/main.c
-@@ -108,12 +108,14 @@ static void bnxt_re_set_db_offset(struct bnxt_re_dev *rdev)
- 		dev_info(rdev_to_dev(rdev),
- 			 "Couldn't get DB bar size, Low latency framework is disabled\n");
- 	/* set register offsets for both UC and WC */
--	if (bnxt_qplib_is_chip_gen_p7(cctx))
-+	if (bnxt_qplib_is_chip_gen_p7(cctx)) {
- 		res->dpi_tbl.ucreg.offset = offset;
--	else
-+		res->dpi_tbl.wcreg.offset = en_dev->l2_db_size;
-+	} else {
- 		res->dpi_tbl.ucreg.offset = res->is_vf ? BNXT_QPLIB_DBR_VF_DB_OFFSET :
- 							 BNXT_QPLIB_DBR_PF_DB_OFFSET;
--	res->dpi_tbl.wcreg.offset = res->dpi_tbl.ucreg.offset;
-+		res->dpi_tbl.wcreg.offset = res->dpi_tbl.ucreg.offset;
-+	}
- 
- 	/* If WC mapping is disabled by L2 driver then en_dev->l2_db_size
- 	 * is equal to the DB-Bar actual size. This indicates that L2
--- 
-2.5.5
+Thanks,
+Yury
 
-
---0000000000003c8219060cdbfffa
-Content-Type: application/pkcs7-signature; name="smime.p7s"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment; filename="smime.p7s"
-Content-Description: S/MIME Cryptographic Signature
-
-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
-FYMZp2DojLAq9f4Oi2OBetbnWxo0WGycXpmq/jC4PUx2u9mazQ79i80VLagGRshWniESXuf+SYG8
-+zBimjld9ZZnwm7itHAZdtme4YYFxx+EHa4PUxPV8t+hPHhsiIjirPa1pVXPbQIDAQABo4IB2zCC
-AdcwDgYDVR0PAQH/BAQDAgWgMIGjBggrBgEFBQcBAQSBljCBkzBOBggrBgEFBQcwAoZCaHR0cDov
-L3NlY3VyZS5nbG9iYWxzaWduLmNvbS9jYWNlcnQvZ3NnY2NyM3BlcnNvbmFsc2lnbjJjYTIwMjAu
-Y3J0MEEGCCsGAQUFBzABhjVodHRwOi8vb2NzcC5nbG9iYWxzaWduLmNvbS9nc2djY3IzcGVyc29u
-YWxzaWduMmNhMjAyMDBNBgNVHSAERjBEMEIGCisGAQQBoDIBKAowNDAyBggrBgEFBQcCARYmaHR0
-cHM6Ly93d3cuZ2xvYmFsc2lnbi5jb20vcmVwb3NpdG9yeS8wCQYDVR0TBAIwADBJBgNVHR8EQjBA
-MD6gPKA6hjhodHRwOi8vY3JsLmdsb2JhbHNpZ24uY29tL2dzZ2NjcjNwZXJzb25hbHNpZ24yY2Ey
-MDIwLmNybDAlBgNVHREEHjAcgRpzZWx2aW4ueGF2aWVyQGJyb2FkY29tLmNvbTATBgNVHSUEDDAK
-BggrBgEFBQcDBDAfBgNVHSMEGDAWgBSWM9HmWBdbNHWKgVZk1b5I3qGPzzAdBgNVHQ4EFgQU3TaH
-dsgUhTW3LwObmZ20fj+8Xj8wDQYJKoZIhvcNAQELBQADggEBAAbt6Sptp6ZlTnhM2FDhkVXks68/
-iqvfL/e8wSPVdBxOuiP+8EXGLV3E72KfTTJXMbkcmFpK2K11poBDQJhz0xyOGTESjXNnN6Eqq+iX
-hQtF8xG2lzPq8MijKI4qXk5Vy5DYfwsVfcF0qJw5AhC32nU9uuIPJq8/mQbZfqmoanV/yadootGr
-j1Ze9ndr+YDXPpCymOsynmmw0ErHZGGW1OmMpAEt0A+613glWCURLDlP8HONi1wnINV6aDiEf0ad
-9NMGxDsp+YWiRXD3txfo2OMQbpIxM90QfhKKacX8t1J1oAAWxDrLVTJBXBNvz5tr+D1sYwuye93r
-hImmkM1unboxggJtMIICaQIBATBrMFsxCzAJBgNVBAYTAkJFMRkwFwYDVQQKExBHbG9iYWxTaWdu
-IG52LXNhMTEwLwYDVQQDEyhHbG9iYWxTaWduIEdDQyBSMyBQZXJzb25hbFNpZ24gMiBDQSAyMDIw
-Agxy+Cu4x/7lM0zxY7cwDQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIEIAhYjHCMZ52t
-+pImnQIwLGHdo10d/PLcfJp2SBRpSqjEMBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZI
-hvcNAQkFMQ8XDTIzMTIxOTEyMjc1OVowaQYJKoZIhvcNAQkPMVwwWjALBglghkgBZQMEASowCwYJ
-YIZIAWUDBAEWMAsGCWCGSAFlAwQBAjAKBggqhkiG9w0DBzALBgkqhkiG9w0BAQowCwYJKoZIhvcN
-AQEHMAsGCWCGSAFlAwQCATANBgkqhkiG9w0BAQEFAASCAQCtB24kjr5VmVq5tKjXX6Y/Gy+yVudW
-zO5lS6+DWujvvY0itvSgy8t5Brfg7UJvLidWsikwlE7khPbzFJxuLnQfEbUoAmhSHPS1G9SrNVH/
-PXn8Mp6aPslAxZSPpqSe3O6fp+JbyglJT5U+TrYdnkda/bob758L8KtE/anKvPO4MeNRI7X8PW0x
-c5zza4bniPajwRIR7Ekt59fRBmb3S1pMe40QVcX4jv6fZacUr+Eh9kkkmCvgBdGA9/xeQ5cYOxsh
-h8FNffqRvt4T1y4AloVPVTIoGzft6gGd0FYbUPXM8j0tJIRd0A5cJrXMnVgPK292Uz1WC81HRiYQ
-JkQV9P04
---0000000000003c8219060cdbfffa--
+> >+                       }
+> >+               }
+> >+               prev = next;
+> >+       }
+> >+done:
+> >+       rcu_read_unlock();
+> >+       return 0;
+> >+}
+> >+
+> > static int mana_gd_setup_irqs(struct pci_dev *pdev)  {
+> >        unsigned int max_queues_per_port = num_online_cpus();
+> >--
+> >2.40.1
 
