@@ -1,269 +1,118 @@
-Return-Path: <linux-rdma+bounces-457-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-458-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5241181894D
-	for <lists+linux-rdma@lfdr.de>; Tue, 19 Dec 2023 15:04:54 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3A6CF819123
+	for <lists+linux-rdma@lfdr.de>; Tue, 19 Dec 2023 21:00:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C4B981F24A25
-	for <lists+linux-rdma@lfdr.de>; Tue, 19 Dec 2023 14:04:53 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E85462872AB
+	for <lists+linux-rdma@lfdr.de>; Tue, 19 Dec 2023 20:00:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 145921A731;
-	Tue, 19 Dec 2023 14:03:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 69ED239863;
+	Tue, 19 Dec 2023 19:59:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="mzeCKHXF"
+	dkim=pass (2048-bit key) header.d=mail.ru header.i=@mail.ru header.b="soG4RZl1";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=mail.ru header.i=@mail.ru header.b="gHv+ZucQ"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-yw1-f175.google.com (mail-yw1-f175.google.com [209.85.128.175])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from fallback13.i.mail.ru (fallback13.i.mail.ru [79.137.243.65])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 44CF41BDC5;
-	Tue, 19 Dec 2023 14:03:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yw1-f175.google.com with SMTP id 00721157ae682-5c85e8fdd2dso37563547b3.2;
-        Tue, 19 Dec 2023 06:03:52 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1702994631; x=1703599431; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=N37HHPKxfmv+voKC+TVPQoiu8z8zuuw9kS6/ar7EHYI=;
-        b=mzeCKHXFd12KBTIpoblLWSFGnXhIcjzol8TzMqzOKNfoFq7sywrGQKYWgCONzNSVtk
-         CVVpz/EdM59MZz7OYbHNrkVR73kMp3gh1O5iSEBZUdbErj9sHSz+V9UT/6PuMSLBPD0n
-         C0veaDDVILinW74gPOazSgk2kDUBiy7iF5H79201tTN6+wkfUU1/8IXRLmCKyOjfBJET
-         bAgokIDVYVnPKK8cOdO5tTim0j/Ho8FN0xJQxs4fqDfgfIYd0TGbaI97poTrQo4pTWLV
-         wmfj7qRlobWrDq2JMBuRKmhg60Zf1g+CSsg6OyvDmym6YgoQv4KqcrF9Xj/KZHmwWF3Z
-         dDbA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702994631; x=1703599431;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=N37HHPKxfmv+voKC+TVPQoiu8z8zuuw9kS6/ar7EHYI=;
-        b=pnXY1m2Nn7WXSDaAcXWNXfag/G6n9hKpfa6L7+JO10jI7MCg8dGA8JtSI5H4wN5hNw
-         rX7Jtcq5auh6L5t+g43tEJriVvk75hDcE4NI9lh8PEHvoLbt2qClI6Z1yzrBMIbMll31
-         cZCRiOgFYbdBYUIyPXg1GKXAAJbXhVsBQ27Yde92CCm5tkKLHkk2Ix+wQ6v1PyPkACPJ
-         0UY1ynYkAfH+zht1lM1CzuzTxKy+yK4aqcKeH7kwiPjKaFolH0S+OtDzAK+/rVtPCrXe
-         mfrC4qZa7HTQbkHcMjW4npc6sc8o2tI5TsORw7L5pCPGLfuYESGQU8wSiOGS6rYKJCUw
-         L8iw==
-X-Gm-Message-State: AOJu0Yy1uC4fKSH6pCka55qGwXyDi0Gj4JpAWvHHzXBj+lL24hr+pOLz
-	yISoqFaeKC5HYLUVmqELLh4=
-X-Google-Smtp-Source: AGHT+IGtbbcT+HOqheXBPJrTeTn0hzXCbnmkPnP4vqy+fi2iNE2ryURfR7AMC8YRKDn1tPDJpotNmQ==
-X-Received: by 2002:a0d:df09:0:b0:5e7:d4c6:ab0a with SMTP id i9-20020a0ddf09000000b005e7d4c6ab0amr520400ywe.46.1702994630969;
-        Tue, 19 Dec 2023 06:03:50 -0800 (PST)
-Received: from localhost ([2601:344:8301:57f0:5e78:6e9c:6a86:dd49])
-        by smtp.gmail.com with ESMTPSA id v4-20020a818504000000b005d9729068f5sm9755526ywf.42.2023.12.19.06.03.50
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 19 Dec 2023 06:03:50 -0800 (PST)
-Date: Tue, 19 Dec 2023 06:03:49 -0800
-From: Yury Norov <yury.norov@gmail.com>
-To: Souradeep Chakrabarti <schakrabarti@microsoft.com>
-Cc: Souradeep Chakrabarti <schakrabarti@linux.microsoft.com>,
-	KY Srinivasan <kys@microsoft.com>,
-	Haiyang Zhang <haiyangz@microsoft.com>,
-	"wei.liu@kernel.org" <wei.liu@kernel.org>,
-	Dexuan Cui <decui@microsoft.com>,
-	"davem@davemloft.net" <davem@davemloft.net>,
-	"edumazet@google.com" <edumazet@google.com>,
-	"kuba@kernel.org" <kuba@kernel.org>,
-	"pabeni@redhat.com" <pabeni@redhat.com>,
-	Long Li <longli@microsoft.com>, "leon@kernel.org" <leon@kernel.org>,
-	"cai.huoqing@linux.dev" <cai.huoqing@linux.dev>,
-	"ssengar@linux.microsoft.com" <ssengar@linux.microsoft.com>,
-	"vkuznets@redhat.com" <vkuznets@redhat.com>,
-	"tglx@linutronix.de" <tglx@linutronix.de>,
-	"linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
-	"netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	"linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-	Paul Rosswurm <paulros@microsoft.com>
-Subject: Re: [EXTERNAL] [PATCH 3/3] net: mana: add a function to spread IRQs
- per CPUs
-Message-ID: <ZYGixTdW4PYF3RjR@yury-ThinkPad>
-References: <20231217213214.1905481-1-yury.norov@gmail.com>
- <20231217213214.1905481-4-yury.norov@gmail.com>
- <PUZP153MB07886CE88351F6B7A2AA0096CC97A@PUZP153MB0788.APCP153.PROD.OUTLOOK.COM>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 32D5C39FE0
+	for <linux-rdma@vger.kernel.org>; Tue, 19 Dec 2023 19:59:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=mail.ru
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mail.ru
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mail.ru; s=mail4;
+	h=Content-Transfer-Encoding:Content-Type:In-Reply-To:From:Cc:References:To:Subject:MIME-Version:Date:Message-ID:From:Subject:Content-Type:Content-Transfer-Encoding:To:Cc; bh=JSkekOjjf/syH7TXgO/vCeXmhD1M2LKvnKgQtef7+go=;
+	t=1703015982;x=1703105982; 
+	b=soG4RZl1nBWqkJG/e+CllPLDCzuCkapGjo+B1fiGk7vxzZxkrgQQF3lrKFFSDCpNKcS10bwxNoH0ji7yLpgougUPRGshv93/ALIW0fteGWk4o52cCvXyYC9AH/ZlnVqATOhJ2H3U02gB5HP2NHXdHhemaONzSMGtcgJ0v59S3t7IkJGW/QsBaG65wk9GJoBCeyG6ZV5iYDjYc+OSEcbhKlQrn9DWUILJcsxImKAMtvmsZy+z51h38Q77x6QXBiHHvsTyfKjqiHbMkVG4c2HsXAP0EfsD8zUTTli2nEbvYM9SajN6ZE5IOU+9L3bRVkri8LUDs1GrBirOBzyuhnWqew==;
+Received: from [10.12.4.31] (port=55228 helo=smtp56.i.mail.ru)
+	by fallback13.i.mail.ru with esmtp (envelope-from <listdansp@mail.ru>)
+	id 1rFfvx-000wfw-Gc
+	for linux-rdma@vger.kernel.org; Tue, 19 Dec 2023 22:39:17 +0300
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mail.ru;
+	s=mail4; h=Content-Transfer-Encoding:Content-Type:In-Reply-To:
+	Disposition-Notification-To:From:Cc:References:To:Subject:MIME-Version:Date:
+	Message-ID:From:Sender:Reply-To:To:Cc:Content-Type:Content-Transfer-Encoding:
+	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
+	Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:
+	List-Subscribe:List-Post:List-Owner:List-Archive:X-Cloud-Ids:
+	Disposition-Notification-To; bh=JSkekOjjf/syH7TXgO/vCeXmhD1M2LKvnKgQtef7+go=;
+	t=1703014757; x=1703104757; b=gHv+ZucQJPFBH2gVWi5d83ypb7fWDD+CqFXiSs0nHhGMttB
+	dPn+//rQR5KVsZJhCzW88T+myPji62SxmAxRN0aOdszRqpmZJ3bSUn3gB6Vrv4ghdo80vxOWTSS5p
+	vdjrYTbrR+0IpCnQ2sb4HPykxCT54o6MwWzN1yayu5qo7HWQi/JPER6VQCzQ9xWxyZugznzsa2w1U
+	A3TOY90YbCRNRQDxlGnOmAVsC1Sx/i8gUlUJMRkbRzWrJsP5ZUIAAPt5PgLbNCsqbT+ZRKIM/Ys96
+	dw9fEXk1AOQpY17zD7kBeLqhRvwx1+zPNMZpL/eMbGSKZYHAjuFZA4JemCixgjfw==;
+Received: by smtp56.i.mail.ru with esmtpa (envelope-from <listdansp@mail.ru>)
+	id 1rFfvj-00DzMq-0x; Tue, 19 Dec 2023 22:39:03 +0300
+Message-ID: <62436d26-3c5c-aa10-b82c-4410fbbe9b1c@mail.ru>
+Date: Tue, 19 Dec 2023 22:39:02 +0300
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <PUZP153MB07886CE88351F6B7A2AA0096CC97A@PUZP153MB0788.APCP153.PROD.OUTLOOK.COM>
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
+ Thunderbird/91.6.1
+Subject: mlx5 attr.max_sge checks
+Content-Language: ru
+To: leon@kernel.org, dledford@redhat.com, jgg@ziepe.ca
+References: <1703013183-24379-mlmmj-3a1ea6ac@vger.kernel.org>
+Cc: linux-rdma@vger.kernel.org
+From: listdansp <listdansp@mail.ru>
+Disposition-Notification-To: listdansp <listdansp@mail.ru>
+In-Reply-To: <1703013183-24379-mlmmj-3a1ea6ac@vger.kernel.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Mailru-Src: smtp
+X-7564579A: 646B95376F6C166E
+X-77F55803: 4F1203BC0FB41BD97533543916A0F71A7F5FD72A6F01437A2062B641662DAC10CD62213F67905E7A2747D5BCC6C3E5AF654CA78D9D1A626D5CE894BBB38A107E0DE140DF427568CF
+X-7FA49CB5: FF5795518A3D127A4AD6D5ED66289B5278DA827A17800CE762F001A90027CA0CC2099A533E45F2D0395957E7521B51C2CFCAF695D4D8E9FCEA1F7E6F0F101C6778DA827A17800CE706CBCB8C0AB1BC4FEA1F7E6F0F101C6723150C8DA25C47586E58E00D9D99D84E1BDDB23E98D2D38B73AB1701401CD8717D4EC1DBA89AC1D3D1BD1036CD1CD06820879F7C8C5043D14489FFFB0AA5F4BF1661749BA6B977358794E14F7ADDB10D8941B15DA834481FA18204E546F3947CD2DCF9CF1F528DBCF6B57BC7E64490618DEB871D839B7333395957E7521B51C2DFABB839C843B9C08941B15DA834481F8AA50765F7900637F924B32C592EA89F389733CBF5DBD5E9B5C8C57E37DE458BD9DD9810294C998ED8FC6C240DEA76428AA50765F7900637B4C266A59E6A0C46D81D268191BDAD3DBD4B6F7A4D31EC0BE2F48590F00D11D6D81D268191BDAD3D78DA827A17800CE79CAD2DBC0234F62EEC76A7562686271ED91E3A1F190DE8FD2E808ACE2090B5E14AD6D5ED66289B5278DA827A17800CE78F196494AD86DCAD2EB15956EA79C166A417C69337E82CC275ECD9A6C639B01B78DA827A17800CE7F9581457D50944AB731C566533BA786AA5CC5B56E945C8DA
+X-C1DE0DAB: 0D63561A33F958A517A3D1DFC377942A5DC6F57979675B685ADE586EA7C16CD0F87CCE6106E1FC07E67D4AC08A07B9B064E7220B7C5505929C5DF10A05D560A950611B66E3DA6D700B0A020F03D25A0997E3FB2386030E77
+X-C8649E89: 1C3962B70DF3F0ADE00A9FD3E00BEEDF77DD89D51EBB7742D3581295AF09D3DF87807E0823442EA2ED31085941D9CD0AF7F820E7B07EA4CF0F76270F0A8DFBCB5FF4557C4127DDD5BBCA2D9CF9CC88BE9590823B57DA54EE284AB208DE0D1BB1E190DC598EAEA94FFBD58A8C741B4607FAA7ED8124A7FDCFA74DFFEFA5DC0E7F02C26D483E81D6BE1622D42B0D48DA1897021655C84034CFF0A6D2C91ED28CB6
+X-D57D3AED: 3ZO7eAau8CL7WIMRKs4sN3D3tLDjz0dLbV79QFUyzQ2Ujvy7cMT6pYYqY16iZVKkSc3dCLJ7zSJH7+u4VD18S7Vl4ZUrpaVfd2+vE6kuoey4m4VkSEu530nj6fImhcD4MUrOEAnl0W826KZ9Q+tr5ycPtXkTV4k65bRjmOUUP8cvGozZ33TWg5HZplvhhXbhDGzqmQDTd6OAevLeAnq3Ra9uf7zvY2zzsIhlcp/Y7m53TZgf2aB4JOg4gkr2biojYtkvzPaMmB6EiGHfUP8tLg==
+X-Mailru-Sender: 4CE1109FD677D2770147F6A9E21DCA7B1CBD3524A56AB0843F24B9FF8AE98EF27F72FD02116BEB297E3C9C7AF06D9E7B78274A4A9E9E44FD3C3897ABF9FF211DE8284E426C7B2D9A5FEEDEB644C299C0ED14614B50AE0675
+X-Mras: Ok
+X-7564579A: 646B95376F6C166E
+X-77F55803: 6242723A09DB00B43D177111D18C9608537746443B7E8395CC7CC0F4B5FCE887049FFFDB7839CE9E8F069D011BA1F8AA4911269011CF60612E18ABDCB458958D2F99D07B6B964BC6
+X-7FA49CB5: 0D63561A33F958A5BEEA22B76F3CBC6086BB0D89E45CF8121E476B0607236BA5CACD7DF95DA8FC8BD5E8D9A59859A8B6E36167FF85871AA3
+X-D57D3AED: 3ZO7eAau8CL7WIMRKs4sN3D3tLDjz0dLbV79QFUyzQ2Ujvy7cMT6pYYqY16iZVKkSc3dCLJ7zSJH7+u4VD18S7Vl4ZUrpaVfd2+vE6kuoey4m4VkSEu530nj6fImhcD4MUrOEAnl0W826KZ9Q+tr5xhPKz0ZEsZ5k6NOOPWz5QAiZSCXKGQRq3/7KxbCLSB2ESzQkaOXqCBFZPLWFrEGlV1shfWe2EVcxl5toh0c/aCGOghz/frdRhzMe95NxDFd13/ESPkUJS3pjUUzX7g7LA==
+X-Mailru-MI: C000000000000800
+X-Mras: Ok
 
-On Tue, Dec 19, 2023 at 10:18:49AM +0000, Souradeep Chakrabarti wrote:
-> 
-> 
-> >-----Original Message-----
-> >From: Yury Norov <yury.norov@gmail.com>
-> >Sent: Monday, December 18, 2023 3:02 AM
-> >To: Souradeep Chakrabarti <schakrabarti@linux.microsoft.com>; KY Srinivasan
-> ><kys@microsoft.com>; Haiyang Zhang <haiyangz@microsoft.com>;
-> >wei.liu@kernel.org; Dexuan Cui <decui@microsoft.com>; davem@davemloft.net;
-> >edumazet@google.com; kuba@kernel.org; pabeni@redhat.com; Long Li
-> ><longli@microsoft.com>; yury.norov@gmail.com; leon@kernel.org;
-> >cai.huoqing@linux.dev; ssengar@linux.microsoft.com; vkuznets@redhat.com;
-> >tglx@linutronix.de; linux-hyperv@vger.kernel.org; netdev@vger.kernel.org; linux-
-> >kernel@vger.kernel.org; linux-rdma@vger.kernel.org
-> >Cc: Souradeep Chakrabarti <schakrabarti@microsoft.com>; Paul Rosswurm
-> ><paulros@microsoft.com>
-> >Subject: [EXTERNAL] [PATCH 3/3] net: mana: add a function to spread IRQs per
-> >CPUs
-> >
-> >[Some people who received this message don't often get email from
-> >yury.norov@gmail.com. Learn why this is important at
-> >https://aka.ms/LearnAboutSenderIdentification ]
-> >
-> >Souradeep investigated that the driver performs faster if IRQs are spread on CPUs
-> >with the following heuristics:
-> >
-> >1. No more than one IRQ per CPU, if possible; 2. NUMA locality is the second
-> >priority; 3. Sibling dislocality is the last priority.
-> >
-> >Let's consider this topology:
-> >
-> >Node            0               1
-> >Core        0       1       2       3
-> >CPU       0   1   2   3   4   5   6   7
-> >
-> >The most performant IRQ distribution based on the above topology and heuristics
-> >may look like this:
-> >
-> >IRQ     Nodes   Cores   CPUs
-> >0       1       0       0-1
-> >1       1       1       2-3
-> >2       1       0       0-1
-> >3       1       1       2-3
-> >4       2       2       4-5
-> >5       2       3       6-7
-> >6       2       2       4-5
-> >7       2       3       6-7
-> >
-> >The irq_setup() routine introduced in this patch leverages the
-> >for_each_numa_hop_mask() iterator and assigns IRQs to sibling groups as
-> >described above.
-> >
-> >According to [1], for NUMA-aware but sibling-ignorant IRQ distribution based on
-> >cpumask_local_spread() performance test results look like this:
-> >
-> >./ntttcp -r -m 16
-> >NTTTCP for Linux 1.4.0
-> >---------------------------------------------------------
-> >08:05:20 INFO: 17 threads created
-> >08:05:28 INFO: Network activity progressing...
-> >08:06:28 INFO: Test run completed.
-> >08:06:28 INFO: Test cycle finished.
-> >08:06:28 INFO: #####  Totals:  #####
-> >08:06:28 INFO: test duration    :60.00 seconds
-> >08:06:28 INFO: total bytes      :630292053310
-> >08:06:28 INFO:   throughput     :84.04Gbps
-> >08:06:28 INFO:   retrans segs   :4
-> >08:06:28 INFO: cpu cores        :192
-> >08:06:28 INFO:   cpu speed      :3799.725MHz
-> >08:06:28 INFO:   user           :0.05%
-> >08:06:28 INFO:   system         :1.60%
-> >08:06:28 INFO:   idle           :96.41%
-> >08:06:28 INFO:   iowait         :0.00%
-> >08:06:28 INFO:   softirq        :1.94%
-> >08:06:28 INFO:   cycles/byte    :2.50
-> >08:06:28 INFO: cpu busy (all)   :534.41%
-> >
-> >For NUMA- and sibling-aware IRQ distribution, the same test works 15% faster:
-> >
-> >./ntttcp -r -m 16
-> >NTTTCP for Linux 1.4.0
-> >---------------------------------------------------------
-> >08:08:51 INFO: 17 threads created
-> >08:08:56 INFO: Network activity progressing...
-> >08:09:56 INFO: Test run completed.
-> >08:09:56 INFO: Test cycle finished.
-> >08:09:56 INFO: #####  Totals:  #####
-> >08:09:56 INFO: test duration    :60.00 seconds
-> >08:09:56 INFO: total bytes      :741966608384
-> >08:09:56 INFO:   throughput     :98.93Gbps
-> >08:09:56 INFO:   retrans segs   :6
-> >08:09:56 INFO: cpu cores        :192
-> >08:09:56 INFO:   cpu speed      :3799.791MHz
-> >08:09:56 INFO:   user           :0.06%
-> >08:09:56 INFO:   system         :1.81%
-> >08:09:56 INFO:   idle           :96.18%
-> >08:09:56 INFO:   iowait         :0.00%
-> >08:09:56 INFO:   softirq        :1.95%
-> >08:09:56 INFO:   cycles/byte    :2.25
-> >08:09:56 INFO: cpu busy (all)   :569.22%
-> >
-> >[1]
-> >https://lore.kernel/
-> >.org%2Fall%2F20231211063726.GA4977%40linuxonhyperv3.guj3yctzbm1etfxqx2v
-> >ob5hsef.xx.internal.cloudapp.net%2F&data=05%7C02%7Cschakrabarti%40micros
-> >oft.com%7Ca385a5a5d661458219c208dbff47a7ab%7C72f988bf86f141af91ab2d7
-> >cd011db47%7C1%7C0%7C638384455520036393%7CUnknown%7CTWFpbGZsb3d
-> >8eyJWIjoiMC4wLjAwMDAiLCJQIjoiV2luMzIiLCJBTiI6Ik1haWwiLCJXVCI6Mn0%3D%
-> >7C3000%7C%7C%7C&sdata=kzoalzSu6frB0GIaUM5VWsz04%2FsB%2FBdXwXKb26
-> >IhqkE%3D&reserved=0
-> >
-> >Signed-off-by: Yury Norov <yury.norov@gmail.com>
-> >Co-developed-by: Souradeep Chakrabarti <schakrabarti@linux.microsoft.com>
-> >---
-> > .../net/ethernet/microsoft/mana/gdma_main.c   | 28 +++++++++++++++++++
-> > 1 file changed, 28 insertions(+)
-> >
-> >diff --git a/drivers/net/ethernet/microsoft/mana/gdma_main.c
-> >b/drivers/net/ethernet/microsoft/mana/gdma_main.c
-> >index 6367de0c2c2e..11e64e42e3b2 100644
-> >--- a/drivers/net/ethernet/microsoft/mana/gdma_main.c
-> >+++ b/drivers/net/ethernet/microsoft/mana/gdma_main.c
-> >@@ -1243,6 +1243,34 @@ void mana_gd_free_res_map(struct gdma_resource
-> >*r)
-> >        r->size = 0;
-> > }
-> >
-> >+static __maybe_unused int irq_setup(unsigned int *irqs, unsigned int
-> >+len, int node) {
-> >+       const struct cpumask *next, *prev = cpu_none_mask;
-> >+       cpumask_var_t cpus __free(free_cpumask_var);
-> >+       int cpu, weight;
-> >+
-> >+       if (!alloc_cpumask_var(&cpus, GFP_KERNEL))
-> >+               return -ENOMEM;
-> >+
-> >+       rcu_read_lock();
-> >+       for_each_numa_hop_mask(next, node) {
-> >+               weight = cpumask_weight_andnot(next, prev);
-> >+               while (weight-- > 0) {
-> Make it while (weight > 0) {
-> >+                       cpumask_andnot(cpus, next, prev);
-> >+                       for_each_cpu(cpu, cpus) {
-> >+                               if (len-- == 0)
-> >+                                       goto done;
-> >+                               irq_set_affinity_and_hint(*irqs++,
-> >topology_sibling_cpumask(cpu));
-> >+                               cpumask_andnot(cpus, cpus, topology_sibling_cpumask(cpu));
-> Here do --weight, else this code will traverse the same node N^2 times, where each
-> node has N cpus .
+Hi,
 
-Sure.
+While investigating the one report of the static analyzer (svacer), it 
+was discovered that attr.max_sge was not checked for the maximum value 
+in the mlx5_ib_create_srq function. However, this check is present in 
+https://github.com/linux-rdma/rdma-core. Also, checks are present in 
+most other infiniband Linux Kernel drivers. This may lead to incorrect 
+driver operation for example
 
-When building your series on top of this, can you please fix it
-inplace?
+int mlx5_ib_read_wqe_srq(struct mlx5_ib_srq *srq, int wqe_index, void 
+*buffer, size_t buflen, size_t *bc)
+{
+     struct ib_umem *umem = srq->umem;
+     size_t wqe_size = 1 << srq->msrq.wqe_shift; // integer overflow here
+     if (buflen < wqe_size)
+         return -EINVAL;
 
-Thanks,
-Yury
+In my opinion, the only possible solution to this problem may be to add 
+a check to mlx5_ib_create_srq similar to 
+https://github.com/linux-rdma/rdma-core like
 
-> >+                       }
-> >+               }
-> >+               prev = next;
-> >+       }
-> >+done:
-> >+       rcu_read_unlock();
-> >+       return 0;
-> >+}
-> >+
-> > static int mana_gd_setup_irqs(struct pci_dev *pdev)  {
-> >        unsigned int max_queues_per_port = num_online_cpus();
-> >--
-> >2.40.1
+u32 max_sge = MLX5_CAP_GEN(dev->mdev, max_wqe_sz_rq) / sizeof(struct 
+mlx5_wqe_data_seg);
+if (attr->attr.max_sge > max_sge) {
+     mlx5_ib_dbg(dev, "max_sge %d, cap %d\n", init_attr->attr.max_sge, 
+max_sge);
+     return -EINVAL;
+}
+
+I would appreciate your suggestions and comments.
+
+Best regards,
+Danila
 
