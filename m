@@ -1,420 +1,314 @@
-Return-Path: <linux-rdma+bounces-452-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-453-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 07281817D4B
-	for <lists+linux-rdma@lfdr.de>; Mon, 18 Dec 2023 23:32:43 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id ED77E81820C
+	for <lists+linux-rdma@lfdr.de>; Tue, 19 Dec 2023 08:14:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8A55B1F23167
-	for <lists+linux-rdma@lfdr.de>; Mon, 18 Dec 2023 22:32:42 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 462B92866BC
+	for <lists+linux-rdma@lfdr.de>; Tue, 19 Dec 2023 07:14:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 76BC7768E4;
-	Mon, 18 Dec 2023 22:32:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7BCA1881E;
+	Tue, 19 Dec 2023 07:14:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ZwWC7i0+"
+	dkim=pass (1024-bit key) header.d=microsoft.com header.i=@microsoft.com header.b="gR72oiuQ"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from HK2P15301CU002.outbound.protection.outlook.com (mail-eastasiaazon11022011.outbound.protection.outlook.com [52.101.128.11])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3E28476080;
-	Mon, 18 Dec 2023 22:32:08 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 613C1C433C7;
-	Mon, 18 Dec 2023 22:32:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1702938728;
-	bh=kmjPRrKt+OLy6oEhR8cZyITBuhz7Wbbxj6JUMpJygf4=;
-	h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-	b=ZwWC7i0+WvteXG3QvJLN80wmlzMQC6x/ve8p9yAUHgFsTEW+E+96Xm5Z855s33c03
-	 /8RowHprq1tJVT9w6WcYbldy7QQRIKh+0OeswTjXj1WoKVCIykCNTDaNshK88HPVuC
-	 MUHpKQGjDjCMs3KF16l4sSb89DSqpfyFNEYWkXY1pwSoRel/c+NeIlhfotVwptzUYB
-	 dC67rb8nUXM77JgpNmW8gq1SH0dPDB1Rx0FXEFJ7P/3KLDI9mJu+QhM5JVVMpJLU2M
-	 8lfeIWQ/oCOF9IBSNlzG6G9puQUbZnWMhipftjoH3ukKDkr5mq6Fli78LcTB+cd1Ae
-	 9Wy/ieUU1V5ZQ==
-Subject: [PATCH v1 4/4] svcrdma: Implement multi-stage Read completion again
-From: Chuck Lever <cel@kernel.org>
-To: linux-nfs@vger.kernel.org, linux-rdma@vger.kernel.org
-Cc: tom@talpey.com
-Date: Mon, 18 Dec 2023 17:32:07 -0500
-Message-ID: 
- <170293872745.4604.13501370140544523227.stgit@bazille.1015granger.net>
-In-Reply-To: 
- <170293795877.4604.12721267378032407419.stgit@bazille.1015granger.net>
-References: 
- <170293795877.4604.12721267378032407419.stgit@bazille.1015granger.net>
-User-Agent: StGit/1.5
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2E095C12A;
+	Tue, 19 Dec 2023 07:14:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=microsoft.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=microsoft.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=RzNkWECt65Fq67KZ9z+uIzwza/739YL7nJCMRXL5bgIeIRid3ipDlabQxBbhEqSTpQ3JU/Ezi5I5vxLfB5jmQoy7SQOXedNWeHND02u3H4Fim6w6b3o/l7fOxfJpG1tG6p8z7ovuZWF1Q8/323Pns/gN8ODRVR9j7I8J0P913N3QCROOt/SV2uFZTnhncmDwZWn0Cgnmvm/tYY3hYuQKoZNmnJubUQflINQBukZ8j0BUkwLl0LfcqxSoOHWJ7S98guxxAAjczshHi8mOALc7bRI00Xkkk8gQ9uP7Rity1hY4L0dlBjIQt06Nr8hAYZsmmEht6X7qC7263M99s6rsbA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=xu1EaTFg+YulzPjjqtF1gfO5wZwyUV7N4KY8/EOUQVA=;
+ b=Y5dM8pRFyXdBqcCGedMcQyaQAqmjnNKtu0T3ZecIqFzzmpQzbcem8OCYO7YwdCATxOgTPEbPZqhSwMBz/+qQhevbZG2s1gcJ4aAK2WD1/HMbiHhudn9vErWoF/zFpAZ6yZAWNpZUb3x1QncaK1o2u0c1kLLbtrku31ag35MKkw/grKIe25m64LZOnOcjMpBqqlWRBTlYu2/eSKMQJdDgOGCN5tI1BnT/mjgoFAMqeY0AtCBE1YjIds5lzeiq0QLgg8hzx/6EMosObwEgnxmIxwM/xIsunyubLviYoMtdxc2NqOo9mpZNGXDffrVuvZeOhlsQY9UJX9aTNKJCbyR3yw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=microsoft.com; dmarc=pass action=none
+ header.from=microsoft.com; dkim=pass header.d=microsoft.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=xu1EaTFg+YulzPjjqtF1gfO5wZwyUV7N4KY8/EOUQVA=;
+ b=gR72oiuQgIcpCT8//I4obgwHT6D9IVBa7WXRixK9yQee8x2638o3CL0jtOlyBXemwnInUN4BMn+uYRMJuCHwEIpvNJVxPCOqOa5mcEqpile4bmZMb860fHaD7GHpSfqVBsAgAz/Nt6IIha9hQtUytYmQ2/+oS3FPnRj4sa/rm38=
+Received: from PUZP153MB0788.APCP153.PROD.OUTLOOK.COM (2603:1096:301:fc::10)
+ by TYZP153MB0413.APCP153.PROD.OUTLOOK.COM (2603:1096:400:2e::11) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7135.5; Tue, 19 Dec
+ 2023 07:14:33 +0000
+Received: from PUZP153MB0788.APCP153.PROD.OUTLOOK.COM
+ ([fe80::a516:f38b:f94e:b77a]) by PUZP153MB0788.APCP153.PROD.OUTLOOK.COM
+ ([fe80::a516:f38b:f94e:b77a%7]) with mapi id 15.20.7135.004; Tue, 19 Dec 2023
+ 07:14:33 +0000
+From: Souradeep Chakrabarti <schakrabarti@microsoft.com>
+To: Yury Norov <yury.norov@gmail.com>, Souradeep Chakrabarti
+	<schakrabarti@linux.microsoft.com>, KY Srinivasan <kys@microsoft.com>,
+	Haiyang Zhang <haiyangz@microsoft.com>, "wei.liu@kernel.org"
+	<wei.liu@kernel.org>, Dexuan Cui <decui@microsoft.com>, "davem@davemloft.net"
+	<davem@davemloft.net>, "edumazet@google.com" <edumazet@google.com>,
+	"kuba@kernel.org" <kuba@kernel.org>, "pabeni@redhat.com" <pabeni@redhat.com>,
+	Long Li <longli@microsoft.com>, "leon@kernel.org" <leon@kernel.org>,
+	"cai.huoqing@linux.dev" <cai.huoqing@linux.dev>,
+	"ssengar@linux.microsoft.com" <ssengar@linux.microsoft.com>,
+	"vkuznets@redhat.com" <vkuznets@redhat.com>, "tglx@linutronix.de"
+	<tglx@linutronix.de>, "linux-hyperv@vger.kernel.org"
+	<linux-hyperv@vger.kernel.org>, "netdev@vger.kernel.org"
+	<netdev@vger.kernel.org>, "linux-kernel@vger.kernel.org"
+	<linux-kernel@vger.kernel.org>, "linux-rdma@vger.kernel.org"
+	<linux-rdma@vger.kernel.org>
+CC: Paul Rosswurm <paulros@microsoft.com>
+Subject: RE: [EXTERNAL] [PATCH 3/3] net: mana: add a function to spread IRQs
+ per CPUs
+Thread-Topic: [EXTERNAL] [PATCH 3/3] net: mana: add a function to spread IRQs
+ per CPUs
+Thread-Index: AQHaMTCKhnR8tJj+p0KJn4+4XMR1UbCwMyDQ
+Date: Tue, 19 Dec 2023 07:14:32 +0000
+Message-ID:
+ <PUZP153MB0788C75BDE241EDF4CDFFC13CC97A@PUZP153MB0788.APCP153.PROD.OUTLOOK.COM>
+References: <20231217213214.1905481-1-yury.norov@gmail.com>
+ <20231217213214.1905481-4-yury.norov@gmail.com>
+In-Reply-To: <20231217213214.1905481-4-yury.norov@gmail.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach:
+X-MS-TNEF-Correlator:
+msip_labels:
+ MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ActionId=b5c28ec4-2412-4a77-99f4-bfc7d66a9ec6;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ContentBits=0;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Enabled=true;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Method=Standard;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Name=Internal;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SetDate=2023-12-19T07:12:40Z;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SiteId=72f988bf-86f1-41af-91ab-2d7cd011db47;
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=microsoft.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: PUZP153MB0788:EE_|TYZP153MB0413:EE_
+x-ms-office365-filtering-correlation-id: 8fa080c8-5c38-4266-1020-08dc00622665
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info:
+ lPNTqleJjcYEpV79z/93UvwHDdTgvR+Ej8W74wnosbbIZyA7fza4RPUwESr5hur4StR37fBBCgyMB1TiNrLc5U/2DxQQMMnRgvyAssWHVyUITYMjcfp98n30pfyC90pu0iRgU3lKzycUa3utL+dDpmrmaluF4eSaKFZ9erA8W5/m7DEx9Oam1LBIs7Dn5BmeYHI3IVqNxkGp46dv12ImAgoT7Wkffh8D3mxOwKDKkGjJ5w7lmiw7rhc/jZmhv9Jo99L1UfO6VuScOm5nGrO+y8P3c2HA7KDYWaJEMPKhNQgClZO0oFq0puH2vZYvDQWpO3bRNAh8eyAn3O9HcuPq9cXUxCN5HwLMA5h2AT87iFYr8hqsZjAkNaQfpnmlw2vOEPETBidDvh4x0fdv11LqWdQ8awFWyJiLz9qViL5LiC1KMjwlagl1Hm6wsOd2nNvWdX6bx8dLzkJuI40lvv/NlLldzD0I2yfebSaGQJQUbgxgWONLyb/zIYkNJ8fgyCBE73/ng2D+5dtUuccwwWcsECk5c3WmWulQLR+sSvdgEE6FvqcbgPjNgSZNy+/wXFroNNkLDjtCL52Ly3oT6SnnyGThXo+CPK8z1v9NlEuj5q9VlautcHBM9a0QFGdjSguPlyOAIZ80QU94H4nrTso16fk/iLhUzTwD9d1hAtuJVAMtU0lECSSDAThBoFyjkcWgZ+eGshyNPww27snHHuUGoQ==
+x-forefront-antispam-report:
+ CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PUZP153MB0788.APCP153.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(13230031)(376002)(346002)(396003)(136003)(39860400002)(366004)(230173577357003)(230922051799003)(230273577357003)(451199024)(1800799012)(186009)(64100799003)(83380400001)(107886003)(26005)(71200400001)(921008)(9686003)(6506007)(7696005)(38070700009)(41300700001)(10290500003)(478600001)(33656002)(55016003)(86362001)(82950400001)(82960400001)(38100700002)(122000001)(316002)(52536014)(8676002)(8936002)(76116006)(66946007)(66556008)(66446008)(64756008)(66476007)(110136005)(4326008)(2906002)(5660300002)(7416002)(8990500004);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0:
+ =?us-ascii?Q?1UyxpjBH8UVwcFY4vGOYrfrk1+3GXIfMQlxSVl3PxxjU+7oTxMiZ104JfgS0?=
+ =?us-ascii?Q?aOxzUeDDPh9J/67uoYfpHj/YTygIPlPTb4nO4f3y8cs+idzUOJWpvKyMtwrj?=
+ =?us-ascii?Q?xM7BxBGxoXHvhOndvmaoAPEnpMAH2/hhiQiX+9i+2uyA8YJB+rJZcjlYeoHi?=
+ =?us-ascii?Q?wHx4xJZWE53mFDuEBMv1qbVUuloZ3TQaaWsnc866gkO/mzfn40NEACVtlNRV?=
+ =?us-ascii?Q?E97Eo/ixypEmKHrW0xkGXYh46JvsoerK4EbC1AKpaCW+Lk8Ff18/rUviPihd?=
+ =?us-ascii?Q?jirkKWADQDkJCwD8qB1DLXjFW8k7yukqqnjeD8tfVTREmrNSFg+dmcpIC/Fj?=
+ =?us-ascii?Q?TvfTQkKQmBW82dUuYeRVUiLIaq981KwAdY0wdG5Vu89LeNrcXYSAUed6lKvq?=
+ =?us-ascii?Q?UyxZdh0bd66wQyL2NuZnL9bdWpvktx6aYLNhi9DcqR4n/RJ+IXyyaHZI4S5m?=
+ =?us-ascii?Q?6VLLPD/Ly5SxfWG/CqkYocsUL3Hf3Na8Q77cdKCb2w64c28D/Lw+1V9lAaYH?=
+ =?us-ascii?Q?e8HJV1enRsNlHsIUsFHgu60X+cQRmautTyqd0od2EwB+wUTf3l7yNa8Dkg6E?=
+ =?us-ascii?Q?V6ja0mNrI9bkt7qMQ3BY/lmAZv+ruZQgBH46ion7mdSO/ybQ0jWVWOLWJF7M?=
+ =?us-ascii?Q?0RfIqsO+TEnjJJlwENHf2dbPqMv+cm/G1ZB77YTApY/46BtIdzIjEgmTfCpf?=
+ =?us-ascii?Q?G+Pvp9PosRRahj0U7G8Z55Oqwjp3FkjZIC96xURRm67y6S2xqBDSnmWio7Vh?=
+ =?us-ascii?Q?5cjIIg+witMDY9QQc+qZbl/OrHP89uQz3Y1gRjhpgh18bJngZlRLhumAvc2P?=
+ =?us-ascii?Q?xuPtnXbtVR7A5EZfj3Dg4x8MkzNr0l1UE4y4TOn2zPYHn4RdjSDGqHeCqGh3?=
+ =?us-ascii?Q?vI46MVKgTBQhLCxFB9HrILxgdJatl0WSzTr9OHMIn6qRlhx3piGn7Ba3mkDP?=
+ =?us-ascii?Q?sNDFgoLrvK9svSz0SQMC+sO4ihj+gQE9VvrT+5sdzKh8Sg43wTwXmnjTf4BN?=
+ =?us-ascii?Q?bmXg7pCYpQqTIbny8o94XsMIIV63q83KoMlUua/k/YNcmU/ljNj6fyQ6kXAm?=
+ =?us-ascii?Q?MTF5ZwXk6HCIz0+0QL17QCPnYOq0sDLEKh7Q9wJyoVr7z3YBhQQ4ZjgchzLb?=
+ =?us-ascii?Q?kNn4NpzSL8hvGbP46G5gVNO6qsoR/zgrxP+wCC4Ci92mEVCj1Ut5cUItfaVc?=
+ =?us-ascii?Q?XB5ltSqJxw4eWcFs9NNYkM6CwGJS9vI4LZUMyzN2wjmt+1DvkJlC33GTf8x3?=
+ =?us-ascii?Q?EIKyciLCufK6Z/MkSK14g5UAjN1CuZc5Wk5DcP/zMhmUpfhMdnAsdDc+M9VV?=
+ =?us-ascii?Q?ZkDnuRoaGswbxd/D8Gc4xNI+o6OsVwmYgJQiKu6zCm4DJCWoH6Z9UDxDVbf5?=
+ =?us-ascii?Q?ZWfq3AAa5/veYvjKNk/3G61TxEe+1btaWFSPVUMloGQQa07Y5lNjR7B6Pevt?=
+ =?us-ascii?Q?EmlbXHguZwBeuU+q5cFJPPaZOYACTMgfazcgPOfZoryoIU6Ynt0SraebS5Y3?=
+ =?us-ascii?Q?skuwCX7XDRSXNGObN3A8Z2GyZJ3Xe3891kCX?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+X-OriginatorOrg: microsoft.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: PUZP153MB0788.APCP153.PROD.OUTLOOK.COM
+X-MS-Exchange-CrossTenant-Network-Message-Id: 8fa080c8-5c38-4266-1020-08dc00622665
+X-MS-Exchange-CrossTenant-originalarrivaltime: 19 Dec 2023 07:14:33.0103
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 72f988bf-86f1-41af-91ab-2d7cd011db47
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: sM6YDgbgSsmilMbGS39FR1NFduJKSiz9yuKqhOEdBnGhJ4p+P016D1Igr7mHI1Qh6XiKhQHsPqtgxLaSER2E0+nxwXRjZ34gtJPPH75RDRE=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: TYZP153MB0413
 
-From: Chuck Lever <chuck.lever@oracle.com>
 
-Having an nfsd thread waiting for an RDMA Read completion is
-problematic if the Read responder (ie, the client) stops responding.
-We need to go back to handling RDMA Reads by getting the svc scheduler
-to call svc_rdma_recvfrom() a second time to finish building an RPC
-message after a Read completion.
 
-This is the final patch, and makes several changes that have to
-happen concurrently:
-
-1. svc_rdma_process_read_list no longer waits for a completion, but
-   simply builds and posts the Read WRs.
-
-2. svc_rdma_read_done() now queues a completed Read on
-   sc_read_complete_q for later processing rather than calling
-   complete().
-
-3. The completed RPC message is no longer built in the
-   svc_rdma_process_read_list() path. Finishing the message is now
-   done in svc_rdma_recvfrom() when it notices work on the
-   sc_read_complete_q. The "finish building this RPC message" code
-   is removed from the svc_rdma_process_read_list() path.
-
-This arrangement avoids the need for an nfsd thread to wait for an
-RDMA Read non-interruptibly without a timeout. It's basically the
-same code structure that Tom Tucker used for Read chunks along with
-some clean-up and modernization.
-
-Signed-off-by: Chuck Lever <chuck.lever@oracle.com>
----
- include/linux/sunrpc/svc_rdma.h         |    6 +
- net/sunrpc/xprtrdma/svc_rdma_recvfrom.c |   36 +++++--
- net/sunrpc/xprtrdma/svc_rdma_rw.c       |  151 +++++++++++--------------------
- 3 files changed, 80 insertions(+), 113 deletions(-)
-
-diff --git a/include/linux/sunrpc/svc_rdma.h b/include/linux/sunrpc/svc_rdma.h
-index c98d29e51b9c..e7595ae62fe2 100644
---- a/include/linux/sunrpc/svc_rdma.h
-+++ b/include/linux/sunrpc/svc_rdma.h
-@@ -170,8 +170,6 @@ struct svc_rdma_chunk_ctxt {
- 	struct list_head	cc_rwctxts;
- 	ktime_t			cc_posttime;
- 	int			cc_sqecount;
--	enum ib_wc_status	cc_status;
--	struct completion	cc_done;
- };
- 
- struct svc_rdma_recv_ctxt {
-@@ -191,6 +189,7 @@ struct svc_rdma_recv_ctxt {
- 	unsigned int		rc_pageoff;
- 	unsigned int		rc_curpage;
- 	unsigned int		rc_readbytes;
-+	struct xdr_buf		rc_saved_arg;
- 	struct svc_rdma_chunk_ctxt	rc_cc;
- 
- 	struct svc_rdma_pcl	rc_call_pcl;
-@@ -240,6 +239,9 @@ extern int svc_rdma_recvfrom(struct svc_rqst *);
- extern void svc_rdma_destroy_rw_ctxts(struct svcxprt_rdma *rdma);
- extern void svc_rdma_cc_init(struct svcxprt_rdma *rdma,
- 			     struct svc_rdma_chunk_ctxt *cc);
-+extern void svc_rdma_cc_release(struct svcxprt_rdma *rdma,
-+				struct svc_rdma_chunk_ctxt *cc,
-+				enum dma_data_direction dir);
- extern int svc_rdma_send_write_chunk(struct svcxprt_rdma *rdma,
- 				     const struct svc_rdma_chunk *chunk,
- 				     const struct xdr_buf *xdr);
-diff --git a/net/sunrpc/xprtrdma/svc_rdma_recvfrom.c b/net/sunrpc/xprtrdma/svc_rdma_recvfrom.c
-index 034bdd02f925..d72953f29258 100644
---- a/net/sunrpc/xprtrdma/svc_rdma_recvfrom.c
-+++ b/net/sunrpc/xprtrdma/svc_rdma_recvfrom.c
-@@ -214,6 +214,8 @@ struct svc_rdma_recv_ctxt *svc_rdma_recv_ctxt_get(struct svcxprt_rdma *rdma)
- void svc_rdma_recv_ctxt_put(struct svcxprt_rdma *rdma,
- 			    struct svc_rdma_recv_ctxt *ctxt)
- {
-+	svc_rdma_cc_release(rdma, &ctxt->rc_cc, DMA_FROM_DEVICE);
-+
- 	/* @rc_page_count is normally zero here, but error flows
- 	 * can leave pages in @rc_pages.
- 	 */
-@@ -870,6 +872,7 @@ static noinline void svc_rdma_read_complete(struct svc_rqst *rqstp,
- 	 * procedure for that depends on what kind of RPC/RDMA
- 	 * chunks were provided by the client.
- 	 */
-+	rqstp->rq_arg = ctxt->rc_saved_arg;
- 	if (pcl_is_empty(&ctxt->rc_call_pcl)) {
- 		if (ctxt->rc_read_pcl.cl_count == 1)
- 			svc_rdma_read_complete_one(rqstp, ctxt);
-@@ -930,7 +933,8 @@ int svc_rdma_recvfrom(struct svc_rqst *rqstp)
- 	ctxt = svc_rdma_next_recv_ctxt(&rdma_xprt->sc_read_complete_q);
- 	if (ctxt) {
- 		list_del(&ctxt->rc_list);
--		spin_unlock_bh(&rdma_xprt->sc_rq_dto_lock);
-+		spin_unlock(&rdma_xprt->sc_rq_dto_lock);
-+		svc_xprt_received(xprt);
- 		svc_rdma_read_complete(rqstp, ctxt);
- 		goto complete;
- 	}
-@@ -965,11 +969,8 @@ int svc_rdma_recvfrom(struct svc_rqst *rqstp)
- 	svc_rdma_get_inv_rkey(rdma_xprt, ctxt);
- 
- 	if (!pcl_is_empty(&ctxt->rc_read_pcl) ||
--	    !pcl_is_empty(&ctxt->rc_call_pcl)) {
--		ret = svc_rdma_process_read_list(rdma_xprt, rqstp, ctxt);
--		if (ret < 0)
--			goto out_readfail;
--	}
-+	    !pcl_is_empty(&ctxt->rc_call_pcl))
-+		goto out_readlist;
- 
- complete:
- 	rqstp->rq_xprt_ctxt = ctxt;
-@@ -983,12 +984,23 @@ int svc_rdma_recvfrom(struct svc_rqst *rqstp)
- 	svc_rdma_recv_ctxt_put(rdma_xprt, ctxt);
- 	return 0;
- 
--out_readfail:
--	if (ret == -EINVAL)
--		svc_rdma_send_error(rdma_xprt, ctxt, ret);
--	svc_rdma_recv_ctxt_put(rdma_xprt, ctxt);
--	svc_xprt_deferred_close(xprt);
--	return -ENOTCONN;
-+out_readlist:
-+	/* This @rqstp is about to be recycled. Save the work
-+	 * already done constructing the Call message in rq_arg
-+	 * so it can be restored when the RDMA Reads have
-+	 * completed.
-+	 */
-+	ctxt->rc_saved_arg = rqstp->rq_arg;
-+
-+	ret = svc_rdma_process_read_list(rdma_xprt, rqstp, ctxt);
-+	if (ret < 0) {
-+		if (ret == -EINVAL)
-+			svc_rdma_send_error(rdma_xprt, ctxt, ret);
-+		svc_rdma_recv_ctxt_put(rdma_xprt, ctxt);
-+		svc_xprt_deferred_close(xprt);
-+		return ret;
-+	}
-+	return 0;
- 
- out_backchannel:
- 	svc_rdma_handle_bc_reply(rqstp, ctxt);
-diff --git a/net/sunrpc/xprtrdma/svc_rdma_rw.c b/net/sunrpc/xprtrdma/svc_rdma_rw.c
-index 28a34718dee5..c00fcce61d1e 100644
---- a/net/sunrpc/xprtrdma/svc_rdma_rw.c
-+++ b/net/sunrpc/xprtrdma/svc_rdma_rw.c
-@@ -163,14 +163,15 @@ void svc_rdma_cc_init(struct svcxprt_rdma *rdma,
- 	cc->cc_sqecount = 0;
- }
- 
--/*
-- * The consumed rw_ctx's are cleaned and placed on a local llist so
-- * that only one atomic llist operation is needed to put them all
-- * back on the free list.
-+/**
-+ * svc_rdma_cc_release - Release resources held by a svc_rdma_chunk_ctxt
-+ * @rdma: controlling transport instance
-+ * @cc: svc_rdma_chunk_ctxt to be released
-+ * @dir: DMA direction
-  */
--static void svc_rdma_cc_release(struct svcxprt_rdma *rdma,
--				struct svc_rdma_chunk_ctxt *cc,
--				enum dma_data_direction dir)
-+void svc_rdma_cc_release(struct svcxprt_rdma *rdma,
-+			 struct svc_rdma_chunk_ctxt *cc,
-+			 enum dma_data_direction dir)
- {
- 	struct llist_node *first, *last;
- 	struct svc_rdma_rw_ctxt *ctxt;
-@@ -300,12 +301,21 @@ static void svc_rdma_wc_read_done(struct ib_cq *cq, struct ib_wc *wc)
- 			container_of(cqe, struct svc_rdma_chunk_ctxt, cc_cqe);
- 	struct svc_rdma_recv_ctxt *ctxt;
- 
-+	svc_rdma_wake_send_waiters(rdma, cc->cc_sqecount);
-+
-+	ctxt = container_of(cc, struct svc_rdma_recv_ctxt, rc_cc);
- 	switch (wc->status) {
- 	case IB_WC_SUCCESS:
--		ctxt = container_of(cc, struct svc_rdma_recv_ctxt, rc_cc);
- 		trace_svcrdma_wc_read(wc, &cc->cc_cid, ctxt->rc_readbytes,
- 				      cc->cc_posttime);
--		break;
-+
-+		spin_lock(&rdma->sc_rq_dto_lock);
-+		list_add_tail(&ctxt->rc_list, &rdma->sc_read_complete_q);
-+		/* the unlock pairs with the smp_rmb in svc_xprt_ready */
-+		set_bit(XPT_DATA, &rdma->sc_xprt.xpt_flags);
-+		spin_unlock(&rdma->sc_rq_dto_lock);
-+		svc_xprt_enqueue(&rdma->sc_xprt);
-+		return;
- 	case IB_WC_WR_FLUSH_ERR:
- 		trace_svcrdma_wc_read_flush(wc, &cc->cc_cid);
- 		break;
-@@ -313,10 +323,13 @@ static void svc_rdma_wc_read_done(struct ib_cq *cq, struct ib_wc *wc)
- 		trace_svcrdma_wc_read_err(wc, &cc->cc_cid);
- 	}
- 
--	svc_rdma_wake_send_waiters(rdma, cc->cc_sqecount);
--	cc->cc_status = wc->status;
--	complete(&cc->cc_done);
--	return;
-+	/* The RDMA Read has flushed, so the incoming RPC message
-+	 * cannot be constructed and must be dropped. Signal the
-+	 * loss to the client by closing the connection.
-+	 */
-+	svc_rdma_cc_release(rdma, cc, DMA_FROM_DEVICE);
-+	svc_rdma_recv_ctxt_put(rdma, ctxt);
-+	svc_xprt_deferred_close(&rdma->sc_xprt);
- }
- 
- /*
-@@ -823,7 +836,6 @@ svc_rdma_read_multiple_chunks(struct svc_rqst *rqstp,
- 			      struct svc_rdma_recv_ctxt *head)
- {
- 	const struct svc_rdma_pcl *pcl = &head->rc_read_pcl;
--	struct xdr_buf *buf = &rqstp->rq_arg;
- 	struct svc_rdma_chunk *chunk, *next;
- 	unsigned int start, length;
- 	int ret;
-@@ -853,18 +865,7 @@ svc_rdma_read_multiple_chunks(struct svc_rqst *rqstp,
- 
- 	start += length;
- 	length = head->rc_byte_len - start;
--	ret = svc_rdma_copy_inline_range(rqstp, head, start, length);
--	if (ret < 0)
--		return ret;
--
--	buf->len += head->rc_readbytes;
--	buf->buflen += head->rc_readbytes;
--
--	buf->head[0].iov_base = page_address(rqstp->rq_pages[0]);
--	buf->head[0].iov_len = min_t(size_t, PAGE_SIZE, head->rc_readbytes);
--	buf->pages = &rqstp->rq_pages[1];
--	buf->page_len = head->rc_readbytes - buf->head[0].iov_len;
--	return 0;
-+	return svc_rdma_copy_inline_range(rqstp, head, start, length);
- }
- 
- /**
-@@ -888,42 +889,8 @@ svc_rdma_read_multiple_chunks(struct svc_rqst *rqstp,
- static int svc_rdma_read_data_item(struct svc_rqst *rqstp,
- 				   struct svc_rdma_recv_ctxt *head)
- {
--	struct xdr_buf *buf = &rqstp->rq_arg;
--	struct svc_rdma_chunk *chunk;
--	unsigned int length;
--	int ret;
--
--	chunk = pcl_first_chunk(&head->rc_read_pcl);
--	ret = svc_rdma_build_read_chunk(rqstp, head, chunk);
--	if (ret < 0)
--		goto out;
--
--	/* Split the Receive buffer between the head and tail
--	 * buffers at Read chunk's position. XDR roundup of the
--	 * chunk is not included in either the pagelist or in
--	 * the tail.
--	 */
--	buf->tail[0].iov_base = buf->head[0].iov_base + chunk->ch_position;
--	buf->tail[0].iov_len = buf->head[0].iov_len - chunk->ch_position;
--	buf->head[0].iov_len = chunk->ch_position;
--
--	/* Read chunk may need XDR roundup (see RFC 8166, s. 3.4.5.2).
--	 *
--	 * If the client already rounded up the chunk length, the
--	 * length does not change. Otherwise, the length of the page
--	 * list is increased to include XDR round-up.
--	 *
--	 * Currently these chunks always start at page offset 0,
--	 * thus the rounded-up length never crosses a page boundary.
--	 */
--	buf->pages = &rqstp->rq_pages[0];
--	length = xdr_align_size(chunk->ch_length);
--	buf->page_len = length;
--	buf->len += length;
--	buf->buflen += length;
--
--out:
--	return ret;
-+	return svc_rdma_build_read_chunk(rqstp, head,
-+					 pcl_first_chunk(&head->rc_read_pcl));
- }
- 
- /**
-@@ -1051,23 +1018,28 @@ static int svc_rdma_read_call_chunk(struct svc_rqst *rqstp,
- static noinline int svc_rdma_read_special(struct svc_rqst *rqstp,
- 					  struct svc_rdma_recv_ctxt *head)
- {
--	struct xdr_buf *buf = &rqstp->rq_arg;
--	int ret;
--
--	ret = svc_rdma_read_call_chunk(rqstp, head);
--	if (ret < 0)
--		goto out;
--
--	buf->len += head->rc_readbytes;
--	buf->buflen += head->rc_readbytes;
-+	return svc_rdma_read_call_chunk(rqstp, head);
-+}
- 
--	buf->head[0].iov_base = page_address(rqstp->rq_pages[0]);
--	buf->head[0].iov_len = min_t(size_t, PAGE_SIZE, head->rc_readbytes);
--	buf->pages = &rqstp->rq_pages[1];
--	buf->page_len = head->rc_readbytes - buf->head[0].iov_len;
-+/* Pages under I/O have been copied to head->rc_pages. Ensure that
-+ * svc_xprt_release() does not put them when svc_rdma_recvfrom()
-+ * returns. This has to be done after all Read WRs are constructed
-+ * to properly handle a page that happens to be part of I/O on behalf
-+ * of two different RDMA segments.
-+ *
-+ * Note: if the subsequent post_send fails, these pages have already
-+ * been moved to head->rc_pages and thus will be cleaned up by
-+ * svc_rdma_recv_ctxt_put().
-+ */
-+static void svc_rdma_clear_rqst_pages(struct svc_rqst *rqstp,
-+				      struct svc_rdma_recv_ctxt *head)
-+{
-+	unsigned int i;
- 
--out:
--	return ret;
-+	for (i = 0; i < head->rc_page_count; i++) {
-+		head->rc_pages[i] = rqstp->rq_pages[i];
-+		rqstp->rq_pages[i] = NULL;
-+	}
- }
- 
- /**
-@@ -1113,30 +1085,11 @@ int svc_rdma_process_read_list(struct svcxprt_rdma *rdma,
- 			ret = svc_rdma_read_multiple_chunks(rqstp, head);
- 	} else
- 		ret = svc_rdma_read_special(rqstp, head);
-+	svc_rdma_clear_rqst_pages(rqstp, head);
- 	if (ret < 0)
--		goto out_err;
-+		return ret;
- 
- 	trace_svcrdma_post_read_chunk(&cc->cc_cid, cc->cc_sqecount);
--	init_completion(&cc->cc_done);
- 	ret = svc_rdma_post_chunk_ctxt(rdma, cc);
--	if (ret < 0)
--		goto out_err;
--
--	ret = 1;
--	wait_for_completion(&cc->cc_done);
--	if (cc->cc_status != IB_WC_SUCCESS)
--		ret = -EIO;
--
--	/* rq_respages starts after the last arg page */
--	rqstp->rq_respages = &rqstp->rq_pages[head->rc_page_count];
--	rqstp->rq_next_page = rqstp->rq_respages + 1;
--
--	/* Ensure svc_rdma_recv_ctxt_put() does not release pages
--	 * left in @rc_pages while I/O proceeds.
--	 */
--	head->rc_page_count = 0;
--
--out_err:
--	svc_rdma_cc_release(rdma, cc, DMA_FROM_DEVICE);
--	return ret;
-+	return ret < 0 ? ret : 1;
- }
-
+>-----Original Message-----
+>From: Yury Norov <yury.norov@gmail.com>
+>Sent: Monday, December 18, 2023 3:02 AM
+>To: Souradeep Chakrabarti <schakrabarti@linux.microsoft.com>; KY Srinivasa=
+n
+><kys@microsoft.com>; Haiyang Zhang <haiyangz@microsoft.com>;
+>wei.liu@kernel.org; Dexuan Cui <decui@microsoft.com>; davem@davemloft.net;
+>edumazet@google.com; kuba@kernel.org; pabeni@redhat.com; Long Li
+><longli@microsoft.com>; yury.norov@gmail.com; leon@kernel.org;
+>cai.huoqing@linux.dev; ssengar@linux.microsoft.com; vkuznets@redhat.com;
+>tglx@linutronix.de; linux-hyperv@vger.kernel.org; netdev@vger.kernel.org; =
+linux-
+>kernel@vger.kernel.org; linux-rdma@vger.kernel.org
+>Cc: Souradeep Chakrabarti <schakrabarti@microsoft.com>; Paul Rosswurm
+><paulros@microsoft.com>
+>Subject: [EXTERNAL] [PATCH 3/3] net: mana: add a function to spread IRQs p=
+er
+>CPUs
+>
+>[Some people who received this message don't often get email from
+>yury.norov@gmail.com. Learn why this is important at
+>https://aka.ms/LearnAboutSenderIdentification ]
+>
+>Souradeep investigated that the driver performs faster if IRQs are spread =
+on CPUs
+>with the following heuristics:
+>
+>1. No more than one IRQ per CPU, if possible; 2. NUMA locality is the seco=
+nd
+>priority; 3. Sibling dislocality is the last priority.
+>
+>Let's consider this topology:
+>
+>Node            0               1
+>Core        0       1       2       3
+>CPU       0   1   2   3   4   5   6   7
+>
+>The most performant IRQ distribution based on the above topology and heuri=
+stics
+>may look like this:
+>
+>IRQ     Nodes   Cores   CPUs
+>0       1       0       0-1
+>1       1       1       2-3
+>2       1       0       0-1
+>3       1       1       2-3
+>4       2       2       4-5
+>5       2       3       6-7
+>6       2       2       4-5
+>7       2       3       6-7
+>
+>The irq_setup() routine introduced in this patch leverages the
+>for_each_numa_hop_mask() iterator and assigns IRQs to sibling groups as
+>described above.
+>
+>According to [1], for NUMA-aware but sibling-ignorant IRQ distribution bas=
+ed on
+>cpumask_local_spread() performance test results look like this:
+>
+>./ntttcp -r -m 16
+>NTTTCP for Linux 1.4.0
+>---------------------------------------------------------
+>08:05:20 INFO: 17 threads created
+>08:05:28 INFO: Network activity progressing...
+>08:06:28 INFO: Test run completed.
+>08:06:28 INFO: Test cycle finished.
+>08:06:28 INFO: #####  Totals:  #####
+>08:06:28 INFO: test duration    :60.00 seconds
+>08:06:28 INFO: total bytes      :630292053310
+>08:06:28 INFO:   throughput     :84.04Gbps
+>08:06:28 INFO:   retrans segs   :4
+>08:06:28 INFO: cpu cores        :192
+>08:06:28 INFO:   cpu speed      :3799.725MHz
+>08:06:28 INFO:   user           :0.05%
+>08:06:28 INFO:   system         :1.60%
+>08:06:28 INFO:   idle           :96.41%
+>08:06:28 INFO:   iowait         :0.00%
+>08:06:28 INFO:   softirq        :1.94%
+>08:06:28 INFO:   cycles/byte    :2.50
+>08:06:28 INFO: cpu busy (all)   :534.41%
+>
+>For NUMA- and sibling-aware IRQ distribution, the same test works 15% fast=
+er:
+>
+>./ntttcp -r -m 16
+>NTTTCP for Linux 1.4.0
+>---------------------------------------------------------
+>08:08:51 INFO: 17 threads created
+>08:08:56 INFO: Network activity progressing...
+>08:09:56 INFO: Test run completed.
+>08:09:56 INFO: Test cycle finished.
+>08:09:56 INFO: #####  Totals:  #####
+>08:09:56 INFO: test duration    :60.00 seconds
+>08:09:56 INFO: total bytes      :741966608384
+>08:09:56 INFO:   throughput     :98.93Gbps
+>08:09:56 INFO:   retrans segs   :6
+>08:09:56 INFO: cpu cores        :192
+>08:09:56 INFO:   cpu speed      :3799.791MHz
+>08:09:56 INFO:   user           :0.06%
+>08:09:56 INFO:   system         :1.81%
+>08:09:56 INFO:   idle           :96.18%
+>08:09:56 INFO:   iowait         :0.00%
+>08:09:56 INFO:   softirq        :1.95%
+>08:09:56 INFO:   cycles/byte    :2.25
+>08:09:56 INFO: cpu busy (all)   :569.22%
+>
+>[1]
+>https://lore.kernel/
+>.org%2Fall%2F20231211063726.GA4977%40linuxonhyperv3.guj3yctzbm1etfxqx2v
+>ob5hsef.xx.internal.cloudapp.net%2F&data=3D05%7C02%7Cschakrabarti%40micros
+>oft.com%7Ca385a5a5d661458219c208dbff47a7ab%7C72f988bf86f141af91ab2d7
+>cd011db47%7C1%7C0%7C638384455520036393%7CUnknown%7CTWFpbGZsb3d
+>8eyJWIjoiMC4wLjAwMDAiLCJQIjoiV2luMzIiLCJBTiI6Ik1haWwiLCJXVCI6Mn0%3D%
+>7C3000%7C%7C%7C&sdata=3DkzoalzSu6frB0GIaUM5VWsz04%2FsB%2FBdXwXKb26
+>IhqkE%3D&reserved=3D0
+>
+>Signed-off-by: Yury Norov <yury.norov@gmail.com>
+>Co-developed-by: Souradeep Chakrabarti <schakrabarti@linux.microsoft.com>
+Please also add Signed-off-by: Souradeep Chakrabarti <schakrabarti@linux.mi=
+crosoft.com>
+>---
+> .../net/ethernet/microsoft/mana/gdma_main.c   | 28 +++++++++++++++++++
+> 1 file changed, 28 insertions(+)
+>
+>diff --git a/drivers/net/ethernet/microsoft/mana/gdma_main.c
+>b/drivers/net/ethernet/microsoft/mana/gdma_main.c
+>index 6367de0c2c2e..11e64e42e3b2 100644
+>--- a/drivers/net/ethernet/microsoft/mana/gdma_main.c
+>+++ b/drivers/net/ethernet/microsoft/mana/gdma_main.c
+>@@ -1243,6 +1243,34 @@ void mana_gd_free_res_map(struct gdma_resource
+>*r)
+>        r->size =3D 0;
+> }
+>
+>+static __maybe_unused int irq_setup(unsigned int *irqs, unsigned int
+>+len, int node) {
+>+       const struct cpumask *next, *prev =3D cpu_none_mask;
+>+       cpumask_var_t cpus __free(free_cpumask_var);
+>+       int cpu, weight;
+>+
+>+       if (!alloc_cpumask_var(&cpus, GFP_KERNEL))
+>+               return -ENOMEM;
+>+
+>+       rcu_read_lock();
+>+       for_each_numa_hop_mask(next, node) {
+>+               weight =3D cpumask_weight_andnot(next, prev);
+>+               while (weight-- > 0) {
+>+                       cpumask_andnot(cpus, next, prev);
+>+                       for_each_cpu(cpu, cpus) {
+>+                               if (len-- =3D=3D 0)
+>+                                       goto done;
+>+                               irq_set_affinity_and_hint(*irqs++,
+>topology_sibling_cpumask(cpu));
+>+                               cpumask_andnot(cpus, cpus, topology_siblin=
+g_cpumask(cpu));
+>+                       }
+>+               }
+>+               prev =3D next;
+>+       }
+>+done:
+>+       rcu_read_unlock();
+>+       return 0;
+>+}
+>+
+> static int mana_gd_setup_irqs(struct pci_dev *pdev)  {
+>        unsigned int max_queues_per_port =3D num_online_cpus();
+>--
+>2.40.1
 
 
