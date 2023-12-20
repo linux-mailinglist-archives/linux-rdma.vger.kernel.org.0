@@ -1,75 +1,127 @@
-Return-Path: <linux-rdma+bounces-465-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-466-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2C1C6819A2B
-	for <lists+linux-rdma@lfdr.de>; Wed, 20 Dec 2023 09:11:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id C51E4819A71
+	for <lists+linux-rdma@lfdr.de>; Wed, 20 Dec 2023 09:28:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DB7302827A8
-	for <lists+linux-rdma@lfdr.de>; Wed, 20 Dec 2023 08:11:39 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 81A4A287139
+	for <lists+linux-rdma@lfdr.de>; Wed, 20 Dec 2023 08:28:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 08BA518637;
-	Wed, 20 Dec 2023 08:11:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 852A81A723;
+	Wed, 20 Dec 2023 08:28:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="tTcSNIGb"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="UhIxQgP9"
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C87C51DA33
-	for <linux-rdma@vger.kernel.org>; Wed, 20 Dec 2023 08:11:32 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id AFDAAC433C7;
-	Wed, 20 Dec 2023 08:11:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4837B1D520;
+	Wed, 20 Dec 2023 08:28:03 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id EE5C6C433C7;
+	Wed, 20 Dec 2023 08:28:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1703059892;
-	bh=Up7pwjn6bHMIOFqBjJea0v8a7jTYish1uFJc/RMLABw=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-	b=tTcSNIGb+LCrWmsCT9pNuh+XdThA+JrBSt3uTzhSKj6/4ZEx0i+1hIx0BEVXsy9py
-	 vYO+gRkYi+6Ty64KgGepBnEsQCCk2uxwavN1oKdOap9qefsEpFEVp2cj/+1XsgM4u5
-	 btILYU8Q0yFxZaDWmOazxynMvVwLwQik37mbyhUgcYimh1ClTIE4vEz+uCn4SMnHMV
-	 hgdnea+aYkmlwZsrEO9wM4d2myOf+6bZYr1FOiegytGKe5j/ATlnnTqfJFnPUtYl3J
-	 X2uDbEj4/EEVM4ysD16vU77vIsYbw86bT0M9Nl42wY9pUqK14YrnjBuAQiIXH0G5+u
-	 K/PFcXGqxc23Q==
+	s=k20201202; t=1703060883;
+	bh=PvZzODyCN3h0tm/M44eh6gfUfU6RJmkkjXP2te2QE/g=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=UhIxQgP9RMa2hIa55tyezx81Qnuht1Ck39onGZDWdO1OKrdIDIZa/yTUWeGjDXYmi
+	 vGHlltknD4YXjk8bWEopjl9PLyZY8+TNdMPh5Bm352qhzYjBAa/xFLxBlWYdCvdkVD
+	 yl6jBW63RR0x5n425wRaAJDCpiDgBpZf3LN6Alx5aFBwsR+wq6l5iYTWTltNYXyNC8
+	 Nlf1whr/O9Wd8+xMHBNJdkRW65vpyxzwxc/FcGhJwK//3zcznOwD1k+k2YSLbwyyvG
+	 HisJXHShyMC8MYvOyNbCsQC8jVJ+4Ri1WTMjy7ZNjSQ+Tz/sT04ZERHw4Y98hGDWwv
+	 wGwTRte9cdv8Q==
+Date: Wed, 20 Dec 2023 10:27:58 +0200
 From: Leon Romanovsky <leon@kernel.org>
-To: jgg@ziepe.ca, Selvin Xavier <selvin.xavier@broadcom.com>
-Cc: linux-rdma@vger.kernel.org, andrew.gospodarek@broadcom.com
-In-Reply-To: <1703046717-8914-1-git-send-email-selvin.xavier@broadcom.com>
-References: <1703046717-8914-1-git-send-email-selvin.xavier@broadcom.com>
-Subject: Re: [PATCH] RDMA/bnxt_re: Fix the sparse warnings
-Message-Id: <170305988642.142815.3070324779441874079.b4-ty@kernel.org>
-Date: Wed, 20 Dec 2023 10:11:26 +0200
+To: longli@linuxonhyperv.com
+Cc: Jason Gunthorpe <jgg@ziepe.ca>, Ajay Sharma <sharmaajay@microsoft.com>,
+	Dexuan Cui <decui@microsoft.com>,
+	"K. Y. Srinivasan" <kys@microsoft.com>,
+	Haiyang Zhang <haiyangz@microsoft.com>,
+	Wei Liu <wei.liu@kernel.org>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	linux-rdma@vger.kernel.org, linux-hyperv@vger.kernel.org,
+	netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+	Long Li <longli@microsoft.com>
+Subject: Re: [Patch v4 0/3] Register with RDMA SOC interface and support for
+ CQ
+Message-ID: <20231220082758.GC136797@unreal>
+References: <1702692255-23640-1-git-send-email-longli@linuxonhyperv.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Mailer: b4 0.12-dev-a055d
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1702692255-23640-1-git-send-email-longli@linuxonhyperv.com>
 
-
-On Tue, 19 Dec 2023 20:31:57 -0800, Selvin Xavier wrote:
-> Fix the following warnings reported
+On Fri, Dec 15, 2023 at 06:04:12PM -0800, longli@linuxonhyperv.com wrote:
+> From: Long Li <longli@microsoft.com>
 > 
-> drivers/infiniband/hw/bnxt_re/qplib_rcfw.c:909:27: warning: invalid assignment: |=
-> drivers/infiniband/hw/bnxt_re/qplib_rcfw.c:909:27:    left side has type restricted __le16
-> drivers/infiniband/hw/bnxt_re/qplib_rcfw.c:909:27:    right side has type unsigned long
-> ...
-> drivers/infiniband/hw/bnxt_re/qplib_fp.c:1620:44: warning: invalid assignment: |=
-> drivers/infiniband/hw/bnxt_re/qplib_fp.c:1620:44:    left side has type restricted __le64
-> drivers/infiniband/hw/bnxt_re/qplib_fp.c:1620:44:    right side has type unsigned long long
+> This patchset add support for registering a RDMA device with SoC for
+> support of querying device capabilities, upcoming RC queue pairs and
+> CQ interrupts.
 > 
-> [...]
+> This patchset is partially based on Ajay Sharma's work:
+> https://lore.kernel.org/netdev/1697494322-26814-1-git-send-email-sharmaajay@linuxonhyperv.com
+> 
+> Changes in v2:
+> Dropped the patches to create EQs for RC QP. They will be implemented with
+> RC patches.
+> 
+> 
+> Long Li (3):
+>   RDMA/mana_ib: register RDMA device with GDMA
+>   RDMA/mana_ib: query device capabilities
+>   RDMA/mana_ib: Add CQ interrupt support for RAW QP
+> 
+>  drivers/infiniband/hw/mana/cq.c               | 34 ++++++-
+>  drivers/infiniband/hw/mana/device.c           | 31 +++++--
+>  drivers/infiniband/hw/mana/main.c             | 69 ++++++++++----
+>  drivers/infiniband/hw/mana/mana_ib.h          | 53 +++++++++++
+>  drivers/infiniband/hw/mana/qp.c               | 90 ++++++++++++++++---
+>  .../net/ethernet/microsoft/mana/gdma_main.c   |  5 ++
+>  include/net/mana/gdma.h                       |  5 ++
+>  7 files changed, 252 insertions(+), 35 deletions(-)
 
-Applied, thanks!
+Applied with the following change in third patch.
 
-[1/1] RDMA/bnxt_re: Fix the sparse warnings
-      https://git.kernel.org/rdma/rdma/c/82a8903a9f9f3f
+diff --git a/drivers/infiniband/hw/mana/qp.c b/drivers/infiniband/hw/mana/qp.c
+index 19998082a376..21ac9fcadf3f 100644
+--- a/drivers/infiniband/hw/mana/qp.c
++++ b/drivers/infiniband/hw/mana/qp.c
+@@ -443,17 +443,16 @@ static int mana_ib_create_qp_raw(struct ib_qp *ibqp, struct ib_pd *ibpd,
+                ibdev_dbg(&mdev->ib_dev,
+                          "Failed copy udata for create qp-raw, %d\n",
+                          err);
+-               goto err_destroy_wq_obj;
++               goto err_release_gdma_cq;
+        }
 
-Best regards,
--- 
-Leon Romanovsky <leon@kernel.org>
+        return 0;
+
+-err_destroy_wq_obj:
+-       if (gdma_cq) {
+-               kfree(gdma_cq);
+-               gd->gdma_context->cq_table[send_cq->id] = NULL;
+-       }
++err_release_gdma_cq:
++       kfree(gdma_cq);
++       gd->gdma_context->cq_table[send_cq->id] = NULL;
+
++err_destroy_wq_obj:
+        mana_destroy_wq_obj(mpc, GDMA_SQ, qp->tx_object);
+
+ err_destroy_dma_region:
+
+
+> 
+> -- 
+> 2.25.1
+> 
 
