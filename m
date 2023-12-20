@@ -1,86 +1,68 @@
-Return-Path: <linux-rdma+bounces-467-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-470-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4D574819A7E
-	for <lists+linux-rdma@lfdr.de>; Wed, 20 Dec 2023 09:30:32 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0F240819AEF
+	for <lists+linux-rdma@lfdr.de>; Wed, 20 Dec 2023 09:54:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 807801C22340
-	for <lists+linux-rdma@lfdr.de>; Wed, 20 Dec 2023 08:30:31 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1467E1C2089B
+	for <lists+linux-rdma@lfdr.de>; Wed, 20 Dec 2023 08:54:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E52991B285;
-	Wed, 20 Dec 2023 08:30:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="tDYmvX8B"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2FEC11CAB9;
+	Wed, 20 Dec 2023 08:54:36 +0000 (UTC)
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from out30-101.freemail.mail.aliyun.com (out30-101.freemail.mail.aliyun.com [115.124.30.101])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A23981C686;
-	Wed, 20 Dec 2023 08:30:14 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 70022C433C8;
-	Wed, 20 Dec 2023 08:30:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1703061014;
-	bh=AWahYc/zb4CGXGe14tOMs+KcFUn0xBNBN9JLTLcrIDI=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-	b=tDYmvX8BYrz6Hk2mhzAweehkaxxH+Adho4snNw/4Vzq/9XNeaHrxH+Ux/6w8X1SYW
-	 wqaiWK7aeim09ncLSX0UHaR6rbtV8KZb2kQ/L+FAt7soLFQ7+dYXzmg3MAh1+XibX0
-	 qJp0N4TbvNoMg/3kyInlONZXNm1Rctk5ebXS9ZB5fG8/plTbVBQRQKbg7SUgMwHSix
-	 czxycFQqtPgsMOS6Y8ifKTpTPMq1zMT4//bEaHBBj2ujhXSLHCs/9/SwOMu9cPER4B
-	 GYkSFBOz/i3K6Ueq5po6ppvU2fMlg266HHiS6LpP/LMEQjlmcBCJhGp1EJSGG1uVii
-	 h3qJaO6Af4fzw==
-From: Leon Romanovsky <leon@kernel.org>
-To: Jason Gunthorpe <jgg@ziepe.ca>, Ajay Sharma <sharmaajay@microsoft.com>,
- Dexuan Cui <decui@microsoft.com>, "K. Y. Srinivasan" <kys@microsoft.com>,
- Haiyang Zhang <haiyangz@microsoft.com>, Wei Liu <wei.liu@kernel.org>,
- "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
- Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
- longli@linuxonhyperv.com
-Cc: linux-rdma@vger.kernel.org, linux-hyperv@vger.kernel.org,
- netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
- Long Li <longli@microsoft.com>
-In-Reply-To: <1702692255-23640-1-git-send-email-longli@linuxonhyperv.com>
-References: <1702692255-23640-1-git-send-email-longli@linuxonhyperv.com>
-Subject:
- Re: [Patch v4 0/3] Register with RDMA SOC interface and support for CQ
-Message-Id: <170306100950.190589.7827009512386066627.b4-ty@kernel.org>
-Date: Wed, 20 Dec 2023 10:30:09 +0200
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 032ED1CA8C
+	for <linux-rdma@vger.kernel.org>; Wed, 20 Dec 2023 08:54:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
+X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R171e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018045176;MF=chengyou@linux.alibaba.com;NM=1;PH=DS;RN=4;SR=0;TI=SMTPD_---0Vytmj2S_1703062465;
+Received: from localhost(mailfrom:chengyou@linux.alibaba.com fp:SMTPD_---0Vytmj2S_1703062465)
+          by smtp.aliyun-inc.com;
+          Wed, 20 Dec 2023 16:54:25 +0800
+From: Cheng Xu <chengyou@linux.alibaba.com>
+To: jgg@ziepe.ca,
+	leon@kernel.org
+Cc: linux-rdma@vger.kernel.org,
+	KaiShen@linux.alibaba.com
+Subject: [PATCH for-next 0/2] RDMA/erdma: Introduce hardware statistics support
+Date: Wed, 20 Dec 2023 16:54:22 +0800
+Message-Id: <20231220085424.97407-1-chengyou@linux.alibaba.com>
+X-Mailer: git-send-email 2.39.3 (Apple Git-145)
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Mailer: b4 0.12-dev-a055d
+Content-Transfer-Encoding: 8bit
 
+This small patchset introduces the support of hardware statistics.
+Statistics counters can not be put in CQEs due to limited CQE size. To
+address this, we provide an extra dma buffer to hardware when posting
+statistics query request, and then hardware writes back the response to
+this dma buffer. Based on this, we add the hardware statistics support
+of erdma.
 
-On Fri, 15 Dec 2023 18:04:12 -0800, longli@linuxonhyperv.com wrote:
-> From: Long Li <longli@microsoft.com>
-> 
-> This patchset add support for registering a RDMA device with SoC for
-> support of querying device capabilities, upcoming RC queue pairs and
-> CQ interrupts.
-> 
-> This patchset is partially based on Ajay Sharma's work:
-> https://lore.kernel.org/netdev/1697494322-26814-1-git-send-email-sharmaajay@linuxonhyperv.com
-> 
-> [...]
+- #1 introduces dma pool used for hardware responses of CMDQ requests.
+- #2 adds hardware statistics support.
 
-Applied, thanks!
+Cheng Xu (2):
+  RDMA/erdma: Introduce dma pool for hardware responses of CMDQ requests
+  RDMA/erdma: Add hardware statistics support
 
-[1/3] RDMA/mana_ib: register RDMA device with GDMA
-      https://git.kernel.org/rdma/rdma/c/a7f0636d223ca9
-[2/3] RDMA/mana_ib: query device capabilities
-      https://git.kernel.org/rdma/rdma/c/2c20e20b22d9fc
-[3/3] RDMA/mana_ib: Add CQ interrupt support for RAW QP
-      https://git.kernel.org/rdma/rdma/c/c15d7802a42402
+ drivers/infiniband/hw/erdma/erdma.h       |   2 +
+ drivers/infiniband/hw/erdma/erdma_hw.h    |  40 +++++++++
+ drivers/infiniband/hw/erdma/erdma_main.c  |  40 ++++++++-
+ drivers/infiniband/hw/erdma/erdma_verbs.c | 100 +++++++++++++++++++++-
+ drivers/infiniband/hw/erdma/erdma_verbs.h |   4 +
+ 5 files changed, 180 insertions(+), 6 deletions(-)
 
-Best regards,
 -- 
-Leon Romanovsky <leon@kernel.org>
+2.31.1
+
 
