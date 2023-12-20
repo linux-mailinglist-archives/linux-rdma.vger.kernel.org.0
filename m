@@ -1,118 +1,206 @@
-Return-Path: <linux-rdma+bounces-458-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-459-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3A6CF819123
-	for <lists+linux-rdma@lfdr.de>; Tue, 19 Dec 2023 21:00:13 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id A878B8197E1
+	for <lists+linux-rdma@lfdr.de>; Wed, 20 Dec 2023 05:48:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E85462872AB
-	for <lists+linux-rdma@lfdr.de>; Tue, 19 Dec 2023 20:00:11 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1DC0E1F25088
+	for <lists+linux-rdma@lfdr.de>; Wed, 20 Dec 2023 04:48:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 69ED239863;
-	Tue, 19 Dec 2023 19:59:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 39A5BC13C;
+	Wed, 20 Dec 2023 04:48:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=mail.ru header.i=@mail.ru header.b="soG4RZl1";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=mail.ru header.i=@mail.ru header.b="gHv+ZucQ"
+	dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b="ViPZZblu"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from fallback13.i.mail.ru (fallback13.i.mail.ru [79.137.243.65])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pl1-f177.google.com (mail-pl1-f177.google.com [209.85.214.177])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 32D5C39FE0
-	for <linux-rdma@vger.kernel.org>; Tue, 19 Dec 2023 19:59:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=mail.ru
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mail.ru
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mail.ru; s=mail4;
-	h=Content-Transfer-Encoding:Content-Type:In-Reply-To:From:Cc:References:To:Subject:MIME-Version:Date:Message-ID:From:Subject:Content-Type:Content-Transfer-Encoding:To:Cc; bh=JSkekOjjf/syH7TXgO/vCeXmhD1M2LKvnKgQtef7+go=;
-	t=1703015982;x=1703105982; 
-	b=soG4RZl1nBWqkJG/e+CllPLDCzuCkapGjo+B1fiGk7vxzZxkrgQQF3lrKFFSDCpNKcS10bwxNoH0ji7yLpgougUPRGshv93/ALIW0fteGWk4o52cCvXyYC9AH/ZlnVqATOhJ2H3U02gB5HP2NHXdHhemaONzSMGtcgJ0v59S3t7IkJGW/QsBaG65wk9GJoBCeyG6ZV5iYDjYc+OSEcbhKlQrn9DWUILJcsxImKAMtvmsZy+z51h38Q77x6QXBiHHvsTyfKjqiHbMkVG4c2HsXAP0EfsD8zUTTli2nEbvYM9SajN6ZE5IOU+9L3bRVkri8LUDs1GrBirOBzyuhnWqew==;
-Received: from [10.12.4.31] (port=55228 helo=smtp56.i.mail.ru)
-	by fallback13.i.mail.ru with esmtp (envelope-from <listdansp@mail.ru>)
-	id 1rFfvx-000wfw-Gc
-	for linux-rdma@vger.kernel.org; Tue, 19 Dec 2023 22:39:17 +0300
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mail.ru;
-	s=mail4; h=Content-Transfer-Encoding:Content-Type:In-Reply-To:
-	Disposition-Notification-To:From:Cc:References:To:Subject:MIME-Version:Date:
-	Message-ID:From:Sender:Reply-To:To:Cc:Content-Type:Content-Transfer-Encoding:
-	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
-	Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:
-	List-Subscribe:List-Post:List-Owner:List-Archive:X-Cloud-Ids:
-	Disposition-Notification-To; bh=JSkekOjjf/syH7TXgO/vCeXmhD1M2LKvnKgQtef7+go=;
-	t=1703014757; x=1703104757; b=gHv+ZucQJPFBH2gVWi5d83ypb7fWDD+CqFXiSs0nHhGMttB
-	dPn+//rQR5KVsZJhCzW88T+myPji62SxmAxRN0aOdszRqpmZJ3bSUn3gB6Vrv4ghdo80vxOWTSS5p
-	vdjrYTbrR+0IpCnQ2sb4HPykxCT54o6MwWzN1yayu5qo7HWQi/JPER6VQCzQ9xWxyZugznzsa2w1U
-	A3TOY90YbCRNRQDxlGnOmAVsC1Sx/i8gUlUJMRkbRzWrJsP5ZUIAAPt5PgLbNCsqbT+ZRKIM/Ys96
-	dw9fEXk1AOQpY17zD7kBeLqhRvwx1+zPNMZpL/eMbGSKZYHAjuFZA4JemCixgjfw==;
-Received: by smtp56.i.mail.ru with esmtpa (envelope-from <listdansp@mail.ru>)
-	id 1rFfvj-00DzMq-0x; Tue, 19 Dec 2023 22:39:03 +0300
-Message-ID: <62436d26-3c5c-aa10-b82c-4410fbbe9b1c@mail.ru>
-Date: Tue, 19 Dec 2023 22:39:02 +0300
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 896B3156C8
+	for <linux-rdma@vger.kernel.org>; Wed, 20 Dec 2023 04:48:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=broadcom.com
+Received: by mail-pl1-f177.google.com with SMTP id d9443c01a7336-1d04c097e34so2815895ad.0
+        for <linux-rdma@vger.kernel.org>; Tue, 19 Dec 2023 20:48:09 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=broadcom.com; s=google; t=1703047689; x=1703652489; darn=vger.kernel.org;
+        h=message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Kbf/BrTVCPuq0p+0tZHIIAh12ZC3jUUghh83KMflhAY=;
+        b=ViPZZbluDsR0gwwyK7cba1EXRZUO9T4zazGvMYq74fucl592EOHO1jiLMC8OHmSVth
+         0wVOwaL5RObsMM6eUFOIWgUv+PndPPdqcTee/DW9DOlT4A6QLFvyp226msPkOgNRKnA9
+         opipoIbgxPNa8Y+hBizRx5XDe4qhPnNPj89RI=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1703047689; x=1703652489;
+        h=message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Kbf/BrTVCPuq0p+0tZHIIAh12ZC3jUUghh83KMflhAY=;
+        b=Yp/zUpOACW7FCJl9VsiO9YgACZyJxvS7N0I6S8MPpQHG5tD+g2LFevSLhSn4jUg0LH
+         z+Hu1kSJBhLWFiGuo6InSkQrc7NCyzC1OCDqc6ZlMyY762d0cWrUtAaCHy69V/39LGs/
+         modyFXIvMhPDnzG1wbtUtJdEtz0bLInj9ZRonbgeCGVOvU43n0psaqtAMComApMnnm3H
+         D4NfsdBDINQYru6imeChyiWNO3/UgUv6IK304TfF6pvWjCSaUbFMxQLFUXR+pflpJ0np
+         IsLQ8sL40mF8xZVOAt35sciZIjCcy0fRw2YFWp4u3X6UvYXtzQNhtu/sB/pJQ8+1cmja
+         n0bg==
+X-Gm-Message-State: AOJu0YxIKa/sYDApTLABSymUT8dZr6M5GhUqNA1SOKN3we8voyHwsR5e
+	hQLfWwlhLjeCxUwQF+WlJvlXOnvBCRkDwJcCvds0mIQGvVYY
+X-Google-Smtp-Source: AGHT+IFnrXjIERbepnMILd36NVQQkKUk4/1C9wwD67WkOJBaqFmlUUiaQhbfO6urjW5oRSp67lfNRQ==
+X-Received: by 2002:a17:903:2382:b0:1d3:ac60:95b0 with SMTP id v2-20020a170903238200b001d3ac6095b0mr2582343plh.46.1703047688775;
+        Tue, 19 Dec 2023 20:48:08 -0800 (PST)
+Received: from dhcp-10-192-206-197.iig.avagotech.net.net ([192.19.252.250])
+        by smtp.gmail.com with ESMTPSA id g13-20020a170902d5cd00b001d1d6f6b67dsm21989971plh.147.2023.12.19.20.48.06
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Tue, 19 Dec 2023 20:48:07 -0800 (PST)
+From: Selvin Xavier <selvin.xavier@broadcom.com>
+To: leon@kernel.org,
+	jgg@ziepe.ca
+Cc: linux-rdma@vger.kernel.org,
+	andrew.gospodarek@broadcom.com,
+	Selvin Xavier <selvin.xavier@broadcom.com>
+Subject: [PATCH] RDMA/bnxt_re: Fix the sparse warnings
+Date: Tue, 19 Dec 2023 20:31:57 -0800
+Message-Id: <1703046717-8914-1-git-send-email-selvin.xavier@broadcom.com>
+X-Mailer: git-send-email 2.5.5
+Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
+	boundary="0000000000008c7c69060ce9b089"
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.6.1
-Subject: mlx5 attr.max_sge checks
-Content-Language: ru
-To: leon@kernel.org, dledford@redhat.com, jgg@ziepe.ca
-References: <1703013183-24379-mlmmj-3a1ea6ac@vger.kernel.org>
-Cc: linux-rdma@vger.kernel.org
-From: listdansp <listdansp@mail.ru>
-Disposition-Notification-To: listdansp <listdansp@mail.ru>
-In-Reply-To: <1703013183-24379-mlmmj-3a1ea6ac@vger.kernel.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Mailru-Src: smtp
-X-7564579A: 646B95376F6C166E
-X-77F55803: 4F1203BC0FB41BD97533543916A0F71A7F5FD72A6F01437A2062B641662DAC10CD62213F67905E7A2747D5BCC6C3E5AF654CA78D9D1A626D5CE894BBB38A107E0DE140DF427568CF
-X-7FA49CB5: FF5795518A3D127A4AD6D5ED66289B5278DA827A17800CE762F001A90027CA0CC2099A533E45F2D0395957E7521B51C2CFCAF695D4D8E9FCEA1F7E6F0F101C6778DA827A17800CE706CBCB8C0AB1BC4FEA1F7E6F0F101C6723150C8DA25C47586E58E00D9D99D84E1BDDB23E98D2D38B73AB1701401CD8717D4EC1DBA89AC1D3D1BD1036CD1CD06820879F7C8C5043D14489FFFB0AA5F4BF1661749BA6B977358794E14F7ADDB10D8941B15DA834481FA18204E546F3947CD2DCF9CF1F528DBCF6B57BC7E64490618DEB871D839B7333395957E7521B51C2DFABB839C843B9C08941B15DA834481F8AA50765F7900637F924B32C592EA89F389733CBF5DBD5E9B5C8C57E37DE458BD9DD9810294C998ED8FC6C240DEA76428AA50765F7900637B4C266A59E6A0C46D81D268191BDAD3DBD4B6F7A4D31EC0BE2F48590F00D11D6D81D268191BDAD3D78DA827A17800CE79CAD2DBC0234F62EEC76A7562686271ED91E3A1F190DE8FD2E808ACE2090B5E14AD6D5ED66289B5278DA827A17800CE78F196494AD86DCAD2EB15956EA79C166A417C69337E82CC275ECD9A6C639B01B78DA827A17800CE7F9581457D50944AB731C566533BA786AA5CC5B56E945C8DA
-X-C1DE0DAB: 0D63561A33F958A517A3D1DFC377942A5DC6F57979675B685ADE586EA7C16CD0F87CCE6106E1FC07E67D4AC08A07B9B064E7220B7C5505929C5DF10A05D560A950611B66E3DA6D700B0A020F03D25A0997E3FB2386030E77
-X-C8649E89: 1C3962B70DF3F0ADE00A9FD3E00BEEDF77DD89D51EBB7742D3581295AF09D3DF87807E0823442EA2ED31085941D9CD0AF7F820E7B07EA4CF0F76270F0A8DFBCB5FF4557C4127DDD5BBCA2D9CF9CC88BE9590823B57DA54EE284AB208DE0D1BB1E190DC598EAEA94FFBD58A8C741B4607FAA7ED8124A7FDCFA74DFFEFA5DC0E7F02C26D483E81D6BE1622D42B0D48DA1897021655C84034CFF0A6D2C91ED28CB6
-X-D57D3AED: 3ZO7eAau8CL7WIMRKs4sN3D3tLDjz0dLbV79QFUyzQ2Ujvy7cMT6pYYqY16iZVKkSc3dCLJ7zSJH7+u4VD18S7Vl4ZUrpaVfd2+vE6kuoey4m4VkSEu530nj6fImhcD4MUrOEAnl0W826KZ9Q+tr5ycPtXkTV4k65bRjmOUUP8cvGozZ33TWg5HZplvhhXbhDGzqmQDTd6OAevLeAnq3Ra9uf7zvY2zzsIhlcp/Y7m53TZgf2aB4JOg4gkr2biojYtkvzPaMmB6EiGHfUP8tLg==
-X-Mailru-Sender: 4CE1109FD677D2770147F6A9E21DCA7B1CBD3524A56AB0843F24B9FF8AE98EF27F72FD02116BEB297E3C9C7AF06D9E7B78274A4A9E9E44FD3C3897ABF9FF211DE8284E426C7B2D9A5FEEDEB644C299C0ED14614B50AE0675
-X-Mras: Ok
-X-7564579A: 646B95376F6C166E
-X-77F55803: 6242723A09DB00B43D177111D18C9608537746443B7E8395CC7CC0F4B5FCE887049FFFDB7839CE9E8F069D011BA1F8AA4911269011CF60612E18ABDCB458958D2F99D07B6B964BC6
-X-7FA49CB5: 0D63561A33F958A5BEEA22B76F3CBC6086BB0D89E45CF8121E476B0607236BA5CACD7DF95DA8FC8BD5E8D9A59859A8B6E36167FF85871AA3
-X-D57D3AED: 3ZO7eAau8CL7WIMRKs4sN3D3tLDjz0dLbV79QFUyzQ2Ujvy7cMT6pYYqY16iZVKkSc3dCLJ7zSJH7+u4VD18S7Vl4ZUrpaVfd2+vE6kuoey4m4VkSEu530nj6fImhcD4MUrOEAnl0W826KZ9Q+tr5xhPKz0ZEsZ5k6NOOPWz5QAiZSCXKGQRq3/7KxbCLSB2ESzQkaOXqCBFZPLWFrEGlV1shfWe2EVcxl5toh0c/aCGOghz/frdRhzMe95NxDFd13/ESPkUJS3pjUUzX7g7LA==
-X-Mailru-MI: C000000000000800
-X-Mras: Ok
 
-Hi,
+--0000000000008c7c69060ce9b089
 
-While investigating the one report of the static analyzer (svacer), it 
-was discovered that attr.max_sge was not checked for the maximum value 
-in the mlx5_ib_create_srq function. However, this check is present in 
-https://github.com/linux-rdma/rdma-core. Also, checks are present in 
-most other infiniband Linux Kernel drivers. This may lead to incorrect 
-driver operation for example
+Fix the following warnings reported
 
-int mlx5_ib_read_wqe_srq(struct mlx5_ib_srq *srq, int wqe_index, void 
-*buffer, size_t buflen, size_t *bc)
-{
-     struct ib_umem *umem = srq->umem;
-     size_t wqe_size = 1 << srq->msrq.wqe_shift; // integer overflow here
-     if (buflen < wqe_size)
-         return -EINVAL;
+drivers/infiniband/hw/bnxt_re/qplib_rcfw.c:909:27: warning: invalid assignment: |=
+drivers/infiniband/hw/bnxt_re/qplib_rcfw.c:909:27:    left side has type restricted __le16
+drivers/infiniband/hw/bnxt_re/qplib_rcfw.c:909:27:    right side has type unsigned long
+...
+drivers/infiniband/hw/bnxt_re/qplib_fp.c:1620:44: warning: invalid assignment: |=
+drivers/infiniband/hw/bnxt_re/qplib_fp.c:1620:44:    left side has type restricted __le64
+drivers/infiniband/hw/bnxt_re/qplib_fp.c:1620:44:    right side has type unsigned long long
 
-In my opinion, the only possible solution to this problem may be to add 
-a check to mlx5_ib_create_srq similar to 
-https://github.com/linux-rdma/rdma-core like
+Reported-by: kernel test robot <lkp@intel.com>
+Closes: https://lore.kernel.org/oe-kbuild-all/202312200537.HoNqPL5L-lkp@intel.com/
+Fixes: 07f830ae4913 ("RDMA/bnxt_re: Adds MSN table capability for Gen P7 adapters")
+Signed-off-by: Selvin Xavier <selvin.xavier@broadcom.com>
+---
+ drivers/infiniband/hw/bnxt_re/qplib_fp.h   | 2 +-
+ drivers/infiniband/hw/bnxt_re/qplib_rcfw.c | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
 
-u32 max_sge = MLX5_CAP_GEN(dev->mdev, max_wqe_sz_rq) / sizeof(struct 
-mlx5_wqe_data_seg);
-if (attr->attr.max_sge > max_sge) {
-     mlx5_ib_dbg(dev, "max_sge %d, cap %d\n", init_attr->attr.max_sge, 
-max_sge);
-     return -EINVAL;
-}
+diff --git a/drivers/infiniband/hw/bnxt_re/qplib_fp.h b/drivers/infiniband/hw/bnxt_re/qplib_fp.h
+index 967c669..7fd4506 100644
+--- a/drivers/infiniband/hw/bnxt_re/qplib_fp.h
++++ b/drivers/infiniband/hw/bnxt_re/qplib_fp.h
+@@ -632,7 +632,7 @@ static inline u16 bnxt_qplib_calc_ilsize(struct bnxt_qplib_swqe *wqe, u16 max)
+ }
+ 
+ /* MSN table update inlin */
+-static inline uint64_t bnxt_re_update_msn_tbl(u32 st_idx, u32 npsn, u32 start_psn)
++static inline __le64 bnxt_re_update_msn_tbl(u32 st_idx, u32 npsn, u32 start_psn)
+ {
+ 	return cpu_to_le64((((u64)(st_idx) << SQ_MSN_SEARCH_START_IDX_SFT) &
+ 		SQ_MSN_SEARCH_START_IDX_MASK) |
+diff --git a/drivers/infiniband/hw/bnxt_re/qplib_rcfw.c b/drivers/infiniband/hw/bnxt_re/qplib_rcfw.c
+index 0ea7ccc..3ffaef0c 100644
+--- a/drivers/infiniband/hw/bnxt_re/qplib_rcfw.c
++++ b/drivers/infiniband/hw/bnxt_re/qplib_rcfw.c
+@@ -906,7 +906,7 @@ int bnxt_qplib_init_rcfw(struct bnxt_qplib_rcfw *rcfw,
+ 
+ skip_ctx_setup:
+ 	if (BNXT_RE_HW_RETX(rcfw->res->dattr->dev_cap_flags))
+-		req.flags |= CMDQ_INITIALIZE_FW_FLAGS_HW_REQUESTER_RETX_SUPPORTED;
++		req.flags |= cpu_to_le16(CMDQ_INITIALIZE_FW_FLAGS_HW_REQUESTER_RETX_SUPPORTED);
+ 	req.stat_ctx_id = cpu_to_le32(ctx->stats.fw_id);
+ 	bnxt_qplib_fill_cmdqmsg(&msg, &req, &resp, NULL, sizeof(req), sizeof(resp), 0);
+ 	rc = bnxt_qplib_rcfw_send_message(rcfw, &msg);
+-- 
+2.5.5
 
-I would appreciate your suggestions and comments.
 
-Best regards,
-Danila
+--0000000000008c7c69060ce9b089
+Content-Type: application/pkcs7-signature; name="smime.p7s"
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename="smime.p7s"
+Content-Description: S/MIME Cryptographic Signature
+
+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
+FYMZp2DojLAq9f4Oi2OBetbnWxo0WGycXpmq/jC4PUx2u9mazQ79i80VLagGRshWniESXuf+SYG8
++zBimjld9ZZnwm7itHAZdtme4YYFxx+EHa4PUxPV8t+hPHhsiIjirPa1pVXPbQIDAQABo4IB2zCC
+AdcwDgYDVR0PAQH/BAQDAgWgMIGjBggrBgEFBQcBAQSBljCBkzBOBggrBgEFBQcwAoZCaHR0cDov
+L3NlY3VyZS5nbG9iYWxzaWduLmNvbS9jYWNlcnQvZ3NnY2NyM3BlcnNvbmFsc2lnbjJjYTIwMjAu
+Y3J0MEEGCCsGAQUFBzABhjVodHRwOi8vb2NzcC5nbG9iYWxzaWduLmNvbS9nc2djY3IzcGVyc29u
+YWxzaWduMmNhMjAyMDBNBgNVHSAERjBEMEIGCisGAQQBoDIBKAowNDAyBggrBgEFBQcCARYmaHR0
+cHM6Ly93d3cuZ2xvYmFsc2lnbi5jb20vcmVwb3NpdG9yeS8wCQYDVR0TBAIwADBJBgNVHR8EQjBA
+MD6gPKA6hjhodHRwOi8vY3JsLmdsb2JhbHNpZ24uY29tL2dzZ2NjcjNwZXJzb25hbHNpZ24yY2Ey
+MDIwLmNybDAlBgNVHREEHjAcgRpzZWx2aW4ueGF2aWVyQGJyb2FkY29tLmNvbTATBgNVHSUEDDAK
+BggrBgEFBQcDBDAfBgNVHSMEGDAWgBSWM9HmWBdbNHWKgVZk1b5I3qGPzzAdBgNVHQ4EFgQU3TaH
+dsgUhTW3LwObmZ20fj+8Xj8wDQYJKoZIhvcNAQELBQADggEBAAbt6Sptp6ZlTnhM2FDhkVXks68/
+iqvfL/e8wSPVdBxOuiP+8EXGLV3E72KfTTJXMbkcmFpK2K11poBDQJhz0xyOGTESjXNnN6Eqq+iX
+hQtF8xG2lzPq8MijKI4qXk5Vy5DYfwsVfcF0qJw5AhC32nU9uuIPJq8/mQbZfqmoanV/yadootGr
+j1Ze9ndr+YDXPpCymOsynmmw0ErHZGGW1OmMpAEt0A+613glWCURLDlP8HONi1wnINV6aDiEf0ad
+9NMGxDsp+YWiRXD3txfo2OMQbpIxM90QfhKKacX8t1J1oAAWxDrLVTJBXBNvz5tr+D1sYwuye93r
+hImmkM1unboxggJtMIICaQIBATBrMFsxCzAJBgNVBAYTAkJFMRkwFwYDVQQKExBHbG9iYWxTaWdu
+IG52LXNhMTEwLwYDVQQDEyhHbG9iYWxTaWduIEdDQyBSMyBQZXJzb25hbFNpZ24gMiBDQSAyMDIw
+Agxy+Cu4x/7lM0zxY7cwDQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIEILFD0yPNpsJI
+OJk7BMcnRx4GHk1ktH6cQf2PIsWCZebiMBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZI
+hvcNAQkFMQ8XDTIzMTIyMDA0NDgwOVowaQYJKoZIhvcNAQkPMVwwWjALBglghkgBZQMEASowCwYJ
+YIZIAWUDBAEWMAsGCWCGSAFlAwQBAjAKBggqhkiG9w0DBzALBgkqhkiG9w0BAQowCwYJKoZIhvcN
+AQEHMAsGCWCGSAFlAwQCATANBgkqhkiG9w0BAQEFAASCAQBUxFYLRbcvrwOI6yLlzGsg4u/oivKp
++kvGeqQSWwEYQgejePCL43rzfAxI038e75Rpcsp2z8uLWHL9JlX0DuPN0cpSha9hvWNw6BmcBRlI
+uKUUY7vz+5PM4RjqxNJyz7Shd38DgAlGzKBLvAZ4fSyiL3zYA3bKosueTIL216ir60snKjIYNpXJ
+vryhUYCcUUWadFJ93T6Cp1XyNkSTHX9SnyJzj3wV7XEavocQ1kl6SvaFMJ2f9OLRyItURdxkGqYw
+chewMQI1+y/Mvnju1zPX2JEOD8vxI9rdhRSUJaSFvcqnW1I+FBVYcYBwt7yGjBcDxOKQFMIU3JN4
+IFQSJquo
+--0000000000008c7c69060ce9b089--
 
