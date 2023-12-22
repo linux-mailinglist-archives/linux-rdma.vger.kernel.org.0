@@ -1,140 +1,104 @@
-Return-Path: <linux-rdma+bounces-474-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-475-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id A7AF781B8E7
-	for <lists+linux-rdma@lfdr.de>; Thu, 21 Dec 2023 14:56:07 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id DC95581D097
+	for <lists+linux-rdma@lfdr.de>; Sat, 23 Dec 2023 00:46:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8D7331C21A93
-	for <lists+linux-rdma@lfdr.de>; Thu, 21 Dec 2023 13:56:06 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1AC571C20E7F
+	for <lists+linux-rdma@lfdr.de>; Fri, 22 Dec 2023 23:46:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8BDD555E64;
-	Thu, 21 Dec 2023 13:46:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2D5F235EE9;
+	Fri, 22 Dec 2023 23:46:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=amazon.com header.i=@amazon.com header.b="KboBhy5T"
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="0DFfXuvC"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from smtp-fw-80008.amazon.com (smtp-fw-80008.amazon.com [99.78.197.219])
+Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 22CDF539E0
-	for <linux-rdma@vger.kernel.org>; Thu, 21 Dec 2023 13:46:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amazon.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=amazon.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1703166368; x=1734702368;
-  h=message-id:date:mime-version:from:to:cc:references:
-   in-reply-to:content-transfer-encoding:subject;
-  bh=BCXvgIBHtbV2195+AAR2FPJnaN62M9F/8YFLMu7OxyU=;
-  b=KboBhy5T9Vg60v8pNNhxfP0Fq+aHhFL3Gks7dfTVYyCLZ4OixBZyWN7R
-   xLUuH+bA4pLJLAQMqRtt0R7rrhPnfVXNCnXE3KotEEULAC0NQFyss4EOT
-   nnwZsLQI31sgZ7K8c5/Z1j1iLqYXYnVwHZxxYgvh5EwqGLPVZQw0SEra9
-   c=;
-X-IronPort-AV: E=Sophos;i="6.04,293,1695686400"; 
-   d="scan'208";a="53062826"
-Subject: Re: [PATCH for-next v3] RDMA/efa: Add EFA query MR support
-Received: from pdx4-co-svc-p1-lb2-vlan3.amazon.com (HELO email-inbound-relay-pdx-2a-m6i4x-1197e3af.us-west-2.amazon.com) ([10.25.36.214])
-  by smtp-border-fw-80008.pdx80.corp.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Dec 2023 13:46:06 +0000
-Received: from smtpout.prod.us-west-2.prod.farcaster.email.amazon.dev (pdx2-ws-svc-p26-lb5-vlan2.pdx.amazon.com [10.39.38.66])
-	by email-inbound-relay-pdx-2a-m6i4x-1197e3af.us-west-2.amazon.com (Postfix) with ESMTPS id EBB1510170A;
-	Thu, 21 Dec 2023 13:46:05 +0000 (UTC)
-Received: from EX19MTAEUA001.ant.amazon.com [10.0.17.79:44907]
- by smtpin.naws.eu-west-1.prod.farcaster.email.amazon.dev [10.0.41.246:2525] with esmtp (Farcaster)
- id eebb7e9a-eb43-444c-8abe-a5ab9ce21a64; Thu, 21 Dec 2023 13:46:04 +0000 (UTC)
-X-Farcaster-Flow-ID: eebb7e9a-eb43-444c-8abe-a5ab9ce21a64
-Received: from EX19D031EUB003.ant.amazon.com (10.252.61.88) by
- EX19MTAEUA001.ant.amazon.com (10.252.50.223) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.40; Thu, 21 Dec 2023 13:46:04 +0000
-Received: from [192.168.66.225] (10.85.143.174) by
- EX19D031EUB003.ant.amazon.com (10.252.61.88) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.40; Thu, 21 Dec 2023 13:46:01 +0000
-Message-ID: <2a4a71b1-4a85-40fb-87c0-59ff50a956c2@amazon.com>
-Date: Thu, 21 Dec 2023 15:45:56 +0200
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9EE8335EE3;
+	Fri, 22 Dec 2023 23:46:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+	MIME-Version:Message-ID:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:
+	Content-ID:Content-Description:In-Reply-To:References;
+	bh=xlxgje3UaSBCWUqU3cE6lT9GNviJolLmY2/JzIgy6DQ=; b=0DFfXuvCq2dMImvornjiY+xKKR
+	yupnFemjTEabgltjBZdEhBBw7M7D7WyAsEzznuEXYjqNyoQiZXenAGRYYuemniHkDqDpCJOKEOzoc
+	SPvtl8HgPscsxj4ccI2w7bdn2NSYPEv2+2ANwjLz3nAxtLwx6Ewlx1hziXzg3mSyUkipO6BlJ4B4d
+	uvZBBGIjvTKrd490ACJsHR1K+ITWo8ye2WDjZNeoZuLjie7hRLjBUj7D0xo2+xmpa0eu7giqG40Al
+	jolrx0TZgZsy7gEo8A3gSws051//wQG4/rmv3RlVd9v2eYWw1TO+Ikz3pPMog/SFCjBTZgXl0Xuw+
+	nA9ySEJQ==;
+Received: from [50.53.46.231] (helo=bombadil.infradead.org)
+	by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
+	id 1rGpDk-0072Dw-01;
+	Fri, 22 Dec 2023 23:46:24 +0000
+From: Randy Dunlap <rdunlap@infradead.org>
+To: linux-kernel@vger.kernel.org
+Cc: Randy Dunlap <rdunlap@infradead.org>,
+	Sagi Grimberg <sagi@grimberg.me>,
+	Max Gurtovoy <mgurtovoy@nvidia.com>,
+	Jason Gunthorpe <jgg@nvidia.com>,
+	Leon Romanovsky <leonro@nvidia.com>,
+	linux-rdma@vger.kernel.org
+Subject: [PATCH] IB/iser: iscsi_iser.h: fix kernel-doc warning and spellos
+Date: Fri, 22 Dec 2023 15:46:23 -0800
+Message-ID: <20231222234623.25231-1-rdunlap@infradead.org>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Content-Language: en-US
-From: "Margolin, Michael" <mrgolin@amazon.com>
-To: Jason Gunthorpe <jgg@nvidia.com>, <leon@kernel.org>,
-	<gal.pressman@linux.dev>
-CC: <linux-rdma@vger.kernel.org>, <sleybo@amazon.com>, <matua@amazon.com>,
-	Anas Mousa <anasmous@amazon.com>, Firas Jahjah <firasj@amazon.com>
-References: <20231211174715.7369-1-mrgolin@amazon.com>
- <20231211175019.GK2944114@nvidia.com>
- <c9790d7c-e904-4014-a238-343f376a08b9@amazon.com>
-In-Reply-To: <c9790d7c-e904-4014-a238-343f376a08b9@amazon.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: EX19D033UWC002.ant.amazon.com (10.13.139.196) To
- EX19D031EUB003.ant.amazon.com (10.252.61.88)
+Content-Transfer-Encoding: 8bit
 
-On 12/13/2023 7:05 PM, Margolin, Michael wrote:
+Drop one kernel-doc comment to prevent a warning:
 
-> On 12/11/2023 7:50 PM, Jason Gunthorpe wrote:
->> CAUTION: This email originated from outside of the organization. Do not click links or open attachments unless you can confirm the sender and know the content is safe.
->>
->>
->>
->> On Mon, Dec 11, 2023 at 05:47:15PM +0000, Michael Margolin wrote:
->>> diff --git a/drivers/infiniband/hw/efa/efa_admin_cmds_defs.h b/drivers/infiniband/hw/efa/efa_admin_cmds_defs.h
->>> index 9c65bd27bae0..597f7ca6f31d 100644
->>> --- a/drivers/infiniband/hw/efa/efa_admin_cmds_defs.h
->>> +++ b/drivers/infiniband/hw/efa/efa_admin_cmds_defs.h
->>> @@ -415,6 +415,32 @@ struct efa_admin_reg_mr_resp {
->>>        * memory region
->>>        */
->>>       u32 r_key;
->>> +
->>> +     /*
->>> +      * Mask indicating which fields have valid values
->>> +      * 0 : recv_pci_bus_id
->>> +      * 1 : rdma_read_pci_bus_id
->>> +      * 2 : rdma_recv_pci_bus_id
->>> +      */
->>> +     u8 validity;
->>> +
->>> +     /*
->>> +      * Physical PCIe bus used by the device to reach the MR for receive
->>> +      * operation
->>> +      */
->>> +     u8 recv_pci_bus_id;
->>> +
->>> +     /*
->>> +      * Physical PCIe bus used by the device to reach the MR for RDMA read
->>> +      * operation
->>> +      */
->>> +     u8 rdma_read_pci_bus_id;
->>> +
->>> +     /*
->>> +      * Physical PCIe bus used by the device to reach the MR for RDMA write
->>> +      * receive
->>> +      */
->>> +     u8 rdma_recv_pci_bus_id;
->> What driver is bound to this other PCIe bus and how did the iommu get
->> setup for it?
->>
->> Jason
-> It's internal bus that is not directly exposed to the host. Addresses
-> mapping is acquired from accelerator's driver as for any MR residing in
-> accelerator memory, and the translation is owned by devices on that bus.
->
->
-> Michael
+iscsi_iser.h:313: warning: Excess struct member 'mr' description in 'iser_device'
 
-Hi,
+and spell 2 words correctly (buffer and deferred).
 
-Just want to make sure if there are any questions / comments regarding
-to this patch that haven't been addressed?
+Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+Cc: Sagi Grimberg <sagi@grimberg.me>
+Cc: Max Gurtovoy <mgurtovoy@nvidia.com>
+Cc: Jason Gunthorpe <jgg@nvidia.com>
+Cc: Leon Romanovsky <leonro@nvidia.com>
+Cc: linux-rdma@vger.kernel.org
+---
+ drivers/infiniband/ulp/iser/iscsi_iser.h |    5 ++---
+ 1 file changed, 2 insertions(+), 3 deletions(-)
 
-
-Michael
-
+diff -- a/drivers/infiniband/ulp/iser/iscsi_iser.h b/drivers/infiniband/ulp/iser/iscsi_iser.h
+--- a/drivers/infiniband/ulp/iser/iscsi_iser.h
++++ b/drivers/infiniband/ulp/iser/iscsi_iser.h
+@@ -182,7 +182,7 @@ enum iser_data_dir {
+  *
+  * @sg:           pointer to the sg list
+  * @size:         num entries of this sg
+- * @data_len:     total beffer byte len
++ * @data_len:     total buffer byte len
+  * @dma_nents:    returned by dma_map_sg
+  */
+ struct iser_data_buf {
+@@ -299,7 +299,6 @@ struct ib_conn;
+  *
+  * @ib_device:     RDMA device
+  * @pd:            Protection Domain for this device
+- * @mr:            Global DMA memory region
+  * @event_handler: IB events handle routine
+  * @ig_list:	   entry in devices list
+  * @refcount:      Reference counter, dominated by open iser connections
+@@ -389,7 +388,7 @@ struct ib_conn {
+  *                    to max number of post recvs
+  * @max_cmds:         maximum cmds allowed for this connection
+  * @name:             connection peer portal
+- * @release_work:     deffered work for release job
++ * @release_work:     deferred work for release job
+  * @state_mutex:      protects iser onnection state
+  * @stop_completion:  conn_stop completion
+  * @ib_completion:    RDMA cleanup completion
 
