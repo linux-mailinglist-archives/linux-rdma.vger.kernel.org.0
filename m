@@ -1,40 +1,43 @@
-Return-Path: <linux-rdma+bounces-482-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-483-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id C292B81DDF8
-	for <lists+linux-rdma@lfdr.de>; Mon, 25 Dec 2023 04:21:39 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A5EB481DEE7
+	for <lists+linux-rdma@lfdr.de>; Mon, 25 Dec 2023 08:57:31 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 348F8281A81
-	for <lists+linux-rdma@lfdr.de>; Mon, 25 Dec 2023 03:21:38 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6AEC6B20FCB
+	for <lists+linux-rdma@lfdr.de>; Mon, 25 Dec 2023 07:57:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4C899A54;
-	Mon, 25 Dec 2023 03:21:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 155A215B0;
+	Mon, 25 Dec 2023 07:57:22 +0000 (UTC)
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from out30-124.freemail.mail.aliyun.com (out30-124.freemail.mail.aliyun.com [115.124.30.124])
+Received: from szxga07-in.huawei.com (szxga07-in.huawei.com [45.249.212.35])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7AB4EA4C
-	for <linux-rdma@vger.kernel.org>; Mon, 25 Dec 2023 03:21:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
-X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R501e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018045168;MF=chengyou@linux.alibaba.com;NM=1;PH=DS;RN=4;SR=0;TI=SMTPD_---0Vz58ENs_1703474480;
-Received: from localhost(mailfrom:chengyou@linux.alibaba.com fp:SMTPD_---0Vz58ENs_1703474480)
-          by smtp.aliyun-inc.com;
-          Mon, 25 Dec 2023 11:21:20 +0800
-From: Cheng Xu <chengyou@linux.alibaba.com>
-To: jgg@ziepe.ca,
-	leon@kernel.org
-Cc: linux-rdma@vger.kernel.org,
-	KaiShen@linux.alibaba.com
-Subject: [PATCH for-next v2 2/2] RDMA/erdma: Add hardware statistics support
-Date: Mon, 25 Dec 2023 11:21:17 +0800
-Message-Id: <20231225032117.7493-3-chengyou@linux.alibaba.com>
-X-Mailer: git-send-email 2.39.3 (Apple Git-145)
-In-Reply-To: <20231225032117.7493-1-chengyou@linux.alibaba.com>
-References: <20231225032117.7493-1-chengyou@linux.alibaba.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F05C76FA1;
+	Mon, 25 Dec 2023 07:57:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=hisilicon.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=hisilicon.com
+Received: from mail.maildlp.com (unknown [172.19.163.17])
+	by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4Sz9FV1Hmbz1R5pL;
+	Mon, 25 Dec 2023 15:55:58 +0800 (CST)
+Received: from kwepemi500006.china.huawei.com (unknown [7.221.188.68])
+	by mail.maildlp.com (Postfix) with ESMTPS id 5B1F21A0172;
+	Mon, 25 Dec 2023 15:57:16 +0800 (CST)
+Received: from localhost.localdomain (10.67.165.2) by
+ kwepemi500006.china.huawei.com (7.221.188.68) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Mon, 25 Dec 2023 15:57:15 +0800
+From: Junxian Huang <huangjunxian6@hisilicon.com>
+To: <jgg@ziepe.ca>, <leon@kernel.org>
+CC: <linux-rdma@vger.kernel.org>, <linuxarm@huawei.com>,
+	<linux-kernel@vger.kernel.org>, <huangjunxian6@hisilicon.com>
+Subject: [PATCH for-next 0/6] RDMA/hns: Improvement for multi-level addressing
+Date: Mon, 25 Dec 2023 15:53:24 +0800
+Message-ID: <20231225075330.4116470-1-huangjunxian6@hisilicon.com>
+X-Mailer: git-send-email 2.30.0
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
@@ -42,207 +45,39 @@ List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
+ kwepemi500006.china.huawei.com (7.221.188.68)
 
-First, we add a new command to query hardware statistics, and then
-implement two functions: ib_device_ops.alloc_hw_port_stats and
-ib_device_ops.get_hw_stats to allow rdma tool can get the statistics
-of erdma device.
+This series optimizes multi-level addressing for hns.
 
-Signed-off-by: Cheng Xu <chengyou@linux.alibaba.com>
----
- drivers/infiniband/hw/erdma/erdma_hw.h    | 37 ++++++++++
- drivers/infiniband/hw/erdma/erdma_main.c  |  2 +
- drivers/infiniband/hw/erdma/erdma_verbs.c | 89 +++++++++++++++++++++++
- drivers/infiniband/hw/erdma/erdma_verbs.h |  4 +
- 4 files changed, 132 insertions(+)
+Patch #1, #2 and #6 are optimization of multi-level addressing codes.
 
-diff --git a/drivers/infiniband/hw/erdma/erdma_hw.h b/drivers/infiniband/hw/erdma/erdma_hw.h
-index 4baabf1f2b08..ed8e3940cf4c 100644
---- a/drivers/infiniband/hw/erdma/erdma_hw.h
-+++ b/drivers/infiniband/hw/erdma/erdma_hw.h
-@@ -146,6 +146,7 @@ enum CMDQ_COMMON_OPCODE {
- 	CMDQ_OPCODE_DESTROY_EQ = 1,
- 	CMDQ_OPCODE_QUERY_FW_INFO = 2,
- 	CMDQ_OPCODE_CONF_MTU = 3,
-+	CMDQ_OPCODE_GET_STATS = 4,
- 	CMDQ_OPCODE_CONF_DEVICE = 5,
- 	CMDQ_OPCODE_ALLOC_DB = 8,
- 	CMDQ_OPCODE_FREE_DB = 9,
-@@ -359,6 +360,42 @@ struct erdma_cmdq_reflush_req {
- 
- #define ERDMA_HW_RESP_SIZE 256
- 
-+struct erdma_cmdq_query_req {
-+	u64 hdr;
-+	u32 rsvd;
-+	u32 index;
-+
-+	u64 target_addr;
-+	u32 target_length;
-+};
-+
-+#define ERDMA_HW_RESP_MAGIC 0x5566
-+
-+struct erdma_cmdq_query_resp_hdr {
-+	u16 magic;
-+	u8 ver;
-+	u8 length;
-+
-+	u32 index;
-+	u32 rsvd[2];
-+};
-+
-+struct erdma_cmdq_query_stats_resp {
-+	struct erdma_cmdq_query_resp_hdr hdr;
-+
-+	u64 tx_req_cnt;
-+	u64 tx_packets_cnt;
-+	u64 tx_bytes_cnt;
-+	u64 tx_drop_packets_cnt;
-+	u64 tx_bps_meter_drop_packets_cnt;
-+	u64 tx_pps_meter_drop_packets_cnt;
-+	u64 rx_packets_cnt;
-+	u64 rx_bytes_cnt;
-+	u64 rx_drop_packets_cnt;
-+	u64 rx_bps_meter_drop_packets_cnt;
-+	u64 rx_pps_meter_drop_packets_cnt;
-+};
-+
- /* cap qword 0 definition */
- #define ERDMA_CMD_DEV_CAP_MAX_CQE_MASK GENMASK_ULL(47, 40)
- #define ERDMA_CMD_DEV_CAP_FLAGS_MASK GENMASK_ULL(31, 24)
-diff --git a/drivers/infiniband/hw/erdma/erdma_main.c b/drivers/infiniband/hw/erdma/erdma_main.c
-index e4df5bf89cd0..472939172f0c 100644
---- a/drivers/infiniband/hw/erdma/erdma_main.c
-+++ b/drivers/infiniband/hw/erdma/erdma_main.c
-@@ -468,6 +468,7 @@ static const struct ib_device_ops erdma_device_ops = {
- 	.driver_id = RDMA_DRIVER_ERDMA,
- 	.uverbs_abi_ver = ERDMA_ABI_VERSION,
- 
-+	.alloc_hw_port_stats = erdma_alloc_hw_port_stats,
- 	.alloc_mr = erdma_ib_alloc_mr,
- 	.alloc_pd = erdma_alloc_pd,
- 	.alloc_ucontext = erdma_alloc_ucontext,
-@@ -479,6 +480,7 @@ static const struct ib_device_ops erdma_device_ops = {
- 	.destroy_cq = erdma_destroy_cq,
- 	.destroy_qp = erdma_destroy_qp,
- 	.get_dma_mr = erdma_get_dma_mr,
-+	.get_hw_stats = erdma_get_hw_stats,
- 	.get_port_immutable = erdma_get_port_immutable,
- 	.iw_accept = erdma_accept,
- 	.iw_add_ref = erdma_qp_get_ref,
-diff --git a/drivers/infiniband/hw/erdma/erdma_verbs.c b/drivers/infiniband/hw/erdma/erdma_verbs.c
-index c317947563fb..e47e158bedd5 100644
---- a/drivers/infiniband/hw/erdma/erdma_verbs.c
-+++ b/drivers/infiniband/hw/erdma/erdma_verbs.c
-@@ -1708,3 +1708,92 @@ void erdma_port_event(struct erdma_dev *dev, enum ib_event_type reason)
- 
- 	ib_dispatch_event(&event);
- }
-+
-+enum counters {
-+	ERDMA_STATS_TX_REQS_CNT,
-+	ERDMA_STATS_TX_PACKETS_CNT,
-+	ERDMA_STATS_TX_BYTES_CNT,
-+	ERDMA_STATS_TX_DISABLE_DROP_CNT,
-+	ERDMA_STATS_TX_BPS_METER_DROP_CNT,
-+	ERDMA_STATS_TX_PPS_METER_DROP_CNT,
-+
-+	ERDMA_STATS_RX_PACKETS_CNT,
-+	ERDMA_STATS_RX_BYTES_CNT,
-+	ERDMA_STATS_RX_DISABLE_DROP_CNT,
-+	ERDMA_STATS_RX_BPS_METER_DROP_CNT,
-+	ERDMA_STATS_RX_PPS_METER_DROP_CNT,
-+
-+	ERDMA_STATS_MAX
-+};
-+
-+static const struct rdma_stat_desc erdma_descs[] = {
-+	[ERDMA_STATS_TX_REQS_CNT].name = "tx_reqs_cnt",
-+	[ERDMA_STATS_TX_PACKETS_CNT].name = "tx_packets_cnt",
-+	[ERDMA_STATS_TX_BYTES_CNT].name = "tx_bytes_cnt",
-+	[ERDMA_STATS_TX_DISABLE_DROP_CNT].name = "tx_disable_drop_cnt",
-+	[ERDMA_STATS_TX_BPS_METER_DROP_CNT].name = "tx_bps_limit_drop_cnt",
-+	[ERDMA_STATS_TX_PPS_METER_DROP_CNT].name = "tx_pps_limit_drop_cnt",
-+	[ERDMA_STATS_RX_PACKETS_CNT].name = "rx_packets_cnt",
-+	[ERDMA_STATS_RX_BYTES_CNT].name = "rx_bytes_cnt",
-+	[ERDMA_STATS_RX_DISABLE_DROP_CNT].name = "rx_disable_drop_cnt",
-+	[ERDMA_STATS_RX_BPS_METER_DROP_CNT].name = "rx_bps_limit_drop_cnt",
-+	[ERDMA_STATS_RX_PPS_METER_DROP_CNT].name = "rx_pps_limit_drop_cnt",
-+};
-+
-+struct rdma_hw_stats *erdma_alloc_hw_port_stats(struct ib_device *device,
-+						u32 port_num)
-+{
-+	return rdma_alloc_hw_stats_struct(erdma_descs, ERDMA_STATS_MAX,
-+					  RDMA_HW_STATS_DEFAULT_LIFESPAN);
-+}
-+
-+int erdma_query_hw_stats(struct erdma_dev *dev, struct rdma_hw_stats *stats)
-+{
-+	struct erdma_cmdq_query_stats_resp *resp;
-+	struct erdma_cmdq_query_req req;
-+	dma_addr_t dma_addr;
-+	int err;
-+
-+	erdma_cmdq_build_reqhdr(&req.hdr, CMDQ_SUBMOD_COMMON,
-+				CMDQ_OPCODE_GET_STATS);
-+
-+	resp = dma_pool_zalloc(dev->resp_pool, GFP_KERNEL, &dma_addr);
-+	if (!resp)
-+		return -ENOMEM;
-+
-+	req.target_addr = dma_addr;
-+	req.target_length = ERDMA_HW_RESP_SIZE;
-+
-+	err = erdma_post_cmd_wait(&dev->cmdq, &req, sizeof(req), NULL, NULL);
-+	if (err)
-+		goto out;
-+
-+	if (resp->hdr.magic != ERDMA_HW_RESP_MAGIC) {
-+		err = -EINVAL;
-+		goto out;
-+	}
-+
-+	memcpy(&stats->value[0], &resp->tx_req_cnt,
-+	       sizeof(u64) * stats->num_counters);
-+
-+out:
-+	dma_pool_free(dev->resp_pool, resp, dma_addr);
-+
-+	return err;
-+}
-+
-+int erdma_get_hw_stats(struct ib_device *ibdev, struct rdma_hw_stats *stats,
-+		       u32 port, int index)
-+{
-+	struct erdma_dev *dev = to_edev(ibdev);
-+	int ret;
-+
-+	if (port == 0)
-+		return 0;
-+
-+	ret = erdma_query_hw_stats(dev, stats);
-+	if (ret)
-+		return ret;
-+
-+	return stats->num_counters;
-+}
-diff --git a/drivers/infiniband/hw/erdma/erdma_verbs.h b/drivers/infiniband/hw/erdma/erdma_verbs.h
-index eb9c0f92fb6f..db6018529ccc 100644
---- a/drivers/infiniband/hw/erdma/erdma_verbs.h
-+++ b/drivers/infiniband/hw/erdma/erdma_verbs.h
-@@ -361,5 +361,9 @@ int erdma_map_mr_sg(struct ib_mr *ibmr, struct scatterlist *sg, int sg_nents,
- 		    unsigned int *sg_offset);
- void erdma_port_event(struct erdma_dev *dev, enum ib_event_type reason);
- void erdma_set_mtu(struct erdma_dev *dev, u32 mtu);
-+struct rdma_hw_stats *erdma_alloc_hw_port_stats(struct ib_device *device,
-+						u32 port_num);
-+int erdma_get_hw_stats(struct ib_device *ibdev, struct rdma_hw_stats *stats,
-+		       u32 port, int index);
- 
- #endif
--- 
-2.31.1
+Patch #3 is prepared for the following optimizations.
+
+Patch #4 and #5 introduce adaptive pagesize and hopnum to improve HW
+performance.
+
+Chengchang Tang (5):
+  RDMA/hns: Refactor mtr find
+  RDMA/hns: Refactor mtr_init_buf_cfg()
+  RDMA/hns: Alloc MTR memory before alloc_mtt()
+  RDMA/hns: Support flexible pagesize
+  RDMA/hns: Support adaptive PBL hopnum
+
+Yunsheng Lin (1):
+  RDMA/hns: Simplify 'struct hns_roce_hem' allocation
+
+ drivers/infiniband/hw/hns/hns_roce_alloc.c  |   6 -
+ drivers/infiniband/hw/hns/hns_roce_cq.c     |  11 +-
+ drivers/infiniband/hw/hns/hns_roce_device.h |  16 +-
+ drivers/infiniband/hw/hns/hns_roce_hem.c    |  95 +----
+ drivers/infiniband/hw/hns/hns_roce_hem.h    |  56 +--
+ drivers/infiniband/hw/hns/hns_roce_hw_v2.c  | 111 +++---
+ drivers/infiniband/hw/hns/hns_roce_mr.c     | 386 +++++++++++++++-----
+ 7 files changed, 386 insertions(+), 295 deletions(-)
+
+--
+2.30.0
 
 
