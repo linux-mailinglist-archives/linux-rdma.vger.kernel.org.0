@@ -1,114 +1,92 @@
-Return-Path: <linux-rdma+bounces-498-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-499-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9DF0681E681
-	for <lists+linux-rdma@lfdr.de>; Tue, 26 Dec 2023 10:42:28 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id AC25B81EB59
+	for <lists+linux-rdma@lfdr.de>; Wed, 27 Dec 2023 02:44:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4ECB21F227B4
-	for <lists+linux-rdma@lfdr.de>; Tue, 26 Dec 2023 09:42:28 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3A00A1F21854
+	for <lists+linux-rdma@lfdr.de>; Wed, 27 Dec 2023 01:44:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0049E4D114;
-	Tue, 26 Dec 2023 09:42:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="sBY+/xTU"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 09F8D1FB2;
+	Wed, 27 Dec 2023 01:44:23 +0000 (UTC)
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from out30-131.freemail.mail.aliyun.com (out30-131.freemail.mail.aliyun.com [115.124.30.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B0F244D102;
-	Tue, 26 Dec 2023 09:42:22 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0AE1EC433C7;
-	Tue, 26 Dec 2023 09:42:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1703583742;
-	bh=Tsmg+MnN4G6iohoVCMTbtuf++BSfs/xm9Czu/0qaSKI=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=sBY+/xTUXxm9VeY9c5lBhJweeyQVDX7DKjV7HvlP5iWYwZmcmyv4/PqPMhfz3oaHF
-	 NXV0/2SSXT++xN7EyODtQ/v5gjMxq9SGkKOGqNa+sR18nuTJnYdDr9D/yoWYvmFzHp
-	 2RWPLqMGs/Gja7Xrdtu3sjL6Nk0xr+iWuWjciLzgBbTEjDO/zlZEZ/ReiFRmN5MwdK
-	 Fif2mImrslkJdIVitjWYf7nSl2gzT2OMF8oDANvlt1Jdo7z+GQSBc/GOob0wmyNgK5
-	 5NbAaLCK55jrZKZe0+uLClHcqs+6JCeljwVhHp7cLMVuIGsSOyVLOITer8VmPIqmCZ
-	 vXzXf/IEaUcAg==
-Date: Tue, 26 Dec 2023 11:42:18 +0200
-From: Leon Romanovsky <leon@kernel.org>
-To: Junxian Huang <huangjunxian6@hisilicon.com>
-Cc: jgg@ziepe.ca, linux-rdma@vger.kernel.org, linuxarm@huawei.com,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH for-next 4/6] RDMA/hns: Support flexible pagesize
-Message-ID: <20231226094218.GA17182@unreal>
-References: <20231225075330.4116470-1-huangjunxian6@hisilicon.com>
- <20231225075330.4116470-5-huangjunxian6@hisilicon.com>
- <20231226085202.GA13350@unreal>
- <fbd65691-b0a2-0963-96fc-7e09a66cd203@hisilicon.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7FCFB4403
+	for <linux-rdma@vger.kernel.org>; Wed, 27 Dec 2023 01:44:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
+X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R211e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018045170;MF=chengyou@linux.alibaba.com;NM=1;PH=DS;RN=7;SR=0;TI=SMTPD_---0VzJMpPy_1703641456;
+Received: from 30.221.116.50(mailfrom:chengyou@linux.alibaba.com fp:SMTPD_---0VzJMpPy_1703641456)
+          by smtp.aliyun-inc.com;
+          Wed, 27 Dec 2023 09:44:17 +0800
+Message-ID: <90098a72-c11c-6e53-464c-40b86ac7b75f@linux.alibaba.com>
+Date: Wed, 27 Dec 2023 09:44:16 +0800
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <fbd65691-b0a2-0963-96fc-7e09a66cd203@hisilicon.com>
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
+ Gecko/20100101 Thunderbird/102.15.1
+Subject: Re: [PATCH for-next v2 2/2] RDMA/erdma: Add hardware statistics
+ support
+To: Zhu Yanjun <yanjun.zhu@linux.dev>, kernel test robot <lkp@intel.com>,
+ jgg@ziepe.ca, leon@kernel.org
+Cc: oe-kbuild-all@lists.linux.dev, linux-rdma@vger.kernel.org,
+ KaiShen@linux.alibaba.com
+References: <20231225032117.7493-3-chengyou@linux.alibaba.com>
+ <202312260550.9DPkrw52-lkp@intel.com>
+ <06da7417-7706-409f-b3d7-a62caa81d57b@linux.dev>
+Content-Language: en-US
+From: Cheng Xu <chengyou@linux.alibaba.com>
+In-Reply-To: <06da7417-7706-409f-b3d7-a62caa81d57b@linux.dev>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-On Tue, Dec 26, 2023 at 05:16:33PM +0800, Junxian Huang wrote:
-> 
-> 
-> On 2023/12/26 16:52, Leon Romanovsky wrote:
-> > On Mon, Dec 25, 2023 at 03:53:28PM +0800, Junxian Huang wrote:
-> >> From: Chengchang Tang <tangchengchang@huawei.com>
-> >>
-> >> In the current implementation, a fixed page size is used to
-> >> configure the PBL, which is not flexible enough and is not
-> >> conducive to the performance of the HW.
-> >>
-> >> Signed-off-by: Chengchang Tang <tangchengchang@huawei.com>
-> >> Signed-off-by: Junxian Huang <huangjunxian6@hisilicon.com>
-> >> ---
-> >>  drivers/infiniband/hw/hns/hns_roce_alloc.c  |   6 -
-> >>  drivers/infiniband/hw/hns/hns_roce_device.h |   9 ++
-> >>  drivers/infiniband/hw/hns/hns_roce_mr.c     | 168 +++++++++++++++-----
-> >>  3 files changed, 139 insertions(+), 44 deletions(-)
-> > 
-> > I'm wonder if the ib_umem_find_best_pgsz() API should be used instead.
-> > What is missing there?
-> > 
-> > Thanks
-> 
-> Actually this API is used for umem.
-> For kmem, we add hns_roce_find_buf_best_pgsz() to do a similar job.
 
-Thanks, let's give a chance to Jason to provide his feedback. I have a
-strong feeling that this code duplicates something in the kernel.
 
-Thanks
+On 12/26/23 10:35 AM, Zhu Yanjun wrote:
+> 在 2023/12/26 6:09, kernel test robot 写道:
+>> Hi Cheng,
+>>
+>> kernel test robot noticed the following build warnings:
+>>
+>> [auto build test WARNING on rdma/for-next]
+>> [also build test WARNING on linus/master v6.7-rc7 next-20231222]
+>> [If your patch is applied to the wrong git tree, kindly drop us a note.
+>> And when submitting patch, we suggest to use '--base' as documented in
+>> https://git-scm.com/docs/git-format-patch#_base_tree_information]
+>>
+>> url:    https://github.com/intel-lab-lkp/linux/commits/Cheng-Xu/RDMA-erdma-Introduce-dma-pool-for-hardware-responses-of-CMDQ-requests/20231225-154653
+>> base:   https://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git for-next
+>> patch link:    https://lore.kernel.org/r/20231225032117.7493-3-chengyou%40linux.alibaba.com
+>> patch subject: [PATCH for-next v2 2/2] RDMA/erdma: Add hardware statistics support
+>> config: s390-allyesconfig (https://download.01.org/0day-ci/archive/20231226/202312260550.9DPkrw52-lkp@intel.com/config)
+>> compiler: s390-linux-gcc (GCC) 13.2.0
+>> reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231226/202312260550.9DPkrw52-lkp@intel.com/reproduce)
+>>
+>> If you fix the issue in a separate patch/commit (i.e. not just a new version of
+>> the same patch/commit), kindly add following tags
+>> | Reported-by: kernel test robot <lkp@intel.com>
+>> | Closes: https://lore.kernel.org/oe-kbuild-all/202312260550.9DPkrw52-lkp@intel.com/
+>>
+>> All warnings (new ones prefixed by >>):
+>>
+>>>> drivers/infiniband/hw/erdma/erdma_verbs.c:1750:5: warning: no previous prototype for 'erdma_query_hw_stats' [-Wmissing-prototypes]
+>>      1750 | int erdma_query_hw_stats(struct erdma_dev *dev, struct rdma_hw_stats *stats)
+>>           |     ^~~~~~~~~~~~~~~~~~~~
+>>
+> 
+> Prepending "static" can fix this problem.
+> 
 
-> 
-> +static int get_best_page_shift(struct hns_roce_dev *hr_dev,
-> +			       struct hns_roce_mtr *mtr,
-> +			       struct hns_roce_buf_attr *buf_attr)
-> +{
-> +	unsigned int page_sz;
-> +
-> +	if (!buf_attr->adaptive || buf_attr->type != MTR_PBL)
-> +		return 0;
-> +
-> +	if (mtr->umem)
-> +		page_sz = ib_umem_find_best_pgsz(mtr->umem,
-> +						 hr_dev->caps.page_size_cap,
-> +						 buf_attr->iova);
-> +	else
-> +		page_sz = hns_roce_find_buf_best_pgsz(hr_dev, mtr->kmem);
-> +
-> +	if (!page_sz)
-> +		return -EINVAL;
-> +
-> +	buf_attr->page_shift = order_base_2(page_sz);
-> +	return 0;
-> +}
-> 
-> Thanks,
-> Junxian
+You are right, thanks for your suggestion.
+
+Cheng Xu
 
