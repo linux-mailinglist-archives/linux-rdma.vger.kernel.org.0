@@ -1,253 +1,145 @@
-Return-Path: <linux-rdma+bounces-504-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-506-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 43F5C81FD61
-	for <lists+linux-rdma@lfdr.de>; Fri, 29 Dec 2023 07:57:00 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9798E8200C2
+	for <lists+linux-rdma@lfdr.de>; Fri, 29 Dec 2023 18:21:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EED2128255B
-	for <lists+linux-rdma@lfdr.de>; Fri, 29 Dec 2023 06:56:58 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0861F1F22260
+	for <lists+linux-rdma@lfdr.de>; Fri, 29 Dec 2023 17:21:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E893F7486;
-	Fri, 29 Dec 2023 06:56:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 09FA812B7C;
+	Fri, 29 Dec 2023 17:21:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=networkplumber-org.20230601.gappssmtp.com header.i=@networkplumber-org.20230601.gappssmtp.com header.b="oF9sd+cO"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pl1-f178.google.com (mail-pl1-f178.google.com [209.85.214.178])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C573F8BEB;
-	Fri, 29 Dec 2023 06:56:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=hisilicon.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=hisilicon.com
-Received: from mail.maildlp.com (unknown [172.19.88.105])
-	by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4T1bkp6W2BzZfsj;
-	Fri, 29 Dec 2023 14:56:18 +0800 (CST)
-Received: from kwepemi500006.china.huawei.com (unknown [7.221.188.68])
-	by mail.maildlp.com (Postfix) with ESMTPS id 0C0F21402DE;
-	Fri, 29 Dec 2023 14:56:30 +0800 (CST)
-Received: from localhost.localdomain (10.67.165.2) by
- kwepemi500006.china.huawei.com (7.221.188.68) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Fri, 29 Dec 2023 14:56:29 +0800
-From: Junxian Huang <huangjunxian6@hisilicon.com>
-To: <jgg@ziepe.ca>, <leon@kernel.org>, <dsahern@gmail.com>,
-	<stephen@networkplumber.org>
-CC: <netdev@vger.kernel.org>, <linux-rdma@vger.kernel.org>,
-	<linuxarm@huawei.com>, <linux-kernel@vger.kernel.org>,
-	<huangjunxian6@hisilicon.com>
-Subject: [PATCH iproute2-rc 2/2] rdma: Fix the error of accessing string variable outside the lifecycle
-Date: Fri, 29 Dec 2023 14:52:41 +0800
-Message-ID: <20231229065241.554726-3-huangjunxian6@hisilicon.com>
-X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20231229065241.554726-1-huangjunxian6@hisilicon.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 37C9812B6B
+	for <linux-rdma@vger.kernel.org>; Fri, 29 Dec 2023 17:21:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=networkplumber.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=networkplumber.org
+Received: by mail-pl1-f178.google.com with SMTP id d9443c01a7336-1d426ad4433so24587465ad.0
+        for <linux-rdma@vger.kernel.org>; Fri, 29 Dec 2023 09:21:31 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=networkplumber-org.20230601.gappssmtp.com; s=20230601; t=1703870491; x=1704475291; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:subject:cc:to:from:date:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=xKoiaN5Ptx5nvAEn7znQLv6cCCZe9EwH3qBzMCtP9vs=;
+        b=oF9sd+cOWhWgo/1AyNvSFN0IstkRRWK6CfG3tx6IDMYboN1/FtisJfSvjg5xc7yIAl
+         UKge4w9wPr6wU4noa0KTC00O2UebsFqyN8TbtcVPlpCYevlH1N0c2cW1QKinN8QSt+X1
+         t9CeD+2R2noED0oQ8/dQGb/otV3ure9+G5mRqK0/DMlhC6tk7rQoYKLlj83FhdryKhHG
+         MynJ7WqZEbWC8UiDV91urQjJkvJvQPikMDlkd/Iq5rMz2/wZKc66wfDSNRbiEhg+9irO
+         lF9kwzlNPKMTSoc9exRozWyS4bOc43A/WUaWt4E2wXLf3aOTGb6YAkRE8ONRM83X1+Dp
+         6d6Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1703870491; x=1704475291;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=xKoiaN5Ptx5nvAEn7znQLv6cCCZe9EwH3qBzMCtP9vs=;
+        b=wubyLTp7O3D+oenCm/K4Gd/Eeft1yFdjxqORtp700L24Jd1d6UMZVw3qXKzP6iel8O
+         2Qk6NDgw4fOszcgvcGmLIbaB37lovCWspczpIuVDn/YmzjE59M2NH8ltrROjKyuneqRa
+         IRHD56mnjfBrtgROP6VE5jrK+1WJ9eNwvmMkg/iRTjcOX3bHb5DynXK546yMoaMi+e3r
+         4WGdcbGH4vxDI6n6hp2J3MopCuUrPhBQeGMmaWzeNQZoCe0XU7BtXXg6bk4+4I/b6qDy
+         fab9SREyT6qtCRS/2IKDk2EMw8M+zzQR/rp/v3NhksfNYn7N2vB7c8VUcvQeS/oy5a3m
+         IiDQ==
+X-Gm-Message-State: AOJu0YwkGOVFFFkospNdXih5JaiiO2OkEV3rWbViS2uqzwuqMsyRdkT8
+	M3wf/TdfVrm7NAFChE3FffDDhIJUBRhOTA==
+X-Google-Smtp-Source: AGHT+IFuPWC15y3Fys9+ve8/S52v3w4SMiq4MkFREGDbWNkns27R/AxG8CAHo6O41LZvW9O9A3IlZg==
+X-Received: by 2002:a17:903:2c9:b0:1d4:61da:1384 with SMTP id s9-20020a17090302c900b001d461da1384mr5475666plk.106.1703870491534;
+        Fri, 29 Dec 2023 09:21:31 -0800 (PST)
+Received: from hermes.local (204-195-123-141.wavecable.com. [204.195.123.141])
+        by smtp.gmail.com with ESMTPSA id j17-20020a170902c3d100b001d400970b6csm15877720plj.110.2023.12.29.09.21.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 29 Dec 2023 09:21:31 -0800 (PST)
+Date: Fri, 29 Dec 2023 09:21:29 -0800
+From: Stephen Hemminger <stephen@networkplumber.org>
+To: Junxian Huang <huangjunxian6@hisilicon.com>
+Cc: <jgg@ziepe.ca>, <leon@kernel.org>, <dsahern@gmail.com>,
+ <netdev@vger.kernel.org>, <linux-rdma@vger.kernel.org>,
+ <linuxarm@huawei.com>, <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH iproute2-rc 1/2] rdma: Fix core dump when pretty is used
+Message-ID: <20231229092129.25a526c4@hermes.local>
+In-Reply-To: <20231229065241.554726-2-huangjunxian6@hisilicon.com>
 References: <20231229065241.554726-1-huangjunxian6@hisilicon.com>
+	<20231229065241.554726-2-huangjunxian6@hisilicon.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
- kwepemi500006.china.huawei.com (7.221.188.68)
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-From: wenglianfa <wenglianfa@huawei.com>
+On Fri, 29 Dec 2023 14:52:40 +0800
+Junxian Huang <huangjunxian6@hisilicon.com> wrote:
 
-All these SPRINT_BUF(b) definitions are inside the 'if' block, but
-accessed outside the 'if' block through the pointers 'comm'. This
-leads to empty 'comm' attribute when querying resource information.
-So move the definitions to the beginning of the functions to extend
-their life cycle.
+> From: Chengchang Tang <tangchengchang@huawei.com>
+> 
+> There will be a core dump when pretty is used as the JSON object
+> hasn't been opened and closed properly.
+> 
+> Before:
+> $ rdma res show qp -jp -dd
+> [ {
+>     "ifindex": 1,
+>     "ifname": "hns_1",
+>     "port": 1,
+>     "lqpn": 1,
+>     "type": "GSI",
+>     "state": "RTS",
+>     "sq-psn": 0,
+>     "comm": "ib_core"
+> },
+> "drv_sq_wqe_cnt": 128,
+> "drv_sq_max_gs": 2,
+> "drv_rq_wqe_cnt": 512,
+> "drv_rq_max_gs": 1,
+> rdma: json_writer.c:130: jsonw_end: Assertion `self->depth > 0' failed.
+> Aborted (core dumped)
+> 
+> After:
+> $ rdma res show qp -jp -dd
+> [ {
+>         "ifindex": 2,
+>         "ifname": "hns_2",
+>         "port": 1,
+>         "lqpn": 1,
+>         "type": "GSI",
+>         "state": "RTS",
+>         "sq-psn": 0,
+>         "comm": "ib_core",{
+>             "drv_sq_wqe_cnt": 128,
+>             "drv_sq_max_gs": 2,
+>             "drv_rq_wqe_cnt": 512,
+>             "drv_rq_max_gs": 1,
+>             "drv_ext_sge_sge_cnt": 256
+>         }
+>     } ]
+> 
+> Fixes: 331152752a97 ("rdma: print driver resource attributes")
+> Signed-off-by: Chengchang Tang <tangchengchang@huawei.com>
+> Signed-off-by: Junxian Huang <huangjunxian6@hisilicon.com>
 
-Before:
-$ rdma res show srq
-dev hns_0 srqn 0 type BASIC lqpn 18 pdn 5 pid 7775 comm
+This code in rdma seems to be miking json and newline functionality
+which creates bug traps.
 
-After:
-$ rdma res show srq
-dev hns_0 srqn 0 type BASIC lqpn 18 pdn 5 pid 7775 comm ib_send_bw
+Also the json should have same effective output in pretty and non-pretty mode.
+It looks like since pretty mode add extra object layer, the nesting of {} would be
+different.
 
-Fixes: 1808f002dfdd ("lib/fs: fix memory leak in get_task_name()")
-Signed-off-by: wenglianfa <wenglianfa@huawei.com>
-Signed-off-by: Junxian Huang <huangjunxian6@hisilicon.com>
----
- rdma/res-cmid.c | 3 +--
- rdma/res-cq.c   | 3 +--
- rdma/res-ctx.c  | 3 +--
- rdma/res-mr.c   | 3 +--
- rdma/res-pd.c   | 3 +--
- rdma/res-qp.c   | 3 +--
- rdma/res-srq.c  | 3 +--
- rdma/stat.c     | 3 +--
- 8 files changed, 8 insertions(+), 16 deletions(-)
+The conversion to json_print() was done but it isn't using same conventions
+as ip or tc.
 
-diff --git a/rdma/res-cmid.c b/rdma/res-cmid.c
-index 7371c3a6..595af848 100644
---- a/rdma/res-cmid.c
-+++ b/rdma/res-cmid.c
-@@ -102,6 +102,7 @@ static int res_cm_id_line(struct rd *rd, const char *name, int idx,
- 	uint32_t lqpn = 0, ps;
- 	uint32_t cm_idn = 0;
- 	char *comm = NULL;
-+	SPRINT_BUF(b);
- 
- 	if (!nla_line[RDMA_NLDEV_ATTR_RES_STATE] ||
- 	    !nla_line[RDMA_NLDEV_ATTR_RES_PS])
-@@ -159,8 +160,6 @@ static int res_cm_id_line(struct rd *rd, const char *name, int idx,
- 		goto out;
- 
- 	if (nla_line[RDMA_NLDEV_ATTR_RES_PID]) {
--		SPRINT_BUF(b);
--
- 		pid = mnl_attr_get_u32(nla_line[RDMA_NLDEV_ATTR_RES_PID]);
- 		if (!get_task_name(pid, b, sizeof(b)))
- 			comm = b;
-diff --git a/rdma/res-cq.c b/rdma/res-cq.c
-index 2cfa4994..80994a03 100644
---- a/rdma/res-cq.c
-+++ b/rdma/res-cq.c
-@@ -63,6 +63,7 @@ static int res_cq_line(struct rd *rd, const char *name, int idx,
- 	uint32_t cqn = 0;
- 	uint64_t users;
- 	uint32_t cqe;
-+	SPRINT_BUF(b);
- 
- 	if (!nla_line[RDMA_NLDEV_ATTR_RES_CQE] ||
- 	    !nla_line[RDMA_NLDEV_ATTR_RES_USECNT])
-@@ -84,8 +85,6 @@ static int res_cq_line(struct rd *rd, const char *name, int idx,
- 		goto out;
- 
- 	if (nla_line[RDMA_NLDEV_ATTR_RES_PID]) {
--		SPRINT_BUF(b);
--
- 		pid = mnl_attr_get_u32(nla_line[RDMA_NLDEV_ATTR_RES_PID]);
- 		if (!get_task_name(pid, b, sizeof(b)))
- 			comm = b;
-diff --git a/rdma/res-ctx.c b/rdma/res-ctx.c
-index 500186d9..99736ea0 100644
---- a/rdma/res-ctx.c
-+++ b/rdma/res-ctx.c
-@@ -13,13 +13,12 @@ static int res_ctx_line(struct rd *rd, const char *name, int idx,
- 	char *comm = NULL;
- 	uint32_t ctxn = 0;
- 	uint32_t pid = 0;
-+	SPRINT_BUF(b);
- 
- 	if (!nla_line[RDMA_NLDEV_ATTR_RES_CTXN])
- 		return MNL_CB_ERROR;
- 
- 	if (nla_line[RDMA_NLDEV_ATTR_RES_PID]) {
--		SPRINT_BUF(b);
--
- 		pid = mnl_attr_get_u32(nla_line[RDMA_NLDEV_ATTR_RES_PID]);
- 		if (!get_task_name(pid, b, sizeof(b)))
- 			comm = b;
-diff --git a/rdma/res-mr.c b/rdma/res-mr.c
-index fb48d5df..e6c81d11 100644
---- a/rdma/res-mr.c
-+++ b/rdma/res-mr.c
-@@ -30,6 +30,7 @@ static int res_mr_line(struct rd *rd, const char *name, int idx,
- 	uint32_t pdn = 0;
- 	uint32_t mrn = 0;
- 	uint32_t pid = 0;
-+	SPRINT_BUF(b);
- 
- 	if (!nla_line[RDMA_NLDEV_ATTR_RES_MRLEN])
- 		return MNL_CB_ERROR;
-@@ -47,8 +48,6 @@ static int res_mr_line(struct rd *rd, const char *name, int idx,
- 		goto out;
- 
- 	if (nla_line[RDMA_NLDEV_ATTR_RES_PID]) {
--		SPRINT_BUF(b);
--
- 		pid = mnl_attr_get_u32(nla_line[RDMA_NLDEV_ATTR_RES_PID]);
- 		if (!get_task_name(pid, b, sizeof(b)))
- 			comm = b;
-diff --git a/rdma/res-pd.c b/rdma/res-pd.c
-index 66f91f42..0dbb310a 100644
---- a/rdma/res-pd.c
-+++ b/rdma/res-pd.c
-@@ -16,6 +16,7 @@ static int res_pd_line(struct rd *rd, const char *name, int idx,
- 	uint32_t pid = 0;
- 	uint32_t pdn = 0;
- 	uint64_t users;
-+	SPRINT_BUF(b);
- 
- 	if (!nla_line[RDMA_NLDEV_ATTR_RES_USECNT])
- 		return MNL_CB_ERROR;
-@@ -34,8 +35,6 @@ static int res_pd_line(struct rd *rd, const char *name, int idx,
- 			nla_line[RDMA_NLDEV_ATTR_RES_UNSAFE_GLOBAL_RKEY]);
- 
- 	if (nla_line[RDMA_NLDEV_ATTR_RES_PID]) {
--		SPRINT_BUF(b);
--
- 		pid = mnl_attr_get_u32(nla_line[RDMA_NLDEV_ATTR_RES_PID]);
- 		if (!get_task_name(pid, b, sizeof(b)))
- 			comm = b;
-diff --git a/rdma/res-qp.c b/rdma/res-qp.c
-index c180a97e..cd2f4aa2 100644
---- a/rdma/res-qp.c
-+++ b/rdma/res-qp.c
-@@ -86,6 +86,7 @@ static int res_qp_line(struct rd *rd, const char *name, int idx,
- 	uint32_t port = 0, pid = 0;
- 	uint32_t pdn = 0;
- 	char *comm = NULL;
-+	SPRINT_BUF(b);
- 
- 	if (!nla_line[RDMA_NLDEV_ATTR_RES_LQPN] ||
- 	    !nla_line[RDMA_NLDEV_ATTR_RES_SQ_PSN] ||
-@@ -146,8 +147,6 @@ static int res_qp_line(struct rd *rd, const char *name, int idx,
- 		goto out;
- 
- 	if (nla_line[RDMA_NLDEV_ATTR_RES_PID]) {
--		SPRINT_BUF(b);
--
- 		pid = mnl_attr_get_u32(nla_line[RDMA_NLDEV_ATTR_RES_PID]);
- 		if (!get_task_name(pid, b, sizeof(b)))
- 			comm = b;
-diff --git a/rdma/res-srq.c b/rdma/res-srq.c
-index cf9209d7..758bb193 100644
---- a/rdma/res-srq.c
-+++ b/rdma/res-srq.c
-@@ -183,13 +183,12 @@ static int res_srq_line(struct rd *rd, const char *name, int idx,
- 	char qp_str[MAX_QP_STR_LEN] = {};
- 	char *comm = NULL;
- 	uint8_t type = 0;
-+	SPRINT_BUF(b);
- 
- 	if (!nla_line[RDMA_NLDEV_ATTR_RES_SRQN])
- 		return MNL_CB_ERROR;
- 
- 	if (nla_line[RDMA_NLDEV_ATTR_RES_PID]) {
--		SPRINT_BUF(b);
--
- 		pid = mnl_attr_get_u32(nla_line[RDMA_NLDEV_ATTR_RES_PID]);
- 		if (!get_task_name(pid, b, sizeof(b)))
- 			comm = b;
-diff --git a/rdma/stat.c b/rdma/stat.c
-index 3df2c98f..c7dde680 100644
---- a/rdma/stat.c
-+++ b/rdma/stat.c
-@@ -223,6 +223,7 @@ static int res_counter_line(struct rd *rd, const char *name, int index,
- 	struct nlattr *hwc_table, *qp_table;
- 	struct nlattr *nla_entry;
- 	const char *comm = NULL;
-+	SPRINT_BUF(b);
- 	bool isfirst;
- 	int err;
- 
-@@ -248,8 +249,6 @@ static int res_counter_line(struct rd *rd, const char *name, int index,
- 		return MNL_CB_OK;
- 
- 	if (nla_line[RDMA_NLDEV_ATTR_RES_PID]) {
--		SPRINT_BUF(b);
--
- 		pid = mnl_attr_get_u32(nla_line[RDMA_NLDEV_ATTR_RES_PID]);
- 		if (!get_task_name(pid, b, sizeof(b)))
- 			comm = b;
--- 
-2.30.0
+The correct fix needs to go deeper and hit other things.
+
+
+
 
 
