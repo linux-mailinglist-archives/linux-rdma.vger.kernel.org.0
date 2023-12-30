@@ -1,75 +1,92 @@
-Return-Path: <linux-rdma+bounces-508-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-509-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 252848206DD
-	for <lists+linux-rdma@lfdr.de>; Sat, 30 Dec 2023 16:23:38 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id EB7318206EB
+	for <lists+linux-rdma@lfdr.de>; Sat, 30 Dec 2023 16:44:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 89D27281BFD
-	for <lists+linux-rdma@lfdr.de>; Sat, 30 Dec 2023 15:23:36 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 287671C20EB7
+	for <lists+linux-rdma@lfdr.de>; Sat, 30 Dec 2023 15:44:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 84BD38F5C;
-	Sat, 30 Dec 2023 15:23:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C1396945A;
+	Sat, 30 Dec 2023 15:44:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="OOBp67Vb"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="IdlySp1m"
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 46625BA27
-	for <linux-rdma@vger.kernel.org>; Sat, 30 Dec 2023 15:23:32 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 20378C433C8;
-	Sat, 30 Dec 2023 15:23:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 87BAB8F65;
+	Sat, 30 Dec 2023 15:44:26 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D4F18C433C7;
+	Sat, 30 Dec 2023 15:44:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1703949812;
-	bh=beOCRPNesQBX42ODsZ9cyI1HX5cjLABu/HHOFPM9Zzc=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-	b=OOBp67Vb/Vtr7OO/VDF0MdaT3iJJrJmIhV2umI+zPlQsBcOBcDIxeA1bMHniaBYIa
-	 ETp2Y6AIoqilen4FXLrx4gd5SpSW94zAc/nUvvchua9mz9BoVQVHyBFgIg9Uz13QWw
-	 gE0+I6Hf2NT9z84NoOA+RZXKu16N60NQh/H776ObfK5e9djL+xASDQ0EuUkBWgrl7H
-	 xyv3N72cABN3/EWY0/lT7ia06SzWxZw0rDOgwoefcYUP8xQ4Qp5xp45xEAkZXNhLpX
-	 U7xi7O2cm20tEdI+0VoUbZtly5j5gE7F9uReKk9zM4ogGLFbnpvNGTXKHN8Twrn7zj
-	 0jEveP9OfjrkA==
+	s=k20201202; t=1703951066;
+	bh=rIx5TWsTspDkYObnDFFupr7if4KBR6HUkks9+m80IkQ=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=IdlySp1mmmuB1ozWiZ5zXIVcjQhC2vI9Nkrv7uL2LgzrFEGQs+sfsHAqUspX33DmE
+	 A38qTbwB7eSMlaY4buhlSh8SYnGQ3+0Ak02ebfjnp5EDQdoovTgT9kdr/7GgOHXIw/
+	 oALvm9dgTqvlhFADgkqGekzKUqSMYq7quqB4gR7KW6N01US7gJvd0X/snD9syo1kS2
+	 rRWbAkBnT5wNeks3Xx7XJzn9h63wR26hz55Myz7bxlKIsT7ow1k/TZx1PjnkTp04CX
+	 PCEvFVqPQR/fhW2FIgctDGfx3cOZg2W8vlqtqkYIdn3U4bzr79LoDRM14VA7CnqYzo
+	 Wyynm7YJJqhgA==
+Date: Sat, 30 Dec 2023 17:44:22 +0200
 From: Leon Romanovsky <leon@kernel.org>
-To: jgg@ziepe.ca, Cheng Xu <chengyou@linux.alibaba.com>
-Cc: linux-rdma@vger.kernel.org, KaiShen@linux.alibaba.com
-In-Reply-To: <20231227084800.99091-1-chengyou@linux.alibaba.com>
-References: <20231227084800.99091-1-chengyou@linux.alibaba.com>
-Subject:
- Re: [PATCH for-next v3 0/2] RDMA/erdma: Introduce hardware statistics support
-Message-Id: <170394980851.347343.2110504876266809028.b4-ty@kernel.org>
-Date: Sat, 30 Dec 2023 17:23:28 +0200
+To: Lin Ma <linma@zju.edu.cn>
+Cc: jgg@ziepe.ca, gustavoars@kernel.org, bvanassche@acm.org,
+	markzhang@nvidia.com, linux-rdma@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v1] RDMA/sa_query: use validate not parser in
+ ib_nl_is_good_resolve_resp
+Message-ID: <20231230154422.GB6849@unreal>
+References: <20231230051956.82499-1-linma@zju.edu.cn>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Mailer: b4 0.12-dev-a055d
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231230051956.82499-1-linma@zju.edu.cn>
 
+On Sat, Dec 30, 2023 at 01:19:56PM +0800, Lin Ma wrote:
+> The attributes array `tb` in ib_nl_is_good_resolve_resp is never used
+> after the parsing. Therefore use nla_validate_deprecated function here
+> for improvement.
 
-On Wed, 27 Dec 2023 16:47:58 +0800, Cheng Xu wrote:
-> This small patchset introduces the support of hardware statistics.
-> Statistics counters can not be put in CQEs due to limited CQE size. To
-> address this, we provide an extra dma buffer to hardware when posting
-> statistics query request, and then hardware writes back the response to
-> this dma buffer. Based on this, we add the hardware statistics support
-> of erdma.
+What did this change improve?
+
 > 
-> [...]
-
-Applied, thanks!
-
-[1/2] RDMA/erdma: Introduce dma pool for hardware responses of CMDQ requests
-      https://git.kernel.org/rdma/rdma/c/68cf9d82f75c07
-[2/2] RDMA/erdma: Add hardware statistics support
-      https://git.kernel.org/rdma/rdma/c/63a43a675cb90e
-
-Best regards,
--- 
-Leon Romanovsky <leon@kernel.org>
+> Signed-off-by: Lin Ma <linma@zju.edu.cn>
+> ---
+>  drivers/infiniband/core/sa_query.c | 5 ++---
+>  1 file changed, 2 insertions(+), 3 deletions(-)
+> 
+> diff --git a/drivers/infiniband/core/sa_query.c b/drivers/infiniband/core/sa_query.c
+> index 8175dde60b0a..c7407a53fcda 100644
+> --- a/drivers/infiniband/core/sa_query.c
+> +++ b/drivers/infiniband/core/sa_query.c
+> @@ -1047,14 +1047,13 @@ int ib_nl_handle_set_timeout(struct sk_buff *skb,
+>  
+>  static inline int ib_nl_is_good_resolve_resp(const struct nlmsghdr *nlh)
+>  {
+> -	struct nlattr *tb[LS_NLA_TYPE_MAX];
+>  	int ret;
+>  
+>  	if (nlh->nlmsg_flags & RDMA_NL_LS_F_ERR)
+>  		return 0;
+>  
+> -	ret = nla_parse_deprecated(tb, LS_NLA_TYPE_MAX - 1, nlmsg_data(nlh),
+> -				   nlmsg_len(nlh), ib_nl_policy, NULL);
+> +	ret = nla_validate_deprecated(nlmsg_data(nlh), nlmsg_len(nlh),
+> +				      LS_NLA_TYPE_MAX - 1, ib_nl_policy, NULL);
+>  	if (ret)
+>  		return 0;
+>  
+> -- 
+> 2.17.1
+> 
 
