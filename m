@@ -1,93 +1,75 @@
-Return-Path: <linux-rdma+bounces-507-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-508-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 85CEC8203AD
-	for <lists+linux-rdma@lfdr.de>; Sat, 30 Dec 2023 06:20:29 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 252848206DD
+	for <lists+linux-rdma@lfdr.de>; Sat, 30 Dec 2023 16:23:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2D8F31F22195
-	for <lists+linux-rdma@lfdr.de>; Sat, 30 Dec 2023 05:20:29 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 89D27281BFD
+	for <lists+linux-rdma@lfdr.de>; Sat, 30 Dec 2023 15:23:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 588B115BF;
-	Sat, 30 Dec 2023 05:20:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 84BD38F5C;
+	Sat, 30 Dec 2023 15:23:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="OOBp67Vb"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from zg8tmtyylji0my4xnjqumte4.icoremail.net (zg8tmtyylji0my4xnjqumte4.icoremail.net [162.243.164.118])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 271143D6C;
-	Sat, 30 Dec 2023 05:20:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=zju.edu.cn
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=zju.edu.cn
-Received: from localhost.localdomain (unknown [39.174.92.167])
-	by mail-app3 (Coremail) with SMTP id cC_KCgBXeNx+qI9l6wOiAQ--.22293S4;
-	Sat, 30 Dec 2023 13:20:00 +0800 (CST)
-From: Lin Ma <linma@zju.edu.cn>
-To: jgg@ziepe.ca,
-	leon@kernel.org,
-	gustavoars@kernel.org,
-	bvanassche@acm.org,
-	markzhang@nvidia.com,
-	linma@zju.edu.cn,
-	linux-rdma@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH v1] RDMA/sa_query: use validate not parser in ib_nl_is_good_resolve_resp
-Date: Sat, 30 Dec 2023 13:19:56 +0800
-Message-Id: <20231230051956.82499-1-linma@zju.edu.cn>
-X-Mailer: git-send-email 2.17.1
-X-CM-TRANSID:cC_KCgBXeNx+qI9l6wOiAQ--.22293S4
-X-Coremail-Antispam: 1UD129KBjvdXoW7Gry5KFWxAw45CrWUAr43ZFb_yoWDKFcEkr
-	4vgrn2qr18CFnIkrnxtr4fuFy2gw4Yqw1fuas2qa43K34DXr9xWa4xXFZxCayUWws2kF13
-	Crn5Cw48GF4IkjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-	9fnUUIcSsGvfJTRUUUbwkFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k26cxKx2IYs7xG
-	6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8w
-	A2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Gr1j
-	6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x0267AKxVW0oV
-	Cq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0
-	I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r1j6r
-	4UM4x0Y48IcxkI7VAKI48JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwCF04k20xvY0x0EwIxG
-	rwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4
-	vE14v26r106r1rMI8E67AF67kF1VAFwI0_Jw0_GFylIxkGc2Ij64vIr41lIxAIcVC0I7IY
-	x2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Jr0_Gr1lIxAIcVCF04k26c
-	xKx2IYs7xG6r1j6r1xMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAF
-	wI0_Jr0_GrUvcSsGvfC2KfnxnUUI43ZEXa7VUbXdbUUUUUU==
-X-CM-SenderInfo: qtrwiiyqvtljo62m3hxhgxhubq/
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 46625BA27
+	for <linux-rdma@vger.kernel.org>; Sat, 30 Dec 2023 15:23:32 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 20378C433C8;
+	Sat, 30 Dec 2023 15:23:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1703949812;
+	bh=beOCRPNesQBX42ODsZ9cyI1HX5cjLABu/HHOFPM9Zzc=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+	b=OOBp67Vb/Vtr7OO/VDF0MdaT3iJJrJmIhV2umI+zPlQsBcOBcDIxeA1bMHniaBYIa
+	 ETp2Y6AIoqilen4FXLrx4gd5SpSW94zAc/nUvvchua9mz9BoVQVHyBFgIg9Uz13QWw
+	 gE0+I6Hf2NT9z84NoOA+RZXKu16N60NQh/H776ObfK5e9djL+xASDQ0EuUkBWgrl7H
+	 xyv3N72cABN3/EWY0/lT7ia06SzWxZw0rDOgwoefcYUP8xQ4Qp5xp45xEAkZXNhLpX
+	 U7xi7O2cm20tEdI+0VoUbZtly5j5gE7F9uReKk9zM4ogGLFbnpvNGTXKHN8Twrn7zj
+	 0jEveP9OfjrkA==
+From: Leon Romanovsky <leon@kernel.org>
+To: jgg@ziepe.ca, Cheng Xu <chengyou@linux.alibaba.com>
+Cc: linux-rdma@vger.kernel.org, KaiShen@linux.alibaba.com
+In-Reply-To: <20231227084800.99091-1-chengyou@linux.alibaba.com>
+References: <20231227084800.99091-1-chengyou@linux.alibaba.com>
+Subject:
+ Re: [PATCH for-next v3 0/2] RDMA/erdma: Introduce hardware statistics support
+Message-Id: <170394980851.347343.2110504876266809028.b4-ty@kernel.org>
+Date: Sat, 30 Dec 2023 17:23:28 +0200
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Mailer: b4 0.12-dev-a055d
 
-The attributes array `tb` in ib_nl_is_good_resolve_resp is never used
-after the parsing. Therefore use nla_validate_deprecated function here
-for improvement.
 
-Signed-off-by: Lin Ma <linma@zju.edu.cn>
----
- drivers/infiniband/core/sa_query.c | 5 ++---
- 1 file changed, 2 insertions(+), 3 deletions(-)
+On Wed, 27 Dec 2023 16:47:58 +0800, Cheng Xu wrote:
+> This small patchset introduces the support of hardware statistics.
+> Statistics counters can not be put in CQEs due to limited CQE size. To
+> address this, we provide an extra dma buffer to hardware when posting
+> statistics query request, and then hardware writes back the response to
+> this dma buffer. Based on this, we add the hardware statistics support
+> of erdma.
+> 
+> [...]
 
-diff --git a/drivers/infiniband/core/sa_query.c b/drivers/infiniband/core/sa_query.c
-index 8175dde60b0a..c7407a53fcda 100644
---- a/drivers/infiniband/core/sa_query.c
-+++ b/drivers/infiniband/core/sa_query.c
-@@ -1047,14 +1047,13 @@ int ib_nl_handle_set_timeout(struct sk_buff *skb,
- 
- static inline int ib_nl_is_good_resolve_resp(const struct nlmsghdr *nlh)
- {
--	struct nlattr *tb[LS_NLA_TYPE_MAX];
- 	int ret;
- 
- 	if (nlh->nlmsg_flags & RDMA_NL_LS_F_ERR)
- 		return 0;
- 
--	ret = nla_parse_deprecated(tb, LS_NLA_TYPE_MAX - 1, nlmsg_data(nlh),
--				   nlmsg_len(nlh), ib_nl_policy, NULL);
-+	ret = nla_validate_deprecated(nlmsg_data(nlh), nlmsg_len(nlh),
-+				      LS_NLA_TYPE_MAX - 1, ib_nl_policy, NULL);
- 	if (ret)
- 		return 0;
- 
+Applied, thanks!
+
+[1/2] RDMA/erdma: Introduce dma pool for hardware responses of CMDQ requests
+      https://git.kernel.org/rdma/rdma/c/68cf9d82f75c07
+[2/2] RDMA/erdma: Add hardware statistics support
+      https://git.kernel.org/rdma/rdma/c/63a43a675cb90e
+
+Best regards,
 -- 
-2.17.1
-
+Leon Romanovsky <leon@kernel.org>
 
