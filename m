@@ -1,104 +1,173 @@
-Return-Path: <linux-rdma+bounces-523-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-524-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 84A40822200
-	for <lists+linux-rdma@lfdr.de>; Tue,  2 Jan 2024 20:30:09 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id EDBB08225B1
+	for <lists+linux-rdma@lfdr.de>; Wed,  3 Jan 2024 00:48:01 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 392651C229AA
-	for <lists+linux-rdma@lfdr.de>; Tue,  2 Jan 2024 19:30:08 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5A2331F236C7
+	for <lists+linux-rdma@lfdr.de>; Tue,  2 Jan 2024 23:48:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7528F15AFE;
-	Tue,  2 Jan 2024 19:30:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6F0E717985;
+	Tue,  2 Jan 2024 23:47:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="eSQFzGzb"
+	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="QZzeqDFW"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-il1-f178.google.com (mail-il1-f178.google.com [209.85.166.178])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from NAM10-DM6-obe.outbound.protection.outlook.com (mail-dm6nam10on2088.outbound.protection.outlook.com [40.107.93.88])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 10D2915AF6;
-	Tue,  2 Jan 2024 19:30:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-il1-f178.google.com with SMTP id e9e14a558f8ab-35fd902c6b5so82044345ab.3;
-        Tue, 02 Jan 2024 11:30:00 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1704223800; x=1704828600; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=3dLzJTPxirZd6kW8WXj95cv8++GN7i41+6PgBQongBc=;
-        b=eSQFzGzbZg6tROrl+Qcqzu9qjGwH5tA4deBoyWW6GmyJEyQBR34tW2m2Snli5Fyiw1
-         th4IR22f1xitbeiNQ9oCXhOmqva+ykEfmp2yR0Fq+Za1tKsp4rSkH8iBZEIGyy6uM7Hs
-         1BsKoN8ZRGqarr3PzI68qdnpKG0SZ4/D6P4iB7u1HidftP8LqN9IgXSHc0f5YSUHpQmU
-         fbeCJI1mkV3cafYoY2y5zv0St+zYRfY3CmVe1caZ2NRVpNRTtixKa972iY7f2fEk7Ijv
-         zRB2HEwOeDANCiPs+CAVLRIhU0gxQVXR+wlzRkGyulZ/wyxWRdOEHFuEESOMl9BtWF6p
-         WiwQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704223800; x=1704828600;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=3dLzJTPxirZd6kW8WXj95cv8++GN7i41+6PgBQongBc=;
-        b=jfPGIRvEq2a7L8y3kSp01sTUol0ib8Kc3D3Ex6Fne8Fx79iUW7xs2fFjAp/Q1KJ7gx
-         OGiKuCpGxfv5T3Hary2FhliDkL7qyxaBmfxOo1A7HtqYH/Mxt7jn4+qdw/kOdgrjXm2P
-         PAlNKGjuuIgqp3QqtXTlnGOL4AEt7Rbqqj7+7ZPsD7XWtNxO0z5Me9OJQxorIsFj5q52
-         23gpvZSb5NhaLotoJu2QwVaL4GYeG2AksIIv9WaPw/kJYs4pLK59ktTsh7X82zHNTRH+
-         ht5H2uMKj0h6BHnWDVnSZSLLM9f+LJKV2CQkdXh8+RRXeJHWeUcK0c9EPkbt2bLRyjSi
-         4apg==
-X-Gm-Message-State: AOJu0Yz6KrRy3a9EO773vIkQMpApO8tX956a7W3S0dzAombIAip4jF+I
-	m9LKBWUEmg3rpQY9BjrE9f0=
-X-Google-Smtp-Source: AGHT+IHZfduyvxdowlAgFeALh+0JD54971ApQGhLj0NNcRFVRfJq3vCoS/FL3GlTSK7oZkhyaqnWew==
-X-Received: by 2002:a05:6e02:1521:b0:360:fe1:8abb with SMTP id i1-20020a056e02152100b003600fe18abbmr17508304ilu.119.1704223800080;
-        Tue, 02 Jan 2024 11:30:00 -0800 (PST)
-Received: from ?IPV6:2601:282:1e82:2350:5017:6182:740b:2f80? ([2601:282:1e82:2350:5017:6182:740b:2f80])
-        by smtp.googlemail.com with ESMTPSA id bf12-20020a056e02308c00b0035fec699584sm6772857ilb.13.2024.01.02.11.29.59
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 02 Jan 2024 11:29:59 -0800 (PST)
-Message-ID: <17a2c694-2c48-46dc-b028-68793a31a984@gmail.com>
-Date: Tue, 2 Jan 2024 12:29:58 -0700
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ACAB0182AA
+	for <linux-rdma@vger.kernel.org>; Tue,  2 Jan 2024 23:47:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=cqa/8RApTOgRX0HmycI2wS2X7iErtPQsOLYOJjaurQJ0fKFjMf/18NjLpNuo5L6WVDLv64o207lPtSCJeUrioWbW3oz9o8h/r0+C3+k5gqh/p5SbvHzKuwCh7qpRy68w6h4iLiPUUNz7oj1JYZ9lLZvQM+2MTVVx0R5j5fxJV2/uGHy3QCPEGoM/wxYZiku8ZBDv1/xZZ4luXhrl64540hMs1Yc/poliNwaFjYXEO91owoRSNQzK2Tw5rRvzofIqSh9mho7AJ3Upv73xR9UHH7ZLmq84gBhe5P2UpzDCwJj9eZd+EJzyYW38em39htsCsw1jr0cwN3iZa5HNBVyYiA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=14rrm7dFweCNvlzjOpLcmlJbTWgg90BnPvXeqJCdIpw=;
+ b=BCeiEzvNy8cMye4V974bWj+uXvdsIyHcPhSbj5+FGOefO88L//cWs2nlCQwOzfSV5h1JEf1u4um5YwScChsif01k0OSWcx+CI/+Bo9d6mAPMb9F0psQa/1+jB9j5HPHYNuiB/GPXr7w+jml81uSNe3CtKnvWFdd3qbH6lXnNQCI6nlhW2x5RwVQMdswxN3tSWhcjn7C9rmyQ7iRrZ213EM1Pg+OYki7iJU2zfVgNtef+yq/YNsvU7ZbB7q42Hn8MLvAhsLXHYFejBr91WtZXJd50/o0P+UFhNiCNICyKcYGEpi1oBIy+NjQLiL2pbAdRSyJdTB81TZXTysa+w5vigA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=14rrm7dFweCNvlzjOpLcmlJbTWgg90BnPvXeqJCdIpw=;
+ b=QZzeqDFWdUXeDKlPn8v/rISgsTZpeDL2e9wvENtddhJ1tiem1rGel6Bcd7+owuFndbKywsmjZpB815Hbzn4tpNOjSaD21/JPC1wYe1tTcEnlhkvT9ZByvZIXrKAlWLz6DORTcQgKEQ8RJpLy4lLgeOS8Mh9hgoxBT675WKDq03yNLBSHY9KJ+dccuLjLTOhjm8KS4AWMBkwvadqus+lofkHj3YERxJAKFCb7Flxg6Z7yfthokELx1Yqvv69rwCYcMOVLKTcYBWoxTqTvnIUDhSqddN7OP8Fgnm+60LOTzW1ufrPczokrce0C2smhmGZk8brZAcJkaHtAP0TqRcPXtQ==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nvidia.com;
+Received: from LV2PR12MB5869.namprd12.prod.outlook.com (2603:10b6:408:176::16)
+ by MN0PR12MB6341.namprd12.prod.outlook.com (2603:10b6:208:3c2::13) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7135.24; Tue, 2 Jan
+ 2024 23:47:15 +0000
+Received: from LV2PR12MB5869.namprd12.prod.outlook.com
+ ([fe80::60d4:c1e3:e1aa:8f93]) by LV2PR12MB5869.namprd12.prod.outlook.com
+ ([fe80::60d4:c1e3:e1aa:8f93%4]) with mapi id 15.20.7135.023; Tue, 2 Jan 2024
+ 23:47:15 +0000
+Date: Tue, 2 Jan 2024 19:47:13 -0400
+From: Jason Gunthorpe <jgg@nvidia.com>
+To: "Margolin, Michael" <mrgolin@amazon.com>
+Cc: leon@kernel.org, linux-rdma@vger.kernel.org, sleybo@amazon.com,
+	matua@amazon.com, gal.pressman@linux.dev,
+	Anas Mousa <anasmous@amazon.com>, Firas Jahjah <firasj@amazon.com>
+Subject: Re: [PATCH for-next v3] RDMA/efa: Add EFA query MR support
+Message-ID: <20240102234713.GL50406@nvidia.com>
+References: <20231211174715.7369-1-mrgolin@amazon.com>
+ <20231211175019.GK2944114@nvidia.com>
+ <c9790d7c-e904-4014-a238-343f376a08b9@amazon.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <c9790d7c-e904-4014-a238-343f376a08b9@amazon.com>
+X-ClientProxiedBy: BL1PR13CA0151.namprd13.prod.outlook.com
+ (2603:10b6:208:2bd::6) To LV2PR12MB5869.namprd12.prod.outlook.com
+ (2603:10b6:408:176::16)
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH iproute2-rc 1/2] rdma: Fix core dump when pretty is used
-Content-Language: en-US
-To: Leon Romanovsky <leon@kernel.org>,
- Stephen Hemminger <stephen@networkplumber.org>
-Cc: Chengchang Tang <tangchengchang@huawei.com>,
- Junxian Huang <huangjunxian6@hisilicon.com>, jgg@ziepe.ca,
- netdev@vger.kernel.org, linux-rdma@vger.kernel.org, linuxarm@huawei.com,
- linux-kernel@vger.kernel.org
-References: <20231229065241.554726-1-huangjunxian6@hisilicon.com>
- <20231229065241.554726-2-huangjunxian6@hisilicon.com>
- <20231229092129.25a526c4@hermes.local>
- <30d8c237-953a-8794-9baa-e21b31d4d88c@huawei.com>
- <20240102083257.GB6361@unreal>
- <29146463-6d0e-21c5-af42-217cee760b3f@huawei.com>
- <20240102122106.GI6361@unreal> <20240102082746.651ff7cf@hermes.local>
- <20240102191701.GC5160@unreal>
-From: David Ahern <dsahern@gmail.com>
-In-Reply-To: <20240102191701.GC5160@unreal>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: LV2PR12MB5869:EE_|MN0PR12MB6341:EE_
+X-MS-Office365-Filtering-Correlation-Id: b3604a84-91af-4dcf-22fa-08dc0bed25cc
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	2IvxnSCEx23Tk24IKa1dE7rNyQuYBMUsDejVFYK/IFrECSwKOFFsJqsxoPFns7DS6P08GGU5F6PYU16S03dzPqTECqiE74zAthA4+eijl1DnFEM9kvZW+NmX5CbYTSEXkUJZniaMwUZf7BXiME0OXh/ZKkHArdp/L47NdSzj6d/wG5AazlcoW3K6qW8bQm3e2zod/vJY3hk2jmA1W+SI2IlGXe4dQUTaCDpFZmo2ZJBTj3s425kHaeCoSfeXxtGJiB/ercBcopzJWWE1xpU+fvZSOQU3XSxgtJ3l4PjOovTNKsVKGjxPVkq6RF9mvis/CZgl/nlxSxJd2tLheNZP1YgM6k+j0Le1t5U2hYzYYkbY0rXRkVPnEpqMdaDr147A8moQTfMdlQqs6pGSXZ2uPZIRmLcyIIUuPw+FuqxxnF1GR7KqW2ODvzk6CjJdBEoeANGDBj+o53MUbsLcQByPbSzNYSHOC3Wx5vUVH2LofbtOo6MY0g8m1+ste+3n0w0TyCjV2bW33l2gvS1T6S9U/TVa+loNtQRp9E2buY4i9AmGRvPOXX+hyxQ3Ux68cqQ7
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:LV2PR12MB5869.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(136003)(366004)(39860400002)(376002)(346002)(396003)(230922051799003)(64100799003)(186009)(1800799012)(451199024)(83380400001)(38100700002)(6916009)(316002)(54906003)(66556008)(478600001)(66946007)(5660300002)(66476007)(2906002)(6486002)(8676002)(4326008)(8936002)(26005)(1076003)(2616005)(41300700001)(6512007)(6506007)(33656002)(86362001)(36756003);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?us-ascii?Q?ueUxlxfn33lMuAAZTgYdnEt9g5aW5SJPYGWis3LkXsWJb1g2ch8kcsZSkXgf?=
+ =?us-ascii?Q?IY3rMDLQfBNcCYzZqKUEjGI0h26MCyhIyga0spRIZIQ4J+X7joVzBzp6r+jv?=
+ =?us-ascii?Q?DnAPIwmGDt2GhNWcHVf/fVSk/qbgr5rEZl/BmmZP8kJgnqzcplL/K/1SEYWh?=
+ =?us-ascii?Q?URzU9GBvz4LR0G+4aQKSSpZi/QtLNkbzeq6phKuY01Pj9dKujHsudA1sIWfC?=
+ =?us-ascii?Q?HWJB+DbNP3sWF6xLBPOyRAZwWVYpPIxO0iHseqluzJ2vLiaWfy/qAM4nUo7J?=
+ =?us-ascii?Q?Lcvw6QwpwV4KL9AxS28Tq1q9M2hy8/iIOgzPxgc9ymRN2YGdvmo6Yw/d6hNW?=
+ =?us-ascii?Q?FwL57voFEGgGb7dKFqHDxoHpKXKME0rsr8EAYkPUl4ffdGnUSKViKL1zjeZM?=
+ =?us-ascii?Q?FTM0VzRmIDa5fiU7zFIuxCu2zr7x1sZi9IhH7VA9BfQR5QRM2hsmp7F9odZF?=
+ =?us-ascii?Q?naBgxXtm10OzTVKDNZ6n+It3AwTJC/PlgLutxgPgBkyAVIrHKGjSaq72rXpH?=
+ =?us-ascii?Q?PIX8xyagvmV7ZYLwYpMbHbyvDcLodtimg2zR1xFnWtWSYC/UGwYi2H5DT4ZS?=
+ =?us-ascii?Q?Gha8Il7t2mwNfN/U6M0cLeMnejwtFj96pqt1B1NL1zv0QVCWyBA/LOycz5mC?=
+ =?us-ascii?Q?06Y9Xm+Z4gzyIVJ9rVXVfsViPKlwDyT92I+MIQpL8GUGm5mZ//UQK3qMB8jA?=
+ =?us-ascii?Q?CCb1+Fzkeyt2E+OCIy6Xy6DGzbtsoDLXTEfSbugtAIwmu1Z4Ih8miynOyYBF?=
+ =?us-ascii?Q?k3Wr9gVhhVszYs3uPSChepZUduPSHL1rbvIEF/eYWi/kr6q/Ei0C1Ytu740C?=
+ =?us-ascii?Q?0v0831lomACyy528QcyLc03oaWiJxTUeQjiGojV+Zi9KpRtyVHC+vZwFIQFR?=
+ =?us-ascii?Q?C4M7LDLsV1EoXZ2xdImteZ8ud7qs/fOxcIdhKbPZ97Z7CkG4IBsKTeelHGKh?=
+ =?us-ascii?Q?K4/NAaOkLJ7LXHAUYsFfKmOn1gIaptmMXJSKf1AYp2sw0vAN9r7iGt7eRm8x?=
+ =?us-ascii?Q?wPLEEjb64Qe7IYFJlMu0xh798aJP8Oen9ZvHbRPNwLc8rNYz3u2dYmd+EoUc?=
+ =?us-ascii?Q?rbcJ+coV5pa33Ce6YwPU+ER4m+xUTJTsSMyEcfXLhLCWn+8G0lPgE8m6exKm?=
+ =?us-ascii?Q?0/j2+O80Qoi7EGVR+JB2wTMUCcKfNVEA9Whc6ZSSuhiti/GXQ9T43VuTIDrz?=
+ =?us-ascii?Q?hIydJvw541caNXCOA8H3UM/1j60ISc13u4gMuMZWLSEIgL6AtgO3Pe9t0llT?=
+ =?us-ascii?Q?X23zqMQDBZoHfeA8TF0T96gy6FUbuP80wnRr0TFqrIEtMm7Wi7KyFgAkg1LB?=
+ =?us-ascii?Q?CZkXIJ5amnp72LKV5eri+Ultn+3MVi5btaaYMvuekhli74zqRkXPd23uIvRU?=
+ =?us-ascii?Q?4snhXoPQvnMCJv1wLLQ/OY53hOzUl4yaKC2fM52h8uC7yoGx9nbDPbInh7zB?=
+ =?us-ascii?Q?3RGnCAOmmUludvc3RkTsxPJsO1/brrjVI7mn7uxekiCIyC4r8bJnYmauMMXm?=
+ =?us-ascii?Q?quwzWGteNV6Dg+hPQVaYTfqOhmDsuc3HpmZxNMR3P5Lx3TunCNGRqn7/Cef2?=
+ =?us-ascii?Q?a4ko46izjdbGYRrG+n0SjEfefBP/Q9PL0No031iH?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: b3604a84-91af-4dcf-22fa-08dc0bed25cc
+X-MS-Exchange-CrossTenant-AuthSource: LV2PR12MB5869.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 02 Jan 2024 23:47:15.0504
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: DfDvbu/p3IJFf/mBBYGJAwSov83B76x54DPdaJzCZHjtiLLlvT8b5nfvMGlBb6tI
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN0PR12MB6341
 
-On 1/2/24 12:17 PM, Leon Romanovsky wrote:
->>
->> Part of the problem is the meaning of pretty mode is different in rdma
->> than all of the other commands. The meaning of the flags should be the
->> same across ip, devlink, tc, and rdma; therefore pretty should mean
->> nothing unless json is enabled.
+On Wed, Dec 13, 2023 at 07:05:24PM +0200, Margolin, Michael wrote:
+> > On Mon, Dec 11, 2023 at 05:47:15PM +0000, Michael Margolin wrote:
+> >> diff --git a/drivers/infiniband/hw/efa/efa_admin_cmds_defs.h b/drivers/infiniband/hw/efa/efa_admin_cmds_defs.h
+> >> index 9c65bd27bae0..597f7ca6f31d 100644
+> >> --- a/drivers/infiniband/hw/efa/efa_admin_cmds_defs.h
+> >> +++ b/drivers/infiniband/hw/efa/efa_admin_cmds_defs.h
+> >> @@ -415,6 +415,32 @@ struct efa_admin_reg_mr_resp {
+> >>        * memory region
+> >>        */
+> >>       u32 r_key;
+> >> +
+> >> +     /*
+> >> +      * Mask indicating which fields have valid values
+> >> +      * 0 : recv_pci_bus_id
+> >> +      * 1 : rdma_read_pci_bus_id
+> >> +      * 2 : rdma_recv_pci_bus_id
+> >> +      */
+> >> +     u8 validity;
+> >> +
+> >> +     /*
+> >> +      * Physical PCIe bus used by the device to reach the MR for receive
+> >> +      * operation
+> >> +      */
+> >> +     u8 recv_pci_bus_id;
+> >> +
+> >> +     /*
+> >> +      * Physical PCIe bus used by the device to reach the MR for RDMA read
+> >> +      * operation
+> >> +      */
+> >> +     u8 rdma_read_pci_bus_id;
+> >> +
+> >> +     /*
+> >> +      * Physical PCIe bus used by the device to reach the MR for RDMA write
+> >> +      * receive
+> >> +      */
+> >> +     u8 rdma_recv_pci_bus_id;
+> > What driver is bound to this other PCIe bus and how did the iommu get
+> > setup for it?
 > 
-> I was very inspired by devlink when wrote rdmatool. It is supposed to
-> behave the same. :)
+> It's internal bus that is not directly exposed to the host. Addresses
+> mapping is acquired from accelerator's driver as for any MR residing in
+> accelerator memory, and the translation is owned by devices on that bus.
 
-You need better inspirations :-)
+So if it isn't visible to the host, or connectable to anything Linux
+would call a PCI RID, why are you giving it such specific names? Just
+call it 'interconnect path id' or something and make it opaque?
 
-It was a mistake to merge devlink source code into iproute2 without a
-commitment to bring it inline with other iproute2 commands.
+Jason
 
