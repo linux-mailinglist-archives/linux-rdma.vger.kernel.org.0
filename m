@@ -1,184 +1,108 @@
-Return-Path: <linux-rdma+bounces-534-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-535-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id BBE918234E0
-	for <lists+linux-rdma@lfdr.de>; Wed,  3 Jan 2024 19:48:16 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 26895823E93
+	for <lists+linux-rdma@lfdr.de>; Thu,  4 Jan 2024 10:25:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6E08E1F25683
-	for <lists+linux-rdma@lfdr.de>; Wed,  3 Jan 2024 18:48:16 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4DE4E1C239B5
+	for <lists+linux-rdma@lfdr.de>; Thu,  4 Jan 2024 09:25:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 86BCA1C6BA;
-	Wed,  3 Jan 2024 18:48:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6ED6020323;
+	Thu,  4 Jan 2024 09:25:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b="LmiPGfC+"
+	dkim=pass (1024-bit key) header.d=amazon.com header.i=@amazon.com header.b="MA9077I5"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-yb1-f177.google.com (mail-yb1-f177.google.com [209.85.219.177])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp-fw-2101.amazon.com (smtp-fw-2101.amazon.com [72.21.196.25])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 860641CA85
-	for <linux-rdma@vger.kernel.org>; Wed,  3 Jan 2024 18:48:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ziepe.ca
-Received: by mail-yb1-f177.google.com with SMTP id 3f1490d57ef6-dbd721384c0so8849361276.1
-        for <linux-rdma@vger.kernel.org>; Wed, 03 Jan 2024 10:48:07 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BDD222030F
+	for <linux-rdma@vger.kernel.org>; Thu,  4 Jan 2024 09:25:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amazon.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=amazon.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google; t=1704307686; x=1704912486; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=FhPl6n+gaHRZqX878lSuSjjHaJIqMMwAsnd88hKX+7k=;
-        b=LmiPGfC+MKvX6Fgcq0PEdfR/GO8u7NK9swKzUJAyJFbyg4kOlbrbN+j3ioyjfUu0Pr
-         dZLOJ7PylQLsdTnuyW7bHi0mG5UF2uf6SZwAnLoZ7v0Vp5heXF6dp76rpE2qTp5v9lqU
-         vMo89V+1Z3ZZeMECWOk9mi6y+kxBCqpLhzliZIV1FBaMXsgXIgP1xnhb0fPbfDUCopak
-         RlZYt96xqfhCuFCKGrSk7EosEz/dzPguegK3fpqj9i5zqAUwhCkRMKLZQqZyhZ2MyLG4
-         GDHSNQz3AzTGx+sV9qfTvXFh3AFiPrinHAfh7Iea4kirKE0+RHUUJXv6ANeBhvX7EtTW
-         KQ9A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704307686; x=1704912486;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=FhPl6n+gaHRZqX878lSuSjjHaJIqMMwAsnd88hKX+7k=;
-        b=fl8flFvQgwy95X5+vxZxcAXrESQ+fGHXhEPvWFYVopRDvi/UzvfuvEBPxHY20MDkXf
-         MIM2dOEyuZ/0IaWvzwer5uop2dGgvcVJFv3AsjqvfM3nhafKlznaVIeHHM9q3gjRwWCO
-         4RILDZXvDkfaowVdq3117U7gJW3Ug7tgj6KcOm6fjhA3X3bqglxxCqviPol8+41NHxYg
-         sGMZe+jfQvir1QAYOi+HxiRYhTBl5Zi9DrxEO8ELE6gOJfEjfRkqUsSxbecSyGxTMlG+
-         07FymixmKHBqubp0Jmndkx+dr7ZlMUNPxuLgwlgsCQrFZmPM8NU8o38lPpvGpqrGoQ+Q
-         60Bw==
-X-Gm-Message-State: AOJu0Yw+5zU5kFjBBQP5wI9fj9wuRdS0ObuRZbT9YnwdjRlfwdH8vx/0
-	DTGSsqb2WKkPng9PSXgogGK6NLFkfOKHtQ==
-X-Google-Smtp-Source: AGHT+IHKWGLvLZUPJL8bZ4+1PfDyD4XSImEoClSZMSeMX+NcmH91Do12c+kWsJ2zb3rFDLDm/c6U0A==
-X-Received: by 2002:a5b:810:0:b0:dbe:82bc:5676 with SMTP id x16-20020a5b0810000000b00dbe82bc5676mr2344620ybp.11.1704307686377;
-        Wed, 03 Jan 2024 10:48:06 -0800 (PST)
-Received: from ziepe.ca (hlfxns017vw-142-68-80-239.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.68.80.239])
-        by smtp.gmail.com with ESMTPSA id cq5-20020a05622a424500b004181e5a724csm14393361qtb.88.2024.01.03.10.48.05
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 03 Jan 2024 10:48:05 -0800 (PST)
-Received: from jgg by wakko with local (Exim 4.95)
-	(envelope-from <jgg@ziepe.ca>)
-	id 1rL6Hc-0013gY-Hm;
-	Wed, 03 Jan 2024 14:48:04 -0400
-Date: Wed, 3 Jan 2024 14:48:04 -0400
-From: Jason Gunthorpe <jgg@ziepe.ca>
-To: Shifeng Li <lishifeng@sangfor.com.cn>
-Cc: leon@kernel.org, wenglianfa@huawei.com, gustavoars@kernel.org,
-	linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
-	Shifeng Li <lishifeng1992@126.com>
-Subject: Re: [PATCH] RDMA/device: Fix a race between mad_client and cm_client
- init
-Message-ID: <20240103184804.GB50608@ziepe.ca>
-References: <20240102034335.34842-1-lishifeng@sangfor.com.cn>
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
+  t=1704360350; x=1735896350;
+  h=message-id:date:mime-version:to:cc:references:from:
+   in-reply-to:content-transfer-encoding:subject;
+  bh=fI6osL9MqyWxhmBc9J30ATQ7hX0xzG9orbgdrNecUeM=;
+  b=MA9077I5FyQGxmzBwhL6TGsCb9SYYVK8Y+4xLO8Tn8DvZnLrPjeZEWT5
+   MN/ARnhvw6azy8tT9ZqSBOtmJFBEE/t6f7htkuBsFUDWSfvM4I9GnbGQO
+   0ZPoqg8H3K6l/UPvhWm6BdgdehW10wd9FCm7gOSZwO7OLMTLCDxH8NIH+
+   Q=;
+X-IronPort-AV: E=Sophos;i="6.04,330,1695686400"; 
+   d="scan'208";a="372424595"
+Subject: Re: [PATCH for-next] RDMA/efa: Limit EQs to available MSI-X vectors
+Received: from iad12-co-svc-p1-lb1-vlan3.amazon.com (HELO email-inbound-relay-iad-1a-m6i4x-edda28d4.us-east-1.amazon.com) ([10.43.8.6])
+  by smtp-border-fw-2101.iad2.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Jan 2024 09:25:47 +0000
+Received: from smtpout.prod.us-west-2.prod.farcaster.email.amazon.dev (iad7-ws-svc-p70-lb3-vlan3.iad.amazon.com [10.32.235.38])
+	by email-inbound-relay-iad-1a-m6i4x-edda28d4.us-east-1.amazon.com (Postfix) with ESMTPS id 8BB0380495;
+	Thu,  4 Jan 2024 09:25:45 +0000 (UTC)
+Received: from EX19MTAEUA002.ant.amazon.com [10.0.43.254:43924]
+ by smtpin.naws.eu-west-1.prod.farcaster.email.amazon.dev [10.0.37.235:2525] with esmtp (Farcaster)
+ id 151e3fd5-2e37-4da9-a905-647b2d22bf7a; Thu, 4 Jan 2024 09:25:44 +0000 (UTC)
+X-Farcaster-Flow-ID: 151e3fd5-2e37-4da9-a905-647b2d22bf7a
+Received: from EX19D045EUC003.ant.amazon.com (10.252.61.236) by
+ EX19MTAEUA002.ant.amazon.com (10.252.50.126) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.40; Thu, 4 Jan 2024 09:25:42 +0000
+Received: from [192.168.136.188] (10.85.143.176) by
+ EX19D045EUC003.ant.amazon.com (10.252.61.236) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.40; Thu, 4 Jan 2024 09:25:39 +0000
+Message-ID: <2edc6365-42a6-4d94-88cb-6ff8cbd9bf52@amazon.com>
+Date: Thu, 4 Jan 2024 11:25:33 +0200
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240102034335.34842-1-lishifeng@sangfor.com.cn>
+User-Agent: Mozilla Thunderbird
+Content-Language: en-US
+To: Gal Pressman <gal.pressman@linux.dev>, <jgg@nvidia.com>,
+	<leon@kernel.org>, <linux-rdma@vger.kernel.org>
+CC: <sleybo@amazon.com>, <matua@amazon.com>, Michael Margolin
+	<mrgolin@amazon.com>, Yonatan Goldhirsh <ygold@amazon.com>
+References: <20240103142134.2191-1-ynachum@amazon.com>
+ <3845b1b5-6e1d-445c-b937-c8bf7af42a77@linux.dev>
+From: "Nachum, Yonatan" <ynachum@amazon.com>
+In-Reply-To: <3845b1b5-6e1d-445c-b937-c8bf7af42a77@linux.dev>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: EX19D041UWA001.ant.amazon.com (10.13.139.124) To
+ EX19D045EUC003.ant.amazon.com (10.252.61.236)
 
-On Mon, Jan 01, 2024 at 07:43:35PM -0800, Shifeng Li wrote:
-> diff --git a/drivers/infiniband/core/device.c b/drivers/infiniband/core/device.c
-> index 67bcea7a153c..85782786993d 100644
-> --- a/drivers/infiniband/core/device.c
-> +++ b/drivers/infiniband/core/device.c
-> @@ -1315,12 +1315,6 @@ static int enable_device_and_get(struct ib_device *device)
->  	down_write(&devices_rwsem);
->  	xa_set_mark(&devices, device->index, DEVICE_REGISTERED);
->  
-> -	/*
-> -	 * By using downgrade_write() we ensure that no other thread can clear
-> -	 * DEVICE_REGISTERED while we are completing the client setup.
-> -	 */
-> -	downgrade_write(&devices_rwsem);
-> -
->  	if (device->ops.enable_driver) {
->  		ret = device->ops.enable_driver(device);
->  		if (ret)
-> @@ -1337,7 +1331,7 @@ static int enable_device_and_get(struct ib_device *device)
->  	if (!ret)
->  		ret = add_compat_devs(device);
->  out:
-> -	up_read(&devices_rwsem);
-> +	up_write(&devices_rwsem);
->  	return ret;
->  }
+>> diff --git a/drivers/infiniband/hw/efa/efa_main.c b/drivers/infiniband/hw/efa/efa_main.c
+>> index 15ee92081118..1aade398c723 100644
+>> --- a/drivers/infiniband/hw/efa/efa_main.c
+>> +++ b/drivers/infiniband/hw/efa/efa_main.c
+>> @@ -319,7 +319,9 @@ static int efa_create_eqs(struct efa_dev *dev)
+>>       int err;
+>>       int i;
+>>
+>> -     neqs = min_t(unsigned int, neqs, num_online_cpus());
+>> +     neqs = min_t(unsigned int, neqs,
+>> +                  dev->num_irq_vectors - EFA_COMP_EQS_VEC_BASE);
+>> +
+> If the device supports one msix (which is reserved for commands) you'll
+> end up with zero neqs, and allocate a zero-sized dev->eqs array.
+>
+> Won't that break when efa_create_cq() is called and try to access this
+> array?
+> Especially since efa_ib_device_add() sets num_comp_vectors to 1 in such
+> case..
+>
+>>       dev->neqs = neqs;
+>>       dev->eqs = kcalloc(neqs, sizeof(*dev->eqs), GFP_KERNEL);
+>>       if (!dev->eqs)
 
-I don't think messing with the devices_rwsem here is a great idea, it
-would be better to address this on the clients_rwsem side like:
+When the number of EQs is 0 we don't report EFA_QUERY_DEVICE_CAPS_CQ_NOTIFICATIONS
+to the upper layer (rdma-core for example) so it won't be able to request the driver for
+CQs with interrupts enabled. So in terms of behavior we keep the same behavior as older driver
+versions.
 
-diff --git a/drivers/infiniband/core/device.c b/drivers/infiniband/core/device.c
-index 67bcea7a153c6a..b956c9f8e62d34 100644
---- a/drivers/infiniband/core/device.c
-+++ b/drivers/infiniband/core/device.c
-@@ -1730,7 +1730,7 @@ static int assign_client_id(struct ib_client *client)
- {
- 	int ret;
- 
--	down_write(&clients_rwsem);
-+	lockdep_assert_held(&clients_rwsem);
- 	/*
- 	 * The add/remove callbacks must be called in FIFO/LIFO order. To
- 	 * achieve this we assign client_ids so they are sorted in
-@@ -1739,14 +1739,11 @@ static int assign_client_id(struct ib_client *client)
- 	client->client_id = highest_client_id;
- 	ret = xa_insert(&clients, client->client_id, client, GFP_KERNEL);
- 	if (ret)
--		goto out;
-+		return ret;
- 
- 	highest_client_id++;
- 	xa_set_mark(&clients, client->client_id, CLIENT_REGISTERED);
--
--out:
--	up_write(&clients_rwsem);
--	return ret;
-+	return 0;
- }
- 
- static void remove_client_id(struct ib_client *client)
-@@ -1776,25 +1773,31 @@ int ib_register_client(struct ib_client *client)
- {
- 	struct ib_device *device;
- 	unsigned long index;
-+	bool need_unreg = false;
- 	int ret;
- 
- 	refcount_set(&client->uses, 1);
- 	init_completion(&client->uses_zero);
--	ret = assign_client_id(client);
--	if (ret)
--		return ret;
- 
- 	down_read(&devices_rwsem);
-+	down_write(&clients_rwsem);
-+	ret = assign_client_id(client);
-+	if (ret)
-+		goto out;
-+
-+	need_unreg = true;
- 	xa_for_each_marked (&devices, index, device, DEVICE_REGISTERED) {
- 		ret = add_client_context(device, client);
--		if (ret) {
--			up_read(&devices_rwsem);
--			ib_unregister_client(client);
--			return ret;
--		}
-+		if (ret)
-+			goto out;
- 	}
-+	ret = 0;
-+out:
-+	up_write(&clients_rwsem);
- 	up_read(&devices_rwsem);
--	return 0;
-+	if (need_unreg && ret)
-+		ib_unregister_client(client);
-+	return ret;
- }
- EXPORT_SYMBOL(ib_register_client);
- 
+I will need create a separate patch for num_comp_vectors to represent the number of EQs even if its 0 and add driver protection for out of bounds reach to the EQ array. Thanks.
 
