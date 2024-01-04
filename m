@@ -1,105 +1,434 @@
-Return-Path: <linux-rdma+bounces-536-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-537-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id BCB60823EEA
-	for <lists+linux-rdma@lfdr.de>; Thu,  4 Jan 2024 10:51:17 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id BEE28823EEB
+	for <lists+linux-rdma@lfdr.de>; Thu,  4 Jan 2024 10:52:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6DA101F2320D
-	for <lists+linux-rdma@lfdr.de>; Thu,  4 Jan 2024 09:51:17 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D9646B23C5A
+	for <lists+linux-rdma@lfdr.de>; Thu,  4 Jan 2024 09:52:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6776C208D1;
-	Thu,  4 Jan 2024 09:51:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3A2CE208C9;
+	Thu,  4 Jan 2024 09:52:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=amazon.com header.i=@amazon.com header.b="VnEY2qwh"
+	dkim=pass (1024-bit key) header.d=amazon.com header.i=@amazon.com header.b="nP1Va2fg"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from smtp-fw-9105.amazon.com (smtp-fw-9105.amazon.com [207.171.188.204])
+Received: from smtp-fw-2101.amazon.com (smtp-fw-2101.amazon.com [72.21.196.25])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0668A208C2
-	for <linux-rdma@vger.kernel.org>; Thu,  4 Jan 2024 09:51:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4BC35208C2
+	for <linux-rdma@vger.kernel.org>; Thu,  4 Jan 2024 09:52:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amazon.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=amazon.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
   d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1704361870; x=1735897870;
-  h=message-id:date:mime-version:to:cc:references:from:
-   in-reply-to:content-transfer-encoding:subject;
-  bh=ViavYJEIIP5FH8BAk48ds/hllZfjIZ0qJZ++26wIdRQ=;
-  b=VnEY2qwhvSKETwcrCt4pUFFdkVzYNcrhGcZQgfXn9eyN2W+pa1ey8b/s
-   tI4XxIA4MycS1pJvNZaHMSsZOga9NpDQXb5OT6AMVqxvzW5kYPv984bJj
-   X/eIZVj/Yhk+6VIE95JNCzeQgyCChAPEDgSpTZ4FxUVgW7wK3eEzpFvcl
-   o=;
+  t=1704361923; x=1735897923;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=bZQxE7IbZJqWMR7VFkkRfylbATuAzBa2c2FBw6RAt9A=;
+  b=nP1Va2fgxgOVYc2saq0Jp/iSRWrO6Ws3YdEoFvQHfRGUQCepcIT6ntWy
+   AtmNCvE+JQSu+02Wi46O6LJpL4REpMV2a/nyBor2o97ICTATrWr34ynC1
+   rGwSyVczZeupxJOZBcbIEp5PPmxbUDOY5EUi3qLafnBjI+jBYftgoxctT
+   0=;
 X-IronPort-AV: E=Sophos;i="6.04,330,1695686400"; 
-   d="scan'208";a="695527182"
-Subject: Re: [PATCH for-next v3] RDMA/efa: Add EFA query MR support
-Received: from pdx4-co-svc-p1-lb2-vlan2.amazon.com (HELO email-inbound-relay-pdx-2a-m6i4x-44b6fc51.us-west-2.amazon.com) ([10.25.36.210])
-  by smtp-border-fw-9105.sea19.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Jan 2024 09:50:47 +0000
+   d="scan'208";a="372429084"
+Received: from iad12-co-svc-p1-lb1-vlan3.amazon.com (HELO email-inbound-relay-pdx-2b-m6i4x-7fa2de02.us-west-2.amazon.com) ([10.43.8.6])
+  by smtp-border-fw-2101.iad2.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Jan 2024 09:51:59 +0000
 Received: from smtpout.prod.us-east-1.prod.farcaster.email.amazon.dev (pdx2-ws-svc-p26-lb5-vlan2.pdx.amazon.com [10.39.38.66])
-	by email-inbound-relay-pdx-2a-m6i4x-44b6fc51.us-west-2.amazon.com (Postfix) with ESMTPS id 57ADCA0C41;
-	Thu,  4 Jan 2024 09:50:46 +0000 (UTC)
-Received: from EX19MTAEUC002.ant.amazon.com [10.0.43.254:61853]
- by smtpin.naws.eu-west-1.prod.farcaster.email.amazon.dev [10.0.10.193:2525] with esmtp (Farcaster)
- id 4ef0f971-86a2-4e6d-97a6-dfce25f321b0; Thu, 4 Jan 2024 09:50:45 +0000 (UTC)
-X-Farcaster-Flow-ID: 4ef0f971-86a2-4e6d-97a6-dfce25f321b0
-Received: from EX19D031EUB003.ant.amazon.com (10.252.61.88) by
- EX19MTAEUC002.ant.amazon.com (10.252.51.245) with Microsoft SMTP Server
+	by email-inbound-relay-pdx-2b-m6i4x-7fa2de02.us-west-2.amazon.com (Postfix) with ESMTPS id 8FCAB40BBD;
+	Thu,  4 Jan 2024 09:51:58 +0000 (UTC)
+Received: from EX19MTAEUC002.ant.amazon.com [10.0.43.254:20210]
+ by smtpin.naws.eu-west-1.prod.farcaster.email.amazon.dev [10.0.11.31:2525] with esmtp (Farcaster)
+ id 4f2b143f-8a52-4dfb-ac60-403db8cc3ad8; Thu, 4 Jan 2024 09:51:57 +0000 (UTC)
+X-Farcaster-Flow-ID: 4f2b143f-8a52-4dfb-ac60-403db8cc3ad8
+Received: from EX19D019EUA003.ant.amazon.com (10.252.50.35) by
+ EX19MTAEUC002.ant.amazon.com (10.252.51.181) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.40; Thu, 4 Jan 2024 09:50:41 +0000
-Received: from [192.168.135.168] (10.85.143.176) by
- EX19D031EUB003.ant.amazon.com (10.252.61.88) with Microsoft SMTP Server
+ 15.2.1118.40; Thu, 4 Jan 2024 09:51:57 +0000
+Received: from EX19MTAUEA001.ant.amazon.com (10.252.134.203) by
+ EX19D019EUA003.ant.amazon.com (10.252.50.35) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.40; Thu, 4 Jan 2024 09:50:37 +0000
-Message-ID: <3ae9207f-1159-42e6-a972-0dfb085e9f82@amazon.com>
-Date: Thu, 4 Jan 2024 11:50:33 +0200
+ 15.2.1118.40; Thu, 4 Jan 2024 09:51:56 +0000
+Received: from dev-dsk-mrgolin-1c-b2091117.eu-west-1.amazon.com
+ (10.253.103.172) by mail-relay.amazon.com (10.252.134.102) with Microsoft
+ SMTP Server id 15.2.1118.40 via Frontend Transport; Thu, 4 Jan 2024 09:51:55
+ +0000
+From: Michael Margolin <mrgolin@amazon.com>
+To: <jgg@nvidia.com>, <leon@kernel.org>, <linux-rdma@vger.kernel.org>
+CC: <sleybo@amazon.com>, <matua@amazon.com>, <gal.pressman@linux.dev>, "Anas
+ Mousa" <anasmous@amazon.com>, Firas Jahjah <firasj@amazon.com>
+Subject: [PATCH for-next v4] RDMA/efa: Add EFA query MR support
+Date: Thu, 4 Jan 2024 09:51:55 +0000
+Message-ID: <20240104095155.10676-1-mrgolin@amazon.com>
+X-Mailer: git-send-email 2.40.1
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Content-Language: en-US
-To: Jason Gunthorpe <jgg@nvidia.com>
-CC: <leon@kernel.org>, <linux-rdma@vger.kernel.org>, <sleybo@amazon.com>,
-	<matua@amazon.com>, <gal.pressman@linux.dev>, Anas Mousa
-	<anasmous@amazon.com>, Firas Jahjah <firasj@amazon.com>
-References: <20231211174715.7369-1-mrgolin@amazon.com>
- <20231211175019.GK2944114@nvidia.com>
- <c9790d7c-e904-4014-a238-343f376a08b9@amazon.com>
- <20240102234713.GL50406@nvidia.com>
- <d6394917-802d-4d37-8141-c4f462583943@amazon.com>
- <20240103133702.GN50406@nvidia.com>
-From: "Margolin, Michael" <mrgolin@amazon.com>
-In-Reply-To: <20240103133702.GN50406@nvidia.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: EX19D046UWB001.ant.amazon.com (10.13.139.187) To
- EX19D031EUB003.ant.amazon.com (10.252.61.88)
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 
+Add EFA driver uapi definitions and register a new query MR method that
+currently returns the physical interconnects the device is using to
+reach the MR. Update admin definitions and efa-abi accordingly.
 
-On 1/3/2024 3:37 PM, Jason Gunthorpe wrote:
-> CAUTION: This email originated from outside of the organization. Do not click links or open attachments unless you can confirm the sender and know the content is safe.
->
->
->
-> On Wed, Jan 03, 2024 at 03:33:41PM +0200, Margolin, Michael wrote:
->
->> I would like it to be as opaque as possible but on the other hand to express
->> that the mentioned 'interconnect path' relates specifically to PCI path.
-> Who cares it is a "PCI path" if the the thing is totally invisible? It
-> is some hidden implementation detail of your device that today happens
-> to be PCI.
->
-> There are many ways to get interconnect multipath coming, including
-> PCIe UIO.
->
-> Jason
+Reviewed-by: Anas Mousa <anasmous@amazon.com>
+Reviewed-by: Firas Jahjah <firasj@amazon.com>
+Signed-off-by: Michael Margolin <mrgolin@amazon.com>
+---
+ drivers/infiniband/hw/efa/efa.h               | 12 +++-
+ .../infiniband/hw/efa/efa_admin_cmds_defs.h   | 33 ++++++++-
+ drivers/infiniband/hw/efa/efa_com_cmd.c       | 11 ++-
+ drivers/infiniband/hw/efa/efa_com_cmd.h       | 12 +++-
+ drivers/infiniband/hw/efa/efa_main.c          |  7 +-
+ drivers/infiniband/hw/efa/efa_verbs.c         | 71 ++++++++++++++++++-
+ include/uapi/rdma/efa-abi.h                   | 21 +++++-
+ 7 files changed, 160 insertions(+), 7 deletions(-)
 
-Ok, changed according to your suggestion.
-
-Michael
+diff --git a/drivers/infiniband/hw/efa/efa.h b/drivers/infiniband/hw/efa/efa.h
+index 7352a1f5d811..e2bdec32ae80 100644
+--- a/drivers/infiniband/hw/efa/efa.h
++++ b/drivers/infiniband/hw/efa/efa.h
+@@ -1,6 +1,6 @@
+ /* SPDX-License-Identifier: GPL-2.0 OR BSD-2-Clause */
+ /*
+- * Copyright 2018-2021 Amazon.com, Inc. or its affiliates. All rights reserved.
++ * Copyright 2018-2024 Amazon.com, Inc. or its affiliates. All rights reserved.
+  */
+ 
+ #ifndef _EFA_H_
+@@ -80,9 +80,19 @@ struct efa_pd {
+ 	u16 pdn;
+ };
+ 
++struct efa_mr_interconnect_info {
++	u16 recv_ic_id;
++	u16 rdma_read_ic_id;
++	u16 rdma_recv_ic_id;
++	u8 recv_ic_id_valid : 1;
++	u8 rdma_read_ic_id_valid : 1;
++	u8 rdma_recv_ic_id_valid : 1;
++};
++
+ struct efa_mr {
+ 	struct ib_mr ibmr;
+ 	struct ib_umem *umem;
++	struct efa_mr_interconnect_info ic_info;
+ };
+ 
+ struct efa_cq {
+diff --git a/drivers/infiniband/hw/efa/efa_admin_cmds_defs.h b/drivers/infiniband/hw/efa/efa_admin_cmds_defs.h
+index 9c65bd27bae0..7377c8a9f4d5 100644
+--- a/drivers/infiniband/hw/efa/efa_admin_cmds_defs.h
++++ b/drivers/infiniband/hw/efa/efa_admin_cmds_defs.h
+@@ -1,6 +1,6 @@
+ /* SPDX-License-Identifier: GPL-2.0 OR BSD-2-Clause */
+ /*
+- * Copyright 2018-2023 Amazon.com, Inc. or its affiliates. All rights reserved.
++ * Copyright 2018-2024 Amazon.com, Inc. or its affiliates. All rights reserved.
+  */
+ 
+ #ifndef _EFA_ADMIN_CMDS_H_
+@@ -415,6 +415,32 @@ struct efa_admin_reg_mr_resp {
+ 	 * memory region
+ 	 */
+ 	u32 r_key;
++
++	/*
++	 * Mask indicating which fields have valid values
++	 * 0 : recv_ic_id
++	 * 1 : rdma_read_ic_id
++	 * 2 : rdma_recv_ic_id
++	 */
++	u8 validity;
++
++	/*
++	 * Physical interconnect used by the device to reach the MR for receive
++	 * operation
++	 */
++	u8 recv_ic_id;
++
++	/*
++	 * Physical interconnect used by the device to reach the MR for RDMA
++	 * read operation
++	 */
++	u8 rdma_read_ic_id;
++
++	/*
++	 * Physical interconnect used by the device to reach the MR for RDMA
++	 * write receive
++	 */
++	u8 rdma_recv_ic_id;
+ };
+ 
+ struct efa_admin_dereg_mr_cmd {
+@@ -999,6 +1025,11 @@ struct efa_admin_host_info {
+ #define EFA_ADMIN_REG_MR_CMD_REMOTE_WRITE_ENABLE_MASK       BIT(1)
+ #define EFA_ADMIN_REG_MR_CMD_REMOTE_READ_ENABLE_MASK        BIT(2)
+ 
++/* reg_mr_resp */
++#define EFA_ADMIN_REG_MR_RESP_RECV_IC_ID_MASK               BIT(0)
++#define EFA_ADMIN_REG_MR_RESP_RDMA_READ_IC_ID_MASK          BIT(1)
++#define EFA_ADMIN_REG_MR_RESP_RDMA_RECV_IC_ID_MASK          BIT(2)
++
+ /* create_cq_cmd */
+ #define EFA_ADMIN_CREATE_CQ_CMD_INTERRUPT_MODE_ENABLED_MASK BIT(5)
+ #define EFA_ADMIN_CREATE_CQ_CMD_VIRT_MASK                   BIT(6)
+diff --git a/drivers/infiniband/hw/efa/efa_com_cmd.c b/drivers/infiniband/hw/efa/efa_com_cmd.c
+index 576811885d59..d3398c7b0bd0 100644
+--- a/drivers/infiniband/hw/efa/efa_com_cmd.c
++++ b/drivers/infiniband/hw/efa/efa_com_cmd.c
+@@ -1,6 +1,6 @@
+ // SPDX-License-Identifier: GPL-2.0 OR BSD-2-Clause
+ /*
+- * Copyright 2018-2023 Amazon.com, Inc. or its affiliates. All rights reserved.
++ * Copyright 2018-2024 Amazon.com, Inc. or its affiliates. All rights reserved.
+  */
+ 
+ #include "efa_com.h"
+@@ -270,6 +270,15 @@ int efa_com_register_mr(struct efa_com_dev *edev,
+ 
+ 	result->l_key = cmd_completion.l_key;
+ 	result->r_key = cmd_completion.r_key;
++	result->ic_info.recv_ic_id = cmd_completion.recv_ic_id;
++	result->ic_info.rdma_read_ic_id = cmd_completion.rdma_read_ic_id;
++	result->ic_info.rdma_recv_ic_id = cmd_completion.rdma_recv_ic_id;
++	result->ic_info.recv_ic_id_valid = EFA_GET(&cmd_completion.validity,
++						   EFA_ADMIN_REG_MR_RESP_RECV_IC_ID);
++	result->ic_info.rdma_read_ic_id_valid = EFA_GET(&cmd_completion.validity,
++							EFA_ADMIN_REG_MR_RESP_RDMA_READ_IC_ID);
++	result->ic_info.rdma_recv_ic_id_valid = EFA_GET(&cmd_completion.validity,
++							EFA_ADMIN_REG_MR_RESP_RDMA_RECV_IC_ID);
+ 
+ 	return 0;
+ }
+diff --git a/drivers/infiniband/hw/efa/efa_com_cmd.h b/drivers/infiniband/hw/efa/efa_com_cmd.h
+index fc97f37bb39b..720a99ba0f7d 100644
+--- a/drivers/infiniband/hw/efa/efa_com_cmd.h
++++ b/drivers/infiniband/hw/efa/efa_com_cmd.h
+@@ -1,6 +1,6 @@
+ /* SPDX-License-Identifier: GPL-2.0 OR BSD-2-Clause */
+ /*
+- * Copyright 2018-2023 Amazon.com, Inc. or its affiliates. All rights reserved.
++ * Copyright 2018-2024 Amazon.com, Inc. or its affiliates. All rights reserved.
+  */
+ 
+ #ifndef _EFA_COM_CMD_H_
+@@ -199,6 +199,15 @@ struct efa_com_reg_mr_params {
+ 	u8 indirect;
+ };
+ 
++struct efa_com_mr_interconnect_info {
++	u16 recv_ic_id;
++	u16 rdma_read_ic_id;
++	u16 rdma_recv_ic_id;
++	u8 recv_ic_id_valid : 1;
++	u8 rdma_read_ic_id_valid : 1;
++	u8 rdma_recv_ic_id_valid : 1;
++};
++
+ struct efa_com_reg_mr_result {
+ 	/*
+ 	 * To be used in conjunction with local buffers references in SQ and
+@@ -210,6 +219,7 @@ struct efa_com_reg_mr_result {
+ 	 * accessed memory region
+ 	 */
+ 	u32 r_key;
++	struct efa_com_mr_interconnect_info ic_info;
+ };
+ 
+ struct efa_com_dereg_mr_params {
+diff --git a/drivers/infiniband/hw/efa/efa_main.c b/drivers/infiniband/hw/efa/efa_main.c
+index 15ee92081118..7b1910a86216 100644
+--- a/drivers/infiniband/hw/efa/efa_main.c
++++ b/drivers/infiniband/hw/efa/efa_main.c
+@@ -1,6 +1,6 @@
+ // SPDX-License-Identifier: GPL-2.0 OR BSD-2-Clause
+ /*
+- * Copyright 2018-2022 Amazon.com, Inc. or its affiliates. All rights reserved.
++ * Copyright 2018-2024 Amazon.com, Inc. or its affiliates. All rights reserved.
+  */
+ 
+ #include <linux/module.h>
+@@ -9,6 +9,7 @@
+ #include <linux/version.h>
+ 
+ #include <rdma/ib_user_verbs.h>
++#include <rdma/uverbs_ioctl.h>
+ 
+ #include "efa.h"
+ 
+@@ -36,6 +37,8 @@ MODULE_DEVICE_TABLE(pci, efa_pci_tbl);
+ 	(BIT(EFA_ADMIN_FATAL_ERROR) | BIT(EFA_ADMIN_WARNING) | \
+ 	 BIT(EFA_ADMIN_NOTIFICATION) | BIT(EFA_ADMIN_KEEP_ALIVE))
+ 
++extern const struct uapi_definition efa_uapi_defs[];
++
+ /* This handler will called for unknown event group or unimplemented handlers */
+ static void unimplemented_aenq_handler(void *data,
+ 				       struct efa_admin_aenq_entry *aenq_e)
+@@ -432,6 +435,8 @@ static int efa_ib_device_add(struct efa_dev *dev)
+ 
+ 	ib_set_device_ops(&dev->ibdev, &efa_dev_ops);
+ 
++	dev->ibdev.driver_def = efa_uapi_defs;
++
+ 	err = ib_register_device(&dev->ibdev, "efa_%d", &pdev->dev);
+ 	if (err)
+ 		goto err_destroy_eqs;
+diff --git a/drivers/infiniband/hw/efa/efa_verbs.c b/drivers/infiniband/hw/efa/efa_verbs.c
+index 0f8ca99d0827..8f4435706e4d 100644
+--- a/drivers/infiniband/hw/efa/efa_verbs.c
++++ b/drivers/infiniband/hw/efa/efa_verbs.c
+@@ -1,6 +1,6 @@
+ // SPDX-License-Identifier: GPL-2.0 OR Linux-OpenIB
+ /*
+- * Copyright 2018-2023 Amazon.com, Inc. or its affiliates. All rights reserved.
++ * Copyright 2018-2024 Amazon.com, Inc. or its affiliates. All rights reserved.
+  */
+ 
+ #include <linux/dma-buf.h>
+@@ -13,6 +13,9 @@
+ #include <rdma/ib_user_verbs.h>
+ #include <rdma/ib_verbs.h>
+ #include <rdma/uverbs_ioctl.h>
++#define UVERBS_MODULE_NAME efa_ib
++#include <rdma/uverbs_named_ioctl.h>
++#include <rdma/ib_user_ioctl_cmds.h>
+ 
+ #include "efa.h"
+ #include "efa_io_defs.h"
+@@ -1653,6 +1656,12 @@ static int efa_register_mr(struct ib_pd *ibpd, struct efa_mr *mr, u64 start,
+ 	mr->ibmr.lkey = result.l_key;
+ 	mr->ibmr.rkey = result.r_key;
+ 	mr->ibmr.length = length;
++	mr->ic_info.recv_ic_id = result.ic_info.recv_ic_id;
++	mr->ic_info.rdma_read_ic_id = result.ic_info.rdma_read_ic_id;
++	mr->ic_info.rdma_recv_ic_id = result.ic_info.rdma_recv_ic_id;
++	mr->ic_info.recv_ic_id_valid = result.ic_info.recv_ic_id_valid;
++	mr->ic_info.rdma_read_ic_id_valid = result.ic_info.rdma_read_ic_id_valid;
++	mr->ic_info.rdma_recv_ic_id_valid = result.ic_info.rdma_recv_ic_id_valid;
+ 	ibdev_dbg(&dev->ibdev, "Registered mr[%d]\n", mr->ibmr.lkey);
+ 
+ 	return 0;
+@@ -1735,6 +1744,39 @@ struct ib_mr *efa_reg_mr(struct ib_pd *ibpd, u64 start, u64 length,
+ 	return ERR_PTR(err);
+ }
+ 
++static int UVERBS_HANDLER(EFA_IB_METHOD_MR_QUERY)(struct uverbs_attr_bundle *attrs)
++{
++	struct ib_mr *ibmr = uverbs_attr_get_obj(attrs, EFA_IB_ATTR_QUERY_MR_HANDLE);
++	struct efa_mr *mr = to_emr(ibmr);
++	u16 ic_id_validity;
++	int ret;
++
++	ret = uverbs_copy_to(attrs, EFA_IB_ATTR_QUERY_MR_RESP_RECV_IC_ID,
++			     &mr->ic_info.recv_ic_id, sizeof(mr->ic_info.recv_ic_id));
++	if (ret)
++		return ret;
++
++	ret = uverbs_copy_to(attrs, EFA_IB_ATTR_QUERY_MR_RESP_RDMA_READ_IC_ID,
++			     &mr->ic_info.rdma_read_ic_id, sizeof(mr->ic_info.rdma_read_ic_id));
++	if (ret)
++		return ret;
++
++	ret = uverbs_copy_to(attrs, EFA_IB_ATTR_QUERY_MR_RESP_RDMA_RECV_IC_ID,
++			     &mr->ic_info.rdma_recv_ic_id, sizeof(mr->ic_info.rdma_recv_ic_id));
++	if (ret)
++		return ret;
++
++	ic_id_validity = (mr->ic_info.recv_ic_id_valid ?
++			  EFA_QUERY_MR_VALIDITY_RECV_IC_ID : 0) |
++			 (mr->ic_info.rdma_read_ic_id_valid ?
++			  EFA_QUERY_MR_VALIDITY_RDMA_READ_IC_ID : 0) |
++			 (mr->ic_info.rdma_recv_ic_id_valid ?
++			  EFA_QUERY_MR_VALIDITY_RDMA_RECV_IC_ID : 0);
++
++	return uverbs_copy_to(attrs, EFA_IB_ATTR_QUERY_MR_RESP_IC_ID_VALIDITY,
++			      &ic_id_validity, sizeof(ic_id_validity));
++}
++
+ int efa_dereg_mr(struct ib_mr *ibmr, struct ib_udata *udata)
+ {
+ 	struct efa_dev *dev = to_edev(ibmr->device);
+@@ -2157,3 +2199,30 @@ enum rdma_link_layer efa_port_link_layer(struct ib_device *ibdev,
+ 	return IB_LINK_LAYER_UNSPECIFIED;
+ }
+ 
++DECLARE_UVERBS_NAMED_METHOD(EFA_IB_METHOD_MR_QUERY,
++			    UVERBS_ATTR_IDR(EFA_IB_ATTR_QUERY_MR_HANDLE,
++					    UVERBS_OBJECT_MR,
++					    UVERBS_ACCESS_READ,
++					    UA_MANDATORY),
++			    UVERBS_ATTR_PTR_OUT(EFA_IB_ATTR_QUERY_MR_RESP_IC_ID_VALIDITY,
++						UVERBS_ATTR_TYPE(u16),
++						UA_MANDATORY),
++			    UVERBS_ATTR_PTR_OUT(EFA_IB_ATTR_QUERY_MR_RESP_RECV_IC_ID,
++						UVERBS_ATTR_TYPE(u16),
++						UA_MANDATORY),
++			    UVERBS_ATTR_PTR_OUT(EFA_IB_ATTR_QUERY_MR_RESP_RDMA_READ_IC_ID,
++						UVERBS_ATTR_TYPE(u16),
++						UA_MANDATORY),
++			    UVERBS_ATTR_PTR_OUT(EFA_IB_ATTR_QUERY_MR_RESP_RDMA_RECV_IC_ID,
++						UVERBS_ATTR_TYPE(u16),
++						UA_MANDATORY));
++
++ADD_UVERBS_METHODS(efa_mr,
++		   UVERBS_OBJECT_MR,
++		   &UVERBS_METHOD(EFA_IB_METHOD_MR_QUERY));
++
++const struct uapi_definition efa_uapi_defs[] = {
++	UAPI_DEF_CHAIN_OBJ_TREE(UVERBS_OBJECT_MR,
++				&efa_mr),
++	{},
++};
+diff --git a/include/uapi/rdma/efa-abi.h b/include/uapi/rdma/efa-abi.h
+index d94c32f28804..701e2d567e41 100644
+--- a/include/uapi/rdma/efa-abi.h
++++ b/include/uapi/rdma/efa-abi.h
+@@ -1,12 +1,13 @@
+ /* SPDX-License-Identifier: ((GPL-2.0 WITH Linux-syscall-note) OR BSD-2-Clause) */
+ /*
+- * Copyright 2018-2023 Amazon.com, Inc. or its affiliates. All rights reserved.
++ * Copyright 2018-2024 Amazon.com, Inc. or its affiliates. All rights reserved.
+  */
+ 
+ #ifndef EFA_ABI_USER_H
+ #define EFA_ABI_USER_H
+ 
+ #include <linux/types.h>
++#include <rdma/ib_user_ioctl_cmds.h>
+ 
+ /*
+  * Increment this value if any changes that break userspace ABI
+@@ -134,4 +135,22 @@ struct efa_ibv_ex_query_device_resp {
+ 	__u32 device_caps;
+ };
+ 
++enum {
++	EFA_QUERY_MR_VALIDITY_RECV_IC_ID = 1 << 0,
++	EFA_QUERY_MR_VALIDITY_RDMA_READ_IC_ID = 1 << 1,
++	EFA_QUERY_MR_VALIDITY_RDMA_RECV_IC_ID = 1 << 2,
++};
++
++enum efa_query_mr_attrs {
++	EFA_IB_ATTR_QUERY_MR_HANDLE = (1U << UVERBS_ID_NS_SHIFT),
++	EFA_IB_ATTR_QUERY_MR_RESP_IC_ID_VALIDITY,
++	EFA_IB_ATTR_QUERY_MR_RESP_RECV_IC_ID,
++	EFA_IB_ATTR_QUERY_MR_RESP_RDMA_READ_IC_ID,
++	EFA_IB_ATTR_QUERY_MR_RESP_RDMA_RECV_IC_ID,
++};
++
++enum efa_mr_methods {
++	EFA_IB_METHOD_MR_QUERY = (1U << UVERBS_ID_NS_SHIFT),
++};
++
+ #endif /* EFA_ABI_USER_H */
+-- 
+2.40.1
 
 
