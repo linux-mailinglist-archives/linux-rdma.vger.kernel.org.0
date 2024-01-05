@@ -1,105 +1,85 @@
-Return-Path: <linux-rdma+bounces-542-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-543-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id E6949824E4D
-	for <lists+linux-rdma@lfdr.de>; Fri,  5 Jan 2024 06:55:24 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 033F2824FF3
+	for <lists+linux-rdma@lfdr.de>; Fri,  5 Jan 2024 09:30:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 74EC01F231A8
-	for <lists+linux-rdma@lfdr.de>; Fri,  5 Jan 2024 05:55:24 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 96293280993
+	for <lists+linux-rdma@lfdr.de>; Fri,  5 Jan 2024 08:30:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1874F5662;
-	Fri,  5 Jan 2024 05:55:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 57D3D21358;
+	Fri,  5 Jan 2024 08:25:59 +0000 (UTC)
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from szxga08-in.huawei.com (szxga08-in.huawei.com [45.249.212.255])
+Received: from mail-m127150.qiye.163.com (mail-m127150.qiye.163.com [115.236.127.150])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A56E9610E;
-	Fri,  5 Jan 2024 05:55:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=hisilicon.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=hisilicon.com
-Received: from mail.maildlp.com (unknown [172.19.163.252])
-	by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4T5t2L57llz1Q6vN;
-	Fri,  5 Jan 2024 13:54:34 +0800 (CST)
-Received: from kwepemi500006.china.huawei.com (unknown [7.221.188.68])
-	by mail.maildlp.com (Postfix) with ESMTPS id 3FE8218006F;
-	Fri,  5 Jan 2024 13:55:12 +0800 (CST)
-Received: from [10.67.120.168] (10.67.120.168) by
- kwepemi500006.china.huawei.com (7.221.188.68) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Fri, 5 Jan 2024 13:55:11 +0800
-Message-ID: <3d4cdc2e-0053-f486-7323-72127027886f@hisilicon.com>
-Date: Fri, 5 Jan 2024 13:55:11 +0800
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C4D042420E;
+	Fri,  5 Jan 2024 08:25:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=sangfor.com.cn
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sangfor.com.cn
+Received: from [172.23.69.7] (unknown [121.32.254.147])
+	by mail-m12750.qiye.163.com (Hmail) with ESMTPA id 594FEF20615;
+	Fri,  5 Jan 2024 16:15:19 +0800 (CST)
+Message-ID: <62db1a02-41b8-44b0-960b-6d6f5bec5d19@sangfor.com.cn>
+Date: Fri, 5 Jan 2024 16:15:18 +0800
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.1.0
-Subject: Re: [PATCH for-next 4/6] RDMA/hns: Support flexible pagesize
-Content-Language: en-US
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] RDMA/device: Fix a race between mad_client and cm_client
+ init
 To: Jason Gunthorpe <jgg@ziepe.ca>
-CC: Leon Romanovsky <leon@kernel.org>, <linux-rdma@vger.kernel.org>,
-	<linuxarm@huawei.com>, <linux-kernel@vger.kernel.org>
-References: <20231225075330.4116470-1-huangjunxian6@hisilicon.com>
- <20231225075330.4116470-5-huangjunxian6@hisilicon.com>
- <20231226085202.GA13350@unreal>
- <fbd65691-b0a2-0963-96fc-7e09a66cd203@hisilicon.com>
- <20240104202902.GD50608@ziepe.ca>
-From: Junxian Huang <huangjunxian6@hisilicon.com>
-In-Reply-To: <20240104202902.GD50608@ziepe.ca>
-Content-Type: text/plain; charset="UTF-8"
+Cc: leon@kernel.org, wenglianfa@huawei.com, gustavoars@kernel.org,
+ linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
+ Shifeng Li <lishifeng1992@126.com>, "Ding, Hui" <dinghui@sangfor.com.cn>
+References: <20240102034335.34842-1-lishifeng@sangfor.com.cn>
+ <20240103184804.GB50608@ziepe.ca>
+ <80cac9fd-7fed-403e-8889-78e2fc7a49b0@sangfor.com.cn>
+ <20240104123728.GC50608@ziepe.ca>
+From: Shifeng Li <lishifeng@sangfor.com.cn>
+In-Reply-To: <20240104123728.GC50608@ziepe.ca>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
- kwepemi500006.china.huawei.com (7.221.188.68)
+X-HM-Spam-Status: e1kfGhgUHx5ZQUpXWQgPGg8OCBgUHx5ZQUlOS1dZFg8aDwILHllBWSg2Ly
+	tZV1koWUFITzdXWS1ZQUlXWQ8JGhUIEh9ZQVlDQhhIVk8eQxhJHh5MTU8aS1UTARMWGhIXJBQOD1
+	lXWRgSC1lBWUpJSlVISVVJTk9VSk9MWVdZFhoPEhUdFFlBWU9LSFVKTU9JTE5VSktLVUpCS0tZBg
+	++
+X-HM-Tid: 0a8cd8b0e062b21dkuuu594fef20615
+X-HM-MType: 1
+X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6Mkk6Nyo*TDwoIj80Kh8sECgc
+	OiMwFC1VSlVKTEtPT09JTklLSU9JVTMWGhIXVRcSCBMSHR4VHDsIGhUcHRQJVRgUFlUYFUVZV1kS
+	C1lBWUpJSlVISVVJTk9VSk9MWVdZCAFZQUlPT083Bg++
 
-
-
-On 2024/1/5 4:29, Jason Gunthorpe wrote:
-> On Tue, Dec 26, 2023 at 05:16:33PM +0800, Junxian Huang wrote:
->>
->>
->> On 2023/12/26 16:52, Leon Romanovsky wrote:
->>> On Mon, Dec 25, 2023 at 03:53:28PM +0800, Junxian Huang wrote:
->>>> From: Chengchang Tang <tangchengchang@huawei.com>
->>>>
->>>> In the current implementation, a fixed page size is used to
->>>> configure the PBL, which is not flexible enough and is not
->>>> conducive to the performance of the HW.
->>>>
->>>> Signed-off-by: Chengchang Tang <tangchengchang@huawei.com>
->>>> Signed-off-by: Junxian Huang <huangjunxian6@hisilicon.com>
->>>> ---
->>>>  drivers/infiniband/hw/hns/hns_roce_alloc.c  |   6 -
->>>>  drivers/infiniband/hw/hns/hns_roce_device.h |   9 ++
->>>>  drivers/infiniband/hw/hns/hns_roce_mr.c     | 168 +++++++++++++++-----
->>>>  3 files changed, 139 insertions(+), 44 deletions(-)
->>>
->>> I'm wonder if the ib_umem_find_best_pgsz() API should be used instead.
->>> What is missing there?
->>>
->>> Thanks
->>
->> Actually this API is used for umem.
->> For kmem, we add hns_roce_find_buf_best_pgsz() to do a similar job.
+On 2024/1/4 20:37, Jason Gunthorpe wrote:
+> On Thu, Jan 04, 2024 at 02:48:14PM +0800, Shifeng Li wrote:
 > 
-> But why do you need to do something like this for kmem? It looked to
-> me like kmem knows its allocation size when it was allocated, how come
-> you need to iterate over all of it again?
+>> The root cause is that mad_client and cm_client may init concurrently
+>> when devices_rwsem write semaphore is downgraded in enable_device_and_get() like:
+> 
+> That can't be true, the module loader infrastructue ensures those two
+> things are sequential.
+> 
+
+I'm a bit confused how the module loader infrastructue ensures that mad_client.add() and
+cm_client.add() are sequential. Could you explain in more detail please?
+
+We know that the ib_cm driver and mlx5_ib driver can load concurrently.
+
+Thanks.
+
+> You are trying to say that the post-client fixup stuff will still see
+> the DEVICE_REGISTERED before it reaches the clients_rwsem lock?
+> 
+> That probably just says the clients_rwsem should be obtained before
+> changing the DEVICE_STATE too :\
 > 
 > Jason
 > 
 
-kmem was split into multiple small pages for allocation to prevent allocation
-failure due to memory fragmentation.
-
-And now we add this function to confirm whether these small pages have contiguous
-address. If so, they can be combined into one huge page for use, which is more
-likely when iommu/smmu is enabled.
-
-Junxian
 
