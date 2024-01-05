@@ -1,85 +1,155 @@
-Return-Path: <linux-rdma+bounces-543-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-544-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 033F2824FF3
-	for <lists+linux-rdma@lfdr.de>; Fri,  5 Jan 2024 09:30:51 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 083C78252CF
+	for <lists+linux-rdma@lfdr.de>; Fri,  5 Jan 2024 12:27:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 96293280993
-	for <lists+linux-rdma@lfdr.de>; Fri,  5 Jan 2024 08:30:49 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1661C1C23100
+	for <lists+linux-rdma@lfdr.de>; Fri,  5 Jan 2024 11:27:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 57D3D21358;
-	Fri,  5 Jan 2024 08:25:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C38D02C1AE;
+	Fri,  5 Jan 2024 11:26:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="A3KTqhxj"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-m127150.qiye.163.com (mail-m127150.qiye.163.com [115.236.127.150])
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.115])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C4D042420E;
-	Fri,  5 Jan 2024 08:25:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=sangfor.com.cn
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sangfor.com.cn
-Received: from [172.23.69.7] (unknown [121.32.254.147])
-	by mail-m12750.qiye.163.com (Hmail) with ESMTPA id 594FEF20615;
-	Fri,  5 Jan 2024 16:15:19 +0800 (CST)
-Message-ID: <62db1a02-41b8-44b0-960b-6d6f5bec5d19@sangfor.com.cn>
-Date: Fri, 5 Jan 2024 16:15:18 +0800
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3197128E3F;
+	Fri,  5 Jan 2024 11:26:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1704454016; x=1735990016;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=2mz6UXD8CKZpj6xVnd1sdog26enPJbDhqYo4qIbUESI=;
+  b=A3KTqhxjo2+2tda5wtl+DNRBvpMb8h7jzvy43R9242BOgv2cKlgtA26p
+   ag6J0XTTQxlxpXdn7h39GQb1hU3kVWWa6TnYfGcBg+oAOj/nrHitZXS4M
+   hC7BN3hcVRuK7DQUnnxODs5t/WlJgTulfep6yGoHUreGAzJP/vVYWlTT/
+   LLRUuReFz8ntL2UDnrPanycqgF9ycvJFoqNKRG30vPSzPAgNL+E3AN97X
+   mbhtFcT6/aMOW9EFhway0uyqviNIWun38DS3ztN87Ts2EeP6XWi1DKhiE
+   XhPvD3r+wHWIEEU1IN0S6IN5kf8X58vQUX6M10KM8BKX2jn9iTVG2VtM6
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10943"; a="397208915"
+X-IronPort-AV: E=Sophos;i="6.04,333,1695711600"; 
+   d="scan'208";a="397208915"
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Jan 2024 03:26:55 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10943"; a="851118164"
+X-IronPort-AV: E=Sophos;i="6.04,333,1695711600"; 
+   d="scan'208";a="851118164"
+Received: from ijarvine-desk1.ger.corp.intel.com (HELO localhost) ([10.246.32.38])
+  by fmsmga004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Jan 2024 03:26:47 -0800
+From: =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
+To: linux-pci@vger.kernel.org,
+	Bjorn Helgaas <bhelgaas@google.com>,
+	Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+	Rob Herring <robh@kernel.org>,
+	=?UTF-8?q?Krzysztof=20Wilczy=C5=84ski?= <kw@linux.com>,
+	Lukas Wunner <lukas@wunner.de>,
+	Alexandru Gagniuc <mr.nuke.me@gmail.com>,
+	Krishna chaitanya chundru <quic_krichai@quicinc.com>,
+	Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+	"Rafael J. Wysocki" <rafael@kernel.org>,
+	linux-pm@vger.kernel.org,
+	Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
+	Jason Gunthorpe <jgg@ziepe.ca>,
+	Leon Romanovsky <leon@kernel.org>,
+	linux-rdma@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Cc: Alex Deucher <alexdeucher@gmail.com>,
+	Daniel Lezcano <daniel.lezcano@linaro.org>,
+	Amit Kucheria <amitk@kernel.org>,
+	Zhang Rui <rui.zhang@intel.com>,
+	=?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>,
+	Dean Luick <dean.luick@cornelisnetworks.com>
+Subject: [PATCH v4 4/8] RDMA/hfi1: Use RMW accessors for changing LNKCTL2
+Date: Fri,  5 Jan 2024 13:25:43 +0200
+Message-Id: <20240105112547.7301-5-ilpo.jarvinen@linux.intel.com>
+X-Mailer: git-send-email 2.39.2
+In-Reply-To: <20240105112547.7301-1-ilpo.jarvinen@linux.intel.com>
+References: <20240105112547.7301-1-ilpo.jarvinen@linux.intel.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] RDMA/device: Fix a race between mad_client and cm_client
- init
-To: Jason Gunthorpe <jgg@ziepe.ca>
-Cc: leon@kernel.org, wenglianfa@huawei.com, gustavoars@kernel.org,
- linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
- Shifeng Li <lishifeng1992@126.com>, "Ding, Hui" <dinghui@sangfor.com.cn>
-References: <20240102034335.34842-1-lishifeng@sangfor.com.cn>
- <20240103184804.GB50608@ziepe.ca>
- <80cac9fd-7fed-403e-8889-78e2fc7a49b0@sangfor.com.cn>
- <20240104123728.GC50608@ziepe.ca>
-From: Shifeng Li <lishifeng@sangfor.com.cn>
-In-Reply-To: <20240104123728.GC50608@ziepe.ca>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-HM-Spam-Status: e1kfGhgUHx5ZQUpXWQgPGg8OCBgUHx5ZQUlOS1dZFg8aDwILHllBWSg2Ly
-	tZV1koWUFITzdXWS1ZQUlXWQ8JGhUIEh9ZQVlDQhhIVk8eQxhJHh5MTU8aS1UTARMWGhIXJBQOD1
-	lXWRgSC1lBWUpJSlVISVVJTk9VSk9MWVdZFhoPEhUdFFlBWU9LSFVKTU9JTE5VSktLVUpCS0tZBg
-	++
-X-HM-Tid: 0a8cd8b0e062b21dkuuu594fef20615
-X-HM-MType: 1
-X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6Mkk6Nyo*TDwoIj80Kh8sECgc
-	OiMwFC1VSlVKTEtPT09JTklLSU9JVTMWGhIXVRcSCBMSHR4VHDsIGhUcHRQJVRgUFlUYFUVZV1kS
-	C1lBWUpJSlVISVVJTk9VSk9MWVdZCAFZQUlPT083Bg++
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-On 2024/1/4 20:37, Jason Gunthorpe wrote:
-> On Thu, Jan 04, 2024 at 02:48:14PM +0800, Shifeng Li wrote:
-> 
->> The root cause is that mad_client and cm_client may init concurrently
->> when devices_rwsem write semaphore is downgraded in enable_device_and_get() like:
-> 
-> That can't be true, the module loader infrastructue ensures those two
-> things are sequential.
-> 
+Don't assume that only the driver would be accessing LNKCTL2. In the
+case of upstream (parent), the driver does not even own the device it's
+changing the registers for.
 
-I'm a bit confused how the module loader infrastructue ensures that mad_client.add() and
-cm_client.add() are sequential. Could you explain in more detail please?
+Use RMW capability accessors which do proper locking to avoid losing
+concurrent updates to the register value. This change is also useful as
+a cleanup.
 
-We know that the ib_cm driver and mlx5_ib driver can load concurrently.
+Suggested-by: Lukas Wunner <lukas@wunner.de>
+Signed-off-by: Ilpo Järvinen <ilpo.jarvinen@linux.intel.com>
+Reviewed-by: Dean Luick <dean.luick@cornelisnetworks.com>
+---
+ drivers/infiniband/hw/hfi1/pcie.c | 30 ++++++++----------------------
+ 1 file changed, 8 insertions(+), 22 deletions(-)
 
-Thanks.
-
-> You are trying to say that the post-client fixup stuff will still see
-> the DEVICE_REGISTERED before it reaches the clients_rwsem lock?
-> 
-> That probably just says the clients_rwsem should be obtained before
-> changing the DEVICE_STATE too :\
-> 
-> Jason
-> 
+diff --git a/drivers/infiniband/hw/hfi1/pcie.c b/drivers/infiniband/hw/hfi1/pcie.c
+index 119ec2f1382b..7133964749f8 100644
+--- a/drivers/infiniband/hw/hfi1/pcie.c
++++ b/drivers/infiniband/hw/hfi1/pcie.c
+@@ -1207,14 +1207,11 @@ int do_pcie_gen3_transition(struct hfi1_devdata *dd)
+ 		    (u32)lnkctl2);
+ 	/* only write to parent if target is not as high as ours */
+ 	if ((lnkctl2 & PCI_EXP_LNKCTL2_TLS) < target_vector) {
+-		lnkctl2 &= ~PCI_EXP_LNKCTL2_TLS;
+-		lnkctl2 |= target_vector;
+-		dd_dev_info(dd, "%s: ..new link control2: 0x%x\n", __func__,
+-			    (u32)lnkctl2);
+-		ret = pcie_capability_write_word(parent,
+-						 PCI_EXP_LNKCTL2, lnkctl2);
++		ret = pcie_capability_clear_and_set_word(parent, PCI_EXP_LNKCTL2,
++							 PCI_EXP_LNKCTL2_TLS,
++							 target_vector);
+ 		if (ret) {
+-			dd_dev_err(dd, "Unable to write to PCI config\n");
++			dd_dev_err(dd, "Unable to change parent PCI target speed\n");
+ 			return_error = 1;
+ 			goto done;
+ 		}
+@@ -1223,22 +1220,11 @@ int do_pcie_gen3_transition(struct hfi1_devdata *dd)
+ 	}
+ 
+ 	dd_dev_info(dd, "%s: setting target link speed\n", __func__);
+-	ret = pcie_capability_read_word(dd->pcidev, PCI_EXP_LNKCTL2, &lnkctl2);
++	ret = pcie_capability_clear_and_set_word(dd->pcidev, PCI_EXP_LNKCTL2,
++						 PCI_EXP_LNKCTL2_TLS,
++						 target_vector);
+ 	if (ret) {
+-		dd_dev_err(dd, "Unable to read from PCI config\n");
+-		return_error = 1;
+-		goto done;
+-	}
+-
+-	dd_dev_info(dd, "%s: ..old link control2: 0x%x\n", __func__,
+-		    (u32)lnkctl2);
+-	lnkctl2 &= ~PCI_EXP_LNKCTL2_TLS;
+-	lnkctl2 |= target_vector;
+-	dd_dev_info(dd, "%s: ..new link control2: 0x%x\n", __func__,
+-		    (u32)lnkctl2);
+-	ret = pcie_capability_write_word(dd->pcidev, PCI_EXP_LNKCTL2, lnkctl2);
+-	if (ret) {
+-		dd_dev_err(dd, "Unable to write to PCI config\n");
++		dd_dev_err(dd, "Unable to change device PCI target speed\n");
+ 		return_error = 1;
+ 		goto done;
+ 	}
+-- 
+2.39.2
 
 
