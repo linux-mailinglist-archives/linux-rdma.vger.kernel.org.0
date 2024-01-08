@@ -1,114 +1,99 @@
-Return-Path: <linux-rdma+bounces-552-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-553-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2A75F826A26
-	for <lists+linux-rdma@lfdr.de>; Mon,  8 Jan 2024 10:06:36 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 74AD5826AC6
+	for <lists+linux-rdma@lfdr.de>; Mon,  8 Jan 2024 10:34:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 9B534B2199D
-	for <lists+linux-rdma@lfdr.de>; Mon,  8 Jan 2024 09:06:33 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 139631F22125
+	for <lists+linux-rdma@lfdr.de>; Mon,  8 Jan 2024 09:34:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 03F7CD310;
-	Mon,  8 Jan 2024 09:06:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="qZjZM6Wi"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9D91E11C86;
+	Mon,  8 Jan 2024 09:34:41 +0000 (UTC)
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-wm1-f45.google.com (mail-wm1-f45.google.com [209.85.128.45])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 00AB71170F
-	for <linux-rdma@vger.kernel.org>; Mon,  8 Jan 2024 09:06:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-wm1-f45.google.com with SMTP id 5b1f17b1804b1-40d89446895so8806585e9.0
-        for <linux-rdma@vger.kernel.org>; Mon, 08 Jan 2024 01:06:16 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1704704775; x=1705309575; darn=vger.kernel.org;
-        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=msJDdr+tw/pwMzu/gEPxG7IevnqWt9byzrz1bK4tMkQ=;
-        b=qZjZM6WiFgwhJ5sFfYej1GtfyzxjC2nlWkz3XDa+EWZULfu1UVh8xZbvuQLHd00Gup
-         9neKZ5MzLDifuN0uP8qNdKn+lxO+qIHxPrX11+EopmYt9MZ4V4RWHWleO160Y+zMwuRt
-         YFpqIg02jE9/mWu5SQIfAqiHZ3AWHCF3TM6FaV5NZ40k3lhTeOIxPHBVqAZv+iXE7svn
-         d4mP+v5N5cLpQnBKNMg38jB8NopkCeL8qEHLm1BUTtBfpkLgC9/LLaTjZ2x2fmw1txS7
-         jF1t+ZWPEppyUseE7HQVzig/capMwWWtO9vA5IVo2aWA8Hu+JOfBpokC8AX5mnWAuWTh
-         LW7A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704704775; x=1705309575;
-        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=msJDdr+tw/pwMzu/gEPxG7IevnqWt9byzrz1bK4tMkQ=;
-        b=Gqmk/HJ0LT0CzRqTUsjDZcRRoHcM7fs7Hq2hYD9+2IpLmr3WU0FHeoeBTEbJ4yO/tK
-         UqC4CYv3BBf7EFAQmb0jYKf6plcGeVIaNelNiwtXrouQOKIrz4uz/X/MhoiO5XvjOQZV
-         63tI8ocDFMLVnLY+MnWg7Pzm7XEZ5+stQiiek9n9cABnuKHVozfrKeVKoLuJ5aZgGitT
-         UIerYwUsn8JPGCX+CuyfwWS+miHhSwVwI3/zYBYGbjQogjalXNCvjTb6GBhXNOCiVi+b
-         ytWBJq1NRt64pJfVhd1TqdHWqryjJFSgxTrIQfwkkrSPQ8rR4HiiYXwSbdc7RwkdOxjw
-         jcZA==
-X-Gm-Message-State: AOJu0YzVvqYKrCf27F0mBp25D+2RPsEOiGqzAeuBo6jZlN+YNDgFR+GZ
-	wpFauvzlqSnORbwIWg5HzGBPLKxGtuABXw==
-X-Google-Smtp-Source: AGHT+IE4Gbx6ph0/udW5CwFHOz7npE3W3GoZs8gPaNe+Vqot6Fs0vGGigyOm3bV7K/AaOKEOMFrMXA==
-X-Received: by 2002:a05:600c:4683:b0:40e:4380:c8e5 with SMTP id p3-20020a05600c468300b0040e4380c8e5mr926343wmo.49.1704704775216;
-        Mon, 08 Jan 2024 01:06:15 -0800 (PST)
-Received: from localhost ([102.140.209.237])
-        by smtp.gmail.com with ESMTPSA id z6-20020a05600c0a0600b0040e3ac9f4c8sm9222609wmp.28.2024.01.08.01.06.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 08 Jan 2024 01:06:15 -0800 (PST)
-Date: Mon, 8 Jan 2024 12:06:11 +0300
-From: Dan Carpenter <dan.carpenter@linaro.org>
-To: Selvin Xavier <selvin.xavier@broadcom.com>
-Cc: Jason Gunthorpe <jgg@ziepe.ca>, Leon Romanovsky <leon@kernel.org>,
-	linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
-	kernel-janitors@vger.kernel.org
-Subject: [PATCH] RDMA/bnxt_re: Fix error code in bnxt_re_create_cq()
-Message-ID: <d714306e-b7d7-4e89-b973-a9ff0f260c78@moroto.mountain>
+Received: from aliyun-sdnproxy-1.icoremail.net (aliyun-cloud.icoremail.net [47.90.88.95])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 873D511709;
+	Mon,  8 Jan 2024 09:34:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=zju.edu.cn
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=zju.edu.cn
+Received: from alexious$zju.edu.cn ( [10.190.64.155] ) by
+ ajax-webmail-mail-app4 (Coremail) ; Mon, 8 Jan 2024 17:12:06 +0800
+ (GMT+08:00)
+Date: Mon, 8 Jan 2024 17:12:06 +0800 (GMT+08:00)
+X-CM-HeaderCharset: UTF-8
+From: alexious@zju.edu.cn
+To: "Simon Horman" <horms@kernel.org>
+Cc: "Saeed Mahameed" <saeedm@nvidia.com>, 
+	"Leon Romanovsky" <leon@kernel.org>, 
+	"David S. Miller" <davem@davemloft.net>, 
+	"Eric Dumazet" <edumazet@google.com>, 
+	"Jakub Kicinski" <kuba@kernel.org>, 
+	"Paolo Abeni" <pabeni@redhat.com>, 
+	"Maor Gottlieb" <maorg@mellanox.com>, netdev@vger.kernel.org, 
+	linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] net/mlx5e: fix a double-free in arfs_create_groups
+X-Priority: 3
+X-Mailer: Coremail Webmail Server Version 2023.2-cmXT5 build
+ 20230825(e13b6a3b) Copyright (c) 2002-2024 www.mailtech.cn
+ mispb-4df6dc2c-e274-4d1c-b502-72c5c3dfa9ce-zj.edu.cn
+In-Reply-To: <20240103172254.GB31813@kernel.org>
+References: <20231224081348.3535146-1-alexious@zju.edu.cn>
+ <20240103172254.GB31813@kernel.org>
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=UTF-8
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Mailer: git-send-email haha only kidding
+Message-ID: <5d93189f.7631f.18ce857ef38.Coremail.alexious@zju.edu.cn>
+X-Coremail-Locale: zh_CN
+X-CM-TRANSID:cS_KCgBXzSxmvJtlmiOHAA--.8335W
+X-CM-SenderInfo: qrsrjiarszq6lmxovvfxof0/1tbiAgwOAGWadaU02gABsA
+X-Coremail-Antispam: 1Ur529EdanIXcx71UUUUU7IcSsGvfJ3iIAIbVAYjsxI4VWxJw
+	CS07vEb4IE77IF4wCS07vE1I0E4x80FVAKz4kxMIAIbVAFxVCaYxvI4VCIwcAKzIAtYxBI
+	daVFxhVjvjDU=
 
-Return -ENOMEM if get_zeroed_page() fails.  Don't return success.
-
-Fixes: e275919d9669 ("RDMA/bnxt_re: Share a page to expose per CQ info with userspace")
-Signed-off-by: Dan Carpenter <dan.carpenter@linaro.org>
----
- drivers/infiniband/hw/bnxt_re/ib_verbs.c | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/infiniband/hw/bnxt_re/ib_verbs.c b/drivers/infiniband/hw/bnxt_re/ib_verbs.c
-index 7213dc7574d0..824349659d69 100644
---- a/drivers/infiniband/hw/bnxt_re/ib_verbs.c
-+++ b/drivers/infiniband/hw/bnxt_re/ib_verbs.c
-@@ -2944,9 +2944,9 @@ int bnxt_re_create_cq(struct ib_cq *ibcq, const struct ib_cq_init_attr *attr,
- 	struct bnxt_qplib_dev_attr *dev_attr = &rdev->dev_attr;
- 	struct bnxt_qplib_chip_ctx *cctx;
- 	struct bnxt_qplib_nq *nq = NULL;
--	int rc = -ENOMEM, entries;
- 	unsigned int nq_alloc_cnt;
- 	int cqe = attr->cqe;
-+	int rc, entries;
- 	u32 active_cqs;
- 
- 	if (attr->flags)
-@@ -3027,8 +3027,10 @@ int bnxt_re_create_cq(struct ib_cq *ibcq, const struct ib_cq_init_attr *attr,
- 			hash_add(rdev->cq_hash, &cq->hash_entry, cq->qplib_cq.id);
- 			/* Allocate a page */
- 			cq->uctx_cq_page = (void *)get_zeroed_page(GFP_KERNEL);
--			if (!cq->uctx_cq_page)
-+			if (!cq->uctx_cq_page) {
-+				rc = -ENOMEM;
- 				goto c2fail;
-+			}
- 			resp.comp_mask |= BNXT_RE_CQ_TOGGLE_PAGE_SUPPORT;
- 		}
- 		resp.cqid = cq->qplib_cq.id;
--- 
-2.42.0
-
+Cgo+IE9uIFN1biwgRGVjIDI0LCAyMDIzIGF0IDA0OjEzOjQ4UE0gKzA4MDAsIFpoaXBlbmcgTHUg
+d3JvdGU6Cj4gPiBXaGVuIGBpbmAgYWxsb2NhdGVkIGJ5IGt2emFsbG9jIGZhaWxzLCBhcmZzX2Ny
+ZWF0ZV9ncm91cHMgd2lsbCBmcmVlCj4gPiBmdC0+ZyBhbmQgcmV0dXJuIGFuIGVycm9yLiBIb3dl
+dmVyLCBhcmZzX2NyZWF0ZV90YWJsZSwgdGhlIG9ubHkgY2FsbGVyIG9mCj4gPiBhcmZzX2NyZWF0
+ZV9ncm91cHMsIHdpbGwgaG9sZCB0aGlzIGVycm9yIGFuZCBjYWxsIHRvCj4gPiBtbHg1ZV9kZXN0
+cm95X2Zsb3dfdGFibGUsIGluIHdoaWNoIHRoZSBmdC0+ZyB3aWxsIGJlIGZyZWVkIGFnYWluLgo+
+ID4gCj4gPiBGaXhlczogMWNhYmU2YjA5NjVlICgibmV0L21seDVlOiBDcmVhdGUgYVJGUyBmbG93
+IHRhYmxlcyIpCj4gPiBTaWduZWQtb2ZmLWJ5OiBaaGlwZW5nIEx1IDxhbGV4aW91c0B6anUuZWR1
+LmNuPgo+IAo+IFRoYW5rcywKPiAKPiBJIGFncmVlIHRoaXMgYWRkcmVzc2VzIHRoZSBpc3N1ZSB0
+aGF0IHlvdSBkZXNjcmliZS4KPiBBbmQgYXMgYSBtaW5pbWFsIGZpeCBpdCBsb29rcyBnb29kLgo+
+IAo+IFJldmlld2VkLWJ5OiBTaW1vbiBIb3JtYW4gPGhvcm1zQGtlcm5lbC5vcmc+Cj4gCj4gSG93
+ZXZlciwgSSB3b3VsZCBsaWtlIHRvIHN1Z2dlc3QgdGhhdCBzb21lIGNsZWFuLXVwIHdvcmsgY291
+bGQKPiB0YWtlIHBsYWNlIGFzIGEgZm9sbG93LXVwLgo+IAo+IEkgdGhpbmsgdGhhdCB0aGUgZXJy
+b3IgaGFuZGxpbmcgaW4gdGhpcyBhcmVhIG9mIHRoZSBjb2RlCj4gaXMgcmF0aGVyIGZyYWdpbGUu
+IFRoaXMgaXMgYmVjYXVzZSBpbml0aWFsaXNhdGlvbiBpcyBub3QgbmVjZXNzYXJpbHkKPiB1bndv
+dW5kIG9uIGVycm9yIHdpdGhpbiB0aGUgZnVuY3Rpb24gdGhhdCBpbml0aWFsaXNhdGlvbiBvY2N1
+cnMuCj4gCj4gSSB0aGluayBpdCB3b3VsZCBiZSBiZXR0ZXIgaWYgYXJmc19jcmVhdGVfZ3JvdXBz
+KCk6Cj4gCj4gMS4gUmVsZWFzZWQgYWxsb2NhdGVzIHJlc291cmNlcyBpdCBhbGxvY2F0ZXMsIGlu
+Y2x1ZGluZyBmdC0+ZyBhbmQKPiAgICBlbGVtZW50cyBvZiBmdC0+Zywgb24gZXJyb3IuCj4gMi4g
+VGhpcyB3YXMgYWNoaWV2ZWQgYnkgdXNpbmcgYSBnb3RvIHVud2luZCBsYWRkZXIuCj4gMy4gVGhl
+IGNhbGxlciB0cmVhdGVkIGZ0LT5nIGFzIHVuaW5pdGlhbGlzZWQgaWYKPiAgICBhcmZzX2NyZWF0
+ZV9ncm91cHMgZmFpbHMuCj4KIApBZ3JlZSwgSSB0aGluayBhIHVud2luZCBsYWRkZXIgZm9yIGFy
+ZnNfY3JlYXRlX2dyb3VwcyBpcyBtdWNoIGJldHRlci4KSSdsbCBmb2xsb3cgdGhpcyBpZGVhIHRv
+IHNlbmQgYSB2MiBwYXRjaCBsYXRlci4KQW5vdGhlciBjb21tZW50IGJlbG93LgoKPiBMaWtld2lz
+ZSwgSSB0aGluayB0aGF0Ogo+IAo+ICogYXJmc19jcmVhdGVfZ3JvdXBzLCBzaG91bGQgaW5pdGlh
+bGlzZSBmdC0+bnVtX2dyb3Vwcwo+IAo+IEFuZCBmdXJ0aGVyLCBsb2dpYyBzaW1pbGFyIHRvIHRo
+ZSBhYm92ZSBzaG91bGQgZ3VpZGUKPiBob3cgYXJmc19jcmVhdGVfdGFibGUoKSBpbml0aWFsaXNl
+cyBmdC0+dCBhbmQgY2xlYW5zIGl0Cj4gdXAgb24gZXJyb3IuCj4gCgpJIHRoaW5rIHRoYXQgZnQt
+PnQgeW91IG1lbnRpb25lZCByZWZlcnMgdG8gbWx4NV9jcmVhdGVfZmxvd190YWJsZS4KSSdkIGxp
+a2UgdG8gbWFrZSB0aGUgbGlmZSBjeWNsZSBvZiBmdC0+dCBzaW1pbGFyIHRvIGZ0LT5nIGluIGFy
+ZnNfY3JlYXRlX2dyb3VwcywgCmJ1dCBpdCBuZWVkcyB0byBhZGQgYW4gYXJndW1lbnQgZm9yIG1s
+eDVfY3JlYXRlX2Zsb3dfdGFibGUgdG8gdHJhbnNmZXIgZnQgdG8gCml0LiBIb3dldmVyLCBtbHg1
+X2NyZWF0ZV9mbG93X3RhYmxlIGlzIGNhbGxlZCBpbiBtb3JlIHRoYW4gMzAgZGlmZmVyZW50IHBs
+YWNlcyAKdGhyb3VnaG91dCB0aGUga2VybmVsLiBTbyBzdWNoIG1vZGlmaWNhdGlvbiBjb3VsZCBi
+ZSBhbm90aGVyIHJlZmFjdG9yaW5nIHBhdGNoCmJ1dCBtYXkgYmUgb3V0IG9mIHRoaXMgZml4IHBh
+dGNoJ3MgZHV0eS4KCj4gSSBkaWQgbm90IGxvb2sgYXQgdGhlIGNvZGUgYmV5b25kIHRoZSBzY29w
+ZSBkZXNjcmliZWQgYWJvdmUuCj4gQnV0IHRoZSBhYm92ZSBhcmUgZ2VuZXJhbCBwcmluY2lwbGVz
+IHRoYXQgbWF5IHdlbGwgYXBwbHkgaW4KPiBvdGhlciBuZWFyYnkgY29kZSB0b28uCj4gCj4gLi4u
+Cg==
 
