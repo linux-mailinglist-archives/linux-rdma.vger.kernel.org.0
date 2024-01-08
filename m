@@ -1,159 +1,127 @@
-Return-Path: <linux-rdma+bounces-560-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-561-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id A9A8E827318
-	for <lists+linux-rdma@lfdr.de>; Mon,  8 Jan 2024 16:29:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id C2E988274AB
+	for <lists+linux-rdma@lfdr.de>; Mon,  8 Jan 2024 17:10:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5B64A1F25935
-	for <lists+linux-rdma@lfdr.de>; Mon,  8 Jan 2024 15:29:35 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 747201F237A7
+	for <lists+linux-rdma@lfdr.de>; Mon,  8 Jan 2024 16:10:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B0D8852F91;
-	Mon,  8 Jan 2024 15:28:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0192A524B7;
+	Mon,  8 Jan 2024 16:10:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="IoUa8Hrn"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from zg8tmty3ljk5ljewns4xndka.icoremail.net (zg8tmty3ljk5ljewns4xndka.icoremail.net [167.99.105.149])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BB44D524D3;
-	Mon,  8 Jan 2024 15:28:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=zju.edu.cn
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=zju.edu.cn
-Received: from luzhipeng.223.5.5.5 (unknown [183.159.171.224])
-	by mail-app2 (Coremail) with SMTP id by_KCgBn+fBKGZxleMgHAA--.4251S2;
-	Mon, 08 Jan 2024 23:48:27 +0800 (CST)
-From: Zhipeng Lu <alexious@zju.edu.cn>
-To: alexious@zju.edu.cn
-Cc: Simon Horman <horms@kernel.org>,
-	Saeed Mahameed <saeedm@nvidia.com>,
-	Leon Romanovsky <leon@kernel.org>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>,
-	Paolo Abeni <pabeni@redhat.com>,
-	Maor Gottlieb <maorg@mellanox.com>,
-	netdev@vger.kernel.org,
-	linux-rdma@vger.kernel.org,
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 47D57537F4
+	for <linux-rdma@vger.kernel.org>; Mon,  8 Jan 2024 16:10:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1704730212;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=cKLHLhBEX8bb9WWT7OqrY212FY4x/L8iopt3fivYrUA=;
+	b=IoUa8HrnPnBv7+km7lZBzWs4WpNZfOxxlWfBOtiO8JfMa/nGZHzp3zkJ1IL3xEoJul2OlN
+	VdoXV+pRKp/LHoRWpD29u/htlMPrJx6sR9D7H22sKIn/wXzju3+f5tOVSCce7hQ09X88Bf
+	SgpKMJJ9yNSVry3HJc5No2+PuMoHp8Q=
+Received: from mail-qv1-f69.google.com (mail-qv1-f69.google.com
+ [209.85.219.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-622-E7aAh0SiPHuk6DYnX3wQQw-1; Mon, 08 Jan 2024 11:10:10 -0500
+X-MC-Unique: E7aAh0SiPHuk6DYnX3wQQw-1
+Received: by mail-qv1-f69.google.com with SMTP id 6a1803df08f44-680c7ce15a0so23849806d6.1
+        for <linux-rdma@vger.kernel.org>; Mon, 08 Jan 2024 08:10:10 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1704730210; x=1705335010;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=cKLHLhBEX8bb9WWT7OqrY212FY4x/L8iopt3fivYrUA=;
+        b=G1rMAh2IVTEtqa8PNG5d7UTwn4eEZX2ZVk+JFzTWKGzFWyvpsL98IhbA7kGZ5NUaqu
+         sTI8Uw01nQCGulnl4LltRc3KcvSG2Y7wc3ef3O/DYw7Mcsj/VxeRA6y5sKQd+JSv0nvi
+         UErQxRip3CN5PnSHrEbBY5LIPjXsUME0o0Go7+We33pHTdkuh04bjzdVIJ/XocLklkP+
+         p26BNoGBkSXqpyaxPX/aOsZ4Sy11ofCm9pJv4GyfRey+Y2rpCb2fGa0yLpzCP3YTiCbQ
+         FvAbqN3JUptNpCbtQyIYiWnEQ+IfeMJ0DkR84ysOG8m5mv28Fq/dGLtuRbA/37/yxhAj
+         r7CQ==
+X-Gm-Message-State: AOJu0YzU7J/wTcSGG+LBjFucFxcZogP5jGNHsvWkEDN3CUe11h/IJJ4f
+	ESS9SabnOW40F3RbWKwphRuq9ka+5+MqINs+CtQcN2x/5Ew7YlwYRxEeTAIG2BfjrhoLQjn8b3e
+	nl1WqjtdetTd/3hw8HIZT1bUR2Sl6+A==
+X-Received: by 2002:ad4:594d:0:b0:681:967:ce0 with SMTP id eo13-20020ad4594d000000b0068109670ce0mr979878qvb.122.1704730210403;
+        Mon, 08 Jan 2024 08:10:10 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IH5zkUshQJQO0Yn7/HhzYaTEGUr4o+kQ0yU3L5LCWG0qqYgnVwhmp7NeTgoPrvq+YKPodSQdQ==
+X-Received: by 2002:ad4:594d:0:b0:681:967:ce0 with SMTP id eo13-20020ad4594d000000b0068109670ce0mr979861qvb.122.1704730210173;
+        Mon, 08 Jan 2024 08:10:10 -0800 (PST)
+Received: from localhost ([37.162.108.53])
+        by smtp.gmail.com with ESMTPSA id l5-20020a056214028500b00680cb3fd476sm81118qvv.43.2024.01.08.08.10.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 08 Jan 2024 08:10:09 -0800 (PST)
+Date: Mon, 8 Jan 2024 17:10:04 +0100
+From: Andrea Claudi <aclaudi@redhat.com>
+To: Junxian Huang <huangjunxian6@hisilicon.com>
+Cc: jgg@ziepe.ca, leon@kernel.org, dsahern@gmail.com,
+	stephen@networkplumber.org,
+	Chengchang Tang <tangchengchang@huawei.com>, netdev@vger.kernel.org,
+	linux-rdma@vger.kernel.org, linuxarm@huawei.com,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH] [v2] net/mlx5e: fix a double-free in arfs_create_groups
-Date: Mon,  8 Jan 2024 23:26:04 +0800
-Message-Id: <20240108152605.3712050-1-alexious@zju.edu.cn>
-X-Mailer: git-send-email 2.34.1
+Subject: Re: [PATCH iproute2-rc 2/2] rdma: Fix the error of accessing string
+ variable outside the lifecycle
+Message-ID: <ZZweXDQ-4ZrlfxBv@renaissance-vector>
+References: <20231229065241.554726-1-huangjunxian6@hisilicon.com>
+ <20231229065241.554726-3-huangjunxian6@hisilicon.com>
+ <fb7c85a4-165d-7eda-740a-d11a32cb86c0@hisilicon.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:by_KCgBn+fBKGZxleMgHAA--.4251S2
-X-Coremail-Antispam: 1UD129KBjvJXoWxZrWUXrWrXw4kWF48KrWDCFg_yoW5Ar48pF
-	45J34DKFs5Za48XanrA3yvqw1rCa18tayUu3WIv34SqwnFyr4UCFyrK3y3AFyxCFW3ArnF
-	y3Z8Zw1UAFZxArUanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUvj14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-	rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
-	1l84ACjcxK6xIIjxv20xvE14v26w1j6s0DM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4U
-	JVWxJr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Gc
-	CE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E
-	2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJV
-	W8JwACjcxG0xvY0x0EwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lFIxGxcIEc7CjxVA2
-	Y2ka0xkIwI1l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4
-	xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q6r43
-	MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I
-	0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVWU
-	JVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjfUoO
-	J5UUUUU
-X-CM-SenderInfo: qrsrjiarszq6lmxovvfxof0/
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <fb7c85a4-165d-7eda-740a-d11a32cb86c0@hisilicon.com>
 
-When `in` allocated by kvzalloc fails, arfs_create_groups will free
-ft->g and return an error. However, arfs_create_table, the only caller of
-arfs_create_groups, will hold this error and call to
-mlx5e_destroy_flow_table, in which the ft->g will be freed again.
+On Mon, Jan 08, 2024 at 09:28:52AM +0800, Junxian Huang wrote:
+> 
+> Hi all,
+> 
+> the first patch is replaced by Stephen's latest patches. Are there any
+> comments to this patch?
+> 
+> Thanks,
+> Junxian
+>
+> On 2023/12/29 14:52, Junxian Huang wrote:
+> > From: wenglianfa <wenglianfa@huawei.com>
+> > 
+> > All these SPRINT_BUF(b) definitions are inside the 'if' block, but
+> > accessed outside the 'if' block through the pointers 'comm'. This
+> > leads to empty 'comm' attribute when querying resource information.
+> > So move the definitions to the beginning of the functions to extend
+> > their life cycle.
+> > 
+> > Before:
+> > $ rdma res show srq
+> > dev hns_0 srqn 0 type BASIC lqpn 18 pdn 5 pid 7775 comm
+> > 
+> > After:
+> > $ rdma res show srq
+> > dev hns_0 srqn 0 type BASIC lqpn 18 pdn 5 pid 7775 comm ib_send_bw
+> > 
+> > Fixes: 1808f002dfdd ("lib/fs: fix memory leak in get_task_name()")
+> > Signed-off-by: wenglianfa <wenglianfa@huawei.com>
+> > Signed-off-by: Junxian Huang <huangjunxian6@hisilicon.com>
+> > ---
 
-Fixes: 1cabe6b0965e ("net/mlx5e: Create aRFS flow tables")
-Signed-off-by: Zhipeng Lu <alexious@zju.edu.cn>
-Reviewed-by: Simon Horman <horms@kernel.org>
----
-Changelog:
+Hi Junxian,
+For future patches, you can have a faster feedback adding to cc the
+author of the original patch. In this case it's me, so here's my
 
-v2: free ft->g just in arfs_create_groups with a unwind ladde.
----
- .../net/ethernet/mellanox/mlx5/core/en_arfs.c   | 17 +++++++++--------
- drivers/net/ethernet/mellanox/mlx5/core/en_fs.c |  1 -
- 2 files changed, 9 insertions(+), 9 deletions(-)
-
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en_arfs.c b/drivers/net/ethernet/mellanox/mlx5/core/en_arfs.c
-index bb7f86c993e5..c96f4c571b63 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/en_arfs.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/en_arfs.c
-@@ -252,13 +252,14 @@ static int arfs_create_groups(struct mlx5e_flow_table *ft,
- 	int err;
- 	u8 *mc;
- 
-+	ft->num_groups = 0;
-+
- 	ft->g = kcalloc(MLX5E_ARFS_NUM_GROUPS,
- 			sizeof(*ft->g), GFP_KERNEL);
- 	in = kvzalloc(inlen, GFP_KERNEL);
- 	if  (!in || !ft->g) {
--		kfree(ft->g);
--		kvfree(in);
--		return -ENOMEM;
-+		err = -ENOMEM;
-+		goto free_ft;
- 	}
- 
- 	mc = MLX5_ADDR_OF(create_flow_group_in, in, match_criteria);
-@@ -278,7 +279,7 @@ static int arfs_create_groups(struct mlx5e_flow_table *ft,
- 		break;
- 	default:
- 		err = -EINVAL;
--		goto out;
-+		goto free_ft;
- 	}
- 
- 	switch (type) {
-@@ -300,7 +301,7 @@ static int arfs_create_groups(struct mlx5e_flow_table *ft,
- 		break;
- 	default:
- 		err = -EINVAL;
--		goto out;
-+		goto free_ft;
- 	}
- 
- 	MLX5_SET_CFG(in, match_criteria_enable, MLX5_MATCH_OUTER_HEADERS);
-@@ -327,7 +328,9 @@ static int arfs_create_groups(struct mlx5e_flow_table *ft,
- err:
- 	err = PTR_ERR(ft->g[ft->num_groups]);
- 	ft->g[ft->num_groups] = NULL;
--out:
-+free_ft:
-+	kfree(ft->g);
-+	ft->g = NULL;
- 	kvfree(in);
- 
- 	return err;
-@@ -343,8 +346,6 @@ static int arfs_create_table(struct mlx5e_flow_steering *fs,
- 	struct mlx5_flow_table_attr ft_attr = {};
- 	int err;
- 
--	ft->num_groups = 0;
--
- 	ft_attr.max_fte = MLX5E_ARFS_TABLE_SIZE;
- 	ft_attr.level = MLX5E_ARFS_FT_LEVEL;
- 	ft_attr.prio = MLX5E_NIC_PRIO;
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en_fs.c b/drivers/net/ethernet/mellanox/mlx5/core/en_fs.c
-index 777d311d44ef..7b6aa0c8b58d 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/en_fs.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/en_fs.c
-@@ -883,7 +883,6 @@ void mlx5e_fs_init_l2_addr(struct mlx5e_flow_steering *fs, struct net_device *ne
- void mlx5e_destroy_flow_table(struct mlx5e_flow_table *ft)
- {
- 	mlx5e_destroy_groups(ft);
--	kfree(ft->g);
- 	mlx5_destroy_flow_table(ft->t);
- 	ft->t = NULL;
- }
--- 
-2.34.1
+Acked-by: Andrea Claudi <aclaudi@redhat.com>
 
 
