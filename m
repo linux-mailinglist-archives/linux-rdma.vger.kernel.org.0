@@ -1,115 +1,161 @@
-Return-Path: <linux-rdma+bounces-590-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-591-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id D474F8296CE
-	for <lists+linux-rdma@lfdr.de>; Wed, 10 Jan 2024 11:01:05 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 472FF829B27
+	for <lists+linux-rdma@lfdr.de>; Wed, 10 Jan 2024 14:24:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8468C289FB2
-	for <lists+linux-rdma@lfdr.de>; Wed, 10 Jan 2024 10:01:04 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 724D61F22447
+	for <lists+linux-rdma@lfdr.de>; Wed, 10 Jan 2024 13:24:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 56B453F8D4;
-	Wed, 10 Jan 2024 10:01:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=amazon.com header.i=@amazon.com header.b="ok9kMP5U"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DDDCC487B7;
+	Wed, 10 Jan 2024 13:23:52 +0000 (UTC)
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from smtp-fw-9102.amazon.com (smtp-fw-9102.amazon.com [207.171.184.29])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D68843F8D2
-	for <linux-rdma@vger.kernel.org>; Wed, 10 Jan 2024 10:01:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amazon.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=amazon.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1704880861; x=1736416861;
-  h=message-id:date:mime-version:to:cc:references:from:
-   in-reply-to:content-transfer-encoding:subject;
-  bh=f7ftmcd1YCXCUjPsXYvF0wf+1htNOqqlSdiSjHfIrek=;
-  b=ok9kMP5UNlq0c/IJJntha+/LhhUCR1jaY3u2TlaBap6glrxPxFJ2PawE
-   ybINDqRKAhtNXVI/BBElW1rVcyoopY75S7SOCLjbR+H4SNncyPxY4G0/l
-   z2oQ2N9LysIaeMYpJPy5vTe0es0KgWaagl/1NFkW7IpOHibq5D4gqof0S
-   w=;
-X-IronPort-AV: E=Sophos;i="6.04,184,1695686400"; 
-   d="scan'208";a="388821809"
-Subject: Re: [PATCH for-next v4] RDMA/efa: Add EFA query MR support
-Received: from pdx4-co-svc-p1-lb2-vlan3.amazon.com (HELO email-inbound-relay-pdx-2c-m6i4x-b1c0e1d0.us-west-2.amazon.com) ([10.25.36.214])
-  by smtp-border-fw-9102.sea19.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Jan 2024 10:00:51 +0000
-Received: from smtpout.prod.us-west-2.prod.farcaster.email.amazon.dev (pdx2-ws-svc-p26-lb5-vlan3.pdx.amazon.com [10.39.38.70])
-	by email-inbound-relay-pdx-2c-m6i4x-b1c0e1d0.us-west-2.amazon.com (Postfix) with ESMTPS id C3E8480E7D;
-	Wed, 10 Jan 2024 10:00:50 +0000 (UTC)
-Received: from EX19MTAEUA002.ant.amazon.com [10.0.10.100:34154]
- by smtpin.naws.eu-west-1.prod.farcaster.email.amazon.dev [10.0.47.189:2525] with esmtp (Farcaster)
- id 2789ee24-d884-44ed-a2c2-c8d5fd289b86; Wed, 10 Jan 2024 10:00:49 +0000 (UTC)
-X-Farcaster-Flow-ID: 2789ee24-d884-44ed-a2c2-c8d5fd289b86
-Received: from EX19D031EUB003.ant.amazon.com (10.252.61.88) by
- EX19MTAEUA002.ant.amazon.com (10.252.50.126) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.40; Wed, 10 Jan 2024 10:00:49 +0000
-Received: from [192.168.135.165] (10.85.143.178) by
- EX19D031EUB003.ant.amazon.com (10.252.61.88) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.40; Wed, 10 Jan 2024 10:00:46 +0000
-Message-ID: <d426646b-9618-4316-8e3f-8943b836cf3a@amazon.com>
-Date: Wed, 10 Jan 2024 12:00:41 +0200
+Received: from zg8tmtu5ljg5lje1ms4xmtka.icoremail.net (zg8tmtu5ljg5lje1ms4xmtka.icoremail.net [159.89.151.119])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7766248CC0;
+	Wed, 10 Jan 2024 13:23:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=zju.edu.cn
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=zju.edu.cn
+Received: from alexious$zju.edu.cn ( [124.90.105.91] ) by
+ ajax-webmail-mail-app4 (Coremail) ; Wed, 10 Jan 2024 21:23:24 +0800
+ (GMT+08:00)
+Date: Wed, 10 Jan 2024 21:23:24 +0800 (GMT+08:00)
+X-CM-HeaderCharset: UTF-8
+From: alexious@zju.edu.cn
+To: "Simon Horman" <horms@kernel.org>
+Cc: "Saeed Mahameed" <saeedm@nvidia.com>, 
+	"Leon Romanovsky" <leon@kernel.org>, 
+	"David S. Miller" <davem@davemloft.net>, 
+	"Eric Dumazet" <edumazet@google.com>, 
+	"Jakub Kicinski" <kuba@kernel.org>, 
+	"Paolo Abeni" <pabeni@redhat.com>, 
+	"Maor Gottlieb" <maorg@mellanox.com>, netdev@vger.kernel.org, 
+	linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] [v2] net/mlx5e: fix a double-free in arfs_create_groups
+X-Priority: 3
+X-Mailer: Coremail Webmail Server Version 2023.2-cmXT5 build
+ 20230825(e13b6a3b) Copyright (c) 2002-2024 www.mailtech.cn
+ mispb-4df6dc2c-e274-4d1c-b502-72c5c3dfa9ce-zj.edu.cn
+In-Reply-To: <20240109081837.GJ132648@kernel.org>
+References: <20240108152605.3712050-1-alexious@zju.edu.cn>
+ <20240109081837.GJ132648@kernel.org>
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=UTF-8
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Content-Language: en-US
-To: Leon Romanovsky <leon@kernel.org>, Jason Gunthorpe <jgg@nvidia.com>
-CC: <linux-rdma@vger.kernel.org>, <sleybo@amazon.com>, <matua@amazon.com>,
-	<gal.pressman@linux.dev>, Anas Mousa <anasmous@amazon.com>, Firas Jahjah
-	<firasj@amazon.com>
-References: <20240104095155.10676-1-mrgolin@amazon.com>
- <20240107100256.GA12803@unreal> <20240108130554.GF50406@nvidia.com>
- <20240108180140.GB12803@unreal> <20240108180636.GM50406@nvidia.com>
- <86765443-4292-44b4-824e-d2ea5ebebc18@app.fastmail.com>
- <20240109180523.GA7488@unreal>
-From: "Margolin, Michael" <mrgolin@amazon.com>
-In-Reply-To: <20240109180523.GA7488@unreal>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: EX19D032UWB004.ant.amazon.com (10.13.139.136) To
- EX19D031EUB003.ant.amazon.com (10.252.61.88)
+Message-ID: <49a38639.7d59b.18cf38ab939.Coremail.alexious@zju.edu.cn>
+X-Coremail-Locale: zh_CN
+X-CM-TRANSID:cS_KCgDnSd1Mmp5lOcemAA--.20056W
+X-CM-SenderInfo: qrsrjiarszq6lmxovvfxof0/1tbiAgcQAGWeaicKGAABsw
+X-Coremail-Antispam: 1Ur529EdanIXcx71UUUUU7IcSsGvfJ3iIAIbVAYjsxI4VWxJw
+	CS07vEb4IE77IF4wCS07vE1I0E4x80FVAKz4kxMIAIbVAFxVCaYxvI4VCIwcAKzIAtYxBI
+	daVFxhVjvjDU=
 
-
-On 1/9/2024 8:05 PM, Leon Romanovsky wrote:
-> CAUTION: This email originated from outside of the organization. Do not click links or open attachments unless you can confirm the sender and know the content is safe.
->
->
->
-> On Mon, Jan 08, 2024 at 09:40:32PM +0200, Leon Romanovsky wrote:
->>
->> On Mon, Jan 8, 2024, at 20:06, Jason Gunthorpe wrote:
->>> On Mon, Jan 08, 2024 at 08:01:40PM +0200, Leon Romanovsky wrote:
->>>>> I was saying in the rdma-core PR that this field shouldn't even
->>>>> exist..
->>>> Something like that?
->>> Yeah, like that. However it is difficult to get the out valid uattr
->>> back in the rdma-core side.
->>>
->>> This is best if the ID's can have well defined not-valid values such
->>> as 0 or -1.
->> Michael tried something like that in previous versions by defining 0xffff as not valid.
->>
->> I didn't like it because there's no promise from PCI core that it is invalid value.
-> Michael,
-> What do you think?
->
-> Thanks
-
-In this case I prefer to keep the explicit validity for consistency with
-the device originated values.
-
-In general I think it will be useful to have some convenient way to get
-attr validity from the ioctl mechanism in rdma-core.
-
-Michael
-
+PiBPbiBNb24sIEphbiAwOCwgMjAyNCBhdCAxMToyNjowNFBNICswODAwLCBaaGlwZW5nIEx1IHdy
+b3RlOgo+ID4gV2hlbiBgaW5gIGFsbG9jYXRlZCBieSBrdnphbGxvYyBmYWlscywgYXJmc19jcmVh
+dGVfZ3JvdXBzIHdpbGwgZnJlZQo+ID4gZnQtPmcgYW5kIHJldHVybiBhbiBlcnJvci4gSG93ZXZl
+ciwgYXJmc19jcmVhdGVfdGFibGUsIHRoZSBvbmx5IGNhbGxlciBvZgo+ID4gYXJmc19jcmVhdGVf
+Z3JvdXBzLCB3aWxsIGhvbGQgdGhpcyBlcnJvciBhbmQgY2FsbCB0bwo+ID4gbWx4NWVfZGVzdHJv
+eV9mbG93X3RhYmxlLCBpbiB3aGljaCB0aGUgZnQtPmcgd2lsbCBiZSBmcmVlZCBhZ2Fpbi4KPiA+
+IAo+ID4gRml4ZXM6IDFjYWJlNmIwOTY1ZSAoIm5ldC9tbHg1ZTogQ3JlYXRlIGFSRlMgZmxvdyB0
+YWJsZXMiKQo+ID4gU2lnbmVkLW9mZi1ieTogWmhpcGVuZyBMdSA8YWxleGlvdXNAemp1LmVkdS5j
+bj4KPiA+IFJldmlld2VkLWJ5OiBTaW1vbiBIb3JtYW4gPGhvcm1zQGtlcm5lbC5vcmc+Cj4gCj4g
+V2hlbiB3b3JraW5nIG9uIG5ldGRldiAoYW5kIHByb2JhYmx5IGVsc2V3aGVyZSkKPiBQbGVhc2Ug
+ZG9uJ3QgaW5jbHVkZSBSZXZpZXdlZC1ieSBvciBvdGhlciB0YWdzCj4gdGhhdCB3ZXJlIGV4cGxp
+Y2l0bHkgc3VwcGxpZWQgYnkgc29tZW9uZTogSSBkb24ndCByZWNhbGwKPiBzdXBwbHlpbmcgdGhl
+IHRhZyBhYm92ZSBzbyBwbGVhc2UgZHJvcCBpdC4KCkkgYXBvbG9naXplLCBidXQgaXQgYXBwZWFy
+cyB0aGF0IHlvdSBpbmNsdWRlZCBhICJyZXZpZXdlZC1ieSIgCnRhZyBhbG9uZyB3aXRoIGNlcnRh
+aW4gc3VnZ2VzdGlvbnMgZm9yIHZlcnNpb24gMSBvZiB0aGlzIHBhdGNoIAppbiB0aGUgZmlyc3Qg
+cmV2aWV3IGVtYWlsKGFib3V0IDYgZGF5cyBiZWZvcmUpLiAKSW4gcmVzcG9uc2UsIGFmdGVyIGEg
+c2hvcnQgZGlzY3Vzc2lvbiwgSSBmb2xsb3dlZCBzb21lIG9mIAp0aG9zZSBzdWdnZXN0aW9ucyBh
+bmQgc2VuZCB0aGlzIHYyIHBhdGNoLgpJIHJlZmVycmVkIHRvIHRoZSAiRGVhbGluZyB3aXRoIHRh
+Z3MiIHNlY3Rpb24gaW4gdGhpcyBLZXJuZWxOZXdiaWVzIAp0aXBzOiBodHRwczovL2tlcm5lbG5l
+d2JpZXMub3JnL1BhdGNoVGlwc0FuZFRyaWNrcyBhbmQgdGhvdWdodCAKdGhhdCBJIHNob3VsZCBp
+bmNsdWRlIHRoYXQgdGFnIGluIHYxIGVtYWlsIHRvIHRoaXMgdjIgcGF0Y2guClNvIG5vdyBJJ20g
+YSBsaXR0bGUgYml0IGNvbmZ1c2VkIGhlcmU6IGlmIHRoZSB0YWcgcnVsZSBoYXMgY2hhbmdlZCAK
+b3IgSSBnb3Qgc29tZSBtaXN1bmRlcnN0YW5kaW5nIG9uIGV4aXN0aW5nIHJ1bGVzPyBZb3VyIGNs
+YXJpZmljYXRpb24gCm9uIHRoaXMgbWF0dGVyIHdvdWxkIGJlIGdyZWF0bHkgYXBwcmVjaWF0ZWQu
+CgpJJ2xsIHNlbmQgYSBuZXcgdmVyc2lvbiBvZiB0aGlzIHBhdGNoIGFmdGVyIGNvcnJlY3Rpbmcg
+dGhlIHRhZyAKaXNzdWUgYW5kIHRha2luZyB5b3VyIHN1Z2dlc3Rpb25zIGludG8gY29uc2lkZXJh
+dGlvbi4KClNldmVyYWwgY29tbWVudHMgYmVsb3cuCgo+IAo+ID4gLS0tCj4gPiBDaGFuZ2Vsb2c6
+Cj4gPiAKPiA+IHYyOiBmcmVlIGZ0LT5nIGp1c3QgaW4gYXJmc19jcmVhdGVfZ3JvdXBzIHdpdGgg
+YSB1bndpbmQgbGFkZGUuCj4gPiAtLS0KPiA+ICAuLi4vbmV0L2V0aGVybmV0L21lbGxhbm94L21s
+eDUvY29yZS9lbl9hcmZzLmMgICB8IDE3ICsrKysrKysrKy0tLS0tLS0tCj4gPiAgZHJpdmVycy9u
+ZXQvZXRoZXJuZXQvbWVsbGFub3gvbWx4NS9jb3JlL2VuX2ZzLmMgfCAgMSAtCj4gPiAgMiBmaWxl
+cyBjaGFuZ2VkLCA5IGluc2VydGlvbnMoKyksIDkgZGVsZXRpb25zKC0pCj4gPiAKPiA+IGRpZmYg
+LS1naXQgYS9kcml2ZXJzL25ldC9ldGhlcm5ldC9tZWxsYW5veC9tbHg1L2NvcmUvZW5fYXJmcy5j
+IGIvZHJpdmVycy9uZXQvZXRoZXJuZXQvbWVsbGFub3gvbWx4NS9jb3JlL2VuX2FyZnMuYwo+ID4g
+aW5kZXggYmI3Zjg2Yzk5M2U1Li5jOTZmNGM1NzFiNjMgMTAwNjQ0Cj4gPiAtLS0gYS9kcml2ZXJz
+L25ldC9ldGhlcm5ldC9tZWxsYW5veC9tbHg1L2NvcmUvZW5fYXJmcy5jCj4gPiArKysgYi9kcml2
+ZXJzL25ldC9ldGhlcm5ldC9tZWxsYW5veC9tbHg1L2NvcmUvZW5fYXJmcy5jCj4gPiBAQCAtMjUy
+LDEzICsyNTIsMTQgQEAgc3RhdGljIGludCBhcmZzX2NyZWF0ZV9ncm91cHMoc3RydWN0IG1seDVl
+X2Zsb3dfdGFibGUgKmZ0LAo+ID4gIAlpbnQgZXJyOwo+ID4gIAl1OCAqbWM7Cj4gPiAgCj4gPiAr
+CWZ0LT5udW1fZ3JvdXBzID0gMDsKPiA+ICsKPiAKPiBBbHRob3VnaCBJIHN1Z2dlc3RlZCB0aGUg
+YWJvdmUgY2hhbmdlLCBJIHRoaW5rIGl0Cj4gcHJvYmFibHkgc3VpdGFibGUgZm9yIGEgc2VwYXJh
+dGUgcGF0Y2guIEZvciBvbmUgdGhpbmcsCj4gdGhpcyBpcyBub3QgbWVudGlvbmVkIGluIHRoZSBw
+YXRjaCBzdWJqZWN0LiBBbmQgZm9yIGFub3RoZXIsCj4gaXQncyBwcm9iYWJseSBiZXR0ZXIgdG8g
+Y2hhbmdlIG9uZSB0aGluZyBhdCBhIHRpbWUuCgpBZ3JlZSwgSSBtYWRlIHRoaXMgY2hhbmdlIGJl
+Y2F1c2UgSSdkIGxpa2UgdG8gYXBwbHkgYXMgbXVjaCAKc3VnZ2VzdGlvbiBhcyBwb3NzaWJsZS4g
+QW5kIGl0IGlzIGEgYmV0dGVyIGlkZWEgdG8gbGVhdmUgaXQgCnRvIGEgcmVmZWN0b3IgcGF0Y2gg
+b25lIGRheS4KCj4gCj4gPiAgCWZ0LT5nID0ga2NhbGxvYyhNTFg1RV9BUkZTX05VTV9HUk9VUFMs
+Cj4gPiAgCQkJc2l6ZW9mKCpmdC0+ZyksIEdGUF9LRVJORUwpOwo+ID4gIAlpbiA9IGt2emFsbG9j
+KGlubGVuLCBHRlBfS0VSTkVMKTsKPiA+ICAJaWYgICghaW4gfHwgIWZ0LT5nKSB7Cj4gPiAtCQlr
+ZnJlZShmdC0+Zyk7Cj4gPiAtCQlrdmZyZWUoaW4pOwo+ID4gLQkJcmV0dXJuIC1FTk9NRU07Cj4g
+PiArCQllcnIgPSAtRU5PTUVNOwo+ID4gKwkJZ290byBmcmVlX2Z0Owo+ID4gIAl9Cj4gCj4gSSB3
+b3VsZCBwcm9iYWJseSBoYXZlIHNwbGl0IHRoaXMgdXAgYSBiaXQ6CgpBZ3JlZSwgSSdsbCBzcGxp
+dCBpdCBpbnRvIHR3byBsaWtlIG90aGVyIGFsbG9jYXRpb24gb3BlcmF0aW9uIAppbiBrZXJuZWwu
+Cgo+IAo+ID4gIAo+ID4gIAltYyA9IE1MWDVfQUREUl9PRihjcmVhdGVfZmxvd19ncm91cF9pbiwg
+aW4sIG1hdGNoX2NyaXRlcmlhKTsKPiA+IEBAIC0yNzgsNyArMjc5LDcgQEAgc3RhdGljIGludCBh
+cmZzX2NyZWF0ZV9ncm91cHMoc3RydWN0IG1seDVlX2Zsb3dfdGFibGUgKmZ0LAo+ID4gIAkJYnJl
+YWs7Cj4gPiAgCWRlZmF1bHQ6Cj4gPiAgCQllcnIgPSAtRUlOVkFMOwo+ID4gLQkJZ290byBvdXQ7
+Cj4gPiArCQlnb3RvIGZyZWVfZnQ7Cj4gPiAgCX0KPiA+ICAKPiA+ICAJc3dpdGNoICh0eXBlKSB7
+Cj4gPiBAQCAtMzAwLDcgKzMwMSw3IEBAIHN0YXRpYyBpbnQgYXJmc19jcmVhdGVfZ3JvdXBzKHN0
+cnVjdCBtbHg1ZV9mbG93X3RhYmxlICpmdCwKPiA+ICAJCWJyZWFrOwo+ID4gIAlkZWZhdWx0Ogo+
+ID4gIAkJZXJyID0gLUVJTlZBTDsKPiA+IC0JCWdvdG8gb3V0Owo+ID4gKwkJZ290byBmcmVlX2Z0
+Owo+ID4gIAl9Cj4gPiAgCj4gPiAgCU1MWDVfU0VUX0NGRyhpbiwgbWF0Y2hfY3JpdGVyaWFfZW5h
+YmxlLCBNTFg1X01BVENIX09VVEVSX0hFQURFUlMpOwo+ID4gQEAgLTMyNyw3ICszMjgsOSBAQCBz
+dGF0aWMgaW50IGFyZnNfY3JlYXRlX2dyb3VwcyhzdHJ1Y3QgbWx4NWVfZmxvd190YWJsZSAqZnQs
+Cj4gPiAgZXJyOgo+ID4gIAllcnIgPSBQVFJfRVJSKGZ0LT5nW2Z0LT5udW1fZ3JvdXBzXSk7Cj4g
+PiAgCWZ0LT5nW2Z0LT5udW1fZ3JvdXBzXSA9IE5VTEw7Cj4gPiAtb3V0Ogo+ID4gK2ZyZWVfZnQ6
+Cj4gPiArCWtmcmVlKGZ0LT5nKTsKPiA+ICsJZnQtPmcgPSBOVUxMOwo+ID4gIAlrdmZyZWUoaW4p
+Owo+ID4gIAo+ID4gIAlyZXR1cm4gZXJyOwo+IAo+IEkgdGhpbmsgdGhhdCBJIHdvdWxkIGhhdmUg
+bmFtZWQgdGhlIGxhYmVscyBlcnJfKiwgd2hpY2gKPiBJIHRoaW5rIGlzIG1vcmUgaWRpb21hdGlj
+LiBTbyBjb21iaW5lZCB3aXRoIG15IHN1Z2dlc3Rpb24KPiBhYm92ZSwgSSBzdWdnZXN0IHNvbWV0
+aGluZyBsaWtlOgoKT0ssIEknbGwgY2hhbmdlIHRoZSBsYWJlbCBuYW1lIHRvIG1vcmUgaWRpb21h
+dGljIG9uZXMuCgo+IAo+IC1lcnI6Cj4gK2Vycl9jbGVhbl9ncm91cDoKPiAgICAgICAgIGVyciA9
+IFBUUl9FUlIoZnQtPmdbZnQtPm51bV9ncm91cHNdKTsKPiAgICAgICAgIGZ0LT5nW2Z0LT5udW1f
+Z3JvdXBzXSA9IE5VTEw7Cj4gLW91dDoKPiArZXJyX2ZyZWVfaW46Cj4gICAgICAgICBrdmZyZWUo
+aW4pOwo+ICtlcnJfZnJlZV9nOgo+ICsgICAgICAga2ZyZWUoZnQtPmcpOwo+ICsJZnQtPmcgPSBO
+VUxMOwo+IAo+ICAJcmV0dXJuIGVycjsKPiAgCj4gPiBAQCAtMzQzLDggKzM0Niw2IEBAIHN0YXRp
+YyBpbnQgYXJmc19jcmVhdGVfdGFibGUoc3RydWN0IG1seDVlX2Zsb3dfc3RlZXJpbmcgKmZzLAo+
+ID4gIAlzdHJ1Y3QgbWx4NV9mbG93X3RhYmxlX2F0dHIgZnRfYXR0ciA9IHt9Owo+ID4gIAlpbnQg
+ZXJyOwo+ID4gIAo+ID4gLQlmdC0+bnVtX2dyb3VwcyA9IDA7Cj4gPiAtCj4gPiAgCWZ0X2F0dHIu
+bWF4X2Z0ZSA9IE1MWDVFX0FSRlNfVEFCTEVfU0laRTsKPiA+ICAJZnRfYXR0ci5sZXZlbCA9IE1M
+WDVFX0FSRlNfRlRfTEVWRUw7Cj4gPiAgCWZ0X2F0dHIucHJpbyA9IE1MWDVFX05JQ19QUklPOwo+
+ID4gZGlmZiAtLWdpdCBhL2RyaXZlcnMvbmV0L2V0aGVybmV0L21lbGxhbm94L21seDUvY29yZS9l
+bl9mcy5jIGIvZHJpdmVycy9uZXQvZXRoZXJuZXQvbWVsbGFub3gvbWx4NS9jb3JlL2VuX2ZzLmMK
+PiA+IGluZGV4IDc3N2QzMTFkNDRlZi4uN2I2YWEwYzhiNThkIDEwMDY0NAo+ID4gLS0tIGEvZHJp
+dmVycy9uZXQvZXRoZXJuZXQvbWVsbGFub3gvbWx4NS9jb3JlL2VuX2ZzLmMKPiA+ICsrKyBiL2Ry
+aXZlcnMvbmV0L2V0aGVybmV0L21lbGxhbm94L21seDUvY29yZS9lbl9mcy5jCj4gPiBAQCAtODgz
+LDcgKzg4Myw2IEBAIHZvaWQgbWx4NWVfZnNfaW5pdF9sMl9hZGRyKHN0cnVjdCBtbHg1ZV9mbG93
+X3N0ZWVyaW5nICpmcywgc3RydWN0IG5ldF9kZXZpY2UgKm5lCj4gPiAgdm9pZCBtbHg1ZV9kZXN0
+cm95X2Zsb3dfdGFibGUoc3RydWN0IG1seDVlX2Zsb3dfdGFibGUgKmZ0KQo+ID4gIHsKPiA+ICAJ
+bWx4NWVfZGVzdHJveV9ncm91cHMoZnQpOwo+ID4gLQlrZnJlZShmdC0+Zyk7Cj4gPiAgCW1seDVf
+ZGVzdHJveV9mbG93X3RhYmxlKGZ0LT50KTsKPiA+ICAJZnQtPnQgPSBOVUxMOwo+IAo+IElzIHRo
+ZSBhYm92ZSBzdGlsbCBuZWVkZWQgaW4gc29tZSBjYXNlcywgYW5kIHNhZmUgaW4gYWxsIGNhc2Vz
+PwoKV2VsbCwgaW4gZmFjdCB0aGUga2ZyZWUoZnQtPmcpIGluIG1seDVlX2Rlc3Ryb3lfZmxvd190
+YWJsZSBjYXVzZXMgCmRvdWJsZSBmcmVlcyBpbiBkaWZmZXJlbnQgZnVuY3Rpb25zIHN1Y2ggYXMg
+ZnNfdWRwX2NyZWF0ZV90YWJsZSwgCm5vdCBvbmx5IGluIGFyZnNfY3JlYXRlX2dyb3Vwcy4gQnV0
+IHlvdSBhcmUgcmlnaHQsIHdpdGggYSBtb3JlIApkZXRhaWxlZCBjaGVjayBJIGZvdW5kIHRoYXQg
+aW4gc29tZSBvdGhlciBmdW5jdGlvbnMsIGxpa2UgCmFjY2VsX2ZzX3RjcF9jcmVhdGVfdGFibGUs
+IHJlbW92aW5nIHN1Y2ggZnJlZSB3aWxsIGNhdXNlIG1lbWxlYWsuClNvIGl0IGNvdWxkIGJlIGEg
+YmV0dGVyIGlkZWEgdG8gbGVhdmUgbWx4NWVfZGVzdHJveV9mbG93X3RhYmxlIAphcyBpdCB1c2Vk
+IHRvIGJlLiBBbmQgdGhhdCBmb2xsb3dzIHRoZSAib25lIHBhdGNoIGZvciBvbmUgY2hhbmdlIiBp
+ZGVhLgo=
 
