@@ -1,161 +1,438 @@
-Return-Path: <linux-rdma+bounces-591-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-592-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 472FF829B27
-	for <lists+linux-rdma@lfdr.de>; Wed, 10 Jan 2024 14:24:10 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B00A1829C2B
+	for <lists+linux-rdma@lfdr.de>; Wed, 10 Jan 2024 15:13:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 724D61F22447
-	for <lists+linux-rdma@lfdr.de>; Wed, 10 Jan 2024 13:24:07 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C815F1C2272B
+	for <lists+linux-rdma@lfdr.de>; Wed, 10 Jan 2024 14:13:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DDDCC487B7;
-	Wed, 10 Jan 2024 13:23:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4DC754BA80;
+	Wed, 10 Jan 2024 14:10:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b="TYQ6n5xg"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from zg8tmtu5ljg5lje1ms4xmtka.icoremail.net (zg8tmtu5ljg5lje1ms4xmtka.icoremail.net [159.89.151.119])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7766248CC0;
-	Wed, 10 Jan 2024 13:23:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=zju.edu.cn
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=zju.edu.cn
-Received: from alexious$zju.edu.cn ( [124.90.105.91] ) by
- ajax-webmail-mail-app4 (Coremail) ; Wed, 10 Jan 2024 21:23:24 +0800
- (GMT+08:00)
-Date: Wed, 10 Jan 2024 21:23:24 +0800 (GMT+08:00)
-X-CM-HeaderCharset: UTF-8
-From: alexious@zju.edu.cn
-To: "Simon Horman" <horms@kernel.org>
-Cc: "Saeed Mahameed" <saeedm@nvidia.com>, 
-	"Leon Romanovsky" <leon@kernel.org>, 
-	"David S. Miller" <davem@davemloft.net>, 
-	"Eric Dumazet" <edumazet@google.com>, 
-	"Jakub Kicinski" <kuba@kernel.org>, 
-	"Paolo Abeni" <pabeni@redhat.com>, 
-	"Maor Gottlieb" <maorg@mellanox.com>, netdev@vger.kernel.org, 
-	linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] [v2] net/mlx5e: fix a double-free in arfs_create_groups
-X-Priority: 3
-X-Mailer: Coremail Webmail Server Version 2023.2-cmXT5 build
- 20230825(e13b6a3b) Copyright (c) 2002-2024 www.mailtech.cn
- mispb-4df6dc2c-e274-4d1c-b502-72c5c3dfa9ce-zj.edu.cn
-In-Reply-To: <20240109081837.GJ132648@kernel.org>
-References: <20240108152605.3712050-1-alexious@zju.edu.cn>
- <20240109081837.GJ132648@kernel.org>
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset=UTF-8
+Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 61E76495C5;
+	Wed, 10 Jan 2024 14:10:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.microsoft.com
+Received: from linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net (linux.microsoft.com [13.77.154.182])
+	by linux.microsoft.com (Postfix) with ESMTPSA id D920D20AECA9;
+	Wed, 10 Jan 2024 06:10:01 -0800 (PST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com D920D20AECA9
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+	s=default; t=1704895801;
+	bh=Bx6tpgbJ7znSR0iIVezjMBXLyqJuhwxy1SofVQ/JPvw=;
+	h=From:To:Cc:Subject:Date:From;
+	b=TYQ6n5xgLYzvwXzwRXHkniE+tEWgLDTHg81bu4RjBUSBaxtaIEDCh3i1pGZQkfndT
+	 NaIfEX81DNwWbIZX36q83QA3GYzqzf+SlKgbP92uYZbqSUAlX8B4J5QgZFhuZuWlWE
+	 N4aJtpYkMa38CIaE575e1F7ywfzYsb5E1VnwtOrI=
+From: Konstantin Taranov <kotaranov@linux.microsoft.com>
+To: kotaranov@microsoft.com,
+	longli@microsoft.com,
+	jgg@ziepe.ca,
+	leon@kernel.org
+Cc: linux-rdma@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH next 1/1] Introduce three helper functions to clean mana_ib code
+Date: Wed, 10 Jan 2024 06:09:54 -0800
+Message-Id: <1704895794-3501-1-git-send-email-kotaranov@linux.microsoft.com>
+X-Mailer: git-send-email 1.8.3.1
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Message-ID: <49a38639.7d59b.18cf38ab939.Coremail.alexious@zju.edu.cn>
-X-Coremail-Locale: zh_CN
-X-CM-TRANSID:cS_KCgDnSd1Mmp5lOcemAA--.20056W
-X-CM-SenderInfo: qrsrjiarszq6lmxovvfxof0/1tbiAgcQAGWeaicKGAABsw
-X-Coremail-Antispam: 1Ur529EdanIXcx71UUUUU7IcSsGvfJ3iIAIbVAYjsxI4VWxJw
-	CS07vEb4IE77IF4wCS07vE1I0E4x80FVAKz4kxMIAIbVAFxVCaYxvI4VCIwcAKzIAtYxBI
-	daVFxhVjvjDU=
 
-PiBPbiBNb24sIEphbiAwOCwgMjAyNCBhdCAxMToyNjowNFBNICswODAwLCBaaGlwZW5nIEx1IHdy
-b3RlOgo+ID4gV2hlbiBgaW5gIGFsbG9jYXRlZCBieSBrdnphbGxvYyBmYWlscywgYXJmc19jcmVh
-dGVfZ3JvdXBzIHdpbGwgZnJlZQo+ID4gZnQtPmcgYW5kIHJldHVybiBhbiBlcnJvci4gSG93ZXZl
-ciwgYXJmc19jcmVhdGVfdGFibGUsIHRoZSBvbmx5IGNhbGxlciBvZgo+ID4gYXJmc19jcmVhdGVf
-Z3JvdXBzLCB3aWxsIGhvbGQgdGhpcyBlcnJvciBhbmQgY2FsbCB0bwo+ID4gbWx4NWVfZGVzdHJv
-eV9mbG93X3RhYmxlLCBpbiB3aGljaCB0aGUgZnQtPmcgd2lsbCBiZSBmcmVlZCBhZ2Fpbi4KPiA+
-IAo+ID4gRml4ZXM6IDFjYWJlNmIwOTY1ZSAoIm5ldC9tbHg1ZTogQ3JlYXRlIGFSRlMgZmxvdyB0
-YWJsZXMiKQo+ID4gU2lnbmVkLW9mZi1ieTogWmhpcGVuZyBMdSA8YWxleGlvdXNAemp1LmVkdS5j
-bj4KPiA+IFJldmlld2VkLWJ5OiBTaW1vbiBIb3JtYW4gPGhvcm1zQGtlcm5lbC5vcmc+Cj4gCj4g
-V2hlbiB3b3JraW5nIG9uIG5ldGRldiAoYW5kIHByb2JhYmx5IGVsc2V3aGVyZSkKPiBQbGVhc2Ug
-ZG9uJ3QgaW5jbHVkZSBSZXZpZXdlZC1ieSBvciBvdGhlciB0YWdzCj4gdGhhdCB3ZXJlIGV4cGxp
-Y2l0bHkgc3VwcGxpZWQgYnkgc29tZW9uZTogSSBkb24ndCByZWNhbGwKPiBzdXBwbHlpbmcgdGhl
-IHRhZyBhYm92ZSBzbyBwbGVhc2UgZHJvcCBpdC4KCkkgYXBvbG9naXplLCBidXQgaXQgYXBwZWFy
-cyB0aGF0IHlvdSBpbmNsdWRlZCBhICJyZXZpZXdlZC1ieSIgCnRhZyBhbG9uZyB3aXRoIGNlcnRh
-aW4gc3VnZ2VzdGlvbnMgZm9yIHZlcnNpb24gMSBvZiB0aGlzIHBhdGNoIAppbiB0aGUgZmlyc3Qg
-cmV2aWV3IGVtYWlsKGFib3V0IDYgZGF5cyBiZWZvcmUpLiAKSW4gcmVzcG9uc2UsIGFmdGVyIGEg
-c2hvcnQgZGlzY3Vzc2lvbiwgSSBmb2xsb3dlZCBzb21lIG9mIAp0aG9zZSBzdWdnZXN0aW9ucyBh
-bmQgc2VuZCB0aGlzIHYyIHBhdGNoLgpJIHJlZmVycmVkIHRvIHRoZSAiRGVhbGluZyB3aXRoIHRh
-Z3MiIHNlY3Rpb24gaW4gdGhpcyBLZXJuZWxOZXdiaWVzIAp0aXBzOiBodHRwczovL2tlcm5lbG5l
-d2JpZXMub3JnL1BhdGNoVGlwc0FuZFRyaWNrcyBhbmQgdGhvdWdodCAKdGhhdCBJIHNob3VsZCBp
-bmNsdWRlIHRoYXQgdGFnIGluIHYxIGVtYWlsIHRvIHRoaXMgdjIgcGF0Y2guClNvIG5vdyBJJ20g
-YSBsaXR0bGUgYml0IGNvbmZ1c2VkIGhlcmU6IGlmIHRoZSB0YWcgcnVsZSBoYXMgY2hhbmdlZCAK
-b3IgSSBnb3Qgc29tZSBtaXN1bmRlcnN0YW5kaW5nIG9uIGV4aXN0aW5nIHJ1bGVzPyBZb3VyIGNs
-YXJpZmljYXRpb24gCm9uIHRoaXMgbWF0dGVyIHdvdWxkIGJlIGdyZWF0bHkgYXBwcmVjaWF0ZWQu
-CgpJJ2xsIHNlbmQgYSBuZXcgdmVyc2lvbiBvZiB0aGlzIHBhdGNoIGFmdGVyIGNvcnJlY3Rpbmcg
-dGhlIHRhZyAKaXNzdWUgYW5kIHRha2luZyB5b3VyIHN1Z2dlc3Rpb25zIGludG8gY29uc2lkZXJh
-dGlvbi4KClNldmVyYWwgY29tbWVudHMgYmVsb3cuCgo+IAo+ID4gLS0tCj4gPiBDaGFuZ2Vsb2c6
-Cj4gPiAKPiA+IHYyOiBmcmVlIGZ0LT5nIGp1c3QgaW4gYXJmc19jcmVhdGVfZ3JvdXBzIHdpdGgg
-YSB1bndpbmQgbGFkZGUuCj4gPiAtLS0KPiA+ICAuLi4vbmV0L2V0aGVybmV0L21lbGxhbm94L21s
-eDUvY29yZS9lbl9hcmZzLmMgICB8IDE3ICsrKysrKysrKy0tLS0tLS0tCj4gPiAgZHJpdmVycy9u
-ZXQvZXRoZXJuZXQvbWVsbGFub3gvbWx4NS9jb3JlL2VuX2ZzLmMgfCAgMSAtCj4gPiAgMiBmaWxl
-cyBjaGFuZ2VkLCA5IGluc2VydGlvbnMoKyksIDkgZGVsZXRpb25zKC0pCj4gPiAKPiA+IGRpZmYg
-LS1naXQgYS9kcml2ZXJzL25ldC9ldGhlcm5ldC9tZWxsYW5veC9tbHg1L2NvcmUvZW5fYXJmcy5j
-IGIvZHJpdmVycy9uZXQvZXRoZXJuZXQvbWVsbGFub3gvbWx4NS9jb3JlL2VuX2FyZnMuYwo+ID4g
-aW5kZXggYmI3Zjg2Yzk5M2U1Li5jOTZmNGM1NzFiNjMgMTAwNjQ0Cj4gPiAtLS0gYS9kcml2ZXJz
-L25ldC9ldGhlcm5ldC9tZWxsYW5veC9tbHg1L2NvcmUvZW5fYXJmcy5jCj4gPiArKysgYi9kcml2
-ZXJzL25ldC9ldGhlcm5ldC9tZWxsYW5veC9tbHg1L2NvcmUvZW5fYXJmcy5jCj4gPiBAQCAtMjUy
-LDEzICsyNTIsMTQgQEAgc3RhdGljIGludCBhcmZzX2NyZWF0ZV9ncm91cHMoc3RydWN0IG1seDVl
-X2Zsb3dfdGFibGUgKmZ0LAo+ID4gIAlpbnQgZXJyOwo+ID4gIAl1OCAqbWM7Cj4gPiAgCj4gPiAr
-CWZ0LT5udW1fZ3JvdXBzID0gMDsKPiA+ICsKPiAKPiBBbHRob3VnaCBJIHN1Z2dlc3RlZCB0aGUg
-YWJvdmUgY2hhbmdlLCBJIHRoaW5rIGl0Cj4gcHJvYmFibHkgc3VpdGFibGUgZm9yIGEgc2VwYXJh
-dGUgcGF0Y2guIEZvciBvbmUgdGhpbmcsCj4gdGhpcyBpcyBub3QgbWVudGlvbmVkIGluIHRoZSBw
-YXRjaCBzdWJqZWN0LiBBbmQgZm9yIGFub3RoZXIsCj4gaXQncyBwcm9iYWJseSBiZXR0ZXIgdG8g
-Y2hhbmdlIG9uZSB0aGluZyBhdCBhIHRpbWUuCgpBZ3JlZSwgSSBtYWRlIHRoaXMgY2hhbmdlIGJl
-Y2F1c2UgSSdkIGxpa2UgdG8gYXBwbHkgYXMgbXVjaCAKc3VnZ2VzdGlvbiBhcyBwb3NzaWJsZS4g
-QW5kIGl0IGlzIGEgYmV0dGVyIGlkZWEgdG8gbGVhdmUgaXQgCnRvIGEgcmVmZWN0b3IgcGF0Y2gg
-b25lIGRheS4KCj4gCj4gPiAgCWZ0LT5nID0ga2NhbGxvYyhNTFg1RV9BUkZTX05VTV9HUk9VUFMs
-Cj4gPiAgCQkJc2l6ZW9mKCpmdC0+ZyksIEdGUF9LRVJORUwpOwo+ID4gIAlpbiA9IGt2emFsbG9j
-KGlubGVuLCBHRlBfS0VSTkVMKTsKPiA+ICAJaWYgICghaW4gfHwgIWZ0LT5nKSB7Cj4gPiAtCQlr
-ZnJlZShmdC0+Zyk7Cj4gPiAtCQlrdmZyZWUoaW4pOwo+ID4gLQkJcmV0dXJuIC1FTk9NRU07Cj4g
-PiArCQllcnIgPSAtRU5PTUVNOwo+ID4gKwkJZ290byBmcmVlX2Z0Owo+ID4gIAl9Cj4gCj4gSSB3
-b3VsZCBwcm9iYWJseSBoYXZlIHNwbGl0IHRoaXMgdXAgYSBiaXQ6CgpBZ3JlZSwgSSdsbCBzcGxp
-dCBpdCBpbnRvIHR3byBsaWtlIG90aGVyIGFsbG9jYXRpb24gb3BlcmF0aW9uIAppbiBrZXJuZWwu
-Cgo+IAo+ID4gIAo+ID4gIAltYyA9IE1MWDVfQUREUl9PRihjcmVhdGVfZmxvd19ncm91cF9pbiwg
-aW4sIG1hdGNoX2NyaXRlcmlhKTsKPiA+IEBAIC0yNzgsNyArMjc5LDcgQEAgc3RhdGljIGludCBh
-cmZzX2NyZWF0ZV9ncm91cHMoc3RydWN0IG1seDVlX2Zsb3dfdGFibGUgKmZ0LAo+ID4gIAkJYnJl
-YWs7Cj4gPiAgCWRlZmF1bHQ6Cj4gPiAgCQllcnIgPSAtRUlOVkFMOwo+ID4gLQkJZ290byBvdXQ7
-Cj4gPiArCQlnb3RvIGZyZWVfZnQ7Cj4gPiAgCX0KPiA+ICAKPiA+ICAJc3dpdGNoICh0eXBlKSB7
-Cj4gPiBAQCAtMzAwLDcgKzMwMSw3IEBAIHN0YXRpYyBpbnQgYXJmc19jcmVhdGVfZ3JvdXBzKHN0
-cnVjdCBtbHg1ZV9mbG93X3RhYmxlICpmdCwKPiA+ICAJCWJyZWFrOwo+ID4gIAlkZWZhdWx0Ogo+
-ID4gIAkJZXJyID0gLUVJTlZBTDsKPiA+IC0JCWdvdG8gb3V0Owo+ID4gKwkJZ290byBmcmVlX2Z0
-Owo+ID4gIAl9Cj4gPiAgCj4gPiAgCU1MWDVfU0VUX0NGRyhpbiwgbWF0Y2hfY3JpdGVyaWFfZW5h
-YmxlLCBNTFg1X01BVENIX09VVEVSX0hFQURFUlMpOwo+ID4gQEAgLTMyNyw3ICszMjgsOSBAQCBz
-dGF0aWMgaW50IGFyZnNfY3JlYXRlX2dyb3VwcyhzdHJ1Y3QgbWx4NWVfZmxvd190YWJsZSAqZnQs
-Cj4gPiAgZXJyOgo+ID4gIAllcnIgPSBQVFJfRVJSKGZ0LT5nW2Z0LT5udW1fZ3JvdXBzXSk7Cj4g
-PiAgCWZ0LT5nW2Z0LT5udW1fZ3JvdXBzXSA9IE5VTEw7Cj4gPiAtb3V0Ogo+ID4gK2ZyZWVfZnQ6
-Cj4gPiArCWtmcmVlKGZ0LT5nKTsKPiA+ICsJZnQtPmcgPSBOVUxMOwo+ID4gIAlrdmZyZWUoaW4p
-Owo+ID4gIAo+ID4gIAlyZXR1cm4gZXJyOwo+IAo+IEkgdGhpbmsgdGhhdCBJIHdvdWxkIGhhdmUg
-bmFtZWQgdGhlIGxhYmVscyBlcnJfKiwgd2hpY2gKPiBJIHRoaW5rIGlzIG1vcmUgaWRpb21hdGlj
-LiBTbyBjb21iaW5lZCB3aXRoIG15IHN1Z2dlc3Rpb24KPiBhYm92ZSwgSSBzdWdnZXN0IHNvbWV0
-aGluZyBsaWtlOgoKT0ssIEknbGwgY2hhbmdlIHRoZSBsYWJlbCBuYW1lIHRvIG1vcmUgaWRpb21h
-dGljIG9uZXMuCgo+IAo+IC1lcnI6Cj4gK2Vycl9jbGVhbl9ncm91cDoKPiAgICAgICAgIGVyciA9
-IFBUUl9FUlIoZnQtPmdbZnQtPm51bV9ncm91cHNdKTsKPiAgICAgICAgIGZ0LT5nW2Z0LT5udW1f
-Z3JvdXBzXSA9IE5VTEw7Cj4gLW91dDoKPiArZXJyX2ZyZWVfaW46Cj4gICAgICAgICBrdmZyZWUo
-aW4pOwo+ICtlcnJfZnJlZV9nOgo+ICsgICAgICAga2ZyZWUoZnQtPmcpOwo+ICsJZnQtPmcgPSBO
-VUxMOwo+IAo+ICAJcmV0dXJuIGVycjsKPiAgCj4gPiBAQCAtMzQzLDggKzM0Niw2IEBAIHN0YXRp
-YyBpbnQgYXJmc19jcmVhdGVfdGFibGUoc3RydWN0IG1seDVlX2Zsb3dfc3RlZXJpbmcgKmZzLAo+
-ID4gIAlzdHJ1Y3QgbWx4NV9mbG93X3RhYmxlX2F0dHIgZnRfYXR0ciA9IHt9Owo+ID4gIAlpbnQg
-ZXJyOwo+ID4gIAo+ID4gLQlmdC0+bnVtX2dyb3VwcyA9IDA7Cj4gPiAtCj4gPiAgCWZ0X2F0dHIu
-bWF4X2Z0ZSA9IE1MWDVFX0FSRlNfVEFCTEVfU0laRTsKPiA+ICAJZnRfYXR0ci5sZXZlbCA9IE1M
-WDVFX0FSRlNfRlRfTEVWRUw7Cj4gPiAgCWZ0X2F0dHIucHJpbyA9IE1MWDVFX05JQ19QUklPOwo+
-ID4gZGlmZiAtLWdpdCBhL2RyaXZlcnMvbmV0L2V0aGVybmV0L21lbGxhbm94L21seDUvY29yZS9l
-bl9mcy5jIGIvZHJpdmVycy9uZXQvZXRoZXJuZXQvbWVsbGFub3gvbWx4NS9jb3JlL2VuX2ZzLmMK
-PiA+IGluZGV4IDc3N2QzMTFkNDRlZi4uN2I2YWEwYzhiNThkIDEwMDY0NAo+ID4gLS0tIGEvZHJp
-dmVycy9uZXQvZXRoZXJuZXQvbWVsbGFub3gvbWx4NS9jb3JlL2VuX2ZzLmMKPiA+ICsrKyBiL2Ry
-aXZlcnMvbmV0L2V0aGVybmV0L21lbGxhbm94L21seDUvY29yZS9lbl9mcy5jCj4gPiBAQCAtODgz
-LDcgKzg4Myw2IEBAIHZvaWQgbWx4NWVfZnNfaW5pdF9sMl9hZGRyKHN0cnVjdCBtbHg1ZV9mbG93
-X3N0ZWVyaW5nICpmcywgc3RydWN0IG5ldF9kZXZpY2UgKm5lCj4gPiAgdm9pZCBtbHg1ZV9kZXN0
-cm95X2Zsb3dfdGFibGUoc3RydWN0IG1seDVlX2Zsb3dfdGFibGUgKmZ0KQo+ID4gIHsKPiA+ICAJ
-bWx4NWVfZGVzdHJveV9ncm91cHMoZnQpOwo+ID4gLQlrZnJlZShmdC0+Zyk7Cj4gPiAgCW1seDVf
-ZGVzdHJveV9mbG93X3RhYmxlKGZ0LT50KTsKPiA+ICAJZnQtPnQgPSBOVUxMOwo+IAo+IElzIHRo
-ZSBhYm92ZSBzdGlsbCBuZWVkZWQgaW4gc29tZSBjYXNlcywgYW5kIHNhZmUgaW4gYWxsIGNhc2Vz
-PwoKV2VsbCwgaW4gZmFjdCB0aGUga2ZyZWUoZnQtPmcpIGluIG1seDVlX2Rlc3Ryb3lfZmxvd190
-YWJsZSBjYXVzZXMgCmRvdWJsZSBmcmVlcyBpbiBkaWZmZXJlbnQgZnVuY3Rpb25zIHN1Y2ggYXMg
-ZnNfdWRwX2NyZWF0ZV90YWJsZSwgCm5vdCBvbmx5IGluIGFyZnNfY3JlYXRlX2dyb3Vwcy4gQnV0
-IHlvdSBhcmUgcmlnaHQsIHdpdGggYSBtb3JlIApkZXRhaWxlZCBjaGVjayBJIGZvdW5kIHRoYXQg
-aW4gc29tZSBvdGhlciBmdW5jdGlvbnMsIGxpa2UgCmFjY2VsX2ZzX3RjcF9jcmVhdGVfdGFibGUs
-IHJlbW92aW5nIHN1Y2ggZnJlZSB3aWxsIGNhdXNlIG1lbWxlYWsuClNvIGl0IGNvdWxkIGJlIGEg
-YmV0dGVyIGlkZWEgdG8gbGVhdmUgbWx4NWVfZGVzdHJveV9mbG93X3RhYmxlIAphcyBpdCB1c2Vk
-IHRvIGJlLiBBbmQgdGhhdCBmb2xsb3dzIHRoZSAib25lIHBhdGNoIGZvciBvbmUgY2hhbmdlIiBp
-ZGVhLgo=
+From: Konstantin Taranov <kotaranov@microsoft.com>
+
+This patch aims to address two issues in mana_ib:
+1) Unsafe and inconsistent access to gdma_dev and  gdma_context
+2) Code repetitions
+
+As a rule of thumb, functions should not access gdma_dev directly
+
+Introduced functions:
+1) mdev_to_gc
+2) mana_ib_get_netdev
+3) mana_ib_install_cq_cb
+
+
+Signed-off-by: Konstantin Taranov <kotaranov@microsoft.com>
+---
+ drivers/infiniband/hw/mana/cq.c      | 23 ++++++++++++++--
+ drivers/infiniband/hw/mana/main.c    | 40 ++++++++++------------------
+ drivers/infiniband/hw/mana/mana_ib.h | 17 ++++++++++++
+ drivers/infiniband/hw/mana/mr.c      | 13 +++------
+ drivers/infiniband/hw/mana/qp.c      | 36 ++++++-------------------
+ 5 files changed, 63 insertions(+), 66 deletions(-)
+
+diff --git a/drivers/infiniband/hw/mana/cq.c b/drivers/infiniband/hw/mana/cq.c
+index 83ebd0705..255e74ab7 100644
+--- a/drivers/infiniband/hw/mana/cq.c
++++ b/drivers/infiniband/hw/mana/cq.c
+@@ -16,7 +16,7 @@ int mana_ib_create_cq(struct ib_cq *ibcq, const struct ib_cq_init_attr *attr,
+ 	int err;
+ 
+ 	mdev = container_of(ibdev, struct mana_ib_dev, ib_dev);
+-	gc = mdev->gdma_dev->gdma_context;
++	gc = mdev_to_gc(mdev);
+ 
+ 	if (udata->inlen < sizeof(ucmd))
+ 		return -EINVAL;
+@@ -81,7 +81,7 @@ int mana_ib_destroy_cq(struct ib_cq *ibcq, struct ib_udata *udata)
+ 	int err;
+ 
+ 	mdev = container_of(ibdev, struct mana_ib_dev, ib_dev);
+-	gc = mdev->gdma_dev->gdma_context;
++	gc = mdev_to_gc(mdev);
+ 
+ 	err = mana_ib_gd_destroy_dma_region(mdev, cq->gdma_region);
+ 	if (err) {
+@@ -107,3 +107,22 @@ void mana_ib_cq_handler(void *ctx, struct gdma_queue *gdma_cq)
+ 	if (cq->ibcq.comp_handler)
+ 		cq->ibcq.comp_handler(&cq->ibcq, cq->ibcq.cq_context);
+ }
++
++int mana_ib_install_cq_cb(struct mana_ib_dev *mdev, struct mana_ib_cq *cq)
++{
++	struct gdma_context *gc = mdev_to_gc(mdev);
++	struct gdma_queue *gdma_cq;
++
++	/* Create CQ table entry */
++	WARN_ON(gc->cq_table[cq->id]);
++	gdma_cq = kzalloc(sizeof(*gdma_cq), GFP_KERNEL);
++	if (!gdma_cq)
++		return -ENOMEM;
++
++	gdma_cq->cq.context = cq;
++	gdma_cq->type = GDMA_CQ;
++	gdma_cq->cq.callback = mana_ib_cq_handler;
++	gdma_cq->id = cq->id;
++	gc->cq_table[cq->id] = gdma_cq;
++	return 0;
++}
+diff --git a/drivers/infiniband/hw/mana/main.c b/drivers/infiniband/hw/mana/main.c
+index faca09245..29dd2438d 100644
+--- a/drivers/infiniband/hw/mana/main.c
++++ b/drivers/infiniband/hw/mana/main.c
+@@ -8,13 +8,10 @@
+ void mana_ib_uncfg_vport(struct mana_ib_dev *dev, struct mana_ib_pd *pd,
+ 			 u32 port)
+ {
+-	struct gdma_dev *gd = &dev->gdma_dev->gdma_context->mana;
+ 	struct mana_port_context *mpc;
+ 	struct net_device *ndev;
+-	struct mana_context *mc;
+ 
+-	mc = gd->driver_data;
+-	ndev = mc->ports[port];
++	ndev = mana_ib_get_netdev(&dev->ib_dev, port);
+ 	mpc = netdev_priv(ndev);
+ 
+ 	mutex_lock(&pd->vport_mutex);
+@@ -31,14 +28,11 @@ void mana_ib_uncfg_vport(struct mana_ib_dev *dev, struct mana_ib_pd *pd,
+ int mana_ib_cfg_vport(struct mana_ib_dev *dev, u32 port, struct mana_ib_pd *pd,
+ 		      u32 doorbell_id)
+ {
+-	struct gdma_dev *mdev = &dev->gdma_dev->gdma_context->mana;
+ 	struct mana_port_context *mpc;
+-	struct mana_context *mc;
+ 	struct net_device *ndev;
+ 	int err;
+ 
+-	mc = mdev->driver_data;
+-	ndev = mc->ports[port];
++	ndev = mana_ib_get_netdev(&dev->ib_dev, port);
+ 	mpc = netdev_priv(ndev);
+ 
+ 	mutex_lock(&pd->vport_mutex);
+@@ -79,17 +73,17 @@ int mana_ib_alloc_pd(struct ib_pd *ibpd, struct ib_udata *udata)
+ 	struct gdma_create_pd_req req = {};
+ 	enum gdma_pd_flags flags = 0;
+ 	struct mana_ib_dev *dev;
+-	struct gdma_dev *mdev;
++	struct gdma_context *gc;
+ 	int err;
+ 
+ 	dev = container_of(ibdev, struct mana_ib_dev, ib_dev);
+-	mdev = dev->gdma_dev;
++	gc = mdev_to_gc(dev);
+ 
+ 	mana_gd_init_req_hdr(&req.hdr, GDMA_CREATE_PD, sizeof(req),
+ 			     sizeof(resp));
+ 
+ 	req.flags = flags;
+-	err = mana_gd_send_request(mdev->gdma_context, sizeof(req), &req,
++	err = mana_gd_send_request(gc, sizeof(req), &req,
+ 				   sizeof(resp), &resp);
+ 
+ 	if (err || resp.hdr.status) {
+@@ -119,17 +113,17 @@ int mana_ib_dealloc_pd(struct ib_pd *ibpd, struct ib_udata *udata)
+ 	struct gdma_destory_pd_resp resp = {};
+ 	struct gdma_destroy_pd_req req = {};
+ 	struct mana_ib_dev *dev;
+-	struct gdma_dev *mdev;
++	struct gdma_context *gc;
+ 	int err;
+ 
+ 	dev = container_of(ibdev, struct mana_ib_dev, ib_dev);
+-	mdev = dev->gdma_dev;
++	gc = mdev_to_gc(dev);
+ 
+ 	mana_gd_init_req_hdr(&req.hdr, GDMA_DESTROY_PD, sizeof(req),
+ 			     sizeof(resp));
+ 
+ 	req.pd_handle = pd->pd_handle;
+-	err = mana_gd_send_request(mdev->gdma_context, sizeof(req), &req,
++	err = mana_gd_send_request(gc, sizeof(req), &req,
+ 				   sizeof(resp), &resp);
+ 
+ 	if (err || resp.hdr.status) {
+@@ -206,13 +200,11 @@ int mana_ib_alloc_ucontext(struct ib_ucontext *ibcontext,
+ 	struct ib_device *ibdev = ibcontext->device;
+ 	struct mana_ib_dev *mdev;
+ 	struct gdma_context *gc;
+-	struct gdma_dev *dev;
+ 	int doorbell_page;
+ 	int ret;
+ 
+ 	mdev = container_of(ibdev, struct mana_ib_dev, ib_dev);
+-	dev = mdev->gdma_dev;
+-	gc = dev->gdma_context;
++	gc = mdev_to_gc(mdev);
+ 
+ 	/* Allocate a doorbell page index */
+ 	ret = mana_gd_allocate_doorbell_page(gc, &doorbell_page);
+@@ -238,7 +230,7 @@ void mana_ib_dealloc_ucontext(struct ib_ucontext *ibcontext)
+ 	int ret;
+ 
+ 	mdev = container_of(ibdev, struct mana_ib_dev, ib_dev);
+-	gc = mdev->gdma_dev->gdma_context;
++	gc = mdev_to_gc(mdev);
+ 
+ 	ret = mana_gd_destroy_doorbell_page(gc, mana_ucontext->doorbell);
+ 	if (ret)
+@@ -322,15 +314,13 @@ int mana_ib_gd_create_dma_region(struct mana_ib_dev *dev, struct ib_umem *umem,
+ 	size_t max_pgs_create_cmd;
+ 	struct gdma_context *gc;
+ 	size_t num_pages_total;
+-	struct gdma_dev *mdev;
+ 	unsigned long page_sz;
+ 	unsigned int tail = 0;
+ 	u64 *page_addr_list;
+ 	void *request_buf;
+ 	int err;
+ 
+-	mdev = dev->gdma_dev;
+-	gc = mdev->gdma_context;
++	gc = mdev_to_gc(dev);
+ 	hwc = gc->hwc.driver_data;
+ 
+ 	/* Hardware requires dma region to align to chosen page size */
+@@ -426,10 +416,8 @@ int mana_ib_gd_create_dma_region(struct mana_ib_dev *dev, struct ib_umem *umem,
+ 
+ int mana_ib_gd_destroy_dma_region(struct mana_ib_dev *dev, u64 gdma_region)
+ {
+-	struct gdma_dev *mdev = dev->gdma_dev;
+-	struct gdma_context *gc;
++	struct gdma_context *gc = mdev_to_gc(dev);
+ 
+-	gc = mdev->gdma_context;
+ 	ibdev_dbg(&dev->ib_dev, "destroy dma region 0x%llx\n", gdma_region);
+ 
+ 	return mana_gd_destroy_dma_region(gc, gdma_region);
+@@ -447,7 +435,7 @@ int mana_ib_mmap(struct ib_ucontext *ibcontext, struct vm_area_struct *vma)
+ 	int ret;
+ 
+ 	mdev = container_of(ibdev, struct mana_ib_dev, ib_dev);
+-	gc = mdev->gdma_dev->gdma_context;
++	gc = mdev_to_gc(mdev);
+ 
+ 	if (vma->vm_pgoff != 0) {
+ 		ibdev_dbg(ibdev, "Unexpected vm_pgoff %lu\n", vma->vm_pgoff);
+@@ -531,7 +519,7 @@ int mana_ib_gd_query_adapter_caps(struct mana_ib_dev *dev)
+ 	req.hdr.resp.msg_version = GDMA_MESSAGE_V3;
+ 	req.hdr.dev_id = dev->gdma_dev->dev_id;
+ 
+-	err = mana_gd_send_request(dev->gdma_dev->gdma_context, sizeof(req),
++	err = mana_gd_send_request(mdev_to_gc(dev), sizeof(req),
+ 				   &req, sizeof(resp), &resp);
+ 
+ 	if (err) {
+diff --git a/drivers/infiniband/hw/mana/mana_ib.h b/drivers/infiniband/hw/mana/mana_ib.h
+index 6bdc0f549..6b15b2ab5 100644
+--- a/drivers/infiniband/hw/mana/mana_ib.h
++++ b/drivers/infiniband/hw/mana/mana_ib.h
+@@ -142,6 +142,22 @@ struct mana_ib_query_adapter_caps_resp {
+ 	u32 max_inline_data_size;
+ }; /* HW Data */
+ 
++static inline struct gdma_context *mdev_to_gc(struct mana_ib_dev *mdev)
++{
++	return mdev->gdma_dev->gdma_context;
++}
++
++static inline struct net_device *mana_ib_get_netdev(struct ib_device *ibdev, u32 port)
++{
++	struct mana_ib_dev *mdev = container_of(ibdev, struct mana_ib_dev, ib_dev);
++	struct gdma_context *gc = mdev_to_gc(mdev);
++	struct mana_context *mc = gc->mana.driver_data;
++
++	if (port < 1 || port > mc->num_ports)
++		return NULL;
++	return mc->ports[port - 1];
++}
++
+ int mana_ib_gd_create_dma_region(struct mana_ib_dev *dev, struct ib_umem *umem,
+ 				 mana_handle_t *gdma_region);
+ 
+@@ -188,6 +204,7 @@ int mana_ib_create_cq(struct ib_cq *ibcq, const struct ib_cq_init_attr *attr,
+ 		      struct ib_udata *udata);
+ 
+ int mana_ib_destroy_cq(struct ib_cq *ibcq, struct ib_udata *udata);
++int mana_ib_install_cq_cb(struct mana_ib_dev *mdev, struct mana_ib_cq *cq);
+ 
+ int mana_ib_alloc_pd(struct ib_pd *ibpd, struct ib_udata *udata);
+ int mana_ib_dealloc_pd(struct ib_pd *ibpd, struct ib_udata *udata);
+diff --git a/drivers/infiniband/hw/mana/mr.c b/drivers/infiniband/hw/mana/mr.c
+index 351207c60..ee4d4f834 100644
+--- a/drivers/infiniband/hw/mana/mr.c
++++ b/drivers/infiniband/hw/mana/mr.c
+@@ -30,12 +30,9 @@ static int mana_ib_gd_create_mr(struct mana_ib_dev *dev, struct mana_ib_mr *mr,
+ {
+ 	struct gdma_create_mr_response resp = {};
+ 	struct gdma_create_mr_request req = {};
+-	struct gdma_dev *mdev = dev->gdma_dev;
+-	struct gdma_context *gc;
++	struct gdma_context *gc = mdev_to_gc(dev);
+ 	int err;
+ 
+-	gc = mdev->gdma_context;
+-
+ 	mana_gd_init_req_hdr(&req.hdr, GDMA_CREATE_MR, sizeof(req),
+ 			     sizeof(resp));
+ 	req.pd_handle = mr_params->pd_handle;
+@@ -77,12 +74,9 @@ static int mana_ib_gd_destroy_mr(struct mana_ib_dev *dev, u64 mr_handle)
+ {
+ 	struct gdma_destroy_mr_response resp = {};
+ 	struct gdma_destroy_mr_request req = {};
+-	struct gdma_dev *mdev = dev->gdma_dev;
+-	struct gdma_context *gc;
++	struct gdma_context *gc = mdev_to_gc(dev);
+ 	int err;
+ 
+-	gc = mdev->gdma_context;
+-
+ 	mana_gd_init_req_hdr(&req.hdr, GDMA_DESTROY_MR, sizeof(req),
+ 			     sizeof(resp));
+ 
+@@ -164,8 +158,7 @@ struct ib_mr *mana_ib_reg_user_mr(struct ib_pd *ibpd, u64 start, u64 length,
+ 	return &mr->ibmr;
+ 
+ err_dma_region:
+-	mana_gd_destroy_dma_region(dev->gdma_dev->gdma_context,
+-				   dma_region_handle);
++	mana_gd_destroy_dma_region(mdev_to_gc(dev), dma_region_handle);
+ 
+ err_umem:
+ 	ib_umem_release(mr->umem);
+diff --git a/drivers/infiniband/hw/mana/qp.c b/drivers/infiniband/hw/mana/qp.c
+index e6d063d45..e889c798f 100644
+--- a/drivers/infiniband/hw/mana/qp.c
++++ b/drivers/infiniband/hw/mana/qp.c
+@@ -17,12 +17,10 @@ static int mana_ib_cfg_vport_steering(struct mana_ib_dev *dev,
+ 	struct mana_cfg_rx_steer_resp resp = {};
+ 	mana_handle_t *req_indir_tab;
+ 	struct gdma_context *gc;
+-	struct gdma_dev *mdev;
+ 	u32 req_buf_size;
+ 	int i, err;
+ 
+-	gc = dev->gdma_dev->gdma_context;
+-	mdev = &gc->mana;
++	gc = mdev_to_gc(dev);
+ 
+ 	req_buf_size =
+ 		sizeof(*req) + sizeof(mana_handle_t) * MANA_INDIRECT_TABLE_SIZE;
+@@ -39,7 +37,7 @@ static int mana_ib_cfg_vport_steering(struct mana_ib_dev *dev,
+ 	req->rx_enable = 1;
+ 	req->update_default_rxobj = 1;
+ 	req->default_rxobj = default_rxobj;
+-	req->hdr.dev_id = mdev->dev_id;
++	req->hdr.dev_id = gc->mana.dev_id;
+ 
+ 	/* If there are more than 1 entries in indirection table, enable RSS */
+ 	if (log_ind_tbl_size)
+@@ -106,7 +104,6 @@ static int mana_ib_create_qp_rss(struct ib_qp *ibqp, struct ib_pd *pd,
+ 	struct gdma_queue **gdma_cq_allocated;
+ 	mana_handle_t *mana_ind_table;
+ 	struct mana_port_context *mpc;
+-	struct gdma_queue *gdma_cq;
+ 	unsigned int ind_tbl_size;
+ 	struct net_device *ndev;
+ 	struct mana_ib_cq *cq;
+@@ -231,19 +228,11 @@ static int mana_ib_create_qp_rss(struct ib_qp *ibqp, struct ib_pd *pd,
+ 		mana_ind_table[i] = wq->rx_object;
+ 
+ 		/* Create CQ table entry */
+-		WARN_ON(gc->cq_table[cq->id]);
+-		gdma_cq = kzalloc(sizeof(*gdma_cq), GFP_KERNEL);
+-		if (!gdma_cq) {
+-			ret = -ENOMEM;
++		ret = mana_ib_install_cq_cb(mdev, cq);
++		if (!ret)
+ 			goto fail;
+-		}
+-		gdma_cq_allocated[i] = gdma_cq;
+ 
+-		gdma_cq->cq.context = cq;
+-		gdma_cq->type = GDMA_CQ;
+-		gdma_cq->cq.callback = mana_ib_cq_handler;
+-		gdma_cq->id = cq->id;
+-		gc->cq_table[cq->id] = gdma_cq;
++		gdma_cq_allocated[i] = gc->cq_table[cq->id];
+ 	}
+ 	resp.num_entries = i;
+ 
+@@ -409,18 +398,9 @@ static int mana_ib_create_qp_raw(struct ib_qp *ibqp, struct ib_pd *ibpd,
+ 	send_cq->id = cq_spec.queue_index;
+ 
+ 	/* Create CQ table entry */
+-	WARN_ON(gc->cq_table[send_cq->id]);
+-	gdma_cq = kzalloc(sizeof(*gdma_cq), GFP_KERNEL);
+-	if (!gdma_cq) {
+-		err = -ENOMEM;
++	err = mana_ib_install_cq_cb(mdev, send_cq);
++	if (err)
+ 		goto err_destroy_wq_obj;
+-	}
+-
+-	gdma_cq->cq.context = send_cq;
+-	gdma_cq->type = GDMA_CQ;
+-	gdma_cq->cq.callback = mana_ib_cq_handler;
+-	gdma_cq->id = send_cq->id;
+-	gc->cq_table[send_cq->id] = gdma_cq;
+ 
+ 	ibdev_dbg(&mdev->ib_dev,
+ 		  "ret %d qp->tx_object 0x%llx sq id %llu cq id %llu\n", err,
+@@ -442,7 +422,7 @@ static int mana_ib_create_qp_raw(struct ib_qp *ibqp, struct ib_pd *ibpd,
+ 
+ err_release_gdma_cq:
+ 	kfree(gdma_cq);
+-	gd->gdma_context->cq_table[send_cq->id] = NULL;
++	gc->cq_table[send_cq->id] = NULL;
+ 
+ err_destroy_wq_obj:
+ 	mana_destroy_wq_obj(mpc, GDMA_SQ, qp->tx_object);
+
+base-commit: d24b923f1d696ddacb09f0f2d1b1f4f045cfe65e
+prerequisite-patch-id: 1b5d35ba40b675d080bfbe6a0e73b0dd163f4a03
+-- 
+2.43.0
+
 
