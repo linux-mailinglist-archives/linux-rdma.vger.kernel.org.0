@@ -1,36 +1,36 @@
-Return-Path: <linux-rdma+bounces-592-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-593-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B00A1829C2B
-	for <lists+linux-rdma@lfdr.de>; Wed, 10 Jan 2024 15:13:35 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5DD53829C42
+	for <lists+linux-rdma@lfdr.de>; Wed, 10 Jan 2024 15:16:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C815F1C2272B
-	for <lists+linux-rdma@lfdr.de>; Wed, 10 Jan 2024 14:13:29 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B701C284996
+	for <lists+linux-rdma@lfdr.de>; Wed, 10 Jan 2024 14:16:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4DC754BA80;
-	Wed, 10 Jan 2024 14:10:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7CA164A9A6;
+	Wed, 10 Jan 2024 14:14:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b="TYQ6n5xg"
+	dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b="L3N4jiQu"
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 61E76495C5;
-	Wed, 10 Jan 2024 14:10:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B470F487B3;
+	Wed, 10 Jan 2024 14:14:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.microsoft.com
 Received: from linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net (linux.microsoft.com [13.77.154.182])
-	by linux.microsoft.com (Postfix) with ESMTPSA id D920D20AECA9;
-	Wed, 10 Jan 2024 06:10:01 -0800 (PST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com D920D20AECA9
+	by linux.microsoft.com (Postfix) with ESMTPSA id 4BD6820B3CC1;
+	Wed, 10 Jan 2024 06:14:41 -0800 (PST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 4BD6820B3CC1
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-	s=default; t=1704895801;
-	bh=Bx6tpgbJ7znSR0iIVezjMBXLyqJuhwxy1SofVQ/JPvw=;
+	s=default; t=1704896081;
+	bh=onDGgSR9mHpkGAEUvaKrzAVPQpPasDlmQchigsMIB34=;
 	h=From:To:Cc:Subject:Date:From;
-	b=TYQ6n5xgLYzvwXzwRXHkniE+tEWgLDTHg81bu4RjBUSBaxtaIEDCh3i1pGZQkfndT
-	 NaIfEX81DNwWbIZX36q83QA3GYzqzf+SlKgbP92uYZbqSUAlX8B4J5QgZFhuZuWlWE
-	 N4aJtpYkMa38CIaE575e1F7ywfzYsb5E1VnwtOrI=
+	b=L3N4jiQutpqH0jCS5WWubKCfv1/xDsKUoAlp4DhvXCIJLKX8Hamdeo/ovnTX5rSce
+	 GhVLCdtHv82jPBkPEVFYUaFVZUro9MtEq8klk0TmSZOBHAPKn2NjC+FPelpfpu2lNz
+	 TwnThwh/sjyTt2pOGw6TZmhO8ArGlhwQDRrvWxq8=
 From: Konstantin Taranov <kotaranov@linux.microsoft.com>
 To: kotaranov@microsoft.com,
 	longli@microsoft.com,
@@ -38,9 +38,9 @@ To: kotaranov@microsoft.com,
 	leon@kernel.org
 Cc: linux-rdma@vger.kernel.org,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH next 1/1] Introduce three helper functions to clean mana_ib code
-Date: Wed, 10 Jan 2024 06:09:54 -0800
-Message-Id: <1704895794-3501-1-git-send-email-kotaranov@linux.microsoft.com>
+Subject: [PATCH next v2 1/1] RDMA/mana_ib: Introduce three helper functions to clean mana_ib code
+Date: Wed, 10 Jan 2024 06:14:34 -0800
+Message-Id: <1704896074-4355-1-git-send-email-kotaranov@linux.microsoft.com>
 X-Mailer: git-send-email 1.8.3.1
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
@@ -63,6 +63,8 @@ Introduced functions:
 
 
 Signed-off-by: Konstantin Taranov <kotaranov@microsoft.com>
+---
+Sorry that was sent again, I forgot to add RDMA/mana_ib to the subject
 ---
  drivers/infiniband/hw/mana/cq.c      | 23 ++++++++++++++--
  drivers/infiniband/hw/mana/main.c    | 40 ++++++++++------------------
