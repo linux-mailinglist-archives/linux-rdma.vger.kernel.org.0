@@ -1,36 +1,36 @@
-Return-Path: <linux-rdma+bounces-593-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-594-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5DD53829C42
-	for <lists+linux-rdma@lfdr.de>; Wed, 10 Jan 2024 15:16:14 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id EBF01829CB1
+	for <lists+linux-rdma@lfdr.de>; Wed, 10 Jan 2024 15:35:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B701C284996
-	for <lists+linux-rdma@lfdr.de>; Wed, 10 Jan 2024 14:16:12 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 79EA91F24957
+	for <lists+linux-rdma@lfdr.de>; Wed, 10 Jan 2024 14:35:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7CA164A9A6;
-	Wed, 10 Jan 2024 14:14:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 755DD4B5B5;
+	Wed, 10 Jan 2024 14:35:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b="L3N4jiQu"
+	dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b="YJXcDoGz"
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B470F487B3;
-	Wed, 10 Jan 2024 14:14:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 85B854B5A8;
+	Wed, 10 Jan 2024 14:35:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.microsoft.com
 Received: from linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net (linux.microsoft.com [13.77.154.182])
-	by linux.microsoft.com (Postfix) with ESMTPSA id 4BD6820B3CC1;
-	Wed, 10 Jan 2024 06:14:41 -0800 (PST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 4BD6820B3CC1
+	by linux.microsoft.com (Postfix) with ESMTPSA id 1FE2C20AECA9;
+	Wed, 10 Jan 2024 06:35:10 -0800 (PST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 1FE2C20AECA9
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-	s=default; t=1704896081;
-	bh=onDGgSR9mHpkGAEUvaKrzAVPQpPasDlmQchigsMIB34=;
+	s=default; t=1704897310;
+	bh=xXFaHv+bZLjFk6iTAADOH86nI8xhQAiBf2imF6OR9X4=;
 	h=From:To:Cc:Subject:Date:From;
-	b=L3N4jiQutpqH0jCS5WWubKCfv1/xDsKUoAlp4DhvXCIJLKX8Hamdeo/ovnTX5rSce
-	 GhVLCdtHv82jPBkPEVFYUaFVZUro9MtEq8klk0TmSZOBHAPKn2NjC+FPelpfpu2lNz
-	 TwnThwh/sjyTt2pOGw6TZmhO8ArGlhwQDRrvWxq8=
+	b=YJXcDoGzVr2tQ2VC3u9cE36cFFV7ZXu0ki6n1x9du7uV9TAVeA+qYxdxJSD0MCo/O
+	 KxyZdnCpxgb3UesustTJso4EJ/t2PhYxPpNgzEAOCDUYZoptPLtI29LIqTBorGm6UY
+	 oeUDVWrDW+QtHL2qnq5VOkBxI8dalnjNTCLwHU6A=
 From: Konstantin Taranov <kotaranov@linux.microsoft.com>
 To: kotaranov@microsoft.com,
 	longli@microsoft.com,
@@ -38,9 +38,9 @@ To: kotaranov@microsoft.com,
 	leon@kernel.org
 Cc: linux-rdma@vger.kernel.org,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH next v2 1/1] RDMA/mana_ib: Introduce three helper functions to clean mana_ib code
-Date: Wed, 10 Jan 2024 06:14:34 -0800
-Message-Id: <1704896074-4355-1-git-send-email-kotaranov@linux.microsoft.com>
+Subject: [PATCH next v3 1/1] RDMA/mana_ib: Introduce three helper functions to clean mana_ib code
+Date: Wed, 10 Jan 2024 06:35:01 -0800
+Message-Id: <1704897301-7253-1-git-send-email-kotaranov@linux.microsoft.com>
 X-Mailer: git-send-email 1.8.3.1
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
@@ -61,17 +61,17 @@ Introduced functions:
 2) mana_ib_get_netdev
 3) mana_ib_install_cq_cb
 
-
 Signed-off-by: Konstantin Taranov <kotaranov@microsoft.com>
 ---
-Sorry that was sent again, I forgot to add RDMA/mana_ib to the subject
+v1->v2: Sorry that was sent again, I forgot to add RDMA/mana_ib to the subject
+v2->v3: missing changes in qp.c
 ---
- drivers/infiniband/hw/mana/cq.c      | 23 ++++++++++++++--
- drivers/infiniband/hw/mana/main.c    | 40 ++++++++++------------------
- drivers/infiniband/hw/mana/mana_ib.h | 17 ++++++++++++
- drivers/infiniband/hw/mana/mr.c      | 13 +++------
- drivers/infiniband/hw/mana/qp.c      | 36 ++++++-------------------
- 5 files changed, 63 insertions(+), 66 deletions(-)
+ drivers/infiniband/hw/mana/cq.c      | 23 +++++++-
+ drivers/infiniband/hw/mana/main.c    | 40 +++++--------
+ drivers/infiniband/hw/mana/mana_ib.h | 17 ++++++
+ drivers/infiniband/hw/mana/mr.c      | 13 +---
+ drivers/infiniband/hw/mana/qp.c      | 88 +++++++++-------------------
+ 5 files changed, 82 insertions(+), 99 deletions(-)
 
 diff --git a/drivers/infiniband/hw/mana/cq.c b/drivers/infiniband/hw/mana/cq.c
 index 83ebd0705..255e74ab7 100644
@@ -344,7 +344,7 @@ index 351207c60..ee4d4f834 100644
  err_umem:
  	ib_umem_release(mr->umem);
 diff --git a/drivers/infiniband/hw/mana/qp.c b/drivers/infiniband/hw/mana/qp.c
-index e6d063d45..e889c798f 100644
+index 21ac9fcad..e889c798f 100644
 --- a/drivers/infiniband/hw/mana/qp.c
 +++ b/drivers/infiniband/hw/mana/qp.c
 @@ -17,12 +17,10 @@ static int mana_ib_cfg_vport_steering(struct mana_ib_dev *dev,
@@ -370,15 +370,64 @@ index e6d063d45..e889c798f 100644
  
  	/* If there are more than 1 entries in indirection table, enable RSS */
  	if (log_ind_tbl_size)
-@@ -106,7 +104,6 @@ static int mana_ib_create_qp_rss(struct ib_qp *ibqp, struct ib_pd *pd,
+@@ -99,20 +97,17 @@ static int mana_ib_create_qp_rss(struct ib_qp *ibqp, struct ib_pd *pd,
+ 	struct mana_ib_qp *qp = container_of(ibqp, struct mana_ib_qp, ibqp);
+ 	struct mana_ib_dev *mdev =
+ 		container_of(pd->device, struct mana_ib_dev, ib_dev);
++	struct gdma_context *gc = mdev_to_gc(mdev);
+ 	struct ib_rwq_ind_table *ind_tbl = attr->rwq_ind_tbl;
+ 	struct mana_ib_create_qp_rss_resp resp = {};
+ 	struct mana_ib_create_qp_rss ucmd = {};
  	struct gdma_queue **gdma_cq_allocated;
  	mana_handle_t *mana_ind_table;
  	struct mana_port_context *mpc;
 -	struct gdma_queue *gdma_cq;
  	unsigned int ind_tbl_size;
+-	struct mana_context *mc;
  	struct net_device *ndev;
+-	struct gdma_context *gc;
  	struct mana_ib_cq *cq;
-@@ -231,19 +228,11 @@ static int mana_ib_create_qp_rss(struct ib_qp *ibqp, struct ib_pd *pd,
+ 	struct mana_ib_wq *wq;
+-	struct gdma_dev *gd;
+ 	struct mana_eq *eq;
+ 	struct ib_cq *ibcq;
+ 	struct ib_wq *ibwq;
+@@ -120,10 +115,6 @@ static int mana_ib_create_qp_rss(struct ib_qp *ibqp, struct ib_pd *pd,
+ 	u32 port;
+ 	int ret;
+ 
+-	gc = mdev->gdma_dev->gdma_context;
+-	gd = &gc->mana;
+-	mc = gd->driver_data;
+-
+ 	if (!udata || udata->inlen < sizeof(ucmd))
+ 		return -EINVAL;
+ 
+@@ -166,12 +157,12 @@ static int mana_ib_create_qp_rss(struct ib_qp *ibqp, struct ib_pd *pd,
+ 
+ 	/* IB ports start with 1, MANA start with 0 */
+ 	port = ucmd.port;
+-	if (port < 1 || port > mc->num_ports) {
++	ndev = mana_ib_get_netdev(pd->device, port);
++	if (!ndev) {
+ 		ibdev_dbg(&mdev->ib_dev, "Invalid port %u in creating qp\n",
+ 			  port);
+ 		return -EINVAL;
+ 	}
+-	ndev = mc->ports[port - 1];
+ 	mpc = netdev_priv(ndev);
+ 
+ 	ibdev_dbg(&mdev->ib_dev, "rx_hash_function %d port %d\n",
+@@ -209,7 +200,7 @@ static int mana_ib_create_qp_rss(struct ib_qp *ibqp, struct ib_pd *pd,
+ 		cq_spec.gdma_region = cq->gdma_region;
+ 		cq_spec.queue_size = cq->cqe * COMP_ENTRY_SIZE;
+ 		cq_spec.modr_ctx_id = 0;
+-		eq = &mc->eqs[cq->comp_vector % gc->max_num_queues];
++		eq = &mpc->ac->eqs[cq->comp_vector % gc->max_num_queues];
+ 		cq_spec.attached_eq = eq->eq->id;
+ 
+ 		ret = mana_create_wq_obj(mpc, mpc->port_handle, GDMA_RQ,
+@@ -237,19 +228,11 @@ static int mana_ib_create_qp_rss(struct ib_qp *ibqp, struct ib_pd *pd,
  		mana_ind_table[i] = wq->rx_object;
  
  		/* Create CQ table entry */
@@ -401,11 +450,79 @@ index e6d063d45..e889c798f 100644
  	}
  	resp.num_entries = i;
  
-@@ -409,18 +398,9 @@ static int mana_ib_create_qp_raw(struct ib_qp *ibqp, struct ib_pd *ibpd,
+@@ -306,14 +289,13 @@ static int mana_ib_create_qp_raw(struct ib_qp *ibqp, struct ib_pd *ibpd,
+ 	struct mana_ib_ucontext *mana_ucontext =
+ 		rdma_udata_to_drv_context(udata, struct mana_ib_ucontext,
+ 					  ibucontext);
+-	struct gdma_dev *gd = &mdev->gdma_dev->gdma_context->mana;
++	struct gdma_context *gc = mdev_to_gc(mdev);
+ 	struct mana_ib_create_qp_resp resp = {};
+ 	struct mana_ib_create_qp ucmd = {};
+ 	struct gdma_queue *gdma_cq = NULL;
+ 	struct mana_obj_spec wq_spec = {};
+ 	struct mana_obj_spec cq_spec = {};
+ 	struct mana_port_context *mpc;
+-	struct mana_context *mc;
+ 	struct net_device *ndev;
+ 	struct ib_umem *umem;
+ 	struct mana_eq *eq;
+@@ -321,8 +303,6 @@ static int mana_ib_create_qp_raw(struct ib_qp *ibqp, struct ib_pd *ibpd,
+ 	u32 port;
+ 	int err;
+ 
+-	mc = gd->driver_data;
+-
+ 	if (!mana_ucontext || udata->inlen < sizeof(ucmd))
+ 		return -EINVAL;
+ 
+@@ -333,11 +313,6 @@ static int mana_ib_create_qp_raw(struct ib_qp *ibqp, struct ib_pd *ibpd,
+ 		return err;
+ 	}
+ 
+-	/* IB ports start with 1, MANA Ethernet ports start with 0 */
+-	port = ucmd.port;
+-	if (port < 1 || port > mc->num_ports)
+-		return -EINVAL;
+-
+ 	if (attr->cap.max_send_wr > mdev->adapter_caps.max_qp_wr) {
+ 		ibdev_dbg(&mdev->ib_dev,
+ 			  "Requested max_send_wr %d exceeding limit\n",
+@@ -352,11 +327,17 @@ static int mana_ib_create_qp_raw(struct ib_qp *ibqp, struct ib_pd *ibpd,
+ 		return -EINVAL;
+ 	}
+ 
+-	ndev = mc->ports[port - 1];
++	port = ucmd.port;
++	ndev = mana_ib_get_netdev(ibpd->device, port);
++	if (!ndev) {
++		ibdev_dbg(&mdev->ib_dev, "Invalid port %u in creating qp\n",
++			  port);
++		return -EINVAL;
++	}
+ 	mpc = netdev_priv(ndev);
+ 	ibdev_dbg(&mdev->ib_dev, "port %u ndev %p mpc %p\n", port, ndev, mpc);
+ 
+-	err = mana_ib_cfg_vport(mdev, port - 1, pd, mana_ucontext->doorbell);
++	err = mana_ib_cfg_vport(mdev, port, pd, mana_ucontext->doorbell);
+ 	if (err)
+ 		return -ENODEV;
+ 
+@@ -396,8 +377,8 @@ static int mana_ib_create_qp_raw(struct ib_qp *ibqp, struct ib_pd *ibpd,
+ 	cq_spec.gdma_region = send_cq->gdma_region;
+ 	cq_spec.queue_size = send_cq->cqe * COMP_ENTRY_SIZE;
+ 	cq_spec.modr_ctx_id = 0;
+-	eq_vec = send_cq->comp_vector % gd->gdma_context->max_num_queues;
+-	eq = &mc->eqs[eq_vec];
++	eq_vec = send_cq->comp_vector % gc->max_num_queues;
++	eq = &mpc->ac->eqs[eq_vec];
+ 	cq_spec.attached_eq = eq->eq->id;
+ 
+ 	err = mana_create_wq_obj(mpc, mpc->port_handle, GDMA_SQ, &wq_spec,
+@@ -417,18 +398,9 @@ static int mana_ib_create_qp_raw(struct ib_qp *ibqp, struct ib_pd *ibpd,
  	send_cq->id = cq_spec.queue_index;
  
  	/* Create CQ table entry */
--	WARN_ON(gc->cq_table[send_cq->id]);
+-	WARN_ON(gd->gdma_context->cq_table[send_cq->id]);
 -	gdma_cq = kzalloc(sizeof(*gdma_cq), GFP_KERNEL);
 -	if (!gdma_cq) {
 -		err = -ENOMEM;
@@ -418,11 +535,11 @@ index e6d063d45..e889c798f 100644
 -	gdma_cq->type = GDMA_CQ;
 -	gdma_cq->cq.callback = mana_ib_cq_handler;
 -	gdma_cq->id = send_cq->id;
--	gc->cq_table[send_cq->id] = gdma_cq;
+-	gd->gdma_context->cq_table[send_cq->id] = gdma_cq;
  
  	ibdev_dbg(&mdev->ib_dev,
  		  "ret %d qp->tx_object 0x%llx sq id %llu cq id %llu\n", err,
-@@ -442,7 +422,7 @@ static int mana_ib_create_qp_raw(struct ib_qp *ibqp, struct ib_pd *ibpd,
+@@ -450,7 +422,7 @@ static int mana_ib_create_qp_raw(struct ib_qp *ibqp, struct ib_pd *ibpd,
  
  err_release_gdma_cq:
  	kfree(gdma_cq);
@@ -431,9 +548,61 @@ index e6d063d45..e889c798f 100644
  
  err_destroy_wq_obj:
  	mana_destroy_wq_obj(mpc, GDMA_SQ, qp->tx_object);
+@@ -462,7 +434,7 @@ static int mana_ib_create_qp_raw(struct ib_qp *ibqp, struct ib_pd *ibpd,
+ 	ib_umem_release(umem);
+ 
+ err_free_vport:
+-	mana_ib_uncfg_vport(mdev, pd, port - 1);
++	mana_ib_uncfg_vport(mdev, pd, port);
+ 
+ 	return err;
+ }
+@@ -500,16 +472,13 @@ static int mana_ib_destroy_qp_rss(struct mana_ib_qp *qp,
+ {
+ 	struct mana_ib_dev *mdev =
+ 		container_of(qp->ibqp.device, struct mana_ib_dev, ib_dev);
+-	struct gdma_dev *gd = &mdev->gdma_dev->gdma_context->mana;
+ 	struct mana_port_context *mpc;
+-	struct mana_context *mc;
+ 	struct net_device *ndev;
+ 	struct mana_ib_wq *wq;
+ 	struct ib_wq *ibwq;
+ 	int i;
+ 
+-	mc = gd->driver_data;
+-	ndev = mc->ports[qp->port - 1];
++	ndev = mana_ib_get_netdev(qp->ibqp.device, qp->port);
+ 	mpc = netdev_priv(ndev);
+ 
+ 	for (i = 0; i < (1 << ind_tbl->log_ind_tbl_size); i++) {
+@@ -527,15 +496,12 @@ static int mana_ib_destroy_qp_raw(struct mana_ib_qp *qp, struct ib_udata *udata)
+ {
+ 	struct mana_ib_dev *mdev =
+ 		container_of(qp->ibqp.device, struct mana_ib_dev, ib_dev);
+-	struct gdma_dev *gd = &mdev->gdma_dev->gdma_context->mana;
+ 	struct ib_pd *ibpd = qp->ibqp.pd;
+ 	struct mana_port_context *mpc;
+-	struct mana_context *mc;
+ 	struct net_device *ndev;
+ 	struct mana_ib_pd *pd;
+ 
+-	mc = gd->driver_data;
+-	ndev = mc->ports[qp->port - 1];
++	ndev = mana_ib_get_netdev(qp->ibqp.device, qp->port);
+ 	mpc = netdev_priv(ndev);
+ 	pd = container_of(ibpd, struct mana_ib_pd, ibpd);
+ 
+@@ -546,7 +512,7 @@ static int mana_ib_destroy_qp_raw(struct mana_ib_qp *qp, struct ib_udata *udata)
+ 		ib_umem_release(qp->sq_umem);
+ 	}
+ 
+-	mana_ib_uncfg_vport(mdev, pd, qp->port - 1);
++	mana_ib_uncfg_vport(mdev, pd, qp->port);
+ 
+ 	return 0;
+ }
 
 base-commit: d24b923f1d696ddacb09f0f2d1b1f4f045cfe65e
-prerequisite-patch-id: 1b5d35ba40b675d080bfbe6a0e73b0dd163f4a03
 -- 
 2.43.0
 
