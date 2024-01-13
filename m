@@ -1,42 +1,42 @@
-Return-Path: <linux-rdma+bounces-622-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-619-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1317482CAAF
-	for <lists+linux-rdma@lfdr.de>; Sat, 13 Jan 2024 10:04:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 13EED82CAA8
+	for <lists+linux-rdma@lfdr.de>; Sat, 13 Jan 2024 10:04:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7C70C1F23420
-	for <lists+linux-rdma@lfdr.de>; Sat, 13 Jan 2024 09:04:56 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7C2BD1F22D63
+	for <lists+linux-rdma@lfdr.de>; Sat, 13 Jan 2024 09:04:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CC91A1EF09;
-	Sat, 13 Jan 2024 09:03:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 493DA1EEEF;
+	Sat, 13 Jan 2024 09:03:37 +0000 (UTC)
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
+Received: from szxga05-in.huawei.com (szxga05-in.huawei.com [45.249.212.191])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9848A17554;
-	Sat, 13 Jan 2024 09:03:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 38D427E8;
+	Sat, 13 Jan 2024 09:03:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=hisilicon.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=hisilicon.com
-Received: from mail.maildlp.com (unknown [172.19.88.194])
-	by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4TBsqk70X2zsVqY;
-	Sat, 13 Jan 2024 17:02:42 +0800 (CST)
+Received: from mail.maildlp.com (unknown [172.19.88.214])
+	by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4TBsps4YxNz2LXJg;
+	Sat, 13 Jan 2024 17:01:57 +0800 (CST)
 Received: from kwepemi500006.china.huawei.com (unknown [7.221.188.68])
-	by mail.maildlp.com (Postfix) with ESMTPS id 549801402E2;
+	by mail.maildlp.com (Postfix) with ESMTPS id F247B1A0190;
 	Sat, 13 Jan 2024 17:03:31 +0800 (CST)
 Received: from localhost.localdomain (10.67.165.2) by
  kwepemi500006.china.huawei.com (7.221.188.68) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Sat, 13 Jan 2024 17:03:30 +0800
+ 15.1.2507.35; Sat, 13 Jan 2024 17:03:31 +0800
 From: Junxian Huang <huangjunxian6@hisilicon.com>
 To: <jgg@ziepe.ca>, <leon@kernel.org>
 CC: <linux-rdma@vger.kernel.org>, <linuxarm@huawei.com>,
 	<linux-kernel@vger.kernel.org>, <huangjunxian6@hisilicon.com>
-Subject: [PATCH v2 for-next 4/6] RDMA/hns: Support flexible umem page size
-Date: Sat, 13 Jan 2024 16:59:33 +0800
-Message-ID: <20240113085935.2838701-5-huangjunxian6@hisilicon.com>
+Subject: [PATCH v2 for-next 6/6] RDMA/hns: Simplify 'struct hns_roce_hem' allocation
+Date: Sat, 13 Jan 2024 16:59:35 +0800
+Message-ID: <20240113085935.2838701-7-huangjunxian6@hisilicon.com>
 X-Mailer: git-send-email 2.30.0
 In-Reply-To: <20240113085935.2838701-1-huangjunxian6@hisilicon.com>
 References: <20240113085935.2838701-1-huangjunxian6@hisilicon.com>
@@ -51,261 +51,320 @@ Content-Type: text/plain
 X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
  kwepemi500006.china.huawei.com (7.221.188.68)
 
-From: Chengchang Tang <tangchengchang@huawei.com>
+From: Yunsheng Lin <linyunsheng@huawei.com>
 
-In the current implementation, a fixed page size is used to
-configure the umem PBL, which is not flexible enough and is
-not conducive to the performance of the HW. Find a best page
-size to get better performance.
+'struct hns_roce_hem' is used to refer to the last level of
+dma buffer managed by the hw, pointed by a single BA(base
+address) in the previous level of BT(base table), so the dma
+buffer in 'struct hns_roce_hem' must be contiguous.
 
-Signed-off-by: Chengchang Tang <tangchengchang@huawei.com>
+Right now the size of dma buffer in 'struct hns_roce_hem' is
+decided by mhop->buf_chunk_size in get_hem_table_config(),
+which ensure the mhop->buf_chunk_size is power of two of
+PAGE_SIZE, so there will be only one contiguous dma buffer
+allocated in hns_roce_alloc_hem(), which means hem->chunk_list
+and chunk->mem for linking multi dma buffers is unnecessary.
+
+This patch removes the hem->chunk_list and chunk->mem and other
+related macro and function accordingly.
+
+Signed-off-by: Yunsheng Lin <linyunsheng@huawei.com>
 Signed-off-by: Junxian Huang <huangjunxian6@hisilicon.com>
 ---
- drivers/infiniband/hw/hns/hns_roce_device.h |   9 ++
- drivers/infiniband/hw/hns/hns_roce_mr.c     | 121 ++++++++++++++------
- 2 files changed, 92 insertions(+), 38 deletions(-)
+ drivers/infiniband/hw/hns/hns_roce_hem.c   | 95 +++++-----------------
+ drivers/infiniband/hw/hns/hns_roce_hem.h   | 56 +------------
+ drivers/infiniband/hw/hns/hns_roce_hw_v2.c |  9 +-
+ 3 files changed, 24 insertions(+), 136 deletions(-)
 
-diff --git a/drivers/infiniband/hw/hns/hns_roce_device.h b/drivers/infiniband/hw/hns/hns_roce_device.h
-index dd652dc090b0..1a8516019516 100644
---- a/drivers/infiniband/hw/hns/hns_roce_device.h
-+++ b/drivers/infiniband/hw/hns/hns_roce_device.h
-@@ -179,6 +179,7 @@ enum {
- 
- #define HNS_ROCE_CMD_SUCCESS			1
- 
-+#define HNS_ROCE_MAX_HOP_NUM			3
- /* The minimum page size is 4K for hardware */
- #define HNS_HW_PAGE_SHIFT			12
- #define HNS_HW_PAGE_SIZE			(1 << HNS_HW_PAGE_SHIFT)
-@@ -269,6 +270,11 @@ struct hns_roce_hem_list {
- 	dma_addr_t root_ba; /* pointer to the root ba table */
- };
- 
-+enum mtr_type {
-+	MTR_DEFAULT = 0,
-+	MTR_PBL,
-+};
-+
- struct hns_roce_buf_attr {
- 	struct {
- 		size_t	size;  /* region size */
-@@ -277,7 +283,10 @@ struct hns_roce_buf_attr {
- 	unsigned int region_count; /* valid region count */
- 	unsigned int page_shift;  /* buffer page shift */
- 	unsigned int user_access; /* umem access flag */
-+	u64 iova;
-+	enum mtr_type type;
- 	bool mtt_only; /* only alloc buffer-required MTT memory */
-+	bool adaptive; /* adaptive for page_shift and hopnum */
- };
- 
- struct hns_roce_hem_cfg {
-diff --git a/drivers/infiniband/hw/hns/hns_roce_mr.c b/drivers/infiniband/hw/hns/hns_roce_mr.c
-index 74ea9d8482b9..d00b4aa7214b 100644
---- a/drivers/infiniband/hw/hns/hns_roce_mr.c
-+++ b/drivers/infiniband/hw/hns/hns_roce_mr.c
-@@ -32,6 +32,7 @@
-  */
- 
- #include <linux/vmalloc.h>
-+#include <linux/count_zeros.h>
- #include <rdma/ib_umem.h>
- #include <linux/math.h>
- #include "hns_roce_device.h"
-@@ -103,6 +104,10 @@ static int alloc_mr_pbl(struct hns_roce_dev *hr_dev, struct hns_roce_mr *mr,
- 	buf_attr.user_access = mr->access;
- 	/* fast MR's buffer is alloced before mapping, not at creation */
- 	buf_attr.mtt_only = is_fast;
-+	buf_attr.iova = mr->iova;
-+	/* pagesize and hopnum is fixed for fast MR */
-+	buf_attr.adaptive = !is_fast;
-+	buf_attr.type = MTR_PBL;
- 
- 	err = hns_roce_mtr_create(hr_dev, &mr->pbl_mtr, &buf_attr,
- 				  hr_dev->caps.pbl_ba_pg_sz + PAGE_SHIFT,
-@@ -721,6 +726,16 @@ static int cal_mtr_pg_cnt(struct hns_roce_mtr *mtr)
- 	return page_cnt;
+diff --git a/drivers/infiniband/hw/hns/hns_roce_hem.c b/drivers/infiniband/hw/hns/hns_roce_hem.c
+index c4ac06a33869..a4b3f19161dc 100644
+--- a/drivers/infiniband/hw/hns/hns_roce_hem.c
++++ b/drivers/infiniband/hw/hns/hns_roce_hem.c
+@@ -249,61 +249,34 @@ int hns_roce_calc_hem_mhop(struct hns_roce_dev *hr_dev,
  }
  
-+static bool need_split_huge_page(struct hns_roce_mtr *mtr)
-+{
-+	/* When HEM buffer uses 0-level addressing, the page size is
-+	 * equal to the whole buffer size. If the current MTR has multiple
-+	 * regions, we split the buffer into small pages(4k, required by hns
-+	 * ROCEE). These pages will be used in multiple regions.
-+	 */
-+	return mtr->hem_cfg.is_direct && mtr->hem_cfg.region_count > 1;
-+}
-+
- static int mtr_map_bufs(struct hns_roce_dev *hr_dev, struct hns_roce_mtr *mtr)
+ static struct hns_roce_hem *hns_roce_alloc_hem(struct hns_roce_dev *hr_dev,
+-					       int npages,
+ 					       unsigned long hem_alloc_size,
+ 					       gfp_t gfp_mask)
  {
- 	struct ib_device *ibdev = &hr_dev->ib_dev;
-@@ -730,14 +745,8 @@ static int mtr_map_bufs(struct hns_roce_dev *hr_dev, struct hns_roce_mtr *mtr)
- 	int npage;
- 	int ret;
+-	struct hns_roce_hem_chunk *chunk = NULL;
+ 	struct hns_roce_hem *hem;
+-	struct scatterlist *mem;
+ 	int order;
+ 	void *buf;
  
--	/* When HEM buffer uses 0-level addressing, the page size is
--	 * equal to the whole buffer size, and we split the buffer into
--	 * small pages which is used to check whether the adjacent
--	 * units are in the continuous space and its size is fixed to
--	 * 4K based on hns ROCEE's requirement.
--	 */
--	page_shift = mtr->hem_cfg.is_direct ? HNS_HW_PAGE_SHIFT :
--					      mtr->hem_cfg.buf_pg_shift;
-+	page_shift = need_split_huge_page(mtr) ? HNS_HW_PAGE_SHIFT :
-+						 mtr->hem_cfg.buf_pg_shift;
- 	/* alloc a tmp array to store buffer's dma address */
- 	pages = kvcalloc(page_count, sizeof(dma_addr_t), GFP_KERNEL);
- 	if (!pages)
-@@ -757,7 +766,7 @@ static int mtr_map_bufs(struct hns_roce_dev *hr_dev, struct hns_roce_mtr *mtr)
- 		goto err_alloc_list;
- 	}
+ 	WARN_ON(gfp_mask & __GFP_HIGHMEM);
  
--	if (mtr->hem_cfg.is_direct && npage > 1) {
-+	if (need_split_huge_page(mtr) && npage > 1) {
- 		ret = mtr_check_direct_pages(pages, npage, page_shift);
- 		if (ret) {
- 			ibdev_err(ibdev, "failed to check %s page: %d / %d.\n",
-@@ -915,56 +924,89 @@ int hns_roce_mtr_find(struct hns_roce_dev *hr_dev, struct hns_roce_mtr *mtr,
- 	return ret;
- }
- 
--static int mtr_init_buf_cfg(struct hns_roce_dev *hr_dev,
--			    struct hns_roce_buf_attr *attr,
--			    struct hns_roce_hem_cfg *cfg, u64 unalinged_size)
-+static int get_best_page_shift(struct hns_roce_dev *hr_dev,
-+			       struct hns_roce_mtr *mtr,
-+			       struct hns_roce_buf_attr *buf_attr)
-+{
-+	unsigned int page_sz;
-+
-+	if (!buf_attr->adaptive || buf_attr->type != MTR_PBL || !mtr->umem)
-+		return 0;
-+
-+	page_sz = ib_umem_find_best_pgsz(mtr->umem,
-+					 hr_dev->caps.page_size_cap,
-+					 buf_attr->iova);
-+	if (!page_sz)
-+		return -EINVAL;
-+
-+	buf_attr->page_shift = order_base_2(page_sz);
-+	return 0;
-+}
-+
-+static bool is_buf_attr_valid(struct hns_roce_dev *hr_dev,
-+			      struct hns_roce_buf_attr *attr)
- {
- 	struct ib_device *ibdev = &hr_dev->ib_dev;
-+
-+	if (attr->region_count > ARRAY_SIZE(attr->region) ||
-+	    attr->region_count < 1 || attr->page_shift < HNS_HW_PAGE_SHIFT) {
-+		ibdev_err(ibdev,
-+			  "invalid buf attr, region count %d, page shift %u.\n",
-+			  attr->region_count, attr->page_shift);
-+		return false;
++	order = get_order(hem_alloc_size);
++	if (PAGE_SIZE << order != hem_alloc_size) {
++		dev_err(hr_dev->dev, "invalid hem_alloc_size: %lu!\n",
++			hem_alloc_size);
++		return NULL;
 +	}
 +
-+	return true;
-+}
-+
-+static int mtr_init_buf_cfg(struct hns_roce_dev *hr_dev,
-+			    struct hns_roce_mtr *mtr,
-+			    struct hns_roce_buf_attr *attr)
-+{
-+	struct hns_roce_hem_cfg *cfg = &mtr->hem_cfg;
- 	struct hns_roce_buf_region *r;
--	u64 first_region_padding;
--	int page_cnt, region_cnt;
- 	size_t buf_pg_sz;
- 	size_t buf_size;
-+	int page_cnt, i;
-+	u64 pgoff = 0;
-+
-+	if (!is_buf_attr_valid(hr_dev, attr))
-+		return -EINVAL;
+ 	hem = kmalloc(sizeof(*hem),
+ 		      gfp_mask & ~(__GFP_HIGHMEM | __GFP_NOWARN));
+ 	if (!hem)
+ 		return NULL;
  
- 	/* If mtt is disabled, all pages must be within a continuous range */
- 	cfg->is_direct = !mtr_has_mtt(attr);
-+	cfg->region_count = attr->region_count;
- 	buf_size = mtr_bufs_size(attr);
--	if (cfg->is_direct) {
-+	if (need_split_huge_page(mtr)) {
- 		buf_pg_sz = HNS_HW_PAGE_SIZE;
- 		cfg->buf_pg_count = 1;
- 		/* The ROCEE requires the page size to be 4K * 2 ^ N. */
- 		cfg->buf_pg_shift = HNS_HW_PAGE_SHIFT +
- 			order_base_2(DIV_ROUND_UP(buf_size, HNS_HW_PAGE_SIZE));
--		first_region_padding = 0;
- 	} else {
--		cfg->buf_pg_count = DIV_ROUND_UP(buf_size + unalinged_size,
--						 1 << attr->page_shift);
-+		buf_pg_sz = 1 << attr->page_shift;
-+		cfg->buf_pg_count = mtr->umem ?
-+			ib_umem_num_dma_blocks(mtr->umem, buf_pg_sz) :
-+			DIV_ROUND_UP(buf_size, buf_pg_sz);
- 		cfg->buf_pg_shift = attr->page_shift;
--		buf_pg_sz = 1 << cfg->buf_pg_shift;
--		first_region_padding = unalinged_size;
-+		pgoff = mtr->umem ? mtr->umem->address & ~PAGE_MASK : 0;
- 	}
+-	INIT_LIST_HEAD(&hem->chunk_list);
+-
+-	order = get_order(hem_alloc_size);
+-
+-	while (npages > 0) {
+-		if (!chunk) {
+-			chunk = kmalloc(sizeof(*chunk),
+-				gfp_mask & ~(__GFP_HIGHMEM | __GFP_NOWARN));
+-			if (!chunk)
+-				goto fail;
+-
+-			sg_init_table(chunk->mem, HNS_ROCE_HEM_CHUNK_LEN);
+-			chunk->npages = 0;
+-			chunk->nsg = 0;
+-			memset(chunk->buf, 0, sizeof(chunk->buf));
+-			list_add_tail(&chunk->list, &hem->chunk_list);
+-		}
++	buf = dma_alloc_coherent(hr_dev->dev, hem_alloc_size,
++				 &hem->dma, gfp_mask);
++	if (!buf)
++		goto fail;
  
- 	/* Convert buffer size to page index and page count for each region and
- 	 * the buffer's offset needs to be appended to the first region.
- 	 */
--	for (page_cnt = 0, region_cnt = 0; region_cnt < attr->region_count &&
--	     region_cnt < ARRAY_SIZE(cfg->region); region_cnt++) {
--		r = &cfg->region[region_cnt];
-+	for (page_cnt = 0, i = 0; i < attr->region_count; i++) {
-+		r = &cfg->region[i];
- 		r->offset = page_cnt;
--		buf_size = hr_hw_page_align(attr->region[region_cnt].size +
--					    first_region_padding);
--		r->count = DIV_ROUND_UP(buf_size, buf_pg_sz);
--		first_region_padding = 0;
--		page_cnt += r->count;
--		r->hopnum = to_hr_hem_hopnum(attr->region[region_cnt].hopnum,
--					     r->count);
+-		while (1 << order > npages)
+-			--order;
+-
+-		/*
+-		 * Alloc memory one time. If failed, don't alloc small block
+-		 * memory, directly return fail.
+-		 */
+-		mem = &chunk->mem[chunk->npages];
+-		buf = dma_alloc_coherent(hr_dev->dev, PAGE_SIZE << order,
+-				&sg_dma_address(mem), gfp_mask);
+-		if (!buf)
+-			goto fail;
+-
+-		chunk->buf[chunk->npages] = buf;
+-		sg_dma_len(mem) = PAGE_SIZE << order;
+-
+-		++chunk->npages;
+-		++chunk->nsg;
+-		npages -= 1 << order;
 -	}
-+		buf_size = hr_hw_page_align(attr->region[i].size + pgoff);
-+		if (attr->type == MTR_PBL && mtr->umem)
-+			r->count = ib_umem_num_dma_blocks(mtr->umem, buf_pg_sz);
-+		else
-+			r->count = DIV_ROUND_UP(buf_size, buf_pg_sz);
++	hem->buf = buf;
++	hem->size = hem_alloc_size;
  
--	cfg->region_count = region_cnt;
--	if (cfg->region_count < 1 || cfg->buf_pg_shift < HNS_HW_PAGE_SHIFT) {
--		ibdev_err(ibdev, "failed to init mtr cfg, count %d shift %u.\n",
--			  cfg->region_count, cfg->buf_pg_shift);
--		return -EINVAL;
-+		pgoff = 0;
-+		page_cnt += r->count;
-+		r->hopnum = to_hr_hem_hopnum(attr->region[i].hopnum, r->count);
- 	}
+ 	return hem;
  
- 	return 0;
-@@ -1054,7 +1096,6 @@ int hns_roce_mtr_create(struct hns_roce_dev *hr_dev, struct hns_roce_mtr *mtr,
- 			unsigned int ba_page_shift, struct ib_udata *udata,
- 			unsigned long user_addr)
+@@ -314,20 +287,10 @@ static struct hns_roce_hem *hns_roce_alloc_hem(struct hns_roce_dev *hr_dev,
+ 
+ void hns_roce_free_hem(struct hns_roce_dev *hr_dev, struct hns_roce_hem *hem)
  {
--	u64 pgoff = udata ? user_addr & ~PAGE_MASK : 0;
- 	struct ib_device *ibdev = &hr_dev->ib_dev;
- 	int ret;
+-	struct hns_roce_hem_chunk *chunk, *tmp;
+-	int i;
+-
+ 	if (!hem)
+ 		return;
  
-@@ -1071,9 +1112,13 @@ int hns_roce_mtr_create(struct hns_roce_dev *hr_dev, struct hns_roce_mtr *mtr,
- 				  "failed to alloc mtr bufs, ret = %d.\n", ret);
- 			return ret;
- 		}
-+
-+		ret = get_best_page_shift(hr_dev, mtr, buf_attr);
-+		if (ret)
-+			goto err_init_buf;
+-	list_for_each_entry_safe(chunk, tmp, &hem->chunk_list, list) {
+-		for (i = 0; i < chunk->npages; ++i)
+-			dma_free_coherent(hr_dev->dev,
+-				   sg_dma_len(&chunk->mem[i]),
+-				   chunk->buf[i],
+-				   sg_dma_address(&chunk->mem[i]));
+-		kfree(chunk);
+-	}
++	dma_free_coherent(hr_dev->dev, hem->size, hem->buf, hem->dma);
+ 
+ 	kfree(hem);
+ }
+@@ -415,7 +378,6 @@ static int alloc_mhop_hem(struct hns_roce_dev *hr_dev,
+ {
+ 	u32 bt_size = mhop->bt_chunk_size;
+ 	struct device *dev = hr_dev->dev;
+-	struct hns_roce_hem_iter iter;
+ 	gfp_t flag;
+ 	u64 bt_ba;
+ 	u32 size;
+@@ -456,16 +418,15 @@ static int alloc_mhop_hem(struct hns_roce_dev *hr_dev,
+ 	 */
+ 	size = table->type < HEM_TYPE_MTT ? mhop->buf_chunk_size : bt_size;
+ 	flag = GFP_KERNEL | __GFP_NOWARN;
+-	table->hem[index->buf] = hns_roce_alloc_hem(hr_dev, size >> PAGE_SHIFT,
+-						    size, flag);
++	table->hem[index->buf] = hns_roce_alloc_hem(hr_dev, size, flag);
+ 	if (!table->hem[index->buf]) {
+ 		ret = -ENOMEM;
+ 		goto err_alloc_hem;
  	}
  
--	ret = mtr_init_buf_cfg(hr_dev, buf_attr, &mtr->hem_cfg, pgoff);
-+	ret = mtr_init_buf_cfg(hr_dev, mtr, buf_attr);
- 	if (ret)
- 		goto err_init_buf;
+ 	index->inited |= HEM_INDEX_BUF;
+-	hns_roce_hem_first(table->hem[index->buf], &iter);
+-	bt_ba = hns_roce_hem_addr(&iter);
++	bt_ba = table->hem[index->buf]->dma;
++
+ 	if (table->type < HEM_TYPE_MTT) {
+ 		if (mhop->hop_num == 2)
+ 			*(table->bt_l1[index->l1] + mhop->l2_idx) = bt_ba;
+@@ -586,7 +547,6 @@ int hns_roce_table_get(struct hns_roce_dev *hr_dev,
+ 	}
  
+ 	table->hem[i] = hns_roce_alloc_hem(hr_dev,
+-				       table->table_chunk_size >> PAGE_SHIFT,
+ 				       table->table_chunk_size,
+ 				       GFP_KERNEL | __GFP_NOWARN);
+ 	if (!table->hem[i]) {
+@@ -725,7 +685,6 @@ void *hns_roce_table_find(struct hns_roce_dev *hr_dev,
+ 			  struct hns_roce_hem_table *table,
+ 			  unsigned long obj, dma_addr_t *dma_handle)
+ {
+-	struct hns_roce_hem_chunk *chunk;
+ 	struct hns_roce_hem_mhop mhop;
+ 	struct hns_roce_hem *hem;
+ 	unsigned long mhop_obj = obj;
+@@ -734,7 +693,6 @@ void *hns_roce_table_find(struct hns_roce_dev *hr_dev,
+ 	int offset, dma_offset;
+ 	void *addr = NULL;
+ 	u32 hem_idx = 0;
+-	int length;
+ 	int i, j;
+ 
+ 	mutex_lock(&table->mutex);
+@@ -767,23 +725,8 @@ void *hns_roce_table_find(struct hns_roce_dev *hr_dev,
+ 	if (!hem)
+ 		goto out;
+ 
+-	list_for_each_entry(chunk, &hem->chunk_list, list) {
+-		for (i = 0; i < chunk->npages; ++i) {
+-			length = sg_dma_len(&chunk->mem[i]);
+-			if (dma_handle && dma_offset >= 0) {
+-				if (length > (u32)dma_offset)
+-					*dma_handle = sg_dma_address(
+-						&chunk->mem[i]) + dma_offset;
+-				dma_offset -= length;
+-			}
+-
+-			if (length > (u32)offset) {
+-				addr = chunk->buf[i] + offset;
+-				goto out;
+-			}
+-			offset -= length;
+-		}
+-	}
++	*dma_handle = hem->dma + dma_offset;
++	addr = hem->buf + offset;
+ 
+ out:
+ 	mutex_unlock(&table->mutex);
+diff --git a/drivers/infiniband/hw/hns/hns_roce_hem.h b/drivers/infiniband/hw/hns/hns_roce_hem.h
+index 7d23d3c51da4..6fb51db9682b 100644
+--- a/drivers/infiniband/hw/hns/hns_roce_hem.h
++++ b/drivers/infiniband/hw/hns/hns_roce_hem.h
+@@ -56,10 +56,6 @@ enum {
+ 	HEM_TYPE_TRRL,
+ };
+ 
+-#define HNS_ROCE_HEM_CHUNK_LEN	\
+-	 ((256 - sizeof(struct list_head) - 2 * sizeof(int)) /	 \
+-	 (sizeof(struct scatterlist) + sizeof(void *)))
+-
+ #define check_whether_bt_num_3(type, hop_num) \
+ 	(type < HEM_TYPE_MTT && hop_num == 2)
+ 
+@@ -72,25 +68,13 @@ enum {
+ 	(type >= HEM_TYPE_MTT && hop_num == 1) || \
+ 	(type >= HEM_TYPE_MTT && hop_num == HNS_ROCE_HOP_NUM_0))
+ 
+-struct hns_roce_hem_chunk {
+-	struct list_head	 list;
+-	int			 npages;
+-	int			 nsg;
+-	struct scatterlist	 mem[HNS_ROCE_HEM_CHUNK_LEN];
+-	void			 *buf[HNS_ROCE_HEM_CHUNK_LEN];
+-};
+-
+ struct hns_roce_hem {
+-	struct list_head chunk_list;
++	void *buf;
++	dma_addr_t dma;
++	unsigned long size;
+ 	refcount_t refcount;
+ };
+ 
+-struct hns_roce_hem_iter {
+-	struct hns_roce_hem		 *hem;
+-	struct hns_roce_hem_chunk	 *chunk;
+-	int				 page_idx;
+-};
+-
+ struct hns_roce_hem_mhop {
+ 	u32	hop_num;
+ 	u32	buf_chunk_size;
+@@ -133,38 +117,4 @@ void *hns_roce_hem_list_find_mtt(struct hns_roce_dev *hr_dev,
+ 				 struct hns_roce_hem_list *hem_list,
+ 				 int offset, int *mtt_cnt);
+ 
+-static inline void hns_roce_hem_first(struct hns_roce_hem *hem,
+-				      struct hns_roce_hem_iter *iter)
+-{
+-	iter->hem = hem;
+-	iter->chunk = list_empty(&hem->chunk_list) ? NULL :
+-				 list_entry(hem->chunk_list.next,
+-					    struct hns_roce_hem_chunk, list);
+-	iter->page_idx = 0;
+-}
+-
+-static inline int hns_roce_hem_last(struct hns_roce_hem_iter *iter)
+-{
+-	return !iter->chunk;
+-}
+-
+-static inline void hns_roce_hem_next(struct hns_roce_hem_iter *iter)
+-{
+-	if (++iter->page_idx >= iter->chunk->nsg) {
+-		if (iter->chunk->list.next == &iter->hem->chunk_list) {
+-			iter->chunk = NULL;
+-			return;
+-		}
+-
+-		iter->chunk = list_entry(iter->chunk->list.next,
+-					 struct hns_roce_hem_chunk, list);
+-		iter->page_idx = 0;
+-	}
+-}
+-
+-static inline dma_addr_t hns_roce_hem_addr(struct hns_roce_hem_iter *iter)
+-{
+-	return sg_dma_address(&iter->chunk->mem[iter->page_idx]);
+-}
+-
+ #endif /* _HNS_ROCE_HEM_H */
+diff --git a/drivers/infiniband/hw/hns/hns_roce_hw_v2.c b/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
+index 94e9e6a237cf..de56dc6e3226 100644
+--- a/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
++++ b/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
+@@ -4058,7 +4058,6 @@ static int hns_roce_v2_set_hem(struct hns_roce_dev *hr_dev,
+ 			       struct hns_roce_hem_table *table, int obj,
+ 			       u32 step_idx)
+ {
+-	struct hns_roce_hem_iter iter;
+ 	struct hns_roce_hem_mhop mhop;
+ 	struct hns_roce_hem *hem;
+ 	unsigned long mhop_obj = obj;
+@@ -4095,12 +4094,8 @@ static int hns_roce_v2_set_hem(struct hns_roce_dev *hr_dev,
+ 
+ 	if (check_whether_last_step(hop_num, step_idx)) {
+ 		hem = table->hem[hem_idx];
+-		for (hns_roce_hem_first(hem, &iter);
+-		     !hns_roce_hem_last(&iter); hns_roce_hem_next(&iter)) {
+-			bt_ba = hns_roce_hem_addr(&iter);
+-			ret = set_hem_to_hw(hr_dev, obj, bt_ba, table->type,
+-					    step_idx);
+-		}
++
++		ret = set_hem_to_hw(hr_dev, obj, hem->dma, table->type, step_idx);
+ 	} else {
+ 		if (step_idx == 0)
+ 			bt_ba = table->bt_l0_dma_addr[i];
 -- 
 2.30.0
 
