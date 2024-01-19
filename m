@@ -1,229 +1,169 @@
-Return-Path: <linux-rdma+bounces-658-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-659-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7B59E832229
-	for <lists+linux-rdma@lfdr.de>; Fri, 19 Jan 2024 00:14:29 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B504383293E
+	for <lists+linux-rdma@lfdr.de>; Fri, 19 Jan 2024 12:52:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E918E1F21E92
-	for <lists+linux-rdma@lfdr.de>; Thu, 18 Jan 2024 23:14:28 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 60D4C287294
+	for <lists+linux-rdma@lfdr.de>; Fri, 19 Jan 2024 11:52:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id ECF5E1DA51;
-	Thu, 18 Jan 2024 23:14:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D5DAC4EB4F;
+	Fri, 19 Jan 2024 11:52:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=cornelisnetworks.com header.i=@cornelisnetworks.com header.b="JxjcJWIk"
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="Sc1Vpb/R"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from NAM04-BN8-obe.outbound.protection.outlook.com (mail-bn8nam04on2130.outbound.protection.outlook.com [40.107.100.130])
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0724728DA1;
-	Thu, 18 Jan 2024 23:14:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.100.130
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705619660; cv=fail; b=IQfbVW6YaOTK7M8EbHqA6ERTLh4UL/MD82FHE3CElJFS/2lzCpyZFIC1hNrta3KN29EGnGON+2rV5qtN5x2PkObT0FYB+ZklMQuM1xoduoYdVpQ0ukUxzHkMbyMDXRYkSInssvBf4h5wZB8UiTwxtWv12e/08jVIg1kP+oLwCSI=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705619660; c=relaxed/simple;
-	bh=IwLKRfz35/0Ixzh7L8Ae13vAaNZRfFGbshN6K3U0eEc=;
-	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
-	 Content-Type:MIME-Version; b=R9euo6hqY0xi15dyZzNxAZtb+URxRuRKPeuyY7s+Ir5IKvp7KaSDckYeW563PAwPcPrGc9vSHUT/geU29CE/jvf0pejrkSFtZ2D3tJOEKrGD/Vh2bAMDAMyzQMQ4vURk2KWxvkb9bRGgLbPGudU0rvySNXtSvNkNQzzM6gnstSA=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=cornelisnetworks.com; spf=pass smtp.mailfrom=cornelisnetworks.com; dkim=pass (2048-bit key) header.d=cornelisnetworks.com header.i=@cornelisnetworks.com header.b=JxjcJWIk; arc=fail smtp.client-ip=40.107.100.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=cornelisnetworks.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cornelisnetworks.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Tziyl2CrdNJ9c1PLK1Lx2IPAPWHWklXyY5nIZtnmrjBb84EHsr2Vhi6vNL6S+CwHwy0fWL/BErORtvm9Qbxtm8JnxIwX15cSySmlAtO8Q/+zM5ocM73bwGau2DHDGU90uPO3D/xiKa6aXMzyYbBlAJ8+KZp/FyHjwarCwY70f9lihYzHfL1HfowACRkzPLtwL31v1/WYY1WYmuLFUAp1nBOk78SDkUt8SuVgN5rkE9kuoIcwGlqgOCCLyF8PnagtyhcrZAaK0lyP3pc5a8nilekH+f30F0E0gMgiWyaKy/idNnmyTyp4q0P34yCEQiZyC+jgxZBtruC553/HBHuTTQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=Qmlhdvq7cAbrOwTdAy3Pjvqf9jLoh4z52NGx23VBvnM=;
- b=aQUEl929y/m2OlrzI6ML9DNOTXZ9X7aa8n6fGzjE+WxjQ2uO0OEdNejGWNlBiaOnHaQ2k9KyE/tKS6y387H8Su92XppWnbPR46KslZVMMBASR7T+Lmkr8NYuTmc6Aq2cZKYhJYjnlKzbCwXl3LVi+3hlP378Bzm9kDtjq0vTy/okdiXr3K6qG4T5MpkV4ZKWuhPdntFzOvuU1DdokFgItbtAXXolzU2FkOxPI4hBqmSDOi1nAyZiQCnZa9vrSETAzNthu8B78lymdhVBWnYoEHaOm2/7XcpKG/MSUSNMRZ0ELCktKxkWt0nmm9FqOL7X5orU4Z7wvprLTPWISBCqdw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=cornelisnetworks.com; dmarc=pass action=none
- header.from=cornelisnetworks.com; dkim=pass header.d=cornelisnetworks.com;
- arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cornelisnetworks.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Qmlhdvq7cAbrOwTdAy3Pjvqf9jLoh4z52NGx23VBvnM=;
- b=JxjcJWIk1oJXE+olF9E/Gu43x7Ak2o2j0lnpmoxzlm6wUkZWCkOSLo5QwKXSC/8w1mlabqteSL/tDTSU/EHZ1ssZGdkblmUz6Y09X0XZx9UARINzyW8VjQKVEJ0CGecnIAlGl2SWtSfZ570NZ3Q03jBo2Kah2q4JFk81fAqZJlfrYzntPui1zRw8ppBPc0ItCpvqxbV9LLfJu0bNXDbDKqrFQjPIC2BSFjoW6Itr/O9DGlmu4zH1cpSEmXAdXa1wOXueQCjKOahxtssmfVpVuMYNc6gDUx+iHBiHs8tTBwM7hirPyEiWLz1pPPR7CA7xMPao7DToxKqpjMlHpGqNDQ==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=cornelisnetworks.com;
-Received: from BL0PR01MB4099.prod.exchangelabs.com (2603:10b6:208:42::12) by
- CH0PR01MB7020.prod.exchangelabs.com (2603:10b6:610:109::5) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.7202.24; Thu, 18 Jan 2024 23:14:14 +0000
-Received: from BL0PR01MB4099.prod.exchangelabs.com
- ([fe80::1840:13fa:59b2:40c5]) by BL0PR01MB4099.prod.exchangelabs.com
- ([fe80::1840:13fa:59b2:40c5%7]) with mapi id 15.20.7202.024; Thu, 18 Jan 2024
- 23:14:14 +0000
-Message-ID: <28aeb877-c0b4-4236-87d5-0bbaeb185656@cornelisnetworks.com>
-Date: Thu, 18 Jan 2024 18:14:11 -0500
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] IB/hfi1: fix a memleak in init_credit_return
-Content-Language: en-US
-To: Leon Romanovsky <leon@kernel.org>, Zhipeng Lu <alexious@zju.edu.cn>
-Cc: Jason Gunthorpe <jgg@ziepe.ca>,
- Ravi Krishnaswamy <ravi.krishnaswamy@intel.com>,
- Harish Chegondi <harish.chegondi@intel.com>,
- Brendan Cunningham <brendan.cunningham@intel.com>,
- linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20240112085523.3731720-1-alexious@zju.edu.cn>
- <20240114090434.GD6404@unreal>
-From: Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>
-In-Reply-To: <20240114090434.GD6404@unreal>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: BLAPR03CA0091.namprd03.prod.outlook.com
- (2603:10b6:208:32a::6) To BL0PR01MB4099.prod.exchangelabs.com
- (2603:10b6:208:42::12)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4CD544C600;
+	Fri, 19 Jan 2024 11:52:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.156.1
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1705665170; cv=none; b=q6dNHNw8qdtL2Td0Mdrnz/RSIRpwiIrNT5ja+ayRBjxZEbbzvms5PgJ2herwiSWS765Abi4enRD9xwqWQgZ1teUrdiaD+Aas8/MRFyEHBQkNxn5u9olz3uzAooLuQ03luNud+uIaA4ESv1pSv/r7jSh+wO1hvngS/P5HKXhv/vs=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1705665170; c=relaxed/simple;
+	bh=Rt/U4LeEYbelRH6EwCkWjSLyEfhtCIGZFLcpiMjeHEc=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=VzGxoaq50YOuY+AVu+5CdNwD8ZzbcQPjO0aTIhV7UT2j2pEG5lkmuFmwGbLtDLl4gm3xtsjqNSGIpXcMLF93dQjOenkMP27MePVPxzyzgXcrLXWUmF1DK4Bb8Hi78H5hoakGOVA8+O8zih9ftWBgpuL+Sk8sLF2gcF3+ho8Q+/s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=Sc1Vpb/R; arc=none smtp.client-ip=148.163.156.1
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
+Received: from pps.filterd (m0353728.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 40JBbCl4015198;
+	Fri, 19 Jan 2024 11:52:28 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
+ from : to : cc : date : in-reply-to : references : content-type :
+ content-transfer-encoding : mime-version; s=pp1;
+ bh=Rt/U4LeEYbelRH6EwCkWjSLyEfhtCIGZFLcpiMjeHEc=;
+ b=Sc1Vpb/R7TGUYisMZc7RPKesd/UZGB96K+viRPxAD+Yojlo4HFu93njZ7CMDPcX1NU4D
+ KVqkX/AvpWnxMrIE7Jr9cVXlLSnlpFIYRDECE8FZRiYou4Z8enH3wyDOOjoQsuzRj1Al
+ 6hZD8Ci4vOnTCAd1hZniItFg2sJAkrvYkLPODmxlTmXUuHnLlBBAfedP1sF9/EB/Nu2/
+ +tVZU9d4sqlj/zf0DSn6HP40HDeuInmcdmm6PpOmJkBYL4q5qKQvbaF6Gz27hTLT+yGW
+ U6K7MHGCCAgvTtyvNreNvX+ZQ8p3MgCJXlbV/5OYyGjr3SXBT2M8PHDdoEgck6697sro Rw== 
+Received: from pps.reinject (localhost [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3vqrc50avs-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 19 Jan 2024 11:52:27 +0000
+Received: from m0353728.ppops.net (m0353728.ppops.net [127.0.0.1])
+	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 40JBqBAi029441;
+	Fri, 19 Jan 2024 11:52:27 GMT
+Received: from ppma22.wdc07v.mail.ibm.com (5c.69.3da9.ip4.static.sl-reverse.com [169.61.105.92])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3vqrc50aus-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 19 Jan 2024 11:52:27 +0000
+Received: from pps.filterd (ppma22.wdc07v.mail.ibm.com [127.0.0.1])
+	by ppma22.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 40JAVFuV011222;
+	Fri, 19 Jan 2024 11:52:24 GMT
+Received: from smtprelay07.fra02v.mail.ibm.com ([9.218.2.229])
+	by ppma22.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3vm5801hpw-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 19 Jan 2024 11:52:24 +0000
+Received: from smtpav07.fra02v.mail.ibm.com (smtpav07.fra02v.mail.ibm.com [10.20.54.106])
+	by smtprelay07.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 40JBqMXs17433312
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Fri, 19 Jan 2024 11:52:22 GMT
+Received: from smtpav07.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 5F3E62004D;
+	Fri, 19 Jan 2024 11:52:22 +0000 (GMT)
+Received: from smtpav07.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 7677C20040;
+	Fri, 19 Jan 2024 11:52:21 +0000 (GMT)
+Received: from [9.171.27.207] (unknown [9.171.27.207])
+	by smtpav07.fra02v.mail.ibm.com (Postfix) with ESMTP;
+	Fri, 19 Jan 2024 11:52:21 +0000 (GMT)
+Message-ID: <b16b959a206a0cebb9b733b7f325e4343d8060ae.camel@linux.ibm.com>
+Subject: Re: [PATCH rdma-next 1/2] arm64/io: add memcpy_toio_64
+From: Niklas Schnelle <schnelle@linux.ibm.com>
+To: Jason Gunthorpe <jgg@nvidia.com>
+Cc: Leon Romanovsky <leon@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
+        Catalin Marinas <catalin.marinas@arm.com>, linux-arch@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-rdma@vger.kernel.org,
+        llvm@lists.linux.dev, Michael Guralnik <michaelgur@mellanox.com>,
+        Nathan
+ Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Will Deacon <will@kernel.org>, Gerd Bayer <gbayer@linux.ibm.com>
+Date: Fri, 19 Jan 2024 12:52:21 +0100
+In-Reply-To: <96451909f0a9ac1eec71b81ee2db49ac66d9ced5.camel@linux.ibm.com>
+References: <637dcc4d69c380bd939dfdd1b14a5c82c2ddfaa4.camel@linux.ibm.com>
+	 <20231127175115.GC1165737@nvidia.com>
+	 <002043477bba726f7dfb38573bf33990e38e3a51.camel@linux.ibm.com>
+	 <20240116173330.GA980613@nvidia.com>
+	 <ddd56db15bd2c87073a2f839e06cdb80d693272c.camel@linux.ibm.com>
+	 <20240117132613.GH734935@nvidia.com> <20240117175518.GJ734935@nvidia.com>
+	 <8e043042f425b4c574d1d3c3ed686253c8cd3517.camel@linux.ibm.com>
+	 <20240118140039.GL734935@nvidia.com>
+	 <071e2d2e301769d523dd613e77c6541a61bd496b.camel@linux.ibm.com>
+	 <20240118162129.GO734935@nvidia.com>
+	 <96451909f0a9ac1eec71b81ee2db49ac66d9ced5.camel@linux.ibm.com>
+Autocrypt: addr=schnelle@linux.ibm.com; prefer-encrypt=mutual;
+ keydata=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
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.50.2 (3.50.2-1.fc39) 
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: BL0PR01MB4099:EE_|CH0PR01MB7020:EE_
-X-MS-Office365-Filtering-Correlation-Id: 0c9f4a11-d5e0-4ac5-1bf6-08dc187b2f64
-X-MS-Exchange-AtpMessageProperties: SA
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	G6Z/HPsaENPhWlNqAsmeERQUsFY+fRKi7Y+oYIuNXpy7q+5HS5/pU+MOIWoaXsCUbnRownwmSluO1PFMagEl3Bxc10qCSJWYFjruiXcTA02If9I6vYqjLBK74XRsPefwknAZ2ySNYRjWFoFhD1mtJ51ATNP0kmXL3K/QTdZ5iDt1zg1qGfcnn7sRmUVOVO0HuEn3bvwPnlP+3S3n5UoT4b0HxGuL+HJ/SoA6+eQ3FVL1mytHB4qiMW0z5fCs/UqtDyMBiE4jgHBrzw9t+JjH/nDNVVBNXzWPyCPeSEe6jSx5BW0ERdDWhAfUdneTRQlDbmqt4n7vcUIPZTrlf4nt0EGzZE0dokyftVgYRjTHo1EXFPUhJBSTv+Zx58TdPS96drGLXgCoP7HM1vve9m90QfBZKhtzCD40cSYpPZ9sq60r0J2988yXNf5Vy+sa/zLkHO3rSiMbQoLEYmxsDqrVWlELmIGxv27ezuR3IQodTd1cp3b4k5zaNHphTrbFoRrN8qB6KxaqLT90Zbe8IbculDfM1/51nkCKeJd9UJZktbdcNDhZ0qLKh9jmSLndJmT5IBQ7Sr7TPNP3802pcbCH+u6c7VfivId5V8nbwTF//dmBho5i4WeYyso7HdHXc8qa4ileDkAFl6ez8bPddaaTFA==
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL0PR01MB4099.prod.exchangelabs.com;PTR:;CAT:NONE;SFS:(13230031)(376002)(346002)(396003)(366004)(39840400004)(136003)(1800799012)(64100799003)(451199024)(186009)(6506007)(66899024)(38100700002)(86362001)(36756003)(41300700001)(31696002)(38350700005)(2906002)(110136005)(66556008)(54906003)(66476007)(66946007)(53546011)(52116002)(316002)(478600001)(6512007)(6666004)(6486002)(2616005)(8936002)(4326008)(8676002)(5660300002)(83380400001)(26005)(44832011)(31686004)(43740500002);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?utf-8?B?aDhLaEVMNHBCaFhMMUtWMWVSTllicHhJZ0UxbWtpbTg0U0VWSVVVWDZPYndr?=
- =?utf-8?B?MFgrWGozaS9UbGdVc2JpVmVNUDMwa1o5M1JlL0RZT3A0dHZyaEZFY1ZvZGMx?=
- =?utf-8?B?WlR3RGVGT1hNNVJXT1UrNVl3djdnVWVzdDVOam5QNld0Q2wwczRHNjRvc09D?=
- =?utf-8?B?WGNpTnpvNUhPNlAyQmdSVXMrNHF3aEFhaU55bHYveHVZWmlwZUdSZDRaV3Za?=
- =?utf-8?B?QjljQU9UK2NoU0RQSGJzME5iSWkydVdsYWx1Tmo0dWg0eStyNTRmWjhRZWlQ?=
- =?utf-8?B?V3FsOGdINzdUa00zOVNYNlBwcEdnTG8rcTRFZCtLa3hWYjgwbll5VXE4dzZ2?=
- =?utf-8?B?Z2E2cUoybkRPby9KNjFaQ00wM09YUHA1ZWdBWUIvVmliaStrdHJxYW9qNFhI?=
- =?utf-8?B?S0w4WjNpNEJ4S0V3aFJqWHRjaW5HN3pZTUlMcWlTZUN6REVqM0cxWldXY0VO?=
- =?utf-8?B?Wi9OUHE5NGVBSXV4UnZ6aHJKNStLeUtESGJINmpWRWl0Tm9FeG4xbVhJSnhy?=
- =?utf-8?B?SjduT0V0MUJIZ09uWXdUc2k1bHZMRURVOUQ3OHlwUlNqZFpweGJGSXllYjlr?=
- =?utf-8?B?WGwvdWViYjNwMFRNenJWWHl1RC9HVlJzR1k0TXFINkhWNkZUQlo2OTdBdWVF?=
- =?utf-8?B?VlBTcFdaVTBkeHNTNWdZTnZTM0tjem1XcmZHNHJ4RXdKMm1uR3FWQlBiM3Nn?=
- =?utf-8?B?aWFkdmZjcVBVQ2RVbVJUL2VMKzQ4Z2dYSUJxNFJTazdVa0o1TDVHdVgzSS9C?=
- =?utf-8?B?SVRLR080c3JFMWl1SmJzWTg5WmpoR3B5N3YvaFI3ZnhuSC80UXJaSkVzalVN?=
- =?utf-8?B?WXhJS3pMOHpVMGJsYVZXQitpbXBxMC9KeU1FUERXNjRMWFVnL3RKN0tqMWFB?=
- =?utf-8?B?M29JRzIxUVR4NjRzUHhKd0dEUE9CbVEwQ3l0UFNkdXd3d3JQamN5cStmd204?=
- =?utf-8?B?L2lnemZWYTB6ZTN1T3lWYUJNMWFrNlQyWEFqc2dYQjRXRmlYNTBIS0tnbjdm?=
- =?utf-8?B?TUNTVkJGcGNxODJMWGh5akZFcTRpS3YybEI2Zys1aVZGMjB5V29OaDcwbmNy?=
- =?utf-8?B?NEZkNlllYTJ4SGdpWlZuUWI2SlBRWmwrTWhTWTJYZGJ1UnRneEJQWGNFMlVr?=
- =?utf-8?B?bVl6VjRqdmgvWnBQRTRTZ3czT3BESmhvL2VxV0ZKK1prY0t6RVNWZWl5MytG?=
- =?utf-8?B?b1hwdzhvQzdKOHpVQkdwNVRtbk5Rayt4eHV6ZmNmRUUzZFFKMUFHd09TV3pm?=
- =?utf-8?B?a0MwYUt3dTE1WXpkOXJXMDljY2k4UzYvV0ZmQ0prZWVqM1RtUXR5WSszSEoy?=
- =?utf-8?B?Y290aVNOQk4wQU1PdzNpaDFpTkJNU2ZJNW5heU1kelp1WUMzOGxwS09kK1pa?=
- =?utf-8?B?bGdxTkFRcnNRa3JYbm9HZ0ZURnRmQjh0dEphdXRBeW5vUk52NVE0aXN2TG5o?=
- =?utf-8?B?QjZMdnMrdzVaNi9NcDZ4QW1kR0pCRUdta2hONVk2Tis0UzlGMVpEbGhSYnUv?=
- =?utf-8?B?YnJHRlRmeUtOeFN3bEc4NGJyRkM1TlRxQW1BeDAwNEd1VXp6bXZxT2NpSTc1?=
- =?utf-8?B?UWxIM3ArN1NWaklXS3pRZ1doRXgySXBwWEZoTnBTQ1RFSXdxQnFqK3gwcUti?=
- =?utf-8?B?ckJpQmJpVlQ1ajU4dzZtRnM2QWVneGdnL2FLREs1UzE0aTBsWlNqYll4L2pG?=
- =?utf-8?B?SlRnK1BacHNrckRoZ0hxb2lsbDZRaDBTay9WSXZ5aDBFODdRZjlhRTc3citE?=
- =?utf-8?B?bHJUR1JrNkVsUVgxN09HeGo4Q0s1QTdHemQrUHMvK3lva0dQTExRdnhsTGUr?=
- =?utf-8?B?YlZ2dGl2VXA5c3ZQMkFtSTJSYWhYcUdPcUtyL1NWNW9qUjlOdjJYVUlMeGwx?=
- =?utf-8?B?dy9RNXhydG4xMzhzM3RYY1NRcDdxWWtJSzFoYVNMeFMrblFKWk1TbndhWEhz?=
- =?utf-8?B?WVJrWEJHLy9PZVpuUEx0MU5ZR0RtOXQvZ0VNUUd4dDJ3S0ljcENyN3RkYTdP?=
- =?utf-8?B?eEo5Z2JaRzlVcnNZRXpuSXZ3VitkWEtCcU9mdjJ6MHNBR1lTb1gxdUFWYmRs?=
- =?utf-8?B?V3BjVk9XeWl6Mys5V29yQlhJQVNCUm5rL3diQVlZM3IwYVZoQUczWnVxdEt2?=
- =?utf-8?B?QUNQQklEVEczaTFCM3pVWi9TUHdneFd0eEZVZEVzWFFOc1I5T3NKR2hvMTEv?=
- =?utf-8?Q?03h4krMy3H1QV0UfP2mu0ME=3D?=
-X-OriginatorOrg: cornelisnetworks.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 0c9f4a11-d5e0-4ac5-1bf6-08dc187b2f64
-X-MS-Exchange-CrossTenant-AuthSource: BL0PR01MB4099.prod.exchangelabs.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 18 Jan 2024 23:14:14.1827
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4dbdb7da-74ee-4b45-8747-ef5ce5ebe68a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: qR1YBePYYciK9md0bZO2iOD/S33SLRrEnd117ywx9ApSG7nomDI8kLs/iYfgZ+rDpo70mIe72SooszryAAgGsMzjKpH0CT3JBeiqma7RvdGnrV2KE9n/GgK44uFgPSjv
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH0PR01MB7020
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: p-KB6q3zymEWtsOOTmhQYjIDYJeCRen_
+X-Proofpoint-GUID: as3VKn3SFOc7GT1cyGh7TKojN1A1HKqi
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-01-19_06,2024-01-19_02,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 adultscore=0
+ malwarescore=0 impostorscore=0 spamscore=0 phishscore=0 suspectscore=0
+ mlxlogscore=999 lowpriorityscore=0 bulkscore=0 clxscore=1015
+ priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2311290000 definitions=main-2401190058
 
-On 1/14/24 4:04 AM, Leon Romanovsky wrote:
-> On Fri, Jan 12, 2024 at 04:55:23PM +0800, Zhipeng Lu wrote:
->> When dma_alloc_coherent fails to allocate dd->cr_base[i].va,
->> init_credit_return should deallocate dd->cr_base and
->> dd->cr_base[i] that allocated before. Or those resources
->> would be never freed and a memleak is triggered.
->>
->> Fixes: 7724105686e7 ("IB/hfi1: add driver files")
->> Signed-off-by: Zhipeng Lu <alexious@zju.edu.cn>
->> ---
->>  drivers/infiniband/hw/hfi1/pio.c | 6 +++++-
->>  1 file changed, 5 insertions(+), 1 deletion(-)
->>
->> diff --git a/drivers/infiniband/hw/hfi1/pio.c b/drivers/infiniband/hw/hfi1/pio.c
->> index 68c621ff59d0..5a91cbda4aee 100644
->> --- a/drivers/infiniband/hw/hfi1/pio.c
->> +++ b/drivers/infiniband/hw/hfi1/pio.c
->> @@ -2086,7 +2086,7 @@ int init_credit_return(struct hfi1_devdata *dd)
->>  				   "Unable to allocate credit return DMA range for NUMA %d\n",
->>  				   i);
->>  			ret = -ENOMEM;
->> -			goto done;
->> +			goto free_cr_base;
->>  		}
->>  	}
->>  	set_dev_node(&dd->pcidev->dev, dd->node);
->> @@ -2094,6 +2094,10 @@ int init_credit_return(struct hfi1_devdata *dd)
->>  	ret = 0;
->>  done:
->>  	return ret;
->> +
->> +free_cr_base:
->> +	free_credit_return(dd);
-> 
-> Dennis,
-> 
-> The idea of this patch is right, but it made me wonder, if
-> free_credit_return() is correct.
+On Thu, 2024-01-18 at 17:25 +0100, Niklas Schnelle wrote:
+> On Thu, 2024-01-18 at 12:21 -0400, Jason Gunthorpe wrote:
+> > On Thu, Jan 18, 2024 at 04:59:47PM +0100, Niklas Schnelle wrote:
+> > > On Thu, 2024-01-18 at 10:00 -0400, Jason Gunthorpe wrote:
+> > > > On Thu, Jan 18, 2024 at 02:46:40PM +0100, Niklas Schnelle wrote:
+> > >=20
+---8<---
+> >=20
+> >=20
+> > > I did test your patches too and by accident confirmed again that thes=
+e
+> > > do need commit 80df7d6af7f6 ("s390/pci: fix max size calculation in
+> > > zpci_memcpy_toio()") from the s390 feature branch to get the mlx5
+> > > driver to detect Write-Combining as supported. Note, as far as I know
+> > > Alexander Gordeev is targeting that one for v6.8-rc2 since we had qui=
+te
+> > > a few changes for v6.8-rc1.
+> >=20
+> > OK, but we can still run these two things in parallel?
+> >=20
+> > Jason
+>=20
+> Sure, it's not worse without my patch than what we had before and
+> clearly __iowrite64_copy() has been completely broken for ages without
+> anyone noticing and is fixed by your patches even without my fix for
+> the too strict issue in that at least it then copies what it is
+> supposed to copy even if it does so with 8*8 byte stores.
+>=20
+> Thanks,
+> Niklas
+>=20
 
-Yes, I've double checked the call path and if init_credit_return() fails we do
-not call the free_credit_return().
+FYI Alexander ended up doing a second v6.8-rc1 pull request and my
+change has now landed in Linus' tree as commit 80df7d6af7f6 ("s390/pci:
+fix max size calculation in zpci_memcpy_toio()").
 
-So this patch:
-
-Acked-by: Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>
-
-
-> 
-> init_credit_return() iterates with help of for_each_node_with_cpus():
-> 
->   2062 int init_credit_return(struct hfi1_devdata *dd)
->   2063 {
-> ...
->   2075         for_each_node_with_cpus(i) {
->   2076                 int bytes = TXE_NUM_CONTEXTS * sizeof(struct credit_return);
->   2077
-> 
-> But free_credit_return uses something else:
->   2099 void free_credit_return(struct hfi1_devdata *dd)
->   2100 {
-> ...
->   2105         for (i = 0; i < node_affinity.num_possible_nodes; i++) {
->   2106                 if (dd->cr_base[i].va) {
-> 
-> Thanks
-> 
->> +	goto done;
->>  }
->>  
->>  void free_credit_return(struct hfi1_devdata *dd)
-
-I think we are OK because the allocation uses node_affinity.num_possible_nodes
-and in free_credit_return() we walk that entire array and if something is
-allocated we free it.
-
-Now why do we use for_each_node_with_cpus() at all? I believe that is because it
-produces a subset of what is represented by num_possible_nodes(), which is OK
-and doesn't leak anything.
-
--Denny
-
+Thanks,
+Niklas
 
