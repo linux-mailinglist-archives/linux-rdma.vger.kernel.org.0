@@ -1,142 +1,154 @@
-Return-Path: <linux-rdma+bounces-667-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-668-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 259FD8354ED
-	for <lists+linux-rdma@lfdr.de>; Sun, 21 Jan 2024 09:51:58 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 546F98355E5
+	for <lists+linux-rdma@lfdr.de>; Sun, 21 Jan 2024 14:09:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5876B1C21236
-	for <lists+linux-rdma@lfdr.de>; Sun, 21 Jan 2024 08:51:57 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 73EF62825CC
+	for <lists+linux-rdma@lfdr.de>; Sun, 21 Jan 2024 13:09:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A823317722;
-	Sun, 21 Jan 2024 08:51:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D76A337165;
+	Sun, 21 Jan 2024 13:09:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="XgbDQMkj"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Yd3FOdmS"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from out-171.mta1.migadu.com (out-171.mta1.migadu.com [95.215.58.171])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0B53415D0
-	for <linux-rdma@vger.kernel.org>; Sun, 21 Jan 2024 08:51:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9080C273FB;
+	Sun, 21 Jan 2024 13:09:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705827112; cv=none; b=YgBca/Cj8WXTVylOSKG6aIVAJDxjl0D5lXJfwpyN2wsSUyVzhRhhc+ePNDX2xXU/blBnQvFnJHDpAMKEzObW71FqP7cpP3x3UMvvShKx8Kij51i6tiLpIeDHqozvFPvXouD7NGPRar4NRrSZom3d00jfIvG29lCVZMFbMx1sOlY=
+	t=1705842585; cv=none; b=jHYO4Nn+MMNPizsCstC9YnVrwRg427CzR3A1/5Zzu8w3q6oyHQimBvyXdoInfEamCnoUgd75MjyMOU8dviFeZK1nDY5eDg3j2V/lACCvjLVd+6HxBIOjJiySLZysZ+NyQdO3L82NbWm5LdL95f8jfGqxZfkKsXTqnmRKakj5F+E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705827112; c=relaxed/simple;
-	bh=pjtb6T7PqWyDsvfaJ8BTctuKXjOT/MRttZnRU4UU828=;
-	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=QDAuRFREQCN/yR7XNPmwQesSL8oWLR9OXRwrz3PJ53bPARNferdYjI1QqRqnzMwfSIr8khWhCBcQkQwpW175qE7LmcuvsyqnkthlOgpgp/gnLiWtaVcWTJyE4LynnDgUesUqw/JMjY0oM+HTfnAZ531Yj6Uk2TCI2inTW4x/RTE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=XgbDQMkj; arc=none smtp.client-ip=95.215.58.171
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <6edfa3cc-6ec1-49d0-817b-59239c1e669c@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1705827108;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Qstl+cJJqUSTFlohvj6VGa7Qo78UuXPfU7UT0vk8ydI=;
-	b=XgbDQMkjrYgqrCDdrk+be8urG3KvcMvfrUOW2XP3d68D5IoM7sZrQHruo8JlIDwVmLscst
-	wRIltHdp+Th+XN8KNtguAyRcrcGcXx49C2IKTsqlGhjW9nNLaI0RIPItHpNUiBetHLkcsR
-	vN7EDlHMeYjL7qy2/XbrBO5oO4gp/hI=
-Date: Sun, 21 Jan 2024 16:51:45 +0800
+	s=arc-20240116; t=1705842585; c=relaxed/simple;
+	bh=9cyDx1F/dYPJrf8RZbUvqLxyHay+cmGJp31p+JZ2tBc=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=NiDCQsa+Ox3ysxwcPsbDDurH0zqqDe+V72QHOzurHimcgFp3mJRW0x5V4XZaKMpZAzc6M0mdWoNBclarzxNiD7ktXzWsG/eJZa/VFht2TC+kSXKVn2xkIasyT3gkuQAY7yGyXn4e4g5GgtyAoN234Yi5upmK3Oo62G/gLLpE4dc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Yd3FOdmS; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 92A0FC433C7;
+	Sun, 21 Jan 2024 13:09:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1705842585;
+	bh=9cyDx1F/dYPJrf8RZbUvqLxyHay+cmGJp31p+JZ2tBc=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=Yd3FOdmSElZt7EwwlOyHijJCPPd8/8JTm/iNfsZcAFaJlWSUC7ysZMyGRPvUmMxsv
+	 L60jypo5eBKcMvi5iEl9IvUIWaAxmP3x6M3r+d4XUnlT/RMWeK93dvrHosPkKROUUb
+	 ZOkcpxfL2xXss9El/SxQTuICc1VV9/hvl9m9JHYYWjFkWujdXhT+ZPZozsH6rx5nEW
+	 U+3bqCJ1BRYppcvn76KfHmELqQgyUGAYmE1FA1W5u0P91BEASJ383RwsKMEXxet6D9
+	 S/w3yQhIZwS0mrJEgkIJRIsCtZUvFufDAVmkWvUQfRRH769U6ggcFVOygT+/r5/P0A
+	 megt6AA8IgTwQ==
+Date: Sun, 21 Jan 2024 15:09:40 +0200
+From: Leon Romanovsky <leon@kernel.org>
+To: Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>
+Cc: Zhipeng Lu <alexious@zju.edu.cn>, Jason Gunthorpe <jgg@ziepe.ca>,
+	Ravi Krishnaswamy <ravi.krishnaswamy@intel.com>,
+	Harish Chegondi <harish.chegondi@intel.com>,
+	Brendan Cunningham <brendan.cunningham@intel.com>,
+	linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] IB/hfi1: fix a memleak in init_credit_return
+Message-ID: <20240121130940.GA7547@unreal>
+References: <20240112085523.3731720-1-alexious@zju.edu.cn>
+ <20240114090434.GD6404@unreal>
+ <28aeb877-c0b4-4236-87d5-0bbaeb185656@cornelisnetworks.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: Questions about RDMA subsystem shared mode for RoCE device with
- MLNX_OFED driver
-To: =?UTF-8?B?6ZmI6YC45Yeh?= <neverhook430@gmail.com>,
- linux-rdma@vger.kernel.org
-References: <CAAoLqsQ-iHo4YwsHyt6MkBKE20Ze=DF4kkFKkDX9QCDiDC2+oQ@mail.gmail.com>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Zhu Yanjun <yanjun.zhu@linux.dev>
-In-Reply-To: <CAAoLqsQ-iHo4YwsHyt6MkBKE20Ze=DF4kkFKkDX9QCDiDC2+oQ@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <28aeb877-c0b4-4236-87d5-0bbaeb185656@cornelisnetworks.com>
 
-在 2024/1/19 20:31, 陈逸凡 写道:
-> Questions:
-> 1. Is RDMA shared mode supported for RoCE/iWARP devices? To be more
-> clearly, ibdev ant netdev required to be in the same net namespace or
-> not?
-
-RoCE/RXE + the following commits can support ibdev in the net namespace.
-
-https://patchwork.kernel.org/project/linux-rdma/cover/20230508075636.352138-1-yanjun.zhu@intel.com/
-
-Current implementation of RXE does not support net namespace. We need 
-the above commits to support net namespace.
-
-IMO, the current implementation of iWARP does not support net namespace, 
-too.
-
-Zhu Yanjun
-
-> 2. If the answer for first question is ‘YES’, but my test failed with
-> MLNX_OFED driver, it does check whether user can access the netdev of
-> the target gid attr, which means they(user and the netdev) should be
-> at the same namespace. Meanwhile the upstream code dose not have the
-> corresponding codes.
+On Thu, Jan 18, 2024 at 06:14:11PM -0500, Dennis Dalessandro wrote:
+> On 1/14/24 4:04 AM, Leon Romanovsky wrote:
+> > On Fri, Jan 12, 2024 at 04:55:23PM +0800, Zhipeng Lu wrote:
+> >> When dma_alloc_coherent fails to allocate dd->cr_base[i].va,
+> >> init_credit_return should deallocate dd->cr_base and
+> >> dd->cr_base[i] that allocated before. Or those resources
+> >> would be never freed and a memleak is triggered.
+> >>
+> >> Fixes: 7724105686e7 ("IB/hfi1: add driver files")
+> >> Signed-off-by: Zhipeng Lu <alexious@zju.edu.cn>
+> >> ---
+> >>  drivers/infiniband/hw/hfi1/pio.c | 6 +++++-
+> >>  1 file changed, 5 insertions(+), 1 deletion(-)
+> >>
+> >> diff --git a/drivers/infiniband/hw/hfi1/pio.c b/drivers/infiniband/hw/hfi1/pio.c
+> >> index 68c621ff59d0..5a91cbda4aee 100644
+> >> --- a/drivers/infiniband/hw/hfi1/pio.c
+> >> +++ b/drivers/infiniband/hw/hfi1/pio.c
+> >> @@ -2086,7 +2086,7 @@ int init_credit_return(struct hfi1_devdata *dd)
+> >>  				   "Unable to allocate credit return DMA range for NUMA %d\n",
+> >>  				   i);
+> >>  			ret = -ENOMEM;
+> >> -			goto done;
+> >> +			goto free_cr_base;
+> >>  		}
+> >>  	}
+> >>  	set_dev_node(&dd->pcidev->dev, dd->node);
+> >> @@ -2094,6 +2094,10 @@ int init_credit_return(struct hfi1_devdata *dd)
+> >>  	ret = 0;
+> >>  done:
+> >>  	return ret;
+> >> +
+> >> +free_cr_base:
+> >> +	free_credit_return(dd);
+> > 
+> > Dennis,
+> > 
+> > The idea of this patch is right, but it made me wonder, if
+> > free_credit_return() is correct.
+> 
+> Yes, I've double checked the call path and if init_credit_return() fails we do
+> not call the free_credit_return().
+> 
+> So this patch:
+> 
+> Acked-by: Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>
 > 
 > 
-> MLNX_OFED impl，form mlnx-ofa_kernel-23.10，compared to the upstream codes
-> ---
-> @@ -1722,6 +1739,9 @@ static int ib_resolve_eth_dmac(struct ib_device *device,
->   {
->          int ret = 0;
+> > 
+> > init_credit_return() iterates with help of for_each_node_with_cpus():
+> > 
+> >   2062 int init_credit_return(struct hfi1_devdata *dd)
+> >   2063 {
+> > ...
+> >   2075         for_each_node_with_cpus(i) {
+> >   2076                 int bytes = TXE_NUM_CONTEXTS * sizeof(struct credit_return);
+> >   2077
+> > 
+> > But free_credit_return uses something else:
+> >   2099 void free_credit_return(struct hfi1_devdata *dd)
+> >   2100 {
+> > ...
+> >   2105         for (i = 0; i < node_affinity.num_possible_nodes; i++) {
+> >   2106                 if (dd->cr_base[i].va) {
+> > 
+> > Thanks
+> > 
+> >> +	goto done;
+> >>  }
+> >>  
+> >>  void free_credit_return(struct hfi1_devdata *dd)
 > 
-> +       if (!rdma_check_gid_user_access(ah_attr->grh.sgid_attr))
-> +               return -ENODEV;
-> +
->          if (rdma_is_multicast_addr((struct in6_addr *)ah_attr->grh.dgid.raw)) {
->                  if (ipv6_addr_v4mapped((struct in6_addr
-> *)ah_attr->grh.dgid.raw)) {
->                          __be32 addr = 0;
-> ---
+> I think we are OK because the allocation uses node_affinity.num_possible_nodes
+> and in free_credit_return() we walk that entire array and if something is
+> allocated we free it.
 > 
-> Its definition:
-> ---
-> /**
->   * rdma_check_gid_user_access - Check if user process can access
->   * this GID entry or not.
->   * @attr: Pointer to GID entry attribute
->   *
->   * rdma_check_gid_user_access() returns true if user process can access
->   * this GID attribute otherwise returns false. This API should be called
->   * from the userspace process context.
->   */
-> bool rdma_check_gid_user_access(const struct ib_gid_attr *attr)
-> {
-> bool allow;
-> /*
->   * For IB and iWarp, there is no netdevice associate with GID entry,
->   * For RoCE consider the netdevice's net ns to validate against the
->   * calling process.
->   */
-> rcu_read_lock();
-> if (!attr->ndev ||
->      (attr->ndev &&
->       net_eq(dev_net(attr->ndev), current->nsproxy->net_ns)))
-> allow = true;
-> else
-> allow = false;
-> rcu_read_unlock();
-> return allow;
-> }
-> ---
-> 
-> I think rdma_check_gid_user_access should be ignored while RDMA
-> subsystem configured as shared mode, It should works with exclusive
-> mode. Am i missing anything? Please tell me the background about why
-> MLNX_OFED driver perform the check if anyone knows.
-> 
-> Thanks!
+> Now why do we use for_each_node_with_cpus() at all? I believe that is because it
+> produces a subset of what is represented by num_possible_nodes(), which is OK
+> and doesn't leak anything.
 
+You are right, let's wait till merge window ends and we will apply this patch to rdma-rc.
+
+Thanks
+
+> 
+> -Denny
+> 
 
