@@ -1,98 +1,98 @@
-Return-Path: <linux-rdma+bounces-674-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-675-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 66C75836209
-	for <lists+linux-rdma@lfdr.de>; Mon, 22 Jan 2024 12:39:00 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 422A58366AD
+	for <lists+linux-rdma@lfdr.de>; Mon, 22 Jan 2024 16:06:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1B56B1F281BB
-	for <lists+linux-rdma@lfdr.de>; Mon, 22 Jan 2024 11:39:00 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EF8F1288D7B
+	for <lists+linux-rdma@lfdr.de>; Mon, 22 Jan 2024 15:06:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2871E4175E;
-	Mon, 22 Jan 2024 11:30:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 70B1A48CC7;
+	Mon, 22 Jan 2024 14:56:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ok8iikra"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="QCGPo+tt"
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D4D8941747;
-	Mon, 22 Jan 2024 11:30:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2BBA8487BC;
+	Mon, 22 Jan 2024 14:56:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705923024; cv=none; b=oVWsSQ5Wkih0nb52mERbDanrTz67a0nFclOVDGCIkyGg/I7wCt9cIIy9E37/UgtmBYOvftyWQVsVLjm77xJ0kPJrJaHuoroOt7KUVdh+dVRprC1nO9uazuh4rDGkxQbNtWYrU5D0cliJ7XJoxMZVX3CU942KqcEMx7Ww36Q9HEk=
+	t=1705935391; cv=none; b=bSgLs5uGTgAOW0GFPI8dk6Qd9mJHZxj2UwKDEUriQ2FRnvS5WpdNKWkJ/N1pkNsZejroCS84huUaiGeWj9xdMo4EnE9v9D81CU01Lgc3ZlMUQjtTwdxR8BrXrhY6rI6f91swqAKbBElE5SOm3thv4gMYzNAsM1HsDkVj6Jhpaik=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705923024; c=relaxed/simple;
-	bh=RCvTGJ0GZvvie/GIf5ztPAc6OQbXT6q4EjuGKMpAvIE=;
-	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
-	 In-Reply-To:To:Cc; b=h0epGzg4pGLkrpk2LPJhaxEEJDs+W3JrghPIQFztOpgcD/pg+irne56zO4iBl51ijJKEzyHL03dygV1p5KTGgDlVjqwQpsyiPakz9WvZ0fngvLyOuu6jUZob+q+vPodNjD0R4e2CEi3njTK3KTG3iVyfReKIlOI4bx0E+fdo21c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ok8iikra; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 53417C43390;
-	Mon, 22 Jan 2024 11:30:24 +0000 (UTC)
+	s=arc-20240116; t=1705935391; c=relaxed/simple;
+	bh=JdZ4z4Xi4Q7kOn2EGUL3jGM0m56Qx8gGSJ6XgYAkvAw=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=BvH4AdSslM7FdraOLf6EQfiDEvKxlrpG4XQuOXnKBpwhYTl5GyyQs5gx7pOvXoqniC4QfnaQZZAA8HMM7jci3M2Ovv2NDe50zsHpRakWBtY7aokD6ORABAkwGcgdFof+sW/McgmMSijB0QgUTO1aQp2h4krMGu5GcxXQy2n0jhQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=QCGPo+tt; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D8660C433F1;
+	Mon, 22 Jan 2024 14:56:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1705923024;
-	bh=RCvTGJ0GZvvie/GIf5ztPAc6OQbXT6q4EjuGKMpAvIE=;
-	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=ok8iikraMnHEgdhufQtdsZ33a6OYW6qFs5sNGxvO1e8PqDyQRHE++C7mh2pZKo5WF
-	 Rm78kEfwi7UnwwzjTRazUpy8TA4/OCFoRIMKG6QEJ7CQC6G3X5HckrCIEEbGmjHghl
-	 zJI68QeOW1rEaPgT8Q+V59StTRhNlja0q7BNp8M9KW7XooIlIMw/yEh7HhsWT3wcWZ
-	 un+G6Y3DJ347t2JxsBQb/8XXQzSeXlpETrvZENaRNJFE9PujL2KlxXDfhR7vYc0OKz
-	 FZyxmYvBH4vMiebLM/NER6+YNKKGYamYdDewOnYcXxNa0z7smlb+vNpo5JBt2oKI57
-	 5d+BB2kJO1eFQ==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 3AC45D8C9A8;
-	Mon, 22 Jan 2024 11:30:24 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+	s=k20201202; t=1705935390;
+	bh=JdZ4z4Xi4Q7kOn2EGUL3jGM0m56Qx8gGSJ6XgYAkvAw=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=QCGPo+ttxNmwUnX6vLjgfx1Xrfu/CwBhZvOQ5s3KGylrHrtD6PLfcnI5BebU1H/6k
+	 u/qk4PxHY+Lr7AIab0GdTArrvgIPG2BEtAgkhfIkW2gqI5x+9xH6P3rUjKVnmGC20m
+	 DQ0lw+CTXEdfpRZmXWSJspMnX/YYqXN/uuf0O0BXt0rFwhuwWj4AmwngaGNb1AGonk
+	 JA+cPt7gjc/Zz3q70IHVklSLzGKs4nlnuHXy5k8J0YAPzxa2/EX0a7uA8VE2m0qFiK
+	 N8ocoicPOZctxREFinvVsSuz3+GyYhfOZImq0A25ydVrs8BRiyvKZDqadE5v6dGNW5
+	 LzTtTRefThKpA==
+From: Sasha Levin <sashal@kernel.org>
+To: linux-kernel@vger.kernel.org,
+	stable@vger.kernel.org
+Cc: Jack Wang <jinpu.wang@ionos.com>,
+	Leon Romanovsky <leon@kernel.org>,
+	Sasha Levin <sashal@kernel.org>,
+	neelx@redhat.com,
+	linux-rdma@vger.kernel.org
+Subject: [PATCH AUTOSEL 6.7 09/88] RDMA/IPoIB: Fix error code return in ipoib_mcast_join
+Date: Mon, 22 Jan 2024 09:50:42 -0500
+Message-ID: <20240122145608.990137-9-sashal@kernel.org>
+X-Mailer: git-send-email 2.43.0
+In-Reply-To: <20240122145608.990137-1-sashal@kernel.org>
+References: <20240122145608.990137-1-sashal@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+X-stable: review
+X-Patchwork-Hint: Ignore
+X-stable-base: Linux 6.7.1
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH] net/rds: Fix UBSAN: array-index-out-of-bounds in
- rds_cmsg_recv
-From: patchwork-bot+netdevbpf@kernel.org
-Message-Id: 
- <170592302423.23374.3289939463686065448.git-patchwork-notify@kernel.org>
-Date: Mon, 22 Jan 2024 11:30:24 +0000
-References: <1705715319-19199-1-git-send-email-sharath.srinivasan@oracle.com>
-In-Reply-To: <1705715319-19199-1-git-send-email-sharath.srinivasan@oracle.com>
-To: Sharath Srinivasan <sharath.srinivasan@oracle.com>
-Cc: santosh.shilimkar@oracle.com, netdev@vger.kernel.org,
- linux-rdma@vger.kernel.org, rds-devel@oss.oracle.com,
- linux-kernel@vger.kernel.org, davem@davemloft.net, edumazet@google.com,
- kuba@kernel.org, pabeni@redhat.com, syzkaller@googlegroups.com,
- chenyuan0y@gmail.com, zzjas98@gmail.com, gerd.rausch@oracle.com,
- allison.henderson@oracle.com, aron.silverton@oracle.com
 
-Hello:
+From: Jack Wang <jinpu.wang@ionos.com>
 
-This patch was applied to netdev/net.git (main)
-by David S. Miller <davem@davemloft.net>:
+[ Upstream commit 753fff78f430704548f45eda52d6d55371a52c0f ]
 
-On Fri, 19 Jan 2024 17:48:39 -0800 you wrote:
-> Syzcaller UBSAN crash occurs in rds_cmsg_recv(),
-> which reads inc->i_rx_lat_trace[j + 1] with index 4 (3 + 1),
-> but with array size of 4 (RDS_RX_MAX_TRACES).
-> Here 'j' is assigned from rs->rs_rx_trace[i] and in-turn from
-> trace.rx_trace_pos[i] in rds_recv_track_latency(),
-> with both arrays sized 3 (RDS_MSG_RX_DGRAM_TRACE_MAX). So fix the
-> off-by-one bounds check in rds_recv_track_latency() to prevent
-> a potential crash in rds_cmsg_recv().
-> 
-> [...]
+Return the error code in case of ib_sa_join_multicast fail.
 
-Here is the summary with links:
-  - net/rds: Fix UBSAN: array-index-out-of-bounds in rds_cmsg_recv
-    https://git.kernel.org/netdev/net/c/13e788deb734
+Signed-off-by: Jack Wang <jinpu.wang@ionos.com>
+Link: https://lore.kernel.org/r/20231121130316.126364-2-jinpu.wang@ionos.com
+Signed-off-by: Leon Romanovsky <leon@kernel.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
+---
+ drivers/infiniband/ulp/ipoib/ipoib_multicast.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-You are awesome, thank you!
+diff --git a/drivers/infiniband/ulp/ipoib/ipoib_multicast.c b/drivers/infiniband/ulp/ipoib/ipoib_multicast.c
+index 5b3154503bf4..9e6967a40042 100644
+--- a/drivers/infiniband/ulp/ipoib/ipoib_multicast.c
++++ b/drivers/infiniband/ulp/ipoib/ipoib_multicast.c
+@@ -546,6 +546,7 @@ static int ipoib_mcast_join(struct net_device *dev, struct ipoib_mcast *mcast)
+ 		spin_unlock_irq(&priv->lock);
+ 		complete(&mcast->done);
+ 		spin_lock_irq(&priv->lock);
++		return ret;
+ 	}
+ 	return 0;
+ }
 -- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
+2.43.0
 
 
