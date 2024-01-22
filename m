@@ -1,154 +1,119 @@
-Return-Path: <linux-rdma+bounces-669-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-670-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id BE89A8358C7
-	for <lists+linux-rdma@lfdr.de>; Mon, 22 Jan 2024 00:37:53 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4303B835A78
+	for <lists+linux-rdma@lfdr.de>; Mon, 22 Jan 2024 06:49:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 5C537B21934
-	for <lists+linux-rdma@lfdr.de>; Sun, 21 Jan 2024 23:37:51 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 759B51C222A0
+	for <lists+linux-rdma@lfdr.de>; Mon, 22 Jan 2024 05:49:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3F09C3613F;
-	Sun, 21 Jan 2024 23:37:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 39533EADB;
+	Mon, 22 Jan 2024 05:48:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="jW0n+iTK"
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="EkYZB46N"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from out-179.mta1.migadu.com (out-179.mta1.migadu.com [95.215.58.179])
+Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 480011E4B3
-	for <linux-rdma@vger.kernel.org>; Sun, 21 Jan 2024 23:37:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7A501CA7F;
+	Mon, 22 Jan 2024 05:48:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705880265; cv=none; b=Pl5w098IVFWXDTS9scOt92pZoFbqxjlxOLsvS/jEct5WXrb9AEdQ+XcX+f475oLk3QyPbi/JKljea69QrfTg5mxIUUIgEx7I00K+4BzrMuFbdLI+K0OCgHnPHSPkv+m7bFXaaNlnYMEu0jYJTyHIJXMsOL2GnysAoRjzEJbLR2w=
+	t=1705902524; cv=none; b=Pwh42xzdwoGxRrTc4SabPZ/8ez0Bf9EJ7Aj1fhI6bvxS3KIOvHt1w0SZhU4++RcMhIrCDor0NrY+CBdRsGwSm8sxI6g9PNRsdkIoTI/tv9cReWbetAAYJYDLkmZwJ2iDv3dS0LOFxHqCfmTnsY1GFNZzuxQHWYpwAts0+e9kZ5U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705880265; c=relaxed/simple;
-	bh=4YhJsjqcOeaMGCr7onsuoiW00P4m+JCjEM+hR314eLQ=;
-	h=Message-ID:Date:MIME-Version:Subject:From:To:References:
-	 In-Reply-To:Content-Type; b=ZTH7eLGoaelS3OEnmmHtaLl3rKI9jbu3sTN0DQsc5dkcOesblLiOKhNtVlKqTytKL07Q3v8AbBmWlCtXt1M4WHCtCChgVt9MFO4eFgpB6NI6/F1NpuZ6prbyGy/0A6/Og/DFEKvvbPgB7Ty9c4CSkoQurZWKbhQMlxLHnMH6BVc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=jW0n+iTK; arc=none smtp.client-ip=95.215.58.179
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <ad08f992-7636-44e6-914b-f467fd7ceb61@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1705880261;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=nP5OXoKc4vFPVZvS6YwlzxXO78ZBU6//ACmMqGRtato=;
-	b=jW0n+iTKyfeuDcY+TFiSfv0FsA8tSNJaeS/2r5QBTwiLwCcj87E9GxrWwLhB27qKLElXVb
-	NuMKqGL36wiOwAgdHgMJDAX9SXwFn3JnZNAMoh4tut4pGFmhxGpgrLsQXiGgs/Xbr/pu3m
-	OKYg5RkPOxbLN8qHtRHm+oM2HsrzaI4=
-Date: Mon, 22 Jan 2024 07:37:37 +0800
+	s=arc-20240116; t=1705902524; c=relaxed/simple;
+	bh=fvcqDANsNrlVg8LHXfdCILc7Q6Zm8CII+gZE4TRCJ1E=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=LVjc8J4kP3kmyorFCezFKLrOYXzOcr+3ai/+fGpCG0xaFtLDQjKV7A8MZTlxk76rf/v60oiXtbAAJAq6oqiYPMzdmSWAzxKU5awQfvZxgxtHgwPXZ6N/A7Ys04q5I7JC0a7dGtRk6ITN/PrMWUh5FHlqES8BmYfRC0gAYcVR7hI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=EkYZB46N; arc=none smtp.client-ip=198.137.202.133
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+	Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
+	Message-ID:Sender:Reply-To:Content-ID:Content-Description;
+	bh=qTB9lkUu0aOVisiKuKEe2EDq/PJZ2wo5dJ7HSEFZVXM=; b=EkYZB46N02S1j23tS+kXa0o+qz
+	SOGen273Lr1irYsN5If2peuKaIKjSk7cDNkpmSKJ+38isemVUJ0/RMOZ5B1cbVi8G4YC+702/krmb
+	k2Q31MTvaLRkSWpdj4s4oWdx/adOATimCIFljjsQrGo+0lCK4v0v51EsnAfvnzSoDU7fhTc2kdJpf
+	fu+/WqZUtkhcYsm08rzmXNJmqYVvn4iiZgVFpOpWubVTPKoFqro90KJcp+hAJUAsCgorC+aanX5zj
+	U+EuxaNA8592b3Mxa3IPcLCT1+d0yvNNoOD5srt2UM2Bx3uqDA1QYY/0st99QQpH/woUekI/Ha5bg
+	MH9PQOyw==;
+Received: from [50.53.50.0] (helo=[192.168.254.15])
+	by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
+	id 1rRnAk-00Adcx-1H;
+	Mon, 22 Jan 2024 05:48:38 +0000
+Message-ID: <c4cd5048-1838-4464-ba79-26cc595e380f@infradead.org>
+Date: Sun, 21 Jan 2024 21:48:36 -0800
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: Questions about RDMA subsystem shared mode for RoCE device with
- MLNX_OFED driver
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Zhu Yanjun <yanjun.zhu@linux.dev>
-To: =?UTF-8?B?6ZmI6YC45Yeh?= <neverhook430@gmail.com>,
- linux-rdma@vger.kernel.org
-References: <CAAoLqsQ-iHo4YwsHyt6MkBKE20Ze=DF4kkFKkDX9QCDiDC2+oQ@mail.gmail.com>
- <6edfa3cc-6ec1-49d0-817b-59239c1e669c@linux.dev>
-In-Reply-To: <6edfa3cc-6ec1-49d0-817b-59239c1e669c@linux.dev>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+User-Agent: Mozilla Thunderbird
+Subject: Re: [Linux Kernel Bug] UBSAN: array-index-out-of-bounds in
+ rds_cmsg_recv
+Content-Language: en-US
+To: Zhu Yanjun <yanjun.zhu@linux.dev>, Chenyuan Yang <chenyuan0y@gmail.com>,
+ santosh.shilimkar@oracle.com, netdev@vger.kernel.org,
+ linux-rdma@vger.kernel.org, rds-devel@oss.oracle.com,
+ linux-kernel@vger.kernel.org
+Cc: davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
+ pabeni@redhat.com, "syzkaller@googlegroups.com"
+ <syzkaller@googlegroups.com>, Zijie Zhao <zzjas98@gmail.com>
+References: <CALGdzuoVdq-wtQ4Az9iottBqC5cv9ZhcE5q8N7LfYFvkRsOVcw@mail.gmail.com>
+ <27319d3d-61dd-41e3-be6c-ccc08b9b3688@linux.dev>
+From: Randy Dunlap <rdunlap@infradead.org>
+In-Reply-To: <27319d3d-61dd-41e3-be6c-ccc08b9b3688@linux.dev>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
+
+Hi,
 
 
-
-在 2024/1/21 16:51, Zhu Yanjun 写道:
-> 在 2024/1/19 20:31, 陈逸凡 写道:
->> Questions:
->> 1. Is RDMA shared mode supported for RoCE/iWARP devices? To be more
->> clearly, ibdev ant netdev required to be in the same net namespace or
->> not?
+On 1/21/24 00:34, Zhu Yanjun wrote:
+> 在 2024/1/19 22:29, Chenyuan Yang 写道:
+>> Dear Linux Kernel Developers for Network RDS,
+>>
+>> We encountered "UBSAN: array-index-out-of-bounds in rds_cmsg_recv"
+>> when testing the RDS with our generated specifications. The C
+>> reproduce program and logs for this crash are attached.
+>>
+>> This crash happens when RDS receives messages by using
+>> `rds_cmsg_recv`, which reads the `j+1` index of the array
+>> `inc->i_rx_lat_trace`
+>> (https://elixir.bootlin.com/linux/v6.7/source/net/rds/recv.c#L585).
+>> The length of `inc->i_rx_lat_trace` array is 4 (defined by
+>> `RDS_RX_MAX_TRACES`,
+>> https://elixir.bootlin.com/linux/v6.7/source/net/rds/rds.h#L289) while
+>> `j` is the value stored in another array `rs->rs_rx_trace`
+>> (https://elixir.bootlin.com/linux/v6.7/source/net/rds/recv.c#L583),
+>> which is sent from others and could be arbitrary value.
 > 
-> RoCE/RXE + the following commits can support ibdev in the net namespace.
-> 
-> https://patchwork.kernel.org/project/linux-rdma/cover/20230508075636.352138-1-yanjun.zhu@intel.com/
-> 
-> Current implementation of RXE does not support net namespace. We need 
-> the above commits to support net namespace.
-> 
-> IMO, the current implementation of iWARP does not support net namespace, 
-> too.
+> I recommend to use the latest rds to make tests. The rds in linux kernel upstream is too old. The rds in oracle linux is newer.
 
-Sorry. I misunderstand what you mean in your mail. Please ignore this mail.
+Why is the upstream kernel lagging behind?  Is the RDS maintainer going
+to submit patches to update mainline?
 
-Zhu Yanjun
+Thanks.
 
-> 
 > Zhu Yanjun
 > 
->> 2. If the answer for first question is ‘YES’, but my test failed with
->> MLNX_OFED driver, it does check whether user can access the netdev of
->> the target gid attr, which means they(user and the netdev) should be
->> at the same namespace. Meanwhile the upstream code dose not have the
->> corresponding codes.
 >>
+>> This crash might be exploited to read the value out-of-bound from the
+>> array by setting arbitrary values for the array `rs->rs_rx_trace`.
 >>
->> MLNX_OFED impl，form mlnx-ofa_kernel-23.10，compared to the upstream 
->> codes
->> ---
->> @@ -1722,6 +1739,9 @@ static int ib_resolve_eth_dmac(struct ib_device 
->> *device,
->>   {
->>          int ret = 0;
+>> If you have any questions or require more information, please feel
+>> free to contact us.
 >>
->> +       if (!rdma_check_gid_user_access(ah_attr->grh.sgid_attr))
->> +               return -ENODEV;
->> +
->>          if (rdma_is_multicast_addr((struct in6_addr 
->> *)ah_attr->grh.dgid.raw)) {
->>                  if (ipv6_addr_v4mapped((struct in6_addr
->> *)ah_attr->grh.dgid.raw)) {
->>                          __be32 addr = 0;
->> ---
->>
->> Its definition:
->> ---
->> /**
->>   * rdma_check_gid_user_access - Check if user process can access
->>   * this GID entry or not.
->>   * @attr: Pointer to GID entry attribute
->>   *
->>   * rdma_check_gid_user_access() returns true if user process can access
->>   * this GID attribute otherwise returns false. This API should be called
->>   * from the userspace process context.
->>   */
->> bool rdma_check_gid_user_access(const struct ib_gid_attr *attr)
->> {
->> bool allow;
->> /*
->>   * For IB and iWarp, there is no netdevice associate with GID entry,
->>   * For RoCE consider the netdevice's net ns to validate against the
->>   * calling process.
->>   */
->> rcu_read_lock();
->> if (!attr->ndev ||
->>      (attr->ndev &&
->>       net_eq(dev_net(attr->ndev), current->nsproxy->net_ns)))
->> allow = true;
->> else
->> allow = false;
->> rcu_read_unlock();
->> return allow;
->> }
->> ---
->>
->> I think rdma_check_gid_user_access should be ignored while RDMA
->> subsystem configured as shared mode, It should works with exclusive
->> mode. Am i missing anything? Please tell me the background about why
->> MLNX_OFED driver perform the check if anyone knows.
->>
->> Thanks!
+>> Best,
+>> Chenyuan
 > 
+> 
+
+-- 
+#Randy
 
