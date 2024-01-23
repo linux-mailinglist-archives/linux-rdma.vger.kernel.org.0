@@ -1,101 +1,93 @@
-Return-Path: <linux-rdma+bounces-711-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-712-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9F8B4838C2A
-	for <lists+linux-rdma@lfdr.de>; Tue, 23 Jan 2024 11:35:48 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 03D418398C8
+	for <lists+linux-rdma@lfdr.de>; Tue, 23 Jan 2024 19:56:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 402781F2631B
-	for <lists+linux-rdma@lfdr.de>; Tue, 23 Jan 2024 10:35:48 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B1B15294E6F
+	for <lists+linux-rdma@lfdr.de>; Tue, 23 Jan 2024 18:56:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CD4C65C619;
-	Tue, 23 Jan 2024 10:35:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 86BD186AC8;
+	Tue, 23 Jan 2024 18:48:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="GgcvnLkn"
+	dkim=pass (2048-bit key) header.d=launchpad.net header.i=@launchpad.net header.b="SfpEJQ+f"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-wm1-f46.google.com (mail-wm1-f46.google.com [209.85.128.46])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp-relay-services-0.canonical.com (smtp-relay-services-0.canonical.com [185.125.188.250])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1BD2E5C610
-	for <linux-rdma@vger.kernel.org>; Tue, 23 Jan 2024 10:35:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1CDA286122
+	for <linux-rdma@vger.kernel.org>; Tue, 23 Jan 2024 18:48:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.125.188.250
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706006143; cv=none; b=ck8pi1+lQimoOfCyRP1YCc2h+UpjGBkb7lWetFet0CB9Wd3U7rAOE4V8ur5Teo4szNur0EXxgmwobnBnwFz0XAJGeFxJ1WKEVbWHNFcHTCPiwdcMBLrk9VY2BVvKX6reykwoc1D6Aexh17YvxWsPadWEub8kYRQHmmkJ72Aqr9o=
+	t=1706035706; cv=none; b=ftol6R79YzSP0Y16/VmucGXlqt5r1gEdx7WBaV5ZplWlBpBR1IvBhLLMbJhbKL+vFHnzneG6MMNM+BEQz6gulFuZ396iF2MnOQJaZCC27HRfXHRbjlXIqju4IwYe6AOk2jPND7/npsDdqCy6D7SscbzPKHKmq9h6mBSlcVxJrq8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706006143; c=relaxed/simple;
-	bh=sCbhuQaFe9ERulAFJsFHSxgFqFnSfKfHxQgWH9/XO9M=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition; b=k1E95iqN3kjnm1TxhsJIWyvTshJW2R8eevFv+/2noWz7DwGnEw8pKr2I5c7gjnOPK12Ij3W2m/yDMHy1OvCQDJ8+d8IiWeumWEhtWY5A9WOx/5d/CQjp6Xs70phvZ1AVulPVAWcFGY50UZuY1+bKmn9sBryucagA4H7DN0LXIH8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=GgcvnLkn; arc=none smtp.client-ip=209.85.128.46
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f46.google.com with SMTP id 5b1f17b1804b1-40e7e2e04f0so45805585e9.1
-        for <linux-rdma@vger.kernel.org>; Tue, 23 Jan 2024 02:35:41 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1706006140; x=1706610940; darn=vger.kernel.org;
-        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=+K8ykXNGzCyqdN2O3hxbBqf7n+ehziJgzDtq5dMy7W0=;
-        b=GgcvnLkngY2fBfb1bw0C24O33YS77EeKr36dD8a6LMHOEhfsuBhHMMzNV7G3EKUSYm
-         G0r02rTe8Btnq5U+0ZEi/+9IeerV45VSGLqvpAhoIO4YtlSWYlAG7IFEMTexlQr4g5x9
-         C3ZLIJzzIrjTdkKABijhbSJCtagNIPMHA1KEDMpqGunDZLHcpBmEWvTSMPZXLy3UPxgX
-         Oat/JN/bbMm2vawrMmDEQ5bAEVfMZE2yexcvhQc61lwwKawm5SbN+4qllo0W/JF+8N+k
-         RVKbQKsp3j/fJtWj5Yq6uguTNX73W0v+46IonObnSAArn2qv8rf6S80CkpAjxyu6lU+N
-         VD0A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706006140; x=1706610940;
-        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=+K8ykXNGzCyqdN2O3hxbBqf7n+ehziJgzDtq5dMy7W0=;
-        b=m2N1d+IHzO/YIr+uzHuUSGfyABibRuGNGvW9a9V/R31dtvqgizPb4oiQWhizqx4CnU
-         BXVPvbv+oJIJ8kV/o1QCJm0ERing+TRjoK7d/xSPvLfrnTYRu7xFWGfv6MFEbnMJZtwF
-         jPMpuY4EzxA94pVGInH6IZUaIYP19ICF+NOhmCZrROolFw9pYV+IPu9npipgFngtBb2o
-         5OdbPoyKNnle8LyBBLghu7WUbCdhpDn0BPwuVoLnEvghWVOA/M5CycJWthmtcrL12p56
-         VsqsG7+bTvPiR3QyorGhlcIMhWw6HTkLtyiVP3wkxJocheKC+aSHMG+ghJ3qTIoi/ugL
-         v5Ew==
-X-Gm-Message-State: AOJu0YzPdleu76CHwX3KPL68aeftUcj0ON7RpXxvrz4KW55fKUqnj0ha
-	Rf4KQmaORD5Rr5G4ijZuoHktxRnuqNLddyV53yyoN4VqyekZ9Go=
-X-Google-Smtp-Source: AGHT+IFJgwBuJgm+8fJX8ur+9tab1QjOOQx45I1q5m769rWURolqKotCmKnzrY9tvIIjIkDVusgWfg==
-X-Received: by 2002:a05:600c:1ca5:b0:40e:6b49:25cd with SMTP id k37-20020a05600c1ca500b0040e6b4925cdmr403991wms.102.1706006139932;
-        Tue, 23 Jan 2024 02:35:39 -0800 (PST)
-Received: from p183 ([46.53.248.133])
-        by smtp.gmail.com with ESMTPSA id fc11-20020a05600c524b00b0040e86fbd772sm23577054wmb.38.2024.01.23.02.35.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 23 Jan 2024 02:35:39 -0800 (PST)
-Date: Tue, 23 Jan 2024 13:35:38 +0300
-From: Alexey Dobriyan <adobriyan@gmail.com>
-To: Jason Gunthorpe <jgg@nvidia.com>, Leon Romanovsky <leonro@nvidia.com>
-Cc: linux-rdma@vger.kernel.org
-Subject: [PATCH] mlx5: delete unused prototype
-Message-ID: <a2cb861e-d11e-4567-8a73-73763d1dc199@p183>
+	s=arc-20240116; t=1706035706; c=relaxed/simple;
+	bh=tBi/fz61lc/K/F0Ofov6sAJrJCdjFsERYvIkR4r2WZM=;
+	h=Content-Type:MIME-Version:To:From:Subject:Message-Id:Date; b=BCMqaCg+fxRx46sw6FDhmE7K6FUME8tC7T0HEqnIpis3p5AxLC/csY7IDUVqsfSBrugqs2c1LRilrMJGw5Ax273ncobdUNa6+oEYWxbgiUsiWzJR1KuFglDr1oh5PSp0zaZb/NsEn1X/niYHNIbznpk/L9GucE6ytFg+opxwTng=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=launchpad.net; spf=pass smtp.mailfrom=launchpad.net; dkim=pass (2048-bit key) header.d=launchpad.net header.i=@launchpad.net header.b=SfpEJQ+f; arc=none smtp.client-ip=185.125.188.250
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=launchpad.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=launchpad.net
+Received: from juju-98d295-prod-launchpad-15.localdomain (buildd-manager.lp.internal [10.131.215.202])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-relay-services-0.canonical.com (Postfix) with ESMTPSA id D3E263F0D6
+	for <linux-rdma@vger.kernel.org>; Tue, 23 Jan 2024 18:48:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=launchpad.net;
+	s=20210803; t=1706035695;
+	bh=tBi/fz61lc/K/F0Ofov6sAJrJCdjFsERYvIkR4r2WZM=;
+	h=Content-Type:MIME-Version:To:From:Subject:Message-Id:Date:
+	 Reply-To;
+	b=SfpEJQ+frFnm4nvIb7kpFfjSWAgLNVqIijyRFhcsSWPVzsTn82sf8wpGg/fRYjZOT
+	 XRePqzgqJA6tE3DKnOkFxolzwGOEj4Eqktn5N7zAqjAz3tuXVXZrvw9SWH6F3X9wat
+	 bNaZaBj9V2KC7VwUTYeLGgSlxTL2SGyenKwWNRrjLcMp0Q42JoBkzK9MKHeWUFySdw
+	 HhO+rAMiknX9mw68J1gF3pXKfheHI3GDOgarCT52Du6nq2sLitbWRtOF5oXDheEdGN
+	 k7qlkWRqiF2sIllYhbsJWW42WuIULqUc49SxyGBvnEguUII63EZFa/ZxffxiliH7O4
+	 2VUDupdK93Ydg==
+Received: from [10.131.215.202] (localhost [127.0.0.1])
+	by juju-98d295-prod-launchpad-15.localdomain (Postfix) with ESMTP id C22EC7E232
+	for <linux-rdma@vger.kernel.org>; Tue, 23 Jan 2024 18:48:15 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+X-Launchpad-Message-Rationale: Requester @linux-rdma
+X-Launchpad-Message-For: linux-rdma
+X-Launchpad-Notification-Type: recipe-build-status
+X-Launchpad-Archive: ~linux-rdma/ubuntu/rdma-core-daily
+X-Launchpad-Build-State: MANUALDEPWAIT
+To: Linux RDMA <linux-rdma@vger.kernel.org>
+From: noreply@launchpad.net
+Subject: [recipe build #3671077] of ~linux-rdma rdma-core-daily in xenial: Dependency wait
+Message-Id: <170603569578.3774464.9921846788588195372.launchpad@juju-98d295-prod-launchpad-15>
+Date: Tue, 23 Jan 2024 18:48:15 -0000
+Reply-To: noreply@launchpad.net
+Sender: noreply@launchpad.net
+Errors-To: noreply@launchpad.net
+Precedence: bulk
+X-Generated-By: Launchpad (canonical.com); Revision="ff54b7050d99a0d84ff58e179f1b8e071713b594"; Instance="launchpad-buildd-manager"
+X-Launchpad-Hash: 08b4611497e088c4f6ca739b3c0859b3b58c3ba1
 
-mlx5_ib_copy_pas() doesn't exist anymore (and g++ doesn't like it
-because "new" is reserved keyword in C++).
+ * State: Dependency wait
+ * Recipe: linux-rdma/rdma-core-daily
+ * Archive: ~linux-rdma/ubuntu/rdma-core-daily
+ * Distroseries: xenial
+ * Duration: 3 minutes
+ * Build Log: https://launchpad.net/~linux-rdma/+archive/ubuntu/rdma-core-d=
+aily/+recipebuild/3671077/+files/buildlog.txt.gz
+ * Upload Log:=20
+ * Builder: https://launchpad.net/builders/lcy02-amd64-092
 
-Signed-off-by: Alexey Dobriyan <adobriyan@gmail.com>
----
+--=20
+https://launchpad.net/~linux-rdma/+archive/ubuntu/rdma-core-daily/+recipebu=
+ild/3671077
+Your team Linux RDMA is the requester of the build.
 
- drivers/infiniband/hw/mlx5/mlx5_ib.h |    1 -
- 1 file changed, 1 deletion(-)
-
---- a/drivers/infiniband/hw/mlx5/mlx5_ib.h
-+++ b/drivers/infiniband/hw/mlx5/mlx5_ib.h
-@@ -1377,7 +1377,6 @@ int mlx5_ib_query_port(struct ib_device *ibdev, u32 port,
- 		       struct ib_port_attr *props);
- void mlx5_ib_populate_pas(struct ib_umem *umem, size_t page_size, __be64 *pas,
- 			  u64 access_flags);
--void mlx5_ib_copy_pas(u64 *old, u64 *new, int step, int num);
- int mlx5_ib_get_cqe_size(struct ib_cq *ibcq);
- int mlx5_mkey_cache_init(struct mlx5_ib_dev *dev);
- void mlx5_mkey_cache_cleanup(struct mlx5_ib_dev *dev);
 
