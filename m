@@ -1,107 +1,224 @@
-Return-Path: <linux-rdma+bounces-717-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-718-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6179383A39D
-	for <lists+linux-rdma@lfdr.de>; Wed, 24 Jan 2024 08:58:27 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3144783A419
+	for <lists+linux-rdma@lfdr.de>; Wed, 24 Jan 2024 09:26:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1AB2A2937F5
-	for <lists+linux-rdma@lfdr.de>; Wed, 24 Jan 2024 07:58:26 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 558F41C21BD3
+	for <lists+linux-rdma@lfdr.de>; Wed, 24 Jan 2024 08:26:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 58F9C171BA;
-	Wed, 24 Jan 2024 07:58:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DC9031756A;
+	Wed, 24 Jan 2024 08:26:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="PAHO44G3"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mailgw.kylinos.cn (mailgw.kylinos.cn [124.126.103.232])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E1B3117543;
-	Wed, 24 Jan 2024 07:58:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=124.126.103.232
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8F1D11754C;
+	Wed, 24 Jan 2024 08:26:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706083101; cv=none; b=AGFigSXvv98amzNaU/70wyvWMWrsJGlmp82jlfMxreX1rww3wfQki3f1ed58V7EPP2PUtsKnL9CXelpQlccAupboGzymn6tQEEifm6uocI0YIJYstKRny5/SVXsfBk44s03pMsGDO/XjJGQT2Wj9m0Uu36oQAN5AczIf23HzcPo=
+	t=1706084791; cv=none; b=azg58C92mt6QaD7UWCQ9yplJtW2kmrdPlEuQOjHbsTKXjXB7ZSkD0VLGPagbr7u/sk7xLfy57AZ32tZV8DhWveXqzpumeadVC9MQ+COogX4x8hfuAR615DK+Uv/Xwq9vw7n7OePc6nGTMIPvdh05PoTUUABFK9e7N2Z8Ri64hzU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706083101; c=relaxed/simple;
-	bh=1v3O0YVMPI+F7nAtQ6rXg2jQUbThSXmEGB9qvSA8O5g=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=pFAw9f5jMcGmxTQSyI9wvc+WiNIHWmTXfat8ZGz1mXjHIsV6rxpAZwxj9ZTMiPO3NqACFSFNLyL6n2+H+h2nQESSXtsGWg0k224aoTpdSsPVUGBVGlYit3gGE+Rs8DyzLkwy1EM694rKg5wyULNngxU1rm5PbpeYkmbi6gLxxqU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylinos.cn; spf=pass smtp.mailfrom=kylinos.cn; arc=none smtp.client-ip=124.126.103.232
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylinos.cn
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kylinos.cn
-X-UUID: 299d9bbcd641409e9a7b28d2a21bd8ad-20240124
-X-CID-P-RULE: Release_Ham
-X-CID-O-INFO: VERSION:1.1.35,REQID:924919e9-e9e1-45c7-b695-27da69cd3540,IP:10,
-	URL:0,TC:0,Content:0,EDM:0,RT:0,SF:-15,FILE:0,BULK:0,RULE:Release_Ham,ACTI
-	ON:release,TS:-5
-X-CID-INFO: VERSION:1.1.35,REQID:924919e9-e9e1-45c7-b695-27da69cd3540,IP:10,UR
-	L:0,TC:0,Content:0,EDM:0,RT:0,SF:-15,FILE:0,BULK:0,RULE:Release_Ham,ACTION
-	:release,TS:-5
-X-CID-META: VersionHash:5d391d7,CLOUDID:11c5998e-e2c0-40b0-a8fe-7c7e47299109,B
-	ulkID:240124155807WFON35KP,BulkQuantity:0,Recheck:0,SF:66|38|24|17|19|44|1
-	02,TC:nil,Content:0,EDM:-3,IP:-2,URL:0,File:nil,Bulk:nil,QS:nil,BEC:nil,CO
-	L:0,OSI:0,OSA:0,AV:0,LES:1,SPR:NO,DKR:0,DKP:0,BRR:0,BRE:0
-X-CID-BVR: 0,NGT
-X-CID-BAS: 0,NGT,0,_
-X-CID-FACTOR: TF_CID_SPAM_SNR,TF_CID_SPAM_FAS,TF_CID_SPAM_FSD,TF_CID_SPAM_FSI
-X-UUID: 299d9bbcd641409e9a7b28d2a21bd8ad-20240124
-Received: from mail.kylinos.cn [(39.156.73.10)] by mailgw
-	(envelope-from <chentao@kylinos.cn>)
-	(Generic MTA)
-	with ESMTP id 2099680962; Wed, 24 Jan 2024 15:58:05 +0800
-Received: from mail.kylinos.cn (localhost [127.0.0.1])
-	by mail.kylinos.cn (NSMail) with SMTP id DBC79E000EB9;
-	Wed, 24 Jan 2024 15:58:04 +0800 (CST)
-X-ns-mid: postfix-65B0C30C-697750425
-Received: from kernel.. (unknown [172.20.15.234])
-	by mail.kylinos.cn (NSMail) with ESMTPA id 3762CE000EB9;
-	Wed, 24 Jan 2024 15:58:03 +0800 (CST)
-From: Kunwu Chan <chentao@kylinos.cn>
-To: santosh.shilimkar@oracle.com,
-	davem@davemloft.net,
-	edumazet@google.com,
-	kuba@kernel.org,
-	pabeni@redhat.com
-Cc: netdev@vger.kernel.org,
+	s=arc-20240116; t=1706084791; c=relaxed/simple;
+	bh=pN/fnpKTCdTdr8iz9bwG3YmYtng5FDKPG7zFExOlM7M=;
+	h=Date:Message-ID:From:To:Cc:Subject:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=Z1Hwr+3SbvUGgdmSzBNutinmtuv7PHuTsgxCms96NfJewCc4cFG15M9JH8zHgNNFnV70ghaa8be/Mj//tbbY9l2kvaeCBEH85e5C1B7TAmLiPOKDLtO65kqPNr7BqR1sLKGabnfE6WLWNEl1EllXktMweMbiLmjfM9XdOTDhVvs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=PAHO44G3; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 16461C433F1;
+	Wed, 24 Jan 2024 08:26:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1706084791;
+	bh=pN/fnpKTCdTdr8iz9bwG3YmYtng5FDKPG7zFExOlM7M=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=PAHO44G39yPBF/MgmuviKNTwso+xJAhQJNnI7vrKh7xtaTw5HRxq4YOltrCobA6uB
+	 lTO4y+mIRErko6Pnme3gZxS5vBhpGHGuPGbOq/wHOfciVjcNLir85Ko8bVTVPSdneL
+	 6LQOglCNNspZqn4JyzX4RwFXXAyJ9CCenYH06qLo1yomaSejBa2VEQ3WBNM2Ia0y07
+	 PRqioGakxW4w3uoy7QdZ+kIWthohCs66X50Djk9GcJwM4Xgsg2LnctteY2FFZj5Qbe
+	 0vW1bjstAMyBo116Wfpw+BqjzrLOjNr/gUX1te3tnr1+TciPd1e0erJdWsXrEbkbAZ
+	 p6jNkSqrEgq/Q==
+Received: from sofa.misterjones.org ([185.219.108.64] helo=goblin-girl.misterjones.org)
+	by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.95)
+	(envelope-from <maz@kernel.org>)
+	id 1rSYaa-00EG6y-Jr;
+	Wed, 24 Jan 2024 08:26:28 +0000
+Date: Wed, 24 Jan 2024 08:26:28 +0000
+Message-ID: <86ede787d7.wl-maz@kernel.org>
+From: Marc Zyngier <maz@kernel.org>
+To: Jason Gunthorpe <jgg@nvidia.com>
+Cc: Catalin Marinas <catalin.marinas@arm.com>,
+	Mark Rutland <mark.rutland@arm.com>,
+	Niklas Schnelle <schnelle@linux.ibm.com>,
+	Leon Romanovsky <leon@kernel.org>,
+	Arnd Bergmann <arnd@arndb.de>,
+	linux-arch@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org,
 	linux-rdma@vger.kernel.org,
-	rds-devel@oss.oracle.com,
-	linux-kernel@vger.kernel.org,
-	Kunwu Chan <chentao@kylinos.cn>
-Subject: [PATCH] net: rds: Simplify the allocation of slab caches in rds_conn_init
-Date: Wed, 24 Jan 2024 15:58:01 +0800
-Message-Id: <20240124075801.471330-1-chentao@kylinos.cn>
-X-Mailer: git-send-email 2.39.2
+	llvm@lists.linux.dev,
+	Michael Guralnik <michaelgur@mellanox.com>,
+	Nathan Chancellor <nathan@kernel.org>,
+	Nick Desaulniers <ndesaulniers@google.com>,
+	Will Deacon <will@kernel.org>
+Subject: Re: [PATCH rdma-next 1/2] arm64/io: add memcpy_toio_64
+In-Reply-To: <20240124012723.GD1455070@nvidia.com>
+References: <20231205175127.GJ2692119@nvidia.com>
+	<ZW97VdHYH3HYVyd5@arm.com>
+	<20231205195130.GM2692119@nvidia.com>
+	<ZXBWXodu2rxQ7Szz@arm.com>
+	<20231206125919.GP2692119@nvidia.com>
+	<20240116185121.GB980613@nvidia.com>
+	<ZafISDVeAA1swx2I@FVFF77S0Q05N.cambridge.arm.com>
+	<20240117123618.GD734935@nvidia.com>
+	<ZafWIsrjvk--JdDn@FVFF77S0Q05N.cambridge.arm.com>
+	<ZbAj34vdVuMrmdFD@arm.com>
+	<20240124012723.GD1455070@nvidia.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/29.1
+ (aarch64-unknown-linux-gnu) MULE/6.0 (HANACHIRUSATO)
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-SA-Exim-Connect-IP: 185.219.108.64
+X-SA-Exim-Rcpt-To: jgg@nvidia.com, catalin.marinas@arm.com, mark.rutland@arm.com, schnelle@linux.ibm.com, leon@kernel.org, arnd@arndb.de, linux-arch@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-rdma@vger.kernel.org, llvm@lists.linux.dev, michaelgur@mellanox.com, nathan@kernel.org, ndesaulniers@google.com, will@kernel.org
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 
-Use the new KMEM_CACHE() macro instead of direct kmem_cache_create
-to simplify the creation of SLAB caches.
+On Wed, 24 Jan 2024 01:27:23 +0000,
+Jason Gunthorpe <jgg@nvidia.com> wrote:
+> 
+> On Tue, Jan 23, 2024 at 08:38:55PM +0000, Catalin Marinas wrote:
+> > (fixed Marc's email address)
+> > 
+> > On Wed, Jan 17, 2024 at 01:29:06PM +0000, Mark Rutland wrote:
+> > > On Wed, Jan 17, 2024 at 08:36:18AM -0400, Jason Gunthorpe wrote:
+> > > > On Wed, Jan 17, 2024 at 12:30:00PM +0000, Mark Rutland wrote:
+> > > > > On Tue, Jan 16, 2024 at 02:51:21PM -0400, Jason Gunthorpe wrote:
+> > > > > > I'm just revising this and I'm wondering if you know why ARM64 has this:
+> > > > > > 
+> > > > > > #define __raw_writeq __raw_writeq
+> > > > > > static __always_inline void __raw_writeq(u64 val, volatile void __iomem *addr)
+> > > > > > {
+> > > > > > 	asm volatile("str %x0, [%1]" : : "rZ" (val), "r" (addr));
+> > > > > > }
+> > > > > > 
+> > > > > > Instead of
+> > > > > > 
+> > > > > > #define __raw_writeq __raw_writeq
+> > > > > > static __always_inline void __raw_writeq(u64 val, volatile void __iomem *addr)
+> > > > > > {
+> > > > > > 	asm volatile("str %x0, %1" : : "rZ" (val), "m" (*(volatile u64 *)addr));
+> > > > > > }
+> > > > > > 
+> > > > > > ?? Like x86 has.
+> > > > > 
+> > > > > I believe this is for the same reason as doing so in all of our other IO
+> > > > > accessors.
+> > > > > 
+> > > > > We've deliberately ensured that our IO accessors use a single base register
+> > > > > with no offset as this is the only form that HW can represent in ESR_ELx.ISS.SRT
+> > > > > when reporting a stage-2 abort, which a hypervisor may use for
+> > > > > emulating IO.
+> > > > 
+> > > > Wow, harming bare metal performace to accommodate imperfect emulation
+> > > > sounds like a horrible reason :(
+> > > 
+> > > Having working functionality everywhere is a very good reason. :)
+> > > 
+> > > > So what happens with this patch where IO is done with STP? Are you
+> > > > going to tell me I can't do it because of this?
+> > > 
+> > > I'm not personally going to make that judgement, but it's certainly something
+> > > for Catalin and Will to consider (and I've added Marc in case he has any
+> > > opinion).
+> > 
+> > Good point, I missed this part. We definitely can't use STP in the I/O
+> > accessors, we'd have a big surprise when running the same code in a
+> > guest with emulated I/O.
+> 
+> Unfortunately there is no hard distinction in KVM/qemu for "emulated
+> IO" and "VFIO MMIO". Even devices using VFIO can get funneled down the
+> emulated path for legitimate reasons.
+> 
+> Again, userspace is already widely deployed using complex IO
+> accessors. ST4 has been out there for years and at this moment this
+> patch with STP is already being deployed in production environments.
 
-Signed-off-by: Kunwu Chan <chentao@kylinos.cn>
----
- net/rds/connection.c | 4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
+Then you will get to keep the pieces. Good luck.
 
-diff --git a/net/rds/connection.c b/net/rds/connection.c
-index b4cc699c5fad..c749c5525b40 100644
---- a/net/rds/connection.c
-+++ b/net/rds/connection.c
-@@ -829,9 +829,7 @@ int rds_conn_init(void)
- 	if (ret)
- 		return ret;
-=20
--	rds_conn_slab =3D kmem_cache_create("rds_connection",
--					  sizeof(struct rds_connection),
--					  0, 0, NULL);
-+	rds_conn_slab =3D KMEM_CACHE(rds_connection, 0);
- 	if (!rds_conn_slab) {
- 		rds_loop_net_exit();
- 		return -ENOMEM;
---=20
-2.39.2
+> Even if you refuse to take STP to mainline it *will* be running in VMs
+> under ARM hypervisors.
 
+A hypervisor can't do anything with it. If you cared to read the
+architecture, you'd know by now. So your VM will be either dead, or
+dog slow, depending on your hypervisor. In any case, I'm sure it will
+reflect positively on your favourite software.
+
+> What exactly do you think should be done about that?
+
+Well, you could use KVM_CAP_ARM_NISV_TO_USER in userspace and see
+everything slow down. Your call.
+
+> I thought the guiding mantra here was that any time KVM does not
+> perfectly emulate bare metal it is a bug. "We can't assume all VMs are
+> Linux!". Indeed we recently had some long and *very* theoretical
+> discussions about possible incompatibilties due to kvm changes in the
+> memory attributes thread.
+>
+> But here it seems to be just shrugging off something so catastrophic
+> as performance IO accessors *that are widely deployed already* don't
+> work reliably in VMs!?!?
+> 
+> "Oh well, don't use them"!?
+
+Exactly.
+
+You can also take this to the ARM architects and get them to update
+the architecture to mandate full syndrome information for all
+load/store instructions, and you'll get something useful in 2034.
+Maybe.
+
+Or you can stop whining and try to get better performance out of what
+we have today.
+
+> Damn I hope it crashes the VM and doesn't corrupt the MMIO. I just
+> debugged a x86 KVM issue with it corrupting VFIO MMIO and that was a
+> total nightmare to find.
+> 
+> > If eight STRs without other operations interleaved give us the
+> > write-combining on most CPUs (with Normal NC), we should go with this
+> > instead of STP.
+> 
+> __iowrite64_copy() is a performance IO accessor, we should not degrade
+> it because buggy hypervisors might exist that have a problem with STP
+> or other instructions. :( :(
+> 
+> Anyhow, I know nothing about whatever this issue is - Mark said:
+> 
+>  > FWIW, IIUC the immediate-offset forms *without* writeback can still
+>  > be reported usefully in ESR_ELx,
+> 
+> Which excludes the post/pre increment forms - but does STP and ST4
+> also have some kind of problem because the emulation path can't know
+> about wider than a 64 bit access?
+> 
+> What is the plan for ST64B? Don't get to use that either?
+
+ST64 has full syndrome information, making it possible to emulate.
+
+In any case, there is no magic there. Everything is documented, and
+has been for the past... 15 years?
+
+	M.
+
+-- 
+Without deviation from the norm, progress is not possible.
 
