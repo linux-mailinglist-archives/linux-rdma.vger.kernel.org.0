@@ -1,120 +1,85 @@
-Return-Path: <linux-rdma+bounces-713-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-714-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1F6CE839A65
-	for <lists+linux-rdma@lfdr.de>; Tue, 23 Jan 2024 21:39:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 95132839DEA
+	for <lists+linux-rdma@lfdr.de>; Wed, 24 Jan 2024 02:03:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 99E53B2258D
-	for <lists+linux-rdma@lfdr.de>; Tue, 23 Jan 2024 20:39:07 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7E8EAB2949D
+	for <lists+linux-rdma@lfdr.de>; Wed, 24 Jan 2024 01:03:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 87F514403;
-	Tue, 23 Jan 2024 20:39:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9D2AD1841;
+	Wed, 24 Jan 2024 01:03:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="NW1XArYK"
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5628220F1;
-	Tue, 23 Jan 2024 20:39:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5427017E1;
+	Wed, 24 Jan 2024 01:03:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706042341; cv=none; b=TMf3+AA+jsblj8M5dTsw965VIb/B56yODi2zEho/3oqPF9A9I3zi77DcEBT3l55uwYstsOm0rqEf62S/HNoeWb1Cp7hoKpyAIdnF0mqh1BZYbsh9TFjDpj3AccnitmBk/8EgZYBNbRZOz6LyulCUTvhXpt4ZoAiunbpC70+lwik=
+	t=1706058215; cv=none; b=Fx72vQYYCglw8WdFD24fWsjduxULpBnhYgWyM+Goz/fOCAGdRl5WuuLNHJR5IDV/OwQ//EUpXvqY4ZOsnDX2cqdwmB86sYFHSY9iLZ6bhRwjrFDLnYlqqNaT9HtHW45IsEXvlyFkAs+0Qs0zh4pCCKHBuPI5wBpKTxtu8ltbx6I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706042341; c=relaxed/simple;
-	bh=fq71BbN1ywaZ7F7VI6egXeKgKsL9xoL1DO3pGojEhSs=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=GdH5OACgckD7mxnc+QJ5FKjBvlXfcc9511ELA1a8/og6bVBaL2Pi21fe4PiKKpic/1DsOZULRI6b8gd2KuZy9BL7NScina7l4TQLQjK84PPlM04ENOwi/SDaBc4B7QjeqIhDVk3LCQeFcXh4tWNS809WbkJMQC98ejzJ4iOABJo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4E0E9C433F1;
-	Tue, 23 Jan 2024 20:38:58 +0000 (UTC)
-Date: Tue, 23 Jan 2024 20:38:55 +0000
-From: Catalin Marinas <catalin.marinas@arm.com>
-To: Mark Rutland <mark.rutland@arm.com>
-Cc: Jason Gunthorpe <jgg@nvidia.com>,
-	Niklas Schnelle <schnelle@linux.ibm.com>,
-	Leon Romanovsky <leon@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
-	linux-arch@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-	linux-rdma@vger.kernel.org, llvm@lists.linux.dev,
-	Michael Guralnik <michaelgur@mellanox.com>,
-	Nathan Chancellor <nathan@kernel.org>,
-	Nick Desaulniers <ndesaulniers@google.com>,
-	Will Deacon <will@kernel.org>, Marc Zyngier <maz@kernel.org>
-Subject: Re: [PATCH rdma-next 1/2] arm64/io: add memcpy_toio_64
-Message-ID: <ZbAj34vdVuMrmdFD@arm.com>
-References: <ZW9cF0ALVwgvcQMy@arm.com>
- <20231205175127.GJ2692119@nvidia.com>
- <ZW97VdHYH3HYVyd5@arm.com>
- <20231205195130.GM2692119@nvidia.com>
- <ZXBWXodu2rxQ7Szz@arm.com>
- <20231206125919.GP2692119@nvidia.com>
- <20240116185121.GB980613@nvidia.com>
- <ZafISDVeAA1swx2I@FVFF77S0Q05N.cambridge.arm.com>
- <20240117123618.GD734935@nvidia.com>
- <ZafWIsrjvk--JdDn@FVFF77S0Q05N.cambridge.arm.com>
+	s=arc-20240116; t=1706058215; c=relaxed/simple;
+	bh=1C0aclCSrTodyIiX9t1yGWxG9h2zK+4zsFmooVu0iQs=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=Tlb8qK6jGH2FMLXOCtPVx+lQ413xRMiCB6i/pZNUKKVwBfQF9gj8tnekmyhg74ccn2ueeIg/hUzGD1tipjSBjEQaEC7ebsnT+lGN/1eJ8NNThCphXlykG/7f8631V3Gg3pEJu9Eyn+1X6YN9VPl0TLUOPjD+QDqpjFdSalV5hHg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=NW1XArYK; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DD3A8C433F1;
+	Wed, 24 Jan 2024 01:03:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1706058214;
+	bh=1C0aclCSrTodyIiX9t1yGWxG9h2zK+4zsFmooVu0iQs=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=NW1XArYKalNgr/Ur0uwp3MhGLCPH0L2LOi6rDbWKIb9MkR0WvyeENiNmpGyAMWQ/G
+	 hV21dFBePxK71+X7A7WQCo2d1SXZBU47YWrVR2Po1P5utDSQRUKivvkbLhROUxZOVG
+	 HWsHNdBtIT2c+XoQbNAnlZKFEtig4zDPOgFUHrpJWYbMGLVS3xh1jdHrm4PR+tJNet
+	 4KRcWRi7ouctoLF/3hQCcJ1jkMzXMbI+FcOMcn4MI05ugtxwPldukkx8q62HXLMoyR
+	 TkAFj4m8DRjb3aE0/N08R7SIpeT31juXqLzvTIfMs547SX5dhpupOdh9npyETtFtQr
+	 Yc4SaUOKuBJEA==
+Date: Tue, 23 Jan 2024 17:03:32 -0800
+From: Jakub Kicinski <kuba@kernel.org>
+To: Souradeep Chakrabarti <schakrabarti@linux.microsoft.com>
+Cc: kys@microsoft.com, haiyangz@microsoft.com, wei.liu@kernel.org,
+ decui@microsoft.com, davem@davemloft.net, edumazet@google.com,
+ pabeni@redhat.com, longli@microsoft.com, yury.norov@gmail.com,
+ leon@kernel.org, cai.huoqing@linux.dev, ssengar@linux.microsoft.com,
+ vkuznets@redhat.com, tglx@linutronix.de, linux-hyperv@vger.kernel.org,
+ netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-rdma@vger.kernel.org, schakrabarti@microsoft.com,
+ paulros@microsoft.com
+Subject: Re: [PATCH 4/4 V2 net-next] net: mana: Assigning IRQ affinity on HT
+ cores
+Message-ID: <20240123170332.20dd8a6b@kernel.org>
+In-Reply-To: <1705939259-2859-5-git-send-email-schakrabarti@linux.microsoft.com>
+References: <1705939259-2859-1-git-send-email-schakrabarti@linux.microsoft.com>
+	<1705939259-2859-5-git-send-email-schakrabarti@linux.microsoft.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZafWIsrjvk--JdDn@FVFF77S0Q05N.cambridge.arm.com>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-(fixed Marc's email address)
+On Mon, 22 Jan 2024 08:00:59 -0800 Souradeep Chakrabarti wrote:
+> IRQ   node-num    core-num   CPU        performance(%)
+> 1      0 | 0       0 | 0     0 | 0-1     0
+> 2      0 | 0       0 | 1     1 | 2-3     3
+> 3      0 | 0       1 | 2     2 | 4-5     10
+> 4      0 | 0       1 | 3     3 | 6-7     15
+> 5      0 | 0       2 | 4     4 | 8-9     15
+> ---
+> ---
 
-On Wed, Jan 17, 2024 at 01:29:06PM +0000, Mark Rutland wrote:
-> On Wed, Jan 17, 2024 at 08:36:18AM -0400, Jason Gunthorpe wrote:
-> > On Wed, Jan 17, 2024 at 12:30:00PM +0000, Mark Rutland wrote:
-> > > On Tue, Jan 16, 2024 at 02:51:21PM -0400, Jason Gunthorpe wrote:
-> > > > I'm just revising this and I'm wondering if you know why ARM64 has this:
-> > > > 
-> > > > #define __raw_writeq __raw_writeq
-> > > > static __always_inline void __raw_writeq(u64 val, volatile void __iomem *addr)
-> > > > {
-> > > > 	asm volatile("str %x0, [%1]" : : "rZ" (val), "r" (addr));
-> > > > }
-> > > > 
-> > > > Instead of
-> > > > 
-> > > > #define __raw_writeq __raw_writeq
-> > > > static __always_inline void __raw_writeq(u64 val, volatile void __iomem *addr)
-> > > > {
-> > > > 	asm volatile("str %x0, %1" : : "rZ" (val), "m" (*(volatile u64 *)addr));
-> > > > }
-> > > > 
-> > > > ?? Like x86 has.
-> > > 
-> > > I believe this is for the same reason as doing so in all of our other IO
-> > > accessors.
-> > > 
-> > > We've deliberately ensured that our IO accessors use a single base register
-> > > with no offset as this is the only form that HW can represent in ESR_ELx.ISS.SRT
-> > > when reporting a stage-2 abort, which a hypervisor may use for
-> > > emulating IO.
-> > 
-> > Wow, harming bare metal performace to accommodate imperfect emulation
-> > sounds like a horrible reason :(
-> 
-> Having working functionality everywhere is a very good reason. :)
-> 
-> > So what happens with this patch where IO is done with STP? Are you
-> > going to tell me I can't do it because of this?
-> 
-> I'm not personally going to make that judgement, but it's certainly something
-> for Catalin and Will to consider (and I've added Marc in case he has any
-> opinion).
-
-Good point, I missed this part. We definitely can't use STP in the I/O
-accessors, we'd have a big surprise when running the same code in a
-guest with emulated I/O.
-
-If eight STRs without other operations interleaved give us the
-write-combining on most CPUs (with Normal NC), we should go with this
-instead of STP.
-
+Please don't use --- as a line, indent it or use ... because git am
+uses --- as a commit message separator. The commit message will get
+cut off at the first one of those if we try to apply this.
 -- 
-Catalin
+pw-bot: cr
 
