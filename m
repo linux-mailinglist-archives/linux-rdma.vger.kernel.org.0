@@ -1,97 +1,92 @@
-Return-Path: <linux-rdma+bounces-731-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-732-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 263B983B474
-	for <lists+linux-rdma@lfdr.de>; Wed, 24 Jan 2024 23:05:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id D76A883B68F
+	for <lists+linux-rdma@lfdr.de>; Thu, 25 Jan 2024 02:29:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 93E8A1F23B66
-	for <lists+linux-rdma@lfdr.de>; Wed, 24 Jan 2024 22:05:23 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4B0691F22B57
+	for <lists+linux-rdma@lfdr.de>; Thu, 25 Jan 2024 01:29:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DA8BE135413;
-	Wed, 24 Jan 2024 22:05:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 832DF1388;
+	Thu, 25 Jan 2024 01:29:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="d0AkV2nd";
-	dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b="gonEmtzO"
+	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="NW6Jb9KP"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mx0a-00069f02.pphosted.com (mx0a-00069f02.pphosted.com [205.220.165.32])
+Received: from NAM04-DM6-obe.outbound.protection.outlook.com (mail-dm6nam04on2070.outbound.protection.outlook.com [40.107.102.70])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3760C13398B
-	for <linux-rdma@vger.kernel.org>; Wed, 24 Jan 2024 22:05:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=205.220.165.32
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A5664ECC;
+	Thu, 25 Jan 2024 01:29:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.102.70
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706133921; cv=fail; b=ig8RQNDXlu0q+lLnvnwdsP3Lm63+/lXfZGUfpBOYyu7ZitSowublUhZZNMhpOaukvMGCVMaqaOAHmT6spMK8bDBCMBRSSd9wC0H6HT4UTYA8cL5fk44WuIN8vJTrYaayh8Nur1iH00WyMesTLFZj0ALimYRjKhkr0hCMJFs+hws=
+	t=1706146171; cv=fail; b=sVNHeCICxhzAX6KhKc7yokOiCzMWhowIenEkWg4538e54ct6oeNqOgVJGXq5xxdHZbfs52x1lyODVpA0UOOAMKsc6JOFUfrKCiGN2Am2jOibzBaGWl77PVN5uCiFjPJ1SuRh26XSoPurGtCDq0IKF0vx9B976uAUbn7DCOmHnpA=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706133921; c=relaxed/simple;
-	bh=ICyfLRO7xvx0PGPURktERBSxBcGiDdMNpa/wn1pbUOk=;
+	s=arc-20240116; t=1706146171; c=relaxed/simple;
+	bh=YZfJr/cvKl+pZP9NQxSS4hOqBvKwkc7eobsl5vDdDOI=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:Content-Type:
-	 Content-Disposition:In-Reply-To:MIME-Version; b=FX3g4g0mqt/D4uwidklcC2E1mRqYXhgzu7HEOr/lGdPvZuW8D7Ku8rWYxyxAvTl9xMQRjUmX3YSiPzXuhu0xALl8OPtQWc2wUWNXh5UHNsVpFeLjNFN2n5VvsfyxA+T7SpJydRPoniBN0MC7Ll+qSMypZNpfUtJhb4V/+DWR/NA=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=oracle.com; spf=pass smtp.mailfrom=oracle.com; dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b=d0AkV2nd; dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b=gonEmtzO; arc=fail smtp.client-ip=205.220.165.32
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=oracle.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oracle.com
-Received: from pps.filterd (m0333521.ppops.net [127.0.0.1])
-	by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 40OLcXq7024132;
-	Wed, 24 Jan 2024 22:05:17 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : content-type : in-reply-to :
- mime-version; s=corp-2023-11-20;
- bh=DXZdN0SaZRBirUKGaj5SPMu9P3ldHh/5c1sux+SS0Ow=;
- b=d0AkV2ndKL/HUp4Z4v3LKYCJhXmubvnp4nysCnV44ScoM98/nfehaNsmJmSsdp3vyubq
- 1SpMJoUMOmcw2dYl1esJIJvgYXweifVtYtHucWjKjSzFCT8c7RykJE/qSApmTDHohNRS
- CIvNMt/USj974sSlXYdhye0+7Kvh2RLaDuTtzlS80flxtVc040b28xxg8kXLBsEEk9ka
- 7kI4bjb/01HH3xIZ570UdqeXGYQDZtcdQRRsPf9a5Pu7o26UD3Ns2+G0s3j3z00VxIj+
- TNdgPL5ygi3P/rBGmYEdUwjuyCdhQzFQoPtwgxARMryppgrk06JoBQMj0ycd/FTJNPJF NA== 
-Received: from phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta02.appoci.oracle.com [147.154.114.232])
-	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3vr7cuwg3u-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Wed, 24 Jan 2024 22:05:17 +0000
-Received: from pps.filterd (phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
-	by phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 40OKosMo030682;
-	Wed, 24 Jan 2024 22:05:16 GMT
-Received: from nam02-sn1-obe.outbound.protection.outlook.com (mail-sn1nam02lp2041.outbound.protection.outlook.com [104.47.57.41])
-	by phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTPS id 3vs373w9e0-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Wed, 24 Jan 2024 22:05:16 +0000
+	 Content-Disposition:In-Reply-To:MIME-Version; b=oQmvgvFHdjKtOOgKrb0BiMa5h83pqQ23C+nQRuCjTq4z4z2RQttWIxcUbiqS/u5MjsBcgxv+YGTe3aA1dQJpRdSqGLY5Zwsz9Ga3nopUGDqZ66yNx25jQZvT9yB1E2Cc8ziE9JCa6Ckp+1atumdoPH4fpvOrW8u+b56gDU7E3Yc=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=NW6Jb9KP; arc=fail smtp.client-ip=40.107.102.70
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=QX3qYPgb3khN2Ky+zJbWRaU/skUUoZJYGMYwTUqgeb7GGiHep35o6b0UcD3vi9Yp+v6Djz2XeJ8ym6cLa2wyciq9rieguf54Du5/HnP07SFoLDfd+h2543uzoeAnGUAExgAmaU32902qGCxGsis3dO6Dztw3K38lJDqahl2GjSwstf7KhPMorT1E1KVi2vO1kODTioTfkHt9pje9IfoMXskt4WTLzLFzf/VxM6ms4TQxvebIcRUPq1BvAsnlz5zH4x2of1PAiUqjGXijlYnKJHGBTTv4eOhkETHzPGNu5tEs0n0ptRNcmgGAGfqibCP7J0kfXPEPZqynVeg+Z/+Jrg==
+ b=QhbISzMZRLzDNLl/0qe365uejJxqk5EjGBnYTgj9sbz5YcPyHoom1wE51FmAyKP9RABjVlckre88U84v0PSbUG/Xt90JCniy69sLJnwve+uemo22oghgUqcwQ15obCh4qCMmmNuiXQt4cRYgh4UlvZGwg0eGdCXWnUkvkKMNEIDuToBMNV14tbutavhUztuVX8ycWh8qM9RHMrD5nKU6mDEvKg6QyGAncqJfhW/llV8SKM9A3NC5x583nUXTPkqSZu/SkDa3P+SOa1ywKx+P7ZbcGOhXuy59/txl55EVTTSRYMs5aS3b89XT0CvoXAgqruIdDYCpRr4vJy7nMwwEhQ==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=DXZdN0SaZRBirUKGaj5SPMu9P3ldHh/5c1sux+SS0Ow=;
- b=OoFHIfc3DolY2tgap3aSoT0WcF8SNTe7ZUmnY1+Q4Yi9K6JIQihFMspN8DfWriFd17jiywvxl1fRS1eZrhc6rIS40VVcZ6f0TQm5bp/CGQy0c4wlNA/q5HhWEstUP908ml2sMtso4Vuxy0qCU1vUOPHuyHm3SOJQX2QGBtGf01KAEVHbKDT+mqoBA6ViREAYUb4fec+XQfpQx08f8gLi+e4bCpFmK4dPV2IS4iQ42HTALhuAj+0aCm1TQYd7cKeppC/4cno4d4CtzLsoG2KW6dlMDTjFJPY4TWSg26YtmQ1n4oxHHsmv+5y+zwsuQ7jXEpxUCZvY6fx+5HelbpZVpw==
+ bh=cE1YBXPN/7WwvP6tCmRAYtm0vUxqDOIjpQq/znFtt8Y=;
+ b=Ip2Ewfb4MROJwNAsV9EnsSoM7+egyreHD17K41l6mIC8jYzmpSnM8D+Ov08SPzO+/vhsyDh2WecPIphqFkRKOx/nzfO6i+9vSBnPOPOOlwp+Up9K4f6BTUO9OwZ1nRfxmvQ+3TGdOWUBreRoDcMq7Qlt6k/pgMz6VpvECMdkFyx/tln19qiDtheHYMBnDBwmxY2TztJeVYqWnqGpsPtk1zOX49aM0M+UbBpQOxu9bJk5q3Gf2DRsnBee1mnlgdfAXEhwVhWS6uXcokVuR/l8p3FbjJyL4t2Fz1ZUDdeZG5Rd5SGdIYTjGFGT9OaNsc0Tn3JjEYkA5vwY4i4SeC6QFQ==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=DXZdN0SaZRBirUKGaj5SPMu9P3ldHh/5c1sux+SS0Ow=;
- b=gonEmtzOFmHp8n4BVbuKjU2E0uUP+xyFp8w2MJZxCLImSL+tIIlii5DLrhcMtGa3dbtyRvDUlY/Azi9psQ3/ydgfiUJNFgnrgDG5RmFZzFd8bySwjVqh30T1Fkutl/3Nq7NsEe8pQfXU5qwfuGuYc7VUlXC6C/JtP3QZ94v3mHs=
-Received: from CH2PR10MB4309.namprd10.prod.outlook.com (2603:10b6:610:ae::12)
- by SA1PR10MB6640.namprd10.prod.outlook.com (2603:10b6:806:2b6::11) with
+ bh=cE1YBXPN/7WwvP6tCmRAYtm0vUxqDOIjpQq/znFtt8Y=;
+ b=NW6Jb9KPN8hfGQr+9SFV3lVgmV7faYEzwoXuyqpmFs/RRvJxJVMKSnoZOgVwE4M/GFl3V1yGxm4qwuQJQ7gxKYNiI40VAwMPX4tirM3VLTdvhyfdDTFR8nV/EuMY9sqlZbWo+iPWWX8vIzZG1XhaO9bgzacOBHor9lwOUijdxR2EMozTpEsvv5nEW2BdQO+m/IWLcmGdNELm7iu9b3POVJigjJGf7EGEH22PQpRAzQEAyVFhnU81KoiAN7I2PXcp+UOlpnb3vh/gpq/KShAPrdm8z/U9hGppV/oEFD97TPjJCMN25DtIoxUy/VbD8JmML9IHEj912noTrp4Y67guxg==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nvidia.com;
+Received: from LV2PR12MB5869.namprd12.prod.outlook.com (2603:10b6:408:176::16)
+ by SJ1PR12MB6025.namprd12.prod.outlook.com (2603:10b6:a03:48c::7) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7228.22; Wed, 24 Jan
- 2024 22:05:12 +0000
-Received: from CH2PR10MB4309.namprd10.prod.outlook.com
- ([fe80::b0c9:ed3d:9161:b1c8]) by CH2PR10MB4309.namprd10.prod.outlook.com
- ([fe80::b0c9:ed3d:9161:b1c8%4]) with mapi id 15.20.7228.022; Wed, 24 Jan 2024
- 22:05:12 +0000
-Date: Wed, 24 Jan 2024 16:05:08 -0600
-From: Aron Silverton <aron.silverton@oracle.com>
-To: Nicolas Morey <nmorey@suse.com>
-Cc: linux-rdma@vger.kernel.org
-Subject: Re: [ANNOUNCE] rdma-core: new stable releases
-Message-ID: <tax7ypiihhjimf2qvdoqpcwobbm5jwwf742dw5hs3a662orsf5@o4lg3z66sbnp>
-References: <8a4daa40-5702-402c-ae80-3f969ac823e0@suse.com>
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7202.37; Thu, 25 Jan
+ 2024 01:29:26 +0000
+Received: from LV2PR12MB5869.namprd12.prod.outlook.com
+ ([fe80::96dd:1160:6472:9873]) by LV2PR12MB5869.namprd12.prod.outlook.com
+ ([fe80::96dd:1160:6472:9873%6]) with mapi id 15.20.7228.022; Thu, 25 Jan 2024
+ 01:29:26 +0000
+Date: Wed, 24 Jan 2024 21:29:24 -0400
+From: Jason Gunthorpe <jgg@nvidia.com>
+To: Catalin Marinas <catalin.marinas@arm.com>
+Cc: Marc Zyngier <maz@kernel.org>, Mark Rutland <mark.rutland@arm.com>,
+	Niklas Schnelle <schnelle@linux.ibm.com>,
+	Leon Romanovsky <leon@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
+	linux-arch@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+	linux-rdma@vger.kernel.org, llvm@lists.linux.dev,
+	Michael Guralnik <michaelgur@mellanox.com>,
+	Nathan Chancellor <nathan@kernel.org>,
+	Nick Desaulniers <ndesaulniers@google.com>,
+	Will Deacon <will@kernel.org>
+Subject: Re: [PATCH rdma-next 1/2] arm64/io: add memcpy_toio_64
+Message-ID: <20240125012924.GL1455070@nvidia.com>
+References: <ZafISDVeAA1swx2I@FVFF77S0Q05N.cambridge.arm.com>
+ <20240117123618.GD734935@nvidia.com>
+ <ZafWIsrjvk--JdDn@FVFF77S0Q05N.cambridge.arm.com>
+ <ZbAj34vdVuMrmdFD@arm.com>
+ <20240124012723.GD1455070@nvidia.com>
+ <86ede787d7.wl-maz@kernel.org>
+ <20240124130638.GE1455070@nvidia.com>
+ <86bk9a97rt.wl-maz@kernel.org>
+ <20240124155225.GG1455070@nvidia.com>
+ <ZbFO6ZXq99AWerlQ@arm.com>
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <8a4daa40-5702-402c-ae80-3f969ac823e0@suse.com>
-X-ClientProxiedBy: BYAPR07CA0075.namprd07.prod.outlook.com
- (2603:10b6:a03:12b::16) To CH2PR10MB4309.namprd10.prod.outlook.com
- (2603:10b6:610:ae::12)
+In-Reply-To: <ZbFO6ZXq99AWerlQ@arm.com>
+X-ClientProxiedBy: DM6PR06CA0049.namprd06.prod.outlook.com
+ (2603:10b6:5:54::26) To LV2PR12MB5869.namprd12.prod.outlook.com
+ (2603:10b6:408:176::16)
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
@@ -99,744 +94,124 @@ List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: CH2PR10MB4309:EE_|SA1PR10MB6640:EE_
-X-MS-Office365-Filtering-Correlation-Id: 617bb78a-6d9b-4670-b049-08dc1d288960
+X-MS-TrafficTypeDiagnostic: LV2PR12MB5869:EE_|SJ1PR12MB6025:EE_
+X-MS-Office365-Filtering-Correlation-Id: 11724913-3f89-4f4f-e5c0-08dc1d451128
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 
-	cvpDkAosUR1x1g+tLj9hiv1qCuodGeKpWhRMlFQU1kCX5y7IWPAUs8OMs+W0Cr+13g8nE+R0Oht9DyyjEadQtJOIG+wASWXimjab8a9io2xEDGo+KrE+GYx+qUaiLU7XRmVd5AYFNZoFscUR6RuRakOQXKZMA6ZFlo3zzVljGRCvAZgKGMQA07EG40ZoDIjYG7PVtMOPcHH4no7jHzUgLg3FdSVKh01g0bXggnycg02j8/wHHbUP00qalL75cLZyAnktFk4CTNzKq8260L/1gBMB/gTn8Ycegwg9h9ahKXU0eEdaOSqaJSCCXqlYZh2jONEO1ARZd4aGFEZ38jP0E8wQjqw1iLkWLBo12xHyK7sbr6j5XE2Y0ZICKXnkmsRLiPhblLKgdhy8lBRoBkjAv+YRIkdqGFw6O6MTR1dbaFyj8oK4Q9TU0mq5j/cuGlgeJKUHi0Xy7Dv8znAZJBMJqQtWXYsLGMHvV4W7902Pae5Xp2HyR16QUjWrhogZwkIjOImik4SJ30waGhrUQ+QUkl9vZm4Vo936KdVTKTin2UGxvZ/MRMgaHttTD9C0czXREnLzVjDKR8EsxHOwsnqjFkfQ0qd6rGOw4FSt3NRNsh0=
-X-Forefront-Antispam-Report: 
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CH2PR10MB4309.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(7916004)(376002)(136003)(366004)(396003)(346002)(39860400002)(230922051799003)(186009)(64100799003)(1800799012)(451199024)(5660300002)(2906002)(30864003)(44832011)(66476007)(66556008)(6916009)(8936002)(33716001)(4326008)(316002)(66946007)(41300700001)(8676002)(478600001)(38100700002)(86362001)(83380400001)(26005)(6666004)(966005)(6512007)(9686003)(6506007)(6486002)(473944003);DIR:OUT;SFP:1101;
+X-Microsoft-Antispam-Message-Info:
+	h/JSqE1qVj//x9kqJjFvlXXy+PvIRfuX+C1z3M3rEfNPRphG2PdsJKyxpoU0sES71gNllnpy+C9hxb9wR3Ftvbj70Y1yoDAkYFPCszezr5zzHDKH+0aTO/CvJRo8ztbjhUJI9gh5yrNaPFx80xzmF3v/G6KFtTulW/K64/jar01b4ZgEAG3wh6R3V376lKhvCjb+e6SMUwbN8jPfPtHkvQFsk5nxEEHPY6JFdTSR6iojmaei1eaoeAvRBd5YPMMoHuseq2SxBZfpCDndntu+iXaDstp414EMUcQ1aHDQdlRnvb4tUE6lcm7GQKAfVhFL49M9VUF8SgTgm32QJeHki+Vo9H+Jj7Zcfibcr5i2YVBtUJv3jg+htv4BpO51Z2oTkm6OETWjViU3TNo4qrBLfWIRo1gSKru9UuULoUubvf6pVVkANm8U/gZRjANTPSkeRkvGuNEGQAxijwmrits0ELg+DU+EevRduBtPvBWpoYkoXpI9/7qXLlgdqC1wZZGxYts2rxakdRLxBQO310XqcxUuSNSnKVhHFFBiW0ABGmkOkkkCRWAvMgty2G7rhNSV
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:LV2PR12MB5869.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(346002)(366004)(136003)(396003)(376002)(39860400002)(230922051799003)(64100799003)(451199024)(186009)(1800799012)(36756003)(83380400001)(41300700001)(26005)(2616005)(478600001)(6512007)(1076003)(6486002)(6506007)(38100700002)(4326008)(5660300002)(7416002)(8936002)(6916009)(66946007)(66556008)(316002)(2906002)(54906003)(66476007)(33656002)(8676002)(86362001);DIR:OUT;SFP:1101;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: 
-	=?us-ascii?Q?pekQ0851hBdc0EbDE08539tQLTjYF5BESXIx3mz39P8QMPjSnhtrUdwVTjb+?=
- =?us-ascii?Q?7ClNeMEyQlFOEaR1JshYCUATa9eXR093px8BNPGZBnEi7Ed6C8hJX5SIac0p?=
- =?us-ascii?Q?Vcsh+DqcVLSdKQvOt6v/4ktUvKjxzAvRskEidrYJDKL8zdtqsPnM+DPy2L/D?=
- =?us-ascii?Q?LmV/sualY+II7FpVjx9vod9+Q4Ph6tYdsngYxgAHplxUo588AzKvuV1xpV7x?=
- =?us-ascii?Q?DQmOOUzwaWdDi2H/8lNOE/OPMp9jI8X7U1HK98Q23K1LEeCYN0v3trCAbGWF?=
- =?us-ascii?Q?welzAbHdvUEKzHmlKS/4bILRy084k244F1o2KQuFS48ZUVUvU8hI1+YOmNYH?=
- =?us-ascii?Q?B+QZwHf9NWB1oisgVIgrGUxcI/DVYZgd/ZF+rHax8hf4XUg0Z0cP2zgCGVNS?=
- =?us-ascii?Q?n55EaKE+ncJ9r51SnBDelxug2qsZ0kchonM98TBwe02CftOxD5kBYgEN2SQP?=
- =?us-ascii?Q?L51CV0bfA0wUiS7tgc1ZcfPljn818rypa5l1xwo6cVEUnVlLmyHdYZN9r/Pe?=
- =?us-ascii?Q?BCuoIyjHh85VItJ4CEWDCaBXncv4opxxV4lTqYqCSMjJbN8bom9S+za7t9hU?=
- =?us-ascii?Q?Sf8ktvv9HFq65DshGQ7ayy3+5aDWuMQ8k9+PkZF1FfqtnhvTpHCMhJ4P0AZk?=
- =?us-ascii?Q?jOgKGSrQLvFt1hF+YpIiux6KdOkiNbvho4VB63TWgoV1OiYGzrTC3NUpiLRG?=
- =?us-ascii?Q?aUxMa6dG4pYsLVt5S1pMjG9978PW3IBP4954bD2VQsYi+eVCJevdJeBb9pBY?=
- =?us-ascii?Q?EbjMgjDSqRVVu1ebZoBszMZrvW6Cb+GkNESOhXsEwj1HPt5t/86h2zZGsfvZ?=
- =?us-ascii?Q?jDw2L0hq5qlKWNyinjyzwsqHTcWPExPsglJC8qPXCSELonE+rCUGnWvRGnq2?=
- =?us-ascii?Q?xIZysQH1GdPPL9ELsIxoWbh1aA8lhdyd1/ncuhwyCvp7lJlFxgtUEVEVVBw5?=
- =?us-ascii?Q?8i2u3Ng3zHpa5bdP+6PguGQqD91mN3X+sMqhneRAQi+h++qoktK023I56I4Q?=
- =?us-ascii?Q?aBSQFrAZV2aSQ2kF0dMhHE3o4H/xK3cbm1LPB50fGWmzF7RZ1Kcty5YZAcNy?=
- =?us-ascii?Q?HQT4RXwyjHh+5kA6vxo0yAZKJanUKPgl590CNgodM/qO/089Rrt8dUstKy8U?=
- =?us-ascii?Q?DcNoqXYdZMNVkgS57DULSEF6qXonTpHJG/Y2e+muLqcsMSMGkTCjs6CWLcOJ?=
- =?us-ascii?Q?RTrOJD3MOb41VK54bvuDUNMuddSsRY0tybjYq+4KBKmTOaWMzKEQ6yCbMmBf?=
- =?us-ascii?Q?E81/p+ckBCe/vlK0Pm8+jPcRPdX5uuK8Lb0hTMEKPTvYM6tonUVMfM9T5wst?=
- =?us-ascii?Q?93uV4GM8B61b8VRCUpD94Lt/u+TDS28IYP7hqp7yoQWr4qWtSmbVqwGENVkz?=
- =?us-ascii?Q?aQSIuFbEv2W9iLzfIxC6CwxCw23e1zrTFhzWdewH/S3+LjAnjhS8FvXKFAce?=
- =?us-ascii?Q?Yyy6mbHLAVZxD1cm1pCdC9U0yw8RxXeCtniu4Yum/OjSLVfnddfKkIkosEka?=
- =?us-ascii?Q?ndRIXmi1luddEfn/Kd2MIvODCpoBM9wd+RlGjXtPIk54jPRUfKDuDWNDlx1F?=
- =?us-ascii?Q?4VPnZPsDTnPjxu7nhfpqJVUl/DgUhcqCkDOpPs77l6HEM/is7E7L/urmNhbJ?=
- =?us-ascii?Q?KQ=3D=3D?=
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: 
-	5k4CzDAlXrI0jBad+n+3zjQrBDa+z6jiHp+/VybuEk8LsSE4qvf6U1vLjcsyKRIAq0Jz7DHqeIdlFMkSl2dkNuHKp4SEEskQiUXmiIRq0OAeMjjBl8ym06segj7+ttemvJkYTrG+7c0GzQdgGbuuzOw9NyTrdLqHGb7s3Zx8KAhN4NUbEhQwOAwuexq8WfzgW1ZSPt1bPcY6TkQEPRuAqOhVTnbykC6A4MDQ4Hl2AdpSFF13uiWpFvFkKv7P3XZyNzhkm/y13kBlpN41o0rr3Ge4wSufMZboDeCoqdRqZH3HXx8479tbv76QgbYg1RkapHSo9x7zFBu0TViHgwktLX4DiCSlomI972CSDkeK7sdhD5QFtNJZfZ3u4Ja00Q1ILxAS352vRLP6qDSLR5brpIYFJ63ceMALSaC1DmBI/lllCd/ex0w3kQOuJdCY56Jr2Yorec+UwFwxoYteD/dSMi8Pxr29OB3TndRsGAL9tMEXAqGAFTV3WxUNrcF/3wyV458p+QXBkhDZmjcXECNrlEKq4uqs/JuDvpDMhwZ4KOSRSM4yyNb5r/zOdWXPUzPC2Mn8oLZJYgZamEbigSUWZ8LLjCooOTlmiExvadAk2L8=
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 617bb78a-6d9b-4670-b049-08dc1d288960
-X-MS-Exchange-CrossTenant-AuthSource: CH2PR10MB4309.namprd10.prod.outlook.com
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?us-ascii?Q?28ombjVa4mGa2c9QXo2kIQf/2/Nnw9jj7Cb2DMdPpEVkwYkWobFJvzVdc639?=
+ =?us-ascii?Q?8cSSniU75fABxJU6eXMjR3306CiIO34iX6zmM3FrTNnjR4Leu3COK8dQpiWl?=
+ =?us-ascii?Q?UWn3ZW5R9LzNNOI9gnGPubZnlOx5WyF+qDq/x8t3UwXc8XXYiJMhGyV6+prC?=
+ =?us-ascii?Q?oxU+Tu46xmyxI6qDDDctIe83t6iRYnwRA2c/tL+Sz1IuYi/7rxH/3oTMxU8d?=
+ =?us-ascii?Q?rkgZEWLMWjSoZrijBs4qGMKjC093eKFmJLtqfdyC4dFj74XloHhv3sOaaxqO?=
+ =?us-ascii?Q?wHahTfYiolTDcXoLzXojANDNHzLUJAiUwYXJjfphrI8+LDLA2lkX63gVqDvD?=
+ =?us-ascii?Q?l7guKZAmByAttgWhUuWWFbKdgTYDiWhWZgN8ZH166gGc4fcy6TkvhKMnLUwc?=
+ =?us-ascii?Q?y3rxx/hhcVRi9DW987iARY7rPGvm+oh4uSUdOSCyqE0AjaBZ9ynGL9DVaXxV?=
+ =?us-ascii?Q?RTJUp6boDcEP/U1MvCJ566Te+RsgEbeqDWyWuvBr3Vuv5p/1iW3SrKM2mBo4?=
+ =?us-ascii?Q?SRmykyhAufE18Nu5+pzUCLor/7uvW77frY1g1AcZCogOq69XortK98e40aUD?=
+ =?us-ascii?Q?ePRxEegnGwA3o5brR/0y4Cfrui2Jb22bgGjmnomoRTwtQHW4xj+bab4IN1W4?=
+ =?us-ascii?Q?N2SWxVPbd3KxZUN1xfsSZ+pAcEjsx6bLmK2HDsN/9k1GY40la9TTaywY5jEM?=
+ =?us-ascii?Q?vZMZvqNKzCMdjhXsKoSY7WgkF0jy8cEqJjGtHzSIlA73VH33aWucoO+QcVph?=
+ =?us-ascii?Q?kXPeEXFDkisA+EWB5RCbPYOPITNQ20OjJPmZzK8qNBRpA4s8+wt6pYw7wX+D?=
+ =?us-ascii?Q?dBlYnJm1Xqll/Vjq+0zcpZXBLFJWr61w/iMHiC/UEBs3gJEYKEcPsGHCEt61?=
+ =?us-ascii?Q?a+NoqqIulOIeHEMW4qqifd2jp0/v8nbrhb8APgQd+ro0K7BxfT7U+8mGqZvc?=
+ =?us-ascii?Q?NBhf0crl0ibU83nHV3EoOoaJhdoFjxsQC6O4FOHQuEF49C/WtPml22N1AyPx?=
+ =?us-ascii?Q?x+6dd91a9iTUQ78ZdfXsBi0MqGp18/ROhcXZNz8uYHO/cMjlCnUYo2mqYeit?=
+ =?us-ascii?Q?BwRCBgvAZWe9MZ0tr1nW42/Mddc8Rw0ojeblrgxIkzgDrcjEDJ5exOJUat0G?=
+ =?us-ascii?Q?6Zet0V6OjgiU9a3gk2G4IZQkyXtj6IWfqrefhS7vA9VCHmUzAHakj5q7lQjt?=
+ =?us-ascii?Q?lBFT+W0I0W4KFrSSdvRjqbOXUM5hBpABzsyEJKAgjKJL5SQGCQ7GtHRBUWnM?=
+ =?us-ascii?Q?ccanI1anScQPf3ijnsM+lE96CJpUWQWUZia2edwyMDG+ISaufEMWeMZnZhAv?=
+ =?us-ascii?Q?yp6Pbvvnfeq4Owo8GDAm8x71ROyw9MtIyAxcdfZY7mXEjUBdxVUmbjIXGyTl?=
+ =?us-ascii?Q?6QxkAGteA/BTGiTlxcO6ERihevXz+3FDJvKGoioFW4igwgFyCvzhhKaihDJG?=
+ =?us-ascii?Q?y4S7irT6YnfdGKlkpYAt5PyTrQUlm2kaXJCcozdUuA5v7r3qlMcQKoSgI5xQ?=
+ =?us-ascii?Q?DHMcvpnzK2D4gua42o6DxBAH/sBcV84nsDZeAVXXDC4XRhd/Kx3sFl1fH5fW?=
+ =?us-ascii?Q?Mfm0tx/fr9qha1J1s2KWf2btr1Q46CjkQ+VYIjEf?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 11724913-3f89-4f4f-e5c0-08dc1d451128
+X-MS-Exchange-CrossTenant-AuthSource: LV2PR12MB5869.namprd12.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 24 Jan 2024 22:05:12.2649
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 25 Jan 2024 01:29:25.9340
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: UBr6gY0tht+KKeo19UYDVb2eFSyP0Aqu3Ok2+QWQQgyBoG+3WYUmJAaS061P11H1QCZ56oUHU4dWL2pS0kZDghnWa3jypw14f3TPFos8H1o=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA1PR10MB6640
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-01-24_10,2024-01-24_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 mlxlogscore=999
- malwarescore=0 mlxscore=0 phishscore=0 bulkscore=0 suspectscore=0
- spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2311290000 definitions=main-2401240160
-X-Proofpoint-ORIG-GUID: utMZqqiyj4LarbTxBo2G7ileODd2o8al
-X-Proofpoint-GUID: utMZqqiyj4LarbTxBo2G7ileODd2o8al
+X-MS-Exchange-CrossTenant-UserPrincipalName: qPysawn3Mid+rqBK2jYrxisJQnNKJiKLcMn5IJASQ25mU2cjcAED7iWqFhE9GGGp
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ1PR12MB6025
 
-Hi Nicolas,
+On Wed, Jan 24, 2024 at 05:54:49PM +0000, Catalin Marinas wrote:
+> On Wed, Jan 24, 2024 at 11:52:25AM -0400, Jason Gunthorpe wrote:
+> > On Wed, Jan 24, 2024 at 01:32:22PM +0000, Marc Zyngier wrote:
+> > > What I'm saying is that there are way to make it better without
+> > > breaking your particular toy workload which, as important as it may be
+> > > to *you*, doesn't cover everybody's use case.
+> > 
+> > Please, do we need the "toy" stuff? The industry is spending 10's of
+> > billions of dollars right now to run "my workload". Currently not
+> > widely on ARM servers, but we are all hoping ARM can succeed here,
+> > right?
+> > 
+> > I still don't know what you mean by "better". There are several issues
+> > now
+> > 
+> > 1) This series, where WC doesn't trigger on new cores. Maybe 8x STR
+> >    will fix it, but it is not better performance wise than 4x STP.
+> 
+> It would be good to know. If the performance difference is significant,
+> we can revisit. I'm not keen on using alternatives here without backing
+> it up by numbers (do we even have a way to detect whether Linux is
+> running natively or not? we may have to invent something).
 
-What is the rule used to determine when older releases are no longer
-supported? Can something be added to Documentation/stable.md to explain?
+I don't have a setup to measure performance, mlx5 is not using it in a
+performance path. The other drivers in the tree are. I feel bad about
+hobbling them.
 
-Thanks,
+> > 2) Userspace does ST4 to MMIO memory, and the VMM can't explode
+> >    because of this. Replacing the ST4 with 8x STR is NOT better,
+> >    that would be a big performance downside, especially for the
+> >    quirky hi-silicon hardware.
+> 
+> I was hoping KVM injects an error into the guest rather than killing it
+> but at a quick look I couldn't find it. The kvm_handle_guest_abort() ->
+> io_mem_abort() ends up returning -ENOSYS while handle_trap_exceptions()
+> only understands handled or not (like 1 or 0). Well, maybe I didn't look
+> deep enough.
 
-Aron
+It looks to me like qemu turns on the KVM_CAP_ARM_NISV_TO_USER and
+then when it gets a NISV it always converts it to a data abort to the
+guest. See kvm_arm_handle_dabt_nisv() in qemu. So it is just a
+correctness issue, not a 'VM userspace can crash the VMM' security
+problem.
 
-On Mon, Jan 22, 2024 at 07:33:36PM +0100, Nicolas Morey wrote:
-> These version were tagged/released:
->  * v29.12 => This will be it's last stable release
->  * v30.12
->  * v31.13
->  * v32.12
->  * v33.12
->  * v34.11
->  * v35.10
->  * v36.10
->  * v37.9
->  * v38.8
->  * v39.7
->  * v40.6
->  * v41.6
->  * v42.6
->  * v43.5
->  * v44.5
->  * v45.4
->  * v46.3
->  * v47.2
->  * v48.1
->  * v49.1
-> 
-> It's available at the normal places:
-> 
-> git://github.com/linux-rdma/rdma-core
-> https://github.com/linux-rdma/rdma-core/releases
-> 
-> ---
-> 
-> Here's the information from the tags:
-> tag v29.12
-> Tagger: Nicolas Morey <nmorey@suse.com>
-> Date:   Mon Jan 22 14:59:29 2024 +0100
-> 
-> rdma-core-29.12:
-> 
-> Updates from version 29.11
->  * Backport fixes:
->    * libhns: Bugfix for wrong timing of modifying ibv_qp state to err
->    * libhns: Fix possible overflow in cq clean
->    * libhns: Fix uninitialized qp attr when flush cqe
->    * ibnetdisc: Fix leak in add_to_portlid_hash
->    * ibtracert: Fix memory leak
->    * /sys/class/infiniband_verbs/uverbs0 is a directory
-> -----BEGIN PGP SIGNATURE-----
-> 
-> iQFEBAABCAAuFiEEQtJThcGhwCuLGxxvgBvduCWYj2QFAmWudMEQHG5tb3JleUBz
-> dXNlLmNvbQAKCRCAG924JZiPZAHSCAC5n0oppCMuRdf+lMKeb61kPxBS/gD1xLcY
-> IyUI0YYSOLLQxsrjyp+2MUAPt36KvBRj5kFInZoXtYu9Gn38i4y+pBTXk08N4rri
-> GKGLRJxU2hkKytAmn813ocSVLrtIJiyQEl0qdq+O2PK0aKxiKy234ZOp7adMpweX
-> CWaC2g509QY6JUjkENaosA/+sXdSU1mwiEfY4J4xjjVaGcFinCt/pXHPAGeOE3sL
-> 97M4Hitgk28Jqy44l08QYQ0y45hjdrGbY2GKP6iIpGgkHPwHI6jRKW0E0d877Ml/
-> xd38HqSAYJY+nje10Bn15qEFahNcj0D7U7rvtFaEVVIK+hLwqgtV
-> =s1mc
-> -----END PGP SIGNATURE-----
-> 
-> tag v30.12
-> Tagger: Nicolas Morey <nmorey@suse.com>
-> Date:   Mon Jan 22 14:59:32 2024 +0100
-> 
-> rdma-core-30.12:
-> 
-> Updates from version 30.11
->  * Backport fixes:
->    * libhns: Bugfix for wrong timing of modifying ibv_qp state to err
->    * libhns: Fix possible overflow in cq clean
->    * libhns: Fix uninitialized qp attr when flush cqe
->    * ibnetdisc: Fix leak in add_to_portlid_hash
->    * ibtracert: Fix memory leak
->    * /sys/class/infiniband_verbs/uverbs0 is a directory
-> -----BEGIN PGP SIGNATURE-----
-> 
-> iQFEBAABCAAuFiEEQtJThcGhwCuLGxxvgBvduCWYj2QFAmWudMQQHG5tb3JleUBz
-> dXNlLmNvbQAKCRCAG924JZiPZIzRB/9CGxKOOIAVWpXiUVTYxEAygQs7rZpN4MYR
-> 0h9aVswgLSZNpxb3UvmyCA6264s+6j2ZDheQ7UnPr/Zs16XLWq0CL0+qrWRYnD+u
-> F0VZSoz81lqadOA/9TNz3XLN6UBUkFRzauwb76WyYdOnsRHYDiUjwgqUhkMR9MTV
-> qYvWyZhPZro+1GItKD+FJ1g/1e/vtKzQzFEnHLv/AH2p5CgmBOFfmVgPYZZAdIjV
-> KVSMKaBbtNNjaV/A3996Z0G7251Zo9GIYHpKzuwk8U0cWjQzAKhdoXuC+UlQLrCN
-> rRh6u7p9cj2oZp/rGg5Z56/PbZCfPMLXqMXSb6AfxWwuwOd3yZtm
-> =GwHX
-> -----END PGP SIGNATURE-----
-> 
-> tag v31.13
-> Tagger: Nicolas Morey <nmorey@suse.com>
-> Date:   Mon Jan 22 14:59:32 2024 +0100
-> 
-> rdma-core-31.13:
-> 
-> Updates from version 31.12
->  * Backport fixes:
->    * libhns: Bugfix for wrong timing of modifying ibv_qp state to err
->    * libhns: Fix possible overflow in cq clean
->    * libhns: Fix uninitialized qp attr when flush cqe
->    * ibnetdisc: Fix leak in add_to_portlid_hash
->    * ibtracert: Fix memory leak
->    * /sys/class/infiniband_verbs/uverbs0 is a directory
-> -----BEGIN PGP SIGNATURE-----
-> 
-> iQFEBAABCAAuFiEEQtJThcGhwCuLGxxvgBvduCWYj2QFAmWudMQQHG5tb3JleUBz
-> dXNlLmNvbQAKCRCAG924JZiPZBZuB/91A03upT+WfvFkV3ZDy4ei2pUJOw0EV9G0
-> dSRauUZgWkOb90hgFdFYOKSyq90ChyNhsDyqOVlEppBWgjr67kSjPjmR2pX8m33y
-> MYiU56o8c51XsRF5lGjVPuT8Qf4y8lPOizylVC9pN2A/Wtx++7sYOgs7pYuzFiQY
-> j0XId4u1w8XgtgDIcRKZwDpPy2o/fCoW4ps1q6nYI1BPXW+Y4B43ova0OUnGRt5Z
-> ehSUThcpOkRoyy3+058ylO+ZhSjEIbigy9RwVUyQebD4mmWwnhGLvmx/Cct930tl
-> g9oPPg2KZEplXtUgUAynY9r2Q69z1YP4phNcd80MJp+tlst6Dp9Q
-> =JVVd
-> -----END PGP SIGNATURE-----
-> 
-> tag v32.12
-> Tagger: Nicolas Morey <nmorey@suse.com>
-> Date:   Mon Jan 22 14:59:33 2024 +0100
-> 
-> rdma-core-32.12:
-> 
-> Updates from version 32.11
->  * Backport fixes:
->    * mlx5: DR, Use the right GVMI number for drop action
->    * libhns: Bugfix for wrong timing of modifying ibv_qp state to err
->    * libhns: Fix possible overflow in cq clean
->    * libhns: Fix uninitialized qp attr when flush cqe
->    * ibnetdisc: Fix leak in add_to_portlid_hash
->    * ibtracert: Fix memory leak
->    * /sys/class/infiniband_verbs/uverbs0 is a directory
-> -----BEGIN PGP SIGNATURE-----
-> 
-> iQFEBAABCAAuFiEEQtJThcGhwCuLGxxvgBvduCWYj2QFAmWudMUQHG5tb3JleUBz
-> dXNlLmNvbQAKCRCAG924JZiPZMXiCAC2dVGWr3MIZVJzCQyv2DU2cPzxnyKYyWcE
-> EhyIWMJ9vfpJxTHpSW25769c+6U0r3OBnx+ynGrzsqZSWweeASx1iVjFJ0RJ2wFP
-> eYsPEU9kTpb4fn1jjccl7VlBFaE7se99Thdc22yhOJ860JHOQGKFMY8rKFa0sTYZ
-> Vs4DBnj2A1g2AFwkNhaaJvY2F2mKT0khyTA2RnfuxVE33epcbwObU9XHT/f8tV5B
-> 7uPSZCzaBUSgoKz2dHy+5wT0AXPK+73WsIpWK4KxhE2hEjC48v9GCQwcuHNSrgpz
-> y3UHWyotg6sh02qjjGc4NZMfXQxGEjE0GU/dTHUg6haCqYJWXDIv
-> =vxio
-> -----END PGP SIGNATURE-----
-> 
-> tag v33.12
-> Tagger: Nicolas Morey <nmorey@suse.com>
-> Date:   Mon Jan 22 14:59:33 2024 +0100
-> 
-> rdma-core-33.12:
-> 
-> Updates from version 33.11
->  * Backport fixes:
->    * mlx5: DR, Use the right GVMI number for drop action
->    * libhns: Bugfix for wrong timing of modifying ibv_qp state to err
->    * libhns: Fix possible overflow in cq clean
->    * libhns: Fix uninitialized qp attr when flush cqe
->    * ibnetdisc: Fix leak in add_to_portlid_hash
->    * ibtracert: Fix memory leak
->    * /sys/class/infiniband_verbs/uverbs0 is a directory
-> -----BEGIN PGP SIGNATURE-----
-> 
-> iQFEBAABCAAuFiEEQtJThcGhwCuLGxxvgBvduCWYj2QFAmWudMUQHG5tb3JleUBz
-> dXNlLmNvbQAKCRCAG924JZiPZDVHCACU5Mr8AQanuwreHd4+fBUhK30NVUlKcQbJ
-> eJ2CK28ZBrmZbIhPAzQBNqHL0TlIiDB5jshtYgYXXXc7qwIJNUSIEqTjnr7ijdTi
-> zTTW0lWrfOEh1pcqjDe9gPhGamjsCUzGNkTmGtiJpS7UY4ubgWeXgWVtUK5ttkn0
-> 7TUvmZvpvhF9H0t5fNwpbyhtwCjRAidS3Q7bbDW609DrbF816/vT9CbpIHZ4q58e
-> WTBKuJhRt4+nG2XXqulqDilf1RmH0i+xNcaFwemKS17LY6wPn/e4zDXW9MrDaPkX
-> 6Vz7h/8+kQdHmCcRdQ30vhI/utBJOH/zcopY1Od3Kp1lgW1P2TnR
-> =sIHH
-> -----END PGP SIGNATURE-----
-> 
-> tag v34.11
-> Tagger: Nicolas Morey <nmorey@suse.com>
-> Date:   Mon Jan 22 14:59:33 2024 +0100
-> 
-> rdma-core-34.11:
-> 
-> Updates from version 34.10
->  * Backport fixes:
->    * mlx5: DR, Use the right GVMI number for drop action
->    * libhns: Bugfix for wrong timing of modifying ibv_qp state to err
->    * libhns: Fix possible overflow in cq clean
->    * libhns: Fix uninitialized qp attr when flush cqe
->    * ibnetdisc: Fix leak in add_to_portlid_hash
->    * ibtracert: Fix memory leak
->    * /sys/class/infiniband_verbs/uverbs0 is a directory
-> -----BEGIN PGP SIGNATURE-----
-> 
-> iQFEBAABCAAuFiEEQtJThcGhwCuLGxxvgBvduCWYj2QFAmWudMUQHG5tb3JleUBz
-> dXNlLmNvbQAKCRCAG924JZiPZNugB/9G9bKbd7FJfbwTFvvi2mO/sioNJTHI88Id
-> hm5P7LriVQHLCjzO5PSCxBuK/quU40B4xS02yCUmvD6i0jIfwf7EUX1GiqC/JWj8
-> UXPhTOlKc3EngzOw7xYMHWq/mslGkN8CGwEjtNFVT7nec8XwC2Ux3ljetu7VIZB6
-> O1NeDHKkxSOeBljxA5GmLFqsehGjt54TcpT0cQhQuIOYfEMHiR7soR1NzJMNJ8/S
-> jTdEVrStatI6aXBXcEhgTky2mBeh8v2xZxOwqRyYTYzRxFKEHGNW7+t2UHTk3h/g
-> QJC9hFdh7ZwYC3oZOgXMFtwe785cesRuApcKa87OIayyT9TP+UUi
-> =qJA3
-> -----END PGP SIGNATURE-----
-> 
-> tag v35.10
-> Tagger: Nicolas Morey <nmorey@suse.com>
-> Date:   Mon Jan 22 14:59:34 2024 +0100
-> 
-> rdma-core-35.10:
-> 
-> Updates from version 35.9
->  * Backport fixes:
->    * mlx5: DR, Use the right GVMI number for drop action
->    * libhns: Bugfix for wrong timing of modifying ibv_qp state to err
->    * libhns: Fix possible overflow in cq clean
->    * libhns: Fix uninitialized qp attr when flush cqe
->    * ibnetdisc: Fix leak in add_to_portlid_hash
->    * ibtracert: Fix memory leak
->    * /sys/class/infiniband_verbs/uverbs0 is a directory
-> -----BEGIN PGP SIGNATURE-----
-> 
-> iQFEBAABCAAuFiEEQtJThcGhwCuLGxxvgBvduCWYj2QFAmWudMYQHG5tb3JleUBz
-> dXNlLmNvbQAKCRCAG924JZiPZAwjB/9ntUqmIEGnzNjPXr8izK9A6cYIqMFr8HAR
-> krfZiUDdvbMf/qSfmfYiHZMn6ymFl6tV8nJzLB9pxqNcfcdP5+4oF3B/XpKeMSmr
-> VRf0hmpXGEEk4c+DNhIfAI/xT9GJDoUt2oIRHiggBMab2Cg8YIkK/mru1J0J4XYr
-> HOaf7usRrcCMxvN8+aeffOPDFAVqEyNYMBEzxiukO7kVwg+fIXL8o4z8JgFN6USm
-> txxidSRaCdd9B6bTKT/Z08V0w3CVfp5x9NQlXnVKOf7aplye2q9FK3Ecq4Q7hCKn
-> Tf6LsgT3pO8vT749Iu1hm/cfecIvCHVoCyNVUBtIh6nbAJvUm4CT
-> =F8k8
-> -----END PGP SIGNATURE-----
-> 
-> tag v36.10
-> Tagger: Nicolas Morey <nmorey@suse.com>
-> Date:   Mon Jan 22 14:59:34 2024 +0100
-> 
-> rdma-core-36.10:
-> 
-> Updates from version 36.9
->  * Backport fixes:
->    * mlx5: DR, Use the right GVMI number for drop action
->    * libhns: Bugfix for wrong timing of modifying ibv_qp state to err
->    * libhns: Fix possible overflow in cq clean
->    * libhns: Fix uninitialized qp attr when flush cqe
->    * ibnetdisc: Fix leak in add_to_portlid_hash
->    * ibtracert: Fix memory leak
->    * providers/bnxt_re: Fix bnxt_re_alloc_queue_ptr error flow
->    * /sys/class/infiniband_verbs/uverbs0 is a directory
-> -----BEGIN PGP SIGNATURE-----
-> 
-> iQFEBAABCAAuFiEEQtJThcGhwCuLGxxvgBvduCWYj2QFAmWudMYQHG5tb3JleUBz
-> dXNlLmNvbQAKCRCAG924JZiPZFk2B/9eyrpri4YlUMYjNZ8CWgdVGMbykmYDvNou
-> AlJDZqwu9vycAtwisO8kKG7N8OE+xD8QU5QZDrHdxMK5xMXt6Q1yw9utfF3n0vZ3
-> AbmfGiqWFWF/+WLD/HNIrgcfvp7Syq+zpYSNv/phR2VNUkvuy6zBzZYN/5Nw1rUZ
-> Q+LghjKKL5J87BiNVCPnbrCdSE8YpRleDFHUiwyvXY8LNoi+cAtO9nZUufn27hFp
-> BJL8V7J+26rJ9FFEcy/jbDoOKs6t0cAFMYNPJAyYS8ItJ19X8gaxOcwHt2bgztXT
-> 1PWwz5YR1a8oTAeA9Gw3CW4R3u0MmnJC5/OKzM/0Dlw+KXnCV53F
-> =tJch
-> -----END PGP SIGNATURE-----
-> 
-> tag v37.9
-> Tagger: Nicolas Morey <nmorey@suse.com>
-> Date:   Mon Jan 22 14:59:34 2024 +0100
-> 
-> rdma-core-37.9:
-> 
-> Updates from version 37.8
->  * Backport fixes:
->    * mlx5: DR, Fix the default miss vport
->    * mlx5: DR, Use the right GVMI number for drop action
->    * libhns: Bugfix for wrong timing of modifying ibv_qp state to err
->    * libhns: Fix possible overflow in cq clean
->    * libhns: Fix uninitialized qp attr when flush cqe
->    * ibnetdisc: Fix leak in add_to_portlid_hash
->    * ibtracert: Fix memory leak
->    * providers/bnxt_re: Fix bnxt_re_alloc_queue_ptr error flow
->    * /sys/class/infiniband_verbs/uverbs0 is a directory
-> -----BEGIN PGP SIGNATURE-----
-> 
-> iQFEBAABCAAuFiEEQtJThcGhwCuLGxxvgBvduCWYj2QFAmWudMYQHG5tb3JleUBz
-> dXNlLmNvbQAKCRCAG924JZiPZFJRB/90dUmtu0S4ChgTdbEXU7ef6Xzng/TW8vW1
-> FEnwGwyCnIcEJtjPpsDj4D0WGiaZsJY5MTCYAAhx2n6ClCPgZMrMLL9UnMpCFBe3
-> Y52IDvxyuUwqVVzu7yHWrkC3I5g/HJWuaMm8KX8pRGpnfib12sYN4qR6kE0q7Gps
-> akLycBKI8WoPkM1oJCgZPFALiuOX1crscF27h931fDCwpzeDk96nRE7ERR2arCy2
-> LCgxIQ+jBrUW6uH3oq2qgHtxodz5DUYDzqBy8W7QEbBU1Hq9sC0wuDGW0pc+Cvg5
-> fp3XJkKmdm/Re7mG2c4gaMGmDbvFa7q+Le5cgYqtZw5m59u/PINv
-> =D/4m
-> -----END PGP SIGNATURE-----
-> 
-> tag v38.8
-> Tagger: Nicolas Morey <nmorey@suse.com>
-> Date:   Mon Jan 22 14:59:35 2024 +0100
-> 
-> rdma-core-38.8:
-> 
-> Updates from version 38.7
->  * Backport fixes:
->    * mlx5: DR, Fix ASO CT action applying in cross domain
->    * mlx5: DR, Fix the default miss vport
->    * mlx5: DR, Use the right GVMI number for drop action
->    * libhns: Bugfix for wrong timing of modifying ibv_qp state to err
->    * libhns: Fix possible overflow in cq clean
->    * libhns: Fix uninitialized qp attr when flush cqe
->    * ibnetdisc: Fix leak in add_to_portlid_hash
->    * ibtracert: Fix memory leak
->    * providers/bnxt_re: Fix bnxt_re_alloc_queue_ptr error flow
->    * /sys/class/infiniband_verbs/uverbs0 is a directory
-> -----BEGIN PGP SIGNATURE-----
-> 
-> iQFEBAABCAAuFiEEQtJThcGhwCuLGxxvgBvduCWYj2QFAmWudMcQHG5tb3JleUBz
-> dXNlLmNvbQAKCRCAG924JZiPZDgyB/kBfCaDaTcL5z3yJB+yGfMo5AeJJTJlZFiv
-> 35v06RV6vIsbkIZpOCVsK72FF1VprabhMuvK2g1/gsSpzEtIG834hH3CKvZbTVnd
-> /ONEQcERVGedHxqHenfma4shcrnUlWL7Us95RrpbRP/sptztq7P6zAHRQHAq6EGY
-> jFclCuuSIO2jDdEBkbZANvcCFUXl6JzpucLEDE0C+D5tQXB20Nhr0dwUUofb8zSv
-> JyqbLONxcHFHzbzt4bXm+2s7CtwMDfBszjpXoeCkHEIADjElY6mhUfcyV4QH6d57
-> U+YCEXwwlJa63wtCjUUmLcDPT3sXVTFrMeaHGZrQhCSLbomaa2GN
-> =H/zh
-> -----END PGP SIGNATURE-----
-> 
-> tag v39.7
-> Tagger: Nicolas Morey <nmorey@suse.com>
-> Date:   Mon Jan 22 14:59:35 2024 +0100
-> 
-> rdma-core-39.7:
-> 
-> Updates from version 39.6
->  * Backport fixes:
->    * mlx5: DR, Fix ASO CT action applying in cross domain
->    * mlx5: DR, Fix the default miss vport
->    * mlx5: DR, Use the right GVMI number for drop action
->    * libhns: Bugfix for wrong timing of modifying ibv_qp state to err
->    * libhns: Fix possible overflow in cq clean
->    * libhns: Fix uninitialized qp attr when flush cqe
->    * ibnetdisc: Fix leak in add_to_portlid_hash
->    * ibtracert: Fix memory leak
->    * providers/bnxt_re: Fix bnxt_re_alloc_queue_ptr error flow
->    * /sys/class/infiniband_verbs/uverbs0 is a directory
-> -----BEGIN PGP SIGNATURE-----
-> 
-> iQFEBAABCAAuFiEEQtJThcGhwCuLGxxvgBvduCWYj2QFAmWudMcQHG5tb3JleUBz
-> dXNlLmNvbQAKCRCAG924JZiPZMjnCAC0oXB/dSOx3bpM2hl99C7hsrIfyUxprK7k
-> qgCgOPGNZOOm3jZ8jpijPwGLgwM/CA9TeZmbFuttP1KU+0TOJgrEJehM4hbpAvTD
-> 1wbkk62AkA8GYVUpKEDmSVyCX3cIuvj2w3oxQvqi9FFt68FmLG7Hc5tHQU1IAA08
-> Qx1otLc7dVbmmotKdVyTOhp8eumSc5a564t5kdmE1lVIQqCMw+8kvF0fXT2fr290
-> fhaJY8FwrXkK4nDiK08z7vYGFlRednDBMyxny6Kkxi4n+wS/g6mwq+HOeSFmLBuz
-> 4wPm6WFht2ITMY5btVRTxSu7lDBLgKDyH3dquUwSSqlEI2GaBEXX
-> =eQy6
-> -----END PGP SIGNATURE-----
-> 
-> tag v40.6
-> Tagger: Nicolas Morey <nmorey@suse.com>
-> Date:   Mon Jan 22 14:59:35 2024 +0100
-> 
-> rdma-core-40.6:
-> 
-> Updates from version 40.5
->  * Backport fixes:
->    * mlx5: DR, Fix ASO CT action applying in cross domain
->    * mlx5: DR, Fix the default miss vport
->    * mlx5: DR, Can't go to uplink vport on RX rule
->    * mlx5: DR, Use the right GVMI number for drop action
->    * libhns: Bugfix for wrong timing of modifying ibv_qp state to err
->    * libhns: Fix possible overflow in cq clean
->    * libhns: Fix uninitialized qp attr when flush cqe
->    * ibnetdisc: Fix leak in add_to_portlid_hash
->    * suse: fix issue on non dma-coherent system
->    * ibtracert: Fix memory leak
->    * providers/bnxt_re: Fix bnxt_re_alloc_queue_ptr error flow
->    * /sys/class/infiniband_verbs/uverbs0 is a directory
-> -----BEGIN PGP SIGNATURE-----
-> 
-> iQFEBAABCAAuFiEEQtJThcGhwCuLGxxvgBvduCWYj2QFAmWudMcQHG5tb3JleUBz
-> dXNlLmNvbQAKCRCAG924JZiPZJ7jB/0bBeQbsw7cIwcRmf27IqdORqtf8kvoUFiw
-> dFep16JjJTZ1PDDgDl04aUeeDEhG9VTk5PmuvrbSRC/p/h+9adv8AZGmzJLZfmsz
-> BBGAgQ3gcjaUKh3GZYMSb5056FSjsAWGIa9+0SBV/bExVkZCtIs55hKW1wY951cl
-> dsiQJT7RGftBwrIwKOVq1zWQJnVkDlLg9Ef82pVKv8M5zJKAMs+cVDwLHnpPjE2o
-> RM5nmSSr2vioVy0PQuP9+ck2mnIKT60GryDMuUMSgjyZuvVEId5ISF7UtlC0MNJ2
-> lTg4lJGks389XVDbojWrDfEYzfvNWyEDPI7srMWaNYioZQz+YQPG
-> =z5S1
-> -----END PGP SIGNATURE-----
-> 
-> tag v41.6
-> Tagger: Nicolas Morey <nmorey@suse.com>
-> Date:   Mon Jan 22 14:59:35 2024 +0100
-> 
-> rdma-core-41.6:
-> 
-> Updates from version 41.5
->  * Backport fixes:
->    * mlx5: DR, Fix ASO CT action applying in cross domain
->    * mlx5: DR, Fix the default miss vport
->    * mlx5: DR, Can't go to uplink vport on RX rule
->    * mlx5: DR, Use the right GVMI number for drop action
->    * libhns: Bugfix for wrong timing of modifying ibv_qp state to err
->    * libhns: Fix possible overflow in cq clean
->    * libhns: Fix uninitialized qp attr when flush cqe
->    * ibnetdisc: Fix leak in add_to_portlid_hash
->    * suse: fix issue on non dma-coherent system
->    * ibtracert: Fix memory leak
->    * providers/bnxt_re: Fix bnxt_re_alloc_queue_ptr error flow
->    * /sys/class/infiniband_verbs/uverbs0 is a directory
-> -----BEGIN PGP SIGNATURE-----
-> 
-> iQFEBAABCAAuFiEEQtJThcGhwCuLGxxvgBvduCWYj2QFAmWudMcQHG5tb3JleUBz
-> dXNlLmNvbQAKCRCAG924JZiPZK04B/0Wz8Y8EquLTpfBO91d/lLa4EFMHI3ev8km
-> mBNSIYQnJpcUSgFNJq2IvCHf2x2qX4FOvVknnBqpmgiBwsOwe8K42IVorYcVSOpt
-> ORdhRqPqorRnxEI/c1uOHK+RiKTOIQl2tc1CLeDD1X7PGl6efBAjh7zEaMmj9nhC
-> EXV6eq8jLBvB9svVVrczggWdtTJzaVUViZwpjeOHe44eSTNEdOMuSTB23jBI4NY2
-> A8t+DkcyxVKPs7anlvoLa3AWPtKp/xrs2YZbZcUW/dNgmzojsVgs2KpB7cjXzlUf
-> AXdjspNF0pRON/gqO24ypwNMXCSNBvXz88VZvWqJw2+gzjBfDd+5
-> =tzAg
-> -----END PGP SIGNATURE-----
-> 
-> tag v42.6
-> Tagger: Nicolas Morey <nmorey@suse.com>
-> Date:   Mon Jan 22 14:59:36 2024 +0100
-> 
-> rdma-core-42.6:
-> 
-> Updates from version 42.5
->  * Backport fixes:
->    * mlx5: DR, Fix ASO CT action applying in cross domain
->    * mlx5: DR, Fix the default miss vport
->    * mlx5: DR, Can't go to uplink vport on RX rule
->    * mlx5: DR, Use the right GVMI number for drop action
->    * mlx5: DR, Fix pattern compare
->    * libhns: Bugfix for wrong timing of modifying ibv_qp state to err
->    * libhns: Fix possible overflow in cq clean
->    * libhns: Fix uninitialized qp attr when flush cqe
->    * ibnetdisc: Fix leak in add_to_portlid_hash
->    * suse: fix issue on non dma-coherent system
->    * ibtracert: Fix memory leak
->    * providers/bnxt_re: Fix bnxt_re_alloc_queue_ptr error flow
->    * /sys/class/infiniband_verbs/uverbs0 is a directory
-> -----BEGIN PGP SIGNATURE-----
-> 
-> iQFEBAABCAAuFiEEQtJThcGhwCuLGxxvgBvduCWYj2QFAmWudMgQHG5tb3JleUBz
-> dXNlLmNvbQAKCRCAG924JZiPZL5FB/9NE1Rk+EQoRCKTEc5TxR99fDPPb7+Jhcvb
-> D5d+PtrggZbGb5qDLLm7Wt07cdYwsmWOzGhmbOQJXvJUW36R+qPPV0atIX8gd0QO
-> 8GBe8ybBLrJrZyeQ9agh8Hh9FRvryrpInruH+LUuFm2Wu5cOiKiroJ2ZkBhtdVOq
-> TWt//ByVG0FdkkOF3dQFTpiXtJj0dNCCSfyycja0ufKZ8Wn6FC+OWhRVvxJ7w+zk
-> RxygZisVHEGveywKFejWMQZ8Gk2XjaJwUIllNszw9meGuGC7QEbXjC0WmSLbAaOe
-> gO2zTKh9rLBZstsa05gfaHpP2/8cDbmhysXv9OrFE2NUuu3oYl5E
-> =aaoI
-> -----END PGP SIGNATURE-----
-> 
-> tag v43.5
-> Tagger: Nicolas Morey <nmorey@suse.com>
-> Date:   Mon Jan 22 14:59:36 2024 +0100
-> 
-> rdma-core-43.5:
-> 
-> Updates from version 43.4
->  * Backport fixes:
->    * mlx5: DR, Fix ASO CT action applying in cross domain
->    * mlx5: DR, Fix the default miss vport
->    * mlx5: DR, Can't go to uplink vport on RX rule
->    * mlx5: DR, Use the right GVMI number for drop action
->    * mlx5: DR, Fix pattern compare
->    * libhns: Bugfix for wrong timing of modifying ibv_qp state to err
->    * libhns: Fix possible overflow in cq clean
->    * libhns: Fix uninitialized qp attr when flush cqe
->    * ibnetdisc: Fix leak in add_to_portlid_hash
->    * suse: fix issue on non dma-coherent system
->    * ibtracert: Fix memory leak
->    * providers/bnxt_re: Fix bnxt_re_alloc_queue_ptr error flow
->    * /sys/class/infiniband_verbs/uverbs0 is a directory
-> -----BEGIN PGP SIGNATURE-----
-> 
-> iQFEBAABCAAuFiEEQtJThcGhwCuLGxxvgBvduCWYj2QFAmWudMgQHG5tb3JleUBz
-> dXNlLmNvbQAKCRCAG924JZiPZDnRCACeYWyurhRjdQObfVwRe9D4jyRlD5kelgei
-> uA8dkC5iRC5Pj0099+lSkLQp7howArzql5/NZwf2KStifcUfms+6DfTf1iz2KVrP
-> rFaLA52IUi+e9P0i4rT4etS7QjnGq+lJjdT451aP6iI0i3Zt8Od7LMgGDzkSRgAu
-> Y+IQPhYT9bB8NdhaQcvF4zJFTg9wWUqXrDsr/v+YbMiZrkl//NehlTsNYeUEdQKY
-> ZrKd51nwnVfFQ4Yq+k7SiNHgf6+Xg4/aXZBuUHfa87UMPrUFY/NAx4wKSGO3GYbk
-> /E0etODeBx/Zmuv17Sj1lvGuXoataVC6x+rr6HrhTmw9TVGFjczG
-> =3Dac
-> -----END PGP SIGNATURE-----
-> 
-> tag v44.5
-> Tagger: Nicolas Morey <nmorey@suse.com>
-> Date:   Mon Jan 22 14:59:36 2024 +0100
-> 
-> rdma-core-44.5:
-> 
-> Updates from version 44.4
->  * Backport fixes:
->    * mlx5: DR, Fix ASO CT action applying in cross domain
->    * mlx5: DR, Fix the default miss vport
->    * mlx5: DR, Can't go to uplink vport on RX rule
->    * mlx5: DR, Use the right GVMI number for drop action
->    * mlx5: DR, Fix pattern compare
->    * libhns: Bugfix for wrong timing of modifying ibv_qp state to err
->    * libhns: Fix possible overflow in cq clean
->    * libhns: Fix uninitialized qp attr when flush cqe
->    * ibnetdisc: Fix leak in add_to_portlid_hash
->    * suse: fix issue on non dma-coherent system
->    * ibtracert: Fix memory leak
->    * providers/bnxt_re: Fix bnxt_re_alloc_queue_ptr error flow
->    * /sys/class/infiniband_verbs/uverbs0 is a directory
-> -----BEGIN PGP SIGNATURE-----
-> 
-> iQFEBAABCAAuFiEEQtJThcGhwCuLGxxvgBvduCWYj2QFAmWudMgQHG5tb3JleUBz
-> dXNlLmNvbQAKCRCAG924JZiPZKiWCACjEgkdV5atcQe8AqUMvEhrG5KGU7q824+E
-> 8oRF20yh+5aHOrkotiq40qf6EypY/H0bBe7nhpLG31iqgyoZuSz97Rm7aSc7qi+h
-> CntG+MEoX8Ah0ZMJBll/Wfrg4Ps6W/+3dlRwtoEjbXcYR8g5yqFCQzZ+A21Bn1E8
-> jDrVSWsJgI7CKND8p+3UcW32zjWKGip25g+bvTBI1LFwNbFHZcHrIt6gNfRkV7GH
-> PBLJBvqzkKKcrvQH9CL420dBlP4yVu6vmdnDDD8wasGbRi/GuBFm4Ip67Utwf+Y7
-> 2c/UqXrjuESnVYJRlnetqdJZO02WzqugEG1MAFZDdVp75bcqoET/
-> =Ja8k
-> -----END PGP SIGNATURE-----
-> 
-> tag v45.4
-> Tagger: Nicolas Morey <nmorey@suse.com>
-> Date:   Mon Jan 22 14:59:37 2024 +0100
-> 
-> rdma-core-45.4:
-> 
-> Updates from version 45.3
->  * Backport fixes:
->    * mlx5: DR, Fix ASO CT action applying in cross domain
->    * mlx5: DR, Fix the default miss vport
->    * mlx5: DR, Can't go to uplink vport on RX rule
->    * mlx5: DR, Use the right GVMI number for drop action
->    * mlx5: DR, Fix pattern compare
->    * libhns: Bugfix for wrong timing of modifying ibv_qp state to err
->    * libhns: Fix possible overflow in cq clean
->    * libhns: Fix uninitialized qp attr when flush cqe
->    * ibnetdisc: Fix leak in add_to_portlid_hash
->    * suse: fix issue on non dma-coherent system
->    * ibtracert: Fix memory leak
->    * providers/bnxt_re: Fix bnxt_re_alloc_queue_ptr error flow
->    * /sys/class/infiniband_verbs/uverbs0 is a directory
-> -----BEGIN PGP SIGNATURE-----
-> 
-> iQFEBAABCAAuFiEEQtJThcGhwCuLGxxvgBvduCWYj2QFAmWudMkQHG5tb3JleUBz
-> dXNlLmNvbQAKCRCAG924JZiPZC2mB/wP07duyCgE7/4n5txuVsREO/Ld1OlbOzsZ
-> /NI28jLRneJCzZDWy041eyMkskPkHTdDrsU2DMO1xQhwzyOhhxsSR0zAa+M4b6FM
-> tav0pjItquQar2/CoBfnJw11+w/0fWgvYiFjRzzjGN9vjKnZBFKTUNrpbRu+wT44
-> 9PHyuDCjx/XKZYCGmA057VQXAYE2KKXvwFmaihfYctJ9IxsKEvR1TO+9QazU35ys
-> sR9r26fuCOt4kGnEV+/+MBK2fHyY30cJm/kfyNK4yvMNSPTRFUv0/f/wkvII6siC
-> cij2a+kFKsbCK5WkiuaxLeUlWIP7vqfhaVEKIX+lJPyEdazNPrl8
-> =mT8B
-> -----END PGP SIGNATURE-----
-> 
-> tag v46.3
-> Tagger: Nicolas Morey <nmorey@suse.com>
-> Date:   Mon Jan 22 14:59:37 2024 +0100
-> 
-> rdma-core-46.3:
-> 
-> Updates from version 46.2
->  * Backport fixes:
->    * mlx5: DR, Fix ASO CT action applying in cross domain
->    * mlx5: DR, Fix the default miss vport
->    * mlx5: DR, Can't go to uplink vport on RX rule
->    * mlx5: DR, Use the right GVMI number for drop action
->    * mlx5: DR, Fix pattern compare
->    * libhns: Bugfix for wrong timing of modifying ibv_qp state to err
->    * libhns: Fix possible overflow in cq clean
->    * libhns: Fix uninitialized qp attr when flush cqe
->    * ibnetdisc: Fix leak in add_to_portlid_hash
->    * tests: Remove FW reformat check for SW tables
->    * suse: fix issue on non dma-coherent system
->    * ibtracert: Fix memory leak
->    * providers/bnxt_re: Fix bnxt_re_alloc_queue_ptr error flow
->    * /sys/class/infiniband_verbs/uverbs0 is a directory
-> -----BEGIN PGP SIGNATURE-----
-> 
-> iQFEBAABCAAuFiEEQtJThcGhwCuLGxxvgBvduCWYj2QFAmWudMkQHG5tb3JleUBz
-> dXNlLmNvbQAKCRCAG924JZiPZNCLCAC3QKML7EHfX9202F2CSYhaTN/1AsuYIKpo
-> UQf9s3rKmu4Fah4G0Cf1sG0jgUL/V0UC6yYCLA4hqY38yoZskC3jRdOGko1wblbK
-> y8AJmong9gIbQUWjDsFw24TLjgcV+DoFb3p719FjfhbuB+wF4oufEnDmkxg0b4Je
-> numgMI6kVwhyf9MPcIKAly1nA69OxLj59KOUwIUIOogJVWvdyLpeFemvEcLyMNi3
-> 6aUvsX3FszboKjE2Ybsp3YOOa8A4rzkoZd7MH1lP8xggBya9+68ZcI68thep+jAB
-> UK3gdE9yKyMq+511gRNgvrJs/5rkVizCXy/WHK3CgZK8pJJQlBds
-> =4lp/
-> -----END PGP SIGNATURE-----
-> 
-> tag v47.2
-> Tagger: Nicolas Morey <nmorey@suse.com>
-> Date:   Mon Jan 22 14:59:37 2024 +0100
-> 
-> rdma-core-47.2:
-> 
-> Updates from version 47.1
->  * Backport fixes:
->    * mlx5: DR, Fix ASO CT action applying in cross domain
->    * mlx5: DR, Fix the default miss vport
->    * mlx5: DR, Can't go to uplink vport on RX rule
->    * mlx5: DR, Use the right GVMI number for drop action
->    * mlx5: DR, Fix pattern compare
->    * mlx5: Add atomic/rdma read for DC comp mask to man page
->    * libhns: Bugfix for wrong timing of modifying ibv_qp state to err
->    * libhns: Fix possible overflow in cq clean
->    * libhns: Fix uninitialized qp attr when flush cqe
->    * ibnetdisc: Fix leak in add_to_portlid_hash
->    * tests: Remove FW reformat check for SW tables
->    * suse: fix issue on non dma-coherent system
->    * ibtracert: Fix memory leak
->    * providers/bnxt_re: Fix bnxt_re_alloc_queue_ptr error flow
->    * /sys/class/infiniband_verbs/uverbs0 is a directory
-> -----BEGIN PGP SIGNATURE-----
-> 
-> iQFEBAABCAAuFiEEQtJThcGhwCuLGxxvgBvduCWYj2QFAmWudMkQHG5tb3JleUBz
-> dXNlLmNvbQAKCRCAG924JZiPZNFrCACljv8ZorgaLfpszpmEoIxVDwOpZCLE+FPo
-> fjmTtcegBjOVHXXqQsU6wIHdJJQhu0jfR+4+NEF3CD5k6QBPWgyiEtH+rHaLxwCm
-> Ftm7bC7tuDICUv74b/gvxM/O6P0aGzqS88bTQR8v1m/kT5JZBdrbXxBxIzGGOmBR
-> qicJbHRMF4aeil1z6tfK9T5gB+c23ZAMMcFHBzVpT7zY0OAJ7TcAZqExzk5ATAjx
-> nBDi+A+lN+D+c2nmtzq71CKfY8jG0c5SAl7/lOY4KAt28B8+mBsCbVu/yRoHlD1b
-> Ccl4no/p4OpF3hacfoycAyrueO9ZqZhnXymBqGRb91NPD7buWbpX
-> =t6Qo
-> -----END PGP SIGNATURE-----
-> 
-> tag v48.1
-> Tagger: Nicolas Morey <nmorey@suse.com>
-> Date:   Mon Jan 22 14:59:37 2024 +0100
-> 
-> rdma-core-48.1:
-> 
-> Updates from version 48.0
->  * Backport fixes:
->    * mlx5: DR, Fix ASO CT action applying in cross domain
->    * mlx5: DR, Fix the default miss vport
->    * mlx5: DR, Can't go to uplink vport on RX rule
->    * mlx5: DR, Use the right GVMI number for drop action
->    * mlx5: DR, Fix pattern compare
->    * mlx5: Add atomic/rdma read for DC comp mask to man page
->    * libhns: Bugfix for wrong timing of modifying ibv_qp state to err
->    * libhns: Fix possible overflow in cq clean
->    * libhns: Fix uninitialized qp attr when flush cqe
->    * ibnetdisc: Fix leak in add_to_portlid_hash
->    * tests: Remove FW reformat check for SW tables
->    * suse: fix issue on non dma-coherent system
->    * ibtracert: Fix memory leak
->    * providers/bnxt_re: Fix bnxt_re_alloc_queue_ptr error flow
->    * /sys/class/infiniband_verbs/uverbs0 is a directory
->    * stable branch creation
-> -----BEGIN PGP SIGNATURE-----
-> 
-> iQFEBAABCAAuFiEEQtJThcGhwCuLGxxvgBvduCWYj2QFAmWudMkQHG5tb3JleUBz
-> dXNlLmNvbQAKCRCAG924JZiPZDIbB/9ZtEOh3EXYUZHN+X9FkcuQ7QKWIINO3XOz
-> /DeWHHht79OKhfP1pTlcu5Opnd9uMYmQdVJVPsvSj6wb/6Z+FQAOL/deVPgpsm53
-> 9bljctQ8tWwvxq2ppEco1l4QBHdxWuUcP492D0gmFYc/epzScxho8HqwpA8YoR3H
-> Z84CVurNHYYYCfLuUHLjWzCFyoU3c2rbnzoq+HhhzxBMCa3sJDP4Qo7237IcxNec
-> JG0ddVI4LsWP+AubhOmcaYhImpUJgRzhlkD2S8kKCRGO2qXZfVK057h3vb8u9w9r
-> 1un5djWq3swBqA6yjyiJQrDAaF52xEoRhb26J7Q6bCKqXGztqjcp
-> =YBdm
-> -----END PGP SIGNATURE-----
-> 
-> tag v49.1
-> Tagger: Nicolas Morey <nmorey@suse.com>
-> Date:   Mon Jan 22 14:59:38 2024 +0100
-> 
-> rdma-core-49.1:
-> 
-> Updates from version 49.0
->  * Backport fixes:
->    * mlx5: DR, Fix ASO CT action applying in cross domain
->    * mlx5: DR, Fix the default miss vport
->    * mlx5: DR, Can't go to uplink vport on RX rule
->    * mlx5: DR, Use the right GVMI number for drop action
->    * mlx5: DR, Fix pattern compare
->    * mlx5: Add atomic/rdma read for DC comp mask to man page
->    * libhns: Bugfix for wrong timing of modifying ibv_qp state to err
->    * libhns: Fix possible overflow in cq clean
->    * libhns: Fix uninitialized qp attr when flush cqe
->    * ibnetdisc: Fix leak in add_to_portlid_hash
->    * stable branch creation
-> -----BEGIN PGP SIGNATURE-----
-> 
-> iQFEBAABCAAuFiEEQtJThcGhwCuLGxxvgBvduCWYj2QFAmWudMoQHG5tb3JleUBz
-> dXNlLmNvbQAKCRCAG924JZiPZGmEB/9wYunI9Bw9ecBepSTyPheEY1hu/4H4gGDZ
-> uUAmOLQpgJMeBcAlj/joSbngEbdPEgnTLRk92Vzdno6/456Aoe64mdhS5h1orcrb
-> CLzwpUBqxAzt5++2l2TRSZrywWkci9jQoqBfA4wuF+z6acvpsfyTKq7vblhxJOf0
-> 7uIlzO51hOenEwpGiPeGBJTD/yQD4Q4VRs6LVcPi4ewupAyKYRw1ofL5phPD278P
-> dhmci/Ral7+X4aFkdFCP4z9OQkiksnT/54wFUxUWf55GKIdZ0hXNK345UNU8qxFX
-> 2wvWOr5B+gNxG1NO98PZbWGNR5ty46OovcTJjs/sffPi6JEA5HFW
-> =i2gO
-> -----END PGP SIGNATURE-----
-> 
-> 
+The reason we've never seen this fault in any of our testing is
+because the whole system is designed to have qemu back vMMIO space
+that is under hot path use by only a VFIO memslot. ie it never drops
+the memslot and forces emulation. (KVM has no issue to handle a S2
+abort if a memslot is present, obviously)
+
+VFIO IO emulation is used to cover corner cases and establish a slow
+technical correctness. It is not fast path. Avoid this if you want any
+sort of performance.
+
+Thus, IMHO, doing IO emulation for VFIO that doesn't support all the
+instructions actual existing SW uses to do IO is hard to justify. We
+are already on a slow path that only exists for technical correctness,
+it should be perfect. It is perfect on x86 because x86 KVM does SW
+instruction decode and emulation. ARM could too, but doesn't.
+
+To put it in a practical example, I predict that if someone steps
+outside our "engineered" box and runs a 64k page size hypervisor
+kernel with a mlx5 device that is not engineered for 64K page size
+they will get a MMIO BAR layout where the 64k page that covers the MSI
+items will overlap with hot path addresses. The existing user space
+stack could issue ST4's to hot path addresses within that emulated 64k
+of vMMIO and explode. 4k page size hypervisors avoid this because the
+typical mlx5 device has a BAR layout with a 4k granule in mind.
+
+Jason
 
