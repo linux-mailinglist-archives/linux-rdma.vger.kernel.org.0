@@ -1,56 +1,56 @@
-Return-Path: <linux-rdma+bounces-738-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-739-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 97A3783BDEA
-	for <lists+linux-rdma@lfdr.de>; Thu, 25 Jan 2024 10:52:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id E6E2183BE0F
+	for <lists+linux-rdma@lfdr.de>; Thu, 25 Jan 2024 10:55:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CAFD71C210E5
-	for <lists+linux-rdma@lfdr.de>; Thu, 25 Jan 2024 09:52:03 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 192091C23EB7
+	for <lists+linux-rdma@lfdr.de>; Thu, 25 Jan 2024 09:55:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AD5061C6BD;
-	Thu, 25 Jan 2024 09:51:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A35EB1BF3C;
+	Thu, 25 Jan 2024 09:54:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="lh80SxsW"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="kbFAz3gB"
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 64CA41C6A6;
-	Thu, 25 Jan 2024 09:51:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 609C71BDE1;
+	Thu, 25 Jan 2024 09:54:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706176292; cv=none; b=AXIU5kftx/XCWubKcQGg6uFFtccab1FWFYJ5gD4+0S8+FZxeswNzITlf3D8Ejad+1zPTZojEWcaJp/4t8TzexLAl0c2EL9Sg7fZq9/osMFpyOfgvit7ETSpcMktpONsiC+teg/dV3CGx8Ts7ppSwk9qe4Z3c4VZ1Rlvp0oWPNzo=
+	t=1706176498; cv=none; b=ZO7Z9iprIvxkebElBn27QSgcbJN9V70XO4kQ124oZNe5ae1ljq+NxEBL6xV8omhU5UPm7I/qdu3UoNDl8SBPREhMRt0gUOMo8xxNJFRIkszvk1iPZpxBINSAuMHBYhmJUhFVnhFHaSgC4Pg4KxJn7SvyyrcXo5FqaEF+kotPDcM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706176292; c=relaxed/simple;
-	bh=hGzPC+Xq5xvy6+xs+vZ48PhfdD49wV5ssqstwwv4No0=;
+	s=arc-20240116; t=1706176498; c=relaxed/simple;
+	bh=Pr9M3TItnO+WCp9xgNJnS3cGyPp1zUpE503a2/p7qFc=;
 	h=From:To:Cc:In-Reply-To:References:Subject:Message-Id:Date:
-	 MIME-Version:Content-Type; b=Pd4OyR9BGy+l/IV0YFvB6rEmvgMCrW/NFYmsk0J7vWohC7CtqZd2o481SUxRffPyehX0mgF2SgEUMtymvwhKVCtrzVbf693AvwOdXs5wP8UyPAA8BHH6zgHgkNA4P5o9H53/Th0NY1gj6LQPPDVpZrsTkAbysfwRPiKJ3xhG2dE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=lh80SxsW; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5AFD5C433C7;
-	Thu, 25 Jan 2024 09:51:31 +0000 (UTC)
+	 MIME-Version:Content-Type; b=niRqTrhzC9wqhwlu+NGzbguSi0008/Q401RhBhC7HZb5k71rWqTqtjVHbR+ZkbpFuQ1hyAqyhi5P2z18am8kRxNSVJbyOS4mP+W7/fTck0u86yhiCeW00VhJ6VM8wcUcLs9Jv4D6ogu5dU9J1dMSYNI6ABxCU+/+qJF+z4k1TUI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=kbFAz3gB; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 59F30C433F1;
+	Thu, 25 Jan 2024 09:54:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1706176291;
-	bh=hGzPC+Xq5xvy6+xs+vZ48PhfdD49wV5ssqstwwv4No0=;
+	s=k20201202; t=1706176497;
+	bh=Pr9M3TItnO+WCp9xgNJnS3cGyPp1zUpE503a2/p7qFc=;
 	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-	b=lh80SxsWTQmOGpfJIknGv744VRKHLl6xMyzjYE+ZQB+/+pi059FqIqgXfr6zXi9bD
-	 s0dJMcGaDkvPMCssMWqS0QZffxjdkcsV4PTJQF3skGD036ekbKqo2jbeXhPe/V+Y+5
-	 T0utB48+C7w0vdF5IWEg/J5je1EOr703N0eIS5wvq1aHXIMSHpXuSoXVImbmLzvhQ4
-	 nhMWkm1Na2LlAWx3WsWaiBKjrDg7yfG1yQ0NOfz69FFQ/Zi3j/b3hnRNtRaKePXzwP
-	 d0jmSz8cXbek5TQGLzkVLixLlJnFB3mn1MWP+GElnXAzPAAoHqs+UQr3bVsjnMf1Yi
-	 JCMo9JaCLtnIg==
+	b=kbFAz3gBeovfkaTx7XidW930wULBscpUoBYfK1FlmJkJHXyMAZ97FhZTGL6nh4HS7
+	 7YYrRjnMcLhTlWR+0Hz208l/wDr3ol+CUvCmG/QpieopCWsIqPRWxmnCODjkiwnuyn
+	 cCpJsaS5FxPxLGXoK9fl1jzMNEUVhJN5FDdGwEzLHb9ZBYpwD/BsqK3wBwnvXno+Za
+	 mYNz46/Wv4ZGfx7yJTpgL8zbzHVdb6K1dIPtejCbAy2W/+anGzc9on6NkhNtzCGz2w
+	 ZeOJKNh0RLCEYxy9QruNosk2aAwgiLfYt3jNcsJy+bYzUGSanrL3KWdTgsm9HBnNKW
+	 AvXh+sitzYr0Q==
 From: Leon Romanovsky <leon@kernel.org>
-To: Jason Gunthorpe <jgg@ziepe.ca>, linux-rdma@vger.kernel.org,
- linux-kernel@vger.kernel.org, Christian Heusel <christian@heusel.eu>
-Cc: dan.carpenter@linaro.org, kernel-janitors@vger.kernel.org
-In-Reply-To: <20240111141311.987098-1-christian@heusel.eu>
-References: <20240111141311.987098-1-christian@heusel.eu>
+To: jgg@ziepe.ca, Junxian Huang <huangjunxian6@hisilicon.com>
+Cc:
+ linux-rdma@vger.kernel.org, linuxarm@huawei.com, linux-kernel@vger.kernel.org
+In-Reply-To: <20240113085935.2838701-1-huangjunxian6@hisilicon.com>
+References: <20240113085935.2838701-1-huangjunxian6@hisilicon.com>
 Subject:
- Re: [PATCH] RDMA/ipoib: print symbolic error name instead of error code
-Message-Id: <170617628743.631264.7207470107458007610.b4-ty@kernel.org>
-Date: Thu, 25 Jan 2024 11:51:27 +0200
+ Re: [PATCH v2 for-next 0/6] RDMA/hns: Improvement for multi-level addressing
+Message-Id: <170617649381.631892.11682073740991077040.b4-ty@kernel.org>
+Date: Thu, 25 Jan 2024 11:54:53 +0200
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
@@ -62,20 +62,32 @@ Content-Transfer-Encoding: 7bit
 X-Mailer: b4 0.12-dev-a055d
 
 
-On Thu, 11 Jan 2024 15:13:07 +0100, Christian Heusel wrote:
-> Utilize the %pe print specifier to get the symbolic error name as a
-> string (i.e "-ENOMEM") in the log message instead of the error code to
-> increase its readablility.
+On Sat, 13 Jan 2024 16:59:29 +0800, Junxian Huang wrote:
+> This series optimizes multi-level addressing for hns.
 > 
-> This change was suggested in
-> https://lore.kernel.org/all/92972476-0b1f-4d0a-9951-af3fc8bc6e65@suswa.mountain/
+> Patch #1, #2 and #6 are optimization of multi-level addressing codes.
+> 
+> Patch #3 is prepared for the following optimizations.
+> 
+> Patch #4 and #5 introduce adaptive pagesize and hopnum to improve HW
+> performance.
 > 
 > [...]
 
 Applied, thanks!
 
-[1/1] RDMA/ipoib: print symbolic error name instead of error code
-      https://git.kernel.org/rdma/rdma/c/64854534ff9664
+[1/6] RDMA/hns: Refactor mtr find
+      https://git.kernel.org/rdma/rdma/c/a4ca341080758d
+[2/6] RDMA/hns: Refactor mtr_init_buf_cfg()
+      https://git.kernel.org/rdma/rdma/c/4f5731b1fb2246
+[3/6] RDMA/hns: Alloc MTR memory before alloc_mtt()
+      https://git.kernel.org/rdma/rdma/c/6afc859518319d
+[4/6] RDMA/hns: Support flexible umem page size
+      https://git.kernel.org/rdma/rdma/c/0ff6c9779aafc2
+[5/6] RDMA/hns: Support adaptive PBL hopnum
+      https://git.kernel.org/rdma/rdma/c/2eb999b3d40ff8
+[6/6] RDMA/hns: Simplify 'struct hns_roce_hem' allocation
+      https://git.kernel.org/rdma/rdma/c/c00743cbf2b8f7
 
 Best regards,
 -- 
