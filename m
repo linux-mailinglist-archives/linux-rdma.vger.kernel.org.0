@@ -1,127 +1,156 @@
-Return-Path: <linux-rdma+bounces-763-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-765-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id E8A9383D272
-	for <lists+linux-rdma@lfdr.de>; Fri, 26 Jan 2024 03:18:14 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 957EF83D9C2
+	for <lists+linux-rdma@lfdr.de>; Fri, 26 Jan 2024 12:55:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 892021F22088
-	for <lists+linux-rdma@lfdr.de>; Fri, 26 Jan 2024 02:18:14 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7ABBBB2D3F0
+	for <lists+linux-rdma@lfdr.de>; Fri, 26 Jan 2024 11:55:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 707938BE3;
-	Fri, 26 Jan 2024 02:18:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="V84AZO/Y"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0571917732;
+	Fri, 26 Jan 2024 11:54:42 +0000 (UTC)
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from out-181.mta0.migadu.com (out-181.mta0.migadu.com [91.218.175.181])
+Received: from mail-m255222.qiye.163.com (mail-m255222.qiye.163.com [103.129.255.222])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3B21B7475
-	for <linux-rdma@vger.kernel.org>; Fri, 26 Jan 2024 02:18:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D47A317BC9;
+	Fri, 26 Jan 2024 11:54:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.129.255.222
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706235490; cv=none; b=dHgynAVd3GF7io+ORo+G8/B7LrFBiR4TKvfJrtwiBX9eCJnP15KlZg2RpBqCNXBlocJq0sw1A5bJYQZkJp/99c7bCa60eHNhI18rn5D7qit8U4smHWZolbbzqSaPT5qLaOX8iV3GIlfI6FI9LcTjqTWc6BdP0EK1HKb9pe2YaVA=
+	t=1706270081; cv=none; b=cHbgyw+xMuNVH5j07eq7ZhZDdkCCqK8iINglfzorQrF0e+5gtfrMAqB6IN5+zr5syrsBbJnXFMXWsuwxeib59QhG6fIaGM2s6zlMaPVJVcmDtmjcvjpVQXbKzFfiOBM6lGK7J890/mDwMJYOpfG2rKquuRGU41n+xwkNuC+CR7g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706235490; c=relaxed/simple;
-	bh=U+0Rv7mAdg2CfouEvvdx3FErzjgvdLl/Y3M/r0HHZMM=;
+	s=arc-20240116; t=1706270081; c=relaxed/simple;
+	bh=Bds8OgSb+ANDgZeXtZphHAaeceMSfeyWRHKOgIMh9TA=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=RWtom3PSHOM1XOJRJYFeA+/MeQesf81JwqiT+WDxRNB5dFVqqRntqvFoSI+rl51T0E1YBMTaaSc6G7MAxvcECXQ+W6nxRIAIS4ZsRfOfCxQSNlPYXbMcOhwgeCYxNDs27CYZyT7nXjzwg5Pcwew/jlj2+M46dt6PuBTOMc2sEws=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=V84AZO/Y; arc=none smtp.client-ip=91.218.175.181
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <e550d100-9545-425e-b548-d6a588968b31@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1706235484;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=RtosFhdK9WYdAwSe6uRtjgNfTz4hNvwY/HhFzzEUKHA=;
-	b=V84AZO/Y7faFUPXFTT7YC90Me/4PWmIbJTMa5fIBcnJwKjLtusNmNwUU9FMwuy7d+CndrI
-	um/zG7nn3C6eyVY+s1/vshnTSsFd39dV2Mz/P4LJZqQMAIZmGBX9mV8GMd7EPmRj0wbmhU
-	YwP08QNs/qx0Axrw1h+5Z5D+9FiK8js=
-Date: Fri, 26 Jan 2024 10:17:56 +0800
+	 In-Reply-To:Content-Type; b=JY6CEmejn7h5F3q9PVKJUqRp3M/Ayn/r+7xoFznRiuuXQHZR2qQNPv3orqdqe0WOlymun1O3RKT6btr+CU9jToUoS4W9SGl0BTeY9TDss2VMpAZFTymm8rhLSgzPBVRyQKPdBC4hZyMVHPHyn19641Spk6mP6JZsTpqU7WXGYW0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=sangfor.com.cn; spf=pass smtp.mailfrom=sangfor.com.cn; arc=none smtp.client-ip=103.129.255.222
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=sangfor.com.cn
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sangfor.com.cn
+Received: from [172.23.69.7] (unknown [121.32.254.147])
+	by smtp.qiye.163.com (Hmail) with ESMTPA id 20CE74601A9;
+	Fri, 26 Jan 2024 10:25:02 +0800 (CST)
+Message-ID: <5bc6ed6d-31e9-4b44-aa91-5f9d0f3d92c8@sangfor.com.cn>
+Date: Fri, 26 Jan 2024 10:25:01 +0800
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH rdma-next 5/6] RDMA/mlx5: Change check for cacheable user
- mkeys
-To: Leon Romanovsky <leon@kernel.org>, Jason Gunthorpe <jgg@nvidia.com>
-Cc: Junxian Huang <huangjunxian6@hisilicon.com>,
- Or Har-Toov <ohartoov@nvidia.com>, Edward Srouji <edwards@nvidia.com>,
- linux-rdma@vger.kernel.org, Maor Gottlieb <maorg@nvidia.com>,
- Mark Zhang <markzhang@nvidia.com>, Michael Guralnik <michaelgur@nvidia.com>,
- Tamar Mashiah <tmashiah@nvidia.com>, Yishai Hadas <yishaih@nvidia.com>
-References: <cover.1706185318.git.leon@kernel.org>
- <4641d8f79a88b07925cab0d8cd1ffc032a9115ef.1706185318.git.leon@kernel.org>
- <36037101-dd46-d956-4555-d02eeb04dd0b@hisilicon.com>
- <20240125133824.GM1455070@nvidia.com> <20240125200230.GD9841@unreal>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Zhu Yanjun <yanjun.zhu@linux.dev>
-In-Reply-To: <20240125200230.GD9841@unreal>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] RDMA/device: Fix a race between mad_client and cm_client
+ init
+To: Ding Hui <dinghui@sangfor.com.cn>, Jason Gunthorpe <jgg@ziepe.ca>
+Cc: leon@kernel.org, wenglianfa@huawei.com, gustavoars@kernel.org,
+ linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
+ Shifeng Li <lishifeng1992@126.com>
+References: <20240102034335.34842-1-lishifeng@sangfor.com.cn>
+ <20240103184804.GB50608@ziepe.ca>
+ <80cac9fd-7fed-403e-8889-78e2fc7a49b0@sangfor.com.cn>
+ <20240104123728.GC50608@ziepe.ca>
+ <e029db0a-c515-e61c-d34e-f7f054d51e88@sangfor.com.cn>
+ <20240115134707.GZ50608@ziepe.ca>
+ <354e2bf7-a8b4-629d-3d2d-35951a52e8bd@sangfor.com.cn>
+From: Shifeng Li <lishifeng@sangfor.com.cn>
+In-Reply-To: <354e2bf7-a8b4-629d-3d2d-35951a52e8bd@sangfor.com.cn>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
+X-HM-Spam-Status: e1kfGhgUHx5ZQUpXWQgPGg8OCBgUHx5ZQUlOS1dZFg8aDwILHllBWSg2Ly
+	tZV1koWUFITzdXWS1ZQUlXWQ8JGhUIEh9ZQVlDTRlCVhkeGR1DHhpMGUlDGVUTARMWGhIXJBQOD1
+	lXWRgSC1lBWUpJSlVISVVJTk9VSk9MWVdZFhoPEhUdFFlBWU9LSFVKTU9JTE5VSktLVUpCS0tZBg
+	++
+X-HM-Tid: 0a8d4395bb0903aekunm20ce74601a9
+X-HM-MType: 1
+X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6PD46MSo5FDMPMg8*URccCS80
+	KUwaCytVSlVKTEtNSUhOQktISE5DVTMWGhIXVRcSCBMSHR4VHDsIGhUcHRQJVRgUFlUYFUVZV1kS
+	C1lBWUpJSlVISVVJTk9VSk9MWVdZCAFZQUNMTE03Bg++
 
-在 2024/1/26 4:02, Leon Romanovsky 写道:
-> On Thu, Jan 25, 2024 at 09:38:24AM -0400, Jason Gunthorpe wrote:
->> On Thu, Jan 25, 2024 at 08:52:57PM +0800, Junxian Huang wrote:
+On 2024/1/16 10:12, Ding Hui wrote:
+> On 2024/1/15 21:47, Jason Gunthorpe wrote:
+>> On Sat, Jan 06, 2024 at 10:12:17AM +0800, Ding Hui wrote:
+>>> On 2024/1/4 20:37, Jason Gunthorpe wrote:
+>>>> On Thu, Jan 04, 2024 at 02:48:14PM +0800, Shifeng Li wrote:
+>>>>
+>>>>> The root cause is that mad_client and cm_client may init concurrently
+>>>>> when devices_rwsem write semaphore is downgraded in enable_device_and_get() like:
+>>>>
+>>>> That can't be true, the module loader infrastructue ensures those two
+>>>> things are sequential.
+>>>>
+>>>
+>>> Please consider the sequence again and notice that:
+>>>
+>>> 1. We agree that dependencies ensure mad_client be registered before cm_client.
+>>> 2. But the mad_client.add() is not invoked in ib_register_client(), since
+>>>     there is no DEVICE_REGISTERED device at that time.
+>>>     Instead, it will be delayed until the device driver init (e.g. mlx5_core)
+>>>     in enable_device_and_get().
+>>> 3. The ib_cm and mlx5_core can be loaded concurrently, after setting DEVICE_REGISTERED
+>>>     and downgrade_write(&devices_rwsem) in enable_device_and_get(), there is a chance
+>>>     that cm_client.add() can be invoked before mad_client.add().
 >>>
 >>>
->>> On 2024/1/25 20:30, Leon Romanovsky wrote:
->>>> From: Or Har-Toov <ohartoov@nvidia.com>
->>>>
->>>> In the dereg flow, UMEM is not a good enough indication whether an MR
->>>> is from userspace since in mlx5_ib_rereg_user_mr there are some cases
->>>> when a new MR is created and the UMEM of the old MR is set to NULL.
->>>> Currently when mlx5_ib_dereg_mr is called on the old MR, UMEM is NULL
->>>> but cache_ent can be different than NULL. So, the mkey will not be
->>>> destroyed.
->>>> Therefore checking if mkey is from user application and cacheable
->>>> should be done by checking if rb_key or cache_ent exist and all other kind of
->>>> mkeys should be destroyed.
->>>>
->>>> Fixes: dd1b913fb0d0 ("RDMA/mlx5: Cache all user cacheable mkeys on dereg MR flow")
->>>> Signed-off-by: Or Har-Toov <ohartoov@nvidia.com>
->>>> Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
->>>> ---
->>>>   drivers/infiniband/hw/mlx5/mr.c | 15 ++++++++-------
->>>>   1 file changed, 8 insertions(+), 7 deletions(-)
->>>>
->>>> diff --git a/drivers/infiniband/hw/mlx5/mr.c b/drivers/infiniband/hw/mlx5/mr.c
->>>> index 12bca6ca4760..3c241898e064 100644
->>>> --- a/drivers/infiniband/hw/mlx5/mr.c
->>>> +++ b/drivers/infiniband/hw/mlx5/mr.c
->>>> @@ -1857,6 +1857,11 @@ static int cache_ent_find_and_store(struct mlx5_ib_dev *dev,
->>>>   	return ret;
->>>>   }
->>>>   
->>>> +static bool is_cacheable_mkey(struct mlx5_ib_mkey mkey)
+>>>          T1(ib_core init)      |      T2(device driver init)        |        T3(ib_cm init)
+>>> ---------------------------------------------------------------------------------------------------
+>>> ib_register_client mad_client
+>>>    assign_client_id
+>>>      add clients CLIENT_REGISTERED
+>>>      (with clients_rwsem write)
+>>>    down_read(&devices_rwsem);
+>>>    xa_for_each_marked (&devices, DEVICE_REGISTERED)
+>>>      nop # no devices
+>>>    up_read(&devices_rwsem);
 >>>
->>> I think it's better using a pointer as the parameter instead of the struct itself.
+>>>                                ib_register_device
+>>>                                  enable_device_and_get
+>>>                                    down_write(&devices_rwsem);
+>>>                                    set DEVICE_REGISTERED
+>>>                                    downgrade_write(&devices_rwsem);
+>>>                                                                      ib_register_client cm_client
+>>>                                                                        assign_client_id
+>>>                                                                          add clients CLIENT_REGISTERED
+>>>                                                                          (with clients_rwsem write)
+>>>                                                                        down_read(&devices_rwsem);
+>>>                                                                        xa_for_each_marked (&devices, DEVICE_REGISTERED)
+>>>                                                                          add_client_context
+>>>                                                                            down_write(&device->client_data_rwsem);
+>>>                                                                            get CLIENT_DATA_REGISTERED
+>>>                                                                            downgrade_write(&device->client_data_rwsem);
+>>>                                                                            cm_client.add
+>>>                                                                              cm_add_one
+>>>                                                                                ib_register_mad_agent
+>>>                                                                                  ib_get_mad_port
+>>>                                                                                    __ib_get_mad_port return NULL!
+>>>                                                                            set CLIENT_DATA_REGISTERED
+>>>                                                                            up_read(&device->client_data_rwsem);
+>>>                                                                        up_read(&devices_rwsem);
+>>>                                  down_read(&clients_rwsem);
+>>>                                  xa_for_each_marked (&clients, CLIENT_REGISTERED)
+>>>                                    add_client_context [mad]
+>>>                                      mad_client.add
+>>>                                    add_client_context [cm]
+>>>                                      nop # already CLIENT_DATA_REGISTERED
+>>>                                  up_read(&clients_rwsem);
+>>>                                  up_read(&devices_rwsem);
 >>
->> Indeed, that looks like a typo
-> 
-> It is suboptimal to pass struct by value, because whole struct will be copied,
-
-Agree. With a pointer, an address is passed. With the struct, the whole 
-struct is copied and passed. The overhead of calling function is less 
-with a pointer.
-
-Zhu Yanjun
-
-> but it is not a mistake too.
-> 
-> Thanks
-> 
+>> Take the draft I sent previously and use down_write(&devices_rwsem) in
+>> ib_register_client()
 >>
->> Thanks,
->> Jason
->>
+> 
+> I believe this modification is effective, rather than expanding the clients_rwsem range,
+> the key point is down_write(&devices_rwsem), which prevents ib_register_client() from
+> being executed in the gap of ib_register_device().
+> 
+> However, this may cause a little confusion, as ib_register_client() does not modify
+> anything related to devices, but it is protected by a write lock.
+> 
+
+Hi Jason，
+
+Do you have any differing opinions about above?
+
 
 
