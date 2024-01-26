@@ -1,156 +1,184 @@
-Return-Path: <linux-rdma+bounces-765-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-764-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 957EF83D9C2
-	for <lists+linux-rdma@lfdr.de>; Fri, 26 Jan 2024 12:55:57 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id E04E483D8FB
+	for <lists+linux-rdma@lfdr.de>; Fri, 26 Jan 2024 12:05:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7ABBBB2D3F0
-	for <lists+linux-rdma@lfdr.de>; Fri, 26 Jan 2024 11:55:20 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 914A01F2365E
+	for <lists+linux-rdma@lfdr.de>; Fri, 26 Jan 2024 11:05:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0571917732;
-	Fri, 26 Jan 2024 11:54:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 14BF0134AD;
+	Fri, 26 Jan 2024 11:05:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="uDWVumaN"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-m255222.qiye.163.com (mail-m255222.qiye.163.com [103.129.255.222])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D47A317BC9;
-	Fri, 26 Jan 2024 11:54:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.129.255.222
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CB287134A3
+	for <linux-rdma@vger.kernel.org>; Fri, 26 Jan 2024 11:05:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706270081; cv=none; b=cHbgyw+xMuNVH5j07eq7ZhZDdkCCqK8iINglfzorQrF0e+5gtfrMAqB6IN5+zr5syrsBbJnXFMXWsuwxeib59QhG6fIaGM2s6zlMaPVJVcmDtmjcvjpVQXbKzFfiOBM6lGK7J890/mDwMJYOpfG2rKquuRGU41n+xwkNuC+CR7g=
+	t=1706267139; cv=none; b=HSYAjwOOuv+I0e5OU7AyUPid+6ZIyyco8EJSpmCTLH1XUiYu/z2fMIn1Oy999ovVnTOeQ5ns6WcnhNFMS2HfDFsQ/vzvsLUZo0plXW7C8qBQkojrCX87MEPvxYVf8qnmhIk+WG/KxpjUpZVLFVBVSqbdQtYeFRh0oJvQWWI4M3o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706270081; c=relaxed/simple;
-	bh=Bds8OgSb+ANDgZeXtZphHAaeceMSfeyWRHKOgIMh9TA=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=JY6CEmejn7h5F3q9PVKJUqRp3M/Ayn/r+7xoFznRiuuXQHZR2qQNPv3orqdqe0WOlymun1O3RKT6btr+CU9jToUoS4W9SGl0BTeY9TDss2VMpAZFTymm8rhLSgzPBVRyQKPdBC4hZyMVHPHyn19641Spk6mP6JZsTpqU7WXGYW0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=sangfor.com.cn; spf=pass smtp.mailfrom=sangfor.com.cn; arc=none smtp.client-ip=103.129.255.222
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=sangfor.com.cn
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sangfor.com.cn
-Received: from [172.23.69.7] (unknown [121.32.254.147])
-	by smtp.qiye.163.com (Hmail) with ESMTPA id 20CE74601A9;
-	Fri, 26 Jan 2024 10:25:02 +0800 (CST)
-Message-ID: <5bc6ed6d-31e9-4b44-aa91-5f9d0f3d92c8@sangfor.com.cn>
-Date: Fri, 26 Jan 2024 10:25:01 +0800
+	s=arc-20240116; t=1706267139; c=relaxed/simple;
+	bh=WbXWuA2ENJ6lmkZS3QH6j1mNh5HJOqC5BB7qr/oRaqU=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=o4DsMVepRTJugagNHwr6tW9+AeB/TD/kXOx2ogMiomZx52TkyTjMKFi30s8eTXVuxK73iFVTOp+EMmtxVY8f4Csc59s9ynYbQlKBoAYdwMOSR3p7EsodbI3j+4CEN7cCTzkvUWakzEVMPLE/1AeHJx4OGOQB9BIbyaxRHNKFFKE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=uDWVumaN; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CC7ECC433C7;
+	Fri, 26 Jan 2024 11:05:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1706267139;
+	bh=WbXWuA2ENJ6lmkZS3QH6j1mNh5HJOqC5BB7qr/oRaqU=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=uDWVumaNWuVATlCOjKE+hGxnwSSCdCwegK20ljUepq60+WFNVgUyDLLhhO+oI/kMO
+	 twu1bjWkF84VlVsdUHqqu4vbdY2MCk1wOH4eBvCupMHCiTS3ceqYeo6SH9RlskwJwP
+	 0aHGsTF4R9A/IjmN5X6N1UTm73Vs5xKSjQCEc/qt4IxLoV1ct/lM5QNmRkoZHGYHl9
+	 G091I6ijG1aceEkSRv+hkXKh8p0HGe6qkb6/wvqwGuZ4wPWwx9U+wq2KcafSDIDCPC
+	 zXZ+p1wNSiZEH73qFUAzjogL/tbqXZbQzrSdPhRnsZKnFBLc2I9PAYxKozqPQD0Mc+
+	 a7fyxECNqz5Cw==
+Date: Fri, 26 Jan 2024 13:05:34 +0200
+From: Leon Romanovsky <leon@kernel.org>
+To: Bernard Metzler <BMT@zurich.ibm.com>
+Cc: Guoqing Jiang <guoqing.jiang@linux.dev>,
+	"linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+	"jgg@ziepe.ca" <jgg@ziepe.ca>,
+	"ionut_n2001@yahoo.com" <ionut_n2001@yahoo.com>
+Subject: Re: Re: [PATCH] RDMA/siw: Trim size of page array to max size needed
+Message-ID: <20240126110534.GE9841@unreal>
+References: <20240119130532.57146-1-bmt@zurich.ibm.com>
+ <05415e8a-2878-04a7-efeb-4119b95b8fd2@linux.dev>
+ <BY5PR15MB3602E55D5186E1A241489C8B997B2@BY5PR15MB3602.namprd15.prod.outlook.com>
+ <a4496a1e-c7bb-eba3-1095-07b4472786dc@linux.dev>
+ <BY5PR15MB36028A78D66BBEE55A54C67E997A2@BY5PR15MB3602.namprd15.prod.outlook.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] RDMA/device: Fix a race between mad_client and cm_client
- init
-To: Ding Hui <dinghui@sangfor.com.cn>, Jason Gunthorpe <jgg@ziepe.ca>
-Cc: leon@kernel.org, wenglianfa@huawei.com, gustavoars@kernel.org,
- linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
- Shifeng Li <lishifeng1992@126.com>
-References: <20240102034335.34842-1-lishifeng@sangfor.com.cn>
- <20240103184804.GB50608@ziepe.ca>
- <80cac9fd-7fed-403e-8889-78e2fc7a49b0@sangfor.com.cn>
- <20240104123728.GC50608@ziepe.ca>
- <e029db0a-c515-e61c-d34e-f7f054d51e88@sangfor.com.cn>
- <20240115134707.GZ50608@ziepe.ca>
- <354e2bf7-a8b4-629d-3d2d-35951a52e8bd@sangfor.com.cn>
-From: Shifeng Li <lishifeng@sangfor.com.cn>
-In-Reply-To: <354e2bf7-a8b4-629d-3d2d-35951a52e8bd@sangfor.com.cn>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-HM-Spam-Status: e1kfGhgUHx5ZQUpXWQgPGg8OCBgUHx5ZQUlOS1dZFg8aDwILHllBWSg2Ly
-	tZV1koWUFITzdXWS1ZQUlXWQ8JGhUIEh9ZQVlDTRlCVhkeGR1DHhpMGUlDGVUTARMWGhIXJBQOD1
-	lXWRgSC1lBWUpJSlVISVVJTk9VSk9MWVdZFhoPEhUdFFlBWU9LSFVKTU9JTE5VSktLVUpCS0tZBg
-	++
-X-HM-Tid: 0a8d4395bb0903aekunm20ce74601a9
-X-HM-MType: 1
-X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6PD46MSo5FDMPMg8*URccCS80
-	KUwaCytVSlVKTEtNSUhOQktISE5DVTMWGhIXVRcSCBMSHR4VHDsIGhUcHRQJVRgUFlUYFUVZV1kS
-	C1lBWUpJSlVISVVJTk9VSk9MWVdZCAFZQUNMTE03Bg++
+In-Reply-To: <BY5PR15MB36028A78D66BBEE55A54C67E997A2@BY5PR15MB3602.namprd15.prod.outlook.com>
 
-On 2024/1/16 10:12, Ding Hui wrote:
-> On 2024/1/15 21:47, Jason Gunthorpe wrote:
->> On Sat, Jan 06, 2024 at 10:12:17AM +0800, Ding Hui wrote:
->>> On 2024/1/4 20:37, Jason Gunthorpe wrote:
->>>> On Thu, Jan 04, 2024 at 02:48:14PM +0800, Shifeng Li wrote:
->>>>
->>>>> The root cause is that mad_client and cm_client may init concurrently
->>>>> when devices_rwsem write semaphore is downgraded in enable_device_and_get() like:
->>>>
->>>> That can't be true, the module loader infrastructue ensures those two
->>>> things are sequential.
->>>>
->>>
->>> Please consider the sequence again and notice that:
->>>
->>> 1. We agree that dependencies ensure mad_client be registered before cm_client.
->>> 2. But the mad_client.add() is not invoked in ib_register_client(), since
->>>     there is no DEVICE_REGISTERED device at that time.
->>>     Instead, it will be delayed until the device driver init (e.g. mlx5_core)
->>>     in enable_device_and_get().
->>> 3. The ib_cm and mlx5_core can be loaded concurrently, after setting DEVICE_REGISTERED
->>>     and downgrade_write(&devices_rwsem) in enable_device_and_get(), there is a chance
->>>     that cm_client.add() can be invoked before mad_client.add().
->>>
->>>
->>>          T1(ib_core init)      |      T2(device driver init)        |        T3(ib_cm init)
->>> ---------------------------------------------------------------------------------------------------
->>> ib_register_client mad_client
->>>    assign_client_id
->>>      add clients CLIENT_REGISTERED
->>>      (with clients_rwsem write)
->>>    down_read(&devices_rwsem);
->>>    xa_for_each_marked (&devices, DEVICE_REGISTERED)
->>>      nop # no devices
->>>    up_read(&devices_rwsem);
->>>
->>>                                ib_register_device
->>>                                  enable_device_and_get
->>>                                    down_write(&devices_rwsem);
->>>                                    set DEVICE_REGISTERED
->>>                                    downgrade_write(&devices_rwsem);
->>>                                                                      ib_register_client cm_client
->>>                                                                        assign_client_id
->>>                                                                          add clients CLIENT_REGISTERED
->>>                                                                          (with clients_rwsem write)
->>>                                                                        down_read(&devices_rwsem);
->>>                                                                        xa_for_each_marked (&devices, DEVICE_REGISTERED)
->>>                                                                          add_client_context
->>>                                                                            down_write(&device->client_data_rwsem);
->>>                                                                            get CLIENT_DATA_REGISTERED
->>>                                                                            downgrade_write(&device->client_data_rwsem);
->>>                                                                            cm_client.add
->>>                                                                              cm_add_one
->>>                                                                                ib_register_mad_agent
->>>                                                                                  ib_get_mad_port
->>>                                                                                    __ib_get_mad_port return NULL!
->>>                                                                            set CLIENT_DATA_REGISTERED
->>>                                                                            up_read(&device->client_data_rwsem);
->>>                                                                        up_read(&devices_rwsem);
->>>                                  down_read(&clients_rwsem);
->>>                                  xa_for_each_marked (&clients, CLIENT_REGISTERED)
->>>                                    add_client_context [mad]
->>>                                      mad_client.add
->>>                                    add_client_context [cm]
->>>                                      nop # already CLIENT_DATA_REGISTERED
->>>                                  up_read(&clients_rwsem);
->>>                                  up_read(&devices_rwsem);
->>
->> Take the draft I sent previously and use down_write(&devices_rwsem) in
->> ib_register_client()
->>
+On Thu, Jan 25, 2024 at 05:27:52PM +0000, Bernard Metzler wrote:
 > 
-> I believe this modification is effective, rather than expanding the clients_rwsem range,
-> the key point is down_write(&devices_rwsem), which prevents ib_register_client() from
-> being executed in the gap of ib_register_device().
 > 
-> However, this may cause a little confusion, as ib_register_client() does not modify
-> anything related to devices, but it is protected by a write lock.
+> > -----Original Message-----
+> > From: Guoqing Jiang <guoqing.jiang@linux.dev>
+> > Sent: Thursday, January 25, 2024 1:15 AM
+> > To: Bernard Metzler <BMT@zurich.ibm.com>; linux-rdma@vger.kernel.org
+> > Cc: jgg@ziepe.ca; leon@kernel.org; ionut_n2001@yahoo.com
+> > Subject: [EXTERNAL] Re: [PATCH] RDMA/siw: Trim size of page array to max
+> > size needed
+> > 
+> > Hi Bernard,
+> > 
+> > On 1/25/24 03:59, Bernard Metzler wrote:
+> > >> -----Original Message-----
+> > >> From: Guoqing Jiang <guoqing.jiang@linux.dev>
+> > >> Sent: Tuesday, January 23, 2024 3:43 AM
+> > >> To: Bernard Metzler <BMT@zurich.ibm.com>; linux-rdma@vger.kernel.org
+> > >> Cc: jgg@ziepe.ca; leon@kernel.org; ionut_n2001@yahoo.com
+> > >> Subject: [EXTERNAL] Re: [PATCH] RDMA/siw: Trim size of page array to
+> > max
+> > >> size needed
+> > >>
+> > >> Hi Bernard,
+> > >>
+> > >> On 1/19/24 21:05, Bernard Metzler wrote:
+> > >>> siw tries sending all parts of an iWarp wire frame in one socket
+> > >>> send operation. If user data can be send without copy, user data
+> > >>> pages for one wire frame are referenced in an fixed size page array.
+> > >>> The size of this array can be made 2 elements smaller, since it
+> > >>> does not reference iWarp header and trailer crc. Trimming
+> > >>> the page array reduces the affected siw_tx_hdt() functions frame
+> > >>> size, staying below 1024 bytes. This avoids the following
+> > >>> compile-time warning:
+> > >>>
+> > >>>    drivers/infiniband/sw/siw/siw_qp_tx.c: In function 'siw_tx_hdt':
+> > >>>    drivers/infiniband/sw/siw/siw_qp_tx.c:677:1: warning: the frame
+> > >>>    size of 1040 bytes is larger than 1024 bytes [-Wframe-larger-
+> > than=]
+> > >> I saw similar warning in my ubuntu 22.04 VM which has below gcc.
+> > >>
+> > >> root@buk:/home/gjiang/linux-mirror# make M=drivers/infiniband/sw/siw/
+> > >> -j16 W=1
+> > >>     CC [M]  drivers/infiniband/sw/siw/siw_qp_tx.o
+> > >> drivers/infiniband/sw/siw/siw_qp_tx.c: In function ‘siw_tx_hdt’:
+> > >> drivers/infiniband/sw/siw/siw_qp_tx.c:665:1: warning: the frame size
+> > of
+> > >> 1440 bytes is larger than 1024 bytes [-Wframe-larger-than=]
+> > >>     665 | }
+> > >>         | ^
+> > >>
+> > > Whew.. that is quite substantially off the target!
+> > > How come different compilers making so much of a difference.
+> > > Guoqing, can you check if the macro computing the maximum number
+> > > of fragments is broken, i.e., computes different values in
+> > > the cases you refer?
+> > 
+> > Sorry, I was wrong 😅.
+> > 
+> > The warning is not relevant with compiler, and it also appears with gcc-
+> > 13.1
+> > after enable KASAN which is used to find out-of-bounds bugs. Also, there
+> > are lots of -Wframe-larger-than warning from other places as well.
+> > 
+> > > Thanks a lot!
+> > > Bernard
+> > >> # gcc --version
+> > >> gcc (Ubuntu 12.3.0-1ubuntu1~22.04) 12.3.0
+> > >>
+> > >> And it still appears after apply this patch on top of 6.8-rc1.
+> > >>
+> > >> root@buk:/home/gjiang/linux-mirror# git am
+> > >>
+> > ./20240119_bmt_rdma_siw_trim_size_of_page_array_to_max_size_needed.mbx
+> > >> Applying: RDMA/siw: Trim size of page array to max size needed
+> > >> root@buk:/home/gjiang/linux-mirror# make M=drivers/infiniband/sw/siw/
+> > >> -j16 W=1
+> > >>     CC [M]  drivers/infiniband/sw/siw/siw_qp_tx.o
+> > >> drivers/infiniband/sw/siw/siw_qp_tx.c: In function ‘siw_tx_hdt’:
+> > >> drivers/infiniband/sw/siw/siw_qp_tx.c:668:1: warning: the frame size
+> > of
+> > >> 1408 bytes is larger than 1024 bytes [-Wframe-larger-than=]
+> > >>     668 | }
+> > >>         | ^
+> > 
+> > The patch actually reduced the frame size from 1440 to 1408 though it is
+> > still larger than 1024.
+> > 
 > 
+> So in your opinion, does this patch fix the issue of having a
+> frame size larger than 1024 bytes for a typical build? I am sure
+> we do not want to optimize the driver for building with KASAN
+> debug options enabled.
 
-Hi Jason，
+But this is how we are running or supposed to run kernels. In any
+sane regression run, KASAN is enabled.
 
-Do you have any differing opinions about above?
+I would speculate that most people who run SIW, use it to test their ULPs.
 
+So I would like to see it fixed for them too.
 
+Thanks
+
+> 
+> The original bug report claimed a frame size of 1040 bytes for a
+> build w/o KASAN, being larger than 1024 bytes by 16 bytes. I
+> think this patch fixes the reported issue.
+> 
+> Thanks a lot,
+> Bernard.
+> 
+> 
+> > Thanks,
+> > Guoqing
+> 
 
