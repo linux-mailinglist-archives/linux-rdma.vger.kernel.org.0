@@ -1,170 +1,235 @@
-Return-Path: <linux-rdma+bounces-810-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-811-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B3F0B84214B
-	for <lists+linux-rdma@lfdr.de>; Tue, 30 Jan 2024 11:31:36 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id C604B842612
+	for <lists+linux-rdma@lfdr.de>; Tue, 30 Jan 2024 14:19:50 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D89231C26A50
-	for <lists+linux-rdma@lfdr.de>; Tue, 30 Jan 2024 10:31:35 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 76D4A28CA15
+	for <lists+linux-rdma@lfdr.de>; Tue, 30 Jan 2024 13:19:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4D65D4CB5C;
-	Tue, 30 Jan 2024 10:31:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 86E416BB2C;
+	Tue, 30 Jan 2024 13:19:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=microsoft.com header.i=@microsoft.com header.b="X4/L9mn0"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-il1-f198.google.com (mail-il1-f198.google.com [209.85.166.198])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from SJ2PR03CU001.outbound.protection.outlook.com (mail-westusazon11020002.outbound.protection.outlook.com [52.101.85.2])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8B02C2AD0F
-	for <linux-rdma@vger.kernel.org>; Tue, 30 Jan 2024 10:31:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.198
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706610689; cv=none; b=ieM5qLh3Duk74Vnd3dvrOwP5KoioBMQEi3WCacXxEtrsXyGnumZDVWpkGYM90m//Fi0AsIIop09RxNrQb5zQB+v5vCHLdVrCPuxn69JLyZ5/eqs/sQVaOjPxp+EJDeihSs9Cy4oByynvN013yH2wzng9noVVvky2Kw3/okFw2Vc=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706610689; c=relaxed/simple;
-	bh=9VqX249zSR4zy8mldC92QkdE9/T1OOtmBQIPeZGJcdg=;
-	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=OLMh1HmLrQXdcaLMbSJF16dccej1lth/KuF8DwWTugkgRb5k8u54k2MAFKYF61hPsODy0msQTykN5+qT2Z9eG0ZvzNS0a+8xdTFir+QMNevK82M6iEOgsKmgLIO0nffMo9ePG4mMLfgyij7gMd9waCQ85jGYZ6otbYbooy0Z6No=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.198
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-il1-f198.google.com with SMTP id e9e14a558f8ab-3637b396e6eso11688855ab.3
-        for <linux-rdma@vger.kernel.org>; Tue, 30 Jan 2024 02:31:27 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706610686; x=1707215486;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=p8aHeenGIyYqSgmMwLbHFVeE81sUtGnJ+u332DdJ8GQ=;
-        b=ThD4JW3ZTv5cxXDLjM5UA8EQnJqaaD9087PreKKiQ2cbPysa8Q7R05w5DHcViZX9T9
-         cNJKZ+H/7XiN04ptwQRvPKlHwqQWZUiLov45zxIvRulAFGivaeQeEFCSzmowrs5cTUY+
-         8UMFNViGs0f41fT+BsrFSlJm3+crXrh0T77KUPJhzVowCGpy17UgONp3yOVqxVcK5Nmp
-         bwmOqRKhhFoinkgKVSWfqNERHONCMZgtgKEanadqUhLiabIRnVzSKpzt/zDpBUfeXHWi
-         Rrky8ylNWzqWOCAPTNzxZCJvn5Qtkc2bdSz3cuzFyc28MPrGdbNBlcFcPU85AGr0W8BC
-         Q0sw==
-X-Gm-Message-State: AOJu0Yy32gzomE+pN9NJ8f1C4Q/DV9a2SO5hnEn5SGPwJP4R52UJbCgH
-	Qgr/3Gb6BmITT1mZ28EKDVrCSqcGO87f36byIGtmEaQUYC4GW25jIALqBinWI9/g2ho+mZthftr
-	N5GaWwHSAW8Y8F7m+y9fqfoPmP/4mKMAN4dzQSxRcx5hFu/59V1d2iYA=
-X-Google-Smtp-Source: AGHT+IFa1Na3ucioZ1Ia+JOTK1cq4gSYvfKxMOdvcetaCMbu8f78GYAr31JEPlssc+Vn95VGAvKsil3/eZgy0xH1T8WyszfiVfz5
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 961F86D1BC;
+	Tue, 30 Jan 2024 13:19:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=52.101.85.2
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1706620773; cv=fail; b=kxGQJ5OUmFSaIJla6cUXq/iHMaHYng9aBT2NhXFGFmzaUEjj9LM0t1s5YqSnR/RYnJ5L/Rm4axn3JUeVlLrETJ9nTLz8xZX/bsC5vXeUUTcFDTG5UEcRBR7INNWkQ3acgm1JPLEejTV90f+yA3YkSWumd9ipTdNE/Eh1bSQbgRM=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1706620773; c=relaxed/simple;
+	bh=6of0/oJtt4gnVGq9xjpTc1nvsP/B2vxN4zLfSZE5NmE=;
+	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
+	 Content-Type:MIME-Version; b=eRcBGXSzPjiA0nmKoWyee5xWb+gwpFNkkJMYfMnByjtQxy9F0hkp5arUKuJimfyg31WbAd8lwDBMaizc7UAOH8sGwbAm9LMXoPdHvlPJ4ICbX6FIn0PUYjAtVCcGK487ggUIEcyf4XCOKSQnnpQeE1DLNkJb8KOoacw/8QRz19k=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=microsoft.com; spf=pass smtp.mailfrom=microsoft.com; dkim=pass (1024-bit key) header.d=microsoft.com header.i=@microsoft.com header.b=X4/L9mn0; arc=fail smtp.client-ip=52.101.85.2
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=microsoft.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=microsoft.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=gIoS1Cr9bzYSHz2KgImEkFer3+z5bP3AaZkVK+KJ6U2idLVWL5A87n1UADa2kk+vu6dQkB5LPN7kl4dV6F1Ido+DdpCfcCejuX8zJd+JuDy7jUBXTVMZqt/FvlwD1vgRH+WhQiF4Wx8GXBAUlDXg84WlCK4ggXVHJBwI9cY1bK5aSFMy+O1u1m0ZuWjpn40E6jECvwkbnQepuhfKn4m4YOWG+IKqQRSUtZo/JerjoUHdQxF1719EB0lnHeC0xS+lK+C3UKzQT2ijirirWlZmnt888p9rdDAXcfy6+ahhp/uez18MJMG/WkjTABVeJ3s8/LQd5RLQCvRxVNmH34sZOg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=4uelUaQzzpbMYNuiLW6pupqr/SqZmFbGR7gX8aDWvTA=;
+ b=UpkH8P/wX+yzt4PkOMamgZWCeMGNN7/gczF6yZG2Nt0CrpPxrCSxiF2PWk8ZMT86vBMumESLK9hiX6DPMkx9H2IcbdG48ylUDdvluRPwWm9b6bQtiTNhOFl7gQ7eN53LpKkZ3YFUGLZwfp+spXg1Sj0atEuGab31opgw+8LqEecj+z/caXsaRquHpwmoa2q7vrb594uSHx0N7Co3gyzriBJYb8GEmHN6mXLyt5p12lazFSCDKD0fLQqAmAAF6z+anbqY/Nw4jp3SnrYpP0jZdiEDsJ6M0hPhPSNDXuY74VtR2A3XTJ5SHvsBIvboSeXtTFVUR798ysXqKKaUCCy8AQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=microsoft.com; dmarc=pass action=none
+ header.from=microsoft.com; dkim=pass header.d=microsoft.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=4uelUaQzzpbMYNuiLW6pupqr/SqZmFbGR7gX8aDWvTA=;
+ b=X4/L9mn023l+SS1Yu1eNAJ3UoUM61wb6nmQpEGkW9LatrmZHODeadO5KLURUvWIad1DUFi+O/VxCJNzh63toXJOyQdUXgHec/H+uzz8nGRjznklXRcNtKsX8qo0SVRJNbmWWlRGwvHCIpAVBRwsp8f56iSveeQfM3sFACfdxJRM=
+Received: from DS1PEPF00012A5F.namprd21.prod.outlook.com
+ (2603:10b6:2c:400:0:3:0:10) by DM4PR21MB3611.namprd21.prod.outlook.com
+ (2603:10b6:8:a1::14) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7270.6; Tue, 30 Jan
+ 2024 13:19:28 +0000
+Received: from DS1PEPF00012A5F.namprd21.prod.outlook.com
+ ([fe80::ff76:81ea:f8d6:45]) by DS1PEPF00012A5F.namprd21.prod.outlook.com
+ ([fe80::ff76:81ea:f8d6:45%8]) with mapi id 15.20.7249.015; Tue, 30 Jan 2024
+ 13:19:28 +0000
+From: Haiyang Zhang <haiyangz@microsoft.com>
+To: Souradeep Chakrabarti <schakrabarti@linux.microsoft.com>, KY Srinivasan
+	<kys@microsoft.com>, "wei.liu@kernel.org" <wei.liu@kernel.org>, Dexuan Cui
+	<decui@microsoft.com>, "davem@davemloft.net" <davem@davemloft.net>,
+	"edumazet@google.com" <edumazet@google.com>, "kuba@kernel.org"
+	<kuba@kernel.org>, "pabeni@redhat.com" <pabeni@redhat.com>, Long Li
+	<longli@microsoft.com>, "yury.norov@gmail.com" <yury.norov@gmail.com>,
+	"leon@kernel.org" <leon@kernel.org>, "cai.huoqing@linux.dev"
+	<cai.huoqing@linux.dev>, "ssengar@linux.microsoft.com"
+	<ssengar@linux.microsoft.com>, "vkuznets@redhat.com" <vkuznets@redhat.com>,
+	"tglx@linutronix.de" <tglx@linutronix.de>, "linux-hyperv@vger.kernel.org"
+	<linux-hyperv@vger.kernel.org>, "netdev@vger.kernel.org"
+	<netdev@vger.kernel.org>, "linux-kernel@vger.kernel.org"
+	<linux-kernel@vger.kernel.org>, "linux-rdma@vger.kernel.org"
+	<linux-rdma@vger.kernel.org>
+CC: Souradeep Chakrabarti <schakrabarti@microsoft.com>
+Subject: RE: [PATCH net] hv_netvsc: Fix race condition between netvsc_probe
+ and netvsc_remove
+Thread-Topic: [PATCH net] hv_netvsc: Fix race condition between netvsc_probe
+ and netvsc_remove
+Thread-Index: AQHaU2VfqcUSLtQeAUKy9jGiH9r5srDyVg2w
+Date: Tue, 30 Jan 2024 13:19:27 +0000
+Message-ID:
+ <DS1PEPF00012A5FFC608BF1BCC9F36841F3CA7D2@DS1PEPF00012A5F.namprd21.prod.outlook.com>
+References:
+ <1706609772-5783-1-git-send-email-schakrabarti@linux.microsoft.com>
+In-Reply-To:
+ <1706609772-5783-1-git-send-email-schakrabarti@linux.microsoft.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach:
+X-MS-TNEF-Correlator:
+msip_labels:
+ MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ActionId=506c9f8b-873e-44f1-b711-91f5bb222c35;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ContentBits=0;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Enabled=true;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Method=Standard;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Name=Internal;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SetDate=2024-01-30T13:15:40Z;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SiteId=72f988bf-86f1-41af-91ab-2d7cd011db47;
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=microsoft.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: DS1PEPF00012A5F:EE_|DM4PR21MB3611:EE_
+x-ms-office365-filtering-correlation-id: f6f2a8ab-5c0a-4d89-b6a5-08dc2196162c
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info:
+ fU+A+qs3tNGW/1kzLV4XgHoZASszF/VI/ioRDVHQiyYLyV+fJZT9VbwIaG4kciFxKamGPTLAP/G/tINa8s6g0u983t2r7AFf/g+3p7ksC0UQJjNbn1nkO5P/6ka+s+G86x/vzBYGORgRSNW4HDPVFblwUsHfGHaZtx/mJzzYCVkD9wjyK64r9efjRKqHMV4/zjD//YhURYDnM+UfjlCs02T5ZN2spE/36bSgbWzHT3oSvsiaQwrSpq2YIb5TO2P2UPM8tnPBwP7lbROymVZGF948eb2G2R+Za8io59OJwM4wc7fQTuWNUswMl49UXFmNnbD4dzdFs+oOXD899UzEo7h0DmWjCXNrGze43SWnUQir9KWsodqvq96qbepJRuLMIYfpND8ChjAdXK1TcS63bX+ZsNqgUIWlI7vWxBULOBqGVnKSypunj0Rd3twVPNIc01uhK4esojYjYjhvV1lBq6TlApttiBksKtFYi7Pjs9XZ91utSpIxVpd6s80nJU+afcnQk8C74S1VvqC/+SjWl9Rm9JsKQz4PNHKHSM/1LBZH/GqlYqcySibyFwiMuA4CZcXztmVNR+GYSXk7nwBW7+7JF7Scwc6cDOmiZ6j8Jmg6Y5rljYEgy+Yp3DX+oAYwKWG9yDlcPJQ9tfKfTUWgyQ==
+x-forefront-antispam-report:
+ CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DS1PEPF00012A5F.namprd21.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(346002)(376002)(136003)(39860400002)(396003)(366004)(230922051799003)(1800799012)(64100799003)(186009)(451199024)(8676002)(4326008)(8936002)(122000001)(52536014)(5660300002)(55016003)(76116006)(66946007)(86362001)(82960400001)(38070700009)(8990500004)(110136005)(38100700002)(82950400001)(41300700001)(66556008)(921011)(33656002)(7416002)(316002)(2906002)(64756008)(66476007)(66446008)(83380400001)(478600001)(26005)(10290500003)(107886003)(71200400001)(9686003)(6506007)(53546011)(7696005);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0:
+ =?us-ascii?Q?PA9FAfaxU4W8afGxWN8E7Z51pxvTCa4b9OdU8DjSLmTICR/gEOYHR6GFtg17?=
+ =?us-ascii?Q?ZGlxklmKn4hXSgJ3IwDpBFOS3bssW7gbvgxqtFnaBRt5Pldv6aqYnKiCM2Za?=
+ =?us-ascii?Q?R026d8KUrBCJEhb+3OP8LPTtvZVpUu55ptykyaMX6sMDEN+bv9YiKLJAgA5l?=
+ =?us-ascii?Q?DrLb6kXhK1obLKa5FtZLLNNvhyHy9Iy/RgelSbgNrnTBTbkcLq/3RSVmk5Go?=
+ =?us-ascii?Q?N++6sdMTm2dn3G0/mbQ/ioo/hyYiHw5Q7VQy/UzqyUbIXoUId4DgzB9bfoW8?=
+ =?us-ascii?Q?mzaqcReq8vX+/xBy4aTELbQ3rZcOjVBOCcWjBNHzmlmxjngWDxJ8f28v1/Aq?=
+ =?us-ascii?Q?nOghlZ6G7JbhJJX+1O7FUSYRJ7v+yRvfEsvPWbzE88bw6whekgoojlnY9VH0?=
+ =?us-ascii?Q?AVDGtuLiDxVZF0eA8dSXytBRoBRyfGZ/wmE/8w+LrbQGWBfAkUJ19A6m30Ql?=
+ =?us-ascii?Q?80Qb9W6jsndzVyD//mU/LY6N3N9exdZhau8kM5VqJZSPpCvHTuyIR5ijIkdn?=
+ =?us-ascii?Q?5QqUvZ6nYGr8uB42BtmCb81D0u7YHR9aJyAoB2ROttj/AJBlEMPJD8aCadHP?=
+ =?us-ascii?Q?6t9TVsOAxRPdfwBzysPkq7vFLxYa/BO7Hl/o2amwcTmEe1zSzZzRlcuqEJzk?=
+ =?us-ascii?Q?QHr83risYs53kVrRvayBACpY8LHC0flMkabnIeLm4O/k2lKcJMjQeaW0ELRo?=
+ =?us-ascii?Q?/YbewIm1LszSsEIzM+9OigvCJlSmNOsUwKMv9YVnGtZY43klXD6mvddu1xGa?=
+ =?us-ascii?Q?2HBUtpN1JWdhlz/s41epkM0Igsdyhcl6RjsWkn0+BY/JjriP+m3eatV19DHu?=
+ =?us-ascii?Q?HDrqY1VjLxFQgCdouUP7MHIzYItDCWBxExZn0RC0EzGDZ/Ab3e7JkOc8RTk+?=
+ =?us-ascii?Q?1vW/sbF1Xw/tt07R/hBgHt8dNr3rE7Y2UdCA7WNDwxBg8hvjfWl7PBDmv2qG?=
+ =?us-ascii?Q?xGFUb28YYGrFbUp3uj9rV41N2T2TMG4Tgqa+GBwyQwR+LCoji0VnjZPFGs8Y?=
+ =?us-ascii?Q?WUWcR+YXc5zMRX9UIb7mvaCS5MBGO/7txLN+OezxEL6Bq4zOYb+5yo65NnMK?=
+ =?us-ascii?Q?9CnvqKfYi2oR9ARLTEZUQYwporpa3fbODWNmeju33jWvhfvdjUFiIlAN8c2A?=
+ =?us-ascii?Q?Ek/0jWk+BBVpQmYk+IF+SkwRY4cVIhcUB/ERLFftxFX52dOCDZekEVarX+F7?=
+ =?us-ascii?Q?wyXoA64PoqryfJ2spvE078Ah3/0RXdKApt+VKKF/bDwRtrBlweQjOk4Q5yLF?=
+ =?us-ascii?Q?NpBMfvP3PxfmxJuC9mV1Y+m/NMm2iU6MFRQZpZ5RVFpRQA4NBMyzOMcHxz93?=
+ =?us-ascii?Q?JZwFMxjy4V01iqwcn49/VlKU6K+9lndVQj5I/2RhyKDL62ggYgFhmgJG1uJi?=
+ =?us-ascii?Q?AEGkdzbzvPsxAdPT3WRE0DMm9oXa1dflHs/atbm9/c7EiXKiK62cKcItJUBo?=
+ =?us-ascii?Q?Vw/BtB8MZsm71MYhOJRUXcZucFsiY2PaOhT4FFYoJR11ml5LSCWEve0CYtbZ?=
+ =?us-ascii?Q?BXugCJvQPZGvD5YcQXF0eN1xccWF5jr+rOIrvPQ9jQzUYvyryZ0r7qDmGq21?=
+ =?us-ascii?Q?XqtZ0Bewu1c0mqn8HAdzVEQQtKNe5Jl6Mpj7fi7t?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:338b:b0:363:8be6:2b22 with SMTP id
- bn11-20020a056e02338b00b003638be62b22mr158132ilb.1.1706610686746; Tue, 30 Jan
- 2024 02:31:26 -0800 (PST)
-Date: Tue, 30 Jan 2024 02:31:26 -0800
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000c0e6af0610274383@google.com>
-Subject: [syzbot] [rdma?] WARNING: ODEBUG bug in __init_work (4)
-From: syzbot <syzbot+2c3c83033160c81c9af2@syzkaller.appspotmail.com>
-To: bmt@zurich.ibm.com, jgg@ziepe.ca, leon@kernel.org, 
-	linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org, 
-	netdev@vger.kernel.org, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
-
-Hello,
-
-syzbot found the following issue on:
-
-HEAD commit:    01af33cc9894 Add linux-next specific files for 20240125
-git tree:       linux-next
-console output: https://syzkaller.appspot.com/x/log.txt?x=111c74f3e80000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=4b73726a6eef71f1
-dashboard link: https://syzkaller.appspot.com/bug?extid=2c3c83033160c81c9af2
-compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
-
-Unfortunately, I don't have any reproducer for this issue yet.
-
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/bd3f86d4b4a5/disk-01af33cc.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/39432e805e81/vmlinux-01af33cc.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/ebd665cc1f02/bzImage-01af33cc.xz
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+2c3c83033160c81c9af2@syzkaller.appspotmail.com
-
-netlink: 'syz-executor.2': attribute type 27 has an invalid length.
-netlink: 4 bytes leftover after parsing attributes in process `syz-executor.2'.
-------------[ cut here ]------------
-ODEBUG: init active (active state 0) object: ffff88802b745128 object type: work_struct hint: siw_netdev_down+0x0/0x210 drivers/infiniband/sw/siw/siw_main.c:87
-WARNING: CPU: 1 PID: 31079 at lib/debugobjects.c:514 debug_print_object+0x1a3/0x2b0 lib/debugobjects.c:514
-Modules linked in:
-CPU: 1 PID: 31079 Comm: syz-executor.2 Not tainted 6.8.0-rc1-next-20240125-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 11/17/2023
-RIP: 0010:debug_print_object+0x1a3/0x2b0 lib/debugobjects.c:514
-Code: fc ff df 48 89 fa 48 c1 ea 03 80 3c 02 00 75 54 48 8b 14 dd c0 d3 4e 8b 41 56 4c 89 e6 48 c7 c7 20 c7 4e 8b e8 3e 95 d4 fc 90 <0f> 0b 90 90 58 83 05 55 9e fe 0a 01 48 83 c4 18 5b 5d 41 5c 41 5d
-RSP: 0018:ffffc9000ae3ed88 EFLAGS: 00010286
-RAX: 0000000000000000 RBX: 0000000000000003 RCX: ffffc9000d729000
-RDX: 0000000000040000 RSI: ffffffff81504dd6 RDI: 0000000000000001
-RBP: 0000000000000001 R08: 0000000000000001 R09: 0000000000000000
-R10: 0000000000000001 R11: fffffffffffc0828 R12: ffffffff8b4ecd80
-R13: ffffffff8aebd9e0 R14: ffffffff8808d330 R15: ffffc9000ae3ee48
-FS:  00007f4e39bbd6c0(0000) GS:ffff8880b9500000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 000000002000a030 CR3: 0000000065e5a000 CR4: 00000000003506f0
-Call Trace:
- <TASK>
- __debug_object_init+0x28c/0x480 lib/debugobjects.c:653
- __init_work+0x4c/0x60 kernel/workqueue.c:591
- siw_device_goes_down drivers/infiniband/sw/siw/siw_main.c:395 [inline]
- siw_netdev_event+0x24d/0x530 drivers/infiniband/sw/siw/siw_main.c:422
- notifier_call_chain+0xb9/0x3e0 kernel/notifier.c:93
- call_netdevice_notifiers_info+0xbe/0x140 net/core/dev.c:1966
- call_netdevice_notifiers_extack net/core/dev.c:2004 [inline]
- call_netdevice_notifiers net/core/dev.c:2018 [inline]
- __dev_close_many+0xf4/0x310 net/core/dev.c:1504
- __dev_close net/core/dev.c:1542 [inline]
- __dev_change_flags+0x4dc/0x720 net/core/dev.c:8646
- dev_change_flags+0x8f/0x160 net/core/dev.c:8720
- do_setlink+0x1abc/0x40c0 net/core/rtnetlink.c:2903
- rtnl_group_changelink net/core/rtnetlink.c:3452 [inline]
- __rtnl_newlink+0xe11/0x1960 net/core/rtnetlink.c:3711
- rtnl_newlink+0x67/0xa0 net/core/rtnetlink.c:3748
- rtnetlink_rcv_msg+0x3c7/0xe10 net/core/rtnetlink.c:6615
- netlink_rcv_skb+0x16b/0x440 net/netlink/af_netlink.c:2543
- netlink_unicast_kernel net/netlink/af_netlink.c:1341 [inline]
- netlink_unicast+0x542/0x820 net/netlink/af_netlink.c:1367
- netlink_sendmsg+0x8b8/0xd70 net/netlink/af_netlink.c:1908
- sock_sendmsg_nosec net/socket.c:730 [inline]
- __sock_sendmsg net/socket.c:745 [inline]
- ____sys_sendmsg+0xab5/0xc90 net/socket.c:2584
- ___sys_sendmsg+0x135/0x1e0 net/socket.c:2638
- __sys_sendmsg+0x117/0x1f0 net/socket.c:2667
- do_syscall_x64 arch/x86/entry/common.c:52 [inline]
- do_syscall_64+0xd2/0x260 arch/x86/entry/common.c:83
- entry_SYSCALL_64_after_hwframe+0x6d/0x75
-RIP: 0033:0x7f4e3a87cda9
-Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 e1 20 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b0 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007f4e39bbd0c8 EFLAGS: 00000246 ORIG_RAX: 000000000000002e
-RAX: ffffffffffffffda RBX: 00007f4e3a9ac1f0 RCX: 00007f4e3a87cda9
-RDX: 0000000000000000 RSI: 0000000020006440 RDI: 0000000000000007
-RBP: 00007f4e3a8c947a R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
-R13: 000000000000006e R14: 00007f4e3a9ac1f0 R15: 00007fff46e53798
- </TASK>
+X-OriginatorOrg: microsoft.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: DS1PEPF00012A5F.namprd21.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: f6f2a8ab-5c0a-4d89-b6a5-08dc2196162c
+X-MS-Exchange-CrossTenant-originalarrivaltime: 30 Jan 2024 13:19:28.0189
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 72f988bf-86f1-41af-91ab-2d7cd011db47
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: edCEIwzWMNAVJTcE+zQ1xFablhGDXYQqeWYu3FyKL1Lzf7AZq8/P9HnKZ6BHtvL/bfZo8SgPk/q3db0nHLu/KQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM4PR21MB3611
 
 
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+> -----Original Message-----
+> From: Souradeep Chakrabarti <schakrabarti@linux.microsoft.com>
+> Sent: Tuesday, January 30, 2024 5:16 AM
+> To: KY Srinivasan <kys@microsoft.com>; Haiyang Zhang
+> <haiyangz@microsoft.com>; wei.liu@kernel.org; Dexuan Cui
+> <decui@microsoft.com>; davem@davemloft.net; edumazet@google.com;
+> kuba@kernel.org; pabeni@redhat.com; Long Li <longli@microsoft.com>;
+> yury.norov@gmail.com; leon@kernel.org; cai.huoqing@linux.dev;
+> ssengar@linux.microsoft.com; vkuznets@redhat.com; tglx@linutronix.de;
+> linux-hyperv@vger.kernel.org; netdev@vger.kernel.org; linux-
+> kernel@vger.kernel.org; linux-rdma@vger.kernel.org
+> Cc: Souradeep Chakrabarti <schakrabarti@microsoft.com>; Souradeep
+> Chakrabarti <schakrabarti@linux.microsoft.com>
+> Subject: [PATCH net] hv_netvsc: Fix race condition between netvsc_probe
+> and netvsc_remove
+>=20
+> In commit ac5047671758 ("hv_netvsc: Disable NAPI before closing the
+> VMBus channel"), napi_disable was getting called for all channels,
+> including all subchannels without confirming if they are enabled or not.
+>=20
+> Which caused hv_netvsc getting hung at napi_disable, when netvsc_probe()
+> and netvsc_remove() are happening simultaneously and netvsc_remove()
+> calls cancel_work_sync(&nvdev->subchan_work) before netvsc_sc_open()
+> calls napi_enable for the sub channels. Which causes NAPIF_STATE_SCHED
+> bit not getting cleared for the subchannels.
+>=20
+> Now during netvsc_device_remove(), when napi_disable is called for those
+> subchannels, napi_disable gets stuck on infinite msleep.
+>=20
+> Call trace:
+> [  654.559417] task:modprobe        state:D stack:    0 pid: 2321 ppid:
+> 1091 flags:0x00004002
+> [  654.568030] Call Trace:
+> [  654.571221]  <TASK>
+> [  654.573790]  __schedule+0x2d6/0x960
+> [  654.577733]  schedule+0x69/0xf0
+> [  654.581214]  schedule_timeout+0x87/0x140
+> [  654.585463]  ? __bpf_trace_tick_stop+0x20/0x20
+> [  654.590291]  msleep+0x2d/0x40
+> [  654.593625]  napi_disable+0x2b/0x80
+> [  654.597437]  netvsc_device_remove+0x8a/0x1f0 [hv_netvsc]
+> [  654.603935]  rndis_filter_device_remove+0x194/0x1c0 [hv_netvsc]
+> [  654.611101]  ? do_wait_intr+0xb0/0xb0
+> [  654.615753]  netvsc_remove+0x7c/0x120 [hv_netvsc]
+> [  654.621675]  vmbus_remove+0x27/0x40 [hv_vmbus]
+>=20
+> Fixes: ac5047671758 ("hv_netvsc: Disable NAPI before closing the VMBus
+> channel")
+> Signed-off-by: Souradeep Chakrabarti <schakrabarti@linux.microsoft.com>
 
-If the report is already addressed, let syzbot know by replying with:
-#syz fix: exact-commit-title
+Please add:
+Cc: stable@vger.kernel.org
 
-If you want to overwrite report's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
+Otherwise, all look good!
 
-If the report is a duplicate of another one, reply with:
-#syz dup: exact-subject-of-another-report
+Reviewed-by: Haiyang Zhang <haiyangz@microsoft.com>
 
-If you want to undo deduplication, reply with:
-#syz undup
+> ---
+>  drivers/net/hyperv/netvsc.c | 5 ++++-
+>  1 file changed, 4 insertions(+), 1 deletion(-)
+>=20
+> diff --git a/drivers/net/hyperv/netvsc.c b/drivers/net/hyperv/netvsc.c
+> index 1dafa44155d0..a6fcbda64ecc 100644
+> --- a/drivers/net/hyperv/netvsc.c
+> +++ b/drivers/net/hyperv/netvsc.c
+> @@ -708,7 +708,10 @@ void netvsc_device_remove(struct hv_device *device)
+>  	/* Disable NAPI and disassociate its context from the device. */
+>  	for (i =3D 0; i < net_device->num_chn; i++) {
+>  		/* See also vmbus_reset_channel_cb(). */
+> -		napi_disable(&net_device->chan_table[i].napi);
+> +		/* only disable enabled NAPI channel */
+> +		if (i < ndev->real_num_rx_queues)
+> +			napi_disable(&net_device->chan_table[i].napi);
+> +
+>  		netif_napi_del(&net_device->chan_table[i].napi);
+>  	}
+>=20
+> --
+> 2.34.1
+
 
