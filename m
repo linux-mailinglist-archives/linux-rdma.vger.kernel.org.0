@@ -1,146 +1,89 @@
-Return-Path: <linux-rdma+bounces-820-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-821-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 149288437F8
-	for <lists+linux-rdma@lfdr.de>; Wed, 31 Jan 2024 08:36:35 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id E31CA843AE2
+	for <lists+linux-rdma@lfdr.de>; Wed, 31 Jan 2024 10:19:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id AAD68B25034
-	for <lists+linux-rdma@lfdr.de>; Wed, 31 Jan 2024 07:36:32 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 995F61F2AF9F
+	for <lists+linux-rdma@lfdr.de>; Wed, 31 Jan 2024 09:19:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 20E9E51C27;
-	Wed, 31 Jan 2024 07:36:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 53F376997C;
+	Wed, 31 Jan 2024 09:16:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b="RglxAPrU"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="e61CEhRC"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 649645677B;
-	Wed, 31 Jan 2024 07:36:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=13.77.154.182
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 145BF55E57
+	for <linux-rdma@vger.kernel.org>; Wed, 31 Jan 2024 09:16:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706686584; cv=none; b=GUF//I4gJrHcfiiqUNP52paBVXm/XCqtumN+OQ5/cxUA0zlWgqrOMwLsc3OSbcxs0OIk42/XDE3EXBSYR89DEVZYsHZF7lIBMDM9/fHfb/p2l/2tYLTxsIuDKtrAyTr4aiEOfCLy0NgowJxO6r9y6hkEFBltSSZndU0Bhobcm0M=
+	t=1706692575; cv=none; b=NKihyzaWrpyHI1MDe57P0a9UVOnyIbz1GvqvoFqcKIu61IyFuAx/7BFIOarnwzIlHSsFGPW7ftjrIIXbWcuVsDpj8YWHu4wASfXPeua/yYez2nrntcJqllZv6JIK3ti7l9qNpm5oXMYi7++ydxe3qKMPQijkW8HkuyJAHedcrYw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706686584; c=relaxed/simple;
-	bh=5bEHW6ksJ3xqW6jJnxsmV+ldSHTTfxdpUCo76HbOvWs=;
-	h=From:To:Cc:Subject:Date:Message-Id; b=n3DFzV8VW0Pq8oFCu4Q5VjxBWOrQoqjj804lcMjtU10e0YWd46uYkMJ5H636b+CYNtrIACRYhm9QM5EqAodnj/ZVFrVfmWd8gpqPMDxx18gRtvJV0+8aokyaWLY+Ysg9wz78kfcR7tXdC9eMPoUlopxUzXzXTDsc/ln+dj384W8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com; spf=pass smtp.mailfrom=linux.microsoft.com; dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b=RglxAPrU; arc=none smtp.client-ip=13.77.154.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.microsoft.com
-Received: by linux.microsoft.com (Postfix, from userid 1099)
-	id 4E89B2057C14; Tue, 30 Jan 2024 23:36:17 -0800 (PST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 4E89B2057C14
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-	s=default; t=1706686577;
-	bh=A9hod7/WJM4EPvXZpXLKwY7FnhxMOn4SZ60i2PuUqsE=;
-	h=From:To:Cc:Subject:Date:From;
-	b=RglxAPrUIN7r8YQ3/2n+WHKSPQEQWtIXbM7C0ahipg7d346Hb5+voReAY38R8Ijby
-	 Hwc9GhT8yNe+b6mzytI2HJwqAyibvevAQ8ng6Kqa7JS6LoL96u5AQ0t4NHP4s7raKM
-	 M6tYRnha0OFzaRpeK8wnrSf4O6n8MnDbWSson16U=
-From: Souradeep Chakrabarti <schakrabarti@linux.microsoft.com>
-To: kys@microsoft.com,
-	haiyangz@microsoft.com,
-	wei.liu@kernel.org,
-	decui@microsoft.com,
-	davem@davemloft.net,
-	edumazet@google.com,
-	kuba@kernel.org,
-	pabeni@redhat.com,
-	longli@microsoft.com,
-	yury.norov@gmail.com,
-	leon@kernel.org,
-	cai.huoqing@linux.dev,
-	ssengar@linux.microsoft.com,
-	vkuznets@redhat.com,
-	tglx@linutronix.de,
-	linux-hyperv@vger.kernel.org,
-	netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	linux-rdma@vger.kernel.org
-Cc: schakrabarti@microsoft.com,
-	Souradeep Chakrabarti <schakrabarti@linux.microsoft.com>,
-	stable@vger.kernel.org
-Subject: [PATCH V2 net] hv_netvsc: Fix race condition between netvsc_probe and netvsc_remove
-Date: Tue, 30 Jan 2024 23:35:51 -0800
-Message-Id: <1706686551-28510-1-git-send-email-schakrabarti@linux.microsoft.com>
-X-Mailer: git-send-email 1.8.3.1
+	s=arc-20240116; t=1706692575; c=relaxed/simple;
+	bh=wigbbYYJAV7mhljisV0g+K1qCrLxlhtWjs0TGDiTuBs=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Message-Id:Date:
+	 MIME-Version:Content-Type; b=aqJXeC0Hx5gvASEv0/cAcsAlO9gVWP0OinnqZ6UQQ2EeQCIqoWyVa8l90mau3Rmh5F4nHRX7W3laUDc1Amr+H3TEMrwqmhoKE7aldALDCngSk1C1nhsy3Pu9GeRSeflScKI7iN0kFUQcJn7LkoA26Tg6Q1jCxYbg1e3E2m6/Hro=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=e61CEhRC; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CFC52C433C7;
+	Wed, 31 Jan 2024 09:16:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1706692574;
+	bh=wigbbYYJAV7mhljisV0g+K1qCrLxlhtWjs0TGDiTuBs=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+	b=e61CEhRCUCHpu2LOvUdRFryf9/kne6mZE8g5XXguffqYyZxJMTc6Y/XMf/HGVqCV4
+	 hV/ZyhjAyLbIvdffCazUF7fpblx92lsACXXRjmgRY1NXlV9kL1Oih6zx/XxhQ8aO92
+	 /Sbbu6iz3850HspiGGxu9lbLdmNliu34HXn6CFFsI/kivAf4lv/S2qTz/NdvquAe0L
+	 MBILKsy2dzLi27ZP8NGu2Xrtj8lCqlmDjazcwmGnxaTYidMMdhEUewXTZSClRHd6il
+	 mI3OP0UcepDYGhLvPDkdGidMaY1Go9v9e6ViBeQn+4OQwp4H7mDoipn686LI+Fg0Ci
+	 nZA7dtIPqoVtA==
+From: Leon Romanovsky <leon@kernel.org>
+To: Jason Gunthorpe <jgg@ziepe.ca>, Leon Romanovsky <leon@kernel.org>
+Cc: Edward Srouji <edwards@nvidia.com>, linux-rdma@vger.kernel.org,
+ Maor Gottlieb <maorg@nvidia.com>, Mark Zhang <markzhang@nvidia.com>,
+ Michael Guralnik <michaelgur@nvidia.com>, Or Har-Toov <ohartoov@nvidia.com>,
+ Tamar Mashiah <tmashiah@nvidia.com>, Yishai Hadas <yishaih@nvidia.com>,
+ Leon Romanovsky <leon@kernel.org>
+In-Reply-To: <cover.1706433934.git.leon@kernel.org>
+References: <cover.1706433934.git.leon@kernel.org>
+Subject: Re: (subset) [PATCH rdma-next v1 0/6] Collection of mlx5_ib fixes
+Message-Id: <170669256955.202005.4624056519882229779.b4-ty@kernel.org>
+Date: Wed, 31 Jan 2024 11:16:09 +0200
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Mailer: b4 0.12-dev-a055d
 
-In commit ac5047671758 ("hv_netvsc: Disable NAPI before closing the
-VMBus channel"), napi_disable was getting called for all channels,
-including all subchannels without confirming if they are enabled or not.
 
-This caused hv_netvsc getting hung at napi_disable, when netvsc_probe()
-has finished running but nvdev->subchan_work has not started yet.
-netvsc_subchan_work() -> rndis_set_subchannel() has not created the
-sub-channels and because of that netvsc_sc_open() is not running.
-netvsc_remove() calls cancel_work_sync(&nvdev->subchan_work), for which
-netvsc_subchan_work did not run.
+On Sun, 28 Jan 2024 11:29:10 +0200, Leon Romanovsky wrote:
+> From: Leon Romanovsky <leonro@nvidia.com>
+> 
+> Changelog:
+> v1:
+>  * Changed function signature is_cacheable_mkey to pass pointer and not value.
+> v0: https://lore.kernel.org/all/cover.1706185318.git.leon@kernel.org
+> 
+> [...]
 
-netif_napi_add() sets the bit NAPI_STATE_SCHED because it ensures NAPI
-cannot be scheduled. Then netvsc_sc_open() -> napi_enable will clear the
-NAPIF_STATE_SCHED bit, so it can be scheduled. napi_disable() does the
-opposite.
+Applied, thanks!
 
-Now during netvsc_device_remove(), when napi_disable is called for those
-subchannels, napi_disable gets stuck on infinite msleep.
+[1/6] RDMA/mlx5: Fix fortify source warning while accessing Eth segment
+      https://git.kernel.org/rdma/rdma/c/4d5e86a56615cc
+[2/6] IB/mlx5: Don't expose debugfs entries for RRoCE general parameters if not supported
+      https://git.kernel.org/rdma/rdma/c/43fdbd140238d4
+[3/6] RDMA/mlx5: Relax DEVX access upon modify commands
+      https://git.kernel.org/rdma/rdma/c/be551ee1574280
 
-This fix addresses this problem by ensuring that napi_disable() is not
-getting called for non-enabled NAPI struct.
-But netif_napi_del() is still necessary for these non-enabled NAPI struct
-for cleanup purpose.
-
-Call trace:
-[  654.559417] task:modprobe        state:D stack:    0 pid: 2321 ppid:  1091 flags:0x00004002
-[  654.568030] Call Trace:
-[  654.571221]  <TASK>
-[  654.573790]  __schedule+0x2d6/0x960
-[  654.577733]  schedule+0x69/0xf0
-[  654.581214]  schedule_timeout+0x87/0x140
-[  654.585463]  ? __bpf_trace_tick_stop+0x20/0x20
-[  654.590291]  msleep+0x2d/0x40
-[  654.593625]  napi_disable+0x2b/0x80
-[  654.597437]  netvsc_device_remove+0x8a/0x1f0 [hv_netvsc]
-[  654.603935]  rndis_filter_device_remove+0x194/0x1c0 [hv_netvsc]
-[  654.611101]  ? do_wait_intr+0xb0/0xb0
-[  654.615753]  netvsc_remove+0x7c/0x120 [hv_netvsc]
-[  654.621675]  vmbus_remove+0x27/0x40 [hv_vmbus]
-
-Cc: stable@vger.kernel.org
-Fixes: ac5047671758 ("hv_netvsc: Disable NAPI before closing the VMBus channel")
-Signed-off-by: Souradeep Chakrabarti <schakrabarti@linux.microsoft.com>
-Reviewed-by: Dexuan Cui <decui@microsoft.com>
-Reviewed-by: Haiyang Zhang <haiyangz@microsoft.com>
----
-V1 -> V2:
-Changed commit message, added some more details on
-napi NAPIF_STATE_SCHED bit set and reset.
----
- drivers/net/hyperv/netvsc.c | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/net/hyperv/netvsc.c b/drivers/net/hyperv/netvsc.c
-index 1dafa44155d0..a6fcbda64ecc 100644
---- a/drivers/net/hyperv/netvsc.c
-+++ b/drivers/net/hyperv/netvsc.c
-@@ -708,7 +708,10 @@ void netvsc_device_remove(struct hv_device *device)
- 	/* Disable NAPI and disassociate its context from the device. */
- 	for (i = 0; i < net_device->num_chn; i++) {
- 		/* See also vmbus_reset_channel_cb(). */
--		napi_disable(&net_device->chan_table[i].napi);
-+		/* only disable enabled NAPI channel */
-+		if (i < ndev->real_num_rx_queues)
-+			napi_disable(&net_device->chan_table[i].napi);
-+
- 		netif_napi_del(&net_device->chan_table[i].napi);
- 	}
- 
+Best regards,
 -- 
-2.34.1
-
+Leon Romanovsky <leon@kernel.org>
 
