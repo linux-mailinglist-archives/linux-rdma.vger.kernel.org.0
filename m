@@ -1,82 +1,85 @@
-Return-Path: <linux-rdma+bounces-837-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-838-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 540A98441A8
-	for <lists+linux-rdma@lfdr.de>; Wed, 31 Jan 2024 15:18:26 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 045728441F6
+	for <lists+linux-rdma@lfdr.de>; Wed, 31 Jan 2024 15:35:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 2BDAFB274DC
-	for <lists+linux-rdma@lfdr.de>; Wed, 31 Jan 2024 14:18:21 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6E7791F26145
+	for <lists+linux-rdma@lfdr.de>; Wed, 31 Jan 2024 14:35:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7357D81ACF;
-	Wed, 31 Jan 2024 14:18:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8093369D2A;
+	Wed, 31 Jan 2024 14:35:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="Blkb+qV3"
+	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="jefo5j3b"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from NAM04-DM6-obe.outbound.protection.outlook.com (mail-dm6nam04on2071.outbound.protection.outlook.com [40.107.102.71])
+Received: from NAM10-BN7-obe.outbound.protection.outlook.com (mail-bn7nam10on2083.outbound.protection.outlook.com [40.107.92.83])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 860BF80C0F
-	for <linux-rdma@vger.kernel.org>; Wed, 31 Jan 2024 14:18:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.102.71
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9E2E541AAB
+	for <linux-rdma@vger.kernel.org>; Wed, 31 Jan 2024 14:35:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.92.83
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706710699; cv=fail; b=HPjEzQheL/iA6ce7NXaw0t+Frby1rCMMkrwF972o2yZSGgiAOrX3TvMIv4hZ+228XBidzknJR2cI0EjdCLLEOKJjgyJ6yeQmjy6681ZFbWdGG+GleSAEICz/7gsIYa8dVFAlJ0ZaIFFXznHpSd8PLFgdIB9hv1mNCKPMuNNrt0c=
+	t=1706711733; cv=fail; b=dphyFpAV9UGISlwRewRVh3dnwwsXNTNvxbh7Vx8RNw6bRDRKiyBNY6wiaOH/uvTsF1QCYisHPOfpy8zhOEEhhppsmbog8+cNomaXR5joHhj+ZM+o8vjQDdmMVmJBMczddF2iaSi7GrhMQYkGINShms/dJ5/xgOW3uJ3YBs4yUAM=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706710699; c=relaxed/simple;
-	bh=OPudhIfd7cmhWY0DDVk9THKyAE8+tnz8GAkCTdmSOAM=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:Content-Type:
-	 Content-Disposition:In-Reply-To:MIME-Version; b=DYiJnN6uK4uaS2okUdhUw/5sXLxBxlx+MuaDSFN0ZyyLG2gG/I/3g2SdBUPGzqshubcTc0NAh3YYZI6YM7qRUfSa8W3R20vWc+yjUScKz+OKmeUk91WEoip18yyDReUMQnTWiDe+hFupKqEGZEg6Hulv2fscgDUQ9vMGLougMkk=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=Blkb+qV3; arc=fail smtp.client-ip=40.107.102.71
+	s=arc-20240116; t=1706711733; c=relaxed/simple;
+	bh=IMqZbq2b5Q9UyNsFfaE1Gb4wpKWfs83HxzDchmiNkq4=;
+	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
+	 Content-Type:MIME-Version; b=e9RurAyMxB76773h6R0BPxgrWXKbWxIY/Veg4qZFfPeJfeVRLyIE3ryrIg/C9V+EOzUbOiTbdGR0aKJJA7RV4jrzJyLcfwvnlYq/U2/erbZv1AnhDlPFJqcULkyM4P/u3ZavSKcH4mmNYxmi1qa4j2KJRsYxEkWkeVY+jhEWeuc=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=jefo5j3b; arc=fail smtp.client-ip=40.107.92.83
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
 Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Rnb6QWwr+VjLXcUyXyJ6wTU9OkbMk+mzDrcoMu6dmCJxuA+6IQLoSSAXjEfHVrCL6Fn2TtJT83jg7E55QYS/BGMVpkLuzR9delzv104JENDVPqV5PNvFpjlnT33PzY9VsVqvK6oTBgLgSFojS/yG+PZR+9zNGfrJ5ws/q7KoJqg/8IQ8wTUVl5bNbR2P/fRpEvbN6q154Q0T2XbqAJ9T4QXNfYnFHmEHz/Jv35FwyILvYPj657f1ICRrk4pSinmPlzE30OKEJDlqYCt9UCC63vrTR6GB19DPMuTCGwF08qUqZYzReD9N9vRD+cg7vp7Qo1OfgjaaAsUvNpdfPihZxQ==
+ b=N/Lz0sBsweBzvIiXoQWgIHhq1i5s1NRBMLPoCqp+LyYHbaU+MPQ8V8ikwPhV0bWxxxpX9GrSzC8/OCNw28M1dh6LAPzdwzF7qIcXzJauI5rMG1KurBmdFOe7cyZ1+eY72ymUAGQQ8OhrKEONlsQ38y93PnfuLlpBOKxCaESNHgSIMRXcYBIp+w38EwVVqJT+hXuhnYRxFAaCA0aubL4T6M83DqVpBqbCIJxMfiGMgPDNgUIaa2MVrtle2KTDooSE7nbH34uFGLtByiqdNio4vH5AILgkJPfC7fpEgE6n5+cznclEW/7hK+hGBInrs9QrZAIgYv96gNZYmc8LUXyDUw==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=k/LfHVLpwZm5qDoNzy2DSx1OGS0WG/3WvKjEO1eZiw0=;
- b=NAPSK26MTBMqDLqsh910n6nRsgN8mEKsOeF928GVStCWiZllmMKnYYb2amNSuBlrJ3IXMLTF6pbX9dW/3yjwaa8dnAOrMY0HkClgRERyx0cD4mufvM1AnaEt5dzjSved41ibvBtJe4jYNHztqixQQ6Ma1jyMo1IZSjJHoFZ3TdwZO41mMYVpvhGUYTRx4cmePcZSbY1SVO0pypxt0pbybiwK1u/7bAEFM5MT/BJNhde06Cnnxgu/bdC+2LQS+gcEFVZ7jlCoHBWRYpQRGagz9Lwu/85u25UhQjkZMHVRulxB88Cv58s/xwc/pL/4HNE5YSKyBgiOmwsOTTLdIrIwsQ==
+ bh=IMqZbq2b5Q9UyNsFfaE1Gb4wpKWfs83HxzDchmiNkq4=;
+ b=ZQqNi1+/qOMeNAdIe9DzSX6VlcuU27MJKo7yBTb2wDk5FZmAqjIBLNlBIV84VQNxb8k4Y1DRfP673oFjEtfvqdmTnAj/hPdlDB6DGQKc8cOp1Qzj4uy3k+2i4397PWurMB+vuta80JsXbCidntIgFAuScAChNDaPX2sNLT7WTUtUb0o1jDYcicZkkgakVAMQN16/7hp5M+L3zw+Iob1yGEEh/dDV/2dch+dzZMiu4hnf9qs+ZXxAAcQxBcb95yiYyhuazN4BXb8AFhNA3aVwCLMvP0fNx07uFNKHl+cX0imfg6SHTa7SgeUQBggI3W/Pv37F3pfCh1dd6ArT5bboMg==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
  dkim=pass header.d=nvidia.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
  s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=k/LfHVLpwZm5qDoNzy2DSx1OGS0WG/3WvKjEO1eZiw0=;
- b=Blkb+qV3MdyOapYbgjPa8sSb4GaMf8xaD7ealkAu0JLZc59ZcjPU+hsVknGWcYTtvQfYm1xc9iz8PoHtWY3aKAM4NqWBeBjffpcCiZvmIeUz1Fo6p+3ZY5DT5ovd8kFUCgotR6Qp+7UK/TRpY984CUJXryRtiD3Sv/kMDeQqIj++VMZ8wAIF1xnDGHyIBLuS3YKt19LSjAOOkXVcEdHWv0aKFkDm/sNGAaXwObkDNQzQfw3s0mif+lp3te+Xn+WKQzKw4/kHnM+jmZUuD6Nvfv7cjrkohfRfOyiI/xXwtVLmDdYCXkLUGu2vx+PoJiJVUO/Pqlb3orFZc4gfz60XOw==
+ bh=IMqZbq2b5Q9UyNsFfaE1Gb4wpKWfs83HxzDchmiNkq4=;
+ b=jefo5j3bMvW5+cqt6LQfRW7OAoSraE6pCrl9LoYX1A8n+xsRooxJ+igajZlbaDk4Tg47E3Gws8hHZxu5IP9fXhlkrs+CnIyIb7BAcvowXqM4ICb/dLhEvB2EmkpJSo1IVW6AG+n1nROePT4IjyiEMK8xe57bL7sFhscTcE8b9G6dpusKefI6osU8VM/IGowDfQ1a+Wh4k7VoIWF6WiEhawm//rtrHScG/2s+i7lPeAhl+v4UL81myiz1gKQAXL6OLIIeQUY83rUhM32eJTY6Ac8jQc6YZYqfcoK0XZ1NsegRqQ6H1QQTYuMYBEsJmj/KsMGjziGiqk3im9xoRd/bDw==
 Authentication-Results: dkim=none (message not signed)
  header.d=none;dmarc=none action=none header.from=nvidia.com;
-Received: from LV2PR12MB5869.namprd12.prod.outlook.com (2603:10b6:408:176::16)
- by PH0PR12MB7959.namprd12.prod.outlook.com (2603:10b6:510:282::22) with
+Received: from CY5PR12MB6084.namprd12.prod.outlook.com (2603:10b6:930:28::7)
+ by PH7PR12MB7965.namprd12.prod.outlook.com (2603:10b6:510:270::8) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7228.34; Wed, 31 Jan
- 2024 14:18:11 +0000
-Received: from LV2PR12MB5869.namprd12.prod.outlook.com
- ([fe80::96dd:1160:6472:9873]) by LV2PR12MB5869.namprd12.prod.outlook.com
- ([fe80::96dd:1160:6472:9873%6]) with mapi id 15.20.7228.029; Wed, 31 Jan 2024
- 14:18:11 +0000
-Date: Wed, 31 Jan 2024 10:18:10 -0400
-From: Jason Gunthorpe <jgg@nvidia.com>
-To: Michael Guralnik <michaelgur@nvidia.com>
-Cc: Leon Romanovsky <leon@kernel.org>, Leon Romanovsky <leonro@nvidia.com>,
-	Edward Srouji <edwards@nvidia.com>, linux-rdma@vger.kernel.org,
-	Maor Gottlieb <maorg@nvidia.com>, Mark Zhang <markzhang@nvidia.com>,
-	Tamar Mashiah <tmashiah@nvidia.com>,
-	Yishai Hadas <yishaih@nvidia.com>,
-	Or Har-Toov <ohartoov@nvidia.com>
+ 2024 14:35:25 +0000
+Received: from CY5PR12MB6084.namprd12.prod.outlook.com
+ ([fe80::3e6e:c7c3:2618:2b68]) by CY5PR12MB6084.namprd12.prod.outlook.com
+ ([fe80::3e6e:c7c3:2618:2b68%7]) with mapi id 15.20.7228.029; Wed, 31 Jan 2024
+ 14:35:25 +0000
+Message-ID: <25276919-9544-5af0-51ed-7ce5e6b8edad@nvidia.com>
+Date: Wed, 31 Jan 2024 16:35:17 +0200
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
 Subject: Re: [PATCH rdma-next v1 5/6] RDMA/mlx5: Change check for cacheable
  user mkeys
-Message-ID: <20240131141810.GH1455070@nvidia.com>
+To: Jason Gunthorpe <jgg@nvidia.com>
+Cc: Leon Romanovsky <leon@kernel.org>, Leon Romanovsky <leonro@nvidia.com>,
+ Edward Srouji <edwards@nvidia.com>, linux-rdma@vger.kernel.org,
+ Maor Gottlieb <maorg@nvidia.com>, Mark Zhang <markzhang@nvidia.com>,
+ Tamar Mashiah <tmashiah@nvidia.com>, Yishai Hadas <yishaih@nvidia.com>,
+ Or Har-Toov <ohartoov@nvidia.com>
 References: <7429abbc-5400-b034-c26a-cdc587689904@nvidia.com>
  <5e04d7a1-5382-179b-968f-97820e376129@nvidia.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <5e04d7a1-5382-179b-968f-97820e376129@nvidia.com>
-X-ClientProxiedBy: BL1PR13CA0022.namprd13.prod.outlook.com
- (2603:10b6:208:256::27) To LV2PR12MB5869.namprd12.prod.outlook.com
- (2603:10b6:408:176::16)
+ <20240131141810.GH1455070@nvidia.com>
+Content-Language: en-US
+From: Michael Guralnik <michaelgur@nvidia.com>
+In-Reply-To: <20240131141810.GH1455070@nvidia.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: LO4P123CA0363.GBRP123.PROD.OUTLOOK.COM
+ (2603:10a6:600:18e::8) To CY5PR12MB6084.namprd12.prod.outlook.com
+ (2603:10b6:930:28::7)
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
@@ -84,85 +87,101 @@ List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: LV2PR12MB5869:EE_|PH0PR12MB7959:EE_
-X-MS-Office365-Filtering-Correlation-Id: 4304e8a2-1ce1-4733-b0c3-08dc226774d7
+X-MS-TrafficTypeDiagnostic: CY5PR12MB6084:EE_|PH7PR12MB7965:EE_
+X-MS-Office365-Filtering-Correlation-Id: 0f483c92-32ce-43c4-557a-08dc2269dc94
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
 X-Microsoft-Antispam-Message-Info:
-	q8rrf3utb+ezpetNkNgx63+CwXN9wPJLSBSupcZz1cS4sgJP2OqtKJx2gT5qxVZIXThkKN0KmrI5M9ES5j6fZ5NBBKHE0Hdx+UXye50XOfxZ4L2nl4MEfGdaH+Mhgfkm0jYB3Fsg/rfLfdP2eTJRvewQnxRgMzGXIxeriJzl9v4z5hE3SEK/Snt6sQtLMUTLMDdRBClv9vFAhwO6k/8Uq4ZhbVvWxbl9o1Wxty4+fz5tre3e9lpYbB+Gzxu+SZsgYSZUd2BknnzSO3+lwXH4mrLZSRqiZNm97Qk7prTQd0TNYSRxNCtVTVKuKLnre4e0FpzRYRELPdd4jvc+66bpWy0lYECe+8qZ8Cjj23OxOBmju6kCfSNecN1AeT59mAfML5IJg3e/FddV/4p4HTqggylH7cKUAPHmdgAOzJpFTGjlTEFfuF1LSOFqCQ+LPDYqQ/ctpyg/NxFejM2gp7eYW41RbgwSgPLl6oMbolClSQQGklqrzUw0yaW0p2T4w0X/qnj8BdVVLSiE4uN92JlREDjjYIBxu/UZpc+HQOuvX2kvqx4Hoc0fiqASC526ozsn
+	SpUPE7X/DD/Ww8wG6C/rfNL7SU+ZJvtY9YQg87SgRMWh/TlfPCS4c5PIFImHo7uLs2ezhNbxq0+jkNpuPNVX0GyEpC38sTrYYEpJj6lYpwo3PKxw7fs2iNtEfHQSoa56zKYsl7cR2eBXttJsdrUbt4mZKzxock71KnEkry6MPE20C0QTQKqnz1mpMBG8QljNfCxhfzUR5w3dPvLI0eYtw6oVP2arHGj8M5NPgbrvcGLpA5/st7P0OWa8IW51vyQ2hz0jeoupwfYmmcuEGmCXdUF070+FnrqP92BUjyb9o3SKTpgK4V/Py+2ugyjuxVAzuuBnfivJ/kSrFuGKgiEiFW2yHTFJ0uQAElgetLHp3ej/TNcSl/7YySdFkNsdM00mADIW7aQ+QYBmyDMfFzdU419McJ8yFeWj5ubwhfJ9698i8cFFPJ2GUVoOooqIr0t9dOjZND+WBsj4G4VdS+skf+8ciN0zV+3HgY8xd62N1hFMIv4ybtTnYhl6kIrJa7ghP17V8mY/8L4Hd2ZJXlM4ZdsTpBulInAf823ND9DhKjjixecKuQCTCQ3WmbxSp8HGG2uYnv6jM11TlTxt6UCNqsl9Debt2Rg3v0q9QxQLQhI2r6gMDMKZhmWCwBZEqjp/IgwtS416KpkpodltO6o71w==
 X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:LV2PR12MB5869.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(136003)(366004)(376002)(346002)(39860400002)(396003)(230922051799003)(186009)(451199024)(1800799012)(64100799003)(36756003)(86362001)(8676002)(6862004)(66899024)(8936002)(4326008)(2906002)(6636002)(5660300002)(33656002)(6486002)(66946007)(54906003)(37006003)(66556008)(66476007)(316002)(53546011)(38100700002)(6512007)(6506007)(478600001)(2616005)(26005)(107886003)(1076003)(41300700001);DIR:OUT;SFP:1101;
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CY5PR12MB6084.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376002)(39860400002)(136003)(396003)(346002)(366004)(230922051799003)(451199024)(186009)(1800799012)(64100799003)(36756003)(66899024)(8676002)(8936002)(4326008)(2906002)(31696002)(5660300002)(316002)(86362001)(6486002)(6862004)(66476007)(6636002)(54906003)(37006003)(66556008)(66946007)(38100700002)(53546011)(6666004)(6506007)(478600001)(6512007)(2616005)(26005)(107886003)(41300700001)(31686004)(45980500001)(43740500002);DIR:OUT;SFP:1101;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
 X-MS-Exchange-AntiSpam-MessageData-0:
-	=?us-ascii?Q?bNJchTcd9qBI4kph47F1UZ+I/EysUtNnfbffFGU+bfc6136w5i7aa+1ur/Hl?=
- =?us-ascii?Q?hKdR5EpfVUkJ5zhU/Eok8VHak4trkt3NTDWK34iXTp1qNbMfp6iwrE2x3No/?=
- =?us-ascii?Q?kSfaaR9T+P2+YSfvEWRIjNOAsS9ypAb9QDszO/SX1zgNefDadksDiRi+fSuP?=
- =?us-ascii?Q?5dW56HKSDJGSxQi2gacxGmg1SqEEtR5YdT3HvRN9D/SP6Q1aVKeD701Lb6qT?=
- =?us-ascii?Q?5O3i3yyB7zWrcG70o7vEG02FirMmV5BqFzbBIgLNEYZmIdX39mKpiaY+2bZI?=
- =?us-ascii?Q?KU64tbiGSz3of3Xld2G7xwmzbMsZWXPHPwkGjDsIrOJgoG1P8R4iDcOojndJ?=
- =?us-ascii?Q?dFlldc78JbBfnpRka0//+jqMGavA5xjngUTu9qJRRRVwU60ojqEp8DJK8FqQ?=
- =?us-ascii?Q?c52ZCZXXAdMo41j52gEt3I4/XMrmscoobFILcBVi+eO/muks4oyLI8OVChIq?=
- =?us-ascii?Q?Tn+kDkNiPVqiGWwZl0Ptof7XxHi/ENOytTpZ6JuTFnivB6HHoAG0uyFYho12?=
- =?us-ascii?Q?P4WoGQOf84mIGIYGgpbFA9nmadrXzy3CcxOES4OAf9KEEMcaM5eWnmwUkxV4?=
- =?us-ascii?Q?bp1tZD7nqwxly4sLzQxNX5bUhOy6tAX5sqNfUs3zjozT6rODj7GJtk82Cusu?=
- =?us-ascii?Q?3o45UVXd2JHyTkHmXhwlChmLg6ebgiz+N0Ufhsl0uUNrBeEFNZF65kCaTKnx?=
- =?us-ascii?Q?tqs6V+foUpbNwhC0jZ7DW9t2ix4D7NpMw6BncSSnhVPzkvDttwKeEWjy+5rn?=
- =?us-ascii?Q?xH0FF+8fBh9jHyyGlZ9rCXUybMiZBBpT3s3mrwiglun5kZXixOns7Sb7dhH/?=
- =?us-ascii?Q?kl58l2KdpvvG8MRZZU9Zr/LWPXptNaYZi5irlHDgH4jhCE9QRu7454SUl1vM?=
- =?us-ascii?Q?jGWshc+JAdZskuffPn0EwOTBBlgsfvFDVQS0/0q6dY6cgIYGVCDo1vsdt5kU?=
- =?us-ascii?Q?oYdE7beFItDZu5nb7xUEh6ol2289ncGbNYMckMlA2far9ijPRs466zV2Croy?=
- =?us-ascii?Q?hPf4GIYBkDAUhPLQlQIYiKuXBVk4M52Ap0fQ4c8iJWhZNdKMbNFMz9CEvkG4?=
- =?us-ascii?Q?ded/a8C8WlR1yaShmlXeuI8p2ImIqnE+3s5q1OF2peh9LHkWysci267pa+Dj?=
- =?us-ascii?Q?p7uFJb0bOKGaoLP68IdDbEiNj068yGltLugO0gsIB7ZcSFwCbI56Sc1mAH9o?=
- =?us-ascii?Q?Cx7QmWFAnNEuoqsnLnfdpTLJtoBjQrtA93JW8EW4+x3Swre19NC5DEprFSa8?=
- =?us-ascii?Q?0weRALA26enoCCV0AGfbNGaf+get55eS65jvlSGvMLpwAvw2vnX+tzH/yrWU?=
- =?us-ascii?Q?X8ptCKYWd21TAgOdtNtWYq0IntYWgte2wSIpDpy4XrnFBb5/ym3cTrvwvC5z?=
- =?us-ascii?Q?F9x6El4dhPQLkODQCugiUyCeuWSeXketqhz1O5/6GvvlnFacqns3CfxCSp+Z?=
- =?us-ascii?Q?QKJzYZCHJDTSxwvYZAGdG1L60fC9YblPBKxNlj6417aK7dPrSE872N84IO0Z?=
- =?us-ascii?Q?w99Q9mpUJnzeyZ1LySWrA5MMe/djvbPaVwNh7fUWiqtNbmwHRY0Cz4uur7NQ?=
- =?us-ascii?Q?WAiYx9NkhoVkSJm1A0BOXjGgjPHPMGA9hji8pUt9?=
+	=?utf-8?B?Q1NzOUQ5Uis1cnpkNVBDY3BXSkdvbXJOYk9DT0prbGYxbmhCV0NKaG44Vkkx?=
+ =?utf-8?B?enV2TmMzQVJ5eFB0Y3doNFliZ2tKbUp2ZnBXakVodnppQyt0RHpOTmFpRW5I?=
+ =?utf-8?B?SXBKM3BiaEpVOWxka1BmUXgwMm9jSEw4cVplcUQrUml4T0NOdDNwVGJtNEtU?=
+ =?utf-8?B?aEVkeHRnRmpTMGozZ0YxQnZNa01rVkhqOG1wQkVtVWpXUTlXY0tMSDJGMUx1?=
+ =?utf-8?B?R1BYQ1g2TkZSeGVOZ1JEbHROSjNmb3ZLdTFlK0YrNUkwSXhoZTROUk1jSk0v?=
+ =?utf-8?B?V0pTQk1ualJicjNLVEo5cVVDbnVad05rZ241RU1IQ2M2OTk3WW1TaDd5ajB3?=
+ =?utf-8?B?Y0Voc2FjZlFkYjZkcVF0V3lPejBLbDVhbHNxY0t3MTcwVGQ5L0FITmM3djJk?=
+ =?utf-8?B?cXhyUHZTYm1yUXJxaXNPZlJsUEF5TjZUSmU2U3FpdWhROFBlUURvNDlzczNy?=
+ =?utf-8?B?MWVKSjlPYUUwRGt5Ym8wOWxNMUFDeHhPZG5leHlrcTAvTjRBYjl1azJiYkJL?=
+ =?utf-8?B?WGV0VHFHZURRNHVzaGJnaC9DL1FtZVVoek5KNGM1VjhZb0MvKzgrdEV6WlZK?=
+ =?utf-8?B?UFFUMGJUajZBS2J3MDZsZlR3Tkc3T0ZLWFhwbml5dXE3RWpqZHhFSnBrcTMw?=
+ =?utf-8?B?VEd0SWNUbXZTL0hmMUlTMURvVmtJbFFUQW1tMHRaMHBvYmNxbEpqd21pSEtN?=
+ =?utf-8?B?MmVVd2tIZFBHOFhWL2RjTTd3dWtUNVNRSUZZL1hGK1RseG0ybWcxYWFqOXRn?=
+ =?utf-8?B?RmgwZ1JsSUR3aHNjSVVTMTR5NjRMTStqOTFVbCs5S1MwK3ZPZXhiamdyY2hp?=
+ =?utf-8?B?K21NYTh2Z2M0Vm0xbWdTVGJpUVNhSm1mekhOVnBnU2plR0wxUmhaM2VYVmRq?=
+ =?utf-8?B?aDVxRURHR2VZYzJreS94RU9KOHZ2QnFkeGticEZ1SWx2R250T0d5c0M5RkQ3?=
+ =?utf-8?B?QWx3U1JIV2V0a1ZqYTdOTlBtdmhhcUZRQy9mOXhuQ3g1VGpXcEtBb2NpbWNq?=
+ =?utf-8?B?cXF2YjRFNEIxR0VLd3hMUmZFSjc0c3JmcEhPclQzVUFXMzUxUkFESjdGRzZC?=
+ =?utf-8?B?R2ZFWXZhU1ROMUROWWRMOUQrODBMTXZhanB1NTVUa3NWak1EV2t1T1ZHV3dR?=
+ =?utf-8?B?TkVDNHNyVnZpWThKMklKb1ppZkNFblJERmZtQVNEZzdic04yTy9qMzlxdEl2?=
+ =?utf-8?B?cGt5c01XQlZCaWkraGtHV0xrM0VKNFlsdXpNTGdBbDZYS0t3TXA0RklzKzlY?=
+ =?utf-8?B?R3BlaHJQNTB5WU10bmt5MDZyaVhZTk5HWlpYU3NwbUlGb2xGbDMwdDNLZmMw?=
+ =?utf-8?B?RERCWkFXUW1OK1BhNURiWHRnMW1rcmRLUFFUbmV4SGRTUUY1Rk5DcnV2Q1dK?=
+ =?utf-8?B?bGtZaFczS0RvRElpOEt2am0ydyt1NkhhVTRsN1RFeDRaUTFCMGhmWjV1cTc4?=
+ =?utf-8?B?ei81TngzaUJoV3Q4OFpUSmQ5dXhIbE9wY3FTejVRcDU3amVSOXl5YThoVmp3?=
+ =?utf-8?B?MFBHZC9Jck5PRy9mY2NjU1prbXYxbXc3QlFwVVpJanFtVXJpbEhmU00zWDM1?=
+ =?utf-8?B?UEVIM0g2b1FvRXdlcWd5RkdiektFbWlmR01TcldiMFJNK3YyZDhKbFdKMmdt?=
+ =?utf-8?B?a0lteEZENkpHdmZvd1hQMHpBWkx3SFVrcXpXdk1ldDVqRXlVOUFkYU8vUEF2?=
+ =?utf-8?B?TzdGUlZIOEp2L1dreC9XYVJ0RVNwOXB5cnZHUmFyL0VmaXpta3pHeG1HUlhk?=
+ =?utf-8?B?UFNnRmdvakcvWkZMNUFteUlwcTRCTVVGY2ZRdDVFZmdWb3IraHJCeE5iVjl3?=
+ =?utf-8?B?Y2VNNlV1ZENmRjVBUExTMUw3UTNJYThiOHZpSXYyRFJUNU5DTU11em1yTW1k?=
+ =?utf-8?B?cjluWHkzUDhYZXZKa3k5V1lPc05iVHlUaU1CRlU3aTcySWdUZ1FjZVJyZ0hX?=
+ =?utf-8?B?SGJsV1kwZk14ZXRUWkoxTEhiZ3VEN2FFUkRRdW5tZlRYMlo0Z2t1aEtiNjgx?=
+ =?utf-8?B?b1NMbzRwcll2RE4yYU0xZlVFdndlVExNTktjOWlOMHhpbUJuNW1IcDluUWJj?=
+ =?utf-8?B?K21ZMWdGV2Iyb0FnUDNjdmNzZFpqVHVEZjJHU0IwKzNjZWVtWjk1VzZuRlhM?=
+ =?utf-8?Q?KFFoP2NWWDv6Lz+KONFUU5vj/?=
 X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 4304e8a2-1ce1-4733-b0c3-08dc226774d7
-X-MS-Exchange-CrossTenant-AuthSource: LV2PR12MB5869.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 0f483c92-32ce-43c4-557a-08dc2269dc94
+X-MS-Exchange-CrossTenant-AuthSource: CY5PR12MB6084.namprd12.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 31 Jan 2024 14:18:11.8490
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 31 Jan 2024 14:35:24.9662
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: G1M4W5K90UN3MnCxkLfSWRplXnlr5o6Yvzrwd7PkZ2mOt3BXguqYtjeiQQwH1bXH
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR12MB7959
+X-MS-Exchange-CrossTenant-UserPrincipalName: yASNu9cJHzFDbfxjvFxdBrZhwaJ01h8imO4xZ0GgtywPpXxLEVlKok2yZeoNEdZ69i40/Er0Tw7OV7G2sEFJeQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH7PR12MB7965
 
-On Wed, Jan 31, 2024 at 02:50:03PM +0200, Michael Guralnik wrote:
-> On 29/01/2024 19:52, Jason Gunthorpe wrote:
-> > On Sun, Jan 28, 2024 at 11:29:15AM +0200, Leon Romanovsky wrote:
-> > > From: Or Har-Toov <ohartoov@nvidia.com>
-> > > 
-> > > In the dereg flow, UMEM is not a good enough indication whether an MR
-> > > is from userspace since in mlx5_ib_rereg_user_mr there are some cases
-> > > when a new MR is created and the UMEM of the old MR is set to NULL.
-> > Why is this a problem though? The only thing the umem has to do is to
-> > trigger the UMR optimization. If UMR is not triggered then the mkey is
-> > destroyed and it shouldn't be part of the cache at all.
-> 
-> The problem is that it doesn't trigger the UMR on mkeys that are dereged
-> from the rereg flow.
-> Optimally, we'd want them to return to the cache, if possible.
 
-Right, so you suggest changing the umem and umr_can_load into
-is_cacheable_mkey() and carefully ensuring the rb_key.ndescs is 
-zero for non-umrable?
+On 31/01/2024 16:18, Jason Gunthorpe wrote:
+> On Wed, Jan 31, 2024 at 02:50:03PM +0200, Michael Guralnik wrote:
+>> On 29/01/2024 19:52, Jason Gunthorpe wrote:
+>>> On Sun, Jan 28, 2024 at 11:29:15AM +0200, Leon Romanovsky wrote:
+>>>> From: Or Har-Toov <ohartoov@nvidia.com>
+>>>>
+>>>> In the dereg flow, UMEM is not a good enough indication whether an MR
+>>>> is from userspace since in mlx5_ib_rereg_user_mr there are some cases
+>>>> when a new MR is created and the UMEM of the old MR is set to NULL.
+>>> Why is this a problem though? The only thing the umem has to do is to
+>>> trigger the UMR optimization. If UMR is not triggered then the mkey is
+>>> destroyed and it shouldn't be part of the cache at all.
+>> The problem is that it doesn't trigger the UMR on mkeys that are dereged
+>> from the rereg flow.
+>> Optimally, we'd want them to return to the cache, if possible.
+> Right, so you suggest changing the umem and umr_can_load into
+> is_cacheable_mkey() and carefully ensuring the rb_key.ndescs is
+> zero for non-umrable?
 
-> We can keep relying on the UMEM to decide whether we want to try to return
-> them to cache, as you suggested in the revoke_mr() below, but that way those
-> mkeys will not return to the cache and we have to deal with the in_use in
-> the revoke flow.
+Yes. The code is already written trying to ensure this and we've rephrased
+a comment in the previous patch to describe this more accurately.
 
-I don't know what this in_use means? in_use should be only an issue if
-the cache_ent is set? Are we really having in_use be set and cache_ent
-bet NULL? That seems like a different bug that should be fixed by
-keeping cache_ent and in_use consistent.
+>> We can keep relying on the UMEM to decide whether we want to try to return
+>> them to cache, as you suggested in the revoke_mr() below, but that way those
+>> mkeys will not return to the cache and we have to deal with the in_use in
+>> the revoke flow.
+> I don't know what this in_use means? in_use should be only an issue if
+> the cache_ent is set? Are we really having in_use be set and cache_ent
+> bet NULL? That seems like a different bug that should be fixed by
+> keeping cache_ent and in_use consistent.
 
-Jason
+in_use should be handled only if mkey has a cache_ent.
+
+I take back what I wrote previously, in_use should be handled in revoke_mr
+no matter how we choose to implement this, since we're not guaranteed to
+succeed in UMR and might end up dereging mkeys from the cache.
+
 
