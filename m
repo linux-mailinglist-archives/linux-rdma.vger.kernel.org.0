@@ -1,317 +1,117 @@
-Return-Path: <linux-rdma+bounces-817-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-818-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id CF70A84361C
-	for <lists+linux-rdma@lfdr.de>; Wed, 31 Jan 2024 06:34:29 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id EA94284369D
+	for <lists+linux-rdma@lfdr.de>; Wed, 31 Jan 2024 07:25:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 44C1A1F26D57
-	for <lists+linux-rdma@lfdr.de>; Wed, 31 Jan 2024 05:34:29 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 296601C259BA
+	for <lists+linux-rdma@lfdr.de>; Wed, 31 Jan 2024 06:25:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C10DA3D572;
-	Wed, 31 Jan 2024 05:34:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 40D113E48C;
+	Wed, 31 Jan 2024 06:25:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmx.net header.i=arthur_mueller@gmx.net header.b="akr253Wc"
+	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="TPI6HSO2"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.21])
+Received: from mx0b-00069f02.pphosted.com (mx0b-00069f02.pphosted.com [205.220.177.32])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0DDDA3DB86
-	for <linux-rdma@vger.kernel.org>; Wed, 31 Jan 2024 05:34:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.21
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DE0213F8C0;
+	Wed, 31 Jan 2024 06:25:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.177.32
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706679262; cv=none; b=IUFwsoyfxove+1iVVW14d373KPbJzj2INd476f8WQGWyDZhBWnJFdvnrc0moDrBJDlpaSl2bhnoCdK7FYvOB/8oyrQ0OZvY/ooSjZFpshsio12IKdRFUL+egljgKIkg+Y3yomCYsmch1LbNgJyTYQOh4F1pMSLMJzHRSAcybpAg=
+	t=1706682306; cv=none; b=oXqOqlNcw+DvZIb9pIUzUEhoSmff5zagElnO9g8oBOXZU0tuPL7EttgECvD5VeqGwp70iGjZZRoXIjR4ZLW+Sy8Lx0yfmQgEtDLskaU3Qb2b8fIjtEDmMxMeafkKeiNE0PZoD4RFJM8cNV9YDWlEnClAjgsq47/k3Vh/Z4AEjcc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706679262; c=relaxed/simple;
-	bh=X2TMcyZgx4GoqrxwlUn7HBJHPcHzKufS7bcEbkunjKo=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=JKp4WOWQAnuESohTaloAi+45GysFA0R0gthQ/Q7mcdYJ+JqUTAfvYYJkFc9N4cp5uUupIeMneIJf8lR4YojeplvxDgy9VBSQZ4NgrpqUwb4sD8lGe36iXFnRyLXoRsYBucFGkIvL2hMe5lLJwfy5m6q+W6dgJtCEnAR6Og6AWRo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.net; spf=pass smtp.mailfrom=gmx.net; dkim=pass (2048-bit key) header.d=gmx.net header.i=arthur_mueller@gmx.net header.b=akr253Wc; arc=none smtp.client-ip=212.227.17.21
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.net
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-	s=s31663417; t=1706679242; x=1707284042; i=arthur_mueller@gmx.net;
-	bh=X2TMcyZgx4GoqrxwlUn7HBJHPcHzKufS7bcEbkunjKo=;
-	h=X-UI-Sender-Class:Subject:From:To:Cc:Date:In-Reply-To:
-	 References;
-	b=akr253WcTltQWpIhHOjzGjRukLzkcjCSjYXDDxepIN1Ro4C1AeW1XL4QBOEsoEBx
-	 OLtGMdyTQxHrnUV40UoYYhSzIK85UTbx4wmNKGePO/uj/fJwkNGJa4hdSMQV9uXdk
-	 ctqu9FgRj0A+qFgqaqwOw/iBE9z1z0UrddU9bdHgiFxJ+tzLDQFBJ2HiFxBkXSA3N
-	 3IBqpma2lkMlaaXxiyq9Btv3E2HUSiyWkKWrIcZiTyr8D8BhQk0Nwr1sVyhZ69mPs
-	 2pjq8nSz7az8uAnd4M7rDFRiYfrl9v/0CRvl4F0ufUoBVJDcM6UGRa2J3eTaPmGCL
-	 tSOTbnys+cZt6wDrPA==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from [192.168.178.20] ([82.135.83.88]) by mail.gmx.net (mrgmx104
- [212.227.17.168]) with ESMTPSA (Nemesis) id 1MgNh1-1qqSxR2lnL-00hzPs; Wed, 31
- Jan 2024 06:34:02 +0100
-Message-ID: <9a40e66eb8ffc48a2e3765cf77f49914d57c55e7.camel@gmx.net>
-Subject: Re: Error when running fio against nvme-of rdma target (mlx5 driver)
-From: Arthur Muller <arthur_mueller@gmx.net>
-To: Martin Oliveira <Martin.Oliveira@eideticom.com>, 
-	"linux-nvme@lists.infradead.org"
-	 <linux-nvme@lists.infradead.org>, "iommu@lists.linux-foundation.org"
-	 <iommu@lists.linux-foundation.org>, "linux-rdma@vger.kernel.org"
-	 <linux-rdma@vger.kernel.org>
-Cc: Kelly Ursenbach <Kelly.Ursenbach@eideticom.com>, "Lee, Jason"
-	 <jasonlee@lanl.gov>, Logan Gunthorpe <Logan.Gunthorpe@eideticom.com>
-Date: Wed, 31 Jan 2024 06:34:00 +0100
-In-Reply-To: <MW3PR19MB42505C41C2BA3F425A5CB606E42D9@MW3PR19MB4250.namprd19.prod.outlook.com>
-References: 
-	<MW3PR19MB42505C41C2BA3F425A5CB606E42D9@MW3PR19MB4250.namprd19.prod.outlook.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.44.4-0ubuntu2 
+	s=arc-20240116; t=1706682306; c=relaxed/simple;
+	bh=2OixQkP1XzLT6upfkeYL3L91QeFp8NUr/iLMR5vPQMY=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=QP7TXhG+nZYEkgpnU9SFzuYmHmHJWngiri5rcJXcspF3hu/yEUGfUPY88CZmMgHdTZDnu5EleUcTCuyQAI5KY6/O4gbL80QvCgG8xaecFr+IoP3e6kzu8Kx2LL3+MFkBHrEDSMgZR2DTn4QuQMqjbKmQlvIQsPDpzhT8zZ4ZBQs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=oracle.com; spf=pass smtp.mailfrom=oracle.com; dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b=TPI6HSO2; arc=none smtp.client-ip=205.220.177.32
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=oracle.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oracle.com
+Received: from pps.filterd (m0246630.ppops.net [127.0.0.1])
+	by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 40UKwxjD003144;
+	Wed, 31 Jan 2024 06:24:58 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-transfer-encoding;
+ s=corp-2023-11-20; bh=A9/Y6j4xelEy7IoU7lyY7odQxgra+0pw5+1WBLZmJ7k=;
+ b=TPI6HSO2w83Qx1uoOHnVArIxRnARz65gejBZ4keH4l89p9Y8If16XQeo6/2q7d3NBTh7
+ qBIFeSeQeKCDvZH8D6DScanCHXQYI7gOpwPFYN7KL2jOObRdzuJcYMrv4H6EycrCsrdm
+ zuYHM2YezVEXJwvxIO6S0zRQH4rmvrQgNa9y2TnN0ozmFgaF709XmbTFXFvCx2nD3T1l
+ i7tJOPZUhmUO7hLJRfAo1xlkoBRPTvE/kvr6QAoGocB9bILCs9qe6YdcECOVZqHvkDT9
+ 2yAx99StaGOZcMlLVkaLVVc1EItnh2Wx1XZd2H7EbUkdOjPf2sTBZYeo6zmiHBEr2s+i aw== 
+Received: from iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta02.appoci.oracle.com [147.154.18.20])
+	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3vvr8egtm5-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Wed, 31 Jan 2024 06:24:57 +0000
+Received: from pps.filterd (iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
+	by iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 40V61JUE035424;
+	Wed, 31 Jan 2024 06:24:57 GMT
+Received: from pps.reinject (localhost [127.0.0.1])
+	by iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTPS id 3vvr9ebs2x-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Wed, 31 Jan 2024 06:24:57 +0000
+Received: from iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
+	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 40V6MZN0010633;
+	Wed, 31 Jan 2024 06:24:56 GMT
+Received: from brm-x62-14.us.oracle.com (brm-x62-14.us.oracle.com [10.80.150.231])
+	by iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTP id 3vvr9ebs27-1;
+	Wed, 31 Jan 2024 06:24:56 +0000
+From: William Kucharski <william.kucharski@oracle.com>
+To: Bart Van Assche <bvanassche@acm.org>, Jason Gunthorpe <jgg@ziepe.ca>,
+        Leon Romanovsky <leon@kernel.org>, linux-rdma@vger.kernel.org,
+        target-devel@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc: William Kucharski <william.kucharski@oracle.com>
+Subject: [PATCH 0/1] RDMA/srpt: Do not register event handler until srpt device is fully setup
+Date: Tue, 30 Jan 2024 23:24:37 -0700
+Message-Id: <20240131062438.869370-1-william.kucharski@oracle.com>
+X-Mailer: git-send-email 2.39.3
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Provags-ID: V03:K1:LMGM8yxU2RQjto9mqaBAgaSvmmMzsbNirqEzW+6wujy99FqI4yf
- Jo6KXZDMtmDqxMn9PH8n32YiWG2qc61zAUYSUYYyFX6+Dq3vFoImE0ULlseRgtPGy1GPTHy
- TsQW75SK82Ra3ik2yA7ZcbT/iphxxQ9VgNWH2eZFIkHNUNDXXYx1+OyInrIpWj6Zv8PzUIR
- OsObj+Zw58n3XtGkfZ2Kw==
-X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:Y0+249djvDI=;PSfPc8kLKi2IojN4XEPDr8UiKy3
- mrxOLCSPu864oM+Gt5l+cJlRfN8fAMv9jQIkVNBBQJVOEULY/nI0kffEv5CGI/XzxbV9RoWaZ
- BQ8OJKCH+ijLgyF3+bA2vGfl1B62xUM4p19fIRi0cQ2cMJYLwSwQpUmL70vdkWX4HQqJzEaRt
- f/UhLpiR2SQF/tCkHsUe92ENOCPHELM78p0QjeazkEoqTPKi0tDFBrxClhYElkiZ5hvOHFIOf
- CEupyiIiRhMF+r8pHoFl3I9ViXyvFKRdc3Et76AGykHeV2UKKA98HGu9eJeWrjOPXKiCW0ceS
- opcl9SaVQhwXlk2DK2DNBrjtsFnlwaG/Zo79tJNawqIPvmjpJa0EBTuydl64nasuDP7PS5gwH
- 7/3LEm2aWcDsVOE8rN8Tgk05RRsp7HzIl3YiA6tLi82GWBvxrAbMMDRbR0l4U9Pq371aI0r1/
- 669U8+mR0MYG5jm+aHPvlBiLcsGO79CMrCLm2NWqTkf0S37w5zYHbvIBDbSqKRgTY1x4BZRKY
- AceTPeSS02biQhTDcZf6r7NkKDM35e1htO4zxpsz0aaY7u79rclu7FJ4mYE0ht2R9rnmXolck
- UI/yMwUYDXwp1OSIIpuaEnEFAmGOb473P2pk7rWvk3DKYUqGYJIuPDnKrXiI3fQml+Jp4lGD2
- GMAiQzPJ0w/C7T5Igh6jw3xPcsP+KFFH87elZ+rOhsztATp5PcT0Rsww7EDXQL02gH/77At3j
- hPjhmwi3cTPo/bK3Q1lXwxlvTqOZ8Y/rRVH4IEduSTH2SE4vfxfV3JoEC3H+Bk1klSDhlK/MG
- +SIiqpbpqEBlSCqXysCGSoUpGeCtGZ0Cbc9KDXMwwKLUOF5dMYrxDVVPD+RWblHP+FTuflDXf
- YmRT6amHBUCG92GYOJsVdt1l956ewwQMRm1fte1X/Vpco1lNcRtOoYuKtJkfAF4htzXpnOB2z
- J06Bfg==
+Content-Transfer-Encoding: 8bit
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-01-31_02,2024-01-30_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 bulkscore=5 spamscore=0
+ phishscore=0 adultscore=0 mlxlogscore=999 suspectscore=0 mlxscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2311290000
+ definitions=main-2401310047
+X-Proofpoint-ORIG-GUID: OEhXAkNA8GtjUwouApNKrZKbVXLcMT5v
+X-Proofpoint-GUID: OEhXAkNA8GtjUwouApNKrZKbVXLcMT5v
 
-Dear all,
+Upon occasion, KASAN testing would report a use-after-free Write in
+srpt_refresh_port().
 
-We've encountered a similar issue. In our case, we are using the Lustre
-file system instead of NVMe-oF to connect our storage over the network.
-Our setup involves an AMD EPYC 7282 machine paired with Mellanox
-MT28908 cards. Following the guidelines in the Nvidia documentation:
+In the course of trying to diagnose this, I noticed that the code in
+srpt_add_one() registers an event handler for the srpt device and then
+initializes the ports on the device. If any portion of the
+device port initialization fails, it removes the registration for the
+event handler in the error leg.
 
-https://docs.nvidia.com/networking/display/mlnxenv584150lts/installing+mlnx=
-_en#src-2477565014_InstallingMLNX_EN-InstallationModes
+This felt like a race condition, where an event handler was registered
+before the device ports were fully initialized.
 
-we compiled the MLNX_EN 5.8 LTS driver using VMA. Additionally, we
-experimented with the latest MLNX_EN 23.10 driver, encountering the
-same issue.=20
+While I can't definitively say this was the issue - this change may just
+modify timing to mask the real issue - when modified to not register
+the event handler until all of the device ports are intialized,
+the issue no longer reproduces in KASAN.
 
-We use kernel 5.15.0 now. This problems first appered after upgrading
-our systems from Ubuntu 20.04 LTS to Ubuntu 22.04 LTS and, thus, from
-kernel 5.4 to 5.15. Unfortunately, we are not completely sure about the
-MLNX_EN driver version prior to the upgrade, but strongly assume <=3D
-5.8.
+I'm submitting  this patch if only so those better acquainted with
+the details of this procedure can analyze whether this was an actual
+issue or just intellectual uncomfortableness with the code.
 
-The error process appears to be initiated by the following error
-message:
+William Kucharski (1):
+  Upon rare occasions, KASAN reports a use-after-free Write in srpt_refresh_port().
 
-mlx5_core 0000:63:00.0: AMD-Vi: Event logged [IO_PAGE_FAULT
-domain=3D0x0003 address=3D0x200020f758 flags=3D0x0020]
+ drivers/infiniband/ulp/srpt/ib_srpt.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-This error results in timeouts and read operation faults within the
-Lustre file system on both the client and storage ends, potentially
-leading to a complete storage failure.=20
-
-Subsequently, the IO_PAGE_FAULT error is often followed by a "local
-protection error," although this is not consistent. The error tends to
-manifest after a prolonged period of constant network operation,
-typically after approximately one day of continuous read and write
-operations involving a Postgres database on the file system.=20
-
-Regrettably, we have been unable to trigger this error by a manual
-action.
-
-Kind regards,
-Arthur M=C3=BCller
-
-
-On Wed, 2022-02-09 at 02:50 +0000, Martin Oliveira wrote:
-> Hello,
->=20
-> We have been hitting an error when running IO over our nvme-of setup,
-> using the mlx5 driver and we are wondering if anyone has seen
-> anything similar/has any suggestions.
->=20
-> Both initiator and target are AMD EPYC 7502 machines connected over
-> RDMA using a Mellanox MT28908. Target has 12 NVMe SSDs which are
-> exposed as a single NVMe fabrics device, one physical SSD per
-> namespace.
->=20
-> When running an fio job targeting directly the fabrics devices (no
-> filesystem, see script at the end), within a minute or so we start
-> seeing errors like this:
->=20
-> [=C2=A0 408.368677] mlx5_core 0000:c1:00.0: AMD-Vi: Event logged
-> [IO_PAGE_FAULT domain=3D0x002f address=3D0x24d08000 flags=3D0x0000]
-> [=C2=A0 408.372201] infiniband mlx5_0: mlx5_handle_error_cqe:332:(pid 0):
-> WC error: 4, Message: local protection error
-> [=C2=A0 408.380181] infiniband mlx5_0: dump_cqe:272:(pid 0): dump error
-> cqe
-> [=C2=A0 408.380187] 00000000: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 0=
-0
-> 00
-> [=C2=A0 408.380189] 00000010: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 0=
-0
-> 00
-> [=C2=A0 408.380191] 00000020: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 0=
-0
-> 00
-> [=C2=A0 408.380192] 00000030: 00 00 00 00 a9 00 56 04 00 00 01 e9 00 54 e=
-8
-> e2
-> [=C2=A0 408.380230] nvme nvme15: RECV for CQE 0x00000000ce392ed9 failed
-> with status local protection error (4)
-> [=C2=A0 408.380235] nvme nvme15: starting error recovery
-> [=C2=A0 408.380238] nvme_ns_head_submit_bio: 726 callbacks suppressed
-> [=C2=A0 408.380246] block nvme15n2: no usable path - requeuing I/O
-> [=C2=A0 408.380284] block nvme15n5: no usable path - requeuing I/O
-> [=C2=A0 408.380298] block nvme15n1: no usable path - requeuing I/O
-> [=C2=A0 408.380304] block nvme15n11: no usable path - requeuing I/O
-> [=C2=A0 408.380304] block nvme15n11: no usable path - requeuing I/O
-> [=C2=A0 408.380330] block nvme15n1: no usable path - requeuing I/O
-> [=C2=A0 408.380350] block nvme15n2: no usable path - requeuing I/O
-> [=C2=A0 408.380371] block nvme15n6: no usable path - requeuing I/O
-> [=C2=A0 408.380377] block nvme15n6: no usable path - requeuing I/O
-> [=C2=A0 408.380382] block nvme15n4: no usable path - requeuing I/O
-> [=C2=A0 408.380472] mlx5_core 0000:c1:00.0: AMD-Vi: Event logged
-> [IO_PAGE_FAULT domain=3D0x002f address=3D0x24d09000 flags=3D0x0000]
-> [=C2=A0 408.391265] mlx5_core 0000:c1:00.0: AMD-Vi: Event logged
-> [IO_PAGE_FAULT domain=3D0x002f address=3D0x24d0a000 flags=3D0x0000]
-> [=C2=A0 415.125967] nvmet: ctrl 1 keep-alive timer (5 seconds) expired!
-> [=C2=A0 415.131898] nvmet: ctrl 1 fatal error occurred!
->=20
-> Occasionally, we've seen the following stack trace:
->=20
-> [ 1158.152464] kernel BUG at drivers/iommu/amd/io_pgtable.c:485!
-> [ 1158.427696] invalid opcode: 0000 [#1] SMP NOPTI
-> [ 1158.432228] CPU: 51 PID: 796 Comm: kworker/51:1H Tainted:
-> P=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 OE=C2=A0=C2=
-=A0=C2=A0=C2=A0 5.13.0-eid-athena-g6fb4e704d11c-dirty #14
-> [ 1158.443867] Hardware name: GIGABYTE R272-Z32-00/MZ32-AR0-00, BIOS
-> R21 10/08/2020
-> [ 1158.451252] Workqueue: ib-comp-wq ib_cq_poll_work [ib_core]
-> [ 1158.456884] RIP: 0010:iommu_v1_unmap_page+0xed/0x100
-> [ 1158.461849] Code: 48 8b 45 d0 65 48 33 04 25 28 00 00 00 75 1d 48
-> 83 c4 10 4c 89 f0 5b 41 5c 41 5d 41 5e 41 5f 5d c3 49 8d 46 ff 4c 85
-> f0 74 d6 <0f> 0b e8 1c 38 46 00 66 66 2e 0f 1f 84 00 00 00 00 00 90
-> 0f 1f 44
-> [ 1158.480589] RSP: 0018:ffffabb520587bd0 EFLAGS: 00010206
-> [ 1158.485812] RAX: 0001000000061fff RBX: 0000000000100000 RCX:
-> 0000000000000027
-> [ 1158.492938] RDX: 0000000030562000 RSI: ffff000000000000 RDI:
-> 0000000000000000
-> [ 1158.500071] RBP: ffffabb520587c08 R08: ffffabb520587bd0 R09:
-> 0000000000000000
-> [ 1158.507202] R10: 0000000000000001 R11: 000ffffffffff000 R12:
-> ffff9984abd9e318
-> [ 1158.514326] R13: ffff9984abd9e310 R14: 0001000000062000 R15:
-> 0001000000000000
-> [ 1158.521452] FS:=C2=A0 0000000000000000(0000) GS:ffff99a36c8c0000(0000)
-> knlGS:0000000000000000
-> [ 1158.529540] CS:=C2=A0 0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> [ 1158.535286] CR2: 00007f75b04f1000 CR3: 00000001eddd8000 CR4:
-> 0000000000350ee0
-> [ 1158.542419] Call Trace:
-> [ 1158.544877]=C2=A0 amd_iommu_unmap+0x2c/0x40
-> [ 1158.548653]=C2=A0 __iommu_unmap+0xc4/0x170
-> [ 1158.552344]=C2=A0 iommu_unmap_fast+0xe/0x10
-> [ 1158.556100]=C2=A0 __iommu_dma_unmap+0x85/0x120
-> [ 1158.560115]=C2=A0 iommu_dma_unmap_sg+0x95/0x110
-> [ 1158.564213]=C2=A0 dma_unmap_sg_attrs+0x42/0x50
-> [ 1158.568225]=C2=A0 rdma_rw_ctx_destroy+0x6e/0xc0 [ib_core]
-> [ 1158.573201]=C2=A0 nvmet_rdma_rw_ctx_destroy+0xa7/0xc0 [nvmet_rdma]
-> [ 1158.578944]=C2=A0 nvmet_rdma_read_data_done+0x5c/0xf0 [nvmet_rdma]
-> [ 1158.584683]=C2=A0 __ib_process_cq+0x8e/0x150 [ib_core]
-> [ 1158.589398]=C2=A0 ib_cq_poll_work+0x2b/0x80 [ib_core]
-> [ 1158.594027]=C2=A0 process_one_work+0x220/0x3c0
-> [ 1158.598038]=C2=A0 worker_thread+0x4d/0x3f0
-> [ 1158.601696]=C2=A0 kthread+0x114/0x150
-> [ 1158.604928]=C2=A0 ? process_one_work+0x3c0/0x3c0
-> [ 1158.609114]=C2=A0 ? kthread_park+0x90/0x90
-> [ 1158.612783]=C2=A0 ret_from_fork+0x22/0x30
->=20
-> We first saw this on a 5.13 kernel but could reproduce with 5.17-rc2.
->=20
-> We found a possibly related bug report [1] that suggested disabling
-> the IOMMU could help, but even after I disabled it (amd_iommu=3Doff
-> iommu=3Doff) I still get errors (nvme IO timeouts). Another thread from
-> 2016[2] suggested that disabling some kernel debug options could
-> workaround the "local protection error" but that didn't help either.
->=20
-> As far as I can tell, the disks are fine, as running the same fio job
-> targeting the real physical devices works fine.
->=20
-> Any suggestions are appreciated.
->=20
-> Thanks,
-> Martin
->=20
-> [1]: https://bugzilla.kernel.org/show_bug.cgi?id=3D210177
-> [2]:
-> https://lore.kernel.org/all/6BBFD126-877C-4638-BB91-ABF715E29326@oracle.c=
-om/
->=20
-> fio script:
-> [global]
-> name=3Dfio-seq-write
-> rw=3Dwrite
-> bs=3D1M
-> direct=3D1
-> numjobs=3D32
-> time_based
-> group_reporting=3D1
-> runtime=3D18000
-> end_fsync=3D1
-> size=3D10G
-> ioengine=3Dlibaio
-> iodepth=3D16
->=20
-> [file1]
-> filename=3D/dev/nvme0n1
->=20
-> [file2]
-> filename=3D/dev/nvme0n2
->=20
-> [file3]
-> filename=3D/dev/nvme0n3
->=20
-> [file4]
-> filename=3D/dev/nvme0n4
->=20
-> [file5]
-> filename=3D/dev/nvme0n5
->=20
-> [file6]
-> filename=3D/dev/nvme0n6
->=20
-> [file7]
-> filename=3D/dev/nvme0n7
->=20
-> [file8]
-> filename=3D/dev/nvme0n8
->=20
-> [file9]
-> filename=3D/dev/nvme0n9
->=20
-> [file10]
-> filename=3D/dev/nvme0n10
->=20
-> [file11]
-> filename=3D/dev/nvme0n11
->=20
-> [file12]
-> filename=3D/dev/nvme0n12
-> _______________________________________________
-> iommu mailing list
-> iommu@lists.linux-foundation.org
-> https://lists.linuxfoundation.org/mailman/listinfo/iommu
+-- 
+2.43.0
 
 
