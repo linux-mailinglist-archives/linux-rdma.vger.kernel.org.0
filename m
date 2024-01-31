@@ -1,222 +1,204 @@
-Return-Path: <linux-rdma+bounces-833-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-834-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 305B2843FA6
-	for <lists+linux-rdma@lfdr.de>; Wed, 31 Jan 2024 13:50:27 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 52348843FAA
+	for <lists+linux-rdma@lfdr.de>; Wed, 31 Jan 2024 13:50:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DC31E28EFBD
-	for <lists+linux-rdma@lfdr.de>; Wed, 31 Jan 2024 12:50:25 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 76ECB1C271B5
+	for <lists+linux-rdma@lfdr.de>; Wed, 31 Jan 2024 12:50:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8D0EB79DDF;
-	Wed, 31 Jan 2024 12:50:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 04BB97AE50;
+	Wed, 31 Jan 2024 12:50:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="rU9UBTio"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="tZpnI/Px"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from NAM11-CO1-obe.outbound.protection.outlook.com (mail-co1nam11on2087.outbound.protection.outlook.com [40.107.220.87])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2FBEF7B3E5
-	for <linux-rdma@vger.kernel.org>; Wed, 31 Jan 2024 12:50:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.220.87
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706705418; cv=fail; b=C6N1QMdcefVJlr1KD85uV1SIUqb2hU2vl1LV50iKIC+LxL9Iq9OQCThCTbkKRP8duMqU2wiF1jpYODkcEtb5tgjijCf55uqdHrCf/9wrH2FUFAAqTvDdxfmO+fNyRB40SjlaxsOMuUoWBOK8k6pJjiFNmCZwvPlZ/3iqcrfd2N4=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706705418; c=relaxed/simple;
-	bh=ifQEsNZM6+ksLx4ZFNU/e84uZWkYjJmd5n2Oa6AoDlw=;
-	h=Message-ID:Date:Subject:References:From:To:Cc:In-Reply-To:
-	 Content-Type:MIME-Version; b=HjpyjJUL0rtN6gL3FmgLPFOy0B6Z/7aLqElzP0h7wwbtguR8/siQ7ITrlP55slQutgxB/+/7bYDG3H9JB0LIGh1jn/IegTcBmSq8ZdFwd3s4KydrwNbkfP4Sz1mkQwmuvWPWeCQePD3TNZHxeZ7Icz6SwVPn9tY0nnAcMbDY/Ag=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=rU9UBTio; arc=fail smtp.client-ip=40.107.220.87
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=LnbIykYMYtyjMKN8riooG0Ow1KwIJ1egRCJBvfoyoKptezHqcyJ5q0nwDJWv+HvkWZGSPosexDfzrAzrsv2whFEqwagH6FjZv8oHCHTtmzQ5IzimdNLnaLWb7n3qYcyrlfckaeCT2RuWlQFpNTcWm+7lrTkdNWVnAMhzucVgRwL0YAb2FjaGuW8SiDJ2C5tfAveNyskRPHo1fLfnb6YDCjlKN+f5hKnF+kAmEcvBKAgw5uTz/Ul3YFhJaJnbTMGlcOMEjEuVB3A0U82YDZnk6ThpUqENjq1gBdyXqFbJ+0ai09GqKP73/ray952IELvbBtQC2JUWyXyLzCoB4FqmRQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=qT9RuqCjfEE1yqyJtUJ3+pYpyWsI4tY7v/sQZRykj90=;
- b=Uz7XtpSCAd3gVF25l5LsC7VyMHedTbRbbTc4zaNm4qUCKDirQ5BiYFjaQ83adU46nVQCZhLL/NmixV05spl+UA8ufma0g2u7y/QSmSaoEWuPBGKi3PXR49G1wMiXOwVDYJh8QhInboT3jU5RUOoosmrq8BMOIga2EvDlc0A6Z8P5EZ+XwLIm/RjviPkw64hCvHklCXg6rjbL9VsQ+AlPm7VATGZdl3ogPnq/9k+q0gCOUXvdVNRjjoY5gGH2emk5UwBCCVKe6ETwCW1DleqPEcIm/PNiElHjns3B2Zpbi6QH+BQVCZwF1WhAje3mMc75o4iDg9+UYqQmLvtY599DlQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=qT9RuqCjfEE1yqyJtUJ3+pYpyWsI4tY7v/sQZRykj90=;
- b=rU9UBTiowP74GhP9CH4RETw0dDXJQ6dSaCCXR854UZ/uNqM33FfK1yffRQMqlJ4yfyxcYlozCiNLoeZF9I1QQ/Yb+VnZIYsJyhNUkzKmkOeQNMvs3VO4oHpWbbkP3Xr7WWws5eLsspZ2c8LbQOvcLV+F5M2FvKuH50P5/53U95IQz1kVbwVtubLJI2KJVrTaDVp7YWc+F9M8gmkwm6mJ39EaguIG926cBCfk52J9TG1azTGSauZjLhN6MQEwF6wYdE2M9eQ7Ta6ozmuwr9554i39c5rd5CJj4sBzvnBo8otocAN//J9oogu6qcEjjDVV0V7ceIMG+WP9YxrhTrB3Sw==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nvidia.com;
-Received: from CY5PR12MB6084.namprd12.prod.outlook.com (2603:10b6:930:28::7)
- by SJ2PR12MB8010.namprd12.prod.outlook.com (2603:10b6:a03:4c7::14) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7228.34; Wed, 31 Jan
- 2024 12:50:11 +0000
-Received: from CY5PR12MB6084.namprd12.prod.outlook.com
- ([fe80::3e6e:c7c3:2618:2b68]) by CY5PR12MB6084.namprd12.prod.outlook.com
- ([fe80::3e6e:c7c3:2618:2b68%7]) with mapi id 15.20.7228.029; Wed, 31 Jan 2024
- 12:50:11 +0000
-Message-ID: <5e04d7a1-5382-179b-968f-97820e376129@nvidia.com>
-Date: Wed, 31 Jan 2024 14:50:03 +0200
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.14.0
-Subject: RE: [PATCH rdma-next v1 5/6] RDMA/mlx5: Change check for cacheable
- user mkeys
-Content-Language: en-US
-References: <7429abbc-5400-b034-c26a-cdc587689904@nvidia.com>
-From: Michael Guralnik <michaelgur@nvidia.com>
-To: Jason Gunthorpe <jgg@nvidia.com>, Leon Romanovsky <leon@kernel.org>
-Cc: Leon Romanovsky <leonro@nvidia.com>, Edward Srouji <edwards@nvidia.com>,
- linux-rdma@vger.kernel.org, Maor Gottlieb <maorg@nvidia.com>,
- Mark Zhang <markzhang@nvidia.com>, Tamar Mashiah <tmashiah@nvidia.com>,
- Yishai Hadas <yishaih@nvidia.com>, Or Har-Toov <ohartoov@nvidia.com>
-In-Reply-To: <7429abbc-5400-b034-c26a-cdc587689904@nvidia.com>
-X-Forwarded-Message-Id: <7429abbc-5400-b034-c26a-cdc587689904@nvidia.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: LO2P265CA0083.GBRP265.PROD.OUTLOOK.COM
- (2603:10a6:600:8::23) To CY5PR12MB6084.namprd12.prod.outlook.com
- (2603:10b6:930:28::7)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AF46C79DDF;
+	Wed, 31 Jan 2024 12:50:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1706705442; cv=none; b=iAymcL6wsyk7ldgCvhWnGoxif28pk/T7VbLHiiW11+Hq1l4ix3ew5fdP3W4UmUkeiOuN2OWuah84jMlaLt/WrxOCgiZTZv7fM5XDCRX9L7eA/I7GpeI9l3Q1QHk6BX1KZwguNByjNAJL9NzQdP12bYYlCyejNPjJWBLbg10LLUA=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1706705442; c=relaxed/simple;
+	bh=RHrTYtjNRuLO1M8OAwEXyjHhu2rKdRpSTOU9mSp3TKE=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=hpZv0Suls9CIyXihoubtaAfUWGeNchmMo8pyNT1eppokbnIb2+vf/WAGevxsI3OLeqg8ecMMTDQf5QXd3mZFvZetOc3kLCpt36ONlL4vuE+DjJA2fA4B/hY4urQDnqUbYFhFAdpI0dXKjHvtIqBtL+IeOZk49FE3lKS8px04C7M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=tZpnI/Px; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A1ACDC433C7;
+	Wed, 31 Jan 2024 12:50:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1706705442;
+	bh=RHrTYtjNRuLO1M8OAwEXyjHhu2rKdRpSTOU9mSp3TKE=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=tZpnI/Pxr/BNixfR5YQwEkVC0VCJn/HgEAYGry3QuEGwjEJ9lyN2a0DVxcMq7TcmU
+	 zF3tosaaYGdAfDUQmR0UuBqASgJfh5G5NhLfuuX2m4z4qLi4QgApzFLXa6BRtCwqBR
+	 UV+76I6uHWU5I2T7A6JOuHPtRbb43+eW7tV3n7XPMJrC9mws5C697YKBATsXUbF8Bs
+	 Znn6/jbmeLEUie68X6VLT+ILwWrMc4JSEsbH6gjkyg/jjHsJoQgeguP+4h6me0vXPu
+	 oW5TjgEMafJYGAJVKwG1v5lSpZRDdvz7Y9NDLBa8CqsXnaupLpvUMEv/GBBhzG04Em
+	 +cZ+xZ5G9vRqg==
+Date: Wed, 31 Jan 2024 14:50:37 +0200
+From: Leon Romanovsky <leon@kernel.org>
+To: Daniel Vacek <neelx@redhat.com>
+Cc: Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
+	Jason Gunthorpe <jgg@ziepe.ca>,
+	Brendan Cunningham <bcunningham@cornelisnetworks.com>,
+	Patrick Kelsey <pat.kelsey@cornelisnetworks.com>,
+	stable@vger.kernel.org, Mats Kronberg <kronberg@nsc.liu.se>,
+	linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] IB/hfi1: Fix sdma.h tx->num_descs off-by-one error (take
+ two)
+Message-ID: <20240131125037.GF71813@unreal>
+References: <20240126152125.869509-1-neelx@redhat.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: CY5PR12MB6084:EE_|SJ2PR12MB8010:EE_
-X-MS-Office365-Filtering-Correlation-Id: fb496733-fc04-46bb-5803-08dc225b2958
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	BLexFIfQ2pW1urDF99LsSV3qGxGUQ+7EC+K/L/AFzuTHG70mY6kxS/WQbunfM2MwBnQiLqvR41AJy8hCHzLLAJDEdStVKeEAg0EOCCV8kGYJtHAfma7m5xpVF6yUGqzzyotWmW8bV9cRwa2ZnGypcIa6bxJ0RnnQfip/TiGagZRclVnppKK9A2wqkl3ejzGSHKT4bIEtL9T4QKn6EQslmlLG0+FXQzZVMyA+Bdl/ByuIdE56j2hFR9gXyUVt8fzsKPiHb/Uc9TZ7gOmlzEmtdmI2KDvukHFQsNtPkNvclpOwF9tqJeuZ0cVLvqNfk81meZuqUO3wctpj5P+RIXJIsVvPv75smP4KtvjlVKhRZ4qjRkoEYN5dM/JkcNxsI9/L7k56orQ6voGdhcBykZLDihKn2FfEFmfirmbbbReOlhqye2bRkuKT6SIAFZhjydZL+mVdBqnNfq/hYHdQgiGdmoH373ee9SckxvJ1s0hsnTX1IWyPoT6iPwGohgr52xKHrY9A+7xHyjs8JQ3++k/s12ZZ0/SU6wfqEtUMEC06m98HwpqNJ/df7m6HgE5tQlca32gaLyy+DSbMsRLOLv3IejZWYilrbg+An8U8aXCDtcNzsJBX638fAhEU1vXUuW/nebRi+RpKVtB95w0sf49FVQ==
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CY5PR12MB6084.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(136003)(39860400002)(376002)(366004)(346002)(396003)(230922051799003)(451199024)(64100799003)(186009)(1800799012)(66899024)(31696002)(86362001)(41300700001)(83380400001)(36756003)(38100700002)(478600001)(8676002)(8936002)(2616005)(4326008)(110136005)(66946007)(66556008)(54906003)(66476007)(316002)(6486002)(26005)(2906002)(107886003)(53546011)(6666004)(6512007)(5660300002)(6506007)(31686004)(45980500001)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?utf-8?B?WTROQUdaL3FvdHg5VWV6dTQ0MzNMRXg0aHA3bW9NNUZLYTNWdk8weHVGU1JV?=
- =?utf-8?B?RjdjbnpJY1B4ZXc2eG52WGFvSTYwckNvMjdmZThTR3VjOWM0eittbFphNHY4?=
- =?utf-8?B?SkFIbGFUbkxlNTViNkNIaHRXZlp0dDI4N1VZYTFVbnowWXhvWHhTREg4Si81?=
- =?utf-8?B?a1FhWHkyS0UwTlpFOHdPRkw2eDhicEJOVHhiSlFzZXB1dE40SXpYbzhhckJ0?=
- =?utf-8?B?eUUxUkE3V3o1VzdOcmRQR0g3cUxYNHcra2pBODA5dlZ1U28vaDJSNmF4cjVJ?=
- =?utf-8?B?NUJJeTdsNTdPa0hhM0k3dkt4OXJVVTE3Y05vWk5wVTZITmJVd1RnZVFoTUc1?=
- =?utf-8?B?TVhxemd5ZTdvZXBiVXNwaU5PTi9CeXZodms2SnFRMk9hZHpnVHc5MUdreUdj?=
- =?utf-8?B?WitDQ3VzQXdraWEwMGRCaXZsQ09IakFoS1Z5MHNkcElYbEJhRWd6eUo4a1lu?=
- =?utf-8?B?VUdKV0VKUldKZ1ora29tSXBPN0h2R0FhNnh3TkRCc3cxS2FUdHYzOE8zRThS?=
- =?utf-8?B?bFNvV0trbG5rb3BOcDZJVU8zd0hZN2x5MTVvR3hnNUYvMnBiWjlXcllXRUxV?=
- =?utf-8?B?ZVloZWFLcEJxTzBKcU1ndmM3YU1URGpzb0tRTmx6WDdCWGIxRDd1OXByNHZM?=
- =?utf-8?B?aGFSTk5oU1pVanBEb1hpOS9lQVQ4TFFjQkZxYk43dHdVR1pBbDhnWjJTdkhi?=
- =?utf-8?B?aGZFN3VFV0dnUXlET0JnRjU1Z01ER1d2QXlYM29HWEtvZnAvZ2VISkRybytr?=
- =?utf-8?B?NVFZZkdHRUY3Nmo4TEw0Q3B5Y3hWUHBlSDV5aDA0d1NCWS81YlNtL1lWaEp6?=
- =?utf-8?B?NjZnbTVrM2VqSUFVcjduSmQ4RkFXQkVFeXJLclczVS9DQ2hrd08yOGNuRnFE?=
- =?utf-8?B?OC9WZVJkclRpL0t0emdzZ3hNWnhzRmVrakFHMlltVWtMbnJ3UC9reG1mN0xu?=
- =?utf-8?B?c0tuYlY2TWNsMDJYajFIN3lMSnJQNElkWk9aSW13bmhHUEkvU0tzTFhCOEE2?=
- =?utf-8?B?TW1TQ0kyWmRQK2d1NWtLVGN3NFdLVVl0ckgwNG1XdU9qcVhaaG4valZvQStN?=
- =?utf-8?B?YjNOR2dMUDNhaFAySFdLOUpZOHh3emlQc21ZR0htSyt3WGZ3QTBKR0UxNG9l?=
- =?utf-8?B?SjZneldlT2dmRHZHaU1SLzFpTHcxUm44SzRlclZlZGZwRlBoNXd1ZmQrRWI3?=
- =?utf-8?B?YmUxSHc2MW5NdmR5Y25mSk8vRHJlM3BXMnY1OTBha1BzcGZ0N0RRQjE4Y3V3?=
- =?utf-8?B?aHJlNXMvemtLOEJCdEVHcVZTeGxoZ2ZjdysxM3Y3dXUvczRMaGtRT2t1OUY4?=
- =?utf-8?B?UHBjQWtpSHU1ZTkyNXNOd3Vjbkh0OVpyb2NnQnFTRStLSzNseHJDTk1xZStY?=
- =?utf-8?B?dTQ3WWtqT2hEUkFQRGVvczdnOWI0NVYwb3hFTzdXWDdoQWtKRzdNaFBwdW1B?=
- =?utf-8?B?bE5iUmtWb1B4UkYwYUhxT1I3VkVsQWdtRVI3Nk1aT2J4UW4ya1BMUkk3M0ky?=
- =?utf-8?B?VGlkTG94MW5Nemhsc1kzQWhsdEpSS2pKbVZMTFZiRmsvdXdpNTZ6TTFjUkh1?=
- =?utf-8?B?WGI3RytRVUFjNThJZFVJV3RzUG9vUVR4dFpBU0R3eVdyZFAzMERabzN5bG5T?=
- =?utf-8?B?RmU5VlhadWluOVdORlZlZHQ3d1pQUklaQ2UyVk5TM2RWUEIyc0RzaGlzWjFM?=
- =?utf-8?B?d1pDdTFKYzBuZStta3BwdTZWSkk5L3drU0hVaU4yRWtraUE0VlJrcUo1Njlm?=
- =?utf-8?B?V1hHdlhvSFEyaGVHRzBCY3JuNnlnb1lrWGNTd1IzOEJnVmxDaHozYlFLYmlt?=
- =?utf-8?B?djRBdzFKSTRvRnNnL2ZtU05XZTYxMFUxNVZrN20wd29IYWxDZHdRS3l3RWMz?=
- =?utf-8?B?cmlEWXVYbW5TVEJ4S2ZQZTVGLzUrbFlncVpBcUlSSUc1QzU2SG5JSk9wZHFv?=
- =?utf-8?B?MHlrUmFmQXdVTGgzaklGWEhldDA0bG1PclYwUk5Xa2JOOGM4ak1oQ215d1NC?=
- =?utf-8?B?WmdGTVNUSURvaHUrS0ZWM284a0h0ZE8zRmZCRlkzbHFJbGhaOHhBRVVVNkFa?=
- =?utf-8?B?clM2WnRHVXVaUHNnZk5rcUJBU2pkcS93amx5emNlNWJiZ3ZpRTBiWGY1YnFw?=
- =?utf-8?B?SmtVMHQ2SU1hcWI5UEVEZW41ZlRCR3lkSk5yQWlDZEV6anRsQWNJZVczRVYr?=
- =?utf-8?B?NVE9PQ==?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: fb496733-fc04-46bb-5803-08dc225b2958
-X-MS-Exchange-CrossTenant-AuthSource: CY5PR12MB6084.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 31 Jan 2024 12:50:11.2859
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: dG+Hurg6YIMRoZrhRBINGp/a1ECxHcjcACX53qqvGllG56vIf2f73QyPYYxUcJJ/Noz19KEVpRe5I7iKiNMPLQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ2PR12MB8010
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240126152125.869509-1-neelx@redhat.com>
 
-On 29/01/2024 19:52, Jason Gunthorpe wrote:
-> On Sun, Jan 28, 2024 at 11:29:15AM +0200, Leon Romanovsky wrote:
->> From: Or Har-Toov <ohartoov@nvidia.com>
->>
->> In the dereg flow, UMEM is not a good enough indication whether an MR
->> is from userspace since in mlx5_ib_rereg_user_mr there are some cases
->> when a new MR is created and the UMEM of the old MR is set to NULL.
-> Why is this a problem though? The only thing the umem has to do is to
-> trigger the UMR optimization. If UMR is not triggered then the mkey is
-> destroyed and it shouldn't be part of the cache at all.
-
-The problem is that it doesn't trigger the UMR on mkeys that are dereged
-from the rereg flow.
-Optimally, we'd want them to return to the cache, if possible.
-
-We can keep relying on the UMEM to decide whether we want to try to return
-them to cache, as you suggested in the revoke_mr() below, but that way those
-mkeys will not return to the cache and we have to deal with the in_use in
-the revoke flow.
-
->> @@ -1914,7 +1913,9 @@ int mlx5_ib_dereg_mr(struct ib_mr *ibmr, struct 
->> ib_udata *udata)
->> ib_umem_stop_invalidation_notifier(mr->umem);
->> }
->> - if (!mr->mmkey.cache_ent) {
->> + /* Stop DMA */
->> + if (!is_cacheable_mkey(&mr->mmkey) || mlx5r_umr_revoke_mr(mr) ||
->> + cache_ent_find_and_store(dev, mr)) {
-> And now the mlx5r_umr_can_load_pas() can been lost, that isn't good. A
-> non-umr-able object should never be placed in the cache. If the mkey's
-> size is too big it has to be freed normally.
-
-mlx5r_can_load_pas() will not get lost since mkeys that are not-umr-able 
-will
-not have rb_key or cache_ent set so is_cacheable_mkey is always false 
-for them.
-
->> rc = destroy_mkey(to_mdev(mr->ibmr.device), mr);
->> if (rc)
->> return rc;
-> I'm not sure it is right to re-order this? The revokation of a mkey
-> should be a single operation, which ever path we choose to take..
->
-> Regardless the upstream code doesn't have this ordering so it should
-> all be one sequence of revoking the mkey and synchronizing the cache.
->
-> I suggest to put the revoke sequence into one function:
->
-> static int mlx5_revoke_mr(struct mlx5_ib_mr *mr)
-> {
-> struct mlx5_ib_dev *dev = to_mdev(mr->ibmr.device);
->
-> if (mr->umem && mlx5r_umr_can_load_pas(dev, mr->umem->length)) {
-> if (mlx5r_umr_revoke_mr(mr))
-> goto destroy;
->
-> if (cache_ent_find_and_store(dev, mr))
-> goto destroy;
-> return 0;
+On Fri, Jan 26, 2024 at 04:21:23PM +0100, Daniel Vacek wrote:
+> Unfortunately the commit `fd8958efe877` introduced another error
+> causing the `descs` array to overflow. This reults in further crashes
+> easily reproducible by `sendmsg` system call.
+> 
+> [ 1080.836473] general protection fault, probably for non-canonical address 0x400300015528b00a: 0000 [#1] PREEMPT SMP PTI
+> [ 1080.869326] RIP: 0010:hfi1_ipoib_build_ib_tx_headers.constprop.0+0xe1/0x2b0 [hfi1]
+> --
+> [ 1080.974535] Call Trace:
+> [ 1080.976990]  <TASK>
+> [ 1081.021929]  hfi1_ipoib_send_dma_common+0x7a/0x2e0 [hfi1]
+> [ 1081.027364]  hfi1_ipoib_send_dma_list+0x62/0x270 [hfi1]
+> [ 1081.032633]  hfi1_ipoib_send+0x112/0x300 [hfi1]
+> [ 1081.042001]  ipoib_start_xmit+0x2a9/0x2d0 [ib_ipoib]
+> [ 1081.046978]  dev_hard_start_xmit+0xc4/0x210
+> --
+> [ 1081.148347]  __sys_sendmsg+0x59/0xa0
+> 
+> crash> ipoib_txreq 0xffff9cfeba229f00
+> struct ipoib_txreq {
+>   txreq = {
+>     list = {
+>       next = 0xffff9cfeba229f00,
+>       prev = 0xffff9cfeba229f00
+>     },
+>     descp = 0xffff9cfeba229f40,
+>     coalesce_buf = 0x0,
+>     wait = 0xffff9cfea4e69a48,
+>     complete = 0xffffffffc0fe0760 <hfi1_ipoib_sdma_complete>,
+>     packet_len = 0x46d,
+>     tlen = 0x0,
+>     num_desc = 0x0,
+>     desc_limit = 0x6,
+>     next_descq_idx = 0x45c,
+>     coalesce_idx = 0x0,
+>     flags = 0x0,
+>     descs = {{
+>         qw = {0x8024000120dffb00, 0x4}  # SDMA_DESC0_FIRST_DESC_FLAG (bit 63)
+>       }, {
+>         qw = {  0x3800014231b108, 0x4}
+>       }, {
+>         qw = { 0x310000e4ee0fcf0, 0x8}
+>       }, {
+>         qw = {  0x3000012e9f8000, 0x8}
+>       }, {
+>         qw = {  0x59000dfb9d0000, 0x8}
+>       }, {
+>         qw = {  0x78000e02e40000, 0x8}
+>       }}
+>   },
+>   sdma_hdr =  0x400300015528b000,  <<< invalid pointer in the tx request structure
+>   sdma_status = 0x0,                   SDMA_DESC0_LAST_DESC_FLAG (bit 62)
+>   complete = 0x0,
+>   priv = 0x0,
+>   txq = 0xffff9cfea4e69880,
+>   skb = 0xffff9d099809f400
 > }
->
-> destroy:
-> if (mr->mmkey.cache_ent) {
-> spin_lock_irq(&mr->mmkey.cache_ent->mkeys_queue.lock);
-> mr->mmkey.cache_ent->in_use--;
-> mr->mmkey.cache_ent = NULL;
-> spin_unlock_irq(&mr->mmkey.cache_ent->mkeys_queue.lock);
-> }
-> return destroy_mkey(dev, mr);
-> }
->
-> (notice we probably shouldn't set cache_ent to null without adjusting 
-> in_use)
-> Jason
+> 
+> With this patch the crashes are no longer reproducible and the machine is stable.
+> 
+> Note, the header file changes are just an unrelated clean-up while I was looking
+> around trying to find the bug.
+> 
+> Fixes: fd8958efe877 ("IB/hfi1: Fix sdma.h tx->num_descs off-by-one errors")
+> Cc: stable@vger.kernel.org
+> Reported-by: Mats Kronberg <kronberg@nsc.liu.se>
+> Tested-by: Mats Kronberg <kronberg@nsc.liu.se>
+> Signed-off-by: Daniel Vacek <neelx@redhat.com>
+> ---
+>  drivers/infiniband/hw/hfi1/sdma.c |  2 +-
+>  drivers/infiniband/hw/hfi1/sdma.h | 17 +++++++----------
+>  2 files changed, 8 insertions(+), 11 deletions(-)
+> 
+> diff --git a/drivers/infiniband/hw/hfi1/sdma.c b/drivers/infiniband/hw/hfi1/sdma.c
+> index 6e5ac2023328a..b67d23b1f2862 100644
+> --- a/drivers/infiniband/hw/hfi1/sdma.c
+> +++ b/drivers/infiniband/hw/hfi1/sdma.c
+> @@ -3158,7 +3158,7 @@ int _pad_sdma_tx_descs(struct hfi1_devdata *dd, struct sdma_txreq *tx)
+>  {
+>  	int rval = 0;
+>  
+> -	if ((unlikely(tx->num_desc + 1 == tx->desc_limit))) {
+> +	if ((unlikely(tx->num_desc == tx->desc_limit))) {
+
+Maybe, Dennis?
+
+>  		rval = _extend_sdma_tx_descs(dd, tx);
+>  		if (rval) {
+>  			__sdma_txclean(dd, tx);
+> diff --git a/drivers/infiniband/hw/hfi1/sdma.h b/drivers/infiniband/hw/hfi1/sdma.h
+> index d77246b48434f..362815a8da267 100644
+> --- a/drivers/infiniband/hw/hfi1/sdma.h
+> +++ b/drivers/infiniband/hw/hfi1/sdma.h
+> @@ -639,13 +639,13 @@ static inline void sdma_txclean(struct hfi1_devdata *dd, struct sdma_txreq *tx)
+>  static inline void _sdma_close_tx(struct hfi1_devdata *dd,
+>  				  struct sdma_txreq *tx)
+>  {
+> -	u16 last_desc = tx->num_desc - 1;
+> +	struct sdma_desc *desc = &tx->descp[tx->num_desc - 1];
+>  
+> -	tx->descp[last_desc].qw[0] |= SDMA_DESC0_LAST_DESC_FLAG;
+> -	tx->descp[last_desc].qw[1] |= dd->default_desc1;
+> +	desc->qw[0] |= SDMA_DESC0_LAST_DESC_FLAG;
+> +	desc->qw[1] |= dd->default_desc1;
+>  	if (tx->flags & SDMA_TXREQ_F_URGENT)
+> -		tx->descp[last_desc].qw[1] |= (SDMA_DESC1_HEAD_TO_HOST_FLAG |
+> -					       SDMA_DESC1_INT_REQ_FLAG);
+> +		desc->qw[1] |= (SDMA_DESC1_HEAD_TO_HOST_FLAG |
+> +				SDMA_DESC1_INT_REQ_FLAG);
+
+Unrelated change which doesn't change anything.
+
+>  }
+>  
+>  static inline int _sdma_txadd_daddr(
+> @@ -670,13 +670,10 @@ static inline int _sdma_txadd_daddr(
+>  	tx->tlen -= len;
+>  	/* special cases for last */
+>  	if (!tx->tlen) {
+> -		if (tx->packet_len & (sizeof(u32) - 1)) {
+> +		if (tx->packet_len & (sizeof(u32) - 1))
+>  			rval = _pad_sdma_tx_descs(dd, tx);
+> -			if (rval)
+> -				return rval;
+> -		} else {
+> +		else
+>  			_sdma_close_tx(dd, tx);
+> -		}
+
+Same as before, unrelated change.
+
+>  	}
+>  	return rval;
+>  }
+> -- 
+> 2.43.0
+> 
 
