@@ -1,93 +1,118 @@
-Return-Path: <linux-rdma+bounces-858-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-859-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 34E89845A91
-	for <lists+linux-rdma@lfdr.de>; Thu,  1 Feb 2024 15:48:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 9997E845C14
+	for <lists+linux-rdma@lfdr.de>; Thu,  1 Feb 2024 16:50:00 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6832A1C2812D
-	for <lists+linux-rdma@lfdr.de>; Thu,  1 Feb 2024 14:48:51 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CC1951C27C27
+	for <lists+linux-rdma@lfdr.de>; Thu,  1 Feb 2024 15:49:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AB3B05F49A;
-	Thu,  1 Feb 2024 14:48:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8C49F626B5;
+	Thu,  1 Feb 2024 15:49:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="D5R878vL"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-pg1-f176.google.com (mail-pg1-f176.google.com [209.85.215.176])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3A1B85F467;
-	Thu,  1 Feb 2024 14:48:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3A5E762179;
+	Thu,  1 Feb 2024 15:49:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706798918; cv=none; b=nSDXSR30CpeYFapxcWrihb91mcYk8AbH/NDLVbeBdBRKJgB90o6bY1SlwmiflKmmvmiXh4+/bmQCK/SP3mF5VTXDmelO7nSxD48pgZ/Y3PqltCeYSjT4aBMLMc47ZaVEKULLyxlz0AL1GvIHNUUaR9LTwCLy5236Tvm8ASyfmZQ=
+	t=1706802593; cv=none; b=S3bviHYw9djl7w+eUzo/njOaiqlQpszHzSdE9H/gabzsqil21ZbOhdAg/cug3fU4oMxOjPFIM+PuqxCImNXQ4//Lkp5I4XQu3UHA7Zqxrs8KhmHQ7WlDCQLnNV+zo2o4SDRQQBooVCLSfZ5kErGkmqy+TKGmRmSY+AG0/9B0C68=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706798918; c=relaxed/simple;
-	bh=kgzPQEYyZvtgptsyAcimKMFdgkPe5hWQr95Fm9WJLqc=;
-	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=VpvZ+Pw8zNJ1bu7FRnze3IkaEt90CcPcEiqTkXbAe3CyHA5xCmzbrmDT0X5KKJ8rNHaAZqbVSI/MOCNHzE9Z4vLvW5JH5SQd0Yru2o91bMTVdl7XUq+HBE0v79HGUgSGBx0bleWMOsrfoab2uBa+Mklm4RutdisZJ2jP1DG/qgM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=acm.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.215.176
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=acm.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pg1-f176.google.com with SMTP id 41be03b00d2f7-5ce2aada130so882335a12.1;
-        Thu, 01 Feb 2024 06:48:36 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706798916; x=1707403716;
-        h=content-transfer-encoding:in-reply-to:from:references:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=YZLfNNOA3fPwT/lACRUCWcunwYFYKzsJvZnIb6KlJOQ=;
-        b=OWWmtzt/3eewEiv0AE8XJRPm5CsMJGwtQikJZ2soMHf3XIN+GGt3kfeFN5593qECnD
-         NitNkv7woSFfEPaJuZTkLPfUUUcvjE09719T9K/IsqE6eAhEH96u94TbxOeYtClQvKOt
-         fflHMzG/8BOnDK/9yxDDgReLxbiXmRll7J8SoYsIpfwjqgE6SmDObN1/gQLR9jVe01zE
-         UV3M57IWkdEx2BD6cU09IooK8e78KCc8eUEKKL2jPebXOofYjukOycrJGQb59L4poQDT
-         l19rzsuxObkf5UuuL7HNr8ijWjD4Zdw84mTomSUdb+e4KHx/HiJQireA4SNOYtO1nrC3
-         hCYQ==
-X-Gm-Message-State: AOJu0Yw8/IUxNoLOxz3Y3ksf4Fo6URzrDRyQXa7FIRL1zy7ShxitjaHY
-	6HNILn0ZCoyTGP1AZ2+JVgg4ZgvNmzOoHH76L4IEvdW+xa4z+slo8RUrk3sL
-X-Google-Smtp-Source: AGHT+IHoazbl4mQQ5JGphXQxeDJXPZMugdFyz2WvWnZ5ZmUmWofiwtqkgnur7TqmRPt0yDYYM1GTIg==
-X-Received: by 2002:a05:6a20:1806:b0:19c:7c49:4e6 with SMTP id bk6-20020a056a20180600b0019c7c4904e6mr4181309pzb.51.1706798916373;
-        Thu, 01 Feb 2024 06:48:36 -0800 (PST)
-X-Forwarded-Encrypted: i=0; AJvYcCX2iMVs77hndj2YXUNkEHyliv8W6tg6f5u+doDL5txl1MIYC567kmm1fHMos076AH97tK/xHMOLaL9kMZ1GYFw96oGD0Zw1Kpi10sRHzlXX5xx71I6jQ8ydpFymPC+Za0ffjJXy6qk9QVXJEVMGFXHdoADnxw0NdGJosImOXYLpjigt9rnr4LUaXBe8tybjBTmBWJaKKWqOEdIjPeVl3lU3b8llhUk=
-Received: from [192.168.51.14] (c-73-231-117-72.hsd1.ca.comcast.net. [73.231.117.72])
-        by smtp.gmail.com with ESMTPSA id y12-20020aa7854c000000b006ddc7ed6edfsm11914573pfn.51.2024.02.01.06.48.35
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 01 Feb 2024 06:48:36 -0800 (PST)
-Message-ID: <894db19d-5287-4ed8-a0d9-0211b365eafa@acm.org>
-Date: Thu, 1 Feb 2024 06:48:34 -0800
+	s=arc-20240116; t=1706802593; c=relaxed/simple;
+	bh=yyG+tXwMfUAMz3ARIk0tUpjcZeb5q7dyZl3guKF9XEI=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=KgqkK9iJ1q0u9l4EEUFePCRy4x/k9HZOspVlZV1zmykWabBWvm3Jo579rP5LQRH7oUnASR9d5TFYuFHNnjVyintuTnFPhX2srRMsCvRPPutU1lwGzUOKaNMOvrlS86SrwVVkHqgRKrB4z5j9qUHzxtGYhq65WiUGza0xn+q0rZM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=D5R878vL; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4578CC433F1;
+	Thu,  1 Feb 2024 15:49:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1706802593;
+	bh=yyG+tXwMfUAMz3ARIk0tUpjcZeb5q7dyZl3guKF9XEI=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=D5R878vLpp+NEpb12DzhTaXiVuha7CUkYaNGVUv4HFeSDPDHQwIZJPMu6bS+/ov/u
+	 W0I3xHDNHJ1I7+jUfB0OPmO80Km5O8eRExbsn/LLkytdUHQY0SxKimRQYvxrHiIksl
+	 9l/KCxMV06+LvGm/VEVnI1vCOipD8duidStMHMTculmhtdoPDYgBUCN22PDZMQSvQ4
+	 ZK38poOGk2Anq8mZ4w+g7d8xLK//MOvO7OAgpUKuHmnBkqwLuf617V1jTVNjpv3coj
+	 dXd454290CsnfBqsmdVRHewoj3XSx4nFQvHCMLvsoqIfUdqZHHzwBAa+DuZbiTYGpJ
+	 vtS2mBiIppf4w==
+Date: Thu, 1 Feb 2024 16:49:45 +0100
+From: Simon Horman <horms@kernel.org>
+To: Souradeep Chakrabarti <schakrabarti@linux.microsoft.com>
+Cc: kys@microsoft.com, haiyangz@microsoft.com, wei.liu@kernel.org,
+	decui@microsoft.com, davem@davemloft.net, edumazet@google.com,
+	kuba@kernel.org, pabeni@redhat.com, longli@microsoft.com,
+	yury.norov@gmail.com, leon@kernel.org, cai.huoqing@linux.dev,
+	ssengar@linux.microsoft.com, vkuznets@redhat.com,
+	tglx@linutronix.de, linux-hyperv@vger.kernel.org,
+	netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-rdma@vger.kernel.org, schakrabarti@microsoft.com,
+	stable@vger.kernel.org
+Subject: Re: [PATCH V2 net] hv_netvsc: Fix race condition between
+ netvsc_probe and netvsc_remove
+Message-ID: <20240201154945.GH530335@kernel.org>
+References: <1706686551-28510-1-git-send-email-schakrabarti@linux.microsoft.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 1/1] RDMA/srpt: Do not register event handler until srpt
- device is fully setup
-Content-Language: en-US
-To: William Kucharski <william.kucharski@oracle.com>,
- Jason Gunthorpe <jgg@ziepe.ca>, Leon Romanovsky <leon@kernel.org>,
- linux-rdma@vger.kernel.org, target-devel@vger.kernel.org,
- linux-kernel@vger.kernel.org
-References: <20240131062438.869370-1-william.kucharski@oracle.com>
- <20240131062438.869370-2-william.kucharski@oracle.com>
-From: Bart Van Assche <bvanassche@acm.org>
-In-Reply-To: <20240131062438.869370-2-william.kucharski@oracle.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1706686551-28510-1-git-send-email-schakrabarti@linux.microsoft.com>
 
-On 1/30/24 22:24, William Kucharski wrote:
-> Upon rare occasions, KASAN reports a use-after-free Write
-> in srpt_refresh_port().
+On Tue, Jan 30, 2024 at 11:35:51PM -0800, Souradeep Chakrabarti wrote:
+> In commit ac5047671758 ("hv_netvsc: Disable NAPI before closing the
+> VMBus channel"), napi_disable was getting called for all channels,
+> including all subchannels without confirming if they are enabled or not.
 > 
-> This seems to be because an event handler is registered before the
-> srpt device is fully setup and a race condition upon error may leave a
-> partially setup event handler in place.
+> This caused hv_netvsc getting hung at napi_disable, when netvsc_probe()
+> has finished running but nvdev->subchan_work has not started yet.
+> netvsc_subchan_work() -> rndis_set_subchannel() has not created the
+> sub-channels and because of that netvsc_sc_open() is not running.
+> netvsc_remove() calls cancel_work_sync(&nvdev->subchan_work), for which
+> netvsc_subchan_work did not run.
 > 
-> Instead, only register the event handler after srpt device initialization
-> is complete.
+> netif_napi_add() sets the bit NAPI_STATE_SCHED because it ensures NAPI
+> cannot be scheduled. Then netvsc_sc_open() -> napi_enable will clear the
+> NAPIF_STATE_SCHED bit, so it can be scheduled. napi_disable() does the
+> opposite.
+> 
+> Now during netvsc_device_remove(), when napi_disable is called for those
+> subchannels, napi_disable gets stuck on infinite msleep.
+> 
+> This fix addresses this problem by ensuring that napi_disable() is not
+> getting called for non-enabled NAPI struct.
+> But netif_napi_del() is still necessary for these non-enabled NAPI struct
+> for cleanup purpose.
+> 
+> Call trace:
+> [  654.559417] task:modprobe        state:D stack:    0 pid: 2321 ppid:  1091 flags:0x00004002
+> [  654.568030] Call Trace:
+> [  654.571221]  <TASK>
+> [  654.573790]  __schedule+0x2d6/0x960
+> [  654.577733]  schedule+0x69/0xf0
+> [  654.581214]  schedule_timeout+0x87/0x140
+> [  654.585463]  ? __bpf_trace_tick_stop+0x20/0x20
+> [  654.590291]  msleep+0x2d/0x40
+> [  654.593625]  napi_disable+0x2b/0x80
+> [  654.597437]  netvsc_device_remove+0x8a/0x1f0 [hv_netvsc]
+> [  654.603935]  rndis_filter_device_remove+0x194/0x1c0 [hv_netvsc]
+> [  654.611101]  ? do_wait_intr+0xb0/0xb0
+> [  654.615753]  netvsc_remove+0x7c/0x120 [hv_netvsc]
+> [  654.621675]  vmbus_remove+0x27/0x40 [hv_vmbus]
+> 
+> Cc: stable@vger.kernel.org
+> Fixes: ac5047671758 ("hv_netvsc: Disable NAPI before closing the VMBus channel")
+> Signed-off-by: Souradeep Chakrabarti <schakrabarti@linux.microsoft.com>
+> Reviewed-by: Dexuan Cui <decui@microsoft.com>
+> Reviewed-by: Haiyang Zhang <haiyangz@microsoft.com>
 
-A Fixes: tag is missing. Otherwise this patch looks good to me. Hence:
-
-Reviewed-by: Bart Van Assche <bvanassche@acm.org>
+Reviewed-by: Simon Horman <horms@kernel.org>
 
