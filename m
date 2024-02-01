@@ -1,50 +1,53 @@
-Return-Path: <linux-rdma+bounces-856-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-857-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id F201A845746
-	for <lists+linux-rdma@lfdr.de>; Thu,  1 Feb 2024 13:20:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id AA99E845851
+	for <lists+linux-rdma@lfdr.de>; Thu,  1 Feb 2024 13:58:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A8604287088
-	for <lists+linux-rdma@lfdr.de>; Thu,  1 Feb 2024 12:20:45 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6827E28A7BD
+	for <lists+linux-rdma@lfdr.de>; Thu,  1 Feb 2024 12:58:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0120F15DBCB;
-	Thu,  1 Feb 2024 12:20:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5701786654;
+	Thu,  1 Feb 2024 12:58:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="l0Sy5Tki"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="oWXNMOz2"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from out-189.mta0.migadu.com (out-189.mta0.migadu.com [91.218.175.189])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A4B1415DBB4;
-	Thu,  1 Feb 2024 12:20:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8CB178663B
+	for <linux-rdma@vger.kernel.org>; Thu,  1 Feb 2024 12:58:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.189
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706790026; cv=none; b=up9bhbN4T+zX2sA0sEIoH3e1AfB55cPLzFGQUpdFYZs+6HS4x2KzhZdHuIOix1tlEvf2D7jRnIvuIGIazRq9we/rhIU10//sP6AiG+ZPEuHXiFZOHmoVsN4sDPD5j/3y1c/dt8UaEHk305Fylxc9NY/CSsW8UO9C1V1KAQFZB/M=
+	t=1706792302; cv=none; b=NLb1eX+f76ulvDvgWFrP5vBxsM3m/Zt+5Jvtk7Md2ivx6AzMbP/YPkPyYEfUyCfX0eVubZDch10KtT4ZWGmDq2gyAK8dH11zWgSoYnK2NuBi9ua2wzh8gxRPBFw/zjVSe7F/l8b29ZXEVDRFRNKB1B5tfZ3EYSosktINm3Tj10Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706790026; c=relaxed/simple;
-	bh=oQNssz3rncvvDdKlqcm3FbBtO0deSJ6YT6kx87aTnfI=;
-	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
-	 In-Reply-To:To:Cc; b=iX3XEFnFDYmaFZSqtb5+ZRFqpSu1r4zmyd6ba1Hr2OtrVI/xMU/hbMAlkIGJqedV5yfdSYG9in4lE2FkjHtvJumAbbnjTG/ZzjLd4Zp21c5r2S2ntOQa6qSeVDix4QMLRwf0tAV/6197T2SJ5Rp1Mj5sX63UXh2OAHS9jB5OA4M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=l0Sy5Tki; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 1E092C433C7;
-	Thu,  1 Feb 2024 12:20:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1706790026;
-	bh=oQNssz3rncvvDdKlqcm3FbBtO0deSJ6YT6kx87aTnfI=;
-	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=l0Sy5Tki+sEEGnirNnX7uwshOZPJO51URpUSP7uei8rRUEpwzcPtfOSUoOMDA7NbD
-	 iXNGD5EM4YJXnQXyMtPfzcSxasVeX9YUtNIQvl0vhHHi6DBz8yZ8m7VDN9g9A1M6Zw
-	 Xnv5Xn6u1yO6vlV1n58MUMle+6GsJR1nFn5DvmWL4Szo9vbx2pbEeNM2TZ/+9xFHdT
-	 ITZTAoYG7ycoX/uf9o+0j+pr41PgQWGK4d40kADIWg67M94KRH2ieFMfWoLoA1/g5t
-	 +sKEGRBiIW0KuNnMp9qXjU4C1Y85WIn5Y1yiypSfqwtQcx+8dOPN6LeB1MmZX9hBsC
-	 7kEpvtSkEBREQ==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id F3447DC99ED;
-	Thu,  1 Feb 2024 12:20:25 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+	s=arc-20240116; t=1706792302; c=relaxed/simple;
+	bh=D/bE457eiMjYS1TLCkDBtW9flCtWKdg8KZ9hEJVRUWQ=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=ftMr/PlvuzKQm1up4mCnrUS6EaZSfM8jQawPTiwGUOZCqWonCdltxIqCg0DFom1heu/9zuXZ06SCiaf9DgIXKks79DqHhNjRL8dJIfVMl9Z4ccCEvM2NNg6rTDS/hTdkOr9RA3YY2sgBSzWYOYuWBJSuLRK3JSr0F9jrWVRiM3A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=oWXNMOz2; arc=none smtp.client-ip=91.218.175.189
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1706792293;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=WqK5bmrC6v9q8f+Fv5b3h0sxLLVsfhSzo0+czAyzafg=;
+	b=oWXNMOz27y/N8Mb540vwytCT5gRlT+UQ4PWiv0+W3tArqC67TnWN79fKFOTfc9La8TU48X
+	gwe+JfIuKp36JNf5JtvSFv47JPecZq0UpXN9FJ2zz8K8dagp0l2gPdj/KK+Mphope6JjsZ
+	bkOh+c3HCEluOiBzi8XNCW52jcf8+VA=
+From: Guoqing Jiang <guoqing.jiang@linux.dev>
+To: zyjzyj2000@gmail.com,
+	jgg@ziepe.ca,
+	leon@kernel.org
+Cc: linux-rdma@vger.kernel.org
+Subject: [PATCH] RDMA/rxe: Remove unused 'iova' parameter from rxe_mr_init_user
+Date: Thu,  1 Feb 2024 20:57:45 +0800
+Message-Id: <20240201125745.21525-1-guoqing.jiang@linux.dev>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
@@ -52,53 +55,44 @@ List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH 0/4 V3 net-next] net: mana: Assigning IRQ affinity on HT cores
-From: patchwork-bot+netdevbpf@kernel.org
-Message-Id: 
- <170679002599.3757.12151723746549913869.git-patchwork-notify@kernel.org>
-Date: Thu, 01 Feb 2024 12:20:25 +0000
-References: <1706509267-17754-1-git-send-email-schakrabarti@linux.microsoft.com>
-In-Reply-To: <1706509267-17754-1-git-send-email-schakrabarti@linux.microsoft.com>
-To: Souradeep Chakrabarti <schakrabarti@linux.microsoft.com>
-Cc: kys@microsoft.com, haiyangz@microsoft.com, wei.liu@kernel.org,
- decui@microsoft.com, davem@davemloft.net, edumazet@google.com,
- kuba@kernel.org, pabeni@redhat.com, longli@microsoft.com,
- yury.norov@gmail.com, leon@kernel.org, cai.huoqing@linux.dev,
- ssengar@linux.microsoft.com, vkuznets@redhat.com, tglx@linutronix.de,
- linux-hyperv@vger.kernel.org, netdev@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
- schakrabarti@microsoft.com, paulros@microsoft.com
+X-Migadu-Flow: FLOW_OUT
 
-Hello:
+This one is not needed since commit 954afc5a8fd8 ("RDMA/rxe:
+Use members of generic struct in rxe_mr").
 
-This series was applied to netdev/net-next.git (main)
-by Paolo Abeni <pabeni@redhat.com>:
+Signed-off-by: Guoqing Jiang <guoqing.jiang@linux.dev>
+---
+ drivers/infiniband/sw/rxe/rxe_loc.h | 2 +-
+ drivers/infiniband/sw/rxe/rxe_mr.c  | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
 
-On Sun, 28 Jan 2024 22:21:03 -0800 you wrote:
-> This patch set introduces a new helper function irq_setup(),
-> to optimize IRQ distribution for MANA network devices.
-> The patch set makes the driver working 15% faster than
-> with cpumask_local_spread().
-> 
-> Souradeep Chakrabarti (1):
->   net: mana: Assigning IRQ affinity on HT cores
-> 
-> [...]
-
-Here is the summary with links:
-  - [1/4,V3,net-next] cpumask: add cpumask_weight_andnot()
-    https://git.kernel.org/netdev/net-next/c/c1f5204efcbc
-  - [2/4,V3,net-next] cpumask: define cleanup function for cpumasks
-    https://git.kernel.org/netdev/net-next/c/dcee228078c3
-  - [3/4,V3,net-next] net: mana: add a function to spread IRQs per CPUs
-    https://git.kernel.org/netdev/net-next/c/91bfe210e196
-  - [4/4,V3,net-next] net: mana: Assigning IRQ affinity on HT cores
-    https://git.kernel.org/netdev/net-next/c/8afefc361209
-
-You are awesome, thank you!
+diff --git a/drivers/infiniband/sw/rxe/rxe_loc.h b/drivers/infiniband/sw/rxe/rxe_loc.h
+index 4d2a8ef52c85..746110898a0e 100644
+--- a/drivers/infiniband/sw/rxe/rxe_loc.h
++++ b/drivers/infiniband/sw/rxe/rxe_loc.h
+@@ -59,7 +59,7 @@ int rxe_mmap(struct ib_ucontext *context, struct vm_area_struct *vma);
+ /* rxe_mr.c */
+ u8 rxe_get_next_key(u32 last_key);
+ void rxe_mr_init_dma(int access, struct rxe_mr *mr);
+-int rxe_mr_init_user(struct rxe_dev *rxe, u64 start, u64 length, u64 iova,
++int rxe_mr_init_user(struct rxe_dev *rxe, u64 start, u64 length,
+ 		     int access, struct rxe_mr *mr);
+ int rxe_mr_init_fast(int max_pages, struct rxe_mr *mr);
+ int rxe_flush_pmem_iova(struct rxe_mr *mr, u64 iova, unsigned int length);
+diff --git a/drivers/infiniband/sw/rxe/rxe_mr.c b/drivers/infiniband/sw/rxe/rxe_mr.c
+index bc81fde696ee..da3dee520876 100644
+--- a/drivers/infiniband/sw/rxe/rxe_mr.c
++++ b/drivers/infiniband/sw/rxe/rxe_mr.c
+@@ -126,7 +126,7 @@ static int rxe_mr_fill_pages_from_sgt(struct rxe_mr *mr, struct sg_table *sgt)
+ 	return xas_error(&xas);
+ }
+ 
+-int rxe_mr_init_user(struct rxe_dev *rxe, u64 start, u64 length, u64 iova,
++int rxe_mr_init_user(struct rxe_dev *rxe, u64 start, u64 length,
+ 		     int access, struct rxe_mr *mr)
+ {
+ 	struct ib_umem *umem;
 -- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
+2.35.3
 
 
