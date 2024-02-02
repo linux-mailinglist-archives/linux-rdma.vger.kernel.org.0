@@ -1,138 +1,150 @@
-Return-Path: <linux-rdma+bounces-863-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-864-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 134DC846BAB
-	for <lists+linux-rdma@lfdr.de>; Fri,  2 Feb 2024 10:16:26 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id A7793846F6A
+	for <lists+linux-rdma@lfdr.de>; Fri,  2 Feb 2024 12:49:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 08AB51C26F89
-	for <lists+linux-rdma@lfdr.de>; Fri,  2 Feb 2024 09:16:25 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5BA2B1F2A5C2
+	for <lists+linux-rdma@lfdr.de>; Fri,  2 Feb 2024 11:49:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1124977650;
-	Fri,  2 Feb 2024 09:16:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CF08213D506;
+	Fri,  2 Feb 2024 11:49:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="giqW65Tt"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="B1jkFImW"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mx0a-00069f02.pphosted.com (mx0a-00069f02.pphosted.com [205.220.165.32])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ej1-f50.google.com (mail-ej1-f50.google.com [209.85.218.50])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A18EA605DB;
-	Fri,  2 Feb 2024 09:16:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.165.32
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E26455C5E6
+	for <linux-rdma@vger.kernel.org>; Fri,  2 Feb 2024 11:49:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706865372; cv=none; b=bucqx/RDWSpY9FjeS/A4lx8FsVjiMfV3TAr6FSYJa31qQqTGVwdwVOAsR+SCmaIJIT7pFCAojg+pGDvhMIWJXwETrkGSpo46jKsc4OP4ysgDB2HuiRoFrU8Jf08kX/jBpKWK7VP2trDC1N4qxu6JMJbYy8IGAOWuoBxhQePWJ4k=
+	t=1706874596; cv=none; b=Zdn4qmLblsFZ0Sd2cB167Bbw7PJhLH/AtlMmDLK8+YgsSAst/RPQWWX01xMK+alLlt/PRI3RCo+p/QjzRnlRixNDKRCi3c9BQYJ7uvS0oTdWBSuWQFjUvIcpTrbrzvVjk543Pts5/6mPfzB12i3QHLVWZi5Kvvmk5aw4al4hGo4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706865372; c=relaxed/simple;
-	bh=jupD0jZ+G5XPKvqrDMiFv55S/1T9122VpUTg6FgOS4c=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=l7WxU0rAF0GYjqBKLYSHps+GZ8MrDQ4AOEsNC3EyYViZGmARtU+Q247gr48wtnm7wTsG6JVXu5/jdGnOzsvV9rtwF1KQHco+e7m8a7FZctk3IcIbNHW1CxKWVufAWyP0eWEtdeZlFaN9BGASR7S77k8Ht4tYq224nygU42sG7ko=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=oracle.com; spf=pass smtp.mailfrom=oracle.com; dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b=giqW65Tt; arc=none smtp.client-ip=205.220.165.32
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=oracle.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oracle.com
-Received: from pps.filterd (m0333521.ppops.net [127.0.0.1])
-	by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 4128TqlG019825;
-	Fri, 2 Feb 2024 09:16:07 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
- subject : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding; s=corp-2023-11-20;
- bh=0s58srxMlt0tFYwCA04+jek/EjXJpoI5doi8EjmkYNI=;
- b=giqW65TtJnR5Ae5X4x1EaI+SxsTlfKGd+ikMqVHSB7e788P8YCwEddhuTI3Az89uSaQc
- Znr+op6exf/jf+/Cz2hqFChoNhp/fnvvX62AUJlTblVpJpWrvY9i4dB/U+Zvl5iK7g7w
- 3VwDGgKlntZPA8EM7o0bFZMxgD6zxa0V53TmMNwkxidORji3W98u0+jPoxRiEJbMBMuQ
- 2+0wOQcFJA6IHtozkRTjcHB28vVmE3FOQr4bfpHlJMU1d9X9Zk6ZAmGXd+OKKMvPS9pe
- PqXnpesupj0goNb6UNZ/uf42Pp/s3S20kXpfghMekTsknnBNIOwTuFx4quxljtjRDPFc yg== 
-Received: from iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta02.appoci.oracle.com [147.154.18.20])
-	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3vvrrcq5rn-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Fri, 02 Feb 2024 09:16:07 +0000
-Received: from pps.filterd (iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
-	by iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 4128flO4005480;
-	Fri, 2 Feb 2024 09:16:06 GMT
-Received: from pps.reinject (localhost [127.0.0.1])
-	by iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTPS id 3vvr9hnqjv-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Fri, 02 Feb 2024 09:16:06 +0000
-Received: from iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
-	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 4129G2Gd000955;
-	Fri, 2 Feb 2024 09:16:05 GMT
-Received: from brm-x62-14.us.oracle.com (brm-x62-14.us.oracle.com [10.80.150.231])
-	by iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTP id 3vvr9hnqd6-2;
-	Fri, 02 Feb 2024 09:16:05 +0000
-From: William Kucharski <william.kucharski@oracle.com>
-To: Bart Van Assche <bvanassche@acm.org>, Jason Gunthorpe <jgg@ziepe.ca>,
-        Leon Romanovsky <leon@kernel.org>, linux-rdma@vger.kernel.org,
-        target-devel@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc: William Kucharski <william.kucharski@oracle.com>
-Subject: [PATCH v2 1/1] RDMA/srpt: Do not register event handler until srpt device is fully setup
-Date: Fri,  2 Feb 2024 02:15:49 -0700
-Message-Id: <20240202091549.991784-2-william.kucharski@oracle.com>
-X-Mailer: git-send-email 2.39.3
-In-Reply-To: <20240202091549.991784-1-william.kucharski@oracle.com>
-References: <20240202091549.991784-1-william.kucharski@oracle.com>
+	s=arc-20240116; t=1706874596; c=relaxed/simple;
+	bh=0v73COBN9g3cEKGP6S4hsms+/p81eqIY+4/Q4ubbOXs=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=pHdGixHV6/fl22BJmENik9XFjPSsuTskFyTM057d5BfW9rudD4eGxZxGB7ti5geMRDOaFhz9Lq0TJ3Efzkgyse0ybWnx6gxoXBHjug0cVr5NG+ui54t38ZHb8s7RzBW19K+cPKFmP+Frz1Lcn6eyNuspk6pNhaKqv8Ay5evxLfE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=B1jkFImW; arc=none smtp.client-ip=209.85.218.50
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ej1-f50.google.com with SMTP id a640c23a62f3a-a35e65df2d8so271770066b.0
+        for <linux-rdma@vger.kernel.org>; Fri, 02 Feb 2024 03:49:54 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1706874593; x=1707479393; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=uDwHVnQRNnooe6g0DvIUJl/9+E4nWfdPKAbtJ9T0QNs=;
+        b=B1jkFImWOkmeph6ZcbAPR4Q7Os4qljsAkIPJgcXLQbemSJetOKxIFXKPaJ8pUKYr2u
+         5nKn/kNSuRg0uSuIGtLwkjSFQOdwF1NwrK42KFJEQW7OiF847B1DbAIbNS0LbA34WCbX
+         fFf4FU7OqRRFYaOYCBjjUn8Wv/Uglnjd0vcGcMjBTgZRApIyTolaxRyqhmEu0J+A5Jgl
+         6KLa1tBDjAkSoNdfT1hdw63KvX2j4KOKnx8BOjpmSEuxFdehv9184LEmYsnnU4EbqXJX
+         7zXvkyQ8AJWFVof5JuCYnlT4GFcMm8h6yOzhdBc2NPLncPz46Gtn+nVuvi4IdegUy3eo
+         KoeQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706874593; x=1707479393;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=uDwHVnQRNnooe6g0DvIUJl/9+E4nWfdPKAbtJ9T0QNs=;
+        b=wujaxq54Dxr4F0p7298miC2SmwK7jqvG9tJkoVO8K3Dm0wsx5p3kToSbD/Ver0bMSz
+         tegVKcvAJ9aJJUx+GlGyhKVO+BOQE1aDocHX/WNH8cRaNgzshZGKR56qEUgWrm91gtVG
+         76HD5NAIVxbrq08Gm2G7gRj5K0qr41JxxPUDyihNEvfDn4l6nf4gyr1taw0RgHyKMhhN
+         UBQWex3x/n4zVAw9g+6quEUB0tIxPhdkMloY1TJhE32HkAwmm6shnX1k9P85BEKhTHx6
+         PtigDJQwwVHNYurVrhgPLfvt6gXpKhIXMW1zIu0ouQduRPw5mEmrV0r9jKi1Zz8dc9tu
+         r8cg==
+X-Gm-Message-State: AOJu0Ywx4b9Xyya+/PpklA/QBwf2PKHa80eysbfYOsM9BwGy9bUqD9m6
+	H3hmqL5PAIg/uN5t8cfy0jzbdPwAXkC6vTE/LulxwFQnqdmeDa4vI6UcnQsBUUrzUApY6Y5Xcdq
+	urA8d1+EscOVHkpHhZ2CDHxkjGQae7iRw434=
+X-Google-Smtp-Source: AGHT+IHy6H4uuHU78X22tWATIaDo6z2ClDlrqtqG5TGGKFsZ/ocGEKePZUNktJmLtce4Odb/rjLt5cSfvkGbLGx+tgk=
+X-Received: by 2002:a17:906:4bcf:b0:a35:fbc4:4c21 with SMTP id
+ x15-20020a1709064bcf00b00a35fbc44c21mr1288989ejv.63.1706874592864; Fri, 02
+ Feb 2024 03:49:52 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-02-02_03,2024-01-31_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 bulkscore=0 spamscore=0
- phishscore=0 adultscore=0 mlxlogscore=999 suspectscore=0 mlxscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2311290000
- definitions=main-2402020067
-X-Proofpoint-ORIG-GUID: f2XL1vAKbQmIDLtQxFHQjSy_dACsKSkF
-X-Proofpoint-GUID: f2XL1vAKbQmIDLtQxFHQjSy_dACsKSkF
+References: <20240201125745.21525-1-guoqing.jiang@linux.dev>
+In-Reply-To: <20240201125745.21525-1-guoqing.jiang@linux.dev>
+From: Zhu Yanjun <zyjzyj2000@gmail.com>
+Date: Fri, 2 Feb 2024 19:49:41 +0800
+Message-ID: <CAD=hENdNnzqBP1jJj-NHRg_BjsQYh-u2CdCQNn6HF8R87JOgzg@mail.gmail.com>
+Subject: Re: [PATCH] RDMA/rxe: Remove unused 'iova' parameter from rxe_mr_init_user
+To: Guoqing Jiang <guoqing.jiang@linux.dev>
+Cc: jgg@ziepe.ca, leon@kernel.org, linux-rdma@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Upon rare occasions, KASAN reports a use-after-free Write
-in srpt_refresh_port().
+On Thu, Feb 1, 2024 at 8:58=E2=80=AFPM Guoqing Jiang <guoqing.jiang@linux.d=
+ev> wrote:
+>
+> This one is not needed since commit 954afc5a8fd8 ("RDMA/rxe:
+> Use members of generic struct in rxe_mr").
+>
+> Signed-off-by: Guoqing Jiang <guoqing.jiang@linux.dev>
+> ---
+>  drivers/infiniband/sw/rxe/rxe_loc.h | 2 +-
+>  drivers/infiniband/sw/rxe/rxe_mr.c  | 2 +-
+>  2 files changed, 2 insertions(+), 2 deletions(-)
+>
+> diff --git a/drivers/infiniband/sw/rxe/rxe_loc.h b/drivers/infiniband/sw/=
+rxe/rxe_loc.h
+> index 4d2a8ef52c85..746110898a0e 100644
+> --- a/drivers/infiniband/sw/rxe/rxe_loc.h
+> +++ b/drivers/infiniband/sw/rxe/rxe_loc.h
+> @@ -59,7 +59,7 @@ int rxe_mmap(struct ib_ucontext *context, struct vm_are=
+a_struct *vma);
+>  /* rxe_mr.c */
+>  u8 rxe_get_next_key(u32 last_key);
+>  void rxe_mr_init_dma(int access, struct rxe_mr *mr);
+> -int rxe_mr_init_user(struct rxe_dev *rxe, u64 start, u64 length, u64 iov=
+a,
+> +int rxe_mr_init_user(struct rxe_dev *rxe, u64 start, u64 length,
+>                      int access, struct rxe_mr *mr);
+>  int rxe_mr_init_fast(int max_pages, struct rxe_mr *mr);
+>  int rxe_flush_pmem_iova(struct rxe_mr *mr, u64 iova, unsigned int length=
+);
+> diff --git a/drivers/infiniband/sw/rxe/rxe_mr.c b/drivers/infiniband/sw/r=
+xe/rxe_mr.c
+> index bc81fde696ee..da3dee520876 100644
+> --- a/drivers/infiniband/sw/rxe/rxe_mr.c
+> +++ b/drivers/infiniband/sw/rxe/rxe_mr.c
+> @@ -126,7 +126,7 @@ static int rxe_mr_fill_pages_from_sgt(struct rxe_mr *=
+mr, struct sg_table *sgt)
+>         return xas_error(&xas);
+>  }
+>
+> -int rxe_mr_init_user(struct rxe_dev *rxe, u64 start, u64 length, u64 iov=
+a,
+> +int rxe_mr_init_user(struct rxe_dev *rxe, u64 start, u64 length,
+>                      int access, struct rxe_mr *mr)
+>  {
+>         struct ib_umem *umem;
 
-This seems to be because an event handler is registered before the
-srpt device is fully setup and a race condition upon error may leave a
-partially setup event handler in place.
+diff --git a/drivers/infiniband/sw/rxe/rxe_verbs.c
+b/drivers/infiniband/sw/rxe/rxe_verbs.c
+index 48f86839d36a..04427238fcab 100644
+--- a/drivers/infiniband/sw/rxe/rxe_verbs.c
++++ b/drivers/infiniband/sw/rxe/rxe_verbs.c
+@@ -1278,7 +1278,7 @@ static struct ib_mr *rxe_reg_user_mr(struct
+ib_pd *ibpd, u64 start,
+        mr->ibmr.pd =3D ibpd;
+        mr->ibmr.device =3D ibpd->device;
 
-Instead, only register the event handler after srpt device initialization
-is complete.
+-       err =3D rxe_mr_init_user(rxe, start, length, iova, access, mr);
++       err =3D rxe_mr_init_user(rxe, start, length, access, mr);
+        if (err) {
+                rxe_dbg_mr(mr, "reg_user_mr failed, err =3D %d", err);
+                goto err_cleanup;
 
-Fixes: dcc9881e6767 ("RDMA/(core, ulp): Convert register/unregister event handler to be void")
-Signed-off-by: William Kucharski <william.kucharski@oracle.com>
----
- drivers/infiniband/ulp/srpt/ib_srpt.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
-
-diff --git a/drivers/infiniband/ulp/srpt/ib_srpt.c b/drivers/infiniband/ulp/srpt/ib_srpt.c
-index 58f70cfec45a..d35f021f154b 100644
---- a/drivers/infiniband/ulp/srpt/ib_srpt.c
-+++ b/drivers/infiniband/ulp/srpt/ib_srpt.c
-@@ -3204,7 +3204,6 @@ static int srpt_add_one(struct ib_device *device)
- 
- 	INIT_IB_EVENT_HANDLER(&sdev->event_handler, sdev->device,
- 			      srpt_event_handler);
--	ib_register_event_handler(&sdev->event_handler);
- 
- 	for (i = 1; i <= sdev->device->phys_port_cnt; i++) {
- 		sport = &sdev->port[i - 1];
-@@ -3227,6 +3226,7 @@ static int srpt_add_one(struct ib_device *device)
- 		}
- 	}
- 
-+	ib_register_event_handler(&sdev->event_handler);
- 	spin_lock(&srpt_dev_lock);
- 	list_add_tail(&sdev->list, &srpt_dev_list);
- 	spin_unlock(&srpt_dev_lock);
-@@ -3237,7 +3237,6 @@ static int srpt_add_one(struct ib_device *device)
- 
- err_port:
- 	srpt_unregister_mad_agent(sdev, i);
--	ib_unregister_event_handler(&sdev->event_handler);
- err_cm:
- 	if (sdev->cm_id)
- 		ib_destroy_cm_id(sdev->cm_id);
--- 
-2.39.3
-
+Zhu Yanjun
+> --
+> 2.35.3
+>
 
