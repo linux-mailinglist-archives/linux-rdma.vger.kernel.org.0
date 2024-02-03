@@ -1,82 +1,125 @@
-Return-Path: <linux-rdma+bounces-875-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-876-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 30483847378
-	for <lists+linux-rdma@lfdr.de>; Fri,  2 Feb 2024 16:40:13 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 296F8847E6B
+	for <lists+linux-rdma@lfdr.de>; Sat,  3 Feb 2024 03:31:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C303E1F26D31
-	for <lists+linux-rdma@lfdr.de>; Fri,  2 Feb 2024 15:40:12 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D84DE28ADA4
+	for <lists+linux-rdma@lfdr.de>; Sat,  3 Feb 2024 02:31:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0DF8E145B3D;
-	Fri,  2 Feb 2024 15:40:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 741221C02;
+	Sat,  3 Feb 2024 02:31:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="Zt+RmWdU"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from ciao.gmane.io (ciao.gmane.io [116.202.254.214])
+Received: from out-179.mta0.migadu.com (out-179.mta0.migadu.com [91.218.175.179])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1BF8722085
-	for <linux-rdma@vger.kernel.org>; Fri,  2 Feb 2024 15:40:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=116.202.254.214
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5878663AE
+	for <linux-rdma@vger.kernel.org>; Sat,  3 Feb 2024 02:31:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706888407; cv=none; b=faXFA7NG2jwWRTOW6te5Md7Yz/ES+QI4NpuqPp6qUE7Ow4nLjRR0/m+JGvebaTzC/WbAGLFrzrhU9UkSTUENUIW2fdnfEYQt5v/pjHdOoUwRd2Srrlw+dXgtXDBgDfo/hEkCfglOWwDcwlsggkIi84AzFdBhkREOVq1n7yJU99c=
+	t=1706927503; cv=none; b=FezjERjlqhveN1wl8WJVNXF7RVxh90EjoLYUxG/y8IhIOafI6QGJMU2t2GvnKvoSw59vqETc72EuH7gAsYv9yRtiI/sMeqdJw0lNYf4JJOVLFAIX2w1jhmfNPJkNeGALlm6nSNmTz2P3+GxIACJ9PKah9VboqtlsDuFasiXY/XE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706888407; c=relaxed/simple;
-	bh=amxXWOA8shkwZCqq409xMVqZnLPj+Od52yEZEeelVY0=;
-	h=To:From:Subject:Date:Message-ID:References:Mime-Version:
-	 Content-Type:Cc; b=hhhyraZ2Vu7uGCPcVxSRAnXSbWG7XlCIdRBsFNZ13WfBtRh1WOglcMDjNW3mJVya33QfvWchJX9Y4D++wqgcaFKaD2zEOyM/ai1XEGN8dLKY2c/CsTDU2X47gEF8v4QJT5rmf9ytJvR+k1LhmIqZGd4ya8Ea7ZY7GNa4KrLP4l4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=applied-asynchrony.com; spf=pass smtp.mailfrom=m.gmane-mx.org; arc=none smtp.client-ip=116.202.254.214
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=applied-asynchrony.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=m.gmane-mx.org
-Received: from list by ciao.gmane.io with local (Exim 4.92)
-	(envelope-from <gldr-linux-rdma@m.gmane-mx.org>)
-	id 1rVve7-00086g-Bs
-	for linux-rdma@vger.kernel.org; Fri, 02 Feb 2024 16:40:03 +0100
-X-Injected-Via-Gmane: http://gmane.org/
-To: linux-rdma@vger.kernel.org
-From: Holger =?iso-8859-1?q?Hoffst=E4tte?= <holger@applied-asynchrony.com>
-Subject: Re: Kernel - 6.7.3 - failed to compile the module
-Date: Fri, 2 Feb 2024 15:32:24 -0000 (UTC)
-Message-ID: <pan$2ed7c$db97fd26$2ea3b30f$fdd2e024@applied-asynchrony.com>
-References: <CAHOGJipx37tUoiSp87Np4b0qzREj60+FEkdi_0X0_JoQW8cYeA@mail.gmail.com>
-	<ZbzwgtGUHK2Dj5eo@archie.me>
+	s=arc-20240116; t=1706927503; c=relaxed/simple;
+	bh=JByoG+mePGG2CGIrb4+Ct/jHsBMs+gVJrYQRz6FPSio=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=UO6aUk6ml2/Hjr3in5imo3dNGMvnm0g1hrpuTtLxAGDFdDitonXDhHdiXyls5CUh8GtPOuKuWdHnnBO12pb4eu4O1YE4h2xGL5oCTb+LYdk6wFA5K0ghEm30onJ4mMGZzvmNpmhCam0jgvMqvIBF/jNq39+q3XzzDHCWScenY5s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=Zt+RmWdU; arc=none smtp.client-ip=91.218.175.179
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <bb83910b-d249-4060-b9ed-38e0d4aad213@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1706927498;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=E/VrcVhvfODqXE/qXp7gcceThKizCQSOvGPWf1LxpVw=;
+	b=Zt+RmWdUA2iiTcz7GWiFgycHiRJIn14v67spYxUo2/MyLtBVUsIgwXPT2EYCRckC9On/E5
+	edshEwhTMSrd82NVMCMhRZC2dv+HWwWef9hq7qevEs0Zdd6TLAIFvvCFTtN89bybjpO6AD
+	ilfDjKfRS8BkRMWIBcMZPcbnOkcHIwo=
+Date: Sat, 3 Feb 2024 10:31:30 +0800
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+MIME-Version: 1.0
+Subject: Re: [PATCH v2] RDMA/rxe: Remove unused 'iova' parameter from
+ rxe_mr_init_user
+To: Guoqing Jiang <guoqing.jiang@linux.dev>, zyjzyj2000@gmail.com,
+ jgg@ziepe.ca, leon@kernel.org
+Cc: linux-rdma@vger.kernel.org
+References: <20240202124144.16033-1-guoqing.jiang@linux.dev>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Zhu Yanjun <yanjun.zhu@linux.dev>
+In-Reply-To: <20240202124144.16033-1-guoqing.jiang@linux.dev>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-User-Agent: Pan/0.151 (Butcha; a6f63273)
-Cc: linux-kernel@vger.kernel.org,netdev@vger.kernel.org
+X-Migadu-Flow: FLOW_OUT
 
-On Fri, 2 Feb 2024 20:39:14 +0700, Bagas Sanjaya wrote:
-
-> [also Cc: mellanox maintainers]
+在 2024/2/2 20:41, Guoqing Jiang 写道:
+> This one is not needed since commit 954afc5a8fd8 ("RDMA/rxe:
+> Use members of generic struct in rxe_mr").
 > 
-> On Fri, Feb 02, 2024 at 08:55:47AM +0100, Michał Jakubowski wrote:
->> Regarding: https://bugzilla.kernel.org/show_bug.cgi?id=218445
->> 
->>   CC [M]  drivers/gpu/drm/amd/amdgpu/../display/modules/hdcp/hdcp1_execution.o
->>   CC [M]  drivers/gpu/drm/amd/amdgpu/../display/modules/hdcp/hdcp1_transition.o
->>   CC [M]  drivers/gpu/drm/amd/amdgpu/../display/modules/hdcp/hdcp2_execution.o
->>   CC [M]  drivers/gpu/drm/amd/amdgpu/../display/modules/hdcp/hdcp2_transition.o
->>   LD [M]  drivers/gpu/drm/amd/amdgpu/amdgpu.o
->>   MODPOST Module.symvers
->> ERROR: modpost: "sched_numa_hop_mask"
->> [drivers/net/ethernet/mellanox/mlx5/core/mlx5_core.ko] undefined!
->> make[2]: *** [scripts/Makefile.modpost:145: Module.symvers] Error 1
->> make[1]: *** [/usr/src/linux-6.7.3-gentoo/Makefile:1863: modpost] Error 2
->> make: *** [Makefile:234: __sub-make] Error 2
+> Signed-off-by: Guoqing Jiang <guoqing.jiang@linux.dev>
+
+Reviewed-by: Zhu Yanjun <yanjun.zhu@linux.dev>
+
+Thanks,
+Zhu Yanjun
+
+> ---
+> v2 changes:
+> 1. add relevant change in rxe_reg_user_mr, thanks for Yanjun's reminder
 > 
-> Do you have above build failure on vanilla v6.7.3? Can you also check current
-> mainline (v6.8-rc2)?
-
-No need to investigate further, this is caused by an additional non-mainline
-patch that has nothing to do with the mellanox driver.
-
--h
+>   drivers/infiniband/sw/rxe/rxe_loc.h   | 2 +-
+>   drivers/infiniband/sw/rxe/rxe_mr.c    | 2 +-
+>   drivers/infiniband/sw/rxe/rxe_verbs.c | 2 +-
+>   3 files changed, 3 insertions(+), 3 deletions(-)
+> 
+> diff --git a/drivers/infiniband/sw/rxe/rxe_loc.h b/drivers/infiniband/sw/rxe/rxe_loc.h
+> index 4d2a8ef52c85..746110898a0e 100644
+> --- a/drivers/infiniband/sw/rxe/rxe_loc.h
+> +++ b/drivers/infiniband/sw/rxe/rxe_loc.h
+> @@ -59,7 +59,7 @@ int rxe_mmap(struct ib_ucontext *context, struct vm_area_struct *vma);
+>   /* rxe_mr.c */
+>   u8 rxe_get_next_key(u32 last_key);
+>   void rxe_mr_init_dma(int access, struct rxe_mr *mr);
+> -int rxe_mr_init_user(struct rxe_dev *rxe, u64 start, u64 length, u64 iova,
+> +int rxe_mr_init_user(struct rxe_dev *rxe, u64 start, u64 length,
+>   		     int access, struct rxe_mr *mr);
+>   int rxe_mr_init_fast(int max_pages, struct rxe_mr *mr);
+>   int rxe_flush_pmem_iova(struct rxe_mr *mr, u64 iova, unsigned int length);
+> diff --git a/drivers/infiniband/sw/rxe/rxe_mr.c b/drivers/infiniband/sw/rxe/rxe_mr.c
+> index bc81fde696ee..da3dee520876 100644
+> --- a/drivers/infiniband/sw/rxe/rxe_mr.c
+> +++ b/drivers/infiniband/sw/rxe/rxe_mr.c
+> @@ -126,7 +126,7 @@ static int rxe_mr_fill_pages_from_sgt(struct rxe_mr *mr, struct sg_table *sgt)
+>   	return xas_error(&xas);
+>   }
+>   
+> -int rxe_mr_init_user(struct rxe_dev *rxe, u64 start, u64 length, u64 iova,
+> +int rxe_mr_init_user(struct rxe_dev *rxe, u64 start, u64 length,
+>   		     int access, struct rxe_mr *mr)
+>   {
+>   	struct ib_umem *umem;
+> diff --git a/drivers/infiniband/sw/rxe/rxe_verbs.c b/drivers/infiniband/sw/rxe/rxe_verbs.c
+> index f0a03b910702..614581989b38 100644
+> --- a/drivers/infiniband/sw/rxe/rxe_verbs.c
+> +++ b/drivers/infiniband/sw/rxe/rxe_verbs.c
+> @@ -1278,7 +1278,7 @@ static struct ib_mr *rxe_reg_user_mr(struct ib_pd *ibpd, u64 start,
+>   	mr->ibmr.pd = ibpd;
+>   	mr->ibmr.device = ibpd->device;
+>   
+> -	err = rxe_mr_init_user(rxe, start, length, iova, access, mr);
+> +	err = rxe_mr_init_user(rxe, start, length, access, mr);
+>   	if (err) {
+>   		rxe_dbg_mr(mr, "reg_user_mr failed, err = %d\n", err);
+>   		goto err_cleanup;
 
 
