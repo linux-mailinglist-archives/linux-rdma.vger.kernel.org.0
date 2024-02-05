@@ -1,283 +1,305 @@
-Return-Path: <linux-rdma+bounces-909-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-910-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id DF15B84971C
-	for <lists+linux-rdma@lfdr.de>; Mon,  5 Feb 2024 10:57:39 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 861E584993D
+	for <lists+linux-rdma@lfdr.de>; Mon,  5 Feb 2024 12:52:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 66EFE1F21AF2
-	for <lists+linux-rdma@lfdr.de>; Mon,  5 Feb 2024 09:57:39 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1A6D32815AF
+	for <lists+linux-rdma@lfdr.de>; Mon,  5 Feb 2024 11:52:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 724AB12B9D;
-	Mon,  5 Feb 2024 09:57:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EAB2B18EAF;
+	Mon,  5 Feb 2024 11:52:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="MUXixGOG"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="obEKWDma"
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 29DF6134A6;
-	Mon,  5 Feb 2024 09:57:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A5C9D18EAD;
+	Mon,  5 Feb 2024 11:52:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707127052; cv=none; b=Gx6jq+FUstyPqftoUKuxjbk2Vc+QqZatbkkzk0rAQQs0RuNxJue+ptJ+GpImJS8osP2saXDetxLiP4n1TfFaZpStcgoe1Qg6q9dUeEydjV6HWWNE9RgOJO+6ZrlsxPBaNNLUc3mes8sKR6stAEhn2hs8bBIOTefKKeD3fMpI8Jc=
+	t=1707133933; cv=none; b=W1g0kkVOxLCHHlC4iBrOaVdk55aMysEM9GnrvQONZELeoGP+2ldpTLTzvtjTtb3REKeHw/WKYFb5Ox7I7haWtwdGjtE+rwioxzh1bCXOYb0mUuf12fvCLZ6x8XuErpH/skpuuJWFE+QX1WE7USWaBFBeNPmhbT4xq/TW9XWo89I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707127052; c=relaxed/simple;
-	bh=T4MV0Cquf673ToNUKPL+KuFk9ND9SNlaDIwR+oDhlUc=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Rw6Sq9OuRF27BDKgBN+zmY1d3DLjfMIn5Rcx9RYWGRUAbR90D1exFzJVVbSM3ahJVISOzX/hcj0v4wZT/DzEKzwIuNieiTd0EV+buFjw3GqxnWmUVEvvUhCZOQ5xBHL7IJ9JlKoQfy2pqVC6FBwO37llabuwOz7aKYjqcgkbU4s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=MUXixGOG; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1DAA7C433C7;
-	Mon,  5 Feb 2024 09:57:30 +0000 (UTC)
+	s=arc-20240116; t=1707133933; c=relaxed/simple;
+	bh=8XmIsB+ZUPoKXn0VaHpI1ydb0f+Ah2hw3XmSjMY0xus=;
+	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:To:Cc; b=ipg4GHiXkifQrTnhi2c1rcX4HBS4EfKyD2hd4Sa/HcRoEvy6fOQbPY2XwF/2XscQJWb5933EF9ncNhVRNwXHiLflckcmaVHjaQTiq/5vVUGxLVKdIt+sTFWdT8ZBpoBWrxOFwe10Kx0DjI3+9phYBLjgMV3AL2u1GmSJMO0QiJI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=obEKWDma; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 52FD0C433C7;
+	Mon,  5 Feb 2024 11:52:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1707127051;
-	bh=T4MV0Cquf673ToNUKPL+KuFk9ND9SNlaDIwR+oDhlUc=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=MUXixGOGwQ6Q5Mis1EoiJpQKcCaKo3MFUzGj6YiHrNLgQCoFhTtTAQPPQPfPL+XVn
-	 lAJ9QhjuaQOQcJLwka1k4rphX3urplulH9NykKEJvWY4kGmhSF3IBH3bCmQ7zGcJoD
-	 XK5+xRNbGJU9lpGGBrsA2L2YR1EV0RZBcXKmzbh69yzb+5tRsoeZSyHhB+sdhOm3i4
-	 S/2TLVdDoEjVCrE3wWwgtTMZHq6N2+ARG+x3vGrYVnqUx/+TMoQhhy8kgvdHn+fH9F
-	 TzBAFhSX3nXemkHk3/+rkhtxbDqYm8X5KzSVtxUgM5wZbxCI3aiulDR9wOS0lP3dPK
-	 +6mfgEDR9XC+Q==
-Date: Mon, 5 Feb 2024 11:57:27 +0200
-From: Leon Romanovsky <leon@kernel.org>
-To: Konstantin Taranov <kotaranov@microsoft.com>
-Cc: Konstantin Taranov <kotaranov@linux.microsoft.com>,
-	"sharmaajay@microsoft.com" <sharmaajay@microsoft.com>,
-	Long Li <longli@microsoft.com>, "jgg@ziepe.ca" <jgg@ziepe.ca>,
-	"linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [EXTERNAL] Re: [PATCH rdma-next v2 2/5] RDMA/mana_ib: Create and
- destroy rnic adapter
-Message-ID: <20240205095727.GC6294@unreal>
-References: <1706886397-16600-1-git-send-email-kotaranov@linux.microsoft.com>
- <1706886397-16600-3-git-send-email-kotaranov@linux.microsoft.com>
- <20240204123013.GE5400@unreal>
- <DU0PR83MB0553DF0BA184971EDD66DB0EB4402@DU0PR83MB0553.EURPRD83.prod.outlook.com>
- <20240204165152.GH5400@unreal>
- <DU0PR83MB05536AACA6D1E980AD91BD8DB4402@DU0PR83MB0553.EURPRD83.prod.outlook.com>
- <20240205075412.GA6294@unreal>
- <DU0PR83MB05531986447918EBD42EE9A8B4472@DU0PR83MB0553.EURPRD83.prod.outlook.com>
+	s=k20201202; t=1707133933;
+	bh=8XmIsB+ZUPoKXn0VaHpI1ydb0f+Ah2hw3XmSjMY0xus=;
+	h=From:Date:Subject:To:Cc:From;
+	b=obEKWDmaIwKRPAm7bJdTzrT4JZwpdpii4beE3lTVswTBP/5p0C8BYrUrJ3A7l6t4l
+	 251fMfyooTJqkqP3jigUYgkyeOP7xLvhIAR2/mmSHJudsT7bbylNIMoVLWZglQCldM
+	 qtqU9hHgP93QCsN25HvPq/08tTHGvLRGrP8T9/CtRU1JI/wMkSPfzV5Ou4MroC08Z2
+	 fPFYtLU+mlOL0FiegdZI5I6wpjPdgZhQoQM2mamT/wl4oZ3nluO4R49porOWOhlO2e
+	 vSFPPt2e5o3ihHqQ3JPmZHfALOV6B+R4aQoCZX0Ec1FOGOOg2ubkjGAvVnBGYEB5xr
+	 XgrVd/Yb8u7XQ==
+From: Simon Horman <horms@kernel.org>
+Date: Mon, 05 Feb 2024 11:51:57 +0000
+Subject: [PATCH net-nex] mlx4: Address spelling errors
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <DU0PR83MB05531986447918EBD42EE9A8B4472@DU0PR83MB0553.EURPRD83.prod.outlook.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Message-Id: <20240205-mlx5-codespell-v1-1-63b86dffbb61@kernel.org>
+X-B4-Tracking: v=1; b=H4sIANzLwGUC/x3MwQqEIBRG4VeJu+6CShn0KtEi85+ZC2ahEUL07
+ sksv8U5N2UkQaaxuSnhkix7rNBtQ+tviV+w+GoyynTKqJ63UHped498IAR2Vg3WGmjtHdXoSPh
+ I+Q8nijg5otD8PC99PwI7aQAAAA==
+To: Tariq Toukan <tariqt@nvidia.com>, 
+ "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, 
+ Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>
+Cc: Colin Ian King <colin.i.king@gmail.com>, 
+ Randy Dunlap <rdunlap@infradead.org>, netdev@vger.kernel.org, 
+ linux-rdma@vger.kernel.org
+X-Mailer: b4 0.12.3
 
-On Mon, Feb 05, 2024 at 09:15:19AM +0000, Konstantin Taranov wrote:
-> > From: Leon Romanovsky <leon@kernel.org>
-> > On Sun, Feb 04, 2024 at 05:17:59PM +0000, Konstantin Taranov wrote:
-> > > > From: Leon Romanovsky <leon@kernel.org> On Sun, Feb 04, 2024 at
-> > > > 03:50:40PM +0000, Konstantin Taranov wrote:
-> > > > > > From: Leon Romanovsky <leon@kernel.org> On Fri, Feb 02, 2024 at
-> > > > > > 07:06:34AM -0800, Konstantin Taranov wrote:
-> > > > > > > This patch adds RNIC creation and destruction.
-> > > > > > > If creation of RNIC fails, we support only RAW QPs as they are
-> > > > > > > served by ethernet driver.
-> > > > > >
-> > > > > > So please make sure that you are creating RNIC only when you are
-> > > > > > supporting it. The idea that some function tries-and-fails with
-> > > > > > dmesg errors is not good idea.
-> > > > > >
-> > > > > > Thanks
-> > > > > >
-> > > > >
-> > > > > Hi Leon. Thanks for your comments and suggestion. I will
-> > > > > incorporate them
-> > > > in the next version.
-> > > > > Regarding this "try-and-fail", we cannot guarantee now that RNIC
-> > > > > is supported, and try-and-fail is the only way to skip RNIC
-> > > > > creation without impeding RAW QPs. Could you, please, suggest how
-> > > > > we could
-> > > > correctly incorporate the "try-and-fail" strategy to get it upstreamed?
-> > > >
-> > > > You already query NIC for its capabilities, so you can check if it supports
-> > RNIC.
-> > >
-> > > At the moment, the capabilities do not indicate whether RNIC creation will
-> > be successful.
-> > > The reason is additional checks during RNIC creation that are not reflected
-> > in capabilities.
-> > > The question is whether we can have the proposed "try and disable" or we
-> > must opt for failing the whole mana_ib.
-> > 
-> > RNIC creation can be seen as an example of any other feature which will be
-> > added later, you will never know if it will be successful or not without
-> > capabilities.
-> > 
-> > If you continue with this try-and-fail approach, I afraid that you will end up
-> > with whole driver written in this style. Style where you don't separate
-> > between "real" failures (wrong configuration, OOM e.t.c) and "expected"
-> > failures (feature is not supported).
-> > 
-> 
-> Hi Leon. I understand your concerns and I see how try-and-fail approach can go wrong.
-> I think you misunderstood the current HW limitation we have. We *do* distinguish between 
-> failures 
+Address spelling errors flagged by codespell.
 
-This is not what the code is doing, you are ignoring real errors.
-The distinguish is usually done by checking the return value of the function after looking
-after specific error code returned by FW/HW.
+This patch follows-up on an earlier patch by Colin Ian King,
+which addressed a spelling error in a user-visible log message [1].
+This patch includes that change.
 
-> and this " try-and-fail " will be used once during initialization. As I mentioned above,
-> our current HW capabilities cannot reflect whether RNIC is supported. Therefore, we must try
-> to create it to understand whether it is really supported. So, if we succeed then the RNIC feature
-> is supported and all RNIC-related operations will work. Otherwise, RNIC capability is not present
-> and in this case, we just wanted to warn the user about it. If it concerns you, I can remove this warn message. 
-> 
-> Given the provided explanation, I would appreciate if you wrote whether this approach of querying RNIC support
-> could be accepted. 
+[1] https://lore.kernel.org/netdev/20231209225135.4055334-1-colin.i.king@gmail.com/
 
-Unless you have a good explanation why you can add new FW command to configure RNIC, but can't add FW command
-to query if RNIC is supported. I'm not keen on adopting this approach.
+This patch is intended to cover all files under
+drivers/net/ethernet/mellanox/mlx4
 
-Thanks
+Signed-off-by: Simon Horman <horms@kernel.org>
+---
+ drivers/net/ethernet/mellanox/mlx4/cmd.c        | 7 ++++---
+ drivers/net/ethernet/mellanox/mlx4/cq.c         | 4 ++--
+ drivers/net/ethernet/mellanox/mlx4/en_clock.c   | 4 ++--
+ drivers/net/ethernet/mellanox/mlx4/en_netdev.c  | 5 +++--
+ drivers/net/ethernet/mellanox/mlx4/en_rx.c      | 2 +-
+ drivers/net/ethernet/mellanox/mlx4/en_tx.c      | 2 +-
+ drivers/net/ethernet/mellanox/mlx4/eq.c         | 2 +-
+ drivers/net/ethernet/mellanox/mlx4/fw_qos.h     | 8 ++++----
+ drivers/net/ethernet/mellanox/mlx4/main.c       | 4 ++--
+ drivers/net/ethernet/mellanox/mlx4/mlx4_stats.h | 2 +-
+ drivers/net/ethernet/mellanox/mlx4/port.c       | 2 +-
+ 11 files changed, 22 insertions(+), 20 deletions(-)
 
-> 
-> Thanks!
-> 
-> > Thanks
-> > 
-> > >
-> > > >
-> > > > >
-> > > > > > >
-> > > > > > > Signed-off-by: Konstantin Taranov
-> > > > > > > <kotaranov@linux.microsoft.com>
-> > > > > > > ---
-> > > > > > >  drivers/infiniband/hw/mana/main.c    | 31
-> > > > > > +++++++++++++++++++++++++++++++
-> > > > > > >  drivers/infiniband/hw/mana/mana_ib.h | 29
-> > > > > > > +++++++++++++++++++++++++++++
-> > > > > > >  2 files changed, 60 insertions(+)
-> > > > > > >
-> > > > > > > diff --git a/drivers/infiniband/hw/mana/main.c
-> > > > > > > b/drivers/infiniband/hw/mana/main.c
-> > > > > > > index c64d569..33cd69e 100644
-> > > > > > > --- a/drivers/infiniband/hw/mana/main.c
-> > > > > > > +++ b/drivers/infiniband/hw/mana/main.c
-> > > > > > > @@ -581,14 +581,31 @@ static void mana_ib_destroy_eqs(struct
-> > > > > > > mana_ib_dev *mdev)
-> > > > > > >
-> > > > > > >  void mana_ib_gd_create_rnic_adapter(struct mana_ib_dev *mdev)
-> > > > > > > {
-> > > > > > > +     struct mana_rnic_create_adapter_resp resp = {};
-> > > > > > > +     struct mana_rnic_create_adapter_req req = {};
-> > > > > > > +     struct gdma_context *gc = mdev_to_gc(mdev);
-> > > > > > >       int err;
-> > > > > > >
-> > > > > > > +     mdev->adapter_handle = INVALID_MANA_HANDLE;
-> > > > > > > +
-> > > > > > >       err = mana_ib_create_eqs(mdev);
-> > > > > > >       if (err) {
-> > > > > > >               ibdev_err(&mdev->ib_dev, "Failed to create EQs
-> > > > > > > for RNIC err %d",
-> > > > > > err);
-> > > > > > >               goto cleanup;
-> > > > > > >       }
-> > > > > > >
-> > > > > > > +     mana_gd_init_req_hdr(&req.hdr, MANA_IB_CREATE_ADAPTER,
-> > > > > > sizeof(req), sizeof(resp));
-> > > > > > > +     req.hdr.req.msg_version = GDMA_MESSAGE_V2;
-> > > > > > > +     req.hdr.dev_id = gc->mana_ib.dev_id;
-> > > > > > > +     req.notify_eq_id = mdev->fatal_err_eq->id;
-> > > > > > > +
-> > > > > > > +     err = mana_gd_send_request(gc, sizeof(req), &req,
-> > > > > > > + sizeof(resp),
-> > > > &resp);
-> > > > > > > +     if (err) {
-> > > > > > > +             ibdev_err(&mdev->ib_dev, "Failed to create RNIC
-> > > > > > > + adapter err %d",
-> > > > > > err);
-> > > > > > > +             goto cleanup;
-> > > > > > > +     }
-> > > > > > > +     mdev->adapter_handle = resp.adapter;
-> > > > > > > +
-> > > > > > >       return;
-> > > > > > >
-> > > > > > >  cleanup:
-> > > > > > > @@ -599,5 +616,19 @@ void
-> > > > > > > mana_ib_gd_create_rnic_adapter(struct
-> > > > > > > mana_ib_dev *mdev)
-> > > > > > >
-> > > > > > >  void mana_ib_gd_destroy_rnic_adapter(struct mana_ib_dev
-> > > > > > > *mdev)  {
-> > > > > > > +     struct mana_rnic_destroy_adapter_resp resp = {};
-> > > > > > > +     struct mana_rnic_destroy_adapter_req req = {};
-> > > > > > > +     struct gdma_context *gc;
-> > > > > > > +
-> > > > > > > +     if (!rnic_is_enabled(mdev))
-> > > > > > > +             return;
-> > > > > > > +
-> > > > > > > +     gc = mdev_to_gc(mdev);
-> > > > > > > +     mana_gd_init_req_hdr(&req.hdr,
-> > MANA_IB_DESTROY_ADAPTER,
-> > > > > > sizeof(req), sizeof(resp));
-> > > > > > > +     req.hdr.dev_id = gc->mana_ib.dev_id;
-> > > > > > > +     req.adapter = mdev->adapter_handle;
-> > > > > > > +
-> > > > > > > +     mana_gd_send_request(gc, sizeof(req), &req, sizeof(resp),
-> > &resp);
-> > > > > > > +     mdev->adapter_handle = INVALID_MANA_HANDLE;
-> > > > > > >       mana_ib_destroy_eqs(mdev);  } diff --git
-> > > > > > > a/drivers/infiniband/hw/mana/mana_ib.h
-> > > > > > > b/drivers/infiniband/hw/mana/mana_ib.h
-> > > > > > > index a4b94ee..96454cf 100644
-> > > > > > > --- a/drivers/infiniband/hw/mana/mana_ib.h
-> > > > > > > +++ b/drivers/infiniband/hw/mana/mana_ib.h
-> > > > > > > @@ -48,6 +48,7 @@ struct mana_ib_adapter_caps {  struct
-> > > > mana_ib_dev {
-> > > > > > >       struct ib_device ib_dev;
-> > > > > > >       struct gdma_dev *gdma_dev;
-> > > > > > > +     mana_handle_t adapter_handle;
-> > > > > > >       struct gdma_queue *fatal_err_eq;
-> > > > > > >       struct mana_ib_adapter_caps adapter_caps;  }; @@ -115,6
-> > > > > > > +116,8 @@ struct mana_ib_rwq_ind_table {
-> > > > > > >
-> > > > > > >  enum mana_ib_command_code {
-> > > > > > >       MANA_IB_GET_ADAPTER_CAP = 0x30001,
-> > > > > > > +     MANA_IB_CREATE_ADAPTER  = 0x30002,
-> > > > > > > +     MANA_IB_DESTROY_ADAPTER = 0x30003,
-> > > > > > >  };
-> > > > > > >
-> > > > > > >  struct mana_ib_query_adapter_caps_req { @@ -143,6 +146,32 @@
-> > > > > > > struct mana_ib_query_adapter_caps_resp {
-> > > > > > >       u32 max_inline_data_size;  }; /* HW Data */
-> > > > > > >
-> > > > > > > +struct mana_rnic_create_adapter_req {
-> > > > > > > +     struct gdma_req_hdr hdr;
-> > > > > > > +     u32 notify_eq_id;
-> > > > > > > +     u32 reserved;
-> > > > > > > +     u64 feature_flags;
-> > > > > > > +}; /*HW Data */
-> > > > > > > +
-> > > > > > > +struct mana_rnic_create_adapter_resp {
-> > > > > > > +     struct gdma_resp_hdr hdr;
-> > > > > > > +     mana_handle_t adapter;
-> > > > > > > +}; /* HW Data */
-> > > > > > > +
-> > > > > > > +struct mana_rnic_destroy_adapter_req {
-> > > > > > > +     struct gdma_req_hdr hdr;
-> > > > > > > +     mana_handle_t adapter;
-> > > > > > > +}; /*HW Data */
-> > > > > > > +
-> > > > > > > +struct mana_rnic_destroy_adapter_resp {
-> > > > > > > +     struct gdma_resp_hdr hdr; }; /* HW Data */
-> > > > > > > +
-> > > > > > > +static inline bool rnic_is_enabled(struct mana_ib_dev *mdev) {
-> > > > > > > +     return mdev->adapter_handle != INVALID_MANA_HANDLE; }
-> > > > > > > +
-> > > > > > >  static inline struct gdma_context *mdev_to_gc(struct
-> > > > > > > mana_ib_dev
-> > > > > > > *mdev)  {
-> > > > > > >       return mdev->gdma_dev->gdma_context;
-> > > > > > > --
-> > > > > > > 1.8.3.1
-> > > > > > >
+diff --git a/drivers/net/ethernet/mellanox/mlx4/cmd.c b/drivers/net/ethernet/mellanox/mlx4/cmd.c
+index f5b1f8c7834f..7f20813456e2 100644
+--- a/drivers/net/ethernet/mellanox/mlx4/cmd.c
++++ b/drivers/net/ethernet/mellanox/mlx4/cmd.c
+@@ -2199,8 +2199,9 @@ static void mlx4_master_do_cmd(struct mlx4_dev *dev, int slave, u8 cmd,
+ 	if (cmd != MLX4_COMM_CMD_RESET) {
+ 		mlx4_warn(dev, "Turn on internal error to force reset, slave=%d, cmd=0x%x\n",
+ 			  slave, cmd);
+-		/* Turn on internal error letting slave reset itself immeditaly,
+-		 * otherwise it might take till timeout on command is passed
++		/* Turn on internal error letting slave reset itself
++		 * immediately, otherwise it might take till timeout on
++		 * command is passed
+ 		 */
+ 		reply |= ((u32)COMM_CHAN_EVENT_INTERNAL_ERR);
+ 	}
+@@ -2954,7 +2955,7 @@ static bool mlx4_valid_vf_state_change(struct mlx4_dev *dev, int port,
+ 	dummy_admin.default_vlan = vlan;
+ 
+ 	/* VF wants to move to other VST state which is valid with current
+-	 * rate limit. Either differnt default vlan in VST or other
++	 * rate limit. Either different default vlan in VST or other
+ 	 * supported QoS priority. Otherwise we don't allow this change when
+ 	 * the TX rate is still configured.
+ 	 */
+diff --git a/drivers/net/ethernet/mellanox/mlx4/cq.c b/drivers/net/ethernet/mellanox/mlx4/cq.c
+index 4d4f9cf9facb..e130e7259275 100644
+--- a/drivers/net/ethernet/mellanox/mlx4/cq.c
++++ b/drivers/net/ethernet/mellanox/mlx4/cq.c
+@@ -115,7 +115,7 @@ void mlx4_cq_completion(struct mlx4_dev *dev, u32 cqn)
+ 		return;
+ 	}
+ 
+-	/* Acessing the CQ outside of rcu_read_lock is safe, because
++	/* Accessing the CQ outside of rcu_read_lock is safe, because
+ 	 * the CQ is freed only after interrupt handling is completed.
+ 	 */
+ 	++cq->arm_sn;
+@@ -137,7 +137,7 @@ void mlx4_cq_event(struct mlx4_dev *dev, u32 cqn, int event_type)
+ 		return;
+ 	}
+ 
+-	/* Acessing the CQ outside of rcu_read_lock is safe, because
++	/* Accessing the CQ outside of rcu_read_lock is safe, because
+ 	 * the CQ is freed only after interrupt handling is completed.
+ 	 */
+ 	cq->event(cq, event_type);
+diff --git a/drivers/net/ethernet/mellanox/mlx4/en_clock.c b/drivers/net/ethernet/mellanox/mlx4/en_clock.c
+index 9e3b76182088..cd754cd76bde 100644
+--- a/drivers/net/ethernet/mellanox/mlx4/en_clock.c
++++ b/drivers/net/ethernet/mellanox/mlx4/en_clock.c
+@@ -96,8 +96,8 @@ void mlx4_en_remove_timestamp(struct mlx4_en_dev *mdev)
+ 
+ #define MLX4_EN_WRAP_AROUND_SEC	10UL
+ /* By scheduling the overflow check every 5 seconds, we have a reasonably
+- * good chance we wont miss a wrap around.
+- * TOTO: Use a timer instead of a work queue to increase the guarantee.
++ * good chance we won't miss a wrap around.
++ * TODO: Use a timer instead of a work queue to increase the guarantee.
+  */
+ #define MLX4_EN_OVERFLOW_PERIOD (MLX4_EN_WRAP_AROUND_SEC * HZ / 2)
+ 
+diff --git a/drivers/net/ethernet/mellanox/mlx4/en_netdev.c b/drivers/net/ethernet/mellanox/mlx4/en_netdev.c
+index 33bbcced8105..d7da62cda821 100644
+--- a/drivers/net/ethernet/mellanox/mlx4/en_netdev.c
++++ b/drivers/net/ethernet/mellanox/mlx4/en_netdev.c
+@@ -1072,7 +1072,8 @@ static void mlx4_en_do_multicast(struct mlx4_en_priv *priv,
+ 				    1, MLX4_MCAST_CONFIG);
+ 
+ 		/* Update multicast list - we cache all addresses so they won't
+-		 * change while HW is updated holding the command semaphor */
++		 * change while HW is updated holding the command semaphore
++		 */
+ 		netif_addr_lock_bh(dev);
+ 		mlx4_en_cache_mclist(dev);
+ 		netif_addr_unlock_bh(dev);
+@@ -1817,7 +1818,7 @@ int mlx4_en_start_port(struct net_device *dev)
+ 	    mlx4_en_set_rss_steer_rules(priv))
+ 		mlx4_warn(mdev, "Failed setting steering rules\n");
+ 
+-	/* Attach rx QP to bradcast address */
++	/* Attach rx QP to broadcast address */
+ 	eth_broadcast_addr(&mc_list[10]);
+ 	mc_list[5] = priv->port; /* needed for B0 steering support */
+ 	if (mlx4_multicast_attach(mdev->dev, priv->rss_map.indir_qp, mc_list,
+diff --git a/drivers/net/ethernet/mellanox/mlx4/en_rx.c b/drivers/net/ethernet/mellanox/mlx4/en_rx.c
+index a09b6e05337d..eac49657bd07 100644
+--- a/drivers/net/ethernet/mellanox/mlx4/en_rx.c
++++ b/drivers/net/ethernet/mellanox/mlx4/en_rx.c
+@@ -762,7 +762,7 @@ int mlx4_en_process_rx_cq(struct net_device *dev, struct mlx4_en_cq *cq, int bud
+ 		/* Drop packet on bad receive or bad checksum */
+ 		if (unlikely((cqe->owner_sr_opcode & MLX4_CQE_OPCODE_MASK) ==
+ 						MLX4_CQE_OPCODE_ERROR)) {
+-			en_err(priv, "CQE completed in error - vendor syndrom:%d syndrom:%d\n",
++			en_err(priv, "CQE completed in error - vendor syndrome:%d syndrome:%d\n",
+ 			       ((struct mlx4_err_cqe *)cqe)->vendor_err_syndrome,
+ 			       ((struct mlx4_err_cqe *)cqe)->syndrome);
+ 			goto next;
+diff --git a/drivers/net/ethernet/mellanox/mlx4/en_tx.c b/drivers/net/ethernet/mellanox/mlx4/en_tx.c
+index 65cb63f6c465..1ddb11cb25f9 100644
+--- a/drivers/net/ethernet/mellanox/mlx4/en_tx.c
++++ b/drivers/net/ethernet/mellanox/mlx4/en_tx.c
+@@ -992,7 +992,7 @@ netdev_tx_t mlx4_en_xmit(struct sk_buff *skb, struct net_device *dev)
+ 		tx_info->ts_requested = 1;
+ 	}
+ 
+-	/* Prepare ctrl segement apart opcode+ownership, which depends on
++	/* Prepare ctrl segment apart opcode+ownership, which depends on
+ 	 * whether LSO is used */
+ 	tx_desc->ctrl.srcrb_flags = priv->ctrl_flags;
+ 	if (likely(skb->ip_summed == CHECKSUM_PARTIAL)) {
+diff --git a/drivers/net/ethernet/mellanox/mlx4/eq.c b/drivers/net/ethernet/mellanox/mlx4/eq.c
+index 6598b10a9ff4..9572a45f6143 100644
+--- a/drivers/net/ethernet/mellanox/mlx4/eq.c
++++ b/drivers/net/ethernet/mellanox/mlx4/eq.c
+@@ -210,7 +210,7 @@ static void slave_event(struct mlx4_dev *dev, u8 slave, struct mlx4_eqe *eqe)
+ 
+ 	memcpy(s_eqe, eqe, sizeof(struct mlx4_eqe) - 1);
+ 	s_eqe->slave_id = slave;
+-	/* ensure all information is written before setting the ownersip bit */
++	/* ensure all information is written before setting the ownership bit */
+ 	dma_wmb();
+ 	s_eqe->owner = !!(slave_eq->prod & SLAVE_EVENT_EQ_SIZE) ? 0x0 : 0x80;
+ 	++slave_eq->prod;
+diff --git a/drivers/net/ethernet/mellanox/mlx4/fw_qos.h b/drivers/net/ethernet/mellanox/mlx4/fw_qos.h
+index 954b86faac29..40ca29bb928c 100644
+--- a/drivers/net/ethernet/mellanox/mlx4/fw_qos.h
++++ b/drivers/net/ethernet/mellanox/mlx4/fw_qos.h
+@@ -44,7 +44,7 @@
+ /* Default supported priorities for VPP allocation */
+ #define MLX4_DEFAULT_QOS_PRIO (0)
+ 
+-/* Derived from FW feature definition, 0 is the default vport fo all QPs */
++/* Derived from FW feature definition, 0 is the default vport for all QPs */
+ #define MLX4_VPP_DEFAULT_VPORT (0)
+ 
+ struct mlx4_vport_qos_param {
+@@ -98,7 +98,7 @@ int mlx4_SET_PORT_SCHEDULER(struct mlx4_dev *dev, u8 port, u8 *tc_tx_bw,
+ int mlx4_ALLOCATE_VPP_get(struct mlx4_dev *dev, u8 port,
+ 			  u16 *available_vpp, u8 *vpp_p_up);
+ /**
+- * mlx4_ALLOCATE_VPP_set - Distribution of VPPs among differnt priorities.
++ * mlx4_ALLOCATE_VPP_set - Distribution of VPPs among different priorities.
+  * The total number of VPPs assigned to all for a port must not exceed
+  * the value reported by available_vpp in mlx4_ALLOCATE_VPP_get.
+  * VPP allocation is allowed only after the port type has been set,
+@@ -113,7 +113,7 @@ int mlx4_ALLOCATE_VPP_get(struct mlx4_dev *dev, u8 port,
+ int mlx4_ALLOCATE_VPP_set(struct mlx4_dev *dev, u8 port, u8 *vpp_p_up);
+ 
+ /**
+- * mlx4_SET_VPORT_QOS_get - Query QoS proporties of a Vport.
++ * mlx4_SET_VPORT_QOS_get - Query QoS properties of a Vport.
+  * Each priority allowed for the Vport is assigned with a share of the BW,
+  * and a BW limitation. This commands query the current QoS values.
+  *
+@@ -128,7 +128,7 @@ int mlx4_SET_VPORT_QOS_get(struct mlx4_dev *dev, u8 port, u8 vport,
+ 			   struct mlx4_vport_qos_param *out_param);
+ 
+ /**
+- * mlx4_SET_VPORT_QOS_set - Set QoS proporties of a Vport.
++ * mlx4_SET_VPORT_QOS_set - Set QoS properties of a Vport.
+  * QoS parameters can be modified at any time, but must be initialized
+  * before any QP is associated with the VPort.
+  *
+diff --git a/drivers/net/ethernet/mellanox/mlx4/main.c b/drivers/net/ethernet/mellanox/mlx4/main.c
+index 2581226836b5..7b02ff61126d 100644
+--- a/drivers/net/ethernet/mellanox/mlx4/main.c
++++ b/drivers/net/ethernet/mellanox/mlx4/main.c
+@@ -129,7 +129,7 @@ static const struct mlx4_profile default_profile = {
+ 	.num_cq		= 1 << 16,
+ 	.num_mcg	= 1 << 13,
+ 	.num_mpt	= 1 << 19,
+-	.num_mtt	= 1 << 20, /* It is really num mtt segements */
++	.num_mtt	= 1 << 20, /* It is really num mtt segments */
+ };
+ 
+ static const struct mlx4_profile low_mem_profile = {
+@@ -1508,7 +1508,7 @@ static int mlx4_port_map_set(struct mlx4_dev *dev, struct mlx4_port_map *v2p)
+ 			priv->v2p.port1 = port1;
+ 			priv->v2p.port2 = port2;
+ 		} else {
+-			mlx4_err(dev, "Failed to change port mape: %d\n", err);
++			mlx4_err(dev, "Failed to change port map: %d\n", err);
+ 		}
+ 	}
+ 
+diff --git a/drivers/net/ethernet/mellanox/mlx4/mlx4_stats.h b/drivers/net/ethernet/mellanox/mlx4/mlx4_stats.h
+index e9cd4bb6f83d..d3d9ec042d2c 100644
+--- a/drivers/net/ethernet/mellanox/mlx4/mlx4_stats.h
++++ b/drivers/net/ethernet/mellanox/mlx4/mlx4_stats.h
+@@ -112,7 +112,7 @@ struct mlx4_en_stat_out_flow_control_mbox {
+ 	__be64 tx_pause_duration;
+ 	/* Number of transmitter transitions from XOFF state to XON state */
+ 	__be64 tx_pause_transition;
+-	/* Reserverd */
++	/* Reserved */
+ 	__be64 reserved[2];
+ };
+ 
+diff --git a/drivers/net/ethernet/mellanox/mlx4/port.c b/drivers/net/ethernet/mellanox/mlx4/port.c
+index 256a06b3c096..4e43f4a7d246 100644
+--- a/drivers/net/ethernet/mellanox/mlx4/port.c
++++ b/drivers/net/ethernet/mellanox/mlx4/port.c
+@@ -2118,7 +2118,7 @@ static void mlx4_qsfp_eeprom_params_set(u8 *i2c_addr, u8 *page_num, u16 *offset)
+  * @data: output buffer to put the requested data into.
+  *
+  * Reads cable module eeprom data, puts the outcome data into
+- * data pointer paramer.
++ * data pointer parameter.
+  * Returns num of read bytes on success or a negative error
+  * code.
+  */
+
 
