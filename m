@@ -1,162 +1,261 @@
-Return-Path: <linux-rdma+bounces-934-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-935-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 717D084BC90
-	for <lists+linux-rdma@lfdr.de>; Tue,  6 Feb 2024 18:55:10 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 19A1B84BDF1
+	for <lists+linux-rdma@lfdr.de>; Tue,  6 Feb 2024 20:10:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D49661F24A3F
-	for <lists+linux-rdma@lfdr.de>; Tue,  6 Feb 2024 17:55:09 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3CE981C24109
+	for <lists+linux-rdma@lfdr.de>; Tue,  6 Feb 2024 19:10:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0A52BCA4E;
-	Tue,  6 Feb 2024 17:55:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1381513FF9;
+	Tue,  6 Feb 2024 19:10:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="gilJT2kq"
+	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="SgQ00VO2"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+Received: from NAM11-DM6-obe.outbound.protection.outlook.com (mail-dm6nam11on2041.outbound.protection.outlook.com [40.107.223.41])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1D3A9DDCF
-	for <linux-rdma@vger.kernel.org>; Tue,  6 Feb 2024 17:55:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707242104; cv=none; b=Cy7lESESk6s0axqmwfh1Q7DZcSDw6md1qIwX6J544i3RbxsE0yIjDM60z3cpCJZgcsnEAewvaUaZq/zP8+I9fKFJ+3aCk3dKX/x7ljvefsfICgBb8QpILy6vVaeL5JyhADfw9ycDL8Pya2Ql5pkroy5Q5ungPE74UbvlZKz1f4w=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707242104; c=relaxed/simple;
-	bh=T2uJDuLlKnMw+soQ+YGpdqkGvLode7wYEUi1KxGmoG8=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=uHN/sOCJy2xXoZ+G0Qz9vnZDh3xm/pqb0uf15nH3FYpCeKQSx64m6dVlzuRSuPd+TWkXcbZAD1XsRFLhhBFUr8UzAv5A1avHfigp3zlj3EIStCDLhfGGZ4TXkdNjUva5bk4FT8pGFbJya5TIAKfZ9sb1ovcnxZJFn+HMwljor+0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=gilJT2kq; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1707242101;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=11FWwPCLr2L7t6h4jrW8V5tYbwH6Nsg81N1xayKu+nw=;
-	b=gilJT2kqaDQsZboOvek2apMcP2F1c/LQhEgTUlP6WDsmhs+FTiprBCUWbwt0PxW6I2iUJR
-	EI/wDbddV3ivfm/rlMbfyyyvslLT45wcoG5YRApnQFoRHrg+SJQawMgq1hk0IdXHaEukDT
-	ll40mxQ8+XPowfBqptvVpbLnQClhKS8=
-Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
- by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-691-_KWojetOOcuSuooxqF8EXg-1; Tue,
- 06 Feb 2024 12:54:59 -0500
-X-MC-Unique: _KWojetOOcuSuooxqF8EXg-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.rdu2.redhat.com [10.11.54.8])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 753DC28B698C;
-	Tue,  6 Feb 2024 17:54:59 +0000 (UTC)
-Received: from fedora-x1.redhat.com (unknown [10.22.33.244])
-	by smtp.corp.redhat.com (Postfix) with ESMTP id EF3D0C07F51;
-	Tue,  6 Feb 2024 17:54:58 +0000 (UTC)
-From: Kamal Heib <kheib@redhat.com>
-To: linux-rdma@vger.kernel.org
-Cc: Jason Gunthorpe <jgg@ziepe.ca>,
-	Leon Romanovsky <leon@kernel.org>,
-	Michal Kalderon <mkalderon@marvell.com>,
-	Ariel Elior <aelior@marvell.com>,
-	Kamal Heib <kheib@redhat.com>
-Subject: [PATCH for-rc] RDMA/qedr: Fix qedr_create_user_qp error flow
-Date: Tue,  6 Feb 2024 12:54:49 -0500
-Message-ID: <20240206175449.1778317-1-kheib@redhat.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 15AEE13AC7;
+	Tue,  6 Feb 2024 19:10:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.223.41
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1707246638; cv=fail; b=N1dC8kCLuSpKQE9CUD8heCMw0pUAzpmaJlWaOzSYJZqYSc3y44bS7WmsrZKeNgHo6Vh87swFrfIRK+EDHwURye8o9sIY0HycaRHfYH5s7amhYEXgytbss56BnAiFW6HAd3SUTN7IpwsaqabQKCKXZFhydTFwoFUcXhBfOXZaSjc=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1707246638; c=relaxed/simple;
+	bh=mWloTn0KFmOvhY+jdhPWwNn1z7QDlte9fZxuljnFZVQ=;
+	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
+	 Content-Type:MIME-Version; b=EBN7bwc8fzSjilXBzl5N0x/UE1xYSAShgk4UpER92E59jhgDkyydcIQDSS5DErBhGw+QfuJc2OSGaH1xk2CPuEf1JSgxLF8fJEAof2liIYLd7A2yRLlIaKha5jRgv15LvqXAknZDnqVGlhUFSsl7QklecKu1PIHRZiVl67l7Dxg=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=SgQ00VO2; arc=fail smtp.client-ip=40.107.223.41
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=MsHuIcGicuLjcC2tik0KRr+bu2EYcfCuWRtpAf0A33yqvmNtoQaBFhe2qPfTJSuWuc+AzrOB9CSxiw+kkk7+okswMYCGdXfgI5KWER5BLA/5/MMes3Iz9CjlIYmbir1/pQ7xRqHgE2XK09Muq4aFnXfXA3ol3TJs4lpYZXZPmD5jAQxN18wyIpTR/4ehDdVjFXrIEGtnCkSA7Y8JWdTegJJJHYvzzq0qDhNFsqY/gVGI6LVZNY1S2y6y2s6RNCGdF8RLAzbmTJGrMePrlfASABJdFI4+qJaoHLOWVq5m3S5TGpNgNhLavXYpKk5v6wiVOHgl72I82fpTeK2+HJWOiA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=7xTuwAnb/izJd+SFabWfx/EDA3MBo24ZpyiPGpkg+oQ=;
+ b=A0gqOd0hO/pIZwzSLImggt/yk2UHp5ZLN/c4VGy5h2H8q5KbfR528FMmywNu1H5ADBU2kHamUaHPUsbi9HoQ65bkLLSIH9p9TtM2i8gheOCW7bwzN7BqXwAOLgeeL9kWq16picf2c2JZsHdolQGB06As7ujvsEs1U72YSVd+q+T7ayYZsKVYi4Nu2yZz9MuWlmY4oCrB3wra+IcYIwxzngBGjgcr3wf5oN9cdgrzQsueDuICEwIV6jX+ebzyDWpGXYdFsTkv2hWLkEII990qzY9iRU3Tdg5Ry8lmBKZx952ekHA12cb0M8CWoZpWW6VvSAsqaDYykKmGfAc1NDwFQA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=7xTuwAnb/izJd+SFabWfx/EDA3MBo24ZpyiPGpkg+oQ=;
+ b=SgQ00VO25/9n4NeEzyjO+R7J9WprL6cnqugnN8HqFPcsADnzBo0pVoIgUpSMAO2hF4BHoCpWovviK/Kmd1pugMfZeEdoI9Z2z/gyHgCxikCob+QfqzMGFRVTpw4LZpjHJXU/nVogQEzdC0g7OWofVRHeJholU96eGu7ooh3rsMpUp5NAE2poyP7EUtjEiXx3m2FKkWmXAYHohG6fH+ZvZlwvvpTmA9Ldt7JazCSm9TDk+VSAAgRgguYNawksFdHMFWkA/Ir5PkOHbiFfP9NpkkRjLU5Jsj2tEPi8BrF0m0bhEOar4ru/Vm0PadKWHwjHRzGnjuviFPZyzQ8w22xAWQ==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nvidia.com;
+Received: from IA1PR12MB6018.namprd12.prod.outlook.com (2603:10b6:208:3d6::6)
+ by CY8PR12MB7196.namprd12.prod.outlook.com (2603:10b6:930:58::12) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7270.15; Tue, 6 Feb
+ 2024 19:10:34 +0000
+Received: from IA1PR12MB6018.namprd12.prod.outlook.com
+ ([fe80::7549:82b1:b8ff:95a]) by IA1PR12MB6018.namprd12.prod.outlook.com
+ ([fe80::7549:82b1:b8ff:95a%5]) with mapi id 15.20.7249.023; Tue, 6 Feb 2024
+ 19:10:33 +0000
+Message-ID: <44d321bf-88a0-4d6f-8572-dfbda088dd8f@nvidia.com>
+Date: Tue, 6 Feb 2024 21:10:27 +0200
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH net-next] eth: mlx5: link NAPI instances to queues and
+ IRQs
+Content-Language: en-US
+To: Joe Damato <jdamato@fastly.com>, Tariq Toukan <ttoukan.linux@gmail.com>
+Cc: linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+ Gal Pressman <gal@nvidia.com>, rrameshbabu@nvidia.com,
+ Saeed Mahameed <saeedm@nvidia.com>, Leon Romanovsky <leon@kernel.org>,
+ "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
+ Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+ "open list:MELLANOX MLX5 core VPI driver" <linux-rdma@vger.kernel.org>
+References: <20240206010311.149103-1-jdamato@fastly.com>
+ <7e338c2a-6091-4093-8ca2-bb3b2af3e79d@gmail.com>
+ <20240206171159.GA11565@fastly.com>
+From: Tariq Toukan <tariqt@nvidia.com>
+In-Reply-To: <20240206171159.GA11565@fastly.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: LO2P265CA0451.GBRP265.PROD.OUTLOOK.COM
+ (2603:10a6:600:e::31) To IA1PR12MB6018.namprd12.prod.outlook.com
+ (2603:10b6:208:3d6::6)
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.8
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: IA1PR12MB6018:EE_|CY8PR12MB7196:EE_
+X-MS-Office365-Filtering-Correlation-Id: acb36ed6-315d-47ce-a64c-08dc27474b26
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	aEnklTLv1XcfEDrE9w3ptiQsXW1Gf8QfDgedvHiGwu45CGIXVLnOVOGZiYzm+o1Q+6UrEoMKZw3c2v+8RfzY2kFLD1mNx6E0l3kJicIsZ9hv5wbKTWUadMpwvHbPZ0aiRzqZbYRCyO2gkkOEKUbGDYFaHshIT6Rk/Wl9RqD2VLSNhWj1agg9TlD11OnND7p5GFtveUNlLZ2VHgxc28eLcxqIEUO+pe0chbZSedkRpf9kyBFjefK4KLWOO/rQPNGozEeawx/3E/c1DPUnTw5+WqK8Kk0i9LS/nIo385kFE+L0QC27vADijcaL1N5yyUqncmqGGwb4IMMXOZpJ7IqPl5WDl2EcCe11ZGgnsva2tfZnVgaqBSsEmOEcGHvvxJZl8f72LgJxAgFBRACasjrRYt1orEeLqOEwvHgfRqPBPhTb+hQwMeQmt/yDZvgRH4pNUKsyrnUIO/WqT0ZI9WOLKgG00A2vDk/pKmT7ehu69qGsOFO3eIeillIk5UFi6ZMwkVfejsYI4OdNAjuOO+s0WOJ6tIZvM2X7MgZ88yZLi2shWNjP7Fq3xRt+PQPr/KZq+CWYwz7W/WO5caUBB95g465bmAEAunRTPNp+Dh8Ojz7aJMgEJXVR1701TRkWEO4Sx7tFQhgfrjdLyWKfnoox8H9uQzRNegtz17S09qp2hOechRm8K1A1NjQvjDTsA1ui
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:IA1PR12MB6018.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(136003)(396003)(366004)(39860400002)(346002)(376002)(230922051799003)(1800799012)(186009)(64100799003)(451199024)(7416002)(31686004)(2906002)(8676002)(4326008)(8936002)(110136005)(5660300002)(66476007)(66556008)(66946007)(316002)(54906003)(478600001)(966005)(6486002)(26005)(53546011)(6666004)(36756003)(2616005)(6512007)(6506007)(83380400001)(38100700002)(31696002)(41300700001)(86362001)(45980500001)(43740500002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?utf-8?B?dHJ2OEdYUERnVzFnc3BEcnFjZC9saVRrd3hqQTRBT1lZVHhhVkk0ZWc3MG44?=
+ =?utf-8?B?eTVzSlRyaUNMOXFPYXpCbkJua0RGYm40aWo0WjlsbFMzek5QVVQ3UHF5STh6?=
+ =?utf-8?B?SU5mQU9VZUxqSDdLZllYMVRBd3Rtd3NsUVlrKzl3bFNmcnJjUWFRS3RGdkk4?=
+ =?utf-8?B?cys0a1RYb3ovZUZGVnJSOVM0RlpRRy9BMllWaVNDWE1sY3ZlWlhHZEFvMUJC?=
+ =?utf-8?B?Zk5DaTBHUnRtemp6dmtOSFYxYU9DNjhuTkh0WEMySkg4MFdWZ05CZUlDNUJo?=
+ =?utf-8?B?ZTNkNmc1SFRHN0xneXZ4bTA2R09KRllhWC9OeXRxRjNkb2FlWERGY1FucWZU?=
+ =?utf-8?B?S1VFanUwQ2U0K1diNmg5WGw4NnV3a2NvU3dNSTdPMXg4MG1kMHdSbDBDRTlY?=
+ =?utf-8?B?UXg2aTlPbzZqbUxVMTRmOFg1Szl3SnVQUEdYaFhtc1RDU3BCMWhPdWR1ajZ1?=
+ =?utf-8?B?R1Y5OEtSRndvdXRSaGJpbGlZK1RoNUdtSnN5bi9ONjR1RW5mYks0d0dYWHZV?=
+ =?utf-8?B?ZERjL1ZPcXJjNVpNbzNMc1BWa1diZzVFVmhQclZ0ZGIrZWJVTDBtYWhGdHZV?=
+ =?utf-8?B?QXJMeWtNMmtUb1pSdVBHd3IyNEluaXk5WnVqOVJJOGRDeUdlUllwWWdNazkx?=
+ =?utf-8?B?M214VkwwSXhPVWwzZ2k2Y3lKeGI2OVBMRUc1bTNWMVlVU28vd3Z2cm5Fd21H?=
+ =?utf-8?B?cUdOVGsyN28xTE45anNvTDBzZU9vUjBMeXhhQTdPTDY1QmUyUUNGdTVBY2ZH?=
+ =?utf-8?B?Yk80aHpzSnNMNGZmdkdYUDFrSWFPaXlmcGREaEhSaEpaTWQzZGYrL013djdT?=
+ =?utf-8?B?Q1lXNzUxVG1tdlY5cDlZbFNqNGE0T3BiNDEyZW00WXhNSWMrdkZzeUZVVFlr?=
+ =?utf-8?B?ajVDaDRXZVIzaE45SDNUTjcvSVF0QmlRSFNzOFhmVEVWc3hvUXVLZDdxeU1h?=
+ =?utf-8?B?cmp3YUsyYXJDMkdjWE1xZ1NraUQ4VU5LZWRPMDRteGlpLzBlOC92QTQvcFBm?=
+ =?utf-8?B?UFc5aHhCMUJvZ3NMNHh1T29mWm1lNEtTdlNoV2RJcXJnajRTb09TWW04UkUv?=
+ =?utf-8?B?R3pUQ0ZKdHRNanhTOEs0M2ppbWJUbnZObXpCTUUrZGhNRkIrVUpNZGRpcXRL?=
+ =?utf-8?B?dEtlV0xDZEhLNS9nOTBtRTBLd2x0cG1uQ2UrSG5NaHhUYldoMUp1TnZrK3dy?=
+ =?utf-8?B?ZU81WEhFU0JUaHhqNHJheUdlQXVjeTVRUHR6Ulh4WGIzUTh0c2JaY3RlWVVW?=
+ =?utf-8?B?RCt6a0pjK0ZOWUpWTUxTR1hkZHBMVGxFb3lndzB0d3h0eDhwU3Raa1o5RHNm?=
+ =?utf-8?B?M2dLSWM5Y2t6WUl2SVFIN3VkbUI1Y2hMNzdSQ1JJL0M3RlRTa0FZSTlGOHlp?=
+ =?utf-8?B?eWNnbGlYQXpGbVhHZW5aTmd1amZ6K0NPYnhDajBPUG8xbEs3d3VrRkN3UUFG?=
+ =?utf-8?B?RTg2dDdabGs3Vm50LytGcDRQcUtWQVdsMmJmKzVEWjhSUkF3ZzBrTE9kUEZI?=
+ =?utf-8?B?M2FCM2pRYThGZHhWS1RCMlNmMENZZXhWa0VQVnRhanc2eVhRWnRQcno5MnZo?=
+ =?utf-8?B?Q1JQb2JaZWpsR1REd0piMlBqSDFGMVgvK1BQaGJ5Z3hoYWlVamZzMkU0ZG55?=
+ =?utf-8?B?RlgwK0RrSTVzOFE3VXpDNThQaFp0cFZjWUFqcTZHU0J2a09SUjFPN2kveHBq?=
+ =?utf-8?B?VVVDbXV1SHZqcm9VakM1YXpoNDJXdW1UMGVFZ2F0Ujh6Y1htS1d5bS9xTWxH?=
+ =?utf-8?B?UW9TalMzMHR3Uy9zN21vdWRXaEJJNFcrcG9NdW5mS3ZrWVYzck43bCtUUjBh?=
+ =?utf-8?B?d3NhS2w0YjRWY3M2M05Na2tpcUNObnpMSG84bHVJL1I4UmRTUzZyVnhISmRi?=
+ =?utf-8?B?eWZKSDJWOUlzenJ5SlBGc2JTQlNqUmtXb3NhYnN0cVZDdlZJa0FzbFRnbkRY?=
+ =?utf-8?B?R1FsR3ljQ09jK1liQmRaenBDclBWaUcxV1NhenJUNUVBUmJaVmlkbndmajla?=
+ =?utf-8?B?ZkROaFBqQ09SMTg2eis4M3hoNCtVV3c1dmVpUGRubGVNK1U5WGNxZitlMGRL?=
+ =?utf-8?B?T2p6OGZjYTdRT3BrR2FqcXBrcmtEWlZCUUVIZzRyTXJFSnQzejk5OU9OQXFa?=
+ =?utf-8?Q?Tqr7DIq4AYDHQvHJEi1LkOdPG?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: acb36ed6-315d-47ce-a64c-08dc27474b26
+X-MS-Exchange-CrossTenant-AuthSource: IA1PR12MB6018.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 06 Feb 2024 19:10:33.8647
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: k2Ia47vKvaBE+JSRHy50lAneShnWO06GB3vF/r2E8UP8VEiXPrFBLaSYdl1eyctWhbOAyIJ7s7TFcqSk1OpT+Q==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY8PR12MB7196
 
-Avoid the following warning by making sure to call qedr_cleanup_user()
-in case qedr_init_user_queue() failed.
 
------------[ cut here ]-----------
-WARNING: CPU: 0 PID: 143192 at drivers/infiniband/core/rdma_core.c:874 uverbs_destroy_ufile_hw+0xcf/0xf0 [ib_uverbs]
-Modules linked in: tls target_core_user uio target_core_pscsi target_core_file target_core_iblock ib_srpt ib_srp scsi_transport_srp nfsd nfs_acl rpcsec_gss_krb5 auth_rpcgss nfsv4 dns_resolver nfs lockd grace fscache netfs 8021q garp mrp stp llc ext4 mbcache jbd2 opa_vnic ib_umad ib_ipoib sunrpc rdma_ucm ib_isert iscsi_target_mod target_core_mod ib_iser libiscsi scsi_transport_iscsi rdma_cm iw_cm ib_cm hfi1 intel_rapl_msr intel_rapl_common mgag200 qedr sb_edac drm_shmem_helper rdmavt x86_pkg_temp_thermal drm_kms_helper intel_powerclamp ib_uverbs coretemp i2c_algo_bit kvm_intel dell_wmi_descriptor ipmi_ssif sparse_keymap kvm ib_core rfkill syscopyarea sysfillrect video sysimgblt irqbypass ipmi_si ipmi_devintf fb_sys_fops rapl iTCO_wdt mxm_wmi iTCO_vendor_support intel_cstate pcspkr dcdbas intel_uncore ipmi_msghandler lpc_ich acpi_power_meter mei_me mei fuse drm xfs libcrc32c qede sd_mod ahci libahci t10_pi sg crct10dif_pclmul crc32_pclmul crc32c_intel qed libata tg3
-ghash_clmulni_intel megaraid_sas crc8 wmi [last unloaded: ib_srpt]
-CPU: 0 PID: 143192 Comm: fi_rdm_tagged_p Kdump: loaded Not tainted 5.14.0-408.el9.x86_64 #1
-Hardware name: Dell Inc. PowerEdge R430/03XKDV, BIOS 2.14.0 01/25/2022
-RIP: 0010:uverbs_destroy_ufile_hw+0xcf/0xf0 [ib_uverbs]
-Code: 5d 41 5c 41 5d 41 5e e9 0f 26 1b dd 48 89 df e8 67 6a ff ff 49 8b 86 10 01 00 00 48 85 c0 74 9c 4c 89 e7 e8 83 c0 cb dd eb 92 <0f> 0b eb be 0f 0b be 04 00 00 00 48 89 df e8 8e f5 ff ff e9 6d ff
-RSP: 0018:ffffb7c6cadfbc60 EFLAGS: 00010286
-RAX: ffff8f0889ee3f60 RBX: ffff8f088c1a5200 RCX: 00000000802a0016
-RDX: 00000000802a0017 RSI: 0000000000000001 RDI: ffff8f0880042600
-RBP: 0000000000000001 R08: 0000000000000001 R09: 0000000000000000
-R10: ffff8f11fffd5000 R11: 0000000000039000 R12: ffff8f0d5b36cd80
-R13: ffff8f088c1a5250 R14: ffff8f1206d91000 R15: 0000000000000000
-FS: 0000000000000000(0000) GS:ffff8f11d7c00000(0000) knlGS:0000000000000000
-CS: 0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 0000147069200e20 CR3: 00000001c7210002 CR4: 00000000001706f0
-Call Trace:
-<TASK>
-? show_trace_log_lvl+0x1c4/0x2df
-? show_trace_log_lvl+0x1c4/0x2df
-? ib_uverbs_close+0x1f/0xb0 [ib_uverbs]
-? uverbs_destroy_ufile_hw+0xcf/0xf0 [ib_uverbs]
-? __warn+0x81/0x110
-? uverbs_destroy_ufile_hw+0xcf/0xf0 [ib_uverbs]
-? report_bug+0x10a/0x140
-? handle_bug+0x3c/0x70
-? exc_invalid_op+0x14/0x70
-? asm_exc_invalid_op+0x16/0x20
-? uverbs_destroy_ufile_hw+0xcf/0xf0 [ib_uverbs]
-ib_uverbs_close+0x1f/0xb0 [ib_uverbs]
-__fput+0x94/0x250
-task_work_run+0x5c/0x90
-do_exit+0x270/0x4a0
-do_group_exit+0x2d/0x90
-get_signal+0x87c/0x8c0
-arch_do_signal_or_restart+0x25/0x100
-? ib_uverbs_ioctl+0xc2/0x110 [ib_uverbs]
-exit_to_user_mode_loop+0x9c/0x130
-exit_to_user_mode_prepare+0xb6/0x100
-syscall_exit_to_user_mode+0x12/0x40
-do_syscall_64+0x69/0x90
-? syscall_exit_work+0x103/0x130
-? syscall_exit_to_user_mode+0x22/0x40
-? do_syscall_64+0x69/0x90
-? syscall_exit_work+0x103/0x130
-? syscall_exit_to_user_mode+0x22/0x40
-? do_syscall_64+0x69/0x90
-? do_syscall_64+0x69/0x90
-? common_interrupt+0x43/0xa0
-entry_SYSCALL_64_after_hwframe+0x72/0xdc
-RIP: 0033:0x1470abe3ec6b
-Code: Unable to access opcode bytes at RIP 0x1470abe3ec41.
-RSP: 002b:00007fff13ce9108 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
-RAX: fffffffffffffffc RBX: 00007fff13ce9218 RCX: 00001470abe3ec6b
-RDX: 00007fff13ce9200 RSI: 00000000c0181b01 RDI: 0000000000000004
-RBP: 00007fff13ce91e0 R08: 0000558d9655da10 R09: 0000558d9655dd00
-R10: 00007fff13ce95c0 R11: 0000000000000246 R12: 00007fff13ce9358
-R13: 0000000000000013 R14: 0000558d9655db50 R15: 00007fff13ce9470
-</TASK>
---[ end trace 888a9b92e04c5c97 ]--
 
-Fixes: df15856132bc ("RDMA/qedr: restructure functions that create/destroy QPs")
-Signed-off-by: Kamal Heib <kheib@redhat.com>
----
- drivers/infiniband/hw/qedr/verbs.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+On 06/02/2024 19:12, Joe Damato wrote:
+> On Tue, Feb 06, 2024 at 10:11:28AM +0200, Tariq Toukan wrote:
+>>
+>>
+>> On 06/02/2024 3:03, Joe Damato wrote:
+>>> Make mlx5 compatible with the newly added netlink queue GET APIs.
+>>>
+>>> Signed-off-by: Joe Damato <jdamato@fastly.com>
+>>
+>> + Gal
+>>
+>> Hi Joe,
+>> Thanks for your patch.
+>>
+>> We have already prepared a similar patch, and it's part of our internal
+>> submission queue, and planned to be submitted soon.
+>>
+>> Please see my comments below, let us know if you're welling to respin a V2
+>> or wait for our patch.
+> 
+> Do you have a rough estimate on when it'll be submitted?
+> 
+> If it's several months out I'll try again, but if it's expected to be
+> submit in the next few weeks I'll wait for your official change.
 
-diff --git a/drivers/infiniband/hw/qedr/verbs.c b/drivers/infiniband/hw/qedr/verbs.c
-index 7887a6786ed4..0943abd4de27 100644
---- a/drivers/infiniband/hw/qedr/verbs.c
-+++ b/drivers/infiniband/hw/qedr/verbs.c
-@@ -1880,7 +1880,7 @@ static int qedr_create_user_qp(struct qedr_dev *dev,
- 		rc = qedr_init_user_queue(udata, dev, &qp->urq, ureq.rq_addr,
- 					  ureq.rq_len, true, 0, alloc_and_init);
- 		if (rc)
--			return rc;
-+			goto err1;
- 	}
- 
- 	memset(&in_params, 0, sizeof(in_params));
--- 
-2.43.0
+It'll be in the next few weeks.
 
+> 
+> BTW, are the per queue coalesce changes in that same queue? It was
+> mentioned previously [1] that this feature is coming after we submit a
+> simple attempt as an RFC. If that feature isn't planned or won't be submit
+> anytime soon, can you let us know and we can try to attempt an RFC v3 for
+> it?
+> 
+
+The per queue coalesce series is going through internal code review, and 
+is expected to also be ready in a matter of a few weeks.
+
+> [1]: https://lore.kernel.org/lkml/874jj34e67.fsf@nvidia.com/
+> 
+>>> ---
+>>>   drivers/net/ethernet/mellanox/mlx5/core/en.h      | 1 +
+>>>   drivers/net/ethernet/mellanox/mlx5/core/en_main.c | 8 ++++++++
+>>>   2 files changed, 9 insertions(+)
+>>>
+>>> diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en.h b/drivers/net/ethernet/mellanox/mlx5/core/en.h
+>>> index 55c6ace0acd5..3f86ee1831a8 100644
+>>> --- a/drivers/net/ethernet/mellanox/mlx5/core/en.h
+>>> +++ b/drivers/net/ethernet/mellanox/mlx5/core/en.h
+>>> @@ -768,6 +768,7 @@ struct mlx5e_channel {
+>>>   	u16                        qos_sqs_size;
+>>>   	u8                         num_tc;
+>>>   	u8                         lag_port;
+>>> +	unsigned int		   irq;
+>>>   	/* XDP_REDIRECT */
+>>>   	struct mlx5e_xdpsq         xdpsq;
+>>> diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en_main.c b/drivers/net/ethernet/mellanox/mlx5/core/en_main.c
+>>> index c8e8f512803e..e1bfff1fb328 100644
+>>> --- a/drivers/net/ethernet/mellanox/mlx5/core/en_main.c
+>>> +++ b/drivers/net/ethernet/mellanox/mlx5/core/en_main.c
+>>> @@ -2473,6 +2473,9 @@ static void mlx5e_close_queues(struct mlx5e_channel *c)
+>>>   	mlx5e_close_tx_cqs(c);
+>>>   	mlx5e_close_cq(&c->icosq.cq);
+>>>   	mlx5e_close_cq(&c->async_icosq.cq);
+>>> +
+>>> +	netif_queue_set_napi(c->netdev, c->ix, NETDEV_QUEUE_TYPE_TX, NULL);
+>>> +	netif_queue_set_napi(c->netdev, c->ix, NETDEV_QUEUE_TYPE_RX, NULL);
+>>>   }
+>>>   static u8 mlx5e_enumerate_lag_port(struct mlx5_core_dev *mdev, int ix)
+>>> @@ -2558,6 +2561,7 @@ static int mlx5e_open_channel(struct mlx5e_priv *priv, int ix,
+>>>   	c->stats    = &priv->channel_stats[ix]->ch;
+>>>   	c->aff_mask = irq_get_effective_affinity_mask(irq);
+>>>   	c->lag_port = mlx5e_enumerate_lag_port(priv->mdev, ix);
+>>> +	c->irq		= irq;
+>>>   	netif_napi_add(netdev, &c->napi, mlx5e_napi_poll);
+>>> @@ -2602,6 +2606,10 @@ static void mlx5e_activate_channel(struct mlx5e_channel *c)
+>>>   		mlx5e_activate_xsk(c);
+>>>   	else
+>>>   		mlx5e_activate_rq(&c->rq);
+>>> +
+>>> +	netif_napi_set_irq(&c->napi, c->irq);
+>>
+>> Can be safely moved to mlx5e_open_channel without interfering with other
+>> existing mapping. This would save the new irq field in mlx5e_channel.
+> 
+> Sure, yea, I have that change queued already from last night.
+> 
+
+I see now.. I replied before noticing it.
+
+>>> +	netif_queue_set_napi(c->netdev, c->ix, NETDEV_QUEUE_TYPE_TX, &c->napi);
+>>
+>> In some configurations we have multiple txqs per channel, so the txq indices
+>> are not 1-to-1 with their channel index.
+>>
+>> This should be called per each txq, with the proper txq index.
+>>
+>> It should be done also for feture-dedicated SQs (like QOS/HTB).
+> 
+> OK. I think the above makes sense and I'll look into it if I have some time
+> this week.
+>   
+>>> +	netif_queue_set_napi(c->netdev, c->ix, NETDEV_QUEUE_TYPE_RX, &c->napi);
+>>
+>> For consistency, I'd move this one as well, to match the TX handling.
+> 
+> Sure.
+> 
+>>>   }
+>>>   static void mlx5e_deactivate_channel(struct mlx5e_channel *c)
 
