@@ -1,371 +1,160 @@
-Return-Path: <linux-rdma+bounces-942-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-944-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2E3BF84C322
-	for <lists+linux-rdma@lfdr.de>; Wed,  7 Feb 2024 04:33:35 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B0FA184C54F
+	for <lists+linux-rdma@lfdr.de>; Wed,  7 Feb 2024 07:59:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1C05B1C24FA4
-	for <lists+linux-rdma@lfdr.de>; Wed,  7 Feb 2024 03:33:34 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D5BA41C25929
+	for <lists+linux-rdma@lfdr.de>; Wed,  7 Feb 2024 06:59:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4894410957;
-	Wed,  7 Feb 2024 03:33:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D8AEC1CF8A;
+	Wed,  7 Feb 2024 06:59:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="YO/Xr7MB"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from szxga04-in.huawei.com (szxga04-in.huawei.com [45.249.212.190])
+Received: from NAM11-CO1-obe.outbound.protection.outlook.com (mail-co1nam11on2075.outbound.protection.outlook.com [40.107.220.75])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6F677101C4;
-	Wed,  7 Feb 2024 03:33:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.190
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707276803; cv=none; b=WheYTX/m5ufqVYF3j9Yi9brtHdJqc+ayOQAgkUCCG9nGvctDp3GKMAImonz3cHj9yo12z9VS8Pa3hzqXb3Dnn0+sUHVTy6S3HDkqlOD54iM9I29sEPmeZKi7hC+T+oxxLBPbEDWn9eaTSRVRKC/PRPiLjZjHRDUwOIFNkRsBL1w=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707276803; c=relaxed/simple;
-	bh=dvqAjBUxSIHK7bIQQ1NvbcPuPs08Cu4BN+2/zSyHInE=;
-	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=FfbfseUqh5d78Jf81q9BRBsMgvoow+hL4E/l4sev9UaNW0dUDgVtLnAqRw+G/m1a+6IZjwmBavFMj5oDLB+IYFZOxgXS6FYWbK3rmWyDIzDU55Tc5Pwxk3dx8Z3fKnkWKbaqD+vom0nYiXeQta718mqclC2iHBDRGSysk1/JqE4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=hisilicon.com; spf=pass smtp.mailfrom=hisilicon.com; arc=none smtp.client-ip=45.249.212.190
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=hisilicon.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=hisilicon.com
-Received: from mail.maildlp.com (unknown [172.19.163.17])
-	by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4TV5Jp4jRZz1xnJq;
-	Wed,  7 Feb 2024 11:32:10 +0800 (CST)
-Received: from kwepemi500006.china.huawei.com (unknown [7.221.188.68])
-	by mail.maildlp.com (Postfix) with ESMTPS id D34F61A0178;
-	Wed,  7 Feb 2024 11:33:17 +0800 (CST)
-Received: from localhost.localdomain (10.67.165.2) by
- kwepemi500006.china.huawei.com (7.221.188.68) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Wed, 7 Feb 2024 11:33:17 +0800
-From: Junxian Huang <huangjunxian6@hisilicon.com>
-To: <jgg@ziepe.ca>, <leon@kernel.org>
-CC: <linux-rdma@vger.kernel.org>, <linuxarm@huawei.com>,
-	<linux-kernel@vger.kernel.org>, <huangjunxian6@hisilicon.com>
-Subject: [PATCH for-next 2/2] RDMA/hns: Support configuring congestion control algorithm with QP granularity
-Date: Wed, 7 Feb 2024 11:29:10 +0800
-Message-ID: <20240207032910.3959426-3-huangjunxian6@hisilicon.com>
-X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20240207032910.3959426-1-huangjunxian6@hisilicon.com>
-References: <20240207032910.3959426-1-huangjunxian6@hisilicon.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 32ECD1CF83;
+	Wed,  7 Feb 2024 06:59:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.220.75
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1707289169; cv=fail; b=Tre7gxvqTHFaUaRjskCsLoBuyKwbkYGBmS5FLdetZprAXqx8RtRhGR+5gXHjFhlJz8vSjkiAKTMVXaFYkKAgjI/yiAao+wl5dSGgTXJfEBbsODB+lMNXh9Xbr8SnVvAsNCM7JDF3vLvCpj4R1B05MD3pHHclvCr9/YkONl3JGZ8=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1707289169; c=relaxed/simple;
+	bh=QMDI5FabLCLRNj/B0PtjQttCQrktV0Bs7d1jTQ/U6WM=;
+	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
+	 Content-Type:MIME-Version; b=RYCvXGjHtwFlw9fXjwovXytncpbfwtEzUTaShI4DGZnlOzqkAtF2JpbUy6GjxkSq4APX8lebRfk1n5aJ5zLkw7Wg34XzZ3sE3G0HBzu7Fk76xnJrlfiMPiL+EICMHliBZ4u41pK8ND7fR0jdItN/HplHI9F4/xNswF1VWKoC3lY=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=YO/Xr7MB; arc=fail smtp.client-ip=40.107.220.75
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=PWTVWb2aJf9bx1gY9IVu7i2vhFrqc98cLanGPTFywUT8kUKlKxQCqGyOTc5G/XvqIxdQBxqPrWJOgmgI5vJnnO/XRJtXE3Cjo0/ToarttewjOF3FsuH/2bt3FdMLPsmZMEzWYIrBmiJkVZOjDQWNZzBm6AMbJmueC705spGpe1FOPQdD5eIyC6cEJFWqaoSrWObNYe1qb4eutG8pYoXgSuxPgxFc3L7ReSwMUb6ROoPyVznemIIqoTOTy0Uw9PG+coquGywy7wVeftnojz9+DGs6NI4okZkPKi6WRDhxcYcF8H9yo7eR6EBzYrBjTnZotgmroR/esC8R6koAAVSQug==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=cz78NVS5D47nogtUdgUrqoOMWnCAMfRraEHzqarZ5U8=;
+ b=QgGEuH0VprBAqALthx+SrRvWaTOnxJhumYKOUdM+Wg3S42Eby20scCq8KJzx0U94Vnpn7WU5trYhVzdMw1Vxz1RtFtbgmw78LLcRM7pc5u3vuVBxq7LfvpD1usUCXHziDFG/RJSnC5xlQtaaCD9xVwsMMsuuSpb2poilHYbt47p7HiKDlY/EnujSuIb1CJJctwPtkJ+MWSWAYgJ3K83KLhosLlGazs9SRZXrtejZcrmGttcqyCAHGA32TjbKn1cn4Q4FNEZolquygtSKFklzug6NHxnOJxED7DlKRH7K2lLmzgg36QPijgyQNgZdmChhjXqBIL9IUwkWrOeoxES2Lg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=cz78NVS5D47nogtUdgUrqoOMWnCAMfRraEHzqarZ5U8=;
+ b=YO/Xr7MBiegsyOUlklI6bPeK3IZwCklS+ZwZVusXVpuXC59U50xv3tkNU7qYpWUmp4SnE0FmQBPHyJDZ0mJB5YWBrSPguwXueqhzrwyUrikwrc7N+NfYtNKphh/6atCIp17fUJC2A9WSrImAqy54XWmJiGT5iAudCQimRptjYoX62rQGv5xf9iM+CQ/GqNy3koTA+RLEp8UqZTob/7YVLAfsUQXWrw28zId7rTR+S0yDG0GLyHm0tGcQ8/cjOYaNdwtG0LR6K/RrJ6MIhb+k46ye8NaH2uP6CjmAANetnlJWLtxBczhPgY70r+RA0VojfO02gwrIuuQtxQ2pCfJk0Q==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nvidia.com;
+Received: from DS7PR12MB6288.namprd12.prod.outlook.com (2603:10b6:8:93::7) by
+ SJ1PR12MB6292.namprd12.prod.outlook.com (2603:10b6:a03:455::20) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7270.15; Wed, 7 Feb
+ 2024 06:59:25 +0000
+Received: from DS7PR12MB6288.namprd12.prod.outlook.com
+ ([fe80::bddb:8ace:1d63:205b]) by DS7PR12MB6288.namprd12.prod.outlook.com
+ ([fe80::bddb:8ace:1d63:205b%5]) with mapi id 15.20.7270.016; Wed, 7 Feb 2024
+ 06:59:25 +0000
+Message-ID: <b3c595d8-b30a-41ac-bb82-c1264678b3c4@nvidia.com>
+Date: Wed, 7 Feb 2024 08:59:18 +0200
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH net-next] eth: mlx5: link NAPI instances to queues and
+ IRQs
+To: Joe Damato <jdamato@fastly.com>, Tariq Toukan <tariqt@nvidia.com>
+Cc: Tariq Toukan <ttoukan.linux@gmail.com>, linux-kernel@vger.kernel.org,
+ netdev@vger.kernel.org, rrameshbabu@nvidia.com,
+ Saeed Mahameed <saeedm@nvidia.com>, Leon Romanovsky <leon@kernel.org>,
+ "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
+ Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+ "open list:MELLANOX MLX5 core VPI driver" <linux-rdma@vger.kernel.org>
+References: <20240206010311.149103-1-jdamato@fastly.com>
+ <7e338c2a-6091-4093-8ca2-bb3b2af3e79d@gmail.com>
+ <20240206171159.GA11565@fastly.com>
+ <44d321bf-88a0-4d6f-8572-dfbda088dd8f@nvidia.com>
+ <20240206192314.GA11982@fastly.com>
+Content-Language: en-US
+From: Gal Pressman <gal@nvidia.com>
+In-Reply-To: <20240206192314.GA11982@fastly.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: FR4P281CA0031.DEUP281.PROD.OUTLOOK.COM
+ (2603:10a6:d10:c7::15) To DS7PR12MB6288.namprd12.prod.outlook.com
+ (2603:10b6:8:93::7)
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
- kwepemi500006.china.huawei.com (7.221.188.68)
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: DS7PR12MB6288:EE_|SJ1PR12MB6292:EE_
+X-MS-Office365-Filtering-Correlation-Id: 8ae26252-30f3-40f1-fafc-08dc27aa520f
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	9LfWv37KLUycPxRieXkhibw/dwe1vNYVKrDQH1WJcvYA2rUWz02hhh4V9lHKuVIeumfYUv/h3upOjL1A3fSmSEBKDF46c7PnkR67g6lxo+xyhO7/0ECjkTIGat3maswIBdnC6JXNU1B10f21vyIobHyUW/eWb92AnxIWDK2Z7jKFbkV5HGpgLUfv/GKxsYZryz6ZryyC4+BBLXAbBoJ1158929iGMs5I2Ua27Bs03ecp4/mk0rb0vqJ1Sx9uaVufd3N50KQ0eOQ6S/CedoMwrSuawiuAuvOdPinLtBC738UxiyEDNnSq8y/To/aS2FNxBy5DRJ97hgWIcMaSXWhJDBRP/MfNFnzgmVcaDkBryYh99KVIuUsqhpg5wYSHv5rR/v+03hPKgjgIVQ93//BeJP70VVECGqSbeqIofveP87s5/jRqDVQb1sdWnWG4TL9t2ZhAXJifgnlRzgxhrKDaOyC1VOtABagr9xQV1xh4L4GRDCfzGJqb84nqlIpUetBBsJCur7TujTR5tIDvuIvwRo4YcEkbCTW9uheiQB8fdzTOiXPyf+9IcT3J4ykkwr2oqFWu498m2S8aLrrx7t2/KVFeZ2qO9Oge2R666yKw0neVjEwnaCDlWwNqewgFBI2PUMHRpwp0864suncKPvLqRQ==
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DS7PR12MB6288.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366004)(396003)(39860400002)(136003)(376002)(346002)(230922051799003)(451199024)(1800799012)(186009)(64100799003)(316002)(478600001)(7416002)(5660300002)(66476007)(6636002)(110136005)(4326008)(8676002)(8936002)(66946007)(66556008)(6666004)(2616005)(38100700002)(4744005)(6506007)(54906003)(2906002)(53546011)(26005)(31696002)(6512007)(6486002)(36756003)(86362001)(31686004)(41300700001)(45980500001)(43740500002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?utf-8?B?ZWltNzVjdGt5c2Q4V2xJRHVkYThSa0psZVFYSy9JMEFGWnFkTkZiM0s5dEJk?=
+ =?utf-8?B?Q29TbkExZUJEQWswa1hEZzc2bzIreVNoOFg3R1dhK0FJM3ZWV1RNTG03SFky?=
+ =?utf-8?B?STF0MVUvY0U5eWJBTkkzc0NuSGg5ZU9ycVp2bVA1ekxqWHVlMTRyeXF0YWNj?=
+ =?utf-8?B?ZTBmbFZENG9FNDRrMUdJYnhUTmptVUJScGtaYU9OY2ViMXdIUmlzdWF1Ritz?=
+ =?utf-8?B?UjA1TkVPVnBscGtQMTI1OWhoQXpFc2tXaHpLNU45SE9wdVdnRHY1ZjY1ODNo?=
+ =?utf-8?B?QzFVUFBJdGs3WStCZlJick9OREhDRlV2OEFDbEhGM3VITGt6clJTajlEMmhq?=
+ =?utf-8?B?M3FyUVEyd3oyTmRjM3k2MmdteTNZK3h4bnJFRnZGSFFXc3dTZFB6aTErcHZF?=
+ =?utf-8?B?MmJZOWJ2S0JTY1hEUVpMbzMzR0o1enUwNTA3Q0VVWVd6dVkrWFBNMGZIbEx1?=
+ =?utf-8?B?djgraTlvM2h1RktPbXdkN0VzWEU3cWN0UnlNcnlRaXFaaXhjZEZSVTJoN2tB?=
+ =?utf-8?B?UlF6RDl3QTdhbmppRmtuY21CbDI2em1tZXNUMDFnWGNuZ0QxaDQ5cmc4bkxt?=
+ =?utf-8?B?dVMzUkRLdU8zNFN0RUFhRFRDS1p4a0JFWFRBZEZtdXBoY2paa1h6MzBUc21K?=
+ =?utf-8?B?ZlZpc0N2RHNMaTNORExBZ205QUFVVEVkNXBmd1RDKytpZ3lGc1hnSWlQVjVI?=
+ =?utf-8?B?MVB6bDdnQUl1M1VVZCtiNHhHREl4WDRTdityWVpuREVjN3JPYjdFZS9xL2Nq?=
+ =?utf-8?B?UTJCY1BWSVdXeGlyMEVFajlFZGpYekI5VGRpbWRmUXVlc3gvSm5UV2hiRkJN?=
+ =?utf-8?B?bnZvOU0rakRsZnZSQ3AySVF0L0s1QXczNmYzMm9XK0VHR0VCREZVZnlyVVBl?=
+ =?utf-8?B?YnhPL2FBOEQrcFRpaUthMHVUVlRlSm5zaS8vOTFqdHhIMmNCbmpGRWVuR1Ir?=
+ =?utf-8?B?SWFrSzhmMmFZQWhycFhhazYxRHBkWnlaVXRiaGppeSsyYmk3aDlOQWYySE1U?=
+ =?utf-8?B?OFo4aDVIZWR3c3dPZ2w0MFUwSTNzUURMbmUxL0srWHFxazFDSm9pdWdtQ0ND?=
+ =?utf-8?B?WjJybG9ETFZoSG5oVExKQzAzRUxSdDdMTXorYnpkaXpEd3N3Qjd0M0M2c1hz?=
+ =?utf-8?B?ZlpNNmowRnMveU40Y290WHg0ZEVGRFduM1Y0N2R4MWpIY3NIcitLaGRGUjFO?=
+ =?utf-8?B?enoycDNHUkRpOG16K0lvQ1J5dm04djBWUU9tM0M3MjdWQUhjcTZGOHlCdEov?=
+ =?utf-8?B?STh4emVIcUNtemlaSldyaFd3bVlvSXEyU0Q1bEhNNnAyTzZPaUV4V0J3bG1v?=
+ =?utf-8?B?bkpBK25xM1Vya21zK1lXSEUrOEtmRVJzRlRFaGZ3a0xtWFJKMUJJMjE4SXFK?=
+ =?utf-8?B?MjZyUzN5Mm0xUGJWOUJZckJ5bHArSU1aNWdobnBFZVhNNHptQy9qaFRNQWMx?=
+ =?utf-8?B?ZUpZT1R0VElrT2ZuNXpsUFhwZjlDb01vdU10bitvLzlKMVVnM1FhTlZyaVVT?=
+ =?utf-8?B?TUNPd1o5RURmT1Y5SVFZc3RuVkdkRm9PUXhzWXViUEhYRkhmQkZ5VjI5ZlpT?=
+ =?utf-8?B?YTN6dThMNjRkN1hYMU84SW94MFg2aWVBZVNiWERVdW9uZ295VUJwSmhKUExD?=
+ =?utf-8?B?NHFCZUlpYkVHSEU4VEYxT0I3MXVWdjFTZ0tZVnJZaVcwbWlveWlQQzNnMUZT?=
+ =?utf-8?B?Vngya1dyUmlrYkQwVk50N0R4S2tSM2VXNGJTVm9yS0RsbS82S2FhZGN3bXN0?=
+ =?utf-8?B?RzlEMCtjR2JLbVBCcVRGMTRDUDlsQ3ZQTk9JamRxQ3hENUM3WUtmeWYwcmJn?=
+ =?utf-8?B?bmdvd04wVkt0Q2xFbGd2TjEwS2RlRXgyQzdzQmc1UmdIcU14UzVZSnFacHVq?=
+ =?utf-8?B?QUZPTkNvbGg0Tkp0ZklneEdMbWpiVkd1UmFrallZcVJqNStqRmVPTnZlTEFE?=
+ =?utf-8?B?WHBxekhHR1pZKzJYMDMwSTBsTzN5aHRwRE5pRzFjNTdrOFBRdXBOM0JpS0Vk?=
+ =?utf-8?B?dGI3Wm5IaTZtZ0lFZWh6ak41SkNnYWt3S25BVjFlM2ZQZTBpa3dHR3NlSWl3?=
+ =?utf-8?B?M2I1R3NmbWx3amNrZVpGKzRSamp1SnpCU2tmRGZWeVB6VWRVWkZwL1A2QzVR?=
+ =?utf-8?Q?KB7M/KNlnQ4zlgws0UbFqiep7?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 8ae26252-30f3-40f1-fafc-08dc27aa520f
+X-MS-Exchange-CrossTenant-AuthSource: DS7PR12MB6288.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 07 Feb 2024 06:59:25.6792
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: wkCy26JsbkZwr1Mb4e95InldL3ntZXbb5egeeLJm1capz0HkU6UVpaKamsw6ukPT
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ1PR12MB6292
 
-Support userspace configuring congestion control algorithm with
-QP granularity. If the algorithm is not specified in userspace,
-use the default one.
+On 06/02/2024 21:23, Joe Damato wrote:
+>> The per queue coalesce series is going through internal code review, and is
+>> expected to also be ready in a matter of a few weeks.
+> 
+> OK, great. Thanks for letting me know; we are definitely interested in
+> using this feature.
 
-Besides, add a restriction that only DCQCN is supported for UD.
-
-Signed-off-by: Junxian Huang <huangjunxian6@hisilicon.com>
----
- drivers/infiniband/hw/hns/hns_roce_device.h | 26 +++++---
- drivers/infiniband/hw/hns/hns_roce_hw_v2.c  | 15 ++---
- drivers/infiniband/hw/hns/hns_roce_hw_v2.h  |  3 +-
- drivers/infiniband/hw/hns/hns_roce_main.c   |  3 +
- drivers/infiniband/hw/hns/hns_roce_qp.c     | 71 +++++++++++++++++++++
- include/uapi/rdma/hns-abi.h                 | 17 +++++
- 6 files changed, 118 insertions(+), 17 deletions(-)
-
-diff --git a/drivers/infiniband/hw/hns/hns_roce_device.h b/drivers/infiniband/hw/hns/hns_roce_device.h
-index 1a8516019516..55f2f54e15fb 100644
---- a/drivers/infiniband/hw/hns/hns_roce_device.h
-+++ b/drivers/infiniband/hw/hns/hns_roce_device.h
-@@ -594,6 +594,21 @@ struct hns_roce_work {
- 	u32 queue_num;
- };
- 
-+enum hns_roce_scc_algo {
-+	HNS_ROCE_SCC_ALGO_DCQCN = 0,
-+	HNS_ROCE_SCC_ALGO_LDCP,
-+	HNS_ROCE_SCC_ALGO_HC3,
-+	HNS_ROCE_SCC_ALGO_DIP,
-+	HNS_ROCE_SCC_ALGO_TOTAL,
-+};
-+
-+enum hns_roce_cong_type {
-+	CONG_TYPE_DCQCN = 1 << HNS_ROCE_SCC_ALGO_DCQCN,
-+	CONG_TYPE_LDCP = 1 << HNS_ROCE_SCC_ALGO_LDCP,
-+	CONG_TYPE_HC3 = 1 << HNS_ROCE_SCC_ALGO_HC3,
-+	CONG_TYPE_DIP = 1 << HNS_ROCE_SCC_ALGO_DIP,
-+};
-+
- struct hns_roce_qp {
- 	struct ib_qp		ibqp;
- 	struct hns_roce_wq	rq;
-@@ -637,6 +652,7 @@ struct hns_roce_qp {
- 	struct list_head	sq_node; /* all send qps are on a list */
- 	struct hns_user_mmap_entry *dwqe_mmap_entry;
- 	u32			config;
-+	enum hns_roce_cong_type	cong_type;
- };
- 
- struct hns_roce_ib_iboe {
-@@ -708,13 +724,6 @@ struct hns_roce_eq_table {
- 	struct hns_roce_eq	*eq;
- };
- 
--enum cong_type {
--	CONG_TYPE_DCQCN,
--	CONG_TYPE_LDCP,
--	CONG_TYPE_HC3,
--	CONG_TYPE_DIP,
--};
--
- struct hns_roce_caps {
- 	u64		fw_ver;
- 	u8		num_ports;
-@@ -844,7 +853,8 @@ struct hns_roce_caps {
- 	u16		default_aeq_period;
- 	u16		default_aeq_arm_st;
- 	u16		default_ceq_arm_st;
--	enum cong_type	cong_type;
-+	u8		cong_cap;
-+	enum hns_roce_cong_type	default_cong_type;
- };
- 
- enum hns_roce_device_state {
-diff --git a/drivers/infiniband/hw/hns/hns_roce_hw_v2.c b/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
-index 8907c30598ab..21532f213b0f 100644
---- a/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
-+++ b/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
-@@ -2209,11 +2209,12 @@ static int hns_roce_query_caps(struct hns_roce_dev *hr_dev)
- 	caps->max_wqes = 1 << le16_to_cpu(resp_c->sq_depth);
- 
- 	caps->num_srqs = 1 << hr_reg_read(resp_d, PF_CAPS_D_NUM_SRQS);
--	caps->cong_type = hr_reg_read(resp_d, PF_CAPS_D_CONG_TYPE);
-+	caps->cong_cap = hr_reg_read(resp_d, PF_CAPS_D_CONG_CAP);
- 	caps->max_srq_wrs = 1 << le16_to_cpu(resp_d->srq_depth);
- 	caps->ceqe_depth = 1 << hr_reg_read(resp_d, PF_CAPS_D_CEQ_DEPTH);
- 	caps->num_comp_vectors = hr_reg_read(resp_d, PF_CAPS_D_NUM_CEQS);
- 	caps->aeqe_depth = 1 << hr_reg_read(resp_d, PF_CAPS_D_AEQ_DEPTH);
-+	caps->default_cong_type = hr_reg_read(resp_d, PF_CAPS_D_DEFAULT_ALG);
- 	caps->reserved_pds = hr_reg_read(resp_d, PF_CAPS_D_RSV_PDS);
- 	caps->num_uars = 1 << hr_reg_read(resp_d, PF_CAPS_D_NUM_UARS);
- 	caps->reserved_qps = hr_reg_read(resp_d, PF_CAPS_D_RSV_QPS);
-@@ -4737,10 +4738,10 @@ enum {
- static int check_cong_type(struct ib_qp *ibqp,
- 			   struct hns_roce_congestion_algorithm *cong_alg)
- {
--	struct hns_roce_dev *hr_dev = to_hr_dev(ibqp->device);
-+	struct hns_roce_qp *hr_qp = to_hr_qp(ibqp);
- 
- 	/* different congestion types match different configurations */
--	switch (hr_dev->caps.cong_type) {
-+	switch (hr_qp->cong_type) {
- 	case CONG_TYPE_DCQCN:
- 		cong_alg->alg_sel = CONG_DCQCN;
- 		cong_alg->alg_sub_sel = UNSUPPORT_CONG_LEVEL;
-@@ -4766,10 +4767,7 @@ static int check_cong_type(struct ib_qp *ibqp,
- 		cong_alg->wnd_mode_sel = WND_LIMIT;
- 		break;
- 	default:
--		ibdev_warn(&hr_dev->ib_dev,
--			   "invalid type(%u) for congestion selection.\n",
--			   hr_dev->caps.cong_type);
--		hr_dev->caps.cong_type = CONG_TYPE_DCQCN;
-+		hr_qp->cong_type = CONG_TYPE_DCQCN;
- 		cong_alg->alg_sel = CONG_DCQCN;
- 		cong_alg->alg_sub_sel = UNSUPPORT_CONG_LEVEL;
- 		cong_alg->dip_vld = DIP_INVALID;
-@@ -4788,6 +4786,7 @@ static int fill_cong_field(struct ib_qp *ibqp, const struct ib_qp_attr *attr,
- 	struct hns_roce_congestion_algorithm cong_field;
- 	struct ib_device *ibdev = ibqp->device;
- 	struct hns_roce_dev *hr_dev = to_hr_dev(ibdev);
-+	struct hns_roce_qp *hr_qp = to_hr_qp(ibqp);
- 	u32 dip_idx = 0;
- 	int ret;
- 
-@@ -4800,7 +4799,7 @@ static int fill_cong_field(struct ib_qp *ibqp, const struct ib_qp_attr *attr,
- 		return ret;
- 
- 	hr_reg_write(context, QPC_CONG_ALGO_TMPL_ID, hr_dev->cong_algo_tmpl_id +
--		     hr_dev->caps.cong_type * HNS_ROCE_CONG_SIZE);
-+		     ilog2(hr_qp->cong_type) * HNS_ROCE_CONG_SIZE);
- 	hr_reg_clear(qpc_mask, QPC_CONG_ALGO_TMPL_ID);
- 	hr_reg_write(&context->ext, QPCEX_CONG_ALG_SEL, cong_field.alg_sel);
- 	hr_reg_clear(&qpc_mask->ext, QPCEX_CONG_ALG_SEL);
-diff --git a/drivers/infiniband/hw/hns/hns_roce_hw_v2.h b/drivers/infiniband/hw/hns/hns_roce_hw_v2.h
-index cd97cbee682a..359a74672ba1 100644
---- a/drivers/infiniband/hw/hns/hns_roce_hw_v2.h
-+++ b/drivers/infiniband/hw/hns/hns_roce_hw_v2.h
-@@ -1214,12 +1214,13 @@ struct hns_roce_query_pf_caps_d {
- #define PF_CAPS_D_RQWQE_HOP_NUM PF_CAPS_D_FIELD_LOC(21, 20)
- #define PF_CAPS_D_EX_SGE_HOP_NUM PF_CAPS_D_FIELD_LOC(23, 22)
- #define PF_CAPS_D_SQWQE_HOP_NUM PF_CAPS_D_FIELD_LOC(25, 24)
--#define PF_CAPS_D_CONG_TYPE PF_CAPS_D_FIELD_LOC(29, 26)
-+#define PF_CAPS_D_CONG_CAP PF_CAPS_D_FIELD_LOC(29, 26)
- #define PF_CAPS_D_CEQ_DEPTH PF_CAPS_D_FIELD_LOC(85, 64)
- #define PF_CAPS_D_NUM_CEQS PF_CAPS_D_FIELD_LOC(95, 86)
- #define PF_CAPS_D_AEQ_DEPTH PF_CAPS_D_FIELD_LOC(117, 96)
- #define PF_CAPS_D_AEQ_ARM_ST PF_CAPS_D_FIELD_LOC(119, 118)
- #define PF_CAPS_D_CEQ_ARM_ST PF_CAPS_D_FIELD_LOC(121, 120)
-+#define PF_CAPS_D_DEFAULT_ALG PF_CAPS_D_FIELD_LOC(127, 122)
- #define PF_CAPS_D_RSV_PDS PF_CAPS_D_FIELD_LOC(147, 128)
- #define PF_CAPS_D_NUM_UARS PF_CAPS_D_FIELD_LOC(155, 148)
- #define PF_CAPS_D_RSV_QPS PF_CAPS_D_FIELD_LOC(179, 160)
-diff --git a/drivers/infiniband/hw/hns/hns_roce_main.c b/drivers/infiniband/hw/hns/hns_roce_main.c
-index b55fe6911f9f..e5b678814f58 100644
---- a/drivers/infiniband/hw/hns/hns_roce_main.c
-+++ b/drivers/infiniband/hw/hns/hns_roce_main.c
-@@ -394,6 +394,9 @@ static int hns_roce_alloc_ucontext(struct ib_ucontext *uctx,
- 			resp.config |= HNS_ROCE_RSP_CQE_INLINE_FLAGS;
- 	}
- 
-+	if (hr_dev->pci_dev->revision >= PCI_REVISION_ID_HIP09)
-+		resp.congest_type  = hr_dev->caps.cong_cap;
-+
- 	ret = hns_roce_uar_alloc(hr_dev, &context->uar);
- 	if (ret)
- 		goto error_out;
-diff --git a/drivers/infiniband/hw/hns/hns_roce_qp.c b/drivers/infiniband/hw/hns/hns_roce_qp.c
-index 31b147210688..e22911d6b6a9 100644
---- a/drivers/infiniband/hw/hns/hns_roce_qp.c
-+++ b/drivers/infiniband/hw/hns/hns_roce_qp.c
-@@ -1004,6 +1004,70 @@ static void free_kernel_wrid(struct hns_roce_qp *hr_qp)
- 	kfree(hr_qp->sq.wrid);
- }
- 
-+static void default_congest_type(struct hns_roce_dev *hr_dev,
-+				 struct hns_roce_qp *hr_qp)
-+{
-+	struct hns_roce_caps *caps = &hr_dev->caps;
-+
-+	if (hr_qp->ibqp.qp_type == IB_QPT_UD ||
-+	    hr_qp->ibqp.qp_type == IB_QPT_GSI)
-+		hr_qp->cong_type = CONG_TYPE_DCQCN;
-+	else
-+		hr_qp->cong_type = 1 << caps->default_cong_type;
-+}
-+
-+static int set_congest_type(struct hns_roce_qp *hr_qp,
-+			    struct hns_roce_ib_create_qp *ucmd)
-+{
-+	struct hns_roce_dev *hr_dev = to_hr_dev(hr_qp->ibqp.device);
-+
-+	switch (ucmd->cong_type_flags) {
-+	case HNS_ROCE_CREATE_QP_FLAGS_DCQCN:
-+		hr_qp->cong_type = CONG_TYPE_DCQCN;
-+		break;
-+	case HNS_ROCE_CREATE_QP_FLAGS_LDCP:
-+		hr_qp->cong_type = CONG_TYPE_LDCP;
-+		break;
-+	case HNS_ROCE_CREATE_QP_FLAGS_HC3:
-+		hr_qp->cong_type = CONG_TYPE_HC3;
-+		break;
-+	case HNS_ROCE_CREATE_QP_FLAGS_DIP:
-+		hr_qp->cong_type = CONG_TYPE_DIP;
-+		break;
-+	default:
-+		hr_qp->cong_type = 0;
-+	}
-+
-+	if (!(hr_qp->cong_type & hr_dev->caps.cong_cap)) {
-+		ibdev_err_ratelimited(&hr_dev->ib_dev,
-+				      "Unsupported congest type 0x%x, cong_cap = 0x%x.\n",
-+				      hr_qp->cong_type, hr_dev->caps.cong_cap);
-+		return -EOPNOTSUPP;
-+	}
-+
-+	if (hr_qp->ibqp.qp_type == IB_QPT_UD &&
-+	    !(hr_qp->cong_type & CONG_TYPE_DCQCN)) {
-+		ibdev_err_ratelimited(&hr_dev->ib_dev,
-+				      "Only DCQCN supported for UD. Unsupported congest type 0x%x.\n",
-+				      hr_qp->cong_type);
-+		return -EOPNOTSUPP;
-+	}
-+
-+	return 0;
-+}
-+
-+static int set_congest_param(struct hns_roce_dev *hr_dev,
-+			     struct hns_roce_qp *hr_qp,
-+			     struct hns_roce_ib_create_qp *ucmd)
-+{
-+	if (ucmd->comp_mask & HNS_ROCE_CREATE_QP_MASK_CONGEST_TYPE)
-+		return set_congest_type(hr_qp, ucmd);
-+
-+	default_congest_type(hr_dev, hr_qp);
-+
-+	return 0;
-+}
-+
- static int set_qp_param(struct hns_roce_dev *hr_dev, struct hns_roce_qp *hr_qp,
- 			struct ib_qp_init_attr *init_attr,
- 			struct ib_udata *udata,
-@@ -1026,6 +1090,9 @@ static int set_qp_param(struct hns_roce_dev *hr_dev, struct hns_roce_qp *hr_qp,
- 		return ret;
- 	}
- 
-+	if (init_attr->qp_type == IB_QPT_XRC_TGT)
-+		default_congest_type(hr_dev, hr_qp);
-+
- 	if (udata) {
- 		ret = ib_copy_from_udata(ucmd, udata,
- 					 min(udata->inlen, sizeof(*ucmd)));
-@@ -1043,6 +1110,10 @@ static int set_qp_param(struct hns_roce_dev *hr_dev, struct hns_roce_qp *hr_qp,
- 			ibdev_err(ibdev,
- 				  "failed to set user SQ size, ret = %d.\n",
- 				  ret);
-+
-+		ret = set_congest_param(hr_dev, hr_qp, ucmd);
-+		if (ret)
-+			return ret;
- 	} else {
- 		if (hr_dev->pci_dev->revision >= PCI_REVISION_ID_HIP09)
- 			hr_qp->config = HNS_ROCE_EXSGE_FLAGS;
-diff --git a/include/uapi/rdma/hns-abi.h b/include/uapi/rdma/hns-abi.h
-index c996e151081e..757095a6c6fc 100644
---- a/include/uapi/rdma/hns-abi.h
-+++ b/include/uapi/rdma/hns-abi.h
-@@ -81,6 +81,9 @@ struct hns_roce_ib_create_qp {
- 	__u8    sq_no_prefetch;
- 	__u8    reserved[5];
- 	__aligned_u64 sdb_addr;
-+	__aligned_u64 comp_mask; /* Use enum hns_roce_create_qp_comp_mask */
-+	__aligned_u64 create_flags;
-+	__aligned_u64 cong_type_flags;
- };
- 
- enum hns_roce_qp_cap_flags {
-@@ -107,6 +110,17 @@ enum {
- 	HNS_ROCE_RSP_CQE_INLINE_FLAGS = 1 << 2,
- };
- 
-+enum hns_roce_congest_type_flags {
-+	HNS_ROCE_CREATE_QP_FLAGS_DCQCN = 1 << 0,
-+	HNS_ROCE_CREATE_QP_FLAGS_LDCP = 1 << 1,
-+	HNS_ROCE_CREATE_QP_FLAGS_HC3 = 1 << 2,
-+	HNS_ROCE_CREATE_QP_FLAGS_DIP = 1 << 3,
-+};
-+
-+enum hns_roce_create_qp_comp_mask {
-+	HNS_ROCE_CREATE_QP_MASK_CONGEST_TYPE = 1 << 1,
-+};
-+
- struct hns_roce_ib_alloc_ucontext_resp {
- 	__u32	qp_tab_size;
- 	__u32	cqe_size;
-@@ -114,6 +128,9 @@ struct hns_roce_ib_alloc_ucontext_resp {
- 	__u32	reserved;
- 	__u32	config;
- 	__u32	max_inline_data;
-+	__u8	reserved0;
-+	__u8	congest_type;
-+	__u8	reserved1[6];
- };
- 
- struct hns_roce_ib_alloc_ucontext {
--- 
-2.30.0
-
+Hi Joe,
+Can you please share some details about your usecase for this feature?
 
