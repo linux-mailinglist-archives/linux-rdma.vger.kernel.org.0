@@ -1,116 +1,83 @@
-Return-Path: <linux-rdma+bounces-947-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-948-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 45FDC84C6C9
-	for <lists+linux-rdma@lfdr.de>; Wed,  7 Feb 2024 10:00:15 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 39CCB84C7E1
+	for <lists+linux-rdma@lfdr.de>; Wed,  7 Feb 2024 10:49:55 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 00C18287788
-	for <lists+linux-rdma@lfdr.de>; Wed,  7 Feb 2024 09:00:14 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 516B81C23DEF
+	for <lists+linux-rdma@lfdr.de>; Wed,  7 Feb 2024 09:49:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 686E4208D7;
-	Wed,  7 Feb 2024 09:00:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8172E224DA;
+	Wed,  7 Feb 2024 09:49:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="J+Vul9bq"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F3934208CB;
-	Wed,  7 Feb 2024 09:00:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.187
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3221624B2F;
+	Wed,  7 Feb 2024 09:49:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707296409; cv=none; b=pp5CY3SS67ZzmVHa/Xple9nYmkm6s6/sq/1SUr0GSKMd5iBZFjKUZSv3qPp47cGc8fLNt4dWa317EYxvMQ40TkxrdjyX2+j+83hNjJAviXA0uvetKg/ndm5wGpzO/TFFMwlEiL8H/heMHw/yR11FTMb3Dx8TahdfAsbjjVyuZC0=
+	t=1707299383; cv=none; b=KZ5ocmu+BqCe3I4EyOLKDgCKPvsdRAPejqUtCWLRkoR9bij84YmPXDUNaZdpkdUrPF1ENcT6Iq3lPPX6Bf169w8IIoEdADzXCJ0moR9C5seIbohssheOplIuIKxXunOj2ORD0+2FRk1p28PxQalUyPtBzqX9E7qQoSNx5OP0mHo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707296409; c=relaxed/simple;
-	bh=GjNksb9mM9ltZpf6qfnQ4VHDgN179hjO+k8p85WPtjw=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=Y6kUKT/+54WZAm0YVORgCcwKhXcL3FlG5pC0khWgoQstHNFfbjnHGh+sZhrksXWymmxxQ8aSoQ6bsS5adzQaCYDRqOs5liPlENFTFuUV0jcwKdLF+8dBzHeS9kyzZj8cpePXvogIr5eLTMn+8bssHBpKfE10VmSaUJqexCSm1fo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=hisilicon.com; spf=pass smtp.mailfrom=hisilicon.com; arc=none smtp.client-ip=45.249.212.187
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=hisilicon.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=hisilicon.com
-Received: from mail.maildlp.com (unknown [172.19.88.194])
-	by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4TVDYS3RktzsWtR;
-	Wed,  7 Feb 2024 16:58:36 +0800 (CST)
-Received: from kwepemi500006.china.huawei.com (unknown [7.221.188.68])
-	by mail.maildlp.com (Postfix) with ESMTPS id 97103140153;
-	Wed,  7 Feb 2024 16:59:57 +0800 (CST)
-Received: from [10.67.120.168] (10.67.120.168) by
- kwepemi500006.china.huawei.com (7.221.188.68) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Wed, 7 Feb 2024 16:59:57 +0800
-Message-ID: <322ab57d-05d8-72b9-9580-0579b5d8b468@hisilicon.com>
-Date: Wed, 7 Feb 2024 16:59:56 +0800
+	s=arc-20240116; t=1707299383; c=relaxed/simple;
+	bh=iaPJLCw/Xy+KGXqtOa/G1rsYICV+i+x8OmFlAgHnp7U=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=NaTra8wYXIPw387ys7PU0sDj8Etbu9cnuGffySuzvU8amtQQUd01XiDfjUblrAY9NWWTDbOIs4kth97LBOlJY91J+VESL77PdkjbvUgvQQbpbOgSpwsbGZZItaxdkSPFduRaBIvZcB9sj08YXPKOXUwe0damvAFZrmjA8OpcaCo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=J+Vul9bq; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BCE59C433C7;
+	Wed,  7 Feb 2024 09:49:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1707299383;
+	bh=iaPJLCw/Xy+KGXqtOa/G1rsYICV+i+x8OmFlAgHnp7U=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=J+Vul9bqfemWsLYL963wUa4MjMJGapEgDfRHrT1NByLcjIGeELuDwCbLITaom9AeY
+	 Rep4tYFuHlv8iNYCJzFdvw1OC3COym1wVptqJrVnDEtoa5Gm0pzpF4baL+3J9sHmTf
+	 08WM61TGPbzR4Qa2Qo61alnOcUu8mYArqElhk5XbaaZ0pVaxl63jL0sPoFZAKvp1IQ
+	 E9KMiYavIim0MtCaPZ+KTNbMxVgMHDGJliuL4zcZrdDdeE2wMJTTq1Y05UJuSLfusQ
+	 JR15HUZ6Ym3oJMQQc8JqsjdXntvOuefg78Uarl5/EsFdDPWmEu5zs4xKFadGdLFCgX
+	 KurQ3rTSg6C1w==
+Date: Wed, 7 Feb 2024 09:48:08 +0000
+From: Simon Horman <horms@kernel.org>
+To: Colin Ian King <colin.i.king@gmail.com>
+Cc: Saeed Mahameed <saeedm@nvidia.com>, Leon Romanovsky <leon@kernel.org>,
+	"David S . Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
+	kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] net/mlx5: remove redundant assignment to variable
+ object_range
+Message-ID: <20240207094808.GO1104779@kernel.org>
+References: <20240206165815.2420951-1-colin.i.king@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.1.0
-Subject: Re: [PATCH for-next 0/2] RDMA/hns: Support configuring congestion
- control algorithm with QP granularity
-Content-Language: en-US
-To: Leon Romanovsky <leon@kernel.org>
-CC: <jgg@ziepe.ca>, <linux-rdma@vger.kernel.org>, <linuxarm@huawei.com>,
-	<linux-kernel@vger.kernel.org>
-References: <20240207032910.3959426-1-huangjunxian6@hisilicon.com>
- <20240207083338.GB56027@unreal>
-From: Junxian Huang <huangjunxian6@hisilicon.com>
-In-Reply-To: <20240207083338.GB56027@unreal>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
- kwepemi500006.china.huawei.com (7.221.188.68)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240206165815.2420951-1-colin.i.king@gmail.com>
 
-
-
-On 2024/2/7 16:33, Leon Romanovsky wrote:
-> On Wed, Feb 07, 2024 at 11:29:08AM +0800, Junxian Huang wrote:
->> Patch #1 reverts a previous bugfix that was intended to add restriction
->> to congestion control algorithm for UD but mistakenly introduced other
->> problem.
+On Tue, Feb 06, 2024 at 04:58:15PM +0000, Colin Ian King wrote:
+> The variable object_range to log_header_modify_argument_granularity
+> is being assigned a value that is never read, the following statement
+> assigns object_range to the max of log_header_modify_argument_granularity
+> and DR_ICM_MODIFY_HDR_GRANULARITY_4K, so clearly the initial
+> assignment is redundant. Remove it.
 > 
-> First patch shouldn't be revert but a fix to "add a restriction that only DCQCN
-> is supported for UD." and second patch should be a new feature.
+> Cleans up clang-scan build warning:
+> drivers/net/ethernet/mellanox/mlx5/core/steering/dr_arg.c:42:2: warning:
+> Value stored to 'object_range' is never read [deadcode.DeadStores]
 > 
-> Thanks
-> 
+> Signed-off-by: Colin Ian King <colin.i.king@gmail.com>
 
-OK, but I have two questions here:
+Thanks Colin,
 
-1. Of course we can not only revert but also completely fix the bug in patch #1.
-   But since we are adding a new feature that can also fix this bug in patch #2,
-   the fix in patch #1 will be immediately removed in patch #2. Is this acceptable?
-
-2. Should I still put these two patches into one patchset in the next version, or
-   seperate them into two individual patchset?
-
-Thanks,
-Junxian
-
->>
->> Patch #2 adds support for configuring congestion control algorithm with
->> QP granularity. The algorithm restriction for UD is added in this patch.
->>
->> Junxian Huang (1):
->>   RDMA/hns: Support configuring congestion control algorithm with QP
->>     granularity
->>
->> Luoyouming (1):
->>   Revert "RDMA/hns: The UD mode can only be configured with DCQCN"
->>
->>  drivers/infiniband/hw/hns/hns_roce_device.h | 26 +++++---
->>  drivers/infiniband/hw/hns/hns_roce_hw_v2.c  | 18 ++----
->>  drivers/infiniband/hw/hns/hns_roce_hw_v2.h  |  3 +-
->>  drivers/infiniband/hw/hns/hns_roce_main.c   |  3 +
->>  drivers/infiniband/hw/hns/hns_roce_qp.c     | 71 +++++++++++++++++++++
->>  include/uapi/rdma/hns-abi.h                 | 17 +++++
->>  6 files changed, 118 insertions(+), 20 deletions(-)
->>
->> --
->> 2.30.0
->>
-> 
+Reviewed-by: Simon Horman <horms@kernel.org>
 
