@@ -1,201 +1,296 @@
-Return-Path: <linux-rdma+bounces-955-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-956-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 62AE484CDB3
-	for <lists+linux-rdma@lfdr.de>; Wed,  7 Feb 2024 16:09:48 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id D62A184CE18
+	for <lists+linux-rdma@lfdr.de>; Wed,  7 Feb 2024 16:32:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1ADEA2866A3
-	for <lists+linux-rdma@lfdr.de>; Wed,  7 Feb 2024 15:09:47 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5D9651F21E4F
+	for <lists+linux-rdma@lfdr.de>; Wed,  7 Feb 2024 15:32:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 07B427F49F;
-	Wed,  7 Feb 2024 15:09:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BF5D97FBAC;
+	Wed,  7 Feb 2024 15:32:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b="K5AUXcxQ"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="g55q4BUZ"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 49C437F48C;
-	Wed,  7 Feb 2024 15:09:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=13.77.154.182
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.7])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EABEB7D3E6
+	for <linux-rdma@vger.kernel.org>; Wed,  7 Feb 2024 15:32:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.7
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707318580; cv=none; b=N6bpS7SqTbmiMrbuxRsA2Ns5DgRhCpbCy/PsddzTKEABc51qBwycun3D4VRJ2PAWqVSD/KqxXT2bgso8EbgvOojzjkXXkY6sV3aifQA2YZa1eI3Gn4OR+CZP569h63UL777PbUk2vCPiWjdqS08URCcAUMD92F7DCe62KDUieEo=
+	t=1707319925; cv=none; b=FgwLX8H7RKdhF82t8ZQB3eFucHhh5a23V1JZa+NmO9xxopSZgdpiJ+yexBq0Y9qCndyajo9z09jb3HQ0CSliJ5l0Cg9Hl3JNU7f0+78yFz2dK6ptKrYA8AVSz6UY8b5O138rj/pJ2ZMlXvbqv340VqsW9ksd8uaFSSREkw39aLk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707318580; c=relaxed/simple;
-	bh=n7jy2nTYCPBPjsSwlsWFPIf9aO2YXgMF4OPIJJOQ1o4=;
-	h=From:To:Cc:Subject:Date:Message-Id; b=SircrNCCLeWPjQWNhJfuLlbzJu9nMk2a0CkKmQQ4eHpzntzYV0hmhaLZvt84D88yKU/rZWL6YGjFrXY2Qz/whFAUA6rVc9Jc32bOGwL8/Jkyr3FhZII0cbUPEgai0MjKQ4U9/5d62p//A/SZhv+GDMUhDhvhrSxgdUToqsAMufY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com; spf=pass smtp.mailfrom=linux.microsoft.com; dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b=K5AUXcxQ; arc=none smtp.client-ip=13.77.154.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.microsoft.com
-Received: from linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net (linux.microsoft.com [13.77.154.182])
-	by linux.microsoft.com (Postfix) with ESMTPSA id 76A7520B2000;
-	Wed,  7 Feb 2024 07:09:33 -0800 (PST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 76A7520B2000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-	s=default; t=1707318573;
-	bh=D9DfkN7+KkkF6zbewlp+XiEGcytqhfnDeuYo9IZEKTY=;
-	h=From:To:Cc:Subject:Date:From;
-	b=K5AUXcxQ7gvu8moeVaO4Kwa0bGmyjDq8KhDUq2WNraKxQOPLfEwaxJcrcSEsgPo7+
-	 U2Ie3oMqm2kyVVRUR2+Y4i9cFmvM7Wsn6LJ9dgLkvYBJild/B3DSGgRzb82be6SvWO
-	 kx6VNnoy1+9x9gX93Rt6d3xKknrT9VcGxXAFLuCw=
-From: Konstantin Taranov <kotaranov@linux.microsoft.com>
-To: kotaranov@microsoft.com,
-	sharmaajay@microsoft.com,
-	longli@microsoft.com,
-	jgg@ziepe.ca,
-	leon@kernel.org
-Cc: linux-rdma@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH rdma-next v1 1/1] RDMA/mana_ib: Fix bug in creation of dma regions
-Date: Wed,  7 Feb 2024 07:09:26 -0800
-Message-Id: <1707318566-3141-1-git-send-email-kotaranov@linux.microsoft.com>
-X-Mailer: git-send-email 1.8.3.1
+	s=arc-20240116; t=1707319925; c=relaxed/simple;
+	bh=Cu8OQqLg+0bupVu9f8VEUNrHcFDthQC2PnR4Sei2AcA=;
+	h=Date:From:To:Cc:Subject:Message-ID; b=LwANfhSUZ4NNqXwdPf25yD4LwL1VBxXgls2Am2cfCGFpnnpiESFzRvAdf5wWYza0j5Hmc4ydHe3lsXI+g9+31HfuuL+XpQnUrDVmRcJjKLaivglr12lAa06r05UYz4scCOvsDQ4DMd9bhmXkA70TjIg3jjrPqVrINAr3vc2qBJk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=g55q4BUZ; arc=none smtp.client-ip=192.198.163.7
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1707319923; x=1738855923;
+  h=date:from:to:cc:subject:message-id;
+  bh=Cu8OQqLg+0bupVu9f8VEUNrHcFDthQC2PnR4Sei2AcA=;
+  b=g55q4BUZ5Mi+FMWsEfvlwjX1DmxTTsgMXI29sBA39f81zkSQooXQAatn
+   ItMAKHZjqt+fcvmstXkgfU98DkeP8gjBb8Y/YGGT6R6oh6XG4lq7f5S7u
+   A2/cxgqXP+jAJfKYmBwi760b/fDA3OOEuzg6iBH1xNnyHIfBSAIQybfbP
+   EMdCwlqMld52eAYZyAPJMFSFHrqa6Muc23zLlw01OOLGOLAJdC3bdJhm9
+   o00Q6xAWzvwYXE+B/SXqnjPOqqOPDZLMS+V6ZOr7aZwxAnaYpAxBNGW3N
+   OZlxPCV+zLqE/lpCJhH2xiC0rQtarkzh9RRBlH/10upBrwwoHqBORePo/
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10977"; a="26456564"
+X-IronPort-AV: E=Sophos;i="6.05,251,1701158400"; 
+   d="scan'208";a="26456564"
+Received: from orviesa009.jf.intel.com ([10.64.159.149])
+  by fmvoesa101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Feb 2024 07:32:02 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.05,251,1701158400"; 
+   d="scan'208";a="1354845"
+Received: from lkp-server01.sh.intel.com (HELO 01f0647817ea) ([10.239.97.150])
+  by orviesa009.jf.intel.com with ESMTP; 07 Feb 2024 07:32:00 -0800
+Received: from kbuild by 01f0647817ea with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1rXju1-0002kA-0I;
+	Wed, 07 Feb 2024 15:31:57 +0000
+Date: Wed, 07 Feb 2024 23:31:33 +0800
+From: kernel test robot <lkp@intel.com>
+To: Leon Romanovsky <leon@kernel.org>
+Cc: Doug Ledford <dledford@redhat.com>,
+ Jason Gunthorpe <jgg+lists@ziepe.ca>, linux-rdma@vger.kernel.org
+Subject: [rdma:for-rc] BUILD SUCCESS
+ fdfa083549de5d50ebf7f6811f33757781e838c0
+Message-ID: <202402072329.Fzpc7D2M-lkp@intel.com>
+User-Agent: s-nail v14.9.24
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 
-From: Konstantin Taranov <kotaranov@microsoft.com>
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git for-rc
+branch HEAD: fdfa083549de5d50ebf7f6811f33757781e838c0  RDMA/srpt: Support specifying the srpt_service_guid parameter
 
-Dma registration was ignoring virtual addresses by setting it to 0.
-As a result, mana_ib could only register page-aligned memory.
-As well as, it could fail to produce dma regions with zero offset
-for WQs and CQs (e.g., page size is 8192 but address is only 4096
-bytes aligned), which is required by hardware.
+elapsed time: 1444m
 
-This patch takes into account the virtual address, allowing to create
-a dma region with any offset. For queues (e.g., WQs, CQs) that require
-dma regions with zero offset we add a flag to ensure zero offset.
+configs tested: 206
+configs skipped: 3
 
-Signed-off-by: Konstantin Taranov <kotaranov@microsoft.com>
----
- drivers/infiniband/hw/mana/cq.c      |  3 ++-
- drivers/infiniband/hw/mana/main.c    | 16 +++++++++++++---
- drivers/infiniband/hw/mana/mana_ib.h |  2 +-
- drivers/infiniband/hw/mana/mr.c      |  2 +-
- drivers/infiniband/hw/mana/qp.c      |  4 ++--
- drivers/infiniband/hw/mana/wq.c      |  3 ++-
- 6 files changed, 21 insertions(+), 9 deletions(-)
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
-diff --git a/drivers/infiniband/hw/mana/cq.c b/drivers/infiniband/hw/mana/cq.c
-index 83d20c3f0..e35de6b92 100644
---- a/drivers/infiniband/hw/mana/cq.c
-+++ b/drivers/infiniband/hw/mana/cq.c
-@@ -48,7 +48,8 @@ int mana_ib_create_cq(struct ib_cq *ibcq, const struct ib_cq_init_attr *attr,
- 		return err;
- 	}
- 
--	err = mana_ib_gd_create_dma_region(mdev, cq->umem, &cq->gdma_region);
-+	err = mana_ib_gd_create_dma_region(mdev, cq->umem, &cq->gdma_region,
-+					   ucmd.buf_addr, true);
- 	if (err) {
- 		ibdev_dbg(ibdev,
- 			  "Failed to create dma region for create cq, %d\n",
-diff --git a/drivers/infiniband/hw/mana/main.c b/drivers/infiniband/hw/mana/main.c
-index 29dd2438d..13a4d5ab4 100644
---- a/drivers/infiniband/hw/mana/main.c
-+++ b/drivers/infiniband/hw/mana/main.c
-@@ -302,7 +302,7 @@ mana_ib_gd_add_dma_region(struct mana_ib_dev *dev, struct gdma_context *gc,
- }
- 
- int mana_ib_gd_create_dma_region(struct mana_ib_dev *dev, struct ib_umem *umem,
--				 mana_handle_t *gdma_region)
-+				 mana_handle_t *gdma_region, u64 virt, bool force_zero_offset)
- {
- 	struct gdma_dma_region_add_pages_req *add_req = NULL;
- 	size_t num_pages_processed = 0, num_pages_to_handle;
-@@ -324,11 +324,21 @@ int mana_ib_gd_create_dma_region(struct mana_ib_dev *dev, struct ib_umem *umem,
- 	hwc = gc->hwc.driver_data;
- 
- 	/* Hardware requires dma region to align to chosen page size */
--	page_sz = ib_umem_find_best_pgsz(umem, PAGE_SZ_BM, 0);
-+	page_sz = ib_umem_find_best_pgsz(umem, PAGE_SZ_BM, virt);
- 	if (!page_sz) {
- 		ibdev_dbg(&dev->ib_dev, "failed to find page size.\n");
- 		return -ENOMEM;
- 	}
-+
-+	if (force_zero_offset) {
-+		while (ib_umem_dma_offset(umem, page_sz) && page_sz > PAGE_SIZE)
-+			page_sz /= 2;
-+		if (ib_umem_dma_offset(umem, page_sz) != 0) {
-+			ibdev_dbg(&dev->ib_dev, "failed to find page size to force zero offset.\n");
-+			return -ENOMEM;
-+		}
-+	}
-+
- 	num_pages_total = ib_umem_num_dma_blocks(umem, page_sz);
- 
- 	max_pgs_create_cmd =
-@@ -348,7 +358,7 @@ int mana_ib_gd_create_dma_region(struct mana_ib_dev *dev, struct ib_umem *umem,
- 			     sizeof(struct gdma_create_dma_region_resp));
- 
- 	create_req->length = umem->length;
--	create_req->offset_in_page = umem->address & (page_sz - 1);
-+	create_req->offset_in_page = ib_umem_dma_offset(umem, page_sz);
- 	create_req->gdma_page_type = order_base_2(page_sz) - PAGE_SHIFT;
- 	create_req->page_count = num_pages_total;
- 
-diff --git a/drivers/infiniband/hw/mana/mana_ib.h b/drivers/infiniband/hw/mana/mana_ib.h
-index 6a03ae645..0a5a8f3f8 100644
---- a/drivers/infiniband/hw/mana/mana_ib.h
-+++ b/drivers/infiniband/hw/mana/mana_ib.h
-@@ -161,7 +161,7 @@ static inline struct net_device *mana_ib_get_netdev(struct ib_device *ibdev, u32
- int mana_ib_install_cq_cb(struct mana_ib_dev *mdev, struct mana_ib_cq *cq);
- 
- int mana_ib_gd_create_dma_region(struct mana_ib_dev *dev, struct ib_umem *umem,
--				 mana_handle_t *gdma_region);
-+				 mana_handle_t *gdma_region, u64 virt, bool force_zero_offset);
- 
- int mana_ib_gd_destroy_dma_region(struct mana_ib_dev *dev,
- 				  mana_handle_t gdma_region);
-diff --git a/drivers/infiniband/hw/mana/mr.c b/drivers/infiniband/hw/mana/mr.c
-index ee4d4f834..856d73ea2 100644
---- a/drivers/infiniband/hw/mana/mr.c
-+++ b/drivers/infiniband/hw/mana/mr.c
-@@ -127,7 +127,7 @@ struct ib_mr *mana_ib_reg_user_mr(struct ib_pd *ibpd, u64 start, u64 length,
- 		goto err_free;
- 	}
- 
--	err = mana_ib_gd_create_dma_region(dev, mr->umem, &dma_region_handle);
-+	err = mana_ib_gd_create_dma_region(dev, mr->umem, &dma_region_handle, iova, false);
- 	if (err) {
- 		ibdev_dbg(ibdev, "Failed create dma region for user-mr, %d\n",
- 			  err);
-diff --git a/drivers/infiniband/hw/mana/qp.c b/drivers/infiniband/hw/mana/qp.c
-index 5d4c05dcd..02de90317 100644
---- a/drivers/infiniband/hw/mana/qp.c
-+++ b/drivers/infiniband/hw/mana/qp.c
-@@ -357,8 +357,8 @@ static int mana_ib_create_qp_raw(struct ib_qp *ibqp, struct ib_pd *ibpd,
- 	}
- 	qp->sq_umem = umem;
- 
--	err = mana_ib_gd_create_dma_region(mdev, qp->sq_umem,
--					   &qp->sq_gdma_region);
-+	err = mana_ib_gd_create_dma_region(mdev, qp->sq_umem, &qp->sq_gdma_region,
-+					   ucmd.sq_buf_addr, true);
- 	if (err) {
- 		ibdev_dbg(&mdev->ib_dev,
- 			  "Failed to create dma region for create qp-raw, %d\n",
-diff --git a/drivers/infiniband/hw/mana/wq.c b/drivers/infiniband/hw/mana/wq.c
-index 372d36151..d9c1a2d5d 100644
---- a/drivers/infiniband/hw/mana/wq.c
-+++ b/drivers/infiniband/hw/mana/wq.c
-@@ -46,7 +46,8 @@ struct ib_wq *mana_ib_create_wq(struct ib_pd *pd,
- 	wq->wq_buf_size = ucmd.wq_buf_size;
- 	wq->rx_object = INVALID_MANA_HANDLE;
- 
--	err = mana_ib_gd_create_dma_region(mdev, wq->umem, &wq->gdma_region);
-+	err = mana_ib_gd_create_dma_region(mdev, wq->umem, &wq->gdma_region,
-+					   ucmd.wq_buf_addr, true);
- 	if (err) {
- 		ibdev_dbg(&mdev->ib_dev,
- 			  "Failed to create dma region for create wq, %d\n",
+tested configs:
+alpha                            alldefconfig   gcc  
+alpha                             allnoconfig   gcc  
+alpha                            allyesconfig   gcc  
+alpha                               defconfig   gcc  
+arc                              alldefconfig   gcc  
+arc                              allmodconfig   gcc  
+arc                               allnoconfig   gcc  
+arc                              allyesconfig   gcc  
+arc                                 defconfig   gcc  
+arc                            hsdk_defconfig   gcc  
+arc                   randconfig-001-20240207   gcc  
+arc                   randconfig-002-20240207   gcc  
+arm                              allmodconfig   gcc  
+arm                               allnoconfig   clang
+arm                              allyesconfig   gcc  
+arm                       aspeed_g5_defconfig   gcc  
+arm                                 defconfig   clang
+arm                        keystone_defconfig   gcc  
+arm                        neponset_defconfig   gcc  
+arm                            qcom_defconfig   clang
+arm                   randconfig-001-20240207   clang
+arm                   randconfig-002-20240207   clang
+arm                   randconfig-003-20240207   clang
+arm                   randconfig-004-20240207   gcc  
+arm                        shmobile_defconfig   gcc  
+arm                          sp7021_defconfig   gcc  
+arm                           spitz_defconfig   gcc  
+arm64                            allmodconfig   clang
+arm64                             allnoconfig   gcc  
+arm64                               defconfig   gcc  
+arm64                 randconfig-001-20240207   clang
+arm64                 randconfig-002-20240207   clang
+arm64                 randconfig-003-20240207   clang
+arm64                 randconfig-004-20240207   clang
+csky                             allmodconfig   gcc  
+csky                              allnoconfig   gcc  
+csky                             allyesconfig   gcc  
+csky                                defconfig   gcc  
+csky                  randconfig-001-20240207   gcc  
+csky                  randconfig-002-20240207   gcc  
+hexagon                          allmodconfig   clang
+hexagon                           allnoconfig   clang
+hexagon                          allyesconfig   clang
+hexagon                             defconfig   clang
+hexagon               randconfig-001-20240207   clang
+hexagon               randconfig-002-20240207   clang
+i386                             allmodconfig   gcc  
+i386                              allnoconfig   gcc  
+i386                             allyesconfig   gcc  
+i386         buildonly-randconfig-001-20240207   clang
+i386         buildonly-randconfig-002-20240207   clang
+i386         buildonly-randconfig-003-20240207   clang
+i386         buildonly-randconfig-004-20240207   clang
+i386         buildonly-randconfig-005-20240207   clang
+i386         buildonly-randconfig-006-20240207   clang
+i386                                defconfig   clang
+i386                  randconfig-001-20240207   gcc  
+i386                  randconfig-002-20240207   clang
+i386                  randconfig-003-20240207   gcc  
+i386                  randconfig-004-20240207   gcc  
+i386                  randconfig-005-20240207   gcc  
+i386                  randconfig-006-20240207   clang
+i386                  randconfig-011-20240207   gcc  
+i386                  randconfig-012-20240207   gcc  
+i386                  randconfig-013-20240207   gcc  
+i386                  randconfig-014-20240207   gcc  
+i386                  randconfig-015-20240207   gcc  
+i386                  randconfig-016-20240207   gcc  
+loongarch                        allmodconfig   gcc  
+loongarch                         allnoconfig   gcc  
+loongarch                        allyesconfig   gcc  
+loongarch                           defconfig   gcc  
+loongarch             randconfig-001-20240207   gcc  
+loongarch             randconfig-002-20240207   gcc  
+m68k                             allmodconfig   gcc  
+m68k                              allnoconfig   gcc  
+m68k                             allyesconfig   gcc  
+m68k                       bvme6000_defconfig   gcc  
+m68k                                defconfig   gcc  
+m68k                          multi_defconfig   gcc  
+microblaze                       allmodconfig   gcc  
+microblaze                        allnoconfig   gcc  
+microblaze                       allyesconfig   gcc  
+microblaze                          defconfig   gcc  
+mips                             allmodconfig   gcc  
+mips                              allnoconfig   gcc  
+mips                             allyesconfig   gcc  
+mips                        bcm47xx_defconfig   clang
+mips                  cavium_octeon_defconfig   gcc  
+mips                         db1xxx_defconfig   clang
+mips                     decstation_defconfig   gcc  
+mips                 decstation_r4k_defconfig   gcc  
+mips                      fuloong2e_defconfig   gcc  
+mips                           gcw0_defconfig   clang
+mips                      loongson3_defconfig   gcc  
+nios2                            allmodconfig   gcc  
+nios2                             allnoconfig   gcc  
+nios2                            allyesconfig   gcc  
+nios2                               defconfig   gcc  
+nios2                 randconfig-001-20240207   gcc  
+nios2                 randconfig-002-20240207   gcc  
+openrisc                         allmodconfig   gcc  
+openrisc                          allnoconfig   gcc  
+openrisc                         allyesconfig   gcc  
+openrisc                            defconfig   gcc  
+openrisc                    or1ksim_defconfig   gcc  
+parisc                           allmodconfig   gcc  
+parisc                            allnoconfig   gcc  
+parisc                           allyesconfig   gcc  
+parisc                              defconfig   gcc  
+parisc                randconfig-001-20240207   gcc  
+parisc                randconfig-002-20240207   gcc  
+parisc64                            defconfig   gcc  
+powerpc                          allmodconfig   gcc  
+powerpc                           allnoconfig   gcc  
+powerpc                          allyesconfig   clang
+powerpc                     ep8248e_defconfig   gcc  
+powerpc                      ep88xc_defconfig   gcc  
+powerpc                 mpc8313_rdb_defconfig   gcc  
+powerpc                      ppc40x_defconfig   clang
+powerpc               randconfig-001-20240207   clang
+powerpc               randconfig-002-20240207   clang
+powerpc               randconfig-003-20240207   gcc  
+powerpc                     tqm5200_defconfig   gcc  
+powerpc64             randconfig-001-20240207   clang
+powerpc64             randconfig-002-20240207   gcc  
+powerpc64             randconfig-003-20240207   gcc  
+riscv                            allmodconfig   clang
+riscv                             allnoconfig   gcc  
+riscv                            allyesconfig   clang
+riscv                               defconfig   clang
+riscv                    nommu_virt_defconfig   clang
+riscv                 randconfig-001-20240207   clang
+riscv                 randconfig-002-20240207   gcc  
+s390                             allmodconfig   clang
+s390                              allnoconfig   clang
+s390                             allyesconfig   gcc  
+s390                          debug_defconfig   gcc  
+s390                                defconfig   clang
+s390                  randconfig-001-20240207   gcc  
+s390                  randconfig-002-20240207   gcc  
+sh                               allmodconfig   gcc  
+sh                                allnoconfig   gcc  
+sh                               allyesconfig   gcc  
+sh                                  defconfig   gcc  
+sh                             espt_defconfig   gcc  
+sh                     magicpanelr2_defconfig   gcc  
+sh                    randconfig-001-20240207   gcc  
+sh                    randconfig-002-20240207   gcc  
+sh                           se7343_defconfig   gcc  
+sh                   secureedge5410_defconfig   gcc  
+sh                           sh2007_defconfig   gcc  
+sh                        sh7757lcr_defconfig   gcc  
+sh                        sh7763rdp_defconfig   gcc  
+sh                   sh7770_generic_defconfig   gcc  
+sh                             shx3_defconfig   gcc  
+sparc                            allmodconfig   gcc  
+sparc                             allnoconfig   gcc  
+sparc                            allyesconfig   gcc  
+sparc                               defconfig   gcc  
+sparc64                          allmodconfig   gcc  
+sparc64                          allyesconfig   gcc  
+sparc64                             defconfig   gcc  
+sparc64               randconfig-001-20240207   gcc  
+sparc64               randconfig-002-20240207   gcc  
+um                               allmodconfig   clang
+um                                allnoconfig   clang
+um                               allyesconfig   gcc  
+um                                  defconfig   clang
+um                    randconfig-001-20240207   clang
+um                    randconfig-002-20240207   gcc  
+um                           x86_64_defconfig   clang
+x86_64                            allnoconfig   clang
+x86_64                           allyesconfig   clang
+x86_64       buildonly-randconfig-001-20240207   clang
+x86_64       buildonly-randconfig-002-20240207   clang
+x86_64       buildonly-randconfig-003-20240207   gcc  
+x86_64       buildonly-randconfig-004-20240207   clang
+x86_64       buildonly-randconfig-005-20240207   clang
+x86_64       buildonly-randconfig-006-20240207   clang
+x86_64                              defconfig   gcc  
+x86_64                randconfig-001-20240207   clang
+x86_64                randconfig-002-20240207   gcc  
+x86_64                randconfig-003-20240207   gcc  
+x86_64                randconfig-004-20240207   gcc  
+x86_64                randconfig-005-20240207   clang
+x86_64                randconfig-006-20240207   clang
+x86_64                randconfig-011-20240207   clang
+x86_64                randconfig-012-20240207   gcc  
+x86_64                randconfig-013-20240207   clang
+x86_64                randconfig-014-20240207   clang
+x86_64                randconfig-015-20240207   gcc  
+x86_64                randconfig-016-20240207   gcc  
+x86_64                randconfig-071-20240207   gcc  
+x86_64                randconfig-072-20240207   clang
+x86_64                randconfig-073-20240207   clang
+x86_64                randconfig-074-20240207   gcc  
+x86_64                randconfig-075-20240207   gcc  
+x86_64                randconfig-076-20240207   clang
+x86_64                          rhel-8.3-rust   clang
+x86_64                               rhel-8.3   gcc  
+xtensa                            allnoconfig   gcc  
+xtensa                           allyesconfig   gcc  
+xtensa                       common_defconfig   gcc  
+xtensa                randconfig-001-20240207   gcc  
+xtensa                randconfig-002-20240207   gcc  
 
-base-commit: aafe4cc5096996873817ff4981a3744e8caf7808
 -- 
-2.43.0
-
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
