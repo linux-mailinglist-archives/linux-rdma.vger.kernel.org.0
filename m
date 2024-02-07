@@ -1,138 +1,201 @@
-Return-Path: <linux-rdma+bounces-954-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-955-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id A999384CCFC
-	for <lists+linux-rdma@lfdr.de>; Wed,  7 Feb 2024 15:40:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 62AE484CDB3
+	for <lists+linux-rdma@lfdr.de>; Wed,  7 Feb 2024 16:09:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6780B2895AB
-	for <lists+linux-rdma@lfdr.de>; Wed,  7 Feb 2024 14:40:18 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1ADEA2866A3
+	for <lists+linux-rdma@lfdr.de>; Wed,  7 Feb 2024 15:09:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CC9AF7E76F;
-	Wed,  7 Feb 2024 14:40:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 07B427F49F;
+	Wed,  7 Feb 2024 15:09:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=fastly.com header.i=@fastly.com header.b="gwquoAEy"
+	dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b="K5AUXcxQ"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-pl1-f179.google.com (mail-pl1-f179.google.com [209.85.214.179])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1B58B7E584
-	for <linux-rdma@vger.kernel.org>; Wed,  7 Feb 2024 14:40:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.179
+Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 49C437F48C;
+	Wed,  7 Feb 2024 15:09:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=13.77.154.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707316812; cv=none; b=c8aHBhsfPYF8EO5SYv59TmgRWeVsR5tbm/EEK98buWbQsyjVYJDN/qyexvnssApEwzHZM4NuFWYmjtJuLXIEdo3ejvYkRnVzEtAeBCHg6BY9PgDVUpp+hymP33NpwoevKrZxmP3N7wzCWcnJyMWpRzfGyJCPqnDAKKL3g4jUiTc=
+	t=1707318580; cv=none; b=N6bpS7SqTbmiMrbuxRsA2Ns5DgRhCpbCy/PsddzTKEABc51qBwycun3D4VRJ2PAWqVSD/KqxXT2bgso8EbgvOojzjkXXkY6sV3aifQA2YZa1eI3Gn4OR+CZP569h63UL777PbUk2vCPiWjdqS08URCcAUMD92F7DCe62KDUieEo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707316812; c=relaxed/simple;
-	bh=Ntw5fiG6U4x7V0dQ7rNOcoT+esXPB/rpqIFiRH2YhbY=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=U1Oej6HnJMCOEq9uiZSczvydLjCHYMYDlqtkBx3yv9FnROXUBRRqRa+MbhAP5czeouxLYD/MA8ealjgqsxK7sCw4f+6JZ7GCB3h+E5JUrHoEokxs4Q5erigwIS6Zvc7OLDB+HzokfawuOwfBR/tKnFtgAdCn7+FHAIvuv+4Ot/Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=fastly.com; spf=pass smtp.mailfrom=fastly.com; dkim=pass (1024-bit key) header.d=fastly.com header.i=@fastly.com header.b=gwquoAEy; arc=none smtp.client-ip=209.85.214.179
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=fastly.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fastly.com
-Received: by mail-pl1-f179.google.com with SMTP id d9443c01a7336-1d94323d547so6552445ad.3
-        for <linux-rdma@vger.kernel.org>; Wed, 07 Feb 2024 06:40:10 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=fastly.com; s=google; t=1707316810; x=1707921610; darn=vger.kernel.org;
-        h=user-agent:in-reply-to:content-disposition:mime-version:references
-         :message-id:subject:cc:to:from:date:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=BTy0TD/WzR5RIh6lZhgnOebUhLZ8bbC+FvuZI+ulvFU=;
-        b=gwquoAEy34dFvJSTqXRIanVMZCQaFlrE9wtu6C1dkC0nsCKWoxqJBaq/f9eFAZ7ipf
-         XD/0Mr8JuvjIv8XnTlRWK1fH9f2GU0CMIM4dfipHd/9uCfNmKzAVI1MOCD7pyunagG7W
-         vs9BsFtj+077CMaq/R9EFMHE2hCmrzIFeAPXw=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707316810; x=1707921610;
-        h=user-agent:in-reply-to:content-disposition:mime-version:references
-         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=BTy0TD/WzR5RIh6lZhgnOebUhLZ8bbC+FvuZI+ulvFU=;
-        b=fHKdO9ZAnUng+QPlfpngBYeagI3+cTNjNlYZRjPFobwdLKMtfPcgEBpIe/l6u22yUt
-         0/+HFR/zJvSDA0f/IKiQg+jh7+Yc8rD0cN4k5pJm0ukHT1o7uwkNf8Vpg5ca2lQjHJIi
-         tOfmqTexyi1pDMFxkHi7ds0q6UIGibk6uk1/BgY8VzjTns4ocUAnp1vHX7EcVq0h5niD
-         AvNE5qxM6++4YzYevZ2UatAi87BFzZEpvfoehUynluCeyqclnxmjYZLnPvrIP5IaF1Bp
-         Rv0iXeUH5MjgZxHyClZ+nPScm0Ej6mbn/q+4xYad3noL/IsHADQojqy35s00vAEoRilx
-         u7CA==
-X-Gm-Message-State: AOJu0YxwlhCDjInMeySIwO1wWOaWoaGmJJG0wGFkiapx4kxjZcs88Gb+
-	CcFggGZGrpLcqk5bgNTF/Ai+xABtnhWhQvVDRGYJF3UFzmajKWr4X9551Z2H11I=
-X-Google-Smtp-Source: AGHT+IFRoT58DRturmHXvkZDAyT8/9JHrm65jJYXEqbtGPJc/79fabXhyu2Y1L3ntiopc0MLhhppgw==
-X-Received: by 2002:a17:902:dac4:b0:1d9:c876:b840 with SMTP id q4-20020a170902dac400b001d9c876b840mr6229185plx.2.1707316810481;
-        Wed, 07 Feb 2024 06:40:10 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCWAMqWy/7rZfxs+UZ1xWTANMYi47f8HisJ/+M0EQCvUkJrdf+qRIBnCAus7+SLsBYmDGd9gxyc4d/f7V4Jz7bwggv4Y/jK8Z8HMHc+SeppnVqBGE8cb21dpHnR0x6DYXmItsgwtp+sZAwnmA5ZSA6olj79S+HybqyCjdwItJYy43U+N5w+Ae3jni2u+MXPHRH6P9mlzfgFml7Sa6gt++mkC/UeEJejGme4hOQNd0U1aSDF0aPZTbLzzQ6Jwodqrgb1axquKJ79d9WWA6TxnyikniR+JR51Owv+GcAHbcH4/6evizQVlnk8QJ7ZWrFd/aSx35Znj1YKWyTt2xW+7B04J0iFJ+NAnWI7lalNUzN3+YJPZs055JSjC/yo=
-Received: from fastly.com (c-24-6-151-244.hsd1.ca.comcast.net. [24.6.151.244])
-        by smtp.gmail.com with ESMTPSA id m17-20020a170902f21100b001d9fadd2e22sm259608plc.252.2024.02.07.06.40.09
-        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 07 Feb 2024 06:40:10 -0800 (PST)
-Date: Wed, 7 Feb 2024 06:40:07 -0800
-From: Joe Damato <jdamato@fastly.com>
-To: Tariq Toukan <ttoukan.linux@gmail.com>
-Cc: Tariq Toukan <tariqt@nvidia.com>, linux-kernel@vger.kernel.org,
-	netdev@vger.kernel.org, Gal Pressman <gal@nvidia.com>,
-	rrameshbabu@nvidia.com, Saeed Mahameed <saeedm@nvidia.com>,
-	Leon Romanovsky <leon@kernel.org>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	"open list:MELLANOX MLX5 core VPI driver" <linux-rdma@vger.kernel.org>
-Subject: Re: [PATCH net-next] eth: mlx5: link NAPI instances to queues and
- IRQs
-Message-ID: <20240207144007.GA13147@fastly.com>
-References: <20240206010311.149103-1-jdamato@fastly.com>
- <7e338c2a-6091-4093-8ca2-bb3b2af3e79d@gmail.com>
- <20240206171159.GA11565@fastly.com>
- <44d321bf-88a0-4d6f-8572-dfbda088dd8f@nvidia.com>
- <20240206192314.GA11982@fastly.com>
- <b19c4280-df54-409e-b3fd-00de6d6958d4@gmail.com>
+	s=arc-20240116; t=1707318580; c=relaxed/simple;
+	bh=n7jy2nTYCPBPjsSwlsWFPIf9aO2YXgMF4OPIJJOQ1o4=;
+	h=From:To:Cc:Subject:Date:Message-Id; b=SircrNCCLeWPjQWNhJfuLlbzJu9nMk2a0CkKmQQ4eHpzntzYV0hmhaLZvt84D88yKU/rZWL6YGjFrXY2Qz/whFAUA6rVc9Jc32bOGwL8/Jkyr3FhZII0cbUPEgai0MjKQ4U9/5d62p//A/SZhv+GDMUhDhvhrSxgdUToqsAMufY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com; spf=pass smtp.mailfrom=linux.microsoft.com; dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b=K5AUXcxQ; arc=none smtp.client-ip=13.77.154.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.microsoft.com
+Received: from linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net (linux.microsoft.com [13.77.154.182])
+	by linux.microsoft.com (Postfix) with ESMTPSA id 76A7520B2000;
+	Wed,  7 Feb 2024 07:09:33 -0800 (PST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 76A7520B2000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+	s=default; t=1707318573;
+	bh=D9DfkN7+KkkF6zbewlp+XiEGcytqhfnDeuYo9IZEKTY=;
+	h=From:To:Cc:Subject:Date:From;
+	b=K5AUXcxQ7gvu8moeVaO4Kwa0bGmyjDq8KhDUq2WNraKxQOPLfEwaxJcrcSEsgPo7+
+	 U2Ie3oMqm2kyVVRUR2+Y4i9cFmvM7Wsn6LJ9dgLkvYBJild/B3DSGgRzb82be6SvWO
+	 kx6VNnoy1+9x9gX93Rt6d3xKknrT9VcGxXAFLuCw=
+From: Konstantin Taranov <kotaranov@linux.microsoft.com>
+To: kotaranov@microsoft.com,
+	sharmaajay@microsoft.com,
+	longli@microsoft.com,
+	jgg@ziepe.ca,
+	leon@kernel.org
+Cc: linux-rdma@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH rdma-next v1 1/1] RDMA/mana_ib: Fix bug in creation of dma regions
+Date: Wed,  7 Feb 2024 07:09:26 -0800
+Message-Id: <1707318566-3141-1-git-send-email-kotaranov@linux.microsoft.com>
+X-Mailer: git-send-email 1.8.3.1
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <b19c4280-df54-409e-b3fd-00de6d6958d4@gmail.com>
-User-Agent: Mutt/1.5.24 (2015-08-30)
 
-On Wed, Feb 07, 2024 at 03:23:47PM +0200, Tariq Toukan wrote:
-> 
-> 
-> On 06/02/2024 21:23, Joe Damato wrote:
-> >On Tue, Feb 06, 2024 at 09:10:27PM +0200, Tariq Toukan wrote:
-> >>
-> >>
-> >>On 06/02/2024 19:12, Joe Damato wrote:
-> >>>On Tue, Feb 06, 2024 at 10:11:28AM +0200, Tariq Toukan wrote:
-> >>>>
-> >>>>
-> >>>>On 06/02/2024 3:03, Joe Damato wrote:
-> >>>>>Make mlx5 compatible with the newly added netlink queue GET APIs.
-> >>>>>
-> >>>>>Signed-off-by: Joe Damato <jdamato@fastly.com>
-> 
-> ...
-> 
-> >
-> >OK, well I tweaked the v3 I had queued  based on your feedback. I am
-> >definitiely not an mlx5 expert, so I have no idea if it's correct.
-> >
-> >The changes can be summed up as:
-> >   - mlx5e_activate_channel and mlx5e_deactivate_channel to use
-> >     netif_queue_set_napi for each mlx5e_txqsq as it is
-> >     activated/deactivated. I assumed sq->txq_ix is the correct index, but I
-> >     have no idea.
-> >   - mlx5e_activate_qos_sq and mlx5e_deactivate_qos_sq to handle the QOS/HTB
-> >     case, similar to the above.
-> >   - IRQ storage removed
-> >
-> >If you think that sounds vaguely correct, I can send the v3 tomorrow when
-> >it has been >24hrs as per Rahul's request.
-> >
-> 
-> Sounds correct.
-> Please go on and send when it's time so we can review.
+From: Konstantin Taranov <kotaranov@microsoft.com>
 
-OK, I'll send it a bit later today. After looking at it again just now, I
-am wondering if the PTP txqsq case needs to be handled, as well.
+Dma registration was ignoring virtual addresses by setting it to 0.
+As a result, mana_ib could only register page-aligned memory.
+As well as, it could fail to produce dma regions with zero offset
+for WQs and CQs (e.g., page size is 8192 but address is only 4096
+bytes aligned), which is required by hardware.
+
+This patch takes into account the virtual address, allowing to create
+a dma region with any offset. For queues (e.g., WQs, CQs) that require
+dma regions with zero offset we add a flag to ensure zero offset.
+
+Signed-off-by: Konstantin Taranov <kotaranov@microsoft.com>
+---
+ drivers/infiniband/hw/mana/cq.c      |  3 ++-
+ drivers/infiniband/hw/mana/main.c    | 16 +++++++++++++---
+ drivers/infiniband/hw/mana/mana_ib.h |  2 +-
+ drivers/infiniband/hw/mana/mr.c      |  2 +-
+ drivers/infiniband/hw/mana/qp.c      |  4 ++--
+ drivers/infiniband/hw/mana/wq.c      |  3 ++-
+ 6 files changed, 21 insertions(+), 9 deletions(-)
+
+diff --git a/drivers/infiniband/hw/mana/cq.c b/drivers/infiniband/hw/mana/cq.c
+index 83d20c3f0..e35de6b92 100644
+--- a/drivers/infiniband/hw/mana/cq.c
++++ b/drivers/infiniband/hw/mana/cq.c
+@@ -48,7 +48,8 @@ int mana_ib_create_cq(struct ib_cq *ibcq, const struct ib_cq_init_attr *attr,
+ 		return err;
+ 	}
+ 
+-	err = mana_ib_gd_create_dma_region(mdev, cq->umem, &cq->gdma_region);
++	err = mana_ib_gd_create_dma_region(mdev, cq->umem, &cq->gdma_region,
++					   ucmd.buf_addr, true);
+ 	if (err) {
+ 		ibdev_dbg(ibdev,
+ 			  "Failed to create dma region for create cq, %d\n",
+diff --git a/drivers/infiniband/hw/mana/main.c b/drivers/infiniband/hw/mana/main.c
+index 29dd2438d..13a4d5ab4 100644
+--- a/drivers/infiniband/hw/mana/main.c
++++ b/drivers/infiniband/hw/mana/main.c
+@@ -302,7 +302,7 @@ mana_ib_gd_add_dma_region(struct mana_ib_dev *dev, struct gdma_context *gc,
+ }
+ 
+ int mana_ib_gd_create_dma_region(struct mana_ib_dev *dev, struct ib_umem *umem,
+-				 mana_handle_t *gdma_region)
++				 mana_handle_t *gdma_region, u64 virt, bool force_zero_offset)
+ {
+ 	struct gdma_dma_region_add_pages_req *add_req = NULL;
+ 	size_t num_pages_processed = 0, num_pages_to_handle;
+@@ -324,11 +324,21 @@ int mana_ib_gd_create_dma_region(struct mana_ib_dev *dev, struct ib_umem *umem,
+ 	hwc = gc->hwc.driver_data;
+ 
+ 	/* Hardware requires dma region to align to chosen page size */
+-	page_sz = ib_umem_find_best_pgsz(umem, PAGE_SZ_BM, 0);
++	page_sz = ib_umem_find_best_pgsz(umem, PAGE_SZ_BM, virt);
+ 	if (!page_sz) {
+ 		ibdev_dbg(&dev->ib_dev, "failed to find page size.\n");
+ 		return -ENOMEM;
+ 	}
++
++	if (force_zero_offset) {
++		while (ib_umem_dma_offset(umem, page_sz) && page_sz > PAGE_SIZE)
++			page_sz /= 2;
++		if (ib_umem_dma_offset(umem, page_sz) != 0) {
++			ibdev_dbg(&dev->ib_dev, "failed to find page size to force zero offset.\n");
++			return -ENOMEM;
++		}
++	}
++
+ 	num_pages_total = ib_umem_num_dma_blocks(umem, page_sz);
+ 
+ 	max_pgs_create_cmd =
+@@ -348,7 +358,7 @@ int mana_ib_gd_create_dma_region(struct mana_ib_dev *dev, struct ib_umem *umem,
+ 			     sizeof(struct gdma_create_dma_region_resp));
+ 
+ 	create_req->length = umem->length;
+-	create_req->offset_in_page = umem->address & (page_sz - 1);
++	create_req->offset_in_page = ib_umem_dma_offset(umem, page_sz);
+ 	create_req->gdma_page_type = order_base_2(page_sz) - PAGE_SHIFT;
+ 	create_req->page_count = num_pages_total;
+ 
+diff --git a/drivers/infiniband/hw/mana/mana_ib.h b/drivers/infiniband/hw/mana/mana_ib.h
+index 6a03ae645..0a5a8f3f8 100644
+--- a/drivers/infiniband/hw/mana/mana_ib.h
++++ b/drivers/infiniband/hw/mana/mana_ib.h
+@@ -161,7 +161,7 @@ static inline struct net_device *mana_ib_get_netdev(struct ib_device *ibdev, u32
+ int mana_ib_install_cq_cb(struct mana_ib_dev *mdev, struct mana_ib_cq *cq);
+ 
+ int mana_ib_gd_create_dma_region(struct mana_ib_dev *dev, struct ib_umem *umem,
+-				 mana_handle_t *gdma_region);
++				 mana_handle_t *gdma_region, u64 virt, bool force_zero_offset);
+ 
+ int mana_ib_gd_destroy_dma_region(struct mana_ib_dev *dev,
+ 				  mana_handle_t gdma_region);
+diff --git a/drivers/infiniband/hw/mana/mr.c b/drivers/infiniband/hw/mana/mr.c
+index ee4d4f834..856d73ea2 100644
+--- a/drivers/infiniband/hw/mana/mr.c
++++ b/drivers/infiniband/hw/mana/mr.c
+@@ -127,7 +127,7 @@ struct ib_mr *mana_ib_reg_user_mr(struct ib_pd *ibpd, u64 start, u64 length,
+ 		goto err_free;
+ 	}
+ 
+-	err = mana_ib_gd_create_dma_region(dev, mr->umem, &dma_region_handle);
++	err = mana_ib_gd_create_dma_region(dev, mr->umem, &dma_region_handle, iova, false);
+ 	if (err) {
+ 		ibdev_dbg(ibdev, "Failed create dma region for user-mr, %d\n",
+ 			  err);
+diff --git a/drivers/infiniband/hw/mana/qp.c b/drivers/infiniband/hw/mana/qp.c
+index 5d4c05dcd..02de90317 100644
+--- a/drivers/infiniband/hw/mana/qp.c
++++ b/drivers/infiniband/hw/mana/qp.c
+@@ -357,8 +357,8 @@ static int mana_ib_create_qp_raw(struct ib_qp *ibqp, struct ib_pd *ibpd,
+ 	}
+ 	qp->sq_umem = umem;
+ 
+-	err = mana_ib_gd_create_dma_region(mdev, qp->sq_umem,
+-					   &qp->sq_gdma_region);
++	err = mana_ib_gd_create_dma_region(mdev, qp->sq_umem, &qp->sq_gdma_region,
++					   ucmd.sq_buf_addr, true);
+ 	if (err) {
+ 		ibdev_dbg(&mdev->ib_dev,
+ 			  "Failed to create dma region for create qp-raw, %d\n",
+diff --git a/drivers/infiniband/hw/mana/wq.c b/drivers/infiniband/hw/mana/wq.c
+index 372d36151..d9c1a2d5d 100644
+--- a/drivers/infiniband/hw/mana/wq.c
++++ b/drivers/infiniband/hw/mana/wq.c
+@@ -46,7 +46,8 @@ struct ib_wq *mana_ib_create_wq(struct ib_pd *pd,
+ 	wq->wq_buf_size = ucmd.wq_buf_size;
+ 	wq->rx_object = INVALID_MANA_HANDLE;
+ 
+-	err = mana_ib_gd_create_dma_region(mdev, wq->umem, &wq->gdma_region);
++	err = mana_ib_gd_create_dma_region(mdev, wq->umem, &wq->gdma_region,
++					   ucmd.wq_buf_addr, true);
+ 	if (err) {
+ 		ibdev_dbg(&mdev->ib_dev,
+ 			  "Failed to create dma region for create wq, %d\n",
+
+base-commit: aafe4cc5096996873817ff4981a3744e8caf7808
+-- 
+2.43.0
+
 
