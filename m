@@ -1,136 +1,124 @@
-Return-Path: <linux-rdma+bounces-949-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-950-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id D039684CB78
-	for <lists+linux-rdma@lfdr.de>; Wed,  7 Feb 2024 14:24:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 5B78584CCA2
+	for <lists+linux-rdma@lfdr.de>; Wed,  7 Feb 2024 15:25:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0E9E71C250F1
-	for <lists+linux-rdma@lfdr.de>; Wed,  7 Feb 2024 13:24:17 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 802931C25A3D
+	for <lists+linux-rdma@lfdr.de>; Wed,  7 Feb 2024 14:25:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 205E876C8D;
-	Wed,  7 Feb 2024 13:23:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id ED65F7CF32;
+	Wed,  7 Feb 2024 14:25:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="iD/reISh"
+	dkim=pass (1024-bit key) header.d=fastly.com header.i=@fastly.com header.b="iMz96eud"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-lf1-f50.google.com (mail-lf1-f50.google.com [209.85.167.50])
+Received: from mail-ot1-f47.google.com (mail-ot1-f47.google.com [209.85.210.47])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 37C6D76904;
-	Wed,  7 Feb 2024 13:23:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D317E7CF05
+	for <linux-rdma@vger.kernel.org>; Wed,  7 Feb 2024 14:25:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707312234; cv=none; b=OZ6xNSvJop9HUloCbB4rXXjX8taXKPAvncM5VUI98kMGW/iwn0D8Shn8wxzi++aeQmH8jwIg2d2VG+NBNqraZGJ2nVFeHTau65rc4aig7exAtRg+84H8LTSNj1096jzZi2jex145yqv8E21wiulzM6w18YNrg56pQPD5k1Bq6VI=
+	t=1707315935; cv=none; b=Q/iE5mM8qGfwfLQs33+mXOE0qbiaAAkJkvq9V59zdIcwQlfwaE0A7z3Mqb/J6GXQoE9D1vdY4dRZkQZ+OwDdpF6Fx7ISw7kc5WXLFSGAwcVzlP4XUnrarfqkePgz9oNQzF9u4tNi8Cb5bauF+NNhGTu8FiTMFSooFVh+AbqpTp0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707312234; c=relaxed/simple;
-	bh=n9lnxml7vDWKWDhPukUbe53jnLIHfWyXAPQRkDlN8cs=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=KU8DI9PXTOxxWiZbMxnMLtuGBTLUdEbggdY6DhIoMx8c4vCscSYouga1FLA0wjQSnraDBIqzDfu3k0ZbwhhmkEm0Vn14oLAaZgWte3ym5XPLx7qMbB0YGTxp0jf/SSEC2I6WCAPAU1T8XG+T9YhzAMhDnpmBn6LDb7t8L0EHR5A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=iD/reISh; arc=none smtp.client-ip=209.85.167.50
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lf1-f50.google.com with SMTP id 2adb3069b0e04-511689e01f3so456976e87.1;
-        Wed, 07 Feb 2024 05:23:52 -0800 (PST)
+	s=arc-20240116; t=1707315935; c=relaxed/simple;
+	bh=8TjpTnr2uOUHyjAU8x1r6nNiu4YhGYIiXKjaSIx66JM=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=pVAhG7iLryfuWC24kg75OOkgCh6oLmOMeiEwr0IV8r2GT+YxJaY1WkM5NBELa/3J5qVo9Tyf1M2mj1hkZu7TBKoHIDyCQJ3DwEpsbabUQJe3e9NEvEesajoKGse6wD/G41rc4X1Qq6qaGmuIt+DG+/cZXDSPJU7/uTJbgzpytyI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=fastly.com; spf=pass smtp.mailfrom=fastly.com; dkim=pass (1024-bit key) header.d=fastly.com header.i=@fastly.com header.b=iMz96eud; arc=none smtp.client-ip=209.85.210.47
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=fastly.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fastly.com
+Received: by mail-ot1-f47.google.com with SMTP id 46e09a7af769-6e1270e8cd3so249053a34.1
+        for <linux-rdma@vger.kernel.org>; Wed, 07 Feb 2024 06:25:33 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1707312231; x=1707917031; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=DlrXLQPU7SiDVj92lskAkNYdA49Qzw9WwEfRE3KmueI=;
-        b=iD/reIShEmiO5+JLardqIju3x6Wq4Q1z10Md3lFkWHuCalqJC98LnF2p8vlDZ/jN4J
-         GY50wgxSKiKQPd8qhQG4yNkcEjmbmun+HYzftngOAlbkC1kXhwOZpGykxh0iWDDYl9SR
-         pyF5/b2qd9WhSwwjOONiEYVgrMTvgfxSJiFmOokcutxAsnGQ7HrjXusDiUFDXE/0zjce
-         I6u/ZKXEuk22zWV4Oa4i68FYIkKTzAz4c64x/RmmLB7+/qX6y8nZHGYaAM/pikbyDDo8
-         qxmicgPcsVvATvMGpcIic/TM7ZIkMg6Rk4oV19FzAe9z9ztHST0QPhnmLXg+TxDfV7DL
-         0CWA==
+        d=fastly.com; s=google; t=1707315933; x=1707920733; darn=vger.kernel.org;
+        h=user-agent:in-reply-to:content-disposition:mime-version:references
+         :message-id:subject:cc:to:from:date:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=jaaCT+rhJtD+61LWJubfwBSzXr8X6PtWTAbxqQNnRNs=;
+        b=iMz96eud1GYBWHS3fj/n5tHdGw/RyTxmuv5pmSkXtmppZHcl7uP48hCvxVIyD90lmi
+         1Hf/QeDq+Bj0YVwyovGcRbRs+ZTuI9Sf2QThGVN3o3f3pO6Z4Vd2Uso7IwFpyQyTwvrS
+         qligkiH8fp/mDGleCTCOxZpOQOUvcZOPD7Jic=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707312231; x=1707917031;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=DlrXLQPU7SiDVj92lskAkNYdA49Qzw9WwEfRE3KmueI=;
-        b=Fpkx3pL3S8D3DipNBGBywTC8zs51PPBIH8cpinnSMNvBUJ3c+WubMOd46x4Q9oTE+B
-         7Auqegh1TRq384MRJ2bplCkCW3YRaEF8Ch2/2r5oj+XcIL0MP/p2XJuqHU/s05Dsx9o2
-         ABy/cFexEyiryI8B/xotjuYGseBYQxYclcCfi9mlcEmzUaYjP/bsvPKuw2QVDgakve2a
-         78IwdieoqZBeL97R0EpK0O/O0L1nX77X48wiH0v4gwlKifRmwYygaHpPwtIiNUZ2+Jgp
-         DYEX9o5JO3fDkCoX2RgIcnR09Tvr/Whqm5A2CCnVS3M5iyBJsBjjLke9A3tdtMn7wmRL
-         BHYQ==
-X-Gm-Message-State: AOJu0YyoIDiHSVN660D3ZWe90D4+5EHUvnX68ulLXUEmHtck056ozSty
-	xUV9a4M7qC+lKAMJSWfhrRiHYwBSSoyap8JconIRDg8dtYno96VN
-X-Google-Smtp-Source: AGHT+IEM7csy2zcnsFVgegPV2i9UeAGj/ka+uV0FjlhlxQMcFZq1EuOMBgksb2YSqdTPTk3fQ60+5g==
-X-Received: by 2002:ac2:44d5:0:b0:511:4edb:501a with SMTP id d21-20020ac244d5000000b005114edb501amr4064284lfm.15.1707312230865;
-        Wed, 07 Feb 2024 05:23:50 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCWM1dxoQWIi4KJuF3E581Mfce4Z9wgU445l4TYSli91UosKlBzuPThtUWOFnifu0Rm+HAtVeMbkYczszS0sz9/vSBy4iwQkSwxPmPV/l0wCvaTttI/JScNUcXZwgCjP1lJxAkkJdv6bd8hXrujxMU9+2WhWcRlo3gEaVBuf7b9RwAa419BxgX9VkAEusda4LdJhoUJ84R8/qFPUoJdmDatC98CITSt6OP46wCqKCl0JTtz0TGp1QUA4hGNRGp1+f69q9b3x879fqmIQ165iC8pp0AXKhXhejWhRj0tilp6mU0aeA9rddpXrJa++2MWoXpYDJfvIRvSfl3tm5CthVpyspIJ0euPH2v2LlaWwm7Y/
-Received: from [172.27.55.67] ([193.47.165.251])
-        by smtp.gmail.com with ESMTPSA id v23-20020a1709064e9700b00a3848ed2ef6sm750772eju.201.2024.02.07.05.23.48
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 07 Feb 2024 05:23:50 -0800 (PST)
-Message-ID: <b19c4280-df54-409e-b3fd-00de6d6958d4@gmail.com>
-Date: Wed, 7 Feb 2024 15:23:47 +0200
+        d=1e100.net; s=20230601; t=1707315933; x=1707920733;
+        h=user-agent:in-reply-to:content-disposition:mime-version:references
+         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=jaaCT+rhJtD+61LWJubfwBSzXr8X6PtWTAbxqQNnRNs=;
+        b=QCiT0US927o/7huEB7+ZLr3mMvZbuL0K509Ki9pMvdnyBHEiuuWfj1noo25JtxcfLa
+         B+Dv2VnlC0w4c9TUVZ0RY0IVMICPOX2eH7tPde8O0nMG3WJQU/YEbJ5YfUCwYq9eeHNl
+         jcUkkJaqqGk6XZezLHw8KZYlc4iDVdkPEZ8EMGeNcNn85VsyOOJMOXAJ4tC5ugVqWpZQ
+         Kez4WHEYCy9sHTsu9KA371a0K50x8VacH/GXrvRSJU3weJFrylWH06mewDVZf7Pi0ZJK
+         VyvMcb93znC9GScF/eMwrtLIOyOKTYfhOJicIb7FTRjum3iqlRu3d4ppyQ62MvIIYnkM
+         K0fw==
+X-Gm-Message-State: AOJu0YyxZCLQWvTUfICxQ+hUF5gIJK9WFpKuIu9FRNDksLWadOCkoqtD
+	Arc8L3cbF+6mqSqPrb7wQI47Oh7mV8D2GOk36V68piYZGJdDGlLVZO21wymfmZ0=
+X-Google-Smtp-Source: AGHT+IHCk9rLNop5t04dt5x+GZXCejO4EU+I7pA1zPkR2gFy1eQTvrGJQb2+FEZyCy0ZfSCaEDQ//Q==
+X-Received: by 2002:a05:6358:2626:b0:178:e3b4:9779 with SMTP id l38-20020a056358262600b00178e3b49779mr2959534rwc.21.1707315932745;
+        Wed, 07 Feb 2024 06:25:32 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCVEGEAtNDvoZPEMB3Kv7QlzSeHyGMzAwgWPVeLcEYDIxX5Hdr+7D4ecvydaNdD4QX5ioyy9xN9UkR8Z0Lnh8bJ22A1D0Z4uoGLFIfKnYENJZqYY5n13S6zt1Wp+rh/4GxMU3mTmyZAcGz/TkSuWN6l/sO7DgVhQ1S6/fXla+UGbqlNUpSRBKbwNjg5Adow3KhHmDEmH5MD99zn2AXniSECFJyR7jUYfQsc6I8i0l+gaiJu1k2Ou4cC7frCiTYkS4X9hZq+xqqueQAKpRM2xt5QiKco+4yNIF7tSjo1oy5Bi94IXf3ObyOx/p7f4/4+pJOXpWRd9Wqxk7xZMAgRZYHt2WPnShMD2J5UCJ1AiW3wjIbB7yJqA+tOAiI3VhvshhojjvQg=
+Received: from fastly.com (c-24-6-151-244.hsd1.ca.comcast.net. [24.6.151.244])
+        by smtp.gmail.com with ESMTPSA id c4-20020aa78c04000000b006dde0f53fc2sm1605617pfd.49.2024.02.07.06.25.31
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Wed, 07 Feb 2024 06:25:32 -0800 (PST)
+Date: Wed, 7 Feb 2024 06:25:29 -0800
+From: Joe Damato <jdamato@fastly.com>
+To: Gal Pressman <gal@nvidia.com>
+Cc: Tariq Toukan <tariqt@nvidia.com>,
+	Tariq Toukan <ttoukan.linux@gmail.com>,
+	linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+	rrameshbabu@nvidia.com, Saeed Mahameed <saeedm@nvidia.com>,
+	Leon Romanovsky <leon@kernel.org>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	"open list:MELLANOX MLX5 core VPI driver" <linux-rdma@vger.kernel.org>
+Subject: Re: [PATCH net-next] eth: mlx5: link NAPI instances to queues and
+ IRQs
+Message-ID: <20240207142529.GA12897@fastly.com>
+References: <20240206010311.149103-1-jdamato@fastly.com>
+ <7e338c2a-6091-4093-8ca2-bb3b2af3e79d@gmail.com>
+ <20240206171159.GA11565@fastly.com>
+ <44d321bf-88a0-4d6f-8572-dfbda088dd8f@nvidia.com>
+ <20240206192314.GA11982@fastly.com>
+ <b3c595d8-b30a-41ac-bb82-c1264678b3c4@nvidia.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH net-next] eth: mlx5: link NAPI instances to queues and
- IRQs
-Content-Language: en-US
-To: Joe Damato <jdamato@fastly.com>, Tariq Toukan <tariqt@nvidia.com>
-Cc: linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
- Gal Pressman <gal@nvidia.com>, rrameshbabu@nvidia.com,
- Saeed Mahameed <saeedm@nvidia.com>, Leon Romanovsky <leon@kernel.org>,
- "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
- Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
- "open list:MELLANOX MLX5 core VPI driver" <linux-rdma@vger.kernel.org>
-References: <20240206010311.149103-1-jdamato@fastly.com>
- <7e338c2a-6091-4093-8ca2-bb3b2af3e79d@gmail.com>
- <20240206171159.GA11565@fastly.com>
- <44d321bf-88a0-4d6f-8572-dfbda088dd8f@nvidia.com>
- <20240206192314.GA11982@fastly.com>
-From: Tariq Toukan <ttoukan.linux@gmail.com>
-In-Reply-To: <20240206192314.GA11982@fastly.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <b3c595d8-b30a-41ac-bb82-c1264678b3c4@nvidia.com>
+User-Agent: Mutt/1.5.24 (2015-08-30)
 
-
-
-On 06/02/2024 21:23, Joe Damato wrote:
-> On Tue, Feb 06, 2024 at 09:10:27PM +0200, Tariq Toukan wrote:
->>
->>
->> On 06/02/2024 19:12, Joe Damato wrote:
->>> On Tue, Feb 06, 2024 at 10:11:28AM +0200, Tariq Toukan wrote:
->>>>
->>>>
->>>> On 06/02/2024 3:03, Joe Damato wrote:
->>>>> Make mlx5 compatible with the newly added netlink queue GET APIs.
->>>>>
->>>>> Signed-off-by: Joe Damato <jdamato@fastly.com>
-
-...
-
+On Wed, Feb 07, 2024 at 08:59:18AM +0200, Gal Pressman wrote:
+> On 06/02/2024 21:23, Joe Damato wrote:
+> >> The per queue coalesce series is going through internal code review, and is
+> >> expected to also be ready in a matter of a few weeks.
+> > 
+> > OK, great. Thanks for letting me know; we are definitely interested in
+> > using this feature.
 > 
-> OK, well I tweaked the v3 I had queued  based on your feedback. I am
-> definitiely not an mlx5 expert, so I have no idea if it's correct.
-> 
-> The changes can be summed up as:
->    - mlx5e_activate_channel and mlx5e_deactivate_channel to use
->      netif_queue_set_napi for each mlx5e_txqsq as it is
->      activated/deactivated. I assumed sq->txq_ix is the correct index, but I
->      have no idea.
->    - mlx5e_activate_qos_sq and mlx5e_deactivate_qos_sq to handle the QOS/HTB
->      case, similar to the above.
->    - IRQ storage removed
-> 
-> If you think that sounds vaguely correct, I can send the v3 tomorrow when
-> it has been >24hrs as per Rahul's request.
-> 
+> Hi Joe,
+> Can you please share some details about your usecase for this feature?
 
-Sounds correct.
-Please go on and send when it's time so we can review.
+It was outlined in the cover letter for the RFC [1].
 
+But, briefly: we set a number of queues (say 16) via ethtool. We then
+create a series of n-tuple filters directing certain flows to queues 0-7
+via a custom RSS context. The remaining queues, 8-15 are for all other
+flows via the default RSS context.
+
+Queues 0-7 are used with busy polling from userland so we want those queues
+to have a larger rx/tx-usecs rx/tx-frames than queues 8-15.
+
+We implemented basic support for this in the RFC we sent to the mailing
+list.
+
+[1]: https://lore.kernel.org/lkml/20230823223121.58676-1-dev@nalramli.com/
 
