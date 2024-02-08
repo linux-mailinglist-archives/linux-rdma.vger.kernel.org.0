@@ -1,280 +1,280 @@
-Return-Path: <linux-rdma+bounces-976-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-977-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8BFAA84DC97
-	for <lists+linux-rdma@lfdr.de>; Thu,  8 Feb 2024 10:15:49 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7895B84DFD0
+	for <lists+linux-rdma@lfdr.de>; Thu,  8 Feb 2024 12:36:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 014291F25BD6
-	for <lists+linux-rdma@lfdr.de>; Thu,  8 Feb 2024 09:15:49 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0C7EC285E76
+	for <lists+linux-rdma@lfdr.de>; Thu,  8 Feb 2024 11:36:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 980F96A8A9;
-	Thu,  8 Feb 2024 09:15:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C9A9A73162;
+	Thu,  8 Feb 2024 11:33:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="lnqlKema"
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="GWOlnlC3"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 529436BB35;
-	Thu,  8 Feb 2024 09:15:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707383743; cv=none; b=eQ704b72LiXQuWl6Hg+cmIUhAmvzlzASUWBR0E1pWJsPNBf5hJrxXEleuAunHTuX+PfdBuxUo1WoXWlPVfyxGPOJXRhOAbk3WwVZAJh79hbMQWJT5HLOmUdVor5iz4Y7WZygF4C5mJunrfa4fBVR8nTFAVtUT6yuq25DmXlDw74=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707383743; c=relaxed/simple;
-	bh=M9fcwsY9A/oSluC/Kkhzcuowx3KxLl5qtstL/ZCmVcA=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=VYQY61hCmT3rfmTJg35agUjQ4I8MeN40xc+yXaxOdawzwe2jsqqq4v6g8+aw7daHDCdHbpIJhzzw+xDcJ7QB7CYsf0WA5Pn9F8/d3/+j3CZ3kHDPin1oaDLzkL0BWBxUYeo1Vt8fclZmwYAalWghWoJrqWVnsZZMV0wBIBG9UQA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=lnqlKema; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 560ECC433C7;
-	Thu,  8 Feb 2024 09:15:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1707383742;
-	bh=M9fcwsY9A/oSluC/Kkhzcuowx3KxLl5qtstL/ZCmVcA=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=lnqlKemagU6f0bTWunF+oOB5OPISJMtXzhmzg0Huo3WOANxsLp92T3MrnzYl8gYgw
-	 EVJ9q5NWRa8G6sT7+GrKmJxpFJ3dX6arTqoP4c18AuhKxJGPp/G4sgJXWhkz5yosfk
-	 Aq440OUURk0hOrb1hbE4Ti6t9Be8yoph8prIf1zvsKrzA/Vtf9f/z++NR+FKkZbrHc
-	 2l+9V/ma+dWI82kwP/tflgrGW05fRoVL3MwUJg5PgAmuQ+wrJc1z314gLJcm68C9yU
-	 tZceEqQqiYsHbbqnrushNwlx8zMA1dGPwZCy8iHu3MswYWIYgz95n2eJ2tDRaiyxjU
-	 vJmqgG1lPKhyg==
-Date: Thu, 8 Feb 2024 11:15:38 +0200
-From: Leon Romanovsky <leon@kernel.org>
-To: Konstantin Taranov <kotaranov@microsoft.com>
-Cc: Konstantin Taranov <kotaranov@linux.microsoft.com>,
-	"sharmaajay@microsoft.com" <sharmaajay@microsoft.com>,
-	Long Li <longli@microsoft.com>, "jgg@ziepe.ca" <jgg@ziepe.ca>,
-	"linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH rdma-next v1 1/1] RDMA/mana_ib: Fix bug in creation of
- dma regions
-Message-ID: <20240208091538.GG56027@unreal>
-References: <1707318566-3141-1-git-send-email-kotaranov@linux.microsoft.com>
- <20240208082336.GE56027@unreal>
- <PAXPR83MB0557AB370FFF54DE667AFDF8B4442@PAXPR83MB0557.EURPRD83.prod.outlook.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 13D1078B59
+	for <linux-rdma@vger.kernel.org>; Thu,  8 Feb 2024 11:32:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=148.163.156.1
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1707391981; cv=fail; b=YooQjSnNsLMV+rkR5QJN8Q2+jsrgyVAKEZ3LOuAQrncXoc3+QSNeh0irQzMUsSlB8ImSPFedvExwhiQbE/wA5nLtTzOxa/RJ5UNbO19w8t5oNIdK2ANDgH10cLGGnsNNTavWPXinieX7DMTAvFplLvn25P+O2lME61OVEhECgDQ=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1707391981; c=relaxed/simple;
+	bh=tJ2X8bualLkckV+2m3i6b9IhgAbbyZZQID0PFyxZeIs=;
+	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
+	 Content-Type:MIME-Version; b=A8nwb/84Xkmsb8LU8+c9jFr+0VAL5T5JrTSC/HBLfdUMaMDsaoIf80MOyC1tAhVN8d3w8IJae+OZmXVgb6fdbqYNiKW3QTgsZr2Z/wguqZQk3YPUp2WGjnXS/j/90DN+Sn8UEvBoXclLTA3xpj4j2L8W7yqL8PbyHA5IP6Q03pQ=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zurich.ibm.com; spf=pass smtp.mailfrom=zurich.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=GWOlnlC3; arc=fail smtp.client-ip=148.163.156.1
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zurich.ibm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=zurich.ibm.com
+Received: from pps.filterd (m0353729.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 418ATv9k018492;
+	Thu, 8 Feb 2024 11:32:40 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
+ : date : message-id : references : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=pp1;
+ bh=tJ2X8bualLkckV+2m3i6b9IhgAbbyZZQID0PFyxZeIs=;
+ b=GWOlnlC3YHhfsQpjJCgCWSxNWK/dD8tnWI/bCeUHgO1BZeX038qQycVUMrwEcXQph8su
+ t8gLiHLzGJXhPc73Qm3EpK3A1MEbXuHms46oYCdOcHZkvahRGyS6wYzn3kxKFuVvTtEY
+ uR0HcP0XiFWhGFGKPS+Ip22Iec/rSYmb88FyXy6kKgGHGJ3WC31um3k76f35Ys2cC1gv
+ 3xt8tfTMiSTGeatlQuyNK2IdIMjU1lH8UQZS/R0p9VZ+95JxKdbTUcPGxUa+74epEttW
+ a16h56TaFGv65E/Qtaq+FY1/W1QPOYCYxdr+AaKboXMiWTqL38K9R56oNTAoOomLHLSn Qg== 
+Received: from pps.reinject (localhost [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3w4tncp4u2-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 08 Feb 2024 11:32:40 +0000
+Received: from m0353729.ppops.net (m0353729.ppops.net [127.0.0.1])
+	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 4189OdM1013262;
+	Thu, 8 Feb 2024 11:32:40 GMT
+Received: from nam12-bn8-obe.outbound.protection.outlook.com (mail-bn8nam12lp2169.outbound.protection.outlook.com [104.47.55.169])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3w4tncp4t7-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 08 Feb 2024 11:32:39 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=PcmWnibzEYGYZso9oz39qO/PGC3IjNryP4/VI7jnGZrjcWlkUnjQTqELgM8yxIv639hLVUbSGDugkPAjwdK7i1w9YK5nrFGWTz405UaVGPJvkN9IiwcZUyeKKaFMgBGH96yYOdM9lL5ATLvIBnV3ctGzNo7AiCO2j+OuAyw0TTSaWeQliT74YxdZA94KMVp/j1ux/cOfVNbUE0YJZOeaEYRMrCX1H718rEvPRzgSistohCulGBS8Y5RK/JEHXq3WZMxPRRZ0eeH0oqhM1rhibENSWvmq8YDDsndLZh/z5C7CqxBWGpsW8LDVtKyYNSCr0Np60RJYIdg1Mn3CwLsM7w==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=tJ2X8bualLkckV+2m3i6b9IhgAbbyZZQID0PFyxZeIs=;
+ b=bpLg5/lIsXGURNC1tU3U7/4b274++A8MiCWYcLobWYm34ThGn8GnIYRYGZFfdDdOY8PmZh0J/aDl5tzLUJzKJVKlRxOPhbLzATiBnR9MZ3uo9C+lkJh3ZxlaZkdxM0mIBNQ05YWXKTmu2sjYhZcSCyvJOH9P1N8OxpKtsD1B4Z3C9vm7LIvZfyMMlvWIdmGalhpUq1muIsGmhm+KZaOEQqZwJCkzbCRYkbUUBF2rg/onrc7suTjC3h8SijEcguHS9oqURU+Vg1qQXcyUdI0iULsJ/D1C5r9KOYftOnownu3rBIKpPSKcUmWfaS7CAdA8Nv780EKSP0YoZgHY0Q/WUA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=zurich.ibm.com; dmarc=pass action=none
+ header.from=zurich.ibm.com; dkim=pass header.d=zurich.ibm.com; arc=none
+Received: from BYAPR15MB3208.namprd15.prod.outlook.com (2603:10b6:a03:10c::13)
+ by SJ0PR15MB4504.namprd15.prod.outlook.com (2603:10b6:a03:379::16) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7270.24; Thu, 8 Feb
+ 2024 11:32:37 +0000
+Received: from BYAPR15MB3208.namprd15.prod.outlook.com
+ ([fe80::73af:2b3a:6743:198a]) by BYAPR15MB3208.namprd15.prod.outlook.com
+ ([fe80::73af:2b3a:6743:198a%5]) with mapi id 15.20.7249.035; Thu, 8 Feb 2024
+ 11:32:37 +0000
+From: Bernard Metzler <BMT@zurich.ibm.com>
+To: Leon Romanovsky <leon@kernel.org>
+CC: Guoqing Jiang <guoqing.jiang@linux.dev>,
+        "linux-rdma@vger.kernel.org"
+	<linux-rdma@vger.kernel.org>,
+        "jgg@ziepe.ca" <jgg@ziepe.ca>,
+        "ionut_n2001@yahoo.com" <ionut_n2001@yahoo.com>
+Subject: RE: Re: Re: [PATCH] RDMA/siw: Trim size of page array to max size
+ needed
+Thread-Topic: Re: Re: [PATCH] RDMA/siw: Trim size of page array to max size
+ needed
+Thread-Index: AQHaWoKE9qjH3H/VqESY1dC4FLO+rQ==
+Date: Thu, 8 Feb 2024 11:32:37 +0000
+Message-ID: 
+ <BYAPR15MB320873D5B2D4CD9A3C38A3FF99442@BYAPR15MB3208.namprd15.prod.outlook.com>
+References: <20240119130532.57146-1-bmt@zurich.ibm.com>
+ <05415e8a-2878-04a7-efeb-4119b95b8fd2@linux.dev>
+ <BY5PR15MB3602E55D5186E1A241489C8B997B2@BY5PR15MB3602.namprd15.prod.outlook.com>
+ <a4496a1e-c7bb-eba3-1095-07b4472786dc@linux.dev>
+ <BY5PR15MB36028A78D66BBEE55A54C67E997A2@BY5PR15MB3602.namprd15.prod.outlook.com>
+ <20240126110534.GE9841@unreal>
+In-Reply-To: <20240126110534.GE9841@unreal>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: BYAPR15MB3208:EE_|SJ0PR15MB4504:EE_
+x-ms-office365-filtering-correlation-id: f51b787c-4dc1-422d-6a01-08dc2899a6e8
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: 
+ HjXTXA0Aqm7jyxRi4syofgpM0Gvc3UfAhfkQ7jOI+0DG9Hfj9qab6gJ21RyqRSgsJ3W0NiYMH+I9KGIOqoTTl4RTEwJ5fcJpdieLpqI9ep+wAMfk94QZOh2n9Ph1OHx7pgAsqZfrzNdmIl6mOnh3yjrmLOXQfe8Ti8n6oImRZtMYvXsSds4u7BoyXCkrcjMYWTdt/EKzcudgV/+sAKcFraqEeCBFJVsXYlAcsGCTbsZhbnZW48KTiuvpXlSW3Qdhe9S4Wd0ajnlx1wz4cDnjeKuWDWx2pc1tc/eZjhMsA0EwQOeYsd5rnaG6+6OZ1JnGDWYt4KbuOdJINyXrMFOV1WwBThDU/wEy0gRQLLGRChdaB3DI/wegXBkG/ZptA9XXsvVfhLL2dNmMSykq7moerjJhr62sMCWMttPBnQPxKQYkvHieJ2GTHI7vFuc7sWyIOEYRhMeq+554E/GVoEAWJB+JSJPsSu6F5y7oUT8zhmKBJKG2JVVZl6J+7khQei/ijMp5ILv3bNDBknUXDtPs0hPDfkgmAZC9wjDHgw1R6A5sEnXC3TxyRM61o9NkbQtsn9hMDTf1pT1ScUsNBBTHJAmxX6CDOFKItAX1t0NurO55P1as/koB3IlCMMlg09c9
+x-forefront-antispam-report: 
+ CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR15MB3208.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(396003)(39860400002)(346002)(376002)(366004)(136003)(230273577357003)(230922051799003)(186009)(451199024)(1800799012)(64100799003)(4326008)(8936002)(8676002)(52536014)(41300700001)(2906002)(55016003)(5660300002)(83380400001)(86362001)(38070700009)(76116006)(66446008)(66556008)(66476007)(66946007)(64756008)(7696005)(71200400001)(53546011)(6506007)(122000001)(478600001)(38100700002)(54906003)(316002)(6916009)(33656002)(9686003);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: 
+ =?utf-8?B?bDl4UlYzY2l0VHBhZlBUOG9nSVhqd05WeDFaMXhpUCs1b0xxL2c2eXhqQ3l3?=
+ =?utf-8?B?akJZMFNnVGpuWjd4dTB2L0l1clYwVVlaT3ZMU0d5Znk0c0NtL0gxbDU2ZHRv?=
+ =?utf-8?B?aWlkVDNuUmJONU0zY0xJcndTeXVPN0NGQzNXUnA4b2drb1ZJcUdHMm5vTDNN?=
+ =?utf-8?B?bDRuVTNVVDBhcmVHZGQ0aSswNklwb2UwS0k0VkNnOFpUdXdrNUpKTmY4U1BP?=
+ =?utf-8?B?OVZEemVHcVV4Wld1WEtTT3pNbnF1Z2RFU0ltSDY2TDFpU29ENnlPQmpHSHFV?=
+ =?utf-8?B?czJXY1I5VnlFd3RhRjh5YXM4NGtYRDAzY3hTZ0JIdG5iRlpqaEcwenpXVmw1?=
+ =?utf-8?B?ak9QUTJ2Q2xBMmkxMWJRV2dteW1aem1pYUV6cGc5WWlFS3AzK0EwMUt3Z0FD?=
+ =?utf-8?B?TmRyOUZGc2lkM0pIbEgxOVdkZkRHbUdtTll2WUJ6QWw1MjVqdWFKZ1lKaitl?=
+ =?utf-8?B?M1N4Zmw3cU1XbVVqZXdGOXkrdllQYVZ1UEcwS3FBNyt6aXhqVzJEd2o1SzBm?=
+ =?utf-8?B?ZXNYVXhpbXllRFRCdVUwcTNtREV6d01BTEp4Zjd1bTc4R21pd2hFaml2aFph?=
+ =?utf-8?B?QVZBTk95QmZRUm5hNHA2VG5lbi9lV1U4T01hcS9zWllkZ3NuZEFYRTJDenR4?=
+ =?utf-8?B?WnlMdFAwd2ZQS3RkR2QxOGdOQmx4dmYrMWFCbHRnbC9yMWFiekl4ZW1xeS94?=
+ =?utf-8?B?d3V4eG5CQjMyQ2RKNFUzQTVvM1l0TTF6eFUrTmZiS1F6WnNGTmhMRnN6REtZ?=
+ =?utf-8?B?eVFnYmNVVEFGdzFQYXRPOXg0VStCOXl5a1djMlZyM0FsMHJLLzNZcHp4U1lQ?=
+ =?utf-8?B?TnZnSS9uaW1HUjU2WDFzK3ozdVljbFczY0NUOXVGem5BWm5HazBqZWJwS0Fa?=
+ =?utf-8?B?cFlON0NtRDFuK0RxTVlxM2ZveUpFa1BXWWdMS0lGWjBEcE90RG9waWVwSDlP?=
+ =?utf-8?B?dlUzMzJLeDVhU05HRDhoNWVQOFYwVkZlZEt0NDMzZzJSbDQ3UzBVc0JYV2hz?=
+ =?utf-8?B?REFXK3QrVm9Td0NXc3Jndy9pYVRsK0dyNUJJTnFKMnRhRkN3MDk0amxLaFR0?=
+ =?utf-8?B?ZE5FMjJ3Sk8rNjl4bU82Z1N2eHZRM0FwY2toTlQwbis3ZzVYWStjUjVvd3F6?=
+ =?utf-8?B?eU1NaGNIdVk5YVBha1VmQWZjZmJmK3dydUxTWndpRmhTTDRXQStWNDdNYi9D?=
+ =?utf-8?B?bjRiT25Pb0Jpc29oWmYrL0x4T1IxUkNWb1I2ZTdLbWQ3T21OY3h6L0ttamlJ?=
+ =?utf-8?B?VXl3S0RrY2pDWGhOdHBWZ0lsNGtMVS9BZitOOEJmM2ZveGcwSU5RQSt2cWJO?=
+ =?utf-8?B?UmNaRU9ZNVltdHNUNXlsTVBzQ01tdGlSeVJ6OXF6VGQvcFNjUytTMmR3TmNE?=
+ =?utf-8?B?dE5mVjcwSTBPWmxXOHdZRnY5SzhJNGRsc0JhbmdiUU5md0dJSHR1c0g1MWJK?=
+ =?utf-8?B?YnRlbXR0L3hvRDFNcHp2cUxWK3VUdkxIdmtjR292bVloVC8xaUJEK2ZtRU02?=
+ =?utf-8?B?dVlzOExtOU04ejBLazc1T3VjOUV6eVFFaUNUZm9xdlJwRCtob3ltWE9XdWpw?=
+ =?utf-8?B?S3EwNTh2WXEvQlowTWFZajREclY0T2RNa1dOeU9QRXIwMHAzR1RKNnBpSFVk?=
+ =?utf-8?B?dVIyRy9sUFRNdjhjVU1vYVBzS3hyTTJmOEdaSVI0TCtodDFETzh3d29SVHAy?=
+ =?utf-8?B?N3RadHd2Lzl6OFBzWlVVQ2NNMnFubDVuTmVCRXc4VURTSmFtM3VEUWdGT0pG?=
+ =?utf-8?B?RWpQdnVaYWFZZ01GZHBIRWhxWk5CSHhKWnFhRXprR1owN2ZHeWlBcVNLWUZS?=
+ =?utf-8?B?YjNIMENiUUpEVXBEU2h5UUZHYUNWekFWOHdkOU5wVEkzOE1GQmM4eGZvYUV0?=
+ =?utf-8?B?WEZ5bHR3cEdNUk9KS3hKeEJsdkJ0NktkQy85bmV0SXBwZkRCUWVwbTZFbGdF?=
+ =?utf-8?B?TGpTalJtT0xCaWl2Tis0UXpXbUIzZ05YbzBkb3drUENSbEVRVEpRdkhYL2Y5?=
+ =?utf-8?B?NlZxUzV4R0ZWbGY2M2l4Z1Q3M1U0ek16TFBZQThkVVBOMWpoNWhOM1hyaXJ6?=
+ =?utf-8?B?L28raWFlTW1aRzBZVnF1TlpRR3J4UjZob0o4VEo0V0pRUDNvMkw3QmNoaDVp?=
+ =?utf-8?B?czBSN3J4L1hqYlRCYVNReUJubGRuLythWC9DSDdkRk8yc0pweUFjSDhsMUFz?=
+ =?utf-8?Q?ZlA8GxWHrfznQO2eSLXPv+E=3D?=
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <PAXPR83MB0557AB370FFF54DE667AFDF8B4442@PAXPR83MB0557.EURPRD83.prod.outlook.com>
+X-OriginatorOrg: Zurich.ibm.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: BYAPR15MB3208.namprd15.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: f51b787c-4dc1-422d-6a01-08dc2899a6e8
+X-MS-Exchange-CrossTenant-originalarrivaltime: 08 Feb 2024 11:32:37.4551
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: fcf67057-50c9-4ad4-98f3-ffca64add9e9
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: 5cXdLiUMB13b+a/iaov5WlqJGw2aqR84qvueGSOl86ufsqdj1qpnVNfNd74gMXugxCScmSAJY3jNy1AYm2SPiQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR15MB4504
+X-Proofpoint-GUID: l1BOl39sh81Geq1aCOlPtKoiy37_vzqg
+X-Proofpoint-ORIG-GUID: ifXRQEutBNPDbpDdgzZnXzszteyCcECb
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-02-08_03,2024-02-07_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0
+ lowpriorityscore=0 phishscore=0 priorityscore=1501 mlxscore=0
+ suspectscore=0 impostorscore=0 spamscore=0 clxscore=1015 mlxlogscore=999
+ malwarescore=0 adultscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2311290000 definitions=main-2402080060
 
-On Thu, Feb 08, 2024 at 08:49:43AM +0000, Konstantin Taranov wrote:
-> > From: Leon Romanovsky <leon@kernel.org>
-> > > From: Konstantin Taranov <kotaranov@microsoft.com>
-> > >
-> > > Dma registration was ignoring virtual addresses by setting it to 0.
-> > > As a result, mana_ib could only register page-aligned memory.
-> > > As well as, it could fail to produce dma regions with zero offset for
-> > > WQs and CQs (e.g., page size is 8192 but address is only 4096 bytes
-> > > aligned), which is required by hardware.
-> > >
-> > > This patch takes into account the virtual address, allowing to create
-> > > a dma region with any offset. For queues (e.g., WQs, CQs) that require
-> > > dma regions with zero offset we add a flag to ensure zero offset.
-> > >
-> > > Signed-off-by: Konstantin Taranov <kotaranov@microsoft.com>
-> > > ---
-> > >  drivers/infiniband/hw/mana/cq.c      |  3 ++-
-> > >  drivers/infiniband/hw/mana/main.c    | 16 +++++++++++++---
-> > >  drivers/infiniband/hw/mana/mana_ib.h |  2 +-
-> > >  drivers/infiniband/hw/mana/mr.c      |  2 +-
-> > >  drivers/infiniband/hw/mana/qp.c      |  4 ++--
-> > >  drivers/infiniband/hw/mana/wq.c      |  3 ++-
-> > >  6 files changed, 21 insertions(+), 9 deletions(-)
-> > 
-> > You definitely advised to look at the Documentation/process/submitting-
-> > patches.rst guide.
-> > 1. First revision doesn't need to be v1.
-> 
-> Thanks. I did not know that.
-> 
-> > 2. One logical fix/change == one patch.
-> 
-> It is one fix. If I only replace 0 with virt, the code will stop working as the offset will not be
-> zero quite often. That is why I need to make offset = 0 for queues. 
-> 
-> > 3. Fixes should have Fixes: tag in the commit message.
-> As existing applications were made to go around this limitation, I wanted this patch arrive to rdma-next.
-> Or do you say that I cannot opt for rdma-next and must make it a "fix"?
-
-Once you write "fix" word in the patch, the expectation is to have Fixes line.
-There is nothing wrong with applying patch with such tag to rdma-next
-and we are doing it all the time. Our policy is fluid here and can be
-summarized as follows:
-1. Try to satisfy submitters request to put in specific target rdma-rc/rdma-next.
-2. Very lax with taking patches to rdma-rc before -rc4.
-3. In general, strict after -rc4, only patches with panics, build breakage and
-UAPI visible bugs.
-4. More pedantic review of -rc material.
-
-So if you write rdma-next in title, add Fixes line which points to "old" code, we will apply
-your patch to rdma-next.
-
-> 
-> > 
-> > And I'm confident that the force_zero_offset change is not correct.
-> 
-> It was tested with many page sizes and offsets. Could you elaborate why it is not correct?
-
-I prefer that Jason will elaborate more on this, he will do it better
-than me.
-
-> 
-> Thanks!
-> 
-> > 
-> > Thanks
-> > 
-> > >
-> > > diff --git a/drivers/infiniband/hw/mana/cq.c
-> > > b/drivers/infiniband/hw/mana/cq.c index 83d20c3f0..e35de6b92 100644
-> > > --- a/drivers/infiniband/hw/mana/cq.c
-> > > +++ b/drivers/infiniband/hw/mana/cq.c
-> > > @@ -48,7 +48,8 @@ int mana_ib_create_cq(struct ib_cq *ibcq, const struct
-> > ib_cq_init_attr *attr,
-> > >               return err;
-> > >       }
-> > >
-> > > -     err = mana_ib_gd_create_dma_region(mdev, cq->umem, &cq-
-> > >gdma_region);
-> > > +     err = mana_ib_gd_create_dma_region(mdev, cq->umem, &cq-
-> > >gdma_region,
-> > > +                                        ucmd.buf_addr, true);
-> > >       if (err) {
-> > >               ibdev_dbg(ibdev,
-> > >                         "Failed to create dma region for create cq,
-> > > %d\n", diff --git a/drivers/infiniband/hw/mana/main.c
-> > > b/drivers/infiniband/hw/mana/main.c
-> > > index 29dd2438d..13a4d5ab4 100644
-> > > --- a/drivers/infiniband/hw/mana/main.c
-> > > +++ b/drivers/infiniband/hw/mana/main.c
-> > > @@ -302,7 +302,7 @@ mana_ib_gd_add_dma_region(struct mana_ib_dev
-> > *dev,
-> > > struct gdma_context *gc,  }
-> > >
-> > >  int mana_ib_gd_create_dma_region(struct mana_ib_dev *dev, struct
-> > ib_umem *umem,
-> > > -                              mana_handle_t *gdma_region)
-> > > +                              mana_handle_t *gdma_region, u64 virt,
-> > > + bool force_zero_offset)
-> > >  {
-> > >       struct gdma_dma_region_add_pages_req *add_req = NULL;
-> > >       size_t num_pages_processed = 0, num_pages_to_handle; @@ -324,11
-> > > +324,21 @@ int mana_ib_gd_create_dma_region(struct mana_ib_dev *dev,
-> > struct ib_umem *umem,
-> > >       hwc = gc->hwc.driver_data;
-> > >
-> > >       /* Hardware requires dma region to align to chosen page size */
-> > > -     page_sz = ib_umem_find_best_pgsz(umem, PAGE_SZ_BM, 0);
-> > > +     page_sz = ib_umem_find_best_pgsz(umem, PAGE_SZ_BM, virt);
-> > >       if (!page_sz) {
-> > >               ibdev_dbg(&dev->ib_dev, "failed to find page size.\n");
-> > >               return -ENOMEM;
-> > >       }
-> > > +
-> > > +     if (force_zero_offset) {
-> > > +             while (ib_umem_dma_offset(umem, page_sz) && page_sz >
-> > PAGE_SIZE)
-> > > +                     page_sz /= 2;
-> > > +             if (ib_umem_dma_offset(umem, page_sz) != 0) {
-> > > +                     ibdev_dbg(&dev->ib_dev, "failed to find page size to force zero
-> > offset.\n");
-> > > +                     return -ENOMEM;
-> > > +             }
-> > > +     }
-> > > +
-> > >       num_pages_total = ib_umem_num_dma_blocks(umem, page_sz);
-> > >
-> > >       max_pgs_create_cmd =
-> > > @@ -348,7 +358,7 @@ int mana_ib_gd_create_dma_region(struct
-> > mana_ib_dev *dev, struct ib_umem *umem,
-> > >                            sizeof(struct
-> > > gdma_create_dma_region_resp));
-> > >
-> > >       create_req->length = umem->length;
-> > > -     create_req->offset_in_page = umem->address & (page_sz - 1);
-> > > +     create_req->offset_in_page = ib_umem_dma_offset(umem, page_sz);
-> > >       create_req->gdma_page_type = order_base_2(page_sz) - PAGE_SHIFT;
-> > >       create_req->page_count = num_pages_total;
-> > >
-> > > diff --git a/drivers/infiniband/hw/mana/mana_ib.h
-> > > b/drivers/infiniband/hw/mana/mana_ib.h
-> > > index 6a03ae645..0a5a8f3f8 100644
-> > > --- a/drivers/infiniband/hw/mana/mana_ib.h
-> > > +++ b/drivers/infiniband/hw/mana/mana_ib.h
-> > > @@ -161,7 +161,7 @@ static inline struct net_device
-> > > *mana_ib_get_netdev(struct ib_device *ibdev, u32  int
-> > > mana_ib_install_cq_cb(struct mana_ib_dev *mdev, struct mana_ib_cq
-> > > *cq);
-> > >
-> > >  int mana_ib_gd_create_dma_region(struct mana_ib_dev *dev, struct
-> > ib_umem *umem,
-> > > -                              mana_handle_t *gdma_region);
-> > > +                              mana_handle_t *gdma_region, u64 virt,
-> > > + bool force_zero_offset);
-> > >
-> > >  int mana_ib_gd_destroy_dma_region(struct mana_ib_dev *dev,
-> > >                                 mana_handle_t gdma_region); diff --git
-> > > a/drivers/infiniband/hw/mana/mr.c b/drivers/infiniband/hw/mana/mr.c
-> > > index ee4d4f834..856d73ea2 100644
-> > > --- a/drivers/infiniband/hw/mana/mr.c
-> > > +++ b/drivers/infiniband/hw/mana/mr.c
-> > > @@ -127,7 +127,7 @@ struct ib_mr *mana_ib_reg_user_mr(struct ib_pd
-> > *ibpd, u64 start, u64 length,
-> > >               goto err_free;
-> > >       }
-> > >
-> > > -     err = mana_ib_gd_create_dma_region(dev, mr->umem,
-> > &dma_region_handle);
-> > > +     err = mana_ib_gd_create_dma_region(dev, mr->umem,
-> > > + &dma_region_handle, iova, false);
-> > >       if (err) {
-> > >               ibdev_dbg(ibdev, "Failed create dma region for user-mr, %d\n",
-> > >                         err);
-> > > diff --git a/drivers/infiniband/hw/mana/qp.c
-> > > b/drivers/infiniband/hw/mana/qp.c index 5d4c05dcd..02de90317 100644
-> > > --- a/drivers/infiniband/hw/mana/qp.c
-> > > +++ b/drivers/infiniband/hw/mana/qp.c
-> > > @@ -357,8 +357,8 @@ static int mana_ib_create_qp_raw(struct ib_qp
-> > *ibqp, struct ib_pd *ibpd,
-> > >       }
-> > >       qp->sq_umem = umem;
-> > >
-> > > -     err = mana_ib_gd_create_dma_region(mdev, qp->sq_umem,
-> > > -                                        &qp->sq_gdma_region);
-> > > +     err = mana_ib_gd_create_dma_region(mdev, qp->sq_umem, &qp-
-> > >sq_gdma_region,
-> > > +                                        ucmd.sq_buf_addr, true);
-> > >       if (err) {
-> > >               ibdev_dbg(&mdev->ib_dev,
-> > >                         "Failed to create dma region for create
-> > > qp-raw, %d\n", diff --git a/drivers/infiniband/hw/mana/wq.c
-> > > b/drivers/infiniband/hw/mana/wq.c index 372d36151..d9c1a2d5d 100644
-> > > --- a/drivers/infiniband/hw/mana/wq.c
-> > > +++ b/drivers/infiniband/hw/mana/wq.c
-> > > @@ -46,7 +46,8 @@ struct ib_wq *mana_ib_create_wq(struct ib_pd *pd,
-> > >       wq->wq_buf_size = ucmd.wq_buf_size;
-> > >       wq->rx_object = INVALID_MANA_HANDLE;
-> > >
-> > > -     err = mana_ib_gd_create_dma_region(mdev, wq->umem, &wq-
-> > >gdma_region);
-> > > +     err = mana_ib_gd_create_dma_region(mdev, wq->umem, &wq-
-> > >gdma_region,
-> > > +                                        ucmd.wq_buf_addr, true);
-> > >       if (err) {
-> > >               ibdev_dbg(&mdev->ib_dev,
-> > >                         "Failed to create dma region for create wq,
-> > > %d\n",
-> > >
-> > > base-commit: aafe4cc5096996873817ff4981a3744e8caf7808
-> > > --
-> > > 2.43.0
-> > >
+DQoNCj4gLS0tLS1PcmlnaW5hbCBNZXNzYWdlLS0tLS0NCj4gRnJvbTogTGVvbiBSb21hbm92c2t5
+IDxsZW9uQGtlcm5lbC5vcmc+DQo+IFNlbnQ6IEZyaWRheSwgSmFudWFyeSAyNiwgMjAyNCAxMjow
+NiBQTQ0KPiBUbzogQmVybmFyZCBNZXR6bGVyIDxCTVRAenVyaWNoLmlibS5jb20+DQo+IENjOiBH
+dW9xaW5nIEppYW5nIDxndW9xaW5nLmppYW5nQGxpbnV4LmRldj47IGxpbnV4LXJkbWFAdmdlci5r
+ZXJuZWwub3JnOw0KPiBqZ2dAemllcGUuY2E7IGlvbnV0X24yMDAxQHlhaG9vLmNvbQ0KPiBTdWJq
+ZWN0OiBbRVhURVJOQUxdIFJlOiBSZTogW1BBVENIXSBSRE1BL3NpdzogVHJpbSBzaXplIG9mIHBh
+Z2UgYXJyYXkgdG8NCj4gbWF4IHNpemUgbmVlZGVkDQo+IA0KPiBPbiBUaHUsIEphbiAyNSwgMjAy
+NCBhdCAwNToyNzo1MlBNICswMDAwLCBCZXJuYXJkIE1ldHpsZXIgd3JvdGU6DQo+ID4NCj4gPg0K
+PiA+ID4gLS0tLS1PcmlnaW5hbCBNZXNzYWdlLS0tLS0NCj4gPiA+IEZyb206IEd1b3FpbmcgSmlh
+bmcgPGd1b3FpbmcuamlhbmdAbGludXguZGV2Pg0KPiA+ID4gU2VudDogVGh1cnNkYXksIEphbnVh
+cnkgMjUsIDIwMjQgMToxNSBBTQ0KPiA+ID4gVG86IEJlcm5hcmQgTWV0emxlciA8Qk1UQHp1cmlj
+aC5pYm0uY29tPjsgbGludXgtcmRtYUB2Z2VyLmtlcm5lbC5vcmcNCj4gPiA+IENjOiBqZ2dAemll
+cGUuY2E7IGxlb25Aa2VybmVsLm9yZzsgaW9udXRfbjIwMDFAeWFob28uY29tDQo+ID4gPiBTdWJq
+ZWN0OiBbRVhURVJOQUxdIFJlOiBbUEFUQ0hdIFJETUEvc2l3OiBUcmltIHNpemUgb2YgcGFnZSBh
+cnJheSB0bw0KPiBtYXgNCj4gPiA+IHNpemUgbmVlZGVkDQo+ID4gPg0KPiA+ID4gSGkgQmVybmFy
+ZCwNCj4gPiA+DQo+ID4gPiBPbiAxLzI1LzI0IDAzOjU5LCBCZXJuYXJkIE1ldHpsZXIgd3JvdGU6
+DQo+ID4gPiA+PiAtLS0tLU9yaWdpbmFsIE1lc3NhZ2UtLS0tLQ0KPiA+ID4gPj4gRnJvbTogR3Vv
+cWluZyBKaWFuZyA8Z3VvcWluZy5qaWFuZ0BsaW51eC5kZXY+DQo+ID4gPiA+PiBTZW50OiBUdWVz
+ZGF5LCBKYW51YXJ5IDIzLCAyMDI0IDM6NDMgQU0NCj4gPiA+ID4+IFRvOiBCZXJuYXJkIE1ldHps
+ZXIgPEJNVEB6dXJpY2guaWJtLmNvbT47IGxpbnV4LXJkbWFAdmdlci5rZXJuZWwub3JnDQo+ID4g
+PiA+PiBDYzogamdnQHppZXBlLmNhOyBsZW9uQGtlcm5lbC5vcmc7IGlvbnV0X24yMDAxQHlhaG9v
+LmNvbQ0KPiA+ID4gPj4gU3ViamVjdDogW0VYVEVSTkFMXSBSZTogW1BBVENIXSBSRE1BL3Npdzog
+VHJpbSBzaXplIG9mIHBhZ2UgYXJyYXkgdG8NCj4gPiA+IG1heA0KPiA+ID4gPj4gc2l6ZSBuZWVk
+ZWQNCj4gPiA+ID4+DQo+ID4gPiA+PiBIaSBCZXJuYXJkLA0KPiA+ID4gPj4NCj4gPiA+ID4+IE9u
+IDEvMTkvMjQgMjE6MDUsIEJlcm5hcmQgTWV0emxlciB3cm90ZToNCj4gPiA+ID4+PiBzaXcgdHJp
+ZXMgc2VuZGluZyBhbGwgcGFydHMgb2YgYW4gaVdhcnAgd2lyZSBmcmFtZSBpbiBvbmUgc29ja2V0
+DQo+ID4gPiA+Pj4gc2VuZCBvcGVyYXRpb24uIElmIHVzZXIgZGF0YSBjYW4gYmUgc2VuZCB3aXRo
+b3V0IGNvcHksIHVzZXIgZGF0YQ0KPiA+ID4gPj4+IHBhZ2VzIGZvciBvbmUgd2lyZSBmcmFtZSBh
+cmUgcmVmZXJlbmNlZCBpbiBhbiBmaXhlZCBzaXplIHBhZ2UNCj4gYXJyYXkuDQo+ID4gPiA+Pj4g
+VGhlIHNpemUgb2YgdGhpcyBhcnJheSBjYW4gYmUgbWFkZSAyIGVsZW1lbnRzIHNtYWxsZXIsIHNp
+bmNlIGl0DQo+ID4gPiA+Pj4gZG9lcyBub3QgcmVmZXJlbmNlIGlXYXJwIGhlYWRlciBhbmQgdHJh
+aWxlciBjcmMuIFRyaW1taW5nDQo+ID4gPiA+Pj4gdGhlIHBhZ2UgYXJyYXkgcmVkdWNlcyB0aGUg
+YWZmZWN0ZWQgc2l3X3R4X2hkdCgpIGZ1bmN0aW9ucyBmcmFtZQ0KPiA+ID4gPj4+IHNpemUsIHN0
+YXlpbmcgYmVsb3cgMTAyNCBieXRlcy4gVGhpcyBhdm9pZHMgdGhlIGZvbGxvd2luZw0KPiA+ID4g
+Pj4+IGNvbXBpbGUtdGltZSB3YXJuaW5nOg0KPiA+ID4gPj4+DQo+ID4gPiA+Pj4gICAgZHJpdmVy
+cy9pbmZpbmliYW5kL3N3L3Npdy9zaXdfcXBfdHguYzogSW4gZnVuY3Rpb24gJ3Npd190eF9oZHQn
+Og0KPiA+ID4gPj4+ICAgIGRyaXZlcnMvaW5maW5pYmFuZC9zdy9zaXcvc2l3X3FwX3R4LmM6Njc3
+OjE6IHdhcm5pbmc6IHRoZSBmcmFtZQ0KPiA+ID4gPj4+ICAgIHNpemUgb2YgMTA0MCBieXRlcyBp
+cyBsYXJnZXIgdGhhbiAxMDI0IGJ5dGVzIFstV2ZyYW1lLWxhcmdlci0NCj4gPiA+IHRoYW49XQ0K
+PiA+ID4gPj4gSSBzYXcgc2ltaWxhciB3YXJuaW5nIGluIG15IHVidW50dSAyMi4wNCBWTSB3aGlj
+aCBoYXMgYmVsb3cgZ2NjLg0KPiA+ID4gPj4NCj4gPiA+ID4+IHJvb3RAYnVrOi9ob21lL2dqaWFu
+Zy9saW51eC1taXJyb3IjIG1ha2UNCj4gTT1kcml2ZXJzL2luZmluaWJhbmQvc3cvc2l3Lw0KPiA+
+ID4gPj4gLWoxNiBXPTENCj4gPiA+ID4+ICAgwqAgQ0MgW01dwqAgZHJpdmVycy9pbmZpbmliYW5k
+L3N3L3Npdy9zaXdfcXBfdHgubw0KPiA+ID4gPj4gZHJpdmVycy9pbmZpbmliYW5kL3N3L3Npdy9z
+aXdfcXBfdHguYzogSW4gZnVuY3Rpb24g4oCYc2l3X3R4X2hkdOKAmToNCj4gPiA+ID4+IGRyaXZl
+cnMvaW5maW5pYmFuZC9zdy9zaXcvc2l3X3FwX3R4LmM6NjY1OjE6IHdhcm5pbmc6IHRoZSBmcmFt
+ZSBzaXplDQo+ID4gPiBvZg0KPiA+ID4gPj4gMTQ0MCBieXRlcyBpcyBsYXJnZXIgdGhhbiAxMDI0
+IGJ5dGVzIFstV2ZyYW1lLWxhcmdlci10aGFuPV0NCj4gPiA+ID4+ICAgwqAgNjY1IHwgfQ0KPiA+
+ID4gPj4gICDCoMKgwqDCoMKgIHwgXg0KPiA+ID4gPj4NCj4gPiA+ID4gV2hldy4uIHRoYXQgaXMg
+cXVpdGUgc3Vic3RhbnRpYWxseSBvZmYgdGhlIHRhcmdldCENCj4gPiA+ID4gSG93IGNvbWUgZGlm
+ZmVyZW50IGNvbXBpbGVycyBtYWtpbmcgc28gbXVjaCBvZiBhIGRpZmZlcmVuY2UuDQo+ID4gPiA+
+IEd1b3FpbmcsIGNhbiB5b3UgY2hlY2sgaWYgdGhlIG1hY3JvIGNvbXB1dGluZyB0aGUgbWF4aW11
+bSBudW1iZXINCj4gPiA+ID4gb2YgZnJhZ21lbnRzIGlzIGJyb2tlbiwgaS5lLiwgY29tcHV0ZXMg
+ZGlmZmVyZW50IHZhbHVlcyBpbg0KPiA+ID4gPiB0aGUgY2FzZXMgeW91IHJlZmVyPw0KPiA+ID4N
+Cj4gPiA+IFNvcnJ5LCBJIHdhcyB3cm9uZyDwn5iFLg0KPiA+ID4NCj4gPiA+IFRoZSB3YXJuaW5n
+IGlzIG5vdCByZWxldmFudCB3aXRoIGNvbXBpbGVyLCBhbmQgaXQgYWxzbyBhcHBlYXJzIHdpdGgN
+Cj4gZ2NjLQ0KPiA+ID4gMTMuMQ0KPiA+ID4gYWZ0ZXIgZW5hYmxlIEtBU0FOIHdoaWNoIGlzIHVz
+ZWQgdG8gZmluZCBvdXQtb2YtYm91bmRzIGJ1Z3MuIEFsc28sDQo+IHRoZXJlDQo+ID4gPiBhcmUg
+bG90cyBvZiAtV2ZyYW1lLWxhcmdlci10aGFuIHdhcm5pbmcgZnJvbSBvdGhlciBwbGFjZXMgYXMg
+d2VsbC4NCj4gPiA+DQo+ID4gPiA+IFRoYW5rcyBhIGxvdCENCj4gPiA+ID4gQmVybmFyZA0KPiA+
+ID4gPj4gIyBnY2MgLS12ZXJzaW9uDQo+ID4gPiA+PiBnY2MgKFVidW50dSAxMi4zLjAtMXVidW50
+dTF+MjIuMDQpIDEyLjMuMA0KPiA+ID4gPj4NCj4gPiA+ID4+IEFuZCBpdCBzdGlsbCBhcHBlYXJz
+IGFmdGVyIGFwcGx5IHRoaXMgcGF0Y2ggb24gdG9wIG9mIDYuOC1yYzEuDQo+ID4gPiA+Pg0KPiA+
+ID4gPj4gcm9vdEBidWs6L2hvbWUvZ2ppYW5nL2xpbnV4LW1pcnJvciMgZ2l0IGFtDQo+ID4gPiA+
+Pg0KPiA+ID4gLi8yMDI0MDExOV9ibXRfcmRtYV9zaXdfdHJpbV9zaXplX29mX3BhZ2VfYXJyYXlf
+dG9fbWF4X3NpemVfbmVlZGVkLm1ieA0KPiA+ID4gPj4gQXBwbHlpbmc6IFJETUEvc2l3OiBUcmlt
+IHNpemUgb2YgcGFnZSBhcnJheSB0byBtYXggc2l6ZSBuZWVkZWQNCj4gPiA+ID4+IHJvb3RAYnVr
+Oi9ob21lL2dqaWFuZy9saW51eC1taXJyb3IjIG1ha2UNCj4gTT1kcml2ZXJzL2luZmluaWJhbmQv
+c3cvc2l3Lw0KPiA+ID4gPj4gLWoxNiBXPTENCj4gPiA+ID4+ICAgwqAgQ0MgW01dwqAgZHJpdmVy
+cy9pbmZpbmliYW5kL3N3L3Npdy9zaXdfcXBfdHgubw0KPiA+ID4gPj4gZHJpdmVycy9pbmZpbmli
+YW5kL3N3L3Npdy9zaXdfcXBfdHguYzogSW4gZnVuY3Rpb24g4oCYc2l3X3R4X2hkdOKAmToNCj4g
+PiA+ID4+IGRyaXZlcnMvaW5maW5pYmFuZC9zdy9zaXcvc2l3X3FwX3R4LmM6NjY4OjE6IHdhcm5p
+bmc6IHRoZSBmcmFtZSBzaXplDQo+ID4gPiBvZg0KPiA+ID4gPj4gMTQwOCBieXRlcyBpcyBsYXJn
+ZXIgdGhhbiAxMDI0IGJ5dGVzIFstV2ZyYW1lLWxhcmdlci10aGFuPV0NCj4gPiA+ID4+ICAgwqAg
+NjY4IHwgfQ0KPiA+ID4gPj4gICDCoMKgwqDCoMKgIHwgXg0KPiA+ID4NCj4gPiA+IFRoZSBwYXRj
+aCBhY3R1YWxseSByZWR1Y2VkIHRoZSBmcmFtZSBzaXplIGZyb20gMTQ0MCB0byAxNDA4IHRob3Vn
+aCBpdA0KPiBpcw0KPiA+ID4gc3RpbGwgbGFyZ2VyIHRoYW4gMTAyNC4NCj4gPiA+DQo+ID4NCj4g
+PiBTbyBpbiB5b3VyIG9waW5pb24sIGRvZXMgdGhpcyBwYXRjaCBmaXggdGhlIGlzc3VlIG9mIGhh
+dmluZyBhDQo+ID4gZnJhbWUgc2l6ZSBsYXJnZXIgdGhhbiAxMDI0IGJ5dGVzIGZvciBhIHR5cGlj
+YWwgYnVpbGQ/IEkgYW0gc3VyZQ0KPiA+IHdlIGRvIG5vdCB3YW50IHRvIG9wdGltaXplIHRoZSBk
+cml2ZXIgZm9yIGJ1aWxkaW5nIHdpdGggS0FTQU4NCj4gPiBkZWJ1ZyBvcHRpb25zIGVuYWJsZWQu
+DQo+IA0KPiBCdXQgdGhpcyBpcyBob3cgd2UgYXJlIHJ1bm5pbmcgb3Igc3VwcG9zZWQgdG8gcnVu
+IGtlcm5lbHMuIEluIGFueQ0KPiBzYW5lIHJlZ3Jlc3Npb24gcnVuLCBLQVNBTiBpcyBlbmFibGVk
+Lg0KPiANCj4gSSB3b3VsZCBzcGVjdWxhdGUgdGhhdCBtb3N0IHBlb3BsZSB3aG8gcnVuIFNJVywg
+dXNlIGl0IHRvIHRlc3QgdGhlaXIgVUxQcy4NCj4gDQo+IFNvIEkgd291bGQgbGlrZSB0byBzZWUg
+aXQgZml4ZWQgZm9yIHRoZW0gdG9vLg0KDQpVbmRlcnN0b29kLiBJIHByb3Bvc2UgdG8gdGFrZSB0
+aGUgcGF0Y2ggYXMgSSBzZW50IGZvciBub3cgYXMgYSBmaXgNCm9mIHRoZSBwcm9ibGVtIHVuZGVy
+IHRoZSBjb25kaXRpb25zIHJlcG9ydGVkLiBJJ2xsIGxvb2sgaW50bw0KcmVzdHJ1Y3R1cmluZyB0
+aGUgdHJhbnNtaXQgcGF0aCB0byBzcXVlZXplIGl0cyBzaXplIGJlbG93IDEwMjQNCmV2ZW4gZm9y
+IEtBU0FOIGJ1aWxkcy4gSXQgd2lsbCByZXF1aXJlIHNvbWUgdGltZS4NCg0KS2VybmVsIGJ1aWxk
+cyB3aXRoIEtBU0FOIGVuYWJsZWQgZW1pdCBsb3RzIG9mIHNpbWlsYXIgY29tcGlsZQ0KdGltZSB3
+YXJuaW5ncyByZXBvcnRpbmcgZnJhbWUgc2l6ZXMgYWJvdmUgMTAyNCBieXRlcy4gT3VyIGNvcmUv
+bmxkZXYuYw0KYWxvbmUgc3BpbGxzIDEzIG9mIHRob3NlLiBBbnkgYWN0aW9uIG5lZWRlZD8gOykN
+Cg0KQmVzdCwNCkJlcm5hcmQNCj4gDQo+IFRoYW5rcw0KPiANCj4gPg0KPiA+IFRoZSBvcmlnaW5h
+bCBidWcgcmVwb3J0IGNsYWltZWQgYSBmcmFtZSBzaXplIG9mIDEwNDAgYnl0ZXMgZm9yIGENCj4g
+PiBidWlsZCB3L28gS0FTQU4sIGJlaW5nIGxhcmdlciB0aGFuIDEwMjQgYnl0ZXMgYnkgMTYgYnl0
+ZXMuIEkNCj4gPiB0aGluayB0aGlzIHBhdGNoIGZpeGVzIHRoZSByZXBvcnRlZCBpc3N1ZS4NCj4g
+Pg0KPiA+IFRoYW5rcyBhIGxvdCwNCj4gPiBCZXJuYXJkLg0KPiA+DQo+ID4NCj4gPiA+IFRoYW5r
+cywNCj4gPiA+IEd1b3FpbmcNCj4gPg0K
 
