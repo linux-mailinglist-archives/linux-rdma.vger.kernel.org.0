@@ -1,174 +1,280 @@
-Return-Path: <linux-rdma+bounces-975-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-976-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 10F5F84DC5C
-	for <lists+linux-rdma@lfdr.de>; Thu,  8 Feb 2024 10:05:46 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8BFAA84DC97
+	for <lists+linux-rdma@lfdr.de>; Thu,  8 Feb 2024 10:15:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3640E1C212C1
-	for <lists+linux-rdma@lfdr.de>; Thu,  8 Feb 2024 09:05:45 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 014291F25BD6
+	for <lists+linux-rdma@lfdr.de>; Thu,  8 Feb 2024 09:15:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 42DEE1E4A8;
-	Thu,  8 Feb 2024 09:05:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 980F96A8A9;
+	Thu,  8 Feb 2024 09:15:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="Xxu9WL57"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="lnqlKema"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from NAM04-BN8-obe.outbound.protection.outlook.com (mail-bn8nam04on2049.outbound.protection.outlook.com [40.107.100.49])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 21BCD69E1E
-	for <linux-rdma@vger.kernel.org>; Thu,  8 Feb 2024 09:05:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.100.49
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707383141; cv=fail; b=dJPE1daEQBHbYFImnMlaWrUlu2Du4THPlgGeIHSj0BzQ3pHwRBCjO4oB/v1JFU2tFbCqBIO+8Jhng+HhzmtpcUQZBMk3obpq19VgRCGc5IuLoONOgKQkziM29MEAfXkeF2hoEjegQ+1TWk7JdAPl1wqQh8toCe4OKeC8gdspWTQ=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707383141; c=relaxed/simple;
-	bh=TeDOWEr/D/P2WRQHjM2bLx0rZAzdjagjOUU5jjGxbcY=;
-	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
-	 Content-Type:MIME-Version; b=mIzCUPbkZ9i3hFxpnBOeSYyWetxkCvk5X4YXkFYvuWNytSpqC29hdhiG2iZt8qkqbdVwcGRdTn7lKK8kG/JtYo/bsnS6aI4qM9D6gI0rKIr4KUvNey4GnyiGaf+h1gkE6EpiDOhrvLDErG53Pf2llFOuK+JofB/0i2GGKLlBR3E=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=Xxu9WL57; arc=fail smtp.client-ip=40.107.100.49
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=T7nBgkF0QS20CUjHui8jKUa7+2Y1EQLETZnl9lGE9WHxqFvO2EotDfzKfB0fz6jODg5NpPzUDQ+rQS5dUT8ic1vgAuPVxrJp46cc6O6nRsl+GXfp9dhVOC/HzTFs1+1/K8RCxK9wmclr5KAVEgxL/2WTeHILU1Z//mgDswBI6ZvoEm0e7PCiCGOh2HFtW7MtPz1rIAxD4iW/vIzZdYU9vxCbL1HpklPcYCZuDyPmAz6JEHoTX8lEIYjX1fUJXzGx5c4DJWq8nsJ9ZtcIA4vlX7APV7c6Tyq1TJO9GyTgMChkvnEx8RfDkn9b1nBqqIdZkJG8+HKLsw/1uz8ic4TXjw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=dCtCu3WB1OQquhFLdUOYvhwNAbUQWzyVIHVWxwhnPyw=;
- b=nCIYRgFGA8PlmjBrvZ3yN2C09qeB1WZjNaJQqsUPW0SlayGJzVYFblx/85Er2k38aSZgMTDyvHhpNit+PCmGmfjmUX4e196bPF3gdkxpAaDzZzs0hO4b+itGIq2ji64YFCKAXBSZEWRxjqtjwqcVyQrJP37cDqD4VTUcpy9MqtmTGDuaNW8N8gE28hLfwWo4WHOAVa/eei49GeJFT4LiJDdDAmAvRFbay5Jq7btZ/j3KJxppNUwdTgNhnE7EsHzEDnfaB34DoW38CGW0AuPazIlV7LECcX0dlJ9Go8X8yq+2gZZMK/wLJdzs0VVnDVXKRDCwxha31rS5MiYmIC+kkw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=dCtCu3WB1OQquhFLdUOYvhwNAbUQWzyVIHVWxwhnPyw=;
- b=Xxu9WL57aaOaMwvdcV4uRgMjDhrpzAdGrE65PHktezguuPKr+7PqbUQv34X1i3hxycAsVuUe5ICWwIZ/EO+aDdzK1nOFK1Ufc+o2TFNSgK0qcH7hgb+1n/LXbNCbOWLOjbPOfU/0BNA1Xi1+lcH6gjWPZV4Z2ByRUgaL4aM1UwbDGfnZA+HNEWfwVHjBgkiyvmRZHbnbFhJdvH/BSgci2rCJH8x1OnRHdv84Pxb99pkJ2wfVDE7VGtxKZlzEiv2YF4dzSHp2gM4/5t/FJn0KqUj3dBT6ygJDNQD1N8AhH4eiTXp31fJDAWx7RHN4MwpHIsGBkEM8eljhs0aA0Lncow==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nvidia.com;
-Received: from IA1PR12MB7495.namprd12.prod.outlook.com (2603:10b6:208:419::11)
- by MN2PR12MB4047.namprd12.prod.outlook.com (2603:10b6:208:1de::20) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7270.17; Thu, 8 Feb
- 2024 09:05:34 +0000
-Received: from IA1PR12MB7495.namprd12.prod.outlook.com
- ([fe80::747c:b6c:523b:63ba]) by IA1PR12MB7495.namprd12.prod.outlook.com
- ([fe80::747c:b6c:523b:63ba%2]) with mapi id 15.20.7270.016; Thu, 8 Feb 2024
- 09:05:33 +0000
-Message-ID: <f56f1b8e-bc99-4dd4-8f24-6c718f6031fe@nvidia.com>
-Date: Thu, 8 Feb 2024 17:05:25 +0800
-User-Agent: Mozilla Thunderbird
-Subject: Re: Segfault in mlx5 driver on infiniband after application fork
-To: Leon Romanovsky <leon@kernel.org>, "Rehm, Kevan" <kevan.rehm@hpe.com>
-Cc: "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
- Yishai Hadas <yishaih@nvidia.com>
-References: <E25C1D96-0FBF-44AB-A5B5-71CDA49E73D1@hpe.com>
- <20240208085229.GF56027@unreal>
-Content-Language: en-US
-From: Mark Zhang <markzhang@nvidia.com>
-In-Reply-To: <20240208085229.GF56027@unreal>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: SG2PR02CA0124.apcprd02.prod.outlook.com
- (2603:1096:4:188::9) To IA1PR12MB7495.namprd12.prod.outlook.com
- (2603:10b6:208:419::11)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 529436BB35;
+	Thu,  8 Feb 2024 09:15:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1707383743; cv=none; b=eQ704b72LiXQuWl6Hg+cmIUhAmvzlzASUWBR0E1pWJsPNBf5hJrxXEleuAunHTuX+PfdBuxUo1WoXWlPVfyxGPOJXRhOAbk3WwVZAJh79hbMQWJT5HLOmUdVor5iz4Y7WZygF4C5mJunrfa4fBVR8nTFAVtUT6yuq25DmXlDw74=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1707383743; c=relaxed/simple;
+	bh=M9fcwsY9A/oSluC/Kkhzcuowx3KxLl5qtstL/ZCmVcA=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=VYQY61hCmT3rfmTJg35agUjQ4I8MeN40xc+yXaxOdawzwe2jsqqq4v6g8+aw7daHDCdHbpIJhzzw+xDcJ7QB7CYsf0WA5Pn9F8/d3/+j3CZ3kHDPin1oaDLzkL0BWBxUYeo1Vt8fclZmwYAalWghWoJrqWVnsZZMV0wBIBG9UQA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=lnqlKema; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 560ECC433C7;
+	Thu,  8 Feb 2024 09:15:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1707383742;
+	bh=M9fcwsY9A/oSluC/Kkhzcuowx3KxLl5qtstL/ZCmVcA=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=lnqlKemagU6f0bTWunF+oOB5OPISJMtXzhmzg0Huo3WOANxsLp92T3MrnzYl8gYgw
+	 EVJ9q5NWRa8G6sT7+GrKmJxpFJ3dX6arTqoP4c18AuhKxJGPp/G4sgJXWhkz5yosfk
+	 Aq440OUURk0hOrb1hbE4Ti6t9Be8yoph8prIf1zvsKrzA/Vtf9f/z++NR+FKkZbrHc
+	 2l+9V/ma+dWI82kwP/tflgrGW05fRoVL3MwUJg5PgAmuQ+wrJc1z314gLJcm68C9yU
+	 tZceEqQqiYsHbbqnrushNwlx8zMA1dGPwZCy8iHu3MswYWIYgz95n2eJ2tDRaiyxjU
+	 vJmqgG1lPKhyg==
+Date: Thu, 8 Feb 2024 11:15:38 +0200
+From: Leon Romanovsky <leon@kernel.org>
+To: Konstantin Taranov <kotaranov@microsoft.com>
+Cc: Konstantin Taranov <kotaranov@linux.microsoft.com>,
+	"sharmaajay@microsoft.com" <sharmaajay@microsoft.com>,
+	Long Li <longli@microsoft.com>, "jgg@ziepe.ca" <jgg@ziepe.ca>,
+	"linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH rdma-next v1 1/1] RDMA/mana_ib: Fix bug in creation of
+ dma regions
+Message-ID: <20240208091538.GG56027@unreal>
+References: <1707318566-3141-1-git-send-email-kotaranov@linux.microsoft.com>
+ <20240208082336.GE56027@unreal>
+ <PAXPR83MB0557AB370FFF54DE667AFDF8B4442@PAXPR83MB0557.EURPRD83.prod.outlook.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: IA1PR12MB7495:EE_|MN2PR12MB4047:EE_
-X-MS-Office365-Filtering-Correlation-Id: 2e4603a7-0e92-456a-b855-08dc28851b13
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	KU/OApb5pdLvbHZvW4O8ZHY8Is4JMOZoWv+6lP6ZPYgAi+Qkpxd7mhlpegfeD6a+b9xobGvsRYOP/q6vceFCsRJTb2BDoSXvJakuCCHnmC9zvaJe0ikxvPjz773f2GNvNeGJE52f1N3ebcVzo1NDoL0EWxivT5hIFFakxKP9DNX7QeRUD8Fb1qUGoqpyAjmCOXgHw+qs5HVT9vmzdr1xx4tWIRpSrRQKU3gUtkQMpnYBcSH/Z5pTWeKIPhMMcG+7w26GdXTBtUG909YJYRC1PBt6m4AVA2d1+vrJyjYYPDg1aqU+po2CiSjUaRaun+lUVnnwfnNZMosjeu1bkodKu5ubQa208UY6E6Acor2Xh+XB7gOgXDHfZyaZeyt+3pfop4Btbsa28JUZNv7wojL9r5fMYSbSqgJccS+RfYTQnln6fCB9ee4uonCGtSN3oE0XegM14HAESk3e4Ia9du/mXYx/4L5iPmWYGMK0ugP8nK86JFbbDzlr4CVFJM1RVgDzswcEds2Buio7qVCaS0iMPpsKG0K5QNYBOJGumy0S9ufuW+tm8IMk6kWlXtWW5RWcanq4gttvwp8gt2RFyG/ZLYVtwwmhlU0AE8XlOW1siiE=
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:IA1PR12MB7495.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(136003)(39860400002)(376002)(396003)(346002)(366004)(230922051799003)(230273577357003)(186009)(1800799012)(451199024)(64100799003)(26005)(107886003)(83380400001)(31686004)(6666004)(31696002)(6512007)(5660300002)(110136005)(53546011)(86362001)(66476007)(41300700001)(316002)(2906002)(54906003)(66946007)(478600001)(2616005)(38100700002)(6506007)(6486002)(966005)(8676002)(4326008)(66556008)(8936002)(36756003);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?utf-8?B?cmhBSUdTMlVyMmhQY242aXBkcFBqc2ZRZDQ1OXI2ZzluYUlkRjI5VDEwNGVV?=
- =?utf-8?B?L0NteUp4eHJaaU05eFlPLzliQjl2cHRpZ0NNYUk3b0o5VFV5VVdGenJXaUNx?=
- =?utf-8?B?VDBNWVNNOGg0VlBnbG5naHBPZlhaZXdkY0tyV04xOGtDc3BTQVdPMWtPU1dC?=
- =?utf-8?B?VncrMmM0eTg2NWw5M3UvaWx4TFRSK0VRWXZVNWNDTUl2aTFoa2o4U0NrTnJH?=
- =?utf-8?B?THl4Mm5zNzY2b09acmdlU0VxazNab2NwVkZPVGdzMTU1RXdXdEIvblMyK09z?=
- =?utf-8?B?bnNUeUR0NmhMSzZlK2doTlFrNUNMN2xyME0zWFZPTVFDNm00WTFRUEl2cXhv?=
- =?utf-8?B?cEloYWNxTGtOckU1UlRsRXdQby9ad2c3Y0lPL0NVb0VSQklLc2VPWkkvYUtq?=
- =?utf-8?B?Y1M2dHkzSDZ4VW5CU0RGbStYZFFZaGNwd20vSVJVSjRobWZzSXNQNEpYMnky?=
- =?utf-8?B?OVBBeG91NVppbWJvK1VnY05KbDNzYlpIcUIxYk9qb09zM0MvMmhiSUt0WDUz?=
- =?utf-8?B?Q2h4MnF4M0g4UTJYS2Zpc01EbzFGeTJJSXdhZ2xYcDZXMVYyTFFCL01yQldz?=
- =?utf-8?B?bHFOT1JheHJWUXRUb0hUSE9XeEFWQXhCSFhLZ3cyL3dSb3Y1eGJWSWZPdVU2?=
- =?utf-8?B?bXBlZjFUWlJ1UytaVGsxaWJ4eGxNcFBKUlRRNzBQVmJNSDUyK3JMbUhneG5t?=
- =?utf-8?B?cjYwWnZ0WnNBay90Q2swTWZYV2s3d0dvRW9DUk5NYVU3cVhEMjB1WHhHRk9P?=
- =?utf-8?B?NS8vR1prZnFRbEJUUkRKS0RJQXNaVFEyVXdaWjBBWnQ4S0s4ckcvUXZwMGc1?=
- =?utf-8?B?ZFhNY1NUZTk0U2RHczkrMXg0RmJocVBkazBoWlVieFdFS0FkYkJ3OWZUU3l0?=
- =?utf-8?B?N0pDM2FINXgyUWtHSFJ6TEhiZ3BJSWxCb0RLSng4MHRDaTNVcGFQWXNqTWgz?=
- =?utf-8?B?K2g1YXNCV2p4OVZlL29hUlBPUEd1cGw5dU5ldlhlS1FvNmMzUjBNOW5NTTN2?=
- =?utf-8?B?Mlk5YUlpZHJtMkJNekEwTi84Vll3K1VQRTBPNEgrblJ1WVV4YXpxV2dBNy8r?=
- =?utf-8?B?bEs0YmZHbEh3QmZoYktLSVp1bUF3THFSY1lpT2psdTNpNHhES0s0bHYzdkJk?=
- =?utf-8?B?MDVZYVQvVE1PSGFsQ0c5RzQ0VmdCMjhGSldQRklWelhoaXJVbVVkWEplaFN4?=
- =?utf-8?B?eGpmdlBIMW5xUEMxamxmanYzOEFxWWNzVFpkQlMzNCtuMHB6N2pHZ0U5bTRs?=
- =?utf-8?B?R3h3cUtBUEIxT2dQT3hjRm9JNFZYcVZ1c0dZODkyU24rMmZScFplZjlwMW5R?=
- =?utf-8?B?ek1renRNN0Z1WGZVak8rSWZ5aHZyNjRYSXh6QTF2NHNXUTcrK1JPa21ORmFX?=
- =?utf-8?B?OEkyVktobzl4UDhJZ0NQenNRL1ArdmdNVjVaZWdCbElYUHgyL045c0p6RjZX?=
- =?utf-8?B?U290MHJ1ZEJYM3J5YzNza2pOSW1mTVNNbE5WcUhReDA3RzRIdUJ3d2h1Slg4?=
- =?utf-8?B?c0pwaktOWEE5aEp6TjFMbmdZYTh1SnIzak94RFFQMlFPRnhZK0UxN25IaVNi?=
- =?utf-8?B?VndITWtOMEVoNmRDRTkvOFlXVkE4RWJva1p4RUdremxLRVU2bGdlajE4eVR4?=
- =?utf-8?B?ZXVTV3UzbmpQNFBIbTdFUy85QVFQbkZJZnpEYzIxbk9zbkx6RnNoM1M3b2xx?=
- =?utf-8?B?UTluZW5OVG9PMFdTWEVkOGo2enJ4VFhnTzYrTWg4Nk5KM044aCtYQVVqL3dV?=
- =?utf-8?B?aEZ6eXdLRDJWcWt3VEpPMXRnTzNpc0p1UnE1dElMZ3NkY09Hd3NrUkJvZmlJ?=
- =?utf-8?B?ekxCZS9XUnZBY29Zd0JTdmhra0R4OEFBekxGanllZEZBOFVGK1NQREROWmt2?=
- =?utf-8?B?ams4SVdmZE00TTdQRmFtYTdRQzZpWWxSOUtxU2lqdElhWEZyMW40UUhsVnRI?=
- =?utf-8?B?ZHFjZUxTZHdyK05ibFB4UW0zaldDekx2MjcwTTl3TjBrRHNORE5pUmx5eTFX?=
- =?utf-8?B?VEo4V1RwaWs3MklpYWdNTWtYTEtXanNtRjJHYThGVGQwZUdBaGl1SXQwL082?=
- =?utf-8?B?cnFQUmxITWRxZzdHWWRIclAvRFZ6bmhVUUlCQUtNVHNFakhkUjJ0cnZ0OW8v?=
- =?utf-8?Q?7azZOGR5fCyNBV9HyFXSNsqm7?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 2e4603a7-0e92-456a-b855-08dc28851b13
-X-MS-Exchange-CrossTenant-AuthSource: IA1PR12MB7495.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 08 Feb 2024 09:05:33.3019
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: vkghcO1efuMh9I+hyZXruPoSGkhGRpPPtYGSnCwVSi76hnTa7GzpVstVWY3yuUeQwKzo+l5cS+4YRrzqIHPK/w==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR12MB4047
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <PAXPR83MB0557AB370FFF54DE667AFDF8B4442@PAXPR83MB0557.EURPRD83.prod.outlook.com>
 
-On 2/8/2024 4:52 PM, Leon Romanovsky wrote:
-> External email: Use caution opening links or attachments
+On Thu, Feb 08, 2024 at 08:49:43AM +0000, Konstantin Taranov wrote:
+> > From: Leon Romanovsky <leon@kernel.org>
+> > > From: Konstantin Taranov <kotaranov@microsoft.com>
+> > >
+> > > Dma registration was ignoring virtual addresses by setting it to 0.
+> > > As a result, mana_ib could only register page-aligned memory.
+> > > As well as, it could fail to produce dma regions with zero offset for
+> > > WQs and CQs (e.g., page size is 8192 but address is only 4096 bytes
+> > > aligned), which is required by hardware.
+> > >
+> > > This patch takes into account the virtual address, allowing to create
+> > > a dma region with any offset. For queues (e.g., WQs, CQs) that require
+> > > dma regions with zero offset we add a flag to ensure zero offset.
+> > >
+> > > Signed-off-by: Konstantin Taranov <kotaranov@microsoft.com>
+> > > ---
+> > >  drivers/infiniband/hw/mana/cq.c      |  3 ++-
+> > >  drivers/infiniband/hw/mana/main.c    | 16 +++++++++++++---
+> > >  drivers/infiniband/hw/mana/mana_ib.h |  2 +-
+> > >  drivers/infiniband/hw/mana/mr.c      |  2 +-
+> > >  drivers/infiniband/hw/mana/qp.c      |  4 ++--
+> > >  drivers/infiniband/hw/mana/wq.c      |  3 ++-
+> > >  6 files changed, 21 insertions(+), 9 deletions(-)
+> > 
+> > You definitely advised to look at the Documentation/process/submitting-
+> > patches.rst guide.
+> > 1. First revision doesn't need to be v1.
 > 
+> Thanks. I did not know that.
 > 
-> On Wed, Feb 07, 2024 at 07:17:01PM +0000, Rehm, Kevan wrote:
->> Greetings,
->>
->> I don’t see a way to open a ticket at rdma-core; it was suggested that I send this email instead.
->>
->> I have been chasing a problem in rdma-core-47.1.   Originally, I opened a ticket in libfabric, but it was pointed out that mlx5 is not part of libfabric.   Full description of the problem plus debug notes are documented at the github repository for libfabric, see issue 9792, please have a look there rather than repeating all of the background information in this email.
->>
->> An application started by pytorch does a fork, then the child process attempts to use libfabric to open a new DAOS infiniband endpoint.    The original endpoint is owned and still in use by the parent process.
->>
->> When the parent process created the endpoint (fi_fabric, fi_domain, fi_endpoint calls), the mlx5 driver allocated memory pages for use in SRQ creation, and issued a madvise to say that the pages are DONTFORK.  These pages are associated with the domain’s ibv_device which is cached in the driver.   After the fork when the child process calls fi_domain for its new endpoint, it gets the ibv_device that was cached at the time it was created by the parent.   The child process immediately segfaults when trying to create a SRQ, because the pages associated with that ibv_device are not in the child’s memory.  There doesn’t appear to be any way for a child process to create a fresh endpoint because of the caching being done for ibv_devices.
->>
->> Is this the proper way to “open a ticket” against rdma-core?
+> > 2. One logical fix/change == one patch.
 > 
-> It is right place, but I won't call it "proper way".
-> For anyone who is interested in this issue, please follow the links below:
-> https://github.com/ofiwg/libfabric/issues/9792
-> https://daosio.atlassian.net/browse/DAOS-15117
+> It is one fix. If I only replace 0 with virt, the code will stop working as the offset will not be
+> zero quite often. That is why I need to make offset = 0 for queues. 
 > 
-> Regarding the issue, I don't know if mlx5 actively used to run
-> libfabric, but the mentioned call to ibv_dontfork_range() existed from
-> prehistoric era.
-> 
-> Do you have any environment variables set related to rdma-core?
-> 
+> > 3. Fixes should have Fixes: tag in the commit message.
+> As existing applications were made to go around this limitation, I wanted this patch arrive to rdma-next.
+> Or do you say that I cannot opt for rdma-next and must make it a "fix"?
 
-Is it reated to ibv_fork_init()? It must be called when fork() is called.
+Once you write "fix" word in the patch, the expectation is to have Fixes line.
+There is nothing wrong with applying patch with such tag to rdma-next
+and we are doing it all the time. Our policy is fluid here and can be
+summarized as follows:
+1. Try to satisfy submitters request to put in specific target rdma-rc/rdma-next.
+2. Very lax with taking patches to rdma-rc before -rc4.
+3. In general, strict after -rc4, only patches with panics, build breakage and
+UAPI visible bugs.
+4. More pedantic review of -rc material.
 
+So if you write rdma-next in title, add Fixes line which points to "old" code, we will apply
+your patch to rdma-next.
+
+> 
+> > 
+> > And I'm confident that the force_zero_offset change is not correct.
+> 
+> It was tested with many page sizes and offsets. Could you elaborate why it is not correct?
+
+I prefer that Jason will elaborate more on this, he will do it better
+than me.
+
+> 
+> Thanks!
+> 
+> > 
+> > Thanks
+> > 
+> > >
+> > > diff --git a/drivers/infiniband/hw/mana/cq.c
+> > > b/drivers/infiniband/hw/mana/cq.c index 83d20c3f0..e35de6b92 100644
+> > > --- a/drivers/infiniband/hw/mana/cq.c
+> > > +++ b/drivers/infiniband/hw/mana/cq.c
+> > > @@ -48,7 +48,8 @@ int mana_ib_create_cq(struct ib_cq *ibcq, const struct
+> > ib_cq_init_attr *attr,
+> > >               return err;
+> > >       }
+> > >
+> > > -     err = mana_ib_gd_create_dma_region(mdev, cq->umem, &cq-
+> > >gdma_region);
+> > > +     err = mana_ib_gd_create_dma_region(mdev, cq->umem, &cq-
+> > >gdma_region,
+> > > +                                        ucmd.buf_addr, true);
+> > >       if (err) {
+> > >               ibdev_dbg(ibdev,
+> > >                         "Failed to create dma region for create cq,
+> > > %d\n", diff --git a/drivers/infiniband/hw/mana/main.c
+> > > b/drivers/infiniband/hw/mana/main.c
+> > > index 29dd2438d..13a4d5ab4 100644
+> > > --- a/drivers/infiniband/hw/mana/main.c
+> > > +++ b/drivers/infiniband/hw/mana/main.c
+> > > @@ -302,7 +302,7 @@ mana_ib_gd_add_dma_region(struct mana_ib_dev
+> > *dev,
+> > > struct gdma_context *gc,  }
+> > >
+> > >  int mana_ib_gd_create_dma_region(struct mana_ib_dev *dev, struct
+> > ib_umem *umem,
+> > > -                              mana_handle_t *gdma_region)
+> > > +                              mana_handle_t *gdma_region, u64 virt,
+> > > + bool force_zero_offset)
+> > >  {
+> > >       struct gdma_dma_region_add_pages_req *add_req = NULL;
+> > >       size_t num_pages_processed = 0, num_pages_to_handle; @@ -324,11
+> > > +324,21 @@ int mana_ib_gd_create_dma_region(struct mana_ib_dev *dev,
+> > struct ib_umem *umem,
+> > >       hwc = gc->hwc.driver_data;
+> > >
+> > >       /* Hardware requires dma region to align to chosen page size */
+> > > -     page_sz = ib_umem_find_best_pgsz(umem, PAGE_SZ_BM, 0);
+> > > +     page_sz = ib_umem_find_best_pgsz(umem, PAGE_SZ_BM, virt);
+> > >       if (!page_sz) {
+> > >               ibdev_dbg(&dev->ib_dev, "failed to find page size.\n");
+> > >               return -ENOMEM;
+> > >       }
+> > > +
+> > > +     if (force_zero_offset) {
+> > > +             while (ib_umem_dma_offset(umem, page_sz) && page_sz >
+> > PAGE_SIZE)
+> > > +                     page_sz /= 2;
+> > > +             if (ib_umem_dma_offset(umem, page_sz) != 0) {
+> > > +                     ibdev_dbg(&dev->ib_dev, "failed to find page size to force zero
+> > offset.\n");
+> > > +                     return -ENOMEM;
+> > > +             }
+> > > +     }
+> > > +
+> > >       num_pages_total = ib_umem_num_dma_blocks(umem, page_sz);
+> > >
+> > >       max_pgs_create_cmd =
+> > > @@ -348,7 +358,7 @@ int mana_ib_gd_create_dma_region(struct
+> > mana_ib_dev *dev, struct ib_umem *umem,
+> > >                            sizeof(struct
+> > > gdma_create_dma_region_resp));
+> > >
+> > >       create_req->length = umem->length;
+> > > -     create_req->offset_in_page = umem->address & (page_sz - 1);
+> > > +     create_req->offset_in_page = ib_umem_dma_offset(umem, page_sz);
+> > >       create_req->gdma_page_type = order_base_2(page_sz) - PAGE_SHIFT;
+> > >       create_req->page_count = num_pages_total;
+> > >
+> > > diff --git a/drivers/infiniband/hw/mana/mana_ib.h
+> > > b/drivers/infiniband/hw/mana/mana_ib.h
+> > > index 6a03ae645..0a5a8f3f8 100644
+> > > --- a/drivers/infiniband/hw/mana/mana_ib.h
+> > > +++ b/drivers/infiniband/hw/mana/mana_ib.h
+> > > @@ -161,7 +161,7 @@ static inline struct net_device
+> > > *mana_ib_get_netdev(struct ib_device *ibdev, u32  int
+> > > mana_ib_install_cq_cb(struct mana_ib_dev *mdev, struct mana_ib_cq
+> > > *cq);
+> > >
+> > >  int mana_ib_gd_create_dma_region(struct mana_ib_dev *dev, struct
+> > ib_umem *umem,
+> > > -                              mana_handle_t *gdma_region);
+> > > +                              mana_handle_t *gdma_region, u64 virt,
+> > > + bool force_zero_offset);
+> > >
+> > >  int mana_ib_gd_destroy_dma_region(struct mana_ib_dev *dev,
+> > >                                 mana_handle_t gdma_region); diff --git
+> > > a/drivers/infiniband/hw/mana/mr.c b/drivers/infiniband/hw/mana/mr.c
+> > > index ee4d4f834..856d73ea2 100644
+> > > --- a/drivers/infiniband/hw/mana/mr.c
+> > > +++ b/drivers/infiniband/hw/mana/mr.c
+> > > @@ -127,7 +127,7 @@ struct ib_mr *mana_ib_reg_user_mr(struct ib_pd
+> > *ibpd, u64 start, u64 length,
+> > >               goto err_free;
+> > >       }
+> > >
+> > > -     err = mana_ib_gd_create_dma_region(dev, mr->umem,
+> > &dma_region_handle);
+> > > +     err = mana_ib_gd_create_dma_region(dev, mr->umem,
+> > > + &dma_region_handle, iova, false);
+> > >       if (err) {
+> > >               ibdev_dbg(ibdev, "Failed create dma region for user-mr, %d\n",
+> > >                         err);
+> > > diff --git a/drivers/infiniband/hw/mana/qp.c
+> > > b/drivers/infiniband/hw/mana/qp.c index 5d4c05dcd..02de90317 100644
+> > > --- a/drivers/infiniband/hw/mana/qp.c
+> > > +++ b/drivers/infiniband/hw/mana/qp.c
+> > > @@ -357,8 +357,8 @@ static int mana_ib_create_qp_raw(struct ib_qp
+> > *ibqp, struct ib_pd *ibpd,
+> > >       }
+> > >       qp->sq_umem = umem;
+> > >
+> > > -     err = mana_ib_gd_create_dma_region(mdev, qp->sq_umem,
+> > > -                                        &qp->sq_gdma_region);
+> > > +     err = mana_ib_gd_create_dma_region(mdev, qp->sq_umem, &qp-
+> > >sq_gdma_region,
+> > > +                                        ucmd.sq_buf_addr, true);
+> > >       if (err) {
+> > >               ibdev_dbg(&mdev->ib_dev,
+> > >                         "Failed to create dma region for create
+> > > qp-raw, %d\n", diff --git a/drivers/infiniband/hw/mana/wq.c
+> > > b/drivers/infiniband/hw/mana/wq.c index 372d36151..d9c1a2d5d 100644
+> > > --- a/drivers/infiniband/hw/mana/wq.c
+> > > +++ b/drivers/infiniband/hw/mana/wq.c
+> > > @@ -46,7 +46,8 @@ struct ib_wq *mana_ib_create_wq(struct ib_pd *pd,
+> > >       wq->wq_buf_size = ucmd.wq_buf_size;
+> > >       wq->rx_object = INVALID_MANA_HANDLE;
+> > >
+> > > -     err = mana_ib_gd_create_dma_region(mdev, wq->umem, &wq-
+> > >gdma_region);
+> > > +     err = mana_ib_gd_create_dma_region(mdev, wq->umem, &wq-
+> > >gdma_region,
+> > > +                                        ucmd.wq_buf_addr, true);
+> > >       if (err) {
+> > >               ibdev_dbg(&mdev->ib_dev,
+> > >                         "Failed to create dma region for create wq,
+> > > %d\n",
+> > >
+> > > base-commit: aafe4cc5096996873817ff4981a3744e8caf7808
+> > > --
+> > > 2.43.0
+> > >
 
