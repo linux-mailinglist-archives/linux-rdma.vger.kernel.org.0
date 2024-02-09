@@ -1,154 +1,240 @@
-Return-Path: <linux-rdma+bounces-988-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-989-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6E0AB84EE67
-	for <lists+linux-rdma@lfdr.de>; Fri,  9 Feb 2024 01:31:29 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 603E084EED9
+	for <lists+linux-rdma@lfdr.de>; Fri,  9 Feb 2024 03:29:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 18516B27F04
-	for <lists+linux-rdma@lfdr.de>; Fri,  9 Feb 2024 00:31:26 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C55DF1F24CD0
+	for <lists+linux-rdma@lfdr.de>; Fri,  9 Feb 2024 02:29:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3CE28632;
-	Fri,  9 Feb 2024 00:31:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9E7FD1366;
+	Fri,  9 Feb 2024 02:29:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b="H53aUxaz"
+	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="FpULPbxS";
+	dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b="Rh+kaJ0Z"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-ot1-f43.google.com (mail-ot1-f43.google.com [209.85.210.43])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mx0a-00069f02.pphosted.com (mx0a-00069f02.pphosted.com [205.220.165.32])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3E0F1376
-	for <linux-rdma@vger.kernel.org>; Fri,  9 Feb 2024 00:31:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.43
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707438680; cv=none; b=F+LpvcgXzWkH2JkWa1c04H6VW5tqvYtLItRegirPI8kFBUuSr71JSzifp9D+R8FeQQi2lbU7+mde6l7b60UbROHmCwFJtbXrxWwcL5HTY/5seqyXdfleuheEoCoXXaeofnOsnYiI9d+7Q8QrgLJEQDoL2vKpmByBB6N21+NQOnU=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707438680; c=relaxed/simple;
-	bh=l916pRRCGHUnatFddLG54mO6hIm0GKfN0ogXG/hocdQ=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=UiTj6PfhK7LkzM2A73JJh0IoWViKOtGQCxxErmqrOCGF5GtWIPtPBPfVdNWTazq9lbCO6heqCgk5iFhyqpU3F/SsPpjODEjuLybs5xUnNPRB/rQ7R8VgPc4/t0Z8hnPJhs32C9pTxN3RG2RrJvqU6iPUHDDB69sn0yQEAXQgf+A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca; spf=pass smtp.mailfrom=ziepe.ca; dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b=H53aUxaz; arc=none smtp.client-ip=209.85.210.43
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ziepe.ca
-Received: by mail-ot1-f43.google.com with SMTP id 46e09a7af769-6e117eec348so170372a34.2
-        for <linux-rdma@vger.kernel.org>; Thu, 08 Feb 2024 16:31:17 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 85F331849;
+	Fri,  9 Feb 2024 02:29:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=205.220.165.32
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1707445757; cv=fail; b=Y9C23nni1Vuwap8T7VusJgmty+xjKpyoyvCL/cOsnx9tcLnZW1/tw1ErLwbyyNiz9lc2L08Y4L7RBGWjmDp31xQWpxcMb88nT2I29uo5Dd2jrTVTObs8lDY6Vykx//cIsEsViq/EiFwFfzkUOSCq9aXHltLhIrLXjry+K80LcaU=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1707445757; c=relaxed/simple;
+	bh=Z7mBPCEBJu83vEnWaZfNhLjerotlRJGhwRWAUC0g3W8=;
+	h=From:To:Cc:Subject:Date:Message-Id:Content-Type:MIME-Version; b=c1x6U+IQ9hsV6WmkAK2ix2v1YipbgxktOUE/2rcE2P1IzY8WALyiYBvFgjnOgnoyK0xshOvf2N/uHBDCnL85TbPEj4VO3bdWgLQrlrBHRxTSV74cWZSqS6PZqIL1fMHzLvnbsEAPMG/h98Fw269fCuXOBkXtZ4QcsieheIfvS6M=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=oracle.com; spf=pass smtp.mailfrom=oracle.com; dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b=FpULPbxS; dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b=Rh+kaJ0Z; arc=fail smtp.client-ip=205.220.165.32
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=oracle.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oracle.com
+Received: from pps.filterd (m0246617.ppops.net [127.0.0.1])
+	by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 418LT9xQ024393;
+	Fri, 9 Feb 2024 02:29:02 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
+ subject : date : message-id : content-transfer-encoding : content-type :
+ mime-version; s=corp-2023-11-20;
+ bh=bnTyvJf4Vz7VAubGZrOWDmTsaVQ8MMxHNYMXxZNt7nE=;
+ b=FpULPbxSoDoRldVi8AL3adnLbZIrS7p8SLZGDdSy27/zUftbTaKi0dNKKPZujmWv5xgN
+ wSKwYFmeIGsGVETehlpbas/vbOl937m013hOLJyfv5xGhR//DR3JyoYJiDvRleUFYdge
+ 7uSscE6gkJrLMohVFSU4NtYLt5r2IYx4JYYhHaLfkzthKe2mw6mjF2m1D0K5ZXJzhEug
+ d0RP7ZaWl6bu62/jVBOtag7ZuGOEdeI8mv3WKfhMkOhHfYiOpclZ+ytR2Q/WHqlEofS1
+ o1Bv2lLFQUr9HkoYbXzo60lzjRfymaG+wSo2BhWgbQSSd2FgBqB7fZMky7ZHKN0RSiyx Bg== 
+Received: from phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta03.appoci.oracle.com [138.1.37.129])
+	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3w1e1ve9ap-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Fri, 09 Feb 2024 02:29:01 +0000
+Received: from pps.filterd (phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
+	by phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 4190KtmS007428;
+	Fri, 9 Feb 2024 02:29:01 GMT
+Received: from nam02-dm3-obe.outbound.protection.outlook.com (mail-dm3nam02lp2040.outbound.protection.outlook.com [104.47.56.40])
+	by phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTPS id 3w1bxby9dy-2
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Fri, 09 Feb 2024 02:29:01 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=jbVdZMSHC2igqGKzUs+nk9x7PYRolAxw610f4CkAy0qXBETw3dz70n0z8HIwzIFEDifaRg2QChuE6WrOIlVRTNpv9QzPn0CzDM8jD0oCjehyaRl/AuYwHEI9aSnKzeU+Y35i/9XbHvPSKyID78uHCtP8vSesyxtxvSBNsVWZlclg1TZzWnLnxjU6l8hznFBr/tY4l9Bxh2raJe0LknTo7EgLvOwj3yI3TivTY1QlYok1LIkV48e1Eqc9iPpJ5BC91H4kIPLaHnaQh3z1zWrxDbxwnl2Li/KI0njYER/QKKq4d4xFnVv4tTGecGl/t8P72BvWDTqf4E0L2BNOZjojmQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=bnTyvJf4Vz7VAubGZrOWDmTsaVQ8MMxHNYMXxZNt7nE=;
+ b=T4FHVVFkMeDEwCwukNPP2RJ814PmfTea9qoKNlYBNi/G//3in6kXfFfxN1MNN6L/53nXoaR+a5yWnfz6pDsfceXiCQkPIYpBjq4wcXpe0ib4jDYwMkFJ2PT79wbmqjvKP3tGeUNaRT745/NeQ0OXhOZvomjQNRn62c8inIaazNfAIpC0WM5dznswmyUEWAqyMoxXfLFu1g+sJ1mRX4XWkSdqU/a0P3z5+d+mxlbSyp4MtZBI/bc4fD5PyP6+gTi28rf2+tXpT3Utzjmt9YotrslJnGnLZcl44Jt9V+Gdaa9Bk36BbMPNYZRJUDKJ/JySc6axER4Y/xY5+E1FEqQUnA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google; t=1707438677; x=1708043477; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=czRkUXbU8Q5EjskKJu9/yfS0M+PFklv+rAmjxmsQpz0=;
-        b=H53aUxazUfw22tqimqbhqoGvxUvk26gh24pyc5ccGHKiAJVTCVaCx3xj6PwHmgKYEG
-         kxmMRtH4Dxgt0pn4rB7oME384MFO6vWMdWpApQ4uS7qjbhowLjdVF/T3aaZ/NJQvwNEO
-         f97FWcfY4xiKJhjoednZ24AHkYnQjZ00c6HM/sovv1lmZdYRg22zwtitJVLPaeGEPEOZ
-         4wAdXvzrulfTMw2mFDiiOkzcolg++6JgiTKxgd3OpFWjkPVdY7Jhff+h2OiID5J7Yelz
-         J/PiYVT3/vMLrX84wjIUlmtbg+JbCvDIifmd+PIuGYMs98F7jW0Qh2zAPtd/K0jVVP30
-         Y7Zw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707438677; x=1708043477;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=czRkUXbU8Q5EjskKJu9/yfS0M+PFklv+rAmjxmsQpz0=;
-        b=oxgV8m7d3el3bWF2obvuL1rYoQZW8DTaxr2ijIrCQNC8IDtuWWmn+YUcKTte13oj8X
-         vvmkrKVkITFJNVQbpRfDdQdwUjHipnLwk/DF4gqz2u1frsvlL7g819ZzPvWPg3Ua8/z7
-         AupCo+RkWfFfIf/DKABaLB33RIdNdjoiZ7ylICHfy+kQEyycAzUlbyTXl4IniNgE27ag
-         bq3MCbLh7TLyhlJbTeKkhueEZO4bXtSAEnI9hntjBsSE8adZ7FayzqCZiu49WCzRsShQ
-         NzorDoQvEaPXdeatT+AXQevWuI3xTXJh2EqJeglMsIbJw7xNuF244fYclvo3m/f1bMor
-         RUqg==
-X-Gm-Message-State: AOJu0Yx98MAena05KYNUI05jnmpTtJEoQCPeI3Z6RQell2X6GwTTm2Ij
-	/QQbec1QZzk5HuqHJkVTJEQCbZjmUPegpCBgL5SSZU4XGqw49kYf3LmjaLaIgas=
-X-Google-Smtp-Source: AGHT+IFdX0zRy/qTN3+hMuXAP66IPMPUi93cDkds2VFNeqs/e7FU3G9ogltteG3JtH94CgD7c6rdGg==
-X-Received: by 2002:a9d:798a:0:b0:6e1:9db:f995 with SMTP id h10-20020a9d798a000000b006e109dbf995mr1124147otm.30.1707438677248;
-        Thu, 08 Feb 2024 16:31:17 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCVaFdBIysYfONKSBNDv26g8cTf4/ZYZsu4PnMnZyHUPVde+bhaWUYgLkiTdHvkrx/7FKrimuMV0BpUIQQAM1Er6dk+tZeEKTwUzBnTRwR5dKr8LGIWQjOtecf3JNXUyBStgKde4xvDloonZDLCC2/UJNvXvtS1ma+8xuOeSQ/4GBKz/1NEjFYiNNDRvmulHXDSSVxKb+Ndo1Q==
-Received: from ziepe.ca (hlfxns017vw-142-68-80-239.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.68.80.239])
-        by smtp.gmail.com with ESMTPSA id a10-20020a9d470a000000b006e11970fb7esm98207otf.67.2024.02.08.16.31.16
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 08 Feb 2024 16:31:16 -0800 (PST)
-Received: from jgg by wakko with local (Exim 4.95)
-	(envelope-from <jgg@ziepe.ca>)
-	id 1rYEnT-00H589-9F;
-	Thu, 08 Feb 2024 20:31:15 -0400
-Date: Thu, 8 Feb 2024 20:31:15 -0400
-From: Jason Gunthorpe <jgg@ziepe.ca>
-To: Konstantin Taranov <kotaranov@microsoft.com>
-Cc: Long Li <longli@microsoft.com>,
-	Konstantin Taranov <kotaranov@linux.microsoft.com>,
-	"leon@kernel.org" <leon@kernel.org>,
-	"linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH rdma-next v1 1/1] RDMA/mana_ib: Fix bug in creation of
- dma regions
-Message-ID: <20240209003115.GA31743@ziepe.ca>
-References: <1707318566-3141-1-git-send-email-kotaranov@linux.microsoft.com>
- <PH7PR21MB326394A06EF49FF286D57B63CE442@PH7PR21MB3263.namprd21.prod.outlook.com>
- <PAXPR83MB0557C2779B1485277FD7E417B4442@PAXPR83MB0557.EURPRD83.prod.outlook.com>
- <20240208201638.GZ31743@ziepe.ca>
- <PAXPR83MB0557626F0EDEEE6D8E78C6D7B4442@PAXPR83MB0557.EURPRD83.prod.outlook.com>
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=bnTyvJf4Vz7VAubGZrOWDmTsaVQ8MMxHNYMXxZNt7nE=;
+ b=Rh+kaJ0ZC1Z1F2EPlMV856jE8rE7SZ2VMS/3R4ftt0wpxH1DeHPPRw759jG4n9OWUqTm2gyqyGjkoDjbSMRa+mwD69YDdgF5YtAWXq1UYohoxttaPu/MjyXa4+1F3sR3u2lgo07Q0wAEWQ5ikiBvUpuZrNd4uYimgYtYaq3ysMU=
+Received: from BY5PR10MB4306.namprd10.prod.outlook.com (2603:10b6:a03:211::7)
+ by MW4PR10MB6464.namprd10.prod.outlook.com (2603:10b6:303:222::9) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7249.36; Fri, 9 Feb
+ 2024 02:28:58 +0000
+Received: from BY5PR10MB4306.namprd10.prod.outlook.com
+ ([fe80::68a8:709b:34ed:2aeb]) by BY5PR10MB4306.namprd10.prod.outlook.com
+ ([fe80::68a8:709b:34ed:2aeb%6]) with mapi id 15.20.7270.025; Fri, 9 Feb 2024
+ 02:28:58 +0000
+From: allison.henderson@oracle.com
+To: netdev@vger.kernel.org
+Cc: rds-devel@oss.oracle.com, linux-rdma@vger.kernel.org, pabeni@redhat.com,
+        kuba@kernel.org, edumazet@google.com, davem@davemloft.net,
+        santosh.shilimkar@oracle.com
+Subject: [PATCH v4 1/1] net:rds: Fix possible deadlock in rds_message_put
+Date: Thu,  8 Feb 2024 19:28:54 -0700
+Message-Id: <20240209022854.200292-1-allison.henderson@oracle.com>
+X-Mailer: git-send-email 2.34.1
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: PH0PR07CA0081.namprd07.prod.outlook.com
+ (2603:10b6:510:f::26) To BY5PR10MB4306.namprd10.prod.outlook.com
+ (2603:10b6:a03:211::7)
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <PAXPR83MB0557626F0EDEEE6D8E78C6D7B4442@PAXPR83MB0557.EURPRD83.prod.outlook.com>
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: BY5PR10MB4306:EE_|MW4PR10MB6464:EE_
+X-MS-Office365-Filtering-Correlation-Id: 677e0a0f-38a5-47b7-c4f3-08dc2916ded9
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 
+	7/v8NQdkRLnjcClLTVIjGhVBZeT5Fw8nI/Ul4aBC0Y9qoil7TYpMu1QUv5sFRdmTizWYN9XvY4Kr4atIwCAv8vmND9Mkm7WX3woQrDB/iB6hVksCTjF8MWQRfPnd3bZx/2pmjDGM4TC+fZToyLu5v7mBk2OWH5p3c70E/GtZWL1Rpek7ZtcuFqbuzwDxOfVaFC4T/cIpZSNVv1aSrNsx5KLJaFCE6+0/AETmRjqK9HN/tBU/frcXly10mUu3EGTjg+9XNZch0TLK9EHor3tDl0lLEyupimhkvwh30j0E7OVUyf41ynfOENe546qFGyEHfJ6laASHO80OiAsW+2HAQGSxdwPPTCgiqWfLdnYKz52+bNHJLvDxUIASMqxrgekOQYAnHVUzjmjZaqefc4JB1hrlUI6IhkV1E/G06aBU8FTfkjGFme6LstHgJ6Ni9sXcNDCQdYojwvz+ph47KvTLyA8iKgG6Cik35BxBBhCIaYbIVnh0Gwib9cqbDd0jkTMkYiazB+HgKGSLxcjIdw9E3OCwRXhStshf+P+8PQIaWYmSGkwRcBvaIpBWCpqDMHP/
+X-Forefront-Antispam-Report: 
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY5PR10MB4306.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(346002)(366004)(396003)(136003)(376002)(39860400002)(230922051799003)(64100799003)(451199024)(186009)(1800799012)(6506007)(66556008)(6666004)(66946007)(6486002)(478600001)(107886003)(66476007)(26005)(2616005)(1076003)(83380400001)(41300700001)(9686003)(316002)(8676002)(8936002)(4326008)(5660300002)(2906002)(6916009)(86362001)(36756003)(6512007)(38100700002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: 
+	=?us-ascii?Q?Z1UwoixThDdOKAcrT4Utw49Ip8V7v8Jnp2wBd40HGKi5dsmwRnnHbtt7j3kA?=
+ =?us-ascii?Q?/ppugLZ58p3qagcxm1S7UEHpWGyk24+OV+TC7/VzQ7K3nfz7clxmSf0DTrkc?=
+ =?us-ascii?Q?Evqn801BLGH4DhsEdjN7hscU0OHBkKk8LrpEm87+fi93Hsl6d1crryiYBO7P?=
+ =?us-ascii?Q?6H6GUTAjPXCJ2qOmH29nRCWuc/nlHVhbzeMlE7J2TYX9F4t1Tc0CNysD+fqT?=
+ =?us-ascii?Q?TeytJV/qCFtSRLX/klck8cecfNqadI0S8aGhHahokYPEsS0qbyQZP2pVj39H?=
+ =?us-ascii?Q?BIcOqC/2YF+QdC7xpPNTu7hNB3mlpRY3UAWSC2Am7KrPkHHOqQ20ZD9tIU0D?=
+ =?us-ascii?Q?DLlofkVBK73InBdDfstch6W1M0FGklESZRMsdtJyvWRgh6rTRDGFlqyTpSLu?=
+ =?us-ascii?Q?yA9XZTmXX47lKMh2i6/HV5T4HK5o54JRHYVwEEWkzyb+gjJaCfIfPgOaF4nF?=
+ =?us-ascii?Q?qyNk06vGweCAKj5KJMxTRzkgFMUpggB97bZgfwl4RB4rv3T0spYRVWZkzipL?=
+ =?us-ascii?Q?yKR8O+VmbfmQgQJ1WWqlSWooQRa4vMm4ln7g0NNLZh96QGURI6hECTPSmYn5?=
+ =?us-ascii?Q?9xIIgenIyl/IeJv3ObNmEujX4hBCNbfNk3gaWlX8GYAqWBYlbqc4lB2VF3mr?=
+ =?us-ascii?Q?l9UOkL90d3aF1h24U59sr8SJuPpJDBayIwIozBhT0mIx5FYx9qPlKChClkjg?=
+ =?us-ascii?Q?u892BYRlwo8lkIPo8iGI2jMfkE5IHBcO40j0DHK9/ye8rzvM0JoEBe5j31rS?=
+ =?us-ascii?Q?Sj4vtLFtn+x4fLjOAzJ9MkaRIal6vElVPC0m6EBeDIm8EGeW6YiKKXMbmrIm?=
+ =?us-ascii?Q?jmJTAfe93KJRMvC8MNalevK5ZPOgrLfDSDu0DVX8Zx7uwtZGF7B+TNglLg7+?=
+ =?us-ascii?Q?kseFcF976nVM1hPPhJ6xR2Vnulyk83XOYMR2xzA0oQuliw6mjuDekAt8hHXa?=
+ =?us-ascii?Q?EP9gVdIEsSvhevjvxLPjyMEABuf4N1R/PeADwJR+Kw7leWsy61lFX4v6jo6Y?=
+ =?us-ascii?Q?/UkuDrHwallmhQrwiUoJNQwTf9ZY4gICVu3GcK7XSwHSEAEp8HVgRQqfk8mg?=
+ =?us-ascii?Q?A1o6oWwjlPASAoftUWr8c/yDTseLoIyraMp/s7ClgcLb2o9ONCVhh6S2r2Bv?=
+ =?us-ascii?Q?q4Qo6VgelSzZzChbFWOnj/Q6FAL9Wf/DXrm0MiC0/w+d8yb3jDmUCs5mZjtW?=
+ =?us-ascii?Q?1L3mYS65fYKe12E4Ydv7QTe7LRRe8INo4xQYddztBxaI0Q3ettbrPGWcFSmS?=
+ =?us-ascii?Q?ljmGMkfvhFRjQDxXnUE4/3SA466bHSoeyo99LFXNl0Oi53oMaSV+/lBAKVlG?=
+ =?us-ascii?Q?GZikfJcMbCZ5y+j1IG5PkMROsg8gZB6zI45evfGWXKEA+VIpEuyB/nOjJhmU?=
+ =?us-ascii?Q?NqRKbSr8fDOmNj5OZd9h8qTsuqeXN57xKhS8VNAcFEkqneeuuJ0KRQmqx4e1?=
+ =?us-ascii?Q?QnxDEyNeG+8JeTz+hSqieF3YKVCHqQ1RmSbWCBexBrJd2WRCeyhuNV40wrdz?=
+ =?us-ascii?Q?hg8Kpb06045Gwal6BVZHeuZS+qx3m8ckyZe0LewHW9nU49dexnOh0/iHuCUq?=
+ =?us-ascii?Q?JBU4FbA5kcWNf7m7pid6DjcPj32iDaHXNnRnpqepNy9YKFhjFvrTe8/c5k4S?=
+ =?us-ascii?Q?Jg=3D=3D?=
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: 
+	tdLeGPcliIPBm6ZdNCNUZL5uW/hLOSIf2BoXx3ZEONTLX3mcHLODhR99VhTLtzr9qzEWwapVJzz6ZkIQh98CvvG8ZC/pze3qA2aExZ5mJyd7KqZkloW0r6STJc3FvvDlk8Ioy1QGGh3Jar8fzHk4CN2s34PN87km6qgKz18vCYG9p3eI09SKOAfpi2m/pRD/ndyJKs1vFJD/G6uWbjscuj+4GU5tXrRfIcc6Zq0x94hD2JyzmC2j+gHfRnIBebEdiZA7riHr7qk62Wwd9CjK4ifk+2DhHDAZGOExA6hdccUXoPR2qB2sNGz4DTlhCQn0Vo76DVw/XrxalVJViu/wBAp9y+aPoMdkNAA/BqPZyoltPqNvg2LfDoy3JwbrRE5veCdtkO6+dM4QYvFUCHtGf8Wi2/2Oc3MOtILs7IxwMIQhJz0OCtwLkASmTha29bAkPYIveSzhiI8ojNg2kWXhypF+lfkxkOjCzUC1jXySBVIby4jQTePzFYS7hD9tHXJTrz15mD7RvbSqWloyVt4zGT47F2d3NxevYv/yZ6dAQypBerRHCfvYufLyCVtNVcl88hBeYy6Sjm3+4EqHOPooqvbc0C/J6x4EhOZ+9HxlIMo=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 677e0a0f-38a5-47b7-c4f3-08dc2916ded9
+X-MS-Exchange-CrossTenant-AuthSource: BY5PR10MB4306.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 09 Feb 2024 02:28:58.5903
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 7rzvERhdSWyS+H3UtaXACVLMidXv/D/HIFKUXaWxaOEdYfb81LTQnq4gcPKclWoLK4Q0fKB51pW51RpOKdFh8MpXwGpFJKgQ3O/WeTyouuw=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW4PR10MB6464
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-02-08_13,2024-02-08_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 suspectscore=0
+ mlxlogscore=999 bulkscore=0 mlxscore=0 adultscore=0 malwarescore=0
+ phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2311290000 definitions=main-2402090016
+X-Proofpoint-GUID: DOeveeWXzXQwF-oLynQHc70V9znqYx3C
+X-Proofpoint-ORIG-GUID: DOeveeWXzXQwF-oLynQHc70V9znqYx3C
 
-> > > > > +
-> > > > > + if (force_zero_offset) {
-> > > > > +         while (ib_umem_dma_offset(umem, page_sz) && page_sz >
-> > > > > PAGE_SIZE)
-> > > > > +                 page_sz /= 2;
-> > > > > +         if (ib_umem_dma_offset(umem, page_sz) != 0) {
-> > > > > +                 ibdev_dbg(&dev->ib_dev, "failed to find page
-> > > > > + size to
-> > > > > force zero offset.\n");
-> > > > > +                 return -ENOMEM;
-> > > > > +         }
-> > > > > + }
-> > > > > +
-> > 
-> > Yes this doesn't look quite right..
-> > 
-> > It should flow from the HW capability, the helper you call should be tightly
-> > linked to what the HW can do.
-> > 
-> > ib_umem_find_best_pgsz() is used for MRs that have the usual
-> >   offset = IOVA % pgsz
-> > 
-> > We've always created other helpers for other restrictions.
-> > 
-> > So you should move your "force_zero_offset" into another helper and
-> > describe exactly how the HW works to support the calculation
-> > 
-> > It is odd to have the offset loop and be using
-> > ib_umem_find_best_pgsz() with some iova, usually you'd use
-> > ib_umem_find_best_pgoff() in those cases, see the other callers.
-> 
-> Hi Jason,
-> Thanks for the comments.
-> 
-> To be honest, I do not understand how I could employ ib_umem_find_best_pgoff
-> for my purpose. As well as I do not see any mistake in the patch, and I think you neither.
+From: Allison Henderson <allison.henderson@oracle.com>
 
-It does exactly the same thing, it is just intended to be used by
-things that are not doing the IOVA calculation. It is a matter of documentation.
+Functions rds_still_queued and rds_clear_recv_queue lock a given socket
+in order to safely iterate over the incoming rds messages. However
+calling rds_inc_put while under this lock creates a potential deadlock.
+rds_inc_put may eventually call rds_message_purge, which will lock
+m_rs_lock. This is the incorrect locking order since m_rs_lock is
+meant to be locked before the socket. To fix this, we move the message
+item to a local list or variable that wont need rs_recv_lock protection.
+Then we can safely call rds_inc_put on any item stored locally after
+rs_recv_lock is released.
 
-> I can make a special helper, but I do not think that it will be useful to anyone. Plus,
-> there is no better approach then halving the page size, so the helper will end up with that
-> loop under the hood. As I see mlnx also uses a loop with halving page_sz, but for a different
-> purpose, I do not see why our code cannot do the same without a special helper.
+Fixes: bdbe6fbc6a2f ("RDS: recv.c")
+Reported-by: syzbot+f9db6ff27b9bfdcfeca0@syzkaller.appspotmail.com
+Reported-by: syzbot+dcd73ff9291e6d34b3ab@syzkaller.appspotmail.com
 
-Are you sure you don't need the length check too? You have a granular
-size but not a granular offset?
+Signed-off-by: Allison Henderson <allison.henderson@oracle.com>
+---
+ net/rds/recv.c | 13 +++++++++++--
+ 1 file changed, 11 insertions(+), 2 deletions(-)
 
-In that case yes, a helper does not seem necessary
+diff --git a/net/rds/recv.c b/net/rds/recv.c
+index c71b923764fd..5627f80013f8 100644
+--- a/net/rds/recv.c
++++ b/net/rds/recv.c
+@@ -425,6 +425,7 @@ static int rds_still_queued(struct rds_sock *rs, struct rds_incoming *inc,
+ 	struct sock *sk = rds_rs_to_sk(rs);
+ 	int ret = 0;
+ 	unsigned long flags;
++	struct rds_incoming *to_drop = NULL;
+ 
+ 	write_lock_irqsave(&rs->rs_recv_lock, flags);
+ 	if (!list_empty(&inc->i_item)) {
+@@ -435,11 +436,14 @@ static int rds_still_queued(struct rds_sock *rs, struct rds_incoming *inc,
+ 					      -be32_to_cpu(inc->i_hdr.h_len),
+ 					      inc->i_hdr.h_dport);
+ 			list_del_init(&inc->i_item);
+-			rds_inc_put(inc);
++			to_drop = inc;
+ 		}
+ 	}
+ 	write_unlock_irqrestore(&rs->rs_recv_lock, flags);
+ 
++	if (to_drop)
++		rds_inc_put(to_drop);
++
+ 	rdsdebug("inc %p rs %p still %d dropped %d\n", inc, rs, ret, drop);
+ 	return ret;
+ }
+@@ -758,16 +762,21 @@ void rds_clear_recv_queue(struct rds_sock *rs)
+ 	struct sock *sk = rds_rs_to_sk(rs);
+ 	struct rds_incoming *inc, *tmp;
+ 	unsigned long flags;
++	LIST_HEAD(to_drop);
+ 
+ 	write_lock_irqsave(&rs->rs_recv_lock, flags);
+ 	list_for_each_entry_safe(inc, tmp, &rs->rs_recv_queue, i_item) {
+ 		rds_recv_rcvbuf_delta(rs, sk, inc->i_conn->c_lcong,
+ 				      -be32_to_cpu(inc->i_hdr.h_len),
+ 				      inc->i_hdr.h_dport);
++		list_move(&inc->i_item, &to_drop);
++	}
++	write_unlock_irqrestore(&rs->rs_recv_lock, flags);
++
++	list_for_each_entry_safe(inc, tmp, &to_drop, i_item) {
+ 		list_del_init(&inc->i_item);
+ 		rds_inc_put(inc);
+ 	}
+-	write_unlock_irqrestore(&rs->rs_recv_lock, flags);
+ }
+ 
+ /*
+-- 
+2.34.1
 
-However, you should still be calling ib_umem_find_best_pgoff() for
-the initialize sizing as a matter of clarity since this is not a MR
-and does not use IOVA addressing.
-
-Jason
 
