@@ -1,171 +1,154 @@
-Return-Path: <linux-rdma+bounces-987-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-988-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id B26C484EBBC
-	for <lists+linux-rdma@lfdr.de>; Thu,  8 Feb 2024 23:36:53 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6E0AB84EE67
+	for <lists+linux-rdma@lfdr.de>; Fri,  9 Feb 2024 01:31:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 64865289F7D
-	for <lists+linux-rdma@lfdr.de>; Thu,  8 Feb 2024 22:36:52 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 18516B27F04
+	for <lists+linux-rdma@lfdr.de>; Fri,  9 Feb 2024 00:31:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3B0B54F1F9;
-	Thu,  8 Feb 2024 22:36:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3CE28632;
+	Fri,  9 Feb 2024 00:31:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="aoW1XjYU"
+	dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b="H53aUxaz"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ot1-f43.google.com (mail-ot1-f43.google.com [209.85.210.43])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0907350250
-	for <linux-rdma@vger.kernel.org>; Thu,  8 Feb 2024 22:36:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3E0F1376
+	for <linux-rdma@vger.kernel.org>; Fri,  9 Feb 2024 00:31:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707431808; cv=none; b=I5UADRhEYDrHrUmqBA3qFiUetcCClGBJ57zt5JPS2tF97UPGwEG7CZ0O1iHAdQVFJi0nt4QY5WaOuyB2M+qNCMBnW+U1WsVuo84drDnrp0cZGVwz9ThXGDnYUN58+2L4v10hp2fvOWTZnxdO8hXuYyCmwj/vuTu5hjn9Xgckp+Q=
+	t=1707438680; cv=none; b=F+LpvcgXzWkH2JkWa1c04H6VW5tqvYtLItRegirPI8kFBUuSr71JSzifp9D+R8FeQQi2lbU7+mde6l7b60UbROHmCwFJtbXrxWwcL5HTY/5seqyXdfleuheEoCoXXaeofnOsnYiI9d+7Q8QrgLJEQDoL2vKpmByBB6N21+NQOnU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707431808; c=relaxed/simple;
-	bh=8k8nNZDRsSo4J3EEKmiSXHaWk0EFXDEtwmjHrxL/yDE=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=AGUVu6GRDR99XO6weYYkySUZhqrRZJcv8ScMPyYl8yXqIqkKwvoOvOR1fyzB4BoFQev6O3WVE0emjgBKx5yWmooDvR+zaCB3yv/dWN5pjXb0bSvniyzzBqT+X985jVPXfmTXVA6HVzDjTKhuOPsj7p3Q7KMW6IgqOnONgOcSF/k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=aoW1XjYU; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1707431804;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=0RMrttg0jEHVdorEkmZ3oJvcqqHxShtSFuX8OOXyHjU=;
-	b=aoW1XjYUKOiDm7VWsqlZ/ozQW3UWFDOV7F8WfdMM/mJ7kOyJJXdwOJiHvQ5soPSn0i08e/
-	pwf0F1BfwXQtHlj/D9jVtOemBaR+8yaRmV3Y/w1mADX9iwKWVulygnWkYyH2DxewJQYzzv
-	zkK4/HgX8oLNH0cEU07pEKC2/sgyx1o=
-Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
- by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-41-QijUQ1S4MLuuVTdUsN6m-g-1; Thu,
- 08 Feb 2024 17:36:42 -0500
-X-MC-Unique: QijUQ1S4MLuuVTdUsN6m-g-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.rdu2.redhat.com [10.11.54.3])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 663B0380671D;
-	Thu,  8 Feb 2024 22:36:41 +0000 (UTC)
-Received: from fedora-x1.redhat.com (unknown [10.22.9.153])
-	by smtp.corp.redhat.com (Postfix) with ESMTP id 01B0F1121313;
-	Thu,  8 Feb 2024 22:36:40 +0000 (UTC)
-From: Kamal Heib <kheib@redhat.com>
-To: linux-rdma@vger.kernel.org
-Cc: Jason Gunthorpe <jgg@ziepe.ca>,
-	Leon Romanovsky <leon@kernel.org>,
-	Michal Kalderon <mkalderon@marvell.com>,
-	Kamal Heib <kheib@redhat.com>
-Subject: [PATCH for-rc v1] RDMA/qedr: Fix qedr_create_user_qp error flow
-Date: Thu,  8 Feb 2024 17:36:28 -0500
-Message-ID: <20240208223628.2040841-1-kheib@redhat.com>
+	s=arc-20240116; t=1707438680; c=relaxed/simple;
+	bh=l916pRRCGHUnatFddLG54mO6hIm0GKfN0ogXG/hocdQ=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=UiTj6PfhK7LkzM2A73JJh0IoWViKOtGQCxxErmqrOCGF5GtWIPtPBPfVdNWTazq9lbCO6heqCgk5iFhyqpU3F/SsPpjODEjuLybs5xUnNPRB/rQ7R8VgPc4/t0Z8hnPJhs32C9pTxN3RG2RrJvqU6iPUHDDB69sn0yQEAXQgf+A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca; spf=pass smtp.mailfrom=ziepe.ca; dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b=H53aUxaz; arc=none smtp.client-ip=209.85.210.43
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ziepe.ca
+Received: by mail-ot1-f43.google.com with SMTP id 46e09a7af769-6e117eec348so170372a34.2
+        for <linux-rdma@vger.kernel.org>; Thu, 08 Feb 2024 16:31:17 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google; t=1707438677; x=1708043477; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=czRkUXbU8Q5EjskKJu9/yfS0M+PFklv+rAmjxmsQpz0=;
+        b=H53aUxazUfw22tqimqbhqoGvxUvk26gh24pyc5ccGHKiAJVTCVaCx3xj6PwHmgKYEG
+         kxmMRtH4Dxgt0pn4rB7oME384MFO6vWMdWpApQ4uS7qjbhowLjdVF/T3aaZ/NJQvwNEO
+         f97FWcfY4xiKJhjoednZ24AHkYnQjZ00c6HM/sovv1lmZdYRg22zwtitJVLPaeGEPEOZ
+         4wAdXvzrulfTMw2mFDiiOkzcolg++6JgiTKxgd3OpFWjkPVdY7Jhff+h2OiID5J7Yelz
+         J/PiYVT3/vMLrX84wjIUlmtbg+JbCvDIifmd+PIuGYMs98F7jW0Qh2zAPtd/K0jVVP30
+         Y7Zw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707438677; x=1708043477;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=czRkUXbU8Q5EjskKJu9/yfS0M+PFklv+rAmjxmsQpz0=;
+        b=oxgV8m7d3el3bWF2obvuL1rYoQZW8DTaxr2ijIrCQNC8IDtuWWmn+YUcKTte13oj8X
+         vvmkrKVkITFJNVQbpRfDdQdwUjHipnLwk/DF4gqz2u1frsvlL7g819ZzPvWPg3Ua8/z7
+         AupCo+RkWfFfIf/DKABaLB33RIdNdjoiZ7ylICHfy+kQEyycAzUlbyTXl4IniNgE27ag
+         bq3MCbLh7TLyhlJbTeKkhueEZO4bXtSAEnI9hntjBsSE8adZ7FayzqCZiu49WCzRsShQ
+         NzorDoQvEaPXdeatT+AXQevWuI3xTXJh2EqJeglMsIbJw7xNuF244fYclvo3m/f1bMor
+         RUqg==
+X-Gm-Message-State: AOJu0Yx98MAena05KYNUI05jnmpTtJEoQCPeI3Z6RQell2X6GwTTm2Ij
+	/QQbec1QZzk5HuqHJkVTJEQCbZjmUPegpCBgL5SSZU4XGqw49kYf3LmjaLaIgas=
+X-Google-Smtp-Source: AGHT+IFdX0zRy/qTN3+hMuXAP66IPMPUi93cDkds2VFNeqs/e7FU3G9ogltteG3JtH94CgD7c6rdGg==
+X-Received: by 2002:a9d:798a:0:b0:6e1:9db:f995 with SMTP id h10-20020a9d798a000000b006e109dbf995mr1124147otm.30.1707438677248;
+        Thu, 08 Feb 2024 16:31:17 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCVaFdBIysYfONKSBNDv26g8cTf4/ZYZsu4PnMnZyHUPVde+bhaWUYgLkiTdHvkrx/7FKrimuMV0BpUIQQAM1Er6dk+tZeEKTwUzBnTRwR5dKr8LGIWQjOtecf3JNXUyBStgKde4xvDloonZDLCC2/UJNvXvtS1ma+8xuOeSQ/4GBKz/1NEjFYiNNDRvmulHXDSSVxKb+Ndo1Q==
+Received: from ziepe.ca (hlfxns017vw-142-68-80-239.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.68.80.239])
+        by smtp.gmail.com with ESMTPSA id a10-20020a9d470a000000b006e11970fb7esm98207otf.67.2024.02.08.16.31.16
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 08 Feb 2024 16:31:16 -0800 (PST)
+Received: from jgg by wakko with local (Exim 4.95)
+	(envelope-from <jgg@ziepe.ca>)
+	id 1rYEnT-00H589-9F;
+	Thu, 08 Feb 2024 20:31:15 -0400
+Date: Thu, 8 Feb 2024 20:31:15 -0400
+From: Jason Gunthorpe <jgg@ziepe.ca>
+To: Konstantin Taranov <kotaranov@microsoft.com>
+Cc: Long Li <longli@microsoft.com>,
+	Konstantin Taranov <kotaranov@linux.microsoft.com>,
+	"leon@kernel.org" <leon@kernel.org>,
+	"linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH rdma-next v1 1/1] RDMA/mana_ib: Fix bug in creation of
+ dma regions
+Message-ID: <20240209003115.GA31743@ziepe.ca>
+References: <1707318566-3141-1-git-send-email-kotaranov@linux.microsoft.com>
+ <PH7PR21MB326394A06EF49FF286D57B63CE442@PH7PR21MB3263.namprd21.prod.outlook.com>
+ <PAXPR83MB0557C2779B1485277FD7E417B4442@PAXPR83MB0557.EURPRD83.prod.outlook.com>
+ <20240208201638.GZ31743@ziepe.ca>
+ <PAXPR83MB0557626F0EDEEE6D8E78C6D7B4442@PAXPR83MB0557.EURPRD83.prod.outlook.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.3
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <PAXPR83MB0557626F0EDEEE6D8E78C6D7B4442@PAXPR83MB0557.EURPRD83.prod.outlook.com>
 
-Avoid the following warning by making sure to free the allocated
-resources in case that qedr_init_user_queue() fail.
+> > > > > +
+> > > > > + if (force_zero_offset) {
+> > > > > +         while (ib_umem_dma_offset(umem, page_sz) && page_sz >
+> > > > > PAGE_SIZE)
+> > > > > +                 page_sz /= 2;
+> > > > > +         if (ib_umem_dma_offset(umem, page_sz) != 0) {
+> > > > > +                 ibdev_dbg(&dev->ib_dev, "failed to find page
+> > > > > + size to
+> > > > > force zero offset.\n");
+> > > > > +                 return -ENOMEM;
+> > > > > +         }
+> > > > > + }
+> > > > > +
+> > 
+> > Yes this doesn't look quite right..
+> > 
+> > It should flow from the HW capability, the helper you call should be tightly
+> > linked to what the HW can do.
+> > 
+> > ib_umem_find_best_pgsz() is used for MRs that have the usual
+> >   offset = IOVA % pgsz
+> > 
+> > We've always created other helpers for other restrictions.
+> > 
+> > So you should move your "force_zero_offset" into another helper and
+> > describe exactly how the HW works to support the calculation
+> > 
+> > It is odd to have the offset loop and be using
+> > ib_umem_find_best_pgsz() with some iova, usually you'd use
+> > ib_umem_find_best_pgoff() in those cases, see the other callers.
+> 
+> Hi Jason,
+> Thanks for the comments.
+> 
+> To be honest, I do not understand how I could employ ib_umem_find_best_pgoff
+> for my purpose. As well as I do not see any mistake in the patch, and I think you neither.
 
------------[ cut here ]-----------
-WARNING: CPU: 0 PID: 143192 at drivers/infiniband/core/rdma_core.c:874 uverbs_destroy_ufile_hw+0xcf/0xf0 [ib_uverbs]
-Modules linked in: tls target_core_user uio target_core_pscsi target_core_file target_core_iblock ib_srpt ib_srp scsi_transport_srp nfsd nfs_acl rpcsec_gss_krb5 auth_rpcgss nfsv4 dns_resolver nfs lockd grace fscache netfs 8021q garp mrp stp llc ext4 mbcache jbd2 opa_vnic ib_umad ib_ipoib sunrpc rdma_ucm ib_isert iscsi_target_mod target_core_mod ib_iser libiscsi scsi_transport_iscsi rdma_cm iw_cm ib_cm hfi1 intel_rapl_msr intel_rapl_common mgag200 qedr sb_edac drm_shmem_helper rdmavt x86_pkg_temp_thermal drm_kms_helper intel_powerclamp ib_uverbs coretemp i2c_algo_bit kvm_intel dell_wmi_descriptor ipmi_ssif sparse_keymap kvm ib_core rfkill syscopyarea sysfillrect video sysimgblt irqbypass ipmi_si ipmi_devintf fb_sys_fops rapl iTCO_wdt mxm_wmi iTCO_vendor_support intel_cstate pcspkr dcdbas intel_uncore ipmi_msghandler lpc_ich acpi_power_meter mei_me mei fuse drm xfs libcrc32c qede sd_mod ahci libahci t10_pi sg crct10dif_pclmul crc32_pclmul crc32c_intel qed libata tg3
-ghash_clmulni_intel megaraid_sas crc8 wmi [last unloaded: ib_srpt]
-CPU: 0 PID: 143192 Comm: fi_rdm_tagged_p Kdump: loaded Not tainted 5.14.0-408.el9.x86_64 #1
-Hardware name: Dell Inc. PowerEdge R430/03XKDV, BIOS 2.14.0 01/25/2022
-RIP: 0010:uverbs_destroy_ufile_hw+0xcf/0xf0 [ib_uverbs]
-Code: 5d 41 5c 41 5d 41 5e e9 0f 26 1b dd 48 89 df e8 67 6a ff ff 49 8b 86 10 01 00 00 48 85 c0 74 9c 4c 89 e7 e8 83 c0 cb dd eb 92 <0f> 0b eb be 0f 0b be 04 00 00 00 48 89 df e8 8e f5 ff ff e9 6d ff
-RSP: 0018:ffffb7c6cadfbc60 EFLAGS: 00010286
-RAX: ffff8f0889ee3f60 RBX: ffff8f088c1a5200 RCX: 00000000802a0016
-RDX: 00000000802a0017 RSI: 0000000000000001 RDI: ffff8f0880042600
-RBP: 0000000000000001 R08: 0000000000000001 R09: 0000000000000000
-R10: ffff8f11fffd5000 R11: 0000000000039000 R12: ffff8f0d5b36cd80
-R13: ffff8f088c1a5250 R14: ffff8f1206d91000 R15: 0000000000000000
-FS: 0000000000000000(0000) GS:ffff8f11d7c00000(0000) knlGS:0000000000000000
-CS: 0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 0000147069200e20 CR3: 00000001c7210002 CR4: 00000000001706f0
-Call Trace:
-<TASK>
-? show_trace_log_lvl+0x1c4/0x2df
-? show_trace_log_lvl+0x1c4/0x2df
-? ib_uverbs_close+0x1f/0xb0 [ib_uverbs]
-? uverbs_destroy_ufile_hw+0xcf/0xf0 [ib_uverbs]
-? __warn+0x81/0x110
-? uverbs_destroy_ufile_hw+0xcf/0xf0 [ib_uverbs]
-? report_bug+0x10a/0x140
-? handle_bug+0x3c/0x70
-? exc_invalid_op+0x14/0x70
-? asm_exc_invalid_op+0x16/0x20
-? uverbs_destroy_ufile_hw+0xcf/0xf0 [ib_uverbs]
-ib_uverbs_close+0x1f/0xb0 [ib_uverbs]
-__fput+0x94/0x250
-task_work_run+0x5c/0x90
-do_exit+0x270/0x4a0
-do_group_exit+0x2d/0x90
-get_signal+0x87c/0x8c0
-arch_do_signal_or_restart+0x25/0x100
-? ib_uverbs_ioctl+0xc2/0x110 [ib_uverbs]
-exit_to_user_mode_loop+0x9c/0x130
-exit_to_user_mode_prepare+0xb6/0x100
-syscall_exit_to_user_mode+0x12/0x40
-do_syscall_64+0x69/0x90
-? syscall_exit_work+0x103/0x130
-? syscall_exit_to_user_mode+0x22/0x40
-? do_syscall_64+0x69/0x90
-? syscall_exit_work+0x103/0x130
-? syscall_exit_to_user_mode+0x22/0x40
-? do_syscall_64+0x69/0x90
-? do_syscall_64+0x69/0x90
-? common_interrupt+0x43/0xa0
-entry_SYSCALL_64_after_hwframe+0x72/0xdc
-RIP: 0033:0x1470abe3ec6b
-Code: Unable to access opcode bytes at RIP 0x1470abe3ec41.
-RSP: 002b:00007fff13ce9108 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
-RAX: fffffffffffffffc RBX: 00007fff13ce9218 RCX: 00001470abe3ec6b
-RDX: 00007fff13ce9200 RSI: 00000000c0181b01 RDI: 0000000000000004
-RBP: 00007fff13ce91e0 R08: 0000558d9655da10 R09: 0000558d9655dd00
-R10: 00007fff13ce95c0 R11: 0000000000000246 R12: 00007fff13ce9358
-R13: 0000000000000013 R14: 0000558d9655db50 R15: 00007fff13ce9470
-</TASK>
---[ end trace 888a9b92e04c5c97 ]--
+It does exactly the same thing, it is just intended to be used by
+things that are not doing the IOVA calculation. It is a matter of documentation.
 
-Fixes: df15856132bc ("RDMA/qedr: restructure functions that create/destroy QPs")
-Signed-off-by: Kamal Heib <kheib@redhat.com>
----
- drivers/infiniband/hw/qedr/verbs.c | 11 ++++++++++-
- 1 file changed, 10 insertions(+), 1 deletion(-)
+> I can make a special helper, but I do not think that it will be useful to anyone. Plus,
+> there is no better approach then halving the page size, so the helper will end up with that
+> loop under the hood. As I see mlnx also uses a loop with halving page_sz, but for a different
+> purpose, I do not see why our code cannot do the same without a special helper.
 
-diff --git a/drivers/infiniband/hw/qedr/verbs.c b/drivers/infiniband/hw/qedr/verbs.c
-index 7887a6786ed4..f118ce0a9a61 100644
---- a/drivers/infiniband/hw/qedr/verbs.c
-+++ b/drivers/infiniband/hw/qedr/verbs.c
-@@ -1879,8 +1879,17 @@ static int qedr_create_user_qp(struct qedr_dev *dev,
- 		/* RQ - read access only (0) */
- 		rc = qedr_init_user_queue(udata, dev, &qp->urq, ureq.rq_addr,
- 					  ureq.rq_len, true, 0, alloc_and_init);
--		if (rc)
-+		if (rc) {
-+			ib_umem_release(qp->usq.umem);
-+			qp->usq.umem = NULL;
-+			if (rdma_protocol_roce(&dev->ibdev, 1)) {
-+				qedr_free_pbl(dev, &qp->usq.pbl_info,
-+					      qp->usq.pbl_tbl);
-+			} else {
-+				kfree(qp->usq.pbl_tbl);
-+			}
- 			return rc;
-+		}
- 	}
- 
- 	memset(&in_params, 0, sizeof(in_params));
--- 
-2.43.0
+Are you sure you don't need the length check too? You have a granular
+size but not a granular offset?
 
+In that case yes, a helper does not seem necessary
+
+However, you should still be calling ib_umem_find_best_pgoff() for
+the initialize sizing as a matter of clarity since this is not a MR
+and does not use IOVA addressing.
+
+Jason
 
