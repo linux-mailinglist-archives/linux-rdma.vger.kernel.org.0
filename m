@@ -1,139 +1,152 @@
-Return-Path: <linux-rdma+bounces-1000-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-1001-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 69CC18512B6
-	for <lists+linux-rdma@lfdr.de>; Mon, 12 Feb 2024 12:54:39 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1478085157B
+	for <lists+linux-rdma@lfdr.de>; Mon, 12 Feb 2024 14:40:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 05D981F26314
-	for <lists+linux-rdma@lfdr.de>; Mon, 12 Feb 2024 11:54:39 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BF82F285996
+	for <lists+linux-rdma@lfdr.de>; Mon, 12 Feb 2024 13:40:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E298D39AC3;
-	Mon, 12 Feb 2024 11:54:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9FB003A8CF;
+	Mon, 12 Feb 2024 13:33:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="e4YSOE3Y"
+	dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b="omgxMKVN"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-oa1-f47.google.com (mail-oa1-f47.google.com [209.85.160.47])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A46BA39FC0
-	for <linux-rdma@vger.kernel.org>; Mon, 12 Feb 2024 11:54:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6D9328485
+	for <linux-rdma@vger.kernel.org>; Mon, 12 Feb 2024 13:33:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707738872; cv=none; b=IxuIac+qcCki7kVaUgPrD6FXE47klOFvlOxYsxOuFkjocdv7GxC0kpse7LaqTwOKoA330sBNmpvMBRyWXDOPy/+xTenagooKE7rU0ubMq0uvCjLi572Q15cIdmGkiX7aB42CIOrMlw9DCRglmOr/aGCMSpAcWgNBhiP7f1tR9y4=
+	t=1707744788; cv=none; b=Ej/jlpMKIi0xzTBoP/nPJBiLGuCWpJ0+7vJH1RZVyLe6Ps63wv2Zw2E2kTio2vK0ZbItUgDaUPw9ASsU+ytFXryaJhfIzWB3vVBxjgedmJ3wOgNdfamFO8NGUkV3AfE408rqWuPbB24Z5TOga0jMTYZZXLbK2rPCWLxa71h0Xn4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707738872; c=relaxed/simple;
-	bh=AWNodlCYMjZsg+DkRVa8m+ilVAUZUxbdlrEgKRxhNpU=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Message-Id:Date:
-	 MIME-Version:Content-Type; b=tcP0E/VbyjXQuuIO+DXmaG69lo4bB93gMHzhlvqh3lD4SkESfSupioSEF1BcxRdC1JfVXlkjkHVt83gb/nj3TxtBdV80hpJPouNibxm66wp+2qbmtv+9XMke++VPThSK/84BE9SlF3tD6mAvCiKlkCs4gelZYfFopKByfsIGqlA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=e4YSOE3Y; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 95AFCC433C7;
-	Mon, 12 Feb 2024 11:54:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1707738872;
-	bh=AWNodlCYMjZsg+DkRVa8m+ilVAUZUxbdlrEgKRxhNpU=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-	b=e4YSOE3YfLrG/A3GlnB37a8VqkkpUSP7FW+XzWo8g4lBiFwNXKXClZ5dCq7S5wxjw
-	 4bcx3m0qLQgFZLca8H9kSg8iutF0FZGcJeiXIiQFyez19uSrjHf3ExuJqp2VeJoXFZ
-	 Yyqxw6qRDDR97JWC8DJNDzWLEaYynZtJbKYDqScEA6fSwU60t1lP4sqknmdlY4IEHc
-	 GxUqGIw1vVmGoUdw0XrsvB+Skj89EfhGvQQbazCVOIk2GSlevZQjP5uz6xWNhxC/62
-	 mVo+REexO8346pLWdJ6ipSNf3uDDPtecSZ0ppjGL72mH3rI55PCamYZ/ubEYCtepl8
-	 oB4VGlorebBug==
-From: Leon Romanovsky <leon@kernel.org>
-To: linux-rdma@vger.kernel.org, Kamal Heib <kheib@redhat.com>
-Cc: Jason Gunthorpe <jgg@ziepe.ca>, Michal Kalderon <mkalderon@marvell.com>
-In-Reply-To: <20240208223628.2040841-1-kheib@redhat.com>
-References: <20240208223628.2040841-1-kheib@redhat.com>
-Subject: Re: [PATCH for-rc v1] RDMA/qedr: Fix qedr_create_user_qp error flow
-Message-Id: <170773886778.155615.13311325997355676005.b4-ty@kernel.org>
-Date: Mon, 12 Feb 2024 13:54:27 +0200
+	s=arc-20240116; t=1707744788; c=relaxed/simple;
+	bh=2nkgJqrMm6cheV8jZl1VcHp7Khu+3Fo9ys61eSAPCAQ=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=cRz7RnX9wJAxXE5wEYg+/Sg3nUhNfUejEnMbByt9hBnCAKRXa3QFXeEg48KO+ZMaZbLNY0hCnmFIkylT7xTIo54ZwMSulgYG/nysfcpavx6ajQuwcYmOLXQcImAc9xamgvgoS5sRmDsvubm1notgE2MqZdYPuQvr1+pWKUzyw4E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca; spf=pass smtp.mailfrom=ziepe.ca; dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b=omgxMKVN; arc=none smtp.client-ip=209.85.160.47
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ziepe.ca
+Received: by mail-oa1-f47.google.com with SMTP id 586e51a60fabf-210c535a19bso1998554fac.1
+        for <linux-rdma@vger.kernel.org>; Mon, 12 Feb 2024 05:33:06 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google; t=1707744785; x=1708349585; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=vqmzoVAOCPjPktZaceP/ZzYn3tgPcXj8AE2gRsFqtGs=;
+        b=omgxMKVNhegK2CVPgHwHPNFr/e5pG6MXbf18yUJHjl0MYvmC8UCz1Vbk9iAHt9bXFD
+         oOjLiLVM3YWFbKceFIT5eHpP8fz7sAvzHn0pN1V/dlF+CtGf0yrJDWBD1Bs1L9aoDwHg
+         voUjgXmgcE1VnoUx9e/0KyycwBd+milaIQD4g7tcgRjBXRSXITV+iwf9hn5q5s4GRxOR
+         5HEJ8Yc9LpDtfZtEdVU+aEE4/pq/fWRjTVXC9x5gVFwhezRw//WbJNVkV5GLeKtqIjaQ
+         A7EYxLs/EWvsSS542AwCDf1Rkxp6aiN0m0IjKkT71ud+g0VdU8aJU42npH+WoWtiDjZm
+         UCew==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707744785; x=1708349585;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=vqmzoVAOCPjPktZaceP/ZzYn3tgPcXj8AE2gRsFqtGs=;
+        b=JHCHK81aqQHWhXwAUZ1KIeVfiXfGI7vhy6fQjAeXtQTioONlDM0nfai0VXdpd07klF
+         R07qdVNf8x3XqO25GrnKSazjmJeIqw8niUKchToDa+aiLsGYBAijvKvYbZkgMLNX5cHA
+         IAqKNtV6kJr6HQ3WZqWUddN5eltjiyfALRi+NSf1G3ExvrwjqtZf7fxdw8NOcqyf3faX
+         X5LeUXwvO/d4juc3FD2fqp0bUwYpBdENPMy7rbN9R6mN5hokUP+1ho9dAsfxa0xRtH9Z
+         YyGRAH9/T+D5SsuESCXrYFCdQRlQxMXQeqJwBZlwhlnl3cdwqK/lcJoBgY02j7LkG+Do
+         cM6w==
+X-Forwarded-Encrypted: i=1; AJvYcCW8+EmEtUzyFl2/u885zpSiLV8n74KfvBVujcnXoNwwtdrIz9Mqd8ZnljXEMtOYtaimw27WTbD1n8PSQOJvEB9JfPxk8hNDk6331g==
+X-Gm-Message-State: AOJu0Yx1RIE/d8760llARgnlDmPTixmYkQJ7ZomRKGdrEipu393hNqY4
+	zHMjVz/jg9glMuEnQKe76Ub2oUTGOshg8CzQ/F/nXapq5RNwxHVwKVOnVg4Nb3E=
+X-Google-Smtp-Source: AGHT+IEz/OrygRuUacZFdjm+bCqwGssoBUn7XzqLxIw/0zkfnU4jU9YsjcnSUMtReHC32oezwAcY5g==
+X-Received: by 2002:a05:6870:64a8:b0:219:3db5:b540 with SMTP id cz40-20020a05687064a800b002193db5b540mr6962808oab.41.1707744785297;
+        Mon, 12 Feb 2024 05:33:05 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCXqdxSvCBQmxOwS+rFy2SUw3iffWpNqCvnd+P+nb2gMg4wUDvX1WVuTdPZwaxyFvhaAls3faC4hlANsCWHWxYcP5A/rik7qZXv8X/wF5XgUvBs8OaRyQTT/v8hee+Uvh4maZF3ZLSNJIfIsr/5rs6TgJ4PjLxr4lHBoZ759NOIEsXphAA==
+Received: from ziepe.ca (hlfxns017vw-142-68-80-239.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.68.80.239])
+        by smtp.gmail.com with ESMTPSA id ny6-20020a056871750600b00219d2d04058sm1395997oac.55.2024.02.12.05.33.04
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 12 Feb 2024 05:33:04 -0800 (PST)
+Received: from jgg by wakko with local (Exim 4.95)
+	(envelope-from <jgg@ziepe.ca>)
+	id 1rZWQh-00GuMa-AV;
+	Mon, 12 Feb 2024 09:33:03 -0400
+Date: Mon, 12 Feb 2024 09:33:03 -0400
+From: Jason Gunthorpe <jgg@ziepe.ca>
+To: Kevan Rehm <kevanrehm@gmail.com>
+Cc: Mark Zhang <markzhang@nvidia.com>, Leon Romanovsky <leon@kernel.org>,
+	"linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+	Yishai Hadas <yishaih@nvidia.com>, kevan.rehm@hpe.com
+Subject: Re: Segfault in mlx5 driver on infiniband after application fork
+Message-ID: <20240212133303.GA765010@ziepe.ca>
+References: <3CAF66C4-32E1-4258-9656-D886843D7771@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Mailer: b4 0.12-dev-a055d
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <3CAF66C4-32E1-4258-9656-D886843D7771@gmail.com>
 
-
-On Thu, 08 Feb 2024 17:36:28 -0500, Kamal Heib wrote:
-> Avoid the following warning by making sure to free the allocated
-> resources in case that qedr_init_user_queue() fail.
+On Sun, Feb 11, 2024 at 02:24:16PM -0500, Kevan Rehm wrote:
 > 
-> -----------[ cut here ]-----------
-> WARNING: CPU: 0 PID: 143192 at drivers/infiniband/core/rdma_core.c:874 uverbs_destroy_ufile_hw+0xcf/0xf0 [ib_uverbs]
-> Modules linked in: tls target_core_user uio target_core_pscsi target_core_file target_core_iblock ib_srpt ib_srp scsi_transport_srp nfsd nfs_acl rpcsec_gss_krb5 auth_rpcgss nfsv4 dns_resolver nfs lockd grace fscache netfs 8021q garp mrp stp llc ext4 mbcache jbd2 opa_vnic ib_umad ib_ipoib sunrpc rdma_ucm ib_isert iscsi_target_mod target_core_mod ib_iser libiscsi scsi_transport_iscsi rdma_cm iw_cm ib_cm hfi1 intel_rapl_msr intel_rapl_common mgag200 qedr sb_edac drm_shmem_helper rdmavt x86_pkg_temp_thermal drm_kms_helper intel_powerclamp ib_uverbs coretemp i2c_algo_bit kvm_intel dell_wmi_descriptor ipmi_ssif sparse_keymap kvm ib_core rfkill syscopyarea sysfillrect video sysimgblt irqbypass ipmi_si ipmi_devintf fb_sys_fops rapl iTCO_wdt mxm_wmi iTCO_vendor_support intel_cstate pcspkr dcdbas intel_uncore ipmi_msghandler lpc_ich acpi_power_meter mei_me mei fuse drm xfs libcrc32c qede sd_mod ahci libahci t10_pi sg crct10dif_pclmul crc32_pclmul crc32c_intel qed libata tg3
-> ghash_clmulni_intel megaraid_sas crc8 wmi [last unloaded: ib_srpt]
-> CPU: 0 PID: 143192 Comm: fi_rdm_tagged_p Kdump: loaded Not tainted 5.14.0-408.el9.x86_64 #1
-> Hardware name: Dell Inc. PowerEdge R430/03XKDV, BIOS 2.14.0 01/25/2022
-> RIP: 0010:uverbs_destroy_ufile_hw+0xcf/0xf0 [ib_uverbs]
-> Code: 5d 41 5c 41 5d 41 5e e9 0f 26 1b dd 48 89 df e8 67 6a ff ff 49 8b 86 10 01 00 00 48 85 c0 74 9c 4c 89 e7 e8 83 c0 cb dd eb 92 <0f> 0b eb be 0f 0b be 04 00 00 00 48 89 df e8 8e f5 ff ff e9 6d ff
-> RSP: 0018:ffffb7c6cadfbc60 EFLAGS: 00010286
-> RAX: ffff8f0889ee3f60 RBX: ffff8f088c1a5200 RCX: 00000000802a0016
-> RDX: 00000000802a0017 RSI: 0000000000000001 RDI: ffff8f0880042600
-> RBP: 0000000000000001 R08: 0000000000000001 R09: 0000000000000000
-> R10: ffff8f11fffd5000 R11: 0000000000039000 R12: ffff8f0d5b36cd80
-> R13: ffff8f088c1a5250 R14: ffff8f1206d91000 R15: 0000000000000000
-> FS: 0000000000000000(0000) GS:ffff8f11d7c00000(0000) knlGS:0000000000000000
-> CS: 0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> CR2: 0000147069200e20 CR3: 00000001c7210002 CR4: 00000000001706f0
-> Call Trace:
-> <TASK>
-> ? show_trace_log_lvl+0x1c4/0x2df
-> ? show_trace_log_lvl+0x1c4/0x2df
-> ? ib_uverbs_close+0x1f/0xb0 [ib_uverbs]
-> ? uverbs_destroy_ufile_hw+0xcf/0xf0 [ib_uverbs]
-> ? __warn+0x81/0x110
-> ? uverbs_destroy_ufile_hw+0xcf/0xf0 [ib_uverbs]
-> ? report_bug+0x10a/0x140
-> ? handle_bug+0x3c/0x70
-> ? exc_invalid_op+0x14/0x70
-> ? asm_exc_invalid_op+0x16/0x20
-> ? uverbs_destroy_ufile_hw+0xcf/0xf0 [ib_uverbs]
-> ib_uverbs_close+0x1f/0xb0 [ib_uverbs]
-> __fput+0x94/0x250
-> task_work_run+0x5c/0x90
-> do_exit+0x270/0x4a0
-> do_group_exit+0x2d/0x90
-> get_signal+0x87c/0x8c0
-> arch_do_signal_or_restart+0x25/0x100
-> ? ib_uverbs_ioctl+0xc2/0x110 [ib_uverbs]
-> exit_to_user_mode_loop+0x9c/0x130
-> exit_to_user_mode_prepare+0xb6/0x100
-> syscall_exit_to_user_mode+0x12/0x40
-> do_syscall_64+0x69/0x90
-> ? syscall_exit_work+0x103/0x130
-> ? syscall_exit_to_user_mode+0x22/0x40
-> ? do_syscall_64+0x69/0x90
-> ? syscall_exit_work+0x103/0x130
-> ? syscall_exit_to_user_mode+0x22/0x40
-> ? do_syscall_64+0x69/0x90
-> ? do_syscall_64+0x69/0x90
-> ? common_interrupt+0x43/0xa0
-> entry_SYSCALL_64_after_hwframe+0x72/0xdc
-> RIP: 0033:0x1470abe3ec6b
-> Code: Unable to access opcode bytes at RIP 0x1470abe3ec41.
-> RSP: 002b:00007fff13ce9108 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
-> RAX: fffffffffffffffc RBX: 00007fff13ce9218 RCX: 00001470abe3ec6b
-> RDX: 00007fff13ce9200 RSI: 00000000c0181b01 RDI: 0000000000000004
-> RBP: 00007fff13ce91e0 R08: 0000558d9655da10 R09: 0000558d9655dd00
-> R10: 00007fff13ce95c0 R11: 0000000000000246 R12: 00007fff13ce9358
-> R13: 0000000000000013 R14: 0000558d9655db50 R15: 00007fff13ce9470
-> </TASK>
-> --[ end trace 888a9b92e04c5c97 ]--
+> >> An application started by pytorch does a fork, then the child
+> >> process attempts to use libfabric to open a new DAOS infiniband
+> >> endpoint.  The original endpoint is owned and still in use by the
+> >> parent process.
+> >>
+> >> When the parent process created the endpoint (fi_fabric,
+> >> fi_domain, fi_endpoint calls), the mlx5 driver allocated memory
+> >> pages for use in SRQ creation, and issued a madvise to say that
+> >> the pages are DONTFORK.  These pages are associated with the
+> >> domain’sibv_device which is cached in the driver.  After the fork
+> >> when the child process calls fi_domain for its new endpoint, it
+> >> gets the ibv_device that was cached at the time it was created by
+> >> the parent.  The child process immediately segfaults when trying
+> >> to create a SRQ, because the pages associated with that
+> >> ibv_device are not in the child’s memory.  There doesn’t appear
+> >> to be any way for a child process to create a fresh endpoint
+> >> because of the caching being done for ibv_devices.
 > 
-> [...]
+> > For anyone who is interested in this issue, please follow the links below:
+> > https://github.com/ofiwg/libfabric/issues/9792
+> > https://daosio.atlassian.net/browse/DAOS-15117
+> > 
+> > Regarding the issue, I don't know if mlx5 actively used to run
+> > libfabric, but the mentioned call to ibv_dontfork_range() existed from
+> > prehistoric era.
+> 
+> Yes, libfabric has used mlx5 for a long time.
+> 
+> > Do you have any environment variables set related to rdma-core?
+> > 
+> IBV_FORK_SAFE is set to 1
+> 
+> > Is it reated to ibv_fork_init()? It must be called when fork() is called.
+> 
+> Calling ibv_fork_init() doesn’t help, because it immediately checks mm_root, sees it is non-zero (from the parent process’s prior call), and returns doing nothing.
+> There is now a simplified test case, see https://github.com/ofiwg/libfabric/issues/9792 for ongoing analysis.
 
-Applied, thanks!
+This was all fixed in the kernel, upgrade your kernel and forking
+works much more reliably, but I'm not sure this case will work.
 
-[1/1] RDMA/qedr: Fix qedr_create_user_qp error flow
-      https://git.kernel.org/rdma/rdma/c/5ba4e6d5863c53
+It is a libfabric problem if it is expecting memory to be registers
+for RDMA and be used by both processes in a fork. That cannot work.
 
-Best regards,
--- 
-Leon Romanovsky <leon@kernel.org>
+Don't do that, or make the memory MAP_SHARED so that the fork children
+can access it.
+
+The bugs seem a bit confused, there is no issue with ibv_device
+sharing. Only with actually sharing underlying registered memory. Ie
+sharing a SRQ memory pool between the child and parent.
+
+"fork safe" does not magically make all scenarios work, it is
+targetted at a specific use case where a rdma using process forks and
+the fork does not continue to use rdma.
+
+Jason
 
