@@ -1,190 +1,139 @@
-Return-Path: <linux-rdma+bounces-999-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-1000-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 459BE8510CE
-	for <lists+linux-rdma@lfdr.de>; Mon, 12 Feb 2024 11:27:56 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 69CC18512B6
+	for <lists+linux-rdma@lfdr.de>; Mon, 12 Feb 2024 12:54:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 9F887B24E9D
-	for <lists+linux-rdma@lfdr.de>; Mon, 12 Feb 2024 10:27:53 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 05D981F26314
+	for <lists+linux-rdma@lfdr.de>; Mon, 12 Feb 2024 11:54:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AFF8237179;
-	Mon, 12 Feb 2024 10:26:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E298D39AC3;
+	Mon, 12 Feb 2024 11:54:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="e4YSOE3Y"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-il1-f197.google.com (mail-il1-f197.google.com [209.85.166.197])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 90CBB2C870
-	for <linux-rdma@vger.kernel.org>; Mon, 12 Feb 2024 10:26:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.197
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A46BA39FC0
+	for <linux-rdma@vger.kernel.org>; Mon, 12 Feb 2024 11:54:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707733587; cv=none; b=rH7cMuQb54FchcD0yZhiixv/R2W4lflDJcyx/q7DZ0hZanJp2enMXRHvnKlvkqRGBRhnmLDigKvJYnwfDXqjSgHV5+wZm4CD9ZUkNYr6duwkhq1ZckaCYCagfBiHDe2W7Yo1eIf9c153Gg+AeK1RZnw13id90/MGs4LRyEKYPnk=
+	t=1707738872; cv=none; b=IxuIac+qcCki7kVaUgPrD6FXE47klOFvlOxYsxOuFkjocdv7GxC0kpse7LaqTwOKoA330sBNmpvMBRyWXDOPy/+xTenagooKE7rU0ubMq0uvCjLi572Q15cIdmGkiX7aB42CIOrMlw9DCRglmOr/aGCMSpAcWgNBhiP7f1tR9y4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707733587; c=relaxed/simple;
-	bh=+mjFm5nuMFtGmd7VSuVSWTR7s1VOXRYw4CPk4dsKHBw=;
-	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=tpJ3d56qhXtGVn7eZRMtxm2BLDJVfN8/QC2rH50bKdsAwV1xXcFR2hHCqe9CGcZYmZVruOLL2hJtGQi8+3jLPBT6LrvGCLRQ3QY596BLvuub4FD2f3DoDF0Eq5Nu/osdQq+xgSBOLXHE2fuxIF4QVK/ySm5CE5L6UPcMnZkuyDQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.197
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-il1-f197.google.com with SMTP id e9e14a558f8ab-363d6348a07so26687795ab.3
-        for <linux-rdma@vger.kernel.org>; Mon, 12 Feb 2024 02:26:25 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707733584; x=1708338384;
-        h=content-transfer-encoding:to:from:subject:message-id:date
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=vDurUD372HRJxmeXSQF7cfLsM+JRV83tAlhXhyo/df0=;
-        b=F3N2TcG2IbJRSq4vxsGYHnEzQdn7aCWQNzgOfwRKNyKvPKO6qn70TIN0dG/PWAsVUp
-         OPPa/cyHuzeQMR3BOPqm6Ax7yTn3k6KHViHi66BKDvE5y+PsJt9HToae6e/V19n6wwKT
-         D/0NHVVO92VxcmnMRTQjiaBDlbLA919Ajog9Mr8scdUyFwlvXMlWRe6WmCM4YbJ0DFwN
-         x1qJzVdWvcvQ+Ar+5CCeotkY5WLolINklMPlA+miOEo+oUrVl10wiSZ5/N0htjdG2cuR
-         IjIqccpxjXSkelMC6g3U+FgYbfJLrpWyQfKHFDPOd98pXFtb0bmIYLR2wNX829HGYjya
-         D56g==
-X-Forwarded-Encrypted: i=1; AJvYcCUOJ66VV1uGtYww59CxQ6Gi1hKiEELo4YOH7Ed5QWeH3KQw7xXqVKThqhRhAXj1c3pcnV/IbTkjrh5PK+cBijFS7azMR6BdRGyZew==
-X-Gm-Message-State: AOJu0YxUiK9QcdpjJCwe+mqFUK6QYrr7btelpetzQ8DzJNxLG+ki3oGf
-	suahhrxhMLO3Ite1CLm4fZaN9zgAsbnFeCcjbmRfcbYxMFPJL4huGvzca2mLiHnT4uN1Z2dyFZ7
-	Js2ZpgGLT5ZYFOMT8I4o/kdzTv6gIiRCOak5Wvm4qHzVXR0wsknjqCU8=
-X-Google-Smtp-Source: AGHT+IFOg0dq76d8mUpJQh2S5UBdwB8eUZtsYdpCGHHlhw7n2SnBCSMtgzF25Xofz1YTxEEB3nsNVYPmiXDaVI+RZBQamxdH69Gg
+	s=arc-20240116; t=1707738872; c=relaxed/simple;
+	bh=AWNodlCYMjZsg+DkRVa8m+ilVAUZUxbdlrEgKRxhNpU=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Message-Id:Date:
+	 MIME-Version:Content-Type; b=tcP0E/VbyjXQuuIO+DXmaG69lo4bB93gMHzhlvqh3lD4SkESfSupioSEF1BcxRdC1JfVXlkjkHVt83gb/nj3TxtBdV80hpJPouNibxm66wp+2qbmtv+9XMke++VPThSK/84BE9SlF3tD6mAvCiKlkCs4gelZYfFopKByfsIGqlA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=e4YSOE3Y; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 95AFCC433C7;
+	Mon, 12 Feb 2024 11:54:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1707738872;
+	bh=AWNodlCYMjZsg+DkRVa8m+ilVAUZUxbdlrEgKRxhNpU=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+	b=e4YSOE3YfLrG/A3GlnB37a8VqkkpUSP7FW+XzWo8g4lBiFwNXKXClZ5dCq7S5wxjw
+	 4bcx3m0qLQgFZLca8H9kSg8iutF0FZGcJeiXIiQFyez19uSrjHf3ExuJqp2VeJoXFZ
+	 Yyqxw6qRDDR97JWC8DJNDzWLEaYynZtJbKYDqScEA6fSwU60t1lP4sqknmdlY4IEHc
+	 GxUqGIw1vVmGoUdw0XrsvB+Skj89EfhGvQQbazCVOIk2GSlevZQjP5uz6xWNhxC/62
+	 mVo+REexO8346pLWdJ6ipSNf3uDDPtecSZ0ppjGL72mH3rI55PCamYZ/ubEYCtepl8
+	 oB4VGlorebBug==
+From: Leon Romanovsky <leon@kernel.org>
+To: linux-rdma@vger.kernel.org, Kamal Heib <kheib@redhat.com>
+Cc: Jason Gunthorpe <jgg@ziepe.ca>, Michal Kalderon <mkalderon@marvell.com>
+In-Reply-To: <20240208223628.2040841-1-kheib@redhat.com>
+References: <20240208223628.2040841-1-kheib@redhat.com>
+Subject: Re: [PATCH for-rc v1] RDMA/qedr: Fix qedr_create_user_qp error flow
+Message-Id: <170773886778.155615.13311325997355676005.b4-ty@kernel.org>
+Date: Mon, 12 Feb 2024 13:54:27 +0200
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:1bc7:b0:363:e134:a158 with SMTP id
- x7-20020a056e021bc700b00363e134a158mr454179ilv.5.1707733584807; Mon, 12 Feb
- 2024 02:26:24 -0800 (PST)
-Date: Mon, 12 Feb 2024 02:26:24 -0800
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000b18dd106112cb53c@google.com>
-Subject: [syzbot] [rdma?] WARNING: ODEBUG bug in siw_netdev_event
-From: syzbot <syzbot+e7c51d3be3a5ddfa0d7a@syzkaller.appspotmail.com>
-To: bmt@zurich.ibm.com, jgg@ziepe.ca, leon@kernel.org, 
-	linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org, 
-	netdev@vger.kernel.org, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-
-Hello,
-
-syzbot found the following issue on:
-
-HEAD commit:    b1d3a0e70c38 Add linux-next specific files for 20240208
-git tree:       linux-next
-console output: https://syzkaller.appspot.com/x/log.txt?x=3D1325c020180000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=3Dbb693ba195662a0=
-6
-dashboard link: https://syzkaller.appspot.com/bug?extid=3De7c51d3be3a5ddfa0=
-d7a
-compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debia=
-n) 2.40
-
-Unfortunately, I don't have any reproducer for this issue yet.
-
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/176a6b395bbe/disk-=
-b1d3a0e7.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/02d7d46f81bd/vmlinux-=
-b1d3a0e7.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/18a5a5030e19/bzI=
-mage-b1d3a0e7.xz
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit=
-:
-Reported-by: syzbot+e7c51d3be3a5ddfa0d7a@syzkaller.appspotmail.com
-
-netlink: 'syz-executor.1': attribute type 27 has an invalid length.
-netlink: 4 bytes leftover after parsing attributes in process `syz-executor=
-.1'.
-=1F: port 3(erspan0) entered disabled state
-------------[ cut here ]------------
-ODEBUG: init active (active state 0) object: ffff88802de95128 object type: =
-work_struct hint: siw_netdev_down+0x0/0x1f0
-WARNING: CPU: 1 PID: 16397 at lib/debugobjects.c:517 debug_print_object+0x1=
-7a/0x1f0 lib/debugobjects.c:514
-Modules linked in:
-CPU: 1 PID: 16397 Comm: syz-executor.1 Not tainted 6.8.0-rc3-next-20240208-=
-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Goo=
-gle 01/25/2024
-RIP: 0010:debug_print_object+0x17a/0x1f0 lib/debugobjects.c:514
-Code: e8 1b e3 4d fd 4c 8b 0b 48 c7 c7 00 89 fe 8b 48 8b 74 24 08 48 89 ea =
-44 89 e1 4d 89 f8 ff 34 24 e8 2b 97 ae fc 48 83 c4 08 90 <0f> 0b 90 90 ff 0=
-5 bc 2f dd 0a 48 83 c4 10 5b 41 5c 41 5d 41 5e 41
-RSP: 0018:ffffc90014536758 EFLAGS: 00010282
-RAX: 5f296badc3198f00 RBX: ffffffff8ba9e6a0 RCX: 0000000000040000
-RDX: ffffc90004f8b000 RSI: 000000000003ffff RDI: 0000000000040000
-RBP: ffffffff8bfe8a80 R08: ffffffff8157b862 R09: fffffbfff1bf95c4
-R10: dffffc0000000000 R11: fffffbfff1bf95c4 R12: 0000000000000000
-R13: ffffffff8bfe8998 R14: dffffc0000000000 R15: ffff88802de95128
-FS:  00007fc00b12a6c0(0000) GS:ffff8880b9500000(0000) knlGS:000000000000000=
-0
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007fa1fd40f000 CR3: 000000003e1a6000 CR4: 00000000003506f0
-DR0: 000000000000d8dd DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000ffff0ff0 DR7: 0000000000000400
-Call Trace:
- <TASK>
- __debug_object_init+0x2a9/0x400 lib/debugobjects.c:653
- siw_device_goes_down drivers/infiniband/sw/siw/siw_main.c:395 [inline]
- siw_netdev_event+0x3bd/0x620 drivers/infiniband/sw/siw/siw_main.c:422
- notifier_call_chain+0x18f/0x3b0 kernel/notifier.c:93
- call_netdevice_notifiers_extack net/core/dev.c:2012 [inline]
- call_netdevice_notifiers net/core/dev.c:2026 [inline]
- __dev_close_many+0x146/0x300 net/core/dev.c:1512
- __dev_close net/core/dev.c:1550 [inline]
- __dev_change_flags+0x30e/0x6f0 net/core/dev.c:8683
- dev_change_flags+0x8b/0x1a0 net/core/dev.c:8757
- do_setlink+0xcb0/0x41c0 net/core/rtnetlink.c:2894
- rtnl_group_changelink net/core/rtnetlink.c:3443 [inline]
- __rtnl_newlink net/core/rtnetlink.c:3702 [inline]
- rtnl_newlink+0x1117/0x20a0 net/core/rtnetlink.c:3739
- rtnetlink_rcv_msg+0x885/0x1040 net/core/rtnetlink.c:6606
- netlink_rcv_skb+0x1e3/0x430 net/netlink/af_netlink.c:2543
- netlink_unicast_kernel net/netlink/af_netlink.c:1341 [inline]
- netlink_unicast+0x7ea/0x980 net/netlink/af_netlink.c:1367
- netlink_sendmsg+0xa3c/0xd70 net/netlink/af_netlink.c:1908
- sock_sendmsg_nosec net/socket.c:730 [inline]
- __sock_sendmsg+0x221/0x270 net/socket.c:745
- ____sys_sendmsg+0x525/0x7d0 net/socket.c:2584
- ___sys_sendmsg net/socket.c:2638 [inline]
- __sys_sendmsg+0x2b0/0x3a0 net/socket.c:2667
- do_syscall_64+0xfb/0x240
- entry_SYSCALL_64_after_hwframe+0x6d/0x75
-RIP: 0033:0x7fc00a47dda9
-Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 e1 20 00 00 90 48 89 f8 48 89 f7 =
-48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff f=
-f 73 01 c3 48 c7 c1 b0 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007fc00b12a0c8 EFLAGS: 00000246 ORIG_RAX: 000000000000002e
-RAX: ffffffffffffffda RBX: 00007fc00a5ac1f0 RCX: 00007fc00a47dda9
-RDX: 0000000000000000 RSI: 0000000020006440 RDI: 0000000000000005
-RBP: 00007fc00a4ca47a R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
-R13: 000000000000006e R14: 00007fc00a5ac1f0 R15: 00007fff19fc38d8
- </TASK>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Mailer: b4 0.12-dev-a055d
 
 
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+On Thu, 08 Feb 2024 17:36:28 -0500, Kamal Heib wrote:
+> Avoid the following warning by making sure to free the allocated
+> resources in case that qedr_init_user_queue() fail.
+> 
+> -----------[ cut here ]-----------
+> WARNING: CPU: 0 PID: 143192 at drivers/infiniband/core/rdma_core.c:874 uverbs_destroy_ufile_hw+0xcf/0xf0 [ib_uverbs]
+> Modules linked in: tls target_core_user uio target_core_pscsi target_core_file target_core_iblock ib_srpt ib_srp scsi_transport_srp nfsd nfs_acl rpcsec_gss_krb5 auth_rpcgss nfsv4 dns_resolver nfs lockd grace fscache netfs 8021q garp mrp stp llc ext4 mbcache jbd2 opa_vnic ib_umad ib_ipoib sunrpc rdma_ucm ib_isert iscsi_target_mod target_core_mod ib_iser libiscsi scsi_transport_iscsi rdma_cm iw_cm ib_cm hfi1 intel_rapl_msr intel_rapl_common mgag200 qedr sb_edac drm_shmem_helper rdmavt x86_pkg_temp_thermal drm_kms_helper intel_powerclamp ib_uverbs coretemp i2c_algo_bit kvm_intel dell_wmi_descriptor ipmi_ssif sparse_keymap kvm ib_core rfkill syscopyarea sysfillrect video sysimgblt irqbypass ipmi_si ipmi_devintf fb_sys_fops rapl iTCO_wdt mxm_wmi iTCO_vendor_support intel_cstate pcspkr dcdbas intel_uncore ipmi_msghandler lpc_ich acpi_power_meter mei_me mei fuse drm xfs libcrc32c qede sd_mod ahci libahci t10_pi sg crct10dif_pclmul crc32_pclmul crc32c_intel qed libata tg3
+> ghash_clmulni_intel megaraid_sas crc8 wmi [last unloaded: ib_srpt]
+> CPU: 0 PID: 143192 Comm: fi_rdm_tagged_p Kdump: loaded Not tainted 5.14.0-408.el9.x86_64 #1
+> Hardware name: Dell Inc. PowerEdge R430/03XKDV, BIOS 2.14.0 01/25/2022
+> RIP: 0010:uverbs_destroy_ufile_hw+0xcf/0xf0 [ib_uverbs]
+> Code: 5d 41 5c 41 5d 41 5e e9 0f 26 1b dd 48 89 df e8 67 6a ff ff 49 8b 86 10 01 00 00 48 85 c0 74 9c 4c 89 e7 e8 83 c0 cb dd eb 92 <0f> 0b eb be 0f 0b be 04 00 00 00 48 89 df e8 8e f5 ff ff e9 6d ff
+> RSP: 0018:ffffb7c6cadfbc60 EFLAGS: 00010286
+> RAX: ffff8f0889ee3f60 RBX: ffff8f088c1a5200 RCX: 00000000802a0016
+> RDX: 00000000802a0017 RSI: 0000000000000001 RDI: ffff8f0880042600
+> RBP: 0000000000000001 R08: 0000000000000001 R09: 0000000000000000
+> R10: ffff8f11fffd5000 R11: 0000000000039000 R12: ffff8f0d5b36cd80
+> R13: ffff8f088c1a5250 R14: ffff8f1206d91000 R15: 0000000000000000
+> FS: 0000000000000000(0000) GS:ffff8f11d7c00000(0000) knlGS:0000000000000000
+> CS: 0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> CR2: 0000147069200e20 CR3: 00000001c7210002 CR4: 00000000001706f0
+> Call Trace:
+> <TASK>
+> ? show_trace_log_lvl+0x1c4/0x2df
+> ? show_trace_log_lvl+0x1c4/0x2df
+> ? ib_uverbs_close+0x1f/0xb0 [ib_uverbs]
+> ? uverbs_destroy_ufile_hw+0xcf/0xf0 [ib_uverbs]
+> ? __warn+0x81/0x110
+> ? uverbs_destroy_ufile_hw+0xcf/0xf0 [ib_uverbs]
+> ? report_bug+0x10a/0x140
+> ? handle_bug+0x3c/0x70
+> ? exc_invalid_op+0x14/0x70
+> ? asm_exc_invalid_op+0x16/0x20
+> ? uverbs_destroy_ufile_hw+0xcf/0xf0 [ib_uverbs]
+> ib_uverbs_close+0x1f/0xb0 [ib_uverbs]
+> __fput+0x94/0x250
+> task_work_run+0x5c/0x90
+> do_exit+0x270/0x4a0
+> do_group_exit+0x2d/0x90
+> get_signal+0x87c/0x8c0
+> arch_do_signal_or_restart+0x25/0x100
+> ? ib_uverbs_ioctl+0xc2/0x110 [ib_uverbs]
+> exit_to_user_mode_loop+0x9c/0x130
+> exit_to_user_mode_prepare+0xb6/0x100
+> syscall_exit_to_user_mode+0x12/0x40
+> do_syscall_64+0x69/0x90
+> ? syscall_exit_work+0x103/0x130
+> ? syscall_exit_to_user_mode+0x22/0x40
+> ? do_syscall_64+0x69/0x90
+> ? syscall_exit_work+0x103/0x130
+> ? syscall_exit_to_user_mode+0x22/0x40
+> ? do_syscall_64+0x69/0x90
+> ? do_syscall_64+0x69/0x90
+> ? common_interrupt+0x43/0xa0
+> entry_SYSCALL_64_after_hwframe+0x72/0xdc
+> RIP: 0033:0x1470abe3ec6b
+> Code: Unable to access opcode bytes at RIP 0x1470abe3ec41.
+> RSP: 002b:00007fff13ce9108 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
+> RAX: fffffffffffffffc RBX: 00007fff13ce9218 RCX: 00001470abe3ec6b
+> RDX: 00007fff13ce9200 RSI: 00000000c0181b01 RDI: 0000000000000004
+> RBP: 00007fff13ce91e0 R08: 0000558d9655da10 R09: 0000558d9655dd00
+> R10: 00007fff13ce95c0 R11: 0000000000000246 R12: 00007fff13ce9358
+> R13: 0000000000000013 R14: 0000558d9655db50 R15: 00007fff13ce9470
+> </TASK>
+> --[ end trace 888a9b92e04c5c97 ]--
+> 
+> [...]
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+Applied, thanks!
 
-If the report is already addressed, let syzbot know by replying with:
-#syz fix: exact-commit-title
+[1/1] RDMA/qedr: Fix qedr_create_user_qp error flow
+      https://git.kernel.org/rdma/rdma/c/5ba4e6d5863c53
 
-If you want to overwrite report's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
-
-If the report is a duplicate of another one, reply with:
-#syz dup: exact-subject-of-another-report
-
-If you want to undo deduplication, reply with:
-#syz undup
+Best regards,
+-- 
+Leon Romanovsky <leon@kernel.org>
 
