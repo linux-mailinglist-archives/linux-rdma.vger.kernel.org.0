@@ -1,80 +1,88 @@
-Return-Path: <linux-rdma+bounces-1008-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-1009-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0FDAE851CBD
-	for <lists+linux-rdma@lfdr.de>; Mon, 12 Feb 2024 19:30:28 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id EF6D5851D7F
+	for <lists+linux-rdma@lfdr.de>; Mon, 12 Feb 2024 20:01:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B95641F21CFB
-	for <lists+linux-rdma@lfdr.de>; Mon, 12 Feb 2024 18:30:27 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A6804287781
+	for <lists+linux-rdma@lfdr.de>; Mon, 12 Feb 2024 19:01:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2C8D63FE4B;
-	Mon, 12 Feb 2024 18:30:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7E7E345BEF;
+	Mon, 12 Feb 2024 19:00:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="FqvSun7R"
+	dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b="lLDikqb7"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-pj1-f51.google.com (mail-pj1-f51.google.com [209.85.216.51])
+Received: from mail-ot1-f48.google.com (mail-ot1-f48.google.com [209.85.210.48])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 877A11E4B4
-	for <linux-rdma@vger.kernel.org>; Mon, 12 Feb 2024 18:30:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A941D4D9E4
+	for <linux-rdma@vger.kernel.org>; Mon, 12 Feb 2024 18:59:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707762621; cv=none; b=R1Rtp0IidjjZ415gNBVcjx62nWBWmogrTn9zoehK9KY1ZBY3yxHVPnRVrxdzOUK57gPC3S129xnRFY3mPihvFTDMhNfIlfjRmvbYHmgEzFTEYHWIsyUwTjhf8HLGR3+MXr9quKCIwF3pD6/QH3a0UgpdtYmtoRaNZUolFVxdmHY=
+	t=1707764400; cv=none; b=Yw9ZZYGYwvtmBCsV/CmXNb44FwzH9hLbRbFrmf2kWucvyoIPLxQlIVwjdwpQrgWyz7cF3cUDe0CTahLBb9PYlfFB2f0qEO6MfYFbEf5xhH/F4fJx0cmRTtqypeNicfuWKUFdtVMpfOZC+pEiyv4cqDPiFkSops6vtXQAU5MX8Bc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707762621; c=relaxed/simple;
-	bh=ljd3GW0VNxjxHS/gV3+xS6+IJarrBJeh1idhgkjc/cE=;
+	s=arc-20240116; t=1707764400; c=relaxed/simple;
+	bh=YK+sGsUdZfCKVzahxbXULih6swELSJdE1qlLN7uwVGM=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=YuEjnih5vWj/cthLVdNIkOShHbZvpOkAW62sTBssg31ECk0eN/U1FRMaV/49UC2n9T4TX6R2lX3yprwuJN7CY2uN2OcrVWl+Pxuw+v9Kd1oVyg8GJNrbcTxO6kJKLCC0sa28txpN7sORTZG+/xwD6I63y84ASsYCQzDyCoTpaNw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=FqvSun7R; arc=none smtp.client-ip=209.85.216.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-pj1-f51.google.com with SMTP id 98e67ed59e1d1-2906bcae4feso1757802a91.3
-        for <linux-rdma@vger.kernel.org>; Mon, 12 Feb 2024 10:30:19 -0800 (PST)
+	 Content-Type:Content-Disposition:In-Reply-To; b=L0oPCResF8Ds2mAN+QZzC9v8QizZzpQM87rkpawCSUnqC4Jr+r5/T1JGWPdknOydM9riEbqKsfiBAAl/+xp3sWcwiHDPyAmJEtsfQr/LxraeJhGC2R3yEl6whlivrTy3gAUfCbr4Zdroj6bC/jFOMRzB/tlHq6l8ulHw89XcTUk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca; spf=pass smtp.mailfrom=ziepe.ca; dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b=lLDikqb7; arc=none smtp.client-ip=209.85.210.48
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ziepe.ca
+Received: by mail-ot1-f48.google.com with SMTP id 46e09a7af769-6e2f12059f4so185939a34.0
+        for <linux-rdma@vger.kernel.org>; Mon, 12 Feb 2024 10:59:58 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1707762619; x=1708367419; darn=vger.kernel.org;
+        d=ziepe.ca; s=google; t=1707764397; x=1708369197; darn=vger.kernel.org;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=N61bSTpFZ2e+PLuAfqmvguTh3fa1HE/2EqLDbYjvwcM=;
-        b=FqvSun7RXHL/H6ytHAgAmKWDsz3oGmPva50Q6H19bG8jjIIOx6FxGGXp4ixLRgCPaZ
-         MeoscEAT60i59UvzXbazQm9s4td6kToCv/VrgMj2porqbI7enwKZWI2PKD/EpUfnl9de
-         QDgISkSoe7Jziqcf89i6BnKQD1lMeNymJ3tAI=
+        bh=YK+sGsUdZfCKVzahxbXULih6swELSJdE1qlLN7uwVGM=;
+        b=lLDikqb72XIUGYz8SWG1QhVietJSjvsR776R3/MhrMoAXfxyxUD4dW17GppSzFyMGE
+         ysDeDpVMMmH8LY08LPAD6uj5t5/Xh2wS6Rg/oOjOvRsdYZ0cFiliJvGUIE5rGuw2O/im
+         CeBzdilEpDjIH0WMl6YFOOXvyxV+mJtIy3xsIdzTWc/2NSH8yx+35Gq2scOiQbqsZXy5
+         2ggF1Emtos9yYlYtB5uhCQ+WAQCagQLf8vo6sLOiiCzLx4fA8meZAKKmiBauuD68F2bY
+         nwxvq2sv385+i7Mdn+vTpvgdKxbepDJYzL7KCMVm59J/ynP6pS+LezbfTumOVeHnGor7
+         PbCw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707762619; x=1708367419;
+        d=1e100.net; s=20230601; t=1707764397; x=1708369197;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=N61bSTpFZ2e+PLuAfqmvguTh3fa1HE/2EqLDbYjvwcM=;
-        b=KNBeuodpbeV14JiDr+IHheQWrZlUskEo15KscH5qHCWlYiJIx9B+0rIkQSVVjuQp0e
-         beKZko5Hm329qZa7GKRNc/+U0V3n8UtHzdvlsrnEilt3pQ8j21kdcOMXtobCj2w0jm37
-         uSpapvJ4w5h8UEzydGQQvUrTO7ozmwXK3unQVYAUnbxvEfVo5O4JBIsWWPGEGFUJAH80
-         qSswT3EW/YrF9xlseut47EZUdLfyGzOOxNemGOQZujXkydoaXnQhjxEWCX1tvpCUiI3G
-         69+ZY+h3N4ZTvDPN2b+CMOyD4EKHY5QGEd4vrqiHyADUSjlHsKKEPnYFKbsRdYZgw0WH
-         uOlQ==
-X-Gm-Message-State: AOJu0YwTMs7AqE4d8nhrIfh2NkukQOIG5P/Gyzq2DZ2uaNOFT0LrpkqU
-	600eo+CAdKj06FrVktGXoZrWlMYMFZopIYY5KIPXOkYL27kogVnCKfFwuLnE3g==
-X-Google-Smtp-Source: AGHT+IEWVVrqr5Ta5/Y8coFAcbU/62c7uV5RG1RnJiaLdKJtTlCzfEyZvDIyFRYCS+zxfkBl8ASQfQ==
-X-Received: by 2002:a17:90b:1054:b0:297:1779:84fb with SMTP id gq20-20020a17090b105400b00297177984fbmr3738633pjb.43.1707762618832;
-        Mon, 12 Feb 2024 10:30:18 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCWqzXReP3IYediOTpA4Y6OC6ft/joUK+DbNmZ8ShuoIpBTd0/KboIdivDaLOt5vZNYxKdzl+WOvG4XORuhYoNyibYUN9VXp/wkGK0yP4JRewr1UQUplInabN+LEwmrssN1JUWssJN1fsZZw8YsVjHSb62XTqJrpSQdZkEeLCvdtji2RL0fv1JEt9orngC4M0AHbgtdjwRkfJ+3Yktv6qug5esufKhfNneR0h4I+IuajP7KsRdy79020cVEeh0MT+3vHybMHJrxUKak+Y5gkO5ZeqEakCh9ObI+a
-Received: from www.outflux.net ([198.0.35.241])
-        by smtp.gmail.com with ESMTPSA id ok5-20020a17090b1d4500b0029703476e9bsm849739pjb.44.2024.02.12.10.30.18
+        bh=YK+sGsUdZfCKVzahxbXULih6swELSJdE1qlLN7uwVGM=;
+        b=Fq4M7lF3I92D4vv4aktH/hp4n3uzSMaq2xWSU/A8M/792CZRTQ/qKJ/w3x0IWYPTKl
+         ULAZjaXjft8P3D2YXyMQl5XHav/jjWpCU+GCTSHcgdK4hp+GMex4caSj6/JRN2BTRWcv
+         nz2u0fHoxKCPCGZ8/8jVGQH4oghGkpEJpmXIE5aIFbMSXA+8/UWswpHZIYyCJZfg4+z6
+         GxGrJ0QWhzl8cvxSggGBHOjfMUgzg8+8/0jQHZvsiOq/iIpPhj8ikTHheBHUFDFCvZU1
+         n/ZKhvKojpANjaNS9Mw/9plHcBsBzA0N1sZkgRzt1esBpWzkrpi15A/s2/17tc6w9bxb
+         DwFA==
+X-Gm-Message-State: AOJu0YwgEdlDrLXbUuJZlHf+NnBHHIqdopThnqYhvBF308oEop9I1+Fu
+	Mz7O75fgN4/x33cROV0OA1HGI4Fdgxpv3tjOiZOyE1lEKUnc+pxEniIPDOLedhE=
+X-Google-Smtp-Source: AGHT+IGLv5eFYNCU4+HomPY1o0vKj1PlmGaiQycPq0Q1ss6ZrPJnmX6ZnjQQphQqx/jfdKCsd3BQ/w==
+X-Received: by 2002:a9d:64cf:0:b0:6e1:14dd:78e6 with SMTP id n15-20020a9d64cf000000b006e114dd78e6mr6802246otl.33.1707764397591;
+        Mon, 12 Feb 2024 10:59:57 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCWTi+7tX5r64ygyx5TKwbl71bUWtl+XXnoD12XhAm2ZTKI+tKjP9/Q+kSfXRykeBt1y1/qJDFKjW41BWdvMRWadJQsGA+H+OvzcLrrJS0oMZWcNuoVY6hqPr5LoBm1qTNkd+RGX+Xefs2CMbVUoC8DZIF/Bb75R7wyzPUr1FiT8SJ2FaU1pLazOtUaRZI5vAlLL/nf5KwssfpgLmISjJsqfFo0CalOoRraAQ8qQzkdEDqjAsAFZNRY6UymT+lUFLYEEu1rGkzuphk0+M95yacyHsHfyMf874fiO
+Received: from ziepe.ca (hlfxns017vw-142-68-80-239.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.68.80.239])
+        by smtp.gmail.com with ESMTPSA id o10-20020a9d6d0a000000b006e2e3fcc23dsm173805otp.58.2024.02.12.10.59.56
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 12 Feb 2024 10:30:18 -0800 (PST)
-Date: Mon, 12 Feb 2024 10:30:17 -0800
-From: Kees Cook <keescook@chromium.org>
-To: Erick Archer <erick.archer@gmx.com>
-Cc: Jason Gunthorpe <jgg@ziepe.ca>, Leon Romanovsky <leon@kernel.org>,
+        Mon, 12 Feb 2024 10:59:56 -0800 (PST)
+Received: from jgg by wakko with local (Exim 4.95)
+	(envelope-from <jgg@ziepe.ca>)
+	id 1rZbX2-000Sw4-0l;
+	Mon, 12 Feb 2024 14:59:56 -0400
+Date: Mon, 12 Feb 2024 14:59:56 -0400
+From: Jason Gunthorpe <jgg@ziepe.ca>
+To: Kees Cook <keescook@chromium.org>
+Cc: Erick Archer <erick.archer@gmx.com>, Leon Romanovsky <leon@kernel.org>,
 	Edward Srouji <edwards@nvidia.com>,
 	Patrisious Haddad <phaddad@nvidia.com>,
 	"Gustavo A. R. Silva" <gustavoars@kernel.org>,
 	linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
 	linux-hardening@vger.kernel.org
 Subject: Re: [PATCH] RDMA/uverbs: Remove flexible arrays from struct *_filter
-Message-ID: <202402121026.0AF90DBA@keescook>
+Message-ID: <20240212185956.GH765010@ziepe.ca>
 References: <20240211115856.9788-1-erick.archer@gmx.com>
+ <202402121026.0AF90DBA@keescook>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
@@ -83,85 +91,30 @@ List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240211115856.9788-1-erick.archer@gmx.com>
+In-Reply-To: <202402121026.0AF90DBA@keescook>
 
-On Sun, Feb 11, 2024 at 12:58:56PM +0100, Erick Archer wrote:
-> When a struct containing a flexible array is included in another struct,
-> and there is a member after the struct-with-flex-array, there is a
-> possibility of memory overlap. These cases must be audited [1]. See:
-> 
-> struct inner {
-> 	...
-> 	int flex[];
-> };
-> 
-> struct outer {
-> 	...
-> 	struct inner header;
-> 	int overlap;
-> 	...
-> };
-> 
-> This is the scenario for all the "struct *_filter" structures that are
-> included in the following "struct ib_flow_spec_*" structures:
-> 
-> struct ib_flow_spec_eth
-> struct ib_flow_spec_ib
-> struct ib_flow_spec_ipv4
-> struct ib_flow_spec_ipv6
-> struct ib_flow_spec_tcp_udp
-> struct ib_flow_spec_tunnel
-> struct ib_flow_spec_esp
-> struct ib_flow_spec_gre
-> struct ib_flow_spec_mpls
-> 
-> The pattern is like the one shown below:
-> 
-> struct *_filter {
-> 	...
-> 	u8 real_sz[];
-> };
-> 
-> struct ib_flow_spec_mpls {
-> 	...
-> 	struct *_filter val;
-> 	struct *_filter mask;
-> };
-> 
-> In this case, the trailing flexible array "real_sz" is never allocated
-> and is only used to calculate the size of the structures. Here the use
-> of the "offsetof" helper can be changed by the "sizeof" operator because
-> the goal is to get the size of these structures. Therefore, the trailing
-> flexible arrays can also be removed.
-> 
-> Link: https://github.com/KSPP/linux/issues/202 [1]
-> Signed-off-by: Erick Archer <erick.archer@gmx.com>
-> ---
-> Hi everyone,
-> 
-> This patch has not been tested. This has only been built-tested.
+On Mon, Feb 12, 2024 at 10:30:17AM -0800, Kees Cook wrote:
+> I might suggest doing a binary difference comparison[1], as it's possible
+> that "real_sz" is being used to try to avoid trailing padding on
+> structs. I wasn't able to trivially construct an example, so maybe I'm
+> not understanding its purpose correctly.
 
-I might suggest doing a binary difference comparison[1], as it's possible
-that "real_sz" is being used to try to avoid trailing padding on
-structs. I wasn't able to trivially construct an example, so maybe I'm
-not understanding its purpose correctly.
+Hmm.. No need for binary comparison:
 
-If, however, there are cases where offsetof(..., real_sz) !=
-sizeof(...), then I would check two alternatives:
++static_assert(offsetof(struct ib_flow_eth_filter, real_sz) == sizeof(struct ib_flow_eth_filter));
++static_assert(offsetof(struct ib_flow_ib_filter, real_sz) == sizeof(struct ib_flow_ib_filter));
++static_assert(offsetof(struct ib_flow_tunnel_filter, real_sz) == sizeof(struct ib_flow_tunnel_filter));
++static_assert(offsetof(struct ib_flow_esp_filter, real_sz) == sizeof(struct ib_flow_esp_filter));
++static_assert(offsetof(struct ib_flow_gre_filter, real_sz) == sizeof(struct ib_flow_gre_filter));
++static_assert(offsetof(struct ib_flow_mpls_filter, real_sz) == sizeof(struct ib_flow_mpls_filter));
 
-	struct { } real_sz;
+But yep, it is doing something:
 
-but that may induce padding still, or:
+In file included from ../include/linux/mlx5/device.h:37:
+../include/rdma/ib_verbs.h:1931:15: error: static assertion failed due to requirement '__builtin_offsetof(struct ib_flow_ib_filter, real_sz) == sizeof(struct ib_flow_ib_filter)': offsetof(struct ib_flow_ib_filter, real_sz) == sizeof(struct ib_flow_ib_filter)
+ 1931 | static_assert(offsetof(struct ib_flow_ib_filter, real_sz) == sizeof(struct ib_flow_ib_filter));
 
-	u8 real_sz[0];
+__packed on that struct would probably be be OK.
 
-which would be a literally zero-sized array, used only for addressing.
-
-Or, these can be left as-is, and the "flex array not at end of struct"
-warnings can be disabled for these targets.
-
--Kees
-
--- 
-Kees Cook
+Jason
 
