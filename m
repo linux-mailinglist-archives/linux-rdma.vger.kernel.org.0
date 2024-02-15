@@ -1,134 +1,196 @@
-Return-Path: <linux-rdma+bounces-1024-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-1025-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id F3013855BF0
-	for <lists+linux-rdma@lfdr.de>; Thu, 15 Feb 2024 09:03:32 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9F7C7856269
+	for <lists+linux-rdma@lfdr.de>; Thu, 15 Feb 2024 13:02:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AA764282C60
-	for <lists+linux-rdma@lfdr.de>; Thu, 15 Feb 2024 08:03:31 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 85C7EB2B00D
+	for <lists+linux-rdma@lfdr.de>; Thu, 15 Feb 2024 11:56:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A154811190;
-	Thu, 15 Feb 2024 08:03:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 32C3012CD87;
+	Thu, 15 Feb 2024 11:56:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b="G42iGkEX";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="R+y/ru1I"
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="ZeRwhGNM"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from fhigh8-smtp.messagingengine.com (fhigh8-smtp.messagingengine.com [103.168.172.159])
+Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 47E71DDAB;
-	Thu, 15 Feb 2024 08:03:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.159
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6DD4912B167;
+	Thu, 15 Feb 2024 11:55:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.158.5
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707984206; cv=none; b=a2RmVoDuYBAQAltlUjBiklnotvfUsN0MfGTcyVLqbUfZVyUsKhlIx0VFpfgKPELZJMHk7t3rrKvH2CSQIwnWKtyKTtCDFJ2JhuJ1VM/YPXbCknCIVmbj2+6+ns5y4stbMXAysXsl0ce5M5JHstNS+R9+52+PN4EON1Zu77+awNA=
+	t=1707998160; cv=none; b=JzP3m93y9kdxP/Bi0KBDFpAfwWlIxkZeHizXURr/3Qjgs8Jhp9D5B/4ACMocsPAHQ+YrtHLwQn02nHRjg0oHPN3ej3nC/4PBKuD9OGaR1IW48tG9cTaqMvZG2M8VwviGf2wamEVoTN0MVwKLs2NN1/uYW0FIojCyM+oJnGQ8CEs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707984206; c=relaxed/simple;
-	bh=W3WXonl3jw7eqUYff5oZbHwVrqKRRkZEbCSVq96r0Ks=;
-	h=MIME-Version:Message-Id:In-Reply-To:References:Date:From:To:Cc:
-	 Subject:Content-Type; b=A/5684lLpQ1qP9bhDz1cnt817+aggHL8KrHnHAHq9jImzkwc9SVRnQ1b50YA2gOh2aYZaWmDmePqbbv09kf65Ng9kOw0R63FvGPnGcEofCEyYrGpe6hVRvUYPEcymluYiNgBTga2HTSFWHA8qRjcZijpKgDvl00IVo9dKAkWpo8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de; spf=pass smtp.mailfrom=arndb.de; dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b=G42iGkEX; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=R+y/ru1I; arc=none smtp.client-ip=103.168.172.159
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arndb.de
-Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
-	by mailfhigh.nyi.internal (Postfix) with ESMTP id 07BB711400D1;
-	Thu, 15 Feb 2024 03:03:23 -0500 (EST)
-Received: from imap51 ([10.202.2.101])
-  by compute5.internal (MEProxy); Thu, 15 Feb 2024 03:03:23 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
-	:cc:content-transfer-encoding:content-type:content-type:date
-	:date:from:from:in-reply-to:in-reply-to:message-id:mime-version
-	:references:reply-to:subject:subject:to:to; s=fm3; t=1707984203;
-	 x=1708070603; bh=nruawRjfVtzHY6r13lnbTRpp78sGs8KHCPeUBSNQVaw=; b=
-	G42iGkEXvMQX9bLghV8tpaLlKY2I87IzuH2ZbCDx2pP/zhsKJD3VVZ38fI+wrjaH
-	zUSofYy5D+gMpQosh3Jn7rKgOuysv/BwkNGAcrL3OoSouqf57hhE6bPDMGwRJvAa
-	Cgyl8/vfNAJLHDwxYS7sT31kOkJMPohG/XCgUBorJbyfGKPNVAuw3/ET1ue/wEV2
-	NQhHhH8g1EW5eMZItBBV6ubgsYa4AMk3WsqBxAcW+Cd8zfLugmodCtHroMLlfbJg
-	WDf7xKKctn6NQaukhXjQLSaXwLCy8f7AJILD6Sf3wuhpFucj/PuiFRjzUmJ8d+e2
-	JJ4+u88HPLzBEKWaXQE6KA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-transfer-encoding
-	:content-type:content-type:date:date:feedback-id:feedback-id
-	:from:from:in-reply-to:in-reply-to:message-id:mime-version
-	:references:reply-to:subject:subject:to:to:x-me-proxy:x-me-proxy
-	:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; t=1707984203; x=
-	1708070603; bh=nruawRjfVtzHY6r13lnbTRpp78sGs8KHCPeUBSNQVaw=; b=R
-	+y/ru1IUwL92HBGtFHagy69xYtsWttfN4EaB+wm592yL+rOGSfrrHtubRKbDs6lw
-	j4vjgXHad/KXDK8BxpEpLBTRFiG0Wki+5UrwKAbFpGiwIgRlUk9f05KN4Uh47ELm
-	ee/EdCZHUsL5G96a2mnXe0C12+/Lu6sDtbNZImUr/5tn85y4bOEVeGcWVNzM1IMZ
-	EGlRRcwACN+74cVCzgctaAsMZSqdbRzZtV/IoUYygPk5mKm41wGhgMc9nAvELKwV
-	QDEjEZl+1qpwgBeKBj80ddFZ+k0n5l0LW88z7QPYCxLZ3KMlOtrbCbIvErpHzT1n
-	ECsNd9m3b8YNYXlL8bG/Q==
-X-ME-Sender: <xms:SsXNZZLOxCB7LLsapMnds01Lvvm0aahagP38taGZa8hjGigm69goqA>
-    <xme:SsXNZVI88RdOQSnidaznTNgrllFe1-97OmsH2p5rEuQz9vqm99qgfixEut1P4B1-8
-    XIDq_NzewnDzUhjUZY>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledrudelgdeitdcutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpefofgggkfgjfhffhffvvefutgfgsehtqhertderreejnecuhfhrohhmpedftehr
-    nhguuceuvghrghhmrghnnhdfuceorghrnhgusegrrhhnuggsrdguvgeqnecuggftrfgrth
-    htvghrnhepgeefjeehvdelvdffieejieejiedvvdfhleeivdelveehjeelteegudektdfg
-    jeevnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomheprg
-    hrnhgusegrrhhnuggsrdguvg
-X-ME-Proxy: <xmx:SsXNZRuz4Jwc3mO9ITu768i7Q9mQmmMX0YvObNWfGC6V6qEAfLXoXQ>
-    <xmx:SsXNZabwXXg9YQRj6deWT0cvniCFsdwm8H2xKZ7pf52TRwSBr9f-RA>
-    <xmx:SsXNZQZfgK_nAAvM0fVJWqT9WhRcZb3_x0s3QGA_E1S36DV1CEoiQQ>
-    <xmx:S8XNZQoig3wW3jHwOAJi0Syiy73Y_j3MOzegrtYSUdIYk1TV7PNtBw>
-Feedback-ID: i56a14606:Fastmail
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-	id A393BB6008D; Thu, 15 Feb 2024 03:03:22 -0500 (EST)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.11.0-alpha0-144-ge5821d614e-fm-20240125.002-ge5821d61
+	s=arc-20240116; t=1707998160; c=relaxed/simple;
+	bh=//cQOtBN0V7j51HQx8FZ9ZotpiIIad0J8ye4LiZogMY=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=Cgd0bcsn8HWaDq2ijwa50JY4O02Z2KuEElyE1aznyj61lFA5VSOkiuDezpbxf3XTjgo2bOouWkE10183OXq4V+RjfCGbcHf7oiRZbWjmZrP8OF//OPbeA/JziFZCI4IHp+5s0+3ku+nKLfGWqG+T6hHkYPiHAEuVl5bg1CBzhSg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zurich.ibm.com; spf=pass smtp.mailfrom=zurich.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=ZeRwhGNM; arc=none smtp.client-ip=148.163.158.5
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zurich.ibm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=zurich.ibm.com
+Received: from pps.filterd (m0353724.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 41FBMxbm024505;
+	Thu, 15 Feb 2024 11:55:51 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-transfer-encoding; s=pp1;
+ bh=JQIyZwMesH5CFC5utWtjUqVuw91qgGFyn2rlfKPbq3w=;
+ b=ZeRwhGNMRLCB1BITsxyxobIBp1U9nEFm08cgWrGaCxHSUjuVzQt01m8Cce2hp45IPedp
+ 1HG7HMRWSgAIkYMiRK57v8eMUkEnvr+rjulaVUKLhdustx8vsRuidya0vkabCdvbBcVi
+ EybwPyaqyNze9yCI/Li94R46r5ja/O7U1jknbKSpIEsO2xP7/CSX4UZKCxUcy6binKkq
+ oYnMxUFnbbRa+zUGORbNtvMgcQK0/L+RdMXwmJ0brVvhGfjavL7G6XiihjH4WJUA/A8l
+ XVHSFoLC1LlIbl5hHv5ZvsqJHwa+7qfYjttnkG46bth/2qFDth0406qiCyNM0ofenyJr dg== 
+Received: from ppma23.wdc07v.mail.ibm.com (5d.69.3da9.ip4.static.sl-reverse.com [169.61.105.93])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3w9hpdgqxn-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 15 Feb 2024 11:55:50 +0000
+Received: from pps.filterd (ppma23.wdc07v.mail.ibm.com [127.0.0.1])
+	by ppma23.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 41FBqvTE016495;
+	Thu, 15 Feb 2024 11:55:50 GMT
+Received: from smtprelay04.fra02v.mail.ibm.com ([9.218.2.228])
+	by ppma23.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3w6mymvcwf-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 15 Feb 2024 11:55:49 +0000
+Received: from smtpav01.fra02v.mail.ibm.com (smtpav01.fra02v.mail.ibm.com [10.20.54.100])
+	by smtprelay04.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 41FBtjse24969942
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Thu, 15 Feb 2024 11:55:48 GMT
+Received: from smtpav01.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id D9AD820040;
+	Thu, 15 Feb 2024 11:55:45 +0000 (GMT)
+Received: from smtpav01.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id A9E1320065;
+	Thu, 15 Feb 2024 11:55:45 +0000 (GMT)
+Received: from spoke.zurich.ibm.com (unknown [9.4.68.71])
+	by smtpav01.fra02v.mail.ibm.com (Postfix) with ESMTP;
+	Thu, 15 Feb 2024 11:55:45 +0000 (GMT)
+From: Bernard Metzler <bmt@zurich.ibm.com>
+To: jgg@ziepe.ca, leon@kernel.org
+Cc: linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
+        netdev@vger.kernel.org, syzkaller-bugs@googlegroups.com,
+        Bernard Metzler <bmt@zurich.ibm.com>,
+        syzbot+e7c51d3be3a5ddfa0d7a@syzkaller.appspotmail.com
+Subject: [PATCH] RDMA/siw: Fix handling netdev going down event
+Date: Thu, 15 Feb 2024 12:55:24 +0100
+Message-Id: <20240215115524.126477-1-bmt@zurich.ibm.com>
+X-Mailer: git-send-email 2.38.1
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Message-Id: <2ebe5a36-ce81-4d26-a12b-7affbd65c5e3@app.fastmail.com>
-In-Reply-To: <84874528-daea-424d-af63-b9b86835fae6@linux.dev>
-References: <20240213100848.458819-1-arnd@kernel.org>
- <84874528-daea-424d-af63-b9b86835fae6@linux.dev>
-Date: Thu, 15 Feb 2024 09:03:02 +0100
-From: "Arnd Bergmann" <arnd@arndb.de>
-To: "Zhu Yanjun" <yanjun.zhu@linux.dev>, "Arnd Bergmann" <arnd@kernel.org>,
- "Saeed Mahameed" <saeedm@nvidia.com>, "Leon Romanovsky" <leon@kernel.org>
-Cc: "David S . Miller" <davem@davemloft.net>,
- "Eric Dumazet" <edumazet@google.com>, "Jakub Kicinski" <kuba@kernel.org>,
- "Paolo Abeni" <pabeni@redhat.com>, "Yevgeny Kliteynik" <kliteyn@nvidia.com>,
- "Alex Vesker" <valex@nvidia.com>, "Hamdan Igbaria" <hamdani@nvidia.com>,
- Netdev <netdev@vger.kernel.org>, linux-rdma@vger.kernel.org,
- linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] net/mlx5: fix possible stack overflows
-Content-Type: text/plain;charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: v4NgQi1OaHOJ0Hsh7DWgUK7XH1f27yZ1
+X-Proofpoint-GUID: v4NgQi1OaHOJ0Hsh7DWgUK7XH1f27yZ1
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-02-15_10,2024-02-14_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0
+ lowpriorityscore=0 spamscore=0 phishscore=0 bulkscore=0 mlxscore=0
+ impostorscore=0 mlxlogscore=958 malwarescore=0 clxscore=1015 adultscore=0
+ priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2311290000 definitions=main-2402150093
 
-On Thu, Feb 15, 2024, at 01:18, Zhu Yanjun wrote:
-> =E5=9C=A8 2024/2/13 18:08, Arnd Bergmann =E5=86=99=E9=81=93:
+siw uses the NETDEV_GOING_DOWN event to schedule work which
+gracefully clears all related siw devices connections. This
+fix avoids re-initiating and re-scheduling this work if still
+pending from a previous invocation.
 
->>   static int
->> -dr_dump_rule_rx_tx(struct seq_file *file, struct mlx5dr_rule_rx_tx *=
-rule_rx_tx,
->> +dr_dump_rule_rx_tx(struct seq_file *file, char *buff,
->> +		   struct mlx5dr_rule_rx_tx *rule_rx_tx,
->>   		   bool is_rx, const u64 rule_id, u8 format_ver)
->>   {
->>   	struct mlx5dr_ste *ste_arr[DR_RULE_MAX_STES + DR_ACTION_MAX_STES];
->> @@ -533,7 +532,7 @@ dr_dump_rule_rx_tx(struct seq_file *file, struct =
-mlx5dr_rule_rx_tx *rule_rx_tx,
->>   		return 0;
->>  =20
->>   	while (i--) {
->> -		ret =3D dr_dump_rule_mem(file, ste_arr[i], is_rx, rule_id,
->
-> Before buff is reused, I am not sure whether buff should be firstly=20
-> zeroed or not.
+Fixes: bdcf26bf9b3a ("rdma/siw: network and RDMA core interface")
+Reported-by: syzbot+e7c51d3be3a5ddfa0d7a@syzkaller.appspotmail.com
+Signed-off-by: Bernard Metzler <bmt@zurich.ibm.com>
+---
+ drivers/infiniband/sw/siw/siw_main.c | 56 ++++++++++++++--------------
+ 1 file changed, 28 insertions(+), 28 deletions(-)
 
-I don't see why it would, but if you want to zero it, that would be
-a separate patch that is already needed on the existing code,
-which never zeroes its buffers.
+diff --git a/drivers/infiniband/sw/siw/siw_main.c b/drivers/infiniband/sw/siw/siw_main.c
+index 723903bd30c5..6c61f62b322c 100644
+--- a/drivers/infiniband/sw/siw/siw_main.c
++++ b/drivers/infiniband/sw/siw/siw_main.c
+@@ -276,6 +276,31 @@ static const struct ib_device_ops siw_device_ops = {
+ 	INIT_RDMA_OBJ_SIZE(ib_ucontext, siw_ucontext, base_ucontext),
+ };
+ 
++/*
++ * Network link becomes unavailable. Mark all
++ * affected QP's accordingly.
++ */
++static void siw_netdev_down(struct work_struct *work)
++{
++	struct siw_device *sdev =
++		container_of(work, struct siw_device, netdev_down);
++
++	struct siw_qp_attrs qp_attrs;
++	struct list_head *pos, *tmp;
++
++	memset(&qp_attrs, 0, sizeof(qp_attrs));
++	qp_attrs.state = SIW_QP_STATE_ERROR;
++
++	list_for_each_safe(pos, tmp, &sdev->qp_list) {
++		struct siw_qp *qp = list_entry(pos, struct siw_qp, devq);
++
++		down_write(&qp->state_lock);
++		WARN_ON(siw_qp_modify(qp, &qp_attrs, SIW_QP_ATTR_STATE));
++		up_write(&qp->state_lock);
++	}
++	ib_device_put(&sdev->base_dev);
++}
++
+ static struct siw_device *siw_device_create(struct net_device *netdev)
+ {
+ 	struct siw_device *sdev;
+@@ -319,6 +344,7 @@ static struct siw_device *siw_device_create(struct net_device *netdev)
+ 	xa_init_flags(&sdev->mem_xa, XA_FLAGS_ALLOC1);
+ 
+ 	ib_set_device_ops(base_dev, &siw_device_ops);
++	INIT_WORK(&sdev->netdev_down, siw_netdev_down);
+ 	rv = ib_device_set_netdev(base_dev, netdev, 1);
+ 	if (rv)
+ 		goto error;
+@@ -364,37 +390,11 @@ static struct siw_device *siw_device_create(struct net_device *netdev)
+ 	return ERR_PTR(rv);
+ }
+ 
+-/*
+- * Network link becomes unavailable. Mark all
+- * affected QP's accordingly.
+- */
+-static void siw_netdev_down(struct work_struct *work)
+-{
+-	struct siw_device *sdev =
+-		container_of(work, struct siw_device, netdev_down);
+-
+-	struct siw_qp_attrs qp_attrs;
+-	struct list_head *pos, *tmp;
+-
+-	memset(&qp_attrs, 0, sizeof(qp_attrs));
+-	qp_attrs.state = SIW_QP_STATE_ERROR;
+-
+-	list_for_each_safe(pos, tmp, &sdev->qp_list) {
+-		struct siw_qp *qp = list_entry(pos, struct siw_qp, devq);
+-
+-		down_write(&qp->state_lock);
+-		WARN_ON(siw_qp_modify(qp, &qp_attrs, SIW_QP_ATTR_STATE));
+-		up_write(&qp->state_lock);
+-	}
+-	ib_device_put(&sdev->base_dev);
+-}
+-
+ static void siw_device_goes_down(struct siw_device *sdev)
+ {
+-	if (ib_device_try_get(&sdev->base_dev)) {
+-		INIT_WORK(&sdev->netdev_down, siw_netdev_down);
++	if (ib_device_try_get(&sdev->base_dev) &&
++	    !work_pending(&sdev->netdev_down))
+ 		schedule_work(&sdev->netdev_down);
+-	}
+ }
+ 
+ static int siw_netdev_event(struct notifier_block *nb, unsigned long event,
+-- 
+2.38.1
 
-    Arnd
 
