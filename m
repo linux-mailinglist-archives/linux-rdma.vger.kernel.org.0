@@ -1,140 +1,339 @@
-Return-Path: <linux-rdma+bounces-1046-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-1047-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8528185A30D
-	for <lists+linux-rdma@lfdr.de>; Mon, 19 Feb 2024 13:19:47 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 360BB85A3B8
+	for <lists+linux-rdma@lfdr.de>; Mon, 19 Feb 2024 13:45:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B73041C2342E
-	for <lists+linux-rdma@lfdr.de>; Mon, 19 Feb 2024 12:19:46 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A0D381F21DE4
+	for <lists+linux-rdma@lfdr.de>; Mon, 19 Feb 2024 12:45:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AB4BD2DF9F;
-	Mon, 19 Feb 2024 12:19:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="CaIe+yC3"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 457122E834;
+	Mon, 19 Feb 2024 12:45:52 +0000 (UTC)
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from out-174.mta1.migadu.com (out-174.mta1.migadu.com [95.215.58.174])
+Received: from szxga04-in.huawei.com (szxga04-in.huawei.com [45.249.212.190])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D3F5C2D04B
-	for <linux-rdma@vger.kernel.org>; Mon, 19 Feb 2024 12:19:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 10DCA2E65B;
+	Mon, 19 Feb 2024 12:45:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.190
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708345178; cv=none; b=AlaJmzoYt5bAFLXt8DhpvlSLKkmlbU+1XlrxjGuTnVo73ac3pbbjf4xjt7aEZ1DYStyDlWfhIieEQc74SJCsT72ddIlPeVc2Qupmf030VG28Atk7mN/8Fg+t28hWwiGyqIfD0tWAvbLvPvEwieZnEoeqc9FwBNqdl66oWBGU5sE=
+	t=1708346752; cv=none; b=K79V1kZdBniJtkNTF8ClN2e+9VYaEcCn1RMyfsGVp0iQ35gWKWjNaknqheDZTHC5dt/SGlAJ7J/lDnnMFSD8+ubq6/z6cQZ5io0NCCbCXYdH05n/RTxB9zJ3elwX6SM2OVjQNVOifRiLkeK+2QF/t00D30lqOpeV9rxUnDbRReQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708345178; c=relaxed/simple;
-	bh=XZhHjRkTj6nAHd5DH2JdWTq2TlG6374TlIGjtVi+DOg=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=qK326QHYznunHeJ7k4b6+THFp9oPdIloD4wOWuUTBTXWH+wmdpp6QlAdjG8HrCOB5z854sognoEdK6IDZto8NWud6Mr04gHksDjnQxzSgHWSZniNGTSNN5he5t+X/0eFK+r1DbjoiiqWb9ZdWkrpn5c8Fnd54ZmXjZJHUIeenuc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=CaIe+yC3; arc=none smtp.client-ip=95.215.58.174
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <99e3e994-ef6a-4339-abf2-cda62d24b1ce@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1708345173;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=DkVT2jDCTEiEB3I4q1MvWvXu2gwGeHJQocWwFjbYXGE=;
-	b=CaIe+yC3VWWsIwDtdZDwlDmoJQpk6KwmTKHJjMIbgk2ALrL3MJOcJRTs0xk71hAcD0iHcs
-	rG4whUuljZj/jHmsTTZ0T6Pk/ZKRszUCWxxxHZ0EzOS7Isofz+m+i+9m2jq/REDPQQ3xss
-	45FxfJFgIskFkV4+58egD+GIeT71+/4=
-Date: Mon, 19 Feb 2024 20:19:23 +0800
+	s=arc-20240116; t=1708346752; c=relaxed/simple;
+	bh=0R/k68qA+muFbteM1o4YrRrqdkoWy77R+Re5DfjOkcU=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=W8kIT5Z/yzz0DtTj5UCddDugYcJ8B2XOOaa0YEqkRQUoteN+AnOCV7bGxLxSUDNf+xLEpHStsRlHNBdpiljpjUP/ENnzVx52gSihRMWvWLYfX/p/CgVdxPvIyoeJgpJGyHYf2KFEWxHRiDPTSkLS20G0hBL1U3gxzT+aMyuBW/k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=hisilicon.com; spf=pass smtp.mailfrom=hisilicon.com; arc=none smtp.client-ip=45.249.212.190
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=hisilicon.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=hisilicon.com
+Received: from mail.maildlp.com (unknown [172.19.163.44])
+	by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4TdhzV0H0Nz2BcyN;
+	Mon, 19 Feb 2024 20:43:34 +0800 (CST)
+Received: from kwepemi500006.china.huawei.com (unknown [7.221.188.68])
+	by mail.maildlp.com (Postfix) with ESMTPS id 348261400CB;
+	Mon, 19 Feb 2024 20:45:41 +0800 (CST)
+Received: from localhost.localdomain (10.67.165.2) by
+ kwepemi500006.china.huawei.com (7.221.188.68) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Mon, 19 Feb 2024 20:45:40 +0800
+From: Junxian Huang <huangjunxian6@hisilicon.com>
+To: <jgg@ziepe.ca>, <leon@kernel.org>
+CC: <linux-rdma@vger.kernel.org>, <linuxarm@huawei.com>,
+	<linux-kernel@vger.kernel.org>, <huangjunxian6@hisilicon.com>
+Subject: [PATCH for-next] RDMA/hns: Support userspace configuring congestion control algorithm with QP granularity
+Date: Mon, 19 Feb 2024 20:41:33 +0800
+Message-ID: <20240219124133.267519-1-huangjunxian6@hisilicon.com>
+X-Mailer: git-send-email 2.30.0
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH] net/mlx5: fix possible stack overflows
-To: Hamdan Agbariya <hamdani@nvidia.com>, Arnd Bergmann <arnd@arndb.de>,
- Arnd Bergmann <arnd@kernel.org>, Saeed Mahameed <saeedm@nvidia.com>,
- Leon Romanovsky <leon@kernel.org>
-Cc: "David S . Miller" <davem@davemloft.net>,
- Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
- Paolo Abeni <pabeni@redhat.com>, Yevgeny Kliteynik <kliteyn@nvidia.com>,
- Alex Vesker <valex@nvidia.com>, Netdev <netdev@vger.kernel.org>,
- "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-References: <20240213100848.458819-1-arnd@kernel.org>
- <84874528-daea-424d-af63-b9b86835fae6@linux.dev>
- <2ebe5a36-ce81-4d26-a12b-7affbd65c5e3@app.fastmail.com>
- <11f40993-ec02-48b7-aec5-13ff7cddf665@linux.dev>
- <DM6PR12MB45168A0957212864D8D53B80CE512@DM6PR12MB4516.namprd12.prod.outlook.com>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Zhu Yanjun <yanjun.zhu@linux.dev>
-In-Reply-To: <DM6PR12MB45168A0957212864D8D53B80CE512@DM6PR12MB4516.namprd12.prod.outlook.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
+Content-Type: text/plain
+X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
+ kwepemi500006.china.huawei.com (7.221.188.68)
 
-在 2024/2/19 17:05, Hamdan Agbariya 写道:
->> 在 2024/2/15 16:03, Arnd Bergmann 写道:
->>> On Thu, Feb 15, 2024, at 01:18, Zhu Yanjun wrote:
->>>> 在 2024/2/13 18:08, Arnd Bergmann 写道:
->>>>>     static int
->>>>> -dr_dump_rule_rx_tx(struct seq_file *file, struct mlx5dr_rule_rx_tx
->>>>> *rule_rx_tx,
->>>>> +dr_dump_rule_rx_tx(struct seq_file *file, char *buff,
->>>>> +              struct mlx5dr_rule_rx_tx *rule_rx_tx,
->>>>>                 bool is_rx, const u64 rule_id, u8 format_ver)
->>>>>     {
->>>>>      struct mlx5dr_ste *ste_arr[DR_RULE_MAX_STES +
->>>>> DR_ACTION_MAX_STES]; @@ -533,7 +532,7 @@
->> dr_dump_rule_rx_tx(struct seq_file *file, struct mlx5dr_rule_rx_tx
->> *rule_rx_tx,
->>>>>              return 0;
->>>>>
->>>>>      while (i--) {
->>>>> -           ret = dr_dump_rule_mem(file, ste_arr[i], is_rx, rule_id,
->>>> Before buff is reused, I am not sure whether buff should be firstly
->>>> zeroed or not.
->>> I don't see why it would, but if you want to zero it, that would be a
->>> separate patch that is already needed on the existing code, which
->>> never zeroes its buffers.
->>
->> Sure. I agree with you. In the existing code, the buffers are not zeroed.
->>
->> But to a buffer which is used for several times, it is good to zero it before it is
->> used again.
->>
->> Can you add a new commit with the following?
->>
->> 1). Zero the buffers in the existing code
->>
-> 
-> No need to zero the buffers, as it does not have any necessity and it will only affect performance.
-> Thanks,
+Currently, congestion control algorithm is statically configured in
+FW, and all QPs use the same algorithm(except UD which has a fixed
+configuration of DCQCN). This is not flexible enough.
 
-Sorry. I can not get your point. Can you explain why no need to zero the 
-buffers? Thanks in advance.
+Support userspace configuring congestion control algorithm with QP
+granularity while creating QPs. If the algorithm is not specified in
+userspace, use the default one.
 
-> Hamdan
-> 
-> 
-> 
-> 
->> 2). Add the zero functionality to your patch
+Signed-off-by: Junxian Huang <huangjunxian6@hisilicon.com>
+---
+ drivers/infiniband/hw/hns/hns_roce_device.h | 19 ++++--
+ drivers/infiniband/hw/hns/hns_roce_hw_v2.c  | 14 +----
+ drivers/infiniband/hw/hns/hns_roce_hw_v2.h  |  3 +-
+ drivers/infiniband/hw/hns/hns_roce_main.c   |  3 +
+ drivers/infiniband/hw/hns/hns_roce_qp.c     | 68 +++++++++++++++++++++
+ include/uapi/rdma/hns-abi.h                 | 17 ++++++
+ 6 files changed, 107 insertions(+), 17 deletions(-)
 
-If a buffer is used for many times, is it necessary to zero it before it 
-is used again?
-
-Thanks,
-Zhu Yanjun
-
->>
->>   From my perspective, it is good to the whole commit.
->>
->> Please Jason and Leon comment on this.
->>
->> Thanks,
->>
->> Zhu Yanjun
->>
->>>
->>>       Arnd
+diff --git a/drivers/infiniband/hw/hns/hns_roce_device.h b/drivers/infiniband/hw/hns/hns_roce_device.h
+index 1d062c522d69..948fbf30e7d8 100644
+--- a/drivers/infiniband/hw/hns/hns_roce_device.h
++++ b/drivers/infiniband/hw/hns/hns_roce_device.h
+@@ -594,11 +594,19 @@ struct hns_roce_work {
+ 	u32 queue_num;
+ };
+ 
++enum hns_roce_scc_algo {
++	HNS_ROCE_SCC_ALGO_DCQCN = 0,
++	HNS_ROCE_SCC_ALGO_LDCP,
++	HNS_ROCE_SCC_ALGO_HC3,
++	HNS_ROCE_SCC_ALGO_DIP,
++	HNS_ROCE_SCC_ALGO_TOTAL,
++};
++
+ enum hns_roce_cong_type {
+-	CONG_TYPE_DCQCN,
+-	CONG_TYPE_LDCP,
+-	CONG_TYPE_HC3,
+-	CONG_TYPE_DIP,
++	CONG_TYPE_DCQCN = 1 << HNS_ROCE_SCC_ALGO_DCQCN,
++	CONG_TYPE_LDCP = 1 << HNS_ROCE_SCC_ALGO_LDCP,
++	CONG_TYPE_HC3 = 1 << HNS_ROCE_SCC_ALGO_HC3,
++	CONG_TYPE_DIP = 1 << HNS_ROCE_SCC_ALGO_DIP,
+ };
+ 
+ struct hns_roce_qp {
+@@ -845,7 +853,8 @@ struct hns_roce_caps {
+ 	u16		default_aeq_period;
+ 	u16		default_aeq_arm_st;
+ 	u16		default_ceq_arm_st;
+-	enum hns_roce_cong_type cong_type;
++	u8		cong_cap;
++	enum hns_roce_cong_type default_cong_type;
+ };
+ 
+ enum hns_roce_device_state {
+diff --git a/drivers/infiniband/hw/hns/hns_roce_hw_v2.c b/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
+index 42e28586cefa..21532f213b0f 100644
+--- a/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
++++ b/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
+@@ -2209,11 +2209,12 @@ static int hns_roce_query_caps(struct hns_roce_dev *hr_dev)
+ 	caps->max_wqes = 1 << le16_to_cpu(resp_c->sq_depth);
+ 
+ 	caps->num_srqs = 1 << hr_reg_read(resp_d, PF_CAPS_D_NUM_SRQS);
+-	caps->cong_type = hr_reg_read(resp_d, PF_CAPS_D_CONG_TYPE);
++	caps->cong_cap = hr_reg_read(resp_d, PF_CAPS_D_CONG_CAP);
+ 	caps->max_srq_wrs = 1 << le16_to_cpu(resp_d->srq_depth);
+ 	caps->ceqe_depth = 1 << hr_reg_read(resp_d, PF_CAPS_D_CEQ_DEPTH);
+ 	caps->num_comp_vectors = hr_reg_read(resp_d, PF_CAPS_D_NUM_CEQS);
+ 	caps->aeqe_depth = 1 << hr_reg_read(resp_d, PF_CAPS_D_AEQ_DEPTH);
++	caps->default_cong_type = hr_reg_read(resp_d, PF_CAPS_D_DEFAULT_ALG);
+ 	caps->reserved_pds = hr_reg_read(resp_d, PF_CAPS_D_RSV_PDS);
+ 	caps->num_uars = 1 << hr_reg_read(resp_d, PF_CAPS_D_NUM_UARS);
+ 	caps->reserved_qps = hr_reg_read(resp_d, PF_CAPS_D_RSV_QPS);
+@@ -4737,14 +4738,8 @@ enum {
+ static int check_cong_type(struct ib_qp *ibqp,
+ 			   struct hns_roce_congestion_algorithm *cong_alg)
+ {
+-	struct hns_roce_dev *hr_dev = to_hr_dev(ibqp->device);
+ 	struct hns_roce_qp *hr_qp = to_hr_qp(ibqp);
+ 
+-	if (ibqp->qp_type == IB_QPT_UD || ibqp->qp_type == IB_QPT_GSI)
+-		hr_qp->cong_type = CONG_TYPE_DCQCN;
+-	else
+-		hr_qp->cong_type = hr_dev->caps.cong_type;
+-
+ 	/* different congestion types match different configurations */
+ 	switch (hr_qp->cong_type) {
+ 	case CONG_TYPE_DCQCN:
+@@ -4772,9 +4767,6 @@ static int check_cong_type(struct ib_qp *ibqp,
+ 		cong_alg->wnd_mode_sel = WND_LIMIT;
+ 		break;
+ 	default:
+-		ibdev_warn(&hr_dev->ib_dev,
+-			   "invalid type(%u) for congestion selection.\n",
+-			   hr_qp->cong_type);
+ 		hr_qp->cong_type = CONG_TYPE_DCQCN;
+ 		cong_alg->alg_sel = CONG_DCQCN;
+ 		cong_alg->alg_sub_sel = UNSUPPORT_CONG_LEVEL;
+@@ -4807,7 +4799,7 @@ static int fill_cong_field(struct ib_qp *ibqp, const struct ib_qp_attr *attr,
+ 		return ret;
+ 
+ 	hr_reg_write(context, QPC_CONG_ALGO_TMPL_ID, hr_dev->cong_algo_tmpl_id +
+-		     hr_qp->cong_type * HNS_ROCE_CONG_SIZE);
++		     ilog2(hr_qp->cong_type) * HNS_ROCE_CONG_SIZE);
+ 	hr_reg_clear(qpc_mask, QPC_CONG_ALGO_TMPL_ID);
+ 	hr_reg_write(&context->ext, QPCEX_CONG_ALG_SEL, cong_field.alg_sel);
+ 	hr_reg_clear(&qpc_mask->ext, QPCEX_CONG_ALG_SEL);
+diff --git a/drivers/infiniband/hw/hns/hns_roce_hw_v2.h b/drivers/infiniband/hw/hns/hns_roce_hw_v2.h
+index cd97cbee682a..359a74672ba1 100644
+--- a/drivers/infiniband/hw/hns/hns_roce_hw_v2.h
++++ b/drivers/infiniband/hw/hns/hns_roce_hw_v2.h
+@@ -1214,12 +1214,13 @@ struct hns_roce_query_pf_caps_d {
+ #define PF_CAPS_D_RQWQE_HOP_NUM PF_CAPS_D_FIELD_LOC(21, 20)
+ #define PF_CAPS_D_EX_SGE_HOP_NUM PF_CAPS_D_FIELD_LOC(23, 22)
+ #define PF_CAPS_D_SQWQE_HOP_NUM PF_CAPS_D_FIELD_LOC(25, 24)
+-#define PF_CAPS_D_CONG_TYPE PF_CAPS_D_FIELD_LOC(29, 26)
++#define PF_CAPS_D_CONG_CAP PF_CAPS_D_FIELD_LOC(29, 26)
+ #define PF_CAPS_D_CEQ_DEPTH PF_CAPS_D_FIELD_LOC(85, 64)
+ #define PF_CAPS_D_NUM_CEQS PF_CAPS_D_FIELD_LOC(95, 86)
+ #define PF_CAPS_D_AEQ_DEPTH PF_CAPS_D_FIELD_LOC(117, 96)
+ #define PF_CAPS_D_AEQ_ARM_ST PF_CAPS_D_FIELD_LOC(119, 118)
+ #define PF_CAPS_D_CEQ_ARM_ST PF_CAPS_D_FIELD_LOC(121, 120)
++#define PF_CAPS_D_DEFAULT_ALG PF_CAPS_D_FIELD_LOC(127, 122)
+ #define PF_CAPS_D_RSV_PDS PF_CAPS_D_FIELD_LOC(147, 128)
+ #define PF_CAPS_D_NUM_UARS PF_CAPS_D_FIELD_LOC(155, 148)
+ #define PF_CAPS_D_RSV_QPS PF_CAPS_D_FIELD_LOC(179, 160)
+diff --git a/drivers/infiniband/hw/hns/hns_roce_main.c b/drivers/infiniband/hw/hns/hns_roce_main.c
+index b55fe6911f9f..1dc60c2b2b7a 100644
+--- a/drivers/infiniband/hw/hns/hns_roce_main.c
++++ b/drivers/infiniband/hw/hns/hns_roce_main.c
+@@ -394,6 +394,9 @@ static int hns_roce_alloc_ucontext(struct ib_ucontext *uctx,
+ 			resp.config |= HNS_ROCE_RSP_CQE_INLINE_FLAGS;
+ 	}
+ 
++	if (hr_dev->pci_dev->revision >= PCI_REVISION_ID_HIP09)
++		resp.congest_type = hr_dev->caps.cong_cap;
++
+ 	ret = hns_roce_uar_alloc(hr_dev, &context->uar);
+ 	if (ret)
+ 		goto error_out;
+diff --git a/drivers/infiniband/hw/hns/hns_roce_qp.c b/drivers/infiniband/hw/hns/hns_roce_qp.c
+index 31b147210688..350a9b78ac6b 100644
+--- a/drivers/infiniband/hw/hns/hns_roce_qp.c
++++ b/drivers/infiniband/hw/hns/hns_roce_qp.c
+@@ -1004,6 +1004,68 @@ static void free_kernel_wrid(struct hns_roce_qp *hr_qp)
+ 	kfree(hr_qp->sq.wrid);
+ }
+ 
++static void default_congest_type(struct hns_roce_dev *hr_dev,
++				 struct hns_roce_qp *hr_qp)
++{
++	if (hr_qp->ibqp.qp_type == IB_QPT_UD ||
++	    hr_qp->ibqp.qp_type == IB_QPT_GSI)
++		hr_qp->cong_type = CONG_TYPE_DCQCN;
++	else
++		hr_qp->cong_type = 1 << hr_dev->caps.default_cong_type;
++}
++
++static int set_congest_type(struct hns_roce_qp *hr_qp,
++			    struct hns_roce_ib_create_qp *ucmd)
++{
++	struct hns_roce_dev *hr_dev = to_hr_dev(hr_qp->ibqp.device);
++
++	switch (ucmd->cong_type_flags) {
++	case HNS_ROCE_CREATE_QP_FLAGS_DCQCN:
++		hr_qp->cong_type = CONG_TYPE_DCQCN;
++		break;
++	case HNS_ROCE_CREATE_QP_FLAGS_LDCP:
++		hr_qp->cong_type = CONG_TYPE_LDCP;
++		break;
++	case HNS_ROCE_CREATE_QP_FLAGS_HC3:
++		hr_qp->cong_type = CONG_TYPE_HC3;
++		break;
++	case HNS_ROCE_CREATE_QP_FLAGS_DIP:
++		hr_qp->cong_type = CONG_TYPE_DIP;
++		break;
++	default:
++		hr_qp->cong_type = 0;
++	}
++
++	if (!(hr_qp->cong_type & hr_dev->caps.cong_cap)) {
++		ibdev_err_ratelimited(&hr_dev->ib_dev,
++				      "Unsupported congest type 0x%x, cong_cap = 0x%x.\n",
++				      hr_qp->cong_type, hr_dev->caps.cong_cap);
++		return -EOPNOTSUPP;
++	}
++
++	if (hr_qp->ibqp.qp_type == IB_QPT_UD &&
++	    !(hr_qp->cong_type & CONG_TYPE_DCQCN)) {
++		ibdev_err_ratelimited(&hr_dev->ib_dev,
++				      "Only DCQCN supported for UD. Unsupported congest type 0x%x.\n",
++				      hr_qp->cong_type);
++		return -EOPNOTSUPP;
++	}
++
++	return 0;
++}
++
++static int set_congest_param(struct hns_roce_dev *hr_dev,
++			     struct hns_roce_qp *hr_qp,
++			     struct hns_roce_ib_create_qp *ucmd)
++{
++	if (ucmd->comp_mask & HNS_ROCE_CREATE_QP_MASK_CONGEST_TYPE)
++		return set_congest_type(hr_qp, ucmd);
++
++	default_congest_type(hr_dev, hr_qp);
++
++	return 0;
++}
++
+ static int set_qp_param(struct hns_roce_dev *hr_dev, struct hns_roce_qp *hr_qp,
+ 			struct ib_qp_init_attr *init_attr,
+ 			struct ib_udata *udata,
+@@ -1043,6 +1105,10 @@ static int set_qp_param(struct hns_roce_dev *hr_dev, struct hns_roce_qp *hr_qp,
+ 			ibdev_err(ibdev,
+ 				  "failed to set user SQ size, ret = %d.\n",
+ 				  ret);
++
++		ret = set_congest_param(hr_dev, hr_qp, ucmd);
++		if (ret)
++			return ret;
+ 	} else {
+ 		if (hr_dev->pci_dev->revision >= PCI_REVISION_ID_HIP09)
+ 			hr_qp->config = HNS_ROCE_EXSGE_FLAGS;
+@@ -1051,6 +1117,8 @@ static int set_qp_param(struct hns_roce_dev *hr_dev, struct hns_roce_qp *hr_qp,
+ 			ibdev_err(ibdev,
+ 				  "failed to set kernel SQ size, ret = %d.\n",
+ 				  ret);
++
++		default_congest_type(hr_dev, hr_qp);
+ 	}
+ 
+ 	return ret;
+diff --git a/include/uapi/rdma/hns-abi.h b/include/uapi/rdma/hns-abi.h
+index c996e151081e..757095a6c6fc 100644
+--- a/include/uapi/rdma/hns-abi.h
++++ b/include/uapi/rdma/hns-abi.h
+@@ -81,6 +81,9 @@ struct hns_roce_ib_create_qp {
+ 	__u8    sq_no_prefetch;
+ 	__u8    reserved[5];
+ 	__aligned_u64 sdb_addr;
++	__aligned_u64 comp_mask; /* Use enum hns_roce_create_qp_comp_mask */
++	__aligned_u64 create_flags;
++	__aligned_u64 cong_type_flags;
+ };
+ 
+ enum hns_roce_qp_cap_flags {
+@@ -107,6 +110,17 @@ enum {
+ 	HNS_ROCE_RSP_CQE_INLINE_FLAGS = 1 << 2,
+ };
+ 
++enum hns_roce_congest_type_flags {
++	HNS_ROCE_CREATE_QP_FLAGS_DCQCN = 1 << 0,
++	HNS_ROCE_CREATE_QP_FLAGS_LDCP = 1 << 1,
++	HNS_ROCE_CREATE_QP_FLAGS_HC3 = 1 << 2,
++	HNS_ROCE_CREATE_QP_FLAGS_DIP = 1 << 3,
++};
++
++enum hns_roce_create_qp_comp_mask {
++	HNS_ROCE_CREATE_QP_MASK_CONGEST_TYPE = 1 << 1,
++};
++
+ struct hns_roce_ib_alloc_ucontext_resp {
+ 	__u32	qp_tab_size;
+ 	__u32	cqe_size;
+@@ -114,6 +128,9 @@ struct hns_roce_ib_alloc_ucontext_resp {
+ 	__u32	reserved;
+ 	__u32	config;
+ 	__u32	max_inline_data;
++	__u8	reserved0;
++	__u8	congest_type;
++	__u8	reserved1[6];
+ };
+ 
+ struct hns_roce_ib_alloc_ucontext {
+-- 
+2.30.0
 
 
