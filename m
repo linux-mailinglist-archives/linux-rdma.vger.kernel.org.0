@@ -1,42 +1,42 @@
-Return-Path: <linux-rdma+bounces-1058-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-1057-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9068385B373
-	for <lists+linux-rdma@lfdr.de>; Tue, 20 Feb 2024 08:03:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 60AF285B372
+	for <lists+linux-rdma@lfdr.de>; Tue, 20 Feb 2024 08:03:06 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4664E1F2290A
-	for <lists+linux-rdma@lfdr.de>; Tue, 20 Feb 2024 07:03:07 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 18E211F22916
+	for <lists+linux-rdma@lfdr.de>; Tue, 20 Feb 2024 07:03:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 875FE5B661;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6C4D55B660;
 	Tue, 20 Feb 2024 07:02:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="HFa9YrTt"
+	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="CjZipc81"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from out30-118.freemail.mail.aliyun.com (out30-118.freemail.mail.aliyun.com [115.124.30.118])
+Received: from out30-98.freemail.mail.aliyun.com (out30-98.freemail.mail.aliyun.com [115.124.30.98])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D82A75A4D3;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D82EF5B5AC;
 	Tue, 20 Feb 2024 07:02:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.118
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.98
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708412525; cv=none; b=moowzByhZaiFmfURXbN+88setO2wmFMpatwHROXsxiaWq2pPrSAITjLyW++Y4I1XFNlQDtDxQ9V83qPBbKw5bMm1XKRj4xwcYEN2qfBzTBLb62o6CbVDRWrHkvvQO5WLd5Woo7oKG49r9lRBhVTuFEcRqwpBV7aZpvpW6fmplCQ=
+	t=1708412525; cv=none; b=WM0+5nwL7wGq4fgAzWQuiIAWtHhXEbcUtYxmc1Aror0l5kNcvarEljA/xD/uw7yr0Kgz8PQ5LOg7uIElFmkTkU2RvuZgHLRjydlqH3K8PXiB5gYJyKn/pL0b+HEJ77/G+a2P0n3suqPVnyBFang60qWnLKqj/SYRSuDcj52bv78=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1708412525; c=relaxed/simple;
-	bh=jYEq85wOIB9G9ChiwfDhIZbbzmqSualEHfDNqFfY8lE=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References; b=dmDp9e8WsQ4gYkvtzwLKbz61SyLdSKV5uC8X4MBYqnIXKyehWbSkA8v9O3zT+pxzoQCXdKEIz47eaQyj0j/gj4wVn3rICpjtnFelv8Qxaxncoh1966c1NDOnF90zAqdh0FUfkLZxxNiCSZMMEDn7h7uNJTYyU7PptUPhPu4LPw8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=HFa9YrTt; arc=none smtp.client-ip=115.124.30.118
+	bh=lUsgo7B7TuvCI1PsvB7d/R6A6ox50ArQ1Zv2S8EHM3w=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References; b=AtjrpQ9XFc9gZIdily4VuNtfcUYtXRFD8y/dEPs3raDQUOHF5MCFIYK+mWmkr1PihJ3Zz99Mldb62kycNOU16NR49LcUzSgEiMGITrSeG6qoniCeDo5lGnuQqbTsN78Nc3hQO1ipk8qt5CvNhX8ERc74C5Ft0+RohV3zd6+h4No=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=CjZipc81; arc=none smtp.client-ip=115.124.30.98
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
 DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
 	d=linux.alibaba.com; s=default;
-	t=1708412514; h=From:To:Subject:Date:Message-Id;
-	bh=x+0fR1Jr6Fhs41cI45xUAC3ALCYq4HJIKp2WfWH9HB4=;
-	b=HFa9YrTtF7UOatdbU+9dAhForFrmpG7xpHsHd5JxP6X5EpWBevWPVfGRUHYqH8jZu1yHVd8ryz17FF954cV9fGam2JqrIYLcOXpJGJTDpbSVFe+XjiM7GGz7U9dDGBRMCt9cEBBOGWBOx/dszTxC2IokQvHjerfD6SdF9SjCBNw=
-X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R361e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046060;MF=alibuda@linux.alibaba.com;NM=1;PH=DS;RN=13;SR=0;TI=SMTPD_---0W0vuXeS_1708412513;
-Received: from j66a10360.sqa.eu95.tbsite.net(mailfrom:alibuda@linux.alibaba.com fp:SMTPD_---0W0vuXeS_1708412513)
+	t=1708412515; h=From:To:Subject:Date:Message-Id;
+	bh=9lQeQhf1fFiHWvZuBmGc279ZVtyAMjo0RgNUKteShYc=;
+	b=CjZipc81Zaf6OLyk8KVBBrIdVEDtirOi8+ZA5hDtDi1k0lHHggRU2nLHKCDEcCqyKjfYbawDG9z2x9z2SjJ/zoHxlc8gW7GuNGnaWJmanAkIRMkuu6W7Jg9lUMSYRY5AwRdj30jOwqeFbInO0pcRCFpdWpic1beuyOdNY0jZnGI=
+X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R211e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046050;MF=alibuda@linux.alibaba.com;NM=1;PH=DS;RN=13;SR=0;TI=SMTPD_---0W0vuXeh_1708412514;
+Received: from j66a10360.sqa.eu95.tbsite.net(mailfrom:alibuda@linux.alibaba.com fp:SMTPD_---0W0vuXeh_1708412514)
           by smtp.aliyun-inc.com;
           Tue, 20 Feb 2024 15:01:54 +0800
 From: "D. Wythe" <alibuda@linux.alibaba.com>
@@ -53,9 +53,9 @@ Cc: kuba@kernel.org,
 	tonylu@linux.alibaba.com,
 	pabeni@redhat.com,
 	edumazet@google.com
-Subject: [RFC net-next 07/20] net/smc: refactor sock_flag/sock_set_flag
-Date: Tue, 20 Feb 2024 15:01:32 +0800
-Message-Id: <1708412505-34470-8-git-send-email-alibuda@linux.alibaba.com>
+Subject: [RFC net-next 08/20] net/smc: optimize mutex_fback_rsn from mutex to spinlock
+Date: Tue, 20 Feb 2024 15:01:33 +0800
+Message-Id: <1708412505-34470-9-git-send-email-alibuda@linux.alibaba.com>
 X-Mailer: git-send-email 1.8.3.1
 In-Reply-To: <1708412505-34470-1-git-send-email-alibuda@linux.alibaba.com>
 References: <1708412505-34470-1-git-send-email-alibuda@linux.alibaba.com>
@@ -67,145 +67,84 @@ List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 
 From: "D. Wythe" <alibuda@linux.alibaba.com>
 
-Use a unified new macro to access the flag of the sock,
-so that we can easily modify the behavior of a specific flag
-instead of modifying the original function.
+The region protected by mutex_fback_rsn is simple enough and has no
+potential blocking points. This change makes us can invoke
+smc_stat_fallback() in any context, typically, in the context of
+IRQ.
 
 Signed-off-by: D. Wythe <alibuda@linux.alibaba.com>
 ---
- net/smc/af_smc.c    | 4 ++--
- net/smc/smc.h       | 2 ++
- net/smc/smc_cdc.c   | 2 +-
- net/smc/smc_close.c | 8 ++++----
- net/smc/smc_rx.c    | 8 ++++----
- 5 files changed, 13 insertions(+), 11 deletions(-)
+ include/net/netns/smc.h | 2 +-
+ net/smc/af_smc.c        | 4 ++--
+ net/smc/smc_stats.c     | 6 +++---
+ 3 files changed, 6 insertions(+), 6 deletions(-)
 
+diff --git a/include/net/netns/smc.h b/include/net/netns/smc.h
+index fc752a5..99bde74 100644
+--- a/include/net/netns/smc.h
++++ b/include/net/netns/smc.h
+@@ -10,7 +10,7 @@ struct netns_smc {
+ 	/* per cpu counters for SMC */
+ 	struct smc_stats __percpu	*smc_stats;
+ 	/* protect fback_rsn */
+-	struct mutex			mutex_fback_rsn;
++	spinlock_t			mutex_fback_rsn;
+ 	struct smc_stats_rsn		*fback_rsn;
+ 
+ 	bool				limit_smc_hs;	/* constraint on handshake */
 diff --git a/net/smc/af_smc.c b/net/smc/af_smc.c
-index 40cf0569..66306b7 100644
+index 66306b7..1381ac1 100644
 --- a/net/smc/af_smc.c
 +++ b/net/smc/af_smc.c
-@@ -358,7 +358,7 @@ static void smc_destruct(struct sock *sk)
+@@ -769,7 +769,7 @@ static void smc_stat_fallback(struct smc_sock *smc)
  {
- 	if (smc_sk_state(sk) != SMC_CLOSED)
- 		return;
--	if (!sock_flag(sk, SOCK_DEAD))
-+	if (!smc_sock_flag(sk, SOCK_DEAD))
- 		return;
+ 	struct net *net = sock_net(&smc->sk);
+ 
+-	mutex_lock(&net->smc.mutex_fback_rsn);
++	spin_lock_bh(&net->smc.mutex_fback_rsn);
+ 	if (smc->listen_smc) {
+ 		smc_stat_inc_fback_rsn_cnt(smc, net->smc.fback_rsn->srv);
+ 		net->smc.fback_rsn->srv_fback_cnt++;
+@@ -777,7 +777,7 @@ static void smc_stat_fallback(struct smc_sock *smc)
+ 		smc_stat_inc_fback_rsn_cnt(smc, net->smc.fback_rsn->clnt);
+ 		net->smc.fback_rsn->clnt_fback_cnt++;
+ 	}
+-	mutex_unlock(&net->smc.mutex_fback_rsn);
++	spin_unlock_bh(&net->smc.mutex_fback_rsn);
  }
  
-@@ -1623,7 +1623,7 @@ static void smc_connect_work(struct work_struct *work)
- 		smc->sk.sk_err = -rc;
+ /* must be called under rcu read lock */
+diff --git a/net/smc/smc_stats.c b/net/smc/smc_stats.c
+index ca14c0f..64668e9 100644
+--- a/net/smc/smc_stats.c
++++ b/net/smc/smc_stats.c
+@@ -26,7 +26,7 @@ int smc_stats_init(struct net *net)
+ 	net->smc.smc_stats = alloc_percpu(struct smc_stats);
+ 	if (!net->smc.smc_stats)
+ 		goto err_stats;
+-	mutex_init(&net->smc.mutex_fback_rsn);
++	spin_lock_init(&net->smc.mutex_fback_rsn);
+ 	return 0;
  
- out:
--	if (!sock_flag(&smc->sk, SOCK_DEAD)) {
-+	if (!smc_sock_flag(&smc->sk, SOCK_DEAD)) {
- 		if (smc->sk.sk_err) {
- 			smc->sk.sk_state_change(&smc->sk);
- 		} else { /* allow polling before and after fallback decision */
-diff --git a/net/smc/smc.h b/net/smc/smc.h
-index 6b651b5..fce6a7a 100644
---- a/net/smc/smc.h
-+++ b/net/smc/smc.h
-@@ -388,4 +388,6 @@ static inline void smc_sock_set_flag(struct sock *sk, enum sock_flags flag)
- 	set_bit(flag, &sk->sk_flags);
- }
+ err_stats:
+@@ -387,7 +387,7 @@ int smc_nl_get_fback_stats(struct sk_buff *skb, struct netlink_callback *cb)
+ 	int snum = cb_ctx->pos[0];
+ 	bool is_srv = true;
  
-+#define smc_sock_flag(sk, flag)	sock_flag(sk, flag)
-+
- #endif	/* __SMC_H */
-diff --git a/net/smc/smc_cdc.c b/net/smc/smc_cdc.c
-index 3c06625..7614545 100644
---- a/net/smc/smc_cdc.c
-+++ b/net/smc/smc_cdc.c
-@@ -285,7 +285,7 @@ static void smc_cdc_handle_urg_data_arrival(struct smc_sock *smc,
- 	/* new data included urgent business */
- 	smc_curs_copy(&conn->urg_curs, &conn->local_rx_ctrl.prod, conn);
- 	conn->urg_state = SMC_URG_VALID;
--	if (!sock_flag(&smc->sk, SOCK_URGINLINE))
-+	if (!smc_sock_flag(&smc->sk, SOCK_URGINLINE))
- 		/* we'll skip the urgent byte, so don't account for it */
- 		(*diff_prod)--;
- 	base = (char *)conn->rmb_desc->cpu_addr + conn->rx_off;
-diff --git a/net/smc/smc_close.c b/net/smc/smc_close.c
-index 9210d1f..8d9512e 100644
---- a/net/smc/smc_close.c
-+++ b/net/smc/smc_close.c
-@@ -202,7 +202,7 @@ int smc_close_active(struct smc_sock *smc)
- 	int rc1 = 0;
- 
- 	timeout = current->flags & PF_EXITING ?
--		  0 : sock_flag(sk, SOCK_LINGER) ?
-+		  0 : smc_sock_flag(sk, SOCK_LINGER) ?
- 		      sk->sk_lingertime : SMC_MAX_STREAM_WAIT_TIMEOUT;
- 
- 	old_state = smc_sk_state(sk);
-@@ -395,7 +395,7 @@ static void smc_close_passive_work(struct work_struct *work)
- 	case SMC_PEERCLOSEWAIT2:
- 		if (!smc_cdc_rxed_any_close(conn))
+-	mutex_lock(&net->smc.mutex_fback_rsn);
++	spin_lock_bh(&net->smc.mutex_fback_rsn);
+ 	for (k = 0; k < SMC_MAX_FBACK_RSN_CNT; k++) {
+ 		if (k < snum)
+ 			continue;
+@@ -406,7 +406,7 @@ int smc_nl_get_fback_stats(struct sk_buff *skb, struct netlink_callback *cb)
+ 		if (rc_clnt == -ENODATA && rc_srv == -ENODATA)
  			break;
--		if (sock_flag(sk, SOCK_DEAD) &&
-+		if (smc_sock_flag(sk, SOCK_DEAD) &&
- 		    smc_close_sent_any_close(conn)) {
- 			/* smc_release has already been called locally */
- 			smc_sk_set_state(sk, SMC_CLOSED);
-@@ -432,7 +432,7 @@ static void smc_close_passive_work(struct work_struct *work)
- 	if (old_state != smc_sk_state(sk)) {
- 		sk->sk_state_change(sk);
- 		if ((smc_sk_state(sk) == SMC_CLOSED) &&
--		    (sock_flag(sk, SOCK_DEAD) || !sk->sk_socket)) {
-+		    (smc_sock_flag(sk, SOCK_DEAD) || !sk->sk_socket)) {
- 			smc_conn_free(conn);
- 			if (smc->clcsock)
- 				release_clcsock = true;
-@@ -453,7 +453,7 @@ int smc_close_shutdown_write(struct smc_sock *smc)
- 	int rc = 0;
- 
- 	timeout = current->flags & PF_EXITING ?
--		  0 : sock_flag(sk, SOCK_LINGER) ?
-+		  0 : smc_sock_flag(sk, SOCK_LINGER) ?
- 		      sk->sk_lingertime : SMC_MAX_STREAM_WAIT_TIMEOUT;
- 
- 	old_state = smc_sk_state(sk);
-diff --git a/net/smc/smc_rx.c b/net/smc/smc_rx.c
-index 32fd7db..684caae 100644
---- a/net/smc/smc_rx.c
-+++ b/net/smc/smc_rx.c
-@@ -70,7 +70,7 @@ static int smc_rx_update_consumer(struct smc_sock *smc,
- 	if (conn->urg_state == SMC_URG_VALID || conn->urg_rx_skip_pend) {
- 		diff = smc_curs_comp(conn->rmb_desc->len, &cons,
- 				     &conn->urg_curs);
--		if (sock_flag(sk, SOCK_URGINLINE)) {
-+		if (smc_sock_flag(sk, SOCK_URGINLINE)) {
- 			if (diff == 0) {
- 				force = true;
- 				rc = 1;
-@@ -286,7 +286,7 @@ static int smc_rx_recv_urg(struct smc_sock *smc, struct msghdr *msg, int len,
- 	struct sock *sk = &smc->sk;
- 	int rc = 0;
- 
--	if (sock_flag(sk, SOCK_URGINLINE) ||
-+	if (smc_sock_flag(sk, SOCK_URGINLINE) ||
- 	    !(conn->urg_state == SMC_URG_VALID) ||
- 	    conn->urg_state == SMC_URG_READ)
- 		return -EINVAL;
-@@ -408,7 +408,7 @@ int smc_rx_recvmsg(struct smc_sock *smc, struct msghdr *msg,
- 				break;
- 			}
- 			if (smc_sk_state(sk) == SMC_CLOSED) {
--				if (!sock_flag(sk, SOCK_DONE)) {
-+				if (!smc_sock_flag(sk, SOCK_DONE)) {
- 					/* This occurs when user tries to read
- 					 * from never connected socket.
- 					 */
-@@ -449,7 +449,7 @@ int smc_rx_recvmsg(struct smc_sock *smc, struct msghdr *msg,
- 		if (splbytes)
- 			smc_curs_add(conn->rmb_desc->len, &cons, splbytes);
- 		if (conn->urg_state == SMC_URG_VALID &&
--		    sock_flag(&smc->sk, SOCK_URGINLINE) &&
-+		    smc_sock_flag(&smc->sk, SOCK_URGINLINE) &&
- 		    readable > 1)
- 			readable--;	/* always stop at urgent Byte */
- 		/* not more than what user space asked for */
+ 	}
+-	mutex_unlock(&net->smc.mutex_fback_rsn);
++	spin_unlock_bh(&net->smc.mutex_fback_rsn);
+ 	cb_ctx->pos[1] = skip_serv;
+ 	cb_ctx->pos[0] = k;
+ 	return skb->len;
 -- 
 1.8.3.1
 
