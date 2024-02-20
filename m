@@ -1,44 +1,44 @@
-Return-Path: <linux-rdma+bounces-1057-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-1055-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 60AF285B372
-	for <lists+linux-rdma@lfdr.de>; Tue, 20 Feb 2024 08:03:06 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6F7F085B369
+	for <lists+linux-rdma@lfdr.de>; Tue, 20 Feb 2024 08:02:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 18E211F22916
-	for <lists+linux-rdma@lfdr.de>; Tue, 20 Feb 2024 07:03:06 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A2ADE1C21561
+	for <lists+linux-rdma@lfdr.de>; Tue, 20 Feb 2024 07:02:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6C4D55B660;
-	Tue, 20 Feb 2024 07:02:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BA0EE5A7B4;
+	Tue, 20 Feb 2024 07:02:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="CjZipc81"
+	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="sH6MRfLT"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from out30-98.freemail.mail.aliyun.com (out30-98.freemail.mail.aliyun.com [115.124.30.98])
+Received: from out30-131.freemail.mail.aliyun.com (out30-131.freemail.mail.aliyun.com [115.124.30.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D82EF5B5AC;
-	Tue, 20 Feb 2024 07:02:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.98
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6441F5A4D3;
+	Tue, 20 Feb 2024 07:01:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708412525; cv=none; b=WM0+5nwL7wGq4fgAzWQuiIAWtHhXEbcUtYxmc1Aror0l5kNcvarEljA/xD/uw7yr0Kgz8PQ5LOg7uIElFmkTkU2RvuZgHLRjydlqH3K8PXiB5gYJyKn/pL0b+HEJ77/G+a2P0n3suqPVnyBFang60qWnLKqj/SYRSuDcj52bv78=
+	t=1708412520; cv=none; b=FqzC6Ih7n6n/t6wmXqGyal2dP7o7RM1uYAE/t8jKG4Ji/EH5Ht+qzkMuboGBg0lYKjtvx781nHRNRrKxAXEPGcPR51xqscGl7yKLw9M89AJf9kEPrYOpsXAKI3u+DV0x/PLCZYP9uI3huhVRkZH+mhUeLJhXBOKbYnth48aFa1w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708412525; c=relaxed/simple;
-	bh=lUsgo7B7TuvCI1PsvB7d/R6A6ox50ArQ1Zv2S8EHM3w=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References; b=AtjrpQ9XFc9gZIdily4VuNtfcUYtXRFD8y/dEPs3raDQUOHF5MCFIYK+mWmkr1PihJ3Zz99Mldb62kycNOU16NR49LcUzSgEiMGITrSeG6qoniCeDo5lGnuQqbTsN78Nc3hQO1ipk8qt5CvNhX8ERc74C5Ft0+RohV3zd6+h4No=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=CjZipc81; arc=none smtp.client-ip=115.124.30.98
+	s=arc-20240116; t=1708412520; c=relaxed/simple;
+	bh=3KZsEV1WJUZcqZISvCXQp8Hcw+dNN1oGioEr2lvo0AQ=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References; b=PXLfXBE4qCWA1fHyjpAG907SeLKnFmVZG0hykA90MPwtRobUXuejwCMBVDV/FPinkgnoIXRnNeD0MCSN7BN+Dk/dmyARIm+KIWDyDFNiJY2QnAhrcfc5Uq6VCDiMaGgR0rzcmYhsqZLU0gw2yQvxF9XiveaNZ62WimMRH4x6E7c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=sH6MRfLT; arc=none smtp.client-ip=115.124.30.131
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
 DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
 	d=linux.alibaba.com; s=default;
-	t=1708412515; h=From:To:Subject:Date:Message-Id;
-	bh=9lQeQhf1fFiHWvZuBmGc279ZVtyAMjo0RgNUKteShYc=;
-	b=CjZipc81Zaf6OLyk8KVBBrIdVEDtirOi8+ZA5hDtDi1k0lHHggRU2nLHKCDEcCqyKjfYbawDG9z2x9z2SjJ/zoHxlc8gW7GuNGnaWJmanAkIRMkuu6W7Jg9lUMSYRY5AwRdj30jOwqeFbInO0pcRCFpdWpic1beuyOdNY0jZnGI=
-X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R211e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046050;MF=alibuda@linux.alibaba.com;NM=1;PH=DS;RN=13;SR=0;TI=SMTPD_---0W0vuXeh_1708412514;
-Received: from j66a10360.sqa.eu95.tbsite.net(mailfrom:alibuda@linux.alibaba.com fp:SMTPD_---0W0vuXeh_1708412514)
+	t=1708412516; h=From:To:Subject:Date:Message-Id;
+	bh=3USlzh593tPYna5RCKRSdt/zJLdUUoPtKz7as3FKsT8=;
+	b=sH6MRfLTAVgVa1eqVq/Cx1ZaNt8RadDEO61NIbb5tBrHLP//Smq2ay43/4ZL2/3orfbbnm/xh/xSZ1kFPBpPsdgRyzU3n9iABRiE2FoOJ67fwUjfSqOP9sqQoJ1/2sQKwDmU9vqVp02PSXV2KPH5mc/zmop2FW/+RtwGF9HV+EQ=
+X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R191e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018045170;MF=alibuda@linux.alibaba.com;NM=1;PH=DS;RN=13;SR=0;TI=SMTPD_---0W0vuXez_1708412515;
+Received: from j66a10360.sqa.eu95.tbsite.net(mailfrom:alibuda@linux.alibaba.com fp:SMTPD_---0W0vuXez_1708412515)
           by smtp.aliyun-inc.com;
-          Tue, 20 Feb 2024 15:01:54 +0800
+          Tue, 20 Feb 2024 15:01:55 +0800
 From: "D. Wythe" <alibuda@linux.alibaba.com>
 To: kgraul@linux.ibm.com,
 	wenjia@linux.ibm.com,
@@ -53,9 +53,9 @@ Cc: kuba@kernel.org,
 	tonylu@linux.alibaba.com,
 	pabeni@redhat.com,
 	edumazet@google.com
-Subject: [RFC net-next 08/20] net/smc: optimize mutex_fback_rsn from mutex to spinlock
-Date: Tue, 20 Feb 2024 15:01:33 +0800
-Message-Id: <1708412505-34470-9-git-send-email-alibuda@linux.alibaba.com>
+Subject: [RFC net-next 09/20] net/smc: refator smc_switch_to_fallback
+Date: Tue, 20 Feb 2024 15:01:34 +0800
+Message-Id: <1708412505-34470-10-git-send-email-alibuda@linux.alibaba.com>
 X-Mailer: git-send-email 1.8.3.1
 In-Reply-To: <1708412505-34470-1-git-send-email-alibuda@linux.alibaba.com>
 References: <1708412505-34470-1-git-send-email-alibuda@linux.alibaba.com>
@@ -67,84 +67,45 @@ List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 
 From: "D. Wythe" <alibuda@linux.alibaba.com>
 
-The region protected by mutex_fback_rsn is simple enough and has no
-potential blocking points. This change makes us can invoke
-smc_stat_fallback() in any context, typically, in the context of
-IRQ.
+Move code ahead which has no need protected by clcsock_release_lock,
+On the one hand, this reduces the granularity of the critical area, and
+on the other hand, for the inet version of SMC, the code protected by
+the critical area is meaningless. This patch make it possible to invoke
+smc_switch_to_fallback() in any context (IRQ .etc) within inet sock
+version of SMC.
 
 Signed-off-by: D. Wythe <alibuda@linux.alibaba.com>
 ---
- include/net/netns/smc.h | 2 +-
- net/smc/af_smc.c        | 4 ++--
- net/smc/smc_stats.c     | 6 +++---
- 3 files changed, 6 insertions(+), 6 deletions(-)
+ net/smc/af_smc.c | 10 ++++++----
+ 1 file changed, 6 insertions(+), 4 deletions(-)
 
-diff --git a/include/net/netns/smc.h b/include/net/netns/smc.h
-index fc752a5..99bde74 100644
---- a/include/net/netns/smc.h
-+++ b/include/net/netns/smc.h
-@@ -10,7 +10,7 @@ struct netns_smc {
- 	/* per cpu counters for SMC */
- 	struct smc_stats __percpu	*smc_stats;
- 	/* protect fback_rsn */
--	struct mutex			mutex_fback_rsn;
-+	spinlock_t			mutex_fback_rsn;
- 	struct smc_stats_rsn		*fback_rsn;
- 
- 	bool				limit_smc_hs;	/* constraint on handshake */
 diff --git a/net/smc/af_smc.c b/net/smc/af_smc.c
-index 66306b7..1381ac1 100644
+index 1381ac1..20abdda 100644
 --- a/net/smc/af_smc.c
 +++ b/net/smc/af_smc.c
-@@ -769,7 +769,7 @@ static void smc_stat_fallback(struct smc_sock *smc)
+@@ -909,16 +909,18 @@ static int smc_switch_to_fallback(struct smc_sock *smc, int reason_code)
  {
- 	struct net *net = sock_net(&smc->sk);
+ 	int rc = 0;
  
--	mutex_lock(&net->smc.mutex_fback_rsn);
-+	spin_lock_bh(&net->smc.mutex_fback_rsn);
- 	if (smc->listen_smc) {
- 		smc_stat_inc_fback_rsn_cnt(smc, net->smc.fback_rsn->srv);
- 		net->smc.fback_rsn->srv_fback_cnt++;
-@@ -777,7 +777,7 @@ static void smc_stat_fallback(struct smc_sock *smc)
- 		smc_stat_inc_fback_rsn_cnt(smc, net->smc.fback_rsn->clnt);
- 		net->smc.fback_rsn->clnt_fback_cnt++;
++	/* no need protected by clcsock_release_lock, move head */
++	smc->use_fallback = true;
++	smc->fallback_rsn = reason_code;
++	smc_stat_fallback(smc);
++	trace_smc_switch_to_fallback(smc, reason_code);
++
+ 	mutex_lock(&smc->clcsock_release_lock);
+ 	if (!smc->clcsock) {
+ 		rc = -EBADF;
+ 		goto out;
  	}
--	mutex_unlock(&net->smc.mutex_fback_rsn);
-+	spin_unlock_bh(&net->smc.mutex_fback_rsn);
- }
  
- /* must be called under rcu read lock */
-diff --git a/net/smc/smc_stats.c b/net/smc/smc_stats.c
-index ca14c0f..64668e9 100644
---- a/net/smc/smc_stats.c
-+++ b/net/smc/smc_stats.c
-@@ -26,7 +26,7 @@ int smc_stats_init(struct net *net)
- 	net->smc.smc_stats = alloc_percpu(struct smc_stats);
- 	if (!net->smc.smc_stats)
- 		goto err_stats;
--	mutex_init(&net->smc.mutex_fback_rsn);
-+	spin_lock_init(&net->smc.mutex_fback_rsn);
- 	return 0;
- 
- err_stats:
-@@ -387,7 +387,7 @@ int smc_nl_get_fback_stats(struct sk_buff *skb, struct netlink_callback *cb)
- 	int snum = cb_ctx->pos[0];
- 	bool is_srv = true;
- 
--	mutex_lock(&net->smc.mutex_fback_rsn);
-+	spin_lock_bh(&net->smc.mutex_fback_rsn);
- 	for (k = 0; k < SMC_MAX_FBACK_RSN_CNT; k++) {
- 		if (k < snum)
- 			continue;
-@@ -406,7 +406,7 @@ int smc_nl_get_fback_stats(struct sk_buff *skb, struct netlink_callback *cb)
- 		if (rc_clnt == -ENODATA && rc_srv == -ENODATA)
- 			break;
- 	}
--	mutex_unlock(&net->smc.mutex_fback_rsn);
-+	spin_unlock_bh(&net->smc.mutex_fback_rsn);
- 	cb_ctx->pos[1] = skip_serv;
- 	cb_ctx->pos[0] = k;
- 	return skb->len;
+-	smc->use_fallback = true;
+-	smc->fallback_rsn = reason_code;
+-	smc_stat_fallback(smc);
+-	trace_smc_switch_to_fallback(smc, reason_code);
+ 	if (smc->sk.sk_socket && smc->sk.sk_socket->file) {
+ 		smc->clcsock->file = smc->sk.sk_socket->file;
+ 		smc->clcsock->file->private_data = smc->clcsock;
 -- 
 1.8.3.1
 
