@@ -1,44 +1,44 @@
-Return-Path: <linux-rdma+bounces-1056-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-1062-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6284385B36D
-	for <lists+linux-rdma@lfdr.de>; Tue, 20 Feb 2024 08:02:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 24E6985B37F
+	for <lists+linux-rdma@lfdr.de>; Tue, 20 Feb 2024 08:03:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 152EE1F2295B
-	for <lists+linux-rdma@lfdr.de>; Tue, 20 Feb 2024 07:02:55 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D0BB21F227D2
+	for <lists+linux-rdma@lfdr.de>; Tue, 20 Feb 2024 07:03:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 326305B5BB;
-	Tue, 20 Feb 2024 07:02:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EFCB25A109;
+	Tue, 20 Feb 2024 07:02:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="bYaTxERB"
+	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="wJzZuHVc"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from out30-100.freemail.mail.aliyun.com (out30-100.freemail.mail.aliyun.com [115.124.30.100])
+Received: from out30-98.freemail.mail.aliyun.com (out30-98.freemail.mail.aliyun.com [115.124.30.98])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 603415B5B3;
-	Tue, 20 Feb 2024 07:02:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.100
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A7BD85A4D3;
+	Tue, 20 Feb 2024 07:02:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.98
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708412524; cv=none; b=NadZT70T/jajERfqQHCTtIwNLrDKfRYawDeDort/eCqyZX+W6Rx+gqu+9aJzvZc3Fm+ROS6ZPgjQ861l+molf+sEwJ3S4Ms9bBbr+Dtg6M1a6LRl3rRZraY1T/Hfbmu6c7K1riY+dR628mNcshPY6IMnbugy9gAZTcmnUk4XD8Q=
+	t=1708412528; cv=none; b=AO4kL5vd0wqOeUIMqou8CANcoEFpk8ONd0Hug/mhRvEwCYcinX6B2V83cCPUMZuaSX6cJYe59wJTviQ/pk1Xvlf9nfQHYX/rNqvJ+OmIb0lmLcQRY2VS2dUWFjnnUvLd2DPiWK+1NNfeVM0qbcZ5HOA8Xf/DcR3l9hA8RqMj2nQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708412524; c=relaxed/simple;
-	bh=uynprvzz2AbAKrOJMac5dPZJ0gH2wTRRdmgU8YlBESE=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References; b=OruoMZinirEg37jIirERQdvY7Dn4jmdxP9EQfgaoNm2WxTAdqJspRk0V3QrmxHWsemZ+zhu9TJxONnXDchYrsi3wD5y1fZdEhbIOjvF+nxofr3nvjG9Me5HT5qWiVNwrStnqOHvGEtmkIT6wjO3sXtDVZ8LiY/XaqC1pTWAxAS4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=bYaTxERB; arc=none smtp.client-ip=115.124.30.100
+	s=arc-20240116; t=1708412528; c=relaxed/simple;
+	bh=Uen6/3QA/kH5/krcRm82SDHTVPfbkLOOICuztBWUjv8=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References; b=BQkbu7LWHZj+mCeTLJU9+D6r0LDW0IhMO1TIfdiZhjB5lplaiyozZjBC9rB2EPM4NM+U4s0QEAN0L/aGM1KP9Z6p8uG9BJAt/xMRCLdW4V4VXYmIptNn+7J6sLr76hPhw6i/qoQgDuSupdwmom6M5D6QT7jxwGPB2dOAHdryyUw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=wJzZuHVc; arc=none smtp.client-ip=115.124.30.98
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
 DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
 	d=linux.alibaba.com; s=default;
-	t=1708412519; h=From:To:Subject:Date:Message-Id;
-	bh=sNwHuATEVbDgcOGggJ4aYilgn556khxa9K+HduugkGs=;
-	b=bYaTxERBJQyS305dEjY09TeV9/aRz4AVTKlWD7UjrfhkhNxPTOfPAf/tgVYdNYC4WY3E2utZHAvnxu9llMbMYtqkh/QN7E6Y6rLB+4KBsm8yMYeyAridYxnpYSSgl0zVZNuH+yikBwz3qzZhCJYzyk0lQoR6r56iJ7iTw97/HC8=
-X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R141e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046050;MF=alibuda@linux.alibaba.com;NM=1;PH=DS;RN=13;SR=0;TI=SMTPD_---0W0vuXfw_1708412517;
-Received: from j66a10360.sqa.eu95.tbsite.net(mailfrom:alibuda@linux.alibaba.com fp:SMTPD_---0W0vuXfw_1708412517)
+	t=1708412518; h=From:To:Subject:Date:Message-Id;
+	bh=pHoJolDSC2elBPjYqT6pbVM380kpEmMy7XkwC6XWJxQ=;
+	b=wJzZuHVcvD1keusWFLwuLC+8GltiQP1/kcDljBHRgDWY6y6XvzsOE6JR9OXoxt9IgTlQSC+3u6w4+vrdsmQdWpSDEL4+GQU6ZFB650/OwKFSbI02Wlthxlzsr1ClJGVohZba/xlXs8Yd6atVYXCjAfcVj5h+tWvBNXFRMYmcMsQ=
+X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R111e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046056;MF=alibuda@linux.alibaba.com;NM=1;PH=DS;RN=13;SR=0;TI=SMTPD_---0W0vuXgI_1708412518;
+Received: from j66a10360.sqa.eu95.tbsite.net(mailfrom:alibuda@linux.alibaba.com fp:SMTPD_---0W0vuXgI_1708412518)
           by smtp.aliyun-inc.com;
-          Tue, 20 Feb 2024 15:01:57 +0800
+          Tue, 20 Feb 2024 15:01:58 +0800
 From: "D. Wythe" <alibuda@linux.alibaba.com>
 To: kgraul@linux.ibm.com,
 	wenjia@linux.ibm.com,
@@ -53,9 +53,9 @@ Cc: kuba@kernel.org,
 	tonylu@linux.alibaba.com,
 	pabeni@redhat.com,
 	edumazet@google.com
-Subject: [RFC net-next 12/20] net/smc: refatoring initialization of smc sock
-Date: Tue, 20 Feb 2024 15:01:37 +0800
-Message-Id: <1708412505-34470-13-git-send-email-alibuda@linux.alibaba.com>
+Subject: [RFC net-next 13/20] net/smc: embedded tcp sock into smc sock
+Date: Tue, 20 Feb 2024 15:01:38 +0800
+Message-Id: <1708412505-34470-14-git-send-email-alibuda@linux.alibaba.com>
 X-Mailer: git-send-email 1.8.3.1
 In-Reply-To: <1708412505-34470-1-git-send-email-alibuda@linux.alibaba.com>
 References: <1708412505-34470-1-git-send-email-alibuda@linux.alibaba.com>
@@ -67,106 +67,47 @@ List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 
 From: "D. Wythe" <alibuda@linux.alibaba.com>
 
-This patch try extract the common part of smc sock
-initialization, use smc_sock_init() for active open sock
-initialization, smc_sock_init_passive() for passive
-open sock initialization. This is a preparation to
-implement the inet version of SMC.
+For inet version of SMC, one of the key goals is to make
+a fallbacked smc sock can be recognazied as a tcp sock by
+net tools.
+
+So, it is necessary to embedded the tcp sock into smc sock
+and make the tcp sock as the first member of smc sock.
 
 Signed-off-by: D. Wythe <alibuda@linux.alibaba.com>
 ---
- net/smc/af_smc.c | 58 +++++++++++++++++++++++++++++++++++++++-----------------
- 1 file changed, 41 insertions(+), 17 deletions(-)
+ net/smc/smc.h | 11 ++++++++++-
+ 1 file changed, 10 insertions(+), 1 deletion(-)
 
-diff --git a/net/smc/af_smc.c b/net/smc/af_smc.c
-index e0505d6..97e3951 100644
---- a/net/smc/af_smc.c
-+++ b/net/smc/af_smc.c
-@@ -362,10 +362,48 @@ static void smc_destruct(struct sock *sk)
- 		return;
+diff --git a/net/smc/smc.h b/net/smc/smc.h
+index fce6a7a..932d61f 100644
+--- a/net/smc/smc.h
++++ b/net/smc/smc.h
+@@ -248,7 +248,11 @@ struct smc_connection {
+ };
+ 
+ struct smc_sock {				/* smc sock container */
+-	struct sock		sk;
++	union {
++		struct tcp6_sock tp6sk;
++		struct tcp_sock tpsk;
++		struct sock sk;
++	};
+ 	struct socket		*clcsock;	/* internal tcp socket */
+ 	void			(*clcsk_state_change)(struct sock *sk);
+ 						/* original stat_change fct. */
+@@ -388,6 +392,11 @@ static inline void smc_sock_set_flag(struct sock *sk, enum sock_flags flag)
+ 	set_bit(flag, &sk->sk_flags);
  }
  
-+static inline void smc_sock_init_common(struct sock *sk)
++static __always_inline bool smc_sock_is_inet_sock(const struct sock *sk)
 +{
-+	struct smc_sock *smc = smc_sk(sk);
-+
-+	smc_sk_set_state(sk, SMC_INIT);
-+	INIT_DELAYED_WORK(&smc->conn.tx_work, smc_tx_work);
-+	spin_lock_init(&smc->conn.send_lock);
-+	mutex_init(&smc->clcsock_release_lock);
++	return inet_test_bit(IS_ICSK, sk);
 +}
 +
-+static void smc_sock_init_passive(struct sock *par, struct sock *sk)
-+{
-+	struct smc_sock *parent = smc_sk(par);
-+	struct sock *clcsk;
-+
-+	smc_sock_init_common(sk);
-+	smc_sk(sk)->listen_smc = parent;
-+
-+	clcsk = smc_sock_is_inet_sock(sk) ? sk : smc_sk(sk)->clcsock->sk;
-+	if (tcp_sk(clcsk)->syn_smc)
-+		atomic_inc(&parent->queued_smc_hs);
-+}
-+
-+static void smc_sock_init(struct sock *sk, struct net *net)
-+{
-+	struct smc_sock *smc = smc_sk(sk);
-+
-+	smc_sock_init_common(sk);
-+	WRITE_ONCE(sk->sk_sndbuf, 2 * READ_ONCE(net->smc.sysctl_wmem));
-+	WRITE_ONCE(sk->sk_rcvbuf, 2* READ_ONCE(net->smc.sysctl_rmem));
-+	INIT_WORK(&smc->tcp_listen_work, smc_tcp_listen_work);
-+	INIT_WORK(&smc->connect_work, smc_connect_work);
-+	INIT_LIST_HEAD(&smc->accept_q);
-+	spin_lock_init(&smc->accept_q_lock);
-+	smc_init_saved_callbacks(smc);
-+
-+	sk->sk_destruct = smc_destruct;
-+}
-+
- static struct sock *smc_sock_alloc(struct net *net, struct socket *sock,
- 				   int protocol)
- {
--	struct smc_sock *smc;
- 	struct proto *prot;
- 	struct sock *sk;
+ #define smc_sock_flag(sk, flag)	sock_flag(sk, flag)
  
-@@ -375,21 +413,9 @@ static struct sock *smc_sock_alloc(struct net *net, struct socket *sock,
- 		return NULL;
- 
- 	sock_init_data(sock, sk); /* sets sk_refcnt to 1 */
--	smc_sk_set_state(sk, SMC_INIT);
--	sk->sk_destruct = smc_destruct;
- 	sk->sk_protocol = protocol;
--	WRITE_ONCE(sk->sk_sndbuf, 2 * READ_ONCE(net->smc.sysctl_wmem));
--	WRITE_ONCE(sk->sk_rcvbuf, 2 * READ_ONCE(net->smc.sysctl_rmem));
--	smc = smc_sk(sk);
--	INIT_WORK(&smc->tcp_listen_work, smc_tcp_listen_work);
--	INIT_WORK(&smc->connect_work, smc_connect_work);
--	INIT_DELAYED_WORK(&smc->conn.tx_work, smc_tx_work);
--	INIT_LIST_HEAD(&smc->accept_q);
--	spin_lock_init(&smc->accept_q_lock);
--	spin_lock_init(&smc->conn.send_lock);
-+	smc_sock_init(sk, net);
- 	sk->sk_prot->hash(sk);
--	mutex_init(&smc->clcsock_release_lock);
--	smc_init_saved_callbacks(smc);
- 
- 	return sk;
- }
-@@ -2573,10 +2599,8 @@ static void smc_tcp_listen_work(struct work_struct *work)
- 		if (!new_smc)
- 			continue;
- 
--		if (tcp_sk(new_smc->clcsock->sk)->syn_smc)
--			atomic_inc(&lsmc->queued_smc_hs);
-+		smc_sock_init_passive(lsk, &new_smc->sk);
- 
--		new_smc->listen_smc = lsmc;
- 		new_smc->use_fallback = lsmc->use_fallback;
- 		new_smc->fallback_rsn = lsmc->fallback_rsn;
- 		sock_hold(lsk); /* sock_put in smc_listen_work */
+ #endif	/* __SMC_H */
 -- 
 1.8.3.1
 
