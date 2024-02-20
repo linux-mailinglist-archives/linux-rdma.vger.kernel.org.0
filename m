@@ -1,172 +1,243 @@
-Return-Path: <linux-rdma+bounces-1049-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-1050-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 027EA85B349
-	for <lists+linux-rdma@lfdr.de>; Tue, 20 Feb 2024 07:58:26 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1D3C085B35B
+	for <lists+linux-rdma@lfdr.de>; Tue, 20 Feb 2024 08:02:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 27DA71C210FE
-	for <lists+linux-rdma@lfdr.de>; Tue, 20 Feb 2024 06:58:25 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9FF511F22543
+	for <lists+linux-rdma@lfdr.de>; Tue, 20 Feb 2024 07:02:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0E9515A119;
-	Tue, 20 Feb 2024 06:58:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 75A175A0F2;
+	Tue, 20 Feb 2024 07:01:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="bubLqgMq"
+	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="U0/Rc/hX"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from NAM02-DM3-obe.outbound.protection.outlook.com (mail-dm3nam02on2055.outbound.protection.outlook.com [40.107.95.55])
+Received: from out30-111.freemail.mail.aliyun.com (out30-111.freemail.mail.aliyun.com [115.124.30.111])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 369535A0F3;
-	Tue, 20 Feb 2024 06:58:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.95.55
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708412288; cv=fail; b=dwvL2TyqIL9HgaKoL+Nygtnel2PMVc2kJw+FCSlet17OsaOKTHTrW3kfP6/T1bySpEkc5/4B4J5T/oEXGteNNWYoaVPLcr0UELQwnTbPxzm9MdKjAHZfNDt7SWpQ/MxjTqn5V0DIekMSeEXC8/7q6+eSXuGzkik+U97ftLJyHEE=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708412288; c=relaxed/simple;
-	bh=kvGN8nhtGZoTVTwcyir86xRcMghgRdBi0xGMnOTxRWE=;
-	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
-	 Content-Type:MIME-Version; b=Ak31283BkoF0LcWGcyDzFuzvimY1RkWylCGlq2PGqnowcVh334RLxtYq9R/jEmEms98tKJ2dFIfM4iva0pZ7g6DuBfNT2Zm1X3eDOISfhHgAADkMtqevxy5LvsnjKTKUZxG+XtBzuXL1ECNYZUIBkerqiyJI7P0lTxuTqwT5+18=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=bubLqgMq; arc=fail smtp.client-ip=40.107.95.55
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=ArqJVCCktDG7X8H/WM7OaxvdBv6EEJXHaoERFA9+5iK/VOYLxdKAYJLm4EU2r5KVnUoxVIHH3hfxJJ3BqSrvx+zEMOBqxO7WvbLgoLZdIxb2hY5ibZS17TTH6DGalIDg1G9tT+J82AhuJIDyuskm9m9ZjcVraI6MEdLjli3abzDe/AjW1fmr40Lzx0JcpRXh1ejswOzQXoM3ztcbSpWu7RGtyNX04OHDo+Z3VXZ9z5l6Gmch4KXMCtnfb11Vp/70EDEkDqhIy/EvWMK474aDHo/Y/DpuQOAeoEBTW3Ab1Zz7UGVOONh7cpw8jipiYEckSWHnj+XkjvIJUCZkqvvcHA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=YCppe5nKRMKWIkG9s7NiGAy7fBjMltr7ENb5oY/iZy4=;
- b=WYcBl53yve0caamOYErJMaROutBWv1i4hO9umPcC3An7en3puaary3msNZCYy9XiPsrrFWHxkahQQJiQM6ZCTpXo9YAW0ldU0gQB+4b7L+3m3p+gw2Uxq9OQj8QBiLDmk+uWidBB19OiYp86TRPG4k8GN48rfw+BcqWiW5ArESUUtw58yQZHYTnI4hMr8HyeNuL8/dF3FX8WrRRgh8nVnUjL5aCeierD2AvBURhDiRRCpziAFlWfgUrxjfuhbUrurrmFKXxbgJL9mJhInpmgqwj2nMcwvMvIXEFM6Uf1UbJmOGUY0/CTqlsPhOsYGyxIOgX6b1AA2WX63FNmSN16xg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=YCppe5nKRMKWIkG9s7NiGAy7fBjMltr7ENb5oY/iZy4=;
- b=bubLqgMqMcpfLNciGXCb5zv4g7NdomxMLWSpKC5y8YMdNVK29gzQl0c4CPHB/KAMXej663OWTMeOTLUcE3ulBVtnn7gswUwYyYyCsJyPPmh8Wuu4TcYZBHkR7VwukDuWUS2iEGy+EcpF8VkI5AYJlm7zJ/odOl89mWHDhpZ6q7HXd7HF65oJAkECI8Fdoj6tUoO+i1iUtvGKvqXLh5UHgMNX8/aaYSr4ro90SFgR75Y9XXL3vH72YNJq9hOCOSmdO0PcwqgOezhYxbHiG0v4wpHcynnVou+XUCZ2tW5jWmBeQ+7Ze47vmVJgACtI4mxCjKiFT/r5/EGFw4LHhxHHZw==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nvidia.com;
-Received: from IA0PR12MB8086.namprd12.prod.outlook.com (2603:10b6:208:403::7)
- by CYYPR12MB8871.namprd12.prod.outlook.com (2603:10b6:930:c2::21) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7316.19; Tue, 20 Feb
- 2024 06:58:04 +0000
-Received: from IA0PR12MB8086.namprd12.prod.outlook.com
- ([fe80::9987:3f37:9a25:b0e7]) by IA0PR12MB8086.namprd12.prod.outlook.com
- ([fe80::9987:3f37:9a25:b0e7%2]) with mapi id 15.20.7316.018; Tue, 20 Feb 2024
- 06:58:04 +0000
-Message-ID: <2abe3279-ccba-4e1d-a04c-fd724e1660b6@nvidia.com>
-Date: Tue, 20 Feb 2024 08:57:55 +0200
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 1/2] net/mlx5: pre-initialize sprintf buffers
-To: Zhu Yanjun <yanjun.zhu@linux.dev>, Arnd Bergmann <arnd@kernel.org>,
- Saeed Mahameed <saeedm@nvidia.com>, Leon Romanovsky <leon@kernel.org>
-Cc: Arnd Bergmann <arnd@arndb.de>, "David S. Miller" <davem@davemloft.net>,
- Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
- Paolo Abeni <pabeni@redhat.com>, Alex Vesker <valex@nvidia.com>,
- Erez Shitrit <erezsh@nvidia.com>, Hamdan Igbaria <hamdani@nvidia.com>,
- netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
- linux-kernel@vger.kernel.org
-References: <20240219100506.648089-1-arnd@kernel.org>
- <bbef7014-5059-405d-a27a-a379431a3fcf@linux.dev>
-Content-Language: en-US
-From: Yevgeny Kliteynik <kliteyn@nvidia.com>
-In-Reply-To: <bbef7014-5059-405d-a27a-a379431a3fcf@linux.dev>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: FR4P281CA0089.DEUP281.PROD.OUTLOOK.COM
- (2603:10a6:d10:cd::18) To IA0PR12MB8086.namprd12.prod.outlook.com
- (2603:10b6:208:403::7)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3233353812;
+	Tue, 20 Feb 2024 07:01:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.111
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1708412515; cv=none; b=uWkKblhTDiS9Q9IARgb/m8F5me8yE7+MEh5AYNvV0YzoqLqNnOjc8B55Ij66ii/EQdbsrMQIThg9GAgdl029sd9hq0CaGabje7WfDoKoHCrDMe5KzoceZecFqNSr+bQoaowpqaquAZRcfPbr9tizxsPUgOBKXhp2kHAovjNtPZI=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1708412515; c=relaxed/simple;
+	bh=6JL8cV6I96lFtahpU5MB/CgFV+BKf+Zz/AuzHvy7h8o=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type; b=ItvBeLXEMudAWAahAcZi70UWwPwM6T1h0TZRQE5ffmg2iShAZ/kRRNjhPgXDaX5giuL8wI3rk/aW8XDGmY3CXSjIyTmcHWyRaIflXnCctdupW3jp6yiZ/3QkwYtwGh30+Lokn3tBnHcOKdrrIi2yW00z6z6HugE8p4XCqZU3NC0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=U0/Rc/hX; arc=none smtp.client-ip=115.124.30.111
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
+DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
+	d=linux.alibaba.com; s=default;
+	t=1708412510; h=From:To:Subject:Date:Message-Id:MIME-Version:Content-Type;
+	bh=tPUrFNUVmxMmR8ZzFyQJcrqL6P7iXqB3hDLDKx1u2FM=;
+	b=U0/Rc/hXe8dNUtZKjF3QXd3t7pjFAHPBn0pBcb4nKrv0p28xIMhTcmDVLednynMcWHOjIPRUiDbEUtgikRhCrS7vW0Yn+fM1GVc7wz7zsKRiTkDyI8BZ7U8kjewqW0stm+uPM/opJtzziRBZB8kiu4MNUSgxWzUlrX8WyyNfxsQ=
+X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R951e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018045170;MF=alibuda@linux.alibaba.com;NM=1;PH=DS;RN=13;SR=0;TI=SMTPD_---0W0vuXaw_1708412505;
+Received: from j66a10360.sqa.eu95.tbsite.net(mailfrom:alibuda@linux.alibaba.com fp:SMTPD_---0W0vuXaw_1708412505)
+          by smtp.aliyun-inc.com;
+          Tue, 20 Feb 2024 15:01:49 +0800
+From: "D. Wythe" <alibuda@linux.alibaba.com>
+To: kgraul@linux.ibm.com,
+	wenjia@linux.ibm.com,
+	jaka@linux.ibm.com,
+	wintera@linux.ibm.com,
+	guwen@linux.alibaba.com
+Cc: kuba@kernel.org,
+	davem@davemloft.net,
+	netdev@vger.kernel.org,
+	linux-s390@vger.kernel.org,
+	linux-rdma@vger.kernel.org,
+	tonylu@linux.alibaba.com,
+	pabeni@redhat.com,
+	edumazet@google.com
+Subject: [RFC net-next 00/20] Introduce IPPROTO_SMC
+Date: Tue, 20 Feb 2024 15:01:25 +0800
+Message-Id: <1708412505-34470-1-git-send-email-alibuda@linux.alibaba.com>
+X-Mailer: git-send-email 1.8.3.1
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: IA0PR12MB8086:EE_|CYYPR12MB8871:EE_
-X-MS-Office365-Filtering-Correlation-Id: bf6e7b3b-00c0-47a9-5918-08dc31e1491c
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	3O0T/U0oaSWdqV1ULVzWzSj0RogC+w2Y2r/PQ37zIuU70+vhw1XIxQ2AKvH0fzTx8M/FyUMwIIdiQw6EBx8/uumltLH2F6XF/vxt9EpchQaIABaIniWem5uK0NkUQT0H3VVW91/yOVduu5NSZkWkMYoCyT2GEmPaZx7eSkPzJPcfc3JJZzNoYAy6CTMMteMFqeRSOoVT0DN1djilcNUBqqYOoxbVUHwXcHenN2g5uHVppZ0H1Anpb9HPSLdoYbVQI5iWdMJ8fE396ziE+sqq1+lKh1e9JQR2YJJj1QbqbC2BESVeypMvJJhjRYplMVoFy9JwtCr7pk6BvLz+4DHzAVdDj6olDm04DtEGXvQpmt0jtSeek4iKU6U1DNtpDXVhcqXtbVdL3wu3HXS9qYNmHrN6nwP2f+UOEEGlYLlZaRExGNtsYjOp4MtqP2Eb5zqeWyueobrDwP3fOlQt5khWK5x9Oz9d6OwtBRSLhSepufBKMpXut2Z3CYafAQiBDm6zvAPs7vm7Tg3f6vthHJUfIyD6SYH7d+6voRH/oWlzVBrv8kpB+N/+/CkKOf2v7vyb
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:IA0PR12MB8086.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(230273577357003);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?utf-8?B?Nk5vb3dIaHZMNFhxMUM2ZHJxVVhWVERkMmRIWjB3TWwwdHNibGF3eU42Mk5O?=
- =?utf-8?B?bGwzT3ArSTlZS24yWGdJNUZHT1dZWGQyRTU2UzNMdU14NlgxWk9ZbFBqM2M3?=
- =?utf-8?B?Q2M5SGlpQmozdm55TFZvMmZ1ejV4WC9WaDgrRGhySGFJdkc0RXlDcjFHRnNy?=
- =?utf-8?B?MWYvY0dkSk1VdFlZNDQ4dVNzeHE2S3FhK0Y0ZTN0R04vSjdpTy9sNjYycktN?=
- =?utf-8?B?dHd1Y1VjWjRtcTZhdk1ya1lybEd1NG1jZmRtN01kbCt3c3YwZzZaSkhURi9v?=
- =?utf-8?B?Zjh1cXVtZlI1b0MySkErVExUcWpLY0FUcm16cjlOdlQ2cDFpZlg3SE1mcjRm?=
- =?utf-8?B?WlRGaHV6R1A5SU12N0pEUjlZOFYrYWtqc0ZsZjJPd25wYnpqR2RuVlpnYzc5?=
- =?utf-8?B?Nm9hM2N3VUhaQXVndHM5NmRDcUc2emM0VkxCYUJNeXN2MUgyRDBpc0xhZkJs?=
- =?utf-8?B?NVVXdnphWGJaN3NxaU5uRmZHV2xsK0lJWmtBNXB6U2JnR1U3TytqNVNNNE55?=
- =?utf-8?B?ZTlEa1Q3MjRDVlByODE5aXAyOXdzOFBBUzVoRXU1TWdjVklneXdoWHB1ZXFJ?=
- =?utf-8?B?ajJWVGEyb3lUb3JxQkhmdktkRnZndEFpNFVOQ1VDaGJ5ZlBYVktLUnpVclY4?=
- =?utf-8?B?YWtNU2x3SzZKWUczay9pQXM3OXBFOVJWaGpXaE9KMjBGOWpwbGp1SXFhSjl3?=
- =?utf-8?B?emhuSFYyNHQwb09jeDE1VytJU0U0RjBhaWd0OWZsV1c5MDJUU2xlS2MzQXM3?=
- =?utf-8?B?K2VndXpSWWM5TDFYQndtNGh3WlFXSE5JeWszYUNTaHU5UFV2UmwxdnNuTDh6?=
- =?utf-8?B?S2JxMUdmMHVObDRham54NGg4UzBrZXNJNGtnTXc1czBkZzE1VlNrK3dBQ0Fs?=
- =?utf-8?B?eHRmQXhDZGFmMUpQTnQ4ZXFyUWxlT0NoZzJVMjVxbnVKRktFUTcwQ0lBQWN1?=
- =?utf-8?B?ODRkNVovVjdxbnV4N2t6OHdTN0hldHFnUlFzWHBlTEUrUWdpLzZhQVBTTVh4?=
- =?utf-8?B?Q2QxRVZUcnN1MWptaVdGc1E2YkgwSTJCRWVETjlqSEdtb0pPTElSZzdxWjRa?=
- =?utf-8?B?UEFtbXMyM2VDN25vU2ViZ3NDVzE1SFBKaDBrWjFhbmhrWWt2TkJhUmVvNG9D?=
- =?utf-8?B?WkVaZHZCTHIvOE9MSFVCWkRtaXU2VzhhNkdtRzR4N3VYTjQ5SjNrdXRORi9I?=
- =?utf-8?B?OFRRN3NNckFyT3Z5dWdTdXNuc2FLcXd6cjFwZHlBN0ZtZTdCcXZRY0RFZUhS?=
- =?utf-8?B?T29YN1N0S1FBUkF0R0lRRFNIV090NFRnZ2pjOURydDUxakVMMDBQUGNLVk9R?=
- =?utf-8?B?dUxheTN6Wlo1T3JLcU53UVZCT2hpY1pnNjBnNGQyNHFGc2ZySjB2bWNwZDdZ?=
- =?utf-8?B?VzJVQ0FZeU9ZbHR1RWpROVpVRitnTDJoOStVS0lQWXhwQ0NNMUlJdld5Ti9Y?=
- =?utf-8?B?UHE4VmEvcUtESXM4ZjdkWEJVZXBIM3E4VVkrZENOZlJ1bFM5VzZ4ZHBNbU81?=
- =?utf-8?B?TGFTQ0c1U2lRRWNPUkhQWHM4VHRMcmh0MHM4TXRVS3JFVUNOQTNZUGRmTXlT?=
- =?utf-8?B?SjRiZ2gzWDVCYmZGdFdzaHljREtVWFVWYXpvUWh6aEo0UGpFRnkxbEpEMytQ?=
- =?utf-8?B?TnRaTHRlZGRWQitEWnZrTm8rUk42U205ZEo3SWhHeDB3UGxBS0pwdC9NMHdx?=
- =?utf-8?B?YkRNN0h2MGJZclJNTWVYb3YrRlZuWjBzcmpQNmJabmExMGswNE5KNlRkZHlz?=
- =?utf-8?B?SWFQOGtsb3RrOWN3TUtDSS9EMHdsTDhyQ0FIcy9KQ3AwbVlBQWFJZkZJQ0k3?=
- =?utf-8?B?NHFSVFRvY1FRd3FUNEdFaktpQTc4d2hQNmh6M1VXVEluajlYaGxyVUpzVHY1?=
- =?utf-8?B?T2xhdUwxTnp0UGNzUisvM3lmMWtycG5PdnJyN3MwbkdFaEwzWTNqVG00YzBx?=
- =?utf-8?B?Y2tNZHdwV1pXZW92ZTlNckVWb1lyeWF0aE5iNStlMlFkN1NlZlY0SHNtRmJa?=
- =?utf-8?B?bmxzT1J4RDVIb3NwaG5sVXUrY2FjUTdNcUZDQzhraS9lTGw5bFZMUG5wbnlP?=
- =?utf-8?B?UnlDMU5VU3RmT24wdDRYRDQrL1Zta2ZsZUpYSW93WTdUa3VRNTU4WFV6NnRE?=
- =?utf-8?Q?hnv1Fw4y3H+dZqw0qJmBsq7Hb?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: bf6e7b3b-00c0-47a9-5918-08dc31e1491c
-X-MS-Exchange-CrossTenant-AuthSource: IA0PR12MB8086.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 20 Feb 2024 06:58:04.5847
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: MDrE0lq38wlAUPLXdotdlbOOD3/NFfFd70VbDz7cIxHelY/2DvKSiYD6DPHHWr0rPrJs/frHtIe0rtSQhRZ2Ng==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CYYPR12MB8871
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-On 20-Feb-24 07:50, Zhu Yanjun wrote:
-> External email: Use caution opening links or attachments
-> 
-> 
-> 在 2024/2/19 18:04, Arnd Bergmann 写道:
->> From: Arnd Bergmann <arnd@arndb.de>
->>
->> The debugfs files always in this driver all use an extra round-trip
->> through an snprintf() before getting put into a mlx5dr_dbg_dump_buff()
->> rather than the normal seq_printf().
->>
->> Zhu Yanjun noticed that the buffers are not initialized before being
->> filled or reused and requested them to always be zeroed as a
->> preparation for having more reused between the buffers.
-> 
-> I think that you are the first to find this.
+From: "D. Wythe" <alibuda@linux.alibaba.com>
 
-The buffers are not initialized intentionally.
-The content is overwritten from the buffer's beginning.
-Initializing is not needed as it will only cause perf degradation.
+this patch attempts to initiate a discussion on creating smc socket
+via AF_INET, similar to the following code snippet:
 
--- YK
+/* create v4 smc sock */
+v4 = socket(AF_INET, SOCK_STREAM, IPPROTO_SMC);
 
+/* create v6 smc sock */
+v6 = socket(AF_INET6, SOCK_STREAM, IPPROTO_SMC);
+
+As we all know, the way we currently create an SMC socket as
+follows.
+
+/* create v4 smc sock */
+v4 = socket(AF_SMC, SOCK_STREAM, SMCPROTO_SMC);
+
+/* create v6 smc sock */
+v6 = socket(AF_SMC, SOCK_STREAM, SMCPROTO_SMC6);
+
+Note: This is not to suggest removing the SMC path, but rather to propose
+adding a new path (inet path).
+
+There are several reasons why we believe it is much better than AF_SMC:
+
+Semantics:
+
+SMC extends the TCP protocol and switches it's data path to RDMA path if
+RDMA link is ready. Otherwise, SMC should always try its best to degrade to
+TCP. From this perspective, SMC is a protocol derived from TCP and can also
+fallback to TCP, It should be considered as part of the same protocol
+family as TCP (AF_INET and AF_INET6).
+
+Compatibility & Scalability:
+
+Due to the presence of fallback, we needs to handle it very carefully to
+keep the consistent with the TCP sockets. SMC has done a lot of work to
+ensure that, but still, there are quite a few issues left, such as:
+
+1. The "ss" command cannot display the process name and ID associated with
+the fallback socket.
+
+2. The linger option is ineffective when user try’s to close the fallback
+socket.
+
+3. Some eBPF attach points related to INET_SOCK are ineffective under
+fallback socket, such as BPF_CGROUP_INET_SOCK_RELEASE.
+
+4. SO_PEEK_OFF is a un-supported sock option for fallback sockets, while
+it’s of course supported for tcp sockets.
+
+Of course, we can fix each issue one by one, but it is not a fundamental
+solution. Any changes on the inet path may require re-synchronization,
+including bug fixes, security fixes, tracing, new features and more. For
+example, there is a commit which we think is very valueable:
+
+commit 0dd061a6a115 ("bpf: Add update_socket_protocol hook")
+
+This commit allows users to modify dynamically the protocol before socket
+created through eBPF programs, which provides a more flexible approach
+than smc_run (LP_PRELOAD). It does not require the process restart
+and allows for controlling replacement at the connection level, whereas
+smc_run operates at the process level.
+
+However, to benefit from it under the SMC path requires additional
+code submission while nothing changes requires to do under inet path.
+
+I'm not saying that these issues cannot be fixed under smc path, however,
+the solution for these issues often involves duplicating work that already
+done on inet path. Thats to say, if we can be under the inet path, we can
+easily reuse the existing infrastructure.
+
+Performance:
+
+In order to ensure consistency between fallback sockets and TCP sockets,
+SMC creates an additional TCP socket. This introduces additional overhead
+of approximately 15%-20% for the establishment and destruction of fallback
+sockets. In fact, for the users we have contacted who have shown interest
+in SMC, ensuring consistency in performance between fallback and TCP has
+always been their top priority. Since no one can guarantee the
+availability of RDMA links, support for SMC on both sides, or if the
+user's environment is 100% suitable for SMC. Fallback is the only way to
+address those issues, but the additional performance overhead is
+unacceptable, as fallback cannot provide the benefits of RDMA and only
+brings burden right now.
+
+A Simple Fallback benchmark within Short connection (wrk/nginx)
+
+------------------------------------------------------------------
+proto/conn          |   128     |  512    |   1024  |  2048       | 
+------------------------------------------------------------------| 
+TCP                 | 133947.56 | 132933.89 |129047.70 |132411.72 | 
+------------------------------------------------------------------| 
+Fallback in Server  |                                             | 
+IPPROTO_SMC	    | 131607.38 | 131579.17 |130023.96 |131814.16 | 
+------------------------------------------------------------------| 
+Fallback in Server  |                                             | 
+PF_SMC              | 85510.27  | 89577.23  |89850.54  |89542.41  | 
+------------------------------------------------------------------| 
+Fallback in Client  |                                             | 
+IPPROTO_SMC         | 134589.05 | 132379.63 |133110.02 |132381.47 | 
+------------------------------------------------------------------| 
+Fallback in Client  |                                             | 
+PF_SMC	            | 109194.38	| 115995.48 |115498.11 |108671.24 | 
+------------------------------------------------------------------
+
+In inet path, we can embed TCP sock into SMC sock, when fallback occurs,
+the socket behaves exactly like a TCP socket. In our POC, the performance
+of fallback socket under inet path is almost indistinguishable from of
+tcp socket, with less than 1% loss. Additionally, and more importantly,
+it has full feature compatibility with TCP socket.
+
+Of course, it is also possible under smc path, but in that way, it
+would require a significant amount of work to ensure compatibility with
+tcp sockets, which most of them has already been done in inet path.
+And still, any changes in inet path may require re-synchronization.
+
+I also noticed that there have been some discussions on this issue before.
+
+Link: https://lore.kernel.org/stable/4a873ea1-ba83-1506-9172-e955d5f9ae16@redhat.com/
+
+And I saw some supportive opinions here, maybe it is time to continue
+discussing this matter now.
+
+D. Wythe (20):
+  net: export partial symbols in inet/inet6 proto_ops
+  net/smc: read&write sock state via unified macros
+  net/smc: refactor smc_setsockopt
+  net/smc: refactor smc_accept_poll
+  net/smc: try test to fallback when ulp set
+  net/smc: fast return on unconcernd TCP options
+  net/smc: refactor sock_flag/sock_set_flag
+  net/smc: optimize mutex_fback_rsn from mutex to spinlock
+  net/smc: refator smc_switch_to_fallback
+  net/smc: make initialization code in smc_listen independent
+  net/smc: make __smc_accept can return the new accepted sock
+  net/smc: refatoring initialization of smc sock
+  net/smc: embedded tcp sock into smc sock
+  net/smc: allow to access the state of inet smc sock
+  net/smc: enable access of sock flags of inet smc sock
+  net/smc: add inet proto defination for SMC
+  net/smc: add dummy implementation for inet smc sock
+  net/smc: add define and macro for smc_negotiation
+  net/smc: support smc inet with merge socks
+  net/smc: support diag for smc inet mode
+
+ include/linux/tcp.h           |    1 +
+ include/net/inet_common.h     |    3 +
+ include/net/netns/smc.h       |    2 +-
+ include/uapi/linux/in.h       |    2 +
+ net/ipv4/af_inet.c            |    3 +-
+ net/ipv6/af_inet6.c           |    2 +
+ net/smc/Makefile              |    1 +
+ net/smc/af_smc.c              | 1501 +++++++++++++++++++++++++++++++++++------
+ net/smc/smc.h                 |   62 +-
+ net/smc/smc_cdc.c             |    2 +-
+ net/smc/smc_cdc.h             |    8 +
+ net/smc/smc_clc.h             |    1 +
+ net/smc/smc_close.c           |  120 ++--
+ net/smc/smc_core.c            |   24 +-
+ net/smc/smc_diag.c            |  157 ++++-
+ net/smc/smc_inet.c            |  450 ++++++++++++
+ net/smc/smc_inet.h            |  280 ++++++++
+ net/smc/smc_rx.c              |   28 +-
+ net/smc/smc_stats.c           |    6 +-
+ net/smc/smc_tx.c              |    2 +-
+ tools/include/uapi/linux/in.h |    2 +
+ 21 files changed, 2326 insertions(+), 331 deletions(-)
+ create mode 100644 net/smc/smc_inet.c
+ create mode 100644 net/smc/smc_inet.h
+
+-- 
+1.8.3.1
 
 
