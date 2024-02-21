@@ -1,88 +1,84 @@
-Return-Path: <linux-rdma+bounces-1091-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-1092-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2E76985E4E6
-	for <lists+linux-rdma@lfdr.de>; Wed, 21 Feb 2024 18:49:39 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6056385E72B
+	for <lists+linux-rdma@lfdr.de>; Wed, 21 Feb 2024 20:22:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D7D612856B2
-	for <lists+linux-rdma@lfdr.de>; Wed, 21 Feb 2024 17:49:37 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 928111C21B4B
+	for <lists+linux-rdma@lfdr.de>; Wed, 21 Feb 2024 19:22:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6917284A31;
-	Wed, 21 Feb 2024 17:49:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9CEFF85C66;
+	Wed, 21 Feb 2024 19:22:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b="mGcA/PMF"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="XJ87J93G"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-qk1-f171.google.com (mail-qk1-f171.google.com [209.85.222.171])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8C12984052
-	for <linux-rdma@vger.kernel.org>; Wed, 21 Feb 2024 17:49:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4A6C27FBBC;
+	Wed, 21 Feb 2024 19:22:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708537774; cv=none; b=bbHLa3+EsXWCKYx9ex7V5KcTTbTrXExu4sITXPE+hgPZpxEH4e3n5lQdMr76iAJDhp9v/kYhiGjMoh2SfiesMOn6Ijl+WaoktqKHgAUkWmS9sVHL0b50CvsXYOXb0Gs7QztSNRj6J1WYM4MboDshZVIdtYXjCV09aMazBjSCMRU=
+	t=1708543337; cv=none; b=Id/2HroRQaAsWVMQWLRJKV5AsW7cE3ko0T31bXwzwues0mhony/viZfAYv0DS8rrtkrq2YHDhyNTGSfazXyPU1yTL9+VC9Ic73j2+n+nKNQuPf+6yKDDfe/rPyjpNGCdYYRluWot4CGh3g1f/ZZMwqrqksuKVp+d/TRhJfMFgS8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708537774; c=relaxed/simple;
-	bh=KQoMuU1dvefNeleeWBIm6wpRfUoOOi3/4vzojzj2KWI=;
+	s=arc-20240116; t=1708543337; c=relaxed/simple;
+	bh=0OodqgNcvx8ntnlXtEmNl9CzN4cmy/3auP5St1YCfYo=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=bouj/HdzSsZmf7hyemfYIUJV8TKKvp5MNpbeP593gPbZtkI4r6kSsrmtz9+voC6EivXllzJ19pJcZIid0mGPNAIOuXb9+r6p6kDOEWF/vLkzY8iP2sxU4WsAGRCk0BsdhoIJLeswxHj4hwhgIW251vLnBvvswJxGiagDAlWAl/E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca; spf=pass smtp.mailfrom=ziepe.ca; dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b=mGcA/PMF; arc=none smtp.client-ip=209.85.222.171
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ziepe.ca
-Received: by mail-qk1-f171.google.com with SMTP id af79cd13be357-785d57056b0so389169885a.0
-        for <linux-rdma@vger.kernel.org>; Wed, 21 Feb 2024 09:49:32 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google; t=1708537771; x=1709142571; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=9EA8cf2yDI8ps402vONEh4eN8mg2XcKNJwopEt2wzvo=;
-        b=mGcA/PMFITU/YtAdN7ADh5yQL705F1RRARAjRuqdKuiW9l4AF3PDF4M0ncPgtNtmTW
-         CgGEpuRUQkR10r4rYPz6VCcfz8cqnk0H7uEmaxDUxRVk5rkQwXYvW9ScB0SsBvaakDGr
-         4wadF9zykK3kPHUyL5DirA3+Yj8xyLhNtnje5tqp9nGIui2M79r10ZJ4jl6Eq6sNtiIz
-         7PfEWKM+tl9kiEB0/4UEC7knOCgP2JRbJC2Py0EXuaQEcIvmzao2pnOfilg9yUuaYFFR
-         lgvxh0EpzJaqMRdnmbcoG9tMYRDV7i/5fHHe+YOgwq+fzqYPHBcAs2AtzD44PmDrzNXi
-         f2gA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708537771; x=1709142571;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=9EA8cf2yDI8ps402vONEh4eN8mg2XcKNJwopEt2wzvo=;
-        b=Caw5E4uO7qoATyiC+Y3ZD5Kow0VwMJuxAXWouQKUDLb6U9BPzZFu50zXZnKcx9SuHM
-         dd9hb3IHdwgbfQ+vYjpdPNCueI6MrFsK8KcsqvuXZ9U51jUBjgdPoQDBZ3qNPYrTfJK1
-         hu+ywooGvwH9llRjUjelHuDZhcttbl+D5170NQlGeXlGvSDdApABnkNe59F+kCBj7CvV
-         Skj7+lv6hFBSUKmTTG/ZcR5QV8TzTrhkprJ3/OGpUibdcmXfjpoHqWn80YnfLH/W08/d
-         JSG7+yD6wk09SEPtpQusnAIaRm9vw3HjCwhPf1yDTrd4zgG+WfkqwVmSSoY2sYYhM7M+
-         +1pg==
-X-Forwarded-Encrypted: i=1; AJvYcCWcjjVLjDwoJo/bkhsC+nFzkuZ+ygRo8rxKUb0dp/aL961gC9mMy4lz//55+TagzJ0rf6HBpVjvsW1afJdVLdLXzRzMmM0pb9kECA==
-X-Gm-Message-State: AOJu0YxdLyxi9hzkDqq26BOa9/jFJYLPysv1D2h216FK2lZPgkSVSEZm
-	CVNXAGQuGEkUgXz72wLIvL9QtEF38TLvLRAOtjMDrnLzYJ44F0RyXCUpSGoUiXMxwHGYa0zqIgI
-	9
-X-Google-Smtp-Source: AGHT+IGZoGA7n7eCfimDJ/ips2D3ir5jrWAPbQVAC3bWxC/pS1Fb+XCKAPN5rul+kokP5AVMOOLtmQ==
-X-Received: by 2002:a05:620a:8325:b0:787:8168:87f5 with SMTP id pa37-20020a05620a832500b00787816887f5mr3237298qkn.58.1708537771450;
-        Wed, 21 Feb 2024 09:49:31 -0800 (PST)
-Received: from ziepe.ca (hlfxns017vw-142-68-80-239.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.68.80.239])
-        by smtp.gmail.com with ESMTPSA id l9-20020a37f509000000b00787236a4ba7sm4527367qkk.40.2024.02.21.09.49.30
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 21 Feb 2024 09:49:30 -0800 (PST)
-Received: from jgg by wakko with local (Exim 4.95)
-	(envelope-from <jgg@ziepe.ca>)
-	id 1rcqio-00Bx8M-6S;
-	Wed, 21 Feb 2024 13:49:30 -0400
-Date: Wed, 21 Feb 2024 13:49:30 -0400
-From: Jason Gunthorpe <jgg@ziepe.ca>
-To: Erick Archer <erick.archer@gmx.com>
-Cc: Leon Romanovsky <leon@kernel.org>, Edward Srouji <edwards@nvidia.com>,
-	Patrisious Haddad <phaddad@nvidia.com>,
-	"Gustavo A. R. Silva" <gustavoars@kernel.org>,
-	Kees Cook <keescook@chromium.org>, linux-rdma@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
-Subject: Re: [PATCH v2] RDMA/uverbs: Remove flexible arrays from struct
- *_filter
-Message-ID: <20240221174930.GF13491@ziepe.ca>
-References: <20240217142913.4285-1-erick.archer@gmx.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=jUuO+8eBkXoaWBFgwnRaxALBa54+9LIgV3WoS585/J0XiaoJACOoyfvQmESRWl3gIYURJMhVzqtRvJ/iQ/sEb1I/EW/d+PicNbZPcdlyAYTGf51DTSaTV4sT7vhA3ctRH77biiLnNZAaLXOuZJz5T/lD+N5uiE+Kws8FalKXxHk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=XJ87J93G; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2A3ECC433C7;
+	Wed, 21 Feb 2024 19:22:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1708543336;
+	bh=0OodqgNcvx8ntnlXtEmNl9CzN4cmy/3auP5St1YCfYo=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=XJ87J93G+evRIoU8Rda/h3gEh+MmBQn/ihau1koXbpG2vc7Q7X/Z3FDA+27G5eGKp
+	 adq/fFZsuxU9dGUvQ230eoKDaDysEUD69zfaKXCggxVmXhRcjlKBVEU0Q0k2rA3BAX
+	 vYHujOcAZrwDDP3o52EkzUI46Ox75hSNy38AGA5vguRG5WscWt6Sg9BGIIq/9CvBKy
+	 0RFb/VgnVQahUHpG96HdW0EROCdzv2pY9bcEZ1dAIkJDeQu+FTMCwMYjQo88bHW8fz
+	 y7YEBgT5m4GIfG0M10Xe1DX+64vISb2glhnZ3nFnLAeDL6LA7l90+0tr269uPe1yt8
+	 afMcW129BlMSA==
+Date: Wed, 21 Feb 2024 19:22:06 +0000
+From: Will Deacon <will@kernel.org>
+To: Jason Gunthorpe <jgg@nvidia.com>
+Cc: Alexander Gordeev <agordeev@linux.ibm.com>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Christian Borntraeger <borntraeger@linux.ibm.com>,
+	Borislav Petkov <bp@alien8.de>,
+	Dave Hansen <dave.hansen@linux.intel.com>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Gerald Schaefer <gerald.schaefer@linux.ibm.com>,
+	Vasily Gorbik <gor@linux.ibm.com>,
+	Heiko Carstens <hca@linux.ibm.com>,
+	"H. Peter Anvin" <hpa@zytor.com>,
+	Justin Stitt <justinstitt@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Leon Romanovsky <leon@kernel.org>,
+	linux-rdma@vger.kernel.org, linux-s390@vger.kernel.org,
+	llvm@lists.linux.dev, Ingo Molnar <mingo@redhat.com>,
+	Bill Wendling <morbo@google.com>,
+	Nathan Chancellor <nathan@kernel.org>,
+	Nick Desaulniers <ndesaulniers@google.com>, netdev@vger.kernel.org,
+	Paolo Abeni <pabeni@redhat.com>,
+	Salil Mehta <salil.mehta@huawei.com>,
+	Jijie Shao <shaojijie@huawei.com>,
+	Sven Schnelle <svens@linux.ibm.com>,
+	Thomas Gleixner <tglx@linutronix.de>, x86@kernel.org,
+	Yisen Zhuang <yisen.zhuang@huawei.com>,
+	Arnd Bergmann <arnd@arndb.de>,
+	Catalin Marinas <catalin.marinas@arm.com>,
+	Leon Romanovsky <leonro@mellanox.com>, linux-arch@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org,
+	Mark Rutland <mark.rutland@arm.com>,
+	Michael Guralnik <michaelgur@mellanox.com>, patches@lists.linux.dev,
+	Niklas Schnelle <schnelle@linux.ibm.com>
+Subject: Re: [PATCH 4/6] arm64/io: Provide a WC friendly __iowriteXX_copy()
+Message-ID: <20240221192205.GA7619@willie-the-truck>
+References: <0-v1-38290193eace+5-mlx5_arm_wc_jgg@nvidia.com>
+ <4-v1-38290193eace+5-mlx5_arm_wc_jgg@nvidia.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
@@ -91,80 +87,47 @@ List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240217142913.4285-1-erick.archer@gmx.com>
+In-Reply-To: <4-v1-38290193eace+5-mlx5_arm_wc_jgg@nvidia.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 
-On Sat, Feb 17, 2024 at 03:29:13PM +0100, Erick Archer wrote:
-> When a struct containing a flexible array is included in another struct,
-> and there is a member after the struct-with-flex-array, there is a
-> possibility of memory overlap. These cases must be audited [1]. See:
-> 
-> struct inner {
-> 	...
-> 	int flex[];
-> };
-> 
-> struct outer {
-> 	...
-> 	struct inner header;
-> 	int overlap;
-> 	...
-> };
-> 
-> This is the scenario for all the "struct *_filter" structures that are
-> included in the following "struct ib_flow_spec_*" structures:
-> 
-> struct ib_flow_spec_eth
-> struct ib_flow_spec_ib
-> struct ib_flow_spec_ipv4
-> struct ib_flow_spec_ipv6
-> struct ib_flow_spec_tcp_udp
-> struct ib_flow_spec_tunnel
-> struct ib_flow_spec_esp
-> struct ib_flow_spec_gre
-> struct ib_flow_spec_mpls
-> 
-> The pattern is like the one shown below:
-> 
-> struct *_filter {
-> 	...
-> 	u8 real_sz[];
-> };
-> 
-> struct ib_flow_spec_* {
-> 	...
-> 	struct *_filter val;
-> 	struct *_filter mask;
-> };
-> 
-> In this case, the trailing flexible array "real_sz" is never allocated
-> and is only used to calculate the size of the structures. Here the use
-> of the "offsetof" helper can be changed by the "sizeof" operator because
-> the goal is to get the size of these structures. Therefore, the trailing
-> flexible arrays can also be removed.
-> 
-> However, due to the trailing padding that can be induced in structs it
-> is possible that the:
-> 
-> offsetof(struct *_filter, real_sz) != sizeof(struct *_filter)
-> 
-> This situation happens with the "struct ib_flow_ipv6_filter" and to
-> avoid it the "__packed" macro is used in this structure. But now, the
-> "sizeof(struct ib_flow_ipv6_filter)" has changed. This is not a problem
-> since this size is not used in the code.
-> 
-> The situation now is that "sizeof(struct ib_flow_spec_ipv6)" has also
-> changed (this struct contains the struct ib_flow_ipv6_filter). This is
-> also not a problem since it is only used to set the size of the "union
-> ib_flow_spec", which can store all the "ib_flow_spec_*" structures.
-> 
-> Link: https://github.com/KSPP/linux/issues/202 [1]
-> Signed-off-by: Erick Archer <erick.archer@gmx.com>
-> ---
-> Changes in v2:
-> - Add the "__packed" macro to the "struct ib_flow_ipv6_filter".
-> - Update the commit message to explain why the "__packed" macro is used.
+On Tue, Feb 20, 2024 at 09:17:08PM -0400, Jason Gunthorpe wrote:
+> +static inline void __const_memcpy_toio_aligned64(volatile u64 __iomem *to,
+> +						 const u64 *from, size_t count)
+> +{
+> +	switch (count) {
+> +	case 8:
+> +		asm volatile("str %x0, [%8, #8 * 0]\n"
+> +			     "str %x1, [%8, #8 * 1]\n"
+> +			     "str %x2, [%8, #8 * 2]\n"
+> +			     "str %x3, [%8, #8 * 3]\n"
+> +			     "str %x4, [%8, #8 * 4]\n"
+> +			     "str %x5, [%8, #8 * 5]\n"
+> +			     "str %x6, [%8, #8 * 6]\n"
+> +			     "str %x7, [%8, #8 * 7]\n"
+> +			     :
+> +			     : "rZ"(from[0]), "rZ"(from[1]), "rZ"(from[2]),
+> +			       "rZ"(from[3]), "rZ"(from[4]), "rZ"(from[5]),
+> +			       "rZ"(from[6]), "rZ"(from[7]), "r"(to));
+> +		break;
+> +	case 4:
+> +		asm volatile("str %x0, [%4, #8 * 0]\n"
+> +			     "str %x1, [%4, #8 * 1]\n"
+> +			     "str %x2, [%4, #8 * 2]\n"
+> +			     "str %x3, [%4, #8 * 3]\n"
+> +			     :
+> +			     : "rZ"(from[0]), "rZ"(from[1]), "rZ"(from[2]),
+> +			       "rZ"(from[3]), "r"(to));
+> +		break;
+> +	case 2:
+> +		asm volatile("str %x0, [%2, #8 * 0]\n"
+> +			     "str %x1, [%2, #8 * 1]\n"
+> +			     :
+> +			     : "rZ"(from[0]), "rZ"(from[1]), "r"(to));
+> +		break;
+> +	case 1:
+> +		__raw_writel(*from, to);
 
-Applied to for-next, thanks
+Shouldn't this be __raw_writeq?
 
-Jason
+Will
 
