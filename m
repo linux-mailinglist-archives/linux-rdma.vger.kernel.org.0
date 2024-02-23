@@ -1,154 +1,141 @@
-Return-Path: <linux-rdma+bounces-1118-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-1119-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3B8ED861B9E
-	for <lists+linux-rdma@lfdr.de>; Fri, 23 Feb 2024 19:29:18 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id AEDDF861BC4
+	for <lists+linux-rdma@lfdr.de>; Fri, 23 Feb 2024 19:34:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EC7F028C899
-	for <lists+linux-rdma@lfdr.de>; Fri, 23 Feb 2024 18:29:16 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1981128CD90
+	for <lists+linux-rdma@lfdr.de>; Fri, 23 Feb 2024 18:34:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E9B85142623;
-	Fri, 23 Feb 2024 18:29:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AC53F143C40;
+	Fri, 23 Feb 2024 18:34:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=amazon.com header.i=@amazon.com header.b="nY6W+eVE"
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="SM1IU5a4"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from smtp-fw-9102.amazon.com (smtp-fw-9102.amazon.com [207.171.184.29])
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6E24212D1F9;
-	Fri, 23 Feb 2024 18:29:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=207.171.184.29
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 86DB4101DE;
+	Fri, 23 Feb 2024 18:33:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.180.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708712951; cv=none; b=flCUhiGJkz3YBsfsrXNVCUFCuI+eI+LstnWYwTLJI6jMhSI4jIXWx/5e+ZRJ4pxD2SBdNcjy1GJQA0gn2YP2tDj9QWm4SmMtJi1WgImp+xY3PfYwMiGInyCGCvPhwyZNRdj02c+OC9GXkI9n8k1JgHkKTI4bpZddwUcrd8d8NPM=
+	t=1708713241; cv=none; b=L+a1ixt46PE1vFVncdz3W3G3T76RRan8AraljVk6FRQYyAxdD06ElLefZIXwxdwuMlG9aPxk/MNMVvDg3PSSZXGg15EnZGFnSUFi34rQYqMVB4Vw8zhKITXA+mHEaQiL3G7ZjVHAR3DzHbUO7CcK9IGsteUKrESiuduQGDBDeqs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708712951; c=relaxed/simple;
-	bh=yM7C/mIoTSeuQ//rGHXdVbVv9xlMbS5XhqsoRpKnB2c=;
-	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=ext4X0wkynlUjdLIw+fLTp5usMDCfRF5fONsDuGRze54UKCPKPiRNJwsbIsHC5ikCK0no2akAx+XQ64Dk26ckFKZ0+SsTHHyROlgOP4lFrl4e85LiTynGHYQyGiCS7bKeSfBCJeL5FVgnSVQjeqQaWisHcFDhPLnE0y+aDYh8Rg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amazon.com; spf=pass smtp.mailfrom=amazon.co.jp; dkim=pass (1024-bit key) header.d=amazon.com header.i=@amazon.com header.b=nY6W+eVE; arc=none smtp.client-ip=207.171.184.29
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amazon.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=amazon.co.jp
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1708712949; x=1740248949;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=QXqiXMxMIOF5N7hJ6ZqTDuaFCpdWZYr39M4bT/KPRYU=;
-  b=nY6W+eVEi5pN+opPyW1sD1aHcfndznQJQ/MoOP34ajFRzXavJAQbwmMr
-   j+nghnqTGn50TqxOI7/rLNVaL3bsE+poY1/JcW3qHBbpSfCXbufL1fiTo
-   AdPoIbM08xVxCu65C3Q3qQmo9K9PPk5W/An8A9A2oSU5ba0+cPaR13xqP
-   Y=;
-X-IronPort-AV: E=Sophos;i="6.06,180,1705363200"; 
-   d="scan'208";a="399271952"
-Received: from pdx4-co-svc-p1-lb2-vlan3.amazon.com (HELO smtpout.prod.us-west-2.prod.farcaster.email.amazon.dev) ([10.25.36.214])
-  by smtp-border-fw-9102.sea19.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Feb 2024 18:28:51 +0000
-Received: from EX19MTAUWC002.ant.amazon.com [10.0.7.35:31941]
- by smtpin.naws.us-west-2.prod.farcaster.email.amazon.dev [10.0.9.241:2525] with esmtp (Farcaster)
- id 62082d0e-ffc5-4cd0-9cc7-1f9783866926; Fri, 23 Feb 2024 18:28:51 +0000 (UTC)
-X-Farcaster-Flow-ID: 62082d0e-ffc5-4cd0-9cc7-1f9783866926
-Received: from EX19D004ANA001.ant.amazon.com (10.37.240.138) by
- EX19MTAUWC002.ant.amazon.com (10.250.64.143) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.40; Fri, 23 Feb 2024 18:28:43 +0000
-Received: from 88665a182662.ant.amazon.com (10.106.100.9) by
- EX19D004ANA001.ant.amazon.com (10.37.240.138) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.40; Fri, 23 Feb 2024 18:28:40 +0000
-From: Kuniyuki Iwashima <kuniyu@amazon.com>
-To: <edumazet@google.com>
-CC: <allison.henderson@oracle.com>, <davem@davemloft.net>, <kuba@kernel.org>,
-	<kuni1840@gmail.com>, <kuniyu@amazon.com>, <linux-rdma@vger.kernel.org>,
-	<netdev@vger.kernel.org>, <pabeni@redhat.com>, <rds-devel@oss.oracle.com>,
-	<sowmini.varadhan@oracle.com>, <syzkaller@googlegroups.com>
-Subject: Re: [PATCH v1 net 2/2] rds: tcp: Fix use-after-free of net in reqsk_timer_handler().
-Date: Fri, 23 Feb 2024 10:28:32 -0800
-Message-ID: <20240223182832.99661-1-kuniyu@amazon.com>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <CANn89iKD9i-UKABN2XVczfYsrSKC81VUVQH+eJxYGgdz42ExTQ@mail.gmail.com>
-References: <CANn89iKD9i-UKABN2XVczfYsrSKC81VUVQH+eJxYGgdz42ExTQ@mail.gmail.com>
+	s=arc-20240116; t=1708713241; c=relaxed/simple;
+	bh=W16s7HsLRKeMogf+4P40NdsqJiCC7rUspv0L6Ekrt7w=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=rl541vZPu4amQbSs75HuxToTVKYCMZbOcDJYuNHjxS3XEkAdVhQQOSPdYtx9dD3siUhliA4nZdULOlRQVDOij0Xw7GNPuhpcG8ploTi6VEoXeUf4TecdQsHDnuX4e6YfC6Bmxd7A11QAEEx+O/M9mRi+/s4AItagHNUg0Oc8zRE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=SM1IU5a4; arc=none smtp.client-ip=205.220.180.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279870.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 41NEnafk007025;
+	Fri, 23 Feb 2024 18:30:50 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	message-id:date:mime-version:subject:to:cc:references:from
+	:in-reply-to:content-type:content-transfer-encoding; s=
+	qcppdkim1; bh=Kfo/C8zqynWW3khr9w38fLA/juhM//M+1TSK7YbUzao=; b=SM
+	1IU5a4CNIWLmOnc+jXipb4Ga9eIJLWms0rnPxEXMwHDSoxe92W9Ew+cz2UneOT08
+	Iyi2XyxnbZDa1t3nXppWD2gBv5baFGSu5jpaJXHu6vAsxhujSo74jXQc1qhtrkyj
+	b1JYz/cxWMolVJrmsIH4767eZriXHsfPc1ASRZIKs+Vh4MImjLRwoZRf+c04IWja
+	WREgwfvGpnGGa1IxPu7qJXJNToVvZY2M73nvMYmrwiDnSM6QuEXhaYYJoUiQlYDP
+	AVkDtm/36vZFGTWQ5CsU0kJMULpTBDkWBl74wMVr5RZuQ0KaRJ0q/8gb9Xik4nP2
+	o7j3uPWaxue4GCbloFJw==
+Received: from nalasppmta03.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3we3233ydp-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 23 Feb 2024 18:30:49 +0000 (GMT)
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+	by NALASPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 41NIUm69006076
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 23 Feb 2024 18:30:48 GMT
+Received: from [10.110.104.142] (10.80.80.8) by nalasex01a.na.qualcomm.com
+ (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Fri, 23 Feb
+ 2024 10:30:46 -0800
+Message-ID: <0aed6cf2-17ae-45aa-b7ff-03da932ea4e0@quicinc.com>
+Date: Fri, 23 Feb 2024 10:30:45 -0800
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [FYI][PATCH] tracing/treewide: Remove second parameter of
+ __assign_str()
+Content-Language: en-US
+To: Steven Rostedt <rostedt@goodmis.org>, LKML <linux-kernel@vger.kernel.org>,
+        Linux Trace Kernel <linux-trace-kernel@vger.kernel.org>
+CC: Masami Hiramatsu <mhiramat@kernel.org>,
+        Mathieu Desnoyers
+	<mathieu.desnoyers@efficios.com>,
+        Linus Torvalds
+	<torvalds@linux-foundation.org>,
+        <linuxppc-dev@lists.ozlabs.org>, <kvm@vger.kernel.org>,
+        <linux-block@vger.kernel.org>, <linux-cxl@vger.kernel.org>,
+        <linux-media@vger.kernel.org>, <dri-devel@lists.freedesktop.org>,
+        <amd-gfx@lists.freedesktop.org>, <intel-gfx@lists.freedesktop.org>,
+        <intel-xe@lists.freedesktop.org>, <linux-arm-msm@vger.kernel.org>,
+        <freedreno@lists.freedesktop.org>, <virtualization@lists.linux.dev>,
+        <linux-rdma@vger.kernel.org>, <linux-pm@vger.kernel.org>,
+        <iommu@lists.linux.dev>, <linux-tegra@vger.kernel.org>,
+        <netdev@vger.kernel.org>, <linux-hyperv@vger.kernel.org>,
+        <ath10k@lists.infradead.org>, <linux-wireless@vger.kernel.org>,
+        <ath11k@lists.infradead.org>, <ath12k@lists.infradead.org>,
+        <brcm80211@lists.linux.dev>, <brcm80211-dev-list.pdl@broadcom.com>,
+        <linux-usb@vger.kernel.org>, <linux-bcachefs@vger.kernel.org>,
+        <linux-nfs@vger.kernel.org>, <ocfs2-devel@lists.linux.dev>,
+        <linux-cifs@vger.kernel.org>, <linux-xfs@vger.kernel.org>,
+        <linux-edac@vger.kernel.org>, <selinux@vger.kernel.org>,
+        <linux-btrfs@vger.kernel.org>, <linux-erofs@lists.ozlabs.org>,
+        <linux-f2fs-devel@lists.sourceforge.net>,
+        <linux-hwmon@vger.kernel.org>, <io-uring@vger.kernel.org>,
+        <linux-sound@vger.kernel.org>, <bpf@vger.kernel.org>,
+        <linux-wpan@vger.kernel.org>, <dev@openvswitch.org>,
+        <linux-s390@vger.kernel.org>, <tipc-discussion@lists.sourceforge.net>,
+        Julia
+ Lawall <Julia.Lawall@inria.fr>
+References: <20240223125634.2888c973@gandalf.local.home>
+From: Jeff Johnson <quic_jjohnson@quicinc.com>
+In-Reply-To: <20240223125634.2888c973@gandalf.local.home>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: EX19D044UWB003.ant.amazon.com (10.13.139.168) To
- EX19D004ANA001.ant.amazon.com (10.37.240.138)
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: wCcVNA_rPgQQt00obewLDHJucphy8QWk
+X-Proofpoint-GUID: wCcVNA_rPgQQt00obewLDHJucphy8QWk
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-02-23_04,2024-02-23_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0 bulkscore=0
+ impostorscore=0 priorityscore=1501 mlxscore=0 lowpriorityscore=0
+ clxscore=1011 suspectscore=0 malwarescore=0 mlxlogscore=793 adultscore=0
+ phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2402120000 definitions=main-2402230136
 
-From: Eric Dumazet <edumazet@google.com>
-Date: Fri, 23 Feb 2024 19:09:27 +0100
-> On Fri, Feb 23, 2024 at 6:26 PM Kuniyuki Iwashima <kuniyu@amazon.com> wrote:
-> >
-> > syzkaller reported a warning of netns tracker [0] followed by KASAN
-> > splat [1] and another ref tracker warning [1].
-> >
-> > syzkaller could not find a repro, but in the log, the only suspicious
-> > sequence was as follows:
-> >
-> >   18:26:22 executing program 1:
-> >   r0 = socket$inet6_mptcp(0xa, 0x1, 0x106)
-> >   ...
-> >   connect$inet6(r0, &(0x7f0000000080)={0xa, 0x4001, 0x0, @loopback}, 0x1c) (async)
-> >
-> > The notable thing here is 0x4001 in connect(), which is RDS_TCP_PORT.
-> >
-> > So, the scenario would be:
-> >
-> >   1. unshare(CLONE_NEWNET) creates a per netns tcp listener in
-> >       rds_tcp_listen_init().
-> >   2. syz-executor connect()s to it and creates a reqsk.
-> >   3. syz-executor exit()s immediately.
-> >   4. netns is dismantled.  [0]
-> >   5. reqsk timer is fired, and UAF happens while freeing reqsk.  [1]
-> >   6. listener is freed after RCU grace period.  [2]
-> >
-> > Basically, reqsk assumes that the listener guarantees netns safety
-> > until all reqsk timers are expired by holding the listener's refcount.
-> > However, this was not the case for kernel sockets.
-> >
-> > Commit 740ea3c4a0b2 ("tcp: Clean up kernel listener's reqsk in
-> > inet_twsk_purge()") fixed this issue only for per-netns ehash, but
-> > the issue still exists for the global ehash.
-> >
-> > We can apply the same fix, but this issue is specific to RDS.
-> >
-> > Instead of iterating potentially large ehash and purging reqsk during
-> > netns dismantle, let's hold netns refcount for the kernel TCP listener.
-> >
-> >
-> > Reported-by: syzkaller <syzkaller@googlegroups.com>
-> > Fixes: 467fa15356ac ("RDS-TCP: Support multiple RDS-TCP listen endpoints, one per netns.")
-> > Signed-off-by: Kuniyuki Iwashima <kuniyu@amazon.com>
-> > ---
-> >  net/rds/tcp_listen.c | 5 +++++
-> >  1 file changed, 5 insertions(+)
-> >
-> > diff --git a/net/rds/tcp_listen.c b/net/rds/tcp_listen.c
-> > index 05008ce5c421..4f7863932df7 100644
-> > --- a/net/rds/tcp_listen.c
-> > +++ b/net/rds/tcp_listen.c
-> > @@ -282,6 +282,11 @@ struct socket *rds_tcp_listen_init(struct net *net, bool isv6)
-> >                 goto out;
-> >         }
-> >
-> > +       __netns_tracker_free(net, &sock->sk->ns_tracker, false);
-> > +       sock->sk->sk_net_refcnt = 1;
-> > +       get_net_track(net, &sock->sk->ns_tracker, GFP_KERNEL);
-> > +       sock_inuse_add(net, 1);
-> > +
+On 2/23/2024 9:56 AM, Steven Rostedt wrote:
+> From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
 > 
-> Why using sock_create_kern() then later 'convert' this kernel socket
-> to a user one ?
+> [
+>    This is a treewide change. I will likely re-create this patch again in
+>    the second week of the merge window of v6.9 and submit it then. Hoping
+>    to keep the conflicts that it will cause to a minimum.
+> ]
 > 
-> Would using __sock_create() avoid this ?
+> With the rework of how the __string() handles dynamic strings where it
+> saves off the source string in field in the helper structure[1], the
+> assignment of that value to the trace event field is stored in the helper
+> value and does not need to be passed in again.
 
-I think yes, but LSM would see kern=0 in pre/post socket() hooks.
-
-Probably we can use __sock_create() in net-next and see if someone
-complains.
+Just curious if this could be done piecemeal by first changing the
+macros to be variadic macros which allows you to ignore the extra
+argument. The callers could then be modified in their separate trees.
+And then once all the callers have be merged, the macros could be
+changed to no longer be variadic.
 
