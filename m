@@ -1,95 +1,157 @@
-Return-Path: <linux-rdma+bounces-1116-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-1117-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C9D16861B1E
-	for <lists+linux-rdma@lfdr.de>; Fri, 23 Feb 2024 19:05:43 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 21626861B32
+	for <lists+linux-rdma@lfdr.de>; Fri, 23 Feb 2024 19:09:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 077AA1C240A9
-	for <lists+linux-rdma@lfdr.de>; Fri, 23 Feb 2024 18:05:43 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id AF2C21F28712
+	for <lists+linux-rdma@lfdr.de>; Fri, 23 Feb 2024 18:09:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 200B51448C6;
-	Fri, 23 Feb 2024 18:05:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2A5C4141987;
+	Fri, 23 Feb 2024 18:09:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="3f1YmZhl"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ed1-f52.google.com (mail-ed1-f52.google.com [209.85.208.52])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 54FA414263E;
-	Fri, 23 Feb 2024 18:05:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3317D13F012
+	for <linux-rdma@vger.kernel.org>; Fri, 23 Feb 2024 18:09:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708711506; cv=none; b=dqsRPXUhBgflnNQnAJg8h2CQcKaCCgoGoTAKoQs48//AYlFjz7Qs2O+6lhHNnhCBYxuyThH4Hq5hr8rcInzvTo0BpWeiK1uii8wIKsYJ0OaI16TSkUpibTSFXVv2r3hKW5mhUMIuLnkB52NWyI9eE3yR25DZXiLP3NqqFin1TxY=
+	t=1708711784; cv=none; b=LIST/wSuMLzUHJY0XEAPi+WpXX1OnRpd6d8ddv29LN0xQv5nqBI7e1t57cihhFQDOJ9YH+YCATu1R0JblP7PtOy8Fr0wgLz4LyuMWjlqtBNRRyQIDEhoZLsXQ+WBneH4cWVEDXEjlYebVymuy1jpgCqzEc85SOvMOeYgZYiFqfU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708711506; c=relaxed/simple;
-	bh=LnhjvqUeq0CK0kIwGNY2StqDTPb27nbR7qd6jVWv0QA=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=WMSzBA10+2Z3T90xbs5EiUSeTqNg7jmyGmiZQOxZXuOFM1nATIvRraeF0YyclHdUwGpK8Ggz0K5mWr53bADO5hQ6lcWXK8E/ZBr/Z92x1oO9dVw+5KByebqUx5GQNBVnqbc3fBCHbRlfBDigxw9Ro+tFUroYHpKhqigrVFFAMPQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 370BEC433C7;
-	Fri, 23 Feb 2024 18:05:01 +0000 (UTC)
-Date: Fri, 23 Feb 2024 13:06:53 -0500
-From: Steven Rostedt <rostedt@goodmis.org>
-To: LKML <linux-kernel@vger.kernel.org>, Linux Trace Kernel
- <linux-trace-kernel@vger.kernel.org>
-Cc: Masami Hiramatsu <mhiramat@kernel.org>, Mathieu Desnoyers
- <mathieu.desnoyers@efficios.com>, Linus Torvalds
- <torvalds@linux-foundation.org>, linuxppc-dev@lists.ozlabs.org,
- kvm@vger.kernel.org, linux-block@vger.kernel.org,
- linux-cxl@vger.kernel.org, linux-media@vger.kernel.org,
- dri-devel@lists.freedesktop.org, amd-gfx@lists.freedesktop.org,
- intel-gfx@lists.freedesktop.org, intel-xe@lists.freedesktop.org,
- linux-arm-msm@vger.kernel.org, freedreno@lists.freedesktop.org,
- virtualization@lists.linux.dev, linux-rdma@vger.kernel.org,
- linux-pm@vger.kernel.org, iommu@lists.linux.dev,
- linux-tegra@vger.kernel.org, netdev@vger.kernel.org,
- linux-hyperv@vger.kernel.org, ath10k@lists.infradead.org,
- linux-wireless@vger.kernel.org, ath11k@lists.infradead.org,
- ath12k@lists.infradead.org, brcm80211@lists.linux.dev,
- brcm80211-dev-list.pdl@broadcom.com, linux-usb@vger.kernel.org,
- linux-bcachefs@vger.kernel.org, linux-nfs@vger.kernel.org,
- ocfs2-devel@lists.linux.dev, linux-cifs@vger.kernel.org,
- linux-xfs@vger.kernel.org, linux-edac@vger.kernel.org,
- selinux@vger.kernel.org, linux-btrfs@vger.kernel.org,
- linux-erofs@lists.ozlabs.org, linux-f2fs-devel@lists.sourceforge.net,
- linux-hwmon@vger.kernel.org, io-uring@vger.kernel.org,
- linux-sound@vger.kernel.org, bpf@vger.kernel.org,
- linux-wpan@vger.kernel.org, dev@openvswitch.org,
- linux-s390@vger.kernel.org, tipc-discussion@lists.sourceforge.net, Julia
- Lawall <Julia.Lawall@inria.fr>
-Subject: Re: [FYI][PATCH] tracing/treewide: Remove second parameter of
- __assign_str()
-Message-ID: <20240223130653.2cc317a8@gandalf.local.home>
-In-Reply-To: <20240223125634.2888c973@gandalf.local.home>
-References: <20240223125634.2888c973@gandalf.local.home>
-X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1708711784; c=relaxed/simple;
+	bh=YerWNo1IvQT57CgOP1IhhejAzZdIcMAqyhFnZkjrJMI=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=pZBab60kWHWsqhsld6xxRDwO5GJ56hmEdw2LiWIBkF9w6rOizBh+n/MQrkpaSx09it6cUE/ObFhN+porqfaT7bOGefrR06z9+B4ywVwD9JFQyKvUB7HUMwNP2ttncxFFErfvlLpOiytiLm6CgBla+dAJylfeK+i+rRJG/PI4iWA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=3f1YmZhl; arc=none smtp.client-ip=209.85.208.52
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-ed1-f52.google.com with SMTP id 4fb4d7f45d1cf-564e4477b7cso293a12.1
+        for <linux-rdma@vger.kernel.org>; Fri, 23 Feb 2024 10:09:42 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1708711781; x=1709316581; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=xzX4jxRTXKDG983WNUYBE978wFUHRMiTk7mCqZuSDfY=;
+        b=3f1YmZhlY/d8r8AzzLqfmhTWh2dUgLL2NcNjIQ0LaCvzYfXMQ/BD5Fbdv7dqOZDlXl
+         6YrIXTLXyPFoHDVu9TX1dSe5N5c1ujuhiYvd7sn4ZHS5yh0Sh56WyPnhB3N8P8zuzC2T
+         r2vAIrbvQ5GzNcb1Hg/1po8VC+9h+Smv/mbG2f4/cibPnaxaxnEX99PrTi2mh12QphZw
+         vhFvQl18lkGxPAw6yUbjq3LnUUvkS3/qbhnOv0MFmrrBZjfJ0YSPMRtQ/2B8jFS2a4hg
+         krAVSk5FCqyhcerC8G1SEMWqMoPiaaQr3titJz84OqlC6mIdi0WGdka0jUJ93ddtdZHI
+         cnOQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708711781; x=1709316581;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=xzX4jxRTXKDG983WNUYBE978wFUHRMiTk7mCqZuSDfY=;
+        b=HOwvDSdPpfotEPIgZpSbmoRJsD0cgEOmVM9WdjWTc/lyTnWFbqGBPQySQJPLKC8LnQ
+         XlmOcHI13MzzzWZl+r5HS3eCXp1QnLahvaD06aXaLeTC12CEjoWqHrYMjl3jh+vlsJtb
+         dBTu0wat8SlOQTaajCi+qIsWQFyEEJ/uY/ZKtc+XhY3h5wxjnt/WqEqQwnCt353mSVTT
+         59FHrvSe2t4N0i43m0yNqRa9WldrdvEflas7dvM/WeFxD4OqWr/utQdlsN3MakNAxh9i
+         Y99VxwxoaSUxLIL9t03Isr94CpQBAaa9KHWaUXgUlSMgiR0/f1t7VuGro2OOxjCL48sV
+         0mVQ==
+X-Forwarded-Encrypted: i=1; AJvYcCX8YAo1SGIJIRpR65aDhDcq7JTJtqSe323It6bBpgVJPgChoVRGa55rJ+YYwSXklYolXUY6xdgHzWOczUYh1SGrCSrLipYSgRbPOA==
+X-Gm-Message-State: AOJu0Yx8NnaZ1D2ygQR1zFpOO1A4ZaYor5ytJpnXfShk0XjTvw+zs1E0
+	ux82Sqm3JX731KoNnVz073dqQHD8YOJPMAZGxFwLA8gJ5qT8wVZrCQVu5Q6dAkiqoqQRyGKOB8O
+	G07reteUmlw8ybNDmcdODTz+LIMaqXVkKlC71
+X-Google-Smtp-Source: AGHT+IG1Wv1Ld5IAjxats+kxHJ5Mcmy/+6OrplzEMMMr5lmasOrVRaGfhzjJAbwxEbVxjHcQ7uIrCzhWNFCyCe5hqcA=
+X-Received: by 2002:a50:c319:0:b0:563:adf3:f5f4 with SMTP id
+ a25-20020a50c319000000b00563adf3f5f4mr14501edb.1.1708711781318; Fri, 23 Feb
+ 2024 10:09:41 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+References: <20240223172448.94084-1-kuniyu@amazon.com> <20240223172448.94084-3-kuniyu@amazon.com>
+In-Reply-To: <20240223172448.94084-3-kuniyu@amazon.com>
+From: Eric Dumazet <edumazet@google.com>
+Date: Fri, 23 Feb 2024 19:09:27 +0100
+Message-ID: <CANn89iKD9i-UKABN2XVczfYsrSKC81VUVQH+eJxYGgdz42ExTQ@mail.gmail.com>
+Subject: Re: [PATCH v1 net 2/2] rds: tcp: Fix use-after-free of net in reqsk_timer_handler().
+To: Kuniyuki Iwashima <kuniyu@amazon.com>
+Cc: "David S. Miller" <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>, 
+	Paolo Abeni <pabeni@redhat.com>, Allison Henderson <allison.henderson@oracle.com>, 
+	Sowmini Varadhan <sowmini.varadhan@oracle.com>, Kuniyuki Iwashima <kuni1840@gmail.com>, netdev@vger.kernel.org, 
+	linux-rdma@vger.kernel.org, rds-devel@oss.oracle.com, 
+	syzkaller <syzkaller@googlegroups.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Fri, 23 Feb 2024 12:56:34 -0500
-Steven Rostedt <rostedt@goodmis.org> wrote:
+On Fri, Feb 23, 2024 at 6:26=E2=80=AFPM Kuniyuki Iwashima <kuniyu@amazon.co=
+m> wrote:
+>
+> syzkaller reported a warning of netns tracker [0] followed by KASAN
+> splat [1] and another ref tracker warning [1].
+>
+> syzkaller could not find a repro, but in the log, the only suspicious
+> sequence was as follows:
+>
+>   18:26:22 executing program 1:
+>   r0 =3D socket$inet6_mptcp(0xa, 0x1, 0x106)
+>   ...
+>   connect$inet6(r0, &(0x7f0000000080)=3D{0xa, 0x4001, 0x0, @loopback}, 0x=
+1c) (async)
+>
+> The notable thing here is 0x4001 in connect(), which is RDS_TCP_PORT.
+>
+> So, the scenario would be:
+>
+>   1. unshare(CLONE_NEWNET) creates a per netns tcp listener in
+>       rds_tcp_listen_init().
+>   2. syz-executor connect()s to it and creates a reqsk.
+>   3. syz-executor exit()s immediately.
+>   4. netns is dismantled.  [0]
+>   5. reqsk timer is fired, and UAF happens while freeing reqsk.  [1]
+>   6. listener is freed after RCU grace period.  [2]
+>
+> Basically, reqsk assumes that the listener guarantees netns safety
+> until all reqsk timers are expired by holding the listener's refcount.
+> However, this was not the case for kernel sockets.
+>
+> Commit 740ea3c4a0b2 ("tcp: Clean up kernel listener's reqsk in
+> inet_twsk_purge()") fixed this issue only for per-netns ehash, but
+> the issue still exists for the global ehash.
+>
+> We can apply the same fix, but this issue is specific to RDS.
+>
+> Instead of iterating potentially large ehash and purging reqsk during
+> netns dismantle, let's hold netns refcount for the kernel TCP listener.
+>
+>
+> Reported-by: syzkaller <syzkaller@googlegroups.com>
+> Fixes: 467fa15356ac ("RDS-TCP: Support multiple RDS-TCP listen endpoints,=
+ one per netns.")
+> Signed-off-by: Kuniyuki Iwashima <kuniyu@amazon.com>
+> ---
+>  net/rds/tcp_listen.c | 5 +++++
+>  1 file changed, 5 insertions(+)
+>
+> diff --git a/net/rds/tcp_listen.c b/net/rds/tcp_listen.c
+> index 05008ce5c421..4f7863932df7 100644
+> --- a/net/rds/tcp_listen.c
+> +++ b/net/rds/tcp_listen.c
+> @@ -282,6 +282,11 @@ struct socket *rds_tcp_listen_init(struct net *net, =
+bool isv6)
+>                 goto out;
+>         }
+>
+> +       __netns_tracker_free(net, &sock->sk->ns_tracker, false);
+> +       sock->sk->sk_net_refcnt =3D 1;
+> +       get_net_track(net, &sock->sk->ns_tracker, GFP_KERNEL);
+> +       sock_inuse_add(net, 1);
+> +
 
-> Note, the same updates will need to be done for:
-> 
->   __assign_str_len()
->   __assign_rel_str()
->   __assign_rel_str_len()
+Why using sock_create_kern() then later 'convert' this kernel socket
+to a user one ?
 
-Correction: The below macros do not pass in their source to the entry
-macros, so they will not need to be updated.
-
--- Steve
-
->   __assign_bitmask()
->   __assign_rel_bitmask()
->   __assign_cpumask()
->   __assign_rel_cpumask()
-
+Would using __sock_create() avoid this ?
 
