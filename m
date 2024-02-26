@@ -1,133 +1,136 @@
-Return-Path: <linux-rdma+bounces-1132-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-1133-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0AB518675C7
-	for <lists+linux-rdma@lfdr.de>; Mon, 26 Feb 2024 13:57:53 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9BC428677DC
+	for <lists+linux-rdma@lfdr.de>; Mon, 26 Feb 2024 15:11:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B65092850E0
-	for <lists+linux-rdma@lfdr.de>; Mon, 26 Feb 2024 12:57:51 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 495941F25A63
+	for <lists+linux-rdma@lfdr.de>; Mon, 26 Feb 2024 14:11:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 668837FBAA;
-	Mon, 26 Feb 2024 12:57:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0028712DDB6;
+	Mon, 26 Feb 2024 14:06:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b="UgsdCwit"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from szxga04-in.huawei.com (szxga04-in.huawei.com [45.249.212.190])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-qv1-f41.google.com (mail-qv1-f41.google.com [209.85.219.41])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EA9607F475;
-	Mon, 26 Feb 2024 12:57:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.190
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0E273127B4B
+	for <linux-rdma@vger.kernel.org>; Mon, 26 Feb 2024 14:06:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708952231; cv=none; b=mzZ0jDLxoMvKqplnG5Enzfwzidxi6LGt7Cn2ui99wtsO2hpPHDBzE0SGtDlAzIL0ObgE87nauiA8vzFYe9udcuHVJnEQYYsYY/DbF0OaMaymZgyzxl1XyEfFmFrTkO/RxwOfm1nkl+lQy50L0pvPAEelLkKu0EXQ0oYurEfQz9I=
+	t=1708956411; cv=none; b=X2iNMhwTLdmlEvTCMlLS/JkDB/LR9e7MmVIsDO7DrZpTWtGW9tSoYOpMvIm4j3/uSxXmcrv7jFm4xOm0ALC2ZelK7NF4wDOR4xmE43PpaeXFyD6uUZ6jqI4vNv1bVR7uIfaRs7U64juDCbLIG/elELnOpsmF97lCk5jy0jKF+mE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708952231; c=relaxed/simple;
-	bh=JHreYlFG9Bvy0VWQqGq32kV4+VYQfyv2BVzD2+p+oGI=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=fVG3MtnXB4XeaL1oBHSNCOxfXb9hTVg6RSC6PtyvgApVRL7AIImUTODYZjuazR9f1Jpm4Jq5wP9/VmNDJFT6lAPHhgpBTb9ArIrCrknRBseg/VtuAANAOWgHGprbFqNMx5AkQHNYhbEnLoUKGKqesYMyu7PXudfxf64jSgJTHyw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=hisilicon.com; spf=pass smtp.mailfrom=hisilicon.com; arc=none smtp.client-ip=45.249.212.190
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=hisilicon.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=hisilicon.com
-Received: from mail.maildlp.com (unknown [172.19.163.17])
-	by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4Tk0w873P6z1xpTt;
-	Mon, 26 Feb 2024 20:55:36 +0800 (CST)
-Received: from kwepemi500006.china.huawei.com (unknown [7.221.188.68])
-	by mail.maildlp.com (Postfix) with ESMTPS id 16B191A0172;
-	Mon, 26 Feb 2024 20:57:05 +0800 (CST)
-Received: from [10.67.120.168] (10.67.120.168) by
- kwepemi500006.china.huawei.com (7.221.188.68) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.35; Mon, 26 Feb 2024 20:57:04 +0800
-Message-ID: <954a1e9b-d0bb-10ea-aaa9-6a958de30537@hisilicon.com>
-Date: Mon, 26 Feb 2024 20:57:04 +0800
+	s=arc-20240116; t=1708956411; c=relaxed/simple;
+	bh=fuDYuRjoR1UI44uUimtjxVT+fQA/4pO33d2wXEFS/BA=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=G1FJuznQTORqdkqDKeoofbpbQ6xzjvPIwxmL+d1FKj4kd2hKz8DuOhQO7RrgyMXUFT4ebaCxb4Z11pciFTTDjFuUq6C3X8SheeyaDSIjJPj6IjODIBsSxFbMC5b21Oum+fLFAg961ZVZeMzXYdulgB3OZdCXobQ/+LwZ3LdMxvg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca; spf=pass smtp.mailfrom=ziepe.ca; dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b=UgsdCwit; arc=none smtp.client-ip=209.85.219.41
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ziepe.ca
+Received: by mail-qv1-f41.google.com with SMTP id 6a1803df08f44-686a92a8661so19615576d6.0
+        for <linux-rdma@vger.kernel.org>; Mon, 26 Feb 2024 06:06:49 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google; t=1708956409; x=1709561209; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=DgXdMwNKjGPBb2jpZ6gPX8zZl4gfkP26DGkK0D6WeTY=;
+        b=UgsdCwitBiz+xtCbUTePRe07RJQveLz8I7gdJShlUy+xkHSBpkU4B0/VLwKJu02XeQ
+         3n28/jIQ8sTd4FAN3UpAtF3j4cCU5Z1JvM2niShQ/CurtG09/o10+D1mAGIV42+c16w5
+         2NY/nWfA6zDQHMWxFuMfzcpc7nKhVRwBEZC3hg4vq0WOMG6IrMizCZ/WiEp/2z6MHJyQ
+         1MJmFFHk4w0k6FtCIGZ4MqAW1TR9Igv8S3aUofajQ5FIyVv6FjYL7OfeDp7Vv44NdQz7
+         PdjZQGEhcxtA3nd5MWGA9SgYNojhailbUzo6Bcu0o13ebYgWk2xIw5ZV66f1IF2q82XA
+         fCGA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708956409; x=1709561209;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=DgXdMwNKjGPBb2jpZ6gPX8zZl4gfkP26DGkK0D6WeTY=;
+        b=EG4etNM0Q9QGmre/ObQfmcQIcQwp/TS64uncgsJr+JnTwBPcemWcyKNp6XVgoe23MS
+         C4U5Gj9ZLNEb2CzBratNA+2h6qXwfk8HhLLxcaSDLImKHr63njaxjYIX76s45ERj8fH5
+         UrFUU7OsU7LNcvYupToHkpdH0DSFh7L7rMbL/qFAW6GH/wOKhHUFSJrOqMyPtaz9FCZ4
+         8nz36pmhWf9dCSF7vmE+SaY9S2mz1HPONeJ/Y55Qfea/1zTLsX0Pe3T41Vxh+XPaiFv6
+         1C8yRMg18j/+Td+ymOLPAe/aWHI6ggvOs0hcYu3B/QVs0qOWCeeP8uGjM/w3E2vKTcxL
+         NvDA==
+X-Forwarded-Encrypted: i=1; AJvYcCXdluoh7Y/uXkwpVF8DBoa0QV07aTOPIdJ+dOjD2UAtpxkAsl0DY0Lo2l7T2EgypSQ2Su61jliHd87UFm9VE44LVsez+H4uDf6jJg==
+X-Gm-Message-State: AOJu0Ywsk9LsUihGpVsh1hRkTQvP3B08hz7dKPW+CFFz6A/1TbbDM/cS
+	gwFINPZw4iZzkfNIZh7rEYEhKrIQbXNZM5ooStCJa5KtxQUMNXd39nvSkzXIY5A=
+X-Google-Smtp-Source: AGHT+IHuYe+Ziwtz0L97YB60rihCZgCj8vYXG569z7yDIQX+tSqbQfmrb9b1cCNldq72fbT5tHzH7w==
+X-Received: by 2002:a0c:da92:0:b0:68f:1daf:d696 with SMTP id z18-20020a0cda92000000b0068f1dafd696mr7858676qvj.31.1708956408934;
+        Mon, 26 Feb 2024 06:06:48 -0800 (PST)
+Received: from ziepe.ca (hlfxns017vw-142-68-80-239.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.68.80.239])
+        by smtp.gmail.com with ESMTPSA id ol8-20020a0562143d0800b0068fb9bdd7absm2979537qvb.74.2024.02.26.06.06.47
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 26 Feb 2024 06:06:48 -0800 (PST)
+Received: from jgg by wakko with local (Exim 4.95)
+	(envelope-from <jgg@ziepe.ca>)
+	id 1rebd1-00HHN4-B2;
+	Mon, 26 Feb 2024 10:06:47 -0400
+Date: Mon, 26 Feb 2024 10:06:47 -0400
+From: Jason Gunthorpe <jgg@ziepe.ca>
+To: Junxian Huang <huangjunxian6@hisilicon.com>
+Cc: leon@kernel.org, linux-rdma@vger.kernel.org, linuxarm@huawei.com,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 for-next 2/2] RDMA/hns: Support userspace configuring
+ congestion control algorithm with QP granularity
+Message-ID: <20240226140647.GB3220539@ziepe.ca>
+References: <20240208035038.94668-1-huangjunxian6@hisilicon.com>
+ <20240208035038.94668-3-huangjunxian6@hisilicon.com>
+ <20240221155248.GD13491@ziepe.ca>
+ <26ea175c-fa31-720c-2ac3-41abcb4d398a@hisilicon.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.1.0
-Subject: Re: [PATCH v2 for-next 2/2] RDMA/hns: Support userspace configuring
- congestion control algorithm with QP granularity
-Content-Language: en-US
-To: Leon Romanovsky <leon@kernel.org>
-CC: Jason Gunthorpe <jgg@ziepe.ca>, <linux-rdma@vger.kernel.org>,
-	<linuxarm@huawei.com>, <linux-kernel@vger.kernel.org>
-References: <20240208035038.94668-1-huangjunxian6@hisilicon.com>
- <20240208035038.94668-3-huangjunxian6@hisilicon.com>
- <20240221155248.GD13491@ziepe.ca>
- <26ea175c-fa31-720c-2ac3-41abcb4d398a@hisilicon.com>
- <20240226080946.GC1842804@unreal>
-From: Junxian Huang <huangjunxian6@hisilicon.com>
-In-Reply-To: <20240226080946.GC1842804@unreal>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
- kwepemi500006.china.huawei.com (7.221.188.68)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <26ea175c-fa31-720c-2ac3-41abcb4d398a@hisilicon.com>
 
+On Thu, Feb 22, 2024 at 03:06:20PM +0800, Junxian Huang wrote:
+> >> +enum hns_roce_congest_type_flags {
+> >> +	HNS_ROCE_CREATE_QP_FLAGS_DCQCN = 1 << 0,
+> >> +	HNS_ROCE_CREATE_QP_FLAGS_LDCP = 1 << 1,
+> >> +	HNS_ROCE_CREATE_QP_FLAGS_HC3 = 1 << 2,
+> >> +	HNS_ROCE_CREATE_QP_FLAGS_DIP = 1 << 3,
+> >> +};
+> > 
+> > Why are these bit flags if they are exclusive?
+> > 
+> 
+> Our FW uses bit flags. Although there is no direct relationship between
+> FW and ABI, but from the perspective of readability, bit flags are also
+> used consistently here in ABI.
 
+Don't do that in uapi.
 
-On 2024/2/26 16:09, Leon Romanovsky wrote:
-> On Thu, Feb 22, 2024 at 03:06:20PM +0800, Junxian Huang wrote:
->>
->>
->> On 2024/2/21 23:52, Jason Gunthorpe wrote:
->>> On Thu, Feb 08, 2024 at 11:50:38AM +0800, Junxian Huang wrote:
->>>> Support userspace configuring congestion control algorithm with
->>>> QP granularity. If the algorithm is not specified in userspace,
->>>> use the default one.
->>>>
->>>> Signed-off-by: Junxian Huang <huangjunxian6@hisilicon.com>
->>>> ---
->>>>  drivers/infiniband/hw/hns/hns_roce_device.h | 23 +++++--
->>>>  drivers/infiniband/hw/hns/hns_roce_hw_v2.c  | 14 +---
->>>>  drivers/infiniband/hw/hns/hns_roce_hw_v2.h  |  3 +-
->>>>  drivers/infiniband/hw/hns/hns_roce_main.c   |  3 +
->>>>  drivers/infiniband/hw/hns/hns_roce_qp.c     | 71 +++++++++++++++++++++
->>>>  include/uapi/rdma/hns-abi.h                 | 17 +++++
->>>>  6 files changed, 112 insertions(+), 19 deletions(-)
+> >> +enum hns_roce_create_qp_comp_mask {
+> >> +	HNS_ROCE_CREATE_QP_MASK_CONGEST_TYPE = 1 << 1,
+> > 
+> > Why 1<<1 not 1<<0?
 > 
-> <...>
-> 
->>>> +
->>>> +enum hns_roce_create_qp_comp_mask {
->>>> +	HNS_ROCE_CREATE_QP_MASK_CONGEST_TYPE = 1 << 1,
->>>
->>> Why 1<<1 not 1<<0?
->>
->> This is to keep consistent with our internal ABI, there are some
->> features not upstream yet.
->>
-> 
-> <...>
-> 
->>>> @@ -114,6 +128,9 @@ struct hns_roce_ib_alloc_ucontext_resp {
->>>>  	__u32	reserved;
->>>>  	__u32	config;
->>>>  	__u32	max_inline_data;
->>>> +	__u8	reserved0;
->>>> +	__u8	congest_type;
->>>
->>> Why this layout?
->>>> Jason
->>
->> Same as the 1<<1 issue, to keep consistent with our internal ABI.
-> 
-> We are talking about upstream kernel UAPI, there is no internal ABI here.
-> 
-> Please fix it.
-> 
-> Thanks
-> 
+> This is to keep consistent with our internal ABI, there are some
+> features not upstream yet.
 
-Sure. Will fix it in next version.
+Nope, pack them tightly. Don't keep an "internal ABI"
 
-Thanks,
-Junxian
+> >> @@ -114,6 +128,9 @@ struct hns_roce_ib_alloc_ucontext_resp {
+> >>  	__u32	reserved;
+> >>  	__u32	config;
+> >>  	__u32	max_inline_data;
+> >> +	__u8	reserved0;
+> >> +	__u8	congest_type;
+> > 
+> > Why this layout?
+> 
+> Same as the 1<<1 issue, to keep consistent with our internal ABI.
 
->>
->> Thanks,
->> Junxian
+Same answer
+
+Jason
 
