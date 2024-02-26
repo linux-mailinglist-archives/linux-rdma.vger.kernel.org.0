@@ -1,96 +1,101 @@
-Return-Path: <linux-rdma+bounces-1139-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-1140-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 51A9186816D
-	for <lists+linux-rdma@lfdr.de>; Mon, 26 Feb 2024 20:49:01 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 43EC886817A
+	for <lists+linux-rdma@lfdr.de>; Mon, 26 Feb 2024 20:52:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0659128BA29
-	for <lists+linux-rdma@lfdr.de>; Mon, 26 Feb 2024 19:49:00 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C49081F2565E
+	for <lists+linux-rdma@lfdr.de>; Mon, 26 Feb 2024 19:52:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3D967130ACC;
-	Mon, 26 Feb 2024 19:48:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 50087130ADC;
+	Mon, 26 Feb 2024 19:52:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=amazon.com header.i=@amazon.com header.b="Wh3wuSXN"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="0V8jhptt"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from smtp-fw-80009.amazon.com (smtp-fw-80009.amazon.com [99.78.197.220])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ed1-f51.google.com (mail-ed1-f51.google.com [209.85.208.51])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4211660BA1;
-	Mon, 26 Feb 2024 19:48:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=99.78.197.220
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 51A25129A91
+	for <linux-rdma@vger.kernel.org>; Mon, 26 Feb 2024 19:52:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708976936; cv=none; b=QgEOQc/pNAchN+uzMvgiVZvedO/Jl0RKbNsG1iRYLMB4z4fipsQJtL87ND3XATLP14TB1aOoIK/FkMQHvhk05MA1hgATAztugYT5Kt0v5XwizOLlenpcagr7cJ/4mg+gfqu7u1QuElduc2rC0bzptasqZTejD8L7NUjLk3XO4hc=
+	t=1708977173; cv=none; b=Evi0bpp9++nE3zKAd1DQA+M10hDaSsT+s8ItUjnreU67YltJAgo4XZaAP1mX1ugyHN3MRiboDsNupqz2WfDg8vySJFiI/um8fKhi+Esb2dD4h8dvrbvCumoRADEU+mnVFh7wcy1KQCuExPrhdYUGS2RLGPPWQP42UDlH4Rcic7M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708976936; c=relaxed/simple;
-	bh=w84SHmgAHfOatuxBCiBAzB/+W9CyFtGI+9YgH2NGO+w=;
-	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=Qb199zumahsdDGYDIQWzVRuhYWDkP4hIuOpbLFxvWNVECsay6aedAS9GELt5Lh0Fk+mRGYt1oY3v6wz9o5PWkajpcX1wzgvgGZpdzQU8AKYn3I6rOXIrIkKGLkGhTAIDyUzuf8fmUacp1ZikbASGdSAwwtYiLlYmWOMXPmHRlE0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amazon.com; spf=pass smtp.mailfrom=amazon.co.jp; dkim=pass (1024-bit key) header.d=amazon.com header.i=@amazon.com header.b=Wh3wuSXN; arc=none smtp.client-ip=99.78.197.220
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amazon.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=amazon.co.jp
+	s=arc-20240116; t=1708977173; c=relaxed/simple;
+	bh=y01BvFAkrfrVhU21/DQvkot2V+GFZJIYF91Q/ml5iKw=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=G+AufeEzmuvC8G8gY2x2xY2dv+4VRqamt8aRrBvR7s66JOcQvWSWB56xw+/9iN+KowQyTsPMH5Riqlb2XrPg1M9APB0HtAyDyTV29d9C70f/Z6gJ4Wh14K+PV1i/3MrmtH/t/p+Ggxm59RpXZ+UrCCyVyK7Tg0Jy6Ux9gr03m2I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=0V8jhptt; arc=none smtp.client-ip=209.85.208.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-ed1-f51.google.com with SMTP id 4fb4d7f45d1cf-564e4477b7cso354a12.1
+        for <linux-rdma@vger.kernel.org>; Mon, 26 Feb 2024 11:52:51 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1708976934; x=1740512934;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=AmUKGrfjFiVhh7T43Pat5Bc0aWlwO+ddTpTRlWa+3Js=;
-  b=Wh3wuSXNjib1B+aejaKxP9XFkJ6UqNSrja3J2xo6PDNShUClKmlGj7kW
-   noHvE2YElI+FGYAL6OfYMiPLBjbONyt940N3uo1HCr5TmKAr86dQHAFtz
-   ssvGK6ThYKwSdq5cAgpEkffuiIe9rXWiduw0tfyat13xPlaWXZo+SL2VV
-   0=;
-X-IronPort-AV: E=Sophos;i="6.06,186,1705363200"; 
-   d="scan'208";a="68874358"
-Received: from pdx4-co-svc-p1-lb2-vlan2.amazon.com (HELO smtpout.prod.us-west-2.prod.farcaster.email.amazon.dev) ([10.25.36.210])
-  by smtp-border-fw-80009.pdx80.corp.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Feb 2024 19:48:51 +0000
-Received: from EX19MTAUWA001.ant.amazon.com [10.0.38.20:46392]
- by smtpin.naws.us-west-2.prod.farcaster.email.amazon.dev [10.0.60.172:2525] with esmtp (Farcaster)
- id e1feba73-12d9-449e-b68a-4485c7360ccb; Mon, 26 Feb 2024 19:48:50 +0000 (UTC)
-X-Farcaster-Flow-ID: e1feba73-12d9-449e-b68a-4485c7360ccb
-Received: from EX19D004ANA001.ant.amazon.com (10.37.240.138) by
- EX19MTAUWA001.ant.amazon.com (10.250.64.218) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.40; Mon, 26 Feb 2024 19:48:49 +0000
-Received: from 88665a182662.ant.amazon.com (10.106.101.48) by
- EX19D004ANA001.ant.amazon.com (10.37.240.138) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1258.28; Mon, 26 Feb 2024 19:48:46 +0000
-From: Kuniyuki Iwashima <kuniyu@amazon.com>
-To: <edumazet@google.com>
-CC: <allison.henderson@oracle.com>, <davem@davemloft.net>, <kuba@kernel.org>,
-	<kuni1840@gmail.com>, <kuniyu@amazon.com>, <linux-rdma@vger.kernel.org>,
-	<netdev@vger.kernel.org>, <pabeni@redhat.com>, <rds-devel@oss.oracle.com>,
-	<sowmini.varadhan@oracle.com>, <syzkaller@googlegroups.com>
-Subject: Re: [PATCH v1 net 2/2] rds: tcp: Fix use-after-free of net in reqsk_timer_handler().
-Date: Mon, 26 Feb 2024 11:48:38 -0800
-Message-ID: <20240226194838.70789-1-kuniyu@amazon.com>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <CANn89iJb-TeMKZCAzhfXhhzQ2FkYYZd9DqyHCwRoOn5KV4+Z5A@mail.gmail.com>
-References: <CANn89iJb-TeMKZCAzhfXhhzQ2FkYYZd9DqyHCwRoOn5KV4+Z5A@mail.gmail.com>
+        d=google.com; s=20230601; t=1708977169; x=1709581969; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=xDgCF7iJjV3FkXUxcLoY1zQ9rm18ScJtC7x4eKLCNts=;
+        b=0V8jhpttkzwTW0r9KOrz5DSdKka9CmXp1DjisHec8lRYB0AIViksI9HXh/AsRfK6v1
+         kJti6H6RvyW30pwSRjQ0AyV2wzgA9l6aDCOHDaubKu9TuzHWKo0ZjXCTsqQAYKo0PJ0+
+         pzWHFWnWtqzJ7FZJHHQjvNolWbBa2vN2IB9jxzSamu7GrCQQCHzCWhVjw6hsoWIbCcEW
+         KiUqeZ9PHaVYRg3xugBK2793EWY3ADjopu6p2i1P3bVGfAt2XH/LQ7RI3F0D8rbGUvtd
+         LX1ghj/jPkd2uImj/mkAgxS7OurTfazqitY9rjX6nAj58iSuBKybpZ+uLZMT8QFknFQI
+         Bv5g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708977169; x=1709581969;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=xDgCF7iJjV3FkXUxcLoY1zQ9rm18ScJtC7x4eKLCNts=;
+        b=jElQ9mkf7hBKAmqg4LkI4ypI2qtwHawHmJ3z3xJuWcjv9TfUmdh90sp9c/pZB1iysy
+         dz9CSkD5LlbQIyfOBFvQHjVqPL4QEsFEBYt5u4YSjFlTXRBg+5IIhABbiBDmlMnQ+XA9
+         y/QZKHGa7BtmRXaDOotqhlftRfhNECc+qkXgnCBK+oPh03pOgRLZoDEfDnst+3pX6qrz
+         1vuhrclsVArVt6g15xZIF0tB48NMFneokhaq2zx+4sk+uyheBd6A6S961yk9XWsmgBPx
+         xUFG0wWpTGWc/1fiJ1G/2mxJj+16QBXuTPZKKXurNYcoyLIrLSIa8NVLKcVjhef0oceR
+         oGcg==
+X-Forwarded-Encrypted: i=1; AJvYcCUOS0y7EKIijoeyZ2fC0DmG4WsICxRlbyG7wkcI5nvm9vuAigy1wXNxpFpyorAecnYAvl1fHbV6Xqn48Fnrs7v0Ff025M1a/6SaFQ==
+X-Gm-Message-State: AOJu0Yyt2F3HMHOwotVbSMGQdVAYFUwRauJwHxtlkeba83jFBfgqG5BK
+	Qeq+8qUx2ZC9LcVFfps96F/6lnFcQcPQvdM+EiNT6zicgNXiMhk2ezCqhjQknFC+6w+YY4qXNeW
+	a1uu3tLm4B3oi9JDxH7eFpDUVZgTDLJtZJDBy
+X-Google-Smtp-Source: AGHT+IEu75F1QGqG2VZKHqwXX0be24MSbstbIMxQ/9mnzwBiHCQbZZ5u32JcJfsAL3xxXz61OojTdtpXe6Lv89TnDbE=
+X-Received: by 2002:a50:c30b:0:b0:560:1a1:eb8d with SMTP id
+ a11-20020a50c30b000000b0056001a1eb8dmr30790edb.7.1708977169413; Mon, 26 Feb
+ 2024 11:52:49 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: EX19D042UWA001.ant.amazon.com (10.13.139.92) To
- EX19D004ANA001.ant.amazon.com (10.37.240.138)
-
+References: <725e8196ad84a91fadcf8858422b20b13f71ca0c.camel@oracle.com> <20240226193857.69672-1-kuniyu@amazon.com>
+In-Reply-To: <20240226193857.69672-1-kuniyu@amazon.com>
 From: Eric Dumazet <edumazet@google.com>
-Date: Mon, 26 Feb 2024 20:40:10 +0100
-> On Mon, Feb 26, 2024 at 8:22 PM Allison Henderson
-> <allison.henderson@oracle.com> wrote:
-> >
+Date: Mon, 26 Feb 2024 20:52:35 +0100
+Message-ID: <CANn89iL+SSPYC8Bwm=-oDYRAkjE509_abvNK1KABThEPFaNL1g@mail.gmail.com>
+Subject: Re: [PATCH v1 net 2/2] rds: tcp: Fix use-after-free of net in reqsk_timer_handler().
+To: Kuniyuki Iwashima <kuniyu@amazon.com>
+Cc: allison.henderson@oracle.com, davem@davemloft.net, kuba@kernel.org, 
+	kuni1840@gmail.com, linux-rdma@vger.kernel.org, netdev@vger.kernel.org, 
+	pabeni@redhat.com, rds-devel@oss.oracle.com, sowmini.varadhan@oracle.com, 
+	syzkaller@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+
+On Mon, Feb 26, 2024 at 8:39=E2=80=AFPM Kuniyuki Iwashima <kuniyu@amazon.co=
+m> wrote:
+>
+> From: Allison Henderson <allison.henderson@oracle.com>
+> Date: Mon, 26 Feb 2024 19:22:01 +0000
 > > On Mon, 2024-02-26 at 11:14 -0800, Kuniyuki Iwashima wrote:
 > > > From: Kuniyuki Iwashima <kuniyu@amazon.com>
 > > > Date: Fri, 23 Feb 2024 10:28:32 -0800
 > > > > From: Eric Dumazet <edumazet@google.com>
 > > > > Date: Fri, 23 Feb 2024 19:09:27 +0100
-> > > > > On Fri, Feb 23, 2024 at 6:26 PM Kuniyuki Iwashima
+> > > > > On Fri, Feb 23, 2024 at 6:26=E2=80=AFPM Kuniyuki Iwashima
 > > > > > <kuniyu@amazon.com> wrote:
 > > > > > >
 > > > > > > syzkaller reported a warning of netns tracker [0] followed by
@@ -102,9 +107,9 @@ Date: Mon, 26 Feb 2024 20:40:10 +0100
 > > > > > > sequence was as follows:
 > > > > > >
 > > > > > >   18:26:22 executing program 1:
-> > > > > >   r0 = socket$inet6_mptcp(0xa, 0x1, 0x106)
+> > > > > >   r0 =3D socket$inet6_mptcp(0xa, 0x1, 0x106)
 > > > > > >   ...
-> > > > > >   connect$inet6(r0, &(0x7f0000000080)={0xa, 0x4001, 0x0,
+> > > > > >   connect$inet6(r0, &(0x7f0000000080)=3D{0xa, 0x4001, 0x0,
 > > > > > > @loopback}, 0x1c) (async)
 > > > > > >
 > > > > > > The notable thing here is 0x4001 in connect(), which is
@@ -159,7 +164,7 @@ Date: Mon, 26 Feb 2024 20:40:10 +0100
 > > > > > >
 > > > > > > +       __netns_tracker_free(net, &sock->sk->ns_tracker,
 > > > > > > false);
-> > > > > > +       sock->sk->sk_net_refcnt = 1;
+> > > > > > +       sock->sk->sk_net_refcnt =3D 1;
 > > > > > > +       get_net_track(net, &sock->sk->ns_tracker, GFP_KERNEL);
 > > > > > > +       sock_inuse_add(net, 1);
 > > > > > > +
@@ -170,17 +175,19 @@ Date: Mon, 26 Feb 2024 20:40:10 +0100
 > > > > >
 > > > > > Would using __sock_create() avoid this ?
 > > > >
-> > > > I think yes, but LSM would see kern=0 in pre/post socket() hooks.
+> > > > I think yes, but LSM would see kern=3D0 in pre/post socket() hooks.
 > > > >
 > > > > Probably we can use __sock_create() in net-next and see if someone
 > > > > complains.
 > > >
 > > > I noticed the patchwork status is Changes Requested.
-> > > https://urldefense.com/v3/__https://patchwork.kernel.org/project/netdevbpf/list/?series=829213&state=*__;Kg!!ACWV5N9M2RV99hQ!KHKUQKUDnNCdiEcb4ZK1VBiYSitarEb-CAWeSJvaeK04fgW4cuWePg3Ac2HmIAPUHuqeCwgt466fHEKAAdfa$
+> > > https://urldefense.com/v3/__https://patchwork.kernel.org/project/netd=
+evbpf/list/?series=3D829213&state=3D*__;Kg!!ACWV5N9M2RV99hQ!KHKUQKUDnNCdiEc=
+b4ZK1VBiYSitarEb-CAWeSJvaeK04fgW4cuWePg3Ac2HmIAPUHuqeCwgt466fHEKAAdfa$
 > > >
 > > >
 > > > Should we use __sock_create() for RDS or add another parameter
-> > > to __sock_create(..., kern=true/false, netref=true/false) and
+> > > to __sock_create(..., kern=3Dtrue/false, netref=3Dtrue/false) and
 > > > fix other similar uses (MPTCP, SMC, Netlink) altogether ?
 > > >
 > > > Thanks!
@@ -190,47 +197,43 @@ Date: Mon, 26 Feb 2024 20:40:10 +0100
 > > Thank you for looking at this.  I've been doing a little investigation
 > > in the area to better understand the issue and this fix.  While I
 > > understand what this patch is trying to do here, I'd like to do a
-> > little more digging as to why 740ea3c4a0b2 didnt work for rds, or what
-> > else rds may not be doing correctly that the other sockets are.  I'm
-> > not quite sure about setting the kern parameter to 0 for socket_create.
-> > While it seems like it would have a similar effect, this looks
-> > incorrect since this is not a user space socket.
-> >
-> > I'll do a little more diging myself too.  If you had another idea about
-> > adding parameters to __sock_create, I'd be happy to take a look.  Thank
-> > you!
-> 
-> I wonder if the following change would help ?
+> > little more digging as to why 740ea3c4a0b2 didnt work for rds,
+>
+> 740ea3c4a0b2 works only for netns with its dedicated ehash, which
+> is unshare(CLONE_NEWNET)d with net.ipv4.tcp_child_ehash_entries !=3D 0.
+>
+> With the diff below, we can fix the issue, but as noted in the
+> description, this slows down netns dismantle where no reqsk, this
+> is true if the netns did not have kernel TCP sockets.
 
-Yes, it also fixes the issue. :)
-https://lore.kernel.org/netdev/20240226193857.69672-1-kuniyu@amazon.com/
+BTW I note that inet_twsk_purge() probably would need this "goto
+restart;" as well....
 
-but it will trigger full ehash iteration for netns with no RDS usage
-(and even without TCP).
+sk_nulls_for_each_rcu(sk, node, &head->chain)  is not a _safe variant...
 
-So, I think __sock_create() or the netref conversion would be better.
+diff --git a/net/ipv4/inet_timewait_sock.c b/net/ipv4/inet_timewait_sock.c
+index 5befa4de5b2416281ad2795713a70d0fd847b0b2..a62031d85bcce00261193136dd7=
+2d9f57ffd34fc
+100644
+--- a/net/ipv4/inet_timewait_sock.c
++++ b/net/ipv4/inet_timewait_sock.c
+@@ -283,10 +283,11 @@ void inet_twsk_purge(struct inet_hashinfo
+*hashinfo, int family)
+                                 * freed.  Userspace listener and
+reqsk never exist here.
+                                 */
+                                if (unlikely(sk->sk_state =3D=3D TCP_NEW_SY=
+N_RECV &&
+-                                            hashinfo->pernet)) {
++
+!refcount_read(&sock_net(sk)->ns.count))) {
+                                        struct request_sock *req =3D
+inet_reqsk(sk);
 
 
-> 
-> diff --git a/net/ipv4/tcp_minisocks.c b/net/ipv4/tcp_minisocks.c
-> index 9e85f2a0bddd4978b1bde6add1efc6aad351db8b..0ecc7311dc6ceedd8ada7b99b1441a562a6be4d6
-> 100644
-> --- a/net/ipv4/tcp_minisocks.c
-> +++ b/net/ipv4/tcp_minisocks.c
-> @@ -398,10 +398,6 @@ void tcp_twsk_purge(struct list_head
-> *net_exit_list, int family)
->                         /* Even if tw_refcount == 1, we must clean up
-> kernel reqsk */
-> 
-> inet_twsk_purge(net->ipv4.tcp_death_row.hashinfo, family);
->                 } else if (!purged_once) {
-> -                       /* The last refcount is decremented in
-> tcp_sk_exit_batch() */
-> -                       if
-> (refcount_read(&net->ipv4.tcp_death_row.tw_refcount) == 1)
-> -                               continue;
-> -
->                         inet_twsk_purge(&tcp_hashinfo, family);
->                         purged_once = true;
->                 }
+inet_csk_reqsk_queue_drop_and_put(req->rsk_listener, req);
++                                       goto restart;
+                                }
+
+                                continue;
 
