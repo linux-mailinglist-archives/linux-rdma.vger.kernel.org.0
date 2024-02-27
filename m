@@ -1,134 +1,208 @@
-Return-Path: <linux-rdma+bounces-1156-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-1157-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 324D78699A9
-	for <lists+linux-rdma@lfdr.de>; Tue, 27 Feb 2024 16:02:32 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id AE23386A09C
+	for <lists+linux-rdma@lfdr.de>; Tue, 27 Feb 2024 21:01:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 63F6F1C23FCE
-	for <lists+linux-rdma@lfdr.de>; Tue, 27 Feb 2024 15:02:31 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C0D4BB22ADE
+	for <lists+linux-rdma@lfdr.de>; Tue, 27 Feb 2024 20:00:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0D2D614A0AA;
-	Tue, 27 Feb 2024 14:58:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4E86814A095;
+	Tue, 27 Feb 2024 20:00:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="DNbAUla7"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-io1-f70.google.com (mail-io1-f70.google.com [209.85.166.70])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mx0a-00069f02.pphosted.com (mx0a-00069f02.pphosted.com [205.220.165.32])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5711F14A0A8
-	for <linux-rdma@vger.kernel.org>; Tue, 27 Feb 2024 14:58:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.70
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 307AD149E13;
+	Tue, 27 Feb 2024 20:00:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.165.32
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709045901; cv=none; b=nf/MffJgQQe338XKmvZSR15yndBFV97CGS1hcJmOiaXvMShTWZjH7eKSTpd2S0hS1zCSUXOiMbi+DnojOH3prQkEZ7rqHq71jugbNerwjjhe6vqu+1VOm03/OCKlEldAWrVNMNlWHlm1FhZZVIQNqHBjS6d44nwlWI+/N+JWZ88=
+	t=1709064034; cv=none; b=TblhL8vZfarfxaNHXaulPCydRjpIfc9I4WZZYzLGunZjQMRlGDKEBU2psz03GEmt7cS6YGk115Kl74v/YDr3HZO6OV6aMjp4E9gSQWx1mmV5GdHyCf0XAnmY1dlBPQNEKZqZOW/t/bE0/DA0f0r85srNtnrZ9NGw6b6ZTL/nzpU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709045901; c=relaxed/simple;
-	bh=v6CtZFIkskFMZP/tfuYcxsRVOqDtKP5Ax0Lc0N+SkrU=;
-	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
-	 Content-Type; b=LPqod8Fbxsh9xN0DzXfA/wlc2AJxf0WvA+Hsb7+3upDXVx2k3lWOSaQJHDUyJDtdStx85EyhJYMLpAnRQTdDFodYMny6kmBVKvtOtn0i4x1B84LWJOWspd9DpVdfyWJ4NdDB7poNSPmHi4Hqv20Ed4JCZ0xK9T8/6JYsD9ExiaM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.70
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-io1-f70.google.com with SMTP id ca18e2360f4ac-7c7842d0340so474420839f.1
-        for <linux-rdma@vger.kernel.org>; Tue, 27 Feb 2024 06:58:20 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709045899; x=1709650699;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=AnxpxdbEEupdGdQ67wxP7la7rz90oqHR6d7BHkK4Pxk=;
-        b=Vovxp9rNXaPwTK3XPbZnUIEs0rsnLkXtMT0AEyLgQZPa82L0OcuLMX39YpxTfl+oUB
-         K+1R85baCeEswAAh77soswW2rJf6tjhvklC82RUCg8BiJ4PE1sqv17kBRyLd6+PuQMMh
-         vhdngLG0NqJ7rj3K0xfihZu/rmi+YAPn/Kt1u0uNvyNchPQANwR7eZewHlAAUHdszpxY
-         EiT7+3Hgy2YJ12pteHmOPDY0XgoaESDs8DrFC/haVmfSUhWQj7ldIdsgv8UzE47+Y+x7
-         Hh6i+6UIvOGoAVh3cTpp6mlEx3mYdQJfJPf50NsIf+27BPo6msdWwmUTYuTL5VZB3MCB
-         fKsA==
-X-Forwarded-Encrypted: i=1; AJvYcCVN5BFdM34q83EbnOW8PW9dBcZTxBDdtCThNg1UncYWFmGBVtP9xVPeGwqomNRi4PG8jt/XeqydPAkAaQG07ycoSN5cPkwEcrn5yw==
-X-Gm-Message-State: AOJu0Yzrl/7OVYG8HnCkT4X+erkThZs/7Ck8RQGu/RALu4nWEZIQv2N0
-	o7totBB/erb/pW4HTnyLJEKTFlQunConM/KO0e4YHJQDoJNJKbVeQ2pRgOeQGbCsny+63KguJPr
-	KH7+DoUH7wGWlhoC9Y3Vh27KFpYc0DB0vdeA8jD7s5bbVNHJnGHMaAhc=
-X-Google-Smtp-Source: AGHT+IF/Ls8IgqyUvBX1SZoLCecsLftlei40N9hwPdoSs4z3YEAKoVzw/T7dIpahfEU7otPMnmtKHalq3FZUtrb+NXc71nNmIPPr
+	s=arc-20240116; t=1709064034; c=relaxed/simple;
+	bh=qN5L2PGsTQDXHqMBD1e0lPG74QqIglLLcjIiJj0SYpE=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=VYilfSy9C83lsepvnVcmCcXNR9EiFoE+aejFVF/YNf0hzX9vAReG4r0v+7tM7phE3gCo9Z5ufP63qKzb5A23VbpCbuo2VEi+nDExnjRC+DjFlxICpuNRbSxTucNGrXCo3daNmNoK4Vah0U3cqZu0tUFoQIBcGMitSPVftzjUBoU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=oracle.com; spf=pass smtp.mailfrom=oracle.com; dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b=DNbAUla7; arc=none smtp.client-ip=205.220.165.32
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=oracle.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oracle.com
+Received: from pps.filterd (m0246617.ppops.net [127.0.0.1])
+	by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 41RFYXq3007452;
+	Tue, 27 Feb 2024 20:00:27 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-transfer-encoding;
+ s=corp-2023-11-20; bh=y6O98lHszAGPvBLwNIUE/BqlQQTZxbNIpPnzH6KjfQo=;
+ b=DNbAUla7t50OPjccyBAKSK3of9X8aSP6Ef3WWXtrklUP7TYm9vYWxDSdZ9rFTn58DrYG
+ Ows+UOoMJdpCZcGAFYwfeJBO1B8zyl4XZKcBY8Dxbc5OXhb/zhm1fQ9mpMXw2qnNi0xc
+ +sYU/ZcGlDvkoPa35XnJR5nzVHKt0sm4k+GxEYS2mfBXYltAFukDt8ofQOQeollHy4Uq
+ PtViNSACv4v+qccDWYJauNWVMHs/okLzKk6pFxoNEza/ZTIShhoyOlfKlUy0+IbRiY/F
+ 9pG/9jYTZjii0F4neQvdiTArGJGOFpHcVkIh/XwrlT2Bvp62vEi2aqeXo6tN6qolueL9 5Q== 
+Received: from phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta03.appoci.oracle.com [138.1.37.129])
+	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3wf90v88et-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Tue, 27 Feb 2024 20:00:26 +0000
+Received: from pps.filterd (phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
+	by phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 41RJpvXn022324;
+	Tue, 27 Feb 2024 20:00:26 GMT
+Received: from pps.reinject (localhost [127.0.0.1])
+	by phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTPS id 3wf6w80t82-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Tue, 27 Feb 2024 20:00:26 +0000
+Received: from phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
+	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 41RJo1MX036408;
+	Tue, 27 Feb 2024 20:00:25 GMT
+Received: from mbpatil.us.oracle.com (mbpatil.us.oracle.com [10.211.44.53])
+	by phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTP id 3wf6w80t76-1;
+	Tue, 27 Feb 2024 20:00:25 +0000
+From: Manjunath Patil <manjunath.b.patil@oracle.com>
+To: dledford@redhat.com, jgg@ziepe.ca
+Cc: manjunath.b.patil@oracle.com, linux-rdma@vger.kernel.org,
+        linux-kernel@vger.kernel.org, rama.nichanamatlu@oracle.com
+Subject: [PATCH RFC] RDMA/cm: add timeout to cm_destroy_id wait
+Date: Tue, 27 Feb 2024 12:00:17 -0800
+Message-Id: <20240227200017.308719-1-manjunath.b.patil@oracle.com>
+X-Mailer: git-send-email 2.31.1
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6638:3714:b0:474:7eb2:f12 with SMTP id
- k20-20020a056638371400b004747eb20f12mr290417jav.2.1709045899611; Tue, 27 Feb
- 2024 06:58:19 -0800 (PST)
-Date: Tue, 27 Feb 2024 06:58:19 -0800
-In-Reply-To: <00000000000080c6c805f915ade0@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000c0550506125e4118@google.com>
-Subject: Re: [syzbot] [rds?] WARNING in rds_conn_connect_if_down
-From: syzbot <syzbot+d4faee732755bba9838e@syzkaller.appspotmail.com>
-To: allison.henderson@oracle.com, davem@davemloft.net, edumazet@google.com, 
-	kuba@kernel.org, linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org, 
-	netdev@vger.kernel.org, pabeni@redhat.com, rds-devel@oss.oracle.com, 
-	santosh.shilimkar@oracle.com, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-02-27_07,2024-02-27_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 phishscore=0 spamscore=0
+ mlxlogscore=999 adultscore=0 mlxscore=0 bulkscore=0 malwarescore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2311290000
+ definitions=main-2402270155
+X-Proofpoint-GUID: _JW5GF8p2fQTKM1jVIloorocTAordXkc
+X-Proofpoint-ORIG-GUID: _JW5GF8p2fQTKM1jVIloorocTAordXkc
 
-syzbot has found a reproducer for the following issue on:
+Add timeout to cm_destroy_id, so that userspace can trigger any data
+collection that would help in analyzing the cause of delay in destroying
+the cm_id.
 
-HEAD commit:    25d434257464 Merge branch 'pcs-xpcs-cleanups'
-git tree:       net-next
-console+strace: https://syzkaller.appspot.com/x/log.txt?x=11f0034a180000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=57c41f64f37f51c5
-dashboard link: https://syzkaller.appspot.com/bug?extid=d4faee732755bba9838e
-compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=11cbd722180000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=10ff934a180000
+New noinline function helps dtrace/ebpf programs to hook on to it.
+Existing functionality isn't changed except triggering a probe-able new
+function at every timeout interval.
 
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/2731aa9fb143/disk-25d43425.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/d1daf5663559/vmlinux-25d43425.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/798446e4189b/bzImage-25d43425.xz
+We have seen cases where CM messages stuck with MAD layer (either due to
+software bug or faulty HCA), leading to cm_id getting stuck in the
+following call stack. This patch helps in resolving such issues faster.
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+d4faee732755bba9838e@syzkaller.appspotmail.com
+kernel: ... INFO: task XXXX:56778 blocked for more than 120 seconds.
+...
+	Call Trace:
+	__schedule+0x2bc/0x895
+	schedule+0x36/0x7c
+	schedule_timeout+0x1f6/0x31f
+ 	? __slab_free+0x19c/0x2ba
+	wait_for_completion+0x12b/0x18a
+	? wake_up_q+0x80/0x73
+	cm_destroy_id+0x345/0x610 [ib_cm]
+	ib_destroy_cm_id+0x10/0x20 [ib_cm]
+	rdma_destroy_id+0xa8/0x300 [rdma_cm]
+	ucma_destroy_id+0x13e/0x190 [rdma_ucm]
+	ucma_write+0xe0/0x160 [rdma_ucm]
+	__vfs_write+0x3a/0x16d
+	vfs_write+0xb2/0x1a1
+	? syscall_trace_enter+0x1ce/0x2b8
+	SyS_write+0x5c/0xd3
+	do_syscall_64+0x79/0x1b9
+	entry_SYSCALL_64_after_hwframe+0x16d/0x0
 
-------------[ cut here ]------------
-WARNING: CPU: 0 PID: 5244 at net/rds/connection.c:931 rds_conn_connect_if_down+0x95/0xb0 net/rds/connection.c:931
-Modules linked in:
-CPU: 0 PID: 5244 Comm: syz-executor403 Not tainted 6.8.0-rc5-syzkaller-01592-g25d434257464 #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/25/2024
-RIP: 0010:rds_conn_connect_if_down+0x95/0xb0 net/rds/connection.c:931
-Code: 00 4c 89 f0 48 c1 e8 03 42 80 3c 38 00 74 08 4c 89 f7 e8 2e c3 42 f7 49 8b 3e 5b 41 5e 41 5f e9 f1 fa ff ff e8 ac 49 e0 f6 90 <0f> 0b 90 eb cb 89 d9 80 e1 07 38 c1 7c a9 48 89 df e8 75 c2 42 f7
-RSP: 0018:ffffc900042cf8a0 EFLAGS: 00010293
-RAX: ffffffff8ab323c4 RBX: 0000000000000002 RCX: ffff888021100000
-RDX: 0000000000000000 RSI: 0000000000000002 RDI: 0000000000000000
-RBP: ffffc900042cfad0 R08: ffffffff8ab3238b R09: ffffffff8ab44361
-R10: 0000000000000002 R11: ffff888021100000 R12: ffff8880746ee000
-R13: ffff88802e39a6c0 R14: ffff8880260f2000 R15: dffffc0000000000
-FS:  00007f8c89bff6c0(0000) GS:ffff8880b9400000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 000000002069d000 CR3: 000000002989a000 CR4: 00000000003506f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- <TASK>
- rds_sendmsg+0x1409/0x2280 net/rds/send.c:1319
- sock_sendmsg_nosec net/socket.c:730 [inline]
- __sock_sendmsg+0x221/0x270 net/socket.c:745
- ____sys_sendmsg+0x525/0x7d0 net/socket.c:2584
- ___sys_sendmsg net/socket.c:2638 [inline]
- __sys_sendmsg+0x2b0/0x3a0 net/socket.c:2667
- do_syscall_64+0xf9/0x240
- entry_SYSCALL_64_after_hwframe+0x6f/0x77
-RIP: 0033:0x7f8c89c84519
-Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 61 1a 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b0 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007f8c89bff218 EFLAGS: 00000246 ORIG_RAX: 000000000000002e
-RAX: ffffffffffffffda RBX: 00007f8c89d0e428 RCX: 00007f8c89c84519
-RDX: 0000000000000000 RSI: 0000000020000800 RDI: 0000000000000003
-RBP: 00007f8c89d0e420 R08: 00007ffeca3c5797 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 00007f8c89d0e42c
-R13: 00007f8c89cdb4f4 R14: 732e79726f6d656d R15: 00007ffeca3c5798
- </TASK>
-
-
+Signed-off-by: Manjunath Patil <manjunath.b.patil@oracle.com>
 ---
-If you want syzbot to run the reproducer, reply with:
-#syz test: git://repo/address.git branch-or-commit-hash
-If you attach or paste a git patch, syzbot will apply it before testing.
+ drivers/infiniband/core/cm.c | 38 +++++++++++++++++++++++++++++++++++-
+ 1 file changed, 37 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/infiniband/core/cm.c b/drivers/infiniband/core/cm.c
+index ff58058aeadc..03f7b80efa77 100644
+--- a/drivers/infiniband/core/cm.c
++++ b/drivers/infiniband/core/cm.c
+@@ -34,6 +34,20 @@ MODULE_AUTHOR("Sean Hefty");
+ MODULE_DESCRIPTION("InfiniBand CM");
+ MODULE_LICENSE("Dual BSD/GPL");
+ 
++static unsigned long cm_destroy_id_wait_timeout_sec = 10;
++
++static struct ctl_table_header *cm_ctl_table_header;
++static struct ctl_table cm_ctl_table[] = {
++	{
++		.procname	= "destroy_id_wait_timeout_sec",
++		.data		= &cm_destroy_id_wait_timeout_sec,
++		.maxlen		= sizeof(cm_destroy_id_wait_timeout_sec),
++		.mode		= 0644,
++		.proc_handler	= proc_doulongvec_minmax,
++	},
++	{ }
++};
++
+ static const char * const ibcm_rej_reason_strs[] = {
+ 	[IB_CM_REJ_NO_QP]			= "no QP",
+ 	[IB_CM_REJ_NO_EEC]			= "no EEC",
+@@ -1025,10 +1039,20 @@ static void cm_reset_to_idle(struct cm_id_private *cm_id_priv)
+ 	}
+ }
+ 
++static noinline void cm_destroy_id_wait_timeout(struct ib_cm_id *cm_id)
++{
++	struct cm_id_private *cm_id_priv;
++
++	cm_id_priv = container_of(cm_id, struct cm_id_private, id);
++	pr_err("%s: cm_id=%p timed out. state=%d refcnt=%d\n", __func__,
++	       cm_id, cm_id->state, refcount_read(&cm_id_priv->refcount));
++}
++
+ static void cm_destroy_id(struct ib_cm_id *cm_id, int err)
+ {
+ 	struct cm_id_private *cm_id_priv;
+ 	struct cm_work *work;
++	int ret;
+ 
+ 	cm_id_priv = container_of(cm_id, struct cm_id_private, id);
+ 	spin_lock_irq(&cm_id_priv->lock);
+@@ -1135,7 +1159,14 @@ static void cm_destroy_id(struct ib_cm_id *cm_id, int err)
+ 
+ 	xa_erase(&cm.local_id_table, cm_local_id(cm_id->local_id));
+ 	cm_deref_id(cm_id_priv);
+-	wait_for_completion(&cm_id_priv->comp);
++	do {
++		ret = wait_for_completion_timeout(&cm_id_priv->comp,
++						  msecs_to_jiffies(
++				cm_destroy_id_wait_timeout_sec * 1000));
++		if (!ret) /* timeout happened */
++			cm_destroy_id_wait_timeout(cm_id);
++	} while (!ret);
++
+ 	while ((work = cm_dequeue_work(cm_id_priv)) != NULL)
+ 		cm_free_work(work);
+ 
+@@ -4505,6 +4536,10 @@ static int __init ib_cm_init(void)
+ 	ret = ib_register_client(&cm_client);
+ 	if (ret)
+ 		goto error3;
++	cm_ctl_table_header = register_net_sysctl(&init_net,
++						  "net/ib_cm", cm_ctl_table);
++	if (!cm_ctl_table_header)
++		pr_warn("ib_cm: couldn't register sysctl path, using default values\n");
+ 
+ 	return 0;
+ error3:
+@@ -4522,6 +4557,7 @@ static void __exit ib_cm_cleanup(void)
+ 		cancel_delayed_work(&timewait_info->work.work);
+ 	spin_unlock_irq(&cm.lock);
+ 
++	unregister_net_sysctl_table(cm_ctl_table_header);
+ 	ib_unregister_client(&cm_client);
+ 	destroy_workqueue(cm.wq);
+ 
+-- 
+2.31.1
+
 
