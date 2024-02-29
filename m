@@ -1,57 +1,58 @@
-Return-Path: <linux-rdma+bounces-1170-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-1171-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id EC1A586D500
-	for <lists+linux-rdma@lfdr.de>; Thu, 29 Feb 2024 21:52:54 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1971186D503
+	for <lists+linux-rdma@lfdr.de>; Thu, 29 Feb 2024 21:53:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 96A372834E5
-	for <lists+linux-rdma@lfdr.de>; Thu, 29 Feb 2024 20:52:53 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B9376B255C8
+	for <lists+linux-rdma@lfdr.de>; Thu, 29 Feb 2024 20:53:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 22AAD14566D;
-	Thu, 29 Feb 2024 20:40:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6CA6E15278D;
+	Thu, 29 Feb 2024 20:40:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="gWGaugMO"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Kr7SQ2Lr"
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CD08E145661;
-	Thu, 29 Feb 2024 20:40:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2884F152780;
+	Thu, 29 Feb 2024 20:40:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709239241; cv=none; b=Rvn/8cR7YLnzmWI+n0fFEonO3buqE4vEngWLX523Usi0k4DVwolJXqbsdE1BFaXqGx9GyM2IjTn4kimi7J93dP2IEgID9fTvEEoLGMhCHzw5DbBAGkSG4aRMsdsksLkkVEY/evhuDSka2gKbGb/fbog3fH4CC9yOE3VUS+nZPyY=
+	t=1709239243; cv=none; b=SUYhPrx7zNSGzio3ERnYXnSccpAYTxnHhZ59VQ3SOHml/1ixXm5An7GT7hT2mSU23NwM3arsCQGmJoH29PzJq3OpDHaYHC80LcKeMxnOllpHYAl9wuMJIvOZRQUMSsO9EClWLiurF1nMRpeBTez120DRg/YiAm+ZBJj28QtCdgo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709239241; c=relaxed/simple;
-	bh=yblZdlPa+A9wWipbOumptZlARm3EGoaVGcYsVoiSfD0=;
+	s=arc-20240116; t=1709239243; c=relaxed/simple;
+	bh=xQC6o6+q3OtIE2gwfV+uYfObv8PJwHK9mSaRmCA0uMY=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=sYcpvfL3v1leAo4bopFujqY7ODVhV5T1sW/VkmChfrxWWlVkIcPXW+mf9mU3yFzygLEai7xVotxvpbbFwNmMEvpwlY03NA+v17tBEPLfPYOQd0qZlyr83Qe3mS7wCdgIizR/Em8VHWv4ibZUaaxMclUVTkXP5LX7wlTCPjTUjS0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=gWGaugMO; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 86746C43399;
-	Thu, 29 Feb 2024 20:40:40 +0000 (UTC)
+	 MIME-Version; b=L6p/mM8JkgSFGvSx2AdDLCXFIOEhXPbmrhf8SO0YVSw2aRT1odKEwuD81ghanS/Hzg2jF9VAOG1cUs1W/9J/BM4qK1D03iA1LPfE19vsTGJkhCrzANZX8hVyPKHhUOT/5ZbV0Oeda98ucOPKYha00fxNthWnagw6cZ4eEodxCoY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Kr7SQ2Lr; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E456EC43390;
+	Thu, 29 Feb 2024 20:40:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1709239241;
-	bh=yblZdlPa+A9wWipbOumptZlARm3EGoaVGcYsVoiSfD0=;
+	s=k20201202; t=1709239243;
+	bh=xQC6o6+q3OtIE2gwfV+uYfObv8PJwHK9mSaRmCA0uMY=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=gWGaugMOQales+gEpRCgeKW7qlcPqn4v8S5wNel9A7NT91P2h1VJ9cDbY4BR+RDJa
-	 HhhUk7Esz+fV1brpKuKzGl2b8XJ0MzoUxJoOFhchwhtYL/fuPkXckSrNipKb/xh7FQ
-	 Jt0tPxcxGAH0LLnlXF9EoGlmGcN9ivG6OJheenuy7lpPCj4c/m+feHdlJsOyvTW7Mg
-	 VgfcQWx/k3/jGPgnz2ITDRAHiXRun8MMqonvth8Y2HPgy8ix/ksOy7hOq8+4wRxH07
-	 m8Ho9v5Jbts+7gc/FSJ7mNn0O81ktN7mvUw1r97DSnBvNPYN7wx9sUXPyI6ms8j14Y
-	 X8GIZW6B+/nPg==
+	b=Kr7SQ2LrKtw2HSbYUzOGL0WZeX+Tcp6XBC0K4TABBm8/vDjuLnn/Ta2CweciQ6EjE
+	 1+HJhXctIsIdV9AK+ZhRYqpwsH8jR7+vdEs3U8TjIehMNfIhRy57hDs9wcx1426ypk
+	 v/+LGkmlRpEAX7xMAB/c/GHQEoyJe0N8Q3soe3xsd7+lmZ+DoSZGNuDMtNJx8J9dVL
+	 efAPx019rsOxYVeDQOFNdyS8/Uuvu9JyLZUX61J6mNtGsxf4F4RxsrNrTAGDGbMb/g
+	 Zdap8NJVY8t7jnN77uL1lkOAPIBryvDfBeM+ojo5dVuG582Bwl4Z5YdQPnPXvuEfbO
+	 E3rS7h0XBY8PA==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Leon Romanovsky <leonro@nvidia.com>,
+Cc: Yishai Hadas <yishaih@nvidia.com>,
+	Tamar Mashiah <tmashiah@nvidia.com>,
+	Michael Guralnik <michaelgur@nvidia.com>,
+	Leon Romanovsky <leon@kernel.org>,
 	Sasha Levin <sashal@kernel.org>,
-	saeedm@nvidia.com,
-	linux-rdma@vger.kernel.org,
-	netdev@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.1 02/12] RDMA/mlx5: Fix fortify source warning while accessing Eth segment
-Date: Thu, 29 Feb 2024 15:40:24 -0500
-Message-ID: <20240229204039.2861519-2-sashal@kernel.org>
+	linux-rdma@vger.kernel.org
+Subject: [PATCH AUTOSEL 6.1 03/12] RDMA/mlx5: Relax DEVX access upon modify commands
+Date: Thu, 29 Feb 2024 15:40:25 -0500
+Message-ID: <20240229204039.2861519-3-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240229204039.2861519-1-sashal@kernel.org>
 References: <20240229204039.2861519-1-sashal@kernel.org>
@@ -66,129 +67,45 @@ X-Patchwork-Hint: Ignore
 X-stable-base: Linux 6.1.79
 Content-Transfer-Encoding: 8bit
 
-From: Leon Romanovsky <leonro@nvidia.com>
+From: Yishai Hadas <yishaih@nvidia.com>
 
-[ Upstream commit 4d5e86a56615cc387d21c629f9af8fb0e958d350 ]
+[ Upstream commit be551ee1574280ef8afbf7c271212ac3e38933ef ]
 
- ------------[ cut here ]------------
- memcpy: detected field-spanning write (size 56) of single field "eseg->inline_hdr.start" at /var/lib/dkms/mlnx-ofed-kernel/5.8/build/drivers/infiniband/hw/mlx5/wr.c:131 (size 2)
- WARNING: CPU: 0 PID: 293779 at /var/lib/dkms/mlnx-ofed-kernel/5.8/build/drivers/infiniband/hw/mlx5/wr.c:131 mlx5_ib_post_send+0x191b/0x1a60 [mlx5_ib]
- Modules linked in: 8021q garp mrp stp llc rdma_ucm(OE) rdma_cm(OE) iw_cm(OE) ib_ipoib(OE) ib_cm(OE) ib_umad(OE) mlx5_ib(OE) ib_uverbs(OE) ib_core(OE) mlx5_core(OE) pci_hyperv_intf mlxdevm(OE) mlx_compat(OE) tls mlxfw(OE) psample nft_fib_inet nft_fib_ipv4 nft_fib_ipv6 nft_fib nft_reject_inet nf_reject_ipv4 nf_reject_ipv6 nft_reject nft_ct nft_chain_nat nf_nat nf_conntrack nf_defrag_ipv6 nf_defrag_ipv4 ip_set nf_tables libcrc32c nfnetlink mst_pciconf(OE) knem(OE) vfio_pci vfio_pci_core vfio_iommu_type1 vfio iommufd irqbypass cuse nfsv3 nfs fscache netfs xfrm_user xfrm_algo ipmi_devintf ipmi_msghandler binfmt_misc crct10dif_pclmul crc32_pclmul polyval_clmulni polyval_generic ghash_clmulni_intel sha512_ssse3 snd_pcsp aesni_intel crypto_simd cryptd snd_pcm snd_timer joydev snd soundcore input_leds serio_raw evbug nfsd auth_rpcgss nfs_acl lockd grace sch_fq_codel sunrpc drm efi_pstore ip_tables x_tables autofs4 psmouse virtio_net net_failover failover floppy
-  [last unloaded: mlx_compat(OE)]
- CPU: 0 PID: 293779 Comm: ssh Tainted: G           OE      6.2.0-32-generic #32~22.04.1-Ubuntu
- Hardware name: Red Hat KVM, BIOS 0.5.1 01/01/2011
- RIP: 0010:mlx5_ib_post_send+0x191b/0x1a60 [mlx5_ib]
- Code: 0c 01 00 a8 01 75 25 48 8b 75 a0 b9 02 00 00 00 48 c7 c2 10 5b fd c0 48 c7 c7 80 5b fd c0 c6 05 57 0c 03 00 01 e8 95 4d 93 da <0f> 0b 44 8b 4d b0 4c 8b 45 c8 48 8b 4d c0 e9 49 fb ff ff 41 0f b7
- RSP: 0018:ffffb5b48478b570 EFLAGS: 00010046
- RAX: 0000000000000000 RBX: 0000000000000001 RCX: 0000000000000000
- RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000000000000
- RBP: ffffb5b48478b628 R08: 0000000000000000 R09: 0000000000000000
- R10: 0000000000000000 R11: 0000000000000000 R12: ffffb5b48478b5e8
- R13: ffff963a3c609b5e R14: ffff9639c3fbd800 R15: ffffb5b480475a80
- FS:  00007fc03b444c80(0000) GS:ffff963a3dc00000(0000) knlGS:0000000000000000
- CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
- CR2: 0000556f46bdf000 CR3: 0000000006ac6003 CR4: 00000000003706f0
- DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
- DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
- Call Trace:
-  <TASK>
-  ? show_regs+0x72/0x90
-  ? mlx5_ib_post_send+0x191b/0x1a60 [mlx5_ib]
-  ? __warn+0x8d/0x160
-  ? mlx5_ib_post_send+0x191b/0x1a60 [mlx5_ib]
-  ? report_bug+0x1bb/0x1d0
-  ? handle_bug+0x46/0x90
-  ? exc_invalid_op+0x19/0x80
-  ? asm_exc_invalid_op+0x1b/0x20
-  ? mlx5_ib_post_send+0x191b/0x1a60 [mlx5_ib]
-  mlx5_ib_post_send_nodrain+0xb/0x20 [mlx5_ib]
-  ipoib_send+0x2ec/0x770 [ib_ipoib]
-  ipoib_start_xmit+0x5a0/0x770 [ib_ipoib]
-  dev_hard_start_xmit+0x8e/0x1e0
-  ? validate_xmit_skb_list+0x4d/0x80
-  sch_direct_xmit+0x116/0x3a0
-  __dev_xmit_skb+0x1fd/0x580
-  __dev_queue_xmit+0x284/0x6b0
-  ? _raw_spin_unlock_irq+0xe/0x50
-  ? __flush_work.isra.0+0x20d/0x370
-  ? push_pseudo_header+0x17/0x40 [ib_ipoib]
-  neigh_connected_output+0xcd/0x110
-  ip_finish_output2+0x179/0x480
-  ? __smp_call_single_queue+0x61/0xa0
-  __ip_finish_output+0xc3/0x190
-  ip_finish_output+0x2e/0xf0
-  ip_output+0x78/0x110
-  ? __pfx_ip_finish_output+0x10/0x10
-  ip_local_out+0x64/0x70
-  __ip_queue_xmit+0x18a/0x460
-  ip_queue_xmit+0x15/0x30
-  __tcp_transmit_skb+0x914/0x9c0
-  tcp_write_xmit+0x334/0x8d0
-  tcp_push_one+0x3c/0x60
-  tcp_sendmsg_locked+0x2e1/0xac0
-  tcp_sendmsg+0x2d/0x50
-  inet_sendmsg+0x43/0x90
-  sock_sendmsg+0x68/0x80
-  sock_write_iter+0x93/0x100
-  vfs_write+0x326/0x3c0
-  ksys_write+0xbd/0xf0
-  ? do_syscall_64+0x69/0x90
-  __x64_sys_write+0x19/0x30
-  do_syscall_64+0x59/0x90
-  ? do_user_addr_fault+0x1d0/0x640
-  ? exit_to_user_mode_prepare+0x3b/0xd0
-  ? irqentry_exit_to_user_mode+0x9/0x20
-  ? irqentry_exit+0x43/0x50
-  ? exc_page_fault+0x92/0x1b0
-  entry_SYSCALL_64_after_hwframe+0x72/0xdc
- RIP: 0033:0x7fc03ad14a37
- Code: 10 00 f7 d8 64 89 02 48 c7 c0 ff ff ff ff eb b7 0f 1f 00 f3 0f 1e fa 64 8b 04 25 18 00 00 00 85 c0 75 10 b8 01 00 00 00 0f 05 <48> 3d 00 f0 ff ff 77 51 c3 48 83 ec 28 48 89 54 24 18 48 89 74 24
- RSP: 002b:00007ffdf8697fe8 EFLAGS: 00000246 ORIG_RAX: 0000000000000001
- RAX: ffffffffffffffda RBX: 0000000000008024 RCX: 00007fc03ad14a37
- RDX: 0000000000008024 RSI: 0000556f46bd8270 RDI: 0000000000000003
- RBP: 0000556f46bb1800 R08: 0000000000007fe3 R09: 0000000000000000
- R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000002
- R13: 0000556f46bc66b0 R14: 000000000000000a R15: 0000556f46bb2f50
-  </TASK>
- ---[ end trace 0000000000000000 ]---
+Relax DEVX access upon modify commands to be UVERBS_ACCESS_READ.
 
-Link: https://lore.kernel.org/r/8228ad34bd1a25047586270f7b1fb4ddcd046282.1706433934.git.leon@kernel.org
-Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
+The kernel doesn't need to protect what firmware protects, or what
+causes no damage to anyone but the user.
+
+As firmware needs to protect itself from parallel access to the same
+object, don't block parallel modify/query commands on the same object in
+the kernel side.
+
+This change will allow user space application to run parallel updates to
+different entries in the same bulk object.
+
+Tested-by: Tamar Mashiah <tmashiah@nvidia.com>
+Signed-off-by: Yishai Hadas <yishaih@nvidia.com>
+Reviewed-by: Michael Guralnik <michaelgur@nvidia.com>
+Link: https://lore.kernel.org/r/7407d5ed35dc427c1097699e12b49c01e1073406.1706433934.git.leon@kernel.org
+Signed-off-by: Leon Romanovsky <leon@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/infiniband/hw/mlx5/wr.c | 2 +-
- include/linux/mlx5/qp.h         | 5 ++++-
- 2 files changed, 5 insertions(+), 2 deletions(-)
+ drivers/infiniband/hw/mlx5/devx.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/infiniband/hw/mlx5/wr.c b/drivers/infiniband/hw/mlx5/wr.c
-index 855f3f4fefadd..737db67a9ce1d 100644
---- a/drivers/infiniband/hw/mlx5/wr.c
-+++ b/drivers/infiniband/hw/mlx5/wr.c
-@@ -78,7 +78,7 @@ static void set_eth_seg(const struct ib_send_wr *wr, struct mlx5_ib_qp *qp,
- 		 */
- 		copysz = min_t(u64, *cur_edge - (void *)eseg->inline_hdr.start,
- 			       left);
--		memcpy(eseg->inline_hdr.start, pdata, copysz);
-+		memcpy(eseg->inline_hdr.data, pdata, copysz);
- 		stride = ALIGN(sizeof(struct mlx5_wqe_eth_seg) -
- 			       sizeof(eseg->inline_hdr.start) + copysz, 16);
- 		*size += stride / 16;
-diff --git a/include/linux/mlx5/qp.h b/include/linux/mlx5/qp.h
-index 4657d5c54abef..ca0eee571ad7b 100644
---- a/include/linux/mlx5/qp.h
-+++ b/include/linux/mlx5/qp.h
-@@ -269,7 +269,10 @@ struct mlx5_wqe_eth_seg {
- 	union {
- 		struct {
- 			__be16 sz;
--			u8     start[2];
-+			union {
-+				u8     start[2];
-+				DECLARE_FLEX_ARRAY(u8, data);
-+			};
- 		} inline_hdr;
- 		struct {
- 			__be16 type;
+diff --git a/drivers/infiniband/hw/mlx5/devx.c b/drivers/infiniband/hw/mlx5/devx.c
+index f8e2baed27a5c..7013ce20549bd 100644
+--- a/drivers/infiniband/hw/mlx5/devx.c
++++ b/drivers/infiniband/hw/mlx5/devx.c
+@@ -2951,7 +2951,7 @@ DECLARE_UVERBS_NAMED_METHOD(
+ 	MLX5_IB_METHOD_DEVX_OBJ_MODIFY,
+ 	UVERBS_ATTR_IDR(MLX5_IB_ATTR_DEVX_OBJ_MODIFY_HANDLE,
+ 			UVERBS_IDR_ANY_OBJECT,
+-			UVERBS_ACCESS_WRITE,
++			UVERBS_ACCESS_READ,
+ 			UA_MANDATORY),
+ 	UVERBS_ATTR_PTR_IN(
+ 		MLX5_IB_ATTR_DEVX_OBJ_MODIFY_CMD_IN,
 -- 
 2.43.0
 
