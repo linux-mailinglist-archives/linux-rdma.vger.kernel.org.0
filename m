@@ -1,183 +1,195 @@
-Return-Path: <linux-rdma+bounces-1165-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-1166-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3EE7386D440
-	for <lists+linux-rdma@lfdr.de>; Thu, 29 Feb 2024 21:31:00 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8DF1986D461
+	for <lists+linux-rdma@lfdr.de>; Thu, 29 Feb 2024 21:38:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C33FF1F23F79
-	for <lists+linux-rdma@lfdr.de>; Thu, 29 Feb 2024 20:30:59 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 1043EB21A10
+	for <lists+linux-rdma@lfdr.de>; Thu, 29 Feb 2024 20:38:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 112381428EA;
-	Thu, 29 Feb 2024 20:30:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6E4D814BD44;
+	Thu, 29 Feb 2024 20:37:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=windriver.com header.i=@windriver.com header.b="XyxDmteF"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="eKxyEzTq"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mx0b-0064b401.pphosted.com (mx0b-0064b401.pphosted.com [205.220.178.238])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B425138DF2
-	for <linux-rdma@vger.kernel.org>; Thu, 29 Feb 2024 20:30:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=205.220.178.238
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709238654; cv=fail; b=B/UjUoEyk4p+7J/GMqWWNQC5QjIAOby8Fp2ZrX4fefgieHjuScE7zdc6OOZDhNf9/JYJu/jrhGYCT+68zFPIkJ97TGDPP5/AQpbtOhB9Lh6tZ2MwEEopZLY/ZnaYRxww25EHdrrnHZlI7moLNNtkmM+tEuMZGIWu73LoCeWTSX0=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709238654; c=relaxed/simple;
-	bh=e9ZVkS6hY/C763vZh0HlCbxtWt+8YhhfLEk4PobB+o0=;
-	h=Message-ID:Date:To:Cc:From:Subject:Content-Type:MIME-Version; b=as3NecJi4jJxtvU2QKwLFrC6wQRP0vgykYHN9ySGAhT9N3Lf8Ffi16Qc8EuxoFV5OuEQXShE3gNMJM3jTIpPia+5zWyb1iVtbXQ8HOhIOY6uCLkIaM+L0dqL8/cSZjPSHf6sgmRUPluJEevMiQ9SqfDe+ZlkqUB6GzkzavMwU24=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=windriver.com; spf=pass smtp.mailfrom=windriver.com; dkim=pass (2048-bit key) header.d=windriver.com header.i=@windriver.com header.b=XyxDmteF; arc=fail smtp.client-ip=205.220.178.238
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=windriver.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=windriver.com
-Received: from pps.filterd (m0250811.ppops.net [127.0.0.1])
-	by mx0a-0064b401.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 41T3WD60017010;
-	Thu, 29 Feb 2024 20:30:49 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=windriver.com;
-	 h=message-id:date:to:cc:from:subject:content-type
-	:content-transfer-encoding:mime-version; s=PPS06212021; bh=4tPYt
-	mz4jnEAZTAFLYD8GyRfn4gDueXQNdcUwINsjWc=; b=XyxDmteF75Zchg36JWC2r
-	yVsvoSkCqEVD+7hVfXiVrjZHxK8ru5AWa9sURUXtzJCkl8qtlNaWmRGetdLHPN7p
-	I5Oy0TWhwrpzCFQJ/w37YJCLSczcKDPFvCn0GUs4+OA6bgqVDA5OC7Nr5smfg87C
-	/R5LHpFP+W6AlI06OE6RpkWoVl1ych4l8Oo4p8wYo+vUJuX0PaoJIroPQjfd2L7V
-	cNPwG8apdw7qnkFHe9g7MCRoY8lJpJllPauFhvfsJkxdUpnraaDdUv/i2FX2VnUQ
-	Ly0mZbgNnKYpMFyvfipsr3hbGMQPhCd/RCjXv+NPn5ByHZ4z6QoBP95OpPPCciw4
-	Q==
-Received: from nam10-bn7-obe.outbound.protection.outlook.com (mail-bn7nam10lp2101.outbound.protection.outlook.com [104.47.70.101])
-	by mx0a-0064b401.pphosted.com (PPS) with ESMTPS id 3wf5nx5y4r-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 29 Feb 2024 20:30:49 +0000 (GMT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=flsDv/lsjD++dzXSsDBmy6icVOTMmOiphzaTp4yIzD2xRc+D56oX7ciwbSvSErxY/X3MH96ynBvN0k94XO1k/JyrYougXUWrBcDtbSqsCiPHCl7aFm7I7zzdS1iGiY9QczrGhMYIkEglAb4PTJalTtbnKWAhMGXL4JN59+lg5GHgoNxiYdqBBbb+rmBkxIhZsvMKlTtbxScKCDYo20rq87pwzp3TXcR5vweo2Dotui5kz1qx0GooE7/aH3dsgTAhui4gOn9bop2Q0zWIQvHbIfW/QK7Y7lsJxtcJtoeSiVW4yDxJoMXeRxZqzcvtFFlvytKtsOKLwGqpwqhwlvrqNg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=4tPYtmz4jnEAZTAFLYD8GyRfn4gDueXQNdcUwINsjWc=;
- b=bSJe+nt98jS3d2YRyc6K452UOkex/gfHh63ZByVUhpb+Lw48JpPFkXDXtEEQ/yV+7QA5b1jl+t9xTD8ivhFB8rjpZh10s8eqaDV97+1ootqQ1bf0rzYRzV3bGi55LragUF7V26q9qMsllxh1V/xgY2vD6oo4D2Vrty72zbVPCPHWLy8vAWql6ryLTQY9biyI2ZGP5ul/ucWo4whebwinfSAfHfgymRruqhlvWJ8JsMhJi6iE+FqRRb6PEMUWhdUozgDr0QidgfbmVqp7G8n+4eI9tk/m57kS1OXP18MRLVfEG6TjBik3xr83i8K02mDiQQWzzyv3gzB5uPtePaZ4wA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=windriver.com; dmarc=pass action=none
- header.from=windriver.com; dkim=pass header.d=windriver.com; arc=none
-Received: from BL3PR11MB6433.namprd11.prod.outlook.com (2603:10b6:208:3b9::11)
- by DS7PR11MB7805.namprd11.prod.outlook.com (2603:10b6:8:ea::15) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7339.25; Thu, 29 Feb
- 2024 20:30:45 +0000
-Received: from BL3PR11MB6433.namprd11.prod.outlook.com
- ([fe80::5c26:5f21:6237:2819]) by BL3PR11MB6433.namprd11.prod.outlook.com
- ([fe80::5c26:5f21:6237:2819%3]) with mapi id 15.20.7339.022; Thu, 29 Feb 2024
- 20:30:45 +0000
-Message-ID: <febe07de-d57b-4369-b388-caa461c94b6b@windriver.com>
-Date: Thu, 29 Feb 2024 14:30:41 -0600
-User-Agent: Mozilla Thunderbird
-Content-Language: en-US
-To: linux-rdma@vger.kernel.org, selvin.xavier@broadcom.com
-Cc: "Asselstine, Mark" <Mark.Asselstine@windriver.com>,
-        "Ma, Jiping" <Jiping.Ma2@windriver.com>
-From: Chris Friesen <chris.friesen@windriver.com>
-Subject: question about in-tree vs out-of-tree Broadcom ROCE drivers.
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: SJ0PR03CA0372.namprd03.prod.outlook.com
- (2603:10b6:a03:3a1::17) To BL3PR11MB6433.namprd11.prod.outlook.com
- (2603:10b6:208:3b9::11)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2456414AD2A;
+	Thu, 29 Feb 2024 20:37:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1709239056; cv=none; b=P4eNjNCpTdIlQIrYQOtHU5DDx7UgOhOqWYbPEhVHqFNaqVx2Fq63nAzcJkARAwUMId4BvsEcEFdBKGjTZW87ztnaHVcuX1tIyWO4it7VR1JiOBmp7Sx5TxyljVY2ZqoJSDkqhXF9Gtrh7TV8aWzAGWB+9CKBPhX9ykDlEVC6bv0=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1709239056; c=relaxed/simple;
+	bh=9ho8EJ2VFT3bEroonlc5dWDoUEEhnUjuMR9yIwHc+Gs=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=cSix9Jay72HMbx9wvlCTZqmDal0GL7L94GStYbbP/p/hLjChSdA2x6PPuPJ165GrpqRJAC6idWaq8LFXrqCh+klz/zXFhJxdxq6lRONAJPVOOCQfo3aMCYV/AP8Fd6cJURATCXdd1oSbNwkiAVv4o0+PHYe9xWGha7P83zji9DY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=eKxyEzTq; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B3416C43390;
+	Thu, 29 Feb 2024 20:37:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1709239055;
+	bh=9ho8EJ2VFT3bEroonlc5dWDoUEEhnUjuMR9yIwHc+Gs=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=eKxyEzTqhV5ELZ1u/k7o+2QAHdrkGBBiYTEUnjtjB48ckvghL5q6ZUhBkddpNLmW4
+	 jkPrNyFrgZ/9UMq/khRZK1RRpFsd5VDojKURxGVCn+Upg5zC7Pbb8Y+ZhAEf6jQlBK
+	 9lxU+Grtq91PBIAt82AAfb+nzVtpxHwAskeiRxBf1ri5pZBCPL/auNyBpphuFbDV4V
+	 HIjHm3aWn0tcEbkgQ4doHxUeIwDNUkQdFzjt/z9VaA6aeUNAnTUkxa9BDkkDddRwbz
+	 /lwN0yJ1NZb8QVQOo9xF5p5rldYGbgJsLKRTDuPBnKH3Q4Cnq6In5vf4exZ8KT95aD
+	 FmelOnGrRDDww==
+From: Sasha Levin <sashal@kernel.org>
+To: linux-kernel@vger.kernel.org,
+	stable@vger.kernel.org
+Cc: Leon Romanovsky <leonro@nvidia.com>,
+	Sasha Levin <sashal@kernel.org>,
+	saeedm@nvidia.com,
+	linux-rdma@vger.kernel.org,
+	netdev@vger.kernel.org
+Subject: [PATCH AUTOSEL 6.7 03/24] RDMA/mlx5: Fix fortify source warning while accessing Eth segment
+Date: Thu, 29 Feb 2024 15:36:43 -0500
+Message-ID: <20240229203729.2860356-3-sashal@kernel.org>
+X-Mailer: git-send-email 2.43.0
+In-Reply-To: <20240229203729.2860356-1-sashal@kernel.org>
+References: <20240229203729.2860356-1-sashal@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: BL3PR11MB6433:EE_|DS7PR11MB7805:EE_
-X-MS-Office365-Filtering-Correlation-Id: 9e2927c6-130e-43f9-b384-08dc39654e61
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 
-	arTdKtrpHs3gTaSHjm+rMzMmxwey/PIk0p7zc+78JkCGAROwJ+kHRmr/8TdO7cdIvHYRslLF8BTnQ5iGWZVKKGrFj/87YRyZMkY6HsqgZdE10SAF7ZZ+rMZ/CKUOIetufPdx63ecm2fDG5+mcluMP2cDNHlLLDUU0w6wkuoy4bRik/Fd22iBHoBK5Bnh9qh++Fk0rofVKSy+5t6tYEIL+dPOhbsGyDbl6Y4rpwMLwGP2kY7aSpqAWKsEMAhYxeiTACaAEVBeRIOOJ68svoMp3fkHxwIo5Lfec9W1LRcR3Yz7m7PutdjuCh/4b6a/3PEg51D4GeTE8GfmjoARtjFyiMVmPjw6WwuQvEKQLuBS6NleY3AIWoVA/ung1IGS/OCXt1HYr4cb5+T3c2NUmF1O/cSjaNzLu04E15BGNCd721Ig+xooShtNuXYt8mByElPXDysKqBGTeYkTW1HI2KmGERF1/ME/995VBtT+OY0PsRhOPSV6d2yfa2FBIrtO+syQuXd82okCr0qrSIoDVUI1wuwdqrVarnO6SF5ekucXyFzNJJU6+urUmXQE3YzCilyfdaoCNNM4t6+EAdQtWoaofA==
-X-Forefront-Antispam-Report: 
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL3PR11MB6433.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: 
-	=?utf-8?B?UDZ0SmJXVTJFSVdkdEY1UzlrVEJlYytkVktLL3RGelhmRE9ja1RTcnRZaVg2?=
- =?utf-8?B?S1ovTmNjaDZaU1RVM0JZc1dIUXZHSFEydUgxbVp2eHpuOG9XSVZHazB1NHhz?=
- =?utf-8?B?YnB6Yk1VUVd4b2hHY1hLV2dSQlB4NDhsMlZIZUs3NGVLWEk2YXVJdmFnRDFG?=
- =?utf-8?B?NmVGbU53VUNoUnJlQWY3clBJQmxnQ1B1dkl2N1RnSC9YZERHa1dTU3ljUHFo?=
- =?utf-8?B?UlR5eEp1SUZSdVBRdEM0dU9ud1RpU01ueE5HMGxnZUw2eFFRMG45ZitXY0J1?=
- =?utf-8?B?dDhkb05Fa1hOSHdQQS9KOE00WVFNdW1vQ2poc0JhUEpQWll2djdMZ0FhNEx4?=
- =?utf-8?B?Ny9oTHhHd0dXWTd1eTN1RlBGZE9FOGNlcUJhMkV4aU85NXE3czFhL2pRQi9B?=
- =?utf-8?B?Y2d3VzlOOXdEakVQcGw0eHdXT3AyYmhWd3lKWW4wcjZXNTl6WkhzWlZST25n?=
- =?utf-8?B?U2NSem9BNkJxQ3lpcXl2ZlJKNU1MbjgxRDdja29zVU16ZXdTQjRhN044dWh2?=
- =?utf-8?B?alBLcmRTUlJBZTlnSFlqeFlZRUNhN3JrV21xZEtVbThPQW9OUTdMdEkxTkZy?=
- =?utf-8?B?eUZ5aFJGd2d2WTM4aUNtenRmSTJLM05IT05RalBzbDVXaWpWY2FlTWJ6enFZ?=
- =?utf-8?B?YytQR0x1VEQ3WWxBOVozZjkvdXNHZmFFL09WZXl5ZXBFVHlTWXAzQWMyNEpJ?=
- =?utf-8?B?Z1Z1S0crZnBtcm02NmpLeGlJVzJTeDYvWDNxRnlkUHovU0NNMTNpMFQ3RXF6?=
- =?utf-8?B?OFEyQ3R3ZHFHdEw2enpzWnAvVm55cnRlMlZkWEQzZHNGOXg4ZVdTOUNVZHp2?=
- =?utf-8?B?a2NNNzhrRlduM2lIYmNYamROSTVVS3NwVUNxZ2x0Y25nUmJTbS9vaGsydHBs?=
- =?utf-8?B?dHBsY3VwTk5sZVJWNm4yQWtmUUdsQ3VCM0NObzh6L0pIc2xxWk5wK2EzUll4?=
- =?utf-8?B?Y3JwQXZ6S0dnOHYxNnFTdVdZc0x3SldzOGM1azhxSHJ1K29RN2hIT3R3eWhV?=
- =?utf-8?B?ZkF3WGZIRXNPSWxremNpeFJzUzRBcHFRRzBEdE16Zm1tMVVCUnU2QzlaODRy?=
- =?utf-8?B?Nm1UZzJ1WXppMlorbzM1MEJUekQ0N0lUMHZVMjFndHptUEZIaG4zeGxmYkpl?=
- =?utf-8?B?dTg0NTVJMDBjbVBnNVY4R2h2NCtUanB3R1BCcncrVnRMQ1VTVjNhblg5akxH?=
- =?utf-8?B?QUJjNDdYNHVGWUF2RlBGREZka1JBaGZBVDI5MTlPeW5nSXZhVzJFQXE1TnpS?=
- =?utf-8?B?SjRubW9zZEdtaS9IQzNZKzhMQ3lKcnZYbW9yWnBLcVRBLzVrWkFaU3BDZzlH?=
- =?utf-8?B?cVJ6ZEw0SEdUZUNSMG9RcWppTENUcmZjNENyRGVlbCttN3E1dUtGdFI3ZWxS?=
- =?utf-8?B?eVRuak1pakNsZzV0aHlWaEZqL0NJVCtST2JLbVJTU3FHd3FKdEkxNnBudHc1?=
- =?utf-8?B?Z3p3Q0RvbVdzL0p4SzZaeWg3WTNUaC9EQ3JmRlJMdDQ4Q1ZWNnptSk5VUnpQ?=
- =?utf-8?B?eEQrMHdWRnRhMjNFVURNTUR6Y0VLQlJkb0JyN2Fyc1Y3bG1CRnNJNlQ1WVl3?=
- =?utf-8?B?bFhjaVRIVzZISGxGUnIwZDFERXh0U0Rab1QrdE1SdTlJL3h2TlUxRnlIMkdv?=
- =?utf-8?B?dzloYU5QQ1N3b1ZmMzJPUlpVUmZEdlZ3elh6T3laWmNGaXFJZWdDRG45dnRE?=
- =?utf-8?B?Zmg3L2w0MlZOSmVjSmRQcnhhMUdhZk1yRFRpNGQ1SGdYY2d5SGZ6UTJydmwy?=
- =?utf-8?B?K0VpN0o4TmRBV3p0MmRIRzhQeGJwdDUzeXIyT1RHNkE0TDN1RmZRSTZDSnRZ?=
- =?utf-8?B?NWtwRG5qNSt1NklVTU9XaWozS0oxNVgyR2xWcDFkbXRwcm1iN0dSc3h4aFpp?=
- =?utf-8?B?VmRaVVFYdVNwUGJJQ1Q5dTU2TTYycy92ampWZnhJUlpyS0xLOE1Ec1RuZVN2?=
- =?utf-8?B?TGxqMUJxSE83c3ZTM1Q4Q3pWOStSRTNFenFvZzdPV1JaVnU3WVNGdVdXUHRh?=
- =?utf-8?B?c1R4NDFYK29DYWgxT0duZFdNdkw3SXA3S0s4ck0raFN6dFloQy9NVXVNUkMv?=
- =?utf-8?B?TlRLNTBWTzFqeDJCT25Zc05JN2dVdlU1bHV4WHIwVXdldnorQ2M0VnpWekdW?=
- =?utf-8?B?dGpZY0ZkNGFzWHlIekl4WnZYcy90bVJOVEs2TUc4Rmt4Uks5VHBGVVdYazM3?=
- =?utf-8?B?L1E9PQ==?=
-X-OriginatorOrg: windriver.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 9e2927c6-130e-43f9-b384-08dc39654e61
-X-MS-Exchange-CrossTenant-AuthSource: BL3PR11MB6433.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 29 Feb 2024 20:30:45.1634
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 8ddb2873-a1ad-4a18-ae4e-4644631433be
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: owFryMR3/gGb30NQoiekFddsGkJ5GPVK0r9FrY0ryY5t/akk2oG7Dyx1vFAEg/RDd0YIBhY/+zSeiOSEUlPzusA0rrIiV8OMuP79A+w8Epc=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS7PR11MB7805
-X-Proofpoint-GUID: 7MYKCQN2QIJzHS_C2ofv-7UIyHglW_rE
-X-Proofpoint-ORIG-GUID: 7MYKCQN2QIJzHS_C2ofv-7UIyHglW_rE
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-02-29_06,2024-02-29_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0 mlxlogscore=918
- malwarescore=0 priorityscore=1501 impostorscore=0 bulkscore=0
- suspectscore=0 spamscore=0 lowpriorityscore=0 clxscore=1031 phishscore=0
- mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2402120000 definitions=main-2402290157
+X-stable: review
+X-Patchwork-Hint: Ignore
+X-stable-base: Linux 6.7.6
+Content-Transfer-Encoding: 8bit
 
-Hi,
+From: Leon Romanovsky <leonro@nvidia.com>
 
-I got your address from the Linux kernel MAINTAINERS file, I was 
-wondering if you could clear something up?
+[ Upstream commit 4d5e86a56615cc387d21c629f9af8fb0e958d350 ]
 
-As far as I can tell, the in-tree driver at 
-drivers/infiniband/hw/bnxt_re uses a BNXT_RE_ABI_VERSION value of 1, as 
-defined in include/uapi/rdma/bnxt_re-abi.h.
+ ------------[ cut here ]------------
+ memcpy: detected field-spanning write (size 56) of single field "eseg->inline_hdr.start" at /var/lib/dkms/mlnx-ofed-kernel/5.8/build/drivers/infiniband/hw/mlx5/wr.c:131 (size 2)
+ WARNING: CPU: 0 PID: 293779 at /var/lib/dkms/mlnx-ofed-kernel/5.8/build/drivers/infiniband/hw/mlx5/wr.c:131 mlx5_ib_post_send+0x191b/0x1a60 [mlx5_ib]
+ Modules linked in: 8021q garp mrp stp llc rdma_ucm(OE) rdma_cm(OE) iw_cm(OE) ib_ipoib(OE) ib_cm(OE) ib_umad(OE) mlx5_ib(OE) ib_uverbs(OE) ib_core(OE) mlx5_core(OE) pci_hyperv_intf mlxdevm(OE) mlx_compat(OE) tls mlxfw(OE) psample nft_fib_inet nft_fib_ipv4 nft_fib_ipv6 nft_fib nft_reject_inet nf_reject_ipv4 nf_reject_ipv6 nft_reject nft_ct nft_chain_nat nf_nat nf_conntrack nf_defrag_ipv6 nf_defrag_ipv4 ip_set nf_tables libcrc32c nfnetlink mst_pciconf(OE) knem(OE) vfio_pci vfio_pci_core vfio_iommu_type1 vfio iommufd irqbypass cuse nfsv3 nfs fscache netfs xfrm_user xfrm_algo ipmi_devintf ipmi_msghandler binfmt_misc crct10dif_pclmul crc32_pclmul polyval_clmulni polyval_generic ghash_clmulni_intel sha512_ssse3 snd_pcsp aesni_intel crypto_simd cryptd snd_pcm snd_timer joydev snd soundcore input_leds serio_raw evbug nfsd auth_rpcgss nfs_acl lockd grace sch_fq_codel sunrpc drm efi_pstore ip_tables x_tables autofs4 psmouse virtio_net net_failover failover floppy
+  [last unloaded: mlx_compat(OE)]
+ CPU: 0 PID: 293779 Comm: ssh Tainted: G           OE      6.2.0-32-generic #32~22.04.1-Ubuntu
+ Hardware name: Red Hat KVM, BIOS 0.5.1 01/01/2011
+ RIP: 0010:mlx5_ib_post_send+0x191b/0x1a60 [mlx5_ib]
+ Code: 0c 01 00 a8 01 75 25 48 8b 75 a0 b9 02 00 00 00 48 c7 c2 10 5b fd c0 48 c7 c7 80 5b fd c0 c6 05 57 0c 03 00 01 e8 95 4d 93 da <0f> 0b 44 8b 4d b0 4c 8b 45 c8 48 8b 4d c0 e9 49 fb ff ff 41 0f b7
+ RSP: 0018:ffffb5b48478b570 EFLAGS: 00010046
+ RAX: 0000000000000000 RBX: 0000000000000001 RCX: 0000000000000000
+ RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000000000000
+ RBP: ffffb5b48478b628 R08: 0000000000000000 R09: 0000000000000000
+ R10: 0000000000000000 R11: 0000000000000000 R12: ffffb5b48478b5e8
+ R13: ffff963a3c609b5e R14: ffff9639c3fbd800 R15: ffffb5b480475a80
+ FS:  00007fc03b444c80(0000) GS:ffff963a3dc00000(0000) knlGS:0000000000000000
+ CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+ CR2: 0000556f46bdf000 CR3: 0000000006ac6003 CR4: 00000000003706f0
+ DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+ DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+ Call Trace:
+  <TASK>
+  ? show_regs+0x72/0x90
+  ? mlx5_ib_post_send+0x191b/0x1a60 [mlx5_ib]
+  ? __warn+0x8d/0x160
+  ? mlx5_ib_post_send+0x191b/0x1a60 [mlx5_ib]
+  ? report_bug+0x1bb/0x1d0
+  ? handle_bug+0x46/0x90
+  ? exc_invalid_op+0x19/0x80
+  ? asm_exc_invalid_op+0x1b/0x20
+  ? mlx5_ib_post_send+0x191b/0x1a60 [mlx5_ib]
+  mlx5_ib_post_send_nodrain+0xb/0x20 [mlx5_ib]
+  ipoib_send+0x2ec/0x770 [ib_ipoib]
+  ipoib_start_xmit+0x5a0/0x770 [ib_ipoib]
+  dev_hard_start_xmit+0x8e/0x1e0
+  ? validate_xmit_skb_list+0x4d/0x80
+  sch_direct_xmit+0x116/0x3a0
+  __dev_xmit_skb+0x1fd/0x580
+  __dev_queue_xmit+0x284/0x6b0
+  ? _raw_spin_unlock_irq+0xe/0x50
+  ? __flush_work.isra.0+0x20d/0x370
+  ? push_pseudo_header+0x17/0x40 [ib_ipoib]
+  neigh_connected_output+0xcd/0x110
+  ip_finish_output2+0x179/0x480
+  ? __smp_call_single_queue+0x61/0xa0
+  __ip_finish_output+0xc3/0x190
+  ip_finish_output+0x2e/0xf0
+  ip_output+0x78/0x110
+  ? __pfx_ip_finish_output+0x10/0x10
+  ip_local_out+0x64/0x70
+  __ip_queue_xmit+0x18a/0x460
+  ip_queue_xmit+0x15/0x30
+  __tcp_transmit_skb+0x914/0x9c0
+  tcp_write_xmit+0x334/0x8d0
+  tcp_push_one+0x3c/0x60
+  tcp_sendmsg_locked+0x2e1/0xac0
+  tcp_sendmsg+0x2d/0x50
+  inet_sendmsg+0x43/0x90
+  sock_sendmsg+0x68/0x80
+  sock_write_iter+0x93/0x100
+  vfs_write+0x326/0x3c0
+  ksys_write+0xbd/0xf0
+  ? do_syscall_64+0x69/0x90
+  __x64_sys_write+0x19/0x30
+  do_syscall_64+0x59/0x90
+  ? do_user_addr_fault+0x1d0/0x640
+  ? exit_to_user_mode_prepare+0x3b/0xd0
+  ? irqentry_exit_to_user_mode+0x9/0x20
+  ? irqentry_exit+0x43/0x50
+  ? exc_page_fault+0x92/0x1b0
+  entry_SYSCALL_64_after_hwframe+0x72/0xdc
+ RIP: 0033:0x7fc03ad14a37
+ Code: 10 00 f7 d8 64 89 02 48 c7 c0 ff ff ff ff eb b7 0f 1f 00 f3 0f 1e fa 64 8b 04 25 18 00 00 00 85 c0 75 10 b8 01 00 00 00 0f 05 <48> 3d 00 f0 ff ff 77 51 c3 48 83 ec 28 48 89 54 24 18 48 89 74 24
+ RSP: 002b:00007ffdf8697fe8 EFLAGS: 00000246 ORIG_RAX: 0000000000000001
+ RAX: ffffffffffffffda RBX: 0000000000008024 RCX: 00007fc03ad14a37
+ RDX: 0000000000008024 RSI: 0000556f46bd8270 RDI: 0000000000000003
+ RBP: 0000556f46bb1800 R08: 0000000000007fe3 R09: 0000000000000000
+ R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000002
+ R13: 0000556f46bc66b0 R14: 000000000000000a R15: 0000556f46bb2f50
+  </TASK>
+ ---[ end trace 0000000000000000 ]---
 
-On the other hand, the libbnxt_re-228.0.133.0 package and the 
-bnxt_re-228.0.133.0 driver embedded within 
-https://docs.broadcom.com/docs/NXE_Linux_Installer-228.1.111.0 are using 
-a BNXT_RE_ABI_VERSION of 6.
+Link: https://lore.kernel.org/r/8228ad34bd1a25047586270f7b1fb4ddcd046282.1706433934.git.leon@kernel.org
+Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
+---
+ drivers/infiniband/hw/mlx5/wr.c | 2 +-
+ include/linux/mlx5/qp.h         | 5 ++++-
+ 2 files changed, 5 insertions(+), 2 deletions(-)
 
-This seems to indicate that the in-tree kernel driver cannot be used 
-with the official version of libbnxt_re as distributed by Broadcom.   Is 
-this correct?   If so, is there a separate version of libbnxt_re 
-intended to be used with the in-kernel driver?
-
-Thanks,
-
-Chris Friesen
+diff --git a/drivers/infiniband/hw/mlx5/wr.c b/drivers/infiniband/hw/mlx5/wr.c
+index df1d1b0a3ef72..9947feb7fb8a0 100644
+--- a/drivers/infiniband/hw/mlx5/wr.c
++++ b/drivers/infiniband/hw/mlx5/wr.c
+@@ -78,7 +78,7 @@ static void set_eth_seg(const struct ib_send_wr *wr, struct mlx5_ib_qp *qp,
+ 		 */
+ 		copysz = min_t(u64, *cur_edge - (void *)eseg->inline_hdr.start,
+ 			       left);
+-		memcpy(eseg->inline_hdr.start, pdata, copysz);
++		memcpy(eseg->inline_hdr.data, pdata, copysz);
+ 		stride = ALIGN(sizeof(struct mlx5_wqe_eth_seg) -
+ 			       sizeof(eseg->inline_hdr.start) + copysz, 16);
+ 		*size += stride / 16;
+diff --git a/include/linux/mlx5/qp.h b/include/linux/mlx5/qp.h
+index bd53cf4be7bdc..f0e55bf3ec8b5 100644
+--- a/include/linux/mlx5/qp.h
++++ b/include/linux/mlx5/qp.h
+@@ -269,7 +269,10 @@ struct mlx5_wqe_eth_seg {
+ 	union {
+ 		struct {
+ 			__be16 sz;
+-			u8     start[2];
++			union {
++				u8     start[2];
++				DECLARE_FLEX_ARRAY(u8, data);
++			};
+ 		} inline_hdr;
+ 		struct {
+ 			__be16 type;
+-- 
+2.43.0
 
 
