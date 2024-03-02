@@ -1,72 +1,78 @@
-Return-Path: <linux-rdma+bounces-1185-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-1186-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id B5AD986E8C9
-	for <lists+linux-rdma@lfdr.de>; Fri,  1 Mar 2024 19:53:14 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9129786ED47
+	for <lists+linux-rdma@lfdr.de>; Sat,  2 Mar 2024 01:17:06 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E66C91C22D93
-	for <lists+linux-rdma@lfdr.de>; Fri,  1 Mar 2024 18:53:13 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C32731C215A8
+	for <lists+linux-rdma@lfdr.de>; Sat,  2 Mar 2024 00:17:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 26DEB39AFE;
-	Fri,  1 Mar 2024 18:52:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 45BB57E9;
+	Sat,  2 Mar 2024 00:14:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="gOkPtCKn"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pf1-f182.google.com (mail-pf1-f182.google.com [209.85.210.182])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DFAB38C1B;
-	Fri,  1 Mar 2024 18:52:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AB5AC10F1
+	for <linux-rdma@vger.kernel.org>; Sat,  2 Mar 2024 00:14:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709319162; cv=none; b=cheF4U6b+hRQQ2NiIR09czDVxD3LrZYDzQyVF9O4/T+xrKNHbZsEpKHAdFMhJv4x8pQ6sQSCXyKqIMbNmo6dTQ2v7cFAxOnRr3xdhMY6Ij8UAbmY8EnEsjaaGNCj6kdY/ZXUASELI4dEHRs0yDnVkvV9BTgAQ09i5viSrqNuv/M=
+	t=1709338490; cv=none; b=m2xN6czELCCGGGpIlLsafs9/Qcux37piqXFkel0gC70dXe4I4ODljzHk5MOLzM6eeAw4bouNEkEIhXCykqJ8NpZUzwGTqn4qoeEyJLskfv2Cu/8PXFVtb7j6THcn7IVZaqMImX8fTRn4d7jMYg1UH94zB9u0/ClxV7se4APJp5o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709319162; c=relaxed/simple;
-	bh=44S/7fMa4t3C3sreMd4jk5F0uk+BmeF1MV2xSiGfrrA=;
+	s=arc-20240116; t=1709338490; c=relaxed/simple;
+	bh=J9RecM11zoh+0vCDfzEiQKHVBWqECX6ysWPdITOtwpg=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=QjwjDv1rQGT/oFdo6ZeSv9Aua86UiMp76PljyAdWAEo41kSiEKd+3HrOMOoI3hwxoXnqVPHdpQ4KUcM4xkx6uzHh9mb+zOnNpGyCTfv8NgEE7fVYurG9FQ/4B1bb91VnKlVgzNeNaaK9HwTs0Ox43iWqrzGP339drIvLebFhPkA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 04C1AC433F1;
-	Fri,  1 Mar 2024 18:52:34 +0000 (UTC)
-Date: Fri, 1 Mar 2024 18:52:32 +0000
-From: Catalin Marinas <catalin.marinas@arm.com>
-To: Jason Gunthorpe <jgg@nvidia.com>
-Cc: Alexander Gordeev <agordeev@linux.ibm.com>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Christian Borntraeger <borntraeger@linux.ibm.com>,
-	Borislav Petkov <bp@alien8.de>,
-	Dave Hansen <dave.hansen@linux.intel.com>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Gerald Schaefer <gerald.schaefer@linux.ibm.com>,
-	Vasily Gorbik <gor@linux.ibm.com>,
-	Heiko Carstens <hca@linux.ibm.com>,
-	"H. Peter Anvin" <hpa@zytor.com>,
-	Justin Stitt <justinstitt@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Leon Romanovsky <leon@kernel.org>,
-	linux-rdma@vger.kernel.org, linux-s390@vger.kernel.org,
-	llvm@lists.linux.dev, Ingo Molnar <mingo@redhat.com>,
-	Bill Wendling <morbo@google.com>,
-	Nathan Chancellor <nathan@kernel.org>,
-	Nick Desaulniers <ndesaulniers@google.com>, netdev@vger.kernel.org,
-	Paolo Abeni <pabeni@redhat.com>,
-	Salil Mehta <salil.mehta@huawei.com>,
-	Jijie Shao <shaojijie@huawei.com>,
-	Sven Schnelle <svens@linux.ibm.com>,
-	Thomas Gleixner <tglx@linutronix.de>, x86@kernel.org,
-	Yisen Zhuang <yisen.zhuang@huawei.com>,
-	Arnd Bergmann <arnd@arndb.de>,
-	Leon Romanovsky <leonro@mellanox.com>, linux-arch@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org,
-	Mark Rutland <mark.rutland@arm.com>,
-	Michael Guralnik <michaelgur@mellanox.com>, patches@lists.linux.dev,
-	Niklas Schnelle <schnelle@linux.ibm.com>,
-	Will Deacon <will@kernel.org>
-Subject: Re: [PATCH 4/6] arm64/io: Provide a WC friendly __iowriteXX_copy()
-Message-ID: <ZeIj8HtdbKS3eqG6@arm.com>
-References: <0-v1-38290193eace+5-mlx5_arm_wc_jgg@nvidia.com>
- <4-v1-38290193eace+5-mlx5_arm_wc_jgg@nvidia.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=n2ubKgqnH15s27loEP0dtxVAyHGaK8LainqeffrS0sl6II7zBtqocfdjJnVrc25BiUMtDX7zGzvTLvw6kfX5YegFSipC7rVAezutgzicgOjcad2fjw2s1r2zfv63vgOOf7+gpu5eBRbBp4pe2e9ryI5xFCE/bjSUWXfuqu7Y6tg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=gOkPtCKn; arc=none smtp.client-ip=209.85.210.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
+Received: by mail-pf1-f182.google.com with SMTP id d2e1a72fcca58-6e5760eeb7aso2370591b3a.1
+        for <linux-rdma@vger.kernel.org>; Fri, 01 Mar 2024 16:14:48 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1709338488; x=1709943288; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=FF4IiXm7A+T8Frcn1xhwOocDaZJ/4WKQwj1y8lgr4F8=;
+        b=gOkPtCKnpB1O7rMJ+Q7MkzCYfrC0Wn69S0rpH6FJKIwtblME4dUFVbWIl4EddOq/dh
+         3CdOIeZ0NkfIpc89Q2u4BDeZ2B9azSNDl9OOPCoeLU/qTTvQTHj8X0O1nn40rqm8n7um
+         p9oXDZuOFCJDgP0i/u1VtIg4d6ymgM4cN5AnQ=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709338488; x=1709943288;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=FF4IiXm7A+T8Frcn1xhwOocDaZJ/4WKQwj1y8lgr4F8=;
+        b=hA+uRGa6t21lQIojtFOggeKtGraTOnK3spWbF6zO53w+KVUmBFnRM6Rkg2R/LSxd+w
+         tOriZA6W+L6HHnGOXYVeHwc+q/Rk0MX2PE4EFCTdE2VAuya58ruBAAOQ4iHQrK+9XMTh
+         grkkfK0NKC5OmZ5dbGm3TcJqTAyJU0LsupeRIPNpXjpIdcRDXtUNG1Xg5UE4jnmmEorp
+         q1TABMfxmTmbSrpzWMJZoLFUff5rwrzrvE0A7WyDU7Yg9CYtrgm9GnlmwJHBBhCCI7A+
+         pKDnAJfc5lktgYXfNZQxEPLeaaZmkyoM/aaxIc5AqbhFc1U5uPM00lCANdjfwoACktzq
+         T4KA==
+X-Forwarded-Encrypted: i=1; AJvYcCUEnuO5tnnhmpqX8LoKTWIfLvCOcI+5OiQRsPeewNK3oEdxxOUwPMKeuMPeg7u31C1Q4ymx4M2S34NIegg5U85ssKzLUnixqRQQ+g==
+X-Gm-Message-State: AOJu0YxrYTm+WVxp+FPSsiqdwDVJwfFCVjq+fO6aa0LmPmD2++X++aFy
+	9o48ob4zCtt5U8OnKOKj7PZxiCFt8XahlG8ZtCl/Bag3OHNQiyl0EkQ+4B1noA==
+X-Google-Smtp-Source: AGHT+IEQo2qIPhB9LTmigxSPC/z8GP5w2KmXdHPe4k2dtlqi/60ZWzje2+zCus9dKjUyCYKc5QJ4pA==
+X-Received: by 2002:a05:6a00:1916:b0:6e5:e8ee:38f2 with SMTP id y22-20020a056a00191600b006e5e8ee38f2mr628578pfi.23.1709338488017;
+        Fri, 01 Mar 2024 16:14:48 -0800 (PST)
+Received: from www.outflux.net ([198.0.35.241])
+        by smtp.gmail.com with ESMTPSA id e29-20020aa7981d000000b006e592a2d073sm3423740pfl.161.2024.03.01.16.14.47
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 01 Mar 2024 16:14:47 -0800 (PST)
+Date: Fri, 1 Mar 2024 16:14:46 -0800
+From: Kees Cook <keescook@chromium.org>
+To: "Gustavo A. R. Silva" <gustavoars@kernel.org>
+Cc: Jason Gunthorpe <jgg@ziepe.ca>, Leon Romanovsky <leon@kernel.org>,
+	linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-hardening@vger.kernel.org
+Subject: Re: [PATCH][next] RDMA/uverbs: Avoid -Wflex-array-member-not-at-end
+ warnings
+Message-ID: <202403011613.BB548211F3@keescook>
+References: <ZeIgeZ5Sb0IZTOyt@neat>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
@@ -75,55 +81,78 @@ List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <4-v1-38290193eace+5-mlx5_arm_wc_jgg@nvidia.com>
+In-Reply-To: <ZeIgeZ5Sb0IZTOyt@neat>
 
-On Tue, Feb 20, 2024 at 09:17:08PM -0400, Jason Gunthorpe wrote:
-> The kernel provides driver support for using write combining IO memory
-> through the __iowriteXX_copy() API which is commonly used as an optional
-> optimization to generate 16/32/64 byte MemWr TLPs in a PCIe environment.
+On Fri, Mar 01, 2024 at 12:37:45PM -0600, Gustavo A. R. Silva wrote:
+> -Wflex-array-member-not-at-end is coming in GCC-14, and we are getting
+> ready to enable it globally.
 > 
-> iomap_copy.c provides a generic implementation as a simple 4/8 byte at a
-> time copy loop that has worked well with past ARM64 CPUs, giving a high
-> frequency of large TLPs being successfully formed.
+> There are currently a couple of objects (`alloc_head` and `bundle`) in
+> `struct bundle_priv` that contain a couple of flexible structures:
 > 
-> However modern ARM64 CPUs are quite sensitive to how the write combining
-> CPU HW is operated and a compiler generated loop with intermixed
-> load/store is not sufficient to frequently generate a large TLP. The CPUs
-> would like to see the entire TLP generated by consecutive store
-> instructions from registers. Compilers like gcc tend to intermix loads and
-> stores and have poor code generation, in part, due to the ARM64 situation
-> that writeq() does not codegen anything other than "[xN]". However even
-> with that resolved compilers like clang still do not have good code
-> generation.
+> struct bundle_priv {
+>         /* Must be first */
+>         struct bundle_alloc_head alloc_head;
 > 
-> This means on modern ARM64 CPUs the rate at which __iowriteXX_copy()
-> successfully generates large TLPs is very small (less than 1 in 10,000)
-> tries), to the point that the use of WC is pointless.
+> 	...
 > 
-> Implement __iowrite32/64_copy() specifically for ARM64 and use inline
-> assembly to build consecutive blocks of STR instructions. Provide direct
-> support for 64/32/16 large TLP generation in this manner. Optimize for
-> common constant lengths so that the compiler can directly inline the store
-> blocks.
+>         /*
+>          * Must be last. bundle ends in a flex array which overlaps
+>          * internal_buffer.
+>          */
+>         struct uverbs_attr_bundle bundle;
+>         u64 internal_buffer[32];
+> };
 > 
-> This brings the frequency of large TLP generation up to a high level that
-> is comparable with older CPU generations.
+> So, in order to avoid ending up with a couple of flexible-array members
+> in the middle of a struct, we use the `struct_group_tagged()` helper to
+> separate the flexible array from the rest of the members in the flexible
+> structures:
 > 
-> As the __iowriteXX_copy() family of APIs is intended for use with WC
-> incorporate the DGH hint directly into the function.
+> struct uverbs_attr_bundle {
+>         struct_group_tagged(uverbs_attr_bundle_hdr, hdr,
+> 		... the rest of the members
+>         );
+>         struct uverbs_attr attrs[];
+> };
 > 
-> Cc: Arnd Bergmann <arnd@arndb.de>
-> Cc: Catalin Marinas <catalin.marinas@arm.com>
-> Cc: Will Deacon <will@kernel.org>
-> Cc: Mark Rutland <mark.rutland@arm.com>
-> Cc: linux-arch@vger.kernel.org
-> Cc: linux-arm-kernel@lists.infradead.org
-> Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
+> With the change described above, we now declare objects of the type of
+> the tagged struct without embedding flexible arrays in the middle of
+> another struct:
+> 
+> struct bundle_priv {
+>         /* Must be first */
+>         struct bundle_alloc_head_hdr alloc_head;
+> 
+>         ...
+> 
+>         struct uverbs_attr_bundle_hdr bundle;
+>         u64 internal_buffer[32];
+> };
+> 
+> We also use `container_of()` whenever we need to retrieve a pointer
+> to the flexible structures.
+> 
+> Notice that the `bundle_size` computed in `uapi_compute_bundle_size()`
+> remains the same.
+> 
+> So, with these changes, fix the following warnings:
+> 
+> drivers/infiniband/core/uverbs_ioctl.c:45:34: warning: structure containing a flexible array member is not at the end of another structure [-Wflex-array-member-not-at-end]
+>    45 |         struct bundle_alloc_head alloc_head;
+>       |                                  ^~~~~~~~~~
+> drivers/infiniband/core/uverbs_ioctl.c:67:35: warning: structure containing a flexible array member is not at the end of another structure [-Wflex-array-member-not-at-end]
+>    67 |         struct uverbs_attr_bundle bundle;
+>       |                                   ^~~~~~
+> 
+> Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
 
-Apart from the slightly more complicated code, I don't expect it to make
-things worse on any of the existing hardware.
+This looks complex, but I think it's simpler that other changes that
+would have much more collateral impact. Thanks for figuring out a
+workable solution!
 
-So, with the typo fix that Will mentioned:
+Reviewed-by: Kees Cook <keescook@chromium.org>
 
-Reviewed-by: Catalin Marinas <catalin.marinas@arm.com>
+-- 
+Kees Cook
 
