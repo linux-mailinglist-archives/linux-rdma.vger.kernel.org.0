@@ -1,87 +1,93 @@
-Return-Path: <linux-rdma+bounces-1194-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-1195-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id BFDA886F52C
-	for <lists+linux-rdma@lfdr.de>; Sun,  3 Mar 2024 14:42:00 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9D17686F595
+	for <lists+linux-rdma@lfdr.de>; Sun,  3 Mar 2024 15:46:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 41E731F213EE
-	for <lists+linux-rdma@lfdr.de>; Sun,  3 Mar 2024 13:42:00 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5941A2860CF
+	for <lists+linux-rdma@lfdr.de>; Sun,  3 Mar 2024 14:46:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4247759B4E;
-	Sun,  3 Mar 2024 13:41:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6726067A07;
+	Sun,  3 Mar 2024 14:46:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="AVromr9A"
+	dkim=pass (2048-bit key) header.d=launchpad.net header.i=@launchpad.net header.b="qA8m2kgZ"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from smtp-relay-services-0.canonical.com (smtp-relay-services-0.canonical.com [185.125.188.250])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EF75B58212;
-	Sun,  3 Mar 2024 13:41:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F22FF59B72
+	for <linux-rdma@vger.kernel.org>; Sun,  3 Mar 2024 14:46:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.125.188.250
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709473314; cv=none; b=mUh7Bv6l8SayoNzkaXHsEDIDl5ReueKOCQnE1y6hOGW8Bd/RoK/HZRJ8Az2c0NB5XeXUyW/JdCrqIXuF4O7/9LgZVVetaQYnccqzXc9ejsHNVuQDnvsRf7nO3w6mzk/1wc3BakxMbtn4RXnnX5Dr9hQwTJBn7jML0QIg/VTHWCs=
+	t=1709477203; cv=none; b=WbDn4Uc9xjdVC7lAKad4vyuD6VaFSGjBjbABmdjntLWz63e2WSX2Z86eOA7a2s+z5uZuws2nZ1k6ONDifI57JTjnIC6mdX3Ug6ZGyZl2Lg9DVJRkXtUnJpJ+q2uqBjOYRl0lhU/TChCFSWELNV9A/I5sfl0fRbpBnGNELvMhCHI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709473314; c=relaxed/simple;
-	bh=/LKK/gSvDJcHii+LVnHZWh4p11aKw93bUXQ3iuGv9zQ=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Message-Id:Date:
-	 MIME-Version:Content-Type; b=WtsUEMOTN5DMnOpErkSF8XpuwVW2tnFE71MZpJFUc9H1XmwiPzV2Uni0O9MZPBQkCvvuaWufYPogjDFyj79AdgYeS5goJwPnBIdzQkT7guKu1hLTw1pVlB8NalhyTqbKYCMB+Wty57l/tMWEoauh1xOPHNZ7XHat41C5V34F8P0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=AVromr9A; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D1455C433F1;
-	Sun,  3 Mar 2024 13:41:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1709473313;
-	bh=/LKK/gSvDJcHii+LVnHZWh4p11aKw93bUXQ3iuGv9zQ=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-	b=AVromr9AMGyhj+dSFI14InpyvyGVbtwDGr0IJuwaB6u8c7LhbyePuwStKyqLwqW7I
-	 T0EW5OmAF3ZJ2B7iDB8BfIdGLnBaR0b5JwkNVpXASrx8S/kwRZu6IYbEYTbW+UGLf0
-	 IfjvJlt6ma8Nr2QxJEsKos7gMVF0vhNLUNVSHG+aP0De3bmRdBYciCGXXQXBXOkWwl
-	 sqFKJDpPTmVZaAKq+DSjABefp00LL70juMKXQCsS3PN4+6ka98zrBzvhPSjIScTOUa
-	 V0AbGBLlBD+4Lqp0fnFGqV0D6p7YWrQ2Ds3ej0PJDbCILmF2O3XosMVCYD8vR7eLtI
-	 YHXWxdUD0uEhA==
-From: Leon Romanovsky <leon@kernel.org>
-To:
- Jason Gunthorpe <jgg@ziepe.ca>, "Gustavo A. R. Silva" <gustavoars@kernel.org>
-Cc: linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-hardening@vger.kernel.org, Kees Cook <keescook@chromium.org>
-In-Reply-To: <ZeIgeZ5Sb0IZTOyt@neat>
-References: <ZeIgeZ5Sb0IZTOyt@neat>
-Subject:
- Re: [PATCH][next] RDMA/uverbs: Avoid -Wflex-array-member-not-at-end warnings
-Message-Id: <170947330942.248794.6765878456401516827.b4-ty@kernel.org>
-Date: Sun, 03 Mar 2024 15:41:49 +0200
+	s=arc-20240116; t=1709477203; c=relaxed/simple;
+	bh=kRR2tpF6nvYalr2Z2RxitPjY+KbN/XfteTAXIzDM2Hw=;
+	h=Content-Type:MIME-Version:To:From:Subject:Message-Id:Date; b=GsBdy5NF9F5oEDR4IU7m2qtF96vSjNfNgTDft9zo1xkFaL2e43NIgbPzm/aQDwjEBi3W10065I1ynflUehUCZkeZ42RmqZq45iCc30DD4APTs/kHnvjvMFX1s8yRGWQyMcS6VR/iL+43+fWTzUE1GcMLyaQxnUfg0OrKtkPPXis=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=launchpad.net; spf=pass smtp.mailfrom=launchpad.net; dkim=pass (2048-bit key) header.d=launchpad.net header.i=@launchpad.net header.b=qA8m2kgZ; arc=none smtp.client-ip=185.125.188.250
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=launchpad.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=launchpad.net
+Received: from juju-98d295-prod-launchpad-15.localdomain (buildd-manager.lp.internal [10.131.215.202])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-relay-services-0.canonical.com (Postfix) with ESMTPSA id 94CCC411A9
+	for <linux-rdma@vger.kernel.org>; Sun,  3 Mar 2024 14:46:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=launchpad.net;
+	s=20210803; t=1709477193;
+	bh=kRR2tpF6nvYalr2Z2RxitPjY+KbN/XfteTAXIzDM2Hw=;
+	h=Content-Type:MIME-Version:To:From:Subject:Message-Id:Date:
+	 Reply-To;
+	b=qA8m2kgZC5VKQbbt0IPlJ6y9FJ4I2Rju1Pox3OiFjS/uLCC6rgdPIbpJLbfQe40Xw
+	 UCDmXfdijYikj4kwvPe8gpYylhCLxD98FiVoEG7Al5gEToOyf2m6/jW1cPIsjPfNlM
+	 JVs3sv6BVt8a1StHIWz8SDycjYG0tNJxZW9yZwrfxEJog6fIu5QR/tQI3NSb6M/7rv
+	 zpq41VAkGDh+DncSzpJrxZhci5bYKsK9jk7+8GkwCMoW0hkB9YnmhOajMLqEbjb2ee
+	 8xHMnHUNW2DsDrb3Ut4Wb/wWYkIacJS+2SmKpkyY5ViPMb39XjT+eCrW5ixbqqjKJ8
+	 WZ8LhyEFM6SLA==
+Received: from [10.131.215.202] (localhost [127.0.0.1])
+	by juju-98d295-prod-launchpad-15.localdomain (Postfix) with ESMTP id 7A59A80ED4
+	for <linux-rdma@vger.kernel.org>; Sun,  3 Mar 2024 14:46:33 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Mailer: b4 0.12-dev-a055d
+Content-Transfer-Encoding: quoted-printable
+X-Launchpad-Message-Rationale: Requester @linux-rdma
+X-Launchpad-Message-For: linux-rdma
+X-Launchpad-Notification-Type: recipe-build-status
+X-Launchpad-Archive: ~linux-rdma/ubuntu/rdma-core-daily
+X-Launchpad-Build-State: MANUALDEPWAIT
+To: Linux RDMA <linux-rdma@vger.kernel.org>
+From: noreply@launchpad.net
+Subject: [recipe build #3692247] of ~linux-rdma rdma-core-daily in xenial: Dependency wait
+Message-Id: <170947719346.1614976.6756256216968738212.launchpad@juju-98d295-prod-launchpad-15>
+Date: Sun, 03 Mar 2024 14:46:33 -0000
+Reply-To: noreply@launchpad.net
+Sender: noreply@launchpad.net
+Errors-To: noreply@launchpad.net
+Precedence: bulk
+X-Generated-By: Launchpad (canonical.com); Revision="2e4955e3d556e61e2eb54acf7a827d17e9e46822"; Instance="launchpad-buildd-manager"
+X-Launchpad-Hash: 152bc84fe465e6086dda9f61e4b137efbc166f1d
 
+ * State: Dependency wait
+ * Recipe: linux-rdma/rdma-core-daily
+ * Archive: ~linux-rdma/ubuntu/rdma-core-daily
+ * Distroseries: xenial
+ * Duration: 1 minute
+ * Build Log: https://launchpad.net/~linux-rdma/+archive/ubuntu/rdma-core-d=
+aily/+recipebuild/3692247/+files/buildlog.txt.gz
+ * Upload Log:=20
+ * Builder: https://launchpad.net/builders/lcy02-amd64-079
 
-On Fri, 01 Mar 2024 12:37:45 -0600, Gustavo A. R. Silva wrote:
-> -Wflex-array-member-not-at-end is coming in GCC-14, and we are getting
-> ready to enable it globally.
-> 
-> There are currently a couple of objects (`alloc_head` and `bundle`) in
-> `struct bundle_priv` that contain a couple of flexible structures:
-> 
-> struct bundle_priv {
->         /* Must be first */
->         struct bundle_alloc_head alloc_head;
-> 
-> [...]
+--=20
+https://launchpad.net/~linux-rdma/+archive/ubuntu/rdma-core-daily/+recipebu=
+ild/3692247
+Your team Linux RDMA is the requester of the build.
 
-Applied, thanks!
-
-[1/1] RDMA/uverbs: Avoid -Wflex-array-member-not-at-end warnings
-      https://git.kernel.org/rdma/rdma/c/155f04366e3cad
-
-Best regards,
--- 
-Leon Romanovsky <leon@kernel.org>
 
