@@ -1,134 +1,191 @@
-Return-Path: <linux-rdma+bounces-1190-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-1191-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0A2E986F3A0
-	for <lists+linux-rdma@lfdr.de>; Sun,  3 Mar 2024 05:27:38 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8910B86F43C
+	for <lists+linux-rdma@lfdr.de>; Sun,  3 Mar 2024 10:58:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 91820283958
-	for <lists+linux-rdma@lfdr.de>; Sun,  3 Mar 2024 04:27:36 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3FE1F1F212B8
+	for <lists+linux-rdma@lfdr.de>; Sun,  3 Mar 2024 09:58:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 11B466FD5;
-	Sun,  3 Mar 2024 04:27:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 24076B64C;
+	Sun,  3 Mar 2024 09:58:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b="ospqSB5k"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="MggU6GTL"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from out203-205-251-73.mail.qq.com (out203-205-251-73.mail.qq.com [203.205.251.73])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D42026FA8;
-	Sun,  3 Mar 2024 04:27:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=203.205.251.73
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D331579E1;
+	Sun,  3 Mar 2024 09:58:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709440049; cv=none; b=pjGf/vDOC0QXylhNnUAt4hvjjCrafjicZOiTcRf/7D7HI0DN3tYvJNidKnj9UYYMqn2K+/q7k1R39pBYLvo+PApWQRZeBetvwHzD3NH/bKS8cfQLyGUHInXEsevK6iiwesbDAuCZKs0TOTBkiYptR/PzfTqqdB08UX9SdIWzQYo=
+	t=1709459894; cv=none; b=ev7l8Deox6+eVJsWNJ6pEz7+Y+fm1omuvwNQtbstzV9DHWjfwudad4+3ZDQPly0jZcP0dxOIgFbMSQmZ4nrM6faLlAF1SNji2ZBxdWoyc4j3fAfzJoRFCt2C3ioEmUT6BVDvwPttcaw+Y5FPvItz7sJod+Br7xp6urqCHmmsQNk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709440049; c=relaxed/simple;
-	bh=tgkxv0wJipx7iT6D8udnhav/UB2N8Ez2CrQrfJ3/1Fk=;
-	h=Message-ID:From:To:Cc:Subject:Date:In-Reply-To:References:
-	 MIME-Version; b=RgkrrUfNJusT1Pfc5R39fnlUKpS6wMZAFHUO2VJnrAyrqzt4ZHpuMmeTfpvxoMmTPI//n3TN8iKLHE4polsZVuI+sUMVeEET37LoBvIjJPpDKAcHL/7DqrWSqHwY+Nm4nB7E5YFJYgbChcLWkEyaQgNDEUYtjGRApoSpORHMYJ8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com; spf=pass smtp.mailfrom=qq.com; dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b=ospqSB5k; arc=none smtp.client-ip=203.205.251.73
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=qq.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=qq.com; s=s201512;
-	t=1709440038; bh=aS+G9OyqYa6igSB8+oaADpXxrUcRmnnV1ukdP5ZUw40=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References;
-	b=ospqSB5kzogVUhsCSraNkPwC0bVgRVkHNZ+PZrlqmJxfE0N5jWvKBtfb2tLmafeZ9
-	 /h7mjK4NhfMvsDx21laMMxI/eEuquDM2MVDJxpJ90nnw8YLjCbTl6GuOnpAvKWUQZ/
-	 oRl6sxxB65urwq0EdeCmsA+6ECd8aptVAQgwS7V0=
-Received: from pek-lxu-l1.wrs.com ([111.198.228.140])
-	by newxmesmtplogicsvrsza10-0.qq.com (NewEsmtp) with SMTP
-	id 4B91820F; Sun, 03 Mar 2024 12:18:57 +0800
-X-QQ-mid: xmsmtpt1709439537tv7yagi3y
-Message-ID: <tencent_25067C49AB2EDF6EE5CC95A7FA86C992F806@qq.com>
-X-QQ-XMAILINFO: MyIXMys/8kCtrKzo+WwWQUCutSBfQRboT1XAuuTchFnlDdd28/APvRLxK7ln2S
-	 RDVzZtWZJqG9hKC2xWGS5+4d6sgY7dts/L42PLnF5ySVCZWnppoD3fk+RoEDgs3O881WKyhBMb33
-	 mRBnAj8LgaAk2tTijlN0fFof8RdAvD8HwT9Tvm0tMOQoMPS/CKtOPl/ooaSC/2rM7AXF7ZrRkWJx
-	 CToej6NhIINDxPeCjhOEjmuJToRByK7AmZGrplDIggmnkMTe1n9edwzQqBPtZtl8byLVkYPJxHAz
-	 SVNsN3/Gg3MqiN0F+qApukqKRCUqAr10jQwKDEv092B/LbaSO4p5sHCFMw9yOaWNFwPr5Ip5lNus
-	 Qu/htmJprUzq+CPVfKnwO51FIJrBcmQpxXZK8f+DbDnZeENGxbHa/Scz4MF7RvfYRPzW82Vcftt1
-	 gRiHoiJYMaz2cJKK+4ToFJb7IK0LhOhg2aqtXjwD7xeb+/O+3zvWIBQEWejB/KkIlNlJ0NfXIR/G
-	 rP8VLdybv/C9MujLrQqQ77cpFGWg9we8a70OJg/KPYtWZvA9UjdVUHpvf2VCdtpMBrT9uLjJF1nW
-	 qFj7oWw+p2BCMdV4IRIOLBJS0YKFxxfj0CXGH2WSTCn/QpcrRrDtBmxc0plGWMWwwo0/jBCgEeAz
-	 gLvZNSFr5peqIe7qFURSD7xx/7fvOqrOtPjClIyoNVwIx9zrFej4dqWAs56qzMJdKCO/P+1m/4aD
-	 HbGOZJgPTPEYIv09CmdTzFH7/eE0YQwG7wrurhaoQtBcRchLwqA8jjm2xdwubj71j/7EnYQn94AA
-	 fw8ZTU6NLLqkwFKBrqLkmsmZosa/HBrcHyF5SqOMmgSMrEb2aQmjcOVvytxD9Ypw/boj8BSvZbCb
-	 2t3w0AGKdjNBALPBF+eughIKO5GR0OihUz7N3hXThLeKPoTUVSLpd3yUQFLexPsPRq/f/+sZ0iO6
-	 6zsm8mg/2m1U2EbeCAp2K/2sz0v/tpYB4cFmzdMoKllNEyBZ4vsisp3YAQpLBnHoRSQk+jOf4Ib9
-	 /H/dRYmw==
-X-QQ-XMRINFO: Nq+8W0+stu50PRdwbJxPCL0=
-From: Edward Adam Davis <eadavis@qq.com>
-To: syzbot+d4faee732755bba9838e@syzkaller.appspotmail.com
-Cc: allison.henderson@oracle.com,
-	davem@davemloft.net,
-	edumazet@google.com,
-	kuba@kernel.org,
-	linux-kernel@vger.kernel.org,
-	linux-rdma@vger.kernel.org,
-	netdev@vger.kernel.org,
-	pabeni@redhat.com,
-	rds-devel@oss.oracle.com,
-	santosh.shilimkar@oracle.com,
-	syzkaller-bugs@googlegroups.com
-Subject: [PATCH] net/rds: fix WARNING in rds_conn_connect_if_down
-Date: Sun,  3 Mar 2024 12:18:57 +0800
-X-OQ-MSGID: <20240303041856.31749-2-eadavis@qq.com>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <000000000000c0550506125e4118@google.com>
-References: <000000000000c0550506125e4118@google.com>
+	s=arc-20240116; t=1709459894; c=relaxed/simple;
+	bh=eTxidrkEvIVqgr8XANRDejBX2L+AkB/ifEZiC9erbHc=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=lXfOW4koxH34C3AIx+wsVCyvomjn3Ae7e8O+qZiz5LV8eHFtFIzQDtFVCwEjaqUlJZOZjxHR9XharJfLk8BjRvfMl8+E7lb9kgSLsjiSqlG4RSGr6hKNxgg1UA3U9yLtDqUvl1h2bv+PgcMqCmS/hmmL1lu5pnBJPgF2m/jVdwQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=MggU6GTL; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 39975C433F1;
+	Sun,  3 Mar 2024 09:58:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1709459894;
+	bh=eTxidrkEvIVqgr8XANRDejBX2L+AkB/ifEZiC9erbHc=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=MggU6GTLSZJZ+CkZLmFA+bL4PY+79XGdvxjha7IyMQBeaaQW1uYtBN2OSgGOMdL+f
+	 HJIJML8RjcnTt6rp1UFExeLoNa8NcEFGr5IvpJ6uoRhL6TOtxLVRYdfkLN7Qj36rUn
+	 BiCbNuhW9u1XX8OdyFy3EOG1wmootgxpJCmBWgHOXyR9ZD4ysYQD7ynJ5Gb5TaN+K9
+	 9K9VOPzoZ+7yR8OHb8d6Dqq1GWU61bzr2cxYWAUc5XEyA16GmGV2iuEuCMMGmKknjL
+	 Zlh7OCOnfypC3tBZpKcyhE/eiWavDQqdlx7YnhQtKjwoU7HVTg3/DfeR8fPvsgaSV8
+	 6b/8OnDq2DbtQ==
+Date: Sun, 3 Mar 2024 11:58:10 +0200
+From: Leon Romanovsky <leon@kernel.org>
+To: Manjunath Patil <manjunath.b.patil@oracle.com>
+Cc: dledford@redhat.com, jgg@ziepe.ca, linux-rdma@vger.kernel.org,
+	linux-kernel@vger.kernel.org, rama.nichanamatlu@oracle.com
+Subject: Re: [PATCH RFC] RDMA/cm: add timeout to cm_destroy_id wait
+Message-ID: <20240303095810.GA112581@unreal>
+References: <20240227200017.308719-1-manjunath.b.patil@oracle.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240227200017.308719-1-manjunath.b.patil@oracle.com>
 
-If connection isn't established yet, get_mr() will fail, trigger connection after
-get_mr().
+On Tue, Feb 27, 2024 at 12:00:17PM -0800, Manjunath Patil wrote:
+> Add timeout to cm_destroy_id, so that userspace can trigger any data
+> collection that would help in analyzing the cause of delay in destroying
+> the cm_id.
 
-Fixes: 584a8279a44a ("RDS: RDMA: return appropriate error on rdma map failures") 
-Reported-and-tested-by: syzbot+d4faee732755bba9838e@syzkaller.appspotmail.com
-Signed-off-by: Edward Adam Davis <eadavis@qq.com>
----
- net/rds/rdma.c | 3 +++
- net/rds/send.c | 6 +-----
- 2 files changed, 4 insertions(+), 5 deletions(-)
+Why doesn't rdmatool resource cm_id dump help to see stalled cm_ids?
 
-diff --git a/net/rds/rdma.c b/net/rds/rdma.c
-index fba82d36593a..a4e3c5de998b 100644
---- a/net/rds/rdma.c
-+++ b/net/rds/rdma.c
-@@ -301,6 +301,9 @@ static int __rds_rdma_map(struct rds_sock *rs, struct rds_get_mr_args *args,
- 			kfree(sg);
- 		}
- 		ret = PTR_ERR(trans_private);
-+		/* Trigger connection so that its ready for the next retry */
-+		if (ret == -ENODEV)
-+			rds_conn_connect_if_down(cp->cp_conn);
- 		goto out;
- 	}
- 
-diff --git a/net/rds/send.c b/net/rds/send.c
-index 5e57a1581dc6..fa1640628b2f 100644
---- a/net/rds/send.c
-+++ b/net/rds/send.c
-@@ -1313,12 +1313,8 @@ int rds_sendmsg(struct socket *sock, struct msghdr *msg, size_t payload_len)
- 
- 	/* Parse any control messages the user may have included. */
- 	ret = rds_cmsg_send(rs, rm, msg, &allocated_mr, &vct);
--	if (ret) {
--		/* Trigger connection so that its ready for the next retry */
--		if (ret ==  -EAGAIN)
--			rds_conn_connect_if_down(conn);
-+	if (ret) 
- 		goto out;
--	}
- 
- 	if (rm->rdma.op_active && !conn->c_trans->xmit_rdma) {
- 		printk_ratelimited(KERN_NOTICE "rdma_op %p conn xmit_rdma %p\n",
--- 
-2.43.0
+Thanks
 
+> 
+> New noinline function helps dtrace/ebpf programs to hook on to it.
+> Existing functionality isn't changed except triggering a probe-able new
+> function at every timeout interval.
+> 
+> We have seen cases where CM messages stuck with MAD layer (either due to
+> software bug or faulty HCA), leading to cm_id getting stuck in the
+> following call stack. This patch helps in resolving such issues faster.
+> 
+> kernel: ... INFO: task XXXX:56778 blocked for more than 120 seconds.
+> ...
+> 	Call Trace:
+> 	__schedule+0x2bc/0x895
+> 	schedule+0x36/0x7c
+> 	schedule_timeout+0x1f6/0x31f
+>  	? __slab_free+0x19c/0x2ba
+> 	wait_for_completion+0x12b/0x18a
+> 	? wake_up_q+0x80/0x73
+> 	cm_destroy_id+0x345/0x610 [ib_cm]
+> 	ib_destroy_cm_id+0x10/0x20 [ib_cm]
+> 	rdma_destroy_id+0xa8/0x300 [rdma_cm]
+> 	ucma_destroy_id+0x13e/0x190 [rdma_ucm]
+> 	ucma_write+0xe0/0x160 [rdma_ucm]
+> 	__vfs_write+0x3a/0x16d
+> 	vfs_write+0xb2/0x1a1
+> 	? syscall_trace_enter+0x1ce/0x2b8
+> 	SyS_write+0x5c/0xd3
+> 	do_syscall_64+0x79/0x1b9
+> 	entry_SYSCALL_64_after_hwframe+0x16d/0x0
+> 
+> Signed-off-by: Manjunath Patil <manjunath.b.patil@oracle.com>
+> ---
+>  drivers/infiniband/core/cm.c | 38 +++++++++++++++++++++++++++++++++++-
+>  1 file changed, 37 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/infiniband/core/cm.c b/drivers/infiniband/core/cm.c
+> index ff58058aeadc..03f7b80efa77 100644
+> --- a/drivers/infiniband/core/cm.c
+> +++ b/drivers/infiniband/core/cm.c
+> @@ -34,6 +34,20 @@ MODULE_AUTHOR("Sean Hefty");
+>  MODULE_DESCRIPTION("InfiniBand CM");
+>  MODULE_LICENSE("Dual BSD/GPL");
+>  
+> +static unsigned long cm_destroy_id_wait_timeout_sec = 10;
+> +
+> +static struct ctl_table_header *cm_ctl_table_header;
+> +static struct ctl_table cm_ctl_table[] = {
+> +	{
+> +		.procname	= "destroy_id_wait_timeout_sec",
+> +		.data		= &cm_destroy_id_wait_timeout_sec,
+> +		.maxlen		= sizeof(cm_destroy_id_wait_timeout_sec),
+> +		.mode		= 0644,
+> +		.proc_handler	= proc_doulongvec_minmax,
+> +	},
+> +	{ }
+> +};
+> +
+>  static const char * const ibcm_rej_reason_strs[] = {
+>  	[IB_CM_REJ_NO_QP]			= "no QP",
+>  	[IB_CM_REJ_NO_EEC]			= "no EEC",
+> @@ -1025,10 +1039,20 @@ static void cm_reset_to_idle(struct cm_id_private *cm_id_priv)
+>  	}
+>  }
+>  
+> +static noinline void cm_destroy_id_wait_timeout(struct ib_cm_id *cm_id)
+> +{
+> +	struct cm_id_private *cm_id_priv;
+> +
+> +	cm_id_priv = container_of(cm_id, struct cm_id_private, id);
+> +	pr_err("%s: cm_id=%p timed out. state=%d refcnt=%d\n", __func__,
+> +	       cm_id, cm_id->state, refcount_read(&cm_id_priv->refcount));
+> +}
+> +
+>  static void cm_destroy_id(struct ib_cm_id *cm_id, int err)
+>  {
+>  	struct cm_id_private *cm_id_priv;
+>  	struct cm_work *work;
+> +	int ret;
+>  
+>  	cm_id_priv = container_of(cm_id, struct cm_id_private, id);
+>  	spin_lock_irq(&cm_id_priv->lock);
+> @@ -1135,7 +1159,14 @@ static void cm_destroy_id(struct ib_cm_id *cm_id, int err)
+>  
+>  	xa_erase(&cm.local_id_table, cm_local_id(cm_id->local_id));
+>  	cm_deref_id(cm_id_priv);
+> -	wait_for_completion(&cm_id_priv->comp);
+> +	do {
+> +		ret = wait_for_completion_timeout(&cm_id_priv->comp,
+> +						  msecs_to_jiffies(
+> +				cm_destroy_id_wait_timeout_sec * 1000));
+> +		if (!ret) /* timeout happened */
+> +			cm_destroy_id_wait_timeout(cm_id);
+> +	} while (!ret);
+> +
+>  	while ((work = cm_dequeue_work(cm_id_priv)) != NULL)
+>  		cm_free_work(work);
+>  
+> @@ -4505,6 +4536,10 @@ static int __init ib_cm_init(void)
+>  	ret = ib_register_client(&cm_client);
+>  	if (ret)
+>  		goto error3;
+> +	cm_ctl_table_header = register_net_sysctl(&init_net,
+> +						  "net/ib_cm", cm_ctl_table);
+> +	if (!cm_ctl_table_header)
+> +		pr_warn("ib_cm: couldn't register sysctl path, using default values\n");
+>  
+>  	return 0;
+>  error3:
+> @@ -4522,6 +4557,7 @@ static void __exit ib_cm_cleanup(void)
+>  		cancel_delayed_work(&timewait_info->work.work);
+>  	spin_unlock_irq(&cm.lock);
+>  
+> +	unregister_net_sysctl_table(cm_ctl_table_header);
+>  	ib_unregister_client(&cm_client);
+>  	destroy_workqueue(cm.wq);
+>  
+> -- 
+> 2.31.1
+> 
+> 
 
