@@ -1,44 +1,44 @@
-Return-Path: <linux-rdma+bounces-1205-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-1203-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 582BC870350
-	for <lists+linux-rdma@lfdr.de>; Mon,  4 Mar 2024 14:53:16 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3C08A87034B
+	for <lists+linux-rdma@lfdr.de>; Mon,  4 Mar 2024 14:53:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E6C8A1F25AFA
-	for <lists+linux-rdma@lfdr.de>; Mon,  4 Mar 2024 13:53:15 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id BFF20B221CF
+	for <lists+linux-rdma@lfdr.de>; Mon,  4 Mar 2024 13:53:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 38BF93F9E0;
-	Mon,  4 Mar 2024 13:52:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D15013EA83;
+	Mon,  4 Mar 2024 13:52:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b="jPMT5EX0"
+	dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b="m7HWS9FK"
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5D12F3DB9A;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5D1603E468;
 	Mon,  4 Mar 2024 13:52:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=13.77.154.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709560376; cv=none; b=Gv2bqYIuPZMn9t96Kk+Q/CY8hnHv7u2O48LIbroil1OHgt7ntz8kE2MaWR7woJCbuaoFE67B04rDZ50llfNCgjSgc8JLG/UOK3z1Sz+cEvXjuAVdoQAgktVhMfanppo6LcgHqjdXvlYhnEX4YQz/Y8cs39HE9UMDCYnBXLJGQy0=
+	t=1709560374; cv=none; b=B8UyPBKXrWvVtxaYut08Zk6mXnmW6d4jlLtFqv06HGFlPNpwPGSBZ9F5np7/5M9dBcPkMw2AYvSqZpwXFvuoCCRgRqlF8//FmNptFvW2VqDOi6jYpr6sYSSO6pepItHnvcEqbhUaZ6p2YREYpXzHykLwvhl2Xz7gQCS7anB85ec=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709560376; c=relaxed/simple;
-	bh=VgKcy/wt8otFtLEAxcf4FH/B26139TXWisSm6/+JazE=;
-	h=From:To:Cc:Subject:Date:Message-Id; b=VaN3olmLOQWcOwFn84yD0Stdp6NpRQzW4qEn8TxJ/mkRTnqcLu/vnw5kAQYhbMzOuVYcm4snz/xubMgJwXBwf4ta0Djn1vRNEAq+6iwTRpnEFmd5yqiJuf/cfc1ZdxSDJFr3atix1+2i86yjg6kshn8FiAex8ykfyS9tYIaKzuY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com; spf=pass smtp.mailfrom=linux.microsoft.com; dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b=jPMT5EX0; arc=none smtp.client-ip=13.77.154.182
+	s=arc-20240116; t=1709560374; c=relaxed/simple;
+	bh=Tj7WsO02oBY3rpOVtVkrmLamQ8bHlbEb+mt75vTTGAA=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References; b=AhVTqWNZ8MgjTNed0jtqHhQ3PTM5IMx5B3U1fT2uIpq6/s5BVaUOwc2Ehz+SqrPpFqe8TRYuVHjjGwoHqkNXsOdp2i9Qy/uwL6wZc4VY1ckyHeoQNBV+J6Nz5u2DYk+CDkNraH1qXm0f7W+Bphy5itFYNx9K5NgnC2Cofdo8kns=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com; spf=pass smtp.mailfrom=linux.microsoft.com; dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b=m7HWS9FK; arc=none smtp.client-ip=13.77.154.182
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.microsoft.com
 Received: from linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net (linux.microsoft.com [13.77.154.182])
-	by linux.microsoft.com (Postfix) with ESMTPSA id 1797020B74C0;
+	by linux.microsoft.com (Postfix) with ESMTPSA id 3050420B74C1;
 	Mon,  4 Mar 2024 05:52:47 -0800 (PST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 1797020B74C0
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 3050420B74C1
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
 	s=default; t=1709560367;
-	bh=PwpulH08AbMmhYDOwT7qW2eiML06lbhG8MMra/FdQ18=;
-	h=From:To:Cc:Subject:Date:From;
-	b=jPMT5EX0OAD69cpEVDfCC+1P+D2qcCpPIEVIiELZLGub/shudqSU96en2OZSzyMJ+
-	 HKJTlEn1pdwUlIIxD+VZ4wn8bgxYQ5jIAKuO81HIuDCyaUc5D9x5l/OH/n2WJqlLTk
-	 JTDHfNd87b6A9YISrYlptLiY+8zYcLdpseIGqyHo=
+	bh=KEd2yZoIBVvL18aDItKvfvTSbUPB7RV44kXga7k9ang=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=m7HWS9FKynD9hCTJb8HUvOydOjlW7R61XvzXbL3qC2Fp0G3EtiEA4XULAIUhamUB3
+	 rR9dFVAZVtsI89TlNepYowrsTV7CCr4F1LVdGNid7u8LwgnMV1rfobPaT2s+nUHNMv
+	 nDI5hLOb1f63vnGnbmerWmfQL3DQDrO64Mm8UCWs=
 From: Konstantin Taranov <kotaranov@linux.microsoft.com>
 To: kotaranov@microsoft.com,
 	sharmaajay@microsoft.com,
@@ -47,10 +47,12 @@ To: kotaranov@microsoft.com,
 	leon@kernel.org
 Cc: linux-rdma@vger.kernel.org,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH rdma-next v3 0/2] RDMA/mana_ib: Improve dma region creation
-Date: Mon,  4 Mar 2024 05:52:39 -0800
-Message-Id: <1709560361-26393-1-git-send-email-kotaranov@linux.microsoft.com>
+Subject: [PATCH rdma-next v3 1/2] RDMA/mana_ib: Fix bug in creation of dma regions
+Date: Mon,  4 Mar 2024 05:52:40 -0800
+Message-Id: <1709560361-26393-2-git-send-email-kotaranov@linux.microsoft.com>
 X-Mailer: git-send-email 1.8.3.1
+In-Reply-To: <1709560361-26393-1-git-send-email-kotaranov@linux.microsoft.com>
+References: <1709560361-26393-1-git-send-email-kotaranov@linux.microsoft.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
@@ -59,36 +61,27 @@ List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 
 From: Konstantin Taranov <kotaranov@microsoft.com>
 
-This patch series fixes an incorrect offset calculation for dma
-regions and adds new functions to create dma regions:
-1)  with iova
-2)  without iova but with zero dma offset
+Use ib_umem_dma_offset() helper to calculate correct dma offset.
 
-Changes:
-v1->v2:
-Split the patch into 2 commits
-In 1/2, Improved commit messages and added "Fixes:"
-In 2/2, Used correct helpers to get page size for iova and no-iova cases
-In 2/2, Introduced mana helpers to work with iova and no-iova cases
+Fixes: 0266a177631d ("RDMA/mana_ib: Add a driver for Microsoft Azure Network Adapter")
+Signed-off-by: Konstantin Taranov <kotaranov@microsoft.com>
+---
+ drivers/infiniband/hw/mana/main.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-v2->v3:
-In 2/2, Return -EINVAL on failed ib_umem_find_best_pgoff
-In 2/2, Improved commit message and added "Fixes:"
-
-Konstantin Taranov (2):
-  RDMA/mana_ib: Fix bug in creation of dma regions
-  RDMA/mana_ib: Use virtual address in dma regions for MRs
-
- drivers/infiniband/hw/mana/cq.c      |  4 +--
- drivers/infiniband/hw/mana/main.c    | 42 +++++++++++++++++++++-------
- drivers/infiniband/hw/mana/mana_ib.h |  7 +++--
- drivers/infiniband/hw/mana/mr.c      |  4 +--
- drivers/infiniband/hw/mana/qp.c      |  6 ++--
- drivers/infiniband/hw/mana/wq.c      |  4 +--
- 6 files changed, 46 insertions(+), 21 deletions(-)
-
-
-base-commit: 14b526f55ba5916856126f9793309fd6de5c5e7e
+diff --git a/drivers/infiniband/hw/mana/main.c b/drivers/infiniband/hw/mana/main.c
+index 29dd2438d..dd570832d 100644
+--- a/drivers/infiniband/hw/mana/main.c
++++ b/drivers/infiniband/hw/mana/main.c
+@@ -348,7 +348,7 @@ int mana_ib_gd_create_dma_region(struct mana_ib_dev *dev, struct ib_umem *umem,
+ 			     sizeof(struct gdma_create_dma_region_resp));
+ 
+ 	create_req->length = umem->length;
+-	create_req->offset_in_page = umem->address & (page_sz - 1);
++	create_req->offset_in_page = ib_umem_dma_offset(umem, page_sz);
+ 	create_req->gdma_page_type = order_base_2(page_sz) - PAGE_SHIFT;
+ 	create_req->page_count = num_pages_total;
+ 
 -- 
 2.43.0
 
