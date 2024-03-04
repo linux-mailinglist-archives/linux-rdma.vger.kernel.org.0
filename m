@@ -1,150 +1,134 @@
-Return-Path: <linux-rdma+bounces-1197-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-1198-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id C2F1086F88E
-	for <lists+linux-rdma@lfdr.de>; Mon,  4 Mar 2024 03:28:14 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0C18086F8DB
+	for <lists+linux-rdma@lfdr.de>; Mon,  4 Mar 2024 04:21:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 012601C20B28
-	for <lists+linux-rdma@lfdr.de>; Mon,  4 Mar 2024 02:28:14 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id BDD8B1F2149B
+	for <lists+linux-rdma@lfdr.de>; Mon,  4 Mar 2024 03:21:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BD9A81864;
-	Mon,  4 Mar 2024 02:28:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="GFbyjr7F"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B7CBF3D6D;
+	Mon,  4 Mar 2024 03:21:43 +0000 (UTC)
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from out-176.mta1.migadu.com (out-176.mta1.migadu.com [95.215.58.176])
+Received: from szxga04-in.huawei.com (szxga04-in.huawei.com [45.249.212.190])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D3C6715B7
-	for <linux-rdma@vger.kernel.org>; Mon,  4 Mar 2024 02:28:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BD1284688;
+	Mon,  4 Mar 2024 03:21:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.190
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709519287; cv=none; b=SR6PnjY9bm8WDJALVbA0B5HXO1uMOxOLCdYB7cXIC4Yf0FAxZ3u7Scv8o+AivxItSStXZBJ+6KSO7/XuAvQDiIr5d10R3tX4qnOOGAxCOOcD8GaQWa0lkS/JNie6ddATV3k8xGmWsfNAA2VUyIZ2E+RuNfaHI/1GYK45bdWnXuY=
+	t=1709522503; cv=none; b=WJsU1/g0QDXprEguzgCWFsOlkSoJvYe71y3ZLTXPh7SaphKfVePYHjBW3V2I2lIF4AJy45t0btCLfMVVnibh/tucjYqSaec7wjGptp8TdZmLzJKdsNL7ke7KUYQSdV7JYhEwJYmFo0pmIkipGzzV830V2oH1M+y9BWelFdmzt6s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709519287; c=relaxed/simple;
-	bh=Lxi/GwcyHffRZyDkM6ZiyzHoAvkPz9PAdQ08ZI1MKn4=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=eX1xV0fjsH0w7k2u8Q3g6GeZ48IjanEy8IhbY+l8l5T65Bgs9dvZbhQ3OE86v0tm4XyLWqrBBLnPQu50KgYslvXnVrPORUGkYiqBg4jMG4v8aX7x+z82LHvYxbQIuJOsFbfuHvPbRQOUAHoKv3pzQT+lmBw6e0hLmtXFFCsKf5M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=GFbyjr7F; arc=none smtp.client-ip=95.215.58.176
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <22df55f8-cf64-4aa8-8c0b-b556c867b926@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1709519282;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=AwmaRBK9f4xeTr2KKIZaEkYuoxsnConkJ3QY8WkxaG4=;
-	b=GFbyjr7FhhwloIRGYJbvYR2kjPjcVdcWEeIEFJysy6dwcV7/jHlDBt/GAmHusvPsiaRlNZ
-	UB7rrqP99IQeHRy17j5j5Kx45ucggNjfStR4c5A4+uGW1Gcy07R2jku2TzogQkWFWGB+PJ
-	j/QAT+SkCeRTAFVbxsPeNebm/D8kfjk=
-Date: Mon, 4 Mar 2024 03:27:52 +0100
+	s=arc-20240116; t=1709522503; c=relaxed/simple;
+	bh=N2l4Fs5hXrcVqwfcD1WSV5rE9juV2u+G8MIDGqfCf3g=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=qJwMyhmPRK2zLfU5HJoWry/R0HhfKYIKmZtyTPPx1bPnLYpBNjIFr6gArrjcEh6G6InzT46ZegUUHgps8xnVPffTYowDcIxj52INz5uOMYBE+JEayYXeMffpDU4lNxJ2sxG4QswnK88nL7WIubKIkAU5pS9ExkQcnfssCfmHmVE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.190
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.19.163.44])
+	by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4Tp3ph3G9fz1xq2D;
+	Mon,  4 Mar 2024 11:19:56 +0800 (CST)
+Received: from kwepemm600012.china.huawei.com (unknown [7.193.23.74])
+	by mail.maildlp.com (Postfix) with ESMTPS id A24AE14037E;
+	Mon,  4 Mar 2024 11:21:31 +0800 (CST)
+Received: from [10.174.178.220] (10.174.178.220) by
+ kwepemm600012.china.huawei.com (7.193.23.74) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.35; Mon, 4 Mar 2024 11:21:31 +0800
+Message-ID: <a7b2409c-4a3b-472d-a23a-87b12530be6d@huawei.com>
+Date: Mon, 4 Mar 2024 11:21:19 +0800
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [LSF/MM/BPF TOPIC] [LSF/MM/BPF ATTEND] : Two stage IOMMU DMA
- mapping operations
-To: Zhu Yanjun <zyjzyj2000@gmail.com>, Leon Romanovsky <leon@kernel.org>,
- Chaitanya Kulkarni <chaitanyak@nvidia.com>
-Cc: "lsf-pc@lists.linux-foundation.org" <lsf-pc@lists.linux-foundation.org>,
- "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
- "linux-nvme@lists.infradead.org" <linux-nvme@lists.infradead.org>,
- "iommu@lists.linux.dev" <iommu@lists.linux.dev>,
- linux-rdma <linux-rdma@vger.kernel.org>,
- "linux-mm@kvack.org" <linux-mm@kvack.org>, Jens Axboe <axboe@kernel.dk>,
- Bart Van Assche <bvanassche@acm.org>, "kbusch@kernel.org"
- <kbusch@kernel.org>, Damien Le Moal <damien.lemoal@opensource.wdc.com>,
- Amir Goldstein <amir73il@gmail.com>,
- "josef@toxicpanda.com" <josef@toxicpanda.com>,
- "Martin K. Petersen" <martin.petersen@oracle.com>,
- "daniel@iogearbox.net" <daniel@iogearbox.net>, Christoph Hellwig
- <hch@lst.de>, Dan Williams <dan.j.williams@intel.com>,
- "jack@suse.com" <jack@suse.com>, Jason Gunthorpe <jgg@nvidia.com>,
- Chuck Lever <chuck.lever@oracle.com>
-References: <97f385db-42c9-4c04-8fba-9b1ba8ffc525@nvidia.com>
- <20240227113007.GD1842804@unreal>
- <be75fe5b-9901-425c-8dbb-771dcb084e2e@linux.dev>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Zhu Yanjun <yanjun.zhu@linux.dev>
-In-Reply-To: <be75fe5b-9901-425c-8dbb-771dcb084e2e@linux.dev>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] RDMA/restrack: Fix potential invalid address access
+To: Leon Romanovsky <leon@kernel.org>
+CC: Jason Gunthorpe <jgg@ziepe.ca>, <linux-rdma@vger.kernel.org>,
+	<linux-kernel@vger.kernel.org>
+References: <20240301095514.3598280-1-haowenchao2@huawei.com>
+ <20240303125737.GB112581@unreal>
+Content-Language: en-US
+From: Wenchao Hao <haowenchao2@huawei.com>
+In-Reply-To: <20240303125737.GB112581@unreal>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
+ kwepemm600012.china.huawei.com (7.193.23.74)
 
-在 2024/3/3 17:43, Zhu Yanjun 写道:
-> On 27.02.24 12:30, Leon Romanovsky wrote:
->> On Tue, Feb 27, 2024 at 08:17:27AM +0000, Chaitanya Kulkarni wrote:
->>> Hi,
->>
->> <...>
->>
->>> In order to create a good platform for a concrete and meaningful
->>> discussion at LSFMM 24, we plan to post an RFC within the next two 
->>> weeks.
->>
->> The code can be found here 
->> https://git.kernel.org/pub/scm/linux/kernel/git/leon/linux-rdma.git/log/?h=dma-split
+On 2024/3/3 20:57, Leon Romanovsky wrote:
+> On Fri, Mar 01, 2024 at 05:55:15PM +0800, Wenchao Hao wrote:
+>> struct rdma_restrack_entry's kern_name was set to KBUILD_MODNAME
+>> in ib_create_cq(), while if the module exited but forgot del this
+>> rdma_restrack_entry, it would cause a invalid address access in
+>> rdma_restrack_clean() when print the owner of this rdma_restrack_entry.
 > 
-> Thanks a lot. I will delve into it. An interesting topic.
-
-The commits should be the followings. I am interested in them.
-
-5d8f8f35859c (HEAD -> dma-split, origin/dma-split) cover-letter: Split 
-IOMMU DMA mapping operation to two steps
-3beffcde0c12 vfio/mlx5: Convert vfio to use DMA link API
-acdfef1ccbcb vfio/mlx5: Explicitly store page list
-f16314362e66 vfio/mlx5: Rewrite create mkey flow to allow better code reuse
-763e753cd6ed vfio/mlx5: Explicitly use number of pages instead of 
-allocated length
-7f58ebf0cfc4 RDMA/umem: Prevent UMEM ODP creation with SWIOTLB
-f1c687fde096 RDMA/core: Separate DMA mapping to caching IOVA and page 
-linkage
-ffc81619c60d RDMA/umem: Store ODP access mask information in PFN
-67038d9e24fd RDMA/umem: Preallocate and cache IOVA for UMEM ODP
-ce141bccd409 iommu/dma: Implement link/unlink page callbacks
-1dd12d4a44d1 iommu/dma: Prepare map/unmap page functions to receive IOVA
-b9714667f54f iommu/dma: Provide an interface to allow preallocate IOVA
-21dbfc7fc2f1 dma-mapping: provide callbacks to link/unlink pages to 
-specific IOVA
-52689a26b87a dma-mapping: provide an interface to allocate IOVA
-34f8a8baecaa mm/hmm: let users to tag specific PFNs
-
-Zhu Yanjun
-
+> How is it possible to exit owner module without cleaning the resources?
 > 
-> Zhu Yanjun
+
+I meet this issue with one of our product who develop their owner kernel
+modules based on ib_core, and there are terrible logic with the exit
+code which cause resource leak.
+
+Of curse it's bug of module who did not clear resource when exit, but
+I think ib_core should avoid accessing memory of other modules directly
+to provides better stability.
+
+What's more, from the context of rdma_restrack_clean() when print
+"restack: %s %s object allocated by %s is not freed ...", it seems
+designed for the above scene where client has bug to alerts there
+are resource leak, so we should not panic on this log print.
+
+> Thanks
 > 
 >>
->> Thanks
+>> Fix this issue by using kstrdup() to set rdma_restrack_entry's
+>> kern_name.
 >>
->>>
->>> Required Attendees list :-
->>>
->>> Christoph Hellwig
->>> Jason Gunthorpe
->>> Jens Axboe
->>> Chuck Lever
->>> David Howells
->>> Keith Busch
->>> Bart Van Assche
->>> Damien Le Moal
->>> Martin Petersen
->>>
->>> -ck
->>>
->>> [1]
->>> https://lore.kernel.org/all/169772852492.5232.17148564580779995849.stgit@klimt.1015granger.net
->>> [2] https://lore.kernel.org/linux-iommu/20200708065014.GA5694@lst.de/
->>>
->>>
->>>
-> 
+>> Signed-off-by: Wenchao Hao <haowenchao2@huawei.com>
+>> ---
+>>   drivers/infiniband/core/restrack.c | 6 ++++--
+>>   1 file changed, 4 insertions(+), 2 deletions(-)
+>>
+>> diff --git a/drivers/infiniband/core/restrack.c b/drivers/infiniband/core/restrack.c
+>> index 01a499a8b88d..6605011c4edc 100644
+>> --- a/drivers/infiniband/core/restrack.c
+>> +++ b/drivers/infiniband/core/restrack.c
+>> @@ -177,7 +177,8 @@ static void rdma_restrack_attach_task(struct rdma_restrack_entry *res,
+>>   void rdma_restrack_set_name(struct rdma_restrack_entry *res, const char *caller)
+>>   {
+>>   	if (caller) {
+>> -		res->kern_name = caller;
+>> +		kfree(res->kern_name);
+>> +		res->kern_name = kstrdup(caller, GFP_KERNEL);
+>>   		return;
+>>   	}
+>>   
+>> @@ -195,7 +196,7 @@ void rdma_restrack_parent_name(struct rdma_restrack_entry *dst,
+>>   			       const struct rdma_restrack_entry *parent)
+>>   {
+>>   	if (rdma_is_kernel_res(parent))
+>> -		dst->kern_name = parent->kern_name;
+>> +		dst->kern_name = kstrdup(parent->kern_name, GFP_KERNEL);
+>>   	else
+>>   		rdma_restrack_attach_task(dst, parent->task);
+>>   }
+>> @@ -306,6 +307,7 @@ static void restrack_release(struct kref *kref)
+>>   		put_task_struct(res->task);
+>>   		res->task = NULL;
+>>   	}
+>> +	kfree(res->kern_name);
+>>   	complete(&res->comp);
+>>   }
+>>   
+>> -- 
+>> 2.32.0
+>>
 
 
