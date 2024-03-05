@@ -1,51 +1,85 @@
-Return-Path: <linux-rdma+bounces-1210-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-1211-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 21B5887159B
-	for <lists+linux-rdma@lfdr.de>; Tue,  5 Mar 2024 06:58:37 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1EC9A871A61
+	for <lists+linux-rdma@lfdr.de>; Tue,  5 Mar 2024 11:15:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 99C431F210EB
-	for <lists+linux-rdma@lfdr.de>; Tue,  5 Mar 2024 05:58:36 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 432641C20309
+	for <lists+linux-rdma@lfdr.de>; Tue,  5 Mar 2024 10:15:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E33CF79957;
-	Tue,  5 Mar 2024 05:57:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 03932548FA;
+	Tue,  5 Mar 2024 10:15:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="dht2/Dpq"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from szxga04-in.huawei.com (szxga04-in.huawei.com [45.249.212.190])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E68FA2AE95;
-	Tue,  5 Mar 2024 05:57:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.190
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 98F4E5476B;
+	Tue,  5 Mar 2024 10:15:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709618242; cv=none; b=V8I1TZQIh9OOFqN4d1ieflNSlaYcqvaIN49TQsJ2F5ePluvGT3qDJ6cHAKdt0oEHM1PiGjS7Xw5oYK1SNTFD8fZPlPkPHeoo+2GKgYrAitB5dnawAE9CXJC0Nfe3Hp78ShK9FhKNorWqOZ5nJm2eBxRjMpbMqiFlQm3ebbQv7MM=
+	t=1709633735; cv=none; b=N7pv3xHpC2EspyqLWaMFjoqfpsZkzCGQmnIkb4p+HTKwLrwf7uvBvh81AwfhtZSCq0mSlhEqLUidzavmu8I8wWEjb9xsyl/+DpIZfHvi4ryMkSbRM06niK8vzuzyqt3f1AZ7Z1SGl0J60E3LuJialoqTMXrOsSrUAWlA2GhKq/Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709618242; c=relaxed/simple;
-	bh=ls+B1ltP0N7/jwz/5QBBYJTT6qIm/m7EuCGiX3tgNZ4=;
-	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=Gv8gwa6CPNPIl/aFxmQrzm4EMNC66/+T+SR9J2tqncfMdS6+mbhKZbPAG+ZUg6Zo+y8OxyxLrnyeBhZF4oSi1AbfUZLXzelC/fTI3Bzj3nSNe2Ak5+zUn166yauyWZcUxW42VnCEw952vmrxJJRgHdyQUNKI21M3NfN/CjSqr68=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=hisilicon.com; spf=pass smtp.mailfrom=hisilicon.com; arc=none smtp.client-ip=45.249.212.190
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=hisilicon.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=hisilicon.com
-Received: from mail.maildlp.com (unknown [172.19.88.234])
-	by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4TplBw2ch5z2BfKn;
-	Tue,  5 Mar 2024 13:54:48 +0800 (CST)
-Received: from kwepemi500006.china.huawei.com (unknown [7.221.188.68])
-	by mail.maildlp.com (Postfix) with ESMTPS id 6F4FE1402CB;
-	Tue,  5 Mar 2024 13:57:08 +0800 (CST)
-Received: from localhost.localdomain (10.67.165.2) by
- kwepemi500006.china.huawei.com (7.221.188.68) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.35; Tue, 5 Mar 2024 13:57:07 +0800
-From: Junxian Huang <huangjunxian6@hisilicon.com>
-To: <jgg@ziepe.ca>, <leon@kernel.org>
-CC: <linux-rdma@vger.kernel.org>, <linuxarm@huawei.com>,
-	<linux-kernel@vger.kernel.org>, <huangjunxian6@hisilicon.com>
-Subject: [PATCH for-next] RDMA/hns: Append SCC context to the raw dump of QPC
-Date: Tue, 5 Mar 2024 13:52:57 +0800
-Message-ID: <20240305055257.823513-1-huangjunxian6@hisilicon.com>
-X-Mailer: git-send-email 2.30.0
+	s=arc-20240116; t=1709633735; c=relaxed/simple;
+	bh=NxhQVbYsKSwyvGgGk5qfaF5a/Y1wAzitab7stbdLKEk=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=QoNraEXOZU8c3enAclUe38SUoPsmVeyq4xtHhL32fwOPN5BJDesUPc7U93hx4KIxbs/Mj8lxu8kYAarQ43ki+QoUDgr5nCnxBChVgBBHRMnwTLVt5pXa6apEUa2TN2xWKH8My7CHIEZEKpDnJ5TGoYJ5wia+4LNZNPzc44NfU/4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=dht2/Dpq; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 60B40C433C7;
+	Tue,  5 Mar 2024 10:15:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1709633735;
+	bh=NxhQVbYsKSwyvGgGk5qfaF5a/Y1wAzitab7stbdLKEk=;
+	h=From:To:Cc:Subject:Date:From;
+	b=dht2/Dpq4PPEmsiwZonmgyZBoV9wxMtTHeSczSJDMWJ5eobUl70c2ZgWMQXg+WtEQ
+	 naNWBfwE6ikouY5FE0P1g8f1Q/OPTLNC/tepoMDKyBZSm20NDUTzv5dVNniqJsgdCg
+	 NkYzwGDGCV43oUjs6Dq+4Ptv0J1wh0lm0x4G/NF8JQrcHfCw9gdfZU4kVJxLK4nh7q
+	 N0RCDSkpk2BaEgalfmX3rzKWGGtuHYppmLwMgOEkpBLcy8p9qCa9tIFyZkJTIwtJYC
+	 lYccNUdQpF36PBZgvN07BPbvkh1X0ICzlejTffr1UDzXkF8B/dhK+TpjUw6/ELm9JI
+	 I8dxDOOUJz9QQ==
+From: Leon Romanovsky <leon@kernel.org>
+To: Christoph Hellwig <hch@lst.de>,
+	Robin Murphy <robin.murphy@arm.com>,
+	Marek Szyprowski <m.szyprowski@samsung.com>,
+	Joerg Roedel <joro@8bytes.org>,
+	Will Deacon <will@kernel.org>,
+	Jason Gunthorpe <jgg@ziepe.ca>,
+	Chaitanya Kulkarni <chaitanyak@nvidia.com>
+Cc: Jonathan Corbet <corbet@lwn.net>,
+	Jens Axboe <axboe@kernel.dk>,
+	Keith Busch <kbusch@kernel.org>,
+	Sagi Grimberg <sagi@grimberg.me>,
+	Yishai Hadas <yishaih@nvidia.com>,
+	Shameer Kolothum <shameerali.kolothum.thodi@huawei.com>,
+	Kevin Tian <kevin.tian@intel.com>,
+	Alex Williamson <alex.williamson@redhat.com>,
+	=?UTF-8?q?J=C3=A9r=C3=B4me=20Glisse?= <jglisse@redhat.com>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	linux-doc@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	linux-block@vger.kernel.org,
+	linux-rdma@vger.kernel.org,
+	iommu@lists.linux.dev,
+	linux-nvme@lists.infradead.org,
+	kvm@vger.kernel.org,
+	linux-mm@kvack.org,
+	Bart Van Assche <bvanassche@acm.org>,
+	Damien Le Moal <damien.lemoal@opensource.wdc.com>,
+	Amir Goldstein <amir73il@gmail.com>,
+	"josef@toxicpanda.com" <josef@toxicpanda.com>,
+	"Martin K. Petersen" <martin.petersen@oracle.com>,
+	"daniel@iogearbox.net" <daniel@iogearbox.net>,
+	Dan Williams <dan.j.williams@intel.com>,
+	"jack@suse.com" <jack@suse.com>,
+	Leon Romanovsky <leonro@nvidia.com>,
+	Zhu Yanjun <zyjzyj2000@gmail.com>
+Subject: [RFC 00/16] Split IOMMU DMA mapping operation to two steps
+Date: Tue,  5 Mar 2024 12:15:10 +0200
+Message-ID: <cover.1709631800.git.leon@kernel.org>
+X-Mailer: git-send-email 2.44.0
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
@@ -53,168 +87,95 @@ List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
- kwepemi500006.china.huawei.com (7.221.188.68)
 
-From: wenglianfa <wenglianfa@huawei.com>
+This is complimentary part to the proposed LSF/MM topic.
+https://lore.kernel.org/linux-rdma/22df55f8-cf64-4aa8-8c0b-b556c867b926@linux.dev/T/#m85672c860539fdbbc8fe0f5ccabdc05b40269057
 
-SCCC (SCC Context) is a context with QP granularity that contains
-information about congestion control. Dump SCCC and QPC together
-to improve troubleshooting.
+This is posted as RFC to get a feedback on proposed split, but RDMA, VFIO and
+DMA patches are ready for review and inclusion, the NVMe patches are still in
+progress as they require agreement on API first.
 
-When dumping raw QPC with rdmatool, there will be a total of 576 bytes
-data output, where the first 512 bytes is QPC and the last 64 bytes is
-SCCC. When congestion control is disabled, the 64 byte SCCC will be all 0.
+Thanks
 
-Example:
-$rdma res show qp -jpr
-[ {
-        "ifindex": 0,
-        "ifname": "hns_0",
-	"data": [ 67,0,0,0... 512bytes
-		  4,0,2... 64bytes]
-  },...
-} ]
+-------------------------------------------------------------------------------
+The DMA mapping operation performs two steps at one same time: allocates
+IOVA space and actually maps DMA pages to that space. This one shot
+operation works perfectly for non-complex scenarios, where callers use
+that DMA API in control path when they setup hardware.
 
-Signed-off-by: wenglianfa <wenglianfa@huawei.com>
-Signed-off-by: Junxian Huang <huangjunxian6@hisilicon.com>
----
- drivers/infiniband/hw/hns/hns_roce_cmd.h      |  3 +++
- drivers/infiniband/hw/hns/hns_roce_device.h   |  1 +
- drivers/infiniband/hw/hns/hns_roce_hw_v2.c    | 25 +++++++++++++++++++
- drivers/infiniband/hw/hns/hns_roce_hw_v2.h    |  6 +++++
- drivers/infiniband/hw/hns/hns_roce_restrack.c | 23 ++++++++++++++---
- 5 files changed, 55 insertions(+), 3 deletions(-)
+However in more complex scenarios, when DMA mapping is needed in data
+path and especially when some sort of specific datatype is involved,
+such one shot approach has its drawbacks.
 
-diff --git a/drivers/infiniband/hw/hns/hns_roce_cmd.h b/drivers/infiniband/hw/hns/hns_roce_cmd.h
-index 052a3d60905a..11dbbabebdc9 100644
---- a/drivers/infiniband/hw/hns/hns_roce_cmd.h
-+++ b/drivers/infiniband/hw/hns/hns_roce_cmd.h
-@@ -108,6 +108,9 @@ enum {
- 	HNS_ROCE_CMD_QUERY_CEQC		= 0x92,
- 	HNS_ROCE_CMD_DESTROY_CEQC	= 0x93,
- 
-+	/* SCC CTX commands */
-+	HNS_ROCE_CMD_QUERY_SCCC		= 0xa2,
-+
- 	/* SCC CTX BT commands */
- 	HNS_ROCE_CMD_READ_SCCC_BT0	= 0xa4,
- 	HNS_ROCE_CMD_WRITE_SCCC_BT0	= 0xa5,
-diff --git a/drivers/infiniband/hw/hns/hns_roce_device.h b/drivers/infiniband/hw/hns/hns_roce_device.h
-index bc015901a7d3..c3cbd0a494bf 100644
---- a/drivers/infiniband/hw/hns/hns_roce_device.h
-+++ b/drivers/infiniband/hw/hns/hns_roce_device.h
-@@ -947,6 +947,7 @@ struct hns_roce_hw {
- 	int (*query_qpc)(struct hns_roce_dev *hr_dev, u32 qpn, void *buffer);
- 	int (*query_mpt)(struct hns_roce_dev *hr_dev, u32 key, void *buffer);
- 	int (*query_srqc)(struct hns_roce_dev *hr_dev, u32 srqn, void *buffer);
-+	int (*query_sccc)(struct hns_roce_dev *hr_dev, u32 qpn, void *buffer);
- 	int (*query_hw_counter)(struct hns_roce_dev *hr_dev,
- 				u64 *stats, u32 port, int *hw_counters);
- 	const struct ib_device_ops *hns_roce_dev_ops;
-diff --git a/drivers/infiniband/hw/hns/hns_roce_hw_v2.c b/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
-index 38e426f4afb5..ba7ae792d279 100644
---- a/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
-+++ b/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
-@@ -5317,6 +5317,30 @@ static int hns_roce_v2_query_srqc(struct hns_roce_dev *hr_dev, u32 srqn,
- 	return ret;
- }
- 
-+static int hns_roce_v2_query_sccc(struct hns_roce_dev *hr_dev, u32 qpn,
-+				  void *buffer)
-+{
-+	struct hns_roce_v2_scc_context *context;
-+	struct hns_roce_cmd_mailbox *mailbox;
-+	int ret;
-+
-+	mailbox = hns_roce_alloc_cmd_mailbox(hr_dev);
-+	if (IS_ERR(mailbox))
-+		return PTR_ERR(mailbox);
-+
-+	ret = hns_roce_cmd_mbox(hr_dev, 0, mailbox->dma, HNS_ROCE_CMD_QUERY_SCCC,
-+				qpn);
-+	if (ret)
-+		goto out;
-+
-+	context = mailbox->buf;
-+	memcpy(buffer, context, sizeof(*context));
-+
-+out:
-+	hns_roce_free_cmd_mailbox(hr_dev, mailbox);
-+	return ret;
-+}
-+
- static u8 get_qp_timeout_attr(struct hns_roce_dev *hr_dev,
- 			      struct hns_roce_v2_qp_context *context)
- {
-@@ -6709,6 +6733,7 @@ static const struct hns_roce_hw hns_roce_hw_v2 = {
- 	.query_qpc = hns_roce_v2_query_qpc,
- 	.query_mpt = hns_roce_v2_query_mpt,
- 	.query_srqc = hns_roce_v2_query_srqc,
-+	.query_sccc = hns_roce_v2_query_sccc,
- 	.query_hw_counter = hns_roce_hw_v2_query_counter,
- 	.hns_roce_dev_ops = &hns_roce_v2_dev_ops,
- 	.hns_roce_dev_srq_ops = &hns_roce_v2_dev_srq_ops,
-diff --git a/drivers/infiniband/hw/hns/hns_roce_hw_v2.h b/drivers/infiniband/hw/hns/hns_roce_hw_v2.h
-index 359a74672ba1..df04bc8ede57 100644
---- a/drivers/infiniband/hw/hns/hns_roce_hw_v2.h
-+++ b/drivers/infiniband/hw/hns/hns_roce_hw_v2.h
-@@ -646,6 +646,12 @@ struct hns_roce_v2_qp_context {
- #define QPCEX_SQ_RQ_NOT_FORBID_EN QPCEX_FIELD_LOC(23, 23)
- #define QPCEX_STASH QPCEX_FIELD_LOC(82, 82)
- 
-+#define SCC_CONTEXT_SIZE 16
-+
-+struct hns_roce_v2_scc_context {
-+	__le32 data[SCC_CONTEXT_SIZE];
-+};
-+
- #define	V2_QP_RWE_S 1 /* rdma write enable */
- #define	V2_QP_RRE_S 2 /* rdma read enable */
- #define	V2_QP_ATE_S 3 /* rdma atomic enable */
-diff --git a/drivers/infiniband/hw/hns/hns_roce_restrack.c b/drivers/infiniband/hw/hns/hns_roce_restrack.c
-index f7f3c4cc7426..356d98816949 100644
---- a/drivers/infiniband/hw/hns/hns_roce_restrack.c
-+++ b/drivers/infiniband/hw/hns/hns_roce_restrack.c
-@@ -97,16 +97,33 @@ int hns_roce_fill_res_qp_entry_raw(struct sk_buff *msg, struct ib_qp *ib_qp)
- {
- 	struct hns_roce_dev *hr_dev = to_hr_dev(ib_qp->device);
- 	struct hns_roce_qp *hr_qp = to_hr_qp(ib_qp);
--	struct hns_roce_v2_qp_context context;
-+	struct hns_roce_full_qp_ctx {
-+		struct hns_roce_v2_qp_context qpc;
-+		struct hns_roce_v2_scc_context sccc;
-+	} context = {};
- 	int ret;
- 
- 	if (!hr_dev->hw->query_qpc)
- 		return -EINVAL;
- 
--	ret = hr_dev->hw->query_qpc(hr_dev, hr_qp->qpn, &context);
-+	ret = hr_dev->hw->query_qpc(hr_dev, hr_qp->qpn, &context.qpc);
- 	if (ret)
--		return -EINVAL;
-+		return ret;
-+
-+	/* If SCC is disabled or the query fails, the queried SCCC will
-+	 * be all 0.
-+	 */
-+	if (!(hr_dev->caps.flags & HNS_ROCE_CAP_FLAG_QP_FLOW_CTRL) ||
-+	    !hr_dev->hw->query_sccc)
-+		goto out;
-+
-+	ret = hr_dev->hw->query_sccc(hr_dev, hr_qp->qpn, &context.sccc);
-+	if (ret)
-+		ibdev_warn_ratelimited(&hr_dev->ib_dev,
-+				       "failed to query SCCC, ret = %d.\n",
-+				       ret);
- 
-+out:
- 	ret = nla_put(msg, RDMA_NLDEV_ATTR_RES_RAW, sizeof(context), &context);
- 
- 	return ret;
+That approach pushes developers to introduce new DMA APIs for specific
+datatype. For example existing scatter-gather mapping functions, or
+latest Chuck's RFC series to add biovec related DMA mapping [1] and
+probably struct folio will need it too.
+
+These advanced DMA mapping APIs are needed to calculate IOVA size to
+allocate it as one chunk and some sort of offset calculations to know
+which part of IOVA to map.
+
+Instead of teaching DMA to know these specific datatypes, let's separate
+existing DMA mapping routine to two steps and give an option to advanced
+callers (subsystems) perform all calculations internally in advance and
+map pages later when it is needed.
+
+In this series, three users are converted and each of such conversion
+presents different positive gain:
+1. RDMA simplifies and speeds up its pagefault handling for
+   on-demand-paging (ODP) mode.
+2. VFIO PCI live migration code saves huge chunk of memory.
+3. NVMe PCI avoids intermediate SG table manipulation and operates
+   directly on BIOs.
+
+Thanks
+
+[1] https://lore.kernel.org/all/169772852492.5232.17148564580779995849.stgit@klimt.1015granger.net
+
+Chaitanya Kulkarni (2):
+  block: add dma_link_range() based API
+  nvme-pci: use blk_rq_dma_map() for NVMe SGL
+
+Leon Romanovsky (14):
+  mm/hmm: let users to tag specific PFNs
+  dma-mapping: provide an interface to allocate IOVA
+  dma-mapping: provide callbacks to link/unlink pages to specific IOVA
+  iommu/dma: Provide an interface to allow preallocate IOVA
+  iommu/dma: Prepare map/unmap page functions to receive IOVA
+  iommu/dma: Implement link/unlink page callbacks
+  RDMA/umem: Preallocate and cache IOVA for UMEM ODP
+  RDMA/umem: Store ODP access mask information in PFN
+  RDMA/core: Separate DMA mapping to caching IOVA and page linkage
+  RDMA/umem: Prevent UMEM ODP creation with SWIOTLB
+  vfio/mlx5: Explicitly use number of pages instead of allocated length
+  vfio/mlx5: Rewrite create mkey flow to allow better code reuse
+  vfio/mlx5: Explicitly store page list
+  vfio/mlx5: Convert vfio to use DMA link API
+
+ Documentation/core-api/dma-attributes.rst |   7 +
+ block/blk-merge.c                         | 156 ++++++++++++++
+ drivers/infiniband/core/umem_odp.c        | 219 +++++++------------
+ drivers/infiniband/hw/mlx5/mlx5_ib.h      |   1 +
+ drivers/infiniband/hw/mlx5/odp.c          |  59 +++--
+ drivers/iommu/dma-iommu.c                 | 129 ++++++++---
+ drivers/nvme/host/pci.c                   | 220 +++++--------------
+ drivers/vfio/pci/mlx5/cmd.c               | 252 ++++++++++++----------
+ drivers/vfio/pci/mlx5/cmd.h               |  22 +-
+ drivers/vfio/pci/mlx5/main.c              | 136 +++++-------
+ include/linux/blk-mq.h                    |   9 +
+ include/linux/dma-map-ops.h               |  13 ++
+ include/linux/dma-mapping.h               |  39 ++++
+ include/linux/hmm.h                       |   3 +
+ include/rdma/ib_umem_odp.h                |  22 +-
+ include/rdma/ib_verbs.h                   |  54 +++++
+ kernel/dma/debug.h                        |   2 +
+ kernel/dma/direct.h                       |   7 +-
+ kernel/dma/mapping.c                      |  91 ++++++++
+ mm/hmm.c                                  |  34 +--
+ 20 files changed, 870 insertions(+), 605 deletions(-)
+
 -- 
-2.30.0
+2.44.0
 
 
