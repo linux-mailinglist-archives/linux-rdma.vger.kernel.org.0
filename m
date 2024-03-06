@@ -1,134 +1,113 @@
-Return-Path: <linux-rdma+bounces-1298-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-1299-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C9D1F87428A
-	for <lists+linux-rdma@lfdr.de>; Wed,  6 Mar 2024 23:14:24 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1E635874372
+	for <lists+linux-rdma@lfdr.de>; Thu,  7 Mar 2024 00:05:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 07B421C22D11
-	for <lists+linux-rdma@lfdr.de>; Wed,  6 Mar 2024 22:14:24 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CE45A281ED9
+	for <lists+linux-rdma@lfdr.de>; Wed,  6 Mar 2024 23:05:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6EA851BF20;
-	Wed,  6 Mar 2024 22:14:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F29AA1C68A;
+	Wed,  6 Mar 2024 23:05:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=amazon.com header.i=@amazon.com header.b="rFVGtz/+"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from verein.lst.de (verein.lst.de [213.95.11.211])
+Received: from smtp-fw-52002.amazon.com (smtp-fw-52002.amazon.com [52.119.213.150])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 397D61BDED;
-	Wed,  6 Mar 2024 22:14:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.95.11.211
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0C2A21C291;
+	Wed,  6 Mar 2024 23:05:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=52.119.213.150
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709763249; cv=none; b=mC+aEtdKRir+ZDMz1hq3oZCbUBtXUvtTxfI8MUwzI7oXsiNMi5ppyZujBv5+2gFzDwkYG4rtUvKbvRRU2jMxWfyrLXHtKAOfRefN0sSvkP3MpuzGM6o2lGewIyuxg3Z+g/1NjjgcNyR/qYJCTVHy9Nuug1N0XSPyYdpd6P5MLYI=
+	t=1709766316; cv=none; b=JqSEp4KBlp0xovbERtS4KSUM73XXDRfYYdbYJpwBq2QebZVDdLcl8b0Mb/HciWHhCPHCahDDdjV6yhWt2TKygxBY29IxO16nTuqySca5gc5ckhA2UHQRdwSad+7ZJWWV8o/lj9rPgjv2mePk9puzoyJJLcbFefdrnumJI1P1waU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709763249; c=relaxed/simple;
-	bh=ZRvTmNRqpxW4X0oWSN8HCjjORJ85EhOCc8pC07Wc42M=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=XtvzMfmGPb582tq6+GSaAy0xjP92NKZXNl33U7hyI+RJtj/r15n1IYIjx3rgnSG5loT7ditnPUtSQJDsaYG+khEAMb1iFmOcxXPeM6Km2uWvytakyFx3QUv72mZMYlo9RXqrTxwektPvOmzsQl6Q/kb5N/gj9lwODhSdFJoiCPQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=lst.de; spf=pass smtp.mailfrom=lst.de; arc=none smtp.client-ip=213.95.11.211
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=lst.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lst.de
-Received: by verein.lst.de (Postfix, from userid 2407)
-	id B087E68C4E; Wed,  6 Mar 2024 23:14:00 +0100 (CET)
-Date: Wed, 6 Mar 2024 23:14:00 +0100
-From: Christoph Hellwig <hch@lst.de>
-To: Jason Gunthorpe <jgg@ziepe.ca>
-Cc: Christoph Hellwig <hch@lst.de>, Leon Romanovsky <leon@kernel.org>,
-	Robin Murphy <robin.murphy@arm.com>,
-	Marek Szyprowski <m.szyprowski@samsung.com>,
-	Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
-	Chaitanya Kulkarni <chaitanyak@nvidia.com>,
-	Jonathan Corbet <corbet@lwn.net>, Jens Axboe <axboe@kernel.dk>,
-	Keith Busch <kbusch@kernel.org>, Sagi Grimberg <sagi@grimberg.me>,
-	Yishai Hadas <yishaih@nvidia.com>,
-	Shameer Kolothum <shameerali.kolothum.thodi@huawei.com>,
-	Kevin Tian <kevin.tian@intel.com>,
-	Alex Williamson <alex.williamson@redhat.com>,
-	=?iso-8859-1?B?Suly9G1l?= Glisse <jglisse@redhat.com>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-block@vger.kernel.org, linux-rdma@vger.kernel.org,
-	iommu@lists.linux.dev, linux-nvme@lists.infradead.org,
-	kvm@vger.kernel.org, linux-mm@kvack.org,
-	Bart Van Assche <bvanassche@acm.org>,
-	Damien Le Moal <damien.lemoal@opensource.wdc.com>,
-	Amir Goldstein <amir73il@gmail.com>,
-	"josef@toxicpanda.com" <josef@toxicpanda.com>,
-	"Martin K. Petersen" <martin.petersen@oracle.com>,
-	"daniel@iogearbox.net" <daniel@iogearbox.net>,
-	Dan Williams <dan.j.williams@intel.com>,
-	"jack@suse.com" <jack@suse.com>, Zhu Yanjun <zyjzyj2000@gmail.com>
-Subject: Re: [RFC RESEND 00/16] Split IOMMU DMA mapping operation to two
- steps
-Message-ID: <20240306221400.GA8663@lst.de>
-References: <cover.1709635535.git.leon@kernel.org> <47afacda-3023-4eb7-b227-5f725c3187c2@arm.com> <20240305122935.GB36868@unreal> <20240306144416.GB19711@lst.de> <20240306154328.GM9225@ziepe.ca> <20240306162022.GB28427@lst.de> <20240306174456.GO9225@ziepe.ca>
+	s=arc-20240116; t=1709766316; c=relaxed/simple;
+	bh=xhlIT+EZ1CJj0eq9kztu2VQgOq4D9T/87BnbZ1zDMP8=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=gilLqngupVU0ELV7K3TyF/IkRoHC8W+GPxiH8uAScn9ISzPPBP9TmLR1yPPAnmU85qoVjiRV4ijIWbS30gAeDJda06WXFGtwUgn37nfpTAA49y3C9mIaUQI1bPYZsEOWK5mqNPbLvcoReAj9+g9qqwMsHdFhrrrkm5Ysq4ezcrY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amazon.com; spf=pass smtp.mailfrom=amazon.co.jp; dkim=pass (1024-bit key) header.d=amazon.com header.i=@amazon.com header.b=rFVGtz/+; arc=none smtp.client-ip=52.119.213.150
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amazon.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=amazon.co.jp
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
+  t=1709766315; x=1741302315;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=4+xazsZ8auCGyyQth/zWsKS9gvCd2G2WMpDXe9b6wJs=;
+  b=rFVGtz/+bvP+I/LSfUeSmw3YaKyjSP1PYnh3Zx/vyUufRkb0zoBb6l90
+   ckWT/zYUfCcXTJCLkSH3e2FKspO2vY8Jf7F2O2OCgX1ssKOxWmXcBP4Vg
+   y6KB0Z89TZwGkNLd2Bjcln2F8sHkXvHlBX6sK2QxKBRxMGnM5Qvn0I/LZ
+   E=;
+X-IronPort-AV: E=Sophos;i="6.06,209,1705363200"; 
+   d="scan'208";a="617908178"
+Received: from iad12-co-svc-p1-lb1-vlan3.amazon.com (HELO smtpout.prod.us-west-2.prod.farcaster.email.amazon.dev) ([10.43.8.6])
+  by smtp-border-fw-52002.iad7.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Mar 2024 23:05:12 +0000
+Received: from EX19MTAUWA002.ant.amazon.com [10.0.38.20:61480]
+ by smtpin.naws.us-west-2.prod.farcaster.email.amazon.dev [10.0.45.183:2525] with esmtp (Farcaster)
+ id 8ecd97e6-5282-49cf-b0dc-2dad61813fcb; Wed, 6 Mar 2024 23:05:11 +0000 (UTC)
+X-Farcaster-Flow-ID: 8ecd97e6-5282-49cf-b0dc-2dad61813fcb
+Received: from EX19D004ANA001.ant.amazon.com (10.37.240.138) by
+ EX19MTAUWA002.ant.amazon.com (10.250.64.202) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1258.28; Wed, 6 Mar 2024 23:05:11 +0000
+Received: from 88665a182662.ant.amazon.com (10.187.171.26) by
+ EX19D004ANA001.ant.amazon.com (10.37.240.138) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1258.28; Wed, 6 Mar 2024 23:05:08 +0000
+From: Kuniyuki Iwashima <kuniyu@amazon.com>
+To: "David S. Miller" <davem@davemloft.net>, Eric Dumazet
+	<edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni
+	<pabeni@redhat.com>, Allison Henderson <allison.henderson@oracle.com>
+CC: Kuniyuki Iwashima <kuniyu@amazon.com>, Kuniyuki Iwashima
+	<kuni1840@gmail.com>, <netdev@vger.kernel.org>, <linux-rdma@vger.kernel.org>,
+	<rds-devel@oss.oracle.com>
+Subject: [PATCH v3 net 0/2] tcp/rds: Fix use-after-free around kernel TCP reqsk.
+Date: Wed, 6 Mar 2024 15:04:56 -0800
+Message-ID: <20240306230458.28784-1-kuniyu@amazon.com>
+X-Mailer: git-send-email 2.30.2
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240306174456.GO9225@ziepe.ca>
-User-Agent: Mutt/1.5.17 (2007-11-01)
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: EX19D032UWB004.ant.amazon.com (10.13.139.136) To
+ EX19D004ANA001.ant.amazon.com (10.37.240.138)
 
-On Wed, Mar 06, 2024 at 01:44:56PM -0400, Jason Gunthorpe wrote:
-> There is a list of interesting cases this has to cover:
-> 
->  1. Direct map. No dma_addr_t at unmap, multiple HW SGLs
->  2. IOMMU aligned map, no P2P. Only IOVA range at unmap, single HW SGLs
->  3. IOMMU aligned map, P2P. Only IOVA range at unmap, multiple HW SGLs
->  4. swiotlb single range. Only IOVA range at unmap, single HW SGL
->  5. swiotlb multi-range. All dma_addr_t's at unmap, multiple HW SGLs.
->  6. Unaligned IOMMU. Only IOVA range at unmap, multiple HW SGLs
-> 
-> I think we agree that 1 and 2 should be optimized highly as they are
-> the common case. That mainly means no dma_addr_t storage in either
+syzkaller reported an warning of netns ref tracker for RDS per-netns
+TCP listener, which commit 740ea3c4a0b2 ("tcp: Clean up kernel listener's
+reqsk in inet_twsk_purge()") fixed for per-netns ehash.
 
-I don't think you can do without dma_addr_t storage.  In most cases
-your can just store the dma_addr_t in the LE/BE encoded hardware
-SGL, so no extra storage should be needed though.
+This series fixes the bug in the partial fix and fixes the bug in the
+global ehash.
 
-> 3 is quite similar to 1, but it has the IOVA range at unmap.
 
-Can you explain what P2P case you mean?  The switch one with the
-bus address is indeed basically the same, just with potentioally a
-different offset, while the through host bridge case is the same
-as a normal iommu map.
+Changes:
+  v3:
+    * Drop patch 2, 3, 5
+    * Fix UAF by purging reqsk during netns dismantle.
 
-> 
-> 4 is basically the same as 2 from the driver's viewpoint
+  v2: https://lore.kernel.org/netdev/20240227011041.97375-1-kuniyu@amazon.com/
+    * Add patch 1, 3, 5
+    * Use __sock_create() instead of converting socket
+    * Drop Sowmini from CC as it's bounced (patchwork may complain)
 
-I'd actually treat it the same as one.
+  v1: https://lore.kernel.org/netdev/20240223172448.94084-1-kuniyu@amazon.com/
 
-> 5 is the slowest and has the most overhead.
 
-and 5 could be broken into multiple 4s at least for now.  Or do you
-have a different dfinition of range here?
+Kuniyuki Iwashima (2):
+  tcp: Restart iteration after removing reqsk in inet_twsk_purge().
+  rds: tcp: Fix use-after-free of net in reqsk_timer_handler().
 
-> So are you thinking something more like a driver flow of:
-> 
->   .. extent IO and get # aligned pages and know if there is P2P ..
->   dma_init_io(state, num_pages, p2p_flag)
->   if (dma_io_single_range(state)) {
->        // #2, #4
->        for each io()
-> 	    dma_link_aligned_pages(state, io range)
->        hw_sgl = (state->iova, state->len)
->   } else {
+ net/ipv4/inet_timewait_sock.c | 4 +++-
+ net/ipv4/tcp_minisocks.c      | 4 ----
+ 2 files changed, 3 insertions(+), 5 deletions(-)
 
-I think what you have a dma_io_single_range should become before
-the dma_init_io.  If we know we can't coalesce it really just is a
-dma_map_{single,page,bvec} loop, no need for any extra state.
-
-And we're back to roughly the proposal I sent out years ago.
-
-> This is not quite what you said, we split the driver flow based on
-> needing 1 HW SGL vs need many HW SGL.
-
-That's at least what I intended to say, and I'm a little curious as what
-it came across.
+-- 
+2.30.2
 
 
