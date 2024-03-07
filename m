@@ -1,211 +1,140 @@
-Return-Path: <linux-rdma+bounces-1310-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-1311-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C8C80874B32
-	for <lists+linux-rdma@lfdr.de>; Thu,  7 Mar 2024 10:46:17 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 19BDA874B4A
+	for <lists+linux-rdma@lfdr.de>; Thu,  7 Mar 2024 10:51:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 041461C21ADB
-	for <lists+linux-rdma@lfdr.de>; Thu,  7 Mar 2024 09:46:17 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C24051F21E41
+	for <lists+linux-rdma@lfdr.de>; Thu,  7 Mar 2024 09:51:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F02AB84FAF;
-	Thu,  7 Mar 2024 09:46:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5F5BC657DA;
+	Thu,  7 Mar 2024 09:51:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="AH/AUnFz"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="0oxxQjbI"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ed1-f54.google.com (mail-ed1-f54.google.com [209.85.208.54])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 96FF583A1E;
-	Thu,  7 Mar 2024 09:46:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7B2A983A19
+	for <linux-rdma@vger.kernel.org>; Thu,  7 Mar 2024 09:51:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709804771; cv=none; b=gQp6CIXwER/0E9I2OwS9+ChrnpgiLNvq2p33ygfzaqVE6qhTVe4knyYwpXKYFk2jrw7xHM5kOtfIlP+cXeRou1oVg4fPIja8C8uuRZRCEFWmS6C5SKBaurHON/2AQTmdgLvVfJMuXs1Dk03gWQ9vf41Z6eurdGafB5lqKgT0CRc=
+	t=1709805093; cv=none; b=KihJq/NNGytKnol1VmH/hyZ5Alu53KNkyvs57QqVlYCnk1dSbEBiPQLDheiOTnwWNMP8gHQaH1LRluTK3ODWj7imXJo4vBoP9usII+tfAt/LuYQ5XypluOJUp7PC4nxt0PUiBWBTpnFRuKmB/wgg0SsAPD5Zc0dqIhR6e/+bPN8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709804771; c=relaxed/simple;
-	bh=6VsiD8SLQTgIPu3KcR4RnXe86UoOR/RNVDH+JKHwmkg=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=qoMeCiVUyLIEwJuI5WCQg9fcGpi2Fy+0HZv5lNv64VG4MfQMMqPbArg+SdGkwUkrWGUAcvJravfcCyL8YvmQ95+iJ5XWUb4/0wM9L5kdHKaKYbNjp989PfuXp8me0nMPq8+5tC6/hffhZSCCujKIUfuTAOyzN8ix7r3XQZ9NY0Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=AH/AUnFz; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 11CCDC433C7;
-	Thu,  7 Mar 2024 09:46:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1709804770;
-	bh=6VsiD8SLQTgIPu3KcR4RnXe86UoOR/RNVDH+JKHwmkg=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=AH/AUnFzcV+qK+lPsZWAB2fhvlkQEllYm64SMrCb4vg+On5qh5qXj4VNCZDpyaWM3
-	 2C4o8rOk4hPuVG6F9y8iKGy5cbYNuNcW0aLm8CVS4d0OG7R8i430fiIez3aBvYLEEl
-	 wLYZ0Zg/9QnBc7Nif+wI2TQmNd9JDoF0NOJUYDUiZW6AP7gwoYPLARj5fsCYDOeUdC
-	 RNHNtkE0zGY06arCAI8kFGh0FZXTo7+atBGOWpRQOkL2WBAzVZzs7hiHkDONmZOmyI
-	 RaNsAVqVWChmAyXWD7SxBDkQ+6Tfai5A0cjq1rwBGyYZWiWVvuye2GSGCPnPiKWE6r
-	 I0aKnS35O7mWQ==
-Date: Thu, 7 Mar 2024 11:46:07 +0200
-From: Leon Romanovsky <leon@kernel.org>
-To: Manjunath Patil <manjunath.b.patil@oracle.com>
-Cc: dledford@redhat.com, jgg@ziepe.ca, linux-rdma@vger.kernel.org,
-	linux-kernel@vger.kernel.org, rama.nichanamatlu@oracle.com
-Subject: Re: [PATCH RFC] RDMA/cm: add timeout to cm_destroy_id wait
-Message-ID: <20240307094607.GB8392@unreal>
-References: <20240227200017.308719-1-manjunath.b.patil@oracle.com>
- <20240303095810.GA112581@unreal>
- <8265fa8e-3de1-444e-8f58-ec60c79d6a9c@oracle.com>
+	s=arc-20240116; t=1709805093; c=relaxed/simple;
+	bh=OoLMlL8GsN655bDWMNp6yhnWBK0A5xqnAO8a4esVDYU=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=l8WvyaR880U8Daog76P0N6fPSire9GL9dTussIYNeNYy7NkGj7iewah+CTd/GviRyNexy9u8nMv6NpCGeqIv1ofY4MTFMS50NouuJPRlBc4nRWLh6+4KZQcv6FdkhBaPttkWEFqtDIPnldcAlwGpIvWi6QLnYq761eWba/x1iBw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=0oxxQjbI; arc=none smtp.client-ip=209.85.208.54
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-ed1-f54.google.com with SMTP id 4fb4d7f45d1cf-5681b7f338aso2139a12.0
+        for <linux-rdma@vger.kernel.org>; Thu, 07 Mar 2024 01:51:31 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1709805089; x=1710409889; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=A+Pit7z1B8h/KOsLvU72CTirJvLWVseq9u0dIG76VEU=;
+        b=0oxxQjbIsdI5GfGlWwOxcvsCva9szXNYmpYn7b3CxNsbpsScFg0EUXxiEMzQzj1C/m
+         atzCIVNGvozcvwtLlf+H287wb5NXGfQyD5VNdaJ/A7tenFlD5jOiEdhOVT8mPFXXBD66
+         MZvVrKEIUaEKPoBRsJuGSc0olbJ3CqvHmG3MspBNsUBB4734cYp5feUy1ZCp3aP5FE14
+         GhwTBAigjlr6lZt10K5m7BdUV2mVq7OEFb1iXzzuEED5luhw2p1P9Plb8lpDiDikbr7o
+         Lt6Lu38rjzOnOrwuOUMNQgAUp0omI6c4uJ/pUiXHV2Wf9uPzNPXOqClw4HXRmX7NWZhf
+         bC4A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709805089; x=1710409889;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=A+Pit7z1B8h/KOsLvU72CTirJvLWVseq9u0dIG76VEU=;
+        b=dBfJ9bLX2KWujSDSmuL8K9VtrYrR1KNcoso5NfE4srKIqLnz8R1J+hpZ183RjUHO17
+         jFN90rt6EzRi1GqP57WP4L93sAOD3gx4pqniK20wUj0j7gROw4UhnjdLA5PnPXQNmmUf
+         HnZa5JDmDUwWsfkZCoERI7ZA1ekICAGQ3p8TzG5LTg1I5MbCFnEvMCPEzm+BrZocIcy2
+         pstizMaCtB5qP07nqrv/uVjlA2JMqFES9LBA52mLB4Zx1PidQdQmfTsQc/kCScvpiPNA
+         43OfIDnDKpsnwPHH+GjiILaXEs0P7j7q/1sf2ZvBlRhAwXokNRsRT3XkVUbE88ghno+/
+         ZXoQ==
+X-Forwarded-Encrypted: i=1; AJvYcCU95df7+ggOnjLf3eA6GinywrjYByOCW19AMsdzrDPcIdgideOApEMqXn2SSCTtZ1kML7bd8UmJn5nZpkaRz/upUIy46TwvBSLinA==
+X-Gm-Message-State: AOJu0YzdEzYYswu0zceGtPfBlRZzlND6+A3pSTZh3Pd0p0ijNMRgTFuc
+	XE+SJ92sofc8cpye+lLmz38LbfVxN7NVMDCgHCZuJiT1MIc0nwhaSTO/DJCc4leQwUc2D2vKnwJ
+	AWeEk96mtLXwmqjm/L8ElqtCFei3V2sIe5ZGh
+X-Google-Smtp-Source: AGHT+IFIRuO5DdJR5+yPgLVnKS4APhUblc5xEtSHYVniiMNUNiTQYEYwJ9d84Get/vODXDJbL2wJTUjsiBh9e528y5I=
+X-Received: by 2002:aa7:d053:0:b0:566:ec5f:891c with SMTP id
+ n19-20020aa7d053000000b00566ec5f891cmr188145edo.6.1709805089307; Thu, 07 Mar
+ 2024 01:51:29 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <8265fa8e-3de1-444e-8f58-ec60c79d6a9c@oracle.com>
+References: <20240306230458.28784-1-kuniyu@amazon.com> <20240306230458.28784-2-kuniyu@amazon.com>
+In-Reply-To: <20240306230458.28784-2-kuniyu@amazon.com>
+From: Eric Dumazet <edumazet@google.com>
+Date: Thu, 7 Mar 2024 10:51:15 +0100
+Message-ID: <CANn89iJP8gy24JOhwvydsDeVieAQFBmL4evt00vtOvW8tPPb7g@mail.gmail.com>
+Subject: Re: [PATCH v3 net 1/2] tcp: Restart iteration after removing reqsk in inet_twsk_purge().
+To: Kuniyuki Iwashima <kuniyu@amazon.com>
+Cc: "David S. Miller" <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>, 
+	Paolo Abeni <pabeni@redhat.com>, Allison Henderson <allison.henderson@oracle.com>, 
+	Kuniyuki Iwashima <kuni1840@gmail.com>, netdev@vger.kernel.org, linux-rdma@vger.kernel.org, 
+	rds-devel@oss.oracle.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Tue, Mar 05, 2024 at 02:59:11PM -0800, Manjunath Patil wrote:
-> 
-> 
-> On 3/3/24 1:58 AM, Leon Romanovsky wrote:
-> > On Tue, Feb 27, 2024 at 12:00:17PM -0800, Manjunath Patil wrote:
-> > > Add timeout to cm_destroy_id, so that userspace can trigger any data
-> > > collection that would help in analyzing the cause of delay in destroying
-> > > the cm_id.
-> > 
-> > Why doesn't rdmatool resource cm_id dump help to see stalled cm_ids?
-> Wouldn't this require us to know cm_id before hand?
-> 
-> I am unfamiliar with rdmatool. Can you explain how I use it to detect a stalled connection?
+On Thu, Mar 7, 2024 at 12:05=E2=80=AFAM Kuniyuki Iwashima <kuniyu@amazon.co=
+m> wrote:
+>
+> Commit 740ea3c4a0b2 ("tcp: Clean up kernel listener's reqsk in
+> inet_twsk_purge()") added changes in inet_twsk_purge() to purge
+> reqsk in per-netns ehash during netns dismantle.
+>
+> inet_csk_reqsk_queue_drop_and_put() will remove reqsk from per-netns
+> ehash, but the iteration uses sk_nulls_for_each_rcu(), which is not
+> safe.
+>
+> After removing reqsk, we need to restart iteration.
+>
+> Note that we need not check net->ns.count here because per-netns
+> ehash does not have reqsk in other live netns.  We will check
+> net->ns.count in the following patch.
+>
+> Fixes: 740ea3c4a0b2 ("tcp: Clean up kernel listener's reqsk in inet_twsk_=
+purge()")
+> Reported-by: Eric Dumazet <edumazet@google.com>
+> Signed-off-by: Kuniyuki Iwashima <kuniyu@amazon.com>
+> ---
+>  net/ipv4/inet_timewait_sock.c | 2 ++
+>  1 file changed, 2 insertions(+)
+>
+> diff --git a/net/ipv4/inet_timewait_sock.c b/net/ipv4/inet_timewait_sock.=
+c
+> index 5befa4de5b24..00cbebaa2c68 100644
+> --- a/net/ipv4/inet_timewait_sock.c
+> +++ b/net/ipv4/inet_timewait_sock.c
+> @@ -287,6 +287,8 @@ void inet_twsk_purge(struct inet_hashinfo *hashinfo, =
+int family)
+>                                         struct request_sock *req =3D inet=
+_reqsk(sk);
+>
+>                                         inet_csk_reqsk_queue_drop_and_put=
+(req->rsk_listener, req);
+> +
+> +                                       goto restart;
+>                                 }
+>
+>                                 continue;
 
-Please see it if it can help:
-https://www.man7.org/linux/man-pages/man8/rdma-resource.8.html
-rdma resource show cm_id ...
+Note how the RCU rules that I followed for TCP_TIME_WAIT made
+me to grab a reference on tw->tw_refcnt, using refcount_inc_not_zero()
 
-> I wouldn't know cm_id before hand to track it to see if that is stalled.
-> 
-> My intention is to have a script monitor for stalled connections[Ex: one of my connections was stuck in destroying it's cm_id] and trigger things like firmware dumps, enable more logging in related modules, crash node if this takes longer than few minutes etc.
-> 
-> The current logic is to, have this timeout trigger a function(which is traceable with ebpf/dtrace) in error path, if more than expected time is spent is destroying the cm_id.
+I think your code had multiple bugs, because
+inet_csk_reqsk_queue_drop_and_put() could cause UAF
+if the timer already fired and refcount went to zero already.
 
-I'm not against the idea to warn about stalled destroy_id, I'm against
-adding new knob to control this timeout.
-
-Thanks
-
-> 
-> -Thank you,
-> Manjunath
-> > 
-> > Thanks
-> > 
-> > > 
-> > > New noinline function helps dtrace/ebpf programs to hook on to it.
-> > > Existing functionality isn't changed except triggering a probe-able new
-> > > function at every timeout interval.
-> > > 
-> > > We have seen cases where CM messages stuck with MAD layer (either due to
-> > > software bug or faulty HCA), leading to cm_id getting stuck in the
-> > > following call stack. This patch helps in resolving such issues faster.
-> > > 
-> > > kernel: ... INFO: task XXXX:56778 blocked for more than 120 seconds.
-> > > ...
-> > > 	Call Trace:
-> > > 	__schedule+0x2bc/0x895
-> > > 	schedule+0x36/0x7c
-> > > 	schedule_timeout+0x1f6/0x31f
-> > >   	? __slab_free+0x19c/0x2ba
-> > > 	wait_for_completion+0x12b/0x18a
-> > > 	? wake_up_q+0x80/0x73
-> > > 	cm_destroy_id+0x345/0x610 [ib_cm]
-> > > 	ib_destroy_cm_id+0x10/0x20 [ib_cm]
-> > > 	rdma_destroy_id+0xa8/0x300 [rdma_cm]
-> > > 	ucma_destroy_id+0x13e/0x190 [rdma_ucm]
-> > > 	ucma_write+0xe0/0x160 [rdma_ucm]
-> > > 	__vfs_write+0x3a/0x16d
-> > > 	vfs_write+0xb2/0x1a1
-> > > 	? syscall_trace_enter+0x1ce/0x2b8
-> > > 	SyS_write+0x5c/0xd3
-> > > 	do_syscall_64+0x79/0x1b9
-> > > 	entry_SYSCALL_64_after_hwframe+0x16d/0x0
-> > > 
-> > > Signed-off-by: Manjunath Patil <manjunath.b.patil@oracle.com>
-> > > ---
-> > >   drivers/infiniband/core/cm.c | 38 +++++++++++++++++++++++++++++++++++-
-> > >   1 file changed, 37 insertions(+), 1 deletion(-)
-> > > 
-> > > diff --git a/drivers/infiniband/core/cm.c b/drivers/infiniband/core/cm.c
-> > > index ff58058aeadc..03f7b80efa77 100644
-> > > --- a/drivers/infiniband/core/cm.c
-> > > +++ b/drivers/infiniband/core/cm.c
-> > > @@ -34,6 +34,20 @@ MODULE_AUTHOR("Sean Hefty");
-> > >   MODULE_DESCRIPTION("InfiniBand CM");
-> > >   MODULE_LICENSE("Dual BSD/GPL");
-> > > +static unsigned long cm_destroy_id_wait_timeout_sec = 10;
-> > > +
-> > > +static struct ctl_table_header *cm_ctl_table_header;
-> > > +static struct ctl_table cm_ctl_table[] = {
-> > > +	{
-> > > +		.procname	= "destroy_id_wait_timeout_sec",
-> > > +		.data		= &cm_destroy_id_wait_timeout_sec,
-> > > +		.maxlen		= sizeof(cm_destroy_id_wait_timeout_sec),
-> > > +		.mode		= 0644,
-> > > +		.proc_handler	= proc_doulongvec_minmax,
-> > > +	},
-> > > +	{ }
-> > > +};
-> > > +
-> > >   static const char * const ibcm_rej_reason_strs[] = {
-> > >   	[IB_CM_REJ_NO_QP]			= "no QP",
-> > >   	[IB_CM_REJ_NO_EEC]			= "no EEC",
-> > > @@ -1025,10 +1039,20 @@ static void cm_reset_to_idle(struct cm_id_private *cm_id_priv)
-> > >   	}
-> > >   }
-> > > +static noinline void cm_destroy_id_wait_timeout(struct ib_cm_id *cm_id)
-> > > +{
-> > > +	struct cm_id_private *cm_id_priv;
-> > > +
-> > > +	cm_id_priv = container_of(cm_id, struct cm_id_private, id);
-> > > +	pr_err("%s: cm_id=%p timed out. state=%d refcnt=%d\n", __func__,
-> > > +	       cm_id, cm_id->state, refcount_read(&cm_id_priv->refcount));
-> > > +}
-> > > +
-> > >   static void cm_destroy_id(struct ib_cm_id *cm_id, int err)
-> > >   {
-> > >   	struct cm_id_private *cm_id_priv;
-> > >   	struct cm_work *work;
-> > > +	int ret;
-> > >   	cm_id_priv = container_of(cm_id, struct cm_id_private, id);
-> > >   	spin_lock_irq(&cm_id_priv->lock);
-> > > @@ -1135,7 +1159,14 @@ static void cm_destroy_id(struct ib_cm_id *cm_id, int err)
-> > >   	xa_erase(&cm.local_id_table, cm_local_id(cm_id->local_id));
-> > >   	cm_deref_id(cm_id_priv);
-> > > -	wait_for_completion(&cm_id_priv->comp);
-> > > +	do {
-> > > +		ret = wait_for_completion_timeout(&cm_id_priv->comp,
-> > > +						  msecs_to_jiffies(
-> > > +				cm_destroy_id_wait_timeout_sec * 1000));
-> > > +		if (!ret) /* timeout happened */
-> > > +			cm_destroy_id_wait_timeout(cm_id);
-> > > +	} while (!ret);
-> > > +
-> > >   	while ((work = cm_dequeue_work(cm_id_priv)) != NULL)
-> > >   		cm_free_work(work);
-> > > @@ -4505,6 +4536,10 @@ static int __init ib_cm_init(void)
-> > >   	ret = ib_register_client(&cm_client);
-> > >   	if (ret)
-> > >   		goto error3;
-> > > +	cm_ctl_table_header = register_net_sysctl(&init_net,
-> > > +						  "net/ib_cm", cm_ctl_table);
-> > > +	if (!cm_ctl_table_header)
-> > > +		pr_warn("ib_cm: couldn't register sysctl path, using default values\n");
-> > >   	return 0;
-> > >   error3:
-> > > @@ -4522,6 +4557,7 @@ static void __exit ib_cm_cleanup(void)
-> > >   		cancel_delayed_work(&timewait_info->work.work);
-> > >   	spin_unlock_irq(&cm.lock);
-> > > +	unregister_net_sysctl_table(cm_ctl_table_header);
-> > >   	ib_unregister_client(&cm_client);
-> > >   	destroy_workqueue(cm.wq);
-> > > -- 
-> > > 2.31.1
-> > > 
-> > > 
+We also could add sk_nulls_for_each_rcu_safe() to avoid these pesky
+"goto restart;"
 
