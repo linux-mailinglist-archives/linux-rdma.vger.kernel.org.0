@@ -1,256 +1,185 @@
-Return-Path: <linux-rdma+bounces-1326-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-1327-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 564118759A2
-	for <lists+linux-rdma@lfdr.de>; Thu,  7 Mar 2024 22:44:44 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id B01BF875A6A
+	for <lists+linux-rdma@lfdr.de>; Thu,  7 Mar 2024 23:44:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C15921F22A4C
-	for <lists+linux-rdma@lfdr.de>; Thu,  7 Mar 2024 21:44:43 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3C85C1F23343
+	for <lists+linux-rdma@lfdr.de>; Thu,  7 Mar 2024 22:44:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 91F4013E7EA;
-	Thu,  7 Mar 2024 21:44:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4001D39FFA;
+	Thu,  7 Mar 2024 22:44:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="ge7AlfuI"
+	dkim=pass (1024-bit key) header.d=amazon.com header.i=@amazon.com header.b="eFYHgJ9f"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.10])
+Received: from smtp-fw-80008.amazon.com (smtp-fw-80008.amazon.com [99.78.197.219])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 051AB13BAC3
-	for <linux-rdma@vger.kernel.org>; Thu,  7 Mar 2024 21:44:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.10
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 68EBA38398;
+	Thu,  7 Mar 2024 22:44:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=99.78.197.219
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709847869; cv=none; b=AQyinU28+5crx9i/fLD+xudBOUXiilB9bJtHyOaIHqD4t0Ek2zqEYH27FKovMbq/OWurLspZ0ll3KkWE9I9wCXvNYKm3mknFVqH7b2HO0fA6mcTBgo6MNVv+S0zQi/YFX0mf/aMl3YQZtCzl8OxdN8eGCSxCSdVieYy56H+RBpg=
+	t=1709851491; cv=none; b=ixgX1NLCt6ip+zSugkZhNvp8Jp6bm659ZgX+EAP10cASJcPQ966oFlloc7Y4M7iF6WVEK5F6jO7wscBU3+UPCFEkMV9G1azhJENXukldL7rGvHG9uVhhfPmhJZkdOvu+CFtXr8jlVPMn8hYrURmCQvzsF+lbGtXpcdzgS1RYYBM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709847869; c=relaxed/simple;
-	bh=UwTVCbxLMpATZ4+iBNBIVTomInTsBhPyvbJ9bfN51+0=;
-	h=Date:From:To:Cc:Subject:Message-ID; b=AqWAUGr9KgAnxS4k+nKvWDdBy8o255ZV2Ovtvm+SnweeqnSvcYBBCaxfMa56UW0Z5myaNMkCmWn3QoCLV9929bnjtBQ/NbrSKTdqBaefaQEAf/ZfkkyGYyJ4vj8oRxrXPV03v6fzBIs+DmEUn7u4Ej+Eku1Bv7DlIWfHsxMMUZQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=ge7AlfuI; arc=none smtp.client-ip=198.175.65.10
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1709847867; x=1741383867;
-  h=date:from:to:cc:subject:message-id;
-  bh=UwTVCbxLMpATZ4+iBNBIVTomInTsBhPyvbJ9bfN51+0=;
-  b=ge7AlfuIk+1KD9ipvrZZlB0ycdaycIK7orlXtXUDlMhibeZp6+duHLq1
-   WW10vVBPPziq9PxSCAg5ZUm7SmnjT7sAqVU2dT3o9O2M9+/JvEu8WbkG6
-   uD3TPSTvikJgfSUL0i4mrQSM3yUgQ0P+NUdg3zUt48D5V0nMVXrHGkx8w
-   7hMlUQe/dzDLPqzluyC+wshl4mlKupSrsgGJlkCR33Bbmsdac0Ed0PDnJ
-   Qfkon1X9ObAe91dTRF//86pSesZGnTACpXSlwGy0KT15vBTIrZPnnJa0m
-   CmJOXbHAgHQW8huhVICJYevyT7dxTpdluJjMI7ccPLuubqNxqFFXGD8P7
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,11006"; a="21999437"
-X-IronPort-AV: E=Sophos;i="6.07,107,1708416000"; 
-   d="scan'208";a="21999437"
-Received: from fmviesa004.fm.intel.com ([10.60.135.144])
-  by orvoesa102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Mar 2024 13:44:24 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,107,1708416000"; 
-   d="scan'208";a="14837357"
-Received: from lkp-server01.sh.intel.com (HELO b21307750695) ([10.239.97.150])
-  by fmviesa004.fm.intel.com with ESMTP; 07 Mar 2024 13:44:22 -0800
-Received: from kbuild by b21307750695 with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1riLXH-0005jF-2g;
-	Thu, 07 Mar 2024 21:44:19 +0000
-Date: Fri, 08 Mar 2024 05:43:45 +0800
-From: kernel test robot <lkp@intel.com>
-To: Leon Romanovsky <leon@kernel.org>
-Cc: Doug Ledford <dledford@redhat.com>,
- Jason Gunthorpe <jgg+lists@ziepe.ca>, linux-rdma@vger.kernel.org
-Subject: [rdma:wip/leon-for-next] BUILD SUCCESS
- 2d5c00815778ec4f4e0a84e405e3e157b7815db1
-Message-ID: <202403080540.xFVqzjQq-lkp@intel.com>
-User-Agent: s-nail v14.9.24
+	s=arc-20240116; t=1709851491; c=relaxed/simple;
+	bh=wkD6adteARyJgYYRu3MrdSFmoRw1Q8vJMLBjF+6FE0k=;
+	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=rRPRO6vLSeS/CqFsArp9IHlzSoHk35axKWIOdHYKNwf2ShzTS0AVG8bnydAEmgUzjrsvLQeMGTi7DiC2PqP1uzZdktKFjmfFBvDev8BN6QgduYAtjCuvw9/ibePcJyuRLIlSv4DEd8VIbWwMJjC4bIyvR4sWCPbgbfpu+dMZiwk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amazon.com; spf=pass smtp.mailfrom=amazon.co.jp; dkim=pass (1024-bit key) header.d=amazon.com header.i=@amazon.com header.b=eFYHgJ9f; arc=none smtp.client-ip=99.78.197.219
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amazon.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=amazon.co.jp
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
+  t=1709851489; x=1741387489;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=xI4kjzpat6l1cEcy6qPyGgoqE95a14RNNSjI2oOWK4Y=;
+  b=eFYHgJ9fHS0R5F3gEZ7AQGbS6JKR/qd3CjFbvC4pMVO7lJrCPTpSPSEM
+   DbBM5Q/X1YnLxnmCodEWAi9r3yT6kUbpQv88PAmxELutt90o4N6MTzRkD
+   +uiMsnLiBzwWQKw2kgW2fZRPR3hRekVTlRlgEoJlcEvOKHPD8tYBNQJcm
+   U=;
+X-IronPort-AV: E=Sophos;i="6.07,107,1708387200"; 
+   d="scan'208";a="71603403"
+Received: from pdx4-co-svc-p1-lb2-vlan3.amazon.com (HELO smtpout.prod.us-west-2.prod.farcaster.email.amazon.dev) ([10.25.36.214])
+  by smtp-border-fw-80008.pdx80.corp.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Mar 2024 22:44:46 +0000
+Received: from EX19MTAUWC002.ant.amazon.com [10.0.38.20:1720]
+ by smtpin.naws.us-west-2.prod.farcaster.email.amazon.dev [10.0.45.183:2525] with esmtp (Farcaster)
+ id c37515f5-e0aa-4a75-9067-720b0d17c378; Thu, 7 Mar 2024 22:44:40 +0000 (UTC)
+X-Farcaster-Flow-ID: c37515f5-e0aa-4a75-9067-720b0d17c378
+Received: from EX19D004ANA001.ant.amazon.com (10.37.240.138) by
+ EX19MTAUWC002.ant.amazon.com (10.250.64.143) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1258.28; Thu, 7 Mar 2024 22:44:36 +0000
+Received: from 88665a182662.ant.amazon.com.com (10.106.101.47) by
+ EX19D004ANA001.ant.amazon.com (10.37.240.138) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1258.28; Thu, 7 Mar 2024 22:44:33 +0000
+From: Kuniyuki Iwashima <kuniyu@amazon.com>
+To: <edumazet@google.com>
+CC: <allison.henderson@oracle.com>, <davem@davemloft.net>, <kuba@kernel.org>,
+	<kuni1840@gmail.com>, <kuniyu@amazon.com>, <linux-rdma@vger.kernel.org>,
+	<netdev@vger.kernel.org>, <pabeni@redhat.com>, <rds-devel@oss.oracle.com>
+Subject: Re: [PATCH v3 net 1/2] tcp: Restart iteration after removing reqsk in inet_twsk_purge().
+Date: Thu, 7 Mar 2024 14:44:23 -0800
+Message-ID: <20240307224423.53315-1-kuniyu@amazon.com>
+X-Mailer: git-send-email 2.30.2
+In-Reply-To: <CANn89iJP8gy24JOhwvydsDeVieAQFBmL4evt00vtOvW8tPPb7g@mail.gmail.com>
+References: <CANn89iJP8gy24JOhwvydsDeVieAQFBmL4evt00vtOvW8tPPb7g@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: EX19D032UWA002.ant.amazon.com (10.13.139.81) To
+ EX19D004ANA001.ant.amazon.com (10.37.240.138)
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git wip/leon-for-next
-branch HEAD: 2d5c00815778ec4f4e0a84e405e3e157b7815db1  RDMA/mana_ib: Use virtual address in dma regions for MRs
+From: Eric Dumazet <edumazet@google.com>
+Date: Thu, 7 Mar 2024 10:51:15 +0100
+> On Thu, Mar 7, 2024 at 12:05 AM Kuniyuki Iwashima <kuniyu@amazon.com> wrote:
+> >
+> > Commit 740ea3c4a0b2 ("tcp: Clean up kernel listener's reqsk in
+> > inet_twsk_purge()") added changes in inet_twsk_purge() to purge
+> > reqsk in per-netns ehash during netns dismantle.
+> >
+> > inet_csk_reqsk_queue_drop_and_put() will remove reqsk from per-netns
+> > ehash, but the iteration uses sk_nulls_for_each_rcu(), which is not
+> > safe.
+> >
+> > After removing reqsk, we need to restart iteration.
+> >
+> > Note that we need not check net->ns.count here because per-netns
+> > ehash does not have reqsk in other live netns.  We will check
+> > net->ns.count in the following patch.
+> >
+> > Fixes: 740ea3c4a0b2 ("tcp: Clean up kernel listener's reqsk in inet_twsk_purge()")
+> > Reported-by: Eric Dumazet <edumazet@google.com>
+> > Signed-off-by: Kuniyuki Iwashima <kuniyu@amazon.com>
+> > ---
+> >  net/ipv4/inet_timewait_sock.c | 2 ++
+> >  1 file changed, 2 insertions(+)
+> >
+> > diff --git a/net/ipv4/inet_timewait_sock.c b/net/ipv4/inet_timewait_sock.c
+> > index 5befa4de5b24..00cbebaa2c68 100644
+> > --- a/net/ipv4/inet_timewait_sock.c
+> > +++ b/net/ipv4/inet_timewait_sock.c
+> > @@ -287,6 +287,8 @@ void inet_twsk_purge(struct inet_hashinfo *hashinfo, int family)
+> >                                         struct request_sock *req = inet_reqsk(sk);
+> >
+> >                                         inet_csk_reqsk_queue_drop_and_put(req->rsk_listener, req);
+> > +
+> > +                                       goto restart;
+> >                                 }
+> >
+> >                                 continue;
+> 
+> Note how the RCU rules that I followed for TCP_TIME_WAIT made
+> me to grab a reference on tw->tw_refcnt, using refcount_inc_not_zero()
+> 
+> I think your code had multiple bugs, because
+> inet_csk_reqsk_queue_drop_and_put() could cause UAF
+> if the timer already fired and refcount went to zero already.
 
-elapsed time: 722m
+Ugh.. exactly.
+I'll post v4 following the TIME_WAIT path.
 
-configs tested: 166
-configs skipped: 3
+---8<---
+diff --git a/net/ipv4/inet_timewait_sock.c b/net/ipv4/inet_timewait_sock.c
+index 961b1917c3eb..c81f83893fc7 100644
+--- a/net/ipv4/inet_timewait_sock.c
++++ b/net/ipv4/inet_timewait_sock.c
+@@ -278,20 +278,32 @@ void inet_twsk_purge(struct inet_hashinfo *hashinfo, int family)
+ restart:
+ 		sk_nulls_for_each_rcu(sk, node, &head->chain) {
+ 			if (sk->sk_state != TCP_TIME_WAIT) {
++				struct request_sock *req;
++
++				if (likely(sk->sk_state != TCP_NEW_SYN_RECV))
++					continue;
++
+ 				/* A kernel listener socket might not hold refcnt for net,
+ 				 * so reqsk_timer_handler() could be fired after net is
+ 				 * freed.  Userspace listener and reqsk never exist here.
+ 				 */
+-				if (unlikely(sk->sk_state == TCP_NEW_SYN_RECV &&
+-					     !refcount_read(&sock_net(sk)->ns.count))) {
+-					struct request_sock *req = inet_reqsk(sk);
+ 
+-					inet_csk_reqsk_queue_drop_and_put(req->rsk_listener, req);
++				if (sk->sk_family != family ||
++				    refcount_read(&sock_net(sk)->ns.count))
++					continue;
++
++				req = inet_reqsk(sk);
++				if (unlikely(!refcount_inc_not_zero(&req->rsk_refcnt)))
++					continue;
+ 
+-					goto restart;
++				if (unlikely(sk->sk_family != family ||
++					     refcount_read(&sock_net(sk)->ns.count))) {
++					reqsk_put(req);
++					continue;
+ 				}
+ 
+-				continue;
++				inet_csk_reqsk_queue_drop_and_put(req->rsk_listener, req);
++				goto restart;
+ 			}
+ 
+ 			tw = inet_twsk(sk);
+---8<---
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
 
-tested configs:
-alpha                             allnoconfig   gcc  
-alpha                            allyesconfig   gcc  
-alpha                               defconfig   gcc  
-arc                              allmodconfig   gcc  
-arc                               allnoconfig   gcc  
-arc                              allyesconfig   gcc  
-arc                                 defconfig   gcc  
-arc                   randconfig-001-20240307   gcc  
-arc                   randconfig-002-20240307   gcc  
-arm                              alldefconfig   gcc  
-arm                              allmodconfig   gcc  
-arm                               allnoconfig   clang
-arm                              allyesconfig   gcc  
-arm                     am200epdkit_defconfig   gcc  
-arm                                 defconfig   clang
-arm                        neponset_defconfig   gcc  
-arm                           omap1_defconfig   gcc  
-arm                          pxa910_defconfig   gcc  
-arm                   randconfig-002-20240307   gcc  
-arm                   randconfig-003-20240307   gcc  
-arm                        shmobile_defconfig   gcc  
-arm64                            allmodconfig   clang
-arm64                             allnoconfig   gcc  
-arm64                               defconfig   gcc  
-arm64                 randconfig-001-20240307   gcc  
-arm64                 randconfig-002-20240307   gcc  
-arm64                 randconfig-003-20240307   gcc  
-csky                             allmodconfig   gcc  
-csky                              allnoconfig   gcc  
-csky                             allyesconfig   gcc  
-csky                                defconfig   gcc  
-csky                  randconfig-001-20240307   gcc  
-csky                  randconfig-002-20240307   gcc  
-hexagon                          allmodconfig   clang
-hexagon                           allnoconfig   clang
-hexagon                          allyesconfig   clang
-hexagon                             defconfig   clang
-i386                             allmodconfig   gcc  
-i386                              allnoconfig   gcc  
-i386                             allyesconfig   gcc  
-i386         buildonly-randconfig-001-20240307   clang
-i386         buildonly-randconfig-002-20240307   gcc  
-i386         buildonly-randconfig-003-20240307   clang
-i386         buildonly-randconfig-004-20240307   gcc  
-i386         buildonly-randconfig-005-20240307   gcc  
-i386         buildonly-randconfig-006-20240307   clang
-i386                                defconfig   clang
-i386                  randconfig-001-20240307   gcc  
-i386                  randconfig-002-20240307   gcc  
-i386                  randconfig-003-20240307   clang
-i386                  randconfig-004-20240307   gcc  
-i386                  randconfig-005-20240307   gcc  
-i386                  randconfig-006-20240307   clang
-i386                  randconfig-011-20240307   clang
-i386                  randconfig-012-20240307   gcc  
-i386                  randconfig-013-20240307   clang
-i386                  randconfig-014-20240307   clang
-i386                  randconfig-015-20240307   clang
-i386                  randconfig-016-20240307   clang
-loongarch                        allmodconfig   gcc  
-loongarch                         allnoconfig   gcc  
-loongarch                           defconfig   gcc  
-loongarch             randconfig-001-20240307   gcc  
-loongarch             randconfig-002-20240307   gcc  
-m68k                             allmodconfig   gcc  
-m68k                              allnoconfig   gcc  
-m68k                             allyesconfig   gcc  
-m68k                                defconfig   gcc  
-m68k                        m5272c3_defconfig   gcc  
-m68k                        stmark2_defconfig   gcc  
-microblaze                       allmodconfig   gcc  
-microblaze                        allnoconfig   gcc  
-microblaze                       allyesconfig   gcc  
-microblaze                          defconfig   gcc  
-mips                              allnoconfig   gcc  
-mips                             allyesconfig   gcc  
-mips                     loongson1c_defconfig   gcc  
-mips                          malta_defconfig   gcc  
-nios2                            allmodconfig   gcc  
-nios2                             allnoconfig   gcc  
-nios2                            allyesconfig   gcc  
-nios2                               defconfig   gcc  
-nios2                 randconfig-001-20240307   gcc  
-nios2                 randconfig-002-20240307   gcc  
-openrisc                          allnoconfig   gcc  
-openrisc                         allyesconfig   gcc  
-openrisc                            defconfig   gcc  
-parisc                           allmodconfig   gcc  
-parisc                            allnoconfig   gcc  
-parisc                           allyesconfig   gcc  
-parisc                              defconfig   gcc  
-parisc                randconfig-001-20240307   gcc  
-parisc                randconfig-002-20240307   gcc  
-parisc64                         alldefconfig   gcc  
-parisc64                            defconfig   gcc  
-powerpc                    adder875_defconfig   gcc  
-powerpc                          allmodconfig   gcc  
-powerpc                           allnoconfig   gcc  
-powerpc                          allyesconfig   clang
-powerpc                     powernv_defconfig   gcc  
-powerpc                         ps3_defconfig   gcc  
-powerpc               randconfig-001-20240307   gcc  
-powerpc               randconfig-002-20240307   gcc  
-powerpc               randconfig-003-20240307   gcc  
-powerpc                  storcenter_defconfig   gcc  
-powerpc64             randconfig-001-20240307   gcc  
-powerpc64             randconfig-002-20240307   gcc  
-powerpc64             randconfig-003-20240307   gcc  
-riscv                            allmodconfig   clang
-riscv                             allnoconfig   gcc  
-riscv                            allyesconfig   clang
-riscv                               defconfig   clang
-s390                             allmodconfig   clang
-s390                              allnoconfig   clang
-s390                             allyesconfig   gcc  
-s390                                defconfig   clang
-sh                               allmodconfig   gcc  
-sh                                allnoconfig   gcc  
-sh                               allyesconfig   gcc  
-sh                         ap325rxa_defconfig   gcc  
-sh                                  defconfig   gcc  
-sh                          kfr2r09_defconfig   gcc  
-sh                            migor_defconfig   gcc  
-sh                    randconfig-001-20240307   gcc  
-sh                    randconfig-002-20240307   gcc  
-sh                           se7343_defconfig   gcc  
-sh                           se7724_defconfig   gcc  
-sh                             sh03_defconfig   gcc  
-sh                            titan_defconfig   gcc  
-sh                          urquell_defconfig   gcc  
-sparc                            allmodconfig   gcc  
-sparc                             allnoconfig   gcc  
-sparc                               defconfig   gcc  
-sparc                       sparc32_defconfig   gcc  
-sparc64                          allmodconfig   gcc  
-sparc64                          allyesconfig   gcc  
-sparc64                             defconfig   gcc  
-sparc64               randconfig-001-20240307   gcc  
-sparc64               randconfig-002-20240307   gcc  
-um                               allmodconfig   clang
-um                                allnoconfig   clang
-um                               allyesconfig   gcc  
-um                                  defconfig   clang
-um                             i386_defconfig   gcc  
-um                    randconfig-001-20240307   gcc  
-um                           x86_64_defconfig   clang
-x86_64                            allnoconfig   clang
-x86_64                           allyesconfig   clang
-x86_64       buildonly-randconfig-004-20240307   clang
-x86_64       buildonly-randconfig-006-20240307   clang
-x86_64                              defconfig   gcc  
-x86_64                randconfig-003-20240307   clang
-x86_64                randconfig-006-20240307   clang
-x86_64                randconfig-014-20240307   clang
-x86_64                randconfig-015-20240307   clang
-x86_64                randconfig-016-20240307   clang
-x86_64                randconfig-073-20240307   clang
-x86_64                randconfig-075-20240307   clang
-x86_64                randconfig-076-20240307   clang
-x86_64                          rhel-8.3-rust   clang
-x86_64                               rhel-8.3   gcc  
-xtensa                            allnoconfig   gcc  
-xtensa                       common_defconfig   gcc  
-xtensa                randconfig-001-20240307   gcc  
-xtensa                randconfig-002-20240307   gcc  
-xtensa                         virt_defconfig   gcc  
+> 
+> We also could add sk_nulls_for_each_rcu_safe() to avoid these pesky
+> "goto restart;"
 
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+I'll post this followup for net-next in the next release cycle.
+
+Thanks!
 
