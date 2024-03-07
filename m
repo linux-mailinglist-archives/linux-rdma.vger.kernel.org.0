@@ -1,185 +1,116 @@
-Return-Path: <linux-rdma+bounces-1327-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-1328-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id B01BF875A6A
-	for <lists+linux-rdma@lfdr.de>; Thu,  7 Mar 2024 23:44:57 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0645A875B0B
+	for <lists+linux-rdma@lfdr.de>; Fri,  8 Mar 2024 00:22:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3C85C1F23343
-	for <lists+linux-rdma@lfdr.de>; Thu,  7 Mar 2024 22:44:57 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 38A8E1C213AA
+	for <lists+linux-rdma@lfdr.de>; Thu,  7 Mar 2024 23:22:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4001D39FFA;
-	Thu,  7 Mar 2024 22:44:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7AF5D47A76;
+	Thu,  7 Mar 2024 23:22:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=amazon.com header.i=@amazon.com header.b="eFYHgJ9f"
+	dkim=pass (1024-bit key) header.d=amazon.com header.i=@amazon.com header.b="qSKQUrzf"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from smtp-fw-80008.amazon.com (smtp-fw-80008.amazon.com [99.78.197.219])
+Received: from smtp-fw-52004.amazon.com (smtp-fw-52004.amazon.com [52.119.213.154])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 68EBA38398;
-	Thu,  7 Mar 2024 22:44:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=99.78.197.219
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 747AD46521;
+	Thu,  7 Mar 2024 23:22:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=52.119.213.154
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709851491; cv=none; b=ixgX1NLCt6ip+zSugkZhNvp8Jp6bm659ZgX+EAP10cASJcPQ966oFlloc7Y4M7iF6WVEK5F6jO7wscBU3+UPCFEkMV9G1azhJENXukldL7rGvHG9uVhhfPmhJZkdOvu+CFtXr8jlVPMn8hYrURmCQvzsF+lbGtXpcdzgS1RYYBM=
+	t=1709853731; cv=none; b=SdWrVgr0vZ6vWAh7i3xV+sblk5iBsHr3RTRT7iwz7ptHqQcWkxRQMXT4UpEJxEr28FycXjZKAHgsyo3lez16VWa7Ru9DG2Wf0QSN94csJmzf2RIds69eD+eu3kryIGLRZWvU9qF+WGUbw65UrF1D+YkSer01SgHg8jFFRSuEJzk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709851491; c=relaxed/simple;
-	bh=wkD6adteARyJgYYRu3MrdSFmoRw1Q8vJMLBjF+6FE0k=;
-	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=rRPRO6vLSeS/CqFsArp9IHlzSoHk35axKWIOdHYKNwf2ShzTS0AVG8bnydAEmgUzjrsvLQeMGTi7DiC2PqP1uzZdktKFjmfFBvDev8BN6QgduYAtjCuvw9/ibePcJyuRLIlSv4DEd8VIbWwMJjC4bIyvR4sWCPbgbfpu+dMZiwk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amazon.com; spf=pass smtp.mailfrom=amazon.co.jp; dkim=pass (1024-bit key) header.d=amazon.com header.i=@amazon.com header.b=eFYHgJ9f; arc=none smtp.client-ip=99.78.197.219
+	s=arc-20240116; t=1709853731; c=relaxed/simple;
+	bh=CVQ7hPIuBN6kugN9cx+m8wn5ReNrOunvCf+GLejAh2k=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=gU9Q7GZAFMmuEQZe12KDLan7x6XfvPRRfrmxY1Op+sqZPzb22vhClbGbyItgDg5VRiJHXHoIsuJMgGMEL9492QghLVvErn5xQh1IeFvlWYL5qY1GBGY28tgfuNVUfe675+R0ZvNU/zRa1XCWPpEYuFkgGJpaJjepoIDjQSrYaYQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amazon.com; spf=pass smtp.mailfrom=amazon.co.jp; dkim=pass (1024-bit key) header.d=amazon.com header.i=@amazon.com header.b=qSKQUrzf; arc=none smtp.client-ip=52.119.213.154
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amazon.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=amazon.co.jp
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
   d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1709851489; x=1741387489;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=xI4kjzpat6l1cEcy6qPyGgoqE95a14RNNSjI2oOWK4Y=;
-  b=eFYHgJ9fHS0R5F3gEZ7AQGbS6JKR/qd3CjFbvC4pMVO7lJrCPTpSPSEM
-   DbBM5Q/X1YnLxnmCodEWAi9r3yT6kUbpQv88PAmxELutt90o4N6MTzRkD
-   +uiMsnLiBzwWQKw2kgW2fZRPR3hRekVTlRlgEoJlcEvOKHPD8tYBNQJcm
-   U=;
+  t=1709853730; x=1741389730;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=O/sRC4ICj7amOdO4WXTxg0mc1+QeoUVckHKiORst4rg=;
+  b=qSKQUrzfXxeEGQg3Q7rIruFb0Awb/pz3ST4b5M2fj1kMGycCzB2a5lQ9
+   Z2K5tZUliy8pcT0dzq6arJ4Np/dVUaWAA95WSe/kIAL8ndiF/qDbP0GQN
+   wPt/FumM/VLh36F0BhvWa02f4b17MFDO3q2hjRMrvlC9p2ww57qNQ/1JD
+   s=;
 X-IronPort-AV: E=Sophos;i="6.07,107,1708387200"; 
-   d="scan'208";a="71603403"
-Received: from pdx4-co-svc-p1-lb2-vlan3.amazon.com (HELO smtpout.prod.us-west-2.prod.farcaster.email.amazon.dev) ([10.25.36.214])
-  by smtp-border-fw-80008.pdx80.corp.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Mar 2024 22:44:46 +0000
-Received: from EX19MTAUWC002.ant.amazon.com [10.0.38.20:1720]
- by smtpin.naws.us-west-2.prod.farcaster.email.amazon.dev [10.0.45.183:2525] with esmtp (Farcaster)
- id c37515f5-e0aa-4a75-9067-720b0d17c378; Thu, 7 Mar 2024 22:44:40 +0000 (UTC)
-X-Farcaster-Flow-ID: c37515f5-e0aa-4a75-9067-720b0d17c378
+   d="scan'208";a="190085491"
+Received: from iad12-co-svc-p1-lb1-vlan2.amazon.com (HELO smtpout.prod.us-west-2.prod.farcaster.email.amazon.dev) ([10.43.8.2])
+  by smtp-border-fw-52004.iad7.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Mar 2024 23:22:07 +0000
+Received: from EX19MTAUWB001.ant.amazon.com [10.0.7.35:46579]
+ by smtpin.naws.us-west-2.prod.farcaster.email.amazon.dev [10.0.28.13:2525] with esmtp (Farcaster)
+ id fae2de8a-f1a2-4feb-8010-b418ff1fc41e; Thu, 7 Mar 2024 23:22:05 +0000 (UTC)
+X-Farcaster-Flow-ID: fae2de8a-f1a2-4feb-8010-b418ff1fc41e
 Received: from EX19D004ANA001.ant.amazon.com (10.37.240.138) by
- EX19MTAUWC002.ant.amazon.com (10.250.64.143) with Microsoft SMTP Server
+ EX19MTAUWB001.ant.amazon.com (10.250.64.248) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1258.28; Thu, 7 Mar 2024 22:44:36 +0000
+ 15.2.1258.28; Thu, 7 Mar 2024 23:22:05 +0000
 Received: from 88665a182662.ant.amazon.com.com (10.106.101.47) by
  EX19D004ANA001.ant.amazon.com (10.37.240.138) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1258.28; Thu, 7 Mar 2024 22:44:33 +0000
+ 15.2.1258.28; Thu, 7 Mar 2024 23:22:02 +0000
 From: Kuniyuki Iwashima <kuniyu@amazon.com>
-To: <edumazet@google.com>
-CC: <allison.henderson@oracle.com>, <davem@davemloft.net>, <kuba@kernel.org>,
-	<kuni1840@gmail.com>, <kuniyu@amazon.com>, <linux-rdma@vger.kernel.org>,
-	<netdev@vger.kernel.org>, <pabeni@redhat.com>, <rds-devel@oss.oracle.com>
-Subject: Re: [PATCH v3 net 1/2] tcp: Restart iteration after removing reqsk in inet_twsk_purge().
-Date: Thu, 7 Mar 2024 14:44:23 -0800
-Message-ID: <20240307224423.53315-1-kuniyu@amazon.com>
+To: "David S. Miller" <davem@davemloft.net>, Eric Dumazet
+	<edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni
+	<pabeni@redhat.com>, Allison Henderson <allison.henderson@oracle.com>
+CC: Kuniyuki Iwashima <kuniyu@amazon.com>, Kuniyuki Iwashima
+	<kuni1840@gmail.com>, <netdev@vger.kernel.org>, <linux-rdma@vger.kernel.org>,
+	<rds-devel@oss.oracle.com>
+Subject: [PATCH v4 net 0/2] tcp/rds: Fix use-after-free around kernel TCP reqsk.
+Date: Thu, 7 Mar 2024 15:21:49 -0800
+Message-ID: <20240307232151.55963-1-kuniyu@amazon.com>
 X-Mailer: git-send-email 2.30.2
-In-Reply-To: <CANn89iJP8gy24JOhwvydsDeVieAQFBmL4evt00vtOvW8tPPb7g@mail.gmail.com>
-References: <CANn89iJP8gy24JOhwvydsDeVieAQFBmL4evt00vtOvW8tPPb7g@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: EX19D032UWA002.ant.amazon.com (10.13.139.81) To
+Content-Type: text/plain
+X-ClientProxiedBy: EX19D042UWA001.ant.amazon.com (10.13.139.92) To
  EX19D004ANA001.ant.amazon.com (10.37.240.138)
 
-From: Eric Dumazet <edumazet@google.com>
-Date: Thu, 7 Mar 2024 10:51:15 +0100
-> On Thu, Mar 7, 2024 at 12:05 AM Kuniyuki Iwashima <kuniyu@amazon.com> wrote:
-> >
-> > Commit 740ea3c4a0b2 ("tcp: Clean up kernel listener's reqsk in
-> > inet_twsk_purge()") added changes in inet_twsk_purge() to purge
-> > reqsk in per-netns ehash during netns dismantle.
-> >
-> > inet_csk_reqsk_queue_drop_and_put() will remove reqsk from per-netns
-> > ehash, but the iteration uses sk_nulls_for_each_rcu(), which is not
-> > safe.
-> >
-> > After removing reqsk, we need to restart iteration.
-> >
-> > Note that we need not check net->ns.count here because per-netns
-> > ehash does not have reqsk in other live netns.  We will check
-> > net->ns.count in the following patch.
-> >
-> > Fixes: 740ea3c4a0b2 ("tcp: Clean up kernel listener's reqsk in inet_twsk_purge()")
-> > Reported-by: Eric Dumazet <edumazet@google.com>
-> > Signed-off-by: Kuniyuki Iwashima <kuniyu@amazon.com>
-> > ---
-> >  net/ipv4/inet_timewait_sock.c | 2 ++
-> >  1 file changed, 2 insertions(+)
-> >
-> > diff --git a/net/ipv4/inet_timewait_sock.c b/net/ipv4/inet_timewait_sock.c
-> > index 5befa4de5b24..00cbebaa2c68 100644
-> > --- a/net/ipv4/inet_timewait_sock.c
-> > +++ b/net/ipv4/inet_timewait_sock.c
-> > @@ -287,6 +287,8 @@ void inet_twsk_purge(struct inet_hashinfo *hashinfo, int family)
-> >                                         struct request_sock *req = inet_reqsk(sk);
-> >
-> >                                         inet_csk_reqsk_queue_drop_and_put(req->rsk_listener, req);
-> > +
-> > +                                       goto restart;
-> >                                 }
-> >
-> >                                 continue;
-> 
-> Note how the RCU rules that I followed for TCP_TIME_WAIT made
-> me to grab a reference on tw->tw_refcnt, using refcount_inc_not_zero()
-> 
-> I think your code had multiple bugs, because
-> inet_csk_reqsk_queue_drop_and_put() could cause UAF
-> if the timer already fired and refcount went to zero already.
+syzkaller reported an warning of netns ref tracker for RDS TCP listener,
+which commit 740ea3c4a0b2 ("tcp: Clean up kernel listener's reqsk in
+inet_twsk_purge()") fixed for per-netns ehash.
 
-Ugh.. exactly.
-I'll post v4 following the TIME_WAIT path.
-
----8<---
-diff --git a/net/ipv4/inet_timewait_sock.c b/net/ipv4/inet_timewait_sock.c
-index 961b1917c3eb..c81f83893fc7 100644
---- a/net/ipv4/inet_timewait_sock.c
-+++ b/net/ipv4/inet_timewait_sock.c
-@@ -278,20 +278,32 @@ void inet_twsk_purge(struct inet_hashinfo *hashinfo, int family)
- restart:
- 		sk_nulls_for_each_rcu(sk, node, &head->chain) {
- 			if (sk->sk_state != TCP_TIME_WAIT) {
-+				struct request_sock *req;
-+
-+				if (likely(sk->sk_state != TCP_NEW_SYN_RECV))
-+					continue;
-+
- 				/* A kernel listener socket might not hold refcnt for net,
- 				 * so reqsk_timer_handler() could be fired after net is
- 				 * freed.  Userspace listener and reqsk never exist here.
- 				 */
--				if (unlikely(sk->sk_state == TCP_NEW_SYN_RECV &&
--					     !refcount_read(&sock_net(sk)->ns.count))) {
--					struct request_sock *req = inet_reqsk(sk);
- 
--					inet_csk_reqsk_queue_drop_and_put(req->rsk_listener, req);
-+				if (sk->sk_family != family ||
-+				    refcount_read(&sock_net(sk)->ns.count))
-+					continue;
-+
-+				req = inet_reqsk(sk);
-+				if (unlikely(!refcount_inc_not_zero(&req->rsk_refcnt)))
-+					continue;
- 
--					goto restart;
-+				if (unlikely(sk->sk_family != family ||
-+					     refcount_read(&sock_net(sk)->ns.count))) {
-+					reqsk_put(req);
-+					continue;
- 				}
- 
--				continue;
-+				inet_csk_reqsk_queue_drop_and_put(req->rsk_listener, req);
-+				goto restart;
- 			}
- 
- 			tw = inet_twsk(sk);
----8<---
+This series fixes the bug in the partial fix and fixes the reported bug
+in the global ehash.
 
 
-> 
-> We also could add sk_nulls_for_each_rcu_safe() to avoid these pesky
-> "goto restart;"
+Changes:
+  v4:
+    * Add sk_family/refcnt check in inet_twsk_purge().
 
-I'll post this followup for net-next in the next release cycle.
+  v3: https://lore.kernel.org/netdev/20240307224423.53315-1-kuniyu@amazon.com/
+    * Drop patch 2, 3, 5
+    * Fix uaf by iterating ehash and purging reqsk during netns dismantle.
 
-Thanks!
+  v2: https://lore.kernel.org/netdev/20240227011041.97375-1-kuniyu@amazon.com/
+    * Add patch 1, 3, 5
+    * Use __sock_create() instead of converting socket
+    * Drop Sowmini from CC as it's bounced (patchwork may complain)
+
+  v1: https://lore.kernel.org/netdev/20240223172448.94084-1-kuniyu@amazon.com/
+
+
+Kuniyuki Iwashima (2):
+  tcp: Fix use-after-free in inet_twsk_purge().
+  rds: tcp: Fix use-after-free of net in reqsk_timer_handler().
+
+ net/ipv4/inet_timewait_sock.c | 24 +++++++++++++++++++-----
+ net/ipv4/tcp_minisocks.c      |  4 ----
+ 2 files changed, 19 insertions(+), 9 deletions(-)
+
+-- 
+2.30.2
+
 
