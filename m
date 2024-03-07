@@ -1,244 +1,265 @@
-Return-Path: <linux-rdma+bounces-1324-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-1325-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 80895875802
-	for <lists+linux-rdma@lfdr.de>; Thu,  7 Mar 2024 21:14:18 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id DB0D98758F3
+	for <lists+linux-rdma@lfdr.de>; Thu,  7 Mar 2024 22:01:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A486A1C21A15
-	for <lists+linux-rdma@lfdr.de>; Thu,  7 Mar 2024 20:14:17 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 1542BB212AC
+	for <lists+linux-rdma@lfdr.de>; Thu,  7 Mar 2024 21:01:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 11C19138481;
-	Thu,  7 Mar 2024 20:14:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9754613A27C;
+	Thu,  7 Mar 2024 21:01:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="F9QIhhyi";
-	dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b="apdIQ0k0"
+	dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b="Z/DCRVlM"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mx0b-00069f02.pphosted.com (mx0b-00069f02.pphosted.com [205.220.177.32])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-oa1-f43.google.com (mail-oa1-f43.google.com [209.85.160.43])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B70B41DA2F;
-	Thu,  7 Mar 2024 20:14:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=205.220.177.32
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709842452; cv=fail; b=Tff4hmdmUAkxS7JmpZqRWswOGj3s4M9McrWFkWi1HORbUWPKcUioJ1dGO1C7JlL5QWQqZH1DU7gS4yqVWpIeYyHuTIBojsOIZLc3wMkbt7kh07iIYo5TOGH/W97YDb5/QGVLXVOZdBS4SLuI7PAxihZnLpGTS/+DHsA53fORgxc=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709842452; c=relaxed/simple;
-	bh=f9KO4Dj6QO87Aweo7d9C5iHQ7tBphXkheTjIDszrE8g=;
-	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
-	 Content-Type:MIME-Version; b=G4WyGmkwt2UKaHERH0ZV6maFaN7bRwrZN3m0nLD37Ncmkh7omlI7QQjOyErLtG3ExuHAA+WXKx+jBjlgC6qc2/PNnx/pbBs+0zdiLMF96Jw9fGh/9q6tfgqo9rzRs/2Gxrk5qKFjKauJhKISzuKPiaVgCt0hgru62/1Xd7cmE58=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=oracle.com; spf=pass smtp.mailfrom=oracle.com; dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b=F9QIhhyi; dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b=apdIQ0k0; arc=fail smtp.client-ip=205.220.177.32
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=oracle.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oracle.com
-Received: from pps.filterd (m0246631.ppops.net [127.0.0.1])
-	by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 427Jhpib011618;
-	Thu, 7 Mar 2024 20:14:00 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
- subject : date : message-id : references : in-reply-to : content-type :
- content-id : content-transfer-encoding : mime-version; s=corp-2023-11-20;
- bh=f9KO4Dj6QO87Aweo7d9C5iHQ7tBphXkheTjIDszrE8g=;
- b=F9QIhhyilAsqBmom+sYEvAHQXzgWX5FTvn+QSrzNuE3XSQMsU3BwoBMUouI274X1OMWB
- gOFUQGWdM6QQ7SdDdBi81fS3OmJBKJcHUr3mCTbVR5IYQ4F4e2JPpEw409siWtWRtaz7
- na+WmtO+/7X9owlRFuUMS6ilxKX6FtFica5n/fJsBty9ImLXgiYaCHyv4Fyh5lmZAo3j
- d6eXLXM+CUbIMQHgQNzhxT3gqRYs3SgdSfv72njVBF5zj+rbPhzrfK4xIhm8SLMhavcf
- JMojE6FEkbhdpZvzOO4s0XAPLh7BL/D7DkpR+CEi6epiuX1XIwOkE/ifeQM/XqesZFy4 pw== 
-Received: from iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta03.appoci.oracle.com [130.35.103.27])
-	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3wktw4d7sn-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Thu, 07 Mar 2024 20:13:57 +0000
-Received: from pps.filterd (iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
-	by iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 427JMoua013753;
-	Thu, 7 Mar 2024 20:13:56 GMT
-Received: from nam10-dm6-obe.outbound.protection.outlook.com (mail-dm6nam10lp2100.outbound.protection.outlook.com [104.47.58.100])
-	by iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTPS id 3wktjbhsyt-2
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Thu, 07 Mar 2024 20:13:56 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=gZ5EG/I5/BL5+kRXOEYUL/FzX6JdFsdptO/SsNVAbGFCi/nTH8jDylRfYRjH+EKddCajPgiMALf3jkqDEYTw3FqHvqYB6l+xjjt5yiLQ0jvT4iq+xLAI2oHCbWa4yJpp9cdulngI5l/cF7FTUhIGga8Z38UaFwRkoXS1SW9SUqnQPWvkWxNpaB6QXLtaZzmmwU7iOGDk2JW8AVpNaL+aoHAfE8IC1kiJws0m7wMZLbQULO94KGt3O9OMknh4Yk6fp1U/iGJCnTnD7HWnNwJKIqvbFBfA7KIFTd5L/XS+4KYIj2alXRqyvnhZBJHSYqQ745iSds4+CcFTAjRRC4NQbw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=f9KO4Dj6QO87Aweo7d9C5iHQ7tBphXkheTjIDszrE8g=;
- b=dyUa/Vio/AaZpjRERXT1VADCLEcCnYil6lCStg4QgisDxSr8ObEx6YbAuv4pgxt4T7j1ed26Xz83pnLkpXsibpE49Yo8cA7lQ+JEnB7VN7jsOUoqY7TKP0zgg0hu4ZUrzVxsx4s48IYj+iZZkDr8LCbDff7PcHq+HY4x3SKiECF+QT2chXPAy/wB90fHVsPZzsYa5C8QzpXFyCwQ5Am0GPLbP2DKqDqCx/4TSfOxcIZzsIc416jQrnZ+Pr9c3cgvyL9PVCtTVKCuM8aVmRsaMWHhxJDkHQi+BkPWwsDCQ5GcNvXGCagBW2dX5hDP7/rdaISLq93MftK1lJrzsb4Jxg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 96B3C130AC1
+	for <linux-rdma@vger.kernel.org>; Thu,  7 Mar 2024 21:01:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.43
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1709845282; cv=none; b=ktbdC+s77zXaAvDdRLz2YwiHXy8somVCCTb2HQPOv8YaekPSOWb57gIVX3jU+DtYTMNtpSsC5Mk+YKPgtQUyuBigMIc+pLKcCexqAHr/3vFMX1DpNuRxynSHXIaYTbzEHTkbezRsSTien50JOe47F9yuURtreQuqWUcPgfkv2+I=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1709845282; c=relaxed/simple;
+	bh=F39gQbFf5tQqliZeRzBOmtAU/EnGdgFMl0rx4muVbQE=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=AJyzrf09WQiLD9ds5RTbPGWkyduJMt1Fe/rMB3BGD5g+IqOXr8iXluQzmdN4/L7ES4N2phSlEEj+xL6cdA0YtCUw08fv3oMr2dyk5jzSw/usUqNotMY89UvvREwB08mToqY0/Vf76uW/kCvob62KeTlVoiJgUl58/rsfpAAHOjg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca; spf=pass smtp.mailfrom=ziepe.ca; dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b=Z/DCRVlM; arc=none smtp.client-ip=209.85.160.43
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ziepe.ca
+Received: by mail-oa1-f43.google.com with SMTP id 586e51a60fabf-21fed501addso625945fac.2
+        for <linux-rdma@vger.kernel.org>; Thu, 07 Mar 2024 13:01:20 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=f9KO4Dj6QO87Aweo7d9C5iHQ7tBphXkheTjIDszrE8g=;
- b=apdIQ0k0CsaupGaCecswFM9OKGT6z0+GsaPNW5ZtauTPjekcX0T4KmtiOEkedVGUxoddhXXDUnnz2WWUMEwRg6+LR4MmJudS2GDK8yzi7o9rd+5ukD1G9FE/34sGqmIkqccZrZ47dBtgOPpSA43e0CpljhEmCoUgl49CZfuwGpI=
-Received: from BY5PR10MB4306.namprd10.prod.outlook.com (2603:10b6:a03:211::7)
- by CO1PR10MB4580.namprd10.prod.outlook.com (2603:10b6:303:98::6) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7362.24; Thu, 7 Mar
- 2024 20:13:50 +0000
-Received: from BY5PR10MB4306.namprd10.prod.outlook.com
- ([fe80::fe4e:ebf3:2157:7f36]) by BY5PR10MB4306.namprd10.prod.outlook.com
- ([fe80::fe4e:ebf3:2157:7f36%6]) with mapi id 15.20.7362.019; Thu, 7 Mar 2024
- 20:13:50 +0000
-From: Allison Henderson <allison.henderson@oracle.com>
-To: "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "rds-devel@oss.oracle.com"
-	<rds-devel@oss.oracle.com>,
-        "linux-kernel@vger.kernel.org"
-	<linux-kernel@vger.kernel.org>,
-        "woni9911@gmail.com" <woni9911@gmail.com>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "kuba@kernel.org"
-	<kuba@kernel.org>,
-        "edumazet@google.com" <edumazet@google.com>,
-        "pabeni@redhat.com" <pabeni@redhat.com>
-CC: "threeearcat@gmail.com" <threeearcat@gmail.com>
-Subject: Re: net/rds: Improper memory ordering semantic in release_in_xmit()
-Thread-Topic: net/rds: Improper memory ordering semantic in release_in_xmit()
-Thread-Index: AQHab8bV9vqlSX7LYEW3f0DuYrtgRbEsuGCA
-Date: Thu, 7 Mar 2024 20:13:50 +0000
-Message-ID: <86d88699e8f22ebe0d45ffb5229fb73d78c5aae9.camel@oracle.com>
-References: <Zehp16cKYeGWknJs@libra05>
-In-Reply-To: <Zehp16cKYeGWknJs@libra05>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-user-agent: Evolution 3.44.4-0ubuntu2 
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: BY5PR10MB4306:EE_|CO1PR10MB4580:EE_
-x-ms-office365-filtering-correlation-id: 58d3d57c-4f13-4134-e480-08dc3ee31a8a
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: 
- XYN7373HNQstYwf2RLxGnlcUAJYEDCbkWwVJoQFfqgmMXdf0FHtaHZMwbmKJhP2GqQKbzh1QJvJquKHrLZgsDEnwdJjR6T4M6PQRIojhp73wpEjJoNiSBgmp/hnduCN/LGVYttXDnp97kBLMyQpb/ym2zaekD3v0DQ1/A5/NfgsSqOkfGoWK28m6aOt0tDxe1NxRY+UoGaFY3EiKX/hBG+618b/UqtpoB4OINRUb+9ZnPFT8MHPfNmgsGVZxv/ThU5mckMbzTJznCBc6KYNrJ6BGQlZr2P7iRJow3rQkA3MirdCgJ0+SsWbXK+e/k1Q94lLgewNimh2sNILop/h5p0dwqBb6/xSrbD+Nka0M1OU9XBJop25VmZmT2fCKmHuZKZF/3k8rlQbrM1ful0EJ6TdNv/Nn/C8uTqnAbCJ1U5oy6YD9Tb14UIPUwQGrH+ZZfF+aqKQ3xyQKhfvgLOdWNZ4LdPPE3hDVy25KHUjej+hgv6aauddG6dTQiIxPhBYbvd+a6YSzSidxIryLufWBTALUor/AfqJw12SzZsq/9OG+4Z8NSON7PmyO5wGOQAMOXXV1P1BlN3Ydtg3FPivnnd16pG50yYySWsJSbJfap4jVhTJvTjLOPu2nXfF36ZhTiGHW+5MkzcxwJjqDo8VID25jotgsyE/OVI8Bw+HSjxR7uXEpywHXeMqgT+BOtQ4rW5Iy2sTSwbgZ1CzmI8E6Rw==
-x-forefront-antispam-report: 
- CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY5PR10MB4306.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376005)(38070700009);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: 
- =?utf-8?B?VkpJNFR2S3lmM1Z2ZkVJMkdZMmxQM2VIU0tkSG03ZCtqSlU3OUt2UlozMUdF?=
- =?utf-8?B?NkUzZ3JxcUZYN0lFQ0xBVFBDK2M1bW5RZEFaem9VOFhtZVcxUytTY2dWK2U3?=
- =?utf-8?B?bUp0UDhDVHkybG51S2FVU2ZXdDdiSWtXNGQyYnhWL0ZCcXRnWGVWdk5RS2FD?=
- =?utf-8?B?eGdwZ2dPUDcycHpSRktBSHBQOExZWktrRWsvZjFlSFRCVkZ4UkpuT0pkb3JJ?=
- =?utf-8?B?NlJXWVYxVlF1QU5lK3RxN2o4a0p4TUFwSy9YNFM1MTJJYStRaTVZa29BNkQw?=
- =?utf-8?B?am9oLzI3YjVsYTk3djh1Z0tHSkFGNkdlcFpkNktVbWRGQTc5R3pnaGJJTmhM?=
- =?utf-8?B?ZzVqTGFxbncrSVpJb3cwTVZRR0MzVlUrNDU2QTI3bS9Ma2kwZjFOTDkvdmdM?=
- =?utf-8?B?b3RUeVRDeG9hWlpuYzFuMUlJSHF2bHpNc2JWUWZSSVU5VWV0dldNRm1jcG1x?=
- =?utf-8?B?QVJxT1E1ZEQrV2RTZUtaL2h2WmJ5Wms5Nzg1eGFUNlFJNnQ5ckFMNjdmVkJT?=
- =?utf-8?B?ZklVQXRVVW5CbGpJUE53d2hUM1UrN0dLa2RpZlVOT3dJdmE0WWRrcGpZd0Yy?=
- =?utf-8?B?UmZhRzdVaVltSlJlVmFDbEdMS2JFN0swazRCZGtMR0ZhQXh3eDJMWVJjRXgz?=
- =?utf-8?B?SEtmQjcwZ2lLQzJrR0pOdlJZekNNQVRhTC9CWDJLWHZyMVpZNWZCQUZSY2Uz?=
- =?utf-8?B?Yks5R1RLcEpNN0lTdGNPd3dObWFSNGdIc2FsSkVsS05GRWIyTlNnajZ5dTlM?=
- =?utf-8?B?ang4eWN5QlJ1ZDNOYi9LQmNveHhSdzE2ZS8yU296UExydHZYY1lJZjkydmdB?=
- =?utf-8?B?aDlWUU5ZcHhhcWgyWFJhajJXY05PNnQyazRRNWwrdUlaVmdTUU1EY3VQS0lN?=
- =?utf-8?B?bGtMajRVUk9zR2EwZTIxZWtWNmlxcHBpKzFLREtGbDR5Y2hzVWxNMVkvQ3V0?=
- =?utf-8?B?cDZQZTZuQmVtZ01zOTJpd0xNMTBmNVR6SCtNYUhlMlR2aXFqcGlnK3hjMHZZ?=
- =?utf-8?B?cC9aNHYvZXdBYUphUTRMWVFmU0dRVWlFRjRGZWtBN3c3L0tCRkRpdkZzSno3?=
- =?utf-8?B?cUJ6a1hiYndTYTBFalBVVHVUaTIybVErTUxDUWVEQnRXaUZuUWVQMnFDNFg5?=
- =?utf-8?B?V3Z3Mi8yTEZPTXVqVHVFQ0VSbG5WUFZnRTFSNHY1MGxQc2VhQ2RtWlJQVUpE?=
- =?utf-8?B?U1hoKysyZWVKNDlCdkM2Q25wVUpFTjhaTUV1ODJNN1BFUmFtWTYybGV5K0Rj?=
- =?utf-8?B?THBxV1paaWI0Q3UwSEVLR3YzYklNclJOOG5nNVlZYklCYXZVb3pFZ284SDhY?=
- =?utf-8?B?RlM2UW16YlJ5TVJPOU5WTzhRaURoU3JrOUpvVmQxdzVZSDd1a1pEUHIzbnVS?=
- =?utf-8?B?S2plV0JiaXd2SnZ2dVpKNmN1aVJGdlE3UmlScjR5NGlkcVV4STl2SEpNYi9Y?=
- =?utf-8?B?NEtyVW1BZTN4WXZaWFNnOWtpRi9EcVJZaTZXU0wyejV6K2ZKTS9Ea096MjV4?=
- =?utf-8?B?aFlicWczd3NoNDRrcUZhdytBQ0dBdDc0OHVNcXRidkVyb1h4WEFHUlRsMzZX?=
- =?utf-8?B?c0pucWdOUExqZWpkTW5nYTVoWmlLV2RoNmZUUURibEFXd0tlZTI3T1Z0TThx?=
- =?utf-8?B?L0UreUx6UWdHdXlmcTdlNG1XT2QwQmtWcnpTME1LRnV0Z0hyak1mMW9sV0Rr?=
- =?utf-8?B?SnpkeUlnR1hySEw4K05rb1F0dDR3OU9SaE95Unl3NGUrclhuU1dITmJ5MEpn?=
- =?utf-8?B?NURIcGNRVkNJZzdOSmp2amZ0NzJ3VGhhYmpKK25PSC81dmUyNEFNWFhWeTl2?=
- =?utf-8?B?bGtZWnFBWEduc29tdzBEdnc5Wm4xS3FkdnJmMFN5Z1ZFUGtMNGk5MzF6L0FU?=
- =?utf-8?B?a3JjTzVqcFA1dW5iNHRURFdtV1gzN1JJS2xBcFBPbFJ1b0Z3eXhQekNZdS9q?=
- =?utf-8?B?R282OXVtK1FXN2VoU3NsQit4M0t1N1hUZTZGTlFUQU9kZWc3M3FteVBSaFZS?=
- =?utf-8?B?QzE5ek5kWXNBQm04ZHh5SURnSXhkUDFVVXNYOXhtanZ6Mit0T3dQRUM4REZO?=
- =?utf-8?B?RXZKZkFtbSt5NGg3VEdaWEtNREVWLzFraFVtMGNkZlFoaXlGbzBnZ1Q5R1BW?=
- =?utf-8?B?alhDWUg0QW1STmlCNWpCV0pqZjNpa0duVVF0Qy9VbUtUaCt3SGo4TlA5RHo4?=
- =?utf-8?B?VVE9PQ==?=
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <4C287E0328A1B24AA8094986D7CF90FB@namprd10.prod.outlook.com>
-Content-Transfer-Encoding: base64
+        d=ziepe.ca; s=google; t=1709845279; x=1710450079; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=B2cqZbDJobgrAlQUN+X6Gc/N/G77Yt6hRBbHc0B6Byw=;
+        b=Z/DCRVlMpmpQcuUzR2NkHT1qn51xzEHPK3zhgcjSc4JoeYM0I7WsfUCBAd3Z4N2Gng
+         t3YZ7UPBpdOAALI+9SxH1JWOTo7sTEVxv7v4PPyDx6JKQaa0+VeOvlYLLz3JRUj9F8Iq
+         xTWIRun60w19TCHVpNqOWsFuGrG69UTKogbpV4SZ4zuIGGsbiqrPSUllOsosDY7gGKxe
+         K0KChnFbH/uomxDgbmSlCXtX90PzwXjBOy3Jzgcn3wRG9RMNxsNFpHDX81UtDO5upRDw
+         hMZdIhbyd2tUsmzgzxP93OBUy+PgLlja3qFZQycaXfOje2VcmPph+cXUWr05FQM0JMVB
+         eskw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709845279; x=1710450079;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=B2cqZbDJobgrAlQUN+X6Gc/N/G77Yt6hRBbHc0B6Byw=;
+        b=ogy2eFULE3HTJOc0paGt8X2zZ6X4zSomsMBRRf2B3c1pJ3ew+Ih0UujD9JQj34QhJ0
+         ecXf9alXt50uGtV9oFjeoAZKlD65/8H6/NZxZVgZr7dJn5EhBIKEIHDWE+uDjR4bgDSM
+         ztpO4XGl90WxyCvlh1roldrmvcbi3zKJ+6I3vRkjIycgTlHHbzck4Vb0BbbWE/GnbAye
+         LS2CuFz/Gt8SzHnMNjQb6jU7JnerTtsS2B0Oeo7/H4vyKUy0ByuxhcAd5Dftb9p9BWn+
+         75xCMnJHgg3owGqypJNjnwwNUzzOhyWhi0hy0nOxeXXle9Qfe3REUksdsVXPdArkqFXT
+         pxKw==
+X-Forwarded-Encrypted: i=1; AJvYcCV47Qo+bHBXFYinhEN0rhplf0t3HgO6y7ezC8feWW0eTl+iL/9cuakpTMLmbE3o99wy3e9GfK6a8Beyu35l9gKVhS915fKr29kNEQ==
+X-Gm-Message-State: AOJu0YzyubDT1DKEzBHM0QA+56DG9j7H8vZ2lmf2VhXD1JMq/XW0iAm2
+	XzgyRLyLecW+jC3sV1lx5LPV5nmMs/12VoeMyubRPtpuI4hASiST0CyMccYUwhc=
+X-Google-Smtp-Source: AGHT+IHVDDnrRb4IzGsRrjreYb2lzNqXBjfY5dZE5DynfGK6hFbMLsAKifeob/DJ0ED9qSx2chYugA==
+X-Received: by 2002:a05:6870:8a06:b0:21e:a40e:7465 with SMTP id p6-20020a0568708a0600b0021ea40e7465mr1134062oaq.24.1709845279574;
+        Thu, 07 Mar 2024 13:01:19 -0800 (PST)
+Received: from ziepe.ca ([12.97.180.36])
+        by smtp.gmail.com with ESMTPSA id mt9-20020a0568706b0900b00220b0891304sm3660721oab.1.2024.03.07.13.01.18
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 07 Mar 2024 13:01:18 -0800 (PST)
+Received: from jgg by wakko with local (Exim 4.95)
+	(envelope-from <jgg@ziepe.ca>)
+	id 1riKrc-004Zwv-Aq;
+	Thu, 07 Mar 2024 17:01:16 -0400
+Date: Thu, 7 Mar 2024 17:01:16 -0400
+From: Jason Gunthorpe <jgg@ziepe.ca>
+To: Christoph Hellwig <hch@lst.de>
+Cc: Leon Romanovsky <leon@kernel.org>, Robin Murphy <robin.murphy@arm.com>,
+	Marek Szyprowski <m.szyprowski@samsung.com>,
+	Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
+	Chaitanya Kulkarni <chaitanyak@nvidia.com>,
+	Jonathan Corbet <corbet@lwn.net>, Jens Axboe <axboe@kernel.dk>,
+	Keith Busch <kbusch@kernel.org>, Sagi Grimberg <sagi@grimberg.me>,
+	Yishai Hadas <yishaih@nvidia.com>,
+	Shameer Kolothum <shameerali.kolothum.thodi@huawei.com>,
+	Kevin Tian <kevin.tian@intel.com>,
+	Alex Williamson <alex.williamson@redhat.com>,
+	=?utf-8?B?SsOpcsO0bWU=?= Glisse <jglisse@redhat.com>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-block@vger.kernel.org, linux-rdma@vger.kernel.org,
+	iommu@lists.linux.dev, linux-nvme@lists.infradead.org,
+	kvm@vger.kernel.org, linux-mm@kvack.org,
+	Bart Van Assche <bvanassche@acm.org>,
+	Damien Le Moal <damien.lemoal@opensource.wdc.com>,
+	Amir Goldstein <amir73il@gmail.com>,
+	"josef@toxicpanda.com" <josef@toxicpanda.com>,
+	"Martin K. Petersen" <martin.petersen@oracle.com>,
+	"daniel@iogearbox.net" <daniel@iogearbox.net>,
+	Dan Williams <dan.j.williams@intel.com>,
+	"jack@suse.com" <jack@suse.com>, Zhu Yanjun <zyjzyj2000@gmail.com>
+Subject: Re: [RFC RESEND 00/16] Split IOMMU DMA mapping operation to two steps
+Message-ID: <20240307210116.GQ9225@ziepe.ca>
+References: <cover.1709635535.git.leon@kernel.org>
+ <47afacda-3023-4eb7-b227-5f725c3187c2@arm.com>
+ <20240305122935.GB36868@unreal>
+ <20240306144416.GB19711@lst.de>
+ <20240306154328.GM9225@ziepe.ca>
+ <20240306162022.GB28427@lst.de>
+ <20240306174456.GO9225@ziepe.ca>
+ <20240306221400.GA8663@lst.de>
+ <20240307000036.GP9225@ziepe.ca>
+ <20240307150505.GA28978@lst.de>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: 
-	VGADNG+kg42dV9HP7/sbBE34G2ru3/dQPznjRr/z5PdYq38e7SCexB0D5UwsXQ2GoEkAyMDDfJCRl/mEBXY9TbcZpgQEgOz0H1PDtVeStF+6p+QkVEFcPU//wXEm9htMwe7cvuGINTdANRkM7Cr6HpTFVYV4A1VfJ5qv9H4SSTDw/7nLqHDMHmeuVtgTuDqhBGyhuMEg5p9tvV7Py+y4XzqTUpqYll249wN8BClKMyd49imqyTeZtTa4o1yB+edyr3Od4Znso9Jc5aZU64vk1Q6Lc+d31foR0qVydxKYs18Coc0QbKp3RPQdlzma7KFWbwvWRa0ycFrtkJwkM9REYW02ONoSRYr95mtcfhQ+2mS5tICkFRpzuNnvyTBhWFhcUxo6iwiAJh79niNARTGF5KWjxn90rjhQEscRlsZc5fEjXLKHWiLtHTEmPiLjbHxLLvyIbTbMJEJj60rIJzR6OG588S+pqHCuz5B8sBpnDYlr40BR/4ljhpidM8SVXfdcKkF0eqeU40YvyC6XPlseeKn2a4l5mq1tjdgL0sz2JRjxop5NSiLrM+upc2PqVTEo5uICIAUIVgMRscYEMPscuqOFCZykj81h/QCWDMAsBDg=
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: BY5PR10MB4306.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 58d3d57c-4f13-4134-e480-08dc3ee31a8a
-X-MS-Exchange-CrossTenant-originalarrivaltime: 07 Mar 2024 20:13:50.3455
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: 9e5lIvGQGT5HCzLWl6UA5t3znCw5xlFfJ9UyP1a0vUb+q1eQPzMCC7QMLhW9INmPo1Hal/H5+vF/91h9wEhssBfC1FcCmzcBat0ELu7d+nA=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CO1PR10MB4580
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-03-07_14,2024-03-06_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=953 bulkscore=0 mlxscore=0
- spamscore=0 phishscore=0 suspectscore=0 malwarescore=0 adultscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2311290000
- definitions=main-2403070142
-X-Proofpoint-ORIG-GUID: qEBQDoHd0wIZJYvEPNZEDyivnhawZsQQ
-X-Proofpoint-GUID: qEBQDoHd0wIZJYvEPNZEDyivnhawZsQQ
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240307150505.GA28978@lst.de>
 
-T24gV2VkLCAyMDI0LTAzLTA2IGF0IDIyOjA0ICswOTAwLCBZZXdvbiBDaG9pIHdyb3RlOg0KPiBI
-ZWxsbywNCj4gDQo+IEl0IHNlZW1zIHRvIGJlIHRoYXQgY2xlYXJfYml0KCkgaW4gcmVsZWFzZV9p
-bl94bWl0KCkgZG9lc24ndCBoYXZlDQo+IHJlbGVhc2Ugc2VtYW50aWMgd2hpbGUgaXQgd29ya3Mg
-YXMgYSBiaXQgbG9jayBpbiByZHNfc2VuZF94bWl0KCkuDQo+IFNpbmNlIGFjcXVpcmUvcmVsZWFz
-ZV9pbl94bWl0KCkgYXJlIHVzZWQgaW4gcmRzX3NlbmRfeG1pdCgpIGZvciB0aGUgDQo+IHNlcmlh
-bGl6YXRpb24gYmV0d2VlbiBjYWxsZXJzIG9mIHJkc19zZW5kX3htaXQoKSwgdGhleSBzaG91bGQg
-aW1wbHkgDQo+IGFjcXVpcmUvcmVsZWFzZSBzZW1hbnRpY3MgbGlrZSBvdGhlciBsb2Nrcy4NCj4g
-DQo+IEFsdGhvdWdoIHNtcF9tYl9fYWZ0ZXJfYXRvbWljKCkgaXMgcGxhY2VkIGFmdGVyIGNsZWFy
-X2JpdCgpLCBpdA0KPiBjYW5ub3QNCj4gcHJldmVudCB0aGF0IGluc3RydWN0aW9ucyBiZWZvcmUg
-Y2xlYXJfYml0KCkgKGluIGNyaXRpY2FsIHNlY3Rpb24pDQo+IGFyZQ0KPiByZW9yZGVyZWQgYWZ0
-ZXIgY2xlYXJfYml0KCkuDQo+IEFzIGEgcmVzdWx0LCBtdXR1YWwgZXhjbHVzaW9uIG1heSBub3Qg
-YmUgZ3VhcmFudGVlZCBpbiBzcGVjaWZpYw0KPiBIVyBhcmNoaXRlY3R1cmVzIGxpa2UgQXJtLg0K
-PiANCj4gV2UgdGVzdGVkIHRoYXQgdGhpcyBsb2NraW5nIGltcGxlbWVudGF0aW9uIGRvZXNuJ3Qg
-Z3VhcmFudGVlIHRoZQ0KPiBhdG9taWNpdHkgb2YNCj4gY3JpdGljYWwgc2VjdGlvbiBpbiBBcm0g
-c2VydmVyLiBUZXN0aW5nIHdhcyBkb25lIHdpdGggQXJtIE5lb3ZlcnNlIE4xDQo+IGNvcmVzLA0K
-PiBhbmQgdGhlIHRlc3RpbmcgY29kZSB3YXMgZ2VuZXJhdGVkIGJ5IGxpdG11cyB0ZXN0aW5nIHRv
-b2wgKGtsaXRtdXM3KS4NCj4gDQo+IEluaXRpYWwgY29uZGl0aW9uOg0KPiANCj4gbCA9IHggPSB5
-ID0gcjAgPSByMSA9IDANCj4gDQo+IFRocmVhZCAwOg0KPiANCj4gaWYgKHRlc3RfYW5kX3NldF9i
-aXQoMCwgbCkgPT0gMCkgew0KPiDCoMKgwqAgV1JJVEVfT05DRSgqeCwgMSk7DQo+IMKgwqDCoCBX
-UklURV9PTkNFKCp5LCAxKTsNCj4gwqDCoMKgIGNsZWFyX2JpdCgwLCBsKTsNCj4gwqDCoMKgIHNt
-cF9tYl9fYWZ0ZXJfYXRvbWljKCk7DQo+IH0NCj4gDQo+IFRocmVhZCAxOg0KPiANCj4gaWYgKHRl
-c3RfYW5kX3NldF9iaXQoMCwgbCkgPT0gMCkgew0KPiDCoMKgwqAgcjAgPSBSRUFEX09OQ0UoKngp
-Ow0KPiDCoMKgwqAgcjEgPSBSRUFEX09OQ0UoKnkpOw0KPiDCoMKgwqAgY2xlYXJfYml0KDAsIGwp
-Ow0KPiDCoMKgwqAgc21wX21iX19hZnRlcl9hdG9taWMoKTsNCj4gfQ0KPiANCj4gSWYgdGhlIGlt
-cGxlbWVudGF0aW9uIGlzIGNvcnJlY3QsIHRoZSB2YWx1ZSBvZiByMCBhbmQgcjEgc2hvdWxkIHNo
-b3cNCj4gYWxsLW9yLW5vdGhpbmcgYmVoYXZpb3IgKGJvdGggMCBvciAxKS4gSG93ZXZlciwgYmVs
-b3cgdGVzdCByZXN1bHQNCj4gc2hvd3MgDQo+IHRoYXQgYXRvbWljaXR5IHZpb2xhdGlvbiBpcyB2
-ZXJ5IHJhcmUsIGJ1dCBleGlzdHM6DQo+IA0KPiBIaXN0b2dyYW0gKDQgc3RhdGVzKQ0KPiA5Njcz
-ODExIDo+MTpyMD0wOyAxOnIxPTA7DQo+IDU2NDfCoMKgwqAgOj4xOnIwPTE7IDE6cjE9MDsgLy8g
-VmlvbGF0ZSBhdG9taWNpdHkNCj4gOTYwNcKgwqDCoCA6PjE6cjA9MDsgMTpyMT0xOyAvLyBWaW9s
-YXRlIGF0b21pY2l0eQ0KPiA2MzEwOTM3IDo+MTpyMD0xOyAxOnIxPTE7DQo+IA0KPiBTbywgd2Ug
-c3VnZ2VzdCBpbnRyb2R1Y2luZyByZWxlYXNlIHNlbWFudGljIHVzaW5nIGNsZWFyX2JpdF91bmxv
-Y2soKQ0KPiBpbnN0ZWFkIG9mIGNsZWFyX2JpdCgpOg0KPiANCj4gZGlmZiAtLWdpdCBhL25ldC9y
-ZHMvc2VuZC5jIGIvbmV0L3Jkcy9zZW5kLmMNCj4gaW5kZXggNWU1N2ExNTgxZGM2Li42NWIxYmIw
-NmNhNzEgMTAwNjQ0DQo+IC0tLSBhL25ldC9yZHMvc2VuZC5jDQo+ICsrKyBiL25ldC9yZHMvc2Vu
-ZC5jDQo+IEBAIC0xMDgsNyArMTA4LDcgQEAgc3RhdGljIGludCBhY3F1aXJlX2luX3htaXQoc3Ry
-dWN0IHJkc19jb25uX3BhdGgNCj4gKmNwKQ0KPiDCoA0KPiDCoHN0YXRpYyB2b2lkIHJlbGVhc2Vf
-aW5feG1pdChzdHJ1Y3QgcmRzX2Nvbm5fcGF0aCAqY3ApDQo+IMKgew0KPiAtwqDCoMKgwqDCoMKg
-wqBjbGVhcl9iaXQoUkRTX0lOX1hNSVQsICZjcC0+Y3BfZmxhZ3MpOw0KPiArwqDCoMKgwqDCoMKg
-wqBjbGVhcl9iaXRfdW5sb2NrKFJEU19JTl9YTUlULCAmY3AtPmNwX2ZsYWdzKTsNCj4gwqDCoMKg
-wqDCoMKgwqDCoHNtcF9tYl9fYWZ0ZXJfYXRvbWljKCk7DQo+IMKgwqDCoMKgwqDCoMKgwqAvKg0K
-PiDCoMKgwqDCoMKgwqDCoMKgICogV2UgZG9uJ3QgdXNlIHdhaXRfb25fYml0KCkvd2FrZV91cF9i
-aXQoKSBiZWNhdXNlIG91cg0KPiB3YWtpbmcgaXMgaW4gYQ0KPiANCj4gQ291bGQgeW91IGNoZWNr
-IHRoaXMgcGxlYXNlPyBJZiBuZWVkZWQsIHdlIHdpbGwgc2VuZCBhIHBhdGNoLg0KDQpIaSBZZXdv
-biwNCg0KVGhhbmsgeW91IGZvciBmaW5kaW5nIHRoaXMuICBJIGhhZCBhIGxvb2sgYXQgdGhlIGNv
-ZGUgeW91IGhhZA0KbWVudGlvbmVkLCBhbmQgd2hpbGUgSSBkb24ndCBzZWUgYW55IHVzZSBjYXNl
-cyBvZiByZWxlYXNlX2luX3htaXQoKQ0KdGhhdCBtaWdodCByZXN1bHQgaW4gYW4gb3V0IG9mIG9y
-ZGVyIHJlYWQsIEkgZG8gdGhpbmsgdGhhdCB0aGUgcHJvcG9zZWQNCmNoYW5nZSBpcyBhIGdvb2Qg
-Y2xlYW4gdXAuICBJZiB5b3UgY2hvb3NlIHRvIHN1Ym1pdCBhIHBhdGNoLCBwbGVhc2UNCnJlbW92
-ZSB0aGUgcHJvY2VlZGluZyAic21wX21iX19hZnRlcl9hdG9taWMiIGxpbmUgYXMgd2VsbCwgYXMg
-aXQgd291bGQNCm5vIGxvbmdlciBiZSBuZWVkZWQuICBBbHNvLCBwbGVhc2UgdXBkYXRlIGFjcXVp
-cmVfaW5feG1pdCgpIHRvIHVzZSB0aGUNCmNvcnJlc3BvbmRpbmcgdGVzdF9hbmRfc2V0X2JpdF9s
-b2NrKCkgY2FsbC4gIFRoYW5rIHlvdSENCg0KQWxsaXNvbg0KDQoNCj4gDQo+IEJlc3QgUmVnYXJk
-cywNCj4gWWV3b24gQ2hvaQ0KDQo=
+On Thu, Mar 07, 2024 at 04:05:05PM +0100, Christoph Hellwig wrote:
+> On Wed, Mar 06, 2024 at 08:00:36PM -0400, Jason Gunthorpe wrote:
+> > > 
+> > > I don't think you can do without dma_addr_t storage.  In most cases
+> > > your can just store the dma_addr_t in the LE/BE encoded hardware
+> > > SGL, so no extra storage should be needed though.
+> > 
+> > RDMA (and often DRM too) generally doesn't work like that, the driver
+> > copies the page table into the device and then the only reason to have
+> > a dma_addr_t storage is to pass that to the dma unmap API. Optionally
+> > eliminating long term dma_addr_t storage would be a worthwhile memory
+> > savings for large long lived user space memory registrations.
+> 
+> It's just kinda hard to do.  For aligned IOMMU mapping you'd only
+> have one dma_addr_t mappings (or maybe a few if P2P regions are
+> involved), so this probably doesn't matter.  For direct mappings
+> you'd have a few, but maybe the better answer is to use THP
+> more aggressively and reduce the number of segments.
+
+Right, those things have all been done. 100GB of huge pages is still
+using a fair amount of memory for storing dma_addr_t's.
+
+It is hard to do perfectly, but I think it is not so bad if we focus
+on the direct only case and simple systems that can exclude swiotlb
+early on.
+
+> > > > So are you thinking something more like a driver flow of:
+> > > > 
+> > > >   .. extent IO and get # aligned pages and know if there is P2P ..
+> > > >   dma_init_io(state, num_pages, p2p_flag)
+> > > >   if (dma_io_single_range(state)) {
+> > > >        // #2, #4
+> > > >        for each io()
+> > > > 	    dma_link_aligned_pages(state, io range)
+> > > >        hw_sgl = (state->iova, state->len)
+> > > >   } else {
+> > > 
+> > > I think what you have a dma_io_single_range should become before
+> > > the dma_init_io.  If we know we can't coalesce it really just is a
+> > > dma_map_{single,page,bvec} loop, no need for any extra state.
+> > 
+> > I imagine dma_io_single_range() to just check a flag in state.
+> > 
+> > I still want to call dma_init_io() for the non-coalescing cases
+> > because all the flows, regardless of composition, should be about as
+> > fast as dma_map_sg is today.
+> 
+> If all flows includes multiple non-coalesced regions that just makes
+> things very complicated, and that's exactly what I'd want to avoid.
+
+I don't see how to avoid it unless we say RDMA shouldn't use this API,
+which is kind of the whole point from my perspective..
+
+I want an API that can handle all the same complexity as dma_map_sg()
+without forcing the use of scatterlist. Instead "bring your own
+datastructure". This is the essence of what we discussed.
+
+An API that is inferior to dma_map_sg() is really problematic to use
+with RDMA.
+
+> > That means we need to always pre-allocate the IOVA in any case where
+> > the IOMMU might be active - even on a non-coalescing flow.
+> > 
+> > IOW, dma_init_io() always pre-allocates IOVA if the iommu is going to
+> > be used and we can't just call today's dma_map_page() in a loop on the
+> > non-coalescing side and pay the overhead of Nx IOVA allocations.
+> > 
+> > In large part this is for RDMA, were a single P2P page in a large
+> > multi-gigabyte user memory registration shouldn't drastically harm the
+> > registration performance by falling down to doing dma_map_page, and an
+> > IOVA allocation, on a 4k page by page basis.
+> 
+> But that P2P page needs to be handled very differently, as with it
+> we can't actually use a single iova range.  So I'm not sure how that
+> is even supposed to work.  If you have
+> 
+>  +-------+-----+-------+
+>  | local | P2P | local |
+>  +-------+-----+-------+
+> 
+> you need at least 3 hw SGL entries, as the IOVA won't be contigous.
+
+Sure, 3 SGL entries is fine, that isn't what I'm pointing at
+
+I'm saying that today if you give such a scatterlist to dma_map_sg()
+it scans it and computes the IOVA space need, allocates one IOVA
+space, then subdivides that single space up into the 3 HW SGLs you
+show.
+
+If you don't preserve that then we are calling, 4k at a time, a
+dma_map_page() which is not anywhere close to the same outcome as what
+dma_map_sg did. I may not get contiguous IOVA, I may not get 3 SGLs,
+and we call into the IOVA allocator a huge number of times.
+
+It needs to work following the same basic structure of dma_map_sg,
+unfolding that logic into helpers so that the driver can provide
+the data structure:
+
+ - Scan the io ranges and figure out how much IOVA needed
+   (dma_io_summarize_range)
+ - Allocate the IOVA (dma_init_io)
+ - Scan the io ranges again generate the final HW SGL
+   (dma_io_link_page)
+ - Finish the iommu batch (dma_io_done_mapping)
+
+And you can make that pattern work for all the other cases too.
+
+So I don't see this as particularly worse, calling some other API
+instead of dma_map_page is not really a complexity on the
+driver. Calling dma_init_io every time is also not a complexity. The
+DMA API side is a bit more, but not substantively different logic from
+what dma_map_sg already does.
+
+Otherwise what is the alternative? How do I keep these complex things
+working in RDMA and remove scatterlist?
+
+> > The other thing that got hand waved here is how does dma_init_io()
+> > know which of the 6 states we are looking at? I imagine we probably
+> > want to do something like:
+> > 
+> >    struct dma_io_summarize summary = {};
+> >    for each io()
+> >         dma_io_summarize_range(&summary, io range)
+> >    dma_init_io(dev, &state, &summary);
+> >    if (state->single_range) {
+> >    } else {
+> >    }
+> >    dma_io_done_mapping(&state); <-- flush IOTLB once
+> 
+> That's why I really just want 2 cases.  If the caller guarantees the
+> range is coalescable and there is an IOMMU use the iommu-API like
+> API, else just iter over map_single/page.
+
+But how does the caller even know if it is coalescable? Other than the
+trivial case of a single CPU range, that is a complicated detail based
+on what pages are inside the range combined with the capability of the
+device doing DMA. I don't see a simple way for the caller to figure
+this out. You need to sweep every page and collect some information on
+it. The above is to abstract that detail.
+
+It was simpler before the confidential compute stuff :(
+
+Jason
 
