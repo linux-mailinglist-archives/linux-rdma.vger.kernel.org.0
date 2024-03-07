@@ -1,263 +1,183 @@
-Return-Path: <linux-rdma+bounces-1316-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-1317-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id CD93887525A
-	for <lists+linux-rdma@lfdr.de>; Thu,  7 Mar 2024 15:52:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 3EF008752B2
+	for <lists+linux-rdma@lfdr.de>; Thu,  7 Mar 2024 16:05:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id F150F1C230AA
-	for <lists+linux-rdma@lfdr.de>; Thu,  7 Mar 2024 14:52:25 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 61A501C24A7D
+	for <lists+linux-rdma@lfdr.de>; Thu,  7 Mar 2024 15:05:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EA2DD12E1FE;
-	Thu,  7 Mar 2024 14:52:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b="GoX4+C50"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4AE2712EBDC;
+	Thu,  7 Mar 2024 15:05:18 +0000 (UTC)
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2135D12C80A;
-	Thu,  7 Mar 2024 14:52:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=13.77.154.182
+Received: from verein.lst.de (verein.lst.de [213.95.11.211])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2174E1DFC1;
+	Thu,  7 Mar 2024 15:05:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.95.11.211
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709823135; cv=none; b=f7ttwL4OOSOYBTukfoT4ZT/m+TnVOqoqilGWdb51+2Sd+E5KdZ1KPZmnKRymhseC1fGIBHPnPpAzEvjeYnjJyY9wph0ImbxoyiepNV/n82qZdLRz6tG3S5DSKP2R2shG7CbT+j6tuWSHqwftoiv914FLtuEB5l9FKEXhWzVbEII=
+	t=1709823918; cv=none; b=khZJ6v26ze6x/gyHQAtE9UYmuGAl4KlEHZmskMe44EHiAtEVnoChtuZiC/6DypaEEtt3e8a3aO+B7j4DUJNMfLdEtkVK+LF/Zs8VbZ2ruhltY00wnGTv1p6lsquI3QKMBSs4YTLmrWtbSHXX5357JQsozqNpTJt21YpY2DE5r20=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709823135; c=relaxed/simple;
-	bh=SVl7ghUZZvLmqoxnJx1TfVNS1aFO+cS/rPtTkMU4lFo=;
-	h=From:To:Cc:Subject:Date:Message-Id; b=Bh9Rqhnzulkw8xEqf96zhLbvei7DZhey1IFF60+5YcBfvTC8hLq1LHzpwr8IZqps00BjKsKfvV1lnIy+zY1hLG+zPflg3aRSWg7pfDumwodB1OKczv7ntOwptrFhn0idoHYM9lqSf44ZPWhJWlcJPt4p+kVayphvXyRjs8TWdtQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com; spf=pass smtp.mailfrom=linux.microsoft.com; dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b=GoX4+C50; arc=none smtp.client-ip=13.77.154.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.microsoft.com
-Received: by linux.microsoft.com (Postfix, from userid 1134)
-	id 8480E20B74C0; Thu,  7 Mar 2024 06:52:13 -0800 (PST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 8480E20B74C0
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-	s=default; t=1709823133;
-	bh=DQrX++fk8abFgdjKuqnBcAVgOubzkQFol/TFp+HA04s=;
-	h=From:To:Cc:Subject:Date:From;
-	b=GoX4+C50fDnqEqTDLUQhX0jEvb2nweO7wCtxXMQfyCEtiaV1gxyaO5Rap/o7qic9e
-	 eSjxHeK0NdFqJQmUANMTP0aRr6atuBQktgzhNaWQ9arYXkyfks1vS7OL/jvY3BNDeU
-	 Fu/oiiRVCDjsDR+0hLQxeYSHfjLYGp/3JLuk+i7w=
-From: Shradha Gupta <shradhagupta@linux.microsoft.com>
-To: linux-kernel@vger.kernel.org,
-	linux-hyperv@vger.kernel.org,
-	linux-rdma@vger.kernel.org,
-	netdev@vger.kernel.org
-Cc: Shradha Gupta <shradhagupta@linux.microsoft.com>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>,
-	Paolo Abeni <pabeni@redhat.com>,
-	Ajay Sharma <sharmaajay@microsoft.com>,
-	Leon Romanovsky <leon@kernel.org>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-	"K. Y. Srinivasan" <kys@microsoft.com>,
-	Haiyang Zhang <haiyangz@microsoft.com>,
-	Wei Liu <wei.liu@kernel.org>,
-	Dexuan Cui <decui@microsoft.com>,
-	Long Li <longli@microsoft.com>,
-	Michael Kelley <mikelley@microsoft.com>,
-	Shradha Gupta <shradhagupta@microsoft.com>
-Subject: [PATCH] net :mana : Add per-cpu stats for MANA device
-Date: Thu,  7 Mar 2024 06:52:12 -0800
-Message-Id: <1709823132-22411-1-git-send-email-shradhagupta@linux.microsoft.com>
-X-Mailer: git-send-email 1.8.3.1
+	s=arc-20240116; t=1709823918; c=relaxed/simple;
+	bh=KcbjcoK0enYuZVWxTVuA3A7m2RX5v0vJJmwup26L1hs=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=m/rkZhNRVb1YBGtGjoMLGPnUT1c0Rj+JaQ5tUtYIilNOa7HeuU+hbxeWrUtSpmDd3PIpcHp/vEdcjIbiBRcQihPddW1qIBT6IEuz6VjZY09hX8kgm7Kua6fwUJ5wr/HmofeSyNnjP6jcDksuUNqh6T1e8h0cHA1Veojxx3vEd6o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=lst.de; spf=pass smtp.mailfrom=lst.de; arc=none smtp.client-ip=213.95.11.211
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=lst.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lst.de
+Received: by verein.lst.de (Postfix, from userid 2407)
+	id 6CF2168CFE; Thu,  7 Mar 2024 16:05:05 +0100 (CET)
+Date: Thu, 7 Mar 2024 16:05:05 +0100
+From: Christoph Hellwig <hch@lst.de>
+To: Jason Gunthorpe <jgg@ziepe.ca>
+Cc: Christoph Hellwig <hch@lst.de>, Leon Romanovsky <leon@kernel.org>,
+	Robin Murphy <robin.murphy@arm.com>,
+	Marek Szyprowski <m.szyprowski@samsung.com>,
+	Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
+	Chaitanya Kulkarni <chaitanyak@nvidia.com>,
+	Jonathan Corbet <corbet@lwn.net>, Jens Axboe <axboe@kernel.dk>,
+	Keith Busch <kbusch@kernel.org>, Sagi Grimberg <sagi@grimberg.me>,
+	Yishai Hadas <yishaih@nvidia.com>,
+	Shameer Kolothum <shameerali.kolothum.thodi@huawei.com>,
+	Kevin Tian <kevin.tian@intel.com>,
+	Alex Williamson <alex.williamson@redhat.com>,
+	=?iso-8859-1?B?Suly9G1l?= Glisse <jglisse@redhat.com>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-block@vger.kernel.org, linux-rdma@vger.kernel.org,
+	iommu@lists.linux.dev, linux-nvme@lists.infradead.org,
+	kvm@vger.kernel.org, linux-mm@kvack.org,
+	Bart Van Assche <bvanassche@acm.org>,
+	Damien Le Moal <damien.lemoal@opensource.wdc.com>,
+	Amir Goldstein <amir73il@gmail.com>,
+	"josef@toxicpanda.com" <josef@toxicpanda.com>,
+	"Martin K. Petersen" <martin.petersen@oracle.com>,
+	"daniel@iogearbox.net" <daniel@iogearbox.net>,
+	Dan Williams <dan.j.williams@intel.com>,
+	"jack@suse.com" <jack@suse.com>, Zhu Yanjun <zyjzyj2000@gmail.com>
+Subject: Re: [RFC RESEND 00/16] Split IOMMU DMA mapping operation to two
+ steps
+Message-ID: <20240307150505.GA28978@lst.de>
+References: <cover.1709635535.git.leon@kernel.org> <47afacda-3023-4eb7-b227-5f725c3187c2@arm.com> <20240305122935.GB36868@unreal> <20240306144416.GB19711@lst.de> <20240306154328.GM9225@ziepe.ca> <20240306162022.GB28427@lst.de> <20240306174456.GO9225@ziepe.ca> <20240306221400.GA8663@lst.de> <20240307000036.GP9225@ziepe.ca>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240307000036.GP9225@ziepe.ca>
+User-Agent: Mutt/1.5.17 (2007-11-01)
 
-Extend 'ethtool -S' output for mana devices to include per-CPU packet
-stats
+On Wed, Mar 06, 2024 at 08:00:36PM -0400, Jason Gunthorpe wrote:
+> > 
+> > I don't think you can do without dma_addr_t storage.  In most cases
+> > your can just store the dma_addr_t in the LE/BE encoded hardware
+> > SGL, so no extra storage should be needed though.
+> 
+> RDMA (and often DRM too) generally doesn't work like that, the driver
+> copies the page table into the device and then the only reason to have
+> a dma_addr_t storage is to pass that to the dma unmap API. Optionally
+> eliminating long term dma_addr_t storage would be a worthwhile memory
+> savings for large long lived user space memory registrations.
 
-Built-on: Ubuntu22
-Tested-on: Ubuntu22
-Signed-off-by: Shradha Gupta <shradhagupta@linux.microsoft.com>
----
- drivers/net/ethernet/microsoft/mana/mana_en.c | 22 ++++++++++
- .../ethernet/microsoft/mana/mana_ethtool.c    | 40 ++++++++++++++++++-
- include/net/mana/mana.h                       | 12 ++++++
- 3 files changed, 72 insertions(+), 2 deletions(-)
+It's just kinda hard to do.  For aligned IOMMU mapping you'd only
+have one dma_addr_t mappings (or maybe a few if P2P regions are
+involved), so this probably doesn't matter.  For direct mappings
+you'd have a few, but maybe the better answer is to use THP
+more aggressively and reduce the number of segments.
 
-diff --git a/drivers/net/ethernet/microsoft/mana/mana_en.c b/drivers/net/ethernet/microsoft/mana/mana_en.c
-index 59287c6e6cee..b27ee6684936 100644
---- a/drivers/net/ethernet/microsoft/mana/mana_en.c
-+++ b/drivers/net/ethernet/microsoft/mana/mana_en.c
-@@ -224,6 +224,7 @@ netdev_tx_t mana_start_xmit(struct sk_buff *skb, struct net_device *ndev)
- 	int gso_hs = 0; /* zero for non-GSO pkts */
- 	u16 txq_idx = skb_get_queue_mapping(skb);
- 	struct gdma_dev *gd = apc->ac->gdma_dev;
-+	struct mana_pcpu_stats *pcpu_stats;
- 	bool ipv4 = false, ipv6 = false;
- 	struct mana_tx_package pkg = {};
- 	struct netdev_queue *net_txq;
-@@ -234,6 +235,8 @@ netdev_tx_t mana_start_xmit(struct sk_buff *skb, struct net_device *ndev)
- 	struct mana_cq *cq;
- 	int err, len;
- 
-+	pcpu_stats = this_cpu_ptr(apc->pcpu_stats);
-+
- 	if (unlikely(!apc->port_is_up))
- 		goto tx_drop;
- 
-@@ -412,6 +415,12 @@ netdev_tx_t mana_start_xmit(struct sk_buff *skb, struct net_device *ndev)
- 	tx_stats->bytes += len;
- 	u64_stats_update_end(&tx_stats->syncp);
- 
-+	/* Also update the per-CPU stats */
-+	u64_stats_update_begin(&pcpu_stats->syncp);
-+	pcpu_stats->tx_packets++;
-+	pcpu_stats->tx_bytes += len;
-+	u64_stats_update_end(&pcpu_stats->syncp);
-+
- tx_busy:
- 	if (netif_tx_queue_stopped(net_txq) && mana_can_tx(gdma_sq)) {
- 		netif_tx_wake_queue(net_txq);
-@@ -425,6 +434,9 @@ netdev_tx_t mana_start_xmit(struct sk_buff *skb, struct net_device *ndev)
- 	kfree(pkg.sgl_ptr);
- tx_drop_count:
- 	ndev->stats.tx_dropped++;
-+	u64_stats_update_begin(&pcpu_stats->syncp);
-+	pcpu_stats->tx_dropped++;
-+	u64_stats_update_end(&pcpu_stats->syncp);
- tx_drop:
- 	dev_kfree_skb_any(skb);
- 	return NETDEV_TX_OK;
-@@ -1505,6 +1517,8 @@ static void mana_rx_skb(void *buf_va, bool from_pool,
- 	struct mana_stats_rx *rx_stats = &rxq->stats;
- 	struct net_device *ndev = rxq->ndev;
- 	uint pkt_len = cqe->ppi[0].pkt_len;
-+	struct mana_pcpu_stats *pcpu_stats;
-+	struct mana_port_context *apc;
- 	u16 rxq_idx = rxq->rxq_idx;
- 	struct napi_struct *napi;
- 	struct xdp_buff xdp = {};
-@@ -1512,6 +1526,9 @@ static void mana_rx_skb(void *buf_va, bool from_pool,
- 	u32 hash_value;
- 	u32 act;
- 
-+	apc = netdev_priv(ndev);
-+	pcpu_stats = this_cpu_ptr(apc->pcpu_stats);
-+
- 	rxq->rx_cq.work_done++;
- 	napi = &rxq->rx_cq.napi;
- 
-@@ -1570,6 +1587,11 @@ static void mana_rx_skb(void *buf_va, bool from_pool,
- 		rx_stats->xdp_tx++;
- 	u64_stats_update_end(&rx_stats->syncp);
- 
-+	u64_stats_update_begin(&pcpu_stats->syncp);
-+	pcpu_stats->rx_packets++;
-+	pcpu_stats->rx_bytes += pkt_len;
-+	u64_stats_update_end(&pcpu_stats->syncp);
-+
- 	if (act == XDP_TX) {
- 		skb_set_queue_mapping(skb, rxq_idx);
- 		mana_xdp_tx(skb, ndev);
-diff --git a/drivers/net/ethernet/microsoft/mana/mana_ethtool.c b/drivers/net/ethernet/microsoft/mana/mana_ethtool.c
-index ab2413d71f6c..e3aa47ead601 100644
---- a/drivers/net/ethernet/microsoft/mana/mana_ethtool.c
-+++ b/drivers/net/ethernet/microsoft/mana/mana_ethtool.c
-@@ -83,8 +83,9 @@ static int mana_get_sset_count(struct net_device *ndev, int stringset)
- 	if (stringset != ETH_SS_STATS)
- 		return -EINVAL;
- 
--	return ARRAY_SIZE(mana_eth_stats) + num_queues *
--				(MANA_STATS_RX_COUNT + MANA_STATS_TX_COUNT);
-+	return ARRAY_SIZE(mana_eth_stats) +
-+	       (num_queues * (MANA_STATS_RX_COUNT + MANA_STATS_TX_COUNT)) +
-+	       (num_present_cpus() * (MANA_STATS_RX_PCPU + MANA_STATS_TX_PCPU));
- }
- 
- static void mana_get_strings(struct net_device *ndev, u32 stringset, u8 *data)
-@@ -139,6 +140,19 @@ static void mana_get_strings(struct net_device *ndev, u32 stringset, u8 *data)
- 		sprintf(p, "tx_%d_mana_map_err", i);
- 		p += ETH_GSTRING_LEN;
- 	}
-+
-+	for (i = 0; i < num_present_cpus(); i++) {
-+		sprintf(p, "cpu%d_rx_packets", i);
-+		p += ETH_GSTRING_LEN;
-+		sprintf(p, "cpu%d_rx_bytes", i);
-+		p += ETH_GSTRING_LEN;
-+		sprintf(p, "cpu%d_tx_packets", i);
-+		p += ETH_GSTRING_LEN;
-+		sprintf(p, "cpu%d_tx_bytes", i);
-+		p += ETH_GSTRING_LEN;
-+		sprintf(p, "cpu%d_tx_dropped", i);
-+		p += ETH_GSTRING_LEN;
-+	}
- }
- 
- static void mana_get_ethtool_stats(struct net_device *ndev,
-@@ -222,6 +236,28 @@ static void mana_get_ethtool_stats(struct net_device *ndev,
- 		data[i++] = csum_partial;
- 		data[i++] = mana_map_err;
- 	}
-+
-+	for_each_possible_cpu(q) {
-+		const struct mana_pcpu_stats *pcpu_stats =
-+				per_cpu_ptr(apc->pcpu_stats, q);
-+		u64 rx_packets, rx_bytes, tx_packets, tx_bytes, tx_dropped;
-+		unsigned int start;
-+
-+		do {
-+			start = u64_stats_fetch_begin(&pcpu_stats->syncp);
-+			rx_packets = pcpu_stats->rx_packets;
-+			tx_packets = pcpu_stats->tx_packets;
-+			rx_bytes = pcpu_stats->rx_bytes;
-+			tx_bytes = pcpu_stats->tx_bytes;
-+			tx_dropped = pcpu_stats->tx_dropped;
-+		} while (u64_stats_fetch_retry(&pcpu_stats->syncp, start));
-+
-+		data[i++] = rx_packets;
-+		data[i++] = rx_bytes;
-+		data[i++] = tx_packets;
-+		data[i++] = tx_bytes;
-+		data[i++] = tx_dropped;
-+	}
- }
- 
- static int mana_get_rxnfc(struct net_device *ndev, struct ethtool_rxnfc *cmd,
-diff --git a/include/net/mana/mana.h b/include/net/mana/mana.h
-index 76147feb0d10..9a2414ee7f02 100644
---- a/include/net/mana/mana.h
-+++ b/include/net/mana/mana.h
-@@ -51,6 +51,8 @@ enum TRI_STATE {
- /* Update this count whenever the respective structures are changed */
- #define MANA_STATS_RX_COUNT 5
- #define MANA_STATS_TX_COUNT 11
-+#define MANA_STATS_RX_PCPU 2
-+#define MANA_STATS_TX_PCPU 3
- 
- struct mana_stats_rx {
- 	u64 packets;
-@@ -386,6 +388,15 @@ struct mana_ethtool_stats {
- 	u64 rx_cqe_unknown_type;
- };
- 
-+struct mana_pcpu_stats {
-+	u64 rx_packets;
-+	u64 rx_bytes;
-+	u64 tx_packets;
-+	u64 tx_bytes;
-+	u64 tx_dropped;
-+	struct u64_stats_sync syncp;
-+};
-+
- struct mana_context {
- 	struct gdma_dev *gdma_dev;
- 
-@@ -449,6 +460,7 @@ struct mana_port_context {
- 	bool port_st_save; /* Saved port state */
- 
- 	struct mana_ethtool_stats eth_stats;
-+	struct mana_pcpu_stats __percpu *pcpu_stats;
- };
- 
- netdev_tx_t mana_start_xmit(struct sk_buff *skb, struct net_device *ndev);
--- 
-2.34.1
+> I wrote the list as from a single IO operation perspective, so all but
+> 5 need to store a single IOVA range that could be stored in some
+> simple non-dynamic memory along with whatever HW SGLs/etc are needed.
+> 
+> The point of 5 being different is because the driver has to provide a
+> dynamically sized list of dma_addr_t's as storage until unmap. 5 is
+> the only case that requires that full list.
 
+No, all cases need to store one or more ranges.
+
+> > > So are you thinking something more like a driver flow of:
+> > > 
+> > >   .. extent IO and get # aligned pages and know if there is P2P ..
+> > >   dma_init_io(state, num_pages, p2p_flag)
+> > >   if (dma_io_single_range(state)) {
+> > >        // #2, #4
+> > >        for each io()
+> > > 	    dma_link_aligned_pages(state, io range)
+> > >        hw_sgl = (state->iova, state->len)
+> > >   } else {
+> > 
+> > I think what you have a dma_io_single_range should become before
+> > the dma_init_io.  If we know we can't coalesce it really just is a
+> > dma_map_{single,page,bvec} loop, no need for any extra state.
+> 
+> I imagine dma_io_single_range() to just check a flag in state.
+> 
+> I still want to call dma_init_io() for the non-coalescing cases
+> because all the flows, regardless of composition, should be about as
+> fast as dma_map_sg is today.
+
+If all flows includes multiple non-coalesced regions that just makes
+things very complicated, and that's exactly what I'd want to avoid.
+
+> That means we need to always pre-allocate the IOVA in any case where
+> the IOMMU might be active - even on a non-coalescing flow.
+> 
+> IOW, dma_init_io() always pre-allocates IOVA if the iommu is going to
+> be used and we can't just call today's dma_map_page() in a loop on the
+> non-coalescing side and pay the overhead of Nx IOVA allocations.
+> 
+> In large part this is for RDMA, were a single P2P page in a large
+> multi-gigabyte user memory registration shouldn't drastically harm the
+> registration performance by falling down to doing dma_map_page, and an
+> IOVA allocation, on a 4k page by page basis.
+
+But that P2P page needs to be handled very differently, as with it
+we can't actually use a single iova range.  So I'm not sure how that
+is even supposed to work.  If you have
+
+ +-------+-----+-------+
+ | local | P2P | local |
+ +-------+-----+-------+
+
+you need at least 3 hw SGL entries, as the IOVA won't be contigous.
+
+> The other thing that got hand waved here is how does dma_init_io()
+> know which of the 6 states we are looking at? I imagine we probably
+> want to do something like:
+> 
+>    struct dma_io_summarize summary = {};
+>    for each io()
+>         dma_io_summarize_range(&summary, io range)
+>    dma_init_io(dev, &state, &summary);
+>    if (state->single_range) {
+>    } else {
+>    }
+>    dma_io_done_mapping(&state); <-- flush IOTLB once
+
+That's why I really just want 2 cases.  If the caller guarantees the
+range is coalescable and there is an IOMMU use the iommu-API like
+API, else just iter over map_single/page.
+
+> Enhancing the single sgl case is not a big change, I think. It does
+> seem simplifying for the driver to not have to coalesce SGLs to detect
+> the single-SGL fast-path.
+> 
+> > > This is not quite what you said, we split the driver flow based on
+> > > needing 1 HW SGL vs need many HW SGL.
+> > 
+> > That's at least what I intended to say, and I'm a little curious as what
+> > it came across.
+> 
+> Ok, I was reading the discussion more about as alignment than single
+> HW SGL, I think you ment alignment as implying coalescing behavior
+> implying single HW SGL..
+
+Yes.
 
