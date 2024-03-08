@@ -1,75 +1,71 @@
-Return-Path: <linux-rdma+bounces-1330-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-1331-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id A64A8875B10
-	for <lists+linux-rdma@lfdr.de>; Fri,  8 Mar 2024 00:23:05 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 050B2875BA1
+	for <lists+linux-rdma@lfdr.de>; Fri,  8 Mar 2024 01:56:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3352E1F229DD
-	for <lists+linux-rdma@lfdr.de>; Thu,  7 Mar 2024 23:23:05 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 5788BB21B26
+	for <lists+linux-rdma@lfdr.de>; Fri,  8 Mar 2024 00:56:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 77E163FE2A;
-	Thu,  7 Mar 2024 23:23:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3C84F21353;
+	Fri,  8 Mar 2024 00:56:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=amazon.com header.i=@amazon.com header.b="pMTkFiVX"
+	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="cS2E3nzt"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from smtp-fw-2101.amazon.com (smtp-fw-2101.amazon.com [72.21.196.25])
+Received: from mx0a-00069f02.pphosted.com (mx0a-00069f02.pphosted.com [205.220.165.32])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 55E993D988;
-	Thu,  7 Mar 2024 23:22:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=72.21.196.25
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1588F21105;
+	Fri,  8 Mar 2024 00:55:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.165.32
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709853781; cv=none; b=a3QAOard40B9YDxtx35gQbgbodCuRC+K5XgWLVuA0hgn35axWinGL6TuYXi8i5mJ3K9WHJAbKIDg0C6Tp6TxEhpkDQW+xLtZzZKFwtzTUgOKpbiYqVea232TQh2yjHcyAF3VQ+jJXXTzjyw41qrJBFpNqjivgKEZfUhf6m0gnJ4=
+	t=1709859361; cv=none; b=L39FmmQ9mMsy3k7Fih6FPc5dwJNWCgonXwVL8jzOgyjmct/+p3GMRZNdXLl9gbk4AHvX8bJbOloETYtneHF/2mwqBY/Oqzt0LD/lsSmxwJ8w7SuX1YKF6kFLzWtsN/5lXjL1daj2nCJlpulKj6wM3gLFdqg4cczFBLTH2ECC7fc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709853781; c=relaxed/simple;
-	bh=4WM+wUvnbTHRz2eV4XY6elFPBHAxwoIPaDIQkdWcSrw=;
-	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=OIWdd6BCPLFPn0jg68yocZJ9p3YfPbnhMEwaXAuXC27uKSHiMDQhiPjkiMNQD1s2o5jlKksIPZt27atm8zefkdDll53bs6DaA2y7gnvHEvT3xcSQVGTEILakxiZlTMOkaWlhVX7NT2QMvWNK/7uZHVJHA8DeK1r8jIChlHhTciU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amazon.com; spf=pass smtp.mailfrom=amazon.co.jp; dkim=pass (1024-bit key) header.d=amazon.com header.i=@amazon.com header.b=pMTkFiVX; arc=none smtp.client-ip=72.21.196.25
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amazon.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=amazon.co.jp
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1709853780; x=1741389780;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=U0RPgy773C5+DdQUYA3mfjmJjSMNNGTss/mkPhGk2xE=;
-  b=pMTkFiVX8C1v/tkYWPsEbX6NUTwc+a7hv+P5NvJqxk5Etiy3P4XMcNbs
-   U78/a64Tpg5ENEruq3X33QBq1YZ1CnFzn7wOH10VfX/ABGvv7FthiZphU
-   V7R2dVlrq7R1FthBI+WnOPoVnW2EnG92OyqV6P9WIurvlL25oCCKZv/dE
-   A=;
-X-IronPort-AV: E=Sophos;i="6.07,107,1708387200"; 
-   d="scan'208";a="386316208"
-Received: from iad12-co-svc-p1-lb1-vlan3.amazon.com (HELO smtpout.prod.us-west-2.prod.farcaster.email.amazon.dev) ([10.43.8.6])
-  by smtp-border-fw-2101.iad2.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Mar 2024 23:22:57 +0000
-Received: from EX19MTAUWA001.ant.amazon.com [10.0.21.151:62963]
- by smtpin.naws.us-west-2.prod.farcaster.email.amazon.dev [10.0.15.174:2525] with esmtp (Farcaster)
- id dd357180-69a5-4fd5-806b-b1330ee8de68; Thu, 7 Mar 2024 23:22:56 +0000 (UTC)
-X-Farcaster-Flow-ID: dd357180-69a5-4fd5-806b-b1330ee8de68
-Received: from EX19D004ANA001.ant.amazon.com (10.37.240.138) by
- EX19MTAUWA001.ant.amazon.com (10.250.64.204) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1258.28; Thu, 7 Mar 2024 23:22:55 +0000
-Received: from 88665a182662.ant.amazon.com.com (10.106.101.47) by
- EX19D004ANA001.ant.amazon.com (10.37.240.138) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1258.28; Thu, 7 Mar 2024 23:22:52 +0000
-From: Kuniyuki Iwashima <kuniyu@amazon.com>
-To: "David S. Miller" <davem@davemloft.net>, Eric Dumazet
-	<edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni
-	<pabeni@redhat.com>, Allison Henderson <allison.henderson@oracle.com>
-CC: Kuniyuki Iwashima <kuniyu@amazon.com>, Kuniyuki Iwashima
-	<kuni1840@gmail.com>, <netdev@vger.kernel.org>, <linux-rdma@vger.kernel.org>,
-	<rds-devel@oss.oracle.com>, syzkaller <syzkaller@googlegroups.com>
-Subject: [PATCH v4 net 2/2] rds: tcp: Fix use-after-free of net in reqsk_timer_handler().
-Date: Thu, 7 Mar 2024 15:21:51 -0800
-Message-ID: <20240307232151.55963-3-kuniyu@amazon.com>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20240307232151.55963-1-kuniyu@amazon.com>
-References: <20240307232151.55963-1-kuniyu@amazon.com>
+	s=arc-20240116; t=1709859361; c=relaxed/simple;
+	bh=EoD/N7fyy6v3G07GLxBqUhJ65YYXjv4B0t9Gs9DK9KY=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=YxNNsie4jOfjb6jxBLTXRFNnVuQ7DTqjyBh/Ll4/5Zdl33L+maejn2t1Q0AD990uTyejUaiWSNrf3P0FRC/+TiSmrPQr5nYdk3MyKMWRT22FfFfscqE5Y9hgByoSxdAji2c22NE9aXk54tpIFAncwJgYA/UigFBgBc19DMz/INA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=oracle.com; spf=pass smtp.mailfrom=oracle.com; dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b=cS2E3nzt; arc=none smtp.client-ip=205.220.165.32
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=oracle.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oracle.com
+Received: from pps.filterd (m0333521.ppops.net [127.0.0.1])
+	by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 427JiHs3019537;
+	Fri, 8 Mar 2024 00:55:56 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-transfer-encoding;
+ s=corp-2023-11-20; bh=iJqdbRpjEP9Anm7UG3DB2OPgXYyaZ6u1AAaa+B1m9xQ=;
+ b=cS2E3nzto7hWNLCpjAajLTrBRTl+urpmQvDdVXCMYXmgJoEDykOx0PCnCqGq6pvSAq/O
+ TOGnUCoQqelVk5gudH5w/WVDj8fY+f8XDZwjPBvus4gr+vCc9AozECGhmwJJEuvz8M2c
+ FmZcmuviv+fj4zR0FHTNA7O6WVMFWnvbS997qm5M92nFqRlB4SqY+5Lv7KDofV57K2ta
+ hpt6BcVjT8sNCFzVt9PxJvHL7bG40LQz8jVDM7QpA2I7B+nEr13iI7YgjDA0ugUNQCOz
+ SXSXVcZ5c8H1G6qboU8AvBmpjgADyg1Du6HbIQSpHdAhmgkmt5K3/TQDFK0GJXUIEKB1 7Q== 
+Received: from phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta03.appoci.oracle.com [138.1.37.129])
+	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3wku1cmtk6-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Fri, 08 Mar 2024 00:55:56 +0000
+Received: from pps.filterd (phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
+	by phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 42804JE4027502;
+	Fri, 8 Mar 2024 00:55:55 GMT
+Received: from pps.reinject (localhost [127.0.0.1])
+	by phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTPS id 3wktjchx1k-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Fri, 08 Mar 2024 00:55:55 +0000
+Received: from phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
+	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 4280tt2U031590;
+	Fri, 8 Mar 2024 00:55:55 GMT
+Received: from mbpatil.us.oracle.com (mbpatil.us.oracle.com [10.211.44.53])
+	by phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTP id 3wktjchx18-1;
+	Fri, 08 Mar 2024 00:55:55 +0000
+From: Manjunath Patil <manjunath.b.patil@oracle.com>
+To: dledford@redhat.com, jgg@ziepe.ca
+Cc: manjunath.b.patil@oracle.com, linux-rdma@vger.kernel.org,
+        linux-kernel@vger.kernel.org, rama.nichanamatlu@oracle.com
+Subject: [PATCH] RDMA/cm: add timeout to cm_destroy_id wait
+Date: Thu,  7 Mar 2024 16:55:53 -0800
+Message-Id: <20240308005553.440065-1-manjunath.b.patil@oracle.com>
+X-Mailer: git-send-email 2.31.1
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
@@ -77,150 +73,106 @@ List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: EX19D041UWA004.ant.amazon.com (10.13.139.9) To
- EX19D004ANA001.ant.amazon.com (10.37.240.138)
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-03-07_18,2024-03-06_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 mlxlogscore=999
+ suspectscore=0 adultscore=0 bulkscore=0 malwarescore=0 mlxscore=0
+ spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2311290000 definitions=main-2403080005
+X-Proofpoint-ORIG-GUID: c3XN_BC7ZM1TM6zc6QL0zHRQN2hSfuV7
+X-Proofpoint-GUID: c3XN_BC7ZM1TM6zc6QL0zHRQN2hSfuV7
 
-syzkaller reported a warning of netns tracker [0] followed by KASAN
-splat [1] and another ref tracker warning [1].
+Add timeout to cm_destroy_id, so that userspace can trigger any data
+collection that would help in analyzing the cause of delay in destroying
+the cm_id.
 
-syzkaller could not find a repro, but in the log, the only suspicious
-sequence was as follows:
+New noinline function helps dtrace/ebpf programs to hook on to it.
+Existing functionality isn't changed except triggering a probe-able new
+function at every timeout interval.
 
-  18:26:22 executing program 1:
-  r0 = socket$inet6_mptcp(0xa, 0x1, 0x106)
-  ...
-  connect$inet6(r0, &(0x7f0000000080)={0xa, 0x4001, 0x0, @loopback}, 0x1c) (async)
+We have seen cases where CM messages stuck with MAD layer (either due to
+software bug or faulty HCA), leading to cm_id getting stuck in the
+following call stack. This patch helps in resolving such issues faster.
 
-The notable thing here is 0x4001 in connect(), which is RDS_TCP_PORT.
-
-So, the scenario would be:
-
-  1. unshare(CLONE_NEWNET) creates a per netns tcp listener in
-      rds_tcp_listen_init().
-  2. syz-executor connect()s to it and creates a reqsk.
-  3. syz-executor exit()s immediately.
-  4. netns is dismantled.  [0]
-  5. reqsk timer is fired, and UAF happens while freeing reqsk.  [1]
-  6. listener is freed after RCU grace period.  [2]
-
-Basically, reqsk assumes that the listener guarantees netns safety
-until all reqsk timers are expired by holding the listener's refcount.
-However, this was not the case for kernel sockets.
-
-Commit 740ea3c4a0b2 ("tcp: Clean up kernel listener's reqsk in
-inet_twsk_purge()") fixed this issue only for per-netns ehash.
-
-Let's apply the same fix for the global ehash.
-
-[0]:
-ref_tracker: net notrefcnt@0000000065449cc3 has 1/1 users at
-     sk_alloc (./include/net/net_namespace.h:337 net/core/sock.c:2146)
-     inet6_create (net/ipv6/af_inet6.c:192 net/ipv6/af_inet6.c:119)
-     __sock_create (net/socket.c:1572)
-     rds_tcp_listen_init (net/rds/tcp_listen.c:279)
-     rds_tcp_init_net (net/rds/tcp.c:577)
-     ops_init (net/core/net_namespace.c:137)
-     setup_net (net/core/net_namespace.c:340)
-     copy_net_ns (net/core/net_namespace.c:497)
-     create_new_namespaces (kernel/nsproxy.c:110)
-     unshare_nsproxy_namespaces (kernel/nsproxy.c:228 (discriminator 4))
-     ksys_unshare (kernel/fork.c:3429)
-     __x64_sys_unshare (kernel/fork.c:3496)
-     do_syscall_64 (arch/x86/entry/common.c:52 arch/x86/entry/common.c:83)
-     entry_SYSCALL_64_after_hwframe (arch/x86/entry/entry_64.S:129)
+kernel: ... INFO: task XXXX:56778 blocked for more than 120 seconds.
 ...
-WARNING: CPU: 0 PID: 27 at lib/ref_tracker.c:179 ref_tracker_dir_exit (lib/ref_tracker.c:179)
+	Call Trace:
+	__schedule+0x2bc/0x895
+	schedule+0x36/0x7c
+	schedule_timeout+0x1f6/0x31f
+ 	? __slab_free+0x19c/0x2ba
+	wait_for_completion+0x12b/0x18a
+	? wake_up_q+0x80/0x73
+	cm_destroy_id+0x345/0x610 [ib_cm]
+	ib_destroy_cm_id+0x10/0x20 [ib_cm]
+	rdma_destroy_id+0xa8/0x300 [rdma_cm]
+	ucma_destroy_id+0x13e/0x190 [rdma_ucm]
+	ucma_write+0xe0/0x160 [rdma_ucm]
+	__vfs_write+0x3a/0x16d
+	vfs_write+0xb2/0x1a1
+	? syscall_trace_enter+0x1ce/0x2b8
+	SyS_write+0x5c/0xd3
+	do_syscall_64+0x79/0x1b9
+	entry_SYSCALL_64_after_hwframe+0x16d/0x0
 
-[1]:
-BUG: KASAN: slab-use-after-free in inet_csk_reqsk_queue_drop (./include/net/inet_hashtables.h:180 net/ipv4/inet_connection_sock.c:952 net/ipv4/inet_connection_sock.c:966)
-Read of size 8 at addr ffff88801b370400 by task swapper/0/0
-Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS rel-1.16.0-0-gd239552ce722-prebuilt.qemu.org 04/01/2014
-Call Trace:
- <IRQ>
- dump_stack_lvl (lib/dump_stack.c:107 (discriminator 1))
- print_report (mm/kasan/report.c:378 mm/kasan/report.c:488)
- kasan_report (mm/kasan/report.c:603)
- inet_csk_reqsk_queue_drop (./include/net/inet_hashtables.h:180 net/ipv4/inet_connection_sock.c:952 net/ipv4/inet_connection_sock.c:966)
- reqsk_timer_handler (net/ipv4/inet_connection_sock.c:979 net/ipv4/inet_connection_sock.c:1092)
- call_timer_fn (./arch/x86/include/asm/jump_label.h:27 ./include/linux/jump_label.h:207 ./include/trace/events/timer.h:127 kernel/time/timer.c:1701)
- __run_timers.part.0 (kernel/time/timer.c:1752 kernel/time/timer.c:2038)
- run_timer_softirq (kernel/time/timer.c:2053)
- __do_softirq (./arch/x86/include/asm/jump_label.h:27 ./include/linux/jump_label.h:207 ./include/trace/events/irq.h:142 kernel/softirq.c:554)
- irq_exit_rcu (kernel/softirq.c:427 kernel/softirq.c:632 kernel/softirq.c:644)
- sysvec_apic_timer_interrupt (arch/x86/kernel/apic/apic.c:1076 (discriminator 14))
- </IRQ>
+Orabug: 36280065
 
-Allocated by task 258 on cpu 0 at 83.612050s:
- kasan_save_stack (mm/kasan/common.c:48)
- kasan_save_track (mm/kasan/common.c:68)
- __kasan_slab_alloc (mm/kasan/common.c:343)
- kmem_cache_alloc (mm/slub.c:3813 mm/slub.c:3860 mm/slub.c:3867)
- copy_net_ns (./include/linux/slab.h:701 net/core/net_namespace.c:421 net/core/net_namespace.c:480)
- create_new_namespaces (kernel/nsproxy.c:110)
- unshare_nsproxy_namespaces (kernel/nsproxy.c:228 (discriminator 4))
- ksys_unshare (kernel/fork.c:3429)
- __x64_sys_unshare (kernel/fork.c:3496)
- do_syscall_64 (arch/x86/entry/common.c:52 arch/x86/entry/common.c:83)
- entry_SYSCALL_64_after_hwframe (arch/x86/entry/entry_64.S:129)
-
-Freed by task 27 on cpu 0 at 329.158864s:
- kasan_save_stack (mm/kasan/common.c:48)
- kasan_save_track (mm/kasan/common.c:68)
- kasan_save_free_info (mm/kasan/generic.c:643)
- __kasan_slab_free (mm/kasan/common.c:265)
- kmem_cache_free (mm/slub.c:4299 mm/slub.c:4363)
- cleanup_net (net/core/net_namespace.c:456 net/core/net_namespace.c:446 net/core/net_namespace.c:639)
- process_one_work (kernel/workqueue.c:2638)
- worker_thread (kernel/workqueue.c:2700 kernel/workqueue.c:2787)
- kthread (kernel/kthread.c:388)
- ret_from_fork (arch/x86/kernel/process.c:153)
- ret_from_fork_asm (arch/x86/entry/entry_64.S:250)
-
-The buggy address belongs to the object at ffff88801b370000
- which belongs to the cache net_namespace of size 4352
-The buggy address is located 1024 bytes inside of
- freed 4352-byte region [ffff88801b370000, ffff88801b371100)
-
-[2]:
-WARNING: CPU: 0 PID: 95 at lib/ref_tracker.c:228 ref_tracker_free (lib/ref_tracker.c:228 (discriminator 1))
-Modules linked in:
-Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS rel-1.16.0-0-gd239552ce722-prebuilt.qemu.org 04/01/2014
-RIP: 0010:ref_tracker_free (lib/ref_tracker.c:228 (discriminator 1))
-...
-Call Trace:
-<IRQ>
- __sk_destruct (./include/net/net_namespace.h:353 net/core/sock.c:2204)
- rcu_core (./arch/x86/include/asm/preempt.h:26 kernel/rcu/tree.c:2165 kernel/rcu/tree.c:2433)
- __do_softirq (./arch/x86/include/asm/jump_label.h:27 ./include/linux/jump_label.h:207 ./include/trace/events/irq.h:142 kernel/softirq.c:554)
- irq_exit_rcu (kernel/softirq.c:427 kernel/softirq.c:632 kernel/softirq.c:644)
- sysvec_apic_timer_interrupt (arch/x86/kernel/apic/apic.c:1076 (discriminator 14))
-</IRQ>
-
-Reported-by: syzkaller <syzkaller@googlegroups.com>
-Suggested-by: Eric Dumazet <edumazet@google.com>
-Fixes: 467fa15356ac ("RDS-TCP: Support multiple RDS-TCP listen endpoints, one per netns.")
-Signed-off-by: Kuniyuki Iwashima <kuniyu@amazon.com>
+Signed-off-by: Manjunath Patil <manjunath.b.patil@oracle.com>
 ---
- net/ipv4/tcp_minisocks.c | 4 ----
- 1 file changed, 4 deletions(-)
+ drivers/infiniband/core/cm.c | 20 +++++++++++++++++++-
+ 1 file changed, 19 insertions(+), 1 deletion(-)
 
-diff --git a/net/ipv4/tcp_minisocks.c b/net/ipv4/tcp_minisocks.c
-index 9e85f2a0bddd..0ecc7311dc6c 100644
---- a/net/ipv4/tcp_minisocks.c
-+++ b/net/ipv4/tcp_minisocks.c
-@@ -398,10 +398,6 @@ void tcp_twsk_purge(struct list_head *net_exit_list, int family)
- 			/* Even if tw_refcount == 1, we must clean up kernel reqsk */
- 			inet_twsk_purge(net->ipv4.tcp_death_row.hashinfo, family);
- 		} else if (!purged_once) {
--			/* The last refcount is decremented in tcp_sk_exit_batch() */
--			if (refcount_read(&net->ipv4.tcp_death_row.tw_refcount) == 1)
--				continue;
--
- 			inet_twsk_purge(&tcp_hashinfo, family);
- 			purged_once = true;
- 		}
+diff --git a/drivers/infiniband/core/cm.c b/drivers/infiniband/core/cm.c
+index ff58058aeadc..00a16b08c7e2 100644
+--- a/drivers/infiniband/core/cm.c
++++ b/drivers/infiniband/core/cm.c
+@@ -34,6 +34,7 @@ MODULE_AUTHOR("Sean Hefty");
+ MODULE_DESCRIPTION("InfiniBand CM");
+ MODULE_LICENSE("Dual BSD/GPL");
+ 
++static unsigned long cm_destroy_id_wait_timeout_sec = 10;
+ static const char * const ibcm_rej_reason_strs[] = {
+ 	[IB_CM_REJ_NO_QP]			= "no QP",
+ 	[IB_CM_REJ_NO_EEC]			= "no EEC",
+@@ -1025,10 +1026,20 @@ static void cm_reset_to_idle(struct cm_id_private *cm_id_priv)
+ 	}
+ }
+ 
++static noinline void cm_destroy_id_wait_timeout(struct ib_cm_id *cm_id)
++{
++	struct cm_id_private *cm_id_priv;
++
++	cm_id_priv = container_of(cm_id, struct cm_id_private, id);
++	pr_err("%s: cm_id=%p timed out. state=%d refcnt=%d\n", __func__,
++	       cm_id, cm_id->state, refcount_read(&cm_id_priv->refcount));
++}
++
+ static void cm_destroy_id(struct ib_cm_id *cm_id, int err)
+ {
+ 	struct cm_id_private *cm_id_priv;
+ 	struct cm_work *work;
++	int ret;
+ 
+ 	cm_id_priv = container_of(cm_id, struct cm_id_private, id);
+ 	spin_lock_irq(&cm_id_priv->lock);
+@@ -1135,7 +1146,14 @@ static void cm_destroy_id(struct ib_cm_id *cm_id, int err)
+ 
+ 	xa_erase(&cm.local_id_table, cm_local_id(cm_id->local_id));
+ 	cm_deref_id(cm_id_priv);
+-	wait_for_completion(&cm_id_priv->comp);
++	do {
++		ret = wait_for_completion_timeout(&cm_id_priv->comp,
++						  msecs_to_jiffies(
++				cm_destroy_id_wait_timeout_sec * 1000));
++		if (!ret) /* timeout happened */
++			cm_destroy_id_wait_timeout(cm_id);
++	} while (!ret);
++
+ 	while ((work = cm_dequeue_work(cm_id_priv)) != NULL)
+ 		cm_free_work(work);
+ 
 -- 
-2.30.2
+2.31.1
 
 
