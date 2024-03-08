@@ -1,153 +1,148 @@
-Return-Path: <linux-rdma+bounces-1338-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-1339-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0923A8768D3
-	for <lists+linux-rdma@lfdr.de>; Fri,  8 Mar 2024 17:49:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 1F1AC876AC0
+	for <lists+linux-rdma@lfdr.de>; Fri,  8 Mar 2024 19:30:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B299A1F2153E
-	for <lists+linux-rdma@lfdr.de>; Fri,  8 Mar 2024 16:49:49 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6D36B1F21FB5
+	for <lists+linux-rdma@lfdr.de>; Fri,  8 Mar 2024 18:30:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5F3411D698;
-	Fri,  8 Mar 2024 16:49:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A6A9B57878;
+	Fri,  8 Mar 2024 18:30:08 +0000 (UTC)
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from verein.lst.de (verein.lst.de [213.95.11.211])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ej1-f51.google.com (mail-ej1-f51.google.com [209.85.218.51])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A72C01C295;
-	Fri,  8 Mar 2024 16:49:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.95.11.211
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C9BE556776;
+	Fri,  8 Mar 2024 18:30:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709916571; cv=none; b=GzBdn1IQXyzYqn6ErG7GRwTr+2VKV7HPJwYZgHM1g6llE4tjVuovQmya/5j7+ofYj1zMqje7vz4eiAWZEfUc0MpMSDbL1Ibhnj7NLTSPiXWO/tfmQK9K0QIIjPlEo8yxNzL4+frlqDWeJpeDOpEjh0Yl6srW0gOfsh6hOGqOX8c=
+	t=1709922608; cv=none; b=tXSnIWatCB4MxAoridrLF5ZFK/AG1mHfOkwucQTMpzq8ZrOjT7tzwBtIioXMKJ5GTh8hkt+rALmTUHhpwF7b/2X8kHarU4I2Wz8nVpyaAcmGx60sJ0ownlt3ROpVMXfcJMp7jigBxhcmXYk2oZyi0qwzBkDhOYpO9c8eVAC+Mso=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709916571; c=relaxed/simple;
-	bh=KzdKUekyi9rBF/gDC5z7G4GjeHKa0pomXxJxjC5D0Xc=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=dplyUU3oQ489ZG7EOUXb2fiNPGjdbyoe5PzKd8NYCCknNTHSWk6kYxj7XYZWVdGwpcUz55jWdkMBPWDwNbJHhposntsq9mj6JFIuvZ/VhYZsM/BOCqbKxcJXJk6HY0sSMUO2QEmwLUuOjUTrTUH1FIS4+BOhFOIXo8jNJHaSp1c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=lst.de; spf=pass smtp.mailfrom=lst.de; arc=none smtp.client-ip=213.95.11.211
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=lst.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lst.de
-Received: by verein.lst.de (Postfix, from userid 2407)
-	id E414168BEB; Fri,  8 Mar 2024 17:49:20 +0100 (CET)
-Date: Fri, 8 Mar 2024 17:49:20 +0100
-From: Christoph Hellwig <hch@lst.de>
-To: Jason Gunthorpe <jgg@ziepe.ca>
-Cc: Christoph Hellwig <hch@lst.de>, Leon Romanovsky <leon@kernel.org>,
-	Robin Murphy <robin.murphy@arm.com>,
-	Marek Szyprowski <m.szyprowski@samsung.com>,
-	Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
-	Chaitanya Kulkarni <chaitanyak@nvidia.com>,
-	Jonathan Corbet <corbet@lwn.net>, Jens Axboe <axboe@kernel.dk>,
-	Keith Busch <kbusch@kernel.org>, Sagi Grimberg <sagi@grimberg.me>,
-	Yishai Hadas <yishaih@nvidia.com>,
-	Shameer Kolothum <shameerali.kolothum.thodi@huawei.com>,
-	Kevin Tian <kevin.tian@intel.com>,
-	Alex Williamson <alex.williamson@redhat.com>,
-	=?iso-8859-1?B?Suly9G1l?= Glisse <jglisse@redhat.com>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-block@vger.kernel.org, linux-rdma@vger.kernel.org,
-	iommu@lists.linux.dev, linux-nvme@lists.infradead.org,
-	kvm@vger.kernel.org, linux-mm@kvack.org,
-	Bart Van Assche <bvanassche@acm.org>,
-	Damien Le Moal <damien.lemoal@opensource.wdc.com>,
-	Amir Goldstein <amir73il@gmail.com>,
-	"josef@toxicpanda.com" <josef@toxicpanda.com>,
-	"Martin K. Petersen" <martin.petersen@oracle.com>,
-	"daniel@iogearbox.net" <daniel@iogearbox.net>,
-	Dan Williams <dan.j.williams@intel.com>,
-	"jack@suse.com" <jack@suse.com>, Zhu Yanjun <zyjzyj2000@gmail.com>
-Subject: Re: [RFC RESEND 00/16] Split IOMMU DMA mapping operation to two
- steps
-Message-ID: <20240308164920.GA17991@lst.de>
-References: <47afacda-3023-4eb7-b227-5f725c3187c2@arm.com> <20240305122935.GB36868@unreal> <20240306144416.GB19711@lst.de> <20240306154328.GM9225@ziepe.ca> <20240306162022.GB28427@lst.de> <20240306174456.GO9225@ziepe.ca> <20240306221400.GA8663@lst.de> <20240307000036.GP9225@ziepe.ca> <20240307150505.GA28978@lst.de> <20240307210116.GQ9225@ziepe.ca>
+	s=arc-20240116; t=1709922608; c=relaxed/simple;
+	bh=HFG1MynytzLWg0eicMZQdvo4JlKR6eu7Ns14s2RLGiw=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=G79E92K/qwQn1BG4y/34ZivaBcXHvVy2QR0I3ru0sqwf7dYzjCMeGczVIWyQmAjATzbFN7Jl5yhOAKIkumnVMOvm3xbD7lPH3SMfLX+xvPsb1YyW9xRMuUU41g3DNfZvgdeMrqqGvl9l1bi90/2SIPUZjVBwpLyHKU9h00r6MI0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=debian.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.218.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=debian.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ej1-f51.google.com with SMTP id a640c23a62f3a-a3ddc13bbb3so627851566b.0;
+        Fri, 08 Mar 2024 10:30:06 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709922605; x=1710527405;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=yFXpUhEJ/ItvZNUQqkXHwG73XavxT72enjAMgAKDLJc=;
+        b=W2J3Hr4ZLBeGbd2wKMgm8PWzBdGJYzBeTcppGgrQnwi0oj9Sws+JoLCH9pibClQ+sq
+         UXFOZazuvLLFs6F3L4Uo7/soYIgg8kuYw7ykQF38NTYRbRsFbMODo0FwJuB7+kSGt6It
+         qf/KeUXxTR0KNF26DZtTljXYZQEcvp2RvzPPISK2g+hajfgGlVVvvLi4FRMT7z0hDypH
+         fk15nOiU0TE+ptUeqp+L8tEu5bfTzrjj/DCg3ErYeMoLTZ7LYNLPzadr6BWzhzs9+PWz
+         OSAQM+g6Sk/GDl5qc8szRDQdYHJpj9rSlfzEPU5MrWVoyx7YpgouMX3LWn1q2AU/gvKf
+         0aTg==
+X-Forwarded-Encrypted: i=1; AJvYcCVzKsfucWA0MC31hnKRuoZl5K6ilSjXGlp/ABmX3F5/1NlsY2Uq321SDbnylA4IgUfPDzQiUzq7wW74VhEf3oJGqST4fgC7WgfVHX/qPA6SSJRBOJk6Cimlc9fRjm+Ig4HdtYvGIs5hhA==
+X-Gm-Message-State: AOJu0Yz8+2gk0nv+WLYoCsQZ0oi34HTGJoghoxxbg6OrwJRUUvlaYcOa
+	0btXdnlnHveMM8T4bIpDKco7pXKrnd2NyBj6noprdg8itLBNBJIM
+X-Google-Smtp-Source: AGHT+IFq4IUV8gyyu9ldBeK/L2ipBwAFO6hBH2Xp0n9UMXbgtEjM58NS9VO7Ix6Sq8JEeZ7uLRFHPA==
+X-Received: by 2002:a17:907:a08e:b0:a45:73b0:bcc3 with SMTP id hu14-20020a170907a08e00b00a4573b0bcc3mr801361ejc.34.1709922605113;
+        Fri, 08 Mar 2024 10:30:05 -0800 (PST)
+Received: from localhost (fwdproxy-lla-111.fbsv.net. [2a03:2880:30ff:6f::face:b00c])
+        by smtp.gmail.com with ESMTPSA id l19-20020a170906231300b00a449d6184dasm54434eja.6.2024.03.08.10.30.04
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 08 Mar 2024 10:30:04 -0800 (PST)
+From: Breno Leitao <leitao@debian.org>
+To: Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
+	Jason Gunthorpe <jgg@ziepe.ca>,
+	Leon Romanovsky <leon@kernel.org>
+Cc: kuba@kernel.org,
+	keescook@chromium.org,
+	linux-rdma@vger.kernel.org (open list:HFI1 DRIVER),
+	linux-kernel@vger.kernel.org (open list)
+Subject: [PATCH net-next] IB/hfi1: allocate dummy net_device dynamically
+Date: Fri,  8 Mar 2024 10:29:50 -0800
+Message-ID: <20240308182951.2137779-1-leitao@debian.org>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240307210116.GQ9225@ziepe.ca>
-User-Agent: Mutt/1.5.17 (2007-11-01)
+Content-Transfer-Encoding: 8bit
 
-On Thu, Mar 07, 2024 at 05:01:16PM -0400, Jason Gunthorpe wrote:
-> > 
-> > It's just kinda hard to do.  For aligned IOMMU mapping you'd only
-> > have one dma_addr_t mappings (or maybe a few if P2P regions are
-> > involved), so this probably doesn't matter.  For direct mappings
-> > you'd have a few, but maybe the better answer is to use THP
-> > more aggressively and reduce the number of segments.
-> 
-> Right, those things have all been done. 100GB of huge pages is still
-> using a fair amount of memory for storing dma_addr_t's.
-> 
-> It is hard to do perfectly, but I think it is not so bad if we focus
-> on the direct only case and simple systems that can exclude swiotlb
-> early on.
+struct net_device shouldn't be embedded into any structure, instead,
+the owner should use the priv space to embed their state into net_device.
 
-Even with direct mappings only we still need to take care of
-cache synchronization.
+Embedding net_device into structures prohibits the usage of flexible
+arrays in the net_device structure. For more details, see the discussion
+at [1].
 
-> > If all flows includes multiple non-coalesced regions that just makes
-> > things very complicated, and that's exactly what I'd want to avoid.
-> 
-> I don't see how to avoid it unless we say RDMA shouldn't use this API,
-> which is kind of the whole point from my perspective..
+Un-embed the net_device from struct iwl_trans_pcie by converting it
+into a pointer. Then use the leverage alloc_netdev() to allocate the
+net_device object at iwl_trans_pcie_alloc.
 
-The DMA API callers really need to know what is P2P or not for
-various reasons.  And they should generally have that information
-available, either from pin_user_pages that needs to special case
-it or from the in-kernel I/O submitter that build it from P2P and
-normal memory.
+The private data of net_device becomes a pointer for the struct
+iwl_trans_pcie, so, it is easy to get back to the iwl_trans_pcie parent
+given the net_device object.
 
-> Sure, 3 SGL entries is fine, that isn't what I'm pointing at
-> 
-> I'm saying that today if you give such a scatterlist to dma_map_sg()
-> it scans it and computes the IOVA space need, allocates one IOVA
-> space, then subdivides that single space up into the 3 HW SGLs you
-> show.
-> 
-> If you don't preserve that then we are calling, 4k at a time, a
-> dma_map_page() which is not anywhere close to the same outcome as what
-> dma_map_sg did. I may not get contiguous IOVA, I may not get 3 SGLs,
-> and we call into the IOVA allocator a huge number of times.
+[1] https://lore.kernel.org/all/20240229225910.79e224cf@kernel.org/
 
-Again, your callers must know what is a P2P region and what is not.
-I don't think it is a hard burdern to do mappings at that granularity,
-and we can encapsulate this in nice helpes for say the block layer
-and pin_user_pages callers to start.
+Signed-off-by: Breno Leitao <leitao@debian.org>
+---
+ drivers/infiniband/hw/hfi1/netdev.h    | 2 +-
+ drivers/infiniband/hw/hfi1/netdev_rx.c | 9 +++++++--
+ 2 files changed, 8 insertions(+), 3 deletions(-)
 
-> 
-> It needs to work following the same basic structure of dma_map_sg,
-> unfolding that logic into helpers so that the driver can provide
-> the data structure:
-> 
->  - Scan the io ranges and figure out how much IOVA needed
->    (dma_io_summarize_range)
-
-That is in general a function of the upper layer and not the DMA code.
-
->  - Allocate the IOVA (dma_init_io)
-
-And this step is only needed for the iommu case.
-
-> > That's why I really just want 2 cases.  If the caller guarantees the
-> > range is coalescable and there is an IOMMU use the iommu-API like
-> > API, else just iter over map_single/page.
-> 
-> But how does the caller even know if it is coalescable? Other than the
-> trivial case of a single CPU range, that is a complicated detail based
-> on what pages are inside the range combined with the capability of the
-> device doing DMA. I don't see a simple way for the caller to figure
-> this out. You need to sweep every page and collect some information on
-> it. The above is to abstract that detail.
-
-dma_get_merge_boundary already provides this information in terms
-of the device capabilities.  And given that the callers knows what
-is P2P and what is not we have all the information that is needed.
+diff --git a/drivers/infiniband/hw/hfi1/netdev.h b/drivers/infiniband/hw/hfi1/netdev.h
+index 8aa074670a9c..07c8f77c9181 100644
+--- a/drivers/infiniband/hw/hfi1/netdev.h
++++ b/drivers/infiniband/hw/hfi1/netdev.h
+@@ -49,7 +49,7 @@ struct hfi1_netdev_rxq {
+  *		When 0 receive queues will be freed.
+  */
+ struct hfi1_netdev_rx {
+-	struct net_device rx_napi;
++	struct net_device *rx_napi;
+ 	struct hfi1_devdata *dd;
+ 	struct hfi1_netdev_rxq *rxq;
+ 	int num_rx_q;
+diff --git a/drivers/infiniband/hw/hfi1/netdev_rx.c b/drivers/infiniband/hw/hfi1/netdev_rx.c
+index 720d4c85c9c9..5c26a69fa2bb 100644
+--- a/drivers/infiniband/hw/hfi1/netdev_rx.c
++++ b/drivers/infiniband/hw/hfi1/netdev_rx.c
+@@ -188,7 +188,7 @@ static int hfi1_netdev_rxq_init(struct hfi1_netdev_rx *rx)
+ 	int i;
+ 	int rc;
+ 	struct hfi1_devdata *dd = rx->dd;
+-	struct net_device *dev = &rx->rx_napi;
++	struct net_device *dev = rx->rx_napi;
+ 
+ 	rx->num_rx_q = dd->num_netdev_contexts;
+ 	rx->rxq = kcalloc_node(rx->num_rx_q, sizeof(*rx->rxq),
+@@ -360,7 +360,11 @@ int hfi1_alloc_rx(struct hfi1_devdata *dd)
+ 	if (!rx)
+ 		return -ENOMEM;
+ 	rx->dd = dd;
+-	init_dummy_netdev(&rx->rx_napi);
++	rx->rx_napi = alloc_netdev(sizeof(struct iwl_trans_pcie *),
++				   "dummy", NET_NAME_UNKNOWN,
++				   init_dummy_netdev);
++	if (!rx->rx_napi)
++		return -ENOMEM;
+ 
+ 	xa_init(&rx->dev_tbl);
+ 	atomic_set(&rx->enabled, 0);
+@@ -374,6 +378,7 @@ void hfi1_free_rx(struct hfi1_devdata *dd)
+ {
+ 	if (dd->netdev_rx) {
+ 		dd_dev_info(dd, "hfi1 rx freed\n");
++		free_netdev(dd->netdev_rx->rx_napi);
+ 		kfree(dd->netdev_rx);
+ 		dd->netdev_rx = NULL;
+ 	}
+-- 
+2.43.0
 
 
