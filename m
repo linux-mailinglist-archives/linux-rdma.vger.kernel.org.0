@@ -1,125 +1,92 @@
-Return-Path: <linux-rdma+bounces-1355-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-1356-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 66FF5877555
-	for <lists+linux-rdma@lfdr.de>; Sun, 10 Mar 2024 05:54:24 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 049648775F3
+	for <lists+linux-rdma@lfdr.de>; Sun, 10 Mar 2024 10:25:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EF4B5282638
-	for <lists+linux-rdma@lfdr.de>; Sun, 10 Mar 2024 04:54:22 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 33026B2131C
+	for <lists+linux-rdma@lfdr.de>; Sun, 10 Mar 2024 09:25:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B4DC517F6;
-	Sun, 10 Mar 2024 04:53:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B2F1D1DDDB;
+	Sun, 10 Mar 2024 09:24:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="Y9elywXD"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="g1ImGlUR"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from out-175.mta1.migadu.com (out-175.mta1.migadu.com [95.215.58.175])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A46BD16FF58
-	for <linux-rdma@vger.kernel.org>; Sun, 10 Mar 2024 04:53:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.175
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6EFCC1DFD2;
+	Sun, 10 Mar 2024 09:24:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710046414; cv=none; b=NxzHrlv9LoSVAMv753nTKCd5NYfQ/QMic1b0vzZc8Z30l7e2gldtwgbGEWfPwlTwbCuqHwtiVvt+FBcA4Wp7YokElJfopz2+eRnOIqVu08XJ92KOip1s/Yv1LemWi7aeshyK4uZNLbJAfQTBYZNzneVQ733T7Mx15BhwiHfLkfQ=
+	t=1710062699; cv=none; b=WCDMWHDCjARYqdd30e8zw+TWvJ/xdDkll9FYf4VEKo/5w+Hd5u6Iy3e6s1ru/ju0e8JwpQLz/XsMXJ39i1BWsG3RpM8caorWM82B2AnJpVi/F87f/y1iuwgbUKIvOuYaBrBKI/Vs3O+f6iNT4WhClr3V0ibmlyveRdKBdq11p9Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710046414; c=relaxed/simple;
-	bh=+M5/D3rA/Qm/pKCZPYWYSQSBNzUmBrlAdlHD3eIkNA4=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=QhJT9WiDDm+OjETZdcCn1hM+lqKZcADaGIH18hSCs7LCJUkzT4YBf9hmpJ1AZFefSKmCmZUA2rc515YmjPJxCKnr5NmLlQH0z1J8EmTCnI5nHJCkYUVAzezw1XPzm3P4FJXrUvSyIhwBenRs4AHlXrScuhMYvUaZ2ONkHarp8/M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=Y9elywXD; arc=none smtp.client-ip=95.215.58.175
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <2d508574-c2b8-489b-a26d-71b1c36961cf@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1710046409;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=MfpnvfCFCpDGN6RtbnA1IMFWuCTDp/YHUNDd+urhXvA=;
-	b=Y9elywXDtnQ7uLAWp0rfk8mONQnZAu/7agWecQM5Gv2K4KTPbcYKM15DxzYmucCl5V84av
-	m0rOdUylsJDu2i9diwUnOzmyuZv1K6kI2j4OojqmyoT+SWIiG6l4Dh0DOlYKe/YXQ112Uv
-	NTCTStj7A5nv0mJ2Wpwtvsdl6xQXYcs=
-Date: Sun, 10 Mar 2024 05:53:26 +0100
+	s=arc-20240116; t=1710062699; c=relaxed/simple;
+	bh=P4ZM/mizClm/AHwxqWX/09R1OQ5BDYw3G6pF7eCt3Yg=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=qVt2Lc7Kb+PuURWVqVLpAzT7v3fuMUt3pPgk694QUwbfSCOgD2Nr1bjmMNt9OGh2IeKN9dVixMzlVB9HodtBKxsIRLq91783fqvgZP5+NkGtkQ7c8/3GaTeJNGEPKcXmXHbN9wbxeCP0IsNdWhz8ex272phLUC2AHArASz+Arjw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=g1ImGlUR; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 71D96C433F1;
+	Sun, 10 Mar 2024 09:24:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1710062698;
+	bh=P4ZM/mizClm/AHwxqWX/09R1OQ5BDYw3G6pF7eCt3Yg=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=g1ImGlURaLnRTv/IYCL48IuBeXzuto6vTT3xVCYgw9ZZCpWskBmaDuAKqv576m9XX
+	 06XVeZSyIKqI5tFO2eZb5FxOgkSLL18TfzrUO3xXPm8JIXN1mc2WZJcOUv29mKE5qR
+	 ufGjfD5/rlUBaz8BAc/V/BaH2uWwVct7tG/K2be5TeFhfpJN8IxEf8R+C3SVTeOm3S
+	 ikZQFX0kOTOU5XL4adI+RusxIZqlScqroRAhEtYiRi0yBHmaveDYFxy2g2OTlkH28t
+	 pdPt1TqJs+UA1popkuZlBx/AUGZAJRVD8oqA6qutu7GC5ZT4YT1mTgsd+66apJ/XhC
+	 exGkyV8NbfYGg==
+Date: Sun, 10 Mar 2024 11:24:54 +0200
+From: Leon Romanovsky <leon@kernel.org>
+To: Wenchao Hao <haowenchao2@huawei.com>
+Cc: Jason Gunthorpe <jgg@ziepe.ca>, linux-rdma@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] RDMA/restrack: Fix potential invalid address access
+Message-ID: <20240310092454.GA12921@unreal>
+References: <20240301095514.3598280-1-haowenchao2@huawei.com>
+ <20240307091317.GA8392@unreal>
+ <c84561e1-0fc5-4381-961f-a246b577938f@huawei.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH] RDMA/siw: Reuse value read using READ_ONCE instead of
- re-reading it
-To: linke li <lilinke99@qq.com>
-Cc: Bernard Metzler <bmt@zurich.ibm.com>, Jason Gunthorpe <jgg@ziepe.ca>,
- Leon Romanovsky <leon@kernel.org>, linux-rdma@vger.kernel.org,
- linux-kernel@vger.kernel.org
-References: <tencent_32C3AEB0599DF0A0010A862439636CDA2707@qq.com>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Zhu Yanjun <yanjun.zhu@linux.dev>
-In-Reply-To: <tencent_32C3AEB0599DF0A0010A862439636CDA2707@qq.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <c84561e1-0fc5-4381-961f-a246b577938f@huawei.com>
 
-在 2024/3/9 13:27, linke li 写道:
-> In siw_orqe_start_rx, the orqe's flag in the if condition is read using
-> READ_ONCE, checked, and then re-read, voiding all guarantees of the
-> checks. Reuse the value that was read by READ_ONCE to ensure the
-> consistency of the flags throughout the function.
+On Thu, Mar 07, 2024 at 10:17:59PM +0800, Wenchao Hao wrote:
+> On 2024/3/7 17:13, Leon Romanovsky wrote:
+> > On Fri, Mar 01, 2024 at 05:55:15PM +0800, Wenchao Hao wrote:
+> > > struct rdma_restrack_entry's kern_name was set to KBUILD_MODNAME
+> > > in ib_create_cq(), while if the module exited but forgot del this
+> > > rdma_restrack_entry, it would cause a invalid address access in
+> > > rdma_restrack_clean() when print the owner of this rdma_restrack_entry.
+> > > 
+> > > Fix this issue by using kstrdup() to set rdma_restrack_entry's
+> > > kern_name.
+> > 
+> > I don't like kstrdup() and would like to avoid it, this rdma_restrack_clean()
+> > is purely for debugging and for a long time all upstream ULPs are "clean"
+> > from these not-released bugs.
+> > 
+> > So my suggestion is to delete that part of code and it will be good enough.
+> > 
 > 
-> Signed-off-by: linke li <lilinke99@qq.com>
-> ---
->   drivers/infiniband/sw/siw/siw_qp_rx.c | 6 ++++--
->   1 file changed, 4 insertions(+), 2 deletions(-)
+> It's OK for me. When found this issue, my first plan is to remove the code, but
+> I do not know why these code is added, so decide to using kstrdup() to work around
+> it.
+
+This code helped us to find one forgotten PD release in one of the ULPs. But it is not needed anymore.
+
 > 
-> diff --git a/drivers/infiniband/sw/siw/siw_qp_rx.c b/drivers/infiniband/sw/siw/siw_qp_rx.c
-> index ed4fc39718b4..f5f69de56882 100644
-> --- a/drivers/infiniband/sw/siw/siw_qp_rx.c
-> +++ b/drivers/infiniband/sw/siw/siw_qp_rx.c
-> @@ -740,6 +740,7 @@ static int siw_orqe_start_rx(struct siw_qp *qp)
->   {
->   	struct siw_sqe *orqe;
->   	struct siw_wqe *wqe = NULL;
-> +	u16 orqe_flags;
->   
->   	if (unlikely(!qp->attrs.orq_size))
->   		return -EPROTO;
-> @@ -748,7 +749,8 @@ static int siw_orqe_start_rx(struct siw_qp *qp)
->   	smp_mb();
->   
->   	orqe = orq_get_current(qp);
-> -	if (READ_ONCE(orqe->flags) & SIW_WQE_VALID) {
+> Then what to do next? Do I need to post another patch or you would fix it by yourself?
 
-In this if test, READ_ONCE is needed to read orqe->flags. But in this 
-commit, this READ_ONCE is moved to other places.
-
-In a complicated environment, for example, this function is called many 
-times at the same time and orqe->flags is changed at the same time, I am 
-not sure if this will introduce risks or not.
-
-if you need to ensure the consistency of the flags throughout the 
-function, not sure if the following is better or not.
-
-if (((orqe_flags=READ_ONCE(orqe->flags))) & SIW_WQE_VALID) {
-
-Thanks,
-Zhu Yanjun
-
-> +	orqe_flags = READ_ONCE(orqe->flags);
-> +	if (orqe_flags & SIW_WQE_VALID) {
->   		/* RRESP is a TAGGED RDMAP operation */
->   		wqe = rx_wqe(&qp->rx_tagged);
->   		wqe->sqe.id = orqe->id;
-> @@ -756,7 +758,7 @@ static int siw_orqe_start_rx(struct siw_qp *qp)
->   		wqe->sqe.sge[0].laddr = orqe->sge[0].laddr;
->   		wqe->sqe.sge[0].lkey = orqe->sge[0].lkey;
->   		wqe->sqe.sge[0].length = orqe->sge[0].length;
-> -		wqe->sqe.flags = orqe->flags;
-> +		wqe->sqe.flags = orqe_flags;
->   		wqe->sqe.num_sge = 1;
->   		wqe->bytes = orqe->sge[0].length;
->   		wqe->processed = 0;
-
+Please send new patch, thanks.
 
