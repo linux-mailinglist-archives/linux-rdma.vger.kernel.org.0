@@ -1,57 +1,54 @@
-Return-Path: <linux-rdma+bounces-1359-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-1360-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9D73087760D
-	for <lists+linux-rdma@lfdr.de>; Sun, 10 Mar 2024 11:15:10 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7D5D0877635
+	for <lists+linux-rdma@lfdr.de>; Sun, 10 Mar 2024 12:17:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 25AC4B2127A
-	for <lists+linux-rdma@lfdr.de>; Sun, 10 Mar 2024 10:15:08 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 16E02B20CA8
+	for <lists+linux-rdma@lfdr.de>; Sun, 10 Mar 2024 11:17:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B5CE61EA71;
-	Sun, 10 Mar 2024 10:14:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C41271EB3B;
+	Sun, 10 Mar 2024 11:17:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="MTqzOiqX"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="IZ1ja7vZ"
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 71BEC208C8;
-	Sun, 10 Mar 2024 10:14:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7405FEEDD;
+	Sun, 10 Mar 2024 11:17:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710065696; cv=none; b=dO6KkuP4TRDzzHoVIItdLyj6jywwp2VDnR08dwOb24Xwn+dDmKwTDvh8Z8t7GxPtSTkuZpIE7/v2FDHaqn8Br0igmHFavF4bXrrWHW3miMr053AoesGfkqWj0TcYj60UGNI0NFh2BdOfWE0jfEctYcCALFo/Jwn2oqmf+ZRB7F8=
+	t=1710069469; cv=none; b=bONzzhV9IlkjYZneU1JXMo+RlqyLRHafr1yZaje5Ol/TCtRlW5dAvdmRr4iIHbL96KQ/hLJ3aR4IbNFqzMkXprAwm4s4c/PDECtxob+tAXOL4bdEJpbFNPnPMa/go6ONmCTFp27C+jYNpNEnWKbfl8I2xwNQ0YeljjxZfkNaD5E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710065696; c=relaxed/simple;
-	bh=JoAFWb9nLtYnlHB1SCF0D6+9Y9U1vP862qBb0QXiCVY=;
+	s=arc-20240116; t=1710069469; c=relaxed/simple;
+	bh=3s1ZmveQR14tT13H4TyNz+vgrxtLD79xkbyvkzcU1+E=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=YsM0x4zUO9Bh2Wutkx4ieAZbqzyz/rUL31HTp4skrx7d8Pbpy1oB8oxPbbm1ZcDT+RJK2HY+Ly430e+1hxdWPqFwlu4uqbzEfECzN/mwijeApysJDSE3dWOFklBtNEE95wy2tGwHyPLk2gvlOtPeE9nr+DfqMJxQV3fRGFHxRxo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=MTqzOiqX; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4BE4BC433F1;
-	Sun, 10 Mar 2024 10:14:55 +0000 (UTC)
+	 Content-Type:Content-Disposition:In-Reply-To; b=PNVA+svzL6yRJZzU0krQEbdhLUA7UdjdjdN+KckGzrFcOEBLOi/dmSQvCmM0L7GM96/U0Au/Se0lQKu7MZTtFTB1sP0n4SdtX2inGunNZlf2Kldd4PL2oydiamQhs8ngXaBObJX2SOaM5oAW36oQKOm4t5uqVawkdhvIXzqmE0c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=IZ1ja7vZ; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 64BE5C433F1;
+	Sun, 10 Mar 2024 11:17:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1710065696;
-	bh=JoAFWb9nLtYnlHB1SCF0D6+9Y9U1vP862qBb0QXiCVY=;
+	s=k20201202; t=1710069468;
+	bh=3s1ZmveQR14tT13H4TyNz+vgrxtLD79xkbyvkzcU1+E=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=MTqzOiqXSKiBKyjZUmMnLGM2bCvM/Sjh4eK3npbXK7/mFi5qgxjaWsTtqHLKorVgR
-	 nBHcSE+d3nK+DVqEF/dk15uAvtn76runMyEKa8is37KHzEtglUlTqwP4ZJLeUPUyGe
-	 sv74xu5DJUFaKRK043v5JVn1+FckJnxLsGkwYODYXGvRfhz83cB8zDaqHZkZo2wEOJ
-	 kLoBvYFapC2KHC0fdONZe2Rk2s6R/6f5UQIjQjvpGXK0l3N43RVRibsKN8HyUJyYX3
-	 LT3ppqUl1IZDj2IiaWvmYJMpUp980WUQpnD1OSItf1efQgkdAhiqXIF5fK+DET45j7
-	 GHyVws8wsBZiw==
-Date: Sun, 10 Mar 2024 12:14:51 +0200
+	b=IZ1ja7vZkyLjEP1jHyBw9XoAqfauKPAxHyRr3nkVN6LzcREvSIkONg/zUKvs3hdNk
+	 oGzfRqK07qiV9ld0H8ywEk3FkGXwUqRYyajvJaEp4aWPXqeCTaqFusiPPT6zy/NG3k
+	 QJkmBsA5RR3t4TxLwu2H+3995AArWpMOQ5eOHEas3Ur49+LSxIxivivl3NHlbCtelB
+	 WUmKbGkrrCl9Sc601XU42UsLgbFiZR0qCZ7YcQGjoc7W0PhNu47d9+AIIIlQRIgqzC
+	 cZ5WVwwKBgko3j5MSbdzPEKPlG0SxpODviGM5uBXDhYlk7hmmUj5pLZKWD7hK0gr+z
+	 ROHseIkJ2j+jw==
+Date: Sun, 10 Mar 2024 13:17:44 +0200
 From: Leon Romanovsky <leon@kernel.org>
-To: Breno Leitao <leitao@debian.org>
-Cc: Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
-	Jason Gunthorpe <jgg@ziepe.ca>, kuba@kernel.org,
-	keescook@chromium.org,
-	"open list:HFI1 DRIVER" <linux-rdma@vger.kernel.org>,
-	open list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH net-next] IB/hfi1: allocate dummy net_device dynamically
-Message-ID: <20240310101451.GD12921@unreal>
-References: <20240308182951.2137779-1-leitao@debian.org>
+To: Manjunath Patil <manjunath.b.patil@oracle.com>
+Cc: dledford@redhat.com, jgg@ziepe.ca, linux-rdma@vger.kernel.org,
+	linux-kernel@vger.kernel.org, rama.nichanamatlu@oracle.com
+Subject: Re: [PATCH v3] RDMA/cm: add timeout to cm_destroy_id wait
+Message-ID: <20240310111744.GE12921@unreal>
+References: <20240309063323.458102-1-manjunath.b.patil@oracle.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
@@ -60,92 +57,71 @@ List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240308182951.2137779-1-leitao@debian.org>
+In-Reply-To: <20240309063323.458102-1-manjunath.b.patil@oracle.com>
 
-On Fri, Mar 08, 2024 at 10:29:50AM -0800, Breno Leitao wrote:
-> struct net_device shouldn't be embedded into any structure, instead,
-> the owner should use the priv space to embed their state into net_device.
+On Fri, Mar 08, 2024 at 10:33:23PM -0800, Manjunath Patil wrote:
+> Add timeout to cm_destroy_id, so that userspace can trigger any data
+> collection that would help in analyzing the cause of delay in destroying
+> the cm_id.
+> 
+> New noinline function helps dtrace/ebpf programs to hook on to it.
+> Existing functionality isn't changed except triggering a probe-able new
+> function at every timeout interval.
+> 
+> We have seen cases where CM messages stuck with MAD layer (either due to
+> software bug or faulty HCA), leading to cm_id getting stuck in the
+> following call stack. This patch helps in resolving such issues faster.
+> 
+> kernel: ... INFO: task XXXX:56778 blocked for more than 120 seconds.
+> ...
+> 	Call Trace:
+> 	__schedule+0x2bc/0x895
+> 	schedule+0x36/0x7c
+> 	schedule_timeout+0x1f6/0x31f
+>  	? __slab_free+0x19c/0x2ba
+> 	wait_for_completion+0x12b/0x18a
+> 	? wake_up_q+0x80/0x73
+> 	cm_destroy_id+0x345/0x610 [ib_cm]
+> 	ib_destroy_cm_id+0x10/0x20 [ib_cm]
+> 	rdma_destroy_id+0xa8/0x300 [rdma_cm]
+> 	ucma_destroy_id+0x13e/0x190 [rdma_ucm]
+> 	ucma_write+0xe0/0x160 [rdma_ucm]
+> 	__vfs_write+0x3a/0x16d
+> 	vfs_write+0xb2/0x1a1
+> 	? syscall_trace_enter+0x1ce/0x2b8
+> 	SyS_write+0x5c/0xd3
+> 	do_syscall_64+0x79/0x1b9
+> 	entry_SYSCALL_64_after_hwframe+0x16d/0x0
+> 
+> Orabug: 36280065
 
-Why?
+Not related to the upstream.
 
 > 
-> Embedding net_device into structures prohibits the usage of flexible
-> arrays in the net_device structure. For more details, see the discussion
-> at [1].
-> 
-> Un-embed the net_device from struct iwl_trans_pcie by converting it
-> into a pointer. Then use the leverage alloc_netdev() to allocate the
-> net_device object at iwl_trans_pcie_alloc.
-> 
-> The private data of net_device becomes a pointer for the struct
-> iwl_trans_pcie, so, it is easy to get back to the iwl_trans_pcie parent
-> given the net_device object.
-> 
-> [1] https://lore.kernel.org/all/20240229225910.79e224cf@kernel.org/
-> 
-> Signed-off-by: Breno Leitao <leitao@debian.org>
+> Signed-off-by: Manjunath Patil <manjunath.b.patil@oracle.com>
 > ---
->  drivers/infiniband/hw/hfi1/netdev.h    | 2 +-
->  drivers/infiniband/hw/hfi1/netdev_rx.c | 9 +++++++--
->  2 files changed, 8 insertions(+), 3 deletions(-)
+> v3:
+>  - added #define
 > 
-> diff --git a/drivers/infiniband/hw/hfi1/netdev.h b/drivers/infiniband/hw/hfi1/netdev.h
-> index 8aa074670a9c..07c8f77c9181 100644
-> --- a/drivers/infiniband/hw/hfi1/netdev.h
-> +++ b/drivers/infiniband/hw/hfi1/netdev.h
-> @@ -49,7 +49,7 @@ struct hfi1_netdev_rxq {
->   *		When 0 receive queues will be freed.
->   */
->  struct hfi1_netdev_rx {
-> -	struct net_device rx_napi;
-> +	struct net_device *rx_napi;
->  	struct hfi1_devdata *dd;
->  	struct hfi1_netdev_rxq *rxq;
->  	int num_rx_q;
-> diff --git a/drivers/infiniband/hw/hfi1/netdev_rx.c b/drivers/infiniband/hw/hfi1/netdev_rx.c
-> index 720d4c85c9c9..5c26a69fa2bb 100644
-> --- a/drivers/infiniband/hw/hfi1/netdev_rx.c
-> +++ b/drivers/infiniband/hw/hfi1/netdev_rx.c
-> @@ -188,7 +188,7 @@ static int hfi1_netdev_rxq_init(struct hfi1_netdev_rx *rx)
->  	int i;
->  	int rc;
->  	struct hfi1_devdata *dd = rx->dd;
-> -	struct net_device *dev = &rx->rx_napi;
-> +	struct net_device *dev = rx->rx_napi;
+> v2:
+>  - removed sysctl related code
+> 
+>  drivers/infiniband/core/cm.c | 20 +++++++++++++++++++-
+>  1 file changed, 19 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/infiniband/core/cm.c b/drivers/infiniband/core/cm.c
+> index ff58058aeadc..793103cf8152 100644
+> --- a/drivers/infiniband/core/cm.c
+> +++ b/drivers/infiniband/core/cm.c
+> @@ -34,6 +34,7 @@ MODULE_AUTHOR("Sean Hefty");
+>  MODULE_DESCRIPTION("InfiniBand CM");
+>  MODULE_LICENSE("Dual BSD/GPL");
 >  
->  	rx->num_rx_q = dd->num_netdev_contexts;
->  	rx->rxq = kcalloc_node(rx->num_rx_q, sizeof(*rx->rxq),
-> @@ -360,7 +360,11 @@ int hfi1_alloc_rx(struct hfi1_devdata *dd)
->  	if (!rx)
->  		return -ENOMEM;
->  	rx->dd = dd;
-> -	init_dummy_netdev(&rx->rx_napi);
-> +	rx->rx_napi = alloc_netdev(sizeof(struct iwl_trans_pcie *),
-> +				   "dummy", NET_NAME_UNKNOWN,
+> +#define CM_DESTORY_ID_WAIT_TIMEOUT 10000 /* msecs */
 
-Will it create multiple "dummy" netdev in the system? Will all devices
-have the same "dummy" name?
+CM_DESTORY_ID_WAIT_TIMEOUT -> CM_DESTROY_ID_WAIT_TIMEOUT
 
-> +				   init_dummy_netdev);
-> +	if (!rx->rx_napi)
-> +		return -ENOMEM;
-
-You forgot to release previously allocated "rx" here.
+Fixed and applied.
 
 Thanks
-
->  
->  	xa_init(&rx->dev_tbl);
->  	atomic_set(&rx->enabled, 0);
-> @@ -374,6 +378,7 @@ void hfi1_free_rx(struct hfi1_devdata *dd)
->  {
->  	if (dd->netdev_rx) {
->  		dd_dev_info(dd, "hfi1 rx freed\n");
-> +		free_netdev(dd->netdev_rx->rx_napi);
->  		kfree(dd->netdev_rx);
->  		dd->netdev_rx = NULL;
->  	}
-> -- 
-> 2.43.0
-> 
 
