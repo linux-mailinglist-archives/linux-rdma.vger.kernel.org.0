@@ -1,105 +1,107 @@
-Return-Path: <linux-rdma+bounces-1371-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-1372-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 181108779B5
-	for <lists+linux-rdma@lfdr.de>; Mon, 11 Mar 2024 03:01:18 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8FB318779DA
+	for <lists+linux-rdma@lfdr.de>; Mon, 11 Mar 2024 03:35:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 56B17B20F9B
-	for <lists+linux-rdma@lfdr.de>; Mon, 11 Mar 2024 02:01:15 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B43591C208F2
+	for <lists+linux-rdma@lfdr.de>; Mon, 11 Mar 2024 02:35:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 415A6A47;
-	Mon, 11 Mar 2024 02:01:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 17ECE7E8;
+	Mon, 11 Mar 2024 02:35:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b="kmIFnJcN"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from szxga05-in.huawei.com (szxga05-in.huawei.com [45.249.212.191])
+Received: from out162-62-57-252.mail.qq.com (out162-62-57-252.mail.qq.com [162.62.57.252])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 326D4801;
-	Mon, 11 Mar 2024 02:01:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.191
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 78BC93D62;
+	Mon, 11 Mar 2024 02:35:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=162.62.57.252
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710122468; cv=none; b=OuAuKuRbW0ukEpwI34yUCGWk4FUuBChZQmmSoUMa4yDaH+WkoNZqmHrjO1Ddb0iEJ6wWp3iY9NT1ujJ039/wzxbYSv0543ju7+q38zQYQKw5t781pD2qh/5IoQkXgio7Xizkvo2arc8WRg/gKVJ5U8KvnYczgwV/6omsBRKK0sw=
+	t=1710124519; cv=none; b=f7dywNLf2ahrtQ9Zd07XmGOYt3IMz6lqBFFLhcrZxmRbRE3h386ffrtuSHfN5CnKkFXmVhTEsV/CSOJFGw1qVx6+1x9T8J/fQa4jYpkvaRo8T/0hXRwtR351ljsszFaN8JSv4AmIjHxBCeFI8OIJS+75dH3FtDcJJ/kDkLrLfBU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710122468; c=relaxed/simple;
-	bh=wiQLkBh8niMqqh6Ln393H6ASZbM8ndGA41bmCEBbZZI=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=oLOQNq1HUwK2XWlqWtGkzF0aK1SgPfFL8ZDWs1gV8VTUwzCLUUBULsLZfBHVM233cYaESi9Of3u+XOraMYl//G6CSCZ8jUtx/qpovVNIShPXEhwZojguiI7Mvo50GTyCS6v8vBF/iNXo7SpUF9izh/0YKrwEglGd2eSANUTwcy4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=hisilicon.com; spf=pass smtp.mailfrom=hisilicon.com; arc=none smtp.client-ip=45.249.212.191
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=hisilicon.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=hisilicon.com
-Received: from mail.maildlp.com (unknown [172.19.88.234])
-	by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4TtKgS0NWfz1h1rd;
-	Mon, 11 Mar 2024 09:58:28 +0800 (CST)
-Received: from kwepemi500006.china.huawei.com (unknown [7.221.188.68])
-	by mail.maildlp.com (Postfix) with ESMTPS id 0C5F61402E1;
-	Mon, 11 Mar 2024 10:00:53 +0800 (CST)
-Received: from [10.67.120.168] (10.67.120.168) by
- kwepemi500006.china.huawei.com (7.221.188.68) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.35; Mon, 11 Mar 2024 10:00:52 +0800
-Message-ID: <c16e3cc2-1a70-a9ec-e533-e508cfbab18e@hisilicon.com>
-Date: Mon, 11 Mar 2024 10:00:51 +0800
+	s=arc-20240116; t=1710124519; c=relaxed/simple;
+	bh=WhmjuGV1kq2WCEIDtuCaWUDhxbU/+ZMX+LPouv4Jpx0=;
+	h=Message-ID:From:To:Cc:Subject:Date:In-Reply-To:References:
+	 MIME-Version; b=L89hs5MoeMju+LRWzfT86ju7B8Ogp83j21FZheAe1VmC+nJQ2J2D4JR/GzSriFuOmSIu118taK/W4IRNnFyUQXvb/WNiPa+F6BQE17adUf/x43Hl2hXHvNMMJevD/+JNnPsOlTsd8YgiqCvepVVrugZTgcXS3M8Dygdbn6kFuEk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com; spf=pass smtp.mailfrom=qq.com; dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b=kmIFnJcN; arc=none smtp.client-ip=162.62.57.252
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=qq.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=qq.com; s=s201512;
+	t=1710124500; bh=C+MiEF4qC6FAaylAML0xdTY2YhM7+veLwzKbbzTLXok=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References;
+	b=kmIFnJcNDNfWAj2bmooSKy0uGNvlwfJ3NDxvHOlFQGUiSdV68TvplEgqoqUnVgrw3
+	 zHSrLBS4L1Vgt+9aeMb3va51KsCYeuS40sawoo2c53Kj1hnZLnFnl9IGWj2wCs6Uut
+	 JI/Yk7NjdX/gfvHofLH4v1PqQSANFmHAVoVJsvPo=
+Received: from localhost.localdomain ([58.213.8.34])
+	by newxmesmtplogicsvrszb9-0.qq.com (NewEsmtp) with SMTP
+	id 8B995E48; Mon, 11 Mar 2024 10:34:57 +0800
+X-QQ-mid: xmsmtpt1710124497t5plveddw
+Message-ID: <tencent_03614198A34E56D038455012AA31022D9C06@qq.com>
+X-QQ-XMAILINFO: Mm/8i8/T4yneLFjWWrRIGkqbOZu0z8AIxOyq+RGDR2OmIiGfEHfbT3yggaBppe
+	 x+5Owg6mNNjoEAAbIRdkBqJmqPPOxnSWCkL/x8/JNqrlqyr/Er8NPHOPK2Odgdf3Wfl9trvb45r1
+	 ZGgig1CzHGTZfkcGQjSWqtyY2RhcBFCl6VKvTw4d4J/pHCgi6J2TcThOgZC0sBpFmImg9qMnKdQk
+	 ZkzOGkc9dOXrK6MuUyouiFAyyWm7Y/u1jLFogBqT1wD61ak2kJdUGphZWVM8TAElO25Jd6/2AWO5
+	 252H1Ps7ELnyxV/rIJTh4zeJaFtKg3fQdFY/md//rE7EErZ634ACM1PVhb7mYkqHy/c9URVhydQr
+	 4BqDq32dWXFz4w7mIA76jUA/BwZZR2eItyGigLDf3PIZhwZ/BwReudQ8sIFfVAKvIn4TIs/ntp9X
+	 D//eMiXXxqUwaaUHTVR36y7xImPkBSn8WXagPj2/anSS1Klud7FUESIAem3UfM/XLnXCHZjmu3y2
+	 NQy/RdUHppO4D9GqL7ML1pdfu/ODveaAjc0lHjHtjQz+BrT38XG3s9mL+SIxEZZYhJOHUMAh91eT
+	 GKL0fwkdfktYZAleB9eg8GBosG8hf6YpEdmj3O/5dEXX8r9Vw2LxNsevcSCpAcXCXlCfD9LyjGvE
+	 clQCLafmM6Ddts/jB8oteHDFz++v2ljoZobAXBUUSlRKf2O7IzMPZ+zGeumlRplpB22Qh0Csj+J1
+	 yeKW+edaCYbPkC4u3jO1hKO6XWAl4/h+Lb6vylBUh2o2yEgvFhPN+NuFxAHNXs/qKW6uBOodBAW6
+	 VOeXQA6q2AlCIlHOaJ2zYcL+mBxR58ADNrjaRYUs+04VKscHopX9VJVdHLZl6B/dDRADFJGrL3dp
+	 Kv+RAiEO/ceg8ZE15tQJCauMW3etZXV1IR98g6UneFwyUQtRMmEvUPBCF54FsRVzaI0gZRGdMMso
+	 KMtOJxzM+3nTgqmbH9u0ZGduadSmvG04a6j9bVZYN48MSpqQDV04O6GlOxwCTp
+X-QQ-XMRINFO: MPJ6Tf5t3I/ycC2BItcBVIA=
+From: linke li <lilinke99@qq.com>
+To: leon@kernel.org
+Cc: bmt@zurich.ibm.com,
+	jgg@ziepe.ca,
+	lilinke99@qq.com,
+	linux-kernel@vger.kernel.org,
+	linux-rdma@vger.kernel.org
+Subject: Re: [PATCH] RDMA/siw: Reuse value read using READ_ONCE instead of re-reading it
+Date: Mon, 11 Mar 2024 10:34:55 +0800
+X-OQ-MSGID: <20240311023455.72601-1-lilinke99@qq.com>
+X-Mailer: git-send-email 2.39.3 (Apple Git-146)
+In-Reply-To: <20240310191910.GG12921@unreal>
+References: <20240310191910.GG12921@unreal>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.1.0
-Subject: Re: [PATCH for-next] RDMA/hns: Support congestion control algorithm
- parameter configuration
-Content-Language: en-US
-To: Leon Romanovsky <leon@kernel.org>
-CC: <jgg@ziepe.ca>, <linux-rdma@vger.kernel.org>, <linuxarm@huawei.com>,
-	<linux-kernel@vger.kernel.org>
-References: <20240308105443.1130283-1-huangjunxian6@hisilicon.com>
- <20240310100027.GC12921@unreal>
-From: Junxian Huang <huangjunxian6@hisilicon.com>
-In-Reply-To: <20240310100027.GC12921@unreal>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
- kwepemi500006.china.huawei.com (7.221.188.68)
+Content-Transfer-Encoding: 8bit
 
+> If value can change between subsequent reads, then you need to use locks
+> to make sure that it doesn't happen. Using READ_ONCE() doesn't solve the
+> concurrency issue, but makes sure that compiler doesn't reorder reads
+> and writes.
 
+This code do not need to prevent other thread from writing on the flags.
 
-On 2024/3/10 18:00, Leon Romanovsky wrote:
-> On Fri, Mar 08, 2024 at 06:54:43PM +0800, Junxian Huang wrote:
->> From: Chengchang Tang <tangchengchang@huawei.com>
->>
->> hns RoCE supports 4 congestion control algorithms. Each algorihm
->> involves multiple parameters. Add port sysfs directory for each
->> algorithm to allow modifying their parameters.
-> 
-> Unless Jason changed his position after this rewrite [1], we don't allow
-> any custom driver sysfs code.
-> 
-> [1] https://lore.kernel.org/all/cover.1623427137.git.leonro@nvidia.com/
-> 
+This topic got quite a bit of discussion [1], quote from it:
 
-I didn't quite get the reason from [1], could you please explain it?
+    (READ_ONCE and WRITE_ONCE)
+    That's often useful - lots of code doesn't really care if you get the
+    old or the new value, but the code *does* care that it gets *one*
+    value, and not some random mix of "I tested one value for validity,
+    then it got reloaded due to register pressure, and I actually used
+    another value".
 
-And it would be helpful if you could give us a hint about any other
-proper ways to do the algorithm parameter configuration.
+    And not some "I read one value, and it was a mix of two other values".
+ 
+From the original code, the first read seems to do the same things. So
+READ_ONCE is probably ok here. 
 
-Thanks,
-Junxian
+I just want to make sure the flags stored to wqe->sqe.flags is consistent
+with the read used in the if condition.
 
->>
->> Signed-off-by: Chengchang Tang <tangchengchang@huawei.com>
->> Signed-off-by: Junxian Huang <huangjunxian6@hisilicon.com>
->> ---
->>  drivers/infiniband/hw/hns/Makefile          |   2 +-
->>  drivers/infiniband/hw/hns/hns_roce_device.h |  20 ++
->>  drivers/infiniband/hw/hns/hns_roce_hw_v2.c  |  59 ++++
->>  drivers/infiniband/hw/hns/hns_roce_hw_v2.h  | 132 ++++++++
->>  drivers/infiniband/hw/hns/hns_roce_main.c   |   3 +
->>  drivers/infiniband/hw/hns/hns_roce_sysfs.c  | 346 ++++++++++++++++++++
->>  6 files changed, 561 insertions(+), 1 deletion(-)
->>  create mode 100644 drivers/infiniband/hw/hns/hns_roce_sysfs.c
-> 
-> Thanks
+[1]https://lore.kernel.org/lkml/CAHk-=wgG6Dmt1JTXDbrbXh_6s2yLjL=9pHo7uv0==LHFD+aBtg@mail.gmail.com/
+
 
