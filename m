@@ -1,191 +1,130 @@
-Return-Path: <linux-rdma+bounces-1389-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-1390-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6EF378783CE
-	for <lists+linux-rdma@lfdr.de>; Mon, 11 Mar 2024 16:34:41 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4F5CF87842B
+	for <lists+linux-rdma@lfdr.de>; Mon, 11 Mar 2024 16:50:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9287D1C21B1F
-	for <lists+linux-rdma@lfdr.de>; Mon, 11 Mar 2024 15:34:40 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 9EBE2B215ED
+	for <lists+linux-rdma@lfdr.de>; Mon, 11 Mar 2024 15:50:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 457554206B;
-	Mon, 11 Mar 2024 15:32:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9A6B344393;
+	Mon, 11 Mar 2024 15:49:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=networkplumber-org.20230601.gappssmtp.com header.i=@networkplumber-org.20230601.gappssmtp.com header.b="uvhuxONZ"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-lj1-f169.google.com (mail-lj1-f169.google.com [209.85.208.169])
+Received: from mail-oi1-f173.google.com (mail-oi1-f173.google.com [209.85.167.173])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0F1B941C87;
-	Mon, 11 Mar 2024 15:32:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.169
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B7698446B3
+	for <linux-rdma@vger.kernel.org>; Mon, 11 Mar 2024 15:49:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710171130; cv=none; b=ZuhgOH5K9VbmsBAMaHsfjCC9ehE2huXyuf/hZXDuf18zB5eZyztCub7bj9q7RuXjPbe+1bK9P5s4T2klCaoekg749TElgv2mGpUoStsD27WogNlii76tWEBv0ONksb/OwPlNLJIEfSmwDUwRie6DPR1YSCANDqSstfth7BRVxPk=
+	t=1710172197; cv=none; b=GZRa7+/yxmdjT9jIdJh2B3Rij9INCJXTreE+EuTIoLp306WPckN2/7443NfKzgU26PvS8TcT6tBo3kSXCNsCdQnCScSaQBpWonfpl5dXKCGPAQ2qLa87bADAjapU3wv7n1MPs9sgqzE0KA7dgYQwPWQHjlX1drtSQs51fw2pfzI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710171130; c=relaxed/simple;
-	bh=IBtQ1Bt2rZNvPqsEPdeWv4N25hlh7/CRi2fmavDsr6M=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=hGBu/1CVfkXCLSEhU1iv4KKxVymrRQ5Ct+gJbtr0VC6JHdOr9+pwgaqMhuGYTgU8kgVexY5iZ4uZivaorqj5/10eRy7JkEJ2CUe2x7dc+Rfxi6fLU+brbjDzyMyEjxf8nqjd8EJl5Cr8xt1LTJWleUR+3BOEmzkyfNcSr3uFpcM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=debian.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.208.169
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=debian.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lj1-f169.google.com with SMTP id 38308e7fff4ca-2d40fe2181dso39209661fa.1;
-        Mon, 11 Mar 2024 08:32:07 -0700 (PDT)
+	s=arc-20240116; t=1710172197; c=relaxed/simple;
+	bh=540orTLqH26liId0CGC0Q/FWP36fwWOz7fNBb2i9ZjQ=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=s2oA3vY/5M0VNIdBCZrYJUgQwQlIS9zu0APnU7y1YeVw69LyBULvJl6jPRTv1DIhURIUkFyBPaZlFE8rJEV3iY8gXdv+fHt3Su5bmywOfDrXEEMPf2JP9GRxyeHOlndYAyriIDok+kkNp2r/LAKiLUDzILGjJdDAk7Vm3nkPsnU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=networkplumber.org; spf=pass smtp.mailfrom=networkplumber.org; dkim=pass (2048-bit key) header.d=networkplumber-org.20230601.gappssmtp.com header.i=@networkplumber-org.20230601.gappssmtp.com header.b=uvhuxONZ; arc=none smtp.client-ip=209.85.167.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=networkplumber.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=networkplumber.org
+Received: by mail-oi1-f173.google.com with SMTP id 5614622812f47-3bbbc6e51d0so2257464b6e.3
+        for <linux-rdma@vger.kernel.org>; Mon, 11 Mar 2024 08:49:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=networkplumber-org.20230601.gappssmtp.com; s=20230601; t=1710172195; x=1710776995; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:subject:cc:to:from:date:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=h+Wtwgm/ud4Teqcm7McoWzRYdR5joosf5QXB8q6Nk6I=;
+        b=uvhuxONZedNAo3GtDxK6XQvovopD1Ijh+J/vIb3ZBiqmUccQhKBatJbWSpR5kwqkBA
+         JSjTWLqNc7z6WZmFjhAGmNXr4PrYPQJfEUtMQXbNiBHHEaY9zHnUx8jAiPyKC5SD5Zr+
+         YxVZX5XpADeS+HqOthRmlOlpj03iZAyxN74IwxAcCMPDfSwGQq0PTwgeEpmr+sEClimm
+         VOhVjGrPUx+USHJOzmre8LagfPio2IsZb9JhmcBXp1dz0NrljxrH8x6M/X2MttUPX8wX
+         E3U2Kl5uTojOt0Dy1EOLn4taPG7obOwct0HX5JOH6POlCu51F5IStcN3X7nNgjr+iRaF
+         2bHw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710171126; x=1710775926;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=TwSH2RmUX8+hBp5SFqXt5yoPzgd9y6S3euZId5zxtYI=;
-        b=InvBsmYbFL8HjflziBaLiKMzl6JUSQ5d3x3aY8xj7I43xj4gAmoBmQ0pZeQa1ijT34
-         Rw2d/87hvuOWFXrltN34cxj6xaTa67ZQAU1CP0meko/vN7ITyXx71+KMMawSP/4WIW+W
-         8zT12nSEoRv4iyW3DbelLSr7DJNkfvhPbJTkN0E5XoMFfgNCfvObFVqjNElM+n4qR8F0
-         BVyMRcoj9M/qVTvU/zbySEsICroxmzA3DDZ7/ORY3n1jOo1rEi2Mw2fGS6j0Sg2cVC7a
-         C/Unr6qPmuOdcyGhdj/sunrmajH/jpdznPWKz1JNN6kl+EWLo2WR4JTSp1HkRma2kkXE
-         zbYw==
-X-Forwarded-Encrypted: i=1; AJvYcCUgd/hdhe5YQvb3CJ9uuepu4DhFHrMRo5k7osdQRtFMa2Nz/mdYwbbbvWwIukJZ8C4pXeExuA5/bRvt+7sUrxwPrA1z7lS8PZ851DkThYthP3So77FgAuxF2ocu4QFMmfTq9Unx68R0fA==
-X-Gm-Message-State: AOJu0Yzk0AyjmX2VblmZylLNuWDE7HJCBYJuZJ2fltJPvHZvkB5Hnp/8
-	GNiraZpubXQBBD9mM/FTqPQGfmBGTsfngSQcT8DgG9W+DOAvdTek
-X-Google-Smtp-Source: AGHT+IGjC79UEv92JL8lH5kWDuZcXIA99I1f/Mi2XRqgx6xZVlXPojUpy84fIrpXsqHctggSSHPkRQ==
-X-Received: by 2002:a2e:918f:0:b0:2d4:22b6:eee6 with SMTP id f15-20020a2e918f000000b002d422b6eee6mr4482635ljg.8.1710171125950;
-        Mon, 11 Mar 2024 08:32:05 -0700 (PDT)
-Received: from gmail.com (fwdproxy-lla-009.fbsv.net. [2a03:2880:30ff:9::face:b00c])
-        by smtp.gmail.com with ESMTPSA id d15-20020aa7d5cf000000b00567f39a8b55sm3019153eds.39.2024.03.11.08.32.05
+        d=1e100.net; s=20230601; t=1710172195; x=1710776995;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=h+Wtwgm/ud4Teqcm7McoWzRYdR5joosf5QXB8q6Nk6I=;
+        b=fhtnRX/EDrqm+8LgotD1M2i4ntEkLuc+CK/8XGQ4PXoSn2NkSEeWMPLYK3Qkmydtzw
+         AA5E7i1MtNX5x8LlKVeG9GlInAOd+ErfoC2ZU1vVKAckrAQJ1MpTOPhoiECzmij1L9FH
+         aFabZSoClNr77kXSJP9k2bm9IHI2l4YmLhXenBK+HNu5Ujp4BVfIwrb/WtaLhSffMr5t
+         75alfl69GFSYEiW7oNaba0N+TDr1MXiNQrxgigADPIj6dO5HbpNli3E0mwKsRonpUe60
+         ffHVw6TDTUthVS6hQ//MiydSrccLGxnneuxcdeuYU/G+Iv4Mz31PCRUne9/bDQAtj6Z4
+         8jRw==
+X-Forwarded-Encrypted: i=1; AJvYcCULARH/WPdT1jxV43sPCsj1wSghqGcbIbsRKu2/NTq1g5qcpZ5SQQunN1TIaVvY8yolg9arWoFtdnSCmKaieuDqkO8KUE5++svw5A==
+X-Gm-Message-State: AOJu0Yx72WCs9sBwmOVc05HkefF6OhJnQFLEc8m9Eg34RUwFs8neQmy0
+	YDwQaSgb9SGTTqwPvDiOlOHs5lfpNH5RdZjoO3z6MuCAa2K+ygKLrW04gzp7CFs=
+X-Google-Smtp-Source: AGHT+IGn/4xKoBd1SYHfu6mVj6p5jAAE0MdJYK4ZZdUXmc3Vj7qqayvCjJPox671NbLnFAYatzWyPg==
+X-Received: by 2002:a05:6808:1406:b0:3c2:2cd7:2417 with SMTP id w6-20020a056808140600b003c22cd72417mr8036293oiv.36.1710172194760;
+        Mon, 11 Mar 2024 08:49:54 -0700 (PDT)
+Received: from hermes.local (204-195-123-141.wavecable.com. [204.195.123.141])
+        by smtp.gmail.com with ESMTPSA id b17-20020a637151000000b005cfbf96c733sm4509856pgn.30.2024.03.11.08.49.53
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 11 Mar 2024 08:32:05 -0700 (PDT)
-Date: Mon, 11 Mar 2024 08:32:03 -0700
-From: Breno Leitao <leitao@debian.org>
-To: Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>
-Cc: Jason Gunthorpe <jgg@ziepe.ca>, Leon Romanovsky <leon@kernel.org>,
-	kuba@kernel.org, keescook@chromium.org,
-	"open list:HFI1 DRIVER" <linux-rdma@vger.kernel.org>,
-	open list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH net-next] IB/hfi1: allocate dummy net_device dynamically
-Message-ID: <Ze8j8yWyXCQtwcOJ@gmail.com>
-References: <20240308182951.2137779-1-leitao@debian.org>
- <6460dd4b-9b65-49df-beaf-05412e42f706@cornelisnetworks.com>
+        Mon, 11 Mar 2024 08:49:54 -0700 (PDT)
+Date: Mon, 11 Mar 2024 08:49:52 -0700
+From: Stephen Hemminger <stephen@networkplumber.org>
+To: Shradha Gupta <shradhagupta@linux.microsoft.com>
+Cc: Jakub Kicinski <kuba@kernel.org>, Haiyang Zhang
+ <haiyangz@microsoft.com>, Shradha Gupta <shradhagupta@microsoft.com>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
+ "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+ "netdev@vger.kernel.org" <netdev@vger.kernel.org>, Eric Dumazet
+ <edumazet@google.com>, Paolo Abeni <pabeni@redhat.com>, Ajay Sharma
+ <sharmaajay@microsoft.com>, Leon Romanovsky <leon@kernel.org>, Thomas
+ Gleixner <tglx@linutronix.de>, Sebastian Andrzej Siewior
+ <bigeasy@linutronix.de>, KY Srinivasan <kys@microsoft.com>, Wei Liu
+ <wei.liu@kernel.org>, Dexuan Cui <decui@microsoft.com>, Long Li
+ <longli@microsoft.com>, Michael Kelley <mikelley@microsoft.com>
+Subject: Re: [PATCH] net :mana : Add per-cpu stats for MANA device
+Message-ID: <20240311084952.643dba6e@hermes.local>
+In-Reply-To: <20240311041950.GA19647@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
+References: <1709823132-22411-1-git-send-email-shradhagupta@linux.microsoft.com>
+	<20240307072923.6cc8a2ba@kernel.org>
+	<DM6PR21MB14817597567C638DEF020FE3CA202@DM6PR21MB1481.namprd21.prod.outlook.com>
+	<20240307090145.2fc7aa2e@kernel.org>
+	<CH2PR21MB1480D3ACADFFD2FC3B1BB7ECCA272@CH2PR21MB1480.namprd21.prod.outlook.com>
+	<20240308112244.391b3779@kernel.org>
+	<20240311041950.GA19647@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <6460dd4b-9b65-49df-beaf-05412e42f706@cornelisnetworks.com>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-Hello Dennis,
+On Sun, 10 Mar 2024 21:19:50 -0700
+Shradha Gupta <shradhagupta@linux.microsoft.com> wrote:
 
-On Mon, Mar 11, 2024 at 08:05:45AM -0400, Dennis Dalessandro wrote:
-> On 3/8/24 1:29 PM, Breno Leitao wrote:
-> > struct net_device shouldn't be embedded into any structure, instead,
-> > the owner should use the priv space to embed their state into net_device.
+> On Fri, Mar 08, 2024 at 11:22:44AM -0800, Jakub Kicinski wrote:
+> > On Fri, 8 Mar 2024 18:51:58 +0000 Haiyang Zhang wrote:  
+> > > > Dynamic is a bit of an exaggeration, right? On a well-configured system
+> > > > each CPU should use a single queue assigned thru XPS. And for manual
+> > > > debug bpftrace should serve the purpose quite well.    
+> > > 
+> > > Some programs, like irqbalancer can dynamically change the CPU affinity, 
+> > > so we want to add the per-CPU counters for better understanding of the CPU 
+> > > usage.  
 > > 
-> > Embedding net_device into structures prohibits the usage of flexible
-> > arrays in the net_device structure. For more details, see the discussion
-> > at [1].
+> > Do you have experimental data showing this making a difference
+> > in production?  
+> Sure, will try to get that data for this discussion
 > > 
-> > Un-embed the net_device from struct iwl_trans_pcie by converting it
-> > into a pointer. Then use the leverage alloc_netdev() to allocate the
-> > net_device object at iwl_trans_pcie_alloc.
+> > Seems unlikely, but if it does work we should enable it for all
+> > devices, no driver by driver.  
+> You mean, if the usecase seems valid we should try to extend the framework
+> mentioned by Rahul (https://lore.kernel.org/lkml/20240307072923.6cc8a2ba@kernel.org/)
+> to include these stats as well?
+> Will explore this a bit more and update. Thanks.
 > 
-> What does an Omni-Path Architecture driver from Cornelis Networks have to do
-> with an Intel wireless driver?
 
-That is an oversight. I will fix it in v2. Sorry about it.
-
-> > The private data of net_device becomes a pointer for the struct
-> > iwl_trans_pcie, so, it is easy to get back to the iwl_trans_pcie parent
-> > given the net_device object.
-> > 
-> > [1] https://lore.kernel.org/all/20240229225910.79e224cf@kernel.org/
-> > 
-> > Signed-off-by: Breno Leitao <leitao@debian.org>
-> > ---
-> >  drivers/infiniband/hw/hfi1/netdev.h    | 2 +-
-> >  drivers/infiniband/hw/hfi1/netdev_rx.c | 9 +++++++--
-> >  2 files changed, 8 insertions(+), 3 deletions(-)
-> > 
-> > diff --git a/drivers/infiniband/hw/hfi1/netdev.h b/drivers/infiniband/hw/hfi1/netdev.h
-> > index 8aa074670a9c..07c8f77c9181 100644
-> > --- a/drivers/infiniband/hw/hfi1/netdev.h
-> > +++ b/drivers/infiniband/hw/hfi1/netdev.h
-> > @@ -49,7 +49,7 @@ struct hfi1_netdev_rxq {
-> >   *		When 0 receive queues will be freed.
-> >   */
-> >  struct hfi1_netdev_rx {
-> > -	struct net_device rx_napi;
-> > +	struct net_device *rx_napi;
-> >  	struct hfi1_devdata *dd;
-> >  	struct hfi1_netdev_rxq *rxq;
-> >  	int num_rx_q;
-> > diff --git a/drivers/infiniband/hw/hfi1/netdev_rx.c b/drivers/infiniband/hw/hfi1/netdev_rx.c
-> > index 720d4c85c9c9..5c26a69fa2bb 100644
-> > --- a/drivers/infiniband/hw/hfi1/netdev_rx.c
-> > +++ b/drivers/infiniband/hw/hfi1/netdev_rx.c
-> > @@ -188,7 +188,7 @@ static int hfi1_netdev_rxq_init(struct hfi1_netdev_rx *rx)
-> >  	int i;
-> >  	int rc;
-> >  	struct hfi1_devdata *dd = rx->dd;
-> > -	struct net_device *dev = &rx->rx_napi;
-> > +	struct net_device *dev = rx->rx_napi;
-> >  
-> >  	rx->num_rx_q = dd->num_netdev_contexts;
-> >  	rx->rxq = kcalloc_node(rx->num_rx_q, sizeof(*rx->rxq),
-> > @@ -360,7 +360,11 @@ int hfi1_alloc_rx(struct hfi1_devdata *dd)
-> >  	if (!rx)
-> >  		return -ENOMEM;
-> >  	rx->dd = dd;
-> > -	init_dummy_netdev(&rx->rx_napi);
-> > +	rx->rx_napi = alloc_netdev(sizeof(struct iwl_trans_pcie *),
-> > +				   "dummy", NET_NAME_UNKNOWN,
-> > +				   init_dummy_netdev);
-> 
-> Again with the iwl stuff? Please do not stuff to the mailing list that doesn't
-> even compile....
-> 
->  CC [M]  drivers/infiniband/hw/hfi1/verbs.o
->   CC [M]  drivers/infiniband/hw/hfi1/verbs_txreq.o
->   CC [M]  drivers/infiniband/hw/hfi1/vnic_main.o
-> In file included from ./include/net/sock.h:46,
->                  from ./include/linux/tcp.h:19,
->                  from ./include/linux/ipv6.h:95,
->                  from ./include/net/ipv6.h:12,
->                  from ./include/rdma/ib_verbs.h:25,
->                  from ./include/rdma/ib_hdrs.h:11,
->                  from drivers/infiniband/hw/hfi1/hfi.h:29,
->                  from drivers/infiniband/hw/hfi1/sdma.h:15,
->                  from drivers/infiniband/hw/hfi1/netdev_rx.c:11:
-> drivers/infiniband/hw/hfi1/netdev_rx.c: In function ‘hfi1_alloc_rx’:
-> drivers/infiniband/hw/hfi1/netdev_rx.c:365:36: error: passing argument 4 of
-> ‘alloc_netdev_mqs’ from incompatible pointer type
-> [-Werror=incompatible-pointer-types]
->   365 |                                    init_dummy_netdev);
->       |                                    ^~~~~~~~~~~~~~~~~
->       |                                    |
->       |                                    int (*)(struct net_device *)
-> ./include/linux/netdevice.h:4632:63: note: in definition of macro ‘alloc_netdev’
->  4632 |         alloc_netdev_mqs(sizeof_priv, name, name_assign_type, setup, 1, 1)
->       |                                                               ^~~~~
-> ./include/linux/netdevice.h:4629:44: note: expected ‘void (*)(struct net_device
-> *)’ but argument is of type ‘int (*)(struct net_device *)’
->  4629 |                                     void (*setup)(struct net_device *),
->       |                                     ~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~
->   CC [M]  drivers/infiniband/hw/hfi1/vnic_sdma.o
-
-Sorry, this patch is against net-next and you probably tested in Linus'
-upstream.
-
-You need to have d160c66cda0ac8614 ("net: Do not return value from
-init_dummy_netdev()"), which is in net-next, and has this important
-change that is necessary for this patch:
-
-    -int init_dummy_netdev(struct net_device *dev);
-    +void init_dummy_netdev(struct net_device *dev);
-
-If you are OK with a v2, I will fix the topics reported in this thread.
-
-Thank you
-Breno
+Remember, statistics aren't free, and even per-cpu stats end up taking cache space.
 
