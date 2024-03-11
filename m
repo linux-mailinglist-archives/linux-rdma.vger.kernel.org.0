@@ -1,107 +1,130 @@
-Return-Path: <linux-rdma+bounces-1386-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-1387-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8FFE3877FCA
-	for <lists+linux-rdma@lfdr.de>; Mon, 11 Mar 2024 13:17:27 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4134A878121
+	for <lists+linux-rdma@lfdr.de>; Mon, 11 Mar 2024 15:00:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2E7271F21FA5
-	for <lists+linux-rdma@lfdr.de>; Mon, 11 Mar 2024 12:17:27 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id EC1CF1F24035
+	for <lists+linux-rdma@lfdr.de>; Mon, 11 Mar 2024 14:00:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 14D4B3C493;
-	Mon, 11 Mar 2024 12:17:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="pU7AuY1I"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D3E983EA92;
+	Mon, 11 Mar 2024 14:00:35 +0000 (UTC)
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from szxga05-in.huawei.com (szxga05-in.huawei.com [45.249.212.191])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C08613D57D;
-	Mon, 11 Mar 2024 12:17:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E0D2625755;
+	Mon, 11 Mar 2024 14:00:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.191
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710159438; cv=none; b=tV5/bk9+F4USvMIRziRB0Fr1IJT3s17bEzvHaaPbUEILtRojTaeASNsMIKkIKeVz9Fg6QuuDOlX+j3iZ2TyK7CU2c3wjP5N1FBbkjv+VcFHAod3lwvuXfBxxlbnEWAvoN6K3oarRxm5a5DAcgsKbNYX46FFcy374Vf72nlRnzLY=
+	t=1710165635; cv=none; b=K4NT8KMgVmyXIY+Y43kv1irpXirqKc0W2s9nFgpbQm+langIpMDzkYpNQgK4GOjMI0HpWcKvgHZcg2ZCpUge4Dhh4xWI9M7M2KdePFVVJrj1TMwi5LO774XCSJotFJfgKJQMdxLdYC41TFBAOC0up5mI2yphKf1OTK52Qog5Yww=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710159438; c=relaxed/simple;
-	bh=NMP2UXbhXQeXR5/a88AEqvzN4xBbgLW8HHOoxRUmxAA=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=uz03VrqBseSLmS9s8xviHZaDE7zGaqi9WVdeY8nufYgLQGlbowwo7AoPsS35KIxYXieuWDQ9GoZt3C+G2NimFQ8dJYbPNjpaVt9lUjOPtP6HWGcOnZnr4s0qbTn4UDGgL+IYoJlQo0EFyqZ8f8L2mIWv6eNjVa9hg+ztkwjwEfY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=pU7AuY1I; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 83095C433F1;
-	Mon, 11 Mar 2024 12:17:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1710159437;
-	bh=NMP2UXbhXQeXR5/a88AEqvzN4xBbgLW8HHOoxRUmxAA=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=pU7AuY1IuYOk86GJ80t2EfDe7LDmTqOwTKM1IJrUsYV0auWz+TsyNvv/KV2L/CwWR
-	 2xBLpofSgmMfJYTfhi0nMcd4RJgYoEgJVLXbaBUmuN1ZU4a17VAcf8sYD0O/s1wvTn
-	 bSKZvW6N+6pw0UgFMEQ4of7kNrsmDbDCjR8EvI4+gTTH/56hhjE5lm+Whpe65TkQR3
-	 CguHexm7mvf0MqNWM8sPpdxfpqUVzv+vx8wQPNVsyBrnhdo6quJNEqbwmLwHyxP/Qk
-	 uqUxDYY8Z2L/61Gvbx2XWuioHtxSRzVDQthCZBBcB8DX9voepNuEDszY3Chrh4esDH
-	 roAD8TVQ/WdmA==
-Date: Mon, 11 Mar 2024 14:17:13 +0200
-From: Leon Romanovsky <leon@kernel.org>
-To: Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>
-Cc: Breno Leitao <leitao@debian.org>, Jason Gunthorpe <jgg@ziepe.ca>,
-	kuba@kernel.org, keescook@chromium.org,
-	"open list:HFI1 DRIVER" <linux-rdma@vger.kernel.org>,
-	open list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH net-next] IB/hfi1: allocate dummy net_device dynamically
-Message-ID: <20240311121713.GK12921@unreal>
-References: <20240308182951.2137779-1-leitao@debian.org>
- <6460dd4b-9b65-49df-beaf-05412e42f706@cornelisnetworks.com>
+	s=arc-20240116; t=1710165635; c=relaxed/simple;
+	bh=yeIfJKwxZ8NuIULLluOK4QJcbswhSvGsUU/2cdooVIU=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=oEv2mutCKoccoDKowaXB2NB1zItTy5+gxgy7A85ErvLTM8rnfPZZC7ZJnBm2BGdbYLcuHNQZFj2Xg9u5DYfV/BCN6ljDc/s3vwv1N+GHpatuZS17JT8dqlA7nEcZcb8ciQfRwWLrpzRAl6VLYG7h2CGj7Y0L/aAbNPSSjdjPApU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=hisilicon.com; spf=pass smtp.mailfrom=hisilicon.com; arc=none smtp.client-ip=45.249.212.191
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=hisilicon.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=hisilicon.com
+Received: from mail.maildlp.com (unknown [172.19.88.163])
+	by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4Ttddl0z6Sz1h1wg;
+	Mon, 11 Mar 2024 21:58:03 +0800 (CST)
+Received: from kwepemi500006.china.huawei.com (unknown [7.221.188.68])
+	by mail.maildlp.com (Postfix) with ESMTPS id 8BD65180061;
+	Mon, 11 Mar 2024 22:00:28 +0800 (CST)
+Received: from [10.67.120.168] (10.67.120.168) by
+ kwepemi500006.china.huawei.com (7.221.188.68) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.35; Mon, 11 Mar 2024 22:00:27 +0800
+Message-ID: <f8354762-703c-16e2-fa8e-bc8519fdcd06@hisilicon.com>
+Date: Mon, 11 Mar 2024 22:00:27 +0800
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <6460dd4b-9b65-49df-beaf-05412e42f706@cornelisnetworks.com>
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.1.0
+Subject: Re: [PATCH for-next] RDMA/hns: Support congestion control algorithm
+ parameter configuration
+Content-Language: en-US
+To: Leon Romanovsky <leon@kernel.org>
+CC: <jgg@ziepe.ca>, <linux-rdma@vger.kernel.org>, <linuxarm@huawei.com>,
+	<linux-kernel@vger.kernel.org>
+References: <20240308105443.1130283-1-huangjunxian6@hisilicon.com>
+ <20240310100027.GC12921@unreal>
+ <c16e3cc2-1a70-a9ec-e533-e508cfbab18e@hisilicon.com>
+ <20240311071119.GH12921@unreal>
+From: Junxian Huang <huangjunxian6@hisilicon.com>
+In-Reply-To: <20240311071119.GH12921@unreal>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
+ kwepemi500006.china.huawei.com (7.221.188.68)
 
-On Mon, Mar 11, 2024 at 08:05:45AM -0400, Dennis Dalessandro wrote:
-> On 3/8/24 1:29 PM, Breno Leitao wrote:
-> > struct net_device shouldn't be embedded into any structure, instead,
-> > the owner should use the priv space to embed their state into net_device.
-> > 
-> > Embedding net_device into structures prohibits the usage of flexible
-> > arrays in the net_device structure. For more details, see the discussion
-> > at [1].
-> > 
-> > Un-embed the net_device from struct iwl_trans_pcie by converting it
-> > into a pointer. Then use the leverage alloc_netdev() to allocate the
-> > net_device object at iwl_trans_pcie_alloc.
+
+
+On 2024/3/11 15:11, Leon Romanovsky wrote:
+> On Mon, Mar 11, 2024 at 10:00:51AM +0800, Junxian Huang wrote:
+>>
+>>
+>> On 2024/3/10 18:00, Leon Romanovsky wrote:
+>>> On Fri, Mar 08, 2024 at 06:54:43PM +0800, Junxian Huang wrote:
+>>>> From: Chengchang Tang <tangchengchang@huawei.com>
+>>>>
+>>>> hns RoCE supports 4 congestion control algorithms. Each algorihm
+>>>> involves multiple parameters. Add port sysfs directory for each
+>>>> algorithm to allow modifying their parameters.
+>>>
+>>> Unless Jason changed his position after this rewrite [1], we don't allow
+>>> any custom driver sysfs code.
+>>>
+>>> [1] https://lore.kernel.org/all/cover.1623427137.git.leonro@nvidia.com/
+>>>
+>>
+>> I didn't quite get the reason from [1], could you please explain it?
 > 
-> What does an Omni-Path Architecture driver from Cornelis Networks have to do
-> with an Intel wireless driver?
+> Before [1], we didn't allow custom sysfs. After [1], the sysfs code
+> started to be more sane and usable for the drivers. However, it is
+> unlikely that the policy is changed to allow driver sysfs code.
 > 
-> > The private data of net_device becomes a pointer for the struct
-> > iwl_trans_pcie, so, it is easy to get back to the iwl_trans_pcie parent
-> > given the net_device object.
-> > 
-> > [1] https://lore.kernel.org/all/20240229225910.79e224cf@kernel.org/
-> > 
-> > Signed-off-by: Breno Leitao <leitao@debian.org>
-> > ---
-> >  drivers/infiniband/hw/hfi1/netdev.h    | 2 +-
-> >  drivers/infiniband/hw/hfi1/netdev_rx.c | 9 +++++++--
-> >  2 files changed, 8 insertions(+), 3 deletions(-)
-
-<...>
-
+>>
+>> And it would be helpful if you could give us a hint about any other
+>> proper ways to do the algorithm parameter configuration.
 > 
-> Leon, please don't accept this until the author resubmits a patch that I either
-> Ack or Test.
-
-Sure, I will wait for your response.
-
-Thanks
-
+> Like any other FW internals.
 > 
+
+If we add the capability of custom driver parameter configuration to
+rdmatool (similar to [2]), would it be acceptable?
+
+[2] https://patchwork.ozlabs.org/project/netdev/patch/1530703837-24563-4-git-send-email-moshe@mellanox.com/
+
+Junxian
+
 > Thanks
 > 
-> -Denny
+>>
+>> Thanks,
+>> Junxian
+>>
+>>>>
+>>>> Signed-off-by: Chengchang Tang <tangchengchang@huawei.com>
+>>>> Signed-off-by: Junxian Huang <huangjunxian6@hisilicon.com>
+>>>> ---
+>>>>  drivers/infiniband/hw/hns/Makefile          |   2 +-
+>>>>  drivers/infiniband/hw/hns/hns_roce_device.h |  20 ++
+>>>>  drivers/infiniband/hw/hns/hns_roce_hw_v2.c  |  59 ++++
+>>>>  drivers/infiniband/hw/hns/hns_roce_hw_v2.h  | 132 ++++++++
+>>>>  drivers/infiniband/hw/hns/hns_roce_main.c   |   3 +
+>>>>  drivers/infiniband/hw/hns/hns_roce_sysfs.c  | 346 ++++++++++++++++++++
+>>>>  6 files changed, 561 insertions(+), 1 deletion(-)
+>>>>  create mode 100644 drivers/infiniband/hw/hns/hns_roce_sysfs.c
+>>>
+>>> Thanks
+>>
 
