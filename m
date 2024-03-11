@@ -1,98 +1,105 @@
-Return-Path: <linux-rdma+bounces-1375-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-1376-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id DB754877A4D
-	for <lists+linux-rdma@lfdr.de>; Mon, 11 Mar 2024 05:20:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id F304F877A85
+	for <lists+linux-rdma@lfdr.de>; Mon, 11 Mar 2024 06:12:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 65D16B20E25
-	for <lists+linux-rdma@lfdr.de>; Mon, 11 Mar 2024 04:19:58 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id DD813B21445
+	for <lists+linux-rdma@lfdr.de>; Mon, 11 Mar 2024 05:12:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 12D3A1FC8;
-	Mon, 11 Mar 2024 04:19:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 137528830;
+	Mon, 11 Mar 2024 05:12:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b="cHChZkNW"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="f1hNUhEk"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 733871860;
-	Mon, 11 Mar 2024 04:19:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=13.77.154.182
+Received: from out-173.mta0.migadu.com (out-173.mta0.migadu.com [91.218.175.173])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BF2D279F6
+	for <linux-rdma@vger.kernel.org>; Mon, 11 Mar 2024 05:12:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710130791; cv=none; b=Z0msIyeSi6JYXWCOdqCnkAd+UDFssOpRc8SdHzUicB2df0KrFXlDFDkNspjUaFcn5QOss43gl2k2Dwa0a0mQlVsn7wZVyTG7CrlO405LEIF7DQy/n2qHjr74iLpheKwvr7y6IDnvXRKuoqFcQTRGPoyUlFJVJfy9sZgzcieco4I=
+	t=1710133927; cv=none; b=OuW5SgLuBMeJEPTI/+kn31x1mlOcJLqikPFB/KjYwU0B+nyMCwsivGJlk57nc69OyAzalhwIjTWH32wdT2NTcqNXQH4eTDNaN9hk+LP1yDqgRV64ldlJI4B7tXBJdjpd1itW9jkXuENHFyq8sp4jrX3HrLWyiIscbGORDL+rokU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710130791; c=relaxed/simple;
-	bh=TfT4qUsYYO3TPRTV9dSEUTKXFozwef3QMPa20ojB+1s=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=YaM5LPbOCyU8x3FyxyOI5rK9w5DBLt6vhADhrir/S9t2XrpqrLXaAJ4LM7jNhcAg1ddlbHmsCqlGNUSb2TZnai0rKeZbrM2e5uAA8P+a89o2JQ/8ocq0/O7oXC1CFPF2Cgnux+bX/ZS2zdIbu4qQCebtc3x6kjo9kevva40l2Zw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com; spf=pass smtp.mailfrom=linux.microsoft.com; dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b=cHChZkNW; arc=none smtp.client-ip=13.77.154.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.microsoft.com
-Received: by linux.microsoft.com (Postfix, from userid 1134)
-	id 1937B20B74C0; Sun, 10 Mar 2024 21:19:50 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 1937B20B74C0
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-	s=default; t=1710130790;
-	bh=zJSmJpS2VA8+3zoHUmrWNe/kRtWurXh4YXWEvTl15fU=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=cHChZkNWLo5P90MreNlBgmPyAGhFP7K/gZqb3yil3ATXKV3J0kuPEW5u0dDUoCfAt
-	 T87L8KZleIzdP8qrg4sC0zFB0CHsdPk2gQCEmHYvTR9yOaIZ73W0lcJh/Sxg83iCJM
-	 xVHhLtsPiuTxR4mMT5pAafvbsX0C+ZFld3CLDaCw=
-Date: Sun, 10 Mar 2024 21:19:50 -0700
-From: Shradha Gupta <shradhagupta@linux.microsoft.com>
-To: Jakub Kicinski <kuba@kernel.org>
-Cc: Haiyang Zhang <haiyangz@microsoft.com>,
-	Shradha Gupta <shradhagupta@microsoft.com>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	"linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
-	"linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-	"netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-	Eric Dumazet <edumazet@google.com>, Paolo Abeni <pabeni@redhat.com>,
-	Ajay Sharma <sharmaajay@microsoft.com>,
-	Leon Romanovsky <leon@kernel.org>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-	KY Srinivasan <kys@microsoft.com>, Wei Liu <wei.liu@kernel.org>,
-	Dexuan Cui <decui@microsoft.com>, Long Li <longli@microsoft.com>,
-	Michael Kelley <mikelley@microsoft.com>
-Subject: Re: [PATCH] net :mana : Add per-cpu stats for MANA device
-Message-ID: <20240311041950.GA19647@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
-References: <1709823132-22411-1-git-send-email-shradhagupta@linux.microsoft.com>
- <20240307072923.6cc8a2ba@kernel.org>
- <DM6PR21MB14817597567C638DEF020FE3CA202@DM6PR21MB1481.namprd21.prod.outlook.com>
- <20240307090145.2fc7aa2e@kernel.org>
- <CH2PR21MB1480D3ACADFFD2FC3B1BB7ECCA272@CH2PR21MB1480.namprd21.prod.outlook.com>
- <20240308112244.391b3779@kernel.org>
+	s=arc-20240116; t=1710133927; c=relaxed/simple;
+	bh=NytgupDwFvRzUjIAqpINUKzOWjpIAOh67PoPb8mOSyc=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=jok9vg8cj34EzPlGwyDX6+a71U4M4D2GcEjuf3G90UZGufLRApp63JIU3+dlOEkKRVszMkYzKXe2cKSK9M03SdxQPG6KpFN08rPNzaUaKnRry+vb6kku83MairMQYXv4+rn3zhVnsEzIFBNoMdWMAGUUzSWWP7LKlz3QYLItI3w=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=f1hNUhEk; arc=none smtp.client-ip=91.218.175.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <0c7d1d79-2372-4bae-ba9b-e7b6070af14c@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1710133921;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=/B6d+GFP5GHkSgOlSDC80Gd/aLW5H4DEqHwRQcwm970=;
+	b=f1hNUhEkqDnkLr6ETTnU+nPsndIOcnXyMheyLd2g9RfrfNEGbFeDMvlk7boqNBodrG4EJi
+	egLsIhMf3RMF8qIhUFOYIgtKKjj9hlOawFlk+AK7YHwwKWq6UXtLsE+IwIh60GOvCz9w//
+	cM/ZiVlMJacJPcU89Kd8OC5Cq3X6gDk=
+Date: Mon, 11 Mar 2024 06:11:58 +0100
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240308112244.391b3779@kernel.org>
-User-Agent: Mutt/1.5.21 (2010-09-15)
+Subject: Re: [PATCH] RDMA/siw: Reuse value read using READ_ONCE instead of
+ re-reading it
+To: linke li <lilinke99@qq.com>, leon@kernel.org
+Cc: bmt@zurich.ibm.com, jgg@ziepe.ca, linux-kernel@vger.kernel.org,
+ linux-rdma@vger.kernel.org
+References: <20240310191910.GG12921@unreal>
+ <tencent_03614198A34E56D038455012AA31022D9C06@qq.com>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Zhu Yanjun <yanjun.zhu@linux.dev>
+In-Reply-To: <tencent_03614198A34E56D038455012AA31022D9C06@qq.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
 
-On Fri, Mar 08, 2024 at 11:22:44AM -0800, Jakub Kicinski wrote:
-> On Fri, 8 Mar 2024 18:51:58 +0000 Haiyang Zhang wrote:
-> > > Dynamic is a bit of an exaggeration, right? On a well-configured system
-> > > each CPU should use a single queue assigned thru XPS. And for manual
-> > > debug bpftrace should serve the purpose quite well.  
-> > 
-> > Some programs, like irqbalancer can dynamically change the CPU affinity, 
-> > so we want to add the per-CPU counters for better understanding of the CPU 
-> > usage.
+在 2024/3/11 3:34, linke li 写道:
+>> If value can change between subsequent reads, then you need to use locks
+>> to make sure that it doesn't happen. Using READ_ONCE() doesn't solve the
+>> concurrency issue, but makes sure that compiler doesn't reorder reads
+>> and writes.
 > 
-> Do you have experimental data showing this making a difference
-> in production?
-Sure, will try to get that data for this discussion
+> This code do not need to prevent other thread from writing on the flags.
 > 
-> Seems unlikely, but if it does work we should enable it for all
-> devices, no driver by driver.
-You mean, if the usecase seems valid we should try to extend the framework
-mentioned by Rahul (https://lore.kernel.org/lkml/20240307072923.6cc8a2ba@kernel.org/)
-to include these stats as well?
-Will explore this a bit more and update. Thanks.
+> This topic got quite a bit of discussion [1], quote from it:
+> 
+>      (READ_ONCE and WRITE_ONCE)
+>      That's often useful - lots of code doesn't really care if you get the
+>      old or the new value, but the code *does* care that it gets *one*
+>      value, and not some random mix of "I tested one value for validity,
+>      then it got reloaded due to register pressure, and I actually used
+>      another value".
+> 
+>      And not some "I read one value, and it was a mix of two other values".
+>   
+>  From the original code, the first read seems to do the same things. So
+> READ_ONCE is probably ok here.
+> 
+> I just want to make sure the flags stored to wqe->sqe.flags is consistent
+> with the read used in the if condition.
+
+Sure. Follow Leon's advice, to make this ("wqe->sqe.flags is consistent 
+with the read used in the if condition") happen, you need a lock to 
+ensure it. The lock can be spin lock or mutex lock depens on its 
+sleeping or not.
+
+ From the original source code, wqe->sqe.flags should be a volatile 
+variable. It should be read from the original source, not from cache.
+
+Zhu Yanjun
+
+> 
+> [1]https://lore.kernel.org/lkml/CAHk-=wgG6Dmt1JTXDbrbXh_6s2yLjL=9pHo7uv0==LHFD+aBtg@mail.gmail.com/
+> 
+
 
