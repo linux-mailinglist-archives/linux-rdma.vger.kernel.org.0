@@ -1,105 +1,115 @@
-Return-Path: <linux-rdma+bounces-1376-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-1377-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id F304F877A85
-	for <lists+linux-rdma@lfdr.de>; Mon, 11 Mar 2024 06:12:18 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 402B8877B2A
+	for <lists+linux-rdma@lfdr.de>; Mon, 11 Mar 2024 08:11:31 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id DD813B21445
-	for <lists+linux-rdma@lfdr.de>; Mon, 11 Mar 2024 05:12:15 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A2CC11F21575
+	for <lists+linux-rdma@lfdr.de>; Mon, 11 Mar 2024 07:11:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 137528830;
-	Mon, 11 Mar 2024 05:12:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F311A101E8;
+	Mon, 11 Mar 2024 07:11:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="f1hNUhEk"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="mIHtkuQW"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from out-173.mta0.migadu.com (out-173.mta0.migadu.com [91.218.175.173])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BF2D279F6
-	for <linux-rdma@vger.kernel.org>; Mon, 11 Mar 2024 05:12:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A6EACFBF2;
+	Mon, 11 Mar 2024 07:11:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710133927; cv=none; b=OuW5SgLuBMeJEPTI/+kn31x1mlOcJLqikPFB/KjYwU0B+nyMCwsivGJlk57nc69OyAzalhwIjTWH32wdT2NTcqNXQH4eTDNaN9hk+LP1yDqgRV64ldlJI4B7tXBJdjpd1itW9jkXuENHFyq8sp4jrX3HrLWyiIscbGORDL+rokU=
+	t=1710141083; cv=none; b=B1kb/F9sxKSQ4KZlBOvARw5M/emSQ3OoS1Xl3eUFN9IIxvXei4N7hLOKzmlHw1H8Pg9LhPpB9EhlNP49Vl3AzbYP9LaoMlkAw31UKRIScq4OULvh2GMUbK9Xdm9w4M9fnZIMc4GHHL4XHcJTrg22nAE/lnoOeCHnOSldAx0q+zc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710133927; c=relaxed/simple;
-	bh=NytgupDwFvRzUjIAqpINUKzOWjpIAOh67PoPb8mOSyc=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=jok9vg8cj34EzPlGwyDX6+a71U4M4D2GcEjuf3G90UZGufLRApp63JIU3+dlOEkKRVszMkYzKXe2cKSK9M03SdxQPG6KpFN08rPNzaUaKnRry+vb6kku83MairMQYXv4+rn3zhVnsEzIFBNoMdWMAGUUzSWWP7LKlz3QYLItI3w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=f1hNUhEk; arc=none smtp.client-ip=91.218.175.173
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <0c7d1d79-2372-4bae-ba9b-e7b6070af14c@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1710133921;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=/B6d+GFP5GHkSgOlSDC80Gd/aLW5H4DEqHwRQcwm970=;
-	b=f1hNUhEkqDnkLr6ETTnU+nPsndIOcnXyMheyLd2g9RfrfNEGbFeDMvlk7boqNBodrG4EJi
-	egLsIhMf3RMF8qIhUFOYIgtKKjj9hlOawFlk+AK7YHwwKWq6UXtLsE+IwIh60GOvCz9w//
-	cM/ZiVlMJacJPcU89Kd8OC5Cq3X6gDk=
-Date: Mon, 11 Mar 2024 06:11:58 +0100
+	s=arc-20240116; t=1710141083; c=relaxed/simple;
+	bh=4k2sfDO9r77vfUAyF7jF5oNEM2gJ6Lzfg5JkoPLhg1o=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=btikiaUUfBeJqw50RdV17obTvRbpvs+9wz5CetDkornvzfxRXwMDjE2SlzC6TrqArPWRE87sQfiDF6H376GFWj9PojVtpCpM5H2pA2wMTMOeDH7BDmSQbk1pTftvhSUutMr8spldejUb+haaEBwiLjmUAFYKEUOqYXPtbKfDWJE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=mIHtkuQW; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C4308C433F1;
+	Mon, 11 Mar 2024 07:11:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1710141083;
+	bh=4k2sfDO9r77vfUAyF7jF5oNEM2gJ6Lzfg5JkoPLhg1o=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=mIHtkuQWTH3TXkmrrLiRThcLOhfXFg9RHzNou/nReR/oZG4UCJnnDHa51DlbQOk/N
+	 za1Rzfb6cvksAZPNZKF/NP1QJ2Wv6MP+CM5+eBo23XTI90YACQb03AXJmoYXL6QTjy
+	 oxW3hkks/pnok0H1CBQM8KJjKqeevL53zW/q0Q/bMmA4bkleTyDE44Wky+p/hM/OZc
+	 9TKaFNh2o9lC19AzOo6vi0zUdVkvs1wMgPsz+SemtSuSazpfkf7+TDGHzhKNOPCrMj
+	 5PNy3Iyup09hR3yQll+6MT8KN5X7dJY+UylZWmga3xoU4Lc5+H7tQLu5s82WYGu21x
+	 +9P9rEA1D9gkQ==
+Date: Mon, 11 Mar 2024 09:11:19 +0200
+From: Leon Romanovsky <leon@kernel.org>
+To: Junxian Huang <huangjunxian6@hisilicon.com>
+Cc: jgg@ziepe.ca, linux-rdma@vger.kernel.org, linuxarm@huawei.com,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH for-next] RDMA/hns: Support congestion control algorithm
+ parameter configuration
+Message-ID: <20240311071119.GH12921@unreal>
+References: <20240308105443.1130283-1-huangjunxian6@hisilicon.com>
+ <20240310100027.GC12921@unreal>
+ <c16e3cc2-1a70-a9ec-e533-e508cfbab18e@hisilicon.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH] RDMA/siw: Reuse value read using READ_ONCE instead of
- re-reading it
-To: linke li <lilinke99@qq.com>, leon@kernel.org
-Cc: bmt@zurich.ibm.com, jgg@ziepe.ca, linux-kernel@vger.kernel.org,
- linux-rdma@vger.kernel.org
-References: <20240310191910.GG12921@unreal>
- <tencent_03614198A34E56D038455012AA31022D9C06@qq.com>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Zhu Yanjun <yanjun.zhu@linux.dev>
-In-Reply-To: <tencent_03614198A34E56D038455012AA31022D9C06@qq.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <c16e3cc2-1a70-a9ec-e533-e508cfbab18e@hisilicon.com>
 
-在 2024/3/11 3:34, linke li 写道:
->> If value can change between subsequent reads, then you need to use locks
->> to make sure that it doesn't happen. Using READ_ONCE() doesn't solve the
->> concurrency issue, but makes sure that compiler doesn't reorder reads
->> and writes.
+On Mon, Mar 11, 2024 at 10:00:51AM +0800, Junxian Huang wrote:
 > 
-> This code do not need to prevent other thread from writing on the flags.
 > 
-> This topic got quite a bit of discussion [1], quote from it:
+> On 2024/3/10 18:00, Leon Romanovsky wrote:
+> > On Fri, Mar 08, 2024 at 06:54:43PM +0800, Junxian Huang wrote:
+> >> From: Chengchang Tang <tangchengchang@huawei.com>
+> >>
+> >> hns RoCE supports 4 congestion control algorithms. Each algorihm
+> >> involves multiple parameters. Add port sysfs directory for each
+> >> algorithm to allow modifying their parameters.
+> > 
+> > Unless Jason changed his position after this rewrite [1], we don't allow
+> > any custom driver sysfs code.
+> > 
+> > [1] https://lore.kernel.org/all/cover.1623427137.git.leonro@nvidia.com/
+> > 
 > 
->      (READ_ONCE and WRITE_ONCE)
->      That's often useful - lots of code doesn't really care if you get the
->      old or the new value, but the code *does* care that it gets *one*
->      value, and not some random mix of "I tested one value for validity,
->      then it got reloaded due to register pressure, and I actually used
->      another value".
-> 
->      And not some "I read one value, and it was a mix of two other values".
->   
->  From the original code, the first read seems to do the same things. So
-> READ_ONCE is probably ok here.
-> 
-> I just want to make sure the flags stored to wqe->sqe.flags is consistent
-> with the read used in the if condition.
+> I didn't quite get the reason from [1], could you please explain it?
 
-Sure. Follow Leon's advice, to make this ("wqe->sqe.flags is consistent 
-with the read used in the if condition") happen, you need a lock to 
-ensure it. The lock can be spin lock or mutex lock depens on its 
-sleeping or not.
-
- From the original source code, wqe->sqe.flags should be a volatile 
-variable. It should be read from the original source, not from cache.
-
-Zhu Yanjun
+Before [1], we didn't allow custom sysfs. After [1], the sysfs code
+started to be more sane and usable for the drivers. However, it is
+unlikely that the policy is changed to allow driver sysfs code.
 
 > 
-> [1]https://lore.kernel.org/lkml/CAHk-=wgG6Dmt1JTXDbrbXh_6s2yLjL=9pHo7uv0==LHFD+aBtg@mail.gmail.com/
-> 
+> And it would be helpful if you could give us a hint about any other
+> proper ways to do the algorithm parameter configuration.
 
+Like any other FW internals.
+
+Thanks
+
+> 
+> Thanks,
+> Junxian
+> 
+> >>
+> >> Signed-off-by: Chengchang Tang <tangchengchang@huawei.com>
+> >> Signed-off-by: Junxian Huang <huangjunxian6@hisilicon.com>
+> >> ---
+> >>  drivers/infiniband/hw/hns/Makefile          |   2 +-
+> >>  drivers/infiniband/hw/hns/hns_roce_device.h |  20 ++
+> >>  drivers/infiniband/hw/hns/hns_roce_hw_v2.c  |  59 ++++
+> >>  drivers/infiniband/hw/hns/hns_roce_hw_v2.h  | 132 ++++++++
+> >>  drivers/infiniband/hw/hns/hns_roce_main.c   |   3 +
+> >>  drivers/infiniband/hw/hns/hns_roce_sysfs.c  | 346 ++++++++++++++++++++
+> >>  6 files changed, 561 insertions(+), 1 deletion(-)
+> >>  create mode 100644 drivers/infiniband/hw/hns/hns_roce_sysfs.c
+> > 
+> > Thanks
+> 
 
