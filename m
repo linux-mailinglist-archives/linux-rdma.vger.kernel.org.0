@@ -1,115 +1,87 @@
-Return-Path: <linux-rdma+bounces-1377-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-1378-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 402B8877B2A
-	for <lists+linux-rdma@lfdr.de>; Mon, 11 Mar 2024 08:11:31 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9EA96877B99
+	for <lists+linux-rdma@lfdr.de>; Mon, 11 Mar 2024 09:18:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id A2CC11F21575
-	for <lists+linux-rdma@lfdr.de>; Mon, 11 Mar 2024 07:11:30 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 2325CB20CDD
+	for <lists+linux-rdma@lfdr.de>; Mon, 11 Mar 2024 08:18:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F311A101E8;
-	Mon, 11 Mar 2024 07:11:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1DB321118B;
+	Mon, 11 Mar 2024 08:18:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="mIHtkuQW"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="ON9V5FQZ"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from out-182.mta0.migadu.com (out-182.mta0.migadu.com [91.218.175.182])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A6EACFBF2;
-	Mon, 11 Mar 2024 07:11:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 461811428E
+	for <linux-rdma@vger.kernel.org>; Mon, 11 Mar 2024 08:17:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710141083; cv=none; b=B1kb/F9sxKSQ4KZlBOvARw5M/emSQ3OoS1Xl3eUFN9IIxvXei4N7hLOKzmlHw1H8Pg9LhPpB9EhlNP49Vl3AzbYP9LaoMlkAw31UKRIScq4OULvh2GMUbK9Xdm9w4M9fnZIMc4GHHL4XHcJTrg22nAE/lnoOeCHnOSldAx0q+zc=
+	t=1710145082; cv=none; b=FXmQHiilridfr6N9LAqAH0RD2hphhZYIM+ZjrfD6KRMbCT47+2CogLfuXOaoJwTQUqyDwbbOWQLp+apD0dg5sZOuhvyLgUHF72g8+gERm0rnTuLbRzGSLid+kPF4fgTXB2kNYr/QLpwjCYDAK6Ghd9g5rfwbH9jr6Wrsi/R9o30=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710141083; c=relaxed/simple;
-	bh=4k2sfDO9r77vfUAyF7jF5oNEM2gJ6Lzfg5JkoPLhg1o=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=btikiaUUfBeJqw50RdV17obTvRbpvs+9wz5CetDkornvzfxRXwMDjE2SlzC6TrqArPWRE87sQfiDF6H376GFWj9PojVtpCpM5H2pA2wMTMOeDH7BDmSQbk1pTftvhSUutMr8spldejUb+haaEBwiLjmUAFYKEUOqYXPtbKfDWJE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=mIHtkuQW; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C4308C433F1;
-	Mon, 11 Mar 2024 07:11:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1710141083;
-	bh=4k2sfDO9r77vfUAyF7jF5oNEM2gJ6Lzfg5JkoPLhg1o=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=mIHtkuQWTH3TXkmrrLiRThcLOhfXFg9RHzNou/nReR/oZG4UCJnnDHa51DlbQOk/N
-	 za1Rzfb6cvksAZPNZKF/NP1QJ2Wv6MP+CM5+eBo23XTI90YACQb03AXJmoYXL6QTjy
-	 oxW3hkks/pnok0H1CBQM8KJjKqeevL53zW/q0Q/bMmA4bkleTyDE44Wky+p/hM/OZc
-	 9TKaFNh2o9lC19AzOo6vi0zUdVkvs1wMgPsz+SemtSuSazpfkf7+TDGHzhKNOPCrMj
-	 5PNy3Iyup09hR3yQll+6MT8KN5X7dJY+UylZWmga3xoU4Lc5+H7tQLu5s82WYGu21x
-	 +9P9rEA1D9gkQ==
-Date: Mon, 11 Mar 2024 09:11:19 +0200
-From: Leon Romanovsky <leon@kernel.org>
-To: Junxian Huang <huangjunxian6@hisilicon.com>
-Cc: jgg@ziepe.ca, linux-rdma@vger.kernel.org, linuxarm@huawei.com,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH for-next] RDMA/hns: Support congestion control algorithm
- parameter configuration
-Message-ID: <20240311071119.GH12921@unreal>
-References: <20240308105443.1130283-1-huangjunxian6@hisilicon.com>
- <20240310100027.GC12921@unreal>
- <c16e3cc2-1a70-a9ec-e533-e508cfbab18e@hisilicon.com>
+	s=arc-20240116; t=1710145082; c=relaxed/simple;
+	bh=jzvSjvVA6Jyy48uWqmfGdrZwBkgTuPLqmjeUVsU/44Q=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=GhkK69bJz4oqw01SdPMTQPHr/NjlFhRl8scOIpTR4/xFLf50IQPUCTbEQS4wNKlEWoRtI9DO7fpVx6EaS9bKvDcEObLofo2L33LrPyp51qE+Z0uVm3thyzcEooOGBWa/sJVVp5IeH/QswQV9eR5Bhe2ANOX/ctZqFfYVXIu//Z4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=ON9V5FQZ; arc=none smtp.client-ip=91.218.175.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <7c391960-4406-4089-991e-d54ecc45524f@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1710145078;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=m/Gz70WprgLvSEDgpF5x0FUaddqxV0rehd1ZR+aa/us=;
+	b=ON9V5FQZKlAsAbR47O1AsQEFG48m7H6UueIUrYklxzeol9YBF2b2dTvxV9SiOAxZcSAoJW
+	WSbs59ndbxLCvr8yMz9cWGYnuy8FBsXDlo9NF/AEZ9PQGRfSnFP+R4NaIVgMrL7QINVdnN
+	5nH3L1J3bIa/3mu+w6+ydd+tl/wh2KY=
+Date: Mon, 11 Mar 2024 09:17:51 +0100
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <c16e3cc2-1a70-a9ec-e533-e508cfbab18e@hisilicon.com>
+Subject: Re: [PATCH] RDMA/siw: Reuse value read using READ_ONCE instead of
+ re-reading it
+To: linke li <lilinke99@qq.com>, gregsword0@gmail.com
+Cc: bmt@zurich.ibm.com, jgg@ziepe.ca, leon@kernel.org,
+ linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org
+References: <CAEz=LctG46xSHVxRg0VwnfCpv+uyOHdb0jqQ+WJNc7zSnMA2Ng@mail.gmail.com>
+ <tencent_C20218AE8489E90806F1522C24B11BAFD30A@qq.com>
+Content-Language: en-US
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Zhu Yanjun <yanjun.zhu@linux.dev>
+In-Reply-To: <tencent_C20218AE8489E90806F1522C24B11BAFD30A@qq.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Migadu-Flow: FLOW_OUT
 
-On Mon, Mar 11, 2024 at 10:00:51AM +0800, Junxian Huang wrote:
-> 
-> 
-> On 2024/3/10 18:00, Leon Romanovsky wrote:
-> > On Fri, Mar 08, 2024 at 06:54:43PM +0800, Junxian Huang wrote:
-> >> From: Chengchang Tang <tangchengchang@huawei.com>
-> >>
-> >> hns RoCE supports 4 congestion control algorithms. Each algorihm
-> >> involves multiple parameters. Add port sysfs directory for each
-> >> algorithm to allow modifying their parameters.
-> > 
-> > Unless Jason changed his position after this rewrite [1], we don't allow
-> > any custom driver sysfs code.
-> > 
-> > [1] https://lore.kernel.org/all/cover.1623427137.git.leonro@nvidia.com/
-> > 
-> 
-> I didn't quite get the reason from [1], could you please explain it?
+In the original source code, READ_ONCE(xxx) is in if test. In your 
+commit, you move READ_ONCE out of this if test.
 
-Before [1], we didn't allow custom sysfs. After [1], the sysfs code
-started to be more sane and usable for the drivers. However, it is
-unlikely that the policy is changed to allow driver sysfs code.
+So the time slot exists between fetching and using. In the original 
+source code, it does not exist. And the fetching and using are not 
+protected by locks. As is suggested by Leon.
 
-> 
-> And it would be helpful if you could give us a hint about any other
-> proper ways to do the algorithm parameter configuration.
+This will introduce risks.
 
-Like any other FW internals.
+The binary is based on optimization level and architectures. It is very 
+complicated.
 
-Thanks
+Zhu Yanjun
 
-> 
-> Thanks,
-> Junxian
-> 
-> >>
-> >> Signed-off-by: Chengchang Tang <tangchengchang@huawei.com>
-> >> Signed-off-by: Junxian Huang <huangjunxian6@hisilicon.com>
-> >> ---
-> >>  drivers/infiniband/hw/hns/Makefile          |   2 +-
-> >>  drivers/infiniband/hw/hns/hns_roce_device.h |  20 ++
-> >>  drivers/infiniband/hw/hns/hns_roce_hw_v2.c  |  59 ++++
-> >>  drivers/infiniband/hw/hns/hns_roce_hw_v2.h  | 132 ++++++++
-> >>  drivers/infiniband/hw/hns/hns_roce_main.c   |   3 +
-> >>  drivers/infiniband/hw/hns/hns_roce_sysfs.c  | 346 ++++++++++++++++++++
-> >>  6 files changed, 561 insertions(+), 1 deletion(-)
-> >>  create mode 100644 drivers/infiniband/hw/hns/hns_roce_sysfs.c
-> > 
-> > Thanks
-> 
+On 11.03.24 03:57, linke li wrote:
+>> This is not a smp problem. Compared with the original source, your
+>> commit introduces a time slot.
+> I don't know what do you mean by a time slot. In the binary level, they
+> have the same code.
+>
 
