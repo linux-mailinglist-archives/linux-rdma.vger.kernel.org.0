@@ -1,54 +1,54 @@
-Return-Path: <linux-rdma+bounces-1383-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-1384-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id ECF62877F2D
-	for <lists+linux-rdma@lfdr.de>; Mon, 11 Mar 2024 12:38:36 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6F9AD877F2E
+	for <lists+linux-rdma@lfdr.de>; Mon, 11 Mar 2024 12:38:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1D2BD1C21775
-	for <lists+linux-rdma@lfdr.de>; Mon, 11 Mar 2024 11:38:36 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 10DCC1F2216F
+	for <lists+linux-rdma@lfdr.de>; Mon, 11 Mar 2024 11:38:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 093893BB2A;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 259BA3B2A1;
 	Mon, 11 Mar 2024 11:38:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="TFOF0UVo"
+	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="rWYl6fi6"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from out30-110.freemail.mail.aliyun.com (out30-110.freemail.mail.aliyun.com [115.124.30.110])
+Received: from out30-124.freemail.mail.aliyun.com (out30-124.freemail.mail.aliyun.com [115.124.30.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A66943B2A4
-	for <linux-rdma@vger.kernel.org>; Mon, 11 Mar 2024 11:38:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.110
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8184B3B2BE
+	for <linux-rdma@vger.kernel.org>; Mon, 11 Mar 2024 11:38:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710157109; cv=none; b=hZNaOaF57GKcbbcJetkbAa8tRycQFFoaGwGhxOVAAQtbbPuvdIS8nyg+TSNwFXE2Gp4qMhVG6Lt3GI9PvQznZ0r3hkmvtXevHV3a1au+4BLeFH6R25xwSb4wN96EcIlLg2qRjMjf3hIwGq5q5kwopJ2h3ZMPD3LdWeFfkJqe9tg=
+	t=1710157109; cv=none; b=jr9pvbKfmvDobTPaMwtwVybn/n0l8wFXsDkZDeIW8huRZhenpsPLttHWQKW5S9Nq2TtPw+dDGqSEaIkxWUnVcSqp7CElNF7OovMbXzmCuwbIlOaJdTctT+8Y6pJy5KzwX1lUsgnMlyiU2FsOFd6lR/FfOktwSI3ikXgzPu0DhIQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1710157109; c=relaxed/simple;
-	bh=6vtdurK6wi7N62UWEQ7pTqzgxi8Y4kjOJZwO4Qd2FGE=;
+	bh=jt8SkkfQqtfjJK34b4YvX8KxYRZ2Jl6D1zo2Cl05L6I=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=apHMavELD23B2YdWT1oC5VM2TQtLGIxwzh0EepLkdtqB2MPh6uQooxJYjBZsiNU2/mapxMZwX3959gEeLAxPsqM9k5FdGr9mrUiS334Ym+K1p4P/bf3TriKKW2lm2uMrP9PRv5yLDG3kSgVPjVq1Ysrvx/xNBsKsVV5APZQoDIY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=alibaba-inc.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=TFOF0UVo; arc=none smtp.client-ip=115.124.30.110
+	 MIME-Version; b=iE6Tpb3WTcucZ42y/ZTXMMDcTRSuEeAQRLckCWgeacMK1NJQF+2qk9Acx4eB/eenlrO9/kk1mvtebLiuByU/RgEzH3osNC/M3BuejFaQ+Y8Vsxkl3k71ycjTNAIWHUeti+sMBkerMHOcIr7+U0880DRFSARZFxgMS9S0YXyo88w=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=alibaba-inc.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=rWYl6fi6; arc=none smtp.client-ip=115.124.30.124
 Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=alibaba-inc.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
 DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
 	d=linux.alibaba.com; s=default;
-	t=1710157104; h=From:To:Subject:Date:Message-Id:MIME-Version;
-	bh=r2TYNlwXlWdHjyRvEW/UxvdFt+GxByK6hHRG/VPkDeg=;
-	b=TFOF0UVoYTvH2Ia9hbdnuGYuhXuZDEuWvQSNVtDK0A8f3oaBaAqizt1C6RlDCV9uDotjeV8oaEQNICAAJbtGryQD6gfpBDFnhukaMphXHQ8jzv8JDtkl5GG50ptNhQY0WQiQTwpGnPuqSNwsu4dTLJvHn5d5aIDnY7QbhwPqfdQ=
-X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R891e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046060;MF=boshiyu@linux.alibaba.com;NM=1;PH=DS;RN=5;SR=0;TI=SMTPD_---0W2G41jT_1710157103;
-Received: from localhost(mailfrom:boshiyu@linux.alibaba.com fp:SMTPD_---0W2G41jT_1710157103)
+	t=1710157105; h=From:To:Subject:Date:Message-Id:MIME-Version;
+	bh=V8K4OJDcFfCwX7P6Fkex6wiWBDY0G7dYGJoDidIYrjA=;
+	b=rWYl6fi6H4djgh1xhmeeloCO2p3bzqwPspjxGGuKnElioUPyjAF03gUHIayUcB6ipEE5Dep7cNtbDJyY6FTNOgmOhpeoOSX9xFUOQBGJDyyMFEgm7Wlw+hlwzA/5/hjau9j8uRQKGcq3lUW6MkENkDZoyMSm6YTMqijYM0YQK3E=
+X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R201e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046049;MF=boshiyu@linux.alibaba.com;NM=1;PH=DS;RN=5;SR=0;TI=SMTPD_---0W2Ghvqb_1710157104;
+Received: from localhost(mailfrom:boshiyu@linux.alibaba.com fp:SMTPD_---0W2Ghvqb_1710157104)
           by smtp.aliyun-inc.com;
-          Mon, 11 Mar 2024 19:38:23 +0800
+          Mon, 11 Mar 2024 19:38:24 +0800
 From: Boshi Yu <boshiyu@alibaba-inc.com>
 To: jgg@ziepe.ca,
 	leon@kernel.org
 Cc: linux-rdma@vger.kernel.org,
 	chengyou@linux.alibaba.com,
 	KaiShen@linux.alibaba.com
-Subject: [PATCH for-next 2/3] RDMA/erdma: Unify the names related to doorbell records
-Date: Mon, 11 Mar 2024 19:38:20 +0800
-Message-Id: <20240311113821.22482-3-boshiyu@alibaba-inc.com>
+Subject: [PATCH for-next 3/3] RDMA/erdma: Remove unnecessary __GFP_ZERO flag
+Date: Mon, 11 Mar 2024 19:38:21 +0800
+Message-Id: <20240311113821.22482-4-boshiyu@alibaba-inc.com>
 X-Mailer: git-send-email 2.39.3
 In-Reply-To: <20240311113821.22482-1-boshiyu@alibaba-inc.com>
 References: <20240311113821.22482-1-boshiyu@alibaba-inc.com>
@@ -62,545 +62,65 @@ Content-Transfer-Encoding: 8bit
 
 From: Boshi Yu <boshiyu@linux.alibaba.com>
 
-There exist two different names for the doorbell records: db_info and
-db_record. We use dbrec for cpu address of the doorbell record and
-dbrec_dma for dma address of the doorbell recordi uniformly.
+The dma_alloc_coherent() interface automatically zero the memory returned.
+Thus, we do not need to specify the __GFP_ZERO flag explicitly when we call
+dma_alloc_coherent().
 
 Reviewed-by: Cheng Xu <chengyou@linux.alibaba.com>
 Signed-off-by: Boshi Yu <boshiyu@linux.alibaba.com>
 ---
- drivers/infiniband/hw/erdma/erdma.h       | 12 ++---
- drivers/infiniband/hw/erdma/erdma_cmdq.c  | 43 ++++++---------
- drivers/infiniband/hw/erdma/erdma_cq.c    |  2 +-
- drivers/infiniband/hw/erdma/erdma_eq.c    | 23 ++++----
- drivers/infiniband/hw/erdma/erdma_hw.h    |  6 +--
- drivers/infiniband/hw/erdma/erdma_qp.c    |  4 +-
- drivers/infiniband/hw/erdma/erdma_verbs.c | 64 +++++++++++------------
- drivers/infiniband/hw/erdma/erdma_verbs.h | 18 +++----
- 8 files changed, 79 insertions(+), 93 deletions(-)
+ drivers/infiniband/hw/erdma/erdma_cmdq.c | 6 ++----
+ drivers/infiniband/hw/erdma/erdma_eq.c   | 6 ++----
+ 2 files changed, 4 insertions(+), 8 deletions(-)
 
-diff --git a/drivers/infiniband/hw/erdma/erdma.h b/drivers/infiniband/hw/erdma/erdma.h
-index e116263a608f..c8bd698e21b0 100644
---- a/drivers/infiniband/hw/erdma/erdma.h
-+++ b/drivers/infiniband/hw/erdma/erdma.h
-@@ -33,8 +33,8 @@ struct erdma_eq {
- 	atomic64_t notify_num;
- 
- 	void __iomem *db;
--	u64 *db_record;
--	dma_addr_t db_record_dma_addr;
-+	u64 *dbrec;
-+	dma_addr_t dbrec_dma;
- };
- 
- struct erdma_cmdq_sq {
-@@ -49,8 +49,8 @@ struct erdma_cmdq_sq {
- 
- 	u16 wqebb_cnt;
- 
--	u64 *db_record;
--	dma_addr_t db_record_dma_addr;
-+	u64 *dbrec;
-+	dma_addr_t dbrec_dma;
- };
- 
- struct erdma_cmdq_cq {
-@@ -63,8 +63,8 @@ struct erdma_cmdq_cq {
- 	u32 ci;
- 	u32 cmdsn;
- 
--	u64 *db_record;
--	dma_addr_t db_record_dma_addr;
-+	u64 *dbrec;
-+	dma_addr_t dbrec_dma;
- 
- 	atomic64_t armed_num;
- };
 diff --git a/drivers/infiniband/hw/erdma/erdma_cmdq.c b/drivers/infiniband/hw/erdma/erdma_cmdq.c
-index c2c666040949..0ac2683cfccf 100644
+index 0ac2683cfccf..43ff40b5a09d 100644
 --- a/drivers/infiniband/hw/erdma/erdma_cmdq.c
 +++ b/drivers/infiniband/hw/erdma/erdma_cmdq.c
-@@ -14,7 +14,7 @@ static void arm_cmdq_cq(struct erdma_cmdq *cmdq)
- 		      FIELD_PREP(ERDMA_CQDB_CMDSN_MASK, cmdq->cq.cmdsn) |
- 		      FIELD_PREP(ERDMA_CQDB_IDX_MASK, cmdq->cq.cmdsn);
+@@ -127,8 +127,7 @@ static int erdma_cmdq_cq_init(struct erdma_dev *dev)
  
--	*cmdq->cq.db_record = db_data;
-+	*cmdq->cq.dbrec = db_data;
- 	writeq(db_data, dev->func_bar + ERDMA_CMDQ_CQDB_REG);
- 
- 	atomic64_inc(&cmdq->cq.armed_num);
-@@ -25,7 +25,7 @@ static void kick_cmdq_db(struct erdma_cmdq *cmdq)
- 	struct erdma_dev *dev = container_of(cmdq, struct erdma_dev, cmdq);
- 	u64 db_data = FIELD_PREP(ERDMA_CMD_HDR_WQEBB_INDEX_MASK, cmdq->sq.pi);
- 
--	*cmdq->sq.db_record = db_data;
-+	*cmdq->sq.dbrec = db_data;
- 	writeq(db_data, dev->func_bar + ERDMA_CMDQ_SQDB_REG);
- }
- 
-@@ -98,9 +98,8 @@ static int erdma_cmdq_sq_init(struct erdma_dev *dev)
- 	if (!sq->qbuf)
+ 	cq->depth = cmdq->sq.depth;
+ 	cq->qbuf = dma_alloc_coherent(&dev->pdev->dev, cq->depth << CQE_SHIFT,
+-				      &cq->qbuf_dma_addr,
+-				      GFP_KERNEL | __GFP_ZERO);
++				      &cq->qbuf_dma_addr, GFP_KERNEL);
+ 	if (!cq->qbuf)
  		return -ENOMEM;
  
--	sq->db_record = dma_pool_zalloc(dev->db_pool, GFP_KERNEL,
--					&sq->db_record_dma_addr);
--	if (!sq->db_record)
-+	sq->dbrec = dma_pool_zalloc(dev->db_pool, GFP_KERNEL, &sq->dbrec_dma);
-+	if (!sq->dbrec)
- 		goto err_out;
+@@ -162,8 +161,7 @@ static int erdma_cmdq_eq_init(struct erdma_dev *dev)
  
- 	spin_lock_init(&sq->lock);
-@@ -110,8 +109,7 @@ static int erdma_cmdq_sq_init(struct erdma_dev *dev)
- 	erdma_reg_write32(dev, ERDMA_REGS_CMDQ_SQ_ADDR_L_REG,
- 			  lower_32_bits(sq->qbuf_dma_addr));
- 	erdma_reg_write32(dev, ERDMA_REGS_CMDQ_DEPTH_REG, sq->depth);
--	erdma_reg_write64(dev, ERDMA_CMDQ_SQ_DB_HOST_ADDR_REG,
--			  sq->db_record_dma_addr);
-+	erdma_reg_write64(dev, ERDMA_CMDQ_SQ_DB_HOST_ADDR_REG, sq->dbrec_dma);
- 
- 	return 0;
- 
-@@ -136,9 +134,8 @@ static int erdma_cmdq_cq_init(struct erdma_dev *dev)
- 
- 	spin_lock_init(&cq->lock);
- 
--	cq->db_record = dma_pool_zalloc(dev->db_pool, GFP_KERNEL,
--					&cq->db_record_dma_addr);
--	if (!cq->db_record)
-+	cq->dbrec = dma_pool_zalloc(dev->db_pool, GFP_KERNEL, &cq->dbrec_dma);
-+	if (!cq->dbrec)
- 		goto err_out;
- 
- 	atomic64_set(&cq->armed_num, 0);
-@@ -147,8 +144,7 @@ static int erdma_cmdq_cq_init(struct erdma_dev *dev)
- 			  upper_32_bits(cq->qbuf_dma_addr));
- 	erdma_reg_write32(dev, ERDMA_REGS_CMDQ_CQ_ADDR_L_REG,
- 			  lower_32_bits(cq->qbuf_dma_addr));
--	erdma_reg_write64(dev, ERDMA_CMDQ_CQ_DB_HOST_ADDR_REG,
--			  cq->db_record_dma_addr);
-+	erdma_reg_write64(dev, ERDMA_CMDQ_CQ_DB_HOST_ADDR_REG, cq->dbrec_dma);
- 
- 	return 0;
- 
-@@ -175,9 +171,8 @@ static int erdma_cmdq_eq_init(struct erdma_dev *dev)
- 	atomic64_set(&eq->event_num, 0);
- 
- 	eq->db = dev->func_bar + ERDMA_REGS_CEQ_DB_BASE_REG;
--	eq->db_record = dma_pool_zalloc(dev->db_pool, GFP_KERNEL,
--					&eq->db_record_dma_addr);
--	if (!eq->db_record)
-+	eq->dbrec = dma_pool_zalloc(dev->db_pool, GFP_KERNEL, &eq->dbrec_dma);
-+	if (!eq->dbrec)
- 		goto err_out;
- 
- 	erdma_reg_write32(dev, ERDMA_REGS_CMDQ_EQ_ADDR_H_REG,
-@@ -185,8 +180,7 @@ static int erdma_cmdq_eq_init(struct erdma_dev *dev)
- 	erdma_reg_write32(dev, ERDMA_REGS_CMDQ_EQ_ADDR_L_REG,
- 			  lower_32_bits(eq->qbuf_dma_addr));
- 	erdma_reg_write32(dev, ERDMA_REGS_CMDQ_EQ_DEPTH_REG, eq->depth);
--	erdma_reg_write64(dev, ERDMA_CMDQ_EQ_DB_HOST_ADDR_REG,
--			  eq->db_record_dma_addr);
-+	erdma_reg_write64(dev, ERDMA_CMDQ_EQ_DB_HOST_ADDR_REG, eq->dbrec_dma);
- 
- 	return 0;
- 
-@@ -231,15 +225,13 @@ int erdma_cmdq_init(struct erdma_dev *dev)
- 	dma_free_coherent(&dev->pdev->dev, cmdq->cq.depth << CQE_SHIFT,
- 			  cmdq->cq.qbuf, cmdq->cq.qbuf_dma_addr);
- 
--	dma_pool_free(dev->db_pool, cmdq->cq.db_record,
--		      cmdq->cq.db_record_dma_addr);
-+	dma_pool_free(dev->db_pool, cmdq->cq.dbrec, cmdq->cq.dbrec_dma);
- 
- err_destroy_sq:
- 	dma_free_coherent(&dev->pdev->dev, cmdq->sq.depth << SQEBB_SHIFT,
- 			  cmdq->sq.qbuf, cmdq->sq.qbuf_dma_addr);
- 
--	dma_pool_free(dev->db_pool, cmdq->sq.db_record,
--		      cmdq->sq.db_record_dma_addr);
-+	dma_pool_free(dev->db_pool, cmdq->sq.dbrec, cmdq->sq.dbrec_dma);
- 
- 	return err;
- }
-@@ -260,20 +252,17 @@ void erdma_cmdq_destroy(struct erdma_dev *dev)
- 	dma_free_coherent(&dev->pdev->dev, cmdq->eq.depth << EQE_SHIFT,
- 			  cmdq->eq.qbuf, cmdq->eq.qbuf_dma_addr);
- 
--	dma_pool_free(dev->db_pool, cmdq->eq.db_record,
--		      cmdq->eq.db_record_dma_addr);
-+	dma_pool_free(dev->db_pool, cmdq->eq.dbrec, cmdq->eq.dbrec_dma);
- 
- 	dma_free_coherent(&dev->pdev->dev, cmdq->sq.depth << SQEBB_SHIFT,
- 			  cmdq->sq.qbuf, cmdq->sq.qbuf_dma_addr);
- 
--	dma_pool_free(dev->db_pool, cmdq->sq.db_record,
--		      cmdq->sq.db_record_dma_addr);
-+	dma_pool_free(dev->db_pool, cmdq->sq.dbrec, cmdq->sq.dbrec_dma);
- 
- 	dma_free_coherent(&dev->pdev->dev, cmdq->cq.depth << CQE_SHIFT,
- 			  cmdq->cq.qbuf, cmdq->cq.qbuf_dma_addr);
- 
--	dma_pool_free(dev->db_pool, cmdq->cq.db_record,
--		      cmdq->cq.db_record_dma_addr);
-+	dma_pool_free(dev->db_pool, cmdq->cq.dbrec, cmdq->cq.dbrec_dma);
- }
- 
- static void *get_next_valid_cmdq_cqe(struct erdma_cmdq *cmdq)
-diff --git a/drivers/infiniband/hw/erdma/erdma_cq.c b/drivers/infiniband/hw/erdma/erdma_cq.c
-index c1cb5568eab2..70f89f0162aa 100644
---- a/drivers/infiniband/hw/erdma/erdma_cq.c
-+++ b/drivers/infiniband/hw/erdma/erdma_cq.c
-@@ -26,7 +26,7 @@ static void notify_cq(struct erdma_cq *cq, u8 solcitied)
- 		FIELD_PREP(ERDMA_CQDB_CMDSN_MASK, cq->kern_cq.cmdsn) |
- 		FIELD_PREP(ERDMA_CQDB_CI_MASK, cq->kern_cq.ci);
- 
--	*cq->kern_cq.db_record = db_data;
-+	*cq->kern_cq.dbrec = db_data;
- 	writeq(db_data, cq->kern_cq.db);
- }
+ 	eq->depth = cmdq->max_outstandings;
+ 	eq->qbuf = dma_alloc_coherent(&dev->pdev->dev, eq->depth << EQE_SHIFT,
+-				      &eq->qbuf_dma_addr,
+-				      GFP_KERNEL | __GFP_ZERO);
++				      &eq->qbuf_dma_addr, GFP_KERNEL);
+ 	if (!eq->qbuf)
+ 		return -ENOMEM;
  
 diff --git a/drivers/infiniband/hw/erdma/erdma_eq.c b/drivers/infiniband/hw/erdma/erdma_eq.c
-index 809c33628f38..0a4746e6d05c 100644
+index 0a4746e6d05c..84ccdd8144c9 100644
 --- a/drivers/infiniband/hw/erdma/erdma_eq.c
 +++ b/drivers/infiniband/hw/erdma/erdma_eq.c
-@@ -13,7 +13,7 @@ void notify_eq(struct erdma_eq *eq)
- 	u64 db_data = FIELD_PREP(ERDMA_EQDB_CI_MASK, eq->ci) |
- 		      FIELD_PREP(ERDMA_EQDB_ARM_MASK, 1);
+@@ -87,8 +87,7 @@ int erdma_aeq_init(struct erdma_dev *dev)
+ 	eq->depth = ERDMA_DEFAULT_EQ_DEPTH;
  
--	*eq->db_record = db_data;
-+	*eq->dbrec = db_data;
- 	writeq(db_data, eq->db);
- 
- 	atomic64_inc(&eq->notify_num);
-@@ -97,9 +97,8 @@ int erdma_aeq_init(struct erdma_dev *dev)
- 	atomic64_set(&eq->notify_num, 0);
- 
- 	eq->db = dev->func_bar + ERDMA_REGS_AEQ_DB_REG;
--	eq->db_record = dma_pool_zalloc(dev->db_pool, GFP_KERNEL,
--					&eq->db_record_dma_addr);
--	if (!eq->db_record)
-+	eq->dbrec = dma_pool_zalloc(dev->db_pool, GFP_KERNEL, &eq->dbrec_dma);
-+	if (!eq->dbrec)
- 		goto err_out;
- 
- 	erdma_reg_write32(dev, ERDMA_REGS_AEQ_ADDR_H_REG,
-@@ -107,8 +106,7 @@ int erdma_aeq_init(struct erdma_dev *dev)
- 	erdma_reg_write32(dev, ERDMA_REGS_AEQ_ADDR_L_REG,
- 			  lower_32_bits(eq->qbuf_dma_addr));
- 	erdma_reg_write32(dev, ERDMA_REGS_AEQ_DEPTH_REG, eq->depth);
--	erdma_reg_write64(dev, ERDMA_AEQ_DB_HOST_ADDR_REG,
--			  eq->db_record_dma_addr);
-+	erdma_reg_write64(dev, ERDMA_AEQ_DB_HOST_ADDR_REG, eq->dbrec_dma);
- 
- 	return 0;
- 
-@@ -126,7 +124,7 @@ void erdma_aeq_destroy(struct erdma_dev *dev)
- 	dma_free_coherent(&dev->pdev->dev, eq->depth << EQE_SHIFT, eq->qbuf,
- 			  eq->qbuf_dma_addr);
- 
--	dma_pool_free(dev->db_pool, eq->db_record, eq->db_record_dma_addr);
-+	dma_pool_free(dev->db_pool, eq->dbrec, eq->dbrec_dma);
- }
- 
- void erdma_ceq_completion_handler(struct erdma_eq_cb *ceq_cb)
-@@ -226,8 +224,8 @@ static int create_eq_cmd(struct erdma_dev *dev, u32 eqn, struct erdma_eq *eq)
- 	req.qtype = ERDMA_EQ_TYPE_CEQ;
- 	/* Vector index is the same as EQN. */
- 	req.vector_idx = eqn;
--	req.db_dma_addr_l = lower_32_bits(eq->db_record_dma_addr);
--	req.db_dma_addr_h = upper_32_bits(eq->db_record_dma_addr);
-+	req.db_dma_addr_l = lower_32_bits(eq->dbrec_dma);
-+	req.db_dma_addr_h = upper_32_bits(eq->dbrec_dma);
- 
- 	return erdma_post_cmd_wait(&dev->cmdq, &req, sizeof(req), NULL, NULL);
- }
-@@ -251,9 +249,8 @@ static int erdma_ceq_init_one(struct erdma_dev *dev, u16 ceqn)
- 	eq->db = dev->func_bar + ERDMA_REGS_CEQ_DB_BASE_REG +
- 		 (ceqn + 1) * ERDMA_DB_SIZE;
- 
--	eq->db_record = dma_pool_zalloc(dev->db_pool, GFP_KERNEL,
--					&eq->db_record_dma_addr);
--	if (!eq->db_record) {
-+	eq->dbrec = dma_pool_zalloc(dev->db_pool, GFP_KERNEL, &eq->dbrec_dma);
-+	if (!eq->dbrec) {
- 		dma_free_coherent(&dev->pdev->dev, eq->depth << EQE_SHIFT,
- 				  eq->qbuf, eq->qbuf_dma_addr);
- 		return -ENOMEM;
-@@ -290,7 +287,7 @@ static void erdma_ceq_uninit_one(struct erdma_dev *dev, u16 ceqn)
- 
- 	dma_free_coherent(&dev->pdev->dev, eq->depth << EQE_SHIFT, eq->qbuf,
- 			  eq->qbuf_dma_addr);
--	dma_pool_free(dev->db_pool, eq->db_record, eq->db_record_dma_addr);
-+	dma_pool_free(dev->db_pool, eq->dbrec, eq->dbrec_dma);
- }
- 
- int erdma_ceqs_init(struct erdma_dev *dev)
-diff --git a/drivers/infiniband/hw/erdma/erdma_hw.h b/drivers/infiniband/hw/erdma/erdma_hw.h
-index 3212a1222760..05978f3b1475 100644
---- a/drivers/infiniband/hw/erdma/erdma_hw.h
-+++ b/drivers/infiniband/hw/erdma/erdma_hw.h
-@@ -240,7 +240,7 @@ struct erdma_cmdq_create_cq_req {
- 	u32 qbuf_addr_l;
- 	u32 qbuf_addr_h;
- 	u32 cfg1;
--	u64 cq_db_info_addr;
-+	u64 cq_dbrec_dma;
- 	u32 first_page_offset;
- 	u32 cfg2;
- };
-@@ -335,8 +335,8 @@ struct erdma_cmdq_create_qp_req {
- 	u64 rq_buf_addr;
- 	u32 sq_mtt_cfg;
- 	u32 rq_mtt_cfg;
--	u64 sq_db_info_dma_addr;
--	u64 rq_db_info_dma_addr;
-+	u64 sq_dbrec_dma;
-+	u64 rq_dbrec_dma;
- 
- 	u64 sq_mtt_entry[3];
- 	u64 rq_mtt_entry[3];
-diff --git a/drivers/infiniband/hw/erdma/erdma_qp.c b/drivers/infiniband/hw/erdma/erdma_qp.c
-index 6d0330badd68..4d1f9114cd97 100644
---- a/drivers/infiniband/hw/erdma/erdma_qp.c
-+++ b/drivers/infiniband/hw/erdma/erdma_qp.c
-@@ -492,7 +492,7 @@ static void kick_sq_db(struct erdma_qp *qp, u16 pi)
- 	u64 db_data = FIELD_PREP(ERDMA_SQE_HDR_QPN_MASK, QP_ID(qp)) |
- 		      FIELD_PREP(ERDMA_SQE_HDR_WQEBB_INDEX_MASK, pi);
- 
--	*(u64 *)qp->kern_qp.sq_db_info = db_data;
-+	*(u64 *)qp->kern_qp.sq_dbrec = db_data;
- 	writeq(db_data, qp->kern_qp.hw_sq_db);
- }
- 
-@@ -557,7 +557,7 @@ static int erdma_post_recv_one(struct erdma_qp *qp,
- 		return -EINVAL;
- 	}
- 
--	*(u64 *)qp->kern_qp.rq_db_info = *(u64 *)rqe;
-+	*(u64 *)qp->kern_qp.rq_dbrec = *(u64 *)rqe;
- 	writeq(*(u64 *)rqe, qp->kern_qp.hw_rq_db);
- 
- 	qp->kern_qp.rwr_tbl[qp->kern_qp.rq_pi & (qp->attrs.rq_size - 1)] =
-diff --git a/drivers/infiniband/hw/erdma/erdma_verbs.c b/drivers/infiniband/hw/erdma/erdma_verbs.c
-index b78ddca1483e..40c9b6e46b82 100644
---- a/drivers/infiniband/hw/erdma/erdma_verbs.c
-+++ b/drivers/infiniband/hw/erdma/erdma_verbs.c
-@@ -76,8 +76,8 @@ static int create_qp_cmd(struct erdma_ucontext *uctx, struct erdma_qp *qp)
- 
- 		req.rq_buf_addr = qp->kern_qp.rq_buf_dma_addr;
- 		req.sq_buf_addr = qp->kern_qp.sq_buf_dma_addr;
--		req.sq_db_info_dma_addr = qp->kern_qp.sq_db_info_dma_addr;
--		req.rq_db_info_dma_addr = qp->kern_qp.rq_db_info_dma_addr;
-+		req.sq_dbrec_dma = qp->kern_qp.sq_dbrec_dma;
-+		req.rq_dbrec_dma = qp->kern_qp.rq_dbrec_dma;
- 	} else {
- 		user_qp = &qp->user_qp;
- 		req.sq_cqn_mtt_cfg = FIELD_PREP(
-@@ -105,8 +105,8 @@ static int create_qp_cmd(struct erdma_ucontext *uctx, struct erdma_qp *qp)
- 		assemble_qbuf_mtt_for_cmd(&user_qp->rq_mem, &req.rq_mtt_cfg,
- 					  &req.rq_buf_addr, req.rq_mtt_entry);
- 
--		req.sq_db_info_dma_addr = user_qp->sq_db_info_dma_addr;
--		req.rq_db_info_dma_addr = user_qp->rq_db_info_dma_addr;
-+		req.sq_dbrec_dma = user_qp->sq_dbrec_dma;
-+		req.rq_dbrec_dma = user_qp->rq_dbrec_dma;
- 
- 		if (uctx->ext_db.enable) {
- 			req.sq_cqn_mtt_cfg |=
-@@ -207,7 +207,7 @@ static int create_cq_cmd(struct erdma_ucontext *uctx, struct erdma_cq *cq)
- 				       ERDMA_MR_MTT_0LEVEL);
- 
- 		req.first_page_offset = 0;
--		req.cq_db_info_addr = cq->kern_cq.db_record_dma_addr;
-+		req.cq_dbrec_dma = cq->kern_cq.dbrec_dma;
- 	} else {
- 		mem = &cq->user_cq.qbuf_mem;
- 		req.cfg0 |=
-@@ -230,7 +230,7 @@ static int create_cq_cmd(struct erdma_ucontext *uctx, struct erdma_cq *cq)
- 				       mem->mtt_nents);
- 
- 		req.first_page_offset = mem->page_offset;
--		req.cq_db_info_addr = cq->user_cq.db_info_dma_addr;
-+		req.cq_dbrec_dma = cq->user_cq.dbrec_dma;
- 
- 		if (uctx->ext_db.enable) {
- 			req.cfg1 |= FIELD_PREP(
-@@ -484,9 +484,9 @@ static void free_kernel_qp(struct erdma_qp *qp)
- 				  qp->kern_qp.sq_buf,
- 				  qp->kern_qp.sq_buf_dma_addr);
- 
--	if (qp->kern_qp.sq_db_info)
--		dma_pool_free(dev->db_pool, qp->kern_qp.sq_db_info,
--			      qp->kern_qp.sq_db_info_dma_addr);
-+	if (qp->kern_qp.sq_dbrec)
-+		dma_pool_free(dev->db_pool, qp->kern_qp.sq_dbrec,
-+			      qp->kern_qp.sq_dbrec_dma);
- 
- 	if (qp->kern_qp.rq_buf)
- 		dma_free_coherent(&dev->pdev->dev,
-@@ -494,9 +494,9 @@ static void free_kernel_qp(struct erdma_qp *qp)
- 				  qp->kern_qp.rq_buf,
- 				  qp->kern_qp.rq_buf_dma_addr);
- 
--	if (qp->kern_qp.rq_db_info)
--		dma_pool_free(dev->db_pool, qp->kern_qp.rq_db_info,
--			      qp->kern_qp.rq_db_info_dma_addr);
-+	if (qp->kern_qp.rq_dbrec)
-+		dma_pool_free(dev->db_pool, qp->kern_qp.rq_dbrec,
-+			      qp->kern_qp.rq_dbrec_dma);
- }
- 
- static int init_kernel_qp(struct erdma_dev *dev, struct erdma_qp *qp,
-@@ -527,9 +527,9 @@ static int init_kernel_qp(struct erdma_dev *dev, struct erdma_qp *qp,
- 	if (!kqp->sq_buf)
- 		goto err_out;
- 
--	kqp->sq_db_info = dma_pool_zalloc(dev->db_pool, GFP_KERNEL,
--					  &kqp->sq_db_info_dma_addr);
--	if (!kqp->sq_db_info)
-+	kqp->sq_dbrec =
-+		dma_pool_zalloc(dev->db_pool, GFP_KERNEL, &kqp->sq_dbrec_dma);
-+	if (!kqp->sq_dbrec)
- 		goto err_out;
- 
- 	size = qp->attrs.rq_size << RQE_SHIFT;
-@@ -538,9 +538,9 @@ static int init_kernel_qp(struct erdma_dev *dev, struct erdma_qp *qp,
- 	if (!kqp->rq_buf)
- 		goto err_out;
- 
--	kqp->rq_db_info = dma_pool_zalloc(dev->db_pool, GFP_KERNEL,
--					  &kqp->rq_db_info_dma_addr);
--	if (!kqp->rq_db_info)
-+	kqp->rq_dbrec =
-+		dma_pool_zalloc(dev->db_pool, GFP_KERNEL, &kqp->rq_dbrec_dma);
-+	if (!kqp->rq_dbrec)
- 		goto err_out;
- 
- 	return 0;
-@@ -876,9 +876,9 @@ erdma_unmap_user_dbrecords(struct erdma_ucontext *ctx,
- }
- 
- static int init_user_qp(struct erdma_qp *qp, struct erdma_ucontext *uctx,
--			u64 va, u32 len, u64 db_info_va)
-+			u64 va, u32 len, u64 dbrec_va)
- {
--	dma_addr_t db_info_dma_addr;
-+	dma_addr_t dbrec_dma;
- 	u32 rq_offset;
- 	int ret;
- 
-@@ -901,14 +901,14 @@ static int init_user_qp(struct erdma_qp *qp, struct erdma_ucontext *uctx,
- 	if (ret)
- 		goto put_sq_mtt;
- 
--	ret = erdma_map_user_dbrecords(uctx, db_info_va,
-+	ret = erdma_map_user_dbrecords(uctx, dbrec_va,
- 				       &qp->user_qp.user_dbr_page,
--				       &db_info_dma_addr);
-+				       &dbrec_dma);
- 	if (ret)
- 		goto put_rq_mtt;
- 
--	qp->user_qp.sq_db_info_dma_addr = db_info_dma_addr;
--	qp->user_qp.rq_db_info_dma_addr = db_info_dma_addr + ERDMA_DB_SIZE;
-+	qp->user_qp.sq_dbrec_dma = dbrec_dma;
-+	qp->user_qp.rq_dbrec_dma = dbrec_dma + ERDMA_DB_SIZE;
- 
- 	return 0;
- 
-@@ -1251,8 +1251,8 @@ int erdma_destroy_cq(struct ib_cq *ibcq, struct ib_udata *udata)
- 	if (rdma_is_kernel_res(&cq->ibcq.res)) {
- 		dma_free_coherent(&dev->pdev->dev, cq->depth << CQE_SHIFT,
- 				  cq->kern_cq.qbuf, cq->kern_cq.qbuf_dma_addr);
--		dma_pool_free(dev->db_pool, cq->kern_cq.db_record,
--			      cq->kern_cq.db_record_dma_addr);
-+		dma_pool_free(dev->db_pool, cq->kern_cq.dbrec,
-+			      cq->kern_cq.dbrec_dma);
- 	} else {
- 		erdma_unmap_user_dbrecords(ctx, &cq->user_cq.user_dbr_page);
- 		put_mtt_entries(dev, &cq->user_cq.qbuf_mem);
-@@ -1592,7 +1592,7 @@ static int erdma_init_user_cq(struct erdma_ucontext *ctx, struct erdma_cq *cq,
- 
- 	ret = erdma_map_user_dbrecords(ctx, ureq->db_record_va,
- 				       &cq->user_cq.user_dbr_page,
--				       &cq->user_cq.db_info_dma_addr);
-+				       &cq->user_cq.dbrec_dma);
- 	if (ret)
- 		put_mtt_entries(dev, &cq->user_cq.qbuf_mem);
- 
-@@ -1609,9 +1609,9 @@ static int erdma_init_kernel_cq(struct erdma_cq *cq)
- 	if (!cq->kern_cq.qbuf)
+ 	eq->qbuf = dma_alloc_coherent(&dev->pdev->dev, eq->depth << EQE_SHIFT,
+-				      &eq->qbuf_dma_addr,
+-				      GFP_KERNEL | __GFP_ZERO);
++				      &eq->qbuf_dma_addr, GFP_KERNEL);
+ 	if (!eq->qbuf)
  		return -ENOMEM;
  
--	cq->kern_cq.db_record = dma_pool_zalloc(
--		dev->db_pool, GFP_KERNEL, &cq->kern_cq.db_record_dma_addr);
--	if (!cq->kern_cq.db_record)
-+	cq->kern_cq.dbrec = dma_pool_zalloc(dev->db_pool, GFP_KERNEL,
-+					    &cq->kern_cq.dbrec_dma);
-+	if (!cq->kern_cq.dbrec)
- 		goto err_out;
+@@ -237,8 +236,7 @@ static int erdma_ceq_init_one(struct erdma_dev *dev, u16 ceqn)
  
- 	spin_lock_init(&cq->kern_cq.lock);
-@@ -1690,8 +1690,8 @@ int erdma_create_cq(struct ib_cq *ibcq, const struct ib_cq_init_attr *attr,
- 	} else {
- 		dma_free_coherent(&dev->pdev->dev, depth << CQE_SHIFT,
- 				  cq->kern_cq.qbuf, cq->kern_cq.qbuf_dma_addr);
--		dma_pool_free(dev->db_pool, cq->kern_cq.db_record,
--			      cq->kern_cq.db_record_dma_addr);
-+		dma_pool_free(dev->db_pool, cq->kern_cq.dbrec,
-+			      cq->kern_cq.dbrec_dma);
- 	}
+ 	eq->depth = ERDMA_DEFAULT_EQ_DEPTH;
+ 	eq->qbuf = dma_alloc_coherent(&dev->pdev->dev, eq->depth << EQE_SHIFT,
+-				      &eq->qbuf_dma_addr,
+-				      GFP_KERNEL | __GFP_ZERO);
++				      &eq->qbuf_dma_addr, GFP_KERNEL);
+ 	if (!eq->qbuf)
+ 		return -ENOMEM;
  
- err_out_xa:
-diff --git a/drivers/infiniband/hw/erdma/erdma_verbs.h b/drivers/infiniband/hw/erdma/erdma_verbs.h
-index b02ffdc8c811..4f02ba06b210 100644
---- a/drivers/infiniband/hw/erdma/erdma_verbs.h
-+++ b/drivers/infiniband/hw/erdma/erdma_verbs.h
-@@ -140,8 +140,8 @@ struct erdma_uqp {
- 	struct erdma_mem sq_mem;
- 	struct erdma_mem rq_mem;
- 
--	dma_addr_t sq_db_info_dma_addr;
--	dma_addr_t rq_db_info_dma_addr;
-+	dma_addr_t sq_dbrec_dma;
-+	dma_addr_t rq_dbrec_dma;
- 
- 	struct erdma_user_dbrecords_page *user_dbr_page;
- 
-@@ -167,11 +167,11 @@ struct erdma_kqp {
- 	void *rq_buf;
- 	dma_addr_t rq_buf_dma_addr;
- 
--	void *sq_db_info;
--	void *rq_db_info;
-+	void *sq_dbrec;
-+	void *rq_dbrec;
- 
--	dma_addr_t sq_db_info_dma_addr;
--	dma_addr_t rq_db_info_dma_addr;
-+	dma_addr_t sq_dbrec_dma;
-+	dma_addr_t rq_dbrec_dma;
- 
- 	u8 sig_all;
- };
-@@ -249,14 +249,14 @@ struct erdma_kcq_info {
- 
- 	spinlock_t lock;
- 	u8 __iomem *db;
--	u64 *db_record;
--	dma_addr_t db_record_dma_addr;
-+	u64 *dbrec;
-+	dma_addr_t dbrec_dma;
- };
- 
- struct erdma_ucq_info {
- 	struct erdma_mem qbuf_mem;
- 	struct erdma_user_dbrecords_page *user_dbr_page;
--	dma_addr_t db_info_dma_addr;
-+	dma_addr_t dbrec_dma;
- };
- 
- struct erdma_cq {
 -- 
 2.39.3
 
