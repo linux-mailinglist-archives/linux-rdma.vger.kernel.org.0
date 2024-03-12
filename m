@@ -1,59 +1,56 @@
-Return-Path: <linux-rdma+bounces-1399-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-1400-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id E0E69878F68
-	for <lists+linux-rdma@lfdr.de>; Tue, 12 Mar 2024 09:05:33 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id C572E879283
+	for <lists+linux-rdma@lfdr.de>; Tue, 12 Mar 2024 11:53:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7D7141F222D7
-	for <lists+linux-rdma@lfdr.de>; Tue, 12 Mar 2024 08:05:33 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 5DD8FB22E08
+	for <lists+linux-rdma@lfdr.de>; Tue, 12 Mar 2024 10:53:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0C4EC6997D;
-	Tue, 12 Mar 2024 08:05:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E880C79942;
+	Tue, 12 Mar 2024 10:53:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="rxOMTwL6"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="LGqoYx7/"
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BB53769976;
-	Tue, 12 Mar 2024 08:05:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AA6D778B44
+	for <linux-rdma@vger.kernel.org>; Tue, 12 Mar 2024 10:53:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710230727; cv=none; b=pgVVR6/NGK3nyMHON13DOwRySU915eub1n+MsUZ4TzQcgN8F9y6qhNFN316t8Or8HI6/ALPIpfaQZykOUzYPN4k8yIzaLTl+4bKPpLi/wYaUtrdilbRUI2iiJSR/eXKoTWItRzXCOWHgj3kLOtsgeciwLkIfyXGGN3GSivyd5PI=
+	t=1710240789; cv=none; b=sjBUlbtSpxp/wwFvJQnpOPg2cNBLScwcxXJNxMM2LbSLE6mQ3bYFYO965z60aNppewd/oB/0FMi6PEFRLwLC9hImubq59g5P2B2yvy/n7zeMQV8MsjqG7s+UCbo5PlcyK/9rB2GuN3ZKImBPjNlAzaRzFuEUAOAiRWxXvpA3NNc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710230727; c=relaxed/simple;
-	bh=hjEUoaSnv3s4TMFYXd/dWLIM48mAjAsndwyEjqfY9hY=;
+	s=arc-20240116; t=1710240789; c=relaxed/simple;
+	bh=1w/vOUM3OVHnKop/q6D4qm65wszVGAL/bGQ6vCZWu6o=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=JSx2PdHomE0rkSBaYjXdPQZAft2syg5289CkoweG/MPbrZGmgxgmeuG57fGknucZeHT+9t5VnQJk4bp0UYBFQCacIlWH95uRfTUASotl6zQSuFawp5MmyGm4ufWAbMugtH3iuWmBPMohs/BuBkdYo4hrvqLNEwh9j7/4vCf5ILQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=rxOMTwL6; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A85EEC433F1;
-	Tue, 12 Mar 2024 08:05:26 +0000 (UTC)
+	 Content-Type:Content-Disposition:In-Reply-To; b=fj0v06ef869m6x4j6ltTsTv3hLhbz24kV4Barj3PFRoHZgmFVe2/JvUz0/mM6KPqUjNSKF8rIgeo4eYdFZYflgwTPdT554fNEdnX2Selab9i+ENA0+B/STwSka2r5gAaBCXzh63x3XCrZKLyLR22FBuFmyqERPCLDPTu5BOZKK4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=LGqoYx7/; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0EC6CC43394;
+	Tue, 12 Mar 2024 10:53:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1710230727;
-	bh=hjEUoaSnv3s4TMFYXd/dWLIM48mAjAsndwyEjqfY9hY=;
+	s=k20201202; t=1710240789;
+	bh=1w/vOUM3OVHnKop/q6D4qm65wszVGAL/bGQ6vCZWu6o=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=rxOMTwL6CLqKvUmKKZhXs//giXwuz+tRxxYx7Mqvik9xwkptCnzWPx20iaaTnpnNB
-	 5Q5b8fd/ALL7izauL33I5LeCoHis1RCkM63v0bN6bGJuV2gM1cLyZdEzhnr102YlHh
-	 RkVcjcpc9KQW6QpWiq7yNDRtKtmmKGCT7ge0xvb7cUUkgBZbX5CtRAuGPNCvAG83Gv
-	 HumVmlbLTZ1xr6kThWuQtm5NI6dkZBu1kuvUIy3WmtZckP4H6oPgYYpKxb4QZT//S3
-	 u0ALKd5W8as/336mZm0UuaTFri0sALnLH9WzquwPSUkABb59oql0L1zmJ2qmLjEmAO
-	 vzyIejzEnB19A==
-Date: Tue, 12 Mar 2024 10:05:22 +0200
+	b=LGqoYx7/ssw1GyC7LHGtmycN3ncMN3Rq5PTXQllcD3FQL/j89k2TSmWi1am2ZumH+
+	 k2erIVgdGJo0UDHkHZu+Aq0CDV1VMNzCA4P34oKrsJZxscKbZR2sEDuT5sRSGL0+gS
+	 bG0MDNLL19OSCN/q45zmYaewEcWyz8+ITMxJ4fybZoNrJwqtPc6qXe230hn/UO4Dhg
+	 +6tJas5GobMcBAcxCH09AJb9BY0yysPFzIatc1RO/ofdmGDAQdM8jdbDJ2wIW6WoGh
+	 ZL8Mu4nhBs1Ou1BwgOqZlAsvsv4KyzCCC7CEWebTrBTJuPPuuTc7R9/TZGfWR9yb5y
+	 vfTazgI84B2Wg==
+Date: Tue, 12 Mar 2024 12:53:05 +0200
 From: Leon Romanovsky <leon@kernel.org>
-To: Junxian Huang <huangjunxian6@hisilicon.com>
-Cc: jgg@ziepe.ca, linux-rdma@vger.kernel.org, linuxarm@huawei.com,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH for-next] RDMA/hns: Support congestion control algorithm
- parameter configuration
-Message-ID: <20240312080522.GO12921@unreal>
-References: <20240308105443.1130283-1-huangjunxian6@hisilicon.com>
- <20240310100027.GC12921@unreal>
- <c16e3cc2-1a70-a9ec-e533-e508cfbab18e@hisilicon.com>
- <20240311071119.GH12921@unreal>
- <f8354762-703c-16e2-fa8e-bc8519fdcd06@hisilicon.com>
+To: Boshi Yu <boshiyu@alibaba-inc.com>
+Cc: jgg@ziepe.ca, linux-rdma@vger.kernel.org, chengyou@linux.alibaba.com,
+	KaiShen@linux.alibaba.com
+Subject: Re: [PATCH for-next 3/3] RDMA/erdma: Remove unnecessary __GFP_ZERO
+ flag
+Message-ID: <20240312105305.GR12921@unreal>
+References: <20240311113821.22482-1-boshiyu@alibaba-inc.com>
+ <20240311113821.22482-4-boshiyu@alibaba-inc.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
@@ -62,80 +59,75 @@ List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <f8354762-703c-16e2-fa8e-bc8519fdcd06@hisilicon.com>
+In-Reply-To: <20240311113821.22482-4-boshiyu@alibaba-inc.com>
 
-On Mon, Mar 11, 2024 at 10:00:27PM +0800, Junxian Huang wrote:
+On Mon, Mar 11, 2024 at 07:38:21PM +0800, Boshi Yu wrote:
+> From: Boshi Yu <boshiyu@linux.alibaba.com>
 > 
-> 
-> On 2024/3/11 15:11, Leon Romanovsky wrote:
-> > On Mon, Mar 11, 2024 at 10:00:51AM +0800, Junxian Huang wrote:
-> >>
-> >>
-> >> On 2024/3/10 18:00, Leon Romanovsky wrote:
-> >>> On Fri, Mar 08, 2024 at 06:54:43PM +0800, Junxian Huang wrote:
-> >>>> From: Chengchang Tang <tangchengchang@huawei.com>
-> >>>>
-> >>>> hns RoCE supports 4 congestion control algorithms. Each algorihm
-> >>>> involves multiple parameters. Add port sysfs directory for each
-> >>>> algorithm to allow modifying their parameters.
-> >>>
-> >>> Unless Jason changed his position after this rewrite [1], we don't allow
-> >>> any custom driver sysfs code.
-> >>>
-> >>> [1] https://lore.kernel.org/all/cover.1623427137.git.leonro@nvidia.com/
-> >>>
-> >>
-> >> I didn't quite get the reason from [1], could you please explain it?
-> > 
-> > Before [1], we didn't allow custom sysfs. After [1], the sysfs code
-> > started to be more sane and usable for the drivers. However, it is
-> > unlikely that the policy is changed to allow driver sysfs code.
-> > 
-> >>
-> >> And it would be helpful if you could give us a hint about any other
-> >> proper ways to do the algorithm parameter configuration.
-> > 
-> > Like any other FW internals.
-> > 
-> 
-> If we add the capability of custom driver parameter configuration to
-> rdmatool (similar to [2]), would it be acceptable?
+> The dma_alloc_coherent() interface automatically zero the memory returned.
 
-Moshe's patch is for devlink. We are working on a generic solution for
-other vendors to control/debug their devices.
-https://lwn.net/Articles/955001/
-https://lore.kernel.org/all/20240304160237.GA2909161@nvidia.com/
+Can you please point to the DMA code which does that?
 
-Feel free to join the discussion and reply that you are interested in
-this proposal as well and emphasize that your device is not netdev at
-all.
-
-Thanks
-
+> Thus, we do not need to specify the __GFP_ZERO flag explicitly when we call
+> dma_alloc_coherent().
 > 
-> [2] https://patchwork.ozlabs.org/project/netdev/patch/1530703837-24563-4-git-send-email-moshe@mellanox.com/
+> Reviewed-by: Cheng Xu <chengyou@linux.alibaba.com>
+> Signed-off-by: Boshi Yu <boshiyu@linux.alibaba.com>
+> ---
+>  drivers/infiniband/hw/erdma/erdma_cmdq.c | 6 ++----
+>  drivers/infiniband/hw/erdma/erdma_eq.c   | 6 ++----
+>  2 files changed, 4 insertions(+), 8 deletions(-)
 > 
-> Junxian
+> diff --git a/drivers/infiniband/hw/erdma/erdma_cmdq.c b/drivers/infiniband/hw/erdma/erdma_cmdq.c
+> index 0ac2683cfccf..43ff40b5a09d 100644
+> --- a/drivers/infiniband/hw/erdma/erdma_cmdq.c
+> +++ b/drivers/infiniband/hw/erdma/erdma_cmdq.c
+> @@ -127,8 +127,7 @@ static int erdma_cmdq_cq_init(struct erdma_dev *dev)
+>  
+>  	cq->depth = cmdq->sq.depth;
+>  	cq->qbuf = dma_alloc_coherent(&dev->pdev->dev, cq->depth << CQE_SHIFT,
+> -				      &cq->qbuf_dma_addr,
+> -				      GFP_KERNEL | __GFP_ZERO);
+> +				      &cq->qbuf_dma_addr, GFP_KERNEL);
+>  	if (!cq->qbuf)
+>  		return -ENOMEM;
+>  
+> @@ -162,8 +161,7 @@ static int erdma_cmdq_eq_init(struct erdma_dev *dev)
+>  
+>  	eq->depth = cmdq->max_outstandings;
+>  	eq->qbuf = dma_alloc_coherent(&dev->pdev->dev, eq->depth << EQE_SHIFT,
+> -				      &eq->qbuf_dma_addr,
+> -				      GFP_KERNEL | __GFP_ZERO);
+> +				      &eq->qbuf_dma_addr, GFP_KERNEL);
+>  	if (!eq->qbuf)
+>  		return -ENOMEM;
+>  
+> diff --git a/drivers/infiniband/hw/erdma/erdma_eq.c b/drivers/infiniband/hw/erdma/erdma_eq.c
+> index 0a4746e6d05c..84ccdd8144c9 100644
+> --- a/drivers/infiniband/hw/erdma/erdma_eq.c
+> +++ b/drivers/infiniband/hw/erdma/erdma_eq.c
+> @@ -87,8 +87,7 @@ int erdma_aeq_init(struct erdma_dev *dev)
+>  	eq->depth = ERDMA_DEFAULT_EQ_DEPTH;
+>  
+>  	eq->qbuf = dma_alloc_coherent(&dev->pdev->dev, eq->depth << EQE_SHIFT,
+> -				      &eq->qbuf_dma_addr,
+> -				      GFP_KERNEL | __GFP_ZERO);
+> +				      &eq->qbuf_dma_addr, GFP_KERNEL);
+>  	if (!eq->qbuf)
+>  		return -ENOMEM;
+>  
+> @@ -237,8 +236,7 @@ static int erdma_ceq_init_one(struct erdma_dev *dev, u16 ceqn)
+>  
+>  	eq->depth = ERDMA_DEFAULT_EQ_DEPTH;
+>  	eq->qbuf = dma_alloc_coherent(&dev->pdev->dev, eq->depth << EQE_SHIFT,
+> -				      &eq->qbuf_dma_addr,
+> -				      GFP_KERNEL | __GFP_ZERO);
+> +				      &eq->qbuf_dma_addr, GFP_KERNEL);
+>  	if (!eq->qbuf)
+>  		return -ENOMEM;
+>  
+> -- 
+> 2.39.3
 > 
-> > Thanks
-> > 
-> >>
-> >> Thanks,
-> >> Junxian
-> >>
-> >>>>
-> >>>> Signed-off-by: Chengchang Tang <tangchengchang@huawei.com>
-> >>>> Signed-off-by: Junxian Huang <huangjunxian6@hisilicon.com>
-> >>>> ---
-> >>>>  drivers/infiniband/hw/hns/Makefile          |   2 +-
-> >>>>  drivers/infiniband/hw/hns/hns_roce_device.h |  20 ++
-> >>>>  drivers/infiniband/hw/hns/hns_roce_hw_v2.c  |  59 ++++
-> >>>>  drivers/infiniband/hw/hns/hns_roce_hw_v2.h  | 132 ++++++++
-> >>>>  drivers/infiniband/hw/hns/hns_roce_main.c   |   3 +
-> >>>>  drivers/infiniband/hw/hns/hns_roce_sysfs.c  | 346 ++++++++++++++++++++
-> >>>>  6 files changed, 561 insertions(+), 1 deletion(-)
-> >>>>  create mode 100644 drivers/infiniband/hw/hns/hns_roce_sysfs.c
-> >>>
-> >>> Thanks
-> >>
+> 
 
