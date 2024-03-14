@@ -1,68 +1,70 @@
-Return-Path: <linux-rdma+bounces-1424-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-1425-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5E68D87B3B5
-	for <lists+linux-rdma@lfdr.de>; Wed, 13 Mar 2024 22:44:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id F2E3087B69C
+	for <lists+linux-rdma@lfdr.de>; Thu, 14 Mar 2024 03:57:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E672C286E26
-	for <lists+linux-rdma@lfdr.de>; Wed, 13 Mar 2024 21:44:38 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A9AFC283A7B
+	for <lists+linux-rdma@lfdr.de>; Thu, 14 Mar 2024 02:57:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 841BE55C35;
-	Wed, 13 Mar 2024 21:44:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 636B21C01;
+	Thu, 14 Mar 2024 02:57:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b="h881D/6v"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from verein.lst.de (verein.lst.de [213.95.11.211])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8863C53E07;
-	Wed, 13 Mar 2024 21:44:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.95.11.211
+Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 942AC8BE5;
+	Thu, 14 Mar 2024 02:57:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=13.77.154.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710366273; cv=none; b=Zp5ZBt5d1sKsBcn7AmDBluPf+bbW5sofsIvO3QDNsLWWwXB2M1PoZwbym8rp7wFY9grFwA8RA3pwR7jGx9eWY4bWxptERXLcUsgliHcrK+WoyNuQ9CQQCa8Gfwm77/T+DbRdFas66nP/HhYZTflWMEA1Jl3FL+BiCorWFbWWytU=
+	t=1710385042; cv=none; b=B0OmVNzwMpfVXoRhXIXr5Vt4tyGUo41fhsuNZ/QBovB8sekoInCvG3l9Dt4GJ4PnnGfGnIM5QBWMrlR/ekwKGRQ89cXDGSFUc0/HLvuYkiBp5xkXkiu6ZzegkFDFzxcL4ErSxSkkD5l8CnRxnDQ5A6i21fNtCrbWQdc98PZG0Ps=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710366273; c=relaxed/simple;
-	bh=fHUHblIM4Ym+Lz04JBq2RDtEh1L4l5ZqXeh2B8Xe0mo=;
+	s=arc-20240116; t=1710385042; c=relaxed/simple;
+	bh=6UGr1FCB/DQlxlKdXDcKgaFfLxkGBqfSY1r+CIlhATw=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=e6/KMea9e6puisxxWLSPC/vJeVAu6/QbaBvaLFyDp+9FvF8E77U3FX9yKud80Yi86BqU5raNoF8yXfI7GwRWJ5Vyz5CL+QJl3xfNZYCMKxeBjgiGUCyUK42fIpGjUlTAvQUho1sycFZboeV+4eN6F0611KjQ2vVJUI0gj5wAA2I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=lst.de; spf=pass smtp.mailfrom=lst.de; arc=none smtp.client-ip=213.95.11.211
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=lst.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lst.de
-Received: by verein.lst.de (Postfix, from userid 2407)
-	id 8161568BFE; Wed, 13 Mar 2024 22:44:18 +0100 (CET)
-Date: Wed, 13 Mar 2024 22:44:18 +0100
-From: Christoph Hellwig <hch@lst.de>
-To: Leon Romanovsky <leon@kernel.org>
-Cc: Christoph Hellwig <hch@lst.de>, Jason Gunthorpe <jgg@ziepe.ca>,
-	Robin Murphy <robin.murphy@arm.com>,
-	Marek Szyprowski <m.szyprowski@samsung.com>,
-	Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
-	Chaitanya Kulkarni <chaitanyak@nvidia.com>,
-	Jonathan Corbet <corbet@lwn.net>, Jens Axboe <axboe@kernel.dk>,
-	Keith Busch <kbusch@kernel.org>, Sagi Grimberg <sagi@grimberg.me>,
-	Yishai Hadas <yishaih@nvidia.com>,
-	Shameer Kolothum <shameerali.kolothum.thodi@huawei.com>,
-	Kevin Tian <kevin.tian@intel.com>,
-	Alex Williamson <alex.williamson@redhat.com>,
-	=?iso-8859-1?B?Suly9G1l?= Glisse <jglisse@redhat.com>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-block@vger.kernel.org, linux-rdma@vger.kernel.org,
-	iommu@lists.linux.dev, linux-nvme@lists.infradead.org,
-	kvm@vger.kernel.org, linux-mm@kvack.org,
-	Bart Van Assche <bvanassche@acm.org>,
-	Damien Le Moal <damien.lemoal@opensource.wdc.com>,
-	Amir Goldstein <amir73il@gmail.com>,
-	"josef@toxicpanda.com" <josef@toxicpanda.com>,
-	"Martin K. Petersen" <martin.petersen@oracle.com>,
-	"daniel@iogearbox.net" <daniel@iogearbox.net>,
-	Dan Williams <dan.j.williams@intel.com>,
-	"jack@suse.com" <jack@suse.com>, Zhu Yanjun <zyjzyj2000@gmail.com>
-Subject: Re: [RFC RESEND 00/16] Split IOMMU DMA mapping operation to two
- steps
-Message-ID: <20240313214418.GA9129@lst.de>
-References: <20240306221400.GA8663@lst.de> <20240307000036.GP9225@ziepe.ca> <20240307150505.GA28978@lst.de> <20240307210116.GQ9225@ziepe.ca> <20240308164920.GA17991@lst.de> <20240308202342.GZ9225@ziepe.ca> <20240309161418.GA27113@lst.de> <20240310093513.GB12921@unreal> <20240312212844.GA3018@lst.de> <20240313074636.GV12921@unreal>
+	 Content-Type:Content-Disposition:In-Reply-To; b=t0rNcBROjvzFEHKgaktoanDlXXLjXPgF018BnCUo16/jATfYXKOMxTchqO3cXlmNbjSd3w8wcVkRswBloNZJOKsIZii5+QDYntVAJxJc7pg7/wZEqvevWdPsxSnY60VvcXTYczHE4nndrJwi3xsMRZ+1pjH/KeLUrxUbmKBj4oo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com; spf=pass smtp.mailfrom=linux.microsoft.com; dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b=h881D/6v; arc=none smtp.client-ip=13.77.154.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.microsoft.com
+Received: by linux.microsoft.com (Postfix, from userid 1134)
+	id 1C3AF20B74C0; Wed, 13 Mar 2024 19:57:20 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 1C3AF20B74C0
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+	s=default; t=1710385040;
+	bh=66P25FXNgIs5HQWvc3vNtZYJsw5/Od+QnPZTiotxhoc=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=h881D/6vJeZSZkW42zfwWokQkqJ4RGf7RqqzkGXVWMLY5LIYJoEa5o0niT2gscsut
+	 Xz9YIG7S8W6WsYg1EGLOKn14lnppimejl/1grxQYynfq0YfccUTUDxFo+73/oVm/qe
+	 WoyVzGuEKY1O0enfLM5SgcFagZqYTYhbwgbI/uGw=
+Date: Wed, 13 Mar 2024 19:57:20 -0700
+From: Shradha Gupta <shradhagupta@linux.microsoft.com>
+To: Jakub Kicinski <kuba@kernel.org>
+Cc: Haiyang Zhang <haiyangz@microsoft.com>,
+	Shradha Gupta <shradhagupta@microsoft.com>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+	"linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
+	"linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+	"netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+	Eric Dumazet <edumazet@google.com>, Paolo Abeni <pabeni@redhat.com>,
+	Ajay Sharma <sharmaajay@microsoft.com>,
+	Leon Romanovsky <leon@kernel.org>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+	KY Srinivasan <kys@microsoft.com>, Wei Liu <wei.liu@kernel.org>,
+	Dexuan Cui <decui@microsoft.com>, Long Li <longli@microsoft.com>,
+	Michael Kelley <mikelley@microsoft.com>
+Subject: Re: [PATCH] net :mana : Add per-cpu stats for MANA device
+Message-ID: <20240314025720.GA13853@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
+References: <1709823132-22411-1-git-send-email-shradhagupta@linux.microsoft.com>
+ <20240307072923.6cc8a2ba@kernel.org>
+ <DM6PR21MB14817597567C638DEF020FE3CA202@DM6PR21MB1481.namprd21.prod.outlook.com>
+ <20240307090145.2fc7aa2e@kernel.org>
+ <CH2PR21MB1480D3ACADFFD2FC3B1BB7ECCA272@CH2PR21MB1480.namprd21.prod.outlook.com>
+ <20240308112244.391b3779@kernel.org>
+ <20240311041950.GA19647@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
@@ -71,21 +73,235 @@ List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240313074636.GV12921@unreal>
-User-Agent: Mutt/1.5.17 (2007-11-01)
+In-Reply-To: <20240311041950.GA19647@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
+User-Agent: Mutt/1.5.21 (2010-09-15)
 
-On Wed, Mar 13, 2024 at 09:46:36AM +0200, Leon Romanovsky wrote:
-> On Tue, Mar 12, 2024 at 10:28:44PM +0100, Christoph Hellwig wrote:
-> > On Sun, Mar 10, 2024 at 11:35:13AM +0200, Leon Romanovsky wrote:
-> > > And you will need to have a way to instruct that pin_user_pages() variant
-> > > to continue anyway, because you asked for FOLL_PCI_P2PDMA. Without that
-> > > force, you will have !FOLL_PCI_P2PDMA behaviour.
+On Sun, Mar 10, 2024 at 09:19:50PM -0700, Shradha Gupta wrote:
+> On Fri, Mar 08, 2024 at 11:22:44AM -0800, Jakub Kicinski wrote:
+> > On Fri, 8 Mar 2024 18:51:58 +0000 Haiyang Zhang wrote:
+> > > > Dynamic is a bit of an exaggeration, right? On a well-configured system
+> > > > each CPU should use a single queue assigned thru XPS. And for manual
+> > > > debug bpftrace should serve the purpose quite well.  
+> > > 
+> > > Some programs, like irqbalancer can dynamically change the CPU affinity, 
+> > > so we want to add the per-CPU counters for better understanding of the CPU 
+> > > usage.
 > > 
-> > I don't understand what you mean.
-> 
-> Jason talked about the need to call to pin_user_pages(..., gup_flags | FOLL_PCI_P2PDMA, ...),
-> but in your proposal this call won't be possible anymore.
+> > Do you have experimental data showing this making a difference
+> > in production?
+> Sure, will try to get that data for this discussion
+> > 
+> > Seems unlikely, but if it does work we should enable it for all
+> > devices, no driver by driver.
+> You mean, if the usecase seems valid we should try to extend the framework
+> mentioned by Rahul (https://lore.kernel.org/lkml/20240307072923.6cc8a2ba@kernel.org/)
+> to include these stats as well?
+> Will explore this a bit more and update. Thanks.
 
-Why?
+Following is the data we can share:
+
+Default interrupts affinity for each queue:
+
+ 25:          1        103          0    2989138  Hyper-V PCIe MSI 4138200989697-edge      mana_q0@pci:7870:00:00.0
+ 26:          0          1    4005360          0  Hyper-V PCIe MSI 4138200989698-edge      mana_q1@pci:7870:00:00.0
+ 27:          0          0          1    2997584  Hyper-V PCIe MSI 4138200989699-edge      mana_q2@pci:7870:00:00.0
+ 28:    3565461          0          0          1  Hyper-V PCIe MSI 4138200989700-edge      mana_q3
+@pci:7870:00:00.0
+
+As seen the CPU-queue mapping is not 1:1, Queue 0 and Queue 2 are both mapped 
+to cpu3. From this knowledge we can figure out the total RX stats processed by
+each CPU by adding the values of mana_q0 and mana_q2 stats for cpu3. But if
+this data changes dynamically using irqbalance or smp_affinity file edits, the
+above assumption fails. 
+
+Interrupt affinity for mana_q2 changes and the affinity table looks as follows
+ 25:          1        103          0    3038084  Hyper-V PCIe MSI 4138200989697-edge      mana_q0@pci:7870:00:00.0
+ 26:          0          1    4012447          0  Hyper-V PCIe MSI 4138200989698-edge      mana_q1@pci:7870:00:00.0
+ 27:     157181         10          1    3007990  Hyper-V PCIe MSI 4138200989699-edge      mana_q2@pci:7870:00:00.0
+ 28:    3593858          0          0          1  Hyper-V PCIe MSI 4138200989700-edge      mana_q3@pci:7870:00:00.0 
+
+And during this time we might end up calculating the per-CPU stats incorrectly,
+messing up the understanding of CPU usage by MANA driver that is consumed by 
+monitoring services. 
+ 
+
+Also sharing the existing per-queue stats during this experiment, in case needed
+
+Per-queue stats before changing CPU-affinities:
+     tx_cq_err: 0
+     tx_cqe_unknown_type: 0
+     rx_coalesced_err: 0
+     rx_cqe_unknown_type: 0
+     rx_0_packets: 4230152
+     rx_0_bytes: 289545167
+     rx_0_xdp_drop: 0
+     rx_0_xdp_tx: 0
+     rx_0_xdp_redirect: 0
+     rx_1_packets: 4113017
+     rx_1_bytes: 314552601
+     rx_1_xdp_drop: 0
+     rx_1_xdp_tx: 0
+     rx_1_xdp_redirect: 0
+     rx_2_packets: 4458906
+     rx_2_bytes: 305117506
+     rx_2_xdp_drop: 0
+     rx_2_xdp_tx: 0
+     rx_2_xdp_redirect: 0
+     rx_3_packets: 4619589
+     rx_3_bytes: 315445084
+     rx_3_xdp_drop: 0
+     rx_3_xdp_tx: 0
+     rx_3_xdp_redirect: 0
+     hc_tx_err_vport_disabled: 0
+     hc_tx_err_inval_vportoffset_pkt: 0
+     hc_tx_err_vlan_enforcement: 0
+     hc_tx_err_eth_type_enforcement: 0
+     hc_tx_err_sa_enforcement: 0
+     hc_tx_err_sqpdid_enforcement: 0
+     hc_tx_err_cqpdid_enforcement: 0
+     hc_tx_err_mtu_violation: 0
+     hc_tx_err_inval_oob: 0
+     hc_tx_err_gdma: 0
+     hc_tx_bytes: 126336708121
+     hc_tx_ucast_pkts: 86748013
+     hc_tx_ucast_bytes: 126336703775
+     hc_tx_bcast_pkts: 37
+     hc_tx_bcast_bytes: 2842
+     hc_tx_mcast_pkts: 7
+     hc_tx_mcast_bytes: 1504
+     tx_cq_err: 0
+     tx_cqe_unknown_type: 0
+     rx_coalesced_err: 0
+     rx_cqe_unknown_type: 0
+     rx_0_packets: 4230152
+     rx_0_bytes: 289545167
+     rx_0_xdp_drop: 0
+     rx_0_xdp_tx: 0
+     rx_0_xdp_redirect: 0
+     rx_1_packets: 4113017
+     rx_1_bytes: 314552601
+     rx_1_xdp_drop: 0
+     rx_1_xdp_tx: 0
+     rx_1_xdp_redirect: 0
+     rx_2_packets: 4458906
+     rx_2_bytes: 305117506
+     rx_2_xdp_drop: 0
+     rx_2_xdp_tx: 0
+     rx_2_xdp_redirect: 0
+     rx_3_packets: 4619589
+     rx_3_bytes: 315445084
+     rx_3_xdp_drop: 0
+     rx_3_xdp_tx: 0
+     rx_3_xdp_redirect: 0
+     tx_0_packets: 5995507
+     tx_0_bytes: 28749696408
+     tx_0_xdp_xmit: 0
+     tx_0_tso_packets: 4719840
+     tx_0_tso_bytes: 26873844525
+     tx_0_tso_inner_packets: 0
+     tx_0_tso_inner_bytes: 0
+     tx_0_long_pkt_fmt: 0
+     tx_0_short_pkt_fmt: 5995507
+     tx_0_csum_partial: 1275621
+     tx_0_mana_map_err: 0
+     tx_1_packets: 6653598
+     tx_1_bytes: 38318341475
+     tx_1_xdp_xmit: 0
+     tx_1_tso_packets: 5330921
+     tx_1_tso_bytes: 36210150488
+     tx_1_tso_inner_packets: 0
+     tx_1_tso_inner_bytes: 0
+     tx_1_long_pkt_fmt: 0
+     tx_1_short_pkt_fmt: 6653598
+     tx_1_csum_partial: 1322643
+     tx_1_mana_map_err: 0
+     tx_2_packets: 5715246
+     tx_2_bytes: 25662283686
+     tx_2_xdp_xmit: 0
+     tx_2_tso_packets: 4619118
+     tx_2_tso_bytes: 23829680267
+     tx_2_tso_inner_packets: 0
+     tx_2_tso_inner_bytes: 0
+     tx_2_long_pkt_fmt: 0
+     tx_2_short_pkt_fmt: 5715246
+     tx_2_csum_partial: 1096092
+     tx_2_mana_map_err: 0
+     tx_3_packets: 6175860
+     tx_3_bytes: 29500667904
+     tx_3_xdp_xmit: 0
+     tx_3_tso_packets: 4951591
+     tx_3_tso_bytes: 27446937448
+     tx_3_tso_inner_packets: 0
+     tx_3_tso_inner_bytes: 0
+     tx_3_long_pkt_fmt: 0
+     tx_3_short_pkt_fmt: 6175860
+     tx_3_csum_partial: 1224213
+     tx_3_mana_map_err: 0
+
+Per-queue stats after changing CPU-affinities:
+     rx_0_packets: 4781895
+     rx_0_bytes: 326478061
+     rx_0_xdp_drop: 0
+     rx_0_xdp_tx: 0
+     rx_0_xdp_redirect: 0
+     rx_1_packets: 4116990
+     rx_1_bytes: 315439234
+     rx_1_xdp_drop: 0
+     rx_1_xdp_tx: 0
+     rx_1_xdp_redirect: 0
+     rx_2_packets: 4528800
+     rx_2_bytes: 310312337
+     rx_2_xdp_drop: 0
+     rx_2_xdp_tx: 0
+     rx_2_xdp_redirect: 0
+     rx_3_packets: 4622622
+     rx_3_bytes: 316282431
+     rx_3_xdp_drop: 0
+     rx_3_xdp_tx: 0
+     rx_3_xdp_redirect: 0
+     tx_0_packets: 5999379
+     tx_0_bytes: 28750864476
+     tx_0_xdp_xmit: 0
+     tx_0_tso_packets: 4720027
+     tx_0_tso_bytes: 26874344494
+     tx_0_tso_inner_packets: 0
+     tx_0_tso_inner_bytes: 0
+     tx_0_long_pkt_fmt: 0
+     tx_0_short_pkt_fmt: 5999379
+     tx_0_csum_partial: 1279296
+     tx_0_mana_map_err: 0
+     tx_1_packets: 6656913
+     tx_1_bytes: 38319355168
+     tx_1_xdp_xmit: 0
+     tx_1_tso_packets: 5331086
+     tx_1_tso_bytes: 36210592040
+     tx_1_tso_inner_packets: 0
+     tx_1_tso_inner_bytes: 0
+     tx_1_long_pkt_fmt: 0
+     tx_1_short_pkt_fmt: 6656913
+     tx_1_csum_partial: 1325785
+     tx_1_mana_map_err: 0
+     tx_2_packets: 5906172
+     tx_2_bytes: 36758032245
+     tx_2_xdp_xmit: 0
+     tx_2_tso_packets: 4806348
+     tx_2_tso_bytes: 34912213258
+     tx_2_tso_inner_packets: 0
+     tx_2_tso_inner_bytes: 0
+     tx_2_long_pkt_fmt: 0
+     tx_2_short_pkt_fmt: 5906172
+     tx_2_csum_partial: 1099782
+     tx_2_mana_map_err: 0
+     tx_3_packets: 6202399
+     tx_3_bytes: 30840325531
+     tx_3_xdp_xmit: 0
+     tx_3_tso_packets: 4973730
+     tx_3_tso_bytes: 28784371532
+     tx_3_tso_inner_packets: 0
+     tx_3_tso_inner_bytes: 0
+     tx_3_long_pkt_fmt: 0
+     tx_3_short_pkt_fmt: 6202399
+     tx_3_csum_partial: 1228603
+     tx_3_mana_map_err: 0
 
 
