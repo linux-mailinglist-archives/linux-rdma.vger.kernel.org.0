@@ -1,197 +1,179 @@
-Return-Path: <linux-rdma+bounces-1431-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-1432-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1F5FA87BC0D
-	for <lists+linux-rdma@lfdr.de>; Thu, 14 Mar 2024 12:39:56 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D68C787BC38
+	for <lists+linux-rdma@lfdr.de>; Thu, 14 Mar 2024 12:51:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CA981287E61
-	for <lists+linux-rdma@lfdr.de>; Thu, 14 Mar 2024 11:39:54 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 054C41C219A1
+	for <lists+linux-rdma@lfdr.de>; Thu, 14 Mar 2024 11:51:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9520C6EB70;
-	Thu, 14 Mar 2024 11:39:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 75FFB6F071;
+	Thu, 14 Mar 2024 11:51:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="fMMraK/A"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="BvqHnTkg"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-pf1-f177.google.com (mail-pf1-f177.google.com [209.85.210.177])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.20])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EAB246CDB5;
-	Thu, 14 Mar 2024 11:39:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.177
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710416385; cv=none; b=MoV15FVUZahH+KM/hZ94KIEm7WjNcNTqTZtbEgXjv7A2OJ7eC/UM4LPVbGT4fTK0dUwLEh/8BWHDKBXjQbfU+MSkTzuWbHrSTAb0FtYq+xxhw3JE+G8RB+udESEGUE+BJqrpNS9rADL4yWgKovhN3GBHo1JyVc2kRR1dih24iC0=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710416385; c=relaxed/simple;
-	bh=ETF4crk2ZZn+GTdZSouP+pIboaWYhShSjz0BQ9XdVLU=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=aelnob23XcVokIZUMkVd76xKRrnTEqu0JV5w02y6mnce+Vjk9Jd3BpwaW0rx0wKu1IIbR2vMFEMHNt9YCo2hENDfTVQl2g+fZzCZIzboh1MUzogShCjAk6TMtARa+DdjSQJ7Drvy6e4sg4fupDcG1JiuSBxfH1wy9L6W/MVyg3E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=fMMraK/A; arc=none smtp.client-ip=209.85.210.177
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f177.google.com with SMTP id d2e1a72fcca58-6e6ccd69ebcso380049b3a.0;
-        Thu, 14 Mar 2024 04:39:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1710416383; x=1711021183; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=QfQgWYQyYj89ysjrRhexn30LYxihC3kxhP3AI5S3jLo=;
-        b=fMMraK/AkYSmmwVzgEFN+40yGYq/SPlhRsa/lAW0JQ1lWD74NWV6nA+fhcFU9Gdsu8
-         IXqgTFkjgLilKdYezeH8BI/ndaPrhoHsC4MbkylKvysqrRp56O7iw5VAuN6iA1n/ibeg
-         83yK7etj9/txu94lUYsjc0pcIYjnXuQVxFv6i6wRlNJOUfdzxpGsH9pNCORtNkZu4dvC
-         5nkXr1X8Y45kExvzaKQzUHH0kv4E/3TFIj2avpRT1xZRnGZzjcK0y9b3ff50+mOMga6Y
-         eQA5Aui12TR8FeK+Zr3LfscUs+nRrJnOyDVrWHZmy1PGeHNKEgL2iFlADosKG0PtKwM5
-         Jmpg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710416383; x=1711021183;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=QfQgWYQyYj89ysjrRhexn30LYxihC3kxhP3AI5S3jLo=;
-        b=A9ZB7eqjfgFuYsvBpBXk3i1bkTVjjiz4CMLEfZDW6uWbusKSXokHNJdkSyuEBb5iW6
-         Lbam3zVIYqSI+Hg5KlIHsotQhLgUYIYuE1JCBXB7yyR1itcY6MSvPTtuaYp6kTPpGuzb
-         lcCxCte4XOGgRxTEGnjePfJD+Atw52mGpJ8KQZl48Yvgl+MHMU5UeWMdwf/MOYJqTLri
-         DqTH6i5VqxxA6ThBysqyvsn8m7DhBOOv1plOcQUmuqdYYhxnHd0ub94RpnlswnWB5+MX
-         Pz4n+sDxic2ao12DxQu4BurN5KtTfMADZNrb+bap8WRQA8elUJWPr1wabGPdTog4wjt5
-         r7gw==
-X-Forwarded-Encrypted: i=1; AJvYcCV4sDi4UBTXNKjiHWuWoeNgy0QnCvWAGuXXv5fiuvlhSpQAe/WD12dp/25uNArV4ldEd7cy42BgDHqkn5xuwXxefx+G7tN+YwR4b9svzKO0N1U83WgkNgUcx4u0ofp2R6Xkd95OCcmqs1PwtcOAOl/Q92mDmR/WOLHyRW80rIlwYw==
-X-Gm-Message-State: AOJu0YzobbrHguGysuXTpNUJvWGf/76KtQXG+LK6XV6pINF4p42drIMP
-	+x4mNHsbhnpsIXRBiWC06+ZtBi56dIUtsSMgNZADzmBHX8/4KLqA
-X-Google-Smtp-Source: AGHT+IHLaKlI2bpVtlmtYb2ia4Zt/JCYONAdDifdpN67PuRuSJBTUazfb6ou5fCqmlhZHkUJgKP0pg==
-X-Received: by 2002:a05:6a21:18e:b0:1a1:6f4f:25e2 with SMTP id le14-20020a056a21018e00b001a16f4f25e2mr1651524pzb.49.1710416383169;
-        Thu, 14 Mar 2024 04:39:43 -0700 (PDT)
-Received: from libra05 ([143.248.188.128])
-        by smtp.gmail.com with ESMTPSA id mr20-20020a17090b239400b0029b9cb71e22sm679670pjb.27.2024.03.14.04.39.40
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 14 Mar 2024 04:39:42 -0700 (PDT)
-Date: Thu, 14 Mar 2024 20:39:38 +0900
-From: Yewon Choi <woni9911@gmail.com>
-To: Allison Henderson <allison.henderson@oracle.com>
-Cc: "David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
-	rds-devel@oss.oracle.com, linux-kernel@vger.kernel.org,
-	"Dae R. Jeong" <threeearcat@gmail.com>
-Subject: Re: net/rds: Improper memory ordering semantic in release_in_xmit()
-Message-ID: <ZfLh+va60YU2U86q@libra05>
-References: <Zehp16cKYeGWknJs@libra05>
- <86d88699e8f22ebe0d45ffb5229fb73d78c5aae9.camel@oracle.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 775B3433C0;
+	Thu, 14 Mar 2024 11:51:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=198.175.65.20
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1710417111; cv=fail; b=cgWhsYMs3iu6k4lNsleggDGVoGo+vf4Jz7BNRnI5ZH/R8xvAHjPhuYmEnhN+TRmpDTrz7vY9l1SjQyCiJxaNHq3nKFK1zsiS5HBDpHUc7QQGSqX4kIHBTQiiCTOAj7bR0XJicNM/RjqfjVInWzZO6AdzdvOAihIs7aJB9Bn3h4w=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1710417111; c=relaxed/simple;
+	bh=OkU7EzNYlneAJ+Px/modPamXredhA8MzNHq4VCF6Lx0=;
+	h=Date:From:To:CC:Subject:Message-ID:References:Content-Type:
+	 Content-Disposition:In-Reply-To:MIME-Version; b=fldvLDu6at1Ju3UmZXg3Bt82Ym2V+WspGxYHYnT7JGBW2aezg2obA+IY6hGfR4lg72Jqo+ENPgcO0ddcp88Ow3o4TnWqDwjqUyQfiZZrQAy0Jr/5XA4ur5rIvkxQE+HrvSk8V38DRkLU1zOBwhWRr0tQ4zmPMp78rbcWNu1P7eU=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=BvqHnTkg; arc=fail smtp.client-ip=198.175.65.20
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1710417109; x=1741953109;
+  h=date:from:to:cc:subject:message-id:references:
+   in-reply-to:mime-version;
+  bh=OkU7EzNYlneAJ+Px/modPamXredhA8MzNHq4VCF6Lx0=;
+  b=BvqHnTkgXrD3zNpkRjdkn8W5lWgTCoa9NndLXLpk0rqFZ7UnW5lfVRZE
+   Ht+Y/mlFUcizboyz7/Sfl6jmP9LGFAWyoR9BJg2C9ZbiTr/3UAHyOj9nc
+   l6AMaEtLRXlI2K6tXtm1kNUzaIdxH3rAiMD5asgkDxBWw+8HROvEkzQPX
+   LsjcIvHPR3e6CtXnRsW8KaQCFwAfIz+/bWYn83XQVR9iGtqOGCwkZzn+c
+   j3/6Fc9CqFgIdGlolAhSKMpNJRQCPAWMy1kzVcLcyzo0QJqQRHDmSbssA
+   DWd7KTplO/F15ESVKoCdfeu0ATXuZ2VsODapxRRuwqLdcpkFhseVEEQqe
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,11012"; a="5095130"
+X-IronPort-AV: E=Sophos;i="6.07,125,1708416000"; 
+   d="scan'208";a="5095130"
+Received: from fmviesa004.fm.intel.com ([10.60.135.144])
+  by orvoesa112.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Mar 2024 04:51:48 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,125,1708416000"; 
+   d="scan'208";a="16858374"
+Received: from fmsmsx601.amr.corp.intel.com ([10.18.126.81])
+  by fmviesa004.fm.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 14 Mar 2024 04:51:48 -0700
+Received: from fmsmsx601.amr.corp.intel.com (10.18.126.81) by
+ fmsmsx601.amr.corp.intel.com (10.18.126.81) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Thu, 14 Mar 2024 04:51:48 -0700
+Received: from FMSEDG603.ED.cps.intel.com (10.1.192.133) by
+ fmsmsx601.amr.corp.intel.com (10.18.126.81) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35 via Frontend Transport; Thu, 14 Mar 2024 04:51:48 -0700
+Received: from NAM12-MW2-obe.outbound.protection.outlook.com (104.47.66.40) by
+ edgegateway.intel.com (192.55.55.68) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.35; Thu, 14 Mar 2024 04:51:48 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Ob1vsUN8osJ/vxoHeIf/MUwpGbERLJUv+2vB8fARtVJb9KoyAcjwon7x9NoUPhzUmXEOYGmDa7InjFYSeNgq+vI0PYwXyIpRuBvtruRe0JxGoxXZbqxJ2yjgp6krwFTabgNAo7sy2c8drJyelXJ3wCS3ANwRTVZ4nubAtdgHn1HN7hLGBvuXK2oxTUNpdrh42Be9r/KYBbLunVhSySNlNp363XHIWQ4eJqoQNmRoiAbP11SQNpqrZOVP8gpc2W60NEKNWIJxrhVq6COBE5o2MjKwGgW8jXR/6Wm5RG7/oyqjKXCUTvun4zTqmqrdXD3kQKD3qjtVjGqg8UfEEcFazA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=Zia3HH8SgjS2JSQ22l3TYlNDx4o6QdVKwkyzm/11VPM=;
+ b=RFmh4WxtCnevUsyqB5j6UyNWLxq7cscTw7huZfU2VLZfoYPFeV/+xHepAkMbwBJCmHavfRNm2whM2itslu+HuLKgWDrHFMgHjys4CuMw0vFrjazGPNJkl862LLePOVQVf/bJqaxyXTRvtgjp3D8MWBjZ76WsEyJj+lIEMh3olhuJznF1b2x0ZUj/FJ8vsND6gEGeoCab+lV83S//tDBtx0L2duRwRfvwfi4nEtadchsDHbKUVq1r73xrD3wXOKPcJjhKAycWanncvB95iGIwXn1jUTTUo7R6LUZU+OvVsw5LAuJ0zfA4EhXUi1aDeqv3X8wSgC6cjjzqyH8fR3HJ9w==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+Received: from PH0PR11MB5782.namprd11.prod.outlook.com (2603:10b6:510:147::11)
+ by PH8PR11MB6831.namprd11.prod.outlook.com (2603:10b6:510:22d::19) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7386.16; Thu, 14 Mar
+ 2024 11:51:46 +0000
+Received: from PH0PR11MB5782.namprd11.prod.outlook.com
+ ([fe80::d48a:df79:97ac:9630]) by PH0PR11MB5782.namprd11.prod.outlook.com
+ ([fe80::d48a:df79:97ac:9630%4]) with mapi id 15.20.7386.017; Thu, 14 Mar 2024
+ 11:51:46 +0000
+Date: Thu, 14 Mar 2024 12:51:38 +0100
+From: Michal Kubiak <michal.kubiak@intel.com>
+To: Yewon Choi <woni9911@gmail.com>
+CC: Allison Henderson <allison.henderson@oracle.com>, "David S. Miller"
+	<davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, Jakub Kicinski
+	<kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, <netdev@vger.kernel.org>,
+	<linux-rdma@vger.kernel.org>, <rds-devel@oss.oracle.com>,
+	<linux-kernel@vger.kernel.org>, "Dae R. Jeong" <threeearcat@gmail.com>
+Subject: Re: [PATCH net] rds: introduce acquire/release ordering in
+ acquire/release_in_xmit()
+Message-ID: <ZfLkyiTssYD8wmVl@localhost.localdomain>
+References: <ZfLdv5DZvBg0wajJ@libra05>
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <ZfLdv5DZvBg0wajJ@libra05>
+X-ClientProxiedBy: DB9PR02CA0017.eurprd02.prod.outlook.com
+ (2603:10a6:10:1d9::22) To PH0PR11MB5782.namprd11.prod.outlook.com
+ (2603:10b6:510:147::11)
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <86d88699e8f22ebe0d45ffb5229fb73d78c5aae9.camel@oracle.com>
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: PH0PR11MB5782:EE_|PH8PR11MB6831:EE_
+X-MS-Office365-Filtering-Correlation-Id: 3d882e83-b62b-4995-a191-08dc441d2045
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: FtJV+e+kh/QzN+JQYq9dymVFZ9fPos2CGYsdSc8blLexWjUCPapPxTot7n5lm+rjaTpRHF2ub/OtUyNn5DSFB7D3QQmAZqCLiaXhtaSYKn12sJTpxsmkQ7xf+aWZ1G1d+UTw/+sf+aMXYtqkNWDOdLi2ft5uqHwNFtx5Fya1nlVjk4dEpcfA5lQDqqmhY+IJvtT8tYAXr9uHOBDbMKAjLNlRUhGY+xK29EQawK49pwaBLo3792170yBSAMDje/uz80AkGfM4augaLePDFoHQKP+LCr2RTTUrNuyeITiK0YAsqePxfq27HXtfuKTG5UXDqhCV42VGA1HkhbHjkZIs8fFd2cYaAd0Zh6Ke9cdjRcTGm/33LvaWoEJJXbkw9A5da9WTgfY9Acu6yKsP8G4hnMidNaBR/HcGr5P70gAoUC92UIwN5c3vyBFE2vpKppXOD+437Pt8H38asnY2pznFycxTHBQOtNYt6cWKmw+jmhnKMfxI8PA/7t6kgHAvTHvlKQODOKdrQ/1NVeorvPcyDz6FF6Z1HwIzIjBRNSGsm9icCHBvANju1n1XQK12QBZblhJOQOLBC+VqVGeoIwS9sqs6WNKYUasxS7VvwuqJ18ewklzT5KrABfZwzxUBA3dyC0mDY+Kx/oPvySPYZ2AFUkzhnfuHRzY0xnkhWBjTtdk=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR11MB5782.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(7416005)(376005)(1800799015);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?Lr8Zf37Y+GbER6Ko62LkdTSuiJhB+iylRcYPF+iYRA69jIKduD5mrzX+nApY?=
+ =?us-ascii?Q?6s/PSt7+KRm2XoC7Q7c4AUU7CYG13xZ8mRtzPYGqUBuAC3e4EXxf975wp9e+?=
+ =?us-ascii?Q?ZUgm6NxDhK8e3w7JUHGWwWxaWqxO64v5eTmjwUXmlptD3BsCAOu6aIjpG9Ha?=
+ =?us-ascii?Q?CfzNj+Oa9BX/BqXkoFMv7R7Bxf/yLLiw8OKmsNZ8AU19uE1NHeLtkDCXKf38?=
+ =?us-ascii?Q?fwjrKYtMEPw+HJ5wfWErNu/CCJASDin1a01X2v4lBZEF/mAr1DUJ90+gZcyy?=
+ =?us-ascii?Q?2DNI8tpByS8aGQSXxPIcKnXWCKTF+AVnLfH9zdgy0Oj2+11Bi+PjjjuF9ZSl?=
+ =?us-ascii?Q?0Lo6VROgfHxCBWPrqLHzuHgMi3312aA+AgyLKo2FK98HHPG3A727jU70BgUS?=
+ =?us-ascii?Q?qBtTfPWHGi/stAbIrXVrfK/gwJExs0SbruZ8Sk4yTDMIsaV0za/HQ70PICog?=
+ =?us-ascii?Q?aYApbmWeoaiMPKROTIx9euhktQb8VdOR5JG3ZnWjSxCznepKHdKKFpsdXogV?=
+ =?us-ascii?Q?zoIm68jg9i0kJYx6ApZUJ/mfpEAwpLvHr7UT7/5uVj7AyRMPXMFhVZgsDXbg?=
+ =?us-ascii?Q?2AUb+VuVft82Vy76F8qM/TPkjVBmuaAx/3d7/1YPkZZVg2qBGLoy2NLtUnWV?=
+ =?us-ascii?Q?cc0EjH7e2bsWU6M1RX+gWG2a7CxfGtlF7dyHVMJu8uzB+u0qFvpzgZR73DjK?=
+ =?us-ascii?Q?eX70gwuW2wNiSBA+FaIXnfrx3b+LrE+P/DxK1BKoZPYcJDqy1GNuRuuE4Rsg?=
+ =?us-ascii?Q?6K/htWk1IsTPbIdrfFXD1askE2wlDbwX3D0G5EmNb1PFj8LZ+prmRPPsrUQW?=
+ =?us-ascii?Q?RIF/IYsDT+Th5sTpI62rOXGzB7yLMoqisf4TV15kyjM22jJ4B3GkKIPLL/zt?=
+ =?us-ascii?Q?PPCXcVXQDwdo3xqHi+7sxEzHqyVU5mT/KBL4+9AQ4Vw2c4L00myU7tzB/kox?=
+ =?us-ascii?Q?BFd8CsQfEO4tX/gEFBTwDPQ7I4MC0fgDh+slD94FE5PY6ZMU3Z+SGFuXCVXV?=
+ =?us-ascii?Q?zT6pE/fS41AcV0CJ9Qkzsz6Ln75VoSQslQ+Nglwy2fmTxgF4KDyvt8PSRSzc?=
+ =?us-ascii?Q?SkCbmOm+zmP0oOuUlDPlXIkh7MWiUiReWdMQ4TU3GreU9RwEUVe5RF7x+wLu?=
+ =?us-ascii?Q?UR8T7Z4EGEUlvUqhXYf9aGL+Vjx+sN72cvpEk/PEVU7E8etHC4BTt5V+Fd6z?=
+ =?us-ascii?Q?GZLw6uMCJaU4T6XSrlLbAqa05XLmXjvTbGKOUQZnzwzx5Uj64F+9R+9sbRjF?=
+ =?us-ascii?Q?gNQdE+hWbFEnZkzG5cI7fRwAZ8c7WDKP0Ll/4BGXwDRkkaAKxctuWPchinhb?=
+ =?us-ascii?Q?ixo8Kal83PNt5qBFHM8uCFRwtGSxOqVwvy42Xi9JSfjXaQIjrx8w+u3oG4uW?=
+ =?us-ascii?Q?zczGxDq6U5HiAg7ux1fpTH+byPR2tj2McX1FQS2oM9If8zD38c/clkMOpAO3?=
+ =?us-ascii?Q?6dk9D/a6rXB+Rvw4fU7p/HSFZ0345NIGqGOjbwzkI4LOAD7rzBCmYM1reuJR?=
+ =?us-ascii?Q?7SjEIFcD6LTIEfis+SlESeP0B0QKcZYk4/C00EWlsxnR+jmll6Bbp8ggdfeD?=
+ =?us-ascii?Q?i4O5IjuMLxsCFD14jEa5iduRWFx6KyJII6e3wUhc8Ex7ajzg4C/45jqkRKte?=
+ =?us-ascii?Q?cA=3D=3D?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: 3d882e83-b62b-4995-a191-08dc441d2045
+X-MS-Exchange-CrossTenant-AuthSource: PH0PR11MB5782.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 14 Mar 2024 11:51:46.6913
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: ANVjut8oPJoAy6vtJ9k/csV0yC91YF0HVQz26OrK/91l3szgOUgVpaS1T268wmR4++8//U1we4ZE2NdlYVSk4Q==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH8PR11MB6831
+X-OriginatorOrg: intel.com
 
-On Thu, Mar 07, 2024 at 08:13:50PM +0000, Allison Henderson wrote:
-> On Wed, 2024-03-06 at 22:04 +0900, Yewon Choi wrote:
-> > Hello,
-> > 
-> > It seems to be that clear_bit() in release_in_xmit() doesn't have
-> > release semantic while it works as a bit lock in rds_send_xmit().
-> > Since acquire/release_in_xmit() are used in rds_send_xmit() for the 
-> > serialization between callers of rds_send_xmit(), they should imply 
-> > acquire/release semantics like other locks.
-> > 
-> > Although smp_mb__after_atomic() is placed after clear_bit(), it
-> > cannot
-> > prevent that instructions before clear_bit() (in critical section)
-> > are
-> > reordered after clear_bit().
-> > As a result, mutual exclusion may not be guaranteed in specific
-> > HW architectures like Arm.
-> > 
-> > We tested that this locking implementation doesn't guarantee the
-> > atomicity of
-> > critical section in Arm server. Testing was done with Arm Neoverse N1
-> > cores,
-> > and the testing code was generated by litmus testing tool (klitmus7).
-> > 
-> > Initial condition:
-> > 
-> > l = x = y = r0 = r1 = 0
-> > 
-> > Thread 0:
-> > 
-> > if (test_and_set_bit(0, l) == 0) {
-> >     WRITE_ONCE(*x, 1);
-> >     WRITE_ONCE(*y, 1);
-> >     clear_bit(0, l);
-> >     smp_mb__after_atomic();
-> > }
-> > 
-> > Thread 1:
-> > 
-> > if (test_and_set_bit(0, l) == 0) {
-> >     r0 = READ_ONCE(*x);
-> >     r1 = READ_ONCE(*y);
-> >     clear_bit(0, l);
-> >     smp_mb__after_atomic();
-> > }
-> > 
-> > If the implementation is correct, the value of r0 and r1 should show
-> > all-or-nothing behavior (both 0 or 1). However, below test result
-> > shows 
-> > that atomicity violation is very rare, but exists:
-> > 
-> > Histogram (4 states)
-> > 9673811 :>1:r0=0; 1:r1=0;
-> > 5647    :>1:r0=1; 1:r1=0; // Violate atomicity
-> > 9605    :>1:r0=0; 1:r1=1; // Violate atomicity
-> > 6310937 :>1:r0=1; 1:r1=1;
-> > 
-> > So, we suggest introducing release semantic using clear_bit_unlock()
-> > instead of clear_bit():
-> > 
-> > diff --git a/net/rds/send.c b/net/rds/send.c
-> > index 5e57a1581dc6..65b1bb06ca71 100644
-> > --- a/net/rds/send.c
-> > +++ b/net/rds/send.c
-> > @@ -108,7 +108,7 @@ static int acquire_in_xmit(struct rds_conn_path
-> > *cp)
-> >  
-> >  static void release_in_xmit(struct rds_conn_path *cp)
-> >  {
-> > -       clear_bit(RDS_IN_XMIT, &cp->cp_flags);
-> > +       clear_bit_unlock(RDS_IN_XMIT, &cp->cp_flags);
-> >         smp_mb__after_atomic();
-> >         /*
-> >          * We don't use wait_on_bit()/wake_up_bit() because our
-> > waking is in a
-> > 
-> > Could you check this please? If needed, we will send a patch.
+On Thu, Mar 14, 2024 at 08:21:35PM +0900, Yewon Choi wrote:
+> acquire/release_in_xmit() work as bit lock in rds_send_xmit(), so they
+> are expected to ensure acquire/release memory ordering semantics.
+> However, test_and_set_bit/clear_bit() don't imply such semantics, on
+> top of this, following smp_mb__after_atomic() does not guarantee release
+> ordering (memory barrier actually should be placed before clear_bit()).
 > 
-> Hi Yewon,
+> Instead, we use clear_bit_unlock/test_and_set_bit_lock() here.
 > 
-> Thank you for finding this.  I had a look at the code you had
-> mentioned, and while I don't see any use cases of release_in_xmit()
-> that might result in an out of order read, I do think that the proposed
-> change is a good clean up.  If you choose to submit a patch, please
-> remove the proceeding "smp_mb__after_atomic" line as well, as it would
-> no longer be needed.  Also, please update acquire_in_xmit() to use the
-> corresponding test_and_set_bit_lock() call.  Thank you!
->
+> Signed-off-by: Yewon Choi <woni9911@gmail.com>
 
-Thank you for examining this and giving suggestions!
-I sent a patch with changes including your suggestions. If it has
-problems, I will correct them as soon as possible.
+Missing "Fixes" tag for the patch addressed to the "net" tree.
 
-Sincerely,
-Yewon Choi
+Thanks,
+Michal
 
-> Allison
-> 
-> 
-> > 
-> > Best Regards,
-> > Yewon Choi
-> 
 
