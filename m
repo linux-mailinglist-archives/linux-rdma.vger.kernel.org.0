@@ -1,106 +1,142 @@
-Return-Path: <linux-rdma+bounces-1446-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-1447-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7A63F87C54C
-	for <lists+linux-rdma@lfdr.de>; Thu, 14 Mar 2024 23:43:06 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4BD5787CAA2
+	for <lists+linux-rdma@lfdr.de>; Fri, 15 Mar 2024 10:25:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 149151F21AE7
-	for <lists+linux-rdma@lfdr.de>; Thu, 14 Mar 2024 22:43:06 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E3BB6283C65
+	for <lists+linux-rdma@lfdr.de>; Fri, 15 Mar 2024 09:25:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id ED56CDDDA;
-	Thu, 14 Mar 2024 22:42:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 41F8B17BC9;
+	Fri, 15 Mar 2024 09:25:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="TL1JK3Da"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="JyO0hW97"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pg1-f172.google.com (mail-pg1-f172.google.com [209.85.215.172])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6B1CC749A;
-	Thu, 14 Mar 2024 22:42:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9BBC5134B6;
+	Fri, 15 Mar 2024 09:25:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710456172; cv=none; b=BCmr6dyG1secgbl9WBjICf5FOnwuyjx+/oapXz4Z1IryDrUVNMBaDA7wXFzYjM+SLB5cxhlcjyXi1w20WG4Et5JsPIuV1cfosyhV3ezwklVPn7ROUy2A4iGUZ9cW7mLxzEIYRP9o2t/rELbNCDHg5cT5O0Ev9ES6DF0+4MJknvg=
+	t=1710494705; cv=none; b=CH1FANW09IroyIsDFKkxDywu8ZPqQZWW7b00rnoC/bTUD0u7Qd9I6a8egTDKZIkIxTyTTSrpvyC3iAtWghoHU2OZC08I6XGtff98Og4JuCxyiZnqitDXFBALXzFuF9mz7Xa5nYZMV6ghZASo6g9PZcoDPFzplsgkmjzYV3gy6Yc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710456172; c=relaxed/simple;
-	bh=U45zB3+40tmVIhF5iKt03Xdrdh8+Z7vW7QN+7y5B3f0=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=LB5Wb3hQ98+4qPYjE5RspExN3TQo+lo5Is+cx7p+cGooHVZO1SUVPRJclUMvpm+X1fpOHBTQCDRC5w4XkCLg+mbxnVpfQm4tYYUDJeQulI7J6E7RyHg0BlbvzBY1zbCud9RYe4CrhQMuIoZVu4tk7EdhxY4kqiC4mW+VwUqhOlI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=TL1JK3Da; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2F7C9C433C7;
-	Thu, 14 Mar 2024 22:42:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1710456171;
-	bh=U45zB3+40tmVIhF5iKt03Xdrdh8+Z7vW7QN+7y5B3f0=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=TL1JK3Dai/kz4OGSXOftYv022x+e7Q4s6+0rQaw50afW+buujjI7SqPnwHoAH/3aY
-	 mHTeNCNm02z8wXyaMCJODN+iXSFMO5ZqOrHw6II6qseUS3PXj/GAIKs2k3exN0FaMG
-	 lgbBhDkTmXnrCvS40pNbF3ZnvBEUlCKF1ne+k8VzuEVhYpEglNHD41xcRqtveNNHb0
-	 5zJFI9JPRdFPROEN46yi+IL95kRvDd7R2MZNGlrZ0+JIHP972CJ8zYnOHQCaTLhiDZ
-	 ouFccyuRjCmD0Wx7PCvr2x5nVuP6IV9lwMrD/Xt8W4JeMxTlXrcUrM0JHh/VAe2C68
-	 3WGbOwnNpaulg==
-Date: Thu, 14 Mar 2024 15:42:48 -0700
-From: Jakub Kicinski <kuba@kernel.org>
-To: Joel Granados via B4 Relay <devnull+j.granados.samsung.com@kernel.org>
-Cc: <j.granados@samsung.com>, "David S. Miller" <davem@davemloft.net>, Eric
- Dumazet <edumazet@google.com>, Paolo Abeni <pabeni@redhat.com>, Alexander
- Aring <alex.aring@gmail.com>, Stefan Schmidt <stefan@datenfreihafen.org>,
- Miquel Raynal <miquel.raynal@bootlin.com>, David Ahern
- <dsahern@kernel.org>, Steffen Klassert <steffen.klassert@secunet.com>,
- Herbert Xu <herbert@gondor.apana.org.au>, Matthieu Baerts
- <matttbe@kernel.org>, Mat Martineau <martineau@kernel.org>, Geliang Tang
- <geliang@kernel.org>, Ralf Baechle <ralf@linux-mips.org>, Remi
- Denis-Courmont <courmisch@gmail.com>, Allison Henderson
- <allison.henderson@oracle.com>, David Howells <dhowells@redhat.com>, Marc
- Dionne <marc.dionne@auristor.com>, Marcelo Ricardo Leitner
- <marcelo.leitner@gmail.com>, Xin Long <lucien.xin@gmail.com>, Wenjia Zhang
- <wenjia@linux.ibm.com>, Jan Karcher <jaka@linux.ibm.com>, "D. Wythe"
- <alibuda@linux.alibaba.com>, Tony Lu <tonylu@linux.alibaba.com>, Wen Gu
- <guwen@linux.alibaba.com>, Trond Myklebust
- <trond.myklebust@hammerspace.com>, Anna Schumaker <anna@kernel.org>, Chuck
- Lever <chuck.lever@oracle.com>, Jeff Layton <jlayton@kernel.org>, Neil
- Brown <neilb@suse.de>, Olga Kornievskaia <kolga@netapp.com>, Dai Ngo
- <Dai.Ngo@oracle.com>, Tom Talpey <tom@talpey.com>, Jon Maloy
- <jmaloy@redhat.com>, Ying Xue <ying.xue@windriver.com>, Martin Schiller
- <ms@dev.tdt.de>, Pablo Neira Ayuso <pablo@netfilter.org>, Jozsef Kadlecsik
- <kadlec@netfilter.org>, Florian Westphal <fw@strlen.de>, Roopa Prabhu
- <roopa@nvidia.com>, Nikolay Aleksandrov <razor@blackwall.org>, Simon Horman
- <horms@verge.net.au>, Julian Anastasov <ja@ssi.bg>, Joerg Reuter
- <jreuter@yaina.de>, Luis Chamberlain <mcgrof@kernel.org>, Kees Cook
- <keescook@chromium.org>, netdev@vger.kernel.org,
- linux-kernel@vger.kernel.org, dccp@vger.kernel.org,
- linux-wpan@vger.kernel.org, mptcp@lists.linux.dev,
- linux-hams@vger.kernel.org, linux-rdma@vger.kernel.org,
- rds-devel@oss.oracle.com, linux-afs@lists.infradead.org,
- linux-sctp@vger.kernel.org, linux-s390@vger.kernel.org,
- linux-nfs@vger.kernel.org, tipc-discussion@lists.sourceforge.net,
- linux-x25@vger.kernel.org, netfilter-devel@vger.kernel.org,
- coreteam@netfilter.org, bridge@lists.linux.dev, lvs-devel@vger.kernel.org
-Subject: Re: [PATCH 0/4] sysctl: Remove sentinel elements from networking
-Message-ID: <20240314154248.155d96a4@kernel.org>
-In-Reply-To: <20240314-jag-sysctl_remset_net-v1-0-aa26b44d29d9@samsung.com>
-References: <20240314-jag-sysctl_remset_net-v1-0-aa26b44d29d9@samsung.com>
+	s=arc-20240116; t=1710494705; c=relaxed/simple;
+	bh=/xuGS9yiiUhrBHkfhSrf4N48/8yyUswq89ZUt/7Z800=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=n+qvLzLPE8wP06KwdOmN4sl8jJbg011PB9dBDEuaFZpowIO/L8bjVGRKZQIx867HrSZ5VGX76eSGnmImOQU6OX4BiWU/fN++IMN4lUYZVSYrseG0V7ZTymjEHbMJTOz6K7avJN2OjAGSkCfhx+YObpmr0XXb5oiAZH//zmw69Eo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=JyO0hW97; arc=none smtp.client-ip=209.85.215.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pg1-f172.google.com with SMTP id 41be03b00d2f7-5ce07cf1e5dso1401503a12.2;
+        Fri, 15 Mar 2024 02:25:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1710494703; x=1711099503; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=oLSa7ZOan89F/O1yeHJaOdFRWOViSYQvkogMEp0GklU=;
+        b=JyO0hW97ppfZ2Q2GPxvr53AP8gzmGr4EThqrd0aSdbsB0o8iAL18gRcD9p4tAoKTnD
+         oL6IlxVdjjM/EOpYHvqtvTD8aEoEjRzBNLCaUQmrH0jmSsY/CufAoKeygaILggWvdybQ
+         ZMjYTyzONgrzmjH2NfbeUuKW106ADysRY9FHRx5RqeGHx5sxajg4KeQIAQz3+T7yohMt
+         SFJUsjJzJ5k7S2itAp/wdop74gszcZ7J/xZenkdSDwwZFYprE71EbXcaSXUJETyOVMuJ
+         ESU0yOfqYFz+OMGnuJcFaVo6zkOOO+WfHbNNcSOeChpY6XjFAbU/tpkKKRdo8bCCrevj
+         jwZg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710494703; x=1711099503;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=oLSa7ZOan89F/O1yeHJaOdFRWOViSYQvkogMEp0GklU=;
+        b=syyyvRplbqFIbT/awcnB3NmiQsUmtRwduQ4hxrrkeeB5EQzn2+oBgOaqmqZVbqYU5/
+         qhZTTrBx9USJypNjIlk+5hKplScQXrXp7mao6hAEeMp+OVkvCwVlg4h6C5ze4p5XGd3V
+         W+XGiseZqDXD/bWKVMNXOZXqIn+50Z8BKjvt4xAXncPt/ZWpXw1iBrPC6SMOgfZOgk51
+         IXhsUM9J/awdbORKUwU8Kvm+K65iYRbMpvocsTx1u9FJY8c3tQv4xfhSXkHrBGWS7Ox5
+         dX/CCvpwIZ95+PH46Aie2UI7I3MpRJwT0cCqi4MJkYEBURnLtSaE3nQrGx7Khu2J9HvS
+         v8GQ==
+X-Forwarded-Encrypted: i=1; AJvYcCV3lZyMRVOfYO9aUcDXk8bXqDFcE2c+Pi4D7st+RW+XoIJOKLSJDngGswqwHArC4+MdZUWMab2GSH4zk8kbx1vcw/deQeqaCO5OMachEHTlg/8geWHfRZCSg1pxYvKCVRfhuDI/MkHrAY7OsL5FZShFZuOg5h5DnsbIDDtoF4m0Aw==
+X-Gm-Message-State: AOJu0YwiPwO++BtujFHtXTG8Nw3vmr5+KjDZChjiXkiq676EQq6IPAKD
+	As9PoE/WiHl5umYQ+vSeugJD6LmFXFSRm9y9CEjBpLFcdjmoYsGW
+X-Google-Smtp-Source: AGHT+IFw9KIH8i2eDYKbcRUxqWmxqcfsJkaO5jItmX7XPiZNsORgPMEOZxdmKV3eETvyFS89d78fNg==
+X-Received: by 2002:a05:6a20:43a0:b0:1a3:1574:5906 with SMTP id i32-20020a056a2043a000b001a315745906mr5216044pzl.15.1710494702697;
+        Fri, 15 Mar 2024 02:25:02 -0700 (PDT)
+Received: from libra05 ([143.248.188.128])
+        by smtp.gmail.com with ESMTPSA id c4-20020a170903234400b001def765d26asm427233plh.8.2024.03.15.02.24.59
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 15 Mar 2024 02:25:02 -0700 (PDT)
+Date: Fri, 15 Mar 2024 18:24:57 +0900
+From: Yewon Choi <woni9911@gmail.com>
+To: Allison Henderson <allison.henderson@oracle.com>,
+	Michal Kubiak <michal.kubiak@intel.com>
+Cc: "David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
+	rds-devel@oss.oracle.com, linux-kernel@vger.kernel.org,
+	"Dae R. Jeong" <threeearcat@gmail.com>
+Subject: Re: [PATCH net] rds: introduce acquire/release ordering in
+ acquire/release_in_xmit()
+Message-ID: <ZfQT6X7KOpbQtF9k@libra05>
+References: <ZfLdv5DZvBg0wajJ@libra05>
+ <ZfLkyiTssYD8wmVl@localhost.localdomain>
+ <4997357157f5735d07efdc7cd45388bd32375e5c.camel@oracle.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <4997357157f5735d07efdc7cd45388bd32375e5c.camel@oracle.com>
 
-On Thu, 14 Mar 2024 20:20:40 +0100 Joel Granados via B4 Relay wrote:
-> These commits remove the sentinel element (last empty element) from the
-> sysctl arrays of all the files under the "net/" directory that register
-> a sysctl array. The merging of the preparation patches [4] to mainline
-> allows us to just remove sentinel elements without changing behavior.
-> This is safe because the sysctl registration code (register_sysctl() and
-> friends) use the array size in addition to checking for a sentinel [1].
+On Thu, Mar 14, 2024 at 10:37:29PM +0000, Allison Henderson wrote:
+> On Thu, 2024-03-14 at 12:51 +0100, Michal Kubiak wrote:
+> > On Thu, Mar 14, 2024 at 08:21:35PM +0900, Yewon Choi wrote:
+> > > acquire/release_in_xmit() work as bit lock in rds_send_xmit(), so
+> > > they
+> > > are expected to ensure acquire/release memory ordering semantics.
+> > > However, test_and_set_bit/clear_bit() don't imply such semantics,
+> > > on
+> > > top of this, following smp_mb__after_atomic() does not guarantee
+> > > release
+> > > ordering (memory barrier actually should be placed before
+> > > clear_bit()).
+> > > 
+> > > Instead, we use clear_bit_unlock/test_and_set_bit_lock() here.
+> > > 
+> > > Signed-off-by: Yewon Choi <woni9911@gmail.com>
+> > 
+> > Missing "Fixes" tag for the patch addressed to the "net" tree.
+> >
 
-Thanks, but please resend after the merge window, we don't apply
-code to -next until -rc1 is cut.
--- 
-pw-bot: defer
+Sorry for mistake, I'll correct this and send v2 patch.
+
+> > Thanks,
+> > Michal
+> 
+> Yes, I think it needs:
+> 
+> Fixes: 1f9ecd7eacfd ("RDS: Pass rds_conn_path to rds_send_xmit()")
+>
+> Since that is the last patch to modify the affected code.  Other than
+> that I think the patch looks good.  With the tag fixed, you can add my
+> rvb:
+> 
+
+Also, test_and_set_bit/clear_bit() was first introduced in
+commit 0f4b1c7e89e6. I think this can be added, too:
+
+Fixes: 0f4b1c7e89e6 ("rds: fix rds_send_xmit() serialization")
+
+> Reviewed-by: Allison Henderson <allison.henderson@oracle.com>
+> > 
+> 
+
+Thank you for the reviewing.
+
+Sincerely,
+Yewon Choi
 
