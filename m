@@ -1,148 +1,214 @@
-Return-Path: <linux-rdma+bounces-1478-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-1479-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6229887E93A
-	for <lists+linux-rdma@lfdr.de>; Mon, 18 Mar 2024 13:20:36 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id CA02E87EA70
+	for <lists+linux-rdma@lfdr.de>; Mon, 18 Mar 2024 14:56:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id BFCE7B2266F
-	for <lists+linux-rdma@lfdr.de>; Mon, 18 Mar 2024 12:20:33 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 3665EB21AA0
+	for <lists+linux-rdma@lfdr.de>; Mon, 18 Mar 2024 13:56:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 05FA0381A1;
-	Mon, 18 Mar 2024 12:20:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5A05A4A990;
+	Mon, 18 Mar 2024 13:56:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="RLD8w+AY"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="kfiTWVdT"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from out-181.mta1.migadu.com (out-181.mta1.migadu.com [95.215.58.181])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B733438385;
-	Mon, 18 Mar 2024 12:20:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 098C42C1AA
+	for <linux-rdma@vger.kernel.org>; Mon, 18 Mar 2024 13:56:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710764420; cv=none; b=p2sGUj2XUHrhc+ydSuLEFzxxyUk06rXo93px9eYRqzzCk43uCbXK+QOsnYwKV5UK9HdXhTnDAn0cPlvooLAQifAc1fkglHtB4eesxcJ+qJlemqCGO36ZXJeiOMIIPnmlXd9GPOaIk+sqXGVBbWqYFWkPtAlpSDY0xfuXYpKfZtk=
+	t=1710770210; cv=none; b=aArSf4nsgstx0DAP7hrrz565cmKQjgJpDVBCegEHTjHJGw2bk03pzrwpEutFc847pS5cTkjHtHfXSqkTEPv0sOpS+8zbc4Soc9mhm9RAjNhBH9v51NHxCqJlU9ar+gVmXRj5fhMKF8bYNpMWPR9oURECpWlmecMl52KMxipXg10=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710764420; c=relaxed/simple;
-	bh=dTwJg1UGqWh+77kQ3HiGt4CvIU6WqC055dKN/Mu7uKg=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=YOVO9Rg+Bc08iYNhbv9NzyVXbfmggt85uZ0gJ6D2aiiwO+mzM9sBUZmaSDEAbzk2Dcz9mSL1larV4D3Vb7s7I9JLdk3kih4Lma+bbfKPTDvV5xidkuehS8bVx9WS5Ps35h5HV73lgh9hI15paCH7AV89EDJeeogJUjjemhzt49o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=RLD8w+AY; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D7059C433F1;
-	Mon, 18 Mar 2024 12:20:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1710764420;
-	bh=dTwJg1UGqWh+77kQ3HiGt4CvIU6WqC055dKN/Mu7uKg=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=RLD8w+AY7j9y1TNGzT3oF5CpiUu5Z81E/VX1E2uVP5cOqDq/m8h8jFSLNYZ+kVAmN
-	 0JSIPM7B5dpGr/KKMUlrLJdfOQjrI6ZRJYae3hCPoYuvLBrT+cFGa32ysvGFjKPiKt
-	 ds0550JFsGq5VEGor5Pe387SEIx2etrxdG3MG08KJvJuTpwfBMHsTYWy3oZPfG0kMr
-	 5tgQxKxmehF6G0eNNRM1smTm3ZhdV1hq4vEp0SMUFPT6WUNfsaa5asNHJm2oeq9QxJ
-	 cARHMo1aJhabfSx6uhDhBzNNKRtCFzRDP6+oVBHiKnH0MeHQQbLfB5BSkNiaLYC7lL
-	 wD9Y9nG0pXDPQ==
-Date: Mon, 18 Mar 2024 14:20:16 +0200
-From: Leon Romanovsky <leon@kernel.org>
-To: Breno Leitao <leitao@debian.org>
-Cc: Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
-	Jason Gunthorpe <jgg@ziepe.ca>, kuba@kernel.org,
-	keescook@chromium.org,
-	"open list:HFI1 DRIVER" <linux-rdma@vger.kernel.org>,
-	open list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v3] IB/hfi1: allocate dummy net_device dynamically
-Message-ID: <20240318122016.GA4341@unreal>
-References: <20240318100858.3696961-1-leitao@debian.org>
+	s=arc-20240116; t=1710770210; c=relaxed/simple;
+	bh=ERVnSpjVdDsO/HGZdby1785ElVvvS6M95VHMrvBbUs4=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=gCS1CdocgE20rCsEbt9Ctg6J4/+YeOtPJm/bmqei6SBueRBPe+vurxvYlpb9eEHwy+pm/0PJRi9B1aw/RQ/TJxk2bZzmpJddpr9NRLgSif5S2uspzrndTYt7JhIeFtuWJe1zPxkIW5jvUSdR4UnJmR90JUpNd6QGSa3L+Vxa8yA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=kfiTWVdT; arc=none smtp.client-ip=95.215.58.181
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <6f0a86cd-dd01-40b1-87ed-39f8d655e18a@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1710770205;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=muvpwz7a96M6/2doTJBM5VlsnMcGZ+AFVmWiFaXOnls=;
+	b=kfiTWVdT8ReLHqMbkUM8dB16NUYpUQUu9Yfp8lnzUy1+Tt/BID2KvcFeq1kyyd8XZNw+kF
+	qBPpBYMR2nJqFecICQ2n+oHEsQPz6kmT96Pf3Wm3CD8l/HvSrrP2hiOdKlKcGuxRd/3fw3
+	7hjvwA236ed1PCoUQV/oqXVOJQlnIYs=
+Date: Mon, 18 Mar 2024 14:56:42 +0100
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240318100858.3696961-1-leitao@debian.org>
+Subject: Re: [EXTERNAL] Re: [PATCH rdma-next 1/4] RDMA/mana_ib: Introduce
+ helpers to create and destroy mana queues
+To: Konstantin Taranov <kotaranov@microsoft.com>,
+ Konstantin Taranov <kotaranov@linux.microsoft.com>,
+ "sharmaajay@microsoft.com" <sharmaajay@microsoft.com>,
+ Long Li <longli@microsoft.com>, "jgg@ziepe.ca" <jgg@ziepe.ca>,
+ "leon@kernel.org" <leon@kernel.org>
+Cc: "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+References: <1710336299-27344-1-git-send-email-kotaranov@linux.microsoft.com>
+ <1710336299-27344-2-git-send-email-kotaranov@linux.microsoft.com>
+ <7956dd4b-3002-4073-aff7-f85ea436e6e0@linux.dev>
+ <PAXPR83MB0557CAF749EE4161E3EE5A31B42D2@PAXPR83MB0557.EURPRD83.prod.outlook.com>
+Content-Language: en-US
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Zhu Yanjun <yanjun.zhu@linux.dev>
+In-Reply-To: <PAXPR83MB0557CAF749EE4161E3EE5A31B42D2@PAXPR83MB0557.EURPRD83.prod.outlook.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Migadu-Flow: FLOW_OUT
 
-On Mon, Mar 18, 2024 at 03:08:57AM -0700, Breno Leitao wrote:
-> Embedding net_device into structures prohibits the usage of flexible
-> arrays in the net_device structure. For more details, see the discussion
-> at [1].
-> 
-> Un-embed the net_device from struct hfi1_netdev_rx by converting it
-> into a pointer. Then use the leverage alloc_netdev() to allocate the
-> net_device object at hfi1_alloc_rx().
-> 
-> [1] https://lore.kernel.org/all/20240229225910.79e224cf@kernel.org/
-> 
-> Signed-off-by: Breno Leitao <leitao@debian.org>
-> Acked-by: Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>
-> 
-> v2:
-> 	* Free struct hfi1_netdev_rx allocation if alloc_netdev() fails
-> 	* Pass zero as the private size for alloc_netdev().
-> 	* Remove wrong reference for iwl in the comments
-> 
-> v3:
-> 	* Re-worded the comment, by removing the first paragraph.
 
-Please put changelog below "---" marker.
-It doesn't belong to commit message.
+On 18.03.24 10:31, Konstantin Taranov wrote:
+>>> From: Konstantin Taranov <kotaranov@microsoft.com>
+>>>
+>>> Intoduce helpers to work with mana ib queues (struct mana_ib_queue).
+>>> A queue always consists of umem, gdma_region, and id.
+>>> A queue can be used for a WQ or a CQ.
+>>>
+>>> Signed-off-by: Konstantin Taranov <kotaranov@microsoft.com>
+>>> ---
+>>>    drivers/infiniband/hw/mana/main.c    | 40
+>> ++++++++++++++++++++++++++++
+>>>    drivers/infiniband/hw/mana/mana_ib.h | 10 +++++++
+>>>    2 files changed, 50 insertions(+)
+>>>
+>>> diff --git a/drivers/infiniband/hw/mana/main.c
+>>> b/drivers/infiniband/hw/mana/main.c
+>>> index 71e33feee..0ec940b97 100644
+>>> --- a/drivers/infiniband/hw/mana/main.c
+>>> +++ b/drivers/infiniband/hw/mana/main.c
+>>> @@ -237,6 +237,46 @@ void mana_ib_dealloc_ucontext(struct
+>> ib_ucontext *ibcontext)
+>>>                ibdev_dbg(ibdev, "Failed to destroy doorbell page %d\n", ret);
+>>>    }
+>>>
+>>> +int mana_ib_create_queue(struct mana_ib_dev *mdev, u64 addr, u32 size,
+>>> +                      struct mana_ib_queue *queue) {
+>>> +     struct ib_umem *umem;
+>>> +     int err;
+>>> +
+>>> +     queue->umem = NULL;
+>>> +     queue->id = INVALID_QUEUE_ID;
+>>> +     queue->gdma_region = GDMA_INVALID_DMA_REGION;
+>>> +
+>>> +     umem = ib_umem_get(&mdev->ib_dev, addr, size,
+>> IB_ACCESS_LOCAL_WRITE);
+>>> +     if (IS_ERR(umem)) {
+>>> +             err = PTR_ERR(umem);
+>>> +             ibdev_dbg(&mdev->ib_dev, "Failed to get umem, %d\n", err);
+>>> +             return err;
+>>> +     }
+>>> +
+>>> +     err = mana_ib_create_zero_offset_dma_region(mdev, umem, &queue-
+>>> gdma_region);
+>>> +     if (err) {
+>>> +             ibdev_dbg(&mdev->ib_dev, "Failed to create dma region, %d\n",
+>> err);
+>>> +             goto free_umem;
+>>> +     }
+>>> +     queue->umem = umem;
+>>> +
+>>> +     ibdev_dbg(&mdev->ib_dev,
+>>> +               "create_dma_region ret %d gdma_region 0x%llx\n",
+>>> +               err, queue->gdma_region);
+>>> +
+>>> +     return 0;
+>>> +free_umem:
+>>> +     ib_umem_release(umem);
+>>> +     return err;
+>>> +}
+>>> +
+>>> +void mana_ib_destroy_queue(struct mana_ib_dev *mdev, struct
+>>> +mana_ib_queue *queue) {
+>>> +     mana_ib_gd_destroy_dma_region(mdev, queue->gdma_region);
+>> The function mana_ib_gd_destroy_dma_region will call
+>> mana_gd_destroy_dma_region. In the function
+>> mana_gd_destroy_dma_region, the function mana_gd_send_request will
+>> return the error -EPROTO.
+>> The procedure is as below. So the function mana_ib_destroy_queue should
+>> also handle this error?
+> Thanks for the comment!
+> This error can be ignored and it was ignored before this commit.
+> I checked the corresponding Windows driver code, and it is also intentionally ignored there.
+> I can add a comment that the error is ignored intentionally if you want.
 
-Thanks
+Sure. Thanks a lot.
 
-> ---
->  drivers/infiniband/hw/hfi1/netdev.h    |  2 +-
->  drivers/infiniband/hw/hfi1/netdev_rx.c | 10 ++++++++--
->  2 files changed, 9 insertions(+), 3 deletions(-)
-> 
-> diff --git a/drivers/infiniband/hw/hfi1/netdev.h b/drivers/infiniband/hw/hfi1/netdev.h
-> index 8aa074670a9c..07c8f77c9181 100644
-> --- a/drivers/infiniband/hw/hfi1/netdev.h
-> +++ b/drivers/infiniband/hw/hfi1/netdev.h
-> @@ -49,7 +49,7 @@ struct hfi1_netdev_rxq {
->   *		When 0 receive queues will be freed.
->   */
->  struct hfi1_netdev_rx {
-> -	struct net_device rx_napi;
-> +	struct net_device *rx_napi;
->  	struct hfi1_devdata *dd;
->  	struct hfi1_netdev_rxq *rxq;
->  	int num_rx_q;
-> diff --git a/drivers/infiniband/hw/hfi1/netdev_rx.c b/drivers/infiniband/hw/hfi1/netdev_rx.c
-> index 720d4c85c9c9..cd6e78e257ef 100644
-> --- a/drivers/infiniband/hw/hfi1/netdev_rx.c
-> +++ b/drivers/infiniband/hw/hfi1/netdev_rx.c
-> @@ -188,7 +188,7 @@ static int hfi1_netdev_rxq_init(struct hfi1_netdev_rx *rx)
->  	int i;
->  	int rc;
->  	struct hfi1_devdata *dd = rx->dd;
-> -	struct net_device *dev = &rx->rx_napi;
-> +	struct net_device *dev = rx->rx_napi;
->  
->  	rx->num_rx_q = dd->num_netdev_contexts;
->  	rx->rxq = kcalloc_node(rx->num_rx_q, sizeof(*rx->rxq),
-> @@ -360,7 +360,12 @@ int hfi1_alloc_rx(struct hfi1_devdata *dd)
->  	if (!rx)
->  		return -ENOMEM;
->  	rx->dd = dd;
-> -	init_dummy_netdev(&rx->rx_napi);
-> +	rx->rx_napi = alloc_netdev(0, "dummy", NET_NAME_UNKNOWN,
-> +				   init_dummy_netdev);
-> +	if (!rx->rx_napi) {
-> +		kfree(rx);
-> +		return -ENOMEM;
-> +	}
->  
->  	xa_init(&rx->dev_tbl);
->  	atomic_set(&rx->enabled, 0);
-> @@ -374,6 +379,7 @@ void hfi1_free_rx(struct hfi1_devdata *dd)
->  {
->  	if (dd->netdev_rx) {
->  		dd_dev_info(dd, "hfi1 rx freed\n");
-> +		free_netdev(dd->netdev_rx->rx_napi);
->  		kfree(dd->netdev_rx);
->  		dd->netdev_rx = NULL;
->  	}
-> -- 
-> 2.43.0
-> 
+Zhu Yanjun
+
+>
+>> mana_ib_gd_destroy_dma_region --- > mana_gd_destroy_dma_region
+>>
+>>    693 int mana_gd_destroy_dma_region(struct gdma_context *gc, u64
+>> dma_region_handle)
+>>    694 {
+>>
+>> ...
+>>
+>>    706         err = mana_gd_send_request(gc, sizeof(req), &req,
+>> sizeof(resp), &resp);
+>>    707         if (err || resp.hdr.status) {
+>>    708                 dev_err(gc->dev, "Failed to destroy DMA region:
+>> %d, 0x%x\n",
+>>    709                         err, resp.hdr.status);
+>>    710                 return -EPROTO;
+>>    711         }
+>>
+>> ...
+>>
+>>    714 }
+>>
+>> Zhu Yanjun
+>>
+>>> +     ib_umem_release(queue->umem);
+>>> +}
+>>> +
+>>>    static int
+>>>    mana_ib_gd_first_dma_region(struct mana_ib_dev *dev,
+>>>                            struct gdma_context *gc, diff --git
+>>> a/drivers/infiniband/hw/mana/mana_ib.h
+>>> b/drivers/infiniband/hw/mana/mana_ib.h
+>>> index f83390eeb..859fd3bfc 100644
+>>> --- a/drivers/infiniband/hw/mana/mana_ib.h
+>>> +++ b/drivers/infiniband/hw/mana/mana_ib.h
+>>> @@ -45,6 +45,12 @@ struct mana_ib_adapter_caps {
+>>>        u32 max_inline_data_size;
+>>>    };
+>>>
+>>> +struct mana_ib_queue {
+>>> +     struct ib_umem *umem;
+>>> +     u64 gdma_region;
+>>> +     u64 id;
+>>> +};
+>>> +
+>>>    struct mana_ib_dev {
+>>>        struct ib_device ib_dev;
+>>>        struct gdma_dev *gdma_dev;
+>>> @@ -169,6 +175,10 @@ int mana_ib_create_dma_region(struct
+>> mana_ib_dev *dev, struct ib_umem *umem,
+>>>    int mana_ib_gd_destroy_dma_region(struct mana_ib_dev *dev,
+>>>                                  mana_handle_t gdma_region);
+>>>
+>>> +int mana_ib_create_queue(struct mana_ib_dev *mdev, u64 addr, u32 size,
+>>> +                      struct mana_ib_queue *queue); void
+>>> +mana_ib_destroy_queue(struct mana_ib_dev *mdev, struct
+>> mana_ib_queue
+>>> +*queue);
+>>> +
+>>>    struct ib_wq *mana_ib_create_wq(struct ib_pd *pd,
+>>>                                struct ib_wq_init_attr *init_attr,
+>>>                                struct ib_udata *udata);
 
