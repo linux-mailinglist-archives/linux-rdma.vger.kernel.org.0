@@ -1,79 +1,157 @@
-Return-Path: <linux-rdma+bounces-1481-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-1482-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id B739B87F341
-	for <lists+linux-rdma@lfdr.de>; Mon, 18 Mar 2024 23:47:36 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 13BCC87FA67
+	for <lists+linux-rdma@lfdr.de>; Tue, 19 Mar 2024 10:09:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 582C21F21AAA
-	for <lists+linux-rdma@lfdr.de>; Mon, 18 Mar 2024 22:47:36 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CB5562822B1
+	for <lists+linux-rdma@lfdr.de>; Tue, 19 Mar 2024 09:09:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 470465B1F6;
-	Mon, 18 Mar 2024 22:47:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="gaVXxpaG"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 88C9B7C0B2;
+	Tue, 19 Mar 2024 09:09:53 +0000 (UTC)
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ed1-f47.google.com (mail-ed1-f47.google.com [209.85.208.47])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 003FD5A7BA;
-	Mon, 18 Mar 2024 22:47:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8D9717C090;
+	Tue, 19 Mar 2024 09:09:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710802043; cv=none; b=Sk07Mcya1yhEd/5SbD8rRpdFB/e5IY3n3tLWdovap3UsnprB34eLzPrZU9Mxx1cpd16vc9FlyRXEiYYz4j8+/TS7xlKshL30iuc6DD/odd/oxIFo1kf7OUENH5iVbhlzEbT9wLICl/2Q7QeO+TXZF1YPFMM0/TrgwVDTvkwzUuc=
+	t=1710839393; cv=none; b=lnrzWZ64ZZy/wUQp1xbJo250mQsucfBlMGTO7oTjdSiSXipeN1czsAHR+dhEiQAJ0Q8Fov3mq/vCSCRqrQaDJGBU3Dpah3stdYxhqr+wHxkoD8VbZ5zOszLqujJ7YqC8CDqBM+8Yq8hvlxUwug98N+F8jLiUCbJ7LaxwDJ+Gdjw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710802043; c=relaxed/simple;
-	bh=iLKo/U3WZLmtrsX/dhBH7iTkvhGmqKqRt+KKdoB31eM=;
-	h=Subject:From:In-Reply-To:References:Message-Id:Date:To:Cc; b=O9uYmqgkn77ex3SUwKZqIKYxGLJAS3rVglyKHavsn+jFK6+9mlHiKS87N9ikSbOELUaQYI0bJU7mJfOXNBGZV5mgKJN6e69/tYtgnjNw9SQ5YTv+Z/4Lc9aM/pBwn4oHCqW1UPy7H0sGAo5fJ4byLV4E4jPOu1tK3iRgg0A0dyk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=gaVXxpaG; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPS id D25A8C433F1;
-	Mon, 18 Mar 2024 22:47:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1710802042;
-	bh=iLKo/U3WZLmtrsX/dhBH7iTkvhGmqKqRt+KKdoB31eM=;
-	h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-	b=gaVXxpaGzuFVAbykuTRUyz+95kz4GBDrXHxcQp6Y6ww7e/zxHBDlEhAUxTIKwhIqi
-	 KitTvhrMBkCh7avvgEzD268yWbBZsiD9xFM5rLwxbv6jNkuM8SVd4zdj6JSZeJZEOY
-	 X5/7JFjKRlU1tjXJDjSn1+5VxJlTnrzAjXYGVolqbZ3962/SBDlyoBojvpToHdgeIb
-	 G5tP6p1uPfahhuOt4ukztoB7TXsM1/R8CDoOqajIrYK9ND4ySJmRLB5qCsh/ClRsov
-	 ViReCeiF8PnKDSTXHesdgVoFzhV+U5LZhF+Tp5av16QIMbVOv3IB5yKgjU5LwtL7/k
-	 ZCVCL2Ig9Obtg==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id CB0A1D84BB3;
-	Mon, 18 Mar 2024 22:47:22 +0000 (UTC)
-Subject: Re: [GIT PULL] Please pull RDMA subsystem changes
-From: pr-tracker-bot@kernel.org
-In-Reply-To: <20240318165111.GA71443@nvidia.com>
-References: <20240318165111.GA71443@nvidia.com>
-X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <20240318165111.GA71443@nvidia.com>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git tags/for-linus
-X-PR-Tracked-Commit-Id: 96d9cbe2f2ff7abde021bac75eafaceabe9a51fa
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 6207b37eb5c5e48f45f3ffe0a299d2df6b42ed69
-Message-Id: <171080204282.23091.3119379779152125017.pr-tracker-bot@kernel.org>
-Date: Mon, 18 Mar 2024 22:47:22 +0000
-To: Jason Gunthorpe <jgg@nvidia.com>
-Cc: Linus Torvalds <torvalds@linux-foundation.org>, linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org, Leon Romanovsky <leonro@nvidia.com>
+	s=arc-20240116; t=1710839393; c=relaxed/simple;
+	bh=EtRYh4nV23koP1b34l5lWPqF+hq36pBImX3IxMAQF2Q=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=KMP9akXTpnSwBYpzB0X/UWxIWXgOTPwZCiuTLkG5O8RpfGtZUu1uNuxE+/UfwUCnlqHeHd4N2/KcN+iaVcakY6zhpxGSpI6PX1njaK1TWPJzEyCTLROvHgaPQ/3U8ZAg5TZBi40SYBDuSd7PVBEDzxUn3ui7Nzc8JfyFDMZwFVw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=debian.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.208.47
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=debian.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ed1-f47.google.com with SMTP id 4fb4d7f45d1cf-5658082d2c4so6665555a12.1;
+        Tue, 19 Mar 2024 02:09:51 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710839390; x=1711444190;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=fWbPYIc2yreZZU4F6NEHsTtZafoo5/fHquHKdIa0meg=;
+        b=a8NHquA82k4IPFrcAtVJHWyAE5UnHcTNVlNfax6HtTWwS5KqeIvyOMqyzrtJrWaNy5
+         Cw6u1Frx3IfeLt4HuZ0OrZFBpDzHp/K718Bj0KesV6PcNb6vDmUiO4c7YhtE4lBaouBZ
+         WO8dyBeYF7f9Q95AAZFlTBVmZKStkos/Lw1TrNB2YXUwAP6OiIDrwxyIb6YyxHZ7ap+L
+         ibbazkaKBr4JG4xVM6f7bBBmBbRhCmcEWvOdHE8rCJil4KRTaOpAH9YCqi/cneLHfnOR
+         fa5GjeB5WNuTpZwAzW+p2HJMWU4jjy8RPFFXpHYbvXExxsNpi2h4tjBoYERwF7ZJbOzP
+         D63A==
+X-Forwarded-Encrypted: i=1; AJvYcCWpubn5Zhp5nHCTBvW8yMZ4mf3p4R6ZyglUakG2OIhR7GYETU0FFjprKDZdJGDUVE/EJgqb/gnO6ab7n7LfPbywwuSM0MjsQXe87dD5juy0yvDmkPcIeJ2SE6WRnsygyswU5UE7DJn69A==
+X-Gm-Message-State: AOJu0YxGqM+MmCu5LSqvdZ65pX54FTu1qPYK1GlzWetpmhftXsXqUrfz
+	e94TWMBY6BIx3sISeovj6JR5J2uWFGEOpO8vLDRdSJxk0i/ChXKW
+X-Google-Smtp-Source: AGHT+IFxZOCf+I3ipaGM55sXiVF5KsEpokvnA+T6qrwCWyl9Ob3DhQFUnTKhKs12GIPDUiJos3ZazA==
+X-Received: by 2002:a17:907:724f:b0:a46:70d1:dda6 with SMTP id ds15-20020a170907724f00b00a4670d1dda6mr10642514ejc.28.1710839389806;
+        Tue, 19 Mar 2024 02:09:49 -0700 (PDT)
+Received: from localhost (fwdproxy-lla-003.fbsv.net. [2a03:2880:30ff:3::face:b00c])
+        by smtp.gmail.com with ESMTPSA id z10-20020a170906714a00b00a46c39e6a47sm1846660ejj.148.2024.03.19.02.09.49
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 19 Mar 2024 02:09:49 -0700 (PDT)
+From: Breno Leitao <leitao@debian.org>
+To: Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
+	Jason Gunthorpe <jgg@ziepe.ca>,
+	Leon Romanovsky <leon@kernel.org>
+Cc: kuba@kernel.org,
+	keescook@chromium.org,
+	linux-rdma@vger.kernel.org (open list:HFI1 DRIVER),
+	linux-kernel@vger.kernel.org (open list)
+Subject: [PATCH v4] IB/hfi1: allocate dummy net_device dynamically
+Date: Tue, 19 Mar 2024 02:09:43 -0700
+Message-ID: <20240319090944.2021309-1-leitao@debian.org>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 
-The pull request you sent on Mon, 18 Mar 2024 13:51:11 -0300:
+Embedding net_device into structures prohibits the usage of flexible
+arrays in the net_device structure. For more details, see the discussion
+at [1].
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git tags/for-linus
+Un-embed the net_device from struct hfi1_netdev_rx by converting it
+into a pointer. Then use the leverage alloc_netdev() to allocate the
+net_device object at hfi1_alloc_rx().
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/6207b37eb5c5e48f45f3ffe0a299d2df6b42ed69
+[1] https://lore.kernel.org/all/20240229225910.79e224cf@kernel.org/
 
-Thank you!
+Signed-off-by: Breno Leitao <leitao@debian.org>
+Acked-by: Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>
 
+---
+Changelog
+
+v2:
+	* Free struct hfi1_netdev_rx allocation if alloc_netdev() fails
+	* Pass zero as the private size for alloc_netdev().
+	* Remove wrong reference for iwl in the comments
+
+v3:
+	* Re-worded the comment, by removing the first paragraph.
+
+v4:
+	* Fix the changelog format
+---
+ drivers/infiniband/hw/hfi1/netdev.h    |  2 +-
+ drivers/infiniband/hw/hfi1/netdev_rx.c | 10 ++++++++--
+ 2 files changed, 9 insertions(+), 3 deletions(-)
+
+diff --git a/drivers/infiniband/hw/hfi1/netdev.h b/drivers/infiniband/hw/hfi1/netdev.h
+index 8aa074670a9c..07c8f77c9181 100644
+--- a/drivers/infiniband/hw/hfi1/netdev.h
++++ b/drivers/infiniband/hw/hfi1/netdev.h
+@@ -49,7 +49,7 @@ struct hfi1_netdev_rxq {
+  *		When 0 receive queues will be freed.
+  */
+ struct hfi1_netdev_rx {
+-	struct net_device rx_napi;
++	struct net_device *rx_napi;
+ 	struct hfi1_devdata *dd;
+ 	struct hfi1_netdev_rxq *rxq;
+ 	int num_rx_q;
+diff --git a/drivers/infiniband/hw/hfi1/netdev_rx.c b/drivers/infiniband/hw/hfi1/netdev_rx.c
+index 720d4c85c9c9..cd6e78e257ef 100644
+--- a/drivers/infiniband/hw/hfi1/netdev_rx.c
++++ b/drivers/infiniband/hw/hfi1/netdev_rx.c
+@@ -188,7 +188,7 @@ static int hfi1_netdev_rxq_init(struct hfi1_netdev_rx *rx)
+ 	int i;
+ 	int rc;
+ 	struct hfi1_devdata *dd = rx->dd;
+-	struct net_device *dev = &rx->rx_napi;
++	struct net_device *dev = rx->rx_napi;
+ 
+ 	rx->num_rx_q = dd->num_netdev_contexts;
+ 	rx->rxq = kcalloc_node(rx->num_rx_q, sizeof(*rx->rxq),
+@@ -360,7 +360,12 @@ int hfi1_alloc_rx(struct hfi1_devdata *dd)
+ 	if (!rx)
+ 		return -ENOMEM;
+ 	rx->dd = dd;
+-	init_dummy_netdev(&rx->rx_napi);
++	rx->rx_napi = alloc_netdev(0, "dummy", NET_NAME_UNKNOWN,
++				   init_dummy_netdev);
++	if (!rx->rx_napi) {
++		kfree(rx);
++		return -ENOMEM;
++	}
+ 
+ 	xa_init(&rx->dev_tbl);
+ 	atomic_set(&rx->enabled, 0);
+@@ -374,6 +379,7 @@ void hfi1_free_rx(struct hfi1_devdata *dd)
+ {
+ 	if (dd->netdev_rx) {
+ 		dd_dev_info(dd, "hfi1 rx freed\n");
++		free_netdev(dd->netdev_rx->rx_napi);
+ 		kfree(dd->netdev_rx);
+ 		dd->netdev_rx = NULL;
+ 	}
 -- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
+2.43.0
+
 
