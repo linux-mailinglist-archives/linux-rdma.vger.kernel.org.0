@@ -1,174 +1,162 @@
-Return-Path: <linux-rdma+bounces-1499-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-1500-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5E4E6886B3A
-	for <lists+linux-rdma@lfdr.de>; Fri, 22 Mar 2024 12:21:18 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id EB7688870ED
+	for <lists+linux-rdma@lfdr.de>; Fri, 22 Mar 2024 17:32:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E6A1B1F23D76
-	for <lists+linux-rdma@lfdr.de>; Fri, 22 Mar 2024 11:21:17 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A1DDF2851C7
+	for <lists+linux-rdma@lfdr.de>; Fri, 22 Mar 2024 16:32:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8A1CC3D0A9;
-	Fri, 22 Mar 2024 11:21:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E59F75D494;
+	Fri, 22 Mar 2024 16:32:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="rwZNE/mC"
+	dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b="JuJ6oBjw"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from NAM12-DM6-obe.outbound.protection.outlook.com (mail-dm6nam12on2065.outbound.protection.outlook.com [40.107.243.65])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-qk1-f169.google.com (mail-qk1-f169.google.com [209.85.222.169])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2C7CA1CAA3
-	for <linux-rdma@vger.kernel.org>; Fri, 22 Mar 2024 11:21:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.243.65
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711106472; cv=fail; b=K5gQP2Yivb0NIoMLoo1wLyDIG8v3awKQULZbUTIEBl0OHsXPCesiRDU3Oo/raZMhkoUy5uul8LG2N0QvVqlHk/FpNvpfB1NTs7xhXH1YHNdv7RxiEE9lo/NbTnWMKq50Ez7Bg5W5HTBAmlCd1j9h1Ju8iQy8/qgmtZojJvumHZ8=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711106472; c=relaxed/simple;
-	bh=Q6u+IvUfwbodVBZu78fHmeL6p3eQJjsVsvtxnPhwGnI=;
-	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=QpdaCw/AsH4bYi5aYuPpMawoVQpo028mbwlAzJcUyNUCO0UAp2rn9b1XZ5op6+uMgixzfeonVy10GATAUvRP0O47/ddBpe631Cb7lF2F56zqjI45Quhsmw0J1kcESKfC9XsTZvxUX38xITEdf9YrsT/tpASdZJEOZOPd3u9LSUg=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=rwZNE/mC; arc=fail smtp.client-ip=40.107.243.65
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=E2poHSxkxBkcyNBNsw8E6Ks2KYHX7G7XCpiaqG/P+FrWeqXkYSVtsynZOQoqBix/lpv6b5k+sqYhE9GnoqkDfz60lrxulUBbWVSy/UjjYLUDI1B5yeVj/AmQ4DpjfKybHSKoItpV9K9FMPxH8PNVxUn9IV1ARB3CNuWBfy6QvSdZD1HHEfBmdDzSykv9QzMboGZwFxBIFU621BJg7mz5ay1yhIPBRoEIZG2/iypSQYXkPWi97AlF1qrJQlUoTSmQFylz/xKbN4cndcBrYAL71XVOmLFV+SxvyVca8023B3dnLagXLVjNAA6uqE9fuTg1LGV/h2VwrUdaoplr3crMRA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=RQPkF6dmTI3TUUTCEQnZoK3pb11H+v28ihHP4OEhcCw=;
- b=QQnEtm4Isw43xn7QH7RlNUAXgj8sL3CCZrkVOcchefMg5YeW4HuEGzvU1M+xx9JPPzG4Mij3nmk/0jOt3ufHNsXjzbYQ9X1BVz6hnyNw/p+C5G0ISPQo+A+tL3qkgz3M+WaRRru9gmTgdvS7IpSpUyA/rd7ZSDy45kTciwl7tOIynhouZG/Sbtuge+MFpw2BIyKfQ5wWtlEkaQsYesyjyM9n9CvQX5ujko7Jx5jPlXUUxf3iM2H4jbLLW43tZpDal06n839ElQ4MJI8erhTBlKygcjiajNPvzL1qHIFrh2NnWBX2MnW9w5tadKP9/P1jQ8FQmOmARl8KuK2O9iFe1g==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 216.228.118.232) smtp.rcpttodomain=oracle.com smtp.mailfrom=nvidia.com;
- dmarc=pass (p=reject sp=reject pct=100) action=none header.from=nvidia.com;
- dkim=none (message not signed); arc=none (0)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=RQPkF6dmTI3TUUTCEQnZoK3pb11H+v28ihHP4OEhcCw=;
- b=rwZNE/mCP3OII0yUy8LqQWNSxXRFtnIyu1hYsMfyRtQ6n6sgJn3IuUP/Eu7dlLgTg1n6gb9fapb78i56Rh50GC6OEgu1LygEjpnWsH6MVg0rE4Y4t6WT7Gc0qfrhhAPYm11oeldQ+X299uy2YqxB6w/jaRxOtagfq2Mg82ps/zsQUNcoQabNppU1oio4xNjUTCLbJX8gikYd9MzkcQztgmXTyeQza6LjeAc/tSlZtEpPif03PZCvjHEDoC6SUYUSRWv1WR3b06ia8l+D3HtfJCx51jwjnf+X9+tIhi6SYNn3MuLOxYKzaOmOvDjFgodUcqzfKc8NpIGbDZA2bV80fA==
-Received: from BN9PR03CA0429.namprd03.prod.outlook.com (2603:10b6:408:113::14)
- by DM4PR12MB6038.namprd12.prod.outlook.com (2603:10b6:8:ab::12) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7386.34; Fri, 22 Mar
- 2024 11:21:06 +0000
-Received: from BN1PEPF00004689.namprd05.prod.outlook.com
- (2603:10b6:408:113:cafe::e4) by BN9PR03CA0429.outlook.office365.com
- (2603:10b6:408:113::14) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7386.27 via Frontend
- Transport; Fri, 22 Mar 2024 11:21:06 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.118.232)
- smtp.mailfrom=nvidia.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=nvidia.com;
-Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
- 216.228.118.232 as permitted sender) receiver=protection.outlook.com;
- client-ip=216.228.118.232; helo=mail.nvidia.com; pr=C
-Received: from mail.nvidia.com (216.228.118.232) by
- BN1PEPF00004689.mail.protection.outlook.com (10.167.243.134) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.7409.10 via Frontend Transport; Fri, 22 Mar 2024 11:21:06 +0000
-Received: from drhqmail201.nvidia.com (10.126.190.180) by mail.nvidia.com
- (10.127.129.5) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.41; Fri, 22 Mar
- 2024 04:20:55 -0700
-Received: from drhqmail203.nvidia.com (10.126.190.182) by
- drhqmail201.nvidia.com (10.126.190.180) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1258.12; Fri, 22 Mar 2024 04:20:55 -0700
-Received: from vdi.nvidia.com (10.127.8.11) by mail.nvidia.com
- (10.126.190.182) with Microsoft SMTP Server id 15.2.1258.12 via Frontend
- Transport; Fri, 22 Mar 2024 04:20:53 -0700
-From: Mark Zhang <markzhang@nvidia.com>
-To: <jgg@nvidia.com>, <leonro@nvidia.com>, <manjunath.b.patil@oracle.com>
-CC: <linux-rdma@vger.kernel.org>, Mark Zhang <markzhang@nvidia.com>
-Subject: [PATCH rdma-next] RDMA/cm: Print the old state when cm_destroy_id gets timeout
-Date: Fri, 22 Mar 2024 13:20:49 +0200
-Message-ID: <20240322112049.2022994-1-markzhang@nvidia.com>
-X-Mailer: git-send-email 2.26.3
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9DC615CDC9
+	for <linux-rdma@vger.kernel.org>; Fri, 22 Mar 2024 16:32:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.169
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1711125126; cv=none; b=rGGsytL+2TW4f2kok3c3eyVfFa+HCpIiM6J1BKJ6ysDDlo3tXTGzJBCmAacQozHuIUp5FSpM+GlDKZlN9SOsxe0kJoKo03Hty2OWXnRuC6GdVXXgCkFBvxs22vrOJwNrMQwcQCSs2cfXHLATNfD/uMX/X/aMp/JPpe/qWEtuIUg=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1711125126; c=relaxed/simple;
+	bh=BuQG63lMcTmgNNl4rqvlHS29xM6nE11JEuyaJ7K23dk=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=IYrB/Dm7gFMXIkABb+8Lw5ZVxrgHUWYteQQQbtGLRtdlVB3dPFgTagYqwYL+CRIY2cC+kTBTCukp79EWGnFDSTFSeio/bSFfhQykBKql8M5g74LZOpZX8OcrDfriE68wtIA7GkhCgzj5hAXPf3KmxhIfbqrZRL2K1SrqgUz85sc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca; spf=pass smtp.mailfrom=ziepe.ca; dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b=JuJ6oBjw; arc=none smtp.client-ip=209.85.222.169
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ziepe.ca
+Received: by mail-qk1-f169.google.com with SMTP id af79cd13be357-789e4a4d3a5so159214685a.1
+        for <linux-rdma@vger.kernel.org>; Fri, 22 Mar 2024 09:32:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google; t=1711125123; x=1711729923; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=Z/jKRcxkxWVwJBSpRibUSdG75lkZ4ocJycd1Mr6Bw2Y=;
+        b=JuJ6oBjw8H7yZWUC46RLCQoesbwU9Lk6T9WPH3kye2vyYNHfTd+KhOz1wwfnD1igB7
+         1p3mIFFWcgt2sWdN6hRnJ2z4cW4j93IxiGT/Oyjuh5sSqqA9XvkQmumHJwmHhBm8x3O1
+         pVBhfk4LLMCLM2XYpDiEH/NXcdlqr2XGuJXMo+MUiisQg5nErFEVsv1z6rPH2bddD/Tf
+         akyFuTxkvmUVwPH41wi30mNRTJoJwAAUZwGEYyXudgKdI+5OGBKrrLClSpkJt6QEfkcP
+         /WMYN8fHNWXXkeu5oo32YIoGoFmLXCPOx5uP4bP5Yd9yRktMIkPkw07IF8VuaaqBwlEs
+         PhjA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1711125123; x=1711729923;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Z/jKRcxkxWVwJBSpRibUSdG75lkZ4ocJycd1Mr6Bw2Y=;
+        b=ZN5/t3hfwmMYdp+weKZn9iS+8/2Rr7sp7Fvpxvh6hLGuWNMvQ5CL2GBYjjzb0rAuh2
+         ePxlCc7mgw9rdaFMVi27TO3RzR1Lm5SsOeFPnDqigOPOmexW+QitGZt4hbvs3payETWs
+         J/FR4B0tGIN2TcV6gd1DRz/2AfAfQDhJxR1i40abvComsU8hTq5rSX2KA0VwJYPGLAv/
+         CE/zhpiqa93yZV4d5FnMBGB70q1F4j5h8B1wMM/DPrWuQyrmbu4LU29WEw6GT3K24FiH
+         nAkhNj5BlZYvYNbq9HEAvfBN2+NhgoIQlZIC+sH/u2IzYCFGrqQTTJdvHQQVEZKbnc1p
+         hAZA==
+X-Forwarded-Encrypted: i=1; AJvYcCVz4d5sBasmZD8D0enrCf9lEKg+amMQjQBMJZ0FcRvNUcJpLtcBoF78ZSpMnFTm/GlvYcuCSeJuZgtGJKYw+o/hnROgunFB6/dwoQ==
+X-Gm-Message-State: AOJu0YyKswWK3OOXDorS0EkE6ZVhbZRVH1zsP1FdcRyybJ9nM//FKvRE
+	dhujGaEx0bsg+X4ShihhZKnorhbVWe5YkZr6BmsVzGV2VVuDVfqlpxHQ/6H8HAQ=
+X-Google-Smtp-Source: AGHT+IEmjNO3iVQtJ5/6Fyo+e6vZeQz1BIgmUNoeNHyvqSHC03UiQxcsrMArTCXiiRa/okEHUAyW2g==
+X-Received: by 2002:a05:620a:57c3:b0:78a:1e39:2674 with SMTP id wl3-20020a05620a57c300b0078a1e392674mr2949227qkn.39.1711125123483;
+        Fri, 22 Mar 2024 09:32:03 -0700 (PDT)
+Received: from ziepe.ca (hlfxns017vw-142-68-80-239.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.68.80.239])
+        by smtp.gmail.com with ESMTPSA id r30-20020a05620a03de00b0078a07fc259csm899307qkm.40.2024.03.22.09.32.02
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 22 Mar 2024 09:32:02 -0700 (PDT)
+Received: from jgg by wakko with local (Exim 4.95)
+	(envelope-from <jgg@ziepe.ca>)
+	id 1rnhoI-00CMyb-0E;
+	Fri, 22 Mar 2024 13:32:02 -0300
+Date: Fri, 22 Mar 2024 13:32:01 -0300
+From: Jason Gunthorpe <jgg@ziepe.ca>
+To: Leon Romanovsky <leon@kernel.org>
+Cc: Junxian Huang <huangjunxian6@hisilicon.com>, linux-rdma@vger.kernel.org,
+	linuxarm@huawei.com, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH for-next] RDMA/hns: Support congestion control algorithm
+ parameter configuration
+Message-ID: <20240322163201.GF66976@ziepe.ca>
+References: <20240308105443.1130283-1-huangjunxian6@hisilicon.com>
+ <20240310100027.GC12921@unreal>
+ <c16e3cc2-1a70-a9ec-e533-e508cfbab18e@hisilicon.com>
+ <20240311071119.GH12921@unreal>
+ <f8354762-703c-16e2-fa8e-bc8519fdcd06@hisilicon.com>
+ <20240312080522.GO12921@unreal>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-NV-OnPremToCloud: ExternallySecured
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: BN1PEPF00004689:EE_|DM4PR12MB6038:EE_
-X-MS-Office365-Filtering-Correlation-Id: 2ec7c7e4-6720-4311-94c9-08dc4a622ab0
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	DsXxqqZyUdSLoq9MQTJyueVdPyjSIVEi/dAdsKE9jVkrn9Ehewhe7+joLP3qN4jQmsugSeup7ctHY8bF11IafqrObTQvUwKGp3u3IrtHRTwlAED/4MpqDSatIDxDHGPPtVFy3p+MmdHrw9mEHB84jOZI0HW1euli35t+vtAx0/tFKBSe3oxl6wApiiLyO9oj3A1ucSsYx94gE/NH6UWroh0rJmPPcrrWpeswI2hqgTeJQ5yFL+RJzHpDyt5t7Z/pO3tm18h/FN2rpSn0SN93imfCesD6LYy61+2GdRPPn0ht/cv80vYKmWVfj5UzB6gHN3ZxbQyS5MRpp4GBrrV+Guwy5x0IFr+8uvaK2bhtTPCxelKANQw60UrQdmSTqFK2bd++9ZESUs50l5Y8a4F2nCYoqHxgDOmmpb0GUxhEaFH5ErrL9se8h5d7BucTh0DiCNZZr1z5GAxVPSokza9CWwqq3zlOadACHr4/n6qYH37HtipfbEKmy0QVRuBxAL2N7tJpmPkQY8si8Jcf38Ig7nUDXqbg+//AeFWqSGTIOU+ztYf8O68VdRg3xMMrqZ3mNL1RBMbrTanWwAgsrxPeJBUNFlKJEtvXB4hWQUeo0eyVzkbwPWKScxPhbo2h47rC0fPvKefVSscYApYX1YD4/2xjRfREPDjrw0N9flN7Om+ebUD5h2THdS380yYPZsB6ms07Rqo5br04BmDnrUPfQGFbfI76pSZxFzZgJ/QSRqnM0ESzW/kUCQtfWrRwAO20
-X-Forefront-Antispam-Report:
-	CIP:216.228.118.232;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc7edge1.nvidia.com;CAT:NONE;SFS:(13230031)(1800799015)(376005)(36860700004)(82310400014);DIR:OUT;SFP:1101;
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 22 Mar 2024 11:21:06.1358
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 2ec7c7e4-6720-4311-94c9-08dc4a622ab0
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.118.232];Helo=[mail.nvidia.com]
-X-MS-Exchange-CrossTenant-AuthSource:
-	BN1PEPF00004689.namprd05.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM4PR12MB6038
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240312080522.GO12921@unreal>
 
-The old state is helpful for debugging, as the current state is always
-IB_CM_IDLE when timeout happens.
+On Tue, Mar 12, 2024 at 10:05:22AM +0200, Leon Romanovsky wrote:
+> On Mon, Mar 11, 2024 at 10:00:27PM +0800, Junxian Huang wrote:
+> > 
+> > 
+> > On 2024/3/11 15:11, Leon Romanovsky wrote:
+> > > On Mon, Mar 11, 2024 at 10:00:51AM +0800, Junxian Huang wrote:
+> > >>
+> > >>
+> > >> On 2024/3/10 18:00, Leon Romanovsky wrote:
+> > >>> On Fri, Mar 08, 2024 at 06:54:43PM +0800, Junxian Huang wrote:
+> > >>>> From: Chengchang Tang <tangchengchang@huawei.com>
+> > >>>>
+> > >>>> hns RoCE supports 4 congestion control algorithms. Each algorihm
+> > >>>> involves multiple parameters. Add port sysfs directory for each
+> > >>>> algorithm to allow modifying their parameters.
+> > >>>
+> > >>> Unless Jason changed his position after this rewrite [1], we don't allow
+> > >>> any custom driver sysfs code.
+> > >>>
+> > >>> [1] https://lore.kernel.org/all/cover.1623427137.git.leonro@nvidia.com/
+> > >>>
+> > >>
+> > >> I didn't quite get the reason from [1], could you please explain it?
+> > > 
+> > > Before [1], we didn't allow custom sysfs. After [1], the sysfs code
+> > > started to be more sane and usable for the drivers. However, it is
+> > > unlikely that the policy is changed to allow driver sysfs code.
+> > > 
+> > >>
+> > >> And it would be helpful if you could give us a hint about any other
+> > >> proper ways to do the algorithm parameter configuration.
+> > > 
+> > > Like any other FW internals.
+> > > 
+> > 
+> > If we add the capability of custom driver parameter configuration to
+> > rdmatool (similar to [2]), would it be acceptable?
+> 
+> Moshe's patch is for devlink. We are working on a generic solution for
+> other vendors to control/debug their devices.
+> https://lwn.net/Articles/955001/
+> https://lore.kernel.org/all/20240304160237.GA2909161@nvidia.com/
+> 
+> Feel free to join the discussion and reply that you are interested in
+> this proposal as well and emphasize that your device is not netdev at
+> all.
 
-Fixes: 96d9cbe2f2ff ("RDMA/cm: add timeout to cm_destroy_id wait")
-Signed-off-by: Mark Zhang <markzhang@nvidia.com>
----
- drivers/infiniband/core/cm.c | 11 +++++++----
- 1 file changed, 7 insertions(+), 4 deletions(-)
+Yeah, I'm kind of expecting that all RDMA devices are going to need
+something like fwctl for exactly reasons like this. Adding a special
+driver sysfs is, IMHO, worse than just exposing a driver specific
+sysfs. hns looks like it would fit nicely into that scheme as it has a
+clean fw RPC interface - indeed this is just welding the FW RPC to
+sysfs..
 
-diff --git a/drivers/infiniband/core/cm.c b/drivers/infiniband/core/cm.c
-index bf0df6ee4f78..07fb8d3c037f 100644
---- a/drivers/infiniband/core/cm.c
-+++ b/drivers/infiniband/core/cm.c
-@@ -1026,23 +1026,26 @@ static void cm_reset_to_idle(struct cm_id_private *cm_id_priv)
- 	}
- }
- 
--static noinline void cm_destroy_id_wait_timeout(struct ib_cm_id *cm_id)
-+static noinline void cm_destroy_id_wait_timeout(struct ib_cm_id *cm_id,
-+						enum ib_cm_state old_state)
- {
- 	struct cm_id_private *cm_id_priv;
- 
- 	cm_id_priv = container_of(cm_id, struct cm_id_private, id);
--	pr_err("%s: cm_id=%p timed out. state=%d refcnt=%d\n", __func__,
--	       cm_id, cm_id->state, refcount_read(&cm_id_priv->refcount));
-+	pr_err("%s: cm_id=%p timed out. state %d -> %d, refcnt=%d\n", __func__,
-+	       cm_id, old_state, cm_id->state, refcount_read(&cm_id_priv->refcount));
- }
- 
- static void cm_destroy_id(struct ib_cm_id *cm_id, int err)
- {
- 	struct cm_id_private *cm_id_priv;
-+	enum ib_cm_state old_state;
- 	struct cm_work *work;
- 	int ret;
- 
- 	cm_id_priv = container_of(cm_id, struct cm_id_private, id);
- 	spin_lock_irq(&cm_id_priv->lock);
-+	old_state = cm_id->state;
- retest:
- 	switch (cm_id->state) {
- 	case IB_CM_LISTEN:
-@@ -1151,7 +1154,7 @@ static void cm_destroy_id(struct ib_cm_id *cm_id, int err)
- 						  msecs_to_jiffies(
- 						  CM_DESTROY_ID_WAIT_TIMEOUT));
- 		if (!ret) /* timeout happened */
--			cm_destroy_id_wait_timeout(cm_id);
-+			cm_destroy_id_wait_timeout(cm_id, old_state);
- 	} while (!ret);
- 
- 	while ((work = cm_dequeue_work(cm_id_priv)) != NULL)
--- 
-2.26.3
+Congestion control does seem like it could have some sensible
+commonality, but there are so many different takes on it and many
+people are not doing per-port stuff but per-device or per-qp
+variations, so I'm not really sure.
 
+I wish there was more industry standards here..
+
+Anyhow, feel free to respond in that thread that hns is also
+interested, thanks
+
+Jason
 
