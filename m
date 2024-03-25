@@ -1,46 +1,46 @@
-Return-Path: <linux-rdma+bounces-1530-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-1518-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id E7BA8889F82
-	for <lists+linux-rdma@lfdr.de>; Mon, 25 Mar 2024 13:31:15 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id A2A4E889EAE
+	for <lists+linux-rdma@lfdr.de>; Mon, 25 Mar 2024 13:12:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9D3D91F38B46
-	for <lists+linux-rdma@lfdr.de>; Mon, 25 Mar 2024 12:31:15 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D411F1C35475
+	for <lists+linux-rdma@lfdr.de>; Mon, 25 Mar 2024 12:12:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 59D82172BA6;
-	Mon, 25 Mar 2024 07:31:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DE84016A1D0;
+	Mon, 25 Mar 2024 07:31:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ly8fo8tV"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="MKuC+jlA"
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7B96513DDC8;
-	Mon, 25 Mar 2024 07:10:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 18C707352F;
+	Mon, 25 Mar 2024 07:10:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711350638; cv=none; b=fmQf3BZ27uDeh59L5hfxo4EeCRemNrkKeHhyKG6gnXMuYD7Dy1eqH7H+SRQcaVD/xudkzq4TfllKrpDCsVwR4RhrpM2kkgyGuOnVxbswVbmMD9zE5kx7oV/jAlteuc+C+eI0eDAd2/S2YRFHp5Yrvr6cbvHoJSNjDcOhEpJn/jo=
+	t=1711350642; cv=none; b=J5AlZjYERpwxyrQegOptFDrWMRZjQ0k53/oMAwCCCTNKs36muG4WktrwbNa9gU3ijKuXdDcZE4V4483C5JzhjLhMlcbJra3Ra87TMoUqqYR2D1N/OthsVHwBzmV4LW5BDzgsfxHHdBjWKb7MFLLfWgmhnXvhnEJM75jyz8yX0FU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711350638; c=relaxed/simple;
-	bh=WYkv91EIIKYnBjiqDa2StmEVhH3MpVjmEKTd+pFQezw=;
+	s=arc-20240116; t=1711350642; c=relaxed/simple;
+	bh=OmWC4u7/olcC3uHIhbPfvkwAK9DJXzZPo8ow7g20qSs=;
 	h=From:To:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=ToQ+7sY6sdKNYlsMZ0Um0SC5zE1tvQ1BxuFRzPezdKG78zheeQC+g7a6BExmNy8fxQoGLQOrkfQ4vMPjiRIdX/dTz2scKdI+bBPVKu1EqxDbG/nC75BZYA1m2VWChCiQYRyUwEvL7FGTra6HTIQFwb2stPrPhZjDuyP3Lr/wCq4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ly8fo8tV; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B3503C433F1;
-	Mon, 25 Mar 2024 07:10:34 +0000 (UTC)
+	 MIME-Version; b=Lj0+qER0maiJL5CEen6BKLbxiGyCf7ijQTSkTV8hEdSqSDUdlmNSC72yoQSxGWv68akEb94C4qiW51adAQN8f94OZGVUPpwYjZ5+slENvN1eRVG5uhQB8NGRoxVQdSlfbk/2vrv0MNAk5g3KlegSpqJ8d8VRHmsRp6UwmrPU73U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=MKuC+jlA; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7B558C43390;
+	Mon, 25 Mar 2024 07:10:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711350638;
-	bh=WYkv91EIIKYnBjiqDa2StmEVhH3MpVjmEKTd+pFQezw=;
+	s=k20201202; t=1711350642;
+	bh=OmWC4u7/olcC3uHIhbPfvkwAK9DJXzZPo8ow7g20qSs=;
 	h=From:To:Subject:Date:In-Reply-To:References:From;
-	b=ly8fo8tVm0I9vz6tH/U6vYCt+/tZTektMeBOExnuVyIh/EKmBVeGLhwFpI2tQULum
-	 uVL1ynEGdJjL7PyOeXwFWQvSCqhuqJgmYzocLxL1zxgnbU0Dvo6F8v7L7lub4met9v
-	 1QBWc0EhV5YJA0b3d7ZhZ1F4W3od9WchLg0QCemBc/iZymYbd4j1ZANCRvuiXDSNf+
-	 DlRI66tKG19MF6dctm45sochuLHR4XBUlBQPJJSNElJ4y8Cxwd+vLfrjRsDsRnz+io
-	 fRHcKlf7ZqGFmZXRxVFGUHQ/8YwDdVYd6lm4umZzXirCXC5Ok0ca77lFO5W6mZ/zF8
-	 u0beROuG8V2oQ==
+	b=MKuC+jlA+mRfHMfmSKKv78QSW+WSz9J7DOIRN/RSAMSOhpWl+7zovZPRm8D1DFfRm
+	 XLo1+8eBt88H6kz7NK0kW8rOru79NjtwH13Q1sjIpmPZY7b/Xw7qPWcpwi1FdDjLk+
+	 MHUjx+jflFd/Hz4PxGMWU/BK9PlUmAsDJRS4WmbSfYlAQIMwkvJp3iHiLXGcYumX+7
+	 ZXv8Tk87JZxkQeiE8HKqYpdXKN2/7n0Nh3aMRviPoGAI+siUgm8GQh4OTZEIvtDeav
+	 lKW8lr5oU/OoN1gBl4jY1H/jdkPzAr6IekdUA79mnxYFxfvL5D9suh4Zz2FAr1cEt8
+	 rzeYBfdQPD3wg==
 From: Damien Le Moal <dlemoal@kernel.org>
 To: linux-pci@vger.kernel.org,
 	Bjorn Helgaas <bhelgaas@google.com>,
@@ -64,9 +64,9 @@ To: linux-pci@vger.kernel.org,
 	Eric Dumazet <edumazet@google.com>,
 	netdev@vger.kernel.org,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH 13/28] misc: vmci_guest: Use PCI_IRQ_ALL_TYPES
-Date: Mon, 25 Mar 2024 16:09:24 +0900
-Message-ID: <20240325070944.3600338-14-dlemoal@kernel.org>
+Subject: [PATCH 14/28] net: xgbe: Use PCI_IRQ_INTX
+Date: Mon, 25 Mar 2024 16:09:25 +0900
+Message-ID: <20240325070944.3600338-15-dlemoal@kernel.org>
 X-Mailer: git-send-email 2.44.0
 In-Reply-To: <20240325070944.3600338-1-dlemoal@kernel.org>
 References: <20240325070944.3600338-1-dlemoal@kernel.org>
@@ -78,28 +78,27 @@ List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-In vmci_guest_probe_device(), remove the reference to PCI_IRQ_LEGACY by
-using PCI_IRQ_ALL_TYPES instead of an explicit OR of all IRQ types.
+Use the macro PCI_IRQ_INTX instead of the deprecated PCI_IRQ_LEGACY
+macro.
 
 Signed-off-by: Damien Le Moal <dlemoal@kernel.org>
 ---
- drivers/misc/vmw_vmci/vmci_guest.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ drivers/net/ethernet/amd/xgbe/xgbe-pci.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/misc/vmw_vmci/vmci_guest.c b/drivers/misc/vmw_vmci/vmci_guest.c
-index 4f8d962bb5b2..c61e8953511d 100644
---- a/drivers/misc/vmw_vmci/vmci_guest.c
-+++ b/drivers/misc/vmw_vmci/vmci_guest.c
-@@ -787,8 +787,7 @@ static int vmci_guest_probe_device(struct pci_dev *pdev,
- 	error = pci_alloc_irq_vectors(pdev, num_irq_vectors, num_irq_vectors,
- 				      PCI_IRQ_MSIX);
- 	if (error < 0) {
--		error = pci_alloc_irq_vectors(pdev, 1, 1,
--				PCI_IRQ_MSIX | PCI_IRQ_MSI | PCI_IRQ_LEGACY);
-+		error = pci_alloc_irq_vectors(pdev, 1, 1, PCI_IRQ_ALL_TYPES);
- 		if (error < 0)
- 			goto err_unsubscribe_event;
- 	} else {
+diff --git a/drivers/net/ethernet/amd/xgbe/xgbe-pci.c b/drivers/net/ethernet/amd/xgbe/xgbe-pci.c
+index f409d7bd1f1e..c5e5fac49779 100644
+--- a/drivers/net/ethernet/amd/xgbe/xgbe-pci.c
++++ b/drivers/net/ethernet/amd/xgbe/xgbe-pci.c
+@@ -170,7 +170,7 @@ static int xgbe_config_irqs(struct xgbe_prv_data *pdata)
+ 		goto out;
+ 
+ 	ret = pci_alloc_irq_vectors(pdata->pcidev, 1, 1,
+-				    PCI_IRQ_LEGACY | PCI_IRQ_MSI);
++				    PCI_IRQ_INTX | PCI_IRQ_MSI);
+ 	if (ret < 0) {
+ 		dev_info(pdata->dev, "single IRQ enablement failed\n");
+ 		return ret;
 -- 
 2.44.0
 
