@@ -1,46 +1,46 @@
-Return-Path: <linux-rdma+bounces-1536-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-1517-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id CD3C688A15A
-	for <lists+linux-rdma@lfdr.de>; Mon, 25 Mar 2024 14:16:25 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6143C889EA7
+	for <lists+linux-rdma@lfdr.de>; Mon, 25 Mar 2024 13:12:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 8B5D3BA3373
-	for <lists+linux-rdma@lfdr.de>; Mon, 25 Mar 2024 12:15:03 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9292A1C34CF0
+	for <lists+linux-rdma@lfdr.de>; Mon, 25 Mar 2024 12:12:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5DBF0174EEB;
-	Mon, 25 Mar 2024 07:31:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C204D161914;
+	Mon, 25 Mar 2024 07:31:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ZssjjmZV"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="hyWih1aE"
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E60901802C8;
-	Mon, 25 Mar 2024 07:10:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D47C8180A67;
+	Mon, 25 Mar 2024 07:10:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711350612; cv=none; b=IB/qaxdIQ13OD7zbMEUt54Fe+V0JDzXjux2O+vOnSQOpS61FkJ2Sw3WzvcuMjdFOYbSlvIuo92FzX4x+wyNNTx65KQ/NZtp9TT0/dvF4/sHKEnR1RgnCHFH3IcKzsnw9jRDEitGs4Pxncaom8THdwu/jAzhwhkX65PoczpTmHeg=
+	t=1711350616; cv=none; b=tjSLFapms45Hz4TuINs9ECA2+PoLUXajuk4qjCQbtaHKbYBBm6g3yLU60hGEFEhbik2tp5EvuwcB/GTo5ASmzH5Yfe7mr0n399E2qq+/vfNWuJvG1UXipBenaFrFnY/NCGodZLGhWKiLFKR/MBIf7xYJLbL7/eljY9pUMVubphQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711350612; c=relaxed/simple;
-	bh=Ob+fZgzFxcE9wTSVWNWVKgYEP0VNmwg/dyGtefu3nb4=;
+	s=arc-20240116; t=1711350616; c=relaxed/simple;
+	bh=/OcYeyGR7nBShU6EhPVo+RHG9KRcq17+M9rAUK4EZAk=;
 	h=From:To:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=AjEGBvH6X9+EOzbX2xzBPdKxu1PkYIuhYsQKCb4w51HXKWwdxuoOk8wZqMA2Pfo8FYrZxAbuG/ll3McU9pJDb4C+Qhh5AM/Wzmv5v4kZIRGEYMNLbGsFcS+pVFexai42eu+2JhxCHO0FXsv2mOathcicm4YPzjzPnPgmC7CGfLQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ZssjjmZV; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1E31EC43390;
-	Mon, 25 Mar 2024 07:10:07 +0000 (UTC)
+	 MIME-Version; b=tHJExlt1swy3hJGHCpTIxvlMUHDDJ3jVjHRnbf9L7rmHUUtDS2DndqEnyUjETcGCazD90r5i/HTVc2tQRfKo/C2WtQT7pbOF7XvO1Op7fSGpIBPYGVal05kF6UHNpWchakDgE8VOY4HFMKk54kNXFV1w4v8CkN1JuD6TNvLy4sE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=hyWih1aE; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E001DC43394;
+	Mon, 25 Mar 2024 07:10:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711350611;
-	bh=Ob+fZgzFxcE9wTSVWNWVKgYEP0VNmwg/dyGtefu3nb4=;
+	s=k20201202; t=1711350615;
+	bh=/OcYeyGR7nBShU6EhPVo+RHG9KRcq17+M9rAUK4EZAk=;
 	h=From:To:Subject:Date:In-Reply-To:References:From;
-	b=ZssjjmZVDRmf/cKWuqrUJCCoGRf8DjhmxDd61XMz9XVtI/KQyNpKe5/j2TfAnroy/
-	 Sf+5rUBcHgmRkOyQx3F+j5s3GR484tRyUucokjtIxKpm5l4ajb4g8N1vC5nlY0v6nr
-	 5zRexkjs3n00maX+dSVIdKqwxDGF4jVbQTkltPZHkBaegx++WyJft/S1rKxUbeH2Fi
-	 lPpgZhvKhUvfuFWdNh2pvCrlNZ8DZI07wwKzc7E4V+hKlPUowOcBx1nnrVj2Lu9xUL
-	 pskMGlroIo1rXIkad1Sg5w8mD2aLfXhwcAhAkKS+6Np8s0ldpLcddg2XFcibCoaNIU
-	 CPb/KwrHTOlcQ==
+	b=hyWih1aEBrF5fxLDV0V7K3X3aOV9TRZTf1V6Bi5kbYHX7oexMuY0E7/Sx+c8SQDTh
+	 d/4dnVvriW2v5Lj5xRzzYkl9M1zajnODNQ6jcgylx6P2ZYBNPHm6gftRxMLNzVPtYc
+	 ijrfvXui5RyPzGBxjLHov1GbqT+koXV96+dkHf7/ZReRGiaH20mWOy9fs5Xl/uU/6S
+	 D/J8rLWLOIs0S8B2hNC35jNImJZ7h1x4c/QfZZW3EzDpvSyKqFJIOzCf35S9g86jC2
+	 c3dlzOrpO800VWpezt374Vba4a3Z5Gj+Orv3Ak8By8NusjGfQxybpKRyX/eeYcuYtC
+	 vLgsrYpw2VoQg==
 From: Damien Le Moal <dlemoal@kernel.org>
 To: linux-pci@vger.kernel.org,
 	Bjorn Helgaas <bhelgaas@google.com>,
@@ -64,9 +64,9 @@ To: linux-pci@vger.kernel.org,
 	Eric Dumazet <edumazet@google.com>,
 	netdev@vger.kernel.org,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH 06/28] tty: 8250_pci: Use PCI_IRQ_INTX
-Date: Mon, 25 Mar 2024 16:09:17 +0900
-Message-ID: <20240325070944.3600338-7-dlemoal@kernel.org>
+Subject: [PATCH 07/28] platform: intel_ips: Use PCI_IRQ_INTX
+Date: Mon, 25 Mar 2024 16:09:18 +0900
+Message-ID: <20240325070944.3600338-8-dlemoal@kernel.org>
 X-Mailer: git-send-email 2.44.0
 In-Reply-To: <20240325070944.3600338-1-dlemoal@kernel.org>
 References: <20240325070944.3600338-1-dlemoal@kernel.org>
@@ -83,22 +83,22 @@ macro.
 
 Signed-off-by: Damien Le Moal <dlemoal@kernel.org>
 ---
- drivers/tty/serial/8250/8250_pci.c | 2 +-
+ drivers/platform/x86/intel_ips.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/tty/serial/8250/8250_pci.c b/drivers/tty/serial/8250/8250_pci.c
-index 0d35c77fad9e..400b16c0336c 100644
---- a/drivers/tty/serial/8250/8250_pci.c
-+++ b/drivers/tty/serial/8250/8250_pci.c
-@@ -4108,7 +4108,7 @@ pciserial_init_ports(struct pci_dev *dev, const struct pciserial_board *board)
- 			rc = pci_alloc_irq_vectors(dev, 1, 1, PCI_IRQ_ALL_TYPES);
- 		} else {
- 			pci_dbg(dev, "Using legacy interrupts\n");
--			rc = pci_alloc_irq_vectors(dev, 1, 1, PCI_IRQ_LEGACY);
-+			rc = pci_alloc_irq_vectors(dev, 1, 1, PCI_IRQ_INTX);
- 		}
- 		if (rc < 0) {
- 			kfree(priv);
+diff --git a/drivers/platform/x86/intel_ips.c b/drivers/platform/x86/intel_ips.c
+index ba38649cc142..73ec4460a151 100644
+--- a/drivers/platform/x86/intel_ips.c
++++ b/drivers/platform/x86/intel_ips.c
+@@ -1505,7 +1505,7 @@ static int ips_probe(struct pci_dev *dev, const struct pci_device_id *id)
+ 	 * IRQ handler for ME interaction
+ 	 * Note: don't use MSI here as the PCH has bugs.
+ 	 */
+-	ret = pci_alloc_irq_vectors(dev, 1, 1, PCI_IRQ_LEGACY);
++	ret = pci_alloc_irq_vectors(dev, 1, 1, PCI_IRQ_INTX);
+ 	if (ret < 0)
+ 		return ret;
+ 
 -- 
 2.44.0
 
