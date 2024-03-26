@@ -1,72 +1,72 @@
-Return-Path: <linux-rdma+bounces-1578-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-1579-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E467B88CB33
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9013188CB32
 	for <lists+linux-rdma@lfdr.de>; Tue, 26 Mar 2024 18:45:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 60F4CB24FD0
-	for <lists+linux-rdma@lfdr.de>; Tue, 26 Mar 2024 17:45:00 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4ADB2308362
+	for <lists+linux-rdma@lfdr.de>; Tue, 26 Mar 2024 17:45:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9CFE64E1A8;
-	Tue, 26 Mar 2024 17:44:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7DD8E52F8A;
+	Tue, 26 Mar 2024 17:44:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="f7omdsts"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="YHhz09vb"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-ot1-f45.google.com (mail-ot1-f45.google.com [209.85.210.45])
+Received: from mail-oo1-f44.google.com (mail-oo1-f44.google.com [209.85.161.44])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 03D3E1D54D
-	for <linux-rdma@vger.kernel.org>; Tue, 26 Mar 2024 17:44:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D4BC0200D1
+	for <linux-rdma@vger.kernel.org>; Tue, 26 Mar 2024 17:44:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.161.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711475084; cv=none; b=AcsIv+OFj3Su0bx+YTuCmDO8as3Z4anBiu59EmCgDBvbBoa8Lp6o+jzRxJgfPVe+mZrAFv91D4/y7WAssh2Bq6IluNGjfYaWuPkKOs1r0+aDMTvbsEwZZgIhySZVMf3DINZUgYyu3SehF+QvqTUvpiKhWWwYfTPbA85QMPkAHNs=
+	t=1711475085; cv=none; b=UhkfdKx/VOxmkOMi7fX6qxwfNNUfE4CajCswbA6VfJfqdxoY8a7xT1ePAPlX4Vda9w1aBgYLzyKTxSdAZLWHLdZser8jNzN12CIbmOHs15VnZYWtjyfrPi7kXdMobr1QJGDTLsA38lWOtBZC8X9VD59bXYQtsQcTBO6Cv19nSqw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711475084; c=relaxed/simple;
-	bh=DTnf6HEfg54WcZlJbM0UnOUOfT1SyJb8ehxXzVRsjls=;
+	s=arc-20240116; t=1711475085; c=relaxed/simple;
+	bh=SoU3uetKGqIojlNPGwhfWHAZhxbc+tHc2KJgZrh2Nd8=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=L9JOHpgJqZqa3COQ02YoGASqD8dkIUHDl0AxHnExQpSF+XkMDGPTewNnXkeiJYPB3s1tBhuJ4IbchvIqbIR3W3/jpQ2n/pcOR/nwnOS2auZkHRWlB0fI05hrxpICmBUAY50PgdWClgsKuEZyCilevDYEGi213Xcd8NAW6Wy0SBg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=f7omdsts; arc=none smtp.client-ip=209.85.210.45
+	 MIME-Version; b=dxT16A4239qF0kUlvQl2Z24algijSb/Rav/Wyhzm11s2g8+QSPZGKfKM9RZsjJ/EB3TCDu8bePNiR9j+i17dMNXDJ0y1pbZWraupsX5i6zV0zfmPKFz+prteVkA0gfU7jRHRyMBVDbqj7I3JdFCjVig/WTl042UNW6GQhMAHQao=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=YHhz09vb; arc=none smtp.client-ip=209.85.161.44
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ot1-f45.google.com with SMTP id 46e09a7af769-6e696ee8fa3so19085a34.1
-        for <linux-rdma@vger.kernel.org>; Tue, 26 Mar 2024 10:44:42 -0700 (PDT)
+Received: by mail-oo1-f44.google.com with SMTP id 006d021491bc7-5a50880ce2aso2906486eaf.0
+        for <linux-rdma@vger.kernel.org>; Tue, 26 Mar 2024 10:44:43 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1711475082; x=1712079882; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1711475083; x=1712079883; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=x0Gn+52B+bX6FQ71fiFjhV1CrL3vIObKr40YlCDrQRk=;
-        b=f7omdstsEGr2NOD09EyGlZyVcCbjDU479kI0GK/xPJxk0zVLT+WU4shk+2tZLsgV2R
-         b3olzJn3/naP3tp5WMf/FD/3rTtWNB7dUuOUCiGYW90Bj5HegxTD0Sem8y6pJMwMUV0F
-         /AEKVKjeBSGxMgyPRR70+PtMDFB/q1AP+eN6ZRVkLQip1MUSb4QFhgwgrhK2OCAAdUfA
-         7PPiGycSQudAfxQ6U74nbnH+/IKC1Q5mlel4ENCxip4N+yXEfhzI+vVO+LU90rDecaGB
-         VWfmeOjFWpDw97FATJnH4VnJwSRVqVUsJy79qt6E7N5XYTMgvzFcQZfWmUWj8YzBLVXH
-         zTjA==
+        bh=s1POE8I9KwEedXg0bNWgQbP3KFGe4zNce0lmHwN/JY0=;
+        b=YHhz09vbP2Nq1xj9w4DBhTZJ+QnCmptaLIX1EPAQs0/1NdOT6y1ZfNTxG69ZEquTrT
+         wMog5W/+4k+K0YDrNDKvJqN/DLw2OQpuYGJBdrinGIKqjHSoQypaFHu5fecpSxsLjqCq
+         79Mn3czo7BIQEKLm12GISib0x4hqrXmMliF4ymF1hXiai8fycM6rKSh/IHyRXcEZXuLN
+         GSNKuoLKVef+o7gj1dueYCKY6PJE6rH10sUiocZ9RmA1dgXRPd72Vaf3V/VL3PHBTzEQ
+         a+GyBsxpA7Cgc6C05b/jYxEhIfuAIPdtk00+sitKRQFjoZD7sEVb12ktDMETTC9++AMb
+         oD1Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711475082; x=1712079882;
+        d=1e100.net; s=20230601; t=1711475083; x=1712079883;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=x0Gn+52B+bX6FQ71fiFjhV1CrL3vIObKr40YlCDrQRk=;
-        b=hIodgiIZxWt357zu8sf6XYfiehyusdZCxKGCEZ3Np4e/7XxvYmGRdA90TlK9CcGM6N
-         c/T+MEsmQXudnvMpopMJbNc1giKIpcSd2qNAMTf2TPCnSilGwMv6O62eXW9BewUZjXaA
-         WEYNMYJC4QrCHMjZPpsHDl1MwM2jb3CUjuYp550skzvChnbTpE3oOQ3DjxGnhxWtWXqj
-         pneCvoMXubmH99j5upkVstMWl1/2g+zIca0y/6F8Y4MCv1GK43Xld9pskT1fwKSMJZzb
-         CrWb9EwdeeWJ/nTWBX3KPf4tlhks01VJQxclpn/AhU1sOWlNgSTfVhom3b2BY1aBCO0Y
-         f6WQ==
-X-Forwarded-Encrypted: i=1; AJvYcCXeC3mQKbRAT5bNJWfg/9ndiK/mept4PDWS5uPrb83pPwd0MaiAP7l4s+7Gcff8Koo6fAQp8F7lzQGlfbZWNgCp3JMYRNDKO3Ff0g==
-X-Gm-Message-State: AOJu0YxrDPawPOgCt6F8h9/3lJBJh8TfyxhJWL/Rxu3Hw7FQaHAoTWn5
-	nfqSbAhBY1N84MC2JNs4q6E8WO+NkUBKQImD3zXY3LQLb14wrH+r
-X-Google-Smtp-Source: AGHT+IEyUIIZitmjkrtCgwdI37NynphbtszWDZlV6Ns7hcCgLrGfsgDBMWp7e/tVErkU4wXc0/g9pA==
-X-Received: by 2002:a9d:7743:0:b0:6e6:8d2f:4013 with SMTP id t3-20020a9d7743000000b006e68d2f4013mr926119otl.8.1711475082087;
-        Tue, 26 Mar 2024 10:44:42 -0700 (PDT)
+        bh=s1POE8I9KwEedXg0bNWgQbP3KFGe4zNce0lmHwN/JY0=;
+        b=VTh2qGHXUFph0SwYgha7xBQVpKmZIfxDbjTCYxx4RtxUNGwpQox+VrJSgLCf7mwWB9
+         RG7r5+/2ZgZck0NcAYm5TiA/6jROM5ene88k4z0sDNOk4IIdaMzM3MMD1+SarXhQCO//
+         cPL72/vinFDvu9egOA3IeflsN6q2hfhCU7YF1+hHURiundQCZe8adlMRhzuXT7E9iHOT
+         AYn125d9Psz/HYkkF5FS9M4/kuBvrqrRo7XPNWPRxipQJ1xN1SiJ5OBGy7DIf/FnVGZP
+         qtoKUS5Acznlp/K/ulDjHwLMZIyPlYTKIpraxDXl77kCdXZ6Nek7ZJbiFmw8a2XnY+gF
+         Y4dg==
+X-Forwarded-Encrypted: i=1; AJvYcCW2GmVwT8A7QI0wwxJCncQXfUrdPDjz+Z43ug6be+n50nZbDKva+7kA3sY7Oc/B5dy7asPT7wGUbJrWfvsX7Fvo+MEpeQZtUoCUFg==
+X-Gm-Message-State: AOJu0YwysGwl5HfFjAW1pIXUKTLH8HhjKuNn51xFmX9h94hQz01Y9TFc
+	gNoyFSDVLUcnesWcENAHDk05Sczobq+8UStce3SHnS8i4uWeJrIg
+X-Google-Smtp-Source: AGHT+IHqkAhUGgT5WsWGXYpH+xssnmR8QZxRntIQLKSXjHIPNmav6NyjyqjC1DLLfmovpr6WA1zwBA==
+X-Received: by 2002:a4a:e910:0:b0:5a5:46e:d0f with SMTP id bx16-20020a4ae910000000b005a5046e0d0fmr2123906oob.1.1711475083043;
+        Tue, 26 Mar 2024 10:44:43 -0700 (PDT)
 Received: from bob-pearson-dev.lan (2603-8081-1405-679b-b62e-99ff-fef9-fa2e.res6.spectrum.com. [2603:8081:1405:679b:b62e:99ff:fef9:fa2e])
-        by smtp.gmail.com with ESMTPSA id i10-20020a056820138a00b005a53e935171sm1399860oow.35.2024.03.26.10.44.41
+        by smtp.gmail.com with ESMTPSA id i10-20020a056820138a00b005a53e935171sm1399860oow.35.2024.03.26.10.44.42
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 26 Mar 2024 10:44:41 -0700 (PDT)
+        Tue, 26 Mar 2024 10:44:42 -0700 (PDT)
 From: Bob Pearson <rpearsonhpe@gmail.com>
 To: yanjun.zhu@linux.dev,
 	jgg@ziepe.ca,
@@ -74,9 +74,9 @@ To: yanjun.zhu@linux.dev,
 	linux-rdma@vger.kernel.org,
 	jhack@hpe.com
 Cc: Bob Pearson <rpearsonhpe@gmail.com>
-Subject: [PATCH for-next 10/11] RDMA/rxe: Make rxe_loopback match rxe_send behavior
-Date: Tue, 26 Mar 2024 12:43:25 -0500
-Message-ID: <20240326174325.300849-12-rpearsonhpe@gmail.com>
+Subject: [PATCH for-next 11/11] RDMA/rxe: Get rid of pkt resend on err
+Date: Tue, 26 Mar 2024 12:43:26 -0500
+Message-ID: <20240326174325.300849-13-rpearsonhpe@gmail.com>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240326174325.300849-2-rpearsonhpe@gmail.com>
 References: <20240326174325.300849-2-rpearsonhpe@gmail.com>
@@ -88,36 +88,52 @@ List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-The rxe send path currently counts the number of skbs outstanding
-between the rxe driver and the ethernet driver to prevent too many
-packets to accumulate waiting to send. This patch makes the local
-loopback path behave the same way. The loopback path forwards the
-packets to the receive path which will eventually call kfree_skb
-on all packets and drop the qp references. This makes the loopback
-path more useful for software testing.
+Currently the rxe_driver detects packet drops by ip_local_out()
+which occur before the packet is sent on the wire and attempts to
+resend them. This is redundant with the usual retry mechanism which
+covers packets that get dropped in transit to or from the remote node.
+
+The way this is implemented is not robust since it sets need_req_skb
+and waits for the number of local skbs outstanding for this qp to
+drop below a low water mark. This is racy since the skb may
+be sent to the destructor before the requester can set the
+need_req_skb flag. This will cause a deadlock in the send path for
+that qp.
+
+This patch removes this mechanism since the normal retry path will
+correct the error and resend the packet and it makes no difference
+if the packet is dropped locally or later.
 
 Signed-off-by: Bob Pearson <rpearsonhpe@gmail.com>
 ---
- drivers/infiniband/sw/rxe/rxe_net.c | 6 ++++++
- 1 file changed, 6 insertions(+)
+ drivers/infiniband/sw/rxe/rxe_req.c | 14 ++------------
+ 1 file changed, 2 insertions(+), 12 deletions(-)
 
-diff --git a/drivers/infiniband/sw/rxe/rxe_net.c b/drivers/infiniband/sw/rxe/rxe_net.c
-index d1dd440b1e4f..5b88ae29b509 100644
---- a/drivers/infiniband/sw/rxe/rxe_net.c
-+++ b/drivers/infiniband/sw/rxe/rxe_net.c
-@@ -386,6 +386,12 @@ static int rxe_loopback(struct sk_buff *skb, struct rxe_pkt_info *pkt)
- {
- 	memcpy(SKB_TO_PKT(skb), pkt, sizeof(*pkt));
+diff --git a/drivers/infiniband/sw/rxe/rxe_req.c b/drivers/infiniband/sw/rxe/rxe_req.c
+index b217fa94ff03..445650b73b19 100644
+--- a/drivers/infiniband/sw/rxe/rxe_req.c
++++ b/drivers/infiniband/sw/rxe/rxe_req.c
+@@ -800,18 +800,8 @@ int rxe_requester(struct rxe_qp *qp)
  
-+	skb->destructor = rxe_skb_tx_dtor;
-+	skb->sk = pkt->qp->sk->sk;
-+
-+	rxe_get(pkt->qp);
-+	atomic_inc(&pkt->qp->skb_out);
-+
- 	if (skb->protocol == htons(ETH_P_IP))
- 		skb_pull(skb, sizeof(struct iphdr));
- 	else
+ 	err = rxe_xmit_packet(qp, &pkt, skb);
+ 	if (err) {
+-		if (err != -EAGAIN) {
+-			wqe->status = IB_WC_LOC_QP_OP_ERR;
+-			goto err;
+-		}
+-
+-		/* force a delay until the dropped packet is freed and
+-		 * the send queue is drained below the low water mark
+-		 */
+-		qp->need_req_skb = 1;
+-
+-		rxe_sched_task(&qp->send_task);
+-		goto exit;
++		wqe->status = IB_WC_LOC_QP_OP_ERR;
++		goto err;
+ 	}
+ 
+ 	update_wqe_state(qp, wqe, &pkt);
 -- 
 2.43.0
 
