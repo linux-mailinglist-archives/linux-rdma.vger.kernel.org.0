@@ -1,219 +1,168 @@
-Return-Path: <linux-rdma+bounces-1559-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-1560-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3BECA88B6F9
-	for <lists+linux-rdma@lfdr.de>; Tue, 26 Mar 2024 02:39:21 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id DD1BA88B7CB
+	for <lists+linux-rdma@lfdr.de>; Tue, 26 Mar 2024 03:57:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id A72521F3B470
-	for <lists+linux-rdma@lfdr.de>; Tue, 26 Mar 2024 01:39:20 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6D3D0284A26
+	for <lists+linux-rdma@lfdr.de>; Tue, 26 Mar 2024 02:57:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A005B2110E;
-	Tue, 26 Mar 2024 01:39:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2916812839E;
+	Tue, 26 Mar 2024 02:57:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="eeLR3mjN"
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=embeddedor.com header.i=@embeddedor.com header.b="dlh+DXZ0"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+Received: from omta038.useast.a.cloudfilter.net (omta038.useast.a.cloudfilter.net [44.202.169.37])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A293B1C6BE
-	for <linux-rdma@vger.kernel.org>; Tue, 26 Mar 2024 01:39:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CD1F412838F
+	for <linux-rdma@vger.kernel.org>; Tue, 26 Mar 2024 02:57:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=44.202.169.37
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711417156; cv=none; b=iPaI3VCf245E59hIGIuyGfFSubRKDs93rnwTfgfgD7jyb/hC8Eda77YhMcE5gXlAOfsHx5wM6nHIhVzWR0axEbQHaxdLbaGsBF9ToWO9Knjv6Bcyk0nQ4//M+e32o6EChbsv4VK+ZYPpH2n3o6MSMDj9r9bv7ZG2TjwdA8w0wAo=
+	t=1711421868; cv=none; b=OycJi1W+iqPt/0Ki2dW5IPdQH4+Zv8+0mp2GuGD8GPZSQzf7dkf5bq3k4AUfI7wWVGHNs3xnBv8fTjbVUc8BD8i4zkTHlzR+GIzjdofdA5s3WkYng0LQNxCNzHF7CiyQx0s5w+Xa4xATIg8/IqX0RnOp7fvzewP/wMn0HKM9Vl4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711417156; c=relaxed/simple;
-	bh=ozN5T78X/8LPjCWi2AnyTnIYDZmkjh80Ju6ZW4H2//U=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=HoiIUPiz28WeOO1eZQH39wU0zD7HX9CDodETvKEGrXoC4aM3zKcUho/zM4g462SjXLvjZD3fU1uOJRQIKw3Rh/aXldKl9hMo6ASFKB3Nvfmhke9Af1Z/BcvloTsI6vxnEJhQa4ZnHQJIyepdXDSHpkYY16F0nXEJiQOXVL/v4/s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=eeLR3mjN; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1711417153;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=WTaD6mudg7VhN+d5uv+mspRcpmC/ctCIgx4dGqOcYps=;
-	b=eeLR3mjNt/8vZD/op0V2xrWfeyHNBoAdyc19DhJvqEMY9+YKNkGhYaWNwNTop33JzO/4zl
-	JO5kr8w7yPr6lkSx8g2c83bBdUCdfsDNA8iyJ0zKUHyq6prQmy1oZ1cnVLBrnzP+SYO3sM
-	4wO27W2lgdk3FRKTEPdxaORubQ8aJdE=
-Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
- [209.85.221.72]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-92-MSS6yFc1MUmSo8plbFHU_Q-1; Mon, 25 Mar 2024 21:39:11 -0400
-X-MC-Unique: MSS6yFc1MUmSo8plbFHU_Q-1
-Received: by mail-wr1-f72.google.com with SMTP id ffacd0b85a97d-33d8d208be9so3407958f8f.2
-        for <linux-rdma@vger.kernel.org>; Mon, 25 Mar 2024 18:39:11 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711417150; x=1712021950;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=WTaD6mudg7VhN+d5uv+mspRcpmC/ctCIgx4dGqOcYps=;
-        b=jL1nE5f7kWdk9mjRHVPVRUJSHbP3nl9MSM0nimFUZW/pAksNU9ZrJDJcSrwcbv2Wui
-         /sr+rphSw/IWfVEtkNg27c/1JugYOhG6t+ubwaSonf9548db+f1KkQipYblbxxpWj6Oi
-         JtvdJmzY6RZOnn7kk3qPP47PzdzMv3GYfNT49+6eMvvhLhrX6FHYEJMs63Pt2b8Nclme
-         JFpOlyJGzqkaJ2XaGL9KhrhsfFDn7qXjAwwYp5eva2i0TPZkGld9K/KAAnvbPSyMCmil
-         z8FUfwySMoNqsVcMGn4i67Ec7k3EjES+KLP5s/xXO7R6el7kNxSh7ESGDx+k2qkA+p0G
-         KLIA==
-X-Forwarded-Encrypted: i=1; AJvYcCWZ8inpdPbi4Fw9X7zJmy+8UpnN0SA45fsMDJqF0+UJxb1CTRyvABr2l/u6JwjtKLsOQPcm1osN0jCTRPCIFgtwvf0LQjgh0/SXSw==
-X-Gm-Message-State: AOJu0Yy4AFjTMjZ5Gj6bWlwS1Blc3gfkViG7kInqWQqvldRf1HHindtY
-	I1UPPDlAN1vHNvKYVmPgKh7XYe6sS1+63bZuJqMWUjfhGEX8o8E7NybygMQDBsqUggoO86A4lDx
-	zmL+DhiXiijWYHXOZwnkq51VYqnp3PrraZso5oBT72IXNei1ZcVC96yj0YDkIdPbM25SSdVDNk/
-	ziHwx7cSoq3xyje2grKeC1LQVaTjSxOzZKHQ==
-X-Received: by 2002:a5d:60c9:0:b0:341:865b:65c9 with SMTP id x9-20020a5d60c9000000b00341865b65c9mr7571758wrt.22.1711417150412;
-        Mon, 25 Mar 2024 18:39:10 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IHGAVRQvSolwKhN9lxaw7HUOTpaQxkO72OCZv+7YVENFG33vSWYVqDPTA5Pq/1JgP4Gbiom3nqQHbE/DxEgqA8=
-X-Received: by 2002:a5d:60c9:0:b0:341:865b:65c9 with SMTP id
- x9-20020a5d60c9000000b00341865b65c9mr7571746wrt.22.1711417150064; Mon, 25 Mar
- 2024 18:39:10 -0700 (PDT)
+	s=arc-20240116; t=1711421868; c=relaxed/simple;
+	bh=vX3bVL1HMc4EDAaj7B3gjYlT0mkkt+c/itIyWdTv+VI=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=fG/u0xXUACj5uyVmExMXJimRlymhKc0eAl+BFibDlynFw5jenm5TT9QExv6l54dwGS8OUwUhCzvpgQTyp+kONH81cOJbSZEUB14YZuw29NCvnXghFQxXZDLXUZgu7afIJiOmtwqDrtF8wfC3EzlOYj+1qylu9o72PPziycyGGIg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=embeddedor.com; spf=pass smtp.mailfrom=embeddedor.com; dkim=pass (2048-bit key) header.d=embeddedor.com header.i=@embeddedor.com header.b=dlh+DXZ0; arc=none smtp.client-ip=44.202.169.37
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=embeddedor.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=embeddedor.com
+Received: from eig-obgw-6005a.ext.cloudfilter.net ([10.0.30.201])
+	by cmsmtp with ESMTPS
+	id omq6ro6wwQr4Sox0TrNwcz; Tue, 26 Mar 2024 02:57:45 +0000
+Received: from gator4166.hostgator.com ([108.167.133.22])
+	by cmsmtp with ESMTPS
+	id ox0SrFkRCHHoAox0SrC4sO; Tue, 26 Mar 2024 02:57:44 +0000
+X-Authority-Analysis: v=2.4 cv=dskQCEg4 c=1 sm=1 tr=0 ts=660239a8
+ a=1YbLdUo/zbTtOZ3uB5T3HA==:117 a=UtBFqMlDG83dypD0sxEoAQ==:17
+ a=IkcTkHD0fZMA:10 a=K6JAEmCyrfEA:10 a=wYkD_t78qR0A:10 a=VwQbUJbxAAAA:8
+ a=yCkJhreVFDLjqfpo9JAA:9 a=QEXdDO2ut3YA:10 a=AjGcO6oz07-iQ99wixmX:22
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=embeddedor.com; s=default; h=Content-Transfer-Encoding:Content-Type:
+	In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:Message-ID:Sender
+	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
+	List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+	bh=o90u6YTpwASH2e8B6jU5tsJiGz540jLK6rTJxZ74n1E=; b=dlh+DXZ0+HwO8YHOI59tzajiU7
+	qmQUEJvuedN+ivIXiM+FfIAcXWLstqvZG56435B6bnHtPH5bqkuJ30xQCzNyxhe/qIwjSIIJo5gAb
+	74tfMHvhcn5K+NTqhs5jPpm7P3AExBIrcQ+mR6q56+/Win8S2npzBx8uELGUPlCRcpKJsPePQFnAB
+	8uyrn8iUYbR742Q6aWCJNeDen3PvwnqLGKWY111yZWIiwASKIMAwOpUYuDcpNrJLsXrcsi3Lm3669
+	KoJPufJI4vyGkljBC2rV6wZDaFT0nw3KRh+kVgTJnuMGX6zdeWkKySinxXTUkOqJkvfxafStVBPXm
+	FoboauPg==;
+Received: from [201.172.174.229] (port=52604 helo=[192.168.15.10])
+	by gator4166.hostgator.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+	(Exim 4.96.2)
+	(envelope-from <gustavo@embeddedor.com>)
+	id 1rox0R-001mui-1e;
+	Mon, 25 Mar 2024 21:57:44 -0500
+Message-ID: <5c0bb827-e5f3-4178-ad46-8ac9b99d7726@embeddedor.com>
+Date: Mon, 25 Mar 2024 20:57:08 -0600
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <CAO7dBbVNv5NWRN6hXeo5rNEixn-ctmTLLn2KAKhEBYvvR+Du2w@mail.gmail.com>
- <5d81d6d0-5afc-4d0e-8d2b-445d48921511@linux.dev>
-In-Reply-To: <5d81d6d0-5afc-4d0e-8d2b-445d48921511@linux.dev>
-From: Tao Liu <ltao@redhat.com>
-Date: Tue, 26 Mar 2024 09:38:33 +0800
-Message-ID: <CAO7dBbXLU5teiYm8VvES7e7m7dUzJQYV9HHLOFKperjwq-NJeA@mail.gmail.com>
-Subject: Re: Implementing .shutdown method for efa module
-To: Gal Pressman <gal.pressman@linux.dev>
-Cc: mrgolin@amazon.com, sleybo@amazon.com, jgg@ziepe.ca, leon@kernel.org, 
-	kexec@lists.infradead.org, linux-kernel@vger.kernel.org, 
-	linux-rdma@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH][next] RDMA/cm: Avoid -Wflex-array-member-not-at-end
+ warning
+Content-Language: en-US
+To: Jason Gunthorpe <jgg@ziepe.ca>,
+ "Gustavo A. R. Silva" <gustavoars@kernel.org>
+Cc: Leon Romanovsky <leon@kernel.org>, linux-rdma@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
+References: <ZgHdZ15cQ7MIHsGL@neat> <20240325224706.GB8419@ziepe.ca>
+From: "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+In-Reply-To: <20240325224706.GB8419@ziepe.ca>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - gator4166.hostgator.com
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - embeddedor.com
+X-BWhitelist: no
+X-Source-IP: 201.172.174.229
+X-Source-L: No
+X-Exim-ID: 1rox0R-001mui-1e
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
+X-Source-Sender: ([192.168.15.10]) [201.172.174.229]:52604
+X-Source-Auth: gustavo@embeddedor.com
+X-Email-Count: 3
+X-Org: HG=hgshared;ORG=hostgator;
+X-Source-Cap: Z3V6aWRpbmU7Z3V6aWRpbmU7Z2F0b3I0MTY2Lmhvc3RnYXRvci5jb20=
+X-Local-Domain: yes
+X-CMAE-Envelope: MS4xfLkYe/ucF8BcReoRhLNtb5IzTPyWUwPX6vRPClpsX4L1ZdE2c3W/RGkLHeoKDUvkZwihhS+lkIHwPiCVzF+YGJIqsI9qY+nUPJcDAxPRHmWULgebLjMH
+ QVd+M6R8SMNHjW3Q4SYbc4Ga+raeyp9jjmPn+6n5ZkLBKwrFjl1dRgCpSHv+Huv/W1w5KC/iXhcRpWemyIHZ+9u5Fd/NlC8Ay3eJFsCYKiN707V5zCCOP/y6
 
-Hi Gal,
 
-On Mon, Mar 25, 2024 at 4:06=E2=80=AFPM Gal Pressman <gal.pressman@linux.de=
-v> wrote:
->
-> On 25/03/2024 4:10, Tao Liu wrote:
-> > Hi,
-> >
-> > Recently I experienced a kernel panic which is related to efa module
-> > when testing kexec -l && kexec -e to switch to a new kernel on AWS
-> > i4g.16xlarge instance.
-> >
-> > Here is the dmesg log:
-> >
-> > [    6.379918] systemd[1]: Mounting FUSE Control File System...
-> > [    6.381984] systemd[1]: Mounting Kernel Configuration File System...
-> > [    6.383918] systemd[1]: Starting Apply Kernel Variables...
-> > [    6.385430] systemd[1]: Started Journal Service.
-> > [    6.394221] ACPI: bus type drm_connector registered
-> > [    6.421408] systemd-journald[1263]: Received client request to
-> > flush runtime journal.
-> > [    7.262543] efa 0000:00:1b.0: enabling device (0010 -> 0012)
-> > [    7.432420] efa 0000:00:1b.0: Setup irq:191 name:efa-mgmnt@pci:0000:=
-00:1b.0
-> > [    7.435581] efa 0000:00:1b.0 efa_0: IB device registered
-> > [    7.885564] random: crng init done
-> > [    8.139857] XFS (nvme0n1p2): Mounting V5 Filesystem
-> > d7003ecc-db6f-4bfb-bf92-60376b6a6563
-> > [    8.265233] XFS (nvme0n1p2): Ending clean mount
-> > [   10.555612] IPv6: ADDRCONF(NETDEV_CHANGE): eth0: link becomes ready
-> >
-> > Red Hat Enterprise Linux 9.4 Beta (Plow)
-> > Kernel 5.14.0-425.el9.aarch64 on an aarch64
-> >
-> > ip-10-0-27-226 login: [   29.940381] kexec_core: Starting new kernel
-> > [   30.079279] psci: CPU1 killed (polled 0 ms)
-> > [   30.119222] psci: CPU2 killed (polled 0 ms)
-> > [   30.199293] psci: CPU3 killed (polled 0 ms)
-> > [   30.309214] psci: CPU4 killed (polled 0 ms)
-> > [   30.379221] psci: CPU5 killed (polled 0 ms)
-> > [   30.419210] psci: CPU6 killed (polled 0 ms)
-> > [   30.489207] IRQ 191: no longer affine to CPU7
-> > [   30.489667] psci: CPU7 killed (polled 0 ms)
-> > ..snip...
-> > [   33.849123] psci: CPU63 killed (polled 0 ms)
-> > [   33.849943] Bye!
-> > [    0.000000] Booting Linux on physical CPU 0x0000000000 [0x413fd0c1]
-> > [    0.000000] Linux version 5.14.0-417.el9.aarch64
-> > (mockbuild@arm64-025.build.eng.bos.redhat.com) (gcc (GCC) 11.4.1
-> > 20231218 (Red Hat 11.4.1-3), GNU ld version 2.35.2-42.el9) #1 SMP
-> > PREEMPT_DYNAMIC Thu Feb 1 21:23:03 EST 2024
-> > ...snip...
-> > [    1.012692] Freeing unused kernel memory: 6016K
-> > [    2.370947] Checked W+X mappings: passed, no W+X pages found
-> > [    2.370980] Run /init as init process
-> > [    2.370982]   with arguments:
-> > [    2.370983]     /init
-> > [    2.370984]   with environment:
-> > [    2.370984]     HOME=3D/
-> > [    2.370985]     TERM=3Dlinux
-> > [    2.373257] Kernel panic - not syncing: Attempted to kill init!
-> > exitcode=3D0x0000000b
-> > [    2.373259] CPU: 1 PID: 1 Comm: init Not tainted 5.14.0-417.el9.aarc=
-h64 #1
-> > [    2.382240] Hardware name: Amazon EC2 i4g.16xlarge/, BIOS 1.0 11/1/2=
-018
-> > [    2.383814] Call trace:
-> > [    2.384410]  dump_backtrace+0xa8/0x120
-> > [    2.385318]  show_stack+0x1c/0x30
-> > [    2.386124]  dump_stack_lvl+0x74/0x8c
-> > [    2.387011]  dump_stack+0x14/0x24
-> > [    2.387810]  panic+0x158/0x368
-> > [    2.388553]  do_exit+0x3a8/0x3b0
-> > [    2.389333]  do_group_exit+0x38/0xa4
-> > [    2.390195]  get_signal+0x7a4/0x810
-> > [    2.391044]  do_signal+0x1bc/0x260
-> > [    2.391870]  do_notify_resume+0x108/0x210
-> > [    2.392839]  el0_da+0x154/0x160
-> > [    2.393603]  el0t_64_sync_handler+0xdc/0x150
-> > [    2.394628]  el0t_64_sync+0x17c/0x180
-> > [    2.395513] SMP: stopping secondary CPUs
-> > [    2.396483] Kernel Offset: 0x586f04e00000 from 0xffff800008000000
-> > [    2.397934] PHYS_OFFSET: 0x40000000
-> > [    2.398774] CPU features: 0x0,00000101,70020143,10417a0b
-> > [    2.400042] Memory Limit: none
-> > [    2.400783] ---[ end Kernel panic - not syncing: Attempted to kill
-> > init! exitcode=3D0x0000000b ]---
-> >
-> > In the dmesg log, I found "[   30.489207] IRQ 191: no longer affine to
-> > CPU7" is suspicious, which is related to efa module. After blacklist
-> > efa module from automatic loading when bootup, the kernel panic issue
-> > doesn't appear again.
-> >
-> > It looks to me it is due to the efa being not properly shutdown during
-> > kexec, so the ongoing DMA/interrupts etc overwrite the memory range.
-> >
-> > Though the issue is reproduced on rhel's kernel, the upstream kernel
-> > [1] doesn't have the .shutdown method implemented either. Since I'm
-> > not very familiar with the efa driver, could you please implement the
-> > .shutdown method in drivers/infiniband/hw/efa/efa_main.c? Thanks in
-> > advance!
->
-> Did you try to reproduce it on upstream kernel?
->
-Thanks for your comments! No I haven't, I will give it a try.
-> >
-> > [1]: https://github.com/torvalds/linux/blob/master/drivers/infiniband/h=
-w/efa/efa_main.c#L674
-> >
-> > Thanks,
-> > Tao Liu
-> >
->
-> Try assigning efa_remove as the shutdown callback:
->     .shutdown =3D efa_remove,
->
-> Does it fix it?
 
-Thanks, I will also try the code, and I will post the testing results.
+On 3/25/24 16:47, Jason Gunthorpe wrote:
+> On Mon, Mar 25, 2024 at 02:24:07PM -0600, Gustavo A. R. Silva wrote:
+>> -Wflex-array-member-not-at-end is coming in GCC-14, and we are getting
+>> ready to enable it globally.
+>>
+>> Use the `struct_group_tagged()` helper to separate the flexible array
+>> from the rest of the members in flexible `struct cm_work`, and avoid
+>> embedding the flexible-array member in `struct cm_timewait_info`.
+>>
+>> Also, use `container_of()` to retrieve a pointer to the flexible
+>> structure.
+>>
+>> So, with these changes, fix the following warning:
+>> drivers/infiniband/core/cm.c:196:24: warning: structure containing a flexible array member is not at the end of another structure [-Wflex-array-member-not-at-end]
+>>
+>> Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+>> ---
+>>   drivers/infiniband/core/cm.c | 21 ++++++++++++---------
+>>   1 file changed, 12 insertions(+), 9 deletions(-)
+>>
+>> diff --git a/drivers/infiniband/core/cm.c b/drivers/infiniband/core/cm.c
+>> index bf0df6ee4f78..80c87085499c 100644
+>> --- a/drivers/infiniband/core/cm.c
+>> +++ b/drivers/infiniband/core/cm.c
+>> @@ -182,18 +182,21 @@ struct cm_av {
+>>   };
+>>   
+>>   struct cm_work {
+>> -	struct delayed_work work;
+>> -	struct list_head list;
+>> -	struct cm_port *port;
+>> -	struct ib_mad_recv_wc *mad_recv_wc;	/* Received MADs */
+>> -	__be32 local_id;			/* Established / timewait */
+>> -	__be32 remote_id;
+>> -	struct ib_cm_event cm_event;
+>> +	/* New members must be added within the struct_group() macro below. */
+>> +	struct_group_tagged(cm_work_hdr, hdr,
+>> +		struct delayed_work work;
+>> +		struct list_head list;
+>> +		struct cm_port *port;
+>> +		struct ib_mad_recv_wc *mad_recv_wc;	/* Received MADs */
+>> +		__be32 local_id;			/* Established / timewait */
+>> +		__be32 remote_id;
+>> +		struct ib_cm_event cm_event;
+>> +	);
+>>   	struct sa_path_rec path[];
+>>   };
+> 
+> I didn't look, but does it make more sense to break out the path side
+> into its own type and avoid the struct_group_tagged? I seem to
+> remember only one thing used it.
+> 
 
-Thanks,
-Tao Liu
+I thought about that, but I'd have to change the parameter type of
+`static int cm_timewait_handler(struct cm_work *work)`, and that would
+imply also modifying the internals of function `cm_work_handler()` (and
+then I didn't look much into it). So, the `struct_group_tagged()`
+strategy is in general more cleaner and straightforward.
 
->
+--
+Gustavo
 
 
