@@ -1,120 +1,121 @@
-Return-Path: <linux-rdma+bounces-1567-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-1568-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id CE66288C704
-	for <lists+linux-rdma@lfdr.de>; Tue, 26 Mar 2024 16:32:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 29E9588CB28
+	for <lists+linux-rdma@lfdr.de>; Tue, 26 Mar 2024 18:44:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 895213208BB
-	for <lists+linux-rdma@lfdr.de>; Tue, 26 Mar 2024 15:32:33 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D6AC930828D
+	for <lists+linux-rdma@lfdr.de>; Tue, 26 Mar 2024 17:44:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D892713C838;
-	Tue, 26 Mar 2024 15:32:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D2B121D539;
+	Tue, 26 Mar 2024 17:44:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b="cDEEblNi"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="TMmzSYHD"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-qv1-f47.google.com (mail-qv1-f47.google.com [209.85.219.47])
+Received: from mail-oo1-f53.google.com (mail-oo1-f53.google.com [209.85.161.53])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DC0CD13C3F4
-	for <linux-rdma@vger.kernel.org>; Tue, 26 Mar 2024 15:32:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3A863A95B
+	for <linux-rdma@vger.kernel.org>; Tue, 26 Mar 2024 17:44:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.161.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711467148; cv=none; b=K2gq8HsXHCtVHvFMJ6uPOFEWAnTOsPSevpjA3AHVdkDeEuZTXGNX4xu9mV6xRiJP5veQYB5klkSIyePZXZSLgeEc+DYoTqj9yfbwS+FoFVz7yXHNi4+PwZrPzD1Eww8Tn1rH2zbz5pdJrMAHlQA0QLV+kQcC1at7ukVO7h7fxo8=
+	t=1711475062; cv=none; b=igS/knUNDdpvYyu7XkpJWm+AYF1n9SYAGeEr7m8VnZenDe0S0Z1NND7mGErl6FC6TYL3JsUVjdU+G0y1DKiVTacE90be0CJCToXEC5OfboJY/RiYu1uzQd0gFRjNo4SU8ScMtAUfMit0Ar9b7FccIJ4Jmvr+OcRcnGcJNYDTnWg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711467148; c=relaxed/simple;
-	bh=GLatH7ZOZFENhKDsjDGlkbHAT25/qlITlr0m28sLf1A=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=h5/MkOGQdfPijiIPkTtbDrFxkqGcpFXh4IpIShazcuFVddVCwm62veUBtHOBuC5E2oP1s/YLvcQSHLS1+GaDJtyiWsINMTmoNbnnrrYM8IiLQGwwmEjSvXsJS2jk00t7DcPngWUi/mdBeAMGyc049wGE0Yf8xXnHtHMtWhb3wUQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca; spf=pass smtp.mailfrom=ziepe.ca; dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b=cDEEblNi; arc=none smtp.client-ip=209.85.219.47
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ziepe.ca
-Received: by mail-qv1-f47.google.com with SMTP id 6a1803df08f44-696a221c53aso4039326d6.0
-        for <linux-rdma@vger.kernel.org>; Tue, 26 Mar 2024 08:32:25 -0700 (PDT)
+	s=arc-20240116; t=1711475062; c=relaxed/simple;
+	bh=Rg7gJ5ajGgP7K5w260P9fa6TYNqVorpBMweHxhdkPJs=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=bMYp6CtKR1UwrRGHKQ1uDP/YAwVJaHsXMKE6xtrzCY2M6OgCUgl3e/Pa69FMRG1dlq2s3eGU4dMWgGdgZa0IKnIYwdsisyi+KMZnJor0tEXBJYH8sLWINN0iCMd1aiUAyyYytUQ0bR6L3EyaqMMM3C/cOke9cgq2LljpItbjpqk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=TMmzSYHD; arc=none smtp.client-ip=209.85.161.53
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-oo1-f53.google.com with SMTP id 006d021491bc7-5a56a5f597dso855715eaf.2
+        for <linux-rdma@vger.kernel.org>; Tue, 26 Mar 2024 10:44:21 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google; t=1711467145; x=1712071945; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=O3SHR7HxdotDZ2M8AZNxpUiAzi1WTnbP3eb5Z70DWwE=;
-        b=cDEEblNiAVtCyfEV6MbEuaHjUO9yn1GdSZn2AbetcrY14TkpcfdJT82gOsdNrellwK
-         0bFxXc7VcfPCkk4zEvrK6sxEvIZA8MsjFSp3dKYh8ymz4H8rRJSzaYIZk5YKR1eO25Wr
-         STRE59SAC8eJAs7l4ClbRSIv1QSjPhNFFBbKbuiQg82hKC6O8TvD5avVn8ywbpxizhim
-         xjF1ame40YwmcIUXWu6aBi4h/rVHulWnm7a6do26F2fXLd6JDfgd6UyILP0jVWIskHmf
-         KVuFXAmH+h6QgxmS+niXOiCzZxi3dRKw+YlbWY7wDTzM9zanDSQN3t1BZ9wt3lbZWKSP
-         ZozQ==
+        d=gmail.com; s=20230601; t=1711475060; x=1712079860; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=sf43KXUljxu5cL4W38O9YvJEryB/seqy3jiGezHopDc=;
+        b=TMmzSYHD4oaU4aijz+r/ZA+U/3W9HgAH3lnpcJYlf1zHGXO0k+q1FBBIlXlpdLfu5E
+         SAIYRBSv8eghSFRzeZoYudLKKG5yjIBqMrClT6v8EqvPZh56kSMvyKfldq4osg8t3wMa
+         D9qaQIuNKPqMXhE92w46U9Wp23KMeXCLskNf0fVhVIZmuQI181AhjFsnjeTGMoEdFySf
+         5pp681eruGYmulOZWOkbOg9we0M9D4ZTrEba6m9qzPMnfA0rQ2rUb1DaYQgpC7KZv101
+         taz3YA4eHp/47wISkiVSL2HJ2d/vD2Q/4ViSUg/Da7+inEqhqs71UYGynRzzrV8+tvie
+         aUZg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711467145; x=1712071945;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=O3SHR7HxdotDZ2M8AZNxpUiAzi1WTnbP3eb5Z70DWwE=;
-        b=gLqOJjhUQgs4c5jSFU6XGURaPPsWm2Mu5w0Vek28Xf8DXYqgU38Lmb5n8lNrMxu7Ed
-         Mq1xg63D3/ZBppFBcsmQC7zNPaeu14BBQqAjjbudCWV3JAxMTH8NJDPz1GCXE0QeQB77
-         EV6iknh4VSDKU1qBzCbKzjgoYJMtbAjOAvt7/4aWgJlrNwmOzqu4CKH9KIe7/BDueT9c
-         yqUrWEZDGe1ipiwBgA6kqqFjuJvB7LmkxLiTs3jzYJuQ0EYcP2s2kIFb8uu9wbLLvnQU
-         YHTI4WliyKDUP3x0yvsIIiTGXT5GMMj1H5xOKXEDylpTLBIGYBkz8+7HOKvV5LwHMxbm
-         NPBg==
-X-Forwarded-Encrypted: i=1; AJvYcCXQruu1JPdMIbramFsSwVUfhwmB+MBfqu0Y60yDLWXppeE7KWuyOmjCTsUUE0FUZsBW4C876oev+ZEoW48GDFfsFQseCSr87Oi7Gg==
-X-Gm-Message-State: AOJu0Yx+YA3b6Z3FiBTm2QN/0IetfxOEDXWAWAanWydRr+MDgA6J63PA
-	YDa9Y7wyx4VJQNFenM+odzWPzyXISL/dYSi7exMC2sO96M5qAkil/dRJgf5XV+w=
-X-Google-Smtp-Source: AGHT+IFb5rsoFzP1zcQcm+tSf+kkK6vnwteEHMmMK0+qzdpITXfqA9F3uCSQSSM/c2javsPnq0SJmA==
-X-Received: by 2002:a05:6214:2249:b0:696:89ae:9f57 with SMTP id c9-20020a056214224900b0069689ae9f57mr2883743qvc.25.1711467144748;
-        Tue, 26 Mar 2024 08:32:24 -0700 (PDT)
-Received: from ziepe.ca (hlfxns017vw-142-68-80-239.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.68.80.239])
-        by smtp.gmail.com with ESMTPSA id 5-20020a05621420c500b006968303bf73sm3279781qve.94.2024.03.26.08.32.23
+        d=1e100.net; s=20230601; t=1711475060; x=1712079860;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=sf43KXUljxu5cL4W38O9YvJEryB/seqy3jiGezHopDc=;
+        b=KRggg2PBVsLP8tB9MtNrEU4A2vvqsj4pN1FqNZ2AaPhcPYpTLayxglOH0Fr6B/zio2
+         iVVzwC/CAGQMdS6+CExiccbgdVmsWeqcKFKuPCdy2MObo31SWr4ghUh2VPBn8xU6qZ9G
+         o0oYJodCCl2XIE6IhqfvHNuzPsng2SkOyZNsggZIvyxS+CEY1n2ol+jwts7vllZPZAAZ
+         R1bETWMb763/AODQa+Z8jeNqduyC9be/WxYV8Ay7XmkSOlHGxniu/qSjrZYc4DoaUhqe
+         DoqLtX/yUX4lMXUJdCmEYzZ7NSctv2yp8kTNTd9zJiuFi1LjHDV60B+3x024nvcbmeCm
+         W49Q==
+X-Forwarded-Encrypted: i=1; AJvYcCVbw3bjRkHOG4PxADyRILwFfaAGJeSCexErl5nZccakx3+WqcN20Eu+0gaKnLmTyfagIufd5GdNXiNXs4tVuw602DaWsJy4eRo3WQ==
+X-Gm-Message-State: AOJu0Yy8+a2hnv+lHIjCEm/y9pFpJz2jcy5wLvMrt3BeSrgyFZcYoh1l
+	zMn0Cg9UvXBALEosyqHIHNKnBvH9f3MksYwJmnBtAHJicWRtNm7K4OSsmWI3bKg=
+X-Google-Smtp-Source: AGHT+IGKpdfY6o2tUTjtXaNHtmhAE9J9TVA96NLsmuTOjiS/zNgj2ULmRu8FoEGfIqfY06MnSMlw0w==
+X-Received: by 2002:a4a:e205:0:b0:5a4:75f2:54d0 with SMTP id b5-20020a4ae205000000b005a475f254d0mr1416710oot.9.1711475060231;
+        Tue, 26 Mar 2024 10:44:20 -0700 (PDT)
+Received: from bob-pearson-dev.lan (2603-8081-1405-679b-b62e-99ff-fef9-fa2e.res6.spectrum.com. [2603:8081:1405:679b:b62e:99ff:fef9:fa2e])
+        by smtp.gmail.com with ESMTPSA id i10-20020a056820138a00b005a53e935171sm1399860oow.35.2024.03.26.10.44.19
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 26 Mar 2024 08:32:23 -0700 (PDT)
-Received: from jgg by wakko with local (Exim 4.95)
-	(envelope-from <jgg@ziepe.ca>)
-	id 1rp8ml-003UNx-AR;
-	Tue, 26 Mar 2024 12:32:23 -0300
-Date: Tue, 26 Mar 2024 12:32:23 -0300
-From: Jason Gunthorpe <jgg@ziepe.ca>
-To: "Margolin, Michael" <mrgolin@amazon.com>
-Cc: Tao Liu <ltao@redhat.com>, Gal Pressman <gal.pressman@linux.dev>,
-	sleybo@amazon.com, leon@kernel.org, kexec@lists.infradead.org,
-	linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org
-Subject: Re: Implementing .shutdown method for efa module
-Message-ID: <20240326153223.GF8419@ziepe.ca>
-References: <CAO7dBbVNv5NWRN6hXeo5rNEixn-ctmTLLn2KAKhEBYvvR+Du2w@mail.gmail.com>
- <5d81d6d0-5afc-4d0e-8d2b-445d48921511@linux.dev>
- <CAO7dBbXLU5teiYm8VvES7e7m7dUzJQYV9HHLOFKperjwq-NJeA@mail.gmail.com>
- <b6c0bd81-3b8d-465d-a0eb-faa5323a6b05@amazon.com>
+        Tue, 26 Mar 2024 10:44:19 -0700 (PDT)
+From: Bob Pearson <rpearsonhpe@gmail.com>
+To: yanjun.zhu@linux.dev,
+	jgg@ziepe.ca,
+	leon@kernel.org,
+	linux-rdma@vger.kernel.org,
+	jhack@hpe.com
+Cc: Bob Pearson <rpearsonhpe@gmail.com>
+Subject: [PATCH for-next 00/11] RDMA/rxe: Various fixes and cleanups
+Date: Tue, 26 Mar 2024 12:43:15 -0500
+Message-ID: <20240326174325.300849-2-rpearsonhpe@gmail.com>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <b6c0bd81-3b8d-465d-a0eb-faa5323a6b05@amazon.com>
+Content-Transfer-Encoding: 8bit
 
-On Tue, Mar 26, 2024 at 02:34:45PM +0200, Margolin, Michael wrote:
-> Hi Tao,
-> 
-> Thanks for bringing this up.
-> 
-> I've unsuccessfully tried to reproduce this kernel panic using production
-> Red Hat 9.3 AMI (5.14.0-362.18.1.el9_3.aarch64).
-> 
-> Are there any related changes in the kernel you are testing?
-> 
-> Anyways we do need to handle shutdown properly, please let know if calling
-> to efa_remove solves your issue.
+This series of patches is the result of high scale testing on a large
+HPC system with a large attached Lustre file system. Several errors
+were found which had not been previously seen at smaller scales. In
+this case up to 1600 QPs on 1024 compute nodes attached to about 100
+flash storage nodes. Each patch has it's own description.
 
-efa_remove should not be used for shutdown..
+Bob Pearson (11):
+  RDMA/rxe: Fix seg fault in rxe_comp_queue_pkt
+  RDMA/rxe: Allow good work requests to be executed
+  RDMA/rxe: Remove redundant scheduling of rxe_completer
+  RDMA/rxe: Merge request and complete tasks
+  RDMA/rxe: Remove save/rollback_state in rxe_requester
+  RDMA/rxe: Don't schedule rxe_completer() in rxe_requester()
+  RDMA/rxe: Don't call rxe_requester from rxe_completer
+  RDMA/rxe: Don't call direct between tasks
+  RDMA/rxe: Fix incorrect rxe_put in error path
+  RDMA/rxe: Make rxe_loopback match rxe_send behavior
+  RDMA/rxe: Get rid of pkt resend on err
 
-If you have an iommu in your system (smmuv3 for this ARM64 case) then
-drivers must implement a shutdown handler or you will risk data
-corruption on ARM64 sytems during crash.
+ drivers/infiniband/sw/rxe/rxe_comp.c        | 34 ++++-----
+ drivers/infiniband/sw/rxe/rxe_hw_counters.c |  2 +-
+ drivers/infiniband/sw/rxe/rxe_hw_counters.h |  2 +-
+ drivers/infiniband/sw/rxe/rxe_loc.h         |  3 +-
+ drivers/infiniband/sw/rxe/rxe_net.c         | 22 +++---
+ drivers/infiniband/sw/rxe/rxe_qp.c          | 44 +++++-------
+ drivers/infiniband/sw/rxe/rxe_req.c         | 80 ++++++---------------
+ drivers/infiniband/sw/rxe/rxe_resp.c        | 14 +---
+ drivers/infiniband/sw/rxe/rxe_verbs.c       | 17 +++--
+ drivers/infiniband/sw/rxe/rxe_verbs.h       |  6 +-
+ 10 files changed, 81 insertions(+), 143 deletions(-)
 
-The shutdown handler must stop all DMA from the device.
+-- 
+2.43.0
 
-If you don't have an iommu then the shutdown handler shouldn't be
-critical.
-
-Jason
 
