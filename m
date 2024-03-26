@@ -1,166 +1,219 @@
-Return-Path: <linux-rdma+bounces-1558-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-1559-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id B23F888B558
-	for <lists+linux-rdma@lfdr.de>; Tue, 26 Mar 2024 00:33:28 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3BECA88B6F9
+	for <lists+linux-rdma@lfdr.de>; Tue, 26 Mar 2024 02:39:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E3FB81C3A0DD
-	for <lists+linux-rdma@lfdr.de>; Mon, 25 Mar 2024 23:33:27 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A72521F3B470
+	for <lists+linux-rdma@lfdr.de>; Tue, 26 Mar 2024 01:39:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 89193839FC;
-	Mon, 25 Mar 2024 23:33:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A005B2110E;
+	Tue, 26 Mar 2024 01:39:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=microsoft.com header.i=@microsoft.com header.b="NITTYHRu"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="eeLR3mjN"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from EUR04-HE1-obe.outbound.protection.outlook.com (mail-he1eur04on2112.outbound.protection.outlook.com [40.107.7.112])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CAEB4839F3;
-	Mon, 25 Mar 2024 23:33:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.7.112
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711409603; cv=fail; b=VGQaQFlrzjyKDwjDVLkk33fXKRDGAupsqx2EUHC2cik5noliFkxp06x3ppKG2DRPq4DewlccLjt/4wzGJXB6HLbSZKXuZZhBN3MjQq1s6AzcWFdK6RZYoL6RU7uBBpmJW/rjz1zXn9PWjCdw9lVzNQmL3IuhcL6R0YnSnT97COM=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711409603; c=relaxed/simple;
-	bh=tBM+wOmmVQEQqhQ8YBqUIz+4j+i8CuXrCT8j49i6CAQ=;
-	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
-	 Content-Type:MIME-Version; b=IxKJWWdo8/SGtDHrr5T3ER9LgFvpeSo59I83RY5nsHfot/TIsoIdk+izcgTpnngi4vSz32Nc2Ri6a8uoRylmMRvlRol0U3QGSzSNi2UXmDzHGU6KzLIWoZfJb2jgAnmpLVH0AxwrlZZhc2Z5lLBCPgZ1OpeGGrvOnRBZqwnksNc=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=microsoft.com; spf=pass smtp.mailfrom=microsoft.com; dkim=pass (1024-bit key) header.d=microsoft.com header.i=@microsoft.com header.b=NITTYHRu; arc=fail smtp.client-ip=40.107.7.112
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=microsoft.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=microsoft.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=nEU6VrQVZf/k/9BQRoM2mnm8D8EJMWKshJc1VKXLWVl3yRvVkJkeFCwXmdOq1kuFCK9nH3kv83S/DzRo+JWvZyC4ABChVcRmfuiVCURIlCMYec0ixlJyOhlaiy/ydoBpJJjygKzYcZK19BPXbCXy9hB0immMI5e48XdSKE7pw9zqeZ2VKvzXiYBQclyIx54/T6BDYBm3wVHheZvVg08H4541vXNQArmyzfhEmzo2QZeImzhi6NE3G8OrXsElvZJZ/6xLJeI5tjihCkxaZgTnOvdv1igplUnBUe3y6KzkrGmoeuMnC2G1H8UVKUV7QOTKKrmE1/pBfJymBfNX8LBAGg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=tBM+wOmmVQEQqhQ8YBqUIz+4j+i8CuXrCT8j49i6CAQ=;
- b=WnZ/nYD/ZzM0RG1s75yA/LfB73w0aKGO79SxvbsznxPPrCGHCwEu9ldya+MbLWxQn5yevqBtOVpNuCmOyIJURW7RQIaI/5VEHC2VKCWdlYJNUzDvyKr4Oy/TQVlJMo5ABXobrS7KdDJsa8T/RCt1vTHG+NI0Nurl4q7KnlZZoIR+xuK9aeQkweeqYTVNjzuWvrduK2IERbZoBnncvCRxDLaKw8jtRwUYtSSI+SOAWovUG7ELsDrImhHTKB3goJpbKh2+vyU2/Ub9pVAgp5qMqwC7NNIeEiCAizlmak8nkCZpnPjZ9Tmzpm/7XVjzviSPw4l/jgjCeNpj2E5i90nvCQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=microsoft.com; dmarc=pass action=none
- header.from=microsoft.com; dkim=pass header.d=microsoft.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=tBM+wOmmVQEQqhQ8YBqUIz+4j+i8CuXrCT8j49i6CAQ=;
- b=NITTYHRuhF1DnAxCvij95kJVeApP9CtUnLFjircoEyR0mEEjbNjNNxjlsXFU6I4JPtdiBm7lC29zj4YXrdzah7SgjvkVD58tWGiwqr/VhMHDRdxou4ttvFB2BI01QdhOTF027l/8tT56QlqLfFGkFJMbfw70N4IYfXQ4j1IYl5k=
-Received: from PAXPR83MB0557.EURPRD83.prod.outlook.com (2603:10a6:102:244::16)
- by GV1PR83MB0604.EURPRD83.prod.outlook.com (2603:10a6:150:164::18) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7430.19; Mon, 25 Mar
- 2024 23:33:17 +0000
-Received: from PAXPR83MB0557.EURPRD83.prod.outlook.com
- ([fe80::7c93:6a01:4c9f:2572]) by PAXPR83MB0557.EURPRD83.prod.outlook.com
- ([fe80::7c93:6a01:4c9f:2572%6]) with mapi id 15.20.7430.021; Mon, 25 Mar 2024
- 23:33:15 +0000
-From: Konstantin Taranov <kotaranov@microsoft.com>
-To: Long Li <longli@microsoft.com>, Konstantin Taranov
-	<kotaranov@linux.microsoft.com>, "sharmaajay@microsoft.com"
-	<sharmaajay@microsoft.com>, "jgg@ziepe.ca" <jgg@ziepe.ca>, "leon@kernel.org"
-	<leon@kernel.org>
-CC: "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: RE: [PATCH rdma-next v2 4/4] RDMA/mana_ib: Use struct mana_ib_queue
- for RAW QPs
-Thread-Topic: [PATCH rdma-next v2 4/4] RDMA/mana_ib: Use struct mana_ib_queue
- for RAW QPs
-Thread-Index: AQHaeh7y6nDPqyfnDUGtka/+kAc0x7FI5HkAgAAUIZCAAAPqgIAAKCjg
-Date: Mon, 25 Mar 2024 23:33:15 +0000
-Message-ID:
- <PAXPR83MB0557EC87F91A7AFD05C6C1F6B4362@PAXPR83MB0557.EURPRD83.prod.outlook.com>
-References: <1710867613-4798-1-git-send-email-kotaranov@linux.microsoft.com>
- <1710867613-4798-5-git-send-email-kotaranov@linux.microsoft.com>
- <SJ1PR21MB345735033DFA7CFF14B7BBD5CE362@SJ1PR21MB3457.namprd21.prod.outlook.com>
- <AS1PR83MB05435D612E76C1F4488FE99CB4362@AS1PR83MB0543.EURPRD83.prod.outlook.com>
- <SJ1PR21MB345727F29DD1E4608A335B43CE362@SJ1PR21MB3457.namprd21.prod.outlook.com>
-In-Reply-To:
- <SJ1PR21MB345727F29DD1E4608A335B43CE362@SJ1PR21MB3457.namprd21.prod.outlook.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach:
-X-MS-TNEF-Correlator:
-msip_labels:
- MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ActionId=1de6e87c-a583-43bc-aa2c-c97facb0b9ad;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ContentBits=0;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Enabled=true;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Method=Standard;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Name=Internal;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SetDate=2024-03-25T19:38:12Z;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SiteId=72f988bf-86f1-41af-91ab-2d7cd011db47;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: PAXPR83MB0557:EE_|GV1PR83MB0604:EE_
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info:
- Pd8wLfu4OUFeoH/gx6hsEBeNdYDJgRjk86Wp4LF29W6mGx7xo/3eJU0eg+wbK71cTFUU/ffyTtZ0WQ+/nnjgd3DibmlpBmdnkXprNaiiCNBncdDJe718aioo1brrsERty/TtZR+EMc+X1H2CC8UqjTMCrL/zZD4UV7cpiOgnGUELk56ZcAg6+Smu97eE0rnZLsTGtVjFnszFjSRJfV2Lq3lwniMRVT/2OsH9Dv8r5U+k/hqDrXBWgI+ar+CtB/23mCqH+E2fagwUdhSlYp2+nsN9vn/Rt412cbu/XbXbTJGo4Y5FYzGdbYoIZaJSp5K/E7hYvlkvGpMNlMOPN593vvY7mHFvibvgrlWkdzU8Rlb25sWtCWGx2SDNLE4bXWvL1ZMRg6om3SNrRbn8Su93yO+J6AzY2bb0PDMVgTAyKmwU7AETowcq4Q0uAJ+uilteZa9RLAoAyeiD2zCIfCVZAKpIdOVTnxUmQdoK2X4fg0Uz2U9cF5qRx628Y9Pbr9BCRmuDBHHYstYoMkg18K+AkBf3O1KxoO97cw4LZOWREOMqLiHEDr14pycjomTg9SG4NJWi5M9mG5k+96aOc1Rsjle0dURWV9IfFOgTVX2Z65cg+JuI9L8bn2iwCRGM6LfuBX5c8v9LZqUoUe/hiCeJ05Lan4JP1NczqwS1+69Tq2M=
-x-forefront-antispam-report:
- CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PAXPR83MB0557.EURPRD83.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(1800799015)(376005)(366007);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0:
- =?utf-8?B?SWllaEs4YndWOWYrQ3hjejl0c2hBdUR4aVdGTUN5UWdVTjVzaEFUeUZLcTMx?=
- =?utf-8?B?OFE5QVlPV1VrdTJSSjhBbytieG40Q3FwTFFQSEpyL3RPTEhkV3VNcWtkdFlr?=
- =?utf-8?B?YUN5ZXloR1Ftd2ZVZFEvWWNBbzMwTkJPa0hMa1JINUo4VjhzZ3JlS3V5K01N?=
- =?utf-8?B?SnpVYkI5VXdjK3hiWmoxNWVkR2dVT0w2STZOVkRZN3NYanZMeUZaN0V1elBi?=
- =?utf-8?B?ZTBENGxnR2F0d0ZxZ3Q2Wm9VdCswa1F4VkNoZ1J4NTA5V3c4MEFQdHdvdHVh?=
- =?utf-8?B?UmVtNEMzazI0VWVlZC9KL2x3MllKUXh2SFUvZjZnWTV3VFM0dnNOVlZoTEor?=
- =?utf-8?B?bGJsOUpGckRjYjB0N0R4WUpjTXJlNG5oTll6Zmd5ZVFxQTNIaEszKzM2Tk02?=
- =?utf-8?B?UjB5R3NjREpRekJEYklRK2JsVzVTRTV6ck0rSjdERmNSajlnZzd0bjlRRWpM?=
- =?utf-8?B?amVVVXBQbFZVTFd5aHVueDhnY1dXY3lDQWlvYnJvT0dhYThWZmswb29vZFZP?=
- =?utf-8?B?citOMDJ0YUdKZzJlL1M5VjlrOTRURStzRTVWc3dBekZCaktuV2lFRjVsNlV2?=
- =?utf-8?B?K2pQZW1Ga3FRUVhmaUFrYXRVQ2V1L2RUckM2aklOaWVZSHY5Sys1dDBmS01q?=
- =?utf-8?B?MFVBYzd4UUVKajlIbm11aTFMMmZXSVZSaU1LVm9aSlBGaTk2MjNEeU1COFFp?=
- =?utf-8?B?MVV4azJMRVJiV0lKZXlVcUZKY24xMmU1L1lJK1hUbzFiTjNnK2dGb0ZSV2J1?=
- =?utf-8?B?RWlBdGJjbkUySkQvWUx4YTVyclZYbE15V2N6SFNOSVJMcVNQNWVQaEo5QzVQ?=
- =?utf-8?B?bEd3MU1DQ3daODdKSWVhcjc2VW1SeVZmY3ZjNEhZNDVqQjhud2RjdVUvQWRV?=
- =?utf-8?B?UndPcHlpNVExUjhST0xHTWwzWCtmMXIxbkpYbHJ1MFVUZFF4c2dTNmdzWXRF?=
- =?utf-8?B?MWRmYzBUeWpmbGxMOWlreXJxMExHdWpCTGdZQkx1MGxMYjUxa0QxdEJUNVBr?=
- =?utf-8?B?Ni9QbWdQTFlzc0h4eXhVSTVubjdONkZrUnc5b09lYmFSVmEzZStIMnYyWGJw?=
- =?utf-8?B?dEFXNzEyVzRQV1p2ZUpXY09lRzdRMEdrZ3JXbnI2bzEyaDNBUm9CT1pnY0xV?=
- =?utf-8?B?d2tTRW1YN215RUtSNmpDbVZ6WVZJOTUyMW84RWhCOFU3enlQNTVXRGVVQzNC?=
- =?utf-8?B?V2R0VFoyakV2OG5HZno5eEhTekRpNFErSi8rUDZGa3VKS1NTZVFEQjZVYS80?=
- =?utf-8?B?VjJaN282bnluT20reFYrMURzVXBpNC84RE5vL1V5SlBLZUltNy9yMmhPcFRR?=
- =?utf-8?B?dFpjNXR4Zys0cDNibHppT25ZRHJ5V1JKNUNCcEpON0VOTGV6ODgwQ0JabFBh?=
- =?utf-8?B?dW44ck0yZmtOTkZVbzVKSjdneGtiNkI1NUNLNmJvV2l0NnJ5dXF6WEo5aW5E?=
- =?utf-8?B?R2t5SUwyMHJTb2pzUDdVcXIrYXpaRXVKNVdMQ2RlWEh5SU1wZUdFZ29ud2dl?=
- =?utf-8?B?bC94YnA3SDJTSGUyMEgydEJqeHdKb1pSNzh4YTVRMnEvYTl1d21tWFBZQ3NE?=
- =?utf-8?B?UnpNSXVVQ3RHVHVvVldCMFN1aFRodEZUVXB4NkxMZThhQmQxK05EVkpMdDBV?=
- =?utf-8?B?eW52QVZ6cWwzckh2REppZlhEM2hZUVp0dTViWUJpWk1FYkdUMGROTDU2aDJk?=
- =?utf-8?B?R2xEQnFpNUJmNjJHM2Z1VnBna0szRzZZNVZMaFhYSVp6a0srRDV2U3VEQmRM?=
- =?utf-8?B?WGJMZUkwbXM4bm5lNkVoaytRQTBCSEZJZ2RMU3dhYXNRaGl2SFBFU3NmcE1k?=
- =?utf-8?B?eWI4MDdaL3NERkNwLzhmekVMNnl1Nm1VSU1tOExBQk5PdVUxVkZlNFdCc2l5?=
- =?utf-8?B?aThqRzJjZEhzOEE3dGhSUUQ4ZXE5TnJkQVpMd2h1anVmdXJQM3U4eFNubVhq?=
- =?utf-8?B?TGk4MlJ5VHc5VlNEbFpXN1lsYkVUQWFXK2gvMklkZDdYOVdEV2FBc2E2ZFZJ?=
- =?utf-8?B?cHY1S0NCUGFiZm5IVUNOWm5SYktBQlhnallZKzVaTzRpSXd6ZG52RGZDNzdK?=
- =?utf-8?Q?Nwigxa?=
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A293B1C6BE
+	for <linux-rdma@vger.kernel.org>; Tue, 26 Mar 2024 01:39:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1711417156; cv=none; b=iPaI3VCf245E59hIGIuyGfFSubRKDs93rnwTfgfgD7jyb/hC8Eda77YhMcE5gXlAOfsHx5wM6nHIhVzWR0axEbQHaxdLbaGsBF9ToWO9Knjv6Bcyk0nQ4//M+e32o6EChbsv4VK+ZYPpH2n3o6MSMDj9r9bv7ZG2TjwdA8w0wAo=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1711417156; c=relaxed/simple;
+	bh=ozN5T78X/8LPjCWi2AnyTnIYDZmkjh80Ju6ZW4H2//U=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=HoiIUPiz28WeOO1eZQH39wU0zD7HX9CDodETvKEGrXoC4aM3zKcUho/zM4g462SjXLvjZD3fU1uOJRQIKw3Rh/aXldKl9hMo6ASFKB3Nvfmhke9Af1Z/BcvloTsI6vxnEJhQa4ZnHQJIyepdXDSHpkYY16F0nXEJiQOXVL/v4/s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=eeLR3mjN; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1711417153;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=WTaD6mudg7VhN+d5uv+mspRcpmC/ctCIgx4dGqOcYps=;
+	b=eeLR3mjNt/8vZD/op0V2xrWfeyHNBoAdyc19DhJvqEMY9+YKNkGhYaWNwNTop33JzO/4zl
+	JO5kr8w7yPr6lkSx8g2c83bBdUCdfsDNA8iyJ0zKUHyq6prQmy1oZ1cnVLBrnzP+SYO3sM
+	4wO27W2lgdk3FRKTEPdxaORubQ8aJdE=
+Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
+ [209.85.221.72]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-92-MSS6yFc1MUmSo8plbFHU_Q-1; Mon, 25 Mar 2024 21:39:11 -0400
+X-MC-Unique: MSS6yFc1MUmSo8plbFHU_Q-1
+Received: by mail-wr1-f72.google.com with SMTP id ffacd0b85a97d-33d8d208be9so3407958f8f.2
+        for <linux-rdma@vger.kernel.org>; Mon, 25 Mar 2024 18:39:11 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1711417150; x=1712021950;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=WTaD6mudg7VhN+d5uv+mspRcpmC/ctCIgx4dGqOcYps=;
+        b=jL1nE5f7kWdk9mjRHVPVRUJSHbP3nl9MSM0nimFUZW/pAksNU9ZrJDJcSrwcbv2Wui
+         /sr+rphSw/IWfVEtkNg27c/1JugYOhG6t+ubwaSonf9548db+f1KkQipYblbxxpWj6Oi
+         JtvdJmzY6RZOnn7kk3qPP47PzdzMv3GYfNT49+6eMvvhLhrX6FHYEJMs63Pt2b8Nclme
+         JFpOlyJGzqkaJ2XaGL9KhrhsfFDn7qXjAwwYp5eva2i0TPZkGld9K/KAAnvbPSyMCmil
+         z8FUfwySMoNqsVcMGn4i67Ec7k3EjES+KLP5s/xXO7R6el7kNxSh7ESGDx+k2qkA+p0G
+         KLIA==
+X-Forwarded-Encrypted: i=1; AJvYcCWZ8inpdPbi4Fw9X7zJmy+8UpnN0SA45fsMDJqF0+UJxb1CTRyvABr2l/u6JwjtKLsOQPcm1osN0jCTRPCIFgtwvf0LQjgh0/SXSw==
+X-Gm-Message-State: AOJu0Yy4AFjTMjZ5Gj6bWlwS1Blc3gfkViG7kInqWQqvldRf1HHindtY
+	I1UPPDlAN1vHNvKYVmPgKh7XYe6sS1+63bZuJqMWUjfhGEX8o8E7NybygMQDBsqUggoO86A4lDx
+	zmL+DhiXiijWYHXOZwnkq51VYqnp3PrraZso5oBT72IXNei1ZcVC96yj0YDkIdPbM25SSdVDNk/
+	ziHwx7cSoq3xyje2grKeC1LQVaTjSxOzZKHQ==
+X-Received: by 2002:a5d:60c9:0:b0:341:865b:65c9 with SMTP id x9-20020a5d60c9000000b00341865b65c9mr7571758wrt.22.1711417150412;
+        Mon, 25 Mar 2024 18:39:10 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IHGAVRQvSolwKhN9lxaw7HUOTpaQxkO72OCZv+7YVENFG33vSWYVqDPTA5Pq/1JgP4Gbiom3nqQHbE/DxEgqA8=
+X-Received: by 2002:a5d:60c9:0:b0:341:865b:65c9 with SMTP id
+ x9-20020a5d60c9000000b00341865b65c9mr7571746wrt.22.1711417150064; Mon, 25 Mar
+ 2024 18:39:10 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-OriginatorOrg: microsoft.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: PAXPR83MB0557.EURPRD83.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: b98e8387-016d-4057-fdca-08dc4d23f18e
-X-MS-Exchange-CrossTenant-originalarrivaltime: 25 Mar 2024 23:33:15.1549
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 72f988bf-86f1-41af-91ab-2d7cd011db47
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: kIXq7SWwrujW2U9Pijmbdz+AR2wTX9pe2C4y+su0oE5LfPAFWm+1AlyULnNHKQ25jv+6CX8TWgjYw+LkICTa6w==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: GV1PR83MB0604
+References: <CAO7dBbVNv5NWRN6hXeo5rNEixn-ctmTLLn2KAKhEBYvvR+Du2w@mail.gmail.com>
+ <5d81d6d0-5afc-4d0e-8d2b-445d48921511@linux.dev>
+In-Reply-To: <5d81d6d0-5afc-4d0e-8d2b-445d48921511@linux.dev>
+From: Tao Liu <ltao@redhat.com>
+Date: Tue, 26 Mar 2024 09:38:33 +0800
+Message-ID: <CAO7dBbXLU5teiYm8VvES7e7m7dUzJQYV9HHLOFKperjwq-NJeA@mail.gmail.com>
+Subject: Re: Implementing .shutdown method for efa module
+To: Gal Pressman <gal.pressman@linux.dev>
+Cc: mrgolin@amazon.com, sleybo@amazon.com, jgg@ziepe.ca, leon@kernel.org, 
+	kexec@lists.infradead.org, linux-kernel@vger.kernel.org, 
+	linux-rdma@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-PiA+ID4gPiAgc3RydWN0IG1hbmFfaWJfcXAgew0KPiA+ID4gPiAgCXN0cnVjdCBpYl9xcCBpYnFw
-Ow0KPiA+ID4gPg0KPiA+ID4gPiAtCS8qIFdvcmsgcXVldWUgaW5mbyAqLw0KPiA+ID4gPiAtCXN0
-cnVjdCBpYl91bWVtICpzcV91bWVtOw0KPiA+ID4gPiAtCWludCBzcWU7DQo+ID4gPiA+IC0JdTY0
-IHNxX2dkbWFfcmVnaW9uOw0KPiA+ID4gPiAtCXU2NCBzcV9pZDsNCj4gPiA+ID4gLQltYW5hX2hh
-bmRsZV90IHR4X29iamVjdDsNCj4gPiA+ID4gKwlzdHJ1Y3QgbWFuYV9pYl9yYXdfc3Egc3E7DQo+
-ID4gPg0KPiA+ID4gQXJlIHlvdSBwbGFubmluZyB0byBhZGQgYW5vdGhlciB0eXBlIG9mIHNxIGZv
-ciBSQyBoZXJlPw0KPiA+ID4NCj4gPg0KPiA+IFRoZXJlIHdpbGwgYmUgbm8gbW9yZSBTUXMuIFRo
-ZXJlIHdpbGwgYmUgcmNfcXAsIHVkX3FwLCB1Y19xcCwgd2hpY2ggaGF2ZQ0KPiBzZXZlcmFsDQo+
-ID4gcXVldWVzIGluc2lkZS4NCj4gDQo+IEFyZSB5b3UgZ29pbmcgdG8gcHV0IHJjX3FwIGluc2lk
-ZSBzdHJ1Y3QgbWFuYV9pYl9xcD8gT3IgaXMgaXQgYW5vdGhlciBzdHJ1Y3QNCj4gY29udGFpbmlu
-ZyBtYW5hX2liX3FwPw0KDQpJdCB3aWxsIGJlIGxpa2UgdGhhdDogDQpzdHJ1Y3QgbWFuYV9pYl9x
-cCB7DQpzdHJ1Y3QgaWJfcXAgaWJxcDsNCg0KdW5pb24geyANCnN0cnVjdCBtYW5hX2liX3Jhd19z
-cSBzcTsNCnN0cnVjdCBtYW5hX2liX3JjX3FwIHJjX3FwOw0Kc3RydWN0IG1hbmFfaWJfdWRfcXAg
-dWRfcXA7DQp9Ow0KfTsNCg==
+Hi Gal,
+
+On Mon, Mar 25, 2024 at 4:06=E2=80=AFPM Gal Pressman <gal.pressman@linux.de=
+v> wrote:
+>
+> On 25/03/2024 4:10, Tao Liu wrote:
+> > Hi,
+> >
+> > Recently I experienced a kernel panic which is related to efa module
+> > when testing kexec -l && kexec -e to switch to a new kernel on AWS
+> > i4g.16xlarge instance.
+> >
+> > Here is the dmesg log:
+> >
+> > [    6.379918] systemd[1]: Mounting FUSE Control File System...
+> > [    6.381984] systemd[1]: Mounting Kernel Configuration File System...
+> > [    6.383918] systemd[1]: Starting Apply Kernel Variables...
+> > [    6.385430] systemd[1]: Started Journal Service.
+> > [    6.394221] ACPI: bus type drm_connector registered
+> > [    6.421408] systemd-journald[1263]: Received client request to
+> > flush runtime journal.
+> > [    7.262543] efa 0000:00:1b.0: enabling device (0010 -> 0012)
+> > [    7.432420] efa 0000:00:1b.0: Setup irq:191 name:efa-mgmnt@pci:0000:=
+00:1b.0
+> > [    7.435581] efa 0000:00:1b.0 efa_0: IB device registered
+> > [    7.885564] random: crng init done
+> > [    8.139857] XFS (nvme0n1p2): Mounting V5 Filesystem
+> > d7003ecc-db6f-4bfb-bf92-60376b6a6563
+> > [    8.265233] XFS (nvme0n1p2): Ending clean mount
+> > [   10.555612] IPv6: ADDRCONF(NETDEV_CHANGE): eth0: link becomes ready
+> >
+> > Red Hat Enterprise Linux 9.4 Beta (Plow)
+> > Kernel 5.14.0-425.el9.aarch64 on an aarch64
+> >
+> > ip-10-0-27-226 login: [   29.940381] kexec_core: Starting new kernel
+> > [   30.079279] psci: CPU1 killed (polled 0 ms)
+> > [   30.119222] psci: CPU2 killed (polled 0 ms)
+> > [   30.199293] psci: CPU3 killed (polled 0 ms)
+> > [   30.309214] psci: CPU4 killed (polled 0 ms)
+> > [   30.379221] psci: CPU5 killed (polled 0 ms)
+> > [   30.419210] psci: CPU6 killed (polled 0 ms)
+> > [   30.489207] IRQ 191: no longer affine to CPU7
+> > [   30.489667] psci: CPU7 killed (polled 0 ms)
+> > ..snip...
+> > [   33.849123] psci: CPU63 killed (polled 0 ms)
+> > [   33.849943] Bye!
+> > [    0.000000] Booting Linux on physical CPU 0x0000000000 [0x413fd0c1]
+> > [    0.000000] Linux version 5.14.0-417.el9.aarch64
+> > (mockbuild@arm64-025.build.eng.bos.redhat.com) (gcc (GCC) 11.4.1
+> > 20231218 (Red Hat 11.4.1-3), GNU ld version 2.35.2-42.el9) #1 SMP
+> > PREEMPT_DYNAMIC Thu Feb 1 21:23:03 EST 2024
+> > ...snip...
+> > [    1.012692] Freeing unused kernel memory: 6016K
+> > [    2.370947] Checked W+X mappings: passed, no W+X pages found
+> > [    2.370980] Run /init as init process
+> > [    2.370982]   with arguments:
+> > [    2.370983]     /init
+> > [    2.370984]   with environment:
+> > [    2.370984]     HOME=3D/
+> > [    2.370985]     TERM=3Dlinux
+> > [    2.373257] Kernel panic - not syncing: Attempted to kill init!
+> > exitcode=3D0x0000000b
+> > [    2.373259] CPU: 1 PID: 1 Comm: init Not tainted 5.14.0-417.el9.aarc=
+h64 #1
+> > [    2.382240] Hardware name: Amazon EC2 i4g.16xlarge/, BIOS 1.0 11/1/2=
+018
+> > [    2.383814] Call trace:
+> > [    2.384410]  dump_backtrace+0xa8/0x120
+> > [    2.385318]  show_stack+0x1c/0x30
+> > [    2.386124]  dump_stack_lvl+0x74/0x8c
+> > [    2.387011]  dump_stack+0x14/0x24
+> > [    2.387810]  panic+0x158/0x368
+> > [    2.388553]  do_exit+0x3a8/0x3b0
+> > [    2.389333]  do_group_exit+0x38/0xa4
+> > [    2.390195]  get_signal+0x7a4/0x810
+> > [    2.391044]  do_signal+0x1bc/0x260
+> > [    2.391870]  do_notify_resume+0x108/0x210
+> > [    2.392839]  el0_da+0x154/0x160
+> > [    2.393603]  el0t_64_sync_handler+0xdc/0x150
+> > [    2.394628]  el0t_64_sync+0x17c/0x180
+> > [    2.395513] SMP: stopping secondary CPUs
+> > [    2.396483] Kernel Offset: 0x586f04e00000 from 0xffff800008000000
+> > [    2.397934] PHYS_OFFSET: 0x40000000
+> > [    2.398774] CPU features: 0x0,00000101,70020143,10417a0b
+> > [    2.400042] Memory Limit: none
+> > [    2.400783] ---[ end Kernel panic - not syncing: Attempted to kill
+> > init! exitcode=3D0x0000000b ]---
+> >
+> > In the dmesg log, I found "[   30.489207] IRQ 191: no longer affine to
+> > CPU7" is suspicious, which is related to efa module. After blacklist
+> > efa module from automatic loading when bootup, the kernel panic issue
+> > doesn't appear again.
+> >
+> > It looks to me it is due to the efa being not properly shutdown during
+> > kexec, so the ongoing DMA/interrupts etc overwrite the memory range.
+> >
+> > Though the issue is reproduced on rhel's kernel, the upstream kernel
+> > [1] doesn't have the .shutdown method implemented either. Since I'm
+> > not very familiar with the efa driver, could you please implement the
+> > .shutdown method in drivers/infiniband/hw/efa/efa_main.c? Thanks in
+> > advance!
+>
+> Did you try to reproduce it on upstream kernel?
+>
+Thanks for your comments! No I haven't, I will give it a try.
+> >
+> > [1]: https://github.com/torvalds/linux/blob/master/drivers/infiniband/h=
+w/efa/efa_main.c#L674
+> >
+> > Thanks,
+> > Tao Liu
+> >
+>
+> Try assigning efa_remove as the shutdown callback:
+>     .shutdown =3D efa_remove,
+>
+> Does it fix it?
+
+Thanks, I will also try the code, and I will post the testing results.
+
+Thanks,
+Tao Liu
+
+>
+
 
