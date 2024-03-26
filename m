@@ -1,140 +1,107 @@
-Return-Path: <linux-rdma+bounces-1579-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-1580-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9013188CB32
-	for <lists+linux-rdma@lfdr.de>; Tue, 26 Mar 2024 18:45:02 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5744888CC96
+	for <lists+linux-rdma@lfdr.de>; Tue, 26 Mar 2024 20:01:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4ADB2308362
-	for <lists+linux-rdma@lfdr.de>; Tue, 26 Mar 2024 17:45:01 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 00CC51F284EB
+	for <lists+linux-rdma@lfdr.de>; Tue, 26 Mar 2024 19:01:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7DD8E52F8A;
-	Tue, 26 Mar 2024 17:44:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D8DE313C9BA;
+	Tue, 26 Mar 2024 19:01:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="YHhz09vb"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="MZ7T1SMg"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-oo1-f44.google.com (mail-oo1-f44.google.com [209.85.161.44])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out-187.mta1.migadu.com (out-187.mta1.migadu.com [95.215.58.187])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D4BC0200D1
-	for <linux-rdma@vger.kernel.org>; Tue, 26 Mar 2024 17:44:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.161.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CC14E129E88
+	for <linux-rdma@vger.kernel.org>; Tue, 26 Mar 2024 19:01:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.187
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711475085; cv=none; b=UhkfdKx/VOxmkOMi7fX6qxwfNNUfE4CajCswbA6VfJfqdxoY8a7xT1ePAPlX4Vda9w1aBgYLzyKTxSdAZLWHLdZser8jNzN12CIbmOHs15VnZYWtjyfrPi7kXdMobr1QJGDTLsA38lWOtBZC8X9VD59bXYQtsQcTBO6Cv19nSqw=
+	t=1711479714; cv=none; b=aK0conEn13s+7N2MQ45ilNrIdG41gpfVZClwbyoJSzgsQJY4ioaHOvEIzt3fEtp8Hoo9V5g1io59nmSPmttSMRpSC6BzGu9JhMGUOfUY+kdCNjV30g8m6pdwMfn+HmVsfANIq4WLM7LHWS2DoxqllJHjkZPHwGOxLVcE1we/m+0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711475085; c=relaxed/simple;
-	bh=SoU3uetKGqIojlNPGwhfWHAZhxbc+tHc2KJgZrh2Nd8=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=dxT16A4239qF0kUlvQl2Z24algijSb/Rav/Wyhzm11s2g8+QSPZGKfKM9RZsjJ/EB3TCDu8bePNiR9j+i17dMNXDJ0y1pbZWraupsX5i6zV0zfmPKFz+prteVkA0gfU7jRHRyMBVDbqj7I3JdFCjVig/WTl042UNW6GQhMAHQao=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=YHhz09vb; arc=none smtp.client-ip=209.85.161.44
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-oo1-f44.google.com with SMTP id 006d021491bc7-5a50880ce2aso2906486eaf.0
-        for <linux-rdma@vger.kernel.org>; Tue, 26 Mar 2024 10:44:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1711475083; x=1712079883; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=s1POE8I9KwEedXg0bNWgQbP3KFGe4zNce0lmHwN/JY0=;
-        b=YHhz09vbP2Nq1xj9w4DBhTZJ+QnCmptaLIX1EPAQs0/1NdOT6y1ZfNTxG69ZEquTrT
-         wMog5W/+4k+K0YDrNDKvJqN/DLw2OQpuYGJBdrinGIKqjHSoQypaFHu5fecpSxsLjqCq
-         79Mn3czo7BIQEKLm12GISib0x4hqrXmMliF4ymF1hXiai8fycM6rKSh/IHyRXcEZXuLN
-         GSNKuoLKVef+o7gj1dueYCKY6PJE6rH10sUiocZ9RmA1dgXRPd72Vaf3V/VL3PHBTzEQ
-         a+GyBsxpA7Cgc6C05b/jYxEhIfuAIPdtk00+sitKRQFjoZD7sEVb12ktDMETTC9++AMb
-         oD1Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711475083; x=1712079883;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=s1POE8I9KwEedXg0bNWgQbP3KFGe4zNce0lmHwN/JY0=;
-        b=VTh2qGHXUFph0SwYgha7xBQVpKmZIfxDbjTCYxx4RtxUNGwpQox+VrJSgLCf7mwWB9
-         RG7r5+/2ZgZck0NcAYm5TiA/6jROM5ene88k4z0sDNOk4IIdaMzM3MMD1+SarXhQCO//
-         cPL72/vinFDvu9egOA3IeflsN6q2hfhCU7YF1+hHURiundQCZe8adlMRhzuXT7E9iHOT
-         AYn125d9Psz/HYkkF5FS9M4/kuBvrqrRo7XPNWPRxipQJ1xN1SiJ5OBGy7DIf/FnVGZP
-         qtoKUS5Acznlp/K/ulDjHwLMZIyPlYTKIpraxDXl77kCdXZ6Nek7ZJbiFmw8a2XnY+gF
-         Y4dg==
-X-Forwarded-Encrypted: i=1; AJvYcCW2GmVwT8A7QI0wwxJCncQXfUrdPDjz+Z43ug6be+n50nZbDKva+7kA3sY7Oc/B5dy7asPT7wGUbJrWfvsX7Fvo+MEpeQZtUoCUFg==
-X-Gm-Message-State: AOJu0YwysGwl5HfFjAW1pIXUKTLH8HhjKuNn51xFmX9h94hQz01Y9TFc
-	gNoyFSDVLUcnesWcENAHDk05Sczobq+8UStce3SHnS8i4uWeJrIg
-X-Google-Smtp-Source: AGHT+IHqkAhUGgT5WsWGXYpH+xssnmR8QZxRntIQLKSXjHIPNmav6NyjyqjC1DLLfmovpr6WA1zwBA==
-X-Received: by 2002:a4a:e910:0:b0:5a5:46e:d0f with SMTP id bx16-20020a4ae910000000b005a5046e0d0fmr2123906oob.1.1711475083043;
-        Tue, 26 Mar 2024 10:44:43 -0700 (PDT)
-Received: from bob-pearson-dev.lan (2603-8081-1405-679b-b62e-99ff-fef9-fa2e.res6.spectrum.com. [2603:8081:1405:679b:b62e:99ff:fef9:fa2e])
-        by smtp.gmail.com with ESMTPSA id i10-20020a056820138a00b005a53e935171sm1399860oow.35.2024.03.26.10.44.42
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 26 Mar 2024 10:44:42 -0700 (PDT)
-From: Bob Pearson <rpearsonhpe@gmail.com>
-To: yanjun.zhu@linux.dev,
-	jgg@ziepe.ca,
-	leon@kernel.org,
-	linux-rdma@vger.kernel.org,
-	jhack@hpe.com
-Cc: Bob Pearson <rpearsonhpe@gmail.com>
-Subject: [PATCH for-next 11/11] RDMA/rxe: Get rid of pkt resend on err
-Date: Tue, 26 Mar 2024 12:43:26 -0500
-Message-ID: <20240326174325.300849-13-rpearsonhpe@gmail.com>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20240326174325.300849-2-rpearsonhpe@gmail.com>
-References: <20240326174325.300849-2-rpearsonhpe@gmail.com>
+	s=arc-20240116; t=1711479714; c=relaxed/simple;
+	bh=Pa3intbb8USGbz9hSbU2UIvuz0BKA0+5uMxp4W9+Tqs=;
+	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
+	 In-Reply-To:Content-Type; b=gLsXxAzwHNKcvUeWCpPDXVQYRHlt90vMWXhXa0bKczZYxYKw887cMdXuyOzYt5attLAtG+CvKX2ThAV21gxf5lVG2oGSLQp5M5zY/Gf1c2GQ6mr0ANX5NAEN62+tV4BQXEOdxdcdGTMxPLOdNdwfKsp2qq8FZwMyvMfmxylkEpI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=MZ7T1SMg; arc=none smtp.client-ip=95.215.58.187
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <c8996ca5-4607-4339-9847-6101e446194c@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1711479709;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=cLiwf39agtTbC6rcl/WxtLl3ZASW10oKdesI8JiV8m8=;
+	b=MZ7T1SMgnpkSQdNtuE21h6VU/gHQrJ2ftTz7WMnA/Mf6IUUfoZl6XE7NzhHJT0EBKRdeMY
+	sixuGP1//ZNEU49TZ4HboNh6CpLCP5OCRi8NlDJ+8qs2Y/VXxfAd3pGf3z1jBl7lMNvxIW
+	lY293ho9F4lWqeyiqiiusO6gAROqNN0=
+Date: Tue, 26 Mar 2024 20:01:45 +0100
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Subject: Re: [PATCH for-next 00/11] RDMA/rxe: Various fixes and cleanups
+To: Bob Pearson <rpearsonhpe@gmail.com>, jgg@ziepe.ca, leon@kernel.org,
+ linux-rdma@vger.kernel.org, jhack@hpe.com
+References: <20240326174325.300849-2-rpearsonhpe@gmail.com>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Zhu Yanjun <yanjun.zhu@linux.dev>
+In-Reply-To: <20240326174325.300849-2-rpearsonhpe@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
 
-Currently the rxe_driver detects packet drops by ip_local_out()
-which occur before the packet is sent on the wire and attempts to
-resend them. This is redundant with the usual retry mechanism which
-covers packets that get dropped in transit to or from the remote node.
+在 2024/3/26 18:43, Bob Pearson 写道:
+> This series of patches is the result of high scale testing on a large
+> HPC system with a large attached Lustre file system. Several errors
+> were found which had not been previously seen at smaller scales. In
+> this case up to 1600 QPs on 1024 compute nodes attached to about 100
+> flash storage nodes. Each patch has it's own description.
 
-The way this is implemented is not robust since it sets need_req_skb
-and waits for the number of local skbs outstanding for this qp to
-drop below a low water mark. This is racy since the skb may
-be sent to the destructor before the requester can set the
-need_req_skb flag. This will cause a deadlock in the send path for
-that qp.
+Thanks a lot. I never thought that RXE can act as an important role in a 
+system up to 1600 QPs on 1024 compute nodes attached to about 100
+flash storage nodes.
 
-This patch removes this mechanism since the normal retry path will
-correct the error and resend the packet and it makes no difference
-if the packet is dropped locally or later.
+It is my honor to review these patches.
 
-Signed-off-by: Bob Pearson <rpearsonhpe@gmail.com>
----
- drivers/infiniband/sw/rxe/rxe_req.c | 14 ++------------
- 1 file changed, 2 insertions(+), 12 deletions(-)
+Thanks Bob for sharing these patches.
 
-diff --git a/drivers/infiniband/sw/rxe/rxe_req.c b/drivers/infiniband/sw/rxe/rxe_req.c
-index b217fa94ff03..445650b73b19 100644
---- a/drivers/infiniband/sw/rxe/rxe_req.c
-+++ b/drivers/infiniband/sw/rxe/rxe_req.c
-@@ -800,18 +800,8 @@ int rxe_requester(struct rxe_qp *qp)
- 
- 	err = rxe_xmit_packet(qp, &pkt, skb);
- 	if (err) {
--		if (err != -EAGAIN) {
--			wqe->status = IB_WC_LOC_QP_OP_ERR;
--			goto err;
--		}
--
--		/* force a delay until the dropped packet is freed and
--		 * the send queue is drained below the low water mark
--		 */
--		qp->need_req_skb = 1;
--
--		rxe_sched_task(&qp->send_task);
--		goto exit;
-+		wqe->status = IB_WC_LOC_QP_OP_ERR;
-+		goto err;
- 	}
- 
- 	update_wqe_state(qp, wqe, &pkt);
--- 
-2.43.0
+Zhu Yanjun
+
+> 
+> Bob Pearson (11):
+>    RDMA/rxe: Fix seg fault in rxe_comp_queue_pkt
+>    RDMA/rxe: Allow good work requests to be executed
+>    RDMA/rxe: Remove redundant scheduling of rxe_completer
+>    RDMA/rxe: Merge request and complete tasks
+>    RDMA/rxe: Remove save/rollback_state in rxe_requester
+>    RDMA/rxe: Don't schedule rxe_completer() in rxe_requester()
+>    RDMA/rxe: Don't call rxe_requester from rxe_completer
+>    RDMA/rxe: Don't call direct between tasks
+>    RDMA/rxe: Fix incorrect rxe_put in error path
+>    RDMA/rxe: Make rxe_loopback match rxe_send behavior
+>    RDMA/rxe: Get rid of pkt resend on err
+> 
+>   drivers/infiniband/sw/rxe/rxe_comp.c        | 34 ++++-----
+>   drivers/infiniband/sw/rxe/rxe_hw_counters.c |  2 +-
+>   drivers/infiniband/sw/rxe/rxe_hw_counters.h |  2 +-
+>   drivers/infiniband/sw/rxe/rxe_loc.h         |  3 +-
+>   drivers/infiniband/sw/rxe/rxe_net.c         | 22 +++---
+>   drivers/infiniband/sw/rxe/rxe_qp.c          | 44 +++++-------
+>   drivers/infiniband/sw/rxe/rxe_req.c         | 80 ++++++---------------
+>   drivers/infiniband/sw/rxe/rxe_resp.c        | 14 +---
+>   drivers/infiniband/sw/rxe/rxe_verbs.c       | 17 +++--
+>   drivers/infiniband/sw/rxe/rxe_verbs.h       |  6 +-
+>   10 files changed, 81 insertions(+), 143 deletions(-)
+> 
 
 
