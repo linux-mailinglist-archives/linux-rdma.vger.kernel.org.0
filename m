@@ -1,72 +1,72 @@
-Return-Path: <linux-rdma+bounces-1603-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-1604-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id CC51F88EA14
-	for <lists+linux-rdma@lfdr.de>; Wed, 27 Mar 2024 16:58:20 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8A38E88EA15
+	for <lists+linux-rdma@lfdr.de>; Wed, 27 Mar 2024 16:58:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7FFDB28B25A
-	for <lists+linux-rdma@lfdr.de>; Wed, 27 Mar 2024 15:58:19 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BBAF21C30D74
+	for <lists+linux-rdma@lfdr.de>; Wed, 27 Mar 2024 15:58:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 41105130A51;
-	Wed, 27 Mar 2024 15:57:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5FA5A130A54;
+	Wed, 27 Mar 2024 15:57:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Gs6+HfZM"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="PFP4taEQ"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-ot1-f41.google.com (mail-ot1-f41.google.com [209.85.210.41])
+Received: from mail-ot1-f45.google.com (mail-ot1-f45.google.com [209.85.210.45])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 86E431304AF
-	for <linux-rdma@vger.kernel.org>; Wed, 27 Mar 2024 15:57:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.41
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AA31B1304BF
+	for <linux-rdma@vger.kernel.org>; Wed, 27 Mar 2024 15:57:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711555071; cv=none; b=cwKOjeJSjTrb8YiaBEuJHUE7ShFxRLx+h7Myg6TJYs2s24OCgR6os7o5VzOjXDzcXlTWImQ1Ag52R1qnGFr/pQG0P/sh2qGo+vebSHjIWz9Abtc3aALyHqY2twboHTsM0LQYWzfbUJXy/Ovf8mrven5aygkpbZ7SU63+n/+Z5Co=
+	t=1711555072; cv=none; b=NT8h5etsKFFyo6P4WDIa5JHeA6MkxjsMu/4SJNb4q5qb5vAYn/Z/S3m9YmtMMPm9FpsNmk2pe7M/4SslvJGhFTjfAdISTbXaRQLCp6lKy+R6qH91eloBYhLgK90FHa4Y0h0diz4pnEYBz3g2+uoZtR5bqdFfc+riYIFBpZGyEw0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711555071; c=relaxed/simple;
-	bh=UZ1/DCPLtR3mduOS71FDyDDnkpBv8+SGmdEPh7DHYY4=;
+	s=arc-20240116; t=1711555072; c=relaxed/simple;
+	bh=AilatBEBLSlh107RF2GtLCHpfjH+1ao7MSzuIpuO8RQ=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=Uq3V51hCiraus2DEOMOr/m6X+aB6fXKPSwxKdqkhzFy+JtDfczRkwpdc//eTQqutgeHv8K0LXxse+SyUssEOtGpIRmmgC7cfNy7OePASBYBMoKuhgMN1UINuqhXZCN2dmwofsdWZwyA3iifM4BaKniEDk9OBn2vgxq2Fnwilzug=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Gs6+HfZM; arc=none smtp.client-ip=209.85.210.41
+	 MIME-Version; b=IDAbkwr7F5PC1W4qlvX6/Hvme/issT3GSgyeWpVa0UMHlX9i30xUMlGZgDpBho3bixirQHeRg0jsGQLavODgh/XDIhe3Y6yE7OqxDQx2E6hOFyK+ntKGWhXM3zGuiPCAlviQTh4ZCCW+qPJsAyjxCS1WFwa800dyM8s4Zt+T2UY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=PFP4taEQ; arc=none smtp.client-ip=209.85.210.45
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ot1-f41.google.com with SMTP id 46e09a7af769-6e68d358974so3267429a34.3
-        for <linux-rdma@vger.kernel.org>; Wed, 27 Mar 2024 08:57:49 -0700 (PDT)
+Received: by mail-ot1-f45.google.com with SMTP id 46e09a7af769-6e4f7975121so1624121a34.1
+        for <linux-rdma@vger.kernel.org>; Wed, 27 Mar 2024 08:57:50 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1711555069; x=1712159869; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1711555070; x=1712159870; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=8iLVySYmuqx2nSAqtlxR4y9KeR6C9kAhC4jpyCkS8UA=;
-        b=Gs6+HfZMxZahWPqm4h7P5zZ2aA0RmSiX6GVlMkhm4SkF+Qw4I2vUSUPI0/FMbY67vx
-         4Yjj+OdDCiuEGhK1wfAfWLgAkUTsoc2HyFVH2B+MazwRnrG+Z3OeM3Lf84fDqdbcAc0C
-         NhlylzXmGmptKtmxOXdeKYp1Lz7Y42BNR3zcXfK1FwYts6s2rwrvZfi6P70cG+3/Wjd9
-         Cyhzwu5WzAUcXlAoIyLrgTDb6uveImG3MHOuzoWHxP5+asowBSQXSYTvaNpFa/xmKsNb
-         Yi8YMJhLqq8SYsXVPQxsCWUvD90qmNfu+/H14ISjlC4FIcIgg1ObwVkWFenj0D/SXG0w
-         6ZJw==
+        bh=ZSjXTA0jQyt41K1i3R8cdCOpeg1vn6KbYe9akb1dy5Y=;
+        b=PFP4taEQYIJdHJmBZeDrU5JNbqCmLG9mklZp+MiXnUv0Ss0EemlncwLGs0jpg5uD80
+         jO23h+A8gH4XS4kbBqJJLmO67k0318QO3X4kftRfddonuJ1O5LVpjL5EbpC234PvZfWN
+         vVkv4U0Id4XmetXo1Bm+rWIhvltWT0iFtGuzvdm3tmDcckET7O+jEVAEPw738vBBdBg+
+         7h7yU2dMZtKnqhNLQ/jugyPXF+dAKO6zCaVkkJWNaCqiw43UKmKypPZm6bqEUcve6OuL
+         xh6h+GQyt25TUvZHB+vvFEBNWubCiGOseOmfZW0OQ4E/Q4B6Ow5n6gslygW/K53/XoAz
+         E0Sw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711555069; x=1712159869;
+        d=1e100.net; s=20230601; t=1711555070; x=1712159870;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=8iLVySYmuqx2nSAqtlxR4y9KeR6C9kAhC4jpyCkS8UA=;
-        b=xCKfUrYfsLN5xQlOK8doPzcp1a/1dhxvraYyFgYhT8WvmbQj3LgQ6BJ2678unugWP5
-         a49ybUsjZktdcOE5rfn3M9RMwpBwYQyHXytVgCRy8XsFZFZ+EMD3QcXVwd6PMYZPbeQk
-         BH7QfSr2PxZOqtPUkujogbtMn7amAdpqG27H97hhiFyUhmYXqCGKnCLrotobAoK6WpBx
-         NvbE6GTQ7SafYlzTG3+iYHLCrWbzT7hey2hlJ1D7cOB5CsD/EVKx9itWeqg8wBVsF/vg
-         SHqrZ5qj+5IjvJIzaC1QHqljJ/fjujdM85EkaxBRLg5YA1BOwSGkXepiobPjXlvi81au
-         y5gA==
-X-Forwarded-Encrypted: i=1; AJvYcCVFkHiVKNmweMge86yvzkD6O5HsNgvbik9Mh+586UYjtphPQdHPj9cnzeuZZwY5NpeNwrk6xLmcUX9GjfHOSTIVWSjASNaUqb5GTA==
-X-Gm-Message-State: AOJu0YwcrTa1PNPrNB0dB74gWff0hEUjIDTRAkIEeWXzngKd67bJ3yV6
-	PpLS55adlZFqW4d3q0LIPsGGOqVmaSJv+auePiCOSOKe8XPGoKZtLo93ma4fuWM=
-X-Google-Smtp-Source: AGHT+IEUUzMgRFd1Loso9emtp0DWE8GcVat4T2Nof4Xd+K/GCPTW+26n1QhWyBk6dPYCr1HPNhKtBQ==
-X-Received: by 2002:a05:6830:d4:b0:6e6:9547:bce4 with SMTP id x20-20020a05683000d400b006e69547bce4mr225737oto.2.1711555068730;
-        Wed, 27 Mar 2024 08:57:48 -0700 (PDT)
+        bh=ZSjXTA0jQyt41K1i3R8cdCOpeg1vn6KbYe9akb1dy5Y=;
+        b=HTH3AvIsZ8CKk6+wh3CPSTVb+D93H/nPtKxY8BeGajaZUAC1zuONRVMA8MlNAXn3nK
+         eRtxCSZhLoDORi8H4mtYmE7q7AkPK5wWSFmBDDHTpUrWjJDwPvII6ltHGAG0RdGTyRtg
+         PfjqZR2bSY3rKUl/GrO3jGhI+9jg9YpjUooZzOKv8D7FQ6jHpr+K9g2wTySmBpinfvqJ
+         VbEQiKiEMkAkjkENZvBafWFVBIKWgymq6MU9gSpdRZFIG081H00WLltcCTVThmMI6mjM
+         KJg87/Sc9m3qnjDQyCioUpND+g73jDWvoeTh20PSUSjcTkop39eTe1kR+i08/U9yx9sq
+         VbZQ==
+X-Forwarded-Encrypted: i=1; AJvYcCXhJTcEEj8/bejuLmQSzK64RGBYwrvSYt6NT92c+OzKqQEbSlJ6yQ82Ad+yT2DldDuiE7sUpIImd7bnL4Wj+Av85ZPC4t5wViXKGQ==
+X-Gm-Message-State: AOJu0Yyjd0ad1DqoQ5VbQghhK3OGPlRc3obA7MhYZwbsLRk8GrQQiSki
+	vhAPAOuG6/EmZOU72jIr4MKlCkL/g3KiYyKuKI8qGUmeKIFL6C2I
+X-Google-Smtp-Source: AGHT+IHkHF+TBF0CPf7bLj7iIcWhZ0waduptM9XuoJALZW51EWAlshMCajnfYZTMrakz7NOggg4qBQ==
+X-Received: by 2002:a9d:6a97:0:b0:6e6:715d:a63f with SMTP id l23-20020a9d6a97000000b006e6715da63fmr389091otq.30.1711555069987;
+        Wed, 27 Mar 2024 08:57:49 -0700 (PDT)
 Received: from bob-pearson-dev.lan (2603-8081-1405-679b-b62e-99ff-fef9-fa2e.res6.spectrum.com. [2603:8081:1405:679b:b62e:99ff:fef9:fa2e])
         by smtp.gmail.com with ESMTPSA id f10-20020a9d6c0a000000b006e6e3fdec53sm883487otq.35.2024.03.27.08.57.48
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 27 Mar 2024 08:57:48 -0700 (PDT)
+        Wed, 27 Mar 2024 08:57:49 -0700 (PDT)
 From: Bob Pearson <rpearsonhpe@gmail.com>
 To: yanjun.zhu@linux.dev,
 	jgg@ziepe.ca,
@@ -74,9 +74,9 @@ To: yanjun.zhu@linux.dev,
 	linux-rdma@vger.kernel.org,
 	jhack@hpe.com
 Cc: Bob Pearson <rpearsonhpe@gmail.com>
-Subject: [PATCH for-next v2 11/12] RDMA/rxe: Get rid of pkt resend on err
-Date: Wed, 27 Mar 2024 10:51:57 -0500
-Message-ID: <20240327155157.590886-13-rpearsonhpe@gmail.com>
+Subject: [PATCH for-next v2 12/12] RDMA/rxe: Let destroy qp succeed with stuck packet
+Date: Wed, 27 Mar 2024 10:51:58 -0500
+Message-ID: <20240327155157.590886-14-rpearsonhpe@gmail.com>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240327155157.590886-2-rpearsonhpe@gmail.com>
 References: <20240327155157.590886-2-rpearsonhpe@gmail.com>
@@ -88,71 +88,112 @@ List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Currently the rxe_driver detects packet drops by ip_local_out()
-which occur before the packet is sent on the wire and attempts to
-resend them. This is redundant with the usual retry mechanism which
-covers packets that get dropped in transit to or from the remote node.
-
-The way this is implemented is not robust since it sets need_req_skb
-and waits for the number of local skbs outstanding for this qp to
-drop below a low water mark. This is racy since the skb may
-be sent to the destructor before the requester can set the
-need_req_skb flag. This will cause a deadlock in the send path for
-that qp.
-
-This patch removes this mechanism since the normal retry path will
-correct the error and resend the packet and it makes no difference
-if the packet is dropped locally or later.
+In some situations a sent packet may get queued in the NIC longer
+than the timeout of a ULP. Currently if this happens the ULP may
+try to reset the link by destroying the qp and setting up an
+alternate connection but will fail because the rxe driver is
+waiting for the packet to finish getting sent and be returned to
+the skb destructor function where the qp reference holding things
+up will be dropped. This patch modifies the way that the qp is
+passed to the destructor to pass the qp index and not a qp pointer.
+Then the destructor will attempt to lookup the qp from its index
+and if it fails exit early. This requires taking a reference on
+the struct sock rather than the qp allowing the qp to be destroyed
+while the sk is still around waiting for the packet to finish.
 
 Signed-off-by: Bob Pearson <rpearsonhpe@gmail.com>
 ---
- drivers/infiniband/sw/rxe/rxe_net.c |  7 +------
- drivers/infiniband/sw/rxe/rxe_req.c | 14 ++------------
- 2 files changed, 3 insertions(+), 18 deletions(-)
+ drivers/infiniband/sw/rxe/rxe_net.c | 42 +++++++++++++++++++++--------
+ drivers/infiniband/sw/rxe/rxe_qp.c  |  2 +-
+ 2 files changed, 32 insertions(+), 12 deletions(-)
 
 diff --git a/drivers/infiniband/sw/rxe/rxe_net.c b/drivers/infiniband/sw/rxe/rxe_net.c
-index d081409450a4..b58eab75df97 100644
+index b58eab75df97..dc22f3922a59 100644
 --- a/drivers/infiniband/sw/rxe/rxe_net.c
 +++ b/drivers/infiniband/sw/rxe/rxe_net.c
-@@ -371,12 +371,7 @@ static int rxe_send(struct sk_buff *skb, struct rxe_pkt_info *pkt)
- 	else
- 		err = ip6_local_out(dev_net(skb_dst(skb)->dev), skb->sk, skb);
+@@ -345,25 +345,44 @@ int rxe_prepare(struct rxe_av *av, struct rxe_pkt_info *pkt,
  
--	if (unlikely(net_xmit_eval(err))) {
--		rxe_dbg_qp(pkt->qp, "error sending packet: %d\n", err);
--		return -EAGAIN;
--	}
--
--	return 0;
-+	return err;
+ static void rxe_skb_tx_dtor(struct sk_buff *skb)
+ {
+-	struct sock *sk = skb->sk;
+-	struct rxe_qp *qp = sk->sk_user_data;
+-	int skb_out = atomic_dec_return(&qp->skb_out);
++	struct net_device *ndev = skb->dev;
++	struct rxe_dev *rxe;
++	unsigned int qp_index;
++	struct rxe_qp *qp;
++	int skb_out;
++
++	rxe = rxe_get_dev_from_net(ndev);
++	if (!rxe && is_vlan_dev(ndev))
++		rxe = rxe_get_dev_from_net(vlan_dev_real_dev(ndev));
++	if (WARN_ON(!rxe))
++		return;
+ 
+-	if (unlikely(qp->need_req_skb &&
+-		     skb_out < RXE_INFLIGHT_SKBS_PER_QP_LOW))
++	qp_index = (int)(uintptr_t)skb->sk->sk_user_data;
++	if (!qp_index)
++		return;
++
++	qp = rxe_pool_get_index(&rxe->qp_pool, qp_index);
++	if (!qp)
++		goto put_dev;
++
++	skb_out = atomic_dec_return(&qp->skb_out);
++	if (qp->need_req_skb && skb_out < RXE_INFLIGHT_SKBS_PER_QP_LOW)
+ 		rxe_sched_task(&qp->send_task);
+ 
+ 	rxe_put(qp);
++put_dev:
++	ib_device_put(&rxe->ib_dev);
++	sock_put(skb->sk);
  }
  
- /* fix up a send packet to match the packets
-diff --git a/drivers/infiniband/sw/rxe/rxe_req.c b/drivers/infiniband/sw/rxe/rxe_req.c
-index 34c55dee0774..cd14c4c2dff9 100644
---- a/drivers/infiniband/sw/rxe/rxe_req.c
-+++ b/drivers/infiniband/sw/rxe/rxe_req.c
-@@ -802,18 +802,8 @@ int rxe_requester(struct rxe_qp *qp)
+ static int rxe_send(struct sk_buff *skb, struct rxe_pkt_info *pkt)
+ {
+ 	int err;
++	struct sock *sk = pkt->qp->sk->sk;
  
- 	err = rxe_xmit_packet(qp, &pkt, skb);
- 	if (err) {
--		if (err != -EAGAIN) {
--			wqe->status = IB_WC_LOC_QP_OP_ERR;
--			goto err;
--		}
++	sock_hold(sk);
++	skb->sk = sk;
+ 	skb->destructor = rxe_skb_tx_dtor;
+-	skb->sk = pkt->qp->sk->sk;
 -
--		/* force a delay until the dropped packet is freed and
--		 * the send queue is drained below the low water mark
--		 */
--		qp->need_req_skb = 1;
--
--		rxe_sched_task(&qp->send_task);
--		goto exit;
-+		wqe->status = IB_WC_LOC_QP_OP_ERR;
-+		goto err;
- 	}
+-	rxe_get(pkt->qp);
+ 	atomic_inc(&pkt->qp->skb_out);
  
- 	update_wqe_state(qp, wqe, &pkt);
+ 	if (skb->protocol == htons(ETH_P_IP))
+@@ -379,12 +398,13 @@ static int rxe_send(struct sk_buff *skb, struct rxe_pkt_info *pkt)
+  */
+ static int rxe_loopback(struct sk_buff *skb, struct rxe_pkt_info *pkt)
+ {
++	struct sock *sk = pkt->qp->sk->sk;
++
+ 	memcpy(SKB_TO_PKT(skb), pkt, sizeof(*pkt));
+ 
++	sock_hold(sk);
++	skb->sk = sk;
+ 	skb->destructor = rxe_skb_tx_dtor;
+-	skb->sk = pkt->qp->sk->sk;
+-
+-	rxe_get(pkt->qp);
+ 	atomic_inc(&pkt->qp->skb_out);
+ 
+ 	if (skb->protocol == htons(ETH_P_IP))
+diff --git a/drivers/infiniband/sw/rxe/rxe_qp.c b/drivers/infiniband/sw/rxe/rxe_qp.c
+index c7d99063594b..d2f7b5195c19 100644
+--- a/drivers/infiniband/sw/rxe/rxe_qp.c
++++ b/drivers/infiniband/sw/rxe/rxe_qp.c
+@@ -244,7 +244,7 @@ static int rxe_qp_init_req(struct rxe_dev *rxe, struct rxe_qp *qp,
+ 	err = sock_create_kern(&init_net, AF_INET, SOCK_DGRAM, 0, &qp->sk);
+ 	if (err < 0)
+ 		return err;
+-	qp->sk->sk->sk_user_data = qp;
++	qp->sk->sk->sk_user_data = (void *)(uintptr_t)qp->elem.index;
+ 
+ 	/* pick a source UDP port number for this QP based on
+ 	 * the source QPN. this spreads traffic for different QPs
 -- 
 2.43.0
 
