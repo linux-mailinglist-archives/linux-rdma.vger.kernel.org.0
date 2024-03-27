@@ -1,72 +1,72 @@
-Return-Path: <linux-rdma+bounces-1598-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-1599-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id BDB8588EA10
-	for <lists+linux-rdma@lfdr.de>; Wed, 27 Mar 2024 16:58:10 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8568B88EA11
+	for <lists+linux-rdma@lfdr.de>; Wed, 27 Mar 2024 16:58:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5D33D1F345C1
-	for <lists+linux-rdma@lfdr.de>; Wed, 27 Mar 2024 15:58:10 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A86EA1C30407
+	for <lists+linux-rdma@lfdr.de>; Wed, 27 Mar 2024 15:58:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EA6B212FB23;
-	Wed, 27 Mar 2024 15:57:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B660912FF97;
+	Wed, 27 Mar 2024 15:57:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="O3kRbMu4"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="O2KpPCQq"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-oo1-f45.google.com (mail-oo1-f45.google.com [209.85.161.45])
+Received: from mail-ot1-f45.google.com (mail-ot1-f45.google.com [209.85.210.45])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2443212FB2F
-	for <linux-rdma@vger.kernel.org>; Wed, 27 Mar 2024 15:57:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.161.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 029DA12FB05
+	for <linux-rdma@vger.kernel.org>; Wed, 27 Mar 2024 15:57:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711555066; cv=none; b=Bn3gIFLVFysUEUbw0BQx/ABnJer497xcR0gTrhyFg2KXN5wWlCprxJxjrp9oFM7SgMLd0j0yLYysAoFPagi1IS4xEIsL3NliKSMfstfmBU8OWIwrurULAiiv2wh9iosiCNoeTEpbnJNRJOjKXXZ9POadBCnRBCk8dm4qkB6rz4g=
+	t=1711555067; cv=none; b=rtPxStqSdcFEv7FoeDpwx5FWA1t+S7P+GVjjB4WrtDtkt5inD+PUmHEvJ+N88lKdLSLlKrhu81NuKnszH37ZCKpyY63Dfxf/tk3bi4VfVUPb45C8JvLmJ7avKPmUY2L7NeEapHTcxCQqPFwIovb8uxn5+hXqk3I1S6AMK7Gh4q4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711555066; c=relaxed/simple;
-	bh=nK/eWvmC9NoeXAd3HPKwxgaAueONSiU99ZwEabcO0kc=;
+	s=arc-20240116; t=1711555067; c=relaxed/simple;
+	bh=x5SWuSvv3SMTKBKxaAPrs628VcfWHAdoZKcjlwv9V7g=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=i6+lZkSDnnRTOSorE+Zyea/E5pXHZRPy88FT4T6+vi1Mx1AHRY0o8Y/sU9S9VG7Fiq2jcjBtAKz2IVdBq6K//UHjzK+X8HkqQkRskdLovrBt20ZQHpic2G5o/1fF3zD8s1fD6HBTZJxE3ot05f3zvSdxkHt2BKXywrA8Yh5AGmg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=O3kRbMu4; arc=none smtp.client-ip=209.85.161.45
+	 MIME-Version; b=HZU3j1ycV9lj6UTBvWBheY4bfO5TjufNHxNSuj/szret8aWlcYtEtiktgMk4loPWRq9UNrtfi9MFhOEnfkczL4AI24EEJeHDHyQvi4xgBLrGN1OTMxk8/69G/gldVdF+D6iZF+yjsF/Z7ayxqpFKeQFGGlEoilA4y913sU6Mlr0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=O2KpPCQq; arc=none smtp.client-ip=209.85.210.45
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-oo1-f45.google.com with SMTP id 006d021491bc7-5a4716cfbbcso3854689eaf.2
-        for <linux-rdma@vger.kernel.org>; Wed, 27 Mar 2024 08:57:44 -0700 (PDT)
+Received: by mail-ot1-f45.google.com with SMTP id 46e09a7af769-6e675181ceaso3745577a34.2
+        for <linux-rdma@vger.kernel.org>; Wed, 27 Mar 2024 08:57:45 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1711555064; x=1712159864; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1711555065; x=1712159865; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=2nS56B9R0MASjlXMNQV3RCH6VoFkteo8/PCt+i+tEO8=;
-        b=O3kRbMu46MfEoBvAuPGFY84aJfI6k3nfPZGNE6CUn8xeIx1d/GnssF4KhAd2DrsGYw
-         sunltseByEswO4bkfWWM6m0GsqapZVjG7GHX6BycdNzwoXzPW6jNU/0x5aTqSKsf0nfI
-         FlLCEcJAg5j+hKZuvb4eqBBotcUR98ohqo+sH46BHc/UkvuSFoxYaZG6rheEzs6bz0QK
-         0TKsU6n8F8IoxxXMTUUAxknuQrZU3hRrGiMzDOQ++bt1op6Rl7mSbDvOuQ/UTukz6b9q
-         asQNs6xV6cq0NlKdH99So3iMgAQzPCRJPVERCPZ2umBlvOW0nNiwWwOP/TXTojo1qEKe
-         aNNw==
+        bh=xCjztQYodtMXHgbrSSmzgM11j2HWm+7GDAVbEYgFieI=;
+        b=O2KpPCQqLx1CVIIAY7TLalZN0y2Lwn7XXiysdrFqUKSloVQhObxdq5vC5PEGuDD9zZ
+         F4KHfPNsg/Hlz+KZk/CpQqGyZ74YXLgRCtjYedNgWnq0k4wmxbSwPpd5AWGF9eph8EZm
+         6N5UNk28zYXrrCtJ7FpqgBMEjzLPnFQDK9gsi84gwFLgB5YUxLAJtAYF5DNWlcFine+2
+         HqMAbVk+HI8yr+rr1EGLTHimnTw85mUW2iRqsqdHyNfjwJIbiOGlOO1GW7vy8pwzrOjP
+         PK5PWun0LWg1veI4iVly9lFbOKX3xzzhoYEc+MuEvRDQI5U9gTbgy31O7rSqQk328IYD
+         LoSw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711555064; x=1712159864;
+        d=1e100.net; s=20230601; t=1711555065; x=1712159865;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=2nS56B9R0MASjlXMNQV3RCH6VoFkteo8/PCt+i+tEO8=;
-        b=jEWj/KBhfxfqT0dkn71iqIiAdYQnBbTFIl5pDLkuA3xVtLusNwBupc/Dp9nolmFKCD
-         Y9psV8DMqcgJ32gEzqGm7nT1gWqiizs3Ad9n+Dwfy5hkibZx5LznRXAwfWCYiJUWU/rV
-         7WIFiKt4FpN0VSARQKC/fCLXK9rwpy5PCqLjugGW3MfyWKCvonRq7TbZthIfCWh+DSso
-         OlDTvgraQMs/i7Q0XYayPZr6MCl5oDuuiUUh1dsorfvkYnCQbKzfp3q9mf+6LF8QHCVQ
-         REXXOCjdrPUPD9j7IaPf+KL/WusZSMaLt0fZdSUWrq4fkFaq5MQsV7rLlHkWbtz5Bvsj
-         YalQ==
-X-Forwarded-Encrypted: i=1; AJvYcCVt//c+V/+vZcXoaYe/l66zZ/EHKLtgnNdbCKDURkauCwq91ZicwZ1qSznA4+/4S9VBsllqDZslQwnNhX+HLIsCz0i9hoctae/xEg==
-X-Gm-Message-State: AOJu0YyERH+ac3Zy7h4hOh9UzyBtfsCDiu6pKNzQkWcg2X4SwNMmxFbO
-	EPID9LOZl4My9Seijiua5YWswAtvXglnXcMhj/B1PULqX9UevvQb
-X-Google-Smtp-Source: AGHT+IHgA8HBbv6h8JjJSzS5Z6C1DMQ7kRcm0ZumvFNBJaBo8ml6pTtt+5fjaG81AYr86eiIluqkiA==
-X-Received: by 2002:a4a:e917:0:b0:5a4:71b3:d090 with SMTP id bx23-20020a4ae917000000b005a471b3d090mr637613oob.5.1711555064282;
-        Wed, 27 Mar 2024 08:57:44 -0700 (PDT)
+        bh=xCjztQYodtMXHgbrSSmzgM11j2HWm+7GDAVbEYgFieI=;
+        b=ekqFt+uVD1jmTVJ0xHWlyPoPa9cJM7rgAhoCSAoa6Pc+bfK2CdaEbNxZgI/mO1vILN
+         LWjbpXWvc3gswjxiyiilXycbv/Xkk0B01CLbzIZa7Ha+nY9e4TIji9LFexkHZjK9InF4
+         wpsnKEOcnnHNuZ5CStyw5FgmCAoOtdQBiNZgT5CRxU6PzkFBVPYd2WTZP6qHxz8hETMo
+         Bqm5AwZdzl5xHq/4jKMnD3DY1ZN6h01KdRtxSb4iGhUqTiBGi/FJX2aCkBUA/sR+0PbL
+         Wx7h8Q6M6CojxEUgmSpP32bzRfaH0hfXQVL1hc/uk+LnCMHYliZFxUlvv9yilIonsthF
+         sX7A==
+X-Forwarded-Encrypted: i=1; AJvYcCVWxccEtAh7HnYsyIhbg1FZneEIv5GTb/4l8OaRUypbEsbdV8Dmqcei74SQTiVwdEgbTzhH79t6aJvFrflnr8MeptsVwxmrZWu/1Q==
+X-Gm-Message-State: AOJu0YxCn9j1V2YLMaTRPQoY8V94lRW7a6Z4eLRxj9CiDx/8x43JSu4D
+	nBwhCXMAWbm/0VJhnChTbvDbvJeb5PxvJTigAoudugjM+focXWID
+X-Google-Smtp-Source: AGHT+IGo5BpQclghhkftGqKPvq4zB9T9L4Ksq86ZcoXASYe/9O1CZMgfai7i3zcIZoZF8suw8O26ig==
+X-Received: by 2002:a05:6830:2085:b0:6e4:253f:c551 with SMTP id y5-20020a056830208500b006e4253fc551mr351428otq.29.1711555065053;
+        Wed, 27 Mar 2024 08:57:45 -0700 (PDT)
 Received: from bob-pearson-dev.lan (2603-8081-1405-679b-b62e-99ff-fef9-fa2e.res6.spectrum.com. [2603:8081:1405:679b:b62e:99ff:fef9:fa2e])
-        by smtp.gmail.com with ESMTPSA id f10-20020a9d6c0a000000b006e6e3fdec53sm883487otq.35.2024.03.27.08.57.43
+        by smtp.gmail.com with ESMTPSA id f10-20020a9d6c0a000000b006e6e3fdec53sm883487otq.35.2024.03.27.08.57.44
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 27 Mar 2024 08:57:43 -0700 (PDT)
+        Wed, 27 Mar 2024 08:57:44 -0700 (PDT)
 From: Bob Pearson <rpearsonhpe@gmail.com>
 To: yanjun.zhu@linux.dev,
 	jgg@ziepe.ca,
@@ -74,9 +74,9 @@ To: yanjun.zhu@linux.dev,
 	linux-rdma@vger.kernel.org,
 	jhack@hpe.com
 Cc: Bob Pearson <rpearsonhpe@gmail.com>
-Subject: [PATCH for-next v2 06/12] RDMA/rxe: Don't schedule rxe_completer from rxe_requester
-Date: Wed, 27 Mar 2024 10:51:52 -0500
-Message-ID: <20240327155157.590886-8-rpearsonhpe@gmail.com>
+Subject: [PATCH for-next v2 07/12] RDMA/rxe: Don't call rxe_requester from rxe_completer
+Date: Wed, 27 Mar 2024 10:51:53 -0500
+Message-ID: <20240327155157.590886-9-rpearsonhpe@gmail.com>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240327155157.590886-2-rpearsonhpe@gmail.com>
 References: <20240327155157.590886-2-rpearsonhpe@gmail.com>
@@ -88,67 +88,103 @@ List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Now that rxe_completer() is always called serially after
-rxe_requester() there is no reason to schedule rxe_completer()
-from rxe_requester().
+Instead of rescheduling rxe_requester from rxe_completer() just extend
+the duration of rxe_sender() by one pass. Setting run_requester_again
+forces rxe_completer() to return 0 which will cause rxe_sender() to be
+called at least one more time.
 
 Signed-off-by: Bob Pearson <rpearsonhpe@gmail.com>
 ---
- drivers/infiniband/sw/rxe/rxe_net.c | 6 ------
- drivers/infiniband/sw/rxe/rxe_req.c | 9 ++-------
- 2 files changed, 2 insertions(+), 13 deletions(-)
+ drivers/infiniband/sw/rxe/rxe_comp.c | 19 ++++++++++++-------
+ 1 file changed, 12 insertions(+), 7 deletions(-)
 
-diff --git a/drivers/infiniband/sw/rxe/rxe_net.c b/drivers/infiniband/sw/rxe/rxe_net.c
-index 928508558df4..a2fc118e7ec1 100644
---- a/drivers/infiniband/sw/rxe/rxe_net.c
-+++ b/drivers/infiniband/sw/rxe/rxe_net.c
-@@ -440,12 +440,6 @@ int rxe_xmit_packet(struct rxe_qp *qp, struct rxe_pkt_info *pkt,
- 		return err;
- 	}
+diff --git a/drivers/infiniband/sw/rxe/rxe_comp.c b/drivers/infiniband/sw/rxe/rxe_comp.c
+index ea64a25fe876..c41743fbd5f1 100644
+--- a/drivers/infiniband/sw/rxe/rxe_comp.c
++++ b/drivers/infiniband/sw/rxe/rxe_comp.c
+@@ -82,6 +82,8 @@ static unsigned long rnrnak_usec[32] = {
+ 	[IB_RNR_TIMER_491_52] = 491520,
+ };
  
--	if ((qp_type(qp) != IB_QPT_RC) &&
--	    (pkt->mask & RXE_END_MASK)) {
--		pkt->wqe->state = wqe_state_done;
++static int run_requester_again;
++
+ static inline unsigned long rnrnak_jiffies(u8 timeout)
+ {
+ 	return max_t(unsigned long,
+@@ -325,7 +327,7 @@ static inline enum comp_state check_ack(struct rxe_qp *qp,
+ 					qp->comp.psn = pkt->psn;
+ 					if (qp->req.wait_psn) {
+ 						qp->req.wait_psn = 0;
+-						rxe_sched_task(&qp->send_task);
++						run_requester_again = 1;
+ 					}
+ 				}
+ 				return COMPST_ERROR_RETRY;
+@@ -476,7 +478,7 @@ static void do_complete(struct rxe_qp *qp, struct rxe_send_wqe *wqe)
+ 	 */
+ 	if (qp->req.wait_fence) {
+ 		qp->req.wait_fence = 0;
 -		rxe_sched_task(&qp->send_task);
--	}
--
- 	rxe_counter_inc(rxe, RXE_CNT_SENT_PKTS);
- 	goto done;
- 
-diff --git a/drivers/infiniband/sw/rxe/rxe_req.c b/drivers/infiniband/sw/rxe/rxe_req.c
-index e20462c3040d..34c55dee0774 100644
---- a/drivers/infiniband/sw/rxe/rxe_req.c
-+++ b/drivers/infiniband/sw/rxe/rxe_req.c
-@@ -545,6 +545,8 @@ static void update_wqe_state(struct rxe_qp *qp,
- 	if (pkt->mask & RXE_END_MASK) {
- 		if (qp_type(qp) == IB_QPT_RC)
- 			wqe->state = wqe_state_pending;
-+		else
-+			wqe->state = wqe_state_done;
- 	} else {
- 		wqe->state = wqe_state_processing;
++		run_requester_again = 1;
  	}
-@@ -631,12 +633,6 @@ static int rxe_do_local_ops(struct rxe_qp *qp, struct rxe_send_wqe *wqe)
- 	wqe->status = IB_WC_SUCCESS;
- 	qp->req.wqe_index = queue_next_index(qp->sq.queue, qp->req.wqe_index);
- 
--	/* There is no ack coming for local work requests
--	 * which can lead to a deadlock. So go ahead and complete
--	 * it now.
--	 */
--	rxe_sched_task(&qp->send_task);
--
- 	return 0;
  }
  
-@@ -760,7 +756,6 @@ int rxe_requester(struct rxe_qp *qp)
- 						       qp->req.wqe_index);
- 			wqe->state = wqe_state_done;
- 			wqe->status = IB_WC_SUCCESS;
+@@ -515,7 +517,7 @@ static inline enum comp_state complete_ack(struct rxe_qp *qp,
+ 		if (qp->req.need_rd_atomic) {
+ 			qp->comp.timeout_retry = 0;
+ 			qp->req.need_rd_atomic = 0;
 -			rxe_sched_task(&qp->send_task);
- 			goto done;
++			run_requester_again = 1;
  		}
- 		payload = mtu;
+ 	}
+ 
+@@ -541,7 +543,7 @@ static inline enum comp_state complete_wqe(struct rxe_qp *qp,
+ 
+ 		if (qp->req.wait_psn) {
+ 			qp->req.wait_psn = 0;
+-			rxe_sched_task(&qp->send_task);
++			run_requester_again = 1;
+ 		}
+ 	}
+ 
+@@ -654,6 +656,8 @@ int rxe_completer(struct rxe_qp *qp)
+ 	int ret;
+ 	unsigned long flags;
+ 
++	run_requester_again = 0;
++
+ 	spin_lock_irqsave(&qp->state_lock, flags);
+ 	if (!qp->valid || qp_state(qp) == IB_QPS_ERR ||
+ 			  qp_state(qp) == IB_QPS_RESET) {
+@@ -737,7 +741,7 @@ int rxe_completer(struct rxe_qp *qp)
+ 
+ 			if (qp->req.wait_psn) {
+ 				qp->req.wait_psn = 0;
+-				rxe_sched_task(&qp->send_task);
++				run_requester_again = 1;
+ 			}
+ 
+ 			state = COMPST_DONE;
+@@ -792,7 +796,7 @@ int rxe_completer(struct rxe_qp *qp)
+ 							RXE_CNT_COMP_RETRY);
+ 					qp->req.need_retry = 1;
+ 					qp->comp.started_retry = 1;
+-					rxe_sched_task(&qp->send_task);
++					run_requester_again = 1;
+ 				}
+ 				goto done;
+ 
+@@ -843,8 +847,9 @@ int rxe_completer(struct rxe_qp *qp)
+ 	ret = 0;
+ 	goto out;
+ exit:
+-	ret = -EAGAIN;
++	ret = (run_requester_again) ? 0 : -EAGAIN;
+ out:
++	run_requester_again = 0;
+ 	if (pkt)
+ 		free_pkt(pkt);
+ 	return ret;
 -- 
 2.43.0
 
