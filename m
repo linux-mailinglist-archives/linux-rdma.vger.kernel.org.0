@@ -1,46 +1,46 @@
-Return-Path: <linux-rdma+bounces-1666-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-1667-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 28052891F55
-	for <lists+linux-rdma@lfdr.de>; Fri, 29 Mar 2024 16:03:00 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 36F37891E51
+	for <lists+linux-rdma@lfdr.de>; Fri, 29 Mar 2024 15:39:00 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id F1D25B28BBB
-	for <lists+linux-rdma@lfdr.de>; Fri, 29 Mar 2024 14:28:52 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id CC00A1F288B3
+	for <lists+linux-rdma@lfdr.de>; Fri, 29 Mar 2024 14:38:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D4B6A14C5BB;
-	Fri, 29 Mar 2024 12:47:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 074C31AB895;
+	Fri, 29 Mar 2024 12:48:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="JJyS7rEu"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="bKlDxSkC"
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8DC6516C459;
-	Fri, 29 Mar 2024 12:47:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B2E481AB88C;
+	Fri, 29 Mar 2024 12:48:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711716443; cv=none; b=kXU3m1vlQQRVlZ/ltHT/BsNURyw4Wih8/JbQdSxT9lCOJX90NxbyO8cCCErpsEiS2H4e2DiMh0RNb2C7uIl/YiVUt6IOwQYLcxiGvJ0nQ3EwrW4uIGGkBHVDh4xYKxBDFNwCNHm6ZhlkuzeQqCB5kXqSmlaTAItjSnQN9CdGg3s=
+	t=1711716520; cv=none; b=ZHdA9jO3ccNyYsXdUsRt3ljblGQxuPqGTVA3Eg/tAfptwY3KEs4GhkONbPmZg6zYfFUVrJwlZ8L6G3ivZ9wYI7ZOWc5coRF/Vxp7UZcsgV4651cFtER4lvEUVaEBtq5Nc8TnhRxrs2xLsrxAGGjAsgI3TUNqCL47Gl4S/zJmPWw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711716443; c=relaxed/simple;
-	bh=HYVuJYmf6hryDlxKDkRvVdXDUbrtfxHve60c2wv2Abc=;
+	s=arc-20240116; t=1711716520; c=relaxed/simple;
+	bh=Lx6Cr1rhOGH6CxQ/pMseZyzBxFMncaDCPKyH+MfPHPo=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=eGgPyyyLMoiUBX85t4CxKWfKS2ZlwRff8mON09/HiUZ0IERRrl/HQXbGmrBqihWxZTjdCfIwoSAM/z4lGmY2zmDTvqLR6vafungcP4UbSKJshj30t2DepvEQaQHZCZ8D7pXOR2PLvF7Twl/T+oBgZ4vKpti5Ic994Ws91F9vhEQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=JJyS7rEu; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 59087C43399;
-	Fri, 29 Mar 2024 12:47:22 +0000 (UTC)
+	 MIME-Version; b=d7iChqXo7k2ocQ1vVRF3sGloNPL8ypLzIKoGoDbC2VJqL/bhHwQSVhPogCJVnm+jaDvHTIVyaNuQxHZjHgiQPVYVHAqvMUYPiSGh6rrKh3kiJB6eHX8Xl/nOrtCrjBzMAeGBD/puuNisUpvoC0mY2RxCSZpSIpWoF/7LNhrvy7M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=bKlDxSkC; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B884AC43390;
+	Fri, 29 Mar 2024 12:48:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711716443;
-	bh=HYVuJYmf6hryDlxKDkRvVdXDUbrtfxHve60c2wv2Abc=;
+	s=k20201202; t=1711716520;
+	bh=Lx6Cr1rhOGH6CxQ/pMseZyzBxFMncaDCPKyH+MfPHPo=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=JJyS7rEu3TIjExhg67/cBEapP7c29WN8ZoKdynKt/mPBiWEALflxqBY+QK/KAJ1cN
-	 toUjqkTkpdhgLOx9jJB23tyWvS415f8Fc+qjnhGge7+UpBxI3pFtF/Tn2kTx19Hksv
-	 nM5kP7BWVIAdN6HW5XvS2ZJ+sHdB59H+jUtAL6h2+fpEaTfKetPbZ1k/0stBOtNCZV
-	 Qryy+mZGsYK1A+ieZz31dpQcPfRwvgvdQb0SvGm/EmYOHG6akBcLplowTYamReO2xN
-	 TAJE7DZMm0IqwpHjS8EvZCMhjGKCJt6EYSbZPBoGR/i+gTR5wvHrNSn/EjDWlE2J+s
-	 RwYcJN0UHweuA==
+	b=bKlDxSkCoy093JIVnF9jdXprVA8cJsUVfDU+m9qkmO7DnFzTRZDFrPkqBMxH4L4iy
+	 6BFjibMDiLp02RaMw23RV2DNY/1wSIWImvdtON/Ri+vqLQTshSp1wnW1kpPm7785Y2
+	 B96Mtaq8aBnHREoA6fim2IvfJYXyTGOzoVInI/gcHw9j5al1B/kAlweyyq3LZnMc1E
+	 n/TaPZa5PWFEjZFy31NO2nn+a+SVwL9k3uON888kR/t8u3MszUV8y5s8INLuFGV+sV
+	 JUV7nG2A8dXSxOVXLL5n6Wa2rfbSAhIGRmi9FZlIk2qGSwu/cwCyl/PKvXA/VdEYHm
+	 pL4rjK23P5y3Q==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
@@ -49,12 +49,12 @@ Cc: Manjunath Patil <manjunath.b.patil@oracle.com>,
 	Sasha Levin <sashal@kernel.org>,
 	markzhang@nvidia.com,
 	linux-rdma@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.1 44/52] RDMA/cm: add timeout to cm_destroy_id wait
-Date: Fri, 29 Mar 2024 08:45:38 -0400
-Message-ID: <20240329124605.3091273-44-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.15 29/34] RDMA/cm: add timeout to cm_destroy_id wait
+Date: Fri, 29 Mar 2024 08:47:30 -0400
+Message-ID: <20240329124750.3092394-29-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20240329124605.3091273-1-sashal@kernel.org>
-References: <20240329124605.3091273-1-sashal@kernel.org>
+In-Reply-To: <20240329124750.3092394-1-sashal@kernel.org>
+References: <20240329124750.3092394-1-sashal@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
@@ -63,7 +63,7 @@ List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
-X-stable-base: Linux 6.1.83
+X-stable-base: Linux 5.15.153
 Content-Transfer-Encoding: 8bit
 
 From: Manjunath Patil <manjunath.b.patil@oracle.com>
@@ -112,7 +112,7 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  1 file changed, 19 insertions(+), 1 deletion(-)
 
 diff --git a/drivers/infiniband/core/cm.c b/drivers/infiniband/core/cm.c
-index b7f9023442890..462a10d6a5762 100644
+index 680c3ac8cd4c0..504e1adf1997a 100644
 --- a/drivers/infiniband/core/cm.c
 +++ b/drivers/infiniband/core/cm.c
 @@ -34,6 +34,7 @@ MODULE_AUTHOR("Sean Hefty");
@@ -123,7 +123,7 @@ index b7f9023442890..462a10d6a5762 100644
  static const char * const ibcm_rej_reason_strs[] = {
  	[IB_CM_REJ_NO_QP]			= "no QP",
  	[IB_CM_REJ_NO_EEC]			= "no EEC",
-@@ -1025,10 +1026,20 @@ static void cm_reset_to_idle(struct cm_id_private *cm_id_priv)
+@@ -1032,10 +1033,20 @@ static void cm_reset_to_idle(struct cm_id_private *cm_id_priv)
  	}
  }
  
@@ -144,7 +144,7 @@ index b7f9023442890..462a10d6a5762 100644
  
  	cm_id_priv = container_of(cm_id, struct cm_id_private, id);
  	spin_lock_irq(&cm_id_priv->lock);
-@@ -1135,7 +1146,14 @@ static void cm_destroy_id(struct ib_cm_id *cm_id, int err)
+@@ -1142,7 +1153,14 @@ static void cm_destroy_id(struct ib_cm_id *cm_id, int err)
  
  	xa_erase(&cm.local_id_table, cm_local_id(cm_id->local_id));
  	cm_deref_id(cm_id_priv);
