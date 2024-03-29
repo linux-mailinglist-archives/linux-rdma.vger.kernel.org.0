@@ -1,200 +1,160 @@
-Return-Path: <linux-rdma+bounces-1681-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-1682-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 224F08920D2
-	for <lists+linux-rdma@lfdr.de>; Fri, 29 Mar 2024 16:48:36 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 52FA58921CA
+	for <lists+linux-rdma@lfdr.de>; Fri, 29 Mar 2024 17:39:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id F3499B33AD6
-	for <lists+linux-rdma@lfdr.de>; Fri, 29 Mar 2024 15:17:34 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C4427B24D0C
+	for <lists+linux-rdma@lfdr.de>; Fri, 29 Mar 2024 16:39:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CE05E14BFA8;
-	Fri, 29 Mar 2024 14:56:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 735371311AC;
+	Fri, 29 Mar 2024 16:39:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="CeLzvi6q"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="uEituwgn"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-oi1-f171.google.com (mail-oi1-f171.google.com [209.85.167.171])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 131E014BF9E
-	for <linux-rdma@vger.kernel.org>; Fri, 29 Mar 2024 14:56:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CC0452D781;
+	Fri, 29 Mar 2024 16:39:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711724166; cv=none; b=GfWngS/hW7z4GBtKD+pykc919gst099Tx+w/l4MawnLD+TK9eFocsnguvx//Jdy6n2k58Jhp4LwrRme5DDYDb7JJ3JWwLzhBhPx9XYyZtbAqEybmBwV1zOgOlTionlUeqyfgZUq10rumZOoQgAysioFn+1BQdeEFydc7J9cVGOI=
+	t=1711730344; cv=none; b=jc+9bkBL2wQj3pMdI6pGRf1yh1g6kQWknddt2ymYF8jQ3fSy3k6iN6650yXpifj7sZ9OpFONQjev/G1sGNtxzuI43/EXps+kXmgu59fnBU8w95EbOseMoObcX/MBOd8t0ncmbc0uVFc1se+v+u0yqw33SKNfEwmYqoeTWkb+Xgc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711724166; c=relaxed/simple;
-	bh=B2gmlDep39f/8aLihVViwFCJdjZs3DgwbdYVLyddLe4=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=ZpffAQnQDTKPZ9xg7+pTnZZ5tGpoL4iQn7B4ecItOsuEzQ5LkM18k1+E9oeJXhTbag8FTiPSEFtmQLrBGudlreNJKz43yq5AcUU+oEuE3LjG8bAqT8fWk2DBJxNuT+Exg0Cf/vz5/gpWZjLw5AgNdVLJtNYSfP95aLUivspqBj0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=CeLzvi6q; arc=none smtp.client-ip=209.85.167.171
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-oi1-f171.google.com with SMTP id 5614622812f47-3c3aeef1385so1423950b6e.3
-        for <linux-rdma@vger.kernel.org>; Fri, 29 Mar 2024 07:56:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1711724164; x=1712328964; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=XF9/VOsT7pCQvNE3+t/XGyOip/FH5VeZPlQno+szpqc=;
-        b=CeLzvi6qUu0BSi/lza0h0T6Hr67bQ0KWyba1Vhu4gjVLw8CdG2iqYbq3hBs+rZENGf
-         uvXn8ZdX224kp0zkfn4mtUyBETa89rpzt5E1etMkB01wsbHQoleObypcyMFsx80Drr4c
-         N93tXfLZ4dDrUFm8DiqDcbzjjD+gMeqqm90SrUPOD3dL1Rgr9ViCZ1ZFOwHRnL59cNfq
-         83liwAidfvevFNmCTGBf4J4euKZqmZoVAqhLk8mzcZRYWnXCsn7uKV5jMF/BRs2nB+io
-         V6DtEw+uKrtjcV+QzK3MKOzRiY2ucLzwdDSXDt1vzuDqryRWYsc/U4e8JCR/JPRFLJo0
-         fFkA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711724164; x=1712328964;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=XF9/VOsT7pCQvNE3+t/XGyOip/FH5VeZPlQno+szpqc=;
-        b=tpE1RCnp6DaDRl/nBysTEFRNggmrjcQUeDZ7EQJ4zpcQ2X7tJEsglZ3W1j3DzF/mlW
-         60zJoxcwEiCE8MM/GLVJe2LfWQxueOV/0J7TiMkn3qw4S6YtiqALR4WE6CjXPIWdFWN+
-         mHiMTyr3FscAEN1A4Ya1JoVIl/m8WFtoQI7NuwejLaI0Ji6Gu8I714cYdOr8QWo/1Jgi
-         JDCmOX7ArPdOx183EXZBTTv3ao08GuF4e5SQTDgdNthQ+3WWClLJT9hHjMXRdRSEN7so
-         1o9brKHeS7Kf4BePmk6O2hnj8jZW5UeT9/vcrXR7s5Ga1ODGsLDHb9uPnD66pyWO8Z9j
-         +dlA==
-X-Forwarded-Encrypted: i=1; AJvYcCWNPy4s4JN0gjNT0O2RHHtprF/noefgZxQDYf6kWUNTSCbCiSmylmt8mTFI2bNzpmTdTB6F3aJHxb4fMDQxm0F7+3eXwdHEIRaiiw==
-X-Gm-Message-State: AOJu0Yw5dSAkbqMYihuoiPyYuEKgOcGRBYBQn/vCVrtJF+z3W7K/yaMw
-	kTWOHE/83G/qmcBj56Chd3f9DGF0+lV9lF7OnVvmUgUbGglSBjj7
-X-Google-Smtp-Source: AGHT+IExP+Q2VUfssSVBzcoK4DoZdQoBh0Wj4q9Q+8gtyYNthukDJTFVsGEBJN8d2YKAmoZys7kMgA==
-X-Received: by 2002:a05:6871:7981:b0:22a:7c81:1e2e with SMTP id pb1-20020a056871798100b0022a7c811e2emr2729135oac.16.1711724164118;
-        Fri, 29 Mar 2024 07:56:04 -0700 (PDT)
-Received: from bob-pearson-dev.lan (2603-8081-1405-679b-75b6-1a40-9b4e-0264.res6.spectrum.com. [2603:8081:1405:679b:75b6:1a40:9b4e:264])
-        by smtp.gmail.com with ESMTPSA id fl9-20020a056870494900b0022a58ffa4a3sm1006249oab.23.2024.03.29.07.56.03
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 29 Mar 2024 07:56:03 -0700 (PDT)
-From: Bob Pearson <rpearsonhpe@gmail.com>
-To: yanjun.zhu@linux.dev,
-	jgg@ziepe.ca,
-	leon@kernel.org,
-	linux-rdma@vger.kernel.org,
-	jhack@hpe.com
-Cc: Bob Pearson <rpearsonhpe@gmail.com>
-Subject: [PATCH for-next v3 12/12] RDMA/rxe: Let destroy qp succeed with stuck packet
-Date: Fri, 29 Mar 2024 09:55:15 -0500
-Message-ID: <20240329145513.35381-15-rpearsonhpe@gmail.com>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20240329145513.35381-2-rpearsonhpe@gmail.com>
-References: <20240329145513.35381-2-rpearsonhpe@gmail.com>
+	s=arc-20240116; t=1711730344; c=relaxed/simple;
+	bh=mu709RK6RdUvGezRsei4fEVVFDMPGmRnjx++n5sjyL0=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=OAJmHWzesT5fcmCnQNJhS2UiH0VZFtmDrdxPLag8o3wp6bYMw2/bl4rr196gudTn1VkTGidnH5lc4nrgFE76iz3JCvL7KlGCv60R7zr7idekbnicm9VuQ5ZmC6xayuwCK2db1rAKY8424a/Kre+R7/+XcQtzQtkNUS7E5VW9pNA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=uEituwgn; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 717E8C433C7;
+	Fri, 29 Mar 2024 16:39:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1711730343;
+	bh=mu709RK6RdUvGezRsei4fEVVFDMPGmRnjx++n5sjyL0=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=uEituwgn1xxAMuURhdwt3/iaLtwEGCu1+Mclwo9+Ty7wLbaMiWmyQU0rOPlf9vJzM
+	 o13NJKluh2NnMuLRvgLiGrQVrebzv3a2gzICu48+3LXXhQ45oB4NluNbhd7SB44a70
+	 M0Wt2X6l0SJT7LJi3C8GA4V9BEhry7YR3ma4wI/3OylDT4TAEwBE8hLV/q3auS8o5H
+	 9muF3kTL6rkQ20Iba0mAQK6pIs92yEx6N2CKY/CrPm5aLVKXPn+H3gbBFziiX6OMqC
+	 zpP4PltZewjblpXJOZBFZ8cpmv8jSqFoiAAks6EZfkeP36KAWbWprPmsY2/9TNUion
+	 NxXBlJGeFB7CQ==
+Date: Fri, 29 Mar 2024 22:08:58 +0530
+From: Vinod Koul <vkoul@kernel.org>
+To: Allen <allen.lkml@gmail.com>
+Cc: Arnd Bergmann <arnd@arndb.de>, Allen Pais <apais@linux.microsoft.com>,
+	linux-kernel@vger.kernel.org, Tejun Heo <tj@kernel.org>,
+	Kees Cook <keescook@chromium.org>, Hector Martin <marcan@marcan.st>,
+	Sven Peter <sven@svenpeter.dev>,
+	Florian Fainelli <florian.fainelli@broadcom.com>,
+	Ray Jui <rjui@broadcom.com>, Scott Branden <sbranden@broadcom.com>,
+	Paul Cercueil <paul@crapouillou.net>, Eugeniy.Paltsev@synopsys.com,
+	Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+	Viresh Kumar <vireshk@kernel.org>, Frank Li <Frank.Li@nxp.com>,
+	Leo Li <leoyang.li@nxp.com>, zw@zh-kernel.org,
+	Zhou Wang <wangzhou1@hisilicon.com>, haijie1@huawei.com,
+	Shawn Guo <shawnguo@kernel.org>,
+	Sascha Hauer <s.hauer@pengutronix.de>,
+	Sean Wang <sean.wang@mediatek.com>,
+	Matthias Brugger <matthias.bgg@gmail.com>,
+	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
+	Andreas =?iso-8859-1?Q?F=E4rber?= <afaerber@suse.de>,
+	logang@deltatee.com, Daniel Mack <daniel@zonque.org>,
+	Haojian Zhuang <haojian.zhuang@gmail.com>,
+	Robert Jarzmik <robert.jarzmik@free.fr>,
+	Bjorn Andersson <andersson@kernel.org>,
+	Konrad Dybcio <konrad.dybcio@linaro.org>,
+	Orson Zhai <orsonzhai@gmail.com>,
+	Baolin Wang <baolin.wang@linux.alibaba.com>,
+	Chunyan Zhang <zhang.lyra@gmail.com>,
+	Patrice Chotard <patrice.chotard@foss.st.com>,
+	Linus Walleij <linus.walleij@linaro.org>,
+	Chen-Yu Tsai <wens@csie.org>,
+	Jernej Skrabec <jernej.skrabec@gmail.com>, peter.ujfalusi@gmail.com,
+	"K. Y. Srinivasan" <kys@microsoft.com>,
+	Haiyang Zhang <haiyangz@microsoft.com>,
+	Wei Liu <wei.liu@kernel.org>, Dexuan Cui <decui@microsoft.com>,
+	Jassi Brar <jassisinghbrar@gmail.com>,
+	Mauro Carvalho Chehab <mchehab@kernel.org>,
+	maintainers@bluecherrydvr.com, aubin.constans@microchip.com,
+	Ulf Hansson <ulf.hansson@linaro.org>,
+	Manuel Lauss <manuel.lauss@gmail.com>,
+	=?utf-8?B?TWljaGHFgiBNaXJvc8WCYXc=?= <mirq-linux@rere.qmqm.pl>,
+	"jh80.chung" <jh80.chung@samsung.com>, oakad@yahoo.com,
+	Kunihiko Hayashi <hayashi.kunihiko@socionext.com>,
+	Masami Hiramatsu <mhiramat@kernel.org>, brucechang@via.com.tw,
+	HaraldWelte@viatech.com, pierre@ossman.eu,
+	Duncan Sands <duncan.sands@free.fr>,
+	Alan Stern <stern@rowland.harvard.edu>,
+	Oliver Neukum <oneukum@suse.com>,
+	openipmi-developer@lists.sourceforge.net, dmaengine@vger.kernel.org,
+	asahi@lists.linux.dev, linux-arm-kernel@lists.infradead.org,
+	linux-rpi-kernel@lists.infradead.org, linux-mips@vger.kernel.org,
+	imx@lists.linux.dev, linuxppc-dev@lists.ozlabs.org,
+	linux-mediatek@lists.infradead.org,
+	linux-actions@lists.infradead.org, linux-arm-msm@vger.kernel.org,
+	linux-riscv@lists.infradead.org, linux-sunxi@lists.linux.dev,
+	linux-tegra@vger.kernel.org, linux-hyperv@vger.kernel.org,
+	linux-rdma@vger.kernel.org, linux-media@vger.kernel.org,
+	"linux-mmc @ vger . kernel . org" <linux-mmc@vger.kernel.org>,
+	Linux-OMAP <linux-omap@vger.kernel.org>,
+	Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+	linux-s390@vger.kernel.org, Netdev <netdev@vger.kernel.org>,
+	linux-usb@vger.kernel.org
+Subject: Re: [PATCH 2/9] dma: Convert from tasklet to BH workqueue
+Message-ID: <ZgbuotY4IX4iHm9U@matsya>
+References: <20240327160314.9982-1-apais@linux.microsoft.com>
+ <20240327160314.9982-3-apais@linux.microsoft.com>
+ <ZgUGXTKPVhrA1tam@matsya>
+ <2e9257af-c123-406b-a189-eaebeecc1d71@app.fastmail.com>
+ <ZgW3j1qkLA-QU4iM@matsya>
+ <CAOMdWSKY9D75FM3bswUfXn2o7bGtrei3G5kLt6JdcdOPDXaG8g@mail.gmail.com>
+ <678ba20b-9f1d-41cb-8a25-e716b61ffafe@app.fastmail.com>
+ <CAOMdWSKC4B8zn6N+=5DssB_BiR6JkHBEpJr0ohKb149eJvCKMQ@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAOMdWSKC4B8zn6N+=5DssB_BiR6JkHBEpJr0ohKb149eJvCKMQ@mail.gmail.com>
 
-In some situations a sent packet may get queued in the NIC longer
-than than timeout of a ULP. Currently if this happens the ULP may
-try to reset the link by destroying the qp and setting up an
-alternate connection but will fail because the rxe driver is
-waiting for the packet to finish getting sent and be returned to
-the skb destructor function where the qp reference holding things
-up will be dropped. This patch modifies the way that the qp is
-passed to the destructor to pass the qp index and not a qp pointer.
-Then the destructor will attempt to lookup the qp from its index
-and if it fails exit early. This requires taking a reference on
-the struct sock rather than the qp allowing the qp to be destroyed
-while the sk is still around waiting for the packet to finish.
+On 28-03-24, 13:01, Allen wrote:
+> > >> > Since almost every driver associates the tasklet with the
+> > >> > dma_chan, we could go one step further and add the
+> > >> > work_queue structure directly into struct dma_chan,
+> > >> > with the wrapper operating on the dma_chan rather than
+> > >> > the work_queue.
+> > >>
+> > >> I think that is very great idea. having this wrapped in dma_chan would
+> > >> be very good way as well
+> > >>
+> > >> Am not sure if Allen is up for it :-)
+> > >
+> > >  Thanks Arnd, I know we did speak about this at LPC. I did start
+> > > working on using completion. I dropped it as I thought it would
+> > > be easier to move to workqueues.
+> >
+> > It's definitely easier to do the workqueue conversion as a first
+> > step, and I agree adding support for the completion right away is
+> > probably too much. Moving the work_struct into the dma_chan
+> > is probably not too hard though, if you leave your current
+> > approach for the cases where the tasklet is part of the
+> > dma_dev rather than the dma_chan.
+> >
+> 
+>  Alright, I will work on moving work_struck into the dma_chan and
+> leave the dma_dev as is (using bh workqueues) and post a RFC.
+> Once reviewed, I could move to the next step.
 
-Signed-off-by: Bob Pearson <rpearsonhpe@gmail.com>
----
- drivers/infiniband/sw/rxe/rxe_net.c | 42 +++++++++++++++++++++--------
- drivers/infiniband/sw/rxe/rxe_qp.c  |  2 +-
- 2 files changed, 32 insertions(+), 12 deletions(-)
+That might be better from a performance pov but the current design is a
+global tasklet and not a per chan one... We would need to carefully
+review and test this for sure
 
-diff --git a/drivers/infiniband/sw/rxe/rxe_net.c b/drivers/infiniband/sw/rxe/rxe_net.c
-index b58eab75df97..dc22f3922a59 100644
---- a/drivers/infiniband/sw/rxe/rxe_net.c
-+++ b/drivers/infiniband/sw/rxe/rxe_net.c
-@@ -345,25 +345,44 @@ int rxe_prepare(struct rxe_av *av, struct rxe_pkt_info *pkt,
- 
- static void rxe_skb_tx_dtor(struct sk_buff *skb)
- {
--	struct sock *sk = skb->sk;
--	struct rxe_qp *qp = sk->sk_user_data;
--	int skb_out = atomic_dec_return(&qp->skb_out);
-+	struct net_device *ndev = skb->dev;
-+	struct rxe_dev *rxe;
-+	unsigned int qp_index;
-+	struct rxe_qp *qp;
-+	int skb_out;
-+
-+	rxe = rxe_get_dev_from_net(ndev);
-+	if (!rxe && is_vlan_dev(ndev))
-+		rxe = rxe_get_dev_from_net(vlan_dev_real_dev(ndev));
-+	if (WARN_ON(!rxe))
-+		return;
- 
--	if (unlikely(qp->need_req_skb &&
--		     skb_out < RXE_INFLIGHT_SKBS_PER_QP_LOW))
-+	qp_index = (int)(uintptr_t)skb->sk->sk_user_data;
-+	if (!qp_index)
-+		return;
-+
-+	qp = rxe_pool_get_index(&rxe->qp_pool, qp_index);
-+			if (!qp)
-+		goto put_dev;
-+
-+	skb_out = atomic_dec_return(&qp->skb_out);
-+	if (qp->need_req_skb && skb_out < RXE_INFLIGHT_SKBS_PER_QP_LOW)
- 		rxe_sched_task(&qp->send_task);
- 
- 	rxe_put(qp);
-+put_dev:
-+	ib_device_put(&rxe->ib_dev);
-+	sock_put(skb->sk);
- }
- 
- static int rxe_send(struct sk_buff *skb, struct rxe_pkt_info *pkt)
- {
- 	int err;
-+	struct sock *sk = pkt->qp->sk->sk;
- 
-+	sock_hold(sk);
-+	skb->sk = sk;
- 	skb->destructor = rxe_skb_tx_dtor;
--	skb->sk = pkt->qp->sk->sk;
--
--	rxe_get(pkt->qp);
- 	atomic_inc(&pkt->qp->skb_out);
- 
- 	if (skb->protocol == htons(ETH_P_IP))
-@@ -379,12 +398,13 @@ static int rxe_send(struct sk_buff *skb, struct rxe_pkt_info *pkt)
-  */
- static int rxe_loopback(struct sk_buff *skb, struct rxe_pkt_info *pkt)
- {
-+	struct sock *sk = pkt->qp->sk->sk;
-+
- 	memcpy(SKB_TO_PKT(skb), pkt, sizeof(*pkt));
- 
-+	sock_hold(sk);
-+	skb->sk = sk;
- 	skb->destructor = rxe_skb_tx_dtor;
--	skb->sk = pkt->qp->sk->sk;
--
--	rxe_get(pkt->qp);
- 	atomic_inc(&pkt->qp->skb_out);
- 
- 	if (skb->protocol == htons(ETH_P_IP))
-diff --git a/drivers/infiniband/sw/rxe/rxe_qp.c b/drivers/infiniband/sw/rxe/rxe_qp.c
-index c7d99063594b..d2f7b5195c19 100644
---- a/drivers/infiniband/sw/rxe/rxe_qp.c
-+++ b/drivers/infiniband/sw/rxe/rxe_qp.c
-@@ -244,7 +244,7 @@ static int rxe_qp_init_req(struct rxe_dev *rxe, struct rxe_qp *qp,
- 	err = sock_create_kern(&init_net, AF_INET, SOCK_DGRAM, 0, &qp->sk);
- 	if (err < 0)
- 		return err;
--	qp->sk->sk->sk_user_data = qp;
-+	qp->sk->sk->sk_user_data = (void *)(uintptr_t)qp->elem.index;
- 
- 	/* pick a source UDP port number for this QP based on
- 	 * the source QPN. this spreads traffic for different QPs
 -- 
-2.43.0
-
+~Vinod
 
