@@ -1,46 +1,46 @@
-Return-Path: <linux-rdma+bounces-1665-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-1666-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6DEAF891D53
-	for <lists+linux-rdma@lfdr.de>; Fri, 29 Mar 2024 15:15:25 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 28052891F55
+	for <lists+linux-rdma@lfdr.de>; Fri, 29 Mar 2024 16:03:00 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 233A51F267CC
-	for <lists+linux-rdma@lfdr.de>; Fri, 29 Mar 2024 14:15:25 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id F1D25B28BBB
+	for <lists+linux-rdma@lfdr.de>; Fri, 29 Mar 2024 14:28:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9D95920012E;
-	Fri, 29 Mar 2024 12:45:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D4B6A14C5BB;
+	Fri, 29 Mar 2024 12:47:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="gYVeFBT0"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="JJyS7rEu"
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 59FDB1D2AB6;
-	Fri, 29 Mar 2024 12:45:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8DC6516C459;
+	Fri, 29 Mar 2024 12:47:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711716327; cv=none; b=gUovM1fNMnXbGJELl5YCp47VRmDaW+Sn9sluWj/vQhek45o209yYx3+FUAsxAargJd2YDbViCsSe7+U++EkV2Fo8SXGDpUO2rwldbQL9I4ceqq2Ew9DSzMMZlW5dCaZFPoJ96a1A3bk5CxzsBcfsGnKyEsEC7QJC+nJYUmdLn7g=
+	t=1711716443; cv=none; b=kXU3m1vlQQRVlZ/ltHT/BsNURyw4Wih8/JbQdSxT9lCOJX90NxbyO8cCCErpsEiS2H4e2DiMh0RNb2C7uIl/YiVUt6IOwQYLcxiGvJ0nQ3EwrW4uIGGkBHVDh4xYKxBDFNwCNHm6ZhlkuzeQqCB5kXqSmlaTAItjSnQN9CdGg3s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711716327; c=relaxed/simple;
-	bh=Xc3uF32qcm2T61fHfLRI1sXsN9HQIKCA58nheKM7b4Q=;
+	s=arc-20240116; t=1711716443; c=relaxed/simple;
+	bh=HYVuJYmf6hryDlxKDkRvVdXDUbrtfxHve60c2wv2Abc=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=BACYtxpujTCjGASL/ye6pMToy8/viSGNVrhq3ECnc5fFfkZdtps1VGz1Rz5uW1uYKfGR5SyX22kV7bBUQY1fFiSHqObEuoueLsQ5owi6up41o1icFstaB8Imq1gLW2RkIegwFfje7qHILCuYwV9JMYlorp4ZwqSmhLdLgO7rrFs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=gYVeFBT0; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1B914C433C7;
-	Fri, 29 Mar 2024 12:45:26 +0000 (UTC)
+	 MIME-Version; b=eGgPyyyLMoiUBX85t4CxKWfKS2ZlwRff8mON09/HiUZ0IERRrl/HQXbGmrBqihWxZTjdCfIwoSAM/z4lGmY2zmDTvqLR6vafungcP4UbSKJshj30t2DepvEQaQHZCZ8D7pXOR2PLvF7Twl/T+oBgZ4vKpti5Ic994Ws91F9vhEQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=JJyS7rEu; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 59087C43399;
+	Fri, 29 Mar 2024 12:47:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711716326;
-	bh=Xc3uF32qcm2T61fHfLRI1sXsN9HQIKCA58nheKM7b4Q=;
+	s=k20201202; t=1711716443;
+	bh=HYVuJYmf6hryDlxKDkRvVdXDUbrtfxHve60c2wv2Abc=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=gYVeFBT0TM3NnEfkjzygjsAvK43Mr3cJ8G07+Sznq1FArSCc5hu3biBzlz1plGGfG
-	 4Dc16pf/pmL/KP/NAXnoGLAEOBtebKJiVLM/Llkw3zgBfJhP15t4Vu1Dq4iSuu5vjI
-	 6vc5hE9vkDJmUdo5o0CTE7tLPoscK/dVIMCtzYXmGxGATxqO19C7wa6k9R+dnxZIs6
-	 J/iyMeVODpreHerXZirtytuxOOQkAhkaI26hR30kh3EBVPdsm8mQl/B+aggE2LSX2R
-	 0aKwosLJyWNaxVeRFCM/RASUiTBF3MwVDpd1v3SJ+rhn4Mgk5bXhyQyo09vFxw+cAG
-	 NQ8zyeF47yMVw==
+	b=JJyS7rEu3TIjExhg67/cBEapP7c29WN8ZoKdynKt/mPBiWEALflxqBY+QK/KAJ1cN
+	 toUjqkTkpdhgLOx9jJB23tyWvS415f8Fc+qjnhGge7+UpBxI3pFtF/Tn2kTx19Hksv
+	 nM5kP7BWVIAdN6HW5XvS2ZJ+sHdB59H+jUtAL6h2+fpEaTfKetPbZ1k/0stBOtNCZV
+	 Qryy+mZGsYK1A+ieZz31dpQcPfRwvgvdQb0SvGm/EmYOHG6akBcLplowTYamReO2xN
+	 TAJE7DZMm0IqwpHjS8EvZCMhjGKCJt6EYSbZPBoGR/i+gTR5wvHrNSn/EjDWlE2J+s
+	 RwYcJN0UHweuA==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
@@ -49,12 +49,12 @@ Cc: Manjunath Patil <manjunath.b.patil@oracle.com>,
 	Sasha Levin <sashal@kernel.org>,
 	markzhang@nvidia.com,
 	linux-rdma@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.6 65/75] RDMA/cm: add timeout to cm_destroy_id wait
-Date: Fri, 29 Mar 2024 08:42:46 -0400
-Message-ID: <20240329124330.3089520-65-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 6.1 44/52] RDMA/cm: add timeout to cm_destroy_id wait
+Date: Fri, 29 Mar 2024 08:45:38 -0400
+Message-ID: <20240329124605.3091273-44-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20240329124330.3089520-1-sashal@kernel.org>
-References: <20240329124330.3089520-1-sashal@kernel.org>
+In-Reply-To: <20240329124605.3091273-1-sashal@kernel.org>
+References: <20240329124605.3091273-1-sashal@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
@@ -63,7 +63,7 @@ List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
-X-stable-base: Linux 6.6.23
+X-stable-base: Linux 6.1.83
 Content-Transfer-Encoding: 8bit
 
 From: Manjunath Patil <manjunath.b.patil@oracle.com>
@@ -112,7 +112,7 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  1 file changed, 19 insertions(+), 1 deletion(-)
 
 diff --git a/drivers/infiniband/core/cm.c b/drivers/infiniband/core/cm.c
-index ff58058aeadca..bf0df6ee4f785 100644
+index b7f9023442890..462a10d6a5762 100644
 --- a/drivers/infiniband/core/cm.c
 +++ b/drivers/infiniband/core/cm.c
 @@ -34,6 +34,7 @@ MODULE_AUTHOR("Sean Hefty");
