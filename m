@@ -1,165 +1,131 @@
-Return-Path: <linux-rdma+bounces-1668-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-1669-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id DF0D7891E9F
-	for <lists+linux-rdma@lfdr.de>; Fri, 29 Mar 2024 15:47:59 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id D3940892010
+	for <lists+linux-rdma@lfdr.de>; Fri, 29 Mar 2024 16:16:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 69F4A1F25C40
-	for <lists+linux-rdma@lfdr.de>; Fri, 29 Mar 2024 14:47:59 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8DC0C284B09
+	for <lists+linux-rdma@lfdr.de>; Fri, 29 Mar 2024 15:16:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 75EA21B2C36;
-	Fri, 29 Mar 2024 12:49:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3C8B214AD0A;
+	Fri, 29 Mar 2024 14:55:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ekK4/EyC"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="NtIR4B1s"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-oo1-f46.google.com (mail-oo1-f46.google.com [209.85.161.46])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 307ED1B2C2C;
-	Fri, 29 Mar 2024 12:49:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8946244C67
+	for <linux-rdma@vger.kernel.org>; Fri, 29 Mar 2024 14:55:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.161.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711716590; cv=none; b=J5VI4Guyq31CLF5ckpSA+QjzdmN6/R+PDTMRJ4sg9Cz8Ryos6jzcrtou5ZcrZbcAG/2nPpH6hwGRjLKFz+8Z7uRoC2J5OiGwxam+D7iXYVqMEz4BMiU36ZBAlm3QvbXSgY8mmeDpgJ5jKy6KSI0l8Ik5Wzz2wv5fOyN460cyfG4=
+	t=1711724144; cv=none; b=VmH6vh717P0oT4XaWX+JhYXGbs1R/r5BjysuQLntp6n245KzY81jCKmsYqMqhulhUSeymhodS/OzWxthIrQw+udSRWJUGQYmuisKr1GCO8C+YvpDggb+MJwjdIKRpRpHiuJfjoMX4B0AelDP4DHlL53VqVd6Qyc3zZWhkNqzYDY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711716590; c=relaxed/simple;
-	bh=67hnujsbtK7vRmIqoli5FDo9E2OVIOrMdtKAEsoBGfQ=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=NqV0RYTWfTvb7VZjIBKl57TJ7nsOcTPSxpf5U/axgFP85c1OrjqGk2q20EBHf7lsbWG+Gysov6t4xiKu9ec+RQbgvfeN8ah9SVeBCNkyqQ5GKBe2IKMu95vnIXTxg9bQ0DT/qNiUu1YAq/mbQm0npF7nnqpGrPg0SONwVY5fJh4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ekK4/EyC; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E2772C433F1;
-	Fri, 29 Mar 2024 12:49:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711716589;
-	bh=67hnujsbtK7vRmIqoli5FDo9E2OVIOrMdtKAEsoBGfQ=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=ekK4/EyCcIeVpXi48vGbssvqvxJIyzE8uXvafvCQONtLEMjpN593DERhQbeaxsixo
-	 TZfoAN//maSj8kKpwqlL4YQgD02kjqqxnWBRGR/8bwiGKdPrmFkx/W48W5T9xeyqzr
-	 Kf7JuOiWn+oZJUCUqgn0GLWQslyapdTUH/Kxx0rqGntzpts8HS3m08LOTkvPgg5vuG
-	 3Fe1v+EI93bwBw6OkOh/lWkASe5ve363YDNHKIUvRDxFNpP0pWXEEKfFORVGJNtw8f
-	 HJC9u2eTVHplFi40BVqlu9yJunoFZ9QuUscbdo1ijozoXkj+hD7I+kYasvobIgvdBD
-	 NbZeEZXGaLMwg==
-From: Sasha Levin <sashal@kernel.org>
-To: linux-kernel@vger.kernel.org,
-	stable@vger.kernel.org
-Cc: Manjunath Patil <manjunath.b.patil@oracle.com>,
-	Leon Romanovsky <leon@kernel.org>,
-	Sasha Levin <sashal@kernel.org>,
-	markzhang@nvidia.com,
-	linux-rdma@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.10 27/31] RDMA/cm: add timeout to cm_destroy_id wait
-Date: Fri, 29 Mar 2024 08:48:44 -0400
-Message-ID: <20240329124903.3093161-27-sashal@kernel.org>
+	s=arc-20240116; t=1711724144; c=relaxed/simple;
+	bh=MRXbppMVBbpEAWNpzEFNIaf+OsjyNFYv7VQxdJVCYGQ=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=URPDC/Er1EPYSzDH2FJeh8cPQUwqNwaiokak4bGp3Qd1OjkC3dGpdvEvp1SlLQSSz2CEDFDa92x7uHR8RpWMN+nWTmKBR1pmniURXKHN8iTRQrugCu/V6nGb381jOjVFZFTjt42h0gHnezHc+sP0tWp1v8Wemh/I3iO1ft2+Cj0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=NtIR4B1s; arc=none smtp.client-ip=209.85.161.46
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-oo1-f46.google.com with SMTP id 006d021491bc7-5a46abf093cso1338765eaf.2
+        for <linux-rdma@vger.kernel.org>; Fri, 29 Mar 2024 07:55:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1711724141; x=1712328941; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=QRbVFFazYE9cEW7lFjMY2HghdW9S2LiyYVss0XO3lx4=;
+        b=NtIR4B1swPPfZ5KknxupNGB4XCztISOqrJtOVFVkr3tiIAF1xNbGMlveV8ObNGLGfV
+         b9i6BFjGcFC+oQ6jXcCMVEc+/zoeZ3kPb8P+GQpkSTyq0/0D2Iy34KbmECz8OweT9fi0
+         cpnu3t2POiIa5z7YzWGL/5VaqmsGfezc9ou9tp8j6wTU8lAXopZ00et/2RhYdZX1H9mT
+         AwzZ7lqnPoFnTJrBLp17cyP00JUK4gXWzQnxC7ARCYOOja0WDLBqYt2rQ5Oi1BAjrIZT
+         f9iucRX8zoewfIVRBbUJfkDb0ICmcT+TfR16nzVZ0gsBnfmv0T6vRkP8OvvTHo0ZpOwA
+         ER/w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1711724141; x=1712328941;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=QRbVFFazYE9cEW7lFjMY2HghdW9S2LiyYVss0XO3lx4=;
+        b=bYJUMEVGSshPYipNo5dPdR9a0XJnf9pdttoYTAmOqM810VWnQhOl0piji8EJzWlduN
+         dY3q9EmkvHOqzWgBejrGwnm8Hv6kPJQmWCqgZhms8T8X77zdnkvwUoaEJfmbTLO9U25J
+         tHaFT+1ZV8kghEs+8PzVrb1+vQR8KU+iiZqcMcmd3totbSmaKOAI05FdbPKa2KVMEDYc
+         iF2QDCPk0+2jrruNPFQWgpl8XqeLnqKqyFy5h51vNDWANnYHbDeaKp0lnS/prjra14A9
+         Axz9UeJhNrquh+94fA+A7hPGnLt6/Fa44o+MnFlWWyxlXS/0vJUw11mx37MBYlCK0psv
+         wknQ==
+X-Forwarded-Encrypted: i=1; AJvYcCUvKV4zdKsRXmXCcT7jHUgcIyr9EeG9fFcpO+ksHL6Ec9/NUzH6HI+8dY8AX3rKta970UO0XvdiNEKVl9xZduSN6Fozzq3EzwNofA==
+X-Gm-Message-State: AOJu0YyCOlXNAjrRCVUVy7ucOppVZLXKzAEnTBEoufQ7FILEb7ENvWfX
+	GXGvyYQFrgSecmk8P//nUcllR4+CnTne/I2axxEM2K8WR/ZiQvA2
+X-Google-Smtp-Source: AGHT+IFRdpB1tvoEWA61XCo1PzgpRULjKU266dEzWWAENZtHafGGfnQ9dXUSRY8yZusHHgEYCcT7gw==
+X-Received: by 2002:a05:6871:54d:b0:221:3c64:fbb with SMTP id t13-20020a056871054d00b002213c640fbbmr2521994oal.30.1711724141618;
+        Fri, 29 Mar 2024 07:55:41 -0700 (PDT)
+Received: from bob-pearson-dev.lan (2603-8081-1405-679b-75b6-1a40-9b4e-0264.res6.spectrum.com. [2603:8081:1405:679b:75b6:1a40:9b4e:264])
+        by smtp.gmail.com with ESMTPSA id fl9-20020a056870494900b0022a58ffa4a3sm1006249oab.23.2024.03.29.07.55.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 29 Mar 2024 07:55:40 -0700 (PDT)
+From: Bob Pearson <rpearsonhpe@gmail.com>
+To: yanjun.zhu@linux.dev,
+	jgg@ziepe.ca,
+	leon@kernel.org,
+	linux-rdma@vger.kernel.org,
+	jhack@hpe.com
+Cc: Bob Pearson <rpearsonhpe@gmail.com>
+Subject: [PATCH for-next v3 00/12] RDMA/rxe: Various fixes and cleanups
+Date: Fri, 29 Mar 2024 09:55:02 -0500
+Message-ID: <20240329145513.35381-2-rpearsonhpe@gmail.com>
 X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20240329124903.3093161-1-sashal@kernel.org>
-References: <20240329124903.3093161-1-sashal@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
-X-stable-base: Linux 5.10.214
 Content-Transfer-Encoding: 8bit
 
-From: Manjunath Patil <manjunath.b.patil@oracle.com>
+This series of patches is the result of high scale testing on a large
+HPC system with a large attached Lustre file system. Several errors
+were found which had not been previously seen at smaller scales. In
+this case up to 1600 QPs on 1024 compute nodes attached to about 100
+flash storage nodes. Each patch has it's own description.
 
-[ Upstream commit 96d9cbe2f2ff7abde021bac75eafaceabe9a51fa ]
+v3
+	Fixed an error in "Don't call rxe_requester from rxe_completer"
+	Moved run_requester_again from a global to rxe_req_info.again.
+	The control parameter has to be local to each qp.
+v2
+	Minor edits to some of the commit messages.
+	Added a missing change to "Don't schedule rxe_completer...".
+	Added a missing change to "Git rid of pkt resend on err".
+	Added one additional commit.
 
-Add timeout to cm_destroy_id, so that userspace can trigger any data
-collection that would help in analyzing the cause of delay in destroying
-the cm_id.
+Bob Pearson (12):
+  RDMA/rxe: Fix seg fault in rxe_comp_queue_pkt
+  RDMA/rxe: Allow good work requests to be executed
+  RDMA/rxe: Remove redundant scheduling of rxe_completer
+  RDMA/rxe: Merge request and complete tasks
+  RDMA/rxe: Remove save/rollback_state in rxe_requester
+  RDMA/rxe: Don't schedule rxe_completer from rxe_requester
+  RDMA/rxe: Don't call rxe_requester from rxe_completer
+  RDMA/rxe: Don't call direct between tasks
+  RDMA/rxe: Fix incorrect rxe_put in error path
+  RDMA/rxe: Make rxe_loopback match rxe_send behavior
+  RDMA/rxe: Get rid of pkt resend on err
+  RDMA/rxe: Let destroy qp succeed with stuck packet
 
-New noinline function helps dtrace/ebpf programs to hook on to it.
-Existing functionality isn't changed except triggering a probe-able new
-function at every timeout interval.
+ drivers/infiniband/sw/rxe/rxe_comp.c        | 32 ++++----
+ drivers/infiniband/sw/rxe/rxe_hw_counters.c |  2 +-
+ drivers/infiniband/sw/rxe/rxe_hw_counters.h |  2 +-
+ drivers/infiniband/sw/rxe/rxe_loc.h         |  3 +-
+ drivers/infiniband/sw/rxe/rxe_net.c         | 69 +++++++++--------
+ drivers/infiniband/sw/rxe/rxe_qp.c          | 46 +++++-------
+ drivers/infiniband/sw/rxe/rxe_req.c         | 82 ++++++---------------
+ drivers/infiniband/sw/rxe/rxe_resp.c        | 14 +---
+ drivers/infiniband/sw/rxe/rxe_verbs.c       | 17 ++---
+ drivers/infiniband/sw/rxe/rxe_verbs.h       |  7 +-
+ 10 files changed, 111 insertions(+), 163 deletions(-)
 
-We have seen cases where CM messages stuck with MAD layer (either due to
-software bug or faulty HCA), leading to cm_id getting stuck in the
-following call stack. This patch helps in resolving such issues faster.
-
-kernel: ... INFO: task XXXX:56778 blocked for more than 120 seconds.
-...
-	Call Trace:
-	__schedule+0x2bc/0x895
-	schedule+0x36/0x7c
-	schedule_timeout+0x1f6/0x31f
- 	? __slab_free+0x19c/0x2ba
-	wait_for_completion+0x12b/0x18a
-	? wake_up_q+0x80/0x73
-	cm_destroy_id+0x345/0x610 [ib_cm]
-	ib_destroy_cm_id+0x10/0x20 [ib_cm]
-	rdma_destroy_id+0xa8/0x300 [rdma_cm]
-	ucma_destroy_id+0x13e/0x190 [rdma_ucm]
-	ucma_write+0xe0/0x160 [rdma_ucm]
-	__vfs_write+0x3a/0x16d
-	vfs_write+0xb2/0x1a1
-	? syscall_trace_enter+0x1ce/0x2b8
-	SyS_write+0x5c/0xd3
-	do_syscall_64+0x79/0x1b9
-	entry_SYSCALL_64_after_hwframe+0x16d/0x0
-
-Signed-off-by: Manjunath Patil <manjunath.b.patil@oracle.com>
-Link: https://lore.kernel.org/r/20240309063323.458102-1-manjunath.b.patil@oracle.com
-Signed-off-by: Leon Romanovsky <leon@kernel.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- drivers/infiniband/core/cm.c | 20 +++++++++++++++++++-
- 1 file changed, 19 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/infiniband/core/cm.c b/drivers/infiniband/core/cm.c
-index db1a25fbe2fa9..2a30b25c5e7e5 100644
---- a/drivers/infiniband/core/cm.c
-+++ b/drivers/infiniband/core/cm.c
-@@ -33,6 +33,7 @@ MODULE_AUTHOR("Sean Hefty");
- MODULE_DESCRIPTION("InfiniBand CM");
- MODULE_LICENSE("Dual BSD/GPL");
- 
-+#define CM_DESTROY_ID_WAIT_TIMEOUT 10000 /* msecs */
- static const char * const ibcm_rej_reason_strs[] = {
- 	[IB_CM_REJ_NO_QP]			= "no QP",
- 	[IB_CM_REJ_NO_EEC]			= "no EEC",
-@@ -1056,10 +1057,20 @@ static void cm_reset_to_idle(struct cm_id_private *cm_id_priv)
- 	}
- }
- 
-+static noinline void cm_destroy_id_wait_timeout(struct ib_cm_id *cm_id)
-+{
-+	struct cm_id_private *cm_id_priv;
-+
-+	cm_id_priv = container_of(cm_id, struct cm_id_private, id);
-+	pr_err("%s: cm_id=%p timed out. state=%d refcnt=%d\n", __func__,
-+	       cm_id, cm_id->state, refcount_read(&cm_id_priv->refcount));
-+}
-+
- static void cm_destroy_id(struct ib_cm_id *cm_id, int err)
- {
- 	struct cm_id_private *cm_id_priv;
- 	struct cm_work *work;
-+	int ret;
- 
- 	cm_id_priv = container_of(cm_id, struct cm_id_private, id);
- 	spin_lock_irq(&cm_id_priv->lock);
-@@ -1171,7 +1182,14 @@ static void cm_destroy_id(struct ib_cm_id *cm_id, int err)
- 
- 	xa_erase(&cm.local_id_table, cm_local_id(cm_id->local_id));
- 	cm_deref_id(cm_id_priv);
--	wait_for_completion(&cm_id_priv->comp);
-+	do {
-+		ret = wait_for_completion_timeout(&cm_id_priv->comp,
-+						  msecs_to_jiffies(
-+						  CM_DESTROY_ID_WAIT_TIMEOUT));
-+		if (!ret) /* timeout happened */
-+			cm_destroy_id_wait_timeout(cm_id);
-+	} while (!ret);
-+
- 	while ((work = cm_dequeue_work(cm_id_priv)) != NULL)
- 		cm_free_work(work);
- 
 -- 
 2.43.0
 
