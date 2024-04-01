@@ -1,84 +1,84 @@
-Return-Path: <linux-rdma+bounces-1702-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-1703-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2B217893AB8
-	for <lists+linux-rdma@lfdr.de>; Mon,  1 Apr 2024 13:49:56 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 894B4893ABE
+	for <lists+linux-rdma@lfdr.de>; Mon,  1 Apr 2024 13:53:43 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 4AF1CB213C6
-	for <lists+linux-rdma@lfdr.de>; Mon,  1 Apr 2024 11:49:53 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 272A2B21368
+	for <lists+linux-rdma@lfdr.de>; Mon,  1 Apr 2024 11:53:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D2E1721340;
-	Mon,  1 Apr 2024 11:49:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F2E1D21A0A;
+	Mon,  1 Apr 2024 11:53:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="o1SNqevJ"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="fGwQK2jl"
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8E9E3D26D;
-	Mon,  1 Apr 2024 11:49:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ABCC021340;
+	Mon,  1 Apr 2024 11:53:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711972187; cv=none; b=s2SA3QQjvQA7PAvZpIysuOu5X3uFvrghTTM7nMm84jOHRFIIn4jWITor+6b9q3b5RjuR4LpYCE/tiRYJzJMHVr2PVr9q/Ibp2BH7CPGMYn66YHywAimUdjqGmdVrKtamX4VE+hI+dtc1u+umpRIbh4lamLJRs87qiD1CCpfFGdo=
+	t=1711972415; cv=none; b=B3cA+TQ9q3UqIwaP9PQVPCVksqWgLWN9mHwE53lMe166qajd0wIMVFjnToqjZIcN6WsbSAbdN/ihDpVI4SsYDCC0h2WW+LzVHMUvvnIf5G9pyLKq+sE9FwddcmIkE+8d9YQFVha9FIWtby4mN1yrA0n2k0uaDtMJro0XpcWNKzY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711972187; c=relaxed/simple;
-	bh=IJNWYYDtEscr+AqSsuEYlRoJ5OSEelynNTrybl13oJg=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Message-Id:Date:
-	 MIME-Version:Content-Type; b=PO1s9S9kkUlHjBChID58FpsPw9BFnIyWrZwbuyM7xeh5oOanIwVblI+JgM1tr/el/rwvrh0VLR2BpSyIZk6AvKgF8DC3+iGP7gZFsqZk783TW7wXc1FzG3+kFcapQavCfcZsfVkQIgH5KKDKiBo/79LF1z0uOJsre3X0nJ5tL9Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=o1SNqevJ; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A3784C433C7;
-	Mon,  1 Apr 2024 11:49:46 +0000 (UTC)
+	s=arc-20240116; t=1711972415; c=relaxed/simple;
+	bh=9uVLf3becGVUgjaaJtEsn16D5M1Pat2+PNKbE6FqNes=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=lBR1bn4E/K/oHZqSqZBZi07lQtId6xTb4bsQnqTPZVmcn1ybqf4nXV4H8B+DhJOwrgiO4E+reBBLGDuIPWTad8erBRbCuIInm96eBkGsi3eUfuy21RxGbMBunSRrBgAnXw5tmbzJgIihbQRFGq9iOT4Pi/zyteSnsPrqUizVlbY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=fGwQK2jl; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 46CB8C433C7;
+	Mon,  1 Apr 2024 11:53:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711972187;
-	bh=IJNWYYDtEscr+AqSsuEYlRoJ5OSEelynNTrybl13oJg=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-	b=o1SNqevJ1dfz7qifpVIpKIeKaNTgySK9DvwoM6UWpcd2CEAOXkCvefYw7+W4/3Ibq
-	 Zb8A/I05BmzoGCcrYMdz1u4sRKlPczpU8AiNmU1J5BVPAs7AkCQpB+Xfw7Qt+v380m
-	 tjsAfsgr/k5UdN5nAmia/NMXbTbAZQGJu+qmPZvui7HAKmjn8Jikw3amvmarBp9YVF
-	 cbrIuoxK9rxfXS0zdbyD0ASn/gcIfwKquJGzwWNDNM+z2Gt1mP1jBH0+L0uxW7KYpD
-	 bfxmdEbSPO5X3EJNWGa8fEcpVPkDyJ7TjIP0pIBy19UzEUqje+g31NBfgeOPqx0OoV
-	 QB0GOXkAE7Xcw==
+	s=k20201202; t=1711972415;
+	bh=9uVLf3becGVUgjaaJtEsn16D5M1Pat2+PNKbE6FqNes=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=fGwQK2jlRWX/sZ8JVLzM1IzKZ5E6GVNsKVM7vYSmcJtgBh0jrdZRkOc2rYMK6TBny
+	 rVpslyeWYSprKJYxGn0ir5Sil+Zqrm3UCrBMrSXYoJVCa4tvUUJSV1RFQIyYewpffS
+	 HFIb4qiOwQaExPz9vy7nxGZtShhuby1y7fgFZO4I5o8GcGsaHJcT/HeqC5ghwUVV8I
+	 cAmiL0C2wSMwKo35aegmpLkC0Xm8Ty3yVaXlxYhWr2Z6JAy5EriVn9yDP4sIHBII/u
+	 Uku4yGj05z0Z1vxiY7u2Cyt4oJF1KYFUgg834fN5Cl0vvQyRvYT0acOKLAz6yIJ7Zs
+	 twlPxQqj7UNtg==
+Date: Mon, 1 Apr 2024 14:53:31 +0300
 From: Leon Romanovsky <leon@kernel.org>
-To: Jason Gunthorpe <jgg@ziepe.ca>, linux-rdma@vger.kernel.org, 
- linux-kernel@vger.kernel.org, Wenchao Hao <haowenchao2@huawei.com>
-Cc: louhongxiang@huawei.com
-In-Reply-To: <20240318092320.1215235-1-haowenchao2@huawei.com>
-References: <20240318092320.1215235-1-haowenchao2@huawei.com>
-Subject: Re: [PATCH v2] RDMA/restrack: Fix potential invalid address access
-Message-Id: <171197218379.76491.12221042581191709272.b4-ty@kernel.org>
-Date: Mon, 01 Apr 2024 14:49:43 +0300
+To: Jakub Kicinski <kuba@kernel.org>, Breno Leitao <leitao@debian.org>
+Cc: Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
+	Jason Gunthorpe <jgg@ziepe.ca>, keescook@chromium.org,
+	"open list:HFI1 DRIVER" <linux-rdma@vger.kernel.org>,
+	open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v4] IB/hfi1: allocate dummy net_device dynamically
+Message-ID: <20240401115331.GB73174@unreal>
+References: <20240319090944.2021309-1-leitao@debian.org>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Mailer: b4 0.14-dev
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240319090944.2021309-1-leitao@debian.org>
 
-
-On Mon, 18 Mar 2024 17:23:20 +0800, Wenchao Hao wrote:
-> struct rdma_restrack_entry's kern_name was set to KBUILD_MODNAME
-> in ib_create_cq(), while if the module exited but forgot del this
-> rdma_restrack_entry, it would cause a invalid address access in
-> rdma_restrack_clean() when print the owner of this rdma_restrack_entry.
+On Tue, Mar 19, 2024 at 02:09:43AM -0700, Breno Leitao wrote:
+> Embedding net_device into structures prohibits the usage of flexible
+> arrays in the net_device structure. For more details, see the discussion
+> at [1].
 > 
-> These code is used to help find one forgotten PD release in one of the
-> ULPs. But it is not needed anymore, so delete them.
+> Un-embed the net_device from struct hfi1_netdev_rx by converting it
+> into a pointer. Then use the leverage alloc_netdev() to allocate the
+> net_device object at hfi1_alloc_rx().
 > 
-> [...]
+> [1] https://lore.kernel.org/all/20240229225910.79e224cf@kernel.org/
+> 
+> Signed-off-by: Breno Leitao <leitao@debian.org>
+> Acked-by: Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>
 
-Applied, thanks!
+Jakub,
 
-[1/1] RDMA/restrack: Fix potential invalid address access
-      https://git.kernel.org/rdma/rdma/c/ca537a34775c10
+I create shared branch for you, please pull it from:
+https://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git/log/?h=remove-dummy-netdev
 
-Best regards,
--- 
-Leon Romanovsky <leon@kernel.org>
-
+Thanks
 
