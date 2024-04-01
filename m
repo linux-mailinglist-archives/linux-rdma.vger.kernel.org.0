@@ -1,222 +1,315 @@
-Return-Path: <linux-rdma+bounces-1710-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-1711-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1E209893CE0
-	for <lists+linux-rdma@lfdr.de>; Mon,  1 Apr 2024 17:34:43 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 72DB2893CE7
+	for <lists+linux-rdma@lfdr.de>; Mon,  1 Apr 2024 17:37:42 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7E93D1F22ABF
-	for <lists+linux-rdma@lfdr.de>; Mon,  1 Apr 2024 15:34:42 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 23A32283029
+	for <lists+linux-rdma@lfdr.de>; Mon,  1 Apr 2024 15:37:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 96C7E4644E;
-	Mon,  1 Apr 2024 15:34:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7BA354654F;
+	Mon,  1 Apr 2024 15:37:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=cornelisnetworks.com header.i=@cornelisnetworks.com header.b="lmpKvegl"
+	dkim=pass (2048-bit key) header.d=outlook.com header.i=@outlook.com header.b="JADSp+K8"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from NAM11-DM6-obe.outbound.protection.outlook.com (mail-dm6nam11on2097.outbound.protection.outlook.com [40.107.223.97])
+Received: from EUR02-VI1-obe.outbound.protection.outlook.com (mail-vi1eur02olkn2101.outbound.protection.outlook.com [40.92.48.101])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 52C98208D1;
-	Mon,  1 Apr 2024 15:34:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.223.97
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1E5253F9C5;
+	Mon,  1 Apr 2024 15:37:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.92.48.101
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711985676; cv=fail; b=mXLDVXoDIQVeEG/atzaY3HyYTy0dUcvTt8njfFotcNVCNSe+hFj/0JvAHbm+F5w9mt88kfJqKLo7DBD6BFVOJYGSqWCsprmyAAYi1AhiBBntv5gIYnM6xPzuwshtX6sAkVxIeqTNF1Iw+0OXhQ4R5aD1X6Xt00jNIOoqReT1nck=
+	t=1711985855; cv=fail; b=f6FP/L0iMISBf6CpTi6+7b0OkZeEAHw3KYnNT7AbNbUap8FHJfpSHWdo3gSgjkSS2T0ORrJ6JfLxUDR1401/auU4f++WFM3d8erLNW4JrVI32p1azLsdL/QFjoxOroCwWPPaCvn8SieE9j0KbQ/GyyTyZXE/taT2MGvqTn9cGTw=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711985676; c=relaxed/simple;
-	bh=dQMMo1Jvm2iva8u9t0WuMDA+CX7pjvb6gUeIGOj34/M=;
-	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
-	 Content-Type:MIME-Version; b=PQwNAx/CncplWCsKOFWfftN+PikkmRhfB8UHBRSInTHyNfnRNtdMjUJ+mIATAgEHOtxixawrKzYj5gb9JckJLai2OwtsisISYEE0TunpScMaMcLPmhUia0pxip3xVrApGcpcCPoEGH+9GWR7k6LEL3OApM5xoVHfbq0+Hw69Vec=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=cornelisnetworks.com; spf=pass smtp.mailfrom=cornelisnetworks.com; dkim=pass (2048-bit key) header.d=cornelisnetworks.com header.i=@cornelisnetworks.com header.b=lmpKvegl; arc=fail smtp.client-ip=40.107.223.97
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=cornelisnetworks.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cornelisnetworks.com
+	s=arc-20240116; t=1711985855; c=relaxed/simple;
+	bh=RjN1+a0ze4yFbrlARz7hHcthnERxcsAYFvS21CoifFU=;
+	h=From:To:Cc:Subject:Date:Message-ID:Content-Type:MIME-Version; b=HnTzTsK78iDf0DAVsZnpqijmcJryynKBGOeuZNZB5h2cqfMg9atwTmn5qhslHU/HtOCgqv5GyLCXOL0aBeFpRB4lRoFvb2LtHb6TD+p6YePzzsLxED6w/u8SW4L9yhG5gyYJEOCvv6vNm3p3Qk2OIBWTHr/XTABPDhp0nIHWEjQ=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=outlook.com; spf=pass smtp.mailfrom=outlook.com; dkim=pass (2048-bit key) header.d=outlook.com header.i=@outlook.com header.b=JADSp+K8; arc=fail smtp.client-ip=40.92.48.101
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=outlook.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=outlook.com
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=dgIsGjotd+DKEg2NQfkNcfzpvdI5ZpJJCVWdsSOI1e8068E0zWBxJsmuEf78hiq5rZLgMIBvRAQWqrrgsMnXIJjn+CnNB/w4szNa3Fty4XKFOE5h/OVRNjtdq1Qt5cMtqqgwR5FFmH7Pr8Ov6LgIaOPJ4hrznMkx1/uP8pcjuMQWUmCxLSF8IlARy0h6dNTTaAf02fSLvaqUItUlAOWT1YkIpQY6Xbl3te2L2w4SzDeQq0Y8F0cqOO+52LXu+hh3Q4Z8BJNcePm1NL9bPRe7OC+IZyTUFILYOTaeAmgWUxRQeh50guDz2CbTxHw5i9mxg8v4RaFigFAxYl1jD2h6OA==
+ b=P11WrR4kpnUwWMFRREg+/3O1ncy53R0LfH/KpnlK+8+Rs7yCHkBfPutAw7xsGEy/gUpsgZXYtV/5LC0/QvFit3S0avzc19RtiVsPbLKA4U6Z3vKh4lnO3LN4lnufTZg57+yo/8Pc8p3KrCnIQ0NnlEbgRzAlOtfjTI+uf/U+kBb9Urnr0VF+kcuYSv6nvegdokW+vhB+FF4FCwIe1Koq1S4aj4Ao9UEugBUF40V1Km6CeNoYVU9zXUjzZzgFImxPcMnfjBMrX3L6kDK+uRSdyeK9kDrMVMOv3/or/7LkJD3R39zN4KBXb9xTH+UeCtuDpbk7Q268h0xflVJnBziDpQ==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=ccXKZNM9HZwsMa6/nfRcsF8JK2K/VVNjF7fWNm7U+3s=;
- b=JQrAkm2LDHPthBAtQZakXAClk9rbX7siiv+hnJTQCad2t/WJi2lRon39LFeh/IIy7v3+NQfScv8spbxa8UkNwTXnH3UI6H0LlrEQWDOU+yoQmXMIYzOT7bY4dgOlZlVwstD6dt4LN6ItBjwn6xf2xXDg/OrTaSjmkpU5GxJ1sRntT9ntKk15FrIr9bOlocQsbfIOqdRZNXhCAxu9BX4vqSQQs/SFiQkw8oKZSL57pyrr+7rmem4i7lGpNVFSvCZbkKTqPj/XsRvsCxrz/junJEXKwjHC9NIPE9FDzjz4+SU3c1iZJPQtXEa+Br04qRMnTGOcMynbjsi9SnSWHznSuw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=cornelisnetworks.com; dmarc=pass action=none
- header.from=cornelisnetworks.com; dkim=pass header.d=cornelisnetworks.com;
- arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cornelisnetworks.com;
+ bh=g4NhnsVgB+nR0/MI42aW4RkDIpRrR1MG06mVvZtxLZ4=;
+ b=f7maFaEfHRoelI/ViujvQbz6WB1hUhd/zqV2yWoQjODJh08teSCuc18LYV0kWZtXhF1UF8IoCGAF2ocCrt1Z/RlFi+8dhPLIehrasijQnSQeRzXuAAYaASh5MlsJheuigE2huaGRLTm9LPC3G+JCJuS72wVBrBen54/bgPQanFALnoRbOvDd707DHi9XgOAN/PDLbyfxrtBaEt7Ajnso8ANNMK43LVbfPa1jNxbXGIuSrAKSIhAlGFO8DJeEdK77w+kos6ipD9AnC9g+IyeR+bOwFTAadSJDFqKSBB2iQocfsbCfy8sMQnV5H/wmTybBfhJqK9eh3toD3nsbVsbZgg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
+ dkim=none; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=outlook.com;
  s=selector1;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=ccXKZNM9HZwsMa6/nfRcsF8JK2K/VVNjF7fWNm7U+3s=;
- b=lmpKvegl61FvsglbGsHAKpv6v4Gfc+YE0/MhPikanQ0lJ0jUDc5lXmOofMPnreS2+QV95jJsXaozCR+uqQtRJwOYqkXKT7CtBuH9AIRrdVpuZwtIN/hTFjj6KEqjCbAaEkG+SsMCgSy9VzEG9EefIqbCYUxNMkAnKcT8Qzn/xRqCzrUJFxo1gus9x8TLXC3t/8mARYRfoI8jTZvG/+ddgfTJWHZAnSExeLvCA4yCArAO7vDl+mnPeKFR7SeqQJj1/9w9g/gJHgCC+DMbhmI2nG4/toJ5SshZk8chg66zwZZbtZIoxF0kmbN6APOrhs4z+d2pC+loBkoTZjYwp7VPDQ==
-Received: from SJ0PR01MB6158.prod.exchangelabs.com (2603:10b6:a03:2a0::15) by
- MN0PR01MB7635.prod.exchangelabs.com (2603:10b6:208:377::22) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.7409.46; Mon, 1 Apr 2024 15:34:27 +0000
-Received: from SJ0PR01MB6158.prod.exchangelabs.com
- ([fe80::82ae:ed8b:de46:cff2]) by SJ0PR01MB6158.prod.exchangelabs.com
- ([fe80::82ae:ed8b:de46:cff2%4]) with mapi id 15.20.7409.042; Mon, 1 Apr 2024
- 15:34:27 +0000
-Message-ID: <2453e7d4-fd50-42ae-a322-490e7e691dc6@cornelisnetworks.com>
-Date: Mon, 1 Apr 2024 11:34:23 -0400
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v4] IB/hfi1: allocate dummy net_device dynamically
-To: Jakub Kicinski <kuba@kernel.org>, Leon Romanovsky <leon@kernel.org>
-Cc: Breno Leitao <leitao@debian.org>, Jason Gunthorpe <jgg@ziepe.ca>,
- keescook@chromium.org, "open list:HFI1 DRIVER" <linux-rdma@vger.kernel.org>,
- open list <linux-kernel@vger.kernel.org>
-References: <20240319090944.2021309-1-leitao@debian.org>
- <20240401115331.GB73174@unreal> <20240401075306.0ce18627@kernel.org>
-Content-Language: en-US
-From: Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>
-In-Reply-To: <20240401075306.0ce18627@kernel.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: MN2PR20CA0032.namprd20.prod.outlook.com
- (2603:10b6:208:e8::45) To SJ0PR01MB6158.prod.exchangelabs.com
- (2603:10b6:a03:2a0::15)
+ bh=g4NhnsVgB+nR0/MI42aW4RkDIpRrR1MG06mVvZtxLZ4=;
+ b=JADSp+K8jVopMjcxABsyIUgOuUr+Kds1q9yC+ZxNA4WPCgpmQ4AIKF+oS0nk9gL9f0jpn1/Sx8bB1XITxcggBKkWYdn+8LLmgJdvCoC+CbP5SBsxiCV9LnTjAcKY/QkIllQ1so/7spsI2DGmFwtzDXojFVfDA1oo7CCPwuukuWQvJZuRxkkBMN0on9ZsDkVbFQp02zn1uZh+OpFUOrCO2pyZadnBONRyl8tZzyOqcTPYtSIa3C8YHmdlWA4NovlNQ/ZVdQjXjCXN83qOBxKGX1kS0XXzUOr6IuGBv0rFf72zkJpZdrVr1xtHjXLewz594JolLNYpPjzRgQvjisWvGQ==
+Received: from AS8PR02MB7237.eurprd02.prod.outlook.com (2603:10a6:20b:3f1::10)
+ by PAVPR02MB9891.eurprd02.prod.outlook.com (2603:10a6:102:31a::9) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7409.46; Mon, 1 Apr
+ 2024 15:37:29 +0000
+Received: from AS8PR02MB7237.eurprd02.prod.outlook.com
+ ([fe80::9817:eaf5:e2a7:e486]) by AS8PR02MB7237.eurprd02.prod.outlook.com
+ ([fe80::9817:eaf5:e2a7:e486%4]) with mapi id 15.20.7409.042; Mon, 1 Apr 2024
+ 15:37:29 +0000
+From: Erick Archer <erick.archer@outlook.com>
+To: Long Li <longli@microsoft.com>,
+	Ajay Sharma <sharmaajay@microsoft.com>,
+	Jason Gunthorpe <jgg@ziepe.ca>,
+	Leon Romanovsky <leon@kernel.org>,
+	"K. Y. Srinivasan" <kys@microsoft.com>,
+	Haiyang Zhang <haiyangz@microsoft.com>,
+	Wei Liu <wei.liu@kernel.org>,
+	Dexuan Cui <decui@microsoft.com>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>,
+	Paolo Abeni <pabeni@redhat.com>,
+	Shradha Gupta <shradhagupta@linux.microsoft.com>,
+	Konstantin Taranov <kotaranov@microsoft.com>,
+	Kees Cook <keescook@chromium.org>,
+	"Gustavo A. R. Silva" <gustavoars@kernel.org>
+Cc: Erick Archer <erick.archer@outlook.com>,
+	linux-rdma@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	linux-hyperv@vger.kernel.org,
+	netdev@vger.kernel.org,
+	linux-hardening@vger.kernel.org
+Subject: [PATCH v2] RDMA/mana_ib: Add flex array to struct mana_cfg_rx_steer_req_v2
+Date: Mon,  1 Apr 2024 17:37:03 +0200
+Message-ID:
+ <AS8PR02MB723729C5A63F24C312FC9CD18B3F2@AS8PR02MB7237.eurprd02.prod.outlook.com>
+X-Mailer: git-send-email 2.25.1
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-TMN: [FCHex79N5qpriGZxlEPT84agzr8wScmQ]
+X-ClientProxiedBy: MA4P292CA0002.ESPP292.PROD.OUTLOOK.COM
+ (2603:10a6:250:2d::19) To AS8PR02MB7237.eurprd02.prod.outlook.com
+ (2603:10a6:20b:3f1::10)
+X-Microsoft-Original-Message-ID:
+ <20240401153703.5825-1-erick.archer@outlook.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: SJ0PR01MB6158:EE_|MN0PR01MB7635:EE_
-X-MS-Exchange-AtpMessageProperties: SA
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
+X-MS-TrafficTypeDiagnostic: AS8PR02MB7237:EE_|PAVPR02MB9891:EE_
+X-MS-Office365-Filtering-Correlation-Id: da2c7ad5-2494-4da9-b168-08dc5261a323
 X-Microsoft-Antispam: BCL:0;
 X-Microsoft-Antispam-Message-Info:
-	A6akYaRKHYm28PMqkrvNng7A6RlVogYR5+9db9iEBuZx0vwCG/IU1Ce7kqO4jxqbvMIDJrZfVovvKl1BE15DYLWE0FWDTVyNk2nJThbmrj28XXfZCdo2zQ31XMDbqGQV3bGZM1R4AVFZhpUsQQC7eK1isXyUN8/dVZ0EZ8fvhjiaLUKLnCtfJeBoCLMBfwaI/o8w/YvE2c8frznHRzW4MO6LZGZTqRsAbeT52uV5C440AV3jolQ4XOz/Oe01YD4nCA5HayAeIrd6gXTBKvDWLRqm6Yp45EIY73iOqBQwJpy5g2G3umFD/2TXLbuXPyETRvKQrYLSjMkInUhH2UDEGirh/h1gEl2xVhFzJfFZUhTQllIBy24jp7m7XIJSWcPUt4ZYkzLcSPRYbiWOpude7mlTBBJL7L982df8wrPiZY4qNUIZMFSnhp/wN9K+GprD61xr15DdM9sFUyj8RtbzihZH/pLZ5+4OvHUI1ayzLOKnrAswQYgTI2TcG8R52Z2Dv5qT95cfgISJPuO6gD9MbMeX0aQQwrPbmE6nEl64lwg4O8e5fkYjsh30xmVF7bTx+RHL+AHPoNCIYECkbPzfj48xSS+wCHddd17MxhHdwfkwFrw1KeId8RYe8D9/mxZ503w2vSp6hEYU6gGfIX6dLzFG5I5IMHum/1dQC8GsM8s=
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SJ0PR01MB6158.prod.exchangelabs.com;PTR:;CAT:NONE;SFS:(13230031)(376005)(366007)(52116005)(1800799015)(38350700005);DIR:OUT;SFP:1102;
+	FEYsG8lwpfYg2ZhSb2TXGs2vIwWEhU+QicVRwrjPsfisBBroSalmmyZgmyvq/mCuAmhi/dqBXJVQkTYH2QWwTXXeukaNa0KOyp71x5ZFdTw0dNtCmUJzD0fORD0ZaH39ReDM7OeIG9dPOtguZYreQjAZMQ814/Ju4IXa7EPLNRgljyZhImBSFJfiKst5b9G1V9DZ8/BRPshDBn5Kn6bbCgXSJS9zi65P2zAhHj4EIsE0HwRfn4V+UJufBLz1CjZQVYrTaoc9biQ95qRoHItkpusaEL2ZfWWDzWaVRx8/TRQpDhdLC+O6TvHTptv5FEr7venZZh7V4dh6V4WremtjHfb1Pk6LKy2K+WVgxDzc7UV8Fn44uw814df1lnSi26QF3IbTuLQNzovDV6kZSQmLW88X14Nsn5rz45EMSFzklGhMpBvXclG3lG1rn48jC4ZknGPyB7H0hMTK/dB+NwVIs3klsE4FoF6w51zUgJcpRSW4xUvPLxwccvS5xdZ21RApdCkSCze1EeHOUvxGDXumBGvLeZI8A/6gceaumNKzQkisJOyPIqiVuJe79H31sW1r6HIZ00jLLYUlownMsqAkiBwAFSS3jGD5hKvTE3hq6cZZ5Tg5x34Pubs2yvP7skW+bbrRU+Beiyo5SdcueA5+FsvXT3f9FLYwFnXRDWMeCvGZt131xrNMEqFGxwR3VWcX
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
 X-MS-Exchange-AntiSpam-MessageData-0:
-	=?utf-8?B?NmR3aEJBUWNlL3p2c1BpYjMvQ2NFOVdHWU1sYjQyQmhkQ0tSeTVYZmxQVXZ1?=
- =?utf-8?B?bHF0MGpXdHhaUk40ZG12STJGVlp1VThQQVU5cktORk0rOHc1ZzFkRWpZR1Q2?=
- =?utf-8?B?Wmx6cG9LT3lNeVV1NTZhNUZZa24vYUZTeEQwaXRwUDh6TVZVYVVRT1NqbGFv?=
- =?utf-8?B?NlNHbEx4M3JjMUZza2dQUmVtVW9EaGFqaWNYQ0RyTEpGVmVoaEJmM0JBRmlF?=
- =?utf-8?B?UG5jWGZyQWhGMUJFdG1HRm13c21WU1UwZmpGemZjNUNaUTBBWXJMSkxrM3JM?=
- =?utf-8?B?VlAweWw0LzQrejR2MkVZVEwzcU9Ia2t1bDBzOWRDS295RDkvVmVDMmFlN0hY?=
- =?utf-8?B?K01yRnJLQ3hPdnJBWVIyRTFKNFBiT2N5UXdFc3VPN2J1dVJFbHZ0OUJPbk1D?=
- =?utf-8?B?Rm5kbWNySEpLU0lPWjZpNzV6VmczTStoSHNHOG5xMHVQakFrOVIvOCtDYm0w?=
- =?utf-8?B?Vkx4UGoxeHhxekVXeUtWKzI3Qmx3SDFOZkxSQllQbU5TU1ZkdUN1YW5pdUFP?=
- =?utf-8?B?WDN6WTFBbElYUU5Ld2RTSnR4QUZXem41b04wT3dKYnlKanB3ZXRMRGVyMUlK?=
- =?utf-8?B?azlhc2RibG1YWEp4VkJsUnNwZ1JpVnlRZ2FYeURyc1QwU1VuTkdGdzVBMFgr?=
- =?utf-8?B?dFlyaG9zcm9VRWhibTJPVnhyM2cwaWp2TmFhdHFDR0hZdUU2UnlYNWhEZDI4?=
- =?utf-8?B?MGZCeExrTlFyeWY2K3lVbDNuUmpib2lhUy8yaGdxNlVnODllbUpiWHY0VHRV?=
- =?utf-8?B?akd0ZUN1QVNKQWl2OTkyQ084S2QySjd4SUhRV1lROEpBa0d3dkVmTkRRVWdU?=
- =?utf-8?B?dWxpK0p6WHVLb2dXK3IxNE9lcUwzK3pSY0hpMHFuRXRKcHNWdjBCejR0YTF4?=
- =?utf-8?B?dWI2ekJJeXRMNGhGeXhZUWNmUnFzMk8zZkJJbGprSnFEUWovQ091L0tFOGwz?=
- =?utf-8?B?TjZIZExFcmM4UFFzaWkrN0t3QXNjRCtKZU8xemN2d2R4dmdOZklRUU5MQ2Jx?=
- =?utf-8?B?dU44VGJCblJsdXl4eWYwRVk4VWpNOUg5bCtNdlovWHZORnRvSElETXp3c0Nl?=
- =?utf-8?B?YlBxb1lHVkVFUE9jSldya2UvN21Qam1IYWdPaVRINDArajVuUEVhSk51QUJn?=
- =?utf-8?B?YjB4dXl1M0UvS25KZHlQVGs4V3BtTHprNFlpNzNvaTk4OHNYZzRCUzRVVGM5?=
- =?utf-8?B?UncrcXZYUnRVazRua1lOck1yK3hib05QT2JnR3ZYU1pBMnZNWDh5VHRPQjI0?=
- =?utf-8?B?SExGQUYyanhsRGp1enpMaE5YQ0xxUWFEdDd5WFovenluMlVlT1JBc2xKZGx1?=
- =?utf-8?B?ZkFmMkdidXprUEUrdXluVFlUbklEcDVtWms2NkFSQWx0T2JaT2NoSXBYV2xv?=
- =?utf-8?B?cHVGZDJlMlRlUXRleDVpNklySkFYRlpCVXhTM1lDNXF5MFlnbFZaTlAzRDJR?=
- =?utf-8?B?Rkx4Ui9FUzNQVHNPblFNMllnaDZLVHgxWkwvNmRURTBYWHNKdXMvSE1pU3Ur?=
- =?utf-8?B?RGs3cTgweG5NQ0NzWTFKN01saHZvMmZ0ZDRVajI0aHAwOGJZcG1IRnNMQW8r?=
- =?utf-8?B?S2cvaHdOQ2lUK1JqdnFCRjNHZGJscVdCM2RTY0dUNkNMamJjK3BTSHFoTDBn?=
- =?utf-8?B?ZXJGN2hjTThVaVBuQVhUc0tWMGRUOGRNZEJPdlB1amZOSjl6QnJqSlRGT09T?=
- =?utf-8?B?aGNveStZS1R4NjlTUERqMmQ3cW9ET1hmazlGZnd4VWp3b3R2NDROSitST3k0?=
- =?utf-8?B?ZHkya2lmUnNzbXBlZjNYRUJPcmkvSjNBNDh4cGFYenQ0VVI4aUMvZUovNDl1?=
- =?utf-8?B?Lzgza2p3UTNzRlFrRy8rRFdMdWkrV3hZVnlsbTFmNUF2anZFNG9oSTFYc2ZO?=
- =?utf-8?B?OGdNenMzU0R1V2xzNWNvbjJiMVdMekpIWDJrZW51aC84ejVMc1FwSGE5Vnlx?=
- =?utf-8?B?NVgyOExIYmxHNTJhWVhYY0pKYkdzczFzZ3hXOGgxQVdGSGJub3cwOGFXQ0VX?=
- =?utf-8?B?Wk5KbWgrU2wzTmFCZFgvNUVWaGQyeDZvN2tEa2dXMDRDV2xNTnQyK2Q5Z3Ry?=
- =?utf-8?B?MHgzVlNncUJmYTdVQVBlbWVuaE1nZmhBblFHU1hxSGl3QVBHM1dYdzlRdGFK?=
- =?utf-8?B?MFcyTFBwVlphTjVhS04yWVAwL0dGd282Rm12UUVRYURQUEhEOFUvRUR2blov?=
- =?utf-8?Q?ScRB4h1HUMOek8QpuWLLjSY=3D?=
-X-OriginatorOrg: cornelisnetworks.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: c7533148-aa2b-4e60-25a6-08dc5261372c
-X-MS-Exchange-CrossTenant-AuthSource: SJ0PR01MB6158.prod.exchangelabs.com
+	=?us-ascii?Q?1wmFSfklgBu10unlWvDB52wfRmVX1C4KcOunlGrf/4MKvup9sY6cnU1Raih5?=
+ =?us-ascii?Q?UlBFoVqHm40GurLaFPB8AYrBaAFAL7jTDQ3mXH4eLqXaUE8tgymNbUde5iLJ?=
+ =?us-ascii?Q?kacNeZDy3nCmiIuUu/TOZ6Ufj1/u6UT1MA6uNkWbsVngHrndG1y8iYTGXlUo?=
+ =?us-ascii?Q?5XHZZ/57E1BRkvjaEriSxYDMAGt0mEP9f82E+ZNxdj0fDmshjuQ6FyoW2Dql?=
+ =?us-ascii?Q?duivUWTtgRb0pxcQSKSp3EKHZn+JqfHyf4blWbotn6Xz3cTo9aUM91N9HoUA?=
+ =?us-ascii?Q?FjakWhR91C0ndIrhp22PY9xtwn8hUVDzr2nbT/MRgGK4BijtvuU46PmsWjyM?=
+ =?us-ascii?Q?pCZpBygew6YU3eBP4Tdpl0Z07TDOhYnzbdK4FAY+hiuoFuwOHQYIv3rV6+Nc?=
+ =?us-ascii?Q?PBxD2PZUaPRhb7EIAPKx3a3wlv5v73KFqQApnMP6MZ6WxE2i/iwts2lMBjxs?=
+ =?us-ascii?Q?aOYBg1Wy+vf8meVH2Gb+SEkSL0CIb4pWaA3lZgNK9LZNXsJnHcb2G88ORdy0?=
+ =?us-ascii?Q?/cDcgUcdfNzdb2Q8e4E/kLMglBpIVl7KO/EsWJqlLX1kDiQ0jqpb5iv0oCv1?=
+ =?us-ascii?Q?GF4WWa8nxmqEHUiR64FOdASr9RYixfIuPeG/x78y/8nyMTya7D0hknRNaOY9?=
+ =?us-ascii?Q?fhd7sHPAFXNHwun/2BbKx7Znu6oMVe4451yPyHh59vm7/smkg7mPiracXO+c?=
+ =?us-ascii?Q?C9Uilz1fdU9f8n7POQlPa1/OMzhXC3kMjkUcnqMCXMxTMQuK8EzQR5F2C73g?=
+ =?us-ascii?Q?ltN83PAFrp/0xFzoeRl0Fk9kRFIeJ1y5QZZWvtQ08+4/L1XbZ6VTr767bXU4?=
+ =?us-ascii?Q?0EzCqsnfsfdIoVCqXOYb913j4/JfEiXOJG7mWEMne8THNo1lj6utQzP7BsCq?=
+ =?us-ascii?Q?zFu3wqKrK3LSGIrjaxR89EVyhuO1ZOP9slKiqXp7OvgUsWnyMYK3+4JXQT5j?=
+ =?us-ascii?Q?TDrwMlDG7K/LCYsdw8sY07sabl+fpbNgkpIol4I7xj5Zuu4sKbhYqz2EtUFK?=
+ =?us-ascii?Q?a9Dy5gqUoIy72PZdxvMLBZ8W6cjqT/8F4/U7aUW/+sTuxuz1akwLPARBj1LJ?=
+ =?us-ascii?Q?l801EmhXgS0i5dAD+eBksTN6R3ii07P+eAvj43CpYrVuMz6r45lF8E4vi6gw?=
+ =?us-ascii?Q?xP1lZhoGi4tRtLzQRD3kEGDnqc0h1e4mO9DgjbjVPCXMGPQMo6LSeNkeEjrn?=
+ =?us-ascii?Q?GWAbo6JODr248rcmix0w7YaNNgpsD++O8BMvHxxioMNN9vbtVVj+PbuMtfN4?=
+ =?us-ascii?Q?D26cF0vUwqaJPuxD5bSb?=
+X-OriginatorOrg: outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: da2c7ad5-2494-4da9-b168-08dc5261a323
+X-MS-Exchange-CrossTenant-AuthSource: AS8PR02MB7237.eurprd02.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 01 Apr 2024 15:34:27.2795
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 01 Apr 2024 15:37:29.6055
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4dbdb7da-74ee-4b45-8747-ef5ce5ebe68a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: PcRbU42ZXTWJSUIZ4MloM7WqljQ9chtbSqchpvxvx6Htg6SyxFjK5tVb2iTixq3KsCXMbxKnYx0e7Bu1NgmuI/YBYcXidzpyIYwayaZUoeYDdIL8uFpxB2qRhO1ZNVP9
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN0PR01MB7635
+X-MS-Exchange-CrossTenant-Id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
+X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg:
+	00000000-0000-0000-0000-000000000000
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PAVPR02MB9891
 
-On 4/1/24 10:53 AM, Jakub Kicinski wrote:
-> On Mon, 1 Apr 2024 14:53:31 +0300 Leon Romanovsky wrote:
->> On Tue, Mar 19, 2024 at 02:09:43AM -0700, Breno Leitao wrote:
->>> Embedding net_device into structures prohibits the usage of flexible
->>> arrays in the net_device structure. For more details, see the discussion
->>> at [1].
->>>
->>> Un-embed the net_device from struct hfi1_netdev_rx by converting it
->>> into a pointer. Then use the leverage alloc_netdev() to allocate the
->>> net_device object at hfi1_alloc_rx().
->>>
->>> [1] https://lore.kernel.org/all/20240229225910.79e224cf@kernel.org/
->>>
->>> Signed-off-by: Breno Leitao <leitao@debian.org>
->>> Acked-by: Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>  
->>
->> Jakub,
->>
->> I create shared branch for you, please pull it from:
->> https://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git/log/?h=remove-dummy-netdev
-> 
-> Did you merge it in already?
-> Turned out that the use of init_dummy_netdev as a setup function
-> is broken, I'm not sure how Dennis tested this :(
-> We should have pinged you, sorry.
+The "struct mana_cfg_rx_steer_req_v2" uses a dynamically sized set of
+trailing elements. Specifically, it uses a "mana_handle_t" array. So,
+use the preferred way in the kernel declaring a flexible array [1].
 
-This is what I tested, Linus 6.8 tag + cherry pick + Breno patch. So if
-something went in that broke it I didn't have it in my tree.
+At the same time, prepare for the coming implementation by GCC and Clang
+of the __counted_by attribute. Flexible array members annotated with
+__counted_by can have their accesses bounds-checked at run-time via
+CONFIG_UBSAN_BOUNDS (for array indexing) and CONFIG_FORTIFY_SOURCE (for
+strcpy/memcpy-family functions).
 
-commit 311810a6d7e37d8e7537d50e26197b7f5f02f164 (linus-master)
-Author: Breno Leitao <leitao@debian.org>
-Date:   Wed Mar 13 03:33:10 2024 -0700
+Also, avoid the open-coded arithmetic in the memory allocator functions
+[2] using the "struct_size" macro.
 
-    IB/hfi1: allocate dummy net_device dynamically
+Moreover, use the "offsetof" helper to get the indirect table offset
+instead of the "sizeof" operator and avoid the open-coded arithmetic in
+pointers using the new flex member. This new structure member also allow
+us to remove the "req_indir_tab" variable since it is no longer needed.
 
-    struct net_device shouldn't be embedded into any structure, instead,
-    the owner should use the priv space to embed their state into net_device.
+Now, it is also possible to use the "flex_array_size" helper to compute
+the size of these trailing elements in the "memcpy" function.
 
-    Embedding net_device into structures prohibits the usage of flexible
-    arrays in the net_device structure. For more details, see the discussion
-    at [1].
+This code was detected with the help of Coccinelle, and audited and
+modified manually.
 
-    Un-embed the net_device from struct hfi1_netdev_rx by converting it
-    into a pointer. Then use the leverage alloc_netdev() to allocate the
-    net_device object at hfi1_alloc_rx().
+Link: https://www.kernel.org/doc/html/next/process/deprecated.html#zero-length-and-one-element-arrays [1]
+Link: https://www.kernel.org/doc/html/next/process/deprecated.html#open-coded-arithmetic-in-allocator-arguments [2]
+Signed-off-by: Erick Archer <erick.archer@outlook.com>
+---
+Changes in v2:
+- Remove the "req_indir_tab" variable (Gustavo A. R. Silva).
+- Update the commit message.
+- Add the "__counted_by" attribute.
 
-    [1] https://lore.kernel.org/all/20240229225910.79e224cf@kernel.org/
+Previous versions:
+v1 -> https://lore.kernel.org/linux-hardening/AS8PR02MB7237974EF1B9BAFA618166C38B382@AS8PR02MB7237.eurprd02.prod.outlook.com/
 
-    Signed-off-by: Breno Leitao <leitao@debian.org>
+Hi,
 
-    ----
-    PS: this diff needs d160c66cda0ac8614 ("net: Do not return value from
-    init_dummy_netdev()") in order to apply and build cleanly.
+The Coccinelle script used to detect this code pattern is the following:
 
-commit 1e06cffe69e6519f8ede42c60f13ad3a7ddb09b7
-Author: Amit Cohen <amcohen@nvidia.com>
-Date:   Mon Feb 5 12:30:22 2024 +0200
+virtual report
 
-    net: Do not return value from init_dummy_netdev()
+@rule1@
+type t1;
+type t2;
+identifier i0;
+identifier i1;
+identifier i2;
+identifier ALLOC =~ "kmalloc|kzalloc|kmalloc_node|kzalloc_node|vmalloc|vzalloc|kvmalloc|kvzalloc";
+position p1;
+@@
 
-    init_dummy_netdev() always returns zero and all the callers do not check
-    the returned value. Set the function to not return value, as it is not
-    really used today.
+i0 = sizeof(t1) + sizeof(t2) * i1;
+...
+i2 = ALLOC@p1(..., i0, ...);
 
-    Signed-off-by: Amit Cohen <amcohen@nvidia.com>
-    Reviewed-by: Ido Schimmel <idosch@nvidia.com>
-    Reviewed-by: Jiri Pirko <jiri@nvidia.com>
-    Reviewed-by: Simon Horman <horms@kernel.org>
-    Link: https://lore.kernel.org/r/20240205103022.440946-1-amcohen@nvidia.com
-    Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+@script:python depends on report@
+p1 << rule1.p1;
+@@
 
-commit e8f897f4afef0031fe618a8e94127a0934896aba (tag: v6.8)
-Author: Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Sun Mar 10 13:38:09 2024 -0700
+msg = "WARNING: verify allocation on line %s" % (p1[0].line)
+coccilib.report.print_report(p1[0],msg)
 
-    Linux 6.8
+Regards,
+Erick
+---
+ drivers/infiniband/hw/mana/qp.c               | 12 +++++-------
+ drivers/net/ethernet/microsoft/mana/mana_en.c | 14 ++++++--------
+ include/net/mana/mana.h                       |  1 +
+ 3 files changed, 12 insertions(+), 15 deletions(-)
 
-
+diff --git a/drivers/infiniband/hw/mana/qp.c b/drivers/infiniband/hw/mana/qp.c
+index 6e7627745c95..258f89464c10 100644
+--- a/drivers/infiniband/hw/mana/qp.c
++++ b/drivers/infiniband/hw/mana/qp.c
+@@ -15,15 +15,13 @@ static int mana_ib_cfg_vport_steering(struct mana_ib_dev *dev,
+ 	struct mana_port_context *mpc = netdev_priv(ndev);
+ 	struct mana_cfg_rx_steer_req_v2 *req;
+ 	struct mana_cfg_rx_steer_resp resp = {};
+-	mana_handle_t *req_indir_tab;
+ 	struct gdma_context *gc;
+ 	u32 req_buf_size;
+ 	int i, err;
+ 
+ 	gc = mdev_to_gc(dev);
+ 
+-	req_buf_size =
+-		sizeof(*req) + sizeof(mana_handle_t) * MANA_INDIRECT_TABLE_SIZE;
++	req_buf_size = struct_size(req, indir_tab, MANA_INDIRECT_TABLE_SIZE);
+ 	req = kzalloc(req_buf_size, GFP_KERNEL);
+ 	if (!req)
+ 		return -ENOMEM;
+@@ -44,20 +42,20 @@ static int mana_ib_cfg_vport_steering(struct mana_ib_dev *dev,
+ 		req->rss_enable = true;
+ 
+ 	req->num_indir_entries = MANA_INDIRECT_TABLE_SIZE;
+-	req->indir_tab_offset = sizeof(*req);
++	req->indir_tab_offset = offsetof(struct mana_cfg_rx_steer_req_v2,
++					 indir_tab);
+ 	req->update_indir_tab = true;
+ 	req->cqe_coalescing_enable = 1;
+ 
+-	req_indir_tab = (mana_handle_t *)(req + 1);
+ 	/* The ind table passed to the hardware must have
+ 	 * MANA_INDIRECT_TABLE_SIZE entries. Adjust the verb
+ 	 * ind_table to MANA_INDIRECT_TABLE_SIZE if required
+ 	 */
+ 	ibdev_dbg(&dev->ib_dev, "ind table size %u\n", 1 << log_ind_tbl_size);
+ 	for (i = 0; i < MANA_INDIRECT_TABLE_SIZE; i++) {
+-		req_indir_tab[i] = ind_table[i % (1 << log_ind_tbl_size)];
++		req->indir_tab[i] = ind_table[i % (1 << log_ind_tbl_size)];
+ 		ibdev_dbg(&dev->ib_dev, "index %u handle 0x%llx\n", i,
+-			  req_indir_tab[i]);
++			  req->indir_tab[i]);
+ 	}
+ 
+ 	req->update_hashkey = true;
+diff --git a/drivers/net/ethernet/microsoft/mana/mana_en.c b/drivers/net/ethernet/microsoft/mana/mana_en.c
+index 59287c6e6cee..62bf3e5661a6 100644
+--- a/drivers/net/ethernet/microsoft/mana/mana_en.c
++++ b/drivers/net/ethernet/microsoft/mana/mana_en.c
+@@ -1058,11 +1058,10 @@ static int mana_cfg_vport_steering(struct mana_port_context *apc,
+ 	struct mana_cfg_rx_steer_req_v2 *req;
+ 	struct mana_cfg_rx_steer_resp resp = {};
+ 	struct net_device *ndev = apc->ndev;
+-	mana_handle_t *req_indir_tab;
+ 	u32 req_buf_size;
+ 	int err;
+ 
+-	req_buf_size = sizeof(*req) + sizeof(mana_handle_t) * num_entries;
++	req_buf_size = struct_size(req, indir_tab, num_entries);
+ 	req = kzalloc(req_buf_size, GFP_KERNEL);
+ 	if (!req)
+ 		return -ENOMEM;
+@@ -1074,7 +1073,8 @@ static int mana_cfg_vport_steering(struct mana_port_context *apc,
+ 
+ 	req->vport = apc->port_handle;
+ 	req->num_indir_entries = num_entries;
+-	req->indir_tab_offset = sizeof(*req);
++	req->indir_tab_offset = offsetof(struct mana_cfg_rx_steer_req_v2,
++					 indir_tab);
+ 	req->rx_enable = rx;
+ 	req->rss_enable = apc->rss_state;
+ 	req->update_default_rxobj = update_default_rxobj;
+@@ -1086,11 +1086,9 @@ static int mana_cfg_vport_steering(struct mana_port_context *apc,
+ 	if (update_key)
+ 		memcpy(&req->hashkey, apc->hashkey, MANA_HASH_KEY_SIZE);
+ 
+-	if (update_tab) {
+-		req_indir_tab = (mana_handle_t *)(req + 1);
+-		memcpy(req_indir_tab, apc->rxobj_table,
+-		       req->num_indir_entries * sizeof(mana_handle_t));
+-	}
++	if (update_tab)
++		memcpy(req->indir_tab, apc->rxobj_table,
++		       flex_array_size(req, indir_tab, req->num_indir_entries));
+ 
+ 	err = mana_send_request(apc->ac, req, req_buf_size, &resp,
+ 				sizeof(resp));
+diff --git a/include/net/mana/mana.h b/include/net/mana/mana.h
+index 76147feb0d10..46f741ebce21 100644
+--- a/include/net/mana/mana.h
++++ b/include/net/mana/mana.h
+@@ -671,6 +671,7 @@ struct mana_cfg_rx_steer_req_v2 {
+ 	u8 hashkey[MANA_HASH_KEY_SIZE];
+ 	u8 cqe_coalescing_enable;
+ 	u8 reserved2[7];
++	mana_handle_t indir_tab[] __counted_by(num_indir_entries);
+ }; /* HW DATA */
+ 
+ struct mana_cfg_rx_steer_resp {
+-- 
+2.25.1
 
 
