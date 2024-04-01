@@ -1,78 +1,81 @@
-Return-Path: <linux-rdma+bounces-1715-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-1716-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id ACD288946B6
-	for <lists+linux-rdma@lfdr.de>; Mon,  1 Apr 2024 23:50:55 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id C83EB8946B9
+	for <lists+linux-rdma@lfdr.de>; Mon,  1 Apr 2024 23:51:08 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 4D693B206B4
-	for <lists+linux-rdma@lfdr.de>; Mon,  1 Apr 2024 21:50:53 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EACC81C21635
+	for <lists+linux-rdma@lfdr.de>; Mon,  1 Apr 2024 21:51:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B5FA354FB1;
-	Mon,  1 Apr 2024 21:50:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 10DCE56473;
+	Mon,  1 Apr 2024 21:50:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="xqJlfgFm"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="u3MjqiD3"
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from mail-yb1-f202.google.com (mail-yb1-f202.google.com [209.85.219.202])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F105D54F87
-	for <linux-rdma@vger.kernel.org>; Mon,  1 Apr 2024 21:50:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4F93955C0A
+	for <linux-rdma@vger.kernel.org>; Mon,  1 Apr 2024 21:50:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.202
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712008248; cv=none; b=ArvkuH2Tjtgpk3uK0wZGYNHPCd5p0nRr3IrAK14vvsXv1wxGeJO+fuSBvyUdX0Ofu/rame4Qv/Gsx77UBsuc4jivKv8xMAUWkBB2EbezJKRlmw02AzFk6Y7X1F+SuNGPPRujpRjR6gACDsmaNvZ00GZX3ZqCqFn6nHWRpKxStNg=
+	t=1712008250; cv=none; b=JaU72s7dfLHoa35LshOeXZQpuv0MpRztGzJ7dK62IsQ5OrbAwOBU174Yu1wkTZMMfsFvsoSLnIU8XO/LQvNYxhgBIFM7zNmCH8QsxAgSjDXzLqG4vYWVYOY52q6lm4q98sAjsG/QYILlHf2J1FihbG7WdTLJUkEW3I1qRwtLwGY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712008248; c=relaxed/simple;
-	bh=LvCBtM2YQSeJABfcqD051PDiGGBI0pmlfrMCxzUoMmE=;
-	h=Date:Mime-Version:Message-ID:Subject:From:To:Cc:Content-Type; b=a8uVDqT9Eqq5zJiRdK/u0RHiQ1RDQTjH3oIbp+wW5I4KfS0ajlbqpG8Bm3TjxHg2KkvDMyOEEccMRW40fCLsnpJD1mULetmFq9c4BCRSRv+2aHFL9w6CcDua9z+A0cKZ0x0/WiJGJATaupzkZVxMPugbdcMP8qTTTdSUMgJayj0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--almasrymina.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=xqJlfgFm; arc=none smtp.client-ip=209.85.219.202
+	s=arc-20240116; t=1712008250; c=relaxed/simple;
+	bh=6iZBHoWjr0SW3V6W6W27wiyE26vfswz1Bipp3C2ZJ1U=;
+	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
+	 To:Cc:Content-Type; b=m+58AJDvwF2+vGdLeNE3xthuwqk8sS9dhX3eXkt94PNCyrrL9zsyR1BVtz14IS5llmrT37bGgt5poBr4BUt3dDKOmXgvPhkCH65yRXPp+YJVQuIagJJSN7iG/aUZkkxL+5xvBMD5Qbp3Rycyf8pyKPksQd3FX59cwwYevuns8IY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--almasrymina.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=u3MjqiD3; arc=none smtp.client-ip=209.85.219.202
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--almasrymina.bounces.google.com
-Received: by mail-yb1-f202.google.com with SMTP id 3f1490d57ef6-dcd94cc48a1so6979624276.3
-        for <linux-rdma@vger.kernel.org>; Mon, 01 Apr 2024 14:50:46 -0700 (PDT)
+Received: by mail-yb1-f202.google.com with SMTP id 3f1490d57ef6-dcc4563611cso6982416276.3
+        for <linux-rdma@vger.kernel.org>; Mon, 01 Apr 2024 14:50:49 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1712008246; x=1712613046; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=XLIDZpDBHrtC9mQGuM4295zuVNtkbE3PLQnEnnfrBMA=;
-        b=xqJlfgFmw8EVSNp5ix6dcbeyrN7dLmOMFe9SHW+OycpRPRgMAHRgN2t5LerU4HRTdT
-         KmTrH+Dk4u2rRCeuRD3GD/R/X6W3ZDBgF95+9kiqJ2I1ulsuINi0c55F0JSK7v0tHOHH
-         5fVHW8PZ4eTjTLqREeHKCeaxxS0GMHCwWtZZ7uCn+j5eCpwkm3Fln1UBQM/YOZrjUNap
-         89LDl067TluOt9qOfbERA1tzFi47zLt0YDEFJU7IY8+QjHQaO2D2X1+rxkjg5/4wV0Fz
-         0BEuUIgSpyjQ73z9thH5OhAUZrxiIFff8QaSdDFXTzxRvVuOjhyDGaxgB+5D/XxdXYzc
-         H5lA==
+        d=google.com; s=20230601; t=1712008248; x=1712613048; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=vXRjUgtATZ0E/Y+63Z5tthtMhFwiRvlicbw1JhZ19s0=;
+        b=u3MjqiD3cgp+NoDLJCk0nQj5dCYJggnfsnjIhVgpAoN1vhtcD+3ZlnfibfUoxvg911
+         KZhW1I97X3JJUQ/AcoRFlH7Z6iIjOdJALdLOg/jHQm7kqCiM9MYafdyxj+b974P8/Esh
+         jH86/2ktJ0VAK4MjkEpoy+QeOZY258HejBFJibEHmN+uIDr0nUbJl3i6Denal+td+qEU
+         ShJZkBcuvoN+G++MkIcKATCNm0qNYyYH3ki+xTnxLMjukV23N/EVx1TLVgzn+7FyKwbs
+         G4U1mvpIkqB147LmGbPYuPnMqwIf1B5ZRr2JcOX+MWQCmYIXWrR3wcLpgfLlWhYZpIIJ
+         MFYQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712008246; x=1712613046;
-        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=XLIDZpDBHrtC9mQGuM4295zuVNtkbE3PLQnEnnfrBMA=;
-        b=eP7Wztkki4zRUOQXaAj3YVlkE9mDUYkE5BBcVhsT1zJovrOul3kuVM28PWZzc88x3S
-         Ki7g/ixi1uUSCv5l8WQ8lZJDDAToBLU/kV3efj/3d/k5gViTaA19D3c/slhNiJiiZhMw
-         G8PJVp1Qo9qrCCqNckGkzL62tN48BOlgkrHRUI0D0EE4TydEYXD5ViPC4wC81/AFNp73
-         f7ZmpdiqsdIt/DHWWN4sPAGdYI1gg0wcw3EUu8+tNdxNFEVLZxfZEG7tMRt2BjfRe+xc
-         iJ1IWkSSXy8Zww5otwsbpDtEQwVhRFmcid4hrk9otfDo6tsOJlO3ABATvRpB2dm5h24/
-         e3VA==
-X-Forwarded-Encrypted: i=1; AJvYcCW6M36eaQFxLJVw0uPTfgvEX0D1qjmuyDaMEq0st99obZUSwI8kfuAooPTYz84LrekNe64W5+fisTUofwtCcA7gRd47/E54tA4JUA==
-X-Gm-Message-State: AOJu0Ywc4mAe4n/Nl5A6NhsP4C+YjXjXhLjj2gbiShgdFoaah/7NEXTI
-	CCcq2U8q9eWR92vJWL+0xawO3flngXoOtAe+uaTPbWk4MbJu52XuC9ODSdYH2Gooc1kYEqi4hjg
-	UiAJaJ+Fvwvzd0kwLay4Cdg==
-X-Google-Smtp-Source: AGHT+IHruwWq4JyI/hLsIFHmVo+4Qge4gKmr6iKc/6xRaXQRVz5Jk7BCEwSZk+LRAFeal/Y+Ugr7hvswKysh+BY5+Q==
+        d=1e100.net; s=20230601; t=1712008248; x=1712613048;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=vXRjUgtATZ0E/Y+63Z5tthtMhFwiRvlicbw1JhZ19s0=;
+        b=VhrMOH/Y99c9/2FioI2brBpoPDLg1D94QM71oJsUsDGm+Zhe0ZByLxcuLXl22shIQu
+         TK3cJEJULgHN92tcdRmsysarpo+Nf2qqy930tdvIJrtfKKtJRKbJoiBe0qpJD3T9BKLe
+         M2I4s/wlqQBjd6GS6eBSIfuTFpQtoNZUCN2z5/jv01psbyAQk1vv7S7aorGlsKhRnAAF
+         hkwuTzmrSEq+fDiyWAq4JnU9ZVqiGwkUtaoszJkj4kATSgfueQx/NcjAn3LN5sWnLMWP
+         Fvot6pLFzdPmpFlpP5al8bYu7PEMioGN3dawTtuRQIW6UnvHQjjSZoUDLtVCQ0ZDB/uq
+         K0wA==
+X-Forwarded-Encrypted: i=1; AJvYcCVocdwwaNwFwz7o+nSTV9NtNdKqQhr0+96aVnDX5ebvCwsJM2ryrZ4LPZkotOzEumfE/VGPqlQxLQ/Z8uzLbj6Q7t4TFiuOZXaH/g==
+X-Gm-Message-State: AOJu0YzNIuKf6VOhA/cnSrGBYuTbjQo5u8OCJG9pt5vqkY8X9v13SIVG
+	IcqKVlmLQznY83iAvz1V6x2j13z/bf6SSaKZDFSmGLfsORCjEMIChJA1ipRwhKiP1PiQ+6lduR4
+	cAJHdxpD8Uq8sMGTDrmpcTg==
+X-Google-Smtp-Source: AGHT+IFGadfogXIS8kOngK5G9vWIutCMBx8L4gKWUrm8XeH+h8lfoSVo1ljXz4C/IkewoV3oHHDRSuJKCxCHbdkprQ==
 X-Received: from almasrymina.svl.corp.google.com ([2620:15c:2c4:200:b337:405b:46e7:9bd9])
- (user=almasrymina job=sendgmr) by 2002:a05:6902:2503:b0:dc9:c54e:c5eb with
- SMTP id dt3-20020a056902250300b00dc9c54ec5ebmr3429870ybb.7.1712008246111;
- Mon, 01 Apr 2024 14:50:46 -0700 (PDT)
-Date: Mon,  1 Apr 2024 14:50:36 -0700
+ (user=almasrymina job=sendgmr) by 2002:a05:6902:72d:b0:dc8:5e26:f4d7 with
+ SMTP id l13-20020a056902072d00b00dc85e26f4d7mr3443884ybt.13.1712008248349;
+ Mon, 01 Apr 2024 14:50:48 -0700 (PDT)
+Date: Mon,  1 Apr 2024 14:50:37 -0700
+In-Reply-To: <20240401215042.1877541-1-almasrymina@google.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 Mime-Version: 1.0
+References: <20240401215042.1877541-1-almasrymina@google.com>
 X-Mailer: git-send-email 2.44.0.478.gd926399ef9-goog
-Message-ID: <20240401215042.1877541-1-almasrymina@google.com>
-Subject: [PATCH net-next v3 0/3] Minor cleanups to skb frag ref/unref
+Message-ID: <20240401215042.1877541-2-almasrymina@google.com>
+Subject: [PATCH net-next v3 1/3] net: make napi_frag_unref reuse skb_page_unref
 From: Mina Almasry <almasrymina@google.com>
 To: netdev@vger.kernel.org, linux-kernel@vger.kernel.org, 
 	linux-rdma@vger.kernel.org
@@ -93,71 +96,76 @@ Cc: Mina Almasry <almasrymina@google.com>, Ayush Sawal <ayush.sawal@chelsio.com>
 	Liang Chen <liangchen.linux@gmail.com>
 Content-Type: text/plain; charset="UTF-8"
 
-v3:
-- Fixed patchwork build errors/warnings from patch-by-patch modallconfig
-  build
+The implementations of these 2 functions are almost identical. Remove
+the implementation of napi_frag_unref, and make it a call into
+skb_page_unref so we don't duplicate the implementation.
 
-v2:
-- Removed RFC tag.
-- Rebased on net-next after the merge window opening.
-- Added 1 patch at the beginning, "net: make napi_frag_unref reuse
-  skb_page_unref" because a recent patch introduced some code
-  duplication that can also be improved.
-- Addressed feedback from Dragos & Yunsheng.
-- Added Dragos's Reviewed-by.
+Signed-off-by: Mina Almasry <almasrymina@google.com>
 
-This series is largely motivated by a recent discussion where there was
-some confusion on how to properly ref/unref pp pages vs non pp pages:
+---
+ include/linux/skbuff.h | 12 +++---------
+ net/ipv4/esp4.c        |  2 +-
+ net/ipv6/esp6.c        |  2 +-
+ 3 files changed, 5 insertions(+), 11 deletions(-)
 
-https://lore.kernel.org/netdev/CAHS8izOoO-EovwMwAm9tLYetwikNPxC0FKyVGu1TPJWSz4bGoA@mail.gmail.com/T/#t
-
-There is some subtely there because pp uses page->pp_ref_count for
-refcounting, while non-pp uses get_page()/put_page() for ref counting.
-Getting the refcounting pairs wrong can lead to kernel crash.
-
-Additionally currently it may not be obvious to skb users unaware of
-page pool internals how to properly acquire a ref on a pp frag. It
-requires checking of skb->pp_recycle & is_pp_page() to make the correct
-calls and may require some handling at the call site aware of arguable pp
-internals.
-
-This series is a minor refactor with a couple of goals:
-
-1. skb users should be able to ref/unref a frag using
-   [__]skb_frag_[un]ref() functions without needing to understand pp
-   concepts and pp_ref_count vs get/put_page() differences.
-
-2. reference counting functions should have a mirror opposite. I.e. there
-   should be a foo_unref() to every foo_ref() with a mirror opposite
-   implementation (as much as possible).
-
-This is RFC to collect feedback if this change is desirable, but also so
-that I don't race with the fix for the issue Dragos is seeing for his
-crash.
-
-https://lore.kernel.org/lkml/CAHS8izN436pn3SndrzsCyhmqvJHLyxgCeDpWXA4r1ANt3RCDLQ@mail.gmail.com/T/
-
-Cc: Dragos Tatulea <dtatulea@nvidia.com>
-
-Mina Almasry (3):
-  net: make napi_frag_unref reuse skb_page_unref
-  net: mirror skb frag ref/unref helpers
-  net: remove napi_frag_unref
-
- .../chelsio/inline_crypto/ch_ktls/chcr_ktls.c |  2 +-
- drivers/net/ethernet/marvell/sky2.c           |  2 +-
- drivers/net/ethernet/mellanox/mlx4/en_rx.c    |  2 +-
- drivers/net/ethernet/sun/cassini.c            |  4 +-
- drivers/net/veth.c                            |  2 +-
- include/linux/skbuff.h                        | 44 +++++++-------
- net/core/skbuff.c                             | 58 ++++++-------------
- net/ipv4/esp4.c                               |  2 +-
- net/ipv6/esp6.c                               |  2 +-
- net/tls/tls_device.c                          |  2 +-
- net/tls/tls_device_fallback.c                 |  2 +-
- net/tls/tls_strp.c                            |  2 +-
- 12 files changed, 54 insertions(+), 70 deletions(-)
-
+diff --git a/include/linux/skbuff.h b/include/linux/skbuff.h
+index b7f1ecdaec38..a6b5596dc0cb 100644
+--- a/include/linux/skbuff.h
++++ b/include/linux/skbuff.h
+@@ -3513,10 +3513,10 @@ int skb_cow_data_for_xdp(struct page_pool *pool, struct sk_buff **pskb,
+ bool napi_pp_put_page(struct page *page, bool napi_safe);
+ 
+ static inline void
+-skb_page_unref(const struct sk_buff *skb, struct page *page, bool napi_safe)
++skb_page_unref(struct page *page, bool recycle, bool napi_safe)
+ {
+ #ifdef CONFIG_PAGE_POOL
+-	if (skb->pp_recycle && napi_pp_put_page(page, napi_safe))
++	if (recycle && napi_pp_put_page(page, napi_safe))
+ 		return;
+ #endif
+ 	put_page(page);
+@@ -3525,13 +3525,7 @@ skb_page_unref(const struct sk_buff *skb, struct page *page, bool napi_safe)
+ static inline void
+ napi_frag_unref(skb_frag_t *frag, bool recycle, bool napi_safe)
+ {
+-	struct page *page = skb_frag_page(frag);
+-
+-#ifdef CONFIG_PAGE_POOL
+-	if (recycle && napi_pp_put_page(page, napi_safe))
+-		return;
+-#endif
+-	put_page(page);
++	skb_page_unref(skb_frag_page(frag), recycle, napi_safe);
+ }
+ 
+ /**
+diff --git a/net/ipv4/esp4.c b/net/ipv4/esp4.c
+index d33d12421814..3d2c252c5570 100644
+--- a/net/ipv4/esp4.c
++++ b/net/ipv4/esp4.c
+@@ -114,7 +114,7 @@ static void esp_ssg_unref(struct xfrm_state *x, void *tmp, struct sk_buff *skb)
+ 	 */
+ 	if (req->src != req->dst)
+ 		for (sg = sg_next(req->src); sg; sg = sg_next(sg))
+-			skb_page_unref(skb, sg_page(sg), false);
++			skb_page_unref(sg_page(sg), skb->pp_recycle, false);
+ }
+ 
+ #ifdef CONFIG_INET_ESPINTCP
+diff --git a/net/ipv6/esp6.c b/net/ipv6/esp6.c
+index 7371886d4f9f..4fe4f97f5420 100644
+--- a/net/ipv6/esp6.c
++++ b/net/ipv6/esp6.c
+@@ -131,7 +131,7 @@ static void esp_ssg_unref(struct xfrm_state *x, void *tmp, struct sk_buff *skb)
+ 	 */
+ 	if (req->src != req->dst)
+ 		for (sg = sg_next(req->src); sg; sg = sg_next(sg))
+-			skb_page_unref(skb, sg_page(sg), false);
++			skb_page_unref(sg_page(sg), skb->pp_recycle, false);
+ }
+ 
+ #ifdef CONFIG_INET6_ESPINTCP
 -- 
 2.44.0.478.gd926399ef9-goog
 
