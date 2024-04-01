@@ -1,127 +1,99 @@
-Return-Path: <linux-rdma+bounces-1706-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-1707-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B9E40893B63
-	for <lists+linux-rdma@lfdr.de>; Mon,  1 Apr 2024 15:24:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 55D93893B69
+	for <lists+linux-rdma@lfdr.de>; Mon,  1 Apr 2024 15:25:52 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4DC1F281ED1
-	for <lists+linux-rdma@lfdr.de>; Mon,  1 Apr 2024 13:24:11 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 104F4281ED0
+	for <lists+linux-rdma@lfdr.de>; Mon,  1 Apr 2024 13:25:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E61683F8F4;
-	Mon,  1 Apr 2024 13:24:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=amazon.com header.i=@amazon.com header.b="aOo7XpIN"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 396E03F8FB;
+	Mon,  1 Apr 2024 13:25:47 +0000 (UTC)
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from smtp-fw-9105.amazon.com (smtp-fw-9105.amazon.com [207.171.188.204])
+Received: from szxga08-in.huawei.com (szxga08-in.huawei.com [45.249.212.255])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4AAE821A0A;
-	Mon,  1 Apr 2024 13:24:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=207.171.188.204
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 534E621A0A;
+	Mon,  1 Apr 2024 13:25:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.255
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711977847; cv=none; b=HSkr4aoYswWDSuEaDE3ElmT1VraUo2hNVC4Ycx2AanVg1NgE2zO4eP3UvovPV1hc5ysWlfE+kRMuwh54jNujx1LuwdNlx3NIWX7YtYVpWPnZP0dz/AELUSX4iSidbyyCZmncWHw6ItPClkeui2CmwcKhfYmV5HatP/nelJWP3uc=
+	t=1711977947; cv=none; b=P75dn2XSo/r4EBpbBd4eCXL2TanevXJpPkrIqC6c3bOIU9amVSodGx3fNNGqz/voqYVBct62byHPNKW03OQbOOmQqfoyv1bgIiPNvfpr47vlrHt0tuv9Vf07rM13E4X/OI7T8KnVwV80SZXw5iReqvEmFtHkb4xMlb0OBXQZers=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711977847; c=relaxed/simple;
-	bh=9EaMVV3elotIvVru5tyAQ4Ib+d3jzMQzcTbDbh/1SCs=;
-	h=Subject:Message-ID:Date:MIME-Version:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=d0Ui9QVanPToQkBVK829snNq10aOixUPRBe+O6N+7Y9o6YjuwXWrO1P7CwabW/qPqBYoI+sHuEBD51Q/OF3A0f813jdRKy7QNsmQ5haLcpPpol4kpeg89QppSkTOyHfiZSp/AqMDhkSfTuwu+dnu+cg9OZp4rtavMOXrNjhOgDE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amazon.com; spf=pass smtp.mailfrom=amazon.com; dkim=pass (1024-bit key) header.d=amazon.com header.i=@amazon.com header.b=aOo7XpIN; arc=none smtp.client-ip=207.171.188.204
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amazon.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=amazon.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1711977846; x=1743513846;
-  h=message-id:date:mime-version:to:cc:references:from:
-   in-reply-to:content-transfer-encoding:subject;
-  bh=/q5RUYrVO7lETbxfGo97Atx61q36lvWj5/xhBcLh7fk=;
-  b=aOo7XpINo08y4LChadQE9loNUa2Uc9kozy6hJfW74p8UvQ3xxNzJDESz
-   UJDa6cwQqUFm5Uo/tvD1pex+aGYAlkcp/5w9q79IB/lRbMQS+yH32tbhU
-   FscZSF6JKDvWVVuv690zzY9R4R2u5NBtu6CpGePMgv3SAdIyMyhgSNoBC
-   Y=;
-X-IronPort-AV: E=Sophos;i="6.07,172,1708387200"; 
-   d="scan'208";a="715783487"
-Subject: Re: Implementing .shutdown method for efa module
-Received: from pdx4-co-svc-p1-lb2-vlan2.amazon.com (HELO smtpout.prod.us-east-1.prod.farcaster.email.amazon.dev) ([10.25.36.210])
-  by smtp-border-fw-9105.sea19.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Apr 2024 13:23:44 +0000
-Received: from EX19MTAEUB002.ant.amazon.com [10.0.17.79:63400]
- by smtpin.naws.eu-west-1.prod.farcaster.email.amazon.dev [10.0.31.112:2525] with esmtp (Farcaster)
- id de5bc671-77f5-45f8-a682-175bf7ec8cfe; Mon, 1 Apr 2024 13:23:43 +0000 (UTC)
-X-Farcaster-Flow-ID: de5bc671-77f5-45f8-a682-175bf7ec8cfe
-Received: from EX19D031EUB003.ant.amazon.com (10.252.61.88) by
- EX19MTAEUB002.ant.amazon.com (10.252.51.79) with Microsoft SMTP Server
+	s=arc-20240116; t=1711977947; c=relaxed/simple;
+	bh=Kq6yKTpgbG14+4gjOm9LIhMP/yc++MC/zNdqyL6pyGc=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=aTPoNTYSH7iEAdh7yjedISGBRwQa7ZSx8c5tPDuYxHm8KKyEkdJ9FQw9H8rQIqUo1zhUYbcOAhWrV0cpMlY6yF+QvLZUryPnz5FbpEzLD+qwBP4ZTHm/g3raGZvJiJbBFMmTvDt9g/HCUcNn9IolOrl7jYO+cSkq4d/FsHaKh9s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=hisilicon.com; spf=pass smtp.mailfrom=hisilicon.com; arc=none smtp.client-ip=45.249.212.255
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=hisilicon.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=hisilicon.com
+Received: from mail.maildlp.com (unknown [172.19.163.174])
+	by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4V7Wsm4jzqz1QC24;
+	Mon,  1 Apr 2024 21:23:08 +0800 (CST)
+Received: from kwepemi500006.china.huawei.com (unknown [7.221.188.68])
+	by mail.maildlp.com (Postfix) with ESMTPS id 608AD1401E9;
+	Mon,  1 Apr 2024 21:25:40 +0800 (CST)
+Received: from [10.67.120.168] (10.67.120.168) by
+ kwepemi500006.china.huawei.com (7.221.188.68) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1258.28; Mon, 1 Apr 2024 13:23:41 +0000
-Received: from [192.168.82.210] (10.85.143.172) by
- EX19D031EUB003.ant.amazon.com (10.252.61.88) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1258.28; Mon, 1 Apr 2024 13:23:37 +0000
-Message-ID: <0e7dddff-d7f3-4617-83e6-f255449a282b@amazon.com>
-Date: Mon, 1 Apr 2024 16:23:32 +0300
+ 15.1.2507.35; Mon, 1 Apr 2024 21:25:39 +0800
+Message-ID: <1f786e1b-e8ff-1d6f-7c4d-89724eda6712@hisilicon.com>
+Date: Mon, 1 Apr 2024 21:25:39 +0800
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.1.0
+Subject: Re: [PATCH for-next] RDMA/hns: Support DSCP
+To: Leon Romanovsky <leon@kernel.org>
+CC: <jgg@ziepe.ca>, <linux-rdma@vger.kernel.org>, <linuxarm@huawei.com>,
+	<linux-kernel@vger.kernel.org>
+References: <20240315093551.1650088-1-huangjunxian6@hisilicon.com>
+ <20240401114853.GA73174@unreal>
 Content-Language: en-US
-To: Jason Gunthorpe <jgg@ziepe.ca>
-CC: Tao Liu <ltao@redhat.com>, Gal Pressman <gal.pressman@linux.dev>,
-	<sleybo@amazon.com>, <leon@kernel.org>, <kexec@lists.infradead.org>,
-	<linux-kernel@vger.kernel.org>, <linux-rdma@vger.kernel.org>
-References: <CAO7dBbVNv5NWRN6hXeo5rNEixn-ctmTLLn2KAKhEBYvvR+Du2w@mail.gmail.com>
- <5d81d6d0-5afc-4d0e-8d2b-445d48921511@linux.dev>
- <CAO7dBbXLU5teiYm8VvES7e7m7dUzJQYV9HHLOFKperjwq-NJeA@mail.gmail.com>
- <b6c0bd81-3b8d-465d-a0eb-faa5323a6b05@amazon.com>
- <20240326153223.GF8419@ziepe.ca>
-From: "Margolin, Michael" <mrgolin@amazon.com>
-In-Reply-To: <20240326153223.GF8419@ziepe.ca>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
+From: Junxian Huang <huangjunxian6@hisilicon.com>
+In-Reply-To: <20240401114853.GA73174@unreal>
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: EX19D043UWA002.ant.amazon.com (10.13.139.53) To
- EX19D031EUB003.ant.amazon.com (10.252.61.88)
-
-Jason
-
-Thanks for your response, efa_remove() is performing reset to the device 
-which should stop all DMA from the device.
-
-Except skipping cleanups that are unnecessary for shutdown flow are 
-there any other reasons to prefer a separate function for shutdown?
+X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
+ kwepemi500006.china.huawei.com (7.221.188.68)
 
 
-Michael
 
-On 3/26/2024 5:32 PM, Jason Gunthorpe wrote:
-> CAUTION: This email originated from outside of the organization. Do not click links or open attachments unless you can confirm the sender and know the content is safe.
->
->
->
-> On Tue, Mar 26, 2024 at 02:34:45PM +0200, Margolin, Michael wrote:
->> Hi Tao,
+On 2024/4/1 19:48, Leon Romanovsky wrote:
+> On Fri, Mar 15, 2024 at 05:35:51PM +0800, Junxian Huang wrote:
+>> Add support for DSCP configuration. For DSCP, get dscp-prio mapping
+>> via hns3 nic driver api .get_dscp_prio() and fill the SL (in WQE for
+>> UD or in QPC for RC) with the priority value. The prio-tc mapping is
+>> configured to HW by hns3 nic driver. HW will select a corresponding
+>> TC according to SL and the prio-tc mapping.
 >>
->> Thanks for bringing this up.
->>
->> I've unsuccessfully tried to reproduce this kernel panic using production
->> Red Hat 9.3 AMI (5.14.0-362.18.1.el9_3.aarch64).
->>
->> Are there any related changes in the kernel you are testing?
->>
->> Anyways we do need to handle shutdown properly, please let know if calling
->> to efa_remove solves your issue.
-> efa_remove should not be used for shutdown..
->
-> If you have an iommu in your system (smmuv3 for this ARM64 case) then
-> drivers must implement a shutdown handler or you will risk data
-> corruption on ARM64 sytems during crash.
->
-> The shutdown handler must stop all DMA from the device.
->
-> If you don't have an iommu then the shutdown handler shouldn't be
-> critical.
->
-> Jason
+>> Signed-off-by: Junxian Huang <huangjunxian6@hisilicon.com>
+>> ---
+>>  drivers/infiniband/hw/hns/hns_roce_ah.c     | 32 +++++---
+>>  drivers/infiniband/hw/hns/hns_roce_device.h |  6 ++
+>>  drivers/infiniband/hw/hns/hns_roce_hw_v2.c  | 86 ++++++++++++++++-----
+>>  drivers/infiniband/hw/hns/hns_roce_qp.c     | 13 ++++
+>>  include/uapi/rdma/hns-abi.h                 |  9 ++-
+>>  5 files changed, 117 insertions(+), 29 deletions(-)
+> 
+> 1. What is TC mode?
+
+TC mode indicates whether the HW is configured as DSCP mode or VLAN priority
+mode currently.
+
+> 2. Did you post rdma-core PR?
+
+Not yet. I was meant to wait until this patch is applied. Should I post it
+right now?
+
+Junxian
+
+> 
+> Thanks
 
