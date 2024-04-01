@@ -1,82 +1,84 @@
-Return-Path: <linux-rdma+bounces-1701-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-1702-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5D6B8893AB6
-	for <lists+linux-rdma@lfdr.de>; Mon,  1 Apr 2024 13:49:04 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2B217893AB8
+	for <lists+linux-rdma@lfdr.de>; Mon,  1 Apr 2024 13:49:56 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AD8B9281B7B
-	for <lists+linux-rdma@lfdr.de>; Mon,  1 Apr 2024 11:49:02 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 4AF1CB213C6
+	for <lists+linux-rdma@lfdr.de>; Mon,  1 Apr 2024 11:49:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 48CAE219E0;
-	Mon,  1 Apr 2024 11:48:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D2E1721340;
+	Mon,  1 Apr 2024 11:49:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="lcs8EFpf"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="o1SNqevJ"
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 05E4BD26D;
-	Mon,  1 Apr 2024 11:48:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8E9E3D26D;
+	Mon,  1 Apr 2024 11:49:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711972137; cv=none; b=kKrgoJZVf/gc/xNhFP4OHcFVAamIwWJEnq4Okuxxlytuvr8xSsV9osmkGo6ohJUAPFR6Ta73r7GVtG8hHjSE6h0lSkk1dyCYiLggId5f8Cc400pfC606+zu55sk5Nmi8OmAGLPK/HsEuTGcgDZBgTGPW4dly8CZTenGKv+nGizs=
+	t=1711972187; cv=none; b=s2SA3QQjvQA7PAvZpIysuOu5X3uFvrghTTM7nMm84jOHRFIIn4jWITor+6b9q3b5RjuR4LpYCE/tiRYJzJMHVr2PVr9q/Ibp2BH7CPGMYn66YHywAimUdjqGmdVrKtamX4VE+hI+dtc1u+umpRIbh4lamLJRs87qiD1CCpfFGdo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711972137; c=relaxed/simple;
-	bh=pCIf/4JC3Jz+ajCP9yLU5DVCXUIXygecRnTv9SJ1/Fs=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=oqO6Bm9OzSY+NBs4TuQLa9reXr1knU9on1q/cL7i/JjkQxYbszPlD7N8HEvMlswY31reiFF1IimHYyJds1d8AS9q8tK7oNIdUeoMHXS2OgPv8kN4DXt16+HlksRl6qFrJPwrcLDk67SUDjADvcOelFLLJRqG5rNkiXV3ZOU35nc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=lcs8EFpf; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 24B07C433F1;
-	Mon,  1 Apr 2024 11:48:55 +0000 (UTC)
+	s=arc-20240116; t=1711972187; c=relaxed/simple;
+	bh=IJNWYYDtEscr+AqSsuEYlRoJ5OSEelynNTrybl13oJg=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Message-Id:Date:
+	 MIME-Version:Content-Type; b=PO1s9S9kkUlHjBChID58FpsPw9BFnIyWrZwbuyM7xeh5oOanIwVblI+JgM1tr/el/rwvrh0VLR2BpSyIZk6AvKgF8DC3+iGP7gZFsqZk783TW7wXc1FzG3+kFcapQavCfcZsfVkQIgH5KKDKiBo/79LF1z0uOJsre3X0nJ5tL9Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=o1SNqevJ; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A3784C433C7;
+	Mon,  1 Apr 2024 11:49:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711972136;
-	bh=pCIf/4JC3Jz+ajCP9yLU5DVCXUIXygecRnTv9SJ1/Fs=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=lcs8EFpfbw6zrCYqHYrhBQhB3RLk3U1DdxllVf9G4y9QG+eWKlBs3juHWGNg1RanN
-	 On7Q1LBmtdahanBGKGoGeGDbytgqQ4N+aA1/2MntxhRyFeW65v7RptykINzPDNjaY+
-	 YXb5kUqDQFdO46SOVTGNYgkYujzOErVE0D4pUObvoe5nXdYs8LsriKrRwoxK07ftyI
-	 Ivili8Yt7u9ytkky4JO2cTWP8tQNKjoqAFvk8QcthuTeRwLHPBJRhJAEB7cg4VocWu
-	 WMJZvbl/z2goaN7xD6EbOlRb4W00JZAek8M1VEo5YdbzzyoW7XmX1QLqbiA9I5TZYF
-	 7jvgjwFvgRI/A==
-Date: Mon, 1 Apr 2024 14:48:53 +0300
+	s=k20201202; t=1711972187;
+	bh=IJNWYYDtEscr+AqSsuEYlRoJ5OSEelynNTrybl13oJg=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+	b=o1SNqevJ1dfz7qifpVIpKIeKaNTgySK9DvwoM6UWpcd2CEAOXkCvefYw7+W4/3Ibq
+	 Zb8A/I05BmzoGCcrYMdz1u4sRKlPczpU8AiNmU1J5BVPAs7AkCQpB+Xfw7Qt+v380m
+	 tjsAfsgr/k5UdN5nAmia/NMXbTbAZQGJu+qmPZvui7HAKmjn8Jikw3amvmarBp9YVF
+	 cbrIuoxK9rxfXS0zdbyD0ASn/gcIfwKquJGzwWNDNM+z2Gt1mP1jBH0+L0uxW7KYpD
+	 bfxmdEbSPO5X3EJNWGa8fEcpVPkDyJ7TjIP0pIBy19UzEUqje+g31NBfgeOPqx0OoV
+	 QB0GOXkAE7Xcw==
 From: Leon Romanovsky <leon@kernel.org>
-To: Junxian Huang <huangjunxian6@hisilicon.com>
-Cc: jgg@ziepe.ca, linux-rdma@vger.kernel.org, linuxarm@huawei.com,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH for-next] RDMA/hns: Support DSCP
-Message-ID: <20240401114853.GA73174@unreal>
-References: <20240315093551.1650088-1-huangjunxian6@hisilicon.com>
+To: Jason Gunthorpe <jgg@ziepe.ca>, linux-rdma@vger.kernel.org, 
+ linux-kernel@vger.kernel.org, Wenchao Hao <haowenchao2@huawei.com>
+Cc: louhongxiang@huawei.com
+In-Reply-To: <20240318092320.1215235-1-haowenchao2@huawei.com>
+References: <20240318092320.1215235-1-haowenchao2@huawei.com>
+Subject: Re: [PATCH v2] RDMA/restrack: Fix potential invalid address access
+Message-Id: <171197218379.76491.12221042581191709272.b4-ty@kernel.org>
+Date: Mon, 01 Apr 2024 14:49:43 +0300
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240315093551.1650088-1-huangjunxian6@hisilicon.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Mailer: b4 0.14-dev
 
-On Fri, Mar 15, 2024 at 05:35:51PM +0800, Junxian Huang wrote:
-> Add support for DSCP configuration. For DSCP, get dscp-prio mapping
-> via hns3 nic driver api .get_dscp_prio() and fill the SL (in WQE for
-> UD or in QPC for RC) with the priority value. The prio-tc mapping is
-> configured to HW by hns3 nic driver. HW will select a corresponding
-> TC according to SL and the prio-tc mapping.
+
+On Mon, 18 Mar 2024 17:23:20 +0800, Wenchao Hao wrote:
+> struct rdma_restrack_entry's kern_name was set to KBUILD_MODNAME
+> in ib_create_cq(), while if the module exited but forgot del this
+> rdma_restrack_entry, it would cause a invalid address access in
+> rdma_restrack_clean() when print the owner of this rdma_restrack_entry.
 > 
-> Signed-off-by: Junxian Huang <huangjunxian6@hisilicon.com>
-> ---
->  drivers/infiniband/hw/hns/hns_roce_ah.c     | 32 +++++---
->  drivers/infiniband/hw/hns/hns_roce_device.h |  6 ++
->  drivers/infiniband/hw/hns/hns_roce_hw_v2.c  | 86 ++++++++++++++++-----
->  drivers/infiniband/hw/hns/hns_roce_qp.c     | 13 ++++
->  include/uapi/rdma/hns-abi.h                 |  9 ++-
->  5 files changed, 117 insertions(+), 29 deletions(-)
+> These code is used to help find one forgotten PD release in one of the
+> ULPs. But it is not needed anymore, so delete them.
+> 
+> [...]
 
-1. What is TC mode?
-2. Did you post rdma-core PR?
+Applied, thanks!
 
-Thanks
+[1/1] RDMA/restrack: Fix potential invalid address access
+      https://git.kernel.org/rdma/rdma/c/ca537a34775c10
+
+Best regards,
+-- 
+Leon Romanovsky <leon@kernel.org>
+
 
