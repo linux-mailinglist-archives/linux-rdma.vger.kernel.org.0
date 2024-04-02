@@ -1,138 +1,243 @@
-Return-Path: <linux-rdma+bounces-1728-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-1729-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id AF4E0894DBD
-	for <lists+linux-rdma@lfdr.de>; Tue,  2 Apr 2024 10:38:46 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D910F894F0F
+	for <lists+linux-rdma@lfdr.de>; Tue,  2 Apr 2024 11:50:38 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E11A71C217DC
-	for <lists+linux-rdma@lfdr.de>; Tue,  2 Apr 2024 08:38:45 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 4E16CB215A0
+	for <lists+linux-rdma@lfdr.de>; Tue,  2 Apr 2024 09:50:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 04055405CF;
-	Tue,  2 Apr 2024 08:38:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E6B6358ABB;
+	Tue,  2 Apr 2024 09:50:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="XII0Ga5o"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="NaDhEned"
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B0FF58BF6;
-	Tue,  2 Apr 2024 08:38:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A5B0858113
+	for <linux-rdma@vger.kernel.org>; Tue,  2 Apr 2024 09:50:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712047119; cv=none; b=iTKLUjPhf7QLYWvaA1u7P3B/vIFGHXG/YYEhbzZVGM/hj2F+p6FmuFZT49HGzhAxKh78Y5OVHZgu2w0UoAxeqZhDYve1xiHrQ3CyhaLJXbfD7Ydw2O46J4bqTarVNArtewawnSVVRUO+5K1lU5ptvahEqBa8A5nZOgBCnx/wWQI=
+	t=1712051429; cv=none; b=aP+CNgImxE3sMwZ/jxnU4N+BstkTtDsoJmCeQGJHXHuIbeGtmokCSsQYPAK5iCibRd6hQQgDgH4mm2QezrGOuk9j0xCvhuy/pMYy1UGX4500QRQE3oxbNnzGHV5eYM9TIbWSPxWxxdwx60r+fjqVZMlmp5w2URGWPrsRYBZ8Ncw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712047119; c=relaxed/simple;
-	bh=2QTJJkBJfOudjF9f8FhQEELqqdByRxvxWBK8+NHb4b8=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Y4p5B83ZxNR+6GsJrGchjJx5qDnCFs/5tpfHFYGSHbtcfw6OnL8QbC6+CVh28qcxz/llZVcwKCBUGSNUxSllyMQ+6YbW+V5EhSEBrzXQ9mW6kbs55Omaug5WFPImT2EhwgC+3pPEUkMLGjOCREK+yxFRkxBGL+mGEKz9sZ6IgQg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=XII0Ga5o; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id BF496C433C7;
-	Tue,  2 Apr 2024 08:38:38 +0000 (UTC)
+	s=arc-20240116; t=1712051429; c=relaxed/simple;
+	bh=+9Ispjx9JQU5UQkS/C33YmSHtSiVA5GJgb+N0JNBP90=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=N7Yg1o4fhIOi8UBz5Gy0xjKlgoWW1xGY2Cl4RzzCUKdXE5YF2pbPQZywODKdq/vTmU88/MA6lGSDp0XHKEZoeESKChsMqVUDzLv15eX5vAACnyrxsbRPxON2FiaSP5ce9cyPniHS+NNfne7FDCqmZjqA5Wi51wq/gFcjRtu/TsQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=NaDhEned; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B7362C433F1;
+	Tue,  2 Apr 2024 09:50:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712047119;
-	bh=2QTJJkBJfOudjF9f8FhQEELqqdByRxvxWBK8+NHb4b8=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=XII0Ga5oYDoW2nnQnppjresLqDDVdZYrBFueH+DJrzs5nFOC3bB+N310FX6Zcy/Lh
-	 Ne7h/2yrnOw1nr+tmKqmpGjVF5sxqgeInuuNIN9LtLOWNPErw7Nt1d43pRLLEEz1iT
-	 eyCEHeKVoi2IrKRDhaJlUvPupz+7DM1GOkXCrkCK7PzOezhOpCTZJweaHbWzyGbXLS
-	 8wAy+VpJgaVDNsOODwK9eZ1in2srnNN1M0EBSYoG2HmThVRUQ5rc5OFaaaJHXrnpIs
-	 8LXzQPdGM6F/t0h7BYZaizArYUmn70YSCm9OCCl58g4NZRd+Zsy1ybLTZpAHMd5RAy
-	 hC5jcXeWECqMg==
-Date: Tue, 2 Apr 2024 11:38:34 +0300
+	s=k20201202; t=1712051429;
+	bh=+9Ispjx9JQU5UQkS/C33YmSHtSiVA5GJgb+N0JNBP90=;
+	h=From:To:Cc:Subject:Date:From;
+	b=NaDhEnedQvSViDLWgT0L3BRypJ3AUhKJ1l4Fnm5oZXEqQsPe9au/kpNcfkCaS/Ez1
+	 jYMhB8neuYELtEqeYTcgOm6dbWq/WBy0hs9XCtKdcfN2a/Z+CXelBIKLH4GfJhUwYE
+	 TwZbIEgeRV1nogEOYkL46F+TaaMz6XihCFi9qzyYWJjqZUzMbXNtlbfRyekgwAdcpB
+	 byQ/LppELQYGAznueAhy3gb6porTqLBsci83ySAyUn1XxTUiIZn1+zUvhCssnAMJyC
+	 3MItQR2mOA7PFWHYDx9GcK6+Wp5f2MRH/nFYfKbVpNrspXFoWmKykDtqGHEHYlz1hb
+	 UShFDkAFDnYOw==
 From: Leon Romanovsky <leon@kernel.org>
-To: "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-Cc: Jason Gunthorpe <jgg@ziepe.ca>,
-	"Gustavo A. R. Silva" <gustavoars@kernel.org>,
-	linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-hardening@vger.kernel.org
-Subject: Re: [PATCH][next] RDMA/cm: Avoid -Wflex-array-member-not-at-end
- warning
-Message-ID: <20240402083834.GF11187@unreal>
-References: <ZgHdZ15cQ7MIHsGL@neat>
- <20240325224706.GB8419@ziepe.ca>
- <5c0bb827-e5f3-4178-ad46-8ac9b99d7726@embeddedor.com>
+To: Jason Gunthorpe <jgg@nvidia.com>
+Cc: Michael Guralnik <michaelgur@nvidia.com>,
+	linux-rdma@vger.kernel.org
+Subject: [PATCH rdma-next] IB/core: Add option to limit user mad receive list
+Date: Tue,  2 Apr 2024 12:50:21 +0300
+Message-ID: <70029b5f256fbad6efbb98458deb9c46baa2c4b3.1712051390.git.leon@kernel.org>
+X-Mailer: git-send-email 2.44.0
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <5c0bb827-e5f3-4178-ad46-8ac9b99d7726@embeddedor.com>
+Content-Transfer-Encoding: 8bit
 
-On Mon, Mar 25, 2024 at 08:57:08PM -0600, Gustavo A. R. Silva wrote:
-> 
-> 
-> On 3/25/24 16:47, Jason Gunthorpe wrote:
-> > On Mon, Mar 25, 2024 at 02:24:07PM -0600, Gustavo A. R. Silva wrote:
-> > > -Wflex-array-member-not-at-end is coming in GCC-14, and we are getting
-> > > ready to enable it globally.
-> > > 
-> > > Use the `struct_group_tagged()` helper to separate the flexible array
-> > > from the rest of the members in flexible `struct cm_work`, and avoid
-> > > embedding the flexible-array member in `struct cm_timewait_info`.
-> > > 
-> > > Also, use `container_of()` to retrieve a pointer to the flexible
-> > > structure.
-> > > 
-> > > So, with these changes, fix the following warning:
-> > > drivers/infiniband/core/cm.c:196:24: warning: structure containing a flexible array member is not at the end of another structure [-Wflex-array-member-not-at-end]
-> > > 
-> > > Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
-> > > ---
-> > >   drivers/infiniband/core/cm.c | 21 ++++++++++++---------
-> > >   1 file changed, 12 insertions(+), 9 deletions(-)
-> > > 
-> > > diff --git a/drivers/infiniband/core/cm.c b/drivers/infiniband/core/cm.c
-> > > index bf0df6ee4f78..80c87085499c 100644
-> > > --- a/drivers/infiniband/core/cm.c
-> > > +++ b/drivers/infiniband/core/cm.c
-> > > @@ -182,18 +182,21 @@ struct cm_av {
-> > >   };
-> > >   struct cm_work {
-> > > -	struct delayed_work work;
-> > > -	struct list_head list;
-> > > -	struct cm_port *port;
-> > > -	struct ib_mad_recv_wc *mad_recv_wc;	/* Received MADs */
-> > > -	__be32 local_id;			/* Established / timewait */
-> > > -	__be32 remote_id;
-> > > -	struct ib_cm_event cm_event;
-> > > +	/* New members must be added within the struct_group() macro below. */
-> > > +	struct_group_tagged(cm_work_hdr, hdr,
-> > > +		struct delayed_work work;
-> > > +		struct list_head list;
-> > > +		struct cm_port *port;
-> > > +		struct ib_mad_recv_wc *mad_recv_wc;	/* Received MADs */
-> > > +		__be32 local_id;			/* Established / timewait */
-> > > +		__be32 remote_id;
-> > > +		struct ib_cm_event cm_event;
-> > > +	);
-> > >   	struct sa_path_rec path[];
-> > >   };
-> > 
-> > I didn't look, but does it make more sense to break out the path side
-> > into its own type and avoid the struct_group_tagged? I seem to
-> > remember only one thing used it.
-> > 
-> 
-> I thought about that, but I'd have to change the parameter type of
-> `static int cm_timewait_handler(struct cm_work *work)`, and that would
-> imply also modifying the internals of function `cm_work_handler()` (and
-> then I didn't look much into it). 
+From: Michael Guralnik <michaelgur@nvidia.com>
 
-So let's try to invest in this direction first before we add obfuscation
-with magic words to the code.
+ib_umad is keeping the received MAD packets in a list that is not
+limited in size. As the extraction of packets from this list is done
+from user-space application, there is no way to guarantee the extraction
+rate to be faster than the rate of incoming packets. This can cause to
+the list to grow uncontrollably.
 
-Thanks
+As a solution, let's add new ysfs control knob for the users to limit
+the number of received MAD packets in the list.
 
-> So, the `struct_group_tagged()` strategy is in general more cleaner and straightforward.
-> 
-> --
-> Gustavo
-> 
-> 
+Packets received when the list is full would be dropped. Sent packets
+that are queued on the receive list for whatever reason, like timed out
+sends, are not dropped even when the list is full.
+
+Signed-off-by: Michael Guralnik <michaelgur@nvidia.com>
+Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
+---
+ .../ABI/stable/sysfs-class-infiniband         | 12 ++++
+ drivers/infiniband/core/user_mad.c            | 63 ++++++++++++++++++-
+ 2 files changed, 72 insertions(+), 3 deletions(-)
+
+diff --git a/Documentation/ABI/stable/sysfs-class-infiniband b/Documentation/ABI/stable/sysfs-class-infiniband
+index 694f23a03a28..0ea9d590ab0e 100644
+--- a/Documentation/ABI/stable/sysfs-class-infiniband
++++ b/Documentation/ABI/stable/sysfs-class-infiniband
+@@ -275,6 +275,18 @@ Description:
+ 		=============== ===========================================
+ 
+ 
++What:		/sys/class/infiniband_mad/umad<N>/max_recv_list_size
++Date:		January, 2024
++KernelVersion:	v6.9
++Contact:	linux-rdma@vger.kernel.org
++Description:
++		(RW) Limit the size of the list of MAD packets waiting to be
++		     read by the user-space agent.
++		     The default value is 0, which means unlimited list size.
++		     Packets received when the list is full will be silently
++		     dropped.
++
++
+ What:		/sys/class/infiniband_verbs/abi_version
+ Date:		Sep, 2005
+ KernelVersion:	v2.6.14
+diff --git a/drivers/infiniband/core/user_mad.c b/drivers/infiniband/core/user_mad.c
+index f5feca7fa9b9..96fe54cd4c8a 100644
+--- a/drivers/infiniband/core/user_mad.c
++++ b/drivers/infiniband/core/user_mad.c
+@@ -102,6 +102,7 @@ struct ib_umad_port {
+ 	struct ib_umad_device *umad_dev;
+ 	int                    dev_num;
+ 	u32                     port_num;
++	int			max_recv_list_size;
+ };
+ 
+ struct ib_umad_device {
+@@ -113,6 +114,7 @@ struct ib_umad_file {
+ 	struct mutex		mutex;
+ 	struct ib_umad_port    *port;
+ 	struct list_head	recv_list;
++	atomic_t		recv_list_size;
+ 	struct list_head	send_list;
+ 	struct list_head	port_list;
+ 	spinlock_t		send_lock;
+@@ -180,9 +182,27 @@ static struct ib_mad_agent *__get_agent(struct ib_umad_file *file, int id)
+ 	return file->agents_dead ? NULL : file->agent[id];
+ }
+ 
++static inline bool should_drop_packet(struct ib_umad_file *file,
++				      struct ib_umad_packet *packet,
++				      bool is_send_mad)
++{
++	if (is_send_mad)
++		return false;
++
++	if (!file->port->max_recv_list_size)
++		return false;
++
++	if (atomic_read(&file->recv_list_size) <
++	    file->port->max_recv_list_size)
++		return false;
++
++	return true;
++}
++
+ static int queue_packet(struct ib_umad_file *file,
+ 			struct ib_mad_agent *agent,
+-			struct ib_umad_packet *packet)
++			struct ib_umad_packet *packet,
++			bool is_send_mad)
+ {
+ 	int ret = 1;
+ 
+@@ -192,7 +212,10 @@ static int queue_packet(struct ib_umad_file *file,
+ 	     packet->mad.hdr.id < IB_UMAD_MAX_AGENTS;
+ 	     packet->mad.hdr.id++)
+ 		if (agent == __get_agent(file, packet->mad.hdr.id)) {
++			if (should_drop_packet(file, packet, is_send_mad))
++				break;
+ 			list_add_tail(&packet->list, &file->recv_list);
++			atomic_inc(&file->recv_list_size);
+ 			wake_up_interruptible(&file->recv_wait);
+ 			ret = 0;
+ 			break;
+@@ -224,7 +247,7 @@ static void send_handler(struct ib_mad_agent *agent,
+ 	if (send_wc->status == IB_WC_RESP_TIMEOUT_ERR) {
+ 		packet->length = IB_MGMT_MAD_HDR;
+ 		packet->mad.hdr.status = ETIMEDOUT;
+-		if (!queue_packet(file, agent, packet))
++		if (!queue_packet(file, agent, packet, true))
+ 			return;
+ 	}
+ 	kfree(packet);
+@@ -284,7 +307,7 @@ static void recv_handler(struct ib_mad_agent *agent,
+ 		rdma_destroy_ah_attr(&ah_attr);
+ 	}
+ 
+-	if (queue_packet(file, agent, packet))
++	if (queue_packet(file, agent, packet, false))
+ 		goto err2;
+ 	return;
+ 
+@@ -409,6 +432,7 @@ static ssize_t ib_umad_read(struct file *filp, char __user *buf,
+ 
+ 	packet = list_entry(file->recv_list.next, struct ib_umad_packet, list);
+ 	list_del(&packet->list);
++	atomic_dec(&file->recv_list_size);
+ 
+ 	mutex_unlock(&file->mutex);
+ 
+@@ -421,6 +445,7 @@ static ssize_t ib_umad_read(struct file *filp, char __user *buf,
+ 		/* Requeue packet */
+ 		mutex_lock(&file->mutex);
+ 		list_add(&packet->list, &file->recv_list);
++		atomic_inc(&file->recv_list_size);
+ 		mutex_unlock(&file->mutex);
+ 	} else {
+ 		if (packet->recv_wc)
+@@ -1222,9 +1247,41 @@ static ssize_t port_show(struct device *dev, struct device_attribute *attr,
+ }
+ static DEVICE_ATTR_RO(port);
+ 
++static ssize_t max_recv_list_size_store(struct device *dev,
++					struct device_attribute *attr,
++					const char *buf, size_t count)
++{
++	struct ib_umad_port *port = dev_get_drvdata(dev);
++	int val, ret;
++
++	if (!port)
++		return -ENODEV;
++
++	ret = kstrtouint(buf, 0, &val);
++	if (ret)
++		return ret;
++
++	port->max_recv_list_size = val;
++
++	return count;
++}
++
++static ssize_t max_recv_list_size_show(struct device *dev,
++				       struct device_attribute *attr, char *buf)
++{
++	struct ib_umad_port *port = dev_get_drvdata(dev);
++
++	if (!port)
++		return -ENODEV;
++
++	return sysfs_emit(buf, "%d\n", port->max_recv_list_size);
++}
++static DEVICE_ATTR_RW(max_recv_list_size);
++
+ static struct attribute *umad_class_dev_attrs[] = {
+ 	&dev_attr_ibdev.attr,
+ 	&dev_attr_port.attr,
++	&dev_attr_max_recv_list_size.attr,
+ 	NULL,
+ };
+ ATTRIBUTE_GROUPS(umad_class_dev);
+-- 
+2.44.0
+
 
