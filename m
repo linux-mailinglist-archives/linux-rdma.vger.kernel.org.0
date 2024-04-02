@@ -1,86 +1,92 @@
-Return-Path: <linux-rdma+bounces-1745-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-1746-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 64B38895B8E
-	for <lists+linux-rdma@lfdr.de>; Tue,  2 Apr 2024 20:17:23 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 096B1895BA9
+	for <lists+linux-rdma@lfdr.de>; Tue,  2 Apr 2024 20:22:50 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1F7D028491C
-	for <lists+linux-rdma@lfdr.de>; Tue,  2 Apr 2024 18:17:22 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1C9951C22725
+	for <lists+linux-rdma@lfdr.de>; Tue,  2 Apr 2024 18:22:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C302615ADB0;
-	Tue,  2 Apr 2024 18:17:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 35B9B15AD9C;
+	Tue,  2 Apr 2024 18:22:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="j+yjw4zb"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Uc8YQdjc"
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7985915AD93;
-	Tue,  2 Apr 2024 18:17:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E1C2515AD8A;
+	Tue,  2 Apr 2024 18:22:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712081831; cv=none; b=qDW2INzw0z1uaHJtOoF3RDfj1eWoOPRfaykjSgWBNm1b4G0Xs/E6gjA1etdQ5KeUo4Pr7WGhckbv37/Xw1TRMmYSzAzMj27vywnA7xBJNCbGLiSGRqlMHCpadzo4rXwwguVKNXY53R2au8D5jEy7MHiu+ljqC5xXNw+GG9/dMrI=
+	t=1712082166; cv=none; b=kqxVpoO3X/7fVCb36DzlDwMWpn1GJUFCa9eHvj+umsXwutAL44FlVfoh95IE4w5A3JmlF1AmqB+FbHbOJWX4s/kHpi2Z9sVNOfjbpM++fcJf3mR+a+pONh66y17KFxQnUpKwUkgz3AH7YCe4FJKyT6e+DzrZMHomPslqBx6XcvM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712081831; c=relaxed/simple;
-	bh=0ARxQ9cttIE0P2km3rZwYbhh6JliaUfiHYwzzaExkGE=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=nl7tryfoaBhtwZg0zYm85HH5uHtvPW2p3xeSIZgChNn1dWNwioTxOokKirEwA+uJVQ1lhYPSXN+LwhBoXKz5ynJFZLUnp3Kh5GwUO6v2HYVCDIgrPaj6wTtHcww0fjDoPOCoDFilWFNmo00KdtwKIsEc5fn6Qge6894vj3MTC+Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=j+yjw4zb; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 81759C43390;
-	Tue,  2 Apr 2024 18:17:10 +0000 (UTC)
+	s=arc-20240116; t=1712082166; c=relaxed/simple;
+	bh=lUx1LzBorggEWYaFrZabaixibaToyBEtNNE2dEjp+BY=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=qMcYKoyGpaoSKOE7xPrMAQYsQUhE0qirKKNOdy7dJoLFAQ1eJLy3evGtGSypYkB5wHDhuZKmxH49I/F/ikHkp6asjd6PrYsIsUjDjHg3ysLTZLrgh5GYQAuXz0tR1vsWhSeJaaM+XF39Yxp9V+4KYynebBuIz5zdB3zI+3edIsg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Uc8YQdjc; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id F3D3EC433C7;
+	Tue,  2 Apr 2024 18:22:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712081831;
-	bh=0ARxQ9cttIE0P2km3rZwYbhh6JliaUfiHYwzzaExkGE=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=j+yjw4zbZrlaNcUDJqfUE1ixZtxbFznrXU41+a50ZKjM18TdEcXy7iCKOK1++lPZC
-	 l56y++MenbvUEkO+T8DPS7RkQQTktGT31vMpgMvsDF/TquT2gp6WMPiv9fhhM685A1
-	 QWEW/yo54O55Hvv+3X/XoCgOxGGTZrRDzn3HRIi9LYU47NwkPyNor16r7gEFiCaEhK
-	 /2PVXeM1GJKFzq44zMrRda/Y1oNWRCm7FVvPshqW+P6tyilCpXVaMbvs7Skvorzf+R
-	 iU4CizFo8Y3jtTcCT9gRupQ9keLHAXkwj2zPJ7q3xEiWc3j5WulFe+Ffohs6F28Gc8
-	 MDboiPygc/dAQ==
-Date: Tue, 2 Apr 2024 11:17:09 -0700
-From: Jakub Kicinski <kuba@kernel.org>
-To: Leon Romanovsky <leon@kernel.org>
-Cc: Breno Leitao <leitao@debian.org>, "David S. Miller"
- <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, Paolo Abeni
- <pabeni@redhat.com>, quic_jjohnson@quicinc.com, kvalo@kernel.org,
- dennis.dalessandro@cornelisnetworks.com, Jiri Pirko <jiri@resnulli.us>,
- Simon Horman <horms@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
- Lorenzo Bianconi <lorenzo@kernel.org>, Coco Li <lixiaoyan@google.com>,
- "open list:NETWORKING DRIVERS" <netdev@vger.kernel.org>, open list
- <linux-kernel@vger.kernel.org>, Dennis Dalessandro
- <dennis.dalessandro@intel.com>, RDMA mailing list
- <linux-rdma@vger.kernel.org>
-Subject: Re: [PATCH net-next] net: create a dummy net_device allocator
-Message-ID: <20240402111709.1551dbca@kernel.org>
-In-Reply-To: <20240402180155.GM11187@unreal>
-References: <20240327200809.512867-1-leitao@debian.org>
-	<20240402180155.GM11187@unreal>
+	s=k20201202; t=1712082165;
+	bh=lUx1LzBorggEWYaFrZabaixibaToyBEtNNE2dEjp+BY=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=Uc8YQdjcAcToGxDoK9apBGCvjg5GdtorpDvzgghqegfQCOP2bvsgtvu0jLsQPgpcQ
+	 PtwjumaLsZBp2TxjolO3kVi1BaQgAe2aVeROch3yk+ziM3E4VnqEmOxIF0Z66QBa7+
+	 XJYP5DQ7jU6awjW1iurDdqEUpAp2Pds+ouduTv5hE1N24Sv2wg8hi7rwZ3debsdt8s
+	 GvY7Y2wyCeNiRR8WiFjCYzoQDeGyYu79kagUeUfjiaiX23aCPftKR+FRFu1TIsGTCx
+	 jqIElXTYPk6jBxuZoUCrMIe7Fi+t0u4Gb1DqLWY+n0IwIDxy5BZlyhhz6E1L/f7QEc
+	 oQOMGuGG1IMxw==
+Date: Tue, 2 Apr 2024 21:22:41 +0300
+From: Leon Romanovsky <leon@kernel.org>
+To: Denis Kirjanov <kirjanov@gmail.com>
+Cc: netdev@vger.kernel.org, edumazet@google.com, jgg@ziepe.ca,
+	Denis Kirjanov <dkirjanov@suse.de>,
+	syzbot+5fe14f2ff4ccbace9a26@syzkaller.appspotmail.com,
+	RDMA mailing list <linux-rdma@vger.kernel.org>
+Subject: Re: [PATCH 5 net] RDMA/core: fix UAF with ib_device_get_netdev()
+Message-ID: <20240402182241.GN11187@unreal>
+References: <20240402132641.1412-1-dkirjanov@suse.de>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240402132641.1412-1-dkirjanov@suse.de>
 
-On Tue, 2 Apr 2024 21:01:55 +0300 Leon Romanovsky wrote:
-> > Suggested-by: Jakub Kicinski <kuba@kernel.org>
-> > Signed-off-by: Breno Leitao <leitao@debian.org>  
+On Tue, Apr 02, 2024 at 09:26:41AM -0400, Denis Kirjanov wrote:
+> A call to ib_device_get_netdev may lead to a race condition
+> while accessing a netdevice instance since we don't hold
+> the rtnl lock while checking
+> the registration state:
+> 	if (res && res->reg_state != NETREG_REGISTERED) {
 > 
-> Exciting read for people who remember this conversation:
-> """
-> > I prefer to see some new wrapper over plain alloc_netdev, which will
-> > create this dummy netdevice. For example, alloc_dummy_netdev(...).  
+> v2: unlock rtnl on error path
+> v3: update remaining callers of ib_device_get_netdev
+> v4: don't call a cb with rtnl lock in ib_enum_roce_netdev
+> v5: put rtnl lock/unlock inside ib_device_get_netdev
 > 
-> Nope, no bona fide APIs for hacky uses.
-> """
-> https://lore.kernel.org/linux-rdma/20240311112532.71f1cb35@kernel.org/
+> Reported-by: syzbot+5fe14f2ff4ccbace9a26@syzkaller.appspotmail.com
+> Fixes: d41861942fc55 ("IB/core: Add generic function to extract IB speed from netdev")
+> Signed-off-by: Denis Kirjanov <dkirjanov@suse.de>
+> ---
+>  drivers/infiniband/core/device.c | 3 +++
+>  1 file changed, 3 insertions(+)
 
-Still my preference, but there's only so many hours in the day
-to keep explaining things. I'd rather we made some progress.
+1. You are changing RDMA code and not net code, please add linux-rdma
+   mailing list to the CC list.
+2. Please put changelog after --- trailer.
+3. Please add to the commit message stack trace.
+4. "May lead to a race condition ..." makes me wonder how it is
+possible, because RoCE/iWARP devices can't leave without netdev. So
+please explain how it is possible in the commit message.
+
+Thanks
 
