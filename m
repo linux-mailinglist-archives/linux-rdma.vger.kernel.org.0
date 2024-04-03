@@ -1,189 +1,146 @@
-Return-Path: <linux-rdma+bounces-1765-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-1766-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2592A89749B
-	for <lists+linux-rdma@lfdr.de>; Wed,  3 Apr 2024 17:55:45 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 229C389757E
+	for <lists+linux-rdma@lfdr.de>; Wed,  3 Apr 2024 18:44:27 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 62F95B2D282
-	for <lists+linux-rdma@lfdr.de>; Wed,  3 Apr 2024 15:55:16 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D0E33285440
+	for <lists+linux-rdma@lfdr.de>; Wed,  3 Apr 2024 16:44:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4F85C14A613;
-	Wed,  3 Apr 2024 15:55:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 73894152163;
+	Wed,  3 Apr 2024 16:44:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=cornelisnetworks.com header.i=@cornelisnetworks.com header.b="Sb+CZJW6"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="i0GskreP"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from NAM04-DM6-obe.outbound.protection.outlook.com (mail-dm6nam04on2128.outbound.protection.outlook.com [40.107.102.128])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-vk1-f173.google.com (mail-vk1-f173.google.com [209.85.221.173])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E817D14A0A0;
-	Wed,  3 Apr 2024 15:55:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.102.128
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712159708; cv=fail; b=kwhAkV6KVaoORT/EYAU5ZP3PEwhq7qLLGTQCECYqqlVG2pdp/4ki2nzHXwqd2EE8uZ4NdCCWAj8FPSveXQNYVbqsd4v9y2Gw6RFlMExplmEX9WNSp2/fwfkHaf8KJveNY8+Iy8u8JvaoB5zboEB1naRRki9a3t1si3wQgl8NWEE=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712159708; c=relaxed/simple;
-	bh=2iA+vARU3t7kcohOsiUYj0OPBEY5o+vA1UaRxGai5Ao=;
-	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
-	 Content-Type:MIME-Version; b=jqM1o3Kl6QQneDZv50WOo12JWmrUADJBbq2UqMjmihLlHnJFUnJoMvVT4YPRhbYnkJUM5tJrjKz172os9XdDAfR1mey5fL7PV/SkkgcuUaYy89ccGIh+KP/SvQgn8UiLfqbPjkeJZ9/V4NhuHJjtrg4Wljwk8KMQepiC+qwdVew=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=cornelisnetworks.com; spf=pass smtp.mailfrom=cornelisnetworks.com; dkim=pass (2048-bit key) header.d=cornelisnetworks.com header.i=@cornelisnetworks.com header.b=Sb+CZJW6; arc=fail smtp.client-ip=40.107.102.128
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=cornelisnetworks.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cornelisnetworks.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=GI70qISv8E3rMsJv0Vd0A9aa150TLboXyly6dXuu8PYOLmbm4aw2BaRyu2KYU1RhG3PCDUqpHr4MmfwjkeG7aq2WmnT20NhCGMrUJhXPDXefLa5bgX3tjLo9EG153DpQt1uIJxCGeZgIN/Zd9D3gj53wQfjsNalRY3L2zuDLUVFTIMQ8rZ9fjn4TiRgGcIinlePYzY2NGWCDgW07OcV05knRQb+H28zxvshrDdNvHLDNlGf9rDYmGCQr7ulRL85OyOcJg07aN8G088jJWpSeqbQcZXFs1rQfvTcPReU3DqcMrHBa9x5C9Hv6lmI84uas0qB8640EqO0f06EeacY+Sw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=v/McWCkIj2q23R1TEabqo+jJ4neecfJxIYkwE0wlj6s=;
- b=Isjzqhz9h3TkhOPW0o5LMEb8X2A4cBKxjZCknw3O6TwvjOJUzEKH7zdVyTkuO5QanC389cmxzbrWGhN4Ta68G3SxB3g9JVVbH12I9ty3tojb46ctlh2KE1Bt2moaiNtonpEDaFBQnYP1ka/Pbu1dVe6q1YOdHu2DJfikHDiFoI/tAL0JPSfOJiM87yKY/C65LJEdikul7eH58g/gnBgaXSRdARq0fY6WYoaHNmR+8oXTFFvGR93N+F5Rm9NuaRhOCvkW9h54Qvyr60Ioa1EJ4SUbRT8DWT6E6MVhxn++YE0jOqrhk7nG2wmBonlv1+R4STpQ1VTLOgPunP7dNyxSMA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=cornelisnetworks.com; dmarc=pass action=none
- header.from=cornelisnetworks.com; dkim=pass header.d=cornelisnetworks.com;
- arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cornelisnetworks.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=v/McWCkIj2q23R1TEabqo+jJ4neecfJxIYkwE0wlj6s=;
- b=Sb+CZJW6LaIpobeZyY3P+NlxCD6RW1UlRkk7AmvBdhIYpFn6DSVYEkjmSRqBcJy/ztZTMkK95BTfAPb6FmwkY5qNk/gREKiuLD2FOfyCTmYQrEXGzRt359o7kGEMqHbhZMttSltywmXlfOYUT4Ab+EvRzSPdX1s9fmQ5F+SDXKHeJxGB3raY1xqzSaZFw6b8dJNiGIka/zitSYrD1FRLWUqsLLtsQT1jSoucjDifCARGt5FLwz+jRbmZ3teEBwocQiCX0hhrN4Ct7/AAXNdf1GS8Fkl6ibDMZbxhETX9mKZx2h2xVwUWsfvZts8N7HBxl2JJxAwxJrVTFLD7zcXZZg==
-Received: from SJ0PR01MB6158.prod.exchangelabs.com (2603:10b6:a03:2a0::15) by
- PH0PR01MB6603.prod.exchangelabs.com (2603:10b6:510:75::9) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.7409.46; Wed, 3 Apr 2024 15:55:01 +0000
-Received: from SJ0PR01MB6158.prod.exchangelabs.com
- ([fe80::82ae:ed8b:de46:cff2]) by SJ0PR01MB6158.prod.exchangelabs.com
- ([fe80::82ae:ed8b:de46:cff2%4]) with mapi id 15.20.7409.042; Wed, 3 Apr 2024
- 15:55:00 +0000
-Message-ID: <0214214a-73c4-46b4-a099-189036954aa1@cornelisnetworks.com>
-Date: Wed, 3 Apr 2024 11:54:52 -0400
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v0 01/14] IB/hfi1, IB/qib: Make I2C terminology more
- inclusive
-To: Leon Romanovsky <leon@kernel.org>,
- Easwar Hariharan <eahariha@linux.microsoft.com>
-Cc: Jason Gunthorpe <jgg@ziepe.ca>,
- "open list:HFI1 DRIVER" <linux-rdma@vger.kernel.org>,
- open list <linux-kernel@vger.kernel.org>,
- Wolfram Sang <wsa+renesas@sang-engineering.com>,
- "open list:RADEON and AMDGPU DRM DRIVERS" <amd-gfx@lists.freedesktop.org>,
- "open list:DRM DRIVERS" <dri-devel@lists.freedesktop.org>,
- "open list:INTEL DRM DISPLAY FOR XE AND I915 DRIVERS"
- <intel-gfx@lists.freedesktop.org>,
- "open list:INTEL DRM DISPLAY FOR XE AND I915 DRIVERS"
- <intel-xe@lists.freedesktop.org>,
- "open list:DRM DRIVER FOR NVIDIA GEFORCE/QUADRO GPUS"
- <nouveau@lists.freedesktop.org>,
- "open list:I2C SUBSYSTEM HOST DRIVERS" <linux-i2c@vger.kernel.org>,
- "open list:BTTV VIDEO4LINUX DRIVER" <linux-media@vger.kernel.org>,
- "open list:FRAMEBUFFER LAYER" <linux-fbdev@vger.kernel.org>
-References: <20240329170038.3863998-1-eahariha@linux.microsoft.com>
- <20240329170038.3863998-2-eahariha@linux.microsoft.com>
- <20240403083025.GT11187@unreal>
-Content-Language: en-US
-From: Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>
-In-Reply-To: <20240403083025.GT11187@unreal>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: BL1P223CA0025.NAMP223.PROD.OUTLOOK.COM
- (2603:10b6:208:2c4::30) To SJ0PR01MB6158.prod.exchangelabs.com
- (2603:10b6:a03:2a0::15)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 923CB1B7F4;
+	Wed,  3 Apr 2024 16:44:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.173
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1712162654; cv=none; b=CDHlBXcmPRoxxJMZbyn5VkACDhQ9TUWXXR1fqJmAvuYqfAOrxh+6nWk9q0LkSvUDORa7/ntY57CeNM79DLrbFQTcOHCTE2ELiaQeWLf8yxujw+Gv4zKEcD503q8LZPHmFh9acDj/+Wtn9gPYKd8w9hVBMvubd0dUYwNAfYW6GzE=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1712162654; c=relaxed/simple;
+	bh=M1neYOlhzngATdBbVyJaKe7fkRAK//9DrStR8GOcQu4=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=HZT2XFqARwF4Z+85DrgQGT9BNu/Qrhxwgl8kP7Kvm8wgPlOlU/6YaxP4O4hledGA1mkNbcaArPbCmwBNh874p01oMZ7M+zmfhwIFzX9WxPwNE6IJi2Zzcv3q9EeX9nmUg35ytnMDbJMJvOYA0YtYAitbeCsfo+gmgvjcjnhaH6g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=i0GskreP; arc=none smtp.client-ip=209.85.221.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-vk1-f173.google.com with SMTP id 71dfb90a1353d-4da6995e58bso3887e0c.1;
+        Wed, 03 Apr 2024 09:44:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1712162651; x=1712767451; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=Aej6QFoETxeFvbQm8/sOYYAdEcWAnghw/7Ynm8n0ucQ=;
+        b=i0GskreP3bhVFE7L+jTrP55NTeLGEOiadN1sTEIYfQZF05ZqD7aFwgcHEWZzggB27p
+         Iu9pSvcSJvv9ctMRtptjRYbadJq2t5PSTI2cbljCYV4c1eP3C39UqNHbXsHjXVWPgRF4
+         cUNtQf66y29Ij0Ux473Ma14olhaOmCPIXPj2UkCmSyIiiLfd/Et1NmcTyn3tZ2/5CroR
+         JGJgD9ELhuJW4HPsYoaybFcG5Or8NO7kPPs+wVFcewF/98zylX3MkbB9YRRmtZLed4a1
+         /rF+ytNHfDippVqXcj/p/3MB6p+36Kb2Su2g3ayZiSDGs4JicOJMXB6apxu1GA4my1On
+         wA5g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712162651; x=1712767451;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=Aej6QFoETxeFvbQm8/sOYYAdEcWAnghw/7Ynm8n0ucQ=;
+        b=e8yBpGhE0mKo3L6OmYGnR55qeIfLG1anmLG/C9J7ZN+3APLmsWh6CvVnaVCYsjCiAq
+         hrNtZxk5KKZnV09ovVAOzQxwB01QW0NNKc7ScDXWNxQ0zT+i61WPf/HwALGzRKQ/BiSX
+         2r2pgmwbGI+J8jma1PQLhQpFVG8uK0yJELN2QNQ/ZEPXA5GxeVSzqk/IdcBm3yahGwRn
+         oed2hqf8dr7V23Fc6MYt4JHlKRTXO29I5BVGoVp8dN9jWEDGfcCwZ82JN9BHBfYpLw+e
+         /dx+zr5qFizvfFylmLkqTFSlx5t4y2pg5rZFtWvn0zdGhdzMxA2/t5cd0Hlv5PzNvCJT
+         s8PQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVpasyVqxm4S9hgcbs8dUy8q6r+F+STTWmT6MCdat3oYYGFf+6rfr/8BT6yKy29uM1AbAIolt6SJh3lZYGu+DdYx9rzuUZiacHksRrNK21d6PVKAmcA2bpy1ts6Yz9bGXjhHCps2uWJIbPr/dVtNNfyydVyE+K1ucGwYnGAjdY8ancrFK+L0hNax/c1XJjskEYv0wHpLr3QYcYae0jP0AbcIV7ty92/ff7x1UVKg/DHrQ4m6vd6MPfODU9MtPOA44TG4uH72P9SYMTl8iJ2Ymh/B+II5LqiE8dVCoxE0cInMo7xr933GhgCTU9KJIPBF0gQ+pJTOetPWCfC4PSf48Ob4/F3T0jmLDQrzHEiBXzlQ9uOWnlsVOsi4UII2DcFQsmqCVxhtgxyxlHQxh8eD2L7lMlo4zNFCgiUX02hHGzwheLA4FNBh6P5J9lVZbQvfyrD8swvpZGH79BZRxgEksXawYvBHZWkIm5bDVqAJDXTaUbQfuH7mx3HADTE5vaD85KO48aJ4TNlbvfSjEfa2sFySReyB4JFNhSFbk7HS6ecFe8=
+X-Gm-Message-State: AOJu0YwxuG7mpFcprqH+unaPXUWhDi4M8kWHnrmwwEENz8OeMEG3DaYw
+	/CXUPwT+I6xRjhFEM44yzLJqF6NH9qPNdRXdt6gxeHK+bYkky7/7uoKKDbs7asmf72EjxBTb0AM
+	t1tSGUHKch652xWodKB7wWjUMX4s=
+X-Google-Smtp-Source: AGHT+IFEFFEcpcdQfCxRWJYlDuuUETZ0sWBciDlGUMCvLnJmEBIY1oP87nAaJSL5QQDatxb4oTnFcly4MrzzQ8OrF5o=
+X-Received: by 2002:a05:6122:499a:b0:4d3:b326:5ae8 with SMTP id
+ ex26-20020a056122499a00b004d3b3265ae8mr10815788vkb.14.1712162651582; Wed, 03
+ Apr 2024 09:44:11 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: SJ0PR01MB6158:EE_|PH0PR01MB6603:EE_
-X-MS-Exchange-AtpMessageProperties: SA
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	nrIf/wbLLYHLjaANcEhOVs3emIi2sLx6VK4s8K1UUgBzWAbBwenMECQ7FqLUR4c7H4f9D8NibV4wk87xtMwBAnZkkcBKX5xlUjal4inBVRnKmgsmtaVn1RzuDDUs5QNKtfUDQK5TwCicmyJvnGnHfFT2c8dv9rdmdh9saVvZ6zbqd2dvONg5MNzlSerEzDREDfMI0kq7nCqQpihF6yownjXF5paaDizASDunA+UmF5enmxQ3ckiQsvyTLpXQ/ufEGZyIXYv6Sr/HSw/EIKUeVcoao8CV8dv1ft1vhP8SZu3I7Qc0G/+KfYXSXPlnvSpm4cz+cie93dMNZktDlD125WSxxZATDbX5YfpDu/FOKNhGPn7bRMOPxf7XTUUumch8L8yWbKpRQuVKevc6T2qRS+sMfuYkjRqIBfV+XkMkaEObgkn1yKhuqZQcJ9cQAwJc67r2TrGG42CXl2V4RImktqYqEjs2uaD4JLgPKcGzePGnQEY6rZYEnMjuNzmA6wuFSQldFTwtjWBKwSX6dRA7EMEvHrIMyW3wlNq/c/ZIPVuCCOLt4XfWuFFnL/KbhO3QT4vkeONaNIUCXldv1zPBAeYnmw9yVx1vG3tZ1QCTo2BR00qRGSzrT7Yf/FbtpiwMj8olBaVtJbx7TLeqkzjozeTSyxoCCx/YNV8YhJ7BFSk=
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SJ0PR01MB6158.prod.exchangelabs.com;PTR:;CAT:NONE;SFS:(13230031)(366007)(376005)(7416005)(52116005)(1800799015)(38350700005);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?utf-8?B?Q1ZxcVpScWJjb2RsY3lNeEszSU9lbyt5UWh6VXpjeTdURzhxOEhvQUwyUXQ2?=
- =?utf-8?B?eWJ0OUtaUHJjYkVtYzBpVjg5dFpUNUhsa2FEUDViTEVVS2NFcHZ0eWxtdjNH?=
- =?utf-8?B?bzI5a2psb0YwcWFxVWwvTmdQUDFhVFFQWFM3TGtGNkVhZG1kOFNTMEhJMEw1?=
- =?utf-8?B?OXNYb0Y1SUlnbDhJVGFIWGVkdXZYZFUwWUxtN0YzOGMzc0JSK0Iwb1RTWEl6?=
- =?utf-8?B?RE12NjlTdEFybjNuOFNaTldSSzYrTSswaUNBcU9adXdlbnp5NW10TE1sb2gw?=
- =?utf-8?B?bEJmNFRwekhWM1RXZU1OWHQxWEhMc1h6NHhtZEZJcTExa0prNlVCT2VobEd4?=
- =?utf-8?B?ZGlQUnZnVWw4RUk4MDNlVmVyMC9WRFZHZ1pkN1o5ME9qZXZRVzlHZzhKSkpP?=
- =?utf-8?B?aklESmljei9JYzFjSGExL1laZUZjME5YeVBhcDhQbFJPOFFydnh4bmxOcUkz?=
- =?utf-8?B?NzhBVnhoTzZiRE93Yk5YbVFtbmdhMXk0bFJRdmJVT0RwTkRMMUtnQW5UWGQ2?=
- =?utf-8?B?ZGx4SE9QSEozWnhhOXM4MW51ZEZwRG5ONHhPZDB4TWVPM2xCekRDRVJGK3R0?=
- =?utf-8?B?b2lVajdXZ0MzRGxaWS8xVFR6L0lPYkhMVjJya0hubEp2VFlVMmRtS0t0U0Z5?=
- =?utf-8?B?VWtnS1Z0SmphYWtlNi9abjEyLzZ2ZWVKL0d1ZU1kNWt6NHRkbmZYcy9uREhW?=
- =?utf-8?B?a0xreGxoMXJoV1RPUWJva3NaSG9QWlVMRHBXbEJsM0lzZ2pwRlRuc3BxWCtu?=
- =?utf-8?B?VjVKN05ONnNhanFnbzA2MVEwZU9PVjByMlM1RFNYNm5QbVNGS29oKzhJNWh3?=
- =?utf-8?B?TnVTN0FYNERqMzZLMVBVaHVJWFRqamVYdlN0bzdmVWt2d0VFd3Q5ZitLM2ZV?=
- =?utf-8?B?NnkwR1ZPNUFWdEdXYzZqUWVabWc3TmVBOXZ3RjJZeUNtOWh2YmxUOWM0ZFYv?=
- =?utf-8?B?TEpJbWNSMFNaeWZudVpUWElIQngwempTVnQzbFRScjlTQkF4SWt5OFZkNytS?=
- =?utf-8?B?K2w2Vy9xak13WUxKR2ZiVTYrVG9yWlM5dThpVzdVWXNIOHN3VHl2cjZhRCtp?=
- =?utf-8?B?TUxnVDJiQjNhMGpqRmRobGlmMExISml0blMwQXlXWnYydGM0V1VuSFRrbjV5?=
- =?utf-8?B?N21paW95WmRLdFYyTk5YNDlTaUlSUWg1bS9qblVpbjdYcms0eW1SN3dhcllM?=
- =?utf-8?B?cnpXQk0wLzVzWFJqNTdWVnF1SEVLMklIYmw4dnAvaVU2S3I2QlVXcWUwWFZD?=
- =?utf-8?B?N21tVytYZDgrbUI1SXpQbVNvQnpRU09GemtKR24vMEZqNjJXVUJIQ3p3S3ZN?=
- =?utf-8?B?YjdveVJrRFRzbm5LQ3BiZkErTkl0MXdNd29xMVkzdkpxbktvNmlqbDlFbEhC?=
- =?utf-8?B?V3Urc3JuR1BuQXlvd0UwMzlqSk40NjF2ZWlEVHhSRE9aUk80ZW5UUjhJbkhW?=
- =?utf-8?B?NGhQMHppZm9uTDEzc0FCQ0dFVFUzWGRrNXBMdGhNUHlEU21YQm8xQXpURlJN?=
- =?utf-8?B?ZHN3UVBjeVJPWElkaDBRLzdPUDRzYVk2ZmVncVE1TTlUMTB3d2UyZHlXRHZk?=
- =?utf-8?B?S3ZJOVZ5RXhjYkgwYTRuVzNFcm91dmtxZjZyWVF6OHNCQ0tqVVBHaHhuTnJa?=
- =?utf-8?B?REIrKzFvdE1mc3UyRHhsZFpacmxwYjNvNlpCc3RKZTVIVkQxY3FEekYxK3ZQ?=
- =?utf-8?B?amRuTy9OMXU2L2VQS25KRDEvdHg0bS94ajB2SDdOUWQ3TjZqaFZTQndxdzdB?=
- =?utf-8?B?QytMbUVIK1dzT2xJRTA5UENZYnRnRzdvWEFTQlREUmtMM0lpcnpOTEJxbkky?=
- =?utf-8?B?V0NvVlpveWtRWUJvc2hsZDN3QUZneEE1MUJkaWEvcndMMkdSUEh6NWU5dTEx?=
- =?utf-8?B?a2M5V3RrMmpjS0g0WkFzd1Q1N0oxcUM3azFjYUJCajZsN1M4cllnQ0wwK1dL?=
- =?utf-8?B?Uk1TWlRUSWl3TDFNdFAwNlVnZE00REhVSVB1UlR1SHBDQU1GQ2laU0l0aTN4?=
- =?utf-8?B?TFJ0eDhwMWZSYzVpU01ScVovVE1DQ3Z3ZmZiTjgva0tWa29jU1puNzBEQ1ls?=
- =?utf-8?B?N1lsTVlOTnZYYWJXUU02K1pDcXh3RFFQSDdTMExTMkRaNFdXRmVCWmY2UzN1?=
- =?utf-8?B?cWVUdjJLeWFWZGtwenFzNmp6eFpXamg0WXFnYWFXUHVKUzNLUU56WXdGckpQ?=
- =?utf-8?Q?HBnu6TdOM8KTUzV2ADxO0sc=3D?=
-X-OriginatorOrg: cornelisnetworks.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 52238616-eb3f-4744-034c-08dc53f66b1a
-X-MS-Exchange-CrossTenant-AuthSource: SJ0PR01MB6158.prod.exchangelabs.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 03 Apr 2024 15:55:00.6323
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4dbdb7da-74ee-4b45-8747-ef5ce5ebe68a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: /8lVdPrIYGpjpJ7zVHlhIgtO5fHdjrEYdcgLp3d/P/2yZRzBetv72+urNfNc7PJ+Nsq6FicmOPTKil+GN8mKQjY1wmStmxxhDq6SyEB2eyOYWaVm8WopdgjdtSgfjZEV
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR01MB6603
+References: <20240327160314.9982-1-apais@linux.microsoft.com> <20240327160314.9982-2-apais@linux.microsoft.com>
+In-Reply-To: <20240327160314.9982-2-apais@linux.microsoft.com>
+From: Allen <allen.lkml@gmail.com>
+Date: Wed, 3 Apr 2024 09:43:57 -0700
+Message-ID: <CAOMdWSLavg27YZgnfE2QHjO=4RNmFx_7veAURaPG_=qWX=KMVA@mail.gmail.com>
+Subject: Re: [PATCH 1/9] hyperv: Convert from tasklet to BH workqueue
+To: Allen Pais <apais@linux.microsoft.com>
+Cc: linux-kernel@vger.kernel.org, tj@kernel.org, keescook@chromium.org, 
+	vkoul@kernel.org, marcan@marcan.st, sven@svenpeter.dev, 
+	florian.fainelli@broadcom.com, rjui@broadcom.com, sbranden@broadcom.com, 
+	paul@crapouillou.net, Eugeniy.Paltsev@synopsys.com, 
+	manivannan.sadhasivam@linaro.org, vireshk@kernel.org, Frank.Li@nxp.com, 
+	leoyang.li@nxp.com, zw@zh-kernel.org, wangzhou1@hisilicon.com, 
+	haijie1@huawei.com, shawnguo@kernel.org, s.hauer@pengutronix.de, 
+	sean.wang@mediatek.com, matthias.bgg@gmail.com, 
+	angelogioacchino.delregno@collabora.com, afaerber@suse.de, 
+	logang@deltatee.com, daniel@zonque.org, haojian.zhuang@gmail.com, 
+	robert.jarzmik@free.fr, andersson@kernel.org, konrad.dybcio@linaro.org, 
+	orsonzhai@gmail.com, baolin.wang@linux.alibaba.com, zhang.lyra@gmail.com, 
+	patrice.chotard@foss.st.com, linus.walleij@linaro.org, wens@csie.org, 
+	jernej.skrabec@gmail.com, peter.ujfalusi@gmail.com, kys@microsoft.com, 
+	haiyangz@microsoft.com, wei.liu@kernel.org, decui@microsoft.com, 
+	jassisinghbrar@gmail.com, mchehab@kernel.org, maintainers@bluecherrydvr.com, 
+	aubin.constans@microchip.com, ulf.hansson@linaro.org, manuel.lauss@gmail.com, 
+	mirq-linux@rere.qmqm.pl, jh80.chung@samsung.com, oakad@yahoo.com, 
+	hayashi.kunihiko@socionext.com, mhiramat@kernel.org, brucechang@via.com.tw, 
+	HaraldWelte@viatech.com, pierre@ossman.eu, duncan.sands@free.fr, 
+	stern@rowland.harvard.edu, oneukum@suse.com, 
+	openipmi-developer@lists.sourceforge.net, dmaengine@vger.kernel.org, 
+	asahi@lists.linux.dev, linux-arm-kernel@lists.infradead.org, 
+	linux-rpi-kernel@lists.infradead.org, linux-mips@vger.kernel.org, 
+	imx@lists.linux.dev, linuxppc-dev@lists.ozlabs.org, 
+	linux-mediatek@lists.infradead.org, linux-actions@lists.infradead.org, 
+	linux-arm-msm@vger.kernel.org, linux-riscv@lists.infradead.org, 
+	linux-sunxi@lists.linux.dev, linux-tegra@vger.kernel.org, 
+	linux-hyperv@vger.kernel.org, linux-rdma@vger.kernel.org, 
+	linux-media@vger.kernel.org, linux-mmc@vger.kernel.org, 
+	linux-omap@vger.kernel.org, linux-renesas-soc@vger.kernel.org, 
+	linux-s390@vger.kernel.org, netdev@vger.kernel.org, linux-usb@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 
+> The only generic interface to execute asynchronously in the BH context is
+> tasklet; however, it's marked deprecated and has some design flaws. To
+> replace tasklets, BH workqueue support was recently added. A BH workqueue
+> behaves similarly to regular workqueues except that the queued work items
+> are executed in the BH context.
+>
+> This patch converts drivers/hv/* from tasklet to BH workqueue.
+>
+> Based on the work done by Tejun Heo <tj@kernel.org>
+> Branch: https://git.kernel.org/pub/scm/linux/kernel/git/tj/wq.git for-6.10
+>
+> Signed-off-by: Allen Pais <allen.lkml@gmail.com>
+> ---
+>  drivers/hv/channel.c      |  8 ++++----
+>  drivers/hv/channel_mgmt.c |  5 ++---
+>  drivers/hv/connection.c   |  9 +++++----
+>  drivers/hv/hv.c           |  3 +--
+>  drivers/hv/hv_balloon.c   |  4 ++--
+>  drivers/hv/hv_fcopy.c     |  8 ++++----
+>  drivers/hv/hv_kvp.c       |  8 ++++----
+>  drivers/hv/hv_snapshot.c  |  8 ++++----
+>  drivers/hv/hyperv_vmbus.h |  9 +++++----
+>  drivers/hv/vmbus_drv.c    | 19 ++++++++++---------
+>  include/linux/hyperv.h    |  2 +-
+>  11 files changed, 42 insertions(+), 41 deletions(-)
 
-On 4/3/24 4:30 AM, Leon Romanovsky wrote:
-> On Fri, Mar 29, 2024 at 05:00:25PM +0000, Easwar Hariharan wrote:
->> I2C v7, SMBus 3.2, and I3C specifications have replaced "master/slave"
->> with more appropriate terms. Inspired by and following on to Wolfram's series
->> to fix drivers/i2c[1], fix the terminology where I had a role to play, now that
->> the approved verbiage exists in the specification.
->>
->> Compile tested, no functionality changes intended
->>
->> [1]: https://lore.kernel.org/all/20240322132619.6389-1-wsa+renesas@sang-engineering.com/
->>
->> Signed-off-by: Easwar Hariharan <eahariha@linux.microsoft.com>
->> ---
->>  drivers/infiniband/hw/hfi1/chip.c           |  6 ++--
->>  drivers/infiniband/hw/hfi1/chip.h           |  2 +-
->>  drivers/infiniband/hw/hfi1/chip_registers.h |  2 +-
->>  drivers/infiniband/hw/hfi1/file_ops.c       |  2 +-
->>  drivers/infiniband/hw/hfi1/firmware.c       | 22 ++++++-------
->>  drivers/infiniband/hw/hfi1/pcie.c           |  2 +-
->>  drivers/infiniband/hw/hfi1/qsfp.c           | 36 ++++++++++-----------
->>  drivers/infiniband/hw/hfi1/user_exp_rcv.c   |  2 +-
->>  drivers/infiniband/hw/qib/qib_twsi.c        |  6 ++--
->>  9 files changed, 40 insertions(+), 40 deletions(-)
-> 
-> hfi1 and qib work perfectly fine with the current terminology. There is
-> no need to change old code just for the sake of change.
-> 
-> Let's drop this patch.
+Wei,
 
-Agreed.
+ I need to send out a v2 as I did not include the second patch that
+updates drivers/pci/controller/pci-hyperv.c
+
+Thanks.
 
