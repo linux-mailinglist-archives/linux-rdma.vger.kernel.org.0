@@ -1,189 +1,264 @@
-Return-Path: <linux-rdma+bounces-1796-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-1797-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id C049B8993AC
-	for <lists+linux-rdma@lfdr.de>; Fri,  5 Apr 2024 05:13:50 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id EC97A899580
+	for <lists+linux-rdma@lfdr.de>; Fri,  5 Apr 2024 08:36:12 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 010331C224B6
-	for <lists+linux-rdma@lfdr.de>; Fri,  5 Apr 2024 03:13:50 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 46E45B2240D
+	for <lists+linux-rdma@lfdr.de>; Fri,  5 Apr 2024 06:36:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8E8D11862C;
-	Fri,  5 Apr 2024 03:13:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5362E2836D;
+	Fri,  5 Apr 2024 06:35:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="JcnWs9WK"
+	dkim=pass (1024-bit key) header.d=samsung.com header.i=@samsung.com header.b="itp/SGTi"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from NAM11-DM6-obe.outbound.protection.outlook.com (mail-dm6nam11on2121.outbound.protection.outlook.com [40.107.223.121])
+Received: from mailout1.w1.samsung.com (mailout1.w1.samsung.com [210.118.77.11])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 98B0118E01;
-	Fri,  5 Apr 2024 03:13:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.223.121
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712286825; cv=fail; b=Vh4HZrWIeCWNmjUxp++emcJKcPbr1oBgrTtSbE05nOedcMxNh2VVSFIOTdAUm01lZ1Wyo73zhWXtUfxq1rwQR01EPaPnZkptkPj73RmfNgTAoeiBUMch+I5nPZ0ALJ/QiG/fbndcdTdL3KXK4IndBjIuu45o+BK1LvkqOCBbfrE=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712286825; c=relaxed/simple;
-	bh=3X+g4hTWV34v19rOqQtP7wmTW4lcSqgUtfGOf4iTXho=;
-	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
-	 Content-Type:MIME-Version; b=okk9JQ8xigopAibHnNjgq0n1B4Kupp2H3DRY3YyOlyghb6EAqGJgDrXYIU1hzT09gkdAGG7rOZchYhtgwZBbqqcqyQy5iKtBw1hCoeDvau7sPeEeRvHCFzDmm/uvWzHMm+ox/SrRQdATcD85fONrm1d7Wbx0qvris+l/vwcMwvU=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=JcnWs9WK; arc=fail smtp.client-ip=40.107.223.121
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Py92vQ9vJWSXapDP89AexCPLUFjPwWJkWF1dUdCLn5dEPPOQjQetGNfJtBPwFBpx3lZQkSD8B3JHsF+lZQhO7PAXmqUWRA0XBTaFmpXrogunm1yRcFyWYlUPhee9ZGt8DunLVCweHSHTH7PAFKbCkGsUJenrwr1Ij7tLlWrPjpX+5u2xnZcSCyZJdJCP2eaN3xgwzF9usu72lE3eFdJFGifHEOlTkIjaM8WnLCTqGIuTI0+WpXLTazUt0NZL+wgxFPUbgXQtnjOKcGwLeekfftgrnQTZlHZz6xJvKx///zkUMg8fYACYTlKGOMs73W3fWuyYv1qO4YrbgLQ7DPhEHg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=3X+g4hTWV34v19rOqQtP7wmTW4lcSqgUtfGOf4iTXho=;
- b=C3etcj7PYMj0WUPyWq75juZInkUG2/AvHB9zetbw8b2SZAQBMRLDxqie9C8l4+0aTKvZNLEZoYjUlXf6D10wb/QZ2v/XCYAXLyhh7+OKwl6CnYaCa9qdQdyLCVC7W11QKlzFyvxTtElXjnNEm2cbvQ5Fl1rYk4Bmzr51tFBfZTBJyGYvHNOwO0mHiPeu7JT4X6qkt2LZ9a+hp9TI8MyFTrojxTJv26KVXisxBJVHq5fN+y6fyFwv/lnRKrzB/dcSmCvnntR7H5BzFYYoUjn6V6pH9zHhGzL4VVGSCOBe1fKYkUYeAKI1HwVMGXGFDbXGgSq1Bp6PIryBUOQAzDddGQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=3X+g4hTWV34v19rOqQtP7wmTW4lcSqgUtfGOf4iTXho=;
- b=JcnWs9WK0bCMsELnG1X+YaXXSg0HvzHCUUEJDx1Y8ac2TQ7lwO2E0aEQ0fj7iTUxc5JV+NmjuNX7D9Ie7MTXVcPyYjFC6B6spmoFIJwNe5YpZ1M0T53nvRThP+97CSHa2yWbpPsErLq9CaslbRYX11ZnjLUlNztzXvGV3ANgED7uAA6mKrw8XMv+i8uv7K1eoQkpwM65WdKbeFTNRHl4XkuDDA7kqMjdvzBdXs9WgcjR9hkww3lytLtZ7GEabyk907gtsY9s9+QERBrv6Fb0o1umfrrZm66urC/2EXoosn/AVjA5gok1qJDLQSSHntYwosnWxUfffp7zWbeHEChjEA==
-Received: from PH0PR12MB5481.namprd12.prod.outlook.com (2603:10b6:510:d4::15)
- by MN2PR12MB4239.namprd12.prod.outlook.com (2603:10b6:208:1d2::11) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7409.46; Fri, 5 Apr
- 2024 03:13:40 +0000
-Received: from PH0PR12MB5481.namprd12.prod.outlook.com
- ([fe80::65d2:19a0:95b8:9490]) by PH0PR12MB5481.namprd12.prod.outlook.com
- ([fe80::65d2:19a0:95b8:9490%5]) with mapi id 15.20.7409.046; Fri, 5 Apr 2024
- 03:13:36 +0000
-From: Parav Pandit <parav@nvidia.com>
-To: Jakub Kicinski <kuba@kernel.org>
-CC: "netdev@vger.kernel.org" <netdev@vger.kernel.org>, "davem@davemloft.net"
-	<davem@davemloft.net>, "edumazet@google.com" <edumazet@google.com>,
-	"pabeni@redhat.com" <pabeni@redhat.com>, "corbet@lwn.net" <corbet@lwn.net>,
-	"kalesh-anakkur.purayil@broadcom.com" <kalesh-anakkur.purayil@broadcom.com>,
-	Saeed Mahameed <saeedm@nvidia.com>, "leon@kernel.org" <leon@kernel.org>,
-	"jiri@resnulli.us" <jiri@resnulli.us>, Shay Drori <shayd@nvidia.com>, Dan
- Jurgens <danielj@nvidia.com>, Dima Chumak <dchumak@nvidia.com>,
-	"linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
-	"linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>, Jiri Pirko
-	<jiri@nvidia.com>
-Subject: RE: [net-next v3 1/2] devlink: Support setting max_io_eqs
-Thread-Topic: [net-next v3 1/2] devlink: Support setting max_io_eqs
-Thread-Index: AQHahe5FgfZ7dsjCtEiNfhPRFPDDgLFY8/iAgAAIH+A=
-Date: Fri, 5 Apr 2024 03:13:36 +0000
-Message-ID:
- <PH0PR12MB5481D604B1BFE72B76D62D37DC032@PH0PR12MB5481.namprd12.prod.outlook.com>
-References: <20240403174133.37587-1-parav@nvidia.com>
-	<20240403174133.37587-2-parav@nvidia.com>
- <20240404192107.667d0f8e@kernel.org>
-In-Reply-To: <20240404192107.667d0f8e@kernel.org>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach:
-X-MS-TNEF-Correlator:
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: PH0PR12MB5481:EE_|MN2PR12MB4239:EE_
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info:
- 5tcX7W4IWDj6N7CLMJbAxaej7zbHPDIA848eM+rvMWchrUeTKv8W6ek3qqtxxdKZnAl0ZlhBL/oa0HvlpjSrOl7ynZtKGSFQYTNbpo+PliqPM/G9QS1itgXkP6cQy4EmZJ8nWa56dVbnAsWopeUL3geE3nwYBDf/xsZbUCVQqgHmGwhux1V3YiOZBd6lGR/dyCRf1ZddVUZHKbjfduV7ouyoOqXILarSGGATrWjzOGy7Ik1aJLFi+Boq8FIoO7T2YqhMG+cNnUbPec6DbnkK/b60uAVIzxKQUnghOyEKr6Zf7Ce1AsBXz+3Ed+K/nr6etCT+HZ0j3hLz6Zm7lPf1zGAyld+EHElZXjJdMyCy/7eK0y9bcITTKEUCkY01D7RrUXcnS+tR6OEhdGj0MnUW4XKIDWMoQPCkS1tLGwt/GAMfBQHEEC8zAzx+hc89cWCVnW0JqqNAd7bHT8+bW2G87MofXePFETO82tvWataHsiTgp8A6nJ2miTTTCcRxK/k+TDi4p+ZDvInHShqXF4aoWreCro7elONU8+IFt1lZOx9O03CFy3szyBgLGVjCFq+0pbRb6tQaLrZ4PRhibns92nE1JmXIy5N/Jg4NJ9LaX01+LPgzB3/2m/kJ0UNqbvMvwzhG+8QHB44Bw8QysVZ4KV/nZWtLxrZmxSWh0+3u+EQ=
-x-forefront-antispam-report:
- CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR12MB5481.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(1800799015)(7416005)(366007)(376005);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0:
- =?us-ascii?Q?lW5hPci9HWW7EDLoI/oX0sGzyaRH0X/d9RjZZetlDbD6bKWzyiUMVJ6XpdYn?=
- =?us-ascii?Q?/ad5xyl9skvBfNsnJLvhqEWgXYeHJ7jeiLRI+mcDBNLYkZYRYIpJSqqIMD6c?=
- =?us-ascii?Q?oifUl5yJFPj/872bGqLh8D0ekM/y35TDizkkPZyx0I6TJ8ZWhq2esBFCXj/U?=
- =?us-ascii?Q?8rQGvRXkMUUwaXfWJLQCmJ5Uza7jKMy+QgsnAnarY8slfvkvanTzAaV6RUre?=
- =?us-ascii?Q?V3vUe6MgV703RC1feq1UULNaf1z8aF11o5S7nzIt5GRnREGIzOIjwHdIfk5M?=
- =?us-ascii?Q?cOciOM0QSn9qoLVzcGoEDFzwbxyfvB+CnzafZV6PvOun6P9B53niPF585ve3?=
- =?us-ascii?Q?d3M/Bh+FpfQJs4Fw+bPMYK8Q+KGNsLeUO1AOng1SaSn4KFO8KF4hPoxk086O?=
- =?us-ascii?Q?9Ji+51SrcwzD7r7j3yuaRAw/2VenQ320w/hqxLjBbhvstkTGR2icHqF0hETv?=
- =?us-ascii?Q?szX/MoyII69Z859E2gZBmHfA+6wjVCJA7+8XAd4TukwjEY/GGLYvz8ZU8Fmb?=
- =?us-ascii?Q?1Lc20mBESE9XPrYRgWrao4D1nDBRcM5Qiz88V7a6OEv8iA8xPMrWA7ubAarK?=
- =?us-ascii?Q?SwJ335cCYrFGpQNDGxjIu996k6fWQEhnbnf5gii6uhYeZdH90cwNj89Y/tHQ?=
- =?us-ascii?Q?pXl2sz1sqwuwqssTm8gVWDdum6SqzXBhtGDth2F5xVJcvdrZiSftlutJN1lc?=
- =?us-ascii?Q?iRGVXyLb3YeFPinjGeb29Xs/mVwQFKxJjqGGlwkm6PYsHbkMQX7gYzaBWAYe?=
- =?us-ascii?Q?XmWTOScOAZn6EEIlqxkGol5X554bg5cXJW+Xh7AhS/VMNxtJAuC+ekaWy+2f?=
- =?us-ascii?Q?EW5s4PrxEWZtE/wTXCi3vyI6SqBYopA7jokQo3cwIZJAFt5EE18wXVO9f5UL?=
- =?us-ascii?Q?jbPCO2kBj7Plji4iARTc2lTtkJJKzTrUB2Y+3sMd74zYkJ1CeLipBENbZ1SJ?=
- =?us-ascii?Q?zXBHSaeJxLUxuBPiyrE5zJrzGyItyVTJi1pCKXjHhekMRxpw3YXOWX6+tfjE?=
- =?us-ascii?Q?pZkZqsZTHM3uTFQ/bMidhnel/0lLElHAkVDk6wsIVpGpQzyjg9jYNuwMvDVO?=
- =?us-ascii?Q?/uJrMvgEUk5/Fw+5W8REypPtHT4cW0vsTX78EqkWqYQu9fbapI0LzYRQyVkD?=
- =?us-ascii?Q?saBKSnjrRIex9goTEEdpsRxZ9H0ixRkGggvVSsCKRtc1MzXUGNchT2prJLO8?=
- =?us-ascii?Q?2i+GjpKzs60ZbRjnixQ7tVdR6QYATFKGYFv4Mj3Wv9Dr7D+vG71bsjmjJ8E8?=
- =?us-ascii?Q?ensUfYM+8RIZ40/HsFrbt8gO3M3nINfppQXEQZZ5hYGGTegK4sVPSY4ZEEdC?=
- =?us-ascii?Q?EEq157kdVoH+Mcvbrg5BcVXDl5RIvvNTPY96e084hql+SOMq/RFKJpuqxQK+?=
- =?us-ascii?Q?8hL/kAa50DnPyDKr+kcp2y3Iy+yz4hqQaDzSIUpa44jrVjINTY5wXEL6V6K/?=
- =?us-ascii?Q?P/WSwieATM8Fe9Rm5Os/hWLr4s0FKDCY7oddfIN9PTU5hpV1aCHVe7EFJyiU?=
- =?us-ascii?Q?7+AQZiW1iuJGwnRSl9i3NE64GubeTQBinUbP/CFaNHbVS2bYQEIhXohR2rX3?=
- =?us-ascii?Q?KDUDYYaMteItNYnc5k4=3D?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 753451C290;
+	Fri,  5 Apr 2024 06:35:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=210.118.77.11
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1712298949; cv=none; b=mXZHUc4W+ZJzrnjBl+pDQFNcwUC4vvsZ85qNTuBcxtp2XY7F6Zq8gQUZJ0sWDh7bxIhJBt2dCSDsRIAqb93H7gAmvZkqKZhaohImdyRY3KNK1EfRW49YjcWH2kyGM0PoklEKImq8agycUGDk97kfdHW6ct5299Ape/Op0OOkLH0=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1712298949; c=relaxed/simple;
+	bh=ikYDLn4Ym4RSvRYw/MJO6iKHulOv0NjFGcOsdIQTkHk=;
+	h=Date:From:To:CC:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition:In-Reply-To:References; b=bAyeN+tyuKxnm8itVLwvFUvXyNxRNkHMViHQ3AJb9b6xuPwk8g5Rg6aImNm1Iaq+W5aSbo5JP9iXS5XtEpTyVDyfjQMm3rjH3KIOa5aiUBLoNVTnpAJPR5Gm+kyLIGA/PxYEyKn2vAD5eakn8J5zgildazYVGhoDpvVaHagdKnk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=samsung.com; spf=pass smtp.mailfrom=samsung.com; dkim=pass (1024-bit key) header.d=samsung.com header.i=@samsung.com header.b=itp/SGTi; arc=none smtp.client-ip=210.118.77.11
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=samsung.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=samsung.com
+Received: from eucas1p2.samsung.com (unknown [182.198.249.207])
+	by mailout1.w1.samsung.com (KnoxPortal) with ESMTP id 20240405063543euoutp017caa354157006bc1f61d80529ba50133~DTtEjAQed1754517545euoutp01J;
+	Fri,  5 Apr 2024 06:35:43 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.w1.samsung.com 20240405063543euoutp017caa354157006bc1f61d80529ba50133~DTtEjAQed1754517545euoutp01J
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+	s=mail20170921; t=1712298943;
+	bh=N7Xk/dqXP1U7JVC+aqhzvUwaPlnQWGEnhGrG4RTCnYM=;
+	h=Date:From:To:CC:Subject:In-Reply-To:References:From;
+	b=itp/SGTi2KY3001kxEzNTe4JO1ixuRif/PHcEZopCR/ThlW+PCAwOppVIUIVs0r5g
+	 ys+4wUrSRboZ6xjZit8bH2bHUTBfLp7CMo6eJx+GjsI4bw0ya31JItGz/bVMttt4ur
+	 qxZQNdpPRMKMZ5NN9VH5cUark/R3Z1nPY3fy2l5U=
+Received: from eusmges3new.samsung.com (unknown [203.254.199.245]) by
+	eucas1p2.samsung.com (KnoxPortal) with ESMTP id
+	20240405063543eucas1p250905f5211a05d8b253a15262f3744d4~DTtETUjcs1221112211eucas1p2k;
+	Fri,  5 Apr 2024 06:35:43 +0000 (GMT)
+Received: from eucas1p2.samsung.com ( [182.198.249.207]) by
+	eusmges3new.samsung.com (EUCPMTA) with SMTP id A2.85.09552.EBB9F066; Fri,  5
+	Apr 2024 07:35:43 +0100 (BST)
+Received: from eusmtrp1.samsung.com (unknown [182.198.249.138]) by
+	eucas1p1.samsung.com (KnoxPortal) with ESMTPA id
+	20240405063542eucas1p190ab901f5f6faa28cff00f183b9749bb~DTtDsmHF20623506235eucas1p14;
+	Fri,  5 Apr 2024 06:35:42 +0000 (GMT)
+Received: from eusmgms2.samsung.com (unknown [182.198.249.180]) by
+	eusmtrp1.samsung.com (KnoxPortal) with ESMTP id
+	20240405063542eusmtrp1b0b10e8e5ca74e71f569e868d048abf1~DTtDp-qN62498024980eusmtrp1z;
+	Fri,  5 Apr 2024 06:35:42 +0000 (GMT)
+X-AuditID: cbfec7f5-83dff70000002550-20-660f9bbe2cb8
+Received: from eusmtip1.samsung.com ( [203.254.199.221]) by
+	eusmgms2.samsung.com (EUCPMTA) with SMTP id 1C.B2.10702.EBB9F066; Fri,  5
+	Apr 2024 07:35:42 +0100 (BST)
+Received: from CAMSVWEXC02.scsc.local (unknown [106.1.227.72]) by
+	eusmtip1.samsung.com (KnoxPortal) with ESMTPA id
+	20240405063542eusmtip16105856c5e39365274c85e3ba56c334c~DTtDTjI3S0803908039eusmtip1Q;
+	Fri,  5 Apr 2024 06:35:42 +0000 (GMT)
+Received: from localhost (106.210.248.50) by CAMSVWEXC02.scsc.local
+	(2002:6a01:e348::6a01:e348) with Microsoft SMTP Server (TLS) id 15.0.1497.2;
+	Fri, 5 Apr 2024 07:35:39 +0100
+Date: Wed, 3 Apr 2024 11:16:25 +0200
+From: Joel Granados <j.granados@samsung.com>
+To: Kuniyuki Iwashima <kuniyu@amazon.com>
+CC: <devnull+j.granados.samsung.com@kernel.org>, <Dai.Ngo@oracle.com>,
+	<alex.aring@gmail.com>, <alibuda@linux.alibaba.com>,
+	<allison.henderson@oracle.com>, <anna@kernel.org>, <bridge@lists.linux.dev>,
+	<chuck.lever@oracle.com>, <coreteam@netfilter.org>, <courmisch@gmail.com>,
+	<davem@davemloft.net>, <dccp@vger.kernel.org>, <dhowells@redhat.com>,
+	<dsahern@kernel.org>, <edumazet@google.com>, <fw@strlen.de>,
+	<geliang@kernel.org>, <guwen@linux.alibaba.com>,
+	<herbert@gondor.apana.org.au>, <horms@verge.net.au>, <ja@ssi.bg>,
+	<jaka@linux.ibm.com>, <jlayton@kernel.org>, <jmaloy@redhat.com>,
+	<jreuter@yaina.de>, <kadlec@netfilter.org>, <keescook@chromium.org>,
+	<kolga@netapp.com>, <kuba@kernel.org>, <linux-afs@lists.infradead.org>,
+	<linux-hams@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+	<linux-nfs@vger.kernel.org>, <linux-rdma@vger.kernel.org>,
+	<linux-s390@vger.kernel.org>, <linux-sctp@vger.kernel.org>,
+	<linux-wpan@vger.kernel.org>, <linux-x25@vger.kernel.org>,
+	<lucien.xin@gmail.com>, <lvs-devel@vger.kernel.org>,
+	<marc.dionne@auristor.com>, <marcelo.leitner@gmail.com>,
+	<martineau@kernel.org>, <matttbe@kernel.org>, <mcgrof@kernel.org>,
+	<miquel.raynal@bootlin.com>, <mptcp@lists.linux.dev>, <ms@dev.tdt.de>,
+	<neilb@suse.de>, <netdev@vger.kernel.org>,
+	<netfilter-devel@vger.kernel.org>, <pabeni@redhat.com>,
+	<pablo@netfilter.org>, <ralf@linux-mips.org>, <razor@blackwall.org>,
+	<rds-devel@oss.oracle.com>, <roopa@nvidia.com>, <stefan@datenfreihafen.org>,
+	<steffen.klassert@secunet.com>, <tipc-discussion@lists.sourceforge.net>,
+	<tom@talpey.com>, <tonylu@linux.alibaba.com>,
+	<trond.myklebust@hammerspace.com>, <wenjia@linux.ibm.com>,
+	<ying.xue@windriver.com>
+Subject: Re: [PATCH v2 4/4] ax.25: Remove the now superfluous sentinel
+ elements from ctl_table array
+Message-ID: <20240403091625.lk35wt2iqkvabrmr@joelS2.panther.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: PH0PR12MB5481.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 380a694f-d294-4ae7-ebb7-08dc551e6218
-X-MS-Exchange-CrossTenant-originalarrivaltime: 05 Apr 2024 03:13:36.2458
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: 9UZmEeZQ6Ym2qMLGDFLsO+l+bqBLLdgzpyXCAkDijrMQtrOZ9fPaVbC+IbmflLHKLeelGCwgJDpX+kOef6c+vQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR12MB4239
+Content-Type: multipart/signed; micalg="pgp-sha512";
+	protocol="application/pgp-signature"; boundary="u37e6yueaf43q4xz"
+Content-Disposition: inline
+In-Reply-To: <20240328194934.42278-1-kuniyu@amazon.com>
+X-ClientProxiedBy: CAMSVWEXC01.scsc.local (2002:6a01:e347::6a01:e347) To
+	CAMSVWEXC02.scsc.local (2002:6a01:e348::6a01:e348)
+X-Brightmail-Tracker: H4sIAAAAAAAAA2WTaVBTZxSG/e6WKzRyjVQ+xY6dVJ1CrftytBWV4nhHO1PHP7WOU0r1orYQ
+	nESqtVtIAJHNjLjUgCaiYgDBliUIuCAqSFBABUQmKMTEjAiIRERQoMSrrTP995z3Pe/5zvnx
+	saRsPzuR3arYLigVIWFyxoMyV/TXfnox1St01slbBJSrF0LbuXga1NGxBMQUD1NgPp5AwHCL
+	k4DB4t0kuNqcNBjS8xlIq42mYPBOAgO3j9gJ6NK8pCC3JIYAR4VNAuakbATZGisFRc4+BhLa
+	J4G2sBeBfa+NhvqMbgb6M7IkcL/XRkF/siccjtcScD0hHM622CmoMyfTkJGYw4DOMhsai1oI
+	uF2SxkBdWTUND8uTKNAd05LgMD6mwZqSQUHZeQMC25knBGgNPSRoXQ9IGDBV0lCTNEyCPjeL
+	hCadA8Hl3RdouH5GI4HnR6+RcN6gpqDCOB50uRYKnld3IDjU0UDCrXNTwPJsmICafBcNrrSP
+	IcVUQEDpnhcSKKj9ASwDFgIe9DkZGG5auiyQN9XF03yzrZfku2qqEH/09C98qvomxQ/0+/MF
+	mXcJPuFKO8kX61skvLlsKm/Mi+Rflf8t4fOy9jD81cwcgi9uW8Tr0svQGvl6j883CWFbfxKU
+	MwO+89hiGpq/Teu7s8nsQGpUPz4ejWYxNw8fKb1BxSMPVsaZEO57cR+JxTOEUwsPvnFcCLf1
+	9ZBvIyfimmjROIWw+sBB4t8u6/FLpFjkI2zUdBHuCMVNwXE5DsbNDDcd13ZYX4/y5vxwXG7i
+	61Ekly/FVXvu0G5jHBeKX9xzIDdLuWW4u7CKEHksrjpsp9xMcjtxhT1zhNkR9sWnhli3PJpb
+	iC8NXKPdMubkuC97lbj1b9hS0Px6UczdfA8ftl5FohGEHzbkESKPw+2VBRKRJ+HqlERKDKQg
+	fHGoWyIW2QhnRPW+SXyGo+vtbxLLcacrihFfHoObOseKe47B+8yHSFGW4rhYmdg9DWff66B0
+	6CP9O5fp37lM/99lojwdG0t7mP/Jn+CMY49JkZfg3NwnlBFJspCPEKkK3yyo5iqEHTNUIeGq
+	SMXmGRsjwvPQyGetHqrsPYtM7U9nlCOCReVoykjY9ld2HZpIKSIUgtxbmrBMGiqTbgr5eZeg
+	jAhWRoYJqnLky1JyH+nUTZMFGbc5ZLvwoyBsE5RvXYIdPVFNRC3Y0P9KYdixZE1hXBCxfsO6
+	jd/f9Ww8HWj5lZo2O6D9+B1N1qhZw2mLdd2xG+XI2hqu7V/s50x66a1pHHsjtiE0jSJYZ+Xg
+	ypLUWc2++8ty1nxh7vTSxduT596uNpz+M912IzjG7DDs3vcoOfPR01ZXoGpO/eX0tppxXyXL
+	nIlFFas/xOscfeF/5Pub0+st3/iQZc+7e4i1yzuWXs6b11oXJHuYZYzxTg9YmRMZvHj1B8FR
+	a2ey79f4eDUPms/P36XQr2IvqCJP+H494YzfhVq/Rb3OUUWe/p0rgrp6lLz+kH4Fe7F08hKv
+	wme2A6ceTdA0R5cELFhwKTjg92+/nHNSNdd0RU6ptoTM9ieVqpB/APXZk9wnBQAA
+X-Brightmail-Tracker: H4sIAAAAAAAAA2WTe0yTZxSH936XtrA0fgLiK5pl6UoycFaLXE4nMOeC+VjM5pjRZWzTqh8g
+	0mJacNPNpVIRBFEm6mZhgEwR6KiCUO6OVUFpDTDlJhMYCKLQiAhy6UQG1mUm++/J75znlzdv
+	cgSkUxHfTbBLGcOplPIoEc+Rsjy/3rXiSvqCsFUpeS5g0vhBb3USDZpDhwmIr5ilwPhLMgGz
+	XYMEzFQkkDDWO0hDVs5lHmQ0HaJgpj2ZB7d/7ifgUdzfFBgq4wkYqO/jgzFFj0Afd5eCssFJ
+	HiQPLQNt6VME/cf7aGjJfcyD6dwCPvQ87aNg+tjrcCZJS8DNZAWUd/VT0Gw8RkPu0UIepJql
+	0FbWRcDtygweNNdaaLhvSqEg9ayWhIHsYRrupuVSUFuThaDv4ggB2qwnJGjH7pFgy7tOQ2PK
+	LAk6QwEJHakDCK4mXKHh5sU4Pkxk3iChJktDQX22K6QazBRMWKwIfrS2knCrWgzm8VkCGi+P
+	0TCW8Tak5ZUQUHVkig8lTZFgtpkJuDc5yIPZjvfWrmPzmpNotrPvKck+amxAbOav37Lpmj8o
+	1jbtyZbk3yHY5GtDJFuh6+Kzxlp3Nrs4ln1mKuKzxQVHeGxdfiHBVvTK2NScWrRR9LnEXxUd
+	G8O9GRGtjgkQhUrBSyKVgcTLWyaRrvb78l0vH9HKQP+dXNSuvZxqZeA2ScSMrhPtObj0m5mc
+	XqRBt1yTkIMAM974XGIHnYQcBU7MeYRPXjlM2wfLcNF460t2xs/aknj2pVGE+yv/emlcRngs
+	vQvNb1GMGCcWDvDmmce8g5usd8l5dmE8cKLh6AuBZIqE2KpvejFwZsLwVPfAC1nIrMWPSxsI
+	e6sF4RuWYb59sBA3nOmn5plk9uIHOuucLJjjpfjCc8F87MD44d9tN+j5GDMiPKn/0P7qA3hs
+	5j5KRc66V4p0rxTp/iuyx5644/lD4n/xcpx7dpi0cwA2GEaobMQvQC5crFoRrlB7SdRyhTpW
+	GS7ZEa0oRnP3YqyfLilH+UOjEhMiBMiExHNm3yV9M3KjlNFKTuQiTF4rDHMS7pTv28+poreq
+	YqM4tQn5zP3iD6Tboh3Rc8enjNkq9V3lI/X2la3ykfmuFi0WBu9JlDsx4fIYbjfH7eFU/3qE
+	wMFNQ7i3f1w4lXji0oYGWOPpnni65k7Pd5mLJx+V705YLy6VxZ8c7xzuGT03Kqn49LTiYJ2z
+	wltzVWzhJrrl7VGW7KCIFmb5eFnz5rrtDiaVzaxblreC2x5QucRf+1Er/+CCevfzSzJdta9V
+	Bf+5qPrJcOAHbTIKl65pf39TwOL1gdQB4a4NCZ9Nzqw//aA16HjsQ32wVR+aJVD7bLGItlHG
+	Uz2d57/v+WJTdUjJVuKNfb6XrA9zfguJKfvkBLvFuXC/09fd4qojaZJWj43KKFttc0n+1FvF
+	1yZG9PGmSMd1HsEt/PAFOaeEcaGSgsjG7tyF5q9+sg1eqAvKjIjPWLhZHDLiEVoaJKLUEXKp
+	J6lSy/8BW/yY6MQEAAA=
+X-CMS-MailID: 20240405063542eucas1p190ab901f5f6faa28cff00f183b9749bb
+X-Msg-Generator: CA
+X-RootMTR: 20240328195008eucas1p2fc32577c64a80424c10f30e4f69fc11a
+X-EPHeader: CA
+CMS-TYPE: 201P
+X-CMS-RootMailID: 20240328195008eucas1p2fc32577c64a80424c10f30e4f69fc11a
+References: <20240328-jag-sysctl_remset_net-v2-4-52c9fad9a1af@samsung.com>
+	<CGME20240328195008eucas1p2fc32577c64a80424c10f30e4f69fc11a@eucas1p2.samsung.com>
+	<20240328194934.42278-1-kuniyu@amazon.com>
 
-Hi Jakub,
+--u37e6yueaf43q4xz
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-> From: Jakub Kicinski <kuba@kernel.org>
-> Sent: Friday, April 5, 2024 7:51 AM
+On Thu, Mar 28, 2024 at 12:49:34PM -0700, Kuniyuki Iwashima wrote:
+> From: Joel Granados via B4 Relay <devnull+j.granados.samsung.com@kernel.o=
+rg>
+> Date: Thu, 28 Mar 2024 16:40:05 +0100
+> > This commit comes at the tail end of a greater effort to remove the
+> > empty elements at the end of the ctl_table arrays (sentinels) which will
+> > reduce the overall build time size of the kernel and run time memory
+> > bloat by ~64 bytes per sentinel (further information Link :
+> > https://lore.kernel.org/all/ZO5Yx5JFogGi%2FcBo@bombadil.infradead.org/)
+> >=20
+> > When we remove the sentinel from ax25_param_table a buffer overflow
+> > shows its ugly head. The sentinel's data element used to be changed when
+> > CONFIG_AX25_DAMA_SLAVE was not defined.
 >=20
-> On Wed, 3 Apr 2024 20:41:32 +0300 Parav Pandit wrote:
-> > Many devices send event notifications for the IO queues, such as tx
-> > and rx queues, through event queues.
-> >
-> > Enable a privileged owner, such as a hypervisor PF, to set the number
-> > of IO event queues for the VF and SF during the provisioning stage.
+> I think it's better to define the relation explicitly between the
+> enum and sysctl table by BUILD_BUG_ON() in ax25_register_dev_sysctl()
 >=20
-> What's the relationship between EQ and queue pairs and IRQs?
+>   BUILD_BUG_ON(AX25_MAX_VALUES !=3D ARRAY_SIZE(ax25_param_table));
+>=20
+> and guard AX25_VALUES_DS_TIMEOUT with #ifdef CONFIG_AX25_DAMA_SLAVE
+> as done for other enum.
+This is a great idea. I'll also try to look and see where else I can add
+the explicit relation check.
 
-Netdev qps (txq, rxq pair) channels created are typically upto num cpus by =
-driver, provided it has enough IO event queues upto cpu count.
+Thx for the review
 
-Rdma qps are far more than netdev qps as multiple process uses them and the=
-y are per user space process resource.
-Those applications use number of QPs based on number of cpus and number of =
-event channels to deliver notifications to user space.
+>=20
+>=20
+> > This did not have any adverse
+> > effects as we still stopped on the sentinel because of its null
+> > procname. But now that we do not have the sentinel element, we are
+> > careful to check ax25_param_table's size.
+> >=20
+> > Signed-off-by: Joel Granados <j.granados@samsung.com>
+> > ---
+> >  net/ax25/sysctl_net_ax25.c | 4 +---
+> >  1 file changed, 1 insertion(+), 3 deletions(-)
+> >=20
+> > diff --git a/net/ax25/sysctl_net_ax25.c b/net/ax25/sysctl_net_ax25.c
+> > index db66e11e7fe8..e55be8817a1e 100644
+> > --- a/net/ax25/sysctl_net_ax25.c
+> > +++ b/net/ax25/sysctl_net_ax25.c
+> > @@ -141,8 +141,6 @@ static const struct ctl_table ax25_param_table[] =
+=3D {
+> >  		.extra2		=3D &max_ds_timeout
+> >  	},
+> >  #endif
+> > -
+> > -	{ }	/* that's all, folks! */
+> >  };
+> > =20
+> >  int ax25_register_dev_sysctl(ax25_dev *ax25_dev)
+> > @@ -155,7 +153,7 @@ int ax25_register_dev_sysctl(ax25_dev *ax25_dev)
+> >  	if (!table)
+> >  		return -ENOMEM;
+> > =20
+> > -	for (k =3D 0; k < AX25_MAX_VALUES; k++)
+> > +	for (k =3D 0; k < AX25_MAX_VALUES && k < ARRAY_SIZE(ax25_param_table)=
+; k++)
+> >  		table[k].data =3D &ax25_dev->values[k];
+> > =20
+> >  	snprintf(path, sizeof(path), "net/ax25/%s", ax25_dev->dev->name);
+> >=20
+> > --=20
+> > 2.43.0
 
-Driver uses the IRQs dynamically upto the PCI's limit based on supported IO=
- event queues.
+--=20
 
-> The next patch says "maximum IO event queues which are typically used to
-> derive the maximum and default number of net device channels"
-> It may not be obvious to non-mlx5 experts, I think it needs to be better
-> documented.
-I will expand the documentation in .../networking/devlink/devlink-port.rst.
+Joel Granados
 
-I will add below change to the v4 that has David's comments also addressed.
-Is this ok for you?
+--u37e6yueaf43q4xz
+Content-Type: application/pgp-signature; name="signature.asc"
 
---- a/Documentation/networking/devlink/devlink-port.rst
-+++ b/Documentation/networking/devlink/devlink-port.rst
-@@ -304,6 +304,11 @@ When user sets maximum number of IO event queues for a=
- SF or
- a VF, such function driver is limited to consume only enforced
- number of IO event queues.
+-----BEGIN PGP SIGNATURE-----
 
-+IO event queues deliver events related to IO queues, including network
-+device transmit and receive queues (txq and rxq) and RDMA Queue Pairs (QPs=
-).
-+For example, the number of netdevice channels and RDMA device completion
-+vectors are derived from the function's IO event queues.
-+
+iQGzBAABCgAdFiEErkcJVyXmMSXOyyeQupfNUreWQU8FAmYNHmkACgkQupfNUreW
+QU9fpAv/V+3/izS8SFMirWyciVnKdoJrmVBsF8hQm+Rl2pYODrbHb98QR2VXqYAA
+obWYFUsHPBIRPhnwtWK4wOUpYjeavZUAa5M3pkVsCZvB1c1YT+HXKNmejNB0zZlh
+vKO3wNon0gXKjuFUDKptPcTQQN71Whfi0QD7jHGAU0jR8tBRLVSNiqN+FlyTT5ZY
+e058hfkPY19gTxx3Igp6rtxw5uxWPDXCbuZLhvRQ6TOyFBs7pxCpwSYnE8MjIxxu
+TpCF4wl12yNHFwySifpvqF1sxp6TIEbmkmYhKjxGu5JY7ZxrMHuqMDSeqcOT7aj1
+xzfrvk5iUpGheARqyK+1QEoyYiLHYCQo9a8F9KlTJQJOwqVfXtBUYTz21demWx1R
+WwcJfePp1yjkcvZPM6yZoKQk3FAS+OlbbtH7iZ4SfPnlhqpFdKvE/kCxDZ2wvOav
+HMjQx9a08CL5VcXF8rowUt+FYuLRUe4wkODIQOMLHZXCuq3giKeFYEX8cfFteHj1
+668CEtfJ
+=6gPd
+-----END PGP SIGNATURE-----
+
+--u37e6yueaf43q4xz--
 
