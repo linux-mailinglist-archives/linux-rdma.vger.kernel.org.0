@@ -1,54 +1,54 @@
-Return-Path: <linux-rdma+bounces-1754-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-1755-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 54C6C8969E2
-	for <lists+linux-rdma@lfdr.de>; Wed,  3 Apr 2024 11:04:01 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3C31C896CAA
+	for <lists+linux-rdma@lfdr.de>; Wed,  3 Apr 2024 12:36:14 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 34E60B2299C
-	for <lists+linux-rdma@lfdr.de>; Wed,  3 Apr 2024 09:03:58 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6DC211C22E48
+	for <lists+linux-rdma@lfdr.de>; Wed,  3 Apr 2024 10:36:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 039F26EB51;
-	Wed,  3 Apr 2024 09:03:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5D26313666C;
+	Wed,  3 Apr 2024 10:36:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="vOVmPh9I"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="e7g9uF2X"
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BA22856471
-	for <linux-rdma@vger.kernel.org>; Wed,  3 Apr 2024 09:03:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1E65A6CDB9
+	for <linux-rdma@vger.kernel.org>; Wed,  3 Apr 2024 10:36:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712135033; cv=none; b=XWJLgEQZaz+QL5sKqRwIQC/OB9NRHEwnfVZdVwdZ4gU9A34dQVpNHsTbdDw/MtKdcGLr07M0GN0X1RphQc27jaG156KKoM0hUbsOhSx9E/FtF05B6d4RkM9oYGArZUhLCKn7t00u2kMnW6EqdPuX8k+7BzSVV3AyYeWI1EiwdT8=
+	t=1712140570; cv=none; b=TCqjXws+IilG51TmUf/SgtOq4OPri7pGLZYsucCHXVETM/KmIkzsBqxHmq2L9ZHamAdkXYDk5aFSjWwzlF6pB6/VFF8YS73iHvclfogknKO76Zf6Eu0oDfJCvnXwCn2MQWOZpiHmjvRY4mRy004ZZrpWSI2UHwdOqGMDxt16Nms=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712135033; c=relaxed/simple;
-	bh=i0u5bC6Vc59Xg059z2gFdTdez3pj9wHsX/gxdM08/7Y=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=kafKY1L8D+09bczsv0QlgirX+2Vvc9PSw9mZnmDjPBea/qdKJ16IFQjfPt6HI0DEj2n4j6dRcycuDvlWaiDpyub991KgGzs5+VSLEKCtftKWpcwykY+u+6YBBb9Bx444Nibcib/UrvmUVlyA4HtecuvcilGrtP/Owfa8TBg1XfI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=vOVmPh9I; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id BD547C433F1;
-	Wed,  3 Apr 2024 09:03:52 +0000 (UTC)
+	s=arc-20240116; t=1712140570; c=relaxed/simple;
+	bh=/XIKldrdBasnTmilCHP/f+Ovi5Ftix582/1v5g/cE9o=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=sK4JLcbd15t7jNcjYPWV4NWCiPjfdPymbLpX0gFbnZIzJj3/svKAuJc2rlNsqb+eU+BjXG5f4BbhWJMsPbONSvCceM669MRP1bwDpHQXOWW2O3EwFHwZ9Br59Isb2hwRvYvMk1kFFN4fgje9/VgTEm3HAY4JNTuMVY+HyRubTbk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=e7g9uF2X; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3914AC433F1;
+	Wed,  3 Apr 2024 10:36:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712135033;
-	bh=i0u5bC6Vc59Xg059z2gFdTdez3pj9wHsX/gxdM08/7Y=;
+	s=k20201202; t=1712140569;
+	bh=/XIKldrdBasnTmilCHP/f+Ovi5Ftix582/1v5g/cE9o=;
 	h=From:To:Cc:Subject:Date:From;
-	b=vOVmPh9INjfRS8z2AtyPiLky8OmRufZ10rv7QVcl+MXDgbA8o4RGpLvdNrTHHASOE
-	 /ptPv11f3TSFvIXC2/uyW/csMh6//IypgnfnMU/f66J8l9d0dmPWnJ3Sr0OsLf+G8b
-	 um2R6Iakj3CQDADkSyIRSKDL/bUXgJvrKFw/y58qjag3L4+saitl4NzFV7gsKlGBFI
-	 QoD39Zb04MX3G9JyDjv/UdIO3KfaL/ivOi0ph5ASUa+wYLkgNHZI2ytWE4voRjCY+L
-	 3+kLdnKaT/RBgx+H1GiDSrgQf7PrpbTn4wIQriIoaL2OziwCKLkakee23mCHOO7KEL
-	 Ad7h8P+RHks0Q==
+	b=e7g9uF2XymuaiEbWLvjtW5FQSfd7Zhr0+0W8ILzqV7u4473nZGstnLNMKnz3ghJrI
+	 EatDZ6+EUbeGxiX1GgCtdsiPiWSk3/DO26nf9Y3BrJNz0ZE11KQ/AOagICfca+rjkJ
+	 npNda+I+RwiL9ytFPDV8GIJJRp+ZZ26gtZdXBXmZhpE4Y3LPxrFT9osuR/+eZRKCjU
+	 I1XN+MWpEV4vHxJfo1GYfivjf7XwtSfLXxe7E6qSSaqKpkrX9rtpOmOVzb4j2YFygs
+	 HDPgd4676qQPbz8jDX/kmDMFca6uXR4oEs6toSFYSaXMLwFoWkPv8jB2a2D38x+QN6
+	 TS/0Pig4bNIhA==
 From: Leon Romanovsky <leon@kernel.org>
 To: Jason Gunthorpe <jgg@nvidia.com>
-Cc: Michael Guralnik <michaelgur@nvidia.com>,
-	Chris Mi <cmi@nvidia.com>,
+Cc: Leon Romanovsky <leonro@nvidia.com>,
 	linux-rdma@vger.kernel.org,
-	Mark Bloch <mbloch@nvidia.com>
-Subject: [PATCH rdma-rc] RDMA/mlx5: Fix port number for counter query in multi-port configuration
-Date: Wed,  3 Apr 2024 12:03:46 +0300
-Message-ID: <9bfcc8ade958b760a51408c3ad654a01b11f7d76.1712134988.git.leon@kernel.org>
+	Michael Guralnik <michaelgur@nvidia.com>,
+	Or Har-Toov <ohartoov@nvidia.com>
+Subject: [PATCH rdma-next v2 0/3] Rewrite mlx3 mkeys logic
+Date: Wed,  3 Apr 2024 13:35:58 +0300
+Message-ID: <cover.1712140377.git.leon@kernel.org>
 X-Mailer: git-send-email 2.44.0
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
@@ -58,34 +58,23 @@ List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-From: Michael Guralnik <michaelgur@nvidia.com>
+From: Leon Romanovsky <leonro@nvidia.com>
 
-Set the correct port when querying PPCNT in multi-port configuration.
-Distinguish between cases where switchdev mode was enabled to multi-port
-configuration and don't overwrite the queried port to 1 in multi-port
-case.
+This is rewrote version of [1].
 
-Fixes: 74b30b3ad5ce ("RDMA/mlx5: Set local port to one when accessing counters")
-Signed-off-by: Michael Guralnik <michaelgur@nvidia.com>
-Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
----
- drivers/infiniband/hw/mlx5/mad.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+[1] https://lore.kernel.org/all/cover.1706433934.git.leon@kernel.org
 
-diff --git a/drivers/infiniband/hw/mlx5/mad.c b/drivers/infiniband/hw/mlx5/mad.c
-index 0c3c4e64812c..3e43687a7f6f 100644
---- a/drivers/infiniband/hw/mlx5/mad.c
-+++ b/drivers/infiniband/hw/mlx5/mad.c
-@@ -188,7 +188,8 @@ static int process_pma_cmd(struct mlx5_ib_dev *dev, u32 port_num,
- 		mdev = dev->mdev;
- 		mdev_port_num = 1;
- 	}
--	if (MLX5_CAP_GEN(dev->mdev, num_ports) == 1) {
-+	if (MLX5_CAP_GEN(dev->mdev, num_ports) == 1 &&
-+	    !mlx5_core_mp_enabled(mdev)) {
- 		/* set local port to one for Function-Per-Port HCA. */
- 		mdev = dev->mdev;
- 		mdev_port_num = 1;
+Thanks
+
+Or Har-Toov (3):
+  RDMA/mlx5: Uncacheable mkey has neither rb_key or cache_ent
+  RDMA/mlx5: Change check for cacheable mkeys
+  RDMA/mlx5: Adding remote atomic access flag to updatable flags
+
+ drivers/infiniband/hw/mlx5/mlx5_ib.h |  3 ++-
+ drivers/infiniband/hw/mlx5/mr.c      | 35 +++++++++++++++++++---------
+ 2 files changed, 26 insertions(+), 12 deletions(-)
+
 -- 
 2.44.0
 
