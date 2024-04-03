@@ -1,123 +1,128 @@
-Return-Path: <linux-rdma+bounces-1759-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-1760-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id E8C10896D03
-	for <lists+linux-rdma@lfdr.de>; Wed,  3 Apr 2024 12:45:54 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id DFCE9896ECA
+	for <lists+linux-rdma@lfdr.de>; Wed,  3 Apr 2024 14:18:21 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9BC9C28E442
-	for <lists+linux-rdma@lfdr.de>; Wed,  3 Apr 2024 10:45:53 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1B44E1C23FE6
+	for <lists+linux-rdma@lfdr.de>; Wed,  3 Apr 2024 12:18:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5549C14535B;
-	Wed,  3 Apr 2024 10:44:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="Bpce7uy2"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 987B6145FFE;
+	Wed,  3 Apr 2024 12:18:11 +0000 (UTC)
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from NAM11-DM6-obe.outbound.protection.outlook.com (mail-dm6nam11on2045.outbound.protection.outlook.com [40.107.223.45])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ej1-f52.google.com (mail-ej1-f52.google.com [209.85.218.52])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 90796136674
-	for <linux-rdma@vger.kernel.org>; Wed,  3 Apr 2024 10:44:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.223.45
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712141074; cv=fail; b=Mfr0Fq0gM3/DKj2Hu4TbNt00HOwjqjk46PX+YPMJGWHJNKxxNwRQ02KoUcs3PfknhiKh8BGFqUHT7PnB4JEOEW1rg4hO7SFvtexb6uZGKp1RSovWbq5qbtY8ds3J2r6j4yz2cXqBRLpqb0+vFZPJumyLeD6SJ7NFL+o7QAc4n3g=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712141074; c=relaxed/simple;
-	bh=DaUpoJ22GYrdvzf9LmesGLQMvA/cSJnaBxRbdFeSJYo=;
-	h=Date:From:To:CC:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=VXpg1hTdtXxMUqMpf3gCM6h5oKwNRnaMSR0xy1LKvWoxwzZtyI4kWSjPbxNwKfCGxbh7cRSC1QN7OFcVvkNhFSFtxZUAYqkpEAqNmuvv32ma5OOFqZzK3t3jRBcCqZwG7u+zpTUxJxOnUV2RBwusLN8yeACTAuoGCEwugFuBLKI=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=Bpce7uy2; arc=fail smtp.client-ip=40.107.223.45
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Y03B56F3WQCLD57tC2Dxk3rHoaekdR0oNXcbXPajGh5/ST3RoBR0y2/ZfeaZYbvWLk1BKAoEIOLrSC0ubOVofPhm7t0mj5I5a+JDWyfuqUxCRHlfL3aqd+4wTXiRqPnpTaRI2KvCdvrBfG8+QrrIZ0D2ZGDEY2++0utBhhaWZinOfp0BWCs8Ix7w2j9qFn8UZvTW5L9XVR9mNsKe+mj+yii+iHEA+f3Ew1U6n2Bk0r4RHBCHG58rcK6QiGmpXyW748C8hDsDyGQfbiCZI2ANRiOLAYyae+ZzkR3K2RXBArVThjHO6Ym/sC3us0L6v9jHSUhpfoVoYj4RoWdaC4+sXQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=DaUpoJ22GYrdvzf9LmesGLQMvA/cSJnaBxRbdFeSJYo=;
- b=KYo9tNH15nBcouCMRbwWKQ6ThB2V1bcLcjmDwKcFd4qeawJxspu06ad4ivxWiXUPWY0//qhrYGVY4d+tXfUyeN+o8mktBFOpXnsSQKvFCCMUGahgHRwOizDjsbl9aCpXxuN8PzuoyNEDrYxsStxXWIgS5qK8PtfxQq5L4X518inSHYvcC1vrPUHCmp1wp2SGIN9ySU95M6H9sDLZnGDwhm0hEtE69J9qfb4f/wpQB3zrD4JQ7TswPNHqSnfYowV2+ndK5XbpK203KGxu+8kInvnCmu3IdI3aZXB3pt898/efo0sQjSiPAZAZUsY/9EwdQOPvgGjoZgQ1hQhBtlAhkA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 216.228.117.160) smtp.rcpttodomain=vger.kernel.org smtp.mailfrom=nvidia.com;
- dmarc=pass (p=reject sp=reject pct=100) action=none header.from=nvidia.com;
- dkim=none (message not signed); arc=none (0)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=DaUpoJ22GYrdvzf9LmesGLQMvA/cSJnaBxRbdFeSJYo=;
- b=Bpce7uy2eKQp32VKW7FzXikxytIXHXWAQebRMN9D+5q00ZaBulBC85GbBAJnV++G42dAeuPCa1q4z/lU3BfLp4ih1p/No5H6Gn88cTAV5xvfHsvbPK19sBQFq9Kg3aEfGCoJi3VoUfq4oakazlRWzSwI6iDq6ihHU5+Z0IEUFRNUnKLLgtAYxaLXTRZcTF5MGR4ysrc956BsbKB/n70btjvKwM4XVf47HMNbhDtZvS6/MP9umOU+QYx8Zr/2NnTdzJhLFL8mpABXK5YS+03E99GykL4FuXMht7WW4utOEh9ZB9KitJQhjPz3M1x4fFqHVbr/OdiIPuKtsd+zH90+EQ==
-Received: from BN9P222CA0001.NAMP222.PROD.OUTLOOK.COM (2603:10b6:408:10c::6)
- by PH7PR12MB7020.namprd12.prod.outlook.com (2603:10b6:510:1ba::17) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7409.46; Wed, 3 Apr
- 2024 10:44:29 +0000
-Received: from BN2PEPF0000449D.namprd02.prod.outlook.com
- (2603:10b6:408:10c:cafe::e7) by BN9P222CA0001.outlook.office365.com
- (2603:10b6:408:10c::6) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7409.46 via Frontend
- Transport; Wed, 3 Apr 2024 10:44:29 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.117.160)
- smtp.mailfrom=nvidia.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=nvidia.com;
-Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
- 216.228.117.160 as permitted sender) receiver=protection.outlook.com;
- client-ip=216.228.117.160; helo=mail.nvidia.com; pr=C
-Received: from mail.nvidia.com (216.228.117.160) by
- BN2PEPF0000449D.mail.protection.outlook.com (10.167.243.148) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.7452.22 via Frontend Transport; Wed, 3 Apr 2024 10:44:29 +0000
-Received: from rnnvmail201.nvidia.com (10.129.68.8) by mail.nvidia.com
- (10.129.200.66) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.41; Wed, 3 Apr 2024
- 03:44:11 -0700
-Received: from localhost (10.126.231.35) by rnnvmail201.nvidia.com
- (10.129.68.8) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1258.12; Wed, 3 Apr
- 2024 03:44:10 -0700
-Date: Wed, 3 Apr 2024 13:44:07 +0300
-From: Leon Romanovsky <leonro@nvidia.com>
-To: Jason Gunthorpe <jgg@nvidia.com>
-CC: <linux-rdma@vger.kernel.org>, Michael Guralnik <michaelgur@nvidia.com>,
-	"Or Har-Toov" <ohartoov@nvidia.com>
-Subject: Re: [PATCH rdma-next v2 0/3] Rewrite mlx3 mkeys logic
-Message-ID: <20240403104407.GU11187@unreal>
-References: <cover.1712140377.git.leon@kernel.org>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9DEFE145FE9;
+	Wed,  3 Apr 2024 12:18:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.52
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1712146691; cv=none; b=ZZ/wp6sESSgIqdoHrfq0kb+DJeyTyQSP1wsWOPEB0PIjkXKr7Kg2bi7t/kcJNLXYdhF3tvHNZpEwMxUOtUip9DCwrm+H6R0mPXUMA6LFSEL9jJV4bskkI+s9b2Km0SbExgmaZ2axMu1IfFRWCUyUT8vyJOUIBPkQ9MCdZjarZQc=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1712146691; c=relaxed/simple;
+	bh=7aQEolH/bYahKfD2MbBpmzlriV0zGZkS0AmAA/p9AoU=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=ImB4PxT1T1rt3dPIuUVaqyUGZCxV5/OiTwTZayiDcuxCp8zvcaVwsdK780YUM/aQ78Ok3JRjc1W7Tz50v6dxVm2fEW2Z5T4jrsm4PMZfK8GdqgfF06tkrGbPWI77AsC3w1ONKs5y6Y9IXZDDF8DQlhmcpzpHhEPf+M/fJR31P2U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=debian.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.218.52
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=debian.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ej1-f52.google.com with SMTP id a640c23a62f3a-a51320fc5d6so57123366b.1;
+        Wed, 03 Apr 2024 05:18:09 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712146688; x=1712751488;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Au+qGYcIXnyg9fBfqDiuIqwrBJxSF6u8tnJvbmFQaMM=;
+        b=cCjy1j1V3ezly8HNKaCVjDstw+X2sFctkTzpt6ZNHsSaBIL8HxjNaj/flDe1JApqrf
+         fqoZYw/wz+xyKyMASCcolqH4KKVIkN5p7TqSQyGaKKwP4wAg8xKZs9hoVmBVonphITHU
+         rFaMSazWLrJT/NplP8J9Md0k6nqs2froLVrj5XOebhqiwHy0Ui7VR8921vwLrIscRBs4
+         xGQimvTbED3SUZdQqMcNvrKuAjlRgUg0NizhEmswbOGQdd8+erFkqcctzxhy4igH/s6+
+         5yYFKC+HI7ie2rTV0U3IfNrqkCzjtqricgJocVyliuBRrmQnFmJI/qesj10WYFGGP54D
+         6DiQ==
+X-Forwarded-Encrypted: i=1; AJvYcCUii1mz7YB0ZcfX3nExzTmlIS1xzX9KWuMgQzjjez8SUpnMpTvJrgfzW2z8NS58QZFAGsP7X+dJ0g+dFpeKGGqk+VazmecMhYbMEDUnGjspbyvK/BmQjOm/PvHxeqAEjh7f8wz668CQGg==
+X-Gm-Message-State: AOJu0YwVt2xJX7nOxPfr1m2+ztaWHwKK+lmWUeW0qXxYVqlhaxQCcmMi
+	o4uXPHiwpe2Md6E8i2pUT1L4FawGTzgewliO7WIYIedSampyFAcP
+X-Google-Smtp-Source: AGHT+IEOJdetlicCrsCF+SFLYXMhXKQWpZlQDUHPB92I2W6WXeYLGh0AwZ8wL2eGROp9RZzePxnQxQ==
+X-Received: by 2002:a17:906:f6c6:b0:a46:cc87:12f3 with SMTP id jo6-20020a170906f6c600b00a46cc8712f3mr9250582ejb.75.1712146687766;
+        Wed, 03 Apr 2024 05:18:07 -0700 (PDT)
+Received: from gmail.com (fwdproxy-lla-005.fbsv.net. [2a03:2880:30ff:5::face:b00c])
+        by smtp.gmail.com with ESMTPSA id la6-20020a170907780600b00a4e2db8ffdcsm6902621ejc.111.2024.04.03.05.18.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 03 Apr 2024 05:18:07 -0700 (PDT)
+Date: Wed, 3 Apr 2024 05:15:10 -0700
+From: Breno Leitao <leitao@debian.org>
+To: Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>
+Cc: Jakub Kicinski <kuba@kernel.org>, Leon Romanovsky <leon@kernel.org>,
+	Jason Gunthorpe <jgg@ziepe.ca>, keescook@chromium.org,
+	"open list:HFI1 DRIVER" <linux-rdma@vger.kernel.org>,
+	open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v4] IB/hfi1: allocate dummy net_device dynamically
+Message-ID: <Zg1ITuSCHW/T+QUX@gmail.com>
+References: <20240319090944.2021309-1-leitao@debian.org>
+ <20240401115331.GB73174@unreal>
+ <20240401075306.0ce18627@kernel.org>
+ <2453e7d4-fd50-42ae-a322-490e7e691dc6@cornelisnetworks.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <cover.1712140377.git.leon@kernel.org>
-X-ClientProxiedBy: rnnvmail201.nvidia.com (10.129.68.8) To
- rnnvmail201.nvidia.com (10.129.68.8)
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: BN2PEPF0000449D:EE_|PH7PR12MB7020:EE_
-X-MS-Office365-Filtering-Correlation-Id: c8fbac45-b612-49ff-5ff8-08dc53cb0a4a
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	g+oYiT7B3ickg5nJE9Mqkga6TXe6RKqSkznF+e1bCuXjAlp9a1/Qdw9F9WnfERm3QOu3zD1NgCP276wbQCj7cUjgodzpve+9BxMkornWM9NV0mAIN8mD9kdbhcqzdDF5iKo1LQQS/9DaZL7sLwJaeXp+/wlyJ0veOWY4YawzzG7br1DGSbHxuVa0HbWg8k9p6RaVUT+QZQ5O4SlrQGJ9Wr6yGMqpdw347BBK8mgKbHCgvlQCfkR/UJkigVrxUlUY9nisRvIVVp+/+xNoDoTSfB2wBk6TV2XkUcqfdClURJHu2SueUWDmc9L7hqu3z7BqqUYq1z27kbcyX6XV5K4U1ADHzr3piubrm2XOUy1FEmq8wojhwzBA9/fCpGom5SQR++pJngi2oHuXAb3BxilTe0+RZESjk/WZTPVlFv6R22l8QwP163TYbnbVqaVKVRi4hGopgxQZ0vMAIgSn4g5fupLQlh70Ah3wdJvMOgKnckpe2uJmvfJ2dBUY3Wkqx/7jkZLzDuJBGaYFpj54FZu+VsBrmFbVd9XKxHatkQanNuZHYZZews4JA8p23X2T02iNWqREkPj856yZcHj2mYiKe01FPeOrCvkl724EIwVR2T8QkU4vdCxxjOCudNrZ9nEmsDMEEse9yyBQSB4wh82hF/y6fFuE1sYL9T9J4NqdErndM5hRaCg5UQfuqiDdcoTyTB3iAgUCNbW+WXS6aSRpvc3cNxV/ct1wkm9nvbBc/XwUbUTUzNeMIdds1ewQGFgX
-X-Forefront-Antispam-Report:
-	CIP:216.228.117.160;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc6edge1.nvidia.com;CAT:NONE;SFS:(13230031)(36860700004)(1800799015)(82310400014)(376005);DIR:OUT;SFP:1101;
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 03 Apr 2024 10:44:29.2443
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: c8fbac45-b612-49ff-5ff8-08dc53cb0a4a
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.117.160];Helo=[mail.nvidia.com]
-X-MS-Exchange-CrossTenant-AuthSource:
-	BN2PEPF0000449D.namprd02.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH7PR12MB7020
+In-Reply-To: <2453e7d4-fd50-42ae-a322-490e7e691dc6@cornelisnetworks.com>
 
-There is a type in subject, it should be mlx5.
+On Mon, Apr 01, 2024 at 11:34:23AM -0400, Dennis Dalessandro wrote:
+> On 4/1/24 10:53 AM, Jakub Kicinski wrote:
+> > On Mon, 1 Apr 2024 14:53:31 +0300 Leon Romanovsky wrote:
+> >> On Tue, Mar 19, 2024 at 02:09:43AM -0700, Breno Leitao wrote:
+> >>> Embedding net_device into structures prohibits the usage of flexible
+> >>> arrays in the net_device structure. For more details, see the discussion
+> >>> at [1].
+> >>>
+> >>> Un-embed the net_device from struct hfi1_netdev_rx by converting it
+> >>> into a pointer. Then use the leverage alloc_netdev() to allocate the
+> >>> net_device object at hfi1_alloc_rx().
+> >>>
+> >>> [1] https://lore.kernel.org/all/20240229225910.79e224cf@kernel.org/
+> >>>
+> >>> Signed-off-by: Breno Leitao <leitao@debian.org>
+> >>> Acked-by: Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>  
+> >>
+> >> Jakub,
+> >>
+> >> I create shared branch for you, please pull it from:
+> >> https://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git/log/?h=remove-dummy-netdev
+> > 
+> > Did you merge it in already?
+> > Turned out that the use of init_dummy_netdev as a setup function
+> > is broken, I'm not sure how Dennis tested this :(
+> > We should have pinged you, sorry.
+> 
+> This is what I tested, Linus 6.8 tag + cherry pick + Breno patch. So if
+> something went in that broke it I didn't have it in my tree.
+> 
+> commit 311810a6d7e37d8e7537d50e26197b7f5f02f164 (linus-master)
+> Author: Breno Leitao <leitao@debian.org>
+> Date:   Wed Mar 13 03:33:10 2024 -0700
+> 
+>     IB/hfi1: allocate dummy net_device dynamically
 
-Thanks
+This one has a potential bug that causes a kernel panic when the module
+is removed.
+
+This is because alloc_netdev() allocates some data structures that are
+later overwritten (memset) by init_dummy_netdev(). At the free time,
+free_netdev() will dereference those structures and they are zero.
+
+A new upcoming patch is creating a helper (init_dummy_netdev()) that
+will allocate the netdev and call a special version of
+init_dummy_netdev() without memsetting the structure.
+
+I would drop this patch for now, and I will submit a new version using
+the new helper.
 
