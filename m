@@ -1,121 +1,120 @@
-Return-Path: <linux-rdma+bounces-1781-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-1782-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id F0DD5898A85
-	for <lists+linux-rdma@lfdr.de>; Thu,  4 Apr 2024 16:59:26 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7B8F6898C9D
+	for <lists+linux-rdma@lfdr.de>; Thu,  4 Apr 2024 18:51:11 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 73A1DB274AF
-	for <lists+linux-rdma@lfdr.de>; Thu,  4 Apr 2024 14:59:24 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 31E091F2985C
+	for <lists+linux-rdma@lfdr.de>; Thu,  4 Apr 2024 16:51:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1BA881BF47;
-	Thu,  4 Apr 2024 14:59:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C60451F94D;
+	Thu,  4 Apr 2024 16:51:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b="l0yltRVa"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="D+mYQyYs"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-oa1-f46.google.com (mail-oa1-f46.google.com [209.85.160.46])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C66151C696
-	for <linux-rdma@vger.kernel.org>; Thu,  4 Apr 2024 14:59:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 876FE1C6A4
+	for <linux-rdma@vger.kernel.org>; Thu,  4 Apr 2024 16:51:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712242757; cv=none; b=RtmPrBCXOgKA8KTj5yNnr/Q6dftWTawZg6+YTx26cBXPixWP0u88ftJVnVRDKW+s53yV4xzV9uHaU5Yr32E+OAtYss5B8mgXt14EhdPPO7hl4MV4DzCAqpqs2+9jqCmevV5kqCWXh3KC85JAWPEz6DgNIIN1lQPo0tGCSTsao+o=
+	t=1712249468; cv=none; b=tDzRT2aNfTmUHnIjzEIzzkrfqMPdxgAEoQDv9rZxID7KF4M9NZXY99QES3avoPwJcI43Bdbqh/fL1Yy8XJGvzvVch9oVFE9CnK6u7CjH2rqkMaD4J6Bt5TuU2QyVOyYeOP7tagVcbR0vuZJ/TxoQC0R7t+gzTL2YMHzFRSbCaYM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712242757; c=relaxed/simple;
-	bh=8do81uvv6Nn7H6RTtLh3DzZq5gqrGMl4JFejDvGxkmw=;
+	s=arc-20240116; t=1712249468; c=relaxed/simple;
+	bh=fcdFxfXPzU4ROOGBojkSXroqFmMWeOndFj2lfGPRChw=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ewKmmXQ5+vVMSLqM8s/HMDy18geaJnOrT78FKjj2xp/6emUc0gCf0lvdNnDj5pxYmPK050tOYRMYjSbhTlpvoneCnpz3lW5+XDnUX74SYKSn7tFcj+dALdGF3U9qTHCe3hMLdeXDl5SnZIK8qkAUSKOqVLc33kN/eePcvNLF1AY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca; spf=pass smtp.mailfrom=ziepe.ca; dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b=l0yltRVa; arc=none smtp.client-ip=209.85.160.46
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ziepe.ca
-Received: by mail-oa1-f46.google.com with SMTP id 586e51a60fabf-22e8652090aso635827fac.2
-        for <linux-rdma@vger.kernel.org>; Thu, 04 Apr 2024 07:59:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google; t=1712242755; x=1712847555; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=GxY0curuOJ9XTquhUQPrk9atEsOqwkrsjUBEfLAwtqw=;
-        b=l0yltRVaAoX2VYaHLfJsul99otbh5lJP80ddzWwvGBIEcIvV1i6S0nxrIxqbx+KLl/
-         SH26aWt4Ky3bO+GYY7twvr3wgtxvgkurrId0VsClbbIYuFt6a+h4G2D7RYAB8SNx6m70
-         vZzROKLDaePO4SYcXiMsImRGNMr1LNraRAzzwpzYAYRDpW78mIHvsyYV+JRKPlrI0vqg
-         k8FV4ZmnWe7SJ8GYIbALE6EGzF8J22TZ+/qOgJY2rlg22WrGzCM1xcw0urfhrpDKYzqa
-         SC3vS34zKDSeyaZp8R5feyxUN+vkXpY9z8Z2FklPuex5YP9mRJnexsyleOaEqJKXhXHg
-         5diA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712242755; x=1712847555;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=GxY0curuOJ9XTquhUQPrk9atEsOqwkrsjUBEfLAwtqw=;
-        b=qUBhAs5iBr/n3rnSER/pWJbw4hup4+rZ+TLNEgzAkdZ/4neeyh+/c4R8290aIz2Fk2
-         H4n0Nfs4Hruwc10POgRaq0nfDxOoTTvwDXzY1RSgd0+d+5aj8XtIAuO4CsnkEo9VHAT5
-         6ZPsVhH3Ys49J1jzbubCZu3uteUo4bbmCRk2TdLwJ2IdHib2ZV+PsmQeU380lXKBx6Hw
-         qCvbkhwliz+9OTjYR9vY67wtEKQkvqWjEwE8oZyvTpt711h/P8/g7zU3BYwH/kD19rPO
-         TzcsqKwu2hJOEgrUxcmtDKC/reufERqTWeVej4W49noAMHlgyTqT+maIURkD45LkR2q6
-         S9yg==
-X-Forwarded-Encrypted: i=1; AJvYcCUMiB0J8Yhe8FX9Te4dyYSdREXI5TAFHf6+3nRzNkXRVLrUGAQfHT3kdYkFnR1PuZc077NMDBS+a9+K/dGOOyW+I83rMCjSTXUFGw==
-X-Gm-Message-State: AOJu0Yx0RCrMOI6Ubgz1WP1sQyBMa56TQpEj5VUlO2iSXDup3A/olS9w
-	kNnZ56gr9TA72niaOLFIfsqa0PXG5cgsRKWRxz5KZsk3p8JitATRg49OIAGY0Bc=
-X-Google-Smtp-Source: AGHT+IFDlJZMiC/wuDrOTwJDh4FtO6fCFQzn0TdCS+465hcHsFINnD8ePoW9Fc0ag29j7GX6ZONT5w==
-X-Received: by 2002:a05:6870:8086:b0:21e:8938:9091 with SMTP id q6-20020a056870808600b0021e89389091mr2931077oab.27.1712242754752;
-        Thu, 04 Apr 2024 07:59:14 -0700 (PDT)
-Received: from ziepe.ca (hlfxns017vw-142-68-80-239.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.68.80.239])
-        by smtp.gmail.com with ESMTPSA id d25-20020a056830005900b006e6ff75a1c3sm2972272otp.27.2024.04.04.07.59.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 04 Apr 2024 07:59:14 -0700 (PDT)
-Received: from jgg by wakko with local (Exim 4.95)
-	(envelope-from <jgg@ziepe.ca>)
-	id 1rsOYb-00AVU3-52;
-	Thu, 04 Apr 2024 11:59:13 -0300
-Date: Thu, 4 Apr 2024 11:59:13 -0300
-From: Jason Gunthorpe <jgg@ziepe.ca>
-To: Zhu Yanjun <yanjun.zhu@linux.dev>
-Cc: zyjzyj2000@gmail.com, leon@kernel.org, linux-rdma@vger.kernel.org
-Subject: Re: [PATCH 1/1] RDMA/rxe: Make pr_fmt work
-Message-ID: <20240404145913.GF1363414@ziepe.ca>
-References: <20240323083139.5484-1-yanjun.zhu@linux.dev>
- <20240327130804.GH8419@ziepe.ca>
- <a9011ab4-6947-4ad4-8d1f-653e129c38b9@linux.dev>
+	 Content-Type:Content-Disposition:In-Reply-To; b=bLntf1YSTRxMPT55rDxDkSNfEKZy5w7Duw/7Lk8qxxmCjLM34Mko+kE3/CbQIpnZnjY+uOGbjEUKvqmxan9U0VJJ2gTsLxBXFoWjW1mEOhPBHXx8Zw0ignehr7gFfibcqsXSlHCpWiW/y6e6Ky4U5MB6RUFGn+VzPs060OQBywQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=D+mYQyYs; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A1912C433F1;
+	Thu,  4 Apr 2024 16:51:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1712249468;
+	bh=fcdFxfXPzU4ROOGBojkSXroqFmMWeOndFj2lfGPRChw=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=D+mYQyYsLSgbFpE3Go8oEtyQwZvPA978nEozTUW2Pv0mMbPzgIoybJME+nQYh9AEI
+	 DZzRBce9B/MMxfFH/FKQlVeqvIsLuVniOPfCrxs2KMsKBdvGf5MHJH2L9rfTKzLWPC
+	 B7nmmGOzllTfUcaZZydsSNeHMjnvdlRkttFl/Ynd8wx9/LIo+9lqkq5L9OFeCyqRm+
+	 bSsxeuepaM4jvGrymyR9dTg9Xu6oneSm+dfhRTt0mZGxskZW5Kvkq16AdGYgujw4AG
+	 1TGy34XdgkxkoYCdCapkEI+aQ9a7qoTQdwdYrTeTNcIrOMjtVyFnezt5aPezJBp3+/
+	 VFUG0ymzoeFyg==
+Date: Thu, 4 Apr 2024 19:51:03 +0300
+From: Leon Romanovsky <leon@kernel.org>
+To: Jason Gunthorpe <jgg@nvidia.com>
+Cc: Michael Guralnik <michaelgur@nvidia.com>, linux-rdma@vger.kernel.org
+Subject: Re: [PATCH rdma-next] IB/core: Add option to limit user mad receive
+ list
+Message-ID: <20240404165103.GW11187@unreal>
+References: <70029b5f256fbad6efbb98458deb9c46baa2c4b3.1712051390.git.leon@kernel.org>
+ <20240404140113.GJ1723999@nvidia.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <a9011ab4-6947-4ad4-8d1f-653e129c38b9@linux.dev>
+In-Reply-To: <20240404140113.GJ1723999@nvidia.com>
 
-On Wed, Mar 27, 2024 at 08:40:54PM +0100, Zhu Yanjun wrote:
+On Thu, Apr 04, 2024 at 11:01:13AM -0300, Jason Gunthorpe wrote:
+> On Tue, Apr 02, 2024 at 12:50:21PM +0300, Leon Romanovsky wrote:
+> > From: Michael Guralnik <michaelgur@nvidia.com>
+> > 
+> > ib_umad is keeping the received MAD packets in a list that is not
+> > limited in size. As the extraction of packets from this list is done
+> > from user-space application, there is no way to guarantee the extraction
+> > rate to be faster than the rate of incoming packets. This can cause to
+> > the list to grow uncontrollably.
+> > 
+> > As a solution, let's add new ysfs control knob for the users to limit
+> > the number of received MAD packets in the list.
+> > 
+> > Packets received when the list is full would be dropped. Sent packets
+> > that are queued on the receive list for whatever reason, like timed out
+> > sends, are not dropped even when the list is full.
+> > 
+> > Signed-off-by: Michael Guralnik <michaelgur@nvidia.com>
+> > Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
+> > ---
+> >  .../ABI/stable/sysfs-class-infiniband         | 12 ++++
+> >  drivers/infiniband/core/user_mad.c            | 63 ++++++++++++++++++-
+> >  2 files changed, 72 insertions(+), 3 deletions(-)
+> > 
+> > diff --git a/Documentation/ABI/stable/sysfs-class-infiniband b/Documentation/ABI/stable/sysfs-class-infiniband
+> > index 694f23a03a28..0ea9d590ab0e 100644
+> > --- a/Documentation/ABI/stable/sysfs-class-infiniband
+> > +++ b/Documentation/ABI/stable/sysfs-class-infiniband
+> > @@ -275,6 +275,18 @@ Description:
+> >  		=============== ===========================================
+> >  
+> >  
+> > +What:		/sys/class/infiniband_mad/umad<N>/max_recv_list_size
+> > +Date:		January, 2024
+> > +KernelVersion:	v6.9
+> > +Contact:	linux-rdma@vger.kernel.org
+> > +Description:
+> > +		(RW) Limit the size of the list of MAD packets waiting to be
+> > +		     read by the user-space agent.
+> > +		     The default value is 0, which means unlimited list size.
+> > +		     Packets received when the list is full will be silently
+> > +		     dropped.
 > 
-> 在 2024/3/27 14:08, Jason Gunthorpe 写道:
-> > On Sat, Mar 23, 2024 at 09:31:39AM +0100, Yanjun.Zhu wrote:
-> > > From: Zhu Yanjun <yanjun.zhu@linux.dev>
-> > > 
-> > > If the definition of pr_fmt is before the header file. The pr_fmt
-> > > will be overwritten by the header file. So move the definition of
-> > > pr_fmt to the below of the header file.
-> > what header file?
+> I'm really not keen on this as a tunable, when we get to future
+> designs it may be hard to retain this specific behavior.
 > 
-> include/linux/printk.h
+> Why do we need a tunable? Can we just set it to something large and be
+> done with it?
+
+I don't know which value to set to be large enough from one side and
+small enough to do not cause to OOM while host gets MAD packets.
+
+Thanks
+
 > 
-> Because this driver will finally call printk function to output the logs,
-> the header file include/linux/printk.h needs be included.
+> Jason
 > 
-> In include/linux/printk.h, pr_fmt is defined.
-
-This doesn't make sense, printk.h has:
-
-#ifndef pr_fmt
-#define pr_fmt(fmt) fmt
-#endif
-
-Before or after printk.h should not have an impact.
-
-Jason
 
