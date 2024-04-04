@@ -1,55 +1,49 @@
-Return-Path: <linux-rdma+bounces-1773-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-1774-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1F811897AA8
-	for <lists+linux-rdma@lfdr.de>; Wed,  3 Apr 2024 23:29:00 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9E9A3897DC6
+	for <lists+linux-rdma@lfdr.de>; Thu,  4 Apr 2024 04:40:35 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 939A1B24164
-	for <lists+linux-rdma@lfdr.de>; Wed,  3 Apr 2024 21:28:57 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4FE421F279AD
+	for <lists+linux-rdma@lfdr.de>; Thu,  4 Apr 2024 02:40:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0DB74156672;
-	Wed,  3 Apr 2024 21:28:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1211F1CD11;
+	Thu,  4 Apr 2024 02:40:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=launchpad.net header.i=@launchpad.net header.b="GmrOMtK0"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="pXVwxse+"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from smtp-relay-services-1.canonical.com (smtp-relay-services-1.canonical.com [185.125.188.251])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 25E9F15687E
-	for <linux-rdma@vger.kernel.org>; Wed,  3 Apr 2024 21:28:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.125.188.251
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A82E8EEB2;
+	Thu,  4 Apr 2024 02:40:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712179725; cv=none; b=km5o7RM9cMaTyxnJGbE6baxXNVuAUn//uQDb5KxNOAsj9ONcpomAWz6t6OGrSAmvHPIuRD1rvlr9+oCgjSzs6Do1zMbMdJ5aEqCFUH4j4GyYcNR2Yj0KXjAgtg64Xbi0ho+cZqZQI62Ngxh2SqZrX1YSg2cYIzebbZOYMlfyCFY=
+	t=1712198427; cv=none; b=CSDRzRPRKgOQTS7eLJw+0snzj+ytt6IQhDKX0jWCFbSqvKSlSKQQPTgp4r0p+Nasc4dIYBlXW8uGz/XQDr4g0ZqevzljSXqhb2erA4m0+0uBFJnDNX0KtsAP9R9HibaGJf9aWa0yKf8omr/0R6tr3ACQvMdop37OS4zIVVtEVgA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712179725; c=relaxed/simple;
-	bh=CzNasDftIy2UvC92j4g8knYBs+DDwEwlNiH8hYpR7qw=;
-	h=Content-Type:MIME-Version:To:From:Subject:Message-Id:Date; b=A1NUch9mE28EHxLMHq5JAlASWoPpI2kkJ2Fogqi9E90LiQkMspT9ighDhMlbK9WonwA2HkGicOwpP4i6nmzxuX5yY09jhBMGCsMMZI+vKAWMba1zQUzlSgf36zZuVIDDDlYzzlXaXM5r743bsHKNSU/c/Wcj+18vCur0VOAHXfg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=launchpad.net; spf=pass smtp.mailfrom=launchpad.net; dkim=pass (2048-bit key) header.d=launchpad.net header.i=@launchpad.net header.b=GmrOMtK0; arc=none smtp.client-ip=185.125.188.251
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=launchpad.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=launchpad.net
-Received: from juju-98d295-prod-launchpad-15.localdomain (buildd-manager.lp.internal [10.131.215.202])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-relay-services-1.canonical.com (Postfix) with ESMTPSA id B247747DD2
-	for <linux-rdma@vger.kernel.org>; Wed,  3 Apr 2024 21:18:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=launchpad.net;
-	s=20210803; t=1712179110;
-	bh=CzNasDftIy2UvC92j4g8knYBs+DDwEwlNiH8hYpR7qw=;
-	h=Content-Type:MIME-Version:To:From:Subject:Message-Id:Date:
-	 Reply-To;
-	b=GmrOMtK00EoHqNGMez+KagyDAkoEYMsWHx0AjNVJ8XMH2f40fcKMUbCPyG2gF97Hk
-	 WidirChacCaQlGXqyyrH+KhbzrjLOZGT/lKOY3YMnzK4CCl6lG1ZmzTbwrSM1sQ7PY
-	 1t/Mjbq0QU9eqxX1MrEeBQFew8hdbSYqugp2E7VpbWxA1toUbb513dKb78LnYH5rQI
-	 VfPk4ON8doeK53D25pip4ul9MZW39ziMzs7Xo7EBIcbwYJH/WTLU/AIyLlCi9cccj9
-	 hFBi4FBRF1v3hJHrh/VvE2FsF/vBhB2qIBCYv8V4W0D7IyA7+lXgNaK065GC2MpiGE
-	 oVVOQjp+52dZQ==
-Received: from [10.131.215.202] (localhost [127.0.0.1])
-	by juju-98d295-prod-launchpad-15.localdomain (Postfix) with ESMTP id 804C27E246
-	for <linux-rdma@vger.kernel.org>; Wed,  3 Apr 2024 21:18:28 +0000 (UTC)
+	s=arc-20240116; t=1712198427; c=relaxed/simple;
+	bh=z1iXLvkFfv7cvcYmpQ/4o3DzldKRSGogDcrjWfkz/no=;
+	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
+	 In-Reply-To:To:Cc; b=hAgq1+PHMe/XQmz54vkJM+94bagcQMIic9rdEqKL2pJVUOFuUOhvdgSekXYIpu4x+u9OphCvrBqHWTsU4NdiP95NYKt/otBZhA/Ev1kzefzCMTJ2vGSR3UeXQhLa0Aap6JJ/eZMIjh7p9ZOtL0+dtLNI6e7zojOWLDrBjqmSADE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=pXVwxse+; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 41F9DC433F1;
+	Thu,  4 Apr 2024 02:40:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1712198427;
+	bh=z1iXLvkFfv7cvcYmpQ/4o3DzldKRSGogDcrjWfkz/no=;
+	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+	b=pXVwxse+4leHQBCAqngVCssZ1Db/s7EX/otUfWPT8kcdnZlyzTP7XAki1eODxVXlv
+	 sRUnbNgRIKG+k4AI1koZH1px3gFXjfiMditk/+ecmOikQq68Z77/yf6EKmdnoZe08u
+	 fafw/k4+9FxQwdM1Vzu/TyMtWC1VS9Bxy1V0qyzx+9MbYr5T6Ui5fjy6CUkTqggFCV
+	 qRLXXKYmVd7xrvpw+ZcIRBdlawvjotu7VcwLsV5zRfE5Z0cwqD6aUp31mDic+QpHKz
+	 BlCO4q0ESelNHxfmzCRtp+zgs1i+0HlAGdAZ000PPj1OxmF0OK7v1CEoRCH3gnwFhV
+	 Eltyt/Bk0Jfmg==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 31064C43168;
+	Thu,  4 Apr 2024 02:40:27 +0000 (UTC)
 Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
@@ -57,37 +51,61 @@ List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-Launchpad-Message-Rationale: Requester @linux-rdma
-X-Launchpad-Message-For: linux-rdma
-X-Launchpad-Notification-Type: recipe-build-status
-X-Launchpad-Archive: ~linux-rdma/ubuntu/rdma-core-daily
-X-Launchpad-Build-State: MANUALDEPWAIT
-To: Linux RDMA <linux-rdma@vger.kernel.org>
-From: noreply@launchpad.net
-Subject: [recipe build #3707358] of ~linux-rdma rdma-core-daily in xenial: Dependency wait
-Message-Id: <171217910850.701.18349643419978871719.launchpad@juju-98d295-prod-launchpad-15>
-Date: Wed, 03 Apr 2024 21:18:28 -0000
-Reply-To: noreply@launchpad.net
-Sender: noreply@launchpad.net
-Errors-To: noreply@launchpad.net
-Precedence: bulk
-X-Generated-By: Launchpad (canonical.com); Revision="aec24aef7a9042c99ef3e238d8b0ca01df9e1a9f"; Instance="launchpad-buildd-manager"
-X-Launchpad-Hash: f2bde4bbf6339aaba7c08aaac741cc3809bc8c84
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH net,v2] net: mana: Fix Rx DMA datasize and skb_over_panic
+From: patchwork-bot+netdevbpf@kernel.org
+Message-Id: 
+ <171219842719.31127.17495935498454370650.git-patchwork-notify@kernel.org>
+Date: Thu, 04 Apr 2024 02:40:27 +0000
+References: <1712087316-20886-1-git-send-email-haiyangz@microsoft.com>
+In-Reply-To: <1712087316-20886-1-git-send-email-haiyangz@microsoft.com>
+To: Haiyang Zhang <haiyangz@microsoft.com>
+Cc: linux-hyperv@vger.kernel.org, netdev@vger.kernel.org, decui@microsoft.com,
+ stephen@networkplumber.org, kys@microsoft.com, paulros@microsoft.com,
+ olaf@aepfle.de, vkuznets@redhat.com, davem@davemloft.net, wei.liu@kernel.org,
+ edumazet@google.com, kuba@kernel.org, pabeni@redhat.com, leon@kernel.org,
+ longli@microsoft.com, ssengar@linux.microsoft.com,
+ linux-rdma@vger.kernel.org, daniel@iogearbox.net, john.fastabend@gmail.com,
+ bpf@vger.kernel.org, ast@kernel.org, sharmaajay@microsoft.com,
+ hawk@kernel.org, tglx@linutronix.de, shradhagupta@linux.microsoft.com,
+ linux-kernel@vger.kernel.org, stable@vger.kernel.org
 
- * State: Dependency wait
- * Recipe: linux-rdma/rdma-core-daily
- * Archive: ~linux-rdma/ubuntu/rdma-core-daily
- * Distroseries: xenial
- * Duration: 3 minutes
- * Build Log: https://launchpad.net/~linux-rdma/+archive/ubuntu/rdma-core-d=
-aily/+recipebuild/3707358/+files/buildlog.txt.gz
- * Upload Log:=20
- * Builder: https://launchpad.net/builders/lcy02-amd64-070
+Hello:
 
---=20
-https://launchpad.net/~linux-rdma/+archive/ubuntu/rdma-core-daily/+recipebu=
-ild/3707358
-Your team Linux RDMA is the requester of the build.
+This patch was applied to netdev/net.git (main)
+by Jakub Kicinski <kuba@kernel.org>:
+
+On Tue,  2 Apr 2024 12:48:36 -0700 you wrote:
+> mana_get_rxbuf_cfg() aligns the RX buffer's DMA datasize to be
+> multiple of 64. So a packet slightly bigger than mtu+14, say 1536,
+> can be received and cause skb_over_panic.
+> 
+> Sample dmesg:
+> [ 5325.237162] skbuff: skb_over_panic: text:ffffffffc043277a len:1536 put:1536 head:ff1100018b517000 data:ff1100018b517100 tail:0x700 end:0x6ea dev:<NULL>
+> [ 5325.243689] ------------[ cut here ]------------
+> [ 5325.245748] kernel BUG at net/core/skbuff.c:192!
+> [ 5325.247838] invalid opcode: 0000 [#1] PREEMPT SMP NOPTI
+> [ 5325.258374] RIP: 0010:skb_panic+0x4f/0x60
+> [ 5325.302941] Call Trace:
+> [ 5325.304389]  <IRQ>
+> [ 5325.315794]  ? skb_panic+0x4f/0x60
+> [ 5325.317457]  ? asm_exc_invalid_op+0x1f/0x30
+> [ 5325.319490]  ? skb_panic+0x4f/0x60
+> [ 5325.321161]  skb_put+0x4e/0x50
+> [ 5325.322670]  mana_poll+0x6fa/0xb50 [mana]
+> [ 5325.324578]  __napi_poll+0x33/0x1e0
+> [ 5325.326328]  net_rx_action+0x12e/0x280
+> 
+> [...]
+
+Here is the summary with links:
+  - [net,v2] net: mana: Fix Rx DMA datasize and skb_over_panic
+    https://git.kernel.org/netdev/net/c/c0de6ab920aa
+
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
 
 
