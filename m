@@ -1,111 +1,113 @@
-Return-Path: <linux-rdma+bounces-1777-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-1778-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3696B897E2D
-	for <lists+linux-rdma@lfdr.de>; Thu,  4 Apr 2024 06:13:12 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id E9C128981A6
+	for <lists+linux-rdma@lfdr.de>; Thu,  4 Apr 2024 08:54:30 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D33E0286635
-	for <lists+linux-rdma@lfdr.de>; Thu,  4 Apr 2024 04:13:10 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5AF361F27334
+	for <lists+linux-rdma@lfdr.de>; Thu,  4 Apr 2024 06:54:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DA6F120B33;
-	Thu,  4 Apr 2024 04:13:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DCD5F52F9A;
+	Thu,  4 Apr 2024 06:54:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=launchpad.net header.i=@launchpad.net header.b="B0o5yg43"
+	dkim=pass (1024-bit key) header.d=amazon.com header.i=@amazon.com header.b="XWRX2Ro6"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from smtp-relay-services-0.canonical.com (smtp-relay-services-0.canonical.com [185.125.188.250])
+Received: from smtp-fw-80008.amazon.com (smtp-fw-80008.amazon.com [99.78.197.219])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B591B3D577
-	for <linux-rdma@vger.kernel.org>; Thu,  4 Apr 2024 04:13:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.125.188.250
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6227053803;
+	Thu,  4 Apr 2024 06:54:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=99.78.197.219
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712203987; cv=none; b=ojkg5f7NqcP40Sk+RabqjNpk3IVNvm5ufAbqzDvKfjEy6DTYYLTKLWbvFnePm1WKev0KLGy6kUOyFJUT86Q9q7lNDA3H69a0CptYRwBtNFVc85ohsa8EFjQoGgkwWxHjSIpgKdQr941g4y8qL3JoWzTrOFZPsCeI3f133J1JKeM=
+	t=1712213663; cv=none; b=bI4B+S1GImrggSZWdXj2h1GVhrMADH8DNCGp6B6byb5U5f/TMZjQGB8b5yWcMK44eB8zvMnL3YAJBWXdkZQShuMYROCJPbv6H9YTw0MGSGdj/ibwly1uqVjYNPRagwIRSVpG94jCZoUekgQR0+sdfGQJ3hzILXgV9t4wzK6+7J8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712203987; c=relaxed/simple;
-	bh=9EwiDsZDv5fx9BvcRR+omHSGJkVb7ybwfQZSRyiB+Q8=;
-	h=Content-Type:MIME-Version:To:From:Subject:Message-Id:Date; b=Do1yvRHxBXkpRtY8mFyltEGc+96sZmLnDHyGdgMegykWN41DGlkf+y/KIaBbdZfF8MUacx3Ny0QinPoTyziKze7/aS2d4R4t8Gi3sS57wlL60Wxgdusc0+UuVyTtYeVuuP2Zw5PjVtHbzkwYpl8NicYRbhtsWsiJLGN41Swbs14=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=launchpad.net; spf=pass smtp.mailfrom=launchpad.net; dkim=pass (2048-bit key) header.d=launchpad.net header.i=@launchpad.net header.b=B0o5yg43; arc=none smtp.client-ip=185.125.188.250
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=launchpad.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=launchpad.net
-Received: from juju-98d295-prod-launchpad-15.localdomain (buildd-manager.lp.internal [10.131.215.202])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-relay-services-0.canonical.com (Postfix) with ESMTPSA id DC0CB4D6EC
-	for <linux-rdma@vger.kernel.org>; Thu,  4 Apr 2024 04:12:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=launchpad.net;
-	s=20210803; t=1712203973;
-	bh=9EwiDsZDv5fx9BvcRR+omHSGJkVb7ybwfQZSRyiB+Q8=;
-	h=Content-Type:MIME-Version:To:From:Subject:Message-Id:Date:
-	 Reply-To;
-	b=B0o5yg43lFNdp7cUV/iJlPaISz8ICXp4jQWH/cw0JMKSlC/dSHlGsBQI6NU3/KVY6
-	 VJZUNbE/1CKMkeLZc/X3+Q2IrxDQojCNWoWE821M2OOk4bkymcHMuoqGxCL9LMEucn
-	 aQI77nIQwo9SBcmWE7Vt3LY7N3zFISXbxwua1oQetXcGrQJWD09HNVU0hnnIfcNiTE
-	 OUVPf0LgV8o9z29x/Bo3lbW6/YOqnRrcsEhqjLbG2h/XpCTHzEeecV+/5STyvw4ENA
-	 ditOH86m7T18j30WeiNsYEs55e/8SkoTIDn7C6iKShZVXvOMvmBtmmvvThH/e64GS+
-	 p2bC6rLdItbjA==
-Received: from [10.131.215.202] (localhost [127.0.0.1])
-	by juju-98d295-prod-launchpad-15.localdomain (Postfix) with ESMTP id 35D9A7E246
-	for <linux-rdma@vger.kernel.org>; Thu,  4 Apr 2024 04:12:52 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+	s=arc-20240116; t=1712213663; c=relaxed/simple;
+	bh=vyYehCtmuOnkDyiTVtISMV19OYydyeZiEvgBYOzKtdU=;
+	h=Subject:Message-ID:Date:MIME-Version:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=UOLFY1yCAlC9G+w8qDaWN9GUQXypWEwApp+e63LJ2yE4qg+FNP82LA4DThiVVZk899MMyOpeoo/zjlckYHw5TGd0dMr6jkLZFULJiNGREMCm6zZ+i7WS4vPGj6KM1fDPXA07flpJS6kkoAIlRNOSVnvD15beQVct3EM+lDjaIMM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amazon.com; spf=pass smtp.mailfrom=amazon.com; dkim=pass (1024-bit key) header.d=amazon.com header.i=@amazon.com header.b=XWRX2Ro6; arc=none smtp.client-ip=99.78.197.219
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amazon.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=amazon.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
+  t=1712213662; x=1743749662;
+  h=message-id:date:mime-version:to:cc:references:from:
+   in-reply-to:content-transfer-encoding:subject;
+  bh=vyYehCtmuOnkDyiTVtISMV19OYydyeZiEvgBYOzKtdU=;
+  b=XWRX2Ro61lfVjiHUSNG93LjGzgb5ESGWcbEoign19AfwjGRHX5FhOxaN
+   frpmHuIyas6clSLySSv17BEA8T7kttUf0vMKNRpQyod3St+lAeAe2lB5C
+   MPKxntAstbRBHSaOAiKE4Rl1FnveDb7rNlaB/R5ULn/DfFX5SvloBFBtp
+   c=;
+X-IronPort-AV: E=Sophos;i="6.07,178,1708387200"; 
+   d="scan'208";a="78531287"
+Subject: Re: Implementing .shutdown method for efa module
+Received: from pdx4-co-svc-p1-lb2-vlan3.amazon.com (HELO smtpout.prod.us-west-2.prod.farcaster.email.amazon.dev) ([10.25.36.214])
+  by smtp-border-fw-80008.pdx80.corp.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Apr 2024 06:54:20 +0000
+Received: from EX19MTAEUA002.ant.amazon.com [10.0.17.79:47413]
+ by smtpin.naws.eu-west-1.prod.farcaster.email.amazon.dev [10.0.28.213:2525] with esmtp (Farcaster)
+ id bb37eac2-f65b-438a-83c5-656e83f2691d; Thu, 4 Apr 2024 06:54:19 +0000 (UTC)
+X-Farcaster-Flow-ID: bb37eac2-f65b-438a-83c5-656e83f2691d
+Received: from EX19D031EUB003.ant.amazon.com (10.252.61.88) by
+ EX19MTAEUA002.ant.amazon.com (10.252.50.124) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1258.28; Thu, 4 Apr 2024 06:54:19 +0000
+Received: from [192.168.84.64] (10.85.143.175) by
+ EX19D031EUB003.ant.amazon.com (10.252.61.88) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1258.28; Thu, 4 Apr 2024 06:54:15 +0000
+Message-ID: <59c5dabd-c06e-4982-af68-bdee9b8174fd@amazon.com>
+Date: Thu, 4 Apr 2024 09:54:10 +0300
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-Launchpad-Message-Rationale: Creator @linux-rdma
-X-Launchpad-Message-For: linux-rdma
-X-Launchpad-Notification-Type: package-build-status
-X-Launchpad-Archive: ~linux-rdma/ubuntu/rdma-core-daily
-X-Launchpad-Build-State: FAILEDTOBUILD
-X-Launchpad-Build-Component: main
-X-Launchpad-Build-Arch: armhf
-X-Creator-Recipient: linux-rdma@vger.kernel.org
-X-Launchpad-PPA: linux-rdma-rdma-core-daily
-To: Linux RDMA <linux-rdma@vger.kernel.org>
-From: Launchpad Buildd System <noreply@launchpad.net>
-Subject: [Build #28023184] armhf build of rdma-core 52.0~202404031838+git4b08a22a~ubuntu18.04.1 in ubuntu bionic RELEASE [~linux-rdma/ubuntu/rdma-core-daily]
-Message-Id: <171220397220.701.10742406623297533361.launchpad@juju-98d295-prod-launchpad-15>
-Date: Thu, 04 Apr 2024 04:12:52 -0000
-Reply-To: Launchpad Buildd System <noreply@launchpad.net>
-Sender: noreply@launchpad.net
-Errors-To: noreply@launchpad.net
-Precedence: bulk
-X-Generated-By: Launchpad (canonical.com); Revision="aec24aef7a9042c99ef3e238d8b0ca01df9e1a9f"; Instance="launchpad-buildd-manager"
-X-Launchpad-Hash: 8c2d8869eaf8f4b3ec7bc77b3f8ffa1385a17198
+User-Agent: Mozilla Thunderbird
+Content-Language: en-US
+To: Jason Gunthorpe <jgg@ziepe.ca>
+CC: Tao Liu <ltao@redhat.com>, Gal Pressman <gal.pressman@linux.dev>,
+	<sleybo@amazon.com>, <leon@kernel.org>, <kexec@lists.infradead.org>,
+	<linux-kernel@vger.kernel.org>, <linux-rdma@vger.kernel.org>
+References: <CAO7dBbVNv5NWRN6hXeo5rNEixn-ctmTLLn2KAKhEBYvvR+Du2w@mail.gmail.com>
+ <5d81d6d0-5afc-4d0e-8d2b-445d48921511@linux.dev>
+ <CAO7dBbXLU5teiYm8VvES7e7m7dUzJQYV9HHLOFKperjwq-NJeA@mail.gmail.com>
+ <b6c0bd81-3b8d-465d-a0eb-faa5323a6b05@amazon.com>
+ <20240326153223.GF8419@ziepe.ca>
+ <0e7dddff-d7f3-4617-83e6-f255449a282b@amazon.com>
+ <20240403154414.GD1363414@ziepe.ca>
+From: "Margolin, Michael" <mrgolin@amazon.com>
+In-Reply-To: <20240403154414.GD1363414@ziepe.ca>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: EX19D046UWB003.ant.amazon.com (10.13.139.174) To
+ EX19D031EUB003.ant.amazon.com (10.252.61.88)
+
+Thanks, I'll send a patch.
 
 
- * Source Package: rdma-core
- * Version: 52.0~202404031838+git4b08a22a~ubuntu18.04.1
- * Architecture: armhf
- * Archive: ~linux-rdma/ubuntu/rdma-core-daily
- * Component: main
- * State: Failed to build
- * Duration: 17 minutes
- * Build Log: https://launchpad.net/~linux-rdma/+archive/ubuntu/rdma-core-d=
-aily/+build/28023184/+files/buildlog_ubuntu-bionic-armhf.rdma-core_52.0~202=
-404031838+git4b08a22a~ubuntu18.04.1_BUILDING.txt.gz
- * Builder: https://launchpad.net/builders/bos02-arm64-033
- * Source: not available
+Michael
 
-
-
-If you want further information about this situation, feel free to
-contact us by asking a question on Launchpad
-(https://answers.launchpad.net/launchpad/+addquestion).
-
---=20
-armhf build of rdma-core 52.0~202404031838+git4b08a22a~ubuntu18.04.1 in ubu=
-ntu bionic RELEASE
-https://launchpad.net/~linux-rdma/+archive/ubuntu/rdma-core-daily/+build/28=
-023184
-
-You are receiving this email because you created this version of this
-package.
-
+On 4/3/2024 6:44 PM, Jason Gunthorpe wrote:
+> CAUTION: This email originated from outside of the organization. Do not click links or open attachments unless you can confirm the sender and know the content is safe.
+>
+>
+>
+> On Mon, Apr 01, 2024 at 04:23:32PM +0300, Margolin, Michael wrote:
+>> Jason
+>>
+>> Thanks for your response, efa_remove() is performing reset to the device
+>> which should stop all DMA from the device.
+>>
+>> Except skipping cleanups that are unnecessary for shutdown flow are there
+>> any other reasons to prefer a separate function for shutdown?
+> Yes you should skip "cleanups" like removing the IB device and
+> otherwise as there is a risk of system hang/deadlock in a shutdown
+> handler context.
+>
+> Jason
+>
 
