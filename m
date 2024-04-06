@@ -1,79 +1,80 @@
-Return-Path: <linux-rdma+bounces-1805-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-1806-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1E7AC89A812
-	for <lists+linux-rdma@lfdr.de>; Sat,  6 Apr 2024 03:06:22 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D547789A815
+	for <lists+linux-rdma@lfdr.de>; Sat,  6 Apr 2024 03:06:35 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id A06D51F24400
-	for <lists+linux-rdma@lfdr.de>; Sat,  6 Apr 2024 01:06:21 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 0EFC8B215CF
+	for <lists+linux-rdma@lfdr.de>; Sat,  6 Apr 2024 01:06:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 29AC34C81;
-	Sat,  6 Apr 2024 01:06:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9EAAC5695;
+	Sat,  6 Apr 2024 01:06:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="HvB2Y9zS"
+	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="Q8q0pwHq"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from NAM11-BN8-obe.outbound.protection.outlook.com (mail-bn8nam11on2081.outbound.protection.outlook.com [40.107.236.81])
+Received: from NAM12-DM6-obe.outbound.protection.outlook.com (mail-dm6nam12on2087.outbound.protection.outlook.com [40.107.243.87])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2148F1FDA;
-	Sat,  6 Apr 2024 01:06:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.236.81
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 93BE4FBEE;
+	Sat,  6 Apr 2024 01:06:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.243.87
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712365575; cv=fail; b=o1TEYN7D+nGxUznnA7sYbjj/5ZuYCM8tR/9YAEgjiPiSOWZLDQOzmZhmGE9lwHMrrBNJ+uWT1xiZMDGtGUXcwLhbZScHFIoBYFLTJX2ORPynO6P287Civ8Yvajzk4mDo12OtAGU0m+NfUntM5yTwbvIj7zLBSjN+sM0RhwIGncA=
+	t=1712365587; cv=fail; b=Ly5Ee8S1yJIGW8pzibKaa3RSlhT/pX7Yonb//yatn+MtpwndE+7c/gmXpzjyFW8YWQaEPxZQzWVYZ27TuP8N7nO82Eidl7ctmUZStx/J0sXeJCPXdQGHk8lkaNQqDsI425RSDtyqHOpnCN5s9fjy2hLIUqiPW5VLEtf3FnIfdkw=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712365575; c=relaxed/simple;
-	bh=oQmFNFiXHx+tRIC4QPHdDv+jxgifNqEtLebbSjrbbVM=;
-	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=EYZvMwlyuVflBHoKJwqmn4CxwLSqLXURvpZU+JUzMU+KcNiC/4edBt79wTjTONnQ62G/DsHz9hU//iVtCU2QRbBsOtpF5TEYyrPEccvV268VAm4O96/pu5mqgVBI5tCNvUOcdIV2SJkfj7ghenGAPJlmWVOlfPeScxNjUXG1ado=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=HvB2Y9zS; arc=fail smtp.client-ip=40.107.236.81
+	s=arc-20240116; t=1712365587; c=relaxed/simple;
+	bh=j/atRVOpT7yb9dVFOdQSVTSJM7kTnB8NzTdCU/ukz1s=;
+	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=VVqvMgxXoBQpMPToz4y1w3kHnPKqlPtmnEO+gUjdBwZCi9RmFJ8Y5VV/RG+3STrAwZ5A358m5OD6sMz61v4QTM4DMih2s43gZuANY9heSy45trqqY2XpAnrFMiEtVZCPnDNIG9dI3KVfqULC374k7rUbSfNXHBHPOvVIL7Ijsn4=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=Q8q0pwHq; arc=fail smtp.client-ip=40.107.243.87
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
 Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=dpYhtykdRRpwTLjs9zw67hLDwPC9QP+zMFBgxXRJOhKebjN6IkDXHLZQTtihuYDkafbY2+TGbxMgXsHtVAFYu/G6h6byQPiz3wkFm2uHjtIhKsDapL064DoumiBsJLWJuJUFGoCShLxHTCTIOzgb/3cOIPv0G3DMVaUuF048k9Y3tEbKPWs6ohExPpN7XgIE8QWpHtE0XBEuMYWeU+bAlX+FLCBkAptjW52IgGi7Pe+P3jNWnCd6k9vPBarT/qx5M/2dRlnob6zruAPlunPZQMXpai6NgE/Kx+TFoSD+tB4qzsgoxmYRcFjW/5l0hNylhGcAOvbHifdoZrGhwG1gmg==
+ b=J6Jc6RGZPRjc2WgAajiwO27NMEvfY7O9ourOVR9stWqHDL3E0hj9P3gdkGdgwqu+Z944qyIZLDMulme1ruJklgDkeg7T4TMsX78/DIV6o3y7H9floigxlMbYads/96FUr+Ln5JDbHx/UqPihiuHZE/yYM7QJiALQi2fZVP/ccvboutp2wd1uzYm6DmTgP589WHbvBkd+98h9TJcVn93gUukg8TmZWojzHD2VP8H2BktOPlMLhUsu5SLmdYoIDjndVBmyr7cPrKgFB3DIrlGs7XR14KvGBoEB5a1oxr7lJbGbR4y3PSEjrAsYUF31hPcjOiz7fLW47yL+lPCuI5QELQ==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=1XqSzsIeo1nDWH8Oh9gjkZ++Oz8ZVd6fHKB5INEN4t0=;
- b=Y8FCnI5C5BfQUuVN1/BSPrwF/SJyrqQdnhKI7ya0ahH6t+FhUHZWtn3fZ9Xc7e8k3J4G4jxA1FYIjgiwFvn4u0RGYE0V9Uir8iKGjAZmYk/wi1kU9GUU682AwjDyejtcfRwHMZuQDM16DitfiN+XBd8jijG56nAEAHqDVmD24j6cdTcI76TXfGfO+uJkgonJeEJW5NtNiYRWAq9j7FyuZAdxO3D/xtdQSMW1LOwE5+O3yIH4QCymxDNjKOrw8UEw9PH3ht5ghBOqMBhrbcIMsr2HmoLb8Lbf+O8M7xLqmfph1/1kbqBafvDkDCeR0BrQZux8MhDBbgZm4f2SIIkGXw==
+ bh=FzyOOIwGJ7NmGhtfxUxRwkVdXEqFsdpzn0zlguAMOQE=;
+ b=Aq6EdkU6DqYyqWZVNtkrhbPxwa2uL6LuJQVHfJEzKz5SKYx0yqSXJ6j3Z4UMJjI8jX1n1tgau80aeoJG0P7GHUleRAJ8k6SrLpstoRHTQDZEayqIFbLxStU7+RyobJ369rdISJFew5BxMZck7SHB3KGJ+uLKXy+NJSzRFcobmXRgY3EznGHfyl6/KGpyZj63Hj/zW87OUO8WDtOQ9rKdZ0H67yV4RhoPUS5Gt2t+2mIp2CgIE1XQy0UauLG7cdRYyJjltDszrjgeD+ucC43id3z7KU7mDMqPq/3G9AC+VsRR1LxgyrokxT3GNqVuvmZaAOxJGP2Jup/QcTp0bIdJoA==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 216.228.117.161) smtp.rcpttodomain=vger.kernel.org smtp.mailfrom=nvidia.com;
+ 216.228.117.160) smtp.rcpttodomain=vger.kernel.org smtp.mailfrom=nvidia.com;
  dmarc=pass (p=reject sp=reject pct=100) action=none header.from=nvidia.com;
  dkim=none (message not signed); arc=none (0)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
  s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=1XqSzsIeo1nDWH8Oh9gjkZ++Oz8ZVd6fHKB5INEN4t0=;
- b=HvB2Y9zSKcGGKa9FqoNedxqBEn5xd842yB+ehKtUiw7nZ6IACicsTQuXRK0wrDhQO5ouXZkQYYzvSa3wbEFaBMZV/GVgmbS10R8auZr0ox19m9sKdk+b+FkLJr7NP3PEfeBqE9Kg/ZrzU6BmXuCS38q/B05Y1dUYRG4LtZlr4S6mFo4UZazoCv5MWdgnjA9sc7A71WFBpAb4g/mPT898iZ/HbWtYp9CdeUfHxr7iV7PtrEWzkWfXSZuZLrR+9FTkOqRyED78zFxx9NBUyOAEVL3pyd21hYnSTBl7M4GKpwmY0IHJhzEilrMaay4QST6n3Qd0gmPPg/IJ/gAUNkerYA==
-Received: from DS7PR03CA0152.namprd03.prod.outlook.com (2603:10b6:5:3b2::7) by
- LV2PR12MB5965.namprd12.prod.outlook.com (2603:10b6:408:172::16) with
+ bh=FzyOOIwGJ7NmGhtfxUxRwkVdXEqFsdpzn0zlguAMOQE=;
+ b=Q8q0pwHqkNuIUOR3eX81S4u1sts5SAs/RmluCFAqsGqScJTgPmKNNK+B0EV91RwINV7QUO6Eu22pfFHxA87BiiYo81vjW0c6RWzqPiR8h7oFfiLXE1E5rvxHlrpfWpZp8/imaIkWaDvG7Cv7FK1po56AYUeBDAFGSlyeLStg7EMYM+tEVtbCu0VcP7TSAzsEHRelsAczUgtB1Euos6VA8f/nCqD4zSDqE17ltp+EJ6BCiZjlUXaFRJe0EMgoQSZNa7UTvkuWqnhfzxfAV8w5fJPvHVTTSgRA6TrV8WRXvaEYXGa67yE+PgQqCCY+1Ty1Hv8/zQIWfH2Nut5NZPe9vA==
+Received: from CH0PR08CA0030.namprd08.prod.outlook.com (2603:10b6:610:33::35)
+ by SA1PR12MB6725.namprd12.prod.outlook.com (2603:10b6:806:254::13) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7409.46; Sat, 6 Apr
- 2024 01:06:10 +0000
-Received: from DS1PEPF00017096.namprd05.prod.outlook.com
- (2603:10b6:5:3b2:cafe::29) by DS7PR03CA0152.outlook.office365.com
- (2603:10b6:5:3b2::7) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7452.33 via Frontend
- Transport; Sat, 6 Apr 2024 01:06:10 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.117.161)
+ 2024 01:06:21 +0000
+Received: from DS3PEPF000099D8.namprd04.prod.outlook.com
+ (2603:10b6:610:33:cafe::c8) by CH0PR08CA0030.outlook.office365.com
+ (2603:10b6:610:33::35) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7409.46 via Frontend
+ Transport; Sat, 6 Apr 2024 01:06:21 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.117.160)
  smtp.mailfrom=nvidia.com; dkim=none (message not signed)
  header.d=none;dmarc=pass action=none header.from=nvidia.com;
 Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
- 216.228.117.161 as permitted sender) receiver=protection.outlook.com;
- client-ip=216.228.117.161; helo=mail.nvidia.com; pr=C
-Received: from mail.nvidia.com (216.228.117.161) by
- DS1PEPF00017096.mail.protection.outlook.com (10.167.18.100) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.7452.22 via Frontend Transport; Sat, 6 Apr 2024 01:06:10 +0000
+ 216.228.117.160 as permitted sender) receiver=protection.outlook.com;
+ client-ip=216.228.117.160; helo=mail.nvidia.com; pr=C
+Received: from mail.nvidia.com (216.228.117.160) by
+ DS3PEPF000099D8.mail.protection.outlook.com (10.167.17.9) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.7452.22 via Frontend Transport; Sat, 6 Apr 2024 01:06:21 +0000
 Received: from rnnvmail201.nvidia.com (10.129.68.8) by mail.nvidia.com
- (10.129.200.67) with Microsoft SMTP Server (version=TLS1_2,
+ (10.129.200.66) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.41; Fri, 5 Apr 2024
- 18:05:58 -0700
+ 18:06:00 -0700
 Received: from sw-mtx-036.mtx.labs.mlnx (10.126.230.35) by
  rnnvmail201.nvidia.com (10.129.68.8) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1258.12; Fri, 5 Apr 2024 18:05:56 -0700
+ 15.2.1258.12; Fri, 5 Apr 2024 18:05:58 -0700
 From: Parav Pandit <parav@nvidia.com>
 To: <netdev@vger.kernel.org>, <davem@davemloft.net>, <edumazet@google.com>,
 	<kuba@kernel.org>, <pabeni@redhat.com>, <corbet@lwn.net>, <dw@davidwei.uk>,
@@ -81,11 +82,13 @@ To: <netdev@vger.kernel.org>, <davem@davemloft.net>, <edumazet@google.com>,
 CC: <saeedm@nvidia.com>, <leon@kernel.org>, <jiri@resnulli.us>,
 	<shayd@nvidia.com>, <danielj@nvidia.com>, <dchumak@nvidia.com>,
 	<linux-doc@vger.kernel.org>, <linux-rdma@vger.kernel.org>, Parav Pandit
-	<parav@nvidia.com>
-Subject: [net-next v4 0/2] devlink: Add port function attribute for IO EQs
-Date: Sat, 6 Apr 2024 04:05:36 +0300
-Message-ID: <20240406010538.220167-1-parav@nvidia.com>
+	<parav@nvidia.com>, Jiri Pirko <jiri@nvidia.com>
+Subject: [net-next v4 1/2] devlink: Support setting max_io_eqs
+Date: Sat, 6 Apr 2024 04:05:37 +0300
+Message-ID: <20240406010538.220167-2-parav@nvidia.com>
 X-Mailer: git-send-email 2.26.2
+In-Reply-To: <20240406010538.220167-1-parav@nvidia.com>
+References: <20240406010538.220167-1-parav@nvidia.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
@@ -98,103 +101,262 @@ X-ClientProxiedBy: rnnvmail203.nvidia.com (10.129.68.9) To
  rnnvmail201.nvidia.com (10.129.68.8)
 X-EOPAttributedMessage: 0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DS1PEPF00017096:EE_|LV2PR12MB5965:EE_
-X-MS-Office365-Filtering-Correlation-Id: e566c8fd-e099-47c5-9528-08dc55d5bf3e
+X-MS-TrafficTypeDiagnostic: DS3PEPF000099D8:EE_|SA1PR12MB6725:EE_
+X-MS-Office365-Filtering-Correlation-Id: 9c5d0df7-3290-4749-937e-08dc55d5c59e
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
 X-Microsoft-Antispam-Message-Info:
-	ZjU1VAo2J6vZk1eVm9f8venXoEkA3ItSIVhtCAAOnkm2Xcb9mMExZOWeTJ1pJQCXF/rH51YHhGXntg8AjF+V0/7Dak3O+3OxIAf7OiMbnQaG7oZq/uEoeFVk5b7jy5PN9im8Zk8cW7wsoTy5wbL+9xRB610wK7NHw4gZzn2PLU6hyoBVRJqPsweaOjga4+gIGt1Os4HuBayeSXs/4B/WEkbuA1LGeQzALEG/UlT/m8josOAzNProSbYOXWXSTE4dbP//OgwIMO3a+RpUKDR0qJFcIZVstO20q3zOH+xZAeYytFExQmEu3lukyoFHRoH2ckMxWp6noZpl2D/jJGYbbpVnIGdDkrEHiZAXiAoTuoEHT0EEB9Vc1HgnAHuw97nANOgWgz2QE4YMMeLawkXq+Wd9ireMhjL/bM9/wqSIeZ3t5YYkW2EoguQGPceVgv1LqgSAaix3cISBFBzK0vdg8H4yUs9Sz/4yJget/vjEnkxX4hUI20zh2L2wyV7j9L6+sCFu/L9lEFXOgJJiRNSMrrr6eJ9wH62bzi4krelv/9o62+dZsBXPDwDML5+9ZffCL/T1QE3IXo63/+RVH6k3G03Q3Z1pm5dhFgd0uUned7/s6l706E5S1OmX1xQb5D8bn5q8i1Bhqphd/3J+ZMf70678EQIURXN7r22hRQwi6QCbLgmAlQLZqqmFV3ZRUdAuv/IcSY7PWlI+6bQUJyVJRCNzoMGvo+iAvCeNBTELttm+V+xxuKjzO+jdgr5PRA5I
+	NbrFpLV8o6ZhNDJGjf6GqXYlyCfa8OveTc15A3CkXRA4TROYkTKfC/GQ2bQUh37V4Ld2DZYudQchDiJKqs2YMzdgChmpthB0cAV9VXjRK52ff+/YxDhbwwhUlCNSS3mGY7gVmJfkt2esG++73Tatx71H8GVz1kT38OOxN67gMn6aClwuTqk7fR7pP7XHm3BVbj+eWdrw52BkoEyXIBh6dzRfl3p/OCUf/lZw9Ki4zXTVNVQYvwRg1n4/6BHh/AOTVfAh6uR8JQy1hltaxpIvGLvRLkO9pzSvNgm0HpZS3k3JOLWBOtAQlDHFXYlCGbrqDXqLiRxboV+ned/R62cwB0PKbnhwTtZ1cWlHFPz/l5yYslqfDH3B7dBSTTly0Cp0YI9zaS6BUDac5tuNwQOKCsXfDVMEbf9Xzvz6DzYkGQ7GAq1Q9ixaw559t9f6agUo2iI+t+qn9k4sloHTwi/ORTxIizQkIxpJPdAv89eEASBJuDQjCainjFsvkPBztgEsQVIe35Dib7m3eEj9F/qkbQl4hDVF13mTZWwv1y6U8Np7qbJFb92aByOc1oqQzAUKpx7eQ4fwB41eMUx7fAqxmvRQOPLd6NCEUc0jpqR1E7tG8WCN5VIxewYPDRH/Hj89fiW0ZAsvSPZFxOZBjqSmsj1V+9lRNz+gm7a+VEON0tE3WvKC/UDzxXcIGQG2tdLS+tSvbyYLynJoSAA8rCTCYU37tSKLC0N34Fp3/msKklGddRGOM7PD7+UJ5CNS9O/Q
 X-Forefront-Antispam-Report:
-	CIP:216.228.117.161;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc6edge2.nvidia.com;CAT:NONE;SFS:(13230031)(1800799015)(82310400014)(7416005)(376005)(36860700004);DIR:OUT;SFP:1101;
+	CIP:216.228.117.160;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc6edge1.nvidia.com;CAT:NONE;SFS:(13230031)(7416005)(36860700004)(376005)(82310400014)(1800799015);DIR:OUT;SFP:1101;
 X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 06 Apr 2024 01:06:10.3149
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 06 Apr 2024 01:06:21.0105
  (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: e566c8fd-e099-47c5-9528-08dc55d5bf3e
+X-MS-Exchange-CrossTenant-Network-Message-Id: 9c5d0df7-3290-4749-937e-08dc55d5c59e
 X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.117.161];Helo=[mail.nvidia.com]
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.117.160];Helo=[mail.nvidia.com]
 X-MS-Exchange-CrossTenant-AuthSource:
-	DS1PEPF00017096.namprd05.prod.outlook.com
+	DS3PEPF000099D8.namprd04.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Anonymous
 X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: LV2PR12MB5965
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA1PR12MB6725
 
-Currently, PCI SFs and VFs use IO event queues to deliver netdev per
-channel events. The number of netdev channels is a function of IO
-event queues. In the second scenario of an RDMA device, the
-completion vectors are also a function of IO event queues. Currently, an
-administrator on the hypervisor has no means to provision the number
-of IO event queues for the SF device or the VF device. Device/firmware
-determines some arbitrary value for these IO event queues. Due to this,
-the SF netdev channels are unpredictable, and consequently, the
-performance is too.
+Many devices send event notifications for the IO queues,
+such as tx and rx queues, through event queues.
 
-This short series introduces a new port function attribute: max_io_eqs.
-The goal is to provide administrators at the hypervisor level with the
-ability to provision the maximum number of IO event queues for a
-function. This gives the control to the administrator to provision
-right number of IO event queues and have predictable performance.
+Enable a privileged owner, such as a hypervisor PF, to set the number
+of IO event queues for the VF and SF during the provisioning stage.
 
-Examples of when an administrator provisions (set) maximum number of
-IO event queues when using switchdev mode:
+example:
+Get maximum IO event queues of the VF device::
 
-  $ devlink port show pci/0000:06:00.0/1
-      pci/0000:06:00.0/1: type eth netdev enp6s0pf0vf0 flavour pcivf pfnum 0 vfnum 0
-          function:
-          hw_addr 00:00:00:00:00:00 roce enable max_io_eqs 10
+  $ devlink port show pci/0000:06:00.0/2
+  pci/0000:06:00.0/2: type eth netdev enp6s0pf0vf1 flavour pcivf pfnum 0 vfnum 1
+      function:
+          hw_addr 00:00:00:00:00:00 ipsec_packet disabled max_io_eqs 10
 
-  $ devlink port function set pci/0000:06:00.0/1 max_io_eqs 20
+Set maximum IO event queues of the VF device::
 
-  $ devlink port show pci/0000:06:00.0/1
-      pci/0000:06:00.0/1: type eth netdev enp6s0pf0vf0 flavour pcivf pfnum 0 vfnum 0
-          function:
-          hw_addr 00:00:00:00:00:00 roce enable max_io_eqs 20
+  $ devlink port function set pci/0000:06:00.0/2 max_io_eqs 32
 
-This sets the corresponding maximum IO event queues of the function
-before it is enumerated. Thus, when the VF/SF driver reads the
-capability from the device, it sees the value provisioned by the
-hypervisor. The driver is then able to configure the number of channels
-for the net device, as well as the number of completion vectors
-for the RDMA device. The device/firmware also honors the provisioned
-value, hence any VF/SF driver attempting to create IO EQs
-beyond provisioned value results in an error.
+  $ devlink port show pci/0000:06:00.0/2
+  pci/0000:06:00.0/2: type eth netdev enp6s0pf0vf1 flavour pcivf pfnum 0 vfnum 1
+      function:
+          hw_addr 00:00:00:00:00:00 ipsec_packet disabled max_io_eqs 32
 
-With above setting now, the administrator is able to achieve the 2x
-performance on SFs with 20 channels. In second example when SF was
-provisioned for a container with 2 cpus, the administrator provisioned only
-2 IO event queues, thereby saving device resources.
-
-With the above settings now in place, the administrator achieved 2x
-performance with the SF device with 20 channels. In the second example,
-when the SF was provisioned for a container with 2 CPUs, the administrator
-provisioned only 2 IO event queues, thereby saving device resources.
-
+Reviewed-by: Jiri Pirko <jiri@nvidia.com>
+Reviewed-by: Shay Drory <shayd@nvidia.com>
+Signed-off-by: Parav Pandit <parav@nvidia.com>
+---
 changelog:
+v3->v4:
+- addressed comment from Jakub to improve devlink documentation
 v2->v3:
-- limited to 80 chars per line in devlink
-- fixed comments from Jakub in mlx5 driver to fix missing mutex unlock
-  on error path
+- limited 80 chars per line
 v1->v2:
 - limited comment to 80 chars per line in header file
-- fixed set function variables for reverse christmas tree
-- fixed comments from Kalesh
-- fixed missing kfree in get call
-- returning error code for get cmd failure
-- fixed error msg copy paste error in set on cmd failure
-
-Parav Pandit (2):
-  devlink: Support setting max_io_eqs
-  mlx5/core: Support max_io_eqs for a function
-
- .../networking/devlink/devlink-port.rst       | 33 +++++++
- .../mellanox/mlx5/core/esw/devlink_port.c     |  4 +
- .../net/ethernet/mellanox/mlx5/core/eswitch.h |  7 ++
- .../mellanox/mlx5/core/eswitch_offloads.c     | 97 +++++++++++++++++++
- include/net/devlink.h                         | 14 +++
+---
+ .../networking/devlink/devlink-port.rst       | 33 ++++++++++++
+ include/net/devlink.h                         | 14 +++++
  include/uapi/linux/devlink.h                  |  1 +
- net/devlink/port.c                            | 53 ++++++++++
- 7 files changed, 209 insertions(+)
+ net/devlink/port.c                            | 53 +++++++++++++++++++
+ 4 files changed, 101 insertions(+)
 
+diff --git a/Documentation/networking/devlink/devlink-port.rst b/Documentation/networking/devlink/devlink-port.rst
+index 562f46b41274..9d22d41a7cd1 100644
+--- a/Documentation/networking/devlink/devlink-port.rst
++++ b/Documentation/networking/devlink/devlink-port.rst
+@@ -134,6 +134,9 @@ Users may also set the IPsec crypto capability of the function using
+ Users may also set the IPsec packet capability of the function using
+ `devlink port function set ipsec_packet` command.
+ 
++Users may also set the maximum IO event queues of the function
++using `devlink port function set max_io_eqs` command.
++
+ Function attributes
+ ===================
+ 
+@@ -295,6 +298,36 @@ policy is processed in software by the kernel.
+         function:
+             hw_addr 00:00:00:00:00:00 ipsec_packet enabled
+ 
++Maximum IO events queues setup
++------------------------------
++When user sets maximum number of IO event queues for a SF or
++a VF, such function driver is limited to consume only enforced
++number of IO event queues.
++
++IO event queues deliver events related to IO queues, including network
++device transmit and receive queues (txq and rxq) and RDMA Queue Pairs (QPs).
++For example, the number of netdevice channels and RDMA device completion
++vectors are derived from the function's IO event queues. Usually, the number
++of interrupt vectors consumed by the driver is limited by the number of IO
++event queues per device, as each of the IO event queues is connected to an
++interrupt vector.
++
++- Get maximum IO event queues of the VF device::
++
++    $ devlink port show pci/0000:06:00.0/2
++    pci/0000:06:00.0/2: type eth netdev enp6s0pf0vf1 flavour pcivf pfnum 0 vfnum 1
++        function:
++            hw_addr 00:00:00:00:00:00 ipsec_packet disabled max_io_eqs 10
++
++- Set maximum IO event queues of the VF device::
++
++    $ devlink port function set pci/0000:06:00.0/2 max_io_eqs 32
++
++    $ devlink port show pci/0000:06:00.0/2
++    pci/0000:06:00.0/2: type eth netdev enp6s0pf0vf1 flavour pcivf pfnum 0 vfnum 1
++        function:
++            hw_addr 00:00:00:00:00:00 ipsec_packet disabled max_io_eqs 32
++
+ Subfunction
+ ============
+ 
+diff --git a/include/net/devlink.h b/include/net/devlink.h
+index 9ac394bdfbe4..bb1af599d101 100644
+--- a/include/net/devlink.h
++++ b/include/net/devlink.h
+@@ -1602,6 +1602,14 @@ void devlink_free(struct devlink *devlink);
+  *			      capability. Should be used by device drivers to
+  *			      enable/disable ipsec_packet capability of a
+  *			      function managed by the devlink port.
++ * @port_fn_max_io_eqs_get: Callback used to get port function's maximum number
++ *			    of event queues. Should be used by device drivers to
++ *			    report the maximum event queues of a function
++ *			    managed by the devlink port.
++ * @port_fn_max_io_eqs_set: Callback used to set port function's maximum number
++ *			    of event queues. Should be used by device drivers to
++ *			    configure maximum number of event queues
++ *			    of a function managed by the devlink port.
+  *
+  * Note: Driver should return -EOPNOTSUPP if it doesn't support
+  * port function (@port_fn_*) handling for a particular port.
+@@ -1651,6 +1659,12 @@ struct devlink_port_ops {
+ 	int (*port_fn_ipsec_packet_set)(struct devlink_port *devlink_port,
+ 					bool enable,
+ 					struct netlink_ext_ack *extack);
++	int (*port_fn_max_io_eqs_get)(struct devlink_port *devlink_port,
++				      u32 *max_eqs,
++				      struct netlink_ext_ack *extack);
++	int (*port_fn_max_io_eqs_set)(struct devlink_port *devlink_port,
++				      u32 max_eqs,
++				      struct netlink_ext_ack *extack);
+ };
+ 
+ void devlink_port_init(struct devlink *devlink,
+diff --git a/include/uapi/linux/devlink.h b/include/uapi/linux/devlink.h
+index 2da0c7eb6710..9401aa343673 100644
+--- a/include/uapi/linux/devlink.h
++++ b/include/uapi/linux/devlink.h
+@@ -686,6 +686,7 @@ enum devlink_port_function_attr {
+ 	DEVLINK_PORT_FN_ATTR_OPSTATE,	/* u8 */
+ 	DEVLINK_PORT_FN_ATTR_CAPS,	/* bitfield32 */
+ 	DEVLINK_PORT_FN_ATTR_DEVLINK,	/* nested */
++	DEVLINK_PORT_FN_ATTR_MAX_IO_EQS,	/* u32 */
+ 
+ 	__DEVLINK_PORT_FUNCTION_ATTR_MAX,
+ 	DEVLINK_PORT_FUNCTION_ATTR_MAX = __DEVLINK_PORT_FUNCTION_ATTR_MAX - 1
+diff --git a/net/devlink/port.c b/net/devlink/port.c
+index 118d130d2afd..be9158b4453c 100644
+--- a/net/devlink/port.c
++++ b/net/devlink/port.c
+@@ -16,6 +16,7 @@ static const struct nla_policy devlink_function_nl_policy[DEVLINK_PORT_FUNCTION_
+ 				 DEVLINK_PORT_FN_STATE_ACTIVE),
+ 	[DEVLINK_PORT_FN_ATTR_CAPS] =
+ 		NLA_POLICY_BITFIELD32(DEVLINK_PORT_FN_CAPS_VALID_MASK),
++	[DEVLINK_PORT_FN_ATTR_MAX_IO_EQS] = { .type = NLA_U32 },
+ };
+ 
+ #define ASSERT_DEVLINK_PORT_REGISTERED(devlink_port)				\
+@@ -182,6 +183,30 @@ static int devlink_port_fn_caps_fill(struct devlink_port *devlink_port,
+ 	return 0;
+ }
+ 
++static int devlink_port_fn_max_io_eqs_fill(struct devlink_port *port,
++					   struct sk_buff *msg,
++					   struct netlink_ext_ack *extack,
++					   bool *msg_updated)
++{
++	u32 max_io_eqs;
++	int err;
++
++	if (!port->ops->port_fn_max_io_eqs_get)
++		return 0;
++
++	err = port->ops->port_fn_max_io_eqs_get(port, &max_io_eqs, extack);
++	if (err) {
++		if (err == -EOPNOTSUPP)
++			return 0;
++		return err;
++	}
++	err = nla_put_u32(msg, DEVLINK_PORT_FN_ATTR_MAX_IO_EQS, max_io_eqs);
++	if (err)
++		return err;
++	*msg_updated = true;
++	return 0;
++}
++
+ int devlink_nl_port_handle_fill(struct sk_buff *msg, struct devlink_port *devlink_port)
+ {
+ 	if (devlink_nl_put_handle(msg, devlink_port->devlink))
+@@ -409,6 +434,18 @@ static int devlink_port_fn_caps_set(struct devlink_port *devlink_port,
+ 	return 0;
+ }
+ 
++static int
++devlink_port_fn_max_io_eqs_set(struct devlink_port *devlink_port,
++			       const struct nlattr *attr,
++			       struct netlink_ext_ack *extack)
++{
++	u32 max_io_eqs;
++
++	max_io_eqs = nla_get_u32(attr);
++	return devlink_port->ops->port_fn_max_io_eqs_set(devlink_port,
++							 max_io_eqs, extack);
++}
++
+ static int
+ devlink_nl_port_function_attrs_put(struct sk_buff *msg, struct devlink_port *port,
+ 				   struct netlink_ext_ack *extack)
+@@ -428,6 +465,9 @@ devlink_nl_port_function_attrs_put(struct sk_buff *msg, struct devlink_port *por
+ 	if (err)
+ 		goto out;
+ 	err = devlink_port_fn_state_fill(port, msg, extack, &msg_updated);
++	if (err)
++		goto out;
++	err = devlink_port_fn_max_io_eqs_fill(port, msg, extack, &msg_updated);
+ 	if (err)
+ 		goto out;
+ 	err = devlink_rel_devlink_handle_put(msg, port->devlink,
+@@ -726,6 +766,12 @@ static int devlink_port_function_validate(struct devlink_port *devlink_port,
+ 			}
+ 		}
+ 	}
++	if (tb[DEVLINK_PORT_FN_ATTR_MAX_IO_EQS] &&
++	    !ops->port_fn_max_io_eqs_set) {
++		NL_SET_ERR_MSG_ATTR(extack, tb[DEVLINK_PORT_FN_ATTR_MAX_IO_EQS],
++				    "Function does not support max_io_eqs setting");
++		return -EOPNOTSUPP;
++	}
+ 	return 0;
+ }
+ 
+@@ -761,6 +807,13 @@ static int devlink_port_function_set(struct devlink_port *port,
+ 			return err;
+ 	}
+ 
++	attr = tb[DEVLINK_PORT_FN_ATTR_MAX_IO_EQS];
++	if (attr) {
++		err = devlink_port_fn_max_io_eqs_set(port, attr, extack);
++		if (err)
++			return err;
++	}
++
+ 	/* Keep this as the last function attribute set, so that when
+ 	 * multiple port function attributes are set along with state,
+ 	 * Those can be applied first before activating the state.
 -- 
 2.26.2
 
