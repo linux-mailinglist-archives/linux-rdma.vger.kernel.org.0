@@ -1,114 +1,93 @@
-Return-Path: <linux-rdma+bounces-1813-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-1814-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 95D9789AC0D
-	for <lists+linux-rdma@lfdr.de>; Sat,  6 Apr 2024 18:35:35 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0A47089B044
+	for <lists+linux-rdma@lfdr.de>; Sun,  7 Apr 2024 12:02:01 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5A676282266
-	for <lists+linux-rdma@lfdr.de>; Sat,  6 Apr 2024 16:35:34 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B81F12844BF
+	for <lists+linux-rdma@lfdr.de>; Sun,  7 Apr 2024 10:01:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 27D91107B3;
-	Sat,  6 Apr 2024 16:35:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D31C8171D8;
+	Sun,  7 Apr 2024 10:01:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="J6zkw0xZ"
+	dkim=pass (2048-bit key) header.d=launchpad.net header.i=@launchpad.net header.b="ccpYQT4+"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from out-181.mta0.migadu.com (out-181.mta0.migadu.com [91.218.175.181])
+Received: from smtp-relay-services-0.canonical.com (smtp-relay-services-0.canonical.com [185.125.188.250])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6EB482940F
-	for <linux-rdma@vger.kernel.org>; Sat,  6 Apr 2024 16:35:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E5E7E63B8
+	for <linux-rdma@vger.kernel.org>; Sun,  7 Apr 2024 10:01:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.125.188.250
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712421330; cv=none; b=odwDrpZL6yOlG7v3UPR8yV2X7pKH5otoQNJD5jPDATdNXfiqJg6TwV8wEKUlbwdDkQSqWvzehshBi/pQnEHgfsTJz5jR4Vq34729ibK957krnoQxuGXbUNLxQyfwlQBpayU1HvxvdWAcziBFEd8nzWFii5L4UnhZKfOGrVrl6WA=
+	t=1712484116; cv=none; b=jnGgm7AScq/MLAqvqaR8L+SdmQbIzzrhZmzgLEH7JGEn6ZxQjY++7SMM/1Mocz+jEeQf/f1VDYZBlVYqq9W272saVp13h6RwehltKpwanYv21GZDY6LxFuKffSTEzElgfxu1yx6gbSZFC3S+4WniIbCqIKEm2xxkA7SdhCE6vfM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712421330; c=relaxed/simple;
-	bh=wI0YZSeqzvN/qVRuAmjmcoDiN2inKK5KxxwjjW12POE=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=glLflFiHxtRt202yoksKp49mhxk6EINXHX4PuHmIT2YD9QQ8KcPXgzePEGFb8vBesAzKYfsKe24fanYVU8t8t+WRHPNVAM/hFL0PJYIDI21CuNvL2FxmRAs/iP1dUt95xuEtNqyQr1FHc4kAtxI8AgLCCuOuVJt46gs9wv5pxQk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=J6zkw0xZ; arc=none smtp.client-ip=91.218.175.181
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <ed9e2b80-0e0f-4628-9a57-e061acf9f4d5@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1712421326;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=g0bHDh8UFsXTxAzHNb9g2dmNrJtw4PGGcQUT8VOBgUI=;
-	b=J6zkw0xZX5QDIOECrVUW+GdrCNjwBzj4wvFOktCIVNMI2wANWoUuPBMZHToMVP20OTJHC3
-	NxYzJNsxIDytRzlBJgSADQXw62TlE2wQEIpqGIUmN6iCnVK6GONebjT/L/PQt6XtIKptcQ
-	KN89DtLYfeoDE+UXKyBOzT71VDvTzgY=
-Date: Sat, 6 Apr 2024 18:35:21 +0200
+	s=arc-20240116; t=1712484116; c=relaxed/simple;
+	bh=8c2HNU+lczAqH/l0isjQM2VjjShIfaPZs3LMd9nQuDE=;
+	h=Content-Type:MIME-Version:To:From:Subject:Message-Id:Date; b=dEtQE4v7i22lfGWXthj69kdCrjknhBeImdRUkGr4IE0LtugY5c1w2+QG8riYAJSSdhU2C1Q4xmgeNN0QBbrbSuY5u9psiKh8KzCjLNRZ///8VsAXclhjY2CyZQNOpCSh8Fa+xzYlF4TdjlxrgpL7B3JWpKoWpUn6ttCGCDriZCE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=launchpad.net; spf=pass smtp.mailfrom=launchpad.net; dkim=pass (2048-bit key) header.d=launchpad.net header.i=@launchpad.net header.b=ccpYQT4+; arc=none smtp.client-ip=185.125.188.250
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=launchpad.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=launchpad.net
+Received: from juju-98d295-prod-launchpad-15.localdomain (buildd-manager.lp.internal [10.131.215.202])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-relay-services-0.canonical.com (Postfix) with ESMTPSA id E91E33F13B
+	for <linux-rdma@vger.kernel.org>; Sun,  7 Apr 2024 10:01:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=launchpad.net;
+	s=20210803; t=1712484105;
+	bh=8c2HNU+lczAqH/l0isjQM2VjjShIfaPZs3LMd9nQuDE=;
+	h=Content-Type:MIME-Version:To:From:Subject:Message-Id:Date:
+	 Reply-To;
+	b=ccpYQT4+PCSoUoUpkZmlJ05ANhiDTHPpn6jVHs6vFYlprF+vMp+EukW7/+MC6cq7x
+	 2eMqQShwj+3R5RTpUV1Hq5KS9zJTdcbVsEewx0rfDabV1lRfGVGJ/troIpuvlr3Fnq
+	 kE52nrXbhGkvlL4eWktxMV8grwE6sX85dwyY78yXwnDmkTkgJPRhcPUWvuHTy+2VIp
+	 KVXJs7nR9RVyvu3O+04oS/nK6dieQz6qFsS3CsC2kgoijttl1uzEOJwATajWDGrM7u
+	 vFsYPCPCW4jrhyvKAPxxgQRCn0hYDn2nKaNJluGThlVICfG+YSGdviBk/KeiohLF/O
+	 Yrp+0dR9ZN07A==
+Received: from [10.131.215.202] (localhost [127.0.0.1])
+	by juju-98d295-prod-launchpad-15.localdomain (Postfix) with ESMTP id DBCA57E231
+	for <linux-rdma@vger.kernel.org>; Sun,  7 Apr 2024 10:01:45 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH 1/1] RDMA/rxe: Make pr_fmt work
-To: Jason Gunthorpe <jgg@ziepe.ca>
-Cc: zyjzyj2000@gmail.com, leon@kernel.org, linux-rdma@vger.kernel.org
-References: <20240323083139.5484-1-yanjun.zhu@linux.dev>
- <20240327130804.GH8419@ziepe.ca>
- <a9011ab4-6947-4ad4-8d1f-653e129c38b9@linux.dev>
- <20240404145913.GF1363414@ziepe.ca>
- <7a2a41c2-c8ef-402d-933a-2b2d8a956207@linux.dev>
- <be9584b6-85fc-46bb-87b8-18ca6103a5a4@linux.dev>
- <20240404235931.GA5792@ziepe.ca>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Zhu Yanjun <yanjun.zhu@linux.dev>
-In-Reply-To: <20240404235931.GA5792@ziepe.ca>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
+Content-Transfer-Encoding: quoted-printable
+X-Launchpad-Message-Rationale: Requester @linux-rdma
+X-Launchpad-Message-For: linux-rdma
+X-Launchpad-Notification-Type: recipe-build-status
+X-Launchpad-Archive: ~linux-rdma/ubuntu/rdma-core-daily
+X-Launchpad-Build-State: MANUALDEPWAIT
+To: Linux RDMA <linux-rdma@vger.kernel.org>
+From: noreply@launchpad.net
+Subject: [recipe build #3708865] of ~linux-rdma rdma-core-daily in xenial: Dependency wait
+Message-Id: <171248410586.1551173.5064894406674607076.launchpad@juju-98d295-prod-launchpad-15>
+Date: Sun, 07 Apr 2024 10:01:45 -0000
+Reply-To: noreply@launchpad.net
+Sender: noreply@launchpad.net
+Errors-To: noreply@launchpad.net
+Precedence: bulk
+X-Generated-By: Launchpad (canonical.com); Revision="aec24aef7a9042c99ef3e238d8b0ca01df9e1a9f"; Instance="launchpad-buildd-manager"
+X-Launchpad-Hash: a6c32064ce7d1e3c6f105896c2851a94968df401
 
-在 2024/4/5 1:59, Jason Gunthorpe 写道:
-> On Thu, Apr 04, 2024 at 08:03:35PM +0200, Zhu Yanjun wrote:
->>>>> Because this driver will finally call printk function to output the logs,
->>>>> the header file include/linux/printk.h needs be included.
->>>>>
->>>>> In include/linux/printk.h, pr_fmt is defined.
->>>> This doesn't make sense, printk.h has:
->>>>
->>>> #ifndef pr_fmt
->>>> #define pr_fmt(fmt) fmt
->>>> #endif
->>>>
->>>> Before or after printk.h should not have an impact.
->>
->>
->> Sorry. The previous mail is not sent successfully. I resend it.
->>
->>> #ifndef pr_fmt
->>>
->>> ...
->>>
->>> #endif
->>>
->>> The above will not undefine pr_fmt.
->>>
->>> #undef pr_fmt will undefine pr_fmt.
->>>
->>> This link explains the above in details.
->>>
->> https://www.techonthenet.com/c_language/directives/ifndef.php
-> 
-> Why would you want to undefine it? The point is to #define it to the
-> rxe specific value. If it is already set to the rxe specific value
-> before including printk.h then it will work fine?
+ * State: Dependency wait
+ * Recipe: linux-rdma/rdma-core-daily
+ * Archive: ~linux-rdma/ubuntu/rdma-core-daily
+ * Distroseries: xenial
+ * Duration: 1 minute
+ * Build Log: https://launchpad.net/~linux-rdma/+archive/ubuntu/rdma-core-d=
+aily/+recipebuild/3708865/+files/buildlog.txt.gz
+ * Upload Log:=20
+ * Builder: https://launchpad.net/builders/lcy02-amd64-045
 
-Got your point. There are about more 130 header files that define pr_fmt 
-in the kernel include directory. And these header files are included one 
-another. Is there any tool to clarify the including relationship between 
-these header files?
-
-Thanks a lot
-Zhu Yanjun
-> 
-> Jason
+--=20
+https://launchpad.net/~linux-rdma/+archive/ubuntu/rdma-core-daily/+recipebu=
+ild/3708865
+Your team Linux RDMA is the requester of the build.
 
 
