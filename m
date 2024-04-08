@@ -1,67 +1,65 @@
-Return-Path: <linux-rdma+bounces-1820-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-1819-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 169A789B626
-	for <lists+linux-rdma@lfdr.de>; Mon,  8 Apr 2024 04:54:57 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8483A89B61E
+	for <lists+linux-rdma@lfdr.de>; Mon,  8 Apr 2024 04:54:42 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id AA1F41F217DD
-	for <lists+linux-rdma@lfdr.de>; Mon,  8 Apr 2024 02:54:56 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 09429B20F9B
+	for <lists+linux-rdma@lfdr.de>; Mon,  8 Apr 2024 02:54:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6A3296FB6;
-	Mon,  8 Apr 2024 02:54:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 673A74430;
+	Mon,  8 Apr 2024 02:54:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="wsmjHel6"
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="s7zvsb0F"
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5DD6717EF;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DD58617F7;
 	Mon,  8 Apr 2024 02:54:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712544873; cv=none; b=dnvl81bWd6X0U4c/uRtH5+FK9VT6KQAdDa3bK39h3Vszdd+YtI32Bk5LMXdpxNhQeohhI2IIBE18QKL/w7SsfDLCHxZQfrwuW+H+TnH8G4HrAxh387SrHgBe0wN9PKMLUxO/zmZcpXgkCZrEWf5Q04p0uPufJKZKKV30VE42hK4=
+	t=1712544872; cv=none; b=bWDS3PM26xRLobvpVnVdShpuGVGzzbgA7amV3RuzwqFHiEcdEtpMQDinWHfHaW+/BSlE8KQnbFBimd924voSkj7lNsQaDzGRx+2hJyYJzD5gBeC99ZtzLOoj4mIOnnYOiM4NaOCquntT6JIzFgoTAoSPvqrABjHqukJ2Agaetqg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712544873; c=relaxed/simple;
-	bh=gRV4N5xFYiInE+BHk6JlA221X5cSHeaIFbd90umqfVo=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=e4A9HDg+U8M5Mr71HEoKKnPGfPfVEKxfNYVpOF05y9aaLUKCKLmc/vObSOdpKHwI/KCH4Ge+B+RzMF97ww9APxqzA/FEETAImzkYgJ+H6gKyuUbWT5yeGFiVAqISlwZj+527FkypfxiP1eHHJYO1imCfUIJ4pAWNz6yfCaM5KYw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=wsmjHel6; arc=none smtp.client-ip=198.137.202.133
+	s=arc-20240116; t=1712544872; c=relaxed/simple;
+	bh=94RvMc6Rf0UIsnYRM2ZlngrhDBe/mSI9V8l2Gsna8QA=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=twA4HHnZv3gkuRizWXCMUZG5Hu9W1ypKTXMhg/aYDsfgv+j+fZHq5e/zsK01t4EwqKxM//CsoBw3+Y+GhBLyJPUHoOzaYL4fogcF3/5220lXNiusB6JpOtvE7/iZS9GL1wpGEKIOgcRIxKzgML8iUYljkvP8PsuC/mL8rwBZW+0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=s7zvsb0F; arc=none smtp.client-ip=198.137.202.133
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
 Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-	MIME-Version:Message-ID:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:
-	Content-ID:Content-Description:In-Reply-To:References;
-	bh=ezkU5mMjz5A11jgyDYvnajpAqZ2htzfK9oaZIm4uNd8=; b=wsmjHel6lSKY+Sa3I96c5LcXEx
-	T6EoL1aJPCogjyD/prWwQBnG8O/ISMkN+HpV2BXenw1EAT4xnmhYsMTeWzStxPzJx59gyUfQoX/GO
-	3XBKqSU3QQx8Qz07CeBBkQC2c0f6XdDNdJYOKiPFcU9/lFcEYLkuoFnyFZUW48tquAK+IzlboHSZv
-	vD/xegC1eaeXqczi33vzhxZwtpZQd/3jpt2edgq1rvraawC5N4P6VvqkPQ7IZ4rTDpex0w/eqC4ne
-	1ToHPd9ve1zsffn49O4yBQ0+COl9+xqzb4mDuvyPoajzi0wLuLgUyr6q4mDUgcpzewrlCbUd+apgY
-	R2eIBXkA==;
+	MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:Sender
+	:Reply-To:Content-Type:Content-ID:Content-Description;
+	bh=sVZokRLRtK/U1jkTDOTUDvOWvOdsjK6uSS0rAvoMvMU=; b=s7zvsb0FszY3b8Zjx3MaQsPz6c
+	J+9tShR/usOzuGoOe9mjdBVGE8Afqk9VwBM6KnmdVSQ4bt3/u20STOWDCBzyAK34uZdbPuWEigubv
+	JO0GTIZJo6P0v/tDUbtKns/v2I15RPbLgYXaldVUNbvd7FKySEOuRN7ylM8S9UwlUXafqZeMwp3Aw
+	04wm3TKLe7mmnsSsv5G82rUlfORZyyj+NEALgljEUx2fXNOtysCoXj+ARLIeWlB0SSKVhSMAqnG5i
+	SjxHPqpkySPz9kkWlX17RS/T2Zt3FR+upavdCEj0KAvYwqQOhkb6Om3t7B8s3VqiN3A6kUU9nDiaV
+	l42C0+3w==;
 Received: from [50.53.2.121] (helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtpsa (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rtf9Q-0000000E7aj-2PWl;
-	Mon, 08 Apr 2024 02:54:28 +0000
+	id 1rtf9S-0000000E7aj-106x;
+	Mon, 08 Apr 2024 02:54:30 +0000
 From: Randy Dunlap <rdunlap@infradead.org>
 To: linux-scsi@vger.kernel.org
 Cc: Randy Dunlap <rdunlap@infradead.org>,
 	"James E.J. Bottomley" <jejb@linux.ibm.com>,
 	"Martin K. Petersen" <martin.petersen@oracle.com>,
-	Doug Gilbert <dgilbert@interlog.com>,
 	Sagi Grimberg <sagi@grimberg.me>,
 	Max Gurtovoy <mgurtovoy@nvidia.com>,
 	linux-rdma@vger.kernel.org,
-	target-devel@vger.kernel.org,
-	Hannes Reinecke <hare@suse.de>,
-	Bart Van Assche <bvanassche@acm.org>,
-	Jonathan Corbet <corbet@lwn.net>,
-	linux-doc@vger.kernel.org
-Subject: [PATCH 0/8] scsi: documentation: clean up docs and fix kernel-doc
-Date: Sun,  7 Apr 2024 19:54:17 -0700
-Message-ID: <20240408025425.18778-1-rdunlap@infradead.org>
+	target-devel@vger.kernel.org
+Subject: [PATCH 4/8] scsi: iser: fix @read_stag kernel-doc warning
+Date: Sun,  7 Apr 2024 19:54:21 -0700
+Message-ID: <20240408025425.18778-5-rdunlap@infradead.org>
 X-Mailer: git-send-email 2.44.0
+In-Reply-To: <20240408025425.18778-1-rdunlap@infradead.org>
+References: <20240408025425.18778-1-rdunlap@infradead.org>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
@@ -70,40 +68,34 @@ List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Clean up some SCSI doc files and fix kernel-doc in 6 header files in
-include/scsi/.
+Correct kernel-doc comments for struct iser_ctrl to prevent warnings:
 
+iser.h:76: warning: Function parameter or struct member 'read_stag' not described in 'iser_ctrl'
+iser.h:76: warning: Excess struct member 'reaf_stag' description in 'iser_ctrl'
 
- [PATCH 1/8] scsi: documentation: clean up overview
- [PATCH 2/8] scsi: documentation: clean up scsi_mid_low_api.rst
- [PATCH 3/8] scsi: core: add kernel-doc for scsi_msg_to_host_byte()
- [PATCH 4/8] scsi: iser: fix @read_stag kernel-doc warning
- [PATCH 5/8] scsi: libfcoe: fix a slew of kernel-doc warnings
- [PATCH 6/8] scsi: core: add function return kernel-doc for 2 functions
- [PATCH 7/8] scsi: scsi_transport_fc: add kernel-doc for function return
- [PATCH 8/8] scsi: scsi_transport_srp: fix a couple of kernel-doc warnings
-
- Documentation/driver-api/scsi.rst       |   15 ++++++-------
- Documentation/scsi/scsi_mid_low_api.rst |   20 ++++++++---------
- include/scsi/iser.h                     |    2 -
- include/scsi/libfcoe.h                  |   25 +++++++++++++++-------
- include/scsi/scsi.h                     |    7 +++---
- include/scsi/scsi_cmnd.h                |    2 +
- include/scsi/scsi_transport_fc.h        |    5 +---
- include/scsi/scsi_transport_srp.h       |    4 +--
- 8 files changed, 46 insertions(+), 34 deletions(-)
-
-
+Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+---
 Cc: "James E.J. Bottomley" <jejb@linux.ibm.com>
 Cc: "Martin K. Petersen" <martin.petersen@oracle.com>
 Cc: linux-scsi@vger.kernel.org
-Cc: Doug Gilbert <dgilbert@interlog.com>
 Cc: Sagi Grimberg <sagi@grimberg.me>
 Cc: Max Gurtovoy <mgurtovoy@nvidia.com>
 Cc: linux-rdma@vger.kernel.org
 Cc: target-devel@vger.kernel.org
-Cc: Hannes Reinecke <hare@suse.de>
-Cc: Bart Van Assche <bvanassche@acm.org>
-Cc: Jonathan Corbet <corbet@lwn.net>
-Cc: linux-doc@vger.kernel.org
+
+ include/scsi/iser.h |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff -- a/include/scsi/iser.h b/include/scsi/iser.h
+--- a/include/scsi/iser.h
++++ b/include/scsi/iser.h
+@@ -63,7 +63,7 @@ struct iser_cm_hdr {
+  * @rsvd:         reserved
+  * @write_stag:   write rkey
+  * @write_va:     write virtual address
+- * @reaf_stag:    read rkey
++ * @read_stag:    read rkey
+  * @read_va:      read virtual address
+  */
+ struct iser_ctrl {
 
