@@ -1,83 +1,102 @@
-Return-Path: <linux-rdma+bounces-1842-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-1843-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id CCFAA89BE1D
-	for <lists+linux-rdma@lfdr.de>; Mon,  8 Apr 2024 13:28:21 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8A31189BF50
+	for <lists+linux-rdma@lfdr.de>; Mon,  8 Apr 2024 14:46:09 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 09BC61C213B1
-	for <lists+linux-rdma@lfdr.de>; Mon,  8 Apr 2024 11:28:21 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 44251283690
+	for <lists+linux-rdma@lfdr.de>; Mon,  8 Apr 2024 12:46:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9B84C657C1;
-	Mon,  8 Apr 2024 11:28:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DED207CF17;
+	Mon,  8 Apr 2024 12:44:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="RMiBitlA"
+	dkim=pass (2048-bit key) header.d=resnulli-us.20230601.gappssmtp.com header.i=@resnulli-us.20230601.gappssmtp.com header.b="XK9zbzRN"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wm1-f54.google.com (mail-wm1-f54.google.com [209.85.128.54])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 58EAC3FB81;
-	Mon,  8 Apr 2024 11:28:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 172497C09E
+	for <linux-rdma@vger.kernel.org>; Mon,  8 Apr 2024 12:44:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712575696; cv=none; b=jM3lzC1TlP8M+fRuXNzcHQ62WXfCIK3yqhxduJ4wHW/Hdy6lPb9CtwMWsl0aWfkwn48Vbx+Mo2HZYIunTNlG5OkrJRkPmJJgrr33WfjeI9amDUb9l+sbj8BNvSBvzQjN5dCfAr2jnpi7HuH9Rf0bsjQkjopBsRtcRce6oUsz6fw=
+	t=1712580252; cv=none; b=H7SNf56RNCbM+ZbaQlyviubHMTBrHmbsoXGjhHW1AFRcdNynhWJ7X2CdiRe8NtRzUTx9xWaWVxuaxSud/RapB0+Qz68kWLHClVU9nrzeWPDA8IcouAO5WaUrg8XNIr9IFReA263Hcn1N5A0TM/ryEB4VkX/RXQRr6OWy9gBXyF8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712575696; c=relaxed/simple;
-	bh=lLTbowSwzeWgkAL21lpvXAkbdwYlYSLAD3ZBr2JGCBQ=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Message-Id:Date:
-	 MIME-Version:Content-Type; b=I76e0DmGQsuIeOSez8xCHhlE348f8xqZM44eu0cgFtzR43HiJfrviWxQMycjvKuncGg/Jy7wDY72G3HIar5iP43DJO9xFzLk+NWiK6WPK5lJKxzXOHE0/rQWCkcq6GPtTUISlpdQy1dQZnrnP+3uew9oUZavF75sNhv0HfnqWKM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=RMiBitlA; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6E368C433F1;
-	Mon,  8 Apr 2024 11:28:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712575695;
-	bh=lLTbowSwzeWgkAL21lpvXAkbdwYlYSLAD3ZBr2JGCBQ=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-	b=RMiBitlAmuZknqrpwEYtL3q6KeUjV9jQzXEA+VMelz3aM7+SV4DS1oh86qt4lkDYJ
-	 xrX6jdkv3Xy0goVsToydhX6vl6V+gqItnfLOV9SYzOm4nKOAvE1AMYXlJDCi7dCGfL
-	 yYYMG86np7ABpTOI7dwYIy1WTdzI3ZYgK0/cJnHAr41J9je0eZ6yiZokP5iH89wB/w
-	 lwKOwGt+mZsP9QKQmb0Z/7dKqKVxiQtibhiv3eBkDqvc60XoV9VuQrA1b1QeqzvrCl
-	 SM+6XQo6wiVfGPyZJ0akKyHVZr05FTpDvMGGINjWESosJ9SG8k1Fz4E4vQNko8of63
-	 OXZEslCFpOYsg==
-From: Leon Romanovsky <leon@kernel.org>
-To: jgg@ziepe.ca, Junxian Huang <huangjunxian6@hisilicon.com>
-Cc: linux-rdma@vger.kernel.org, linuxarm@huawei.com, 
- linux-kernel@vger.kernel.org
-In-Reply-To: <20240315093551.1650088-1-huangjunxian6@hisilicon.com>
-References: <20240315093551.1650088-1-huangjunxian6@hisilicon.com>
-Subject: Re: [PATCH for-next] RDMA/hns: Support DSCP
-Message-Id: <171257569273.115037.9184913634596731281.b4-ty@kernel.org>
-Date: Mon, 08 Apr 2024 14:28:12 +0300
+	s=arc-20240116; t=1712580252; c=relaxed/simple;
+	bh=Zr+1C6AMrdIdosUk3eIJmCBfHO6COi5oAT0Uj5E0hjA=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=YlTot+8IWs/d5W584fQHeM2az8O+utaPbMIu8G8xNyVQLiHvT3c8AnNhMex1HcCNDmpsfALzBONch1GjO7vP8X4jowTU0JyfD5jQn8fvoOkvfxEJnX3FJKq1T7xJBRgGMjU0r1OMmw/mLPGWQaLekuxqs4sL2Xw4smYOMrNDXWc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=resnulli.us; spf=none smtp.mailfrom=resnulli.us; dkim=pass (2048-bit key) header.d=resnulli-us.20230601.gappssmtp.com header.i=@resnulli-us.20230601.gappssmtp.com header.b=XK9zbzRN; arc=none smtp.client-ip=209.85.128.54
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=resnulli.us
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=resnulli.us
+Received: by mail-wm1-f54.google.com with SMTP id 5b1f17b1804b1-4166d6dab3dso6480205e9.0
+        for <linux-rdma@vger.kernel.org>; Mon, 08 Apr 2024 05:44:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=resnulli-us.20230601.gappssmtp.com; s=20230601; t=1712580248; x=1713185048; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=Zr+1C6AMrdIdosUk3eIJmCBfHO6COi5oAT0Uj5E0hjA=;
+        b=XK9zbzRNwU56eqUuNS4GVi5MqnTbKrL+/uUiO/N830DiA2Izzm9OHB1kZKdLiuCYub
+         WjvAILRuxnUE1f3WwlylOxOjUpdNfEHVX/SrpwVpxJrbx+QK6uUQbUKO9EATMYXuSru2
+         9onpWbGHatDtZJchycDemEDi7akLO+AFeXRcim4kv1dDbEL08TGimQ3mbSPuZ1kKKEIr
+         zH/kv8il0Gk2G4vIRF3/p0dmnOlqruvB022Z8lVxZz9PKgjGxomjxI+zNeAIux1+ejAn
+         QIO27jUabXt+n0YeNafoGAPMpnX0IpL509oeOg3M1wlAtCIHLrt3bKcnk4EKjdz6Oo9L
+         G8kQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712580248; x=1713185048;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Zr+1C6AMrdIdosUk3eIJmCBfHO6COi5oAT0Uj5E0hjA=;
+        b=ANe5k93DKYHu7LWkxOZzNvj2HFEAHE4WuyKTusHzUDjre997BRxzm/rMHQ2qPjjDnW
+         fvnn8n3ysHE3SSuUS9r5Lxzk7Y15TPyI8X9+SVhnXjtcffuZSRSrqrWDv9T+7Axwfl6d
+         mU2Xbj0SXo9OqJQxWTK02ZfLFGbcP1q3o3W2p8tY3qcsRPqy0piFx2wGtZIrT/KgFhDu
+         rw2g8Pcnbcsl7oAp86hOxMLARI0r0YzIaeoAkODnrGKY57RIzr8M8UyIsQMooGNXVe+9
+         YjUbrunTaJOgrchgYfFnaKUiZ2cAIRxRDrRUspQrr26CBi0dyLU2G9Rj/uIDmJ93BDrP
+         f7jg==
+X-Forwarded-Encrypted: i=1; AJvYcCUs41MgANQ1s9I++/pGdnYWkX99PV5R/F9lnCLy47LHTkWx/jn67h2k9cU4yOG35yxTFqLXMJqaGbO/Ad/7n14dem8xYLj+k2eHvg==
+X-Gm-Message-State: AOJu0YxSAG1mCSY71FuzHfTV5YWCW/54cR8iHuu+saqVXTK0VzgY+/Zm
+	LHTMayktizrEq526YaJb6sZ7qL02xdp3vvB6NVFctkEfaoWVMWgaFG350kVx/fw=
+X-Google-Smtp-Source: AGHT+IGT3I51sbHihk12YlzaY/nd+QTgAV3yBeDem8Fp22k5JGBZfOnoWf+LgfjLwQxeK39XA4/fWw==
+X-Received: by 2002:a05:600c:a42:b0:416:1d6d:dc6d with SMTP id c2-20020a05600c0a4200b004161d6ddc6dmr6057461wmq.40.1712580248295;
+        Mon, 08 Apr 2024 05:44:08 -0700 (PDT)
+Received: from localhost ([193.47.165.251])
+        by smtp.gmail.com with ESMTPSA id u10-20020adff88a000000b00343e01d3f6dsm8882182wrp.3.2024.04.08.05.44.07
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 08 Apr 2024 05:44:07 -0700 (PDT)
+Date: Mon, 8 Apr 2024 14:44:04 +0200
+From: Jiri Pirko <jiri@resnulli.us>
+To: Parav Pandit <parav@nvidia.com>
+Cc: netdev@vger.kernel.org, davem@davemloft.net, edumazet@google.com,
+	kuba@kernel.org, pabeni@redhat.com, corbet@lwn.net, dw@davidwei.uk,
+	kalesh-anakkur.purayil@broadcom.com, saeedm@nvidia.com,
+	leon@kernel.org, shayd@nvidia.com, danielj@nvidia.com,
+	dchumak@nvidia.com, linux-doc@vger.kernel.org,
+	linux-rdma@vger.kernel.org
+Subject: Re: [net-next v4 2/2] mlx5/core: Support max_io_eqs for a function
+Message-ID: <ZhPmlL_ptzw9PJ9z@nanopsycho>
+References: <20240406010538.220167-1-parav@nvidia.com>
+ <20240406010538.220167-3-parav@nvidia.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Mailer: b4 0.14-dev
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240406010538.220167-3-parav@nvidia.com>
 
+Sat, Apr 06, 2024 at 03:05:38AM CEST, parav@nvidia.com wrote:
+>Implement get and set for the maximum IO event queues for SF and VF.
+>This enables administrator on the hypervisor to control the maximum
+>IO event queues which are typically used to derive the maximum and
+>default number of net device channels or rdma device completion vectors.
+>
+>Reviewed-by: Shay Drory <shayd@nvidia.com>
+>Signed-off-by: Parav Pandit <parav@nvidia.com>
 
-On Fri, 15 Mar 2024 17:35:51 +0800, Junxian Huang wrote:
-> Add support for DSCP configuration. For DSCP, get dscp-prio mapping
-> via hns3 nic driver api .get_dscp_prio() and fill the SL (in WQE for
-> UD or in QPC for RC) with the priority value. The prio-tc mapping is
-> configured to HW by hns3 nic driver. HW will select a corresponding
-> TC according to SL and the prio-tc mapping.
-> 
-> 
-> [...]
-
-Applied, thanks!
-
-[1/1] RDMA/hns: Support DSCP
-      https://git.kernel.org/rdma/rdma/c/c3236d538646c8
-
-Best regards,
--- 
-Leon Romanovsky <leon@kernel.org>
-
+Reviewed-by: Jiri Pirko <jiri@nvidia.com>
 
