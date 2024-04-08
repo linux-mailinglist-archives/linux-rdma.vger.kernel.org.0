@@ -1,130 +1,80 @@
-Return-Path: <linux-rdma+bounces-1823-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-1824-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id B7C5589B772
-	for <lists+linux-rdma@lfdr.de>; Mon,  8 Apr 2024 08:04:17 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id BCA3D89B7AD
+	for <lists+linux-rdma@lfdr.de>; Mon,  8 Apr 2024 08:35:32 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 577E71F2173C
-	for <lists+linux-rdma@lfdr.de>; Mon,  8 Apr 2024 06:04:17 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1CDFE281EC7
+	for <lists+linux-rdma@lfdr.de>; Mon,  8 Apr 2024 06:35:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7AF6579F0;
-	Mon,  8 Apr 2024 06:04:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="GuVRc2gz"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D58EAEEA5;
+	Mon,  8 Apr 2024 06:35:25 +0000 (UTC)
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wm1-f41.google.com (mail-wm1-f41.google.com [209.85.128.41])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 865F41BC31
-	for <linux-rdma@vger.kernel.org>; Mon,  8 Apr 2024 06:04:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C784D1D52C;
+	Mon,  8 Apr 2024 06:35:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712556252; cv=none; b=Yl7nUileeKXh3RFIhN0p8uLL311R7FmQWMcPRZJqm0XoexUFLmsWvOOw8KVMF1dtrwwT/5gLqqnZZ0VcRWRzAb4mC5zVLpOG1bSeC9KHVzNCUxA1qi/MScWFajfqVxXeBaVSiEIHTvn22JOAhs81qzsvbSqT5TBDts+F6OICLD0=
+	t=1712558125; cv=none; b=ky0GDW73yjWyYPx0s8ahwRhHtnJe59QFWBgJT+nmZhtzDt4vze4zH4UsUh+sk/SES60sQyy2L56SvEyFfoBPvO5zMOnNMarrY3+dJfmQlmtD71FtM/y+n2qhkqOjo0zZd8wUTrS5+F/kIbkVRnm89SeV9zNkCn9wXkEbgnCDgks=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712556252; c=relaxed/simple;
-	bh=z3VKM8ifEz1OYxd9ScJ+qSOMAQizdORgVeNjdf04wic=;
-	h=MIME-Version:From:Date:Message-ID:Subject:To:Cc:Content-Type; b=FouCnXpEUOtAPFmZLNiH/P0moTfrLnA4PBfvxZkCZhjF5KBgkUfrFv7pZKCTe0syVVyZ8/RTX6OG7jV9DuG2lfvoxLZWk8/+djHAvqll8vSN3xaepSHLdSj3n6Hfp+19aCRxk2isnZRdyJsIaoeBG9vRGkAd3cu6b8N8XOsmX2o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=GuVRc2gz; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1712556249;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type;
-	bh=wdfrx2ti+7KT1+Xx3Ua+Avfc5gHDz9AsrT99YKhBbZs=;
-	b=GuVRc2gzc7B6EBM2l79pAGWe0rRIkCOd/zVnkfUH71PS1NcSTv7OaUucJazlsUFdzxOLFh
-	dbaQ0vudm9S+xDVHNLdoI9tkLU7VSRGXlpmYOFNQHdiWC7u05zQsZhPJqAVAyiSBGUGDpI
-	7PMlmkaVUkkBQg1PpwaYWgQzZHiJG9o=
-Received: from mail-pj1-f72.google.com (mail-pj1-f72.google.com
- [209.85.216.72]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-208-Anu8xjKFOLu-qyeoNnMMIg-1; Mon, 08 Apr 2024 02:04:06 -0400
-X-MC-Unique: Anu8xjKFOLu-qyeoNnMMIg-1
-Received: by mail-pj1-f72.google.com with SMTP id 98e67ed59e1d1-2a49440f7b5so1847415a91.1
-        for <linux-rdma@vger.kernel.org>; Sun, 07 Apr 2024 23:04:06 -0700 (PDT)
+	s=arc-20240116; t=1712558125; c=relaxed/simple;
+	bh=+KhrMhcJSvItbb/04gtqwcqQ9SN2qd7j6u0HCMyKS6E=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=mYZL38Z/YPlbX5CnEncegqU5YvCtQR5AOnZd7kaHy5REDW4JTyoyCi6vwFtb9pfT5LGPmCDWXKCiHSaW/guaGZ6otOGSL3bzrTLPRjblC4mRSEjNnA7LUk/Od8O3W5VhpYzc2MjYWcaW0HZ6hNe8gj7VBUvROog2uA644m1RZyU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=grimberg.me; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.128.41
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=grimberg.me
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wm1-f41.google.com with SMTP id 5b1f17b1804b1-4167082dabdso946495e9.0;
+        Sun, 07 Apr 2024 23:35:23 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712556243; x=1713161043;
-        h=cc:to:subject:message-id:date:from:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=wdfrx2ti+7KT1+Xx3Ua+Avfc5gHDz9AsrT99YKhBbZs=;
-        b=nL5ElHJFJiGFOma6rl5BVQC4kMXXR9xytUZnCc4pW+kXzXW+HzoO0klnViR15Y8ihg
-         rAbH1cpiEuh/9vh16QLTaRCVokhMSZ9jwyA6vYr6QO4aHxQv901dEHswYtIIgmYonlX5
-         KRPdUUxF+TDhMCAg7NthIKSo6Hi66iB5xkULc5yE9+bFf39OkMGRX0CeQvt4Lt3a+P5U
-         5vzI26a8isghclub6VvvW3XJQ8L/WGvLJA4Br3EYxu2vHYAvF8iiSnrPlK/EcX1FL7/0
-         tBx0zERtv2yNEPEpE6Am7bH+f3fR27023htCemkpIbaukb+FdQgdW7F05uINnzNG8tqu
-         +Lcw==
-X-Gm-Message-State: AOJu0YyoyyRsj68INiNnjsX8AF2++ZquyfmEQCFvuvhFHNZ2yubTaEWL
-	NPkYlxTWmxIlRxEra/F5JBR4sIdNCQxLtb+Vg8dx/kDKFEPSk+Vup9nGZJwbK5ZeKHcShj4SrCU
-	BLnxGXNjn0niNGTn82vnnLI5/4Fye710m/P+citGIUl/ONjh0JknbpI7D3QHeAbQaHTaPNVwH8C
-	ZgWR/Y2afzswclWNSdM0hfc3L0Z1iTIm1NtO5qICDQXo544dVw7g==
-X-Received: by 2002:a17:90a:c08c:b0:2a4:a87c:b907 with SMTP id o12-20020a17090ac08c00b002a4a87cb907mr2943416pjs.4.1712556243584;
-        Sun, 07 Apr 2024 23:04:03 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IHH4MmXQRAwIqD3IjY29U13hfoIEOpCDqe6B4UhYmfFhgbDLBetr2uDzoa2G2CgYVtFR9uF3foIHFbetKVP39Y=
-X-Received: by 2002:a17:90a:c08c:b0:2a4:a87c:b907 with SMTP id
- o12-20020a17090ac08c00b002a4a87cb907mr2943406pjs.4.1712556243268; Sun, 07 Apr
- 2024 23:04:03 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1712558122; x=1713162922;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=+KhrMhcJSvItbb/04gtqwcqQ9SN2qd7j6u0HCMyKS6E=;
+        b=rIWolup+fF/JdenwNEaEzc+lbOEPqTJjhS/4mSR7b2E9Fm6deNxifJd+dSoWXdYfjv
+         kl5ZhPlTJiMvdwTvdQAX8xGlZS9v3Alg6h9eYU6CR4KMlfDP/L2jbmZKg/LdYhbZNoiG
+         xR543HRvgyhYpVghB17b8wm1J91B3daanGR9YmSzC7O4KT014m8918zyWrcXSouSoLqM
+         RLQ9dn2kO00MZ0nLf/2zpiVVePiIoj6pc9LIQxLc05OtYwTdBIytUfE/VOupEK+hFQED
+         /fmJsiKKUOIFYt2JN3th4lyOR0G/dD95k7iKORtFOZp6wOpWRHhSZFLOsKH7a0CbF2QO
+         HOkw==
+X-Forwarded-Encrypted: i=1; AJvYcCXzrQFkztSNddltB3uOM76pesg4PhzI4hleyXmTF3fKqamV0SvfZ0m8o5CDGrabMchcOi5DekB5MN7bENNih6kKPp9Gg33rX4LtniSLa0b+eknLh+W7TDCVxnAXhaADDuvwlc5bPpJGFDPBHge3SDbeDkZefX7UuL9iem9kDdOxC6NDn84=
+X-Gm-Message-State: AOJu0Yxz8NBC5TCnK5baIRShSXcy5UsKSxaU8qsRIZQsxjvITIH6JX2O
+	86awN6no0vNy7fGxrB5EmWy3pQd6/QYElGnUJXPB4uaXyKiZ4sTZ
+X-Google-Smtp-Source: AGHT+IFSyt0zPSTcrnhe5XjpfseqpCtC+DiCJFueKoydoT+hbLBs5WFMLMjDRBKfZIA/WEgashqa5Q==
+X-Received: by 2002:a05:600c:3b96:b0:416:7b2c:df09 with SMTP id n22-20020a05600c3b9600b004167b2cdf09mr693106wms.1.1712558121952;
+        Sun, 07 Apr 2024 23:35:21 -0700 (PDT)
+Received: from [10.50.4.160] (bzq-84-110-32-226.static-ip.bezeqint.net. [84.110.32.226])
+        by smtp.gmail.com with ESMTPSA id l25-20020a1c7919000000b004161cb3e794sm7174390wme.1.2024.04.07.23.35.21
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 07 Apr 2024 23:35:21 -0700 (PDT)
+Message-ID: <6d038491-b05d-435f-9f34-53afc6e67029@grimberg.me>
+Date: Mon, 8 Apr 2024 09:35:19 +0300
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-From: Yi Zhang <yi.zhang@redhat.com>
-Date: Mon, 8 Apr 2024 14:03:51 +0800
-Message-ID: <CAHj4cs9uQduBHjcsmOGHa8RaNGNMw8k8bBhZdGgdeEKPFeB8qQ@mail.gmail.com>
-Subject: [bug report] kmemleak in rdma_core observed during blktests nvme/rdma
- use siw
-To: RDMA mailing list <linux-rdma@vger.kernel.org>
-Cc: Shinichiro Kawasaki <shinichiro.kawasaki@wdc.com>, Jason Gunthorpe <jgg@nvidia.com>, leonro@nvidia.com
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 4/8] scsi: iser: fix @read_stag kernel-doc warning
+To: Randy Dunlap <rdunlap@infradead.org>, linux-scsi@vger.kernel.org
+Cc: "James E.J. Bottomley" <jejb@linux.ibm.com>,
+ "Martin K. Petersen" <martin.petersen@oracle.com>,
+ Max Gurtovoy <mgurtovoy@nvidia.com>, linux-rdma@vger.kernel.org,
+ target-devel@vger.kernel.org
+References: <20240408025425.18778-1-rdunlap@infradead.org>
+ <20240408025425.18778-5-rdunlap@infradead.org>
+Content-Language: he-IL, en-US
+From: Sagi Grimberg <sagi@grimberg.me>
+In-Reply-To: <20240408025425.18778-5-rdunlap@infradead.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-Hi
-I found the below kmemleak issue during blktests nvme/rdma on the
-latest linux-rdma/for-next, please help check it and let me know if
-you need any info/testing for it, thanks.
-
-# dmesg | grep kmemleak
-[   67.130652] kmemleak: Kernel memory leak detector initialized (mem
-pool available: 36041)
-[   67.130728] kmemleak: Automatic memory scanning thread started
-[ 1051.771867] kmemleak: 2 new suspected memory leaks (see
-/sys/kernel/debug/kmemleak)
-[ 1832.796189] kmemleak: 8 new suspected memory leaks (see
-/sys/kernel/debug/kmemleak)
-[ 2578.189075] kmemleak: 17 new suspected memory leaks (see
-/sys/kernel/debug/kmemleak)
-[ 3330.710984] kmemleak: 4 new suspected memory leaks (see
-/sys/kernel/debug/kmemleak)
-
-unreferenced object 0xffff88855da53400 (size 192):
-  comm "rdma", pid 10630, jiffies 4296575922
-  hex dump (first 32 bytes):
-    37 00 00 00 00 00 00 00 c0 ff ff ff 1f 00 00 00  7...............
-    10 34 a5 5d 85 88 ff ff 10 34 a5 5d 85 88 ff ff  .4.].....4.]....
-  backtrace (crc 47f66721):
-    [<ffffffff911251bd>] kmalloc_trace+0x30d/0x3b0
-    [<ffffffffc2640ff7>] alloc_gid_entry+0x47/0x380 [ib_core]
-    [<ffffffffc2642206>] add_modify_gid+0x166/0x930 [ib_core]
-    [<ffffffffc2643468>] ib_cache_update.part.0+0x6d8/0x910 [ib_core]
-    [<ffffffffc2644e1a>] ib_cache_setup_one+0x24a/0x350 [ib_core]
-    [<ffffffffc263949e>] ib_register_device+0x9e/0x3a0 [ib_core]
-    [<ffffffffc2a3d389>] 0xffffffffc2a3d389
-    [<ffffffffc2688cd8>] nldev_newlink+0x2b8/0x520 [ib_core]
-    [<ffffffffc2645fe3>] rdma_nl_rcv_msg+0x2c3/0x520 [ib_core]
-    [<ffffffffc264648c>]
-rdma_nl_rcv_skb.constprop.0.isra.0+0x23c/0x3a0 [ib_core]
-    [<ffffffff9270e7b5>] netlink_unicast+0x445/0x710
-    [<ffffffff9270f1f1>] netlink_sendmsg+0x761/0xc40
-    [<ffffffff9249db29>] __sys_sendto+0x3a9/0x420
-    [<ffffffff9249dc8c>] __x64_sys_sendto+0xdc/0x1b0
-    [<ffffffff92db0ad3>] do_syscall_64+0x93/0x180
-    [<ffffffff92e00126>] entry_SYSCALL_64_after_hwframe+0x71/0x79
-
--- 
-Best Regards,
-  Yi Zhang
-
+Acked-by: Sagi Grimberg <sagi@grimberg.me>
 
