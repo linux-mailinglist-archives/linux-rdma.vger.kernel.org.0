@@ -1,183 +1,273 @@
-Return-Path: <linux-rdma+bounces-1826-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-1827-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3229489B809
-	for <lists+linux-rdma@lfdr.de>; Mon,  8 Apr 2024 08:57:48 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 512E989B873
+	for <lists+linux-rdma@lfdr.de>; Mon,  8 Apr 2024 09:31:54 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6E607B22125
-	for <lists+linux-rdma@lfdr.de>; Mon,  8 Apr 2024 06:57:45 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E71D81F22D7A
+	for <lists+linux-rdma@lfdr.de>; Mon,  8 Apr 2024 07:31:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EBF691CAAC;
-	Mon,  8 Apr 2024 06:57:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D491428DBF;
+	Mon,  8 Apr 2024 07:31:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="Aj3rTdcM"
+	dkim=pass (1024-bit key) header.d=samsung.com header.i=@samsung.com header.b="R4igch+N"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from NAM10-BN7-obe.outbound.protection.outlook.com (mail-bn7nam10on2077.outbound.protection.outlook.com [40.107.92.77])
+Received: from mailout2.w1.samsung.com (mailout2.w1.samsung.com [210.118.77.12])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D26E4200BA
-	for <linux-rdma@vger.kernel.org>; Mon,  8 Apr 2024 06:57:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.92.77
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712559459; cv=fail; b=k7/UXYLEU+NUO4YjgPG/OT9Sp/kMIfbmmM8H9XtKi9mSRYQzxEYytTYOSN+mYE4hKCkIGHbvXTE/TIv9xOadL9Zf6ZKst8uH0UlaLhpFZA4e/OQ4MrfKofgdvaxcUmAf7m04gpLtg+3ydAW2UPmRRIrZYgXt6F/7xFmo7iczKAk=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712559459; c=relaxed/simple;
-	bh=1Xodh1zcpeHBDUXjFAD4ZgypKkQ7i1hBHN8nozFB6oI=;
-	h=Date:From:To:CC:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ht40er4f1wfEVH/CUVsxTADgtzd8ySURTHRC9UmcvwgcHd46v4yNW4KfyRT5HSzEtj4SFeN1XEKSwgENKCMDp2bRchP3oTvck3pZuI/wDWTYZQP2bqKc6xMTDCYvtMhnYR+5aLVvHWKY0ce92mGDg2VQhP/nwvReOqiCs6oAHvk=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=Aj3rTdcM; arc=fail smtp.client-ip=40.107.92.77
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=EmmQXROUdJah7nGmEy3dlGSAKJYmwESVmn0fYpH//fTgk+jbAmxQuXVA9BpihZDz8epINBerzNoUsy4IudhEmiONs0uvZaD5PaIxGyBPzhFF6MwuUOETKtWcsiPC/eb1lMPZl6ZLJw87/QdSfFLkO72cFM9KhYSAoIhyoFw5j+TjzpXUB5KzYXtQfmHvF+HaMc0uH12VUSmoeOUpWuZtYIy22BohjAEphuFHVXyJ5VjX6+0rEwnlEi7vEEnY1BG8pTZcsPzWswh06VI7L5n0qRsNwvopRz0OhA232QO02wWME5L9ky7EVvQtEKe2gKAkylHqmmWpZRchSxGyyqqHVg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=eak1W8t8KKybh6bCwFW+Qkufrp8HOSSisuzKJiBz7jg=;
- b=BkEhEgTUT2aDS95H/28idGkiQEc59xCEmNZSrYjPPnRE2gBxATTz+G0OHoM+JIE7yjGq4eJwa6hLQ8QToQAToUxh1rRHN5dlwcqOrXhrFcy5AfDoM3COyiulxRutGLgfi9aAC3OP4GUxOs1nKFvEMaq+nJGHbQf+ZuwcL9pMEDzGio9CViVBMQNEN8+5WEBEIguCE8Ln3ICXf2Q8hfMTHo+Azbd5fW8J+qYE7ulz5ti8TMfFFBhqnMvWigU8XdtV0Q4CAVdLZYh9pRRJh8jjsmL4IcI5q2ao5+OgnuTIRDTTZ6zKgNSG0/dzm8W4iEtaoDe8D6gbIuH5x/qiDlcWJg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 216.228.117.160) smtp.rcpttodomain=redhat.com smtp.mailfrom=nvidia.com;
- dmarc=pass (p=reject sp=reject pct=100) action=none header.from=nvidia.com;
- dkim=none (message not signed); arc=none (0)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=eak1W8t8KKybh6bCwFW+Qkufrp8HOSSisuzKJiBz7jg=;
- b=Aj3rTdcMOyvJWCdNv5NnW2VuCdzLInvzBx6dgpVpeVDCuXY9OzWepiK44gcQYV/DKd2liVBSG20NdKUEsnRq1MYCaCVZzqyFqzALRui4zVMFsstczt81f3Y6HotC7Xfq2G6d8pvBVekMdQ7gebemwdWtEI2YncGc2J3jycjD0ar7O72L1l3uzqnyvZP0o6HAaKMLEFXOtHddkNc2qHyYnmvy9jjch+llq73wTQqhVhT93sI0V6KSYUjGbj7wfioWmHZV6pFeVNgK+aZEX3lACRZSGzRI2PWblkg9Q+zCH6JUy2WugILkP4fH2oxyt5AXM+LMpw44Np+Ml2JgnYEF/Q==
-Received: from PH0P220CA0028.NAMP220.PROD.OUTLOOK.COM (2603:10b6:510:d3::17)
- by SJ0PR12MB6782.namprd12.prod.outlook.com (2603:10b6:a03:44d::10) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7409.46; Mon, 8 Apr
- 2024 06:57:32 +0000
-Received: from SN1PEPF000252A3.namprd05.prod.outlook.com
- (2603:10b6:510:d3:cafe::23) by PH0P220CA0028.outlook.office365.com
- (2603:10b6:510:d3::17) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7452.26 via Frontend
- Transport; Mon, 8 Apr 2024 06:57:32 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.117.160)
- smtp.mailfrom=nvidia.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=nvidia.com;
-Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
- 216.228.117.160 as permitted sender) receiver=protection.outlook.com;
- client-ip=216.228.117.160; helo=mail.nvidia.com; pr=C
-Received: from mail.nvidia.com (216.228.117.160) by
- SN1PEPF000252A3.mail.protection.outlook.com (10.167.242.10) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.7452.22 via Frontend Transport; Mon, 8 Apr 2024 06:57:31 +0000
-Received: from rnnvmail201.nvidia.com (10.129.68.8) by mail.nvidia.com
- (10.129.200.66) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.41; Sun, 7 Apr 2024
- 23:57:13 -0700
-Received: from localhost (10.126.231.35) by rnnvmail201.nvidia.com
- (10.129.68.8) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1258.12; Sun, 7 Apr
- 2024 23:57:12 -0700
-Date: Mon, 8 Apr 2024 09:57:10 +0300
-From: Leon Romanovsky <leonro@nvidia.com>
-To: Yi Zhang <yi.zhang@redhat.com>
-CC: RDMA mailing list <linux-rdma@vger.kernel.org>, Shinichiro Kawasaki
-	<shinichiro.kawasaki@wdc.com>, Jason Gunthorpe <jgg@nvidia.com>
-Subject: Re: [bug report] kmemleak in rdma_core observed during blktests
- nvme/rdma use siw
-Message-ID: <20240408065710.GC8764@unreal>
-References: <CAHj4cs9uQduBHjcsmOGHa8RaNGNMw8k8bBhZdGgdeEKPFeB8qQ@mail.gmail.com>
- <20240408063907.GB8764@unreal>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F1EAE2576E;
+	Mon,  8 Apr 2024 07:31:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=210.118.77.12
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1712561502; cv=none; b=Gu4p7a/1YW86BExy7b6+HbQc+5V00Zm9ptdqlDl65yoyfbn3zFN/IAYUVA8vUsyHm38ufM9gJa2SC5FO9wITwVuX8dRQTY/V2IYjMyUALeiALIFFbMsHaY8RDarszHbSh8KCELisc4WIqtJ9nBmlmoWdQnSSsU3m+lF5pTNm+nU=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1712561502; c=relaxed/simple;
+	bh=lmsBm5nTnffgSx2fS/ryKsYEj/upOdvS9elDu44URUg=;
+	h=Date:From:To:CC:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition:In-Reply-To:References; b=UtEMZdJ1z/lvf1NtUxBWEaKTxHfr5IFqPc3yHLUkwz4jj+tDm4OAZ1ZWUieTEvSoLLLojpTUHnIT0STMhEu7QXOY2+CELlwMf3uOo2oWIqn/UHQS+FfNw2yitburOkUXqJdDow0Box0OSiCUqhmXRn4/76YVekkTsNQqvWg2TfI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=samsung.com; spf=pass smtp.mailfrom=samsung.com; dkim=pass (1024-bit key) header.d=samsung.com header.i=@samsung.com header.b=R4igch+N; arc=none smtp.client-ip=210.118.77.12
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=samsung.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=samsung.com
+Received: from eucas1p2.samsung.com (unknown [182.198.249.207])
+	by mailout2.w1.samsung.com (KnoxPortal) with ESMTP id 20240408072050euoutp02410e3d635aa40075dd940878b76f66a4~EPQUwTE-M0578505785euoutp02B;
+	Mon,  8 Apr 2024 07:20:50 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.w1.samsung.com 20240408072050euoutp02410e3d635aa40075dd940878b76f66a4~EPQUwTE-M0578505785euoutp02B
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+	s=mail20170921; t=1712560850;
+	bh=dic+LWsSv8Akr20ymbAxctCZm+7tnRnSHjjKdWufs+M=;
+	h=Date:From:To:CC:Subject:In-Reply-To:References:From;
+	b=R4igch+NX9vZcyEjz9xuRWmkA2q91FagNMFNpqwDiitOV/D+OsI7RYwSyzHBsmqyX
+	 ZbUGCEyohbKzcPinP/cCJzFkJJPMzO2eVGE/eOVVrc004e5YNvgIGJZePbaWm9q22j
+	 YVQMOM9+DH6PHsDVg1joqLelPhU4kImKEQjIhdvY=
+Received: from eusmges1new.samsung.com (unknown [203.254.199.242]) by
+	eucas1p1.samsung.com (KnoxPortal) with ESMTP id
+	20240408072050eucas1p1a8c0beb906ba7d9b12d86046bb4fa42d~EPQUi2_Q42048920489eucas1p1M;
+	Mon,  8 Apr 2024 07:20:50 +0000 (GMT)
+Received: from eucas1p2.samsung.com ( [182.198.249.207]) by
+	eusmges1new.samsung.com (EUCPMTA) with SMTP id CB.3B.09624.2DA93166; Mon,  8
+	Apr 2024 08:20:50 +0100 (BST)
+Received: from eusmtrp1.samsung.com (unknown [182.198.249.138]) by
+	eucas1p2.samsung.com (KnoxPortal) with ESMTPA id
+	20240408072049eucas1p2bc84263f53c4eb375742a6739a2f8fbd~EPQTyuEjs2668926689eucas1p2J;
+	Mon,  8 Apr 2024 07:20:49 +0000 (GMT)
+Received: from eusmgms2.samsung.com (unknown [182.198.249.180]) by
+	eusmtrp1.samsung.com (KnoxPortal) with ESMTP id
+	20240408072049eusmtrp113df4514d474d7cbd59d368c0190ea5e~EPQTvd1e20866108661eusmtrp1J;
+	Mon,  8 Apr 2024 07:20:49 +0000 (GMT)
+X-AuditID: cbfec7f2-bfbff70000002598-fe-66139ad20952
+Received: from eusmtip1.samsung.com ( [203.254.199.221]) by
+	eusmgms2.samsung.com (EUCPMTA) with SMTP id ED.02.09010.1DA93166; Mon,  8
+	Apr 2024 08:20:49 +0100 (BST)
+Received: from CAMSVWEXC02.scsc.local (unknown [106.1.227.72]) by
+	eusmtip1.samsung.com (KnoxPortal) with ESMTPA id
+	20240408072049eusmtip1eaef4a235fff5b1d93272c279edd8416~EPQTa7RNP0059900599eusmtip13;
+	Mon,  8 Apr 2024 07:20:49 +0000 (GMT)
+Received: from localhost (106.110.32.44) by CAMSVWEXC02.scsc.local
+	(2002:6a01:e348::6a01:e348) with Microsoft SMTP Server (TLS) id 15.0.1497.2;
+	Mon, 8 Apr 2024 08:20:48 +0100
+Date: Mon, 8 Apr 2024 09:20:43 +0200
+From: Joel Granados <j.granados@samsung.com>
+To: Kuniyuki Iwashima <kuniyu@amazon.com>
+CC: <Dai.Ngo@oracle.com>, <alex.aring@gmail.com>,
+	<alibuda@linux.alibaba.com>, <allison.henderson@oracle.com>,
+	<anna@kernel.org>, <bridge@lists.linux.dev>, <chuck.lever@oracle.com>,
+	<coreteam@netfilter.org>, <courmisch@gmail.com>, <davem@davemloft.net>,
+	<dccp@vger.kernel.org>, <devnull+j.granados.samsung.com@kernel.org>,
+	<dhowells@redhat.com>, <dsahern@kernel.org>, <edumazet@google.com>,
+	<fw@strlen.de>, <geliang@kernel.org>, <guwen@linux.alibaba.com>,
+	<herbert@gondor.apana.org.au>, <horms@verge.net.au>, <ja@ssi.bg>,
+	<jaka@linux.ibm.com>, <jlayton@kernel.org>, <jmaloy@redhat.com>,
+	<jreuter@yaina.de>, <kadlec@netfilter.org>, <keescook@chromium.org>,
+	<kolga@netapp.com>, <kuba@kernel.org>, <linux-afs@lists.infradead.org>,
+	<linux-hams@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+	<linux-nfs@vger.kernel.org>, <linux-rdma@vger.kernel.org>,
+	<linux-s390@vger.kernel.org>, <linux-sctp@vger.kernel.org>,
+	<linux-wpan@vger.kernel.org>, <linux-x25@vger.kernel.org>,
+	<lucien.xin@gmail.com>, <lvs-devel@vger.kernel.org>,
+	<marc.dionne@auristor.com>, <marcelo.leitner@gmail.com>,
+	<martineau@kernel.org>, <matttbe@kernel.org>, <mcgrof@kernel.org>,
+	<miquel.raynal@bootlin.com>, <mptcp@lists.linux.dev>, <ms@dev.tdt.de>,
+	<neilb@suse.de>, <netdev@vger.kernel.org>,
+	<netfilter-devel@vger.kernel.org>, <pabeni@redhat.com>,
+	<pablo@netfilter.org>, <ralf@linux-mips.org>, <razor@blackwall.org>,
+	<rds-devel@oss.oracle.com>, <roopa@nvidia.com>, <stefan@datenfreihafen.org>,
+	<steffen.klassert@secunet.com>, <tipc-discussion@lists.sourceforge.net>,
+	<tom@talpey.com>, <tonylu@linux.alibaba.com>,
+	<trond.myklebust@hammerspace.com>, <wenjia@linux.ibm.com>,
+	<ying.xue@windriver.com>
+Subject: Re: [PATCH v2 4/4] ax.25: Remove the now superfluous sentinel
+ elements from ctl_table array
+Message-ID: <20240408072043.j5p3dcyalm5yrozo@joelS2.panther.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: multipart/signed; micalg="pgp-sha512";
+	protocol="application/pgp-signature"; boundary="a36pnpbxxry3pzoc"
 Content-Disposition: inline
-In-Reply-To: <20240408063907.GB8764@unreal>
-X-ClientProxiedBy: rnnvmail201.nvidia.com (10.129.68.8) To
- rnnvmail201.nvidia.com (10.129.68.8)
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: SN1PEPF000252A3:EE_|SJ0PR12MB6782:EE_
-X-MS-Office365-Filtering-Correlation-Id: 472a68ad-9088-40b8-9eda-08dc579929ae
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	edsxwDZV6JOXeliftDO1TjEBdbY5oMhnzyrH6bI80dl+wG0OhO31qgngBEvdX32wQ/QTwX3UgLlLP90g9GCLZYDJIst2jD7OeAAtpbquSiGnxuqZnZ6szW1kzVPid2x/k7uycnqT/BXoAKbCre+ZsCBNngJC9vJqOMojx/0XuhOGWj/hIh2bT6UCWtpSpRseal/brVLDJmVis0mnuqBlJQOcZG1j+nh4LoEZ2b8V19G9N1e0rA8hXK6CPH/Pmk4wfdImalLOn/INpTAWxhU/LpEJPFv9Aq1fqQuUwFsiHfw11RGf6xTUVUmyWKCD4HFO4v3PnTcaCvxu1tSdoFIaHTR8igP3VtyG2Emigo90Tkr8eMtrEP8wizT+qAYZGbj9Fwz2WsDFRwHWwOD+BCWVYEgssrdrj+M5X+9DKAfesRoETEKDlbjywO3KhIw6XGL3wKN/Qhsd1DaaHt8oSaOPDva6SUquAk4w1ycw/BJeAz2cJFNl6Rr1x/z9Fc6ljz5/F5PcKytEzYeDcqgoM4zIHjOC8q3HAlJdFWV65Dtehnmv5kmYuUrR7jW5u0oUmCfo8Qtta9vR+N5QtQ3T+l8YWqvhZOjM0cOIn6+9QXmFrLej+6Sp3mC0aNsUWDnIYLvKLE7zx3aANlmhbjZXS04cb18YXQbT0dCwcmqIVFZQoT+SM/Q6AAm8Y0iHw0zDsffl32QGCEpp4N/K32t7bJd2V1K9Li7/HLhsTDrcux7qfFpXeNKF2LFQAmOrG0oxYHg4
-X-Forefront-Antispam-Report:
-	CIP:216.228.117.160;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc6edge1.nvidia.com;CAT:NONE;SFS:(13230031)(1800799015)(36860700004)(376005)(82310400014);DIR:OUT;SFP:1101;
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 08 Apr 2024 06:57:31.9284
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 472a68ad-9088-40b8-9eda-08dc579929ae
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.117.160];Helo=[mail.nvidia.com]
-X-MS-Exchange-CrossTenant-AuthSource:
-	SN1PEPF000252A3.namprd05.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR12MB6782
+In-Reply-To: <20240405222658.3615-1-kuniyu@amazon.com>
+X-ClientProxiedBy: CAMSVWEXC01.scsc.local (2002:6a01:e347::6a01:e347) To
+	CAMSVWEXC02.scsc.local (2002:6a01:e348::6a01:e348)
+X-Brightmail-Tracker: H4sIAAAAAAAAA2WTeUxUVxTGc982M1TwAUZulCpSpBUVi9X2VK1So/aVNpFg26RNrJ3CA5HN
+	zIhLGxvKqmyOLIJTEMRkGAcc6YDoqMAULchABAVZJoAwDJIiLmVHWQo8jSb973e+73z3nvPH
+	EZN2aeIl4sDQQ7wsVBrszFhRpVUT9WvvK+39P0xvXgSVEZ9A9814GiKiYwmI0c9QUHohgYCZ
+	jj4CpvRxJAx199GQk1fMQFZ9NAVTLQkMNGZbCHga+ZIC7fUYAnqrzCIoTSpAUBDZTsHVvjEG
+	EvodIerKCALLKTMNTarnDEyoNCJ4OGKmYCL5HTgbH0VAXUIIXOuwUNBQmkyDKvESAwqjBzRf
+	7SCg8XoWAw2GWhoeVSZRoDgfRUJv7mMa2lNVFBjKchCYLz8jICpnkISooR4SXqirabibNEOC
+	UqshoVXRi+BWXDkNdZcjRTB67g4JZTkRFFTlLgaF1kjBaO0AgoyBByTcv+kCxuEZAu4WD9Ew
+	lPUBpKpLCLhxclwEJfUHwPjCSEDPWB8DM63bPLdz6oZ4mjOZR0ju6d0axJ0r/JX7I+Iexb2Y
+	cONKLrYRXMLtfpLTKztEXKlhJZerC+cmK/8UcTrNSYb7++IlgtN3f8op8gzI2/kHqy1+fHDg
+	YV62butPVvsHux6IDg46Hs3R/RiBTA7xSCLG7AasnX5OzbEdq0ZYkxEYj6xmeRjhtKk2RiiG
+	EM6/pBC9TujTz9CCkY/wqDrlTZdpYooSCh3CDbpJei5CsS64JUUzzwy7BtcPtJNzvIhdhU9o
+	E+efItlia5yRcRrNGfasPx7v7J1na9YT95ieEQLb4pqzlvlpSfYo1k1OzfaIZ3kpzp8Wz8kS
+	9mM8Vq0lhVFX4JELnZTAx7GxxETM/YXZBwuwuaARCcYOfK+ujxHYHvdXl7za0xHXpiZSQiAV
+	4Yrp5yKhKEBY9fsIIXRtxtFNlleJz3FF3tj8RJi1wa1PbIVBbXBKaQYpyNb4RKyd0O2KCzoH
+	KAV6T/nWasq3VlO+WU2Q3XFrehrzP3k1Vp1/TAr8GdZqn1G5SKRBDny4PCSAl3uE8kfc5dIQ
+	eXhogLtvWIgOzR5r7XT14DWU3f+veyUixKgSucyGzUUFDWgJFRoWyjsvst6z0dbfztpPeuwX
+	Xha2TxYezMsr0VIx5exgvdJvOW/HBkgP8UE8f5CXvXYJsWRJBOG9Xd8jfjjsPtTlF9P87rJy
+	+wX3DdmrmsW7vyxav0nF9rTGpGxw+Wjr09kb3Ha5sJz18qlZX9Z27Ksz/6zLDAyjG31vbvzW
+	a2DNE0nQkdbvJY9O7ewW5e8sDHIqMuzd1/V+tCu1OCt9f4LPvd1qvUe8W7bGxslk41vmWFgz
+	8bXGx8lZ3jm+MO5MUnnqbabpeFrXptEQ29+W29MHv9nlMHZ4MsD4yJjputdjpPt07MKWYnPQ
+	ahfvXVnLMo8Frc08fGXS1Fa2uMkpZWfFHYlPnjrFMu6yqSVqbJdX+7hFnNxhsfs51vPAns0v
+	e1c0lQR/d6P8Vt/aHONf0i9cYTjWNSY8c4tBku7vTMn3Sz3cSJlc+h9Ib7zGJwUAAA==
+X-Brightmail-Tracker: H4sIAAAAAAAAA2WTf1DTZRzHe76/NrXZBMzvoXW6w/JX0wHDD56KaZ7fugzT6xdewcIvw4JN
+	NuDMrJCBwPDHwstwiBuQEzadMWEyE+WwmPwQUFTQGxhjQCExdU5FBQJXl3f993ren/f7/Tz3
+	3H24uJ+FE8jdKktmFTJJgoCaTDSO2jvfuKz1j1tiuiCA2rSl0H1WTUJaxm4MMm1jBFhLcjEY
+	6+zHYMSWhYOnu58EXfEpCg63ZBAw0p5LQVuhC4Oh9CcEmM9kYtBb5+SAda8JgSndQcDp/ocU
+	5A7MAlWlF4Frv5OEq4Y7FAwbjBy45XUSMLxvChxSqzBoyk2Eqk4XAa3WfSQY9pygQNMgguun
+	OzFoO3OYgtaaRhL6avcSoClS4dCrv02C44CBgJpqHQLnSTcGKt09HFSeHhwel9pJaN47hoPW
+	bMShQ9OL4ELWORKaTqZz4MGRizhU69IIqNO/DBpzAwEPGgcR/Dh4DYcrZ4Og4f4YBs2nPCR4
+	Ds+DA6UVGPyS84gDFS1fQMPjBgx6HvZTMNYRsWo1U9qqJpmbTi/ODDXXI+bI8a+ZgrTLBPN4
+	eAFTUXYDY3J/HcAZm7aTw1hr5jJ6SwrztLacw1iMORTzW9kJjLF1hzOa4hq0QRAlXK6QpySz
+	s+PlyuQVgs0iCBaKwkEYHBouFIUs/XRZsFiweOXyLWzC1lRWsXhljDC+QW8jtt2ZtV2nuYvS
+	UMcMNZrEpfmhtO2Hg6QaTeb68Y8i+syAB/MNZtHl96+RPvann15XUz7TXURXlbQQvoMF0b8b
+	rZwJF8EPotvzjM8SFH8R3TLowCc4gD+fzjbveXYFzi/n0cNZR5+Z/Plx9KOuXjTBPP4quuem
+	G/O11iDacKX0n8E0uv6Qi5hgnJ9K5/+UN97KHeeZ9LFR7oQ8iR9GP7Sbcd9T59Deki7Cx9/Q
+	npE+pEH+2ueatM81af9r8smLaFulg/qfvJA2FN3GfbyCNpvdhB5xjCiATVEmShOVwUKlJFGZ
+	IpMKY+WJFjS+MNa64YoqVDZwV1iLMC6qRUHjSefPplYUSMjkMlYQwNsknhbnx9si+WoHq5BH
+	K1ISWGUtEo9/4/d44PRY+fj2yZKjRWFLxKLQsPAl4vCwEMEM3tvbsiV+fKkkmf2SZbexin9z
+	GHdSYBoWw8Pr1hJ5a485/0iMUL7zpuDgfpejMTLakL1aPzd/Tk/mPGPSdx9y+0JGNiUnfa7K
+	KLAf2fwo8rWkDRZ3Zt96R39qPqv66PyFmwWKre/9qR6tbPKavu2q9uzMckvx1IzdDyJdhwrX
+	TJfuZI4e1zVpn+66vSWnyrs+iHo/JNISXtpiLyE+kX/QvmlZ/kslEoN0f8y614uag2c66lVD
+	67dbrxa8EDafU51eP7/Rf05pHLrhLpReWjiC7O53u7ra1OL2qRt3DRtUo2UbI6QmeXxEcTn/
+	xZzzfQFRutmxUz97NfatHQP7yCmF93qj3Odu5f315IBr0Z2P7byLpkunX5Gvo9YqoioFhDJe
+	IlqAK5SSvwH5lVNtxQQAAA==
+X-CMS-MailID: 20240408072049eucas1p2bc84263f53c4eb375742a6739a2f8fbd
+X-Msg-Generator: CA
+X-RootMTR: 20240405222730eucas1p16a0790be308342130a19a5b489ffae1e
+X-EPHeader: CA
+CMS-TYPE: 201P
+X-CMS-RootMailID: 20240405222730eucas1p16a0790be308342130a19a5b489ffae1e
+References: <20240405071531.fv6smp55znlfnul2@joelS2.panther.com>
+	<CGME20240405222730eucas1p16a0790be308342130a19a5b489ffae1e@eucas1p1.samsung.com>
+	<20240405222658.3615-1-kuniyu@amazon.com>
 
-On Mon, Apr 08, 2024 at 09:39:07AM +0300, Leon Romanovsky wrote:
-> On Mon, Apr 08, 2024 at 02:03:51PM +0800, Yi Zhang wrote:
-> > Hi
-> > I found the below kmemleak issue during blktests nvme/rdma on the
-> > latest linux-rdma/for-next, please help check it and let me know if
-> > you need any info/testing for it, thanks.
-> > 
-> > # dmesg | grep kmemleak
-> > [   67.130652] kmemleak: Kernel memory leak detector initialized (mem
-> > pool available: 36041)
-> > [   67.130728] kmemleak: Automatic memory scanning thread started
-> > [ 1051.771867] kmemleak: 2 new suspected memory leaks (see
-> > /sys/kernel/debug/kmemleak)
-> > [ 1832.796189] kmemleak: 8 new suspected memory leaks (see
-> > /sys/kernel/debug/kmemleak)
-> > [ 2578.189075] kmemleak: 17 new suspected memory leaks (see
-> > /sys/kernel/debug/kmemleak)
-> > [ 3330.710984] kmemleak: 4 new suspected memory leaks (see
-> > /sys/kernel/debug/kmemleak)
-> > 
-> > unreferenced object 0xffff88855da53400 (size 192):
-> >   comm "rdma", pid 10630, jiffies 4296575922
-> >   hex dump (first 32 bytes):
-> >     37 00 00 00 00 00 00 00 c0 ff ff ff 1f 00 00 00  7...............
-> >     10 34 a5 5d 85 88 ff ff 10 34 a5 5d 85 88 ff ff  .4.].....4.]....
-> >   backtrace (crc 47f66721):
-> >     [<ffffffff911251bd>] kmalloc_trace+0x30d/0x3b0
-> >     [<ffffffffc2640ff7>] alloc_gid_entry+0x47/0x380 [ib_core]
-> >     [<ffffffffc2642206>] add_modify_gid+0x166/0x930 [ib_core]
-> >     [<ffffffffc2643468>] ib_cache_update.part.0+0x6d8/0x910 [ib_core]
-> >     [<ffffffffc2644e1a>] ib_cache_setup_one+0x24a/0x350 [ib_core]
-> >     [<ffffffffc263949e>] ib_register_device+0x9e/0x3a0 [ib_core]
-> >     [<ffffffffc2a3d389>] 0xffffffffc2a3d389
-> >     [<ffffffffc2688cd8>] nldev_newlink+0x2b8/0x520 [ib_core]
-> 
-> My guess is that your test didn't call too nldev_dellink() and left
-> device registered.
+--a36pnpbxxry3pzoc
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Sorry, I was wrong, it looks like GID entry leak.
+On Fri, Apr 05, 2024 at 03:26:58PM -0700, Kuniyuki Iwashima wrote:
+> From: Joel Granados <j.granados@samsung.com>
+> Date: Fri, 5 Apr 2024 09:15:31 +0200
+> > On Thu, Mar 28, 2024 at 12:49:34PM -0700, Kuniyuki Iwashima wrote:
+> > > From: Joel Granados via B4 Relay <devnull+j.granados.samsung.com@kern=
+el.org>
+> > > Date: Thu, 28 Mar 2024 16:40:05 +0100
+> > > > This commit comes at the tail end of a greater effort to remove the
+> > > > empty elements at the end of the ctl_table arrays (sentinels) which=
+ will
+> > > > reduce the overall build time size of the kernel and run time memory
+> > > > bloat by ~64 bytes per sentinel (further information Link :
+> > > > https://lore.kernel.org/all/ZO5Yx5JFogGi%2FcBo@bombadil.infradead.o=
+rg/)
+> > > >=20
+> > > > When we remove the sentinel from ax25_param_table a buffer overflow
+> > > > shows its ugly head. The sentinel's data element used to be changed=
+ when
+> > > > CONFIG_AX25_DAMA_SLAVE was not defined.
+> > >=20
+> > > I think it's better to define the relation explicitly between the
+> > > enum and sysctl table by BUILD_BUG_ON() in ax25_register_dev_sysctl()
+> > >=20
+> > >   BUILD_BUG_ON(AX25_MAX_VALUES !=3D ARRAY_SIZE(ax25_param_table));
+> > >=20
+> > > and guard AX25_VALUES_DS_TIMEOUT with #ifdef CONFIG_AX25_DAMA_SLAVE
+> > > as done for other enum.
+> >=20
+> > When I remove AX25_VALUES_DS_TIMEOUT from the un-guarded build it
+> > complains in net/ax25/ax25_ds_timer.c (ax25_ds_set_timer). Here is the
+> > report https://lore.kernel.org/oe-kbuild-all/202404040301.qzKmVQGB-lkp@=
+intel.com/.
+> >=20
+> > How best to address this? Should we just guard the whole function and do
+> > nothing when not set? like this:
+>=20
+> It seems fine to me.
+>=20
+> ax25_ds_timeout() checks !ax25_dev->dama.slave_timeout, but it's
+> initialised by kzalloc() during dev setup, so it will be a noop.
+thx. I'll solve it like this then
 
-Thanks
+>=20
+>=20
+> >=20
+> > ```
+> > void ax25_ds_set_timer(ax25_dev *ax25_dev)
+> > {
+> > #ifdef COFNIG_AX25_DAMA_SLAVE
+> >         if (ax25_dev =3D=3D NULL)        =B7=B7=B7/* paranoia */
+> >                 return;
+> >=20
+> >         ax25_dev->dama.slave_timeout =3D
+> >                 msecs_to_jiffies(ax25_dev->values[AX25_VALUES_DS_TIMEOU=
+T]) / 10;
+> >         mod_timer(&ax25_dev->dama.slave_timer, jiffies + HZ);
+> > #else
+> >         return;
+> > #endif
+> > }
+> >=20
+> > ```
+> >=20
+> > I'm not too familiar with this, so pointing me to the "correct" way to
+> > handle this would be helpfull.
+>=20
+> Also, you will need to guard another use of AX25_VALUES_DS_TIMEOUT in
+> ax25_dev_device_up().
+Yes. I had noticed this already. This was a trivial one though, so I did
+not ask about it.
 
-> 
-> Thanks
-> 
-> >     [<ffffffffc2645fe3>] rdma_nl_rcv_msg+0x2c3/0x520 [ib_core]
-> >     [<ffffffffc264648c>]
-> > rdma_nl_rcv_skb.constprop.0.isra.0+0x23c/0x3a0 [ib_core]
-> >     [<ffffffff9270e7b5>] netlink_unicast+0x445/0x710
-> >     [<ffffffff9270f1f1>] netlink_sendmsg+0x761/0xc40
-> >     [<ffffffff9249db29>] __sys_sendto+0x3a9/0x420
-> >     [<ffffffff9249dc8c>] __x64_sys_sendto+0xdc/0x1b0
-> >     [<ffffffff92db0ad3>] do_syscall_64+0x93/0x180
-> >     [<ffffffff92e00126>] entry_SYSCALL_64_after_hwframe+0x71/0x79
-> > 
-> > -- 
-> > Best Regards,
-> >   Yi Zhang
-> > 
-> > 
-> 
+Thx.
+
+Best
+
+--=20
+
+Joel Granados
+
+--a36pnpbxxry3pzoc
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQGzBAABCgAdFiEErkcJVyXmMSXOyyeQupfNUreWQU8FAmYTmsoACgkQupfNUreW
+QU9ICwv6A6h0aHFqNdUCkstNuQDQL6/IKZsdnmejFWMbFZKYFjyGWo1/Qa5SnEmf
+5aN4REQAWpaHGznkRrbgZHVET5CqmXOIbIvP/+AZsENF0RfL0CZW6hcEjRMUF6tb
+jpJ8KT/wl2xmmvfCcZkV3rymYiOxwtp2lMdUM7Zx5QZ33CaStmeKvfoA8ngQX3Ri
+u2fO/A856mzsUuUvYqJsCRqNfe9LQZQ7uFEY+0f31BpCagdivfXyFpvFk7Ol0tvB
+k7DExa1ndy/G92OzYPEOsTdzRv9xlujgnBVHIapZ2Le6aZ1YGplwI3X+m1n7kNjV
+X10vWmuQOZ81xz2n3ZjdCPmu6VfWkwyBfkaVJ/ehqjYkfQ8+s80iSRxU/g6EV2oX
+fsfSUYyolzz1Vp8nllQRiWuygSAIeaLlpXl+vwa7rQKSdLYXsoC8YqM/gEBUThe3
+X/KQMPBl7qYM2CqAkoar8omqvkBratmAJwScZQEqZxGmosEn4KWDWc4de3toUFCR
+JsRQKj4e
+=iYz3
+-----END PGP SIGNATURE-----
+
+--a36pnpbxxry3pzoc--
 
