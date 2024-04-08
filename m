@@ -1,62 +1,89 @@
-Return-Path: <linux-rdma+bounces-1848-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-1849-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6A9B389C5D6
-	for <lists+linux-rdma@lfdr.de>; Mon,  8 Apr 2024 16:01:35 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9BB2E89C65C
+	for <lists+linux-rdma@lfdr.de>; Mon,  8 Apr 2024 16:08:23 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 26654283145
-	for <lists+linux-rdma@lfdr.de>; Mon,  8 Apr 2024 14:01:34 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CE7071C22572
+	for <lists+linux-rdma@lfdr.de>; Mon,  8 Apr 2024 14:08:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 53DD67F499;
-	Mon,  8 Apr 2024 14:01:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 57F058175F;
+	Mon,  8 Apr 2024 14:08:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="M67WO3MO"
+	dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b="KsmEh3VN"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-qt1-f179.google.com (mail-qt1-f179.google.com [209.85.160.179])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0DB667F47E;
-	Mon,  8 Apr 2024 14:00:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3814181729
+	for <linux-rdma@vger.kernel.org>; Mon,  8 Apr 2024 14:08:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712584860; cv=none; b=HH6glVVfF0dTCSfTwjEVvuw0O2Xy5qGMTrfl0HVauhTVeH3H+0dIMJYlaMwtqlby+kA4nY0Z/yJy8+zihICR2OntpuJjomLmE30VDa/vRIcdtPc5POYvwtInHUqHXpC6xO3punFUq1rD7UPwnZAqrALVkVneeWN1KOcQLmA7R3k=
+	t=1712585299; cv=none; b=jYxS5S24WaGQPKYxovu2eSDsJ4BS/I0LoZI0oOu9Jsa3OZR5bRl3/SdMv9v7vOwqqO2XcC5yZgZSG9J+ZiGv3PmeYQtCDF9wvKFFb7O5n8bqbW50RPmwTeDWM8lAZTNvryoVt04GbqZVX89C+8ygk+d1GJQx9bLXvhWDWEBBsJ0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712584860; c=relaxed/simple;
-	bh=LRkUGtbdysI7/tiFWsFk0skJui/QKklnMkcGgNPr+6s=;
+	s=arc-20240116; t=1712585299; c=relaxed/simple;
+	bh=aNaAiaPsLQoFxFVUSN2sTScX6D8kGjyawet3xKsYAdM=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=a9X+5MIZ/vvDOTZIm12zn1Mn8ReQuioOztoUpYRL/BccLxn5UtfjmyrzLVvQOWWCsTFFHd8x8gEhcegaEuBDeXGJvne/KRyHwtOObo6U1/AxJFGtZruV7DAOf2dqma3+z9ISub/NrMKLcG3p0+/NhyhXSOygMPX3BIQXxrfSceo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=M67WO3MO; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 60730C433B2;
-	Mon,  8 Apr 2024 14:00:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712584859;
-	bh=LRkUGtbdysI7/tiFWsFk0skJui/QKklnMkcGgNPr+6s=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=M67WO3MO0MT2zVXUR1oJb50r0ESEjtLzRA4KqexN2iQUrs4lX9EEjjnwoQ7T3iuo9
-	 967pWN9c0uup1rjOl3TRrWLV1XxCDsgMtSIQoJmqgjOM1e4ni91pUN1SAAiLjTgb6h
-	 7wbrxE2MWafJ7nJ9AwsXSG2hXE2FqmB4ptdM+o7eExNvxndFJ9k3v9kz48y2IK0vpk
-	 ucl5sZsBQT/03NK3C6EDV2OfsSeoCTM+S6QhJ85J/7tAAEBEGARNw/ksf2m4STgAXL
-	 ZVnuEB5CpYwLdFDPG1UcoV/KpKeMQKC/HjhGBKZYYbqzT24R2BNL6T85ZMrtktJZ2j
-	 N2fgUWgIlu68Q==
-Date: Mon, 8 Apr 2024 17:00:55 +0300
-From: Leon Romanovsky <leon@kernel.org>
-To: Konstantin Taranov <kotaranov@microsoft.com>
-Cc: Konstantin Taranov <kotaranov@linux.microsoft.com>,
-	"sharmaajay@microsoft.com" <sharmaajay@microsoft.com>,
-	Long Li <longli@microsoft.com>, "jgg@ziepe.ca" <jgg@ziepe.ca>,
-	"linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH rdma-next v4 0/4] Define and use mana queues for CQs and
- WQs
-Message-ID: <20240408140055.GH8764@unreal>
-References: <1712567646-5247-1-git-send-email-kotaranov@linux.microsoft.com>
- <20240408112533.GF8764@unreal>
- <PAXPR83MB05570E9EE9853B2E6F66703DB4002@PAXPR83MB0557.EURPRD83.prod.outlook.com>
- <20240408130024.GG8764@unreal>
- <PAXPR83MB05573802DE8859318A7B1435B4002@PAXPR83MB0557.EURPRD83.prod.outlook.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=vCjcUS9gpGFSD81SxdMsbsH91nEsSyF6d+b65zNdxJuWkHIqWwj6IMvWYCSliJLWAgIvGAmJCcZkZhkBeYvPWGPXNIHpRyGkibwynLaamLN/6EJjNaEFyWPpPyFcYaQLeeAgXVgFcP705Iry/9S2Tkjq4t9BlgEcu7zDwLDKlqE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca; spf=pass smtp.mailfrom=ziepe.ca; dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b=KsmEh3VN; arc=none smtp.client-ip=209.85.160.179
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ziepe.ca
+Received: by mail-qt1-f179.google.com with SMTP id d75a77b69052e-43444a599d0so26772911cf.3
+        for <linux-rdma@vger.kernel.org>; Mon, 08 Apr 2024 07:08:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google; t=1712585296; x=1713190096; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=aNaAiaPsLQoFxFVUSN2sTScX6D8kGjyawet3xKsYAdM=;
+        b=KsmEh3VN0VWigo8YmgEvFWDO61fn9fSGE3OEk+QoW6YlHcupt6lIA37eJHRaHmStx2
+         Wtlun2kXJE/C+zzsxd6jmMpNCMYqb8gi6TxHgGCkjGslbD2es3l8Aa2mtAGqPbue/dZg
+         /ddg/oYlWEHlTpRfhP8Sp5nvqJtlV5m+sxtImXDZTcg9tiI45Opb6urAQ3V5jzOGzzPq
+         WTAwvAvQfOfrE6LkiqbgiM/dChpbwi9cohh7+YTbGPGNwjN0jIHltEWJQXPGyVUYixoI
+         pejsrInCY2D+3IxNFTIQVvpT3jMScGgg2mQczEeGFjS47X/F3qIFCt0JguP6ByrhiSAb
+         wKYw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712585296; x=1713190096;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=aNaAiaPsLQoFxFVUSN2sTScX6D8kGjyawet3xKsYAdM=;
+        b=nKwKOZ7leWMoNE8WSaGN0WPhiiX6+Zc9C/KCTuV2oaOcFObgJWC2K5lcuv8cVw/DBa
+         nWjHqhhh3F2tBJUkaQyhBuunwRdlyj6oMnHCQl/e7Mu6FByPgFMD/j8Il9BtYyJOwccR
+         fSOKVmeW/LYW1LCFA3fGHJ6bpdIVfpeCwyL2jzBCiPcyrTZPfqUhXtmEYpn4znIvwIIV
+         TSsehs+R+Fv7cQB3/267akbgrG8H1Il1Xqsxy6UkaNLqXsyjBBWCglxMkJGj+bEZsnOp
+         UitlldQdRbzwRYArjeDlqFhxns6zMEG/Z6IHG2Wki0O0sqmZmZ2tYpB+mOTkKxzzkTvF
+         AzGw==
+X-Forwarded-Encrypted: i=1; AJvYcCX5KkQ59lGz256LkshxV0ptT70GlPT0ixBAuZKhl1hN4oG8pzb9rBFL9zmPd57BaHeJEtJES+QSBqfgN9aPjOzEq6SydDNaOPC1UA==
+X-Gm-Message-State: AOJu0YxFrPQnO3I2KNDfZBkhE3M4doJN2Iiefapzy/Vz8MGIPpD5wna1
+	TPA0jWoTsKCPtNwb99ODsztHp7FF1905Ty4XgPrqnI9vyO/Iby0Cp0yVBnLNn28=
+X-Google-Smtp-Source: AGHT+IEACb0TZxNCWa5D09kzHnXgZKbSJ+J6CSClq+wsF25mlhvZDwVLJvU2uUGVJrxYk1oQfmX/Hw==
+X-Received: by 2002:a05:622a:1ba4:b0:431:3af9:1c7d with SMTP id bp36-20020a05622a1ba400b004313af91c7dmr9688251qtb.36.1712585295957;
+        Mon, 08 Apr 2024 07:08:15 -0700 (PDT)
+Received: from ziepe.ca (hlfxns017vw-142-68-80-239.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.68.80.239])
+        by smtp.gmail.com with ESMTPSA id b8-20020ac86bc8000000b00434cc487759sm3064qtt.96.2024.04.08.07.08.15
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 08 Apr 2024 07:08:15 -0700 (PDT)
+Received: from jgg by wakko with local (Exim 4.95)
+	(envelope-from <jgg@ziepe.ca>)
+	id 1rtpfS-005FZM-MC;
+	Mon, 08 Apr 2024 11:08:14 -0300
+Date: Mon, 8 Apr 2024 11:08:14 -0300
+From: Jason Gunthorpe <jgg@ziepe.ca>
+To: Zhu Yanjun <yanjun.zhu@linux.dev>
+Cc: zyjzyj2000@gmail.com, leon@kernel.org, linux-rdma@vger.kernel.org
+Subject: Re: [PATCH 1/1] RDMA/rxe: Make pr_fmt work
+Message-ID: <20240408140814.GA223006@ziepe.ca>
+References: <20240323083139.5484-1-yanjun.zhu@linux.dev>
+ <20240327130804.GH8419@ziepe.ca>
+ <a9011ab4-6947-4ad4-8d1f-653e129c38b9@linux.dev>
+ <20240404145913.GF1363414@ziepe.ca>
+ <7a2a41c2-c8ef-402d-933a-2b2d8a956207@linux.dev>
+ <be9584b6-85fc-46bb-87b8-18ca6103a5a4@linux.dev>
+ <20240404235931.GA5792@ziepe.ca>
+ <ed9e2b80-0e0f-4628-9a57-e061acf9f4d5@linux.dev>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
@@ -65,82 +92,20 @@ List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <PAXPR83MB05573802DE8859318A7B1435B4002@PAXPR83MB0557.EURPRD83.prod.outlook.com>
+In-Reply-To: <ed9e2b80-0e0f-4628-9a57-e061acf9f4d5@linux.dev>
 
-On Mon, Apr 08, 2024 at 01:47:45PM +0000, Konstantin Taranov wrote:
-> > From: Leon Romanovsky <leon@kernel.org>
-> > On Mon, Apr 08, 2024 at 12:50:12PM +0000, Konstantin Taranov wrote:
-> > > > From: Leon Romanovsky <leon@kernel.org> On Mon, Apr 08, 2024 at
-> > > > 02:14:02AM -0700, Konstantin Taranov wrote:
-> > > > > From: Konstantin Taranov <kotaranov@microsoft.com>
-> > > > >
-> > > > > This patch series aims to reduce code duplication by introducing a
-> > > > > notion of mana ib queues and corresponding helpers to create and
-> > > > > destroy them.
-> > > > >
-> > > > > v3->v4:
-> > > > > * Removed debug prints in patches, as asked by Leon
-> > > > >
-> > > > > v2->v3:
-> > > > > * [in 4/4] Do not define an additional struct for a raw qp
-> > > > >
-> > > > > v1->v2:
-> > > > > * [in 1/4] Added a comment about the ignored return value
-> > > > > * [in 2/4] Replaced RDMA:mana_ib to RDMA/mana_ib in the subject
-> > > > > * [in 4/4] Renamed mana_ib_raw_qp to mana_ib_raw_sq
-> > > > >
-> > > > > Konstantin Taranov (4):
-> > > > >   RDMA/mana_ib: Introduce helpers to create and destroy mana queues
-> > > > >   RDMA/mana_ib: Use struct mana_ib_queue for CQs
-> > > > >   RDMA/mana_ib: Use struct mana_ib_queue for WQs
-> > > > >   RDMA/mana_ib: Use struct mana_ib_queue for RAW QPs
-> > > > >
-> > > > >  drivers/infiniband/hw/mana/cq.c      | 52 +++-------------
-> > > > >  drivers/infiniband/hw/mana/main.c    | 39 ++++++++++++
-> > > > >  drivers/infiniband/hw/mana/mana_ib.h | 26 ++++----
-> > > > >  drivers/infiniband/hw/mana/qp.c      | 93 +++++++++-------------------
-> > > > >  drivers/infiniband/hw/mana/wq.c      | 33 ++--------
-> > > > >  5 files changed, 96 insertions(+), 147 deletions(-)
-> > > >
-> > > > It doesn't apply.
-> > > >
-> > >
-> > > I guess there was some mis-synchronisation between us.
-> > > I see that you have already applied the patch 6 days ago:
-> > > https://nam06.safelinks.protection.outlook.com/?url=https%3A%2F%2Fgit.
-> > >
-> > kernel.org%2Fpub%2Fscm%2Flinux%2Fkernel%2Fgit%2Frdma%2Frdma.git%2
-> > Flog%
-> > >
-> > 2F&data=05%7C02%7Ckotaranov%40microsoft.com%7C09ea6de381194295c
-> > 4ae08dc
-> > >
-> > 57cbe121%7C72f988bf86f141af91ab2d7cd011db47%7C1%7C0%7C63848178
-> > 04102717
-> > >
-> > 33%7CUnknown%7CTWFpbGZsb3d8eyJWIjoiMC4wLjAwMDAiLCJQIjoiV2luMz
-> > IiLCJBTiI
-> > >
-> > 6Ik1haWwiLCJXVCI6Mn0%3D%7C0%7C%7C%7C&sdata=jwGGhmatHqdN4bW
-> > Xc%2FtyXtubD
-> > > ZxxCXpnyL26S5lEKd0%3D&reserved=0
-> > >
-> > > I am sorry for sending a newer version after the patch has been applied.
-> > > I have not checked this before sending.
-> > > I can take care of useless debug prints in a future cleanup patch.
-> > 
-> > Please rebase your series, and resend.
-> 
-> Sorry for a confusion. I mean you have already applied this patch series (v3) 6 days ago.
-> See commits:
-> 46f5be7cd4bceb3a503c544b3dab7b75fe4bb96b
-> 60a7ac0b8bec5df9764b7460ffee91fc981e8a31
-> 688bac28e3dc9eb795ae8ea5aa40cb637e289faa
-> f10242b3da908dc9d4bfa040e6511a5b86522499
-> 
-> As a result, I cannot rebase. I could send a completely new patch that removes some debug prints.
+On Sat, Apr 06, 2024 at 06:35:21PM +0200, Zhu Yanjun wrote:
 
-Yes, sorry for not being clear. Please send a cleanup patch.
+> Got your point. There are about more 130 header files that define pr_fmt in
+> the kernel include directory. And these header files are included one
+> another. Is there any tool to clarify the including relationship between
+> these header files?
 
-Thanks
+No tool I am aware of, but if headers define it then they should be
+local to a subsystem and never included outside it. Such as what rxe
+is doing.
+
+Ideally they would be private headers not under include/
+
+Jason
 
