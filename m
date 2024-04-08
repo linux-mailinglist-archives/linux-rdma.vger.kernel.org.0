@@ -1,273 +1,409 @@
-Return-Path: <linux-rdma+bounces-1827-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-1828-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 512E989B873
-	for <lists+linux-rdma@lfdr.de>; Mon,  8 Apr 2024 09:31:54 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 61F4689B8D8
+	for <lists+linux-rdma@lfdr.de>; Mon,  8 Apr 2024 09:45:40 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E71D81F22D7A
-	for <lists+linux-rdma@lfdr.de>; Mon,  8 Apr 2024 07:31:53 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 17D3B283C63
+	for <lists+linux-rdma@lfdr.de>; Mon,  8 Apr 2024 07:45:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D491428DBF;
-	Mon,  8 Apr 2024 07:31:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 505712E3F9;
+	Mon,  8 Apr 2024 07:41:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=samsung.com header.i=@samsung.com header.b="R4igch+N"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="YCeTtHUh"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mailout2.w1.samsung.com (mailout2.w1.samsung.com [210.118.77.12])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F1EAE2576E;
-	Mon,  8 Apr 2024 07:31:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=210.118.77.12
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 04DD436AFB;
+	Mon,  8 Apr 2024 07:41:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712561502; cv=none; b=Gu4p7a/1YW86BExy7b6+HbQc+5V00Zm9ptdqlDl65yoyfbn3zFN/IAYUVA8vUsyHm38ufM9gJa2SC5FO9wITwVuX8dRQTY/V2IYjMyUALeiALIFFbMsHaY8RDarszHbSh8KCELisc4WIqtJ9nBmlmoWdQnSSsU3m+lF5pTNm+nU=
+	t=1712562111; cv=none; b=bSV0WIrjf3qSAmkGtdL2h/rQ9Ap2D1JZo8rxxlgWB9wOV9JDGiJoRDl9SXM14PVWFohocvibSuRGK1MzCfzAS2rSvPHjszQldQ3CF0IVVUfi2MOxw/o5/BsRA0JRKNyeZ3fyrQ7+343DpRE4q6bGAVnPqqYKdo6AsVBNAaUYGWY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712561502; c=relaxed/simple;
-	bh=lmsBm5nTnffgSx2fS/ryKsYEj/upOdvS9elDu44URUg=;
-	h=Date:From:To:CC:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition:In-Reply-To:References; b=UtEMZdJ1z/lvf1NtUxBWEaKTxHfr5IFqPc3yHLUkwz4jj+tDm4OAZ1ZWUieTEvSoLLLojpTUHnIT0STMhEu7QXOY2+CELlwMf3uOo2oWIqn/UHQS+FfNw2yitburOkUXqJdDow0Box0OSiCUqhmXRn4/76YVekkTsNQqvWg2TfI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=samsung.com; spf=pass smtp.mailfrom=samsung.com; dkim=pass (1024-bit key) header.d=samsung.com header.i=@samsung.com header.b=R4igch+N; arc=none smtp.client-ip=210.118.77.12
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=samsung.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=samsung.com
-Received: from eucas1p2.samsung.com (unknown [182.198.249.207])
-	by mailout2.w1.samsung.com (KnoxPortal) with ESMTP id 20240408072050euoutp02410e3d635aa40075dd940878b76f66a4~EPQUwTE-M0578505785euoutp02B;
-	Mon,  8 Apr 2024 07:20:50 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.w1.samsung.com 20240408072050euoutp02410e3d635aa40075dd940878b76f66a4~EPQUwTE-M0578505785euoutp02B
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-	s=mail20170921; t=1712560850;
-	bh=dic+LWsSv8Akr20ymbAxctCZm+7tnRnSHjjKdWufs+M=;
-	h=Date:From:To:CC:Subject:In-Reply-To:References:From;
-	b=R4igch+NX9vZcyEjz9xuRWmkA2q91FagNMFNpqwDiitOV/D+OsI7RYwSyzHBsmqyX
-	 ZbUGCEyohbKzcPinP/cCJzFkJJPMzO2eVGE/eOVVrc004e5YNvgIGJZePbaWm9q22j
-	 YVQMOM9+DH6PHsDVg1joqLelPhU4kImKEQjIhdvY=
-Received: from eusmges1new.samsung.com (unknown [203.254.199.242]) by
-	eucas1p1.samsung.com (KnoxPortal) with ESMTP id
-	20240408072050eucas1p1a8c0beb906ba7d9b12d86046bb4fa42d~EPQUi2_Q42048920489eucas1p1M;
-	Mon,  8 Apr 2024 07:20:50 +0000 (GMT)
-Received: from eucas1p2.samsung.com ( [182.198.249.207]) by
-	eusmges1new.samsung.com (EUCPMTA) with SMTP id CB.3B.09624.2DA93166; Mon,  8
-	Apr 2024 08:20:50 +0100 (BST)
-Received: from eusmtrp1.samsung.com (unknown [182.198.249.138]) by
-	eucas1p2.samsung.com (KnoxPortal) with ESMTPA id
-	20240408072049eucas1p2bc84263f53c4eb375742a6739a2f8fbd~EPQTyuEjs2668926689eucas1p2J;
-	Mon,  8 Apr 2024 07:20:49 +0000 (GMT)
-Received: from eusmgms2.samsung.com (unknown [182.198.249.180]) by
-	eusmtrp1.samsung.com (KnoxPortal) with ESMTP id
-	20240408072049eusmtrp113df4514d474d7cbd59d368c0190ea5e~EPQTvd1e20866108661eusmtrp1J;
-	Mon,  8 Apr 2024 07:20:49 +0000 (GMT)
-X-AuditID: cbfec7f2-bfbff70000002598-fe-66139ad20952
-Received: from eusmtip1.samsung.com ( [203.254.199.221]) by
-	eusmgms2.samsung.com (EUCPMTA) with SMTP id ED.02.09010.1DA93166; Mon,  8
-	Apr 2024 08:20:49 +0100 (BST)
-Received: from CAMSVWEXC02.scsc.local (unknown [106.1.227.72]) by
-	eusmtip1.samsung.com (KnoxPortal) with ESMTPA id
-	20240408072049eusmtip1eaef4a235fff5b1d93272c279edd8416~EPQTa7RNP0059900599eusmtip13;
-	Mon,  8 Apr 2024 07:20:49 +0000 (GMT)
-Received: from localhost (106.110.32.44) by CAMSVWEXC02.scsc.local
-	(2002:6a01:e348::6a01:e348) with Microsoft SMTP Server (TLS) id 15.0.1497.2;
-	Mon, 8 Apr 2024 08:20:48 +0100
-Date: Mon, 8 Apr 2024 09:20:43 +0200
-From: Joel Granados <j.granados@samsung.com>
-To: Kuniyuki Iwashima <kuniyu@amazon.com>
-CC: <Dai.Ngo@oracle.com>, <alex.aring@gmail.com>,
-	<alibuda@linux.alibaba.com>, <allison.henderson@oracle.com>,
-	<anna@kernel.org>, <bridge@lists.linux.dev>, <chuck.lever@oracle.com>,
-	<coreteam@netfilter.org>, <courmisch@gmail.com>, <davem@davemloft.net>,
-	<dccp@vger.kernel.org>, <devnull+j.granados.samsung.com@kernel.org>,
-	<dhowells@redhat.com>, <dsahern@kernel.org>, <edumazet@google.com>,
-	<fw@strlen.de>, <geliang@kernel.org>, <guwen@linux.alibaba.com>,
-	<herbert@gondor.apana.org.au>, <horms@verge.net.au>, <ja@ssi.bg>,
-	<jaka@linux.ibm.com>, <jlayton@kernel.org>, <jmaloy@redhat.com>,
-	<jreuter@yaina.de>, <kadlec@netfilter.org>, <keescook@chromium.org>,
-	<kolga@netapp.com>, <kuba@kernel.org>, <linux-afs@lists.infradead.org>,
-	<linux-hams@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-	<linux-nfs@vger.kernel.org>, <linux-rdma@vger.kernel.org>,
-	<linux-s390@vger.kernel.org>, <linux-sctp@vger.kernel.org>,
-	<linux-wpan@vger.kernel.org>, <linux-x25@vger.kernel.org>,
-	<lucien.xin@gmail.com>, <lvs-devel@vger.kernel.org>,
-	<marc.dionne@auristor.com>, <marcelo.leitner@gmail.com>,
-	<martineau@kernel.org>, <matttbe@kernel.org>, <mcgrof@kernel.org>,
-	<miquel.raynal@bootlin.com>, <mptcp@lists.linux.dev>, <ms@dev.tdt.de>,
-	<neilb@suse.de>, <netdev@vger.kernel.org>,
-	<netfilter-devel@vger.kernel.org>, <pabeni@redhat.com>,
-	<pablo@netfilter.org>, <ralf@linux-mips.org>, <razor@blackwall.org>,
-	<rds-devel@oss.oracle.com>, <roopa@nvidia.com>, <stefan@datenfreihafen.org>,
-	<steffen.klassert@secunet.com>, <tipc-discussion@lists.sourceforge.net>,
-	<tom@talpey.com>, <tonylu@linux.alibaba.com>,
-	<trond.myklebust@hammerspace.com>, <wenjia@linux.ibm.com>,
-	<ying.xue@windriver.com>
-Subject: Re: [PATCH v2 4/4] ax.25: Remove the now superfluous sentinel
- elements from ctl_table array
-Message-ID: <20240408072043.j5p3dcyalm5yrozo@joelS2.panther.com>
+	s=arc-20240116; t=1712562111; c=relaxed/simple;
+	bh=QNi6U869pwkO7r45qhNkBeq35HwP1JQ6HFNif1rR0mU=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=egdctqY1j28vqe5SQSCen+2kVqp9kjkw+b1eyfgFRoKhZVgwmqhGhYXF7DdScxNFrmB5U8kyHJJ4DhnDL+JzuLUR1YlAvcWrVi+2yoJaz/DVO+2O8UM/W290PugvjOfrMHWhw7je2RaSoEJr6IdaTiZX+9yckIDMpzOX8LDTH+E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=YCeTtHUh; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4A58AC433C7;
+	Mon,  8 Apr 2024 07:41:47 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1712562110;
+	bh=QNi6U869pwkO7r45qhNkBeq35HwP1JQ6HFNif1rR0mU=;
+	h=From:To:Cc:Subject:Date:From;
+	b=YCeTtHUhbFPR8AWyn0J2QajgebKiCMz0YpUDJRF3+azZXKDimucPthFuIQOUtccoA
+	 L7QCSNteu+24n3M9muxnJUJa5dD3J6A8A1O5AHToGlxwvegbK8onu06+//l7XiuJB+
+	 XVKw0N56i5HS7w2VN/X5967JUOmTBcRyzJNicQgxhTy8pKL55orn3K/ri07M+7PCzO
+	 qLg+cmmmvDoqSoNU1npRqPEHoCrRFKm6SQMVkJF7drxPl8yyyoNd1eoPq3KseBFq5Q
+	 7C5YYDpZ4jQw+Ccx1tLyii1xTwFjB9083VKg9H7H42FFEFvXxW2r2ocFyTjkcMd6ac
+	 gZA9e/UpwkWLQ==
+From: Arnd Bergmann <arnd@kernel.org>
+To: Saeed Mahameed <saeedm@nvidia.com>,
+	Leon Romanovsky <leon@kernel.org>,
+	Tariq Toukan <tariqt@nvidia.com>
+Cc: Arnd Bergmann <arnd@arndb.de>,
+	Simon Horman <horms@kernel.org>,
+	Jiri Pirko <jiri@nvidia.com>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>,
+	Paolo Abeni <pabeni@redhat.com>,
+	Yevgeny Kliteynik <kliteyn@nvidia.com>,
+	Alex Vesker <valex@nvidia.com>,
+	Jiri Pirko <jiri@resnulli.us>,
+	netdev@vger.kernel.org,
+	linux-rdma@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH] [v4] net/mlx5: fix possible stack overflows
+Date: Mon,  8 Apr 2024 09:41:10 +0200
+Message-Id: <20240408074142.3007036-1-arnd@kernel.org>
+X-Mailer: git-send-email 2.39.2
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg="pgp-sha512";
-	protocol="application/pgp-signature"; boundary="a36pnpbxxry3pzoc"
-Content-Disposition: inline
-In-Reply-To: <20240405222658.3615-1-kuniyu@amazon.com>
-X-ClientProxiedBy: CAMSVWEXC01.scsc.local (2002:6a01:e347::6a01:e347) To
-	CAMSVWEXC02.scsc.local (2002:6a01:e348::6a01:e348)
-X-Brightmail-Tracker: H4sIAAAAAAAAA2WTeUxUVxTGc982M1TwAUZulCpSpBUVi9X2VK1So/aVNpFg26RNrJ3CA5HN
-	zIhLGxvKqmyOLIJTEMRkGAcc6YDoqMAULchABAVZJoAwDJIiLmVHWQo8jSb973e+73z3nvPH
-	EZN2aeIl4sDQQ7wsVBrszFhRpVUT9WvvK+39P0xvXgSVEZ9A9814GiKiYwmI0c9QUHohgYCZ
-	jj4CpvRxJAx199GQk1fMQFZ9NAVTLQkMNGZbCHga+ZIC7fUYAnqrzCIoTSpAUBDZTsHVvjEG
-	EvodIerKCALLKTMNTarnDEyoNCJ4OGKmYCL5HTgbH0VAXUIIXOuwUNBQmkyDKvESAwqjBzRf
-	7SCg8XoWAw2GWhoeVSZRoDgfRUJv7mMa2lNVFBjKchCYLz8jICpnkISooR4SXqirabibNEOC
-	UqshoVXRi+BWXDkNdZcjRTB67g4JZTkRFFTlLgaF1kjBaO0AgoyBByTcv+kCxuEZAu4WD9Ew
-	lPUBpKpLCLhxclwEJfUHwPjCSEDPWB8DM63bPLdz6oZ4mjOZR0ju6d0axJ0r/JX7I+Iexb2Y
-	cONKLrYRXMLtfpLTKztEXKlhJZerC+cmK/8UcTrNSYb7++IlgtN3f8op8gzI2/kHqy1+fHDg
-	YV62butPVvsHux6IDg46Hs3R/RiBTA7xSCLG7AasnX5OzbEdq0ZYkxEYj6xmeRjhtKk2RiiG
-	EM6/pBC9TujTz9CCkY/wqDrlTZdpYooSCh3CDbpJei5CsS64JUUzzwy7BtcPtJNzvIhdhU9o
-	E+efItlia5yRcRrNGfasPx7v7J1na9YT95ieEQLb4pqzlvlpSfYo1k1OzfaIZ3kpzp8Wz8kS
-	9mM8Vq0lhVFX4JELnZTAx7GxxETM/YXZBwuwuaARCcYOfK+ujxHYHvdXl7za0xHXpiZSQiAV
-	4Yrp5yKhKEBY9fsIIXRtxtFNlleJz3FF3tj8RJi1wa1PbIVBbXBKaQYpyNb4RKyd0O2KCzoH
-	KAV6T/nWasq3VlO+WU2Q3XFrehrzP3k1Vp1/TAr8GdZqn1G5SKRBDny4PCSAl3uE8kfc5dIQ
-	eXhogLtvWIgOzR5r7XT14DWU3f+veyUixKgSucyGzUUFDWgJFRoWyjsvst6z0dbfztpPeuwX
-	Xha2TxYezMsr0VIx5exgvdJvOW/HBkgP8UE8f5CXvXYJsWRJBOG9Xd8jfjjsPtTlF9P87rJy
-	+wX3DdmrmsW7vyxav0nF9rTGpGxw+Wjr09kb3Ha5sJz18qlZX9Z27Ksz/6zLDAyjG31vbvzW
-	a2DNE0nQkdbvJY9O7ewW5e8sDHIqMuzd1/V+tCu1OCt9f4LPvd1qvUe8W7bGxslk41vmWFgz
-	8bXGx8lZ3jm+MO5MUnnqbabpeFrXptEQ29+W29MHv9nlMHZ4MsD4yJjputdjpPt07MKWYnPQ
-	ahfvXVnLMo8Frc08fGXS1Fa2uMkpZWfFHYlPnjrFMu6yqSVqbJdX+7hFnNxhsfs51vPAns0v
-	e1c0lQR/d6P8Vt/aHONf0i9cYTjWNSY8c4tBku7vTMn3Sz3cSJlc+h9Ib7zGJwUAAA==
-X-Brightmail-Tracker: H4sIAAAAAAAAA2WTf1DTZRzHe76/NrXZBMzvoXW6w/JX0wHDD56KaZ7fugzT6xdewcIvw4JN
-	NuDMrJCBwPDHwstwiBuQEzadMWEyE+WwmPwQUFTQGxhjQCExdU5FBQJXl3f993ren/f7/Tz3
-	3H24uJ+FE8jdKktmFTJJgoCaTDSO2jvfuKz1j1tiuiCA2rSl0H1WTUJaxm4MMm1jBFhLcjEY
-	6+zHYMSWhYOnu58EXfEpCg63ZBAw0p5LQVuhC4Oh9CcEmM9kYtBb5+SAda8JgSndQcDp/ocU
-	5A7MAlWlF4Frv5OEq4Y7FAwbjBy45XUSMLxvChxSqzBoyk2Eqk4XAa3WfSQY9pygQNMgguun
-	OzFoO3OYgtaaRhL6avcSoClS4dCrv02C44CBgJpqHQLnSTcGKt09HFSeHhwel9pJaN47hoPW
-	bMShQ9OL4ELWORKaTqZz4MGRizhU69IIqNO/DBpzAwEPGgcR/Dh4DYcrZ4Og4f4YBs2nPCR4
-	Ds+DA6UVGPyS84gDFS1fQMPjBgx6HvZTMNYRsWo1U9qqJpmbTi/ODDXXI+bI8a+ZgrTLBPN4
-	eAFTUXYDY3J/HcAZm7aTw1hr5jJ6SwrztLacw1iMORTzW9kJjLF1hzOa4hq0QRAlXK6QpySz
-	s+PlyuQVgs0iCBaKwkEYHBouFIUs/XRZsFiweOXyLWzC1lRWsXhljDC+QW8jtt2ZtV2nuYvS
-	UMcMNZrEpfmhtO2Hg6QaTeb68Y8i+syAB/MNZtHl96+RPvann15XUz7TXURXlbQQvoMF0b8b
-	rZwJF8EPotvzjM8SFH8R3TLowCc4gD+fzjbveXYFzi/n0cNZR5+Z/Plx9KOuXjTBPP4quuem
-	G/O11iDacKX0n8E0uv6Qi5hgnJ9K5/+UN97KHeeZ9LFR7oQ8iR9GP7Sbcd9T59Deki7Cx9/Q
-	npE+pEH+2ueatM81af9r8smLaFulg/qfvJA2FN3GfbyCNpvdhB5xjCiATVEmShOVwUKlJFGZ
-	IpMKY+WJFjS+MNa64YoqVDZwV1iLMC6qRUHjSefPplYUSMjkMlYQwNsknhbnx9si+WoHq5BH
-	K1ISWGUtEo9/4/d44PRY+fj2yZKjRWFLxKLQsPAl4vCwEMEM3tvbsiV+fKkkmf2SZbexin9z
-	GHdSYBoWw8Pr1hJ5a485/0iMUL7zpuDgfpejMTLakL1aPzd/Tk/mPGPSdx9y+0JGNiUnfa7K
-	KLAf2fwo8rWkDRZ3Zt96R39qPqv66PyFmwWKre/9qR6tbPKavu2q9uzMckvx1IzdDyJdhwrX
-	TJfuZI4e1zVpn+66vSWnyrs+iHo/JNISXtpiLyE+kX/QvmlZ/kslEoN0f8y614uag2c66lVD
-	67dbrxa8EDafU51eP7/Rf05pHLrhLpReWjiC7O53u7ra1OL2qRt3DRtUo2UbI6QmeXxEcTn/
-	xZzzfQFRutmxUz97NfatHQP7yCmF93qj3Odu5f315IBr0Z2P7byLpkunX5Gvo9YqoioFhDJe
-	IlqAK5SSvwH5lVNtxQQAAA==
-X-CMS-MailID: 20240408072049eucas1p2bc84263f53c4eb375742a6739a2f8fbd
-X-Msg-Generator: CA
-X-RootMTR: 20240405222730eucas1p16a0790be308342130a19a5b489ffae1e
-X-EPHeader: CA
-CMS-TYPE: 201P
-X-CMS-RootMailID: 20240405222730eucas1p16a0790be308342130a19a5b489ffae1e
-References: <20240405071531.fv6smp55znlfnul2@joelS2.panther.com>
-	<CGME20240405222730eucas1p16a0790be308342130a19a5b489ffae1e@eucas1p1.samsung.com>
-	<20240405222658.3615-1-kuniyu@amazon.com>
+Content-Transfer-Encoding: 8bit
 
---a36pnpbxxry3pzoc
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+From: Arnd Bergmann <arnd@arndb.de>
 
-On Fri, Apr 05, 2024 at 03:26:58PM -0700, Kuniyuki Iwashima wrote:
-> From: Joel Granados <j.granados@samsung.com>
-> Date: Fri, 5 Apr 2024 09:15:31 +0200
-> > On Thu, Mar 28, 2024 at 12:49:34PM -0700, Kuniyuki Iwashima wrote:
-> > > From: Joel Granados via B4 Relay <devnull+j.granados.samsung.com@kern=
-el.org>
-> > > Date: Thu, 28 Mar 2024 16:40:05 +0100
-> > > > This commit comes at the tail end of a greater effort to remove the
-> > > > empty elements at the end of the ctl_table arrays (sentinels) which=
- will
-> > > > reduce the overall build time size of the kernel and run time memory
-> > > > bloat by ~64 bytes per sentinel (further information Link :
-> > > > https://lore.kernel.org/all/ZO5Yx5JFogGi%2FcBo@bombadil.infradead.o=
-rg/)
-> > > >=20
-> > > > When we remove the sentinel from ax25_param_table a buffer overflow
-> > > > shows its ugly head. The sentinel's data element used to be changed=
- when
-> > > > CONFIG_AX25_DAMA_SLAVE was not defined.
-> > >=20
-> > > I think it's better to define the relation explicitly between the
-> > > enum and sysctl table by BUILD_BUG_ON() in ax25_register_dev_sysctl()
-> > >=20
-> > >   BUILD_BUG_ON(AX25_MAX_VALUES !=3D ARRAY_SIZE(ax25_param_table));
-> > >=20
-> > > and guard AX25_VALUES_DS_TIMEOUT with #ifdef CONFIG_AX25_DAMA_SLAVE
-> > > as done for other enum.
-> >=20
-> > When I remove AX25_VALUES_DS_TIMEOUT from the un-guarded build it
-> > complains in net/ax25/ax25_ds_timer.c (ax25_ds_set_timer). Here is the
-> > report https://lore.kernel.org/oe-kbuild-all/202404040301.qzKmVQGB-lkp@=
-intel.com/.
-> >=20
-> > How best to address this? Should we just guard the whole function and do
-> > nothing when not set? like this:
->=20
-> It seems fine to me.
->=20
-> ax25_ds_timeout() checks !ax25_dev->dama.slave_timeout, but it's
-> initialised by kzalloc() during dev setup, so it will be a noop.
-thx. I'll solve it like this then
+A couple of debug functions use a 512 byte temporary buffer and call another
+function that has another buffer of the same size, which in turn exceeds the
+usual warning limit for excessive stack usage:
 
->=20
->=20
-> >=20
-> > ```
-> > void ax25_ds_set_timer(ax25_dev *ax25_dev)
-> > {
-> > #ifdef COFNIG_AX25_DAMA_SLAVE
-> >         if (ax25_dev =3D=3D NULL)        =B7=B7=B7/* paranoia */
-> >                 return;
-> >=20
-> >         ax25_dev->dama.slave_timeout =3D
-> >                 msecs_to_jiffies(ax25_dev->values[AX25_VALUES_DS_TIMEOU=
-T]) / 10;
-> >         mod_timer(&ax25_dev->dama.slave_timer, jiffies + HZ);
-> > #else
-> >         return;
-> > #endif
-> > }
-> >=20
-> > ```
-> >=20
-> > I'm not too familiar with this, so pointing me to the "correct" way to
-> > handle this would be helpfull.
->=20
-> Also, you will need to guard another use of AX25_VALUES_DS_TIMEOUT in
-> ax25_dev_device_up().
-Yes. I had noticed this already. This was a trivial one though, so I did
-not ask about it.
+drivers/net/ethernet/mellanox/mlx5/core/steering/dr_dbg.c:1073:1: error: stack frame size (1448) exceeds limit (1024) in 'dr_dump_start' [-Werror,-Wframe-larger-than]
+dr_dump_start(struct seq_file *file, loff_t *pos)
+drivers/net/ethernet/mellanox/mlx5/core/steering/dr_dbg.c:1009:1: error: stack frame size (1120) exceeds limit (1024) in 'dr_dump_domain' [-Werror,-Wframe-larger-than]
+dr_dump_domain(struct seq_file *file, struct mlx5dr_domain *dmn)
+drivers/net/ethernet/mellanox/mlx5/core/steering/dr_dbg.c:705:1: error: stack frame size (1104) exceeds limit (1024) in 'dr_dump_matcher_rx_tx' [-Werror,-Wframe-larger-than]
+dr_dump_matcher_rx_tx(struct seq_file *file, bool is_rx,
 
-Thx.
+Rework these so that each of the various code paths only ever has one of
+these buffers in it, and exactly the functions that declare one have
+the 'noinline_for_stack' annotation that prevents them from all being
+inlined into the same caller.
 
-Best
+Fixes: 917d1e799ddf ("net/mlx5: DR, Change SWS usage to debug fs seq_file interface")
+Reviewed-by: Simon Horman <horms@kernel.org>
+Reviewed-by: Jiri Pirko <jiri@nvidia.com>
+Link: https://lore.kernel.org/all/20240219100506.648089-1-arnd@kernel.org/
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+---
+[v4] Resend with Reviewed-by after the merge window closed
+[v3] no changes, sending again without a second patch
+[v2] no changes, just based on patch 1/2 but can still be applied independently
+---
+ .../mellanox/mlx5/core/steering/dr_dbg.c      | 82 +++++++++----------
+ 1 file changed, 41 insertions(+), 41 deletions(-)
 
---=20
+diff --git a/drivers/net/ethernet/mellanox/mlx5/core/steering/dr_dbg.c b/drivers/net/ethernet/mellanox/mlx5/core/steering/dr_dbg.c
+index 64f4cc284aea..030a5776c937 100644
+--- a/drivers/net/ethernet/mellanox/mlx5/core/steering/dr_dbg.c
++++ b/drivers/net/ethernet/mellanox/mlx5/core/steering/dr_dbg.c
+@@ -205,12 +205,11 @@ dr_dump_hex_print(char hex[DR_HEX_SIZE], char *src, u32 size)
+ }
+ 
+ static int
+-dr_dump_rule_action_mem(struct seq_file *file, const u64 rule_id,
++dr_dump_rule_action_mem(struct seq_file *file, char *buff, const u64 rule_id,
+ 			struct mlx5dr_rule_action_member *action_mem)
+ {
+ 	struct mlx5dr_action *action = action_mem->action;
+ 	const u64 action_id = DR_DBG_PTR_TO_ID(action);
+-	char buff[MLX5DR_DEBUG_DUMP_BUFF_LENGTH];
+ 	u64 hit_tbl_ptr, miss_tbl_ptr;
+ 	u32 hit_tbl_id, miss_tbl_id;
+ 	int ret;
+@@ -488,10 +487,9 @@ dr_dump_rule_action_mem(struct seq_file *file, const u64 rule_id,
+ }
+ 
+ static int
+-dr_dump_rule_mem(struct seq_file *file, struct mlx5dr_ste *ste,
++dr_dump_rule_mem(struct seq_file *file, char *buff, struct mlx5dr_ste *ste,
+ 		 bool is_rx, const u64 rule_id, u8 format_ver)
+ {
+-	char buff[MLX5DR_DEBUG_DUMP_BUFF_LENGTH];
+ 	char hw_ste_dump[DR_HEX_SIZE];
+ 	u32 mem_rec_type;
+ 	int ret;
+@@ -522,7 +520,8 @@ dr_dump_rule_mem(struct seq_file *file, struct mlx5dr_ste *ste,
+ }
+ 
+ static int
+-dr_dump_rule_rx_tx(struct seq_file *file, struct mlx5dr_rule_rx_tx *rule_rx_tx,
++dr_dump_rule_rx_tx(struct seq_file *file, char *buff,
++		   struct mlx5dr_rule_rx_tx *rule_rx_tx,
+ 		   bool is_rx, const u64 rule_id, u8 format_ver)
+ {
+ 	struct mlx5dr_ste *ste_arr[DR_RULE_MAX_STES + DR_ACTION_MAX_STES];
+@@ -533,7 +532,7 @@ dr_dump_rule_rx_tx(struct seq_file *file, struct mlx5dr_rule_rx_tx *rule_rx_tx,
+ 		return 0;
+ 
+ 	while (i--) {
+-		ret = dr_dump_rule_mem(file, ste_arr[i], is_rx, rule_id,
++		ret = dr_dump_rule_mem(file, buff, ste_arr[i], is_rx, rule_id,
+ 				       format_ver);
+ 		if (ret < 0)
+ 			return ret;
+@@ -542,7 +541,8 @@ dr_dump_rule_rx_tx(struct seq_file *file, struct mlx5dr_rule_rx_tx *rule_rx_tx,
+ 	return 0;
+ }
+ 
+-static int dr_dump_rule(struct seq_file *file, struct mlx5dr_rule *rule)
++static noinline_for_stack int
++dr_dump_rule(struct seq_file *file, struct mlx5dr_rule *rule)
+ {
+ 	struct mlx5dr_rule_action_member *action_mem;
+ 	const u64 rule_id = DR_DBG_PTR_TO_ID(rule);
+@@ -565,19 +565,19 @@ static int dr_dump_rule(struct seq_file *file, struct mlx5dr_rule *rule)
+ 		return ret;
+ 
+ 	if (rx->nic_matcher) {
+-		ret = dr_dump_rule_rx_tx(file, rx, true, rule_id, format_ver);
++		ret = dr_dump_rule_rx_tx(file, buff, rx, true, rule_id, format_ver);
+ 		if (ret < 0)
+ 			return ret;
+ 	}
+ 
+ 	if (tx->nic_matcher) {
+-		ret = dr_dump_rule_rx_tx(file, tx, false, rule_id, format_ver);
++		ret = dr_dump_rule_rx_tx(file, buff, tx, false, rule_id, format_ver);
+ 		if (ret < 0)
+ 			return ret;
+ 	}
+ 
+ 	list_for_each_entry(action_mem, &rule->rule_actions_list, list) {
+-		ret = dr_dump_rule_action_mem(file, rule_id, action_mem);
++		ret = dr_dump_rule_action_mem(file, buff, rule_id, action_mem);
+ 		if (ret < 0)
+ 			return ret;
+ 	}
+@@ -586,10 +586,10 @@ static int dr_dump_rule(struct seq_file *file, struct mlx5dr_rule *rule)
+ }
+ 
+ static int
+-dr_dump_matcher_mask(struct seq_file *file, struct mlx5dr_match_param *mask,
++dr_dump_matcher_mask(struct seq_file *file, char *buff,
++		     struct mlx5dr_match_param *mask,
+ 		     u8 criteria, const u64 matcher_id)
+ {
+-	char buff[MLX5DR_DEBUG_DUMP_BUFF_LENGTH];
+ 	char dump[DR_HEX_SIZE];
+ 	int ret;
+ 
+@@ -681,10 +681,10 @@ dr_dump_matcher_mask(struct seq_file *file, struct mlx5dr_match_param *mask,
+ }
+ 
+ static int
+-dr_dump_matcher_builder(struct seq_file *file, struct mlx5dr_ste_build *builder,
++dr_dump_matcher_builder(struct seq_file *file, char *buff,
++			struct mlx5dr_ste_build *builder,
+ 			u32 index, bool is_rx, const u64 matcher_id)
+ {
+-	char buff[MLX5DR_DEBUG_DUMP_BUFF_LENGTH];
+ 	int ret;
+ 
+ 	ret = snprintf(buff, MLX5DR_DEBUG_DUMP_BUFF_LENGTH,
+@@ -702,11 +702,10 @@ dr_dump_matcher_builder(struct seq_file *file, struct mlx5dr_ste_build *builder,
+ }
+ 
+ static int
+-dr_dump_matcher_rx_tx(struct seq_file *file, bool is_rx,
++dr_dump_matcher_rx_tx(struct seq_file *file, char *buff, bool is_rx,
+ 		      struct mlx5dr_matcher_rx_tx *matcher_rx_tx,
+ 		      const u64 matcher_id)
+ {
+-	char buff[MLX5DR_DEBUG_DUMP_BUFF_LENGTH];
+ 	enum dr_dump_rec_type rec_type;
+ 	u64 s_icm_addr, e_icm_addr;
+ 	int i, ret;
+@@ -731,7 +730,7 @@ dr_dump_matcher_rx_tx(struct seq_file *file, bool is_rx,
+ 		return ret;
+ 
+ 	for (i = 0; i < matcher_rx_tx->num_of_builders; i++) {
+-		ret = dr_dump_matcher_builder(file,
++		ret = dr_dump_matcher_builder(file, buff,
+ 					      &matcher_rx_tx->ste_builder[i],
+ 					      i, is_rx, matcher_id);
+ 		if (ret < 0)
+@@ -741,7 +740,7 @@ dr_dump_matcher_rx_tx(struct seq_file *file, bool is_rx,
+ 	return 0;
+ }
+ 
+-static int
++static noinline_for_stack int
+ dr_dump_matcher(struct seq_file *file, struct mlx5dr_matcher *matcher)
+ {
+ 	struct mlx5dr_matcher_rx_tx *rx = &matcher->rx;
+@@ -763,19 +762,19 @@ dr_dump_matcher(struct seq_file *file, struct mlx5dr_matcher *matcher)
+ 	if (ret)
+ 		return ret;
+ 
+-	ret = dr_dump_matcher_mask(file, &matcher->mask,
++	ret = dr_dump_matcher_mask(file, buff, &matcher->mask,
+ 				   matcher->match_criteria, matcher_id);
+ 	if (ret < 0)
+ 		return ret;
+ 
+ 	if (rx->nic_tbl) {
+-		ret = dr_dump_matcher_rx_tx(file, true, rx, matcher_id);
++		ret = dr_dump_matcher_rx_tx(file, buff, true, rx, matcher_id);
+ 		if (ret < 0)
+ 			return ret;
+ 	}
+ 
+ 	if (tx->nic_tbl) {
+-		ret = dr_dump_matcher_rx_tx(file, false, tx, matcher_id);
++		ret = dr_dump_matcher_rx_tx(file, buff, false, tx, matcher_id);
+ 		if (ret < 0)
+ 			return ret;
+ 	}
+@@ -803,11 +802,10 @@ dr_dump_matcher_all(struct seq_file *file, struct mlx5dr_matcher *matcher)
+ }
+ 
+ static int
+-dr_dump_table_rx_tx(struct seq_file *file, bool is_rx,
++dr_dump_table_rx_tx(struct seq_file *file, char *buff, bool is_rx,
+ 		    struct mlx5dr_table_rx_tx *table_rx_tx,
+ 		    const u64 table_id)
+ {
+-	char buff[MLX5DR_DEBUG_DUMP_BUFF_LENGTH];
+ 	enum dr_dump_rec_type rec_type;
+ 	u64 s_icm_addr;
+ 	int ret;
+@@ -829,7 +827,8 @@ dr_dump_table_rx_tx(struct seq_file *file, bool is_rx,
+ 	return 0;
+ }
+ 
+-static int dr_dump_table(struct seq_file *file, struct mlx5dr_table *table)
++static noinline_for_stack int
++dr_dump_table(struct seq_file *file, struct mlx5dr_table *table)
+ {
+ 	struct mlx5dr_table_rx_tx *rx = &table->rx;
+ 	struct mlx5dr_table_rx_tx *tx = &table->tx;
+@@ -848,14 +847,14 @@ static int dr_dump_table(struct seq_file *file, struct mlx5dr_table *table)
+ 		return ret;
+ 
+ 	if (rx->nic_dmn) {
+-		ret = dr_dump_table_rx_tx(file, true, rx,
++		ret = dr_dump_table_rx_tx(file, buff, true, rx,
+ 					  DR_DBG_PTR_TO_ID(table));
+ 		if (ret < 0)
+ 			return ret;
+ 	}
+ 
+ 	if (tx->nic_dmn) {
+-		ret = dr_dump_table_rx_tx(file, false, tx,
++		ret = dr_dump_table_rx_tx(file, buff, false, tx,
+ 					  DR_DBG_PTR_TO_ID(table));
+ 		if (ret < 0)
+ 			return ret;
+@@ -881,10 +880,10 @@ static int dr_dump_table_all(struct seq_file *file, struct mlx5dr_table *tbl)
+ }
+ 
+ static int
+-dr_dump_send_ring(struct seq_file *file, struct mlx5dr_send_ring *ring,
++dr_dump_send_ring(struct seq_file *file, char *buff,
++		  struct mlx5dr_send_ring *ring,
+ 		  const u64 domain_id)
+ {
+-	char buff[MLX5DR_DEBUG_DUMP_BUFF_LENGTH];
+ 	int ret;
+ 
+ 	ret = snprintf(buff, MLX5DR_DEBUG_DUMP_BUFF_LENGTH,
+@@ -902,13 +901,13 @@ dr_dump_send_ring(struct seq_file *file, struct mlx5dr_send_ring *ring,
+ 	return 0;
+ }
+ 
+-static noinline_for_stack int
++static int
+ dr_dump_domain_info_flex_parser(struct seq_file *file,
++				char *buff,
+ 				const char *flex_parser_name,
+ 				const u8 flex_parser_value,
+ 				const u64 domain_id)
+ {
+-	char buff[MLX5DR_DEBUG_DUMP_BUFF_LENGTH];
+ 	int ret;
+ 
+ 	ret = snprintf(buff, MLX5DR_DEBUG_DUMP_BUFF_LENGTH,
+@@ -925,11 +924,11 @@ dr_dump_domain_info_flex_parser(struct seq_file *file,
+ 	return 0;
+ }
+ 
+-static noinline_for_stack int
+-dr_dump_domain_info_caps(struct seq_file *file, struct mlx5dr_cmd_caps *caps,
++static int
++dr_dump_domain_info_caps(struct seq_file *file, char *buff,
++			 struct mlx5dr_cmd_caps *caps,
+ 			 const u64 domain_id)
+ {
+-	char buff[MLX5DR_DEBUG_DUMP_BUFF_LENGTH];
+ 	struct mlx5dr_cmd_vport_cap *vport_caps;
+ 	unsigned long i, vports_num;
+ 	int ret;
+@@ -969,34 +968,35 @@ dr_dump_domain_info_caps(struct seq_file *file, struct mlx5dr_cmd_caps *caps,
+ }
+ 
+ static int
+-dr_dump_domain_info(struct seq_file *file, struct mlx5dr_domain_info *info,
++dr_dump_domain_info(struct seq_file *file, char *buff,
++		    struct mlx5dr_domain_info *info,
+ 		    const u64 domain_id)
+ {
+ 	int ret;
+ 
+-	ret = dr_dump_domain_info_caps(file, &info->caps, domain_id);
++	ret = dr_dump_domain_info_caps(file, buff, &info->caps, domain_id);
+ 	if (ret < 0)
+ 		return ret;
+ 
+-	ret = dr_dump_domain_info_flex_parser(file, "icmp_dw0",
++	ret = dr_dump_domain_info_flex_parser(file, buff, "icmp_dw0",
+ 					      info->caps.flex_parser_id_icmp_dw0,
+ 					      domain_id);
+ 	if (ret < 0)
+ 		return ret;
+ 
+-	ret = dr_dump_domain_info_flex_parser(file, "icmp_dw1",
++	ret = dr_dump_domain_info_flex_parser(file, buff, "icmp_dw1",
+ 					      info->caps.flex_parser_id_icmp_dw1,
+ 					      domain_id);
+ 	if (ret < 0)
+ 		return ret;
+ 
+-	ret = dr_dump_domain_info_flex_parser(file, "icmpv6_dw0",
++	ret = dr_dump_domain_info_flex_parser(file, buff, "icmpv6_dw0",
+ 					      info->caps.flex_parser_id_icmpv6_dw0,
+ 					      domain_id);
+ 	if (ret < 0)
+ 		return ret;
+ 
+-	ret = dr_dump_domain_info_flex_parser(file, "icmpv6_dw1",
++	ret = dr_dump_domain_info_flex_parser(file, buff, "icmpv6_dw1",
+ 					      info->caps.flex_parser_id_icmpv6_dw1,
+ 					      domain_id);
+ 	if (ret < 0)
+@@ -1032,12 +1032,12 @@ dr_dump_domain(struct seq_file *file, struct mlx5dr_domain *dmn)
+ 	if (ret)
+ 		return ret;
+ 
+-	ret = dr_dump_domain_info(file, &dmn->info, domain_id);
++	ret = dr_dump_domain_info(file, buff, &dmn->info, domain_id);
+ 	if (ret < 0)
+ 		return ret;
+ 
+ 	if (dmn->info.supp_sw_steering) {
+-		ret = dr_dump_send_ring(file, dmn->send_ring, domain_id);
++		ret = dr_dump_send_ring(file, buff, dmn->send_ring, domain_id);
+ 		if (ret < 0)
+ 			return ret;
+ 	}
+-- 
+2.39.2
 
-Joel Granados
-
---a36pnpbxxry3pzoc
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQGzBAABCgAdFiEErkcJVyXmMSXOyyeQupfNUreWQU8FAmYTmsoACgkQupfNUreW
-QU9ICwv6A6h0aHFqNdUCkstNuQDQL6/IKZsdnmejFWMbFZKYFjyGWo1/Qa5SnEmf
-5aN4REQAWpaHGznkRrbgZHVET5CqmXOIbIvP/+AZsENF0RfL0CZW6hcEjRMUF6tb
-jpJ8KT/wl2xmmvfCcZkV3rymYiOxwtp2lMdUM7Zx5QZ33CaStmeKvfoA8ngQX3Ri
-u2fO/A856mzsUuUvYqJsCRqNfe9LQZQ7uFEY+0f31BpCagdivfXyFpvFk7Ol0tvB
-k7DExa1ndy/G92OzYPEOsTdzRv9xlujgnBVHIapZ2Le6aZ1YGplwI3X+m1n7kNjV
-X10vWmuQOZ81xz2n3ZjdCPmu6VfWkwyBfkaVJ/ehqjYkfQ8+s80iSRxU/g6EV2oX
-fsfSUYyolzz1Vp8nllQRiWuygSAIeaLlpXl+vwa7rQKSdLYXsoC8YqM/gEBUThe3
-X/KQMPBl7qYM2CqAkoar8omqvkBratmAJwScZQEqZxGmosEn4KWDWc4de3toUFCR
-JsRQKj4e
-=iYz3
------END PGP SIGNATURE-----
-
---a36pnpbxxry3pzoc--
 
