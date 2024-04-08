@@ -1,115 +1,99 @@
-Return-Path: <linux-rdma+bounces-1845-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-1846-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9596289BFC6
-	for <lists+linux-rdma@lfdr.de>; Mon,  8 Apr 2024 15:02:13 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3387989C1E5
+	for <lists+linux-rdma@lfdr.de>; Mon,  8 Apr 2024 15:25:26 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 51BE3285E96
-	for <lists+linux-rdma@lfdr.de>; Mon,  8 Apr 2024 13:02:12 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 653BF1C21C87
+	for <lists+linux-rdma@lfdr.de>; Mon,  8 Apr 2024 13:25:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 23D057D41B;
-	Mon,  8 Apr 2024 13:00:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B758083A09;
+	Mon,  8 Apr 2024 13:20:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="DJGhC5xC"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="aypNzpwL"
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CACC37D3F1;
-	Mon,  8 Apr 2024 13:00:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6EE70481A6;
+	Mon,  8 Apr 2024 13:20:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712581228; cv=none; b=DEJgRnnyrF0xqgg4ewjVgJ6ODRr8p/C6DOGiw8NVlExhWC6p3MJq62jdGm8Qg+PTfaoi99KUKsoCE+c/1Za/e60fZlLCSCqtX0jxJAXtQgHAdPN4GMqhn7Eu/YyPDI/wPwf0LLSX/73NKwWCUpCS7HXDg3a3JdKl/HYQO0jtnFk=
+	t=1712582427; cv=none; b=qNClLl0NcBrvgiit0O5MqHrREOpisHuhixOdZHfLuQ4LD7SV9xpf3Y/g8tAO/xKSK3sxxZsJMyiPSxcwAUmtu+LPh6E0UGPt/i8cKhqWFEdo52Ga6O3Lz3JxRbnrHaaMhJQTHwDkk2XcbZfOIhElhxe0N4PEEHrWoQP96HN2vtM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712581228; c=relaxed/simple;
-	bh=Wpv5AKvn48JjIJwCSXxs+rgMlho3WmegP95pAqv7OOw=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=LH79FaTQRS3OKKJf/XwPWW3C2ONbCFKrEP5pJq/DI7wSr6cqv9Z5fYDQI7EnG0RuWo03mkFPgl+f8/KlyZe2JBYazQh1xaYuDYPa4VqOJAD/SkQjgB0w++wrvoemNm8eKv3NnXEKVPSEvNo7GZcOkRQ+Lf1NZx6nMZZawjnv/yw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=DJGhC5xC; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 06CE8C433B2;
-	Mon,  8 Apr 2024 13:00:27 +0000 (UTC)
+	s=arc-20240116; t=1712582427; c=relaxed/simple;
+	bh=cGDUlw6k8tIWFZInxvFyjxFVpYYU2NmTQtQ7IW9vU/A=;
+	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
+	 In-Reply-To:To:Cc; b=mCUwpxL7VQOnSTw1VKQoWT/iteqk7rQ8+o7UPwfzjFFvcPUcooFcucHoSHVemhPTapmJ5vdSMWEslJIM4Ys6Pwo+UXGxCV5RXHYH1ZjbL6IFyvJTr20tyF7ihc8n4XY5tTiNLSJ05uR52zCDqlmmsUyD4iJXfJ1W3FQxLRu6LHY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=aypNzpwL; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPS id F38BEC43394;
+	Mon,  8 Apr 2024 13:20:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712581228;
-	bh=Wpv5AKvn48JjIJwCSXxs+rgMlho3WmegP95pAqv7OOw=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=DJGhC5xCjCwXgcZJ0g3vBg/r0ulgVUGmdvMC9pjzwD3AVdMeE3DvbCP733rQgj1JS
-	 0UqtFfkIs7CXis50ct2Lygz+Z6/oZCt6wg/G8ba6MGOQEW+MDEeZrzc1HGXOlSBWXH
-	 fW5a/cLxIX5O1sJ8nw78nJnH7f5xV7brTvxA5JAnjiZCIbOImEHX2PtSS5ylH3oaVk
-	 +xXCmvRgJPJ/zSLD/qD10aeXwY+5s+GwZXsaT3OtoRkl8I9FDQTA1CTFuNPTXCPqpU
-	 rGo8nlPQ3KjS0KwbFgr+7ap6HMbBhqpISs7MRHPXsi2W1JpWhncN2E/YtQS2rdIBwA
-	 KgZZSUCN4U5/g==
-Date: Mon, 8 Apr 2024 16:00:24 +0300
-From: Leon Romanovsky <leon@kernel.org>
-To: Konstantin Taranov <kotaranov@microsoft.com>
-Cc: Konstantin Taranov <kotaranov@linux.microsoft.com>,
-	"sharmaajay@microsoft.com" <sharmaajay@microsoft.com>,
-	Long Li <longli@microsoft.com>, "jgg@ziepe.ca" <jgg@ziepe.ca>,
-	"linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [EXTERNAL] Re: [PATCH rdma-next v4 0/4] Define and use mana
- queues for CQs and WQs
-Message-ID: <20240408130024.GG8764@unreal>
-References: <1712567646-5247-1-git-send-email-kotaranov@linux.microsoft.com>
- <20240408112533.GF8764@unreal>
- <PAXPR83MB05570E9EE9853B2E6F66703DB4002@PAXPR83MB0557.EURPRD83.prod.outlook.com>
+	s=k20201202; t=1712582427;
+	bh=cGDUlw6k8tIWFZInxvFyjxFVpYYU2NmTQtQ7IW9vU/A=;
+	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+	b=aypNzpwL71CgTXwvMT2nnOIHleunSJDzp8ieXffpdoU0tCRN928ur92PPKGHlWIZm
+	 NAo9HQ1PmFLsCdC57ukZ3F6InGI8XbkusegMUhTSlY9XIZqlZU4Gy51NShqHXMHO6g
+	 CTktv64IfpLOsLUNKfr3DV4tP101GAgzlToWX3gaPtqz52GyniLGq1haqiYalwcSxS
+	 +tQV3xxdviLwIABE69MAp4taHWbJ8dW1AINlzy2lx1Kcz8zLBen3fKi01/ZPOSY8wO
+	 cNgAdRo2xeiRYAL9qzBb7Wpetbz2jGZ4vGGz+aRto684VBCd/ygdGfCUr88NrzJlsO
+	 DChFOCXT/fQEQ==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id E683BD72A02;
+	Mon,  8 Apr 2024 13:20:26 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <PAXPR83MB05570E9EE9853B2E6F66703DB4002@PAXPR83MB0557.EURPRD83.prod.outlook.com>
+Content-Transfer-Encoding: 8bit
+Subject: Re: [net-next v4 0/2] devlink: Add port function attribute for IO EQs
+From: patchwork-bot+netdevbpf@kernel.org
+Message-Id: 
+ <171258242694.15799.9946974100091774097.git-patchwork-notify@kernel.org>
+Date: Mon, 08 Apr 2024 13:20:26 +0000
+References: <20240406010538.220167-1-parav@nvidia.com>
+In-Reply-To: <20240406010538.220167-1-parav@nvidia.com>
+To: Parav Pandit <parav@nvidia.com>
+Cc: netdev@vger.kernel.org, davem@davemloft.net, edumazet@google.com,
+ kuba@kernel.org, pabeni@redhat.com, corbet@lwn.net, dw@davidwei.uk,
+ kalesh-anakkur.purayil@broadcom.com, saeedm@nvidia.com, leon@kernel.org,
+ jiri@resnulli.us, shayd@nvidia.com, danielj@nvidia.com, dchumak@nvidia.com,
+ linux-doc@vger.kernel.org, linux-rdma@vger.kernel.org
 
-On Mon, Apr 08, 2024 at 12:50:12PM +0000, Konstantin Taranov wrote:
-> > From: Leon Romanovsky <leon@kernel.org>
-> > On Mon, Apr 08, 2024 at 02:14:02AM -0700, Konstantin Taranov wrote:
-> > > From: Konstantin Taranov <kotaranov@microsoft.com>
-> > >
-> > > This patch series aims to reduce code duplication by introducing a
-> > > notion of mana ib queues and corresponding helpers to create and
-> > > destroy them.
-> > >
-> > > v3->v4:
-> > > * Removed debug prints in patches, as asked by Leon
-> > >
-> > > v2->v3:
-> > > * [in 4/4] Do not define an additional struct for a raw qp
-> > >
-> > > v1->v2:
-> > > * [in 1/4] Added a comment about the ignored return value
-> > > * [in 2/4] Replaced RDMA:mana_ib to RDMA/mana_ib in the subject
-> > > * [in 4/4] Renamed mana_ib_raw_qp to mana_ib_raw_sq
-> > >
-> > > Konstantin Taranov (4):
-> > >   RDMA/mana_ib: Introduce helpers to create and destroy mana queues
-> > >   RDMA/mana_ib: Use struct mana_ib_queue for CQs
-> > >   RDMA/mana_ib: Use struct mana_ib_queue for WQs
-> > >   RDMA/mana_ib: Use struct mana_ib_queue for RAW QPs
-> > >
-> > >  drivers/infiniband/hw/mana/cq.c      | 52 +++-------------
-> > >  drivers/infiniband/hw/mana/main.c    | 39 ++++++++++++
-> > >  drivers/infiniband/hw/mana/mana_ib.h | 26 ++++----
-> > >  drivers/infiniband/hw/mana/qp.c      | 93 +++++++++-------------------
-> > >  drivers/infiniband/hw/mana/wq.c      | 33 ++--------
-> > >  5 files changed, 96 insertions(+), 147 deletions(-)
-> > 
-> > It doesn't apply.
-> > 
+Hello:
+
+This series was applied to netdev/net-next.git (main)
+by David S. Miller <davem@davemloft.net>:
+
+On Sat, 6 Apr 2024 04:05:36 +0300 you wrote:
+> Currently, PCI SFs and VFs use IO event queues to deliver netdev per
+> channel events. The number of netdev channels is a function of IO
+> event queues. In the second scenario of an RDMA device, the
+> completion vectors are also a function of IO event queues. Currently, an
+> administrator on the hypervisor has no means to provision the number
+> of IO event queues for the SF device or the VF device. Device/firmware
+> determines some arbitrary value for these IO event queues. Due to this,
+> the SF netdev channels are unpredictable, and consequently, the
+> performance is too.
 > 
-> I guess there was some mis-synchronisation between us.
-> I see that you have already applied the patch 6 days ago:
-> https://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git/log/
-> 
-> I am sorry for sending a newer version after the patch has been applied.
-> I have not checked this before sending.
-> I can take care of useless debug prints in a future cleanup patch.
+> [...]
 
-Please rebase your series, and resend.
+Here is the summary with links:
+  - [net-next,v4,1/2] devlink: Support setting max_io_eqs
+    https://git.kernel.org/netdev/net-next/c/5af3e3876d56
+  - [net-next,v4,2/2] mlx5/core: Support max_io_eqs for a function
+    https://git.kernel.org/netdev/net-next/c/93197c7c509d
 
-Thanks
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
+
 
