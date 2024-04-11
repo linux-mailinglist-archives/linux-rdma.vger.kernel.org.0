@@ -1,134 +1,105 @@
-Return-Path: <linux-rdma+bounces-1902-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-1903-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A4A018A124E
-	for <lists+linux-rdma@lfdr.de>; Thu, 11 Apr 2024 12:55:35 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id C87258A1260
+	for <lists+linux-rdma@lfdr.de>; Thu, 11 Apr 2024 12:58:50 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E592628183D
-	for <lists+linux-rdma@lfdr.de>; Thu, 11 Apr 2024 10:55:29 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 67E7E1F28DA2
+	for <lists+linux-rdma@lfdr.de>; Thu, 11 Apr 2024 10:58:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 12E3F146A74;
-	Thu, 11 Apr 2024 10:55:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 67B5C1474B0;
+	Thu, 11 Apr 2024 10:58:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="Ow7qyZP2"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Md+x0skq"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from out-183.mta0.migadu.com (out-183.mta0.migadu.com [91.218.175.183])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 46D021442FE
-	for <linux-rdma@vger.kernel.org>; Thu, 11 Apr 2024 10:55:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.183
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 06C19146A74;
+	Thu, 11 Apr 2024 10:58:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712832925; cv=none; b=QYOy1QeTxD5V/Hdmzqnq+hdlSSne4R32rtVbRQOf1NbKOGBOL2pZ3BUXMz3nAU6NaTQJLqNICq9mKgWbNOC927vLCoAOwM4JfZfY0AvfoqNbHVJGbsDZjVgqgOfOWulF7IKhV/8DPRTyDX0XS3C6Knnw3Uz1eCZagSTt//pixow=
+	t=1712833124; cv=none; b=mEvkcUUAPMsL9Ftr1YnrEBN/eZiMLa7RpoFmu8c46Eo08+V1NqDYOxI3lSDR77/1wcbNFqxTsBAaFNjvvai3f7XQ55mibaDZ7tfuJ/QCAUZghtDVwIq5hHN89kKlMORPyR2z80RkTeEXKEiYEvZ6HpWgB/9s/nnH7xBeTG8iJ/g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712832925; c=relaxed/simple;
-	bh=FnvaYVjgjga/QLbf/+N8vt3LnLcgNucJPAvIYwlPBBY=;
-	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=GE21ahbDQ6ON9l9GvmF5I8dw8t8W4ljnQ5BixfMCkECeNDiaAeMsHs8a7VQhysnzX0YkwCgvwgf+JBjXS39/0hgah7GulcBqorHEdL0b8vr0kGjk3pjuYHHhvC/7YVGBD2yg1p8+V5wgGGhh9vyF2y7WZ1lTh/DZJHf40f1Ua5Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=Ow7qyZP2; arc=none smtp.client-ip=91.218.175.183
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <5cb275ac-0405-4097-bd63-a64fe58bfc92@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1712832920;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=B4izHLAj8TuqwFZDvbDSfI8ObD2uhyizaX/o7YekfsA=;
-	b=Ow7qyZP2Kc7v3lEQNTFRi413yMlqOQMkieflUOHyXF1ymiQHraR5gV1hC213Q7C1OFMXxL
-	+OgwZqoxf0+hMRtY4JSY7k1BvpBu9Kb6EYL/KaHQ4CSlSbgy8RRx9x/Cx5PUTWQ0fvq2fS
-	ZsN65W2AJWiHq7w9pDVNsDOWCXi7cgw=
-Date: Thu, 11 Apr 2024 12:55:18 +0200
+	s=arc-20240116; t=1712833124; c=relaxed/simple;
+	bh=ZFt2FgqJLD7/gLiutE/ebb+N6CTG7vGzNaG/smf7tEg=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=oJtVpyZ0a18cv26YdXkO+3p71h23cJJ/SPxnQuOnnNBg9r8hJqsghsg8kbNoEVG4QNE1rXCSjiRFujMq5Hccz4eFqfm07N1m3lGxmzXO2Wqdj+gs5yT5sRjAKFJGwGeYO3lH1H1lUEskgVH3r/GR0zo4y++1Rm9O7oy2eJfxZmM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Md+x0skq; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0205DC433C7;
+	Thu, 11 Apr 2024 10:58:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1712833123;
+	bh=ZFt2FgqJLD7/gLiutE/ebb+N6CTG7vGzNaG/smf7tEg=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=Md+x0skqmrQ0bdIhKDQbJoPVky1ILIxBqDWPkc5ntpGNwvzj+EIYoCvzCMSpjDsSS
+	 OEcnruhA5jN/tkwLBFyGr7NlzmqHTwHXM9csV7fTkfV/RHjcfwgAUBQUV4yvj8e6SD
+	 GrhihLbDytZ7Fy7++/dECmxgklzC0Q41MV5koamg5hgMzaqmkEMDgsic85PVo1+Muk
+	 rEdb6faiuY7s6rE92ALkAbErg0pXB9wr/sipLa3z+UJtHhYTjPqwboo9ljG+pNALeO
+	 3c/Isc3zJb9cBA4AZuICvzps5EG1jNhtnJX+HyvcIUPelj/XNDxA9xY7Aj1ITmWToN
+	 1o9A3jNS9mGBw==
+Date: Thu, 11 Apr 2024 13:58:39 +0300
+From: Leon Romanovsky <leon@kernel.org>
+To: Jakub Kicinski <kuba@kernel.org>
+Cc: Edward Cree <ecree.xilinx@gmail.com>,
+	Erick Archer <erick.archer@outlook.com>,
+	Long Li <longli@microsoft.com>,
+	Ajay Sharma <sharmaajay@microsoft.com>,
+	"K. Y. Srinivasan" <kys@microsoft.com>,
+	Haiyang Zhang <haiyangz@microsoft.com>,
+	Wei Liu <wei.liu@kernel.org>, Dexuan Cui <decui@microsoft.com>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>, Paolo Abeni <pabeni@redhat.com>,
+	Kees Cook <keescook@chromium.org>,
+	"Gustavo A. R. Silva" <gustavoars@kernel.org>,
+	Nathan Chancellor <nathan@kernel.org>,
+	Nick Desaulniers <ndesaulniers@google.com>,
+	Bill Wendling <morbo@google.com>,
+	Justin Stitt <justinstitt@google.com>,
+	Jason Gunthorpe <jgg@ziepe.ca>,
+	Shradha Gupta <shradhagupta@linux.microsoft.com>,
+	Konstantin Taranov <kotaranov@microsoft.com>,
+	linux-rdma@vger.kernel.org, linux-hyperv@vger.kernel.org,
+	netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-hardening@vger.kernel.org, llvm@lists.linux.dev
+Subject: Re: [PATCH v3 0/3] RDMA/mana_ib: Add flex array to struct
+ mana_cfg_rx_steer_req_v2
+Message-ID: <20240411105839.GN4195@unreal>
+References: <AS8PR02MB72374BD1B23728F2E3C3B1A18B022@AS8PR02MB7237.eurprd02.prod.outlook.com>
+ <20240408110730.GE8764@unreal>
+ <20240408183657.7fb6cc35@kernel.org>
+ <ca8a0df8-b178-31ff-026f-b2d298f3aa84@gmail.com>
+ <20240409144419.6dc12ebb@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH 1/1] RDMA/rxe: Return the correct errno
-To: "Zhijian Li (Fujitsu)" <lizhijian@fujitsu.com>,
- "zyjzyj2000@gmail.com" <zyjzyj2000@gmail.com>, "jgg@ziepe.ca"
- <jgg@ziepe.ca>, "leon@kernel.org" <leon@kernel.org>,
- "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>
-References: <20240408142142.792413-1-yanjun.zhu@linux.dev>
- <402329bf-b959-4210-a3a0-7a3847dd8811@fujitsu.com>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Zhu Yanjun <yanjun.zhu@linux.dev>
-In-Reply-To: <402329bf-b959-4210-a3a0-7a3847dd8811@fujitsu.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240409144419.6dc12ebb@kernel.org>
 
+On Tue, Apr 09, 2024 at 02:44:19PM -0700, Jakub Kicinski wrote:
+> On Tue, 9 Apr 2024 18:01:40 +0100 Edward Cree wrote:
+> > > Shared branch would be good. Ed has some outstanding patches 
+> > > to refactor the ethtool RSS API.  
+> > 
+> > For the record I am extremely unlikely to have time to get those
+> >  done this cycle :(
+> > Though in any case fwiw it doesn't look like this series touches
+> >  anything that would conflict; mana doesn't appear to support
+> >  custom RSS contexts and besides the changes are well away from
+> >  the ethtool API handling.
+> 
+> Better safe than sorry, since the change applies cleanly on an -rc tag
+> having it applied to both trees should be very little extra work.
 
-在 2024/4/11 11:11, Zhijian Li (Fujitsu) 写道:
->
-> On 08/04/2024 22:21, Zhu Yanjun wrote:
->> In the function __rxe_add_to_pool, the function xa_alloc_cyclic is
->> called. The return value of the function xa_alloc_cyclic is as below:
->> "
->>    Return: 0 if the allocation succeeded without wrapping.  1 if the
->>    allocation succeeded after wrapping, -ENOMEM if memory could not be
->>    allocated or -EBUSY if there are no free entries in @limit.
->> "
->> But now the function __rxe_add_to_pool only returns -EINVAL. All the
->> returned error value should be returned to the caller.
->>
-> make sense.
->
->
->> Signed-off-by: Zhu Yanjun <yanjun.zhu@linux.dev>
->> ---
->>    drivers/infiniband/sw/rxe/rxe_pool.c | 6 ++++--
->>    1 file changed, 4 insertions(+), 2 deletions(-)
->>
->> diff --git a/drivers/infiniband/sw/rxe/rxe_pool.c b/drivers/infiniband/sw/rxe/rxe_pool.c
->> index 6215c6de3a84..43ba0277bd7b 100644
->> --- a/drivers/infiniband/sw/rxe/rxe_pool.c
->> +++ b/drivers/infiniband/sw/rxe/rxe_pool.c
->> @@ -122,8 +122,10 @@ int __rxe_add_to_pool(struct rxe_pool *pool, struct rxe_pool_elem *elem,
->>    	int err;
-> I'd like to assign 'err' a default error code: -EINVAL
+I prepared mana-ib-flex branch https://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git/log/?h=mana-ib-flex
+and merge ti to our wip branch https://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git/commit/?h=wip/leon-for-next&id=e537deecda03e0911e9406095ccd48bd42f328c7
 
-Thanks a lot for your comments.
-
-Before the local variable err is used, this variable err has already 
-been set.
-
-As such, it is not necessary to initialize this local variable when it 
-is declared.
-
-Best Regards,
-
-Zhu Yanjun
-
->
->
-> Thanks
-> Zhijian
->
->
->
->>    	gfp_t gfp_flags;
->>    
->> -	if (atomic_inc_return(&pool->num_elem) > pool->max_elem)
->> +	if (atomic_inc_return(&pool->num_elem) > pool->max_elem) {
->> +		err = -EINVAL;
->>    		goto err_cnt;
->> +	}
->>    
->>    	elem->pool = pool;
->>    	elem->obj = (u8 *)elem - pool->elem_offset;
->> @@ -147,7 +149,7 @@ int __rxe_add_to_pool(struct rxe_pool *pool, struct rxe_pool_elem *elem,
->>    
->>    err_cnt:
->>    	atomic_dec(&pool->num_elem);
->> -	return -EINVAL;
->> +	return err;
->>    }
->>    
->>    void *rxe_pool_get_index(struct rxe_pool *pool, u32 index)
+Thanks
 
