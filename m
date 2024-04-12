@@ -1,51 +1,51 @@
-Return-Path: <linux-rdma+bounces-1928-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-1932-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 149438A2AFD
-	for <lists+linux-rdma@lfdr.de>; Fri, 12 Apr 2024 11:21:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 8FF628A2B04
+	for <lists+linux-rdma@lfdr.de>; Fri, 12 Apr 2024 11:22:18 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C4E87281554
-	for <lists+linux-rdma@lfdr.de>; Fri, 12 Apr 2024 09:21:46 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4A6E7285117
+	for <lists+linux-rdma@lfdr.de>; Fri, 12 Apr 2024 09:22:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9E2A254646;
-	Fri, 12 Apr 2024 09:20:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C934954FBE;
+	Fri, 12 Apr 2024 09:20:54 +0000 (UTC)
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from szxga06-in.huawei.com (szxga06-in.huawei.com [45.249.212.32])
+Received: from szxga04-in.huawei.com (szxga04-in.huawei.com [45.249.212.190])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 722C551C5B;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D8E65502AA;
 	Fri, 12 Apr 2024 09:20:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.32
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.190
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712913653; cv=none; b=DUWMwxzckHtteGH8erjQ0yYVlfBc3eusvPWkXtq3iLzTe6PVlram3yG0ktxPYcHSHEyhP1Z/pLBA/6KmPqvXyAc5P5PXA7W/1T8KqreOtvcKqBlQx8c6bt+asL1bLqP1JkBR/3ivh+Zbor2Ie5Cw/pI3Exdilak2TCWtYEGa/WI=
+	t=1712913654; cv=none; b=LvJMYA7H1ENuzIYjzvvyYzHqf7aSWdUiwYBilHAACuM6uUiTtFvfSb+wxzVSwbK03MC2HiZviMvHKdX/aC8y/SZjdEj0mB/XitL6ekuD0/MiSWGu2H2Vpv8nDkzm9bnGhIXruNMutD1nAybdBHxuMj0x0sbLlouClv3oOLB7uwQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712913653; c=relaxed/simple;
-	bh=31rJ8Dui/r7OSm/CEjqbMvt4wFKJXRDqU2+rwk/A7Z8=;
+	s=arc-20240116; t=1712913654; c=relaxed/simple;
+	bh=v3FczZT5MCatWnDOanGqyKC0iGfg95SCAmsBvumAY4k=;
 	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=QenUnwU0DU7apw7Jdi0SvaD2JgPTts3Pw8MMm73/1UVaG+gmF19iCb3vLxpUjb66ntLT2tCz76MTsfq16Sw/uWHHAZmYEqXRWlwtPUF3f3/Li3LYvNQo/v51hZYYpr37kN2fFlyWlAifa7pJxBWM/AiKSzXVCEc3r2QVR57Kys0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=hisilicon.com; spf=pass smtp.mailfrom=hisilicon.com; arc=none smtp.client-ip=45.249.212.32
+	 MIME-Version:Content-Type; b=BDf8E2wnVNRy4yxnWgRvnstHsKAUEPSQCazTXiHvl6LSbgTdZOg7ev8SM8Z517DOrQuNhVRXq/rGU/xmodGWt/3STDI1tRIyeOlEdEaXuxZip77k3xvd+4xqmPhM5fi/80U99ATRczlQZ1g6c033mJyEm13dyBZnHiusLo+qs2I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=hisilicon.com; spf=pass smtp.mailfrom=hisilicon.com; arc=none smtp.client-ip=45.249.212.190
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=hisilicon.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=hisilicon.com
-Received: from mail.maildlp.com (unknown [172.19.88.214])
-	by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4VG9y01FzNz1wr4w;
-	Fri, 12 Apr 2024 17:19:52 +0800 (CST)
+Received: from mail.maildlp.com (unknown [172.19.162.112])
+	by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4VG9vl1VB7z2CcDq;
+	Fri, 12 Apr 2024 17:17:55 +0800 (CST)
 Received: from kwepemi500006.china.huawei.com (unknown [7.221.188.68])
-	by mail.maildlp.com (Postfix) with ESMTPS id 728231A016C;
+	by mail.maildlp.com (Postfix) with ESMTPS id CA2A0140156;
 	Fri, 12 Apr 2024 17:20:48 +0800 (CST)
 Received: from localhost.localdomain (10.67.165.2) by
  kwepemi500006.china.huawei.com (7.221.188.68) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.35; Fri, 12 Apr 2024 17:20:47 +0800
+ 15.1.2507.35; Fri, 12 Apr 2024 17:20:48 +0800
 From: Junxian Huang <huangjunxian6@hisilicon.com>
 To: <jgg@ziepe.ca>, <leon@kernel.org>
 CC: <linux-rdma@vger.kernel.org>, <linuxarm@huawei.com>,
 	<linux-kernel@vger.kernel.org>, <huangjunxian6@hisilicon.com>
-Subject: [PATCH for-next 04/10] RDMA/hns: Fix deadlock on SRQ async events.
-Date: Fri, 12 Apr 2024 17:16:10 +0800
-Message-ID: <20240412091616.370789-5-huangjunxian6@hisilicon.com>
+Subject: [PATCH for-next 05/10] RDMA/hns: Fix UAF for cq async event
+Date: Fri, 12 Apr 2024 17:16:11 +0800
+Message-ID: <20240412091616.370789-6-huangjunxian6@hisilicon.com>
 X-Mailer: git-send-email 2.30.0
 In-Reply-To: <20240412091616.370789-1-huangjunxian6@hisilicon.com>
 References: <20240412091616.370789-1-huangjunxian6@hisilicon.com>
@@ -62,60 +62,82 @@ X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
 
 From: Chengchang Tang <tangchengchang@huawei.com>
 
-xa_lock for SRQ table may be required in AEQ. Use xa_store_irq()/
-xa_erase_irq() to avoid deadlock.
+The refcount of CQ is not protected by locks. When CQ asynchronous
+events and CQ destruction are concurrent, CQ may have been released,
+which will cause UAF.
 
-Fixes: 81fce6291d99 ("RDMA/hns: Add SRQ asynchronous event support")
+Use the xa_lock() to protect the CQ refcount.
+
+Fixes: 9a4435375cd1 ("IB/hns: Add driver files for hns RoCE driver")
 Signed-off-by: Chengchang Tang <tangchengchang@huawei.com>
 Signed-off-by: Junxian Huang <huangjunxian6@hisilicon.com>
 ---
- drivers/infiniband/hw/hns/hns_roce_main.c | 1 +
- drivers/infiniband/hw/hns/hns_roce_srq.c  | 6 +++---
- 2 files changed, 4 insertions(+), 3 deletions(-)
+ drivers/infiniband/hw/hns/hns_roce_cq.c | 24 +++++++++++++-----------
+ 1 file changed, 13 insertions(+), 11 deletions(-)
 
-diff --git a/drivers/infiniband/hw/hns/hns_roce_main.c b/drivers/infiniband/hw/hns/hns_roce_main.c
-index 4d94fcb8685a..d202258368ed 100644
---- a/drivers/infiniband/hw/hns/hns_roce_main.c
-+++ b/drivers/infiniband/hw/hns/hns_roce_main.c
-@@ -37,6 +37,7 @@
- #include <rdma/ib_smi.h>
- #include <rdma/ib_user_verbs.h>
- #include <rdma/ib_cache.h>
-+#include "hnae3.h"
- #include "hns_roce_common.h"
- #include "hns_roce_device.h"
- #include "hns_roce_hem.h"
-diff --git a/drivers/infiniband/hw/hns/hns_roce_srq.c b/drivers/infiniband/hw/hns/hns_roce_srq.c
-index e4705ccdfa65..7210e53a82f3 100644
---- a/drivers/infiniband/hw/hns/hns_roce_srq.c
-+++ b/drivers/infiniband/hw/hns/hns_roce_srq.c
-@@ -123,7 +123,7 @@ static int alloc_srqc(struct hns_roce_dev *hr_dev, struct hns_roce_srq *srq)
+diff --git a/drivers/infiniband/hw/hns/hns_roce_cq.c b/drivers/infiniband/hw/hns/hns_roce_cq.c
+index 7250d0643b5c..68e22f368d43 100644
+--- a/drivers/infiniband/hw/hns/hns_roce_cq.c
++++ b/drivers/infiniband/hw/hns/hns_roce_cq.c
+@@ -149,7 +149,7 @@ static int alloc_cqc(struct hns_roce_dev *hr_dev, struct hns_roce_cq *hr_cq)
  		return ret;
  	}
  
--	ret = xa_err(xa_store(&srq_table->xa, srq->srqn, srq, GFP_KERNEL));
-+	ret = xa_err(xa_store_irq(&srq_table->xa, srq->srqn, srq, GFP_KERNEL));
+-	ret = xa_err(xa_store(&cq_table->array, hr_cq->cqn, hr_cq, GFP_KERNEL));
++	ret = xa_err(xa_store_irq(&cq_table->array, hr_cq->cqn, hr_cq, GFP_KERNEL));
  	if (ret) {
- 		ibdev_err(ibdev, "failed to store SRQC, ret = %d.\n", ret);
+ 		ibdev_err(ibdev, "failed to xa_store CQ, ret = %d.\n", ret);
  		goto err_put;
-@@ -136,7 +136,7 @@ static int alloc_srqc(struct hns_roce_dev *hr_dev, struct hns_roce_srq *srq)
+@@ -163,7 +163,7 @@ static int alloc_cqc(struct hns_roce_dev *hr_dev, struct hns_roce_cq *hr_cq)
  	return 0;
  
  err_xa:
--	xa_erase(&srq_table->xa, srq->srqn);
-+	xa_erase_irq(&srq_table->xa, srq->srqn);
+-	xa_erase(&cq_table->array, hr_cq->cqn);
++	xa_erase_irq(&cq_table->array, hr_cq->cqn);
  err_put:
- 	hns_roce_table_put(hr_dev, &srq_table->table, srq->srqn);
+ 	hns_roce_table_put(hr_dev, &cq_table->table, hr_cq->cqn);
  
-@@ -154,7 +154,7 @@ static void free_srqc(struct hns_roce_dev *hr_dev, struct hns_roce_srq *srq)
- 		dev_err(hr_dev->dev, "DESTROY_SRQ failed (%d) for SRQN %06lx\n",
- 			ret, srq->srqn);
+@@ -182,7 +182,7 @@ static void free_cqc(struct hns_roce_dev *hr_dev, struct hns_roce_cq *hr_cq)
+ 		dev_err(dev, "DESTROY_CQ failed (%d) for CQN %06lx\n", ret,
+ 			hr_cq->cqn);
  
--	xa_erase(&srq_table->xa, srq->srqn);
-+	xa_erase_irq(&srq_table->xa, srq->srqn);
+-	xa_erase(&cq_table->array, hr_cq->cqn);
++	xa_erase_irq(&cq_table->array, hr_cq->cqn);
  
- 	if (refcount_dec_and_test(&srq->refcount))
- 		complete(&srq->free);
+ 	/* Waiting interrupt process procedure carried out */
+ 	synchronize_irq(hr_dev->eq_table.eq[hr_cq->vector].irq);
+@@ -476,13 +476,6 @@ void hns_roce_cq_event(struct hns_roce_dev *hr_dev, u32 cqn, int event_type)
+ 	struct ib_event event;
+ 	struct ib_cq *ibcq;
+ 
+-	hr_cq = xa_load(&hr_dev->cq_table.array,
+-			cqn & (hr_dev->caps.num_cqs - 1));
+-	if (!hr_cq) {
+-		dev_warn(dev, "async event for bogus CQ 0x%06x\n", cqn);
+-		return;
+-	}
+-
+ 	if (event_type != HNS_ROCE_EVENT_TYPE_CQ_ID_INVALID &&
+ 	    event_type != HNS_ROCE_EVENT_TYPE_CQ_ACCESS_ERROR &&
+ 	    event_type != HNS_ROCE_EVENT_TYPE_CQ_OVERFLOW) {
+@@ -491,7 +484,16 @@ void hns_roce_cq_event(struct hns_roce_dev *hr_dev, u32 cqn, int event_type)
+ 		return;
+ 	}
+ 
+-	refcount_inc(&hr_cq->refcount);
++	xa_lock(&hr_dev->cq_table.array);
++	hr_cq = xa_load(&hr_dev->cq_table.array,
++			cqn & (hr_dev->caps.num_cqs - 1));
++	if (hr_cq)
++		refcount_inc(&hr_cq->refcount);
++	xa_unlock(&hr_dev->cq_table.array);
++	if (!hr_cq) {
++		dev_warn(dev, "async event for bogus CQ 0x%06x\n", cqn);
++		return;
++	}
+ 
+ 	ibcq = &hr_cq->ib_cq;
+ 	if (ibcq->event_handler) {
 -- 
 2.30.0
 
