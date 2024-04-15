@@ -1,127 +1,93 @@
-Return-Path: <linux-rdma+bounces-1945-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-1946-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D22978A57FE
-	for <lists+linux-rdma@lfdr.de>; Mon, 15 Apr 2024 18:40:06 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id F08068A5DC6
+	for <lists+linux-rdma@lfdr.de>; Tue, 16 Apr 2024 00:39:22 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 875E3283C06
-	for <lists+linux-rdma@lfdr.de>; Mon, 15 Apr 2024 16:40:05 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 207E51C21326
+	for <lists+linux-rdma@lfdr.de>; Mon, 15 Apr 2024 22:39:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6D0A782D6C;
-	Mon, 15 Apr 2024 16:38:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 429C982D93;
+	Mon, 15 Apr 2024 22:39:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b="IGdTDLf6"
+	dkim=pass (2048-bit key) header.d=launchpad.net header.i=@launchpad.net header.b="nTUD5yI2"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 76D0182485;
-	Mon, 15 Apr 2024 16:38:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=13.77.154.182
+Received: from smtp-relay-services-1.canonical.com (smtp-relay-services-1.canonical.com [185.125.188.251])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3508D2E852
+	for <linux-rdma@vger.kernel.org>; Mon, 15 Apr 2024 22:39:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.125.188.251
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713199121; cv=none; b=J3bxOEvG5/v+oVB8S5upB+VxY0VsruVlVGfNNldSCcv85oE5sgKDtXqfCCzNswKuoJmRpSqTEj5s1uERvrjRtOBmG67rIwqcV+jEmkRwPs6BA/l2XFIWBcSM3Mkv7+7SOauzcv0og1OLHeCVhPN2C5ICocEr85UAiUIXH1fjseA=
+	t=1713220758; cv=none; b=KLioGdlAjYBM5UHP/ZCkdCIUmg1u4FMSfVlt55R+wDEQrkCDEOsd34a03U58SejDlbH4sN/JveNeRKz3y6BW5dxYjnchalcjw1AITTR+7OkRXzt/Pfs8Gzox8NDCz5do8SjJpcYH+K1sMU8yfvo4OAg/iIQUUF/tJNJtpNCjbHY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713199121; c=relaxed/simple;
-	bh=Iu3sKE+YRCqwKdiAB3om3hv5zVJb0LpbWJ23pVnz8Cg=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=nrBHxxGrvGPl277AJG5SuJlgmm99YKP0yUAifKdIUJ8RmLE4z8yYARfzl1NjspbH+tr1PVgEXckSL1Pyty8Wh+8HyilUuq2SpIwMpejQBu3ofwghyfHNoMzcDWAl4921cgswsY4LOtDu4AB9bOkJa7CENYRDCGIZ3olUDLaxShk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com; spf=pass smtp.mailfrom=linux.microsoft.com; dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b=IGdTDLf6; arc=none smtp.client-ip=13.77.154.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.microsoft.com
-Received: by linux.microsoft.com (Postfix, from userid 1127)
-	id CFF9E20FC5F5; Mon, 15 Apr 2024 09:38:32 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com CFF9E20FC5F5
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-	s=default; t=1713199112;
-	bh=LhdsE6efodYH8GQvxcpPZhNnPBH3tY5kGI4QxFJUD7A=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=IGdTDLf6NwimYdoARfgYLzKymBbs2nS+TCIfTqZBb1p/2QYvV1Jy2p9AcHrIVGbyx
-	 wWNZ/6STv4qrFKgJ8h9jsk3naDFVR9zZ+6BOndDZ0reksraiMZRhJMSdbWw5C5xs+i
-	 1qVsQkuqaNM6aI3DB4RwYnFb9zlWr/lKUQLRGxbg=
-Date: Mon, 15 Apr 2024 09:38:32 -0700
-From: Saurabh Singh Sengar <ssengar@linux.microsoft.com>
-To: Shradha Gupta <shradhagupta@linux.microsoft.com>
-Cc: linux-kernel@vger.kernel.org, linux-hyperv@vger.kernel.org,
-	linux-rdma@vger.kernel.org, netdev@vger.kernel.org,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	Ajay Sharma <sharmaajay@microsoft.com>,
-	Leon Romanovsky <leon@kernel.org>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-	"K. Y. Srinivasan" <kys@microsoft.com>,
-	Haiyang Zhang <haiyangz@microsoft.com>,
-	Wei Liu <wei.liu@kernel.org>, Dexuan Cui <decui@microsoft.com>,
-	Long Li <longli@microsoft.com>,
-	Michael Kelley <mikelley@microsoft.com>,
-	Shradha Gupta <shradhagupta@microsoft.com>,
-	Yury Norov <yury.norov@gmail.com>,
-	Konstantin Taranov <kotaranov@microsoft.com>,
-	Souradeep Chakrabarti <schakrabarti@linux.microsoft.com>
-Subject: Re: [PATCH net-next] net: mana: Add new device attributes for mana
-Message-ID: <20240415163832.GA28558@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
-References: <1713174589-29243-1-git-send-email-shradhagupta@linux.microsoft.com>
+	s=arc-20240116; t=1713220758; c=relaxed/simple;
+	bh=BRubRHn+bdBwk7hCnQWkyWL0lSsAI7e1QjvTouDvqj4=;
+	h=Content-Type:MIME-Version:To:From:Subject:Message-Id:Date; b=C9JlgjoJ9aD0Nkp0gOTpxOE9RF5/hK8e9m2BgnzM5U9pau9ovqr4UJsY8qlpeG8SulqnwO0beIsAV0pVXmTDr82jAWayOicNm8pIiX1XhIkUhzplKuYmQXSxngl+PWrGWqBlMCch9JNSNVWq8bDQrDLr87unmYHTGKFclEfuBsM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=launchpad.net; spf=pass smtp.mailfrom=launchpad.net; dkim=pass (2048-bit key) header.d=launchpad.net header.i=@launchpad.net header.b=nTUD5yI2; arc=none smtp.client-ip=185.125.188.251
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=launchpad.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=launchpad.net
+Received: from juju-98d295-prod-launchpad-15.localdomain (buildd-manager.lp.internal [10.131.215.202])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-relay-services-1.canonical.com (Postfix) with ESMTPSA id 40B623F806
+	for <linux-rdma@vger.kernel.org>; Mon, 15 Apr 2024 22:32:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=launchpad.net;
+	s=20210803; t=1713220372;
+	bh=BRubRHn+bdBwk7hCnQWkyWL0lSsAI7e1QjvTouDvqj4=;
+	h=Content-Type:MIME-Version:To:From:Subject:Message-Id:Date:
+	 Reply-To;
+	b=nTUD5yI2LsONXjAJjbNUBoP2ch4jSja0wk0cpQR35+q4jzZS8FfNPqEr3wMyxdwq6
+	 8Qr2k4I4jhm6A+lsEfQKR4gGHfiefO+KITAlq4L2gAHo25/Q8CfeFazrzFndet9VZi
+	 emQ21wSE4vyJmWBDLyIMJ07k+790VOwdR1hD3gQcqu7b4WmWdUJYHS+gfEi6/c2GzC
+	 g9co0g1NLO69UMjAgRZsX9V60ZAvfoy4MBpYIxnCKZ0b7ma+GLHJuEmvYIdwkzcFxq
+	 eRbRf+76Up7WJEEbKf1J8RTHmFnj/w8u02yQxbD9oFSIdDCSFdjkIF5V9tLjaKo+cT
+	 eCPtreSF96CkQ==
+Received: from [10.131.215.202] (localhost [127.0.0.1])
+	by juju-98d295-prod-launchpad-15.localdomain (Postfix) with ESMTP id 2B1917E243
+	for <linux-rdma@vger.kernel.org>; Mon, 15 Apr 2024 22:32:51 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1713174589-29243-1-git-send-email-shradhagupta@linux.microsoft.com>
-User-Agent: Mutt/1.5.21 (2010-09-15)
+Content-Transfer-Encoding: quoted-printable
+X-Launchpad-Message-Rationale: Requester @linux-rdma
+X-Launchpad-Message-For: linux-rdma
+X-Launchpad-Notification-Type: recipe-build-status
+X-Launchpad-Archive: ~linux-rdma/ubuntu/rdma-core-daily
+X-Launchpad-Build-State: MANUALDEPWAIT
+To: Linux RDMA <linux-rdma@vger.kernel.org>
+From: noreply@launchpad.net
+Subject: [recipe build #3712747] of ~linux-rdma rdma-core-daily in xenial: Dependency wait
+Message-Id: <171322037114.3971088.895989769744293623.launchpad@juju-98d295-prod-launchpad-15>
+Date: Mon, 15 Apr 2024 22:32:51 -0000
+Reply-To: noreply@launchpad.net
+Sender: noreply@launchpad.net
+Errors-To: noreply@launchpad.net
+Precedence: bulk
+X-Generated-By: Launchpad (canonical.com); Revision="67d34a19aaa1df7be4dd8bf498cbc5bbd785067b"; Instance="launchpad-buildd-manager"
+X-Launchpad-Hash: 74b9cb0cd0ba5b9704cdb99d1cf3e55152284fe8
 
-On Mon, Apr 15, 2024 at 02:49:49AM -0700, Shradha Gupta wrote:
-> Add new device attributes to view multiport, msix, and adapter MTU
-> setting for MANA device.
-> 
-> Signed-off-by: Shradha Gupta <shradhagupta@linux.microsoft.com>
-> ---
->  .../net/ethernet/microsoft/mana/gdma_main.c   | 74 +++++++++++++++++++
->  include/net/mana/gdma.h                       |  9 +++
->  2 files changed, 83 insertions(+)
-> 
-> diff --git a/drivers/net/ethernet/microsoft/mana/gdma_main.c b/drivers/net/ethernet/microsoft/mana/gdma_main.c
-> index 1332db9a08eb..6674a02cff06 100644
-> --- a/drivers/net/ethernet/microsoft/mana/gdma_main.c
-> +++ b/drivers/net/ethernet/microsoft/mana/gdma_main.c
-> @@ -1471,6 +1471,65 @@ static bool mana_is_pf(unsigned short dev_id)
->  	return dev_id == MANA_PF_DEVICE_ID;
->  }
->  
-> +static ssize_t mana_attr_show(struct device *dev,
-> +			      struct device_attribute *attr, char *buf)
-> +{
-> +	struct pci_dev *pdev = to_pci_dev(dev);
-> +	struct gdma_context *gc = pci_get_drvdata(pdev);
-> +	struct mana_context *ac = gc->mana.driver_data;
-> +
-> +	if (strcmp(attr->attr.name, "mport") == 0)
-> +		return snprintf(buf, PAGE_SIZE, "%d\n", ac->num_ports);
-> +	else if (strcmp(attr->attr.name, "adapter_mtu") == 0)
-> +		return snprintf(buf, PAGE_SIZE, "%d\n", gc->adapter_mtu);
-> +	else if (strcmp(attr->attr.name, "msix") == 0)
-> +		return snprintf(buf, PAGE_SIZE, "%d\n", gc->max_num_msix);
-> +	else
-> +		return -EINVAL;
-> +}
-> +
-> +static int mana_gd_setup_sysfs(struct pci_dev *pdev)
-> +{
-> +	struct gdma_context *gc = pci_get_drvdata(pdev);
-> +	int retval = 0;
-> +
-> +	gc->mana_attributes.mana_mport_attr.attr.name = "mport";
-> +	gc->mana_attributes.mana_mport_attr.attr.mode = 0444;
-> +	gc->mana_attributes.mana_mport_attr.show = mana_attr_show;
-> +	sysfs_attr_init(&gc->mana_attributes.mana_mport_attr);
-> +	retval = device_create_file(&pdev->dev,
-> +				    &gc->mana_attributes.mana_mport_attr);
+ * State: Dependency wait
+ * Recipe: linux-rdma/rdma-core-daily
+ * Archive: ~linux-rdma/ubuntu/rdma-core-daily
+ * Distroseries: xenial
+ * Duration: 3 minutes
+ * Build Log: https://launchpad.net/~linux-rdma/+archive/ubuntu/rdma-core-d=
+aily/+recipebuild/3712747/+files/buildlog.txt.gz
+ * Upload Log:=20
+ * Builder: https://launchpad.net/builders/lcy02-amd64-032
 
-if you can use .dev_groups, sysfs creation and removal will be lot more
-simplified for the driver.
+--=20
+https://launchpad.net/~linux-rdma/+archive/ubuntu/rdma-core-daily/+recipebu=
+ild/3712747
+Your team Linux RDMA is the requester of the build.
 
-- Saurabh
 
