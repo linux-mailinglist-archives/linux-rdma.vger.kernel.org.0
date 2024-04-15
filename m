@@ -1,104 +1,219 @@
-Return-Path: <linux-rdma+bounces-1940-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-1942-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6732E8A4727
-	for <lists+linux-rdma@lfdr.de>; Mon, 15 Apr 2024 04:55:47 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4CA748A4BF3
+	for <lists+linux-rdma@lfdr.de>; Mon, 15 Apr 2024 11:51:11 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 95CC11C20D82
-	for <lists+linux-rdma@lfdr.de>; Mon, 15 Apr 2024 02:55:46 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6C83C1C21E19
+	for <lists+linux-rdma@lfdr.de>; Mon, 15 Apr 2024 09:51:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0028B18E02;
-	Mon, 15 Apr 2024 02:55:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 01302482E2;
+	Mon, 15 Apr 2024 09:49:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b="Y2tpKM3R"
+	dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b="HREzJFRF"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from m16.mail.163.com (m16.mail.163.com [117.135.210.4])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2EEAB17C6D
-	for <linux-rdma@vger.kernel.org>; Mon, 15 Apr 2024 02:55:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=117.135.210.4
+Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2C10347A7F;
+	Mon, 15 Apr 2024 09:49:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=13.77.154.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713149731; cv=none; b=SR/SBvH7mmAGH7ed7mUwN7lUNDu7jduNBvnl7Mj591MxYIqA+d3Oy9cSWfWIpDyHScT/3RXySl/rSTLppVLsCoklApzTNHnaGS8phB9vpe41BnjTNhU/PJk/qkhFol/6CbK7B825JNHc1cLOznJ18kT4mjUvhDmy4Q24eR1JvJI=
+	t=1713174592; cv=none; b=LZXxHBbzjeg1rHAwALvatUC69mJYY2GxxPYP+rdijfhiHcAT+WYqoXQJWZkYI1EIZlwfNz0AbshG80csgXrvTffVZ5FjFrRV1PKre54asIR7heEM8L7eZe8W8nvSdCbt5wU5ykhs2a7gBwrnAziabgL9Cupq4W3+wmpqo4L2mmg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713149731; c=relaxed/simple;
-	bh=T3x0WQpAZCi2yivHlFX+HNBVpsGtrS8OqSlLj1JgOG0=;
-	h=Date:From:To:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition; b=hWC7pTPdJZnZYHeTHB9CkSiifrh6YHW97OHZjdqbmeAx/ipau8Ded2cS6h9wvic2dQzRCYtmIMd5CUz6PAAYTnjk4PsBVRMIJIz6m5N1gpafCjAlpUKWwidBtHSjQ0tDGfEtD4bum35MdLzokbBpyMB1uqB0CHZzDze2GjDgbMc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com; spf=pass smtp.mailfrom=163.com; dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b=Y2tpKM3R; arc=none smtp.client-ip=117.135.210.4
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=163.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-	s=s110527; h=Date:From:Subject:Message-ID:MIME-Version:
-	Content-Type; bh=6yjv2FBVBgeUNkKvYO5qIAJ369bfKTRO9maGwUzlCHg=;
-	b=Y2tpKM3RmtYkZhBfJZi2pgBLNR3/H/EqLqt/kW0TNCW2WP5PpviKE+sUJF1MBS
-	8mgrGw7jj6IwHmabW86cR90i2MZ+sHi7sQaUDSkFfwANWeaxj8wLfxaxx8ByBK6v
-	vXKuyOrr2D+vigEWSKOYZKGK2LmZq/XpDorR9x8h2L2NM=
-Received: from localhost (unknown [183.81.182.182])
-	by gzga-smtp-mta-g1-2 (Coremail) with SMTP id _____wDnN94RlxxmYQJBAQ--.34734S2;
-	Mon, 15 Apr 2024 10:55:14 +0800 (CST)
-Date: Mon, 15 Apr 2024 10:55:12 +0800
-From: Honggang LI <honggangli@163.com>
-To: linux-rdma@vger.kernel.org
-Subject: Question about extra 40 bytes needed for UD receive buffer
-Message-ID: <ZhyXEOC9SMIxjXP1@fc39>
+	s=arc-20240116; t=1713174592; c=relaxed/simple;
+	bh=HPqIfe8N0h1aRaKL1e6qWNji6hvbGbimqY4dEkNUOi4=;
+	h=From:To:Cc:Subject:Date:Message-Id; b=NFAcTYJOcd/XtkPFUKntyvXzTG0WTcbP4cNwdr2i1oiBRThs1B7VFzwrgbJ/AWPzz3AlG1HqcacY2Pp4cXMbooyac6VOB78Ivv1Nmt/mDOnuGCHV5+5rcOIqa5g6QpZDrzWVGduvkfEiMSqORrTVWQ0L6hj7NcvrgyncMD6M/CA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com; spf=pass smtp.mailfrom=linux.microsoft.com; dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b=HREzJFRF; arc=none smtp.client-ip=13.77.154.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.microsoft.com
+Received: by linux.microsoft.com (Postfix, from userid 1134)
+	id 9AC8420FC60E; Mon, 15 Apr 2024 02:49:50 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 9AC8420FC60E
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+	s=default; t=1713174590;
+	bh=I0/lrKTOZRAEKlw4IxM0UxHLji3Bd4EZwvEMBRN/Fps=;
+	h=From:To:Cc:Subject:Date:From;
+	b=HREzJFRFIojtvhKFj4dl+RnRoAPWmBOCXhHvKF0V3TI3hbC/3bErU8JTUi7F/hjMV
+	 9CvIYHwhL4pT6vwbC6627dcePGt8GB6kJGcIeu1tgnw1CSeGg8xMHf+0IpLU3Q69GT
+	 WcigWcty1iqnWg4s2SJYN+I9Eh3+bA57QQnEPdow=
+From: Shradha Gupta <shradhagupta@linux.microsoft.com>
+To: linux-kernel@vger.kernel.org,
+	linux-hyperv@vger.kernel.org,
+	linux-rdma@vger.kernel.org,
+	netdev@vger.kernel.org
+Cc: Shradha Gupta <shradhagupta@linux.microsoft.com>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>,
+	Paolo Abeni <pabeni@redhat.com>,
+	Ajay Sharma <sharmaajay@microsoft.com>,
+	Leon Romanovsky <leon@kernel.org>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+	"K. Y. Srinivasan" <kys@microsoft.com>,
+	Haiyang Zhang <haiyangz@microsoft.com>,
+	Wei Liu <wei.liu@kernel.org>,
+	Dexuan Cui <decui@microsoft.com>,
+	Long Li <longli@microsoft.com>,
+	Michael Kelley <mikelley@microsoft.com>,
+	Shradha Gupta <shradhagupta@microsoft.com>,
+	Yury Norov <yury.norov@gmail.com>,
+	Konstantin Taranov <kotaranov@microsoft.com>,
+	Souradeep Chakrabarti <schakrabarti@linux.microsoft.com>
+Subject: [PATCH net-next] net: mana: Add new device attributes for mana
+Date: Mon, 15 Apr 2024 02:49:49 -0700
+Message-Id: <1713174589-29243-1-git-send-email-shradhagupta@linux.microsoft.com>
+X-Mailer: git-send-email 1.8.3.1
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-CM-TRANSID:_____wDnN94RlxxmYQJBAQ--.34734S2
-X-Coremail-Antispam: 1Uf129KBjvJXoW7tr4rGr1xXw43uF1fuw18Grg_yoW8ZryDpF
-	4rKrsxJF1kW347A3W8ua1kJ34xC3ZYy3W5Cay8Wr48uw15Ww10gFy3KrWYva1DZr1Fkayj
-	qr1Y9r4rCFn0vFDanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x0zRwL0rUUUUU=
-X-CM-SenderInfo: 5krqwwxdqjzxi6rwjhhfrp/xtbBDxbBRWVODSrfyQAAsH
 
-hi,
+Add new device attributes to view multiport, msix, and adapter MTU
+setting for MANA device.
 
-According to volume 1 of IBAT specification of release 1.4,
+Signed-off-by: Shradha Gupta <shradhagupta@linux.microsoft.com>
+---
+ .../net/ethernet/microsoft/mana/gdma_main.c   | 74 +++++++++++++++++++
+ include/net/mana/gdma.h                       |  9 +++
+ 2 files changed, 83 insertions(+)
 
-1) 11.4.1.2 POST RECEIVE REQUEST
-Note that for UD QPs, the first 40 bytes of the buffer(s) referred
-to by the Scatter/Gather list will contain the GRH of the incoming message.
-If no GRH is present, the contents of first 40 bytes of the buffer(s) will
-be undefined. The presence of the GRH will be indicated by a bit in the
-Work Completion.
-
-2) 11.4.2.1 POLL FOR COMPLETION
-GRH Present indicator, for UD RQs only. If this indicator is
-set, the first 40 bytes of the buffer(s) referred to by the Scatter/Gather
-list will contain the GRH of the incoming message. If it is not set, the
-contents of first 40 bytes of the buffer(s) will be undefined. Contents 
-of the payload of the message will begin after the first 40 bytes
-
-3) A17.4.5.2 SCATTERING OF THE L3 HEADER IN UD
-The first 40 bytes of user posted UD Receive Buffers are reserved for the
-L3 header of the incoming packet (as per the InfiniBand Spec Section
-11.4.1.2). In RoCEv2, this area is filled up with the IP header. IPv6 header
-uses the entire 40 bytes. IPv4 headers use the 20 bytes in the second half
-of the reserved 40 bytes area (i.e. offset 20 from the beginning of the
-receive buffer). In this case, the content of the first 20 bytes is undefined.
-
-
-
-After function `ibv_poll_cq` return 1, the dump of receive buffer of
-`ibv_ud_pingpong` shows there is 40 bytes GRH in the head of receive
-buffer. The first 20 bytes are zeros and the second 20 bytes is a valid
-IP header. At this point, everything works as required by the
-specification rules 1), 2) and 3).
-
-However, I'm confused by the dump of `mckey` receive buffer. The flag
-`IBV_WC_GRH` is set in `ibv_wc.wc_flags`, but there is no GRH in
-the receive buffer. Received data starts from the *first* byte of
-receive buffer. As multicast over UD QP only, can someone please explian
-why there is no GRH in receive buffer and the data starts from the first
-bytes of receive buffer with `IBV_WC_GRH` was set?
-
-Thanks
+diff --git a/drivers/net/ethernet/microsoft/mana/gdma_main.c b/drivers/net/ethernet/microsoft/mana/gdma_main.c
+index 1332db9a08eb..6674a02cff06 100644
+--- a/drivers/net/ethernet/microsoft/mana/gdma_main.c
++++ b/drivers/net/ethernet/microsoft/mana/gdma_main.c
+@@ -1471,6 +1471,65 @@ static bool mana_is_pf(unsigned short dev_id)
+ 	return dev_id == MANA_PF_DEVICE_ID;
+ }
+ 
++static ssize_t mana_attr_show(struct device *dev,
++			      struct device_attribute *attr, char *buf)
++{
++	struct pci_dev *pdev = to_pci_dev(dev);
++	struct gdma_context *gc = pci_get_drvdata(pdev);
++	struct mana_context *ac = gc->mana.driver_data;
++
++	if (strcmp(attr->attr.name, "mport") == 0)
++		return snprintf(buf, PAGE_SIZE, "%d\n", ac->num_ports);
++	else if (strcmp(attr->attr.name, "adapter_mtu") == 0)
++		return snprintf(buf, PAGE_SIZE, "%d\n", gc->adapter_mtu);
++	else if (strcmp(attr->attr.name, "msix") == 0)
++		return snprintf(buf, PAGE_SIZE, "%d\n", gc->max_num_msix);
++	else
++		return -EINVAL;
++}
++
++static int mana_gd_setup_sysfs(struct pci_dev *pdev)
++{
++	struct gdma_context *gc = pci_get_drvdata(pdev);
++	int retval = 0;
++
++	gc->mana_attributes.mana_mport_attr.attr.name = "mport";
++	gc->mana_attributes.mana_mport_attr.attr.mode = 0444;
++	gc->mana_attributes.mana_mport_attr.show = mana_attr_show;
++	sysfs_attr_init(&gc->mana_attributes.mana_mport_attr);
++	retval = device_create_file(&pdev->dev,
++				    &gc->mana_attributes.mana_mport_attr);
++	if (retval < 0)
++		return retval;
++
++	gc->mana_attributes.mana_adapter_mtu_attr.attr.name = "adapter_mtu";
++	gc->mana_attributes.mana_adapter_mtu_attr.attr.mode = 0444;
++	gc->mana_attributes.mana_adapter_mtu_attr.show = mana_attr_show;
++	sysfs_attr_init(&gc->mana_attributes.mana_adapter_mtu_attr);
++	retval = device_create_file(&pdev->dev,
++				    &gc->mana_attributes.mana_adapter_mtu_attr);
++	if (retval < 0)
++		goto mtu_attr_error;
++
++	gc->mana_attributes.mana_msix_attr.attr.name = "msix";
++	gc->mana_attributes.mana_msix_attr.attr.mode = 0444;
++	gc->mana_attributes.mana_msix_attr.show = mana_attr_show;
++	sysfs_attr_init(&gc->mana_attributes.mana_msix_attr);
++	retval = device_create_file(&pdev->dev,
++				    &gc->mana_attributes.mana_msix_attr);
++	if (retval < 0)
++		goto msix_attr_error;
++
++	return retval;
++msix_attr_error:
++	device_remove_file(&pdev->dev,
++			   &gc->mana_attributes.mana_adapter_mtu_attr);
++mtu_attr_error:
++	device_remove_file(&pdev->dev,
++			   &gc->mana_attributes.mana_mport_attr);
++	return retval;
++}
++
+ static int mana_gd_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
+ {
+ 	struct gdma_context *gc;
+@@ -1519,6 +1578,10 @@ static int mana_gd_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
+ 	gc->bar0_va = bar0_va;
+ 	gc->dev = &pdev->dev;
+ 
++	err = mana_gd_setup_sysfs(pdev);
++	if (err < 0)
++		goto free_gc;
++
+ 	err = mana_gd_setup(pdev);
+ 	if (err)
+ 		goto unmap_bar;
+@@ -1544,6 +1607,15 @@ static int mana_gd_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
+ 	return err;
+ }
+ 
++static void mana_cleanup_sysfs_files(struct pci_dev *pdev,
++				     struct gdma_context *gc)
++{
++	device_remove_file(&pdev->dev, &gc->mana_attributes.mana_msix_attr);
++	device_remove_file(&pdev->dev,
++			   &gc->mana_attributes.mana_adapter_mtu_attr);
++	device_remove_file(&pdev->dev, &gc->mana_attributes.mana_mport_attr);
++}
++
+ static void mana_gd_remove(struct pci_dev *pdev)
+ {
+ 	struct gdma_context *gc = pci_get_drvdata(pdev);
+@@ -1552,6 +1624,8 @@ static void mana_gd_remove(struct pci_dev *pdev)
+ 
+ 	mana_gd_cleanup(pdev);
+ 
++	mana_cleanup_sysfs_files(pdev, gc);
++
+ 	pci_iounmap(pdev, gc->bar0_va);
+ 
+ 	vfree(gc);
+diff --git a/include/net/mana/gdma.h b/include/net/mana/gdma.h
+index 27684135bb4d..ea636959164c 100644
+--- a/include/net/mana/gdma.h
++++ b/include/net/mana/gdma.h
+@@ -354,6 +354,12 @@ struct gdma_irq_context {
+ 	char name[MANA_IRQ_NAME_SZ];
+ };
+ 
++struct mana_device_attributes {
++	struct device_attribute mana_mport_attr;
++	struct device_attribute mana_adapter_mtu_attr;
++	struct device_attribute mana_msix_attr;
++};
++
+ struct gdma_context {
+ 	struct device		*dev;
+ 
+@@ -395,6 +401,9 @@ struct gdma_context {
+ 
+ 	/* Azure RDMA adapter */
+ 	struct gdma_dev		mana_ib;
++
++	/* device attributes */
++	struct mana_device_attributes mana_attributes;
+ };
+ 
+ #define MAX_NUM_GDMA_DEVICES	4
+-- 
+2.34.1
 
 
