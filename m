@@ -1,55 +1,55 @@
-Return-Path: <linux-rdma+bounces-1948-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-1947-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 514BF8A5DD1
-	for <lists+linux-rdma@lfdr.de>; Tue, 16 Apr 2024 00:49:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id A03488A5DCA
+	for <lists+linux-rdma@lfdr.de>; Tue, 16 Apr 2024 00:43:35 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8ED7B1F220EE
-	for <lists+linux-rdma@lfdr.de>; Mon, 15 Apr 2024 22:49:23 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 37DDF1F22554
+	for <lists+linux-rdma@lfdr.de>; Mon, 15 Apr 2024 22:43:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 20F6015749B;
-	Mon, 15 Apr 2024 22:49:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8A57B1442F3;
+	Mon, 15 Apr 2024 22:43:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=launchpad.net header.i=@launchpad.net header.b="IbQJwHJj"
+	dkim=pass (2048-bit key) header.d=launchpad.net header.i=@launchpad.net header.b="ccCU44D2"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from smtp-relay-services-0.canonical.com (smtp-relay-services-0.canonical.com [185.125.188.250])
+Received: from smtp-relay-services-1.canonical.com (smtp-relay-services-1.canonical.com [185.125.188.251])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 175B3156225
-	for <linux-rdma@vger.kernel.org>; Mon, 15 Apr 2024 22:49:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.125.188.250
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4047D2E852
+	for <linux-rdma@vger.kernel.org>; Mon, 15 Apr 2024 22:43:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.125.188.251
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713221358; cv=none; b=EvW7X3wgNjIwixo96c+4ilTSPYqTAl6EebZ5lDWRCHy+FAd7tyoH3oQtUMFkN+2GKC2G72P5sqC5N+mEfyWroRHZJw2PmxEXhT0Wu9YRIPtvWHg4BYFyU8i3K1k94tajsBVlmCdUW89V7z9JOm+gEgp1TIl686g+8TSNpy6nYBE=
+	t=1713221010; cv=none; b=E0dSzEp9laSmCQwqxL6gjOG0AE73lLl3Uvx+e8EY127D3108lncLTdUgiVACso5fXWcItOWPR93HLB0vel0C9RTbhJtAuY1OEF6nHce9Qxeq8x+o10yU2kFGBM8TuaIu70cHSRtfY5eB8kgmdVAUL+CHqqZUzEKcDTtXMhGJXKs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713221358; c=relaxed/simple;
-	bh=JAVXVY3LgmuiY7ndiYyctILHjwZanJfGhpghRuqM9Mc=;
-	h=Content-Type:MIME-Version:To:From:Subject:Message-Id:Date; b=SVVwu9B1QllbeRKCLTCIihh8KfFhshyEDuQyag+CI7gk9/vGvFWI79oJBxgRnPAjL59s1iKrBFWh5hE901durRFm3KPqgbufX/yuT3JqDQHyawx+j1srfaUXaX4UHyJjB0iK+2aWpeUjgJ9deNul4YLCECIrIdtFkYQQURrYsQ0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=launchpad.net; spf=pass smtp.mailfrom=launchpad.net; dkim=pass (2048-bit key) header.d=launchpad.net header.i=@launchpad.net header.b=IbQJwHJj; arc=none smtp.client-ip=185.125.188.250
+	s=arc-20240116; t=1713221010; c=relaxed/simple;
+	bh=WI67IuvIACDf6rZggFVa31X6kJZ7iRWQeaSB8z6103g=;
+	h=Content-Type:MIME-Version:To:From:Subject:Message-Id:Date; b=GRJR7UKadC8g7xtAJ32VfHB9JTk3Xj6WG8dEM/oZQ9WBROJT27XdSVbB+KxRyM34V+s2Kr2kqJxRGQIXWkdw7F62Q2agS3KE+hoKC5U09jZaA1q6m5ohpLqAt3nTAahemrTHNnx1+2R2Qi5vpSIL39mJPRAWMPKhy6YSopmnfjk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=launchpad.net; spf=pass smtp.mailfrom=launchpad.net; dkim=pass (2048-bit key) header.d=launchpad.net header.i=@launchpad.net header.b=ccCU44D2; arc=none smtp.client-ip=185.125.188.251
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=launchpad.net
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=launchpad.net
 Received: from juju-98d295-prod-launchpad-15.localdomain (buildd-manager.lp.internal [10.131.215.202])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
 	(No client certificate requested)
-	by smtp-relay-services-0.canonical.com (Postfix) with ESMTPSA id 96AE04083D
-	for <linux-rdma@vger.kernel.org>; Mon, 15 Apr 2024 22:40:27 +0000 (UTC)
+	by smtp-relay-services-1.canonical.com (Postfix) with ESMTPSA id C7EE33F8D7
+	for <linux-rdma@vger.kernel.org>; Mon, 15 Apr 2024 22:43:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=launchpad.net;
-	s=20210803; t=1713220827;
-	bh=JAVXVY3LgmuiY7ndiYyctILHjwZanJfGhpghRuqM9Mc=;
+	s=20210803; t=1713221006;
+	bh=WI67IuvIACDf6rZggFVa31X6kJZ7iRWQeaSB8z6103g=;
 	h=Content-Type:MIME-Version:To:From:Subject:Message-Id:Date:
 	 Reply-To;
-	b=IbQJwHJjZ5XD+nESNROjYmV/EXUPSskOjPU3SkXsOmb+tVRGeaL9hxWS51k/6nOtF
-	 b/h0D1j0VVtK5ysTW7+7E3gnii+A2XnxVNhOTCaksBMlp4oWeuqpAQK+ldTIJ89gIO
-	 fjfW4Ghf7Frz80BN1KpzeZhEKAPdCOGAhz9auYuHUMRdFRXWGlEntlX0MkrF7IxhJ+
-	 EsmQunk7UYsf6phLibkUkYba8R7H2eXNc73LwbhuwZ1/sZroGQTiC+fSQDXEghIQe7
-	 fA2zvnIatE7C6WxARp7rtZ9g4l0DMjStCY8ZGdSmAQ5qpg+xsQ+YVdklJsR8EpLztz
-	 aJDULvPPYhS7w==
+	b=ccCU44D2UzAKwyTXVkFQVgEToNuGq8znUdtpMCMb6Y3dekUIwaZke+92l3Fzd7eD+
+	 Off4ELlCNsPUZ5XV0/hLFvx9vPJPzWfWC7ZJ10hQ3d6zbWyNcysrrm2mlPCN/+OQxL
+	 SKDrgMVQGnkJJ8ZKmffexyfqn8AHXqsgaQ3JyUU/e1WQ1/7daIjqTSXh6+90jxYjFi
+	 Za6Rxac9+5VaEq6vIAkgerw6RS4f0WfNpv7TRP2L8KFaqLpvbm+zyig5orf6Jl1Cri
+	 DxC8gzheqFXejxUIuDnDIfO65geteInFE4oI+y5Xd8afWLMoAF/cRvXE867hEMc4RU
+	 6yBQoGlipEH5Q==
 Received: from [10.131.215.202] (localhost [127.0.0.1])
-	by juju-98d295-prod-launchpad-15.localdomain (Postfix) with ESMTP id 05F6D7E243
-	for <linux-rdma@vger.kernel.org>; Mon, 15 Apr 2024 22:40:27 +0000 (UTC)
+	by juju-98d295-prod-launchpad-15.localdomain (Postfix) with ESMTP id B24787E243
+	for <linux-rdma@vger.kernel.org>; Mon, 15 Apr 2024 22:43:26 +0000 (UTC)
 Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
@@ -69,28 +69,28 @@ X-Creator-Recipient: linux-rdma@vger.kernel.org
 X-Launchpad-PPA: linux-rdma-rdma-core-daily
 To: Linux RDMA <linux-rdma@vger.kernel.org>
 From: Launchpad Buildd System <noreply@launchpad.net>
-Subject: [Build #28097067] armhf build of rdma-core 52.0~202404151807+git3be56612~ubuntu20.04.1 in ubuntu focal RELEASE [~linux-rdma/ubuntu/rdma-core-daily]
-Message-Id: <171322082698.3971088.6807757308587547262.launchpad@juju-98d295-prod-launchpad-15>
-Date: Mon, 15 Apr 2024 22:40:26 -0000
+Subject: [Build #28097061] armhf build of rdma-core 52.0~202404151807+git3be56612~ubuntu18.04.1 in ubuntu bionic RELEASE [~linux-rdma/ubuntu/rdma-core-daily]
+Message-Id: <171322100671.3971088.8758366845839240244.launchpad@juju-98d295-prod-launchpad-15>
+Date: Mon, 15 Apr 2024 22:43:26 -0000
 Reply-To: Launchpad Buildd System <noreply@launchpad.net>
 Sender: noreply@launchpad.net
 Errors-To: noreply@launchpad.net
 Precedence: bulk
 X-Generated-By: Launchpad (canonical.com); Revision="67d34a19aaa1df7be4dd8bf498cbc5bbd785067b"; Instance="launchpad-buildd-manager"
-X-Launchpad-Hash: f3d7275119140ab45bff7cd9f87c17db3f6df84b
+X-Launchpad-Hash: cb8fcc0a5c10bb6a42ef9ab243d5d98c5c71aee5
 
 
  * Source Package: rdma-core
- * Version: 52.0~202404151807+git3be56612~ubuntu20.04.1
+ * Version: 52.0~202404151807+git3be56612~ubuntu18.04.1
  * Architecture: armhf
  * Archive: ~linux-rdma/ubuntu/rdma-core-daily
  * Component: main
  * State: Failed to build
- * Duration: 6 minutes
+ * Duration: 9 minutes
  * Build Log: https://launchpad.net/~linux-rdma/+archive/ubuntu/rdma-core-d=
-aily/+build/28097067/+files/buildlog_ubuntu-focal-armhf.rdma-core_52.0~2024=
-04151807+git3be56612~ubuntu20.04.1_BUILDING.txt.gz
- * Builder: https://launchpad.net/builders/bos01-arm64-003
+aily/+build/28097061/+files/buildlog_ubuntu-bionic-armhf.rdma-core_52.0~202=
+404151807+git3be56612~ubuntu18.04.1_BUILDING.txt.gz
+ * Builder: https://launchpad.net/builders/bos02-arm64-051
  * Source: not available
 
 
@@ -100,10 +100,10 @@ contact us by asking a question on Launchpad
 (https://answers.launchpad.net/launchpad/+addquestion).
 
 --=20
-armhf build of rdma-core 52.0~202404151807+git3be56612~ubuntu20.04.1 in ubu=
-ntu focal RELEASE
+armhf build of rdma-core 52.0~202404151807+git3be56612~ubuntu18.04.1 in ubu=
+ntu bionic RELEASE
 https://launchpad.net/~linux-rdma/+archive/ubuntu/rdma-core-daily/+build/28=
-097067
+097061
 
 You are receiving this email because you created this version of this
 package.
