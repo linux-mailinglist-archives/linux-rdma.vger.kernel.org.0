@@ -1,53 +1,52 @@
-Return-Path: <linux-rdma+bounces-1960-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-1961-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C7F198A6A12
-	for <lists+linux-rdma@lfdr.de>; Tue, 16 Apr 2024 14:01:57 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3E79E8A6A30
+	for <lists+linux-rdma@lfdr.de>; Tue, 16 Apr 2024 14:05:13 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EAF6B1C20E5D
-	for <lists+linux-rdma@lfdr.de>; Tue, 16 Apr 2024 12:01:56 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 8FD10B217A8
+	for <lists+linux-rdma@lfdr.de>; Tue, 16 Apr 2024 12:05:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 58A29129E7F;
-	Tue, 16 Apr 2024 12:01:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 443E612C48E;
+	Tue, 16 Apr 2024 12:03:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="pUN3Ddfg"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="U8+xVB2c"
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 16615129A7C
-	for <linux-rdma@vger.kernel.org>; Tue, 16 Apr 2024 12:01:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 043C612AACB
+	for <linux-rdma@vger.kernel.org>; Tue, 16 Apr 2024 12:03:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713268912; cv=none; b=VTE+RVY3T/X8EqTsvugcRmKECm5PgBM+cT1KrjaLTKnAgr9untoXHS2tY+D58WKjA/pcxlAY+qHA05wiIUOrJTlpZWBHexXh/q6HHsD8TPGDR9R0chyDd4N/IAxKTCzHn4Q+w0ApjomobthhqpNNWlM8wMxXq2JB+KDN1s/z2II=
+	t=1713269038; cv=none; b=nKeztWs2kX3S79lya64u0vEuw6EqAszYpV4xQEUUr2khdK0YhbqcQumcpGempMqQjRiTIqggw4z0tBVe+xBuW/rxdNV6zZCy5wRCt+2x98vZI4TgH5ULBQgpZhTDufcFiWsH4TU0YbvOJ6xa7oYiwA6ylV90DXiQk1geTI5dlh4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713268912; c=relaxed/simple;
-	bh=Xh+479ngd4H0PXlh6k6him+/1ZmzfcsAq0aZr7ehGs4=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=mBsjwj9c+MtUjEkYr/hPa0R7GnC+g5T+O2MwljXQea2Yvfa158gq7gzY2fafwIWkfNV9YrvUW0VYPRem4pIrIxhoyun2a+cHbbffgQF9nuENXP63Fk4GkMWr7b/8z7e1GR1XtnNN+Pdym0Qz2ZF4XZ0aE0hNf5FBrRSUY8N9GDQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=pUN3Ddfg; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0636AC2BD10;
-	Tue, 16 Apr 2024 12:01:50 +0000 (UTC)
+	s=arc-20240116; t=1713269038; c=relaxed/simple;
+	bh=sn8AO83yQX6sViFDFTj3WfuqLsCdxyPVkKDg6dgnkFs=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=t/ieUBP8PD/v3YE16J2qLmleEVKKkgLD86CcMqznGwNhTNt4GnaAL9fPO/c8KbaALZg7blpEuHXny02kg08eWXq96po03ZgPssFfLjTF97sNgYD0O5QL7f8EgLt5V2XuNI8Z1t89eHTTSXw6jYE3yzuGYpv2wcrKQLodqzQcskI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=U8+xVB2c; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 596A3C2BD10;
+	Tue, 16 Apr 2024 12:03:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713268911;
-	bh=Xh+479ngd4H0PXlh6k6him+/1ZmzfcsAq0aZr7ehGs4=;
+	s=k20201202; t=1713269037;
+	bh=sn8AO83yQX6sViFDFTj3WfuqLsCdxyPVkKDg6dgnkFs=;
 	h=From:To:Cc:Subject:Date:From;
-	b=pUN3DdfghzCIEQ6hSnxdGf0b6h4udBMMhXkGdCvaSylKKH09COpiY19hDU+f23sah
-	 mQ/0IjNEVmwTb/r2JkQwqwUN4Tjzxt6Raqw8GAjwPN3XajeyOITYw38kDENl0ah3aJ
-	 MXG5lOEfCT4VE1h4HNNE7L69VgAh+cmwWjw94OsvbQTGsrH+P1MdkvDvmEzyPOJY5l
-	 2sk9BupzKdsZcksJvXwouAstYEeUW1ctinjkjWMUZ9cnWL79N2lCYjP25i8l1bRO/O
-	 Qu9XSk+/zeTBqazrVh1WDUq4q/4wsdGE6Usv7nuvaS2H6Kq6soFCpfTIgW3WOv6fxr
-	 chdosoQ+sDWNQ==
+	b=U8+xVB2cRmlK1mp/SjEtTv2jy9YpMcBkcG/WwwoKo9ZnWaJgqWHNHov37KwPm6Ox5
+	 Di1vP03BFra6Aryup4fo5smpJCs9xk8FuPKWJ59FQIbWg6/nG7TJJq5jRxLDlFpMLv
+	 K43lCTNYs/vPVk86OxFLgg50tuKWAZTBmsSUZKKYsN89ef6jhqRIxboee/FvvFQbnB
+	 4SFmXbCJPzsCGg9hIBjcMPxv7FPH6tZ7WaFUoxY0AHP9UuUAatx3KI257rxq4LV6bu
+	 9ORdbIqhbcKY0jzr8FKoitQ9MGerU4yh1sgI0U0zRAxguQqUgQAQRcWkskoCZN/X9B
+	 3uANSoMl+QCcQ==
 From: Leon Romanovsky <leon@kernel.org>
 To: Jason Gunthorpe <jgg@nvidia.com>
-Cc: Michael Guralnik <michaelgur@nvidia.com>,
-	linux-rdma@vger.kernel.org,
-	Mark Zhang <markzhang@nvidia.com>
-Subject: [PATCH rdma-next v2] IB/core: Implement a limit on UMAD receive List
-Date: Tue, 16 Apr 2024 15:01:44 +0300
-Message-ID: <7197cb58a7d9e78399008f25036205ceab07fbd5.1713268818.git.leon@kernel.org>
+Cc: Chiara Meiohas <cmeiohas@nvidia.com>,
+	linux-rdma@vger.kernel.org
+Subject: [PATCH rdma-next 1/2] RDMA/core: Add an option to display driver-specific QPs in the rdmatool
+Date: Tue, 16 Apr 2024 15:03:50 +0300
+Message-ID: <2607bb3ddec3cae3443c2ea19e9f700825d20a98.1713268997.git.leon@kernel.org>
 X-Mailer: git-send-email 2.44.0
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
@@ -57,127 +56,227 @@ List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-From: Michael Guralnik <michaelgur@nvidia.com>
+From: Chiara Meiohas <cmeiohas@nvidia.com>
 
-The existing behavior of ib_umad, which maintains received MAD
-packets in an unbounded list, poses a risk of uncontrolled growth.
-As user-space applications extract packets from this list, the rate
-of extraction may not match the rate of incoming packets, leading
-to potential list overflow.
+Utilize the -dd flag (driver-specific details) in the rdmatool
+to view driver-specific QPs which are not exposed yet.
 
-To address this, we introduce a limit to the size of the list. After
-considering typical scenarios, such as OpenSM processing, which can
-handle approximately 100k packets per second, and the 1-second retry
-timeout for most packets, we set the list size limit to 200k. Packets
-received beyond this limit are dropped, assuming they are likely timed
-out by the time they are handled by user-space.
+Add the netlink attribute to mark request to convey driver details and
+use it to return QP subtype as a string.
 
-Notably, packets queued on the receive list due to reasons like
-timed-out sends are preserved even when the list is full.
+$ rdma resource show qp link ibp8s0f1
+link ibp8s0f1/1 lqpn 360 type UD state RTS sq-psn 0 comm [mlx5_ib]
+link ibp8s0f1/1 lqpn 0 type SMI state RTS sq-psn 0 comm [ib_core]
+link ibp8s0f1/1 lqpn 1 type GSI state RTS sq-psn 0 comm [ib_core]
 
-Signed-off-by: Michael Guralnik <michaelgur@nvidia.com>
-Reviewed-by: Mark Zhang <markzhang@nvidia.com>
+$ rdma resource show qp link ibp8s0f1 -dd
+link ibp8s0f1/1 lqpn 360 type UD state RTS sq-psn 0 comm [mlx5_ib]
+link ibp8s0f1/1 lqpn 465 type DRIVER subtype REG_UMR state RTS sq-psn 0 comm [mlx5_ib]
+link ibp8s0f1/1 lqpn 0 type SMI state RTS sq-psn 0 comm [ib_core]
+link ibp8s0f1/1 lqpn 1 type GSI state RTS sq-psn 0 comm [ib_core]
+
+$ rdma resource show
+0: ibp8s0f0: pd 3 cq 4 qp 3 cm_id 0 mr 0 ctx 0 srq 2
+1: ibp8s0f1: pd 3 cq 4 qp 3 cm_id 0 mr 0 ctx 0 srq 2
+
+$ rdma resource show -dd
+0: ibp8s0f0: pd 3 cq 4 qp 4 cm_id 0 mr 0 ctx 0 srq 2
+1: ibp8s0f1: pd 3 cq 4 qp 4 cm_id 0 mr 0 ctx 0 srq 2
+
+Signed-off-by: Chiara Meiohas <cmeiohas@nvidia.com>
 Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
 ---
-Changelog:
-v2:
- * Fixed condition
-v1: https://lore.kernel.org/all/e2262f827f43518e5e3a4d825a3e0514c0f7aa5f.1712668708.git.leonro@nvidia.com
- * Changed sysfs entry to hard coded value.
- * Rewrote the commit message.
-v0: https://lore.kernel.org/all/70029b5f256fbad6efbb98458deb9c46baa2c4b3.1712051390.git.leon@kernel.org
----
- drivers/infiniband/core/user_mad.c | 21 +++++++++++++++------
- 1 file changed, 15 insertions(+), 6 deletions(-)
+ drivers/infiniband/core/nldev.c    | 23 +++++++++++++++++++----
+ drivers/infiniband/core/restrack.c | 12 ++++++++++--
+ include/rdma/restrack.h            |  7 +++++--
+ include/uapi/rdma/rdma_netlink.h   |  6 ++++++
+ 4 files changed, 40 insertions(+), 8 deletions(-)
 
-diff --git a/drivers/infiniband/core/user_mad.c b/drivers/infiniband/core/user_mad.c
-index f5feca7fa9b9..2ed749f50a29 100644
---- a/drivers/infiniband/core/user_mad.c
-+++ b/drivers/infiniband/core/user_mad.c
-@@ -63,6 +63,8 @@ MODULE_AUTHOR("Roland Dreier");
- MODULE_DESCRIPTION("InfiniBand userspace MAD packet access");
- MODULE_LICENSE("Dual BSD/GPL");
+diff --git a/drivers/infiniband/core/nldev.c b/drivers/infiniband/core/nldev.c
+index 4900a0848124..bc79ee630d8d 100644
+--- a/drivers/infiniband/core/nldev.c
++++ b/drivers/infiniband/core/nldev.c
+@@ -137,6 +137,8 @@ static const struct nla_policy nldev_policy[RDMA_NLDEV_ATTR_MAX] = {
+ 	[RDMA_NLDEV_ATTR_RES_SUMMARY_ENTRY_NAME]= { .type = NLA_NUL_STRING,
+ 					.len = RDMA_NLDEV_ATTR_EMPTY_STRING },
+ 	[RDMA_NLDEV_ATTR_RES_TYPE]		= { .type = NLA_U8 },
++	[RDMA_NLDEV_ATTR_RES_SUBTYPE]		= { .type = NLA_NUL_STRING,
++					.len = RDMA_NLDEV_ATTR_EMPTY_STRING },
+ 	[RDMA_NLDEV_ATTR_RES_UNSAFE_GLOBAL_RKEY]= { .type = NLA_U32 },
+ 	[RDMA_NLDEV_ATTR_RES_USECNT]		= { .type = NLA_U64 },
+ 	[RDMA_NLDEV_ATTR_RES_SRQ]		= { .type = NLA_NESTED },
+@@ -164,6 +166,7 @@ static const struct nla_policy nldev_policy[RDMA_NLDEV_ATTR_MAX] = {
+ 	[RDMA_NLDEV_ATTR_STAT_HWCOUNTER_INDEX]	= { .type = NLA_U32 },
+ 	[RDMA_NLDEV_ATTR_STAT_HWCOUNTER_DYNAMIC] = { .type = NLA_U8 },
+ 	[RDMA_NLDEV_SYS_ATTR_PRIVILEGED_QKEY_MODE] = { .type = NLA_U8 },
++	[RDMA_NLDEV_ATTR_DRIVER_DETAILS]	= { .type = NLA_U8 },
+ };
  
-+#define MAX_UMAD_RECV_LIST_SIZE 200000
-+
- enum {
- 	IB_UMAD_MAX_PORTS  = RDMA_MAX_PORTS,
- 	IB_UMAD_MAX_AGENTS = 32,
-@@ -113,6 +115,7 @@ struct ib_umad_file {
- 	struct mutex		mutex;
- 	struct ib_umad_port    *port;
- 	struct list_head	recv_list;
-+	atomic_t		recv_list_size;
- 	struct list_head	send_list;
- 	struct list_head	port_list;
- 	spinlock_t		send_lock;
-@@ -180,24 +183,28 @@ static struct ib_mad_agent *__get_agent(struct ib_umad_file *file, int id)
- 	return file->agents_dead ? NULL : file->agent[id];
+ static int put_driver_name_print_type(struct sk_buff *msg, const char *name,
+@@ -399,7 +402,8 @@ static int fill_res_info_entry(struct sk_buff *msg,
+ 	return -EMSGSIZE;
  }
  
--static int queue_packet(struct ib_umad_file *file,
--			struct ib_mad_agent *agent,
--			struct ib_umad_packet *packet)
-+static int queue_packet(struct ib_umad_file *file, struct ib_mad_agent *agent,
-+			struct ib_umad_packet *packet, bool is_recv_mad)
+-static int fill_res_info(struct sk_buff *msg, struct ib_device *device)
++static int fill_res_info(struct sk_buff *msg, struct ib_device *device,
++			 bool show_details)
  {
- 	int ret = 1;
+ 	static const char * const names[RDMA_RESTRACK_MAX] = {
+ 		[RDMA_RESTRACK_PD] = "pd",
+@@ -424,7 +428,7 @@ static int fill_res_info(struct sk_buff *msg, struct ib_device *device)
+ 	for (i = 0; i < RDMA_RESTRACK_MAX; i++) {
+ 		if (!names[i])
+ 			continue;
+-		curr = rdma_restrack_count(device, i);
++		curr = rdma_restrack_count(device, i, show_details);
+ 		ret = fill_res_info_entry(msg, names[i], curr);
+ 		if (ret)
+ 			goto err;
+@@ -1305,6 +1309,7 @@ static int nldev_res_get_doit(struct sk_buff *skb, struct nlmsghdr *nlh,
+ 			      struct netlink_ext_ack *extack)
+ {
+ 	struct nlattr *tb[RDMA_NLDEV_ATTR_MAX];
++	bool show_details = false;
+ 	struct ib_device *device;
+ 	struct sk_buff *msg;
+ 	u32 index;
+@@ -1320,6 +1325,9 @@ static int nldev_res_get_doit(struct sk_buff *skb, struct nlmsghdr *nlh,
+ 	if (!device)
+ 		return -EINVAL;
  
- 	mutex_lock(&file->mutex);
- 
-+	if (is_recv_mad &&
-+	    atomic_read(&file->recv_list_size) > MAX_UMAD_RECV_LIST_SIZE)
-+		goto unlock;
++	if (tb[RDMA_NLDEV_ATTR_DRIVER_DETAILS])
++		show_details = nla_get_u8(tb[RDMA_NLDEV_ATTR_DRIVER_DETAILS]);
 +
- 	for (packet->mad.hdr.id = 0;
- 	     packet->mad.hdr.id < IB_UMAD_MAX_AGENTS;
- 	     packet->mad.hdr.id++)
- 		if (agent == __get_agent(file, packet->mad.hdr.id)) {
- 			list_add_tail(&packet->list, &file->recv_list);
-+			atomic_inc(&file->recv_list_size);
- 			wake_up_interruptible(&file->recv_wait);
- 			ret = 0;
- 			break;
- 		}
--
-+unlock:
- 	mutex_unlock(&file->mutex);
- 
- 	return ret;
-@@ -224,7 +231,7 @@ static void send_handler(struct ib_mad_agent *agent,
- 	if (send_wc->status == IB_WC_RESP_TIMEOUT_ERR) {
- 		packet->length = IB_MGMT_MAD_HDR;
- 		packet->mad.hdr.status = ETIMEDOUT;
--		if (!queue_packet(file, agent, packet))
-+		if (!queue_packet(file, agent, packet, false))
- 			return;
- 	}
- 	kfree(packet);
-@@ -284,7 +291,7 @@ static void recv_handler(struct ib_mad_agent *agent,
- 		rdma_destroy_ah_attr(&ah_attr);
+ 	msg = nlmsg_new(NLMSG_DEFAULT_SIZE, GFP_KERNEL);
+ 	if (!msg) {
+ 		ret = -ENOMEM;
+@@ -1334,7 +1342,7 @@ static int nldev_res_get_doit(struct sk_buff *skb, struct nlmsghdr *nlh,
+ 		goto err_free;
  	}
  
--	if (queue_packet(file, agent, packet))
-+	if (queue_packet(file, agent, packet, true))
- 		goto err2;
- 	return;
+-	ret = fill_res_info(msg, device);
++	ret = fill_res_info(msg, device, show_details);
+ 	if (ret)
+ 		goto err_free;
  
-@@ -409,6 +416,7 @@ static ssize_t ib_umad_read(struct file *filp, char __user *buf,
+@@ -1364,7 +1372,7 @@ static int _nldev_res_get_dumpit(struct ib_device *device,
+ 			RDMA_NL_GET_TYPE(RDMA_NL_NLDEV, RDMA_NLDEV_CMD_RES_GET),
+ 			0, NLM_F_MULTI);
  
- 	packet = list_entry(file->recv_list.next, struct ib_umad_packet, list);
- 	list_del(&packet->list);
-+	atomic_dec(&file->recv_list_size);
+-	if (!nlh || fill_res_info(skb, device)) {
++	if (!nlh || fill_res_info(skb, device, false)) {
+ 		nlmsg_cancel(skb, nlh);
+ 		goto out;
+ 	}
+@@ -1534,6 +1542,7 @@ static int res_get_common_dumpit(struct sk_buff *skb,
+ 	struct rdma_restrack_entry *res;
+ 	struct rdma_restrack_root *rt;
+ 	int err, ret = 0, idx = 0;
++	bool show_details = false;
+ 	struct nlattr *table_attr;
+ 	struct nlattr *entry_attr;
+ 	struct ib_device *device;
+@@ -1562,6 +1571,9 @@ static int res_get_common_dumpit(struct sk_buff *skb,
+ 	if (!device)
+ 		return -EINVAL;
  
- 	mutex_unlock(&file->mutex);
++	if (tb[RDMA_NLDEV_ATTR_DRIVER_DETAILS])
++		show_details = nla_get_u8(tb[RDMA_NLDEV_ATTR_DRIVER_DETAILS]);
++
+ 	/*
+ 	 * If no PORT_INDEX is supplied, we will return all QPs from that device
+ 	 */
+@@ -1599,6 +1611,9 @@ static int res_get_common_dumpit(struct sk_buff *skb,
+ 	 * objects.
+ 	 */
+ 	xa_for_each(&rt->xa, id, res) {
++		if (xa_get_mark(&rt->xa, res->id, RESTRACK_DD) && !show_details)
++			goto next;
++
+ 		if (idx < start || !rdma_restrack_get(res))
+ 			goto next;
  
-@@ -421,6 +429,7 @@ static ssize_t ib_umad_read(struct file *filp, char __user *buf,
- 		/* Requeue packet */
- 		mutex_lock(&file->mutex);
- 		list_add(&packet->list, &file->recv_list);
-+		atomic_inc(&file->recv_list_size);
- 		mutex_unlock(&file->mutex);
- 	} else {
- 		if (packet->recv_wc)
+diff --git a/drivers/infiniband/core/restrack.c b/drivers/infiniband/core/restrack.c
+index 438ed3588175..3313410014cd 100644
+--- a/drivers/infiniband/core/restrack.c
++++ b/drivers/infiniband/core/restrack.c
+@@ -59,8 +59,10 @@ void rdma_restrack_clean(struct ib_device *dev)
+  * rdma_restrack_count() - the current usage of specific object
+  * @dev:  IB device
+  * @type: actual type of object to operate
++ * @show_details: count driver specific objects
+  */
+-int rdma_restrack_count(struct ib_device *dev, enum rdma_restrack_type type)
++int rdma_restrack_count(struct ib_device *dev, enum rdma_restrack_type type,
++			bool show_details)
+ {
+ 	struct rdma_restrack_root *rt = &dev->res[type];
+ 	struct rdma_restrack_entry *e;
+@@ -68,8 +70,11 @@ int rdma_restrack_count(struct ib_device *dev, enum rdma_restrack_type type)
+ 	u32 cnt = 0;
+ 
+ 	xa_lock(&rt->xa);
+-	xas_for_each(&xas, e, U32_MAX)
++	xas_for_each(&xas, e, U32_MAX) {
++		if (xa_get_mark(&rt->xa, e->id, RESTRACK_DD) && !show_details)
++			continue;
+ 		cnt++;
++	}
+ 	xa_unlock(&rt->xa);
+ 	return cnt;
+ }
+@@ -198,6 +203,9 @@ void rdma_restrack_add(struct rdma_restrack_entry *res)
+ 		ret = xa_insert(&rt->xa, res->id, res, GFP_KERNEL);
+ 		if (ret)
+ 			res->id = 0;
++
++		if (qp->qp_type >= IB_QPT_DRIVER)
++			xa_set_mark(&rt->xa, res->id, RESTRACK_DD);
+ 	} else if (res->type == RDMA_RESTRACK_COUNTER) {
+ 		/* Special case to ensure that cntn points to right counter */
+ 		struct rdma_counter *counter;
+diff --git a/include/rdma/restrack.h b/include/rdma/restrack.h
+index 8b7c46daeb07..0d69ded73bf2 100644
+--- a/include/rdma/restrack.h
++++ b/include/rdma/restrack.h
+@@ -14,6 +14,9 @@
+ #include <uapi/rdma/rdma_netlink.h>
+ #include <linux/xarray.h>
+ 
++/* Mark entry as containing driver specific details, it is used to provide QP subtype for now */
++#define RESTRACK_DD XA_MARK_1
++
+ struct ib_device;
+ struct sk_buff;
+ 
+@@ -116,8 +119,8 @@ struct rdma_restrack_entry {
+ 	u32 id;
+ };
+ 
+-int rdma_restrack_count(struct ib_device *dev,
+-			enum rdma_restrack_type type);
++int rdma_restrack_count(struct ib_device *dev, enum rdma_restrack_type type,
++			bool show_details);
+ /**
+  * rdma_is_kernel_res() - check the owner of resource
+  * @res:  resource entry
+diff --git a/include/uapi/rdma/rdma_netlink.h b/include/uapi/rdma/rdma_netlink.h
+index 723bbb0f7042..a214fc259f28 100644
+--- a/include/uapi/rdma/rdma_netlink.h
++++ b/include/uapi/rdma/rdma_netlink.h
+@@ -558,6 +558,12 @@ enum rdma_nldev_attr {
+ 
+ 	RDMA_NLDEV_SYS_ATTR_PRIVILEGED_QKEY_MODE, /* u8 */
+ 
++	RDMA_NLDEV_ATTR_DRIVER_DETAILS,		/* u8 */
++	/*
++	 * QP subtype string, used for driver QPs
++	 */
++	RDMA_NLDEV_ATTR_RES_SUBTYPE,		/* string */
++
+ 	/*
+ 	 * Always the end
+ 	 */
 -- 
 2.44.0
 
