@@ -1,53 +1,56 @@
-Return-Path: <linux-rdma+bounces-1961-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-1962-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3E79E8A6A30
-	for <lists+linux-rdma@lfdr.de>; Tue, 16 Apr 2024 14:05:13 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 66D238A6A2F
+	for <lists+linux-rdma@lfdr.de>; Tue, 16 Apr 2024 14:05:12 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 8FD10B217A8
-	for <lists+linux-rdma@lfdr.de>; Tue, 16 Apr 2024 12:05:10 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 933111C212A4
+	for <lists+linux-rdma@lfdr.de>; Tue, 16 Apr 2024 12:05:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 443E612C48E;
-	Tue, 16 Apr 2024 12:03:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F010E12AAD5;
+	Tue, 16 Apr 2024 12:04:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="U8+xVB2c"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="EV3tiomg"
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 043C612AACB
-	for <linux-rdma@vger.kernel.org>; Tue, 16 Apr 2024 12:03:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AF80D12A176
+	for <linux-rdma@vger.kernel.org>; Tue, 16 Apr 2024 12:04:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713269038; cv=none; b=nKeztWs2kX3S79lya64u0vEuw6EqAszYpV4xQEUUr2khdK0YhbqcQumcpGempMqQjRiTIqggw4z0tBVe+xBuW/rxdNV6zZCy5wRCt+2x98vZI4TgH5ULBQgpZhTDufcFiWsH4TU0YbvOJ6xa7oYiwA6ylV90DXiQk1geTI5dlh4=
+	t=1713269042; cv=none; b=AVu0C7OrB9tQLfzAuuM6r1FPMvMkR576XzfuGo3qmhUSUsvmJsXp0gxcXCHWthel/Hj9lTNn23EWB+rgqNuUEqfym191YEH1Sma42biiMeZjaAqCp0ZSoORCG/KSWkZWzv+pQOQ0wgQXrAmdSC3/Bl0FwvsG9O5mvjpjbyKRF04=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713269038; c=relaxed/simple;
-	bh=sn8AO83yQX6sViFDFTj3WfuqLsCdxyPVkKDg6dgnkFs=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=t/ieUBP8PD/v3YE16J2qLmleEVKKkgLD86CcMqznGwNhTNt4GnaAL9fPO/c8KbaALZg7blpEuHXny02kg08eWXq96po03ZgPssFfLjTF97sNgYD0O5QL7f8EgLt5V2XuNI8Z1t89eHTTSXw6jYE3yzuGYpv2wcrKQLodqzQcskI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=U8+xVB2c; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 596A3C2BD10;
-	Tue, 16 Apr 2024 12:03:57 +0000 (UTC)
+	s=arc-20240116; t=1713269042; c=relaxed/simple;
+	bh=PA0Sdvp08t+XN/jinEMxMgneO6ID2fiPPprz/JtX1rY=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=b8yjEcRz34KK5qGRIeSnfxkA2K/z4LZk4C/+zhqgOFYg0nfTBmdM8lZB7iH7yIEWcKlGxFNtuDDx+CM6dzi5ZD5PwVVWBiv+xw+Wq90q8OWulRylUAgqEVTmGo9HymPEDhF6ijdWcYcP5ZWG/Yd9pPxwlYa6L4NfNd+BrMlTjI4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=EV3tiomg; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id AEA0BC2BD10;
+	Tue, 16 Apr 2024 12:04:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713269037;
-	bh=sn8AO83yQX6sViFDFTj3WfuqLsCdxyPVkKDg6dgnkFs=;
-	h=From:To:Cc:Subject:Date:From;
-	b=U8+xVB2cRmlK1mp/SjEtTv2jy9YpMcBkcG/WwwoKo9ZnWaJgqWHNHov37KwPm6Ox5
-	 Di1vP03BFra6Aryup4fo5smpJCs9xk8FuPKWJ59FQIbWg6/nG7TJJq5jRxLDlFpMLv
-	 K43lCTNYs/vPVk86OxFLgg50tuKWAZTBmsSUZKKYsN89ef6jhqRIxboee/FvvFQbnB
-	 4SFmXbCJPzsCGg9hIBjcMPxv7FPH6tZ7WaFUoxY0AHP9UuUAatx3KI257rxq4LV6bu
-	 9ORdbIqhbcKY0jzr8FKoitQ9MGerU4yh1sgI0U0zRAxguQqUgQAQRcWkskoCZN/X9B
-	 3uANSoMl+QCcQ==
+	s=k20201202; t=1713269042;
+	bh=PA0Sdvp08t+XN/jinEMxMgneO6ID2fiPPprz/JtX1rY=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=EV3tiomg3fV0kMlZsOZbMSvMK9THJ24KdeOz2gQA5r0uRaTnEGkHOo+AcB3WiJ3wo
+	 TPbfYkH8ZEeQ14F64HJWj8VWkjtQGPycIcioBllfXHChqefzzKqYddk8UnCsRuP9Hz
+	 NfojG54AGjLce6OgXNLHWruCrGk8ZtWnA/kKO6ty8+eqd5bWyZ5bcHPAjxuvItt/HX
+	 E/MDlpTf8FRUrxYVfSPwGjbzsx6MO45R+1dcqZBYITUMt62IUgLNI7DAUm2xOxYPIN
+	 V2ig7b5EnYsvrZQ530+t1G3+MdRrtGSNBz04cfxbvSgXk5dnMwA3g/A71P+7nIb93K
+	 ScUKN2YdZJ65w==
 From: Leon Romanovsky <leon@kernel.org>
 To: Jason Gunthorpe <jgg@nvidia.com>
 Cc: Chiara Meiohas <cmeiohas@nvidia.com>,
 	linux-rdma@vger.kernel.org
-Subject: [PATCH rdma-next 1/2] RDMA/core: Add an option to display driver-specific QPs in the rdmatool
-Date: Tue, 16 Apr 2024 15:03:50 +0300
-Message-ID: <2607bb3ddec3cae3443c2ea19e9f700825d20a98.1713268997.git.leon@kernel.org>
+Subject: [PATCH rdma-next 2/2] RDMA/mlx5: Track DCT, DCI and REG_UMR QPs as diver_detail resources.
+Date: Tue, 16 Apr 2024 15:03:51 +0300
+Message-ID: <452432d7d0917f053a80a893a614169857fe3b10.1713268997.git.leon@kernel.org>
 X-Mailer: git-send-email 2.44.0
+In-Reply-To: <2607bb3ddec3cae3443c2ea19e9f700825d20a98.1713268997.git.leon@kernel.org>
+References: <2607bb3ddec3cae3443c2ea19e9f700825d20a98.1713268997.git.leon@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
@@ -58,225 +61,93 @@ Content-Transfer-Encoding: 8bit
 
 From: Chiara Meiohas <cmeiohas@nvidia.com>
 
-Utilize the -dd flag (driver-specific details) in the rdmatool
-to view driver-specific QPs which are not exposed yet.
+Allow user to see driver-specific QPs (the "driver_detail" QPs)
+through the rdmatool, when requested.
 
-Add the netlink attribute to mark request to convey driver details and
-use it to return QP subtype as a string.
+When creating DCT, DCI and REG_UMR QPs, we designate them as driver_detail
+resources.
 
-$ rdma resource show qp link ibp8s0f1
-link ibp8s0f1/1 lqpn 360 type UD state RTS sq-psn 0 comm [mlx5_ib]
-link ibp8s0f1/1 lqpn 0 type SMI state RTS sq-psn 0 comm [ib_core]
-link ibp8s0f1/1 lqpn 1 type GSI state RTS sq-psn 0 comm [ib_core]
-
-$ rdma resource show qp link ibp8s0f1 -dd
-link ibp8s0f1/1 lqpn 360 type UD state RTS sq-psn 0 comm [mlx5_ib]
-link ibp8s0f1/1 lqpn 465 type DRIVER subtype REG_UMR state RTS sq-psn 0 comm [mlx5_ib]
-link ibp8s0f1/1 lqpn 0 type SMI state RTS sq-psn 0 comm [ib_core]
-link ibp8s0f1/1 lqpn 1 type GSI state RTS sq-psn 0 comm [ib_core]
-
-$ rdma resource show
-0: ibp8s0f0: pd 3 cq 4 qp 3 cm_id 0 mr 0 ctx 0 srq 2
-1: ibp8s0f1: pd 3 cq 4 qp 3 cm_id 0 mr 0 ctx 0 srq 2
-
-$ rdma resource show -dd
-0: ibp8s0f0: pd 3 cq 4 qp 4 cm_id 0 mr 0 ctx 0 srq 2
-1: ibp8s0f1: pd 3 cq 4 qp 4 cm_id 0 mr 0 ctx 0 srq 2
+When filling the QP info for the rdma tool, for the driver_detail QPs:
+-the QP type is IB_QPT_DRIVER
+-the subtype is a string with the QP name ("DCT", "DCI", "REG_UMR")
 
 Signed-off-by: Chiara Meiohas <cmeiohas@nvidia.com>
 Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
 ---
- drivers/infiniband/core/nldev.c    | 23 +++++++++++++++++++----
- drivers/infiniband/core/restrack.c | 12 ++++++++++--
- include/rdma/restrack.h            |  7 +++++--
- include/uapi/rdma/rdma_netlink.h   |  6 ++++++
- 4 files changed, 40 insertions(+), 8 deletions(-)
+ drivers/infiniband/hw/mlx5/qp.c       |  3 +--
+ drivers/infiniband/hw/mlx5/restrack.c | 29 +++++++++++++++++++++++++++
+ 2 files changed, 30 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/infiniband/core/nldev.c b/drivers/infiniband/core/nldev.c
-index 4900a0848124..bc79ee630d8d 100644
---- a/drivers/infiniband/core/nldev.c
-+++ b/drivers/infiniband/core/nldev.c
-@@ -137,6 +137,8 @@ static const struct nla_policy nldev_policy[RDMA_NLDEV_ATTR_MAX] = {
- 	[RDMA_NLDEV_ATTR_RES_SUMMARY_ENTRY_NAME]= { .type = NLA_NUL_STRING,
- 					.len = RDMA_NLDEV_ATTR_EMPTY_STRING },
- 	[RDMA_NLDEV_ATTR_RES_TYPE]		= { .type = NLA_U8 },
-+	[RDMA_NLDEV_ATTR_RES_SUBTYPE]		= { .type = NLA_NUL_STRING,
-+					.len = RDMA_NLDEV_ATTR_EMPTY_STRING },
- 	[RDMA_NLDEV_ATTR_RES_UNSAFE_GLOBAL_RKEY]= { .type = NLA_U32 },
- 	[RDMA_NLDEV_ATTR_RES_USECNT]		= { .type = NLA_U64 },
- 	[RDMA_NLDEV_ATTR_RES_SRQ]		= { .type = NLA_NESTED },
-@@ -164,6 +166,7 @@ static const struct nla_policy nldev_policy[RDMA_NLDEV_ATTR_MAX] = {
- 	[RDMA_NLDEV_ATTR_STAT_HWCOUNTER_INDEX]	= { .type = NLA_U32 },
- 	[RDMA_NLDEV_ATTR_STAT_HWCOUNTER_DYNAMIC] = { .type = NLA_U8 },
- 	[RDMA_NLDEV_SYS_ATTR_PRIVILEGED_QKEY_MODE] = { .type = NLA_U8 },
-+	[RDMA_NLDEV_ATTR_DRIVER_DETAILS]	= { .type = NLA_U8 },
- };
- 
- static int put_driver_name_print_type(struct sk_buff *msg, const char *name,
-@@ -399,7 +402,8 @@ static int fill_res_info_entry(struct sk_buff *msg,
- 	return -EMSGSIZE;
+diff --git a/drivers/infiniband/hw/mlx5/qp.c b/drivers/infiniband/hw/mlx5/qp.c
+index 83727bde54f5..8c16c9278ce4 100644
+--- a/drivers/infiniband/hw/mlx5/qp.c
++++ b/drivers/infiniband/hw/mlx5/qp.c
+@@ -3099,7 +3099,6 @@ static int create_qp(struct mlx5_ib_dev *dev, struct ib_pd *pd,
+ 	switch (qp->type) {
+ 	case MLX5_IB_QPT_DCT:
+ 		err = create_dct(dev, pd, qp, params);
+-		rdma_restrack_no_track(&qp->ibqp.res);
+ 		break;
+ 	case MLX5_IB_QPT_DCI:
+ 		err = create_dci(dev, pd, qp, params);
+@@ -3111,9 +3110,9 @@ static int create_qp(struct mlx5_ib_dev *dev, struct ib_pd *pd,
+ 		err = mlx5_ib_create_gsi(pd, qp, params->attr);
+ 		break;
+ 	case MLX5_IB_QPT_HW_GSI:
+-	case MLX5_IB_QPT_REG_UMR:
+ 		rdma_restrack_no_track(&qp->ibqp.res);
+ 		fallthrough;
++	case MLX5_IB_QPT_REG_UMR:
+ 	default:
+ 		if (params->udata)
+ 			err = create_user_qp(dev, pd, qp, params);
+diff --git a/drivers/infiniband/hw/mlx5/restrack.c b/drivers/infiniband/hw/mlx5/restrack.c
+index 4ac429e72004..affcf8fe943c 100644
+--- a/drivers/infiniband/hw/mlx5/restrack.c
++++ b/drivers/infiniband/hw/mlx5/restrack.c
+@@ -156,6 +156,34 @@ static int fill_res_cq_entry_raw(struct sk_buff *msg, struct ib_cq *ibcq)
+ 	return fill_res_raw(msg, dev, MLX5_SGMT_TYPE_PRM_QUERY_CQ, cq->mcq.cqn);
  }
  
--static int fill_res_info(struct sk_buff *msg, struct ib_device *device)
-+static int fill_res_info(struct sk_buff *msg, struct ib_device *device,
-+			 bool show_details)
- {
- 	static const char * const names[RDMA_RESTRACK_MAX] = {
- 		[RDMA_RESTRACK_PD] = "pd",
-@@ -424,7 +428,7 @@ static int fill_res_info(struct sk_buff *msg, struct ib_device *device)
- 	for (i = 0; i < RDMA_RESTRACK_MAX; i++) {
- 		if (!names[i])
- 			continue;
--		curr = rdma_restrack_count(device, i);
-+		curr = rdma_restrack_count(device, i, show_details);
- 		ret = fill_res_info_entry(msg, names[i], curr);
- 		if (ret)
- 			goto err;
-@@ -1305,6 +1309,7 @@ static int nldev_res_get_doit(struct sk_buff *skb, struct nlmsghdr *nlh,
- 			      struct netlink_ext_ack *extack)
- {
- 	struct nlattr *tb[RDMA_NLDEV_ATTR_MAX];
-+	bool show_details = false;
- 	struct ib_device *device;
- 	struct sk_buff *msg;
- 	u32 index;
-@@ -1320,6 +1325,9 @@ static int nldev_res_get_doit(struct sk_buff *skb, struct nlmsghdr *nlh,
- 	if (!device)
- 		return -EINVAL;
- 
-+	if (tb[RDMA_NLDEV_ATTR_DRIVER_DETAILS])
-+		show_details = nla_get_u8(tb[RDMA_NLDEV_ATTR_DRIVER_DETAILS]);
++static int fill_res_qp_entry(struct sk_buff *msg, struct ib_qp *ibqp)
++{
++	struct mlx5_ib_qp *qp = to_mqp(ibqp);
++	int ret;
 +
- 	msg = nlmsg_new(NLMSG_DEFAULT_SIZE, GFP_KERNEL);
- 	if (!msg) {
- 		ret = -ENOMEM;
-@@ -1334,7 +1342,7 @@ static int nldev_res_get_doit(struct sk_buff *skb, struct nlmsghdr *nlh,
- 		goto err_free;
- 	}
- 
--	ret = fill_res_info(msg, device);
-+	ret = fill_res_info(msg, device, show_details);
- 	if (ret)
- 		goto err_free;
- 
-@@ -1364,7 +1372,7 @@ static int _nldev_res_get_dumpit(struct ib_device *device,
- 			RDMA_NL_GET_TYPE(RDMA_NL_NLDEV, RDMA_NLDEV_CMD_RES_GET),
- 			0, NLM_F_MULTI);
- 
--	if (!nlh || fill_res_info(skb, device)) {
-+	if (!nlh || fill_res_info(skb, device, false)) {
- 		nlmsg_cancel(skb, nlh);
- 		goto out;
- 	}
-@@ -1534,6 +1542,7 @@ static int res_get_common_dumpit(struct sk_buff *skb,
- 	struct rdma_restrack_entry *res;
- 	struct rdma_restrack_root *rt;
- 	int err, ret = 0, idx = 0;
-+	bool show_details = false;
- 	struct nlattr *table_attr;
- 	struct nlattr *entry_attr;
- 	struct ib_device *device;
-@@ -1562,6 +1571,9 @@ static int res_get_common_dumpit(struct sk_buff *skb,
- 	if (!device)
- 		return -EINVAL;
- 
-+	if (tb[RDMA_NLDEV_ATTR_DRIVER_DETAILS])
-+		show_details = nla_get_u8(tb[RDMA_NLDEV_ATTR_DRIVER_DETAILS]);
++	if (qp->type < IB_QPT_DRIVER)
++		return 0;
 +
- 	/*
- 	 * If no PORT_INDEX is supplied, we will return all QPs from that device
- 	 */
-@@ -1599,6 +1611,9 @@ static int res_get_common_dumpit(struct sk_buff *skb,
- 	 * objects.
- 	 */
- 	xa_for_each(&rt->xa, id, res) {
-+		if (xa_get_mark(&rt->xa, res->id, RESTRACK_DD) && !show_details)
-+			goto next;
-+
- 		if (idx < start || !rdma_restrack_get(res))
- 			goto next;
- 
-diff --git a/drivers/infiniband/core/restrack.c b/drivers/infiniband/core/restrack.c
-index 438ed3588175..3313410014cd 100644
---- a/drivers/infiniband/core/restrack.c
-+++ b/drivers/infiniband/core/restrack.c
-@@ -59,8 +59,10 @@ void rdma_restrack_clean(struct ib_device *dev)
-  * rdma_restrack_count() - the current usage of specific object
-  * @dev:  IB device
-  * @type: actual type of object to operate
-+ * @show_details: count driver specific objects
-  */
--int rdma_restrack_count(struct ib_device *dev, enum rdma_restrack_type type)
-+int rdma_restrack_count(struct ib_device *dev, enum rdma_restrack_type type,
-+			bool show_details)
- {
- 	struct rdma_restrack_root *rt = &dev->res[type];
- 	struct rdma_restrack_entry *e;
-@@ -68,8 +70,11 @@ int rdma_restrack_count(struct ib_device *dev, enum rdma_restrack_type type)
- 	u32 cnt = 0;
- 
- 	xa_lock(&rt->xa);
--	xas_for_each(&xas, e, U32_MAX)
-+	xas_for_each(&xas, e, U32_MAX) {
-+		if (xa_get_mark(&rt->xa, e->id, RESTRACK_DD) && !show_details)
-+			continue;
- 		cnt++;
++	switch (qp->type) {
++	case MLX5_IB_QPT_REG_UMR:
++		ret = nla_put_string(msg, RDMA_NLDEV_ATTR_RES_SUBTYPE,
++				     "REG_UMR");
++		break;
++	case MLX5_IB_QPT_DCT:
++		ret = nla_put_string(msg, RDMA_NLDEV_ATTR_RES_SUBTYPE, "DCT");
++		break;
++	case MLX5_IB_QPT_DCI:
++		ret = nla_put_string(msg, RDMA_NLDEV_ATTR_RES_SUBTYPE, "DCI");
++		break;
++	default:
++		return 0;
 +	}
- 	xa_unlock(&rt->xa);
- 	return cnt;
- }
-@@ -198,6 +203,9 @@ void rdma_restrack_add(struct rdma_restrack_entry *res)
- 		ret = xa_insert(&rt->xa, res->id, res, GFP_KERNEL);
- 		if (ret)
- 			res->id = 0;
++	if (ret)
++		return ret;
 +
-+		if (qp->qp_type >= IB_QPT_DRIVER)
-+			xa_set_mark(&rt->xa, res->id, RESTRACK_DD);
- 	} else if (res->type == RDMA_RESTRACK_COUNTER) {
- 		/* Special case to ensure that cntn points to right counter */
- 		struct rdma_counter *counter;
-diff --git a/include/rdma/restrack.h b/include/rdma/restrack.h
-index 8b7c46daeb07..0d69ded73bf2 100644
---- a/include/rdma/restrack.h
-+++ b/include/rdma/restrack.h
-@@ -14,6 +14,9 @@
- #include <uapi/rdma/rdma_netlink.h>
- #include <linux/xarray.h>
- 
-+/* Mark entry as containing driver specific details, it is used to provide QP subtype for now */
-+#define RESTRACK_DD XA_MARK_1
++	return nla_put_u8(msg, RDMA_NLDEV_ATTR_RES_TYPE, IB_QPT_DRIVER);
++}
 +
- struct ib_device;
- struct sk_buff;
- 
-@@ -116,8 +119,8 @@ struct rdma_restrack_entry {
- 	u32 id;
+ static int fill_res_qp_entry_raw(struct sk_buff *msg, struct ib_qp *ibqp)
+ {
+ 	struct mlx5_ib_dev *dev = to_mdev(ibqp->device);
+@@ -168,6 +196,7 @@ static const struct ib_device_ops restrack_ops = {
+ 	.fill_res_cq_entry_raw = fill_res_cq_entry_raw,
+ 	.fill_res_mr_entry = fill_res_mr_entry,
+ 	.fill_res_mr_entry_raw = fill_res_mr_entry_raw,
++	.fill_res_qp_entry = fill_res_qp_entry,
+ 	.fill_res_qp_entry_raw = fill_res_qp_entry_raw,
+ 	.fill_stat_mr_entry = fill_stat_mr_entry,
  };
- 
--int rdma_restrack_count(struct ib_device *dev,
--			enum rdma_restrack_type type);
-+int rdma_restrack_count(struct ib_device *dev, enum rdma_restrack_type type,
-+			bool show_details);
- /**
-  * rdma_is_kernel_res() - check the owner of resource
-  * @res:  resource entry
-diff --git a/include/uapi/rdma/rdma_netlink.h b/include/uapi/rdma/rdma_netlink.h
-index 723bbb0f7042..a214fc259f28 100644
---- a/include/uapi/rdma/rdma_netlink.h
-+++ b/include/uapi/rdma/rdma_netlink.h
-@@ -558,6 +558,12 @@ enum rdma_nldev_attr {
- 
- 	RDMA_NLDEV_SYS_ATTR_PRIVILEGED_QKEY_MODE, /* u8 */
- 
-+	RDMA_NLDEV_ATTR_DRIVER_DETAILS,		/* u8 */
-+	/*
-+	 * QP subtype string, used for driver QPs
-+	 */
-+	RDMA_NLDEV_ATTR_RES_SUBTYPE,		/* string */
-+
- 	/*
- 	 * Always the end
- 	 */
 -- 
 2.44.0
 
