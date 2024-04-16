@@ -1,56 +1,56 @@
-Return-Path: <linux-rdma+bounces-1958-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-1959-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 79A318A69FC
-	for <lists+linux-rdma@lfdr.de>; Tue, 16 Apr 2024 13:56:21 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 37ECB8A6A0B
+	for <lists+linux-rdma@lfdr.de>; Tue, 16 Apr 2024 13:59:42 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id EB9C9B2166F
-	for <lists+linux-rdma@lfdr.de>; Tue, 16 Apr 2024 11:56:18 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BCB102827A3
+	for <lists+linux-rdma@lfdr.de>; Tue, 16 Apr 2024 11:59:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EC93C129A93;
-	Tue, 16 Apr 2024 11:56:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E50F712A166;
+	Tue, 16 Apr 2024 11:59:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="bKRdBH2N"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="kU5OOEj2"
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A7E87128361;
-	Tue, 16 Apr 2024 11:56:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A648A12A153
+	for <linux-rdma@vger.kernel.org>; Tue, 16 Apr 2024 11:59:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713268573; cv=none; b=pQdMgVLynCTvG3yRNpkOMZ4wv545UBYqvZqd8qH2kNAwFO0cT4n/zWMcpbQEmczkYx/MlKwhMaYTTMgQmdiuamdeNBZkoC7s8aTSs17meIn9YvYJXF0ZKVMYcPW1Qj1B1kd+1ff0FXyOV+Zp+qcTyer5xEBfD18LnuW4or4Lb1E=
+	t=1713268771; cv=none; b=hB7oa0E3bexrV1UgDJrHLewUEd0ZXjZiBn6K5bJ4I9yghrC7K/RQTKCnQuPmqPo1+ZRf0Q3cVS0noml+OGrdL5dX4c4zhr2fcZKvpNsK9J6SoShk6nChEqUAUZN/ybkMPNGcZ2tem54rMpv+B9OBkXSo0xlfougogSU6//dxwQY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713268573; c=relaxed/simple;
-	bh=QIIgZPlU7sCpPuc1DD4+2O4Bt99x0iraayLWZnSrc0c=;
+	s=arc-20240116; t=1713268771; c=relaxed/simple;
+	bh=6ykrYpm9WdpKrq/IxSTJ7s2BR/MfRmk23MYJUrIKI5Q=;
 	h=From:To:Cc:In-Reply-To:References:Subject:Message-Id:Date:
-	 MIME-Version:Content-Type; b=PA1RsGqQMxx/CbCXGtRQuTRdeLXB1eYzIpr3ALwLVk9KIoWqYZQK4RA6hoUrOTm1C9qPjoTQyCHbWAf1x4HMBXKjkoGtSKHRRshSklA+07O6j6rKfv9bOz28kV6G79tQjLD2FEExpU+yX+tSHoI8CbaCeSxEsalR3RFDp1OrrWo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=bKRdBH2N; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 852D7C113CE;
-	Tue, 16 Apr 2024 11:56:12 +0000 (UTC)
+	 MIME-Version:Content-Type; b=AJZ/L5KYXZlDadjyPc9hOpCpgTEsIXqIItLxBX7wqc1pReLTd6Ckbf8tAH/UAbyBOWnyjigxnM1XrNIuw2Xt6cfLBdThXxeuBWSf04wzxjheUI+uKi70lT8jgW5ycD5joz3fvtWq/o4MTy32uL/wS6aHytxpAolZrsSgDvFVSEg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=kU5OOEj2; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A523CC113CE;
+	Tue, 16 Apr 2024 11:59:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713268573;
-	bh=QIIgZPlU7sCpPuc1DD4+2O4Bt99x0iraayLWZnSrc0c=;
+	s=k20201202; t=1713268771;
+	bh=6ykrYpm9WdpKrq/IxSTJ7s2BR/MfRmk23MYJUrIKI5Q=;
 	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-	b=bKRdBH2NbW05BHkuRK8VGKFRqdG/cZ0uVqtmx7+tUk0bni6Ee4FbJbrAi4DzaCUhA
-	 +eirpN80NVh6fMXycMB21HEaVyCF/8zJfT+38T7hMaZAAX6aWtEgRUz+1lBoEu7Psg
-	 1vzub5UxbMKmXguugwVfxQU//1v8c5luga1/hMrtkB5fcZs7SVvi1NvRsfBq/1NErw
-	 3m7jR777V+O6LdhU975kvn5D6G81TniOMbckQbCqC9DJMVL9F0R4NY/lVNNocsrdsC
-	 n6dzbs9ghfXYXcOTXLflXc7pBVBzoY/8CxxhbDVypOvbSHINXqDyZFYc6gGtWkrgwL
-	 qpj/gHJ06i1Gg==
+	b=kU5OOEj2YtEsCkOAotPdJQaYXY8VcG3uzyVpD6doVwnSXcyLoc0phvF+sq/tDD5PK
+	 mJOWSR0Cj/EaK6WkxxlbQZBoZhhfsslekJNqudd0+ig90dimq1gq1MH7GEc45ka3JP
+	 2n0rmVOWyX6ZwqaEk43cJ2t9UtB5GkIAwGve/DKm7ipMmmSRs3C7aqYPPNfCZoNCXy
+	 T1YeX35RpmFYWn6pZtGVHMjiQQT1jP4glf4kQ/W38WVD7f6pTZy1TCO8uZGRhnvyce
+	 vohhnyY4oogBhd7KTP+sU717UxraI5HBvncZ7U5S3I79x4gyy3nxYsMowVdyboxvVb
+	 xIZ6NRBrEUvMA==
 From: Leon Romanovsky <leon@kernel.org>
-To: kotaranov@microsoft.com, sharmaajay@microsoft.com, longli@microsoft.com, 
- jgg@ziepe.ca, Konstantin Taranov <kotaranov@linux.microsoft.com>
-Cc: linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org
-In-Reply-To: <1712738551-22075-1-git-send-email-kotaranov@linux.microsoft.com>
-References: <1712738551-22075-1-git-send-email-kotaranov@linux.microsoft.com>
-Subject: Re: [PATCH rdma-next v3 0/6] RDMA/mana_ib: Enable RNIC adapter and
- populate it with GIDs
-Message-Id: <171326856734.751269.15693523737204634211.b4-ty@kernel.org>
-Date: Tue, 16 Apr 2024 14:56:07 +0300
+To: linux-rdma@vger.kernel.org, tangchengchang@huawei.com, 
+ huangjunxian6@hisilicon.com, Zhengchao Shao <shaozhengchao@huawei.com>
+Cc: jgg@ziepe.ca, chenglang@huawei.com, wangxi11@huawei.com, 
+ liweihang@huawei.com, weiyongjun1@huawei.com, yuehaibing@huawei.com
+In-Reply-To: <20240411033851.2884771-1-shaozhengchao@huawei.com>
+References: <20240411033851.2884771-1-shaozhengchao@huawei.com>
+Subject: Re: [PATCH v2] RDMA/hns: fix return value in hns_roce_map_mr_sg
+Message-Id: <171326876705.752004.8039826272359636944.b4-ty@kernel.org>
+Date: Tue, 16 Apr 2024 14:59:27 +0300
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
@@ -62,30 +62,18 @@ Content-Transfer-Encoding: 7bit
 X-Mailer: b4 0.14-dev
 
 
-On Wed, 10 Apr 2024 01:42:25 -0700, Konstantin Taranov wrote:
-> From: Konstantin Taranov <kotaranov@microsoft.com>
+On Thu, 11 Apr 2024 11:38:51 +0800, Zhengchao Shao wrote:
+> As described in the ib_map_mr_sg function comment, it returns the number
+> of sg elements that were mapped to the memory region. However,
+> hns_roce_map_mr_sg returns the number of pages required for mapping the
+> DMA area. Fix it.
 > 
-> This patch series creates RNIC adapter in mana_ib.
-> To create the adapter, we must create one EQ.
-> In the future patches, this EQ will be used for fatal RC QP error events.
-> In the future patches, we will also add more EQs for CQs.
 > 
-> [...]
 
 Applied, thanks!
 
-[1/6] RDMA/mana_ib: Add EQ creation for rnic adapter
-      https://git.kernel.org/rdma/rdma/c/98b889c43935c4
-[2/6] RDMA/mana_ib: Create and destroy rnic adapter
-      https://git.kernel.org/rdma/rdma/c/1a79c2b9d4a087
-[3/6] RDMA/mana_ib: implement port parameters
-      https://git.kernel.org/rdma/rdma/c/4bda1d5332ec1b
-[4/6] RDMA/mana_ib: enable RoCE on port 1
-      https://git.kernel.org/rdma/rdma/c/8b184e4f1c328d
-[5/6] RDMA/mana_ib: adding and deleting GIDs
-      https://git.kernel.org/rdma/rdma/c/faafb8b126ad60
-[6/6] RDMA/mana_ib: Configure mac address in RNIC
-      https://git.kernel.org/rdma/rdma/c/8859f009ace237
+[1/1] RDMA/hns: fix return value in hns_roce_map_mr_sg
+      https://git.kernel.org/rdma/rdma/c/203b70fda63425
 
 Best regards,
 -- 
