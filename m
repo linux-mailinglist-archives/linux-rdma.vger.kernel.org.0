@@ -1,203 +1,130 @@
-Return-Path: <linux-rdma+bounces-1954-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-1955-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5D6FA8A65F0
-	for <lists+linux-rdma@lfdr.de>; Tue, 16 Apr 2024 10:19:09 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 99B3E8A661B
+	for <lists+linux-rdma@lfdr.de>; Tue, 16 Apr 2024 10:30:09 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 809621C22AE2
-	for <lists+linux-rdma@lfdr.de>; Tue, 16 Apr 2024 08:19:08 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4B1551F21977
+	for <lists+linux-rdma@lfdr.de>; Tue, 16 Apr 2024 08:30:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 98DF115884A;
-	Tue, 16 Apr 2024 08:18:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 540F0126F02;
+	Tue, 16 Apr 2024 08:30:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="TByiiSen"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="p61+UYgY"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 43467136E28
-	for <linux-rdma@vger.kernel.org>; Tue, 16 Apr 2024 08:18:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EBE2985959;
+	Tue, 16 Apr 2024 08:30:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713255533; cv=none; b=RCS5+wTzqGV65rJeo0uhjTRuBks4C7ZBP9t/1e2ub3ebLCqiRSwqf0F/l4AHIyZFcZDqBYSmoCUEQuiDdlpHKcSZHnFITJFOoHSLymTEb5jRTRqSHN0lNcIl5gSoY0d4uQV063UC60GbL4j5M1Ybpbne4Cjqaijvp/gWB32EqOw=
+	t=1713256203; cv=none; b=W+SXq8KM17NfxZqf61n/tUo9fwAai5VwhGx+sK6vcjYb3X1oeaAZRK+2Zpj8VHOxghWRl+cJYat+Uf0d3GRL0ndbuEd9noHuEHcRjOseGxcngjUsvOSATWfK+ZFbio5iOat0HTz0xsEowElko8dROj5cPI3+XWm5WFkB0o/Lcpk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713255533; c=relaxed/simple;
-	bh=WSUcYTGfMiJPS6dBoWIy1OiuZHDqhA72PAGbwoqjEHc=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=Wof0WHtRqPSiwy0HGUnvrvtkvuXaFIwjPF8GOTZWIzDdoOeLQ/ZkaMuPju2f9K586pHGpF+Z6kVGYRrMfzjGdHe/XxiWMz/7ErQ/bnE11BXVRiHmOMm+p5JpI/qOF/KQWTEZ/HzmSpHbQTpZZ8LjU5n+4g8eRVMxrV28JaU6kp8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=TByiiSen; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1713255529;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=sx9FIAo9TZjFdKuhika+AQetmZMIT9vu9nUh+3JKCOQ=;
-	b=TByiiSen8u4aSXJIcOd8ZEvHzJ1U8Izegjbg0vUe7+kU55q01CaBCCds/86hosbbmARQWZ
-	uFNPqUQIlAVqsVjxpRhoiT4PZyXfUqjAGHzVy2nIkE/wnPu51iHD057H8lfoyAwzq0zZbV
-	S/LoLmJ64E/oz1JfvlTyAQPDixFuCRQ=
-Received: from mail-ej1-f72.google.com (mail-ej1-f72.google.com
- [209.85.218.72]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-400-a0Zaj3ydMXeTeSQCAM5Acg-1; Tue, 16 Apr 2024 04:18:47 -0400
-X-MC-Unique: a0Zaj3ydMXeTeSQCAM5Acg-1
-Received: by mail-ej1-f72.google.com with SMTP id a640c23a62f3a-a51a65f488cso86112766b.1
-        for <linux-rdma@vger.kernel.org>; Tue, 16 Apr 2024 01:18:47 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713255526; x=1713860326;
-        h=mime-version:user-agent:content-transfer-encoding:autocrypt
-         :references:in-reply-to:date:cc:to:from:subject:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=sx9FIAo9TZjFdKuhika+AQetmZMIT9vu9nUh+3JKCOQ=;
-        b=Ju3hH60HClr/Rjvh9s2Uvf+gwHGedsRuROSK7ueT5STCDrVWQmILLFdSBZDg0BUbCR
-         5mUXPGQHpd23gBGoisNaTEUm9CbU1ZOxalqyg3NSlj65CCk4aWifBrah6W78ZoisbK3P
-         6zV4GMAYIWV5S2ryLFmcfUiTLfCv5iHpb0Wj0Ok9gxRi32p1wnOB7gC4cqm6ZIR9xjDb
-         bj0x+DA1y0ukB6137KIOnAGW+rsrpa5bxpEfwZxOzrM91NLbRSoISruzpyRme9SmRrQB
-         BDT1BFAtZTBoYzFW/XyweXuABhNGeZAacWrGk0o3IZ3SPSj/Trf/qvEgvW2ONuCEUT/q
-         bbmQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWUr34ltMhL3I4UAxhLklRfntMlqHKqQ5m6s2OlmL90ZPOwb0BrQVd2hnJt8aP/13VC6LlgI+ONQRKnZpsJ8sFaZM4JbVVzeKbyhA==
-X-Gm-Message-State: AOJu0Yy2/jWUa8Xw4JO97aidVS2SKp+lMRA+qRORB3Rn5tVuiwyvZai0
-	lLYh2i+IwguOu9qhwYQFH9XaVe9iktr/lEj+JVQgC736rM66P/JgbPIr6RWX0MPjFFKqqLbj1lE
-	GgcVdtIM7cdyyYzhyARsHWeLfBQnQCiZV5TVGTG4PVzu77GO//uIwK40xSL0=
-X-Received: by 2002:a17:906:4ecf:b0:a52:6535:d078 with SMTP id i15-20020a1709064ecf00b00a526535d078mr3213748ejv.7.1713255526653;
-        Tue, 16 Apr 2024 01:18:46 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IEeWubKk9sfU5n4Eg4r0fgR17oDosoRykSHGnpq+PCrNmzGMeRZ2HKjVJzu/+KOc5EhcE24Ng==
-X-Received: by 2002:a17:906:4ecf:b0:a52:6535:d078 with SMTP id i15-20020a1709064ecf00b00a526535d078mr3213728ejv.7.1713255526227;
-        Tue, 16 Apr 2024 01:18:46 -0700 (PDT)
-Received: from gerbillo.redhat.com (146-241-231-31.dyn.eolo.it. [146.241.231.31])
-        by smtp.gmail.com with ESMTPSA id gf14-20020a170906e20e00b00a51e6222200sm6539922ejb.156.2024.04.16.01.18.42
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 16 Apr 2024 01:18:45 -0700 (PDT)
-Message-ID: <be056435353af60a564f457c79dacc16c6ea920e.camel@redhat.com>
-Subject: Re: [PATCH v3 1/4] networking: Remove the now superfluous sentinel
- elements from ctl_table array
-From: Paolo Abeni <pabeni@redhat.com>
-To: Kuniyuki Iwashima <kuniyu@amazon.com>, 
-	devnull+j.granados.samsung.com@kernel.org
-Cc: Dai.Ngo@oracle.com, alex.aring@gmail.com, alibuda@linux.alibaba.com, 
- allison.henderson@oracle.com, anna@kernel.org, bridge@lists.linux.dev, 
- chuck.lever@oracle.com, coreteam@netfilter.org, courmisch@gmail.com, 
- davem@davemloft.net, dccp@vger.kernel.org, dhowells@redhat.com,
- dsahern@kernel.org,  edumazet@google.com, fw@strlen.de, geliang@kernel.org,
- guwen@linux.alibaba.com,  herbert@gondor.apana.org.au, horms@verge.net.au,
- j.granados@samsung.com, ja@ssi.bg,  jaka@linux.ibm.com, jlayton@kernel.org,
- jmaloy@redhat.com, jreuter@yaina.de,  kadlec@netfilter.org,
- keescook@chromium.org, kolga@netapp.com, kuba@kernel.org, 
- linux-afs@lists.infradead.org, linux-hams@vger.kernel.org, 
- linux-kernel@vger.kernel.org, linux-nfs@vger.kernel.org, 
- linux-rdma@vger.kernel.org, linux-s390@vger.kernel.org, 
- linux-sctp@vger.kernel.org, linux-wpan@vger.kernel.org, 
- linux-x25@vger.kernel.org, lucien.xin@gmail.com, lvs-devel@vger.kernel.org,
-  marc.dionne@auristor.com, marcelo.leitner@gmail.com, martineau@kernel.org,
-  matttbe@kernel.org, mcgrof@kernel.org, miquel.raynal@bootlin.com, 
- mptcp@lists.linux.dev, ms@dev.tdt.de, neilb@suse.de,
- netdev@vger.kernel.org,  netfilter-devel@vger.kernel.org,
- pablo@netfilter.org, ralf@linux-mips.org,  razor@blackwall.org,
- rds-devel@oss.oracle.com, roopa@nvidia.com,  stefan@datenfreihafen.org,
- steffen.klassert@secunet.com,  tipc-discussion@lists.sourceforge.net,
- tom@talpey.com, tonylu@linux.alibaba.com,  trond.myklebust@hammerspace.com,
- wenjia@linux.ibm.com, ying.xue@windriver.com
-Date: Tue, 16 Apr 2024 10:18:42 +0200
-In-Reply-To: <20240415231210.22785-1-kuniyu@amazon.com>
-References: <20240412-jag-sysctl_remset_net-v3-1-11187d13c211@samsung.com>
-	 <20240415231210.22785-1-kuniyu@amazon.com>
-Autocrypt: addr=pabeni@redhat.com; prefer-encrypt=mutual; keydata=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
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.50.4 (3.50.4-1.fc39) 
+	s=arc-20240116; t=1713256203; c=relaxed/simple;
+	bh=lJrj9v6ekM+Ddi5L9uY9dMcBsBq+d7SARM1jH6N4GQQ=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=gST/C1vOqA1EmWlrS9NrQhVdPkaV6TrAcfTSGDr/mgR262tD0XWwJtFxWy/aUxo59T30bsOXjCs7UN8/Qx+O7pRXNcA7hkPrNPXgsWXPxVQIgqMrHoGqz89UhdLOfnUtzF0dPatyFEQ3b3wg4rxCU8rgYlNn92+nlvFbJY0on1Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=p61+UYgY; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B131DC113CE;
+	Tue, 16 Apr 2024 08:30:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1713256202;
+	bh=lJrj9v6ekM+Ddi5L9uY9dMcBsBq+d7SARM1jH6N4GQQ=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=p61+UYgYo11o8wr+9Y1NTCQKaUdil+iO3y09VvB2XgUFcg+G0hFo9nVW748ZyFVyS
+	 jbsf9lWI/fFLW2RS99UV30A3yiEWvznNPQ8QGOUpP08u3lFxS3v2xFdx4iUVfPLLvQ
+	 kUTrfHBa2we/FaHPNnxCp/OEulJA6LTIK+TyCuJUppYn2sc73MSIfB37zKPHIXDyXM
+	 vJfCDtHbQXfm1eYIVsUEcNy+DkO2Ld937JnJ/MOVna6c+oUdYFKaKxzWRGG033qwRR
+	 LtIIu1HqZaC3Ig8eBWSR97uPo608TMUmpzBoHQXGVFzkEUxfvYwv7vLMjz8gm6l87/
+	 XztQv707Kx+FQ==
+Date: Tue, 16 Apr 2024 11:29:57 +0300
+From: Leon Romanovsky <leon@kernel.org>
+To: Jason Gunthorpe <jgg@nvidia.com>
+Cc: Alexander Gordeev <agordeev@linux.ibm.com>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Christian Borntraeger <borntraeger@linux.ibm.com>,
+	Borislav Petkov <bp@alien8.de>,
+	Dave Hansen <dave.hansen@linux.intel.com>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Gerald Schaefer <gerald.schaefer@linux.ibm.com>,
+	Vasily Gorbik <gor@linux.ibm.com>,
+	Heiko Carstens <hca@linux.ibm.com>,
+	"H. Peter Anvin" <hpa@zytor.com>,
+	Justin Stitt <justinstitt@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, linux-rdma@vger.kernel.org,
+	linux-s390@vger.kernel.org, llvm@lists.linux.dev,
+	Ingo Molnar <mingo@redhat.com>, Bill Wendling <morbo@google.com>,
+	Nathan Chancellor <nathan@kernel.org>,
+	Nick Desaulniers <ndesaulniers@google.com>, netdev@vger.kernel.org,
+	Paolo Abeni <pabeni@redhat.com>,
+	Salil Mehta <salil.mehta@huawei.com>,
+	Sven Schnelle <svens@linux.ibm.com>,
+	Thomas Gleixner <tglx@linutronix.de>, x86@kernel.org,
+	Yisen Zhuang <yisen.zhuang@huawei.com>,
+	Arnd Bergmann <arnd@arndb.de>,
+	Catalin Marinas <catalin.marinas@arm.com>,
+	linux-arch@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+	Mark Rutland <mark.rutland@arm.com>,
+	Michael Guralnik <michaelgur@mellanox.com>, patches@lists.linux.dev,
+	Niklas Schnelle <schnelle@linux.ibm.com>,
+	Jijie Shao <shaojijie@huawei.com>, Will Deacon <will@kernel.org>
+Subject: Re: [PATCH v3 6/6] IB/mlx5: Use __iowrite64_copy() for write
+ combining stores
+Message-ID: <20240416082957.GC6832@unreal>
+References: <0-v3-1893cd8b9369+1925-mlx5_arm_wc_jgg@nvidia.com>
+ <6-v3-1893cd8b9369+1925-mlx5_arm_wc_jgg@nvidia.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <6-v3-1893cd8b9369+1925-mlx5_arm_wc_jgg@nvidia.com>
 
-On Mon, 2024-04-15 at 16:12 -0700, Kuniyuki Iwashima wrote:
-> From: Joel Granados via B4 Relay <devnull+j.granados.samsung.com@kernel.o=
-rg>
-> Date: Fri, 12 Apr 2024 16:48:29 +0200
-> > From: Joel Granados <j.granados@samsung.com>
-> >=20
-> > This commit comes at the tail end of a greater effort to remove the
-> > empty elements at the end of the ctl_table arrays (sentinels) which
-> > will reduce the overall build time size of the kernel and run time
-> > memory bloat by ~64 bytes per sentinel (further information Link :
-> > https://lore.kernel.org/all/ZO5Yx5JFogGi%2FcBo@bombadil.infradead.org/)
-> >=20
-> > * Remove sentinel element from ctl_table structs.
-> > * Remove extra element in ctl_table arrays declarations
-> > * Remove instances where an array element is zeroed out to make it look
-> >   like a sentinel. This is not longer needed and is safe after commit
-> >   c899710fe7f9 ("networking: Update to register_net_sysctl_sz") added
-> >   the array size to the ctl_table registration
-> > * Replace the for loop stop condition that tests for procname =3D=3D NU=
-LL with
-> >   one that depends on array size
-> > * Removed the "-1" that adjusted for having an extra empty element when
-> >   looping over ctl_table arrays
-> > * Removing the unprivileged user check in ipv6_route_sysctl_init is
-> >   safe as it is replaced by calling ipv6_route_sysctl_table_size;
-> >   introduced in commit c899710fe7f9 ("networking: Update to
-> >   register_net_sysctl_sz")
-> > * Replace empty array registration with the register_net_sysctl_sz call=
-.
-> >=20
-> > Signed-off-by: Joel Granados <j.granados@samsung.com>
-> > ---
-> >  net/core/neighbour.c                | 5 +----
-> >  net/core/sysctl_net_core.c          | 9 ++++-----
-> >  net/dccp/sysctl.c                   | 2 --
-> >  net/ieee802154/6lowpan/reassembly.c | 6 +-----
-> >  net/ipv4/devinet.c                  | 5 ++---
-> >  net/ipv4/ip_fragment.c              | 2 --
-> >  net/ipv4/route.c                    | 8 ++------
-> >  net/ipv4/sysctl_net_ipv4.c          | 7 +++----
-> >  net/ipv4/xfrm4_policy.c             | 1 -
-> >  net/ipv6/addrconf.c                 | 5 +----
-> >  net/ipv6/icmp.c                     | 1 -
-> >  net/ipv6/reassembly.c               | 2 --
-> >  net/ipv6/route.c                    | 5 -----
-> >  net/ipv6/sysctl_net_ipv6.c          | 4 +---
-> >  net/ipv6/xfrm6_policy.c             | 1 -
-> >  net/llc/sysctl_net_llc.c            | 8 ++------
-> >  net/mpls/af_mpls.c                  | 3 +--
-> >  net/mptcp/ctrl.c                    | 1 -
-> >  net/netrom/sysctl_net_netrom.c      | 1 -
-> >  net/phonet/sysctl.c                 | 1 -
-> >  net/rds/ib_sysctl.c                 | 1 -
-> >  net/rds/sysctl.c                    | 1 -
-> >  net/rds/tcp.c                       | 1 -
-> >  net/rose/sysctl_net_rose.c          | 1 -
-> >  net/rxrpc/sysctl.c                  | 1 -
-> >  net/sctp/sysctl.c                   | 6 +-----
-> >  net/smc/smc_sysctl.c                | 1 -
-> >  net/sunrpc/sysctl.c                 | 1 -
-> >  net/sunrpc/xprtrdma/svc_rdma.c      | 1 -
-> >  net/sunrpc/xprtrdma/transport.c     | 1 -
-> >  net/sunrpc/xprtsock.c               | 1 -
-> >  net/tipc/sysctl.c                   | 1 -
-> >  net/unix/sysctl_net_unix.c          | 1 -
-> >  net/x25/sysctl_net_x25.c            | 1 -
-> >  net/xfrm/xfrm_sysctl.c              | 5 +----
-> >  35 files changed, 20 insertions(+), 81 deletions(-)
->=20
-> You may want to split patch based on subsystem or the type of changes
-> to make review easier.
-
-I agree with Kuniyuki. I think the x25 chunks can me moved in the last
-patch, and at least sunrpc and rds could go in separate patches,
-possibly even xfrm and smc.
+On Thu, Apr 11, 2024 at 01:46:19PM -0300, Jason Gunthorpe wrote:
+> mlx5 has a built in self-test at driver startup to evaluate if the
+> platform supports write combining to generate a 64 byte PCIe TLP or
+> not. This has proven necessary because a lot of common scenarios end up
+> with broken write combining (especially inside virtual machines) and there
+> is other way to learn this information.
+> 
+> This self test has been consistently failing on new ARM64 CPU
+> designs (specifically with NVIDIA Grace's implementation of Neoverse
+> V2). The C loop around writeq() generates some pretty terrible ARM64
+> assembly, but historically this has worked on a lot of existing ARM64 CPUs
+> till now.
+> 
+> We see it succeed about 1 time in 10,000 on the worst effected
+> systems. The CPU architects speculate that the load instructions
+> interspersed with the stores makes the WC buffers statistically flush too
+> often and thus the generation of large TLPs becomes infrequent. This makes
+> the boot up test unreliable in that it indicates no write-combining,
+> however userspace would be fine since it uses a ST4 instruction.
+> 
+> Further, S390 has similar issues where only the special zpci_memcpy_toio()
+> will actually generate large TLPs, and the open coded loop does not
+> trigger it at all.
+> 
+> Fix both ARM64 and S390 by switching to __iowrite64_copy() which now
+> provides architecture specific variants that have a high change of
+> generating a large TLP with write combining. x86 continues to use a
+> similar writeq loop in the generate __iowrite64_copy().
+> 
+> Fixes: 11f552e21755 ("IB/mlx5: Test write combining support")
+> Tested-by: Niklas Schnelle <schnelle@linux.ibm.com>
+> Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
+> ---
+>  drivers/infiniband/hw/mlx5/mem.c | 8 +++-----
+>  1 file changed, 3 insertions(+), 5 deletions(-)
+> 
 
 Thanks,
-
-Paolo
-
+Acked-by: Leon Romanovsky <leonro@nvidia.com>
 
