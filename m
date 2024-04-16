@@ -1,213 +1,123 @@
-Return-Path: <linux-rdma+bounces-1950-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-1951-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id DE4588A5E2F
-	for <lists+linux-rdma@lfdr.de>; Tue, 16 Apr 2024 01:19:33 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4C3398A625B
+	for <lists+linux-rdma@lfdr.de>; Tue, 16 Apr 2024 06:25:34 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0D9E21C21BEA
-	for <lists+linux-rdma@lfdr.de>; Mon, 15 Apr 2024 23:19:33 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B70FD285242
+	for <lists+linux-rdma@lfdr.de>; Tue, 16 Apr 2024 04:25:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 97AF41591FB;
-	Mon, 15 Apr 2024 23:19:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D98112232B;
+	Tue, 16 Apr 2024 04:25:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=amazon.com header.i=@amazon.com header.b="Bp98jKkX"
+	dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b="CeQrwFtP"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from smtp-fw-52003.amazon.com (smtp-fw-52003.amazon.com [52.119.213.152])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 023D61272B8;
-	Mon, 15 Apr 2024 23:19:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=52.119.213.152
+Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5F85420B0E;
+	Tue, 16 Apr 2024 04:25:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=13.77.154.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713223163; cv=none; b=vCJWpovfmVWEPVlrmCxeEBDx9aFIfJMJxfM1+beCfXqDVM1Fk9SV9Xz5/078bIwyy8T6U1m5D27mMc5l//EsJJqES2gdNiLDW5KtWgYQGCcYwy6NEx6c/yQUaThseWbrruzpsONtO5oVlGsNrgpQGpV/xyfEoXB15rJikm2Vd0g=
+	t=1713241527; cv=none; b=qNZg5bWQHbfY17J46v+xsm9JNG/zGGu0mIOMASVC6YtG3jCMntyS8JRC8y4U17ks3R1YtePYBflRbDIomn503i+ZMqo7CiPGBtp/y7E69e5aLmZQ/GgdGZ5L2gZzNvwGfcE+tet6Gr3gvo2kLEes6LkP8XbIwZEh9O7wPx2HaJw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713223163; c=relaxed/simple;
-	bh=O7IS3oPlp5+sm72VRPb5jKxSHrI+jlf1vy1OB12Yer0=;
-	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=DFNeXMq9GuW2nb6151JrQgcEJpQkBt3lhr/KIQFTJfJ8pcTEW/kqp38+urWP7CJDU2PvNndow8YiAhtN8AW+39D8ecBXhUkbcp3mHtrp8qk0t6yqnnmgAvH20LzCyuX+NT484DQTaHNPIREWAfasfbsAIXrOZf5P3A1whdeKfB4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amazon.com; spf=pass smtp.mailfrom=amazon.co.jp; dkim=pass (1024-bit key) header.d=amazon.com header.i=@amazon.com header.b=Bp98jKkX; arc=none smtp.client-ip=52.119.213.152
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amazon.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=amazon.co.jp
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1713223161; x=1744759161;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=nNllzdqzyM5Bz0YxRI8syNc99amIrBzYYq2sTSmZBPw=;
-  b=Bp98jKkXt+DWgJMJk/VnC2koZBCdXF3S9UfLHaXWlu2lOD/jHEkaJPiX
-   NqB29FKb+Zd+SEVzJ6uzAsCvZ/OEQA8szmWpggCFPh+qW6LgLBlyAc+Hl
-   PTSqDmJ6Sxwh9DzQzTiDVil4QvwPFl/KKS1zGzrkCyJ8MPHfLJoPeu923
-   Y=;
-X-IronPort-AV: E=Sophos;i="6.07,204,1708387200"; 
-   d="scan'208";a="652012921"
-Received: from iad12-co-svc-p1-lb1-vlan3.amazon.com (HELO smtpout.prod.us-west-2.prod.farcaster.email.amazon.dev) ([10.43.8.6])
-  by smtp-border-fw-52003.iad7.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Apr 2024 23:19:15 +0000
-Received: from EX19MTAUWB002.ant.amazon.com [10.0.21.151:43163]
- by smtpin.naws.us-west-2.prod.farcaster.email.amazon.dev [10.0.42.38:2525] with esmtp (Farcaster)
- id b612ba95-1060-4583-9bf4-c255c8a740ec; Mon, 15 Apr 2024 23:19:15 +0000 (UTC)
-X-Farcaster-Flow-ID: b612ba95-1060-4583-9bf4-c255c8a740ec
-Received: from EX19D004ANA001.ant.amazon.com (10.37.240.138) by
- EX19MTAUWB002.ant.amazon.com (10.250.64.231) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1258.28; Mon, 15 Apr 2024 23:19:14 +0000
-Received: from 88665a182662.ant.amazon.com (10.106.101.23) by
- EX19D004ANA001.ant.amazon.com (10.37.240.138) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1258.28; Mon, 15 Apr 2024 23:19:03 +0000
-From: Kuniyuki Iwashima <kuniyu@amazon.com>
-To: <devnull+j.granados.samsung.com@kernel.org>
-CC: <Dai.Ngo@oracle.com>, <alex.aring@gmail.com>, <alibuda@linux.alibaba.com>,
-	<allison.henderson@oracle.com>, <anna@kernel.org>, <bridge@lists.linux.dev>,
-	<chuck.lever@oracle.com>, <coreteam@netfilter.org>, <courmisch@gmail.com>,
-	<davem@davemloft.net>, <dccp@vger.kernel.org>, <dhowells@redhat.com>,
-	<dsahern@kernel.org>, <edumazet@google.com>, <fw@strlen.de>,
-	<geliang@kernel.org>, <guwen@linux.alibaba.com>,
-	<herbert@gondor.apana.org.au>, <horms@verge.net.au>,
-	<j.granados@samsung.com>, <ja@ssi.bg>, <jaka@linux.ibm.com>,
-	<jlayton@kernel.org>, <jmaloy@redhat.com>, <jreuter@yaina.de>,
-	<kadlec@netfilter.org>, <keescook@chromium.org>, <kolga@netapp.com>,
-	<kuba@kernel.org>, <linux-afs@lists.infradead.org>,
-	<linux-hams@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-	<linux-nfs@vger.kernel.org>, <linux-rdma@vger.kernel.org>,
-	<linux-s390@vger.kernel.org>, <linux-sctp@vger.kernel.org>,
-	<linux-wpan@vger.kernel.org>, <linux-x25@vger.kernel.org>,
-	<lucien.xin@gmail.com>, <lvs-devel@vger.kernel.org>,
-	<marc.dionne@auristor.com>, <marcelo.leitner@gmail.com>,
-	<martineau@kernel.org>, <matttbe@kernel.org>, <mcgrof@kernel.org>,
-	<miquel.raynal@bootlin.com>, <mptcp@lists.linux.dev>, <ms@dev.tdt.de>,
-	<neilb@suse.de>, <netdev@vger.kernel.org>, <netfilter-devel@vger.kernel.org>,
-	<pabeni@redhat.com>, <pablo@netfilter.org>, <ralf@linux-mips.org>,
-	<razor@blackwall.org>, <rds-devel@oss.oracle.com>, <roopa@nvidia.com>,
-	<stefan@datenfreihafen.org>, <steffen.klassert@secunet.com>,
-	<tipc-discussion@lists.sourceforge.net>, <tom@talpey.com>,
-	<tonylu@linux.alibaba.com>, <trond.myklebust@hammerspace.com>,
-	<wenjia@linux.ibm.com>, <ying.xue@windriver.com>, <kuniyu@amazon.com>
-Subject: Re: [PATCH v3 4/4] ax.25: Remove the now superfluous sentinel elements from ctl_table array
-Date: Mon, 15 Apr 2024 16:18:53 -0700
-Message-ID: <20240415231853.23060-1-kuniyu@amazon.com>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20240412-jag-sysctl_remset_net-v3-4-11187d13c211@samsung.com>
-References: <20240412-jag-sysctl_remset_net-v3-4-11187d13c211@samsung.com>
+	s=arc-20240116; t=1713241527; c=relaxed/simple;
+	bh=dLKuEx3zS6xD3HOWu8wyg2W7hIiC28htgpdfpLYs9IY=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=tHYkNltP1gtrld+krOe3SFaaImyUEGz0/toID4j7aQYZuo4pWUf0awjXA0lnhIvD2swmRTx8MX9650DlrKHXp5DSRV5LQQhNkXY3Cniyufsed0SCRZt572XHhfDNWtHRZvFJuU6mue0XtXaVUKr3mK3n8uTzZNlVczcA6G0G/O0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com; spf=pass smtp.mailfrom=linux.microsoft.com; dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b=CeQrwFtP; arc=none smtp.client-ip=13.77.154.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.microsoft.com
+Received: by linux.microsoft.com (Postfix, from userid 1134)
+	id EEDDF20FD43F; Mon, 15 Apr 2024 21:25:25 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com EEDDF20FD43F
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+	s=default; t=1713241525;
+	bh=ogpyOHNHkyZwnpq6dIwauvYSTq02i3af+QgdMRMGFrI=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=CeQrwFtPIrMI1svwcbTGL4cUAUqpYv6uEHp4pP1EqCIynzeYP8zAmTG/WSVDJNYcb
+	 Xb+xMLdqR5YXhG8tIHZPO1CWnPIjJcztbqZmM9lJfukqwDfjbSEpl6GUEMt8U1+eUQ
+	 SYbflB8VYkyYF8PXVSwTr2TEDlYR5o7uMljDc4d4=
+Date: Mon, 15 Apr 2024 21:25:25 -0700
+From: Shradha Gupta <shradhagupta@linux.microsoft.com>
+To: Jason Gunthorpe <jgg@ziepe.ca>
+Cc: linux-kernel@vger.kernel.org, linux-hyperv@vger.kernel.org,
+	linux-rdma@vger.kernel.org, netdev@vger.kernel.org,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	Ajay Sharma <sharmaajay@microsoft.com>,
+	Leon Romanovsky <leon@kernel.org>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+	"K. Y. Srinivasan" <kys@microsoft.com>,
+	Haiyang Zhang <haiyangz@microsoft.com>,
+	Wei Liu <wei.liu@kernel.org>, Dexuan Cui <decui@microsoft.com>,
+	Long Li <longli@microsoft.com>,
+	Michael Kelley <mikelley@microsoft.com>,
+	Shradha Gupta <shradhagupta@microsoft.com>,
+	Yury Norov <yury.norov@gmail.com>,
+	Konstantin Taranov <kotaranov@microsoft.com>,
+	Souradeep Chakrabarti <schakrabarti@linux.microsoft.com>
+Subject: Re: [PATCH net-next] net: mana: Add new device attributes for mana
+Message-ID: <20240416042525.GA23796@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
+References: <1713174589-29243-1-git-send-email-shradhagupta@linux.microsoft.com>
+ <20240415161305.GO223006@ziepe.ca>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: EX19D031UWC003.ant.amazon.com (10.13.139.252) To
- EX19D004ANA001.ant.amazon.com (10.37.240.138)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240415161305.GO223006@ziepe.ca>
+User-Agent: Mutt/1.5.21 (2010-09-15)
 
-From: Joel Granados via B4 Relay <devnull+j.granados.samsung.com@kernel.org>
-Date: Fri, 12 Apr 2024 16:48:32 +0200
-> From: Joel Granados <j.granados@samsung.com>
+On Mon, Apr 15, 2024 at 01:13:05PM -0300, Jason Gunthorpe wrote:
+> On Mon, Apr 15, 2024 at 02:49:49AM -0700, Shradha Gupta wrote:
+> > Add new device attributes to view multiport, msix, and adapter MTU
+> > setting for MANA device.
+> > 
+> > Signed-off-by: Shradha Gupta <shradhagupta@linux.microsoft.com>
+> > ---
+> >  .../net/ethernet/microsoft/mana/gdma_main.c   | 74 +++++++++++++++++++
+> >  include/net/mana/gdma.h                       |  9 +++
+> >  2 files changed, 83 insertions(+)
+> > 
+> > diff --git a/drivers/net/ethernet/microsoft/mana/gdma_main.c b/drivers/net/ethernet/microsoft/mana/gdma_main.c
+> > index 1332db9a08eb..6674a02cff06 100644
+> > --- a/drivers/net/ethernet/microsoft/mana/gdma_main.c
+> > +++ b/drivers/net/ethernet/microsoft/mana/gdma_main.c
+> > @@ -1471,6 +1471,65 @@ static bool mana_is_pf(unsigned short dev_id)
+> >  	return dev_id == MANA_PF_DEVICE_ID;
+> >  }
+> >  
+> > +static ssize_t mana_attr_show(struct device *dev,
+> > +			      struct device_attribute *attr, char *buf)
+> > +{
+> > +	struct pci_dev *pdev = to_pci_dev(dev);
+> > +	struct gdma_context *gc = pci_get_drvdata(pdev);
+> > +	struct mana_context *ac = gc->mana.driver_data;
+> > +
+> > +	if (strcmp(attr->attr.name, "mport") == 0)
+> > +		return snprintf(buf, PAGE_SIZE, "%d\n", ac->num_ports);
+> > +	else if (strcmp(attr->attr.name, "adapter_mtu") == 0)
+> > +		return snprintf(buf, PAGE_SIZE, "%d\n", gc->adapter_mtu);
+> > +	else if (strcmp(attr->attr.name, "msix") == 0)
+> > +		return snprintf(buf, PAGE_SIZE, "%d\n", gc->max_num_msix);
+> > +	else
+> > +		return -EINVAL;
+> > +
 > 
-> This commit comes at the tail end of a greater effort to remove the
-> empty elements at the end of the ctl_table arrays (sentinels) which will
-> reduce the overall build time size of the kernel and run time memory
-> bloat by ~64 bytes per sentinel (further information Link :
-> https://lore.kernel.org/all/ZO5Yx5JFogGi%2FcBo@bombadil.infradead.org/)
+> That is not how sysfs should be implemented at all, please find a
+> good example to copy from. Every attribute should use its own function
+> with the macros to link it into an attributes group and sysfs_emit
+> should be used for printing
 > 
-> Avoid a buffer overflow when traversing the ctl_table by ensuring that
-> AX25_MAX_VALUES is the same as the size of ax25_param_table. This is
-> done with a BUILD_BUG_ON where ax25_param_table is defined and a
-> CONFIG_AX25_DAMA_SLAVE guard in the unnamed enum definition as well as
-> in the ax25_dev_device_up and ax25_ds_set_timer functions.
-> 
-> The overflow happened when the sentinel was removed from
-> ax25_param_table. The sentinel's data element was changed when
-> CONFIG_AX25_DAMA_SLAVE was undefined. This had no adverse effects as it
-> still stopped on the sentinel's null procname but needed to be addressed
-> once the sentinel was removed.
-> 
-> Signed-off-by: Joel Granados <j.granados@samsung.com>
+> Jason
+Thanks Jason, I will make the appropriate changes in the next version.
 
-Reviewed-by: Kuniyuki Iwashima <kuniyu@amazon.com>
-
-
-> ---
->  include/net/ax25.h         | 2 ++
->  net/ax25/ax25_dev.c        | 3 +++
->  net/ax25/ax25_ds_timer.c   | 4 ++++
->  net/ax25/sysctl_net_ax25.c | 3 +--
->  4 files changed, 10 insertions(+), 2 deletions(-)
-> 
-> diff --git a/include/net/ax25.h b/include/net/ax25.h
-> index 0d939e5aee4e..eb9cee8252c8 100644
-> --- a/include/net/ax25.h
-> +++ b/include/net/ax25.h
-> @@ -139,7 +139,9 @@ enum {
->  	AX25_VALUES_N2,		/* Default N2 value */
->  	AX25_VALUES_PACLEN,	/* AX.25 MTU */
->  	AX25_VALUES_PROTOCOL,	/* Std AX.25, DAMA Slave, DAMA Master */
-> +#ifdef CONFIG_AX25_DAMA_SLAVE
->  	AX25_VALUES_DS_TIMEOUT,	/* DAMA Slave timeout */
-> +#endif
->  	AX25_MAX_VALUES		/* THIS MUST REMAIN THE LAST ENTRY OF THIS LIST */
->  };
->  
-> diff --git a/net/ax25/ax25_dev.c b/net/ax25/ax25_dev.c
-> index c5462486dbca..af547e185a94 100644
-> --- a/net/ax25/ax25_dev.c
-> +++ b/net/ax25/ax25_dev.c
-> @@ -78,7 +78,10 @@ void ax25_dev_device_up(struct net_device *dev)
->  	ax25_dev->values[AX25_VALUES_N2]        = AX25_DEF_N2;
->  	ax25_dev->values[AX25_VALUES_PACLEN]	= AX25_DEF_PACLEN;
->  	ax25_dev->values[AX25_VALUES_PROTOCOL]  = AX25_DEF_PROTOCOL;
-> +
-> +#ifdef CONFIG_AX25_DAMA_SLAVE
->  	ax25_dev->values[AX25_VALUES_DS_TIMEOUT]= AX25_DEF_DS_TIMEOUT;
-> +#endif
->  
->  #if defined(CONFIG_AX25_DAMA_SLAVE) || defined(CONFIG_AX25_DAMA_MASTER)
->  	ax25_ds_setup_timer(ax25_dev);
-> diff --git a/net/ax25/ax25_ds_timer.c b/net/ax25/ax25_ds_timer.c
-> index c4f8adbf8144..8f385d2a7628 100644
-> --- a/net/ax25/ax25_ds_timer.c
-> +++ b/net/ax25/ax25_ds_timer.c
-> @@ -49,12 +49,16 @@ void ax25_ds_del_timer(ax25_dev *ax25_dev)
->  
->  void ax25_ds_set_timer(ax25_dev *ax25_dev)
->  {
-> +#ifdef CONFIG_AX25_DAMA_SLAVE
->  	if (ax25_dev == NULL)		/* paranoia */
->  		return;
->  
->  	ax25_dev->dama.slave_timeout =
->  		msecs_to_jiffies(ax25_dev->values[AX25_VALUES_DS_TIMEOUT]) / 10;
->  	mod_timer(&ax25_dev->dama.slave_timer, jiffies + HZ);
-> +#else
-> +	return;
-> +#endif
->  }
->  
->  /*
-> diff --git a/net/ax25/sysctl_net_ax25.c b/net/ax25/sysctl_net_ax25.c
-> index db66e11e7fe8..fb9966926e90 100644
-> --- a/net/ax25/sysctl_net_ax25.c
-> +++ b/net/ax25/sysctl_net_ax25.c
-> @@ -141,8 +141,6 @@ static const struct ctl_table ax25_param_table[] = {
->  		.extra2		= &max_ds_timeout
->  	},
->  #endif
-> -
-> -	{ }	/* that's all, folks! */
->  };
->  
->  int ax25_register_dev_sysctl(ax25_dev *ax25_dev)
-> @@ -155,6 +153,7 @@ int ax25_register_dev_sysctl(ax25_dev *ax25_dev)
->  	if (!table)
->  		return -ENOMEM;
->  
-> +	BUILD_BUG_ON(AX25_MAX_VALUES != ARRAY_SIZE(ax25_param_table));
->  	for (k = 0; k < AX25_MAX_VALUES; k++)
->  		table[k].data = &ax25_dev->values[k];
->  
-> 
-> -- 
-> 2.43.0
+Regards,
+Shradha.
 
