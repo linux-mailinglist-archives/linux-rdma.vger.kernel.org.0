@@ -1,165 +1,109 @@
-Return-Path: <linux-rdma+bounces-1968-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-1971-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 81C3C8A85D8
-	for <lists+linux-rdma@lfdr.de>; Wed, 17 Apr 2024 16:21:19 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id C86AD8A86B3
+	for <lists+linux-rdma@lfdr.de>; Wed, 17 Apr 2024 16:52:33 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 0E1B4B23DDD
-	for <lists+linux-rdma@lfdr.de>; Wed, 17 Apr 2024 14:21:17 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 834DC286346
+	for <lists+linux-rdma@lfdr.de>; Wed, 17 Apr 2024 14:52:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8CC7114198E;
-	Wed, 17 Apr 2024 14:21:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CF50E142625;
+	Wed, 17 Apr 2024 14:51:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b="hYD8FKz5"
+	dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b="GbWvw+2J"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1F72614039D;
-	Wed, 17 Apr 2024 14:21:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=13.77.154.182
+Received: from mail-oo1-f50.google.com (mail-oo1-f50.google.com [209.85.161.50])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 137EA13C3EF
+	for <linux-rdma@vger.kernel.org>; Wed, 17 Apr 2024 14:51:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.161.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713363668; cv=none; b=Rg8LXrt7JlRVeJqm984B3IBMVCkfuabTDRPastEl6LLl4I3wX+NqQnxqq8mUDKdALEttk//ou3wTEbP8Ghol2ASXmQ9IX4/wOb+sxx8psfH+fJ0Qmt0OiaMwxwCxnZMcNDf+bPy/S9Ov79IGEArEK9SsIfTqWsx8qlsrmQw6rfc=
+	t=1713365471; cv=none; b=joFIlJ09P387ZH+d2q4D9KlQG9lZUnEra7F7khH8FxyQ8nS+HtEL8umbtVJxKu0elkJG9F9ksQNq3VLpVvukBIv/fIaBlGNne/ZO8s1GS8TVmy8axJiIP4aZZ2NfjAFA34e/vrwsuCh1MJRC+QBJn/nvyga1tlqHZrH0Dt1uoaM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713363668; c=relaxed/simple;
-	bh=yOxyY+z0luA2MN0HnxsPSXAtBt77yQT+AbxHCJCneA8=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References; b=YAnJdQaB75LvoAoosd5sJ4xHtHKYLZG8Q4BqrwbUtyqgHt+6OXydis9hqCQ/ZueItoo5v1hUe68+DrkE5YNnxgFo61nTlx7gHBLQ3glnVjkxFbpW2yclkiGdsZxD3QgNbiVkQ13zy2wnXemLKUpIe8ThXNCtHl/+iixMIYPtzKI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com; spf=pass smtp.mailfrom=linux.microsoft.com; dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b=hYD8FKz5; arc=none smtp.client-ip=13.77.154.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.microsoft.com
-Received: from linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net (linux.microsoft.com [13.77.154.182])
-	by linux.microsoft.com (Postfix) with ESMTPSA id C52FB20FD4C4;
-	Wed, 17 Apr 2024 07:21:06 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com C52FB20FD4C4
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-	s=default; t=1713363666;
-	bh=hK1BMIWP2TovnG573MEOflwiY7usqGsIMsWM2neQ+/4=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=hYD8FKz5mbsDju2nVlKAokKtf/O8eGtVUfUq+qXui3qNiifyQUHqa7OnqjqduTWPi
-	 7P4xQv5bvbKQOQrJsCyI/9Ond/emR9KnKOklzNKl110+BgQckQSNSCrrYqG5SLO/yf
-	 iutr6Y1STYb/Ugrb+w9rtowALWgrWnGwLYFilrsA=
-From: Konstantin Taranov <kotaranov@linux.microsoft.com>
-To: kotaranov@microsoft.com,
-	sharmaajay@microsoft.com,
-	longli@microsoft.com,
-	jgg@ziepe.ca,
-	leon@kernel.org
-Cc: linux-rdma@vger.kernel.org,
+	s=arc-20240116; t=1713365471; c=relaxed/simple;
+	bh=wMVuMH9LI7UuNCb9GdN4WEGzyOQpVSkGjvVlOi7rgEU=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=ZlkP7hDJ0YtZ1mW3tG7zo3KUq/GDXzQCqttyTb4SAoprMhWzwLIfD2OA78A+Dr9LVntPlaVxWZ+fBYfoH97F5Sfx3buVKOixI0Aim4IG3LSCorRWtn7M5hNVBwsonaZymgFuWXwwgvsJxIiDfWdN9Qdr5e6jX66LNFy94XHcrnA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca; spf=pass smtp.mailfrom=ziepe.ca; dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b=GbWvw+2J; arc=none smtp.client-ip=209.85.161.50
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ziepe.ca
+Received: by mail-oo1-f50.google.com with SMTP id 006d021491bc7-5aa4204bacdso4048242eaf.2
+        for <linux-rdma@vger.kernel.org>; Wed, 17 Apr 2024 07:51:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google; t=1713365468; x=1713970268; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=sn16XyH2vGWqQiF5vmVfdCLTqM8qaB/bRtbPGNzH6uA=;
+        b=GbWvw+2JOhsvQI836BTW4ZxPtAgpMBZJ2acKNSvMV7bU4ePZrK4ZK3I9j8g5VoPfg2
+         0a6mvinVh/9kXeVuhoaNhFBgOnO4skOZJvRy0zNUbleZHCT/9uZana30+Y8LAeu9obuj
+         yskL0QvSGlLKAA5pq2Vjkz9LZLAWcdQcq4vd1ZreWAigzyZbL6Kmv56nJxnxE/P5d26Y
+         bnCZaaKRDcQ86DSZUEvyOoei/FB81GsD4xaxvsmzz+9fX+dUt6v1dUgPKe02DMdK/Cw3
+         5v+dOQYcHiEYXpCkxvpmo9Y2N7etRYhEEaEhcE8/PWRoe1XK8byWSec+meacWSHTtUE0
+         kjTA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713365468; x=1713970268;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=sn16XyH2vGWqQiF5vmVfdCLTqM8qaB/bRtbPGNzH6uA=;
+        b=C30kLZ4cSl9K/Oirbu4sKGaVV3Ox3tMjN6LF0ttLY673+M61fl9VSg38WFKqEzlPnB
+         MrGNcg9FPkREUONsvCVHI17/DrGVNxDBeM6ZHdnaLuRbJDLJMYclCe2OvZv9Tw2CgJME
+         2gSRptzk2Uu7AoGmIKsBA7ESoFkgNsH9eVsF0RoEDqHconVV2eZgnngelfNc2Raus35i
+         OyaHLA2H+mlpqyjvGYWvaQMSdmPKvpXevq2UNFdh/VEv1VziU7IVh/lvutHQ05XdbDuG
+         pb13x3YG7oAeMbZ3vuw1hvqT+rQHF73xm5//nTByya4FesuLy8tGLwu+Iy2DPp9QZU/9
+         ZJHg==
+X-Forwarded-Encrypted: i=1; AJvYcCX1TI6weEM07pAUffleHqgxZVz0cg0M74srA57OgunK3nViKR06P5wpzXdvDo7+r1gG1ThpJ4SlbqziPd+5Y+JZ1RpW3UQdlLvgKw==
+X-Gm-Message-State: AOJu0YwNRxCoEOys1BV0I1533/3bHqqAkM/TNdTp52sQYCsYMkUFlJb1
+	aMqeYABf61D977Wq1i538vQIcBd1DvqXjXHuzJoE+E422+ZwSOk7E2E/J5NHinU=
+X-Google-Smtp-Source: AGHT+IF9jKclsfwc/2dOm0UYRDZe4Z7fbW7RD2LFqk2dv7+uXxlXrV0hKypQvQnIeBBazCFKKNl7Yg==
+X-Received: by 2002:a4a:8c2a:0:b0:5ac:bdbe:33f5 with SMTP id u39-20020a4a8c2a000000b005acbdbe33f5mr7840118ooj.3.1713365468101;
+        Wed, 17 Apr 2024 07:51:08 -0700 (PDT)
+Received: from ziepe.ca (hlfxns017vw-142-68-80-239.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.68.80.239])
+        by smtp.gmail.com with ESMTPSA id bg41-20020a056820082900b005aa6c0a9b3csm3063951oob.30.2024.04.17.07.51.07
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 17 Apr 2024 07:51:07 -0700 (PDT)
+Received: from jgg by wakko with local (Exim 4.95)
+	(envelope-from <jgg@ziepe.ca>)
+	id 1rx6cs-00CDTX-BT;
+	Wed, 17 Apr 2024 11:51:06 -0300
+Date: Wed, 17 Apr 2024 11:51:06 -0300
+From: Jason Gunthorpe <jgg@ziepe.ca>
+To: Konstantin Taranov <kotaranov@linux.microsoft.com>
+Cc: kotaranov@microsoft.com, sharmaajay@microsoft.com, longli@microsoft.com,
+	leon@kernel.org, linux-rdma@vger.kernel.org,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH rdma-next 2/2] RDMA/mana_ib: Implement get_dma_mr
-Date: Wed, 17 Apr 2024 07:20:59 -0700
-Message-Id: <1713363659-30156-3-git-send-email-kotaranov@linux.microsoft.com>
-X-Mailer: git-send-email 1.8.3.1
-In-Reply-To: <1713363659-30156-1-git-send-email-kotaranov@linux.microsoft.com>
+Subject: Re: [PATCH rdma-next 2/2] RDMA/mana_ib: Implement get_dma_mr
+Message-ID: <20240417145106.GV223006@ziepe.ca>
 References: <1713363659-30156-1-git-send-email-kotaranov@linux.microsoft.com>
+ <1713363659-30156-3-git-send-email-kotaranov@linux.microsoft.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1713363659-30156-3-git-send-email-kotaranov@linux.microsoft.com>
 
-From: Konstantin Taranov <kotaranov@microsoft.com>
+On Wed, Apr 17, 2024 at 07:20:59AM -0700, Konstantin Taranov wrote:
+> From: Konstantin Taranov <kotaranov@microsoft.com>
+> 
+> Implement allocation of DMA-mapped memory regions.
+> 
+> Signed-off-by: Konstantin Taranov <kotaranov@microsoft.com>
+> ---
+>  drivers/infiniband/hw/mana/device.c |  1 +
+>  drivers/infiniband/hw/mana/mr.c     | 36 +++++++++++++++++++++++++++++
+>  include/net/mana/gdma.h             |  5 ++++
+>  3 files changed, 42 insertions(+)
 
-Implement allocation of DMA-mapped memory regions.
+What is the point of doing this without supporting enough verbs to
+allow a kernel ULP?
 
-Signed-off-by: Konstantin Taranov <kotaranov@microsoft.com>
----
- drivers/infiniband/hw/mana/device.c |  1 +
- drivers/infiniband/hw/mana/mr.c     | 36 +++++++++++++++++++++++++++++
- include/net/mana/gdma.h             |  5 ++++
- 3 files changed, 42 insertions(+)
-
-diff --git a/drivers/infiniband/hw/mana/device.c b/drivers/infiniband/hw/mana/device.c
-index 6fa902ee80a6..043cef09f1c2 100644
---- a/drivers/infiniband/hw/mana/device.c
-+++ b/drivers/infiniband/hw/mana/device.c
-@@ -29,6 +29,7 @@ static const struct ib_device_ops mana_ib_dev_ops = {
- 	.destroy_rwq_ind_table = mana_ib_destroy_rwq_ind_table,
- 	.destroy_wq = mana_ib_destroy_wq,
- 	.disassociate_ucontext = mana_ib_disassociate_ucontext,
-+	.get_dma_mr = mana_ib_get_dma_mr,
- 	.get_port_immutable = mana_ib_get_port_immutable,
- 	.mmap = mana_ib_mmap,
- 	.modify_qp = mana_ib_modify_qp,
-diff --git a/drivers/infiniband/hw/mana/mr.c b/drivers/infiniband/hw/mana/mr.c
-index 4f13423ecdbd..7c9394926a18 100644
---- a/drivers/infiniband/hw/mana/mr.c
-+++ b/drivers/infiniband/hw/mana/mr.c
-@@ -8,6 +8,8 @@
- #define VALID_MR_FLAGS                                                         \
- 	(IB_ACCESS_LOCAL_WRITE | IB_ACCESS_REMOTE_WRITE | IB_ACCESS_REMOTE_READ)
- 
-+#define VALID_DMA_MR_FLAGS IB_ACCESS_LOCAL_WRITE
-+
- static enum gdma_mr_access_flags
- mana_ib_verbs_to_gdma_access_flags(int access_flags)
- {
-@@ -39,6 +41,8 @@ static int mana_ib_gd_create_mr(struct mana_ib_dev *dev, struct mana_ib_mr *mr,
- 	req.mr_type = mr_params->mr_type;
- 
- 	switch (mr_params->mr_type) {
-+	case GDMA_MR_TYPE_GPA:
-+		break;
- 	case GDMA_MR_TYPE_GVA:
- 		req.gva.dma_region_handle = mr_params->gva.dma_region_handle;
- 		req.gva.virtual_address = mr_params->gva.virtual_address;
-@@ -168,6 +172,38 @@ struct ib_mr *mana_ib_reg_user_mr(struct ib_pd *ibpd, u64 start, u64 length,
- 	return ERR_PTR(err);
- }
- 
-+struct ib_mr *mana_ib_get_dma_mr(struct ib_pd *ibpd, int access_flags)
-+{
-+	struct mana_ib_pd *pd = container_of(ibpd, struct mana_ib_pd, ibpd);
-+	struct gdma_create_mr_params mr_params = {};
-+	struct ib_device *ibdev = ibpd->device;
-+	struct mana_ib_dev *dev;
-+	struct mana_ib_mr *mr;
-+	int err;
-+
-+	dev = container_of(ibdev, struct mana_ib_dev, ib_dev);
-+
-+	if (access_flags & ~VALID_DMA_MR_FLAGS)
-+		return ERR_PTR(-EINVAL);
-+
-+	mr = kzalloc(sizeof(*mr), GFP_KERNEL);
-+	if (!mr)
-+		return ERR_PTR(-ENOMEM);
-+
-+	mr_params.pd_handle = pd->pd_handle;
-+	mr_params.mr_type = GDMA_MR_TYPE_GPA;
-+
-+	err = mana_ib_gd_create_mr(dev, mr, &mr_params);
-+	if (err)
-+		goto err_free;
-+
-+	return &mr->ibmr;
-+
-+err_free:
-+	kfree(mr);
-+	return ERR_PTR(err);
-+}
-+
- int mana_ib_dereg_mr(struct ib_mr *ibmr, struct ib_udata *udata)
- {
- 	struct mana_ib_mr *mr = container_of(ibmr, struct mana_ib_mr, ibmr);
-diff --git a/include/net/mana/gdma.h b/include/net/mana/gdma.h
-index 8d796a30ddde..dc19b5cb33a6 100644
---- a/include/net/mana/gdma.h
-+++ b/include/net/mana/gdma.h
-@@ -788,6 +788,11 @@ struct gdma_destory_pd_resp {
- };/* HW DATA */
- 
- enum gdma_mr_type {
-+	/*
-+	 * Guest Physical Address - MRs of this type allow access
-+	 * to any DMA-mapped memory using bus-logical address
-+	 */
-+	GDMA_MR_TYPE_GPA = 1,
- 	/* Guest Virtual Address - MRs of this type allow access
- 	 * to memory mapped by PTEs associated with this MR using a virtual
- 	 * address that is set up in the MST
--- 
-2.43.0
-
+Jason
 
