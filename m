@@ -1,196 +1,153 @@
-Return-Path: <linux-rdma+bounces-1980-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-1982-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3537D8AA065
-	for <lists+linux-rdma@lfdr.de>; Thu, 18 Apr 2024 18:52:50 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 856EF8AA168
+	for <lists+linux-rdma@lfdr.de>; Thu, 18 Apr 2024 19:51:28 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 58B391C20DF5
-	for <lists+linux-rdma@lfdr.de>; Thu, 18 Apr 2024 16:52:49 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A8EAA1C20FD0
+	for <lists+linux-rdma@lfdr.de>; Thu, 18 Apr 2024 17:51:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7D011174EF7;
-	Thu, 18 Apr 2024 16:52:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 56C8C17AD73;
+	Thu, 18 Apr 2024 17:51:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b="aQuP8NeG"
+	dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b="lJ08rxMW"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E815D171E4D;
-	Thu, 18 Apr 2024 16:52:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=13.77.154.182
+Received: from mail-ot1-f43.google.com (mail-ot1-f43.google.com [209.85.210.43])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B6FB6175564
+	for <linux-rdma@vger.kernel.org>; Thu, 18 Apr 2024 17:51:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713459134; cv=none; b=ULQ6nLC1RSlFNU17G+Os6cggLbhesWx+rfcu2RbiGHq3pcv++HftY7tJO7TgMP3SXdRo9wHbGpFpU2Dej7NHKxB/VBTD0cS1zW7fVt0tBFK4sTatmI4tgG9tZn2EBowPAdYAsFw9oOtYWvLHG/iJYNIoUfiHFp5pkVazw+sdDfg=
+	t=1713462664; cv=none; b=BBMm7xm4hXMECg2OQN+gDBzAV8wJ9XJdwN9pmZKP7kImhn5i9Gw/fmnrIDDYshrfx4fA4n0xK6ju/KD/Q7qoJcbtH2GzlO3ak0YpyOChUIx8ACmi7d8ldERyl3stKfj62rqgG0Fd1Vf9PP0mq2jW1BZ9MR/lsWroBrxrzFxjRWc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713459134; c=relaxed/simple;
-	bh=P1jKaaFIVDCOd1shZPQNQUq8dSyyRB+AouxP+iSFsSY=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References; b=p7xM8B9oGQKgzkXU14dApZ11byQwhm0875uvbeaUvL3Yvfw/TrgBnYkYVGKenA/pZOTJh8q8nyhrO1RJ2BeypW36x/0WDFwf8Q5UY1lC71+I4uI2+onE80mvjiwadrIp0p+HL6qgOFinWjNGr23i5bl7poa6Kk8PWAmyfzVZ3x0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com; spf=pass smtp.mailfrom=linux.microsoft.com; dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b=aQuP8NeG; arc=none smtp.client-ip=13.77.154.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.microsoft.com
-Received: from linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net (linux.microsoft.com [13.77.154.182])
-	by linux.microsoft.com (Postfix) with ESMTPSA id A3EAB20FD8F6;
-	Thu, 18 Apr 2024 09:52:11 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com A3EAB20FD8F6
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-	s=default; t=1713459131;
-	bh=LYgSVLk66YgQdAnxAyejIaaET5e5BXdpX71D97ms0eo=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=aQuP8NeGhL4bt890gwh6NwiSRFptH/Qr8r5eIRLYUX8T6fPhwjiEV2fB9btUWDDwa
-	 Md0JoDc8qSvsjGgZVYXz49HW2uKUu0PWtYhsAkiHgK9TJFNwOthO9rRoMjcQ3aaHEv
-	 BRlbZpSA6BkagarwLmOE/bpFeBeFxvz39UQgL2OU=
-From: Konstantin Taranov <kotaranov@linux.microsoft.com>
-To: kotaranov@microsoft.com,
-	sharmaajay@microsoft.com,
-	longli@microsoft.com,
-	jgg@ziepe.ca,
-	leon@kernel.org
-Cc: linux-rdma@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH rdma-next 6/6] RDMA/mana_ib: implement uapi for creation of rnic cq
-Date: Thu, 18 Apr 2024 09:52:05 -0700
-Message-Id: <1713459125-14914-7-git-send-email-kotaranov@linux.microsoft.com>
-X-Mailer: git-send-email 1.8.3.1
-In-Reply-To: <1713459125-14914-1-git-send-email-kotaranov@linux.microsoft.com>
-References: <1713459125-14914-1-git-send-email-kotaranov@linux.microsoft.com>
+	s=arc-20240116; t=1713462664; c=relaxed/simple;
+	bh=ICVQMXd+yWltnMkkLmPSWiJSyQlug6UXgcOqsu6RALs=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=nUGXYMSCn3RnzNOdgulrb4PYe0Ns1GnUUvf0dHA+gXmi5cVz6FkBi+qe9zCOiBywRjZ11MEplUZhG4d0+gjh8daBzFlbZn8A3DodzXmwKcuHaGEaGWsMdO5XN4A+0XrvaK4HJpO2psQhI68YhO+4R5ElolAwkTw0oYfBlTMAkhc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca; spf=pass smtp.mailfrom=ziepe.ca; dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b=lJ08rxMW; arc=none smtp.client-ip=209.85.210.43
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ziepe.ca
+Received: by mail-ot1-f43.google.com with SMTP id 46e09a7af769-6ebca142b27so268638a34.0
+        for <linux-rdma@vger.kernel.org>; Thu, 18 Apr 2024 10:51:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google; t=1713462662; x=1714067462; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=jYBNpNIicI/8ED5gIHnDvzk5k+KDpAJzCV70dwuFNEY=;
+        b=lJ08rxMWDcbrI1Hl6SBNOrCvACyB1LRJK8rTLBm0rfyOeX/veSr2JkDbmiQU15CJoc
+         nTUZHur42DqiwOKpoUchU07tCggKELuo4Pv2/OYAQE5f3Zsh8SisYBHXUzz2xb19e32t
+         j7M1PflzoYzH4J8ZCR4eRntOhIlQAtEk4aWLJaK1+sG8VO9v2x/7C5tMLdjvAL5qIdND
+         E8AVFxAsDGv5VXq5BmwcTleh8io2bEf7+7rOMJkQRiz4sDE7FQheFuKVQ6+jlQKqg9GJ
+         g0xSY8Z/YtG9M9QCwHhUaNAp++Wu0/S+2N9Nwd74k2rh8Nly/+Pk+a2gD6Ies3McmUHH
+         ZIwA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713462662; x=1714067462;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=jYBNpNIicI/8ED5gIHnDvzk5k+KDpAJzCV70dwuFNEY=;
+        b=nBBqKE+ypQT4seZCFLiXNzsT7W9Q70KCbIPSyFJ/SJmgO301UDVDYUIioyKybTychf
+         MPGRuQTt3UPTgs02aLpHOcYXeCjibjyrSS895gm9rFqdJijiWMELMrpVZv1Po7y7yTkN
+         AHOdNGhbX5NU7BCKm4FZ84qqm4dR8CJuHJ1JKGTAeHOu2E00NvP++RtX3eLuTQMgcaqy
+         I4q9WVnaE6ic1VuDzUS2j8Fhvkx25N3KCx/B/8G0hRdwNa+qRcCYvClYlUZ2IeR/Tnzd
+         ErJP/tHfjpUW7fyT2bYCYLICuOIouZpSa7clJpEFvlEKRbzupjDrk9IrLH3rk5EIUJ23
+         pRRA==
+X-Forwarded-Encrypted: i=1; AJvYcCUqEfkmdTIpyjGP0eQxwBPrqWLpXFK+6lwRF4Dj525BTXv2K/CQ9sk1ZG1ciTsTO4sDqtm4hI/u4T5g6aasotQjXIxIQ/A/eVQ2Pg==
+X-Gm-Message-State: AOJu0YzYEVf6UAy1zrQz5oYSkmg7JdpZ6c9yH61o3klBEJkgFIkk668y
+	4dpmmucwnlQJ0EOUmYdOSyS2HIjTkRO2WGnvDOvkQ1+Uk1oibpT8GLiflKid/Uo=
+X-Google-Smtp-Source: AGHT+IHAgStOV9TdoloDBt9xFRmSANx1NimuspwckNExMic3r/5mxvsR/GI8ziwcEFHL6TxWaU/P2A==
+X-Received: by 2002:a05:6830:1152:b0:6eb:85bb:144d with SMTP id x18-20020a056830115200b006eb85bb144dmr1341629otq.7.1713462661747;
+        Thu, 18 Apr 2024 10:51:01 -0700 (PDT)
+Received: from ziepe.ca (hlfxns017vw-142-68-80-239.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.68.80.239])
+        by smtp.gmail.com with ESMTPSA id s8-20020a056830148800b006eb85b34e48sm399299otq.54.2024.04.18.10.51.00
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 18 Apr 2024 10:51:00 -0700 (PDT)
+Received: from jgg by wakko with local (Exim 4.95)
+	(envelope-from <jgg@ziepe.ca>)
+	id 1rxVuV-00EHQx-H7;
+	Thu, 18 Apr 2024 14:50:59 -0300
+Date: Thu, 18 Apr 2024 14:50:59 -0300
+From: Jason Gunthorpe <jgg@ziepe.ca>
+To: Shradha Gupta <shradhagupta@linux.microsoft.com>
+Cc: Andrew Lunn <andrew@lunn.ch>, Zhu Yanjun <yanjun.zhu@linux.dev>,
+	linux-kernel@vger.kernel.org, linux-hyperv@vger.kernel.org,
+	linux-rdma@vger.kernel.org, netdev@vger.kernel.org,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	Ajay Sharma <sharmaajay@microsoft.com>,
+	Leon Romanovsky <leon@kernel.org>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+	"K. Y. Srinivasan" <kys@microsoft.com>,
+	Haiyang Zhang <haiyangz@microsoft.com>,
+	Wei Liu <wei.liu@kernel.org>, Dexuan Cui <decui@microsoft.com>,
+	Long Li <longli@microsoft.com>,
+	Michael Kelley <mikelley@microsoft.com>,
+	Shradha Gupta <shradhagupta@microsoft.com>,
+	Yury Norov <yury.norov@gmail.com>,
+	Konstantin Taranov <kotaranov@microsoft.com>,
+	Souradeep Chakrabarti <schakrabarti@linux.microsoft.com>
+Subject: Re: [PATCH net-next] net: mana: Add new device attributes for mana
+Message-ID: <20240418175059.GZ223006@ziepe.ca>
+References: <1713174589-29243-1-git-send-email-shradhagupta@linux.microsoft.com>
+ <20240415161305.GO223006@ziepe.ca>
+ <56b0a8c1-50f6-41a9-9ea5-ed45ada58892@linux.dev>
+ <b34bfb11-98a3-4418-b482-14f2e50745d3@lunn.ch>
+ <20240418060108.GB13182@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240418060108.GB13182@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
 
-From: Konstantin Taranov <kotaranov@microsoft.com>
+On Wed, Apr 17, 2024 at 11:01:08PM -0700, Shradha Gupta wrote:
 
-Enable users to create RNIC CQs.
-With the previous request size, an ethernet CQ is created.
-Use the cq_buf_size from the user to create an RNIC CQ and return its ID.
+> > > > > +static ssize_t mana_attr_show(struct device *dev,
+> > > > > +			      struct device_attribute *attr, char *buf)
+> > > > > +{
+> > > > > +	struct pci_dev *pdev = to_pci_dev(dev);
+> > > > > +	struct gdma_context *gc = pci_get_drvdata(pdev);
+> > > > > +	struct mana_context *ac = gc->mana.driver_data;
+> > > > > +
+> > > > > +	if (strcmp(attr->attr.name, "mport") == 0)
+> > > > > +		return snprintf(buf, PAGE_SIZE, "%d\n", ac->num_ports);
+> > > > > +	else if (strcmp(attr->attr.name, "adapter_mtu") == 0)
+> > > > > +		return snprintf(buf, PAGE_SIZE, "%d\n", gc->adapter_mtu);
+> > > > > +	else if (strcmp(attr->attr.name, "msix") == 0)
+> > > > > +		return snprintf(buf, PAGE_SIZE, "%d\n", gc->max_num_msix);
+> > > > > +	else
+> > > > > +		return -EINVAL;
+> > > > > +
+> > > > 
+> > > > That is not how sysfs should be implemented at all, please find a
+> > > > good example to copy from. Every attribute should use its own function
+> > > > with the macros to link it into an attributes group and sysfs_emit
+> > > > should be used for printing
+> > > 
+> > > Not sure if this file drivers/infiniband/hw/usnic/usnic_ib_sysfs.c is a good
+> > > example or not.
+> > 
+> > The first question should be, what are these values used for? You can
+> > then decide on debugfs or sysfs. debugfs is easier to use, and you
+> > avoid any ABI, which will make long term support easier.
+> 
+> Hi Andrew,
+> We want to eventually use these attributes to make the device settings configurable
+> and also improve debuggability for MANA devices. I feel having these attributes 
+> in sysfs would make more sense as we plan to extend the attribute list and also make
+> them settable.
 
-Signed-off-by: Konstantin Taranov <kotaranov@microsoft.com>
----
- drivers/infiniband/hw/mana/cq.c | 56 ++++++++++++++++++++++++++++++---
- include/uapi/rdma/mana-abi.h    |  7 +++++
- 2 files changed, 59 insertions(+), 4 deletions(-)
+From an RDMA perspective this is all available from other APIs already
+at least and I wouldn't want to see new sysfs unless there is a netdev
+justification.
 
-diff --git a/drivers/infiniband/hw/mana/cq.c b/drivers/infiniband/hw/mana/cq.c
-index 8323085..a62bda7 100644
---- a/drivers/infiniband/hw/mana/cq.c
-+++ b/drivers/infiniband/hw/mana/cq.c
-@@ -9,17 +9,25 @@ int mana_ib_create_cq(struct ib_cq *ibcq, const struct ib_cq_init_attr *attr,
- 		      struct ib_udata *udata)
- {
- 	struct mana_ib_cq *cq = container_of(ibcq, struct mana_ib_cq, ibcq);
-+	struct mana_ib_create_cq_resp resp = {};
-+	struct mana_ib_ucontext *mana_ucontext;
- 	struct ib_device *ibdev = ibcq->device;
- 	struct mana_ib_create_cq ucmd = {};
- 	struct mana_ib_dev *mdev;
-+	bool is_rnic_cq = true;
-+	u32 doorbell;
- 	int err;
- 
- 	mdev = container_of(ibdev, struct mana_ib_dev, ib_dev);
- 
--	if (udata->inlen < sizeof(ucmd))
-+	cq->comp_vector = attr->comp_vector % ibdev->num_comp_vectors;
-+	cq->cq_handle = INVALID_MANA_HANDLE;
-+
-+	if (udata->inlen < offsetof(struct mana_ib_create_cq, cq_buf_size))
- 		return -EINVAL;
- 
--	cq->comp_vector = attr->comp_vector % ibdev->num_comp_vectors;
-+	if (udata->inlen == offsetof(struct mana_ib_create_cq, cq_buf_size))
-+		is_rnic_cq = false;
- 
- 	err = ib_copy_from_udata(&ucmd, udata, min(sizeof(ucmd), udata->inlen));
- 	if (err) {
-@@ -28,19 +36,53 @@ int mana_ib_create_cq(struct ib_cq *ibcq, const struct ib_cq_init_attr *attr,
- 		return err;
- 	}
- 
--	if (attr->cqe > mdev->adapter_caps.max_qp_wr) {
-+	if (!is_rnic_cq && attr->cqe > mdev->adapter_caps.max_qp_wr) {
- 		ibdev_dbg(ibdev, "CQE %d exceeding limit\n", attr->cqe);
- 		return -EINVAL;
- 	}
- 
--	cq->buf_size = attr->cqe * COMP_ENTRY_SIZE;
-+	cq->buf_size = is_rnic_cq ? ucmd.cq_buf_size : attr->cqe * COMP_ENTRY_SIZE;
- 	err = mana_ib_create_queue(mdev, ucmd.buf_addr, cq->buf_size, &cq->queue);
- 	if (err) {
- 		ibdev_dbg(ibdev, "Failed to create queue for create cq, %d\n", err);
- 		return err;
- 	}
- 
-+	mana_ucontext = rdma_udata_to_drv_context(udata, struct mana_ib_ucontext,
-+						  ibucontext);
-+	doorbell = mana_ucontext->doorbell;
-+
-+	if (is_rnic_cq) {
-+		err = mana_ib_gd_create_cq(mdev, cq, doorbell);
-+		if (err) {
-+			ibdev_dbg(ibdev, "Failed to create RNIC cq, %d\n", err);
-+			goto err_destroy_queue;
-+		}
-+
-+		err = mana_ib_install_cq_cb(mdev, cq);
-+		if (err) {
-+			ibdev_dbg(ibdev, "Failed to install cq callback, %d\n", err);
-+			goto err_destroy_rnic_cq;
-+		}
-+	}
-+
-+	resp.cqid = cq->queue.id;
-+	err = ib_copy_to_udata(udata, &resp, min(sizeof(resp), udata->outlen));
-+	if (err) {
-+		ibdev_dbg(&mdev->ib_dev, "Failed to copy to udata, %d\n", err);
-+		goto err_remove_cq_cb;
-+	}
-+
- 	return 0;
-+
-+err_remove_cq_cb:
-+	mana_ib_remove_cq_cb(mdev, cq);
-+err_destroy_rnic_cq:
-+	mana_ib_gd_destroy_cq(mdev, cq);
-+err_destroy_queue:
-+	mana_ib_destroy_queue(mdev, &cq->queue);
-+
-+	return err;
- }
- 
- int mana_ib_destroy_cq(struct ib_cq *ibcq, struct ib_udata *udata)
-@@ -52,6 +94,12 @@ int mana_ib_destroy_cq(struct ib_cq *ibcq, struct ib_udata *udata)
- 	mdev = container_of(ibdev, struct mana_ib_dev, ib_dev);
- 
- 	mana_ib_remove_cq_cb(mdev, cq);
-+
-+	/* Ignore return code as there is not much we can do about it.
-+	 * The error message is printed inside.
-+	 */
-+	mana_ib_gd_destroy_cq(mdev, cq);
-+
- 	mana_ib_destroy_queue(mdev, &cq->queue);
- 
- 	return 0;
-diff --git a/include/uapi/rdma/mana-abi.h b/include/uapi/rdma/mana-abi.h
-index 5fcb31b..8fc9d32 100644
---- a/include/uapi/rdma/mana-abi.h
-+++ b/include/uapi/rdma/mana-abi.h
-@@ -18,6 +18,13 @@
- 
- struct mana_ib_create_cq {
- 	__aligned_u64 buf_addr;
-+	__u32 cq_buf_size;
-+	__u32 reserved;
-+};
-+
-+struct mana_ib_create_cq_resp {
-+	__u32 cqid;
-+	__u32 reserved;
- };
- 
- struct mana_ib_create_qp {
--- 
-2.43.0
-
+Jason
 
