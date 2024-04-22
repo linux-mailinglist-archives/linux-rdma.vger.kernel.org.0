@@ -1,118 +1,160 @@
-Return-Path: <linux-rdma+bounces-2001-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-2002-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id EC6278ACA49
-	for <lists+linux-rdma@lfdr.de>; Mon, 22 Apr 2024 12:09:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id CD1BF8ACA4B
+	for <lists+linux-rdma@lfdr.de>; Mon, 22 Apr 2024 12:09:51 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 80AD3B21A72
-	for <lists+linux-rdma@lfdr.de>; Mon, 22 Apr 2024 10:09:31 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 2FFA9B2147B
+	for <lists+linux-rdma@lfdr.de>; Mon, 22 Apr 2024 10:09:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BB2E913DDDD;
-	Mon, 22 Apr 2024 10:08:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9AED113D611;
+	Mon, 22 Apr 2024 10:09:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b="dPP0TSga"
+	dkim=pass (2048-bit key) header.d=hotmail.com header.i=@hotmail.com header.b="I99fK7lU"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4195513DBB2;
-	Mon, 22 Apr 2024 10:08:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=13.77.154.182
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713780496; cv=none; b=mmYY5cOt2afxKbQQ4kPyaE0FACOgIZOXvDlmRlNfxzrsynY45kSLQFBudmobIGUiB1siFqRU9eS4P+G0SaARxVvXttNnWcOaqY6C7EY7oNAWPD1AKh2+lnuJQQpnosYdAaArO9wxzZQx7TLJyuPpTgK/pxDWcSAvGu2icbiVnRQ=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713780496; c=relaxed/simple;
-	bh=5t1Bfop7a73SP2Xoc+JjPX3eauf9YdecV0ZqhsEjPCA=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=BuVBuBEZino09RyhkDxIP2acCOjRvDSwGJGjunQk80gNsJG2ypDsgxgzlpO2fy3w39zcBOZcD2XdKl0Fq6hiAYcVt1JnjBrM6QxWCuQ5eS5OI8gQeMPAaH7E63SE3jFOvfhtwhnlHJgWR5kFsFR/rZRUvGKEey8nFXYGOJPUm8M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com; spf=pass smtp.mailfrom=linux.microsoft.com; dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b=dPP0TSga; arc=none smtp.client-ip=13.77.154.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.microsoft.com
-Received: by linux.microsoft.com (Postfix, from userid 1134)
-	id 5A40E20FEB70; Mon, 22 Apr 2024 03:08:09 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 5A40E20FEB70
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-	s=default; t=1713780489;
-	bh=p/91VOpGr+sXlA4jv/RAoPR3l3/fwg6j5nhp26gdg74=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=dPP0TSgaJivoAFhSsrYk9liFUNizFn+wcBwR9iR/96vvpWhIJ69DCFlE4IpyE5UuF
-	 0XveB92uwHC46KXjCMY1uBItDd0eSw0IfWb6BHVAM9EH4fQ6s9Qny5cJhpK2ClRmmL
-	 nxtJWq6M81hbyyDZt/fiDiPALWzxvP39K2cVGn94=
-Date: Mon, 22 Apr 2024 03:08:09 -0700
-From: Shradha Gupta <shradhagupta@linux.microsoft.com>
-To: Andrew Lunn <andrew@lunn.ch>
-Cc: Jason Gunthorpe <jgg@ziepe.ca>, Zhu Yanjun <yanjun.zhu@linux.dev>,
-	linux-kernel@vger.kernel.org, linux-hyperv@vger.kernel.org,
-	linux-rdma@vger.kernel.org, netdev@vger.kernel.org,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	Ajay Sharma <sharmaajay@microsoft.com>,
-	Leon Romanovsky <leon@kernel.org>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-	"K. Y. Srinivasan" <kys@microsoft.com>,
-	Haiyang Zhang <haiyangz@microsoft.com>,
-	Wei Liu <wei.liu@kernel.org>, Dexuan Cui <decui@microsoft.com>,
-	Long Li <longli@microsoft.com>,
-	Michael Kelley <mikelley@microsoft.com>,
-	Shradha Gupta <shradhagupta@microsoft.com>,
-	Yury Norov <yury.norov@gmail.com>,
-	Konstantin Taranov <kotaranov@microsoft.com>,
-	Souradeep Chakrabarti <schakrabarti@linux.microsoft.com>
-Subject: Re: [PATCH net-next] net: mana: Add new device attributes for mana
-Message-ID: <20240422100809.GA9873@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
-References: <1713174589-29243-1-git-send-email-shradhagupta@linux.microsoft.com>
- <20240415161305.GO223006@ziepe.ca>
- <56b0a8c1-50f6-41a9-9ea5-ed45ada58892@linux.dev>
- <b34bfb11-98a3-4418-b482-14f2e50745d3@lunn.ch>
- <20240418060108.GB13182@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
- <20240418175059.GZ223006@ziepe.ca>
- <f3e7ea07-2903-4f19-ba86-94bba569dae9@lunn.ch>
- <20240419165926.GC506@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
- <fc345b4d-0747-4ca3-aee0-c53064cc7fe1@lunn.ch>
+Received: from NAM11-CO1-obe.outbound.protection.outlook.com (mail-co1nam11olkn2075.outbound.protection.outlook.com [40.92.18.75])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C470450280
+	for <linux-rdma@vger.kernel.org>; Mon, 22 Apr 2024 10:09:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.92.18.75
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1713780558; cv=fail; b=CfPiAG/77x+7Aztz5Lr1rOxlMz2ZacCL0wV7yyyvR3t6lZu6A2RRvugLIZFNm/QnXNV3eAEjebPFLglBd8mhtFvUq30FsQlEOcjyvnTWjcOw1ZBKEGe2k56yBhnx6nBwSJjp+GMZqLJcnghVH1bQYESfeR9lh2/tAdrJOxvu1c4=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1713780558; c=relaxed/simple;
+	bh=fGmhc6hue2AMV06NypVOexZTtq6NPphuNiu+ZgoIWHU=;
+	h=From:To:Subject:Date:Message-ID:Content-Type:MIME-Version; b=upg7v3gk3pnYWumlS21F7EETYTm8fhdn+Axhk6KcEjL3JpJ2/oGgTDmsH3bBHzGHmbmrbESbgUjbFhvOAoclNAw4lE7jo8+2MXc6G7CtezEEiYrBir+EBvKY99QLuswBfxu+Hn60BjOlLc96FHCqHv+lEMxe9x5nbzQ+qDVtuQg=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=hotmail.com; spf=pass smtp.mailfrom=hotmail.com; dkim=pass (2048-bit key) header.d=hotmail.com header.i=@hotmail.com header.b=I99fK7lU; arc=fail smtp.client-ip=40.92.18.75
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=hotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=hotmail.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=U3tDoL1CuNuF2yaSRrjd2C8gcRyi+6rUYs1drgoREutc2MYONz844rvkPxDi+xkp5vEqmfFn32jCvZtic4VNi8BmKJQk9OEInuqiVy5lFzJFEMWQulVHLs09lOBFOLuefzcoaJaQSqmuxkS1wM2UOXLtSVQKe9w0a7Y1M+8udy4LosgGCmFMASYsgzNHKw7Ewmicq8Z2/6YQXkcM6AZ7kuWwgvotdWce04Ndq1nnjgsx3tyCUy5Ny3B5kKB2z9UMPruOo/Dwd2lyBl1XR3Men1YCBIbR12ET7NSbmihhKQdM38/Ynl1hZrGOxgSWHZUSXUnJOcTLyPOEueb0OIHVnQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=Cj1x01oseqT57jtr32d3obOpz9SKEudkd016yIHXoNc=;
+ b=ND1D0j2vX5vxUIsbUpZc/GVVute64TcE/a5neLrm5AVqZ6sAuIrRu4JGhs3pmmaFWd7akfNfyfTW6WeDjX/u2lOTW314e7Gegkc7z7r4GahPE9Tfj0FsI3dDOBLtd7XcERu0BoG94tkuSM8yVONOMOLgIntiwp5zcSSgTCC+ki1S0UdDVAjvN7a/Bn2wh49x4/Wfop6pYjIIy30NWeMNJbivrXGfb9h5ap56NhRzvb3yUOH4dER5Cx6mX6QZrjLzjDVFXVBMEwU4HUkupt+17ALi5doEvGxfLNf/Nx/ZisOMqilRXNr+Wr3OmdHyyFSQ4WTYgFS37GbCUoRaoz28Eg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
+ dkim=none; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=hotmail.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Cj1x01oseqT57jtr32d3obOpz9SKEudkd016yIHXoNc=;
+ b=I99fK7lUU74bUNXyvnKGmXiG1myCIhNX2lTj4jdql85fYBP1E3jh5ruswaiHDiNjNWMtM3C/PXPy/M9ooGdjtwrQiUqnWr7Dl6PNjwMTwltIti9RCj9Mm38w2Fvxcv2rBOnvLsfFv9VSU2whxnpMGLIHGf4nLGHQmhRSJGH9MVhWoTmG/w6sR1Ztv6SKaVC7pc8zu2BwRLd5meLAQrT+c6AHlVbTuqiTrpmPaMZL7mNgCEw4+v2q7aVk4UDk2o0WRP73Z8bBYfmBwELRGu5GxQfLKjohS57vFur1BL5JFqu3aD4vKGHs5iA89FHCN+ell767wY5C8oKasHl/+RCqww==
+Received: from SA1P221MB1018.NAMP221.PROD.OUTLOOK.COM (2603:10b6:806:259::10)
+ by IA2P221MB1350.NAMP221.PROD.OUTLOOK.COM (2603:10b6:208:4b3::11) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7472.44; Mon, 22 Apr
+ 2024 10:09:15 +0000
+Received: from SA1P221MB1018.NAMP221.PROD.OUTLOOK.COM
+ ([fe80::2890:9823:488c:2ded]) by SA1P221MB1018.NAMP221.PROD.OUTLOOK.COM
+ ([fe80::2890:9823:488c:2ded%7]) with mapi id 15.20.7472.044; Mon, 22 Apr 2024
+ 10:09:15 +0000
+From: Ewen Chan <alpha754293@hotmail.com>
+To: "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>
+Subject: SRIOV virtual functions with Linux "inbox" opensm
+Thread-Topic: SRIOV virtual functions with Linux "inbox" opensm
+Thread-Index: AQHalJz/zOFXuLYU2EWJz7mH+6NL6w==
+Date: Mon, 22 Apr 2024 10:09:15 +0000
+Message-ID:
+ <SA1P221MB10184D6002569E274E6630D7B5122@SA1P221MB1018.NAMP221.PROD.OUTLOOK.COM>
+Accept-Language: en-CA, en-US
+Content-Language: en-CA
+X-MS-Has-Attach:
+X-MS-TNEF-Correlator:
+msip_labels:
+x-ms-exchange-messagesentrepresentingtype: 1
+x-tmn: [A2yAfw9riTrvrl4bp25hj4/D5EDWDcAp]
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: SA1P221MB1018:EE_|IA2P221MB1350:EE_
+x-ms-office365-filtering-correlation-id: bb7d50ff-da21-4479-1235-08dc62b443cf
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info:
+ uhnhMybMMZPobcmBUBzgn+mztez467VJIQrZ9TRcMul/Vabzxxe9ZiXbhB1/hfEBiYb7HLuTzUFnZf1NdgCLQPPw8i5jKdiv7v0QvbVJsi8fhrVZATOSd/nHeuRhmtP3j5z1Fpf1A2vbicfGN1u45cSGA9rrBEIRkg/18rKa1Vqp8OuYa5gVW+Jy23B4AtmxITVhrYhYWVLx/HembFbBlTKMIfN/h1647tLRj3bAdYgHyGIrRyhMfn9WhSwPiN/hdKHJQB0VAEvMMdGn8BG1vsgF0lh80UyTpqzH5TJLPPGbJjwDCYczxqQE5xBaRG9jAEJ/1P4o9C2Q8IBKrQrqmutOvGlnnZIX461GZbbAuNIOysqdYCK+V5FqbPVpI+7QaxM+DNR/zu1tihTX+zeQtvZ1x0Me70xIUoieAAMYhJtP8WxTJLoK4YwO0XMCePtvtlnb5y+O3EC7k4OOOLivIv4RmUwaDA2Hofb4xKFKvJc3ALnvF2Fgquc94Z1wJYdUA+Oa1m/7aVSVnGttx/eDH1Bg/wM9yi9HQRKO8nt27aFEbZloSSu8Yzts36IRE2aY
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0:
+ =?iso-8859-1?Q?RVtU5Duwxoadn6DCjdHW7dpsJIGMSetg0O0JuVAVwWY+p98SfbcRc/iPQT?=
+ =?iso-8859-1?Q?UXdRNC2dNbrJpbQQn/CKY9MCo1p4yVer9PbpBChPNCXLMxf0k4DQ7QZ57a?=
+ =?iso-8859-1?Q?7JKi4472WkZ8ZRVlGHMGXBfTCKJZ8WUSO0roZ6912xQLr+IG35iiQ4nmn6?=
+ =?iso-8859-1?Q?1GTuY/3d+K6ExupkswSWJFiDD0Qurp8oqlLPVb3221//FVPF6FBamT93Pq?=
+ =?iso-8859-1?Q?khnkitFAhjVBpyyT21Ixj/5Cwxv2QcMU0EaRp6dbnE2eotVQRV7Dic+IOy?=
+ =?iso-8859-1?Q?H6xYoad3RlGN1sLg2XFSQcY+vg5uJ/wQ3eEYGFPU8VWTJKPhFNqygzTT1g?=
+ =?iso-8859-1?Q?CPBeXhVNIHuwR5Ns/XsM/b5WwYaxAxsAEAvdHb+rFY/GS17Qf5gUhOYD7J?=
+ =?iso-8859-1?Q?dfRUTZ5q43skdSPVQuZzsaJxw1QIfXh2CwZBDNMuJ8JmaBYEZCDvQtzX48?=
+ =?iso-8859-1?Q?GPZqAkOYHPc5XeA0s86vB+s5C+IMWp9fD91xJUNCEthVfFw2IAzhP6hCDd?=
+ =?iso-8859-1?Q?lT/j0G6DCmtDynkBRrp53MZm3ducNhreg0RHeugeGAlSZaUNBznEdfyN8Q?=
+ =?iso-8859-1?Q?XeSxuakJdcMn0xqRfUs3tOWJnJS5CEJwLB7bkTL9Rlno1H8th9tvg7UOiq?=
+ =?iso-8859-1?Q?TMcovKOGgN0WCPjsIRMt4rYsxzOd5UInUW+oAjm4QovPDKtiY0VZK8+nsj?=
+ =?iso-8859-1?Q?lh6PR+DW/ZMCnZZApdBDc+wkYYVZcmyei4RAtJ5tfByZlqwtskQyyZ67gV?=
+ =?iso-8859-1?Q?0E29LAGqGFdFwICqAXLVM4ZTfiq0EX4Z5ypSxIpJHT391NmZkTFb1BiDdd?=
+ =?iso-8859-1?Q?/VeZ5Mo7uCn9b6gXoJ0qIS4Kp4V525IYeCoCBdVEXMZcEfAhCl+WkZKsVF?=
+ =?iso-8859-1?Q?cjBzxYtCtMw1WqRSdQuVUA13/KQrUtWpscYU38qaUXmYaE4p0t6Io6J8oJ?=
+ =?iso-8859-1?Q?H0oBlzTVRD3xaszunGsN1PUUpBYCCRPjMdke3oEW3vy55YdnBNgYAwP3ez?=
+ =?iso-8859-1?Q?ssY2X7GjBzyP9JL65yjQNOsElhAzYSXxGsSBLsPoZD42NAw/+MVSoknvfc?=
+ =?iso-8859-1?Q?GLKFK4rN0ePRdR7KufqHreWnu85lEOLC3g9B1mViWLl8od2glgrZN9Kli7?=
+ =?iso-8859-1?Q?9T5TMeLuQCaeIvzLAbbgOjCkuTqJWJLkRZVYAQxrRq1XyGsmS9Zcci1WPZ?=
+ =?iso-8859-1?Q?DMD10kv/qGK44VCZOm5PamxA3oOEfYqCefeLbEXO7H/DyT/sayg4GzkDO6?=
+ =?iso-8859-1?Q?5Nm8M68KyT9Xx1BvoO5Rj/zu0ZLG8uRDCMJJLDYCU=3D?=
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <fc345b4d-0747-4ca3-aee0-c53064cc7fe1@lunn.ch>
-User-Agent: Mutt/1.5.21 (2010-09-15)
+X-OriginatorOrg: sct-15-20-4755-11-msonline-outlook-f5d03.templateTenant
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: SA1P221MB1018.NAMP221.PROD.OUTLOOK.COM
+X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg: 00000000-0000-0000-0000-000000000000
+X-MS-Exchange-CrossTenant-Network-Message-Id: bb7d50ff-da21-4479-1235-08dc62b443cf
+X-MS-Exchange-CrossTenant-rms-persistedconsumerorg: 00000000-0000-0000-0000-000000000000
+X-MS-Exchange-CrossTenant-originalarrivaltime: 22 Apr 2024 10:09:15.0949
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: IA2P221MB1350
 
-On Fri, Apr 19, 2024 at 08:51:02PM +0200, Andrew Lunn wrote:
-> On Fri, Apr 19, 2024 at 09:59:26AM -0700, Shradha Gupta wrote:
-> > On Thu, Apr 18, 2024 at 08:42:59PM +0200, Andrew Lunn wrote:
-> > > > >From an RDMA perspective this is all available from other APIs already
-> > > > at least and I wouldn't want to see new sysfs unless there is a netdev
-> > > > justification.
-> > > 
-> > > It is unlikely there is a netdev justification. Configuration happens
-> > > via netlink, not sysfs.
-> > > 
-> > >     Andrew
-> > 
-> > Thanks. Sure, it makes sense to make the generic attribute configurable
-> > through the netdevice ops or netlink implementation. I will keep that in
-> > mind while adding the next set of configuration attributes for the driver.
-> > These attributes(from the patch) however, are hardware specific(that show
-> > the maximum supported values by the hardware in most cases).
-> 
->         ndev->max_mtu = gc->adapter_mtu - ETH_HLEN;
->         ndev->min_mtu = ETH_MIN_MTU;
-> 
-> This does not appear to be specific to your device. This is very
-> generic. We already have /sys/class/net/eth42/mtu, why not add
-> /sys/class/net/eth42/max_mtu and /sys/class/net/eth42/min_mtu for
-> every driver?
-> 
-> Are these values really hardware specific? Are they really unique to
-> your hardware? I have to wounder because you clearly did not think
-> much about MTU, and how it is actually generic...
-> 
->      Andrew
-That makes sense. I will make these as generic attributes in the next version.
-Thanks.
+To Whom It May Concern:=0A=
+=0A=
+I am using a few Mellanox ConnectX-4 100 Gbps Infiniband NIC that's connect=
+ed together via a Mellanox MSB7890 externally managed switch.=0A=
+=0A=
+I have a dual Xeon E5-2697A v4, Proxmox 7.4-17 (Debian 11) server that's ru=
+nning opensm, along with two AMD Ryzen 5950X compute nodes, that also have =
+the ConnectX-4 in them, running Proxmox 7.4-17 as well.=0A=
+=0A=
+I have enabled SR-IOV on all three systems, and all three systems have 8 vi=
+rtual functions for said ConnectX-4.=0A=
+=0A=
+I read in the Nvidia/Mellanox documentation that I would need to add the pa=
+rameter "virt_enabled 2" to /etc/opensm/opensm.conf so that the OpenSM subn=
+et manager will know that virtual functions are enabled, but it would appea=
+r that the opensm that ships with Debian 11/linux-rdma, either ignores that=
+ option or doesn't know what to do with it.=0A=
+=0A=
+I would prefer NOT to install the MLNX_OFED drivers for Debian (11) if I ca=
+n avoid it.=0A=
+=0A=
+My two questions are how do I get the linux opensm to:=0A=
+=0A=
+    Recognise that I am using virtual functions (so that it would understan=
+d that there are multiple traffic streams coming over the wire, via one phy=
+sical port)?=0A=
+=0A=
+    Automatically assign the Node GUID and Port GUID so that I don't have t=
+o set those manually.=0A=
+=0A=
+    (I've set the Node GUID and Port GUID on the my Ryzen compute node host=
+ already, and I can see the Node GUID and Port GUID inside my CentOS 7.7.19=
+08 VM (which I've updated to use the 5.4.247 kernel), but it is still showi=
+ng "Port 1, State: Down".)=0A=
+=0A=
+=0A=
+Your help is greatly appreciated.=0A=
+=0A=
+Thank you.=0A=
 
