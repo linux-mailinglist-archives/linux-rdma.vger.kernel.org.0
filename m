@@ -1,274 +1,171 @@
-Return-Path: <linux-rdma+bounces-1996-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-1997-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0FD8B8AC239
-	for <lists+linux-rdma@lfdr.de>; Mon, 22 Apr 2024 02:08:53 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 41F9D8AC4A2
+	for <lists+linux-rdma@lfdr.de>; Mon, 22 Apr 2024 09:00:45 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 29E4A1F214B8
-	for <lists+linux-rdma@lfdr.de>; Mon, 22 Apr 2024 00:08:53 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 65773B2133D
+	for <lists+linux-rdma@lfdr.de>; Mon, 22 Apr 2024 07:00:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DE9E2184;
-	Mon, 22 Apr 2024 00:08:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 308EC48781;
+	Mon, 22 Apr 2024 07:00:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="nCuUK1t6"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="UG33bpgU"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.14])
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.15])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B264B163
-	for <linux-rdma@vger.kernel.org>; Mon, 22 Apr 2024 00:08:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.14
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D026E1391;
+	Mon, 22 Apr 2024 07:00:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.15
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713744527; cv=none; b=Wf40fOC33EjRhlH2xLNA2WALQek+RRz+31k00TjJE36zfYqcgU9/O85SANJbhS+17pnchW8Z4gV1I8UZKl1PbAYo10wkgVdkgdxq0EcRzXX35/m2DHTd8TIbdeEUS9nazsC/6lbuTRtBupaCFX9SBHS/+RSUPjppp7hBDlx3TQg=
+	t=1713769234; cv=none; b=c8vfXQz2b6ucpTgfedFliAP3joluIotaAl9ki5RbxBVsQW2HwMkoFnvY3v5LOJlxdKGw6MztRktfo+lNdwD5ag+9ABObfr5QfenGI2lhJGd4qTfKmvVVnqmMIfJ+dfTxoH7fjXiqHCCXBU0/YZ9j9RcHfUzTzK5wdOIJpS3nl7s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713744527; c=relaxed/simple;
-	bh=4BI2vUY6pY2UEYyg0InmwyAzw3sE/ZjLasiK5GjYGtI=;
-	h=Date:From:To:Cc:Subject:Message-ID; b=G+xE3FRf8GOoLkF4NCaQQJc38GrsnKOKoGqVHuSCmSg00CHhts1KFhV2msDmYIxMK+JYqtPSVCkY8506FKeZRQBIXhgPjddklwaL3ehVR7WSHf4zvcmcg/Ke7ym0Eh8WwXPuhQsuVUmQ4utW/wXdj/hKAdot0HP0u4LaBnT8XIw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=nCuUK1t6; arc=none smtp.client-ip=192.198.163.14
+	s=arc-20240116; t=1713769234; c=relaxed/simple;
+	bh=YiQ/DpX5SzCxzEYtaD9CawGrBTtPFSoR6EHdNCTOEU0=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=HU5E3uOPYZWY2jnGV47kc8cCDmBR4wg2xw04Ro00SgtJ83oqVu16MQR+GmVeC8jwdVvEHU/bOdUIoCRqTRM0FsLN7ZnoVukxv4su6aI0ai7QbZqq9qKO9mkPiIs8PJ5ru8bU1AHl3WnuF+MdwakTgYWo4FSpF72LDAYjJC4OKCg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=UG33bpgU; arc=none smtp.client-ip=198.175.65.15
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1713744525; x=1745280525;
-  h=date:from:to:cc:subject:message-id;
-  bh=4BI2vUY6pY2UEYyg0InmwyAzw3sE/ZjLasiK5GjYGtI=;
-  b=nCuUK1t6jsU2ltX8CgKpvegQGmPH6aPPmN0wwa4bYAhm+BR6vrSZPFeq
-   sYEa0+mpy3rF+ZmLT63sKZPTD0XjY2RWwP2JUBpVxYrhGT++xczap8vZI
-   ChT2aOaVsyoYm++izaennzo4RFKz2WNPQfKtjPf7kqpyQzf6ubM0g2KhA
-   vbLzvbKbK0R1ArsjvL/l8DSMrsLqHDFZ0rJd+qauOTsgTY+P5yoQYg1+h
-   J81grHQmQojPQTZBwdWumdzknR/1pUOSPMULovmL31D/3oObsCZgZ4vWJ
-   ZQ7FYJr00ldRxzNSais8dg7TLEvo4Gp9w0h6HoLWjNIGTdLZWtriVcNaX
-   Q==;
-X-CSE-ConnectionGUID: TizcoRmASdO3QO7jOtc25w==
-X-CSE-MsgGUID: AuloYOUtSH69t47IMfqgKg==
-X-IronPort-AV: E=McAfee;i="6600,9927,11051"; a="9488533"
-X-IronPort-AV: E=Sophos;i="6.07,219,1708416000"; 
-   d="scan'208";a="9488533"
-Received: from orviesa006.jf.intel.com ([10.64.159.146])
-  by fmvoesa108.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Apr 2024 17:08:44 -0700
-X-CSE-ConnectionGUID: Yj+IKekKRDiQuUMNn+Hy1w==
-X-CSE-MsgGUID: AzIoofSWQ9Ch46ZV87QqCg==
+  t=1713769229; x=1745305229;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=YiQ/DpX5SzCxzEYtaD9CawGrBTtPFSoR6EHdNCTOEU0=;
+  b=UG33bpgUK26z6jSpuS9mD88TcDr8RLiT6Bp/FC+EMO3q+YvX8pJ3ESYn
+   7xcCdF18UzrRj+dYxyNlddziSRpVhDBhFvjV0f6ZxhYmnLyDvEcdYttGx
+   8x34k3u/XxLomnTvDgbF7Oyzwreb3m1VassmmhPXgtCVkNW73YSCKF2ju
+   v0kNOpqzlWGE23LRnoSd/zPxL+aRrts+WbqOdoTcoKLypUpGvVjfpl8jI
+   7cczzqGl7CP9bCCppi/waYjdezU+3s0W0b6YeoRcrzfw3PHMIfDZH01I+
+   /PPLGpzsvdlaOBEFOLttc5jSmwHQ8Az/pqRMQs9TWs9LGGEf1R9HCCjiJ
+   g==;
+X-CSE-ConnectionGUID: cCMVz7rAQjOhd2PLkEoSDQ==
+X-CSE-MsgGUID: iX2Ml7wHRo6svhCOoTmQzA==
+X-IronPort-AV: E=McAfee;i="6600,9927,11051"; a="13080580"
+X-IronPort-AV: E=Sophos;i="6.07,220,1708416000"; 
+   d="scan'208";a="13080580"
+Received: from orviesa001.jf.intel.com ([10.64.159.141])
+  by orvoesa107.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Apr 2024 00:00:29 -0700
+X-CSE-ConnectionGUID: eAlJzHO0RaGZrtSzJ/mIig==
+X-CSE-MsgGUID: hGIa9n8XS2avXsL5VcGSaw==
 X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,219,1708416000"; 
-   d="scan'208";a="24294158"
-Received: from unknown (HELO 23c141fc0fd8) ([10.239.97.151])
-  by orviesa006.jf.intel.com with ESMTP; 21 Apr 2024 17:08:42 -0700
-Received: from kbuild by 23c141fc0fd8 with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1ryhEd-000CEO-1x;
-	Mon, 22 Apr 2024 00:08:39 +0000
-Date: Mon, 22 Apr 2024 08:08:07 +0800
-From: kernel test robot <lkp@intel.com>
-To: Leon Romanovsky <leon@kernel.org>
-Cc: Doug Ledford <dledford@redhat.com>,
- Jason Gunthorpe <jgg+lists@ziepe.ca>, linux-rdma@vger.kernel.org
-Subject: [rdma:wip/leon-for-next] BUILD SUCCESS
- ca0b44e20a6f3032224599f02e7c8fb49525c894
-Message-ID: <202404220804.Sy3Lf5Wr-lkp@intel.com>
-User-Agent: s-nail v14.9.24
+X-IronPort-AV: E=Sophos;i="6.07,220,1708416000"; 
+   d="scan'208";a="61362271"
+Received: from vkasired-desk2.fm.intel.com ([10.105.128.132])
+  by smtpauth.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Apr 2024 00:00:29 -0700
+From: Vivek Kasireddy <vivek.kasireddy@intel.com>
+To: dri-devel@lists.freedesktop.org,
+	kvm@vger.kernel.org,
+	linux-rdma@vger.kernel.org
+Cc: Vivek Kasireddy <vivek.kasireddy@intel.com>,
+	Jason Gunthorpe <jgg@nvidia.com>,
+	Christoph Hellwig <hch@lst.de>,
+	Robin Murphy <robin.murphy@arm.com>,
+	=?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
+	Daniel Vetter <daniel.vetter@ffwll.ch>,
+	Oded Gabbay <ogabbay@kernel.org>,
+	Gerd Hoffmann <kraxel@redhat.com>,
+	Alex Williamson <alex.williamson@redhat.com>,
+	Kevin Tian <kevin.tian@intel.com>
+Subject: [PATCH v1 0/2] vfio/pci: Allow MMIO regions to be exported through dma-buf
+Date: Sun, 21 Apr 2024 23:30:31 -0700
+Message-ID: <20240422063602.3690124-1-vivek.kasireddy@intel.com>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git wip/leon-for-next
-branch HEAD: ca0b44e20a6f3032224599f02e7c8fb49525c894  IB/core: Implement a limit on UMAD receive List
+This is an attempt to revive the patches posted by Jason Gunthorpe at:
+https://patchwork.kernel.org/project/linux-media/cover/0-v2-472615b3877e+28f7-vfio_dma_buf_jgg@nvidia.com/
 
-elapsed time: 726m
+Here is the cover letter text from Jason's original series:
+"dma-buf has become a way to safely acquire a handle to non-struct page
+memory that can still have lifetime controlled by the exporter. Notably
+RDMA can now import dma-buf FDs and build them into MRs which allows for
+PCI P2P operations. Extend this to allow vfio-pci to export MMIO memory
+from PCI device BARs.
 
-configs tested: 180
-configs skipped: 3
+This series supports a use case for SPDK where a NVMe device will be owned
+by SPDK through VFIO but interacting with a RDMA device. The RDMA device
+may directly access the NVMe CMB or directly manipulate the NVMe device's
+doorbell using PCI P2P.
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+However, as a general mechanism, it can support many other scenarios with
+VFIO. I imagine this dmabuf approach to be usable by iommufd as well for
+generic and safe P2P mappings.
 
-tested configs:
-alpha                             allnoconfig   gcc  
-alpha                            allyesconfig   gcc  
-alpha                               defconfig   gcc  
-arc                              allmodconfig   gcc  
-arc                               allnoconfig   gcc  
-arc                              allyesconfig   gcc  
-arc                                 defconfig   gcc  
-arc                         haps_hs_defconfig   gcc  
-arc                        nsim_700_defconfig   gcc  
-arc                   randconfig-001-20240421   gcc  
-arc                   randconfig-002-20240421   gcc  
-arm                              allmodconfig   gcc  
-arm                               allnoconfig   clang
-arm                              allyesconfig   gcc  
-arm                         bcm2835_defconfig   clang
-arm                                 defconfig   clang
-arm                           h3600_defconfig   gcc  
-arm                         mv78xx0_defconfig   clang
-arm                   randconfig-001-20240421   clang
-arm                   randconfig-002-20240421   clang
-arm                   randconfig-003-20240421   clang
-arm                   randconfig-004-20240421   clang
-arm                        shmobile_defconfig   gcc  
-arm                         wpcm450_defconfig   gcc  
-arm64                            allmodconfig   clang
-arm64                             allnoconfig   gcc  
-arm64                               defconfig   gcc  
-arm64                 randconfig-001-20240421   gcc  
-arm64                 randconfig-002-20240421   clang
-arm64                 randconfig-003-20240421   gcc  
-arm64                 randconfig-004-20240421   clang
-csky                             allmodconfig   gcc  
-csky                              allnoconfig   gcc  
-csky                             allyesconfig   gcc  
-csky                                defconfig   gcc  
-csky                  randconfig-001-20240421   gcc  
-csky                  randconfig-002-20240421   gcc  
-hexagon                          allmodconfig   clang
-hexagon                           allnoconfig   clang
-hexagon                          allyesconfig   clang
-hexagon                             defconfig   clang
-hexagon               randconfig-001-20240421   clang
-hexagon               randconfig-002-20240421   clang
-i386                             allmodconfig   gcc  
-i386                              allnoconfig   gcc  
-i386                             allyesconfig   gcc  
-i386         buildonly-randconfig-001-20240421   clang
-i386         buildonly-randconfig-002-20240421   clang
-i386         buildonly-randconfig-003-20240421   clang
-i386         buildonly-randconfig-004-20240421   gcc  
-i386         buildonly-randconfig-005-20240421   clang
-i386         buildonly-randconfig-006-20240421   clang
-i386                                defconfig   clang
-i386                  randconfig-001-20240421   clang
-i386                  randconfig-002-20240421   clang
-i386                  randconfig-003-20240421   gcc  
-i386                  randconfig-004-20240421   clang
-i386                  randconfig-005-20240421   clang
-i386                  randconfig-006-20240421   clang
-i386                  randconfig-011-20240421   clang
-i386                  randconfig-012-20240421   gcc  
-i386                  randconfig-013-20240421   gcc  
-i386                  randconfig-014-20240421   clang
-i386                  randconfig-015-20240421   gcc  
-i386                  randconfig-016-20240421   clang
-loongarch                        allmodconfig   gcc  
-loongarch                         allnoconfig   gcc  
-loongarch                           defconfig   gcc  
-loongarch             randconfig-001-20240421   gcc  
-loongarch             randconfig-002-20240421   gcc  
-m68k                             allmodconfig   gcc  
-m68k                              allnoconfig   gcc  
-m68k                             allyesconfig   gcc  
-m68k                                defconfig   gcc  
-microblaze                       allmodconfig   gcc  
-microblaze                        allnoconfig   gcc  
-microblaze                       allyesconfig   gcc  
-microblaze                          defconfig   gcc  
-mips                              allnoconfig   gcc  
-mips                             allyesconfig   gcc  
-mips                        vocore2_defconfig   clang
-nios2                            allmodconfig   gcc  
-nios2                             allnoconfig   gcc  
-nios2                            allyesconfig   gcc  
-nios2                               defconfig   gcc  
-nios2                 randconfig-001-20240421   gcc  
-nios2                 randconfig-002-20240421   gcc  
-openrisc                          allnoconfig   gcc  
-openrisc                         allyesconfig   gcc  
-openrisc                            defconfig   gcc  
-parisc                           allmodconfig   gcc  
-parisc                            allnoconfig   gcc  
-parisc                           allyesconfig   gcc  
-parisc                              defconfig   gcc  
-parisc                randconfig-001-20240421   gcc  
-parisc                randconfig-002-20240421   gcc  
-parisc64                            defconfig   gcc  
-powerpc                          allmodconfig   gcc  
-powerpc                           allnoconfig   gcc  
-powerpc                          allyesconfig   clang
-powerpc                      arches_defconfig   gcc  
-powerpc                     mpc512x_defconfig   clang
-powerpc                 mpc8313_rdb_defconfig   gcc  
-powerpc                 mpc8315_rdb_defconfig   clang
-powerpc               randconfig-001-20240421   clang
-powerpc               randconfig-002-20240421   clang
-powerpc               randconfig-003-20240421   clang
-powerpc                     stx_gp3_defconfig   clang
-powerpc64             randconfig-001-20240421   clang
-powerpc64             randconfig-002-20240421   gcc  
-powerpc64             randconfig-003-20240421   clang
-riscv                            allmodconfig   clang
-riscv                             allnoconfig   gcc  
-riscv                            allyesconfig   clang
-riscv                               defconfig   clang
-riscv                 randconfig-001-20240421   clang
-riscv                 randconfig-002-20240421   gcc  
-s390                             allmodconfig   clang
-s390                              allnoconfig   clang
-s390                             allyesconfig   gcc  
-s390                                defconfig   clang
-s390                  randconfig-001-20240421   clang
-s390                  randconfig-002-20240421   gcc  
-sh                               alldefconfig   gcc  
-sh                               allmodconfig   gcc  
-sh                                allnoconfig   gcc  
-sh                               allyesconfig   gcc  
-sh                                  defconfig   gcc  
-sh                    randconfig-001-20240421   gcc  
-sh                    randconfig-002-20240421   gcc  
-sh                        sh7785lcr_defconfig   gcc  
-sparc                            allmodconfig   gcc  
-sparc                             allnoconfig   gcc  
-sparc                               defconfig   gcc  
-sparc                       sparc32_defconfig   gcc  
-sparc64                          allmodconfig   gcc  
-sparc64                          allyesconfig   gcc  
-sparc64                             defconfig   gcc  
-sparc64               randconfig-001-20240421   gcc  
-sparc64               randconfig-002-20240421   gcc  
-um                               allmodconfig   clang
-um                                allnoconfig   clang
-um                               allyesconfig   gcc  
-um                                  defconfig   clang
-um                             i386_defconfig   gcc  
-um                    randconfig-001-20240421   gcc  
-um                    randconfig-002-20240421   gcc  
-um                           x86_64_defconfig   clang
-x86_64                            allnoconfig   clang
-x86_64                           allyesconfig   clang
-x86_64       buildonly-randconfig-001-20240421   clang
-x86_64       buildonly-randconfig-002-20240421   clang
-x86_64       buildonly-randconfig-003-20240421   gcc  
-x86_64       buildonly-randconfig-004-20240421   clang
-x86_64       buildonly-randconfig-005-20240421   clang
-x86_64       buildonly-randconfig-006-20240421   gcc  
-x86_64                              defconfig   gcc  
-x86_64                randconfig-001-20240421   gcc  
-x86_64                randconfig-002-20240421   clang
-x86_64                randconfig-003-20240421   gcc  
-x86_64                randconfig-004-20240421   clang
-x86_64                randconfig-005-20240421   gcc  
-x86_64                randconfig-006-20240421   gcc  
-x86_64                randconfig-011-20240421   clang
-x86_64                randconfig-012-20240421   clang
-x86_64                randconfig-013-20240421   clang
-x86_64                randconfig-014-20240421   gcc  
-x86_64                randconfig-015-20240421   clang
-x86_64                randconfig-016-20240421   clang
-x86_64                randconfig-071-20240421   clang
-x86_64                randconfig-072-20240421   clang
-x86_64                randconfig-073-20240421   clang
-x86_64                randconfig-074-20240421   clang
-x86_64                randconfig-075-20240421   gcc  
-x86_64                randconfig-076-20240421   gcc  
-x86_64                          rhel-8.3-rust   clang
-xtensa                            allnoconfig   gcc  
-xtensa                  audio_kc705_defconfig   gcc  
-xtensa                randconfig-001-20240421   gcc  
-xtensa                randconfig-002-20240421   gcc  
+This series goes after the "Break up ioctl dispatch functions to one
+function per ioctl" series."
+
+In addition to the SPDK use-case mentioned above, the capability added
+in this patch series can also be useful when a buffer (located in device
+memory such as VRAM) needs to be shared between any two GPU devices or
+instances (assuming one of them is bound to VFIO PCI) as long as they
+are P2P DMA compatible.
+
+The main difference between this series and the original one is the usage
+of P2P DMA APIs to create struct pages (ZONE_DEVICE) to populate the
+scatterlist instead of using DMA addresses. Other additions include a
+mmap handler to provide CPU access to the dmabuf and support for
+creating the dmabuf from multiple areas (or ranges).
+
+This series is available at:
+https://gitlab.freedesktop.org/Vivek/drm-tip/-/commits/vfio_dmabuf_v1
+
+along with additional patches for Qemu and Spice here:
+https://gitlab.freedesktop.org/Vivek/qemu/-/commits/vfio_dmabuf_1
+https://gitlab.freedesktop.org/Vivek/spice/-/commits/encode_dmabuf_v4 
+
+This series is tested using the following method:
+- Run Qemu with the following relevant options:
+  qemu-system-x86_64 -m 4096m ....
+  -device vfio-pci,host=0000:03:00.0
+  -device virtio-vga,max_outputs=1,blob=true,xres=1920,yres=1080
+  -spice port=3001,gl=on,disable-ticketing=on,preferred-codec=gstreamer:h264
+  -object memory-backend-memfd,id=mem1,size=4096M
+  -machine memory-backend=mem1 ...
+- Run upstream Weston with the following options in the Guest VM:
+  ./weston --drm-device=card1 --additional-devices=card0
+
+where card1 is a DG2 dGPU (assigned to vfio-pci) and card0 is
+virtio-gpu.
+
+Cc: Jason Gunthorpe <jgg@nvidia.com>
+Cc: Christoph Hellwig <hch@lst.de>
+Cc: Robin Murphy <robin.murphy@arm.com>
+Cc: Christian König <christian.koenig@amd.com>
+Cc: Daniel Vetter <daniel.vetter@ffwll.ch>
+Cc: Oded Gabbay <ogabbay@kernel.org>
+Cc: Gerd Hoffmann <kraxel@redhat.com>
+Cc: Alex Williamson <alex.williamson@redhat.com>
+Cc: Kevin Tian <kevin.tian@intel.com>
+
+Vivek Kasireddy (2):
+  vfio: Export vfio device get and put registration helpers
+  vfio/pci: Allow MMIO regions to be exported through dma-buf
+
+ drivers/vfio/pci/Makefile          |   1 +
+ drivers/vfio/pci/dma_buf.c         | 348 +++++++++++++++++++++++++++++
+ drivers/vfio/pci/vfio_pci_config.c |   8 +-
+ drivers/vfio/pci/vfio_pci_core.c   |  28 ++-
+ drivers/vfio/pci/vfio_pci_priv.h   |  23 ++
+ drivers/vfio/vfio_main.c           |   2 +
+ include/linux/vfio.h               |   2 +
+ include/linux/vfio_pci_core.h      |   1 +
+ include/uapi/linux/vfio.h          |  25 +++
+ 9 files changed, 430 insertions(+), 8 deletions(-)
+ create mode 100644 drivers/vfio/pci/dma_buf.c
 
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+2.43.0
+
 
