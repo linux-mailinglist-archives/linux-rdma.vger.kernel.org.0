@@ -1,169 +1,258 @@
-Return-Path: <linux-rdma+bounces-2023-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-2024-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id E381F8AEA18
-	for <lists+linux-rdma@lfdr.de>; Tue, 23 Apr 2024 17:03:49 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6DF7E8AEB58
+	for <lists+linux-rdma@lfdr.de>; Tue, 23 Apr 2024 17:43:35 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1BF521C2204E
-	for <lists+linux-rdma@lfdr.de>; Tue, 23 Apr 2024 15:03:49 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 91EBB1C226DE
+	for <lists+linux-rdma@lfdr.de>; Tue, 23 Apr 2024 15:43:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4B73113BC19;
-	Tue, 23 Apr 2024 15:03:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4B6CE13C3F1;
+	Tue, 23 Apr 2024 15:43:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="aWr34/cW"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="iTzUk5Hj"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from NAM12-BN8-obe.outbound.protection.outlook.com (mail-bn8nam12on2062.outbound.protection.outlook.com [40.107.237.62])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wm1-f44.google.com (mail-wm1-f44.google.com [209.85.128.44])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 483AF13BADD;
-	Tue, 23 Apr 2024 15:03:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.237.62
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713884602; cv=fail; b=rlWfvt3yvNo4cDGNixf3WqNtt4BwakZn3X+Usuplvzppa+P6nuwTVLxjbigKQ3MFMLWsNYFZRghT6tAQUu0IWPqZRPwdBikbpzpD9CC99gLa5chR142sSri1OlN12CINhZvHhmb4aD1wMIbwifn1XhBizFY+QHTXbPl3hRE3f58=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713884602; c=relaxed/simple;
-	bh=+a45vB54BTu3mlxsEpw4/NqoBEE+tm6qUccuEiTxoyY=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:Content-Type:
-	 Content-Disposition:In-Reply-To:MIME-Version; b=TIDpKHWCwyup3Q1HUD71fxEkB3VIjq8KmPkBOo6//MB0eZRwmpsGlstTcfYdDAKLmYqDRfnDXpvi7t6EWmqs9UeMnn310cnMf0UuQrnsiZfFjpTYgy4ltgmwjy0b3KL82zSYj81ehksjybVOaecs4kD1PLucBLMVNmb3YBZ0USc=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=aWr34/cW; arc=fail smtp.client-ip=40.107.237.62
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=X6K2t4bEwbT1VlJUhTBaAalzqmv3a0XuBxVm118aM1aWSshFM2bjswYnGVFLERpiH8rxAn3u0FuIZUDpQVABrYIh5HIUFGEhRQfrUzvBT1WWgX7tsN3gir3Wq4nfP/Z8oHaB3Wu4WNvR48wsWqdrcKu7Hb/V40rGjA6WwWtmfcBR5MXe4AcSVf8dqCpvHMElBI040dP9n4r8bxPcKVjfrmqPA6VYjYx44tiTvLCYa/bHh+WFML0KM/r0gE+7BWhOqmapDG2lNwfHPc2JnqzkroMibN2aE6n1VygU6ETwpAnXPdOcc+7uSzdnVaYHvavi3+FzqFMtiE/luZPwW/UuNQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=ECheSrA1Xj0S3IqwN5PhssXKfuaf82e4I6he5Kdvydk=;
- b=iMjAhzPMftQMaCpcuiNV9Y89DGR5UgZBEJJrN2dz6ra9d7L+RKrXxct1mKVhXpWwF4wETOzzBf0vdCGoPiPVxf5J8q33wLU4Tjfwvr/NfiLvzMTjOggXafpKwIt4A5zL3iiY3w8bqyPuFpJfVEZ3IGD1Kkt/+jB3MnplSfz9yJ8SNcl3PJ6k90p1xaSmi9NLZDYfogshPMNOR9yJoB/PZwVuT+FnZx4sx1VGccBRNBcuezE5+pemQw3Vmt5CWcEnzo4ZxTNrywF0/ZqwkNEudGJkFiE5I907odp8/9lZcgcdJbMHwVCoXv0XVeFY9Hc5ELXZRnhfaftNIG5qI2OGvA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=ECheSrA1Xj0S3IqwN5PhssXKfuaf82e4I6he5Kdvydk=;
- b=aWr34/cW6cJlNwOVwWDZ6AFlam2S5+i1UM6AcR9slMlvkTb1nVlKtuSJkVRwiibyKGPsoYV5WKdZrWlHdQYUBYxdgf8HXnQ54Ta7rDpy1gWiCTw1j33tcTIHXCs2jfU0hTDdmgdgGtaC+QeujN7JMbmFu7OyncFAEB3HfMsYsBx0siS1ZM6UIL8T3ezQdbyk5EbTYLAtmZ8CyN7vbQnhAPYVya1pmmMGZPVC41LU6o14UCA+zBpdb40Zql7JkzV1/jSjMhoKotV2wAiNRRrbppO8EzAfTF8P2l1igyASeBa//TrExevIDhUbK7SjDpVW/A6rXGEgJPidWRLZGZkLTw==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nvidia.com;
-Received: from DM6PR12MB3849.namprd12.prod.outlook.com (2603:10b6:5:1c7::26)
- by PH0PR12MB7840.namprd12.prod.outlook.com (2603:10b6:510:28a::16) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7472.44; Tue, 23 Apr
- 2024 15:03:17 +0000
-Received: from DM6PR12MB3849.namprd12.prod.outlook.com
- ([fe80::c296:774b:a5fc:965e]) by DM6PR12MB3849.namprd12.prod.outlook.com
- ([fe80::c296:774b:a5fc:965e%3]) with mapi id 15.20.7519.021; Tue, 23 Apr 2024
- 15:03:17 +0000
-Date: Tue, 23 Apr 2024 12:03:15 -0300
-From: Jason Gunthorpe <jgg@nvidia.com>
-To: Konstantin Taranov <kotaranov@linux.microsoft.com>
-Cc: nathan@kernel.org, kotaranov@microsoft.com, sharmaajay@microsoft.com,
-	longli@microsoft.com, leon@kernel.org, linux-rdma@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH rdma-next 1/1] RDMA/mana_ib: fix missing ret value
-Message-ID: <20240423150315.GA891022@nvidia.com>
-References: <1713881751-21621-1-git-send-email-kotaranov@linux.microsoft.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1713881751-21621-1-git-send-email-kotaranov@linux.microsoft.com>
-X-ClientProxiedBy: SA9PR13CA0141.namprd13.prod.outlook.com
- (2603:10b6:806:27::26) To DM6PR12MB3849.namprd12.prod.outlook.com
- (2603:10b6:5:1c7::26)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4F73413CA81
+	for <linux-rdma@vger.kernel.org>; Tue, 23 Apr 2024 15:43:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.44
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1713887003; cv=none; b=URCM2ORjYe7kIst8L177SMJxQsixp5JhKZjvjRFLEvuD0mUR7/8PSgGgtdalUN6kCZoXLgiZa/+PmII6QEHNJ1TjHlZJyRkBN69WkhrAK9kzgkZVLNrmoiwTQ9ZRftGSl9vKxSOM5E2Nu5KGIr/kUrCB2mBB+J/1K+1uyFrGV6k=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1713887003; c=relaxed/simple;
+	bh=v1PT5V2VFfOIzHM2b0UI6Kj4hOA6F5PdHj0GbZwm7t4=;
+	h=From:Message-ID:Date:MIME-Version:Subject:To:Cc:References:
+	 In-Reply-To:Content-Type; b=ZKw/7o72nauY/th2pFBge+qh8IFRsc0AicztSX1bZPP4pw55FUXl7q242S3iaVf/EGlIEHLMFJ1yO4yBN/cO45W4QXNAXR1PvrP01PRU7SDcSjRSUZU4L4PgBXpx2D7FnxrGYbhAApKUX8myhUqLnR/Hkev5wW13SYubAh+0tnA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=iTzUk5Hj; arc=none smtp.client-ip=209.85.128.44
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wm1-f44.google.com with SMTP id 5b1f17b1804b1-4196c62bb4eso31345055e9.2
+        for <linux-rdma@vger.kernel.org>; Tue, 23 Apr 2024 08:43:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1713886999; x=1714491799; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:content-language:references
+         :cc:to:subject:user-agent:mime-version:date:message-id:from:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=HFuDF28RY8gJYKHf8kDrkH8zdRH5gP/Ap9W+QWMQ2eU=;
+        b=iTzUk5HjnRB/SoR6LLwN7W1H8gmHaZlNLxj2jldnUbG9WKVOXl+81EgvieCfjQXTLS
+         E6HvFMAA1VX43uxQ5KORveLLgAIDSTIheIB6p0/pCVPlj0wzw9ORfOMW8TJPQRj+gZgI
+         JGxXiE8rzMxAGggLe1ODrV+1PRKIjx+IRmqvrBkaTDOSQEKbV2yS99dBSoGaoOxJFJzj
+         odpJ76sOw8VSBMFh8tN1iJ5itoz9PCdx3f9m4RgD4G7KwF7qPFjuBqF1bd4HEuYnutpo
+         /cE1Ajzr0EBgUAwVBqWLJDQAHX/u+zGcgh/pwrgzCIc/4sJhOcKrXF20dOQBCtw2XKHz
+         yzIg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713886999; x=1714491799;
+        h=content-transfer-encoding:in-reply-to:content-language:references
+         :cc:to:subject:user-agent:mime-version:date:message-id:from
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=HFuDF28RY8gJYKHf8kDrkH8zdRH5gP/Ap9W+QWMQ2eU=;
+        b=llbzOFDrpH3rdjHq9E2R09Cw5b8IJjaSckok7tcKVkX2N7WCE9sLbWiYZ303xIni0R
+         LEn6NbYNQZ99FxGrCI/kKyt0KLHeAWjNXy1+iY9I8WR6VPIXR7lEEwb03NBbvQoOPh1t
+         ncE8rZBQYMhFSe9n89NyjveHmEiIUM+teMXnvL9sFBtD8NpvsprLW40LYOTeJHuSbfsr
+         QhclrSwaP1sv7MAt/PsejufV/oME602Ba5/99Oh2i8tzR6HRcKmoRZEk9wiVoALpOLo1
+         sKOIvasaYjRIvqxpJgaqfhWeuIK71Lqtl9RQO0yAQWtbl0IQJauef+Xpf66HcUgArEuK
+         iHMw==
+X-Gm-Message-State: AOJu0Yz6nys/Gy+0+apAmBdFUlTjwPEZSNT075f/LrossI33w72NXRfC
+	7D66f3Y1L9kCxWfDCQtY4U4wE2/GpIvIf+f74jaWqrJPOsNIA+zB
+X-Google-Smtp-Source: AGHT+IFcn4/GVOsEGIi6kDiZ5qJk2Ck0bGRZrc9ItMVVRDQNV1ZvjS4/bH6KVyU/nwPnl16bLxPk+Q==
+X-Received: by 2002:a05:600c:4691:b0:417:d4f6:1aa2 with SMTP id p17-20020a05600c469100b00417d4f61aa2mr11761425wmo.4.1713886999289;
+        Tue, 23 Apr 2024 08:43:19 -0700 (PDT)
+Received: from [10.16.124.60] ([212.227.34.98])
+        by smtp.gmail.com with ESMTPSA id h8-20020a05600c314800b0041a9a6a2bebsm1807164wmo.1.2024.04.23.08.42.45
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 23 Apr 2024 08:42:58 -0700 (PDT)
+From: Zhu Yanjun <zyjzyj2000@gmail.com>
+X-Google-Original-From: Zhu Yanjun <yanjun.zhu@linux.dev>
+Message-ID: <700c19e8-ae4f-42f0-a604-9e33a9a94dd3@linux.dev>
+Date: Tue, 23 Apr 2024 17:42:37 +0200
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DM6PR12MB3849:EE_|PH0PR12MB7840:EE_
-X-MS-Office365-Filtering-Correlation-Id: 890ca73e-cc6c-43a2-8858-08dc63a6816f
-X-LD-Processed: 43083d15-7273-40c1-b7db-39efd9ccc17a,ExtAddr
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	=?us-ascii?Q?s8a7ifqmRF/UOnTbmO1wJrFZCoPb2EvcW22zJSXEAmB1mjAiDGIqDygEsvRo?=
- =?us-ascii?Q?MDKVX2FaRSADu2DoMskmKIz/ozNFpLKKBLPylkLM1uXK2EgEzDYVozkCpeYI?=
- =?us-ascii?Q?YfFzusXzDK+EYn6tx133QzPSHqsua2lGbhroOQN+DMCwAJg7pP2vEZ/zMc5s?=
- =?us-ascii?Q?JAPhyl4XNqK8c+LVxyQ2d5kDffwTQJ0s4vefXdj9OvK6kOqRy/zx4X9LQM/A?=
- =?us-ascii?Q?eTwLj9zxr93VSBxXLCQBmDHCvTuwfqmwm2WoA9mGDHBrR+SdVf9I+ZS4AsQG?=
- =?us-ascii?Q?u9jIUfI/1p/6rW/FpE861QE5nKUUkBSRuJRT4HfyF3MbYaSHELGRBKSeOoGz?=
- =?us-ascii?Q?utq59YNFm+kPvJqXcZLUkThiBrFRnU25EAuRFUrnU3Gu1jiXvGQjSdyHveQa?=
- =?us-ascii?Q?hJjhmzGZFEO6wB46E6BjU39q0ecor+ZCW4G/0oie4RsMFGVmLW+4CizvffWL?=
- =?us-ascii?Q?RR4hNEdZZvg+jJWxlGH3KgSf6na1hiA8cpaOnpN3IaDp8Tqjyk1MB0GmavGX?=
- =?us-ascii?Q?p9yMZM6LqbqUiuQlu7kBX6hrDnxODqD962ZOlhlq08MvQDAISmIdKJslb4hW?=
- =?us-ascii?Q?Qyrb0n0O1LzRLoKuVtw559g0AXHCVDxrN9XMG2EsL89G6+Zu2izdfvfGqqCq?=
- =?us-ascii?Q?sAPAh+68X0PQZjMtgrQQ5t8FTZPSjV3UphKP5Vf6PX6RxvRDrq1kRznEpR69?=
- =?us-ascii?Q?41aUg5zs1RY5MT8NWRq0IDoez6WHysshgL1k9o6KY5iueYo8ESaLo9kZoSHa?=
- =?us-ascii?Q?Gn+oTos3+kDEMXzAVtJ1rXvayBgsWf7aNfcEG9oJAVVGc20nu23W0KvDEeOh?=
- =?us-ascii?Q?QJN1qY9Avvt/C9XXVKcprNwsyxMINQ5wwnDYy3wY3ZtfVgryekdIr40Zvce2?=
- =?us-ascii?Q?fk/IOam4V5ORb1waRtqdpEf8FXpb6Hcq0lVBveSrw5xBB+tFbi57L+cjGFs2?=
- =?us-ascii?Q?0qCjVj+PZBBeIgwTryrsjhY+psTa9g1euawORHClKP6xFnET7U8mmNqmMy9e?=
- =?us-ascii?Q?0NoSlbJfgJKsyNF3pXy47jcDnqAK33jqXRW1qXbRnmFPVpE9G21x60vQDsqC?=
- =?us-ascii?Q?U7iWrPpA0t2g0yR5Y14VRKIcLIqZ7Eb94pTeataFxet+F2/CDv/P7SnsOJPF?=
- =?us-ascii?Q?UM0AFbbFM0g5dPQe+6kEK7+WBHgOdQ6plBSRxJ3j4Bc4DVOVTEnpod3wNlJj?=
- =?us-ascii?Q?3VQ+inyx1bt9xN/edS9ANAVInPBj9wR/CoaWCeIgbPFrWJOuD4C4eTUYvph4?=
- =?us-ascii?Q?XV5CliiidVS/yYwfdv4zbcD+WviZ2cdaRcb/AlKhsw=3D=3D?=
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR12MB3849.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376005)(1800799015)(366007);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?us-ascii?Q?cVN+P5LZrHZplTepGhnNlNlZqQUONKmlJXfU5JRFX8HaXAsn0pV/ej4w9/8V?=
- =?us-ascii?Q?MuD0+ZuHnK94M2iU+7JcJ+6OMbCfev8oZQZ9QmmwobN1x2kqF7HMfY/uPEid?=
- =?us-ascii?Q?ZWuU9pJNeg7X2wJDsmqr0XlNeAqQxScwJxS/rk6bx16kycOSy4hLtGPVQFqa?=
- =?us-ascii?Q?cwXrRpaMePpEVRQtO3U5UTjvXJVoBy6s87pJJnJuvIqrhvpaHNWUIQgzCL+H?=
- =?us-ascii?Q?u4ddk4mdADWdD1t0LboKZ5HeMpEbKITRGpIXWN91OiG7E/mcleba4cjHLcyD?=
- =?us-ascii?Q?KV71TKDoF+V3zw02AYCzD/Dz8kHBz6BB8qkYdd8ME0J83i1WXd1lLJrRqJuc?=
- =?us-ascii?Q?lhMstbCo6OhaKByDtOwLLS0XOpPJwp0iDvrvnthGPGP3/mjFLhDrMU2mLPqR?=
- =?us-ascii?Q?st0Hi0T/WeSSsltvbCKU54VdFtctpfl0ngu737LW1sHBHIUKxZ2RCh2dTiEy?=
- =?us-ascii?Q?c+B/T5oZW1aJ3V/miTwsaQxJ/X1qgscOeYlB66dwnC7/zl4e0xvyVbsLirIs?=
- =?us-ascii?Q?KRLfXV6iwsFeCU3pGH6gwLYI7UCs7LCrWU6VtKwa8YyQ/QybLVAXx5IDTqtX?=
- =?us-ascii?Q?bSIyVocfQbu7RmxzVwNqinfCmL8RaTzHYFGMJiW+zJG4nCwKI217zJJZ7I8O?=
- =?us-ascii?Q?CNT5uqGlmLyzxI3r70MouuMX8j2U4jupPekQzYxXGgVsSmK9LcgNpn2miNFY?=
- =?us-ascii?Q?EgTy5JQ3+vtVto5CvjDaEaFCmoLazMdNRVNApWzC4OwQOHu7/y+aOTvHve6q?=
- =?us-ascii?Q?QH9U+tJ/pAAuoI2hKXuu6xSMKznQdoS88O770EHGVao7wa7PEub3esyeqlVG?=
- =?us-ascii?Q?UW/MQQGV4sWezylIGKPbn/MM470DtFlUSuS/Gl0GbCF+OGR2C8YMcIb+a1hI?=
- =?us-ascii?Q?660H/5yWg+3IF/EfAonyOyvxpsTW70FFJzsw0fnQyQSOOJpD1YuIqNrelYOU?=
- =?us-ascii?Q?INzzgPXEwHN8uXTdOKlh3bfVl+UJmQ6/W9jM8Kona3CMQ9/LA1kWcKlKaMkP?=
- =?us-ascii?Q?ARoeHtr673HQQfM37O8B5DXnl+HtP6tL4gCSVXu2+AtzWKRaMFFi09ydDuvT?=
- =?us-ascii?Q?4cfCeb+U0KJUqWdRQAR+5Ke4Cu3tbPredWbYetSsMpINyovZTtbIX5Nfox9b?=
- =?us-ascii?Q?XJPbIpx6I4Rm0dJ6MMBzccwPb6eSj5qVnYIhTJtOHOYGagnu2OxF/zXGZCiv?=
- =?us-ascii?Q?/TzK0yLkoF0CZKtcGP9AR9d6dBIjegI2cFrKYyFHnZmsOfP1DCzc97QFK+JR?=
- =?us-ascii?Q?K1GHcTTYZ75WWekD1Lsz77B7fl3i+hiqaund1XIDuXD0JasjNGIr1MmRkhyv?=
- =?us-ascii?Q?ZE1O6RiLnEhLXQKGxPLk0kg7Ssj76FNA4iYHUadTqJU2475zBddWW9UKeiec?=
- =?us-ascii?Q?HntAngWX0aIdDYeKoxYRPcrdMTYLF0gSzw6BWYT5w5t7Im1Sq0VMLcSQ4ML1?=
- =?us-ascii?Q?jjzgzTfCcUyfjkad/KWYBjluVRxf5zcvwLXHktUxFh/OpydSRJWC3vbyAcJt?=
- =?us-ascii?Q?yfE9aq1eZxKFNkRD81NtpeZ8GUD6wPinntFlaVFvowVS0Xr7gkoOQ/ArVXvk?=
- =?us-ascii?Q?4oeoalTuH9maAOHxVnY=3D?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 890ca73e-cc6c-43a2-8858-08dc63a6816f
-X-MS-Exchange-CrossTenant-AuthSource: DM6PR12MB3849.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 23 Apr 2024 15:03:17.0857
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: I0sv2ulTZZduy5dKsIpkobqepr9AopiixHFg60+HIF0ac6JKOjmuU9390zz5GZ5m
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR12MB7840
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH rdma-next v2] IB/cma: Define option to set max CM retries
+To: Etienne AUJAMES <eaujames@ddn.com>, jgg@ziepe.ca, leon@kernel.org,
+ markzhang@nvidia.com, shefty@nvidia.com
+Cc: "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+ "Gael.DELBARY@cea.fr" <Gael.DELBARY@cea.fr>,
+ "guillaume.courrier@cea.fr" <guillaume.courrier@cea.fr>,
+ Serguei Smirnov <ssmirnov@whamcloud.com>,
+ Cyril Bordage <cbordage@whamcloud.com>
+References: <Zh_IGG3chXtjK3Nu@eaujamesDDN>
+Content-Language: en-US
+In-Reply-To: <Zh_IGG3chXtjK3Nu@eaujamesDDN>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Tue, Apr 23, 2024 at 07:15:51AM -0700, Konstantin Taranov wrote:
-> From: Konstantin Taranov <kotaranov@microsoft.com>
+On 17.04.24 15:01, Etienne AUJAMES wrote:
+> Define new options in 'rdma_set_option' to override default CM retries
+> ("Max CM retries").
 > 
-> Set ret to -ENODEV when netdev_master_upper_dev_get_rcu
-> returns NULL.
+> This option can be useful for RoCE networks (no SM) to decrease the
+> overall connection timeout with an unreachable node.
 > 
-> Fixes: 8b184e4f1c32 ("RDMA/mana_ib: Enable RoCE on port 1")
-> Signed-off-by: Konstantin Taranov <kotaranov@microsoft.com>
+> With a default of 15 retries, the CM can take several minutes to
+> return an UNREACHABLE event.
+> 
+> With Infiniband, the SM returns an empty path record for an
+> unreachable node (error returned in rdma_resolve_route()). So, the
+> application will not send the connection requests.
+> 
+> Signed-off-by: Etienne AUJAMES <eaujames@ddn.com>
 > ---
->  drivers/infiniband/hw/mana/device.c | 1 +
->  1 file changed, 1 insertion(+)
+>   drivers/infiniband/core/cma.c      | 40 +++++++++++++++++++++++++++---
+>   drivers/infiniband/core/cma_priv.h |  2 ++
+>   drivers/infiniband/core/ucma.c     |  7 ++++++
+>   include/rdma/rdma_cm.h             |  3 +++
+>   include/uapi/rdma/rdma_user_cm.h   |  3 ++-
+>   5 files changed, 51 insertions(+), 4 deletions(-)
+> 
+> diff --git a/drivers/infiniband/core/cma.c b/drivers/infiniband/core/cma.c
+> index 1e2cd7c8716e..b6a73c7307ea 100644
+> --- a/drivers/infiniband/core/cma.c
+> +++ b/drivers/infiniband/core/cma.c
+> @@ -1002,6 +1002,7 @@ __rdma_create_id(struct net *net, rdma_cm_event_handler event_handler,
+>   	id_priv->tos_set = false;
+>   	id_priv->timeout_set = false;
+>   	id_priv->min_rnr_timer_set = false;
+> +	id_priv->max_cm_retries = false;
 
-Applied to for-next, thanks
+max_cm_retries is u8 type. Not sure if it is good to set it as false.
 
-Jason
+Zhu Yanjun
+
+>   	id_priv->gid_type = IB_GID_TYPE_IB;
+>   	spin_lock_init(&id_priv->lock);
+>   	mutex_init(&id_priv->qp_mutex);
+> @@ -2845,6 +2846,38 @@ int rdma_set_min_rnr_timer(struct rdma_cm_id *id, u8 min_rnr_timer)
+>   }
+>   EXPORT_SYMBOL(rdma_set_min_rnr_timer);
+>   
+> +/**
+> + * rdma_set_cm_retries() - Configure CM retries to establish an active
+> + *                         connection.
+> + * @id: Connection identifier to connect.
+> + * @max_cm_retries: 4-bit value defined as "Max CM Retries" REQ field
+> + *		    (Table 99 "REQ Message Contents" in the IBTA specification).
+> + *
+> + * This function should be called before rdma_connect() on active side.
+> + * The value will determine the maximum number of times the CM should
+> + * resend a connection request or reply (REQ/REP) before giving up (UNREACHABLE
+> + * event).
+> + *
+> + * Return: 0 for success
+> + */
+> +int rdma_set_cm_retries(struct rdma_cm_id *id, u8 max_cm_retries)
+> +{
+> +	struct rdma_id_private *id_priv;
+> +
+> +	/* It is a 4-bit value */
+> +	if (max_cm_retries & 0xf0)
+> +		return -EINVAL;
+> +
+> +	id_priv = container_of(id, struct rdma_id_private, id);
+> +	mutex_lock(&id_priv->qp_mutex);
+> +	id_priv->max_cm_retries = max_cm_retries;
+> +	id_priv->max_cm_retries_set = true;
+> +	mutex_unlock(&id_priv->qp_mutex);
+> +
+> +	return 0;
+> +}
+> +EXPORT_SYMBOL(rdma_set_cm_retries);
+> +
+>   static int route_set_path_rec_inbound(struct cma_work *work,
+>   				      struct sa_path_rec *path_rec)
+>   {
+> @@ -4295,8 +4328,8 @@ static int cma_resolve_ib_udp(struct rdma_id_private *id_priv,
+>   	req.path = id_priv->id.route.path_rec;
+>   	req.sgid_attr = id_priv->id.route.addr.dev_addr.sgid_attr;
+>   	req.service_id = rdma_get_service_id(&id_priv->id, cma_dst_addr(id_priv));
+> -	req.timeout_ms = 1 << (CMA_CM_RESPONSE_TIMEOUT - 8);
+> -	req.max_cm_retries = CMA_MAX_CM_RETRIES;
+> +	req.max_cm_retries = id_priv->max_cm_retries_set ?
+> +		id_priv->max_cm_retries : CMA_MAX_CM_RETRIES;
+>   
+>   	trace_cm_send_sidr_req(id_priv);
+>   	ret = ib_send_cm_sidr_req(id_priv->cm_id.ib, &req);
+> @@ -4370,7 +4403,8 @@ static int cma_connect_ib(struct rdma_id_private *id_priv,
+>   	req.rnr_retry_count = min_t(u8, 7, conn_param->rnr_retry_count);
+>   	req.remote_cm_response_timeout = CMA_CM_RESPONSE_TIMEOUT;
+>   	req.local_cm_response_timeout = CMA_CM_RESPONSE_TIMEOUT;
+> -	req.max_cm_retries = CMA_MAX_CM_RETRIES;
+> +	req.max_cm_retries = id_priv->max_cm_retries_set ?
+> +		id_priv->max_cm_retries : CMA_MAX_CM_RETRIES;
+>   	req.srq = id_priv->srq ? 1 : 0;
+>   	req.ece.vendor_id = id_priv->ece.vendor_id;
+>   	req.ece.attr_mod = id_priv->ece.attr_mod;
+> diff --git a/drivers/infiniband/core/cma_priv.h b/drivers/infiniband/core/cma_priv.h
+> index b7354c94cf1b..4c41e5d7e848 100644
+> --- a/drivers/infiniband/core/cma_priv.h
+> +++ b/drivers/infiniband/core/cma_priv.h
+> @@ -95,10 +95,12 @@ struct rdma_id_private {
+>   	u8			tos_set:1;
+>   	u8                      timeout_set:1;
+>   	u8			min_rnr_timer_set:1;
+> +	u8			max_cm_retries_set:1;
+>   	u8			reuseaddr;
+>   	u8			afonly;
+>   	u8			timeout;
+>   	u8			min_rnr_timer;
+> +	u8			max_cm_retries;
+>   	u8 used_resolve_ip;
+>   	enum ib_gid_type	gid_type;
+>   
+> diff --git a/drivers/infiniband/core/ucma.c b/drivers/infiniband/core/ucma.c
+> index 5f5ad8faf86e..27c165de7eff 100644
+> --- a/drivers/infiniband/core/ucma.c
+> +++ b/drivers/infiniband/core/ucma.c
+> @@ -1284,6 +1284,13 @@ static int ucma_set_option_id(struct ucma_context *ctx, int optname,
+>   		}
+>   		ret = rdma_set_ack_timeout(ctx->cm_id, *((u8 *)optval));
+>   		break;
+> +	case RDMA_OPTION_ID_CM_RETRIES:
+> +		if (optlen != sizeof(u8)) {
+> +			ret = -EINVAL;
+> +			break;
+> +		}
+> +		ret = rdma_set_cm_retries(ctx->cm_id, *((u8 *)optval));
+> +		break;
+>   	default:
+>   		ret = -ENOSYS;
+>   	}
+> diff --git a/include/rdma/rdma_cm.h b/include/rdma/rdma_cm.h
+> index 8a8ab2f793ab..1d7404e2d81e 100644
+> --- a/include/rdma/rdma_cm.h
+> +++ b/include/rdma/rdma_cm.h
+> @@ -344,6 +344,9 @@ int rdma_set_afonly(struct rdma_cm_id *id, int afonly);
+>   int rdma_set_ack_timeout(struct rdma_cm_id *id, u8 timeout);
+>   
+>   int rdma_set_min_rnr_timer(struct rdma_cm_id *id, u8 min_rnr_timer);
+> +
+> +int rdma_set_cm_retries(struct rdma_cm_id *id, u8 max_cm_retries);
+> +
+>    /**
+>    * rdma_get_service_id - Return the IB service ID for a specified address.
+>    * @id: Communication identifier associated with the address.
+> diff --git a/include/uapi/rdma/rdma_user_cm.h b/include/uapi/rdma/rdma_user_cm.h
+> index 7cea03581f79..f00eb05006b0 100644
+> --- a/include/uapi/rdma/rdma_user_cm.h
+> +++ b/include/uapi/rdma/rdma_user_cm.h
+> @@ -313,7 +313,8 @@ enum {
+>   	RDMA_OPTION_ID_TOS	 = 0,
+>   	RDMA_OPTION_ID_REUSEADDR = 1,
+>   	RDMA_OPTION_ID_AFONLY	 = 2,
+> -	RDMA_OPTION_ID_ACK_TIMEOUT = 3
+> +	RDMA_OPTION_ID_ACK_TIMEOUT = 3,
+> +	RDMA_OPTION_ID_CM_RETRIES = 4,
+>   };
+>   
+>   enum {
+
 
