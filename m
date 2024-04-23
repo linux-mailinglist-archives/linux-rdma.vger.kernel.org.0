@@ -1,110 +1,134 @@
-Return-Path: <linux-rdma+bounces-2026-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-2027-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 131098AF695
-	for <lists+linux-rdma@lfdr.de>; Tue, 23 Apr 2024 20:32:02 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 085D38AF78A
+	for <lists+linux-rdma@lfdr.de>; Tue, 23 Apr 2024 21:49:46 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 42B651C22DBE
-	for <lists+linux-rdma@lfdr.de>; Tue, 23 Apr 2024 18:32:01 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 29C79B210C1
+	for <lists+linux-rdma@lfdr.de>; Tue, 23 Apr 2024 19:49:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9B9C713CA9A;
-	Tue, 23 Apr 2024 18:31:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4F02E1420D3;
+	Tue, 23 Apr 2024 19:49:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="WfiCVzYk"
+	dkim=pass (1024-bit key) header.d=fastly.com header.i=@fastly.com header.b="O23D/Lds"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pf1-f174.google.com (mail-pf1-f174.google.com [209.85.210.174])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DEA751DDC5;
-	Tue, 23 Apr 2024 18:31:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B23E41420B3
+	for <linux-rdma@vger.kernel.org>; Tue, 23 Apr 2024 19:49:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713897108; cv=none; b=na4g+41QcKKUfAUVIVfgS47Xqo5jjlr+WdTFRhS9vKR6s+5mQb7nBMLxbUPDiyj1X604PH0Vh9cxVnLkBSuH6OceENWw5B7DCxC7fxEsRhL7/x0cB+QCvMHW3y7I5V/XNtj+ySeyhr0cf2xY2Oen+mjYV9nH9mrTZQjPtxonWao=
+	t=1713901778; cv=none; b=UVQhhm0lt/n2VO9BVrOKJs3+VC1bstsBytAlWf0RpuukkPIGQTtIPZUhVwnyZXa1sjxPShiycV4/fu2GnJ2FWxhH2eMScb55hqFp589d/NBfP29gcMFAK/gomY9wqBE1M9xJElI7br3TNZTT8tU6dkqjcYJa7/b4JE1TpqVjd/Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713897108; c=relaxed/simple;
-	bh=zCEHlyKJhhK4MvhJVSRGGSCDG0oxF0tC8ADUk82NkVk=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=bfRq5v77AOHR8aaGY6eV8O+t4obBkrmNNQ7UZr5mkx1KRud0on5EW8Th/1x6gZNv4CIsmrcPxMemhMvacMK0q4VuGTyc0tyiFQ6k3WkB1jtv5bpJZZWCSoec0Z418b+IwL4cLm2rxS+fXaHMUM/K6XuSCnm8GJ3Tp8SKroRPu+c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=WfiCVzYk; arc=none smtp.client-ip=198.137.202.133
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=bombadil.20210309; h=Sender:In-Reply-To:
-	Content-Transfer-Encoding:Content-Type:MIME-Version:References:Message-ID:
-	Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description;
-	bh=Rogg05ztOu4aP2/pn8CD75vsgL5H5uwqaxXujjk6r6E=; b=WfiCVzYkyj37KGe/1NcuIa1Hgk
-	I9gAfHu6MCMw7NSXSor84TLrOU+mUG0ndyfzjVt0moZbaiRHo/8L+p3QYdcySteGNhcAPGJCKkoWj
-	g/687Hepcmtf5PZKpuZ7znbxvUnMDD43qnPnbu67zfXVJS8SML5AtXvgw73tSyJkv3Nhg5awIIQnq
-	1JNMkoOZN3LoUHS53IUhOaxE7wP++2K6T0ediCLJbAhO11cNq5v9xJzhveqww2JPt0aKNdvm5A/Y5
-	rB55b5NewsYDat/UO4lQuhE8Q3txZ3JjdTGVGjV+Hgo05PhOwNnuMGRbC0LVs1cOtEcnZeCVZdr0F
-	79Ap4ebA==;
-Received: from mcgrof by bombadil.infradead.org with local (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rzKvd-000000018V6-22Td;
-	Tue, 23 Apr 2024 18:31:41 +0000
-Date: Tue, 23 Apr 2024 11:31:41 -0700
-From: Luis Chamberlain <mcgrof@kernel.org>
-To: Thomas =?iso-8859-1?Q?Wei=DFschuh?= <linux@weissschuh.net>
-Cc: Joel Granados <j.granados@samsung.com>,
-	Kees Cook <keescook@chromium.org>,
+	s=arc-20240116; t=1713901778; c=relaxed/simple;
+	bh=kJ9kYfil2xzfpoYxIpb3/kZLHitOV5bl8cT+liycUAA=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=CepelDQPNEQgh5gazWBnmHshpHUw0tuULziAeepKpJPKnTXE1Fng9XZJdOItCTHaG5dOzjx89NJqXNiLZqIqF8V6vz7BgTW5wRKFUcNCIjUeq6u3y4qeqFTd76vNnDeIcMNSM05skBcyL7V/nS+UENanhmA0GWIjFRrcQm6NnI0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=fastly.com; spf=pass smtp.mailfrom=fastly.com; dkim=pass (1024-bit key) header.d=fastly.com header.i=@fastly.com header.b=O23D/Lds; arc=none smtp.client-ip=209.85.210.174
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=fastly.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fastly.com
+Received: by mail-pf1-f174.google.com with SMTP id d2e1a72fcca58-6ed04c91c46so5938604b3a.0
+        for <linux-rdma@vger.kernel.org>; Tue, 23 Apr 2024 12:49:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=fastly.com; s=google; t=1713901776; x=1714506576; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=oPtGpJ/IOjI79m4Y457ecZg+Ii4M4Q2uc2yvPSAuKZY=;
+        b=O23D/LdsracELJIRnsl1Q9GakcG+wGXRnrx01rydjSQr6LqkRBxoFQQPXCwXf2k4fZ
+         rpq+M08yVj4+YTes+Mq1grbTTfngE3X3wVf1XrkmabhnxGXgcEPJcnVEhGp23JcOTvAq
+         wcWRHzjEJKXaW1ebVC7zSY1+FvubZ3+3CQdFo=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713901776; x=1714506576;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=oPtGpJ/IOjI79m4Y457ecZg+Ii4M4Q2uc2yvPSAuKZY=;
+        b=E1itaHDrxS7d4RdpBtj9hRd1hGuUG9VUiNIqrQBkC7FXEPAiQglYOrH+SLOV2KIMpU
+         JmX6QhYvtht0iuCTnAL+VrnJd0xSCxEhS5FDdrketbkQAm5p6hYcApfTdf6D5sHJfXi9
+         PAwfm/AKbv0ricyJAwMWYwm5h5E5jgfnEHyHtqF2CMZ4Fl4U+szKj+n9kZKscumyZq6v
+         Pt7NbjwLSoOoh35Mov/LgklNqvWuEccrJmYg/gQ6e18wUlCczo7ftp+H8gm3TYXoEhh7
+         RgQaaw5eZpW2amSfGTLZ7al1XMVKLxR2PERkX+82vGcNE3HVzm8yskIIaEsJskacE9jm
+         tYoQ==
+X-Forwarded-Encrypted: i=1; AJvYcCUaEKcqBlb9dzT0skLBjUbVFmUmv1tILT+Rr6Va3Fpd0HA54y+PV3HI5uqTfEOr6cM8yMbqo68mnax6jYNcgJfHpzmhJbvLHitPLg==
+X-Gm-Message-State: AOJu0YygXkOiaLVnRSn03vqdEoIB8Ui2wen68T1nO2DgBeopMujxinbp
+	BKWeVFXRjk/wKkAwF2roM/NX7lZgu1Y1e5umpDpOMKqdcWPi1jyw3PXNubqN1fI=
+X-Google-Smtp-Source: AGHT+IHfhg5op9/dvJaSrwjVkbxyvWR8iTMv6cxD/iyEnDvQGXqvcq/rsuhpMV+6R+9nENeq9i1FyA==
+X-Received: by 2002:aa7:888d:0:b0:6ed:d189:a0b6 with SMTP id z13-20020aa7888d000000b006edd189a0b6mr710354pfe.32.1713901775801;
+        Tue, 23 Apr 2024 12:49:35 -0700 (PDT)
+Received: from localhost.localdomain ([2620:11a:c019:0:65e:3115:2f58:c5fd])
+        by smtp.gmail.com with ESMTPSA id q3-20020a056a00084300b006ecc6c1c67asm9995672pfk.215.2024.04.23.12.49.34
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 23 Apr 2024 12:49:35 -0700 (PDT)
+From: Joe Damato <jdamato@fastly.com>
+To: linux-kernel@vger.kernel.org,
+	netdev@vger.kernel.org,
+	tariqt@nvidia.com,
+	saeedm@nvidia.com
+Cc: mkarsten@uwaterloo.ca,
+	gal@nvidia.com,
+	nalramli@fastly.com,
+	Joe Damato <jdamato@fastly.com>,
+	"David S. Miller" <davem@davemloft.net>,
 	Eric Dumazet <edumazet@google.com>,
-	Dave Chinner <david@fromorbit.com>, linux-fsdevel@vger.kernel.org,
-	netdev@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-	linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-riscv@lists.infradead.org, linux-mm@kvack.org,
-	linux-security-module@vger.kernel.org, bpf@vger.kernel.org,
-	linuxppc-dev@lists.ozlabs.org, linux-xfs@vger.kernel.org,
-	linux-trace-kernel@vger.kernel.org,
-	linux-perf-users@vger.kernel.org, netfilter-devel@vger.kernel.org,
-	coreteam@netfilter.org, kexec@lists.infradead.org,
-	linux-hardening@vger.kernel.org, bridge@lists.linux.dev,
-	lvs-devel@vger.kernel.org, linux-rdma@vger.kernel.org,
-	rds-devel@oss.oracle.com, linux-sctp@vger.kernel.org,
-	linux-nfs@vger.kernel.org, apparmor@lists.ubuntu.com
-Subject: Re: [PATCH v3 00/11] sysctl: treewide: constify ctl_table argument
- of sysctl handlers
-Message-ID: <Zif-jf8Takojtq7x@bombadil.infradead.org>
-References: <20240423-sysctl-const-handler-v3-0-e0beccb836e2@weissschuh.net>
+	Jakub Kicinski <kuba@kernel.org>,
+	linux-rdma@vger.kernel.org (open list:MELLANOX MLX4 core VPI driver),
+	Paolo Abeni <pabeni@redhat.com>
+Subject: [PATCH net-next 0/3] mlx4: Add support for netdev-genl API
+Date: Tue, 23 Apr 2024 19:49:27 +0000
+Message-Id: <20240423194931.97013-1-jdamato@fastly.com>
+X-Mailer: git-send-email 2.25.1
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20240423-sysctl-const-handler-v3-0-e0beccb836e2@weissschuh.net>
-Sender: Luis Chamberlain <mcgrof@infradead.org>
 
-On Tue, Apr 23, 2024 at 09:54:35AM +0200, Thomas Weiﬂschuh wrote:
-> * Patch 1 is a bugfix for the stack_erasing sysctl handler
-> * Patches 2-10 change various helper functions throughout the kernel to
->   be able to handle 'const ctl_table'.
-> * Patch 11 changes the signatures of all proc handlers through the tree.
->   Some other signatures are also adapted, for details see the commit
->   message.
-> 
-> Only patch 1 changes any code at all.
-> 
-> The series was compile-tested on top of next-20230423 for
-> i386, x86_64, arm, arm64, riscv, loongarch, s390 and m68k.
-> 
-> The series was split from my larger series sysctl-const series [0].
-> It only focusses on the proc_handlers but is an important step to be
-> able to move all static definitions of ctl_table into .rodata.
-> 
-> [0] https://lore.kernel.org/lkml/20231204-const-sysctl-v2-0-7a5060b11447@weissschuh.net/
-> 
-> Signed-off-by: Thomas Weiﬂschuh <linux@weissschuh.net>
+Hi:
 
-Cover letters don't need SOBS we only use them for patches.
+This series adds support to mlx4 for the netdev-genl API which makes it
+much easier for users and user programs to map NAPI IDs back to
+ifindexes, queues, and IRQs. This is extremely useful for a number of
+use cases, including epoll-based busy poll.
 
-But anyway:
+In addition, this series includes a patch to generate per-queue
+statistics using the netlink API, as well.
 
-Reviewed-by: Luis Chamberlain <mcgrof@kernel.org>
+To facilitate the stats, patch 1/3 makes use of an existing field,
+"dropped" which was already being exported in the ethtool stats by the
+driver, but was never incremented. As of patch 1/3, it is now being
+incremented by the driver in an appropriate place and used in patch 3/3
+as alloc_fail.
 
-  Luis
+Please note: I do not have access to mlx4 hardware, but I've been
+working closely with Martin Karsten from University of Waterloo (CC'd)
+who has very graciously tested my patches on their mlx4 hardware (hence
+his Tested-by attribution in each commit). His latest research work is
+particularly interesting [1] and this series helps to support that (and
+future) work.
+
+[1]: https://dl.acm.org/doi/pdf/10.1145/3626780
+
+Thanks,
+Joe
+
+Joe Damato (3):
+  net/mlx4: Track RX allocation failures in a stat
+  net/mlx4: link NAPI instances to queues and IRQs
+  net/mlx4: support per-queue statistics via netlink
+
+ drivers/net/ethernet/mellanox/mlx4/en_cq.c    | 14 +++
+ .../net/ethernet/mellanox/mlx4/en_netdev.c    | 91 +++++++++++++++++++
+ drivers/net/ethernet/mellanox/mlx4/en_port.c  |  4 +-
+ drivers/net/ethernet/mellanox/mlx4/en_rx.c    |  4 +-
+ drivers/net/ethernet/mellanox/mlx4/mlx4_en.h  |  1 +
+ 5 files changed, 112 insertions(+), 2 deletions(-)
+
+-- 
+2.25.1
+
 
