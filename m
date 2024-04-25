@@ -1,89 +1,105 @@
-Return-Path: <linux-rdma+bounces-2060-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-2061-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2AE988B19B5
-	for <lists+linux-rdma@lfdr.de>; Thu, 25 Apr 2024 05:47:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 97EB28B1B90
+	for <lists+linux-rdma@lfdr.de>; Thu, 25 Apr 2024 09:11:05 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A9A1F28632E
-	for <lists+linux-rdma@lfdr.de>; Thu, 25 Apr 2024 03:47:03 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 579EF2862FE
+	for <lists+linux-rdma@lfdr.de>; Thu, 25 Apr 2024 07:11:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D6B002943C;
-	Thu, 25 Apr 2024 03:46:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3833C6DCE8;
+	Thu, 25 Apr 2024 07:10:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="cLcZBRSX"
+	dkim=pass (1024-bit key) header.d=weissschuh.net header.i=@weissschuh.net header.b="MmasBUph"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from todd.t-8ch.de (todd.t-8ch.de [159.69.126.157])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8C8F122F0D;
-	Thu, 25 Apr 2024 03:46:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 265FC6CDA5;
+	Thu, 25 Apr 2024 07:10:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=159.69.126.157
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714016817; cv=none; b=eYhz2cKp4Nx77aF31/ZN30zXl5mBk/ln+bTqpA1YAevRf9iXVI9lWYBodnvuDH9GPArBKQmcPYYfqMgbpohe+gM0zE6W28Bme5Ko26nOW3Cikvuvx5AMaQBK3H1MDYn5VIAjloB4jAkd/LNrJ1BsA2vADu38ryczdbzKCyPn4SE=
+	t=1714029040; cv=none; b=uZlhU/LfITufdr6wUyubmn7V68w/ZlTtzgNBBFxXy8bUwO01JD1et/nSI0mp7VLDgueIne3fITim+YnlqFAhs+pEgdNN6rxk/Zj2zxO9lJq1zbr3218wWdisDtRsno2+CyirAzvAvpVOwdFPn2Nmhvjdz3kt18Hz7V5BGdSQI2o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714016817; c=relaxed/simple;
-	bh=fSWVkSsgoRD6SMlmpNYA6oLa7Vc1xeL3oLQj477NoBM=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=bc23nTR3Qdjf/KujadRf/c33/pk+Ly9nDQWXOxP7hZ8VI2XfF2kLB/Px53gghw7gN2ohx1pSZpTCi68lI2c70BUyLnOyeBDnSrAsl+Q2MsZ+oARr/21Jtbhu733B6mh4nkJBxWtfVOmtcAIPajb0sK/kh+qhT5ffCoR4tyYtB5c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=cLcZBRSX; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9D81BC113CC;
-	Thu, 25 Apr 2024 03:46:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1714016817;
-	bh=fSWVkSsgoRD6SMlmpNYA6oLa7Vc1xeL3oLQj477NoBM=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=cLcZBRSXoRYHOTIYGK1XZF+WlxxKrgNCW8WexdZEsK80Le7fbZrWaeVL5FTWrRhsD
-	 fJFoDmC3FbjOwiILawqmeytWemyq5obxleRDfauRSCY6Qs8BUVLrSdkqFAGqBiNw8d
-	 pzGR1Q8mMYndOoOhBPnWD/3gW29HgBAcwJkhB1ckbKXPDoTUx/qZAgz/YtuN0gzv8e
-	 tCAm8snXKoAORd3+UzqEXnpTPOsnDp2nv/V1hkt6v24T0MpgByyBm8vxTxHLKZddZ/
-	 lKPpZMAwFRcxZjqtJJkj9SGC9oMD4jYLARcpwW8lLcHfG+75J5QWkLMEpJQd3BP1s3
-	 XLvI9608h8/mw==
-Date: Wed, 24 Apr 2024 20:46:55 -0700
-From: Jakub Kicinski <kuba@kernel.org>
-To: Joe Damato <jdamato@fastly.com>
-Cc: linux-kernel@vger.kernel.org, netdev@vger.kernel.org, tariqt@nvidia.com,
- saeedm@nvidia.com, mkarsten@uwaterloo.ca, gal@nvidia.com,
- nalramli@fastly.com, "David S. Miller" <davem@davemloft.net>, Eric Dumazet
- <edumazet@google.com>, Paolo Abeni <pabeni@redhat.com>, "open list:MELLANOX
- MLX4 core VPI driver" <linux-rdma@vger.kernel.org>
-Subject: Re: [PATCH net-next 3/3] net/mlx4: support per-queue statistics via
- netlink
-Message-ID: <20240424204655.7042c614@kernel.org>
-In-Reply-To: <Zik1zCI9W9EUi13T@LQ3V64L9R2>
-References: <20240423194931.97013-1-jdamato@fastly.com>
-	<20240423194931.97013-4-jdamato@fastly.com>
-	<Zig5RZOkzhGITL7V@LQ3V64L9R2>
-	<20240423175718.4ad4dc5a@kernel.org>
-	<ZiieqiuqNiy_W0mr@LQ3V64L9R2>
-	<20240424072818.2c68a1ab@kernel.org>
-	<Zik1zCI9W9EUi13T@LQ3V64L9R2>
+	s=arc-20240116; t=1714029040; c=relaxed/simple;
+	bh=rmNCwj/QZXocvFu/SV+UsAbq1yc1Onrw5e/MM6tpI4o=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=gieOt1pLr+D0qMK4OYcfBKCyFuFyZJ7Do7RWMt3ayutKnlctUSr2Giaov9NdiRm4Za70PQzA3qkWCBKWf1/H9AA4Nu5ldrBgQ/XdgGVcB+r1Ht+ee3gDsTp/K9jbn607DyqrWZKqMU3wvsVD4YOAM1Fwrm2yuESrIdV3F2KqHVU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=weissschuh.net; spf=pass smtp.mailfrom=weissschuh.net; dkim=pass (1024-bit key) header.d=weissschuh.net header.i=@weissschuh.net header.b=MmasBUph; arc=none smtp.client-ip=159.69.126.157
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=weissschuh.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=weissschuh.net
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=weissschuh.net;
+	s=mail; t=1714029027;
+	bh=rmNCwj/QZXocvFu/SV+UsAbq1yc1Onrw5e/MM6tpI4o=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=MmasBUphC0hDmcDselWsqNDchcFNLbtyyIXYaTEfQv4BLOsVbY80KeyHb5BvHn9uV
+	 mXfX+53b9fklgAHnv4JHOlIL0SSIIXm5AmCALLJVlcCrmQacW/Cc+9xB5aBl8A7Dwb
+	 B9LRLV8RKBn3hp3tvoCofURazzoY7NMe3hrGTd84=
+Date: Thu, 25 Apr 2024 09:10:27 +0200
+From: Thomas =?utf-8?Q?Wei=C3=9Fschuh?= <linux@weissschuh.net>
+To: Jakub Kicinski <kuba@kernel.org>
+Cc: Luis Chamberlain <mcgrof@kernel.org>, 
+	Joel Granados <j.granados@samsung.com>, Kees Cook <keescook@chromium.org>, 
+	Eric Dumazet <edumazet@google.com>, Dave Chinner <david@fromorbit.com>, 
+	linux-fsdevel@vger.kernel.org, netdev@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
+	linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org, 
+	linux-mm@kvack.org, linux-security-module@vger.kernel.org, bpf@vger.kernel.org, 
+	linuxppc-dev@lists.ozlabs.org, linux-xfs@vger.kernel.org, linux-trace-kernel@vger.kernel.org, 
+	linux-perf-users@vger.kernel.org, netfilter-devel@vger.kernel.org, coreteam@netfilter.org, 
+	kexec@lists.infradead.org, linux-hardening@vger.kernel.org, bridge@lists.linux.dev, 
+	lvs-devel@vger.kernel.org, linux-rdma@vger.kernel.org, rds-devel@oss.oracle.com, 
+	linux-sctp@vger.kernel.org, linux-nfs@vger.kernel.org, apparmor@lists.ubuntu.com
+Subject: Re: [PATCH v3 00/11] sysctl: treewide: constify ctl_table argument
+ of sysctl handlers
+Message-ID: <9e657181-866a-4626-82d0-e0030051b003@t-8ch.de>
+References: <20240423-sysctl-const-handler-v3-0-e0beccb836e2@weissschuh.net>
+ <20240424201234.3cc2b509@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20240424201234.3cc2b509@kernel.org>
 
-On Wed, 24 Apr 2024 09:39:40 -0700 Joe Damato wrote:
-> FWIW, I also attempted to implement this API for i40e (hardware I also
-> have):
+On 2024-04-24 20:12:34+0000, Jakub Kicinski wrote:
+> On Tue, 23 Apr 2024 09:54:35 +0200 Thomas Weißschuh wrote:
+> > The series was split from my larger series sysctl-const series [0].
+> > It only focusses on the proc_handlers but is an important step to be
+> > able to move all static definitions of ctl_table into .rodata.
 > 
->   https://lore.kernel.org/lkml/20240410043936.206169-1-jdamato@fastly.com/
+> Split this per subsystem, please.
 
-Ah, missed the second patch on that thread initially!
+Unfortunately this would introduce an enormous amount of code churn.
 
-> But there are some complications I haven't resolved, so I'm focusing on
-> mlx4 and mlx5, first, and will have to come back to i40e later.
+The function prototypes for each callback have to stay consistent.
+So a another callback member ("proc_handler_new") is needed and users
+would be migrated to it gradually.
 
-FWIW I hope this series will get ironed out soon and we'll have far
-more qstats defined:
-https://lore.kernel.org/all/20240423113141.1752-1-xuanzhuo@linux.alibaba.com/
+But then *all* definitions of "struct ctl_table" throughout the tree need to
+be touched.
+In contrast, the proposed series only needs to change the handler
+implementations, not their usage sites.
 
-The drop counts in particular could be useful in production, not so
-sure about the rest :)
+There are many, many more usage sites than handler implementations.
+
+Especially, as the majority of sysctl tables use the standard handlers
+(proc_dostring, proc_dobool, ...) and are not affected by the proposed
+aproach at all.
+
+And then we would have introduced a new handler name "proc_handler_new"
+and maybe have to do the whole thing again to rename it back to
+the original and well-known "proc_handler".
+
+
+Of course if somebody has a better aproach, I'm all ears.
+
+
+Thomas
 
