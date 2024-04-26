@@ -1,137 +1,153 @@
-Return-Path: <linux-rdma+bounces-2113-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-2114-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8B15A8B3D75
-	for <lists+linux-rdma@lfdr.de>; Fri, 26 Apr 2024 19:01:12 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 189EB8B3F5A
+	for <lists+linux-rdma@lfdr.de>; Fri, 26 Apr 2024 20:34:36 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BD0B41C24560
-	for <lists+linux-rdma@lfdr.de>; Fri, 26 Apr 2024 17:01:11 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A73EC1F24E56
+	for <lists+linux-rdma@lfdr.de>; Fri, 26 Apr 2024 18:34:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1D03A15B0FB;
-	Fri, 26 Apr 2024 17:00:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B0C8A4A3D;
+	Fri, 26 Apr 2024 18:34:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="nicMT+aJ"
+	dkim=pass (1024-bit key) header.d=fastly.com header.i=@fastly.com header.b="vVVU2/Ct"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.18])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pl1-f169.google.com (mail-pl1-f169.google.com [209.85.214.169])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 99DD9159912;
-	Fri, 26 Apr 2024 17:00:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.18
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 06A5F1173F
+	for <linux-rdma@vger.kernel.org>; Fri, 26 Apr 2024 18:34:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.169
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714150850; cv=none; b=SPxPe/C2jKT0fo+cBxI9oSGoJXH8U+Q/Mrt7MO20x84OyDx2mVx49lkhEsqn9XIPtFBsep2q+IKqmnlVLRNd3Am6EsbXjtE7EtLbu3Zs3tp1Cbtw8d6UnRJ/UZvegq4Q27NbmmQkg31OWhw5gHyKFO3DSZkdiSYmgEP2uE56z68=
+	t=1714156448; cv=none; b=N2RY+tffMiSyN/Ig4607JSMRheNCXsDOdfP6SbKlBr0koB+5EEJdlT+UMFb3XDwuuodqKJ1rpxP5rFWMURzvLMC8AGZc96d/pKH+7NTY+XEaQXp2ZuR2hOaZU1c9tqgG7/S/WbsjD6FzgUUjbghOCdV9UVfHxR5SJz4IsnB0ps0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714150850; c=relaxed/simple;
-	bh=tAzT0APZ1gO3qIoBSFeSsXtVfHovkqASueptZpGwCMs=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=BKNx1yLi/sXbxZPzviONKJlBKj2QA9RHaR5Vt9n8GX9C6MoWwdPqv0ai8OO3ZWu5IFDxhsKqpfREf+ly+IgKtwLQBD+gCWt/BEGMbxdtkZy4yVfkw5gt+XAtmsSTkZl8hfdl1pCEnm2mCO4QNHkp3pVK/wdgYf4NJXiC8C17jbk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=nicMT+aJ; arc=none smtp.client-ip=198.175.65.18
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1714150850; x=1745686850;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=tAzT0APZ1gO3qIoBSFeSsXtVfHovkqASueptZpGwCMs=;
-  b=nicMT+aJTRZM9BGEIiGx6PdiXawSWUjQ7Dm1ex8EArEWL45WTR+xiZ3e
-   ir2HNNp3QS8/D1CzeHW1rc56l1LIS6ySPpNtie1e3RTP1l7v/uX5OUgTe
-   RtQttfbb4kYKqjTCAFWP7vWay7BsbPZP4c2mLlPbjGVxbl9ABNQPevSyz
-   R40bCIwtZuDmJzPD8jf0LAW8G0MOlftiTlUR8FA1PtgDoVbqPgwpjNFet
-   yuri6vL0+GOfEc7QsPKASB+dN/KfrGqsJtkWbl2l9JzCtdJzMcAaNieFC
-   86j+RX64NyFLKp3wHCFJhS+C3WcAMq731e+5wLp7BOXIhAvs+lsJ6JsFb
-   w==;
-X-CSE-ConnectionGUID: 9C32My+PRG6u1/1VoIxmBg==
-X-CSE-MsgGUID: 4aOMSoDPRwm0CqllrIh8sw==
-X-IronPort-AV: E=McAfee;i="6600,9927,11056"; a="10056659"
-X-IronPort-AV: E=Sophos;i="6.07,233,1708416000"; 
-   d="scan'208";a="10056659"
-Received: from orviesa004.jf.intel.com ([10.64.159.144])
-  by orvoesa110.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Apr 2024 10:00:48 -0700
-X-CSE-ConnectionGUID: Nx/4jGLtSSa0MLZrtjk5lg==
-X-CSE-MsgGUID: XxN58ixGR6WpwMcoOG6Opw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,233,1708416000"; 
-   d="scan'208";a="30286732"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by orviesa004.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Apr 2024 10:00:46 -0700
-Received: from andy by smile.fi.intel.com with local (Exim 4.97)
-	(envelope-from <andriy.shevchenko@intel.com>)
-	id 1s0OwF-00000001Osy-05jM;
-	Fri, 26 Apr 2024 20:00:43 +0300
-Date: Fri, 26 Apr 2024 20:00:42 +0300
-From: Andy Shevchenko <andriy.shevchenko@intel.com>
-To: Nathan Chancellor <nathan@kernel.org>
-Cc: Jason Gunthorpe <jgg@nvidia.com>,
-	Konstantin Taranov <kotaranov@linux.microsoft.com>,
-	kotaranov@microsoft.com, sharmaajay@microsoft.com,
-	longli@microsoft.com, leon@kernel.org, linux-rdma@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH rdma-next 1/1] RDMA/mana_ib: fix missing ret value
-Message-ID: <ZivduvnNzGnoAXAs@smile.fi.intel.com>
-References: <1713881751-21621-1-git-send-email-kotaranov@linux.microsoft.com>
- <20240423150315.GA891022@nvidia.com>
- <Zivb7qs4gSywzVsL@smile.fi.intel.com>
- <20240426165815.GA2876951@dev-arch.thelio-3990X>
+	s=arc-20240116; t=1714156448; c=relaxed/simple;
+	bh=veT0sDsyrl73mCujRdcKEc2AtCFryNFecy2sFtWamoE=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=k+9rUytcgvt9l0AGz+H1OhP7FE/ib3r1YJlWpuf3kIS7Y9tiNKs8SgBZ6lYQz22eY4oX9ral0G+oknKzLe9VVoCyge1UKAskqSM3JMx2zfDrYK6FfbBhOpS04kEC4InhdwobFbGLx38llN4hKRVfJ9zce4JtaA53ceGOWDy1e5c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=fastly.com; spf=pass smtp.mailfrom=fastly.com; dkim=pass (1024-bit key) header.d=fastly.com header.i=@fastly.com header.b=vVVU2/Ct; arc=none smtp.client-ip=209.85.214.169
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=fastly.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fastly.com
+Received: by mail-pl1-f169.google.com with SMTP id d9443c01a7336-1e3f17c6491so20381975ad.2
+        for <linux-rdma@vger.kernel.org>; Fri, 26 Apr 2024 11:34:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=fastly.com; s=google; t=1714156446; x=1714761246; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=pZoSwzLi6xvTIvtNVms/jlVvWAfvYtCLM7lzp/fumoA=;
+        b=vVVU2/Ct3D4r2pjJ2u3DuoB0ifAiZURDotWsnzPg8nxXXw9YkeMRN6cieUZGPlPzMX
+         MqTsJnI6khIFz+q5hkcs0CUXKEUv88CDwSoel4Mvr+R9QJwsFrlZULYwll/ba9T1GTz+
+         xHVf6eo1eoKnSks0UCOmH4o2MKl+zoHnkiS18=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1714156446; x=1714761246;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=pZoSwzLi6xvTIvtNVms/jlVvWAfvYtCLM7lzp/fumoA=;
+        b=W0gppYo45/79d1E11SF7zT3kboyEKvTSyPg7WeXRzxf4/oeELYrm4USj66Vn63Hn8A
+         Pm+ztfRlfzpicNTR7CQgowiMI+HBb1uCPr6cZdgdGM0C+vHOv/HFhAASBqb3LiBkIrPD
+         dlnsB2xyjcF2OJqwJXvL1Wbi1Q2pVeg/lifUl5z0qdd31A0D1ns6PbADD8OmdFEcqtow
+         oF70mXFw4h9O0YF2d6rpAdHQdqTGLI9Co1mBxObAl+AH+hgBnWpTWgbJrvlcoErKr4fd
+         8V199Xy+jJ39UgFh3E6GGI3Stwy6MAgfNd3lDFuoS1WwPPxFTzSZhQ3tCoHqmd0VTqer
+         TYXA==
+X-Forwarded-Encrypted: i=1; AJvYcCUe0q+6COHblU67Eo1l0lSR5zhcW53RdoykznBDhvNNxr9oGPe+gEOiJwt2wssIzrgXRuBwT9VBTcXh3lr9HY7r7doE7bszZp2hxQ==
+X-Gm-Message-State: AOJu0YxOzUCQWGqAI7lJjtiNQEYqUgNUnAJWEEFn/jhrt6kaP4aC5PZl
+	EXC06BH2Sh7AYDxPY1YK4m8WMl8y3iPCUE+aDg6aCWln32Y4CGNZ6cHVaWQeus4=
+X-Google-Smtp-Source: AGHT+IHnG5xfPC7t9g3uaoL8prAXxXW+Go6YADGhLzvoUqn+vtXCfvI59SkJt+SVoMBVTy4FuT5Pxw==
+X-Received: by 2002:a17:902:c40f:b0:1e4:4537:40ab with SMTP id k15-20020a170902c40f00b001e4453740abmr4026315plk.12.1714156446226;
+        Fri, 26 Apr 2024 11:34:06 -0700 (PDT)
+Received: from localhost.localdomain ([2620:11a:c019:0:65e:3115:2f58:c5fd])
+        by smtp.gmail.com with ESMTPSA id j23-20020a170902759700b001deecb4f897sm15713152pll.100.2024.04.26.11.34.04
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 26 Apr 2024 11:34:05 -0700 (PDT)
+From: Joe Damato <jdamato@fastly.com>
+To: linux-kernel@vger.kernel.org,
+	netdev@vger.kernel.org,
+	tariqt@nvidia.com,
+	saeedm@nvidia.com
+Cc: mkarsten@uwaterloo.ca,
+	gal@nvidia.com,
+	nalramli@fastly.com,
+	Joe Damato <jdamato@fastly.com>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>,
+	linux-rdma@vger.kernel.org (open list:MELLANOX MLX4 core VPI driver),
+	Paolo Abeni <pabeni@redhat.com>
+Subject: [PATCH net-next v2 0/3] mlx4: Add support for netdev-genl API
+Date: Fri, 26 Apr 2024 18:33:52 +0000
+Message-Id: <20240426183355.500364-1-jdamato@fastly.com>
+X-Mailer: git-send-email 2.25.1
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240426165815.GA2876951@dev-arch.thelio-3990X>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+Content-Transfer-Encoding: 8bit
 
-On Fri, Apr 26, 2024 at 09:58:15AM -0700, Nathan Chancellor wrote:
-> On Fri, Apr 26, 2024 at 07:53:02PM +0300, Andy Shevchenko wrote:
-> > On Tue, Apr 23, 2024 at 12:03:15PM -0300, Jason Gunthorpe wrote:
-> > > On Tue, Apr 23, 2024 at 07:15:51AM -0700, Konstantin Taranov wrote:
-> > > > From: Konstantin Taranov <kotaranov@microsoft.com>
-> > > > 
-> > > > Set ret to -ENODEV when netdev_master_upper_dev_get_rcu
-> > > > returns NULL.
-> > > > 
-> > > > Fixes: 8b184e4f1c32 ("RDMA/mana_ib: Enable RoCE on port 1")
-> > > > Signed-off-by: Konstantin Taranov <kotaranov@microsoft.com>
-> > > > ---
-> > > >  drivers/infiniband/hw/mana/device.c | 1 +
-> > > >  1 file changed, 1 insertion(+)
-> > > 
-> > > Applied to for-next, thanks
-> > 
-> > So, what's wrong with my patch that had been sent _before_ this one?
-> 
-> Was it?
-> 
-> This patch:
-> 
->   $ date -d 'Tue, 23 Apr 2024 07:15:51 -0700' -u
->   Tue Apr 23 02:15:51 PM UTC 2024
-> 
-> Your patch: https://lore.kernel.org/20240423204258.3669706-1-andriy.shevchenko@linux.intel.com/
-> 
->   $ date -d 'Tue, 23 Apr 2024 23:42:58 +0300' -u
->   Tue Apr 23 08:42:58 PM UTC 2024
-> 
-> Seems like this one beat yours by six hours?
+Greetings:
 
-Repeating myself from another thread:
+Welcome to v2.
 
-"""
-Oh, my... Sorry, I missed PM, it was mine sent after that one!
-I guess time for weekend.
-"""
+This series adds support to mlx4 for the netdev-genl API which makes it
+much easier for users and user programs to map NAPI IDs back to
+ifindexes, queues, and IRQs. This is extremely useful for a number of
+use cases, including epoll-based busy poll.
 
-Sorry for the noise and have a nice weekend!
+In addition, this series includes a patch to generate per-queue
+statistics using the netlink API, as well.
+
+To facilitate the stats, patch 1/3 makes use of an existing field,
+"dropped" which was already being exported in the ethtool stats by the
+driver, but was never incremented. As of patch 1/3, it is now being
+incremented by the driver in an appropriate place and used in patch 3/3
+as alloc_fail.
+
+Please note: I do not have access to mlx4 hardware, but I've been
+working closely with Martin Karsten from University of Waterloo (CC'd)
+who has very graciously tested my patches on their mlx4 hardware (hence
+his Tested-by attribution in each commit). His latest research work is
+particularly interesting [1] and this series helps to support that (and
+future) work.
+
+Martin has re-tested this v2 using Jakub's tool [2] and the
+stats.pkt_byte_sum and stats.qstat_by_ifindex tests passed.
+
+[1]: https://dl.acm.org/doi/pdf/10.1145/3626780
+[2]: https://lore.kernel.org/lkml/20240423175718.4ad4dc5a@kernel.org/
+
+Thanks,
+Joe
+
+v1 -> v2:
+ - Patch 1/3 now initializes dropped to 0.
+ - Patch 2/3 fix use of uninitialized qtype warning.
+ - Patch 3/3 includes several changes:
+   - mlx4_get_queue_stats_rx and mlx4_get_queue_stats_tx check if i is
+     valid before proceeding.
+   - All initialization to 0xff for stats fields has been omit. The
+     network stack does this before calling into the driver functions, so
+     I've adjusted the driver functions to only set values if there is
+     data to set, leaving the network stack's 0xff in place if not.
+   - mlx4_get_base_stats set all stat fields to 0 individually if there
+     are RX and TX queues.
+
+Joe Damato (3):
+  net/mlx4: Track RX allocation failures in a stat
+  net/mlx4: link NAPI instances to queues and IRQs
+  net/mlx4: support per-queue statistics via netlink
+
+ drivers/net/ethernet/mellanox/mlx4/en_cq.c    | 14 ++++
+ .../net/ethernet/mellanox/mlx4/en_netdev.c    | 79 +++++++++++++++++++
+ drivers/net/ethernet/mellanox/mlx4/en_port.c  |  5 +-
+ drivers/net/ethernet/mellanox/mlx4/en_rx.c    |  4 +-
+ drivers/net/ethernet/mellanox/mlx4/mlx4_en.h  |  1 +
+ 5 files changed, 101 insertions(+), 2 deletions(-)
 
 -- 
-With Best Regards,
-Andy Shevchenko
-
+2.25.1
 
 
