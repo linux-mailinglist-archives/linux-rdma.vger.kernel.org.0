@@ -1,358 +1,319 @@
-Return-Path: <linux-rdma+bounces-2146-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-2147-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3EB5D8B5DDC
-	for <lists+linux-rdma@lfdr.de>; Mon, 29 Apr 2024 17:37:43 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 512D98B60E2
+	for <lists+linux-rdma@lfdr.de>; Mon, 29 Apr 2024 20:08:47 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C59BFB2DE95
-	for <lists+linux-rdma@lfdr.de>; Mon, 29 Apr 2024 15:29:13 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 082042820CC
+	for <lists+linux-rdma@lfdr.de>; Mon, 29 Apr 2024 18:08:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D5614127E2E;
-	Mon, 29 Apr 2024 15:25:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D9DE51292C4;
+	Mon, 29 Apr 2024 18:08:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="kq8U/A47"
+	dkim=pass (1024-bit key) header.d=microsoft.com header.i=@microsoft.com header.b="feXDQZBh"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from SN4PR2101CU001.outbound.protection.outlook.com (mail-southcentralusazon11020003.outbound.protection.outlook.com [40.93.193.3])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9031A127E21;
-	Mon, 29 Apr 2024 15:25:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714404348; cv=none; b=PsdMiG4uzOUB3qladiR423+BdaKKstC44Pa6EieIGXMjXtz3Rq6yjjRR84z2RHwbiBMFmK3qsbq8JrmaaCoVZhSDW+tDSEXn/VrI3rc02efmbDPxDUkyl+v++7A+JarBjVhZrM/9i4dufRqvuxiOQtrMzv4U8VRtbPTyZeX2iHI=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714404348; c=relaxed/simple;
-	bh=CQQfWet9gRYvytRYkhPPwpkxKK1mvYgGDcAwgOS5qq8=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=lkdsNykc4mYT+n0rdCfX47psPaQtUz6gok68tl5xu5FSylT+xEoCl4xEkPGJWU0Z6941jrwy/J6cxg8SNeO/6LoHtUPPFZggo18U6OKburZLRSt4+4Z7N/7XCytaX+zY7Gn4zVSO1IUuKbz4ZCbO7oxAzolX7cXXsipWIORD5io=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=kq8U/A47; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B5738C4AF14;
-	Mon, 29 Apr 2024 15:25:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1714404348;
-	bh=CQQfWet9gRYvytRYkhPPwpkxKK1mvYgGDcAwgOS5qq8=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=kq8U/A47lB/1NODC/Kh6VcY/ruMTF9Qv7513eb5dGgAr18xX/z2tqkCgOPQXFHhfx
-	 zGTCVFeNlsPhD65M/Vqlml6hR3OGTJJkAct15k9IKgtXX8sU7MmkkuanDflbnt8m+J
-	 hepoEqHOkGkhoA9yELEKxzftSMtLl/TYfWNzS/Tuj4qZwSX1/R0FEJXQYx7aFw1VRn
-	 nDtHh7+d9KRNrnwwkh8VNNfZTuaKw1ipyi5MFXOnd/l5MWVIsE4esP1rstdQXR5+XH
-	 mm2cU8vl4u5v19NxQEG9Lf9lDGDlKgVsveQZHEm6zfufPPPHX1uCQQc3VpYIWOvpsy
-	 XoMX/PokCIYSw==
-From: cel@kernel.org
-To: <linux-nfs@vger.kernel.org>,
-	<linux-rdma@vger.kernel.org>
-Cc: Chuck Lever <chuck.lever@oracle.com>
-Subject: [RFC PATCH 4/4] xprtrdma: Move MRs to struct rpcrdma_ep
-Date: Mon, 29 Apr 2024 11:25:42 -0400
-Message-ID: <20240429152537.212958-10-cel@kernel.org>
-X-Mailer: git-send-email 2.44.0
-In-Reply-To: <20240429152537.212958-6-cel@kernel.org>
-References: <20240429152537.212958-6-cel@kernel.org>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EE0838614C;
+	Mon, 29 Apr 2024 18:08:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.93.193.3
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1714414113; cv=fail; b=I93frS770xXGR25/UJ0YfT+1va/sNUyUhpWiocTI9SNWtEoXZ4VydRvdrOerHcxQAkmToda3vlfij9A6STsaaZnG0BqYfZn2qJYx5cjtVgRQpvdK5Y8m59ToFpIv/eEr/kjuRo37cLeZsiRWl9iaMjguPnZkVgVppwns6jJQdyA=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1714414113; c=relaxed/simple;
+	bh=6+aBC6a00/jBzBDPFNovD24OIC+UcfmZMzks+0xt2oE=;
+	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
+	 Content-Type:MIME-Version; b=pQtzx4/RGJeAFwpZNW9oyILKOIC2pIwG5gFcBeFG4Ws2ivUubrFS0BUArya3U2C1i6M/Kon+xbaXPcLiRwETVh43KV5cbJWlKCT39HYZQWZC1/KnMVl/MVry2evV86iUPU8MieI+X8JOUAJNA05ClYv5SFfUzp88qtYXIKyU1Ks=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=microsoft.com; spf=pass smtp.mailfrom=microsoft.com; dkim=pass (1024-bit key) header.d=microsoft.com header.i=@microsoft.com header.b=feXDQZBh; arc=fail smtp.client-ip=40.93.193.3
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=microsoft.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=microsoft.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=g0Xnpr8vPs8gaEUv44OklsYBE4ZVe1M8ZcTtP1JQRKyUhC0sRO4rmrmz4q8YZX3pNTUvwn1dEb70RJHEWd0F2rSm/a9zT5bOPXHHW64Jyk5j5UXXZoi8f3m7xRdYmHovmGuZnBhpAAdhapCDVx2oc0jNlBsHraQDaZeQw2eK8WIUc6ZVo/u1cGq/yQNaHopCJLkjcvE4tvRsTtY89Toff+BPejZfmzGVYJcfaha14JN0+OkGb4nFcKinhE+n6DumArZF9HyREE3ljzoRlI4BygAnTrFIrKp5qA1EMn/r3zy8gBc4E4SkhclNN8I5TZKNqP8IZ+fO+CU5Dwmty82j/g==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=CccGTKr+hshhZpzFr5ue8WpzM1Nb46EcLbryrkO+VrM=;
+ b=gvxeR2kSUqxX5GNOWpQDnfM0hcdJGf3iQdQDd+okXenK4SZBxFPwCyzF0fz2K8DIYrONUNQd1nW3hLMjzmCqhG1fUECXZCbu7rVqu0pfGdj+DLWJCFughMZQ7LlYhHfkv5RoM10QSXPJpAzSI4CEgbK3hVMdCcIN6rqFpY+/PnfHcTVJKENHjU53axjmWX5sKc9h3MEKF4bQSIQcmRRQSvrFiOEzn6ea2jIK0YM5l6AVr3t710Ywb1hu54UHT3qfW1R+DmPZk5jBV14RFh9N7yHABxRGcxDmwt8/ItGBBZBddOvMbyqJiKeDZswaWBDAXDjTTg15068lB0hP+bQ1tQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=microsoft.com; dmarc=pass action=none
+ header.from=microsoft.com; dkim=pass header.d=microsoft.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=CccGTKr+hshhZpzFr5ue8WpzM1Nb46EcLbryrkO+VrM=;
+ b=feXDQZBhpxGcMRrOkil3hy1KFjwHVb9TkvJBEYKQiKeiEwme9FUsxvOsYwuTetOtTrPhkZdl4GwfBEvW9XLYlSbbZPdei8nJHKw+Cm3PV/KVftAuWWWyHDIMlu2F1o6XCFoW2kS8Sf9PQyFOxztlFJdbgvWDymMUFuVMRP+dcPU=
+Received: from SJ1PR21MB3457.namprd21.prod.outlook.com (2603:10b6:a03:453::5)
+ by IA1PR21MB3595.namprd21.prod.outlook.com (2603:10b6:208:3e0::14) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7544.23; Mon, 29 Apr
+ 2024 18:08:27 +0000
+Received: from SJ1PR21MB3457.namprd21.prod.outlook.com
+ ([fe80::94ec:979:8364:85eb]) by SJ1PR21MB3457.namprd21.prod.outlook.com
+ ([fe80::94ec:979:8364:85eb%4]) with mapi id 15.20.7544.019; Mon, 29 Apr 2024
+ 18:08:27 +0000
+From: Long Li <longli@microsoft.com>
+To: Konstantin Taranov <kotaranov@linux.microsoft.com>, Konstantin Taranov
+	<kotaranov@microsoft.com>, "sharmaajay@microsoft.com"
+	<sharmaajay@microsoft.com>, "jgg@ziepe.ca" <jgg@ziepe.ca>, "leon@kernel.org"
+	<leon@kernel.org>
+CC: "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: RE: [PATCH rdma-next v2 5/5] RDMA/mana_ib: implement uapi for
+ creation of rnic cq
+Thread-Topic: [PATCH rdma-next v2 5/5] RDMA/mana_ib: implement uapi for
+ creation of rnic cq
+Thread-Index: AQHal9t008XqsRzWOUiSmiSGonpoubF/kHbg
+Date: Mon, 29 Apr 2024 18:08:26 +0000
+Message-ID:
+ <SJ1PR21MB3457722A994F429FDE0C46FACE1B2@SJ1PR21MB3457.namprd21.prod.outlook.com>
+References: <1714137160-5222-1-git-send-email-kotaranov@linux.microsoft.com>
+ <1714137160-5222-6-git-send-email-kotaranov@linux.microsoft.com>
+In-Reply-To: <1714137160-5222-6-git-send-email-kotaranov@linux.microsoft.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach:
+X-MS-TNEF-Correlator:
+msip_labels:
+ MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ActionId=fad8713b-ecb4-44a8-9989-0b4ccf5bc06f;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ContentBits=0;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Enabled=true;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Method=Standard;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Name=Internal;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SetDate=2024-04-29T18:07:24Z;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SiteId=72f988bf-86f1-41af-91ab-2d7cd011db47;
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=microsoft.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: SJ1PR21MB3457:EE_|IA1PR21MB3595:EE_
+x-ms-office365-filtering-correlation-id: c7bbb733-2dba-42df-1ecf-08dc68775e23
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;ARA:13230031|376005|1800799015|366007|38070700009;
+x-microsoft-antispam-message-info:
+ =?us-ascii?Q?r4AqgYNMHcgnUml96Dsg1IliokryXV9u+w81HvD5Rbnk7lydSgdRqNLKG+cw?=
+ =?us-ascii?Q?UeXXxrmfnjMaD2Uit6gtA8lU9NmxCswntdHg+/GxfusTc/w9yevpd2SebBa5?=
+ =?us-ascii?Q?GX27bQrMjwAxUl8QuvFquo5tjKgx9zvIZw54TaPOoxryn09s+i0ujdoNPgU/?=
+ =?us-ascii?Q?6N9gCSJay5G34kXMUVVS32NrwODf7vto3rJx8zyg52bsUCuWaV+Z5TeGX+jF?=
+ =?us-ascii?Q?UgZh6yMnzN5QIbMtp4R4PpK9u1DKl0l3FW86RXh/I1yClaypXyYNXPKKQ9b+?=
+ =?us-ascii?Q?K67XrSE+iDnKYGZM8si8nzwGbV59jaDNKpF+6l3FPu9Y1BEuan/SLQKHwXIS?=
+ =?us-ascii?Q?u8uSLXuenKB6jnppW5FMzeXFpB3rZF6jQIwa2b6ZYjcx9K5gByfr47AHXezT?=
+ =?us-ascii?Q?ygPxRZOFVTK2dJfYXTCV8hE2Z3TM52tfSUrHPgtdnQBi+taQAP+32jg4yG8G?=
+ =?us-ascii?Q?rv1e5CXuTUkKx/Th6FxwqFhUWH4wNfZbYJeVkYKgQHYYKnj97QRdCzFlx6mO?=
+ =?us-ascii?Q?lseoY+Y45RSFVYh08aL+kBMdGrY80fs/aDS8bGUlB8DlVxZ4Gv+Z6+1tv1P1?=
+ =?us-ascii?Q?Eu/LKFp9ApT5jo+Ug9daQuO/kTOmlen0swGdaG2HPkWrurcodGbh+hyTIfS6?=
+ =?us-ascii?Q?5pZYWiEd/tFGTryK1AyWbaCcNbZV070XylRXI/eEtGt1iYamxdhjZgbXNp+0?=
+ =?us-ascii?Q?EAzgMrzhrASMj82OSuX/xQ138Ru3YJyTSWoanHKgUtYad26gjoqlXC4FYiwW?=
+ =?us-ascii?Q?tcMY+va62WSa4Ufp9g9/wRIj0EkyNqy/D0ogfW3qUXiwmbuBp3sgjcRFeJKF?=
+ =?us-ascii?Q?KJRxFUtLrwEvAkiSudhq/x5O4FGtWTmJrX4Gq6pz9JL1MfAmSm704+0rnDqY?=
+ =?us-ascii?Q?LGoMvXTwQov6t9Gh1TOOF4J/MqJGIyLN+M9/y9/Ltdw2W6+Q56nxBazCdKv7?=
+ =?us-ascii?Q?jg4Q10JG3VGG5qdRPYO7TPCvwLODNrUVf8vpENTcT8wpkffk0iFRVZa/uCI8?=
+ =?us-ascii?Q?j9i/zLctzmfqXX3BQ0aGKRR8mO8QxKPlrE4Zj5yKfjoqvzqjb0ocUBP8SRm4?=
+ =?us-ascii?Q?255IZXl3hOIc8OeeG84sqmSR5p81TXLpefUH0ugFXE8fv316el6nmMOuwvY8?=
+ =?us-ascii?Q?YGwJmM3kF5geECMIy5CWXs89gpSf5eyMoLSESwLzMsfkYaNtCQowCtNd7cGN?=
+ =?us-ascii?Q?1QOfQF76+4WCORn9GFD1os1ai7cwCcbjYojOv+y46uxVgOt9KdiK5Z+hAaDS?=
+ =?us-ascii?Q?tIO8MfE1K7FpAzwijeLeGng3kBhbK6I7xDf5lbCNCYk8nsouAp2//smxIEnE?=
+ =?us-ascii?Q?FPYKCPkSdMDlg6v5MkEuPgsYA+fem8T6HDaVDXIgv3W49A=3D=3D?=
+x-forefront-antispam-report:
+ CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SJ1PR21MB3457.namprd21.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376005)(1800799015)(366007)(38070700009);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0:
+ =?us-ascii?Q?LPbvXL6iU9Fju1sWEod8GRQoHyMongxg4YmuZPQnp0XPxEOedhmHgtj6bezC?=
+ =?us-ascii?Q?TSAX7wJUZIzS0xee7oifkQwdgZwG5MRkzPA7CEoqDw3hSNnljq79WVVkY4ph?=
+ =?us-ascii?Q?kG78eIH3xNEO1pZBxpBxczymAOGxCeWMqkVt+YjkvNv9OaASCjCz+YNLuaMh?=
+ =?us-ascii?Q?we1jttvrTlBYjBGasPZR0BnEPkPYYhVaDg+8k0B13oU6hfLqN9qU8tsdVUU4?=
+ =?us-ascii?Q?p3VRJinTk7gX0KxARwCjSXAQiopuHdQQpG0A13SfsJ5SjbLylmksOGJeeOEb?=
+ =?us-ascii?Q?p+UM+nIYPTVMEMmj1UStgVOFXJxerYaSuoZ4t1ngd37GK+Lq7hFb8olGTouB?=
+ =?us-ascii?Q?0oU2knOAc0tOiZcF//5NoxZqhRn42R0FbCUeZOeMCS9Afa/bsvlI6RFTqm+j?=
+ =?us-ascii?Q?qj/AVyk9TVyQP/IGYne/Z8aXEZ3+GXGgPIm5nac1uVI2c7vRzdNvHjQvx8El?=
+ =?us-ascii?Q?wTLSvkQ3x2l1ZS05Ph6+4MGCxjx6PZj8JZOkTaGnvynfhbOTFI1ews+wUwqp?=
+ =?us-ascii?Q?dfSOpEP0wf9yJ3uRsXUlMHSoHU/Ki7DRMpVauZiblae9WuYSg1zFI/QkBPnY?=
+ =?us-ascii?Q?5I3RL0PzRH5Th0na1VTZo4kXkxdPq0WZtl6mKhAAzCW2sNTwhcyn+VfummUW?=
+ =?us-ascii?Q?DaghVdncA61gNec+DercC/oZmF2H7S+8oZWubMk1PwmFKzhjXbqmAZdu2TKY?=
+ =?us-ascii?Q?PopvbwUhtJU03HwPmo6MKxccHyc7MVhxsTJarZDvlK/uTZr7RCLHy3RVc+m7?=
+ =?us-ascii?Q?cKJGosbOpaQWhyZU5UvPZh8uwSZGj1vByQFYpd87KsbcteDEXSymGXVwJcL7?=
+ =?us-ascii?Q?bYpoQR13zS+AFfR2vZ6lIn98asRoPSokYvDSZsjt6tw+lpvnFFoXEwFZa6Sp?=
+ =?us-ascii?Q?4talkPNgrj9DSGNYcbiImbRzrgAtUnsy/U3qYa/lKzGuAjszc3cqCFtXYW5W?=
+ =?us-ascii?Q?yrJSNSBNlChllB93Z2dYPtGeTT1Dzw7L3FfiGoSG26vlHKRlvrnLWvqe2QHB?=
+ =?us-ascii?Q?cJIGebkW/k/SLnaaJ8QeVFv1MV/ZVEO+JTo8i3foDm5QF90yWyCTKMCjg/19?=
+ =?us-ascii?Q?UL3s61CQ3Do6zzWGdvpOdm4YTIjMbZ+yEIgxT6WdfkHR1CUBLUS6wlSZBDsP?=
+ =?us-ascii?Q?6/mK2mFd0RnhUEPThnWjSfPOJqtFSf0O/ZsodfY2gUEvEPx/ksDFAOEXIDFV?=
+ =?us-ascii?Q?87gyHiDClkoqEZuOU82EqonSO9r329hdQPRF/w1ePBd1YIXR+dFtcti9a/gB?=
+ =?us-ascii?Q?uRuDyF3AfpkYFfdnJDxGTMh0HWcdMPW3U4R0CbZIpoD7MriB98yMnC3PSF7K?=
+ =?us-ascii?Q?Vd/ppLIvHpp1gh7qQ7ZYc3NV+I/NpWzKeQ5rDx7htlaCHvWja89xFM3gKcQd?=
+ =?us-ascii?Q?DD5wU4q/su7HqtEqxa2PgqknjhcRokEih6MBYf09dJi5mbw0admosGAtXU8u?=
+ =?us-ascii?Q?s7nYb2olWQWxxtKOGeGptMBT9r5Dww1GHpPGAkSlKzBuG4R+8Z7oZzhHEWls?=
+ =?us-ascii?Q?t75FdUvGZ+5eqs3IbCO91T7YLkUGdiCVV7+cmKBhi0ks7iysQfNSD2rOCrZv?=
+ =?us-ascii?Q?fxTHFWdAaslm3k+wYx6lezs7uIWiVHzSC5pukMgf?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=9678; i=chuck.lever@oracle.com; h=from:subject; bh=l6rX/ZC8L4NkMCKe75WVMTLvRYW9ylOWHZBIeAcPFs8=; b=owEBbQKS/ZANAwAIATNqszNvZn+XAcsmYgBmL7vy2WObc4SeGY0QS08ZGftCF6Z/O1ZwLJPYe 5AUr2Aqi9OJAjMEAAEIAB0WIQQosuWwEobfJDzyPv4zarMzb2Z/lwUCZi+78gAKCRAzarMzb2Z/ lw3dD/9MwY+wnUScEPuB+AiOwPYc+kKmXYJaiQnYr6eAUy0aSrLTxHUcOxjJDIf5HFoHNHHJR7w Qf+kCvjiTtyU0Escy6w8hC0KtZGciu9XdSVsYkAZxqNbExhjftv5I2Q9b6H1EkG2F0ObUjP2zXv DVneX39ysB/5li9PjCuVUDktvh+wNJzZPaHxYwiR+X4agVsqE4/huj3eu4UpCsbLtEXwTFnkqJ6 y2L4MVdKxfkuyrXCYQJjo7Mtcn9lz4TNGPu7M54oyyTjIndxFHkW9BghrzOtsUWYKs+EzmVWMk0 OSZKsRgtYPNlHe+gK68SYsjXr6Sof3woBo08CgIsv1cb+BnTPSR/osfRIOA4JwXtU5a+S6m2nei gFKfjY8Ljaody4Mwh/VDhhoZ8B4u1MJemrUT1UakxFP5Qb1iTgMTW8rSRmWPwYWGrwvi8qX6tCZ A1nS6AhAbHagz0/LgtgNIAGkI4A3MJSraqS/xDXNbgpZYSESHb6lfBJObz/vmxPPv50DgH/wlex 792ApRdoA5PtowzCD/Rrc178ofadFN2kht0dHYxxqO79NUH4nkA0Lf5xtD8Exn7zjfKgyGGQvQ5 VcKOCG9snPnvvT74+ehOj+QP/59L+78s81rlEcPPeWv7nqfD3cq+wDgbNgQTKeqrh1JUbzKRvWA eLBe0IGnB9AglFQ==
-X-Developer-Key: i=chuck.lever@oracle.com; a=openpgp; fpr=28B2E5B01286DF243CF23EFE336AB3336F667F97
-Content-Transfer-Encoding: 8bit
+X-OriginatorOrg: microsoft.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: SJ1PR21MB3457.namprd21.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: c7bbb733-2dba-42df-1ecf-08dc68775e23
+X-MS-Exchange-CrossTenant-originalarrivaltime: 29 Apr 2024 18:08:26.9171
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 72f988bf-86f1-41af-91ab-2d7cd011db47
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: MsRoCbJbqr+/+bfKEZLsctEUM9f27dUvXIw93nPbKEMYSG1PdaeaOR+FB+nD8M2MQU/7ptMzvfWj0p21+v/hyA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: IA1PR21MB3595
 
-From: Chuck Lever <chuck.lever@oracle.com>
+> Subject: [PATCH rdma-next v2 5/5] RDMA/mana_ib: implement uapi for creati=
+on
+> of rnic cq
+>=20
+> From: Konstantin Taranov <kotaranov@microsoft.com>
+>=20
+> Enable users to create RNIC CQs using a corresponding flag.
+> With the previous request size, an ethernet CQ is created.
+> As a response, return ID of the created CQ.
+>=20
+> Signed-off-by: Konstantin Taranov <kotaranov@microsoft.com>
+> ---
+>  drivers/infiniband/hw/mana/cq.c | 55 ++++++++++++++++++++++++++++++---
+>  include/uapi/rdma/mana-abi.h    | 12 +++++++
+>  2 files changed, 63 insertions(+), 4 deletions(-)
+>=20
+> diff --git a/drivers/infiniband/hw/mana/cq.c b/drivers/infiniband/hw/mana=
+/cq.c
+> index 688ffe6..c6a3fd5 100644
+> --- a/drivers/infiniband/hw/mana/cq.c
+> +++ b/drivers/infiniband/hw/mana/cq.c
+> @@ -9,17 +9,22 @@ int mana_ib_create_cq(struct ib_cq *ibcq, const struct
+> ib_cq_init_attr *attr,
+>  		      struct ib_udata *udata)
+>  {
+>  	struct mana_ib_cq *cq =3D container_of(ibcq, struct mana_ib_cq, ibcq);
+> +	struct mana_ib_create_cq_resp resp =3D {};
+> +	struct mana_ib_ucontext *mana_ucontext;
+>  	struct ib_device *ibdev =3D ibcq->device;
+>  	struct mana_ib_create_cq ucmd =3D {};
+>  	struct mana_ib_dev *mdev;
+> +	bool is_rnic_cq;
+> +	u32 doorbell;
+>  	int err;
+>=20
+>  	mdev =3D container_of(ibdev, struct mana_ib_dev, ib_dev);
+>=20
+> -	if (udata->inlen < sizeof(ucmd))
+> -		return -EINVAL;
+> -
+>  	cq->comp_vector =3D attr->comp_vector % ibdev->num_comp_vectors;
+> +	cq->cq_handle =3D INVALID_MANA_HANDLE;
+> +
+> +	if (udata->inlen < offsetof(struct mana_ib_create_cq, flags))
+> +		return -EINVAL;
+>=20
+>  	err =3D ib_copy_from_udata(&ucmd, udata, min(sizeof(ucmd), udata-
+> >inlen));
+>  	if (err) {
+> @@ -28,7 +33,9 @@ int mana_ib_create_cq(struct ib_cq *ibcq, const struct
+> ib_cq_init_attr *attr,
+>  		return err;
+>  	}
+>=20
+> -	if (attr->cqe > mdev->adapter_caps.max_qp_wr) {
+> +	is_rnic_cq =3D !!(ucmd.flags & MANA_IB_CREATE_RNIC_CQ);
+> +
+> +	if (!is_rnic_cq && attr->cqe > mdev->adapter_caps.max_qp_wr) {
+>  		ibdev_dbg(ibdev, "CQE %d exceeding limit\n", attr->cqe);
+>  		return -EINVAL;
+>  	}
+> @@ -40,7 +47,41 @@ int mana_ib_create_cq(struct ib_cq *ibcq, const struct
+> ib_cq_init_attr *attr,
+>  		return err;
+>  	}
+>=20
+> +	mana_ucontext =3D rdma_udata_to_drv_context(udata, struct
+> mana_ib_ucontext,
+> +						  ibucontext);
+> +	doorbell =3D mana_ucontext->doorbell;
+> +
+> +	if (is_rnic_cq) {
+> +		err =3D mana_ib_gd_create_cq(mdev, cq, doorbell);
+> +		if (err) {
+> +			ibdev_dbg(ibdev, "Failed to create RNIC cq, %d\n", err);
+> +			goto err_destroy_queue;
+> +		}
+> +
+> +		err =3D mana_ib_install_cq_cb(mdev, cq);
+> +		if (err) {
+> +			ibdev_dbg(ibdev, "Failed to install cq callback, %d\n",
+> err);
+> +			goto err_destroy_rnic_cq;
+> +		}
+> +	}
+> +
+> +	resp.cqid =3D cq->queue.id;
+> +	err =3D ib_copy_to_udata(udata, &resp, min(sizeof(resp), udata->outlen)=
+);
+> +	if (err) {
+> +		ibdev_dbg(&mdev->ib_dev, "Failed to copy to udata, %d\n", err);
+> +		goto err_remove_cq_cb;
+> +	}
+> +
+>  	return 0;
+> +
+> +err_remove_cq_cb:
+> +	mana_ib_remove_cq_cb(mdev, cq);
+> +err_destroy_rnic_cq:
+> +	mana_ib_gd_destroy_cq(mdev, cq);
+> +err_destroy_queue:
+> +	mana_ib_destroy_queue(mdev, &cq->queue);
+> +
+> +	return err;
+>  }
+>=20
+>  int mana_ib_destroy_cq(struct ib_cq *ibcq, struct ib_udata *udata) @@ -5=
+2,6
+> +93,12 @@ int mana_ib_destroy_cq(struct ib_cq *ibcq, struct ib_udata *uda=
+ta)
+>  	mdev =3D container_of(ibdev, struct mana_ib_dev, ib_dev);
+>=20
+>  	mana_ib_remove_cq_cb(mdev, cq);
+> +
+> +	/* Ignore return code as there is not much we can do about it.
+> +	 * The error message is printed inside.
+> +	 */
+> +	mana_ib_gd_destroy_cq(mdev, cq);
+> +
+>  	mana_ib_destroy_queue(mdev, &cq->queue);
+>=20
+>  	return 0;
+> diff --git a/include/uapi/rdma/mana-abi.h b/include/uapi/rdma/mana-abi.h
+> index 5fcb31b..2c41cc3 100644
+> --- a/include/uapi/rdma/mana-abi.h
+> +++ b/include/uapi/rdma/mana-abi.h
+> @@ -16,8 +16,20 @@
+>=20
+>  #define MANA_IB_UVERBS_ABI_VERSION 1
+>=20
+> +enum mana_ib_create_cq_flags {
+> +	MANA_IB_CREATE_RNIC_CQ	=3D 1 << 0,
+> +};
+> +
+>  struct mana_ib_create_cq {
+>  	__aligned_u64 buf_addr;
+> +	__u16	flags;
+> +	__u16	reserved0;
+> +	__u32	reserved1;
+> +};
+> +
+> +struct mana_ib_create_cq_resp {
+> +	__u32 cqid;
+> +	__u32 reserved;
+>  };
+>=20
+>  struct mana_ib_create_qp {
+> --
+> 2.43.0
 
-MRs are a connection-specific hardware resource, thus they should be
-anchored in the EP and released with the other hardware resources.
+For this review, it will be helpful if you can also post a link to the rdma=
+-core changes.
 
-Closes: Link: https://bugzilla.kernel.org/show_bug.cgi?id=218704
-Signed-off-by: Chuck Lever <chuck.lever@oracle.com>
----
- net/sunrpc/xprtrdma/frwr_ops.c  |  7 ++--
- net/sunrpc/xprtrdma/verbs.c     | 70 ++++++++++++++++-----------------
- net/sunrpc/xprtrdma/xprt_rdma.h | 13 +++---
- 3 files changed, 45 insertions(+), 45 deletions(-)
-
-diff --git a/net/sunrpc/xprtrdma/frwr_ops.c b/net/sunrpc/xprtrdma/frwr_ops.c
-index 6e508708d06d..7e918753eec4 100644
---- a/net/sunrpc/xprtrdma/frwr_ops.c
-+++ b/net/sunrpc/xprtrdma/frwr_ops.c
-@@ -112,15 +112,14 @@ void frwr_reset(struct rpcrdma_req *req)
- 
- /**
-  * frwr_mr_init - Initialize one MR
-- * @r_xprt: controlling transport instance
-+ * @ep: controlling transport instance
-  * @mr: generic MR to prepare for FRWR
-  *
-  * Returns zero if successful. Otherwise a negative errno
-  * is returned.
-  */
--int frwr_mr_init(struct rpcrdma_xprt *r_xprt, struct rpcrdma_mr *mr)
-+int frwr_mr_init(struct rpcrdma_ep *ep, struct rpcrdma_mr *mr)
- {
--	struct rpcrdma_ep *ep = r_xprt->rx_ep;
- 	unsigned int depth = ep->re_max_fr_depth;
- 	struct scatterlist *sg;
- 	struct ib_mr *frmr;
-@@ -134,7 +133,7 @@ int frwr_mr_init(struct rpcrdma_xprt *r_xprt, struct rpcrdma_mr *mr)
- 	if (IS_ERR(frmr))
- 		goto out_mr_err;
- 
--	mr->mr_xprt = r_xprt;
-+	mr->mr_ep = ep;
- 	mr->mr_ibmr = frmr;
- 	mr->mr_device = NULL;
- 	INIT_LIST_HEAD(&mr->mr_list);
-diff --git a/net/sunrpc/xprtrdma/verbs.c b/net/sunrpc/xprtrdma/verbs.c
-index f1e4a28325fa..2578d9e77056 100644
---- a/net/sunrpc/xprtrdma/verbs.c
-+++ b/net/sunrpc/xprtrdma/verbs.c
-@@ -71,7 +71,8 @@ static int rpcrdma_reqs_setup(struct rpcrdma_xprt *r_xprt);
- static void rpcrdma_reqs_reset(struct rpcrdma_xprt *r_xprt);
- static void rpcrdma_reps_unmap(struct rpcrdma_xprt *r_xprt);
- static void rpcrdma_mrs_create(struct rpcrdma_xprt *r_xprt);
--static void rpcrdma_mrs_destroy(struct rpcrdma_xprt *r_xprt);
-+static void rpcrdma_mrs_destroy(struct rpcrdma_ep *ep);
-+static void rpcrdma_mr_refresh_worker(struct work_struct *work);
- static void rpcrdma_ep_get(struct rpcrdma_ep *ep);
- static void rpcrdma_ep_put(struct rpcrdma_ep *ep);
- static struct rpcrdma_regbuf *
-@@ -337,6 +338,8 @@ static void rpcrdma_ep_destroy(struct work_struct *work)
- {
- 	struct rpcrdma_ep *ep = container_of(work, struct rpcrdma_ep, re_worker);
- 
-+	rpcrdma_mrs_destroy(ep);
-+
- 	if (ep->re_id->qp) {
- 		rdma_destroy_qp(ep->re_id);
- 		ep->re_id->qp = NULL;
-@@ -393,6 +396,11 @@ static int rpcrdma_ep_create(struct rpcrdma_xprt *r_xprt)
- 	ep->re_xprt = &r_xprt->rx_xprt;
- 	kref_init(&ep->re_kref);
- 
-+	spin_lock_init(&ep->re_mr_lock);
-+	INIT_WORK(&ep->re_refresh_worker, rpcrdma_mr_refresh_worker);
-+	INIT_LIST_HEAD(&ep->re_mrs);
-+	INIT_LIST_HEAD(&ep->re_all_mrs);
-+
- 	id = rpcrdma_create_id(r_xprt, ep);
- 	if (IS_ERR(id)) {
- 		kfree(ep);
-@@ -575,7 +583,6 @@ void rpcrdma_xprt_disconnect(struct rpcrdma_xprt *r_xprt)
- 	rpcrdma_xprt_drain(r_xprt);
- 	rpcrdma_reps_unmap(r_xprt);
- 	rpcrdma_reqs_reset(r_xprt);
--	rpcrdma_mrs_destroy(r_xprt);
- 	rpcrdma_sendctxs_destroy(r_xprt);
- 
- 	r_xprt->rx_ep = NULL;
-@@ -749,7 +756,6 @@ static void rpcrdma_sendctx_put_locked(struct rpcrdma_xprt *r_xprt,
- static void
- rpcrdma_mrs_create(struct rpcrdma_xprt *r_xprt)
- {
--	struct rpcrdma_buffer *buf = &r_xprt->rx_buf;
- 	struct rpcrdma_ep *ep = r_xprt->rx_ep;
- 	struct ib_device *device = ep->re_id->device;
- 	unsigned int count;
-@@ -764,16 +770,16 @@ rpcrdma_mrs_create(struct rpcrdma_xprt *r_xprt)
- 		if (!mr)
- 			break;
- 
--		rc = frwr_mr_init(r_xprt, mr);
-+		rc = frwr_mr_init(ep, mr);
- 		if (rc) {
- 			kfree(mr);
- 			break;
- 		}
- 
--		spin_lock(&buf->rb_lock);
--		rpcrdma_mr_push(mr, &buf->rb_mrs);
--		list_add(&mr->mr_all, &buf->rb_all_mrs);
--		spin_unlock(&buf->rb_lock);
-+		spin_lock(&ep->re_mr_lock);
-+		rpcrdma_mr_push(mr, &ep->re_mrs);
-+		list_add(&mr->mr_all, &ep->re_all_mrs);
-+		spin_unlock(&ep->re_mr_lock);
- 	}
- 
- 	r_xprt->rx_stats.mrs_allocated += count;
-@@ -783,10 +789,11 @@ rpcrdma_mrs_create(struct rpcrdma_xprt *r_xprt)
- static void
- rpcrdma_mr_refresh_worker(struct work_struct *work)
- {
--	struct rpcrdma_buffer *buf = container_of(work, struct rpcrdma_buffer,
--						  rb_refresh_worker);
--	struct rpcrdma_xprt *r_xprt = container_of(buf, struct rpcrdma_xprt,
--						   rx_buf);
-+	struct rpcrdma_ep *ep = container_of(work, struct rpcrdma_ep,
-+					     re_refresh_worker);
-+	struct rpcrdma_xprt *r_xprt = container_of(ep->re_xprt,
-+						   struct rpcrdma_xprt,
-+						   rx_xprt);
- 
- 	rpcrdma_mrs_create(r_xprt);
- 	xprt_write_space(&r_xprt->rx_xprt);
-@@ -799,7 +806,6 @@ rpcrdma_mr_refresh_worker(struct work_struct *work)
-  */
- void rpcrdma_mrs_refresh(struct rpcrdma_xprt *r_xprt)
- {
--	struct rpcrdma_buffer *buf = &r_xprt->rx_buf;
- 	struct rpcrdma_ep *ep = r_xprt->rx_ep;
- 
- 	/* If there is no underlying connection, it's no use
-@@ -807,7 +813,7 @@ void rpcrdma_mrs_refresh(struct rpcrdma_xprt *r_xprt)
- 	 */
- 	if (ep->re_connect_status != 1)
- 		return;
--	queue_work(system_highpri_wq, &buf->rb_refresh_worker);
-+	queue_work(system_highpri_wq, &ep->re_refresh_worker);
- }
- 
- /**
-@@ -1044,9 +1050,6 @@ int rpcrdma_buffer_create(struct rpcrdma_xprt *r_xprt)
- 
- 	buf->rb_bc_srv_max_requests = 0;
- 	spin_lock_init(&buf->rb_lock);
--	INIT_LIST_HEAD(&buf->rb_mrs);
--	INIT_LIST_HEAD(&buf->rb_all_mrs);
--	INIT_WORK(&buf->rb_refresh_worker, rpcrdma_mr_refresh_worker);
- 
- 	INIT_LIST_HEAD(&buf->rb_send_bufs);
- 	INIT_LIST_HEAD(&buf->rb_allreqs);
-@@ -1085,11 +1088,11 @@ void rpcrdma_req_destroy(struct rpcrdma_req *req)
- 	list_del(&req->rl_all);
- 
- 	while ((mr = rpcrdma_mr_pop(&req->rl_free_mrs))) {
--		struct rpcrdma_buffer *buf = &mr->mr_xprt->rx_buf;
-+		struct rpcrdma_ep *ep = mr->mr_ep;
- 
--		spin_lock(&buf->rb_lock);
-+		spin_lock(&ep->re_mr_lock);
- 		list_del(&mr->mr_all);
--		spin_unlock(&buf->rb_lock);
-+		spin_unlock(&ep->re_mr_lock);
- 
- 		frwr_mr_release(mr);
- 	}
-@@ -1102,31 +1105,28 @@ void rpcrdma_req_destroy(struct rpcrdma_req *req)
- 
- /**
-  * rpcrdma_mrs_destroy - Release all of a transport's MRs
-- * @r_xprt: controlling transport instance
-+ * @ep: controlling transport instance
-  *
-- * Relies on caller holding the transport send lock to protect
-- * removing mr->mr_list from req->rl_free_mrs safely.
-  */
--static void rpcrdma_mrs_destroy(struct rpcrdma_xprt *r_xprt)
-+static void rpcrdma_mrs_destroy(struct rpcrdma_ep *ep)
- {
--	struct rpcrdma_buffer *buf = &r_xprt->rx_buf;
- 	struct rpcrdma_mr *mr;
- 
--	cancel_work_sync(&buf->rb_refresh_worker);
-+	cancel_work_sync(&ep->re_refresh_worker);
- 
--	spin_lock(&buf->rb_lock);
--	while ((mr = list_first_entry_or_null(&buf->rb_all_mrs,
-+	spin_lock(&ep->re_mr_lock);
-+	while ((mr = list_first_entry_or_null(&ep->re_all_mrs,
- 					      struct rpcrdma_mr,
- 					      mr_all)) != NULL) {
- 		list_del(&mr->mr_list);
- 		list_del(&mr->mr_all);
--		spin_unlock(&buf->rb_lock);
-+		spin_unlock(&ep->re_mr_lock);
- 
- 		frwr_mr_release(mr);
- 
--		spin_lock(&buf->rb_lock);
-+		spin_lock(&ep->re_mr_lock);
- 	}
--	spin_unlock(&buf->rb_lock);
-+	spin_unlock(&ep->re_mr_lock);
- }
- 
- /**
-@@ -1162,12 +1162,12 @@ rpcrdma_buffer_destroy(struct rpcrdma_buffer *buf)
- struct rpcrdma_mr *
- rpcrdma_mr_get(struct rpcrdma_xprt *r_xprt)
- {
--	struct rpcrdma_buffer *buf = &r_xprt->rx_buf;
-+	struct rpcrdma_ep *ep = r_xprt->rx_ep;
- 	struct rpcrdma_mr *mr;
- 
--	spin_lock(&buf->rb_lock);
--	mr = rpcrdma_mr_pop(&buf->rb_mrs);
--	spin_unlock(&buf->rb_lock);
-+	spin_lock(&ep->re_mr_lock);
-+	mr = rpcrdma_mr_pop(&ep->re_mrs);
-+	spin_unlock(&ep->re_mr_lock);
- 	return mr;
- }
- 
-diff --git a/net/sunrpc/xprtrdma/xprt_rdma.h b/net/sunrpc/xprtrdma/xprt_rdma.h
-index 048d2e329384..ce703b6e3b86 100644
---- a/net/sunrpc/xprtrdma/xprt_rdma.h
-+++ b/net/sunrpc/xprtrdma/xprt_rdma.h
-@@ -96,6 +96,11 @@ struct rpcrdma_ep {
- 	unsigned int		re_inline_send;	/* negotiated */
- 	unsigned int		re_inline_recv;	/* negotiated */
- 
-+	spinlock_t		re_mr_lock;
-+	struct list_head	re_mrs;
-+	struct list_head	re_all_mrs;
-+	struct work_struct	re_refresh_worker;
-+
- 	atomic_t		re_completion_ids;
- 
- 	char			re_write_pad[XDR_UNIT];
-@@ -253,7 +258,7 @@ struct rpcrdma_mr {
- 		struct ib_reg_wr	mr_regwr;
- 		struct ib_send_wr	mr_invwr;
- 	};
--	struct rpcrdma_xprt	*mr_xprt;
-+	struct rpcrdma_ep	*mr_ep;
- 	u32			mr_handle;
- 	u32			mr_length;
- 	u64			mr_offset;
-@@ -365,7 +370,6 @@ rpcrdma_mr_pop(struct list_head *list)
- struct rpcrdma_buffer {
- 	spinlock_t		rb_lock;
- 	struct list_head	rb_send_bufs;
--	struct list_head	rb_mrs;
- 
- 	unsigned long		rb_sc_head;
- 	unsigned long		rb_sc_tail;
-@@ -373,7 +377,6 @@ struct rpcrdma_buffer {
- 	struct rpcrdma_sendctx	**rb_sc_ctxs;
- 
- 	struct list_head	rb_allreqs;
--	struct list_head	rb_all_mrs;
- 	struct list_head	rb_all_reps;
- 
- 	struct llist_head	rb_free_reps;
-@@ -383,8 +386,6 @@ struct rpcrdma_buffer {
- 
- 	u32			rb_bc_srv_max_requests;
- 	u32			rb_bc_max_requests;
--
--	struct work_struct	rb_refresh_worker;
- };
- 
- /*
-@@ -533,7 +534,7 @@ rpcrdma_data_dir(bool writing)
-  */
- void frwr_reset(struct rpcrdma_req *req);
- int frwr_query_device(struct rpcrdma_ep *ep, const struct ib_device *device);
--int frwr_mr_init(struct rpcrdma_xprt *r_xprt, struct rpcrdma_mr *mr);
-+int frwr_mr_init(struct rpcrdma_ep *ep, struct rpcrdma_mr *mr);
- void frwr_mr_release(struct rpcrdma_mr *mr);
- struct rpcrdma_mr_seg *frwr_map(struct rpcrdma_xprt *r_xprt,
- 				struct rpcrdma_mr_seg *seg,
--- 
-2.44.0
-
+Long
 
