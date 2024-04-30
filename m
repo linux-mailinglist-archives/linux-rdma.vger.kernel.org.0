@@ -1,73 +1,180 @@
-Return-Path: <linux-rdma+bounces-2173-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-2174-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id AC4E18B7AAA
-	for <lists+linux-rdma@lfdr.de>; Tue, 30 Apr 2024 16:55:57 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 823BD8B7AB4
+	for <lists+linux-rdma@lfdr.de>; Tue, 30 Apr 2024 16:57:59 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id CE497B24800
-	for <lists+linux-rdma@lfdr.de>; Tue, 30 Apr 2024 14:55:54 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3CBE3280D2D
+	for <lists+linux-rdma@lfdr.de>; Tue, 30 Apr 2024 14:57:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 222C47710F;
-	Tue, 30 Apr 2024 14:55:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B30207710B;
+	Tue, 30 Apr 2024 14:57:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="KnRYaDqu"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="Z5lJiH4M"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from out-182.mta0.migadu.com (out-182.mta0.migadu.com [91.218.175.182])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D334B770F0;
-	Tue, 30 Apr 2024 14:55:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 90B0E1527AB
+	for <linux-rdma@vger.kernel.org>; Tue, 30 Apr 2024 14:57:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714488935; cv=none; b=Hutin9EBq+15js2UpNBySCq6wpvkyG2GC5PGDz0WZbBz9sgsF6YQumZvrWP6vibnyLtBNRcjTG2XkoQa56eBuzTOC2jUJ7ilvMn09Au0qobb5QEhJ2F3/gnnHG9Op+HTDXpb+p0wPvLPlton6VELNZAcWw9sexmGokB6OWrEpFc=
+	t=1714489073; cv=none; b=KUnEWWjfCyB+GST4lPMA63h4Ea1iPPzL4Ooblhq8L1jMxygThynURZhwnSjp3rABc+nAOXZCC3mC6NkeKUskH9nHtVNPSNXto9oNp3htA6N8VizvD6dsuOKchrxBSJ8w9phzfzAeEuF7zwq5r96s08PJYXYE3Uvmmfa5SaMaKtQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714488935; c=relaxed/simple;
-	bh=LbxazFNKPGjXRCPe1IyWjuxFW/SlZaB4365pwSAW8+8=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=faLYB2BcRqSQjod/46zjeSXoPxz4sK20pfVTL6x88sVTXyP70gext+mrFPkQka7A0Mob+x2xB3OpIlD4LrtW0VhyoUVfNoeBjfie6faBm/0byx17CUp4tkboCtLcfSgDuTbkFvz9yaTaRjNM/fvKYPW79YqSJy/KvOMo8pCjCA8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=KnRYaDqu; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 12DF5C2BBFC;
-	Tue, 30 Apr 2024 14:55:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1714488935;
-	bh=LbxazFNKPGjXRCPe1IyWjuxFW/SlZaB4365pwSAW8+8=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=KnRYaDquIH5vCbfYChkYJBhK1EZaWADduXl6Fg7XQLgeRQDK/cJmD1VqaKVJTbcMM
-	 oQ34qgZNxYt9INylKudmTRmO41ojDM46nhRptIl0tgp/AwPF5gwdqNZz7tHKSyE1Ig
-	 ylhaTfVaDJylpvr9VHdoWRHGeqX0f1Hjq+bQlJsQ6YsRISjex84gFr2+sigBQaJWbz
-	 jEQ21N90yRRqtdoNd2ouQ1FYldOwaZXTOrGPVm6C9r1HzShWy/kmvb6ZZXpurNvQtR
-	 82J+xC2wnR9rELh7cX8DzzhiIctjmKj6XqtRAj5f2KQbHxlLVpoGkZqBbFqqgvnTA7
-	 c/1fUGisE/KEg==
-Date: Tue, 30 Apr 2024 07:55:34 -0700
-From: Jakub Kicinski <kuba@kernel.org>
-To: Breno Leitao <leitao@debian.org>
-Cc: Leon Romanovsky <leon@kernel.org>, Dennis Dalessandro
- <dennis.dalessandro@cornelisnetworks.com>, Jason Gunthorpe <jgg@ziepe.ca>,
- "open list:HFI1 DRIVER" <linux-rdma@vger.kernel.org>, open list
- <linux-kernel@vger.kernel.org>, linux-netdev <netdev@vger.kernel.org>
-Subject: Re: [PATCH net-next] IB/hfi1: allocate dummy net_device dynamically
-Message-ID: <20240430075534.435a686e@kernel.org>
-In-Reply-To: <20240430141039.GH100414@unreal>
-References: <20240426085606.1801741-1-leitao@debian.org>
-	<20240430125047.GE100414@unreal>
-	<49973089-1e5e-48a2-9616-09cf8b8d5a7f@cornelisnetworks.com>
-	<20240430141039.GH100414@unreal>
+	s=arc-20240116; t=1714489073; c=relaxed/simple;
+	bh=u0ws1N2byfhODyeRFxwnUKrAppRYKcwuXepE2Oe6Nl4=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=gjeODLXTQHZ6bTErldZmAYqHzNd2konSl7ZFr6rnxK5moHuuXiubtvkD9+mzhdQQcfAmg7fw9++jMTlwsL4MkByTWnb1qjFOKOhkJVDqTS8F0etotchu2As3rDKjCSY35nzfJtPa6YNyip0hLLCLGKQZsnoPmsw6aJBt45E3GEA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=Z5lJiH4M; arc=none smtp.client-ip=91.218.175.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <873cfaf7-fc0f-4809-8439-7a67c1c4f5a0@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1714489069;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=Gk8UC4FxGGHbDkmD2PRRpUNqj2ltZn8Jm3FkYBvKxgA=;
+	b=Z5lJiH4MMkQrMPMU6Evc+7cvmEIWQ0t8XBi7qJ1XZI2L9zphKNPppfnbMSDcAFr5LW7EiX
+	e3fz+Ff12PrpCOD5nqoUf4uRxy/GgW/AYR6Pt3PS/AdDYlFLapSYbXuc5Zvzkpn5IYhhey
+	0ZskXb/sbIod36E6FKqr2lhDaptcN1o=
+Date: Tue, 30 Apr 2024 16:57:47 +0200
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Subject: Re: [RFC PATCH 0/4] NFS: Fix another 'check_flush_dependency' splat
+To: Chuck Lever III <chuck.lever@oracle.com>
+Cc: Chuck Lever <cel@kernel.org>,
+ Linux NFS Mailing List <linux-nfs@vger.kernel.org>,
+ "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>
+References: <20240429152537.212958-6-cel@kernel.org>
+ <efc4f895-3a45-4b44-a47d-532896526458@linux.dev>
+ <90F6A893-5315-4E53-B54E-1CF8D7D4AC4D@oracle.com>
+ <f49907ea-cedc-44b7-9ffc-30c265731f3e@linux.dev>
+ <675A3584-6086-45D4-9B31-F7F572394144@oracle.com>
+ <6d483d75-5866-4c4e-8d86-c89a2b27f5e7@linux.dev>
+ <3B48378E-CE68-47FC-A8D3-7A7AEE383B25@oracle.com>
+Content-Language: en-US
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Zhu Yanjun <yanjun.zhu@linux.dev>
+In-Reply-To: <3B48378E-CE68-47FC-A8D3-7A7AEE383B25@oracle.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
 
-On Tue, 30 Apr 2024 17:10:39 +0300 Leon Romanovsky wrote:
-> > Nothing right now. Should be safe to sent to net-next.  
-> 
-> Jakub, can you please take this patch?
 
-We'll need a repost, it wasn't CCed to netdev.
+On 30.04.24 16:52, Chuck Lever III wrote:
+>
+>> On Apr 30, 2024, at 10:45 AM, Zhu Yanjun <zyjzyj2000@gmail.com> wrote:
+>>
+>> On 30.04.24 16:13, Chuck Lever III wrote:
+>>>> On Apr 30, 2024, at 9:58 AM, Zhu Yanjun <yanjun.zhu@linux.dev> wrote:
+>>>>
+>>>>
+>>>> On 30.04.24 15:42, Chuck Lever III wrote:
+>>>>>> On Apr 30, 2024, at 3:26 AM, Zhu Yanjun <zyjzyj2000@gmail.com> wrote:
+>>>>>>
+>>>>>> On 29.04.24 17:25, cel@kernel.org wrote:
+>>>>>>> From: Chuck Lever <chuck.lever@oracle.com>
+>>>>>>> Avoid getting work queue splats in the system journal by moving
+>>>>>>> client-side RPC/RDMA transport tear-down into a background process.
+>>>>>>> I've done some testing of this series, now looking for review
+>>>>>>> comments.
+>>>>>> How to make tests with nfs && rdma? Can you provide some steps or tools?
+>>>>> We are building NFS tests into kdevops:
+>>>>>
+>>>>>     https://github.com/linux-kdevops/kdevops.git
+>>>>>
+>>>>> and there is a config option to use soft iWARP instead of TCP.
+>>>> Thanks a lot. It is interesting. Have you made tests with RXE instead of iWARP?
+>>>>
+>>>> If yes, does nfs work well with RXE? I am just curious with nfs && RXE.
+>>>>
+>>>> Normally nfs works with TCP. Now nfs will use RDMA instead of TCP.
+>>>>
+>>>> The popular RDMA implementation is RoCEv2 which is based on UDP protocol.
+>>>>
+>>>> So I am curious if NFS can work well with RXE (RoCEv2 emulation driver) or not.
+>>>>
+>>>> If the user wants to use nfs in his production hosts, it is possible that nfs will work with RoCEv2 (UDP).
+>>> Yes, NFS/RDMA works with rxe and even with rxe mixed with
+>>> hardware RoCE. Someone else will have to step in and say
+>>> whether it works "well" since I don't use rxe, only CX-5
+>>> and newer on 100GbE.
+>>> Generally we use siw because our testing environment varies
+>>> between all systems on a single local network or hypervisor,
+>>> all the way up to NFS/RDMA on VPN and WAN. The rxe driver
+>>> doesn't support operation over tunnels, currently.
+>> Thanks a lot. "The rxe driver doesn't support operation over tunnels, currently." Do you mean that rxe can not work well with tun/tap device?
+> No, rxe cannot be configured to use tunnel devices, AFAIK.
+>
+>
+>>> It is possible to add rxe as a second option in kdevops,
+>>> but siw has worked for our purposes so far, and the NFS
+>>> test matrix is already enormous.
+>> Thanks. If rxe can be as a second option in kdevops, I will make tests with kdevops to check rxe work well or not in the future kernel version.
+> No new tests are necessary. The only thing missing right
+> now is the ability to set up rxe devices on all the test
+> systems.
+
+Got it. Thanks.
+
+Zhu Yanjun
+
+>
+>
+>> Best Regards,
+>> Zhu Yanjun
+>>
+>>>> Best Regards,
+>>>>
+>>>> Zhu Yanjun
+>>>>
+>>>>> kdevops includes workflows for fstests, Mora's nfstest, the
+>>>>> git regression suite, and ltp, all of which we use regularly
+>>>>> to test the Linux NFS client and server implementations.
+>>>>>
+>>>>>
+>>>>>> I am interested in nfs && rdma.
+>>>>>>
+>>>>>> Thanks,
+>>>>>> Zhu Yanjun
+>>>>>>
+>>>>>>> Chuck Lever (4):
+>>>>>>>    xprtrdma: Remove temp allocation of rpcrdma_rep objects
+>>>>>>>    xprtrdma: Clean up synopsis of frwr_mr_unmap()
+>>>>>>>    xprtrdma: Delay releasing connection hardware resources
+>>>>>>>    xprtrdma: Move MRs to struct rpcrdma_ep
+>>>>>>>   net/sunrpc/xprtrdma/frwr_ops.c  |  13 ++-
+>>>>>>>   net/sunrpc/xprtrdma/rpc_rdma.c  |   3 +-
+>>>>>>>   net/sunrpc/xprtrdma/transport.c |  20 +++-
+>>>>>>>   net/sunrpc/xprtrdma/verbs.c     | 173 ++++++++++++++++----------------
+>>>>>>>   net/sunrpc/xprtrdma/xprt_rdma.h |  21 ++--
+>>>>>>>   5 files changed, 125 insertions(+), 105 deletions(-)
+>>>>>>> base-commit: e67572cd2204894179d89bd7b984072f19313b03
+>>>>> --
+>>>>> Chuck Lever
+>>>>>
+>>>>>
+>>>> -- 
+>>>> Best Regards,
+>>>> Yanjun.Zhu
+>>> --
+>>> Chuck Lever
+>
+> --
+> Chuck Lever
+>
+>
+-- 
+Best Regards,
+Yanjun.Zhu
+
 
