@@ -1,55 +1,83 @@
-Return-Path: <linux-rdma+bounces-2163-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-2164-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2E4C68B76E9
-	for <lists+linux-rdma@lfdr.de>; Tue, 30 Apr 2024 15:23:12 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 99E908B775D
+	for <lists+linux-rdma@lfdr.de>; Tue, 30 Apr 2024 15:41:23 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D73531F2318B
-	for <lists+linux-rdma@lfdr.de>; Tue, 30 Apr 2024 13:23:11 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CAED21C22381
+	for <lists+linux-rdma@lfdr.de>; Tue, 30 Apr 2024 13:41:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7D827171E45;
-	Tue, 30 Apr 2024 13:21:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E3513171E60;
+	Tue, 30 Apr 2024 13:41:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="qyzanMcW"
+	dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b="CxlVORiS"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-oo1-f48.google.com (mail-oo1-f48.google.com [209.85.161.48])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 36D9117166C;
-	Tue, 30 Apr 2024 13:21:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A11E712CD90
+	for <linux-rdma@vger.kernel.org>; Tue, 30 Apr 2024 13:41:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.161.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714483297; cv=none; b=XckK2s864zjRej8zmlG4B1iQxEYpNvbf/+ppVdEpKK2XwQmYlCPbb1BndlPu4vgSVO7hEVD3QUvqWE16uVATXad7AUf+WhmmsDWtgorbHKGIZqL0AO9+ri7b+HcoU5SXMtAy9qvPnyVUBjtVbdV+pB8N+W4G5XQcNMtfzKP2DPw=
+	t=1714484477; cv=none; b=oNLR/hb1E2AuRfvVG5mTF9eh2ZjoT/0vVwwC7x26Gkbk5rrJCfVmuUqvFDygHrTTcBRCjHKU2EVhsDr10fQwMtJeL2tSaQsOKiFuK4joJW0Wfnk+8eL775KUoD16Gtx4EzxwHaR148rvwbM1bWqxtcHf/CqZqqH+fBzgVr5vU6Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714483297; c=relaxed/simple;
-	bh=AKOQrcJJa/PgvbmB77Ei3e3Xgp/1RKlFobDI2jRg6yo=;
+	s=arc-20240116; t=1714484477; c=relaxed/simple;
+	bh=F1qt8VVpzCRzm8FHEJTQ7+DA8vuSysbZAqcXhPKDx5o=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=bysgEpELKCGP4p8vyo/CmWif4eLnrXXSE+tl2hcPRnmONYahId03pSbG9X68kttYZ1sZy0U62qTjff1x8CtVJxBxMJF0YHKNAMZ7aNYV5nzMmrdwEpKP0mXzfIzx9e2w3a8CxJu+e5uFrDbtFEqlRD+0U+QBnlBR+FhziB72VVM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=qyzanMcW; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id BC06EC2BBFC;
-	Tue, 30 Apr 2024 13:21:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1714483296;
-	bh=AKOQrcJJa/PgvbmB77Ei3e3Xgp/1RKlFobDI2jRg6yo=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=qyzanMcW2Zm9XUgr42I5Z8b8OLIWBd2L66oIpnphw/6Nluus4g86N8cM1gDqAkjlq
-	 TqgBq7dJl2TIqNG8GSYb4rAHl38ExSRwEZIk3VclKSgbVRhWQH+H3UNfYs210gETdN
-	 ENoKl+tgTzIbTcdwWWOzvtPZ1r8bJNdJi7uPg0TEd3YLjYaxzh3Yws0TvvIIaREDLZ
-	 hl5lVLiUDtlbYTa3Hj7aGoHyvk3vQ/RN7xZL14eBBxXUtCZJOYBC7ZB5G3nMQOXo7X
-	 M3MR0Z3iqini8O36heR4U3aKWaxp1WTW/wPjL2Yeq2rwONvIocUAE7wJNgoXJyywRx
-	 dLIRke2GVGDvQ==
-Date: Tue, 30 Apr 2024 16:21:31 +0300
-From: Leon Romanovsky <leon@kernel.org>
-To: Jules Irenge <jbi.octave@gmail.com>
-Cc: jgg@ziepe.ca, wenglianfa@huawei.com, gustavoars@kernel.org,
-	lishifeng@sangfor.com.cn, linux-rdma@vger.kernel.org,
+	 Content-Type:Content-Disposition:In-Reply-To; b=fLJOsZD+9lm7sW24OWz2RJqR9bogc06es6JaE28AWfnewp7ClA7Vv4si/EZWGKevQjas+AgrdoUb/ifj54fvCttlUJFBVA6GcczZ06nSsxrfxMwafV1PiuFK9+NODhjqhRinKcfGLR7FK2jIKh+Skjd0y0CL2jyDTAYXv5nsZFU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca; spf=pass smtp.mailfrom=ziepe.ca; dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b=CxlVORiS; arc=none smtp.client-ip=209.85.161.48
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ziepe.ca
+Received: by mail-oo1-f48.google.com with SMTP id 006d021491bc7-5ad21f3e5dcso3982087eaf.3
+        for <linux-rdma@vger.kernel.org>; Tue, 30 Apr 2024 06:41:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google; t=1714484474; x=1715089274; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=Dzw9A3IXUr1HMpouSEVNHEKHoRky87JvxE7doN13XH4=;
+        b=CxlVORiSz8Ft+XhknC5X7p8hpv95R1hsLSjC2Z7cgeB39Jg9Az+wAdgRgN8sXMuZ8A
+         QnUwjKbSE44px15olS+y8Hk7BNVKJS/EDEFonQA1pFbFnQ6GFUNx2mxi2iDlA0Ntn2+C
+         IdV9sLgmp8ex1V69i/eu8EznerLW7BGFqeusmNTkyB9QJfCPDq0xheSAvk4QEhQEwfAP
+         pvenH7QkCbYV/fwdiKXfFvSsQCR0jYSj6+dKhjqWHS//Nzg6UZM+RlK3WbUUIxiT5y/G
+         GP2k8VKC9UffkWuV3HFbDmrVi2CgHYBk8fo5LDOgeiA3j+09q98iCxFHDeBJIWL4bNUP
+         GLjA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1714484474; x=1715089274;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Dzw9A3IXUr1HMpouSEVNHEKHoRky87JvxE7doN13XH4=;
+        b=ORddpuXo5UGZUjUVfw7D1nRyhSYZlEL8osmhX3xNmAYe3+ysuk8SP50AsiPq7nDhtC
+         ZZWXwaRkHCdUiMZQzPOFzkGQFTqD9S8P6X3GVdWd50neIfjX0x19R4YGhWgXhhFdOqKS
+         1nTvvr9RfuI7CQ0wtHTg0MSNrk+V9UqlBboL5oibzu/MfuJsyg4vJ/ibXaTxHAe7s8HQ
+         Z2m+nRkm4YmeDPiOmIzi2QvL4FOYuvOa26eX+Hq1xyOm/38xNMJ4l1wuXiTpj2qrI/Z0
+         XWcpxVW/2jL8r27kdKPbLolx8urOHBkHaRpZels1NesHzP9sUjSemBbTvJTcakdC3BO3
+         bOiA==
+X-Forwarded-Encrypted: i=1; AJvYcCWQ4GytnhxEMvS6i/z3QG3XmHPrhUGzai5pqhvb48WuCBbYBEd4OoOgffSQzfL95JzbbS1E1nqhmTLPZC9k/W+vEy+qov6EG/9eUA==
+X-Gm-Message-State: AOJu0YxSdAN2HmmkhXRyJ0oonUObhJeQF0gOrPj0mWvb2jnMdQu4XK36
+	8+HBzXawRKpz2bxrtDEriL0AFQPaWQchrWT5dRfaSGLJVOK+RMDIHSe4jfNmSQE=
+X-Google-Smtp-Source: AGHT+IErvqN1PfglDscv/jolNjD1aPMMQBUx3pTu9Z5oQ/rvoiryaovZZiP9EN0L/oH7dvTP46YYxQ==
+X-Received: by 2002:a4a:bd0a:0:b0:5af:bf76:e3d with SMTP id n10-20020a4abd0a000000b005afbf760e3dmr3781473oop.2.1714484474715;
+        Tue, 30 Apr 2024 06:41:14 -0700 (PDT)
+Received: from ziepe.ca (hlfxns017vw-142-68-80-239.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.68.80.239])
+        by smtp.gmail.com with ESMTPSA id ch14-20020a0568200a0e00b005afafa10ed7sm766053oob.33.2024.04.30.06.41.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 30 Apr 2024 06:41:14 -0700 (PDT)
+Received: from jgg by wakko with local (Exim 4.95)
+	(envelope-from <jgg@ziepe.ca>)
+	id 1s1njN-007E4h-2V;
+	Tue, 30 Apr 2024 10:41:13 -0300
+Date: Tue, 30 Apr 2024 10:41:13 -0300
+From: Jason Gunthorpe <jgg@ziepe.ca>
+To: Junxian Huang <huangjunxian6@hisilicon.com>
+Cc: leon@kernel.org, linux-rdma@vger.kernel.org, linuxarm@huawei.com,
 	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] RDMA/core: Remove NULL check before dev_{put, hold}
-Message-ID: <20240430132131.GG100414@unreal>
-References: <Zi5QgLIt9sblrfYs@octinomon.home>
+Subject: Re: [PATCH for-next] RDMA/hns: Support flexible WQE buffer page size
+Message-ID: <20240430134113.GU231144@ziepe.ca>
+References: <20240430092845.4058786-1-huangjunxian6@hisilicon.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
@@ -58,39 +86,32 @@ List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <Zi5QgLIt9sblrfYs@octinomon.home>
+In-Reply-To: <20240430092845.4058786-1-huangjunxian6@hisilicon.com>
 
-On Sun, Apr 28, 2024 at 02:34:56PM +0100, Jules Irenge wrote:
-> Coccinelle reports a warning
+On Tue, Apr 30, 2024 at 05:28:45PM +0800, Junxian Huang wrote:
+> From: Chengchang Tang <tangchengchang@huawei.com>
 > 
-> WARNING: NULL check before dev_{put, hold} functions is not needed
+> Currently, driver fixedly allocates 4K pages for userspace WQE buffer
+> and results in HW reading WQE with a granularity of 4K even in a 64K
+> system. HW has to switch pages every 4K, leading to a loss of performance.
 
-Please do it for whole drivers/infiniband/core in one patch, please.
+> In order to improve performance, add support for userspace to allocate
+> flexible WQE buffer page size between 4K to system PAGESIZE.
+> @@ -90,7 +90,8 @@ struct hns_roce_ib_create_qp {
+>  	__u8    log_sq_bb_count;
+>  	__u8    log_sq_stride;
+>  	__u8    sq_no_prefetch;
+> -	__u8    reserved[5];
+> +	__u8    pageshift;
+> +	__u8    reserved[4];
 
-> 
-> The reason is the call netdev_{put, hold} of dev_{put,hold} will check NULL
-> There is no need to check before using dev_{put, hold}
-> 
-> Signed-off-by: Jules Irenge <jbi.octave@gmail.com>
-> ---
->  drivers/infiniband/core/device.c | 3 +--
->  1 file changed, 1 insertion(+), 2 deletions(-)
-> 
-> diff --git a/drivers/infiniband/core/device.c b/drivers/infiniband/core/device.c
-> index 07cb6c5ffda0..84be4bb9b625 100644
-> --- a/drivers/infiniband/core/device.c
-> +++ b/drivers/infiniband/core/device.c
-> @@ -2235,8 +2235,7 @@ struct net_device *ib_device_get_netdev(struct ib_device *ib_dev,
->  		spin_lock(&pdata->netdev_lock);
->  		res = rcu_dereference_protected(
->  			pdata->netdev, lockdep_is_held(&pdata->netdev_lock));
-> -		if (res)
-> -			dev_hold(res);
-> +		dev_hold(res);
->  		spin_unlock(&pdata->netdev_lock);
->  	}
->  
-> -- 
-> 2.43.2
-> 
+It doesn't make any sense to pass in a pageshift from userspace.
+
+Kernel should detect whatever underlying physical contiguity userspace
+has been able to create and configure the hardware optimally. The umem
+already has all the tools to do this trivially.
+
+Why would you need to specify anything?
+
+Jason
 
