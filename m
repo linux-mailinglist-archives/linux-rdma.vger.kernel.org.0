@@ -1,221 +1,197 @@
-Return-Path: <linux-rdma+bounces-2170-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-2171-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id EED4E8B7A6D
-	for <lists+linux-rdma@lfdr.de>; Tue, 30 Apr 2024 16:46:14 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3EDAD8B7A77
+	for <lists+linux-rdma@lfdr.de>; Tue, 30 Apr 2024 16:46:55 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A8D2A2871EA
-	for <lists+linux-rdma@lfdr.de>; Tue, 30 Apr 2024 14:46:13 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 48358B217C4
+	for <lists+linux-rdma@lfdr.de>; Tue, 30 Apr 2024 14:46:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8E87C1527BF;
-	Tue, 30 Apr 2024 14:43:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1E07E770F9;
+	Tue, 30 Apr 2024 14:45:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=marvell.com header.i=@marvell.com header.b="eYXFu9ji"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Bbb8J3lK"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mx0b-0016f401.pphosted.com (mx0b-0016f401.pphosted.com [67.231.156.173])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wr1-f46.google.com (mail-wr1-f46.google.com [209.85.221.46])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CFE851527A3;
-	Tue, 30 Apr 2024 14:43:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=67.231.156.173
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714488208; cv=fail; b=sGv4WDwBPTNP30gZgMOiSSeZyxQBLDYSTO+rNMSWvECBEaYD+sufocYNKs8Av3uuQ0gy5Sogldd2Xjb7xhUe1Qmg1zpZHqAZxk5ugbQLbbKxz93UgfBt6aa1lrNqvkNdtst5qZ5pBJdIms7rTwQeOCFMJOtGeCPVFJpa3pkf+E8=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714488208; c=relaxed/simple;
-	bh=cWpobIAyvQqYmAGEf122/PA+a8bn+TAwtt98Ke0JUEA=;
-	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
-	 Content-Type:MIME-Version; b=QSQlu8YmO7q9jcL8H+tI+Vary77t92Cp+G+bl3+PAcXGxGcgP0JTvmbcdBq2pYli1/FdnPWQUiar2kvAT5eocFfBpbpC43IZZ9CfTJFf14M7FfrxnGbxgCi0F29ZeCavbJiVd1z7JqkrwwD134PJHNPbNSRxvs0DBurTLZANTa0=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=marvell.com; spf=pass smtp.mailfrom=marvell.com; dkim=pass (1024-bit key) header.d=marvell.com header.i=@marvell.com header.b=eYXFu9ji; arc=fail smtp.client-ip=67.231.156.173
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=marvell.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=marvell.com
-Received: from pps.filterd (m0045851.ppops.net [127.0.0.1])
-	by mx0b-0016f401.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 43UDT6BX008436;
-	Tue, 30 Apr 2024 07:43:21 -0700
-Received: from nam12-dm6-obe.outbound.protection.outlook.com (mail-dm6nam12lp2169.outbound.protection.outlook.com [104.47.59.169])
-	by mx0b-0016f401.pphosted.com (PPS) with ESMTPS id 3xtxqf0vnt-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 30 Apr 2024 07:43:21 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=aLNbzj8oye1ZWPjA1AJCm4NC0dZ5oSSSQMB+2NjDExFz4GPaKcE4vakxaowAvn/TxDJFRNUEXDxTIy+ZRC8gjvJHCFtGtRktn+Yg1vdWTaMcm4GdKzJtuHHUa230y0WCxdwXcWEzver6Ceqf1xK8DmSArT3wvzETOrg6eLiuvHLwRzDv2NfOOEM2Ld6b5HScV8Xi77VC44RDfe3UPb5IydPNJRHPOHzeOBAiHChKW9nkkYmyi2tq0GRtQXfUKMWWS17SYJZh3PfPZXq1tniXm9tZ/0CSjbYJqd+OouukkXaoCb1prJXMwMyX/fii/UX7IsVoVOdV5nfKiJP2aQ8Gpw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=eXw6nqls+cERSULNdDluUD6NbfaIV8XXzokBpPwGr0k=;
- b=SdEoFaG8bq7JnQnaK//tereiSCcE2tRqSVcE8fcICy94b8xuwKvH+ri+Uf8wIn1sCZOY0FbdKCZ882lioktJJPcQYbxktFY1SUEJ9csl34vfssvEP+g4d1yXoG8SNOT6usrk/Fhi2mMb6eH1qowqW+tpNfi0ODTV6VJKlztPkd/gM3mSVHiHepIiNXDMWA0Ah/DEblu40U5x4s24XTlVAKV202ixweGwF37wEILrqH9Ikq9gJMhReGIJNF4+0l7VRM9CmwF5cptDi1/pcI3zPmszArBuUOOaRlWDvJKZAtvwpaz+OhqLs1fyxTI+ogVYAYNegtrzJhoq4R5KynyCtQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=marvell.com; dmarc=pass action=none header.from=marvell.com;
- dkim=pass header.d=marvell.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=eXw6nqls+cERSULNdDluUD6NbfaIV8XXzokBpPwGr0k=;
- b=eYXFu9ji7Tzvw7t8Fp6sKisywF9M6Cl0D5kSSYeDmKfTukEPS4WT8ERsGE/cbHK8H96oqkepmXyTb1gTmdBbWBvBDPpqDtO1lCR4bYJZGFnhIpPMifqpg4OVo5732qAQlKMl9LXvFAMHQWCosrqJHv/JMb5Rj5Io2YFCXd/Q7ro=
-Received: from CO1PR18MB4666.namprd18.prod.outlook.com (2603:10b6:303:e5::24)
- by MN2PR18MB3653.namprd18.prod.outlook.com (2603:10b6:208:26b::17) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7519.35; Tue, 30 Apr
- 2024 14:43:15 +0000
-Received: from CO1PR18MB4666.namprd18.prod.outlook.com
- ([fe80::b3e1:2252:a09b:a64e]) by CO1PR18MB4666.namprd18.prod.outlook.com
- ([fe80::b3e1:2252:a09b:a64e%7]) with mapi id 15.20.7544.023; Tue, 30 Apr 2024
- 14:43:15 +0000
-From: Subbaraya Sundeep Bhatta <sbhatta@marvell.com>
-To: Leon Romanovsky <leon@kernel.org>, David Ahern <dsahern@gmail.com>
-CC: Chiara Meiohas <cmeiohas@nvidia.com>, Jason Gunthorpe <jgg@nvidia.com>,
-        linux-netdev <netdev@vger.kernel.org>,
-        RDMA mailing list
-	<linux-rdma@vger.kernel.org>
-Subject: RE: [EXTERNAL] [PATCH iproute2-next 1/2] rdma: update uapi header
-Thread-Topic: [EXTERNAL] [PATCH iproute2-next 1/2] rdma: update uapi header
-Thread-Index: AQHamufKZ0h06o0ddE2POm5Aay6MyLGA41Xw
-Date: Tue, 30 Apr 2024 14:43:15 +0000
-Message-ID: 
- <CO1PR18MB4666E319527D853C9F4179F5A11A2@CO1PR18MB4666.namprd18.prod.outlook.com>
-References: <cover.1714472040.git.leonro@nvidia.com>
- <b265f104d37354266a30238701d0f73b298a5209.1714472040.git.leonro@nvidia.com>
-In-Reply-To: 
- <b265f104d37354266a30238701d0f73b298a5209.1714472040.git.leonro@nvidia.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: CO1PR18MB4666:EE_|MN2PR18MB3653:EE_
-x-ms-office365-filtering-correlation-id: 5d1b69b8-2fa5-4489-fec5-08dc6923de69
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;ARA:13230031|1800799015|376005|366007|38070700009;
-x-microsoft-antispam-message-info: 
- =?us-ascii?Q?IHwvztbWHpfUGF+gGonaMvdwTpvd2xXPMsa7e9SiBBEBQ8rQOdjSjpXtHnTw?=
- =?us-ascii?Q?M3WfWOm3rdir8V/kKoLgHxOfO4SWqVh/B07fLrb2NLJZruANVCvPAMncIxVT?=
- =?us-ascii?Q?Dg3Sa/cKXo+VnGaXLnBM+YGoZ8us0MDv+EsMbWmxTJZjgxD/ADPyZaoZfV8d?=
- =?us-ascii?Q?/86XbKc/bpDyYSfPRaEOwP3M/pyuhadRavTOIcb7zHmDaiQsnbSMXhhoiLP0?=
- =?us-ascii?Q?UeekoWjBrc7lIcmNxp3Aj1tpuZNrZzEOfTZBQA7DxdI3UF9N8Ce0sc6+1LJB?=
- =?us-ascii?Q?Mn/BXXvmXp91tOphwKyubhRrObsrtydSJhmqqVfRi8q911n8wxAzJnRhhW6g?=
- =?us-ascii?Q?1vlBdPCzCWd4RoOdDqKacDLpwVer1a6JOsQVblY913NlG+Ml0EYZ8HoGpZsh?=
- =?us-ascii?Q?8cCrjCKhLfxMO+55GHCY8IktQqHdorQ3HwgGGf35UIfWUKpvd0nn2c8u3aBD?=
- =?us-ascii?Q?5qr85+v0FD17qF+TBUQl8JMyT37gG64hevWfZgAgYVKMFIFAcURyclRc+Pds?=
- =?us-ascii?Q?gtNbwA/ZFGtKg+GyLU7L/Vi16sCzrFqWk7Vf5KMcx8z98tXa2NM/aoJVhhe7?=
- =?us-ascii?Q?KPKJ9tk6N8VFXemtTGpBuu7Ai5mvLPKQBkdExkSXpMhA7JqpeAroLAW4Hnmq?=
- =?us-ascii?Q?gcwnl24tB/GRXF/D3OS5cCgQ84gM8XE1YBaPAyPohbuKDs1It7wgZQmlPeuW?=
- =?us-ascii?Q?rZMZLhxa13X4Ia5C2FxUOgaQeLdqMWhnTkRp4kMoGGD+LIkSuHOebFIh+ms8?=
- =?us-ascii?Q?TCDz/8VlHu6eTS9wN5QeTXaG1xHe+WY0kOiXP64TKOcbvcJ/O1rBKyovl+0h?=
- =?us-ascii?Q?g9jBHHl44R4DXFKQXFNNJw69Ykb4xF3Igp7Xl5kOMlDmm4BUmu9N00n+eTvn?=
- =?us-ascii?Q?C7ZOJ9HzzOK9QnxH9eJa+i5i9+Xmzvbu5y8ewEvaT4nNfJE1TokGmj+pIecn?=
- =?us-ascii?Q?A6EpKqmOlzJOwP+UaykacBWPy1OQcHZZhaJ70XE0rxHW2UjdR/grqaAD2Xvh?=
- =?us-ascii?Q?7BOQGhHBQV8oddvBpa/N/XKqJaM8Dvk2Yrw0vArQi2yrUeHYPChLkX2O5tGe?=
- =?us-ascii?Q?QCOlmhAB/apptlNKF8mM5S81Z8gB7fpBTE6LCZLySYfmULNztyK7D2v9IEtc?=
- =?us-ascii?Q?65iz69UmuNF0EPAc8vvymBZbKqX7mjF+Tk3pBWHfjdZBlwsbKp4LWf42hdqe?=
- =?us-ascii?Q?bz/IHcxzy1Xk0ukUZjN8KQVC0acWnxpPcNdMdGl+FMx9yLNIGHHI08Zx95Iy?=
- =?us-ascii?Q?ulkPA4se2o3EZWblBehh6Eu564LpoAfOaF/Hj4O8rNGkzuutwg3p/qQYKBvY?=
- =?us-ascii?Q?AUjgPowjyuTNL5++fNvytVJ/9Eny4w0elM7kZmTIA33A5w=3D=3D?=
-x-forefront-antispam-report: 
- CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CO1PR18MB4666.namprd18.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(1800799015)(376005)(366007)(38070700009);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: 
- =?us-ascii?Q?bY8/lN4CwZUGXlfISD7OQMZkNh9zd68tzYqCspmgZJF8s5s67ddPDXSTxvZM?=
- =?us-ascii?Q?U6q38Etp84Oc9inb/FSc4Wf7ONY36/xcTwlV8Z1BWTyMNMR0VP7O1quw7mXx?=
- =?us-ascii?Q?hJvG4xTr70hillJeKrcRFQoKFbbyGfz0qrhKoQlhoaA+P4MBOw8924KPbOgt?=
- =?us-ascii?Q?fQ9tuMiW2XXMSXo2SDyJe2Ha8WyElu4MyxYAA/ibVdVRyGUiwpSiwNxg61h4?=
- =?us-ascii?Q?1hhV+gk2OBDe/qp08XZkX1+Qq9u4uk+joVSI+spmL+p1Ij7S7mTo9l/COBU5?=
- =?us-ascii?Q?IOtI0zApoFIvhwA505++Hgb/qmRYLnZzXY3sO2bQOLR/2roYpEIfDCJqGBI9?=
- =?us-ascii?Q?0euFogqYPZ9++qBinBL9lvwHwOuxnNBAfiVSHhjkMUxnIPApUHr6yrozQF9D?=
- =?us-ascii?Q?Dp3+WBuZUnc2Y+bbu4eO5SyWy78UgLu84TA9nMjaFXdcYAwWqAOLjxUreEvn?=
- =?us-ascii?Q?Ir8Ny4EPtoiigblWN5mAr19u6SWCimCDf/Yz0DHz/ql0D3eZsmfP6JQNsrSl?=
- =?us-ascii?Q?za4HQ5ssMhEJ7XLplzEQbqu5ipvzODeFMk3FsSktLCHAEGoNSS0XNyiA2zPO?=
- =?us-ascii?Q?8EqPjCG8OodTf3EEBa6zBbxSb3pdjCbWq2H9aHHY+X2YhpRfGV528Lz/nsKB?=
- =?us-ascii?Q?4U9hQ/NkbFpSID6eTPgSln8dYMxbZ8KN9NmtbDQbNEjZyglkpm7j3PfGtQWo?=
- =?us-ascii?Q?SrWbfOs2qPlaQc/QguuTkghe7YtfSCqufe/m64UX+Q3WH/VYSWYKglv88uJe?=
- =?us-ascii?Q?usnjNfEpV6C0Tu5xsW0hPlTGEoMTF3GvwrzQ4Uv4a/YkaKTd3A28jmqeioKx?=
- =?us-ascii?Q?CYpGs571pQ+NAJO51zby9lpYcpHUiSwiEs/Ui67Ma3xckdDhonZziEaB4i8H?=
- =?us-ascii?Q?6qmPWprpfatFr5HDxuzirkduT892eAdbA+BhVEiEbZgZb33P0eErkXGb8xnE?=
- =?us-ascii?Q?7uDiu8QxA4ezF6lRb8pRKMp921KeWXTpBK97rSijM5iOgPJs+ysoVCnnMx+L?=
- =?us-ascii?Q?BQMKVHe189ynkH+dWDyJwoUxh+HQsDJVZasAmpfEsse7W7LKUquSXxiVQi/G?=
- =?us-ascii?Q?3jMikII0Ed/yl78lgMOYqjzdCr4ZuPLhfgctiMC2d7F5kTIYNiFxHtOC9bBw?=
- =?us-ascii?Q?erKxp+OHeSw3FHNyggKmlLPSA/4JxFmJcICyd32gyw2Gep1iLy7utU9H+YGZ?=
- =?us-ascii?Q?ComJGRLqcFW7aAZRUcvH9g9VM6SMm5LifnU52euAz5r5G0UDLt1Q0xDBMfZ/?=
- =?us-ascii?Q?oXIj29itGbqcB1wcPhY7GAPgN7hclfMRepCJa2dcfFEhr3/y/AMCMxqdrkdz?=
- =?us-ascii?Q?Bij6VeATyRMeGA/r5fRA3Wq6A29j6McGF0xiKMIURKOKO7DB8KZU8/h+VUtm?=
- =?us-ascii?Q?Uz9JeeCQ2077t8sPiCjrwP/pH29w997dvSTJXuOq6zUAJ5Ps/PGcV+ZQVbds?=
- =?us-ascii?Q?fE6WBC8jHoG5ehGX00+pD98+taPc9zmMs2xIevycyy89US8KVIPGzTomEHMh?=
- =?us-ascii?Q?GUhl1AGrXu+AdGpzV2i0/LDsOTRs77dOfVHW25GNPG4n7O5ZILNCGscqL/xV?=
- =?us-ascii?Q?NnbRjuU2MUO5Jp9jy/c=3D?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 26A85770E3;
+	Tue, 30 Apr 2024 14:45:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.46
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1714488324; cv=none; b=CiTjw0X90U4bJ8ycbGWaQgc6aS92LszqdnHDiGLhFmKsPy+CojUYIn+58XxB7LCp9VAwdbiIFmvCVidsJkLR++sNaOqgWJA5e+xiQIWV/fTvLhTxQOoVTAdR52zJqx7L0mAt2lEEfzby2FhoqA9smtnSaspDdQLBxor85gWDpYQ=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1714488324; c=relaxed/simple;
+	bh=SQ0pawimoOjWaEZRpOTD7te2lZ82DdtQBQ6Ux3/kxZU=;
+	h=From:Message-ID:Date:MIME-Version:Subject:To:Cc:References:
+	 In-Reply-To:Content-Type; b=UcbDy6uo7YUjUCxw7Vb+2N+UNYkK08nkopK+mxLSFW5dOrYrNZat8YIFnx2LGH7oOajiafPQ4MAD5fUVUNuSMWatcm5TGNOBd/Q02CZFKz3paIqqkZT1QeTnQGCsIDApJO2SzQ1EeeafxxoZC+wy3zpwDXjRGilz/Df2knTVlbI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Bbb8J3lK; arc=none smtp.client-ip=209.85.221.46
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wr1-f46.google.com with SMTP id ffacd0b85a97d-34d96054375so363229f8f.2;
+        Tue, 30 Apr 2024 07:45:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1714488321; x=1715093121; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:content-language:references
+         :cc:to:subject:user-agent:mime-version:date:message-id:from:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=hcW3ThwTpracNVT6BIj2sViiE5bP9U7pNEb0EqDX8R0=;
+        b=Bbb8J3lKetFDQ0nqopj2W1AGE88ZMJ0iTa30uqdsHvJFroJ4+iOi5bD7deHpUGhXhp
+         HxCjmzhvx/ScXkplt2OOtwbYbzdsagEab5Ld9h/1Vymy9QqM0ZwqIKx/H4+D61TYpw9E
+         eyUybukIzfDuyIdojFb1qzEsqGc3gHoMx1aAWGbOf8ydcWKawfZdVRpXqAeR0CknCfmw
+         6rqqKj/AhD8QmJzPjCUkmUxtla3aOHvrRMKp0I0g3zjJY0TOCZ2bH3aNylXPdKT7Owic
+         7FfxYSeG2rLY9ONqjAra4mWUgMpCWuoAtvgfWvkZgJSByjDFYgyVA0S0AdOYAUato/Jl
+         LE1w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1714488321; x=1715093121;
+        h=content-transfer-encoding:in-reply-to:content-language:references
+         :cc:to:subject:user-agent:mime-version:date:message-id:from
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=hcW3ThwTpracNVT6BIj2sViiE5bP9U7pNEb0EqDX8R0=;
+        b=FErJNhVmf/hazeqbub3xrQecUwjoYtYlcuMnElbBQGkPZcHtWngmdG/tjgmtsR+0YB
+         jxzOl2JRR1vv7iusiRybuk48Y1gXRx84bSqJwJ99+o6TnSlPWdPO1vncoaRPsFfwmmBG
+         X/DBPU+dIGiAuBUwcmdKP9NOIg2SD+y4mycxeh+HuCLa+zbGpcRHro1F9658Q0ab0Ts1
+         SyTF65ss3jOJXh2HQHHazO3ojvTRWDDrjo2qp+jrG9LIRyxpkuQvLMe0mdZ6Wp39pI4W
+         VMBb7x7D1w2tnC0vSbiNG3qrH5P+MXd80mRtWPERkz1slWxah4WJfda+OeZYRqYc1gws
+         zngg==
+X-Forwarded-Encrypted: i=1; AJvYcCVmLFJfjuExIiNPqyjiu7FDe5RKQbotLibDXqqNfp/Hqkn0K9KC25jcO6FFHdIRzscZhr7EnLb9sZRRQI8kOaOKt+VAUhtTxVakPvX407Zr+6KNbtSpey1hRjpl8qz06PUqbXym5Q==
+X-Gm-Message-State: AOJu0YyS/0MYZOx4qnQZROL1+wV0ZONSwcm2t8XN+P/BlvWJNODkli01
+	0ffYnOCLR2vaJraflhI7lwGCiLBRf+zCJjUc5oHoNC5kchVXKhb7
+X-Google-Smtp-Source: AGHT+IHkF+ba7Btb7L7FjML/+fBDXlXBctSNMdU/i+CV00wPVcggo7cJ6jjeUyyiiNG9DMmS8VmEoA==
+X-Received: by 2002:a05:6000:c83:b0:34c:5448:b81a with SMTP id dp3-20020a0560000c8300b0034c5448b81amr9285033wrb.48.1714488321039;
+        Tue, 30 Apr 2024 07:45:21 -0700 (PDT)
+Received: from [10.16.124.60] ([212.227.34.98])
+        by smtp.gmail.com with ESMTPSA id b16-20020a5d4d90000000b0034c59c41f45sm11326435wru.7.2024.04.30.07.45.20
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 30 Apr 2024 07:45:20 -0700 (PDT)
+From: Zhu Yanjun <zyjzyj2000@gmail.com>
+X-Google-Original-From: Zhu Yanjun <yanjun.zhu@linux.dev>
+Message-ID: <6d483d75-5866-4c4e-8d86-c89a2b27f5e7@linux.dev>
+Date: Tue, 30 Apr 2024 16:45:20 +0200
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-OriginatorOrg: marvell.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: CO1PR18MB4666.namprd18.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 5d1b69b8-2fa5-4489-fec5-08dc6923de69
-X-MS-Exchange-CrossTenant-originalarrivaltime: 30 Apr 2024 14:43:15.5663
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 70e1fb47-1155-421d-87fc-2e58f638b6e0
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: kVCCRGfw0ScOOTnDOVqaAnlLOcljapwXoatx1i7S4I7TwuXrwvg6dTjKbBWXnfdfMi42+5OxFK/ODbzNQ9w8Qw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR18MB3653
-X-Proofpoint-GUID: r3FU2siam_MFkUtKso_jpVxXXVcxZo3A
-X-Proofpoint-ORIG-GUID: r3FU2siam_MFkUtKso_jpVxXXVcxZo3A
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1011,Hydra:6.0.650,FMLib:17.11.176.26
- definitions=2024-04-30_08,2024-04-30_01,2023-05-22_02
+User-Agent: Mozilla Thunderbird
+Subject: Re: [RFC PATCH 0/4] NFS: Fix another 'check_flush_dependency' splat
+To: Chuck Lever III <chuck.lever@oracle.com>
+Cc: Chuck Lever <cel@kernel.org>,
+ Linux NFS Mailing List <linux-nfs@vger.kernel.org>,
+ "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>
+References: <20240429152537.212958-6-cel@kernel.org>
+ <efc4f895-3a45-4b44-a47d-532896526458@linux.dev>
+ <90F6A893-5315-4E53-B54E-1CF8D7D4AC4D@oracle.com>
+ <f49907ea-cedc-44b7-9ffc-30c265731f3e@linux.dev>
+ <675A3584-6086-45D4-9B31-F7F572394144@oracle.com>
+Content-Language: en-US
+In-Reply-To: <675A3584-6086-45D4-9B31-F7F572394144@oracle.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
+On 30.04.24 16:13, Chuck Lever III wrote:
+> 
+> 
+>> On Apr 30, 2024, at 9:58 AM, Zhu Yanjun <yanjun.zhu@linux.dev> wrote:
+>>
+>>
+>> On 30.04.24 15:42, Chuck Lever III wrote:
+>>>
+>>>> On Apr 30, 2024, at 3:26 AM, Zhu Yanjun <zyjzyj2000@gmail.com> wrote:
+>>>>
+>>>> On 29.04.24 17:25, cel@kernel.org wrote:
+>>>>> From: Chuck Lever <chuck.lever@oracle.com>
+>>>>> Avoid getting work queue splats in the system journal by moving
+>>>>> client-side RPC/RDMA transport tear-down into a background process.
+>>>>> I've done some testing of this series, now looking for review
+>>>>> comments.
+>>>> How to make tests with nfs && rdma? Can you provide some steps or tools?
+>>> We are building NFS tests into kdevops:
+>>>
+>>>     https://github.com/linux-kdevops/kdevops.git
+>>>
+>>> and there is a config option to use soft iWARP instead of TCP.
+>>
+>> Thanks a lot. It is interesting. Have you made tests with RXE instead of iWARP?
+>>
+>> If yes, does nfs work well with RXE? I am just curious with nfs && RXE.
+>>
+>> Normally nfs works with TCP. Now nfs will use RDMA instead of TCP.
+>>
+>> The popular RDMA implementation is RoCEv2 which is based on UDP protocol.
+>>
+>> So I am curious if NFS can work well with RXE (RoCEv2 emulation driver) or not.
+>>
+>> If the user wants to use nfs in his production hosts, it is possible that nfs will work with RoCEv2 (UDP).
+> 
+> Yes, NFS/RDMA works with rxe and even with rxe mixed with
+> hardware RoCE. Someone else will have to step in and say
+> whether it works "well" since I don't use rxe, only CX-5
+> and newer on 100GbE.
+> 
+> Generally we use siw because our testing environment varies
+> between all systems on a single local network or hypervisor,
+> all the way up to NFS/RDMA on VPN and WAN. The rxe driver
+> doesn't support operation over tunnels, currently.
 
+Thanks a lot. "The rxe driver doesn't support operation over tunnels, 
+currently." Do you mean that rxe can not work well with tun/tap device?
 
->-----Original Message-----
->From: Leon Romanovsky <leon@kernel.org>
->Sent: Tuesday, April 30, 2024 3:48 PM
->To: David Ahern <dsahern@gmail.com>
->Cc: Chiara Meiohas <cmeiohas@nvidia.com>; Jason Gunthorpe
-><jgg@nvidia.com>; linux-netdev <netdev@vger.kernel.org>; RDMA mailing list
-><linux-rdma@vger.kernel.org>
->Subject: [EXTERNAL] [PATCH iproute2-next 1/2] rdma: update uapi header
->
->From: Chiara Meiohas <cmeiohas@nvidia.com>
->
->Update rdma_netlink.h file up to kernel commit e18fa0bbcedf
->("RDMA/core: Add an option to display driver-specific QPs in the rdmatool"=
-)
->
->Signed-off-by: Chiara Meiohas <cmeiohas@nvidia.com>
->Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
-Reviewed-by: Subbaraya Sundeep <sbhatta@marvell.com>
+> 
+> It is possible to add rxe as a second option in kdevops,
+> but siw has worked for our purposes so far, and the NFS
+> test matrix is already enormous.
 
-Thanks,
-Sundeep
+Thanks. If rxe can be as a second option in kdevops, I will make tests 
+with kdevops to check rxe work well or not in the future kernel version.
 
->---
-> rdma/include/uapi/rdma/rdma_netlink.h | 6 ++++++
-> 1 file changed, 6 insertions(+)
->
->diff --git a/rdma/include/uapi/rdma/rdma_netlink.h
->b/rdma/include/uapi/rdma/rdma_netlink.h
->index e8861b5e..a6c8a52d 100644
->--- a/rdma/include/uapi/rdma/rdma_netlink.h
->+++ b/rdma/include/uapi/rdma/rdma_netlink.h
->@@ -558,6 +558,12 @@ enum rdma_nldev_attr {
->
-> 	RDMA_NLDEV_SYS_ATTR_PRIVILEGED_QKEY_MODE, /* u8 */
->
->+	RDMA_NLDEV_ATTR_DRIVER_DETAILS,		/* u8 */
->+	/*
->+	 * QP subtype string, used for driver QPs
->+	 */
->+	RDMA_NLDEV_ATTR_RES_SUBTYPE,		/* string */
->+
-> 	/*
-> 	 * Always the end
-> 	 */
->--
->2.44.0
->
+Best Regards,
+Zhu Yanjun
+
+> 
+> 
+>> Best Regards,
+>>
+>> Zhu Yanjun
+>>
+>>> kdevops includes workflows for fstests, Mora's nfstest, the
+>>> git regression suite, and ltp, all of which we use regularly
+>>> to test the Linux NFS client and server implementations.
+>>>
+>>>
+>>>> I am interested in nfs && rdma.
+>>>>
+>>>> Thanks,
+>>>> Zhu Yanjun
+>>>>
+>>>>> Chuck Lever (4):
+>>>>>    xprtrdma: Remove temp allocation of rpcrdma_rep objects
+>>>>>    xprtrdma: Clean up synopsis of frwr_mr_unmap()
+>>>>>    xprtrdma: Delay releasing connection hardware resources
+>>>>>    xprtrdma: Move MRs to struct rpcrdma_ep
+>>>>>   net/sunrpc/xprtrdma/frwr_ops.c  |  13 ++-
+>>>>>   net/sunrpc/xprtrdma/rpc_rdma.c  |   3 +-
+>>>>>   net/sunrpc/xprtrdma/transport.c |  20 +++-
+>>>>>   net/sunrpc/xprtrdma/verbs.c     | 173 ++++++++++++++++----------------
+>>>>>   net/sunrpc/xprtrdma/xprt_rdma.h |  21 ++--
+>>>>>   5 files changed, 125 insertions(+), 105 deletions(-)
+>>>>> base-commit: e67572cd2204894179d89bd7b984072f19313b03
+>>> --
+>>> Chuck Lever
+>>>
+>>>
+>> -- 
+>> Best Regards,
+>> Yanjun.Zhu
+> 
+> 
+> --
+> Chuck Lever
+> 
+> 
 
 
