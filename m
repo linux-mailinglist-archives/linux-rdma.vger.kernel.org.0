@@ -1,228 +1,205 @@
-Return-Path: <linux-rdma+bounces-2195-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-2196-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 67AE68B8816
-	for <lists+linux-rdma@lfdr.de>; Wed,  1 May 2024 11:32:43 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id AFDEE8B8994
+	for <lists+linux-rdma@lfdr.de>; Wed,  1 May 2024 14:10:46 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D3B251F23547
-	for <lists+linux-rdma@lfdr.de>; Wed,  1 May 2024 09:32:42 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B88D71C2188F
+	for <lists+linux-rdma@lfdr.de>; Wed,  1 May 2024 12:10:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D34EA1272AF;
-	Wed,  1 May 2024 09:30:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E4BE183CC2;
+	Wed,  1 May 2024 12:10:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="VQd0De6S"
+	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="ZAZF0PbY"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from NAM10-DM6-obe.outbound.protection.outlook.com (mail-dm6nam10on2067.outbound.protection.outlook.com [40.107.93.67])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BD4EE535D9;
-	Wed,  1 May 2024 09:30:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714555809; cv=none; b=ZIwIeK70qQvChZSnBS2Co3KIi/rnhcYZSb+xdSTfAeyo0gjB74LsIvBkE8wunZHW3XVAEF0/HxxocjhgoYBSHOoZucZ0FHa3EydCXENWcCMo41SWNSTcueYuNwH28tHCuysNDdIj4LT0wk9ArkmzPEV8nt2sYOveBzMSTFTl0ec=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714555809; c=relaxed/simple;
-	bh=hNf63Pk2HgAGXyBQQDS5WAsEv/JgWTScOzabV6lKgvc=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=megTcRyJRsBYfgaR5qQIMqjFDPH3nXp/WF5JC1zG6Sx/OFpo0wZ5RCUCON08BPJHRgD48uendNOsVgGJL+d4eak8bNjiETBF36DD2yEOqhp99fDv1GD5/T/ti1C/6QgaE2NVyg+ALPp3eGJfpPVv6N8tdGHewoSSMmDAXszaAGM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=VQd0De6S; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 20793C4DDF0;
-	Wed,  1 May 2024 09:30:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1714555809;
-	bh=hNf63Pk2HgAGXyBQQDS5WAsEv/JgWTScOzabV6lKgvc=;
-	h=From:Date:Subject:References:In-Reply-To:To:Cc:Reply-To:From;
-	b=VQd0De6So4doAjJTCCet49lx95qoLIjPiu5+aD+VXkqFT6+RutHhFAN1iIcbE62nZ
-	 fa6NJeX4drewKJvWHV3wZPubVy/y9m5dhrukSR/4RF4qZ2q0tXm+xxrwIDiKphT+oe
-	 RKBBYh6fdHuqcg1engr3LK9ZIQ0MOSZu6bCXNh1V1u4YvOgw50T3IVTr5ie4UwtUrJ
-	 TriWlwx+iVIAXtspLSF3kX5Wd71+dTQ/d/Lq+/wUoE+ixoueyoW0Nlj9AU2raN/1g3
-	 6+84w7Kpev/GEl9c7B/TgkQhP6Wb/8AzxCICoc6EcbQw8H6SllPzkZs/KmMCFzgHQI
-	 WIT/g4ZxcD4rA==
-Received: from aws-us-west-2-korg-lkml-1.web.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 13FF7C25B76;
-	Wed,  1 May 2024 09:30:09 +0000 (UTC)
-From: Joel Granados via B4 Relay <devnull+j.granados.samsung.com@kernel.org>
-Date: Wed, 01 May 2024 11:29:32 +0200
-Subject: [PATCH net-next v6 8/8] ax.25: x.25: Remove the now superfluous
- sentinel elements from ctl_table array
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 460774437;
+	Wed,  1 May 2024 12:10:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.93.67
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1714565440; cv=fail; b=d31Zme5lupzFu3Yw/8R5XqYv7uPNQkRrauyXAtxOw5V6QVLF98l2/NnXH2bZDZCmlTumkL0cpgRdprWTX6g7/wOSZHA5TH7Upsi7ns/leGm6uw2GOcSC++qZ5VjJb/vUH03+1FDAcLyvcWlv6IrzxOpmhjmp3mRChvwdIRZhAbM=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1714565440; c=relaxed/simple;
+	bh=6jBngJ+iy2VGj/xWmxGjLQ5lnLrx4MpBoH6W9fT9QnU=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:Content-Type:
+	 Content-Disposition:In-Reply-To:MIME-Version; b=gtEIaVfkZJqvVgyu+tN4ihw1NXVtibaUx9BVPXxNQ0w8wbH5gqWnf6GZYOsahHrlNM445RYZjAGlXfj5fRm3A/JMo02oOSE7hWRQTW7MOY9Ywt2ezBZeQLc416KwL7gZBWPJP8t7SCY47E4wxnOeLJmZ7af4WnZ5Cwp9ZJ+CfAI=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=ZAZF0PbY; arc=fail smtp.client-ip=40.107.93.67
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Ns2qT7Yx3IClk6eq+mWQfjg/lQvVxQF/Hevhy02QZcZw6Uosb+lJjy8H6ARl7k+WZoMJT4n/gt71fdQVz9JgTN/dYjZdjxEsIHZKdihSlhvic7/9PCHHPAmGEdqj2R74EzMvDzDX7kCnhM3bhTPnmhgY02SxAG+F8B7DQPaEz3tUGDYqBQcK6fPrCNUDiP48nXD8Nn9aDFKWerOEBC4fJ7j0vHB9Sf0TXeyf0f+ej6QGnOY/GpmTCi5lfii+JmFVgXG5VA+yKEqJrQZ/sQb2bR9x0+70muxD6yBibZkmIANftnI7KCfA3FucV1InX2WJv0GRLAIa8gU+BgulO558Wg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=ZnJkJO7orUqyoqrS/FjEYW9dopHDcxHV/lfxRSrGFSs=;
+ b=LndbW8qIkZhXBXrAIp/kJ3xBVkfLEbuKV3gVyG1AZIhsx7IgELjsK5ehIjkaJxoITsqPjQ2e9UKHkv2Gor61mApFKKSL616jjZk3VqmFjUKh+UsXUGdzesUsxCQh/jqkI7M763+JXV/JJzhjN+skNFR49tD48UT5jJ+JIGsTGULfzUYEMINKi74wcz7P2YE4lCNpOJbB1K/V1YX3k+CewSgGBapoB7Qk8UIhTAEsm40s28ZwnPosqS59HTAWocnuYMKhMSexuGuxCGRoEHGGb0wBR0jck6mw4+qJyOfKD54l7BhlIiEE9Xu0BnzVoZPIR6Sb3TcSDvV6Mk8O7fhFdg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=ZnJkJO7orUqyoqrS/FjEYW9dopHDcxHV/lfxRSrGFSs=;
+ b=ZAZF0PbYpAukV01czbfEiKIvGruRHvOrrO3Lx4u8/akmNIfMbKZtGWtEC5NR+iB+8NuiJV316fIFsMnonRAs0iMlwwjY+Nhmgv9BZ9F0rf3e8l2tpX1UmNWxcvXuINZvfco7i1PrvA1wKgMawcMH/OOBgCMn1GDwGk6Ikq3TuGguBkynAtqiIdNZ3JdUc/h5FzsDI/2tMhUm5EqEV4Ue0eiMe5bEF9hBTG7OSBTSE3AovlOh6tPrceWOBfmyXCtkb++vRsc9j+HoZNoL7o+kN852Cz/ChSYsfwff2UAZLp1MXVH7ofMKaCZvqagBnQaszfhcYWwY5LGrC3FB5LjX0g==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nvidia.com;
+Received: from DM6PR12MB3849.namprd12.prod.outlook.com (2603:10b6:5:1c7::26)
+ by PH7PR12MB7283.namprd12.prod.outlook.com (2603:10b6:510:20a::21) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7519.35; Wed, 1 May
+ 2024 12:10:35 +0000
+Received: from DM6PR12MB3849.namprd12.prod.outlook.com
+ ([fe80::c296:774b:a5fc:965e]) by DM6PR12MB3849.namprd12.prod.outlook.com
+ ([fe80::c296:774b:a5fc:965e%3]) with mapi id 15.20.7544.029; Wed, 1 May 2024
+ 12:10:34 +0000
+Date: Wed, 1 May 2024 09:10:32 -0300
+From: Jason Gunthorpe <jgg@nvidia.com>
+To: Christoph Hellwig <hch@infradead.org>
+Cc: John Hubbard <jhubbard@nvidia.com>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	LKML <linux-kernel@vger.kernel.org>, linux-rdma@vger.kernel.org,
+	linux-mm@kvack.org, Mike Marciniszyn <mike.marciniszyn@intel.com>,
+	Leon Romanovsky <leon@kernel.org>,
+	Artemy Kovalyov <artemyko@nvidia.com>,
+	Michael Guralnik <michaelgur@nvidia.com>,
+	Alistair Popple <apopple@nvidia.com>,
+	Pak Markthub <pmarkthub@nvidia.com>
+Subject: Re: [RFC] RDMA/umem: pin_user_pages*() can temporarily fail due to
+ migration glitches
+Message-ID: <20240501121032.GA941030@nvidia.com>
+References: <20240501003117.257735-1-jhubbard@nvidia.com>
+ <ZjHO04Rb75TIlmkA@infradead.org>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZjHO04Rb75TIlmkA@infradead.org>
+X-ClientProxiedBy: MN2PR13CA0009.namprd13.prod.outlook.com
+ (2603:10b6:208:160::22) To DM6PR12MB3849.namprd12.prod.outlook.com
+ (2603:10b6:5:1c7::26)
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20240501-jag-sysctl_remset_net-v6-8-370b702b6b4a@samsung.com>
-References: <20240501-jag-sysctl_remset_net-v6-0-370b702b6b4a@samsung.com>
-In-Reply-To: <20240501-jag-sysctl_remset_net-v6-0-370b702b6b4a@samsung.com>
-To: "David S. Miller" <davem@davemloft.net>, 
- Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, 
- Paolo Abeni <pabeni@redhat.com>, Alexander Aring <alex.aring@gmail.com>, 
- Stefan Schmidt <stefan@datenfreihafen.org>, 
- Miquel Raynal <miquel.raynal@bootlin.com>, David Ahern <dsahern@kernel.org>, 
- Steffen Klassert <steffen.klassert@secunet.com>, 
- Herbert Xu <herbert@gondor.apana.org.au>, 
- Matthieu Baerts <matttbe@kernel.org>, Mat Martineau <martineau@kernel.org>, 
- Geliang Tang <geliang@kernel.org>, Ralf Baechle <ralf@linux-mips.org>, 
- Remi Denis-Courmont <courmisch@gmail.com>, 
- Allison Henderson <allison.henderson@oracle.com>, 
- David Howells <dhowells@redhat.com>, Marc Dionne <marc.dionne@auristor.com>, 
- Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>, 
- Xin Long <lucien.xin@gmail.com>, Wenjia Zhang <wenjia@linux.ibm.com>, 
- Jan Karcher <jaka@linux.ibm.com>, "D. Wythe" <alibuda@linux.alibaba.com>, 
- Tony Lu <tonylu@linux.alibaba.com>, Wen Gu <guwen@linux.alibaba.com>, 
- Trond Myklebust <trond.myklebust@hammerspace.com>, 
- Anna Schumaker <anna@kernel.org>, Chuck Lever <chuck.lever@oracle.com>, 
- Jeff Layton <jlayton@kernel.org>, Neil Brown <neilb@suse.de>, 
- Olga Kornievskaia <kolga@netapp.com>, Dai Ngo <Dai.Ngo@oracle.com>, 
- Tom Talpey <tom@talpey.com>, Jon Maloy <jmaloy@redhat.com>, 
- Ying Xue <ying.xue@windriver.com>, Martin Schiller <ms@dev.tdt.de>, 
- Pablo Neira Ayuso <pablo@netfilter.org>, 
- Jozsef Kadlecsik <kadlec@netfilter.org>, Florian Westphal <fw@strlen.de>, 
- Roopa Prabhu <roopa@nvidia.com>, Nikolay Aleksandrov <razor@blackwall.org>, 
- Simon Horman <horms@verge.net.au>, Julian Anastasov <ja@ssi.bg>, 
- Joerg Reuter <jreuter@yaina.de>, Luis Chamberlain <mcgrof@kernel.org>, 
- Kees Cook <keescook@chromium.org>
-Cc: netdev@vger.kernel.org, linux-kernel@vger.kernel.org, 
- dccp@vger.kernel.org, linux-wpan@vger.kernel.org, mptcp@lists.linux.dev, 
- linux-hams@vger.kernel.org, linux-rdma@vger.kernel.org, 
- rds-devel@oss.oracle.com, linux-afs@lists.infradead.org, 
- linux-sctp@vger.kernel.org, linux-s390@vger.kernel.org, 
- linux-nfs@vger.kernel.org, tipc-discussion@lists.sourceforge.net, 
- linux-x25@vger.kernel.org, netfilter-devel@vger.kernel.org, 
- coreteam@netfilter.org, bridge@lists.linux.dev, lvs-devel@vger.kernel.org, 
- Joel Granados <j.granados@samsung.com>
-X-Mailer: b4 0.13-dev-2d940
-X-Developer-Signature: v=1; a=openpgp-sha256; l=3832;
- i=j.granados@samsung.com; h=from:subject:message-id;
- bh=AuUMNVULwdRpc7MqK6QxuNKeT/f1k5AlEkDFZpyU2BQ=;
- b=owJ4nAHtARL+kA0DAAoBupfNUreWQU8ByyZiAGYyC55+jATyuag2cMz+nAfHl+HL6F0qL73yQ
- it9OOI3ZHMdqIkBswQAAQoAHRYhBK5HCVcl5jElzssnkLqXzVK3lkFPBQJmMgueAAoJELqXzVK3
- lkFPeOEL/jPjta+dOJSZPZOjLVWcJG08CJUC7rYb1k0PNtxO7S/21gaMJjENoVcIEVGESaFX22i
- 7CGruN2yxgicXlNg5nTRv1ZrlzybcKiPH06JFYreKEgLe6CJ4UsTGS/jXsMpupMDpSw3FsLRf2b
- p0RiEVHZlB5v+TY5XZVLfYuni9WBamS0CWyHo/YP4Cpt7BFk7Z400iRHZtp8Mm3BbernP88WLsI
- tu+949SFzqw3fVIsjFSrmWoCP3O1O3XbWbwn1jbbvjMMcwEoQ5HtlVMe4wofVUgR58+Qo4dxmMg
- cnk4INgUh0IkD/gez2ewL7bnlZDDKjRA1wtR25xIqsxCmxeamUeFFjWs1856xfEwNa8w48gn3q6
- jKggb0B5t38jUi1rgISS3kB5+IDwZsSmZLV7SdEBgZTQoA0WntUu/A6QzpK/dm4yw4JHktCZeyb
- G7zXpWgiGYiuhdcJC4yBMyJcFqQUYM71xk7umchoPq1It2qt5P/Iwgk1NCdtrg06W7Bz3uHXL76
- mk=
-X-Developer-Key: i=j.granados@samsung.com; a=openpgp;
- fpr=F1F8E46D30F0F6C4A45FF4465895FAAC338C6E77
-X-Endpoint-Received: by B4 Relay for j.granados@samsung.com/default with
- auth_id=70
-X-Original-From: Joel Granados <j.granados@samsung.com>
-Reply-To: j.granados@samsung.com
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: DM6PR12MB3849:EE_|PH7PR12MB7283:EE_
+X-MS-Office365-Filtering-Correlation-Id: ad664f03-e733-4e47-5f08-08dc69d7b41a
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;ARA:13230031|376005|1800799015|366007;
+X-Microsoft-Antispam-Message-Info:
+	=?us-ascii?Q?mtAEUFuSCuTQwbFH3joNXrkHVodfkMxG796g80mnGMT+bGnSyeCYb1sQZpX+?=
+ =?us-ascii?Q?ch5xNtgdwjLxocicSl2zJzXbiIXqqI3bI0O7FV3jDo792onPjbiq3lFWmIE0?=
+ =?us-ascii?Q?D25dJ9yoj3sLUCFE1hJ5F0MLTXQEXDnEUHfrFEy+V+qQ8QGF5SYQWHmy2qZz?=
+ =?us-ascii?Q?YmP+HRS+Qxcfdqa1iGF7uFz+8OEaRpHGHJgqZ4e/EN4Z9qQxVU013qacHj8e?=
+ =?us-ascii?Q?8SJV1jv25sqOHf8ng9WgdiKWMHHp8MIdhBxkcbZF5Sl+nUOVyEKDbCDtMcla?=
+ =?us-ascii?Q?j/RDcgUE9A+VrnEnS9tFYysosiphmLKYPX6cNDe+014JLmEvqP5DyyXMH/ZL?=
+ =?us-ascii?Q?gqvo2L4sHHHRxj/ltYGxrvwHolv8sQ3dgJYwsGeSK5a8qu7717sM6Xn6zvWh?=
+ =?us-ascii?Q?q4350MAr/avYTxWExeL3jAWgktEQCEP+O4EyOJK0KYsXbcGwBT2Lc0LhHaK1?=
+ =?us-ascii?Q?XOIyl8HFoDesW6FXthGbnls2fdzG+Hqil5kNjeA5v51XssDMUczA3lcvHd7r?=
+ =?us-ascii?Q?UkUegogw+ebV8FAXU2OggKCmgoQ6WL9g+80WD0MRDIMpX/d+Nr1S/xGMK79o?=
+ =?us-ascii?Q?VmZsP5a0P8KC56fKP1ooj9rFmneaJH2gTNKSoghrDNjIiMYk7i/lUbTNRqtm?=
+ =?us-ascii?Q?9HQdttCVdGlDmP7mh8HeYvMyTR36Qubk3a616xD2SOgUlc/+bRY7h7gayPIi?=
+ =?us-ascii?Q?Deq/iTPc1P7CC+q1U5xtQgygAOZcQW3pMNjarAo0OISuJ0ly2rkHQrBRLrFB?=
+ =?us-ascii?Q?0wYZ4JqyspGsCeg0kDggf1bfngsO6fenD/lGYcaEzBTQKMvfS7ddR1F01xZN?=
+ =?us-ascii?Q?BP546fDvaYbyC8hAQdi8IbvfNtMEyuLV4+FEzc7mQp7cEpmxJn3TguMoDfkk?=
+ =?us-ascii?Q?F+khkqxqB+6jLz4TpjtL1ZomBbZxctmcOaLLvK2dFrjhejCSYh7tMVwBj6eM?=
+ =?us-ascii?Q?Rr4pcrk40drJYlUMHY+nSCQQPb5QFfgBVzVnDNREpPallzgNnPBcqrmI9BtW?=
+ =?us-ascii?Q?+c/ipxB2xTPkSvO6Fm+G6hpF+Sw7hpV+SayvcljWDQ3dYZ1NNj2GGGhltMiP?=
+ =?us-ascii?Q?M7vscSu5DQYkOrSJXuZ1nsHjvtOesFs7A6Lh9VF+A8c5nkjIGrcgc0Kz2KkE?=
+ =?us-ascii?Q?72Kovc0ZpKTOjPYE9UTCy8Tn8GcefIWdZgjiJoEGhIXoAMXbyQwbH8Ex7zXF?=
+ =?us-ascii?Q?U34bYqdNo8/x21J9tlCXTkGDk7IyA605dGY2hwI/iBOqOwNJ0wPmqgOaRwRY?=
+ =?us-ascii?Q?W7sjTD/lCn7J8gjF+c/akSOF8q3UWHwuRzEGcpQoMA=3D=3D?=
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR12MB3849.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376005)(1800799015)(366007);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?us-ascii?Q?mDcEyuKOVjIAERu9Qxo8GmTEsJYBGtc/cDf06KkCC9JpTmGG7XgM97VH6zbs?=
+ =?us-ascii?Q?Mwk39pjsAL5kZXOXp0KHliu4HEyP+EoO2iAvmedD4ezpp9w5Dk4Rn62MxvBE?=
+ =?us-ascii?Q?l91uICDVp0gQpHPgFnC7/+LYUzRGG7PBEQAQINqPADSruQ3DkMLSABrNsWCF?=
+ =?us-ascii?Q?xwVsF8ERED593Q0u4qyTauh0ufA/juSMFLr6kqkFAjUSdXNoeu9Jhaqsm3Lr?=
+ =?us-ascii?Q?75ZGVmDH5hCG6IFp3xQDwHqMRL9m+DIOUSbs17ETfI+jpP5c27lXXFnjyolQ?=
+ =?us-ascii?Q?YsxLHeR2iWddh/8nlNJ3DNBPbPv+7BDuc/t70fHkJXXs0pNlF+9G4VfWnfoL?=
+ =?us-ascii?Q?TpD1ILLXE26OyyG7SSoXxIm4NgsdtdqYGnUkhj68WYQ55EviivG6ZOcee79H?=
+ =?us-ascii?Q?ktDxippODFe+kx2ItaWX6qIjLOQkRG/FIEnNhulwu24kH7wWMc8MgvK60Xdf?=
+ =?us-ascii?Q?QjFqdMYB/dwsV4eDw4SVJz3I7vZLZoEBVl8elJg04BEcFXAO+/g89EtlPgEM?=
+ =?us-ascii?Q?beFzmw9vvwXstXyVCcDN3gBiZ9iS9GlJ7CPO15d+6MAWguhhvu+9bVf+Ck5j?=
+ =?us-ascii?Q?y1N1P5GesSE8VBhCVb7cAqWzwJCleMO/SxpkakI+ehdTiwVb8rAykPF4/ARz?=
+ =?us-ascii?Q?vMbVeVhAX6Beg44/WsMKUJZQbxHy7aWf6OoioYeSe/hwNx64ATlbIUwAzelt?=
+ =?us-ascii?Q?XnRAuWQset5nHkwAlqxg30W9K4E0WdvDKZTo7DdQAiJYfulYBbP9nLsKYRXf?=
+ =?us-ascii?Q?GwY8lY664YB9xthz8022WXrslvU1LxmbT5PBBCcG6BgU+qSIyhJqXNkrOROS?=
+ =?us-ascii?Q?ZY5NwY3mSIVaDAUgecf7ABRZVyzjjiHKDAGhAjW9P9IGYqrX7hv/olIRlk1B?=
+ =?us-ascii?Q?bgMvaxUPeFl9Luhf5yegVzCflux+VXhjW0o3rMXTMN6/WKB8ESUQZCgstRGR?=
+ =?us-ascii?Q?nIsu768KS4msd++EAxON4G1ApWB/SC0GPtqn9hcS/JCfCWIKvf3PkwmgGtQO?=
+ =?us-ascii?Q?h8gnpQ90b4hQpW2v4STeCF7483yA284rB6qJ+BSGJnspUgq+NtSl4bCBbJp5?=
+ =?us-ascii?Q?uqpTfmOgD+Hbgd2C9L4RJ7kimUyOd+r7R43b6/4GWbno3aGVZzO4aVgrjGxj?=
+ =?us-ascii?Q?sZCaBvgjnq2D3q0kmOxFROfL/3bOx1lBDt5XOKgXkeCp4u176crnGQOSpZmW?=
+ =?us-ascii?Q?LaGcUcWxkxeEGDr29nLG1hLP6YDgcYVu+kxz0KbCJkZyFBfYtSx3uFHhaYzB?=
+ =?us-ascii?Q?1iMLHEh/rMTYLMsInXT96zhKpKSj7qCiC8PVh0K2qq/ZE2ce/73GPocnwerM?=
+ =?us-ascii?Q?KcFB7uQlIzPwO6WWk5msr0gRcs+qr3N4ZdZ+cuDJb7bdcVVMdJiEed3cY+hY?=
+ =?us-ascii?Q?H3V9bYWYI5rHW9wthAtkrdNhB5EZ0ZMNAEn2isx4oVWB/5qqojrZJfVd/tOm?=
+ =?us-ascii?Q?VjeihMQxjGRCZHV7MnTqxzyYqyMLwDXlDZE6FtrsUcxIu2ssfixSMUg0rC1U?=
+ =?us-ascii?Q?OEkhnmLem71wigsApUvya33kFIlUyvs84c/PZt51Zn0PPQVov2GTzdE0div1?=
+ =?us-ascii?Q?TTJqaYE65A5AzQGEnEIclox+czBaXFQEKI9aMeR+?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: ad664f03-e733-4e47-5f08-08dc69d7b41a
+X-MS-Exchange-CrossTenant-AuthSource: DM6PR12MB3849.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 01 May 2024 12:10:34.1953
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: V+r7PVpf1xn4kawtTN5uNQ+nybR9mNnPhUukwuhUcVqjbZxhSU+Ipm0bS4SPBbon
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH7PR12MB7283
 
-From: Joel Granados <j.granados@samsung.com>
+On Tue, Apr 30, 2024 at 10:10:43PM -0700, Christoph Hellwig wrote:
+> > +		pinned = -ENOMEM;
+> > +		int attempts = 0;
+> > +		/*
+> > +		 * pin_user_pages_fast() can return -EAGAIN, due to falling back
+> > +		 * to gup-slow and then failing to migrate pages out of
+> > +		 * ZONE_MOVABLE due to a transient elevated page refcount.
+> > +		 *
+> > +		 * One retry is enough to avoid this problem, so far, but let's
+> > +		 * use a slightly higher retry count just in case even larger
+> > +		 * systems have a longer-lasting transient refcount problem.
+> > +		 *
+> > +		 */
+> > +		static const int MAX_ATTEMPTS = 3;
+> > +
+> > +		while (pinned == -EAGAIN && attempts < MAX_ATTEMPTS) {
+> > +			pinned = pin_user_pages_fast(cur_base,
+> > +						     min_t(unsigned long,
+> > +							npages, PAGE_SIZE /
+> > +							sizeof(struct page *)),
+> > +						     gup_flags, page_list);
+> >  			ret = pinned;
+> > -			goto umem_release;
+> > +			attempts++;
+> > +
+> > +			if (pinned == -EAGAIN)
+> > +				continue;
+> >  		}
+> > +		if (pinned < 0)
+> > +			goto umem_release;
+> 
+> This doesn't make sense.  IFF a blind retry is all that is needed it
+> should be done in the core functionality.  I fear it's not that easy,
+> though.
 
-This commit comes at the tail end of a greater effort to remove the
-empty elements at the end of the ctl_table arrays (sentinels) which will
-reduce the overall build time size of the kernel and run time memory
-bloat by ~64 bytes per sentinel (further information Link :
-https://lore.kernel.org/all/ZO5Yx5JFogGi%2FcBo@bombadil.infradead.org/)
++1
 
-Avoid a buffer overflow when traversing the ctl_table by ensuring that
-AX25_MAX_VALUES is the same as the size of ax25_param_table. This is
-done with a BUILD_BUG_ON where ax25_param_table is defined and a
-CONFIG_AX25_DAMA_SLAVE guard in the unnamed enum definition as well as
-in the ax25_dev_device_up and ax25_ds_set_timer functions.
+This migration retry weirdness is a GUP issue, it needs to be solved
+in the mm not exposed to every pin_user_pages caller.
 
-The overflow happened when the sentinel was removed from
-ax25_param_table. The sentinel's data element was changed when
-CONFIG_AX25_DAMA_SLAVE was undefined. This had no adverse effects as it
-still stopped on the sentinel's null procname but needed to be addressed
-once the sentinel was removed.
+If it turns out ZONE_MOVEABLE pages can't actually be reliably moved
+then it is pretty broken..
 
-Signed-off-by: Joel Granados <j.granados@samsung.com>
----
- include/net/ax25.h         | 2 ++
- net/ax25/ax25_dev.c        | 3 +++
- net/ax25/ax25_ds_timer.c   | 1 +
- net/ax25/sysctl_net_ax25.c | 3 +--
- net/x25/sysctl_net_x25.c   | 1 -
- 5 files changed, 7 insertions(+), 3 deletions(-)
-
-diff --git a/include/net/ax25.h b/include/net/ax25.h
-index 0d939e5aee4e..eb9cee8252c8 100644
---- a/include/net/ax25.h
-+++ b/include/net/ax25.h
-@@ -139,7 +139,9 @@ enum {
- 	AX25_VALUES_N2,		/* Default N2 value */
- 	AX25_VALUES_PACLEN,	/* AX.25 MTU */
- 	AX25_VALUES_PROTOCOL,	/* Std AX.25, DAMA Slave, DAMA Master */
-+#ifdef CONFIG_AX25_DAMA_SLAVE
- 	AX25_VALUES_DS_TIMEOUT,	/* DAMA Slave timeout */
-+#endif
- 	AX25_MAX_VALUES		/* THIS MUST REMAIN THE LAST ENTRY OF THIS LIST */
- };
- 
-diff --git a/net/ax25/ax25_dev.c b/net/ax25/ax25_dev.c
-index 282ec581c072..0bc682ffae9c 100644
---- a/net/ax25/ax25_dev.c
-+++ b/net/ax25/ax25_dev.c
-@@ -78,7 +78,10 @@ void ax25_dev_device_up(struct net_device *dev)
- 	ax25_dev->values[AX25_VALUES_N2]        = AX25_DEF_N2;
- 	ax25_dev->values[AX25_VALUES_PACLEN]	= AX25_DEF_PACLEN;
- 	ax25_dev->values[AX25_VALUES_PROTOCOL]  = AX25_DEF_PROTOCOL;
-+
-+#ifdef CONFIG_AX25_DAMA_SLAVE
- 	ax25_dev->values[AX25_VALUES_DS_TIMEOUT]= AX25_DEF_DS_TIMEOUT;
-+#endif
- 
- #if defined(CONFIG_AX25_DAMA_SLAVE) || defined(CONFIG_AX25_DAMA_MASTER)
- 	ax25_ds_setup_timer(ax25_dev);
-diff --git a/net/ax25/ax25_ds_timer.c b/net/ax25/ax25_ds_timer.c
-index c4f8adbf8144..c50a58d9e368 100644
---- a/net/ax25/ax25_ds_timer.c
-+++ b/net/ax25/ax25_ds_timer.c
-@@ -55,6 +55,7 @@ void ax25_ds_set_timer(ax25_dev *ax25_dev)
- 	ax25_dev->dama.slave_timeout =
- 		msecs_to_jiffies(ax25_dev->values[AX25_VALUES_DS_TIMEOUT]) / 10;
- 	mod_timer(&ax25_dev->dama.slave_timer, jiffies + HZ);
-+	return;
- }
- 
- /*
-diff --git a/net/ax25/sysctl_net_ax25.c b/net/ax25/sysctl_net_ax25.c
-index e0128dc9def3..68753aa30334 100644
---- a/net/ax25/sysctl_net_ax25.c
-+++ b/net/ax25/sysctl_net_ax25.c
-@@ -141,8 +141,6 @@ static const struct ctl_table ax25_param_table[] = {
- 		.extra2		= &max_ds_timeout
- 	},
- #endif
--
--	{ }	/* that's all, folks! */
- };
- 
- int ax25_register_dev_sysctl(ax25_dev *ax25_dev)
-@@ -155,6 +153,7 @@ int ax25_register_dev_sysctl(ax25_dev *ax25_dev)
- 	if (!table)
- 		return -ENOMEM;
- 
-+	BUILD_BUG_ON(ARRAY_SIZE(ax25_param_table) != AX25_MAX_VALUES);
- 	for (k = 0; k < AX25_MAX_VALUES; k++)
- 		table[k].data = &ax25_dev->values[k];
- 
-diff --git a/net/x25/sysctl_net_x25.c b/net/x25/sysctl_net_x25.c
-index e9802afa43d0..643f50874dfe 100644
---- a/net/x25/sysctl_net_x25.c
-+++ b/net/x25/sysctl_net_x25.c
-@@ -71,7 +71,6 @@ static struct ctl_table x25_table[] = {
- 		.mode = 	0644,
- 		.proc_handler = proc_dointvec,
- 	},
--	{ },
- };
- 
- int __init x25_register_sysctl(void)
-
--- 
-2.43.0
-
-
+Jason
 
