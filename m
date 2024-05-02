@@ -1,210 +1,479 @@
-Return-Path: <linux-rdma+bounces-2205-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-2206-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 390908B94EC
-	for <lists+linux-rdma@lfdr.de>; Thu,  2 May 2024 08:56:48 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7114A8B959B
+	for <lists+linux-rdma@lfdr.de>; Thu,  2 May 2024 09:50:49 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A5549B20E29
-	for <lists+linux-rdma@lfdr.de>; Thu,  2 May 2024 06:56:44 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 937451C211B9
+	for <lists+linux-rdma@lfdr.de>; Thu,  2 May 2024 07:50:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F123B21A04;
-	Thu,  2 May 2024 06:56:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 95A2222EF2;
+	Thu,  2 May 2024 07:50:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="evq0rJY8"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="HU72hEoH"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.15])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 35C9F1C693
-	for <linux-rdma@vger.kernel.org>; Thu,  2 May 2024 06:56:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714632995; cv=none; b=ZAYoYCIUnI2Z8D4mxxbTvC8bbRNlt31Q0FP6Fy2Wgbjt5HciVYj5fZguztn/VzvXGUWrUo6/bk2t9ilskLhXoxh6j9nvTOOm0/PCqq5v9L2jxQFHBbY62iC23jVHDLqYco4RYZxJEZ9OjXfgNjnQjh+Vr+TvPCGTMiIbLowiVbY=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714632995; c=relaxed/simple;
-	bh=EuChPRAm4oDIG6E11x0FkZXBAaBNnO9bzAQeZhVzVXY=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=mmIeTzke8wcfYaJrgwaV8v6RS1/sK7EOZ7lv92boRJKl+9+DRekwcdgcjMuEtWDqr7G/ZuWP2Wo4IPvHgL6K2h59sBKxVE6s0afdC0EQY/P8AAAz3WInwdrB4/Gocb2mCpz/QqDrE1WnO52mmPt52mXIYGXusMog/RWoyqWM61Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=evq0rJY8; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1714632992;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=a98A7PArdae3xZyGNJJv71/CegQfWFJVRXHCuxa9iGU=;
-	b=evq0rJY8d7v0LPt8mOpt7LFUpz30edE3peKcOrNln21AC9y+Ul6HEgo7wO6+D5GsUKOLkZ
-	Fih7u76nTokTih0Sfechn8OT/l+ztyrUgArOXpbu+rx5NG8JRRRC5RV2ajZ+PTvYLyDuL5
-	1naKU+smZYbeMunOjGCKAGwB0Oki2m8=
-Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
- [209.85.128.72]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-54-07vK6KA4OpmAJdGAj3fC0Q-1; Thu, 02 May 2024 02:56:31 -0400
-X-MC-Unique: 07vK6KA4OpmAJdGAj3fC0Q-1
-Received: by mail-wm1-f72.google.com with SMTP id 5b1f17b1804b1-41681022d82so33992735e9.1
-        for <linux-rdma@vger.kernel.org>; Wed, 01 May 2024 23:56:31 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714632990; x=1715237790;
-        h=content-transfer-encoding:in-reply-to:organization:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=a98A7PArdae3xZyGNJJv71/CegQfWFJVRXHCuxa9iGU=;
-        b=ZpZehvAEualDxJAAlDF1ntnz9GbaC2GZr0es8+zf1shi47lgQhJVec+j+ZyIPZLfB8
-         4ZUUiwrt2w1IMhODtkiFxTClw0Q+bPKU7zYs8sE8VoXru/9jLGrCaAeHLvyL6jcGvGhA
-         isCJP4L0LdUo0tI1t4bAuSUXIHIAfjfoLekrO+bVwAHt3KWZZnhCNl2GTAveRaycC5WM
-         TMQf+AhiLkPNJjzqdxJby6hsbNdLWAOK4PCVPOU7cAceJmcQByV0nk709UrsZ7g+RYX+
-         hhUxuaEfBm+oXNmbvka18Q0ZDsd5hQNrribR+HcAmZwfKW2+fTWWQYlR9JgLqtB2Npci
-         6U7A==
-X-Forwarded-Encrypted: i=1; AJvYcCX7UQwcbYZQzu3fmdVqadfpY3Kl7TcDdhnYkzZKcCjDBxxsodDDD8Tg2nsxHQ6EYauORTHiis3wqhigdVGZoQYwUuofm++zrQHWxg==
-X-Gm-Message-State: AOJu0YzMF9nyf+kj2yQa6DaWV7hv2Qvd2dnECP12txHAXFROsQ78T/cK
-	bGC7DnvML7uF+d9E/1P9OmIfTPmKO+wry0UDkIYtwVBMnAEywyxCKaGA7fBdxdoQGF/uQXIZvi1
-	7DAmr5rysWI7LMJWn+uZeQIgL+Ct13ND8HWBkhzNlQMLW2Mf/+b6C6i/EBDM=
-X-Received: by 2002:a05:600c:a46:b0:41b:f116:8c22 with SMTP id c6-20020a05600c0a4600b0041bf1168c22mr928814wmq.14.1714632990388;
-        Wed, 01 May 2024 23:56:30 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IE0tjyuBHdY2T5BTC4Tlcnj+bXG2O5cvGW9HCXrSE3PGQy8+LgItEt/8T6nh1VX4d+C9KO7BQ==
-X-Received: by 2002:a05:600c:a46:b0:41b:f116:8c22 with SMTP id c6-20020a05600c0a4600b0041bf1168c22mr928788wmq.14.1714632989855;
-        Wed, 01 May 2024 23:56:29 -0700 (PDT)
-Received: from ?IPV6:2003:cb:c71e:bf00:eba1:3ab9:ab0f:d676? (p200300cbc71ebf00eba13ab9ab0fd676.dip0.t-ipconnect.de. [2003:cb:c71e:bf00:eba1:3ab9:ab0f:d676])
-        by smtp.gmail.com with ESMTPSA id k6-20020a05600c478600b004185be4baefsm4614042wmo.0.2024.05.01.23.56.28
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 01 May 2024 23:56:29 -0700 (PDT)
-Message-ID: <92289167-5655-4c51-8dfc-df7ae53fdb7b@redhat.com>
-Date: Thu, 2 May 2024 08:56:28 +0200
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EC9D2224F2;
+	Thu,  2 May 2024 07:50:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=192.198.163.15
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1714636243; cv=fail; b=itVMrjgB6AL/nAzJvpX4XQjdd1yRRh1qDx660RN9SR9etjPha2M+f191zrVg0iE0elpD1FPVGJZ84lMfQeOhDqgxk0MTp0ef6Plcp1R0CP/uhXpR000qfjsrgvqnshqvPAA/d4qn9/IMPH3oP76Rd67VMkyYeeC5Nwdwpcz5iWA=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1714636243; c=relaxed/simple;
+	bh=0+rx+nPFaKo58yWxHu6gCzMUN05L5zk5HHVeATxTYIA=;
+	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
+	 Content-Type:MIME-Version; b=IleN5GbeVbgSr6MCO8Oie0ehZhHD64hzfaSeUUAO+UrjfKvHxQx4C01aQfBa6OdgsBG62aSHgsQh0ZN5T6IaNZLWNyOOF4nec+FCJqxme0C9qI3qMEwmEKQXoV0YJluyroafsTjWK75Oy9HbCmqPpoSzPCcCM40XqxM98VteF+0=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=HU72hEoH; arc=fail smtp.client-ip=192.198.163.15
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1714636241; x=1746172241;
+  h=from:to:cc:subject:date:message-id:references:
+   in-reply-to:content-transfer-encoding:mime-version;
+  bh=0+rx+nPFaKo58yWxHu6gCzMUN05L5zk5HHVeATxTYIA=;
+  b=HU72hEoHnRt6NcUNaUFTD3maIP8Zj1DbGuzbyZdzwELeY9wUqloV9Pfy
+   tC4KIJ5WVJS7UNq/iz+urP/iPT1jqXTx9l1N0nOORv9NOOa4xHehm7qPB
+   SR1krdBYssaIvpENJoM3yfXcb+Nn0EbYmsINAJ5SDtUddtIr+T4VIWvvh
+   NIMBHAyHSVBXpiec1Ij9cMRn04m8w5QT4iZkwD6OQp/FaKBo9jtNphIeG
+   4Hs+YVrwEtGqBpK51vMsEddtUgXqeYiPmSw+fDaRX7T5jqxjmN6jFWQzD
+   GQZHRgZ1DXxxALvhmJxNLPfxwkF/e9ixmTboL6SIHyBcjQPUXiXAgDQ58
+   Q==;
+X-CSE-ConnectionGUID: oG6jpCuxSt6YkYpJP5KS1w==
+X-CSE-MsgGUID: 7bmOIN98SluDzg0QVwGwRg==
+X-IronPort-AV: E=McAfee;i="6600,9927,11061"; a="10546918"
+X-IronPort-AV: E=Sophos;i="6.07,247,1708416000"; 
+   d="scan'208";a="10546918"
+Received: from orviesa003.jf.intel.com ([10.64.159.143])
+  by fmvoesa109.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 May 2024 00:50:40 -0700
+X-CSE-ConnectionGUID: Abpu+9mfS/SLqTVUh/P9iw==
+X-CSE-MsgGUID: 6W0eMdKnSo+c9Jb5EhLgeg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,247,1708416000"; 
+   d="scan'208";a="31708897"
+Received: from fmsmsx602.amr.corp.intel.com ([10.18.126.82])
+  by orviesa003.jf.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 02 May 2024 00:50:40 -0700
+Received: from fmsmsx601.amr.corp.intel.com (10.18.126.81) by
+ fmsmsx602.amr.corp.intel.com (10.18.126.82) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Thu, 2 May 2024 00:50:39 -0700
+Received: from fmsedg601.ED.cps.intel.com (10.1.192.135) by
+ fmsmsx601.amr.corp.intel.com (10.18.126.81) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35 via Frontend Transport; Thu, 2 May 2024 00:50:39 -0700
+Received: from NAM02-BN1-obe.outbound.protection.outlook.com (104.47.51.40) by
+ edgegateway.intel.com (192.55.55.70) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.35; Thu, 2 May 2024 00:50:39 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=oceZFmZjlojjpIXWltDhEGq1AFJM/CSsEZuTmqciy/PVf5rTcV3V+zMgeyQEdBYnt9jb3QVtdmRfDiNh/qbJVZ9XBhsjYDUVemgtOUbwpbX1Q8g9wnwHOBFf5FPxPauDty40iEF6wPqCXmhAPUiA0vAPkjQ7nUlD1DgzJdeYPcuSSVOZhzH5mnzqJadeJx9l0Fka6v4UAHXJtOtiYfPXgEJzwOVL7uXZCIH+Kge+8InJ1qWN/eQC+orUleTp5kyFCg5G2jreutdTIDK7yaQYFfEq/PnnKD+uJHDGBfehwClGAvtXQKEt/ZzwN10xhVk+eum8dxls/EOIl455FVqZ7g==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=bdbNwaUbtv9+hAd0rB2B9O7shnIkBTggy1I5AhHBU7E=;
+ b=lcaMpHGHkCunym68km4wE7cdkdA4ATXKAdFDnKznpsFXwzkDN97ZijHBbNdxAWqXdRcYLRbqUG3VlboizuuJY6+mq58Hd4y9H8mdjD93jRc1vYadQne8KVw6a6ureum/Cw+OrlwRh5yF5w8b/dCACd9P9LwXW8czmn8XOyJyHt/5Q5u4KJUUObTctldavq8u0zJWj7xAI4+eGujKcouY/3n2pmEER7MbNrchj7z2XtP2vwNFUvlrBk+eOLJow3aGq+jZ7GXMVCi4I9AUE080ZbB4AhJPj/owa+UyEC612munp6mV4SLmuPdC53tMF0JDKt4ym4M0CtNZYSxU+AZkbA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Received: from IA0PR11MB7185.namprd11.prod.outlook.com (2603:10b6:208:432::20)
+ by LV8PR11MB8748.namprd11.prod.outlook.com (2603:10b6:408:200::21) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7544.28; Thu, 2 May
+ 2024 07:50:37 +0000
+Received: from IA0PR11MB7185.namprd11.prod.outlook.com
+ ([fe80::dd3b:ce77:841a:722b]) by IA0PR11MB7185.namprd11.prod.outlook.com
+ ([fe80::dd3b:ce77:841a:722b%4]) with mapi id 15.20.7544.023; Thu, 2 May 2024
+ 07:50:36 +0000
+From: "Kasireddy, Vivek" <vivek.kasireddy@intel.com>
+To: Jason Gunthorpe <jgg@nvidia.com>, Alex Williamson
+	<alex.williamson@redhat.com>
+CC: "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
+	"kvm@vger.kernel.org" <kvm@vger.kernel.org>, "linux-rdma@vger.kernel.org"
+	<linux-rdma@vger.kernel.org>, Christoph Hellwig <hch@infradead.org>
+Subject: RE: [PATCH v1 2/2] vfio/pci: Allow MMIO regions to be exported
+ through dma-buf
+Thread-Topic: [PATCH v1 2/2] vfio/pci: Allow MMIO regions to be exported
+ through dma-buf
+Thread-Index: AQHalILXkvPPqcFAaEeF7XrDtjddVLGBcWgAgADym4CAAPcxIA==
+Date: Thu, 2 May 2024 07:50:36 +0000
+Message-ID: <IA0PR11MB718509BB8B56455710DB2033F8182@IA0PR11MB7185.namprd11.prod.outlook.com>
+References: <20240422063602.3690124-1-vivek.kasireddy@intel.com>
+ <20240422063602.3690124-3-vivek.kasireddy@intel.com>
+ <20240430162450.711f4616.alex.williamson@redhat.com>
+ <20240501125309.GB941030@nvidia.com>
+In-Reply-To: <20240501125309.GB941030@nvidia.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach:
+X-MS-TNEF-Correlator:
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: IA0PR11MB7185:EE_|LV8PR11MB8748:EE_
+x-ms-office365-filtering-correlation-id: 0b19f865-b384-49bd-4645-08dc6a7c8ddd
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;ARA:13230031|1800799015|366007|376005|38070700009;
+x-microsoft-antispam-message-info: =?us-ascii?Q?fxRt7kI6czlWry81epYPoyOSjzhMu5Q9KujazSdJDLqC4lfEGxoWihPJZsj5?=
+ =?us-ascii?Q?WP07/FyAgxBI2mRlpdChZf5lVWFUXrVinsIG3ZkbqvsnDKUZ7m0YDLyCzkUq?=
+ =?us-ascii?Q?2oo9PkkVegDB8rr4Pq1dCspDMT2SZW3NJPMw6oeFIU37gtBIrmjfRWiozd8N?=
+ =?us-ascii?Q?Jq3HtF7ls9Wja5I5IPnB7eTaQgTWHE50zgt4nDGeVMZW2iQGxNdzd3l+R6LX?=
+ =?us-ascii?Q?13ShEhLZk4I/jX2VeFGf8+DyWkZ4cEwfIyfUaUn5/kEQFBejNM92pRJ1MhTB?=
+ =?us-ascii?Q?iYetc+37PIKrRLbePaXyEBpStSDhs+zjcwReefIDNDnxJci0b1yEuWvuSWyM?=
+ =?us-ascii?Q?rhIGAYxuderZTSyhT86a5V+k8APm7Ks8MjJihk5R0j67W9OrlwsF0iyQMOmn?=
+ =?us-ascii?Q?Ho0u74S7kBCB2nf9l4+y0v/pshLOtSSW8tIY8DlihRoy2FzFYccE/yg2jT1D?=
+ =?us-ascii?Q?a0x1nVTuDWbcaVbuhuCitBNAF+Xm0TVqUeZzK+3uFzHQbWXlc+tqIl1Z0L+l?=
+ =?us-ascii?Q?ZfQr6g3axn8SG1SX7gfoohY6QjHZDq/89rt+GmvSDd7uDUATPVSBbADsUnKJ?=
+ =?us-ascii?Q?pAJIOR9XW2lUP4sAVpIa1//WSjgUt2vcJMmHS0rwbPuHb7Q9IreAnmq4DYQW?=
+ =?us-ascii?Q?mo7JQoIeyn7DBhJHy+rsNZh0oJ2w9z52/hN5nhoPLQJ3o1RnZMJFk8OxIoAH?=
+ =?us-ascii?Q?FOw0/ND4fzcax+63ChzFDiQBUNzXOwQODCnmK2hBr1y9dGG6oKNvBg+6r7Lk?=
+ =?us-ascii?Q?tq+Wp9+Vd4JnpjnJe5fFmzD4icbxuo9ectu5ddJopKJ0R2ktF8qMWnGqnC6D?=
+ =?us-ascii?Q?tRAQtfrfDoQG/sg3Rux+OfQ7UkiO6w4xuQp077uyJ48zmXxTrcsifg8IHx0M?=
+ =?us-ascii?Q?WeYgocFbfgz0xIvPMth/ILikftnzXSs7xeYMStnszechtHw/cqTBsolT9EII?=
+ =?us-ascii?Q?ebA0FBiZAXVl9Zia1RN1ttKp3TQjiT15E82Q+wgjiK2Mg2JC19PRq1Mylfip?=
+ =?us-ascii?Q?olVbZ4ss7j6SGMhGshF0dtKZl8fNputWKgSjwx4fhdX1nOJAXRM6uhy6f7r4?=
+ =?us-ascii?Q?haeHXs6Z6MPIDhCiuiQct2UF2hFU8w02p2rFuIN7LwMl80EIJvE1KONmnIEv?=
+ =?us-ascii?Q?6iPv8R4AsQ2Ime+gIwdSSYpPH8dPRbAcwoszP2UK0mTf1YFGEmEYns0BWx8G?=
+ =?us-ascii?Q?P0CWwP/0jrClBSyiezQjjT+RohmBRWQ4T63C8eJFa5hp0znqnvA1XKt53Tb+?=
+ =?us-ascii?Q?UBNmrYTqtle7VtiFItlc2bDFRU/KlbAsLj2ZDM2W5sv+g2Vu/jkxX7yu2zjz?=
+ =?us-ascii?Q?LOpvlC798aQ1PWGY5z+xICy+nu/zq4wd/ABX12ZI70soQw=3D=3D?=
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:IA0PR11MB7185.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(1800799015)(366007)(376005)(38070700009);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?eJKoGRtYgQesRTibuC74H8HAUCC+/uaw+GQhwfNCrKeSx2SZU5CxdjVFi+rU?=
+ =?us-ascii?Q?L0HVm/nwdoSZlYiomrr/Q2lSr+LHdCSolMT1x2A6wKivxSMS9fXly6t75Etx?=
+ =?us-ascii?Q?EA3uWcPimAC0eE8R51Kt+vbzOwpmS1ju9Gu5c2cn/Vn6t+DVr5caSm8pLm6g?=
+ =?us-ascii?Q?Ljgph2XrAOfTjNSYbrDv98Tygr1EaY4gcUhZuoGRwBeM9uSyLwJttH1XBQfX?=
+ =?us-ascii?Q?KvTmEZQLJUkJSp3M2WaSr81rBCuXRvDtA4FlZmlcj0pnfhUcj9e4n4aBa1sk?=
+ =?us-ascii?Q?seztCVubWR77ZAhcAD041ZQ6yPTnvS0xhzS4K5Z/5NeG1y13JrwHTxrXybfE?=
+ =?us-ascii?Q?5wdeGSd/rgoe8zGDmrrLaG6RgC9wnSmEd2w5epbCgJhgMrWb9cVbx0UYdi9V?=
+ =?us-ascii?Q?Bw3jTaWGUv7Tcx7Kxdh8/gwtpUCSLGZI8uyXhh1a4EJQnNhY39Qb8cCIP49T?=
+ =?us-ascii?Q?AmTasVmz47FN/yhBBHlsjT0E+Vr0Bk3AvaMX8Jc/xF2cL7uzehXsnixXC0ZZ?=
+ =?us-ascii?Q?vHhRBgrk6XBjZaIUnFmt1NevYrdh8B/I2ZTpBpws3LfTnYiK/KQ+kftLnbJN?=
+ =?us-ascii?Q?BxzsqdaWKX8j/l9DsebzBGP9UNQh0ePCD1MDfoOYOF/AjYOjSCCUOPRbyJc7?=
+ =?us-ascii?Q?SXDDsfFgAgdJh9h0TU5f23g9LQBAKKKSY630hB7oq/oeghoHz8k5HSZenVrJ?=
+ =?us-ascii?Q?L2nY0NQtCRdHhLXXBM/5zMEl2nAn0OBouKLvl+w81uHmHFXr1vvDfFgw2R85?=
+ =?us-ascii?Q?L6N5Z5TzIiKKSStUXdXK57niX8x2VhWiGe+4GYWJ6R5OzhLX5WQyeJDiKmF5?=
+ =?us-ascii?Q?QimmBUVdxemlWPnxl28tsJc7c885HSQVt7tNwDZIr+PFYQ7M6KqyQ1RcmzDW?=
+ =?us-ascii?Q?bXnKwpypduZWcHSg4Csrq4va0F5tE+3J81OnYlaOpM0vYpKUjI3qrfv6qAa5?=
+ =?us-ascii?Q?v/aFdxjWXFV9qPJfaiyQBjbJdH+PdEDeRtlQEM5Y4AEOZVeVXt+ZSFpP/AQH?=
+ =?us-ascii?Q?599V8edLjQnqUE6gUI2MvYbRP3u1ovqUj2GKMvhN4/SceynElIHNGsLsRoA1?=
+ =?us-ascii?Q?s5bGc+WZH98RzHyzCxUGBsiO3iviNw0ugZ+VCjC/yInOdnG2uIcGBo5pzLkN?=
+ =?us-ascii?Q?uIT5tFndWozkX97mFC7A//T/h+5yYo5A51FSpjQzY8xzcYrJjsWEUokIgIDq?=
+ =?us-ascii?Q?Ypk91z85JGEKNL7eYYq2Dhz2VsCUh5xoViycKNcnjjAa4FmACqWk8BslLoyM?=
+ =?us-ascii?Q?d4R7bAkqvYr11CsLmy6YDsFWr+qXGuqxMCrzW9jVgUvV/fj0ZtzoPtCpMXC+?=
+ =?us-ascii?Q?9L9oEcqWibBdORlMsZdF4Bz1tcsSqlJnwVrgsWe1Yl7MASvMr+4ZUSgObsJY?=
+ =?us-ascii?Q?60+fz9E7frJ4i1tUNJxY2bQUnQv+AhRFgHYXMpJBKstUmdAID0zHHguYqBuu?=
+ =?us-ascii?Q?9+iNroPEGaFbsZA3AjvW8LtpiG19K6brXJS3tpSQKdqDlESejgtV69jBBQ2E?=
+ =?us-ascii?Q?QUBLuNwLxJmqMC0PVyS+03QB1p1bxBvIX/ZWLd3lFyWnmSIWxFiHQvlc7QAc?=
+ =?us-ascii?Q?a+cXbSCElu5/lbyIDYz4DPfvHXNGQsGnYOnNXALq?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC] RDMA/umem: pin_user_pages*() can temporarily fail due to
- migration glitches
-To: Alistair Popple <apopple@nvidia.com>, Jason Gunthorpe <jgg@nvidia.com>
-Cc: Christoph Hellwig <hch@infradead.org>, John Hubbard
- <jhubbard@nvidia.com>, Andrew Morton <akpm@linux-foundation.org>,
- LKML <linux-kernel@vger.kernel.org>, linux-rdma@vger.kernel.org,
- linux-mm@kvack.org, Mike Marciniszyn <mike.marciniszyn@intel.com>,
- Leon Romanovsky <leon@kernel.org>, Artemy Kovalyov <artemyko@nvidia.com>,
- Michael Guralnik <michaelgur@nvidia.com>, Pak Markthub <pmarkthub@nvidia.com>
-References: <20240501003117.257735-1-jhubbard@nvidia.com>
- <ZjHO04Rb75TIlmkA@infradead.org> <20240501121032.GA941030@nvidia.com>
- <87r0el3tfi.fsf@nvdebian.thelocal>
-Content-Language: en-US
-From: David Hildenbrand <david@redhat.com>
-Autocrypt: addr=david@redhat.com; keydata=
- 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
- WNyWQQ==
-Organization: Red Hat
-In-Reply-To: <87r0el3tfi.fsf@nvdebian.thelocal>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: IA0PR11MB7185.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 0b19f865-b384-49bd-4645-08dc6a7c8ddd
+X-MS-Exchange-CrossTenant-originalarrivaltime: 02 May 2024 07:50:36.8312
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: mf6xeJsYwnjqhnEoXbxC7Cq/iaMAfg+8CgpW08arQlGzfGdhUe2uO4NmdnR9a967p/zuQLPPR0K1KpbKwC2KF/kC8Gr/kVRJQQkNSOQ0jCg=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: LV8PR11MB8748
+X-OriginatorOrg: intel.com
 
-On 02.05.24 03:05, Alistair Popple wrote:
-> 
-> Jason Gunthorpe <jgg@nvidia.com> writes:
-> 
->> On Tue, Apr 30, 2024 at 10:10:43PM -0700, Christoph Hellwig wrote:
->>>> +		pinned = -ENOMEM;
->>>> +		int attempts = 0;
->>>> +		/*
->>>> +		 * pin_user_pages_fast() can return -EAGAIN, due to falling back
->>>> +		 * to gup-slow and then failing to migrate pages out of
->>>> +		 * ZONE_MOVABLE due to a transient elevated page refcount.
->>>> +		 *
->>>> +		 * One retry is enough to avoid this problem, so far, but let's
->>>> +		 * use a slightly higher retry count just in case even larger
->>>> +		 * systems have a longer-lasting transient refcount problem.
->>>> +		 *
->>>> +		 */
->>>> +		static const int MAX_ATTEMPTS = 3;
->>>> +
->>>> +		while (pinned == -EAGAIN && attempts < MAX_ATTEMPTS) {
->>>> +			pinned = pin_user_pages_fast(cur_base,
->>>> +						     min_t(unsigned long,
->>>> +							npages, PAGE_SIZE /
->>>> +							sizeof(struct page *)),
->>>> +						     gup_flags, page_list);
->>>>   			ret = pinned;
->>>> -			goto umem_release;
->>>> +			attempts++;
->>>> +
->>>> +			if (pinned == -EAGAIN)
->>>> +				continue;
->>>>   		}
->>>> +		if (pinned < 0)
->>>> +			goto umem_release;
->>>
->>> This doesn't make sense.  IFF a blind retry is all that is needed it
->>> should be done in the core functionality.  I fear it's not that easy,
->>> though.
->>
->> +1
->>
->> This migration retry weirdness is a GUP issue, it needs to be solved
->> in the mm not exposed to every pin_user_pages caller.
->>
->> If it turns out ZONE_MOVEABLE pages can't actually be reliably moved
->> then it is pretty broken..
-> 
-> I wonder if we should remove the arbitrary retry limit in
-> migrate_pages() entirely for ZONE_MOVEABLE pages and just loop until
-> they migrate? By definition there should only be transient references on
-> these pages so why do we need to limit the number of retries in the
-> first place?
+Hi Jason,
 
-There are some weird things that still needs fixing: vmsplice() is the 
-example that doesn't use FOLL_LONGTERM.
+>=20
+> On Tue, Apr 30, 2024 at 04:24:50PM -0600, Alex Williamson wrote:
+> > > +static vm_fault_t vfio_pci_dma_buf_fault(struct vm_fault *vmf)
+> > > +{
+> > > +	struct vm_area_struct *vma =3D vmf->vma;
+> > > +	struct vfio_pci_dma_buf *priv =3D vma->vm_private_data;
+> > > +	pgoff_t pgoff =3D vmf->pgoff;
+> > > +
+> > > +	if (pgoff >=3D priv->nr_pages)
+> > > +		return VM_FAULT_SIGBUS;
+> > > +
+> > > +	return vmf_insert_pfn(vma, vmf->address,
+> > > +			      page_to_pfn(priv->pages[pgoff]));
+> > > +}
+> >
+> > How does this prevent the MMIO space from being mmap'd when disabled
+> at
+> > the device?  How is the mmap revoked when the MMIO becomes disabled?
+> > Is it part of the move protocol?
+In this case, I think the importers that mmap'd the dmabuf need to be track=
+ed
+separately and their VMA PTEs need to be zapped when MMIO access is revoked=
+.
 
--- 
-Cheers,
+>=20
+> Yes, we should not have a mmap handler for dmabuf. vfio memory must be
+> mmapped in the normal way.
+Although optional, I think most dmabuf exporters (drm ones) provide a mmap
+handler. Otherwise, there is no easy way to provide CPU access (backup slow=
+ path)
+to the dmabuf for the importer.
 
-David / dhildenb
+>=20
+> > > +static void vfio_pci_dma_buf_release(struct dma_buf *dmabuf)
+> > > +{
+> > > +	struct vfio_pci_dma_buf *priv =3D dmabuf->priv;
+> > > +
+> > > +	/*
+> > > +	 * Either this or vfio_pci_dma_buf_cleanup() will remove from the
+> list.
+> > > +	 * The refcount prevents both.
+> > > +	 */
+> > > +	if (priv->vdev) {
+> > > +		release_p2p_pages(priv, priv->nr_pages);
+> > > +		kfree(priv->pages);
+> > > +		down_write(&priv->vdev->memory_lock);
+> > > +		list_del_init(&priv->dmabufs_elm);
+> > > +		up_write(&priv->vdev->memory_lock);
+> >
+> > Why are we acquiring and releasing the memory_lock write lock
+> > throughout when we're not modifying the device memory enable state?
+> > Ugh, we're using it to implicitly lock dmabufs_elm/dmabufs aren't we...
+>=20
+> Not really implicitly, but yes the dmabufs list is locked by the
+> memory_lock.
+>=20
+> > > +int vfio_pci_core_feature_dma_buf(struct vfio_pci_core_device *vdev,
+> u32 flags,
+> > > +				  struct vfio_device_feature_dma_buf __user
+> *arg,
+> > > +				  size_t argsz)
+> > > +{
+> > > +	struct vfio_device_feature_dma_buf get_dma_buf;
+> > > +	struct vfio_region_p2p_area *p2p_areas;
+> > > +	DEFINE_DMA_BUF_EXPORT_INFO(exp_info);
+> > > +	struct vfio_pci_dma_buf *priv;
+> > > +	int i, ret;
+> > > +
+> > > +	ret =3D vfio_check_feature(flags, argsz, VFIO_DEVICE_FEATURE_GET,
+> > > +				 sizeof(get_dma_buf));
+> > > +	if (ret !=3D 1)
+> > > +		return ret;
+> > > +
+> > > +	if (copy_from_user(&get_dma_buf, arg, sizeof(get_dma_buf)))
+> > > +		return -EFAULT;
+> > > +
+> > > +	p2p_areas =3D memdup_array_user(&arg->p2p_areas,
+> > > +				      get_dma_buf.nr_areas,
+> > > +				      sizeof(*p2p_areas));
+> > > +	if (IS_ERR(p2p_areas))
+> > > +		return PTR_ERR(p2p_areas);
+> > > +
+> > > +	priv =3D kzalloc(sizeof(*priv), GFP_KERNEL);
+> > > +	if (!priv)
+> > > +		return -ENOMEM;
+> >
+> > p2p_areas is leaked.
+>=20
+> What is this new p2p_areas thing? It wasn't in my patch..
+As noted in the commit message, this is one of the things I added to
+your original patch.
 
+>=20
+> > > +	exp_info.ops =3D &vfio_pci_dmabuf_ops;
+> > > +	exp_info.size =3D priv->nr_pages << PAGE_SHIFT;
+> > > +	exp_info.flags =3D get_dma_buf.open_flags;
+> >
+> > open_flags from userspace are unchecked.
+>=20
+> Huh. That seems to be a dmabuf pattern. :\
+>=20
+> > > +	exp_info.priv =3D priv;
+> > > +
+> > > +	priv->dmabuf =3D dma_buf_export(&exp_info);
+> > > +	if (IS_ERR(priv->dmabuf)) {
+> > > +		ret =3D PTR_ERR(priv->dmabuf);
+> > > +		goto err_free_pages;
+> > > +	}
+> > > +
+> > > +	/* dma_buf_put() now frees priv */
+> > > +	INIT_LIST_HEAD(&priv->dmabufs_elm);
+> > > +	down_write(&vdev->memory_lock);
+> > > +	dma_resv_lock(priv->dmabuf->resv, NULL);
+> > > +	priv->revoked =3D !__vfio_pci_memory_enabled(vdev);
+> > > +	vfio_device_try_get_registration(&vdev->vdev);
+> >
+> > I guess we're assuming this can't fail in the ioctl path of an open
+> > device?
+>=20
+> Seems like a bug added here.. My version had this as
+> vfio_device_get(). This stuff has probably changed since I wrote it.
+vfio_device_try_get_registration() is essentially doing the same thing as
+vfio_device_get() except that we need check the return value of
+vfio_device_try_get_registration() which I plan to do in v2.
+
+>=20
+> > > +	list_add_tail(&priv->dmabufs_elm, &vdev->dmabufs);
+> > > +	dma_resv_unlock(priv->dmabuf->resv);
+> >
+> > What was the purpose of locking this?
+>=20
+> ?
+>=20
+> > > +void vfio_pci_dma_buf_move(struct vfio_pci_core_device *vdev, bool
+> revoked)
+> > > +{
+> > > +	struct vfio_pci_dma_buf *priv;
+> > > +	struct vfio_pci_dma_buf *tmp;
+> > > +
+> > > +	lockdep_assert_held_write(&vdev->memory_lock);
+> > > +
+> > > +	list_for_each_entry_safe(priv, tmp, &vdev->dmabufs, dmabufs_elm)
+> {
+> > > +		if (!get_file_rcu(&priv->dmabuf->file))
+> > > +			continue;
+> >
+> > Does this indicate the file was closed?
+>=20
+> Yes.. The original patch was clearer, Christian asked to open
+> code it:
+>=20
+> + * Returns true if a reference was successfully obtained. The caller mus=
+t
+> + * interlock with the dmabuf's release function in some way, such as RCU=
+, to
+> + * ensure that this is not called on freed memory.
+>=20
+> A description of how the locking is working should be put in a comment
+> above that code.
+Sure, will add it in v2.
+
+>=20
+> > > @@ -623,6 +625,8 @@ static int vfio_basic_config_write(struct
+> vfio_pci_core_device *vdev, int pos,
+> > >  		*virt_cmd &=3D cpu_to_le16(~mask);
+> > >  		*virt_cmd |=3D cpu_to_le16(new_cmd & mask);
+> > >
+> > > +		if (__vfio_pci_memory_enabled(vdev))
+> > > +			vfio_pci_dma_buf_move(vdev, false);
+> > >  		up_write(&vdev->memory_lock);
+> > >  	}
+> >
+> > FLR is also accessible through config space.
+>=20
+> That needs fixing up
+>=20
+> > > @@ -1246,7 +1248,10 @@ static int vfio_pci_ioctl_reset(struct
+> vfio_pci_core_device *vdev,
+> > >  	 */
+> > >  	vfio_pci_set_power_state(vdev, PCI_D0);
+> > >
+> > > +	vfio_pci_dma_buf_move(vdev, true);
+> > >  	ret =3D pci_try_reset_function(vdev->pdev);
+> > > +	if (__vfio_pci_memory_enabled(vdev))
+> > > +		vfio_pci_dma_buf_move(vdev, false);
+> > >  	up_write(&vdev->memory_lock);
+> > >
+> >
+> > What about runtime power management?
+>=20
+> Yes
+>=20
+> Yes, I somehow thing it was added
+Ok, I'll handle runtime PM and FLR cases in v2.
+
+>=20
+> > > -static int vfio_pci_core_feature_token(struct vfio_device *device, u=
+32
+> flags,
+> > > -				       uuid_t __user *arg, size_t argsz)
+> > > +static int vfio_pci_core_feature_token(struct vfio_pci_core_device
+> *vdev,
+> > > +				       u32 flags, uuid_t __user *arg,
+> > > +				       size_t argsz)
+> > >  {
+> > > -	struct vfio_pci_core_device *vdev =3D
+> > > -		container_of(device, struct vfio_pci_core_device, vdev);
+> >
+> > Why is only this existing function updated?  If the core device deref
+> > is common then apply it to all and do so in a separate patch.  Thanks,
+>=20
+> Hm, I think that was som rebasing issue.
+Yeah, looks like the above change may not be needed.
+
+>=20
+> > > +/**
+> > > + * Upon VFIO_DEVICE_FEATURE_GET create a dma_buf fd for the
+> > > + * region selected.
+> > > + *
+> > > + * open_flags are the typical flags passed to open(2), eg O_RDWR,
+> O_CLOEXEC,
+> > > + * etc. offset/length specify a slice of the region to create the dm=
+abuf
+> from.
+> > > + * If both are 0 then the whole region is used.
+> > > + *
+> > > + * Return: The fd number on success, -1 and errno is set on failure.
+> > > + */
+> > > +#define VFIO_DEVICE_FEATURE_DMA_BUF 11
+> > > +
+> > > +struct vfio_region_p2p_area {
+> > > +	__u32	region_index;
+> > > +	__u32	__pad;
+> > > +	__u64	offset;
+> > > +	__u64	length;
+> > > +};
+> > > +
+> > > +struct vfio_device_feature_dma_buf {
+> > > +	__u32	open_flags;
+> > > +	__u32	nr_areas;
+> > > +	struct vfio_region_p2p_area p2p_areas[];
+> > > +};
+>=20
+> Still have no clue what this p2p areas is. You want to create a dmabuf
+> out of a scatterlist? Why??
+Because the data associated with a buffer that needs to be shared can
+come from multiple ranges. I probably should have used the terms ranges
+or slices or chunks to make it more clear instead of p2p areas.
+
+In my use-case, GPU A (in a guest VM and bound to vfio-pci on Host) writes
+to a buffer (framebuffer in device mem/VRAM in this case) that needs to be
+shared with GPU B on the Host. Since the framebuffer can be at-least 8 MB
+(assuming 1920x1080) or more in size, it is not reasonable to expect that i=
+t
+would be allocated as one big contiguous chunk in device memory/VRAM.
+
+>=20
+> I'm also not sure of the use of the pci_p2pdma family of functions, it
+> is a bold step to make struct pages, that isn't going to work in quite
+I guess things may have changed since the last discussion on this topic or
+maybe I misunderstood but I thought Christoph's suggestion was to use
+struct pages to populate the scatterlist instead of using DMA addresses
+and, I figured pci_p2pdma APIs can easily help with that.
+
+Do you see any significant drawback in using pci_p2pdma APIs? Or, could
+you please explain why this approach would not work in a lot of cases?
+
+> alot of cases. It is really hacky/wrong to immediately call
+> pci_alloc_p2pmem() to defeat the internal genalloc.
+In my use-case, I need to use all the pages from the pool and I don't see a=
+ny
+better way to do it.
+
+>=20
+> I'd rather we stick with the original design. Leon is working on DMA
+> API changes that should address half the issue.
+Ok, I'll keep an eye out for Leon's work.
+
+Thanks,
+Vivek
+
+>=20
+> Jason
 
