@@ -1,57 +1,58 @@
-Return-Path: <linux-rdma+bounces-2237-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-2238-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7D7E28BAB6E
-	for <lists+linux-rdma@lfdr.de>; Fri,  3 May 2024 13:13:54 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id E39138BAB71
+	for <lists+linux-rdma@lfdr.de>; Fri,  3 May 2024 13:14:10 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 324181F22A70
-	for <lists+linux-rdma@lfdr.de>; Fri,  3 May 2024 11:13:54 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9FFA52853CB
+	for <lists+linux-rdma@lfdr.de>; Fri,  3 May 2024 11:14:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 83E10152182;
-	Fri,  3 May 2024 11:13:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B389F152DE2;
+	Fri,  3 May 2024 11:13:50 +0000 (UTC)
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-ej1-f45.google.com (mail-ej1-f45.google.com [209.85.218.45])
+Received: from mail-lf1-f54.google.com (mail-lf1-f54.google.com [209.85.167.54])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B9D6414F9D7;
-	Fri,  3 May 2024 11:13:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 02338152501;
+	Fri,  3 May 2024 11:13:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714734828; cv=none; b=Thk+MN3vOufXr8JV2FdIqymCNAWwBizWI/DRY7gA1682ytSyzs7eKKGc+l3Q7Qyy7iAssO50v1ncNSXUpwypJYu5pwC4PoVvp6eKy5f1h4/r2qNzROamNWZz4aZOcq61xAF9HgoYuQmD7T/i0Vg5JB/KgjUzY8/i6GEZ5iYiJR0=
+	t=1714734830; cv=none; b=cZGEA8NCrTqVFam/+elrJO0OPqQf6a8nq55Vtxmot4ycIupQANBG4KSWxpJGQ1CMH76doCT+vVKwPqvP48rVafGOqvpfHnYIjeIqFSTdY25iGLW5Rg4k6JzGOp/BD61lUE2pFKmgqTs2R6Gr6N1E8yKGQ+JDrLXlE7SOse8P2pA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714734828; c=relaxed/simple;
-	bh=eP7UrYAm+QXdT7GsbpqZgXK33rijqXS4hxtOIMaJM+8=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=cz11+Zu0d+6mzguD3s/+6LOiftL4wRuZ7jeOHxXsy6aQOBoKN7T+erG3SP4R5Hnnw+Uv1smdgu4ABUX/PsgkrAtOuSlHNvXwyGY+/9uKiYnZz36SeYsa9575j0Ies05SkSOrN6C1/gIzIHaGuhSmfI1isR+qm4ZR4US83M5n5tA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=debian.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.218.45
+	s=arc-20240116; t=1714734830; c=relaxed/simple;
+	bh=cBAnSrJnc6T/6zNafgNMQ/ABTJTYXNZjAnbvdO0IzV4=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=AyQXtvUVq8qHynWkZKVY6zsgUcNO6zJrlTIm6y89vCq9zflS4vAFafQVTlNeIQ6mDeCRkzLbzM4VntU6IMp3BET7ZO/sYReynqgR9wdki33s31bLrNfQ8uW0P6bm9G9azv2GXauz2mxOSku7LaaaRIjw2G4r56fruya6NP3y82c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=debian.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.167.54
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=debian.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f45.google.com with SMTP id a640c23a62f3a-a51a7d4466bso1088818866b.2;
-        Fri, 03 May 2024 04:13:46 -0700 (PDT)
+Received: by mail-lf1-f54.google.com with SMTP id 2adb3069b0e04-51f2ebbd8a7so1966521e87.2;
+        Fri, 03 May 2024 04:13:48 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714734825; x=1715339625;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=fjeIuy9dzDTEtIZgB/dBWOi7o2OzXsFxxtGO6ENhPS8=;
-        b=vEWqM0QEokyGJAFxAtZNBfDp70qaIpf5jeJOwc4jaDIMLpEkhZHdI0KOUOnC6BcbDn
-         p+JKmNhgNvSvmuLKdkPKlCy30IAfmq5mMW7HlwxlmfIVb0PSyUmuEFbXcxidZpgMXnz9
-         va6SQIBHxD6FsqCHsvy1wcgsjskz9RRW0d1Mnyu7kVIUus+DydCqI4Oa4kuWxA4seFuf
-         6cUhl0+PGyQs9fF64BKqIrgGthstxDwi1pFH5furub4Oooeh1iJBZ/JnkSHySw1V0hg9
-         npByLoDBrNIUdYPubdw6k0prxR2IXl2bU9g27ftOYLW1SPxJGkwJXaJBNsNgHXywzVPY
-         5DlQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUiJf7CC4KdbDxhVzvJfAjsbhYBvxo9eKYHEt/WgG7hT/Y3UtYDMfNoj6+dD5aT179/bhod6UGte365Si9Qgq1aCgcPhBi0Dd89GMrEKinQms0BWbmgMxK8T8iOHHEtceV5OZsMjQbzHQ==
-X-Gm-Message-State: AOJu0YyVFz52F90oMCfNRqdwXRKno2jpoEJljPKEQ4kEuBUc9vTJhj0d
-	ZZuRzzkR6LKaSrt6Evvb82y7bk3VWSW+8G0genWm9n+ZWw6dqqnhBniLig==
-X-Google-Smtp-Source: AGHT+IHJxQZVhIx315d2eMT4ER2zN7KMg67+sDv4OXDn7eZIjMXdEpmX9lpfpSRhmextaA64KUwc/Q==
-X-Received: by 2002:a17:906:40ca:b0:a55:ac3d:5871 with SMTP id a10-20020a17090640ca00b00a55ac3d5871mr1312923ejk.77.1714734825020;
-        Fri, 03 May 2024 04:13:45 -0700 (PDT)
-Received: from localhost (fwdproxy-lla-003.fbsv.net. [2a03:2880:30ff:3::face:b00c])
-        by smtp.gmail.com with ESMTPSA id t24-20020a1709063e5800b00a58bcb55704sm1561929eji.165.2024.05.03.04.13.44
+        d=1e100.net; s=20230601; t=1714734827; x=1715339627;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=tXrwZ21nOmfdZ6s+4+0+abMwpM7qqm9U6gzSaZhDUoA=;
+        b=Dzh+BpxDheC1SNa7XXwl2lsVtWMX65BPqD+x6nf6mVCFPTR9SRwihNDg8dcUgg45Rb
+         61YgcMNwp2bp9oaqvdx3i1u9jjcQ+t1n3+uHR2nU7kJjVx7cfrSjtL4TGxvofhrF+A+Q
+         S5Yf+nkSiEV53czVsVjppruE0EeePheKWFpe5xfoqrvmvNaEpYCtmVBzgdWScTT78Qgi
+         4faQRhzrbCLUc6ysRlKxXhkXu3v3BhNFIcqP2SrCCZA4IPry1C8o55BgEAeMZ7h8MUhB
+         9zNH6Xq3rKtU9JxL4t1s5Z7z7+jbZ6hT7Hj1eDSU3vhxxIqvnUu1tn/fOYF1dkbp+Pxo
+         vHyg==
+X-Forwarded-Encrypted: i=1; AJvYcCVaZg+BnO/USJdDRvyhW3y1gNWbFoFI1OaBqKJFzFmvDJYhIWXBxmusvM0zfOaFJHZJ8fYt2I7lmbePfbAVY0X63HLTzM37opuxxK10lJ+yAlNcJN0ddMsAck/Y96+wdSXPTJcnvLM3MA==
+X-Gm-Message-State: AOJu0YxypucTGQxncBI2lpqJFaT7+w33vj0bXppgJJm0G/5/fUGgItot
+	61XVq/mEDn3BFxszyKD9QbQF3lnR4sqsfa5yO25bg1Dw1YKsBm1Whe2I5Q==
+X-Google-Smtp-Source: AGHT+IEUl31PUP0o+zgIUWrcD8hHrz20gaWcHnLIVz23yLtxDK3jNpocByejvyBLY2zoBc9JYNu23A==
+X-Received: by 2002:ac2:4e98:0:b0:51d:497e:83d6 with SMTP id o24-20020ac24e98000000b0051d497e83d6mr1550812lfr.20.1714734826772;
+        Fri, 03 May 2024 04:13:46 -0700 (PDT)
+Received: from localhost (fwdproxy-lla-117.fbsv.net. [2a03:2880:30ff:75::face:b00c])
+        by smtp.gmail.com with ESMTPSA id kt14-20020a170906aace00b00a5995900bd7sm441878ejb.192.2024.05.03.04.13.46
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 03 May 2024 04:13:44 -0700 (PDT)
+        Fri, 03 May 2024 04:13:46 -0700 (PDT)
 From: Breno Leitao <leitao@debian.org>
 To: Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
 	Jason Gunthorpe <jgg@ziepe.ca>,
@@ -59,10 +60,12 @@ To: Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
 Cc: netdev@vger.kernel.org,
 	linux-rdma@vger.kernel.org (open list:HFI1 DRIVER),
 	linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH net-next 1/2] IB/hfi1: Do not use custom stat allocator
-Date: Fri,  3 May 2024 04:13:31 -0700
-Message-ID: <20240503111333.552360-1-leitao@debian.org>
+Subject: [PATCH net-next 2/2] IB/hfi1: Remove generic .ndo_get_stats64
+Date: Fri,  3 May 2024 04:13:32 -0700
+Message-ID: <20240503111333.552360-2-leitao@debian.org>
 X-Mailer: git-send-email 2.43.0
+In-Reply-To: <20240503111333.552360-1-leitao@debian.org>
+References: <20240503111333.552360-1-leitao@debian.org>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
@@ -71,83 +74,32 @@ List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-With commit 34d21de99cea9 ("net: Move {l,t,d}stats allocation to core and
-convert veth & vrf"), stats allocation could be done on net core
-instead of in this driver.
+Commit 3e2f544dd8a33 ("net: get stats64 if device if driver is
+configured") moved the callback to dev_get_tstats64() to net core, so,
+unless the driver is doing some custom stats collection, it does not
+need to set .ndo_get_stats64.
 
-With this new approach, the driver doesn't have to bother with error
-handling (allocation failure checking, making sure free happens in the
-right spot, etc). This is core responsibility now.
-
-Remove the allocation in the hfi1 driver and leverage the network
-core allocation instead.
+Since this driver is now relying in NETDEV_PCPU_STAT_TSTATS, then, it
+doesn't need to set the dev_get_tstats64() generic .ndo_get_stats64
+function pointer.
 
 Signed-off-by: Breno Leitao <leitao@debian.org>
 ---
- drivers/infiniband/hw/hfi1/ipoib_main.c | 19 +++----------------
- 1 file changed, 3 insertions(+), 16 deletions(-)
+ drivers/infiniband/hw/hfi1/ipoib_main.c | 1 -
+ 1 file changed, 1 deletion(-)
 
 diff --git a/drivers/infiniband/hw/hfi1/ipoib_main.c b/drivers/infiniband/hw/hfi1/ipoib_main.c
-index 5d814afdf7f3..59c6e55f4119 100644
+index 59c6e55f4119..7c9d5203002b 100644
 --- a/drivers/infiniband/hw/hfi1/ipoib_main.c
 +++ b/drivers/infiniband/hw/hfi1/ipoib_main.c
-@@ -21,36 +21,25 @@ static int hfi1_ipoib_dev_init(struct net_device *dev)
- 	struct hfi1_ipoib_dev_priv *priv = hfi1_ipoib_priv(dev);
- 	int ret;
+@@ -96,7 +96,6 @@ static const struct net_device_ops hfi1_ipoib_netdev_ops = {
+ 	.ndo_uninit       = hfi1_ipoib_dev_uninit,
+ 	.ndo_open         = hfi1_ipoib_dev_open,
+ 	.ndo_stop         = hfi1_ipoib_dev_stop,
+-	.ndo_get_stats64  = dev_get_tstats64,
+ };
  
--	dev->tstats = netdev_alloc_pcpu_stats(struct pcpu_sw_netstats);
--	if (!dev->tstats)
--		return -ENOMEM;
--
- 	ret = priv->netdev_ops->ndo_init(dev);
- 	if (ret)
--		goto out_ret;
-+		return ret;
- 
- 	ret = hfi1_netdev_add_data(priv->dd,
- 				   qpn_from_mac(priv->netdev->dev_addr),
- 				   dev);
- 	if (ret < 0) {
- 		priv->netdev_ops->ndo_uninit(dev);
--		goto out_ret;
-+		return ret;
- 	}
- 
- 	return 0;
--out_ret:
--	free_percpu(dev->tstats);
--	dev->tstats = NULL;
--	return ret;
- }
- 
- static void hfi1_ipoib_dev_uninit(struct net_device *dev)
- {
- 	struct hfi1_ipoib_dev_priv *priv = hfi1_ipoib_priv(dev);
- 
--	free_percpu(dev->tstats);
--	dev->tstats = NULL;
--
- 	hfi1_netdev_remove_data(priv->dd, qpn_from_mac(priv->netdev->dev_addr));
- 
- 	priv->netdev_ops->ndo_uninit(dev);
-@@ -173,9 +162,6 @@ static void hfi1_ipoib_netdev_dtor(struct net_device *dev)
- 
- 	hfi1_ipoib_txreq_deinit(priv);
- 	hfi1_ipoib_rxq_deinit(priv->netdev);
--
--	free_percpu(dev->tstats);
--	dev->tstats = NULL;
- }
- 
- static void hfi1_ipoib_set_id(struct net_device *dev, int id)
-@@ -234,6 +220,7 @@ static int hfi1_ipoib_setup_rn(struct ib_device *device,
- 
- 	netdev->priv_destructor = hfi1_ipoib_netdev_dtor;
- 	netdev->needs_free_netdev = true;
-+	netdev->pcpu_stat_type = NETDEV_PCPU_STAT_TSTATS;
- 
- 	return 0;
- }
+ static int hfi1_ipoib_mcast_attach(struct net_device *dev,
 -- 
 2.43.0
 
