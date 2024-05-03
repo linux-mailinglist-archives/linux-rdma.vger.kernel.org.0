@@ -1,115 +1,80 @@
-Return-Path: <linux-rdma+bounces-2249-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-2250-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7E2F78BB125
-	for <lists+linux-rdma@lfdr.de>; Fri,  3 May 2024 18:44:21 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id E6AE08BB194
+	for <lists+linux-rdma@lfdr.de>; Fri,  3 May 2024 19:15:55 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3497E283985
-	for <lists+linux-rdma@lfdr.de>; Fri,  3 May 2024 16:44:20 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 868211F22DC7
+	for <lists+linux-rdma@lfdr.de>; Fri,  3 May 2024 17:15:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 35CB5156C71;
-	Fri,  3 May 2024 16:42:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C4203157E76;
+	Fri,  3 May 2024 17:15:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b="TE0zOntu"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="SAHHNHyI"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-ot1-f50.google.com (mail-ot1-f50.google.com [209.85.210.50])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.21])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 39E76156C60
-	for <linux-rdma@vger.kernel.org>; Fri,  3 May 2024 16:42:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 95B5E157A49;
+	Fri,  3 May 2024 17:15:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.21
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714754564; cv=none; b=sH05cAxBKlrTcARhWj6KeSlfSkxcsw5pE5kT+iNjFgNaGwLJqUCSIdvlbml31Jh44pJvewMvEHTKRPjfn6Y8jvcVdh8N9h8dO//sMHL9/I3vkc1XPYESCIzxvbF7DYvvpZvYolLXY/Uf9M2UMtYJmSSA+weHVQJBasjk9hAlfvI=
+	t=1714756550; cv=none; b=d7Pq0ONtUEy52kDPXFBSao2UxP/WQjDfg8JyPJqA4GYAEURwo/hs2Mpd3flVIsVOQQBegVjpnkE5NvxEqSHVU2bauq6KJXD5l6BBJHafeDNGeUwnJuHxsbcR6kpgyOz8cTo9GqJ/0gcZUK3jtAbEeiWsW1ImsM68PpThZ3/KTz4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714754564; c=relaxed/simple;
-	bh=yC4oGgKTnqIzx0SwseiUuBVl6ikYuhNImy0LdahK+hY=;
+	s=arc-20240116; t=1714756550; c=relaxed/simple;
+	bh=nmzk+rIi5lhP+mMY1lgQk4NZ9UnrTXzds4LWmy2mArY=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=b20XlMiMTL59/qDGhxznsBD5NQKMc0tE2MGTsJPzqshd8fVfBwrNTsD71mHc2hI1rRAaMzoSNLkme/yuf3WLcHcap9xL2XStl4XCRknxGOV1LwFUY0EYEohnRlNFbe3YoRbwl67FzHSdoxXpsoUC4hlfU3GPCGUBcWNPrgCop5Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca; spf=pass smtp.mailfrom=ziepe.ca; dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b=TE0zOntu; arc=none smtp.client-ip=209.85.210.50
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ziepe.ca
-Received: by mail-ot1-f50.google.com with SMTP id 46e09a7af769-6ee2fda66easo3066091a34.3
-        for <linux-rdma@vger.kernel.org>; Fri, 03 May 2024 09:42:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google; t=1714754561; x=1715359361; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=9MCkvEl6vfBsR3xGXbm5ipuSQzsyNXlO2daQS9IANas=;
-        b=TE0zOntu+3apuUKJVLSWkF78FO0PGQCdxodCLGmkOG0wDvF3GWppAPWCmWBOQEOVP7
-         YJ0Awj7odvTnTxD7vMXpoZopROrJtOXzJGabZ2jhSyO+WopjtgVDLsz4G+jXyfSm4UF4
-         EiNl9NasSl5dKmhqBeXXbIPT0YdbeujHt75WCQoNJpGi1zArUz2uf+scBJO1IVeny7rA
-         7J/LRfVdPcY9Qbl8U/57m+oK1acU2EgPsYIT3f5ACWjsN4eIJbE4Pv3Q5vCn1+YCHw30
-         0ZNw1sxQvHLt0Qd4fsCjym+bhijRBVpaf21oauLcQxGy0r/Im7WfZStR2gC6XmaOBkMB
-         Cvcw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714754561; x=1715359361;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=9MCkvEl6vfBsR3xGXbm5ipuSQzsyNXlO2daQS9IANas=;
-        b=N5JEwwGIRwt3yXGABRQVXG9P+HdJNGTkP3OAKwpaX7IFQsLUOhHp/nthNQI2gcIS/7
-         N9DNa41kHxZNmHv93y2Hv1HqpuVnJd7x+Jt1QklZn/XxnZwt6wlfBp4Mud+Wl8PQhUMW
-         Rl+lj6IQOhQVvkDKs+MioS5mKFmFpx4Z8OhR/RAStS0FOwWJ6WNKB8dYEfHahBeb6Dhs
-         NEW8AkMo5HRWrBdQwh/usHeY+b3KJiykmm8Do1WqfRrTrPap3kf24dtPCsPAhhMZB+jF
-         HGUmsXU6iHtGAaN3EQr1T6W29EefLs6+LvG/fA7WN+Nttzvr97I5Th2E3d/49X3VPJPN
-         Id5g==
-X-Forwarded-Encrypted: i=1; AJvYcCU6bhEt6tyhQ2JR1yuGSkG9LEDl5un2jiOf5kjQxWsX90c4UXJfTOfDqHDTY5e45N1cYzkk1g40siKUjJDpNQzs7F+4IuwlrvapNA==
-X-Gm-Message-State: AOJu0Yx29vLNcQKrAZcknzcTL4kxzX9Mzg4uN0SAGWP9Gzmlu8R1R18v
-	TIbSsq6+J9J4j7iOsrANhzKehUoGrNHRDXBiF4IBOMAyaDre3hO9HU8L/5Qsb/0=
-X-Google-Smtp-Source: AGHT+IFVT2rAsXVdMpvr8pAPF1WuNA1CE6Xv9L67MOMLKugSh13tMbQmSyNxDuuJNWHb/QOcrYHVYQ==
-X-Received: by 2002:a05:6830:33fb:b0:6ee:1cc5:68c3 with SMTP id i27-20020a05683033fb00b006ee1cc568c3mr3499852otu.12.1714754561211;
-        Fri, 03 May 2024 09:42:41 -0700 (PDT)
-Received: from ziepe.ca (hlfxns017vw-142-68-80-239.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.68.80.239])
-        by smtp.gmail.com with ESMTPSA id ca14-20020a056830610e00b006ee5b409f23sm701317otb.22.2024.05.03.09.42.40
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 03 May 2024 09:42:40 -0700 (PDT)
-Received: from jgg by wakko with local (Exim 4.95)
-	(envelope-from <jgg@ziepe.ca>)
-	id 1s2vzb-007ETb-4i;
-	Fri, 03 May 2024 13:42:39 -0300
-Date: Fri, 3 May 2024 13:42:39 -0300
-From: Jason Gunthorpe <jgg@ziepe.ca>
-To: "Zeng, Oak" <oak.zeng@intel.com>
-Cc: "leon@kernel.org" <leon@kernel.org>, Christoph Hellwig <hch@lst.de>,
-	Robin Murphy <robin.murphy@arm.com>,
-	Marek Szyprowski <m.szyprowski@samsung.com>,
-	Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
-	Chaitanya Kulkarni <chaitanyak@nvidia.com>,
-	"Brost, Matthew" <matthew.brost@intel.com>,
-	"Hellstrom, Thomas" <thomas.hellstrom@intel.com>,
-	Jonathan Corbet <corbet@lwn.net>, Jens Axboe <axboe@kernel.dk>,
-	Keith Busch <kbusch@kernel.org>, Sagi Grimberg <sagi@grimberg.me>,
-	Yishai Hadas <yishaih@nvidia.com>,
-	Shameer Kolothum <shameerali.kolothum.thodi@huawei.com>,
-	"Tian, Kevin" <kevin.tian@intel.com>,
-	Alex Williamson <alex.williamson@redhat.com>,
-	=?utf-8?B?SsOpcsO0bWU=?= Glisse <jglisse@redhat.com>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	"linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	"linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
-	"linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-	"iommu@lists.linux.dev" <iommu@lists.linux.dev>,
-	"linux-nvme@lists.infradead.org" <linux-nvme@lists.infradead.org>,
-	"kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-	"linux-mm@kvack.org" <linux-mm@kvack.org>,
-	Bart Van Assche <bvanassche@acm.org>,
-	Damien Le Moal <damien.lemoal@opensource.wdc.com>,
-	Amir Goldstein <amir73il@gmail.com>,
-	"josef@toxicpanda.com" <josef@toxicpanda.com>,
-	"Martin K. Petersen" <martin.petersen@oracle.com>,
-	"daniel@iogearbox.net" <daniel@iogearbox.net>,
-	"Williams, Dan J" <dan.j.williams@intel.com>,
-	"jack@suse.com" <jack@suse.com>,
-	Leon Romanovsky <leonro@nvidia.com>,
-	Zhu Yanjun <zyjzyj2000@gmail.com>
-Subject: Re: [RFC RESEND 00/16] Split IOMMU DMA mapping operation to two steps
-Message-ID: <20240503164239.GB901876@ziepe.ca>
-References: <cover.1709635535.git.leon@kernel.org>
- <SA1PR11MB6991CB2B1398948F4241E51992182@SA1PR11MB6991.namprd11.prod.outlook.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=FUGAjmE+d0N8Czg4C393akXybd2ZBHO6obs3gHZPWiLxhh+nYE/RTwDqw9c5Tg15LFBzSQrZacqqzQ+N1BfwVcRKsFJZAsUkus4vABkcSbGhzqNgU6/o01ZL7QQVTdsh29kNbb/VbJQ5/Z/5Okc4o2vxjIu/XLoR0HVpVkCsO8M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=SAHHNHyI; arc=none smtp.client-ip=198.175.65.21
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1714756549; x=1746292549;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=nmzk+rIi5lhP+mMY1lgQk4NZ9UnrTXzds4LWmy2mArY=;
+  b=SAHHNHyIUPctz3+Q4BOz3lipk9rGbqFKusJFUgQ6o+4VBC37kNSQSlX+
+   nU1v8MohxetSYODNq2K2nSKnPsGT2Vx+VPoph3d8O+OMPd9w1/vm4MGpG
+   6bQfTQP39uoxLITVdTFnHJJo/LPZCXI3bC9WuWNzmsgjFvE4mQAirtQwu
+   dJGtMEOgi3bLojsAhfiV0MQzvspOJjb3qyraifK3LZg14mEJM+SLo2PKc
+   0fx4NlCoUC+0J5tnrYLnM/lmZ5VzNb0WkMnFjHePqabWpt78rYvpZzHl8
+   lMzkQFQ/wsBJS3v7tzPxLrO84DXFgmY4DuhYNXanFALzvdvuxAo6HPABy
+   A==;
+X-CSE-ConnectionGUID: 2HBnTOLGQ96jx51nNFt4IA==
+X-CSE-MsgGUID: dce0ttkiQcCdWt8vRnXoWQ==
+X-IronPort-AV: E=McAfee;i="6600,9927,11063"; a="10499676"
+X-IronPort-AV: E=Sophos;i="6.07,251,1708416000"; 
+   d="scan'208";a="10499676"
+Received: from orviesa003.jf.intel.com ([10.64.159.143])
+  by orvoesa113.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 May 2024 10:15:48 -0700
+X-CSE-ConnectionGUID: KdVxzLLHRbG1FAlcm1gMAg==
+X-CSE-MsgGUID: jzsi3S87SGqKEJo5T5+tCw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,251,1708416000"; 
+   d="scan'208";a="32185685"
+Received: from lkp-server01.sh.intel.com (HELO e434dd42e5a1) ([10.239.97.150])
+  by orviesa003.jf.intel.com with ESMTP; 03 May 2024 10:15:44 -0700
+Received: from kbuild by e434dd42e5a1 with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1s2wVZ-000Bw0-2e;
+	Fri, 03 May 2024 17:15:41 +0000
+Date: Sat, 4 May 2024 01:14:57 +0800
+From: kernel test robot <lkp@intel.com>
+To: Shay Drory <shayd@nvidia.com>, netdev@vger.kernel.org,
+	pabeni@redhat.com, davem@davemloft.net, kuba@kernel.org,
+	edumazet@google.com, gregkh@linuxfoundation.org,
+	david.m.ertman@intel.com
+Cc: oe-kbuild-all@lists.linux.dev, rafael@kernel.org, ira.weiny@intel.com,
+	linux-rdma@vger.kernel.org, leon@kernel.org, tariqt@nvidia.com,
+	Shay Drory <shayd@nvidia.com>, Parav Pandit <parav@nvidia.com>
+Subject: Re: [PATCH 1/2] driver core: auxiliary bus: show auxiliary device
+ IRQs
+Message-ID: <202405040108.NWUaSJgz-lkp@intel.com>
+References: <20240503043104.381938-2-shayd@nvidia.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
@@ -118,95 +83,58 @@ List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <SA1PR11MB6991CB2B1398948F4241E51992182@SA1PR11MB6991.namprd11.prod.outlook.com>
+In-Reply-To: <20240503043104.381938-2-shayd@nvidia.com>
 
-On Thu, May 02, 2024 at 11:32:55PM +0000, Zeng, Oak wrote:
+Hi Shay,
 
-> > Instead of teaching DMA to know these specific datatypes, let's separate
-> > existing DMA mapping routine to two steps and give an option to advanced
-> > callers (subsystems) perform all calculations internally in advance and
-> > map pages later when it is needed.
-> 
-> I looked into how this scheme can be applied to DRM subsystem and GPU drivers. 
-> 
-> I figured RDMA can apply this scheme because RDMA can calculate the
-> iova size. Per my limited knowledge of rdma, user can register a
-> memory region (the reg_user_mr vfunc) and memory region's sized is
-> used to pre-allocate iova space. And in the RDMA use case, it seems
-> the user registered region can be very big, e.g., 512MiB or even GiB
+kernel test robot noticed the following build warnings:
 
-In RDMA the iova would be linked to the SVA granual we discussed
-previously.
+[auto build test WARNING on driver-core/driver-core-testing]
+[also build test WARNING on driver-core/driver-core-next driver-core/driver-core-linus net/main net-next/main linus/master v6.9-rc6 next-20240503]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
 
-> In GPU driver, we have a few use cases where we need dma-mapping. Just name two:
-> 
-> 1) userptr: it is user malloc'ed/mmap'ed memory and registers to gpu
-> (in Intel's driver it is through a vm_bind api, similar to mmap). A
-> userptr can be of any random size, depending on user malloc
-> size. Today we use dma-map-sg for this use case. The down side of
-> our approach is, during userptr invalidation, even if user only
-> munmap partially of an userptr, we invalidate the whole userptr from
-> gpu page table, because there is no way for us to partially
-> dma-unmap the whole sg list. I think we can try your new API in this
-> case. The main benefit of the new approach is the partial munmap
-> case.
+url:    https://github.com/intel-lab-lkp/linux/commits/Shay-Drory/driver-core-auxiliary-bus-show-auxiliary-device-IRQs/20240503-123319
+base:   driver-core/driver-core-testing
+patch link:    https://lore.kernel.org/r/20240503043104.381938-2-shayd%40nvidia.com
+patch subject: [PATCH 1/2] driver core: auxiliary bus: show auxiliary device IRQs
+config: s390-randconfig-r081-20240503 (https://download.01.org/0day-ci/archive/20240504/202405040108.NWUaSJgz-lkp@intel.com/config)
+compiler: s390-linux-gcc (GCC) 13.2.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240504/202405040108.NWUaSJgz-lkp@intel.com/reproduce)
 
-Yes, this is one of the main things it will improve.
- 
-> We will have to pre-allocate iova for each userptr, and we have many
-> userptrs of random size... So we might be not as efficient as RDMA
-> case where I assume user register a few big memory regions.
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202405040108.NWUaSJgz-lkp@intel.com/
 
-You are already doing this. dma_map_sg() does exactly the same IOVA
-allocation under the covers.
- 
-> 2) system allocator: it is malloc'ed/mmap'ed memory be used for GPU
-> program directly, without any other extra driver API call. We call
-> this use case system allocator.
- 
-> For system allocator, driver have no knowledge of which virtual
-> address range is valid in advance. So when GPU access a
-> malloc'ed/mmap'ed address, we have a page fault. We then look up a
-> CPU vma which contains the fault address. I guess we can use the CPU
-> vma size to allocate the iova space of the same size?
+All warnings (new ones prefixed by >>):
 
-No. You'd follow what we discussed in the other thread.
+>> drivers/base/auxiliary.c:182: warning: This comment starts with '/**', but isn't a kernel-doc comment. Refer Documentation/doc-guide/kernel-doc.rst
+    * Auxiliary devices can share IRQs. Expose to user whether the provided IRQ is
 
-If you do a full SVA then you'd split your MM space into granuals and
-when a fault hits a granual you'd allocate the IOVA for the whole
-granual. RDMA ODP is using a 512M granual currently.
 
-If you are doing sub ranges then you'd probably allocate the IOVA for
-the well defined sub range (assuming the typical use case isn't huge)
+vim +182 drivers/base/auxiliary.c
 
-> But there will be a true difficulty to apply your scheme to this use
-> case. It is related to the STICKY flag. As I understand it, the
-> sticky flag is designed for driver to mark "this page/pfn has been
-> populated, no need to re-populate again", roughly...Unlike userptr
-> and RDMA use cases where the backing store of a buffer is always in
-> system memory, in the system allocator use case, the backing store
-> can be changing b/t system memory and GPU's device private
-> memory. Even worse, we have to assume the data migration b/t system
-> and GPU is dynamic. When data is migrated to GPU, we don't need
-> dma-map. And when migration happens to a pfn with STICKY flag, we
-> still need to repopulate this pfn. So you can see, it is not easy to
-> apply this scheme to this use case. At least I can't see an obvious
-> way.
+   180	
+   181	/**
+ > 182	 * Auxiliary devices can share IRQs. Expose to user whether the provided IRQ is
+   183	 * shared or exclusive.
+   184	 */
+   185	static ssize_t auxiliary_irq_mode_show(struct device *dev,
+   186					       struct device_attribute *attr, char *buf)
+   187	{
+   188		struct auxiliary_irq_info *info =
+   189			container_of(attr, struct auxiliary_irq_info, sysfs_attr);
+   190	
+   191		if (refcount_read(xa_load(&irqs, info->irq)) > 1)
+   192			return sysfs_emit(buf, "%s\n", "shared");
+   193		else
+   194			return sysfs_emit(buf, "%s\n", "exclusive");
+   195	}
+   196	
 
-You are already doing this today, you are keeping the sg list around
-until you unmap it.
-
-Instead of keeping the sg list you'd keep a much smaller datastructure
-per-granual. The sticky bit is simply a convient way for ODP to manage
-the smaller data structure, you don't have to use it.
-
-But you do need to keep track of what pages in the granual have been
-DMA mapped - sg list was doing this before. This could be a simple
-bitmap array matching the granual size.
-
-Looking (far) forward we may be able to have a "replace" API that
-allows installing a new page unconditionally regardless of what is
-already there.
-
-Jason
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
