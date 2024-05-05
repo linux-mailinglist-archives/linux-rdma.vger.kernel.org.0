@@ -1,107 +1,91 @@
-Return-Path: <linux-rdma+bounces-2270-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-2271-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id BA4178BC079
-	for <lists+linux-rdma@lfdr.de>; Sun,  5 May 2024 15:09:57 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id AA3768BC07A
+	for <lists+linux-rdma@lfdr.de>; Sun,  5 May 2024 15:12:06 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D6771B212E1
-	for <lists+linux-rdma@lfdr.de>; Sun,  5 May 2024 13:09:54 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 14A88281D68
+	for <lists+linux-rdma@lfdr.de>; Sun,  5 May 2024 13:12:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B5C8B1BC5C;
-	Sun,  5 May 2024 13:09:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C06101B7FD;
+	Sun,  5 May 2024 13:12:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="DyFIsDIc"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ayQbzRJL"
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 669F218C36;
-	Sun,  5 May 2024 13:09:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7CACE1BC31;
+	Sun,  5 May 2024 13:12:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714914589; cv=none; b=iz5fEvSiFly5GzszwxJeG6r2zUwIY6zFQFSpEn8QgKONtQtGpYtC1bfU84uGch0VRupZ61/VUa4+akLFrINB016ejwK/Axb7qDrZSdyKje+8YOxW3DhpgshB4xqRls3D13yusYk+7kU/PbdmWLJhrBRgUul4+zlvwWfLW91QX38=
+	t=1714914720; cv=none; b=pV8QOWMkahGi0edF8xjaPvNvVKfUzFRlwmSpyjm99OfwGbAAUAMay9cjF3o1wqPAFY+5PT+x6X6Ux9CNE192jhEfKNZiA5t6ce9Pno0itC2NzASnZV5+fo2XRqaG54KeqJLHlnjHnQ9ntn/YMpj6LhPW4VbtkCSv7HOmDfpzyno=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714914589; c=relaxed/simple;
-	bh=xlRUYoJPou2/MPpAB5hzWLpalR+ZAUvBv9HmZG5I9+k=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=e5h9egQu9yFIYyQulPXPhgYqqjFbJjlEzpkHcE+8TiMgFxlnENQKN02y+QIIipEVsvYRDMfR3vhY6VIxpVYeHvYxByb/L6GIb+crRDHtkQqxSSeIBvp4hrhDozEAYYAlAoeHbvHM0yFekATz4uPN/XPK91BdZnGKuI6Pjpf3CaQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=DyFIsDIc; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6E851C113CC;
-	Sun,  5 May 2024 13:09:48 +0000 (UTC)
+	s=arc-20240116; t=1714914720; c=relaxed/simple;
+	bh=339kHs5cw0S4Jw9bzqy0KdYyelCRe83EhIFkTfjj06E=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Message-Id:Date:
+	 MIME-Version:Content-Type; b=HBnZImAvBYsYgGltVq2Dyn8JwkgXkO2zNiUGiGzIzkjgfx0e2ZRLajVk5h1FEOBMWYoQ6a7y2fvyDH8GRfdIDPnvIwdb3yJG0J9b1zwOt7cyAIdaD1xtC4hke0zvLFHAKSk2Rm6hL9yUJK01qLx7+fHyVOHkSXVTxMASSeUCZEQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ayQbzRJL; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9F26EC113CC;
+	Sun,  5 May 2024 13:11:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1714914588;
-	bh=xlRUYoJPou2/MPpAB5hzWLpalR+ZAUvBv9HmZG5I9+k=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=DyFIsDIcBCXPdf5m999VIskZIZ3Ju5s8JfJ7pbM8DKPrNCCZI9ot8LqlAFcA7zGeH
-	 xEfZUHP+pTYlQEqLs5pArOYOcT/l+a+8A+7Li6FYOIOb0T0Q92zUCdc02p38J1kKkN
-	 fGz+U2FNMt6C6ocJrCG3jWrFuT2kSuaQOuVPdsE/3Xt5+iiIhD2KTKWkyHVbirLHfh
-	 32cMVlj5dqsjTbb6WCnYlM6luqPotng5VtG5kZVmmJPSVMiRB1wsc8tj4jsVypNjmR
-	 0qe5FzwC3I1L1tkbGk2SvbABZQgkwvc244O3J4xGB0zePEAC4wEw7a2mGw3vkLSbks
-	 1+K3E3asdqGhg==
-Date: Sun, 5 May 2024 16:09:45 +0300
+	s=k20201202; t=1714914720;
+	bh=339kHs5cw0S4Jw9bzqy0KdYyelCRe83EhIFkTfjj06E=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+	b=ayQbzRJLppFZ6X7ysAjTs7NeK89fOKRh5ECkUUlpuvdnoY2EQPTjBJ144AuUV/Uzu
+	 6ddwaFLeH7Vtg6sph5bg67lFLY4c8Fqq+JZof4OQEm71vrqObHNXFdqtjQCG8KXMWw
+	 Rj0LjKvjw8NPmdZ0vwJYMRZ1pWbnhJLlj5UJr2QNYYmEz0Wmy+nzLqrJNRsCU2dEbI
+	 npJthztemfRODI5iowYvgLftTGY9oGGsxiIYrtIltmLmd5rjO8QswojZ4t9fbpZJIh
+	 kCNwNh/qWL8g1MDyGbQ5Ih8IjdMGohDodHfdspE7/28Oa7sQ5KIRTW7tnB/9gmp7HX
+	 ge43qEkeqhtSQ==
 From: Leon Romanovsky <leon@kernel.org>
-To: Jason Gunthorpe <jgg@ziepe.ca>
-Cc: Ilpo =?iso-8859-1?Q?J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>,
-	Alex Deucher <alexander.deucher@amd.com>,
-	amd-gfx@lists.freedesktop.org, Daniel Vetter <daniel@ffwll.ch>,
-	David Airlie <airlied@gmail.com>,
-	Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
-	dri-devel@lists.freedesktop.org,
-	LKML <linux-kernel@vger.kernel.org>, linux-rdma@vger.kernel.org,
-	"Pan, Xinhui" <Xinhui.Pan@amd.com>,
-	Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
-	Lukas Wunner <lukas@wunner.de>,
-	Dean Luick <dean.luick@cornelisnetworks.com>
-Subject: Re: [PATCH 3/3] RDMA/hfi1: Use RMW accessors for changing LNKCTL2
-Message-ID: <20240505130945.GB68202@unreal>
-References: <20240215133155.9198-1-ilpo.jarvinen@linux.intel.com>
- <20240215133155.9198-4-ilpo.jarvinen@linux.intel.com>
- <26be3948-e687-f510-0612-abcac5d919af@linux.intel.com>
- <20240503130416.GA901876@ziepe.ca>
+To: Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>, 
+ Jason Gunthorpe <jgg@ziepe.ca>, linux-rdma@vger.kernel.org, 
+ linux-kernel@vger.kernel.org, 
+ =?utf-8?q?Ilpo_J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
+Cc: Lukas Wunner <lukas@wunner.de>, 
+ Dean Luick <dean.luick@cornelisnetworks.com>
+In-Reply-To: <20240503133640.15899-1-ilpo.jarvinen@linux.intel.com>
+References: <20240503133640.15899-1-ilpo.jarvinen@linux.intel.com>
+Subject: Re: [PATCH v2 1/1] RDMA/hfi1: Use RMW accessors for changing
+ LNKCTL2
+Message-Id: <171491471637.194239.11215634092351988199.b4-ty@kernel.org>
+Date: Sun, 05 May 2024 16:11:56 +0300
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20240503130416.GA901876@ziepe.ca>
+X-Mailer: b4 0.14-dev
 
-On Fri, May 03, 2024 at 10:04:16AM -0300, Jason Gunthorpe wrote:
-> On Fri, May 03, 2024 at 01:18:35PM +0300, Ilpo Järvinen wrote:
-> > On Thu, 15 Feb 2024, Ilpo Järvinen wrote:
-> > 
-> > > Convert open coded RMW accesses for LNKCTL2 to use
-> > > pcie_capability_clear_and_set_word() which makes its easier to
-> > > understand what the code tries to do.
-> > > 
-> > > LNKCTL2 is not really owned by any driver because it is a collection of
-> > > control bits that PCI core might need to touch. RMW accessors already
-> > > have support for proper locking for a selected set of registers
-> > > (LNKCTL2 is not yet among them but likely will be in the future) to
-> > > avoid losing concurrent updates.
-> > > 
-> > > Suggested-by: Lukas Wunner <lukas@wunner.de>
-> > > Signed-off-by: Ilpo Järvinen <ilpo.jarvinen@linux.intel.com>
-> > > Reviewed-by: Dean Luick <dean.luick@cornelisnetworks.com>
-> > 
-> > I found out from Linux RDMA and InfiniBand patchwork that this patch had 
-> > been silently closed as "Not Applicable". Is there some reason for
-> > that?
-> 
-> It is part of a series that crosses subsystems, series like that
-> usually go through some other trees.
 
-Exactly, this is why I marked it as "Not Applicable".
+On Fri, 03 May 2024 16:36:40 +0300, Ilpo JÃ¤rvinen wrote:
+> Convert open coded RMW accesses for LNKCTL2 to use
+> pcie_capability_clear_and_set_word() which makes its easier to
+> understand what the code tries to do.
+> 
+> In addition, this futureproofs the code. LNKCTL2 is not really owned by
+> any driver because it is a collection of control bits that PCI core
+> might need to touch. RMW accessors already have support for proper
+> locking for a selected set of registers to avoid losing concurrent
+> updates (LNKCTL2 is not yet among the registers that need protection
+> but likely will be in the future).
+> 
+> [...]
 
-> 
-> If you want single patches applied then please send single
-> patches.. It is hard to understand intent from mixed series.
-> 
-> Jason
+Applied, thanks!
+
+[1/1] RDMA/hfi1: Use RMW accessors for changing LNKCTL2
+      https://git.kernel.org/rdma/rdma/c/8f3b7103b41314
+
+Best regards,
+-- 
+Leon Romanovsky <leon@kernel.org>
+
 
