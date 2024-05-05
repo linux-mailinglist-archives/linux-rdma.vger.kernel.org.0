@@ -1,87 +1,104 @@
-Return-Path: <linux-rdma+bounces-2276-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-2277-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 77BCD8BC0AC
-	for <lists+linux-rdma@lfdr.de>; Sun,  5 May 2024 16:11:03 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 583058BC0B4
+	for <lists+linux-rdma@lfdr.de>; Sun,  5 May 2024 16:16:19 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A8F951C20C8E
-	for <lists+linux-rdma@lfdr.de>; Sun,  5 May 2024 14:11:02 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 9206CB20B8A
+	for <lists+linux-rdma@lfdr.de>; Sun,  5 May 2024 14:16:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0C5E521364;
-	Sun,  5 May 2024 14:10:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 677082232A;
+	Sun,  5 May 2024 14:16:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="AFIEUiAM"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="OVTDNHPw"
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BA42E1D556;
-	Sun,  5 May 2024 14:10:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1F728208CA;
+	Sun,  5 May 2024 14:16:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714918255; cv=none; b=MWPb6o8QlBDyTWt87VRihjNreTbcwpHuq0soJmyuYXWSzC++wBNNvO9v/UDxHPfxXqAUe1s9w8/beQsZjmYitSxOn1UPIb6+cwBWvDgub1OPedEOU6gwfQW1q2ZftHrqcRox5ts3yGubVfA+oEagTU+lP+vFauqU9APgloRKBhE=
+	t=1714918570; cv=none; b=AMh0Fj/k6gMVaVDRB9+iDBXbXliBe84GQES98y6Jzn2/5no9GTQaOszcXel/Gc5rlo2z/rVwRP78yk/0OB/IjLaT4vxQjxsw++FrbaY8QRdtZum5i6NBMJeoRmOKnLARUmKag6PG+SGlntbp+sx9TJSx8Z5OXBi04R7B/Z/Y6Lk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714918255; c=relaxed/simple;
-	bh=l+QfcIw/W4/Qc2ykMKKcLoG2Ca5/57nuM2Klcz8YbDc=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Message-Id:Date:
-	 MIME-Version:Content-Type; b=TesLaXj/Lj2peJN0GpDQrqcrezNzy5cOSiDHTDw6sWfN3u0xz2vNuGGScVYsU+MiaOA+zjVjz8R6qlG+Z8bfF0NLJIslcyoOfsJy47whzpOm7Q/kut78PCt+tw2V/PiNXbs4aR1B3FtJ2VlNbHxw+/l9CPpEd/hBjkmdm5NyJB8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=AFIEUiAM; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D8097C113CC;
-	Sun,  5 May 2024 14:10:54 +0000 (UTC)
+	s=arc-20240116; t=1714918570; c=relaxed/simple;
+	bh=DLchroJz79kbL2e5l1H7RnbQisLdhsuaVztVjGH3kvA=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=vAPqBnXSv7IYrAth9Z261pN6+OXBWbND5YhQa26ZeeHVKgQTNrZaf17OUdXkSiQnUvuNIDXiLR5+AyxY89gbb4PPryEd95DRaQWeI1l8OZzmpKElXBL7bg62tqEYPo68ylF//Oaa7Ezrgzmmm3S2gMuwrwYEVK6iI3Xdq4AZgko=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=OVTDNHPw; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 18B99C113CC;
+	Sun,  5 May 2024 14:16:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1714918255;
-	bh=l+QfcIw/W4/Qc2ykMKKcLoG2Ca5/57nuM2Klcz8YbDc=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-	b=AFIEUiAM/BjVulzegPCT7NbxWJx5GRxjCvUwSxRsgBrGPZ+pVPWSdLEdJuHgSBEi2
-	 b9oKv09rOUN6X+lfKSHwSzbnaEcFGBd1hGykFtI3uk9+nbYpY4S0wGO1v1FXZkUvKK
-	 ZoQ26I5Zj1VJRwt2tcwtZS4SjO0vNA+U5Jmg6nO3dTltebWw18Ydi6K+gJutbehFK8
-	 5zKaXtEb/beNmzI/flyoeXssFZOepZIcYk2Abz24RPV41odGYpQIdhs5ntkToqT0P1
-	 TSGLsm49gGd7b9Qxc2aTpZOMCBhS0o4EfmorLY9Q6PZRl/GZ7PeBaGp8CgRzl1kivB
-	 15VDKyMyr0KjQ==
+	s=k20201202; t=1714918569;
+	bh=DLchroJz79kbL2e5l1H7RnbQisLdhsuaVztVjGH3kvA=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=OVTDNHPwAr6VpIZAeu3LIunGe1FT2I2+Bc7LitboltauXKb2grFN/LaZDsBpRKXPO
+	 yV9fyMEcDhPJbFtufGoWzz0yuLTUMWR5J1QSPj8LOpda35NqL+InZh4w+J9uTFkKf+
+	 tkJwYWsvWVxl2keiuqyoCN7ZzUHdP8qO6K+JnrrYLaFexP/NvECP1YoNnhOqGzVSiM
+	 RumCcQRFqWSNbrgq5NH57OhjLbBTWw2bXca3W+ABodKXAL64kJlFTOdmrBcgNKfHQz
+	 FBoJh81PUktvgnHjNGLZkpeWfFI8dJ2zB1cKCCMHrbAJY4DT1oB4vqRjgPcZfH5wUW
+	 FNYh8m8PbKVIQ==
+Date: Sun, 5 May 2024 17:16:05 +0300
 From: Leon Romanovsky <leon@kernel.org>
-To: Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>, 
- Jason Gunthorpe <jgg@ziepe.ca>, Breno Leitao <leitao@debian.org>
-Cc: netdev@vger.kernel.org, linux-rdma@vger.kernel.org, 
- linux-kernel@vger.kernel.org
-In-Reply-To: <20240503111333.552360-1-leitao@debian.org>
+To: Breno Leitao <leitao@debian.org>,
+	Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>
+Cc: Jason Gunthorpe <jgg@ziepe.ca>, netdev@vger.kernel.org,
+	"open list:HFI1 DRIVER" <linux-rdma@vger.kernel.org>,
+	open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH net-next 2/2] IB/hfi1: Remove generic .ndo_get_stats64
+Message-ID: <20240505141605.GF68202@unreal>
 References: <20240503111333.552360-1-leitao@debian.org>
-Subject: Re: [PATCH net-next 1/2] IB/hfi1: Do not use custom stat allocator
-Message-Id: <171491825157.204646.10648523184290579853.b4-ty@kernel.org>
-Date: Sun, 05 May 2024 17:10:51 +0300
+ <20240503111333.552360-2-leitao@debian.org>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Mailer: b4 0.14-dev
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240503111333.552360-2-leitao@debian.org>
 
-
-On Fri, 03 May 2024 04:13:31 -0700, Breno Leitao wrote:
-> With commit 34d21de99cea9 ("net: Move {l,t,d}stats allocation to core and
-> convert veth & vrf"), stats allocation could be done on net core
-> instead of in this driver.
+On Fri, May 03, 2024 at 04:13:32AM -0700, Breno Leitao wrote:
+> Commit 3e2f544dd8a33 ("net: get stats64 if device if driver is
+> configured") moved the callback to dev_get_tstats64() to net core, so,
+> unless the driver is doing some custom stats collection, it does not
+> need to set .ndo_get_stats64.
 > 
-> With this new approach, the driver doesn't have to bother with error
-> handling (allocation failure checking, making sure free happens in the
-> right spot, etc). This is core responsibility now.
+> Since this driver is now relying in NETDEV_PCPU_STAT_TSTATS, then, it
+> doesn't need to set the dev_get_tstats64() generic .ndo_get_stats64
+> function pointer.
 > 
-> [...]
+> Signed-off-by: Breno Leitao <leitao@debian.org>
+> ---
+>  drivers/infiniband/hw/hfi1/ipoib_main.c | 1 -
+>  1 file changed, 1 deletion(-)
 
-Applied, thanks!
+Dennis,
 
-[1/2] IB/hfi1: Do not use custom stat allocator
-      https://git.kernel.org/rdma/rdma/c/5194947e6a3966
-[2/2] IB/hfi1: Remove generic .ndo_get_stats64
-      https://git.kernel.org/rdma/rdma/c/f483f6a29d4d70
+Please pay attention that 3e2f544dd8a33 ("net: get stats64 if device if
+driver is configured") is not in RDMA tree yet, but we are approaching
+merge window and linux-next is already have it.
 
-Best regards,
--- 
-Leon Romanovsky <leon@kernel.org>
+Thanks
 
+> 
+> diff --git a/drivers/infiniband/hw/hfi1/ipoib_main.c b/drivers/infiniband/hw/hfi1/ipoib_main.c
+> index 59c6e55f4119..7c9d5203002b 100644
+> --- a/drivers/infiniband/hw/hfi1/ipoib_main.c
+> +++ b/drivers/infiniband/hw/hfi1/ipoib_main.c
+> @@ -96,7 +96,6 @@ static const struct net_device_ops hfi1_ipoib_netdev_ops = {
+>  	.ndo_uninit       = hfi1_ipoib_dev_uninit,
+>  	.ndo_open         = hfi1_ipoib_dev_open,
+>  	.ndo_stop         = hfi1_ipoib_dev_stop,
+> -	.ndo_get_stats64  = dev_get_tstats64,
+>  };
+>  
+>  static int hfi1_ipoib_mcast_attach(struct net_device *dev,
+> -- 
+> 2.43.0
+> 
 
