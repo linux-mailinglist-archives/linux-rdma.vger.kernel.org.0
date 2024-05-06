@@ -1,123 +1,135 @@
-Return-Path: <linux-rdma+bounces-2286-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-2287-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B0C368BC7C9
-	for <lists+linux-rdma@lfdr.de>; Mon,  6 May 2024 08:47:22 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id E9C508BC846
+	for <lists+linux-rdma@lfdr.de>; Mon,  6 May 2024 09:25:25 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id BA7C8B20E94
-	for <lists+linux-rdma@lfdr.de>; Mon,  6 May 2024 06:47:19 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 94CC91F215B8
+	for <lists+linux-rdma@lfdr.de>; Mon,  6 May 2024 07:25:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 043DB4D9EC;
-	Mon,  6 May 2024 06:47:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B194713FD9B;
+	Mon,  6 May 2024 07:25:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="nZznPeyz"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
+Received: from out-182.mta1.migadu.com (out-182.mta1.migadu.com [95.215.58.182])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D558345948;
-	Mon,  6 May 2024 06:47:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.187
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8348E7D3F6
+	for <linux-rdma@vger.kernel.org>; Mon,  6 May 2024 07:25:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714978033; cv=none; b=jvrGNTDzKrtbmz+frnIK6P2VRqzSCkr46VAem3Sc2+aEIyX1MIY0zzJMwykb1jsN9g2ntP7MW5Ct0E3AOwdGrsj5utOYJl9gpk3sKm1vc8IocJz9ORPqoU7sZFcUd7aZGJ/elDCoccrWPolr6U7CkNhbjfVDERn8h8dwirtprhY=
+	t=1714980312; cv=none; b=KJuSd71datOuOIBiKhS1k/1f8Cy85ima4327GlcjclbcrtZuKvYbTFOMdGnsFNgqelMeGqUzoS1wxLU6PqoRYmQ+xC62xt0bIazdmUKjuzhkymeXgVbdkQoCPlnQNXKZFGvz2i/jcQblz0JDD5D32GpPfLf1w0AI03VBxCMHSMo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714978033; c=relaxed/simple;
-	bh=3uxiYTb5Bc5ndnoMLNXIS4HY6afVwSDNr9pFRdfYbps=;
-	h=Subject:To:References:CC:From:Message-ID:Date:MIME-Version:
-	 In-Reply-To:Content-Type; b=kpjXEVEQokC5RjvBh719omvC7etO5kEmqX7A5eE4nmCpHKRWZOPbsnO8lNhBI9Mz2vCnvFKkNkg+H9Epl5T8BnWBIprdxulUicGH5fcYKCs/fuORffnHtzi1+AvmAM2Eyt+GwyspTMoWY+hB/DQoSLjviiM0p2n/Xv7gTq8l+ng=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.187
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.88.194])
-	by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4VXsLf1GSKztSyS;
-	Mon,  6 May 2024 14:43:38 +0800 (CST)
-Received: from dggpemm100017.china.huawei.com (unknown [7.185.36.220])
-	by mail.maildlp.com (Postfix) with ESMTPS id E360814040D;
-	Mon,  6 May 2024 14:47:01 +0800 (CST)
-Received: from dggpemm500007.china.huawei.com (7.185.36.183) by
- dggpemm100017.china.huawei.com (7.185.36.220) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.35; Mon, 6 May 2024 14:47:01 +0800
-Received: from [10.67.121.229] (10.67.121.229) by
- dggpemm500007.china.huawei.com (7.185.36.183) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.35; Mon, 6 May 2024 14:47:01 +0800
-Subject: Re: [PATCH for-next] RDMA/hns: Support flexible WQE buffer page size
-To: Jason Gunthorpe <jgg@ziepe.ca>, Junxian Huang
-	<huangjunxian6@hisilicon.com>
-References: <20240430092845.4058786-1-huangjunxian6@hisilicon.com>
- <20240430134113.GU231144@ziepe.ca>
-CC: <leon@kernel.org>, <linux-rdma@vger.kernel.org>, <linuxarm@huawei.com>,
-	<linux-kernel@vger.kernel.org>
-From: Chengchang Tang <tangchengchang@huawei.com>
-Message-ID: <fac4927b-16ed-d801-fb47-182f2aca355c@huawei.com>
-Date: Mon, 6 May 2024 14:47:01 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:45.0) Gecko/20100101
- Thunderbird/45.7.1
+	s=arc-20240116; t=1714980312; c=relaxed/simple;
+	bh=OVDIWxUDRvlUhkLXJmVPIg7Ss7MCI8rmRJKjNBcIAYc=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=n2k/PEmHNZF7+NE5h2oU0KI9cQb87Hk18efP+KOIP87NyXMF/UTHZLUTwhjQidmGz3ScP3RhyFP/9U8wxY+vs1D3pR0oMOPxQCNAV54tALuCm45uFWPBqVuVUmvAaw0NRq+bNoClZIQJACaYKhllRLiAtcKhju064MX4kJx5wPE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=nZznPeyz; arc=none smtp.client-ip=95.215.58.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <1615fe92-d4ff-4ef2-9bd0-199aa9e3a426@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1714980307;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=VNICsQwAZLEIq4FagMWJtT9l3ne94Q3HOggFLnvinbw=;
+	b=nZznPeyzXvBnkwuymZAd7H5uP6FsRpvl2JfkIEHhVLGTRXN2z1loonY6p/619WY28zpwEl
+	Bogs2+q+8zcc500vR6DNiQHdd+mPtphq8OjqAyhbN7IEoPG5hcFcOxw9uMk2A927K9UGj9
+	Kf4xW9Sd1i3DF1NmDYSRbBRBNofkxMI=
+Date: Mon, 6 May 2024 09:25:01 +0200
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <20240430134113.GU231144@ziepe.ca>
-Content-Type: text/plain; charset="windows-1252"
+Subject: Re: [RFC RESEND 16/16] nvme-pci: use blk_rq_dma_map() for NVMe SGL
+To: Leon Romanovsky <leon@kernel.org>
+Cc: Christoph Hellwig <hch@lst.de>, Robin Murphy <robin.murphy@arm.com>,
+ Marek Szyprowski <m.szyprowski@samsung.com>, Joerg Roedel <joro@8bytes.org>,
+ Will Deacon <will@kernel.org>, Jason Gunthorpe <jgg@ziepe.ca>,
+ Chaitanya Kulkarni <chaitanyak@nvidia.com>,
+ Chaitanya Kulkarni <kch@nvidia.com>, Jonathan Corbet <corbet@lwn.net>,
+ Jens Axboe <axboe@kernel.dk>, Keith Busch <kbusch@kernel.org>,
+ Sagi Grimberg <sagi@grimberg.me>, Yishai Hadas <yishaih@nvidia.com>,
+ Shameer Kolothum <shameerali.kolothum.thodi@huawei.com>,
+ Kevin Tian <kevin.tian@intel.com>,
+ Alex Williamson <alex.williamson@redhat.com>,
+ =?UTF-8?B?SsOpcsO0bWUgR2xpc3Nl?= <jglisse@redhat.com>,
+ Andrew Morton <akpm@linux-foundation.org>, linux-doc@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-block@vger.kernel.org,
+ linux-rdma@vger.kernel.org, iommu@lists.linux.dev,
+ linux-nvme@lists.infradead.org, kvm@vger.kernel.org, linux-mm@kvack.org,
+ Bart Van Assche <bvanassche@acm.org>,
+ Damien Le Moal <damien.lemoal@opensource.wdc.com>,
+ Amir Goldstein <amir73il@gmail.com>,
+ "josef@toxicpanda.com" <josef@toxicpanda.com>,
+ "Martin K. Petersen" <martin.petersen@oracle.com>,
+ "daniel@iogearbox.net" <daniel@iogearbox.net>,
+ Dan Williams <dan.j.williams@intel.com>, "jack@suse.com" <jack@suse.com>
+References: <cover.1709635535.git.leon@kernel.org>
+ <016fc02cbfa9be3c156a6f74df38def1e09c08f1.1709635535.git.leon@kernel.org>
+ <c9f9e29e-c2e1-4f99-b359-db0babd41dec@linux.dev>
+ <20240505132314.GC68202@unreal>
+Content-Language: en-US
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Zhu Yanjun <yanjun.zhu@linux.dev>
+In-Reply-To: <20240505132314.GC68202@unreal>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
- dggpemm500007.china.huawei.com (7.185.36.183)
+X-Migadu-Flow: FLOW_OUT
 
 
+On 05.05.24 15:23, Leon Romanovsky wrote:
+> On Fri, May 03, 2024 at 04:41:21PM +0200, Zhu Yanjun wrote:
+>> On 05.03.24 12:18, Leon Romanovsky wrote:
+>>> From: Chaitanya Kulkarni <kch@nvidia.com>
+> <...>
+>
+>>> This is an RFC to demonstrate the newly added DMA APIs can be used to
+>>> map/unmap bvecs without the use of sg list, hence I've modified the pci
+>>> code to only handle SGLs for now. Once we have some agreement on the
+>>> structure of new DMA API I'll add support for PRPs along with all the
+>>> optimization that I've removed from the code for this RFC for NVMe SGLs
+>>> and PRPs.
+>>>
+> <...>
+>
+>>> diff --git a/drivers/nvme/host/pci.c b/drivers/nvme/host/pci.c
+>>> index e6267a6aa380..140939228409 100644
+>>> --- a/drivers/nvme/host/pci.c
+>>> +++ b/drivers/nvme/host/pci.c
+>>> @@ -236,7 +236,9 @@ struct nvme_iod {
+>>>    	unsigned int dma_len;	/* length of single DMA segment mapping */
+>>>    	dma_addr_t first_dma;
+>>>    	dma_addr_t meta_dma;
+>>> -	struct sg_table sgt;
+>>> +	struct dma_iova_attrs iova;
+>>> +	dma_addr_t dma_link_address[128];
+>> Why the length of this array is 128? Can we increase this length of the
+>> array?
+> It is combination of two things:
+>   * Good enough value for this nvme RFC to pass simple test, which Chaitanya did.
+>   * Output of various NVME_CTRL_* defines
 
-On 2024/4/30 21:41, Jason Gunthorpe wrote:
-> On Tue, Apr 30, 2024 at 05:28:45PM +0800, Junxian Huang wrote:
->> From: Chengchang Tang <tangchengchang@huawei.com>
->>
->> Currently, driver fixedly allocates 4K pages for userspace WQE buffer
->> and results in HW reading WQE with a granularity of 4K even in a 64K
->> system. HW has to switch pages every 4K, leading to a loss of performance.
-> 
->> In order to improve performance, add support for userspace to allocate
->> flexible WQE buffer page size between 4K to system PAGESIZE.
->> @@ -90,7 +90,8 @@ struct hns_roce_ib_create_qp {
->>  	__u8    log_sq_bb_count;
->>  	__u8    log_sq_stride;
->>  	__u8    sq_no_prefetch;
->> -	__u8    reserved[5];
->> +	__u8    pageshift;
->> +	__u8    reserved[4];
-> 
-> It doesn't make any sense to pass in a pageshift from userspace.
-> 
-> Kernel should detect whatever underlying physical contiguity userspace
-> has been able to create and configure the hardware optimally. The umem
-> already has all the tools to do this trivially.
-> 
-> Why would you need to specify anything?
-> 
-> Jason
-> 
+Thanks a lot. I enlarged this number to 512. It seems that it can work. 
+Hope this will increase the performance.
 
-For hns roce, QPs requires three wqe buffers, namely SQ wqe buffer, RQ wqe
-buffer and EXT_SGE buffer.  Due to HW constraints, they need to be configured
-with the same page size. The memory of these three buffers is allocated by
-the user-mode driver now. The user-mode driver will calculate the size of
-each region and align them to the page size. Finally, the driver will merge
-the memories of these three regions together, apply for a memory with
-continuous virtual addresses, and send the address to the kernel-mode driver
-(during this process, the user-mode driver and the kernel-mode driver only
-exchange addresses, but not the the sizes of these three areas or other
-information).
+Best Regards,
 
-Since the three regions share one umem, through umem's tools, such as
-ib_umem_find_best_pgsz(), they will eventually calculate the best page size
-of the entire umem, not each region. For this reason, coupled with the fact
-that currently only the address is passed when the kernel mode driver interacts
-with the user mode driver, and no other information is passed, it makes it more
-difficult to calculate the page size used by the user mode driver from the
-kernel mode driver. In this case, it is a relatively simpler method to let user
-mode directly tell kernel mode which pageshift it uses, and it is also easier
-in terms of forward and backward compatibility.
+Zhu Yanjun
 
-Chengchang
+>
+> Thanks
+
+-- 
+Best Regards,
+Yanjun.Zhu
+
 
