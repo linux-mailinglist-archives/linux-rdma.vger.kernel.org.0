@@ -1,180 +1,246 @@
-Return-Path: <linux-rdma+bounces-2288-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-2289-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id BBE8E8BC986
-	for <lists+linux-rdma@lfdr.de>; Mon,  6 May 2024 10:26:12 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 653578BC9CE
+	for <lists+linux-rdma@lfdr.de>; Mon,  6 May 2024 10:43:29 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 294AB1F21E78
-	for <lists+linux-rdma@lfdr.de>; Mon,  6 May 2024 08:26:12 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 80801B20F4C
+	for <lists+linux-rdma@lfdr.de>; Mon,  6 May 2024 08:43:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 708E11411F8;
-	Mon,  6 May 2024 08:26:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CA38613774B;
+	Mon,  6 May 2024 08:43:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="TyeGQgnM"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="YG88aU7B"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-wm1-f44.google.com (mail-wm1-f44.google.com [209.85.128.44])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.15])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7EBB41411C8;
-	Mon,  6 May 2024 08:26:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 261511D547
+	for <linux-rdma@vger.kernel.org>; Mon,  6 May 2024 08:43:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.15
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714983966; cv=none; b=HvhLnn/6iPX9KBXCXdpeJKMS0tXSMRTRlfkB+EZqviZE47lGxS2Kv+DKiW0iyCBAVUf5UUu4FLx14+fvWRJE5CYo0mr+MkVvdkH7/yCELdB2E0CmFuRBwvlb66Mt7FMjB6yajfmcSmYaZe3AcxYooxpzBS0UwQGTEHIuO9s/HgY=
+	t=1714985000; cv=none; b=LsdKz3SAG20OlCahrJX7WYxl8EDP5lb2OChq19IAr2mU+jJq/+MVX6hE4H0UXit0pgDWaxGdM5avWw0q4KaFrV8MvTFy+BaqLVakPsi4FAkIwPROxu+fMIxTFNF4ED6dl36N7SjsOh1wrYhkf3yfUxLy9TyiHDCfHARO/Wix+u0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714983966; c=relaxed/simple;
-	bh=7+eDm5TeUm1AP6UiGE9zKjcJXu2JlpVyW5y6tdKRRyk=;
-	h=From:Message-ID:Date:MIME-Version:Subject:To:Cc:References:
-	 In-Reply-To:Content-Type; b=seGuhbXCLY3urFi+cN5im2qbCwiXeoekH0gfqPHzStSOqGkmp6cmIjypQoNVU3jVuG+RrmL+D6yecxiugGz+6QRUrYHySIicWoKo/EMsZiXS8FrlsYkYm9DEBQt3pjPE1gSV5ifxneFeoFUbqb7zLn1c6wkwhcwAyWXJcmkdwZs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=TyeGQgnM; arc=none smtp.client-ip=209.85.128.44
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f44.google.com with SMTP id 5b1f17b1804b1-41b7a26326eso11617335e9.3;
-        Mon, 06 May 2024 01:26:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1714983963; x=1715588763; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:content-language:references
-         :cc:to:subject:user-agent:mime-version:date:message-id:from:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=f+60zAT7F46IrP7vFuTziIV1AaHIR2IlJuib9TgQr3Q=;
-        b=TyeGQgnMd3Lm0CNaCNZtY2dorVG3LglI20Q9rvwnuUKhN4a0VK7b1oKG5FKuJRQ9kG
-         UplgfMHqAH3dj/RL9Ov1iSWyY4ePgzkPrlvwIcfVG49trwGqggo0lnP1A74fJ01veovw
-         x1q2b7IexBdM94tpFWWFeHHYtpW8mINr+ploKbG+w79BUONpHhLZcbPgRL38aDgxKN/N
-         M1poE0vIAVOXXT3aXP124de2qajUBT9ca3+xssQwwr6hNsZO2Rv19c+Ec8F8CPnp3hER
-         u+fZP913Xdio22n3rDe6KZyVmQGBLeC8TcHdKBQZOr+Ckd4xapYcGCz0f5HxX6T6w9rx
-         9XQg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714983963; x=1715588763;
-        h=content-transfer-encoding:in-reply-to:content-language:references
-         :cc:to:subject:user-agent:mime-version:date:message-id:from
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=f+60zAT7F46IrP7vFuTziIV1AaHIR2IlJuib9TgQr3Q=;
-        b=uFdrqtupSiTWrygjr0op6UsuiQ0oYlpZyMde830TyZZDt0at9EwmifZgQ/rsn058oR
-         ErXJa8Jv4G1+NY8hAHj2iK9AapvaZMqWf412tMEOzA1kYERPJ0uZ+BKwviyslVndHFs7
-         xBVzoTfod8By/gRFuAiXwajB663HkiG832BBG4elbo5tLmLURUNkqK3AX5TGNfpFkD7b
-         hYd3GY8sgJjhLn8Mc7KtaqGqo6oSg6ZrL2cN2r0bzfHMLPRl9wy0FcO6eEQNhXcch87I
-         QIlrAL6Z0jR1ZDBpJEN1fcjH3cv/jq6Jh7kgbQq5EM19QPFrttPsl0R1MzvmSPyRAWLW
-         ec2w==
-X-Forwarded-Encrypted: i=1; AJvYcCXWUXhw4Q+PW+TEC76dEQ8LkR5n+zKptxuzNq7yF5CcZaoiZUFRYiFGjnq9LLP164/16Wr7pBt4dc2Lr/IapURVTQh5ibRzKjnOTA==
-X-Gm-Message-State: AOJu0YwWuZ+L4kRSyfqHCEaWmvqGAN1/Q4R+/mb9d85y9amzoGKihyOI
-	5FhuxD479uhUhDKGrCSxr45ozTXdXvboTzlkRMc8b/BOeatgt8PZvdGh5pqa
-X-Google-Smtp-Source: AGHT+IHO9M0y7K4W0qJmoVM+1kKrJqZuzDRMIP69jZu+QiiYgUgpsq4TODJygwVfqrvPN7flYphRGg==
-X-Received: by 2002:a05:600c:4e16:b0:41a:6229:396b with SMTP id b22-20020a05600c4e1600b0041a6229396bmr7441454wmq.10.1714983962708;
-        Mon, 06 May 2024 01:26:02 -0700 (PDT)
-Received: from [10.16.155.254] ([212.227.34.98])
-        by smtp.gmail.com with ESMTPSA id p12-20020a05600c1d8c00b0041bcb898984sm15239524wms.31.2024.05.06.01.26.02
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 06 May 2024 01:26:02 -0700 (PDT)
-From: Zhu Yanjun <zyjzyj2000@gmail.com>
-X-Google-Original-From: Zhu Yanjun <yanjun.zhu@linux.dev>
-Message-ID: <7b0e61e1-8d50-4431-bd0a-6398c618a609@linux.dev>
-Date: Mon, 6 May 2024 10:26:01 +0200
+	s=arc-20240116; t=1714985000; c=relaxed/simple;
+	bh=UtNUIVcy91zaYFhz6vh2nt7UkmQsFV+YZajB5O6Pkys=;
+	h=Date:From:To:Cc:Subject:Message-ID; b=eugA/Ox+FyIkb+P6vtCIPY6qNeDdtURM+72R8j14d2mi73pjGTRGZqeTaYGiIdbHk+W1MWWNShz6ykvTuUic3mIID4+cB/AGWvXhaCDnoBfPUEVA51zuF9cDugVkX+raF9hjAEaMwvL8fMzKrFoz+Vpya1kkLK3ZJ1iH/JtmX+E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=YG88aU7B; arc=none smtp.client-ip=198.175.65.15
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1714984999; x=1746520999;
+  h=date:from:to:cc:subject:message-id;
+  bh=UtNUIVcy91zaYFhz6vh2nt7UkmQsFV+YZajB5O6Pkys=;
+  b=YG88aU7BAzyXieXOuoQUvEbRREIkvT/Hq/WOYcOeaHWhRgehHVuyraoS
+   nJgThpNKO9EluYVcSq2rc2N9nuXiAyo3pad7+fm/yzJHKjiRI56Fjp3Kv
+   50tzrMfOZhqcDJgkD6TlJiCA3dv9Ish9weqsoq1ta9t4NGMfJqC+bjirl
+   Z06kl4+OZ6YhnJyciJYpZxjB96KGOPrQQHxHyw6UZCSCMY1w1MCeOQBY/
+   aUmblmBSA3vtpio0kfpqOfMaYTCZ2hEJKNNzIgyB2l4HEsmHdh/WccjxE
+   VUXw5dCEeMwKysWyGKuEhEinDqtjHp6UTkF1zzEoKWwcMbhU3ws399SWl
+   A==;
+X-CSE-ConnectionGUID: xrSF9/uiSHWeiwdCQPBogQ==
+X-CSE-MsgGUID: W3rhsQXaSs22cMH3NW4Mzw==
+X-IronPort-AV: E=McAfee;i="6600,9927,11064"; a="14505344"
+X-IronPort-AV: E=Sophos;i="6.07,257,1708416000"; 
+   d="scan'208";a="14505344"
+Received: from fmviesa001.fm.intel.com ([10.60.135.141])
+  by orvoesa107.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 May 2024 01:43:19 -0700
+X-CSE-ConnectionGUID: 17BFS3ggQYGKzdulMsUS/w==
+X-CSE-MsgGUID: PK1X/J+aQj25rzYyqjhboA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,257,1708416000"; 
+   d="scan'208";a="59287713"
+Received: from lkp-server01.sh.intel.com (HELO f8b243fe6e68) ([10.239.97.150])
+  by fmviesa001.fm.intel.com with ESMTP; 06 May 2024 01:43:17 -0700
+Received: from kbuild by f8b243fe6e68 with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1s3twI-0000ZJ-2Q;
+	Mon, 06 May 2024 08:43:14 +0000
+Date: Mon, 06 May 2024 16:42:37 +0800
+From: kernel test robot <lkp@intel.com>
+To: Leon Romanovsky <leon@kernel.org>
+Cc: Doug Ledford <dledford@redhat.com>,
+ Jason Gunthorpe <jgg+lists@ziepe.ca>, linux-rdma@vger.kernel.org
+Subject: [rdma:wip/leon-for-next] BUILD SUCCESS
+ f483f6a29d4d701f1641898463e93d081bb03b52
+Message-ID: <202405061635.vMb9d2w3-lkp@intel.com>
+User-Agent: s-nail v14.9.24
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [question] when bonding with CX5 network card that support ROCE
-To: shaozhengchao <shaozhengchao@huawei.com>, saeedm@nvidia.com,
- tariqt@nvidia.com, borisp@nvidia.com, shayd@nvidia.com, msanalla@nvidia.com,
- Rahul Rameshbabu <rrameshbabu@nvidia.com>, weizhang@nvidia.com,
- kliteyn@nvidia.com, erezsh@nvidia.com, igozlan@nvidia.com
-Cc: netdev <netdev@vger.kernel.org>, linux-rdma@vger.kernel.org
-References: <756aaf3c-5a15-8d18-89d4-ea7380cf845d@huawei.com>
-Content-Language: en-US
-In-Reply-To: <756aaf3c-5a15-8d18-89d4-ea7380cf845d@huawei.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
 
-On 06.05.24 06:46, shaozhengchao wrote:
-> 
-> When using the 5.10 kernel, I can find two IB devices using the 
-> ibv_devinfo command.
-> ----------------------------------
-> [root@localhost ~]# lspci
-> 91:00.0 Ethernet controller: Mellanox Technologies MT27800 Family 
-> [ConnectX-5]
-> 91:00.1 Ethernet controller: Mellanox Technologies MT27800 Family
-> ----------------------------------
-> [root@localhost ~]# ibv_devinfo
-> hca_id: mlx5_0
->          transport:                      InfiniBand (0)
->          fw_ver:                         16.31.1014
->          node_guid:                      f41d:6b03:006f:4743
->          sys_image_guid:                 f41d:6b03:006f:4743
->          vendor_id:                      0x02c9
->          vendor_part_id:                 4119
->          hw_ver:                         0x0
->          board_id:                       HUA0000000004
->          phys_port_cnt:                  1
->                  port:   1
->                          state:                  PORT_ACTIVE (4)
->                          max_mtu:                4096 (5)
->                          active_mtu:             1024 (3)
->                          sm_lid:                 0
->                          port_lid:               0
->                          port_lmc:               0x00
->                          link_layer:             Ethernet
-> 
-> hca_id: mlx5_1
->          transport:                      InfiniBand (0)
->          fw_ver:                         16.31.1014
->          node_guid:                      f41d:6b03:006f:4744
->          sys_image_guid:                 f41d:6b03:006f:4743
->          vendor_id:                      0x02c9
->          vendor_part_id:                 4119
->          hw_ver:                         0x0
->          board_id:                       HUA0000000004
->          phys_port_cnt:                  1
->                  port:   1
->                          state:                  PORT_ACTIVE (4)
->                          max_mtu:                4096 (5)
->                          active_mtu:             1024 (3)
->                          sm_lid:                 0
->                          port_lid:               0
->                          port_lmc:               0x00
->                          link_layer:             Ethernet
-> ----------------------------------
-> But after the two network ports are bonded, only one IB device is
-> available, and only PF0 can be used.
-> [root@localhost shaozhengchao]# ibv_devinfo
-> hca_id: mlx5_bond_0
->          transport:                      InfiniBand (0)
->          fw_ver:                         16.31.1014
->          node_guid:                      f41d:6b03:006f:4743
->          sys_image_guid:                 f41d:6b03:006f:4743
->          vendor_id:                      0x02c9
->          vendor_part_id:                 4119
->          hw_ver:                         0x0
->          board_id:                       HUA0000000004
->          phys_port_cnt:                  1
->                  port:   1
->                          state:                  PORT_ACTIVE (4)
->                          max_mtu:                4096 (5)
->                          active_mtu:             1024 (3)
->                          sm_lid:                 0
->                          port_lid:               0
->                          port_lmc:               0x00
->                          link_layer:             Ethernet
-> 
-> The current Linux mainline driver is the same.
-> 
-> I found the comment ("If bonded, we do not add an IB device for PF1.")
-> in the mlx5_lag_intf_add function of the 5.10 branch driver code.
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git wip/leon-for-next
+branch HEAD: f483f6a29d4d701f1641898463e93d081bb03b52  IB/hfi1: Remove generic .ndo_get_stats64
 
-Not sure if rdma lag is enabled for this or not. /proc/net/bonding will 
-provide more more details normally.
+elapsed time: 1062m
 
-Zhu Yanjun
+configs tested: 152
+configs skipped: 4
 
-> This indicates that wthe the same NIC is used, only PF0 support bonding?
-> Are there any other constraints, when enable bonding with CX5?
-> 
-> Thank you
-> Zhengchao Shao
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
+tested configs:
+alpha                             allnoconfig   gcc  
+alpha                            allyesconfig   gcc  
+alpha                               defconfig   gcc  
+arc                              allmodconfig   gcc  
+arc                               allnoconfig   gcc  
+arc                              allyesconfig   gcc  
+arc                          axs103_defconfig   gcc  
+arc                                 defconfig   gcc  
+arc                   randconfig-001-20240506   gcc  
+arc                   randconfig-002-20240506   gcc  
+arm                              allmodconfig   gcc  
+arm                               allnoconfig   clang
+arm                              allyesconfig   gcc  
+arm                                 defconfig   clang
+arm                             pxa_defconfig   gcc  
+arm                   randconfig-001-20240506   clang
+arm                   randconfig-002-20240506   clang
+arm                   randconfig-003-20240506   gcc  
+arm                   randconfig-004-20240506   clang
+arm64                            allmodconfig   clang
+arm64                             allnoconfig   gcc  
+arm64                               defconfig   gcc  
+arm64                 randconfig-001-20240506   gcc  
+arm64                 randconfig-002-20240506   gcc  
+arm64                 randconfig-003-20240506   clang
+arm64                 randconfig-004-20240506   clang
+csky                             allmodconfig   gcc  
+csky                              allnoconfig   gcc  
+csky                             allyesconfig   gcc  
+csky                                defconfig   gcc  
+csky                  randconfig-001-20240506   gcc  
+csky                  randconfig-002-20240506   gcc  
+hexagon                          allmodconfig   clang
+hexagon                           allnoconfig   clang
+hexagon                          allyesconfig   clang
+hexagon                             defconfig   clang
+hexagon               randconfig-001-20240506   clang
+hexagon               randconfig-002-20240506   clang
+i386                             allmodconfig   gcc  
+i386                              allnoconfig   gcc  
+i386                             allyesconfig   gcc  
+i386         buildonly-randconfig-001-20240506   gcc  
+i386         buildonly-randconfig-002-20240506   clang
+i386         buildonly-randconfig-003-20240506   gcc  
+i386         buildonly-randconfig-004-20240506   gcc  
+i386         buildonly-randconfig-005-20240506   gcc  
+i386         buildonly-randconfig-006-20240506   clang
+i386                                defconfig   clang
+i386                  randconfig-001-20240506   gcc  
+i386                  randconfig-002-20240506   clang
+i386                  randconfig-003-20240506   gcc  
+i386                  randconfig-004-20240506   clang
+i386                  randconfig-005-20240506   clang
+i386                  randconfig-006-20240506   gcc  
+i386                  randconfig-011-20240506   gcc  
+i386                  randconfig-012-20240506   gcc  
+i386                  randconfig-013-20240506   gcc  
+i386                  randconfig-014-20240506   clang
+i386                  randconfig-015-20240506   clang
+i386                  randconfig-016-20240506   clang
+loongarch                        alldefconfig   gcc  
+loongarch                        allmodconfig   gcc  
+loongarch                         allnoconfig   gcc  
+loongarch                           defconfig   gcc  
+loongarch             randconfig-001-20240506   gcc  
+loongarch             randconfig-002-20240506   gcc  
+m68k                             allmodconfig   gcc  
+m68k                              allnoconfig   gcc  
+m68k                             allyesconfig   gcc  
+m68k                                defconfig   gcc  
+microblaze                       allmodconfig   gcc  
+microblaze                        allnoconfig   gcc  
+microblaze                       allyesconfig   gcc  
+microblaze                          defconfig   gcc  
+mips                              allnoconfig   gcc  
+mips                             allyesconfig   gcc  
+mips                          ath79_defconfig   gcc  
+mips                           ci20_defconfig   clang
+mips                         db1xxx_defconfig   clang
+mips                      maltasmvp_defconfig   gcc  
+nios2                            allmodconfig   gcc  
+nios2                             allnoconfig   gcc  
+nios2                            allyesconfig   gcc  
+nios2                               defconfig   gcc  
+nios2                 randconfig-001-20240506   gcc  
+nios2                 randconfig-002-20240506   gcc  
+openrisc                          allnoconfig   gcc  
+openrisc                         allyesconfig   gcc  
+openrisc                            defconfig   gcc  
+parisc                           allmodconfig   gcc  
+parisc                            allnoconfig   gcc  
+parisc                           allyesconfig   gcc  
+parisc                              defconfig   gcc  
+parisc                generic-32bit_defconfig   gcc  
+parisc                randconfig-001-20240506   gcc  
+parisc                randconfig-002-20240506   gcc  
+parisc64                            defconfig   gcc  
+powerpc                          allmodconfig   gcc  
+powerpc                           allnoconfig   gcc  
+powerpc                          allyesconfig   clang
+powerpc                      pcm030_defconfig   clang
+powerpc                       ppc64_defconfig   clang
+powerpc               randconfig-001-20240506   gcc  
+powerpc               randconfig-002-20240506   clang
+powerpc               randconfig-003-20240506   gcc  
+powerpc64             randconfig-001-20240506   clang
+powerpc64             randconfig-002-20240506   clang
+powerpc64             randconfig-003-20240506   clang
+riscv                             allnoconfig   gcc  
+riscv                            allyesconfig   clang
+riscv                               defconfig   clang
+riscv                 randconfig-001-20240506   clang
+riscv                 randconfig-002-20240506   gcc  
+s390                             allmodconfig   clang
+s390                              allnoconfig   clang
+s390                             allyesconfig   gcc  
+s390                                defconfig   clang
+s390                  randconfig-001-20240506   gcc  
+s390                  randconfig-002-20240506   gcc  
+sh                               allmodconfig   gcc  
+sh                                allnoconfig   gcc  
+sh                               allyesconfig   gcc  
+sh                         ap325rxa_defconfig   gcc  
+sh                                  defconfig   gcc  
+sh                    randconfig-001-20240506   gcc  
+sh                    randconfig-002-20240506   gcc  
+sh                   rts7751r2dplus_defconfig   gcc  
+sh                           se7750_defconfig   gcc  
+sh                        sh7785lcr_defconfig   gcc  
+sparc                            allmodconfig   gcc  
+sparc                             allnoconfig   gcc  
+sparc                               defconfig   gcc  
+sparc64                          allmodconfig   gcc  
+sparc64                          allyesconfig   gcc  
+sparc64                             defconfig   gcc  
+sparc64               randconfig-001-20240506   gcc  
+sparc64               randconfig-002-20240506   gcc  
+um                               allmodconfig   clang
+um                                allnoconfig   clang
+um                               allyesconfig   gcc  
+um                                  defconfig   clang
+um                             i386_defconfig   gcc  
+um                    randconfig-001-20240506   clang
+um                    randconfig-002-20240506   clang
+um                           x86_64_defconfig   clang
+x86_64                            allnoconfig   clang
+x86_64                           allyesconfig   clang
+x86_64                              defconfig   gcc  
+x86_64                          rhel-8.3-rust   clang
+xtensa                            allnoconfig   gcc  
+xtensa                randconfig-001-20240506   gcc  
+xtensa                randconfig-002-20240506   gcc  
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
