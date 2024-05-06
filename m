@@ -1,241 +1,247 @@
-Return-Path: <linux-rdma+bounces-2290-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-2291-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7EB768BCC43
-	for <lists+linux-rdma@lfdr.de>; Mon,  6 May 2024 12:45:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id C5FDE8BCC5D
+	for <lists+linux-rdma@lfdr.de>; Mon,  6 May 2024 12:49:28 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A1E091C21D0F
-	for <lists+linux-rdma@lfdr.de>; Mon,  6 May 2024 10:45:55 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E93B21C222E4
+	for <lists+linux-rdma@lfdr.de>; Mon,  6 May 2024 10:49:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B8B5F1422C5;
-	Mon,  6 May 2024 10:45:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 163AE143745;
+	Mon,  6 May 2024 10:49:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=amazon.com header.i=@amazon.com header.b="l4X8szCj"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
+Received: from smtp-fw-80006.amazon.com (smtp-fw-80006.amazon.com [99.78.197.217])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D12D313FD93;
-	Mon,  6 May 2024 10:45:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.188
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 577B61339A2
+	for <linux-rdma@vger.kernel.org>; Mon,  6 May 2024 10:49:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=99.78.197.217
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714992342; cv=none; b=l3QuBxW6av+6uLu5M9d+jPM8u3Ixih9WAtHcCa9J8TrPDlrFn86qyK74HiZSEJTibwaIujy4xSwC4FFweJoY2uCMAFL407uNaW+Qww34wyUIKjuzlRXy9SrfbAgawXqTJLlyOfntRKalvG6Y83wWzIeqybhJARISkzT0rI/cW9M=
+	t=1714992547; cv=none; b=fF8eiX9rnziTwel8QRKvpaeDm1YeBQt1i4aH2eFCwFduSe6F9w2Ga+CnLsk/jXJJhR1bfa7t5i7rsi0wkEAnmYGG+ld/dccNEOKsvIH18yslXlNlokdiyu3PwjOC69GHRf7ekdGQ9jYU/3ZljxEw6CRiylWqx/Jbp8zsxaVJKwY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714992342; c=relaxed/simple;
-	bh=Z6vgtTZpxPV9s+3TUUKL8BxnHLMXBxs0mpkslYHN6UY=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=KA9EvdXA7dh+FFbsAAlF9YcIeyWBospoiUWyI4Q/mGOeiRQAX+QoswtdZIZNS5yPtinCzpQ/6WviBVclG6v8E8sXgKwrnuGUxo66pNy/yPoRB9KBh8GIfbI4kcGSbXC4lplRdc+Cqivsf7W0tYC9GfTHrcJ4lGe/Rej0roV6NX8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.188
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.162.254])
-	by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4VXyhN3BtRzccYf;
-	Mon,  6 May 2024 18:44:20 +0800 (CST)
-Received: from dggpeml500026.china.huawei.com (unknown [7.185.36.106])
-	by mail.maildlp.com (Postfix) with ESMTPS id 9858C1800CB;
-	Mon,  6 May 2024 18:45:30 +0800 (CST)
-Received: from [10.174.178.66] (10.174.178.66) by
- dggpeml500026.china.huawei.com (7.185.36.106) with Microsoft SMTP Server
+	s=arc-20240116; t=1714992547; c=relaxed/simple;
+	bh=MchiKex2Ttspwf3Mj6hMgmM+WpZZLfGpvxv4sgb/zZ0=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=dEw9pKsQME4SYyaTU60Y8jYOC6sAjK9/vWBjjVYtTcEXx0YVHiUmYae1fCcZiaILOnGAKKxyErjVdbr+0yXu4GucZo62LbFdEE2ZSiH1qXWxmP/t31gMkoTbkp36qPzDDWds0H+BaWjTE4oCryOKNs6vjaZncx4DN81z138DGog=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amazon.com; spf=pass smtp.mailfrom=amazon.com; dkim=pass (1024-bit key) header.d=amazon.com header.i=@amazon.com header.b=l4X8szCj; arc=none smtp.client-ip=99.78.197.217
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amazon.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=amazon.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
+  t=1714992546; x=1746528546;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=SQstU5W2FBBt1xB5O4OCRhBo5VKYSvpLgb6srvAt1LI=;
+  b=l4X8szCj0y56YTFmQAw/l7Wj/o9L8RzdCZJPUgupdPU6czpAuVgwv2jg
+   qjZgBrYPcc9G3ox0jWYpvhAjHdPA7zTPAxMZSA6YpHHR/S5okTMFhXVtX
+   9SvQQFaVC8/1AYy7fEBbW+2ngNg8g9vXlR2+xQsodIvr6Hy75cl5VdTAB
+   k=;
+X-IronPort-AV: E=Sophos;i="6.07,258,1708387200"; 
+   d="scan'208";a="293163107"
+Received: from pdx4-co-svc-p1-lb2-vlan3.amazon.com (HELO smtpout.prod.us-east-1.prod.farcaster.email.amazon.dev) ([10.25.36.214])
+  by smtp-border-fw-80006.pdx80.corp.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 May 2024 10:49:02 +0000
+Received: from EX19MTAEUC002.ant.amazon.com [10.0.17.79:13515]
+ by smtpin.naws.eu-west-1.prod.farcaster.email.amazon.dev [10.0.29.175:2525] with esmtp (Farcaster)
+ id 8e700346-fb03-4da2-ae31-5757bd752731; Mon, 6 May 2024 10:49:01 +0000 (UTC)
+X-Farcaster-Flow-ID: 8e700346-fb03-4da2-ae31-5757bd752731
+Received: from EX19D022EUA002.ant.amazon.com (10.252.50.201) by
+ EX19MTAEUC002.ant.amazon.com (10.252.51.245) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.35; Mon, 6 May 2024 18:45:29 +0800
-Message-ID: <bb68fc32-9c6c-ceda-a961-f4fde72ce64d@huawei.com>
-Date: Mon, 6 May 2024 18:45:29 +0800
+ 15.2.1258.28; Mon, 6 May 2024 10:49:01 +0000
+Received: from EX19MTAUEA001.ant.amazon.com (10.252.134.203) by
+ EX19D022EUA002.ant.amazon.com (10.252.50.201) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1258.28; Mon, 6 May 2024 10:49:00 +0000
+Received: from dev-dsk-mrgolin-1c-b2091117.eu-west-1.amazon.com
+ (10.253.103.172) by mail-relay.amazon.com (10.252.134.102) with Microsoft
+ SMTP Server id 15.2.1258.28 via Frontend Transport; Mon, 6 May 2024 10:48:59
+ +0000
+From: Michael Margolin <mrgolin@amazon.com>
+To: <jgg@nvidia.com>, <leon@kernel.org>, <linux-rdma@vger.kernel.org>
+CC: <sleybo@amazon.com>, <matua@amazon.com>, <gal.pressman@linux.dev>, "Daniel
+ Kranzdorf" <dkkranzd@amazon.com>, Firas Jahjah <firasj@amazon.com>
+Subject: [PATCH for-next] RDMA/efa: Support QP with unsolicited write w/ imm. receive
+Date: Mon, 6 May 2024 10:48:59 +0000
+Message-ID: <20240506104859.9225-1-mrgolin@amazon.com>
+X-Mailer: git-send-email 2.40.1
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.0.2
-Subject: Re: [question] when bonding with CX5 network card that support ROCE
-To: Zhu Yanjun <zyjzyj2000@gmail.com>, <saeedm@nvidia.com>,
-	<tariqt@nvidia.com>, <borisp@nvidia.com>, <shayd@nvidia.com>,
-	<msanalla@nvidia.com>, Rahul Rameshbabu <rrameshbabu@nvidia.com>,
-	<weizhang@nvidia.com>, <kliteyn@nvidia.com>, <erezsh@nvidia.com>,
-	<igozlan@nvidia.com>
-CC: netdev <netdev@vger.kernel.org>, <linux-rdma@vger.kernel.org>
-References: <756aaf3c-5a15-8d18-89d4-ea7380cf845d@huawei.com>
- <7b0e61e1-8d50-4431-bd0a-6398c618a609@linux.dev>
-From: shaozhengchao <shaozhengchao@huawei.com>
-In-Reply-To: <7b0e61e1-8d50-4431-bd0a-6398c618a609@linux.dev>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
 Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
- dggpeml500026.china.huawei.com (7.185.36.106)
+Content-Type: text/plain
 
-Hi yanjun:
-   The following is the command output after the cat /proc/net/bonding
-/bond0 command is run:
-[root@localhost ~]# cat /proc/net/bonding/bond0
-Ethernet Channel Bonding Driver: v5.10.0+
+Add a new EFA flags attribute for QP creation, and support unsolicited
+write with immediate flag. QPs created with this flag set will not
+consume receive work requests for incoming RDMA write with immediate.
+Expose device capability bit for this feature support.
 
-Bonding Mode: IEEE 802.3ad Dynamic link aggregation
-Transmit Hash Policy: layer2 (0)
-MII Status: up
-MII Polling Interval (ms): 100
-Up Delay (ms): 0
-Down Delay (ms): 0
-Peer Notification Delay (ms): 0
+Reviewed-by: Daniel Kranzdorf <dkkranzd@amazon.com>
+Reviewed-by: Firas Jahjah <firasj@amazon.com>
+Signed-off-by: Michael Margolin <mrgolin@amazon.com>
+---
+ drivers/infiniband/hw/efa/efa_admin_cmds_defs.h | 11 +++++++++--
+ drivers/infiniband/hw/efa/efa_com_cmd.c         |  3 +++
+ drivers/infiniband/hw/efa/efa_com_cmd.h         |  1 +
+ drivers/infiniband/hw/efa/efa_verbs.c           | 17 +++++++++++++++++
+ include/uapi/rdma/efa-abi.h                     |  7 +++++++
+ 5 files changed, 37 insertions(+), 2 deletions(-)
 
-802.3ad info
-LACP rate: slow
-Min links: 0
-Aggregator selection policy (ad_select): stable
-System priority: 65535
-System MAC address: f4:1d:6b:6f:3b:97
-Active Aggregator Info:
-         Aggregator ID: 2
-         Number of ports: 1
-         Actor Key: 23
-         Partner Key: 1
-         Partner Mac Address: 00:00:00:00:00:00
+diff --git a/drivers/infiniband/hw/efa/efa_admin_cmds_defs.h b/drivers/infiniband/hw/efa/efa_admin_cmds_defs.h
+index 7377c8a9f4d5..86a2a1a4f543 100644
+--- a/drivers/infiniband/hw/efa/efa_admin_cmds_defs.h
++++ b/drivers/infiniband/hw/efa/efa_admin_cmds_defs.h
+@@ -110,7 +110,10 @@ struct efa_admin_create_qp_cmd {
+ 	 *    virtual (IOVA returned by MR registration)
+ 	 * 1 : rq_virt - If set, RQ ring base address is
+ 	 *    virtual (IOVA returned by MR registration)
+-	 * 7:2 : reserved - MBZ
++	 * 2 : unsolicited_write_recv - If set, work requests
++	 *    will not be consumed for incoming RDMA write with
++	 *    immediate
++	 * 7:3 : reserved - MBZ
+ 	 */
+ 	u8 flags;
+ 
+@@ -663,7 +666,9 @@ struct efa_admin_feature_device_attr_desc {
+ 	 *    polling is supported
+ 	 * 3 : rdma_write - If set, RDMA Write is supported
+ 	 *    on TX queues
+-	 * 31:4 : reserved - MBZ
++	 * 4 : unsolicited_write_recv - If set, unsolicited
++	 *    write with imm. receive is supported
++	 * 32:5 : reserved - MBZ
+ 	 */
+ 	u32 device_caps;
+ 
+@@ -1009,6 +1014,7 @@ struct efa_admin_host_info {
+ /* create_qp_cmd */
+ #define EFA_ADMIN_CREATE_QP_CMD_SQ_VIRT_MASK                BIT(0)
+ #define EFA_ADMIN_CREATE_QP_CMD_RQ_VIRT_MASK                BIT(1)
++#define EFA_ADMIN_CREATE_QP_CMD_UNSOLICITED_WRITE_RECV_MASK BIT(2)
+ 
+ /* modify_qp_cmd */
+ #define EFA_ADMIN_MODIFY_QP_CMD_QP_STATE_MASK               BIT(0)
+@@ -1044,6 +1050,7 @@ struct efa_admin_host_info {
+ #define EFA_ADMIN_FEATURE_DEVICE_ATTR_DESC_RNR_RETRY_MASK   BIT(1)
+ #define EFA_ADMIN_FEATURE_DEVICE_ATTR_DESC_DATA_POLLING_128_MASK BIT(2)
+ #define EFA_ADMIN_FEATURE_DEVICE_ATTR_DESC_RDMA_WRITE_MASK  BIT(3)
++#define EFA_ADMIN_FEATURE_DEVICE_ATTR_DESC_UNSOLICITED_WRITE_RECV_MASK BIT(4)
+ 
+ /* create_eq_cmd */
+ #define EFA_ADMIN_CREATE_EQ_CMD_ENTRY_SIZE_WORDS_MASK       GENMASK(4, 0)
+diff --git a/drivers/infiniband/hw/efa/efa_com_cmd.c b/drivers/infiniband/hw/efa/efa_com_cmd.c
+index d3398c7b0bd0..5b9c2b16df0e 100644
+--- a/drivers/infiniband/hw/efa/efa_com_cmd.c
++++ b/drivers/infiniband/hw/efa/efa_com_cmd.c
+@@ -32,6 +32,9 @@ int efa_com_create_qp(struct efa_com_dev *edev,
+ 			params->rq_depth;
+ 	create_qp_cmd.uar = params->uarn;
+ 
++	if (params->unsolicited_write_recv)
++		EFA_SET(&create_qp_cmd.flags, EFA_ADMIN_CREATE_QP_CMD_UNSOLICITED_WRITE_RECV, 1);
++
+ 	err = efa_com_cmd_exec(aq,
+ 			       (struct efa_admin_aq_entry *)&create_qp_cmd,
+ 			       sizeof(create_qp_cmd),
+diff --git a/drivers/infiniband/hw/efa/efa_com_cmd.h b/drivers/infiniband/hw/efa/efa_com_cmd.h
+index 720a99ba0f7d..9714105fcf7e 100644
+--- a/drivers/infiniband/hw/efa/efa_com_cmd.h
++++ b/drivers/infiniband/hw/efa/efa_com_cmd.h
+@@ -27,6 +27,7 @@ struct efa_com_create_qp_params {
+ 	u16 pd;
+ 	u16 uarn;
+ 	u8 qp_type;
++	u8 unsolicited_write_recv : 1;
+ };
+ 
+ struct efa_com_create_qp_result {
+diff --git a/drivers/infiniband/hw/efa/efa_verbs.c b/drivers/infiniband/hw/efa/efa_verbs.c
+index 2f412db2edcd..5a4ee6fec1ed 100644
+--- a/drivers/infiniband/hw/efa/efa_verbs.c
++++ b/drivers/infiniband/hw/efa/efa_verbs.c
+@@ -263,6 +263,9 @@ int efa_query_device(struct ib_device *ibdev,
+ 		if (EFA_DEV_CAP(dev, RDMA_WRITE))
+ 			resp.device_caps |= EFA_QUERY_DEVICE_CAPS_RDMA_WRITE;
+ 
++		if (EFA_DEV_CAP(dev, UNSOLICITED_WRITE_RECV))
++			resp.device_caps |= EFA_QUERY_DEVICE_CAPS_UNSOLICITED_WRITE_RECV;
++
+ 		if (dev->neqs)
+ 			resp.device_caps |= EFA_QUERY_DEVICE_CAPS_CQ_NOTIFICATIONS;
+ 
+@@ -639,6 +642,7 @@ int efa_create_qp(struct ib_qp *ibqp, struct ib_qp_init_attr *init_attr,
+ 	struct efa_ibv_create_qp cmd = {};
+ 	struct efa_qp *qp = to_eqp(ibqp);
+ 	struct efa_ucontext *ucontext;
++	u16 supported_efa_flags = 0;
+ 	int err;
+ 
+ 	ucontext = rdma_udata_to_drv_context(udata, struct efa_ucontext,
+@@ -683,6 +687,16 @@ int efa_create_qp(struct ib_qp *ibqp, struct ib_qp_init_attr *init_attr,
+ 		goto err_out;
+ 	}
+ 
++	if (EFA_DEV_CAP(dev, UNSOLICITED_WRITE_RECV))
++		supported_efa_flags |= EFA_CREATE_QP_WITH_UNSOLICITED_WRITE_RECV;
++
++	if (cmd.flags & ~supported_efa_flags) {
++		ibdev_dbg(&dev->ibdev, "Unsupported EFA QP create flags[%#x], supported[%#x]\n",
++			  cmd.flags, supported_efa_flags);
++		err = -EOPNOTSUPP;
++		goto err_out;
++	}
++
+ 	create_qp_params.uarn = ucontext->uarn;
+ 	create_qp_params.pd = to_epd(ibqp->pd)->pdn;
+ 
+@@ -722,6 +736,9 @@ int efa_create_qp(struct ib_qp *ibqp, struct ib_qp_init_attr *init_attr,
+ 		create_qp_params.rq_base_addr = qp->rq_dma_addr;
+ 	}
+ 
++	if (cmd.flags & EFA_CREATE_QP_WITH_UNSOLICITED_WRITE_RECV)
++		create_qp_params.unsolicited_write_recv = true;
++
+ 	err = efa_com_create_qp(&dev->edev, &create_qp_params,
+ 				&create_qp_resp);
+ 	if (err)
+diff --git a/include/uapi/rdma/efa-abi.h b/include/uapi/rdma/efa-abi.h
+index 701e2d567e41..d689b8b34189 100644
+--- a/include/uapi/rdma/efa-abi.h
++++ b/include/uapi/rdma/efa-abi.h
+@@ -85,11 +85,17 @@ enum {
+ 	EFA_QP_DRIVER_TYPE_SRD = 0,
+ };
+ 
++enum {
++	EFA_CREATE_QP_WITH_UNSOLICITED_WRITE_RECV = 1 << 0,
++};
++
+ struct efa_ibv_create_qp {
+ 	__u32 comp_mask;
+ 	__u32 rq_ring_size; /* bytes */
+ 	__u32 sq_ring_size; /* bytes */
+ 	__u32 driver_qp_type;
++	__u16 flags;
++	__u8 reserved_90[6];
+ };
+ 
+ struct efa_ibv_create_qp_resp {
+@@ -123,6 +129,7 @@ enum {
+ 	EFA_QUERY_DEVICE_CAPS_CQ_WITH_SGID     = 1 << 3,
+ 	EFA_QUERY_DEVICE_CAPS_DATA_POLLING_128 = 1 << 4,
+ 	EFA_QUERY_DEVICE_CAPS_RDMA_WRITE = 1 << 5,
++	EFA_QUERY_DEVICE_CAPS_UNSOLICITED_WRITE_RECV = 1 << 6,
+ };
+ 
+ struct efa_ibv_ex_query_device_resp {
+-- 
+2.40.1
 
-Slave Interface: enp145s0f0
-MII Status: up
-Speed: 40000 Mbps
-Duplex: full
-Link Failure Count: 1
-Permanent HW addr: f4:1d:6b:6f:3b:97
-Slave queue ID: 0
-Aggregator ID: 1
-Actor Churn State: churned
-Partner Churn State: churned
-Actor Churned Count: 1
-Partner Churned Count: 2
-details actor lacp pdu:
-     system priority: 65535
-     system mac address: f4:1d:6b:6f:3b:97
-     port key: 23
-     port priority: 255
-     port number: 1
-     port state: 69
-details partner lacp pdu:
-     system priority: 65535
-     system mac address: 00:00:00:00:00:00
-     oper key: 1
-     port priority: 255
-     port number: 1
-     port state: 1
-
-Slave Interface: enp145s0f1
-MII Status: up
-Speed: 40000 Mbps
-Duplex: full
-Link Failure Count: 0
-Permanent HW addr: f4:1d:6b:6f:3b:98
-Slave queue ID: 0
-Aggregator ID: 2
-Actor Churn State: none
-Partner Churn State: churned
-Actor Churned Count: 0
-Partner Churned Count: 1
-details actor lacp pdu:
-     system priority: 65535
-     system mac address: f4:1d:6b:6f:3b:97
-     port key: 23
-     port priority: 255
-     port number: 2
-     port state: 77
-details partner lacp pdu:
-     system priority: 65535
-     system mac address: 00:00:00:00:00:00
-     oper key: 1
-     port priority: 255
-     port number: 1
-     port state: 1
-
-Thank you
-Zhengchao Shao
-
-
-On 2024/5/6 16:26, Zhu Yanjun wrote:
-> On 06.05.24 06:46, shaozhengchao wrote:
->>
->> When using the 5.10 kernel, I can find two IB devices using the 
->> ibv_devinfo command.
->> ----------------------------------
->> [root@localhost ~]# lspci
->> 91:00.0 Ethernet controller: Mellanox Technologies MT27800 Family 
->> [ConnectX-5]
->> 91:00.1 Ethernet controller: Mellanox Technologies MT27800 Family
->> ----------------------------------
->> [root@localhost ~]# ibv_devinfo
->> hca_id: mlx5_0
->>          transport:                      InfiniBand (0)
->>          fw_ver:                         16.31.1014
->>          node_guid:                      f41d:6b03:006f:4743
->>          sys_image_guid:                 f41d:6b03:006f:4743
->>          vendor_id:                      0x02c9
->>          vendor_part_id:                 4119
->>          hw_ver:                         0x0
->>          board_id:                       HUA0000000004
->>          phys_port_cnt:                  1
->>                  port:   1
->>                          state:                  PORT_ACTIVE (4)
->>                          max_mtu:                4096 (5)
->>                          active_mtu:             1024 (3)
->>                          sm_lid:                 0
->>                          port_lid:               0
->>                          port_lmc:               0x00
->>                          link_layer:             Ethernet
->>
->> hca_id: mlx5_1
->>          transport:                      InfiniBand (0)
->>          fw_ver:                         16.31.1014
->>          node_guid:                      f41d:6b03:006f:4744
->>          sys_image_guid:                 f41d:6b03:006f:4743
->>          vendor_id:                      0x02c9
->>          vendor_part_id:                 4119
->>          hw_ver:                         0x0
->>          board_id:                       HUA0000000004
->>          phys_port_cnt:                  1
->>                  port:   1
->>                          state:                  PORT_ACTIVE (4)
->>                          max_mtu:                4096 (5)
->>                          active_mtu:             1024 (3)
->>                          sm_lid:                 0
->>                          port_lid:               0
->>                          port_lmc:               0x00
->>                          link_layer:             Ethernet
->> ----------------------------------
->> But after the two network ports are bonded, only one IB device is
->> available, and only PF0 can be used.
->> [root@localhost shaozhengchao]# ibv_devinfo
->> hca_id: mlx5_bond_0
->>          transport:                      InfiniBand (0)
->>          fw_ver:                         16.31.1014
->>          node_guid:                      f41d:6b03:006f:4743
->>          sys_image_guid:                 f41d:6b03:006f:4743
->>          vendor_id:                      0x02c9
->>          vendor_part_id:                 4119
->>          hw_ver:                         0x0
->>          board_id:                       HUA0000000004
->>          phys_port_cnt:                  1
->>                  port:   1
->>                          state:                  PORT_ACTIVE (4)
->>                          max_mtu:                4096 (5)
->>                          active_mtu:             1024 (3)
->>                          sm_lid:                 0
->>                          port_lid:               0
->>                          port_lmc:               0x00
->>                          link_layer:             Ethernet
->>
->> The current Linux mainline driver is the same.
->>
->> I found the comment ("If bonded, we do not add an IB device for PF1.")
->> in the mlx5_lag_intf_add function of the 5.10 branch driver code.
-> 
-> Not sure if rdma lag is enabled for this or not. /proc/net/bonding will 
-> provide more more details normally.
-> 
-> Zhu Yanjun
-> 
->> This indicates that wthe the same NIC is used, only PF0 support bonding?
->> Are there any other constraints, when enable bonding with CX5?
->>
->> Thank you
->> Zhengchao Shao
-> 
 
