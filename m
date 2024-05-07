@@ -1,152 +1,283 @@
-Return-Path: <linux-rdma+bounces-2303-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-2304-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4E84E8BD459
-	for <lists+linux-rdma@lfdr.de>; Mon,  6 May 2024 20:04:48 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 327338BD8E5
+	for <lists+linux-rdma@lfdr.de>; Tue,  7 May 2024 03:23:49 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E28271F2763E
-	for <lists+linux-rdma@lfdr.de>; Mon,  6 May 2024 18:04:47 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5586F1C21D09
+	for <lists+linux-rdma@lfdr.de>; Tue,  7 May 2024 01:23:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 51596158A2D;
-	Mon,  6 May 2024 18:04:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=fastly.com header.i=@fastly.com header.b="TugZZ1HB"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 496481877;
+	Tue,  7 May 2024 01:23:44 +0000 (UTC)
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-pf1-f178.google.com (mail-pf1-f178.google.com [209.85.210.178])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 52C961586DB
-	for <linux-rdma@vger.kernel.org>; Mon,  6 May 2024 18:04:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B707D1854;
+	Tue,  7 May 2024 01:23:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.188
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1715018668; cv=none; b=oXTAf5yf6CARvWCwN3QF9XE1uhu24DyoxJSViU2GDeK69IkB7Z+jd/9aw1+UOM/pbsEaztOLW5CsjhaviZgoidnu0VpDat+gY3MCqT5CTHGckcou8OjE/3oRg7RbUW2KOfMZPSxfY5T3SXUDpFKPAhxBB/7C4P6hk9Xuq0Ult4A=
+	t=1715045024; cv=none; b=ZGf+jBbv29GODwNnjyYlzJC+QrmC5VRGLvOdQLwvi/b770CoEtBwJ9mqhcJnP/xGnyiV4FY347pTgxIX05F1Ycd3DDkfdqe2i7UVQwM7IP1nW1C7keOb/G9vUsXlFZFejE1Cf0+u7icgAWdsbWD7q7zlATnqBbwUS+zKcqCgB+M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1715018668; c=relaxed/simple;
-	bh=cAhKDATngg5XYWtp3wm/gO2bAzCF+ksynWN1+HGqIgw=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=kzOVPLbivkUEWIcvpR6NWhnva7MRF+Dr2DWR/5SJWDl0SE2PSN13lCO8YxUYKl0QKsn+kU2RWGFFic6827Bb2iz0I1GHOis1W7CqksKJ64Pnp04LNWXHH+tJAksLj1ucVLIaMxFR9HObfy/vfgYe8hjROlUUhXGE7bm++v/+JOk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=fastly.com; spf=pass smtp.mailfrom=fastly.com; dkim=pass (1024-bit key) header.d=fastly.com header.i=@fastly.com header.b=TugZZ1HB; arc=none smtp.client-ip=209.85.210.178
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=fastly.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fastly.com
-Received: by mail-pf1-f178.google.com with SMTP id d2e1a72fcca58-6f45f1179c3so1394350b3a.3
-        for <linux-rdma@vger.kernel.org>; Mon, 06 May 2024 11:04:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=fastly.com; s=google; t=1715018664; x=1715623464; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=te4/Y4Ex1bU5Fl7piJ8mgbBAfhUkYcVHwGSxY1/VZ2Y=;
-        b=TugZZ1HBqBbqQJ0K9saySdstreGXiIszyp88wotUwvoyvynHcYwBlsink1K5vY5+vB
-         UViW3LprrUOoanxZz4WB+JNvqRb/eZNluV57t/dZMA0dSyZ3e1HgxBhnSdvDT79DOG7U
-         hiW9T5mqSVcklTiUifQHdYDYKtPfLnW7lAFhE=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1715018664; x=1715623464;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=te4/Y4Ex1bU5Fl7piJ8mgbBAfhUkYcVHwGSxY1/VZ2Y=;
-        b=BxkVKw2ntI2OulkomUbpRBrsvcv32UxebuOTOgL9SSL33WEoqiyxfbOj0RjLUCC8wc
-         LRWUv72ywAjQvdqvNUOFNty64ebeICowD3ni4JwBeoU6myPvNx2Twop+krAIgFETQu7e
-         XLEfgkrfzHjmg4m0X/Y3lWWlpTTXoL5s2BnUx2sZdGq5MipNyq9hUWnCX0memGOOSnJz
-         brF4FRJtnQJfTiWJepVbCak8VA7XXisarS4VtVpSZBmXyAuAIYMKQGrHVD8Pzb5uFXKt
-         F4dCt0wuffPB+7Y1CMh8d/CrFk3MxD9neMkQ+GNTD6evtwc83+J3yV5kl+HptuD6O/AS
-         FPJA==
-X-Forwarded-Encrypted: i=1; AJvYcCVxYvzwC6DkH9fu9DMeCreh6ugdAH3R+LeWOyBrz0/ACTm/hn9BKuHM7WHLMnJMnyLjPEirCPv1w9HSycrG9YXSiHI+kHfSnqp3yg==
-X-Gm-Message-State: AOJu0Yx39IMSsJdQK+2pSAzVZUosac7k5ntYHopCZbd1EpCGiJwthQNh
-	KwBC+AOb00nMmREmY/HD9aPUBnXbkRvgN37CnMoZNjQGc0KD6BAoocnyS+0X6iM=
-X-Google-Smtp-Source: AGHT+IGwppSbySl31uGPw1FvJc3LjfLZLPlCmVQ1KC7Gq3CDOyzgBuo4ezyM24BqAPTlNNPjdcMqUA==
-X-Received: by 2002:a05:6a21:620:b0:1af:a4f7:cba1 with SMTP id ll32-20020a056a21062000b001afa4f7cba1mr4246826pzb.31.1715018664422;
-        Mon, 06 May 2024 11:04:24 -0700 (PDT)
-Received: from LQ3V64L9R2 (c-24-6-151-244.hsd1.ca.comcast.net. [24.6.151.244])
-        by smtp.gmail.com with ESMTPSA id p28-20020a631e5c000000b005e438fe702dsm8248238pgm.65.2024.05.06.11.04.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 06 May 2024 11:04:23 -0700 (PDT)
-Date: Mon, 6 May 2024 11:04:20 -0700
-From: Joe Damato <jdamato@fastly.com>
-To: Jakub Kicinski <kuba@kernel.org>
-Cc: Zhu Yanjun <zyjzyj2000@gmail.com>, linux-kernel@vger.kernel.org,
-	netdev@vger.kernel.org, tariqt@nvidia.com, saeedm@nvidia.com,
-	gal@nvidia.com, nalramli@fastly.com,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Leon Romanovsky <leon@kernel.org>,
-	"open list:MELLANOX MLX5 core VPI driver" <linux-rdma@vger.kernel.org>,
-	Paolo Abeni <pabeni@redhat.com>
-Subject: Re: [PATCH net-next 0/1] mlx5: Add netdev-genl queue stats
-Message-ID: <ZjkbpLRyZ9h0U01_@LQ3V64L9R2>
-References: <20240503022549.49852-1-jdamato@fastly.com>
- <c3f4f1a4-303d-4d57-ae83-ed52e5a08f69@linux.dev>
- <ZjUwT_1SA9tF952c@LQ3V64L9R2>
- <20240503145808.4872fbb2@kernel.org>
- <ZjV5BG8JFGRBoKaz@LQ3V64L9R2>
- <20240503173429.10402325@kernel.org>
+	s=arc-20240116; t=1715045024; c=relaxed/simple;
+	bh=BBeUUcnKdqwjJNM/9HXrPaPwjiMKRmPvEMOkdsxKDio=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=Qy3rCOytn4hbq19G8ji59vHOXCX3kgmv6z/Vw1QN9/8iQFS6He6+L7rckVI3VdhnP04sLW6EMHQxbBpIaoH90x3voxjU3TMqVwgjrpsHQN7Q0DsMhWk0HHRBvf4RbZ6cAGpgmgBZDaVAuSxxK+QQo5hTnDtYUz7LNy2LZ3FwUWU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.188
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.19.163.48])
+	by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4VYL9c0GMHzcdjj;
+	Tue,  7 May 2024 09:22:28 +0800 (CST)
+Received: from dggpeml500026.china.huawei.com (unknown [7.185.36.106])
+	by mail.maildlp.com (Postfix) with ESMTPS id 7D26D180073;
+	Tue,  7 May 2024 09:23:38 +0800 (CST)
+Received: from [10.174.178.66] (10.174.178.66) by
+ dggpeml500026.china.huawei.com (7.185.36.106) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.35; Tue, 7 May 2024 09:23:37 +0800
+Message-ID: <b10f0074-4003-2862-78ff-9b5dfcdc8566@huawei.com>
+Date: Tue, 7 May 2024 09:23:37 +0800
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240503173429.10402325@kernel.org>
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.0.2
+Subject: Re: [question] when bonding with CX5 network card that support ROCE
+To: Zhu Yanjun <zyjzyj2000@gmail.com>, <saeedm@nvidia.com>,
+	<tariqt@nvidia.com>, <borisp@nvidia.com>, <shayd@nvidia.com>,
+	<msanalla@nvidia.com>, Rahul Rameshbabu <rrameshbabu@nvidia.com>,
+	<weizhang@nvidia.com>, <kliteyn@nvidia.com>, <erezsh@nvidia.com>,
+	<igozlan@nvidia.com>
+CC: netdev <netdev@vger.kernel.org>, <linux-rdma@vger.kernel.org>
+References: <756aaf3c-5a15-8d18-89d4-ea7380cf845d@huawei.com>
+ <7b0e61e1-8d50-4431-bd0a-6398c618a609@linux.dev>
+ <bb68fc32-9c6c-ceda-a961-f4fde72ce64d@huawei.com>
+ <6a285586-0a11-43be-a07a-5ba0b92d0ee6@gmail.com>
+ <d345b292-e5a1-a428-f5e1-74a6c0c390d9@huawei.com>
+ <f49c80dc-6138-4073-b873-97f729817790@linux.dev>
+From: shaozhengchao <shaozhengchao@huawei.com>
+In-Reply-To: <f49c80dc-6138-4073-b873-97f729817790@linux.dev>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
+ dggpeml500026.china.huawei.com (7.185.36.106)
 
-On Fri, May 03, 2024 at 05:34:29PM -0700, Jakub Kicinski wrote:
-> On Fri, 3 May 2024 16:53:40 -0700 Joe Damato wrote:
-> > > diff --git a/include/net/netdev_queues.h b/include/net/netdev_queues.h
-> > > index c7ac4539eafc..f5d9f3ad5b66 100644
-> > > --- a/include/net/netdev_queues.h
-> > > +++ b/include/net/netdev_queues.h
-> > > @@ -59,6 +59,8 @@ struct netdev_queue_stats_tx {
-> > >   * statistics will not generally add up to the total number of events for
-> > >   * the device. The @get_base_stats callback allows filling in the delta
-> > >   * between events for currently live queues and overall device history.
-> > > + * @get_base_stats can also be used to report any miscellaneous packets
-> > > + * transferred outside of the main set of queues used by the networking stack.
-> > >   * When the statistics for the entire device are queried, first @get_base_stats
-> > >   * is issued to collect the delta, and then a series of per-queue callbacks.
-> > >   * Only statistics which are set in @get_base_stats will be reported
-> > > 
-> > > 
-> > > SG?  
-> > 
-> > I think that sounds good and makes sense, yea. By that definition, then I
-> > should leave the PTP stats as shown above. If you agree, I'll add that
-> > to the v2.
+
+
+On 2024/5/6 20:27, Zhu Yanjun wrote:
+> On 06.05.24 13:33, shaozhengchao wrote:
+>>
+>> Hi Yanjun:
+>>    Thank you for your reply. Are there any other restrictions on using
+>> ROCE on the CX5?
 > 
-> Yup, agreed.
+> https://docs.nvidia.com/networking/display/mlnxofedv571020
 > 
-> > I feel like I should probably wait before sending a v2 with PTP included in
-> > get_base_stats to see if the Mellanox folks have any hints about why rtnl
-> > != queue stats on mlx5?
-> > 
-> > What do you think?
+> The above link can answer all your questions ^_^
 > 
-> Very odd, the code doesn't appear to be doing any magic :S Did you try
-> to print what the delta in values is? Does bringing the interface up and
-> down affect the size of it?
+> Enjoy it.
+> 
+> Zhu Yanjun
+> 
+Thank you.
 
-I booted the kernel which includes PTP stats in the base stats as you've
-suggested (as shown in the diff in this thread) and I've brought the
-interface down and back up:
-
-$ sudo ip link set dev eth0 down
-$ sudo ip link set dev eth0 up
-
-Re ran the test script, which includes some mild debugging print out I
-added to show the delta for rx-packets (but I think all stats are off):
-
-  # Exception| Exception: Qstats are lower, fetched later
-
-key: rx-packets rstat: 1192281902 qstat: 1186755777
-key: rx-packets rstat: 1192281902 qstat: 1186755781
-
-So qstat is lower by (1192281902 - 1186755781) = 5,526,121
-
-Not really sure why, but I'll take another look at the code this morning to
-see if I can figure out what's going on.
-
-I'm clearly doing something wrong or misunderstanding something about the
-accounting that will seem extremely obvious in retrospect.
+Zhengchao Shao
+>>
+>> Zhengchao Shao
+>>
+>> On 2024/5/6 18:58, Zhu Yanjun wrote:
+>>>
+>>> On 06.05.24 12:45, shaozhengchao wrote:
+>>>> Hi yanjun:
+>>>>   The following is the command output after the cat /proc/net/bonding
+>>>> /bond0 command is run:
+>>>
+>>> If I remember it correctly, it seems that it is a rdma LAG and 
+>>> bonding problem.
+>>>
+>>> Not sure if it is a known problem or not. Please contact your local 
+>>> support.
+>>>
+>>> Zhu Yanjun
+>>>
+>>>> [root@localhost ~]# cat /proc/net/bonding/bond0
+>>>> Ethernet Channel Bonding Driver: v5.10.0+
+>>>>
+>>>> Bonding Mode: IEEE 802.3ad Dynamic link aggregation
+>>>> Transmit Hash Policy: layer2 (0)
+>>>> MII Status: up
+>>>> MII Polling Interval (ms): 100
+>>>> Up Delay (ms): 0
+>>>> Down Delay (ms): 0
+>>>> Peer Notification Delay (ms): 0
+>>>>
+>>>> 802.3ad info
+>>>> LACP rate: slow
+>>>> Min links: 0
+>>>> Aggregator selection policy (ad_select): stable
+>>>> System priority: 65535
+>>>> System MAC address: f4:1d:6b:6f:3b:97
+>>>> Active Aggregator Info:
+>>>>         Aggregator ID: 2
+>>>>         Number of ports: 1
+>>>>         Actor Key: 23
+>>>>         Partner Key: 1
+>>>>         Partner Mac Address: 00:00:00:00:00:00
+>>>>
+>>>> Slave Interface: enp145s0f0
+>>>> MII Status: up
+>>>> Speed: 40000 Mbps
+>>>> Duplex: full
+>>>> Link Failure Count: 1
+>>>> Permanent HW addr: f4:1d:6b:6f:3b:97
+>>>> Slave queue ID: 0
+>>>> Aggregator ID: 1
+>>>> Actor Churn State: churned
+>>>> Partner Churn State: churned
+>>>> Actor Churned Count: 1
+>>>> Partner Churned Count: 2
+>>>> details actor lacp pdu:
+>>>>     system priority: 65535
+>>>>     system mac address: f4:1d:6b:6f:3b:97
+>>>>     port key: 23
+>>>>     port priority: 255
+>>>>     port number: 1
+>>>>     port state: 69
+>>>> details partner lacp pdu:
+>>>>     system priority: 65535
+>>>>     system mac address: 00:00:00:00:00:00
+>>>>     oper key: 1
+>>>>     port priority: 255
+>>>>     port number: 1
+>>>>     port state: 1
+>>>>
+>>>> Slave Interface: enp145s0f1
+>>>> MII Status: up
+>>>> Speed: 40000 Mbps
+>>>> Duplex: full
+>>>> Link Failure Count: 0
+>>>> Permanent HW addr: f4:1d:6b:6f:3b:98
+>>>> Slave queue ID: 0
+>>>> Aggregator ID: 2
+>>>> Actor Churn State: none
+>>>> Partner Churn State: churned
+>>>> Actor Churned Count: 0
+>>>> Partner Churned Count: 1
+>>>> details actor lacp pdu:
+>>>>     system priority: 65535
+>>>>     system mac address: f4:1d:6b:6f:3b:97
+>>>>     port key: 23
+>>>>     port priority: 255
+>>>>     port number: 2
+>>>>     port state: 77
+>>>> details partner lacp pdu:
+>>>>     system priority: 65535
+>>>>     system mac address: 00:00:00:00:00:00
+>>>>     oper key: 1
+>>>>     port priority: 255
+>>>>     port number: 1
+>>>>     port state: 1
+>>>>
+>>>> Thank you
+>>>> Zhengchao Shao
+>>>>
+>>>>
+>>>> On 2024/5/6 16:26, Zhu Yanjun wrote:
+>>>>> On 06.05.24 06:46, shaozhengchao wrote:
+>>>>>>
+>>>>>> When using the 5.10 kernel, I can find two IB devices using the 
+>>>>>> ibv_devinfo command.
+>>>>>> ----------------------------------
+>>>>>> [root@localhost ~]# lspci
+>>>>>> 91:00.0 Ethernet controller: Mellanox Technologies MT27800 Family 
+>>>>>> [ConnectX-5]
+>>>>>> 91:00.1 Ethernet controller: Mellanox Technologies MT27800 Family
+>>>>>> ----------------------------------
+>>>>>> [root@localhost ~]# ibv_devinfo
+>>>>>> hca_id: mlx5_0
+>>>>>>          transport:                      InfiniBand (0)
+>>>>>>          fw_ver:                         16.31.1014
+>>>>>>          node_guid:                      f41d:6b03:006f:4743
+>>>>>>          sys_image_guid:                 f41d:6b03:006f:4743
+>>>>>>          vendor_id:                      0x02c9
+>>>>>>          vendor_part_id:                 4119
+>>>>>>          hw_ver:                         0x0
+>>>>>>          board_id:                       HUA0000000004
+>>>>>>          phys_port_cnt:                  1
+>>>>>>                  port:   1
+>>>>>>                          state:                  PORT_ACTIVE (4)
+>>>>>>                          max_mtu:                4096 (5)
+>>>>>>                          active_mtu:             1024 (3)
+>>>>>>                          sm_lid:                 0
+>>>>>>                          port_lid:               0
+>>>>>>                          port_lmc:               0x00
+>>>>>>                          link_layer:             Ethernet
+>>>>>>
+>>>>>> hca_id: mlx5_1
+>>>>>>          transport:                      InfiniBand (0)
+>>>>>>          fw_ver:                         16.31.1014
+>>>>>>          node_guid:                      f41d:6b03:006f:4744
+>>>>>>          sys_image_guid:                 f41d:6b03:006f:4743
+>>>>>>          vendor_id:                      0x02c9
+>>>>>>          vendor_part_id:                 4119
+>>>>>>          hw_ver:                         0x0
+>>>>>>          board_id:                       HUA0000000004
+>>>>>>          phys_port_cnt:                  1
+>>>>>>                  port:   1
+>>>>>>                          state:                  PORT_ACTIVE (4)
+>>>>>>                          max_mtu:                4096 (5)
+>>>>>>                          active_mtu:             1024 (3)
+>>>>>>                          sm_lid:                 0
+>>>>>>                          port_lid:               0
+>>>>>>                          port_lmc:               0x00
+>>>>>>                          link_layer:             Ethernet
+>>>>>> ----------------------------------
+>>>>>> But after the two network ports are bonded, only one IB device is
+>>>>>> available, and only PF0 can be used.
+>>>>>> [root@localhost shaozhengchao]# ibv_devinfo
+>>>>>> hca_id: mlx5_bond_0
+>>>>>>          transport:                      InfiniBand (0)
+>>>>>>          fw_ver:                         16.31.1014
+>>>>>>          node_guid:                      f41d:6b03:006f:4743
+>>>>>>          sys_image_guid:                 f41d:6b03:006f:4743
+>>>>>>          vendor_id:                      0x02c9
+>>>>>>          vendor_part_id:                 4119
+>>>>>>          hw_ver:                         0x0
+>>>>>>          board_id:                       HUA0000000004
+>>>>>>          phys_port_cnt:                  1
+>>>>>>                  port:   1
+>>>>>>                          state:                  PORT_ACTIVE (4)
+>>>>>>                          max_mtu:                4096 (5)
+>>>>>>                          active_mtu:             1024 (3)
+>>>>>>                          sm_lid:                 0
+>>>>>>                          port_lid:               0
+>>>>>>                          port_lmc:               0x00
+>>>>>>                          link_layer:             Ethernet
+>>>>>>
+>>>>>> The current Linux mainline driver is the same.
+>>>>>>
+>>>>>> I found the comment ("If bonded, we do not add an IB device for 
+>>>>>> PF1.")
+>>>>>> in the mlx5_lag_intf_add function of the 5.10 branch driver code.
+>>>>>
+>>>>> Not sure if rdma lag is enabled for this or not. /proc/net/bonding 
+>>>>> will provide more more details normally.
+>>>>>
+>>>>> Zhu Yanjun
+>>>>>
+>>>>>> This indicates that wthe the same NIC is used, only PF0 support 
+>>>>>> bonding?
+>>>>>> Are there any other constraints, when enable bonding with CX5?
+>>>>>>
+>>>>>> Thank you
+>>>>>> Zhengchao Shao
+>>>>>
+> 
 
