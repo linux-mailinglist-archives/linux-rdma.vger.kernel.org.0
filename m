@@ -1,216 +1,100 @@
-Return-Path: <linux-rdma+bounces-2310-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-2313-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 784B78BDEFF
-	for <lists+linux-rdma@lfdr.de>; Tue,  7 May 2024 11:53:44 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id C64E78BDF65
+	for <lists+linux-rdma@lfdr.de>; Tue,  7 May 2024 12:07:25 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2F0FC28284B
-	for <lists+linux-rdma@lfdr.de>; Tue,  7 May 2024 09:53:43 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 284FEB250CE
+	for <lists+linux-rdma@lfdr.de>; Tue,  7 May 2024 10:07:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3159E14E2FA;
-	Tue,  7 May 2024 09:53:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b="mEeKrAF3"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7A5DC14EC4A;
+	Tue,  7 May 2024 10:07:12 +0000 (UTC)
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9E07114D714;
-	Tue,  7 May 2024 09:53:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=13.77.154.182
+Received: from mail-ej1-f53.google.com (mail-ej1-f53.google.com [209.85.218.53])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C865314E2FA;
+	Tue,  7 May 2024 10:07:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1715075609; cv=none; b=giKzW4xj90vukoVxA9HoSekTu5AyR7wnkswafakTis1O6Eaw6zMsp/l9+o4r9/QrucT6RvSvnZgyKg46m+2wN3A1VtI686BKchXtSMgdTt+KHvht4FnKcvf+r0JRYnc0Zxyrv6tApAxNpfa8CgSHJU9E5F35UwVXYtGDqK/hAjI=
+	t=1715076432; cv=none; b=EiQDLBUXDi9iaxtNmqdk0oHBnfeha8vJ4tSyEEogJOu0QhsgS0Lj4DRBk0GQZPizf++Yl9YUBvQ9OVStIPMqZm5KBYY8cyF9wNJWoIhkWGE3RBMvoOaqvciorA2kqtqQomk8RgJGP4yI9bxbAEnoYXSL5V6omBOz3oTc1i0ccMg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1715075609; c=relaxed/simple;
-	bh=aATkdZwAVIo+8tSFMb3c+jbnvPRsopOiumaKJVmkTx0=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References; b=GTqf+H0+HIBUWQwgv4wxVClNPJVFXOAA6ONmE8ldhD+Xsn0ZgT3znnh9jx6wtB1s63scrw61GNJsTFOTgyOE+JczZVTnFlB8zc958Cu9v5t5sDp9z8hNEKNusZ6TEboSIL7PzNz6xqH5Cz04viKrc4bpl68z1SF1BmieXG+LGgc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com; spf=pass smtp.mailfrom=linux.microsoft.com; dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b=mEeKrAF3; arc=none smtp.client-ip=13.77.154.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.microsoft.com
-Received: from linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net (linux.microsoft.com [13.77.154.182])
-	by linux.microsoft.com (Postfix) with ESMTPSA id 152DF20B2C87;
-	Tue,  7 May 2024 02:53:21 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 152DF20B2C87
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-	s=default; t=1715075601;
-	bh=6cDFGREVj/+/FKPys8Z2I4DttGj2j6tW05XiRyEcBbg=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=mEeKrAF3sucvuxY+Kx18L91z+faPDJHLArVHuF+6JRLit0GELI+s/nJp9TbeLGNqG
-	 t77ze5dtOc4T0LwE+z0z7zZovRy+ikDuznQQRSdMQaUug9gmaYbXIDyEnW8gihZXRi
-	 zZls66ROVJsHlRQHMPwaLqk5wbGpZ53c31kio32E=
-From: Konstantin Taranov <kotaranov@linux.microsoft.com>
-To: kotaranov@microsoft.com,
-	sharmaajay@microsoft.com,
-	longli@microsoft.com,
-	jgg@ziepe.ca,
-	leon@kernel.org
-Cc: linux-rdma@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH rdma-next 3/3] RDMA/mana_ib: Modify QP state
-Date: Tue,  7 May 2024 02:53:15 -0700
-Message-Id: <1715075595-24470-4-git-send-email-kotaranov@linux.microsoft.com>
-X-Mailer: git-send-email 1.8.3.1
-In-Reply-To: <1715075595-24470-1-git-send-email-kotaranov@linux.microsoft.com>
-References: <1715075595-24470-1-git-send-email-kotaranov@linux.microsoft.com>
+	s=arc-20240116; t=1715076432; c=relaxed/simple;
+	bh=S7omKV9kOMCmdCuTu6dz7wlUE+c8m51RsRDdwQ2VgNY=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=FdpHuA547MVk+Axufaad0Y/vR4SMO+uLZoYGNBB2bL+kFWoNpXyY+psnuqbxKJhmKyAEgC2ifFuBJLNsNlXNQbr6Akr7efP6fGjB/zpes/4iC12/BHdVv0qnVw6VzW8REgYXTQGDBs4Z45S33xhyQv1K2+W7sNNy9X8arV1ZvhQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=debian.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.218.53
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=debian.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ej1-f53.google.com with SMTP id a640c23a62f3a-a59ece5e18bso129326466b.2;
+        Tue, 07 May 2024 03:07:09 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1715076428; x=1715681228;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=YXoVtGhI6zkYKaNS7ndbrEmy/g3ybw+z//AryJkqLgM=;
+        b=I6duP6x4yt09LDQk75jgUtfbmqW4QiBMszAGr0GLtK5G6gHGyi64xi9fNZW7EfN6iQ
+         vcOSGbeqknms6l4auUdvmx+uHLeeHglvARF6K8YtEZG6dbBpR/xtO1YLtZ6dpqf1/B90
+         c45E5PZ42UDCw3eq6dmqvFiXph+EltciGzfqE7/LQ1p8PPNQjqsDPn1MvCXW9Zx2d4Kb
+         ae9T70Ig7t8v9Ihqa3kKDtjki6K0t82Bv5q/o8vZCQ0lPZYsrIyhVxPs6Gl1KPBzEX1B
+         t7GmOyaDzamz3f1anRbHVy7LEpSmX72JDQ9sMcUGyQ2QgRGnijheRUK8T4h13t/0vC9v
+         sr2w==
+X-Forwarded-Encrypted: i=1; AJvYcCVYQZyViu8SS2F8ZdqK21w4Re0t3GiATWo1w20vqzw+itR78WzBLkXwkUXnNHyM2iZ+rjbxLzwYUdKYNWTKaNhovlE7Ee2HByHQ1lg1rkrMlhnlyN6ylwlDamqNXTXwT41BVkaTXCfnk8pIDjNBztXOUBQgBjoych7k4FGBvP1Gbw==
+X-Gm-Message-State: AOJu0YywBEBLqoBhaN73bsl2Lv+/UB+cNxw6vtSn57MMbpuLp5ZlZJPs
+	ePmYgiSSUEczM+t8aylRPgoS2uMzUgPlFd5CRO8bpiMKyygGrvkJpj3JOg==
+X-Google-Smtp-Source: AGHT+IEEbaozK4NAuVJcdD+Du1WTr36eoSupIvJ1svJ8Z+Vst9GF+gREZCyMJdd56oz0ver9O/hNQw==
+X-Received: by 2002:a17:906:b149:b0:a59:c3a5:4df0 with SMTP id bt9-20020a170906b14900b00a59c3a54df0mr7105921ejb.4.1715076427836;
+        Tue, 07 May 2024 03:07:07 -0700 (PDT)
+Received: from gmail.com (fwdproxy-lla-119.fbsv.net. [2a03:2880:30ff:77::face:b00c])
+        by smtp.gmail.com with ESMTPSA id p12-20020a1709060e8c00b00a59a8f595ebsm4007272ejf.192.2024.05.07.03.07.07
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 07 May 2024 03:07:07 -0700 (PDT)
+Date: Tue, 7 May 2024 03:07:05 -0700
+From: Breno Leitao <leitao@debian.org>
+To: Leon Romanovsky <leon@kernel.org>
+Cc: Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
+	Jason Gunthorpe <jgg@ziepe.ca>, netdev@vger.kernel.org,
+	"open list:HFI1 DRIVER" <linux-rdma@vger.kernel.org>,
+	open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH net-next 1/2] IB/hfi1: Do not use custom stat allocator
+Message-ID: <Zjn9ScolCtJV+ZCp@gmail.com>
+References: <20240503111333.552360-1-leitao@debian.org>
+ <20240505141032.GE68202@unreal>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240505141032.GE68202@unreal>
 
-From: Konstantin Taranov <kotaranov@microsoft.com>
+Hello Leon,
 
-Implement modify QP state for RC QPs.
+On Sun, May 05, 2024 at 05:10:32PM +0300, Leon Romanovsky wrote:
+> On Fri, May 03, 2024 at 04:13:31AM -0700, Breno Leitao wrote:
+> > With commit 34d21de99cea9 ("net: Move {l,t,d}stats allocation to core and
+> > convert veth & vrf"), stats allocation could be done on net core
+> > instead of in this driver.
+> > 
+> > With this new approach, the driver doesn't have to bother with error
+> > handling (allocation failure checking, making sure free happens in the
+> > right spot, etc). This is core responsibility now.
+> > 
+> > Remove the allocation in the hfi1 driver and leverage the network
+> > core allocation instead.
+> > 
+> > Signed-off-by: Breno Leitao <leitao@debian.org>
+> > ---
+> >  drivers/infiniband/hw/hfi1/ipoib_main.c | 19 +++----------------
+> >  1 file changed, 3 insertions(+), 16 deletions(-)
+> 
+> Please use rdma-next in the PATCH subject line, when sending patches for RDMA.
 
-Signed-off-by: Konstantin Taranov <kotaranov@microsoft.com>
----
- drivers/infiniband/hw/mana/mana_ib.h | 37 ++++++++++++++
- drivers/infiniband/hw/mana/qp.c      | 72 +++++++++++++++++++++++++++-
- 2 files changed, 107 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/infiniband/hw/mana/mana_ib.h b/drivers/infiniband/hw/mana/mana_ib.h
-index 5cccbe3..d29dee7 100644
---- a/drivers/infiniband/hw/mana/mana_ib.h
-+++ b/drivers/infiniband/hw/mana/mana_ib.h
-@@ -140,6 +140,7 @@ enum mana_ib_command_code {
- 	MANA_IB_DESTROY_CQ      = 0x30009,
- 	MANA_IB_CREATE_RC_QP    = 0x3000a,
- 	MANA_IB_DESTROY_RC_QP   = 0x3000b,
-+	MANA_IB_SET_QP_STATE	= 0x3000d,
- };
- 
- struct mana_ib_query_adapter_caps_req {
-@@ -286,6 +287,42 @@ struct mana_rnic_destroy_rc_qp_resp {
- 	struct gdma_resp_hdr hdr;
- }; /* HW Data */
- 
-+struct mana_ib_ah_attr {
-+	u8 src_addr[16];
-+	u8 dest_addr[16];
-+	u8 src_mac[ETH_ALEN];
-+	u8 dest_mac[ETH_ALEN];
-+	u8 src_addr_type;
-+	u8 dest_addr_type;
-+	u8 hop_limit;
-+	u8 traffic_class;
-+	u16 src_port;
-+	u16 dest_port;
-+	u32 reserved;
-+};
-+
-+struct mana_rnic_set_qp_state_req {
-+	struct gdma_req_hdr hdr;
-+	mana_handle_t adapter;
-+	mana_handle_t qp_handle;
-+	u64 attr_mask;
-+	u32 qp_state;
-+	u32 path_mtu;
-+	u32 rq_psn;
-+	u32 sq_psn;
-+	u32 dest_qpn;
-+	u32 max_dest_rd_atomic;
-+	u32 retry_cnt;
-+	u32 rnr_retry;
-+	u32 min_rnr_timer;
-+	u32 reserved;
-+	struct mana_ib_ah_attr ah_attr;
-+}; /* HW Data */
-+
-+struct mana_rnic_set_qp_state_resp {
-+	struct gdma_resp_hdr hdr;
-+}; /* HW Data */
-+
- static inline struct gdma_context *mdev_to_gc(struct mana_ib_dev *mdev)
- {
- 	return mdev->gdma_dev->gdma_context;
-diff --git a/drivers/infiniband/hw/mana/qp.c b/drivers/infiniband/hw/mana/qp.c
-index 14e6adb..5393b6f 100644
---- a/drivers/infiniband/hw/mana/qp.c
-+++ b/drivers/infiniband/hw/mana/qp.c
-@@ -492,11 +492,79 @@ int mana_ib_create_qp(struct ib_qp *ibqp, struct ib_qp_init_attr *attr,
- 	return -EINVAL;
- }
- 
-+static int mana_ib_gd_modify_qp(struct ib_qp *ibqp, struct ib_qp_attr *attr,
-+				int attr_mask, struct ib_udata *udata)
-+{
-+	struct mana_ib_dev *mdev = container_of(ibqp->device, struct mana_ib_dev, ib_dev);
-+	struct mana_ib_qp *qp = container_of(ibqp, struct mana_ib_qp, ibqp);
-+	struct mana_rnic_set_qp_state_resp resp = {};
-+	struct mana_rnic_set_qp_state_req req = {};
-+	struct gdma_context *gc = mdev_to_gc(mdev);
-+	struct mana_port_context *mpc;
-+	struct net_device *ndev;
-+	int err;
-+
-+	mana_gd_init_req_hdr(&req.hdr, MANA_IB_SET_QP_STATE, sizeof(req), sizeof(resp));
-+	req.hdr.dev_id = gc->mana_ib.dev_id;
-+	req.adapter = mdev->adapter_handle;
-+	req.qp_handle = qp->qp_handle;
-+	req.qp_state = attr->qp_state;
-+	req.attr_mask = attr_mask;
-+	req.path_mtu = attr->path_mtu;
-+	req.rq_psn = attr->rq_psn;
-+	req.sq_psn = attr->sq_psn;
-+	req.dest_qpn = attr->dest_qp_num;
-+	req.max_dest_rd_atomic = attr->max_dest_rd_atomic;
-+	req.retry_cnt = attr->retry_cnt;
-+	req.rnr_retry = attr->rnr_retry;
-+	req.min_rnr_timer = attr->min_rnr_timer;
-+	if (attr_mask & IB_QP_AV) {
-+		ndev = mana_ib_get_netdev(&mdev->ib_dev, ibqp->port);
-+		if (!ndev) {
-+			ibdev_dbg(&mdev->ib_dev, "Invalid port %u in RC QP %u\n",
-+				  ibqp->port, ibqp->qp_num);
-+			return -EINVAL;
-+		}
-+		mpc = netdev_priv(ndev);
-+		copy_in_reverse(req.ah_attr.src_mac, mpc->mac_addr, ETH_ALEN);
-+		copy_in_reverse(req.ah_attr.dest_mac, attr->ah_attr.roce.dmac, ETH_ALEN);
-+		copy_in_reverse(req.ah_attr.src_addr, attr->ah_attr.grh.sgid_attr->gid.raw,
-+				sizeof(union ib_gid));
-+		copy_in_reverse(req.ah_attr.dest_addr, attr->ah_attr.grh.dgid.raw,
-+				sizeof(union ib_gid));
-+		if (rdma_gid_attr_network_type(attr->ah_attr.grh.sgid_attr) == RDMA_NETWORK_IPV4) {
-+			req.ah_attr.src_addr_type = SGID_TYPE_IPV4;
-+			req.ah_attr.dest_addr_type = SGID_TYPE_IPV4;
-+		} else {
-+			req.ah_attr.src_addr_type = SGID_TYPE_IPV6;
-+			req.ah_attr.dest_addr_type = SGID_TYPE_IPV6;
-+		}
-+		req.ah_attr.dest_port = ROCE_V2_UDP_DPORT;
-+		req.ah_attr.src_port = rdma_get_udp_sport(attr->ah_attr.grh.flow_label,
-+							  ibqp->qp_num, attr->dest_qp_num);
-+		req.ah_attr.traffic_class = attr->ah_attr.grh.traffic_class;
-+		req.ah_attr.hop_limit = attr->ah_attr.grh.hop_limit;
-+	}
-+
-+	err = mana_gd_send_request(gc, sizeof(req), &req, sizeof(resp), &resp);
-+	if (err) {
-+		ibdev_err(&mdev->ib_dev, "Failed modify qp err %d", err);
-+		return err;
-+	}
-+
-+	return 0;
-+}
-+
- int mana_ib_modify_qp(struct ib_qp *ibqp, struct ib_qp_attr *attr,
- 		      int attr_mask, struct ib_udata *udata)
- {
--	/* modify_qp is not supported by this version of the driver */
--	return -EOPNOTSUPP;
-+	switch (ibqp->qp_type) {
-+	case IB_QPT_RC:
-+		return mana_ib_gd_modify_qp(ibqp, attr, attr_mask, udata);
-+	default:
-+		ibdev_dbg(ibqp->device, "Modify QP type %u not supported", ibqp->qp_type);
-+		return -EOPNOTSUPP;
-+	}
- }
- 
- static int mana_ib_destroy_qp_rss(struct mana_ib_qp *qp,
--- 
-2.43.0
-
+Thanks for the heads-up. I will make sure I use rdma-next in the next RDMA patches.
 
