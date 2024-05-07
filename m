@@ -1,247 +1,241 @@
-Return-Path: <linux-rdma+bounces-2305-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-2306-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id EBE618BDA2D
-	for <lists+linux-rdma@lfdr.de>; Tue,  7 May 2024 06:27:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 5CE918BDCDD
+	for <lists+linux-rdma@lfdr.de>; Tue,  7 May 2024 10:02:43 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9FC00282A05
-	for <lists+linux-rdma@lfdr.de>; Tue,  7 May 2024 04:27:36 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 12D33283AB0
+	for <lists+linux-rdma@lfdr.de>; Tue,  7 May 2024 08:02:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C73174EB55;
-	Tue,  7 May 2024 04:27:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9222613C8FB;
+	Tue,  7 May 2024 08:02:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b="BSWB6Yrn"
+	dkim=pass (1024-bit key) header.d=samsung.com header.i=@samsung.com header.b="OaCt/I82"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-yw1-f178.google.com (mail-yw1-f178.google.com [209.85.128.178])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mailout1.w1.samsung.com (mailout1.w1.samsung.com [210.118.77.11])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E7F003FB9F
-	for <linux-rdma@vger.kernel.org>; Tue,  7 May 2024 04:27:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4E9EC13C825;
+	Tue,  7 May 2024 08:02:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=210.118.77.11
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1715056052; cv=none; b=f8LXKVUY3ojnLpiWRQgDX/m5+31qPcpFaNGO3wMPkn4VOD6Na+5XHZfRPkxOcwT3JZRbn7ciglOFXFEBMGBGNCfj55itDfPZwG7/oizya9qc/KHNOo3yIeao8XFXQwINtPdhgb/3sVPf9vXPfUn4d/1W2VKhrsScedf7hwtZUW8=
+	t=1715068952; cv=none; b=ZxUnZ3PGcJ4s4/sVnCJmRfqnR4icuARsY2jq/HffYbth7X7E3fZy/R69vIT0QOPEVKSFbKcDF+E+Iorm2V9iYBZ0qvJNhzWJf1ZYMmmMhwuGa+I7qJT+RX/0wIeNMQRnsQ//IFzknRfkjn0DIn8eFF2iBBBg0KNbpAdTEg0G/HM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1715056052; c=relaxed/simple;
-	bh=BSeystm3ldadPrVy1VyG82D3O0eTM/Co0DFGLJwyOLU=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=f2FJlLkMgA/itUqAKHUaxvj7jkoLTLSaNeKOtRFUPy57zb5BGtu5esxUC2UPag2rTHUxhCunYnAdJrG/qHnUerFhtCLWkUn/EsvX8D40Il/MwvJdi6RBG32rT38beh3I2RVsT2oG0MULlN3jDVvyX7AS/KsmQuvzpvhd/987ZbQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com; spf=fail smtp.mailfrom=broadcom.com; dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b=BSWB6Yrn; arc=none smtp.client-ip=209.85.128.178
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=broadcom.com
-Received: by mail-yw1-f178.google.com with SMTP id 00721157ae682-61bee45d035so30724507b3.1
-        for <linux-rdma@vger.kernel.org>; Mon, 06 May 2024 21:27:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google; t=1715056050; x=1715660850; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=IMV9C5vRujxGZw+l7TW7ViQZO+kvgzpIi0TzfXsNv2s=;
-        b=BSWB6YrnuNUIMdkNOk86nIA6wecDrd33RRAUxiuRlaqZFlCb2pqjLhsy3a2T3xWlIp
-         bcIJfLnlwbz9TpZm7Oddau/Wv7fmVF6H6liwN4YWf0pvaMXFe/kAM/R3grmFSD/OScBw
-         PdDQQorxXKqU+hPCQ590LrwLFiXYF67GZgFL0=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1715056050; x=1715660850;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=IMV9C5vRujxGZw+l7TW7ViQZO+kvgzpIi0TzfXsNv2s=;
-        b=nJVnG18se7nVDPZDrhoULcfYLiQG5gRwkGRbnkG0gi/GuS3zn9wkdVruQ6KgpEvtcw
-         ZF/prn6ohQzo+foGTx/B/VHLulh8qVXY+HGLUme1/pkQXDmKXIGiIYJ+7TANF5ivVG5D
-         oOkMJAkhk64hUN4Ddc7ErnaMJPfJyVIWRuLIj5z35gVhKnwzwpRV8J2Zsc+WrlH5x6w0
-         GMmTGNX2AIqLXnttJZDZpKRdsFNe1agbFcstf1q7FiBUWQN1tIyNUqeIoJSRuxTx2sWu
-         cDC706yO3CoumMkGT/92OnNNVyj0hst4vMNcuxoPO6LWoCX/ZjwwWcF85g0Wf5cjT3lu
-         XwyQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUeKvTwg+YlGBV06RG3tYJ+5wT/+ORXYviDj4wrrtU+m+oNnkKefBc0+tS3cVauONvE9k1d+VoIvkgtXybCuXhSFcsKiynX8x7nyA==
-X-Gm-Message-State: AOJu0YxssUkoPpsdjHhqNj5lLiyS3wX8MljghOrs9gQSf3XQElMAcgGZ
-	jKr/xwsB+RVaJ3GGkPM3nfEObqOjct+saCpikP7BywDp36nEzTQHejFyuH/968D8hE95FPX4wTz
-	x2c7I8jrnOuRY4C1PbiEd5GwecPPD7zroLsIY
-X-Google-Smtp-Source: AGHT+IEXomlLvnnrH8TAYKgLbq41ThayccjijPdupIZhVzsftNvL1w3F0y7dX47DMzkJQxoPx5LOHtdKWzV2YKOM9O4=
-X-Received: by 2002:a25:d090:0:b0:de5:bc2e:4706 with SMTP id
- h138-20020a25d090000000b00de5bc2e4706mr12314225ybg.18.1715056049728; Mon, 06
- May 2024 21:27:29 -0700 (PDT)
+	s=arc-20240116; t=1715068952; c=relaxed/simple;
+	bh=eVuJaWmf6K+6Q7+mij6ttOAXRmIGKtXLtFRjx9VCUhU=;
+	h=Date:From:To:CC:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition:In-Reply-To:References; b=t1uRzGdm3g52b1uewkew8SMc+PjjwmPrZYlxhrqkTp0OQmYrKnR4CuwYQsBQ3T+MiDT/ix22xexGFmM+g5h86ixOPJ8Xf5wUJ0NopiSF6nsBg6Myb2QEhJ6oFtVT8DLfEzCqqEBakQ1Wxi2yMX6G76bp2N2NqaIZc/jiSoz9dRE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=samsung.com; spf=pass smtp.mailfrom=samsung.com; dkim=pass (1024-bit key) header.d=samsung.com header.i=@samsung.com header.b=OaCt/I82; arc=none smtp.client-ip=210.118.77.11
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=samsung.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=samsung.com
+Received: from eucas1p1.samsung.com (unknown [182.198.249.206])
+	by mailout1.w1.samsung.com (KnoxPortal) with ESMTP id 20240507080226euoutp01ffb1c9ea68a4ba254d5e06cfea0a15ef~NJh6jrufP1475714757euoutp01N;
+	Tue,  7 May 2024 08:02:26 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.w1.samsung.com 20240507080226euoutp01ffb1c9ea68a4ba254d5e06cfea0a15ef~NJh6jrufP1475714757euoutp01N
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+	s=mail20170921; t=1715068946;
+	bh=bM6BO+kXomYK6wu5Oe2x75rmz5FGAnqZz6OZvwI6EI8=;
+	h=Date:From:To:CC:Subject:In-Reply-To:References:From;
+	b=OaCt/I8263CIse6EAHirslaA+XjPx3S99X0Lnu+QkIer/c0VKj8SFlQ3zGajYKMOr
+	 LYHYoCwD/OM250G6eDa95qO5w5nzjQVjBgP5yR0c7DVdlluAmL+6rTNVU6/ftVtthh
+	 whD4dNzZqSg6CHoctLNTdfvbH/llcfrspgm6hywo=
+Received: from eusmges2new.samsung.com (unknown [203.254.199.244]) by
+	eucas1p1.samsung.com (KnoxPortal) with ESMTP id
+	20240507080225eucas1p100839565bf9accbaa12bd4b6d3ce75ea~NJh6UAr6t1360813608eucas1p1P;
+	Tue,  7 May 2024 08:02:25 +0000 (GMT)
+Received: from eucas1p2.samsung.com ( [182.198.249.207]) by
+	eusmges2new.samsung.com (EUCPMTA) with SMTP id F5.3E.09875.110E9366; Tue,  7
+	May 2024 09:02:25 +0100 (BST)
+Received: from eusmtrp1.samsung.com (unknown [182.198.249.138]) by
+	eucas1p2.samsung.com (KnoxPortal) with ESMTPA id
+	20240507080225eucas1p2ecd684015a8497b39ba48a3cbf7ff117~NJh5t9EE63198231982eucas1p2j;
+	Tue,  7 May 2024 08:02:25 +0000 (GMT)
+Received: from eusmgms2.samsung.com (unknown [182.198.249.180]) by
+	eusmtrp1.samsung.com (KnoxPortal) with ESMTP id
+	20240507080225eusmtrp1c4d5b256ccf9962d4d861eb6994c583a~NJh5r3Gwh1695816958eusmtrp1e;
+	Tue,  7 May 2024 08:02:25 +0000 (GMT)
+X-AuditID: cbfec7f4-131ff70000002693-73-6639e011d550
+Received: from eusmtip1.samsung.com ( [203.254.199.221]) by
+	eusmgms2.samsung.com (EUCPMTA) with SMTP id 9F.32.09010.010E9366; Tue,  7
+	May 2024 09:02:24 +0100 (BST)
+Received: from CAMSVWEXC02.scsc.local (unknown [106.1.227.72]) by
+	eusmtip1.samsung.com (KnoxPortal) with ESMTPA id
+	20240507080224eusmtip1557a07acc6af3e10765745c779036cca~NJh5VdlXv1570615706eusmtip19;
+	Tue,  7 May 2024 08:02:24 +0000 (GMT)
+Received: from localhost (106.110.32.44) by CAMSVWEXC02.scsc.local
+	(2002:6a01:e348::6a01:e348) with Microsoft SMTP Server (TLS) id 15.0.1497.2;
+	Tue, 7 May 2024 09:02:24 +0100
+Date: Tue, 7 May 2024 10:02:19 +0200
+From: Joel Granados <j.granados@samsung.com>
+To: Dan Carpenter <dan.carpenter@linaro.org>
+CC: Sabrina Dubroca <sd@queasysnail.net>, "David S. Miller"
+	<davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, Jakub Kicinski
+	<kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, Alexander Aring
+	<alex.aring@gmail.com>, Stefan Schmidt <stefan@datenfreihafen.org>, Miquel
+	Raynal <miquel.raynal@bootlin.com>, David Ahern <dsahern@kernel.org>,
+	Steffen Klassert <steffen.klassert@secunet.com>, Herbert Xu
+	<herbert@gondor.apana.org.au>, Matthieu Baerts <matttbe@kernel.org>, Mat
+	Martineau <martineau@kernel.org>, Geliang Tang <geliang@kernel.org>, Remi
+	Denis-Courmont <courmisch@gmail.com>, Allison Henderson
+	<allison.henderson@oracle.com>, David Howells <dhowells@redhat.com>, Marc
+	Dionne <marc.dionne@auristor.com>, Marcelo Ricardo Leitner
+	<marcelo.leitner@gmail.com>, Xin Long <lucien.xin@gmail.com>, Wenjia Zhang
+	<wenjia@linux.ibm.com>, Jan Karcher <jaka@linux.ibm.com>, "D. Wythe"
+	<alibuda@linux.alibaba.com>, Tony Lu <tonylu@linux.alibaba.com>, Wen Gu
+	<guwen@linux.alibaba.com>, Trond Myklebust
+	<trond.myklebust@hammerspace.com>, Anna Schumaker <anna@kernel.org>, Chuck
+	Lever <chuck.lever@oracle.com>, Jeff Layton <jlayton@kernel.org>, Neil Brown
+	<neilb@suse.de>, Olga Kornievskaia <kolga@netapp.com>, Dai Ngo
+	<Dai.Ngo@oracle.com>, Tom Talpey <tom@talpey.com>, Jon Maloy
+	<jmaloy@redhat.com>, Ying Xue <ying.xue@windriver.com>, Martin Schiller
+	<ms@dev.tdt.de>, Pablo Neira Ayuso <pablo@netfilter.org>, Jozsef Kadlecsik
+	<kadlec@netfilter.org>, Florian Westphal <fw@strlen.de>, Roopa Prabhu
+	<roopa@nvidia.com>, Nikolay Aleksandrov <razor@blackwall.org>, Simon Horman
+	<horms@verge.net.au>, Julian Anastasov <ja@ssi.bg>, Joerg Reuter
+	<jreuter@yaina.de>, Luis Chamberlain <mcgrof@kernel.org>, Kees Cook
+	<keescook@chromium.org>, <netdev@vger.kernel.org>,
+	<linux-kernel@vger.kernel.org>, <dccp@vger.kernel.org>,
+	<linux-wpan@vger.kernel.org>, <mptcp@lists.linux.dev>,
+	<linux-hams@vger.kernel.org>, <linux-rdma@vger.kernel.org>,
+	<rds-devel@oss.oracle.com>, <linux-afs@lists.infradead.org>,
+	<linux-sctp@vger.kernel.org>, <linux-s390@vger.kernel.org>,
+	<linux-nfs@vger.kernel.org>, <tipc-discussion@lists.sourceforge.net>,
+	<linux-x25@vger.kernel.org>, <netfilter-devel@vger.kernel.org>,
+	<coreteam@netfilter.org>, <bridge@lists.linux.dev>,
+	<lvs-devel@vger.kernel.org>
+Subject: Re: [PATCH net-next v6 8/8] ax.25: x.25: Remove the now superfluous
+ sentinel elements from ctl_table array
+Message-ID: <20240507080219.xp6m5lyx5mt655yg@joelS2.panther.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <1714795819-12543-1-git-send-email-selvin.xavier@broadcom.com>
- <1714795819-12543-3-git-send-email-selvin.xavier@broadcom.com> <20240506174701.GG901876@ziepe.ca>
-In-Reply-To: <20240506174701.GG901876@ziepe.ca>
-From: Selvin Xavier <selvin.xavier@broadcom.com>
-Date: Tue, 7 May 2024 09:57:17 +0530
-Message-ID: <CA+sbYW0VZ-tnHGkB=nod7M-aOXryORpWrvV2CKN0F_tjEE9+JA@mail.gmail.com>
-Subject: Re: [PATCH for-next 2/2] RDMA/bnxt_re: Expose the MSN table
- capability for user library
-To: Jason Gunthorpe <jgg@ziepe.ca>
-Cc: leon@kernel.org, linux-rdma@vger.kernel.org, 
-	andrew.gospodarek@broadcom.com
-Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
-	boundary="000000000000a43cf20617d59a4b"
+Content-Type: multipart/signed; micalg="pgp-sha512";
+	protocol="application/pgp-signature"; boundary="3yuuqqhcvvnk6kqm"
+Content-Disposition: inline
+In-Reply-To: <21f76a94-1b35-4cf7-914d-e341848b0b9e@moroto.mountain>
+X-ClientProxiedBy: CAMSVWEXC01.scsc.local (2002:6a01:e347::6a01:e347) To
+	CAMSVWEXC02.scsc.local (2002:6a01:e348::6a01:e348)
+X-Brightmail-Tracker: H4sIAAAAAAAAA2WTfUxTVxjGc+5HW5l1l0rmibow+XCGOZDNyGumDqdzN/vDmBjDhku0wysw
+	obAWlGHYqtCiINhZB5MRQFwAWykMoYAfjHQIWipgRAVSUCqFrIKiUL4EOup1mcn++z3v+zw5
+	5znJEZESrWi5KFqWwMll0hgfgQdlbJ5u/9Dz0caD69QNa8GkDIH+axk0KNPUBKjqXRQYL2QS
+	4OodImCuPp2Esf4hGgqLLwtgtEAlhPz2NArmHmQK4OnxlxQYrqgIsDfbhGDM0iPQH7dSUDs0
+	KYBMx0pIrXEiGDhto6GzZFQA0yU6ITx02iiYzn4LzmWkEmDJjIW63gEKOozZNGjMwXC/tpeA
+	u1fyBdDR2ErDoCmLAs35VBLsRU9osGpLKGi8XojAVvGMgNTCFySkjj0mYaashYa2LBcJeQYd
+	CV0aO4K/0htosFQcF8JEwU0SrhcqKWguegc0BjMFE63DCHKH75FgHncR0HZ5jIax/DXQ5V5q
+	y6oJuHpySgjV7d+BecZMwOPJIQG4uj6FYxajMHQr22NzkuzTtluILbh0lP1NeYdiZ6YD2OqL
+	3QSb2eQg2fq8XiFrbPRni6oS2VnTH0K2SndSwFrvXxOw9f0bWU1xI2Iv//7TLp9wj00HuJjo
+	w5w8aMt+j6ixM6fo+D5JUl6ak1Cik0wGEokwsx5XVa7JQB4iCVOGcJqqkeLFOMIWXRfKQIsW
+	xBjC15uxm92BDmUPzZtKEbaWVb5OLJg6KmpIXlQhfPFEsdAdoRg/PGfPJdwsYNbi9mEr6Wav
+	BZ6f075Kk8yvEqxuqHwVWMok4tIn6a9MYiYUG+c6Ec+e+Na5AcrNJJOE1UOFpLsEyazApfMi
+	Ny5ituHaRm/+pquw80IfxXMKNlf3EO6jMHN7MbbU3BXwi+34dP3Ua16KHS3VQp5X4lbtKYoP
+	aBH+c35UyAs9wiXHnATv+gSndQ68TmzFt62XEP+qS3DXiCd/zyX4jDGX5MdifEIt4d2rsb5v
+	mNIg37w3muW90Szvv2b8eC0uuvpC8L/xB7jk/BOS583YYHhGFSGhDi3jEhWxkZziIxl3JFAh
+	jVUkyiIDI+Jiq9DCX22dbxmvQ6WO54EmRIiQCfkthG2V+g60nJLFyTgfL/GN9JCDEvEB6Q/J
+	nDxunzwxhlOY0AoR5bNM7H/Am5MwkdIE7hDHxXPyf7eEaNFyJRFtarb4lE+rAjflhK1b7L83
+	e/GeI/cLftHcDDvq7bgxW3vP76X2q7aBVSObN6SnhOdHT20c16RIApqP1nXSE8nEZOjHTNbb
+	Tbq/40JinOej5+32nX2D3ttyRgpco+9t6XPc0YfdpXwnvNSf28qdG1RZ629Wdv/o+OLbU00z
+	DwMCuyVh4oioZNm+d59/86BhX35w+B5i74TfHO6ZHIioMNgyU2y7YncMzqo99lvjRx/t3lxV
+	m13XOh3hX786yVLT/f7PsxU54b7lLLfrs4czQQkh7NT6kaHRs9uTvXU76Ud3iO6zK2Xm4O8T
+	Arq+HG5J397/tdfu0PjYIP/nh8Tyw7fveR6qsfpQiihpcAApV0j/AfPhAtomBQAA
+X-Brightmail-Tracker: H4sIAAAAAAAAA2WTe0yTZxTG836XtkjYPlvdvjAStUrGmKuU6+kiTIMun4FETZguGAeNFpFB
+	iy1lTiMrFERbL0WjjMsAwZWbKwpYBBWxOhyVAWbCmBQcBcQpE5CLgpautVlmsv9+eZ7zPO/J
+	mxwOzr3I9uTslaZI5FJxIp+1iLi7cKf/E+pPUZzfZNtaMKlCYPCahgRV5mEMshrtBBjLtBjY
+	+0cxsDVm4zA1OEpCcWkdCyaKsthQ2JlJgO13LQueZbwiwNCUhcFIq5UNxuPVCKozLAQ0jL5g
+	gfaJF6gvzyAYPmkl4b5+ggVz+io2PJyxEjB3wh3yNGoM2rVJcKV/mIAu4wkSdGYh9DT0Y/Bb
+	UyELulrukvDIdJwA3Tk1DiMlT0mwnNYT0HK9GIG1ZhwDdfFzHNRTQzjMV9whoeO4HYd8QxUO
+	vboRBLeym0lor8lgw2zRLzhcL1YR0FryHugMZgJm744hyB3rxsE8bcego26KhKlCH+h1mqcr
+	6jG4evQlG+o7E8A8b8Zg6MUoC+y9n0F6u5G9bj3zwDqDM8862hBTdOEgU6C6RzDzc75MfeUf
+	GKO9/QRnGvP72YyxxZspqVUyr02X2Ext1VEWY+m5xmIaB0WMrrQFMXXnv9vCjxaslcuUKZLl
+	8TJFSih/hxD8BUIRCPwDRQJhQMjOT/2D+GvC1u6WJO5NlcjXhMUK4sd708lkC3f/1K3vkQpl
+	UxrkxqGpQLpL9YDUoEUcLvUjoke7O9guw4u+NN1NuphHv+7RsFxDk4i+XaXBnAaXqkX0dQM4
+	maBW0baR3Dc6i1pNd45ZcCcvcfCC7TThDOPUWS59uSn9TSuPUtLlT7PfDHlQ62ij7T5yvfAY
+	o39NP4O5jMV0W94w4WScSqXHtEOO9TgO/oAuX+A40Y0KpxtalrkWXUHPlA0QLj5ET9keIR3i
+	5b9VlP9WUf5/RS7Zl+5d+Av7n/wxrT/3FHdxKG0wjBMliF2FlkiUiqQ9SQp/gUKcpFBK9wh2
+	yZJqkeNcjK1z9VdQ5ZNJgQlhHGRCqxxJ68XqLuRJSGVSCX+Jx8/ZIXFcj93ibw9I5LIYuTJR
+	ojChIMcv5uCeS3fJHLcnTYkRBvsFCQODRX5BouAA/vsem5KPiLnUHnGK5GuJJFki/zeHcdw8
+	VVhkSE91843glvTYF7LdvDXtKSEFpsEPbbc0oY/TloYpVpZ/nlDcwBdEugtg483MyLjHgZur
+	th9LU9hvxu64GV62/svQnQurovdHRjetDFN+EV6nS8sciDpjjzzYd+NqVEJfwaWjc+6pgZHh
+	MRnn9cf2Hdl1T7/lUMXWh8RwfE118/xXvMrGFX05PN7JjXu9/M7+VLrNEmzRbN4Q/oP3clNT
+	j89S2WTupmcbvlGfLD8RO+0dPPD3hc5li3n7uZyovEcRUq8yi8fsBImtrLxqSojAV2+NCChM
+	zOS/0/XuQXOa1bYtJ8D3QWU3P8/nQHeS1Kx/fnj75KvGl7J9fZxTH23QJidwvd35hCJeLPTF
+	5QrxP3FAyGDDBAAA
+X-CMS-MailID: 20240507080225eucas1p2ecd684015a8497b39ba48a3cbf7ff117
+X-Msg-Generator: CA
+X-RootMTR: 20240501131616eucas1p28a33eeb55f6c084a0751e5b7b7d91d78
+X-EPHeader: CA
+CMS-TYPE: 201P
+X-CMS-RootMailID: 20240501131616eucas1p28a33eeb55f6c084a0751e5b7b7d91d78
+References: <20240501-jag-sysctl_remset_net-v6-0-370b702b6b4a@samsung.com>
+	<20240501-jag-sysctl_remset_net-v6-8-370b702b6b4a@samsung.com>
+	<CGME20240501131616eucas1p28a33eeb55f6c084a0751e5b7b7d91d78@eucas1p2.samsung.com>
+	<ZjJAikcdWzzaIr1s@hog> <20240503121811.fsmriwsgugzm2o7i@joelS2.panther.com>
+	<21f76a94-1b35-4cf7-914d-e341848b0b9e@moroto.mountain>
 
---000000000000a43cf20617d59a4b
-Content-Type: text/plain; charset="UTF-8"
+--3yuuqqhcvvnk6kqm
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-On Mon, May 6, 2024 at 11:17=E2=80=AFPM Jason Gunthorpe <jgg@ziepe.ca> wrot=
-e:
->
-> On Fri, May 03, 2024 at 09:10:19PM -0700, Selvin Xavier wrote:
-> > Expose the MSN table capability to the user space. Rename
-> > the current macro as the driver/library is allocating the
-> > table based on the MSN capability reported by FW.
-> >
-> > Signed-off-by: Selvin Xavier <selvin.xavier@broadcom.com>
-> > ---
-> >  drivers/infiniband/hw/bnxt_re/ib_verbs.c | 3 +++
-> >  include/uapi/rdma/bnxt_re-abi.h          | 2 +-
-> >  2 files changed, 4 insertions(+), 1 deletion(-)
-> >
-> > diff --git a/drivers/infiniband/hw/bnxt_re/ib_verbs.c b/drivers/infinib=
-and/hw/bnxt_re/ib_verbs.c
-> > index ce9c5ba..d261b09 100644
-> > --- a/drivers/infiniband/hw/bnxt_re/ib_verbs.c
-> > +++ b/drivers/infiniband/hw/bnxt_re/ib_verbs.c
-> > @@ -4201,6 +4201,9 @@ int bnxt_re_alloc_ucontext(struct ib_ucontext *ct=
-x, struct ib_udata *udata)
-> >       if (rdev->pacing.dbr_pacing)
-> >               resp.comp_mask |=3D BNXT_RE_UCNTX_CMASK_DBR_PACING_ENABLE=
-D;
-> >
-> > +     if (_is_host_msn_table(rdev->qplib_res.dattr->dev_cap_flags2))
-> > +             resp.comp_mask |=3D BNXT_RE_UCNTX_CMASK_MSN_TABLE_ENABLED=
-;
-> > +
-> >       if (udata->inlen >=3D sizeof(ureq)) {
-> >               rc =3D ib_copy_from_udata(&ureq, udata, min(udata->inlen,=
- sizeof(ureq)));
-> >               if (rc)
-> > diff --git a/include/uapi/rdma/bnxt_re-abi.h b/include/uapi/rdma/bnxt_r=
-e-abi.h
-> > index c0c34ac..e61104f 100644
-> > --- a/include/uapi/rdma/bnxt_re-abi.h
-> > +++ b/include/uapi/rdma/bnxt_re-abi.h
-> > @@ -55,7 +55,7 @@ enum {
-> >       BNXT_RE_UCNTX_CMASK_WC_DPI_ENABLED =3D 0x04ULL,
-> >       BNXT_RE_UCNTX_CMASK_DBR_PACING_ENABLED =3D 0x08ULL,
-> >       BNXT_RE_UCNTX_CMASK_POW2_DISABLED =3D 0x10ULL,
-> > -     BNXT_RE_COMP_MASK_UCNTX_HW_RETX_ENABLED =3D 0x40,
-> > +     BNXT_RE_UCNTX_CMASK_MSN_TABLE_ENABLED =3D 0x40,
->
-> Wah? How can you rename this bit in the uapi?
->
-> Looks really strange, userspace is even using this constant.
->
-> Please explain in detail what is going on here in the commit message. :\
+On Fri, May 03, 2024 at 06:23:14PM +0300, Dan Carpenter wrote:
+> On Fri, May 03, 2024 at 02:18:11PM +0200, Joel Granados wrote:
+> > On Wed, May 01, 2024 at 03:15:54PM +0200, Sabrina Dubroca wrote:
+> > > 2024-05-01, 11:29:32 +0200, Joel Granados via B4 Relay wrote:
+> > > > From: Joel Granados <j.granados@samsung.com>
+> > > > diff --git a/net/ax25/ax25_ds_timer.c b/net/ax25/ax25_ds_timer.c
+> > > > index c4f8adbf8144..c50a58d9e368 100644
+> > > > --- a/net/ax25/ax25_ds_timer.c
+> > > > +++ b/net/ax25/ax25_ds_timer.c
+> > > > @@ -55,6 +55,7 @@ void ax25_ds_set_timer(ax25_dev *ax25_dev)
+> > > >  	ax25_dev->dama.slave_timeout =3D
+> > > >  		msecs_to_jiffies(ax25_dev->values[AX25_VALUES_DS_TIMEOUT]) / 10;
+> > > >  	mod_timer(&ax25_dev->dama.slave_timer, jiffies + HZ);
+> > > > +	return;
+> > >=20
+> > > nit: return not needed here since we're already at the bottom of the
+> > > function, but probably not worth a repost of the series.
+> > >=20
+> > Thx. I will not repost, but I have changed them locally so they are
+> > there in case a V7 is required.
+> >=20
+>=20
+> It's a checkpatch.pl -f warning so we probably will want to fix it
+> eventually.
 
-BNXT_RE_COMP_MASK_UCNTX_HW_RETX_ENABLED was introduced to share the HW
-retransmit capability between driver and lib. The main difference in
-implementation for HW Retransmit support is the usage of MSN table or
-PSN table . When HW retrans is enabled, HW expects MSN table to be
-allocated by driver/lib, else PSN table (for older adapters). So when
-FW started exposing the MSN capability as a new field, we can actually
-depend on the new field instead of HW Retrasns capability. For
-adapters which support HW_RETX feature, MSN table capability will be
-set. For older adapters, this value will be 0  (to maintain backward
-compatibility with older FW).  I renamed the UAPI just to capture the
-correct name of the HW capability that driver/library is interested
-in.
+According to [1] the patchset has already been applied. So I'll just
+send another patch for it to be applied on top.
 
-I pushed an rdma-core PR [1] also with the associated change. Even if
-an older version of library is using
-BNXT_RE_COMP_MASK_UCNTX_HW_RETX_ENABLED, it doesn't affect the
-functionality and this is reason for renaming and not defining a new
-UAPI.  If you feel that I should totally avoid this UAPI change, will
-add a new comp mask and leave the current value unused.
+Thx for pointing this out.
 
-Thanks
 
-[1] https://github.com/linux-rdma/rdma-core/pull/1457
->
-> Jason
+[1] https://patchwork.kernel.org/project/netdevbpf/patch/20240501-jag-sysct=
+l_remset_net-v6-1-370b702b6b4a@samsung.com/
+--=20
 
---000000000000a43cf20617d59a4b
-Content-Type: application/pkcs7-signature; name="smime.p7s"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment; filename="smime.p7s"
-Content-Description: S/MIME Cryptographic Signature
+Joel Granados
 
-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
-FYMZp2DojLAq9f4Oi2OBetbnWxo0WGycXpmq/jC4PUx2u9mazQ79i80VLagGRshWniESXuf+SYG8
-+zBimjld9ZZnwm7itHAZdtme4YYFxx+EHa4PUxPV8t+hPHhsiIjirPa1pVXPbQIDAQABo4IB2zCC
-AdcwDgYDVR0PAQH/BAQDAgWgMIGjBggrBgEFBQcBAQSBljCBkzBOBggrBgEFBQcwAoZCaHR0cDov
-L3NlY3VyZS5nbG9iYWxzaWduLmNvbS9jYWNlcnQvZ3NnY2NyM3BlcnNvbmFsc2lnbjJjYTIwMjAu
-Y3J0MEEGCCsGAQUFBzABhjVodHRwOi8vb2NzcC5nbG9iYWxzaWduLmNvbS9nc2djY3IzcGVyc29u
-YWxzaWduMmNhMjAyMDBNBgNVHSAERjBEMEIGCisGAQQBoDIBKAowNDAyBggrBgEFBQcCARYmaHR0
-cHM6Ly93d3cuZ2xvYmFsc2lnbi5jb20vcmVwb3NpdG9yeS8wCQYDVR0TBAIwADBJBgNVHR8EQjBA
-MD6gPKA6hjhodHRwOi8vY3JsLmdsb2JhbHNpZ24uY29tL2dzZ2NjcjNwZXJzb25hbHNpZ24yY2Ey
-MDIwLmNybDAlBgNVHREEHjAcgRpzZWx2aW4ueGF2aWVyQGJyb2FkY29tLmNvbTATBgNVHSUEDDAK
-BggrBgEFBQcDBDAfBgNVHSMEGDAWgBSWM9HmWBdbNHWKgVZk1b5I3qGPzzAdBgNVHQ4EFgQU3TaH
-dsgUhTW3LwObmZ20fj+8Xj8wDQYJKoZIhvcNAQELBQADggEBAAbt6Sptp6ZlTnhM2FDhkVXks68/
-iqvfL/e8wSPVdBxOuiP+8EXGLV3E72KfTTJXMbkcmFpK2K11poBDQJhz0xyOGTESjXNnN6Eqq+iX
-hQtF8xG2lzPq8MijKI4qXk5Vy5DYfwsVfcF0qJw5AhC32nU9uuIPJq8/mQbZfqmoanV/yadootGr
-j1Ze9ndr+YDXPpCymOsynmmw0ErHZGGW1OmMpAEt0A+613glWCURLDlP8HONi1wnINV6aDiEf0ad
-9NMGxDsp+YWiRXD3txfo2OMQbpIxM90QfhKKacX8t1J1oAAWxDrLVTJBXBNvz5tr+D1sYwuye93r
-hImmkM1unboxggJtMIICaQIBATBrMFsxCzAJBgNVBAYTAkJFMRkwFwYDVQQKExBHbG9iYWxTaWdu
-IG52LXNhMTEwLwYDVQQDEyhHbG9iYWxTaWduIEdDQyBSMyBQZXJzb25hbFNpZ24gMiBDQSAyMDIw
-Agxy+Cu4x/7lM0zxY7cwDQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIEIJ8O0UAswcAB
-/7nf5UUMZI2gIXORpd2XLNCECEl4A5qsMBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZI
-hvcNAQkFMQ8XDTI0MDUwNzA0MjczMFowaQYJKoZIhvcNAQkPMVwwWjALBglghkgBZQMEASowCwYJ
-YIZIAWUDBAEWMAsGCWCGSAFlAwQBAjAKBggqhkiG9w0DBzALBgkqhkiG9w0BAQowCwYJKoZIhvcN
-AQEHMAsGCWCGSAFlAwQCATANBgkqhkiG9w0BAQEFAASCAQAK0Fb2JnOudqX8kfY2IeKpz+wTQB6r
-l2GRb/OH2YcGfaxDhXlOo1ZaYCAQIui8f58N4LhpvF1zhBvW89v+3ju+VEPZfHMYY+P1qMdYvvWz
-pz3Fxb2/IIqgppb9NuINHGP1TAZSKuBmHVdBtg/PUXndJ/5uHDrq6hKax/uuDnsEFmOwXQOflbcM
-IauRKu8XRvUMaX9rO56V+tnEG99jPqy249IaKqNvcoHTYPaeoo5LIeJSFDX46W8TM/H7ZkoTOJei
-7z7g3xhYvYSjA/9e8x2PRvhZMMcMj2DuQn2EXa2J0IGOBONnOCWm6AUAl6QyierIn5yvPLhJteaW
-/kRTskM6
---000000000000a43cf20617d59a4b--
+--3yuuqqhcvvnk6kqm
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQGzBAABCgAdFiEErkcJVyXmMSXOyyeQupfNUreWQU8FAmY54AoACgkQupfNUreW
+QU9Dbgv+Op/tVXQJ7NdTua64j7NUxRCzHsjHQRU3hdSkupwQI/OaUY7bGGoodczt
+iNNg2J0Y0JSmRdASM/aOD7s7SaOxFKiYEe+2VsUZz/BzFO2Y2v3NI2RiwnSQh4wi
+kEJJfiJnfq3F5Kmie/WyXxmzU/2oSKFykgNJ11RddJnduusi+dU5l6qCymKxRjZg
+SX5SB1waJpZkGTnuevMNqF/GWr9DK1kAAU6OBKZO/lUneHDGag6yX3qPbKZJslJZ
+s16Z/mlzepR8cxQH3beDzfirydf2IlOH8HZh4WVH76mloTq2lQknnkdcqi+18eP1
+PE8600acZK1jILUXHGxMpMkLM1PAWARbwV2NWpdv1eFt2t1BEap/sVfaSy03EJpx
+LluZY7QlJy2LQs4alGQmme51crtM0ej6zbEF/MjTgPC5rtdsaKYxm8AUqMUTpZXK
+9seDYkN4LcV0sAb8ckQgOEfnNnDEezQ2koX8si4S1g4d7SZaGkNTpC/56oH4zk6T
+wbHvE20c
+=sLD8
+-----END PGP SIGNATURE-----
+
+--3yuuqqhcvvnk6kqm--
 
