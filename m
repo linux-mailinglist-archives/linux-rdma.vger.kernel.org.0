@@ -1,88 +1,93 @@
-Return-Path: <linux-rdma+bounces-2324-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-2325-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4A89A8BE946
-	for <lists+linux-rdma@lfdr.de>; Tue,  7 May 2024 18:39:17 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7D2AB8BE972
+	for <lists+linux-rdma@lfdr.de>; Tue,  7 May 2024 18:43:39 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id CB9C41F277BF
-	for <lists+linux-rdma@lfdr.de>; Tue,  7 May 2024 16:39:16 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0D405292BE8
+	for <lists+linux-rdma@lfdr.de>; Tue,  7 May 2024 16:43:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EBD0616D316;
-	Tue,  7 May 2024 16:34:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2451C16C6B2;
+	Tue,  7 May 2024 16:38:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b="a3W4cEA+"
+	dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b="B+KWgLH6"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-qk1-f169.google.com (mail-qk1-f169.google.com [209.85.222.169])
+Received: from mail-oi1-f171.google.com (mail-oi1-f171.google.com [209.85.167.171])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 408BB15FA70
-	for <linux-rdma@vger.kernel.org>; Tue,  7 May 2024 16:34:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.169
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 73386200D2
+	for <linux-rdma@vger.kernel.org>; Tue,  7 May 2024 16:38:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1715099680; cv=none; b=iyiBi1j93a0rdD40qbhmIE1xH+lryJS5uJzoOQU/pK+E4CBmS6tyhDwYh6n4aNm0yTAEKCRh4DA/BMiUPUN+WAMRVfWSZAeulAe9BLdVObpsJaAKOc7HEearO/3w11WjQZo+zhbeJK6Es8jiDLJbYYyuFTuEQTj8DAamJ4TiWgk=
+	t=1715099882; cv=none; b=Ulaeo/3aibc0+rdSHWBicAoEBHNqd1hzh5qfWTtqEtpUUF0hdlTFMwtmSfLUkqDE0X0a2AipnPDfcgScCyzodab4VUZsGjGo44xz2Z/lRmyni6r/OU0jEyjvFplWhH8Zahgxd7W/J7+kauYCSt63FNA8ICdd8X2Sc/mUkFApDVs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1715099680; c=relaxed/simple;
-	bh=VxFzCgfUjGZkaIJq1NXJEvjtXKhGePeLgzFYgc7qqaU=;
+	s=arc-20240116; t=1715099882; c=relaxed/simple;
+	bh=LV19r+RdCbS6VdMILFArPFDoxtY76IPBUlNtwHHns6M=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=I0Uss53B31spVvvKjynExn1W4JmKHBKRZMgMqp6bOHxfhXyAguTPsn+X7TCckfJGBtUyhQ/JQCIeh1WasyNPYAHG5IAIgZUDporZbgxJtPBKNE5fdWyp+AOAVyA/OMh1P8CY3I4JisfgS3d3WkDr1Q7TAR8Yu8Q+1Q4jut6hdF8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca; spf=pass smtp.mailfrom=ziepe.ca; dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b=a3W4cEA+; arc=none smtp.client-ip=209.85.222.169
+	 Content-Type:Content-Disposition:In-Reply-To; b=sSJrSiQqCZ2DjuxeDBkMr4Ax4jIJt0JDxqkgaLOQXVbUKqVav7pmlzQdfL35me1XoqNFDMfADpNOJStxJfwfoToMi2O2czD3Z44rLHH8bR5LC21Dt1bF6mdZFRwWpDgM2qZElISxZfeZnFwjhBCK/Ee/1NVqXGBcg8uH708iS50=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca; spf=pass smtp.mailfrom=ziepe.ca; dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b=B+KWgLH6; arc=none smtp.client-ip=209.85.167.171
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ziepe.ca
-Received: by mail-qk1-f169.google.com with SMTP id af79cd13be357-7928c5cb63fso241733685a.1
-        for <linux-rdma@vger.kernel.org>; Tue, 07 May 2024 09:34:38 -0700 (PDT)
+Received: by mail-oi1-f171.google.com with SMTP id 5614622812f47-3c969fa8fd2so1502793b6e.1
+        for <linux-rdma@vger.kernel.org>; Tue, 07 May 2024 09:38:01 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google; t=1715099678; x=1715704478; darn=vger.kernel.org;
+        d=ziepe.ca; s=google; t=1715099880; x=1715704680; darn=vger.kernel.org;
         h=in-reply-to:content-transfer-encoding:content-disposition
          :mime-version:references:message-id:subject:cc:to:from:date:from:to
          :cc:subject:date:message-id:reply-to;
-        bh=uaTjuv9MHWZ7KfcpIF3FcH0nBlhF0D+YtiY2KzyAiNw=;
-        b=a3W4cEA+44D0OikCVUoxSO1xiMmF+v9BQ4MADcsbM36hUY8kejhFxoJJpc2/oTbFrB
-         va9t1NC7xjBESCBoyjB//fIzoYXRjPIXMLRdD6n9glfWgsg9UrafavfpyDadurtEfGws
-         F1Td4n9lfVx6zpMHvdhvCeBbzO06V82PYG7HZvbnwMuW/ZIq0AU52bNt14At2QyrxhLd
-         X0LCrdUqznbwICN7rYkUuD1Z1zIjU7F+dAEjqhL58LS8Jtp8o6aKqFh7nH7YaANuEQDz
-         mmdi+h1HqqDfqYYVaQvZywPIOzs23CUlkjOX8/vUWbKY2z6OFM6K/qP1gZCIb908jSiz
-         5cwg==
+        bh=Rq3E+hsLGSN+5MIZB3XZU6auyIYe/okJXkhSxXH/gFE=;
+        b=B+KWgLH6/PDddvOApWbzfxjWnqHUuVinyluVIAySRCKE6nNiOTwugbzQit6wuPIRxW
+         ORB1QltB2KajfvmRCuArb6/jZJ38dg0G5ItWpVNWomSDJeT4Izwrb8tPRQ9h0cZ1KtCp
+         AIcQ7yHw0f8uOSQn89Du94eAR2+Zcxm+O/vFYKKSrfuDr+xYg2yd9y3Wzeb014r8YBSM
+         SfkIHYxBWBeGS5H0kbdB9jGIi5KN8Xf0lXzP2GDSSWfWArKTKstnGvvbYWDQ8XYl2tp9
+         Ny7vcuBtlpauQXWaHSQKZ1vDSSjJbM7khaIwjZRV8nhkggMiXHSxwTcYy12BeFVCNkuX
+         yp3Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1715099678; x=1715704478;
+        d=1e100.net; s=20230601; t=1715099880; x=1715704680;
         h=in-reply-to:content-transfer-encoding:content-disposition
          :mime-version:references:message-id:subject:cc:to:from:date
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=uaTjuv9MHWZ7KfcpIF3FcH0nBlhF0D+YtiY2KzyAiNw=;
-        b=Rk7e6Z33SWbWaZZyhk0N05Kxtx+PlqeBab/GfIkUF7mxiODc33OnluJc0/IFhqAQrb
-         lsrT072domm3bYBQqCV2F5PyfoOmPrrtTfBg3XTc4zDW//Cs9XmfrJp/9T9oay2ZtCZA
-         t5xtyO/Q1+H9nB9KinDtlfCkN3xM2HAXIzC2hADp7OjSe5cad+aAizp0nPTSFQjHJzbT
-         nlFP1xMtAfZ0AJj9LWNdvXzoxFbs1ekA9G+4RPqLDCU3ra/hEfyEw5uNBnvhXLZWm4D0
-         wm2RMxH9HtQuWxxlzKifGA8fLDv7YuJ8q4i9dQZ3NuMQj17zeyFvjv+/L/1taZeJEJ1S
-         Waew==
-X-Forwarded-Encrypted: i=1; AJvYcCU+d1MAm1cCH08Vn1JevmaA1Xf+YGH4lhAAtlZ08iFvXGG33tWkbAYFP1YDNMacifzY/IQriXjkEmsxqz5SY5FZ2bOO4okDv9yTZQ==
-X-Gm-Message-State: AOJu0YzC6sy1wy4qjUl+ywo1aqyBcUxAsl1BhVSlPow3E/KxYOdzhTct
-	H9P8S+P0v1Y/0XcAsLFvykaDxSQoFCAC12Ym/LYUdu7yhIWKkzzEE0MfeOCKonw=
-X-Google-Smtp-Source: AGHT+IEPovxBbcDlMGC0HwOh/WHREsods4JskpCcFKaQSmxjoF4qX1hkbji7shRDgUaZL/8uSfAHMg==
-X-Received: by 2002:a05:620a:40c3:b0:790:77d4:5e7a with SMTP id af79cd13be357-792a6481e0bmr505548385a.20.1715099678153;
-        Tue, 07 May 2024 09:34:38 -0700 (PDT)
+        bh=Rq3E+hsLGSN+5MIZB3XZU6auyIYe/okJXkhSxXH/gFE=;
+        b=NqAMKgltjDmY0HnNnr9h7nhusyN8OgLDQWXZaSq+6Bej6JPnZ9HNgva2PA00D8zLFW
+         YjyKgOz96rjrau3Ow+GOrs+EIoAfFj2GqETjP8h4dUbb/Q8aB+gKRvQX2cPzwIUltqA4
+         MmfdD8ZaBouyvkxjd7ng3A26to6CxTJztJ05GudKIdvQGi76dudiiE+PBCnIgRnFK9jR
+         g4DuPbfl3jcEU/u5kHMwtliJln+JNg7wziXoEvYarsiMRq32Q31ntyGiA8I9rXgeMjwL
+         d0T2RetPlwD+s8z+c+/p+syM1MvCNwLtmrhO3S5BuqmS5ki0yZ3slWfj5pQWspO6bB7h
+         oW3Q==
+X-Forwarded-Encrypted: i=1; AJvYcCUL7L5R+1mK8xXidZX/mgM/WfTGwaLRdG5bnmlkAXx09zylvlOCBAN4aw4XeDblblQRC+qJ9mO9oaVBcIpmEW5EO8h9hnK7wwhtqw==
+X-Gm-Message-State: AOJu0YxwERFB4Qrlbg7uZIcN9aFkLl+ky/HTbwQZF4WqxkyzKl1OCVrp
+	IAK2NXumauKcQ6eQUP2kJtRUBugfZkKZFxtVWNYE4D5yRSwRA9bYe0PE1ZyDDTQ=
+X-Google-Smtp-Source: AGHT+IE2aO/S3bXjWgK34KH3T6cSRhii++OQmAOeSN/94L/Njsbgg11/GQF1S4tybMrwZYT6KHLiBA==
+X-Received: by 2002:a05:6808:8f7:b0:3c9:68d4:22a7 with SMTP id 5614622812f47-3c9852d2f46mr91679b6e.35.1715099880581;
+        Tue, 07 May 2024 09:38:00 -0700 (PDT)
 Received: from ziepe.ca (hlfxns017vw-142-68-80-239.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.68.80.239])
-        by smtp.gmail.com with ESMTPSA id os20-20020a05620a811400b0079282ce61fdsm4103806qkn.77.2024.05.07.09.34.37
+        by smtp.gmail.com with ESMTPSA id v2-20020a0cf902000000b0069b69c5f077sm4766905qvn.102.2024.05.07.09.37.59
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 07 May 2024 09:34:37 -0700 (PDT)
+        Tue, 07 May 2024 09:37:59 -0700 (PDT)
 Received: from jgg by wakko with local (Exim 4.95)
 	(envelope-from <jgg@ziepe.ca>)
-	id 1s4Nm0-0001VQ-QP;
-	Tue, 07 May 2024 13:34:36 -0300
-Date: Tue, 7 May 2024 13:34:36 -0300
+	id 1s4NpH-0001Wi-6r;
+	Tue, 07 May 2024 13:37:59 -0300
+Date: Tue, 7 May 2024 13:37:59 -0300
 From: Jason Gunthorpe <jgg@ziepe.ca>
-To: Selvin Xavier <selvin.xavier@broadcom.com>
-Cc: leon@kernel.org, linux-rdma@vger.kernel.org,
-	andrew.gospodarek@broadcom.com
-Subject: Re: [PATCH for-next 2/2] RDMA/bnxt_re: Expose the MSN table
- capability for user library
-Message-ID: <20240507163436.GE4718@ziepe.ca>
-References: <1714795819-12543-1-git-send-email-selvin.xavier@broadcom.com>
- <1714795819-12543-3-git-send-email-selvin.xavier@broadcom.com>
- <20240506174701.GG901876@ziepe.ca>
- <CA+sbYW0VZ-tnHGkB=nod7M-aOXryORpWrvV2CKN0F_tjEE9+JA@mail.gmail.com>
+To: Zhu Yanjun <yanjun.zhu@linux.dev>
+Cc: Konstantin Taranov <kotaranov@microsoft.com>,
+	Brian Baboch <brian.baboch@gmail.com>,
+	Leon Romanovsky <leon@kernel.org>,
+	"linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+	"stable@vger.kernel.org" <stable@vger.kernel.org>,
+	"florent.fourcot@wifirst.fr" <florent.fourcot@wifirst.fr>,
+	"brian.baboch@wifirst.fr" <brian.baboch@wifirst.fr>
+Subject: Re: Excessive memory usage when infiniband config is enabled
+Message-ID: <20240507163759.GF4718@ziepe.ca>
+References: <2b4f7f6e-9fe5-43a4-b62e-6e42be67d1d9@gmail.com>
+ <20240507112730.GB78961@unreal>
+ <8992c811-f8d9-4c95-8931-ee4a836d757e@gmail.com>
+ <PAXPR83MB0557451B4EA24A7D2800DF6AB4E42@PAXPR83MB0557.EURPRD83.prod.outlook.com>
+ <fa606d14-c35b-4d27-95fe-93e2192f1f52@linux.dev>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
@@ -92,75 +97,49 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <CA+sbYW0VZ-tnHGkB=nod7M-aOXryORpWrvV2CKN0F_tjEE9+JA@mail.gmail.com>
+In-Reply-To: <fa606d14-c35b-4d27-95fe-93e2192f1f52@linux.dev>
 
-On Tue, May 07, 2024 at 09:57:17AM +0530, Selvin Xavier wrote:
-> On Mon, May 6, 2024 at 11:17 PM Jason Gunthorpe <jgg@ziepe.ca> wrote:
-> >
-> > On Fri, May 03, 2024 at 09:10:19PM -0700, Selvin Xavier wrote:
-> > > Expose the MSN table capability to the user space. Rename
-> > > the current macro as the driver/library is allocating the
-> > > table based on the MSN capability reported by FW.
-> > >
-> > > Signed-off-by: Selvin Xavier <selvin.xavier@broadcom.com>
-> > > ---
-> > >  drivers/infiniband/hw/bnxt_re/ib_verbs.c | 3 +++
-> > >  include/uapi/rdma/bnxt_re-abi.h          | 2 +-
-> > >  2 files changed, 4 insertions(+), 1 deletion(-)
-> > >
-> > > diff --git a/drivers/infiniband/hw/bnxt_re/ib_verbs.c b/drivers/infiniband/hw/bnxt_re/ib_verbs.c
-> > > index ce9c5ba..d261b09 100644
-> > > --- a/drivers/infiniband/hw/bnxt_re/ib_verbs.c
-> > > +++ b/drivers/infiniband/hw/bnxt_re/ib_verbs.c
-> > > @@ -4201,6 +4201,9 @@ int bnxt_re_alloc_ucontext(struct ib_ucontext *ctx, struct ib_udata *udata)
-> > >       if (rdev->pacing.dbr_pacing)
-> > >               resp.comp_mask |= BNXT_RE_UCNTX_CMASK_DBR_PACING_ENABLED;
-> > >
-> > > +     if (_is_host_msn_table(rdev->qplib_res.dattr->dev_cap_flags2))
-> > > +             resp.comp_mask |= BNXT_RE_UCNTX_CMASK_MSN_TABLE_ENABLED;
-> > > +
-> > >       if (udata->inlen >= sizeof(ureq)) {
-> > >               rc = ib_copy_from_udata(&ureq, udata, min(udata->inlen, sizeof(ureq)));
-> > >               if (rc)
-> > > diff --git a/include/uapi/rdma/bnxt_re-abi.h b/include/uapi/rdma/bnxt_re-abi.h
-> > > index c0c34ac..e61104f 100644
-> > > --- a/include/uapi/rdma/bnxt_re-abi.h
-> > > +++ b/include/uapi/rdma/bnxt_re-abi.h
-> > > @@ -55,7 +55,7 @@ enum {
-> > >       BNXT_RE_UCNTX_CMASK_WC_DPI_ENABLED = 0x04ULL,
-> > >       BNXT_RE_UCNTX_CMASK_DBR_PACING_ENABLED = 0x08ULL,
-> > >       BNXT_RE_UCNTX_CMASK_POW2_DISABLED = 0x10ULL,
-> > > -     BNXT_RE_COMP_MASK_UCNTX_HW_RETX_ENABLED = 0x40,
-> > > +     BNXT_RE_UCNTX_CMASK_MSN_TABLE_ENABLED = 0x40,
-> >
-> > Wah? How can you rename this bit in the uapi?
-> >
-> > Looks really strange, userspace is even using this constant.
-> >
-> > Please explain in detail what is going on here in the commit message. :\
+On Tue, May 07, 2024 at 05:24:51PM +0200, Zhu Yanjun wrote:
+> 在 2024/5/7 15:32, Konstantin Taranov 写道:
+> > > Hello Leon,
+> > > 
+> > > I feel that it's a bug because I don't understand why is this module/option
+> > > allocating 6GB of RAM without any explicit configuration or usage from us.
+> > > It's also worth mentioning that we are using the default linux-image from
+> > > Debian bookworm, and it took us a long time to understand the reason
+> > > behind this memory increase by bisecting the kernel's config file.
+> > > Moreover the documentation of the module doesn't mention anything
+> > > regarding additional memory usage, we're talking about an increase of 6Gb
+> > > which is huge since we're not using the option.
+> > > So is that an expected behavior, to have this much increase in the memory
+> > > consumption, when activating the RDMA option even if we're not using it ? If
+> > > that's the case, perhaps it would be good to mention this in the
+> > > documentation.
+> > > 
+> > > Thank you
+> > > 
+> > 
+> > Hi Brian,
+> > 
+> > I do not think it is a bug. The high memory usage seems to come from these lines:
+> > 	rsrc_size = irdma_calc_mem_rsrc_size(rf);
+> > 	rf->mem_rsrc = vzalloc(rsrc_size);
 > 
-> BNXT_RE_COMP_MASK_UCNTX_HW_RETX_ENABLED was introduced to share the HW
-> retransmit capability between driver and lib. The main difference in
-> implementation for HW Retransmit support is the usage of MSN table or
-> PSN table . When HW retrans is enabled, HW expects MSN table to be
-> allocated by driver/lib, else PSN table (for older adapters). So when
-> FW started exposing the MSN capability as a new field, we can actually
-> depend on the new field instead of HW Retrasns capability. For
-> adapters which support HW_RETX feature, MSN table capability will be
-> set. For older adapters, this value will be 0  (to maintain backward
-> compatibility with older FW).  I renamed the UAPI just to capture the
-> correct name of the HW capability that driver/library is interested
-> in.
+> Exactly. The memory usage is related with the number of QP.
+> When on irdma, the Queue Pairs is 4092, Completion Queues is 8189, the
+> memory usage is about 4194302.
 > 
-> I pushed an rdma-core PR [1] also with the associated change. Even if
-> an older version of library is using
-> BNXT_RE_COMP_MASK_UCNTX_HW_RETX_ENABLED, it doesn't affect the
-> functionality and this is reason for renaming and not defining a new
-> UAPI.  If you feel that I should totally avoid this UAPI change, will
-> add a new comp mask and leave the current value unused.
+> The command "modprobe irdma limits_sel" will change QP numbers.
+> 0 means minimum, up to 124 QPs.
+> 
+> Please use the command "modprobe irdma limits_sel=0" to make tests.
+> Please let us know the test results.
 
-It is fine if it works, I asked you to decribe in detail the reasoning
-and outline why it is correct in the commit message.
+It seems like a really unfortunate design choice in this driver to not
+have dynamic memory allocation.
+
+Burning 6G on every server that has your HW, regardless if any RDMA
+apps are run, seems completely excessive.
 
 Jason
 
