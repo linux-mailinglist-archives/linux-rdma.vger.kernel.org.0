@@ -1,140 +1,178 @@
-Return-Path: <linux-rdma+bounces-2355-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-2356-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 830858C0572
-	for <lists+linux-rdma@lfdr.de>; Wed,  8 May 2024 22:17:27 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5DDA68C065F
+	for <lists+linux-rdma@lfdr.de>; Wed,  8 May 2024 23:40:12 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3F2B12812FE
-	for <lists+linux-rdma@lfdr.de>; Wed,  8 May 2024 20:17:26 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 808231C21629
+	for <lists+linux-rdma@lfdr.de>; Wed,  8 May 2024 21:40:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 60656131190;
-	Wed,  8 May 2024 20:17:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C2DCC13175F;
+	Wed,  8 May 2024 21:40:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="OSZyA/tB"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="XSZzpPqo"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wr1-f52.google.com (mail-wr1-f52.google.com [209.85.221.52])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1116E131183;
-	Wed,  8 May 2024 20:17:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D75898120C;
+	Wed,  8 May 2024 21:40:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1715199425; cv=none; b=aLbd8WPsstjTjZGQ/GUSLvw3uSkyI4LVRn6RzDXzmliLGEHFvyAq0hLk79gx6U/CVlKjqKTO5OOKMJGw5Wcjt98sSVzG5Q0OHqQA9dvzZzLCZ6tgNp6vk+wBRWt5hQodhCw7TOqa/nM8El+QfIRi05x1DYBQ4dukOfTHjyd68sA=
+	t=1715204406; cv=none; b=pJGqy5YTw76kO6LT9/7Bfq2RVY0YI1eYdEU04a4p9hKkkHxx5M+G7Eco+Gnum/fmIk47ChkFDclBqvTkFITx5q3krX9krm17e9t5Z5vmpP7iwYo5N+1knANTXwWTwxr8RRB7ZGwDsMPgSNpZ4TwU/NvZY6RrPg0fQJ+eKakAz5g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1715199425; c=relaxed/simple;
-	bh=AeePNuL7SFwUOG4gPSg8rwAm8IPCSABF4FYA1EDT90I=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=bVrTaJ82txG5Q7Jv5Zyw3s7BVZlRFhvMLQ3RcCuGwPFkOUaxtGGQW498PvPOl5oGxoZaBBIGHOaS+avYEGRRUBIDWrRNxSMyBgzBKPbkjI6aDWx/Nlr9JUh7Rk5wOmZpP7BQp7pPELf3Y33l7Iu2IL8vQKo8Fq7IyXjSqpN204w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=OSZyA/tB; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 13308C113CC;
-	Wed,  8 May 2024 20:16:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1715199424;
-	bh=AeePNuL7SFwUOG4gPSg8rwAm8IPCSABF4FYA1EDT90I=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=OSZyA/tB5lOjpS4LC/9SY0EU+oSR2ADLqzy+2Oxxm/z6SO+lSeYqArptx9zIchIXk
-	 UiNicWJF1t0rqW+/75aVsY9qju7Ua4/12VQZiJiUlaEiH4nP7dtm6m8nHPMJVkL/e7
-	 dT4l7ucoWkMp4DEZQmkg02x4F/I3bajuOdqHxt96PxG7vcQGPSxmIVSWWk4UWM2Npy
-	 5j8C7jHMtngGG50t8cy9/OfatYDYYOm8fCYKK5P4uKlv6Q2FcvJcfql94ojXTASiir
-	 Unt1u5D51eAHSMTj76PGlYkMWXCG+OJIRRO2EgobbMJJ0WcJKSBDeElVhnooiXnVGX
-	 evN2ku1af2CsA==
-Date: Wed, 8 May 2024 21:16:54 +0100
-From: Simon Horman <horms@kernel.org>
-To: Allen <allen.lkml@gmail.com>
-Cc: "Russell King (Oracle)" <linux@armlinux.org.uk>,
-	Allen Pais <apais@linux.microsoft.com>, netdev@vger.kernel.org,
-	jes@trained-monkey.org, davem@davemloft.net, edumazet@google.com,
-	kuba@kernel.org, pabeni@redhat.com, kda@linux-powerpc.org,
-	cai.huoqing@linux.dev, dougmill@linux.ibm.com, npiggin@gmail.com,
-	christophe.leroy@csgroup.eu, aneesh.kumar@kernel.org,
-	naveen.n.rao@linux.ibm.com, nnac123@linux.ibm.com,
-	tlfalcon@linux.ibm.com, cooldavid@cooldavid.org,
-	marcin.s.wojtas@gmail.com, mlindner@marvell.com,
-	stephen@networkplumber.org, nbd@nbd.name, sean.wang@mediatek.com,
-	Mark-MC.Lee@mediatek.com, lorenzo@kernel.org,
-	matthias.bgg@gmail.com, angelogioacchino.delregno@collabora.com,
-	borisp@nvidia.com, bryan.whitehead@microchip.com,
-	UNGLinuxDriver@microchip.com, louis.peens@corigine.com,
-	richardcochran@gmail.com, linux-rdma@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-acenic@sunsite.dk,
-	linux-arm-kernel@lists.infradead.org, linuxppc-dev@lists.ozlabs.org,
-	linux-mediatek@lists.infradead.org, oss-drivers@corigine.com,
-	linux-net-drivers@amd.com
-Subject: Re: [PATCH 1/1] [RFC] ethernet: Convert from tasklet to BH workqueue
-Message-ID: <20240508201654.GA2248333@kernel.org>
-References: <20240507190111.16710-1-apais@linux.microsoft.com>
- <20240507190111.16710-2-apais@linux.microsoft.com>
- <Zjp/kgBE2ddjV044@shell.armlinux.org.uk>
- <CAOMdWSKfkT4K9MAOn-rL44pycHPhVDj4CtiYkru5y_s0S-sPeQ@mail.gmail.com>
+	s=arc-20240116; t=1715204406; c=relaxed/simple;
+	bh=bzTGae9EOZKFKSew3VcSKUbgakBdZWZDUnv41Y1Gngo=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=cw8Jvs/UMWSz3DEKZJ9VtZSHhgD68ZpMaJRU+uEiUFCYu3ErAONPFfVxb/0hyD/aw18EaUbNiYpSxq4V5+AkAbeduEGgS1/LpqDNkr09U1xOrFfLTZc515Z1zhvCSbGnaZyVv2nYuWR/bP6kYFyhd2NjxlIn7zy5S9u7LsYsfJ4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=XSZzpPqo; arc=none smtp.client-ip=209.85.221.52
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wr1-f52.google.com with SMTP id ffacd0b85a97d-34c8592b8dbso145479f8f.3;
+        Wed, 08 May 2024 14:40:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1715204403; x=1715809203; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=7H9huRivbVATrO/WFy2nNVVcRmMBZKByEpYeYLII4SI=;
+        b=XSZzpPqoimJBx5nymUw+E0Pd7dPjRwqhDl/1PScnWP9GkPSbXG/apYPmuiBzdTDDgz
+         5rnFmwAw2/Vl2Jbbjw32S5yrsZOx50dtrOaIo/WbcY+0DN2x6bO8b1/xs1dnTt6Vl5Li
+         0nxMXF/xJajO6OTzpc4CuyP+L0WkAPqj3Btd37qm58pH0K9LIf1d8iHOs8Ru2jdbQgzO
+         kSS4nmmhKf0MUVb+O6eUzLBweI1Ei1Pm12Lmc7scruFf4+ZzfOvS9GDTvUInHi82M0FO
+         xFke0LB/ERlYKyzPEeqKqCxaQpMpk7Ej7o9WZKGA5/vfZqlbG4WNrxeWCa4vGu+ojjfV
+         5iiQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1715204403; x=1715809203;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=7H9huRivbVATrO/WFy2nNVVcRmMBZKByEpYeYLII4SI=;
+        b=lB+zTIHES1Gi7+ifDDw+5LUaHAVxSHDl3PJ3GGbgrRNyiT25/nKhsDV7hH/SHxg5uL
+         OlfG1Gl6ReRV/BumoVXE566+/RRWP5YpHo9tGEIAYFvXJNDuPxj9cVeaUc9H271hVgoM
+         SKkyc15z94jshogKT8zYsVcCtpicyec/FuRDzl66c7uxYiDi/2evUxx6GvDiVXyc8+Es
+         d6lFMRNZuCK0AC8I8/d7/6hgVDQywB7TYQ/ODcZtLjS92NiXPZ9VmlBKX8V/f8xbsHyl
+         tNRaw2zfmy+eSH8AI5ixI2Vn6yWPO4Suv5k8/BASWYeGQm5GU9wEgH55Jun25qCdWAbX
+         L7QQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVsxxroLYdGJZdZAtu+GOVaGRK97/SoZVlHHCoDspZ09Suiiw0/5ydLuNGZVqsbH/Pnn7jVtbgDdOePtWEt3L1ds6+2xMSu18M5rTpsSfU8RY533BLKpcaEacH1XnBoVhdDZOnjIQqUtELdwsRGcrEBM9odyYP+SUugMrtuOqYxYQ==
+X-Gm-Message-State: AOJu0YwchLUTAmyRglab514zMLRkfwkxuRNXUShVAoo3O+YE9yjcMyB7
+	kpC/aE3OW7DPN8uwTLVKDbpV4kJzw5GC6HlJDFq/gscvmiF9ZnlA
+X-Google-Smtp-Source: AGHT+IEDS631DxOEM4z9Cjs85wfPMT9p4IhcPBKOSJLFJraPYX0iLuE8yst8rmDozGgmppVRjVoVCg==
+X-Received: by 2002:a05:6000:b8e:b0:34d:12b4:a4b0 with SMTP id ffacd0b85a97d-34fca80d7bfmr3384321f8f.70.1715204402838;
+        Wed, 08 May 2024 14:40:02 -0700 (PDT)
+Received: from [172.27.51.192] ([193.47.165.251])
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-41f882085c5sm36021675e9.40.2024.05.08.14.40.00
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 08 May 2024 14:40:02 -0700 (PDT)
+Message-ID: <8678e62c-f33b-469c-ac6c-68a060273754@gmail.com>
+Date: Thu, 9 May 2024 00:40:01 +0300
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAOMdWSKfkT4K9MAOn-rL44pycHPhVDj4CtiYkru5y_s0S-sPeQ@mail.gmail.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH net-next 0/1] mlx5: Add netdev-genl queue stats
+To: Joe Damato <jdamato@fastly.com>, Jakub Kicinski <kuba@kernel.org>
+Cc: Zhu Yanjun <zyjzyj2000@gmail.com>, linux-kernel@vger.kernel.org,
+ netdev@vger.kernel.org, saeedm@nvidia.com, gal@nvidia.com,
+ nalramli@fastly.com, "David S. Miller" <davem@davemloft.net>,
+ Eric Dumazet <edumazet@google.com>, Leon Romanovsky <leon@kernel.org>,
+ "open list:MELLANOX MLX5 core VPI driver" <linux-rdma@vger.kernel.org>,
+ Paolo Abeni <pabeni@redhat.com>, Tariq Toukan <tariqt@nvidia.com>
+References: <20240503022549.49852-1-jdamato@fastly.com>
+ <c3f4f1a4-303d-4d57-ae83-ed52e5a08f69@linux.dev>
+ <ZjUwT_1SA9tF952c@LQ3V64L9R2> <20240503145808.4872fbb2@kernel.org>
+ <ZjV5BG8JFGRBoKaz@LQ3V64L9R2> <20240503173429.10402325@kernel.org>
+ <ZjkbpLRyZ9h0U01_@LQ3V64L9R2>
+Content-Language: en-US
+From: Tariq Toukan <ttoukan.linux@gmail.com>
+In-Reply-To: <ZjkbpLRyZ9h0U01_@LQ3V64L9R2>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Tue, May 07, 2024 at 12:27:10PM -0700, Allen wrote:
-> On Tue, May 7, 2024 at 12:23 PM Russell King (Oracle)
-> <linux@armlinux.org.uk> wrote:
-> >
-> > On Tue, May 07, 2024 at 07:01:11PM +0000, Allen Pais wrote:
-> > > The only generic interface to execute asynchronously in the BH context is
-> > > tasklet; however, it's marked deprecated and has some design flaws. To
-> > > replace tasklets, BH workqueue support was recently added. A BH workqueue
-> > > behaves similarly to regular workqueues except that the queued work items
-> > > are executed in the BH context.
-> > >
-> > > This patch converts drivers/ethernet/* from tasklet to BH workqueue.
-> >
-> > I doubt you're going to get many comments on this patch, being so large
-> > and spread across all drivers. I'm not going to bother trying to edit
-> > this down to something more sensible, I'll just plonk my comment here.
-> >
-> > For the mvpp2 driver, you're only updating a comment - and looking at
-> > it, the comment no longer reflects the code. It doesn't make use of
-> > tasklets at all. That makes the comment wrong whether or not it's
-> > updated. So I suggest rather than doing a search and replace for
-> > "tasklet" to "BH blahblah" (sorry, I don't remember what you replaced
-> > it with) just get rid of that bit of the comment.
-> >
+
+
+On 06/05/2024 21:04, Joe Damato wrote:
+> On Fri, May 03, 2024 at 05:34:29PM -0700, Jakub Kicinski wrote:
+>> On Fri, 3 May 2024 16:53:40 -0700 Joe Damato wrote:
+>>>> diff --git a/include/net/netdev_queues.h b/include/net/netdev_queues.h
+>>>> index c7ac4539eafc..f5d9f3ad5b66 100644
+>>>> --- a/include/net/netdev_queues.h
+>>>> +++ b/include/net/netdev_queues.h
+>>>> @@ -59,6 +59,8 @@ struct netdev_queue_stats_tx {
+>>>>    * statistics will not generally add up to the total number of events for
+>>>>    * the device. The @get_base_stats callback allows filling in the delta
+>>>>    * between events for currently live queues and overall device history.
+>>>> + * @get_base_stats can also be used to report any miscellaneous packets
+>>>> + * transferred outside of the main set of queues used by the networking stack.
+>>>>    * When the statistics for the entire device are queried, first @get_base_stats
+>>>>    * is issued to collect the delta, and then a series of per-queue callbacks.
+>>>>    * Only statistics which are set in @get_base_stats will be reported
+>>>>
+>>>>
+>>>> SG?
+>>>
+>>> I think that sounds good and makes sense, yea. By that definition, then I
+>>> should leave the PTP stats as shown above. If you agree, I'll add that
+>>> to the v2.
+>>
+>> Yup, agreed.
+>>
+>>> I feel like I should probably wait before sending a v2 with PTP included in
+>>> get_base_stats to see if the Mellanox folks have any hints about why rtnl
+>>> != queue stats on mlx5?
+>>>
+>>> What do you think?
+>>
+>> Very odd, the code doesn't appear to be doing any magic :S Did you try
+>> to print what the delta in values is? Does bringing the interface up and
+>> down affect the size of it?
 > 
->  Thank you Russell.
+> I booted the kernel which includes PTP stats in the base stats as you've
+> suggested (as shown in the diff in this thread) and I've brought the
+> interface down and back up:
 > 
->  I will get rid of the comment. If it helps, I can create a patch for each
-> driver. We did that in the past, with this series, I thought it would be
-> easier to apply one patch.
+> $ sudo ip link set dev eth0 down
+> $ sudo ip link set dev eth0 up
+> 
+> Re ran the test script, which includes some mild debugging print out I
+> added to show the delta for rx-packets (but I think all stats are off):
+> 
+>    # Exception| Exception: Qstats are lower, fetched later
+> 
+> key: rx-packets rstat: 1192281902 qstat: 1186755777
+> key: rx-packets rstat: 1192281902 qstat: 1186755781
+> 
+> So qstat is lower by (1192281902 - 1186755781) = 5,526,121
+> 
+> Not really sure why, but I'll take another look at the code this morning to
+> see if I can figure out what's going on.
+> 
+> I'm clearly doing something wrong or misunderstanding something about the
+> accounting that will seem extremely obvious in retrospect.
 
-Hi Allen and Russell,
+Hi Joe,
 
-My 2c worth:
+Thanks for your patch.
+Apologies for the late response. I was on PTO for some time.
 
-* In general non bug-fix patches for networking code should be targeted at
-  net-next. This means that they should include net-next in the subject,
-  and be based on that tree.
+ From first look the patch looks okay. The overall approach seems correct.
 
-  Subject: [PATCH net-next] ...
+The off-channels queues (like PTP) do not exist in default. So they are 
+out of the game unless you explicitly enables them.
 
-* This series does not appear to apply to net-next
+A possible reason for this difference is the queues included in the sum.
+Our stats are persistent across configuration changes, so they doesn't 
+reset when number of channels changes for example.
 
-* This series appears to depend on code which is not present in net-next.
-  f.e. disable_work_sync
+We keep stats entries for al ring indices that ever existed. Our driver 
+loops and sums up the stats for all of them, while the stack loops only 
+up to the current netdev->real_num_rx_queues.
 
-* The Infiniband patches should probably be submitted separately
-  to the relevant maintainers
-
-* As this patch seems to involve many non-trivial changes
-  it seems to me that it would be best to break it up somehow.
-  To allow proper review.
-
-* Patch-sets for net-next should be limited to 15 patches,
-  so perhaps multiple sequential batches would be a way forwards.
-
-Link: https://docs.kernel.org/process/maintainer-netdev.html
+Can this explain the diff here?
 
