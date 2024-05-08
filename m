@@ -1,255 +1,274 @@
-Return-Path: <linux-rdma+bounces-2331-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-2332-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id B061B8BECB4
-	for <lists+linux-rdma@lfdr.de>; Tue,  7 May 2024 21:37:09 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 64B518BF3B7
+	for <lists+linux-rdma@lfdr.de>; Wed,  8 May 2024 02:32:09 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 26886B250F0
-	for <lists+linux-rdma@lfdr.de>; Tue,  7 May 2024 19:37:07 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1AE8B281FC1
+	for <lists+linux-rdma@lfdr.de>; Wed,  8 May 2024 00:32:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 92A2B16D4FA;
-	Tue,  7 May 2024 19:37:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 08753399;
+	Wed,  8 May 2024 00:32:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b="QjDVnC31"
+	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="azMe9IoT"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-yb1-f178.google.com (mail-yb1-f178.google.com [209.85.219.178])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from NAM12-MW2-obe.outbound.protection.outlook.com (mail-mw2nam12on2061.outbound.protection.outlook.com [40.107.244.61])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C0C4516C690
-	for <linux-rdma@vger.kernel.org>; Tue,  7 May 2024 19:36:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.178
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1715110621; cv=none; b=lVwVwpceCyqDZ2o3eT1y99CvECeCvOq18NvX75B9lca6NZZsVHNxIvaY5Jh142VZKXlNEjuBGIvfm9E65qBZVfO2YpTWERWlvQnfxda5/0FDMUzZ4IxP1WgBxo/4qcyWddB7JqpIq0JlPS9sct4+EYMliyWjfzJmED+FLL2zynM=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1715110621; c=relaxed/simple;
-	bh=6li3TgtN8Tq0pPfW0a0zo5qSYqQduV4EvozlGa3kE2E=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=nI2B4hsJ2Y7uJ4vqn91g53ElXoSgLXLCm4DRJWGDfyuhlQFrg8caKP0EjA3Wgwkjb+TFhRMJSVVxLyGxXliJ66CyhzgXNMaL0UavR3z++YoS9gHll1OMUjsRE+K7wcAn0wSkOxlJiBcS9LK+VZUvffwUglagpR474VGQ0PscpYw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com; spf=fail smtp.mailfrom=broadcom.com; dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b=QjDVnC31; arc=none smtp.client-ip=209.85.219.178
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=broadcom.com
-Received: by mail-yb1-f178.google.com with SMTP id 3f1490d57ef6-dcc6fc978ddso105291276.0
-        for <linux-rdma@vger.kernel.org>; Tue, 07 May 2024 12:36:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google; t=1715110619; x=1715715419; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=CGNkK2c3GgSvVVZ28Myr0QXIYCkrfUYZbCvS+OjA4K8=;
-        b=QjDVnC31GKjbsDl1PcPsmGYMQ79y43itMCPqbANoUmtjGW6K2m3H3wAqC6fP++RyOj
-         AOtE2xoleXRx+Tv+Xk/Trtn64G6rqdzAo4x/OpDzDam1+qfZW5eoS0rdppX/278shAyH
-         BQo0PJj+6vybMx7BJ+MEIOBBXLyVfC7WNLzk8=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1715110619; x=1715715419;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=CGNkK2c3GgSvVVZ28Myr0QXIYCkrfUYZbCvS+OjA4K8=;
-        b=S/4bfZuxRM7vMJcSQwpAc5/pdlRkQXClglxk7hDJPaze8CEffk0sDgkSnLHgDdtJQv
-         3mluevc09OXUsKiFhog+2U7XzUpp3YvDPc2rLPhGhdd5XH2D969xFH72BoaoQ9ALOljE
-         qsv467HlehGUlr/tFVXHpK9VH8o5kW5o3QAQv8dHxB7TLqnESmwzJTvueuw4aoe8OCNw
-         U0CTQCTGPd2/XodkysfxOryBg6JgSxZEdk85vktGHt1X1GmFKmJnHNG45LGpsZlUKeTw
-         U+JdTQKVjz/yoPvN4l+iyVd7pS+Q8qLnVdS+kxLs66k5NH4aRt5HUPbVZrizDVkfUddG
-         G0PQ==
-X-Forwarded-Encrypted: i=1; AJvYcCVuMfM3nbk1P0I+GEBQBWI2UzACnNCSivKaeZT0hfgScJr657gJBq/lEzZ+D8lSEYPMB7ltm0u3Dnr+W+u/zJjHFXFPbYL/wyLz+g==
-X-Gm-Message-State: AOJu0YzK0nuGNCNoy+EyJ+hO9+XkXzq0K8rpWnBi55QGgpwPTm1tW6XF
-	zLnDqRGY7HIYSYwKLHmwCHT3eJUL/273CPj0uYPSSohhjnkghsK82j/Izv3yhvCV31IRnGkwHBR
-	TL+iWSimjHT+4VNVwqa/SDlgDsf9n9r5MYk5zwEDQb4BMFJNYFw==
-X-Google-Smtp-Source: AGHT+IHynnplDUlh7yKe04EMpbVpQwmVxfzBSVB/eajVZGGq51Pf2xUpKygk2fNnoXUSiaTUMhXHk1gn2EDTCxhZIB0=
-X-Received: by 2002:a25:d88c:0:b0:dda:c380:689e with SMTP id
- 3f1490d57ef6-deba31e005amr2798177276.4.1715110618654; Tue, 07 May 2024
- 12:36:58 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 18ECC387;
+	Wed,  8 May 2024 00:32:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.244.61
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1715128323; cv=fail; b=guLIrELpMfYVstEp0LCPdlBEtnaLu4L7nYmbvsBPGTJyL5vtEhNer/nEM8b+UvoGaWk+OZaguKh844VBHsuTDFpc/DO3tcIvDaIPswLyVw2INMB8/m19rgfloEVo5yqWeYMzg7OfjEwtqEGbAndJtQG/Vh6zbshzaMGhUFXZ0WU=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1715128323; c=relaxed/simple;
+	bh=4XyIl2oaiXGV4PgzKCZrb3txz2PHgNu0/F1LavPp7ic=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:Content-Type:
+	 Content-Disposition:In-Reply-To:MIME-Version; b=h45+Tac2rvJXQ8/1UJ8DdJHXVqBZmcomAhGobVBMRNtI2nObcRtk/O9nThXf4r4YV6UsYC5WI6iEZvL13qatjAUbKljl9X/I1uKqZHw7yBfRBgQj9wLoyrv8kPIERtMjDtZdxco52czpoe37noHpgAxZCUxDf3pxwdgKonZslwo=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=azMe9IoT; arc=fail smtp.client-ip=40.107.244.61
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=ls1fiy4eAqjRuZz4uoH2HWIzZhZpL3p+hFKpK3nFWd254nGzw/01+h3aNVyX/Ftd0Mfn0NcFudCZDjbuGHfmv3XCum1kZcU4RTzyrGoJN5xI0eAdVy7Qs9WDXc0YwzjlmAvzewJ8auGCfNANg6b9YhzEIyAzq7yRrJwN2nz5abSgf0M9XbEknAtPQ0UKTY4sthQFWNXAiF8brzoP3LbySHtb6rFYw08b33eJQ42pYXXs0mgPSV44mLnVumMXmTiXu2KSKxUZ41S9FbTz0ovOKDdFlHSFarfctUrNrpUws+IjLUq3bUqRAv1m7FzFdCkSxvMaLq/PO/c7s7wX0qL0Qw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=tHi5GOuwaOsan8doJX76CFShJQRqMQuKL5RsNiq7BmQ=;
+ b=AoqIpjWJvXMyMKPfh4Esl9zYL8twnvTOklnLGxLtiezdLmeRaZNwmt8nxyhjYTUq/2XSNTdyMfT0Kl5KsZx6sLmH8DOkuV4vI/q39J6QhFyc1VOUBd+nABnIptaxpHKjb7aKOPAQg1XkJF05vFjQelAO34wUW97/lV6KCY92hG3jXGeTTqxIJOipDnTFdsa5ukPeBTCN+hRURLxEKKFCcTQor4VlY8G4d1y7SJxEx4tz1s1KTOnMWeypIIsflUJSb4hMYXK0OHjj9FEURCAeTexfZdX4vpX3QvFqyU/tO49hrL9SPmR5OlThDNyjJ2H0WW6WQxmGG5dPEuGdeWKQag==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=tHi5GOuwaOsan8doJX76CFShJQRqMQuKL5RsNiq7BmQ=;
+ b=azMe9IoT+tMMjzHeAriDQvJYIFQUJqqGmCJurJIZFym0Pnma52HcZuL+MDf0P45vatbOjlso5sY/Oi/H5fxZL7O2LmTmQGeJEYonzJ1o4gVcfEdgMV5KK2bx2G7EE4H34gCEzDhkiQLr+90l9+UqKhzmpAohDUCwRTnICwVLkX9/QeLQq4nVosktx2hy7rTwjDTn+ao3ZEfPGCcYTbCc0F0aQ7k17gyl04mJDYtEsoepmP51vJ47azwUi83WeFkc6zCTUD5GYAOXKsuQUpHVX20VdyIRuZ6jyFvlX6HMXLja5JHqQb9GxHS3xSfQht0/ayQnlKlYkbZPcQXKw5KkRg==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nvidia.com;
+Received: from DM6PR12MB3849.namprd12.prod.outlook.com (2603:10b6:5:1c7::26)
+ by IA1PR12MB8335.namprd12.prod.outlook.com (2603:10b6:208:3fa::19) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7544.43; Wed, 8 May
+ 2024 00:31:55 +0000
+Received: from DM6PR12MB3849.namprd12.prod.outlook.com
+ ([fe80::c296:774b:a5fc:965e]) by DM6PR12MB3849.namprd12.prod.outlook.com
+ ([fe80::c296:774b:a5fc:965e%3]) with mapi id 15.20.7544.041; Wed, 8 May 2024
+ 00:31:55 +0000
+Date: Tue, 7 May 2024 21:31:53 -0300
+From: Jason Gunthorpe <jgg@nvidia.com>
+To: "Kasireddy, Vivek" <vivek.kasireddy@intel.com>
+Cc: Alex Williamson <alex.williamson@redhat.com>,
+	"dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
+	"kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+	"linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+	Christoph Hellwig <hch@infradead.org>
+Subject: Re: [PATCH v1 2/2] vfio/pci: Allow MMIO regions to be exported
+ through dma-buf
+Message-ID: <20240508003153.GC4650@nvidia.com>
+References: <20240422063602.3690124-1-vivek.kasireddy@intel.com>
+ <20240422063602.3690124-3-vivek.kasireddy@intel.com>
+ <20240430162450.711f4616.alex.williamson@redhat.com>
+ <20240501125309.GB941030@nvidia.com>
+ <IA0PR11MB718509BB8B56455710DB2033F8182@IA0PR11MB7185.namprd11.prod.outlook.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <IA0PR11MB718509BB8B56455710DB2033F8182@IA0PR11MB7185.namprd11.prod.outlook.com>
+X-ClientProxiedBy: MN2PR10CA0002.namprd10.prod.outlook.com
+ (2603:10b6:208:120::15) To DM6PR12MB3849.namprd12.prod.outlook.com
+ (2603:10b6:5:1c7::26)
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <1714795819-12543-1-git-send-email-selvin.xavier@broadcom.com>
- <1714795819-12543-3-git-send-email-selvin.xavier@broadcom.com>
- <20240506174701.GG901876@ziepe.ca> <CA+sbYW0VZ-tnHGkB=nod7M-aOXryORpWrvV2CKN0F_tjEE9+JA@mail.gmail.com>
- <20240507163436.GE4718@ziepe.ca>
-In-Reply-To: <20240507163436.GE4718@ziepe.ca>
-From: Selvin Xavier <selvin.xavier@broadcom.com>
-Date: Wed, 8 May 2024 01:06:46 +0530
-Message-ID: <CA+sbYW00RS2uaJ5agL9XzZTmzPFHz-K9U3SUDcup==K6iNfP0Q@mail.gmail.com>
-Subject: Re: [PATCH for-next 2/2] RDMA/bnxt_re: Expose the MSN table
- capability for user library
-To: Jason Gunthorpe <jgg@ziepe.ca>
-Cc: leon@kernel.org, linux-rdma@vger.kernel.org, 
-	andrew.gospodarek@broadcom.com
-Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
-	boundary="0000000000003284370617e24fa8"
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: DM6PR12MB3849:EE_|IA1PR12MB8335:EE_
+X-MS-Office365-Filtering-Correlation-Id: 4174cf60-baa3-4e7a-66da-08dc6ef64330
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;ARA:13230031|1800799015|376005|366007;
+X-Microsoft-Antispam-Message-Info:
+	=?us-ascii?Q?E1f9aggElgd1ObG3mahJap+KCi/RE2c4u3D9sAyOKJGKQhlTQeGceW1iKk0E?=
+ =?us-ascii?Q?nOWEUD1F9RvlNRiq6TvuwymJyD2IWgfTehFu+QmJRuDzDhKjdPC5t8SO2dnm?=
+ =?us-ascii?Q?gAFyKJ4VWF9jACuAYtTi6nntbDrcl89Yis9mLrEDgiQ18nxYgaYG9wclOLRJ?=
+ =?us-ascii?Q?/5cSLQnBh26bj3bUH/0aPrJYcSrzp7xolPofXwn4P1vGQMlANOQrypw1gBZ9?=
+ =?us-ascii?Q?EvsUg3FTMnMMBAJtqKuoWa6bM7J0ljAiy7+TUepegabuWYIIuowZLQAFj123?=
+ =?us-ascii?Q?nhzbi5rq4U2AwxSAeU+SoVm3jeCiaEtuLr7eILH2gJYhU7w4/LBdh8berzHM?=
+ =?us-ascii?Q?s4kxFxMpipcKcmF3UhfsfILCsQzwP+KbdMj7DSSPXuc8vy+VvWZLRnwxL4sn?=
+ =?us-ascii?Q?W2rMcjPIDKNfA/kIVW0XS6jMFlO+KPd+M5XwAGnac6E2nR0Vqwp+pRQFT7H+?=
+ =?us-ascii?Q?QLicgWL9AAdn1D7YOoRj4fGkfOjfAYpij16ksk4lYxMzI9tcTXOe/toRdhE+?=
+ =?us-ascii?Q?0X2BPnA/ATmcnFZwq1axWe+TMdXySNNJ8+iXnK27QSdoTu4NCx1PdKzJm9IY?=
+ =?us-ascii?Q?hzwZjMzHrTY4ifv8HmhfpVcW6MZHjlgAUOaDzT5neb1e9xMX10oeXk4R51qu?=
+ =?us-ascii?Q?deaUmg7bRqHjAUMO1O51svjIlHAJfmAhMrLBZrCF4j8Vu6jE7foSe1J30of2?=
+ =?us-ascii?Q?xZkAKe6wJZaqKygRu0P/5QtGhLaxTI4njxaOluwpHIOjwktBc5o2RvDXlCxI?=
+ =?us-ascii?Q?EoXEDMuivYUiO+b0wbaVph1lPOmpVmDif4DX7FKlaQorFoNJkvmk4zLl7qJR?=
+ =?us-ascii?Q?bQ/CMyYLb1GAUtS6vfSzD42q5nGp9VoaGMFPxVuUNLs+2qIf2LyVwrZy//3u?=
+ =?us-ascii?Q?U7/xXMxypwk5dpYakQlqoexcWketTxDiVWa+uiwzfmrolznvoqjBhZhzXKwj?=
+ =?us-ascii?Q?yqdAxIblyEJE64rioALJJQ06PsGXNTldaDIxV/JaNZ1J+cMOPkWIwrIo5K0B?=
+ =?us-ascii?Q?uBYFMuzwvraExHfUaS5+DsKaqgOgJfCWjps1lhRMtaZKxngccg9KW3NZGUDA?=
+ =?us-ascii?Q?S+N3eqW706f6xnjn3aCjqK32WD2ba8HNgMLjJtcMSQ3YDzAwHUWaqLBoQV84?=
+ =?us-ascii?Q?t6Dc/uHVUidBoS35ks2SwxhTAgT4lHuDQ5sWALsXYaIqcATIIfrrrn8KZCx5?=
+ =?us-ascii?Q?tXRAg5MdqOC0fX5kAF/KllPLffOHgRaoi5IwC7ht2VPRYd2pWQRvAy4m9nlF?=
+ =?us-ascii?Q?bBlMC6uoz3G1RZIhMmaW4Ku0V92c8ypqR4+kdXLp1A=3D=3D?=
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR12MB3849.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(1800799015)(376005)(366007);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?us-ascii?Q?nhhBNXMBpxNHbfic2w2LnypaAdqCy1yZwmaUeUwjBjW6hdcggcnioNC88FIo?=
+ =?us-ascii?Q?03lm2HlkxQ/jpZ1fWe7el+5NqW42k3tSmnoLlbxloI4z5B7E3CkgGF07bm1a?=
+ =?us-ascii?Q?wwCz4hQxXBsRZRa3X2+UrXfnXuPDkWnXyYjthPD53U5zV5lmYoQ6BuvTwhjV?=
+ =?us-ascii?Q?cS84Ri2hD6Z3MqNWlUtc7Yy6P9ByXedavcgm5b0hDjd+waD2bBw5BjLN6bY4?=
+ =?us-ascii?Q?EO2eeQgzubehzdtD8/kQ9oWPnvKbNdJgTikhejZyjyM2BPAA7YlF/ZDPEuMw?=
+ =?us-ascii?Q?KLZsE34ZqaHWmJUGcOCMDNR4emeYHKKmGCJUbIADlM9IZn6qg8HFJuVWY0Ip?=
+ =?us-ascii?Q?u7oPiz2dw15nbZKKgUMyy70tYhyWkTq4xSJUhUsLFvXIEEVhOgayZGGO6Lb+?=
+ =?us-ascii?Q?mZFDjqdcukKfQdHCgcuxtfOmUazlu9jttheaWwqHlD9iscEuQnqOPYSSnRKO?=
+ =?us-ascii?Q?O5Md+QHOiPJikLRENisFipf1KmP84Rsv6HOiSvoVLFpwDEOlKf3XYM+eLSg+?=
+ =?us-ascii?Q?wPmsRZElmbodJsOzaGwHdR7fHMSi66HqkJa2rSMo7LFSu4DonB2OA4u9DyLr?=
+ =?us-ascii?Q?aZMvOoom0R6X4U2ewLg79y3XomFn1fXjfKOSR34o0iOOMcD/vTn/abTtnMT/?=
+ =?us-ascii?Q?7l5cmeB2Q6oweTSr0bRcbgaoB2rX7Fqk7liRl7L6tuJlx+o0L0YPtPP+iedK?=
+ =?us-ascii?Q?ka/NDdaWTcgnEfnFoXNs4JMMgrtNCZYW2mnF16v6xR/YpReBsunMoOL5ZNiE?=
+ =?us-ascii?Q?MNg+ijeoSVFVZv5Goxq2TUaQxFKiiiMXI1dn0yJTiQP4csOP06DhPsSluEWh?=
+ =?us-ascii?Q?iOJXRj/Kt1/Ex5NLrH6r85f6nl8aTgjTXZQtkexNfDhWX+ZFbEVfBCrfGmvY?=
+ =?us-ascii?Q?f5Qnni3EBT/KnyWOy2hJFDV9KwCoCb8Sq88vKbTG7Nsq5vrccp2spxOfkOmE?=
+ =?us-ascii?Q?f8KORuDzY1km14uf09LH2LOFunjh9G73bOfbfWiVHzz2tk71dQezwq/BUqjz?=
+ =?us-ascii?Q?GwmM41NOX2QWzyLs21LHzf0cTX0C1CLgvg05fcHwPz+BooAvwrOcasWmKVel?=
+ =?us-ascii?Q?NwFQXmcClwr7XW9koIsPZivWeyvoPfiu1DcjIjZn1XJkMdNKfnfTfDC2fcwA?=
+ =?us-ascii?Q?5gugNvYlkTibRPJjyooNt/lpYpGYFBsM71Kkgf99m09+iufFjMDTANRpLRxA?=
+ =?us-ascii?Q?IOltF/+VB6n7V0W0MfzwqbI31oinOKlxpfmmjKMN2JFmVXqW48J9sdyzusF0?=
+ =?us-ascii?Q?P2Ai2YdFPwJzsM40S2+ifv6k7Yj6TJgOc4DWUYyrqofcik1bbOKLvw77GRFh?=
+ =?us-ascii?Q?CpIrSaYzt0G0vf+r8tmO8XC6pRgkR3rIjQTVHpB5D6gPjIKpA3YrEJwqwMtO?=
+ =?us-ascii?Q?f5qU5WNWrs1TgBgj10AofQkLwMj//rTIyIXw9nya2ajlThOvhhoCGEWEu6U3?=
+ =?us-ascii?Q?Ambl9anarpyjYYfFVtOVD7MNaM2dlYz8PAvxDTBAPN1a8+R+cs5QKvbodTz8?=
+ =?us-ascii?Q?h8PHbT9OzK5SO29plP+sPAsgsj6AtJABzoUKi3RsZCZPLsB6ultma3a6jIg7?=
+ =?us-ascii?Q?g9Xz/zrnPM+aRrsMTapsSpegfK2bKBbjQu87abYY?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 4174cf60-baa3-4e7a-66da-08dc6ef64330
+X-MS-Exchange-CrossTenant-AuthSource: DM6PR12MB3849.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 08 May 2024 00:31:54.9629
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: aULDc2x2mRR1JKWx8Ob+ZxjmrrlBFxfYU9zXx+9VTuQds7Im+r/prspdwHZEvWoV
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: IA1PR12MB8335
 
---0000000000003284370617e24fa8
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-
-On Tue, May 7, 2024 at 10:04=E2=80=AFPM Jason Gunthorpe <jgg@ziepe.ca> wrot=
-e:
->
-> On Tue, May 07, 2024 at 09:57:17AM +0530, Selvin Xavier wrote:
-> > On Mon, May 6, 2024 at 11:17=E2=80=AFPM Jason Gunthorpe <jgg@ziepe.ca> =
-wrote:
-> > >
-> > > On Fri, May 03, 2024 at 09:10:19PM -0700, Selvin Xavier wrote:
-> > > > Expose the MSN table capability to the user space. Rename
-> > > > the current macro as the driver/library is allocating the
-> > > > table based on the MSN capability reported by FW.
-> > > >
-> > > > Signed-off-by: Selvin Xavier <selvin.xavier@broadcom.com>
-> > > > ---
-> > > >  drivers/infiniband/hw/bnxt_re/ib_verbs.c | 3 +++
-> > > >  include/uapi/rdma/bnxt_re-abi.h          | 2 +-
-> > > >  2 files changed, 4 insertions(+), 1 deletion(-)
-> > > >
-> > > > diff --git a/drivers/infiniband/hw/bnxt_re/ib_verbs.c b/drivers/inf=
-iniband/hw/bnxt_re/ib_verbs.c
-> > > > index ce9c5ba..d261b09 100644
-> > > > --- a/drivers/infiniband/hw/bnxt_re/ib_verbs.c
-> > > > +++ b/drivers/infiniband/hw/bnxt_re/ib_verbs.c
-> > > > @@ -4201,6 +4201,9 @@ int bnxt_re_alloc_ucontext(struct ib_ucontext=
- *ctx, struct ib_udata *udata)
-> > > >       if (rdev->pacing.dbr_pacing)
-> > > >               resp.comp_mask |=3D BNXT_RE_UCNTX_CMASK_DBR_PACING_EN=
-ABLED;
-> > > >
-> > > > +     if (_is_host_msn_table(rdev->qplib_res.dattr->dev_cap_flags2)=
-)
-> > > > +             resp.comp_mask |=3D BNXT_RE_UCNTX_CMASK_MSN_TABLE_ENA=
-BLED;
+On Thu, May 02, 2024 at 07:50:36AM +0000, Kasireddy, Vivek wrote:
+> Hi Jason,
+> 
+> > 
+> > On Tue, Apr 30, 2024 at 04:24:50PM -0600, Alex Williamson wrote:
+> > > > +static vm_fault_t vfio_pci_dma_buf_fault(struct vm_fault *vmf)
+> > > > +{
+> > > > +	struct vm_area_struct *vma = vmf->vma;
+> > > > +	struct vfio_pci_dma_buf *priv = vma->vm_private_data;
+> > > > +	pgoff_t pgoff = vmf->pgoff;
 > > > > +
-> > > >       if (udata->inlen >=3D sizeof(ureq)) {
-> > > >               rc =3D ib_copy_from_udata(&ureq, udata, min(udata->in=
-len, sizeof(ureq)));
-> > > >               if (rc)
-> > > > diff --git a/include/uapi/rdma/bnxt_re-abi.h b/include/uapi/rdma/bn=
-xt_re-abi.h
-> > > > index c0c34ac..e61104f 100644
-> > > > --- a/include/uapi/rdma/bnxt_re-abi.h
-> > > > +++ b/include/uapi/rdma/bnxt_re-abi.h
-> > > > @@ -55,7 +55,7 @@ enum {
-> > > >       BNXT_RE_UCNTX_CMASK_WC_DPI_ENABLED =3D 0x04ULL,
-> > > >       BNXT_RE_UCNTX_CMASK_DBR_PACING_ENABLED =3D 0x08ULL,
-> > > >       BNXT_RE_UCNTX_CMASK_POW2_DISABLED =3D 0x10ULL,
-> > > > -     BNXT_RE_COMP_MASK_UCNTX_HW_RETX_ENABLED =3D 0x40,
-> > > > +     BNXT_RE_UCNTX_CMASK_MSN_TABLE_ENABLED =3D 0x40,
+> > > > +	if (pgoff >= priv->nr_pages)
+> > > > +		return VM_FAULT_SIGBUS;
+> > > > +
+> > > > +	return vmf_insert_pfn(vma, vmf->address,
+> > > > +			      page_to_pfn(priv->pages[pgoff]));
+> > > > +}
 > > >
-> > > Wah? How can you rename this bit in the uapi?
-> > >
-> > > Looks really strange, userspace is even using this constant.
-> > >
-> > > Please explain in detail what is going on here in the commit message.=
- :\
-> >
-> > BNXT_RE_COMP_MASK_UCNTX_HW_RETX_ENABLED was introduced to share the HW
-> > retransmit capability between driver and lib. The main difference in
-> > implementation for HW Retransmit support is the usage of MSN table or
-> > PSN table . When HW retrans is enabled, HW expects MSN table to be
-> > allocated by driver/lib, else PSN table (for older adapters). So when
-> > FW started exposing the MSN capability as a new field, we can actually
-> > depend on the new field instead of HW Retrasns capability. For
-> > adapters which support HW_RETX feature, MSN table capability will be
-> > set. For older adapters, this value will be 0  (to maintain backward
-> > compatibility with older FW).  I renamed the UAPI just to capture the
-> > correct name of the HW capability that driver/library is interested
-> > in.
-> >
-> > I pushed an rdma-core PR [1] also with the associated change. Even if
-> > an older version of library is using
-> > BNXT_RE_COMP_MASK_UCNTX_HW_RETX_ENABLED, it doesn't affect the
-> > functionality and this is reason for renaming and not defining a new
-> > UAPI.  If you feel that I should totally avoid this UAPI change, will
-> > add a new comp mask and leave the current value unused.
->
-> It is fine if it works, I asked you to decribe in detail the reasoning
-> and outline why it is correct in the commit message.
-sure. will include it in v2
->
-> Jason
+> > > How does this prevent the MMIO space from being mmap'd when disabled
+> > at
+> > > the device?  How is the mmap revoked when the MMIO becomes disabled?
+> > > Is it part of the move protocol?
+> In this case, I think the importers that mmap'd the dmabuf need to be tracked
+> separately and their VMA PTEs need to be zapped when MMIO access is revoked.
 
---0000000000003284370617e24fa8
-Content-Type: application/pkcs7-signature; name="smime.p7s"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment; filename="smime.p7s"
-Content-Description: S/MIME Cryptographic Signature
+Which, as we know, is quite hard.
 
-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
-FYMZp2DojLAq9f4Oi2OBetbnWxo0WGycXpmq/jC4PUx2u9mazQ79i80VLagGRshWniESXuf+SYG8
-+zBimjld9ZZnwm7itHAZdtme4YYFxx+EHa4PUxPV8t+hPHhsiIjirPa1pVXPbQIDAQABo4IB2zCC
-AdcwDgYDVR0PAQH/BAQDAgWgMIGjBggrBgEFBQcBAQSBljCBkzBOBggrBgEFBQcwAoZCaHR0cDov
-L3NlY3VyZS5nbG9iYWxzaWduLmNvbS9jYWNlcnQvZ3NnY2NyM3BlcnNvbmFsc2lnbjJjYTIwMjAu
-Y3J0MEEGCCsGAQUFBzABhjVodHRwOi8vb2NzcC5nbG9iYWxzaWduLmNvbS9nc2djY3IzcGVyc29u
-YWxzaWduMmNhMjAyMDBNBgNVHSAERjBEMEIGCisGAQQBoDIBKAowNDAyBggrBgEFBQcCARYmaHR0
-cHM6Ly93d3cuZ2xvYmFsc2lnbi5jb20vcmVwb3NpdG9yeS8wCQYDVR0TBAIwADBJBgNVHR8EQjBA
-MD6gPKA6hjhodHRwOi8vY3JsLmdsb2JhbHNpZ24uY29tL2dzZ2NjcjNwZXJzb25hbHNpZ24yY2Ey
-MDIwLmNybDAlBgNVHREEHjAcgRpzZWx2aW4ueGF2aWVyQGJyb2FkY29tLmNvbTATBgNVHSUEDDAK
-BggrBgEFBQcDBDAfBgNVHSMEGDAWgBSWM9HmWBdbNHWKgVZk1b5I3qGPzzAdBgNVHQ4EFgQU3TaH
-dsgUhTW3LwObmZ20fj+8Xj8wDQYJKoZIhvcNAQELBQADggEBAAbt6Sptp6ZlTnhM2FDhkVXks68/
-iqvfL/e8wSPVdBxOuiP+8EXGLV3E72KfTTJXMbkcmFpK2K11poBDQJhz0xyOGTESjXNnN6Eqq+iX
-hQtF8xG2lzPq8MijKI4qXk5Vy5DYfwsVfcF0qJw5AhC32nU9uuIPJq8/mQbZfqmoanV/yadootGr
-j1Ze9ndr+YDXPpCymOsynmmw0ErHZGGW1OmMpAEt0A+613glWCURLDlP8HONi1wnINV6aDiEf0ad
-9NMGxDsp+YWiRXD3txfo2OMQbpIxM90QfhKKacX8t1J1oAAWxDrLVTJBXBNvz5tr+D1sYwuye93r
-hImmkM1unboxggJtMIICaQIBATBrMFsxCzAJBgNVBAYTAkJFMRkwFwYDVQQKExBHbG9iYWxTaWdu
-IG52LXNhMTEwLwYDVQQDEyhHbG9iYWxTaWduIEdDQyBSMyBQZXJzb25hbFNpZ24gMiBDQSAyMDIw
-Agxy+Cu4x/7lM0zxY7cwDQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIEIGX1bCWfPY06
-sW7hmxJMRmx+avFkibW5l9Qu4HpXRi+UMBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZI
-hvcNAQkFMQ8XDTI0MDUwNzE5MzY1OVowaQYJKoZIhvcNAQkPMVwwWjALBglghkgBZQMEASowCwYJ
-YIZIAWUDBAEWMAsGCWCGSAFlAwQBAjAKBggqhkiG9w0DBzALBgkqhkiG9w0BAQowCwYJKoZIhvcN
-AQEHMAsGCWCGSAFlAwQCATANBgkqhkiG9w0BAQEFAASCAQBRiEfYAh0XoyLuE9DUbQR13ZQlK7x5
-/rJQULen2GPqaTvr1PczIz0TFWKCTc+mG4iwwDfTAc5vl4+HTcP+aJ3ulUsZacx4zs1ObfIGP6bL
-wZtOvb6h65+0sbCJSS13CU3ZKWUPiIBhZBJO87FDF91SvASwU41Z9ulaL8s9ofBs0zynG+e8hq14
-uiV1HFzTfy2zi4kch9Qx69qxbJ3eS39h+OhVAXtd3FIIiUVUYTsuCdV4p1RFOEqMGTZmMqY9eb21
-kj8RVIzUtqRPYJn4fhdRnNQHy8v72LBY/bXZKbd4lBQVibI1aJQtuB16IaoJrbis2msDY0xPe9tj
-zdi17Vj6
---0000000000003284370617e24fa8--
+> > Yes, we should not have a mmap handler for dmabuf. vfio memory must be
+> > mmapped in the normal way.
+> Although optional, I think most dmabuf exporters (drm ones) provide a mmap
+> handler. Otherwise, there is no easy way to provide CPU access (backup slow path)
+> to the dmabuf for the importer.
+
+Here we should not, there is no reason since VFIO already provides a
+mmap mechanism itself. Anything using this API should just call the
+native VFIO function instead of trying to mmap the DMABUF. Yes, it
+will be inconvient for the scatterlist case you have, but the kernel
+side implementation is much easier ..
+
+
+> > > > +/**
+> > > > + * Upon VFIO_DEVICE_FEATURE_GET create a dma_buf fd for the
+> > > > + * region selected.
+> > > > + *
+> > > > + * open_flags are the typical flags passed to open(2), eg O_RDWR,
+> > O_CLOEXEC,
+> > > > + * etc. offset/length specify a slice of the region to create the dmabuf
+> > from.
+> > > > + * If both are 0 then the whole region is used.
+> > > > + *
+> > > > + * Return: The fd number on success, -1 and errno is set on failure.
+> > > > + */
+> > > > +#define VFIO_DEVICE_FEATURE_DMA_BUF 11
+> > > > +
+> > > > +struct vfio_region_p2p_area {
+> > > > +	__u32	region_index;
+> > > > +	__u32	__pad;
+> > > > +	__u64	offset;
+> > > > +	__u64	length;
+> > > > +};
+> > > > +
+> > > > +struct vfio_device_feature_dma_buf {
+> > > > +	__u32	open_flags;
+> > > > +	__u32	nr_areas;
+> > > > +	struct vfio_region_p2p_area p2p_areas[];
+> > > > +};
+> > 
+> > Still have no clue what this p2p areas is. You want to create a dmabuf
+> > out of a scatterlist? Why??
+
+> Because the data associated with a buffer that needs to be shared can
+> come from multiple ranges. I probably should have used the terms ranges
+> or slices or chunks to make it more clear instead of p2p areas.
+
+Yes, please pick a better name.
+
+> > I'm also not sure of the use of the pci_p2pdma family of functions, it
+> > is a bold step to make struct pages, that isn't going to work in quite
+
+> I guess things may have changed since the last discussion on this topic or
+> maybe I misunderstood but I thought Christoph's suggestion was to use
+> struct pages to populate the scatterlist instead of using DMA addresses
+> and, I figured pci_p2pdma APIs can easily help with that.
+
+It was, but it doesn't really work for VFIO. You can only create
+struct pages for large MMIO spaces, and only on some architectures.
+
+Requiring them will make VFIO unusable in alot of places. Requiring
+them just for DMABUF will make that feature unusable.
+
+Creating them on first use, and then ignoring how broken it is 
+perhaps reasonable for now, but I'm unhappy to see it so poorly
+usable.
+> 
+> > alot of cases. It is really hacky/wrong to immediately call
+> > pci_alloc_p2pmem() to defeat the internal genalloc.
+
+> In my use-case, I need to use all the pages from the pool and I don't see any
+> better way to do it.
+
+You have to fix the P2P API to work properly for this kind of use
+case.
+
+There should be no genalloc at all.
+
+> > I'd rather we stick with the original design. Leon is working on DMA
+> > API changes that should address half the issue.
+>
+> Ok, I'll keep an eye out for Leon's work.
+
+It saves from messing with the P2P stuff, but you get the other issues
+back.
+
+Jason
 
