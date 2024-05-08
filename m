@@ -1,48 +1,48 @@
-Return-Path: <linux-rdma+bounces-2350-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-2351-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id A32E38C0032
-	for <lists+linux-rdma@lfdr.de>; Wed,  8 May 2024 16:38:26 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 71CA98C00FB
+	for <lists+linux-rdma@lfdr.de>; Wed,  8 May 2024 17:31:12 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 59331287903
-	for <lists+linux-rdma@lfdr.de>; Wed,  8 May 2024 14:38:25 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 00D3A1F28712
+	for <lists+linux-rdma@lfdr.de>; Wed,  8 May 2024 15:31:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E47E0127E27;
-	Wed,  8 May 2024 14:37:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id ADE71126F07;
+	Wed,  8 May 2024 15:31:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="bYbLPVn5"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="aIDiEbR8"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from out-173.mta1.migadu.com (out-173.mta1.migadu.com [95.215.58.173])
+Received: from out-182.mta1.migadu.com (out-182.mta1.migadu.com [95.215.58.182])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6EAC8127E1F
-	for <linux-rdma@vger.kernel.org>; Wed,  8 May 2024 14:37:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ABFF83716F
+	for <linux-rdma@vger.kernel.org>; Wed,  8 May 2024 15:31:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1715179053; cv=none; b=avMPdjKTGtM0PBK3WfxdvVQUD9RNL0nX+ll0NYnHOEW3V3/OmOVui9CcGuz9ZKH6mSsgmdMHR0+oEuxAeAD+16zUXo5yx48gO37Rx65kxqXorZoP6dmCJ+wb5wEGR437sbyg7l+vKMCx+m6N41Uf1WMoZAfIA3CPGoRO/ivLHm8=
+	t=1715182267; cv=none; b=n4o98X1Q82wEyUwLXL65QvvvVkGjV+3dRH1ifNFt4Q6H3iO7ZFgPcAHpiKRysxOdsMCqKOEnS01FQvDeVc9hYF0dUKZ9oQw7QQ+/eB0E1CT2nwGh0NuOMk2hXsTf04tevEDCa98mhRPSb9L/dAmkt71EV+cMMEFdmrGI75J+YBM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1715179053; c=relaxed/simple;
-	bh=QE+AH07clUQsOu+tvHKx3/oesiAIY06AlgPwquNSylA=;
+	s=arc-20240116; t=1715182267; c=relaxed/simple;
+	bh=+CCxu+j5royCNHvfNUe7rL//povNEbdDycscv1G1woA=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=bOrVymgD55b0Ny4A0zr4/oEOY0vX1AJnWmANRZyAkj63tQLFhzxa4QqquYT2LpvB+INHgEBL0DajivGBltQlB8d3NvlwGHm37IXl376iC3ZtD02+MJTaVf1SWzGBagD1d8+DGWPFWvFmiHEnQyh99EMZzhKZxyH9eHHS7A2lRYQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=bYbLPVn5; arc=none smtp.client-ip=95.215.58.173
+	 In-Reply-To:Content-Type; b=cxDYfXzFnfPWYIPd2Cr8+m4BM3q4hHDdzGv57ik1P8R86nv0DDh/+BTb/CuSXubKYu9rSulCTLpn9ojVEjPHUE6BAJARtSzk+zW67FI2WqdxVOhictvhv567xWm7rEYoX46r1DuDTZMSYu4zNqfyzqWZZYyG3TYcAQDDFb8t1z8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=aIDiEbR8; arc=none smtp.client-ip=95.215.58.182
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <2f5d2314-c1c3-443c-9e58-5d7dc8e30803@linux.dev>
+Message-ID: <9eb4ed5e-0872-40fd-ab96-e210463d82ee@linux.dev>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1715179048;
+	t=1715182262;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=KuOSOKSGW8Ghcm7VQPEsJR5qAiFtbETzjyJdCzDPOAo=;
-	b=bYbLPVn56kvyW+JbwD9v5Lb5P4Ucbj/IK3BHdQGuBwI57eLacnO6k7w436nO/Qlqo4lIml
-	GoIF7LWImqFqIfCfljLyIEDi2jiWlbmGZSFjwFHs5RHMDGG61H1nu7cj8rsacouBp7zb+v
-	Lt77oEdhXYH/C6Q01ct8tWR5gMSEaLE=
-Date: Wed, 8 May 2024 16:37:23 +0200
+	bh=Ppi2pnc+1piT3fWBa8rmshZsH2dw1r0hZMg5gaB7by0=;
+	b=aIDiEbR8zb1wmEvAR4nyKDQNOndoR64lZk6KL8wuLWFyJRiubyNYkRIbArIY4jmIdvtgGw
+	jz0nXjvOlCr0pz5kJ8RlTy/X/oe8jikS2b/g139rHtbB0msKdrY5S78aml5w0B2AOJDm9g
+	otgzCz3yyeNNI5BjqDMTyCnSImWsV/0=
+Date: Wed, 8 May 2024 17:31:00 +0200
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
@@ -81,8 +81,28 @@ X-Migadu-Flow: FLOW_OUT
 > 
 >      RDMA/cma: Avoid GID lookups on iWARP devices
 
-Got it. Thanks a lot. I will delve into this problem.
+Not sure if the following can fix this problem or not.
+Please let me know the test result.
+Thanks a lot.
 
+diff --git a/drivers/infiniband/core/cma.c b/drivers/infiniband/core/cma.c
+index 1e2cd7c8716e..901e6c40d560 100644
+--- a/drivers/infiniband/core/cma.c
++++ b/drivers/infiniband/core/cma.c
+@@ -715,9 +715,13 @@ cma_validate_port(struct ib_device *device, u32 port,
+                 rcu_read_lock();
+                 ndev = rcu_dereference(sgid_attr->ndev);
+                 if (!net_eq(dev_net(ndev), dev_addr->net) ||
+-                   ndev->ifindex != bound_if_index)
++                   ndev->ifindex != bound_if_index) {
++                       rdma_put_gid_attr(sgid_attr);
+                         sgid_attr = ERR_PTR(-ENODEV);
++               }
+                 rcu_read_unlock();
++               if (!IS_ERR(sgid_attr))
++                       rdma_put_gid_attr(sgid_attr);
+                 goto out;
+         }
 Zhu Yanjun
 
 > 
