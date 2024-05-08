@@ -1,235 +1,295 @@
-Return-Path: <linux-rdma+bounces-2346-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-2344-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8F9E78BFC9D
-	for <lists+linux-rdma@lfdr.de>; Wed,  8 May 2024 13:47:08 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id E7CAD8BFC41
+	for <lists+linux-rdma@lfdr.de>; Wed,  8 May 2024 13:38:41 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4627D280E29
-	for <lists+linux-rdma@lfdr.de>; Wed,  8 May 2024 11:47:07 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 75B361F22241
+	for <lists+linux-rdma@lfdr.de>; Wed,  8 May 2024 11:38:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1BDEF83A19;
-	Wed,  8 May 2024 11:46:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EB847839FF;
+	Wed,  8 May 2024 11:38:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=samsung.com header.i=@samsung.com header.b="MGedoFgJ"
+	dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b="PccTtZkI"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mailout2.w1.samsung.com (mailout2.w1.samsung.com [210.118.77.12])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-yb1-f179.google.com (mail-yb1-f179.google.com [209.85.219.179])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4ABDE82D62;
-	Wed,  8 May 2024 11:46:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=210.118.77.12
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 73D9A839E4
+	for <linux-rdma@vger.kernel.org>; Wed,  8 May 2024 11:38:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1715168803; cv=none; b=r4+TihxJqOgmyUCehE91vYQowL4h/5ic7FjRAM5nZklYPvu9tjpsqKErxql3GjkA4N00/44tlRZebRFTzrES+NTfNMY0N8+KyA1ajtJwjuD5if7WNCSR21BcKm/WJ/LP+svd9EAnhRrU1Gw0r7ABw+h1szrSH2hGjV3q522pH94=
+	t=1715168284; cv=none; b=mif6ZKvXt3voASoizrxkT7s6kzlzqddd4vMGDZzp3t+I6TdJ4GOxH1JbLHiW41IiAdKnzxVACh5nKuAfa9sjVsx/lL7GnU+jQWM5KENSy2gQLv6YtkHl0PIiLbRqkj+F+IMHzEE26iS6V3ac9QolVMd/gj8ARJ7GJFPfgPmicFg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1715168803; c=relaxed/simple;
-	bh=cpA+7N6Sz3fsV3eip5EVkKcJQeVtFO7ZiIALxL3MuKA=;
-	h=Date:From:To:CC:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition:In-Reply-To:References; b=U+8k4XmOVQRQawKAarRlX7wi2Q1LMRxT2qdZnRTdMWxrI7DHXOey/FD0uT30oCzA5UZN5K7Mct4AC49DlR83clHXkrgu26phEutdJCbKd9u3PnnYT/TDQz5Dy5E7WrMkJk+RvMqfOUSakZk/q7EJg3/6ULBZTki8IK3rDmE/weU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=samsung.com; spf=pass smtp.mailfrom=samsung.com; dkim=pass (1024-bit key) header.d=samsung.com header.i=@samsung.com header.b=MGedoFgJ; arc=none smtp.client-ip=210.118.77.12
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=samsung.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=samsung.com
-Received: from eucas1p1.samsung.com (unknown [182.198.249.206])
-	by mailout2.w1.samsung.com (KnoxPortal) with ESMTP id 20240508113726euoutp023b917c183029915f96a388a085ef9f3c~NgG6-85E21770217702euoutp02_;
-	Wed,  8 May 2024 11:37:26 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.w1.samsung.com 20240508113726euoutp023b917c183029915f96a388a085ef9f3c~NgG6-85E21770217702euoutp02_
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-	s=mail20170921; t=1715168246;
-	bh=cF90zorX3Vhkec3/TFj+N593dqTmsatotOCQjHSZEbM=;
-	h=Date:From:To:CC:Subject:In-Reply-To:References:From;
-	b=MGedoFgJUxqsWS+zDcnWEQjCsAolmv6XQq26O3hTwtnVUXsPIbO123xNVdDsR1wi8
-	 4ruaFwHk37WfH/K8Vb94HbGRPKKEv2Im4rxPFviwViSVpO0j+oN5tsVWmyq70AhMUk
-	 fkBQHu/4DdTej80roiXkz13NiIEQJKgdnVvkytNE=
-Received: from eusmges1new.samsung.com (unknown [203.254.199.242]) by
-	eucas1p1.samsung.com (KnoxPortal) with ESMTP id
-	20240508113725eucas1p16225069534576a85124b13399ba8b854~NgG6vou7Z2221222212eucas1p1K;
-	Wed,  8 May 2024 11:37:25 +0000 (GMT)
-Received: from eucas1p1.samsung.com ( [182.198.249.206]) by
-	eusmges1new.samsung.com (EUCPMTA) with SMTP id C2.CE.09624.5F36B366; Wed,  8
-	May 2024 12:37:25 +0100 (BST)
-Received: from eusmtrp1.samsung.com (unknown [182.198.249.138]) by
-	eucas1p1.samsung.com (KnoxPortal) with ESMTPA id
-	20240508113725eucas1p1c73dc1b7bc2780f99b281e4cc534d1a0~NgG6RWhmU1576115761eucas1p1a;
-	Wed,  8 May 2024 11:37:25 +0000 (GMT)
-Received: from eusmgms2.samsung.com (unknown [182.198.249.180]) by
-	eusmtrp1.samsung.com (KnoxPortal) with ESMTP id
-	20240508113725eusmtrp125fc799878405e7480db3ef8c0ccefef~NgG6P556t0870508705eusmtrp1k;
-	Wed,  8 May 2024 11:37:25 +0000 (GMT)
-X-AuditID: cbfec7f2-c11ff70000002598-a3-663b63f58af9
-Received: from eusmtip2.samsung.com ( [203.254.199.222]) by
-	eusmgms2.samsung.com (EUCPMTA) with SMTP id 28.7B.09010.5F36B366; Wed,  8
-	May 2024 12:37:25 +0100 (BST)
-Received: from CAMSVWEXC02.scsc.local (unknown [106.1.227.72]) by
-	eusmtip2.samsung.com (KnoxPortal) with ESMTPA id
-	20240508113725eusmtip245b7460632450ec5f8efcdd3ed3a83f1~NgG6AtV8G1709017090eusmtip2g;
-	Wed,  8 May 2024 11:37:25 +0000 (GMT)
-Received: from localhost (106.110.32.44) by CAMSVWEXC02.scsc.local
-	(2002:6a01:e348::6a01:e348) with Microsoft SMTP Server (TLS) id 15.0.1497.2;
-	Wed, 8 May 2024 12:37:24 +0100
-Date: Wed, 8 May 2024 13:37:19 +0200
-From: Joel Granados <j.granados@samsung.com>
-To: Kees Cook <keescook@chromium.org>
-CC: Jakub Kicinski <kuba@kernel.org>, Luis Chamberlain <mcgrof@kernel.org>,
-	Kees Cook <keescook@chromium.org>, Eric Dumazet <edumazet@google.com>, Dave
-	Chinner <david@fromorbit.com>, <linux-fsdevel@vger.kernel.org>,
-	<netdev@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>,
-	<linux-s390@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-	<linux-riscv@lists.infradead.org>, <linux-mm@kvack.org>,
-	<linux-security-module@vger.kernel.org>, <bpf@vger.kernel.org>,
-	<linuxppc-dev@lists.ozlabs.org>, <linux-xfs@vger.kernel.org>,
-	<linux-trace-kernel@vger.kernel.org>, <linux-perf-users@vger.kernel.org>,
-	<netfilter-devel@vger.kernel.org>, <coreteam@netfilter.org>,
-	<kexec@lists.infradead.org>, <linux-hardening@vger.kernel.org>,
-	<bridge@lists.linux.dev>, <lvs-devel@vger.kernel.org>,
-	<linux-rdma@vger.kernel.org>, <rds-devel@oss.oracle.com>,
-	<linux-sctp@vger.kernel.org>, <linux-nfs@vger.kernel.org>,
-	<apparmor@lists.ubuntu.com>
-Subject: Re: [PATCH v3 00/11] sysctl: treewide: constify ctl_table argument
- of sysctl handlers
-Message-ID: <20240508113719.pccjkyd5nk5soqrg@joelS2.panther.com>
+	s=arc-20240116; t=1715168284; c=relaxed/simple;
+	bh=w8vkuvXBBVxKGRD3KwWJ2CqLpfAyTR2dUnE0JgFsrFc=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=bI8I5f4p7GhgsTkzX6J2tj23EoXR/C08PGj9WK5hblsMWBm8bAGw+OgZV6wez4xKZ3jrZw+qnkybEO+tVe+catKcdzL/8+xNGP0XYpJdvR4w00fmhUACrEECxUQYFVlEIrQlNyuL4POmK7PtlaxddE2R2J//e4l4XNT5VeDyotA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com; spf=fail smtp.mailfrom=broadcom.com; dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b=PccTtZkI; arc=none smtp.client-ip=209.85.219.179
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=broadcom.com
+Received: by mail-yb1-f179.google.com with SMTP id 3f1490d57ef6-de6074a464aso4654310276.0
+        for <linux-rdma@vger.kernel.org>; Wed, 08 May 2024 04:38:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=broadcom.com; s=google; t=1715168281; x=1715773081; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=2hHlvEvHl/LLzml5MmXo3tqm8HbKr6QE3ucojA1kuhg=;
+        b=PccTtZkIEkNyadePV598XsWMDURqYUtLkHVd/IZFJst4I5C7aZXwL1xxeZke+wpcgr
+         md/fCsl8s9s7BuK8KWqdes+0FFFO9MiKR55LnOB4MnOBvmILFTReKiocfKd7tXG0nas6
+         T1Q/tvlMx4VBUzUs/BCGHHDAsuiyCKr0qveEg=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1715168281; x=1715773081;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=2hHlvEvHl/LLzml5MmXo3tqm8HbKr6QE3ucojA1kuhg=;
+        b=BC25AGRLoqmnawQvGX5QLGTPQGe1ri9e1Cl+F0xKZiY/xtXCNoJTc0vPeyTrbeJiDz
+         WrLyXjgNRD0vXBaAp5pU7SPJlMYcPKBzP8L35jysiOYshmuM2hBzsutlH3ZJ2F1ndbMz
+         LEgjuCn65kguaiqESYq8ILiMOYPo3qZRfVTwm3wgxZlk6mwt94NKQ2ypSz7JFyyaknxF
+         51F7PwxpzNSajIXvcE3WtVzLedNLFHse8uYwtCNAiiGBAGvyABv1yVw2TZAdR5ScViHQ
+         5fMIfMpO3N1XvkkIMoF+Fcnr+Vi0VguaQJvm1Opf0BE/iujrN9qIp2hZZFt9rTXqI9D2
+         2M0g==
+X-Forwarded-Encrypted: i=1; AJvYcCWzsbWKnpMVOY/UlgqUDCUT7hAyNeWUX9iB3beSI9DaeHPatep3i3ZPYbXv0VwQXY5uveslxnZWwSdPWNJTYJwFHvFMqqxy00wq0Q==
+X-Gm-Message-State: AOJu0YzLYwnb7gyZz7nDlGZ0FUwO+I+UqZ3DKj04XsMHNfmBmWrPJnIl
+	U4dJ5+fuzlF3J3BdlMQEc7F7uYDRt94545xAV9iuDE0TDKz5uXBNAXGb8uIZKwA0Y8ZpWC8PTbU
+	8DndUsDh8Ed06CAbwkbQ7NL6A0WfLkTdV+Gna
+X-Google-Smtp-Source: AGHT+IE7+5hD8vaHxlSHFKeB32y+Axuwv2U+Nf23vOgdXYwHps4xkJ/AU7kOHGSLvQBiRDXSGnObqGUuG2+/N8DalJA=
+X-Received: by 2002:a25:9e0e:0:b0:de5:9f17:1ccc with SMTP id
+ 3f1490d57ef6-debb9e4d8eemr2152934276.54.1715168281161; Wed, 08 May 2024
+ 04:38:01 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg="pgp-sha512";
-	protocol="application/pgp-signature"; boundary="v7sa5w52x2sbyktg"
-Content-Disposition: inline
-In-Reply-To: <d11f875e-4fb5-46dd-a412-84818208c575@t-8ch.de>
-X-ClientProxiedBy: CAMSVWEXC01.scsc.local (2002:6a01:e347::6a01:e347) To
-	CAMSVWEXC02.scsc.local (2002:6a01:e348::6a01:e348)
-X-Brightmail-Tracker: H4sIAAAAAAAAA2WSf0wTZxzG917vrkez4lGdvIDOwQCz6RhuKO8C21RMdsuiwy1b4pJldnAU
-	Ai2kBabgsiKObvwQtJnQKrMgItCFstI1/DISwDIps0WJkskgqeAmUGB0hSBa13KQmey/z/N8
-	v0/u+7w5iie6RwZTabJsVi4TZ4SRAtxsWb75mjspLiV61L0bFVh0BHL19ZPIfKkEQ0/aVTxk
-	sowBNGlx8NFgiRR1Wt0YsptPE8h4/w6Buq7ewNGPhmWAbndcINHYT08JZO+2Emj4l2YcPegp
-	w5HZdYpEFTWFPDSpmybQfKmDRH2G33DU8biNj1aWPAQqvLjAQyMVkwBZdJtRRfMAjm62uoi9
-	W5nzyiGcGaiFjM6YwxibvicZ48JZPtNa9w3zV6sGMLaqGsDcGRnHGefKrxhjr58hGZfxxcTn
-	PxPEJ7MZabms/PV3jgpSda4JkPVzyLG66iq+EjzZXAz8KEjHwMFyKygGAkpENwBYvzTI58Q/
-	AFaZ7DgnXACqp5r465H2yi6MG1wBcLh4XXi3ZvvH1vJGABufthG+CE6Hw85zHatM0juhbWaU
-	5+NNdARculW4yjy6nQ9trgAfb6SPQtNlNfCxkN4LtY4hnOMAeEMzgXP7x2Dhmcfej1FeDoFX
-	PJTP9qPjYdt5O4+7NBS6L43hHH8NB0y/rx4K6QkB1HTZMG5wALYM95Mcb4RT/aa1mlugVV2K
-	cwE1gNc883xO6L3PVOBeS8fBU8MTa4l90GawEb6LIO0PR5wB3KH+8Ky5ksfZQvhdkYjbjoT6
-	sRm8Arysfaaa9plq2v+qcfZOqOtcIP9n74D1NdM8jt+Gzc1zuA7wm0Agm6OQSljFLhn7VZRC
-	LFXkyCRRSZlSI/D+81ZP/0IbqJ76O6oHYBToAeHesKNFbwfBuCxTxoZtEl5XxaaIhMni43ms
-	PPMLeU4Gq+gBIRQeFiiMSN7GimiJOJtNZ9ksVr4+xSi/YCW2R1rSi4Qx4elB5/Z35R9871Za
-	+ZbjQfXKdOsrOUox3EDMsoJq43MJ6pZDi+P63LRti5GzjTXXFoNky/5FR8J6Ba4909mfJm73
-	XF94kFCg/OHkwzJxxMcn4lRJwsqBw2/2FVyIVmtFcTumh2rclm/z/+guS7g6cyLrYt49Z+Mg
-	9uHIbodGETtep6ib3G9yOJY/Kv38S6vmtqM19uH4n7mS8kfd0p59KU3qOfP9w+ly+uDoXfTG
-	J1Wt+TAy3vnBkeTodztDscsr5g3WkwcOba/tdeclKopWnI3stIQ1vBWTF/8CnZrUwDc1hJd6
-	5k8Hzhnuvk/lT6q2htbqx19iMUr1KAxXpIp3vcqTK8T/AgNMPNVuBAAA
-X-Brightmail-Tracker: H4sIAAAAAAAAA2WSfUxTZxTG896vtmrntaC+gDpX2WaYVlpofWHAIDHLXXTL9seyZROxK1dg
-	0pb1w+AWNwxmzDIWQCICMotCJ4UUdmGErw1XWSlUpLjJ0Gx11kEmH9mgA0OKZYVmmcn+++V5
-	8jzn5OTwcdEiGcnP0RhYnUaZK6bWEa7AgGfvgurFY7HW4nB02mEmka9/gEIdV4ox9LirCEft
-	Dg9AEw4vD90oVqMe1wKG3B1fkIh7MEai3m8HCfRlyxJAP3ZfpJCneYVE7msuEv30jY1Ak/YS
-	AnX4zlCotK4QRxPmaRL99bmXQv0twwTqXu7kIf+jAIkKL83jaLx0AiCHeQsqtQ0R6Gabj0zd
-	ztQUjBLM0GXImDkjw1nPUgw3X85j2uo/Yf5oqwLMyIU6wIyN3yOYWb8TY9yWGYrxcTte3/CO
-	JEmnNRrYndlavSFZ/K4UySTSBCSRxSdIpHH70xNlcvG+lKRMNjfnBKvbl3JUkl356U2Q1xKV
-	f8ZnIguAf4sJCPiQjoddlb2YCazji+gGAE3dFVTI2Aa//vs2GeIwuDxmWtNF9ByAjdbnQgEO
-	QEuZiVg1CDoa9pzvXgtQ9B44MvMLvsrh9LPw0a3CNcbpLh50LdKrHEYfhe0N58AqC+lUWO0d
-	JUKlrRicthfgIWMTHKz6nQiFT0Bn61xwAD/IUfCrAH9VFtBJsLPGjYcWfQYuXPEQIT4FfY8n
-	QSkIq36iqfqJpur/mkJyDBwPPMT+J78ALXXTeIiToc32J2EGPCsIZ416dZZaL5PolWq9UZMl
-	UWnVHAg+XYdjqb0TNE7NSewA4wM7iA4mva1NbhBJaLQaVhwu/KFo/zGRMFN58kNWp83QGXNZ
-	vR3Ig1cswyM3q7TBD9YYMqSKWLk0XpEQK09QxIm3Cl/J+0wporOUBvY4y+axun9zGF8QWYBZ
-	xWWJk1SvYtDoUnNPN78hM3Utbnq+XvLqaLIqrNZ2teTNuqKLUa7E9T1X9wzE7Bqv2VbW4Tni
-	TO07HXjZ7uZ+Tn1YNb6oqLxeUrzT3HZj5Xr+3ZOXn7LMpsRNC5oiJu+0FH+wvn+0YkzRJapP
-	Gz4gqFj43nJhKOOU//D93VjfsNOmOh/RMLx1Y9TB3dQSeXfzHe39CKtAmNW84S3pvHTO7n+t
-	Nquitqnc8etvM40jMUcyPVPXyvEIWWv0jrRdG8/mr/i42733Bt7P+ah50n8rZuptc7r4Y2c6
-	zTsIdZVNndF732ugqeTD574T9jNpPO/x7QuH+l56oNTL5YYD0uUAb1ZM6LOV0hhcp1f+Aw47
-	jhcJBAAA
-X-CMS-MailID: 20240508113725eucas1p1c73dc1b7bc2780f99b281e4cc534d1a0
-X-Msg-Generator: CA
-X-RootMTR: 20240425031241eucas1p1fb0790e0d03ccbe4fca2b5f6da83d6db
-X-EPHeader: CA
-CMS-TYPE: 201P
-X-CMS-RootMailID: 20240425031241eucas1p1fb0790e0d03ccbe4fca2b5f6da83d6db
-References: <20240423-sysctl-const-handler-v3-0-e0beccb836e2@weissschuh.net>
-	<CGME20240425031241eucas1p1fb0790e0d03ccbe4fca2b5f6da83d6db@eucas1p1.samsung.com>
-	<20240424201234.3cc2b509@kernel.org>
-	<20240425110412.2n5d27smecfncsfa@joelS2.panther.com>
-	<d11f875e-4fb5-46dd-a412-84818208c575@t-8ch.de>
+References: <20240507103929.30003-1-mschmidt@redhat.com>
+In-Reply-To: <20240507103929.30003-1-mschmidt@redhat.com>
+From: Selvin Xavier <selvin.xavier@broadcom.com>
+Date: Wed, 8 May 2024 17:07:47 +0530
+Message-ID: <CA+sbYW0adh=c_TxeYmtTxnQosZnRdpncGT0=zDROudBreuHwhw@mail.gmail.com>
+Subject: Re: [PATCH] bnxt_re: avoid shift undefined behavior in bnxt_qplib_alloc_init_hwq
+To: Michal Schmidt <mschmidt@redhat.com>
+Cc: Jason Gunthorpe <jgg@ziepe.ca>, Leon Romanovsky <leon@kernel.org>, 
+	Devesh Sharma <devesh.sharma@broadcom.com>, 
+	Naresh Kumar PBS <nareshkumar.pbs@broadcom.com>, linux-rdma@vger.kernel.org, 
+	linux-kernel@vger.kernel.org
+Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
+	boundary="0000000000002a0f420617efbc1a"
 
---v7sa5w52x2sbyktg
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
+--0000000000002a0f420617efbc1a
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-Kees
+On Tue, May 7, 2024 at 4:10=E2=80=AFPM Michal Schmidt <mschmidt@redhat.com>=
+ wrote:
+>
+> Undefined behavior is triggered when bnxt_qplib_alloc_init_hwq is called
+> with hwq_attr->aux_depth !=3D 0 and hwq_attr->aux_stride =3D=3D 0.
+> In that case, "roundup_pow_of_two(hwq_attr->aux_stride)" gets called.
+> roundup_pow_of_two is documented as undefined for 0.
+>
+> Fix it in the one caller that had this combination.
+>
+> The undefined behavior was detected by UBSAN:
+>   UBSAN: shift-out-of-bounds in ./include/linux/log2.h:57:13
+>   shift exponent 64 is too large for 64-bit type 'long unsigned int'
+>   CPU: 24 PID: 1075 Comm: (udev-worker) Not tainted 6.9.0-rc6+ #4
+>   Hardware name: Abacus electric, s.r.o. - servis@abacus.cz Super Server/=
+H12SSW-iN, BIOS 2.7 10/25/2023
+>   Call Trace:
+>    <TASK>
+>    dump_stack_lvl+0x5d/0x80
+>    ubsan_epilogue+0x5/0x30
+>    __ubsan_handle_shift_out_of_bounds.cold+0x61/0xec
+>    __roundup_pow_of_two+0x25/0x35 [bnxt_re]
+>    bnxt_qplib_alloc_init_hwq+0xa1/0x470 [bnxt_re]
+>    bnxt_qplib_create_qp+0x19e/0x840 [bnxt_re]
+>    bnxt_re_create_qp+0x9b1/0xcd0 [bnxt_re]
+>    ? srso_alias_return_thunk+0x5/0xfbef5
+>    ? srso_alias_return_thunk+0x5/0xfbef5
+>    ? __kmalloc+0x1b6/0x4f0
+>    ? create_qp.part.0+0x128/0x1c0 [ib_core]
+>    ? __pfx_bnxt_re_create_qp+0x10/0x10 [bnxt_re]
+>    create_qp.part.0+0x128/0x1c0 [ib_core]
+>    ib_create_qp_kernel+0x50/0xd0 [ib_core]
+>    create_mad_qp+0x8e/0xe0 [ib_core]
+>    ? __pfx_qp_event_handler+0x10/0x10 [ib_core]
+>    ib_mad_init_device+0x2be/0x680 [ib_core]
+>    add_client_context+0x10d/0x1a0 [ib_core]
+>    enable_device_and_get+0xe0/0x1d0 [ib_core]
+>    ib_register_device+0x53c/0x630 [ib_core]
+>    ? srso_alias_return_thunk+0x5/0xfbef5
+>    bnxt_re_probe+0xbd8/0xe50 [bnxt_re]
+>    ? __pfx_bnxt_re_probe+0x10/0x10 [bnxt_re]
+>    auxiliary_bus_probe+0x49/0x80
+>    ? driver_sysfs_add+0x57/0xc0
+>    really_probe+0xde/0x340
+>    ? pm_runtime_barrier+0x54/0x90
+>    ? __pfx___driver_attach+0x10/0x10
+>    __driver_probe_device+0x78/0x110
+>    driver_probe_device+0x1f/0xa0
+>    __driver_attach+0xba/0x1c0
+>    bus_for_each_dev+0x8f/0xe0
+>    bus_add_driver+0x146/0x220
+>    driver_register+0x72/0xd0
+>    __auxiliary_driver_register+0x6e/0xd0
+>    ? __pfx_bnxt_re_mod_init+0x10/0x10 [bnxt_re]
+>    bnxt_re_mod_init+0x3e/0xff0 [bnxt_re]
+>    ? __pfx_bnxt_re_mod_init+0x10/0x10 [bnxt_re]
+>    do_one_initcall+0x5b/0x310
+>    do_init_module+0x90/0x250
+>    init_module_from_file+0x86/0xc0
+>    idempotent_init_module+0x121/0x2b0
+>    __x64_sys_finit_module+0x5e/0xb0
+>    do_syscall_64+0x82/0x160
+>    ? srso_alias_return_thunk+0x5/0xfbef5
+>    ? syscall_exit_to_user_mode_prepare+0x149/0x170
+>    ? srso_alias_return_thunk+0x5/0xfbef5
+>    ? syscall_exit_to_user_mode+0x75/0x230
+>    ? srso_alias_return_thunk+0x5/0xfbef5
+>    ? do_syscall_64+0x8e/0x160
+>    ? srso_alias_return_thunk+0x5/0xfbef5
+>    ? __count_memcg_events+0x69/0x100
+>    ? srso_alias_return_thunk+0x5/0xfbef5
+>    ? count_memcg_events.constprop.0+0x1a/0x30
+>    ? srso_alias_return_thunk+0x5/0xfbef5
+>    ? handle_mm_fault+0x1f0/0x300
+>    ? srso_alias_return_thunk+0x5/0xfbef5
+>    ? do_user_addr_fault+0x34e/0x640
+>    ? srso_alias_return_thunk+0x5/0xfbef5
+>    ? srso_alias_return_thunk+0x5/0xfbef5
+>    entry_SYSCALL_64_after_hwframe+0x76/0x7e
+>   RIP: 0033:0x7f4e5132821d
+>   Code: ff c3 66 2e 0f 1f 84 00 00 00 00 00 90 f3 0f 1e fa 48 89 f8 48 89=
+ f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 =
+ff ff 73 01 c3 48 8b 0d e3 db 0c 00 f7 d8 64 89 01 48
+>   RSP: 002b:00007ffca9c906a8 EFLAGS: 00000246 ORIG_RAX: 0000000000000139
+>   RAX: ffffffffffffffda RBX: 0000563ec8a8f130 RCX: 00007f4e5132821d
+>   RDX: 0000000000000000 RSI: 00007f4e518fa07d RDI: 000000000000003b
+>   RBP: 00007ffca9c90760 R08: 00007f4e513f6b20 R09: 00007ffca9c906f0
+>   R10: 0000563ec8a8faa0 R11: 0000000000000246 R12: 00007f4e518fa07d
+>   R13: 0000000000020000 R14: 0000563ec8409e90 R15: 0000563ec8a8fa60
+>    </TASK>
+>   ---[ end trace ]---
+>
+> Fixes: 0c4dcd602817 ("RDMA/bnxt_re: Refactor hardware queue memory alloca=
+tion")
+> Signed-off-by: Michal Schmidt <mschmidt@redhat.com>
+Acked-by: Selvin Xavier <selvin.xavier@broadcom.com>
 
-Could you comment on the feasibility of this alternative from the
-Control Flow Integrity perspective. My proposal is to change the
-proc_handler to void* and back in the same release. So there would not
-be a kernel released with a void* proc_handler.
+Thanks,
+Selvin
+> ---
+>  drivers/infiniband/hw/bnxt_re/qplib_fp.c | 3 ++-
+>  1 file changed, 2 insertions(+), 1 deletion(-)
+>
+> diff --git a/drivers/infiniband/hw/bnxt_re/qplib_fp.c b/drivers/infiniban=
+d/hw/bnxt_re/qplib_fp.c
+> index 439d0c7c5d0c..04258676d072 100644
+> --- a/drivers/infiniband/hw/bnxt_re/qplib_fp.c
+> +++ b/drivers/infiniband/hw/bnxt_re/qplib_fp.c
+> @@ -1013,7 +1013,8 @@ int bnxt_qplib_create_qp(struct bnxt_qplib_res *res=
+, struct bnxt_qplib_qp *qp)
+>         hwq_attr.stride =3D sizeof(struct sq_sge);
+>         hwq_attr.depth =3D bnxt_qplib_get_depth(sq);
+>         hwq_attr.aux_stride =3D psn_sz;
+> -       hwq_attr.aux_depth =3D bnxt_qplib_set_sq_size(sq, qp->wqe_mode);
+> +       hwq_attr.aux_depth =3D psn_sz ? bnxt_qplib_set_sq_size(sq, qp->wq=
+e_mode)
+> +                                   : 0;
+>         /* Update msn tbl size */
+>         if (BNXT_RE_HW_RETX(qp->dev_cap_flags) && psn_sz) {
+>                 hwq_attr.aux_depth =3D roundup_pow_of_two(bnxt_qplib_set_=
+sq_size(sq, qp->wqe_mode));
+> --
+> 2.44.0
+>
 
-> > However, there is an alternative way to do this that allows chunking. We
-> > first define the proc_handler as a void pointer (casting it where it is
-> > being used) [1]. Then we could do the constification by subsystem (like
-> > Jakub proposes). Finally we can "revert the void pointer change so we
-> > don't have one size fit all pointer as our proc_handler [2].
-> >=20
-> > Here are some comments about the alternative:
-> > 1. We would need to make the first argument const in all the derived
-> >    proc_handlers [3]=20
-> > 2. There would be no undefined behavior for two reasons:
-> >    2.1. There is no case where we change the first argument. We know
-> >         this because there are no compile errors after we make it const.
-> >    2.2. We would always go from non-const to const. This is the case
-> >         because all the stuff that is unchanged in non-const.
-> > 3. If the idea sticks, it should go into mainline as one patchset. I
-> >    would not like to have a void* proc_handler in a kernel release.
-> > 4. I think this is a "win/win" solution were the constification goes
-> >    through and it is divided in such a way that it is reviewable.
-> >=20
-> > I would really like to hear what ppl think about this "heretic"
-> > alternative. @Thomas, @Luis, @Kees @Jakub?
->=20
-> Thanks for that alternative, I'm not a big fan though.
->=20
-> Besides the wonky syntax, Control Flow Integrity should trap on
-> this construct. Functions are called through different pointers than
-> their actual types which is exactly what CFI is meant to prevent.
->=20
-> Maybe people find it easier to review when using
-> "--word-diff" and/or "-U0" with git diff/show.
-> There is really nothing going an besides adding a few "const"s.
->=20
-> But if the consensus prefers this solution, I'll be happy to adopt it.
->=20
-> > [1] https://git.kernel.org/pub/scm/linux/kernel/git/joel.granados/linux=
-=2Egit/commit/?h=3Djag/constfy_treewide_alternative&id=3D4a383503b1ea650d4e=
-12c1f5838974e879f5aa6f
-> > [2] https://git.kernel.org/pub/scm/linux/kernel/git/joel.granados/linux=
-=2Egit/commit/?h=3Djag/constfy_treewide_alternative&id=3Da3be65973d27ec2933=
-b9e81e1bec60be3a9b460d
-> > [3] proc_dostring, proc_dobool, proc_dointvec....
->=20
->=20
-> Thomas
+--0000000000002a0f420617efbc1a
+Content-Type: application/pkcs7-signature; name="smime.p7s"
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename="smime.p7s"
+Content-Description: S/MIME Cryptographic Signature
 
-Best
---=20
-
-Joel Granados
-
---v7sa5w52x2sbyktg
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQGzBAABCgAdFiEErkcJVyXmMSXOyyeQupfNUreWQU8FAmY7Y+4ACgkQupfNUreW
-QU9YEgwAhDVP7Y6eoR6THZeBhX5jlhu2G9nJstttqNF2XutpFKVjE8Z3C89eHNng
-DCMo7QPRNspNV7452TWHzjB9TyWvZ3WtKaNd1O0ECwCMpZ32/0aZ5SAsMd+cY2D5
-yDhAjIzVJups6lQWx1bTMDtuWft9Ebi7Wvd9I3Q+Qjq5khbrSHMCzCr1Bl2ZfscY
-ApmHqb3v0KxOM+QrrybFvFCD/tt7uYyJfmH96GgBLdl2+7ceoUigiSK5ebySplCo
-UnNLZi6LEwS1kjyNpbWQbKq9czcSKCCYVM3kzqzcPBdRU/km7XH0oi7SybNt7PSz
-ZvFQgc34OiFAFcb9twbtzTKfXVBXpBwmOwwgqLw4yNS2C8QH+nbO6qUmHoDp44ZW
-6jYrjdWbdDrP+Mwh56FkIcs84+0tgdLgsT6ni9LyK50S8Ik7ivQRCnojjpNJS19p
-wRnfmB6C3lNH2MWxq9gw8k+RMhDB3eRxcXrTbEjYImsO4zb3xo+CjjPG5TGkvezg
-ehHTRa51
-=YpMU
------END PGP SIGNATURE-----
-
---v7sa5w52x2sbyktg--
+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
+FYMZp2DojLAq9f4Oi2OBetbnWxo0WGycXpmq/jC4PUx2u9mazQ79i80VLagGRshWniESXuf+SYG8
++zBimjld9ZZnwm7itHAZdtme4YYFxx+EHa4PUxPV8t+hPHhsiIjirPa1pVXPbQIDAQABo4IB2zCC
+AdcwDgYDVR0PAQH/BAQDAgWgMIGjBggrBgEFBQcBAQSBljCBkzBOBggrBgEFBQcwAoZCaHR0cDov
+L3NlY3VyZS5nbG9iYWxzaWduLmNvbS9jYWNlcnQvZ3NnY2NyM3BlcnNvbmFsc2lnbjJjYTIwMjAu
+Y3J0MEEGCCsGAQUFBzABhjVodHRwOi8vb2NzcC5nbG9iYWxzaWduLmNvbS9nc2djY3IzcGVyc29u
+YWxzaWduMmNhMjAyMDBNBgNVHSAERjBEMEIGCisGAQQBoDIBKAowNDAyBggrBgEFBQcCARYmaHR0
+cHM6Ly93d3cuZ2xvYmFsc2lnbi5jb20vcmVwb3NpdG9yeS8wCQYDVR0TBAIwADBJBgNVHR8EQjBA
+MD6gPKA6hjhodHRwOi8vY3JsLmdsb2JhbHNpZ24uY29tL2dzZ2NjcjNwZXJzb25hbHNpZ24yY2Ey
+MDIwLmNybDAlBgNVHREEHjAcgRpzZWx2aW4ueGF2aWVyQGJyb2FkY29tLmNvbTATBgNVHSUEDDAK
+BggrBgEFBQcDBDAfBgNVHSMEGDAWgBSWM9HmWBdbNHWKgVZk1b5I3qGPzzAdBgNVHQ4EFgQU3TaH
+dsgUhTW3LwObmZ20fj+8Xj8wDQYJKoZIhvcNAQELBQADggEBAAbt6Sptp6ZlTnhM2FDhkVXks68/
+iqvfL/e8wSPVdBxOuiP+8EXGLV3E72KfTTJXMbkcmFpK2K11poBDQJhz0xyOGTESjXNnN6Eqq+iX
+hQtF8xG2lzPq8MijKI4qXk5Vy5DYfwsVfcF0qJw5AhC32nU9uuIPJq8/mQbZfqmoanV/yadootGr
+j1Ze9ndr+YDXPpCymOsynmmw0ErHZGGW1OmMpAEt0A+613glWCURLDlP8HONi1wnINV6aDiEf0ad
+9NMGxDsp+YWiRXD3txfo2OMQbpIxM90QfhKKacX8t1J1oAAWxDrLVTJBXBNvz5tr+D1sYwuye93r
+hImmkM1unboxggJtMIICaQIBATBrMFsxCzAJBgNVBAYTAkJFMRkwFwYDVQQKExBHbG9iYWxTaWdu
+IG52LXNhMTEwLwYDVQQDEyhHbG9iYWxTaWduIEdDQyBSMyBQZXJzb25hbFNpZ24gMiBDQSAyMDIw
+Agxy+Cu4x/7lM0zxY7cwDQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIEICpS/U0ZqW2m
+hjhqTKKsGzswafTMCTNCNALUTnKMCffXMBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZI
+hvcNAQkFMQ8XDTI0MDUwODExMzgwMVowaQYJKoZIhvcNAQkPMVwwWjALBglghkgBZQMEASowCwYJ
+YIZIAWUDBAEWMAsGCWCGSAFlAwQBAjAKBggqhkiG9w0DBzALBgkqhkiG9w0BAQowCwYJKoZIhvcN
+AQEHMAsGCWCGSAFlAwQCATANBgkqhkiG9w0BAQEFAASCAQB33rIwmajxgSV+OuxLWgm63rhaliyu
+D7v+f/CQhMHoT48Snia7Pa1mSiT0Nhadqmh2wffawKYCQg1gq9RZDbsQR/QdhC7QHSYr7iUjqgIf
++ptnsMs3glTtOFGQ5Jo1X+qKBrYSWshWzEEP89dc/37BrS1E5IKXDalVHaLWO6CE6CM0p3Dto4oh
+NTlod5EAEksdHJJE9AZD7LNQvT9KzjtbPxXeL/8GfueOFWjnq8v0BrkEUT9g4WJpVJSazP7RJ1Cl
+7QzgzDetcbLNJU6TJZImxqVYmmIaCEGwj4ncadicaOimaGd7vJhrQlnE6xg8jE17gtRFWGdmiES4
+TMTvB0p0
+--0000000000002a0f420617efbc1a--
 
