@@ -1,270 +1,156 @@
-Return-Path: <linux-rdma+bounces-2337-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-2338-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 55C978BF867
-	for <lists+linux-rdma@lfdr.de>; Wed,  8 May 2024 10:23:06 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id BBD848BF869
+	for <lists+linux-rdma@lfdr.de>; Wed,  8 May 2024 10:23:22 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A19A7B21EBD
-	for <lists+linux-rdma@lfdr.de>; Wed,  8 May 2024 08:23:03 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 330FB1F24570
+	for <lists+linux-rdma@lfdr.de>; Wed,  8 May 2024 08:23:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5B77D405FC;
-	Wed,  8 May 2024 08:22:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F0902446D5;
+	Wed,  8 May 2024 08:23:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="EbHlgkfj"
+	dkim=pass (1024-bit key) header.d=ffwll.ch header.i=@ffwll.ch header.b="O051azcW"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ej1-f42.google.com (mail-ej1-f42.google.com [209.85.218.42])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1CA242C861
-	for <linux-rdma@vger.kernel.org>; Wed,  8 May 2024 08:22:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4C7883FBBD
+	for <linux-rdma@vger.kernel.org>; Wed,  8 May 2024 08:23:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1715156577; cv=none; b=Hro2U2SelZEkcYwrcmsHQFwEFonwPc05cTqjR6rXuNHZF5ve46I094OmtsQHz0NFXHYc8S/qfzdTCgFacYYkYjw7ZPkmwTIRsKGoYwmWzGl2LZfIXzSd28Cfp7Vj1d+RL7xLzmNKG1Icnr2Ep1Z544eH8OGJo+JSV964/d15hsk=
+	t=1715156594; cv=none; b=ndF58i1oO8ESxmow5wTl1auRJpMncvb7aEUDSvdRsgY61kPOO51Mh8F7YUkoSpnBUg3BBuyzy0/QWGJDPiVm2VM8yaQsLDtBrhRlELbRBGKUR3YqoG/wkDUEWireiVhQx8d0eSZNM5FhgfHdzwtBxP4f/V1MWA69neIlxn2BTgc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1715156577; c=relaxed/simple;
-	bh=teXcGKMmVXQVOHuUo9+oD7MP1U2l4HXu/P0aH1junRQ=;
+	s=arc-20240116; t=1715156594; c=relaxed/simple;
+	bh=L9G2zXTS16Mb+4am/gUrC3INgoVtn6qnR/OXIt3yAGk=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=R3KBqdJIvZoa/alkc4eDf3jfsSuo6Zg8QPL41yZuRlw2wZdKwXmUBe653HJb05gfpRH24bMpjjzNAw1+y4CYRqSPWMZG0Bt1gAwg7K5CG/jGyKjbvOi6MomA5exozlMBRGXoR5TpYcPsCp0JAHHrdkVS8sfsu3SalVwYewyu1E8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=EbHlgkfj; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CF0ADC113CC;
-	Wed,  8 May 2024 08:22:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1715156576;
-	bh=teXcGKMmVXQVOHuUo9+oD7MP1U2l4HXu/P0aH1junRQ=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=EbHlgkfj7DwGkdwQyPFV+PHgXxsqw45+dASiZpFUVbHRNfHK8SJJ62GtJxMgRubE/
-	 PRlr3Hqc21Mwr1RScbuBetHuV73zJbpvdi7IJIYPBbNPuuf3F3oy2mDOg1Qkti6LEl
-	 qnnbEI4cg+cBFKKRbhsOEpQEoMYb00Et2u0GojXmePNc2XsuJDWuuepS8G4myTCXRG
-	 OtRtITConW07OVJ0LHnsIbxs4EaApxXcq3g6+hg33XDIBD1ZAMFyIjJp/grxOAY7Eh
-	 rx/3smjeGrHKcnayWRnD4o02wRk/tJOTIxfkbanEFtcS/EhbmhUz207AGaXL3nRWUn
-	 jcUV5pVBrnV7Q==
-Date: Wed, 8 May 2024 11:22:52 +0300
-From: Leon Romanovsky <leon@kernel.org>
-To: Selvin Xavier <selvin.xavier@broadcom.com>
-Cc: jgg@ziepe.ca, linux-rdma@vger.kernel.org,
-	andrew.gospodarek@broadcom.com
-Subject: Re: [PATCH for-next 1/2] RDMA/bnxt_re: Allow MSN table capability
- check
-Message-ID: <20240508082252.GC78961@unreal>
-References: <1714795819-12543-1-git-send-email-selvin.xavier@broadcom.com>
- <1714795819-12543-2-git-send-email-selvin.xavier@broadcom.com>
- <20240505134606.GD68202@unreal>
- <CA+sbYW0O=h4hdkCqtT3SievAyReV7uKMsbLsAg-s7-YHOHvyBw@mail.gmail.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=WsD2DQGpsAqsOeEvDwj2LmCqJs5CDvDMjefKjpgYEKR9I7reBy4+kMTSJcGWsexL1uXL/OzFbDHf+yr2OzVcXUoOtSXft0sQYM8RmE8M70OjNW3f8hLbOFv5TD8YvOkOm9wgaPN2fm85Gb7vyvbFUakejQix6GtS/t8kYUFjp2s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ffwll.ch; spf=none smtp.mailfrom=ffwll.ch; dkim=pass (1024-bit key) header.d=ffwll.ch header.i=@ffwll.ch header.b=O051azcW; arc=none smtp.client-ip=209.85.218.42
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ffwll.ch
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=ffwll.ch
+Received: by mail-ej1-f42.google.com with SMTP id a640c23a62f3a-a59ad24baa2so135301466b.1
+        for <linux-rdma@vger.kernel.org>; Wed, 08 May 2024 01:23:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ffwll.ch; s=google; t=1715156591; x=1715761391; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=xX8T7z7JX/d3uw4bZ2bZEEE/EwwDbdoePKTyocl8yug=;
+        b=O051azcWeaUdieG5z6eGWGsCxpkth8aoKM7Uxqs31yUSx1RF57dkPOV4vdKxMp5/dy
+         fsau1jvbVsPyEXRadd0Z/cGo70XACc/u5KEalTe9iMLz5YM0GJGTsygKzU5aKD2PConV
+         NPMRZ2Q9gxEprU9MbE8FoGNLB1+a6OY0Pxf7k=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1715156591; x=1715761391;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=xX8T7z7JX/d3uw4bZ2bZEEE/EwwDbdoePKTyocl8yug=;
+        b=JjJ7TJHGJ0EpF1l0pHDj0o/LyGxAlmJb679pxRL3zmFXMgcr/JxSDR5BlZYUbl8szJ
+         uWqHsmg3DkVBuFPrqCpDg6qi/+WIYfd2V+8nEhtP8ygshi0P8faYEPmvDNEUuQH0nj0k
+         RmfuGvRoZB9Xnr1azNUQefCx6nYXV1ZT6GdLddEhYgEIZKZw3hgHLQkeW4eVhM1Psri+
+         CNtMYSakXgE0eN6nqvGPuwqm3cqewniKOUWMYdCwUzvGpOd6FZApj6gI0ZhqW59gnr7t
+         6k4Ks0fD5Rc4SDhGhQulLIqzQ+VRIX2LIu0hX1Bb7UHsPcJgw2t8jX58QJDxNUpsCk6f
+         gQBw==
+X-Forwarded-Encrypted: i=1; AJvYcCUYPynV9RWGZQr8UMyJa6smE3/z6jc36r18Prdjt2/JGMduUm0jfZC1+F/6JCfqkkfZGsC2zGd1O7euYiuauF7sUlqDnxzXHi3E5A==
+X-Gm-Message-State: AOJu0Yzp6DxHXiqmNFMZpB+ZovkfKwjBsePW6rFZkaCLk8+wFJ0R3ghg
+	LMhzfOpUNsdGg1mJw+I+FcwzxLevSdClgXQJA/oEAi9Vu/WT6A7dhq3JTAFXdUTswlplsZcz+5h
+	J
+X-Google-Smtp-Source: AGHT+IERZtXNeoCiRmo1mqas8Y/UQ6pzLyLJDXpgtWRZ1RzE0ZKKFqa1dMwitwttSdKyrV7CIRB1ew==
+X-Received: by 2002:a17:906:f359:b0:a59:dbb0:ddcf with SMTP id a640c23a62f3a-a59fb6fba8fmr121830766b.0.1715156591554;
+        Wed, 08 May 2024 01:23:11 -0700 (PDT)
+Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
+        by smtp.gmail.com with ESMTPSA id g8-20020a1709067c4800b00a59a9cfec7esm5128792ejp.133.2024.05.08.01.23.10
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 08 May 2024 01:23:11 -0700 (PDT)
+Date: Wed, 8 May 2024 10:23:09 +0200
+From: Daniel Vetter <daniel@ffwll.ch>
+To: Jason Gunthorpe <jgg@nvidia.com>
+Cc: "Kasireddy, Vivek" <vivek.kasireddy@intel.com>,
+	Alex Williamson <alex.williamson@redhat.com>,
+	"dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
+	"kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+	"linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+	Christoph Hellwig <hch@infradead.org>
+Subject: Re: [PATCH v1 2/2] vfio/pci: Allow MMIO regions to be exported
+ through dma-buf
+Message-ID: <Zjs2bVVxBHEGUhF_@phenom.ffwll.local>
+References: <20240422063602.3690124-1-vivek.kasireddy@intel.com>
+ <20240422063602.3690124-3-vivek.kasireddy@intel.com>
+ <20240430162450.711f4616.alex.williamson@redhat.com>
+ <20240501125309.GB941030@nvidia.com>
+ <IA0PR11MB718509BB8B56455710DB2033F8182@IA0PR11MB7185.namprd11.prod.outlook.com>
+ <20240508003153.GC4650@nvidia.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CA+sbYW0O=h4hdkCqtT3SievAyReV7uKMsbLsAg-s7-YHOHvyBw@mail.gmail.com>
+In-Reply-To: <20240508003153.GC4650@nvidia.com>
+X-Operating-System: Linux phenom 6.6.15-amd64 
 
-On Mon, May 06, 2024 at 07:30:12PM +0530, Selvin Xavier wrote:
-> On Sun, May 5, 2024 at 7:16 PM Leon Romanovsky <leon@kernel.org> wrote:
-> >
-> > On Fri, May 03, 2024 at 09:10:18PM -0700, Selvin Xavier wrote:
-> > > FW reports the HW capability to use PSN table or MSN table and
-> > > driver/library need to select it based on this capability.
-> > > Use the new capability instead of the older capability check for HW
-> > > retransmission while handling the MSN/PSN table.
-> > > Also, Updated the FW interface structures to handle the new fields.
-> > >
-> > > Signed-off-by: Selvin Xavier <selvin.xavier@broadcom.com>
-> > > ---
-> > >  drivers/infiniband/hw/bnxt_re/qplib_fp.c  | 12 ++++++------
-> > >  drivers/infiniband/hw/bnxt_re/qplib_fp.h  |  2 +-
-> > >  drivers/infiniband/hw/bnxt_re/qplib_res.h |  6 ++++++
-> > >  drivers/infiniband/hw/bnxt_re/qplib_sp.c  |  1 +
-> > >  drivers/infiniband/hw/bnxt_re/qplib_sp.h  |  1 +
-> > >  drivers/infiniband/hw/bnxt_re/roce_hsi.h  | 30 +++++++++++++++++++++++++++++-
-> > >  6 files changed, 44 insertions(+), 8 deletions(-)
-> >
-> > I have same comment as I gave in rdma-core PR.
-> > It seems like your change will cause to old devices to behave as they
-> > don't have PSN table anymore.
-> Hi Leon,
+On Tue, May 07, 2024 at 09:31:53PM -0300, Jason Gunthorpe wrote:
+> On Thu, May 02, 2024 at 07:50:36AM +0000, Kasireddy, Vivek wrote:
+> > Hi Jason,
+> > 
+> > > 
+> > > On Tue, Apr 30, 2024 at 04:24:50PM -0600, Alex Williamson wrote:
+> > > > > +static vm_fault_t vfio_pci_dma_buf_fault(struct vm_fault *vmf)
+> > > > > +{
+> > > > > +	struct vm_area_struct *vma = vmf->vma;
+> > > > > +	struct vfio_pci_dma_buf *priv = vma->vm_private_data;
+> > > > > +	pgoff_t pgoff = vmf->pgoff;
+> > > > > +
+> > > > > +	if (pgoff >= priv->nr_pages)
+> > > > > +		return VM_FAULT_SIGBUS;
+> > > > > +
+> > > > > +	return vmf_insert_pfn(vma, vmf->address,
+> > > > > +			      page_to_pfn(priv->pages[pgoff]));
+> > > > > +}
+> > > >
+> > > > How does this prevent the MMIO space from being mmap'd when disabled
+> > > at
+> > > > the device?  How is the mmap revoked when the MMIO becomes disabled?
+> > > > Is it part of the move protocol?
+> > In this case, I think the importers that mmap'd the dmabuf need to be tracked
+> > separately and their VMA PTEs need to be zapped when MMIO access is revoked.
 > 
-> I replied to your comment in the rdma-core PR. For older devices, the
-> PSN table is created. For new devices, MSN table will be created.
-> This patch is changing the capability check from BNXT_RE_HW_RETX to
-> _is_host_msn_table. Both capabilities are reported by FW.
-> Driver is deciding which table to be created and it's better to decide
-> it using _is_host_msn_table capability. For older adapters, this
-> capability will be 0 which means PSN table.
-
-Thanks.
-
+> Which, as we know, is quite hard.
 > 
-> Thanks
-> >
-> > Thanks
-> >
-> > >
-> > > diff --git a/drivers/infiniband/hw/bnxt_re/qplib_fp.c b/drivers/infiniband/hw/bnxt_re/qplib_fp.c
-> > > index 439d0c7..3c961a8 100644
-> > > --- a/drivers/infiniband/hw/bnxt_re/qplib_fp.c
-> > > +++ b/drivers/infiniband/hw/bnxt_re/qplib_fp.c
-> > > @@ -984,7 +984,7 @@ int bnxt_qplib_create_qp(struct bnxt_qplib_res *res, struct bnxt_qplib_qp *qp)
-> > >       u16 nsge;
-> > >
-> > >       if (res->dattr)
-> > > -             qp->dev_cap_flags = res->dattr->dev_cap_flags;
-> > > +             qp->is_host_msn_tbl = _is_host_msn_table(res->dattr->dev_cap_flags2);
-> > >
-> > >       sq->dbinfo.flags = 0;
-> > >       bnxt_qplib_rcfw_cmd_prep((struct cmdq_base *)&req,
-> > > @@ -1002,7 +1002,7 @@ int bnxt_qplib_create_qp(struct bnxt_qplib_res *res, struct bnxt_qplib_qp *qp)
-> > >                        sizeof(struct sq_psn_search_ext) :
-> > >                        sizeof(struct sq_psn_search);
-> > >
-> > > -             if (BNXT_RE_HW_RETX(qp->dev_cap_flags)) {
-> > > +             if (qp->is_host_msn_tbl) {
-> > >                       psn_sz = sizeof(struct sq_msn_search);
-> > >                       qp->msn = 0;
-> > >               }
-> > > @@ -1015,7 +1015,7 @@ int bnxt_qplib_create_qp(struct bnxt_qplib_res *res, struct bnxt_qplib_qp *qp)
-> > >       hwq_attr.aux_stride = psn_sz;
-> > >       hwq_attr.aux_depth = bnxt_qplib_set_sq_size(sq, qp->wqe_mode);
-> > >       /* Update msn tbl size */
-> > > -     if (BNXT_RE_HW_RETX(qp->dev_cap_flags) && psn_sz) {
-> > > +     if (qp->is_host_msn_tbl && psn_sz) {
-> > >               hwq_attr.aux_depth = roundup_pow_of_two(bnxt_qplib_set_sq_size(sq, qp->wqe_mode));
-> > >               qp->msn_tbl_sz = hwq_attr.aux_depth;
-> > >               qp->msn = 0;
-> > > @@ -1636,7 +1636,7 @@ static void bnxt_qplib_fill_psn_search(struct bnxt_qplib_qp *qp,
-> > >       if (!swq->psn_search)
-> > >               return;
-> > >       /* Handle MSN differently on cap flags  */
-> > > -     if (BNXT_RE_HW_RETX(qp->dev_cap_flags)) {
-> > > +     if (qp->is_host_msn_tbl) {
-> > >               bnxt_qplib_fill_msn_search(qp, wqe, swq);
-> > >               return;
-> > >       }
-> > > @@ -1818,7 +1818,7 @@ int bnxt_qplib_post_send(struct bnxt_qplib_qp *qp,
-> > >       }
-> > >
-> > >       swq = bnxt_qplib_get_swqe(sq, &wqe_idx);
-> > > -     bnxt_qplib_pull_psn_buff(qp, sq, swq, BNXT_RE_HW_RETX(qp->dev_cap_flags));
-> > > +     bnxt_qplib_pull_psn_buff(qp, sq, swq, qp->is_host_msn_tbl);
-> > >
-> > >       idx = 0;
-> > >       swq->slot_idx = hwq->prod;
-> > > @@ -2008,7 +2008,7 @@ int bnxt_qplib_post_send(struct bnxt_qplib_qp *qp,
-> > >               rc = -EINVAL;
-> > >               goto done;
-> > >       }
-> > > -     if (!BNXT_RE_HW_RETX(qp->dev_cap_flags) || msn_update) {
-> > > +     if (!qp->is_host_msn_tbl || msn_update) {
-> > >               swq->next_psn = sq->psn & BTH_PSN_MASK;
-> > >               bnxt_qplib_fill_psn_search(qp, wqe, swq);
-> > >       }
-> > > diff --git a/drivers/infiniband/hw/bnxt_re/qplib_fp.h b/drivers/infiniband/hw/bnxt_re/qplib_fp.h
-> > > index 7fd4506..5b8d097 100644
-> > > --- a/drivers/infiniband/hw/bnxt_re/qplib_fp.h
-> > > +++ b/drivers/infiniband/hw/bnxt_re/qplib_fp.h
-> > > @@ -340,7 +340,7 @@ struct bnxt_qplib_qp {
-> > >       struct list_head                rq_flush;
-> > >       u32                             msn;
-> > >       u32                             msn_tbl_sz;
-> > > -     u16                             dev_cap_flags;
-> > > +     u16                             is_host_msn_tbl;
-> > >  };
-> > >
-> > >  #define BNXT_QPLIB_MAX_CQE_ENTRY_SIZE        sizeof(struct cq_base)
-> > > diff --git a/drivers/infiniband/hw/bnxt_re/qplib_res.h b/drivers/infiniband/hw/bnxt_re/qplib_res.h
-> > > index 61628f7..a0f78cd 100644
-> > > --- a/drivers/infiniband/hw/bnxt_re/qplib_res.h
-> > > +++ b/drivers/infiniband/hw/bnxt_re/qplib_res.h
-> > > @@ -554,6 +554,12 @@ static inline bool _is_hw_retx_supported(u16 dev_cap_flags)
-> > >
-> > >  #define BNXT_RE_HW_RETX(a) _is_hw_retx_supported((a))
-> > >
-> > > +static inline bool _is_host_msn_table(u16 dev_cap_ext_flags2)
-> > > +{
-> > > +     return (dev_cap_ext_flags2 & CREQ_QUERY_FUNC_RESP_SB_REQ_RETRANSMISSION_SUPPORT_MASK) ==
-> > > +             CREQ_QUERY_FUNC_RESP_SB_REQ_RETRANSMISSION_SUPPORT_HOST_MSN_TABLE;
-> > > +}
-> > > +
-> > >  static inline u8 bnxt_qplib_dbr_pacing_en(struct bnxt_qplib_chip_ctx *cctx)
-> > >  {
-> > >       return cctx->modes.dbr_pacing;
-> > > diff --git a/drivers/infiniband/hw/bnxt_re/qplib_sp.c b/drivers/infiniband/hw/bnxt_re/qplib_sp.c
-> > > index 8beeedd..9328db9 100644
-> > > --- a/drivers/infiniband/hw/bnxt_re/qplib_sp.c
-> > > +++ b/drivers/infiniband/hw/bnxt_re/qplib_sp.c
-> > > @@ -156,6 +156,7 @@ int bnxt_qplib_get_dev_attr(struct bnxt_qplib_rcfw *rcfw,
-> > >                                   (0x01 << RCFW_DBR_BASE_PAGE_SHIFT);
-> > >       attr->max_sgid = BNXT_QPLIB_NUM_GIDS_SUPPORTED;
-> > >       attr->dev_cap_flags = le16_to_cpu(sb->dev_cap_flags);
-> > > +     attr->dev_cap_flags2 = le16_to_cpu(sb->dev_cap_ext_flags_2);
-> > >
-> > >       bnxt_qplib_query_version(rcfw, attr->fw_ver);
-> > >
-> > > diff --git a/drivers/infiniband/hw/bnxt_re/qplib_sp.h b/drivers/infiniband/hw/bnxt_re/qplib_sp.h
-> > > index d33c78b..16a67d7 100644
-> > > --- a/drivers/infiniband/hw/bnxt_re/qplib_sp.h
-> > > +++ b/drivers/infiniband/hw/bnxt_re/qplib_sp.h
-> > > @@ -72,6 +72,7 @@ struct bnxt_qplib_dev_attr {
-> > >       u8                              tqm_alloc_reqs[MAX_TQM_ALLOC_REQ];
-> > >       bool                            is_atomic;
-> > >       u16                             dev_cap_flags;
-> > > +     u16                             dev_cap_flags2;
-> > >       u32                             max_dpi;
-> > >  };
-> > >
-> > > diff --git a/drivers/infiniband/hw/bnxt_re/roce_hsi.h b/drivers/infiniband/hw/bnxt_re/roce_hsi.h
-> > > index 605c946..0425309 100644
-> > > --- a/drivers/infiniband/hw/bnxt_re/roce_hsi.h
-> > > +++ b/drivers/infiniband/hw/bnxt_re/roce_hsi.h
-> > > @@ -2157,8 +2157,36 @@ struct creq_query_func_resp_sb {
-> > >       __le32  tqm_alloc_reqs[12];
-> > >       __le32  max_dpi;
-> > >       u8      max_sge_var_wqe;
-> > > -     u8      reserved_8;
-> > > +     u8      dev_cap_ext_flags;
-> > > +     #define CREQ_QUERY_FUNC_RESP_SB_ATOMIC_OPS_NOT_SUPPORTED         0x1UL
-> > > +     #define CREQ_QUERY_FUNC_RESP_SB_DRV_VERSION_RGTR_SUPPORTED       0x2UL
-> > > +     #define CREQ_QUERY_FUNC_RESP_SB_CREATE_QP_BATCH_SUPPORTED        0x4UL
-> > > +     #define CREQ_QUERY_FUNC_RESP_SB_DESTROY_QP_BATCH_SUPPORTED       0x8UL
-> > > +     #define CREQ_QUERY_FUNC_RESP_SB_ROCE_STATS_EXT_CTX_SUPPORTED     0x10UL
-> > > +     #define CREQ_QUERY_FUNC_RESP_SB_CREATE_SRQ_SGE_SUPPORTED         0x20UL
-> > > +     #define CREQ_QUERY_FUNC_RESP_SB_FIXED_SIZE_WQE_DISABLED          0x40UL
-> > > +     #define CREQ_QUERY_FUNC_RESP_SB_DCN_SUPPORTED                    0x80UL
-> > >       __le16  max_inline_data_var_wqe;
-> > > +     __le32  start_qid;
-> > > +     u8      max_msn_table_size;
-> > > +     u8      reserved8_1;
-> > > +     __le16  dev_cap_ext_flags_2;
-> > > +     #define CREQ_QUERY_FUNC_RESP_SB_OPTIMIZE_MODIFY_QP_SUPPORTED             0x1UL
-> > > +     #define CREQ_QUERY_FUNC_RESP_SB_CHANGE_UDP_SRC_PORT_WQE_SUPPORTED        0x2UL
-> > > +     #define CREQ_QUERY_FUNC_RESP_SB_CQ_COALESCING_SUPPORTED                  0x4UL
-> > > +     #define CREQ_QUERY_FUNC_RESP_SB_MEMORY_REGION_RO_SUPPORTED               0x8UL
-> > > +     #define CREQ_QUERY_FUNC_RESP_SB_REQ_RETRANSMISSION_SUPPORT_MASK          0x30UL
-> > > +     #define CREQ_QUERY_FUNC_RESP_SB_REQ_RETRANSMISSION_SUPPORT_SFT           4
-> > > +     #define CREQ_QUERY_FUNC_RESP_SB_REQ_RETRANSMISSION_SUPPORT_HOST_PSN_TABLE  (0x0UL << 4)
-> > > +     #define CREQ_QUERY_FUNC_RESP_SB_REQ_RETRANSMISSION_SUPPORT_HOST_MSN_TABLE  (0x1UL << 4)
-> > > +     #define CREQ_QUERY_FUNC_RESP_SB_REQ_RETRANSMISSION_SUPPORT_IQM_MSN_TABLE   (0x2UL << 4)
-> > > +     #define CREQ_QUERY_FUNC_RESP_SB_REQ_RETRANSMISSION_SUPPORT_LAST \
-> > > +                     CREQ_QUERY_FUNC_RESP_SB_REQ_RETRANSMISSION_SUPPORT_IQM_MSN_TABLE
-> > > +     __le16  max_xp_qp_size;
-> > > +     __le16  create_qp_batch_size;
-> > > +     __le16  destroy_qp_batch_size;
-> > > +     __le16  reserved16;
-> > > +     __le64  reserved64;
-> > >  };
-> > >
-> > >  /* cmdq_set_func_resources (size:448b/56B) */
-> > > --
-> > > 2.5.5
-> > >
-> >
-> >
-> >
+> > > Yes, we should not have a mmap handler for dmabuf. vfio memory must be
+> > > mmapped in the normal way.
+> > Although optional, I think most dmabuf exporters (drm ones) provide a mmap
+> > handler. Otherwise, there is no easy way to provide CPU access (backup slow path)
+> > to the dmabuf for the importer.
+> 
+> Here we should not, there is no reason since VFIO already provides a
+> mmap mechanism itself. Anything using this API should just call the
+> native VFIO function instead of trying to mmap the DMABUF. Yes, it
+> will be inconvient for the scatterlist case you have, but the kernel
+> side implementation is much easier ..
 
+Just wanted to confirm that it's entirely legit to not implement dma-buf
+mmap. Same for the in-kernel vmap functions. Especially for really funny
+buffers like these it's just not a good idea, and the dma-buf interfaces
+are intentionally "everything is optional".
 
+Similarly you can (and should) reject and dma_buf_attach to devices where
+p2p connectevity isn't there, or well really for any other reason that
+makes stuff complicated and is out of scope for your use-case. It's better
+to reject strictly and than accidentally support something really horrible
+(we've been there).
+
+The only real rule with all the interfaces is that when attach() worked,
+then map must too (except when you're in OOM). Because at least for some
+drivers/subsystems, that's how userspace figures out whether a buffer can
+be shared.
+-Sima
+-- 
+Daniel Vetter
+Software Engineer, Intel Corporation
+http://blog.ffwll.ch
 
