@@ -1,202 +1,163 @@
-Return-Path: <linux-rdma+bounces-2378-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-2380-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 32ED98C17F2
-	for <lists+linux-rdma@lfdr.de>; Thu,  9 May 2024 22:51:57 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9FBFF8C1877
+	for <lists+linux-rdma@lfdr.de>; Thu,  9 May 2024 23:35:32 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id A08C51F21CAA
-	for <lists+linux-rdma@lfdr.de>; Thu,  9 May 2024 20:51:56 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C2C1D1C21C9A
+	for <lists+linux-rdma@lfdr.de>; Thu,  9 May 2024 21:35:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4A15E126F05;
-	Thu,  9 May 2024 20:51:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6F1BD12838D;
+	Thu,  9 May 2024 21:35:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=fastly.com header.i=@fastly.com header.b="jXh2kqeU"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="bCO5rgmD"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-pl1-f176.google.com (mail-pl1-f176.google.com [209.85.214.176])
+Received: from mail-ua1-f45.google.com (mail-ua1-f45.google.com [209.85.222.45])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B129885623
-	for <linux-rdma@vger.kernel.org>; Thu,  9 May 2024 20:51:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AA2B182871;
+	Thu,  9 May 2024 21:35:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1715287872; cv=none; b=PmnBPD/gyqQ/DYqKYayU1ak/DPPQ19KBcnfjBFVS3eaYFt210BJEqUFlWlXqf/b6uRiMkSoHFGnvXIUPRX+C/kOI/R6L6JkxjFZR4Qbh14R6R/QtyVTX6CVuYSlIjzyHizo2QNreHpwJ2f9WaRYM8TwHQ/ehh5DJkCHDf1HPyz8=
+	t=1715290527; cv=none; b=hsztUcPB1SpqxyMwb3QosdfqJdtsjxJPYPrSUfd2smi6jCCA5ioy2yoB8B07Hc9VCoskEZykdyUI3KLifzv+bJy6uHeeO3oxLihAtIFV+KvcEOFJzOaPwPYB/0sIqvM6OvS0jo9n69mT6b4ivZ2KqjACxTcORv8/KEaZR/9WCb8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1715287872; c=relaxed/simple;
-	bh=jh0q0ulQ5LcPy3XQUg0Ue3n4pGfewvXGaX+N3ICGH+Y=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=UGtuacFhml3eDzfPB2fnObc+lbbRZ9hlaBwz0wSwSDc1F5nPTtOJgZF7LO2I3ZvwGGCgZwvdNky7VXHfeqzRxL8rPqh1PHBWP9sAoK2eyFQIHYem2hNp6+L5XRvpRMBLjMPbrwWBP05gQX7234IzLXTeheT25kMauR+iT1gR+4I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=fastly.com; spf=pass smtp.mailfrom=fastly.com; dkim=pass (1024-bit key) header.d=fastly.com header.i=@fastly.com header.b=jXh2kqeU; arc=none smtp.client-ip=209.85.214.176
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=fastly.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fastly.com
-Received: by mail-pl1-f176.google.com with SMTP id d9443c01a7336-1ee5235f5c9so11277245ad.2
-        for <linux-rdma@vger.kernel.org>; Thu, 09 May 2024 13:51:09 -0700 (PDT)
+	s=arc-20240116; t=1715290527; c=relaxed/simple;
+	bh=UwbCOJ+2ltILz7mmNFABnaGxjulRAwqZ+Yv5Bs9oBTo=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=SSnqpyvI4P61TSKUKefTYoaYdnrb/m+xhQvs706iy6N1Xp02TougufaiNtfw5ajXl2wpEN8n4CJ6zA418z4HAYvg9spIV8+SuhS6quzVrx22NaL5GDMBtdtIjI02p+uOSQfvn5jTXmR9HSa2ZWWChuJb+kMzy5A0vXftXaqkI/Y=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=bCO5rgmD; arc=none smtp.client-ip=209.85.222.45
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ua1-f45.google.com with SMTP id a1e0cc1a2514c-7f82c932858so440804241.0;
+        Thu, 09 May 2024 14:35:25 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=fastly.com; s=google; t=1715287869; x=1715892669; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=No8/jmvB2lIMy6tK61c0Wm+y+Z2VaVEhQDXdDb8ENDg=;
-        b=jXh2kqeUaVQ0nhfXGHTIL23aws5KMCR8Yscd7r1sehBwfSwQRHDjCnXqcnG0IRr0oH
-         3a+hKH2nHUvzXiXJA9/y/H35CGqSW2LAh6Wx5h13meATPrwl3nalSImdxrrhXHWILNuv
-         4JPlAyjSq+MMJEmRPYcZXa80RgNMRcWQWZ1i8=
+        d=gmail.com; s=20230601; t=1715290524; x=1715895324; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=1Yo3NJl/+D3HjDzk2u86J+UDtYtrXvOHQjT1qCvhfSw=;
+        b=bCO5rgmDjNmNHOd4rdDidebbEu/czR20bYwycwbsINCPco/LrDrifnvwC2fF8mKE50
+         W5O9GLpC4UCSnHW7JlmMxcYuMF6loqvf7JuNSuXEmhCISPy3v9ge6LMiaf/IIcOxVllU
+         FwDNFaYSMAlLTmrCM2zvwpQMJWmWNR+f93WJ5Kh3Cv2EW6hn4FclNpb3lBwm8YJiCM4c
+         6G+VfcNhanfiUx1L6IPIysJW+pyrHoGaQBdjUUtkj+tygrOUrrs9pnA7N1yaxkKe5CfI
+         yFMOISiNxnShdBV4J3KYTePCaJaBfBZqSVObOPk7k3nyP/Mjbd9gbaSbnUYXOXEX4qP7
+         1pLA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1715287869; x=1715892669;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=No8/jmvB2lIMy6tK61c0Wm+y+Z2VaVEhQDXdDb8ENDg=;
-        b=fTJ8uGKxaiabGfRs/hazA+KCFPs4vZMRyjysoQmau3anlrvTf2YE4TXLi0yzCvkMC4
-         ccbjpfYGeGNa7W/2mbfu9nfhzQQSgBNUe3QKAJlucZPoDElcLlBiiAtTdcENcAJ/3mB/
-         0p4T0Widfub3WFQtwWwor5Myjmp+JFdp7w2A8j5ri9wrt0b+etDDhVfyybphR2uTY5jN
-         +duMvLDNZol1Tikd6p+wgkYSjCCnSspBUN3pVXZa6hlgv/Mo8gyQwBJcwvj5FKazX5ES
-         lEvIOIfXufCGn7JBgy9bsDXHYGGQ0UnkSp3QhTSSF2f1Uv9wLgbxZ3M+q7VNtN7Wlvql
-         61MA==
-X-Forwarded-Encrypted: i=1; AJvYcCVMlSiEbNSsH2fn9/29SrrtGljA7MpV+TKxjXGDRlsGI9kJgVPWOMg+UT+I1asS5aAlQii448Cje/S68hZ9eh0NkkDSCPSCi2pY8g==
-X-Gm-Message-State: AOJu0Yz0ibiwRAJedRfgQ3ATleH7K5UwRXFwUUTrH1eRuJj6xD1Tutm/
-	DlNzRwNAIDAAhknzPbaBmYQky3bpoGGcVaqovFvsnA4QaiuvxJ0h/fw1J8/K9Hs=
-X-Google-Smtp-Source: AGHT+IFdJzoOlK3+2PZn0yWAVQ5SUDkUUcQQGgjCs9iyqPeiJ5XXgMJqnpVya2oFF/6RdwbW0XGY1w==
-X-Received: by 2002:a17:902:f812:b0:1eb:1474:5ef5 with SMTP id d9443c01a7336-1ef43d2ea72mr6154495ad.33.1715287868873;
-        Thu, 09 May 2024 13:51:08 -0700 (PDT)
-Received: from localhost.localdomain ([2620:11a:c019:0:65e:3115:2f58:c5fd])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-1ef0badb959sm18677365ad.85.2024.05.09.13.51.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 09 May 2024 13:51:08 -0700 (PDT)
-From: Joe Damato <jdamato@fastly.com>
-To: linux-kernel@vger.kernel.org,
-	netdev@vger.kernel.org
-Cc: mkarsten@uwaterloo.ca,
-	nalramli@fastly.com,
-	Joe Damato <jdamato@fastly.com>,
-	Tariq Toukan <tariqt@nvidia.com>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>,
-	Paolo Abeni <pabeni@redhat.com>,
-	linux-rdma@vger.kernel.org (open list:MELLANOX MLX4 core VPI driver)
-Subject: [PATCH net-next v4 3/3] net/mlx4: support per-queue statistics via netlink
-Date: Thu,  9 May 2024 20:50:56 +0000
-Message-Id: <20240509205057.246191-4-jdamato@fastly.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20240509205057.246191-1-jdamato@fastly.com>
-References: <20240509205057.246191-1-jdamato@fastly.com>
+        d=1e100.net; s=20230601; t=1715290524; x=1715895324;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=1Yo3NJl/+D3HjDzk2u86J+UDtYtrXvOHQjT1qCvhfSw=;
+        b=ce736AjipCnN6DYMHYEG+7ExThvf+HH8z1Hiv8C6Wlhc2aWK5zrqhkZj98xaPTR6UQ
+         Ih4POQsEhwICU1Xl3xBquzNXml2COxKNROEaDOnh5tqcDDKG/Li3Cxlw7mPzN8Va9xQf
+         4cZVttYTjx/gVEuh7UosnI/1fa2jRJg52OKebyZ1PYtx+oJacG1QqbbfCEcpsKg7ttlT
+         iik9NInEUmJNYG84CZOl/T3V6cHcKpH89CnO3pqTLEAH7IGKYr3CdvGDXG+c8oGDlafb
+         VbAIutaZ/xZSxAdQFEhN0Nx+Pvvv6GP7DwIH0+smcwn1Cgs/kIyTwQ+SrCwLE06HHMeE
+         +yZQ==
+X-Forwarded-Encrypted: i=1; AJvYcCWRSYV9CFgnv+fZ19PJaXvjpxeS2bx36TjEc/VUxF+0eA3mufo6xizqP935TWlGs3HmpQEHMFUSotdv3hLQpT2uEMC0ykDiuFTOcnG79YyTg9s/DgZdfmyzmzsFkV8ho8+MpGa/sWjQRRLvwFB28QCTgc4ec2cRc5NBiL5+PFOtYQ==
+X-Gm-Message-State: AOJu0Yx//rQckLpLUTgbqBrozL5CeWbidPqcrWikv5QBGeRDtI8hQ5Wi
+	aEhrnv3lRTcaEP1VnRZgS8UWBnKDsHO97P/5J4A6FIL6DfhvH4tDGOiqA95W5gKy3/l2ZnHFVQz
+	/1t3mLBJ4HOcGj3mclQKh9hIYF2k=
+X-Google-Smtp-Source: AGHT+IEDcACUSM80VSR45ArKgZiWP4c9kqdCth3bLU1kbXd1shP57oMwEOz/0YVPrQ6VzKWJJJR4QpRgtprtu6Wem7s=
+X-Received: by 2002:a05:6102:3ece:b0:47e:5c2e:5695 with SMTP id
+ ada2fe7eead31-48077e45cc6mr1030292137.23.1715290523779; Thu, 09 May 2024
+ 14:35:23 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20240507190111.16710-1-apais@linux.microsoft.com>
+ <20240507190111.16710-2-apais@linux.microsoft.com> <Zjp/kgBE2ddjV044@shell.armlinux.org.uk>
+ <CAOMdWSKfkT4K9MAOn-rL44pycHPhVDj4CtiYkru5y_s0S-sPeQ@mail.gmail.com> <20240508201654.GA2248333@kernel.org>
+In-Reply-To: <20240508201654.GA2248333@kernel.org>
+From: Allen <allen.lkml@gmail.com>
+Date: Thu, 9 May 2024 14:35:12 -0700
+Message-ID: <CAOMdWSJ2vV5gYpEQUCpAco3W9ZKKmmj1LXGzk7kTbAaBmsQknQ@mail.gmail.com>
+Subject: Re: [PATCH 1/1] [RFC] ethernet: Convert from tasklet to BH workqueue
+To: Simon Horman <horms@kernel.org>
+Cc: "Russell King (Oracle)" <linux@armlinux.org.uk>, Allen Pais <apais@linux.microsoft.com>, 
+	netdev@vger.kernel.org, jes@trained-monkey.org, davem@davemloft.net, 
+	edumazet@google.com, kuba@kernel.org, pabeni@redhat.com, 
+	kda@linux-powerpc.org, cai.huoqing@linux.dev, dougmill@linux.ibm.com, 
+	npiggin@gmail.com, christophe.leroy@csgroup.eu, aneesh.kumar@kernel.org, 
+	naveen.n.rao@linux.ibm.com, nnac123@linux.ibm.com, tlfalcon@linux.ibm.com, 
+	cooldavid@cooldavid.org, marcin.s.wojtas@gmail.com, mlindner@marvell.com, 
+	stephen@networkplumber.org, nbd@nbd.name, sean.wang@mediatek.com, 
+	Mark-MC.Lee@mediatek.com, lorenzo@kernel.org, matthias.bgg@gmail.com, 
+	angelogioacchino.delregno@collabora.com, borisp@nvidia.com, 
+	bryan.whitehead@microchip.com, UNGLinuxDriver@microchip.com, 
+	louis.peens@corigine.com, richardcochran@gmail.com, 
+	linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	linux-acenic@sunsite.dk, linux-arm-kernel@lists.infradead.org, 
+	linuxppc-dev@lists.ozlabs.org, linux-mediatek@lists.infradead.org, 
+	oss-drivers@corigine.com, linux-net-drivers@amd.com
+Content-Type: text/plain; charset="UTF-8"
 
-Make mlx4 compatible with the newly added netlink queue stats API.
+> > > On Tue, May 07, 2024 at 07:01:11PM +0000, Allen Pais wrote:
+> > > > The only generic interface to execute asynchronously in the BH context is
+> > > > tasklet; however, it's marked deprecated and has some design flaws. To
+> > > > replace tasklets, BH workqueue support was recently added. A BH workqueue
+> > > > behaves similarly to regular workqueues except that the queued work items
+> > > > are executed in the BH context.
+> > > >
+> > > > This patch converts drivers/ethernet/* from tasklet to BH workqueue.
+> > >
+> > > I doubt you're going to get many comments on this patch, being so large
+> > > and spread across all drivers. I'm not going to bother trying to edit
+> > > this down to something more sensible, I'll just plonk my comment here.
+> > >
+> > > For the mvpp2 driver, you're only updating a comment - and looking at
+> > > it, the comment no longer reflects the code. It doesn't make use of
+> > > tasklets at all. That makes the comment wrong whether or not it's
+> > > updated. So I suggest rather than doing a search and replace for
+> > > "tasklet" to "BH blahblah" (sorry, I don't remember what you replaced
+> > > it with) just get rid of that bit of the comment.
+> > >
+> >
+> >  Thank you Russell.
+> >
+> >  I will get rid of the comment. If it helps, I can create a patch for each
+> > driver. We did that in the past, with this series, I thought it would be
+> > easier to apply one patch.
+>
+> Hi Allen and Russell,
+>
+> My 2c worth:
+>
+> * In general non bug-fix patches for networking code should be targeted at
+>   net-next. This means that they should include net-next in the subject,
+>   and be based on that tree.
+>
+>   Subject: [PATCH net-next] ...
+>
+> * This series does not appear to apply to net-next
+>
+> * This series appears to depend on code which is not present in net-next.
+>   f.e. disable_work_sync
+>
+> * The Infiniband patches should probably be submitted separately
+>   to the relevant maintainers
+>
+> * As this patch seems to involve many non-trivial changes
+>   it seems to me that it would be best to break it up somehow.
+>   To allow proper review.
+>
+> * Patch-sets for net-next should be limited to 15 patches,
+>   so perhaps multiple sequential batches would be a way forwards.
+>
+> Link: https://docs.kernel.org/process/maintainer-netdev.html
 
-Signed-off-by: Joe Damato <jdamato@fastly.com>
-Tested-by: Martin Karsten <mkarsten@uwaterloo.ca>
----
- .../net/ethernet/mellanox/mlx4/en_netdev.c    | 73 +++++++++++++++++++
- 1 file changed, 73 insertions(+)
+ Thank you very much for taking the time to write back.
+Since the patches that are necessary for this series are not in
+net-next, I could not target net-next.
 
-diff --git a/drivers/net/ethernet/mellanox/mlx4/en_netdev.c b/drivers/net/ethernet/mellanox/mlx4/en_netdev.c
-index 4c089cfa027a..fd79e957b5d8 100644
---- a/drivers/net/ethernet/mellanox/mlx4/en_netdev.c
-+++ b/drivers/net/ethernet/mellanox/mlx4/en_netdev.c
-@@ -43,6 +43,7 @@
- #include <net/vxlan.h>
- #include <net/devlink.h>
- #include <net/rps.h>
-+#include <net/netdev_queues.h>
- 
- #include <linux/mlx4/driver.h>
- #include <linux/mlx4/device.h>
-@@ -3099,6 +3100,77 @@ void mlx4_en_set_stats_bitmap(struct mlx4_dev *dev,
- 	last_i += NUM_PHY_STATS;
- }
- 
-+static void mlx4_get_queue_stats_rx(struct net_device *dev, int i,
-+				    struct netdev_queue_stats_rx *stats)
-+{
-+	struct mlx4_en_priv *priv = netdev_priv(dev);
-+	const struct mlx4_en_rx_ring *ring;
-+
-+	spin_lock_bh(&priv->stats_lock);
-+
-+	if (!priv->port_up || mlx4_is_master(priv->mdev->dev))
-+		goto out_unlock;
-+
-+	ring = priv->rx_ring[i];
-+	stats->packets = READ_ONCE(ring->packets);
-+	stats->bytes   = READ_ONCE(ring->bytes);
-+	stats->alloc_fail = READ_ONCE(ring->alloc_fail);
-+
-+out_unlock:
-+	spin_unlock_bh(&priv->stats_lock);
-+}
-+
-+static void mlx4_get_queue_stats_tx(struct net_device *dev, int i,
-+				    struct netdev_queue_stats_tx *stats)
-+{
-+	struct mlx4_en_priv *priv = netdev_priv(dev);
-+	const struct mlx4_en_tx_ring *ring;
-+
-+	spin_lock_bh(&priv->stats_lock);
-+
-+	if (!priv->port_up || mlx4_is_master(priv->mdev->dev))
-+		goto out_unlock;
-+
-+	ring = priv->tx_ring[TX][i];
-+	stats->packets = READ_ONCE(ring->packets);
-+	stats->bytes   = READ_ONCE(ring->bytes);
-+
-+out_unlock:
-+	spin_unlock_bh(&priv->stats_lock);
-+}
-+
-+static void mlx4_get_base_stats(struct net_device *dev,
-+				struct netdev_queue_stats_rx *rx,
-+				struct netdev_queue_stats_tx *tx)
-+{
-+	struct mlx4_en_priv *priv = netdev_priv(dev);
-+
-+	spin_lock_bh(&priv->stats_lock);
-+
-+	if (!priv->port_up || mlx4_is_master(priv->mdev->dev))
-+		goto out_unlock;
-+
-+	if (priv->rx_ring_num) {
-+		rx->packets = 0;
-+		rx->bytes = 0;
-+		rx->alloc_fail = 0;
-+	}
-+
-+	if (priv->tx_ring_num[TX]) {
-+		tx->packets = 0;
-+		tx->bytes = 0;
-+	}
-+
-+out_unlock:
-+	spin_unlock_bh(&priv->stats_lock);
-+}
-+
-+static const struct netdev_stat_ops mlx4_stat_ops = {
-+	.get_queue_stats_rx     = mlx4_get_queue_stats_rx,
-+	.get_queue_stats_tx     = mlx4_get_queue_stats_tx,
-+	.get_base_stats         = mlx4_get_base_stats,
-+};
-+
- int mlx4_en_init_netdev(struct mlx4_en_dev *mdev, int port,
- 			struct mlx4_en_port_profile *prof)
- {
-@@ -3262,6 +3334,7 @@ int mlx4_en_init_netdev(struct mlx4_en_dev *mdev, int port,
- 	netif_set_real_num_tx_queues(dev, priv->tx_ring_num[TX]);
- 	netif_set_real_num_rx_queues(dev, priv->rx_ring_num);
- 
-+	dev->stat_ops = &mlx4_stat_ops;
- 	dev->ethtool_ops = &mlx4_en_ethtool_ops;
- 
- 	/*
--- 
-2.25.1
+ I will wait for the patches to land in net-next, and the v2 will
+be broken into multiple smaller sets(per driver).
 
+Thanks.
+ Allen
 
