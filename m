@@ -1,69 +1,69 @@
-Return-Path: <linux-rdma+bounces-2362-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-2363-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id F421E8C0A5A
-	for <lists+linux-rdma@lfdr.de>; Thu,  9 May 2024 06:11:45 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5C2F98C0B84
+	for <lists+linux-rdma@lfdr.de>; Thu,  9 May 2024 08:30:32 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7CD16282A08
-	for <lists+linux-rdma@lfdr.de>; Thu,  9 May 2024 04:11:44 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E15B51F23A9B
+	for <lists+linux-rdma@lfdr.de>; Thu,  9 May 2024 06:30:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 477011482F1;
-	Thu,  9 May 2024 04:11:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BB23973164;
+	Thu,  9 May 2024 06:30:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=fastly.com header.i=@fastly.com header.b="ruZqvsCK"
+	dkim=pass (1024-bit key) header.d=fastly.com header.i=@fastly.com header.b="KKH2leG1"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-pf1-f171.google.com (mail-pf1-f171.google.com [209.85.210.171])
+Received: from mail-ot1-f45.google.com (mail-ot1-f45.google.com [209.85.210.45])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B702FD26D
-	for <linux-rdma@vger.kernel.org>; Thu,  9 May 2024 04:11:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 00643637
+	for <linux-rdma@vger.kernel.org>; Thu,  9 May 2024 06:30:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1715227900; cv=none; b=mfevV0gReqTBLijZLeeE4AjJEUF3kyyKcVRAtWO/E1ETaMtQUmikUUxH/7UDKfJZOI0IemrbFIybFLaK1rKrVuWWaT0TVXYgPrGhbZVH9g0cvorpPRi2ooWWJ4OOk6wp0loayHhi6j6bxgMN7NYbqEbu20Y24N8KRnoD95XTpL0=
+	t=1715236224; cv=none; b=fAU2m1SGcvO1uAeVHczuvsbcei+LANR2twecOHDxFIpIlhx9PSaUP9VU2uSBCv5nVh8pHluYNQvXg/f33jc4Tri5CAcynMjgx70r+QSvFFd0tHOTB+8h4A1cAILaM4Ey3vPAmLQfdnOv2jBqxdqdxRV+EArR6u0o/avBlfx4NJw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1715227900; c=relaxed/simple;
-	bh=EuD5rGws0oPE0xiAPheoEoxDAQyOqvEFoxH7b515VT8=;
+	s=arc-20240116; t=1715236224; c=relaxed/simple;
+	bh=n0yLBLsCcWZoXT34oLNGOKh5OKX0+BXthBYvmA190hI=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ZuOpg740PtuUYxT55lmHm0o7qkUbquO1MaxkPojaT/7wqu7MJ/m1jXc8Xws1oLrETL1H88Zgu2rh1O316pXSACvdpmi+CrgwXWepDWcpl5t+uGaFMo865tQqqD5fHNvANyl3VgUjB8S1kFWWYteZ66+z9oP4rzTrtQb4IqJyRFQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=fastly.com; spf=pass smtp.mailfrom=fastly.com; dkim=pass (1024-bit key) header.d=fastly.com header.i=@fastly.com header.b=ruZqvsCK; arc=none smtp.client-ip=209.85.210.171
+	 Content-Type:Content-Disposition:In-Reply-To; b=EaPoCFLVWRweTQrbHW4kY/GnoP+GIei5ZCCnDHgEQ9TmBPsFeupP8C6HY3A4yIQVdeZhm668ntzw9AHF6QfGknG9xpIrGUy/4cYsn9TlpH31XdbFnwWondn6R6hCMU6gjBJhmz4sDgZE38ychvkw/pI1L8U9x2isEDrLw+6KGTI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=fastly.com; spf=pass smtp.mailfrom=fastly.com; dkim=pass (1024-bit key) header.d=fastly.com header.i=@fastly.com header.b=KKH2leG1; arc=none smtp.client-ip=209.85.210.45
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=fastly.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fastly.com
-Received: by mail-pf1-f171.google.com with SMTP id d2e1a72fcca58-6f453d2c5a1so455429b3a.2
-        for <linux-rdma@vger.kernel.org>; Wed, 08 May 2024 21:11:38 -0700 (PDT)
+Received: by mail-ot1-f45.google.com with SMTP id 46e09a7af769-6f042ff9ddcso284978a34.1
+        for <linux-rdma@vger.kernel.org>; Wed, 08 May 2024 23:30:22 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=fastly.com; s=google; t=1715227898; x=1715832698; darn=vger.kernel.org;
+        d=fastly.com; s=google; t=1715236222; x=1715841022; darn=vger.kernel.org;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=BquM86FdyvTwrPBmMgArwClBgJHZfCecZ2xsyzp4mrw=;
-        b=ruZqvsCKtYkD71cVib3ALNpeZZ8cim29EZ+2akNN0Aty4Y7tMceiuhGvuZ5AenT4r4
-         PsW7nSht5KsJahYja+PKkwPcdLSLCnlwMU2n+cF2j57aD/P5dvJ5VSX47CvUjimhtXmi
-         znq/rCDZyj75mI9Vr7CDIHagU9J5iPhIpaYFw=
+        bh=3qoYQ9U2MlC2IsyOoGY5lXnwSMtPZXtV4EZE56MKyN8=;
+        b=KKH2leG1H5mAm1P/La2bBB872AjGrZ/gxtz0Rd3W3tUxRz5vU3LV++FX/CDputlPQe
+         YPCltQRmlNaEBkGl/12VcgxEGfvA/NHPw5FnNKfVyiRMb3wfPZH/Yu3BDqOVMB02Krco
+         NMZvr5HhAzoFQU9ENuxvq3lYX/hEOiEvfBP9c=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1715227898; x=1715832698;
+        d=1e100.net; s=20230601; t=1715236222; x=1715841022;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=BquM86FdyvTwrPBmMgArwClBgJHZfCecZ2xsyzp4mrw=;
-        b=FXdQNQ18PGav+eH1iLNgPjvphIjQJJC2z7mi/frbMdaG+h2xHgqOIhR/zllHqnldaM
-         X/gIUZAc+RrrPCbtXO+OzyHZe5u62bkReTRw1YfbVi/OS27/8jj4JvKa6HEJuI278fZy
-         BcQk1YKvXBJ1USlNNbTyOeORj1HOjbkeFmK/OP8ClLB/t2NQbSti4Xr9KAC/wmsPH4Cp
-         gthHsXy/TRQdyUox2M/WBWaO4dE58Dc2jSOT+p2aiCrY/Kx6/9rTuaFpGNYQZ5WgPthr
-         +/mJyQZ+k1Ss5sgDXKwBhQR5tyizo9qC/hVzNMz6MS2mbG8BeNDKQioX6kzexJzFAH6I
-         TMIg==
-X-Forwarded-Encrypted: i=1; AJvYcCVWRVA5YV6Bcit8x5OjGqLoGx1oBiVLNGOSR8Ht3KA7zS3nPgkMdF+/kIzJMHIyUFHwnF7lUSAR503wP20j5LIIRZ0U/0HSqYuzxA==
-X-Gm-Message-State: AOJu0YzLIqctQRPEyQCF7KUU7BWigSXdiVIL3yMaXPuQGjcDQIs3xl3F
-	GTJUlP6AVeeiIZW9r97umyC0LlWJjkDzlDSLoovKgWOmhYpfmORM14ffmeopyOk=
-X-Google-Smtp-Source: AGHT+IEeW5kcZzuh3q3xss0tmlvWIeShGXPqLqYpMy8O9b5kYA5qoS5aLHM33knk0PbdcH07cxN0OA==
-X-Received: by 2002:a05:6a00:2d88:b0:6f3:ee9a:f38b with SMTP id d2e1a72fcca58-6f49c206b5bmr6352615b3a.6.1715227898075;
-        Wed, 08 May 2024 21:11:38 -0700 (PDT)
+        bh=3qoYQ9U2MlC2IsyOoGY5lXnwSMtPZXtV4EZE56MKyN8=;
+        b=NDg0wBNwnC0ohf4VAhVQFSTNSwgw8qZ1G15PhdlQxod/ULqiWLVZS6J84TY+NTd2U4
+         dIilR290sDCGFwPuig16WCcOUYmxEhN5mNoJVVVeUKkTXv18tliAzhKQnNTjsJg0a+Fy
+         ra58wF2SKCYxDo+9XH49jI961z+NlvyFRghxRjCT7C3yww2ID9JkHdj97MGkT1HaDifx
+         ue50LvpOopDQEZe5fq8b/OmnGIrBuCKt7s4EVLHJIthrFWmCWF2HSBlOZNEBINt2ZJIG
+         58RQjB2x2z05D5h8E6Eq6qk6pi09xBKsB5qeZqq/15NuGKLxSjtcN+fokCs7EBgNuAyX
+         7dzA==
+X-Forwarded-Encrypted: i=1; AJvYcCUWcTB3Fcz+f6l7NcCPxmF6lw09Sq0zapdrjHln8WUWB0rLRd5QqgTpTZR/3phKCJSEhHATPr5F8fj/FcrbxrwoO7YoD9GWWUaqlw==
+X-Gm-Message-State: AOJu0Yxn4y1CMqRPfHhOdFJzIA6LQm276H2+JRNkqCvdk8wrzWQQXntL
+	juNpq8kXYjUIzumiYDLOHYlSpICFfn2IwI2SVIqKXRJ1dEBXa/0UckxdlgDJs8w=
+X-Google-Smtp-Source: AGHT+IFDgooGY0GwBc2iJimptTybd/gNtDtCFUTE5EpIKrrUwbabTOKQRU++5xWg2GQ02FIt7hW1VA==
+X-Received: by 2002:a05:6358:890:b0:186:2ac7:316c with SMTP id e5c5f4694b2df-192d35776c9mr580862955d.20.1715236222043;
+        Wed, 08 May 2024 23:30:22 -0700 (PDT)
 Received: from ubuntu (c-24-6-151-244.hsd1.ca.comcast.net. [24.6.151.244])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-6f4d2a86a2csm367073b3a.78.2024.05.08.21.11.36
+        by smtp.gmail.com with ESMTPSA id 41be03b00d2f7-634119041b2sm484067a12.94.2024.05.08.23.30.20
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 08 May 2024 21:11:37 -0700 (PDT)
-Date: Thu, 9 May 2024 04:11:34 +0000
+        Wed, 08 May 2024 23:30:21 -0700 (PDT)
+Date: Thu, 9 May 2024 06:30:18 +0000
 From: Joe Damato <jdamato@fastly.com>
 To: Jakub Kicinski <kuba@kernel.org>
 Cc: Tariq Toukan <ttoukan.linux@gmail.com>,
@@ -75,7 +75,7 @@ Cc: Tariq Toukan <ttoukan.linux@gmail.com>,
 	"open list:MELLANOX MLX5 core VPI driver" <linux-rdma@vger.kernel.org>,
 	Paolo Abeni <pabeni@redhat.com>, Tariq Toukan <tariqt@nvidia.com>
 Subject: Re: [PATCH net-next 0/1] mlx5: Add netdev-genl queue stats
-Message-ID: <ZjxM9i1yFDRQ2f/s@ubuntu>
+Message-ID: <ZjxtejIZmJCwLgKC@ubuntu>
 References: <ZjUwT_1SA9tF952c@LQ3V64L9R2>
  <20240503145808.4872fbb2@kernel.org>
  <ZjV5BG8JFGRBoKaz@LQ3V64L9R2>
@@ -106,9 +106,7 @@ On Wed, May 08, 2024 at 07:08:39PM -0700, Jakub Kicinski wrote:
 > 
 > Yes, tho, not sure whether the "if i < ...num_channels" is even
 > necessary, as core already checks against real_num_rx_queues.
-
-OK, I'll omit the i < ... check in the v2, then.
-
+> 
 > >   and when
 > >   summing mlx5e_sq_stats in the latter function, it's up to
 > >   priv->channels.params.mqprio.num_tc instead of priv->max_opened_tc.
@@ -119,23 +117,18 @@ OK, I'll omit the i < ... check in the v2, then.
 > I'm not sure num_channels gets set to 0 when device is down so possibly
 > from "0 if down else ...num_channels" to stats_nch.
 
-Yea, it looks like priv->channels.params.num_channels is untouched on
-ndo_stop, but:
+Yea, you were right:
 
-mlx5e_close (ndo_close)
-  mlx5e_close_locked
-    mlx5e_close_channels
-      priv->channels->num = 0;
+  if (priv->channels.num == 0)
+          i = 0;
+  else
+          i = priv->channels.params.num_channels;
+  
+  for (; i < priv->stats_nch; i++) {
 
-and on open priv->channels->num is restored from 0 to
-priv->channels.params.num_channels.
+Seems to be working now when I adjust the queue count and the test is
+passing as I adjust the queue count up or down. Cool.
 
-So, priv->channels->num to priv->stats_nch would be, I think, the inactive
-queues. I'll give it a try locally real quick.
-
-> >   priv->channels.params.mqprio.num_tc to priv->max_opened_tc... which
-> >   should cover the inactive queues, I think.
-> > 
-> > Just writing that all out to avoid hacking up the wrong thing for the v2
-> > and to reduce overall noise on the list :)
+Adding TCs to the NIC triggers the test to fail, so there's still some bug
+in how I'm accumulating stats from the hw TCs.
 
