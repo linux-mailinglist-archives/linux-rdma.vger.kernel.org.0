@@ -1,127 +1,128 @@
-Return-Path: <linux-rdma+bounces-2381-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-2382-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id B68D88C188A
-	for <lists+linux-rdma@lfdr.de>; Thu,  9 May 2024 23:39:04 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0CC148C19C3
+	for <lists+linux-rdma@lfdr.de>; Fri, 10 May 2024 01:06:50 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E5D9C1C21988
-	for <lists+linux-rdma@lfdr.de>; Thu,  9 May 2024 21:39:03 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A287C1F240CE
+	for <lists+linux-rdma@lfdr.de>; Thu,  9 May 2024 23:06:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2482D128820;
-	Thu,  9 May 2024 21:38:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8471B12D76B;
+	Thu,  9 May 2024 23:06:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="IluzAOm8"
+	dkim=pass (1024-bit key) header.d=fastly.com header.i=@fastly.com header.b="rtGMrxWN"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-vk1-f178.google.com (mail-vk1-f178.google.com [209.85.221.178])
+Received: from mail-pg1-f170.google.com (mail-pg1-f170.google.com [209.85.215.170])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6EB2B7FBBE;
-	Thu,  9 May 2024 21:38:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D48DE129E62
+	for <linux-rdma@vger.kernel.org>; Thu,  9 May 2024 23:06:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1715290727; cv=none; b=EYvrXs0QBqxpC5PMx7h4xCL9jtjKg7HEzavBLK8ZCl6IAMg/CVWKb4rMdUyE0kXUENTs0YVpPr7dfjbxt/lYnZaT8cMzTFJuYLq7T+zMpMYbdF79d5Mz52ZdP0OqOM4y1rAHkxFT3oXVuUPYYx8W0jx9FgpvtoC0rw4keFT6gOQ=
+	t=1715296002; cv=none; b=GpU+TF1MSza/mlVEjXBHy5TEXYFmjv9GOr5d9aRWKkOW4tuKSfCbCB0vnwJ/KSLNcqnjY1i5aeeNXVh7oysCAgrF5tPIZkdkZeVjtWXmZJZRqFIpxKIEXulo8bhqjv75uEi2Abo4lmoJqWVRSyMe29/pTpga5IK49eUv0MJMq8Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1715290727; c=relaxed/simple;
-	bh=9NrpOMaXb9IZHzVgmR1XogNQf6JD+O7Gz/0hR5AmBeM=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=lWb4N48xgqu1nt0OyG3M+Mot8ZzdU5iM75bShKtR20Dbq18EzvZChYs7BXCk4pu2uUv/GFMlKswtKoiYEkweR3bNQ6Pq3sft7ozsbq8PTF2X4OILlLBDZEtR26z84n3u/uB9snHyeUdyGcA1iXbLq5n1VgxZpicQJrdzVbVSOJo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=IluzAOm8; arc=none smtp.client-ip=209.85.221.178
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-vk1-f178.google.com with SMTP id 71dfb90a1353d-4df4016b3c9so504907e0c.1;
-        Thu, 09 May 2024 14:38:46 -0700 (PDT)
+	s=arc-20240116; t=1715296002; c=relaxed/simple;
+	bh=Ng18fVP8U39tP/Yi0NGN1v5+V+jbpidoZX+xxyxIFck=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Po7Haq5Xc88b4zf9aIEJCTeq9DEIUGnWLuO41bdbfaMf+TBAukSOnFw4QgW49B4DNLsE1rhf8brzRhBDmoT1NxshBL5YwoSxCIMy2mIORMgdkJiDlH2N+Yt4WTWZMtNF8wPFUpgZ3jzsQb8X3mT5iNFjt4CeWbU2oIE6v43alOY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=fastly.com; spf=pass smtp.mailfrom=fastly.com; dkim=pass (1024-bit key) header.d=fastly.com header.i=@fastly.com header.b=rtGMrxWN; arc=none smtp.client-ip=209.85.215.170
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=fastly.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fastly.com
+Received: by mail-pg1-f170.google.com with SMTP id 41be03b00d2f7-5bdbe2de25fso1053071a12.3
+        for <linux-rdma@vger.kernel.org>; Thu, 09 May 2024 16:06:40 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1715290725; x=1715895525; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=ZcXomuFTNs6kAOjv+oYFgSUhkraR2OB9WxwHOqU2kw0=;
-        b=IluzAOm86GUXj5wiPoJJsbyot2kWu8ojleIJiM5T7sW70X72h3A6wS36Fyf8KY7CGL
-         Q/VHUKRxqoSVP26gVY5GZwXth7lrP7GyCkKsPr1DasfVSlPERZIJ1sEyX6vGU9GdRVQ5
-         5kVl4NYddr734STrSed8ZCiUtlAVsZSgu9Foeka57REr8uTQg85GEBi4WBT9Wl0bZAcX
-         MEBjFKJkgavWP1g1twzbpVITbcAANmvSspl/RARD4BoFG7mIEOx4MR/Meesw3/X+Wno2
-         mjymLFA4EMchRJsdYVLCFKJoXROuSB1WwycMjU2KxCUoYrnztX0kW74ogBn81xUB1LUo
-         WOOA==
+        d=fastly.com; s=google; t=1715296000; x=1715900800; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=FrQui9B6BoEIY/rh+mexhaF7aELyfYWuHXoeSmqlVL0=;
+        b=rtGMrxWNHvsrkMZKxcoyo6lwbgezQ83jdWTAEPN9zbjUSXotTl9RE2f6Fs3xdTVffl
+         4uAWy+bwDKNqRWpz/eMnxUU3Bf7dopkdxgMffIbQzOWLqRfdlTk+trm0Qp4r+nNoVist
+         KdaJUO5LS0ctg48P6RS9t3n1y2TEnO1nDikuw=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1715290725; x=1715895525;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=ZcXomuFTNs6kAOjv+oYFgSUhkraR2OB9WxwHOqU2kw0=;
-        b=dboOzGkTHbO+SyRYjONZ/R3Cb8zHML6XPKJt6FMWyHd+uoeWoRKp0uiYpUzELZEBir
-         WcY9Ut830/cC9gJ/8TG4fiuoFaZhB6ETnX48lR152OurmDGfnV055aurZZRbCftwJVIx
-         pYE3pngd2Sfz6hrDlwLWNyGOV8gREJp7XypI9mU6j6gcGz2Iv4UD+EVCL9QJ1OKBaPcr
-         v5oxSeVI3viwOmk5mloV+hb8//iA0ja7SU4jccFhIlK0Nlw8Eej4w+P6KPR9O7pJ8SAM
-         B8Vj3eImxAHfettkWYmOlZzu1r02t7WJ+vS6GbM7L2vrC468gnodjyMIZSS6ZL18CIsp
-         5XJA==
-X-Forwarded-Encrypted: i=1; AJvYcCU/eELKvbXOLD1rI63aR+fBpVgB7dnd1zB0N4btSVdcIv/CKKiTBAYSCvt/yL+V/z7TM5c3+/cxcxdQySxb9CFZYIsXTa7Nbxv9emOBDn5UF27ljQV67B/7w7YynSl1FecTObi2WWRQTaZinpj10jF6MLOOc5VD1DVTHWR2NX5L8Q==
-X-Gm-Message-State: AOJu0YwotvHKVCcnkF0yQ8MYjgwnKSDg+VIyJgVN0YvntBSiAp+OJSRh
-	6Lpf5eMJQ7oI6T/o9DKw6VzTk4RPvCPE8HAwjAwfCEeJzA4fZdE20z5x4IIvY0KL7q6w4XJWGcJ
-	YHWNugoz23UcYzHFPvxdJlSiR144=
-X-Google-Smtp-Source: AGHT+IGDPdAnAHFbOGEVVQfuthPYBDUFn04X97C8h8u5g41EhAQrrR+vQZTM+R921KKRTb5redHLdvkWlrvB0RI6wnw=
-X-Received: by 2002:a05:6122:2a51:b0:4d8:75ca:8cbe with SMTP id
- 71dfb90a1353d-4df8839a7cemr976657e0c.16.1715290725239; Thu, 09 May 2024
- 14:38:45 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1715296000; x=1715900800;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=FrQui9B6BoEIY/rh+mexhaF7aELyfYWuHXoeSmqlVL0=;
+        b=MP6kkCfiBMGOcLt3N643KR9L4BsbsmTxRVHZ0+VTP+48O9Rth7/TVbutCUpE6gzoOH
+         iX9FQTAD0sxIYlVVfbR58yDWU+Lx+bjgX75FrHPOhF5wkyp5NI+jCIpMGu10BZbl5DTQ
+         2oJIMM5n6Ii51XI3Xq/BYRlkQT6u4UUAudccpOEXBQajEoVQrY1VSx5EHlH4LBUZ6K+d
+         p0znaq5aAf/YISabHF9eGSuzCk52Jh0SQX4EUb64fZ596uxNaBvDVXOHo53IHM2KNHw8
+         XUF0CAKmhsPURM7mpvP4tNVgYsm1whcn8jZYTdPXPxU6AGc1rtWiSGgh0hFLWmKW1CFH
+         /sYw==
+X-Forwarded-Encrypted: i=1; AJvYcCUwJ1MSdcvCguRt8LhtbAPXaraoW2yoEYP/5xb3qW7n92vfN/RK3KoyOsiEUL4SwMl3uVJhSjFh/hqVTqlTZ9mS9Sgtjnh9r0cTrQ==
+X-Gm-Message-State: AOJu0Yw02j19SPkQeMbstkGgxDJ6lqouteDAkBgetGLKWzz5BLCLDQbe
+	hR8lc08CC18REZeF1/rmEBbXM23I6Zw4r4jH149K2f52JkCl9nCT6HgxiOgPkgs=
+X-Google-Smtp-Source: AGHT+IGc/iwlNZZmQjVUxnvbLuwphUnwPD4l0hWq3QPzh+j7dh2oKcWhg374+QqVtMcUzqahlUUnGg==
+X-Received: by 2002:a17:90a:8a96:b0:2b2:c6f8:70b0 with SMTP id 98e67ed59e1d1-2b6cc357aefmr1012739a91.11.1715296000115;
+        Thu, 09 May 2024 16:06:40 -0700 (PDT)
+Received: from LQ3V64L9R2 (c-24-6-151-244.hsd1.ca.comcast.net. [24.6.151.244])
+        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-2b695f8d058sm1186647a91.2.2024.05.09.16.06.38
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 09 May 2024 16:06:39 -0700 (PDT)
+Date: Thu, 9 May 2024 16:06:36 -0700
+From: Joe Damato <jdamato@fastly.com>
+To: Tariq Toukan <ttoukan.linux@gmail.com>
+Cc: Jakub Kicinski <kuba@kernel.org>, Zhu Yanjun <zyjzyj2000@gmail.com>,
+	linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+	saeedm@nvidia.com, gal@nvidia.com, nalramli@fastly.com,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Leon Romanovsky <leon@kernel.org>,
+	"open list:MELLANOX MLX5 core VPI driver" <linux-rdma@vger.kernel.org>,
+	Paolo Abeni <pabeni@redhat.com>, Tariq Toukan <tariqt@nvidia.com>
+Subject: Re: [PATCH net-next 0/1] mlx5: Add netdev-genl queue stats
+Message-ID: <Zj1W_JH-k3skeHPj@LQ3V64L9R2>
+References: <20240503022549.49852-1-jdamato@fastly.com>
+ <c3f4f1a4-303d-4d57-ae83-ed52e5a08f69@linux.dev>
+ <ZjUwT_1SA9tF952c@LQ3V64L9R2>
+ <20240503145808.4872fbb2@kernel.org>
+ <ZjV5BG8JFGRBoKaz@LQ3V64L9R2>
+ <20240503173429.10402325@kernel.org>
+ <ZjkbpLRyZ9h0U01_@LQ3V64L9R2>
+ <8678e62c-f33b-469c-ac6c-68a060273754@gmail.com>
+ <ZjwJmKa6orPm9NHF@LQ3V64L9R2>
+ <05317efb-14e9-433b-b0b6-657a98500efd@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240507190111.16710-1-apais@linux.microsoft.com>
- <20240507190111.16710-2-apais@linux.microsoft.com> <Zjp/kgBE2ddjV044@shell.armlinux.org.uk>
- <CAOMdWSKfkT4K9MAOn-rL44pycHPhVDj4CtiYkru5y_s0S-sPeQ@mail.gmail.com>
- <20240508201654.GA2248333@kernel.org> <e9633d41d0d004db3ec6e2b6d9dcb95d029dbb94.camel@redhat.com>
-In-Reply-To: <e9633d41d0d004db3ec6e2b6d9dcb95d029dbb94.camel@redhat.com>
-From: Allen <allen.lkml@gmail.com>
-Date: Thu, 9 May 2024 14:38:34 -0700
-Message-ID: <CAOMdWS+WRC7KOqPUXJ88ikCDPS-6oZ0i6OFTUk95DFTfYtNZcA@mail.gmail.com>
-Subject: Re: [PATCH 1/1] [RFC] ethernet: Convert from tasklet to BH workqueue
-To: Paolo Abeni <pabeni@redhat.com>
-Cc: Simon Horman <horms@kernel.org>, "Russell King (Oracle)" <linux@armlinux.org.uk>, 
-	Allen Pais <apais@linux.microsoft.com>, netdev@vger.kernel.org, jes@trained-monkey.org, 
-	davem@davemloft.net, edumazet@google.com, kuba@kernel.org, 
-	kda@linux-powerpc.org, cai.huoqing@linux.dev, dougmill@linux.ibm.com, 
-	npiggin@gmail.com, christophe.leroy@csgroup.eu, aneesh.kumar@kernel.org, 
-	naveen.n.rao@linux.ibm.com, nnac123@linux.ibm.com, tlfalcon@linux.ibm.com, 
-	cooldavid@cooldavid.org, marcin.s.wojtas@gmail.com, mlindner@marvell.com, 
-	stephen@networkplumber.org, nbd@nbd.name, sean.wang@mediatek.com, 
-	Mark-MC.Lee@mediatek.com, lorenzo@kernel.org, matthias.bgg@gmail.com, 
-	angelogioacchino.delregno@collabora.com, borisp@nvidia.com, 
-	bryan.whitehead@microchip.com, UNGLinuxDriver@microchip.com, 
-	louis.peens@corigine.com, richardcochran@gmail.com, 
-	linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	linux-acenic@sunsite.dk, linux-arm-kernel@lists.infradead.org, 
-	linuxppc-dev@lists.ozlabs.org, linux-mediatek@lists.infradead.org, 
-	oss-drivers@corigine.com, linux-net-drivers@amd.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <05317efb-14e9-433b-b0b6-657a98500efd@gmail.com>
 
-Paolo,
+On Thu, May 09, 2024 at 12:42:11PM +0300, Tariq Toukan wrote:
+> ..
+> 
+> > > The off-channels queues (like PTP) do not exist in default. So they are out
+> > > of the game unless you explicitly enables them.
+> > 
+> > I did not enable them, but if you saw the thread, it sounds like Jakub's
+> > preference is that in the v2 I include the PTP stats in get_base_stats.
+> > 
+> > Are you OK with that?
+> 
+> Sounds good.
+> 
+> > Are there other queue stats I should include as well?
+> > 
+> 
+> The QOS/HTB queues.
+> See mlx5e_stats_grp_sw_update_stats_qos.
 
-> On Wed, 2024-05-08 at 21:16 +0100, Simon Horman wrote:
-> > * As this patch seems to involve many non-trivial changes
-> >   it seems to me that it would be best to break it up somehow.
-> >   To allow proper review.
->
-> I would like to stress this latest point: it looks like the changes to
-> all the drivers are completely independent. If so, you have to break
-> the series on a per driver basis. Since the total number of patch will
-> be higher then 15 (maximum size allowed on netdev) you will have to
-> split this in several smaller series.
->
+Sure, thanks, I can take a look. I think maybe an issue might be that if
+I include QOS/HTB queues then tools/testing/selftests/drivers/net/stats.py
+will start to fail.
 
- Right, it's a valid point. Per-driver might not work. Depending on the
-driver and changes, I will try and make it an independent series.
+I could be mistaken, but it seems that QOS/HTB are not included in the rtnl
+stats, is that right?
 
-> Beyond making the change reviewable, it will allow eventually reverting
-> the changes individually, should that cause any regressions.
->
-
-Thank you, I understand the concern here. Will work on it in v2.
-
-Thank you very much for your time and suggestions.
-
- - Allen
+If the goal is for queue stats to match rtnl then maybe I should leave
+QOS/HTB out and they can be added to both RTNL and queue stats together at
+a later time.
 
