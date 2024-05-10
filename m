@@ -1,509 +1,511 @@
-Return-Path: <linux-rdma+bounces-2399-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-2400-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id D40FA8C22DF
-	for <lists+linux-rdma@lfdr.de>; Fri, 10 May 2024 13:11:37 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0EEF78C2524
+	for <lists+linux-rdma@lfdr.de>; Fri, 10 May 2024 14:55:07 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8B05C28272E
-	for <lists+linux-rdma@lfdr.de>; Fri, 10 May 2024 11:11:36 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 847791F25AEB
+	for <lists+linux-rdma@lfdr.de>; Fri, 10 May 2024 12:55:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E518516F297;
-	Fri, 10 May 2024 11:11:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8689B127B7A;
+	Fri, 10 May 2024 12:55:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="pQjzWHuU"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="XzXGRain"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from out-184.mta0.migadu.com (out-184.mta0.migadu.com [91.218.175.184])
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.12])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9540716D332
-	for <linux-rdma@vger.kernel.org>; Fri, 10 May 2024 11:10:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.184
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1715339460; cv=none; b=jxxrWLHmrvLzexzJoMdRT5F9O2CJ4LQzv4bluhDlgdH4h/YFf28jAl/pbLHn2AZ0zH+iaVj/U7m6EljqHzWeKTromf4XkeBimZ/6whEAC7UHhxKOoZgbwDzyBGMNcdy3r9xajwHdiV5/p9jBI61gN9Dl53YBZfqgQimUDxdaHac=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1715339460; c=relaxed/simple;
-	bh=hCna4l4WEAhnsxjsCtoq8uxoH6C6N39738+/HxAz6gc=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=LZkEDyDevOD9jXDE9MZIbno5lcNy8q6ysx6qQLuui2RQCnCPzYGJwUN/MjkRs0odjPVi0nMkRnovQZ2a+ywpHH52+b0+cy3boH9XWxP0NAHF0/sxqcR9/OUKWqsAKZ9ejUaxpjr8lo0JaMMa42ApqxP3KSZ7J2lXoDFaXIkFbEg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=pQjzWHuU; arc=none smtp.client-ip=91.218.175.184
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <82714325-e705-4142-85c8-9d53bc9f2db1@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1715339454;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Mj47W7DbtEtXDFeORN5sL7n5huow2wucmn7CO3gY52A=;
-	b=pQjzWHuUrYmtmRS94Tlqd4CddpXX8Q7CTlgjPdjKgSmFZ7lvq1SzXlP8oWBKqUNdTkhFsF
-	LOijGs+RST0k62IQNYy1vcT1GpFpU5ZLQTbkdHKk38UJ5fUw04sdkltm8YgXA9PyPpHWiL
-	ZkndnGtKnIITuqIdkxQntZK/La7BalQ=
-Date: Fri, 10 May 2024 13:10:52 +0200
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 407C4127B5F;
+	Fri, 10 May 2024 12:54:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=192.198.163.12
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1715345701; cv=fail; b=t3yvKnZC878XeJrq4pyh89tK2X84o5Kw4efOOGE+5BwXCzx5K5FJMwkxPWz5H7h2HbmibSC8ZqDMpEB+xQkmkew4gfIYpZpKoCawqPXT4m5S2WF1QNF+jJ29xVwuwllKsRrvNZAg3U9tYRgS0F8Re0ToofQMO8TRuMQEfIhACwE=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1715345701; c=relaxed/simple;
+	bh=pRbIUaHsquY8u4Aah01HqvXWPRmLd2GYTpsImxFXDNg=;
+	h=Message-ID:Date:Subject:To:CC:References:From:In-Reply-To:
+	 Content-Type:MIME-Version; b=qhzLJg+aTEZdb8zTjLoYtbuoLIOdh96TLRGUCKUHHpdQhslFqwrB7MkB7ZhcEx1NwjEnAAYQ4ueZXNIBmBWAu2sQDVh/jicV6ctjkyRk4A8+XbAQThMwJ+UQLu9UB8EMAOj2OhcOS+O/oR+Ywl4vbAM9uXnxSr326o1MvGNCA3E=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=XzXGRain; arc=fail smtp.client-ip=192.198.163.12
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1715345699; x=1746881699;
+  h=message-id:date:subject:to:cc:references:from:
+   in-reply-to:content-transfer-encoding:mime-version;
+  bh=pRbIUaHsquY8u4Aah01HqvXWPRmLd2GYTpsImxFXDNg=;
+  b=XzXGRainXP3FQG58qfSlGtZe1CD6ni347dc4e7S+RJ1OiOtA2OovDzeB
+   xTZOQV0Qc6kqRwjRjwe624d5VlzwZ75nOHb9cCR9P7DCzhQu6PF0s5Aax
+   Gd9x57pGQv4ari00pNJvcFGDMPd4nEgI2gOWuuRxirIi8ZxT+5AvuLiU6
+   CZk+M1UVXYtg5U3yCXsD+AFeqPQdE5Ux73e0+vr3nBoqYBC923hxmKpf3
+   jCCQt7SYJi3hxwsxNZ68m1unjbVT5K2oPJkTxMQpLQ5iXlDwzehQaomQU
+   pYo767J1bz1C0r+RxaWFeL+4+PlPb/PsiVxEATTqY2lrY6AVy8nEzA/h3
+   Q==;
+X-CSE-ConnectionGUID: nmboYG33TCmjq7xBDApncQ==
+X-CSE-MsgGUID: IVejFzODRKaUbB5COlFM1w==
+X-IronPort-AV: E=McAfee;i="6600,9927,11068"; a="15135530"
+X-IronPort-AV: E=Sophos;i="6.08,151,1712646000"; 
+   d="scan'208";a="15135530"
+Received: from fmviesa002.fm.intel.com ([10.60.135.142])
+  by fmvoesa106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 May 2024 05:54:58 -0700
+X-CSE-ConnectionGUID: mHCo2PQMRdWmbXR7vMV+Uw==
+X-CSE-MsgGUID: pivWDXq+TD6iszJvKi4yPg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.08,151,1712646000"; 
+   d="scan'208";a="52816789"
+Received: from orsmsx603.amr.corp.intel.com ([10.22.229.16])
+  by fmviesa002.fm.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 10 May 2024 05:54:59 -0700
+Received: from orsmsx611.amr.corp.intel.com (10.22.229.24) by
+ ORSMSX603.amr.corp.intel.com (10.22.229.16) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Fri, 10 May 2024 05:54:57 -0700
+Received: from orsmsx601.amr.corp.intel.com (10.22.229.14) by
+ ORSMSX611.amr.corp.intel.com (10.22.229.24) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Fri, 10 May 2024 05:54:57 -0700
+Received: from ORSEDG601.ED.cps.intel.com (10.7.248.6) by
+ orsmsx601.amr.corp.intel.com (10.22.229.14) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35 via Frontend Transport; Fri, 10 May 2024 05:54:57 -0700
+Received: from NAM04-BN8-obe.outbound.protection.outlook.com (104.47.74.40) by
+ edgegateway.intel.com (134.134.137.102) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.35; Fri, 10 May 2024 05:54:57 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=AL7yNXFu6KRhMnF+k7FIggyimERoccJXSN0I5QnW2s4QvGmq8LKW+zN/kExjU/W5XMbG1IRMFLqOPLz1UQdmx5jol3jcbbhZAyQGnYhiUS3NPfH6NIJKLTWmKTI/T0goFjUki4GNgb6FhikurXTn3BIqjv7otf+oaAE9tPC0j4DIfO9mQ1fSNcwiW0iV+C1vz8pR61evzkesORdIJNoGBWZ08x6P84HsHc06xu8nITW+qxNrceUy51MH3H0QXAsRKBpw8P0Z+WYAXtuKoI/ELnpr4auAAEwN+FIGJX2viF01R6gm7ub5gZ6zPaatm8vDXdW9HX3HmCN+BG/vjkG1UQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=Qwf0hJTYskOy/Bqucxe/NLajqT2ED/4IEF3BQ28/82s=;
+ b=aNlhw7gv213IZUusV9WvUxA5Z71dPtyZtdnTzMHaudCmyt+h6Gwg/90dJ8KjNh/jEjymVyNjG0359IqKWtynoC0phVQSTGq5mYPxUBncf4gyvQc7G0hVv7UfIQUePgDw5U79wo2jB7/7y0j0iS3TLimpFOZcCWdOE6oOFmRof9REeIIR9g3eU9ef33RYiGLTFhC2EPlbOU9dRxVECpsrJlrbZO0QZMvF3zD+Idq8s0QXxZiSCJ7ZRS5pkkqopKzfMY+LVkhZE8fxiXwalF5/kUkGbg8QuOO0W17OpO65AV7iI1qo4L9rpTC+0SKBXQaFBnPSBWFOTLjmRnZ0Ncr0sA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+Received: from MN6PR11MB8102.namprd11.prod.outlook.com (2603:10b6:208:46d::9)
+ by SJ0PR11MB5199.namprd11.prod.outlook.com (2603:10b6:a03:2dd::6) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7544.49; Fri, 10 May
+ 2024 12:54:55 +0000
+Received: from MN6PR11MB8102.namprd11.prod.outlook.com
+ ([fe80::bfb:c63:7490:93eb]) by MN6PR11MB8102.namprd11.prod.outlook.com
+ ([fe80::bfb:c63:7490:93eb%3]) with mapi id 15.20.7544.048; Fri, 10 May 2024
+ 12:54:55 +0000
+Message-ID: <22533dbb-3be9-4ff2-9b59-b3d6a650f7b3@intel.com>
+Date: Fri, 10 May 2024 14:54:49 +0200
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH net-next v4 1/2] driver core: auxiliary bus: show
+ auxiliary device IRQs
+Content-Language: en-US
+To: Greg KH <gregkh@linuxfoundation.org>, Shay Drory <shayd@nvidia.com>
+CC: <netdev@vger.kernel.org>, <pabeni@redhat.com>, <davem@davemloft.net>,
+	<kuba@kernel.org>, <edumazet@google.com>, <david.m.ertman@intel.com>,
+	<rafael@kernel.org>, <ira.weiny@intel.com>, <linux-rdma@vger.kernel.org>,
+	<leon@kernel.org>, <tariqt@nvidia.com>, Parav Pandit <parav@nvidia.com>
+References: <20240509091411.627775-1-shayd@nvidia.com>
+ <20240509091411.627775-2-shayd@nvidia.com>
+ <2024051056-encrypt-divided-30d2@gregkh>
+From: Przemek Kitszel <przemyslaw.kitszel@intel.com>
+In-Reply-To: <2024051056-encrypt-divided-30d2@gregkh>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: WA2P291CA0011.POLP291.PROD.OUTLOOK.COM
+ (2603:10a6:1d0:1e::23) To MN6PR11MB8102.namprd11.prod.outlook.com
+ (2603:10b6:208:46d::9)
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [bug report][bisected] kmemleak in rdma_core observed during
- blktests nvme/rdma use siw
-To: Yi Zhang <yi.zhang@redhat.com>
-Cc: Guoqing Jiang <guoqing.jiang@linux.dev>,
- RDMA mailing list <linux-rdma@vger.kernel.org>,
- Shinichiro Kawasaki <shinichiro.kawasaki@wdc.com>,
- Jason Gunthorpe <jgg@nvidia.com>, leonro@nvidia.com, chuck.lever@oracle.com
-References: <CAHj4cs9uQduBHjcsmOGHa8RaNGNMw8k8bBhZdGgdeEKPFeB8qQ@mail.gmail.com>
- <7de9793f-6805-1412-3fae-a5508910124b@linux.dev>
- <CAHj4cs-RiZXAdz131ihQ=wsW8nsViphJeHAD_i6qi7_DtW7NwQ@mail.gmail.com>
- <CAHj4cs-HWjMq__89RR1WwLcOa5H46H8+d2t=jj=qFJ_m5kRwFQ@mail.gmail.com>
- <c9e68631-0e60-578d-e88d-23e1f9d8eb2f@linux.dev>
- <CAHj4cs99vDgjfA8So4dd7UW04+rie65Uy=jVTWheU0JY=H4R8g@mail.gmail.com>
- <54eea59a-efcd-c281-e998-033c6df81a28@linux.dev>
- <CAHj4cs9xwzrhRPoZ2t69b6F2JL8X9mZNVmwBfW2y5g7ZdbR8vg@mail.gmail.com>
- <CAHj4cs-mz5Dh6WrqB3PzoV89YaMTHrt9PbJv_4ofQD2r0BktTw@mail.gmail.com>
- <9eb4ed5e-0872-40fd-ab96-e210463d82ee@linux.dev>
- <CAHj4cs9nRtM4Dsh=ciSBS4OMx26T7EsccE13G6sEXUG+963OPQ@mail.gmail.com>
-Content-Language: en-US
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Zhu Yanjun <yanjun.zhu@linux.dev>
-In-Reply-To: <CAHj4cs9nRtM4Dsh=ciSBS4OMx26T7EsccE13G6sEXUG+963OPQ@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: MN6PR11MB8102:EE_|SJ0PR11MB5199:EE_
+X-MS-Office365-Filtering-Correlation-Id: b6701776-3e84-400a-7639-08dc70f063c8
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;ARA:13230031|366007|7416005|376005|1800799015;
+X-Microsoft-Antispam-Message-Info: =?utf-8?B?SzV5c04vOU5CbnFUT2E0WjIrc3g2L1c3SkpXd2ZRUWtqLzBtMEp6OEIxT2l4?=
+ =?utf-8?B?QkJrbldDNGJFV0NkQXdxY1FzejB6T1FWeDVNR3BTemR1bVdUWDBkZlRxbVN5?=
+ =?utf-8?B?amtvSDN3TmNRa0E1TmRJREpyMWZrR2lmVE1jMWxMNlhjUUd5Q0hFb1lnck5D?=
+ =?utf-8?B?ZHkwSDRyMmpqbVlQeTJvVStzMXY3M0tpNTVlY1o0SVpyQ2I5a2k2UWxNenR0?=
+ =?utf-8?B?RXZNNjRMdTREVVRJeDR3TXZLdGJsdStxYjBGTEp2ZXVPcWp0dUdWY2RCRllR?=
+ =?utf-8?B?cFZYWVdybkg2NCt1VmR3a1B5ZElaUGF1aU5mNUlJVHFmQWJTYVNvTUtSMGta?=
+ =?utf-8?B?a3VwZU1VYkhZSkJGOGNrSGRXMnI2SXJvZGp2YUNiMTM1aGVZb1dXTmpKTDBC?=
+ =?utf-8?B?WEt1aDd4MDcrRHVHclQxT0pLemxoTEpQVmV4R09wQjRwM0tKUnJST29pcmJo?=
+ =?utf-8?B?ZUU3OHBuWVVZeDU3MENSTk8ycHRUUmE3MUNiOEdWeFlIRUR3dFREV0dIUGwy?=
+ =?utf-8?B?d2ROcEtYQ1VJVmErZ0d2bUxWVHBDZlJSYWp0VlFLUCtNOE8wQVZsYnk0MUhi?=
+ =?utf-8?B?dlRhVkoycDhIalFpczVoeWhYZ2tFRzRrWm83OS90WEV5ai8veEFhZ2xyL1Ux?=
+ =?utf-8?B?blhWc29DeDRXcXNBZHBwZlZWTXJDOC9WN3hWRldJV0Z5dUNrWmhnV3RxN2RL?=
+ =?utf-8?B?Vks4SEU2OWZZZU01UGVDT2hsemp2ZUdKcENIcnFQRW5leml2bndGQTZwSW5B?=
+ =?utf-8?B?YkxWbUhCOUl5SDZmYVd5aG1IaXdkMmQyMFJ0eS81aWcxYlRQRFVEUEwvbmJQ?=
+ =?utf-8?B?Y0llMktXTmZrWDR4RjAwdXZ2VVhKQnFmcG1URFNZZE1PQno4aExIemNkR3Jh?=
+ =?utf-8?B?Q0VnWUlVRTRZSk5BNUJ2ZDhTUWgvRnA1ZkVwV2x5S1RQbzg1SlZyMEJhWXIy?=
+ =?utf-8?B?OWduVVZFcWpNL09sTEZ0MXVLcGdqa21yUU5KbUY2VldZUjNqNTRRWUNJSWIz?=
+ =?utf-8?B?MmR6aEhxSFltUGZxalN2bXp1dW1DNUpCYXlsVVNxSVpVWEQ0aCtQbDZLMEFC?=
+ =?utf-8?B?eks5S0pQQVN3UGlwK3V0WWhtMVZqUXJpRTcwUVREQkN1RzFTendXQkNUeENO?=
+ =?utf-8?B?cHJoc3pqZmtjRnFwRk1qM0FMem91OWdVektRalZDY2hEcFR1N1l0cVRLZzhr?=
+ =?utf-8?B?UFlMb1VPQjlFNHdaMERUSGE4WUZITGtrMlQzY2R2VDJNNGZlQ05oZml4WXVu?=
+ =?utf-8?B?VHJrVEdIRDBvMmxWU0YxVWVZMjVSY2xLeEtyV3hSdEpkM3ZlNnFya3ZXWW1w?=
+ =?utf-8?B?R1ZTYzN1NU5kZTR1UGIzb2tSNU50d1pDWXJoQXhZYjROQlQ1eVAxVzZCczNr?=
+ =?utf-8?B?M05WaWEreHozSlBRWjVmTlZCdm5yNWx0cGhGUUhGMmxtU0E2aXRkOStmOElR?=
+ =?utf-8?B?TlBObnJORDIwQTlLQ3ZYMDI0Q25Eb2czblh2eGVIbk1LQnB6L2pxTURHVTBJ?=
+ =?utf-8?B?SklwT3VQZlNzQWxKdzhJVEdlL3lyYlF4L3JWMjN5Nm1Id1VyT053dUExdU8v?=
+ =?utf-8?B?ajZ2cy84WXlWSEdYOTg1VDRNRjhFQzdpc3VjdkVYcjVVeVRqMGgzTjBFVnZ0?=
+ =?utf-8?B?ZlZ6WVNUUlRRNzBYcXRhbnVyeldsQWsrUng4SFltWllVNXJKNnd5TEF6aFgr?=
+ =?utf-8?B?RjZBVk1UZVAvcFo4ZXdVSHZyWjJFU05PL2lxeHJWcnBlc1ZzUVljWHRRPT0=?=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN6PR11MB8102.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366007)(7416005)(376005)(1800799015);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?MGJKSmMxTXJCYndtUDFQdkdrd1FWaStOdk5RVEFiOWFWMUx0Yzc0VEdZOFoy?=
+ =?utf-8?B?dTlPMnRqU3N2MzFGcmtzTWFzbnlINzRTbUc1Sys2NUJOOWZUb0NHekxqY2FN?=
+ =?utf-8?B?RkxrYkM2c1R6VFJPQWtYWmtQRndqaTJtNzRCYmZKa3gzVThJZ0d4aWcxZkI2?=
+ =?utf-8?B?NUpHL3QvUEpWQ0RsdTE2eHJSb1k1U1F0ZEUzekJHZEZpSDFsNklHd1E2b0xy?=
+ =?utf-8?B?VnpSUVVUcnJnVmt0TnBnNm5UN1l0K2J4d09ZcEs1ZU5pQm1DWTAzZnBCTmt6?=
+ =?utf-8?B?QTY3RE8rSGF1TyswUEVPazFvNDJjOVZNczJlZjVGRUFkdjB0cStrWTN0MTJF?=
+ =?utf-8?B?WVVxU0J5ellOR3kweXkxeXBPWHMvNU9HaUJ4TGJucFd1MFJLS05zMndScjU4?=
+ =?utf-8?B?ZmZWQWZKaHVMRzVqOUpEREtsempMQTdhelV1WEhHa2FLYjhWcmgxZ1B6UUJF?=
+ =?utf-8?B?RzFlYlhDRDAyTWtlNHhnc3RiRWpBZ3BwMzNoMHlYYnJOejBNM0ZPTGhTblIr?=
+ =?utf-8?B?bzdFOFhkYk04Tzk0c1RqV2xnSzV1TGt3YWx6a0ZsSFhNMGV3My9sRVhVeVhQ?=
+ =?utf-8?B?UXlZRDkwajBZeVJUWGF5bldaSzZ2UWMxL3BacSt4bG9sS2ZndmgzSWdpeVpl?=
+ =?utf-8?B?ajMzTFhVUENuMzBrYnZLWXlrbitDVjhLME9wcnhablVDS1UyQnVTaFJlU1Y2?=
+ =?utf-8?B?YWxMSU02c0lVYWgvWUJhdE1zb2FaTng0S1NMVitzeDFTYUZ5T3g5LysweFhv?=
+ =?utf-8?B?bE1iODltRTdPTGMxeVVQUUErWjBUb2lVRStJMGZIVDNZRE9YWkt2T3RpV0I0?=
+ =?utf-8?B?TXVTQ2JRU0I5a1RMYU5EZnBuMytmWnlrR1JlU1FvVWQ5elRaSmVjazJZWkU1?=
+ =?utf-8?B?bVpGeitSQ3g5STNGOUo2VlNPVkdycXArT1FRMG5zQ1lmbkl2aU1KemwxeXJr?=
+ =?utf-8?B?aHZoRFFKREEycGFGMTAyLzgvZm1yUXZBaWgxNFNoR0ZudFJGdGs4M0NpUTd6?=
+ =?utf-8?B?VEtVQ2ZsNFFQSDZJSXJYM2pSOXBRZ0tpT2Y3RnFxSXF0Z3ZsSTF4ZWhjc284?=
+ =?utf-8?B?Z0Q1Z2lIZWlhN2pCdU9FeStDRkdscUpuS3JLSXZPbk5pNFBHVGsvd3pjekM0?=
+ =?utf-8?B?eWpqUEtkUld0cmNtYjBoYlI3dUJrQzJDRzdKUkZEc25QckQ5dUprYUtDVVdy?=
+ =?utf-8?B?MGVaNmh3RWwrYy9zVHlnTGk3SGdjRUZoR1dEb09ia1pjVldaQkdzK2pwZytU?=
+ =?utf-8?B?SUs5NUc4Q1MrSUVTcGU0eGF3THpFWEp5b3B4aWgvS3ArbTA4cWhrQmFUZTd1?=
+ =?utf-8?B?UEdyTEFuUW5qNVo2dTNqUjYvdCtwSnY3RU1LWm9obHlWUyt0THc4UjRtSTdU?=
+ =?utf-8?B?R0FBamdHNS9uUFpFbFNRclNhTDV6M2kxN1Qza2pLbHV4SUpTYXE2RUUzSFFw?=
+ =?utf-8?B?R21KN0tYMDMrbEZ3ZExhQjdod1RTbHNoMzlpRURyY2lkU0JDcXYxeE1XY2tO?=
+ =?utf-8?B?eEVOWG5zLzc1L0JVTzd3RUJqM25JWTlZK0FXdUR6SHZMSjE2U1c4SlFQVXRx?=
+ =?utf-8?B?SFQ2dXBYbk5YWlZrQTBJODVKYnMxd3pXUU50NjUzUWdzOGR2Q25SKzR3alcy?=
+ =?utf-8?B?T3pRM285c0YraEJjSmZ5RnRDK0lEWkxUZDRhWG1HSEhDeWtZanJoRUc0SDV0?=
+ =?utf-8?B?SWJOeXFKQ0tJbTV4eWRnSUhvdzN5VSt2MTRBY3RaelBkR2RhcEltSnA1SWsz?=
+ =?utf-8?B?T1BmNTE0YTFxcjM3bUw1WUZydzdoU1gvUTE5LzcrSnB5K1dQaUpTSDRQcy9i?=
+ =?utf-8?B?SmdLZTRFenBCbFhRSjJMWEFsZ3VTRmlaUkxLTW5oWmdxcWd2MGFBMkw2TUNm?=
+ =?utf-8?B?bGtTemM5OXl1S1pSTjRvOFlyOWEycXhKdTRNRjNySEoyMlBob2NsNGlQSFRw?=
+ =?utf-8?B?MUFPTlpvRGJWQWxQOHV5UEVIWVRGYlU5VlRGbGdDamhZc0JHa2JTK3BVVTY2?=
+ =?utf-8?B?ZnpUYTNQdCtmdnFzeThlZnJWRVIxMlNteE1TTkkvaGU2S1dqRXF3ZFo5aGp1?=
+ =?utf-8?B?UGhLWXdZWlk3YlM4ZTZaQVVhMVo3VmF5aFhYSmZ4UnQrVnRlaGh3T3BaZmlJ?=
+ =?utf-8?B?WkxrM3gwOTUzTXhLUUVuNmFhemk0eGRVbmlkR2NCVndwc2g2RHdsUW5ZZWhv?=
+ =?utf-8?Q?7DyRyTYWlMV8/JU5Kih2JVU=3D?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: b6701776-3e84-400a-7639-08dc70f063c8
+X-MS-Exchange-CrossTenant-AuthSource: MN6PR11MB8102.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 10 May 2024 12:54:54.9479
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: s99j88b18sn8bxcjqWojNetcXlZCqB6r5tkihb7vLpe96fV+bIJ8K4oTFX/vzwpj2vAioUF9DzIoec4cYhybHBrfggqDZod7LWuwgBf+kYY=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR11MB5199
+X-OriginatorOrg: intel.com
 
-
-On 10.05.24 03:41, Yi Zhang wrote:
-> On Wed, May 8, 2024 at 11:31 PM Zhu Yanjun <yanjun.zhu@linux.dev> wrote:
->> 在 2024/5/8 15:08, Yi Zhang 写道:
->>> So bisect shows it was introduced with below commit, please help check
->>> and fix it, thanks.
->>>
->>> commit f8ef1be816bf9a0c406c696368c2264a9597a994
->>> Author: Chuck Lever <chuck.lever@oracle.com>
->>> Date:   Mon Jul 17 11:12:32 2023 -0400
->>>
->>>       RDMA/cma: Avoid GID lookups on iWARP devices
->> Not sure if the following can fix this problem or not.
->> Please let me know the test result.
->> Thanks a lot.
-> Hi Yanjun
->
-> Seems the change introduced new issue, here is the log:
-
-Yeah. I can reproduce this problem. I will delve into this problem.
-
-Zhu Yanjun
-
->
-> [ 3017.171697] run blktests nvme/003 at 2024-05-09 21:35:41
-> [ 3032.344539] ==================================================================
-> [ 3032.351780] BUG: KASAN: slab-use-after-free in
-> rdma_put_gid_attr+0x23/0xa0 [ib_core]
-> [ 3032.359659] Write of size 4 at addr ffff88813c1c3f00 by task kworker/27:1/370
-> [ 3032.366791]
-> [ 3032.368293] CPU: 27 PID: 370 Comm: kworker/27:1 Not tainted
-> 6.9.0-rc2.rdma.fix+ #1
-> [ 3032.375859] Hardware name: Dell Inc. PowerEdge R640/08HT8T, BIOS
-> 2.20.1 09/13/2023
-> [ 3032.383425] Workqueue: nvmet-wq nvmet_rdma_release_queue_work [nvmet_rdma]
-> [ 3032.390304] Call Trace:
-> [ 3032.392757]  <TASK>
-> [ 3032.394864]  dump_stack_lvl+0x84/0xd0
-> [ 3032.398537]  ? rdma_put_gid_attr+0x23/0xa0 [ib_core]
-> [ 3032.403561]  print_report+0x19d/0x52e
-> [ 3032.407228]  ? rdma_put_gid_attr+0x23/0xa0 [ib_core]
-> [ 3032.412256]  ? __virt_addr_valid+0x228/0x420
-> [ 3032.416537]  ? rdma_put_gid_attr+0x23/0xa0 [ib_core]
-> [ 3032.421563]  kasan_report+0xab/0x180
-> [ 3032.425142]  ? rdma_put_gid_attr+0x23/0xa0 [ib_core]
-> [ 3032.430173]  kasan_check_range+0x104/0x1b0
-> [ 3032.434275]  rdma_put_gid_attr+0x23/0xa0 [ib_core]
-> [ 3032.439128]  ? cma_dev_put+0x1f/0x60 [rdma_cm]
-> [ 3032.443591]  cma_release_dev+0x1b2/0x270 [rdma_cm]
-> [ 3032.448401]  _destroy_id+0x35f/0xc80 [rdma_cm]
-> [ 3032.452867]  nvmet_rdma_free_queue+0x7a/0x380 [nvmet_rdma]
-> [ 3032.458360]  nvmet_rdma_release_queue_work+0x42/0x90 [nvmet_rdma]
-> [ 3032.464460]  process_one_work+0x85d/0x13e0
-> [ 3032.468573]  ? worker_thread+0xcc/0x1130
-> [ 3032.472501]  ? __pfx_process_one_work+0x10/0x10
-> [ 3032.477038]  ? assign_work+0x16c/0x240
-> [ 3032.480797]  worker_thread+0x6da/0x1130
-> [ 3032.484648]  ? __pfx_worker_thread+0x10/0x10
-> [ 3032.488923]  kthread+0x2ed/0x3c0
-> [ 3032.492155]  ? _raw_spin_unlock_irq+0x28/0x60
-> [ 3032.496514]  ? __pfx_kthread+0x10/0x10
-> [ 3032.500267]  ret_from_fork+0x31/0x70
-> [ 3032.503854]  ? __pfx_kthread+0x10/0x10
-> [ 3032.507607]  ret_from_fork_asm+0x1a/0x30
-> [ 3032.511539]  </TASK>
-> [ 3032.513734]
-> [ 3032.515234] Allocated by task 1997:
-> [ 3032.518725]  kasan_save_stack+0x30/0x50
-> [ 3032.522562]  kasan_save_track+0x14/0x30
-> [ 3032.526402]  __kasan_kmalloc+0x8f/0xa0
-> [ 3032.530155]  add_modify_gid+0x18e/0xb80 [ib_core]
-> [ 3032.534922]  ib_cache_update.part.0+0x6fc/0x8e0 [ib_core]
-> [ 3032.540380]  ib_cache_setup_one+0x3ff/0x5f0 [ib_core]
-> [ 3032.545495]  ib_register_device+0x5ba/0xa20 [ib_core]
-> [ 3032.550607]  siw_newlink+0xb0d/0xe50 [siw]
-> [ 3032.554724]  nldev_newlink+0x301/0x520 [ib_core]
-> [ 3032.559404]  rdma_nl_rcv_msg+0x2e7/0x600 [ib_core]
-> [ 3032.564256]  rdma_nl_rcv_skb.constprop.0.isra.0+0x23c/0x3a0 [ib_core]
-> [ 3032.570756]  netlink_unicast+0x437/0x6e0
-> [ 3032.574679]  netlink_sendmsg+0x775/0xc10
-> [ 3032.578607]  __sys_sendto+0x3e5/0x490
-> [ 3032.582273]  __x64_sys_sendto+0xe0/0x1c0
-> [ 3032.586198]  do_syscall_64+0x9a/0x1a0
-> [ 3032.589862]  entry_SYSCALL_64_after_hwframe+0x71/0x79
-> [ 3032.594917]
-> [ 3032.596416] Freed by task 339:
-> [ 3032.599475]  kasan_save_stack+0x30/0x50
-> [ 3032.603312]  kasan_save_track+0x14/0x30
-> [ 3032.607153]  kasan_save_free_info+0x3b/0x60
-> [ 3032.611338]  poison_slab_object+0x103/0x190
-> [ 3032.615523]  __kasan_slab_free+0x14/0x30
-> [ 3032.619450]  kfree+0x120/0x3a0
-> [ 3032.622508]  free_gid_work+0xd4/0x120 [ib_core]
-> [ 3032.627100]  process_one_work+0x85d/0x13e0
-> [ 3032.631200]  worker_thread+0x6da/0x1130
-> [ 3032.635038]  kthread+0x2ed/0x3c0
-> [ 3032.638271]  ret_from_fork+0x31/0x70
-> [ 3032.641849]  ret_from_fork_asm+0x1a/0x30
-> [ 3032.645777]
-> [ 3032.647277] Last potentially related work creation:
-> [ 3032.652153]  kasan_save_stack+0x30/0x50
-> [ 3032.655994]  __kasan_record_aux_stack+0x8e/0xa0
-> [ 3032.660525]  insert_work+0x36/0x310
-> [ 3032.664019]  __queue_work+0x6a4/0xcb0
-> [ 3032.667685]  queue_work_on+0x99/0xb0
-> [ 3032.671263]  cma_release_dev+0x1b2/0x270 [rdma_cm]
-> [ 3032.676072]  _destroy_id+0x35f/0xc80 [rdma_cm]
-> [ 3032.680537]  nvme_rdma_free_queue+0x4a/0x70 [nvme_rdma]
-> [ 3032.685768]  nvme_do_delete_ctrl+0x146/0x160 [nvme_core]
-> [ 3032.691108]  nvme_delete_ctrl_sync.cold+0x8/0xd [nvme_core]
-> [ 3032.696707]  nvme_sysfs_delete+0x96/0xc0 [nvme_core]
-> [ 3032.701696]  kernfs_fop_write_iter+0x3a5/0x5b0
-> [ 3032.706142]  vfs_write+0x62e/0x1010
-> [ 3032.709636]  ksys_write+0xfb/0x1d0
-> [ 3032.713041]  do_syscall_64+0x9a/0x1a0
-> [ 3032.716707]  entry_SYSCALL_64_after_hwframe+0x71/0x79
-> [ 3032.721760]
-> [ 3032.723259] The buggy address belongs to the object at ffff88813c1c3f00
-> [ 3032.723259]  which belongs to the cache kmalloc-rnd-07-192 of size 192
-> [ 3032.736370] The buggy address is located 0 bytes inside of
-> [ 3032.736370]  freed 192-byte region [ffff88813c1c3f00, ffff88813c1c3fc0)
-> [ 3032.748441]
-> [ 3032.749942] The buggy address belongs to the physical page:
-> [ 3032.755513] page: refcount:1 mapcount:0 mapping:0000000000000000
-> index:0x0 pfn:0x13c1c2
-> [ 3032.763511] head: order:1 entire_mapcount:0 nr_pages_mapped:0 pincount:0
-> [ 3032.770212] flags:
-> 0x17ffffe0000840(slab|head|node=0|zone=2|lastcpupid=0x3fffff)
-> [ 3032.777604] page_type: 0xffffffff()
-> [ 3032.781097] raw: 0017ffffe0000840 ffff888100053c00 dead000000000122
-> 0000000000000000
-> [ 3032.788837] raw: 0000000000000000 0000000080200020 00000001ffffffff
-> 0000000000000000
-> [ 3032.796574] head: 0017ffffe0000840 ffff888100053c00
-> dead000000000122 0000000000000000
-> [ 3032.804400] head: 0000000000000000 0000000080200020
-> 00000001ffffffff 0000000000000000
-> [ 3032.812225] head: 0017ffffe0000001 ffffea0004f07081
-> ffffea0004f070c8 00000000ffffffff
-> [ 3032.820050] head: 0000000200000000 0000000000000000
-> 00000000ffffffff 0000000000000000
-> [ 3032.827874] page dumped because: kasan: bad access detected
-> [ 3032.833447]
-> [ 3032.834944] Memory state around the buggy address:
-> [ 3032.839737]  ffff88813c1c3e00: fc fc fc fc fc fc fc fc fc fc fc fc
-> fc fc fc fc
-> [ 3032.846958]  ffff88813c1c3e80: fc fc fc fc fc fc fc fc fc fc fc fc
-> fc fc fc fc
-> [ 3032.854177] >ffff88813c1c3f00: fa fb fb fb fb fb fb fb fb fb fb fb
-> fb fb fb fb
-> [ 3032.861393]                    ^
-> [ 3032.864628]  ffff88813c1c3f80: fb fb fb fb fb fb fb fb fc fc fc fc
-> fc fc fc fc
-> [ 3032.871845]  ffff88813c1c4000: 00 00 00 00 00 00 00 00 00 00 00 00
-> 00 00 00 00
-> [ 3032.879065] ==================================================================
-> [ 3032.886311] Disabling lock debugging due to kernel taint
-> [ 3032.891630] ------------[ cut here ]------------
-> [ 3032.896255] refcount_t: underflow; use-after-free.
-> [ 3032.901104] WARNING: CPU: 27 PID: 370 at lib/refcount.c:28
-> refcount_warn_saturate+0xf2/0x150
-> [ 3032.909552] Modules linked in: siw ib_uverbs nvmet_rdma nvmet
-> nvme_keyring nvme_rdma nvme_fabrics nvme_core nvme_auth rdma_cm iw_cm
-> ib_cm ib_core intel_rapl_msr intel_rapl_coma
-> [ 3032.992273] CPU: 27 PID: 370 Comm: kworker/27:1 Tainted: G    B
->           6.9.0-rc2.rdma.fix+ #1
-> [ 3033.001324] Hardware name: Dell Inc. PowerEdge R640/08HT8T, BIOS
-> 2.20.1 09/13/2023
-> [ 3033.008899] Workqueue: nvmet-wq nvmet_rdma_release_queue_work [nvmet_rdma]
-> [ 3033.015787] RIP: 0010:refcount_warn_saturate+0xf2/0x150
-> [ 3033.021022] Code: 2f 1b 66 04 01 e8 6e f7 9c fe 0f 0b eb 91 80 3d
-> 1e 1b 66 04 00 75 88 48 c7 c7 80 16 c5 91 c6 05 0e 1b 66 04 01 e8 4e
-> f7 9c fe <0f> 0b e9 6e ff ff ff 80 3d fe7
-> [ 3033.039775] RSP: 0018:ffffc9000e627c10 EFLAGS: 00010286
-> [ 3033.045019] RAX: 0000000000000000 RBX: ffff88813c1c3f00 RCX: 0000000000000000
-> [ 3033.052158] RDX: 0000000000000000 RSI: ffffffff91c5c760 RDI: 0000000000000001
-> [ 3033.059303] RBP: 0000000000000003 R08: 0000000000000001 R09: fffff52001cc4f36
-> [ 3033.066449] R10: ffffc9000e6279b7 R11: 0000000000000001 R12: ffff88a88f394248
-> [ 3033.073588] R13: ffff888135750240 R14: ffff88825385fb80 R15: dead000000000100
-> [ 3033.080730] FS:  0000000000000000(0000) GS:ffff88c7ad200000(0000)
-> knlGS:0000000000000000
-> [ 3033.088824] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> [ 3033.094579] CR2: 00007fdfcb573c58 CR3: 0000000ea6e98004 CR4: 00000000007706f0
-> [ 3033.101720] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-> [ 3033.108859] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-> [ 3033.116001] PKRU: 55555554
-> [ 3033.118723] Call Trace:
-> [ 3033.121182]  <TASK>
-> [ 3033.123300]  ? __warn+0xcc/0x170
-> [ 3033.126548]  ? refcount_warn_saturate+0xf2/0x150
-> [ 3033.131176]  ? report_bug+0x1fc/0x3d0
-> [ 3033.134860]  ? handle_bug+0x3c/0x80
-> [ 3033.138368]  ? exc_invalid_op+0x17/0x40
-> [ 3033.142217]  ? asm_exc_invalid_op+0x1a/0x20
-> [ 3033.146428]  ? refcount_warn_saturate+0xf2/0x150
-> [ 3033.151056]  cma_release_dev+0x1b2/0x270 [rdma_cm]
-> [ 3033.155874]  _destroy_id+0x35f/0xc80 [rdma_cm]
-> [ 3033.160348]  nvmet_rdma_free_queue+0x7a/0x380 [nvmet_rdma]
-> [ 3033.165851]  nvmet_rdma_release_queue_work+0x42/0x90 [nvmet_rdma]
-> [ 3033.171958]  process_one_work+0x85d/0x13e0
-> [ 3033.176077]  ? worker_thread+0xcc/0x1130
-> [ 3033.180017]  ? __pfx_process_one_work+0x10/0x10
-> [ 3033.184561]  ? assign_work+0x16c/0x240
-> [ 3033.188332]  worker_thread+0x6da/0x1130
-> [ 3033.192187]  ? __pfx_worker_thread+0x10/0x10
-> [ 3033.196475]  kthread+0x2ed/0x3c0
-> [ 3033.199724]  ? _raw_spin_unlock_irq+0x28/0x60
-> [ 3033.204099]  ? __pfx_kthread+0x10/0x10
-> [ 3033.207860]  ret_from_fork+0x31/0x70
-> [ 3033.211447]  ? __pfx_kthread+0x10/0x10
-> [ 3033.215209]  ret_from_fork_asm+0x1a/0x30
-> [ 3033.219152]  </TASK>
-> [ 3033.221352] irq event stamp: 255979
-> [ 3033.224855] hardirqs last  enabled at (255979):
-> [<ffffffff9160160a>] asm_sysvec_apic_timer_interrupt+0x1a/0x20
-> [ 3033.234863] hardirqs last disabled at (255978):
-> [<ffffffff91433f0a>] __do_softirq+0x75a/0x967
-> [ 3033.243391] softirqs last  enabled at (255766):
-> [<ffffffff8e269f56>] __irq_exit_rcu+0xc6/0x1d0
-> [ 3033.252015] softirqs last disabled at (255757):
-> [<ffffffff8e269f56>] __irq_exit_rcu+0xc6/0x1d0
-> [ 3033.260637] ---[ end trace 0000000000000000 ]---
->
->> diff --git a/drivers/infiniband/core/cma.c b/drivers/infiniband/core/cma.c
->> index 1e2cd7c8716e..901e6c40d560 100644
->> --- a/drivers/infiniband/core/cma.c
->> +++ b/drivers/infiniband/core/cma.c
->> @@ -715,9 +715,13 @@ cma_validate_port(struct ib_device *device, u32 port,
->>                   rcu_read_lock();
->>                   ndev = rcu_dereference(sgid_attr->ndev);
->>                   if (!net_eq(dev_net(ndev), dev_addr->net) ||
->> -                   ndev->ifindex != bound_if_index)
->> +                   ndev->ifindex != bound_if_index) {
->> +                       rdma_put_gid_attr(sgid_attr);
->>                           sgid_attr = ERR_PTR(-ENODEV);
->> +               }
->>                   rcu_read_unlock();
->> +               if (!IS_ERR(sgid_attr))
->> +                       rdma_put_gid_attr(sgid_attr);
->>                   goto out;
->>           }
->> Zhu Yanjun
+On 5/10/24 10:15, Greg KH wrote:
+> On Thu, May 09, 2024 at 12:14:10PM +0300, Shay Drory wrote:
+>> PCI subfunctions (SF) are anchored on the auxiliary bus.
+> 
+> "Some PCI subfunctions can be on the auxiliary bus"
+> 
+> Or maybe "Sometimes the auxiliary bus interface is used for PCI
+> subfunctions."
+> 
+> Either way, the text here as-is is not correct as that is not how the
+> auxbus code is always used, sorry.
+> 
+>> PCI physical
+>> and virtual functions are anchored on the PCI bus;  the irq information
+> 
+> Odd use of ';'?  And an extra ' '?
+> 
+>> of each such function is visible to users via sysfs directory "msi_irqs"
+>> containing file for each irq entry. However, for PCI SFs such information
+>> is unavailable. Due to this users have no visibility on IRQs used by the
+>> SFs.
+> 
+> Not even in /proc/irq/ ?
+> 
+>> Secondly, an SF is a multi function device supporting rdma, netdevice
+> 
+> Not "is", it should be "can be"  Not all the world is your crazy
+> hardware :)
+> 
+>> and more. Without irq information at the bus level, the user is unable
+>> to view or use the affinity of the SF IRQs.
+> 
+> How would affinity be relevent here?  You are just allowing them to be
+> viewed, not set.
+> 
+>> Hence to match to the equivalent PCI PFs and VFs, add "irqs" directory,
+>> for supporting auxiliary devices, containing file for each irq entry.
 >>
->>> On Tue, Apr 30, 2024 at 7:51 PM Yi Zhang <yi.zhang@redhat.com> wrote:
->>>> On Mon, Apr 29, 2024 at 8:54 AM Guoqing Jiang <guoqing.jiang@linux.dev> wrote:
->>>>>
->>>>>
->>>>> On 4/28/24 20:42, Yi Zhang wrote:
->>>>>> On Sun, Apr 28, 2024 at 10:54 AM Guoqing Jiang <guoqing.jiang@linux.dev> wrote:
->>>>>>>
->>>>>>> On 4/26/24 16:44, Yi Zhang wrote:
->>>>>>>> On Fri, Apr 26, 2024 at 1:56 PM Yi Zhang <yi.zhang@redhat.com> wrote:
->>>>>>>>> On Wed, Apr 24, 2024 at 9:28 PM Guoqing Jiang <guoqing.jiang@linux.dev> wrote:
->>>>>>>>>> Hi,
->>>>>>>>>>
->>>>>>>>>> On 4/8/24 14:03, Yi Zhang wrote:
->>>>>>>>>>> Hi
->>>>>>>>>>> I found the below kmemleak issue during blktests nvme/rdma on the
->>>>>>>>>>> latest linux-rdma/for-next, please help check it and let me know if
->>>>>>>>>>> you need any info/testing for it, thanks.
->>>>>>>>>> Could you share which test case caused the issue? I can't reproduce
->>>>>>>>>> it with 6.9-rc3+ kernel (commit 586b5dfb51b) with the below.
->>>>>>>>> It can be reproduced by [1], you can find more info from the symbol
->>>>>>>>> info[2], I also attached the config file, maybe you can this config
->>>>>>>>> file
->>>>>>>> Just attached the config file
->>>>>>>>
->>>>>>> I tried with the config, but still unlucky.
->>>>>>>
->>>>>>> # nvme_trtype=rdma ./check nvme/012
->>>>>>> nvme/012 (run mkfs and data verification fio job on NVMeOF block
->>>>>>> device-backed ns)
->>>>>>> nvme/012 (run mkfs and data verification fio job on NVMeOF block
->>>>>>> device-backed ns) [passed]
->>>>>>>         runtime  52.763s  ...  392.027s device: nvme0
->>>>>>>
->>>>>>>>> [1] nvme_trtype=rdma ./check nvme/012
->>>>>>>>> [2]
->>>>>>>>> unreferenced object 0xffff8883a87e8800 (size 192):
->>>>>>>>>       comm "rdma", pid 2355, jiffies 4294836069
->>>>>>>>>       hex dump (first 32 bytes):
->>>>>>>>>         32 00 00 00 00 00 00 00 c0 ff ff ff 1f 00 00 00  2...............
->>>>>>>>>         10 88 7e a8 83 88 ff ff 10 88 7e a8 83 88 ff ff  ..~.......~.....
->>>>>>>>>       backtrace (crc 4db191c4):
->>>>>>>>>         [<ffffffff8cd251bd>] kmalloc_trace+0x30d/0x3b0
->>>>>>>>>         [<ffffffffc207eff7>] alloc_gid_entry+0x47/0x380 [ib_core]
->>>>>>>>>         [<ffffffffc2080206>] add_modify_gid+0x166/0x930 [ib_core]
->>>>>>>>>         [<ffffffffc2081468>] ib_cache_update.part.0+0x6d8/0x910 [ib_core]
->>>>>>>>>         [<ffffffffc2082e1a>] ib_cache_setup_one+0x24a/0x350 [ib_core]
->>>>>>>>>         [<ffffffffc207749e>] ib_register_device+0x9e/0x3a0 [ib_core]
->>>>>>>>>         [<ffffffffc24ac389>] 0xffffffffc24ac389
->>>>>>>>>         [<ffffffffc20c6cd8>] nldev_newlink+0x2b8/0x520 [ib_core]
->>>>>>>>>         [<ffffffffc2083fe3>] rdma_nl_rcv_msg+0x2c3/0x520 [ib_core]
->>>>>>>>>         [<ffffffffc208448c>]
->>>>>>>>> rdma_nl_rcv_skb.constprop.0.isra.0+0x23c/0x3a0 [ib_core]
->>>>>>>>>         [<ffffffff8e30e715>] netlink_unicast+0x445/0x710
->>>>>>>>>         [<ffffffff8e30f151>] netlink_sendmsg+0x761/0xc40
->>>>>>>>>         [<ffffffff8e09da89>] __sys_sendto+0x3a9/0x420
->>>>>>>>>         [<ffffffff8e09dbec>] __x64_sys_sendto+0xdc/0x1b0
->>>>>>>>>         [<ffffffff8e9afad3>] do_syscall_64+0x93/0x180
->>>>>>>>>         [<ffffffff8ea00126>] entry_SYSCALL_64_after_hwframe+0x71/0x79
->>>>>>>>>
->>>>>>>>> (gdb) l *(alloc_gid_entry+0x47)
->>>>>>>>> 0x2eff7 is in alloc_gid_entry (./include/linux/slab.h:628).
->>>>>>>>> 623
->>>>>>>>> 624 if (size > KMALLOC_MAX_CACHE_SIZE)
->>>>>>>>> 625 return kmalloc_large(size, flags);
->>>>>>>>> 626
->>>>>>>>> 627 index = kmalloc_index(size);
->>>>>>>>> 628 return kmalloc_trace(
->>>>>>>>> 629 kmalloc_caches[kmalloc_type(flags, _RET_IP_)][index],
->>>>>>>>> 630 flags, size);
->>>>>>>>> 631 }
->>>>>>>>> 632 return __kmalloc(size, flags);
->>>>>>>>>
->>>>>>>>> (gdb) l *(add_modify_gid+0x166)
->>>>>>>>> 0x30206 is in add_modify_gid (drivers/infiniband/core/cache.c:447).
->>>>>>>>> 442 * empty table entries instead of storing them.
->>>>>>>>> 443 */
->>>>>>>>> 444 if (rdma_is_zero_gid(&attr->gid))
->>>>>>>>> 445 return 0;
->>>>>>>>> 446
->>>>>>>>> 447 entry = alloc_gid_entry(attr);
->>>>>>>>> 448 if (!entry)
->>>>>>>>> 449 return -ENOMEM;
->>>>>>>>> 450
->>>>>>>>> 451 if (rdma_protocol_roce(attr->device, attr->port_num)) {
->>>>>>>>>
->>>>>>>>>
->>>>>>>>>> use_siw=1 nvme_trtype=rdma ./check nvme/
->>>>>>>>>>
->>>>>>>>>>> # dmesg | grep kmemleak
->>>>>>>>>>> [   67.130652] kmemleak: Kernel memory leak detector initialized (mem
->>>>>>>>>>> pool available: 36041)
->>>>>>>>>>> [   67.130728] kmemleak: Automatic memory scanning thread started
->>>>>>>>>>> [ 1051.771867] kmemleak: 2 new suspected memory leaks (see
->>>>>>>>>>> /sys/kernel/debug/kmemleak)
->>>>>>>>>>> [ 1832.796189] kmemleak: 8 new suspected memory leaks (see
->>>>>>>>>>> /sys/kernel/debug/kmemleak)
->>>>>>>>>>> [ 2578.189075] kmemleak: 17 new suspected memory leaks (see
->>>>>>>>>>> /sys/kernel/debug/kmemleak)
->>>>>>>>>>> [ 3330.710984] kmemleak: 4 new suspected memory leaks (see
->>>>>>>>>>> /sys/kernel/debug/kmemleak)
->>>>>>>>>>>
->>>>>>>>>>> unreferenced object 0xffff88855da53400 (size 192):
->>>>>>>>>>>        comm "rdma", pid 10630, jiffies 4296575922
->>>>>>>>>>>        hex dump (first 32 bytes):
->>>>>>>>>>>          37 00 00 00 00 00 00 00 c0 ff ff ff 1f 00 00 00  7...............
->>>>>>>>>>>          10 34 a5 5d 85 88 ff ff 10 34 a5 5d 85 88 ff ff  .4.].....4.]....
->>>>>>>>>>>        backtrace (crc 47f66721):
->>>>>>>>>>>          [<ffffffff911251bd>] kmalloc_trace+0x30d/0x3b0
->>>>>>>>>>>          [<ffffffffc2640ff7>] alloc_gid_entry+0x47/0x380 [ib_core]
->>>>>>>>>>>          [<ffffffffc2642206>] add_modify_gid+0x166/0x930 [ib_core]
->>>>>>>>>> I guess add_modify_gid is called from config_non_roce_gid_cache, not sure
->>>>>>>>>> why we don't check the return value of it here.
->>>>>>>>>>
->>>>>>>>>> Looks put_gid_entry is called in case add_modify_gid returns failure, it
->>>>>>>>>> would
->>>>>>>>>> trigger schedule_free_gid -> queue_work(ib_wq, &entry->del_work), then
->>>>>>>>>> free_gid_work -> free_gid_entry_locked would free storage asynchronously by
->>>>>>>>>> put_gid_ndev and also entry.
->>>>>>>>>>
->>>>>>>>>>>          [<ffffffffc2643468>] ib_cache_update.part.0+0x6d8/0x910 [ib_core]
->>>>>>>>>>>          [<ffffffffc2644e1a>] ib_cache_setup_one+0x24a/0x350 [ib_core]
->>>>>>>>>>>          [<ffffffffc263949e>] ib_register_device+0x9e/0x3a0 [ib_core]
->>>>>>>>>>>          [<ffffffffc2a3d389>] 0xffffffffc2a3d389
->>>>>>>>>>>          [<ffffffffc2688cd8>] nldev_newlink+0x2b8/0x520 [ib_core]
->>>>>>>>>>>          [<ffffffffc2645fe3>] rdma_nl_rcv_msg+0x2c3/0x520 [ib_core]
->>>>>>>>>>>          [<ffffffffc264648c>]
->>>>>>>>>>> rdma_nl_rcv_skb.constprop.0.isra.0+0x23c/0x3a0 [ib_core]
->>>>>>>>>>>          [<ffffffff9270e7b5>] netlink_unicast+0x445/0x710
->>>>>>>>>>>          [<ffffffff9270f1f1>] netlink_sendmsg+0x761/0xc40
->>>>>>>>>>>          [<ffffffff9249db29>] __sys_sendto+0x3a9/0x420
->>>>>>>>>>>          [<ffffffff9249dc8c>] __x64_sys_sendto+0xdc/0x1b0
->>>>>>>>>>>          [<ffffffff92db0ad3>] do_syscall_64+0x93/0x180
->>>>>>>>>>>          [<ffffffff92e00126>] entry_SYSCALL_64_after_hwframe+0x71/0x79
->>>>>>>>>> After ib_cache_setup_one failed, maybe ib_cache_cleanup_one is needed
->>>>>>>>>> which flush ib_wq to ensure storage is freed. Could you try with the change?
->>>>>>>>> Will try it later.
->>>>>>>>>
->>>>>>>> The kmemleak still can be reproduced with this change:
->>>>>>>>
->>>>>>>> unreferenced object 0xffff8881f89fde00 (size 192):
->>>>>>>>       comm "rdma", pid 8708, jiffies 4295703453
->>>>>>>>       hex dump (first 32 bytes):
->>>>>>>>         02 00 00 00 00 00 00 00 c0 ff ff ff 1f 00 00 00  ................
->>>>>>>>         10 de 9f f8 81 88 ff ff 10 de 9f f8 81 88 ff ff  ................
->>>>>>>>       backtrace (crc 888c494b):
->>>>>>>>         [<ffffffffa7d251bd>] kmalloc_trace+0x30d/0x3b0
->>>>>>>>         [<ffffffffc1efeff7>] alloc_gid_entry+0x47/0x380 [ib_core]
->>>>>>>>         [<ffffffffc1f00206>] add_modify_gid+0x166/0x930 [ib_core]
->>>>>>>>         [<ffffffffc1f01468>] ib_cache_update.part.0+0x6d8/0x910 [ib_core]
->>>>>>>>         [<ffffffffc1f02e1a>] ib_cache_setup_one+0x24a/0x350 [ib_core]
->>>>>>>>         [<ffffffffc1ef749e>] ib_register_device+0x9e/0x3a0 [ib_core]
->>>>>>>>         [<ffffffffc22ee389>]
->>>>>>>> siw_qp_state_to_ib_qp_state+0x28a9/0xfffffffffffd1520 [siw]
->>>>>>> Is it possible to run the test with rxe instead of siw? In case it is
->>>>>>> only happened
->>>>>>> with siw, I'd suggest to revert 0b988c1bee28 to check if it causes the
->>>>>>> issue.
->>>>>>> But I don't understand why siw_qp_state_to_ib_qp_state was appeared in the
->>>>>>> middle of above trace.
->>>>>> Hi Guoqing
->>>>>> This issue only can be reproduced with siw, I did more testing today
->>>>>> and it cannot be reproduced with 6.5, seems it was introduced from
->>>>>> 6.6-rc1, and I saw there are some siw updates from 6.6-rc1.
->>>>> Yes, pls bisect them.
->>>> Sure, will do that after I back from holiday next week.
->>>>
->>>>>    > git log --oneline v6.5..v6.6-rc1 drivers/infiniband/sw/siw/|cat
->>>>> 9dfccb6d0d3d RDMA/siw: Call llist_reverse_order in siw_run_sq
->>>>> bee024d20451 RDMA/siw: Correct wrong debug message
->>>>> b056327bee09 RDMA/siw: Balance the reference of cep->kref in the error path
->>>>> 91f36237b4b9 RDMA/siw: Fix tx thread initialization.
->>>>> bad5b6e34ffb RDMA/siw: Fabricate a GID on tun and loopback devices
->>>>> 9191df002926 RDMA/siw: use vmalloc_array and vcalloc
->>>>>
->>>>> Thanks,
->>>>> Guoqing
->>>>>
->>>>
->>>> --
->>>> Best Regards,
->>>>     Yi Zhang
->>>
->>>
->
--- 
-Best Regards,
-Yanjun.Zhu
+>> Additionally, the PCI SFs sometimes share the IRQs with peer SFs. This
+>> information is also not available to the users. To overcome this
+>> limitation, each irq sysfs entry shows if irq is exclusive or shared.
+>>
+>> For example:
+>> $ ls /sys/bus/auxiliary/devices/mlx5_core.sf.1/irqs/
+>> 50  51  52  53  54  55  56  57  58
+>> $ cat /sys/bus/auxiliary/devices/mlx5_core.sf.1/irqs/52
+>> exclusive
+>>
+>> Reviewed-by: Parav Pandit <parav@nvidia.com>
+>> Signed-off-by: Shay Drory <shayd@nvidia.com>
+>>
+>> ---
+>> v3->4:
+>> - remove global mutex (Przemek)
+
+thanks, and sorry for not catching back in time on v3 disussion
+
+>> v2->v3:
+>> - fix function declaration in case SYSFS isn't defined (Parav)
+>> - convert auxdev->groups array with auxiliary_irqs_groups (Przemek)
+>> v1->v2:
+>> - move #ifdefs from drivers/base/auxiliary.c to
+>>    include/linux/auxiliary_bus.h (Greg)
+>> - use EXPORT_SYMBOL_GPL instead of EXPORT_SYMBOL (Greg)
+>> - Fix kzalloc(ref) to kzalloc(*ref) (Simon)
+>> - Add return description in auxiliary_device_sysfs_irq_add() kdoc (Simon)
+>> - Fix auxiliary_irq_mode_show doc (kernel test boot)
+>> ---
+>>   Documentation/ABI/testing/sysfs-bus-auxiliary |  14 ++
+>>   drivers/base/auxiliary.c                      | 178 +++++++++++++++++-
+>>   include/linux/auxiliary_bus.h                 |  24 ++-
+>>   3 files changed, 213 insertions(+), 3 deletions(-)
+>>   create mode 100644 Documentation/ABI/testing/sysfs-bus-auxiliary
+>>
+>> diff --git a/Documentation/ABI/testing/sysfs-bus-auxiliary b/Documentation/ABI/testing/sysfs-bus-auxiliary
+>> new file mode 100644
+>> index 000000000000..3b8299d49d9e
+>> --- /dev/null
+>> +++ b/Documentation/ABI/testing/sysfs-bus-auxiliary
+>> @@ -0,0 +1,14 @@
+>> +What:		/sys/bus/auxiliary/devices/.../irqs/
+>> +Date:		April, 2024
+>> +Contact:	Shay Drory <shayd@nvidia.com>
+>> +Description:
+>> +		The /sys/devices/.../irqs directory contains a variable set of
+>> +		files, with each file is named as irq number similar to PCI PF
+>> +		or VF's irq number located in msi_irqs directory.
+> 
+> So this can be msi irqs?  Or not msi irqs?  How do we know?
+> 
+> 
+>> +
+>> +What:		/sys/bus/auxiliary/devices/.../irqs/<N>
+>> +Date:		April, 2024
+>> +Contact:	Shay Drory <shayd@nvidia.com>
+>> +Description:
+>> +		auxiliary devices can share IRQs. This attribute indicates if
+>> +		the irq is shared with other SFs or exclusively used by the SF.
+>> diff --git a/drivers/base/auxiliary.c b/drivers/base/auxiliary.c
+>> index d3a2c40c2f12..def02f5f1220 100644
+>> --- a/drivers/base/auxiliary.c
+>> +++ b/drivers/base/auxiliary.c
+>> @@ -158,6 +158,176 @@
+>>    *	};
+>>    */
+>>   
+>> +#ifdef CONFIG_SYSFS
+>> +/* Xarray of irqs to determine if irq is exclusive or shared. */
+>> +static DEFINE_XARRAY(irqs);
+>> +
+>> +struct auxiliary_irq_info {
+>> +	struct device_attribute sysfs_attr;
+>> +	int irq;
+>> +};
+>> +
+>> +static struct attribute *auxiliary_irq_attrs[] = {
+>> +	NULL
+>> +};
+>> +
+>> +static const struct attribute_group auxiliary_irqs_group = {
+>> +	.name = "irqs",
+>> +	.attrs = auxiliary_irq_attrs,
+>> +};
+>> +
+>> +static const struct attribute_group *auxiliary_irqs_groups[2] = {
+> 
+> Why list the array size?
+> 
+>> +	&auxiliary_irqs_group,
+>> +	NULL
+>> +};
+>> +
+>> +/* Auxiliary devices can share IRQs. Expose to user whether the provided IRQ is
+>> + * shared or exclusive.
+>> + */
+>> +static ssize_t auxiliary_irq_mode_show(struct device *dev,
+>> +				       struct device_attribute *attr, char *buf)
+>> +{
+>> +	struct auxiliary_irq_info *info =
+>> +		container_of(attr, struct auxiliary_irq_info, sysfs_attr);
+>> +
+>> +	if (refcount_read(xa_load(&irqs, info->irq)) > 1)
+> 
+> refcount combined with xa?  That feels wrong, why is refcount used for
+> this at all?
+
+Not long ago I commented on similar usage for ice driver,
+~"since you are locking anyway this could be a plain counter",
+and author replied
+~"additional semantics (like saturation) of refcount make me feel warm
+and fuzzy" (sorry if misquoting too much).
+That convinced me back then, so I kept quiet about that here.
+
+The "use least powerful option" rule of thumb is perhaps more important.
+
+@Greg, WDYT?
+
+> 
+>> +		return sysfs_emit(buf, "%s\n", "shared");
+>> +	else
+>> +		return sysfs_emit(buf, "%s\n", "exclusive");
+>> +}
+>> +
+>> +static void auxiliary_irq_destroy(int irq)
+>> +{
+>> +	refcount_t *ref;
+>> +
+>> +	xa_lock(&irqs);
+>> +	ref = xa_load(&irqs, irq);
+>> +	if (refcount_dec_and_test(ref)) {
+>> +		__xa_erase(&irqs, irq);
+>> +		kfree(ref);
+>> +	}
+>> +	xa_unlock(&irqs);
+>> +}
+>> +
+>> +static int auxiliary_irq_create(int irq)
+>> +{
+>> +	refcount_t *new_ref = kzalloc(sizeof(*new_ref), GFP_KERNEL);
+>> +	refcount_t *ref;
+>> +	int ret = 0;
+>> +
+>> +	if (!new_ref)
+>> +		return -ENOMEM;
+>> +
+>> +	xa_lock(&irqs);
+>> +	ref = xa_load(&irqs, irq);
+>> +	if (ref) {
+>> +		kfree(new_ref);
+>> +		refcount_inc(ref);
+> 
+> Why do you need to use refcounts for these?  What does that help out
+> with?
+> 
+>> +		goto out;
+>> +	}
+>> +
+>> +	refcount_set(new_ref, 1);
+>> +	ref = __xa_cmpxchg(&irqs, irq, NULL, new_ref, GFP_KERNEL);
+>> +	if (ref) {
+>> +		kfree(new_ref);
+>> +		if (xa_is_err(ref)) {
+>> +			ret = xa_err(ref);
+>> +			goto out;
+>> +		}
+>> +
+>> +		/* Another thread beat us to creating the enrtry. */
+>> +		refcount_inc(ref);
+> 
+> How can that happen?  Why not just use a normal simple lock for all of
+> this so you don't have to mess with refcounts at all?  This is not
+> performance-relevent code at all, but yet with a refcount you cause
+> almost the same issues that a normal lock would have, plus the increased
+> complexity of all of the surrounding code (like this, and the crazy
+> __xa_cmpxchg() call)
+> 
+> Make this simple please.
+
+I find current API of xarray not ideal for this use case, and would like
+to fix it, but let me write a proper RFC to don't derail (or slow down)
+this series.
+
+> 
+> 
+>> +	}
+>> +
+>> +out:
+>> +	xa_unlock(&irqs);
+>> +	return ret;
+>> +}
+>> +
+>> +/**
+>> + * auxiliary_device_sysfs_irq_add - add a sysfs entry for the given IRQ
+>> + * @auxdev: auxiliary bus device to add the sysfs entry.
+>> + * @irq: The associated Linux interrupt number.
+>> + *
+>> + * This function should be called after auxiliary device have successfully
+>> + * received the irq.
+>> + *
+>> + * Return: zero on success or an error code on failure.
+>> + */
+>> +int auxiliary_device_sysfs_irq_add(struct auxiliary_device *auxdev, int irq)
+>> +{
+>> +	struct device *dev = &auxdev->dev;
+>> +	struct auxiliary_irq_info *info;
+>> +	int ret;
+>> +
+>> +	ret = auxiliary_irq_create(irq);
+>> +	if (ret)
+>> +		return ret;
+>> +
+>> +	info = kzalloc(sizeof(*info), GFP_KERNEL);
+>> +	if (!info) {
+>> +		ret = -ENOMEM;
+>> +		goto info_err;
+>> +	}
+>> +
+>> +	sysfs_attr_init(&info->sysfs_attr.attr);
+>> +	info->sysfs_attr.attr.name = kasprintf(GFP_KERNEL, "%d", irq);
+>> +	if (!info->sysfs_attr.attr.name) {
+>> +		ret = -ENOMEM;
+>> +		goto name_err;
+>> +	}
+>> +	info->irq = irq;
+>> +	info->sysfs_attr.attr.mode = 0444;
+>> +	info->sysfs_attr.show = auxiliary_irq_mode_show;
+>> +
+>> +	ret = xa_insert(&auxdev->irqs, irq, info, GFP_KERNEL);
+>> +	if (ret)
+>> +		goto auxdev_xa_err;
+>> +
+>> +	ret = sysfs_add_file_to_group(&dev->kobj, &info->sysfs_attr.attr,
+>> +				      auxiliary_irqs_group.name);
+> 
+> Adding dynamic sysfs attributes like this means that you normally just
+> raced with userspace and lost.  How are you ensuring that you did not
+> just do that?
+> 
+>> +/**
+>> + * auxiliary_device_sysfs_irq_remove - remove a sysfs entry for the given IRQ
+>> + * @auxdev: auxiliary bus device to add the sysfs entry.
+>> + * @irq: the IRQ to remove.
+>> + *
+>> + * This function should be called to remove an IRQ sysfs entry.
+>> + */
+>> +void auxiliary_device_sysfs_irq_remove(struct auxiliary_device *auxdev, int irq)
+>> +{
+>> +	struct auxiliary_irq_info *info = xa_load(&auxdev->irqs, irq);
+>> +	struct device *dev = &auxdev->dev;
+>> +
+>> +	if (WARN_ON(!info))
+> 
+> How can this ever happen?  If not, don't check for it please.  If it can
+> happen, properly handle it and move on, don't reboot the box.
+> 
+> thanks,
+> 
+> greg k-h
+> 
 
 
