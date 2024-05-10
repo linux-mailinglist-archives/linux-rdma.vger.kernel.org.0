@@ -1,165 +1,509 @@
-Return-Path: <linux-rdma+bounces-2398-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-2399-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 60B9F8C21FD
-	for <lists+linux-rdma@lfdr.de>; Fri, 10 May 2024 12:23:10 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id D40FA8C22DF
+	for <lists+linux-rdma@lfdr.de>; Fri, 10 May 2024 13:11:37 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 833191C20C4E
-	for <lists+linux-rdma@lfdr.de>; Fri, 10 May 2024 10:23:09 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8B05C28272E
+	for <lists+linux-rdma@lfdr.de>; Fri, 10 May 2024 11:11:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8CD62168AF0;
-	Fri, 10 May 2024 10:23:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E518516F297;
+	Fri, 10 May 2024 11:11:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="RCWRYoNy"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="pQjzWHuU"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
+Received: from out-184.mta0.migadu.com (out-184.mta0.migadu.com [91.218.175.184])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 93136130E39;
-	Fri, 10 May 2024 10:23:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.158.5
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9540716D332
+	for <linux-rdma@vger.kernel.org>; Fri, 10 May 2024 11:10:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.184
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1715336583; cv=none; b=G+v5aowAMSngyu4OIfraVF26aSqy8titwf3EUn59dOLXMf09Qk/vcKD8M+cRqTFepMaD+ucI/rgPKJw1OOiB+48XNLrFI3OZ0XNA4Vjvlx79ODH4dlP+ApvckHo6uZpfHw5Xh3Td1H8khMIqE8R2CBM037V+q2VoKDs+EWjVCA0=
+	t=1715339460; cv=none; b=jxxrWLHmrvLzexzJoMdRT5F9O2CJ4LQzv4bluhDlgdH4h/YFf28jAl/pbLHn2AZ0zH+iaVj/U7m6EljqHzWeKTromf4XkeBimZ/6whEAC7UHhxKOoZgbwDzyBGMNcdy3r9xajwHdiV5/p9jBI61gN9Dl53YBZfqgQimUDxdaHac=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1715336583; c=relaxed/simple;
-	bh=oJTSAfBvuIycIoXTlRrSClNVDYbN32w4IpQTqf56fco=;
-	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
-	 Content-Type:MIME-Version; b=F3SJGPfa5g1/KMO1okXOjCKZb9an+iNcrKoZUuqBcBt5RUd/2x1JrgUxpojuuV133xB8tAkAZj6tJkRORucYdn1/2QwXS41SglgtXYmjyjFwVRWt7k6R8lZfDGLxIwbErVj/AG2XqkvHmPT9SLI/VfmOcYZjLjDvs2aIk224RVs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=RCWRYoNy; arc=none smtp.client-ip=148.163.158.5
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
-Received: from pps.filterd (m0353725.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 44A9Cqx8022386;
-	Fri, 10 May 2024 10:22:54 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
- subject : to : cc : references : from : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=pp1;
- bh=MG5ZYsRiODRe4ubGtFf8H3gDEjjOmPzap7ojKtBzCzc=;
- b=RCWRYoNyivhryOSfXnxpR0dknta7AKjeVlGRD8GqnqHGNishCuQLYpUeRbBx8i7w59Iw
- SbikzDl+fPAPXkCbc9qpsxTaPOyDYAVHpeAQ3GeUbQ03vd9XDI8ypHUi4Qa4OSqk5YLw
- gJ6qV5siXlAk8EO1GDnHFlOv3kLtMFwthDhjN8qbDKrC/aqnpNm1q81tQc70yxLF4Hzy
- H/SCdH8RhsNRv4qVcTgKkpWIULZSwT+Ep2SzgKy6D8QMpbZ/XAT0mFkvI9n0EYfhCXz5
- A+YQUjxYQo266+vj6Fs3f0YPkkOKG0MLq2PJeKeHR5ZQSttOI/cW4ZlviHstCWnVacTV /A== 
-Received: from pps.reinject (localhost [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3y1grdr50k-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 10 May 2024 10:22:54 +0000
-Received: from m0353725.ppops.net (m0353725.ppops.net [127.0.0.1])
-	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 44AAMrmK029219;
-	Fri, 10 May 2024 10:22:53 GMT
-Received: from ppma11.dal12v.mail.ibm.com (db.9e.1632.ip4.static.sl-reverse.com [50.22.158.219])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3y1grdr50f-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 10 May 2024 10:22:53 +0000
-Received: from pps.filterd (ppma11.dal12v.mail.ibm.com [127.0.0.1])
-	by ppma11.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 44A7Ower017582;
-	Fri, 10 May 2024 10:22:52 GMT
-Received: from smtprelay06.wdc07v.mail.ibm.com ([172.16.1.73])
-	by ppma11.dal12v.mail.ibm.com (PPS) with ESMTPS id 3xysht8kw0-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 10 May 2024 10:22:52 +0000
-Received: from smtpav01.dal12v.mail.ibm.com (smtpav01.dal12v.mail.ibm.com [10.241.53.100])
-	by smtprelay06.wdc07v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 44AAMmIq45482446
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Fri, 10 May 2024 10:22:51 GMT
-Received: from smtpav01.dal12v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id D7C1458059;
-	Fri, 10 May 2024 10:22:48 +0000 (GMT)
-Received: from smtpav01.dal12v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id A0CDA58057;
-	Fri, 10 May 2024 10:22:46 +0000 (GMT)
-Received: from [9.171.7.235] (unknown [9.171.7.235])
-	by smtpav01.dal12v.mail.ibm.com (Postfix) with ESMTP;
-	Fri, 10 May 2024 10:22:46 +0000 (GMT)
-Message-ID: <310155d9-591a-428f-ad81-d317615faa90@linux.ibm.com>
-Date: Fri, 10 May 2024 12:22:45 +0200
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH net-next 0/2] Introduce IPPROTO_SMC
-To: "D. Wythe" <alibuda@linux.alibaba.com>, kgraul@linux.ibm.com,
-        jaka@linux.ibm.com, wintera@linux.ibm.com, guwen@linux.alibaba.com
-Cc: kuba@kernel.org, davem@davemloft.net, netdev@vger.kernel.org,
-        linux-s390@vger.kernel.org, linux-rdma@vger.kernel.org,
-        tonylu@linux.alibaba.com, pabeni@redhat.com, edumazet@google.com
-References: <1715314333-107290-1-git-send-email-alibuda@linux.alibaba.com>
-Content-Language: en-US
-From: Wenjia Zhang <wenjia@linux.ibm.com>
-In-Reply-To: <1715314333-107290-1-git-send-email-alibuda@linux.alibaba.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: l2kbX6APCCV0-1pkzDdruf7P-z99Nzgf
-X-Proofpoint-GUID: K9ygItOsGcJw_nv5XM2sXt1N1yDIsgTG
-Content-Transfer-Encoding: 7bit
-X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+	s=arc-20240116; t=1715339460; c=relaxed/simple;
+	bh=hCna4l4WEAhnsxjsCtoq8uxoH6C6N39738+/HxAz6gc=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=LZkEDyDevOD9jXDE9MZIbno5lcNy8q6ysx6qQLuui2RQCnCPzYGJwUN/MjkRs0odjPVi0nMkRnovQZ2a+ywpHH52+b0+cy3boH9XWxP0NAHF0/sxqcR9/OUKWqsAKZ9ejUaxpjr8lo0JaMMa42ApqxP3KSZ7J2lXoDFaXIkFbEg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=pQjzWHuU; arc=none smtp.client-ip=91.218.175.184
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <82714325-e705-4142-85c8-9d53bc9f2db1@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1715339454;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=Mj47W7DbtEtXDFeORN5sL7n5huow2wucmn7CO3gY52A=;
+	b=pQjzWHuUrYmtmRS94Tlqd4CddpXX8Q7CTlgjPdjKgSmFZ7lvq1SzXlP8oWBKqUNdTkhFsF
+	LOijGs+RST0k62IQNYy1vcT1GpFpU5ZLQTbkdHKk38UJ5fUw04sdkltm8YgXA9PyPpHWiL
+	ZkndnGtKnIITuqIdkxQntZK/La7BalQ=
+Date: Fri, 10 May 2024 13:10:52 +0200
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1039,Hydra:6.0.650,FMLib:17.11.176.26
- definitions=2024-05-10_06,2024-05-10_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1011 spamscore=0
- malwarescore=0 bulkscore=0 priorityscore=1501 phishscore=0 adultscore=0
- mlxscore=0 mlxlogscore=999 lowpriorityscore=0 impostorscore=0
- suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2405010000 definitions=main-2405100073
+Subject: Re: [bug report][bisected] kmemleak in rdma_core observed during
+ blktests nvme/rdma use siw
+To: Yi Zhang <yi.zhang@redhat.com>
+Cc: Guoqing Jiang <guoqing.jiang@linux.dev>,
+ RDMA mailing list <linux-rdma@vger.kernel.org>,
+ Shinichiro Kawasaki <shinichiro.kawasaki@wdc.com>,
+ Jason Gunthorpe <jgg@nvidia.com>, leonro@nvidia.com, chuck.lever@oracle.com
+References: <CAHj4cs9uQduBHjcsmOGHa8RaNGNMw8k8bBhZdGgdeEKPFeB8qQ@mail.gmail.com>
+ <7de9793f-6805-1412-3fae-a5508910124b@linux.dev>
+ <CAHj4cs-RiZXAdz131ihQ=wsW8nsViphJeHAD_i6qi7_DtW7NwQ@mail.gmail.com>
+ <CAHj4cs-HWjMq__89RR1WwLcOa5H46H8+d2t=jj=qFJ_m5kRwFQ@mail.gmail.com>
+ <c9e68631-0e60-578d-e88d-23e1f9d8eb2f@linux.dev>
+ <CAHj4cs99vDgjfA8So4dd7UW04+rie65Uy=jVTWheU0JY=H4R8g@mail.gmail.com>
+ <54eea59a-efcd-c281-e998-033c6df81a28@linux.dev>
+ <CAHj4cs9xwzrhRPoZ2t69b6F2JL8X9mZNVmwBfW2y5g7ZdbR8vg@mail.gmail.com>
+ <CAHj4cs-mz5Dh6WrqB3PzoV89YaMTHrt9PbJv_4ofQD2r0BktTw@mail.gmail.com>
+ <9eb4ed5e-0872-40fd-ab96-e210463d82ee@linux.dev>
+ <CAHj4cs9nRtM4Dsh=ciSBS4OMx26T7EsccE13G6sEXUG+963OPQ@mail.gmail.com>
+Content-Language: en-US
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Zhu Yanjun <yanjun.zhu@linux.dev>
+In-Reply-To: <CAHj4cs9nRtM4Dsh=ciSBS4OMx26T7EsccE13G6sEXUG+963OPQ@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
 
 
+On 10.05.24 03:41, Yi Zhang wrote:
+> On Wed, May 8, 2024 at 11:31 PM Zhu Yanjun <yanjun.zhu@linux.dev> wrote:
+>> 在 2024/5/8 15:08, Yi Zhang 写道:
+>>> So bisect shows it was introduced with below commit, please help check
+>>> and fix it, thanks.
+>>>
+>>> commit f8ef1be816bf9a0c406c696368c2264a9597a994
+>>> Author: Chuck Lever <chuck.lever@oracle.com>
+>>> Date:   Mon Jul 17 11:12:32 2023 -0400
+>>>
+>>>       RDMA/cma: Avoid GID lookups on iWARP devices
+>> Not sure if the following can fix this problem or not.
+>> Please let me know the test result.
+>> Thanks a lot.
+> Hi Yanjun
+>
+> Seems the change introduced new issue, here is the log:
 
-On 10.05.24 06:12, D. Wythe wrote:
-> From: "D. Wythe" <alibuda@linux.alibaba.com>
-> 
-> This patch allows to create smc socket via AF_INET,
-> similar to the following code,
-> 
-> /* create v4 smc sock */
-> v4 = socket(AF_INET, SOCK_STREAM, IPPROTO_SMC);
-> 
-> /* create v6 smc sock */
-> v6 = socket(AF_INET6, SOCK_STREAM, IPPROTO_SMC);
-> 
-> There are several reasons why we believe it is appropriate here:
-> 
-> 1. For smc sockets, it actually use IPv4 (AF-INET) or IPv6 (AF-INET6)
-> address. There is no AF_SMC address at all.
-> 
-> 2. Create smc socket in the AF_INET(6) path, which allows us to reuse
-> the infrastructure of AF_INET(6) path, such as common ebpf hooks.
-> Otherwise, smc have to implement it again in AF_SMC path. Such as:
->    1. Replace IPPROTO_TCP with IPPROTO_SMC in the socket() syscall
->       initiated by the user, without the use of LD-PRELOAD.
->    2. Select whether immediate fallback is required based on peer's port/ip
->       before connect().
-> 
-> A very significant result is that we can now use eBPF to implement smc_run
-> instead of LD_PRELOAD, who is completely ineffective in scenarios of static
-> linking.
-> 
+Yeah. I can reproduce this problem. I will delve into this problem.
 
-> Another potential value is that we are attempting to optimize the performance of
-> fallback socks, where merging socks is an important part, and it relies on the
-> creation of SMC sockets under the AF_INET path. (More information :
-> https://lore.kernel.org/netdev/1699442703-25015-1-git-send-email-alibuda@linux.alibaba.com/T/)
-> 
-> D. Wythe (2):
->    net/smc: refatoring initialization of smc sock
->    net/smc: Introduce IPPROTO_SMC
-> 
->   include/uapi/linux/in.h |   2 +
->   net/smc/af_smc.c        | 222 +++++++++++++++++++++++++++++++++++++++---------
->   net/smc/inet_smc.h      |  32 +++++++
->   3 files changed, 214 insertions(+), 42 deletions(-)
->   create mode 100644 net/smc/inet_smc.h
-> 
-Replacing the preload library is indeed a good reason for this method. 
-And that could be a new era for smc. However, there are still some 
-details we need to take care of. Thus, I'd like to ask for more time to 
-review and test these patches.
+Zhu Yanjun
 
-Thank you,
-Wenjia
+>
+> [ 3017.171697] run blktests nvme/003 at 2024-05-09 21:35:41
+> [ 3032.344539] ==================================================================
+> [ 3032.351780] BUG: KASAN: slab-use-after-free in
+> rdma_put_gid_attr+0x23/0xa0 [ib_core]
+> [ 3032.359659] Write of size 4 at addr ffff88813c1c3f00 by task kworker/27:1/370
+> [ 3032.366791]
+> [ 3032.368293] CPU: 27 PID: 370 Comm: kworker/27:1 Not tainted
+> 6.9.0-rc2.rdma.fix+ #1
+> [ 3032.375859] Hardware name: Dell Inc. PowerEdge R640/08HT8T, BIOS
+> 2.20.1 09/13/2023
+> [ 3032.383425] Workqueue: nvmet-wq nvmet_rdma_release_queue_work [nvmet_rdma]
+> [ 3032.390304] Call Trace:
+> [ 3032.392757]  <TASK>
+> [ 3032.394864]  dump_stack_lvl+0x84/0xd0
+> [ 3032.398537]  ? rdma_put_gid_attr+0x23/0xa0 [ib_core]
+> [ 3032.403561]  print_report+0x19d/0x52e
+> [ 3032.407228]  ? rdma_put_gid_attr+0x23/0xa0 [ib_core]
+> [ 3032.412256]  ? __virt_addr_valid+0x228/0x420
+> [ 3032.416537]  ? rdma_put_gid_attr+0x23/0xa0 [ib_core]
+> [ 3032.421563]  kasan_report+0xab/0x180
+> [ 3032.425142]  ? rdma_put_gid_attr+0x23/0xa0 [ib_core]
+> [ 3032.430173]  kasan_check_range+0x104/0x1b0
+> [ 3032.434275]  rdma_put_gid_attr+0x23/0xa0 [ib_core]
+> [ 3032.439128]  ? cma_dev_put+0x1f/0x60 [rdma_cm]
+> [ 3032.443591]  cma_release_dev+0x1b2/0x270 [rdma_cm]
+> [ 3032.448401]  _destroy_id+0x35f/0xc80 [rdma_cm]
+> [ 3032.452867]  nvmet_rdma_free_queue+0x7a/0x380 [nvmet_rdma]
+> [ 3032.458360]  nvmet_rdma_release_queue_work+0x42/0x90 [nvmet_rdma]
+> [ 3032.464460]  process_one_work+0x85d/0x13e0
+> [ 3032.468573]  ? worker_thread+0xcc/0x1130
+> [ 3032.472501]  ? __pfx_process_one_work+0x10/0x10
+> [ 3032.477038]  ? assign_work+0x16c/0x240
+> [ 3032.480797]  worker_thread+0x6da/0x1130
+> [ 3032.484648]  ? __pfx_worker_thread+0x10/0x10
+> [ 3032.488923]  kthread+0x2ed/0x3c0
+> [ 3032.492155]  ? _raw_spin_unlock_irq+0x28/0x60
+> [ 3032.496514]  ? __pfx_kthread+0x10/0x10
+> [ 3032.500267]  ret_from_fork+0x31/0x70
+> [ 3032.503854]  ? __pfx_kthread+0x10/0x10
+> [ 3032.507607]  ret_from_fork_asm+0x1a/0x30
+> [ 3032.511539]  </TASK>
+> [ 3032.513734]
+> [ 3032.515234] Allocated by task 1997:
+> [ 3032.518725]  kasan_save_stack+0x30/0x50
+> [ 3032.522562]  kasan_save_track+0x14/0x30
+> [ 3032.526402]  __kasan_kmalloc+0x8f/0xa0
+> [ 3032.530155]  add_modify_gid+0x18e/0xb80 [ib_core]
+> [ 3032.534922]  ib_cache_update.part.0+0x6fc/0x8e0 [ib_core]
+> [ 3032.540380]  ib_cache_setup_one+0x3ff/0x5f0 [ib_core]
+> [ 3032.545495]  ib_register_device+0x5ba/0xa20 [ib_core]
+> [ 3032.550607]  siw_newlink+0xb0d/0xe50 [siw]
+> [ 3032.554724]  nldev_newlink+0x301/0x520 [ib_core]
+> [ 3032.559404]  rdma_nl_rcv_msg+0x2e7/0x600 [ib_core]
+> [ 3032.564256]  rdma_nl_rcv_skb.constprop.0.isra.0+0x23c/0x3a0 [ib_core]
+> [ 3032.570756]  netlink_unicast+0x437/0x6e0
+> [ 3032.574679]  netlink_sendmsg+0x775/0xc10
+> [ 3032.578607]  __sys_sendto+0x3e5/0x490
+> [ 3032.582273]  __x64_sys_sendto+0xe0/0x1c0
+> [ 3032.586198]  do_syscall_64+0x9a/0x1a0
+> [ 3032.589862]  entry_SYSCALL_64_after_hwframe+0x71/0x79
+> [ 3032.594917]
+> [ 3032.596416] Freed by task 339:
+> [ 3032.599475]  kasan_save_stack+0x30/0x50
+> [ 3032.603312]  kasan_save_track+0x14/0x30
+> [ 3032.607153]  kasan_save_free_info+0x3b/0x60
+> [ 3032.611338]  poison_slab_object+0x103/0x190
+> [ 3032.615523]  __kasan_slab_free+0x14/0x30
+> [ 3032.619450]  kfree+0x120/0x3a0
+> [ 3032.622508]  free_gid_work+0xd4/0x120 [ib_core]
+> [ 3032.627100]  process_one_work+0x85d/0x13e0
+> [ 3032.631200]  worker_thread+0x6da/0x1130
+> [ 3032.635038]  kthread+0x2ed/0x3c0
+> [ 3032.638271]  ret_from_fork+0x31/0x70
+> [ 3032.641849]  ret_from_fork_asm+0x1a/0x30
+> [ 3032.645777]
+> [ 3032.647277] Last potentially related work creation:
+> [ 3032.652153]  kasan_save_stack+0x30/0x50
+> [ 3032.655994]  __kasan_record_aux_stack+0x8e/0xa0
+> [ 3032.660525]  insert_work+0x36/0x310
+> [ 3032.664019]  __queue_work+0x6a4/0xcb0
+> [ 3032.667685]  queue_work_on+0x99/0xb0
+> [ 3032.671263]  cma_release_dev+0x1b2/0x270 [rdma_cm]
+> [ 3032.676072]  _destroy_id+0x35f/0xc80 [rdma_cm]
+> [ 3032.680537]  nvme_rdma_free_queue+0x4a/0x70 [nvme_rdma]
+> [ 3032.685768]  nvme_do_delete_ctrl+0x146/0x160 [nvme_core]
+> [ 3032.691108]  nvme_delete_ctrl_sync.cold+0x8/0xd [nvme_core]
+> [ 3032.696707]  nvme_sysfs_delete+0x96/0xc0 [nvme_core]
+> [ 3032.701696]  kernfs_fop_write_iter+0x3a5/0x5b0
+> [ 3032.706142]  vfs_write+0x62e/0x1010
+> [ 3032.709636]  ksys_write+0xfb/0x1d0
+> [ 3032.713041]  do_syscall_64+0x9a/0x1a0
+> [ 3032.716707]  entry_SYSCALL_64_after_hwframe+0x71/0x79
+> [ 3032.721760]
+> [ 3032.723259] The buggy address belongs to the object at ffff88813c1c3f00
+> [ 3032.723259]  which belongs to the cache kmalloc-rnd-07-192 of size 192
+> [ 3032.736370] The buggy address is located 0 bytes inside of
+> [ 3032.736370]  freed 192-byte region [ffff88813c1c3f00, ffff88813c1c3fc0)
+> [ 3032.748441]
+> [ 3032.749942] The buggy address belongs to the physical page:
+> [ 3032.755513] page: refcount:1 mapcount:0 mapping:0000000000000000
+> index:0x0 pfn:0x13c1c2
+> [ 3032.763511] head: order:1 entire_mapcount:0 nr_pages_mapped:0 pincount:0
+> [ 3032.770212] flags:
+> 0x17ffffe0000840(slab|head|node=0|zone=2|lastcpupid=0x3fffff)
+> [ 3032.777604] page_type: 0xffffffff()
+> [ 3032.781097] raw: 0017ffffe0000840 ffff888100053c00 dead000000000122
+> 0000000000000000
+> [ 3032.788837] raw: 0000000000000000 0000000080200020 00000001ffffffff
+> 0000000000000000
+> [ 3032.796574] head: 0017ffffe0000840 ffff888100053c00
+> dead000000000122 0000000000000000
+> [ 3032.804400] head: 0000000000000000 0000000080200020
+> 00000001ffffffff 0000000000000000
+> [ 3032.812225] head: 0017ffffe0000001 ffffea0004f07081
+> ffffea0004f070c8 00000000ffffffff
+> [ 3032.820050] head: 0000000200000000 0000000000000000
+> 00000000ffffffff 0000000000000000
+> [ 3032.827874] page dumped because: kasan: bad access detected
+> [ 3032.833447]
+> [ 3032.834944] Memory state around the buggy address:
+> [ 3032.839737]  ffff88813c1c3e00: fc fc fc fc fc fc fc fc fc fc fc fc
+> fc fc fc fc
+> [ 3032.846958]  ffff88813c1c3e80: fc fc fc fc fc fc fc fc fc fc fc fc
+> fc fc fc fc
+> [ 3032.854177] >ffff88813c1c3f00: fa fb fb fb fb fb fb fb fb fb fb fb
+> fb fb fb fb
+> [ 3032.861393]                    ^
+> [ 3032.864628]  ffff88813c1c3f80: fb fb fb fb fb fb fb fb fc fc fc fc
+> fc fc fc fc
+> [ 3032.871845]  ffff88813c1c4000: 00 00 00 00 00 00 00 00 00 00 00 00
+> 00 00 00 00
+> [ 3032.879065] ==================================================================
+> [ 3032.886311] Disabling lock debugging due to kernel taint
+> [ 3032.891630] ------------[ cut here ]------------
+> [ 3032.896255] refcount_t: underflow; use-after-free.
+> [ 3032.901104] WARNING: CPU: 27 PID: 370 at lib/refcount.c:28
+> refcount_warn_saturate+0xf2/0x150
+> [ 3032.909552] Modules linked in: siw ib_uverbs nvmet_rdma nvmet
+> nvme_keyring nvme_rdma nvme_fabrics nvme_core nvme_auth rdma_cm iw_cm
+> ib_cm ib_core intel_rapl_msr intel_rapl_coma
+> [ 3032.992273] CPU: 27 PID: 370 Comm: kworker/27:1 Tainted: G    B
+>           6.9.0-rc2.rdma.fix+ #1
+> [ 3033.001324] Hardware name: Dell Inc. PowerEdge R640/08HT8T, BIOS
+> 2.20.1 09/13/2023
+> [ 3033.008899] Workqueue: nvmet-wq nvmet_rdma_release_queue_work [nvmet_rdma]
+> [ 3033.015787] RIP: 0010:refcount_warn_saturate+0xf2/0x150
+> [ 3033.021022] Code: 2f 1b 66 04 01 e8 6e f7 9c fe 0f 0b eb 91 80 3d
+> 1e 1b 66 04 00 75 88 48 c7 c7 80 16 c5 91 c6 05 0e 1b 66 04 01 e8 4e
+> f7 9c fe <0f> 0b e9 6e ff ff ff 80 3d fe7
+> [ 3033.039775] RSP: 0018:ffffc9000e627c10 EFLAGS: 00010286
+> [ 3033.045019] RAX: 0000000000000000 RBX: ffff88813c1c3f00 RCX: 0000000000000000
+> [ 3033.052158] RDX: 0000000000000000 RSI: ffffffff91c5c760 RDI: 0000000000000001
+> [ 3033.059303] RBP: 0000000000000003 R08: 0000000000000001 R09: fffff52001cc4f36
+> [ 3033.066449] R10: ffffc9000e6279b7 R11: 0000000000000001 R12: ffff88a88f394248
+> [ 3033.073588] R13: ffff888135750240 R14: ffff88825385fb80 R15: dead000000000100
+> [ 3033.080730] FS:  0000000000000000(0000) GS:ffff88c7ad200000(0000)
+> knlGS:0000000000000000
+> [ 3033.088824] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> [ 3033.094579] CR2: 00007fdfcb573c58 CR3: 0000000ea6e98004 CR4: 00000000007706f0
+> [ 3033.101720] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+> [ 3033.108859] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+> [ 3033.116001] PKRU: 55555554
+> [ 3033.118723] Call Trace:
+> [ 3033.121182]  <TASK>
+> [ 3033.123300]  ? __warn+0xcc/0x170
+> [ 3033.126548]  ? refcount_warn_saturate+0xf2/0x150
+> [ 3033.131176]  ? report_bug+0x1fc/0x3d0
+> [ 3033.134860]  ? handle_bug+0x3c/0x80
+> [ 3033.138368]  ? exc_invalid_op+0x17/0x40
+> [ 3033.142217]  ? asm_exc_invalid_op+0x1a/0x20
+> [ 3033.146428]  ? refcount_warn_saturate+0xf2/0x150
+> [ 3033.151056]  cma_release_dev+0x1b2/0x270 [rdma_cm]
+> [ 3033.155874]  _destroy_id+0x35f/0xc80 [rdma_cm]
+> [ 3033.160348]  nvmet_rdma_free_queue+0x7a/0x380 [nvmet_rdma]
+> [ 3033.165851]  nvmet_rdma_release_queue_work+0x42/0x90 [nvmet_rdma]
+> [ 3033.171958]  process_one_work+0x85d/0x13e0
+> [ 3033.176077]  ? worker_thread+0xcc/0x1130
+> [ 3033.180017]  ? __pfx_process_one_work+0x10/0x10
+> [ 3033.184561]  ? assign_work+0x16c/0x240
+> [ 3033.188332]  worker_thread+0x6da/0x1130
+> [ 3033.192187]  ? __pfx_worker_thread+0x10/0x10
+> [ 3033.196475]  kthread+0x2ed/0x3c0
+> [ 3033.199724]  ? _raw_spin_unlock_irq+0x28/0x60
+> [ 3033.204099]  ? __pfx_kthread+0x10/0x10
+> [ 3033.207860]  ret_from_fork+0x31/0x70
+> [ 3033.211447]  ? __pfx_kthread+0x10/0x10
+> [ 3033.215209]  ret_from_fork_asm+0x1a/0x30
+> [ 3033.219152]  </TASK>
+> [ 3033.221352] irq event stamp: 255979
+> [ 3033.224855] hardirqs last  enabled at (255979):
+> [<ffffffff9160160a>] asm_sysvec_apic_timer_interrupt+0x1a/0x20
+> [ 3033.234863] hardirqs last disabled at (255978):
+> [<ffffffff91433f0a>] __do_softirq+0x75a/0x967
+> [ 3033.243391] softirqs last  enabled at (255766):
+> [<ffffffff8e269f56>] __irq_exit_rcu+0xc6/0x1d0
+> [ 3033.252015] softirqs last disabled at (255757):
+> [<ffffffff8e269f56>] __irq_exit_rcu+0xc6/0x1d0
+> [ 3033.260637] ---[ end trace 0000000000000000 ]---
+>
+>> diff --git a/drivers/infiniband/core/cma.c b/drivers/infiniband/core/cma.c
+>> index 1e2cd7c8716e..901e6c40d560 100644
+>> --- a/drivers/infiniband/core/cma.c
+>> +++ b/drivers/infiniband/core/cma.c
+>> @@ -715,9 +715,13 @@ cma_validate_port(struct ib_device *device, u32 port,
+>>                   rcu_read_lock();
+>>                   ndev = rcu_dereference(sgid_attr->ndev);
+>>                   if (!net_eq(dev_net(ndev), dev_addr->net) ||
+>> -                   ndev->ifindex != bound_if_index)
+>> +                   ndev->ifindex != bound_if_index) {
+>> +                       rdma_put_gid_attr(sgid_attr);
+>>                           sgid_attr = ERR_PTR(-ENODEV);
+>> +               }
+>>                   rcu_read_unlock();
+>> +               if (!IS_ERR(sgid_attr))
+>> +                       rdma_put_gid_attr(sgid_attr);
+>>                   goto out;
+>>           }
+>> Zhu Yanjun
+>>
+>>> On Tue, Apr 30, 2024 at 7:51 PM Yi Zhang <yi.zhang@redhat.com> wrote:
+>>>> On Mon, Apr 29, 2024 at 8:54 AM Guoqing Jiang <guoqing.jiang@linux.dev> wrote:
+>>>>>
+>>>>>
+>>>>> On 4/28/24 20:42, Yi Zhang wrote:
+>>>>>> On Sun, Apr 28, 2024 at 10:54 AM Guoqing Jiang <guoqing.jiang@linux.dev> wrote:
+>>>>>>>
+>>>>>>> On 4/26/24 16:44, Yi Zhang wrote:
+>>>>>>>> On Fri, Apr 26, 2024 at 1:56 PM Yi Zhang <yi.zhang@redhat.com> wrote:
+>>>>>>>>> On Wed, Apr 24, 2024 at 9:28 PM Guoqing Jiang <guoqing.jiang@linux.dev> wrote:
+>>>>>>>>>> Hi,
+>>>>>>>>>>
+>>>>>>>>>> On 4/8/24 14:03, Yi Zhang wrote:
+>>>>>>>>>>> Hi
+>>>>>>>>>>> I found the below kmemleak issue during blktests nvme/rdma on the
+>>>>>>>>>>> latest linux-rdma/for-next, please help check it and let me know if
+>>>>>>>>>>> you need any info/testing for it, thanks.
+>>>>>>>>>> Could you share which test case caused the issue? I can't reproduce
+>>>>>>>>>> it with 6.9-rc3+ kernel (commit 586b5dfb51b) with the below.
+>>>>>>>>> It can be reproduced by [1], you can find more info from the symbol
+>>>>>>>>> info[2], I also attached the config file, maybe you can this config
+>>>>>>>>> file
+>>>>>>>> Just attached the config file
+>>>>>>>>
+>>>>>>> I tried with the config, but still unlucky.
+>>>>>>>
+>>>>>>> # nvme_trtype=rdma ./check nvme/012
+>>>>>>> nvme/012 (run mkfs and data verification fio job on NVMeOF block
+>>>>>>> device-backed ns)
+>>>>>>> nvme/012 (run mkfs and data verification fio job on NVMeOF block
+>>>>>>> device-backed ns) [passed]
+>>>>>>>         runtime  52.763s  ...  392.027s device: nvme0
+>>>>>>>
+>>>>>>>>> [1] nvme_trtype=rdma ./check nvme/012
+>>>>>>>>> [2]
+>>>>>>>>> unreferenced object 0xffff8883a87e8800 (size 192):
+>>>>>>>>>       comm "rdma", pid 2355, jiffies 4294836069
+>>>>>>>>>       hex dump (first 32 bytes):
+>>>>>>>>>         32 00 00 00 00 00 00 00 c0 ff ff ff 1f 00 00 00  2...............
+>>>>>>>>>         10 88 7e a8 83 88 ff ff 10 88 7e a8 83 88 ff ff  ..~.......~.....
+>>>>>>>>>       backtrace (crc 4db191c4):
+>>>>>>>>>         [<ffffffff8cd251bd>] kmalloc_trace+0x30d/0x3b0
+>>>>>>>>>         [<ffffffffc207eff7>] alloc_gid_entry+0x47/0x380 [ib_core]
+>>>>>>>>>         [<ffffffffc2080206>] add_modify_gid+0x166/0x930 [ib_core]
+>>>>>>>>>         [<ffffffffc2081468>] ib_cache_update.part.0+0x6d8/0x910 [ib_core]
+>>>>>>>>>         [<ffffffffc2082e1a>] ib_cache_setup_one+0x24a/0x350 [ib_core]
+>>>>>>>>>         [<ffffffffc207749e>] ib_register_device+0x9e/0x3a0 [ib_core]
+>>>>>>>>>         [<ffffffffc24ac389>] 0xffffffffc24ac389
+>>>>>>>>>         [<ffffffffc20c6cd8>] nldev_newlink+0x2b8/0x520 [ib_core]
+>>>>>>>>>         [<ffffffffc2083fe3>] rdma_nl_rcv_msg+0x2c3/0x520 [ib_core]
+>>>>>>>>>         [<ffffffffc208448c>]
+>>>>>>>>> rdma_nl_rcv_skb.constprop.0.isra.0+0x23c/0x3a0 [ib_core]
+>>>>>>>>>         [<ffffffff8e30e715>] netlink_unicast+0x445/0x710
+>>>>>>>>>         [<ffffffff8e30f151>] netlink_sendmsg+0x761/0xc40
+>>>>>>>>>         [<ffffffff8e09da89>] __sys_sendto+0x3a9/0x420
+>>>>>>>>>         [<ffffffff8e09dbec>] __x64_sys_sendto+0xdc/0x1b0
+>>>>>>>>>         [<ffffffff8e9afad3>] do_syscall_64+0x93/0x180
+>>>>>>>>>         [<ffffffff8ea00126>] entry_SYSCALL_64_after_hwframe+0x71/0x79
+>>>>>>>>>
+>>>>>>>>> (gdb) l *(alloc_gid_entry+0x47)
+>>>>>>>>> 0x2eff7 is in alloc_gid_entry (./include/linux/slab.h:628).
+>>>>>>>>> 623
+>>>>>>>>> 624 if (size > KMALLOC_MAX_CACHE_SIZE)
+>>>>>>>>> 625 return kmalloc_large(size, flags);
+>>>>>>>>> 626
+>>>>>>>>> 627 index = kmalloc_index(size);
+>>>>>>>>> 628 return kmalloc_trace(
+>>>>>>>>> 629 kmalloc_caches[kmalloc_type(flags, _RET_IP_)][index],
+>>>>>>>>> 630 flags, size);
+>>>>>>>>> 631 }
+>>>>>>>>> 632 return __kmalloc(size, flags);
+>>>>>>>>>
+>>>>>>>>> (gdb) l *(add_modify_gid+0x166)
+>>>>>>>>> 0x30206 is in add_modify_gid (drivers/infiniband/core/cache.c:447).
+>>>>>>>>> 442 * empty table entries instead of storing them.
+>>>>>>>>> 443 */
+>>>>>>>>> 444 if (rdma_is_zero_gid(&attr->gid))
+>>>>>>>>> 445 return 0;
+>>>>>>>>> 446
+>>>>>>>>> 447 entry = alloc_gid_entry(attr);
+>>>>>>>>> 448 if (!entry)
+>>>>>>>>> 449 return -ENOMEM;
+>>>>>>>>> 450
+>>>>>>>>> 451 if (rdma_protocol_roce(attr->device, attr->port_num)) {
+>>>>>>>>>
+>>>>>>>>>
+>>>>>>>>>> use_siw=1 nvme_trtype=rdma ./check nvme/
+>>>>>>>>>>
+>>>>>>>>>>> # dmesg | grep kmemleak
+>>>>>>>>>>> [   67.130652] kmemleak: Kernel memory leak detector initialized (mem
+>>>>>>>>>>> pool available: 36041)
+>>>>>>>>>>> [   67.130728] kmemleak: Automatic memory scanning thread started
+>>>>>>>>>>> [ 1051.771867] kmemleak: 2 new suspected memory leaks (see
+>>>>>>>>>>> /sys/kernel/debug/kmemleak)
+>>>>>>>>>>> [ 1832.796189] kmemleak: 8 new suspected memory leaks (see
+>>>>>>>>>>> /sys/kernel/debug/kmemleak)
+>>>>>>>>>>> [ 2578.189075] kmemleak: 17 new suspected memory leaks (see
+>>>>>>>>>>> /sys/kernel/debug/kmemleak)
+>>>>>>>>>>> [ 3330.710984] kmemleak: 4 new suspected memory leaks (see
+>>>>>>>>>>> /sys/kernel/debug/kmemleak)
+>>>>>>>>>>>
+>>>>>>>>>>> unreferenced object 0xffff88855da53400 (size 192):
+>>>>>>>>>>>        comm "rdma", pid 10630, jiffies 4296575922
+>>>>>>>>>>>        hex dump (first 32 bytes):
+>>>>>>>>>>>          37 00 00 00 00 00 00 00 c0 ff ff ff 1f 00 00 00  7...............
+>>>>>>>>>>>          10 34 a5 5d 85 88 ff ff 10 34 a5 5d 85 88 ff ff  .4.].....4.]....
+>>>>>>>>>>>        backtrace (crc 47f66721):
+>>>>>>>>>>>          [<ffffffff911251bd>] kmalloc_trace+0x30d/0x3b0
+>>>>>>>>>>>          [<ffffffffc2640ff7>] alloc_gid_entry+0x47/0x380 [ib_core]
+>>>>>>>>>>>          [<ffffffffc2642206>] add_modify_gid+0x166/0x930 [ib_core]
+>>>>>>>>>> I guess add_modify_gid is called from config_non_roce_gid_cache, not sure
+>>>>>>>>>> why we don't check the return value of it here.
+>>>>>>>>>>
+>>>>>>>>>> Looks put_gid_entry is called in case add_modify_gid returns failure, it
+>>>>>>>>>> would
+>>>>>>>>>> trigger schedule_free_gid -> queue_work(ib_wq, &entry->del_work), then
+>>>>>>>>>> free_gid_work -> free_gid_entry_locked would free storage asynchronously by
+>>>>>>>>>> put_gid_ndev and also entry.
+>>>>>>>>>>
+>>>>>>>>>>>          [<ffffffffc2643468>] ib_cache_update.part.0+0x6d8/0x910 [ib_core]
+>>>>>>>>>>>          [<ffffffffc2644e1a>] ib_cache_setup_one+0x24a/0x350 [ib_core]
+>>>>>>>>>>>          [<ffffffffc263949e>] ib_register_device+0x9e/0x3a0 [ib_core]
+>>>>>>>>>>>          [<ffffffffc2a3d389>] 0xffffffffc2a3d389
+>>>>>>>>>>>          [<ffffffffc2688cd8>] nldev_newlink+0x2b8/0x520 [ib_core]
+>>>>>>>>>>>          [<ffffffffc2645fe3>] rdma_nl_rcv_msg+0x2c3/0x520 [ib_core]
+>>>>>>>>>>>          [<ffffffffc264648c>]
+>>>>>>>>>>> rdma_nl_rcv_skb.constprop.0.isra.0+0x23c/0x3a0 [ib_core]
+>>>>>>>>>>>          [<ffffffff9270e7b5>] netlink_unicast+0x445/0x710
+>>>>>>>>>>>          [<ffffffff9270f1f1>] netlink_sendmsg+0x761/0xc40
+>>>>>>>>>>>          [<ffffffff9249db29>] __sys_sendto+0x3a9/0x420
+>>>>>>>>>>>          [<ffffffff9249dc8c>] __x64_sys_sendto+0xdc/0x1b0
+>>>>>>>>>>>          [<ffffffff92db0ad3>] do_syscall_64+0x93/0x180
+>>>>>>>>>>>          [<ffffffff92e00126>] entry_SYSCALL_64_after_hwframe+0x71/0x79
+>>>>>>>>>> After ib_cache_setup_one failed, maybe ib_cache_cleanup_one is needed
+>>>>>>>>>> which flush ib_wq to ensure storage is freed. Could you try with the change?
+>>>>>>>>> Will try it later.
+>>>>>>>>>
+>>>>>>>> The kmemleak still can be reproduced with this change:
+>>>>>>>>
+>>>>>>>> unreferenced object 0xffff8881f89fde00 (size 192):
+>>>>>>>>       comm "rdma", pid 8708, jiffies 4295703453
+>>>>>>>>       hex dump (first 32 bytes):
+>>>>>>>>         02 00 00 00 00 00 00 00 c0 ff ff ff 1f 00 00 00  ................
+>>>>>>>>         10 de 9f f8 81 88 ff ff 10 de 9f f8 81 88 ff ff  ................
+>>>>>>>>       backtrace (crc 888c494b):
+>>>>>>>>         [<ffffffffa7d251bd>] kmalloc_trace+0x30d/0x3b0
+>>>>>>>>         [<ffffffffc1efeff7>] alloc_gid_entry+0x47/0x380 [ib_core]
+>>>>>>>>         [<ffffffffc1f00206>] add_modify_gid+0x166/0x930 [ib_core]
+>>>>>>>>         [<ffffffffc1f01468>] ib_cache_update.part.0+0x6d8/0x910 [ib_core]
+>>>>>>>>         [<ffffffffc1f02e1a>] ib_cache_setup_one+0x24a/0x350 [ib_core]
+>>>>>>>>         [<ffffffffc1ef749e>] ib_register_device+0x9e/0x3a0 [ib_core]
+>>>>>>>>         [<ffffffffc22ee389>]
+>>>>>>>> siw_qp_state_to_ib_qp_state+0x28a9/0xfffffffffffd1520 [siw]
+>>>>>>> Is it possible to run the test with rxe instead of siw? In case it is
+>>>>>>> only happened
+>>>>>>> with siw, I'd suggest to revert 0b988c1bee28 to check if it causes the
+>>>>>>> issue.
+>>>>>>> But I don't understand why siw_qp_state_to_ib_qp_state was appeared in the
+>>>>>>> middle of above trace.
+>>>>>> Hi Guoqing
+>>>>>> This issue only can be reproduced with siw, I did more testing today
+>>>>>> and it cannot be reproduced with 6.5, seems it was introduced from
+>>>>>> 6.6-rc1, and I saw there are some siw updates from 6.6-rc1.
+>>>>> Yes, pls bisect them.
+>>>> Sure, will do that after I back from holiday next week.
+>>>>
+>>>>>    > git log --oneline v6.5..v6.6-rc1 drivers/infiniband/sw/siw/|cat
+>>>>> 9dfccb6d0d3d RDMA/siw: Call llist_reverse_order in siw_run_sq
+>>>>> bee024d20451 RDMA/siw: Correct wrong debug message
+>>>>> b056327bee09 RDMA/siw: Balance the reference of cep->kref in the error path
+>>>>> 91f36237b4b9 RDMA/siw: Fix tx thread initialization.
+>>>>> bad5b6e34ffb RDMA/siw: Fabricate a GID on tun and loopback devices
+>>>>> 9191df002926 RDMA/siw: use vmalloc_array and vcalloc
+>>>>>
+>>>>> Thanks,
+>>>>> Guoqing
+>>>>>
+>>>>
+>>>> --
+>>>> Best Regards,
+>>>>     Yi Zhang
+>>>
+>>>
+>
+-- 
+Best Regards,
+Yanjun.Zhu
+
 
