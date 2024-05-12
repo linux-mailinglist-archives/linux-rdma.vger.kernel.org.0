@@ -1,93 +1,100 @@
-Return-Path: <linux-rdma+bounces-2427-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-2428-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4B9F68C35DD
-	for <lists+linux-rdma@lfdr.de>; Sun, 12 May 2024 11:36:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id C99398C35E1
+	for <lists+linux-rdma@lfdr.de>; Sun, 12 May 2024 11:42:22 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DE3EA281635
-	for <lists+linux-rdma@lfdr.de>; Sun, 12 May 2024 09:36:02 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 548A0281824
+	for <lists+linux-rdma@lfdr.de>; Sun, 12 May 2024 09:42:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 984291BF47;
-	Sun, 12 May 2024 09:35:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EC96C1BF47;
+	Sun, 12 May 2024 09:42:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="cW7ttcwT"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="RvhCeWP2"
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4A79E1865C;
-	Sun, 12 May 2024 09:35:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AB6CD1BC44
+	for <linux-rdma@vger.kernel.org>; Sun, 12 May 2024 09:42:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1715506558; cv=none; b=P26ymH7sMXpLeV8xbgww59cD1f2Q9j6AsqenMLy/31iMRRzQroWdakiEMZwA42qwt7IZOGKrSSN9hnVmV4+si+sHSEH3Eqm4f4jX78oqNKANYqeu3gV8FMDpc/Hdu+TUyA8tBn+mK1Oy8uDEJvZpxHI1kTHn5SE5fsGPCP1jevY=
+	t=1715506938; cv=none; b=HcO+i+iRsS4vi/8vm3eSMt2SVw+i63Z8ZuqunLor3SjZCBNLiLQFTiPCuccX1bDMe3tBWx1wi0yKSySTzzW7mkGs0k0UNGu6bpCwCZeh8Z3LLhU3Cxjg08WTgyn8wM1V+aRrpY8StU7Lf15du4P4eXMgVGp7sbT/ZT3yJ1/cy/Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1715506558; c=relaxed/simple;
-	bh=PCHTMZ+fjytB5RLa9+V6lhUcpWrdVwb/2cnmNsA6uZM=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=QmP9kQDVNU3p5A/jGuR7fLYwmWGdvn+kTgqBfMXkJq5gfYoneybX0oMuXHX6nZAd7VAqblyfRXYBJRTGhijADNVi7snURGVeBj/k181Mu9I0oTfnAEMJavUZ/ddB7k8V/hwgPavNETaVpe0Uw1adDoK2RCDgEP3BRqSINjsxdc4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=cW7ttcwT; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 59AD6C116B1;
-	Sun, 12 May 2024 09:35:57 +0000 (UTC)
+	s=arc-20240116; t=1715506938; c=relaxed/simple;
+	bh=OdQhbTVR7FIBJgYHaSs9TcD6eevn71O2Eh1hhNfRJ18=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Message-Id:Date:
+	 MIME-Version:Content-Type; b=pG6FsgZ24WnKqY0WXqbUlbc7GmcJtKxsvJDhPH653JVHFOphEPa/ruLjqTWYdI0f5FX3hytncLek3IHieE/oSH2McW3HeUtU8FptnCUWPobE12GW6nuEXLRaOIi5S5E+rd9TU1+O4Q0s6U9bSKy4fa16tAqU1ZLpR/xi7+z0L9c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=RvhCeWP2; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9A166C116B1;
+	Sun, 12 May 2024 09:42:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1715506557;
-	bh=PCHTMZ+fjytB5RLa9+V6lhUcpWrdVwb/2cnmNsA6uZM=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=cW7ttcwTY9xRSdzpXIxs2O4YBl5l2GAIBvvglHxMY7rLmM9ghHFqE6tbGUhFqDwJX
-	 2a2N9cUVoxrsaojqb2c5xYD5ZxoPusBURe1zITHJ39b1mZyG8Fhy0ZRb/rL2d+5eNm
-	 8h8PFyjifNczAc3j9nosoF1qVSHXgK4v1RzCcdfNFGDXHi49PLAF6ixvlRID9QPTtn
-	 8RCywZ0qojSitm/M4IO7mouYBVTkNCmpr1K6eAsRn75g6dR4bC2fO0IABVHkwCXiXk
-	 N58DI53GOzBwnxxqYecIVmzhv1QJqVAu6XmN3ESVFlrzwMADYrOL5cXos9u+7m+jmg
-	 uk9QHUq5gW8RQ==
-Date: Sun, 12 May 2024 12:35:53 +0300
+	s=k20201202; t=1715506938;
+	bh=OdQhbTVR7FIBJgYHaSs9TcD6eevn71O2Eh1hhNfRJ18=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+	b=RvhCeWP28VcJV4smGpYDLSDen4/Y4oBPV7RDm3X7nM9nuruTP66IkQ+a3mpPVnJtQ
+	 efmeX0VtgLGRWf3+miKc68ajUOTO2OTlpvW/1LoB8np+lEXL55v8EeB5GyU1TXq1lL
+	 7BiUT1sIUPqySNVMaNJfyxV4mrReXvUCeWLoN8XiphBIi8Cwg+euWw+3U3P4H6sQ8F
+	 Z/VRVlnAO0B8wzH6EDhWArCOJQ2wFCM1nVR2HyjjUCL9/2Kk4chSG7K6CJhoWjqtQo
+	 6iG0lntoHseomAy1Q2T3Is9QAQeEtIlVvoFyxVLpYOZG8g+0ZOnOen7N8jE7y0mg/v
+	 dwN5coaTtPZTQ==
 From: Leon Romanovsky <leon@kernel.org>
-To: Konstantin Taranov <kotaranov@linux.microsoft.com>
-Cc: kotaranov@microsoft.com, sharmaajay@microsoft.com, longli@microsoft.com,
-	jgg@ziepe.ca, linux-rdma@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH rdma-next 0/3] RDMA/mana_ib: Add support of RC QPs
-Message-ID: <20240512093553.GA11697@unreal>
-References: <1715075595-24470-1-git-send-email-kotaranov@linux.microsoft.com>
+To: Jason Gunthorpe <jgg@ziepe.ca>, Leon Romanovsky <leon@kernel.org>
+Cc: linux-rdma@vger.kernel.org, Leon Romanovsky <leon@kernel.org>
+In-Reply-To: <e9d3e1fef69df4c9beaf402cc3ac342bad680791.1715240029.git.leon@kernel.org>
+References: <e9d3e1fef69df4c9beaf402cc3ac342bad680791.1715240029.git.leon@kernel.org>
+Subject: Re: [PATCH rdma-next v1] RDMA/IPoIB: Fix format truncation
+ compilation errors
+Message-Id: <171550693384.115362.6327463065943357914.b4-ty@kernel.org>
+Date: Sun, 12 May 2024 12:42:13 +0300
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1715075595-24470-1-git-send-email-kotaranov@linux.microsoft.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+X-Mailer: b4 0.14-dev
 
-On Tue, May 07, 2024 at 02:53:12AM -0700, Konstantin Taranov wrote:
-> From: Konstantin Taranov <kotaranov@microsoft.com>
-> 
-> This patch series enables creation and destruction of RC QPs.
-> The RC QP can be transitioned to RTS and be used by rdma-core.
-> 
-> Later I will submit rdma-core patches with fully working RC QPs.
 
-Did it happen?
+On Thu, 09 May 2024 10:39:33 +0300, Leon Romanovsky wrote:
+> Truncate the device name to store IPoIB VLAN name.
+> 
+> [leonro@5b4e8fba4ddd kernel]$ make -s -j 20 allmodconfig
+> [leonro@5b4e8fba4ddd kernel]$ make -s -j 20 W=1 drivers/infiniband/ulp/ipoib/
+> drivers/infiniband/ulp/ipoib/ipoib_vlan.c: In function ‘ipoib_vlan_add’:
+> drivers/infiniband/ulp/ipoib/ipoib_vlan.c:187:52: error: ‘%04x’
+> directive output may be truncated writing 4 bytes into a region of size
+> between 0 and 15 [-Werror=format-truncation=]
+>   187 |         snprintf(intf_name, sizeof(intf_name), "%s.%04x",
+>       |                                                    ^~~~
+> drivers/infiniband/ulp/ipoib/ipoib_vlan.c:187:48: note: directive
+> argument in the range [0, 65535]
+>   187 |         snprintf(intf_name, sizeof(intf_name), "%s.%04x",
+>       |                                                ^~~~~~~~~
+> drivers/infiniband/ulp/ipoib/ipoib_vlan.c:187:9: note: ‘snprintf’ output
+> between 6 and 21 bytes into a destination of size 16
+>   187 |         snprintf(intf_name, sizeof(intf_name), "%s.%04x",
+>       |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+>   188 |                  ppriv->dev->name, pkey);
+>       |                  ~~~~~~~~~~~~~~~~~~~~~~~
+> cc1: all warnings being treated as errors
+> make[6]: *** [scripts/Makefile.build:244: drivers/infiniband/ulp/ipoib/ipoib_vlan.o] Error 1
+> make[6]: *** Waiting for unfinished jobs....
+> 
+> [...]
 
-I want to remind that we are not merging UAPI changes without relevant
-userspace part.
+Applied, thanks!
 
-Thanks
+[1/1] RDMA/IPoIB: Fix format truncation compilation errors
+      https://git.kernel.org/rdma/rdma/c/49ca2b2ef3d003
 
-> 
-> Konstantin Taranov (3):
->   RDMA/mana_ib: Create and destroy RC QP
->   RDMA/mana_ib: Implement uapi to create and destroy RC QP
->   RDMA/mana_ib: Modify QP state
-> 
->  drivers/infiniband/hw/mana/main.c    |  59 ++++++++++
->  drivers/infiniband/hw/mana/mana_ib.h |  99 +++++++++++++++-
->  drivers/infiniband/hw/mana/qp.c      | 165 ++++++++++++++++++++++++++-
->  include/uapi/rdma/mana-abi.h         |   9 ++
->  4 files changed, 328 insertions(+), 4 deletions(-)
-> 
-> -- 
-> 2.43.0
-> 
+Best regards,
+-- 
+Leon Romanovsky <leon@kernel.org>
+
 
