@@ -1,119 +1,268 @@
-Return-Path: <linux-rdma+bounces-2433-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-2434-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0E2908C3653
-	for <lists+linux-rdma@lfdr.de>; Sun, 12 May 2024 14:09:02 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C41888C3654
+	for <lists+linux-rdma@lfdr.de>; Sun, 12 May 2024 14:09:03 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 803FD1F2127A
-	for <lists+linux-rdma@lfdr.de>; Sun, 12 May 2024 12:09:01 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D1B271C20A3A
+	for <lists+linux-rdma@lfdr.de>; Sun, 12 May 2024 12:09:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F31D3208BC;
-	Sun, 12 May 2024 12:08:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7F64620B0F;
+	Sun, 12 May 2024 12:08:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b="NSkFk9NS"
+	dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b="OGWKhAN9"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-pl1-f173.google.com (mail-pl1-f173.google.com [209.85.214.173])
+Received: from mail-pl1-f169.google.com (mail-pl1-f169.google.com [209.85.214.169])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1F1D120323
-	for <linux-rdma@vger.kernel.org>; Sun, 12 May 2024 12:08:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9D67F20323
+	for <linux-rdma@vger.kernel.org>; Sun, 12 May 2024 12:08:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.169
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1715515736; cv=none; b=kyKvJUkkz9ZWwsDPffDCMDbNnDp5VM3K98CS7s+wDHmMc0l6gIzXA5gKOfnw8DGYS5yl5vHCYzicQbF+zM6ypx3jainUvSi1rdpgBLBoRLsAD7uEh1bsM4K+GhgT0TrhVUWuC102YNicJ2H8LJZdIFeY/aheRqmMIYhcxgMusCk=
+	t=1715515739; cv=none; b=UzYI+fvf8cQWx0Ux9yWheVet1Y/ZzI/BNihQEFaFXQe8rJVog/vJaUKSxi4RUsFu3Y+2lKe3Hy71sfy6vNgK8arPtF0PJNNA4XEQ1kXg0ydzyIUXc/D2GyYPSZYoJcUS+4eHrgQzX4cbE0UAS9IlxNZzqC0GicYmlAUeHmPF5aE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1715515736; c=relaxed/simple;
-	bh=yOxNFWJb99+LbO9UB/izKDn8Qm7vPemiD0z3RS7TF+I=;
-	h=From:To:Cc:Subject:Date:Message-Id:Content-Type; b=gsQL3FRBRlq+nhLq1Fj2Uly5RZwsQVV8ZyAFO/6KWCMNhVeZ/1iAWXcnbMurWZnAAOTktlY0fxhd4dCb2NnY/wQN3S8wOG3OM84SIIitgbI5puT8MH0IbBj17IAOb/or9rurWXGxluk8ox4nhz33oM47PnQzK7rShehSbxO+9AE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com; spf=fail smtp.mailfrom=broadcom.com; dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b=NSkFk9NS; arc=none smtp.client-ip=209.85.214.173
+	s=arc-20240116; t=1715515739; c=relaxed/simple;
+	bh=H89Nk3Tp+LF50IiV0ZjHYwDq/H6c9jejVbkDnDm/yac=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 Content-Type; b=dwl4IyPiEmQgswZnBRFqpOj0mls4qqbQDAGOWyUYEW6etK6fkTMBgPTfaSOHSjYqSzqd3FHLiadd2QGV16RsyNxPHOVGkKkoXFSUSmkfyqiW/uPP6TsUnlzfS0XMig3xSov3M3O/NIoFwnEtgQae3h1YmHGn/ZK51HtFbCzKq2E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com; spf=fail smtp.mailfrom=broadcom.com; dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b=OGWKhAN9; arc=none smtp.client-ip=209.85.214.169
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com
 Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=broadcom.com
-Received: by mail-pl1-f173.google.com with SMTP id d9443c01a7336-1ec4dc64c6cso24092145ad.0
-        for <linux-rdma@vger.kernel.org>; Sun, 12 May 2024 05:08:54 -0700 (PDT)
+Received: by mail-pl1-f169.google.com with SMTP id d9443c01a7336-1ed0abbf706so25452965ad.2
+        for <linux-rdma@vger.kernel.org>; Sun, 12 May 2024 05:08:57 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google; t=1715515734; x=1716120534; darn=vger.kernel.org;
-        h=message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Z/KcNhLk2HcKnvttp543fBqE0K98G5wrbWU8HE6R1jU=;
-        b=NSkFk9NS0g0FURBNTd1/UvbUQbN41n+6JbAgl+1Yt0XC9P+Nca8aovf96iQmUEJ2Rw
-         6+dnyTOojDOKgQOxeL1JCmIKdx9jhRQ59SbEilkRZJovXm0o2w7b7R3xTzTbkinBqUbr
-         Gu7TlCjgKyhKUOv6COtOklqs2EMbuMhLk0mHc=
+        d=broadcom.com; s=google; t=1715515737; x=1716120537; darn=vger.kernel.org;
+        h=references:in-reply-to:message-id:date:subject:cc:to:from:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=1AB1v1wEQNtQeTMIr+SDhlZmPuNZ+eyHnVbD85FI7ZI=;
+        b=OGWKhAN9Erq8sO1WBMkg/l7hkRBtmpK1eFVkKxWdDFJr9JxSFZX7ysWUfMo05xh7lB
+         KtbSWx65HJe56i0AMwSAVZJLIWBkmIADjc5Cs2p7wl78zFBwyvMN3Pt9r2x9KHteP85w
+         STuwlq3KqZfWV00dqvRsXwlDOWm50w+RBWapI=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1715515734; x=1716120534;
-        h=message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Z/KcNhLk2HcKnvttp543fBqE0K98G5wrbWU8HE6R1jU=;
-        b=HQKu1JLXyuFB5guACrFvjwntk62iXOGXqJKqWy6TMcJhpE9tlptjD+UDK6wYq86WXY
-         TQICLrO770wSlod+8Xn5LPcXjjk93oMRKy2U05OJH0om1jliXa1H15LIv3noQI9nuiOU
-         LDLYm54D17xtvQmB+KlGDk8B6zMgFYOvknZ3/xfx/OJzAxgxXIWVbAzSFd67U0ShTcwf
-         dLvrgWlttXpzIxipOxBG23UhAXjZk7zpou70zxo84/hNpPA+RsKkMKuBNqN6qgD+9bGR
-         40f4aJ726nUAUeIlXpc3JtL5Av2gOmhNb4w1xOX+F9I5xxMcXTIa21KgPjORRdQredt0
-         Qpng==
-X-Gm-Message-State: AOJu0YxQeGchUo6Qjyz9Eg6DPaCTXDXlsR7daWbMvsmIMsxNBlAZYUJq
-	8/leklQGxOdP0K0H/CvlrkZrat3vj8FnP9M93bVQNcEbAh+V5iIgKIHg9hAvWAU+QsZwFeMHkjz
-	+ag==
-X-Google-Smtp-Source: AGHT+IEm2+4I28unRN7cCygaQUcle0uXNLJCGlr113Q5Jl7YLrR7mVrq8NkvbFkk6KzUJM2SZM3rSw==
-X-Received: by 2002:a17:903:289:b0:1e6:114c:2e54 with SMTP id d9443c01a7336-1ef44050ea8mr110870765ad.69.1715515734299;
-        Sun, 12 May 2024 05:08:54 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1715515737; x=1716120537;
+        h=references:in-reply-to:message-id:date:subject:cc:to:from
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=1AB1v1wEQNtQeTMIr+SDhlZmPuNZ+eyHnVbD85FI7ZI=;
+        b=QfgVxb9xN4P0VvQu7DK3P8jm0oMNag8rj9TLe15TUmIyBf3NVOUMFxkhEwXQRc34FL
+         EUdUwSdKXzhcb/IcCE/mUJfjAZ7OIhQZpCIcUYxXa2jQbico4WpP82RYK08ZNh+PNhcO
+         AWER/QFFpMp/t6n1dcR2TnHsgqtG/ZZORw/afHAalu6lwT+OebdzV6D8b3RpaN0S/Hxm
+         FyaoEIc1j15oSbcp1G/n0swOdaBIcgT9o5vo2iRUtFPHe5nsilkhfLqRvpL6C8LVTh9M
+         OvXx5PiknLcNFAK/HLQuevxJzYGlQO1wo3mmVF6pcpMGuIAt9n3mpZKhasMatRWAAYyr
+         dHTA==
+X-Gm-Message-State: AOJu0YzNV4osLOWD6QefRDWXbtehtj5uqUGrRhr/RwfIngEva+bujDro
+	6SuwKRrLbJZq+wGG2qB+pruJ+WWxw7nvZKeB1C2D7FKS/en8NoSisRFuofTxgwOK98mmKWY6EKZ
+	Upw==
+X-Google-Smtp-Source: AGHT+IGW1c7o85uW7bpxsCHjQnpERux+gwllecdq2WAXDPiWzn0uTDOqFE1R0o0HQDu6Abaigps8mw==
+X-Received: by 2002:a17:902:6b82:b0:1e3:dfdc:6972 with SMTP id d9443c01a7336-1ef43d15755mr80716245ad.9.1715515736822;
+        Sun, 12 May 2024 05:08:56 -0700 (PDT)
 Received: from dhcp-10-192-206-197.iig.avagotech.net.net ([192.19.234.250])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-1ef0b9d484fsm61149435ad.39.2024.05.12.05.08.51
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-1ef0b9d484fsm61149435ad.39.2024.05.12.05.08.54
         (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Sun, 12 May 2024 05:08:53 -0700 (PDT)
+        Sun, 12 May 2024 05:08:56 -0700 (PDT)
 From: Selvin Xavier <selvin.xavier@broadcom.com>
 To: leon@kernel.org,
 	jgg@ziepe.ca
 Cc: linux-rdma@vger.kernel.org,
 	andrew.gospodarek@broadcom.com,
 	Selvin Xavier <selvin.xavier@broadcom.com>
-Subject: [PATCH v3 for-next 0/2] RDMA/bnxt_re: MSN table capability check for latest adapters
-Date: Sun, 12 May 2024 04:52:39 -0700
-Message-Id: <1715514761-31694-1-git-send-email-selvin.xavier@broadcom.com>
+Subject: [PATCH v3 for-next 1/2] RDMA/bnxt_re: Allow MSN table capability check
+Date: Sun, 12 May 2024 04:52:40 -0700
+Message-Id: <1715514761-31694-2-git-send-email-selvin.xavier@broadcom.com>
 X-Mailer: git-send-email 2.5.5
+In-Reply-To: <1715514761-31694-1-git-send-email-selvin.xavier@broadcom.com>
+References: <1715514761-31694-1-git-send-email-selvin.xavier@broadcom.com>
 Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
-	boundary="000000000000f98bfb061840a16c"
+	boundary="0000000000001f9fa8061840a2cc"
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 
---000000000000f98bfb061840a16c
+--0000000000001f9fa8061840a2cc
 
-Add MSN table capbility check for newer adapters. Expose
-this capability to user library.
+FW reports the HW capability to use PSN table or MSN table and
+driver/library need to select it based on this capability.
+Use the new capability instead of the older capability check for HW
+retransmission while handling the MSN/PSN table. FW report
+zero (PSN table) for older adapters to maintain backward compatibility.
 
-Please review and apply.
+Also, Updated the FW interface structures to handle the new fields.
 
-Thanks,
-Selvin Xavier
-
-v2 -> v3:
+Signed-off-by: Selvin Xavier <selvin.xavier@broadcom.com>
+---
+v2 -> v3 :
   Use data type bool instead of u16 for is_host_msn_tbl
-v1 -> v2:
-  Updated the commit message of both the patches with more details
-
-
-Selvin Xavier (2):
-  RDMA/bnxt_re: Allow MSN table capability check
-  RDMA/bnxt_re: Expose the MSN table capability for user library
-
- drivers/infiniband/hw/bnxt_re/ib_verbs.c  |  3 +++
  drivers/infiniband/hw/bnxt_re/qplib_fp.c  | 12 ++++++------
  drivers/infiniband/hw/bnxt_re/qplib_fp.h  |  2 +-
  drivers/infiniband/hw/bnxt_re/qplib_res.h |  6 ++++++
  drivers/infiniband/hw/bnxt_re/qplib_sp.c  |  1 +
  drivers/infiniband/hw/bnxt_re/qplib_sp.h  |  1 +
  drivers/infiniband/hw/bnxt_re/roce_hsi.h  | 30 +++++++++++++++++++++++++++++-
- include/uapi/rdma/bnxt_re-abi.h           |  2 +-
- 8 files changed, 48 insertions(+), 9 deletions(-)
+ 6 files changed, 44 insertions(+), 8 deletions(-)
 
+diff --git a/drivers/infiniband/hw/bnxt_re/qplib_fp.c b/drivers/infiniband/hw/bnxt_re/qplib_fp.c
+index 439d0c7..3c961a8 100644
+--- a/drivers/infiniband/hw/bnxt_re/qplib_fp.c
++++ b/drivers/infiniband/hw/bnxt_re/qplib_fp.c
+@@ -984,7 +984,7 @@ int bnxt_qplib_create_qp(struct bnxt_qplib_res *res, struct bnxt_qplib_qp *qp)
+ 	u16 nsge;
+ 
+ 	if (res->dattr)
+-		qp->dev_cap_flags = res->dattr->dev_cap_flags;
++		qp->is_host_msn_tbl = _is_host_msn_table(res->dattr->dev_cap_flags2);
+ 
+ 	sq->dbinfo.flags = 0;
+ 	bnxt_qplib_rcfw_cmd_prep((struct cmdq_base *)&req,
+@@ -1002,7 +1002,7 @@ int bnxt_qplib_create_qp(struct bnxt_qplib_res *res, struct bnxt_qplib_qp *qp)
+ 			 sizeof(struct sq_psn_search_ext) :
+ 			 sizeof(struct sq_psn_search);
+ 
+-		if (BNXT_RE_HW_RETX(qp->dev_cap_flags)) {
++		if (qp->is_host_msn_tbl) {
+ 			psn_sz = sizeof(struct sq_msn_search);
+ 			qp->msn = 0;
+ 		}
+@@ -1015,7 +1015,7 @@ int bnxt_qplib_create_qp(struct bnxt_qplib_res *res, struct bnxt_qplib_qp *qp)
+ 	hwq_attr.aux_stride = psn_sz;
+ 	hwq_attr.aux_depth = bnxt_qplib_set_sq_size(sq, qp->wqe_mode);
+ 	/* Update msn tbl size */
+-	if (BNXT_RE_HW_RETX(qp->dev_cap_flags) && psn_sz) {
++	if (qp->is_host_msn_tbl && psn_sz) {
+ 		hwq_attr.aux_depth = roundup_pow_of_two(bnxt_qplib_set_sq_size(sq, qp->wqe_mode));
+ 		qp->msn_tbl_sz = hwq_attr.aux_depth;
+ 		qp->msn = 0;
+@@ -1636,7 +1636,7 @@ static void bnxt_qplib_fill_psn_search(struct bnxt_qplib_qp *qp,
+ 	if (!swq->psn_search)
+ 		return;
+ 	/* Handle MSN differently on cap flags  */
+-	if (BNXT_RE_HW_RETX(qp->dev_cap_flags)) {
++	if (qp->is_host_msn_tbl) {
+ 		bnxt_qplib_fill_msn_search(qp, wqe, swq);
+ 		return;
+ 	}
+@@ -1818,7 +1818,7 @@ int bnxt_qplib_post_send(struct bnxt_qplib_qp *qp,
+ 	}
+ 
+ 	swq = bnxt_qplib_get_swqe(sq, &wqe_idx);
+-	bnxt_qplib_pull_psn_buff(qp, sq, swq, BNXT_RE_HW_RETX(qp->dev_cap_flags));
++	bnxt_qplib_pull_psn_buff(qp, sq, swq, qp->is_host_msn_tbl);
+ 
+ 	idx = 0;
+ 	swq->slot_idx = hwq->prod;
+@@ -2008,7 +2008,7 @@ int bnxt_qplib_post_send(struct bnxt_qplib_qp *qp,
+ 		rc = -EINVAL;
+ 		goto done;
+ 	}
+-	if (!BNXT_RE_HW_RETX(qp->dev_cap_flags) || msn_update) {
++	if (!qp->is_host_msn_tbl || msn_update) {
+ 		swq->next_psn = sq->psn & BTH_PSN_MASK;
+ 		bnxt_qplib_fill_psn_search(qp, wqe, swq);
+ 	}
+diff --git a/drivers/infiniband/hw/bnxt_re/qplib_fp.h b/drivers/infiniband/hw/bnxt_re/qplib_fp.h
+index 7fd4506..4aaac84 100644
+--- a/drivers/infiniband/hw/bnxt_re/qplib_fp.h
++++ b/drivers/infiniband/hw/bnxt_re/qplib_fp.h
+@@ -340,7 +340,7 @@ struct bnxt_qplib_qp {
+ 	struct list_head		rq_flush;
+ 	u32				msn;
+ 	u32				msn_tbl_sz;
+-	u16				dev_cap_flags;
++	bool				is_host_msn_tbl;
+ };
+ 
+ #define BNXT_QPLIB_MAX_CQE_ENTRY_SIZE	sizeof(struct cq_base)
+diff --git a/drivers/infiniband/hw/bnxt_re/qplib_res.h b/drivers/infiniband/hw/bnxt_re/qplib_res.h
+index 61628f7..a0f78cd 100644
+--- a/drivers/infiniband/hw/bnxt_re/qplib_res.h
++++ b/drivers/infiniband/hw/bnxt_re/qplib_res.h
+@@ -554,6 +554,12 @@ static inline bool _is_hw_retx_supported(u16 dev_cap_flags)
+ 
+ #define BNXT_RE_HW_RETX(a) _is_hw_retx_supported((a))
+ 
++static inline bool _is_host_msn_table(u16 dev_cap_ext_flags2)
++{
++	return (dev_cap_ext_flags2 & CREQ_QUERY_FUNC_RESP_SB_REQ_RETRANSMISSION_SUPPORT_MASK) ==
++		CREQ_QUERY_FUNC_RESP_SB_REQ_RETRANSMISSION_SUPPORT_HOST_MSN_TABLE;
++}
++
+ static inline u8 bnxt_qplib_dbr_pacing_en(struct bnxt_qplib_chip_ctx *cctx)
+ {
+ 	return cctx->modes.dbr_pacing;
+diff --git a/drivers/infiniband/hw/bnxt_re/qplib_sp.c b/drivers/infiniband/hw/bnxt_re/qplib_sp.c
+index 8beeedd..9328db9 100644
+--- a/drivers/infiniband/hw/bnxt_re/qplib_sp.c
++++ b/drivers/infiniband/hw/bnxt_re/qplib_sp.c
+@@ -156,6 +156,7 @@ int bnxt_qplib_get_dev_attr(struct bnxt_qplib_rcfw *rcfw,
+ 				    (0x01 << RCFW_DBR_BASE_PAGE_SHIFT);
+ 	attr->max_sgid = BNXT_QPLIB_NUM_GIDS_SUPPORTED;
+ 	attr->dev_cap_flags = le16_to_cpu(sb->dev_cap_flags);
++	attr->dev_cap_flags2 = le16_to_cpu(sb->dev_cap_ext_flags_2);
+ 
+ 	bnxt_qplib_query_version(rcfw, attr->fw_ver);
+ 
+diff --git a/drivers/infiniband/hw/bnxt_re/qplib_sp.h b/drivers/infiniband/hw/bnxt_re/qplib_sp.h
+index d33c78b..16a67d7 100644
+--- a/drivers/infiniband/hw/bnxt_re/qplib_sp.h
++++ b/drivers/infiniband/hw/bnxt_re/qplib_sp.h
+@@ -72,6 +72,7 @@ struct bnxt_qplib_dev_attr {
+ 	u8				tqm_alloc_reqs[MAX_TQM_ALLOC_REQ];
+ 	bool				is_atomic;
+ 	u16                             dev_cap_flags;
++	u16                             dev_cap_flags2;
+ 	u32                             max_dpi;
+ };
+ 
+diff --git a/drivers/infiniband/hw/bnxt_re/roce_hsi.h b/drivers/infiniband/hw/bnxt_re/roce_hsi.h
+index 605c946..0425309 100644
+--- a/drivers/infiniband/hw/bnxt_re/roce_hsi.h
++++ b/drivers/infiniband/hw/bnxt_re/roce_hsi.h
+@@ -2157,8 +2157,36 @@ struct creq_query_func_resp_sb {
+ 	__le32	tqm_alloc_reqs[12];
+ 	__le32	max_dpi;
+ 	u8	max_sge_var_wqe;
+-	u8	reserved_8;
++	u8	dev_cap_ext_flags;
++	#define CREQ_QUERY_FUNC_RESP_SB_ATOMIC_OPS_NOT_SUPPORTED         0x1UL
++	#define CREQ_QUERY_FUNC_RESP_SB_DRV_VERSION_RGTR_SUPPORTED       0x2UL
++	#define CREQ_QUERY_FUNC_RESP_SB_CREATE_QP_BATCH_SUPPORTED        0x4UL
++	#define CREQ_QUERY_FUNC_RESP_SB_DESTROY_QP_BATCH_SUPPORTED       0x8UL
++	#define CREQ_QUERY_FUNC_RESP_SB_ROCE_STATS_EXT_CTX_SUPPORTED     0x10UL
++	#define CREQ_QUERY_FUNC_RESP_SB_CREATE_SRQ_SGE_SUPPORTED         0x20UL
++	#define CREQ_QUERY_FUNC_RESP_SB_FIXED_SIZE_WQE_DISABLED          0x40UL
++	#define CREQ_QUERY_FUNC_RESP_SB_DCN_SUPPORTED                    0x80UL
+ 	__le16	max_inline_data_var_wqe;
++	__le32	start_qid;
++	u8	max_msn_table_size;
++	u8	reserved8_1;
++	__le16	dev_cap_ext_flags_2;
++	#define CREQ_QUERY_FUNC_RESP_SB_OPTIMIZE_MODIFY_QP_SUPPORTED             0x1UL
++	#define CREQ_QUERY_FUNC_RESP_SB_CHANGE_UDP_SRC_PORT_WQE_SUPPORTED        0x2UL
++	#define CREQ_QUERY_FUNC_RESP_SB_CQ_COALESCING_SUPPORTED                  0x4UL
++	#define CREQ_QUERY_FUNC_RESP_SB_MEMORY_REGION_RO_SUPPORTED               0x8UL
++	#define CREQ_QUERY_FUNC_RESP_SB_REQ_RETRANSMISSION_SUPPORT_MASK          0x30UL
++	#define CREQ_QUERY_FUNC_RESP_SB_REQ_RETRANSMISSION_SUPPORT_SFT           4
++	#define CREQ_QUERY_FUNC_RESP_SB_REQ_RETRANSMISSION_SUPPORT_HOST_PSN_TABLE  (0x0UL << 4)
++	#define CREQ_QUERY_FUNC_RESP_SB_REQ_RETRANSMISSION_SUPPORT_HOST_MSN_TABLE  (0x1UL << 4)
++	#define CREQ_QUERY_FUNC_RESP_SB_REQ_RETRANSMISSION_SUPPORT_IQM_MSN_TABLE   (0x2UL << 4)
++	#define CREQ_QUERY_FUNC_RESP_SB_REQ_RETRANSMISSION_SUPPORT_LAST	\
++			CREQ_QUERY_FUNC_RESP_SB_REQ_RETRANSMISSION_SUPPORT_IQM_MSN_TABLE
++	__le16	max_xp_qp_size;
++	__le16	create_qp_batch_size;
++	__le16	destroy_qp_batch_size;
++	__le16	reserved16;
++	__le64	reserved64;
+ };
+ 
+ /* cmdq_set_func_resources (size:448b/56B) */
 -- 
 2.5.5
 
 
---000000000000f98bfb061840a16c
+--0000000000001f9fa8061840a2cc
 Content-Type: application/pkcs7-signature; name="smime.p7s"
 Content-Transfer-Encoding: base64
 Content-Disposition: attachment; filename="smime.p7s"
@@ -184,15 +333,15 @@ j1Ze9ndr+YDXPpCymOsynmmw0ErHZGGW1OmMpAEt0A+613glWCURLDlP8HONi1wnINV6aDiEf0ad
 9NMGxDsp+YWiRXD3txfo2OMQbpIxM90QfhKKacX8t1J1oAAWxDrLVTJBXBNvz5tr+D1sYwuye93r
 hImmkM1unboxggJtMIICaQIBATBrMFsxCzAJBgNVBAYTAkJFMRkwFwYDVQQKExBHbG9iYWxTaWdu
 IG52LXNhMTEwLwYDVQQDEyhHbG9iYWxTaWduIEdDQyBSMyBQZXJzb25hbFNpZ24gMiBDQSAyMDIw
-Agxy+Cu4x/7lM0zxY7cwDQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIEIIFYXg6HrZtZ
-gDRjYtiOaif8P/w4xycuuKJmWyUH7oxqMBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZI
-hvcNAQkFMQ8XDTI0MDUxMjEyMDg1NFowaQYJKoZIhvcNAQkPMVwwWjALBglghkgBZQMEASowCwYJ
+Agxy+Cu4x/7lM0zxY7cwDQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIEIGym2lI/k08L
+98S9CcZ5oa1103FSB9q73JK1FBy76aZUMBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZI
+hvcNAQkFMQ8XDTI0MDUxMjEyMDg1N1owaQYJKoZIhvcNAQkPMVwwWjALBglghkgBZQMEASowCwYJ
 YIZIAWUDBAEWMAsGCWCGSAFlAwQBAjAKBggqhkiG9w0DBzALBgkqhkiG9w0BAQowCwYJKoZIhvcN
-AQEHMAsGCWCGSAFlAwQCATANBgkqhkiG9w0BAQEFAASCAQBJt5rQD8fFebtEpJZLSmnncDda7DpC
-bJkGvYx7VEcPG8k1a3s6Ia+UcTo2BjRwpjgtrA7CauS+e4xiyljQRL0jGHHYdVkJk5da09dbhvat
-fveENRgc9lXZVUReHuzttoBjBBuHNZlYCMsihY4nFavNci+l3CD4/x0P4FgFqHpAjIVTXkYv6MAa
-+9c7WMYGPXFKgdAfzXyVPKexsK75AooMZmZD0dGkfn4L/PbsKz2f3EH6QFb7uLSFR12kH61K9EJS
-Nir/1a94Nz/WUWBXttRZN3qoqvJ5pH6ddy8PfU5g5BeICTioxBvsCUupWUf7nW7PCf1XuE/2JDj0
-By+wfdPd
---000000000000f98bfb061840a16c--
+AQEHMAsGCWCGSAFlAwQCATANBgkqhkiG9w0BAQEFAASCAQB8Pi5Jb8Vsj+4pA0i9fy9BjeNQjdaj
+ntREFyQ8kKhhcYOnR9ms4g/+vzSFH4T+/TPiJzctwlsQytL8Cw0NzdwxdBQpTE+lAjeZQlNfkgTp
+8JWidzQeWNUx06y80z/+O3s0VvGuy5C0EclKv9MAdY65+jobGSCmn8u2xBHuFg0hV7GCqAeUY4kg
+cHrSYwbfPNoZwe61z15FQc5VGAbYbf3Ltm6hmx42dh2lQ4aKXMvkJ1e2pM+sWXV5DoqrmYBEpu+y
+qiMpVEhRl8cEr9gGUFziUtlHPTIlT6r6+bGJ9FX53eNP9Q8KZCPRJuZk/DGS64MXKLhnGYIWwFBb
+WznG5MWV
+--0000000000001f9fa8061840a2cc--
 
