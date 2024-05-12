@@ -1,146 +1,122 @@
-Return-Path: <linux-rdma+bounces-2425-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-2426-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2425F8C3576
-	for <lists+linux-rdma@lfdr.de>; Sun, 12 May 2024 10:17:24 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5D7BD8C357E
+	for <lists+linux-rdma@lfdr.de>; Sun, 12 May 2024 10:20:56 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 942EA281885
-	for <lists+linux-rdma@lfdr.de>; Sun, 12 May 2024 08:17:22 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D1D77B20E41
+	for <lists+linux-rdma@lfdr.de>; Sun, 12 May 2024 08:20:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DB2C1175AA;
-	Sun, 12 May 2024 08:17:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4E9C01757E;
+	Sun, 12 May 2024 08:20:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="h4fZLsuq"
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="EP4NhPXr"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-wm1-f51.google.com (mail-wm1-f51.google.com [209.85.128.51])
+Received: from mail-ej1-f45.google.com (mail-ej1-f45.google.com [209.85.218.45])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 14D183D6A;
-	Sun, 12 May 2024 08:17:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 69562DDA0
+	for <linux-rdma@vger.kernel.org>; Sun, 12 May 2024 08:20:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1715501836; cv=none; b=bJY6URcaAGlWNXSBYh3nALVOeG4uihpDl6LJAFTYzZ2SHWmtk/JdqAGq6z/SNjX5WEBIAtJUWoqwiq5WME2zKrgxiyuSdZ0Gmuh7O5pY7SJnLhs4o3UfSK1l10Q0lhUCIe+aOcM+ClN235aXokrIMfUEGjxbAI9GkiN+z7ME7Ns=
+	t=1715502049; cv=none; b=lwon2t9Xm7OfoJFIfQEXrX761pYOq5oypMbjcZ4oip+TW26qJ/lXEBIYGmpodU5dZjcSR5EWWFXjcpBOQ/nRK3H8ExcXjB65fHDehNJNQHduNgLRRYzV1T/jeF9yniX1XGxmbPaGYcW29YofluSNCqWUOkBfkNz5hcS3CCE5hfo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1715501836; c=relaxed/simple;
-	bh=SxRgOz9FrW2nOJVIYf9MsvTis9bo2V8NngiZT8z0rTE=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=AUArncCdoX82+ACqCSPuxDIOSmKy1kB1y8822Q8noci8rhlegrbMFA1WvrplaSS6ObcocYbkNi7TR+a6JXPkY8x4ILH1ts8zsJepWRvuFiyrOmwxBD8/tdc08W5bi5JSmvG9z48f2x94mSCXcixummPerBylNjMCgcWaZEKXQ+E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=h4fZLsuq; arc=none smtp.client-ip=209.85.128.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f51.google.com with SMTP id 5b1f17b1804b1-41fd5dc0480so19753155e9.1;
-        Sun, 12 May 2024 01:17:14 -0700 (PDT)
+	s=arc-20240116; t=1715502049; c=relaxed/simple;
+	bh=57aIvZSlXvHd2XNr6XUvBTj1SaQbsmoHThuid5rkxjc=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=QprKl056+EZ74yyJaKjsE9BVIDq+Jufby/rzP2nX5EfwOH4yRao5Mygeu8e18WqWtmn/873bmFVki1Sr97HCX2cbtJBSSJjP7ayrAX+3eioC9aP7d2z2rDlJhNsWmq6ZHeEE9ypBDqRDXBZosagIDvWHQKCrq9AaTMQfR1gdrnQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=EP4NhPXr; arc=none smtp.client-ip=209.85.218.45
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-ej1-f45.google.com with SMTP id a640c23a62f3a-a59cdd185b9so759523766b.1
+        for <linux-rdma@vger.kernel.org>; Sun, 12 May 2024 01:20:47 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1715501833; x=1716106633; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=xXlhXUYBz2j7T8no4wkelMyXb8COeQGHIUfPVvUbzMs=;
-        b=h4fZLsuqvgItmXZzEhyMv3Zu2i8hPCgebsBP7OEHB6rqRwlJuyp4tgBCf5TxUqD0cO
-         dbYLvtLpSUCVU5auEW+Mnuew6ewuy73/1ISp8GmI2EE0C4tAcdl67CVoNmEl6ulJEdL9
-         55GCQIvxG35iEiC/fvRM4XhObASXNkFlgqtCbzciWfRsAqMPYCoaayThGY+V4pyG9JhI
-         OGyRB7tHZEoMzVIconxZgaPh3g7spxoOZGcnrhpxsBB4caHUHZRnnfXAvu1ooWNKUfis
-         WO7Q1R2xq6TZVARXSd850XIaQB5kGmwNVQnzyHxCxupEX/cwJygSNLsU+9TWNSi+WQhG
-         /Ukg==
+        d=linaro.org; s=google; t=1715502046; x=1716106846; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=aA2OPIGe9/26kCTNuDnbmS99Q0tmMHaLiwj2IVXEJuE=;
+        b=EP4NhPXrgCh0Y+nCrC/A+xOYfqnHp3W77DPdncZCfvE/5ZlUzliAKU4SgrbH6uaU/f
+         JvOclsTe9KLMxcpaV2B7wEum5yskQ3samvYxcydNV6OhJi2gRZUtnERhovVBk3QHPPdI
+         fBdeGsrH93lAMjqtcP03S331ukgQ9M1AEWqrQBEBoPW8QXtDWrLoAeunquR+9X1MDkdI
+         Vteh+s9fD+SDe5Y91NzIe78od3RSswcb8k9AZLM6H4xPg8W9fT1pds6U0AYgipQFpYgj
+         2gq4xzsWEV3oWP4wP3ijrtxi095VJxjviTQbP9YWEBx0NMAqVQ7p1C+FhzcnyCYRBDx1
+         zNFA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1715501833; x=1716106633;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=xXlhXUYBz2j7T8no4wkelMyXb8COeQGHIUfPVvUbzMs=;
-        b=qnQSE6ahOl10+UDuwlA6dHAeBg81MCWLeu+w4Gbh1PfTjz2pqI56Yokr4Dz5qtKmsg
-         I6NlYn2dQNsdkHRlvLblZbSYBk5UvPgZ/VJwdS2QFB8/BFSj5rcDpwwwQLX34YZfdAs0
-         FKyTa5HmoYI3lpQPpwikro69qQzRddr57plEDiQmknShjoURFMhsyv3V5sRJTr3z+2WT
-         ZeEXyoxw3fd3IFZOIw1uMOCVHynJskY5PP26KgoyVbuPebFCSlbflZRorCPOGv7Eyv0u
-         JM2wMcRVFOYj8G1J/sBhJChISfw3Jntz1VbZIfXDYSMNlLtNMOGhKiMtFp/aRxHH1Cvg
-         4R6Q==
-X-Forwarded-Encrypted: i=1; AJvYcCV2JF30/84kyraR9Rq4mNU+7BuqL+Xq3rtO3KQaB6HqaSBJrmATVaorlSMrCfhmBG9QYYVTrAM1o879BYNdr4DBy7H+zlNXKwYf/R0f1Af2AP6ALKVNv+ZY5p37Je4tNcuoF6gORpWWWRjoX8jHgCjz5Ac0C1oIlc8F7mWzkpLrvA==
-X-Gm-Message-State: AOJu0Yw9gLj6/HLZeMFtLd3HE6+OCeNMSY2Zwtny/jcuU1ncemc0OVqP
-	lRmfec3BHYwv2SWWupY6KjL1WizhQn4Vl/8LCUT8+LTuQEWts6oL
-X-Google-Smtp-Source: AGHT+IEOalB+778r4CqlSVXIAWe1JPzos5Do/QR+Dve78YpSIk5eyo9JJnTF5MDxO8/0sqUEO1y2aQ==
-X-Received: by 2002:a05:600c:3582:b0:418:29d4:1964 with SMTP id 5b1f17b1804b1-41fea539b5amr50417525e9.0.1715501833128;
-        Sun, 12 May 2024 01:17:13 -0700 (PDT)
-Received: from [172.27.21.17] ([193.47.165.251])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-41fccce25casm120049505e9.20.2024.05.12.01.17.11
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 12 May 2024 01:17:12 -0700 (PDT)
-Message-ID: <a4efd162-5dc0-4ed1-b875-de12521a6618@gmail.com>
-Date: Sun, 12 May 2024 11:17:09 +0300
+        d=1e100.net; s=20230601; t=1715502046; x=1716106846;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=aA2OPIGe9/26kCTNuDnbmS99Q0tmMHaLiwj2IVXEJuE=;
+        b=ZjesMTyYDD0slRLkQ0XMu7bPfHc012GeGauFTbSa3Q/tiIUZRlu7tAxOipTcihTfYA
+         Lr1Q8+E7/NK9uE+4oR3kDQ0KJGzmIsHwGEa7aaIKM102pqqx0gpda2TLVaOrh5GwV9pT
+         dKMPJs4sbU11h0c/NnFERbgheZ1gKCM+QEzu8BnwY5zXJhcEWExM2j+2y7+hbFcSkCCq
+         yfulMD0U7THiDCar23aWiMPRc4mCJLcCAW1qyiibcXEI0faJzoNQPU0BKowXMOJBAz+8
+         icSTXKaSWaTZ/7uVXGQz3t9hEcciX/+ZTNSRKRbKENVHUeZ6vc3CSd0FjkKjodY+YZyw
+         0fHw==
+X-Forwarded-Encrypted: i=1; AJvYcCXW1loS4jCUaxt+DTLGQOVtwSEiTz1e2s1g5w1Hu4Go6V6EbRWBzlY83F4ekbsBJsDjwApZ/sheua3ePRuHwOWdaf/lXERFN0h06g==
+X-Gm-Message-State: AOJu0YyrfazjootXryPn9ehlR63Ki07UJRlbhalL89qEfEwz4DVtV0xE
+	XBt4RXUf2XSXgvxUAZW+Q9eA2ukaULwlXPb0HXZ5gP74e/q6Lf4A7p3lxjz83XA=
+X-Google-Smtp-Source: AGHT+IH8IAAcuq0uwpTf6fMx0D8wB462+TGmZE1W/D5t26zWbQkpZSc39eY03aIz5zXbSAbXfLd1/g==
+X-Received: by 2002:a17:906:57d4:b0:a59:ba34:f047 with SMTP id a640c23a62f3a-a5a2d1de87dmr521612466b.22.1715502045535;
+        Sun, 12 May 2024 01:20:45 -0700 (PDT)
+Received: from localhost ([102.222.70.76])
+        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-a5a17b01399sm438058766b.172.2024.05.12.01.20.44
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 12 May 2024 01:20:45 -0700 (PDT)
+Date: Sun, 12 May 2024 11:20:40 +0300
+From: Dan Carpenter <dan.carpenter@linaro.org>
+To: Simon Horman <horms@kernel.org>
+Cc: Shay Drory <shayd@nvidia.com>, Saeed Mahameed <saeedm@nvidia.com>,
+	Leon Romanovsky <leon@kernel.org>, Tariq Toukan <tariqt@nvidia.com>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	Moshe Shemesh <moshe@nvidia.com>, netdev@vger.kernel.org,
+	linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
+	kernel-janitors@vger.kernel.org
+Subject: Re: [PATCH net] net/mlx5: Fix error handling in mlx5_init_one_light()
+Message-ID: <38283c14-c8b2-4274-9e34-9d5951816a59@suswa.mountain>
+References: <a2bb6a55-5415-4c15-bee9-9e63f4b6a339@moroto.mountain>
+ <20240511142304.GH2347895@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH net-next v4 1/3] net/mlx4: Track RX allocation failures in
- a stat
-To: Joe Damato <jdamato@fastly.com>, linux-kernel@vger.kernel.org,
- netdev@vger.kernel.org
-Cc: mkarsten@uwaterloo.ca, nalramli@fastly.com,
- Tariq Toukan <tariqt@nvidia.com>, "David S. Miller" <davem@davemloft.net>,
- Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
- Paolo Abeni <pabeni@redhat.com>,
- "open list:MELLANOX MLX4 core VPI driver" <linux-rdma@vger.kernel.org>,
- Tariq Toukan <tariqt@nvidia.com>
-References: <20240509205057.246191-1-jdamato@fastly.com>
- <20240509205057.246191-2-jdamato@fastly.com>
-Content-Language: en-US
-From: Tariq Toukan <ttoukan.linux@gmail.com>
-In-Reply-To: <20240509205057.246191-2-jdamato@fastly.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240511142304.GH2347895@kernel.org>
 
-
-
-On 09/05/2024 23:50, Joe Damato wrote:
-> mlx4_en_alloc_frags currently returns -ENOMEM when mlx4_alloc_page
-> fails but does not increment a stat field when this occurs.
+On Sat, May 11, 2024 at 03:23:04PM +0100, Simon Horman wrote:
+> On Thu, May 09, 2024 at 02:00:18PM +0300, Dan Carpenter wrote:
+> > If mlx5_query_hca_caps_light() fails then calling devl_unregister() or
+> > devl_unlock() is a bug.  It's not registered and it's not locked.  That
+> > will trigger a stack trace in this case because devl_unregister() checks
+> > both those things at the start of the function.
+> > 
+> > If mlx5_devlink_params_register() fails then this code will call
+> > devl_unregister() and devl_unlock() twice which will again lead to a
+> > stack trace or possibly something worse as well.
+> > 
+> > Fixes: bf729988303a ("net/mlx5: Restore mistakenly dropped parts in register devlink flow")
+> > Fixes: c6e77aa9dd82 ("net/mlx5: Register devlink first under devlink lock")
+> > Signed-off-by: Dan Carpenter <dan.carpenter@linaro.org>
 > 
-> A new field called alloc_fail has been added to struct mlx4_en_rx_ring
-> which is now incremented in mlx4_en_rx_ring when -ENOMEM occurs.
+> Hi Dan,
 > 
-> Signed-off-by: Joe Damato <jdamato@fastly.com>
-> Tested-by: Martin Karsten <mkarsten@uwaterloo.ca>
-> ---
->   drivers/net/ethernet/mellanox/mlx4/en_rx.c   | 4 +++-
->   drivers/net/ethernet/mellanox/mlx4/mlx4_en.h | 1 +
->   2 files changed, 4 insertions(+), 1 deletion(-)
+> I believe that after you posted this patch, a different fix for this was
+> added to net as:
 > 
-> diff --git a/drivers/net/ethernet/mellanox/mlx4/en_rx.c b/drivers/net/ethernet/mellanox/mlx4/en_rx.c
-> index 8328df8645d5..15c57e9517e9 100644
-> --- a/drivers/net/ethernet/mellanox/mlx4/en_rx.c
-> +++ b/drivers/net/ethernet/mellanox/mlx4/en_rx.c
-> @@ -82,8 +82,10 @@ static int mlx4_en_alloc_frags(struct mlx4_en_priv *priv,
->   
->   	for (i = 0; i < priv->num_frags; i++, frags++) {
->   		if (!frags->page) {
-> -			if (mlx4_alloc_page(priv, frags, gfp))
-> +			if (mlx4_alloc_page(priv, frags, gfp)) {
-> +				ring->alloc_fail++;
->   				return -ENOMEM;
-> +			}
->   			ring->rx_alloc_pages++;
->   		}
->   		rx_desc->data[i].addr = cpu_to_be64(frags->dma +
-> diff --git a/drivers/net/ethernet/mellanox/mlx4/mlx4_en.h b/drivers/net/ethernet/mellanox/mlx4/mlx4_en.h
-> index efe3f97b874f..cd70df22724b 100644
-> --- a/drivers/net/ethernet/mellanox/mlx4/mlx4_en.h
-> +++ b/drivers/net/ethernet/mellanox/mlx4/mlx4_en.h
-> @@ -355,6 +355,7 @@ struct mlx4_en_rx_ring {
->   	unsigned long xdp_tx;
->   	unsigned long xdp_tx_full;
->   	unsigned long dropped;
-> +	unsigned long alloc_fail;
->   	int hwtstamp_rx_filter;
->   	cpumask_var_t affinity_mask;
->   	struct xdp_rxq_info xdp_rxq;
+> 3c453e8cc672 ("net/mlx5: Fix peer devlink set for SF representor devlink port")
+> 
 
-Counter should be reset in mlx4_en_clear_stats().
+Ah good.  Plus that patch has been tested.
 
-BTW, there are existing counters that are missing there already.
-We should add them as well, not related to your series though...
+regards,
+dan carpenter
+
 
