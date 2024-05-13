@@ -1,216 +1,139 @@
-Return-Path: <linux-rdma+bounces-2470-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-2471-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 535878C4873
-	for <lists+linux-rdma@lfdr.de>; Mon, 13 May 2024 22:50:50 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 66A8D8C49D9
+	for <lists+linux-rdma@lfdr.de>; Tue, 14 May 2024 01:03:31 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 76E8A1C2123E
-	for <lists+linux-rdma@lfdr.de>; Mon, 13 May 2024 20:50:49 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1AEE72821BB
+	for <lists+linux-rdma@lfdr.de>; Mon, 13 May 2024 23:03:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1754B81720;
-	Mon, 13 May 2024 20:50:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 14B6184DF7;
+	Mon, 13 May 2024 23:03:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=microsoft.com header.i=@microsoft.com header.b="Dv3slrdD"
+	dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b="iKd+8fwn"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from SA9PR02CU001.outbound.protection.outlook.com (mail-southcentralusazon11021006.outbound.protection.outlook.com [40.93.193.6])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pf1-f176.google.com (mail-pf1-f176.google.com [209.85.210.176])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3B1F41C69E;
-	Mon, 13 May 2024 20:50:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.93.193.6
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1715633443; cv=fail; b=rKBk2zHnB6lfoqotAsAClICtjjsXIO1ygi2B43dCOd1OE2tASdi7T3NNPj30/j3MPgYw9TC08eVJAay0nnPlLCxVxkXWJ9SfCUDnUgLcUMjTsyAJb5S/D6CBWFRds/mBfXJSmvSaSKryyb1aTneW1Z0ORf7l86G1XP4f87lTB7o=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1715633443; c=relaxed/simple;
-	bh=UbxpnMKaNwI97jQyhCl9SJ2XtNtQIMdYLl/qnESXs6E=;
-	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
-	 Content-Type:MIME-Version; b=XN2aPkbS53G2//eu3blYfam6e5WeLjdyJLKIMl8JE9+t5/wIIPeOZ8PtbWAc9ZGcJZspzExwmPo5G/d8uSYgg+7bSiQXbCSOk5ynitOha+72cWXyn40pAbi6hzA+fPzXqoXiJBQVCWw/X+W5CFAd7IHxMR4mnpaQx2JYrLY0FRI=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=microsoft.com; spf=pass smtp.mailfrom=microsoft.com; dkim=pass (1024-bit key) header.d=microsoft.com header.i=@microsoft.com header.b=Dv3slrdD; arc=fail smtp.client-ip=40.93.193.6
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=microsoft.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=microsoft.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=JrrYCv8HxOusmMYKQ570i0X/GR7nrkQ8L9PkoZhmJE7WYCWDbdT5weqzVwe2j+Gxb1s1gltuEmT3PdPKtQhMPejiY6hBPixLbBntGkPriJ/Mq3J0Kg6T0amse85grAYcEFA4TLvzf6nVLq93MSwoS9u1unMRgsvWWdhImaCSflZH5C6wrbCfZ3nlE4DHIJL7xB12Ub2mwQitFlzceZF/7OAGTGujj3XK0IVkJSfaRXCdLoIOx3cfBvmr0t60uaNS05ILhxKr2BGEk+QHhI4uJWW/dP0zrXiVRjBpyKGEdKuSyCYHq8mzglxfrlGLfDu4NTHp4Uoq9GhUN0GzrRJZew==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=G5gH74DSu+jfqStvA8VcF4BfD8y+KLuRxkJlu8XBm/k=;
- b=NOps55e1XCHdCTbHwjcLA4FyBVaA5f+LrIxhDEheIu0P8KClwTtXVxT8BX+0hjaEHuTX+XzBtGsmrF6sG217LcJzY0Rcl4uArkPuvsxbhLu+e8C718sNA3psAu0PcRfbI0e8A4Oo+JZyKxFJU6DnC1OXsgH/Kwcdr/fpEMell40W1WL/ADX5yxhBIUdi2TcjAp7wMM+5OsJzFfJioAKrZ84HjSWqe1+DTYFkiQxGQBP8DucayKs6xZbA3zg5CPu2ON0QA08SgWPR3I4uC1bTmQs2MZrDsmFuIrUqKUt38lsnkZYfEYBUQxAU3CpzgxzOyiRRxZVFMG6ydK6mkzNasg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=microsoft.com; dmarc=pass action=none
- header.from=microsoft.com; dkim=pass header.d=microsoft.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=G5gH74DSu+jfqStvA8VcF4BfD8y+KLuRxkJlu8XBm/k=;
- b=Dv3slrdDkdJ7sj24iInRfevJigr/XQnLfgB8J6nd/et6KcKdmHp+HOOHwpn//3MfiLM9k68bEfAQrWX+dpEWmPvnoMtPUVYRvNKfHv56Rinv8OvV6kKaAxchWQxDnewHislygIflBqAAmDvwfSNwNRAS+D2IUF4sVaklY5YYMtA=
-Received: from DM6PR21MB1481.namprd21.prod.outlook.com (2603:10b6:5:22f::8) by
- LV3PR21MB4191.namprd21.prod.outlook.com (2603:10b6:408:27c::14) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7611.5; Mon, 13 May
- 2024 20:50:38 +0000
-Received: from DM6PR21MB1481.namprd21.prod.outlook.com
- ([fe80::93ce:566b:57a1:bb4e]) by DM6PR21MB1481.namprd21.prod.outlook.com
- ([fe80::93ce:566b:57a1:bb4e%4]) with mapi id 15.20.7611.002; Mon, 13 May 2024
- 20:50:38 +0000
-From: Haiyang Zhang <haiyangz@microsoft.com>
-To: Jakub Kicinski <kuba@kernel.org>
-CC: "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
-	"netdev@vger.kernel.org" <netdev@vger.kernel.org>, Dexuan Cui
-	<decui@microsoft.com>, "stephen@networkplumber.org"
-	<stephen@networkplumber.org>, KY Srinivasan <kys@microsoft.com>, Paul
- Rosswurm <paulros@microsoft.com>, "olaf@aepfle.de" <olaf@aepfle.de>, vkuznets
-	<vkuznets@redhat.com>, "davem@davemloft.net" <davem@davemloft.net>,
-	"wei.liu@kernel.org" <wei.liu@kernel.org>, "edumazet@google.com"
-	<edumazet@google.com>, "pabeni@redhat.com" <pabeni@redhat.com>,
-	"leon@kernel.org" <leon@kernel.org>, Long Li <longli@microsoft.com>,
-	"ssengar@linux.microsoft.com" <ssengar@linux.microsoft.com>,
-	"linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-	"daniel@iogearbox.net" <daniel@iogearbox.net>, "john.fastabend@gmail.com"
-	<john.fastabend@gmail.com>, "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
-	"ast@kernel.org" <ast@kernel.org>, "hawk@kernel.org" <hawk@kernel.org>,
-	"tglx@linutronix.de" <tglx@linutronix.de>, "shradhagupta@linux.microsoft.com"
-	<shradhagupta@linux.microsoft.com>, "linux-kernel@vger.kernel.org"
-	<linux-kernel@vger.kernel.org>
-Subject: RE: [PATCH net-next] net: mana: Enable MANA driver on ARM64 with 4K
- page size
-Thread-Topic: [PATCH net-next] net: mana: Enable MANA driver on ARM64 with 4K
- page size
-Thread-Index: AQHapXRSoF8bWF0GzU23EBNbj3wY2rGVoRqAgAABNAA=
-Date: Mon, 13 May 2024 20:50:37 +0000
-Message-ID:
- <DM6PR21MB1481F5EE04BAB66E380A0706CAE22@DM6PR21MB1481.namprd21.prod.outlook.com>
-References: <1715632141-8089-1-git-send-email-haiyangz@microsoft.com>
- <20240513134201.5f5acbae@kernel.org>
-In-Reply-To: <20240513134201.5f5acbae@kernel.org>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach:
-X-MS-TNEF-Correlator:
-msip_labels:
- MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ActionId=16de0ef6-6bc9-49ea-9ab7-dc6239760e82;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ContentBits=0;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Enabled=true;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Method=Standard;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Name=Internal;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SetDate=2024-05-13T20:46:19Z;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SiteId=72f988bf-86f1-41af-91ab-2d7cd011db47;
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=microsoft.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: DM6PR21MB1481:EE_|LV3PR21MB4191:EE_
-x-ms-office365-filtering-correlation-id: ee5ff38e-4c1f-4fad-f268-08dc738e5811
-x-ld-processed: 72f988bf-86f1-41af-91ab-2d7cd011db47,ExtAddr
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam:
- BCL:0;ARA:13230031|366007|1800799015|7416005|376005|38070700009;
-x-microsoft-antispam-message-info:
- =?us-ascii?Q?vKYC12z9w998ZPl5tg+sFnR+P4Eii8uFV9luCkCkqKdb/921OZSmmaorv2ln?=
- =?us-ascii?Q?eqg5j4J4CVQwTTth3y7jXOfAEuqoPPh2vt21qpphGK0tSs54ahwvmvKv0oFa?=
- =?us-ascii?Q?MFE2JA677jnhHc8FfT/yejWEVqDZg39gCTkBq2aAOqnIK7l9+Js0577XCzt0?=
- =?us-ascii?Q?bF+fjCH9S8mLUVBqJTtXLLqFZ5Bd5uaYj67HuoHWBLoUXbyfZYEx/ZfX46YY?=
- =?us-ascii?Q?4hwr/X8mC8AEhLrgWpUo4mXTWqQOcDEy3raN/wCJeOJSfE9ebwUp8oOEP3Ei?=
- =?us-ascii?Q?OoCst7LOaz9l5e1sHhVc+b9JYPHLmptdEemu2l4sSY3kdRiU4MzFMU/GnYjW?=
- =?us-ascii?Q?93YpOL/+cVlnB0wzMPxNM44XODkfGH3qVxFKQVu6E5V5VWER5CkLe6onjTI9?=
- =?us-ascii?Q?nJMNFD31NQcgN6T/W+KGUB57YHNATEKjTjADuqq7Wmxd1KfnXr04zil6+P6t?=
- =?us-ascii?Q?7i/0Mcu+G6rJyNrni1xkcw3+HZot9IHbTvpbZEEBqIlSgjvfYIBi61/ZASPv?=
- =?us-ascii?Q?USoMbSA7pdq2NWOe9Wt3BgPDS+XDsHxhPoybOAgucT7NOrwOk4g8hsL03xx8?=
- =?us-ascii?Q?SaTlU5yoEoqymmyJgNJrlGts9wHUkYHMpsAmhKjgPqxFBl2ZY8LATKL6lTqJ?=
- =?us-ascii?Q?3AnaZ9Oy8Btr9eaFQAaFtDu3Bs9yTim0x764m1S2ajqFpO3zi77yY5Tz0A7M?=
- =?us-ascii?Q?fB7ZSHHB0yxxrPNV+bwnPIl/MdqyHH6qat/f9oCxaViY5eMUvWDyaPCDkydo?=
- =?us-ascii?Q?9rBH7H/9i0iPDQoFle5xx2vIvHhRsC1WMKrQA7m6nt/ldyA7/sC6FayVHTiC?=
- =?us-ascii?Q?5GTdhslGmWF4k15GmiK2OJJqrhBf5LhzB9aFf5zIcY1encgXmna6Nhcmmob+?=
- =?us-ascii?Q?Dayf4MIX5avaz4gXU/DIAqj3oFVa8MBRxoQnmcXue7/nQ21eqQLwjpi86D7g?=
- =?us-ascii?Q?5Q91OEh6kZnmtjj+N3Ty01eQa97rA8ByG0fk043mi+NCm/y6e5B5YkEBZHXR?=
- =?us-ascii?Q?TDYCQ/jTBs6yvqQJlyUbn8/HJZm/LOfJTiwp3cZG7ZPe5SlzfJtzSk4Rf6IH?=
- =?us-ascii?Q?JsNp3eLMMRJQW7bAMYrl53dre3+Z2xx3ryKF/HIsiwLFyjyecAMWkvMnXWxP?=
- =?us-ascii?Q?dZQADxAc6YDppcHIgIotwZDt6+IHDk8OXOJt/y2YoE4ejkhSh2iU1r1NieS6?=
- =?us-ascii?Q?JtiWSW9eOUDWpgx1dr26QSumqr1svW9WfdLU6+PRHaxtsLuxLwBzYRnHx21i?=
- =?us-ascii?Q?YZ9l5z0vkfHJ/Y+zSctLK2QLRxDVqSX/FPlfaygwNw=3D=3D?=
-x-forefront-antispam-report:
- CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR21MB1481.namprd21.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366007)(1800799015)(7416005)(376005)(38070700009);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0:
- =?us-ascii?Q?KKw68Bc/aVlIZQIG2/+mjiztrnM6x2aOQ/yOEJmtv2UGiElMNlfnlHZBZsIB?=
- =?us-ascii?Q?X42HXaDtUHsj6p0vbVrNvH4MKFXgMjo9sMRwax45vYMiqdqQ8OpuhTeAB8AN?=
- =?us-ascii?Q?yECvZXsstmRmAmwyv4JWkr4IeJd7EgEDv6CLIhP25JZaes73cAgQ4KVS1uCv?=
- =?us-ascii?Q?qtXDw+tm8FolA1VKFUyy6EDxD1JY+OlYTvclJnf2MZfxpSHspZXRrwR0mM88?=
- =?us-ascii?Q?tpUsbaFEvxqFIKwuqaN9AQQMTNoAkBR5wgCiKe9rGD3NK91B+RCLLkFGOARs?=
- =?us-ascii?Q?6u/Cw/UxVm0nDEqo+ax5pJsV0JxhnvAdyBbXGzt7QxQQOTyfYPNtJMRRO9ct?=
- =?us-ascii?Q?5KOGfvTQG/tQcELZSf20yT6HFkcdEChBN1bNcIHdTnqaHNQJFlH5mTaoGgdz?=
- =?us-ascii?Q?ZZOo2id+t12EKlyL+Lo/kxcBUPXjOkRVzox/gpia/Nv8pz0DvjPMOegfYN/a?=
- =?us-ascii?Q?Wc7Y59Ectfot7z8XjRHaYwmpaHItffpIjwrhZ/dypWUIxN6hsp+5FY36Dsgn?=
- =?us-ascii?Q?Rs/YJLOKdbm82g9u3a4DNHE9NjI3ohk9Pvb6AzM7BVyffLdysYc6Z97iOJvM?=
- =?us-ascii?Q?Gi+BqXtfNX5wl5AhqZppWYwP6mUVOJgvcfI6/BZqbZDlQF328Lrj6F3m/Q80?=
- =?us-ascii?Q?K9taRzNJXUIs2IXpahPMdEXhjiJJIxYffTFw4eYhwb1XziyAl552zmlM+lOs?=
- =?us-ascii?Q?KJzujWiJdhyourez4RB5Lumrkhh7Fpy5KZ/HSz+LXL9/xd0aJQGYjoVTaVAD?=
- =?us-ascii?Q?4z15gfkzo3BDG4vNxI8CvdGg1kOYDvJiUpjxYmjaTww7L5J/IqAGELp64FKm?=
- =?us-ascii?Q?50+/EnPqtHWLzcmDgxdk6ifWn91sPn14LjY6q9UQb7my5wl/qPzrOFN2aLz2?=
- =?us-ascii?Q?CEivWryj60nXp4LQJ3T7VaoX2YOrefm23hN52lXXgeKFxKDc34LrnoWcRlPV?=
- =?us-ascii?Q?UXMcXyUBsmNT1gsNbBzQN+UTVr5QixfDF885s5FI6quxJWMNrAH/SfPAwirQ?=
- =?us-ascii?Q?KT2MFIVifTSBGYGyHvYIiRmfj0scXhluu+Obz43mm8x0X8sHOezhxEZvjosM?=
- =?us-ascii?Q?+lAeko4YU/dxckMkEJzGB01Eyj+GPVd2N2UnVPaGZSf8Gihk0VQOje3tg/Ei?=
- =?us-ascii?Q?fCleVFrWUwi49e7eAhTypDenI3hLNLb2+j7DPqbZU7PmzJ5sxPHImTO5/puE?=
- =?us-ascii?Q?Urgvakdqi7O7YFhAxnwU4Ibenj+OgtNiOXfXQHLXJjZ0vfmLF8vM7nxuJRbq?=
- =?us-ascii?Q?RRnuZ9OJKBqsrYo3UslMWE8CFf02TQh6+NDaFnTunCiys7sKBc5RzF5PVvBf?=
- =?us-ascii?Q?Z1YJuCbKCECSoskoqauCEfcvXPLJPAiMBcoYlDmZqohL9iThkAptcCaN/oZ4?=
- =?us-ascii?Q?VyH8dshBrtp1U5iNIrKns+qux+7f+qjnGHZRshoxMXI2l53Doy8auhc1LO2K?=
- =?us-ascii?Q?vmpESmmIjc75LDDCP11AO/W/NGgv1gBgdyFXzOMM+3P9o4BojN/HxEOoM+iw?=
- =?us-ascii?Q?RoLbd1h4moHqTfOd9k5TXdd3SoFTF0c/002/S/ENIDGXxXoxJDCjtvgwdL8Y?=
- =?us-ascii?Q?ib5LLJCDMjslxo+dOvXyEUo9+8NKersDDbgo9kRN?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7399484DEC
+	for <linux-rdma@vger.kernel.org>; Mon, 13 May 2024 23:03:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.176
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1715641405; cv=none; b=cesCR3Z4Kl9rPgdgTVU8hCxO330urgdrM9vC6KdgXMz9GNw/jk4/8QqacvccqHJWwbABpGEbijSzV6jtqkQrNnDZWfGXqYSVY4Lj2702eg0iGgOF4PgftE8EPBdulQKpBEsZqV9To5v277Kp0k/zfsd+wKMYeABriGtboWntUY4=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1715641405; c=relaxed/simple;
+	bh=/9z5Va8BoS10Zw3lv3iW17W4Qhvjzu7IIUUc3s4u6+E=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=DXoLLozU08CD7CLSeX+LVzm1XpXudLY3XBmCTnKsL9S0yGDSCVd3Qp09PTx9fzUtfMt5FR2b7SJVELanXdx3XCJunwgDmdfFgZ+Jq1fH6ZmgaJXpzXyWrLBFNLvlvrQDTAIiv4sIvKsYW3tn1ACaei3TMk8uMR4u8vVQTjCxm0A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca; spf=pass smtp.mailfrom=ziepe.ca; dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b=iKd+8fwn; arc=none smtp.client-ip=209.85.210.176
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ziepe.ca
+Received: by mail-pf1-f176.google.com with SMTP id d2e1a72fcca58-6f4521ad6c0so4053218b3a.0
+        for <linux-rdma@vger.kernel.org>; Mon, 13 May 2024 16:03:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google; t=1715641404; x=1716246204; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=eiIURfigbv4jfMYVn+cegJe5X/kgu+BloNveVda8Z54=;
+        b=iKd+8fwngYQ1a9VzFZ1uGEVrJHwiOLeTu0PzsbV4jUJ3bNunb/Hrd+Ob/apHhpW9F1
+         PpcyDeGKKTuX8Lbk4hb1N8fYWGHFp+1iCvt0CyhdE9tdaQXsjtG0FFvDIhbHWsu/qMpI
+         mJx6tYUMvvYeQwFfnDSL/KByxX7SdP9uHyOlVaXU1p2xFGcaTMInakp5Z9YwdclpkCsL
+         vp8ZFSDahv/9sI/5ChJXUPBeS2g5a2ttW6IgLxquW0ahKsdBV0wo97d708G81TM5vp0D
+         oncFWNnaT9SS/8tJqd018OMRbp+87vuaFtRFBHrDWi4BjiWVAulZ4HPrpxPyJoo1SpE1
+         Ay4w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1715641404; x=1716246204;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=eiIURfigbv4jfMYVn+cegJe5X/kgu+BloNveVda8Z54=;
+        b=IkVj03o8qlw2Ssw1zp9t+LMXlHkagJMgTzRx6xShb/sIZBfK6DxQbfABHSMd+V3XRg
+         DOesXkLf4FBeS9HuHqyKk1oJzocAppxuGOazRSGacLgVB7r3QQh4lYL/hzE9DYBhW5ke
+         j3HfeC4Q4MZFXr1VLTc3sXO9xs2KUp+MsWtoUrlGCcFxmKyGAVxR4PEJwAko6ZcSc/nm
+         aOZlB4nVoyeyvL25cmUm/iq/6Dy+8hkWszaa4r/N9ZyUWdMVB9InYMHn0rUdJHVFWny9
+         cEdxvit0JtqeUaH18/5+ddy6H7B7w4sZoYxDZGyhJT7UirblpdDA/zyCauHHlr1URh2k
+         +3tA==
+X-Gm-Message-State: AOJu0Yxq/4V/x6eG++uf5fAzkbqcSWIYtsfO1kkRw+w2bKdWIvS5qOam
+	jIkVR0sh+rb+dMGyQlzirfHB7cjEueFMVwFaZFbJ/44buFzvBJzndd6jiY2kXDE=
+X-Google-Smtp-Source: AGHT+IGZZ05t4FHBsyrm+Iw0NDc4I2GEzxI8XRqc94KzZJOwLZEC+KqvVPk0Pm01zm+C+DAs6jMXHA==
+X-Received: by 2002:a05:6a21:6da1:b0:1a9:5e1f:8485 with SMTP id adf61e73a8af0-1afde1180a2mr10908731637.31.1715641403754;
+        Mon, 13 May 2024 16:03:23 -0700 (PDT)
+Received: from ziepe.ca ([50.204.89.20])
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-6f4d2a665c0sm7877475b3a.3.2024.05.13.16.03.22
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 13 May 2024 16:03:22 -0700 (PDT)
+Received: from jgg by jggl with local (Exim 4.95)
+	(envelope-from <jgg@ziepe.ca>)
+	id 1s6ehW-0001ej-5J;
+	Mon, 13 May 2024 20:03:22 -0300
+Date: Mon, 13 May 2024 20:03:22 -0300
+From: Jason Gunthorpe <jgg@ziepe.ca>
+To: =?utf-8?B?SMOla29u?= Bugge <haakon.bugge@oracle.com>
+Cc: linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
+	netdev@vger.kernel.org, rds-devel@oss.oracle.com,
+	Leon Romanovsky <leon@kernel.org>,
+	Saeed Mahameed <saeedm@nvidia.com>,
+	Tariq Toukan <tariqt@nvidia.com>,
+	"David S . Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	Tejun Heo <tj@kernel.org>, Lai Jiangshan <jiangshanlai@gmail.com>,
+	Allison Henderson <allison.henderson@oracle.com>,
+	Manjunath Patil <manjunath.b.patil@oracle.com>,
+	Mark Zhang <markzhang@nvidia.com>,
+	Chuck Lever <chuck.lever@oracle.com>,
+	Shiraz Saleem <shiraz.saleem@intel.com>,
+	Yang Li <yang.lee@linux.alibaba.com>
+Subject: Re: [PATCH 0/6] rds: rdma: Add ability to force GFP_NOIO
+Message-ID: <ZkKcOogJpI0PU2l3@ziepe.ca>
+References: <20240513125346.764076-1-haakon.bugge@oracle.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-OriginatorOrg: microsoft.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: DM6PR21MB1481.namprd21.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: ee5ff38e-4c1f-4fad-f268-08dc738e5811
-X-MS-Exchange-CrossTenant-originalarrivaltime: 13 May 2024 20:50:37.9874
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 72f988bf-86f1-41af-91ab-2d7cd011db47
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: DNUr5fU89Wcy2N6hwibGVvzeozATPHouj6OXRRZIOVgRf/Kl8q5ixK/RD3v5XkOp68a7IC3PIp8jVtykOMc2Pw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: LV3PR21MB4191
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20240513125346.764076-1-haakon.bugge@oracle.com>
 
+On Mon, May 13, 2024 at 02:53:40PM +0200, Håkon Bugge wrote:
+> This series enables RDS and the RDMA stack to be used as a block I/O
+> device. This to support a filesystem on top of a raw block device
+> which uses RDS and the RDMA stack as the network transport layer.
+> 
+> Under intense memory pressure, we get memory reclaims. Assume the
+> filesystem reclaims memory, goes to the raw block device, which calls
+> into RDS, which calls the RDMA stack. Now, if regular GFP_KERNEL
+> allocations in RDS or the RDMA stack require reclaims to be fulfilled,
+> we end up in a circular dependency.
+> 
+> We break this circular dependency by:
+> 
+> 1. Force all allocations in RDS and the relevant RDMA stack to use
+>    GFP_NOIO, by means of a parenthetic use of
+>    memalloc_noio_{save,restore} on all relevant entry points.
 
+I didn't see an obvious explanation why each of these changes was
+necessary. I expected this:
+ 
+> 2. Make sure work-queues inherits current->flags
+>    wrt. PF_MEMALLOC_{NOIO,NOFS}, such that work executed on the
+>    work-queue inherits the same flag(s).
 
-> -----Original Message-----
-> From: Jakub Kicinski <kuba@kernel.org>
-> Sent: Monday, May 13, 2024 4:42 PM
-> To: Haiyang Zhang <haiyangz@microsoft.com>
-> Cc: linux-hyperv@vger.kernel.org; netdev@vger.kernel.org; Dexuan Cui
-> <decui@microsoft.com>; stephen@networkplumber.org; KY Srinivasan
-> <kys@microsoft.com>; Paul Rosswurm <paulros@microsoft.com>;
-> olaf@aepfle.de; vkuznets <vkuznets@redhat.com>; davem@davemloft.net;
-> wei.liu@kernel.org; edumazet@google.com; pabeni@redhat.com;
-> leon@kernel.org; Long Li <longli@microsoft.com>;
-> ssengar@linux.microsoft.com; linux-rdma@vger.kernel.org;
-> daniel@iogearbox.net; john.fastabend@gmail.com; bpf@vger.kernel.org;
-> ast@kernel.org; hawk@kernel.org; tglx@linutronix.de;
-> shradhagupta@linux.microsoft.com; linux-kernel@vger.kernel.org
-> Subject: Re: [PATCH net-next] net: mana: Enable MANA driver on ARM64 with
-> 4K page size
->=20
-> On Mon, 13 May 2024 13:29:01 -0700 Haiyang Zhang wrote:
-> > -	depends on PCI_MSI && X86_64
-> > +	depends on PCI_MSI
-> > +	depends on X86_64 || (ARM64 && !CPU_BIG_ENDIAN && ARM64_4K_PAGES)
->=20
-> Can ARM64 be big endian?
+To broadly capture everything and understood this was the general plan
+from the MM side instead of direct annotation?
 
-From the document, it can be:
-"ARM cores support both modes, but are most commonly used in, and typically=
- default to little-endian mode. Most Linux distributions for ARM tend to be=
- little-endian only."=20
-https://developer.arm.com/documentation/den0042/a/Coding-for-Cortex-R-Proce=
-ssors/Endianness
+So, can you explain in each case why it needs an explicit change?
 
-MANA driver doesn't support big endian.
+And further, is there any validation of this? There is some lockdep
+tracking of reclaim, I feel like it should be more robustly hooked up
+in RDMA if we expect this to really work..
 
-Thanks,
-- Haiyang
-
+Jason
 
