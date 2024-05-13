@@ -1,291 +1,153 @@
-Return-Path: <linux-rdma+bounces-2446-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-2447-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1F0368C3CD0
-	for <lists+linux-rdma@lfdr.de>; Mon, 13 May 2024 10:01:22 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 83B8A8C3CE7
+	for <lists+linux-rdma@lfdr.de>; Mon, 13 May 2024 10:10:33 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C6679281E91
-	for <lists+linux-rdma@lfdr.de>; Mon, 13 May 2024 08:01:20 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3C69D281E4B
+	for <lists+linux-rdma@lfdr.de>; Mon, 13 May 2024 08:10:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9370C146D56;
-	Mon, 13 May 2024 08:01:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E1D61146D61;
+	Mon, 13 May 2024 08:10:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="ZiI2BsI5"
+	dkim=pass (1024-bit key) header.d=amazon.com header.i=@amazon.com header.b="Equ8ZS2W"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.13])
+Received: from smtp-fw-52005.amazon.com (smtp-fw-52005.amazon.com [52.119.213.156])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5060A7E777
-	for <linux-rdma@vger.kernel.org>; Mon, 13 May 2024 08:01:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.13
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3967133CA
+	for <linux-rdma@vger.kernel.org>; Mon, 13 May 2024 08:10:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=52.119.213.156
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1715587277; cv=none; b=MtXsHDMi8lymDYx4rhOIwi2Xwz8OPD3x+4RWqtsmTMTdH1aLNgKFUMqQGrxcXw6cKqDS27pv60gbEN4CH7X/5ewbyF0pd/yZ2UZtzkBLC+HTOg69RHK0Nj5GXXbJ8TO8u64znHO1g4HrUtyW5aiunFmXPK0gZXHy4lS0ob4g1OY=
+	t=1715587827; cv=none; b=EpaL84jU0njHIuq578MliFr4hFm2ShSjugl/7s0ZH/fBVOGtHSp5cE1AHhYbUuuIkCkR16MKWZ96mRKZhy961fbUhfdFHVCY2HllFVSx2vpKph6Y3GJuz7oq5WOWCeBcU3rr/mjSlOIxgtK1bG3he33xQ9f/u41wm/oAW2OFBU4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1715587277; c=relaxed/simple;
-	bh=e2oOTjoQiuwLIeHZtE5s9XVUL1uh13aGIZe2lLk0lf4=;
-	h=Date:From:To:Cc:Subject:Message-ID; b=IBjzCuxs5+BuxHtw3NyL8nwzVzZd7xdfIefC3KEsllhknwuW2dzyvqUVbFiKW1pUvTirVfSS1vgAESZPJ54a2Px6Mg7NsOChJf5ghi+a6vmcwVTssm1df6y9YrSMxdrucdSVCfSvxWzO3Fo7JFivECm+s3MBxmuBuIC1z7NcNlQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=ZiI2BsI5; arc=none smtp.client-ip=198.175.65.13
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1715587275; x=1747123275;
-  h=date:from:to:cc:subject:message-id;
-  bh=e2oOTjoQiuwLIeHZtE5s9XVUL1uh13aGIZe2lLk0lf4=;
-  b=ZiI2BsI5IRpTiW8RAntp5FesBIsja6RUOVC6wpWj4MccdWrtpoE1P4b1
-   +bYuWg0FEKcahh2lwEs9BSViO9c40cQvq2kUVKTxIc28sIyDMhgP78W9J
-   OP73jgi7JA599ngl+s6fsCTonHRbteIfW5omuCiLOupMUDFd01xLF38dV
-   3+0rO1POaksE3pXY5XLUSUYtzFEeXrCnpPiMO9+IufUBLg4u8Ha+TeX5x
-   tdIz1K8sbcmhWvYZh0APIVNiYrhwTMmXjsQ6FhWGvcspC+zo6B2OanF/6
-   WVSgg6nYELBgPyCNExa+sKbnIEdrf4AGteUx6jDVjeqTw+2WDdS6bMhnJ
-   A==;
-X-CSE-ConnectionGUID: PshiCkYySdCxalsdo0Wqqg==
-X-CSE-MsgGUID: JuXp/k4oRpGnZ/4E+KxTog==
-X-IronPort-AV: E=McAfee;i="6600,9927,11071"; a="22655301"
-X-IronPort-AV: E=Sophos;i="6.08,157,1712646000"; 
-   d="scan'208";a="22655301"
-Received: from fmviesa010.fm.intel.com ([10.60.135.150])
-  by orvoesa105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 May 2024 01:01:14 -0700
-X-CSE-ConnectionGUID: kIlExHtRQ0es5CG95w736Q==
-X-CSE-MsgGUID: X3WSa005TISNZ2H1p99a8A==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.08,157,1712646000"; 
-   d="scan'208";a="30339124"
-Received: from lkp-server01.sh.intel.com (HELO f8b243fe6e68) ([10.239.97.150])
-  by fmviesa010.fm.intel.com with ESMTP; 13 May 2024 01:01:12 -0700
-Received: from kbuild by f8b243fe6e68 with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1s6QcQ-0009ln-2S;
-	Mon, 13 May 2024 08:01:10 +0000
-Date: Mon, 13 May 2024 16:00:13 +0800
-From: kernel test robot <lkp@intel.com>
-To: Leon Romanovsky <leon@kernel.org>
-Cc: Doug Ledford <dledford@redhat.com>,
- Jason Gunthorpe <jgg+lists@ziepe.ca>, linux-rdma@vger.kernel.org
-Subject: [rdma:for-next] BUILD SUCCESS
- 49ca2b2ef3d003402584c68ae7b3055ba72e750a
-Message-ID: <202405131611.1S5CJQbt-lkp@intel.com>
-User-Agent: s-nail v14.9.24
+	s=arc-20240116; t=1715587827; c=relaxed/simple;
+	bh=bR2Qffyo6I6J7+g3EjVrxZK/rIRFOl23+FwgOVGCS+c=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=Ls9KfOXZenzDYlt7trwpxS5QevSJrZBQ7ZWtyO4UvbGt6XC3PW6vvXGmeOtyKwjiNLo4OMknXmLzGrNi1Uz5ys6aCiTcx/u8Y/wlG0CCvI0v/UXc3zcE0JGFZq9PUSIQerzhMRB/nAlC9GP7cmITMG2sWkuyXBw7XdAqQEhEax8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amazon.com; spf=pass smtp.mailfrom=amazon.com; dkim=pass (1024-bit key) header.d=amazon.com header.i=@amazon.com header.b=Equ8ZS2W; arc=none smtp.client-ip=52.119.213.156
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amazon.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=amazon.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
+  t=1715587826; x=1747123826;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=/fkDyKxvQqWLrKg8pxZBaMoEAlkLAr67GgLh5evvJwA=;
+  b=Equ8ZS2WIa5ROmO+pxU7CPWGHt/t5Q2gvREDT8Y82GQYvfBsgdW0ixnU
+   T/kmegt4RO4UJwJZdmdY5H14gDJ7+x+7G3bWTAbdLsHfqoEP17qS8PDMx
+   7NpaC5gs5kP2TM3hG+bhdQsxtzsewFciewIb8RRR3fvT9aPRu2QkK6bAn
+   4=;
+X-IronPort-AV: E=Sophos;i="6.08,157,1712620800"; 
+   d="scan'208";a="653709861"
+Received: from iad12-co-svc-p1-lb1-vlan3.amazon.com (HELO smtpout.prod.us-west-2.prod.farcaster.email.amazon.dev) ([10.43.8.6])
+  by smtp-border-fw-52005.iad7.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 May 2024 08:10:24 +0000
+Received: from EX19MTAEUC002.ant.amazon.com [10.0.10.100:11940]
+ by smtpin.naws.eu-west-1.prod.farcaster.email.amazon.dev [10.0.14.131:2525] with esmtp (Farcaster)
+ id 3089abd9-d9a6-4faa-b5c1-a23e6018062d; Mon, 13 May 2024 08:10:22 +0000 (UTC)
+X-Farcaster-Flow-ID: 3089abd9-d9a6-4faa-b5c1-a23e6018062d
+Received: from EX19D022EUA003.ant.amazon.com (10.252.50.138) by
+ EX19MTAEUC002.ant.amazon.com (10.252.51.245) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1258.28; Mon, 13 May 2024 08:10:21 +0000
+Received: from EX19MTAUWA001.ant.amazon.com (10.250.64.204) by
+ EX19D022EUA003.ant.amazon.com (10.252.50.138) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1258.28; Mon, 13 May 2024 08:10:21 +0000
+Received: from dev-dsk-mrgolin-1c-b2091117.eu-west-1.amazon.com
+ (10.253.103.172) by mail-relay.amazon.com (10.250.64.204) with Microsoft SMTP
+ Server id 15.2.1258.28 via Frontend Transport; Mon, 13 May 2024 08:10:19
+ +0000
+From: Michael Margolin <mrgolin@amazon.com>
+To: <jgg@nvidia.com>, <leon@kernel.org>, <linux-rdma@vger.kernel.org>
+CC: <sleybo@amazon.com>, <matua@amazon.com>, <gal.pressman@linux.dev>, "Daniel
+ Kranzdorf" <dkkranzd@amazon.com>, Firas Jahjah <firasj@amazon.com>
+Subject: [PATCH for-next] RDMA/efa: Fail probe on missing BARs
+Date: Mon, 13 May 2024 08:10:19 +0000
+Message-ID: <20240513081019.26998-1-mrgolin@amazon.com>
+X-Mailer: git-send-email 2.40.1
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git for-next
-branch HEAD: 49ca2b2ef3d003402584c68ae7b3055ba72e750a  RDMA/IPoIB: Fix format truncation compilation errors
+In case any of PCI BARs is missing during device probe we would like to
+fail as early as possible. Fail if any of the required BARs isn't listed
+as a memory BAR.
 
-elapsed time: 1268m
+Reviewed-by: Daniel Kranzdorf <dkkranzd@amazon.com>
+Reviewed-by: Firas Jahjah <firasj@amazon.com>
+Signed-off-by: Michael Margolin <mrgolin@amazon.com>
+---
+ drivers/infiniband/hw/efa/efa_main.c | 30 ++++++++++++++++++++--------
+ 1 file changed, 22 insertions(+), 8 deletions(-)
 
-configs tested: 197
-configs skipped: 3
-
-The following configs have been built successfully.
-More configs may be tested in the coming days.
-
-tested configs:
-alpha                             allnoconfig   gcc  
-alpha                            allyesconfig   gcc  
-alpha                               defconfig   gcc  
-arc                              allmodconfig   gcc  
-arc                               allnoconfig   gcc  
-arc                              allyesconfig   gcc  
-arc                                 defconfig   gcc  
-arc                   randconfig-001-20240513   gcc  
-arc                   randconfig-002-20240513   gcc  
-arm                              allmodconfig   gcc  
-arm                               allnoconfig   clang
-arm                              allyesconfig   gcc  
-arm                       aspeed_g5_defconfig   gcc  
-arm                                 defconfig   clang
-arm                      footbridge_defconfig   clang
-arm                            hisi_defconfig   gcc  
-arm                         lpc18xx_defconfig   clang
-arm                   randconfig-001-20240513   clang
-arm                   randconfig-002-20240513   gcc  
-arm                   randconfig-003-20240513   clang
-arm                   randconfig-004-20240513   gcc  
-arm                         socfpga_defconfig   gcc  
-arm64                            allmodconfig   clang
-arm64                             allnoconfig   gcc  
-arm64                               defconfig   gcc  
-arm64                 randconfig-001-20240513   gcc  
-arm64                 randconfig-002-20240513   gcc  
-arm64                 randconfig-003-20240513   clang
-arm64                 randconfig-004-20240513   clang
-csky                             allmodconfig   gcc  
-csky                              allnoconfig   gcc  
-csky                             allyesconfig   gcc  
-csky                                defconfig   gcc  
-csky                  randconfig-001-20240513   gcc  
-csky                  randconfig-002-20240513   gcc  
-hexagon                          allmodconfig   clang
-hexagon                           allnoconfig   clang
-hexagon                          allyesconfig   clang
-hexagon                             defconfig   clang
-hexagon               randconfig-001-20240513   clang
-hexagon               randconfig-002-20240513   clang
-i386                             allmodconfig   gcc  
-i386                              allnoconfig   gcc  
-i386                             allyesconfig   gcc  
-i386         buildonly-randconfig-001-20240512   gcc  
-i386         buildonly-randconfig-001-20240513   clang
-i386         buildonly-randconfig-002-20240512   clang
-i386         buildonly-randconfig-002-20240513   clang
-i386         buildonly-randconfig-003-20240512   gcc  
-i386         buildonly-randconfig-003-20240513   gcc  
-i386         buildonly-randconfig-004-20240512   gcc  
-i386         buildonly-randconfig-004-20240513   clang
-i386         buildonly-randconfig-005-20240512   gcc  
-i386         buildonly-randconfig-005-20240513   gcc  
-i386         buildonly-randconfig-006-20240512   clang
-i386         buildonly-randconfig-006-20240513   gcc  
-i386                                defconfig   clang
-i386                  randconfig-001-20240512   clang
-i386                  randconfig-001-20240513   gcc  
-i386                  randconfig-002-20240512   clang
-i386                  randconfig-002-20240513   clang
-i386                  randconfig-003-20240512   clang
-i386                  randconfig-003-20240513   gcc  
-i386                  randconfig-004-20240512   gcc  
-i386                  randconfig-004-20240513   clang
-i386                  randconfig-005-20240512   clang
-i386                  randconfig-005-20240513   gcc  
-i386                  randconfig-006-20240512   clang
-i386                  randconfig-006-20240513   gcc  
-i386                  randconfig-011-20240512   gcc  
-i386                  randconfig-011-20240513   gcc  
-i386                  randconfig-012-20240512   clang
-i386                  randconfig-012-20240513   clang
-i386                  randconfig-013-20240512   gcc  
-i386                  randconfig-013-20240513   clang
-i386                  randconfig-014-20240512   clang
-i386                  randconfig-014-20240513   gcc  
-i386                  randconfig-015-20240512   gcc  
-i386                  randconfig-015-20240513   gcc  
-i386                  randconfig-016-20240512   gcc  
-i386                  randconfig-016-20240513   clang
-loongarch                        allmodconfig   gcc  
-loongarch                         allnoconfig   gcc  
-loongarch                           defconfig   gcc  
-loongarch             randconfig-001-20240513   gcc  
-loongarch             randconfig-002-20240513   gcc  
-m68k                             allmodconfig   gcc  
-m68k                              allnoconfig   gcc  
-m68k                             allyesconfig   gcc  
-m68k                                defconfig   gcc  
-m68k                        m5307c3_defconfig   gcc  
-m68k                       m5475evb_defconfig   gcc  
-microblaze                       allmodconfig   gcc  
-microblaze                        allnoconfig   gcc  
-microblaze                       allyesconfig   gcc  
-microblaze                          defconfig   gcc  
-mips                              allnoconfig   gcc  
-mips                             allyesconfig   gcc  
-mips                        bcm63xx_defconfig   clang
-mips                     loongson1b_defconfig   clang
-mips                    maltaup_xpa_defconfig   gcc  
-nios2                            allmodconfig   gcc  
-nios2                             allnoconfig   gcc  
-nios2                            allyesconfig   gcc  
-nios2                               defconfig   gcc  
-nios2                 randconfig-001-20240513   gcc  
-nios2                 randconfig-002-20240513   gcc  
-openrisc                          allnoconfig   gcc  
-openrisc                         allyesconfig   gcc  
-openrisc                            defconfig   gcc  
-parisc                           alldefconfig   gcc  
-parisc                           allmodconfig   gcc  
-parisc                            allnoconfig   gcc  
-parisc                           allyesconfig   gcc  
-parisc                              defconfig   gcc  
-parisc                randconfig-001-20240513   gcc  
-parisc                randconfig-002-20240513   gcc  
-parisc64                            defconfig   gcc  
-powerpc                          allmodconfig   gcc  
-powerpc                           allnoconfig   gcc  
-powerpc                          allyesconfig   clang
-powerpc                     powernv_defconfig   gcc  
-powerpc               randconfig-001-20240513   gcc  
-powerpc               randconfig-002-20240513   gcc  
-powerpc               randconfig-003-20240513   gcc  
-powerpc64             randconfig-001-20240513   gcc  
-powerpc64             randconfig-002-20240513   clang
-powerpc64             randconfig-003-20240513   clang
-riscv                            allmodconfig   clang
-riscv                             allnoconfig   gcc  
-riscv                            allyesconfig   clang
-riscv                               defconfig   clang
-riscv                 randconfig-001-20240513   gcc  
-riscv                 randconfig-002-20240513   clang
-s390                             allmodconfig   clang
-s390                              allnoconfig   clang
-s390                             allyesconfig   gcc  
-s390                                defconfig   clang
-s390                  randconfig-001-20240513   gcc  
-s390                  randconfig-002-20240513   clang
-sh                               allmodconfig   gcc  
-sh                                allnoconfig   gcc  
-sh                               allyesconfig   gcc  
-sh                                  defconfig   gcc  
-sh                ecovec24-romimage_defconfig   gcc  
-sh                        edosk7760_defconfig   gcc  
-sh                    randconfig-001-20240513   gcc  
-sh                    randconfig-002-20240513   gcc  
-sh                           se7206_defconfig   gcc  
-sh                             shx3_defconfig   gcc  
-sparc                            allmodconfig   gcc  
-sparc                             allnoconfig   gcc  
-sparc                               defconfig   gcc  
-sparc64                          allmodconfig   gcc  
-sparc64                          allyesconfig   gcc  
-sparc64                             defconfig   gcc  
-sparc64               randconfig-001-20240513   gcc  
-sparc64               randconfig-002-20240513   gcc  
-um                               allmodconfig   clang
-um                                allnoconfig   clang
-um                               allyesconfig   gcc  
-um                                  defconfig   clang
-um                             i386_defconfig   gcc  
-um                    randconfig-001-20240513   clang
-um                    randconfig-002-20240513   gcc  
-um                           x86_64_defconfig   clang
-x86_64                            allnoconfig   clang
-x86_64                           allyesconfig   clang
-x86_64       buildonly-randconfig-001-20240512   clang
-x86_64       buildonly-randconfig-002-20240512   clang
-x86_64       buildonly-randconfig-003-20240512   clang
-x86_64       buildonly-randconfig-004-20240512   gcc  
-x86_64       buildonly-randconfig-005-20240512   clang
-x86_64       buildonly-randconfig-006-20240512   gcc  
-x86_64                              defconfig   gcc  
-x86_64                randconfig-001-20240512   gcc  
-x86_64                randconfig-002-20240512   gcc  
-x86_64                randconfig-003-20240512   clang
-x86_64                randconfig-004-20240512   gcc  
-x86_64                randconfig-005-20240512   gcc  
-x86_64                randconfig-006-20240512   gcc  
-x86_64                randconfig-011-20240512   gcc  
-x86_64                randconfig-012-20240512   gcc  
-x86_64                randconfig-013-20240512   clang
-x86_64                randconfig-014-20240512   gcc  
-x86_64                randconfig-015-20240512   clang
-x86_64                randconfig-016-20240512   clang
-x86_64                randconfig-071-20240512   clang
-x86_64                randconfig-072-20240512   gcc  
-x86_64                randconfig-073-20240512   gcc  
-x86_64                randconfig-074-20240512   clang
-x86_64                randconfig-075-20240512   clang
-x86_64                randconfig-076-20240512   clang
-x86_64                          rhel-8.3-rust   clang
-xtensa                            allnoconfig   gcc  
-xtensa                randconfig-001-20240513   gcc  
-xtensa                randconfig-002-20240513   gcc  
-
+diff --git a/drivers/infiniband/hw/efa/efa_main.c b/drivers/infiniband/hw/efa/efa_main.c
+index d1a48f988f6c..99f9ac23c721 100644
+--- a/drivers/infiniband/hw/efa/efa_main.c
++++ b/drivers/infiniband/hw/efa/efa_main.c
+@@ -190,15 +190,23 @@ static int efa_request_doorbell_bar(struct efa_dev *dev)
+ {
+ 	u8 db_bar_idx = dev->dev_attr.db_bar;
+ 	struct pci_dev *pdev = dev->pdev;
+-	int bars;
++	int pci_mem_bars;
++	int db_bar;
+ 	int err;
+ 
+-	if (!(BIT(db_bar_idx) & EFA_BASE_BAR_MASK)) {
+-		bars = pci_select_bars(pdev, IORESOURCE_MEM) & BIT(db_bar_idx);
++	db_bar = BIT(db_bar_idx);
++	if (!(db_bar & EFA_BASE_BAR_MASK)) {
++		pci_mem_bars = pci_select_bars(pdev, IORESOURCE_MEM);
++		if (db_bar & ~pci_mem_bars) {
++			dev_err(&pdev->dev,
++				"Doorbells BAR unavailable. Requested %#x, available %#x\n",
++				db_bar, pci_mem_bars);
++			return -ENODEV;
++		}
+ 
+-		err = pci_request_selected_regions(pdev, bars, DRV_MODULE_NAME);
++		err = pci_request_selected_regions(pdev, db_bar, DRV_MODULE_NAME);
+ 		if (err) {
+-			dev_err(&dev->pdev->dev,
++			dev_err(&pdev->dev,
+ 				"pci_request_selected_regions for bar %d failed %d\n",
+ 				db_bar_idx, err);
+ 			return err;
+@@ -531,7 +539,7 @@ static struct efa_dev *efa_probe_device(struct pci_dev *pdev)
+ {
+ 	struct efa_com_dev *edev;
+ 	struct efa_dev *dev;
+-	int bars;
++	int pci_mem_bars;
+ 	int err;
+ 
+ 	err = pci_enable_device_mem(pdev);
+@@ -556,8 +564,14 @@ static struct efa_dev *efa_probe_device(struct pci_dev *pdev)
+ 	dev->pdev = pdev;
+ 	xa_init(&dev->cqs_xa);
+ 
+-	bars = pci_select_bars(pdev, IORESOURCE_MEM) & EFA_BASE_BAR_MASK;
+-	err = pci_request_selected_regions(pdev, bars, DRV_MODULE_NAME);
++	pci_mem_bars = pci_select_bars(pdev, IORESOURCE_MEM);
++	if (EFA_BASE_BAR_MASK & ~pci_mem_bars) {
++		dev_err(&pdev->dev, "BARs unavailable. Requested %#x, available %#x\n",
++			(int)EFA_BASE_BAR_MASK, pci_mem_bars);
++		err = -ENODEV;
++		goto err_ibdev_destroy;
++	}
++	err = pci_request_selected_regions(pdev, EFA_BASE_BAR_MASK, DRV_MODULE_NAME);
+ 	if (err) {
+ 		dev_err(&pdev->dev, "pci_request_selected_regions failed %d\n",
+ 			err);
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+2.40.1
+
 
