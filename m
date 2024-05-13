@@ -1,242 +1,179 @@
-Return-Path: <linux-rdma+bounces-2443-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-2444-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id A6B298C3A6E
-	for <lists+linux-rdma@lfdr.de>; Mon, 13 May 2024 05:22:40 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0BE2B8C3B92
+	for <lists+linux-rdma@lfdr.de>; Mon, 13 May 2024 08:46:56 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5BC6B281385
-	for <lists+linux-rdma@lfdr.de>; Mon, 13 May 2024 03:22:39 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6AB77281583
+	for <lists+linux-rdma@lfdr.de>; Mon, 13 May 2024 06:46:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 76590145B20;
-	Mon, 13 May 2024 03:22:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0A1721465AA;
+	Mon, 13 May 2024 06:46:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="ALzBAkQE"
+	dkim=pass (1024-bit key) header.d=amazon.com header.i=@amazon.com header.b="My2ueOZr"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from out30-100.freemail.mail.aliyun.com (out30-100.freemail.mail.aliyun.com [115.124.30.100])
+Received: from smtp-fw-2101.amazon.com (smtp-fw-2101.amazon.com [72.21.196.25])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C86591C6AF;
-	Mon, 13 May 2024 03:22:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.100
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A3FD214658B
+	for <linux-rdma@vger.kernel.org>; Mon, 13 May 2024 06:46:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=72.21.196.25
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1715570555; cv=none; b=FE0G5kW2Y0LVfJGKGRpyAx1bUZvdzmTql9Q/EuZfhGkHBxxekwz3rKTD8SNHNHZhwx24Ogp9mUeccotBbkzz7PHcd/8zrwqIqEf3k9bYKHEt+PIqwo22Mtsmflxhb0d3vFKSvBdcXaHUVc1lGAlrwkmd+spAGHTMyw7UY0EuBDc=
+	t=1715582810; cv=none; b=Ym55IdpZNzA0uddUImhD9MDMh2zFpVnP0Vl5RKXeH3zl/RzqzpSYmyl2+D2NmPDzfAkFfoA9iD7cTG6EcxKyijS0AbArMtW8089j1VaWznWjutWM4XK+PcUMh1E1V44hwSGBa3V66PE0VrP48DbgySkhmAN7eqwg1Kcc9k95eBE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1715570555; c=relaxed/simple;
-	bh=158n1jQPgG/o/3jlOTda9lV/7ihfFB/4Br3Dc2PDJzQ=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=H5Sv4hh2ha/WDQVT5H9kaJC/W6mE/UyiklDvsYluZeiZZC3/xMsSO9ckoEYUJpcqmd2ZpLSzs6aZCkQWzvc7OcfC4fjDMNuGoWUQ992KEhbi/038RSJ82eEnj7VqYQnwgi6kRSa5qsvrMD924rYOpgFrr4y9A5GXNRf8RCmSs/s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=ALzBAkQE; arc=none smtp.client-ip=115.124.30.100
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
-DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
-	d=linux.alibaba.com; s=default;
-	t=1715570542; h=Message-ID:Date:MIME-Version:Subject:To:From:Content-Type;
-	bh=s15C9g0InwhlKvDrzOTm7wKTSvHQm/d0u/XuRgKojDQ=;
-	b=ALzBAkQE4p7nAhpFMt+vg6i6zb45g5UREusH2Evd5C37b402b/iWUi/cww3799nQkIRe3QB11b1iwV9us9uFjPgWUfvDJbsOzUfdekoJECRq0QMzzXpEJqElDw2cDtOc6jRtD6WYixbzOuZfaofMjkfw3EaU5pJxbTcMmULopCk=
-X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R961e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=maildocker-contentspam033032014031;MF=alibuda@linux.alibaba.com;NM=1;PH=DS;RN=14;SR=0;TI=SMTPD_---0W6H5ntU_1715570540;
-Received: from 30.221.147.113(mailfrom:alibuda@linux.alibaba.com fp:SMTPD_---0W6H5ntU_1715570540)
-          by smtp.aliyun-inc.com;
-          Mon, 13 May 2024 11:22:21 +0800
-Message-ID: <52825ab1-9162-422b-93f7-5981e3b6ad78@linux.alibaba.com>
-Date: Mon, 13 May 2024 11:22:18 +0800
+	s=arc-20240116; t=1715582810; c=relaxed/simple;
+	bh=fMEQlO5xyMBQcp0XRkfeT5Mm3s+yUQWrkZ2lfQPRqbE=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=G9hLgPx0Is0NLoksp7SWTBGGXD7PACno+T00WkxFx4igmgTZBQpp3P2XqIZtNfmF7UOBD7wFgeCkJZ6ga5R6g8rbu9MlGXx3AtmIvDkobzMPDd7X7c4lOwLmx2sogTH1ZCA2DgLhcrtVxYt31RfWYaUCJbcJq/0t4dv9Xfj6Sf8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amazon.com; spf=pass smtp.mailfrom=amazon.com; dkim=pass (1024-bit key) header.d=amazon.com header.i=@amazon.com header.b=My2ueOZr; arc=none smtp.client-ip=72.21.196.25
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amazon.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=amazon.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
+  t=1715582806; x=1747118806;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=p5cIZWRdbBjjo1P727wmze5+y3nZ3wSHVOwb8chBlsY=;
+  b=My2ueOZrV4pv7D7kiVFcIeTBlGAdHng6M4gzKB/zAi1AnZ8Z1Q92HpYS
+   ez9ZYBIqzmFDqvzDddaDjUP+ZT0WTjEV+u/lzo1SvQaC+dKhejW/04jqy
+   moUzgh2WuMSeS81ihIAdlZN764/5OXZ2PpEfBlsGWMMh+9TtAJgpRPbSX
+   Q=;
+X-IronPort-AV: E=Sophos;i="6.08,157,1712620800"; 
+   d="scan'208";a="400734037"
+Received: from iad12-co-svc-p1-lb1-vlan3.amazon.com (HELO smtpout.prod.us-east-1.prod.farcaster.email.amazon.dev) ([10.43.8.6])
+  by smtp-border-fw-2101.iad2.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 May 2024 06:46:42 +0000
+Received: from EX19MTAEUC002.ant.amazon.com [10.0.17.79:52455]
+ by smtpin.naws.eu-west-1.prod.farcaster.email.amazon.dev [10.0.32.50:2525] with esmtp (Farcaster)
+ id 187280fe-be94-4043-9373-eebf8a38dc5f; Mon, 13 May 2024 06:46:33 +0000 (UTC)
+X-Farcaster-Flow-ID: 187280fe-be94-4043-9373-eebf8a38dc5f
+Received: from EX19D002EUA004.ant.amazon.com (10.252.50.181) by
+ EX19MTAEUC002.ant.amazon.com (10.252.51.181) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1258.28; Mon, 13 May 2024 06:46:33 +0000
+Received: from EX19MTAUEB001.ant.amazon.com (10.252.135.35) by
+ EX19D002EUA004.ant.amazon.com (10.252.50.181) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1258.28; Mon, 13 May 2024 06:46:32 +0000
+Received: from dev-dsk-mrgolin-1c-b2091117.eu-west-1.amazon.com
+ (10.253.103.172) by mail-relay.amazon.com (10.252.135.35) with Microsoft SMTP
+ Server id 15.2.1258.28 via Frontend Transport; Mon, 13 May 2024 06:46:31
+ +0000
+From: Michael Margolin <mrgolin@amazon.com>
+To: <jgg@nvidia.com>, <leon@kernel.org>, <linux-rdma@vger.kernel.org>
+CC: <sleybo@amazon.com>, <matua@amazon.com>, <gal.pressman@linux.dev>, "Firas
+ Jahjah" <firasj@amazon.com>, Yehuda Yitschak <yehuday@amazon.com>
+Subject: [PATCH for-next] RDMA/efa: Properly handle unexpected AQ completions
+Date: Mon, 13 May 2024 06:46:30 +0000
+Message-ID: <20240513064630.6247-1-mrgolin@amazon.com>
+X-Mailer: git-send-email 2.40.1
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH net-next 1/2] net/smc: refatoring initialization of smc
- sock
-To: Zhu Yanjun <yanjun.zhu@linux.dev>, kgraul@linux.ibm.com,
- wenjia@linux.ibm.com, jaka@linux.ibm.com, wintera@linux.ibm.com,
- guwen@linux.alibaba.com
-Cc: kuba@kernel.org, davem@davemloft.net, netdev@vger.kernel.org,
- linux-s390@vger.kernel.org, linux-rdma@vger.kernel.org,
- tonylu@linux.alibaba.com, pabeni@redhat.com, edumazet@google.com
-References: <1715314333-107290-1-git-send-email-alibuda@linux.alibaba.com>
- <1715314333-107290-2-git-send-email-alibuda@linux.alibaba.com>
- <11f7d33c-80b1-40db-87c0-566ed24c389e@linux.dev>
-Content-Language: en-US
-From: "D. Wythe" <alibuda@linux.alibaba.com>
-In-Reply-To: <11f7d33c-80b1-40db-87c0-566ed24c389e@linux.dev>
-Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 
+Do not try to handle admin command completion if it has an unexpected
+command id and print a relevant error message.
 
+Reviewed-by: Firas Jahjah <firasj@amazon.com>
+Reviewed-by: Yehuda Yitschak <yehuday@amazon.com>
+Signed-off-by: Michael Margolin <mrgolin@amazon.com>
+---
+ drivers/infiniband/hw/efa/efa_com.c | 30 ++++++++++++++++-------------
+ 1 file changed, 17 insertions(+), 13 deletions(-)
 
-On 5/11/24 8:21 PM, Zhu Yanjun wrote:
-> 在 2024/5/10 6:12, D. Wythe 写道:
->> From: "D. Wythe" <alibuda@linux.alibaba.com>
->>
->> This patch aims to isolate the shared components of SMC socket
->> allocation by introducing smc_sock_init() for sock initialization
->> and __smc_create_clcsk() for the initialization of clcsock.
->>
->> This is in preparation for the subsequent implementation of the
->> AF_INET version of SMC.
->>
->> Signed-off-by: D. Wythe <alibuda@linux.alibaba.com>
->> ---
->>   net/smc/af_smc.c | 93 
->> +++++++++++++++++++++++++++++++-------------------------
->>   1 file changed, 52 insertions(+), 41 deletions(-)
->>
->> diff --git a/net/smc/af_smc.c b/net/smc/af_smc.c
->> index 9389f0c..1f03724 100644
->> --- a/net/smc/af_smc.c
->> +++ b/net/smc/af_smc.c
->> @@ -361,34 +361,43 @@ static void smc_destruct(struct sock *sk)
->>           return;
->>   }
->>   -static struct sock *smc_sock_alloc(struct net *net, struct socket 
->> *sock,
->> -                   int protocol)
->> +static void smc_sock_init(struct net *net, struct sock *sk, int 
->> protocol)
->>   {
->> -    struct smc_sock *smc;
->> -    struct proto *prot;
->> -    struct sock *sk;
->> -
->> -    prot = (protocol == SMCPROTO_SMC6) ? &smc_proto6 : &smc_proto;
->> -    sk = sk_alloc(net, PF_SMC, GFP_KERNEL, prot, 0);
->> -    if (!sk)
->> -        return NULL;
->> +    struct smc_sock *smc = smc_sk(sk);
->>   -    sock_init_data(sock, sk); /* sets sk_refcnt to 1 */
->>       sk->sk_state = SMC_INIT;
->> -    sk->sk_destruct = smc_destruct;
->>       sk->sk_protocol = protocol;
->> +    mutex_init(&smc->clcsock_release_lock);
->
-> Please add mutex_destroy(&smc->clcsock_release_lock); when 
-> smc->clcsock_release_lock is no longer used.
->
-> Or else some tools will notify errors.
->
-> Zhu Yanjun
-
-
-It seems that the problem you mentioned is not caused by this patch, 
-after all, this patch is solely for refactoring.
-Adding the fix you mentioned in this refactoring patch would not be 
-appropriate. Perhaps, you could submit a separate
-patch to address the issue. What do you think?
-
-D. Wythe
-
->
->>       WRITE_ONCE(sk->sk_sndbuf, 2 * READ_ONCE(net->smc.sysctl_wmem));
->>       WRITE_ONCE(sk->sk_rcvbuf, 2 * READ_ONCE(net->smc.sysctl_rmem));
->> -    smc = smc_sk(sk);
->>       INIT_WORK(&smc->tcp_listen_work, smc_tcp_listen_work);
->>       INIT_WORK(&smc->connect_work, smc_connect_work);
->>       INIT_DELAYED_WORK(&smc->conn.tx_work, smc_tx_work);
->>       INIT_LIST_HEAD(&smc->accept_q);
->>       spin_lock_init(&smc->accept_q_lock);
->>       spin_lock_init(&smc->conn.send_lock);
->> -    sk->sk_prot->hash(sk);
->> -    mutex_init(&smc->clcsock_release_lock);
->>       smc_init_saved_callbacks(smc);
->> +    smc->limit_smc_hs = net->smc.limit_smc_hs;
->> +    smc->use_fallback = false; /* assume rdma capability first */
->> +    smc->fallback_rsn = 0;
->> +
->> +    sk->sk_destruct = smc_destruct;
->> +    sk->sk_prot->hash(sk);
->> +}
->> +
->> +static struct sock *smc_sock_alloc(struct net *net, struct socket 
->> *sock,
->> +                   int protocol)
->> +{
->> +    struct proto *prot;
->> +    struct sock *sk;
->> +
->> +    prot = (protocol == SMCPROTO_SMC6) ? &smc_proto6 : &smc_proto;
->> +    sk = sk_alloc(net, PF_SMC, GFP_KERNEL, prot, 0);
->> +    if (!sk)
->> +        return NULL;
->> +
->> +    sock_init_data(sock, sk); /* sets sk_refcnt to 1 */
->> +    smc_sock_init(net, sk, protocol);
->>         return sk;
->>   }
->> @@ -3321,6 +3330,31 @@ static ssize_t smc_splice_read(struct socket 
->> *sock, loff_t *ppos,
->>       .splice_read    = smc_splice_read,
->>   };
->>   +static int __smc_create_clcsk(struct net *net, struct sock *sk, 
->> int family)
->> +{
->> +    struct smc_sock *smc = smc_sk(sk);
->> +    int rc;
->> +
->> +    rc = sock_create_kern(net, family, SOCK_STREAM, IPPROTO_TCP,
->> +                  &smc->clcsock);
->> +    if (rc) {
->> +        sk_common_release(sk);
->> +        return rc;
->> +    }
->> +
->> +    /* smc_clcsock_release() does not wait smc->clcsock->sk's
->> +     * destruction;  its sk_state might not be TCP_CLOSE after
->> +     * smc->sk is close()d, and TCP timers can be fired later,
->> +     * which need net ref.
->> +     */
->> +    sk = smc->clcsock->sk;
->> +    __netns_tracker_free(net, &sk->ns_tracker, false);
->> +    sk->sk_net_refcnt = 1;
->> +    get_net_track(net, &sk->ns_tracker, GFP_KERNEL);
->> +    sock_inuse_add(net, 1);
->> +    return 0;
->> +}
->> +
->>   static int __smc_create(struct net *net, struct socket *sock, int 
->> protocol,
->>               int kern, struct socket *clcsock)
->>   {
->> @@ -3346,35 +3380,12 @@ static int __smc_create(struct net *net, 
->> struct socket *sock, int protocol,
->>         /* create internal TCP socket for CLC handshake and fallback */
->>       smc = smc_sk(sk);
->> -    smc->use_fallback = false; /* assume rdma capability first */
->> -    smc->fallback_rsn = 0;
->> -
->> -    /* default behavior from limit_smc_hs in every net namespace */
->> -    smc->limit_smc_hs = net->smc.limit_smc_hs;
->>         rc = 0;
->> -    if (!clcsock) {
->> -        rc = sock_create_kern(net, family, SOCK_STREAM, IPPROTO_TCP,
->> -                      &smc->clcsock);
->> -        if (rc) {
->> -            sk_common_release(sk);
->> -            goto out;
->> -        }
->> -
->> -        /* smc_clcsock_release() does not wait smc->clcsock->sk's
->> -         * destruction;  its sk_state might not be TCP_CLOSE after
->> -         * smc->sk is close()d, and TCP timers can be fired later,
->> -         * which need net ref.
->> -         */
->> -        sk = smc->clcsock->sk;
->> -        __netns_tracker_free(net, &sk->ns_tracker, false);
->> -        sk->sk_net_refcnt = 1;
->> -        get_net_track(net, &sk->ns_tracker, GFP_KERNEL);
->> -        sock_inuse_add(net, 1);
->> -    } else {
->> +    if (!clcsock)
->> +        rc = __smc_create_clcsk(net, sk, family);
->> +    else
->>           smc->clcsock = clcsock;
->> -    }
->> -
->>   out:
->>       return rc;
->>   }
+diff --git a/drivers/infiniband/hw/efa/efa_com.c b/drivers/infiniband/hw/efa/efa_com.c
+index 16a24a05fc2a..bafd210dd43e 100644
+--- a/drivers/infiniband/hw/efa/efa_com.c
++++ b/drivers/infiniband/hw/efa/efa_com.c
+@@ -1,6 +1,6 @@
+ // SPDX-License-Identifier: GPL-2.0 OR BSD-2-Clause
+ /*
+- * Copyright 2018-2021 Amazon.com, Inc. or its affiliates. All rights reserved.
++ * Copyright 2018-2024 Amazon.com, Inc. or its affiliates. All rights reserved.
+  */
+ 
+ #include "efa_com.h"
+@@ -406,8 +406,8 @@ static struct efa_comp_ctx *efa_com_submit_admin_cmd(struct efa_com_admin_queue
+ 	return comp_ctx;
+ }
+ 
+-static void efa_com_handle_single_admin_completion(struct efa_com_admin_queue *aq,
+-						   struct efa_admin_acq_entry *cqe)
++static int efa_com_handle_single_admin_completion(struct efa_com_admin_queue *aq,
++						  struct efa_admin_acq_entry *cqe)
+ {
+ 	struct efa_comp_ctx *comp_ctx;
+ 	u16 cmd_id;
+@@ -416,11 +416,11 @@ static void efa_com_handle_single_admin_completion(struct efa_com_admin_queue *a
+ 			 EFA_ADMIN_ACQ_COMMON_DESC_COMMAND_ID);
+ 
+ 	comp_ctx = efa_com_get_comp_ctx(aq, cmd_id, false);
+-	if (!comp_ctx) {
++	if (comp_ctx->status != EFA_CMD_SUBMITTED) {
+ 		ibdev_err(aq->efa_dev,
+-			  "comp_ctx is NULL. Changing the admin queue running state\n");
+-		clear_bit(EFA_AQ_STATE_RUNNING_BIT, &aq->state);
+-		return;
++			  "Received completion with unexpected command id[%d], sq producer: %d, sq consumer: %d, cq consumer: %d\n",
++			  cmd_id, aq->sq.pc, aq->sq.cc, aq->cq.cc);
++		return -EINVAL;
+ 	}
+ 
+ 	comp_ctx->status = EFA_CMD_COMPLETED;
+@@ -428,14 +428,17 @@ static void efa_com_handle_single_admin_completion(struct efa_com_admin_queue *a
+ 
+ 	if (!test_bit(EFA_AQ_STATE_POLLING_BIT, &aq->state))
+ 		complete(&comp_ctx->wait_event);
++
++	return 0;
+ }
+ 
+ static void efa_com_handle_admin_completion(struct efa_com_admin_queue *aq)
+ {
+ 	struct efa_admin_acq_entry *cqe;
+ 	u16 queue_size_mask;
+-	u16 comp_num = 0;
++	u16 comp_cmds = 0;
+ 	u8 phase;
++	int err;
+ 	u16 ci;
+ 
+ 	queue_size_mask = aq->depth - 1;
+@@ -453,10 +456,12 @@ static void efa_com_handle_admin_completion(struct efa_com_admin_queue *aq)
+ 		 * phase bit was validated
+ 		 */
+ 		dma_rmb();
+-		efa_com_handle_single_admin_completion(aq, cqe);
++		err = efa_com_handle_single_admin_completion(aq, cqe);
++		if (!err)
++			comp_cmds++;
+ 
++		aq->cq.cc++;
+ 		ci++;
+-		comp_num++;
+ 		if (ci == aq->depth) {
+ 			ci = 0;
+ 			phase = !phase;
+@@ -465,10 +470,9 @@ static void efa_com_handle_admin_completion(struct efa_com_admin_queue *aq)
+ 		cqe = &aq->cq.entries[ci];
+ 	}
+ 
+-	aq->cq.cc += comp_num;
+ 	aq->cq.phase = phase;
+-	aq->sq.cc += comp_num;
+-	atomic64_add(comp_num, &aq->stats.completed_cmd);
++	aq->sq.cc += comp_cmds;
++	atomic64_add(comp_cmds, &aq->stats.completed_cmd);
+ }
+ 
+ static int efa_com_comp_status_to_errno(u8 comp_status)
+-- 
+2.40.1
 
 
