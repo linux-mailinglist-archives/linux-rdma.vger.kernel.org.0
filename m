@@ -1,176 +1,158 @@
-Return-Path: <linux-rdma+bounces-2465-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-2466-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7C2648C46BC
-	for <lists+linux-rdma@lfdr.de>; Mon, 13 May 2024 20:14:38 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 04C858C471F
+	for <lists+linux-rdma@lfdr.de>; Mon, 13 May 2024 20:47:24 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1C6791F21978
-	for <lists+linux-rdma@lfdr.de>; Mon, 13 May 2024 18:14:38 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3143F1C21353
+	for <lists+linux-rdma@lfdr.de>; Mon, 13 May 2024 18:47:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 30424364D2;
-	Mon, 13 May 2024 18:14:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 774893FE5D;
+	Mon, 13 May 2024 18:47:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="uuTpDKT+"
+	dkim=pass (1024-bit key) header.d=fastly.com header.i=@fastly.com header.b="GZha+N5Y"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pl1-f176.google.com (mail-pl1-f176.google.com [209.85.214.176])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D093B2E647;
-	Mon, 13 May 2024 18:14:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 834B24206A
+	for <linux-rdma@vger.kernel.org>; Mon, 13 May 2024 18:47:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.176
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1715624071; cv=none; b=KWAW7umYiG/ItkHwr1eqCCIDmLi3FVM4vSeTDJ9TDwEKAW/x5uVCOIj7DFN+qbnDJPrxyUGkWiNVdUg8FrRP3EZkzThhSb+Frsfj5RCwu/5FxHNIRydktUh1G/+ncCOlU2/Xp2yVw79sSSsR4bWmGeVvQR15+0/UuDb3SsjJc/Q=
+	t=1715626024; cv=none; b=bBsN5qO6ibhQvo3EU85kAb+9XkyYVM2aT7AeTQ5PduCN2fTAoowtPVDIaMoFKCnLXUBR2lI37vBnrRoWd3uCp7IDC6YwAXrxLlMBriueogAhDccY5ipYy/6TB0ztJcgQjtFX2Iul9Uv3c2dvsIQyNvggLvYuqhQh4d8euR4AP4s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1715624071; c=relaxed/simple;
-	bh=+rxemvwnzoV10RvCe8M2I4H331E50lxDd6UYYKgz8B8=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=bhRyVDenyDZBlZmDInYSS561kBsVdU044XBVkskFDi+kqd11rT9kur0C2L/WSkVvY7ReZcfwKGuLHHlu1mRgPpdshgCeRM5jcriRZZ/itmx/r4O/E+fI18LePezoKmzTPtymgtI8H7E+ovs9wBhtBNFnI9dNvmHjMWFX50/IA6s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=uuTpDKT+; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 31DCBC2BD11;
-	Mon, 13 May 2024 18:14:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1715624071;
-	bh=+rxemvwnzoV10RvCe8M2I4H331E50lxDd6UYYKgz8B8=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=uuTpDKT+/dgLfyi7mquP/3z1x4NV6xq9HH36oJx82FLiTJ/nczLjRHS7koxzmyf79
-	 zAz57mdFGzjA2l9bKnQky64bxUqvPZcJQx3hMPg1R7bnTTiNudR4eLzmAy/TWbEnuO
-	 /qGd4DC4VnhyWhvD5wkF/ju8+RVwMZprkWrbtBsfxCjllnzferND6i1zz575R5k6/z
-	 bTlHLpcKSy+9zFxlcmvb8r5a38SMZXbOTg80cTuBfXjSpJUyfhmrmIso7OlPmGtIf5
-	 +H+FrB32gal4ZCzPCA/mGGXTk0KpYPvh6QXW4EvxidOkct1EW+BpLAQpxY2wk1SkRp
-	 tUbNS9J+d1/LQ==
-Date: Mon, 13 May 2024 19:14:24 +0100
-From: Simon Horman <horms@kernel.org>
-To: =?utf-8?B?SMOla29u?= Bugge <haakon.bugge@oracle.com>
-Cc: linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
-	netdev@vger.kernel.org, rds-devel@oss.oracle.com,
-	Jason Gunthorpe <jgg@ziepe.ca>, Leon Romanovsky <leon@kernel.org>,
+	s=arc-20240116; t=1715626024; c=relaxed/simple;
+	bh=1u9/b9gk/Tl5ozsdOKNx/td/R95i1KBWjQylrJWvc1k=;
+	h=Date:From:To:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=jRhsY2TZvS9VPUsaO1NQUKPLVe1bqrSCggQHEep8KjrhaJdwR9lA/K6GLaj1+mBjQ9htdlM7A4I3pszHm8SI2L22hGq4Acv+uKKbJx8o/99AlwfPmdifVFWJN8ZZoqDwPjk7d1y/SJ6YBSUaej0q5xwUtB9AcgipHrqRfUj2PKM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=fastly.com; spf=pass smtp.mailfrom=fastly.com; dkim=pass (1024-bit key) header.d=fastly.com header.i=@fastly.com header.b=GZha+N5Y; arc=none smtp.client-ip=209.85.214.176
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=fastly.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fastly.com
+Received: by mail-pl1-f176.google.com with SMTP id d9443c01a7336-1eeabda8590so33661115ad.0
+        for <linux-rdma@vger.kernel.org>; Mon, 13 May 2024 11:47:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=fastly.com; s=google; t=1715626021; x=1716230821; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references
+         :mail-followup-to:message-id:subject:to:from:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=4/YpgsmxEh7NnZ1zRADZ2HbHM07VTZzuSca8drjzUhU=;
+        b=GZha+N5Yez+iTz/TJMB89wFfdlYKZVoMOL6XtCKFwXwvnC9bK+icU4rmf7z0o5xRtI
+         YJhwmdcng42I136HEmlU6AhQpa5HJHx/uJTPh20EewuS+/5YCurgrqQ8/2rGf53Blzup
+         15FMB9VxAHNF0PugoirJhF4ti2jn+lJP92tcw=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1715626021; x=1716230821;
+        h=in-reply-to:content-disposition:mime-version:references
+         :mail-followup-to:message-id:subject:to:from:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=4/YpgsmxEh7NnZ1zRADZ2HbHM07VTZzuSca8drjzUhU=;
+        b=cryOzE+YDRR0RKPdqc7ESF7eKBGb7aataEk2R2FHOl/bodfkoUKT6xFQrpyas5njfi
+         PbvCePm9e4v67mQ7uljnU6SSEpYyjgKPOTGxQhwz972Z0XRDipvTy9ujtTc8vEt7etgv
+         0ndL2+zS/LXCxF0YRKrYWMe8Yqzc/AuGhN2uaVzgrD+GUywqQhR4a+m5M0U0Ot4Zi8V/
+         +7z8AQcXBLZMblKDdvDg807Ws6kfzRNTmoYkj+IpRcpl+5ToGAVR+4L7SIetU2kzy6jV
+         kn3Dd33EVXwku3aQCbcrn0xg4rbj5c7wNkQNu19QIz7vf4rJ3XQ+yOEDhV9Am0L8Cetb
+         Cpuw==
+X-Forwarded-Encrypted: i=1; AJvYcCVd2tyeNH1Fq3Xj2YChdHNnPlE2VM1faMYpGtL2posnhEsu+D4NK1PT83yDdF28JKZTqVktZkZJ9oh+8HdCObfCP5kf302IdjvU9w==
+X-Gm-Message-State: AOJu0YzLOmM5baCcB6YQFGEjlnQlvyNbnho8QYvL9XqF+WO0HcidG+d9
+	KLZZKgCwsbxVOTyF9g0aYpaBSlkwlWIQ6qg5GACq0P+m5Op2OCgYGYnq1XP3uZw=
+X-Google-Smtp-Source: AGHT+IHbSrhUBqN1/ZWPPfyWlFBVdHyHLIR+khL/KKrN4dLXG5CPpLVAkZ3pgSvHmoFsy/dhzVKAsA==
+X-Received: by 2002:a17:902:f552:b0:1ed:1d37:267e with SMTP id d9443c01a7336-1ef43e281b0mr137384885ad.16.1715626020880;
+        Mon, 13 May 2024 11:47:00 -0700 (PDT)
+Received: from LQ3V64L9R2 (c-24-6-151-244.hsd1.ca.comcast.net. [24.6.151.244])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-1ef0b9d168esm82664875ad.32.2024.05.13.11.46.59
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 13 May 2024 11:47:00 -0700 (PDT)
+Date: Mon, 13 May 2024 11:46:57 -0700
+From: Joe Damato <jdamato@fastly.com>
+To: Jakub Kicinski <kuba@kernel.org>, Tariq Toukan <tariqt@nvidia.com>,
+	linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+	zyjzyj2000@gmail.com, nalramli@fastly.com,
 	Saeed Mahameed <saeedm@nvidia.com>,
-	Tariq Toukan <tariqt@nvidia.com>,
-	"David S . Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	Tejun Heo <tj@kernel.org>, Lai Jiangshan <jiangshanlai@gmail.com>,
-	Allison Henderson <allison.henderson@oracle.com>,
-	Manjunath Patil <manjunath.b.patil@oracle.com>,
-	Mark Zhang <markzhang@nvidia.com>,
-	Chuck Lever <chuck.lever@oracle.com>,
-	Shiraz Saleem <shiraz.saleem@intel.com>,
-	Yang Li <yang.lee@linux.alibaba.com>
-Subject: Re: [PATCH 2/6] rds: Brute force GFP_NOIO
-Message-ID: <20240513181424.GU2787@kernel.org>
-References: <20240513125346.764076-1-haakon.bugge@oracle.com>
- <20240513125346.764076-3-haakon.bugge@oracle.com>
+	Leon Romanovsky <leon@kernel.org>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>, Paolo Abeni <pabeni@redhat.com>,
+	Richard Cochran <richardcochran@gmail.com>,
+	"open list:MELLANOX MLX5 core VPI driver" <linux-rdma@vger.kernel.org>
+Subject: Re: [PATCH net-next v2 1/1] net/mlx5e: Add per queue netdev-genl
+ stats
+Message-ID: <ZkJgIe71mz12qCe1@LQ3V64L9R2>
+Mail-Followup-To: Joe Damato <jdamato@fastly.com>,
+	Jakub Kicinski <kuba@kernel.org>, Tariq Toukan <tariqt@nvidia.com>,
+	linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+	zyjzyj2000@gmail.com, nalramli@fastly.com,
+	Saeed Mahameed <saeedm@nvidia.com>,
+	Leon Romanovsky <leon@kernel.org>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>, Paolo Abeni <pabeni@redhat.com>,
+	Richard Cochran <richardcochran@gmail.com>,
+	"open list:MELLANOX MLX5 core VPI driver" <linux-rdma@vger.kernel.org>
+References: <20240510041705.96453-1-jdamato@fastly.com>
+ <20240510041705.96453-2-jdamato@fastly.com>
+ <20240513075827.66d42cc1@kernel.org>
+ <ZkJO6BIhor3VEJA2@LQ3V64L9R2>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20240513125346.764076-3-haakon.bugge@oracle.com>
+In-Reply-To: <ZkJO6BIhor3VEJA2@LQ3V64L9R2>
 
-On Mon, May 13, 2024 at 02:53:42PM +0200, Håkon Bugge wrote:
-> For most entry points to RDS, we call memalloc_noio_{save,restore} in
-> a parenthetic fashion when enabled by the module parameter force_noio.
+On Mon, May 13, 2024 at 10:33:28AM -0700, Joe Damato wrote:
+> On Mon, May 13, 2024 at 07:58:27AM -0700, Jakub Kicinski wrote:
+> > On Fri, 10 May 2024 04:17:04 +0000 Joe Damato wrote:
+> > > Add functions to support the netdev-genl per queue stats API.
+> > > 
+> > > ./cli.py --spec netlink/specs/netdev.yaml \
+> > > --dump qstats-get --json '{"scope": "queue"}'
+> > > 
+> > > ...snip
+> > > 
+> > >  {'ifindex': 7,
+> > >   'queue-id': 62,
+> > >   'queue-type': 'rx',
+> > >   'rx-alloc-fail': 0,
+> > >   'rx-bytes': 105965251,
+> > >   'rx-packets': 179790},
+> > >  {'ifindex': 7,
+> > >   'queue-id': 0,
+> > >   'queue-type': 'tx',
+> > >   'tx-bytes': 9402665,
+> > >   'tx-packets': 17551},
+> > > 
+> > > ...snip
+> > > 
+> > > Also tested with the script tools/testing/selftests/drivers/net/stats.py
+> > > in several scenarios to ensure stats tallying was correct:
+> > > 
+> > > - on boot (default queue counts)
+> > > - adjusting queue count up or down (ethtool -L eth0 combined ...)
+> > > - adding mqprio TCs
+> > > 
+> > > Signed-off-by: Joe Damato <jdamato@fastly.com>
+> > 
+> > Tariq, could you take a look? Is it good enough to make 6.10? 
+> > Would be great to have it..
 > 
-> We skip the calls to memalloc_noio_{save,restore} in rds_ioctl(), as
-> no memory allocations are executed in this function or its callees.
+> Thanks Jakub.
 > 
-> The reason we execute memalloc_noio_{save,restore} in rds_poll(), is
-> due to the following call chain:
+> FYI: I've also sent a v5 of the mlx4 patches which is only a very minor
+> change from the v4 as suggested by Tariq (see the changelog in that cover
+> letter).
 > 
-> rds_poll()
->         poll_wait()
->                 __pollwait()
->                         poll_get_entry()
->                                 __get_free_page(GFP_KERNEL)
-> 
-> The function rds_setsockopt() allocates memory in its callee's
-> rds_get_mr() and rds_get_mr_for_dest(). Hence, we need
-> memalloc_noio_{save,restore} in rds_setsockopt().
-> 
-> In rds_getsockopt(), we have rds_info_getsockopt() that allocates
-> memory. Hence, we need memalloc_noio_{save,restore} in
-> rds_getsockopt().
-> 
-> All the above, in order to conditionally enable RDS to become a block I/O
-> device.
-> 
-> Signed-off-by: Håkon Bugge <haakon.bugge@oracle.com>
+> I am not trying to "rush" either in, to to speak, but if they both made it
+> to 6.10 it would be great to have the same support on both drivers in the
+> same kernel release :)
 
-Hi Håkon,
+Err, sorry, just going through emails now and saw that net-next was closed
+just before I sent the v5.
 
-Some minor feedback from my side.
+My apologies for missing that announcement.
 
-> ---
->  net/rds/af_rds.c | 60 +++++++++++++++++++++++++++++++++++++++++++++---
->  1 file changed, 57 insertions(+), 3 deletions(-)
->
-> diff --git a/net/rds/af_rds.c b/net/rds/af_rds.c
-> index 8435a20968ef5..a89d192aabc0b 100644
-> --- a/net/rds/af_rds.c
-> +++ b/net/rds/af_rds.c
-> @@ -37,10 +37,16 @@                                                           >  #include <linux/in.h>
->  #include <linux/ipv6.h>
->  #include <linux/poll.h>
-> +#include <linux/sched/mm.h>
->  #include <net/sock.h>
->
->  #include "rds.h"
->
-> +bool rds_force_noio;
-> +EXPORT_SYMBOL(rds_force_noio);
-
-rds_force_noio seems to be only used within this file.
-I wonder if it should it be static and not EXPORTed?
-
-Flagged by Sparse.
-
-> +module_param_named(force_noio, rds_force_noio, bool, 0444);
-> +MODULE_PARM_DESC(force_noio, "Force the use of GFP_NOIO (Y/N)");
-> +
->  /* this is just used for stats gathering :/ */
->  static DEFINE_SPINLOCK(rds_sock_lock);
->  static unsigned long rds_sock_count;
-> @@ -60,6 +66,10 @@ static int rds_release(struct socket *sock)
->  {
->  	struct sock *sk = sock->sk;
->  	struct rds_sock *rs;
-> +	unsigned int noio_flags;
-
-Please consider using reverse xmas tree order - longest line to shortest -
-for local variable declarations in Networking code.
-
-This tool can be of assistance: https://github.com/ecree-solarflare/xmastree
-
-> +
-> +	if (rds_force_noio)
-> +		noio_flags = memalloc_noio_save();
->  
->  	if (!sk)
->  		goto out;
-
-...
-
-> @@ -324,6 +346,8 @@ static int rds_cancel_sent_to(struct rds_sock *rs, sockptr_t optval, int len)
->  
->  	rds_send_drop_to(rs, &sin6);
->  out:
-> +	if (rds_force_noio)
-> +		noio_flags = memalloc_noio_save();
-
-noio_flags appears to be set but otherwise unused in this function.
-
-Flagged by W=1 builds.
-
->  	return ret;
->  }
->  
-
-...
+Do I need to re-send after net-next re-opens or will it automatically be in
+the queue for net-next?
 
