@@ -1,144 +1,169 @@
-Return-Path: <linux-rdma+bounces-2528-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-2529-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6103F8C8A08
-	for <lists+linux-rdma@lfdr.de>; Fri, 17 May 2024 18:23:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 7D8CB8C8B04
+	for <lists+linux-rdma@lfdr.de>; Fri, 17 May 2024 19:30:58 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 18F681F22F8E
-	for <lists+linux-rdma@lfdr.de>; Fri, 17 May 2024 16:23:37 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0EE821F2149C
+	for <lists+linux-rdma@lfdr.de>; Fri, 17 May 2024 17:30:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CDD9013049E;
-	Fri, 17 May 2024 16:23:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 20F5E13DDAC;
+	Fri, 17 May 2024 17:30:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="F8J6rGhR"
+	dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b="JtFMb3r/"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-qt1-f182.google.com (mail-qt1-f182.google.com [209.85.160.182])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0225D3D9E;
-	Fri, 17 May 2024 16:23:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6A66B38DD6
+	for <linux-rdma@vger.kernel.org>; Fri, 17 May 2024 17:30:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1715962994; cv=none; b=JbzhVl9QqOrGn5aI3Lp2QNl3nFNFVGz2U9XaYDDV5FovgM5gKKZAXRXy1/SmO9pdi7wgxYf4Ybf2RQI7LH29HkUaLiMIMdWi2pliMj4nIRJ4+c9q0QjMzoq0sWfXOJpcHg7fErYP1NBGlj//ZNX4xSSk6r7glY0UKNAc0GOIo/w=
+	t=1715967052; cv=none; b=CrYsw9J/8N7dsi50gHrdcV7xvikAeijXjDkj2ECizRUFu+QKTHp5OrQE3fskxnDRlWkU2Dko8gKJ5UvbcfA62GIxl76E236InE1NuypjH3dN/zkwbYQuFl4Obufh0AzWxFmAVarWyPvDtN0xgH2bpNphEGAo6EA34+4h5mMq3X4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1715962994; c=relaxed/simple;
-	bh=uNwlZVn0k6bBYrUn2NOTbtyZjAe9hAwPUWGNLiaSzKs=;
+	s=arc-20240116; t=1715967052; c=relaxed/simple;
+	bh=c2QtSZdCkA5RFZOYVJWDhlgUfVfylInXYEoMha5QZYU=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=MlIAnJvXoclx91HzV3KHgMAmzFsWWX7APIuqQKg6D8rdDfiO2lBWN8hNUnta8MkPvLMjbRrCzno9d+ey7uKWaxOu5yWMAIKuIS4yXd50yO6+ba4Jn3R+4XC21rSS0pTUnL9jV4xzW+y5gexohMQGsr+7nf1x4bn2gL2/M+fleQw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=F8J6rGhR; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 70342C2BD10;
-	Fri, 17 May 2024 16:23:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1715962993;
-	bh=uNwlZVn0k6bBYrUn2NOTbtyZjAe9hAwPUWGNLiaSzKs=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=F8J6rGhR6abMw+H3e0sNsBE3c0HR9drUMq7zelYKMTQHa0vv/MIG2W8+/hD/7XTI+
-	 9VkRoCKMyZzVY3LjQAv7zTKPKrfWjp+PaYpWL+HZIXKwJ9PpfHkWCOm8/AnprKJTiS
-	 x71fH3FEiRuBcJ7Snaffb4mCRWAYWAV32gCoEeO44TUBKDap7ZLHPJJXjD0QMTmCNO
-	 ZUj+MK/eDva4zMj4VegTwZ0y/H/lyuO2Nk/KqN8YnLbubwD8YFqugReL9OgeiAJUxc
-	 u0pTJlCPPo4/7T1+KTMYWfO14b9TwwHb+K7KeD4YmO6RNA3DpP+PsNxwbeXmOHuVhd
-	 +qE7xoo2PLRTA==
-Date: Fri, 17 May 2024 09:23:12 -0700
-From: "Darrick J. Wong" <djwong@kernel.org>
-To: Steven Rostedt <rostedt@goodmis.org>
-Cc: LKML <linux-kernel@vger.kernel.org>,
-	Linux trace kernel <linux-trace-kernel@vger.kernel.org>,
-	Masami Hiramatsu <mhiramat@kernel.org>,
-	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-	Linus Torvalds <torvalds@linux-foundation.org>,
-	linuxppc-dev@lists.ozlabs.org, kvm@vger.kernel.org,
-	linux-block@vger.kernel.org, linux-cxl@vger.kernel.org,
-	linux-media@vger.kernel.org, dri-devel@lists.freedesktop.org,
-	amd-gfx@lists.freedesktop.org, intel-gfx@lists.freedesktop.org,
-	intel-xe@lists.freedesktop.org, linux-arm-msm@vger.kernel.org,
-	freedreno@lists.freedesktop.org, virtualization@lists.linux.dev,
-	linux-rdma@vger.kernel.org, linux-pm@vger.kernel.org,
-	iommu@lists.linux.dev, linux-tegra@vger.kernel.org,
-	netdev@vger.kernel.org, linux-hyperv@vger.kernel.org,
-	ath10k@lists.infradead.org, linux-wireless@vger.kernel.org,
-	ath11k@lists.infradead.org, ath12k@lists.infradead.org,
-	brcm80211@lists.linux.dev, brcm80211-dev-list.pdl@broadcom.com,
-	linux-usb@vger.kernel.org, linux-bcachefs@vger.kernel.org,
-	linux-nfs@vger.kernel.org, ocfs2-devel@lists.linux.dev,
-	linux-cifs@vger.kernel.org, linux-xfs@vger.kernel.org,
-	linux-edac@vger.kernel.org, selinux@vger.kernel.org,
-	linux-btrfs@vger.kernel.org, linux-erofs@lists.ozlabs.org,
-	linux-f2fs-devel@lists.sourceforge.net, linux-hwmon@vger.kernel.org,
-	io-uring@vger.kernel.org, linux-sound@vger.kernel.org,
-	bpf@vger.kernel.org, linux-wpan@vger.kernel.org,
-	dev@openvswitch.org, linux-s390@vger.kernel.org,
-	tipc-discussion@lists.sourceforge.net,
-	Julia Lawall <Julia.Lawall@inria.fr>
-Subject: Re: [PATCH] tracing/treewide: Remove second parameter of
- __assign_str()
-Message-ID: <20240517162312.GZ360919@frogsfrogsfrogs>
-References: <20240516133454.681ba6a0@rorschach.local.home>
+	 Content-Type:Content-Disposition:In-Reply-To; b=G0cdOUgFi69kBoWpr98Yid2/7S2ez7BueSUP2divw6WiLWvyXREH9GjdZnhYRWSFgTLjeTrYkNu474yUglMk+VxidJMtWyoQcLCR2qmnlWSvB1vMmSRjQqmTza8e2QTRcEzxkchLwq3ZHU7ZGzYW/loIh0WsiiIgMGwavZE1Lpg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca; spf=pass smtp.mailfrom=ziepe.ca; dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b=JtFMb3r/; arc=none smtp.client-ip=209.85.160.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ziepe.ca
+Received: by mail-qt1-f182.google.com with SMTP id d75a77b69052e-43df23e034cso7571321cf.0
+        for <linux-rdma@vger.kernel.org>; Fri, 17 May 2024 10:30:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google; t=1715967050; x=1716571850; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=4G1AoFSIpqiKBdHTLG/UG3KtMvn8GSyLhR2c4jHS3UM=;
+        b=JtFMb3r/IWgBydXEXsMo+KkL09GnZn6UTWU4leMB/1jYSI76vDBnTTWzsvcwis1qYA
+         BX5TrmI+9X7OTa8s6Q8pfSCNUqVLsavwh+kdLO7rv3l36QUPMvR5c0ytfnkJ7KiAbRkF
+         AHMy56JBvJ4K/AeV8JeXKewXcCpBE1x+DrDqmQNwrUwhUbE4RUR9WauZ6G7LcbSjD/SR
+         b4ULMu8KZdnvidq88tzyjoMqTu8wo8ONiHpFsrhb/HE12Is2h3Kr1GrQuPjudIKcr3hr
+         mofLy/YNB5QOiVfnMH1utgQuBWKHWfgP2wlqOgB1W7Ao36TTG8S7H/pVRgQm5eIAqqKz
+         2pNw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1715967050; x=1716571850;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=4G1AoFSIpqiKBdHTLG/UG3KtMvn8GSyLhR2c4jHS3UM=;
+        b=mRkG3nYiWKWHULQ8ZXkisbellFmmfU/o91qNEKDm6dLu+BJP2EDdc5fQFD2M+Tvx15
+         7/eziztzV9SmLY5UcB2mrLDqr/AikONGb757WG+1QsL1ryz0/HkywhjCuQXcYW/rr9wl
+         maMKbd51EEUdI1CQwoMjxRRT/XeVbSsylAeRziuXJnZe4/5gG01uiWTtbEbE5FEvcgEX
+         jM2zRz6txeUoLbny5ZuK+WEKMsrpTMj8yuFIyYimSXMEKfRAj3RxluBXbkPX1SdV0Dd1
+         GohmqNikin+wg9l9uu4QdGvZfq/vaLPRu6B6Nu7Ko0LsqvPjKwr+HJvnR4JutsP8G8kI
+         D2Ew==
+X-Gm-Message-State: AOJu0Yyae66KmYoUDK59AOwLyc2N8Dl74IoF2OT9cLwDDen6PDJN/l2n
+	6jv6QoWn2kHehYkDLYPmCJ0CXRHPyCp1KEdw5c5XnwPtHCEi0CRCVwzU2aw00kg=
+X-Google-Smtp-Source: AGHT+IGXKdXJA0lkwUcO26Y+9UlF6kGxU18scjw4rEAVIldCihU6dVWbhtXLf3Gbw+DaS0FLrN4qtw==
+X-Received: by 2002:a0c:f889:0:b0:6a0:9607:a441 with SMTP id 6a1803df08f44-6a15cc965f2mr477287196d6.28.1715967050326;
+        Fri, 17 May 2024 10:30:50 -0700 (PDT)
+Received: from ziepe.ca (hlfxns017vw-142-68-80-239.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.68.80.239])
+        by smtp.gmail.com with ESMTPSA id 6a1803df08f44-6a465aed09bsm10136526d6.29.2024.05.17.10.30.49
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 17 May 2024 10:30:49 -0700 (PDT)
+Received: from jgg by wakko with local (Exim 4.95)
+	(envelope-from <jgg@ziepe.ca>)
+	id 1s81Ps-000Ixn-JM;
+	Fri, 17 May 2024 14:30:48 -0300
+Date: Fri, 17 May 2024 14:30:48 -0300
+From: Jason Gunthorpe <jgg@ziepe.ca>
+To: Haakon Bugge <haakon.bugge@oracle.com>
+Cc: OFED mailing list <linux-rdma@vger.kernel.org>,
+	open list <linux-kernel@vger.kernel.org>,
+	netdev <netdev@vger.kernel.org>,
+	"rds-devel@oss.oracle.com" <rds-devel@oss.oracle.com>,
+	Leon Romanovsky <leon@kernel.org>,
+	Saeed Mahameed <saeedm@nvidia.com>,
+	Tariq Toukan <tariqt@nvidia.com>,
+	"David S . Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	Tejun Heo <tj@kernel.org>, Lai Jiangshan <jiangshanlai@gmail.com>,
+	Allison Henderson <allison.henderson@oracle.com>,
+	Manjunath Patil <manjunath.b.patil@oracle.com>,
+	Mark Zhang <markzhang@nvidia.com>,
+	Chuck Lever III <chuck.lever@oracle.com>,
+	Shiraz Saleem <shiraz.saleem@intel.com>,
+	Yang Li <yang.lee@linux.alibaba.com>
+Subject: Re: [PATCH 0/6] rds: rdma: Add ability to force GFP_NOIO
+Message-ID: <20240517173048.GA69273@ziepe.ca>
+References: <20240513125346.764076-1-haakon.bugge@oracle.com>
+ <ZkKcOogJpI0PU2l3@ziepe.ca>
+ <72BE64EC-3CB8-469C-85CB-F97671C0E867@oracle.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20240516133454.681ba6a0@rorschach.local.home>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <72BE64EC-3CB8-469C-85CB-F97671C0E867@oracle.com>
 
-On Thu, May 16, 2024 at 01:34:54PM -0400, Steven Rostedt wrote:
-> From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
+On Tue, May 14, 2024 at 06:19:53PM +0000, Haakon Bugge wrote:
+> Hi Jason,
 > 
-> [
->    This is a treewide change. I will likely re-create this patch again in
->    the second week of the merge window of v6.10 and submit it then. Hoping
->    to keep the conflicts that it will cause to a minimum.
-> ]
 > 
-> With the rework of how the __string() handles dynamic strings where it
-> saves off the source string in field in the helper structure[1], the
-> assignment of that value to the trace event field is stored in the helper
-> value and does not need to be passed in again.
+> > On 14 May 2024, at 01:03, Jason Gunthorpe <jgg@ziepe.ca> wrote:
+> > 
+> > On Mon, May 13, 2024 at 02:53:40PM +0200, Håkon Bugge wrote:
+> >> This series enables RDS and the RDMA stack to be used as a block I/O
+> >> device. This to support a filesystem on top of a raw block device
+> >> which uses RDS and the RDMA stack as the network transport layer.
+> >> 
+> >> Under intense memory pressure, we get memory reclaims. Assume the
+> >> filesystem reclaims memory, goes to the raw block device, which calls
+> >> into RDS, which calls the RDMA stack. Now, if regular GFP_KERNEL
+> >> allocations in RDS or the RDMA stack require reclaims to be fulfilled,
+> >> we end up in a circular dependency.
+> >> 
+> >> We break this circular dependency by:
+> >> 
+> >> 1. Force all allocations in RDS and the relevant RDMA stack to use
+> >>   GFP_NOIO, by means of a parenthetic use of
+> >>   memalloc_noio_{save,restore} on all relevant entry points.
+> > 
+> > I didn't see an obvious explanation why each of these changes was
+> > necessary. I expected this:
+> > 
+> >> 2. Make sure work-queues inherits current->flags
+> >>   wrt. PF_MEMALLOC_{NOIO,NOFS}, such that work executed on the
+> >>   work-queue inherits the same flag(s).
 > 
-> This means that with:
-> 
->   __string(field, mystring)
-> 
-> Which use to be assigned with __assign_str(field, mystring), no longer
-> needs the second parameter and it is unused. With this, __assign_str()
-> will now only get a single parameter.
-> 
-> There's over 700 users of __assign_str() and because coccinelle does not
-> handle the TRACE_EVENT() macro I ended up using the following sed script:
-> 
->   git grep -l __assign_str | while read a ; do
->       sed -e 's/\(__assign_str([^,]*[^ ,]\) *,[^;]*/\1)/' $a > /tmp/test-file;
->       mv /tmp/test-file $a;
->   done
-> 
-> I then searched for __assign_str() that did not end with ';' as those
-> were multi line assignments that the sed script above would fail to catch.
-> 
-> Note, the same updates will need to be done for:
-> 
->   __assign_str_len()
->   __assign_rel_str()
->   __assign_rel_str_len()
-> 
-> I tested this with both an allmodconfig and an allyesconfig (build only for both).
-> 
-> [1] https://lore.kernel.org/linux-trace-kernel/20240222211442.634192653@goodmis.org/
-> 
-> Cc: Masami Hiramatsu <mhiramat@kernel.org>
-> Cc: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-> Cc: Linus Torvalds <torvalds@linux-foundation.org>
-> Cc: Julia Lawall <Julia.Lawall@inria.fr>
-> Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
+> When the modules initialize, it does not help to have 2., unless
+> PF_MEMALLOC_NOIO is set in current->flags. That is most probably not
+> set, e.g. considering modprobe. That is why we have these steps in
+> all the five modules. During module initialization, work queues are
+> allocated in all mentioned modules. Therefore, the module
+> initialization functions need the paranthetic use of
+> memalloc_noio_{save,restore}.
 
-/me finds this pretty magical, but such is the way of macros.
-Thanks for being much smarter about them than me. :)
+And why would I need these work queues to have noio? they are never
+called under a filesystem.
 
-Acked-by: Darrick J. Wong <djwong@kernel.org>	# xfs
+You need to explain in every single case how something in a NOIO
+context becomes entangled with the unrelated thing you are taggin NIO.
 
---D
+Historically when we've tried to do this we gave up because the entire
+subsystem end up being NOIO.
+
+> > And further, is there any validation of this? There is some lockdep
+> > tracking of reclaim, I feel like it should be more robustly hooked up
+> > in RDMA if we expect this to really work..
+> 
+> Oracle is about to launch a product using this series, so the
+> techniques used have been thoroughly validated, allthough on an
+> older kernel version.
+
+That doesn't really help keep it working. I want to see some kind of
+lockdep scheme to enforce this that can validate without ever
+triggering reclaim.
+
+Jason
 
