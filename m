@@ -1,60 +1,60 @@
-Return-Path: <linux-rdma+bounces-2543-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-2544-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 53E738CA2C6
-	for <lists+linux-rdma@lfdr.de>; Mon, 20 May 2024 21:38:02 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D4C3E8CA2CA
+	for <lists+linux-rdma@lfdr.de>; Mon, 20 May 2024 21:40:28 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D52DA1F21FF5
-	for <lists+linux-rdma@lfdr.de>; Mon, 20 May 2024 19:38:01 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id F2AEB1C20AAB
+	for <lists+linux-rdma@lfdr.de>; Mon, 20 May 2024 19:40:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6BB391AAC4;
-	Mon, 20 May 2024 19:37:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 058001B28D;
+	Mon, 20 May 2024 19:40:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=microsoft.com header.i=@microsoft.com header.b="XpH2G8QI"
+	dkim=pass (1024-bit key) header.d=microsoft.com header.i=@microsoft.com header.b="ecY0cSRs"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from NAM12-DM6-obe.outbound.protection.outlook.com (mail-dm6nam12on2095.outbound.protection.outlook.com [40.107.243.95])
+Received: from NAM12-DM6-obe.outbound.protection.outlook.com (mail-dm6nam12on2097.outbound.protection.outlook.com [40.107.243.97])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 503BD1095B;
-	Mon, 20 May 2024 19:37:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.243.95
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 64DE41095B;
+	Mon, 20 May 2024 19:40:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.243.97
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1716233875; cv=fail; b=IjOvFwSMQ9U3+EMImw254UDbAnzwZfFoeCegA0/NjpPRSTjU7e00fnc7tr+F/spCIOWReYVq4mW+O0/hw0+QXEoIZzpwwgcB9WNNKDUXssTN7W3rFmdewrnYgY5beqUHTrKczIDlF4NFjVuaHsn2IX37jMaQX6JqLRr644Muwyw=
+	t=1716234023; cv=fail; b=hv2248DXqu12UEeYHeZXzPqR0T67lrBdN9dnJirccYu9QYfZp3xDxu9o3w9SUxpAklwtJPicqO3x5lsIzjtlBAVA9hoUdTr+bYrCNToa9zX/3IyFx/0LqDI3G48HUE6D9cXZhnE2FgQ0L24dW24I7xQXbA6sTHS9GC+vNazdmvk=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1716233875; c=relaxed/simple;
-	bh=9ozTYqYDzWiXim3O4LRYW8uG6hAeyDa+oLota8vDLNk=;
+	s=arc-20240116; t=1716234023; c=relaxed/simple;
+	bh=OwJOtvmXlGSqnzDQ75Dt9wr5shUixSxAS7SoygpN+JQ=;
 	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
-	 Content-Type:MIME-Version; b=eHYP63qlaN7KdupdA35UMXwcj+f+1RKarrFZ3evXi6SUdR6kxPuZ/+zJaMQjEDlZYb2rJsayHSMAgVlxizjTZMXGhToE9ukpLLnkqalgnoIpwGPHTLec+q7sFqcDt0f5nJVdM2j9ZhkcROkmKngyMqMwtW5H9BewbO902eLphEg=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=microsoft.com; spf=pass smtp.mailfrom=microsoft.com; dkim=pass (1024-bit key) header.d=microsoft.com header.i=@microsoft.com header.b=XpH2G8QI; arc=fail smtp.client-ip=40.107.243.95
+	 Content-Type:MIME-Version; b=qyEtKjYFysCu5Wejsu2R7pmxPNWeaq598DZ/OZDCp8Yu/YF1wCkTQ5gWEwODtY1q2oVNZ2gCo8rSYrOIyHiuHcFQuocmUxux1nfcUxaFNEJFpWVvx7hRAgG+Uxu4pQ7hsjMHrbd9Of+OwaxTWXLLqtYy/xhFBlIsX0ZwuL58KBE=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=microsoft.com; spf=pass smtp.mailfrom=microsoft.com; dkim=pass (1024-bit key) header.d=microsoft.com header.i=@microsoft.com header.b=ecY0cSRs; arc=fail smtp.client-ip=40.107.243.97
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=microsoft.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=microsoft.com
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Xab23ypVZuvxU5KcCk9gZtGWZaSnbWPDXYFcgZ5XNguJ+8ue+E+8eBi7ypi0SYqG2VwiCsQSS37LXwciV3L8HBc1eIsLidIDi2lSsAsMErHauC+NTkDZ0QxaxwtTdw/QIHGh6yXmtfvpPyBHbyixm1xDka7NFXIs1o8QKmdGL502tuc6M5BLK+dK+EMnR2V5YYPEKoAc6NmuabuT1J0bVbOk5BXmPnfMUXBajGzp7mDubFLN9He6jdtRv8fosDwYciF2kpOU93YQ8xcuhm4o9YG45seoAW3WPB69mfg19OrQ/P32ToW1L4onyysa7rU+9DNanm9X6QT4kVaR2Zr3gA==
+ b=ZDI/9x5mcffcKA6rEPPdCv+T4ltQyoD0CCr6BDRsjycRq1rDorR0jvh+eYtCZL0vUhKZFNtr+ChMUFKLB9eWA+dRTlaD3xGQONlkHvOUfEBOnXavhEXlR7KItnE1lnMqL9GFGx10vbssDH2tQxQUQFJFEFKN/72SUglzWzExsydCTcpdFdHNU89+KDsZ/BcJdfb2ZXid6SJN+eNVk4IgbQEkUZRenkFJ7YGNI8DKR2aZrRMLOi6nylgGgoxCyWdVafYOqmpnATNbMU4udkfF2EgTqGCNkFtYwcoWcBLj/6DCc3+KWy6dOUS2qsK7KQ7+aKYvVu5Gbp96nAq0blfozg==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=k9hoLvTQR65DEW1zHWd89c+BSkrX9Q3NtsUsim2cINw=;
- b=X1qyTGxgtR1+J9OPGZG/tAPdUqManYsWY3TsLyVVvFMnKOmd/B8Xnim0F7ODYyCNLYHu1cl1j+tzJaPztj4rlplLlhsNCR0+l2mJ9dq/OflR842q+qq/ILuyqOEw2hFFmLOGjgUAdoRbNEDLFhYBEUyO0pYLXRWo1ezlC/WZAsWQm8KABdiMTJuH+5j1hU4AWU9yc5ynKZFNlLhdmHoQHDpKWFStc0XUIrvaXTqJYMTdZsJi3uDsinUAdq3bOyhcpPLTUnIn9GSKUVEUJpHd4l1HTYXPt2AZb0sqRUAOwYYguuSBC8iIekXzS+YOlHmqC6zDGdKaotapBimJ3SU+XQ==
+ bh=OwJOtvmXlGSqnzDQ75Dt9wr5shUixSxAS7SoygpN+JQ=;
+ b=LvEmRSoShwTptrBNl1zysMCgcv2Kqtre/JCkse6BVVqxeo5wnuhnXPuX8Z0BFMeONk0j24UsOiuPgOzinWvvKOoPeT2NKPR9apNLBChCcWNtd69u2c8LwVHt9v1utSeNnYM1OxqluX0rvEapmqo1hcCNbFqY3SY0aSXm1DZ8VKMvUy31HN029RNuEHTt0pAKAcEdiMq4dxS/3XZ6DpIaSXyx+Jsz9dkV12R3xWworMJwdRnoQ35+lfbUjdTnFmOpwT8isX2gnqO09fQPp4VngpUt6tXYyuFS1GFYpJfaiU/Tn+PRxT5yDCOWNHijbdJM7B3gxMAECNcXMPlCjgdO+A==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=microsoft.com; dmarc=pass action=none
  header.from=microsoft.com; dkim=pass header.d=microsoft.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=k9hoLvTQR65DEW1zHWd89c+BSkrX9Q3NtsUsim2cINw=;
- b=XpH2G8QIFdDdwbtOlHB1ZbYeZiVfYVb//SGcUWFFkx8Mx39eje7lAcSoCfYfG+/6Et2ehp60vUl3PGoh/eCip2UBXpG+4It6WSOTlM6XDjMo+Ps5jWhXYb2BmdqP6fhfaYZq+FEFP2qnidjKBTc4i9dfO/Ghr94uvbc/2qG/Qfs=
+ bh=OwJOtvmXlGSqnzDQ75Dt9wr5shUixSxAS7SoygpN+JQ=;
+ b=ecY0cSRsVW9yC/li0NKRMn/VAWjejGnDnhkSCPd0VdcBeZQoCpUP5SupiE0BgwN3nRfaufH9T+viYx+eTwycLImo1TgaggG1ey3fjfZj+oPsavlJnT2KznI1djnCt/VFms2iKNIxpp0G9cZshREItdqrmV/vX7AHBJaUbHrbg3Q=
 Received: from PH7PR21MB3071.namprd21.prod.outlook.com (2603:10b6:510:1d0::12)
  by SJ1PR21MB3456.namprd21.prod.outlook.com (2603:10b6:a03:454::9) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7633.0; Mon, 20 May
- 2024 19:37:48 +0000
+ 2024 19:40:19 +0000
 Received: from PH7PR21MB3071.namprd21.prod.outlook.com
  ([fe80::204c:c88b:65d2:7d3a]) by PH7PR21MB3071.namprd21.prod.outlook.com
  ([fe80::204c:c88b:65d2:7d3a%6]) with mapi id 15.20.7633.000; Mon, 20 May 2024
- 19:37:48 +0000
+ 19:40:19 +0000
 From: Long Li <longli@microsoft.com>
 To: Konstantin Taranov <kotaranov@linux.microsoft.com>, Konstantin Taranov
 	<kotaranov@microsoft.com>, "sharmaajay@microsoft.com"
@@ -62,86 +62,84 @@ To: Konstantin Taranov <kotaranov@linux.microsoft.com>, Konstantin Taranov
 	<leon@kernel.org>
 CC: "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
 	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: RE: [PATCH rdma-next 2/3] RDMA/mana_ib: Implement uapi to create and
- destroy RC QP
-Thread-Topic: [PATCH rdma-next 2/3] RDMA/mana_ib: Implement uapi to create and
- destroy RC QP
-Thread-Index: AQHaoGRnSgRJGGLlNEqrOLQaIRx7MbGgmSLA
-Date: Mon, 20 May 2024 19:37:47 +0000
+Subject: RE: [PATCH rdma-next 1/3] RDMA/mana_ib: Create and destroy RC QP
+Thread-Topic: [PATCH rdma-next 1/3] RDMA/mana_ib: Create and destroy RC QP
+Thread-Index: AQHaoGRmS3lu0CflYUSPC0b9UVbGLrGgmkMw
+Date: Mon, 20 May 2024 19:40:19 +0000
 Message-ID:
- <PH7PR21MB3071EF8F3E4F9381C52225EECEE92@PH7PR21MB3071.namprd21.prod.outlook.com>
+ <PH7PR21MB3071DF00F6D22AEFF9DC1B81CEE92@PH7PR21MB3071.namprd21.prod.outlook.com>
 References: <1715075595-24470-1-git-send-email-kotaranov@linux.microsoft.com>
- <1715075595-24470-3-git-send-email-kotaranov@linux.microsoft.com>
-In-Reply-To: <1715075595-24470-3-git-send-email-kotaranov@linux.microsoft.com>
+ <1715075595-24470-2-git-send-email-kotaranov@linux.microsoft.com>
+In-Reply-To: <1715075595-24470-2-git-send-email-kotaranov@linux.microsoft.com>
 Accept-Language: en-US
 Content-Language: en-US
 X-MS-Has-Attach:
 X-MS-TNEF-Correlator:
 msip_labels:
- MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ActionId=f547d5dd-f3e3-417f-9124-0981488d0d41;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ContentBits=0;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Enabled=true;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Method=Standard;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Name=Internal;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SetDate=2024-05-20T19:36:07Z;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SiteId=72f988bf-86f1-41af-91ab-2d7cd011db47;
+ MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ActionId=5c077ae2-c61d-48b4-8357-703441c5f0ba;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ContentBits=0;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Enabled=true;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Method=Standard;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Name=Internal;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SetDate=2024-05-20T19:40:09Z;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SiteId=72f988bf-86f1-41af-91ab-2d7cd011db47;
 authentication-results: dkim=none (message not signed)
  header.d=none;dmarc=none action=none header.from=microsoft.com;
 x-ms-publictraffictype: Email
 x-ms-traffictypediagnostic: PH7PR21MB3071:EE_|SJ1PR21MB3456:EE_
-x-ms-office365-filtering-correlation-id: b6f3e1cb-e787-49d9-2865-08dc7904541a
+x-ms-office365-filtering-correlation-id: 78724c6f-b976-41fb-8223-08dc7904ae7a
 x-ms-exchange-senderadcheck: 1
 x-ms-exchange-antispam-relay: 0
 x-microsoft-antispam: BCL:0;ARA:13230031|366007|1800799015|376005|38070700009;
 x-microsoft-antispam-message-info:
- =?us-ascii?Q?lSQZl2PLcwK6W08bw9XVViQMfUV6PKOg9XKclHdMZMDU5ZkdabKFETlAfDUx?=
- =?us-ascii?Q?fUH5D6PtyxLa6DpFeBr/8/OzS/J1dQBG793ZRsOxTfUHS3Is2503tItYJBC1?=
- =?us-ascii?Q?JTLvt4AYIxobarfuAw/uQ5nqpEOhafOF3fASdx5kxr8PPwo3oKHpxXQkVh2a?=
- =?us-ascii?Q?uLP1nSeQLIk9+W4Jn2CJcm4P5h6OCu8ytrHQLyzyQzHmuDJuEofRSRiR3i4W?=
- =?us-ascii?Q?a2ce6s9KkpfiHTz+iFJ+d+AVjz3qqKeHC2MeGOhkGhDOxSCZOi4hpVNwL/PJ?=
- =?us-ascii?Q?pI8DkWNcSQEAQaCAIGJi4gcjuyg0GJRurPv0fn1GUg39jCb6X5bP3vHlJ51u?=
- =?us-ascii?Q?PswaeU3DbfsO7OEw0PpC6OOvt51vgLra04zCDY1oSCAg1E+CJi/tTZasCWkE?=
- =?us-ascii?Q?0qpx5I5cOfYotlV0TvIZjl8VALE8CMc60wdG71NMvM0ZysYGdjCrbdvpYI/D?=
- =?us-ascii?Q?JTHazBumZKLYXqTjTILi8m2rVlT/tmm/kTjXLaKkUUh2aFVgmVkjnW0bYHiE?=
- =?us-ascii?Q?GMUd0hYLuNdoAYZQOXEXDLG/A+Qz6VeEestpCn+1A1PgjETLfPa0Ewi+yrTA?=
- =?us-ascii?Q?uI0G0KghIwevFv8/NrW6ShdKkp9cZTy75NQL9wQ7OLWj/22L2+NazwkkCjew?=
- =?us-ascii?Q?kjA8U3O0X052SA6z8YYpmaFxo7RKOOhpXbjpyJIbOdE2YYIc3qHTCAVlkiXW?=
- =?us-ascii?Q?OJ+YGNfUw7/leICfZiAD7I9mDLoHLBcn+8e3ho2jQGMyJSQ29EZYZkO9FyLD?=
- =?us-ascii?Q?57aYCPNtwuAWWKM3g7xMhTHC09iOfsooHpK9D0iau5EJOOGiDNAHZUUVEEf1?=
- =?us-ascii?Q?spFtQXJRaRAwfrCo/SGSWJCJyw/GaRpap0y3lnZla6+vxGV0yLnGaTeCsZYT?=
- =?us-ascii?Q?9m7NEcBzBF/QMJmMKj4fTYB+0fdWMlYH92/q+eX6LEZ/nKesqGbkCfAqmmaM?=
- =?us-ascii?Q?OTsYSsve/qaPWfutuDtP7vxXieii6w8BSNOxz12ZL6GcYRgDZw7XloUf6KaE?=
- =?us-ascii?Q?xm5R1CLXVGmYjjID01zuRP46yrygpfu5R5/gb55r+J43vrf6HpT1WxWoz4ET?=
- =?us-ascii?Q?hsIjrg6yI9674GUkAOxteLT9X67wS6onuTGE4HISc1Ul5NpqcZ5JHE9imG/g?=
- =?us-ascii?Q?PnStfx9Cs9sR0UMYpaS/YI7j7tlCzpQ8sQECYTsH1ulThFOC+mUwUYmbpJsE?=
- =?us-ascii?Q?/7K2qFrq4zDofSul1qPS4JqbJhnABlA9aSakKrCWkfZT2ERBkft/7Wr4KMDx?=
- =?us-ascii?Q?yAAMpDVAU5VouCIlhPd3Ztk9Nqc76D18qqx/6HBbB/O0dNrxHNSahwWaIU93?=
- =?us-ascii?Q?6T+XwSXeDd8wU5hCxVP9fIwy?=
+ =?us-ascii?Q?yOb7m03dHtZ07r3k2IBSyuuOEZfurZTY33NLPtrbH2UbRR3d+7My8h18rE8v?=
+ =?us-ascii?Q?dVHIYALRAvHB9yDPffUWMBkjjBP6FPbHfslDWsLqAdOCvwU/T1qynnr45C+V?=
+ =?us-ascii?Q?3jEQSNAtXDo83Ud2GdzgiMvA2+nfEOcxcuThWNdGym0CHVoMtupYJE1RfUBc?=
+ =?us-ascii?Q?N3FY4SyORQAaguw7DpdNVGM5H/tHKcVEEs+ef+eJEu6mjRg/PAJqH3j9kRYK?=
+ =?us-ascii?Q?R3tssV1UKA8EyEeZgGKyqrTUZpnoOQPWpmC/1ejlvYokbk+Qow/zfXku/Dco?=
+ =?us-ascii?Q?3eP2FMMK+FLazFZiuycN4vk3Q5Q6AhgqMWOy58kwyKv1zDwhPcnOwecEdHcA?=
+ =?us-ascii?Q?miLGsDy4P+M2WqmYfrYBw1TS7ZLcvTQmhRE98btszrtELbyiQPeUoasKmaPV?=
+ =?us-ascii?Q?l6NH2WJz4J6OB5EYMkP6QWuX9o4G2Bb896j9SWL7i/Xat5DlDg1RSKbcI6uO?=
+ =?us-ascii?Q?eN89xI3YvmvPmTz/LguaRjns/4CZiCNrp57b7rT/IWKNf4xu0MndsEl1HXt9?=
+ =?us-ascii?Q?pWOXxp+EAd6ukQEheEiNE9p+4qvWPub4NdFlVOU0FZ6scfihobu5gaAkhYYO?=
+ =?us-ascii?Q?iq+UBz75/cOJod8vTgRvm7k1bBqhVfZYCrcYFpx+SCaSrTTATFUB4ueFJpXs?=
+ =?us-ascii?Q?7S4vqGVjlq19x5mN3j9ZA6Wnaztg906CG2sZD1CUqxtGf9zRPuCc25WFtBqA?=
+ =?us-ascii?Q?CqpWDZfcVCY8S6Y6fV0QKkQp2cTHzFl9lK3fCS/6C/24qyccNL5lKW18z4HC?=
+ =?us-ascii?Q?xvn6j+U3JNFiRRLnRgpRog2Jj+sLqKInstwmM4Wcr4FXCYPeo9QqVo5/OzGi?=
+ =?us-ascii?Q?l3oxrQuuh+yXR5SU33hLciFO1RabVw2NJudnDD+tqQIxRJ6xGdCS21kZ7Ene?=
+ =?us-ascii?Q?CpAozdl0x9L/zJEK6XeVa81SoCRRQ+AAzCtt+p4lsHofTb1lB/gGm7hnSTyN?=
+ =?us-ascii?Q?NSLD+st3Xjoo2/hi+7IPAKwXthUjzUqrPv1knZLAqXXGHtyoZnRSvrQ8KKRo?=
+ =?us-ascii?Q?Tc1u5qBNWW7bEyrTSPXZWJ4E5uZ5gazYslHphxln5NLGKhkJweBTrlUNIgfX?=
+ =?us-ascii?Q?eGy1+GHIzRldvqIydEREaZ6LBTKgjmWooDq3JZBNiW2wVnMBuzO9diDnGMyH?=
+ =?us-ascii?Q?zbkB3oEJuP4hRbZcbm1apehI/tsH6muDybwuicENPdDgxzAdl7VzGPHwreWn?=
+ =?us-ascii?Q?JDWdWxVxU87A7b1aBnkRDXqN0/dSpAIX8Np5o5vCrWSBFWevgIsZSdSVKHws?=
+ =?us-ascii?Q?+ExU/BHpvAFogrrgB0LuIDaMXzHSq47B/ue8smK1qJ3RdUgUHJSRJODYAaK3?=
+ =?us-ascii?Q?96VfM7QS7hxt4kQB5yNVga0BbEXRKhhrqHiR4VBlJ8I4PA=3D=3D?=
 x-forefront-antispam-report:
  CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH7PR21MB3071.namprd21.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366007)(1800799015)(376005)(38070700009);DIR:OUT;SFP:1102;
 x-ms-exchange-antispam-messagedata-chunkcount: 1
 x-ms-exchange-antispam-messagedata-0:
- =?us-ascii?Q?JsBiDGGU+/krBKCES+1aSrGyEivsdnadtLdHBj9Sp5z+2C6iLDg3mz8ZYSDi?=
- =?us-ascii?Q?CgnErmL/8hzhepau5ReUZhLz9XQGt5uMJxi7hroWCNkG3tfZyO7Ipwm1+c8c?=
- =?us-ascii?Q?+BCnzTr+axOSool3QfT0+0dOi8rPANVdEpwWaaxaAGaXXva/wNX6XAc41xQC?=
- =?us-ascii?Q?oehR+cfEgeZZRn2Qul2cWKCfxybFAiLkWsvbBg8Fh/+0h6owSRwzcSEEulAJ?=
- =?us-ascii?Q?yHT0/pBzg+u4Ew/w06VJ8PneH+QoKeMFOmIJaAI4SzknUpgg7exMlVSk8xWb?=
- =?us-ascii?Q?4rq+CoFT3x4S2pGOG2oQSjt/4Y0lcjExgl1XQodIAR1hBaAHMfRT14OcKcXW?=
- =?us-ascii?Q?VHG25T97ubj/REXkD3poXZlJJaMHB70yUPQeIcNyMKZWEetnE9IloseKZgWP?=
- =?us-ascii?Q?0b4VLHFUU484tyCWogKhLilHqbFrYvcBuFoOsf2K6o8pr4Z+jEsBnccZd8ZT?=
- =?us-ascii?Q?CWo2E273IBdxIOIuMTu+tyoCC2fRxlmll/m6zYw8xnV2MiRiCzr2YBTXSTDQ?=
- =?us-ascii?Q?qQKS+bu2oo8abMrxpjGiOysKsYv2MgJ50k7tYai2TiNTVZlG8Eknkh6daJIp?=
- =?us-ascii?Q?UmGXvox6MC74uBMbt14ZQyZqoxheqw9mw1vLa2ll4QpM9EehmI3y7Cmg4Gsb?=
- =?us-ascii?Q?ZWNrMOsyLj4ER1Rel3YETu3ge/dOhiJRSxK0ddu3RmKs0DOIiYbelIr0uM7C?=
- =?us-ascii?Q?P4qt0Ijnv2uqVXoeDBDmhC9Fss8WpdWBwU1taO/9gV0uRjvb6DT/UHpndsx7?=
- =?us-ascii?Q?p6Bdr5BTW+vXHC5xlFnFLNxwlFphiidJOueSf/KObyb19ck2zlLsOo9yc4KH?=
- =?us-ascii?Q?H+j9Xe3GYJQ9W8ywwLxo39j/ItPIiK7Bogh+n4Ej0Z/tXTtw8G1IMC3YP9QL?=
- =?us-ascii?Q?Q0mDu2aO164Y9zokSO0fCGiwRgDPYYowyU4vd2v/OO2F4EQlGWFH/Zmlkkzu?=
- =?us-ascii?Q?W5A7VuRNgUN63wVKA0BJpcW1KSnKltPcKBbYZYdcYKO6lQE9fxwl4GxcgUQr?=
- =?us-ascii?Q?m/UxAFyPlQZgpT/VluzBwRp4DVym8FXqVffkC1ZhFRGUEvmHUTRjPffJXIBM?=
- =?us-ascii?Q?IBpx0N9pVxrtXTkauf2o0BWxm41VsJ1g0D5EKfJj23hEztymXl0EakMdY4hq?=
- =?us-ascii?Q?JrQjSrQDBHSWp/39d0+Qp4qAy5yIpNgxPQGs0ujzTnljckwtN23F10bfqXWi?=
- =?us-ascii?Q?kWgKEDAs9PN4u06L0YIPk68xGR/0XfLop8KsZOspbhXNVKS9p1DJO46IzH2B?=
- =?us-ascii?Q?S1/tsgDHW5tk9KEEsEzNbWpeal2+ohKPt0GWK/+sjhcqWarrljNQ/Ry1BeOe?=
- =?us-ascii?Q?pCd8xXXNcz111T/jPN8lMNh0UhekV2yVB66C+ehXdsKJsi4BtDmNs7X8fhJs?=
- =?us-ascii?Q?A7ZuW19N0MEjRG3JQPu6X10hMBjAXBXfPpLc7n3eUMPEL9UEGI9N8elTFp3J?=
- =?us-ascii?Q?Bcrdj+Avjl5bRQobyjZ70OUP2og/q/5eaoW8dvvI1Q5zgwdAWqn5kVDWtTWs?=
- =?us-ascii?Q?bkO3sdmmTCHqdWETuv7WOErC843r8C+LyzSR0xj/r5bYyISAXQk0xa0Ss4FM?=
- =?us-ascii?Q?kGiarttQq0lHs7Hn5c+bqkUJr902lwuQ6Hb15Mrp?=
+ =?us-ascii?Q?cft7vGhWRfZSbSOvb11H6/szdCXO3pBb8zexELyPSQ3zlkPrKgiSQ4G/ZTYc?=
+ =?us-ascii?Q?D0FcT/bdcMcpu3a8O9mkk5yM9UN0Qk7cVuNYdV5xwiKiwAL+87X2rNW4pxAp?=
+ =?us-ascii?Q?FWOD8DCy7niPyal6TkBNZLsn/mL5cbm7GQcxNrfHHmZXbvx30UdvyxggxXxH?=
+ =?us-ascii?Q?BiN9xa8mKCPocJYK4rgwVvctLQNFJNu1C3sjFHxhhyRCXRysAeMXfUKgN8Iv?=
+ =?us-ascii?Q?P8VH2alcd0tQH9j1T65ZJn2G3pz6Wejt1D6kpf0SDlAFg+YvTOUDHnCnejrI?=
+ =?us-ascii?Q?PsQwNpfW8CSmtAQmniaX7XFGXQYt7ZN3bVmBT1TKfBSytKbKtKspXI0Ive6U?=
+ =?us-ascii?Q?jlp1P6qqx7cFEVK05/s037L6GfFk08TB9ZPrfb6NoRsJPsqddo3FYgAtMBMr?=
+ =?us-ascii?Q?jiTkIHoCFZ/i7DyuZA4LNyLcX5BB00tlK+TZOvgw2oML+gjtbuiyGvvtzb8y?=
+ =?us-ascii?Q?NjNc0RGAkR0TsmFbrZcF3IXIrBs1nimCd3gnc8YOzA4/tPjky4pULO8FDFX5?=
+ =?us-ascii?Q?sL7BjdEkyaeKtrL1Qjdc0YjXuzQe2gekGF+mEllO00d0xoihBw0VFULct30B?=
+ =?us-ascii?Q?61LO7KQbA7Cl+Y3QeKWhM+sSVevc826z2wU3lpVvvcgNwFwq/khkTl7BSe2J?=
+ =?us-ascii?Q?vQW6ZzEW+NmdvNJS7Smtteu3qAtykandZenp4OIwVG1IByMFkBSPr89NGPDg?=
+ =?us-ascii?Q?livQ8hSXpvTuOTHwJ0935BZr+aK3h1up+W9j/T2niumxsjfqg/Mmv70IaIci?=
+ =?us-ascii?Q?tuZOk9LAcyx2uoNmu3m9hhnBOhvZxjq0+JUXLV4ICbajcdCt/fbE4UsguTkM?=
+ =?us-ascii?Q?glJQM8idykkuam/oGn/7ZzRyfT3a2iwRgKPFLtwGus+TRtWL5Pn2PuXagPoE?=
+ =?us-ascii?Q?L7C9THUtCUP2Fhr8AT5q5cptETwglVLQWkfC26A9BAjWtO1B0qYgzFa5WkXe?=
+ =?us-ascii?Q?x1GbCZ85ja31qk4fnuiI6MTPdQIbGnX9Wg3WHIZ2+cBCWGz+PRlzVSFSZy4R?=
+ =?us-ascii?Q?2ybyPxPTwh8YUlxzqWMA2w2d3nZ6m5M2USt1g7JurkTvcLeRGKbQhvO78zat?=
+ =?us-ascii?Q?B0sQ1Z4CatRvV1yVwzkb+6vO9IrKqGmHU7KaqDNjtglWIWhSMO5dcltHD/uo?=
+ =?us-ascii?Q?2bJHoWdRcDf85hklzROmYusYD/Ke63YShFftb7s95Y6BynGOJRiNP1EDnFT0?=
+ =?us-ascii?Q?oqZH1pKuPDKT8vmviyZXZblhNzhNabTdlZU/itUlM3KxoKXdym2gk+UwkWUW?=
+ =?us-ascii?Q?BuqcurXO1OIb2psNTAIN1rxgGgfknml04pdEp3XlwBj0NzUNFCGw3f1ItEuE?=
+ =?us-ascii?Q?0XcmsZSk04IMGx9EpYt988Mrw+XpJx+mnXTOdFLIJ1Ch5RHqlqEODBNv5zU8?=
+ =?us-ascii?Q?yo2g+ozsNn/fcVrpvsbhLU+wlK6WDLkSpR4QNzikK+eMN7+S7kWb3FHxa7gQ?=
+ =?us-ascii?Q?WqMnEnv3HLQpntcBkjVB2z86FvDOutj1AsLVJtSS4wEW7qV2MN53aNgLx+s1?=
+ =?us-ascii?Q?bPscJUNigW5NMSwgfLB8a2iVvOQ1cxtGb9e4YRx2prM7Z2Jp4cajEy/4iWYk?=
+ =?us-ascii?Q?6KL+A+IiQW8sJ9lgkSmc4BFwNaGY619Cb1VPp3vH?=
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
@@ -153,213 +151,25 @@ MIME-Version: 1.0
 X-OriginatorOrg: microsoft.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
 X-MS-Exchange-CrossTenant-AuthSource: PH7PR21MB3071.namprd21.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: b6f3e1cb-e787-49d9-2865-08dc7904541a
-X-MS-Exchange-CrossTenant-originalarrivaltime: 20 May 2024 19:37:47.7361
+X-MS-Exchange-CrossTenant-Network-Message-Id: 78724c6f-b976-41fb-8223-08dc7904ae7a
+X-MS-Exchange-CrossTenant-originalarrivaltime: 20 May 2024 19:40:19.3565
  (UTC)
 X-MS-Exchange-CrossTenant-fromentityheader: Hosted
 X-MS-Exchange-CrossTenant-id: 72f988bf-86f1-41af-91ab-2d7cd011db47
 X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: EmfY7BcxUsMYQGJsuoO07XDo6lfhiPRpKulESqb630eQjqzYIOYihtE6HvPkihbv30XygZxr8L2pRcvG8Ov74w==
+X-MS-Exchange-CrossTenant-userprincipalname: A3f5CthlvqlM7KlzLJF5eR12uUWJFEqzSNb4Q/zSJ3F/QdEqH8m4ofdXZ7uR2xzsD0hGNRb2TE2JIJE0LHokfw==
 X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ1PR21MB3456
 
-> Subject: [PATCH rdma-next 2/3] RDMA/mana_ib: Implement uapi to create and
-> destroy RC QP
+> Subject: [PATCH rdma-next 1/3] RDMA/mana_ib: Create and destroy RC QP
 >=20
 > From: Konstantin Taranov <kotaranov@microsoft.com>
 >=20
-> Implement user requests to create and destroy an RC QP.
-> As the user does not have an FMR queue, it is skipped and NO_FMR flag is =
-used.
+> Implement HW requests to create and destroy an RC QP.
+> An RC QP may have 5 queues.
 >=20
 > Signed-off-by: Konstantin Taranov <kotaranov@microsoft.com>
-> ---
->  drivers/infiniband/hw/mana/mana_ib.h |  4 ++
->  drivers/infiniband/hw/mana/qp.c      | 93 +++++++++++++++++++++++++++-
->  include/uapi/rdma/mana-abi.h         |  9 +++
->  3 files changed, 105 insertions(+), 1 deletion(-)
->=20
-> diff --git a/drivers/infiniband/hw/mana/mana_ib.h
-> b/drivers/infiniband/hw/mana/mana_ib.h
-> index a3e229c..5cccbe3 100644
-> --- a/drivers/infiniband/hw/mana/mana_ib.h
-> +++ b/drivers/infiniband/hw/mana/mana_ib.h
-> @@ -248,6 +248,10 @@ struct mana_rnic_destroy_cq_resp {
->  	struct gdma_resp_hdr hdr;
->  }; /* HW Data */
->=20
-> +enum mana_rnic_create_rc_flags {
-> +	MANA_RC_FLAG_NO_FMR =3D 2,
-> +};
-> +
->  struct mana_rnic_create_qp_req {
->  	struct gdma_req_hdr hdr;
->  	mana_handle_t adapter;
-> diff --git a/drivers/infiniband/hw/mana/qp.c b/drivers/infiniband/hw/mana=
-/qp.c
-> index ba13c5a..14e6adb 100644
-> --- a/drivers/infiniband/hw/mana/qp.c
-> +++ b/drivers/infiniband/hw/mana/qp.c
-> @@ -398,6 +398,78 @@ err_free_vport:
->  	return err;
->  }
->=20
-> +static int mana_ib_create_rc_qp(struct ib_qp *ibqp, struct ib_pd *ibpd,
-> +				struct ib_qp_init_attr *attr, struct ib_udata
-> *udata) {
-> +	struct mana_ib_dev *mdev =3D container_of(ibpd->device, struct
-> mana_ib_dev, ib_dev);
-> +	struct mana_ib_qp *qp =3D container_of(ibqp, struct mana_ib_qp, ibqp);
-> +	struct mana_ib_create_rc_qp_resp resp =3D {};
-> +	struct mana_ib_ucontext *mana_ucontext;
-> +	struct mana_ib_create_rc_qp ucmd =3D {};
-> +	int i, err, j;
-> +	u64 flags =3D 0;
-> +	u32 doorbell;
-> +
-> +	if (!udata || udata->inlen < sizeof(ucmd))
-> +		return -EINVAL;
-> +
-> +	mana_ucontext =3D rdma_udata_to_drv_context(udata, struct
-> mana_ib_ucontext, ibucontext);
-> +	doorbell =3D mana_ucontext->doorbell;
-> +	flags =3D MANA_RC_FLAG_NO_FMR;
-> +	err =3D ib_copy_from_udata(&ucmd, udata, min(sizeof(ucmd), udata-
-> >inlen));
-> +	if (err) {
-> +		ibdev_dbg(&mdev->ib_dev, "Failed to copy from udata, %d\n",
-> err);
-> +		return err;
-> +	}
-> +
-> +	for (i =3D 0, j =3D 0; i < MANA_RC_QUEUE_TYPE_MAX; ++i) {
-> +		// skip FMR for user-level RC QPs
-> +		if (i =3D=3D MANA_RC_SEND_QUEUE_FMR) {
-> +			qp->rc_qp.queues[i].id =3D INVALID_QUEUE_ID;
-> +			qp->rc_qp.queues[i].gdma_region =3D
-> GDMA_INVALID_DMA_REGION;
-> +			continue;
-> +		}
-> +		err =3D mana_ib_create_queue(mdev, ucmd.queue_buf[j],
-> ucmd.queue_size[j],
-> +					   &qp->rc_qp.queues[i]);
-> +		if (err) {
-> +			ibdev_err(&mdev->ib_dev, "Failed to create queue %d,
-> err %d\n", i, err);
-> +			goto destroy_queues;
-> +		}
-> +		j++;
-> +	}
-> +
-> +	err =3D mana_ib_gd_create_rc_qp(mdev, qp, attr, doorbell, flags);
-> +	if (err) {
-> +		ibdev_err(&mdev->ib_dev, "Failed to create rc qp  %d\n", err);
-> +		goto destroy_queues;
-> +	}
-> +	qp->ibqp.qp_num =3D qp-
-> >rc_qp.queues[MANA_RC_RECV_QUEUE_RESPONDER].id;
-> +	qp->port =3D attr->port_num;
-> +
-> +	if (udata) {
-> +		for (i =3D 0, j =3D 0; i < MANA_RC_QUEUE_TYPE_MAX; ++i) {
-> +			if (i =3D=3D MANA_RC_SEND_QUEUE_FMR)
-> +				continue;
-> +			resp.queue_id[j] =3D qp->rc_qp.queues[i].id;
-> +			j++;
-> +		}
-> +		err =3D ib_copy_to_udata(udata, &resp, min(sizeof(resp), udata-
-> >outlen));
-> +		if (err) {
-> +			ibdev_dbg(&mdev->ib_dev, "Failed to copy to
-> udata, %d\n", err);
-> +			goto destroy_qp;
-> +		}
-> +	}
-> +
-> +	return 0;
-> +
-> +destroy_qp:
-> +	mana_ib_gd_destroy_rc_qp(mdev, qp);
-> +destroy_queues:
-> +	while (i-- > 0)
-> +		mana_ib_destroy_queue(mdev, &qp->rc_qp.queues[i]);
-> +	return err;
-> +}
-> +
->  int mana_ib_create_qp(struct ib_qp *ibqp, struct ib_qp_init_attr *attr,
->  		      struct ib_udata *udata)
->  {
-> @@ -409,6 +481,8 @@ int mana_ib_create_qp(struct ib_qp *ibqp, struct
-> ib_qp_init_attr *attr,
->  						     udata);
->=20
->  		return mana_ib_create_qp_raw(ibqp, ibqp->pd, attr, udata);
-> +	case IB_QPT_RC:
-> +		return mana_ib_create_rc_qp(ibqp, ibqp->pd, attr, udata);
->  	default:
->  		/* Creating QP other than IB_QPT_RAW_PACKET is not
-> supported */
 
+Reviewed-by: Long Li <longli@microsoft.com>
 
-Need to change this comment as RC is supported now.
-
-
->  		ibdev_dbg(ibqp->device, "Creating QP type %u not supported\n",
-> @@ -473,6 +547,22 @@ static int mana_ib_destroy_qp_raw(struct mana_ib_qp
-> *qp, struct ib_udata *udata)
->  	return 0;
->  }
->=20
-> +static int mana_ib_destroy_rc_qp(struct mana_ib_qp *qp, struct ib_udata
-> +*udata) {
-> +	struct mana_ib_dev *mdev =3D
-> +		container_of(qp->ibqp.device, struct mana_ib_dev, ib_dev);
-> +	int i;
-> +
-> +	/* Ignore return code as there is not much we can do about it.
-> +	 * The error message is printed inside.
-> +	 */
-> +	mana_ib_gd_destroy_rc_qp(mdev, qp);
-> +	for (i =3D 0; i < MANA_RC_QUEUE_TYPE_MAX; ++i)
-> +		mana_ib_destroy_queue(mdev, &qp->rc_qp.queues[i]);
-> +
-> +	return 0;
-> +}
-> +
->  int mana_ib_destroy_qp(struct ib_qp *ibqp, struct ib_udata *udata)  {
->  	struct mana_ib_qp *qp =3D container_of(ibqp, struct mana_ib_qp, ibqp);
-> @@ -484,7 +574,8 @@ int mana_ib_destroy_qp(struct ib_qp *ibqp, struct
-> ib_udata *udata)
->  						      udata);
->=20
->  		return mana_ib_destroy_qp_raw(qp, udata);
-> -
-> +	case IB_QPT_RC:
-> +		return mana_ib_destroy_rc_qp(qp, udata);
->  	default:
->  		ibdev_dbg(ibqp->device, "Unexpected QP type %u\n",
->  			  ibqp->qp_type);
-> diff --git a/include/uapi/rdma/mana-abi.h b/include/uapi/rdma/mana-abi.h
-> index 2c41cc3..45c2df6 100644
-> --- a/include/uapi/rdma/mana-abi.h
-> +++ b/include/uapi/rdma/mana-abi.h
-> @@ -45,6 +45,15 @@ struct mana_ib_create_qp_resp {
->  	__u32 reserved;
->  };
->=20
-> +struct mana_ib_create_rc_qp {
-> +	__aligned_u64 queue_buf[4];
-> +	__u32 queue_size[4];
-> +};
-> +
-> +struct mana_ib_create_rc_qp_resp {
-> +	__u32 queue_id[4];
-> +};
-> +
-
-
-You are adding new UAPI without changing MANA_IB_UVERBS_ABI_VERSION.
-
-For this use-case, I think it's okay because it will fail to create CQ befo=
-re this. But it may not be a good customer experience for RC usage.
 
 
