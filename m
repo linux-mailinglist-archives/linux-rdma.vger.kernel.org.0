@@ -1,60 +1,65 @@
-Return-Path: <linux-rdma+bounces-2574-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-2575-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id DDFAA8CBF7B
-	for <lists+linux-rdma@lfdr.de>; Wed, 22 May 2024 12:50:57 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B58828CBFCB
+	for <lists+linux-rdma@lfdr.de>; Wed, 22 May 2024 13:02:33 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7E72F1F236A7
-	for <lists+linux-rdma@lfdr.de>; Wed, 22 May 2024 10:50:57 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E4F531C20CDE
+	for <lists+linux-rdma@lfdr.de>; Wed, 22 May 2024 11:02:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 98B6D81AA2;
-	Wed, 22 May 2024 10:50:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9677B81211;
+	Wed, 22 May 2024 11:02:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=amazon.com header.i=@amazon.com header.b="PbqmaMl1"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-wr1-f50.google.com (mail-wr1-f50.google.com [209.85.221.50])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp-fw-80006.amazon.com (smtp-fw-80006.amazon.com [99.78.197.217])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BBBB279B9D;
-	Wed, 22 May 2024 10:50:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1C0046BFCA
+	for <linux-rdma@vger.kernel.org>; Wed, 22 May 2024 11:02:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=99.78.197.217
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1716375051; cv=none; b=gJQnQMLgOTeOII8PJ7JPA+CE439fklymDLHbG4B1WvltfJuqi14irR9JFmL1zoh4Y4eZPql4Sk49+DWJn9e83gmCNWPpZUqcT7SHwi/mCNYcTHg36BlChonnGj4OycIjboW+XljzkoUs6lQDR3zImglT2JBBa2rDnctIG4fY7dY=
+	t=1716375749; cv=none; b=tg1x/ZDygk+wWQMc8ZBKQViQUnfSkaLlfw694EwbOtZ6KlvWKGXdvbFgg4eArgwiCzvj8LXcpP/gzkDwtW4mHf1G0UlmstMNJPYYVgR4v+DV8uux/aa6SKPgmyDA/squDE/0dEMC9ddVceDfeYS9ehf0wFDy9s+7oTJnbLDK8YU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1716375051; c=relaxed/simple;
-	bh=VyBReXjt4mK/tUMAyCCPZcz5+wqr2j9lYzuGW1fGTIs=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=gicwYsIdEtqoALWWaRL0yNq8YkEE6HZdH7vPbA6HuicAXXMtwziPplpT86sO/CjErOY4G/ulz5J1nrLnWRovVcgC5Edz5x9lEtxnYUuk0gHZpfq2tTpVFCXjaGCQ0Mm3XyHdI45q37Zv/140/QICzn1eHDnBvwOTyNMf/EErmKg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=grimberg.me; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.221.50
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=grimberg.me
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f50.google.com with SMTP id ffacd0b85a97d-354c3b445bbso426748f8f.1;
-        Wed, 22 May 2024 03:50:49 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1716375048; x=1716979848;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=1BnHc3XspGm0v4PnkZaEeuFqvR0cRw7aXohQPjr95aY=;
-        b=J+S0GK87ZRsWvGxuFvZc3ztgNHaPAjSdZ4MoJXvmgJxtKewQhkSH3bx2NHTGnPM3Pw
-         M3FqKUakT7eBkwWFINvuGUrrMY4WeIfFGW9WWAXlrUpAwM9QOcoZLZ9GrZOdEc9W/daX
-         aEIeOb7XCZPIiQ/ZaXFdZRAWHuqW/elT845h0dygUJXOvyHiILlLVQ/cPIHATMw1hlwC
-         IwwGOhNhuG7x1ScteLebeVXDRZbP1hF4+1jdA1glJOahSYAjJ4NBCMV06e1cq6fukirI
-         VBkUvZS+uGn2Y+yLrS3tCYoDAJ63Z52MzDxeV59XK0ELSSXcTlk9L9hAbZ86td6zrvcp
-         +18A==
-X-Forwarded-Encrypted: i=1; AJvYcCVXnWE9PFH7WUcQn876d/AhAk70EyJxaDuR9nqEWTw1CkygBJRl6OsP8SlbggaCvmlhmnx8alLq/8q1Ph9wTMZU52eq1UpRJk3mLPPavplg8MQBD8qQyd+8h7ycHitdcrV1bMN5Hg==
-X-Gm-Message-State: AOJu0YyZ6NH472gN6ReHH6tuHvNPtWQyVzMeJwrgFPPvu+s4jsmdvbXw
-	i8bKcZ4C4D1XGOfd1uSSCxN46I9/0Ihx1yOSguOavj0JcISu5SzD
-X-Google-Smtp-Source: AGHT+IGSF2AVRpH6Y4O/xml9TIH1QyFLkrQi4blx+ftI6lROnk9Fsw05hHINZrkwwdozuInSgu5v2w==
-X-Received: by 2002:a05:600c:3ba8:b0:418:f770:ba0 with SMTP id 5b1f17b1804b1-420fd22a4d5mr12400595e9.0.1716375047841;
-        Wed, 22 May 2024 03:50:47 -0700 (PDT)
-Received: from [10.50.4.180] (bzq-84-110-32-226.static-ip.bezeqint.net. [84.110.32.226])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-42011d91edfsm406112765e9.44.2024.05.22.03.50.47
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 22 May 2024 03:50:47 -0700 (PDT)
-Message-ID: <c1aa177a-3328-4447-af23-246beacf3169@grimberg.me>
-Date: Wed, 22 May 2024 13:50:46 +0300
+	s=arc-20240116; t=1716375749; c=relaxed/simple;
+	bh=Op93j6WT7ewCL13T6vg2g9WuB6JO45rP9tKg9/2I64c=;
+	h=Subject:Message-ID:Date:MIME-Version:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=qNIwK0TUawgpYbmHdXyKNJB76x636A7F8sWI5x8ceZwxyl7dWg6l6qH+aE7whf7tPYbK3CwSuYIPb3CPAKt778aZhPnbUptoKzzTyvCMESQQayW266uFpqephnB0WENLwqXpVVAPh73KvOPaYU6d52Hq1+QhhiOD4il3fKFK4mU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amazon.com; spf=pass smtp.mailfrom=amazon.com; dkim=pass (1024-bit key) header.d=amazon.com header.i=@amazon.com header.b=PbqmaMl1; arc=none smtp.client-ip=99.78.197.217
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amazon.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=amazon.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
+  t=1716375748; x=1747911748;
+  h=message-id:date:mime-version:to:cc:references:from:
+   in-reply-to:content-transfer-encoding:subject;
+  bh=Lfw+iLFs6o5C2n/yYmshZmLcXBQLsgkeEXben4b+pVg=;
+  b=PbqmaMl1Z+TnRu+CFRHkjB59VF+OKfyqxNWExJqZakyDlELZCFvFi0e5
+   RTRurX/en+bAzsD3uFhPxjWSfH5+u8LgwuUP+UgiimQNn6hqkNOQSxp9J
+   7urKW9uaK74d9SPCDXZaKc0WqxkYi3qSnKFPSyse9zsVAQ7e1mj+N2ipL
+   M=;
+X-IronPort-AV: E=Sophos;i="6.08,179,1712620800"; 
+   d="scan'208";a="296764234"
+Subject: Re: [PATCH for-next] RDMA/efa: Properly handle unexpected AQ completions
+Received: from pdx4-co-svc-p1-lb2-vlan3.amazon.com (HELO smtpout.prod.us-west-2.prod.farcaster.email.amazon.dev) ([10.25.36.214])
+  by smtp-border-fw-80006.pdx80.corp.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 May 2024 11:02:27 +0000
+Received: from EX19MTAEUB002.ant.amazon.com [10.0.10.100:37338]
+ by smtpin.naws.eu-west-1.prod.farcaster.email.amazon.dev [10.0.29.8:2525] with esmtp (Farcaster)
+ id d589abe6-19ee-48ee-8b55-a147583cafde; Wed, 22 May 2024 11:02:25 +0000 (UTC)
+X-Farcaster-Flow-ID: d589abe6-19ee-48ee-8b55-a147583cafde
+Received: from EX19D031EUB003.ant.amazon.com (10.252.61.88) by
+ EX19MTAEUB002.ant.amazon.com (10.252.51.79) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1258.28; Wed, 22 May 2024 11:02:25 +0000
+Received: from [192.168.92.204] (10.85.143.172) by
+ EX19D031EUB003.ant.amazon.com (10.252.61.88) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1258.28; Wed, 22 May 2024 11:02:21 +0000
+Message-ID: <010ecf52-6d2b-4b5e-92e0-57e0069057fd@amazon.com>
+Date: Wed, 22 May 2024 14:02:16 +0300
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
@@ -62,42 +67,62 @@ List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: Safe to delete rpcrdma.ko loading start-up code
-To: Jason Gunthorpe <jgg@nvidia.com>
-Cc: Chuck Lever III <chuck.lever@oracle.com>,
- Linux NFS Mailing List <linux-nfs@vger.kernel.org>,
- "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>
-References: <DE53C92C-D16E-4FA7-9C0B-F83F03B1896F@oracle.com>
- <8cc80bdb-9f17-4f44-b2e6-54b36ac85b63@grimberg.me>
- <20240521124306.GE20229@nvidia.com>
- <5b0b8ffe-75ad-4026-a0e8-8d74992ab7b6@grimberg.me>
- <20240521133727.GF20229@nvidia.com>
- <46c36727-ef93-44ca-9741-df2325d4420c@grimberg.me>
- <20240521152325.GG20229@nvidia.com>
- <e558ee64-48fc-48b9-addd-eab7f9f861ad@grimberg.me>
- <20240521163713.GL20229@nvidia.com>
- <0f9ddfe5-67ff-470b-8901-d513dceb757e@grimberg.me>
- <20240521232905.GQ20229@nvidia.com>
-Content-Language: he-IL, en-US
-From: Sagi Grimberg <sagi@grimberg.me>
-In-Reply-To: <20240521232905.GQ20229@nvidia.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Language: en-US
+To: Gal Pressman <gal.pressman@linux.dev>, <jgg@nvidia.com>,
+	<leon@kernel.org>, <linux-rdma@vger.kernel.org>
+CC: <sleybo@amazon.com>, <matua@amazon.com>, Firas Jahjah <firasj@amazon.com>,
+	Yehuda Yitschak <yehuday@amazon.com>
+References: <20240513064630.6247-1-mrgolin@amazon.com>
+ <5f2f0165-c148-4bba-8af9-ded7665ba373@linux.dev>
+From: "Margolin, Michael" <mrgolin@amazon.com>
+In-Reply-To: <5f2f0165-c148-4bba-8af9-ded7665ba373@linux.dev>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
 Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: EX19D033UWA002.ant.amazon.com (10.13.139.10) To
+ EX19D031EUB003.ant.amazon.com (10.252.61.88)
+
+Thanks Gal, we indeed shouldn't see such errors on regular basis and the 
+print is sufficient to help tracking and debugging in case it appears.
 
 
+Michael
 
-On 22/05/2024 2:29, Jason Gunthorpe wrote:
-> On Tue, May 21, 2024 at 11:30:00PM +0300, Sagi Grimberg wrote:
+On 5/16/2024 1:54 PM, Gal Pressman wrote:
+> CAUTION: This email originated from outside of the organization. Do not click links or open attachments unless you can confirm the sender and know the content is safe.
 >
->> I just don't see why the presence of an rdma device dictates that
->> all the ulps autoload. Does rxe/siw count as rdma HW?
-> It doesn't do all of them, just the ones the distro decides it wants
-> to do, usually for boot volumes. It is a weird historical thing :|
-
-Well, as mentioned, I find it odd. For the same reason why
-all tcp flavors of the ulps discussed in this thread don't autoload if 
-the machine
-has a nic (which means pretty much every machine).
-
-Having said that, I don't have the same PoV as distro folks...
+>
+>
+> On 13/05/2024 9:46, Michael Margolin wrote:
+>> Do not try to handle admin command completion if it has an unexpected
+>> command id and print a relevant error message.
+>>
+>> Reviewed-by: Firas Jahjah <firasj@amazon.com>
+>> Reviewed-by: Yehuda Yitschak <yehuday@amazon.com>
+>> Signed-off-by: Michael Margolin <mrgolin@amazon.com>
+>> ---
+>>   static void efa_com_handle_admin_completion(struct efa_com_admin_queue *aq)
+>>   {
+>>        struct efa_admin_acq_entry *cqe;
+>>        u16 queue_size_mask;
+>> -     u16 comp_num = 0;
+>> +     u16 comp_cmds = 0;
+>>        u8 phase;
+>> +     int err;
+>>        u16 ci;
+>>
+>>        queue_size_mask = aq->depth - 1;
+>> @@ -453,10 +456,12 @@ static void efa_com_handle_admin_completion(struct efa_com_admin_queue *aq)
+>>                 * phase bit was validated
+>>                 */
+>>                dma_rmb();
+>> -             efa_com_handle_single_admin_completion(aq, cqe);
+>> +             err = efa_com_handle_single_admin_completion(aq, cqe);
+>> +             if (!err)
+>> +                     comp_cmds++;
+> I would count the unexpected completions as well.
+> Regardless, I would definitely add a counter to track these (hopefully)
+> rare cases.
+>
+> Whatever you decide:
+> Reviewed-by: Gal Pressman <gal.pressman@linux.dev>
 
