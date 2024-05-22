@@ -1,108 +1,103 @@
-Return-Path: <linux-rdma+bounces-2573-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-2574-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id B317F8CBF43
-	for <lists+linux-rdma@lfdr.de>; Wed, 22 May 2024 12:29:19 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id DDFAA8CBF7B
+	for <lists+linux-rdma@lfdr.de>; Wed, 22 May 2024 12:50:57 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6EB9D28326F
-	for <lists+linux-rdma@lfdr.de>; Wed, 22 May 2024 10:29:18 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7E72F1F236A7
+	for <lists+linux-rdma@lfdr.de>; Wed, 22 May 2024 10:50:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A2EE7823CB;
-	Wed, 22 May 2024 10:29:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="cqE23WdT"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 98B6D81AA2;
+	Wed, 22 May 2024 10:50:51 +0000 (UTC)
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from out-181.mta1.migadu.com (out-181.mta1.migadu.com [95.215.58.181])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wr1-f50.google.com (mail-wr1-f50.google.com [209.85.221.50])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 00C28823B5
-	for <linux-rdma@vger.kernel.org>; Wed, 22 May 2024 10:29:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BBBB279B9D;
+	Wed, 22 May 2024 10:50:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1716373755; cv=none; b=YP+dTXVCwxe8Vw07l4jXBD5yH89ghIP+1L+p0vnuzP81BV0kePBtYH4dQVwoq8V3JJtVzZicWMFmQDOUzy67UPIRdvpxlDERaYr9mh62a9pWl4IwwYtYnI3T2WcOTtxmA0ze9KDchP7FErfJcWqVNxdG8DyV3JRT4Lqf8RS5yLg=
+	t=1716375051; cv=none; b=gJQnQMLgOTeOII8PJ7JPA+CE439fklymDLHbG4B1WvltfJuqi14irR9JFmL1zoh4Y4eZPql4Sk49+DWJn9e83gmCNWPpZUqcT7SHwi/mCNYcTHg36BlChonnGj4OycIjboW+XljzkoUs6lQDR3zImglT2JBBa2rDnctIG4fY7dY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1716373755; c=relaxed/simple;
-	bh=YgWOXcmXZa+NxNmnvSW0g33eq38hRBxHQFuxngZ9Po8=;
+	s=arc-20240116; t=1716375051; c=relaxed/simple;
+	bh=VyBReXjt4mK/tUMAyCCPZcz5+wqr2j9lYzuGW1fGTIs=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=cQpt5RPfyuGnmg9iqgLaMXVfTeY6gLhbWwTx2fG9QThMX2p76LdPZvBg0d4iaqsmL7jXKllF5oeK2OiH3OE8RYzP40LbS1EkbUr4ZIsRrANLNtYihLhlfh/ncD88ZrXr1xUnYLOaXyNGX9BfdwtTBxYQBZT3nrO/3Oh6sFC6pWs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=cqE23WdT; arc=none smtp.client-ip=95.215.58.181
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-X-Envelope-To: kotaranov@linux.microsoft.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1716373750;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=dBqCPT8x+cGM4ULy2b+eQuWgpEzPPgSD98pYc3964+Q=;
-	b=cqE23WdTOHz3c6Jp+iMdabjGcebl/Tfu5NNgrG2fL0upgM3qZpFnGRGVygnZIMF0dpOnVD
-	Fnvlv1RoaFgFfkYcpfMxAFJKplKMvQ7JWZdDlKg7+kHAcO7/InSkam1rmJG/0BaEPbTXV0
-	Jv7dOi2bL4+CBhzK5l9v/UtkvVoVv9U=
-X-Envelope-To: kotaranov@microsoft.com
-X-Envelope-To: sharmaajay@microsoft.com
-X-Envelope-To: longli@microsoft.com
-X-Envelope-To: jgg@ziepe.ca
-X-Envelope-To: leon@kernel.org
-X-Envelope-To: linux-rdma@vger.kernel.org
-X-Envelope-To: linux-kernel@vger.kernel.org
-Message-ID: <10a9df97-7b1b-4c0f-ad11-3ecf6512d926@linux.dev>
-Date: Wed, 22 May 2024 12:29:08 +0200
+	 In-Reply-To:Content-Type; b=gicwYsIdEtqoALWWaRL0yNq8YkEE6HZdH7vPbA6HuicAXXMtwziPplpT86sO/CjErOY4G/ulz5J1nrLnWRovVcgC5Edz5x9lEtxnYUuk0gHZpfq2tTpVFCXjaGCQ0Mm3XyHdI45q37Zv/140/QICzn1eHDnBvwOTyNMf/EErmKg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=grimberg.me; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.221.50
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=grimberg.me
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wr1-f50.google.com with SMTP id ffacd0b85a97d-354c3b445bbso426748f8f.1;
+        Wed, 22 May 2024 03:50:49 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1716375048; x=1716979848;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=1BnHc3XspGm0v4PnkZaEeuFqvR0cRw7aXohQPjr95aY=;
+        b=J+S0GK87ZRsWvGxuFvZc3ztgNHaPAjSdZ4MoJXvmgJxtKewQhkSH3bx2NHTGnPM3Pw
+         M3FqKUakT7eBkwWFINvuGUrrMY4WeIfFGW9WWAXlrUpAwM9QOcoZLZ9GrZOdEc9W/daX
+         aEIeOb7XCZPIiQ/ZaXFdZRAWHuqW/elT845h0dygUJXOvyHiILlLVQ/cPIHATMw1hlwC
+         IwwGOhNhuG7x1ScteLebeVXDRZbP1hF4+1jdA1glJOahSYAjJ4NBCMV06e1cq6fukirI
+         VBkUvZS+uGn2Y+yLrS3tCYoDAJ63Z52MzDxeV59XK0ELSSXcTlk9L9hAbZ86td6zrvcp
+         +18A==
+X-Forwarded-Encrypted: i=1; AJvYcCVXnWE9PFH7WUcQn876d/AhAk70EyJxaDuR9nqEWTw1CkygBJRl6OsP8SlbggaCvmlhmnx8alLq/8q1Ph9wTMZU52eq1UpRJk3mLPPavplg8MQBD8qQyd+8h7ycHitdcrV1bMN5Hg==
+X-Gm-Message-State: AOJu0YyZ6NH472gN6ReHH6tuHvNPtWQyVzMeJwrgFPPvu+s4jsmdvbXw
+	i8bKcZ4C4D1XGOfd1uSSCxN46I9/0Ihx1yOSguOavj0JcISu5SzD
+X-Google-Smtp-Source: AGHT+IGSF2AVRpH6Y4O/xml9TIH1QyFLkrQi4blx+ftI6lROnk9Fsw05hHINZrkwwdozuInSgu5v2w==
+X-Received: by 2002:a05:600c:3ba8:b0:418:f770:ba0 with SMTP id 5b1f17b1804b1-420fd22a4d5mr12400595e9.0.1716375047841;
+        Wed, 22 May 2024 03:50:47 -0700 (PDT)
+Received: from [10.50.4.180] (bzq-84-110-32-226.static-ip.bezeqint.net. [84.110.32.226])
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-42011d91edfsm406112765e9.44.2024.05.22.03.50.47
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 22 May 2024 03:50:47 -0700 (PDT)
+Message-ID: <c1aa177a-3328-4447-af23-246beacf3169@grimberg.me>
+Date: Wed, 22 May 2024 13:50:46 +0300
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH rdma-next v3 0/3] RDMA/mana_ib: Add support of RC QPs
-To: Konstantin Taranov <kotaranov@linux.microsoft.com>,
- kotaranov@microsoft.com, sharmaajay@microsoft.com, longli@microsoft.com,
- jgg@ziepe.ca, leon@kernel.org
-Cc: linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <1716366242-558-1-git-send-email-kotaranov@linux.microsoft.com>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Zhu Yanjun <yanjun.zhu@linux.dev>
-In-Reply-To: <1716366242-558-1-git-send-email-kotaranov@linux.microsoft.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: Safe to delete rpcrdma.ko loading start-up code
+To: Jason Gunthorpe <jgg@nvidia.com>
+Cc: Chuck Lever III <chuck.lever@oracle.com>,
+ Linux NFS Mailing List <linux-nfs@vger.kernel.org>,
+ "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>
+References: <DE53C92C-D16E-4FA7-9C0B-F83F03B1896F@oracle.com>
+ <8cc80bdb-9f17-4f44-b2e6-54b36ac85b63@grimberg.me>
+ <20240521124306.GE20229@nvidia.com>
+ <5b0b8ffe-75ad-4026-a0e8-8d74992ab7b6@grimberg.me>
+ <20240521133727.GF20229@nvidia.com>
+ <46c36727-ef93-44ca-9741-df2325d4420c@grimberg.me>
+ <20240521152325.GG20229@nvidia.com>
+ <e558ee64-48fc-48b9-addd-eab7f9f861ad@grimberg.me>
+ <20240521163713.GL20229@nvidia.com>
+ <0f9ddfe5-67ff-470b-8901-d513dceb757e@grimberg.me>
+ <20240521232905.GQ20229@nvidia.com>
+Content-Language: he-IL, en-US
+From: Sagi Grimberg <sagi@grimberg.me>
+In-Reply-To: <20240521232905.GQ20229@nvidia.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
+Content-Transfer-Encoding: 7bit
 
-在 2024/5/22 10:23, Konstantin Taranov 写道:
-> From: Konstantin Taranov <kotaranov@microsoft.com>
-> 
-> This patch series enables creation and destruction of RC QPs.
-> The RC QP can be transitioned to RTS and be used by rdma-core.
-> 
-> RDMA-CORE: https://github.com/linux-rdma/rdma-core/pull/1461
-> 
-> v2->v3:
-> * fixed c99 comment style
 
-Thanks a lot. I am fine with it.
-You can add:
 
-Reviewed-by: Zhu Yanjun <yanjun.zhu@linux.dev>
+On 22/05/2024 2:29, Jason Gunthorpe wrote:
+> On Tue, May 21, 2024 at 11:30:00PM +0300, Sagi Grimberg wrote:
+>
+>> I just don't see why the presence of an rdma device dictates that
+>> all the ulps autoload. Does rxe/siw count as rdma HW?
+> It doesn't do all of them, just the ones the distro decides it wants
+> to do, usually for boot volumes. It is a weird historical thing :|
 
-Zhu Yanjun
+Well, as mentioned, I find it odd. For the same reason why
+all tcp flavors of the ulps discussed in this thread don't autoload if 
+the machine
+has a nic (which means pretty much every machine).
 
-> 
-> v1->v2:
-> * Removed an old comment in 2/3.
-> * Fixed text in a debug message in 3/3.
-> 
-> Konstantin Taranov (3):
->    RDMA/mana_ib: Create and destroy RC QP
->    RDMA/mana_ib: Implement uapi to create and destroy RC QP
->    RDMA/mana_ib: Modify QP state
-> 
->   drivers/infiniband/hw/mana/main.c    |  59 ++++++++++
->   drivers/infiniband/hw/mana/mana_ib.h |  99 +++++++++++++++-
->   drivers/infiniband/hw/mana/qp.c      | 166 ++++++++++++++++++++++++++-
->   include/uapi/rdma/mana-abi.h         |   9 ++
->   4 files changed, 328 insertions(+), 5 deletions(-)
-> 
-
+Having said that, I don't have the same PoV as distro folks...
 
