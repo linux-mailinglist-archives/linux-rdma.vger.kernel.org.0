@@ -1,288 +1,127 @@
-Return-Path: <linux-rdma+bounces-2588-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-2589-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id E619E8CC2A9
-	for <lists+linux-rdma@lfdr.de>; Wed, 22 May 2024 15:59:05 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 239D48CC4F6
+	for <lists+linux-rdma@lfdr.de>; Wed, 22 May 2024 18:37:30 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 163361C20FAB
-	for <lists+linux-rdma@lfdr.de>; Wed, 22 May 2024 13:59:05 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D04FFB21F1D
+	for <lists+linux-rdma@lfdr.de>; Wed, 22 May 2024 16:37:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E635514882F;
-	Wed, 22 May 2024 13:55:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AF9421411EB;
+	Wed, 22 May 2024 16:37:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="YsjodTtQ"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="WvNIz+RM"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mx0b-00069f02.pphosted.com (mx0b-00069f02.pphosted.com [205.220.177.32])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pf1-f175.google.com (mail-pf1-f175.google.com [209.85.210.175])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 184A613F44F;
-	Wed, 22 May 2024 13:55:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.177.32
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2E2826AD7;
+	Wed, 22 May 2024 16:37:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.175
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1716386146; cv=none; b=GqjelPWLGrUG4FFFyFG3OcSm2d+zavim+EktIWkfBKLKpjIrRYsiWHH9+iSauaZ0lQWmyHDQwJBaFsGb9GShx38YsxcLwtaUfYX7Wu7tcZpNDTbfKeJ7d2XmOGrxxpuwoScvCakz01L0XCVnS2VEaW1mDZ4tz4ek5T6IJ4yvTvY=
+	t=1716395837; cv=none; b=Rtl7Pu8jl4pvGJkyDXO2+F2X3amMQN2lH2OojrBBThnKLwD5X/xz1hBdKxJ3PyNI5DOmq7HV029ieuX8VMkbmPppSk3z5TDPFSfnBYpDv7PX1qpPVZHqi7/Hp2aXreAYLQRgIKpKv8EAigyzJodu2MCx9kpjHcC2d7JEWoXUyog=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1716386146; c=relaxed/simple;
-	bh=Fv4RgdofNF0g1JF1RNb7kP1z5vab40UP16jtAY2qMKY=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=K0bdUs79/6ytcnaJZ6tNIp5X6zEH+GqjXRDlDJfh4kgZwd8EnHGESH45vNHiXenZnMjbz8mbl5VFAmv7+fa0RZucL/6jUSYvEs210VasvwqxD7HxXTGLbcDCN6spqYNK6NYMbsdl0sApHpo3n7PIPdOCHQwGoXX/RvDb0jdV84U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=oracle.com; spf=pass smtp.mailfrom=oracle.com; dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b=YsjodTtQ; arc=none smtp.client-ip=205.220.177.32
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=oracle.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oracle.com
-Received: from pps.filterd (m0333520.ppops.net [127.0.0.1])
-	by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 44MCqdEr013781;
-	Wed, 22 May 2024 13:55:30 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
- subject : date : message-id : in-reply-to : references : mime-version :
- content-type : content-transfer-encoding; s=corp-2023-11-20;
- bh=cjEST1jMAgisAXPjhkC6jVf+PoUCWzwnDuoQDxOX6/o=;
- b=YsjodTtQ2/cQ+NNKK2zGwVP68kZYMxe8mr4oFhj/27bFMZ15T/FdiSux5vH56bZokVF3
- p02XGtQkMcO7lCqOZR3yg+5ZEJ0CNIbVD4V3Z8rd0fhG8/F8t95LXK3DvdhiQBUMMtf5
- Jzgrj70BuxDvFqCuWa5H6WX7X4qGUCSHdA/DHzMeJ59WhM43RYz/2rBpKLSUaYb+34jU
- BZv6iR76VQ4leDqUVF//dQYhhDoO9LOcbocw5r5HxAhTqCmMNIspcZw0yajCL5Uoh7vZ
- oUkvcwa+ugYW1q2zxymQByLz7ITVJFVriLSffworKkvhplgd7V3Qu2sZ2SZKUvzzObow Kg== 
-Received: from iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta02.appoci.oracle.com [147.154.18.20])
-	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3y6mcdyt6r-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Wed, 22 May 2024 13:55:30 +0000
-Received: from pps.filterd (iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
-	by iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 44MC6s1B019593;
-	Wed, 22 May 2024 13:55:29 GMT
-Received: from pps.reinject (localhost [127.0.0.1])
-	by iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTPS id 3y6js98tsn-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Wed, 22 May 2024 13:55:29 +0000
-Received: from iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
-	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 44MDsm3M016070;
-	Wed, 22 May 2024 13:55:29 GMT
-Received: from lab61.no.oracle.com (lab61.no.oracle.com [10.172.144.82])
-	by iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTP id 3y6js98su1-13;
-	Wed, 22 May 2024 13:55:28 +0000
-From: =?UTF-8?q?H=C3=A5kon=20Bugge?= <haakon.bugge@oracle.com>
-To: linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, rds-devel@oss.oracle.com
-Cc: Jason Gunthorpe <jgg@ziepe.ca>, Leon Romanovsky <leon@kernel.org>,
-        Saeed Mahameed <saeedm@nvidia.com>, Tariq Toukan <tariqt@nvidia.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>, Tejun Heo <tj@kernel.org>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Allison Henderson <allison.henderson@oracle.com>,
-        Manjunath Patil <manjunath.b.patil@oracle.com>,
-        Mark Zhang <markzhang@nvidia.com>,
-        =?UTF-8?q?H=C3=A5kon=20Bugge?= <haakon.bugge@oracle.com>,
-        Chuck Lever <chuck.lever@oracle.com>,
-        Shiraz Saleem <shiraz.saleem@intel.com>,
-        Yang Li <yang.lee@linux.alibaba.com>
-Subject: [PATCH v3 6/6] workqueue: Inherit per-process allocation flags
-Date: Wed, 22 May 2024 15:54:44 +0200
-Message-Id: <20240522135444.1685642-13-haakon.bugge@oracle.com>
-X-Mailer: git-send-email 2.39.3
-In-Reply-To: <20240522135444.1685642-1-haakon.bugge@oracle.com>
+	s=arc-20240116; t=1716395837; c=relaxed/simple;
+	bh=OPRA3FUZBoBovwiYjKJevz+MzGYuVGCZhkXsOEfajWc=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=VmgFOM50uaeJwcKX/l44sshmm9hanpKDXIIFICelyCvJ97aSjjnBb+JYZsUbiAuucBg3bOL0NDGGhne0XDZ+BBxE3YeyEuJkNwgPdhklnsoPr51fhD3ScLt0WrmntjnBNH5wMGBXYvj6xTRoRM0Ra7a8OFOQdTw1yIn2/G0dGUk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=WvNIz+RM; arc=none smtp.client-ip=209.85.210.175
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pf1-f175.google.com with SMTP id d2e1a72fcca58-6f447976de7so2478044b3a.1;
+        Wed, 22 May 2024 09:37:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1716395835; x=1717000635; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:sender
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=6fLC3+2/b8athVdAjNdAdtF6LJlJTIZGeSogYFaPPNA=;
+        b=WvNIz+RMTssQIqK/92L1ML1KhSoEFSUkxGHmtevwR6MZwMoTNJhuU3ooRXeCGQiFIh
+         aJNZZQrPRTK+wGTkUPXrjMUxUEl3mACQIil8bC/eyN5eVG3lc+R1ihffG3PR1NMlvZrR
+         e1EssjC4MpFUT/uCyRnif0B2jKStrOBUxce7bYrQJRHzigqJ/Po7JPtMyFVDrjGO3/6b
+         858iQKxYLzL8Y1Ul+rAmu05kmT4HSmdlArn+qpBd/6AYzG5Wru4xcHbMNREDnLGDNmNB
+         z1hIqiAB7kVKn+2WBfVox2v6CLVMxylo0iyfBJWgNnnAcQw0uBca+xeo5s9UrLuNHdGI
+         3ygw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1716395835; x=1717000635;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:sender
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=6fLC3+2/b8athVdAjNdAdtF6LJlJTIZGeSogYFaPPNA=;
+        b=Nm/Ldw6Z6mUk2Fp+jN7uF3J8IgLV06Lj7fN96t4Kw5QDH+c1U4+AuIl/ApjsOPieZj
+         kfmZiZnAi9Q1CzlFLiuchnZuJLG3GTV9OZoT2z/RpzqoKI4+0h8nhDcBEVZC7UC75q6J
+         zTugcvWIHVHJlnH1qQHN4e3tFnadSXKJr9iqQtzu+Kl9r4ZFu8SQmD0ofnbC8rMhFJom
+         pEVVM8nTOxPa1wf8wu61DCBgm092Lt1nJJwifIKkLLn5kFoMf0/WEK6xcVpRuzL92p0l
+         KzefCzuzkw1gquZVukFZ9HwLO257BHrfHlmVOpJ7m6uDF0r1UCusSjx7PDDsd85MFwIZ
+         4LVQ==
+X-Forwarded-Encrypted: i=1; AJvYcCXTG1BirEnnXqXNYYud8NBmof9+r6+jlhQndLolubalUFEWNk8PYLnKg1VvOFhMmrvapVGNKvOB7OzEpblkzeiZGqU1kheVkwomwG7pLqJsV2Vpt2UVuIzv3k4HPgh8xIzniIq5
+X-Gm-Message-State: AOJu0YwvW8dUenJTt9ng/t5l4rhugA1T7t+HEF/apHYcrP+d33XrlgNv
+	j8PGv7uUIO9BOurpqXzOdjDsm49Mw89SMsi4rzwfd3gwxXjmQjYk
+X-Google-Smtp-Source: AGHT+IGsNVFpNsjJl6nkL6TcIWCfQ9Nnc1YXfE65lJq1XVOE0KT/iyLfgR5YJyvil4mu7PUBbhaJSg==
+X-Received: by 2002:a05:6a20:431c:b0:1af:cc48:3e25 with SMTP id adf61e73a8af0-1b1f874d86bmr2766603637.10.1716395835293;
+        Wed, 22 May 2024 09:37:15 -0700 (PDT)
+Received: from localhost (dhcp-141-239-159-203.hawaiiantel.net. [141.239.159.203])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-1ef0bada410sm241322635ad.69.2024.05.22.09.37.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 22 May 2024 09:37:14 -0700 (PDT)
+Sender: Tejun Heo <htejun@gmail.com>
+Date: Wed, 22 May 2024 06:37:13 -1000
+From: Tejun Heo <tj@kernel.org>
+To: =?iso-8859-1?Q?H=E5kon?= Bugge <haakon.bugge@oracle.com>
+Cc: linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
+	netdev@vger.kernel.org, rds-devel@oss.oracle.com,
+	Jason Gunthorpe <jgg@ziepe.ca>, Leon Romanovsky <leon@kernel.org>,
+	Saeed Mahameed <saeedm@nvidia.com>,
+	Tariq Toukan <tariqt@nvidia.com>,
+	"David S . Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	Lai Jiangshan <jiangshanlai@gmail.com>,
+	Allison Henderson <allison.henderson@oracle.com>,
+	Manjunath Patil <manjunath.b.patil@oracle.com>,
+	Mark Zhang <markzhang@nvidia.com>,
+	Chuck Lever <chuck.lever@oracle.com>,
+	Shiraz Saleem <shiraz.saleem@intel.com>,
+	Yang Li <yang.lee@linux.alibaba.com>
+Subject: Re: [PATCH v3 1/6] workqueue: Inherit per-process allocation flags
+Message-ID: <Zk4fOU8NCn755vv3@slm.duckdns.org>
 References: <20240522135444.1685642-1-haakon.bugge@oracle.com>
+ <20240522135444.1685642-3-haakon.bugge@oracle.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1039,Hydra:6.0.650,FMLib:17.12.28.16
- definitions=2024-05-22_07,2024-05-22_01,2024-05-17_01
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 mlxscore=0 spamscore=0
- adultscore=0 mlxlogscore=999 malwarescore=0 suspectscore=0 phishscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2405010000
- definitions=main-2405220093
-X-Proofpoint-ORIG-GUID: eUWMZFAEmmP3H6GkpJe4GjZk2_mD0AC3
-X-Proofpoint-GUID: eUWMZFAEmmP3H6GkpJe4GjZk2_mD0AC3
+In-Reply-To: <20240522135444.1685642-3-haakon.bugge@oracle.com>
 
-For drivers/modules running inside a memalloc_flags_{save,restore}
-region, if a work-queue is created, we make sure work executed on the
-work-queue inherits the same flag(s).
+Hello,
 
-This in order to conditionally enable drivers to work aligned with
-block I/O devices. This commit makes sure that any work queued later
-on work-queues created during module initialization, when current's
-flags has any of the PF_MEMALLOC* set, will inherit the same flags.
+On Wed, May 22, 2024 at 03:54:34PM +0200, Håkon Bugge wrote:
+> --- a/include/linux/workqueue.h
+> +++ b/include/linux/workqueue.h
+> @@ -406,9 +406,18 @@ enum wq_flags {
+>  	__WQ_DRAINING		= 1 << 16, /* internal: workqueue is draining */
+>  	__WQ_ORDERED		= 1 << 17, /* internal: workqueue is ordered */
+>  	__WQ_LEGACY		= 1 << 18, /* internal: create*_workqueue() */
+> +	__WQ_MEMALLOC		= 1 << 19, /* internal: execute work with MEMALLOC */
+> +	__WQ_MEMALLOC_NOFS      = 1 << 20, /* internal: execute work with MEMALLOC_NOFS */
+> +	__WQ_MEMALLOC_NOIO      = 1 << 21, /* internal: execute work with MEMALLOC_NOIO */
+> +	__WQ_MEMALLOC_NORECLAIM = 1 << 22, /* internal: execute work with MEMALLOC_NORECLAIM */
+> +	__WQ_MEMALLOC_NOWARN    = 1 << 23, /* internal: execute work with MEMALLOC_NOWARN */
+> +	__WQ_MEMALLOC_PIN	= 1 << 24, /* internal: execute work with MEMALLOC_PIN */
 
-We do this in order to enable drivers to be used as a network block
-I/O device. This in order to support XFS or other file-systems on top
-of a raw block device which uses said drivers as the network transport
-layer.
+Please use a separate field w/ gfp_t. You can probably add it to
+workqueue_attrs.
 
-Under intense memory pressure, we get memory reclaims. Assume the
-file-system reclaims memory, goes to the raw block device, which calls
-into said drivers. Now, if regular GFP_KERNEL allocations in the
-drivers require reclaims to be fulfilled, we end up in a circular
-dependency.
+Thanks.
 
-We break this circular dependency by:
-
-1. Force all allocations in the drivers to use GFP_NOIO, by means of a
-   parenthetic use of memalloc_flags_{save,restore} on all relevant
-   entry points, setting/clearing the PF_MEMALLOC_NOIO bit.
-
-2. Make sure work-queues inherits current->flags
-   wrt. PF_MEMALLOC_NOIO, such that work executed on the
-   work-queue inherits the same flag(s). That is what this commit
-   contributes with.
-
-Signed-off-by: HÃ¥kon Bugge <haakon.bugge@oracle.com>
-
----
-
-v2 -> v3:
-   * Add support for all PF_MEMALLOC* flags
-   * Re-worded commit message
-
-v1 -> v2:
-   * Added missing hunk in alloc_workqueue()
----
- include/linux/workqueue.h |  9 ++++++
- kernel/workqueue.c        | 60 +++++++++++++++++++++++++++++++++++++++
- 2 files changed, 69 insertions(+)
-
-diff --git a/include/linux/workqueue.h b/include/linux/workqueue.h
-index fb39938945365..f8c87f824272b 100644
---- a/include/linux/workqueue.h
-+++ b/include/linux/workqueue.h
-@@ -406,9 +406,18 @@ enum wq_flags {
- 	__WQ_DRAINING		= 1 << 16, /* internal: workqueue is draining */
- 	__WQ_ORDERED		= 1 << 17, /* internal: workqueue is ordered */
- 	__WQ_LEGACY		= 1 << 18, /* internal: create*_workqueue() */
-+	__WQ_MEMALLOC		= 1 << 19, /* internal: execute work with MEMALLOC */
-+	__WQ_MEMALLOC_NOFS      = 1 << 20, /* internal: execute work with MEMALLOC_NOFS */
-+	__WQ_MEMALLOC_NOIO      = 1 << 21, /* internal: execute work with MEMALLOC_NOIO */
-+	__WQ_MEMALLOC_NORECLAIM = 1 << 22, /* internal: execute work with MEMALLOC_NORECLAIM */
-+	__WQ_MEMALLOC_NOWARN    = 1 << 23, /* internal: execute work with MEMALLOC_NOWARN */
-+	__WQ_MEMALLOC_PIN	= 1 << 24, /* internal: execute work with MEMALLOC_PIN */
- 
- 	/* BH wq only allows the following flags */
- 	__WQ_BH_ALLOWS		= WQ_BH | WQ_HIGHPRI,
-+
-+	__WQ_PF_MEMALLOC_MASK	= PF_MEMALLOC | PF_MEMALLOC_NOFS | PF_MEMALLOC_NOIO |
-+				  PF_MEMALLOC_NORECLAIM | PF_MEMALLOC_NOWARN | PF_MEMALLOC_PIN,
- };
- 
- enum wq_consts {
-diff --git a/kernel/workqueue.c b/kernel/workqueue.c
-index 003474c9a77d0..28ed6b9556e91 100644
---- a/kernel/workqueue.c
-+++ b/kernel/workqueue.c
-@@ -51,6 +51,7 @@
- #include <linux/uaccess.h>
- #include <linux/sched/isolation.h>
- #include <linux/sched/debug.h>
-+#include <linux/sched/mm.h>
- #include <linux/nmi.h>
- #include <linux/kvm_para.h>
- #include <linux/delay.h>
-@@ -3113,6 +3114,28 @@ static bool manage_workers(struct worker *worker)
- 	return true;
- }
- 
-+static unsigned int wq_build_memalloc_flags(struct pool_workqueue *pwq)
-+{
-+	unsigned int pf_flags = 0;
-+
-+#define BUILD_PF_FLAGS_FROM_WQ(name)			\
-+	do {						\
-+		if (pwq->wq->flags & __WQ_ ## name)	\
-+			pf_flags |= PF_ ## name;	\
-+	} while (0)
-+
-+	BUILD_PF_FLAGS_FROM_WQ(MEMALLOC);
-+	BUILD_PF_FLAGS_FROM_WQ(MEMALLOC_NOFS);
-+	BUILD_PF_FLAGS_FROM_WQ(MEMALLOC_NOIO);
-+	BUILD_PF_FLAGS_FROM_WQ(MEMALLOC_NORECLAIM);
-+	BUILD_PF_FLAGS_FROM_WQ(MEMALLOC_NOWARN);
-+	BUILD_PF_FLAGS_FROM_WQ(MEMALLOC_PIN);
-+
-+#undef BUILD_PF_FLAGS_FROM_WQ
-+
-+	return pf_flags;
-+}
-+
- /**
-  * process_one_work - process single work
-  * @worker: self
-@@ -3136,6 +3159,8 @@ __acquires(&pool->lock)
- 	unsigned long work_data;
- 	int lockdep_start_depth, rcu_start_depth;
- 	bool bh_draining = pool->flags & POOL_BH_DRAINING;
-+	unsigned int memalloc_flags = wq_build_memalloc_flags(pwq);
-+	unsigned int memalloc_flags_old;
- #ifdef CONFIG_LOCKDEP
- 	/*
- 	 * It is permissible to free the struct work_struct from
-@@ -3148,6 +3173,10 @@ __acquires(&pool->lock)
- 
- 	lockdep_copy_map(&lockdep_map, &work->lockdep_map);
- #endif
-+	/* Set inherited alloc flags */
-+	if (memalloc_flags)
-+		memalloc_flags_old = memalloc_flags_save(memalloc_flags);
-+
- 	/* ensure we're on the correct CPU */
- 	WARN_ON_ONCE(!(pool->flags & POOL_DISASSOCIATED) &&
- 		     raw_smp_processor_id() != pool->cpu);
-@@ -3284,6 +3313,10 @@ __acquires(&pool->lock)
- 
- 	/* must be the last step, see the function comment */
- 	pwq_dec_nr_in_flight(pwq, work_data);
-+
-+	/* Restore alloc flags */
-+	if (memalloc_flags)
-+		memalloc_flags_restore(memalloc_flags_old);
- }
- 
- /**
-@@ -5637,6 +5670,30 @@ static void wq_adjust_max_active(struct workqueue_struct *wq)
- 	} while (activated);
- }
- 
-+/**
-+ * wq_set_memalloc_flags - Test current->flags for PF_MEMALLOC_FOO_BAR
-+ * flag bits and set the corresponding __WQ_MEMALLOC_FOO_BAR in the
-+ * WQ's flags variable.
-+ * @flags_ptr: Pointer to wq->flags
-+ */
-+static void wq_set_memalloc_flags(unsigned int *flags_ptr)
-+{
-+#define TEST_PF_SET_WQ(name)				\
-+	do {						\
-+		if (current->flags & PF_ ## name)	\
-+			*flags_ptr |= __WQ_ ## name;	\
-+	} while (0)
-+
-+	TEST_PF_SET_WQ(MEMALLOC);
-+	TEST_PF_SET_WQ(MEMALLOC_NOFS);
-+	TEST_PF_SET_WQ(MEMALLOC_NOIO);
-+	TEST_PF_SET_WQ(MEMALLOC_NORECLAIM);
-+	TEST_PF_SET_WQ(MEMALLOC_NOWARN);
-+	TEST_PF_SET_WQ(MEMALLOC_PIN);
-+
-+#undef TEST_PF_SET_WQ
-+}
-+
- __printf(1, 4)
- struct workqueue_struct *alloc_workqueue(const char *fmt,
- 					 unsigned int flags,
-@@ -5695,6 +5752,9 @@ struct workqueue_struct *alloc_workqueue(const char *fmt,
- 
- 	/* init wq */
- 	wq->flags = flags;
-+	if (current->flags & __WQ_PF_MEMALLOC_MASK)
-+		wq_set_memalloc_flags(&wq->flags);
-+
- 	wq->max_active = max_active;
- 	wq->min_active = min(max_active, WQ_DFL_MIN_ACTIVE);
- 	wq->saved_max_active = wq->max_active;
 -- 
-2.31.1
-
+tejun
 
