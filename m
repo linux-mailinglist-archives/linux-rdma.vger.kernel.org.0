@@ -1,44 +1,44 @@
-Return-Path: <linux-rdma+bounces-2570-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-2571-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id C75598CBCE0
-	for <lists+linux-rdma@lfdr.de>; Wed, 22 May 2024 10:24:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 85CD28CBCE4
+	for <lists+linux-rdma@lfdr.de>; Wed, 22 May 2024 10:24:49 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 342A6B21E15
-	for <lists+linux-rdma@lfdr.de>; Wed, 22 May 2024 08:24:32 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E4130B21E65
+	for <lists+linux-rdma@lfdr.de>; Wed, 22 May 2024 08:24:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 32C2F7FBBD;
-	Wed, 22 May 2024 08:24:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1D26580639;
+	Wed, 22 May 2024 08:24:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b="BBsSZqoc"
+	dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b="ElM5YxGb"
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8507280628;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8504380623;
 	Wed, 22 May 2024 08:24:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=13.77.154.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1716366250; cv=none; b=j5JQcrYsuTSLpebtxBHIEePkLjyE8T60hR2uIYru2qcGYMatXfNDZEhXByJ65htpOGaayr1pCDqc/PODcVS7QQek0YxIeBuHB6q+3RaDg9MBc5oy9i88XHTn9HVQiLTxrEHlF58SkOIsCjfgiNubCkTxisxEDC0UL8NQOAGnJJY=
+	t=1716366250; cv=none; b=cnISF68HLVcN5utp/hNUVoKWmwSU2tzKgxqSa6ye07a5kWnnIN32cKqQVjYXxCyDvoUWQlFXtqwUqYSFNRI1IeX/VPqYnFM9T6UYRXFJRW3zZkZeEPGddhEf3ariTTMmDDWdmqKVR8sfckveYkDh+34MePHyg0Clr1Lezrxr9f4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1716366250; c=relaxed/simple;
-	bh=tGxkOHkWcNnYGJHaZpvH6fbE/F4Q+AnoMxnvZ5Vr+gM=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References; b=RiiptijsIbjjW+abo+h5+X/Jgyw5oHnNLgwZMkGu5J5Zbthjpb07UUgUzFtM8ZL8ngFERTCVo0W63BrlLpCGiwCuigrX8dFyRbsy7+Z7uZB0vuhXWhmHQiwhxRhT2SXfQso10SnZC4O8OaMX4ddDps5J5XUKx6tqElnCrlo07jA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com; spf=pass smtp.mailfrom=linux.microsoft.com; dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b=BBsSZqoc; arc=none smtp.client-ip=13.77.154.182
+	bh=EYPNd9jku6aA/O1q5hY9nV/rIEYnM/qGK4CFng0WG8g=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References; b=p6KMAIflElhaY7W4KZjk25lOPj994sUt2wEnZHZv3AsxAyabuALepk1Y05FNbhd2hmgrquu9oztOFDLQSI3G3J0bm4RCU1+doC3kkuo1di8xjFYXx4F2UAcsXvcLUswIqz/MIx19oJ+5tqB2/lY74iDukdH5RGJrBc6eFNHqE1E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com; spf=pass smtp.mailfrom=linux.microsoft.com; dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b=ElM5YxGb; arc=none smtp.client-ip=13.77.154.182
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.microsoft.com
 Received: from linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net (linux.microsoft.com [13.77.154.182])
-	by linux.microsoft.com (Postfix) with ESMTPSA id 1DAF820B915B;
+	by linux.microsoft.com (Postfix) with ESMTPSA id 359CC20B9260;
 	Wed, 22 May 2024 01:24:07 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 1DAF820B915B
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 359CC20B9260
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
 	s=default; t=1716366247;
-	bh=gqKYoeoonvFkXp+pl5no+6w3TiGWAGlqPfERfYBnT94=;
+	bh=ZR4hh871xcAO+lwxUXrmJzzyt+PmjiJru8bB82ScqyU=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=BBsSZqocB9eCRaTyTnWY8GhVKt2kLJpevRn5WEgPNr1hjUYghq76kHX28tfLh/MZ5
-	 ZimIKg4oCh7QFi6QmExPLF4LVOvdOurWBseeTxexyl5VkV0PVMTr8SEdds1lbd8z2v
-	 /bHZMHUQMClP1KZomDdK5MBrjqphayVYq4woKfLY=
+	b=ElM5YxGb+Vy9gQVkzAXacgE+h2K4eLZSCw3ZLY0Zn3B8igKQkfM2ABMep+ncM8TC5
+	 dQeu50JnoBu/jjE38J3RfA+poMaM+zIKo/u9FynEZogWdYGaq+fMRXurEWEPSgd3nK
+	 7SJOoclmo5saXtOmpOnrwEJ9UYmTygVkyGF83p4g=
 From: Konstantin Taranov <kotaranov@linux.microsoft.com>
 To: kotaranov@microsoft.com,
 	sharmaajay@microsoft.com,
@@ -47,9 +47,9 @@ To: kotaranov@microsoft.com,
 	leon@kernel.org
 Cc: linux-rdma@vger.kernel.org,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH rdma-next v3 1/3] RDMA/mana_ib: Create and destroy RC QP
-Date: Wed, 22 May 2024 01:24:00 -0700
-Message-Id: <1716366242-558-2-git-send-email-kotaranov@linux.microsoft.com>
+Subject: [PATCH rdma-next v3 2/3] RDMA/mana_ib: Implement uapi to create and destroy RC QP
+Date: Wed, 22 May 2024 01:24:01 -0700
+Message-Id: <1716366242-558-3-git-send-email-kotaranov@linux.microsoft.com>
 X-Mailer: git-send-email 1.8.3.1
 In-Reply-To: <1716366242-558-1-git-send-email-kotaranov@linux.microsoft.com>
 References: <1716366242-558-1-git-send-email-kotaranov@linux.microsoft.com>
@@ -61,175 +61,179 @@ List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 
 From: Konstantin Taranov <kotaranov@microsoft.com>
 
-Implement HW requests to create and destroy an RC QP.
-An RC QP may have 5 queues.
+Implement user requests to create and destroy an RC QP.
+As the user does not have an FMR queue, it is skipped and NO_FMR flag
+is used.
 
 Signed-off-by: Konstantin Taranov <kotaranov@microsoft.com>
-Reviewed-by: Long Li <longli@microsoft.com>
 ---
- drivers/infiniband/hw/mana/main.c    | 59 ++++++++++++++++++++++++++++
- drivers/infiniband/hw/mana/mana_ib.h | 58 ++++++++++++++++++++++++++-
- 2 files changed, 116 insertions(+), 1 deletion(-)
+ drivers/infiniband/hw/mana/mana_ib.h |  4 ++
+ drivers/infiniband/hw/mana/qp.c      | 94 +++++++++++++++++++++++++++-
+ include/uapi/rdma/mana-abi.h         |  9 +++
+ 3 files changed, 105 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/infiniband/hw/mana/main.c b/drivers/infiniband/hw/mana/main.c
-index 2a4113576..6bd60729e 100644
---- a/drivers/infiniband/hw/mana/main.c
-+++ b/drivers/infiniband/hw/mana/main.c
-@@ -888,3 +888,62 @@ int mana_ib_gd_destroy_cq(struct mana_ib_dev *mdev, struct mana_ib_cq *cq)
- 
- 	return 0;
- }
-+
-+int mana_ib_gd_create_rc_qp(struct mana_ib_dev *mdev, struct mana_ib_qp *qp,
-+			    struct ib_qp_init_attr *attr, u32 doorbell, u64 flags)
-+{
-+	struct mana_ib_cq *send_cq = container_of(qp->ibqp.send_cq, struct mana_ib_cq, ibcq);
-+	struct mana_ib_cq *recv_cq = container_of(qp->ibqp.recv_cq, struct mana_ib_cq, ibcq);
-+	struct mana_ib_pd *pd = container_of(qp->ibqp.pd, struct mana_ib_pd, ibpd);
-+	struct gdma_context *gc = mdev_to_gc(mdev);
-+	struct mana_rnic_create_qp_resp resp = {};
-+	struct mana_rnic_create_qp_req req = {};
-+	int err, i;
-+
-+	mana_gd_init_req_hdr(&req.hdr, MANA_IB_CREATE_RC_QP, sizeof(req), sizeof(resp));
-+	req.hdr.dev_id = gc->mana_ib.dev_id;
-+	req.adapter = mdev->adapter_handle;
-+	req.pd_handle = pd->pd_handle;
-+	req.send_cq_handle = send_cq->cq_handle;
-+	req.recv_cq_handle = recv_cq->cq_handle;
-+	for (i = 0; i < MANA_RC_QUEUE_TYPE_MAX; i++)
-+		req.dma_region[i] = qp->rc_qp.queues[i].gdma_region;
-+	req.doorbell_page = doorbell;
-+	req.max_send_wr = attr->cap.max_send_wr;
-+	req.max_recv_wr = attr->cap.max_recv_wr;
-+	req.max_send_sge = attr->cap.max_send_sge;
-+	req.max_recv_sge = attr->cap.max_recv_sge;
-+	req.flags = flags;
-+
-+	err = mana_gd_send_request(gc, sizeof(req), &req, sizeof(resp), &resp);
-+	if (err) {
-+		ibdev_err(&mdev->ib_dev, "Failed to create rc qp err %d", err);
-+		return err;
-+	}
-+	qp->qp_handle = resp.rc_qp_handle;
-+	for (i = 0; i < MANA_RC_QUEUE_TYPE_MAX; i++) {
-+		qp->rc_qp.queues[i].id = resp.queue_ids[i];
-+		/* The GDMA regions are now owned by the RNIC QP handle */
-+		qp->rc_qp.queues[i].gdma_region = GDMA_INVALID_DMA_REGION;
-+	}
-+	return 0;
-+}
-+
-+int mana_ib_gd_destroy_rc_qp(struct mana_ib_dev *mdev, struct mana_ib_qp *qp)
-+{
-+	struct mana_rnic_destroy_rc_qp_resp resp = {0};
-+	struct mana_rnic_destroy_rc_qp_req req = {0};
-+	struct gdma_context *gc = mdev_to_gc(mdev);
-+	int err;
-+
-+	mana_gd_init_req_hdr(&req.hdr, MANA_IB_DESTROY_RC_QP, sizeof(req), sizeof(resp));
-+	req.hdr.dev_id = gc->mana_ib.dev_id;
-+	req.adapter = mdev->adapter_handle;
-+	req.rc_qp_handle = qp->qp_handle;
-+	err = mana_gd_send_request(gc, sizeof(req), &req, sizeof(resp), &resp);
-+	if (err) {
-+		ibdev_err(&mdev->ib_dev, "Failed to destroy rc qp err %d", err);
-+		return err;
-+	}
-+	return 0;
-+}
 diff --git a/drivers/infiniband/hw/mana/mana_ib.h b/drivers/infiniband/hw/mana/mana_ib.h
-index 68c3b4f0f..a3e229c83 100644
+index a3e229c83..5cccbe397 100644
 --- a/drivers/infiniband/hw/mana/mana_ib.h
 +++ b/drivers/infiniband/hw/mana/mana_ib.h
-@@ -95,11 +95,27 @@ struct mana_ib_cq {
- 	mana_handle_t  cq_handle;
- };
- 
-+enum mana_rc_queue_type {
-+	MANA_RC_SEND_QUEUE_REQUESTER = 0,
-+	MANA_RC_SEND_QUEUE_RESPONDER,
-+	MANA_RC_SEND_QUEUE_FMR,
-+	MANA_RC_RECV_QUEUE_REQUESTER,
-+	MANA_RC_RECV_QUEUE_RESPONDER,
-+	MANA_RC_QUEUE_TYPE_MAX,
-+};
-+
-+struct mana_ib_rc_qp {
-+	struct mana_ib_queue queues[MANA_RC_QUEUE_TYPE_MAX];
-+};
-+
- struct mana_ib_qp {
- 	struct ib_qp ibqp;
- 
- 	mana_handle_t qp_handle;
--	struct mana_ib_queue raw_sq;
-+	union {
-+		struct mana_ib_queue raw_sq;
-+		struct mana_ib_rc_qp rc_qp;
-+	};
- 
- 	/* The port on the IB device, starting with 1 */
- 	u32 port;
-@@ -122,6 +138,8 @@ enum mana_ib_command_code {
- 	MANA_IB_CONFIG_MAC_ADDR	= 0x30005,
- 	MANA_IB_CREATE_CQ       = 0x30008,
- 	MANA_IB_DESTROY_CQ      = 0x30009,
-+	MANA_IB_CREATE_RC_QP    = 0x3000a,
-+	MANA_IB_DESTROY_RC_QP   = 0x3000b,
- };
- 
- struct mana_ib_query_adapter_caps_req {
-@@ -230,6 +248,40 @@ struct mana_rnic_destroy_cq_resp {
+@@ -248,6 +248,10 @@ struct mana_rnic_destroy_cq_resp {
  	struct gdma_resp_hdr hdr;
  }; /* HW Data */
  
-+struct mana_rnic_create_qp_req {
-+	struct gdma_req_hdr hdr;
-+	mana_handle_t adapter;
-+	mana_handle_t pd_handle;
-+	mana_handle_t send_cq_handle;
-+	mana_handle_t recv_cq_handle;
-+	u64 dma_region[MANA_RC_QUEUE_TYPE_MAX];
-+	u64 deprecated[2];
-+	u64 flags;
-+	u32 doorbell_page;
-+	u32 max_send_wr;
-+	u32 max_recv_wr;
-+	u32 max_send_sge;
-+	u32 max_recv_sge;
-+	u32 reserved;
-+}; /* HW Data */
++enum mana_rnic_create_rc_flags {
++	MANA_RC_FLAG_NO_FMR = 2,
++};
 +
-+struct mana_rnic_create_qp_resp {
-+	struct gdma_resp_hdr hdr;
-+	mana_handle_t rc_qp_handle;
-+	u32 queue_ids[MANA_RC_QUEUE_TYPE_MAX];
-+	u32 reserved;
-+}; /* HW Data*/
-+
-+struct mana_rnic_destroy_rc_qp_req {
-+	struct gdma_req_hdr hdr;
-+	mana_handle_t adapter;
-+	mana_handle_t rc_qp_handle;
-+}; /* HW Data */
-+
-+struct mana_rnic_destroy_rc_qp_resp {
-+	struct gdma_resp_hdr hdr;
-+}; /* HW Data */
-+
- static inline struct gdma_context *mdev_to_gc(struct mana_ib_dev *mdev)
- {
- 	return mdev->gdma_dev->gdma_context;
-@@ -354,4 +406,8 @@ int mana_ib_gd_config_mac(struct mana_ib_dev *mdev, enum mana_ib_addr_op op, u8
- int mana_ib_gd_create_cq(struct mana_ib_dev *mdev, struct mana_ib_cq *cq, u32 doorbell);
+ struct mana_rnic_create_qp_req {
+ 	struct gdma_req_hdr hdr;
+ 	mana_handle_t adapter;
+diff --git a/drivers/infiniband/hw/mana/qp.c b/drivers/infiniband/hw/mana/qp.c
+index ba13c5abf..7dbeba41b 100644
+--- a/drivers/infiniband/hw/mana/qp.c
++++ b/drivers/infiniband/hw/mana/qp.c
+@@ -398,6 +398,78 @@ static int mana_ib_create_qp_raw(struct ib_qp *ibqp, struct ib_pd *ibpd,
+ 	return err;
+ }
  
- int mana_ib_gd_destroy_cq(struct mana_ib_dev *mdev, struct mana_ib_cq *cq);
++static int mana_ib_create_rc_qp(struct ib_qp *ibqp, struct ib_pd *ibpd,
++				struct ib_qp_init_attr *attr, struct ib_udata *udata)
++{
++	struct mana_ib_dev *mdev = container_of(ibpd->device, struct mana_ib_dev, ib_dev);
++	struct mana_ib_qp *qp = container_of(ibqp, struct mana_ib_qp, ibqp);
++	struct mana_ib_create_rc_qp_resp resp = {};
++	struct mana_ib_ucontext *mana_ucontext;
++	struct mana_ib_create_rc_qp ucmd = {};
++	int i, err, j;
++	u64 flags = 0;
++	u32 doorbell;
 +
-+int mana_ib_gd_create_rc_qp(struct mana_ib_dev *mdev, struct mana_ib_qp *qp,
-+			    struct ib_qp_init_attr *attr, u32 doorbell, u64 flags);
-+int mana_ib_gd_destroy_rc_qp(struct mana_ib_dev *mdev, struct mana_ib_qp *qp);
- #endif
++	if (!udata || udata->inlen < sizeof(ucmd))
++		return -EINVAL;
++
++	mana_ucontext = rdma_udata_to_drv_context(udata, struct mana_ib_ucontext, ibucontext);
++	doorbell = mana_ucontext->doorbell;
++	flags = MANA_RC_FLAG_NO_FMR;
++	err = ib_copy_from_udata(&ucmd, udata, min(sizeof(ucmd), udata->inlen));
++	if (err) {
++		ibdev_dbg(&mdev->ib_dev, "Failed to copy from udata, %d\n", err);
++		return err;
++	}
++
++	for (i = 0, j = 0; i < MANA_RC_QUEUE_TYPE_MAX; ++i) {
++		/* skip FMR for user-level RC QPs */
++		if (i == MANA_RC_SEND_QUEUE_FMR) {
++			qp->rc_qp.queues[i].id = INVALID_QUEUE_ID;
++			qp->rc_qp.queues[i].gdma_region = GDMA_INVALID_DMA_REGION;
++			continue;
++		}
++		err = mana_ib_create_queue(mdev, ucmd.queue_buf[j], ucmd.queue_size[j],
++					   &qp->rc_qp.queues[i]);
++		if (err) {
++			ibdev_err(&mdev->ib_dev, "Failed to create queue %d, err %d\n", i, err);
++			goto destroy_queues;
++		}
++		j++;
++	}
++
++	err = mana_ib_gd_create_rc_qp(mdev, qp, attr, doorbell, flags);
++	if (err) {
++		ibdev_err(&mdev->ib_dev, "Failed to create rc qp  %d\n", err);
++		goto destroy_queues;
++	}
++	qp->ibqp.qp_num = qp->rc_qp.queues[MANA_RC_RECV_QUEUE_RESPONDER].id;
++	qp->port = attr->port_num;
++
++	if (udata) {
++		for (i = 0, j = 0; i < MANA_RC_QUEUE_TYPE_MAX; ++i) {
++			if (i == MANA_RC_SEND_QUEUE_FMR)
++				continue;
++			resp.queue_id[j] = qp->rc_qp.queues[i].id;
++			j++;
++		}
++		err = ib_copy_to_udata(udata, &resp, min(sizeof(resp), udata->outlen));
++		if (err) {
++			ibdev_dbg(&mdev->ib_dev, "Failed to copy to udata, %d\n", err);
++			goto destroy_qp;
++		}
++	}
++
++	return 0;
++
++destroy_qp:
++	mana_ib_gd_destroy_rc_qp(mdev, qp);
++destroy_queues:
++	while (i-- > 0)
++		mana_ib_destroy_queue(mdev, &qp->rc_qp.queues[i]);
++	return err;
++}
++
+ int mana_ib_create_qp(struct ib_qp *ibqp, struct ib_qp_init_attr *attr,
+ 		      struct ib_udata *udata)
+ {
+@@ -409,8 +481,9 @@ int mana_ib_create_qp(struct ib_qp *ibqp, struct ib_qp_init_attr *attr,
+ 						     udata);
+ 
+ 		return mana_ib_create_qp_raw(ibqp, ibqp->pd, attr, udata);
++	case IB_QPT_RC:
++		return mana_ib_create_rc_qp(ibqp, ibqp->pd, attr, udata);
+ 	default:
+-		/* Creating QP other than IB_QPT_RAW_PACKET is not supported */
+ 		ibdev_dbg(ibqp->device, "Creating QP type %u not supported\n",
+ 			  attr->qp_type);
+ 	}
+@@ -473,6 +546,22 @@ static int mana_ib_destroy_qp_raw(struct mana_ib_qp *qp, struct ib_udata *udata)
+ 	return 0;
+ }
+ 
++static int mana_ib_destroy_rc_qp(struct mana_ib_qp *qp, struct ib_udata *udata)
++{
++	struct mana_ib_dev *mdev =
++		container_of(qp->ibqp.device, struct mana_ib_dev, ib_dev);
++	int i;
++
++	/* Ignore return code as there is not much we can do about it.
++	 * The error message is printed inside.
++	 */
++	mana_ib_gd_destroy_rc_qp(mdev, qp);
++	for (i = 0; i < MANA_RC_QUEUE_TYPE_MAX; ++i)
++		mana_ib_destroy_queue(mdev, &qp->rc_qp.queues[i]);
++
++	return 0;
++}
++
+ int mana_ib_destroy_qp(struct ib_qp *ibqp, struct ib_udata *udata)
+ {
+ 	struct mana_ib_qp *qp = container_of(ibqp, struct mana_ib_qp, ibqp);
+@@ -484,7 +573,8 @@ int mana_ib_destroy_qp(struct ib_qp *ibqp, struct ib_udata *udata)
+ 						      udata);
+ 
+ 		return mana_ib_destroy_qp_raw(qp, udata);
+-
++	case IB_QPT_RC:
++		return mana_ib_destroy_rc_qp(qp, udata);
+ 	default:
+ 		ibdev_dbg(ibqp->device, "Unexpected QP type %u\n",
+ 			  ibqp->qp_type);
+diff --git a/include/uapi/rdma/mana-abi.h b/include/uapi/rdma/mana-abi.h
+index 2c41cc315..45c2df619 100644
+--- a/include/uapi/rdma/mana-abi.h
++++ b/include/uapi/rdma/mana-abi.h
+@@ -45,6 +45,15 @@ struct mana_ib_create_qp_resp {
+ 	__u32 reserved;
+ };
+ 
++struct mana_ib_create_rc_qp {
++	__aligned_u64 queue_buf[4];
++	__u32 queue_size[4];
++};
++
++struct mana_ib_create_rc_qp_resp {
++	__u32 queue_id[4];
++};
++
+ struct mana_ib_create_wq {
+ 	__aligned_u64 wq_buf_addr;
+ 	__u32 wq_buf_size;
 -- 
 2.43.0
 
