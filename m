@@ -1,171 +1,121 @@
-Return-Path: <linux-rdma+bounces-2564-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-2565-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8BCE98CB652
-	for <lists+linux-rdma@lfdr.de>; Wed, 22 May 2024 01:29:20 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 68F108CB9CC
+	for <lists+linux-rdma@lfdr.de>; Wed, 22 May 2024 05:33:10 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id DE9971F21E43
-	for <lists+linux-rdma@lfdr.de>; Tue, 21 May 2024 23:29:19 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 208591F22DD7
+	for <lists+linux-rdma@lfdr.de>; Wed, 22 May 2024 03:33:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 65C97149C7F;
-	Tue, 21 May 2024 23:29:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C9E4B249F5;
+	Wed, 22 May 2024 03:33:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="A/DWt0H7"
+	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="oWQGm2jU"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from NAM10-BN7-obe.outbound.protection.outlook.com (mail-bn7nam10on2045.outbound.protection.outlook.com [40.107.92.45])
+Received: from mx0b-00069f02.pphosted.com (mx0b-00069f02.pphosted.com [205.220.177.32])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 609B236134;
-	Tue, 21 May 2024 23:29:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.92.45
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1716334154; cv=fail; b=ax4XyBXcJca7yBZMV8nBP4GJMcIjf5OQqJPb9I0aNwf0pXjWNe3h1iChK14pLEakE7ArpXGdm6/9c1IPKyuXeL9WcvVl5tA6O3Ef/dlH9hMUpoAMx5LIZmd87DclA2O4jBFlGDBA2Xj+OTUjOjlMMDGGTG1rqVW0ne3eYBzgRj4=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1716334154; c=relaxed/simple;
-	bh=s94r+PaiwdQyyNE59tKpe169KFptDkR2j1AXb5FSC+w=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:Content-Type:
-	 Content-Disposition:In-Reply-To:MIME-Version; b=m5m1DbGYnGChb3p3aZWKPGz32ZEABn7oNqB2/sXdjk9aJyHvH5Am6jIr9fZZCcENZi5vKl0GJFGe7UJEsPML8LYdsJyLzvl6TFHEY5jdF/cJ4osm09wDKXyOXZppRApWuU691A7X1cbcugDDzxwn0iQFLSs1oXrsyNlulHtpPq0=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=A/DWt0H7; arc=fail smtp.client-ip=40.107.92.45
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=FJyWAP0CbPfb4NbMlCoEh8IVUwN6ICn1nl5SdOcA7qgTm3tx47iLCOwLO2WdWbywWj3Tj9snHukF7sCvtui/+BCYPeN+MFzU9L9IxHZLGhA8DrZFhSCXusHAIPcRRYdRxLbQKF+eMRcg7+moXYaHHgM9hZjeTnJ/IkhaULHdlL7tGbaqPMtAlIInEyqKdQbgMF0L6mUnX2/PRZQKf8SVaQEMYxA3d38oIvNq7m3CAdtGY3VyhciGzzRMBG2zvRfRga/9EjGio/4E3wxT7kfkRWeHvVJK1NJoGNsQjANUohttl+A8bt5/HlpH/UA+mr+dkuSvmEFP3C+bwqm2HH2eKw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=s94r+PaiwdQyyNE59tKpe169KFptDkR2j1AXb5FSC+w=;
- b=I7KStIrcug1YQtX/Okbf/GxqNE59bsd0nkJo+ZlSDI+cmq5tNTBiNr9IfSfAgGw/2CEN03D8lBK9IjxAJrZ8+HE+7O8nXWZFMCA7yP7DUGVPCJOxQmXxcTieVJtuR8ibIePNhcFagIwhlsZg63E++9Fsv/HG6Fv3hsrsctW0EYKCljvZai3uMuAPnrvLsDnxBiCPJc1rM7cy1XQOv6vZlTKYpg3vZkLWKhSgXjPRN3r9xxK5Bem6KYchLrPBUXtO5Vh+VHxFFBKDTNmSOgPnKYiEJCFAhLhk73fMUTjX0iquV3l/xMw0RwKIuGILRduxfJxYdYGdVnLLrSfR0jcz0g==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=s94r+PaiwdQyyNE59tKpe169KFptDkR2j1AXb5FSC+w=;
- b=A/DWt0H7w/b71g0In/UGoHBfB+x1hbqqVxQTzntzX4seZhaMbjhWEys3fpqocTRLYDL3mfGyiwTM46uG10WZirfY99C9CwlFsvACfNtCYZcRG04MJBUdsR/LZrxRmVkTFV0BpwN/Mm0Ei5BB4RlNi7hbDJkIMizgB7AJGjPZQcxvNpNVRmNt/cQyhgE7EGafQuf2Pe+DM4TstmTbXN0lPcy6OCf53TBbwDLFykHrW8j9Lnf5XnCRPWCQ+X/uolBR97hz0+NnWc0blyInG9m24kIAnO0LMFACeU4EWK+qr37lFAljIHCZQlLVzhr5jUaPcYV9Ll+cgBLJ4je8xDG4fw==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nvidia.com;
-Received: from DM6PR12MB3849.namprd12.prod.outlook.com (2603:10b6:5:1c7::26)
- by PH7PR12MB8156.namprd12.prod.outlook.com (2603:10b6:510:2b5::10) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7587.35; Tue, 21 May
- 2024 23:29:07 +0000
-Received: from DM6PR12MB3849.namprd12.prod.outlook.com
- ([fe80::c296:774b:a5fc:965e]) by DM6PR12MB3849.namprd12.prod.outlook.com
- ([fe80::c296:774b:a5fc:965e%4]) with mapi id 15.20.7587.035; Tue, 21 May 2024
- 23:29:07 +0000
-Date: Tue, 21 May 2024 20:29:05 -0300
-From: Jason Gunthorpe <jgg@nvidia.com>
-To: Sagi Grimberg <sagi@grimberg.me>
-Cc: Chuck Lever III <chuck.lever@oracle.com>,
-	Linux NFS Mailing List <linux-nfs@vger.kernel.org>,
-	"linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>
-Subject: Re: Safe to delete rpcrdma.ko loading start-up code
-Message-ID: <20240521232905.GQ20229@nvidia.com>
-References: <DE53C92C-D16E-4FA7-9C0B-F83F03B1896F@oracle.com>
- <8cc80bdb-9f17-4f44-b2e6-54b36ac85b63@grimberg.me>
- <20240521124306.GE20229@nvidia.com>
- <5b0b8ffe-75ad-4026-a0e8-8d74992ab7b6@grimberg.me>
- <20240521133727.GF20229@nvidia.com>
- <46c36727-ef93-44ca-9741-df2325d4420c@grimberg.me>
- <20240521152325.GG20229@nvidia.com>
- <e558ee64-48fc-48b9-addd-eab7f9f861ad@grimberg.me>
- <20240521163713.GL20229@nvidia.com>
- <0f9ddfe5-67ff-470b-8901-d513dceb757e@grimberg.me>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <0f9ddfe5-67ff-470b-8901-d513dceb757e@grimberg.me>
-X-ClientProxiedBy: BLAPR03CA0060.namprd03.prod.outlook.com
- (2603:10b6:208:32d::35) To DM6PR12MB3849.namprd12.prod.outlook.com
- (2603:10b6:5:1c7::26)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A973B139B;
+	Wed, 22 May 2024 03:33:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.177.32
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1716348784; cv=none; b=j9QsirrPrXHNqCAAETOaH9Vi5OFqY56Fz81UvurqchNkI9lXrmeQNGbzqBttE0SvQYFAYFNROTMX+6YMjEerORqsaJWJymu+7vSONlEPO4Yagex+HB70G245PYMRzCUUE2I2PrVNSpyA/rJZ1sx4M4+THmdtrOFgRr2xoCd+QLo=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1716348784; c=relaxed/simple;
+	bh=LPR/3OUX7k4uodzrLlE9kM1YyY3naFlHqoeE6DgyglE=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=K9brh0qkIFuYBkUWaqVjssCsRIcCPbRdIps8aQxc79B9VSmfmQTujVuE7DmNVUOpbQN+Wv3Gxs1DyK+5wF8mSBLdGYUXOmdlNmilM/kRhf2mvPkPk89DxmPgA/8k0jr87purruoQ1s3+scZ55ohX/cDdePw3h5EJfXj17atXMrc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=oracle.com; spf=pass smtp.mailfrom=oracle.com; dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b=oWQGm2jU; arc=none smtp.client-ip=205.220.177.32
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=oracle.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oracle.com
+Received: from pps.filterd (m0246632.ppops.net [127.0.0.1])
+	by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 44LJi1pS004574;
+	Wed, 22 May 2024 03:33:01 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-transfer-encoding;
+ s=corp-2023-11-20; bh=Wixmg3oAwvlEp7wraIn9B9q1PFisDmfBpVWJ4kNjCUY=;
+ b=oWQGm2jUv4hcNfvHEqyO8tAN5cHPXk4lab33Wlz54xpCYMlqp+ZdhawkRUCOXis8D/cP
+ PE1gffdLQC1lNsY/jlK0sK3mVczHMxVKe2PPW01w5nWlP6sqKzuVQMspioRxMopktiid
+ pvwSryJlUF6FfImZfQS3tm5dhkeBXA+OjzuyivVYJbyKWFNCbj0PIORyMespfjpbuyco
+ WfzArcjfBPuxMvX1HdgCZVnxCEEZir7Cwv/etpH3BkpgxZE19/BDyfbmKogD65+ssXUi
+ Pwe2n4JfJUZi48VD+V5Wz655dD212Rb3S05LN8ix3kZyQy7Xqy1STN6VE7YUenK/Sw7s IQ== 
+Received: from iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta01.appoci.oracle.com [130.35.100.223])
+	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3y6kxv6scm-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Wed, 22 May 2024 03:33:01 +0000
+Received: from pps.filterd (iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
+	by iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 44M0XvaK038479;
+	Wed, 22 May 2024 03:33:00 GMT
+Received: from pps.reinject (localhost [127.0.0.1])
+	by iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTPS id 3y6jsem896-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Wed, 22 May 2024 03:33:00 +0000
+Received: from iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
+	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 44M3Txah038463;
+	Wed, 22 May 2024 03:33:00 GMT
+Received: from aakhoje-ol.in.oracle.com (dhcp-10-76-55-136.vpn.oracle.com [10.76.55.136])
+	by iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTP id 3y6jsem88e-1;
+	Wed, 22 May 2024 03:32:59 +0000
+From: Anand Khoje <anand.a.khoje@oracle.com>
+To: linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc: anand.a.khoje@oracle.com, rama.nichanamatlu@oracle.com,
+        manjunath.b.patil@oracle.com
+Subject: [PATCH 0/1] RDMA/mlx5: Release CPU for other processes in mlx5_free_cmd_msg() 
+Date: Wed, 22 May 2024 09:02:55 +0530
+Message-Id: <20240522033256.11960-1-anand.a.khoje@oracle.com>
+X-Mailer: git-send-email 2.39.3
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DM6PR12MB3849:EE_|PH7PR12MB8156:EE_
-X-MS-Office365-Filtering-Correlation-Id: ed307bb9-d1dd-4c39-fe0a-08dc79edcf7b
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;ARA:13230031|366007|1800799015|376005;
-X-Microsoft-Antispam-Message-Info:
-	=?us-ascii?Q?ydP8CSRiOETNae3dai5qrXkcaLVR5NILGWc1NqIXEYfak6X/+otQDBB+XyQu?=
- =?us-ascii?Q?3/ixpM8CGVrcGXEKuxfZ7iXtqIN5NixytTDW6JscLS6ce/wnskv4jQGj/EVs?=
- =?us-ascii?Q?U+zrO4P76hf4VNi83gLFB3eVaTq2tRj4pSbXBBVGu+5dASKMsW6ZbzwGcBrb?=
- =?us-ascii?Q?+knrSMpeVCXEpAH53xmxsMtiYa57Pp1Bg7bmeFs8t+dMoAXs5qSs3/ifmDnS?=
- =?us-ascii?Q?SjU4Fc3OO28JboQr1vqr+b09/wj6pt28AQRZt7Gqbo1eIWg3LqP7Cx+b84vz?=
- =?us-ascii?Q?MXePZG2wiWs+pHjWnSzsa2EjHjJk8TINPa1BdNeVJfq1IKt4xrDj2UxtP9U1?=
- =?us-ascii?Q?rLkMUOfKuJLp561dv8cMHydyW9P3tpcX0LeaHghApMJbbPeFTTKfz1c/DhYs?=
- =?us-ascii?Q?NHKjVEIGcDwpMEPlLsxJif1QQ7hd+XJ4tSoIRReWqBPbjbKNJd1nt86vxv+w?=
- =?us-ascii?Q?t+FPqXGQrnU27Wt7qQh9OJmhCZGPW5MgKvuiV5NEng4h3cZI2umPQBkoTw2J?=
- =?us-ascii?Q?2joULA8n4cXly9Lrih3LlVH40PKdq0RfTax+9wu9euC+1kStKeSHDbk/V+uY?=
- =?us-ascii?Q?WFi3eLeOhwndUQdm0Npey5PE1yP9rZ3jz6mwfiB2RclgnV94Oogrv8LXVsB7?=
- =?us-ascii?Q?J92wqQl5fawfp+H0N/M/MFziaDIL2HrD2xlYyaBjsruixrhSB6GKXajHzj7B?=
- =?us-ascii?Q?lXypdm3GGSyxBfi9e3noXRGya5YoLLlrUjZIg0ze2ALccOZaqtT/KW1QJ1oO?=
- =?us-ascii?Q?HtnQYxHeHHrc3UWtSGrf3ej/CA4fmeUJfHOb8WQ9TFqLGKVMbVjnzfD1aA1K?=
- =?us-ascii?Q?ZxMwj5AdB0/kYVevTZniOvL0/61esKxeXmnuTI+nzs4a1/Oczd7cRWi9p/Rg?=
- =?us-ascii?Q?H5JFw4GTzRwAcSdrgXrN5iMEcjyenYcX/YHa1KC+XiLbQKdOTyefynjs7FkL?=
- =?us-ascii?Q?YQQqIfQPrPAL895yZob68BGEeebWZQ9bQW6GlfFt7EN9Ft8VQNia8CqaIXMb?=
- =?us-ascii?Q?GsqOkNc4QTiCWGFQJCni0aRkdu3sD047xt0vGSR9KtvRR/KMhLIkctgJSGJm?=
- =?us-ascii?Q?RPLP2pOj/SQRaYs5c6VF9MmW2S7a+GCCrjX1Y6IysrMoA38Hwrdpc5YBkCrM?=
- =?us-ascii?Q?Et1T/CpXkGZszQ4mGblXqwb4wTIMisup+qlgCEohu5iCBkX+nqf5gE0QcjBP?=
- =?us-ascii?Q?opsrrSra0iKokFQmRfA4N4MNOj4wHUqd4dhfJRiE/j4PkQ0CMCZBiHYNevFH?=
- =?us-ascii?Q?39nwWP6rYATwqZl98vtbPO1neq5YgnjCqhsOuotxWA=3D=3D?=
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR12MB3849.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366007)(1800799015)(376005);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?us-ascii?Q?Szf82EuDgh1HAKKVfZgZlzsW5K/M/Prl/6wBIHYQuw15oWP2X1WbqcEeHiVS?=
- =?us-ascii?Q?VQZYHxxhGZKhfQCMv35YAW7JRcMoJaiKIAUrBi8N8JQLwLSzDS1KgqkZw65M?=
- =?us-ascii?Q?uKLOLgb+vpWZ9eSi/KZRh6bpIZ121W2+m4lg6An640dNZsZZP/Dz8bq54J3k?=
- =?us-ascii?Q?UY+ZJQjF9/c/OediRBjancpXSjerhwVETY1EYQh+4BZJ7O3MbZ8kL37MLj1A?=
- =?us-ascii?Q?3pfAAoy70DeFNqPm6Q7rFUPItHyGqvrzMmC72Vhki6Rl+9xPrHL4Csk87+RP?=
- =?us-ascii?Q?Fr7yWx/t29kf5h3J11aJT2FcDiA2/+0ZOKcf188FhoKsb0RwUvP6gVvUshYG?=
- =?us-ascii?Q?3EZvjQBRKZOKY6GFu+BH78++vGr+k0Q6usUZKp4Hkf0Sr26Ipalb8SxfIgEJ?=
- =?us-ascii?Q?V6Y5SBiXtEremfPmJo7LvBWvOE4WVdFQhwSPImwVZMYjUpBv+QQg/M4vQ+JI?=
- =?us-ascii?Q?RyEgxDram1VUqBuNVFqa/VqWFM2GYQhwf99Xb76d76CmV5Bf63KU49AjXeZ0?=
- =?us-ascii?Q?zBkaFvb/rMWxfpKL5LArnBACIixN5eZZNH8yrwz12fpPAnnRcPokf4M1Cuck?=
- =?us-ascii?Q?uMrL8zfq4XylNgWsPMPJIiQvKfv9t9xrCsdkcLdwSBaQJ5+joINCFviZEzL9?=
- =?us-ascii?Q?YVGBR3w1P9XKMZqm/pYr4jdbyf/bfNWTb0J03gX0EWR3GS5HvV0d0p11SQ2L?=
- =?us-ascii?Q?u1Ywymv/ccaVXco4fhqaeuvm0+6JzsEyxWeiHlaP30z0GMPB9POWrZLEnKyq?=
- =?us-ascii?Q?zl9LKQtmDP87P8JJjPp+zXh0oVDRRJw6ln1Lqx25Mr/dl2uGj+2gXOqWsWzm?=
- =?us-ascii?Q?p25A80Wtj2VZLRCsTgxAPXRnzzZYjaFeVdZmR/eRGy6CjM52AcvvaqxTgaaS?=
- =?us-ascii?Q?62L2E+ROjXLkYmymPOZT/D2mP5bgeEI+unjTKPcAmr5t8OpUbmdCzPjX0BG7?=
- =?us-ascii?Q?TRkh5Z4CJZ13TE/DUk0VwPnBV3ldzQ6EXBHoXLMt/vfsERV4mX2Hsxk3tqks?=
- =?us-ascii?Q?am+WvzoSzMRtwLEkE25iDaBETGsJX+ppDIeCJCQCeI9W02fNUlfQ5Pi3n+D/?=
- =?us-ascii?Q?vrgRaPlJDEOdpz+FQyl5XrLoZ4oOwg8wIcZsc3mDA5klvC3nACAv7pUoxZrJ?=
- =?us-ascii?Q?kJEObXRQCy4rnxP/ImSRoOOMZ73Z0Zfv47Is61f2MP5dOgQMS+FyNNEYOSbz?=
- =?us-ascii?Q?hgP4Fi44xsIQOv3XQwdXAxkLiOvZeEO0+RICzCj3ijKKy1FhSShSyFj0LM13?=
- =?us-ascii?Q?pst8wn3fQiBY1LM0u22/Y/nhigqXaKigQyr3tAOn7hR7GlV0vhdbA45tqPTx?=
- =?us-ascii?Q?zK4Ki/sWaHUHBwZSG7U+Gt60UwrXqVIQ18S+UJh9b+81WQv8akx15f4NnaMd?=
- =?us-ascii?Q?cVMnMAW48DS3F2o99Pen0H22ypYR4B+SVoT0VYmv2rrJmc3KWOFwiGob+Csc?=
- =?us-ascii?Q?qUqcx7PwtEXHdrsF9Mk346tRiKW8SHrFoout5WPT3mztJANYtB17L85w9hkl?=
- =?us-ascii?Q?hiGUb/EoB4ZVV6TRSbRQEb4GwTFn44D3G6ux/EbbZFAuc3aTr8ZQ25YMMWvy?=
- =?us-ascii?Q?Bxx+u3CTZvtOE4cpr4Q=3D?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: ed307bb9-d1dd-4c39-fe0a-08dc79edcf7b
-X-MS-Exchange-CrossTenant-AuthSource: DM6PR12MB3849.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 21 May 2024 23:29:07.6288
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: /7sxRtew7tGR8OCQ5JO7VBwqdgSFr3hrSYv4YRBeHP5406Q4UzYVJXyYUa+4d7QE
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH7PR12MB8156
+MIME-Version: 1.0 Content-Type:
+Content-Transfer-Encoding: 8bit
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1039,Hydra:6.0.650,FMLib:17.12.28.16
+ definitions=2024-05-22_01,2024-05-21_01,2024-05-17_01
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 adultscore=0
+ mlxlogscore=999 bulkscore=0 spamscore=0 malwarescore=0 phishscore=0
+ mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2405010000 definitions=main-2405220024
+X-Proofpoint-GUID: bHqx_4QwdUItVzMTZoVKOLzApzQ3fMxg
+X-Proofpoint-ORIG-GUID: bHqx_4QwdUItVzMTZoVKOLzApzQ3fMxg
 
-On Tue, May 21, 2024 at 11:30:00PM +0300, Sagi Grimberg wrote:
+FW pages are allocated and reclaimed through a worker pages_handler().  This
+worker allocates mlx5 mailbox messages to populate meta-data associated with the
+pages being allocated or reclaimed.  During reclaim of pages, after getting the
+meta-data of the pages to reclaim and releasing the pages, the dma pool
+associated with the mailbox message is freed using dma_pool_free(), where it
+tried to find the dma_page of this dma_pool by walking the page_list.  This is a
+slow approach and if the number of pages reclaimed is high, it takes a lot of
+time in execution of one work.  As a result, other critical processes are
+starved of CPU.
 
-> I just don't see why the presence of an rdma device dictates that
-> all the ulps autoload. Does rxe/siw count as rdma HW?
+This patch checks if time spent in mlx5_free_cmd_msg() is more than 2 msec, it
+yields the CPU for other processes to use.
 
-It doesn't do all of them, just the ones the distro decides it wants
-to do, usually for boot volumes. It is a weird historical thing :|
+In our tests, we were able to allocate around 3.4 million FW pages and tried to
+deallocate all of them at once, this resulted in the worker thread to yield the
+CPU many times.
 
-Jason
+May 21 04:39:28 kernel: mlx5_core 0000:17:00.0:
+mlx5_free_cmd_msg:1352:(pid 327407): Spent more than 2 msecs, yielding CPU
+May 21 04:39:28 kernel: mlx5_core 0000:17:00.0:
+mlx5_free_cmd_msg:1352:(pid 327407): Spent more than 2 msecs, yielding CPU
+May 21 04:39:29 kernel: mlx5_core 0000:17:00.0:
+mlx5_free_cmd_msg:1352:(pid 327407): Spent more than 2 msecs, yielding CPU
+May 21 04:39:29 kernel: mlx5_core 0000:17:00.0:
+mlx5_free_cmd_msg:1352:(pid 327407): Spent more than 2 msecs, yielding CPU
+
+
+Anand Khoje (1): RDMA/mlx5: Release CPU for other processes in
+mlx5_free_cmd_msg()
+
+ drivers/net/ethernet/mellanox/mlx5/core/cmd.c | 7 +++++++ 1 file changed, 7
+insertions(+)
+
+-- 1.8.3.1
+
 
