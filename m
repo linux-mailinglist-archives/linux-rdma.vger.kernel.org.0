@@ -1,99 +1,108 @@
-Return-Path: <linux-rdma+bounces-2572-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-2573-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7A5DE8CBDA7
-	for <lists+linux-rdma@lfdr.de>; Wed, 22 May 2024 11:20:48 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id B317F8CBF43
+	for <lists+linux-rdma@lfdr.de>; Wed, 22 May 2024 12:29:19 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 302CA1F23131
-	for <lists+linux-rdma@lfdr.de>; Wed, 22 May 2024 09:20:48 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6EB9D28326F
+	for <lists+linux-rdma@lfdr.de>; Wed, 22 May 2024 10:29:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 31A4B811FB;
-	Wed, 22 May 2024 09:20:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A2EE7823CB;
+	Wed, 22 May 2024 10:29:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Zcgnz/v3"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="cqE23WdT"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from out-181.mta1.migadu.com (out-181.mta1.migadu.com [95.215.58.181])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D394D2D047;
-	Wed, 22 May 2024 09:20:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 00C28823B5
+	for <linux-rdma@vger.kernel.org>; Wed, 22 May 2024 10:29:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1716369630; cv=none; b=bWbTqgePgWjPU2+Q+WfbvK+5pfx0PzicVgbp0Oal7KQY18C5OZYOiU4EtiXWZL8oa8q3snVboWfXYzykdLXLJxqea5NN3HClVNN7PI4XYjcGOUe13Z/PlfWq4mE1La/eh0g9q1xjg6tl34t+ACuwuByfOGYCJfxZjRmO8G9edhM=
+	t=1716373755; cv=none; b=YP+dTXVCwxe8Vw07l4jXBD5yH89ghIP+1L+p0vnuzP81BV0kePBtYH4dQVwoq8V3JJtVzZicWMFmQDOUzy67UPIRdvpxlDERaYr9mh62a9pWl4IwwYtYnI3T2WcOTtxmA0ze9KDchP7FErfJcWqVNxdG8DyV3JRT4Lqf8RS5yLg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1716369630; c=relaxed/simple;
-	bh=xZs+ye5qwNKov0tLlq5iXfmZRCL5RvXS0tDyXCyIVYM=;
-	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
-	 In-Reply-To:To:Cc; b=cfCTcE5+9u4PL5D40b/j+rR7f72PVd6hap/ddTMOYecjIFj7PwVMkqSoESlu27Jl9Y1OUfjXipyAqhQnVss7aHzfeNcJ/eaK5trC5Dc6GDysQUlFv4y7eBHMbwZ7T7KFK11qKQFrSWxRjRRM52lcgYTRwGmFEbC4F1DES1Kschg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Zcgnz/v3; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 4D76BC32781;
-	Wed, 22 May 2024 09:20:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1716369629;
-	bh=xZs+ye5qwNKov0tLlq5iXfmZRCL5RvXS0tDyXCyIVYM=;
-	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=Zcgnz/v3xLpANv3pLHA5JZSj6Eml9zBnDwCrG33JwY/tXdM/srH4fSUHG00m+4X2/
-	 nAmBkCaFldyF1DyeMCQbMQLGxvqRrljwPSUYfozmADSwLbmQKEde/JNY2yNjUVVUax
-	 T2zddxxoaTWKVQFK2M8Sq1LSMQw80ZOK5zv/O0rgNnaHTQ4i0WPRPmeTV9EpeQhf3S
-	 d6xrQMdkc5LCflI4Trt6hiI30OvFcbz9MPlFh8PPxZlLcW8JuLokNWqZbvYQeSbLrs
-	 R+MQh4qtkunJaEEAnb+eCkPiS4Y1BA0NvBrelwySPp3kBd7WNHNmDugHiquTbNF52Q
-	 IcElKkdn8QWdg==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 3C09CC4361B;
-	Wed, 22 May 2024 09:20:29 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+	s=arc-20240116; t=1716373755; c=relaxed/simple;
+	bh=YgWOXcmXZa+NxNmnvSW0g33eq38hRBxHQFuxngZ9Po8=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=cQpt5RPfyuGnmg9iqgLaMXVfTeY6gLhbWwTx2fG9QThMX2p76LdPZvBg0d4iaqsmL7jXKllF5oeK2OiH3OE8RYzP40LbS1EkbUr4ZIsRrANLNtYihLhlfh/ncD88ZrXr1xUnYLOaXyNGX9BfdwtTBxYQBZT3nrO/3Oh6sFC6pWs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=cqE23WdT; arc=none smtp.client-ip=95.215.58.181
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+X-Envelope-To: kotaranov@linux.microsoft.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1716373750;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=dBqCPT8x+cGM4ULy2b+eQuWgpEzPPgSD98pYc3964+Q=;
+	b=cqE23WdTOHz3c6Jp+iMdabjGcebl/Tfu5NNgrG2fL0upgM3qZpFnGRGVygnZIMF0dpOnVD
+	Fnvlv1RoaFgFfkYcpfMxAFJKplKMvQ7JWZdDlKg7+kHAcO7/InSkam1rmJG/0BaEPbTXV0
+	Jv7dOi2bL4+CBhzK5l9v/UtkvVoVv9U=
+X-Envelope-To: kotaranov@microsoft.com
+X-Envelope-To: sharmaajay@microsoft.com
+X-Envelope-To: longli@microsoft.com
+X-Envelope-To: jgg@ziepe.ca
+X-Envelope-To: leon@kernel.org
+X-Envelope-To: linux-rdma@vger.kernel.org
+X-Envelope-To: linux-kernel@vger.kernel.org
+Message-ID: <10a9df97-7b1b-4c0f-ad11-3ecf6512d926@linux.dev>
+Date: Wed, 22 May 2024 12:29:08 +0200
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Subject: Re: [PATCH rdma-next v3 0/3] RDMA/mana_ib: Add support of RC QPs
+To: Konstantin Taranov <kotaranov@linux.microsoft.com>,
+ kotaranov@microsoft.com, sharmaajay@microsoft.com, longli@microsoft.com,
+ jgg@ziepe.ca, leon@kernel.org
+Cc: linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <1716366242-558-1-git-send-email-kotaranov@linux.microsoft.com>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Zhu Yanjun <yanjun.zhu@linux.dev>
+In-Reply-To: <1716366242-558-1-git-send-email-kotaranov@linux.microsoft.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH V2 net] net: mana: Fix the extra HZ in mana_hwc_send_request
-From: patchwork-bot+netdevbpf@kernel.org
-Message-Id: 
- <171636962924.3713.1861130025429857473.git-patchwork-notify@kernel.org>
-Date: Wed, 22 May 2024 09:20:29 +0000
-References: <1716185104-31658-1-git-send-email-schakrabarti@linux.microsoft.com>
-In-Reply-To: <1716185104-31658-1-git-send-email-schakrabarti@linux.microsoft.com>
-To: Souradeep Chakrabarti <schakrabarti@linux.microsoft.com>
-Cc: kys@microsoft.com, haiyangz@microsoft.com, wei.liu@kernel.org,
- decui@microsoft.com, davem@davemloft.net, edumazet@google.com,
- kuba@kernel.org, pabeni@redhat.com, longli@microsoft.com,
- yury.norov@gmail.com, leon@kernel.org, cai.huoqing@linux.dev,
- ssengar@linux.microsoft.com, vkuznets@redhat.com, tglx@linutronix.de,
- linux-hyperv@vger.kernel.org, netdev@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
- schakrabarti@microsoft.com, stable@vger.kernel.org
+X-Migadu-Flow: FLOW_OUT
 
-Hello:
-
-This patch was applied to netdev/net.git (main)
-by Paolo Abeni <pabeni@redhat.com>:
-
-On Sun, 19 May 2024 23:05:04 -0700 you wrote:
-> Commit 62c1bff593b7 added an extra HZ along with msecs_to_jiffies.
-> This patch fixes that.
+在 2024/5/22 10:23, Konstantin Taranov 写道:
+> From: Konstantin Taranov <kotaranov@microsoft.com>
 > 
-> Cc: stable@vger.kernel.org
-> Fixes: 62c1bff593b7 ("net: mana: Configure hwc timeout from hardware")
-> Signed-off-by: Souradeep Chakrabarti <schakrabarti@linux.microsoft.com>
-> Reviewed-by: Brett Creeley <brett.creeley@amd.com>
-> Reviewed-by: Dexuan Cui <decui@microsoft.com>
+> This patch series enables creation and destruction of RC QPs.
+> The RC QP can be transitioned to RTS and be used by rdma-core.
 > 
-> [...]
+> RDMA-CORE: https://github.com/linux-rdma/rdma-core/pull/1461
+> 
+> v2->v3:
+> * fixed c99 comment style
 
-Here is the summary with links:
-  - [V2,net] net: mana: Fix the extra HZ in mana_hwc_send_request
-    https://git.kernel.org/netdev/net/c/9c91c7fadb17
+Thanks a lot. I am fine with it.
+You can add:
 
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
+Reviewed-by: Zhu Yanjun <yanjun.zhu@linux.dev>
 
+Zhu Yanjun
+
+> 
+> v1->v2:
+> * Removed an old comment in 2/3.
+> * Fixed text in a debug message in 3/3.
+> 
+> Konstantin Taranov (3):
+>    RDMA/mana_ib: Create and destroy RC QP
+>    RDMA/mana_ib: Implement uapi to create and destroy RC QP
+>    RDMA/mana_ib: Modify QP state
+> 
+>   drivers/infiniband/hw/mana/main.c    |  59 ++++++++++
+>   drivers/infiniband/hw/mana/mana_ib.h |  99 +++++++++++++++-
+>   drivers/infiniband/hw/mana/qp.c      | 166 ++++++++++++++++++++++++++-
+>   include/uapi/rdma/mana-abi.h         |   9 ++
+>   4 files changed, 328 insertions(+), 5 deletions(-)
+> 
 
 
