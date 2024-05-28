@@ -1,46 +1,46 @@
-Return-Path: <linux-rdma+bounces-2629-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-2630-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 26C0B8D1BB1
-	for <lists+linux-rdma@lfdr.de>; Tue, 28 May 2024 14:53:34 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9D92D8D1BB7
+	for <lists+linux-rdma@lfdr.de>; Tue, 28 May 2024 14:53:46 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 43CD41C21E81
-	for <lists+linux-rdma@lfdr.de>; Tue, 28 May 2024 12:53:33 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 32B421F22D18
+	for <lists+linux-rdma@lfdr.de>; Tue, 28 May 2024 12:53:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A746C16D9D9;
-	Tue, 28 May 2024 12:53:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9A60C16E86A;
+	Tue, 28 May 2024 12:53:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Q5ekjcuJ"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="K6KF4x83"
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 681DE16D31F
-	for <linux-rdma@vger.kernel.org>; Tue, 28 May 2024 12:53:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5B39116E866
+	for <linux-rdma@vger.kernel.org>; Tue, 28 May 2024 12:53:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1716900795; cv=none; b=dS/kzOHosy+9kYg/7iveo3I3uZ1CESqwfKLhagXcohdrjkt7ACZXdsvbBHjBCgpAgBmwkOJCrGuJM7k+Qxia6syJcLMHoNAt0iifwaVC7eaEnf8Tm5u34ewMy+4q/u8cWgvHbxvzxduGm7shlICi+Fzq24/+pjAkfRAq+G5Nt5Y=
+	t=1716900799; cv=none; b=fg/ms4KA0ITmseZV3lA03SW32LjTPnW2EtWfSjbLcxmDgYG12nCwscHdiAJRl25WCutIPzyf8zYdArfjJxaWAxmVl8gfvWoFBxVhtM4yttrqIIJN7pdpeitOoBtyDq+nJBFwm9UzMSj2RjOHQlXhTN9lruf7nRbSbQE9w3tGix4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1716900795; c=relaxed/simple;
-	bh=j/VaX961WtOx0tOpWiKQjxZSDBDT5m+pLYMsvbM6Ji8=;
+	s=arc-20240116; t=1716900799; c=relaxed/simple;
+	bh=TM/gJtG2Qa0zhwgcXm0tDtj2n6FAF818ZS88FOkE+8s=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=d11WgeyZpMquD8WlITcZa1eeTEEK3xEJ3q9vjex7QplSJ/PdbGWeAgWS0fL4yaZZ8/vKFDExMw9ouKCqccFb8lSVPU9wr0pY+iT/MQberWu78zL/HObBhnXSs7fnLezO8bvmrcSh9c0tU2Y7fwCklkNrB5JKNXhh5X10YYs3q9g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Q5ekjcuJ; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 626A0C32782;
-	Tue, 28 May 2024 12:53:14 +0000 (UTC)
+	 MIME-Version; b=K3JKK1Ruryz8Q70KWw+6rWQc4ATvxmwfcwgfZYgrMdeTm7BrNZTiQSa0mr6t5/R2fS5YdOpisyHF7FOMVZIFvnEkS15+ORqS4L0Amz1XkLX3STdY+O9nwr5ZHo+4Oge7QP8rjoVH6rFxwLAodyOMTxH4qZgRYqUbdzcrLP+C5hM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=K6KF4x83; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6D313C4AF07;
+	Tue, 28 May 2024 12:53:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1716900794;
-	bh=j/VaX961WtOx0tOpWiKQjxZSDBDT5m+pLYMsvbM6Ji8=;
+	s=k20201202; t=1716900799;
+	bh=TM/gJtG2Qa0zhwgcXm0tDtj2n6FAF818ZS88FOkE+8s=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=Q5ekjcuJE+f49i4GjOc70Gafn1Gp32I+u4aTmcO+GmXqoyaFPoBAsosTtdlGvcJk7
-	 BpKxOXNx3IJ78vxv5mrHJrqpKHUuiFI/8tnz9/jcc9zYu8DFsLp+VRvlfGxr/vK6ZI
-	 2U+6F2AQeajByCIhApHxzdWoJWRtIbX7IJqd00FUsFA1XRAccQhGIN6aEq2L85bxcO
-	 M7IfP4cfmwXHWp0bOzPDAYEATPjkeHZuDG/4sci9QI7afDyOMd1mpkTP7ahC4N6PUe
-	 o5QJBRx7vZmJkefa5pY5wqihccAUkKkfXT0TVZpoN6vl2qChdN/uwuRhQRrwfdMV8w
-	 6TJQsly/PHdvw==
+	b=K6KF4x837hLn9wtgZiTwSdRFxZxDkxNXzOLJkS+zWfACMuxl05cEKHOnPtmghT4l/
+	 EyX0FyAmGbufOWYeh+2d9vwQkQL1S+NoHXuw9Q8ugGkosKh2JCIECfmuLtQbGUBNgc
+	 4GcVuABAIRPA2C9qSlbe/RzrZHOvahihh1v4wqMv87igIn9+blvBIWtKrCTC9brKk+
+	 cFNAjebOXLNQfA8hi9H5EVdesGdzslEtGyxdCz3fR3GdOpEp1SQAZN7PhUhQTKBLN+
+	 27nt6+SIbZd7v/4lPULbXPk08WEjIjTdTLzYccpn2SyDXUuZClmg1cvJXyO3kf+Skp
+	 QP1NtAvDrixaA==
 From: Leon Romanovsky <leon@kernel.org>
 To: Jason Gunthorpe <jgg@nvidia.com>
 Cc: linux-rdma@vger.kernel.org,
@@ -49,9 +49,9 @@ Cc: linux-rdma@vger.kernel.org,
 	Or Har-Toov <ohartoov@nvidia.com>,
 	Patrisious Haddad <phaddad@nvidia.com>,
 	Yishai Hadas <yishaih@nvidia.com>
-Subject: [PATCH rdma-rc 3/6] RDMA/mlx5: Follow rb_key.ats when creating new mkeys
-Date: Tue, 28 May 2024 15:52:53 +0300
-Message-ID: <7c5613458ecb89fbe5606b7aa4c8d990bdea5b9a.1716900410.git.leon@kernel.org>
+Subject: [PATCH rdma-rc 4/6] RDMA/mlx5: Ensure created mkeys always have a populated rb_key
+Date: Tue, 28 May 2024 15:52:54 +0300
+Message-ID: <7778c02dfa0999a30d6746c79a23dd7140a9c729.1716900410.git.leon@kernel.org>
 X-Mailer: git-send-email 2.45.1
 In-Reply-To: <cover.1716900410.git.leon@kernel.org>
 References: <cover.1716900410.git.leon@kernel.org>
@@ -65,34 +65,46 @@ Content-Transfer-Encoding: 8bit
 
 From: Jason Gunthorpe <jgg@nvidia.com>
 
-When a cache ent already exists but doesn't have any mkeys in it the cache
-will automatically create a new one based on the specification in the
-ent->rb_key.
+cachable and mmkey.rb_key together are used by mlx5_revoke_mr() to put the
+MR/mkey back into the cache. In all cases they should be set correctly.
 
-ent->ats was missed when creating the new key and so ma_translation_mode
-was not being set even though the ent requires it.
+alloc_cacheable_mr() was setting cachable but not filling rb_key,
+resulting in cache_ent_find_and_store() bucketing them all into a 0 length
+entry.
+
+implicit_get_child_mr()/mlx5_ib_alloc_implicit_mr() failed to set cachable
+or rb_key at all, so the cache was not working at all for implicit ODP.
 
 Cc: stable@vger.kernel.org
-Fixes: 73d09b2fe833 ("RDMA/mlx5: Introduce mlx5r_cache_rb_key")
+Fixes: 8c1185fef68c ("RDMA/mlx5: Change check for cacheable mkeys")
+Fixes: dd1b913fb0d0 ("RDMA/mlx5: Cache all user cacheable mkeys on dereg MR flow")
 Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
-Reviewed-by: Michael Guralnik <michaelgur@nvidia.com>
 Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
 ---
- drivers/infiniband/hw/mlx5/mr.c | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/infiniband/hw/mlx5/mr.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
 diff --git a/drivers/infiniband/hw/mlx5/mr.c b/drivers/infiniband/hw/mlx5/mr.c
-index 38d2c743db87..35dcb9d9e12a 100644
+index 35dcb9d9e12a..d3c1f63791a2 100644
 --- a/drivers/infiniband/hw/mlx5/mr.c
 +++ b/drivers/infiniband/hw/mlx5/mr.c
-@@ -246,6 +246,7 @@ static void set_cache_mkc(struct mlx5_cache_ent *ent, void *mkc)
- 	MLX5_SET(mkc, mkc, access_mode_1_0, ent->rb_key.access_mode & 0x3);
- 	MLX5_SET(mkc, mkc, access_mode_4_2,
- 		(ent->rb_key.access_mode >> 2) & 0x7);
-+	MLX5_SET(mkc, mkc, ma_translation_mode, !!ent->rb_key.ats);
+@@ -718,6 +718,8 @@ static struct mlx5_ib_mr *_mlx5_mr_cache_alloc(struct mlx5_ib_dev *dev,
+ 	}
+ 	mr->mmkey.cache_ent = ent;
+ 	mr->mmkey.type = MLX5_MKEY_MR;
++	mr->mmkey.rb_key = ent->rb_key;
++	mr->mmkey.cacheable = true;
+ 	init_waitqueue_head(&mr->mmkey.wait);
+ 	return mr;
+ }
+@@ -1168,7 +1170,6 @@ static struct mlx5_ib_mr *alloc_cacheable_mr(struct ib_pd *pd,
+ 	mr->ibmr.pd = pd;
+ 	mr->umem = umem;
+ 	mr->page_shift = order_base_2(page_size);
+-	mr->mmkey.cacheable = true;
+ 	set_mr_fields(dev, mr, umem->length, access_flags, iova);
  
- 	MLX5_SET(mkc, mkc, translations_octword_size,
- 		 get_mkc_octo_size(ent->rb_key.access_mode,
+ 	return mr;
 -- 
 2.45.1
 
