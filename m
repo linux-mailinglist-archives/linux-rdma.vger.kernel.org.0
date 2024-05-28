@@ -1,120 +1,115 @@
-Return-Path: <linux-rdma+bounces-2634-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-2635-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9B60D8D1F21
-	for <lists+linux-rdma@lfdr.de>; Tue, 28 May 2024 16:45:38 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 52AFE8D1F3B
+	for <lists+linux-rdma@lfdr.de>; Tue, 28 May 2024 16:48:16 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BE89E1C222FD
-	for <lists+linux-rdma@lfdr.de>; Tue, 28 May 2024 14:45:37 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7699C1C209AD
+	for <lists+linux-rdma@lfdr.de>; Tue, 28 May 2024 14:48:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 188F617085C;
-	Tue, 28 May 2024 14:44:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8938616F8FD;
+	Tue, 28 May 2024 14:48:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="bDCJTKJs"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="ntoVgzX/"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.10])
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.20])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 93DE1171E73;
-	Tue, 28 May 2024 14:44:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=192.198.163.10
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8ED6D107A0;
+	Tue, 28 May 2024 14:48:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=198.175.65.20
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1716907448; cv=fail; b=ME5KDlyTUZwDvF99V2hUoXZMM36ozwyTL86qTSbtgEkgonustwh1BCnDqvJXLXvHY8UtBdXhmor9eSCj4mMAj8rV4oeDsAiYWGf3mhxSO5+E4GbzpFgGfLIYKn60jnTCXJ1M4IJ04ZTMMFeHAxhL1NuLt3YhW+9yKP6lSnbYKcs=
+	t=1716907691; cv=fail; b=BZoeZUNG+f5+lkwYrtLqEAqzzJ08G6rN6zyAAXKSUfEVpbDuIJE/m4mTppreSjut9BUsytPdRFVCNFT/GeZC9tB+si7UOkXAJcOhNtDIuVgX2/NFbNS0lwKenaSYyNArlxvfNyMEkzkCDY3QpaWt3xj0My1nbmy/42PLxzA370Q=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1716907448; c=relaxed/simple;
-	bh=1/6/H2Y8NvlbZ3gjXjNzj+Dg3yUk15DLZWKTobA+sDo=;
+	s=arc-20240116; t=1716907691; c=relaxed/simple;
+	bh=LVTySbcDA1mmGpvvE4JAgw6CVthj1Z2cMTToFFzREhU=;
 	h=Message-ID:Date:Subject:To:CC:References:From:In-Reply-To:
-	 Content-Type:MIME-Version; b=B4eLwkhwBmL2OvSdrTE08/d4P77wK8Coa5htD9b+oFAv/DZWA4F6LxZsqEyDM2YpKEwvTJhXgDUroyf38GYsMokkY8YSDpc1MRaSsHNpItZONC6h8hOAALyf7aIInOqbpvFtvV64FpH5Gpyy7041iWqbnADLu9VwuLLcLHgTTc0=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=bDCJTKJs; arc=fail smtp.client-ip=192.198.163.10
+	 Content-Type:MIME-Version; b=Em2QYj8Ys/pCMoas8VPvKBP3DwLOQe9m6tQ12WDL36NGGMj9quujwdHLCEZtFzjpiNAOqczkuGe9pgJTb4CbwcakvEPkq0+H6ue/OSqfsHkj6KTyhRdPA3YdylW8gVC7hTktoAnAuPoqCwFnlGMbkOYFpTGW79qDVJfks4pYhLQ=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=ntoVgzX/; arc=fail smtp.client-ip=198.175.65.20
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1716907446; x=1748443446;
+  t=1716907690; x=1748443690;
   h=message-id:date:subject:to:cc:references:from:
    in-reply-to:content-transfer-encoding:mime-version;
-  bh=1/6/H2Y8NvlbZ3gjXjNzj+Dg3yUk15DLZWKTobA+sDo=;
-  b=bDCJTKJsmu/ok3X4KLnYNFuwV4RaX09EN64uhW0f1iT5vMyeektJ8A1g
-   ANpqzwP37sekgo0bysGU4XCFUWNM3awtg75JTsleN2l3HnutFB8k2xZis
-   EoorS97lyXCLNVSN2eulLJTKiL8E8ohriVzA6+DGDnOKOt4MAVS8XQj+F
-   C5KUdopbnFljmFGYC68ZUGgBy1ivXK+ZtFaqgO1Hnktq9rTo3+OmCJzV+
-   16wVIVZmfc8gdtsMa3VYqFZI0dx2wkRg8OheN4oq4KHJmUoHAAW48zMsD
-   yWOrbvwj368mvD4AmKRVG87EvF+yg7qDt8A6gxOpoo5NDpKnuIjP6QlRl
-   g==;
-X-CSE-ConnectionGUID: DtANTiOqSwqtZP5Vqdl5eQ==
-X-CSE-MsgGUID: 8Lw/99X5SlSFFb3j0AIhlg==
-X-IronPort-AV: E=McAfee;i="6600,9927,11085"; a="24672117"
+  bh=LVTySbcDA1mmGpvvE4JAgw6CVthj1Z2cMTToFFzREhU=;
+  b=ntoVgzX/6I1EfSeUQ2v/qU9tnjVEy+53QLuwdT75XpMj0Q5bYfx9naLW
+   RaHeBg/Y6hop93jF/riTlYcELk/NfSnDYwGgENM4ZjNfXz0+28KRKmFKN
+   oRdhsafQgby9IzyOea++OGa7JQt4nGUkyTSVl2YaIc7Ja1jmM/fZN4Xi8
+   QoL5NO2bEFxDC5x8Ltsi7HsSZbdxIexYfHVeiva0mRAZNH0etFay9B579
+   D9ue6FdY3iPgriWt7JUE5i89XuCDEszMWHXFdcLJzIs5+ChZfIDzCgMbC
+   JhUoGH7+ExKGxbrbVGo02pSTWjWs8tp1pawr0264rbEhRZduuuV6h4DHo
+   A==;
+X-CSE-ConnectionGUID: XKFAVfxdRzGCMNkmWfxsDA==
+X-CSE-MsgGUID: Nlz6AbGJR0adaVRb+7ISoA==
+X-IronPort-AV: E=McAfee;i="6600,9927,11085"; a="13098963"
 X-IronPort-AV: E=Sophos;i="6.08,195,1712646000"; 
-   d="scan'208";a="24672117"
-Received: from fmviesa003.fm.intel.com ([10.60.135.143])
-  by fmvoesa104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 May 2024 07:44:04 -0700
-X-CSE-ConnectionGUID: ZGzF9qqoSg2SBL3TN76Z6g==
-X-CSE-MsgGUID: BSTk36rkQFanHE8U6tSHwg==
+   d="scan'208";a="13098963"
+Received: from orviesa004.jf.intel.com ([10.64.159.144])
+  by orvoesa112.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 May 2024 07:48:09 -0700
+X-CSE-ConnectionGUID: zudUWsQxTwqDgjw86mANvw==
+X-CSE-MsgGUID: nMquBLaLSWOCW1KXoexOOQ==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="6.08,195,1712646000"; 
-   d="scan'208";a="39537177"
+   d="scan'208";a="40058294"
 Received: from orsmsx603.amr.corp.intel.com ([10.22.229.16])
-  by fmviesa003.fm.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 28 May 2024 07:43:48 -0700
+  by orviesa004.jf.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 28 May 2024 07:48:09 -0700
 Received: from orsmsx610.amr.corp.intel.com (10.22.229.23) by
  ORSMSX603.amr.corp.intel.com (10.22.229.16) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.39; Tue, 28 May 2024 07:43:47 -0700
-Received: from orsmsx610.amr.corp.intel.com (10.22.229.23) by
- ORSMSX610.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.39; Tue, 28 May 2024 07:43:47 -0700
-Received: from orsedg603.ED.cps.intel.com (10.7.248.4) by
+ 15.1.2507.39; Tue, 28 May 2024 07:48:08 -0700
+Received: from ORSEDG602.ED.cps.intel.com (10.7.248.7) by
  orsmsx610.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.39 via Frontend Transport; Tue, 28 May 2024 07:43:47 -0700
-Received: from NAM12-MW2-obe.outbound.protection.outlook.com (104.47.66.40) by
- edgegateway.intel.com (134.134.137.100) with Microsoft SMTP Server
+ 15.1.2507.39 via Frontend Transport; Tue, 28 May 2024 07:48:08 -0700
+Received: from NAM11-CO1-obe.outbound.protection.outlook.com (104.47.56.169)
+ by edgegateway.intel.com (134.134.137.103) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.39; Tue, 28 May 2024 07:43:46 -0700
+ 15.1.2507.39; Tue, 28 May 2024 07:48:08 -0700
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Su35ligsrLtIwmXFW/demGZfZ/29rGA/hLUAlDQ2+5x1G9lEyRbPdXWSyRu0TJfHTOn026UcZZxy/mEynYeijuykLbxJc1sgEncGYh3fnXIzRDUDXDAEsYssLHbcU3Qaq/YgcQwYK5vdWML1d3UCUhVoj1WKLkvKec6TBfP0L+XKInvsOhw1GSrUrbGIh85gp+19i3iiU4wuNv0FUIsy7Efbf/qYJC1fnizKtaQrNGwOB+Ld4VvAvsOvVoZCSIQlHFytELBNJp96oEwMEB9ddddQazTXtP3obnZW/F5F0IlZ8mZQQs/GAMkrMQTuvrihoYJiW4BlnzTd5h6i7wuJkg==
+ b=SHsvQTxizStNj9ZvvTz49YK8Nd8X2L5zuhMfpkNsfRwQk+Sg5W/Z/mD+AnTDyCDKBdK3viCF5RMq9rLL9iKYG3Mq4KdSuOUsokuZlXLqwx0y23Sz6+mXxG3DfvpFBTwuSTvOrOc/ipnOq495TzccB7tP1ogRWDdVeq/FFm37e7+j6vLIzpRdwRtCV2EgXKW0WipG+9LiwogR+cUhe01roqjMU8EjFoaPoCMW6Y5tF/ES59MSM0MQGgvlvCrINR1DBut6mkCtk4LS+P6gAX++2UKEupbvB5aLxcjFk4dBKY22/oLCYAKa4IJZpaTo7/ZmPGhBOzRbDupf8mmSqxWlzQ==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=dmJhD0Vnf6P5mdCiBlTZkPYEIys04zuzDejl5EbLPVM=;
- b=UGq7s9/ZA16XdbHHaOuyiu6SW+ojYYLneaZiykMH8Kjl49GPsVmJHm8GvqdC4oIwBq5l1sScVj2UY5zMO68n6nrGpGpnGUAKm48nzpPr5vvm+zJOSn+2XeVmNmdMgE3UePNlIdQE16xF2euGbHj3MHtWKgNTA36UUsZBChJsmNinmzWjIrE2nUSVQW6O1TC3xS/KWzbyyWUQcb5qNpWz1mlywD8w1yVvzCdkXMuvGr1hVxM4DFvcLVHngObOP8Ek1IAtXQQ3KHwPKs79uZd8NIU4/8sAPEh1E7ULavMtkY3GoV+nNgFRY9AtIhYw7i4f+Ss6xBMXj2B96bTyB/X0Rw==
+ bh=dWuiqkWTxJLohERTjRBTD1GbvZe+hbGDYpyut1H9xYI=;
+ b=gJBw7WFhrulK8221jmvdFSnH38s5uR8XQTnyLOtj0Ad9m870+LwKZ9upiJbiQgyKhzcVNwsNsQnGw289lSzXAv9D8HMfnNT1Y3OPSq7jQQQWbOzSB3SwfEyoVoJfjBtTHg9SZWmk1J7T2f2u64v7VGWxnZSOAVaBdbjrvcrfT3kKQ00rvi/b+1tkm/rmDOLEehpmzbLZh70RpqV5KF+mC8k23lqkpwuUYAURv76T5dtDSxjIV58988rf2lUpBuRy01ezATwce0fsuBtkOY8ry1fcm0v0ZNdi7f1rwRzYvKImdp1vxzsKL3/CW8OsCKkSVYTGbpgUW/nAnJREnd0NCA==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
  dkim=pass header.d=intel.com; arc=none
 Authentication-Results: dkim=none (message not signed)
  header.d=none;dmarc=none action=none header.from=intel.com;
 Received: from MN6PR11MB8102.namprd11.prod.outlook.com (2603:10b6:208:46d::9)
- by SA0PR11MB4717.namprd11.prod.outlook.com (2603:10b6:806:9f::16) with
+ by SJ2PR11MB8568.namprd11.prod.outlook.com (2603:10b6:a03:56c::19) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7611.31; Tue, 28 May
- 2024 14:43:44 +0000
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7611.29; Tue, 28 May
+ 2024 14:48:06 +0000
 Received: from MN6PR11MB8102.namprd11.prod.outlook.com
  ([fe80::15b2:ee05:2ae7:cfd6]) by MN6PR11MB8102.namprd11.prod.outlook.com
  ([fe80::15b2:ee05:2ae7:cfd6%5]) with mapi id 15.20.7611.025; Tue, 28 May 2024
- 14:43:44 +0000
-Message-ID: <8b8a42af-afe4-4b53-b946-f60e10affc2f@intel.com>
-Date: Tue, 28 May 2024 16:43:38 +0200
+ 14:48:06 +0000
+Message-ID: <fb037803-0002-4d91-9c9f-bbb233490acb@intel.com>
+Date: Tue, 28 May 2024 16:48:00 +0200
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH net-next v5 1/2] driver core: auxiliary bus: show
- auxiliary device IRQs
-To: Shay Drory <shayd@nvidia.com>, <gregkh@linuxfoundation.org>
-CC: <rafael@kernel.org>, <ira.weiny@intel.com>, <edumazet@google.com>,
-	<kuba@kernel.org>, <davem@davemloft.net>, <pabeni@redhat.com>,
-	<netdev@vger.kernel.org>, <david.m.ertman@intel.com>,
-	<linux-rdma@vger.kernel.org>, <leon@kernel.org>, <tariqt@nvidia.com>, "Parav
- Pandit" <parav@nvidia.com>
+Subject: Re: [PATCH net-next v5 2/2] net/mlx5: Expose SFs IRQs
+To: Shay Drory <shayd@nvidia.com>, <netdev@vger.kernel.org>,
+	<pabeni@redhat.com>, <davem@davemloft.net>, <kuba@kernel.org>,
+	<edumazet@google.com>, <gregkh@linuxfoundation.org>,
+	<david.m.ertman@intel.com>
+CC: <rafael@kernel.org>, <ira.weiny@intel.com>, <linux-rdma@vger.kernel.org>,
+	<leon@kernel.org>, <tariqt@nvidia.com>, Parav Pandit <parav@nvidia.com>
 References: <20240528091144.112829-1-shayd@nvidia.com>
- <20240528091144.112829-2-shayd@nvidia.com>
+ <20240528091144.112829-3-shayd@nvidia.com>
 From: Przemek Kitszel <przemyslaw.kitszel@intel.com>
 Content-Language: en-US
-In-Reply-To: <20240528091144.112829-2-shayd@nvidia.com>
+In-Reply-To: <20240528091144.112829-3-shayd@nvidia.com>
 Content-Type: text/plain; charset="UTF-8"; format=flowed
 Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: VI1PR0102CA0016.eurprd01.prod.exchangelabs.com
- (2603:10a6:802::29) To MN6PR11MB8102.namprd11.prod.outlook.com
+X-ClientProxiedBy: VI1PR03CA0057.eurprd03.prod.outlook.com
+ (2603:10a6:803:50::28) To MN6PR11MB8102.namprd11.prod.outlook.com
  (2603:10b6:208:46d::9)
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
@@ -123,416 +118,155 @@ List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: MN6PR11MB8102:EE_|SA0PR11MB4717:EE_
-X-MS-Office365-Filtering-Correlation-Id: c3d96933-e702-4107-9499-08dc7f24934b
+X-MS-TrafficTypeDiagnostic: MN6PR11MB8102:EE_|SJ2PR11MB8568:EE_
+X-MS-Office365-Filtering-Correlation-Id: 82681d2b-7f1f-47c4-ac04-08dc7f252eff
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;ARA:13230031|1800799015|7416005|376005|366007;
-X-Microsoft-Antispam-Message-Info: =?utf-8?B?Z25xMVk4S3Y1bWU1OE9lNnYzYWc1N1hkYXphQTBMYmdGelFnM0xzd3lPNHVr?=
- =?utf-8?B?K05FZmZaSVZDYXBpY2NhaWkrNkxZb0orcklvSEhZaHF1d0VvTVR5T0dsaHJs?=
- =?utf-8?B?eEFGVXVDd0NjSEl1SFdDdmh5Tlllem9DcnV6b0tSR0hiUERoNlYvZGY1OWJN?=
- =?utf-8?B?cnhUcTJyUCtFSnIzWEp1VlYwdVZEcElscytXZlZDL0tuamlyNnZYMDVJK2wx?=
- =?utf-8?B?T1NyQWlDeUVjQ2hFcTBXTTYzZjZaMzZNNUc3Unh0YzFHbGlrMlcvUWs0VEUx?=
- =?utf-8?B?LzlQaVBGMTd4bDFBbS9yYm92TkJWSzQ4ZmpaZ1h0WUI1OVJkTnhCMk44NFV3?=
- =?utf-8?B?VHNXMjhNMlhLOFdRenFsVjdjT1ZvVzNxb05wM2FLREhhRHUrM05ldE5aOUhr?=
- =?utf-8?B?ZHJMNVVvMzVFTWtBMEJINjFFS2F6aEZZZ01USUo3Njg1RTNKZkR2UFQ5a0hy?=
- =?utf-8?B?MEVlM3haU2hWeTlmSVlrK2F0TktPL05hNWF1SFhlSGxHU2NRYUlrYnJXenpQ?=
- =?utf-8?B?QXVXeWk5ZWxvN1NPSjAwcjdvZmU2aDhWTHBud2Y2YVhTaUpIZ1dlQzZ6R3da?=
- =?utf-8?B?UGR3ZHlQUStnSjlySzNIcS8vRWhpcGdNYnFhbVlVUmM2ZkFrdE1JZ3l4YXQ2?=
- =?utf-8?B?L05GMTE2UTF1blAyMjY2Q1UrK0IrZHByOEUwYjFrWEdic1pUVTNpZDdUTm1V?=
- =?utf-8?B?RytnMWxyWlM2WllCc1E0dW9RRHltSWE1eWtTN0NtV0VtTDNNWW51V1YweHNY?=
- =?utf-8?B?Sms0Wkg0bDN0NzgwMnk3ZGxvWDZkY2pHbVNuaFpacFpiSUE0VkUxWWtZT1Fv?=
- =?utf-8?B?MmZ5NS9lL28rcXFYTGJ3Sy9qUndyODhFWmhYRnpiTFlaWUZEazk1WVZ0ZjEx?=
- =?utf-8?B?TStRclVuOEw1WFBidWlVS0cxeFJPWmo1OHpzbnN2L1dYUkhWZzhrYjk4Rlhm?=
- =?utf-8?B?TnF5dmE1KzJnV1AweXU4LzFDaFdLY3EvVkZNTGJPaGVyTHpuWTRwNUZGMEJQ?=
- =?utf-8?B?cW5UNStuelZ3SENoa3BwMFVjUmtTOVVzQmhFdEdsUm10bi9ZM2QxUUlmVFBr?=
- =?utf-8?B?bEdoMGo5TDRqWWgvMEVJUlV3NHhSYWFEaGw4OW9tZzQxay9heTBySktNTHc0?=
- =?utf-8?B?S2VZNVVXZHdLZDNWdnBoVlo1VDRVK0xick9qb1JXUGhFS0V6cHY4b01lbVo4?=
- =?utf-8?B?RDgvdXdDNFRVNlhlcDUra1hhUVVvUnN4L0tEcTZhdU9RVmhTTlRqbFZSLzhX?=
- =?utf-8?B?S3A4MHA5akNNUUtXRGdiOWlLSjEzUTB5WXY2SnpwZDZZYnpLSlN6dVk5SEw5?=
- =?utf-8?B?VDB6QzdzZitaSXhndngwdTg3QlJ0MmU0eUpwUFNrMEhEQUZkMGRObnowYnY5?=
- =?utf-8?B?RWFTU0lnWmx0dTRUVmp1UGpWNXBmTXBGSkIxUVNmY2x4cWlPT3MrK1llR01E?=
- =?utf-8?B?dHZmL0txcWFudmcvMXlBTE1MMnFVc3Exd0JJc0hXb2R5c1hMMGxtMW9DOGg2?=
- =?utf-8?B?Zktpdm94TUZkWE9PdkliN2JuS1pOMlZOWUhlNHhCRHM1WnF2NGFlQzBybkZL?=
- =?utf-8?B?N29IMzB3L1QrT2lVK1gyVHFQZG9GeEFMYU03d3hmem1SZXJGL21LMER5ZUFq?=
- =?utf-8?B?cDlpUnNzUi9Wb3lkMnA4TUxRemRjR29WenM3UEh4VW41Y2pISU5iMW5KeFIw?=
- =?utf-8?B?MVFjenkxdklSb00yTDlDcWxGakpWRFlMcHA1REp1bWFHaUFFZUJpUmR3PT0=?=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN6PR11MB8102.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(1800799015)(7416005)(376005)(366007);DIR:OUT;SFP:1101;
+X-Microsoft-Antispam: BCL:0;ARA:13230031|366007|7416005|1800799015|376005;
+X-Microsoft-Antispam-Message-Info: =?utf-8?B?Z3A1VTZ5bHI2eThzTmpqZ0hHeDhTYWVzd3ZDM2RwTXVtczFKbUF4TnFFMnEy?=
+ =?utf-8?B?TEFBajgwUjJlVUFMcE42Y2daWTU4dElGVmpleVpVWHFiQjREQTE4eVRHOTJT?=
+ =?utf-8?B?bFRzdmdhS3NkOE1SOUhUZmZnaldFeU1TdVAwWStIKzJOMmJWTmRsY2dkSjJl?=
+ =?utf-8?B?YzJFT2hsZTliczE5Tm5lb3BGempua1dSRkJyT0dFYWFjMGZZc1dIbFdZbURq?=
+ =?utf-8?B?NGkvcTZhNk45WG04cjI2b1JkNUcxaWxYaEhiOUZkczFXSWtsRktKdVNmS0Vn?=
+ =?utf-8?B?dVg1MmJPbkhkdXQ5TTZSK25HckpMUW1DbHdKUzA1empUTmxjN3NxVW1iT0dz?=
+ =?utf-8?B?MjhhaFZIUkJqS25ycndEN0JENmR6WUFvOGpSYUgzOUdtYmVlUTZqYmRzMDVr?=
+ =?utf-8?B?enB6anV0SHR6QWxtMWhqSDROUFU4cURUeHRGOUxhZFhiRWthcnBWeTdHdXdW?=
+ =?utf-8?B?WHNQN1Q2dDhRMXUzZE84QXNRTkp2d3RZZ1dZRk9xZnhQQUdOdyt5OTJtTm9h?=
+ =?utf-8?B?RmVjeWF0VjErczcwemFsUGZNOW1zVEo2NHVPT1M3M0tGVGVadlJNbHIrWVdS?=
+ =?utf-8?B?blFYVDlNOWxqdFhuRDRXdW1ZQ2t3RWhEQ3ArYkwrL0FqSlB5ZFVKZnBjejVn?=
+ =?utf-8?B?MmJLNFJIVmFVY2JOYlFrSnBDcUVJZGVSMXdZT0tPQTE4V213ejY1WkJ5K29y?=
+ =?utf-8?B?TTNweVhEWWMvM0tDaU5qNnNtMks0ZHErTE9sbk56TnIwYTd1Ui9QaUF5K29r?=
+ =?utf-8?B?SWdBVVI1Wklrenl0RXJRWTJKaU5BMlYwWGZkcEFEa2xMdWc5bzlSakJ2ODds?=
+ =?utf-8?B?cllGYkU1Z0pxS2c2SXJiZzMyNFl3Um81VDdNVmpCZXZNcE5RTHJXRkJJcmR6?=
+ =?utf-8?B?Vkp0QWFQc1d4RDN2dm5EU1M4VTZUTGF2VU9iZkU2NkFQVWNla2lWL3dLREht?=
+ =?utf-8?B?dU9mWGNMQVZmNnkxdDJjbzVkWXdyUmhOdG9BZUc2RGo1RmdXeS9YSTUzRVhQ?=
+ =?utf-8?B?ckVuY0pLTWlrUEpEMmxQVm9iVGlRKy93clYvUzFrdk4xT3JVREtoalBZVWtr?=
+ =?utf-8?B?RTNKWXJJN2VLajR3V1dpMC8zam1DUlZScmVzeFFJbTZSSkhBOGh6a3AxNWxC?=
+ =?utf-8?B?QTFTSDY1b3J6RWNjUnBnWlYzc012c1h5aERnTTZqMVVhY3pqZGhUcS8zOWlK?=
+ =?utf-8?B?bHMyQnUrdnpQNW1kRnhsT21pMzFrMEt1VHBlQ05WbkdCRWR1dXdIMVN5WkNQ?=
+ =?utf-8?B?ek9BVG1uQXBPWUtsT2JqNmllS0hpcU5pY3BybFNVbzV4SFVobXR0RDNZMDc5?=
+ =?utf-8?B?R1NLMkZkRGhDeGRsZXdNeUlGU3NtNmkvdmlnN1c4aVR2V3RxNUhVMkFqSVBY?=
+ =?utf-8?B?SHdxQlZQUC9qY3AvM2JwdnVmR00wR2pGY2ZaTmRnVUwzTitRSDdHOU1uKy9i?=
+ =?utf-8?B?aXVqeHh5Snhva2djZDE5aUR5b0VrVnN5MHBzZmNqc3UvVWhIZEw5c1R5Yith?=
+ =?utf-8?B?NEdwbG83T2hpb0tXZmNEdkhBMFhBOVFQVERKVjlVUk9JVFBKSjlMRmRrczgy?=
+ =?utf-8?B?YnFKU3JCQXJpb3FHZS9VVEVNbDNpbjNISis3M0hPWm9DazRLeXZ4VzNxOE1C?=
+ =?utf-8?B?TzVqQWpSNG00UG44RUFiZ1JnT25XV3NmYVF6c2pwZmYrYk5EN2k4b3ZRbEpL?=
+ =?utf-8?B?NVJSaG5hVklOeUdFSFM1REY2K21qZloxblRKaWVERG54QVVEdWlJYW1BPT0=?=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN6PR11MB8102.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366007)(7416005)(1800799015)(376005);DIR:OUT;SFP:1101;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?NXBZTVpSbUZXSmtBRmFkbkhhWVNhdHVBM1pmbnlvazBXQ1JrbzJTWUx5WEFk?=
- =?utf-8?B?NjF0Tmt4V0ZDMWVVT1Q0NEsyaXVMZjJGMWVvRGpPNHltWlduOEN1L3RSN05I?=
- =?utf-8?B?dWxnSEVaMk5ETUZDamFCak04cERCVGxlTFJVK3p0U09ORjl0WFVIYXpVY1VI?=
- =?utf-8?B?Z3dncERicExVRlFOeG5sTzlnWTM3WjM4RG8ybVhFT0dJQmVyQ2U0bUprRllr?=
- =?utf-8?B?eXBmNjFrQU5wdzVrSm55UTBpYy9iYTdGRC9mODJPOHZLTWM1MzlVR3N6ZDNW?=
- =?utf-8?B?OGhxcVZOcXVyZ2tZemJqcEw5Q3VDYURMUndQaDNidCtDd25yRUxRNTM1b0JB?=
- =?utf-8?B?UzRmSkZHYkE1RG5GYmQ4aXdPNkR2c2VSWC9PZWNBRFZwQlRqUElaYmhNV1Ar?=
- =?utf-8?B?bEFlVk1Hblg3WHBZRENOWWZZYWxnV0RWbHFVd0dEZzRZYlk4dDFkdUZpQVdl?=
- =?utf-8?B?YWVzTCtZdWEyVWJ3cWcwLyt0dWxFTVY0R0hLS3hxT3ltVk1xejZEMFhPbkov?=
- =?utf-8?B?NlE1enora2YrcURFWmlUNVRqVTU3RXUvQURSRlc5UkZwbVVIZnNiaDdnSlMy?=
- =?utf-8?B?WnJDRG4wWVdMUkhsT0JRZ2lVamdXVkF4bWVkSjRYRFZZTndHQUk5NXd6V295?=
- =?utf-8?B?L2NlSmhBNThieWdrbjllNVhxakpsTmtzOS93ak9TVU8zbkFKaElnNUx3TGgv?=
- =?utf-8?B?ZUNWdVBQTVBFOGpwblRrbCtYdExPdmNRNWxTSjRYYTRtTjJNVDdNeDR2U3Iw?=
- =?utf-8?B?QmJTeWN1b21EWWxPWFR2MGFlcVVObTdDTkFiakx5b0pHQ1BCaU45enNjSkEw?=
- =?utf-8?B?KyswY1R6SVZybnJZcklaTGdIT1M3cVcyTlVxRnhTdkVObjJaYWtzZTBwemNO?=
- =?utf-8?B?UHlDbUZjcVZ1dEZZT2s4NHhsY2ZJa29OTDVCd0p4emxoaFFUYnFSejQ1R1dp?=
- =?utf-8?B?SDByZGRreDllOFcwbU9TMjFVU0lYcjdNNHhlTmR2QlNRQkZQRDVGdjZnU05O?=
- =?utf-8?B?R1VwdWpOVTRvc3ZBeTBiNTM5cVM3OS9OUXNQeVUrTXFlV0pxUXBSR2dTK1p5?=
- =?utf-8?B?WGFUOVdkd3h5dmwveVZMOEFhS1FBTytUbzkwL29nSEdTSVJUWkZMWk5XZ0tu?=
- =?utf-8?B?ZURyNS82YVNOS1FZL2t2eDRYZUZaWWVVTlV6QWVlLzNDMzVmcDNwa0M4YUxP?=
- =?utf-8?B?Q1d6d3RoYlNDUEJJdmtQM3RkaDhaUklFdGpLSzdUSkJUbkVLNW5LdVBCN09i?=
- =?utf-8?B?T2dLQmRjWE1uaGlWMFZJd1NlWGE3emQ1LzVjK1F4a3FwaXdQaEtnR0xuTjdY?=
- =?utf-8?B?bHNRQzAzamF5eEVBd1ZueEtGY0RKUWZoUmp4WmxkZ1Y2WTBRaWowL3JvaXA2?=
- =?utf-8?B?NG9HcG92UGN4aHV1UGpWRWlxMVUwTEQ3OEoyczQ3VTR0MGtocGxMTGg1M2VN?=
- =?utf-8?B?c2YwY3NyL3BEWjYzQlg4ZHJZbjI3WXpLMEljRDlFQVozd2pxODJVRkdycnJ3?=
- =?utf-8?B?cnhQOC94S1kvOHphSUlDa3MrUGh0NDRLNi9hbXo2TjRFTWJRTUVRUXVzRnVj?=
- =?utf-8?B?QzIvOWk1ZE1PUGh1RkExKzhxUUtrRk90YzJoVnhMSVgwbHpzeE9uRFB2S3Fu?=
- =?utf-8?B?akpVaHB3UFRTWTA5ZVBPbkRJWjgyTHBJSVlJZHMyR1ZSTnZPRm9ReFVRS0xh?=
- =?utf-8?B?K0hoU1lXU0UrY29lT1l5V2JWeEcvVUV0OERwSmRROTVwRXJ2Y3k2WjNldUNu?=
- =?utf-8?B?THBKVlpiRVR3aTFyUmdxL2hmOXFvejV4ZFUrclVtbzQ5SWptVjVsTEhmTU5U?=
- =?utf-8?B?eWFIQUpwUS9yTlJncmtvRlZvanh5VDgxL0FCVTBNNU1IUHc2UXpSb2g2K0cr?=
- =?utf-8?B?VVkxbXBNTys0eTMzcUlZRnd2ejFDT2xnb0NYY1lDdXlDZndLaUZvS1I3MTY4?=
- =?utf-8?B?VE5xR2J1aHFvU1JYeWUvenowaUFSSjNraFdnQzZPMktEYjQrb3JJN3RHNlJ6?=
- =?utf-8?B?d1N4b0RIWEVaVjBxbkV6V0xTaXFsNUxMbFpWZW5QSUhHUTBEQk81QXlCVHkz?=
- =?utf-8?B?MUJpSVZqWDQ2ZEQwRlZ3b1VMZXQrN1lNbW5zbkxDUENHaWp2WjFhS1JNNCtr?=
- =?utf-8?B?eENVTUNKdjlyS0lmMjZrMmpIOFNjZEFqd3ZxNHhRdUF6dXA3NnYyT3pDS2RR?=
- =?utf-8?B?SEE9PQ==?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: c3d96933-e702-4107-9499-08dc7f24934b
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?Y1dOeGxQZUx1Nzk4RVdyRlNhTmpQRnc4Snc1blMydllWLzY2NkIvdjR5aXcw?=
+ =?utf-8?B?T2F6YkRSdHQ1dTZ5NDdwbDl0Ung3UXV4anBPejBJYkdmS0xEbEFvRVNGUVlD?=
+ =?utf-8?B?OFk3bjErT0RDVXdyM1grMVJBa0J4YkhWSEQ0OEkrNW5kMkxGZ25Qa2RGcW1S?=
+ =?utf-8?B?Z21Yd21MTGZMRlpKRE5ZWkkwL1lHY2tmN0pGWjVJV1ZlV2pJejJBeTZGQi96?=
+ =?utf-8?B?T1NoUldacG9DSHR2dnBhRWhtQmhZRWhhU1NZZDI4NEZIREZxMUl4ZHM1Si8v?=
+ =?utf-8?B?dStPR3RXcGJFTERPWkovQThFNk9ZbzQvdW1LV0tMYk9CUTUvQ213ZmR1MmZ1?=
+ =?utf-8?B?UzlLUy9ob2xqRFh4S2lVZTV1TjFsU3dTaGJGSTVUTzlFdEpOTG5jcVM1WURE?=
+ =?utf-8?B?VWJycng1dzMyVjRhNU5kaThVc3Fzd01hTURWUmYrT1pPbDFSRWE5eFJ4UVpp?=
+ =?utf-8?B?QzR3eUNicHdqSW5LdjVlUnlkSjRkQW11MVNlNk42MUdXd0UvR2xlbVNkVlp6?=
+ =?utf-8?B?RGc4dWVzUWVMc2RnYXlYT25CU2dyYWNJKzB6VXpKeGxURnpMNCsyRjgxWWdR?=
+ =?utf-8?B?R0Z3Z2I1YmpZM05RVWFqdWg5cXVVa0xVRmlTR09iV0UwZVB6ZTI3YU1lcEhi?=
+ =?utf-8?B?QTNyNmtTdGtobms5bmlPNFVIcEMzSkVpUTh5NTNTRmVMZFdtNWo0VW12SVBu?=
+ =?utf-8?B?RDU5UzJnZ2hCVGRBZ2NHenpncWpjMTdCWUpuU0ZiWDI1cTRvWVM2ajlBRjgz?=
+ =?utf-8?B?QXN1UFlxcDk5U285SzcrNEZsZklxaE85L0J1QkVEMStqK1JvN29ndjhpZ09j?=
+ =?utf-8?B?ZGRWNWxDcWM1T2FpSkhQQjBVRytSNGhhQUlOelg4Y0ZJV0twaFBDaHlrcE11?=
+ =?utf-8?B?SlE5Z1ZnZnREc0lNR2RESTdSSDNyOGYrU0JyelJhRll5bTVzRmJ4WXpHV2Zs?=
+ =?utf-8?B?dTJEbWFyRVd6VldpQk9mR3prNnhrWWR3VmFveHBHNDRNbC8vQlc3dlFyOTFz?=
+ =?utf-8?B?bjdDMWRDbDlUNTFaL09kak9TL2pZUHI4RFFyaTNwUlZ6OEg3YlZTbHZ3Z1Q2?=
+ =?utf-8?B?aHFuSHBvOHhTbmM0d3hQcUtWY2hxM1EzV0xUNkFXc1ZxS1dONHlZa3JET0xC?=
+ =?utf-8?B?OE14TVBzMGQyQk11VzJkaVMyNDdVU2ZCelo1WGNtUlVmWHlvbkJVM0hmcVM2?=
+ =?utf-8?B?WGpFb05UbXdyRHN3N3hOeVBwaHVUYmRWQmxzdmxJR2hmbVVhMTVOOTNHZTl0?=
+ =?utf-8?B?M0Vabk1vWWViMEN2QWdObWY2dG5SdFZQaEt3dlVJbjZjTHFTREhnL1AzVjh3?=
+ =?utf-8?B?OFkzY3dEcHBEMkc5cE50bVJRTVlscGJHbFB4Y1EzOXZxbHc2OWdhUHcyMi9y?=
+ =?utf-8?B?STdYMzdyUEl1ZjhpaG5iQllaQzkwczFuMTg3dEFXSDNYVUlEMSsybGg0Qmox?=
+ =?utf-8?B?N1JZd2c5dmVId3ZVS0wyUWF2R0J1TXBXd21QMjMwWGtYTkQxTkI5c20vazJU?=
+ =?utf-8?B?cFBsUzdaaWxYSS9KWUx5VDkxOFRSekZpVkt4Tm5yZEcvUXZnRWttVTlTVHJl?=
+ =?utf-8?B?NmlWeGZGZnh5ZEFaYllDUS9iQkNKOVlOM2s5dUFoc3I4UzZ1ZUxUenEzNjdD?=
+ =?utf-8?B?dnVFOGZ0WVR5K3lyTHhIb0hDUC9HY2tiRHV1R3BlRFRKUFdHSFdMNERtZFpz?=
+ =?utf-8?B?aHUwemtnb2lLK2d3WkhncVZ3N1UvVTlhaU1udXp1WE5vcWpmaG5NZWVCVE9E?=
+ =?utf-8?B?ejFRanhMYjVLUnNVY1dJbmVIaXV0RnhvRmJaSS83b0xTTERXeVA0WGUvSmNO?=
+ =?utf-8?B?OTYrYVlEbGxMZEZXcXRXNmd3cWN5VnFnbjBIUFBhdndXN3VXem5VcjFVU09Y?=
+ =?utf-8?B?dURrK2N2TTk0L0xwM2EwcTlndUh0bnd0L09vNEdTd1g2RTAzbjdWZDhNMFZu?=
+ =?utf-8?B?L0t0Njg5aW1XOWVOeVZ4TWwwNGI0T2xtd2VQa0tmZkZYZzY3Z2hLYU9Sb1Vw?=
+ =?utf-8?B?bVFNSVd5S3kyamZxcVZjbmJMWXVmc2JXcnNXYmRTN0t2ZER0aFVuOUExSWZX?=
+ =?utf-8?B?SVUyRE1Vd012K3JkclZ5Q3VCcUFOVy9FMFV6YlJ5R0J0aXBRN3VpQkZKenE1?=
+ =?utf-8?B?TVpWTkxTWE9yZ25BOVE2S2tTZkM4L2I2MWRwTE91UUh4SVdlWmdybUc2T2NO?=
+ =?utf-8?B?eUE9PQ==?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: 82681d2b-7f1f-47c4-ac04-08dc7f252eff
 X-MS-Exchange-CrossTenant-AuthSource: MN6PR11MB8102.namprd11.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 28 May 2024 14:43:44.7411
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 28 May 2024 14:48:05.9729
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: lR85eiEUyTgT/Xrsk/5xpALogCOyBEnZHSP7LEMxhKuyJ2P/LlYWuLEm8LI3WZW0N2IucW0dEp0C1/vq/YrheMxTIAxgsLXBPrVxzTIxClo=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA0PR11MB4717
+X-MS-Exchange-CrossTenant-UserPrincipalName: NyMiYOVQrblBIenlF2tfCVf5QLpDmpI5oKTmGR3QHVx1cIYBTm0ctR820fhcbi7BI3AIfcS6BT4Gm9v2lKdwJ6fJmo1UxqYFAyYaGa81k/Q=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ2PR11MB8568
 X-OriginatorOrg: intel.com
 
 On 5/28/24 11:11, Shay Drory wrote:
-> Some PCI subfunctions (SF) are anchored on the auxiliary bus. PCI
-> physical and virtual functions are anchored on the PCI bus. The irq
-> information of each such function is visible to users via sysfs
-> directory "msi_irqs" containing file for each irq entry. However, for
-> PCI SFs such information is unavailable. Due to this users have no
-> visibility on IRQs used by the SFs.
-> Secondly, an SF can be multi function device supporting rdma, netdevice
-> and more. Without irq information at the bus level, the user is unable
-> to view or use the affinity of the SF IRQs.
-> 
-> Hence to match to the equivalent PCI PFs and VFs, add "irqs" directory,
-> for supporting auxiliary devices, containing file for each irq entry.
-> 
-> Additionally, the PCI SFs sometimes share the IRQs with peer SFs. This
-> information is also not available to the users. To overcome this
-> limitation, each irq sysfs entry shows if irq is exclusive or shared.
-> 
-> For example:
-> $ ls /sys/bus/auxiliary/devices/mlx5_core.sf.1/irqs/
-> 50  51  52  53  54  55  56  57  58
-> $ cat /sys/bus/auxiliary/devices/mlx5_core.sf.1/irqs/52
-> exclusive
+> Expose the sysfs files for the IRQs that the mlx5 PCI SFs are using.
+> These entries are similar to PCI PFs and VFs in 'msi_irqs' directory.
 > 
 > Reviewed-by: Parav Pandit <parav@nvidia.com>
 > Signed-off-by: Shay Drory <shayd@nvidia.com>
 > 
 > ---
-> v4-v5:
-> - restore global mutex and replace refcount_t with simple integer (Greg)
-> v3->4:
-> - remove global mutex (Przemek)
 > v2->v3:
-> - fix function declaration in case SYSFS isn't defined
-> v1->v2:
-> - move #ifdefs from drivers/base/auxiliary.c to
->    include/linux/auxiliary_bus.h (Greg)
-> - use EXPORT_SYMBOL_GPL instead of EXPORT_SYMBOL (Greg)
-> - Fix kzalloc(ref) to kzalloc(*ref) (Simon)
-> - Add return description in auxiliary_device_sysfs_irq_add() kdoc (Simon)
-> - Fix auxiliary_irq_mode_show doc (kernel test boot)
+> - fix mlx5 sfnum SF sysfs
 > ---
->   Documentation/ABI/testing/sysfs-bus-auxiliary |  14 ++
->   drivers/base/auxiliary.c                      | 165 +++++++++++++++++-
->   include/linux/auxiliary_bus.h                 |  24 ++-
->   3 files changed, 200 insertions(+), 3 deletions(-)
->   create mode 100644 Documentation/ABI/testing/sysfs-bus-auxiliary
+>   drivers/net/ethernet/mellanox/mlx5/core/eq.c     |  6 +++---
+>   .../ethernet/mellanox/mlx5/core/irq_affinity.c   | 15 ++++++++++++++-
+>   .../net/ethernet/mellanox/mlx5/core/mlx5_core.h  |  6 ++++++
+>   .../net/ethernet/mellanox/mlx5/core/mlx5_irq.h   | 12 ++++++++----
+>   .../net/ethernet/mellanox/mlx5/core/pci_irq.c    | 12 +++++++++---
+>   .../net/ethernet/mellanox/mlx5/core/sf/dev/dev.c | 16 +++++++---------
+>   6 files changed, 47 insertions(+), 20 deletions(-)
 > 
-> diff --git a/Documentation/ABI/testing/sysfs-bus-auxiliary b/Documentation/ABI/testing/sysfs-bus-auxiliary
-> new file mode 100644
-> index 000000000000..3b8299d49d9e
-> --- /dev/null
-> +++ b/Documentation/ABI/testing/sysfs-bus-auxiliary
-> @@ -0,0 +1,14 @@
-> +What:		/sys/bus/auxiliary/devices/.../irqs/
-> +Date:		April, 2024
-> +Contact:	Shay Drory <shayd@nvidia.com>
-> +Description:
-> +		The /sys/devices/.../irqs directory contains a variable set of
-> +		files, with each file is named as irq number similar to PCI PF
-> +		or VF's irq number located in msi_irqs directory.
-> +
-> +What:		/sys/bus/auxiliary/devices/.../irqs/<N>
-> +Date:		April, 2024
-> +Contact:	Shay Drory <shayd@nvidia.com>
-> +Description:
-> +		auxiliary devices can share IRQs. This attribute indicates if
-> +		the irq is shared with other SFs or exclusively used by the SF.
-> diff --git a/drivers/base/auxiliary.c b/drivers/base/auxiliary.c
-> index d3a2c40c2f12..579d755dcbee 100644
-> --- a/drivers/base/auxiliary.c
-> +++ b/drivers/base/auxiliary.c
-> @@ -158,6 +158,163 @@
->    *	};
->    */
+
+[...]
+
+> diff --git a/drivers/net/ethernet/mellanox/mlx5/core/irq_affinity.c b/drivers/net/ethernet/mellanox/mlx5/core/irq_affinity.c
+> index 612e666ec263..5c36aa3c57e0 100644
+> --- a/drivers/net/ethernet/mellanox/mlx5/core/irq_affinity.c
+> +++ b/drivers/net/ethernet/mellanox/mlx5/core/irq_affinity.c
+> @@ -112,15 +112,18 @@ irq_pool_find_least_loaded(struct mlx5_irq_pool *pool, const struct cpumask *req
 >   
-> +#ifdef CONFIG_SYSFS
-> +/* Xarray of irqs to determine if irq is exclusive or shared. */
-> +static DEFINE_XARRAY(irqs);
-> +/* Protects insertions into the irqs xarray. */
-> +static DEFINE_MUTEX(irqs_lock);
-> +
-> +struct auxiliary_irq_info {
-> +	struct device_attribute sysfs_attr;
-> +	int irq;
-> +};
-> +
-> +static struct attribute *auxiliary_irq_attrs[] = {
-> +	NULL
-> +};
-> +
-> +static const struct attribute_group auxiliary_irqs_group = {
-> +	.name = "irqs",
-> +	.attrs = auxiliary_irq_attrs,
-> +};
-> +
-> +static const struct attribute_group *auxiliary_irqs_groups[] = {
-> +	&auxiliary_irqs_group,
-> +	NULL
-> +};
-> +
-> +/* Auxiliary devices can share IRQs. Expose to user whether the provided IRQ is
-> + * shared or exclusive.
-> + */
-> +static ssize_t auxiliary_irq_mode_show(struct device *dev,
-> +				       struct device_attribute *attr, char *buf)
-> +{
-> +	struct auxiliary_irq_info *info =
-> +		container_of(attr, struct auxiliary_irq_info, sysfs_attr);
-> +	int ref = xa_to_value(xa_load(&irqs, info->irq));
-
-just a note that you forgot to take the global lock here
-
-> +
-> +	if (!ref)
-> +		return -ENOENT;
-> +	if (ref > 1)
-> +		return sysfs_emit(buf, "%s\n", "shared");
-> +	else
-> +		return sysfs_emit(buf, "%s\n", "exclusive");
-> +}
-> +
-> +static void auxiliary_irq_destroy(int irq)
-> +{
-> +	int ref;
-> +
-> +	mutex_lock(&irqs_lock);
-> +	ref = xa_to_value(xa_load(&irqs, irq));
-> +	if (!(--ref))
-> +		xa_erase(&irqs, irq);
-
-Global lock makes it indeed simpler to support xa_erase()-on-zero.
-There are simple solutions without erasing zero elements (you could
-have non-allocating store), but let's say we are leaving "the simplest"
-room then :)
-
-> +	else
-> +		xa_store(&irqs, irq, xa_mk_value(ref), GFP_KERNEL);
-> +	mutex_unlock(&irqs_lock);
-> +}
-> +
-> +static int auxiliary_irq_create(int irq)
-> +{
-> +	int ret = 0;
-> +	int ref;
-> +
-> +	mutex_lock(&irqs_lock);
-> +	ref = xa_to_value(xa_load(&irqs, irq));
-> +	if (ref) {
-> +		ref++;
-> +		xa_store(&irqs, irq, xa_mk_value(ref), GFP_KERNEL);
-> +		goto out;
-> +	}
-> +
-> +	ret = xa_insert(&irqs, irq, xa_mk_value(1), GFP_KERNEL);
-
-make code simpler by one common variant of ref++ & store
-
-> +
-> +out:
-> +	mutex_unlock(&irqs_lock);
-> +	return ret;
-> +}
-> +
-> +/**
-> + * auxiliary_device_sysfs_irq_add - add a sysfs entry for the given IRQ
-> + * @auxdev: auxiliary bus device to add the sysfs entry.
-> + * @irq: The associated Linux interrupt number.
-> + *
-> + * This function should be called after auxiliary device have successfully
-> + * received the irq.
-> + *
-> + * Return: zero on success or an error code on failure.
-> + */
-> +int auxiliary_device_sysfs_irq_add(struct auxiliary_device *auxdev, int irq)
-> +{
-> +	struct device *dev = &auxdev->dev;
-> +	struct auxiliary_irq_info *info;
+>   /**
+>    * mlx5_irq_affinity_request - request an IRQ according to the given mask.
+> + * @dev: mlx5 core device which is requesting the IRQ.
+>    * @pool: IRQ pool to request from.
+>    * @af_desc: affinity descriptor for this IRQ.
+>    *
+>    * This function returns a pointer to IRQ, or ERR_PTR in case of error.
+>    */
+>   struct mlx5_irq *
+> -mlx5_irq_affinity_request(struct mlx5_irq_pool *pool, struct irq_affinity_desc *af_desc)
+> +mlx5_irq_affinity_request(struct mlx5_core_dev *dev, struct mlx5_irq_pool *pool,
+> +			  struct irq_affinity_desc *af_desc)
+>   {
+>   	struct mlx5_irq *least_loaded_irq, *new_irq;
 > +	int ret;
-> +
-> +	ret = auxiliary_irq_create(irq);
-> +	if (ret)
-> +		return ret;
-> +
-> +	info = kzalloc(sizeof(*info), GFP_KERNEL);
-> +	if (!info) {
-> +		ret = -ENOMEM;
-> +		goto info_err;
-> +	}
-> +
-> +	sysfs_attr_init(&info->sysfs_attr.attr);
-> +	info->sysfs_attr.attr.name = kasprintf(GFP_KERNEL, "%d", irq);
-> +	if (!info->sysfs_attr.attr.name) {
-> +		ret = -ENOMEM;
-> +		goto name_err;
-> +	}
-> +	info->irq = irq;
-> +	info->sysfs_attr.attr.mode = 0444;
-> +	info->sysfs_attr.show = auxiliary_irq_mode_show;
-> +
-> +	ret = xa_insert(&auxdev->irqs, irq, info, GFP_KERNEL);
-> +	if (ret)
-> +		goto auxdev_xa_err;
-> +
-> +	ret = sysfs_add_file_to_group(&dev->kobj, &info->sysfs_attr.attr,
-> +				      auxiliary_irqs_group.name);
-> +	if (ret)
-> +		goto sysfs_add_err;
-> +
-> +	return 0;
-> +
-> +sysfs_add_err:
-> +	xa_erase(&auxdev->irqs, irq);
-> +auxdev_xa_err:
-> +	kfree(info->sysfs_attr.attr.name);
-> +name_err:
-> +	kfree(info);
-> +info_err:
-> +	auxiliary_irq_destroy(irq);
-> +	return ret;
-> +}
-> +EXPORT_SYMBOL_GPL(auxiliary_device_sysfs_irq_add);
-> +
-> +/**
-> + * auxiliary_device_sysfs_irq_remove - remove a sysfs entry for the given IRQ
-> + * @auxdev: auxiliary bus device to add the sysfs entry.
-> + * @irq: the IRQ to remove.
-> + *
-> + * This function should be called to remove an IRQ sysfs entry.
-> + */
-> +void auxiliary_device_sysfs_irq_remove(struct auxiliary_device *auxdev, int irq)
-> +{
-> +	struct auxiliary_irq_info *info = xa_load(&auxdev->irqs, irq);
-> +	struct device *dev = &auxdev->dev;
-> +
-> +	sysfs_remove_file_from_group(&dev->kobj, &info->sysfs_attr.attr,
-> +				     auxiliary_irqs_group.name);
-> +	xa_erase(&auxdev->irqs, irq);
-> +	kfree(info->sysfs_attr.attr.name);
-> +	kfree(info);
-> +	auxiliary_irq_destroy(irq);
-> +}
-> +EXPORT_SYMBOL_GPL(auxiliary_device_sysfs_irq_remove);
-> +#endif
-> +
->   static const struct auxiliary_device_id *auxiliary_match_id(const struct auxiliary_device_id *id,
->   							    const struct auxiliary_device *auxdev)
->   {
-> @@ -295,6 +452,7 @@ EXPORT_SYMBOL_GPL(auxiliary_device_init);
->    * __auxiliary_device_add - add an auxiliary bus device
->    * @auxdev: auxiliary bus device to add to the bus
->    * @modname: name of the parent device's driver module
-> + * @irqs_sysfs_enable: whether to enable IRQs sysfs
->    *
->    * This is the third step in the three-step process to register an
->    * auxiliary_device.
-> @@ -310,7 +468,8 @@ EXPORT_SYMBOL_GPL(auxiliary_device_init);
->    * parameter.  Only if a user requires a custom name would this version be
->    * called directly.
->    */
-> -int __auxiliary_device_add(struct auxiliary_device *auxdev, const char *modname)
-> +int __auxiliary_device_add(struct auxiliary_device *auxdev, const char *modname,
-> +			   bool irqs_sysfs_enable)
->   {
->   	struct device *dev = &auxdev->dev;
->   	int ret;
-> @@ -325,6 +484,10 @@ int __auxiliary_device_add(struct auxiliary_device *auxdev, const char *modname)
->   		dev_err(dev, "auxiliary device dev_set_name failed: %d\n", ret);
->   		return ret;
->   	}
-> +	if (irqs_sysfs_enable) {
-> +		dev->groups = auxiliary_irqs_groups;
-> +		xa_init(&auxdev->irqs);
-> +	}
 >   
->   	ret = device_add(dev);
->   	if (ret)
-> diff --git a/include/linux/auxiliary_bus.h b/include/linux/auxiliary_bus.h
-> index de21d9d24a95..760fadb26620 100644
-> --- a/include/linux/auxiliary_bus.h
-> +++ b/include/linux/auxiliary_bus.h
-> @@ -58,6 +58,7 @@
->    *       in
->    * @name: Match name found by the auxiliary device driver,
->    * @id: unique identitier if multiple devices of the same name are exported,
-> + * @irqs: irqs xarray contains irq indices which are used by the device,
->    *
->    * An auxiliary_device represents a part of its parent device's functionality.
->    * It is given a name that, combined with the registering drivers
-> @@ -138,6 +139,7 @@
->   struct auxiliary_device {
->   	struct device dev;
->   	const char *name;
-> +	struct xarray irqs;
->   	u32 id;
->   };
->   
-> @@ -209,8 +211,26 @@ static inline struct auxiliary_driver *to_auxiliary_drv(struct device_driver *dr
->   }
->   
->   int auxiliary_device_init(struct auxiliary_device *auxdev);
-> -int __auxiliary_device_add(struct auxiliary_device *auxdev, const char *modname);
-> -#define auxiliary_device_add(auxdev) __auxiliary_device_add(auxdev, KBUILD_MODNAME)
-> +int __auxiliary_device_add(struct auxiliary_device *auxdev, const char *modname,
-> +			   bool irqs_sysfs_enable);
-> +#define auxiliary_device_add(auxdev) __auxiliary_device_add(auxdev, KBUILD_MODNAME, false)
-> +#define auxiliary_device_add_with_irqs(auxdev) \
-> +	__auxiliary_device_add(auxdev, KBUILD_MODNAME, true)
-> +
-> +#ifdef CONFIG_SYSFS
-> +int auxiliary_device_sysfs_irq_add(struct auxiliary_device *auxdev, int irq);
-> +void auxiliary_device_sysfs_irq_remove(struct auxiliary_device *auxdev,
-> +				       int irq);
-> +#else /* CONFIG_SYSFS */
-> +static inline int
-> +auxiliary_device_sysfs_irq_add(struct auxiliary_device *auxdev, int irq)
-> +{
-> +	return 0;
-> +}
-> +
-> +static inline void
-> +auxiliary_device_sysfs_irq_remove(struct auxiliary_device *auxdev, int irq) {}
-> +#endif
->   
->   static inline void auxiliary_device_uninit(struct auxiliary_device *auxdev)
->   {
+>   	mutex_lock(&pool->lock);
+>   	least_loaded_irq = irq_pool_find_least_loaded(pool, &af_desc->mask);
+> @@ -152,6 +155,13 @@ mlx5_irq_affinity_request(struct mlx5_irq_pool *pool, struct irq_affinity_desc *
+>   					     mlx5_irq_get_index(least_loaded_irq)), pool->name,
+>   			      mlx5_irq_read_locked(least_loaded_irq) / MLX5_EQ_REFS_PER_IRQ);
+>   unlock:
+> +	if (mlx5_irq_pool_is_sf_pool(pool)) {
+> +		ret = auxiliary_device_sysfs_irq_add(mlx5_sf_coredev_to_adev(dev),
+> +						     mlx5_irq_get_irq(least_loaded_irq));
+> +		if (ret)
+> +			mlx5_core_err(dev, "Failed to create sysfs entry for irq %d, ret = %d\n",
+> +				      mlx5_irq_get_irq(least_loaded_irq), ret);
 
+you are handling the error by logging a message, then ignoring it
+this is clearly not an ERROR, just a WARN or INFO.
+
+> +	}
+>   	mutex_unlock(&pool->lock);
+>   	return least_loaded_irq;
+>   }
+
+[...]
 
