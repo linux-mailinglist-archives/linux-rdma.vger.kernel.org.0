@@ -1,53 +1,55 @@
-Return-Path: <linux-rdma+bounces-2637-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-2638-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 379AB8D22DC
-	for <lists+linux-rdma@lfdr.de>; Tue, 28 May 2024 19:57:27 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 49F468D22E3
+	for <lists+linux-rdma@lfdr.de>; Tue, 28 May 2024 20:00:13 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E79671F24AE6
-	for <lists+linux-rdma@lfdr.de>; Tue, 28 May 2024 17:57:26 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id CC069B22722
+	for <lists+linux-rdma@lfdr.de>; Tue, 28 May 2024 18:00:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 09F4545C07;
-	Tue, 28 May 2024 17:57:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D416246453;
+	Tue, 28 May 2024 18:00:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="IvMn314Q"
+	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="GGdW0yBJ"
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9551C48781;
-	Tue, 28 May 2024 17:57:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8ECD044C7E;
+	Tue, 28 May 2024 18:00:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1716919038; cv=none; b=Dc/hIM4fuEdkuVzI8U7IlKbd0bHqhlo3r9Jn+P5tO150zTP+R3Mcj9BushBSZpD1YHhemtSiBhsvqB/xPz4rLwKCLO3rb1gjCgYy8xGIkpagYyHGs0HDMz1ZLeUEe1gj2Z0Y0JFnGl0CCP8Ao+KM2TukVettqWBjqhEW6vhneYI=
+	t=1716919207; cv=none; b=eo4kR8O2eto7gKsM/ZMu7NOD7VDtQ2PkNYyZr/ChKcbxDklOni/RwcAyjbTvqFhECNfBzteHMaaFkBxcQJrnSkz4eOOqzBsBBxRz4Hx5hpgfZmmPBIA4U/bB5OPqUEQ8vf86w4CEb0IDrSJKTlxXibPDFq+kRoFR6uP9RCpKB9A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1716919038; c=relaxed/simple;
-	bh=UElZkq4qpCK3zCVRc9jcd5OyfnQZO4JqaDi62I4WnCA=;
+	s=arc-20240116; t=1716919207; c=relaxed/simple;
+	bh=EBpocNbTbdzrhYBqZxwCzCJlT995g3wl4iXLBSp+0/4=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=IV60/mAht673CQbM7Op5mXOvGjqYVMyrkoGLO/9MisFurbK7U+nvZmwnEAtV+RXOPUh5c5pBeGj9ecJiGBENCs4QBZwO8JCGDfElCS5iede+s6aoJOQvtB3RrkSx/GzgnYESbGIf0bwvhgLIVDntzXSrDZpcXqfTqEqcy+Ot/FY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=IvMn314Q; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B78E9C3277B;
-	Tue, 28 May 2024 17:57:17 +0000 (UTC)
+	 Content-Type:Content-Disposition:In-Reply-To; b=TO8WLelbZ/k1XswD3B01k8K+wLfQEZ6kyomeiC4Cx1U0Tj4s2jivHMiDC/vbPhae2P0QCoSpHCsspEmLjLgirFUK39gDXnrP+VueCtzoMfoI+EaO6uQcnMAaJEV+2EwuTEY0/oL1nCVflW5U+Jnp4m96twdAq/cKAb/5+yjGHP0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=GGdW0yBJ; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 801BFC3277B;
+	Tue, 28 May 2024 18:00:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-	s=korg; t=1716919038;
-	bh=UElZkq4qpCK3zCVRc9jcd5OyfnQZO4JqaDi62I4WnCA=;
+	s=korg; t=1716919207;
+	bh=EBpocNbTbdzrhYBqZxwCzCJlT995g3wl4iXLBSp+0/4=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=IvMn314Qln82wrUv3HDPSK2V81ZLxf3kUcFpYYXnlCfHRczm+0cRVlw1cyfZ+CKgw
-	 52iLC+vBKdjki5740l3YNVatv6byjLre+TbCxC1a9HrAaoysMKZ6eY3xuOJLCfZSyt
-	 7fe2mHJSXhckADrCnchfGdJd/Z3QCc22t8g6aXcs=
-Date: Tue, 28 May 2024 19:57:22 +0200
+	b=GGdW0yBJWNpktuyt6n6bS0lqmmJqPep6iUcO4NhJN7sA8nuG76z1M0pPWce3ibnUR
+	 5/0I3884KBEm+4xE7yfco4RoKezOHyHSw16IpC66CrVV5bA1Aa5aYzZKXp9neYJnv+
+	 mtts4/XorANFbDt8ru44/b//inGU0t5AyC4sknko=
+Date: Tue, 28 May 2024 20:00:11 +0200
 From: Greg KH <gregkh@linuxfoundation.org>
 To: Shay Drory <shayd@nvidia.com>
 Cc: netdev@vger.kernel.org, pabeni@redhat.com, davem@davemloft.net,
 	kuba@kernel.org, edumazet@google.com, david.m.ertman@intel.com,
 	rafael@kernel.org, ira.weiny@intel.com, linux-rdma@vger.kernel.org,
-	leon@kernel.org, tariqt@nvidia.com
-Subject: Re: [PATCH net-next v5 0/2] Introduce auxiliary bus IRQs sysfs
-Message-ID: <2024052806-armadillo-mournful-6b23@gregkh>
+	leon@kernel.org, tariqt@nvidia.com, Parav Pandit <parav@nvidia.com>
+Subject: Re: [PATCH net-next v5 1/2] driver core: auxiliary bus: show
+ auxiliary device IRQs
+Message-ID: <2024052829-pretended-dad-ac9b@gregkh>
 References: <20240528091144.112829-1-shayd@nvidia.com>
+ <20240528091144.112829-2-shayd@nvidia.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
@@ -56,64 +58,56 @@ List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240528091144.112829-1-shayd@nvidia.com>
+In-Reply-To: <20240528091144.112829-2-shayd@nvidia.com>
 
-On Tue, May 28, 2024 at 12:11:42PM +0300, Shay Drory wrote:
-> Today, PCI PFs and VFs, which are anchored on the PCI bus, display their
-> IRQ information in the <pci_device>/msi_irqs/<irq_num> sysfs files. PCI
-> subfunctions (SFs) are similar to PFs and VFs and these SFs are anchored
-> on the auxiliary bus. However, these PCI SFs lack such IRQ information
-> on the auxiliary bus, leaving users without visibility into which IRQs
-> are used by the SFs. This absence makes it impossible to debug
-> situations and to understand the source of interrupts/SFs for
-> performance tuning and debug.
+On Tue, May 28, 2024 at 12:11:43PM +0300, Shay Drory wrote:
+> +#ifdef CONFIG_SYSFS
+> +/* Xarray of irqs to determine if irq is exclusive or shared. */
+> +static DEFINE_XARRAY(irqs);
+> +/* Protects insertions into the irqs xarray. */
+> +static DEFINE_MUTEX(irqs_lock);
 
-Wait, again, this feels wrong.  You should be able to walk back up the
-tree see the irq for the device, and vf, right?  Why would the value be
-different down in the aux device?  Does the msi irq somehow not actually
-show anywhere for the real pci device in sysfs at all today?
+You access the irq xarray without grabbing the lock in places :(
 
-What does sysfs look like today exactly for this information?
+But again, I fail to see why the xarray is needed at all, why isn't the
+needed information here:
 
-And what about /proc/irq/ and /proc/interrupts/ doesn't that show you
-the needed information?  Why are aux devices somehow "special" here?
+> +struct auxiliary_irq_info {
+> +	struct device_attribute sysfs_attr;
+> +	int irq;
+> +};
 
-> Additionally, the SFs are multifunctional devices supporting RDMA,
-> network devices, clocks, and more, similar to their peer PCI PFs and
-> VFs. Therefore, it is desirable to have SFs' IRQ information available
-> at the bus/device level.
+Right there^ should contain everything you need, NOT a global array and
+lock at all.
 
-But it should be as part of the pci device, as that's where that
-information lives and is "bound" to, not the aux device on its own.
+> +/* Auxiliary devices can share IRQs. Expose to user whether the provided IRQ is
+> + * shared or exclusive.
 
-> To overcome the above limitations, this short series extends the
-> auxiliary bus to display IRQ information in sysfs, similar to that of
-> PFs and VFs.
+Why are you using networking comment style here?  :)
 
-Again, examples of what it looks like today, and what it will look like
-with this patch set is needed in order to justify why this really is
-needed as it seems that the information should already be there for you.
+> diff --git a/include/linux/auxiliary_bus.h b/include/linux/auxiliary_bus.h
+> index de21d9d24a95..760fadb26620 100644
+> --- a/include/linux/auxiliary_bus.h
+> +++ b/include/linux/auxiliary_bus.h
+> @@ -58,6 +58,7 @@
+>   *       in
+>   * @name: Match name found by the auxiliary device driver,
+>   * @id: unique identitier if multiple devices of the same name are exported,
+> + * @irqs: irqs xarray contains irq indices which are used by the device,
+>   *
+>   * An auxiliary_device represents a part of its parent device's functionality.
+>   * It is given a name that, combined with the registering drivers
+> @@ -138,6 +139,7 @@
+>  struct auxiliary_device {
+>  	struct device dev;
+>  	const char *name;
+> +	struct xarray irqs;
 
-> It adds an 'irqs' directory under the auxiliary device and includes an
-> <irq_num> sysfs file within it. Sometimes, the PCI SF auxiliary devices
-> share the IRQ with other SFs, a detail that is also not available to the
-> users. Consequently, this <irq_num> file indicates whether the IRQ is
-> 'exclusive' or 'shared'.  This 'irqs' directory extenstion is optional,
-> i.e. only for PCI SFs the sysfs irq information is optionally exposed.
+wait, why is an xarray added here too?  That feels wrong, or odd, or
+something as you seem to have multiple xarrays here when it feels like
+you need none.
 
-Why does userspace care about "shared" or not?  What can they do with
-that, and why?
-
-> For example:
-> $ ls /sys/bus/auxiliary/devices/mlx5_core.sf.1/irqs/
-> 50  51  52  53  54  55  56  57  58
-> $ cat /sys/bus/auxiliary/devices/mlx5_core.sf.1/irqs/52
-> exclusive
-
-"exclusive" for now, but again, why?  Who cares?  These are msi irqs it
-shouldn't matter if they are shared or not.
-
-thanks,
+confused,
 
 greg k-h
 
