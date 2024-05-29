@@ -1,255 +1,175 @@
-Return-Path: <linux-rdma+bounces-2645-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-2646-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id A82478D2AEA
-	for <lists+linux-rdma@lfdr.de>; Wed, 29 May 2024 04:36:53 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 517978D2B5C
+	for <lists+linux-rdma@lfdr.de>; Wed, 29 May 2024 05:20:57 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1B2431F24C82
-	for <lists+linux-rdma@lfdr.de>; Wed, 29 May 2024 02:36:53 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A3746B23431
+	for <lists+linux-rdma@lfdr.de>; Wed, 29 May 2024 03:20:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6812215B0E5;
-	Wed, 29 May 2024 02:36:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CD6CC15B111;
+	Wed, 29 May 2024 03:20:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="Bu+hDgvm"
+	dkim=pass (1024-bit key) header.d=fastly.com header.i=@fastly.com header.b="COijAqrr"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from out30-130.freemail.mail.aliyun.com (out30-130.freemail.mail.aliyun.com [115.124.30.130])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pg1-f178.google.com (mail-pg1-f178.google.com [209.85.215.178])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4818917E8F0;
-	Wed, 29 May 2024 02:36:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1B95C1391
+	for <linux-rdma@vger.kernel.org>; Wed, 29 May 2024 03:20:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1716950207; cv=none; b=YIYkjrNNIJBGU9U+te2cfhg2Q/gSDd9tEqgzdfitix+YFIMCMhj59iUFykfqONa1b4rc+3O7Pachc0Or76ej5nl2a44fxz7FTvRn1KmWMIJgZROGLt1ev0G97iFcJfXAHwwzqF2+4ie0arMtCDkavnjuIN6odIQd1CDcIESu2m0=
+	t=1716952848; cv=none; b=fFXVzzCFCAxISzk5Xiki8dP1HPLa9dV0QFcmZ2jSUuk46GC+xO3nsmyKMLueOQYxEy7Qwfx1E+gxr10d7pgnn0iDZ9TxR0UChG+/rZi4hve1mOXBpKYzCaI2kx6ZPPDsVELqa6WreBr6U26AGfJGMycD9PJEAdkJ7BTx8qumC6k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1716950207; c=relaxed/simple;
-	bh=/prjtynIALKef+NidgM/TwteCz1yQxr8kvZyr3UStrk=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=OKI0391PdqOAjQqNfIYLgn/0zVGQhF29frghFzPaRtylir4+TZg9qPIzWjDPeneNmxApp64JcA4LTtKGS7bNQh7CABjIkeTNuoDTv7UeXm5D3llBcm8YNkAekjns1erhZ/Aa/ZlHrCuqmPLuwrGrJA7AkIo46t7NNDINxO/XUrE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=Bu+hDgvm; arc=none smtp.client-ip=115.124.30.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
-DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
-	d=linux.alibaba.com; s=default;
-	t=1716950195; h=Message-ID:Date:MIME-Version:Subject:To:From:Content-Type;
-	bh=kTh5iBvwSDqWZxPNhWhI/gl1LaGJ95imBRViouswUz4=;
-	b=Bu+hDgvmthSpldJVDVjLPPBnrUJYBlR4QWV042hurObHkhGzxEBXXqtvELZtiae0zs+jHZPfTF2Vln+HCYkktfa7H0rBMZ4lcKDfoc4vYwB7RFSwmlIFVXpK5jsVO8KURekciZ9QtDre6OSGiuvtbLB/0icI9u1CgObbs7UxTl0=
-X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R201e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=maildocker-contentspam033037067111;MF=alibuda@linux.alibaba.com;NM=1;PH=DS;RN=13;SR=0;TI=SMTPD_---0W7R7OGN_1716950194;
-Received: from 30.221.145.238(mailfrom:alibuda@linux.alibaba.com fp:SMTPD_---0W7R7OGN_1716950194)
-          by smtp.aliyun-inc.com;
-          Wed, 29 May 2024 10:36:35 +0800
-Message-ID: <5bb36a9c-6f2e-4d60-a210-fd2c01da5b60@linux.alibaba.com>
-Date: Wed, 29 May 2024 10:36:33 +0800
+	s=arc-20240116; t=1716952848; c=relaxed/simple;
+	bh=6VEjzVq5nrmfkHoJWASudCixHFmzlAa4gIuIxJ0VuRY=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=NKKlv+j+YRtmvAGdhaRP0EXR77XglAIrXO5m4pGoVJpXsjyMlmss33Ry3Pm2QKAZCXbYFKvrMzb5hY5V06oCl7p3NcXMFBJbhvEbL+Ad8M9LJbYhfIaAL4xfZ4EugRj1XdfJodXMRraNaihw90iRKdG85B4UjXsFZLph4XbCy/4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=fastly.com; spf=pass smtp.mailfrom=fastly.com; dkim=pass (1024-bit key) header.d=fastly.com header.i=@fastly.com header.b=COijAqrr; arc=none smtp.client-ip=209.85.215.178
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=fastly.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fastly.com
+Received: by mail-pg1-f178.google.com with SMTP id 41be03b00d2f7-681a48efe77so1262650a12.2
+        for <linux-rdma@vger.kernel.org>; Tue, 28 May 2024 20:20:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=fastly.com; s=google; t=1716952846; x=1717557646; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=BS6iHbBIsatoVGzFhXDQJ9Pi9ja6uQG7muHBmiB17xY=;
+        b=COijAqrrIcoNb4M1HsEvUJGvG/G3QCs7XHuVp2LCAzlcJcYSIUUwILLfonMZCMkTHr
+         dTzdYJqkYoSuTRt/erXDzmuU8sKlXScMQzd4MyWaf39OAHY17umA2QvoB15/PTgNfyQ2
+         9mZnILDjobV6PNW33GDACWZ9ExLFUrJKPNvLk=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1716952846; x=1717557646;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=BS6iHbBIsatoVGzFhXDQJ9Pi9ja6uQG7muHBmiB17xY=;
+        b=lVAA5eambPG9/BWQI56ab5gA9N9nEF5FbvpsyQY74v2raCM7AGHBdLZnpvla6WBVqc
+         Yy6x5FhL94HEuEXDWL93y+KVvCRmpEuxMtQBXaNtpay4UJ6ThjNHTGbek1MsjcXzUfym
+         H6iBSpdZa2UnQ/jyqEbXAc01D1OPvtYt4KvjuIz7V01fnsq6P+S9igqXTW+YLi0fjOmw
+         3SjPxYzORYnQ0jzV+8yCz+C0vWgBiOZ6nMa6A+ICNvNEjkR6hLL2oSO406p0tybTAm0u
+         1FVL8CNcFFLBcS5/UiFhiY0Sg9KnG2qk28IlpnLumV8cBMBggcrcTWVCxmGpEQVk5GA3
+         3H+w==
+X-Forwarded-Encrypted: i=1; AJvYcCUbs5WvQ/foFh4jfpJ5fF2tFWU+QPDNvOXHJggNd55c8zwFIHU2myxb6DFEPt7aqb6LJg5tQxnsOb67dCIdFfy4K12RXQrdzoMxVg==
+X-Gm-Message-State: AOJu0Yw4KSTlUazlQIGeer658jqarrWZ21IJGt7kc1zbOhOBJrM7Gnc1
+	dolersFpTf4rJ0J7uDheZK4L2GDfDB/deUtfVwfaAfcIGrQBa4QcUb2eOFLPNlI=
+X-Google-Smtp-Source: AGHT+IHK0odMwl88fs80oLL00dG99YZ4irO3GqOx026WsTxm2kQRal9aBjH+zm0v6XLilUzBDoueLA==
+X-Received: by 2002:a05:6a20:dd82:b0:1a7:5e8f:8707 with SMTP id adf61e73a8af0-1b212d46534mr13913852637.26.1716952846230;
+        Tue, 28 May 2024 20:20:46 -0700 (PDT)
+Received: from localhost.localdomain ([2620:11a:c019:0:65e:3115:2f58:c5fd])
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-6f8fbd3ea03sm7156766b3a.39.2024.05.28.20.20.44
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 28 May 2024 20:20:45 -0700 (PDT)
+From: Joe Damato <jdamato@fastly.com>
+To: linux-kernel@vger.kernel.org,
+	netdev@vger.kernel.org
+Cc: nalramli@fastly.com,
+	Joe Damato <jdamato@fastly.com>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>,
+	Leon Romanovsky <leon@kernel.org>,
+	linux-rdma@vger.kernel.org (open list:MELLANOX MLX5 core VPI driver),
+	Paolo Abeni <pabeni@redhat.com>,
+	Richard Cochran <richardcochran@gmail.com>,
+	Saeed Mahameed <saeedm@nvidia.com>,
+	Tariq Toukan <tariqt@nvidia.com>
+Subject: [RFC net-next v3 0/2] mlx5: Add netdev-genl queue stats
+Date: Wed, 29 May 2024 03:16:25 +0000
+Message-Id: <20240529031628.324117-1-jdamato@fastly.com>
+X-Mailer: git-send-email 2.25.1
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH net-next v3 1/3] net/smc: refatoring initialization of smc
- sock
-To: Tony Lu <tonylu@linux.alibaba.com>
-Cc: kgraul@linux.ibm.com, wenjia@linux.ibm.com, jaka@linux.ibm.com,
- wintera@linux.ibm.com, guwen@linux.alibaba.com, kuba@kernel.org,
- davem@davemloft.net, netdev@vger.kernel.org, linux-s390@vger.kernel.org,
- linux-rdma@vger.kernel.org, pabeni@redhat.com, edumazet@google.com
-References: <1716863394-112399-1-git-send-email-alibuda@linux.alibaba.com>
- <1716863394-112399-2-git-send-email-alibuda@linux.alibaba.com>
- <ZlVJib8rRvwPJJJi@TONYMAC-ALIBABA.local>
-Content-Language: en-US
-From: "D. Wythe" <alibuda@linux.alibaba.com>
-In-Reply-To: <ZlVJib8rRvwPJJJi@TONYMAC-ALIBABA.local>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 
+Greetings:
 
+Switching to an RFC instead of a PATCH because even though Tariq
+patiently explained the code to me, I'm sure I probably still missed
+something ;)
 
-On 5/28/24 11:03 AM, Tony Lu wrote:
-> In subject, refatoring -> refactoring.
+If this turns out to be right and Tariq agrees, I can send a PATCH
+net-next v4.
 
-Oops... thanks for that.
+This change adds support for the per queue netdev-genl API to mlx5,
+which seems to output stats:
 
->
-> On Tue, May 28, 2024 at 10:29:52AM +0800, D. Wythe wrote:
->> From: "D. Wythe" <alibuda@linux.alibaba.com>
->>
->> This patch aims to isolate the shared components of SMC socket
->> allocation by introducing smc_sock_init() for sock initialization
->> and __smc_create_clcsk() for the initialization of clcsock.
->>
->> This is in preparation for the subsequent implementation of the
->> AF_INET version of SMC.
->>
->> Signed-off-by: D. Wythe <alibuda@linux.alibaba.com>
->> ---
->>   net/smc/af_smc.c | 86 +++++++++++++++++++++++++++++++-------------------------
->>   net/smc/smc.h    |  5 ++++
->>   2 files changed, 53 insertions(+), 38 deletions(-)
->>
->> diff --git a/net/smc/af_smc.c b/net/smc/af_smc.c
->> index 9389f0c..d8c116e 100644
->> --- a/net/smc/af_smc.c
->> +++ b/net/smc/af_smc.c
->> @@ -361,25 +361,15 @@ static void smc_destruct(struct sock *sk)
->>   		return;
->>   }
->>   
->> -static struct sock *smc_sock_alloc(struct net *net, struct socket *sock,
->> -				   int protocol)
->> +void smc_sock_init(struct net *net, struct sock *sk, int protocol)
->              ^^^^                       ^^^^^^^^^^^^^^^^
->
-> Using smc_sk_init to align the others' name style.
+./cli.py --spec ../../../Documentation/netlink/specs/netdev.yaml \
+         --dump qstats-get --json '{"scope": "queue"}'
 
-Make sense, I will do it in the next version.
+...snip
+ {'ifindex': 7,
+  'queue-id': 28,
+  'queue-type': 'tx',
+  'tx-bytes': 399462,
+  'tx-packets': 3311},
+...snip
 
+I've used the suggested tooling to verify the per queue stats match
+rtnl by doing this:
 
->>   {
->> -	struct smc_sock *smc;
->> -	struct proto *prot;
->> -	struct sock *sk;
->> -
->> -	prot = (protocol == SMCPROTO_SMC6) ? &smc_proto6 : &smc_proto;
->> -	sk = sk_alloc(net, PF_SMC, GFP_KERNEL, prot, 0);
->> -	if (!sk)
->> -		return NULL;
->> +	struct smc_sock *smc = smc_sk(sk);
->>   
->> -	sock_init_data(sock, sk); /* sets sk_refcnt to 1 */
->>   	sk->sk_state = SMC_INIT;
->>   	sk->sk_destruct = smc_destruct;
->>   	sk->sk_protocol = protocol;
->>   	WRITE_ONCE(sk->sk_sndbuf, 2 * READ_ONCE(net->smc.sysctl_wmem));
->>   	WRITE_ONCE(sk->sk_rcvbuf, 2 * READ_ONCE(net->smc.sysctl_rmem));
->> -	smc = smc_sk(sk);
->>   	INIT_WORK(&smc->tcp_listen_work, smc_tcp_listen_work);
->>   	INIT_WORK(&smc->connect_work, smc_connect_work);
->>   	INIT_DELAYED_WORK(&smc->conn.tx_work, smc_tx_work);
->> @@ -389,6 +379,24 @@ static struct sock *smc_sock_alloc(struct net *net, struct socket *sock,
->>   	sk->sk_prot->hash(sk);
->>   	mutex_init(&smc->clcsock_release_lock);
->>   	smc_init_saved_callbacks(smc);
->> +	smc->limit_smc_hs = net->smc.limit_smc_hs;
->> +	smc->use_fallback = false; /* assume rdma capability first */
->> +	smc->fallback_rsn = 0;
->> +}
->> +
->> +static struct sock *smc_sock_alloc(struct net *net, struct socket *sock,
->> +				   int protocol)
->> +{
->> +	struct proto *prot;
->> +	struct sock *sk;
->> +
->> +	prot = (protocol == SMCPROTO_SMC6) ? &smc_proto6 : &smc_proto;
->> +	sk = sk_alloc(net, PF_SMC, GFP_KERNEL, prot, 0);
->> +	if (!sk)
->> +		return NULL;
->> +
->> +	sock_init_data(sock, sk); /* sets sk_refcnt to 1 */
->> +	smc_sock_init(net, sk, protocol);
->>   
->>   	return sk;
->>   }
->> @@ -3321,6 +3329,31 @@ static ssize_t smc_splice_read(struct socket *sock, loff_t *ppos,
->>   	.splice_read	= smc_splice_read,
->>   };
->>   
->> +int smc_create_clcsk(struct net *net, struct sock *sk, int family)
->> +{
->> +	struct smc_sock *smc = smc_sk(sk);
->> +	int rc;
->> +
->> +	rc = sock_create_kern(net, family, SOCK_STREAM, IPPROTO_TCP,
->> +			      &smc->clcsock);
->> +	if (rc) {
->> +		sk_common_release(sk);
->> +		return rc;
->> +	}
->> +
->> +	/* smc_clcsock_release() does not wait smc->clcsock->sk's
->> +	 * destruction;  its sk_state might not be TCP_CLOSE after
->> +	 * smc->sk is close()d, and TCP timers can be fired later,
->> +	 * which need net ref.
->> +	 */
->> +	sk = smc->clcsock->sk;
->> +	__netns_tracker_free(net, &sk->ns_tracker, false);
->> +	sk->sk_net_refcnt = 1;
->> +	get_net_track(net, &sk->ns_tracker, GFP_KERNEL);
->> +	sock_inuse_add(net, 1);
->> +	return 0;
->> +}
->> +
->>   static int __smc_create(struct net *net, struct socket *sock, int protocol,
->>   			int kern, struct socket *clcsock)
->>   {
->> @@ -3346,35 +3379,12 @@ static int __smc_create(struct net *net, struct socket *sock, int protocol,
->>   
->>   	/* create internal TCP socket for CLC handshake and fallback */
->>   	smc = smc_sk(sk);
->> -	smc->use_fallback = false; /* assume rdma capability first */
->> -	smc->fallback_rsn = 0;
->> -
->> -	/* default behavior from limit_smc_hs in every net namespace */
->> -	smc->limit_smc_hs = net->smc.limit_smc_hs;
->>   
->>   	rc = 0;
->> -	if (!clcsock) {
->> -		rc = sock_create_kern(net, family, SOCK_STREAM, IPPROTO_TCP,
->> -				      &smc->clcsock);
->> -		if (rc) {
->> -			sk_common_release(sk);
->> -			goto out;
->> -		}
->> -
->> -		/* smc_clcsock_release() does not wait smc->clcsock->sk's
->> -		 * destruction;  its sk_state might not be TCP_CLOSE after
->> -		 * smc->sk is close()d, and TCP timers can be fired later,
->> -		 * which need net ref.
->> -		 */
->> -		sk = smc->clcsock->sk;
->> -		__netns_tracker_free(net, &sk->ns_tracker, false);
->> -		sk->sk_net_refcnt = 1;
->> -		get_net_track(net, &sk->ns_tracker, GFP_KERNEL);
->> -		sock_inuse_add(net, 1);
->> -	} else {
->> +	if (!clcsock)
->> +		rc = smc_create_clcsk(net, sk, family);
->> +	else
->>   		smc->clcsock = clcsock;
->> -	}
-> Using if (clcsock) is more intuitive.
+  NETIF=eth0 tools/testing/selftests/drivers/net/stats.py
 
-Sounds reasonable. I'll take it.
+I've tested the following scenarios:
+  - The machine at boot (default queue configuration)
+  - Adjusting the queue configuration to various amounts via ethtool
+  - Add mqprio TCs
+  - Removing the mqprio TCs
 
+and in each scenario the stats script above reports that the stats match
+rtnl.
+
+Worth noting that Tariq suggested I also export HTB/QOS stats in
+mlx5e_get_base_stats.
+
+I am open to doing this, but I think if I were to do that, HTB/QOS queue
+stats should also be exported by rtnl so that the script above will
+continue to show that the output is correct.
+
+I'd like to propose: adding HTB/QOS to both rtnl *and* the netdev-genl
+code together at the same time, but a later time, separate from this
+change.
 
 Thanks,
-D. Wythe
+Joe
 
+v2 -> rfcv3:
+ - Added patch 1/2 which creates some helpers for computing the txq_ix
+   and ch_ix/tc_ix.
 
->> -
->>   out:
->>   	return rc;
->>   }
->> diff --git a/net/smc/smc.h b/net/smc/smc.h
->> index 18c8b78..a0accb5 100644
->> --- a/net/smc/smc.h
->> +++ b/net/smc/smc.h
->> @@ -34,6 +34,11 @@
->>   extern struct proto smc_proto;
->>   extern struct proto smc_proto6;
->>   
->> +/* smc sock initialization */
->> +void smc_sock_init(struct net *net, struct sock *sk, int protocol);
->> +/* clcsock initialization */
->> +int smc_create_clcsk(struct net *net, struct sock *sk, int family);
->> +
->>   #ifdef ATOMIC64_INIT
->>   #define KERNEL_HAS_ATOMIC64
->>   #endif
->> -- 
->> 1.8.3.1
+ - Patch 2/2 modified in several ways:
+   - Fixed variable declarations in mlx5e_get_queue_stats_rx to be at
+     the start of the function.
+   - mlx5e_get_queue_stats_tx rewritten to access sq stats directly by
+     using the helpers added in the previous patch.
+   - mlx5e_get_base_stats modified in several ways:
+     - Took the state_lock when accessing priv->channels.
+     - For the base RX stats, code was simplified to call
+       mlx5e_get_queue_stats_rx instead of repeating the same code.
+     - For the base TX stats, I attempted to implement what I think
+       Tariq suggested in the previous thread:
+         - for available channels, only unavailable TC stats are summed
+	 - for unavailable channels, all stats for TCs up to
+	   max_opened_tc are summed.
+
+v1 - > v2:
+  - Essentially a full rewrite after comments from Jakub, Tariq, and
+    Zhu.
+
+Joe Damato (2):
+  net/mlx5e: Add helpers to calculate txq and ch idx
+  net/mlx5e: Add per queue netdev-genl stats
+
+ .../net/ethernet/mellanox/mlx5/core/en_main.c | 150 +++++++++++++++++-
+ 1 file changed, 149 insertions(+), 1 deletion(-)
+
+-- 
+2.25.1
 
 
