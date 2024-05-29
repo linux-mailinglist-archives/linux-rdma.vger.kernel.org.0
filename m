@@ -1,415 +1,289 @@
-Return-Path: <linux-rdma+bounces-2668-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-2669-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id DC4D78D35DF
-	for <lists+linux-rdma@lfdr.de>; Wed, 29 May 2024 13:59:15 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id A0BF38D35E6
+	for <lists+linux-rdma@lfdr.de>; Wed, 29 May 2024 14:01:27 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0C8911C2194E
-	for <lists+linux-rdma@lfdr.de>; Wed, 29 May 2024 11:59:15 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2BD211F25336
+	for <lists+linux-rdma@lfdr.de>; Wed, 29 May 2024 12:01:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AEB37180A68;
-	Wed, 29 May 2024 11:59:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="FUWEyZTP"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 76EE6180A71;
+	Wed, 29 May 2024 12:01:22 +0000 (UTC)
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+Received: from mx0a-00069f02.pphosted.com (mx0a-00069f02.pphosted.com [205.220.165.32])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 59C6114B973;
-	Wed, 29 May 2024 11:59:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.156.1
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1716983950; cv=none; b=V3aHW42NY59ZqpLF/+vbOa2FAaCEI6iugaddVemBmExfHGeq6rov3V3Wq66VsDkyjqZunTUF1c8apBUi5dIHFpgp8371Uy7/d9+Jo49urSqQ4R8TsWW15vKwqtbZ9asJy/E8hcgpFLZ/M2+EYPMEKU2j5k5LqY8pa1bWkUoS3Yo=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1716983950; c=relaxed/simple;
-	bh=dLT/58C0zy674fYlDtdZlLmhYALf46Cz2ASBUAXsx/M=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=A2gYMdEAxU9aOeeSooQX4QBWvvMvgqBrywGTXbUqk0GpQ01zF94UwXmPS8PB/TPcWLa2E9DwpGyMctN72QcZeGMWMNu71R54vka7N7KlWg8YwjTaekBtgqTFgG+xSolCKwSPM2lh9bYwnNjRtzLJNNvxCfcWDikU2te2eGbeiTw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=FUWEyZTP; arc=none smtp.client-ip=148.163.156.1
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
-Received: from pps.filterd (m0353728.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 44TBrUWs027084;
-	Wed, 29 May 2024 11:59:00 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=cc :
- content-transfer-encoding : content-type : date : from : in-reply-to :
- message-id : mime-version : references : subject : to; s=pp1;
- bh=i1znse8DBkBqrSue04/xMrd3P+3cUTNgrky5X9XnhM8=;
- b=FUWEyZTPfuTesHfcoYUHKcspHvue3pV++wEcn5f0bF4vvTsmO7NZucywhmtZ+LoAokx5
- +9Vw4CfeqiPMAfK3KVOVe/Sqw4Vd2QHZTgb4PkYgQG5jerVEoQOq+k9NYJHS3g6SKVUB
- IgqQ6E1lz1RCR55Q+I7P/L1hE5K2LEo2HTvA0vO62ZSYfV9z/tlHd5WQt36gWamzzImS
- 2w56V9sF9ncBxkj5Bb4A5TZfYlSZqzFrxGEGg6vGZYDlGmjGyndE3O4HNPPNWJZLl1Ip
- fjbBnQlTEKv8lSd75RHZyciqARJTLKbM4jQiWtWLaBjh1WQNdKDS9Wg4coZ3w3ZXCj2j jg== 
-Received: from pps.reinject (localhost [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3ye3v8g0jp-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 29 May 2024 11:58:59 +0000
-Received: from m0353728.ppops.net (m0353728.ppops.net [127.0.0.1])
-	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 44TBsPcc028037;
-	Wed, 29 May 2024 11:58:59 GMT
-Received: from ppma23.wdc07v.mail.ibm.com (5d.69.3da9.ip4.static.sl-reverse.com [169.61.105.93])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3ye3v8g0jj-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 29 May 2024 11:58:58 +0000
-Received: from pps.filterd (ppma23.wdc07v.mail.ibm.com [127.0.0.1])
-	by ppma23.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 44TBel0n006992;
-	Wed, 29 May 2024 11:58:57 GMT
-Received: from smtprelay06.wdc07v.mail.ibm.com ([172.16.1.73])
-	by ppma23.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3ydpebbjmf-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 29 May 2024 11:58:57 +0000
-Received: from smtpav02.wdc07v.mail.ibm.com (smtpav02.wdc07v.mail.ibm.com [10.39.53.229])
-	by smtprelay06.wdc07v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 44TBwsrx27329106
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Wed, 29 May 2024 11:58:56 GMT
-Received: from smtpav02.wdc07v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 6E8EA58059;
-	Wed, 29 May 2024 11:58:54 +0000 (GMT)
-Received: from smtpav02.wdc07v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id EA24858058;
-	Wed, 29 May 2024 11:58:51 +0000 (GMT)
-Received: from [9.171.1.223] (unknown [9.171.1.223])
-	by smtpav02.wdc07v.mail.ibm.com (Postfix) with ESMTP;
-	Wed, 29 May 2024 11:58:51 +0000 (GMT)
-Message-ID: <ea8194ec-6583-40f1-912a-a612a6509566@linux.ibm.com>
-Date: Wed, 29 May 2024 13:58:51 +0200
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8668E1802CB;
+	Wed, 29 May 2024 12:01:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=205.220.165.32
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1716984082; cv=fail; b=Dm22xPPuqhecx+dWSs6zHYgSzNznuNrrzZf6tF/NaMgCQKd6i/8TYpaR/1KTI0e+rkzNIatrbrNwdjCbn9GjVIuMEJJqd51fynNxn2M6NaUSP52I7EkPJF+JbcLqmI04tR8IucrHYJtnTOdGuGtOkvq7XVgetF17hXBYTFqkxrA=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1716984082; c=relaxed/simple;
+	bh=Wvw/JClM3ohxsdv8pf6O5dyht8KR+WUZoBHemAWsBeo=;
+	h=Message-ID:Date:From:Subject:To:Cc:References:In-Reply-To:
+	 Content-Type:MIME-Version; b=CxhkCscFolhN7r5gOwh98lpaGnHyzfWWQWFMgtzK1WaAZ3KrbnAwHcmlG2jm9L0tHQ5rpJSjVwJ/8A40cHtgur/xbqXUkK8dw65T5BG/EoAgwiwFBB9IFsKOk5Fsc4VUNRb2H5aWxO/uItV0n+qW4l954ilN4a3IFcnvEDGAiCc=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=oracle.com; spf=pass smtp.mailfrom=oracle.com; arc=fail smtp.client-ip=205.220.165.32
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=oracle.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oracle.com
+Received: from pps.filterd (m0246629.ppops.net [127.0.0.1])
+	by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 44T6IGW2031545;
+	Wed, 29 May 2024 12:01:17 GMT
+DKIM-Signature: =?UTF-8?Q?v=3D1;_a=3Drsa-sha256;_c=3Drelaxed/relaxed;_d=3Doracle.com;_h?=
+ =?UTF-8?Q?=3Dcc:content-transfer-encoding:content-type:date:from:in-reply?=
+ =?UTF-8?Q?-to:message-id:mime-version:references:subject:to;_s=3Dcorp-202?=
+ =?UTF-8?Q?3-11-20;_bh=3DJl76LIcWRdojsPalSWO3Bok1qtquK3myXWh+prZVLac=3D;_b?=
+ =?UTF-8?Q?=3Di5toOvj0EGr5DgpMbIXCk7yPAT0kkrA2ZgSYQQ+yFPBehcVqAqpZ7Lx92KrQ?=
+ =?UTF-8?Q?XLWVuIsF_Kg+U8lhd+XLAacIUe3yOAwQ4k84xHYOXUEPi1FrXSjI/lyjW9jOK6v?=
+ =?UTF-8?Q?yYw3A7rDkhtaOG_XO0LMibwzY+5Cp5eC4M8s6wHNg7CbhyvNPoTy13CqXHhi+zh?=
+ =?UTF-8?Q?7A+vEu1CqyOPJQpjS6AY_W0ofSGmgI9vwVQk4TZ1AOh9UilY/fJStvwX2TQtW2e?=
+ =?UTF-8?Q?GBWtYlEnQNJiG7O3hS2BuSDBWV_VDwPkWDqFTOHy1RWZ1/Cl3HLVKe0SOJJCiHI?=
+ =?UTF-8?Q?3hH/3K1aHoTzXADJw7oBRczN2HWvxrp7_uw=3D=3D_?=
+Received: from iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta01.appoci.oracle.com [130.35.100.223])
+	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3yb8p7pdf0-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Wed, 29 May 2024 12:01:17 +0000
+Received: from pps.filterd (iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
+	by iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 44TBbhRG024012;
+	Wed, 29 May 2024 12:01:15 GMT
+Received: from nam02-bn1-obe.outbound.protection.outlook.com (mail-bn1nam02lp2041.outbound.protection.outlook.com [104.47.51.41])
+	by iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTPS id 3yc52cduyf-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Wed, 29 May 2024 12:01:15 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Xa74zbkIUvuv4TDTRhKjFhDckcsSTP64cHLUuX1rtWeSIj0Rsz0tPlRyC2lGDYV18LhXQ4x065su3FusTzx/vxO4p67xYom8tk4SWpsvmXhnTuBNQB45K/tfQmjC794YrDk3/vZBZU8QKODvi2MsEP3BqBB3dWmeZ55fr6Fv/6YHUZPnZ3MCoyoL3+qTO9JqDuwMFn6NQ+Q0ZjBlPI2tStyWmynMcsVJhQr1HFfeQjlwgVPwIbMgEAfKJW3ulOPdqInfPeuZRCVL210wZ/tIgjIMtnI2uQbXB1UB9UGyS6lAiMc8gE7lNzRTNFBl4+oW+JXwP2KcydXkLRmuiMbJEA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=Jl76LIcWRdojsPalSWO3Bok1qtquK3myXWh+prZVLac=;
+ b=aqJH/ycCOskZNPUSlpmmKa0sxLiS30057RlXQ1V8GLdG/WJLFOpHAVMJsgr9a8sO7F0FPLR+fbtHwu7/VWApcRAvwRL2OkdIRSzj6zGLRjVKd6D26Qx+o240jAKOMMKNB1eJZwY3nbfu2uXv34cJNu8Tw2bKnVEFb70a0NTfn7i0+/J1N4ssqzDmUmWzDWEkSAcHtGz9JbvfX033akp8srfb5BFzcIJDku6tNmQFcFO6MCzrqzwJ0afp4WO9rRm70stBh/YGgajY8uMDg8Z6e4fXsWNbe12RbLOR3oOC5S4iDUCxLPuUARBzJ1LqnyYNvvogOJ/x0CzNcVve/k3R1Q==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Jl76LIcWRdojsPalSWO3Bok1qtquK3myXWh+prZVLac=;
+ b=wg+YLTTbZumgA3tJHvwnL23MxMFSe/qRK9cf5AM6tGV+BfFSxTx+InmdfdJNdGSXkoLK0mLPxM2Afg7ay0tN6b5oqJDEI+Vn7Al1lvb28RbRBllBMHiKCRGuv11Qfl73S8BuyTU6ecned7GXmLbfNd87pgRe6SHwmanxVo3M1Ls=
+Received: from DM4PR10MB6111.namprd10.prod.outlook.com (2603:10b6:8:bf::9) by
+ MW4PR10MB6560.namprd10.prod.outlook.com (2603:10b6:303:226::8) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.7611.30; Wed, 29 May 2024 12:01:13 +0000
+Received: from DM4PR10MB6111.namprd10.prod.outlook.com
+ ([fe80::d8b5:ffc:6b9a:b777]) by DM4PR10MB6111.namprd10.prod.outlook.com
+ ([fe80::d8b5:ffc:6b9a:b777%4]) with mapi id 15.20.7633.017; Wed, 29 May 2024
+ 12:01:13 +0000
+Message-ID: <04591dbf-57de-4d21-8009-5f462fb59c73@oracle.com>
+Date: Wed, 29 May 2024 17:31:02 +0530
+User-Agent: Mozilla Thunderbird
+From: Anand Khoje <anand.a.khoje@oracle.com>
+Subject: Re: [PATCH 1/1] RDMA/mlx5: Release CPU for other processes in
+ mlx5_free_cmd_msg()
+To: Shay Drori <shayd@nvidia.com>, linux-rdma@vger.kernel.org,
+        linux-kernel@vger.kernel.org, moshe@nvidia.com
+Cc: rama.nichanamatlu@oracle.com, manjunath.b.patil@oracle.com,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>
+References: <20240522033256.11960-1-anand.a.khoje@oracle.com>
+ <20240522033256.11960-2-anand.a.khoje@oracle.com>
+ <a26f1947-58fc-48c4-a8f3-4fe2a274afa6@nvidia.com>
+Content-Language: en-US
+In-Reply-To: <a26f1947-58fc-48c4-a8f3-4fe2a274afa6@nvidia.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: PN3PR01CA0177.INDPRD01.PROD.OUTLOOK.COM
+ (2603:1096:c01:de::19) To DM4PR10MB6111.namprd10.prod.outlook.com
+ (2603:10b6:8:bf::9)
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH net-next v4 3/3] net/smc: Introduce IPPROTO_SMC
-To: "D. Wythe" <alibuda@linux.alibaba.com>, kgraul@linux.ibm.com,
-        jaka@linux.ibm.com, wintera@linux.ibm.com, guwen@linux.alibaba.com
-Cc: kuba@kernel.org, davem@davemloft.net, netdev@vger.kernel.org,
-        linux-s390@vger.kernel.org, linux-rdma@vger.kernel.org,
-        tonylu@linux.alibaba.com, pabeni@redhat.com, edumazet@google.com
-References: <1716955147-88923-1-git-send-email-alibuda@linux.alibaba.com>
- <1716955147-88923-4-git-send-email-alibuda@linux.alibaba.com>
-Content-Language: en-US
-From: Wenjia Zhang <wenjia@linux.ibm.com>
-In-Reply-To: <1716955147-88923-4-git-send-email-alibuda@linux.alibaba.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: F8po9ndDL0Wd2BY2-WlyU3Xku9Gb6ORr
-X-Proofpoint-GUID: 62aWBfwpXuTfif-gjsSrSVmHc27ibqHS
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: DM4PR10MB6111:EE_|MW4PR10MB6560:EE_
+X-MS-Office365-Filtering-Correlation-Id: 2fcb316a-c4da-43af-3e92-08dc7fd7093d
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;ARA:13230031|366007|1800799015|376005;
+X-Microsoft-Antispam-Message-Info: 
+	=?utf-8?B?Sm5UblAyK3pVNUVjWWJac3JWVUczK2llbk9iY1hJWW5pVjMrL0xINnRFcGJR?=
+ =?utf-8?B?dDlkY3daby9sQ3FjMWZSbUhsYlpaeFpoWmwzai9SK3FOcklqV1lKNTJrbjNv?=
+ =?utf-8?B?RmxSK3J0amRSMExldmE0bGFzQk5qTXh4dERNZkpscHIrMmlHR1hxNlp5c25w?=
+ =?utf-8?B?eEZxOGw1ckFVcndKTzRJdDg5WWhvSEFaaFFZL3NxWktHWldQbDVPd204ZWp0?=
+ =?utf-8?B?QjdDdUVCSXBnbEZEZXEvdzQ1UzR5UzNwNWFKV3V0aGtVSHJ2MW5IVkNYdjBU?=
+ =?utf-8?B?SDVGRlUvSDJSL05TTlRmNCtPVGFZMWZmNmxON3kxemFJVWhYU0M1bXdMNEg2?=
+ =?utf-8?B?QmNDNktsMW1ZdHhMZWdVajl5cG5YaVlzZDVOVzdmUERMSTF2ckgxYjZiaVlk?=
+ =?utf-8?B?RW95RkRpeklMeHk5bUJpRmVkNmloT0hBNys5YTRZb0pxYXNwY0RVMjBnOFRM?=
+ =?utf-8?B?M2Y5SzdobHoxQW5LaE40czBOZ1V1SFVvdE95SlRFeFlhRVR6TDFUUlZUTlA4?=
+ =?utf-8?B?em9DQXJoRVVwdnJmSUh6VFpIZkN4QkFUeDlqZlBTTEgyN0xyT2VzYlByWmVl?=
+ =?utf-8?B?dzQ1UEM1c1lsQ0R3ZFBYUlBoSUlUT0FMazdtVHVFakczcUFpN1REWldJN0sw?=
+ =?utf-8?B?U24wUmwxNGFuU0MxNUdkZFNGckVxaG8vT0xWUTd2QmpEUlRnUWtaKzk0ZTJl?=
+ =?utf-8?B?aWtRaHcwWDZpcUkzU3E1eFFJYjhGb0hEVlFGcm5ZVXZmNGRMcm1hSUxHS0li?=
+ =?utf-8?B?U0NHelBrbkxLQkl6VkFEbGdPUzRnOEs5TUx3L290czB4WUZua2VaTEk0NStq?=
+ =?utf-8?B?VmNyckZ3MHpmRlROQnMvL0tudnhTQmtMY3RDL0tsQzY2SnVidXE2MmY3Mkxw?=
+ =?utf-8?B?MjZJaUIrMFUxSTVKMnhqcytjdmgzUWw1RGpsbVo1R1JJUEZTcHBPVE9iVWxv?=
+ =?utf-8?B?VE1NT3N5MFNmYnZYb2Q5aDY2OGNYZnRsZzVkVEV3WGdQT1UvcU9lMHlscW81?=
+ =?utf-8?B?Q3ZJWk4yT3ZvTFNzRDREcy9XQnZQQm9EVmFxMjlTcWluMjdZenk4c0E1RzQw?=
+ =?utf-8?B?cklNRXNZRTRTMXVQbXY0SjlWakFIeEVOMFVKcUJFVFJNMDZQZm5pMUFXUTJZ?=
+ =?utf-8?B?eEZZUFFJNjdXT2NOOFBJVTRtaTI2NkJwZmM4eHBpWFZ0cWV1dVhrMHhaSWU2?=
+ =?utf-8?B?UjM1c3RhL3VyU2lxbnpXcGIzOXk4dDNIa0dmZUo2S2NyNVRVTnZCcFJNUWo5?=
+ =?utf-8?B?SG5YdFhEYkkrUnVWUzB2bDJsQ0FMbXpFY2ZiakYvY2ptWkZpQ0hmbjF6UVRZ?=
+ =?utf-8?B?NnRISFFaSHdiU2lDMWpxTUdUcllteEIxL3NIcU9mUG5DZjVDQ0daZDYxeWRl?=
+ =?utf-8?B?MlU4VjV6YzZNUElLSFFYdC9Bb0kwbCs1b0JnZGlFMDhxdWxRNkQ4SFR0b2Nm?=
+ =?utf-8?B?Ly9HOGx5RXA2ZnNwblF0TkFDOTBTc0FDdDFSYzluc0VBeHlsbFhIVnFBcW02?=
+ =?utf-8?B?ZGJYVzJqbWVIcStIUHJuTmVOdjNlNzhJMWdtQklvY3MwZElBYkFnOC9HQ0ZF?=
+ =?utf-8?B?SXd0OXhQVmF5d2pVZ3QxRENhZFFJZVFmMUhjSEo0N1A4Y3Q2VEpKVkFlTjd2?=
+ =?utf-8?B?d0twUmV5THIyTXI0OXdvS0U2MERxbFB3SG5mclBTQXJOK2F1WnNVR28wdTRx?=
+ =?utf-8?B?NVhxcnQxTmFWci8yNzM4U1RhZDIyVjFoSlExeHdMMXVJaWYrSVQrR1lRPT0=?=
+X-Forefront-Antispam-Report: 
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM4PR10MB6111.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366007)(1800799015)(376005);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: 
+	=?utf-8?B?SkpVQ0JHTVFpWFA3bjFTeEEzRVlFL1FiOE1BeklXM2lOekdXZGZXTUY1cHNO?=
+ =?utf-8?B?U2VsazVOcEI2Qm9aSS9UUnM5cW9vdGNYY2U5Ump0enRrY2RQVEFReWN3U252?=
+ =?utf-8?B?ckNQN05qNG95T1lLMW5aMWRXRXVaOUcwV0w2K1l1ejdPaUY3dUtzTTd4bmVN?=
+ =?utf-8?B?M2FNMVVaVFozODlsaVk4RlhZNG9Gdm84endOaC8wRThCUzZSd2RhZVFJUVRh?=
+ =?utf-8?B?aWYwQlRQU0FpMlZDNEoxM3hVaWE4ZUt1ZmppNVZ1c0FEUUZ3NFpNVkNmZER0?=
+ =?utf-8?B?bkxqOVJ4REJ2MWMyYWVZaFR1WnRFaVR5d0dSbTVZQkdPcW9ZRUw5dDhQcWpT?=
+ =?utf-8?B?UDViTm45cTV5S2FFTGFuK2dKM0xXYVNORWpnUVBUR1hqTlE0Z05NNENXVWh3?=
+ =?utf-8?B?Q2dDQkpIa2MyNXdFd3d1cmhNZUhSa1pWQlJCeXFjbE4yRDB1Q0w4bmhzdDZW?=
+ =?utf-8?B?Vk9CdXZxTFg0L0ZGQTZsb2w3c1pKTTlKL3Q2c1Fsck1JM3drQkZGUHJONWow?=
+ =?utf-8?B?cXhrazlsMEo2cEZXdVMwOU5mTU4vTStpSXF2cVdROHE5QS9jRjJwajZvZ0Zq?=
+ =?utf-8?B?a3dzQ0lCc1VPaHRhK0h4dnZ0S2d6RHdWckJld3dUY1VYZWIvbzNxeWMxeVBk?=
+ =?utf-8?B?Mm5IYW1YQXFWaHFRM0pqVGhFUEd5YVphV3g1WGRYdFN1T3J6Q2cvSmlpVTVu?=
+ =?utf-8?B?Um5tRmZRUDR6SWNUSThIdmY0WlBZbGhab1VGNkVNTjhobVZLaHEvZ1FBcTlB?=
+ =?utf-8?B?TEt3ZjlGeVFYSlFzejArQjYwLzhCMkFldzZoMndsRXhKTjZnRFRvV1E1ZWwr?=
+ =?utf-8?B?VVlyNVBYQ3FwMUZBYk5ZUmxJUEt1ZWZIdEdrN1RXMWw1L2tPM2VmMHhMSDhj?=
+ =?utf-8?B?NEtIOFlmUnNUbHhQVDJUYm82VkFSaTFDWDRhZTRVUFQ2SUZFb01mdUhuNVJR?=
+ =?utf-8?B?N3JCQkhrTTMzZGpsTUU5N3h5eFBhK2E1K25XNHkxMDlLRmZNMFduWEwwQ0N3?=
+ =?utf-8?B?RTBOY1VNYUJVbkZVbGFKUG84ZW96VXZZaS9pUWJENFBjaEd3K0w2dkRLWHZX?=
+ =?utf-8?B?RzluWVk3VzZBbnhidFdVckd3dFQ5NzdncVVhVkd6eFl4NHFJSGprWis2cGlC?=
+ =?utf-8?B?RE9Sek8yQ2Y1djJXYjMxNmcvbjM4YUpGdVJKblBEYzZJY1ZLSUhaWjExWHZP?=
+ =?utf-8?B?T2o4VFpmMUdubTZVUEpzZkRlcDduNkYyaHd4bjVHUlZLRlNFMjVmZEdKQW8v?=
+ =?utf-8?B?VnF4QWRFRHBLVTZ4WlZLYVVNNlJCdVhzSlZLN25sVEdSVHFoR01BRlFCRkRt?=
+ =?utf-8?B?eEZIZGdPbWNyQlJWZXZIaEh5a1BTeUIvVHI4dHBsLzZTamNwSlhUOUQ1VmJr?=
+ =?utf-8?B?OU4xeU1KYXphOFluOGxUcDhsbFhLMWhqdzVKS1pSRS92UGJYYTBhQU15WjlY?=
+ =?utf-8?B?Y3FiZjJKamM5YWZXQ0tKaGEzUlJJMURUT1JacFNPMG5UNTh6eDNHZkFYczB6?=
+ =?utf-8?B?S2dWZ2NCRDM3UmpaZXNBcUEvUVd6UnorTThnOWVFQk5ZUXVTQldqbFU0YW45?=
+ =?utf-8?B?czhzd1kxSm4wNGM1OTNuZ1AwZ0hoZW1RTkJ5anB0VHpjR0pJMUExTkpJcUp5?=
+ =?utf-8?B?a0gxQTBLa2VMYXJUeldrWGdldE0wSG1pVjNwdTJOeVQ3b3NtYmt4MU1CZlN0?=
+ =?utf-8?B?V21ldVlPK2RZRHlheEFNWTRYZkVQV2RvbXpHbTAybHlIYXE3S3pVcEdvUURk?=
+ =?utf-8?B?ZU04TW1EeFZxSENpWGVWRTJPa3NHR3RvTDV0bTNZSERYaXhQYloySkg0dktn?=
+ =?utf-8?B?YllYbkhhWUNGeUJ5MC92YmJSYjlJZHZPaGh3QzRlTzNvaWlMN29uWHdpRkZB?=
+ =?utf-8?B?Yk1WejVXSW4wUlg2cUxSZElCRUFDUVlpTmpaSGYvWGZmRXh2enBkUm9mL3Qz?=
+ =?utf-8?B?cVFlUk1jckVPYTM1WHkwMklpMlhSbldCdFBJa3JaeG84clNaVkRXUytoZkpO?=
+ =?utf-8?B?U2orS1dpdDd4TkN5clFFcFc0c1ZzSnBxVWg2bDE1dDdCcGp0U0E5bTJVeE50?=
+ =?utf-8?B?Wk8xK2xaVC8zRXBjb1ZrV2NSMFo1UlJoRE5ab1lSWk5QcC9Fb0dpdWpIcjUx?=
+ =?utf-8?B?N1NPMFdmMVgxczQyVHY0d1VnTFRIclF3d3l2NGo5K1J2MUIwN0ZBMENsbTU5?=
+ =?utf-8?B?cVh2bUVtbHcwSWNYRXZOSStiaFJuSWxYZVprNU52aHl4SUlVUHJYKzVNaGNI?=
+ =?utf-8?B?WXZ5UzNReHJLdVVKcHRONXp2bm1RPT0=?=
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: 
+	fB9xzZxea4vmDf7mawiWKj+p4SP9IxO/UL2zWWmtu/E/ChNVJBXX+SzQIH+L7KyC5u29/1wnAK5WlW9EP63GHzOttlck6LYtTsRRgGgL2rXRl+sKtV818wM+4iEc//kyE/3P6BOsdmZloUnLHX9WJirpVY0zfh3m+y8nuwJRjwUtd0w0weRCL9vKd4n1rBrBCmt5pSzKwMi5g+ueyNCBT9caXtIxt5DKdbqfFTWeqA7cdyiN32Dnq23wRI+ud8fGvGgmkC8Ntu3Q93gVWYaLmP2fNGrMWYR0iCnNiHvYIn0sB9/UNIgy4LSGPAh0gXzlNdls0oG968ZqSyWPswkqgdDCLBQWIuHyy7BxygspAFnwW5UYlWDgl72MaJdXlWCrNQjytmh44f+407WajpSSEuJGcboS/bI2DQFSZg9wJop6ia56rRKXbH2sqzDh/PhDc5m5CLvktWfzQtvo+5YwnbRFZNPG1Hmya3PaZm6Vtin9mljIp6Vom5Dpj8IdVR9+KiIO+i46XYX+HQ1d2Ggu2rykp9zHZFj+kSX96UPfWqz+37c2WVwnI9/SiJ/OgsT5SyxTnlW3OMcrB2rcOGL43u1mlg+ezBOBtv74iTUV5O4=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 2fcb316a-c4da-43af-3e92-08dc7fd7093d
+X-MS-Exchange-CrossTenant-AuthSource: DM4PR10MB6111.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 29 May 2024 12:01:13.2905
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: MIKsURfK0bV2c4ojuOhFwcuT9+sOWFPq++KLQh9XhwcFh2Tej4i80sdskyQyFGhC+Hm+oPvW+f9qv2U4/++Go4bJWikj6uLT4yaEoUsoQjY=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW4PR10MB6560
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.293,Aquarius:18.0.1039,Hydra:6.0.650,FMLib:17.12.28.16
  definitions=2024-05-29_07,2024-05-28_01,2024-05-17_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0 clxscore=1011
- impostorscore=0 mlxscore=0 mlxlogscore=999 spamscore=0 lowpriorityscore=0
- adultscore=0 bulkscore=0 phishscore=0 malwarescore=0 priorityscore=1501
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 malwarescore=0 mlxscore=0
+ mlxlogscore=999 phishscore=0 spamscore=0 adultscore=0 suspectscore=0
  classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2405010000
- definitions=main-2405290081
+ definitions=main-2405290082
+X-Proofpoint-ORIG-GUID: I0KtqyjEKtlQgYhfpIP2TgKUDDfZG5pF
+X-Proofpoint-GUID: I0KtqyjEKtlQgYhfpIP2TgKUDDfZG5pF
 
 
+On 5/26/24 20:53, Shay Drori wrote:
+> Hi Anand.
+>
+> First, the correct Mailing list for this patch is
+> netdev@vger.kernel.org, please send there the next version.
+>
+> On 22/05/2024 6:32, Anand Khoje wrote:
+>> In non FLR context, at times CX-5 requests release of ~8 million 
+>> device pages.
+>> This needs humongous number of cmd mailboxes, which to be released once
+>> the pages are reclaimed. Release of humongous number of cmd mailboxes
+>> consuming cpu time running into many secs, with non preemptable kernels
+>> is leading to critical process starving on that cpu’s RQ. To alleviate
+>> this, this patch relinquishes cpu periodically but conditionally.
+>>
+>> Orabug: 36275016
+>
+> this doesn't seem relevant
+>
+>>
+>> Signed-off-by: Anand Khoje <anand.a.khoje@oracle.com>
+>> ---
+>>   drivers/net/ethernet/mellanox/mlx5/core/cmd.c | 7 +++++++
+>>   1 file changed, 7 insertions(+)
+>>
+>> diff --git a/drivers/net/ethernet/mellanox/mlx5/core/cmd.c 
+>> b/drivers/net/ethernet/mellanox/mlx5/core/cmd.c
+>> index 9c21bce..9fbf25d 100644
+>> --- a/drivers/net/ethernet/mellanox/mlx5/core/cmd.c
+>> +++ b/drivers/net/ethernet/mellanox/mlx5/core/cmd.c
+>> @@ -1336,16 +1336,23 @@ static struct mlx5_cmd_msg 
+>> *mlx5_alloc_cmd_msg(struct mlx5_core_dev *dev,
+>>       return ERR_PTR(err);
+>>   }
+>>   +#define RESCHED_MSEC 2
+>
+>
+> What if you add cond_resched() on every iteration of the loop ? Does it
+> take much more time to finish 8 Million pages or same ?
+> If it does matter, maybe 2 ms is too high freq ? 20 ms ? 200 ms ?
+>
+Shay,
 
-On 29.05.24 05:59, D. Wythe wrote:
-> From: "D. Wythe" <alibuda@linux.alibaba.com>
-> 
-> This patch allows to create smc socket via AF_INET,
-> similar to the following code,
-> 
-> /* create v4 smc sock */
-> v4 = socket(AF_INET, SOCK_STREAM, IPPROTO_SMC);
-> 
-> /* create v6 smc sock */
-> v6 = socket(AF_INET6, SOCK_STREAM, IPPROTO_SMC);
-> 
-> There are several reasons why we believe it is appropriate here:
-> 
-> 1. For smc sockets, it actually use IPv4 (AF-INET) or IPv6 (AF-INET6)
-> address. There is no AF_SMC address at all.
-> 
-> 2. Create smc socket in the AF_INET(6) path, which allows us to reuse
-> the infrastructure of AF_INET(6) path, such as common ebpf hooks.
-> Otherwise, smc have to implement it again in AF_SMC path.
-> 
-> Signed-off-by: D. Wythe <alibuda@linux.alibaba.com>
-> ---
->   include/uapi/linux/in.h |   2 +
->   net/smc/Makefile        |   2 +-
->   net/smc/af_smc.c        |  36 ++++++++++++++++
->   net/smc/inet_smc.c      | 108 ++++++++++++++++++++++++++++++++++++++++++++++++
->   net/smc/inet_smc.h      |  34 +++++++++++++++
->   5 files changed, 181 insertions(+), 1 deletion(-)
->   create mode 100644 net/smc/inet_smc.c
->   create mode 100644 net/smc/inet_smc.h
-> 
-> diff --git a/include/uapi/linux/in.h b/include/uapi/linux/in.h
-> index e682ab6..0c6322b 100644
-> --- a/include/uapi/linux/in.h
-> +++ b/include/uapi/linux/in.h
-> @@ -83,6 +83,8 @@ enum {
->   #define IPPROTO_RAW		IPPROTO_RAW
->     IPPROTO_MPTCP = 262,		/* Multipath TCP connection		*/
->   #define IPPROTO_MPTCP		IPPROTO_MPTCP
-> +  IPPROTO_SMC = 263,		/* Shared Memory Communications		*/
-> +#define IPPROTO_SMC		IPPROTO_SMC
->     IPPROTO_MAX
->   };
->   #endif
-> diff --git a/net/smc/Makefile b/net/smc/Makefile
-> index 2c510d54..472b9ee 100644
-> --- a/net/smc/Makefile
-> +++ b/net/smc/Makefile
-> @@ -4,6 +4,6 @@ obj-$(CONFIG_SMC)	+= smc.o
->   obj-$(CONFIG_SMC_DIAG)	+= smc_diag.o
->   smc-y := af_smc.o smc_pnet.o smc_ib.o smc_clc.o smc_core.o smc_wr.o smc_llc.o
->   smc-y += smc_cdc.o smc_tx.o smc_rx.o smc_close.o smc_ism.o smc_netlink.o smc_stats.o
-> -smc-y += smc_tracepoint.o
-> +smc-y += smc_tracepoint.o inet_smc.o
->   smc-$(CONFIG_SYSCTL) += smc_sysctl.o
->   smc-$(CONFIG_SMC_LO) += smc_loopback.o
-> diff --git a/net/smc/af_smc.c b/net/smc/af_smc.c
-> index 8e3ce76..320624c 100644
-> --- a/net/smc/af_smc.c
-> +++ b/net/smc/af_smc.c
-> @@ -54,6 +54,7 @@
->   #include "smc_tracepoint.h"
->   #include "smc_sysctl.h"
->   #include "smc_loopback.h"
-> +#include "inet_smc.h"
->   
->   static DEFINE_MUTEX(smc_server_lgr_pending);	/* serialize link group
->   						 * creation on server
-> @@ -3594,9 +3595,31 @@ static int __init smc_init(void)
->   		goto out_lo;
->   	}
->   
-> +	rc = proto_register(&smc_inet_prot, 1);
-> +	if (rc) {
-> +		pr_err("%s: proto_register smc_inet_prot fails with %d\n", __func__, rc);
-> +		goto out_ulp;
-> +	}
-> +	inet_register_protosw(&smc_inet_protosw);
-> +#if IS_ENABLED(CONFIG_IPV6)
-> +	rc = proto_register(&smc_inet6_prot, 1);
-> +	if (rc) {
-> +		pr_err("%s: proto_register smc_inet6_prot fails with %d\n", __func__, rc);
-> +		goto out_inet_prot;
-> +	}
-> +	inet6_register_protosw(&smc_inet6_protosw);
 
-Comparing to inet_register_protosw(), the inet6_register_protosw() 
-returns an integer. Thus, making error check and direct corresponding 
-housekeeping here looks IMO much cleaner.
+There is no rule we could use, but can use only guidance/suggestions here.
+Delay if too short/often relinquish leads to thrashing and high context 
+switch costs,
+while keeping it long/infrequent relinquish leads to RQ starvation.
+This observation is based  on our applications / workload, using which a 
+middle ground was chosen as 2 msecs.
+But your suggestions are also very viable. Hence we are reconsidering it.
 
-> +#endif
-> +
->   	static_branch_enable(&tcp_have_smc);
->   	return 0;
->   
-> +#if IS_ENABLED(CONFIG_IPV6)
-> +out_inet_prot:
-> +	inet_unregister_protosw(&smc_inet_protosw);
-> +	proto_unregister(&smc_inet_prot);
-> +#endif
-> +out_ulp:
-> +	tcp_unregister_ulp(&smc_ulp_ops);
->   out_lo:
->   	smc_loopback_exit();
->   out_ib:
-> @@ -3633,6 +3656,10 @@ static int __init smc_init(void)
->   static void __exit smc_exit(void)
->   {
->   	static_branch_disable(&tcp_have_smc);
-> +	inet_unregister_protosw(&smc_inet_protosw);
-> +#if IS_ENABLED(CONFIG_IPV6)
-> +	inet6_unregister_protosw(&smc_inet6_protosw);
-> +#endif
->   	tcp_unregister_ulp(&smc_ulp_ops);
->   	sock_unregister(PF_SMC);
->   	smc_core_exit();
-> @@ -3644,6 +3671,10 @@ static void __exit smc_exit(void)
->   	destroy_workqueue(smc_hs_wq);
->   	proto_unregister(&smc_proto6);
->   	proto_unregister(&smc_proto);
-> +	proto_unregister(&smc_inet_prot);
-> +#if IS_ENABLED(CONFIG_IPV6)
-> +	proto_unregister(&smc_inet6_prot);
-> +#end
+This was very helpful. thank you! I will resend a v2 after more testing.
 
-Since there is already inet_smc.c, I'd recommend to group these register 
-and unregister stuff respectively in functions like e.g. smc_inet_init() 
-and smc_inet_exit() in inet_smc.c
+Thanks,
 
->   	smc_pnet_exit();
->   	smc_nl_exit();
->   	smc_clc_exit();
-> @@ -3660,4 +3691,9 @@ static void __exit smc_exit(void)
->   MODULE_LICENSE("GPL");
->   MODULE_ALIAS_NETPROTO(PF_SMC);
->   MODULE_ALIAS_TCP_ULP("smc");
-> +/* 263 for IPPROTO_SMC and 1 for SOCK_STREAM */
-> +MODULE_ALIAS_NET_PF_PROTO_TYPE(PF_INET, 263, 1);
-> +#if IS_ENABLED(CONFIG_IPV6)
-> +MODULE_ALIAS_NET_PF_PROTO_TYPE(PF_INET6, 263, 1);
-> +#endif
->   MODULE_ALIAS_GENL_FAMILY(SMC_GENL_FAMILY_NAME);
-> diff --git a/net/smc/inet_smc.c b/net/smc/inet_smc.c
-> new file mode 100644
-> index 00000000..1ba73d7
-> --- /dev/null
-> +++ b/net/smc/inet_smc.c
+Anand
 
-In order to keep the consistency with the structure and function names 
-in the files, I'm wondering why not to use smc_inet.h and smc_inet.c
-instead of inet_smc.h and inet_smc.c respectively
 
-> @@ -0,0 +1,108 @@
-> +// SPDX-License-Identifier: GPL-2.0-only
-> +/*
-> + *  Shared Memory Communications over RDMA (SMC-R) and RoCE
-> + *
-> + *  Definitions for the IPPROTO_SMC (socket related)
-> + *
-> + *  Copyright IBM Corp. 2016, 2018
-> + *  Copyright (c) 2024, Alibaba Inc.
-> + *
-> + *  Author: D. Wythe <alibuda@linux.alibaba.com>
-> + */
-> +
-> +#include "inet_smc.h"
-> +#include "smc.h"
-> +
-> +struct proto smc_inet_prot = {
-> +	.name		= "INET_SMC",
-> +	.owner		= THIS_MODULE,
-> +	.init		= smc_inet_init_sock,
-> +	.hash		= smc_hash_sk,
-> +	.unhash		= smc_unhash_sk,
-> +	.release_cb	= smc_release_cb,
-> +	.obj_size	= sizeof(struct smc_sock),
-> +	.h.smc_hash	= &smc_v4_hashinfo,
-> +	.slab_flags	= SLAB_TYPESAFE_BY_RCU,
-> +};
-> +
-> +const struct proto_ops smc_inet_stream_ops = {
-> +	.family		= PF_INET,
-> +	.owner		= THIS_MODULE,
-> +	.release	= smc_release,
-> +	.bind		= smc_bind,
-> +	.connect	= smc_connect,
-> +	.socketpair	= sock_no_socketpair,
-> +	.accept		= smc_accept,
-> +	.getname	= smc_getname,
-> +	.poll		= smc_poll,
-> +	.ioctl		= smc_ioctl,
-> +	.listen		= smc_listen,
-> +	.shutdown	= smc_shutdown,
-> +	.setsockopt	= smc_setsockopt,
-> +	.getsockopt	= smc_getsockopt,
-> +	.sendmsg	= smc_sendmsg,
-> +	.recvmsg	= smc_recvmsg,
-> +	.mmap		= sock_no_mmap,
-> +	.splice_read	= smc_splice_read,
-> +};
-> +
-> +struct inet_protosw smc_inet_protosw = {
-> +	.type		= SOCK_STREAM,
-> +	.protocol	= IPPROTO_SMC,
-> +	.prot		= &smc_inet_prot,
-> +	.ops		= &smc_inet_stream_ops,
-> +	.flags		= INET_PROTOSW_ICSK,
-> +};
-> +
-> +#if IS_ENABLED(CONFIG_IPV6)
-> +struct proto smc_inet6_prot = {
-> +	.name		= "INET6_SMC",
-> +	.owner		= THIS_MODULE,
-> +	.init		= smc_inet_init_sock,
-> +	.hash		= smc_hash_sk,
-> +	.unhash		= smc_unhash_sk,
-> +	.release_cb	= smc_release_cb,
-> +	.obj_size	= sizeof(struct smc_sock),
-> +	.h.smc_hash	= &smc_v6_hashinfo,
-> +	.slab_flags	= SLAB_TYPESAFE_BY_RCU,
-> +};
-> +
-> +const struct proto_ops smc_inet6_stream_ops = {
-> +	.family		= PF_INET6,
-> +	.owner		= THIS_MODULE,
-> +	.release	= smc_release,
-> +	.bind		= smc_bind,
-> +	.connect	= smc_connect,
-> +	.socketpair	= sock_no_socketpair,
-> +	.accept		= smc_accept,
-> +	.getname	= smc_getname,
-> +	.poll		= smc_poll,
-> +	.ioctl		= smc_ioctl,
-> +	.listen		= smc_listen,
-> +	.shutdown	= smc_shutdown,
-> +	.setsockopt	= smc_setsockopt,
-> +	.getsockopt	= smc_getsockopt,
-> +	.sendmsg	= smc_sendmsg,
-> +	.recvmsg	= smc_recvmsg,
-> +	.mmap		= sock_no_mmap,
-> +	.splice_read	= smc_splice_read,
-> +};
-> +
-> +struct inet_protosw smc_inet6_protosw = {
-> +	.type		= SOCK_STREAM,
-> +	.protocol	= IPPROTO_SMC,
-> +	.prot		= &smc_inet6_prot,
-> +	.ops		= &smc_inet6_stream_ops,
-> +	.flags		= INET_PROTOSW_ICSK,
-> +};
-> +#endif
-> +
-> +int smc_inet_init_sock(struct sock *sk)
-> +{
-> +	struct net *net = sock_net(sk);
-> +
-> +	/* init common smc sock */
-> +	smc_sk_init(net, sk, IPPROTO_SMC);
-> +	/* create clcsock */
-> +	return smc_create_clcsk(net, sk, sk->sk_family);
-> +}
-> diff --git a/net/smc/inet_smc.h b/net/smc/inet_smc.h
-> new file mode 100644
-> index 00000000..c55345d
-> --- /dev/null
-> +++ b/net/smc/inet_smc.h
-> @@ -0,0 +1,34 @@
-> +/* SPDX-License-Identifier: GPL-2.0 */
-> +/*
-> + *  Shared Memory Communications over RDMA (SMC-R) and RoCE
-> + *
-> + *  Definitions for the IPPROTO_SMC (socket related)
-> +
-> + *  Copyright IBM Corp. 2016
-> + *  Copyright (c) 2024, Alibaba Inc.
-> + *
-> + *  Author: D. Wythe <alibuda@linux.alibaba.com>
-> + */
-> +#ifndef __INET_SMC
-> +#define __INET_SMC
-> +
-> +#include <net/protocol.h>
-> +#include <net/sock.h>
-> +#include <net/tcp.h>
-> +
-> +extern struct proto smc_inet_prot;
-> +extern const struct proto_ops smc_inet_stream_ops;
-> +extern struct inet_protosw smc_inet_protosw;
-> +
-> +#if IS_ENABLED(CONFIG_IPV6)
-> +#include <net/ipv6.h>
-> +/* MUST after net/tcp.h or warning */
-> +#include <net/transp_v6.h>
-> +extern struct proto smc_inet6_prot;
-> +extern const struct proto_ops smc_inet6_stream_ops;
-> +extern struct inet_protosw smc_inet6_protosw;
-> +#endif
-> +
-> +int smc_inet_init_sock(struct sock *sk);
-> +
-> +#endif /* __INET_SMC */
+> Thanks
+>
+>>   static void mlx5_free_cmd_msg(struct mlx5_core_dev *dev,
+>>                     struct mlx5_cmd_msg *msg)
+>>   {
+>>       struct mlx5_cmd_mailbox *head = msg->next;
+>>       struct mlx5_cmd_mailbox *next;
+>> +    unsigned long start_time = jiffies;
+>>         while (head) {
+>>           next = head->next;
+>>           free_cmd_box(dev, head);
+>>           head = next;
+>> +        if (time_after(jiffies, start_time + 
+>> msecs_to_jiffies(RESCHED_MSEC))) {
+>> +            mlx5_core_warn_rl(dev, "Spent more than %d msecs, 
+>> yielding CPU\n", RESCHED_MSEC);
+>> +            cond_resched();
+>> +            start_time = jiffies;
+>> +        }
+>>       }
+>>       kfree(msg);
+>>   }
 
