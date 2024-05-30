@@ -1,44 +1,44 @@
-Return-Path: <linux-rdma+bounces-2685-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-2686-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id B6D7F8D4B19
-	for <lists+linux-rdma@lfdr.de>; Thu, 30 May 2024 13:55:53 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C59518D4B1A
+	for <lists+linux-rdma@lfdr.de>; Thu, 30 May 2024 13:55:54 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 57D111F22D3A
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7621C283B60
 	for <lists+linux-rdma@lfdr.de>; Thu, 30 May 2024 11:55:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 35DE717FAA6;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3BDD117FAAB;
 	Thu, 30 May 2024 11:55:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b="NKEayk30"
+	dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b="PnA+xJCo"
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B839117E469;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B83D417E478;
 	Thu, 30 May 2024 11:55:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=13.77.154.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1717070125; cv=none; b=H3utH3HjxLFAiSig9q9n9piswbyFl7DmxVJrEn6R7redP8URLwnzDUK00z3zFgx/JBCWpGlr3y/MJAFCT4DqOa4oFms8ObV85zf6Hz9UVT48Ez4zBnH+8WfLbJbyr6om0Z+OWZGPfkPvj3xiUhyN9DHrVdNtSBOqW/HXTnqZgA0=
+	t=1717070125; cv=none; b=ZhE0s9EnMdGOMLrCKS0xfJSsi1tOAmDm0YvmgpExBjJXTdokfHyLSKPSKzSLddFV/ZSeelrurHsBz2iw8t/ol8gEgJgIKsvnjjJXvDOWScyeCoFcZNwSzpgC6iPcHpbTpjJdtQhBerelk1Z6bGStRU/ZFzYvez/Da7ia9XjM86A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1717070125; c=relaxed/simple;
-	bh=Opw8RaFJm5BcSRqVOUlh/M4jQ1cC47a2Jr1Nav7FFMc=;
-	h=From:To:Cc:Subject:Date:Message-Id; b=RmkTc8Il+Lfoa7vaY9kA6ljvH1IE1NYMYP/iQyag4Zh/d1VTysp0bGQwHjctQyXJ3MYig7aTNn5tzJXePrnyAmpG/XPXHe2yZyuYoC6h8Cs/AnFRShMAA0CBdkCMT++sQa3MdYVJuHWvnAh8Ih8Rv/88aK/awwf+jqEHVLRQ3sA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com; spf=pass smtp.mailfrom=linux.microsoft.com; dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b=NKEayk30; arc=none smtp.client-ip=13.77.154.182
+	bh=QLjiQw7NqssbLJLK2uetUPdOfYeFKGuAmahS5JMoJ/Q=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References; b=lw6pXv4VI/sZ5EgbkLr3VcBnb7ANDnufbkbfeyMnCumaVaxKlhm8/02CHeqg8RSbmXZhJVCr41CYYq0SgUaNnWk++3jAUaozoNWP/xGBAA06XCXjg6vr7vzKl0TeBpQQxQ7ay57AU5B8qB2g5wlgfFsI9vYOYCrFeTu0ugDdWQw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com; spf=pass smtp.mailfrom=linux.microsoft.com; dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b=PnA+xJCo; arc=none smtp.client-ip=13.77.154.182
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.microsoft.com
 Received: from linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net (linux.microsoft.com [13.77.154.182])
-	by linux.microsoft.com (Postfix) with ESMTPSA id 3E70C20B915A;
+	by linux.microsoft.com (Postfix) with ESMTPSA id 57B2C20B915B;
 	Thu, 30 May 2024 04:55:23 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 3E70C20B915A
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 57B2C20B915B
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
 	s=default; t=1717070123;
-	bh=q9fgagC4Yf4H1eJaVbjrrK9BAWBS3+KdKEIrydPSsWI=;
-	h=From:To:Cc:Subject:Date:From;
-	b=NKEayk30hyrl4DIteVd0SHsA0zB1vHIAKg/buxjPWTaO8y0Z/tM7Ml+tzMn9jrUOu
-	 GD/MX9l4dNHBXbuWX/xqIyoK1X8ZS8rv0g6MiJ/+I5diz6b8aRHlRyfjDKsFfI+hGx
-	 1apgYiUx4A14fCEn84Y1xDlN/0Ggh9r8MYBJ9XtY=
+	bh=UBCU0OT+/KidNJ3GcZj3+bBFsfX2yHeRnRPCUIDpm+s=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=PnA+xJCoS71RGwaE3/4twvUHXOWjMHPfS5b6Iqo0XEBC//LXDOXJdPQcZVurVUPrZ
+	 v1d4gKpm9CYG+7pbM1kCtOiLT8iFRx8ZqBfzWMbsSDTZhCURtInZbX1doXfD6rbr1E
+	 u5dQJsFfO1ZrQ2HujyIMVNWeM7jK8qFOIAGwkDUQ=
 From: Konstantin Taranov <kotaranov@linux.microsoft.com>
 To: kotaranov@microsoft.com,
 	sharmaajay@microsoft.com,
@@ -47,10 +47,12 @@ To: kotaranov@microsoft.com,
 	leon@kernel.org
 Cc: linux-rdma@vger.kernel.org,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH rdma-next v2 0/2] Fill in capabilities and guid
-Date: Thu, 30 May 2024 04:55:15 -0700
-Message-Id: <1717070117-1234-1-git-send-email-kotaranov@linux.microsoft.com>
+Subject: [PATCH rdma-next v2 1/2] RDMA/mana_ib: set node_guid
+Date: Thu, 30 May 2024 04:55:16 -0700
+Message-Id: <1717070117-1234-2-git-send-email-kotaranov@linux.microsoft.com>
 X-Mailer: git-send-email 1.8.3.1
+In-Reply-To: <1717070117-1234-1-git-send-email-kotaranov@linux.microsoft.com>
+References: <1717070117-1234-1-git-send-email-kotaranov@linux.microsoft.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
@@ -59,21 +61,34 @@ List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 
 From: Konstantin Taranov <kotaranov@microsoft.com>
 
-This patch series fills in GUID and device properties.
-Most of these properties are required for CM.
+Use the mac address for the node_guid of the IB device.
 
-v1->v2:
-* Added a comment to the CA delay
+Signed-off-by: Konstantin Taranov <kotaranov@microsoft.com>
+Reviewed-by: Long Li <longli@microsoft.com>
+---
+ drivers/infiniband/hw/mana/device.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-Konstantin Taranov (2):
-  RDMA/mana_ib: set node_guid
-  RDMA/mana_ib: extend query device
-
- drivers/infiniband/hw/mana/device.c  |  2 ++
- drivers/infiniband/hw/mana/main.c    | 19 ++++++++++++++++---
- drivers/infiniband/hw/mana/mana_ib.h |  5 +++++
- 3 files changed, 23 insertions(+), 3 deletions(-)
-
+diff --git a/drivers/infiniband/hw/mana/device.c b/drivers/infiniband/hw/mana/device.c
+index 7e09ceb..9a7da2e 100644
+--- a/drivers/infiniband/hw/mana/device.c
++++ b/drivers/infiniband/hw/mana/device.c
+@@ -5,6 +5,7 @@
+ 
+ #include "mana_ib.h"
+ #include <net/mana/mana_auxiliary.h>
++#include <net/addrconf.h>
+ 
+ MODULE_DESCRIPTION("Microsoft Azure Network Adapter IB driver");
+ MODULE_LICENSE("GPL");
+@@ -92,6 +93,7 @@ static int mana_ib_probe(struct auxiliary_device *adev,
+ 		goto free_ib_device;
+ 	}
+ 	ether_addr_copy(mac_addr, upper_ndev->dev_addr);
++	addrconf_addr_eui48((u8 *)&dev->ib_dev.node_guid, upper_ndev->dev_addr);
+ 	ret = ib_device_set_netdev(&dev->ib_dev, upper_ndev, 1);
+ 	rcu_read_unlock();
+ 	if (ret) {
 -- 
 2.43.0
 
