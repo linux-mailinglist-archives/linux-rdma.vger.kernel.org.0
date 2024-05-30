@@ -1,47 +1,47 @@
-Return-Path: <linux-rdma+bounces-2676-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-2677-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id A17458D43BC
-	for <lists+linux-rdma@lfdr.de>; Thu, 30 May 2024 04:35:14 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 430B08D43DD
+	for <lists+linux-rdma@lfdr.de>; Thu, 30 May 2024 04:51:24 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 50FB2284B3B
-	for <lists+linux-rdma@lfdr.de>; Thu, 30 May 2024 02:35:13 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 646661C22FA7
+	for <lists+linux-rdma@lfdr.de>; Thu, 30 May 2024 02:51:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F1EDD1B7E9;
-	Thu, 30 May 2024 02:35:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BD2EA1BF31;
+	Thu, 30 May 2024 02:51:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="rUPAgVhW"
+	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="cneZ+Xet"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from out30-113.freemail.mail.aliyun.com (out30-113.freemail.mail.aliyun.com [115.124.30.113])
+Received: from out30-100.freemail.mail.aliyun.com (out30-100.freemail.mail.aliyun.com [115.124.30.100])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2B2E7168B8;
-	Thu, 30 May 2024 02:35:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.113
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 08EC18F4A;
+	Thu, 30 May 2024 02:51:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.100
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1717036508; cv=none; b=nXCDyKt8W5dDXmVptxlo65YDQguXJPgnGqMKRpEKP60BTClosQvYxM1g7ZflJ6RTeAR05z0E3ki/QGpR4KcCxaVEpOENZAUipX9Iz6Ih8iwPRz/JnmiwhyNLDnoS+kSod2ha/g8YFs5G8meem7vfjfCsXhg8rhcdTVhjtjUQjQQ=
+	t=1717037479; cv=none; b=J7d0sc0S+i1eET6A3NY+eFCOJb0rjFeED9HO+vMPoJgLGCUZXwfB4fcI9b1CGstHAsO9zdDsO2+RpqIy7zy3kLRdDGkTM9zYu2nH0TyNMmzgtLo/JOrxeMm9/leOrJ/BVuD8cPHMgrgTHsPbJ6k41dW/MnzHk3rxiQbIPi3UeOA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1717036508; c=relaxed/simple;
-	bh=stM3QafbhoESbP7MZddZFF0FFIgu9SAOzMV+AUtJ+9o=;
+	s=arc-20240116; t=1717037479; c=relaxed/simple;
+	bh=lr7aYZdXmjuN5ocIYwBUc+AkSxcWfqkwln4akezJKDg=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=GDIfFg/A/oigiGKn/iwxV4yxoROj8yirrVZxyezgGdVp5+RV2/c2WP/y82dDJqe6JLwD6c1/ZIznf9/Dq3wriwIsthuyY6R7gCxdBSDjBKt6eEE7BiEBKW/XSzwcCWPOscmq5eTE1+s0CekEiBZF3D/lclJfbGTf43EQTcxWLJA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=rUPAgVhW; arc=none smtp.client-ip=115.124.30.113
+	 In-Reply-To:Content-Type; b=ktUpfJK2MsSBbvPPvR/7eqocKe2/pPgNuj9u0nmvueaIhgssO7GPgE+y6vCrncZOTlxohjgFZObd0OJ5CPQFddlHW40VJnHEz+ygLkDQucpP7JOe4Pu7+vDVcmDpcUBwG2zHYG2BkU7UWzZu1iHHvguf7vCKMpB8hCvxX+7RVgY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=cneZ+Xet; arc=none smtp.client-ip=115.124.30.100
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
 DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
 	d=linux.alibaba.com; s=default;
-	t=1717036502; h=Message-ID:Date:MIME-Version:Subject:To:From:Content-Type;
-	bh=YXpx0GvEPjk5AuoW+cXZw0X4IRgAlbYsf09KZZv7vXE=;
-	b=rUPAgVhWP2dBKOrHjrx1Ljjoc5YSaEkyM1oyexyBXlwZgW8zf/WuSMQZ4fR9mdN+uOFFxN5nes/IzU89o/qAFE7TkJw7FlFXsRUWU+3zu49bdFRwsSjui7bGUwn+mijaXYhQ/kuFObJt3ulMTuRsIKTWhWOXQeKnpfOjHmidp0I=
-X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R171e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=maildocker-contentspam033037067110;MF=alibuda@linux.alibaba.com;NM=1;PH=DS;RN=14;SR=0;TI=SMTPD_---0W7VUmzp_1717036501;
-Received: from 30.221.146.99(mailfrom:alibuda@linux.alibaba.com fp:SMTPD_---0W7VUmzp_1717036501)
+	t=1717037473; h=Message-ID:Date:MIME-Version:Subject:To:From:Content-Type;
+	bh=WE2w20DPjBcab3ELDcShSVkSZp/3CCT8/dpCQS3EgyA=;
+	b=cneZ+Xet8AgzJHObtmZ6fkz2D5iADkI7DYzGfKUAnaK9Z6FN0Ct+FmU5KOO+FfGKxp4fYydhWBCqZNWHHjNul2UvNoe5FTuzre09He6UK8MZLZjeHQYe0RTH0bqv9HjBetJMMBxsMoQIfQxK8jy8zrhJOUehemgHeOsthOglt4c=
+X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R171e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=maildocker-contentspam033045075189;MF=alibuda@linux.alibaba.com;NM=1;PH=DS;RN=13;SR=0;TI=SMTPD_---0W7VKfAj_1717037472;
+Received: from 30.221.146.99(mailfrom:alibuda@linux.alibaba.com fp:SMTPD_---0W7VKfAj_1717037472)
           by smtp.aliyun-inc.com;
-          Thu, 30 May 2024 10:35:02 +0800
-Message-ID: <c722d246-056b-4c8e-8a1d-84ec88afd52c@linux.alibaba.com>
-Date: Thu, 30 May 2024 10:35:01 +0800
+          Thu, 30 May 2024 10:51:12 +0800
+Message-ID: <95d94f6c-a77f-45c3-9889-77620efcdbff@linux.alibaba.com>
+Date: Thu, 30 May 2024 10:51:10 +0800
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
@@ -50,25 +50,26 @@ List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
 Subject: Re: [PATCH net-next v4 3/3] net/smc: Introduce IPPROTO_SMC
-To: Zhu Yanjun <yanjun.zhu@linux.dev>, kgraul@linux.ibm.com,
- wenjia@linux.ibm.com, jaka@linux.ibm.com, wintera@linux.ibm.com,
- guwen@linux.alibaba.com
+To: Wenjia Zhang <wenjia@linux.ibm.com>, kgraul@linux.ibm.com,
+ jaka@linux.ibm.com, wintera@linux.ibm.com, guwen@linux.alibaba.com
 Cc: kuba@kernel.org, davem@davemloft.net, netdev@vger.kernel.org,
  linux-s390@vger.kernel.org, linux-rdma@vger.kernel.org,
  tonylu@linux.alibaba.com, pabeni@redhat.com, edumazet@google.com
 References: <1716955147-88923-1-git-send-email-alibuda@linux.alibaba.com>
  <1716955147-88923-4-git-send-email-alibuda@linux.alibaba.com>
- <f7ad8072-a173-4d75-bbdd-775f31f6826f@linux.dev>
+ <ea8194ec-6583-40f1-912a-a612a6509566@linux.ibm.com>
 Content-Language: en-US
 From: "D. Wythe" <alibuda@linux.alibaba.com>
-In-Reply-To: <f7ad8072-a173-4d75-bbdd-775f31f6826f@linux.dev>
+In-Reply-To: <ea8194ec-6583-40f1-912a-a612a6509566@linux.ibm.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
 
 
 
-On 5/30/24 3:55 AM, Zhu Yanjun wrote:
-> 在 2024/5/29 5:59, D. Wythe 写道:
+On 5/29/24 7:58 PM, Wenjia Zhang wrote:
+>
+>
+> On 29.05.24 05:59, D. Wythe wrote:
 >> From: "D. Wythe" <alibuda@linux.alibaba.com>
 >>
 >> This patch allows to create smc socket via AF_INET,
@@ -158,6 +159,14 @@ On 5/30/24 3:55 AM, Zhu Yanjun wrote:
 >> +        goto out_inet_prot;
 >> +    }
 >> +    inet6_register_protosw(&smc_inet6_protosw);
+>
+> Comparing to inet_register_protosw(), the inet6_register_protosw() 
+> returns an integer. Thus, making error check and direct corresponding 
+> housekeeping here looks IMO much cleaner.
+>
+Oops... I was under the impression that it had no return. In the prior 
+RFC, I even commented that it had no return. Quite the oversight on my part.
+
 >> +#endif
 >> +
 >>       static_branch_enable(&tcp_have_smc);
@@ -190,7 +199,17 @@ On 5/30/24 3:55 AM, Zhu Yanjun wrote:
 >> +    proto_unregister(&smc_inet_prot);
 >> +#if IS_ENABLED(CONFIG_IPV6)
 >> +    proto_unregister(&smc_inet6_prot);
->> +#endif
+>> +#end
+>
+> Since there is already inet_smc.c, I'd recommend to group these 
+> register and unregister stuff respectively in functions like e.g. 
+> smc_inet_init() and smc_inet_exit() in inet_smc.c
+>
+
+Agreed, I also see similar opinions from the community, and I will 
+improve it in the next version.
+
+
 >>       smc_pnet_exit();
 >>       smc_nl_exit();
 >>       smc_clc_exit();
@@ -209,6 +228,19 @@ On 5/30/24 3:55 AM, Zhu Yanjun wrote:
 >> index 00000000..1ba73d7
 >> --- /dev/null
 >> +++ b/net/smc/inet_smc.c
+>
+> In order to keep the consistency with the structure and function names 
+> in the files, I'm wondering why not to use smc_inet.h and smc_inet.c
+> instead of inet_smc.h and inet_smc.c respectively
+
+That's because I am trying to keep the name style to be consistent with 
+af_smc.c. But I don't insist on this, using smc_inet
+is also good for me.
+
+Thanks,
+D. Wythe
+
+>
 >> @@ -0,0 +1,108 @@
 >> +// SPDX-License-Identifier: GPL-2.0-only
 >> +/*
@@ -354,21 +386,6 @@ On 5/30/24 3:55 AM, Zhu Yanjun wrote:
 >> +extern const struct proto_ops smc_inet6_stream_ops;
 >> +extern struct inet_protosw smc_inet6_protosw;
 >> +#endif
->
-> If we append /* CONFIG_IPV6 */ to #endif to indicate that it is the 
-> end of CONFIG_IPV6, it is a good habit. When browsing the source code, 
-> it is easy for us to know that it is the end of CONFIG_IPV6.
-> Just my 2 cent suggestions. It is a trivial problem. You can ignore it.
-> But if you fix it, it can make the source code more readable.
->
-> Zhu Yanjun
-
-I really like the style you said, I will use it in the next version.
-
-Best wishes,
-D. Wythe
-
->
 >> +
 >> +int smc_inet_init_sock(struct sock *sk);
 >> +
