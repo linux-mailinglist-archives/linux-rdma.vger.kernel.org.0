@@ -1,254 +1,277 @@
-Return-Path: <linux-rdma+bounces-2723-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-2724-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 426F38D5868
-	for <lists+linux-rdma@lfdr.de>; Fri, 31 May 2024 03:55:04 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C40FD8D5921
+	for <lists+linux-rdma@lfdr.de>; Fri, 31 May 2024 05:49:03 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E16C6283D01
-	for <lists+linux-rdma@lfdr.de>; Fri, 31 May 2024 01:55:02 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E12FD1C22B15
+	for <lists+linux-rdma@lfdr.de>; Fri, 31 May 2024 03:49:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6468F52F6A;
-	Fri, 31 May 2024 01:54:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E413238DEC;
+	Fri, 31 May 2024 03:48:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=wdc.com header.i=@wdc.com header.b="Zxc9R0Ul";
-	dkim=pass (1024-bit key) header.d=sharedspace.onmicrosoft.com header.i=@sharedspace.onmicrosoft.com header.b="Hez62OKO"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="EMeP96xV"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from esa6.hgst.iphmx.com (esa6.hgst.iphmx.com [216.71.154.45])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2E4DC6FB8;
-	Fri, 31 May 2024 01:54:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=216.71.154.45
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1717120498; cv=fail; b=mI2Jh9YBetChgxzg+uXXBK3kRSd5/vfOkIui4LLdcRotgMBwzWuNxChMYwnHBSCcXW6vEFTKE1KNXqFH3y6cmZHb2H6sd5c16eiMeETVh+9zz0UUjLJvla8g6yzW24jLFpucVx2rehWqWV7JJt7s7LLdMGObD0gtaj8kbJQ4H0g=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1717120498; c=relaxed/simple;
-	bh=rvT71Q76PrRVfQ7drtUTWluDtUN+G56T51s0m6AOUg0=;
-	h=From:To:Subject:Date:Message-ID:Content-Type:MIME-Version; b=Y5mbQYLRe/HvXhHdn39L709Zh/HrwK+Qky5GfGcsQt6UmAG6q0HbPCas4X1u13cKmBP+kUl78BluVkMqUF7CI5oEe+ZUDbZFagIiisZOn4mPQq/cD+xGj6z/DsweTR7G0v2c5hveGG8P8uU5N0Om22wBAdF4KiPR0yPhHCNpfow=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wdc.com; spf=pass smtp.mailfrom=wdc.com; dkim=pass (2048-bit key) header.d=wdc.com header.i=@wdc.com header.b=Zxc9R0Ul; dkim=pass (1024-bit key) header.d=sharedspace.onmicrosoft.com header.i=@sharedspace.onmicrosoft.com header.b=Hez62OKO; arc=fail smtp.client-ip=216.71.154.45
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wdc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=wdc.com
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1717120496; x=1748656496;
-  h=from:to:subject:date:message-id:content-id:
-   content-transfer-encoding:mime-version;
-  bh=rvT71Q76PrRVfQ7drtUTWluDtUN+G56T51s0m6AOUg0=;
-  b=Zxc9R0UlWd9VdHWK/8H9+YX1Cs4b+SEK3AuaGA8lsLuYdJZx6wE00CNO
-   DNgZZxMkcMO+DqR3DaTwudP4xUQPcJ3G3KhK2Ox3FiWLvJF/zg8ZbsPEO
-   L+EBc8DbgUqbUEiauVIaPiv7ppoPEOJ471i0dUxpcTeOWIVhkMB9pOKwB
-   z5izyRh0U0CeZHQBwBmUYAsq93bKayE0S2MPDz7uGo/BlNIvvE0leA+0x
-   s3Wy55YaJdZjhqXIRhYzNraHnDITNOIfVYjHdicuAdDJf0vSSh5WjLcqo
-   qZvwmEP2ZzdDZvHRgeiBW2tBpT4WxXBin5+qh6N2FKS3vTqCcOxQ84cu/
-   A==;
-X-CSE-ConnectionGUID: zXtG8FKeTei8iHONSRxYdg==
-X-CSE-MsgGUID: 1W6kUUZuQ6KKHnMA4FZhUg==
-X-IronPort-AV: E=Sophos;i="6.08,202,1712592000"; 
-   d="scan'208";a="17689141"
-Received: from mail-dm6nam10lp2101.outbound.protection.outlook.com (HELO NAM10-DM6-obe.outbound.protection.outlook.com) ([104.47.58.101])
-  by ob1.hgst.iphmx.com with ESMTP; 31 May 2024 09:54:48 +0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=j2ZpYNYBsR4my0bCYq6jm6XSM7atqXD79QLNFWCiVDHXcDsgzTNLnNSIUbX3VV9ztuptLYNJHivTlMyqoAgHmvgYvw03AaoI4Gr/3tNhbAYRuCMMv43Uc+TTtHO9l3Hdu5kPMPd431vfaR4mbeLtU59wE6FLl3+cSnoCbLM4GvkYGQ1br3PPx3A4O5YcjaX6jG11b89wpjVET+JApEd7+CXlFJ/QCYvzflcmpYH1WwDKyDZfV4fhe8UV3Z+aBYx7Wi15OXXYKwEYs/81HSihyXgOjJK2julZVHjvuSVprHKM9sncoLSJ/I5mFdxlxbYjBW3w+wd7u3YeO/SxK8pLsw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=HrG5wbDLFDaNKO9ot8g1xU0Ql77uDI/TOo1P8gbKND4=;
- b=jSm9ElGWV0BZiyJ0v7Tk13H3/hCET3OSCI3NZhimdb++1kId4hROb9kPXtOe+J9VNuwdF0HxfJ16A2PiBgSk3bjUbXzhBBSY9lSHISo33OHSdfF7VyxG8JnjLVj7CiUD9rOV795tm6F2psLB62X+OMxxtIVNZCmCS9WzUvQeyZaPHqYUBkVFf8egPW+GozuP0nlZxf9SESjiQnAeOVKPk0kNShtjZ13ybNJTDs88B5lCR9svEDAe0epOpm+nSeUDk52j9gTpAdUH3cl8sjMP9KVSlT2uJWt4Wdph/r43qEnq2pRJI1M5YZqrLSr+uBedFa4y03fu7Oz+ahI0PNgPIQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
- header.d=wdc.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=HrG5wbDLFDaNKO9ot8g1xU0Ql77uDI/TOo1P8gbKND4=;
- b=Hez62OKOiCljbe8yp4qAcXEeeV1kaqcDzJrklHuiUkZdOPLkVfF2muOtUCtjl+VZWPTMkPKdF3qIjhhuuIojFf4/x3ueyxHldekSlc9pgSgDPpfIC4B7dr5RNZBchSYKtMR1zskbWrX2VMuXR0JKDUutLXnVWxCeDJa6ukecXsk=
-Received: from DM8PR04MB8037.namprd04.prod.outlook.com (2603:10b6:8:f::6) by
- BY5PR04MB6993.namprd04.prod.outlook.com (2603:10b6:a03:226::18) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7633.24; Fri, 31 May
- 2024 01:54:46 +0000
-Received: from DM8PR04MB8037.namprd04.prod.outlook.com
- ([fe80::b27f:cdfa:851:e89a]) by DM8PR04MB8037.namprd04.prod.outlook.com
- ([fe80::b27f:cdfa:851:e89a%3]) with mapi id 15.20.7633.021; Fri, 31 May 2024
- 01:54:46 +0000
-From: Shinichiro Kawasaki <shinichiro.kawasaki@wdc.com>
-To: "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
-	"linux-nvme@lists.infradead.org" <linux-nvme@lists.infradead.org>,
-	"linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
-	"nbd@other.debian.org" <nbd@other.debian.org>, "linux-rdma@vger.kernel.org"
-	<linux-rdma@vger.kernel.org>
-Subject: blktests failures with v6.10-rc1 kernel
-Thread-Topic: blktests failures with v6.10-rc1 kernel
-Thread-Index: AQHasv2DeM2gCBvvcEWHNHypcj0XAQ==
-Date: Fri, 31 May 2024 01:54:46 +0000
-Message-ID: <wnucs5oboi4flje5yvtea7puvn6zzztcnlrfz3lpzlwgblrxgw@7wvqdzioejgl>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach:
-X-MS-TNEF-Correlator:
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=wdc.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: DM8PR04MB8037:EE_|BY5PR04MB6993:EE_
-x-ms-office365-filtering-correlation-id: 6c22f80b-cd38-4f35-1f6a-08dc8114a638
-wdcipoutbound: EOP-TRUE
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;ARA:13230031|376005|1800799015|366007|38070700009;
-x-microsoft-antispam-message-info:
- =?us-ascii?Q?QL1Iwye/f7meltlcTK7E8vgx1S8hylgQuXw/JQ3SMMaPGkytr1+5QltA15Pl?=
- =?us-ascii?Q?tWADT0H3sp8G8dE7HTEhbYuS4sRUmPeU8hh+OYCp/sCtjtNazwcXki7RvM+P?=
- =?us-ascii?Q?XBWzHdQ9S6jpFTDiQeTPcxj7Sdmzb7XzyDFLWlDCDqzfIj9w7mtgxxD1ga2f?=
- =?us-ascii?Q?X3It8SkqTgSSedpftm63L6FtRFO+zpXIWU7qV1U/Hq6lMPAmfMbMSdAzyLWV?=
- =?us-ascii?Q?I3fAbOU0geGye87JbV4ukOeh/KNXtRv/t8JA4Jki7Mkh1u0bKMbVCMVe7CSr?=
- =?us-ascii?Q?XcxcBmZ8I1RU9e9At2ZxW2nLdo8hnNEr0MxAllCGCaTG5T6u+UfRwkhXvbKb?=
- =?us-ascii?Q?nx7B9gnNPVgEi42JUpbGfdSzD78/KatLfAfTJzPUCKGUWLQAi6HFeVkv9G/d?=
- =?us-ascii?Q?muNf38sF2P8f6P96Yn+wQHw6f0km9nJqUruV905WJ5/OvwD3GySS0kusD8VN?=
- =?us-ascii?Q?f2jIcKcHDfuTrdm3q/fmbsW2YOxjv5vYbMSJAnpov2FpLaDiX23mVNYfu4Qp?=
- =?us-ascii?Q?+C6kljOiFLSUgdHOfKQEZqtkVLK8LcUIW6CuEqpNa7+5BvD6EhTKFOGyWZoz?=
- =?us-ascii?Q?fp8HGxAZzWN19fAZvAztyH8orfOP+CotHYehbQ27qwzzveC4hekbs/oiS8gX?=
- =?us-ascii?Q?IqEEUWizl5MsaOpGkTt2XYiZNfS2yOLvOMXF4RGBv8CTtR6TT386YF0yLB9h?=
- =?us-ascii?Q?u1NPBfy0ltfrHuec37yPK3jB20vDO72Go2imTTGslI25CHqTZFf0vuQjjI8b?=
- =?us-ascii?Q?XlKK04THx6BCxmpDms8/ZekDTynUBpd2T9Odnz4MNgRsb4+FSI5vAEJc6/aj?=
- =?us-ascii?Q?60DQx5BihUM9YEvFE0ecmCIfYTfoeG1TobRIkn87Maz+RfoJOS3G89Bca21m?=
- =?us-ascii?Q?auDyGqcimsqkudsH+c4qRzRtGZ5SxSRG+xgfP1p2jmNmQjlkJ0vNwUcCG2PN?=
- =?us-ascii?Q?hVdRShQzr+b0mwTPLLHzbd7/MXMa9HvNtvQCT9Q1Ag1PV8oPlQWr+/fLDCGp?=
- =?us-ascii?Q?I928fzXKAUQLFAx4cacJtHybOICKY33YSdpdjsbOCO/KvD3BDdevzQVkd9Ot?=
- =?us-ascii?Q?kXqu0Iq4qCKEITOBcSUiJgPgr0Jimc9NjuNRcXHpCJKZeNPmsdKEawOEHy8b?=
- =?us-ascii?Q?80TicewCSm19sSIjdJmk8z4kt+qZz62R/ClwQ2vUGBhtAuwNMWPWlqOzDVkP?=
- =?us-ascii?Q?ddQOnqNNtn1ow97zrIQ3i8JdlmKBcDDkHs6OSIQKl9i36L3Gyv9DKbRpH1kF?=
- =?us-ascii?Q?XshdvGVAmEzMx/9p93NAeSgKwEmYRvsWk29DkIuIft2kNQA6j/Pvv5d27IZW?=
- =?us-ascii?Q?y8U=3D?=
-x-forefront-antispam-report:
- CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM8PR04MB8037.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376005)(1800799015)(366007)(38070700009);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0:
- =?us-ascii?Q?GmRe+F3D3VLKHgWuLyvygUmBiB1YlkMDYKvHx3EtNfhGUW6BngMRXzSWuRZ2?=
- =?us-ascii?Q?UxP0v2c7oK+oRV3/fj8itCchXVVvB+lbZl/pFFJubqEM6Xmo5e8b5JHRR41K?=
- =?us-ascii?Q?BZF7GtOcHY4+ulXs/A4F5Rl1hN9ToappJkqVd5Jd4OEtzlGH8hCMYJelqH9T?=
- =?us-ascii?Q?hY92tYuHn3BcK7Y2J7ZHosvfVN9bfAjE18SYKvtXhVMXs4ZUOq//Cvf7NZJ4?=
- =?us-ascii?Q?4DYlzKAcT+xstJ0nXMNQyO4wNvwt8SERl0ceTTHtOgv15mADeLJEzImAEp2b?=
- =?us-ascii?Q?cW3CSJGf3hnnWf0fRz7EFrwprPCeY3RZKyKpFgJcXMBRea9s/29b8FLQOZUG?=
- =?us-ascii?Q?LPTaGimskG6iOChii1eovraATtn0C0MnxaFPDgwzt+q1AbZzgmEHPenxt11z?=
- =?us-ascii?Q?kCC+V/MHBvUnQMRsKU66s3+y69I18RpBuxlQaN7jnnhDJR+HC99qEHGSnLDZ?=
- =?us-ascii?Q?OK6/1rAbmCPXIFm4W58N5HhM/DV6FYrBf6PnQTDUhtZ+aZLZlyj5YaDJYwMw?=
- =?us-ascii?Q?lrPNd2MAO2GXkdaszW3vmbBNguM6U/W86vgkragIzIRhGSg2sFi3PhRO81nW?=
- =?us-ascii?Q?ptjbrVoGThDrBAgWCFHe0tMmjKuJLDtGbQUF38rZYv8X65EjjC9V6/JCpXUE?=
- =?us-ascii?Q?oQBI3pAG13z4KnP2YsdaNT9zBsm4HqrOjswgnDhB/5w8a3Eknt9TlLFv7Mfp?=
- =?us-ascii?Q?NlNBfJaB/VBXykw9F7pPEJCYh6vwEH3iOdQIU/c8FZXMa/cMhKlHCaXTloMg?=
- =?us-ascii?Q?Ea0JLqDBOh9lS9dPK6n6XGeDx6/k2abdhcHVrP4ZCvmZGacDRgn1xkP5qyaq?=
- =?us-ascii?Q?eA7rGNws9DCR2E6UZ7f0jVdJhYKGWOJp9WorNreFwoKSrgO0PGEjtZv5ljWG?=
- =?us-ascii?Q?OWEavaFi0lwLZVeqIWag8nZ1n2dSz/2TJix5EvhCw1Msp5129dTM6rESgSou?=
- =?us-ascii?Q?wY7cPIgsNteSdbvQeuxodlgGynhEyOJnvBUVde+xSsnSHb+OCA39S8KAkJD0?=
- =?us-ascii?Q?Gu/lo+FOS5MFAZlsNC/w03rGeFJMwLh3sNB4z2zkXDRRbYlyVirCKPwzYkn3?=
- =?us-ascii?Q?FjFnrdE5MUGQ+Zk1b/9rwDvGaZ1Ux1Z3MuJOEXmFOdDQ3nrypqH/9AuSJmsK?=
- =?us-ascii?Q?Y14Njcdj3h9JcFTI08sM0kMcjI2RzTLMqxfHpCEGdDtoa+xh+52eVkWGghEk?=
- =?us-ascii?Q?Qd+EW6v6aYLlc12gaUJOre3bP5POaL7DAkmYLByTXPp7Mw1NI6yxNDXF/8+w?=
- =?us-ascii?Q?Wr4HAbnmdXpu6u4GtNE3YUSn9CU5kqRuM00xiLXKSUPdte20x29231M0Bngh?=
- =?us-ascii?Q?g5xj6TWteg1Qq8tkaTVVNhoW7Bzdidav+XDzD4B4rYIMAMF+sZsIX8RXoqKC?=
- =?us-ascii?Q?IUDOQfuDYT4IPr0EEsMQGoZUif4agD94ydivvVBbE6Exyq7TveYLL0p6VRSh?=
- =?us-ascii?Q?DQKJhaOnOZ+/XtkmBWlri+LlBkPdqPm981MGrwEbrTxDmkEKivm6WWfOo8Eb?=
- =?us-ascii?Q?85EN5oabvMt42oPmpeHnQs69rNafS2w3sEmA6OinU94lEEeHsUjHkHY4yu8W?=
- =?us-ascii?Q?XZfLa9p6hT1LDR7UAIL/BcP5FqTJspa5mn5xaTyxfuER4afXmEeCfUzDblHu?=
- =?us-ascii?Q?0VJKzhfdJGbBkV29FHjeT70=3D?=
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <A7D87954673FFD4A868A290018636B21@namprd04.prod.outlook.com>
-Content-Transfer-Encoding: quoted-printable
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9FC7C187562;
+	Fri, 31 May 2024 03:48:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1717127337; cv=none; b=EpwuW8HKPnxUMQkjlP9G8uP7whf9TJrd+J/kZbMAORc6WBDReHGcBj/R0QxAhCVgiRtVVPc8kT7SUlSTqFNQGl/s8kpqkzee7uiAX6ITQFUITcISmNOPGuji0qRURKRErcvV8sQEI8dIHlUEkcHnPmoOQ1ejCnIa8Ngs8XBkg+c=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1717127337; c=relaxed/simple;
+	bh=4eyWO6BTiWV78FwZiJQV1iMx7IDxtI3gimgxu/VNTIY=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=eRUKOQJepQ/MTlItXzlU/hiZcO2xwGfhSyVmaYKG3oCCGpgfBYWeAbPyyAl6JAUDiXDViLiUX9klYTOCWk+GdneJNm7fU1nslRTZnw1/9/xbdEA6QUbbpbeBiGiKhdMvrKCUjpdsozFAB1/EWiQQYRNyr6iIKQbjoT2DkshUdH4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=EMeP96xV; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4BE56C116B1;
+	Fri, 31 May 2024 03:48:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1717127337;
+	bh=4eyWO6BTiWV78FwZiJQV1iMx7IDxtI3gimgxu/VNTIY=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=EMeP96xVWrEmNv3ntDRCaR6XIxYWaUXoXHB5uMSLOo/G9ewg1dLGhpJzKK9heAyC3
+	 wjMFo3HGmRCqskip0HDCKAb4LYZZyP23Pwmw+herqzpyalIl2m/SS3yrV+BU30r7gT
+	 y+72nyI5hYKXOq0jhqIoq8tfrA4+2rnbRYHCiLvjLlm224CLxD778Dj71CUmysRONA
+	 qAOMxpXR7J/nY2ipyxs+A6IAZtqB3CzSPL3Eccz7I2EVuXhx01HRB7G4io+mXdTBlm
+	 UiGd+ihqTjBoiUsUYkcxuIfPQi/LzrTV6BpjhUChnjMPjXDfS0nObx7jb9WZpOL4LG
+	 lI7khstNwvV9g==
+Date: Fri, 31 May 2024 06:48:51 +0300
+From: Leon Romanovsky <leon@kernel.org>
+To: Tejun Heo <tj@kernel.org>
+Cc: Lai Jiangshan <jiangshanlai@gmail.com>,
+	Zqiang <qiang.zhang1211@gmail.com>, linux-kernel@vger.kernel.org,
+	Gal Pressman <gal@nvidia.com>, Tariq Toukan <tariqt@nvidia.com>,
+	RDMA mailing list <linux-rdma@vger.kernel.org>
+Subject: Re: [PATCH -rc] workqueue: Reimplement UAF fix to avoid lockdep
+ worning
+Message-ID: <20240531034851.GF3884@unreal>
+References: <4c4f1fb769a609a61010cb6d884ab2841ef716d3.1716885172.git.leon@kernel.org>
+ <ZljyqODpCD0_5-YD@slm.duckdns.org>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0:
-	1hTSf1xrMhoba2QHWQqo8TL+OsKCMOPuglEBa8ikAG9RFX/W8+zirxxfM7b534NEWCmbNA6xE3Fsckh65JuGTEJnRsJCm6SYDqKmezZEQygYyLTUp46kBBItZTgtm+N6zRp5awTxOkFuEBlft7tykMiyFZkzQCfHMbjbagH2ZTaw94eF+/kF+Ynpnf6gt1YAcWuV7zqFGU3wyuZ1FyEH18CU//gjoJR6ASE1BaP5tZ5y2EsfiUnuslAsYmA33l3cC7twQBNRUtVLiR2MPo3a0lWo6ZdpVTZyIL71iog2b4igCKYfmB5wgIQuQ4GiJMXqg92gdNZQCmju6PSlYrqpjc3XCartabyD6GX0u2fJFnLRmBp0nP2yUzFrSLfn8vsJZBzUVLkuB2OQa7R6lxC3pRPikMXRqTnkXV0TciXq09MuvCYTRbbdVvdL8UH68VPa4HmEK5zc98a2b4fSdQ2cphTvlz4SAMA6Jx52nWE/qiZXtT/nxpMQhr9+nGbQLEZjdyaMT2S7sza4IUG/2Buz0NGXrw2/WOCpPEyVCCJKn9WJUq+fO44tLVtFStb51L1pmBaNMKfR5QQrJgIU3hwOVSazkfUUtGTD7xT+sb8vXjWVPveq7hbMwhiTWNm7sHGw
-X-OriginatorOrg: wdc.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: DM8PR04MB8037.namprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 6c22f80b-cd38-4f35-1f6a-08dc8114a638
-X-MS-Exchange-CrossTenant-originalarrivaltime: 31 May 2024 01:54:46.7676
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: 3yguDPB+PmS7gvCmrt9VpMlDbiDKo5Nblk+t4TZuYwo6npVnHjuq38qEcqfhlmdYzfjXmnMqNy4LSduVEMiCb/SZsZDcmY9nTKOkxFszpJM=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR04MB6993
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <ZljyqODpCD0_5-YD@slm.duckdns.org>
 
-Hi all,
+On Thu, May 30, 2024 at 11:42:00AM -1000, Tejun Heo wrote:
+> Hello, Leon. Sorry about the delay.
+> 
+> On Tue, May 28, 2024 at 11:39:58AM +0300, Leon Romanovsky wrote:
+> > From: Leon Romanovsky <leonro@nvidia.com>
+> > 
+> > The commit 643445531829 ("workqueue: Fix UAF report by KASAN in
+> > pwq_release_workfn()") causes to the following lockdep warning.
+> 
+> KASAN warning?
 
-(I added linux-rdma list to the To list since blktests nvme and srp groups
- depend on rdma drivers.)
+Yes
 
-I ran the latest blktests (git hash: 698f1a024cb4) with the v6.10-rc1 kerne=
-l,
-and observed a couple of failures as listed below.
+> 
+> >  [ 1818.839405] ==================================================================
+> >  [ 1818.840636] BUG: KASAN: slab-use-after-free in lockdep_register_key+0x707/0x810
+> >  [ 1818.841827] Read of size 8 at addr ffff888156864928 by task systemd-udevd/71399
+> ...
+> >  [ 1818.846493] Call Trace:
+> >  [ 1818.846981]  <TASK>
+> >  [ 1818.847439]  dump_stack_lvl+0x7e/0xc0
+> >  [ 1818.848089]  print_report+0xc1/0x600
+> >  [ 1818.850978]  kasan_report+0xb9/0xf0
+> >  [ 1818.852381]  lockdep_register_key+0x707/0x810
+> >  [ 1818.855329]  alloc_workqueue+0x466/0x1800
+> 
+> Can you please map this to the source line?
 
-There are two notable differences from the result with kernel v6.9-rc1 [1].
-The first one is srp/002,011 hangs with the rdma rxe driver, which was disc=
-ussed
-at LSF 2024. I no longer observe these hangs with v6.10-rc1 kernel. Great :=
-) I
-found Bob Pearson made a number of improvements in the driver. I guess thes=
-e
-changes avoided the hangs. Thank you very much!
+I'm not sure if it is accurate, as my object is slightly different from
+the report, but the area is the same.
 
-The other difference is nbd/002 failure. CKI project still reports it for
-v6.10-rc1 kernel [2]. Recently Josef provided blktests side fix [3] (Thanks=
-!),
-and it has not yet applied to the CKI test run set up. The fix was made for
-nbd/001, but I expect that it will avoid the nbd/002 failure also.
+➜  kernel git:(wip/leon-for-next) ./scripts/faddr2line vmlinux alloc_workqueue+0x466
+alloc_workqueue+0x466/0x19f0:
+kernel/workqueue.c:5710
+  5709         wq_init_lockdep(wq);
+  5710         INIT_LIST_HEAD(&wq->list);  
 
-[1] https://lore.kernel.org/linux-block/m6a437jvfwzq2jfytvvk62zpgu7e4bjvegr=
-7x73pihhkp5me5c@sh6vs3s7w754/
-[2] https://datawarehouse.cki-project.org/kcidb/tests/12631448
-[3] https://lore.kernel.org/linux-block/9377610cbdc3568c172cd7c5d2e9d36da8d=
-d2cf4.1716312272.git.josef@toxicpanda.com/
+> 
+> >  [ 1818.857997]  ib_mad_init_device+0x809/0x1760 [ib_core]
+> 
+> ...
+> 
+> >  [ 1818.907242] Allocated by task 1:
+> >  [ 1818.907819]  kasan_save_stack+0x20/0x40
+> >  [ 1818.908512]  kasan_save_track+0x10/0x30
+> >  [ 1818.909173]  __kasan_slab_alloc+0x51/0x60
+> >  [ 1818.909849]  kmem_cache_alloc_noprof+0x139/0x3f0
+> >  [ 1818.910608]  getname_flags+0x4f/0x3c0
+> >  [ 1818.911236]  do_sys_openat2+0xd3/0x150
+> >  [ 1818.911878]  __x64_sys_openat+0x11f/0x1d0
+> >  [ 1818.912554]  do_syscall_64+0x6d/0x140
+> >  [ 1818.913189]  entry_SYSCALL_64_after_hwframe+0x4b/0x53
+> >  [ 1818.913996]
+> >  [ 1818.914359] Freed by task 1:
+> >  [ 1818.914897]  kasan_save_stack+0x20/0x40
+> >  [ 1818.915553]  kasan_save_track+0x10/0x30
+> >  [ 1818.916210]  kasan_save_free_info+0x37/0x50
+> >  [ 1818.916911]  poison_slab_object+0x10c/0x190
+> >  [ 1818.917606]  __kasan_slab_free+0x11/0x30
+> >  [ 1818.918271]  kmem_cache_free+0x12c/0x460
+> >  [ 1818.918939]  do_sys_openat2+0x102/0x150
+> >  [ 1818.919586]  __x64_sys_openat+0x11f/0x1d0
+> >  [ 1818.920264]  do_syscall_64+0x6d/0x140
+> >  [ 1818.920899]  entry_SYSCALL_64_after_hwframe+0x4b/0x53
+> >  [ 1818.921699]
+> >  [ 1818.922059] The buggy address belongs to the object at ffff888156864400
+> >  [ 1818.922059]  which belongs to the cache names_cache of size 4096
+> 
+> This is a dcache name. I'm a bit lost on how we're hitting this.
 
+We have similar issues but with different workqueue.
 
-List of failures
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-#1: nvme/041 (fc transport)
-#2: nvme/050
+ [ 1233.554381] ==================================================================
+ [ 1233.555215] BUG: KASAN: slab-use-after-free in lockdep_register_key+0x707/0x810
+ [ 1233.555983] Read of size 8 at addr ffff88811f1d8928 by task test-ovs-bond-m/10149
+ [ 1233.556774] 
+ [ 1233.557020] CPU: 0 PID: 10149 Comm: test-ovs-bond-m Not tainted 6.10.0-rc1_external_1613e604df0c #1
+ [ 1233.557951] Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS rel-1.13.0-0-gf21b5a4aeb02-prebuilt.qemu.org 04/01/2014
+ [ 1233.559044] Call Trace:
+ [ 1233.559367]  <TASK>
+ [ 1233.559653]  dump_stack_lvl+0x7e/0xc0
+ [ 1233.560078]  print_report+0xc1/0x600
+ [ 1233.560496]  ? __virt_addr_valid+0x1cf/0x390
+ [ 1233.560964]  ? lockdep_register_key+0x707/0x810
+ [ 1233.561463]  ? lockdep_register_key+0x707/0x810
+ [ 1233.561975]  kasan_report+0xb9/0xf0
+ [ 1233.562382]  ? lockdep_register_key+0x707/0x810
+ [ 1233.562872]  lockdep_register_key+0x707/0x810
+ [ 1233.563344]  ? add_lock_to_list+0x5b0/0x5b0
+ [ 1233.563813]  ? lockdep_init_map_type+0x2c3/0x7a0
+ [ 1233.564312]  ? __raw_spin_lock_init+0x3b/0x110
+ [ 1233.564799]  alloc_workqueue+0x466/0x1800
+ [ 1233.565261]  ? workqueue_sysfs_register+0x370/0x370
+ [ 1233.565808]  ? is_module_address+0x2d/0x40
+ [ 1233.566268]  ? static_obj+0x98/0xd0
+ [ 1233.566671]  ? lockdep_init_map_type+0x2c3/0x7a0
+ [ 1233.567170]  ? queue_work_node+0x2c0/0x2c0
+ [ 1233.567627]  mlx5_pagealloc_init+0x7d/0x180 [mlx5_core]
+ [ 1233.568322]  mlx5_mdev_init+0x482/0xad0 [mlx5_core]
+ [ 1233.568915]  ? devlink_alloc_ns+0x883/0xaa0
+ [ 1233.569387]  probe_one+0x11d/0xc80 [mlx5_core]
+ [ 1233.572996]  ? remove_one+0x210/0x210 [mlx5_core]
+ [ 1233.573604]  local_pci_probe+0xd7/0x180
+ [ 1233.574063]  pci_device_probe+0x228/0x720
+ [ 1233.574516]  ? pci_match_device+0x690/0x690
+ [ 1233.574985]  ? kernfs_create_link+0x16f/0x230
+ [ 1233.575460]  ? do_raw_spin_unlock+0x54/0x220
+ [ 1233.575933]  ? kernfs_put+0x18/0x30
+ [ 1233.576342]  ? sysfs_do_create_link_sd+0x8c/0xf0
+ [ 1233.576844]  really_probe+0x1e4/0x920
+ [ 1233.577269]  __driver_probe_device+0x261/0x3e0
+ [ 1233.577766]  driver_probe_device+0x49/0x130
+ [ 1233.578232]  __device_attach_driver+0x187/0x290
+ [ 1233.578723]  ? driver_probe_device+0x130/0x130
+ [ 1233.579202]  bus_for_each_drv+0x103/0x190
+ [ 1233.579644]  ? mark_held_locks+0x9f/0xe0
+ [ 1233.580090]  ? bus_for_each_dev+0x170/0x170
+ [ 1233.580553]  ? lockdep_hardirqs_on_prepare+0x284/0x400
+ [ 1233.581108]  __device_attach+0x1a3/0x3f0
+ [ 1233.581544]  ? device_driver_attach+0x1e0/0x1e0
+ [ 1233.582047]  ? pci_bridge_d3_possible+0x1e0/0x1e0
+ [ 1233.582558]  ? pci_create_resource_files+0xeb/0x170
+ [ 1233.583081]  pci_bus_add_device+0x9f/0xf0
+ [ 1233.583531]  pci_iov_add_virtfn+0x9c6/0xde0
+ [ 1233.583994]  ? __wake_up+0x40/0x50
+ [ 1233.584396]  sriov_enable+0x658/0xd10
+ [ 1233.584813]  ? pcibios_sriov_disable+0x10/0x10
+ [ 1233.585317]  mlx5_core_sriov_configure+0xb1/0x310 [mlx5_core]
+ [ 1233.586030]  sriov_numvfs_store+0x209/0x370
+ [ 1233.586497]  ? sriov_totalvfs_show+0xc0/0xc0
+ [ 1233.586972]  ? sysfs_file_ops+0x170/0x170
+ [ 1233.587430]  ? sysfs_file_ops+0x11a/0x170
+ [ 1233.587883]  ? sysfs_file_ops+0x170/0x170
+ [ 1233.588334]  kernfs_fop_write_iter+0x347/0x520
+ [ 1233.588817]  vfs_write+0x96f/0xf30
+ [ 1233.589234]  ? do_user_addr_fault+0x812/0xd20
+ [ 1233.589714]  ? kernel_write+0x530/0x530
+ [ 1233.590168]  ? __fget_light+0x53/0x1d0
+ [ 1233.590600]  ksys_write+0xf1/0x1d0
+ [ 1233.591003]  ? __x64_sys_read+0xb0/0xb0
+ [ 1233.591437]  ? do_user_addr_fault+0x895/0xd20
+ [ 1233.591924]  do_syscall_64+0x6d/0x140
+ [ 1233.592348]  entry_SYSCALL_64_after_hwframe+0x4b/0x53
+ [ 1233.592888] RIP: 0033:0x7f8d663018b7
+ [ 1233.593312] Code: 0f 00 f7 d8 64 89 02 48 c7 c0 ff ff ff ff eb b7 0f 1f 00 f3 0f 1e fa 64 8b 04 25 18 00 00 00 85 c0 75 10 b8 01 00 00 00 0f 05 <48> 3d 00 f0 ff ff 77 51 c3 48 83 ec 28 48 89 54 24 18 48 89 74 24
+ [ 1233.595070] RSP: 002b:00007ffdbae78c68 EFLAGS: 00000246 ORIG_RAX: 0000000000000001
+ [ 1233.595853] RAX: ffffffffffffffda RBX: 0000000000000002 RCX: 00007f8d663018b7
+ [ 1233.596551] RDX: 0000000000000002 RSI: 000055e696bc2070 RDI: 0000000000000001
+ [ 1233.597270] RBP: 000055e696bc2070 R08: 0000000000000000 R09: 00007f8d663b64e0
+ [ 1233.598001] R10: 00007f8d663b63e0 R11: 0000000000000246 R12: 0000000000000002
+ [ 1233.598716] R13: 00007f8d663fb5a0 R14: 0000000000000002 R15: 00007f8d663fb7a0
+ [ 1233.599431]  </TASK>
+ [ 1233.599735] 
+ [ 1233.599979] Allocated by task 9589:
+ [ 1233.600382]  kasan_save_stack+0x20/0x40
+ [ 1233.600828]  kasan_save_track+0x10/0x30
+ [ 1233.601265]  __kasan_kmalloc+0x77/0x90
+ [ 1233.601696]  kernfs_iop_get_link+0x61/0x5a0
+ [ 1233.602181]  vfs_readlink+0x1ab/0x320
+ [ 1233.602582] mlx5_core 0000:08:00.6 enp8s0f1v0: renamed from eth4
+ [ 1233.602605]  do_readlinkat+0x1cb/0x290
+ [ 1233.602610]  __x64_sys_readlinkat+0x92/0xf0
+ [ 1233.602612]  do_syscall_64+0x6d/0x140
+ [ 1233.605196]  entry_SYSCALL_64_after_hwframe+0x4b/0x53
+ [ 1233.605731] 
+ [ 1233.605986] Freed by task 9589:
+ [ 1233.606373]  kasan_save_stack+0x20/0x40
+ [ 1233.606801]  kasan_save_track+0x10/0x30
+ [ 1233.607232]  kasan_save_free_info+0x37/0x50
+ [ 1233.607695]  poison_slab_object+0x10c/0x190
+ [ 1233.608161]  __kasan_slab_free+0x11/0x30
+ [ 1233.608604]  kfree+0x11b/0x340
+ [ 1233.608970]  vfs_readlink+0x120/0x320
+ [ 1233.609413]  do_readlinkat+0x1cb/0x290
+ [ 1233.609849]  __x64_sys_readlinkat+0x92/0xf0
+ [ 1233.610308]  do_syscall_64+0x6d/0x140
+ [ 1233.610741]  entry_SYSCALL_64_after_hwframe+0x4b/0x53
+ [ 1233.611276] 
+ [ 1233.611524] The buggy address belongs to the object at ffff88811f1d8000
+ [ 1233.611524]  which belongs to the cache kmalloc-4k of size 4096
+ [ 1233.612714] The buggy address is located 2344 bytes inside of
+ [ 1233.612714]  freed 4096-byte region [ffff88811f1d8000, ffff88811f1d9000)
+ [ 1233.613920] 
+ [ 1233.614168] The buggy address belongs to the physical page:
+ [ 1233.614743] page: refcount:1 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0x11f1d8
+ [ 1233.615556] head: order:3 mapcount:0 entire_mapcount:0 nr_pages_mapped:0 pincount:0
+ [ 1233.616338] flags: 0x200000000000040(head|node=0|zone=2)
+ [ 1233.616894] page_type: 0xffffefff(slab)
+ [ 1233.617340] raw: 0200000000000040 ffff888100043040 ffffea00051bd800 dead000000000002
+ [ 1233.618151] raw: 0000000000000000 0000000000040004 00000001ffffefff 0000000000000000
+ [ 1233.618958] head: 0200000000000040 ffff888100043040 ffffea00051bd800 dead000000000002
+ [ 1233.619763] head: 0000000000000000 0000000000040004 00000001ffffefff 0000000000000000
+ [ 1233.620573] head: 0200000000000003 ffffea00047c7601 ffffffffffffffff 0000000000000000
+ [ 1233.621386] head: 0000000000000008 0000000000000000 00000000ffffffff 0000000000000000
+ [ 1233.622201] page dumped because: kasan: bad access detected
+ [ 1233.622778] 
+ [ 1233.623027] Memory state around the buggy address:
+ [ 1233.623532]  ffff88811f1d8800: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+ [ 1233.624280]  ffff88811f1d8880: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+ [ 1233.625029] >ffff88811f1d8900: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+ [ 1233.625803]                                   ^
+ [ 1233.626296]  ffff88811f1d8980: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+ [ 1233.627047]  ffff88811f1d8a00: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+ [ 1233.627801] ==================================================================
 
-Failure description
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-
-#1: nvme/041 (fc transport)
-
-   With the trtype=3Dfc configuration, nvme/041 fails:
-
-  nvme/041 (Create authenticated connections)                  [failed]
-      runtime  2.677s  ...  4.823s
-      --- tests/nvme/041.out      2023-11-29 12:57:17.206898664 +0900
-      +++ /home/shin/Blktests/blktests/results/nodev/nvme/041.out.bad     2=
-024-03-19 14:50:56.399101323 +0900
-      @@ -2,5 +2,5 @@
-       Test unauthenticated connection (should fail)
-       disconnected 0 controller(s)
-       Test authenticated connection
-      -disconnected 1 controller(s)
-      +disconnected 0 controller(s)
-       Test complete
-
-   nvme/044 had same failure symptom until the kernel v6.9. A solution was
-   suggested and discussed in Feb/2024 [4].
-
-   [4] https://lore.kernel.org/linux-nvme/20240221132404.6311-1-dwagner@sus=
-e.de/
-
-#2: nvme/050
-
-   The test case fails occasionally with a QEMU NVME device. The failure ca=
-use
-   is the lockdep WARN among ctrl->namespaces_rwsem, dev->shutdown_lock and
-   workqueue work completion. After LSF 2024 discussion, Sagi and Keith wor=
-ked
-   on the solution and Keith provided the fix [5]. Thank you!
-
-   [5] https://lore.kernel.org/linux-nvme/20240524155345.243814-1-kbusch@me=
-ta.com/=
+> 
+> Thanks.
+> 
+> -- 
+> tejun
 
