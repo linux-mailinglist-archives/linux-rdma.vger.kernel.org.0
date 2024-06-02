@@ -1,96 +1,146 @@
-Return-Path: <linux-rdma+bounces-2750-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-2751-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id DE9148D7430
-	for <lists+linux-rdma@lfdr.de>; Sun,  2 Jun 2024 09:51:09 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 09EC48D7442
+	for <lists+linux-rdma@lfdr.de>; Sun,  2 Jun 2024 10:19:45 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 977B7281877
-	for <lists+linux-rdma@lfdr.de>; Sun,  2 Jun 2024 07:51:08 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3091E1C20A2E
+	for <lists+linux-rdma@lfdr.de>; Sun,  2 Jun 2024 08:19:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 365C51CD23;
-	Sun,  2 Jun 2024 07:51:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0B2671D543;
+	Sun,  2 Jun 2024 08:19:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="HT5yTiIg"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-lj1-f182.google.com (mail-lj1-f182.google.com [209.85.208.182])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6DB4B171D8;
-	Sun,  2 Jun 2024 07:51:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BDAEC1CAA6
+	for <linux-rdma@vger.kernel.org>; Sun,  2 Jun 2024 08:19:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1717314664; cv=none; b=dFmkZd5b2B23JZVpHWYkt8YCYaqAuKRYQ7dnVIiAej3fxGP8h3xse6uTwZroq7ZtOk3L//gw7k/1zhG22VKt5iHv95yTezecDtnEx43p+R4p3VhSMVCf1PBli4tdh7ETjWCC4aZwfkNOPcyHQnYn/pK6WRlrw9B3YEO17R1Clg0=
+	t=1717316380; cv=none; b=h6oq1molaZd/r101ocZUscCOwy/ac3t6ZgxoKFEBMFz2xSjKpnd9HPfV8fTYiOp/5LT+wyZ+ybS+VABg2KELwnTqMWSrlokIJna5y+Xo0hvrhqlViAAC3is3S4cjr5dh+SFgTVgBCk5/f8hfIopgr2egBmHfLZ5T56lyFE071H0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1717314664; c=relaxed/simple;
-	bh=AZu49nY28ov+iASFfyhKpt3j8P0WVVadjo2Zqlcq6K4=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=FxiA+6nlWkO0YbltiZ3xW08jyKxRKpXSIFoxwGuN8mRka12GhWrjU8C+vOa99z/V3bEbwqXh58vuLj5hQEK87vl3kQEHJhhAr7LAZKSGO+VKqVEp7tvKBK6u/9nWEQC6BVhd0xl4kyJyHfajJsgDWUX6GYMIPD+n5xtLniOQu+s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=grimberg.me; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.208.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=grimberg.me
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lj1-f182.google.com with SMTP id 38308e7fff4ca-2ea84b9181dso1823951fa.2;
-        Sun, 02 Jun 2024 00:51:02 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1717314660; x=1717919460;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=D/SOWSlctJCblL/nwyH7JDdZwoHFKl1tHUB0yIAR9Gk=;
-        b=gzsH0tP52f/3TPfcA60e3LMbXSQuN2KBlQhA5l7YtWxkIpyveXfhnmrwyaGIwgUNbm
-         mtyJvU12ccrYinu1yIXF9He7f4IuxuMkrsVdwOUk2qZKk3IOGCUFLWSkk1fTqbrXLBCW
-         cLKivTd00U/nTpCuK10+xVSLPiU9Nw1eyrrodzJUuwu32IbeEtW8de6UEaIu1BajyBV5
-         0ztVzlm3sA+z3hDYUuVNdvFDDPD+SCdmGG+zmFZNfA5FxIz6e/fw5cPe3F10L7zMp9o3
-         n4/iWvfMq/BgWV09XWuzcDcrbouv9gEB2dpV26AD44u7kEWq14bIsDto0WADPFZAg46k
-         Sd3w==
-X-Forwarded-Encrypted: i=1; AJvYcCWQjxbIxByMxTvi5K2CDtaUzn5e5HJo4bme3Sup6gwEaaak1BxXdZhTgPiwXLoePMZndfzYoWSfbfI24E6Ywnw6dk7KwoPo3JjItD+AxOOgwU8d/yrYtxcS3TRLKd8AGO/INx7Kjw==
-X-Gm-Message-State: AOJu0YzPcgSnklllwAIP47mh0UBNvdZ+c62MG91PA0c1LHbunRoSvC/P
-	UJbVMx27FLNGcrDou2o+W/hwyCDzljK0hc5m2rtQDvJQogQrGHHQ
-X-Google-Smtp-Source: AGHT+IGPxe5Gl5vpA6oWGjpp1Qh7OQr9fo/Ruce71SPYlMdz6kcR6/M1TKE7tTxa/Y/nJD/7tbS/wg==
-X-Received: by 2002:a2e:be0f:0:b0:2ea:806a:d701 with SMTP id 38308e7fff4ca-2ea95242b93mr38516401fa.3.1717314660255;
-        Sun, 02 Jun 2024 00:51:00 -0700 (PDT)
-Received: from [10.100.102.74] (85.65.205.146.dynamic.barak-online.net. [85.65.205.146])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-42123458f78sm119521935e9.1.2024.06.02.00.50.59
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 02 Jun 2024 00:50:59 -0700 (PDT)
-Message-ID: <5250bfd2-1268-4ab5-8429-92227a4a049b@grimberg.me>
-Date: Sun, 2 Jun 2024 10:50:58 +0300
+	s=arc-20240116; t=1717316380; c=relaxed/simple;
+	bh=fw7vZEUkP0roXDhN8/W5VJS4D7GNGUGCHJWCO+zC1K0=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=jeFZVL8OKsEMJRUn773TxTfqC55svHYbQz6CD7BjYVGKhXgyH5ISnmPzXGrY6nZ/lOib8QwKaAd1WNlZmt/KLEdhZhvdE5/KlnEtAcb2noP/2XqLukfOQFlsR9dknZ+76GHXfZvP2GgI8HOhtrPag1Vxy01t9hyADvczNwxA9eE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=HT5yTiIg; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BEEB6C2BBFC;
+	Sun,  2 Jun 2024 08:19:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1717316380;
+	bh=fw7vZEUkP0roXDhN8/W5VJS4D7GNGUGCHJWCO+zC1K0=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=HT5yTiIgutNM4vgdRUv/29MheyHTayPZRgOXn+xJb8Rb0FiQAybOXHZqphlMKooQi
+	 9GMn7bplO2oObwkWiFl+uj/LQZau+/iFHC1iALen0o3E12iIOOmoILKfzQJORsFPde
+	 E6Jt3W/o4ybzPogHClThfJoBdxDj2/Lo66kzt3DH7YEQG5R9UacqQT37eVlRk2T9Eo
+	 GulNzvSZrNHXrpWsDmMm+1azcoavmIvPE83MJqLOfKy+mnSN5t1HUBxcwElJ4nNNBB
+	 V2N1CkJEZHAwVwm8oOn0E9vCNGBD0blO1Fzh8q23VMuBBtGAVvdeKT2vdcistE8Xw2
+	 5oiAFNnTC1iPA==
+Date: Sun, 2 Jun 2024 11:19:34 +0300
+From: Leon Romanovsky <leon@kernel.org>
+To: Sagi Grimberg <sagi@grimberg.me>
+Cc: linux-rdma@vger.kernel.org, linux-nvme@lists.infradead.org,
+	Jason Gunthorpe <jgg@ziepe.ca>, Max Gurtovoy <mgurtovoy@nvidia.com>,
+	Israel Rukshin <israelr@nvidia.com>, Oren Duer <ooren@nvidia.com>
+Subject: Re: [PATCH rfc] rdma/verbs: fix a possible uaf when draining a srq
+ attached qp
+Message-ID: <20240602081934.GJ3884@unreal>
+References: <20240526083125.1454440-1-sagi@grimberg.me>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 0/2] Fix ADDR_CHANGE event handling for NFSD
-To: cel@kernel.org, linux-nfs@vger.kernel.org, linux-rdma@vger.kernel.org
-Cc: Chuck Lever <chuck.lever@oracle.com>
-References: <20240531131550.64044-4-cel@kernel.org>
-Content-Language: en-US
-From: Sagi Grimberg <sagi@grimberg.me>
-In-Reply-To: <20240531131550.64044-4-cel@kernel.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240526083125.1454440-1-sagi@grimberg.me>
 
+On Sun, May 26, 2024 at 11:31:25AM +0300, Sagi Grimberg wrote:
+> ib_drain_qp does not do drain a shared recv queue (because it is
+> shared). However in the absence of any guarantees that the recv
+> completions were consumed, the ulp can reference these completions
+> after draining the qp and freeing its associated resources, which
+> is a uaf [1].
+> 
+> We cannot drain a srq like a normal rq, however in ib_drain_qp
+> once the qp moved to error state, we reap the recv_cq once in
+> order to prevent consumption of recv completions after the drain.
+> 
+> [1]:
+> --
+> [199856.569999] Unable to handle kernel paging request at virtual address 002248778adfd6d0
+> <....>
+> [199856.721701] Workqueue: ib-comp-wq ib_cq_poll_work [ib_core]
+> <....>
+> [199856.827281] Call trace:
+> [199856.829847]  nvmet_parse_admin_cmd+0x34/0x178 [nvmet]
+> [199856.835007]  nvmet_req_init+0x2e0/0x378 [nvmet]
+> [199856.839640]  nvmet_rdma_handle_command+0xa4/0x2e8 [nvmet_rdma]
+> [199856.845575]  nvmet_rdma_recv_done+0xcc/0x240 [nvmet_rdma]
+> [199856.851109]  __ib_process_cq+0x84/0xf0 [ib_core]
+> [199856.855858]  ib_cq_poll_work+0x34/0xa0 [ib_core]
+> [199856.860587]  process_one_work+0x1ec/0x4a0
+> [199856.864694]  worker_thread+0x48/0x490
+> [199856.868453]  kthread+0x158/0x160
+> [199856.871779]  ret_from_fork+0x10/0x18
+> --
+> 
+> Signed-off-by: Sagi Grimberg <sagi@grimberg.me>
+> ---
+> Note this patch is not yet tested, but sending it for visibility and
+> early feedback. While nothing prevents ib_drain_cq to process a cq
+> directly (even if it has another context) I am not convinced if all
+> the upper layers don't have any assumptions about a single context
+> consuming the cq, even if it is while it is drained. It is also
+> possible to to add ib_reap_cq that fences the cq poll context before
+> reaping the cq, but this may have other side-effects.
 
+Did you have a chance to test this patch?
+I looked at the code and it seems to be correct change, but I also don't
+know about all ULP assumptions.
 
-On 31/05/2024 16:15, cel@kernel.org wrote:
-> From: Chuck Lever <chuck.lever@oracle.com>
->
-> Sagi recently pointed out that the CM ADDR_CHANGE event handler in
-> svcrdma has a bug similar to one he fixed in the NVMe target. This
-> series attempts to address that issue.
->
-> Chuck Lever (2):
->    svcrdma: Refactor the creation of listener CMA ID
->    svcrdma: Handle ADDR_CHANGE CM event properly
->
->   net/sunrpc/xprtrdma/svc_rdma_transport.c | 83 ++++++++++++++++--------
->   1 file changed, 55 insertions(+), 28 deletions(-)
->
+Thanks
 
-Looks good, For the series:
-
-Reviewed-by: Sagi Grimberg <sagi@grimberg.me>
-
+> 
+> This crash was seen in the wild, and not easy to reproduce. I suspect
+> that moving the nvmet_wq to be unbound expedited the teardown process
+> exposing a possible uaf for srq attached qps (which nvmet-rdma has a
+> mode of using).
+> 
+> 
+>  drivers/infiniband/core/verbs.c | 11 +++++++++++
+>  1 file changed, 11 insertions(+)
+> 
+> diff --git a/drivers/infiniband/core/verbs.c b/drivers/infiniband/core/verbs.c
+> index 94a7f3b0c71c..580e9019e96a 100644
+> --- a/drivers/infiniband/core/verbs.c
+> +++ b/drivers/infiniband/core/verbs.c
+> @@ -2962,6 +2962,17 @@ void ib_drain_qp(struct ib_qp *qp)
+>  	ib_drain_sq(qp);
+>  	if (!qp->srq)
+>  		ib_drain_rq(qp);
+> +	else {
+> +		/*
+> +		 * We cannot drain a srq, however the qp is in error state,
+> +		 * and will not generate new recv completions, hence it should
+> +		 * be enough to reap the recv cq to cleanup any recv completions
+> +		 * that may have placed before we drained. Without this nothing
+> +		 * guarantees that the ulp will free resources and only then
+> +		 * consume the recv completion.
+> +		 */
+> +		ib_process_cq_direct(qp->recv_cq, -1);
+> +	}
+>  }
+>  EXPORT_SYMBOL(ib_drain_qp);
+>  
+> -- 
+> 2.40.1
+> 
+> 
 
