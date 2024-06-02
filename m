@@ -1,146 +1,99 @@
-Return-Path: <linux-rdma+bounces-2751-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-2752-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 09EC48D7442
-	for <lists+linux-rdma@lfdr.de>; Sun,  2 Jun 2024 10:19:45 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 666AD8D7446
+	for <lists+linux-rdma@lfdr.de>; Sun,  2 Jun 2024 10:30:42 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3091E1C20A2E
-	for <lists+linux-rdma@lfdr.de>; Sun,  2 Jun 2024 08:19:44 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id CC300B20D83
+	for <lists+linux-rdma@lfdr.de>; Sun,  2 Jun 2024 08:30:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0B2671D543;
-	Sun,  2 Jun 2024 08:19:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CE9D41CD16;
+	Sun,  2 Jun 2024 08:30:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="HT5yTiIg"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="E+wtuyFb"
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BDAEC1CAA6
-	for <linux-rdma@vger.kernel.org>; Sun,  2 Jun 2024 08:19:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 862A7469D
+	for <linux-rdma@vger.kernel.org>; Sun,  2 Jun 2024 08:30:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1717316380; cv=none; b=h6oq1molaZd/r101ocZUscCOwy/ac3t6ZgxoKFEBMFz2xSjKpnd9HPfV8fTYiOp/5LT+wyZ+ybS+VABg2KELwnTqMWSrlokIJna5y+Xo0hvrhqlViAAC3is3S4cjr5dh+SFgTVgBCk5/f8hfIopgr2egBmHfLZ5T56lyFE071H0=
+	t=1717317034; cv=none; b=quVHhDJEO3rx/zSWfx/oYznOOYMBmEgS6NiGqx7MsdhRUbxfJ2ycks2HFLUdJQwuePtXMhv0FsFtaaFvo+K4sLlEh15liHK5bA9YsH6IDV7/sT57PP3zfponivzcWGMSeESnoLN9XHNijHGCSP+yOXL4dnAFJPAQ8c9qTkloqCQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1717316380; c=relaxed/simple;
-	bh=fw7vZEUkP0roXDhN8/W5VJS4D7GNGUGCHJWCO+zC1K0=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=jeFZVL8OKsEMJRUn773TxTfqC55svHYbQz6CD7BjYVGKhXgyH5ISnmPzXGrY6nZ/lOib8QwKaAd1WNlZmt/KLEdhZhvdE5/KlnEtAcb2noP/2XqLukfOQFlsR9dknZ+76GHXfZvP2GgI8HOhtrPag1Vxy01t9hyADvczNwxA9eE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=HT5yTiIg; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id BEEB6C2BBFC;
-	Sun,  2 Jun 2024 08:19:39 +0000 (UTC)
+	s=arc-20240116; t=1717317034; c=relaxed/simple;
+	bh=5kZBMMKdVZ9Atf9gE2ZRlFEDNG8VtmoJaJHIpviShOI=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Message-Id:Date:
+	 MIME-Version:Content-Type; b=n2z9uiG+t1rnPQMxdvWXiaVmEBXmZF6GmGPYJHtx2tiLlWQ6j0U9xZVQf0MuDD/NgtY8KEwEhnBISHo76YZ1VKmguEnVIOxuIeKSTipqIEUMzu0IqTjVu/Yk80yWrdcVSDWrc8HO8gKTymS36VZLX283B5vOhxY7HeV7SQz9JUk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=E+wtuyFb; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 49C16C2BBFC;
+	Sun,  2 Jun 2024 08:30:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1717316380;
-	bh=fw7vZEUkP0roXDhN8/W5VJS4D7GNGUGCHJWCO+zC1K0=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=HT5yTiIgutNM4vgdRUv/29MheyHTayPZRgOXn+xJb8Rb0FiQAybOXHZqphlMKooQi
-	 9GMn7bplO2oObwkWiFl+uj/LQZau+/iFHC1iALen0o3E12iIOOmoILKfzQJORsFPde
-	 E6Jt3W/o4ybzPogHClThfJoBdxDj2/Lo66kzt3DH7YEQG5R9UacqQT37eVlRk2T9Eo
-	 GulNzvSZrNHXrpWsDmMm+1azcoavmIvPE83MJqLOfKy+mnSN5t1HUBxcwElJ4nNNBB
-	 V2N1CkJEZHAwVwm8oOn0E9vCNGBD0blO1Fzh8q23VMuBBtGAVvdeKT2vdcistE8Xw2
-	 5oiAFNnTC1iPA==
-Date: Sun, 2 Jun 2024 11:19:34 +0300
+	s=k20201202; t=1717317034;
+	bh=5kZBMMKdVZ9Atf9gE2ZRlFEDNG8VtmoJaJHIpviShOI=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+	b=E+wtuyFbH1GSaGnBRHv21ZuU1O7npomMZYF0OQ1tVHW3AfW/AqUzr1gjgfCzmKB9f
+	 xRwnlI9cPkOyJ2RY0+ggnQV+6QQv3o+uJTagRUetZvuof53/9X9TFEPjbjOWltpSak
+	 n9lYC18WhOqT3We3nErFEwG6ijvcwrubfM5bH7rDxplWkizUjPH36GKVJrCKWAUgab
+	 xs7kTKB6x6lnUBijrYqbOb2NcgsF0G889LgCC9QAqC0SFiec4gIyjWKsgOvtmtmUPC
+	 mbHpVLXes03CLIRtIzDNtAZBXfghrybQy9qCY3uT46w8J4V/LPoLyRT8bSfvSk3ofO
+	 ofsoVmDOVAXXQ==
 From: Leon Romanovsky <leon@kernel.org>
-To: Sagi Grimberg <sagi@grimberg.me>
-Cc: linux-rdma@vger.kernel.org, linux-nvme@lists.infradead.org,
-	Jason Gunthorpe <jgg@ziepe.ca>, Max Gurtovoy <mgurtovoy@nvidia.com>,
-	Israel Rukshin <israelr@nvidia.com>, Oren Duer <ooren@nvidia.com>
-Subject: Re: [PATCH rfc] rdma/verbs: fix a possible uaf when draining a srq
- attached qp
-Message-ID: <20240602081934.GJ3884@unreal>
-References: <20240526083125.1454440-1-sagi@grimberg.me>
+To: Jason Gunthorpe <jgg@ziepe.ca>, Leon Romanovsky <leon@kernel.org>
+Cc: linux-rdma@vger.kernel.org, Mark Zhang <markzhang@nvidia.com>, 
+ Michael Guralnik <michaelgur@nvidia.com>, Or Har-Toov <ohartoov@nvidia.com>, 
+ Patrisious Haddad <phaddad@nvidia.com>, Yishai Hadas <yishaih@nvidia.com>, 
+ Leon Romanovsky <leon@kernel.org>
+In-Reply-To: <cover.1716900410.git.leon@kernel.org>
+References: <cover.1716900410.git.leon@kernel.org>
+Subject: Re: [PATCH rdma-rc 0/6] Batch of mlx5 fixes for v6.10
+Message-Id: <171731702935.679323.4920994492251966989.b4-ty@kernel.org>
+Date: Sun, 02 Jun 2024 11:30:29 +0300
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240526083125.1454440-1-sagi@grimberg.me>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Mailer: b4 0.14-dev
 
-On Sun, May 26, 2024 at 11:31:25AM +0300, Sagi Grimberg wrote:
-> ib_drain_qp does not do drain a shared recv queue (because it is
-> shared). However in the absence of any guarantees that the recv
-> completions were consumed, the ulp can reference these completions
-> after draining the qp and freeing its associated resources, which
-> is a uaf [1].
-> 
-> We cannot drain a srq like a normal rq, however in ib_drain_qp
-> once the qp moved to error state, we reap the recv_cq once in
-> order to prevent consumption of recv completions after the drain.
-> 
-> [1]:
-> --
-> [199856.569999] Unable to handle kernel paging request at virtual address 002248778adfd6d0
-> <....>
-> [199856.721701] Workqueue: ib-comp-wq ib_cq_poll_work [ib_core]
-> <....>
-> [199856.827281] Call trace:
-> [199856.829847]  nvmet_parse_admin_cmd+0x34/0x178 [nvmet]
-> [199856.835007]  nvmet_req_init+0x2e0/0x378 [nvmet]
-> [199856.839640]  nvmet_rdma_handle_command+0xa4/0x2e8 [nvmet_rdma]
-> [199856.845575]  nvmet_rdma_recv_done+0xcc/0x240 [nvmet_rdma]
-> [199856.851109]  __ib_process_cq+0x84/0xf0 [ib_core]
-> [199856.855858]  ib_cq_poll_work+0x34/0xa0 [ib_core]
-> [199856.860587]  process_one_work+0x1ec/0x4a0
-> [199856.864694]  worker_thread+0x48/0x490
-> [199856.868453]  kthread+0x158/0x160
-> [199856.871779]  ret_from_fork+0x10/0x18
-> --
-> 
-> Signed-off-by: Sagi Grimberg <sagi@grimberg.me>
-> ---
-> Note this patch is not yet tested, but sending it for visibility and
-> early feedback. While nothing prevents ib_drain_cq to process a cq
-> directly (even if it has another context) I am not convinced if all
-> the upper layers don't have any assumptions about a single context
-> consuming the cq, even if it is while it is drained. It is also
-> possible to to add ib_reap_cq that fences the cq poll context before
-> reaping the cq, but this may have other side-effects.
 
-Did you have a chance to test this patch?
-I looked at the code and it seems to be correct change, but I also don't
-know about all ULP assumptions.
+On Tue, 28 May 2024 15:52:50 +0300, Leon Romanovsky wrote:
+> From: Leon Romanovsky <leonro@nvidia.com>
+> 
+> Various fixes which I collected during the last few weeks.
+> 
+> Thanks
+> 
+> Jason Gunthorpe (3):
+>   RDMA/mlx5: Remove extra unlock on error path
+>   RDMA/mlx5: Follow rb_key.ats when creating new mkeys
+>   RDMA/mlx5: Ensure created mkeys always have a populated rb_key
+> 
+> [...]
 
-Thanks
+Applied, thanks!
 
-> 
-> This crash was seen in the wild, and not easy to reproduce. I suspect
-> that moving the nvmet_wq to be unbound expedited the teardown process
-> exposing a possible uaf for srq attached qps (which nvmet-rdma has a
-> mode of using).
-> 
-> 
->  drivers/infiniband/core/verbs.c | 11 +++++++++++
->  1 file changed, 11 insertions(+)
-> 
-> diff --git a/drivers/infiniband/core/verbs.c b/drivers/infiniband/core/verbs.c
-> index 94a7f3b0c71c..580e9019e96a 100644
-> --- a/drivers/infiniband/core/verbs.c
-> +++ b/drivers/infiniband/core/verbs.c
-> @@ -2962,6 +2962,17 @@ void ib_drain_qp(struct ib_qp *qp)
->  	ib_drain_sq(qp);
->  	if (!qp->srq)
->  		ib_drain_rq(qp);
-> +	else {
-> +		/*
-> +		 * We cannot drain a srq, however the qp is in error state,
-> +		 * and will not generate new recv completions, hence it should
-> +		 * be enough to reap the recv cq to cleanup any recv completions
-> +		 * that may have placed before we drained. Without this nothing
-> +		 * guarantees that the ulp will free resources and only then
-> +		 * consume the recv completion.
-> +		 */
-> +		ib_process_cq_direct(qp->recv_cq, -1);
-> +	}
->  }
->  EXPORT_SYMBOL(ib_drain_qp);
->  
-> -- 
-> 2.40.1
-> 
-> 
+[1/6] RDMA/cache: Release GID table even if leak is detected
+      https://git.kernel.org/rdma/rdma/c/3ac844148b9b80
+[2/6] RDMA/mlx5: Remove extra unlock on error path
+      https://git.kernel.org/rdma/rdma/c/36e1ea42751ce8
+[3/6] RDMA/mlx5: Follow rb_key.ats when creating new mkeys
+      https://git.kernel.org/rdma/rdma/c/0f28eefd6bdb6c
+[4/6] RDMA/mlx5: Ensure created mkeys always have a populated rb_key
+      https://git.kernel.org/rdma/rdma/c/7322d666dbd55f
+[5/6] RDMA/mlx5: Fix unwind flow as part of mlx5_ib_stage_init_init
+      https://git.kernel.org/rdma/rdma/c/6bb41bed95ec39
+[6/6] RDMA/mlx5: Add check for srq max_sge attribute
+      https://git.kernel.org/rdma/rdma/c/c405e9cac10239
+
+Best regards,
+-- 
+Leon Romanovsky <leon@kernel.org>
+
 
