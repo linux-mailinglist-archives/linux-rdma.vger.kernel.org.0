@@ -1,129 +1,164 @@
-Return-Path: <linux-rdma+bounces-2783-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-2784-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 588FD8D848E
-	for <lists+linux-rdma@lfdr.de>; Mon,  3 Jun 2024 16:03:25 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id EC5038D8553
+	for <lists+linux-rdma@lfdr.de>; Mon,  3 Jun 2024 16:43:45 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6F4E91C21F29
-	for <lists+linux-rdma@lfdr.de>; Mon,  3 Jun 2024 14:03:24 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 38241B22C82
+	for <lists+linux-rdma@lfdr.de>; Mon,  3 Jun 2024 14:43:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1795681207;
-	Mon,  3 Jun 2024 14:03:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 31BBB130485;
+	Mon,  3 Jun 2024 14:43:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="D9jhueSF"
+	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="EpJPetlG"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from out-174.mta0.migadu.com (out-174.mta0.migadu.com [91.218.175.174])
+Received: from out30-131.freemail.mail.aliyun.com (out30-131.freemail.mail.aliyun.com [115.124.30.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ACFC815C3
-	for <linux-rdma@vger.kernel.org>; Mon,  3 Jun 2024 14:03:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4BE4E84A35;
+	Mon,  3 Jun 2024 14:43:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1717423400; cv=none; b=Fl4kvEJo7AOaNNsPxJC2AggvWH6Ol9I5bKjWp5j3Ha1Px1BJfOnnekFf2v6/tmQJ7z0isS0nPp+E2nnt2Ga7Er+4JggXycsV8Suu2uiI5DA1r/2sOYXQOEjHO9LbEdKrUmrI8gNVVgpUkm/xzc2EYD9ndCofjh7kan0VvRD4MEs=
+	t=1717425807; cv=none; b=VOozalnCdEXVS/saMjtfMiWqs7fqrmGqOyHvN+UPGw2Cp2QoVbWSNEcF/G+ROJggQFG9p7oOslEwD7BJWiiR9+NO0qlgrn6yyB1vO6NQEObceeUXjmSC/mXt/gNf5Wz4x+dexEYXQ/8FAVhZ386w0NscvjgWt+z352Ojwnk9kx0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1717423400; c=relaxed/simple;
-	bh=Ff2WzmhmYEItPNf1qQFYOKhLPGHJOjnu1zuuR7VObKs=;
+	s=arc-20240116; t=1717425807; c=relaxed/simple;
+	bh=vqPteU+ShY+tFFsnyCy91eplh17ffUIH0ni3JoDnahE=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=rmtSZStQ/6TL48Dz3/O7L4rPL/VGVXmumWey/lTa4Sx99B5oPK1s4OD+PjUDghoSXbd2Rk5ezXgQwvHhpHdwyCnDqO5x/mqeBuoGSx2fmLY1P3RMXJ5gjX9z2UTryAKhiYuQTJr/Aqif6Zu4olNunDG/kEMSQRhNMRnARPOS8uA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=D9jhueSF; arc=none smtp.client-ip=91.218.175.174
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-X-Envelope-To: chuck.lever@oracle.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1717423394;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=7s1AYR70khVIfVDYU7GD/y9Hirp7COpsMuoMksv4eUw=;
-	b=D9jhueSFt8g+EbsbojazbUDojysJWfbQ53H5O2wiv19TNfciQbBNPEAtmPnulL6rI4FXfX
-	5Mnhwc5HcJ7RFBZf4m4/cLQ+fsA0SaB+znsbxcKcfG9kfEliCcFu+QYTU8xaNh7F4ADobn
-	DiWtiSWVgqEev/gGW25SS7E5dJcift4=
-X-Envelope-To: cel@kernel.org
-X-Envelope-To: linux-nfs@vger.kernel.org
-X-Envelope-To: linux-rdma@vger.kernel.org
-Message-ID: <1e54456d-a50d-c1ce-ca3e-e58e7e2bdbc3@linux.dev>
-Date: Mon, 3 Jun 2024 22:03:02 +0800
+	 In-Reply-To:Content-Type; b=R+Lm4k2t5tqwt/nZkQFP9H8wTtkpDNXg1FI7s6eowLLhd6YcRYTD0VHLJlSmmt52oxnXmhO+8HxCbi+ocTGPandsEzHSaDpqMPcYkIlXSTbz6ApzalDo6YGWnCTCIu+5OGFzoU+A5YVGCQhW4W7Bs8fh73dknAXemjTC52rUEo4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=EpJPetlG; arc=none smtp.client-ip=115.124.30.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
+DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
+	d=linux.alibaba.com; s=default;
+	t=1717425796; h=Message-ID:Date:MIME-Version:Subject:To:From:Content-Type;
+	bh=LuHj3RTY5pjD9DVnlCmbp9LxMkyrwdGJVdkMRo33rM0=;
+	b=EpJPetlGhFzCoFI+cfMaYB1pP7uEHYUguw694ieGQVNiSRe3rj5dV9Kj5tO8C92VlPw7sK0dYptbk/kgAgbcxkE55KtANcOzp1Aklz9oqfLSzXg7CWYt/f7UfKH4u1FGlfjXZoha742GWPgkUkPYVlFZfylyRL8bfWjvniYzsqk=
+X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R581e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=maildocker-contentspam033037067109;MF=alibuda@linux.alibaba.com;NM=1;PH=DS;RN=14;SR=0;TI=SMTPD_---0W7o9Qya_1717425794;
+Received: from 192.168.50.173(mailfrom:alibuda@linux.alibaba.com fp:SMTPD_---0W7o9Qya_1717425794)
+          by smtp.aliyun-inc.com;
+          Mon, 03 Jun 2024 22:43:15 +0800
+Message-ID: <d77ffb6e-28e6-4666-ae73-33bb64a44318@linux.alibaba.com>
+Date: Mon, 3 Jun 2024 22:43:14 +0800
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH 1/2] svcrdma: Refactor the creation of listener CMA ID
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH net-next v5 3/3] net/smc: Introduce IPPROTO_SMC
+To: Ratheesh Kannoth <rkannoth@marvell.com>
+Cc: kgraul@linux.ibm.com, wenjia@linux.ibm.com, jaka@linux.ibm.com,
+ wintera@linux.ibm.com, guwen@linux.alibaba.com, kuba@kernel.org,
+ davem@davemloft.net, netdev@vger.kernel.org, linux-s390@vger.kernel.org,
+ linux-rdma@vger.kernel.org, tonylu@linux.alibaba.com, pabeni@redhat.com,
+ edumazet@google.com
+References: <1717061440-59937-1-git-send-email-alibuda@linux.alibaba.com>
+ <1717061440-59937-4-git-send-email-alibuda@linux.alibaba.com>
+ <20240603034901.GA3254291@maili.marvell.com>
 Content-Language: en-US
-To: Chuck Lever <chuck.lever@oracle.com>
-Cc: cel@kernel.org, linux-nfs@vger.kernel.org, linux-rdma@vger.kernel.org
-References: <20240531131550.64044-4-cel@kernel.org>
- <20240531131550.64044-5-cel@kernel.org>
- <9ae0657b-b430-9318-4e19-eae9f40307fb@linux.dev>
- <Zl3DvlqRGasKmhz8@tissot.1015granger.net>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Guoqing Jiang <guoqing.jiang@linux.dev>
-In-Reply-To: <Zl3DvlqRGasKmhz8@tissot.1015granger.net>
+From: "D. Wythe" <alibuda@linux.alibaba.com>
+In-Reply-To: <20240603034901.GA3254291@maili.marvell.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-Migadu-Flow: FLOW_OUT
 
 
 
-On 6/3/24 21:23, Chuck Lever wrote:
-> On Mon, Jun 03, 2024 at 06:59:13PM +0800, Guoqing Jiang wrote:
+On 6/3/24 11:49 AM, Ratheesh Kannoth wrote:
+> On 2024-05-30 at 15:00:40, D. Wythe (alibuda@linux.alibaba.com) wrote:
+>> From: "D. Wythe" <alibuda@linux.alibaba.com>
 >>
->> On 5/31/24 21:15, cel@kernel.org wrote:
->>> From: Chuck Lever <chuck.lever@oracle.com>
->>>
->>> In a moment, I will add a second consumer of CMA ID creation in
->>> svcrdma. Refactor so this code can be reused.
->>>
->>> Signed-off-by: Chuck Lever <chuck.lever@oracle.com>
->>> ---
->>>    net/sunrpc/xprtrdma/svc_rdma_transport.c | 67 ++++++++++++++----------
->>>    1 file changed, 40 insertions(+), 27 deletions(-)
->>>
->>> diff --git a/net/sunrpc/xprtrdma/svc_rdma_transport.c b/net/sunrpc/xprtrdma/svc_rdma_transport.c
->>> index 2b1c16b9547d..fa50b7494a0a 100644
->>> --- a/net/sunrpc/xprtrdma/svc_rdma_transport.c
->>> +++ b/net/sunrpc/xprtrdma/svc_rdma_transport.c
->>> @@ -65,6 +65,8 @@
->>>    static struct svcxprt_rdma *svc_rdma_create_xprt(struct svc_serv *serv,
->>>    						 struct net *net, int node);
->>> +static int svc_rdma_listen_handler(struct rdma_cm_id *cma_id,
->>> +				   struct rdma_cm_event *event);
->>>    static struct svc_xprt *svc_rdma_create(struct svc_serv *serv,
->>>    					struct net *net,
->>>    					struct sockaddr *sa, int salen,
->>> @@ -122,6 +124,41 @@ static void qp_event_handler(struct ib_event *event, void *context)
->>>    	}
->>>    }
->>> +static struct rdma_cm_id *
->>> +svc_rdma_create_listen_id(struct net *net, struct sockaddr *sap,
->>> +			  void *context)
->>> +{
->>> +	struct rdma_cm_id *listen_id;
->>> +	int ret;
->>> +
->>> +	listen_id = rdma_create_id(net, svc_rdma_listen_handler, context,
->>> +				   RDMA_PS_TCP, IB_QPT_RC);
->>> +	if (IS_ERR(listen_id))
->>> +		return listen_id;
->> I am wondering if above need to return PTR_ERR(listen_id),
-> PTR_ERR would convert the listen_id error to an integer, but
-> svc_rdma_create_listen_id() returns a pointer or an ERR_PTR. Thus
-> using PTR_ERR() would be wrong in this case.
->
->
->> and I find some
->> callers (in net/rds/, nvme etc)
->> return PTR_ERR(id) while others (rtrs-srv, ib_isert.c) return ERR_PTR(ret)
->> with ret is set to PTR_ERR(id).
-> These functions use PTR_ERR only when the calling function returns
-> an int.
+>> +
+>> +int __init smc_inet_init(void)
+>> +{
+>> +	int rc;
+>> +
+>> +	rc = proto_register(&smc_inet_prot, 1);
+>> +	if (rc) {
+>> +		pr_err("%s: proto_register smc_inet_prot fails with %d\n", __func__, rc);
+>> +		return rc;
+>> +	}
+>> +	/* no return value */
+>> +	inet_register_protosw(&smc_inet_protosw);
+>> +
+>> +#if IS_ENABLED(CONFIG_IPV6)
+>> +	rc = proto_register(&smc_inet6_prot, 1);
+>> +	if (rc) {
+>> +		pr_err("%s: proto_register smc_inet6_prot fails with %d\n", __func__, rc);
+>> +		goto out_inet6_prot;
+>> +	}
+>> +	rc = inet6_register_protosw(&smc_inet6_protosw);
+>> +	if (rc) {
+>> +		pr_err("%s: inet6_register_protosw smc_inet6_protosw fails with %d\n",
+>> +		       __func__, rc);
+>> +		goto out_inet6_protosw;
+>> +	}
+>> +#endif /* CONFIG_IPV6 */
+>> +
+>> +	return rc;
+>> +#if IS_ENABLED(CONFIG_IPV6)
+> Can you combine this #if with above one ? Any way you need this only in case of ipv6.
+> Error handling with #if is an hindrance to a good readability.
 
-Thanks for the explanation!
+Hi Ratheesh,
 
-Guoqing
+Thanks for your advice. Totally agreed with that.
+I'll give it a fix in next version.
+
+Best wishes,
+D. Wythe
+
+>> +out_inet6_protosw:
+>> +	proto_unregister(&smc_inet6_prot);
+>> +out_inet6_prot:
+>> +	inet_unregister_protosw(&smc_inet_protosw);
+>> +	proto_unregister(&smc_inet_prot);
+>> +	return rc;
+>> +#endif /* CONFIG_IPV6 */
+>> +}
+>> +
+>> +void smc_inet_exit(void)
+>> +{
+>> +#if IS_ENABLED(CONFIG_IPV6)
+>> +	inet6_unregister_protosw(&smc_inet6_protosw);
+>> +	proto_unregister(&smc_inet6_prot);
+>> +#endif /* CONFIG_IPV6 */
+>> +	inet_unregister_protosw(&smc_inet_protosw);
+>> +	proto_unregister(&smc_inet_prot);
+>> +}
+>> diff --git a/net/smc/smc_inet.h b/net/smc/smc_inet.h
+>> new file mode 100644
+>> index 00000000..a489c8a
+>> --- /dev/null
+>> +++ b/net/smc/smc_inet.h
+>> @@ -0,0 +1,22 @@
+>> +/* SPDX-License-Identifier: GPL-2.0 */
+>> +/*
+>> + *  Shared Memory Communications over RDMA (SMC-R) and RoCE
+>> + *
+>> + *  Definitions for the IPPROTO_SMC (socket related)
+>> +
+>> + *  Copyright IBM Corp. 2016
+>> + *  Copyright (c) 2024, Alibaba Inc.
+>> + *
+>> + *  Author: D. Wythe <alibuda@linux.alibaba.com>
+>> + */
+>> +#ifndef __INET_SMC
+>> +#define __INET_SMC
+>> +
+>> +/* Initialize protocol registration on IPPROTO_SMC,
+>> + * @return 0 on success
+>> + */
+>> +int smc_inet_init(void);
+>> +
+>> +void smc_inet_exit(void);
+>> +
+>> +#endif /* __INET_SMC */
+>> --
+>> 1.8.3.1
+>>
+
 
