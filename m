@@ -1,246 +1,96 @@
-Return-Path: <linux-rdma+bounces-2822-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-2823-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id A1A038FB133
-	for <lists+linux-rdma@lfdr.de>; Tue,  4 Jun 2024 13:36:17 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 41B338FB13A
+	for <lists+linux-rdma@lfdr.de>; Tue,  4 Jun 2024 13:38:45 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 835101C21AD0
-	for <lists+linux-rdma@lfdr.de>; Tue,  4 Jun 2024 11:36:16 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id ECF9D2842B9
+	for <lists+linux-rdma@lfdr.de>; Tue,  4 Jun 2024 11:38:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7063F14535B;
-	Tue,  4 Jun 2024 11:36:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5F93414535F;
+	Tue,  4 Jun 2024 11:38:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b="CQ0m0CP9"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="CnTyLfnr"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C00CC38B;
-	Tue,  4 Jun 2024 11:36:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=13.77.154.182
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1C58E1422D1;
+	Tue,  4 Jun 2024 11:38:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1717500972; cv=none; b=PuewJBehhrAA4eb4kq41JH5xkftR56uKs75dE7nlqkJaMg3MbEstWy/5yxP6sh0HwC1XxFGrgKirSQ3r8z4ekUV+eVqPTl4GZNE/t1NQpVgTzEydxOosR6TQ53YhXB/kbYSAz6+QluswK/lN/F/XbaEkoXYqNacwHSSaqKfdjdI=
+	t=1717501120; cv=none; b=P9oxVr3cxnOPZqheftZGFyxt742I7iWBQpFBayAEIVWOUbgF7WTJfPKFkg2f3fv/4Fl0D7DjWXv9sFxGjfP5PU3m6NQUH9DYjd64/EBAQNxLa0NrL3ny2I0DUwDwaKhK086t/pAtR+jg83glgJEgwNdic7A1xcjWTfsMFXAG7Jg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1717500972; c=relaxed/simple;
-	bh=02u0kNPyfblbpdwTQTDwg+4zFb9EyB2G2DK5wKRR5ZY=;
-	h=From:To:Cc:Subject:Date:Message-Id; b=fXNS8FYNk9VP7AckgYn6tFszWjZcEfrkJtV5L/PfV8O6agWPZAfNS7MLEGqKXyVbF48FLHLriCYbe9pJ6fsSCQuUzJhC4yUx54Z6L9wE6xjHHFPAdQXqYDzByoRs1bT9laKtk23fRSrmX0boVYLGzodi5nyhhCjbXHI0dNaMn+k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com; spf=pass smtp.mailfrom=linux.microsoft.com; dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b=CQ0m0CP9; arc=none smtp.client-ip=13.77.154.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.microsoft.com
-Received: from linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net (linux.microsoft.com [13.77.154.182])
-	by linux.microsoft.com (Postfix) with ESMTPSA id 391F720B915A;
-	Tue,  4 Jun 2024 04:36:10 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 391F720B915A
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-	s=default; t=1717500970;
-	bh=P719o/fbklQlZn6JZundaChgkDKmyxtoWTlV7qJ1Hoo=;
-	h=From:To:Cc:Subject:Date:From;
-	b=CQ0m0CP92PDJfkAMxdRkZq8Cagk+hYrZpV5Bk42kg4KkcHZo9+kxlecwhRvbdgZu1
-	 wAIl91nxLWqJhj8SaDdPZhOqPjZxmvne1LAqZ6mbLT2+4JQQaZM2oWdVWU3vKmFAmJ
-	 B+p9LpJVPxnVih3nFTXvyWeDUJ8UIjgVilgi5r5k=
-From: Konstantin Taranov <kotaranov@linux.microsoft.com>
-To: kotaranov@microsoft.com,
-	weh@microsoft.com,
-	sharmaajay@microsoft.com,
-	longli@microsoft.com,
-	jgg@ziepe.ca,
-	leon@kernel.org
-Cc: linux-rdma@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH rdma-next 1/1] RDMA/mana_ib: process QP error events
-Date: Tue,  4 Jun 2024 04:36:03 -0700
-Message-Id: <1717500963-1108-1-git-send-email-kotaranov@linux.microsoft.com>
-X-Mailer: git-send-email 1.8.3.1
+	s=arc-20240116; t=1717501120; c=relaxed/simple;
+	bh=GtcAYrRqb6w1aZ+SFaBxNrVc7F5CbXLwhUVHHa87tRE=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=at32HhmYE+RHjSaXBqhlGncO4EECLveAkIqPinHSEyVVdgWNBrF8NC7Hs5pi8TfiTVzMoTF8JqfhdbSQrfe3wvqC1JSF8qSBTyIY9ZcG7nGIKrxMflkGAedof2oZCMEPw8vZwSZzhJk2CwOueLQ4KxyyTOdhikJYtapST6cfHc0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=CnTyLfnr; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0D5E9C4AF07;
+	Tue,  4 Jun 2024 11:38:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1717501119;
+	bh=GtcAYrRqb6w1aZ+SFaBxNrVc7F5CbXLwhUVHHa87tRE=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=CnTyLfnr4EboZbPq1pMFsHretWsJBnWnfbhKZSEmBqgwfjw+QRkLYDZAGSYk2RURT
+	 tTewdlPn07ynKSBXtPkxIdO3KqLYYWDHDsAB8X+rDyTBV6z1Oh5AcMk3c6hf0a4uVY
+	 iTgnsNcbkxm0EfAkXuWTyPyBe6NEGpCsyoYoiJA1mZkWNdW+pi9gAGr6QmWC1LpUge
+	 Q0W6haGun23zoK5mqRVcIz2t1YMfLZXFvV2iG/DqO0s1zsRleaYM5puf++rVrMG6rJ
+	 jxsV6qa+lYumBUFOgv33R/brUzyJB3sMnoNRqxsA4FDuAzDlkYVSj1KqE/6ORtIgGe
+	 jKPQY3aQrC1Bg==
+Date: Tue, 4 Jun 2024 14:38:34 +0300
+From: Leon Romanovsky <leon@kernel.org>
+To: Hillf Danton <hdanton@sina.com>, Tejun Heo <tj@kernel.org>
+Cc: Peter Zijlstra <peterz@infradead.org>,
+	Lai Jiangshan <jiangshanlai@gmail.com>,
+	Zqiang <qiang.zhang1211@gmail.com>, linux-kernel@vger.kernel.org,
+	Gal Pressman <gal@nvidia.com>, Tariq Toukan <tariqt@nvidia.com>,
+	RDMA mailing list <linux-rdma@vger.kernel.org>
+Subject: Re: [PATCH -rc] workqueue: Reimplement UAF fix to avoid lockdep
+ worning
+Message-ID: <20240604113834.GO3884@unreal>
+References: <4c4f1fb769a609a61010cb6d884ab2841ef716d3.1716885172.git.leon@kernel.org>
+ <ZljyqODpCD0_5-YD@slm.duckdns.org>
+ <20240531034851.GF3884@unreal>
+ <Zl4jPImmEeRuYQjz@slm.duckdns.org>
+ <20240604105456.1668-1-hdanton@sina.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240604105456.1668-1-hdanton@sina.com>
 
-From: Konstantin Taranov <kotaranov@microsoft.com>
+On Tue, Jun 04, 2024 at 06:54:56PM +0800, Hillf Danton wrote:
+> On Tue, 4 Jun 2024 11:09:58 +0300 Leon Romanovsky <leon@kernel.org>
+> > On Mon, Jun 03, 2024 at 10:10:36AM -1000, Tejun Heo wrote:
+> > > 
+> > > And KASAN is reporting use-after-free on a completely unrelated VFS object.
+> > > I can't tell for sure from the logs alone but lockdep_register_key()
+> > > iterates entries in the hashtable trying to find whether the key is a
+> > > duplicate and it could be that that walk is triggering the use-after-free
+> > > warning. If so, it doesn't really have much to do with workqueue. The
+> > > corruption happened elsewhere and workqueue just happens to traverse the
+> > > hashtable afterwards.
+> > 
+> > The problem is that revert of commit 643445531829
+> > ("workqueue: Fix UAF report by KASAN in pwq_release_workfn()")
+> > fixed these use-after-free reports.
+> > 
+> Given revert makes sense,
 
-Process QP fatal events from the error event queue.
-For that, find the QP, using QPN from the event, and then call its
-event_handler. To find the QPs, store created RC QPs in an xarray.
+Thanks, it is very rare situation where call to flush/drain queue
+(in our case kthread_flush_worker) in the middle of the allocation
+flow can be correct. I can't remember any such case.
 
-Signed-off-by: Konstantin Taranov <kotaranov@microsoft.com>
-Reviewed-by: Wei Hu <weh@microsoft.com>
----
- drivers/infiniband/hw/mana/device.c           |  3 ++
- drivers/infiniband/hw/mana/main.c             | 37 ++++++++++++++++++-
- drivers/infiniband/hw/mana/mana_ib.h          |  4 ++
- drivers/infiniband/hw/mana/qp.c               | 11 ++++++
- .../net/ethernet/microsoft/mana/gdma_main.c   |  1 +
- include/net/mana/gdma.h                       |  1 +
- 6 files changed, 55 insertions(+), 2 deletions(-)
+So even we don't fully understand the root cause, the reimplementation
+is still valid and improves existing code.
 
-diff --git a/drivers/infiniband/hw/mana/device.c b/drivers/infiniband/hw/mana/device.c
-index 9a7da2e..9eb714e 100644
---- a/drivers/infiniband/hw/mana/device.c
-+++ b/drivers/infiniband/hw/mana/device.c
-@@ -126,6 +126,7 @@ static int mana_ib_probe(struct auxiliary_device *adev,
- 	if (ret)
- 		goto destroy_eqs;
- 
-+	xa_init_flags(&dev->qp_table_rq, XA_FLAGS_LOCK_IRQ);
- 	ret = mana_ib_gd_config_mac(dev, ADDR_OP_ADD, mac_addr);
- 	if (ret) {
- 		ibdev_err(&dev->ib_dev, "Failed to add Mac address, ret %d",
-@@ -143,6 +144,7 @@ static int mana_ib_probe(struct auxiliary_device *adev,
- 	return 0;
- 
- destroy_rnic:
-+	xa_destroy(&dev->qp_table_rq);
- 	mana_ib_gd_destroy_rnic_adapter(dev);
- destroy_eqs:
- 	mana_ib_destroy_eqs(dev);
-@@ -158,6 +160,7 @@ static void mana_ib_remove(struct auxiliary_device *adev)
- 	struct mana_ib_dev *dev = dev_get_drvdata(&adev->dev);
- 
- 	ib_unregister_device(&dev->ib_dev);
-+	xa_destroy(&dev->qp_table_rq);
- 	mana_ib_gd_destroy_rnic_adapter(dev);
- 	mana_ib_destroy_eqs(dev);
- 	mana_gd_deregister_device(dev->gdma_dev);
-diff --git a/drivers/infiniband/hw/mana/main.c b/drivers/infiniband/hw/mana/main.c
-index 365b4f1..dfcfb88 100644
---- a/drivers/infiniband/hw/mana/main.c
-+++ b/drivers/infiniband/hw/mana/main.c
-@@ -667,6 +667,39 @@ int mana_ib_gd_query_adapter_caps(struct mana_ib_dev *dev)
- 	return 0;
- }
- 
-+static void
-+mana_ib_event_handler(void *ctx, struct gdma_queue *q, struct gdma_event *event)
-+{
-+	struct mana_ib_dev *mdev = (struct mana_ib_dev *)ctx;
-+	struct mana_ib_qp *qp;
-+	struct ib_event ev;
-+	unsigned long flag;
-+	u32 qpn;
-+
-+	switch (event->type) {
-+	case GDMA_EQE_RNIC_QP_FATAL:
-+		qpn = event->details[0];
-+		xa_lock_irqsave(&mdev->qp_table_rq, flag);
-+		qp = xa_load(&mdev->qp_table_rq, qpn);
-+		if (qp)
-+			refcount_inc(&qp->refcount);
-+		xa_unlock_irqrestore(&mdev->qp_table_rq, flag);
-+		if (!qp)
-+			break;
-+		if (qp->ibqp.event_handler) {
-+			ev.device = qp->ibqp.device;
-+			ev.element.qp = &qp->ibqp;
-+			ev.event = IB_EVENT_QP_FATAL;
-+			qp->ibqp.event_handler(&ev, qp->ibqp.qp_context);
-+		}
-+		if (refcount_dec_and_test(&qp->refcount))
-+			complete(&qp->free);
-+		break;
-+	default:
-+		break;
-+	}
-+}
-+
- int mana_ib_create_eqs(struct mana_ib_dev *mdev)
- {
- 	struct gdma_context *gc = mdev_to_gc(mdev);
-@@ -676,7 +709,7 @@ int mana_ib_create_eqs(struct mana_ib_dev *mdev)
- 	spec.type = GDMA_EQ;
- 	spec.monitor_avl_buf = false;
- 	spec.queue_size = EQ_SIZE;
--	spec.eq.callback = NULL;
-+	spec.eq.callback = mana_ib_event_handler;
- 	spec.eq.context = mdev;
- 	spec.eq.log2_throttle_limit = LOG2_EQ_THROTTLE;
- 	spec.eq.msix_index = 0;
-@@ -691,7 +724,7 @@ int mana_ib_create_eqs(struct mana_ib_dev *mdev)
- 		err = -ENOMEM;
- 		goto destroy_fatal_eq;
- 	}
--
-+	spec.eq.callback = NULL;
- 	for (i = 0; i < mdev->ib_dev.num_comp_vectors; i++) {
- 		spec.eq.msix_index = (i + 1) % gc->num_msix_usable;
- 		err = mana_gd_create_mana_eq(mdev->gdma_dev, &spec, &mdev->eqs[i]);
-diff --git a/drivers/infiniband/hw/mana/mana_ib.h b/drivers/infiniband/hw/mana/mana_ib.h
-index 60bc548..b732555 100644
---- a/drivers/infiniband/hw/mana/mana_ib.h
-+++ b/drivers/infiniband/hw/mana/mana_ib.h
-@@ -62,6 +62,7 @@ struct mana_ib_dev {
- 	mana_handle_t adapter_handle;
- 	struct gdma_queue *fatal_err_eq;
- 	struct gdma_queue **eqs;
-+	struct xarray qp_table_rq;
- 	struct mana_ib_adapter_caps adapter_caps;
- };
- 
-@@ -124,6 +125,9 @@ struct mana_ib_qp {
- 
- 	/* The port on the IB device, starting with 1 */
- 	u32 port;
-+
-+	refcount_t		refcount;
-+	struct completion	free;
- };
- 
- struct mana_ib_ucontext {
-diff --git a/drivers/infiniband/hw/mana/qp.c b/drivers/infiniband/hw/mana/qp.c
-index 34a9372..3f4fcc9 100644
---- a/drivers/infiniband/hw/mana/qp.c
-+++ b/drivers/infiniband/hw/mana/qp.c
-@@ -460,6 +460,12 @@ static int mana_ib_create_rc_qp(struct ib_qp *ibqp, struct ib_pd *ibpd,
- 		}
- 	}
- 
-+	refcount_set(&qp->refcount, 1);
-+	init_completion(&qp->free);
-+	err = xa_insert_irq(&mdev->qp_table_rq, qp->ibqp.qp_num, qp, GFP_KERNEL);
-+	if (err)
-+		goto destroy_qp;
-+
- 	return 0;
- 
- destroy_qp:
-@@ -620,6 +626,11 @@ static int mana_ib_destroy_rc_qp(struct mana_ib_qp *qp, struct ib_udata *udata)
- 		container_of(qp->ibqp.device, struct mana_ib_dev, ib_dev);
- 	int i;
- 
-+	xa_erase_irq(&mdev->qp_table_rq, qp->ibqp.qp_num);
-+	if (refcount_dec_and_test(&qp->refcount))
-+		complete(&qp->free);
-+	wait_for_completion(&qp->free);
-+
- 	/* Ignore return code as there is not much we can do about it.
- 	 * The error message is printed inside.
- 	 */
-diff --git a/drivers/net/ethernet/microsoft/mana/gdma_main.c b/drivers/net/ethernet/microsoft/mana/gdma_main.c
-index d33b272..ab8adac 100644
---- a/drivers/net/ethernet/microsoft/mana/gdma_main.c
-+++ b/drivers/net/ethernet/microsoft/mana/gdma_main.c
-@@ -380,6 +380,7 @@ static void mana_gd_process_eqe(struct gdma_queue *eq)
- 	case GDMA_EQE_HWC_INIT_EQ_ID_DB:
- 	case GDMA_EQE_HWC_INIT_DATA:
- 	case GDMA_EQE_HWC_INIT_DONE:
-+	case GDMA_EQE_RNIC_QP_FATAL:
- 		if (!eq->eq.callback)
- 			break;
- 
-diff --git a/include/net/mana/gdma.h b/include/net/mana/gdma.h
-index 2768413..44c797d 100644
---- a/include/net/mana/gdma.h
-+++ b/include/net/mana/gdma.h
-@@ -60,6 +60,7 @@ enum gdma_eqe_type {
- 	GDMA_EQE_HWC_INIT_DONE		= 131,
- 	GDMA_EQE_HWC_SOC_RECONFIG	= 132,
- 	GDMA_EQE_HWC_SOC_RECONFIG_DATA	= 133,
-+	GDMA_EQE_RNIC_QP_FATAL		= 176,
- };
- 
- enum {
--- 
-2.43.0
-
+Thanks
 
