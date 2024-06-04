@@ -1,66 +1,55 @@
-Return-Path: <linux-rdma+bounces-2835-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-2836-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2824B8FB20D
-	for <lists+linux-rdma@lfdr.de>; Tue,  4 Jun 2024 14:22:35 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 62F478FB329
+	for <lists+linux-rdma@lfdr.de>; Tue,  4 Jun 2024 15:06:33 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D261C28368B
-	for <lists+linux-rdma@lfdr.de>; Tue,  4 Jun 2024 12:22:33 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C4209B2C5B9
+	for <lists+linux-rdma@lfdr.de>; Tue,  4 Jun 2024 13:03:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3968D145FFA;
-	Tue,  4 Jun 2024 12:22:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AC988145B27;
+	Tue,  4 Jun 2024 13:03:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="dtigBN5M"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="p000rvcZ"
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DA3EE266A7;
-	Tue,  4 Jun 2024 12:22:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 66E431E519;
+	Tue,  4 Jun 2024 13:03:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1717503748; cv=none; b=LlTyk6ZigG3utmyujxW95fhPrQCxIezL1PjCvbU+84v5pz0F4tZxIgksItbVyc3YAAvCgq2ViPbWvbT1q/eR0Lfwwlu5skSKkbRwUkfUFXRzNxrtmHfD6IpIhv9wAAARSEKPfCbfS6fw32jMgwQ6l0BeUEdV68z/s6BJYTyLDSw=
+	t=1717506217; cv=none; b=GqWokPtn59ZPs6r4cra5qMt5aeljdh1JYEF1+PxIG7A7cxpyYTKZJuHJj2YVv8JdY9GTa7b+tP4291pp4zWwe+AmM35Ii8pDlOK0Mm9o4e8VEn9qdkWHL7sQEEzkymq3kYSKXKhUCznPF3/Dpd1kdeGmxH4+RjkT9k7vSdWClvU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1717503748; c=relaxed/simple;
-	bh=VzJ8Fzy20WxViCnJYd8q5zvqvIU2EWkl8ZQDsXYO2N8=;
+	s=arc-20240116; t=1717506217; c=relaxed/simple;
+	bh=snaMy2D6q++knfWhNRs+J2NDIjP7SJheVj7QpZxtH0Y=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=maAKeDMVYlxtzsYO60APDgfpZmdve6mlkERRpYStoCSCC7O2OC1VjvLhxi/a9+CxIZB9mUwXBZU+SgSXOjuVwl+GCsQv9jziy5U7ZBCzAKCx8p/k6AKngnwrZk0BpmAI3MWVRcT8KqHv+h53kVs5uwiy8a+IJZs5Hd5z2Pdo2+I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=dtigBN5M; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7BEF5C2BBFC;
-	Tue,  4 Jun 2024 12:22:26 +0000 (UTC)
+	 Content-Type:Content-Disposition:In-Reply-To; b=Lup02r5PE2BdGxmQ2kIC2x6CAPgwOg/TRM/fOMMAVdWLsPQn//eZS3iKekQYUUKIT8qudmOcugnbBMq9u41+XCAae66GrUngw21GkTnahCmWD0nKfIDWep5urE3kKTf2y9hzeo6dKI/3twFnxlcNUw8mP345+bL3uVkEzp9kT/g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=p000rvcZ; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4F797C2BBFC;
+	Tue,  4 Jun 2024 13:03:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1717503747;
-	bh=VzJ8Fzy20WxViCnJYd8q5zvqvIU2EWkl8ZQDsXYO2N8=;
+	s=k20201202; t=1717506217;
+	bh=snaMy2D6q++knfWhNRs+J2NDIjP7SJheVj7QpZxtH0Y=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=dtigBN5M9PT1p0ond8gNzYMF0fQ1Pz7e8gvKUX+pHtQi2/8NB6XgTBz+PCPe5G2iz
-	 +esnK43uws2LBRgsQgFCAqM2n4U9CmPQSJ234y6bVIslOGlL2rmVh/uXXWe8EvwQZ5
-	 zGko9m6ERVFGw8gAeUYRIRu2Ra19cF1R3agC0n4j9Lr8fMzUee9t7/OaI7/OsYHEfo
-	 N43yXWaB04lVSMpZz5zHL/tqAsJbr4/2e0qt5B1Ovs+PVV05K0tkXVzMP+bY3cgCPz
-	 qdNy3b+0iJYUUMjv29jerZa0ID9/4sM9M+PS70fs7JcZXWS7l2r1YR1xJQp66cLdPR
-	 sJHObc2RWciCg==
-Date: Tue, 4 Jun 2024 15:22:21 +0300
+	b=p000rvcZn1zZnKy29vbQxqrV2lXH+T0lAyiDHfEK7+J9qb1fSLz3WbM+0gW26KW+u
+	 RY1h1nzMZtHP8XXZYW5bsjgPPpEKzj+af3kQ73ydm/Kycc/dm+SzzUomaEyamc+3pi
+	 5mb4VbB+hym//PvzUANxrv6fOAEWsABRYE5uMtY9wpZz6Wjx5bK0lTeF6mjsoppqu2
+	 /mMvCqGwCdPOMixbs1N4xXpKXp48lziNvVMSpO9k7Vi88WhYywrH1+Ho6wEJ/QEVI2
+	 TBAUJPWrraL+kFJUJzaI3dnKEVh7fiIdrEBiLEjGKdbl5KjGSEduzJ7L4rLhtKO5Sb
+	 CRR+3FizNx5UA==
+Date: Tue, 4 Jun 2024 16:03:30 +0300
 From: Leon Romanovsky <leon@kernel.org>
-To: Zhu Yanjun <zyjzyj2000@gmail.com>
-Cc: Jason Gunthorpe <jgg@nvidia.com>, Jonathan Corbet <corbet@lwn.net>,
-	Itay Avraham <itayavr@nvidia.com>, Jakub Kicinski <kuba@kernel.org>,
-	linux-doc@vger.kernel.org, linux-rdma@vger.kernel.org,
-	netdev@vger.kernel.org, Paolo Abeni <pabeni@redhat.com>,
-	Saeed Mahameed <saeedm@nvidia.com>,
-	Tariq Toukan <tariqt@nvidia.com>,
-	Andy Gospodarek <andrew.gospodarek@broadcom.com>,
-	Aron Silverton <aron.silverton@oracle.com>,
-	Dan Williams <dan.j.williams@intel.com>,
-	David Ahern <dsahern@kernel.org>,
-	Christoph Hellwig <hch@infradead.org>, Jiri Pirko <jiri@nvidia.com>,
-	Leonid Bloch <lbloch@nvidia.com>, linux-cxl@vger.kernel.org,
-	patches@lists.linux.dev
-Subject: Re: [PATCH 2/8] fwctl: Basic ioctl dispatch for the character device
-Message-ID: <20240604122221.GR3884@unreal>
-References: <2-v1-9912f1a11620+2a-fwctl_jgg@nvidia.com>
- <6cfe00ce-1860-4aba-bcb8-54f8d365d2dc@linux.dev>
+To: Konstantin Taranov <kotaranov@linux.microsoft.com>
+Cc: kotaranov@microsoft.com, sharmaajay@microsoft.com, longli@microsoft.com,
+	jgg@ziepe.ca, linux-rdma@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/1] RDMA/mana_ib: ignore optional access flags for MRs
+Message-ID: <20240604130330.GS3884@unreal>
+References: <1717502162-4161-1-git-send-email-kotaranov@linux.microsoft.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
@@ -69,68 +58,36 @@ List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <6cfe00ce-1860-4aba-bcb8-54f8d365d2dc@linux.dev>
+In-Reply-To: <1717502162-4161-1-git-send-email-kotaranov@linux.microsoft.com>
 
-On Tue, Jun 04, 2024 at 02:16:12PM +0200, Zhu Yanjun wrote:
-> On 03.06.24 17:53, Jason Gunthorpe wrote:
-> > Each file descriptor gets a chunk of per-FD driver specific context that
-> > allows the driver to attach a device specific struct to. The core code
-> > takes care of the memory lifetime for this structure.
-> > 
-> > The ioctl dispatch and design is based on what was built for iommufd. The
-> > ioctls have a struct which has a combined in/out behavior with a typical
-> > 'zero pad' scheme for future extension and backwards compatibility.
-> > 
-> > Like iommufd some shared logic does most of the ioctl marshalling and
-> > compatibility work and tables diatches to some function pointers for
-> > each unique iotcl.
-> > 
-> > This approach has proven to work quite well in the iommufd and rdma
-> > subsystems.
-> > 
-> > Allocate an ioctl number space for the subsystem.
-> > 
-> > Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
-> > ---
-> >   .../userspace-api/ioctl/ioctl-number.rst      |   1 +
-> >   MAINTAINERS                                   |   1 +
-> >   drivers/fwctl/main.c                          | 124 +++++++++++++++++-
-> >   include/linux/fwctl.h                         |  31 +++++
-> >   include/uapi/fwctl/fwctl.h                    |  41 ++++++
-> >   5 files changed, 196 insertions(+), 2 deletions(-)
-> >   create mode 100644 include/uapi/fwctl/fwctl.h
-
-<...>
-
-> >   static int fwctl_fops_open(struct inode *inode, struct file *filp)
-> >   {
-> >   	struct fwctl_device *fwctl =
-> >   		container_of(inode->i_cdev, struct fwctl_device, cdev);
-> > +	struct fwctl_uctx *uctx __free(kfree) = NULL;
-> > +	int ret;
-> > +
-> > +	guard(rwsem_read)(&fwctl->registration_lock);
-> > +	if (!fwctl->ops)
-> > +		return -ENODEV;
-> > +
-> > +	uctx = kzalloc(fwctl->ops->uctx_size, GFP_KERNEL |  GFP_KERNEL_ACCOUNT);
-> > +	if (!uctx)
-> > +		return -ENOMEM;
-> > +
-> > +	uctx->fwctl = fwctl;
-> > +	ret = fwctl->ops->open_uctx(uctx);
-> > +	if (ret)
-> > +		return ret;
+On Tue, Jun 04, 2024 at 04:56:02AM -0700, Konstantin Taranov wrote:
+> From: Konstantin Taranov <kotaranov@microsoft.com>
 > 
-> When something is wrong, uctx is freed in "fwctl->ops->open_uctx(uctx);"?
+> Ignore optional ib_access_flags when an MR is created.
 > 
-> If not, the allocated memory uctx leaks here.
+> Signed-off-by: Konstantin Taranov <kotaranov@microsoft.com>
+> ---
+>  drivers/infiniband/hw/mana/mr.c | 1 +
+>  1 file changed, 1 insertion(+)
 
-See how uctx is declared:
-struct fwctl_uctx *uctx __free(kfree) = NULL;
-
-It will be released automatically.
-See include/linux/cleanup.h for more details.
+Please add Fixes line.
 
 Thanks
+
+> 
+> diff --git a/drivers/infiniband/hw/mana/mr.c b/drivers/infiniband/hw/mana/mr.c
+> index 4f13423..887b09d 100644
+> --- a/drivers/infiniband/hw/mana/mr.c
+> +++ b/drivers/infiniband/hw/mana/mr.c
+> @@ -112,6 +112,7 @@ struct ib_mr *mana_ib_reg_user_mr(struct ib_pd *ibpd, u64 start, u64 length,
+>  		  "start 0x%llx, iova 0x%llx length 0x%llx access_flags 0x%x",
+>  		  start, iova, length, access_flags);
+>  
+> +	access_flags &= ~IB_ACCESS_OPTIONAL;
+>  	if (access_flags & ~VALID_MR_FLAGS)
+>  		return ERR_PTR(-EINVAL);
+>  
+> -- 
+> 2.43.0
+> 
 
