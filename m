@@ -1,113 +1,117 @@
-Return-Path: <linux-rdma+bounces-2862-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-2863-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 54DFD8FBD40
-	for <lists+linux-rdma@lfdr.de>; Tue,  4 Jun 2024 22:26:17 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 564678FBE09
+	for <lists+linux-rdma@lfdr.de>; Tue,  4 Jun 2024 23:28:14 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E2D38B249BF
-	for <lists+linux-rdma@lfdr.de>; Tue,  4 Jun 2024 20:26:14 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1497C284256
+	for <lists+linux-rdma@lfdr.de>; Tue,  4 Jun 2024 21:28:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4D01614B945;
-	Tue,  4 Jun 2024 20:26:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3C3B314B97C;
+	Tue,  4 Jun 2024 21:28:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=acm.org header.i=@acm.org header.b="YVS+hVa/"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Cr2NIPV/"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from 008.lax.mailroute.net (008.lax.mailroute.net [199.89.1.11])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9E7431384B3
-	for <linux-rdma@vger.kernel.org>; Tue,  4 Jun 2024 20:26:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=199.89.1.11
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DD9A48174E;
+	Tue,  4 Jun 2024 21:28:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1717532770; cv=none; b=D3oCEBFWTvo7tjovg0Nplpe4n6MbqB7Hf4IMGLY4aNOeCHVqlNkQQtVP/nqNemBdDND4R33Sq6F1HRdFRjS//1tTQ9kxxQz8Kba/AOEHOr7cge8xbX6ylarB4M2O0hct0C3bGOtD5r8irRNnG3idXD8xXt18N3t8gj6/nwYY41o=
+	t=1717536487; cv=none; b=h0ixMyUb+MMFfLJomZuJw1byyD+KE7ukSKm9617cPvmycUDSgqX0ZAb59toZ3VenCOA8FBwME2gliX5fKcmGd/cXU492q1SX3kt3qeQQkTft1QmSaWoW1aQjHNM/YAGUqLW4Uj9SYIYL2KkrVzQ7RNaIh3dJlU6z4Wzu+/byYsI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1717532770; c=relaxed/simple;
-	bh=5PxDlbU0GhRmYI+4MYumcpB+xqHwOOKBHMFWxuMprgc=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=LIoIBkSWu1BVZLBn1haO7TUakQPp407X0kaKLWTuqyLI41NAhHj0jdA7QzVG+Ao9/SRj5PmQccxt23rh4OYZ0/c4GraQgmXPrfhZ2ZZMYqz1i/77q3AQE2x4qgaAN2cVq+RjhdnYrCb1RKM8OpTnNJ4F4TwxHCb7ODN4U7O16Iw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=acm.org; spf=pass smtp.mailfrom=acm.org; dkim=pass (2048-bit key) header.d=acm.org header.i=@acm.org header.b=YVS+hVa/; arc=none smtp.client-ip=199.89.1.11
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=acm.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=acm.org
-Received: from localhost (localhost [127.0.0.1])
-	by 008.lax.mailroute.net (Postfix) with ESMTP id 4Vv2DB0fsHz6CmM6M;
-	Tue,  4 Jun 2024 20:26:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=acm.org; h=
-	content-transfer-encoding:content-type:content-type:in-reply-to
-	:from:from:content-language:references:subject:subject
-	:user-agent:mime-version:date:date:message-id:received:received;
-	 s=mr01; t=1717532759; x=1720124760; bh=kTkfzniMCoXVAFHqLMBTm8KN
-	6oCn00mwPI+4QBGMB84=; b=YVS+hVa/2Oifl8kGI13B4eaCeuBwhLPmHGPvQzAV
-	cxan6Bs3+kPu8vUc5uI0pXeawfIM9j6lWZ9WagNMjE+JPSq9FwmghWh5/bDjyHg9
-	v1ynskiyKhDwFFtWUi0o3HT5UhVTfM1BvSCrFEHiu8DTpct4GZ/hLfOE6GqM3BtQ
-	J9237StwnHvbV5HL1h41UWGc47ejVqFCM4SF8X+5/LofsMh9Jsr9f40Bxj9X9MHv
-	kPmdu8YSKqEh103/4enjF3zLyPQPZzVVq6IgRmn2rGr6UdwhJz8FIkDKtqjA/ULM
-	9CcQg8MMZU5JG3aMMXeFZ8uhnvyb9MreJ1ZgBqKUSPav7A==
-X-Virus-Scanned: by MailRoute
-Received: from 008.lax.mailroute.net ([127.0.0.1])
- by localhost (008.lax [127.0.0.1]) (mroute_mailscanner, port 10029) with LMTP
- id RCgRfCtnP_N8; Tue,  4 Jun 2024 20:25:59 +0000 (UTC)
-Received: from [192.168.132.235] (unknown [65.117.37.195])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	(Authenticated sender: bvanassche@acm.org)
-	by 008.lax.mailroute.net (Postfix) with ESMTPSA id 4Vv2D71zkRz6CmM6L;
-	Tue,  4 Jun 2024 20:25:58 +0000 (UTC)
-Message-ID: <1c62e2b1-14ea-4927-93c9-c9acd0965774@acm.org>
-Date: Tue, 4 Jun 2024 14:25:58 -0600
+	s=arc-20240116; t=1717536487; c=relaxed/simple;
+	bh=T52kcXJ7mL4Q4PqNXSfJ7Kdnz9pHXcZRoLVIr7LNdKs=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=dorcuH0pJQ5c9PjxKJiA7PAcvS3uuZ71rHudJcblXz7HDuWa4SYMUl3dDkSJLBODmg8cqizgOz5NN7JQa8vgEqBsA+cW3hQkICw+PHvcoJN3oP1N64kq8ceruXgJFZxRkeKDABtXu87/4Vys1UxlWGVWnd2uF+WWuAYjeP1TiRM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Cr2NIPV/; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7BCA3C2BBFC;
+	Tue,  4 Jun 2024 21:28:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1717536486;
+	bh=T52kcXJ7mL4Q4PqNXSfJ7Kdnz9pHXcZRoLVIr7LNdKs=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=Cr2NIPV/oQGKb92AMrQQcg2dZTKnQS0n5ymAAgJVUt2i4U6ikH2V+13JFun/U8G5+
+	 ov6jr2E2HN69k+07HS9uU33fse0K+fLl9v+ANdVOF0emNH63EVsVf430yOTuaeI7MP
+	 Px/rgXmwEluM2uo4RvIau0IkYhXlFKD1aOQLJyfMDiJ+/7bo2SKLvNp2/buqr6RGsG
+	 hDeR6LbqH08PSVjNUNor6Kcq6tCdVDLsDl/UW5HZpGEa5/RxjiOwxVgQE5aVaOWzEZ
+	 PdI3TdxcXNJl5KB4vTVJ2dQNBCfchIu2BoNaqr3HxIKP9CHihbg7TDDk5gy0hyMKUC
+	 1wCpZHxtXfArw==
+Date: Tue, 4 Jun 2024 14:28:05 -0700
+From: Saeed Mahameed <saeed@kernel.org>
+To: Jakub Kicinski <kuba@kernel.org>
+Cc: David Ahern <dsahern@kernel.org>, Jason Gunthorpe <jgg@nvidia.com>,
+	Jonathan Corbet <corbet@lwn.net>, Itay Avraham <itayavr@nvidia.com>,
+	Leon Romanovsky <leon@kernel.org>, linux-doc@vger.kernel.org,
+	linux-rdma@vger.kernel.org, netdev@vger.kernel.org,
+	Paolo Abeni <pabeni@redhat.com>, Saeed Mahameed <saeedm@nvidia.com>,
+	Tariq Toukan <tariqt@nvidia.com>,
+	Andy Gospodarek <andrew.gospodarek@broadcom.com>,
+	Aron Silverton <aron.silverton@oracle.com>,
+	Dan Williams <dan.j.williams@intel.com>,
+	Christoph Hellwig <hch@infradead.org>, Jiri Pirko <jiri@nvidia.com>,
+	Leonid Bloch <lbloch@nvidia.com>,
+	Leon Romanovsky <leonro@nvidia.com>, linux-cxl@vger.kernel.org,
+	patches@lists.linux.dev
+Subject: Re: [PATCH 0/8] Introduce fwctl subystem
+Message-ID: <Zl-G5SRFztx_77a2@x130>
+References: <0-v1-9912f1a11620+2a-fwctl_jgg@nvidia.com>
+ <20240603114250.5325279c@kernel.org>
+ <214d7d82-0916-4c29-9012-04590e77df73@kernel.org>
+ <20240604070451.79cfb280@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [bug report] KASAN slab-use-after-free at blktests srp/002 with
- siw driver
-To: Jason Gunthorpe <jgg@ziepe.ca>
-Cc: Zhu Yanjun <yanjun.zhu@linux.dev>,
- Shinichiro Kawasaki <shinichiro.kawasaki@wdc.com>,
- "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
- Leon Romanovsky <leon@kernel.org>
-References: <5prftateosuvgmosryes4lakptbxccwtx7yajoicjhudt7gyvp@w3f6nqdvurir>
- <6bcbe337-c2fe-46ee-8228-a3cff6852c28@linux.dev>
- <a21021bf-6866-466b-a924-2f465fbb2e64@acm.org>
- <20240604202217.GB791043@ziepe.ca>
-Content-Language: en-US
-From: Bart Van Assche <bvanassche@acm.org>
-In-Reply-To: <20240604202217.GB791043@ziepe.ca>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
+In-Reply-To: <20240604070451.79cfb280@kernel.org>
 
-On 6/4/24 14:22, Jason Gunthorpe wrote:
->>  From 879ca4e5f9ab8c4ce522b4edc144a3938a2f4afb Mon Sep 17 00:00:00 2001
->> From: Bart Van Assche <bvanassche@acm.org>
->> Date: Tue, 4 Jun 2024 12:49:44 -0700
->> Subject: [PATCH] RDMA/iwcm: Fix a use-after-free related to destroying CM IDs
+On 04 Jun 07:04, Jakub Kicinski wrote:
+>On Mon, 3 Jun 2024 21:01:58 -0600 David Ahern wrote:
+>> On 6/3/24 12:42 PM, Jakub Kicinski wrote:
+>> > Somewhat related, I saw nVidia sells various interesting features in its
+>> > DOCA stack. Is that Open Source?
 >>
->> iw_conn_req_handler() associates a new struct rdma_id_private (conn_id) with
->> an existing struct iw_cm_id (cm_id) as follows:
->>
->>          conn_id->cm_id.iw = cm_id;
->>          cm_id->context = conn_id;
->>          cm_id->cm_handler = cma_iw_handler;
->>
->> rdma_destroy_id() frees both the cm_id and the struct rdma_id_private. Make
->> sure that cm_work_handler() does not trigger a use-after-free by delaing
->> freeing of the struct rdma_id_private until all pending work has finished.
-> 
-> I didn't try to look in detail but this certainly makes more sense to
-> me as a possible solution to a UAF
-> 
-> Presumably destroy_cm_id() does something to prevent new work from
-> being scheduled?
-Yes, it removes the iWARP CM ID from all the data structures that are consulted
-when an incoming CM packet arrives.
+>> Seriously, Jakub, how is that in any way related to this patch set?
+>
+>Whether they admit it or not, DOCA is a major reason nVidia wants
+>this to be standalone rather than part of RDMA.
+>
 
-Thanks,
+No, DOCA isn't on the agenda for this new interface. But what is the point
+in arguing? Apparently the vendor is not credible enough in your opinion.
+Which is an absolute outrageous grounds for a NAK.
 
-Bart.
+Anyway I don't see your point in bringing up DOCA here, but obviously once 
+this interface is accepted, all developers are welcome to use it,
+including DOCA developers of course..
+
+That being said, the why we need this is crystal clear in the 
+cover-letter and previous submission discussions, bringing random SDKs
+into this discussion is not objective and counter productive to the
+technical discussion.
+
+>> You are basically suggesting that if any vendor ever has an out of tree
+>> option for its hardware every patch it sends should be considered a ruse
+>> to enable or simplify proprietary options.
+>
+
+It's apparent that you're attributing sinister agendas to patchsets when
+you fail to offer valid technical opinions regarding the NAK nature. Let's
+address this outside of this patchset, as this isn't the first occurrence.
+Consistency in evaluating patches is crucial; some, like the fbnic and
+idpf, seem to go unquestioned, while others face scrutiny.
+
+>Ooo, is that a sore spot?
+>
+>I don't begrudge anyone building proprietary options, but leave
+>upstream out of it.
+>
 
