@@ -1,376 +1,287 @@
-Return-Path: <linux-rdma+bounces-2811-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-2812-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id C08628FABD0
-	for <lists+linux-rdma@lfdr.de>; Tue,  4 Jun 2024 09:25:37 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 870B78FAD25
+	for <lists+linux-rdma@lfdr.de>; Tue,  4 Jun 2024 10:10:30 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 36A351F2234E
-	for <lists+linux-rdma@lfdr.de>; Tue,  4 Jun 2024 07:25:37 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id EB2A9B217D1
+	for <lists+linux-rdma@lfdr.de>; Tue,  4 Jun 2024 08:10:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4B809140E22;
-	Tue,  4 Jun 2024 07:25:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B5B9B1428FD;
+	Tue,  4 Jun 2024 08:10:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=wdc.com header.i=@wdc.com header.b="mSvHPx6x";
-	dkim=pass (1024-bit key) header.d=sharedspace.onmicrosoft.com header.i=@sharedspace.onmicrosoft.com header.b="i0PV0U/C"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="tnnbzbqo"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from esa4.hgst.iphmx.com (esa4.hgst.iphmx.com [216.71.154.42])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C762A14037E
-	for <linux-rdma@vger.kernel.org>; Tue,  4 Jun 2024 07:25:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=216.71.154.42
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1717485931; cv=fail; b=myaM6e0nKHbdDL+hblmrtpxWibd8zdy3DKVuuVQ/N0w5YVylEbxDVt1lgnCfgmLFLvhBUeriXybGmLOscJ5Uznz8mOhxWehmbmjHe3KEceJ/8N6fQir/xS/2q+/932kj+kyC+gk0UrYXgsKCwD6U87VV6oyBpsiP8b2YyLZXCSg=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1717485931; c=relaxed/simple;
-	bh=+QdUBVRXZwqzcpg/Uy+aiWNlnZIzqIAR6C2vNE0C0MA=;
-	h=From:To:CC:Subject:Date:Message-ID:Content-Type:MIME-Version; b=a7y5b7voJM3k/kNpt5YT+b6jWaqt/E6AiwfT8AWkjn5F+9daHQkiTGcDpS6cB5We1rQWrracX1ki6u8NQXZobbD2XvDpDjD1UeV1F8iK6Vm7oSHx3satR0KwEHSXsS8WvD2Pk/GiVMqtBYGtGrUBxDJ5TB0J2gkECtqYdKdCy5o=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wdc.com; spf=pass smtp.mailfrom=wdc.com; dkim=pass (2048-bit key) header.d=wdc.com header.i=@wdc.com header.b=mSvHPx6x; dkim=pass (1024-bit key) header.d=sharedspace.onmicrosoft.com header.i=@sharedspace.onmicrosoft.com header.b=i0PV0U/C; arc=fail smtp.client-ip=216.71.154.42
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wdc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=wdc.com
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1717485928; x=1749021928;
-  h=from:to:cc:subject:date:message-id:content-id:
-   content-transfer-encoding:mime-version;
-  bh=+QdUBVRXZwqzcpg/Uy+aiWNlnZIzqIAR6C2vNE0C0MA=;
-  b=mSvHPx6xffPOWTqoiFhV9lTyhOWQ1RqlGtuSMLMdTje0oayrbHOh1irp
-   Bj3w3pHvk11SZH0fQXKzVqDljBCVhdU4a68IDcfzB3pm5LSwS1Is98Dzq
-   98tAw/gUqsXqNLsEi66BZ3jtrSafgvg65hu7cVmR0uEHrTEbrOMqsvwp9
-   2iW20DluRbVPzA3Sou5Vmg08mP9/c/e8arOYdPbkD2GoYM9WrZpP8vUK9
-   sqcViqS+x5M+lT8AES7pxazTY6N0MBwPdBMYP386ncmG71voG9Y++Ygg7
-   HnJ0NcsfljLRpD6gbd9q9qEWQYueTsxp9RhfmiUVUiQcMgXPt5qxyUHn1
-   w==;
-X-CSE-ConnectionGUID: VQ3ugwxmTQaUptnLdFDspQ==
-X-CSE-MsgGUID: D6nz89c7TPaNKXRmm1FrGw==
-X-IronPort-AV: E=Sophos;i="6.08,213,1712592000"; 
-   d="scan'208";a="17411617"
-Received: from mail-dm6nam10lp2101.outbound.protection.outlook.com (HELO NAM10-DM6-obe.outbound.protection.outlook.com) ([104.47.58.101])
-  by ob1.hgst.iphmx.com with ESMTP; 04 Jun 2024 15:25:27 +0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=fG//oeUy763K2k+j4CcFj3nQRcQyxQUrAr0B7wI6Hw8KgNHpxSD1/qOhFO0TLzEW/veZwsBAnBLzyIOyRwDAes6pmA1kk7gs2bckmOMZCYy1+BHVEws/DwmZZvcF1/nQ0/Dp0dbsvqZyKlRfAWnzamevaQHhoDMPSf/iSjh6VAZLpIXmhtmQEQYIP4NSEfUEkp0GTmtulkDQIjNWcDBkR/CzGsQJ/rjO5V9+4rBlGjtzl8C2T/xvUjzXb4oAGqfzt2xjtBqEZ5YGSLNQk47MritAep8rUOrS5+ao5B1WDoJ42YssnQ22F8lzsAuV6guXs/374uBUujrb36Ee3E2fVw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=IVniWahg2ZoJXXf+PAf/TaAfka45S4audT7KfWh2zTY=;
- b=GKeXBP7M9vsbBElABFHWbJhROy55nU7CcilbQ0edjriZxypJrfWKF+JjRnDkECoRcxnPKTwDDMjaMsoVvGn9O5mYbNlKXCE2LN2NcFvZQRjinZo0GWofP4LI4OH7CH04RNFKdqkQXdwwQLpWLUP14vWac/A92GRSgr+myvhAmIC7MKeRuVcwOG5QuKJn0OfPRs6HMlxlAUjOSin9vmtHRjJRap0dwJFH9hOei0IV/FGwaJVPTwKzE3OVuxe2WxG8deBX4AW4gb2TQO8W9eGEd0V0qIqsvK0r5sZ3DPRuUXECmzQMn/Wxho2QyVnEIxrIfJ9hXLZLW9YYQieS+/WcrA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
- header.d=wdc.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=IVniWahg2ZoJXXf+PAf/TaAfka45S4audT7KfWh2zTY=;
- b=i0PV0U/CPr4lz5/3C6sIFzR692GOw22CS9itnknj8LoOHdTNfdLTMwGC0+dPuVSeTksE0lBu6EUYVhTv76W8brdnmHE5kI2hHwGFAdbXPMkUs+W9gKL9z2PN/T+ebBF1snOoTjzvjltpRivXmbXOpeSRCv7KMPenLmYknalyfRI=
-Received: from DM8PR04MB8037.namprd04.prod.outlook.com (2603:10b6:8:f::6) by
- DS0PR04MB9440.namprd04.prod.outlook.com (2603:10b6:8:201::14) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.7633.27; Tue, 4 Jun 2024 07:25:25 +0000
-Received: from DM8PR04MB8037.namprd04.prod.outlook.com
- ([fe80::b27f:cdfa:851:e89a]) by DM8PR04MB8037.namprd04.prod.outlook.com
- ([fe80::b27f:cdfa:851:e89a%3]) with mapi id 15.20.7633.021; Tue, 4 Jun 2024
- 07:25:25 +0000
-From: Shinichiro Kawasaki <shinichiro.kawasaki@wdc.com>
-To: "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>
-CC: Bart Van Assche <bvanassche@acm.org>, Zhu Yanjun <zyjzyj2000@gmail.com>
-Subject: [bug report] KASAN slab-use-after-free at blktests srp/002 with siw
- driver
-Thread-Topic: [bug report] KASAN slab-use-after-free at blktests srp/002 with
- siw driver
-Thread-Index: AQHatlBevjdEqNl9WEGGLP8JyoPSxg==
-Date: Tue, 4 Jun 2024 07:25:25 +0000
-Message-ID: <5prftateosuvgmosryes4lakptbxccwtx7yajoicjhudt7gyvp@w3f6nqdvurir>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach:
-X-MS-TNEF-Correlator:
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=wdc.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: DM8PR04MB8037:EE_|DS0PR04MB9440:EE_
-x-ms-office365-filtering-correlation-id: 647284d6-d58f-4634-83d1-08dc846780d0
-wdcipoutbound: EOP-TRUE
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;ARA:13230031|1800799015|376005|366007|38070700009;
-x-microsoft-antispam-message-info:
- =?us-ascii?Q?Cnw9y1gbQAXLnMxefqx3Oplud1ueNLVNPZK0kn5dR9giuw4rvcno+yAoCq/6?=
- =?us-ascii?Q?Ac8tzpP+AY2rTvVDOFHF7p+ghzqje+SfyQIRQzQM/84cM2LV5hIBXk4tjmYB?=
- =?us-ascii?Q?LeWojVxmsKzEKBbznWxIxiPFFh8ozvfhjiirEbPCU5x7EuWkYPQMLjbQ6Ye4?=
- =?us-ascii?Q?9olDoJ7OM87ZATnMa27ZK8/7X9r3CABp0IR/H+f+ls90LeOAMN0OpNCdzEAg?=
- =?us-ascii?Q?XTv7Rar7b8qwyODjPooE5FiN3uTFJR8gt2FKREWHTVYcdkxJgmtrBWuojBHQ?=
- =?us-ascii?Q?HUVJeHTyFd/uqCTSz6448Ii3mT1+SynxUT+3Uk17mDKVJF0XOXpIxqLotieB?=
- =?us-ascii?Q?2movMGHGKsPz1Unm6+pDEqwmWB2EdaHcNBc6oDa2/h8Y91jWdUByEXOFKIiw?=
- =?us-ascii?Q?DKBDVpS/3tSZqnpgYmE69AkTUFv6n2WR8Jf/KY/7aEgC2VRbsaUA/IMejrl3?=
- =?us-ascii?Q?MhUIqic6xBLlW/jNGwpXnzplrlC+l2HwDaLL06s5btaKMfO38B8xiVM3pU4N?=
- =?us-ascii?Q?33UPuKpPWL001V7m8ABt+sxu2AlTPSf1pyL9QzZZQOYUew7RLnP/ZOAQIrhA?=
- =?us-ascii?Q?CgD4p8o7+LKUbPXpifPe0xrGKRrwPtJvY63JeK05IWqYEDJjBQgqADTY4CxJ?=
- =?us-ascii?Q?JPfz6nbay6V6tsDYjOtR44IT6Nj6SAjV5KNAR9Ln7r4zPK60xMTJ5zYC1z25?=
- =?us-ascii?Q?Wf2GTaVKnneKp1VnxGOsZjk5ZXt7bhFf1QcUczuVnLxnYE2UjY7Zmia8p/dk?=
- =?us-ascii?Q?/Yo3KPeUQXC8vWKh4j65DWhZ63blA3EFf8Xl3loI1QkMOVFjYWYncGHqIEMn?=
- =?us-ascii?Q?Nw0xbOImDkZLjbSHUGOIQEGq9kf3NDilEEHu1vh94+xaM9Zw184ogA7aBZsC?=
- =?us-ascii?Q?/fJdPQ9KrQIXwwf9hbSL1z3B7Xi2LNTh8L+epcW+PLg2S863eSPGHb0t1U8x?=
- =?us-ascii?Q?Z9tijJKgxvJkRIj83YFdtUTCX+6FmJYLcjnybhAASnc+EccZRdTxX4OpgtXO?=
- =?us-ascii?Q?n7kpbduKFZMu61X9MD4hhLbJMPiqOIj1F0HDhlTlDWfkWWGWsX0k2L7GFeRM?=
- =?us-ascii?Q?x8LREi6QO9oxxLcA9kisTO+BpVi+gFZunFEJMynYFLkiEBoCQexv3bOyIpBR?=
- =?us-ascii?Q?K8JQGJSvv7coR+XJnqH9KF/DK1zEDt6Z59Fq4RtP7nuE9P+PN8njK4ahTil7?=
- =?us-ascii?Q?CNciw2VEMmX4GgHcHrWRcu0i1/rpyqC8JV3/EhnnlSeIGEISEPMCSzz8mvwf?=
- =?us-ascii?Q?sPzAvNdidGGTzo3XB7dkgA849Ru0k2ZZIas6bwc0L7LxF9DwJCVsRFK3X3t3?=
- =?us-ascii?Q?IM0hUI7Tg5wAT2L89vfwBNsbsE4/k3f2N+J8wDgkoe6CbA=3D=3D?=
-x-forefront-antispam-report:
- CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM8PR04MB8037.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(1800799015)(376005)(366007)(38070700009);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0:
- =?us-ascii?Q?+99dtpuJL4XoE8G7E9sg00dIPKcNPcW8xhKlUbK7fnH3i1MVWRty+NklgBjE?=
- =?us-ascii?Q?FzMbPCHCJa1Ueju6oml45A5349BsaVdqZB1ubYW/a46s6eVZX4HzI+RQL67O?=
- =?us-ascii?Q?K/DftdCI9eqkOcaUcYzsfzGfsWg6Z9ZsbHEtVscQYqYjGQHR1TKXkBhRvnzL?=
- =?us-ascii?Q?76kurKAOb2NxW1whbvOKwAQYnuDJRWlchGqjniVCAcYbVc3QPsfQ7nlEZKBs?=
- =?us-ascii?Q?91Kkb7HFaSIGDje5LxiZdef7Mg/VQHbZSp1sNcoVZEqtxXqGnjvG1EX06aFu?=
- =?us-ascii?Q?juaGgk24AOF8HYsgvPi588HnxZDFe4ldwMV/6HZXjRySv7BQlYC44BBdovUw?=
- =?us-ascii?Q?uEGrNfeBHCsrKDz6hLkHhvUouN3dTiDM5KcjKMmknqonhPNVgg4ei8SAq/0s?=
- =?us-ascii?Q?3WVEfveQly+2P1tWzxEBR+lht3RTiEYSkpd2N/3htc1gGdu/OouLRrbE3v+c?=
- =?us-ascii?Q?FUca6w7IusU3Ihi1K/v8ff50k6pFT0PPniQSt5VognHYagdZcTqz4pWk+csP?=
- =?us-ascii?Q?yRwt0w3SHIGJTe8a7crNoiywv/MzeqXRC97oSen9V0YbaQIuhbyBWVxbeNOg?=
- =?us-ascii?Q?/WddYC64gQeB7et8N1GhZF7TeikPsubL5ppUk6h5hwGagFjsY3/TzwfGdSW6?=
- =?us-ascii?Q?aHyNWIYuMeIQl3DEZCb1IzR5lZa1ZdZzF2b3sG/m9C+yDWsw7WsFm97HQPea?=
- =?us-ascii?Q?HSRwbFwGy0HL1+JTRcQ+XCwrFEjTJQW/jTHKGtH4MEs4p9C5z0O12jjAH4po?=
- =?us-ascii?Q?AeTI52uPMweo3D+AFxH4eSaiNlKw81kN3xgyaI9ZMzVuYLT0BuRRmUEyLltt?=
- =?us-ascii?Q?0vELEzYNYjurUBIZTC6ijWJsYBoTCKboEeuc+oAWEdqWrjFzy0RSI2SRjJQu?=
- =?us-ascii?Q?qTrN0c3pbEKkgIeE9GaIL3LgXBmRgJISO1S+ji2Rvdh8ihOmY/sUIsAFr0B9?=
- =?us-ascii?Q?6JrWno/CRhptRHUsnmXhMOlSnFf5qVjB8odY8a3VpiUHBzU5iPXAdpdRDOof?=
- =?us-ascii?Q?ApDR5I0YUMzUPuZTLIiGeplxRKFHzxdbvjqyQvY3IoaCbh6eyClNvTeTJPc0?=
- =?us-ascii?Q?NlkVEteFyhcG/JJS3ONX7JgAX7JQtc/8ZQMh50aaggK6HVQWPmB+3wgmY5WQ?=
- =?us-ascii?Q?WazhohN2Eovjz2ZDZ6s7wwqt7jkGz+Q1sW+I/SjMjwYio2xuuxV3Y+DBBIVW?=
- =?us-ascii?Q?k1xyqoaj2NZhFFtezi5JpDNRiR5pgTtQZEfD2O7QJsH50g+AjNSy/wBdPd+0?=
- =?us-ascii?Q?hLdktCSS9zKq8zwwAoogl0g/P+uon7+3wL/h5NXSCtHZwzxF7hH4jtO53JiD?=
- =?us-ascii?Q?Jzi0akBEQFQ26jW6kX8fpU2tF03D+Qiep4t/QQHje4JNAN0nJ0ub4nxx4wHR?=
- =?us-ascii?Q?Ml4pK8PICWhCplP9X7aqgNN6wY8zs/dIkW/C/rU9I1fMMnBmpjvk9P7Ue7u7?=
- =?us-ascii?Q?xnFwRngNxG+hpKR5eKbaXb++wxCMHwpNnVmYl+kg/b8kgE+ehdCZfin3s1y8?=
- =?us-ascii?Q?2nJp53JdV1HYftUJ5OiDvY2kN0DIYg00ZuuiyPMtM5dwoXiP23juWWRY9MV4?=
- =?us-ascii?Q?08VLx2TQUmeVe4Xn+iGES/TPOvm5AIn/NgNe3WjHJKuDqJokpO3eR/dDBt0j?=
- =?us-ascii?Q?45QtA5MOEMC6SYeReJShSJM=3D?=
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <74F83967F3ABDD4594AA4F4CCC7B7DB3@namprd04.prod.outlook.com>
-Content-Transfer-Encoding: quoted-printable
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6E1601422B2;
+	Tue,  4 Jun 2024 08:10:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1717488604; cv=none; b=tZJoDAtLA/GR+ITxZa/edfoZKbbA4vDri+gqoT/+psrOsNj8uglDBWQ5r0pDs1HFgbDAde110GsZxS9yh8DUSXBWO4YdMI4Le2xQSoAYLOSRncGmwD78v5XoJIORiiJVDAOLT4CAIyF8XPRtWRSG3dYYa/SEClpQFuFBK9M/a4k=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1717488604; c=relaxed/simple;
+	bh=0Cf0CyzkCzo4+hwTBl+a4NoUWxaLyIjWgwlG7ygjWgI=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Bb+E7IrVh4Ns5W3awj0hIsyXCSfcO9bY5J8zOsygwJ6nCztNb8094YPRpPCk55zyg54A0T2t4JIpyD5OJWYQd0p3cp9RpDGQvHYZpboQCQGfcBBDAnWQYWtnfvwYD2pVWv1/Qkq3rhIoNSpr+n+B0JSJ65DAIS4TzdxsJkPBRnw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=tnnbzbqo; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 64F2DC4AF07;
+	Tue,  4 Jun 2024 08:10:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1717488604;
+	bh=0Cf0CyzkCzo4+hwTBl+a4NoUWxaLyIjWgwlG7ygjWgI=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=tnnbzbqo+xubxtkdswPid2Z9Tk81ICVLIZ7XKLuA0Iv3mYvbKEJ0wIpJUu9kyp/O0
+	 ZP7eV4+/hD3WubWEcoFgdM0FYFS9LwNDpaKneAX1n8fOHLG4Hv1E4iQjcXjcmrBKMm
+	 27VSy2+pBKrbRg5pGM7P3KxLkEpyfWheJ3vP/SRuVKt7gI+ZNWgHX2HpGT2+JvkQTQ
+	 HVPhZBomTODLCemy9c+WFuIbdjIfcSyiZdrl08gp16DZ8WtbD8hfRs6ehtwOkeAlMJ
+	 2FSEGA7OuocO5fS2d5a2nD9Q8/s0NkdnuyG2HnzKZ7mfjBYO/QHL4LERG4kzxksprm
+	 NC2BS36cY+VSw==
+Date: Tue, 4 Jun 2024 11:09:58 +0300
+From: Leon Romanovsky <leon@kernel.org>
+To: Tejun Heo <tj@kernel.org>, Peter Zijlstra <peterz@infradead.org>
+Cc: Lai Jiangshan <jiangshanlai@gmail.com>,
+	Zqiang <qiang.zhang1211@gmail.com>, linux-kernel@vger.kernel.org,
+	Gal Pressman <gal@nvidia.com>, Tariq Toukan <tariqt@nvidia.com>,
+	RDMA mailing list <linux-rdma@vger.kernel.org>
+Subject: Re: [PATCH -rc] workqueue: Reimplement UAF fix to avoid lockdep
+ worning
+Message-ID: <20240604080958.GL3884@unreal>
+References: <4c4f1fb769a609a61010cb6d884ab2841ef716d3.1716885172.git.leon@kernel.org>
+ <ZljyqODpCD0_5-YD@slm.duckdns.org>
+ <20240531034851.GF3884@unreal>
+ <Zl4jPImmEeRuYQjz@slm.duckdns.org>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0:
-	QqsFo/VRZM3aZhFW1/mW7k7Nm8OIcMrmIEqqbNxgdoxwBo4HUr7yENe6rCNLVMX3EUG30IVcOpBanHTOpjJ44jOi0cvNToOu2Kdd20spuEn6x2CFA0z9DSyVM/1qYdinNl1UEeKlZ/aei7KNQY0vHeHOCsNfh0yTHJjnH1l3a6E2KOAtn8UIMtTEnRXFECryf0+5G93IEV8MJdgcl4LFjEz9hhvmp4vDvLO3dLyfnKCB/TEBnJFmuAembXGI9VZqt6NNOQQw+qZBkFPWIu/p9+hNhLRvl32ixe4Rpnpyq0sV1mm0pyS1tgeerp3ivZqLy+8LTH3Q+bNnyB1DATjNS4/R7l7UKhm40WgkZ3vpjV5TAj0+1xKaA9/bjVRnSV9c0Enf0QnmBy/hRqQwIa5roByYIS3ygVkCZgjxed7eCLHNVSAuEz+bu0jwSvfkLLNplh+GR1TDlH5UmpcNpojRtaRCecffntN5ZkGZVIjFN3t1FmoYNu8oB+Nyc+Jvro/K/IXo5QNJa+RYJEewMrZaP27h/Thr/NlU3hAM3lHIIOKVUDJVfWzyWrj1CLuyMt3eCOJzCG7uNSIMIKrnQyA5aSxdrIOyogY9FM6W1z+PGTArB2xv/AW4qD8VUTGnU9wk
-X-OriginatorOrg: wdc.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: DM8PR04MB8037.namprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 647284d6-d58f-4634-83d1-08dc846780d0
-X-MS-Exchange-CrossTenant-originalarrivaltime: 04 Jun 2024 07:25:25.7235
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: mMMNccx+/O3LSFJfKTlZl0I6D5fiamIvukhk2SUrRomdvtZMHFJRJ3qlj9swjBHj1/CW3+JUwcbaOo3pgEsBlFtdb4x7uSfkMOvkUls25FY=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS0PR04MB9440
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <Zl4jPImmEeRuYQjz@slm.duckdns.org>
 
-As I noted in another thread [1], KASAN slab-use-after-free is observed whe=
-n
-I repeat the blktests test case srp/002 with the siw driver [2]. The kernel
-version was v6.10-rc2. The failure is recreated in stable manner when the t=
-est
-case is repeated around 30 times. It was not observed with the rxe driver.
+On Mon, Jun 03, 2024 at 10:10:36AM -1000, Tejun Heo wrote:
+> Hello, again, Leon.
+> 
+> Re-reading the warning, I'm not sure this is a bug on workqueue side.
+> 
+> On Fri, May 31, 2024 at 06:48:51AM +0300, Leon Romanovsky wrote:
+> >  [ 1233.554381] ==================================================================
+> >  [ 1233.555215] BUG: KASAN: slab-use-after-free in lockdep_register_key+0x707/0x810
+> >  [ 1233.555983] Read of size 8 at addr ffff88811f1d8928 by task test-ovs-bond-m/10149
+> >  [ 1233.556774] 
+> >  [ 1233.557020] CPU: 0 PID: 10149 Comm: test-ovs-bond-m Not tainted 6.10.0-rc1_external_1613e604df0c #1
+> >  [ 1233.557951] Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS rel-1.13.0-0-gf21b5a4aeb02-prebuilt.qemu.org 04/01/2014
+> >  [ 1233.559044] Call Trace:
+> >  [ 1233.559367]  <TASK>
+> >  [ 1233.559653]  dump_stack_lvl+0x7e/0xc0
+> >  [ 1233.560078]  print_report+0xc1/0x600
+> >  [ 1233.561975]  kasan_report+0xb9/0xf0
+> >  [ 1233.562872]  lockdep_register_key+0x707/0x810
+> >  [ 1233.564799]  alloc_workqueue+0x466/0x1800
+> >  [ 1233.567627]  mlx5_pagealloc_init+0x7d/0x180 [mlx5_core]
+> >  [ 1233.568322]  mlx5_mdev_init+0x482/0xad0 [mlx5_core]
+> >  [ 1233.569387]  probe_one+0x11d/0xc80 [mlx5_core]
+> 
+> So, this is saying that alloc_workqueue() allocated a name during lockdep
+> initialization. This is before pwq init or anything else complicated
+> happening. It just allocated the workqueue struct and called into
+> lockep_register_key(&wq->key).
+> 
+> >  [ 1233.599979] Allocated by task 9589:
+> >  [ 1233.600382]  kasan_save_stack+0x20/0x40
+> >  [ 1233.600828]  kasan_save_track+0x10/0x30
+> >  [ 1233.601265]  __kasan_kmalloc+0x77/0x90
+> >  [ 1233.601696]  kernfs_iop_get_link+0x61/0x5a0
+> >  [ 1233.602181]  vfs_readlink+0x1ab/0x320
+> >  [ 1233.602605]  do_readlinkat+0x1cb/0x290
+> >  [ 1233.602610]  __x64_sys_readlinkat+0x92/0xf0
+> >  [ 1233.602612]  do_syscall_64+0x6d/0x140
+> >  [ 1233.605196]  entry_SYSCALL_64_after_hwframe+0x4b/0x53
+> >  [ 1233.605731] 
+> >  [ 1233.605986] Freed by task 9589:
+> >  [ 1233.606373]  kasan_save_stack+0x20/0x40
+> >  [ 1233.606801]  kasan_save_track+0x10/0x30
+> >  [ 1233.607232]  kasan_save_free_info+0x37/0x50
+> >  [ 1233.607695]  poison_slab_object+0x10c/0x190
+> >  [ 1233.608161]  __kasan_slab_free+0x11/0x30
+> >  [ 1233.608604]  kfree+0x11b/0x340
+> >  [ 1233.608970]  vfs_readlink+0x120/0x320
+> >  [ 1233.609413]  do_readlinkat+0x1cb/0x290
+> >  [ 1233.609849]  __x64_sys_readlinkat+0x92/0xf0
+> >  [ 1233.610308]  do_syscall_64+0x6d/0x140
+> >  [ 1233.610741]  entry_SYSCALL_64_after_hwframe+0x4b/0x53
+> 
+> And KASAN is reporting use-after-free on a completely unrelated VFS object.
+> I can't tell for sure from the logs alone but lockdep_register_key()
+> iterates entries in the hashtable trying to find whether the key is a
+> duplicate and it could be that that walk is triggering the use-after-free
+> warning. If so, it doesn't really have much to do with workqueue. The
+> corruption happened elsewhere and workqueue just happens to traverse the
+> hashtable afterwards.
 
-I think this failure is same as that I reported in Jun/2023 [3]. The Call T=
-race
-reported is quite similar. Also, I confirmed that the trial fix patch that =
-I
-created in Jun/2023 avoided the KASAN failure at srp/002.
+The problem is that revert of commit 643445531829 ("workqueue: Fix UAF report by KASAN in pwq_release_workfn()")
+fixed these use-after-free reports. In addition, we didn't get any other failures (related to memory corruption)
+except these lockdeps reports.
 
-In Jun/2023, the KASAN failure was observed with the test cases nvme/030 an=
-d
-nvme/031. But the symptom disappeared in Sep/2023 [4]. I guess the failure =
-has
-got observable again with srp/002.
+Tariq showed me another lockdep report. I don't think that it is
+related, but adding here to make sure.
 
-As for the root cause, it was advised that "There is something wrong with t=
-he
-iwarp cm if it is destroying IDs in handlers" [5]. Actions for fix will be
-appreciated. I'm willing to test fix patches.
+Also let's add Peter to this report, maybe he can guide us to find the root cause.
+➜  kernel git:(rdma-next) ./scripts/faddr2line vmlinux lockdep_register_key+0x8f
+lockdep_register_key+0x8f/0x800:
+lockdep_lock at kernel/locking/lockdep.c:141
+(inlined by) graph_lock at kernel/locking/lockdep.c:170
+(inlined by) lockdep_register_key at kernel/locking/lockdep.c:1223
 
-[1] https://lore.kernel.org/linux-block/n2adhqzr6x5fss6jff7pxhubkkalvxeyesm=
-g7jre4uomfcdudb@dwn3wgkqhmj7/
+ [ 1078.101755] ====================================================================================================
+ [ 1078.584085] mlx5_core 0000:08:00.0: firmware version: 16.35.1012
+ [ 1078.585182] mlx5_core 0000:08:00.0: 126.016 Gb/s available PCIe bandwidth, limited by 8.0 GT/s PCIe x16 link at 0000:00:02.7 (capable of 252.048 Gb/s with 16.0 GT/s PCIe x16 link)
+ [ 1079.013341] mlx5_core 0000:08:00.0: Rate limit: 127 rates are supported, range: 0Mbps to 97656Mbps
+ [ 1079.015912] mlx5_core 0000:08:00.0: E-Switch: Total vports 6, per vport: max uc(128) max mc(2048)
+ [ 1079.048423] mlx5_core 0000:08:00.0: Port module event: module 0, Cable plugged
+ [ 1079.053400] mlx5_core 0000:08:00.0: mlx5_pcie_event:301:(pid 10308): PCIe slot advertised sufficient power (75W).
+ [ 1079.283669] mlx5_core 0000:08:00.0: MLX5E: StrdRq(1) RqSz(8) StrdSz(2048) RxCqeCmprss(0 basic)
+ [ 1079.288969] BUG: unable to handle page fault for address: 000000330000000a
+ [ 1079.290036] #PF: supervisor read access in kernel mode
+ [ 1079.290902] #PF: error_code(0x0000) - not-present page
+ [ 1079.292016] PGD 0 P4D 0
+ [ 1079.292808] Oops: Oops: 0000 [#1] SMP
+ [ 1079.293561] CPU: 8 PID: 31777 Comm: modprobe Not tainted 6.10.0-rc2_internal_net_next_60d8b51 #1
+ [ 1079.295087] Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS rel-1.13.0-0-gf21b5a4aeb02-prebuilt.qemu.org 04/01/2014
+ [ 1079.296804] RIP: 0010:lockdep_register_key+0x8f/0x220
+ [ 1079.297600] Code: bf 31 fa 01 65 4c 8b 25 7f 56 e5 7e 45 85 c0 4c 89 25 3d 33 e0 03 74 25 48 8b 04 ed 00 37 e2 84 48 85 c0 75 11 e9 c2 00 00 00 <48> 8b 00 48 85 c0 0f 84 b6 00 00 00 48 39 d8 75 ef 0f 0b 8b 3d a0
+ [ 1079.300226] RSP: 0018:ffff888108e97a80 EFLAGS: 00010003
+ [ 1079.301034] RAX: 000000330000000a RBX: ffff8881095c6278 RCX: 000000000000000a
+ [ 1079.302076] RDX: 0000000000000001 RSI: 000000000000000a RDI: ffffffff826a4700
+ [ 1079.303148] RBP: 00000000000001ae R08: 0000000000000001 R09: 0000000000000000
+ [ 1079.304215] R10: 0000000000000000 R11: 0000000000000001 R12: ffff888122ff8000
+ [ 1079.305281] R13: 0000000000000202 R14: ffffffff84e24470 R15: ffffffff84ffdf18
+ [ 1079.306338] FS:  00007fb8b7277740(0000) GS:ffff88852cc00000(0000) knlGS:0000000000000000
+ [ 1079.307593] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+ [ 1079.308482] CR2: 000000330000000a CR3: 00000001167d7004 CR4: 0000000000370eb0
+ [ 1079.309540] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+ [ 1079.310628] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+ [ 1079.311713] Call Trace:
+ [ 1079.312195]  <TASK>
+ [ 1079.312623]  ? __die+0x20/0x60
+ [ 1079.313178]  ? page_fault_oops+0x150/0x400
+ [ 1079.313852]  ? exc_page_fault+0x79/0x240
+ [ 1079.314522]  ? asm_exc_page_fault+0x22/0x30
+ [ 1079.315213]  ? lockdep_register_key+0x8f/0x220
+ [ 1079.315963]  devlink_alloc_ns+0x306/0x390
+ [ 1079.316623]  probe_one+0x24/0x4e0 [mlx5_core]
+ [ 1079.317432]  local_pci_probe+0x3e/0x90
+ [ 1079.318071]  pci_device_probe+0xbf/0x240
+ [ 1079.318735]  ? sysfs_do_create_link_sd+0x69/0xd0
+ [ 1079.319491]  really_probe+0xd4/0x3b0
+ [ 1079.320104]  __driver_probe_device+0x8c/0x160
+ [ 1079.320811]  driver_probe_device+0x1e/0xb0
+ [ 1079.321488]  __driver_attach+0xff/0x1e0
+ [ 1079.322128]  ? __device_attach_driver+0x130/0x130
+ [ 1079.322886]  bus_for_each_dev+0x74/0xc0
+ [ 1079.323555]  bus_add_driver+0xf0/0x250
+ [ 1079.324188]  driver_register+0x58/0x100
+ [ 1079.324837]  ? 0xffffffffa0242000
+ [ 1079.325420]  mlx5_init+0x65/0x1000 [mlx5_core]
+ [ 1079.326226]  do_one_initcall+0x61/0x2b0
+ [ 1079.326887]  ? kmalloc_trace_noprof+0x1a9/0x400
+ [ 1079.327647]  do_init_module+0x8a/0x270
+ [ 1079.328293]  init_module_from_file+0x8b/0xd0
+ [ 1079.328999]  idempotent_init_module+0x17d/0x230
+ [ 1079.329735]  __x64_sys_finit_module+0x61/0xb0
+ [ 1079.330459]  do_syscall_64+0x6d/0x140
+ [ 1079.331084]  entry_SYSCALL_64_after_hwframe+0x4b/0x53
+ [ 1079.331900] RIP: 0033:0x7fb8b6b0af3d
+ [ 1079.332507] Code: 5b 41 5c c3 66 0f 1f 84 00 00 00 00 00 f3 0f 1e fa 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 8b 0d bb ee 0e 00 f7 d8 64 89 01 48
+ [ 1079.335157] RSP: 002b:00007ffe04497818 EFLAGS: 00000246 ORIG_RAX: 0000000000000139
+ [ 1079.336362] RAX: ffffffffffffffda RBX: 000055b05c326c10 RCX: 00007fb8b6b0af3d
+ [ 1079.337407] RDX: 0000000000000000 RSI: 000055b049840a2a RDI: 0000000000000003
+ [ 1079.338466] RBP: 0000000000040000 R08: 0000000000000000 R09: 00007ffe04497950
+ [ 1079.339533] R10: 0000000000000003 R11: 0000000000000246 R12: 000055b049840a2a
+ [ 1079.340581] R13: 000055b05c326d80 R14: 000055b05c326c10 R15: 000055b05c329600
+ [ 1079.341634]  </TASK>
+ [ 1079.342076] Modules linked in: mlx5_core(+) ip6_tunnel tunnel6 nf_tables vfio_pci vfio_pci_core act_tunnel_key vxlan act_mirred act_skbedit cls_matchall act_gact cls_flower sch_ingress nfnetlink_cttimeout vfio_iommu_type1 vfio iptable_raw openvswitch nsh xt_conntrack xt_MASQUERADE nf_conntrack_netlink nfnetlink xt_addrtype iptable_nat nf_nat br_netfilter rpcsec_gss_krb5 auth_rpcgss oid_registry overlay rpcrdma ib_iser libiscsi scsi_transport_iscsi rdma_cm iw_cm ib_cm ib_core zram zsmalloc fuse [last unloaded: nf_tables]
+ [ 1079.352250] CR2: 000000330000000a
+ [ 1079.352838] ---[ end trace 0000000000000000 ]---
+ [ 1079.353575] RIP: 0010:lockdep_register_key+0x8f/0x220
+ [ 1079.354380] Code: bf 31 fa 01 65 4c 8b 25 7f 56 e5 7e 45 85 c0 4c 89 25 3d 33 e0 03 74 25 48 8b 04 ed 00 37 e2 84 48 85 c0 75 11 e9 c2 00 00 00 <48> 8b 00 48 85 c0 0f 84 b6 00 00 00 48 39 d8 75 ef 0f 0b 8b 3d a0
+ [ 1079.357025] RSP: 0018:ffff888108e97a80 EFLAGS: 00010003
+ [ 1079.357832] RAX: 000000330000000a RBX: ffff8881095c6278 RCX: 000000000000000a
+ [ 1079.358899] RDX: 0000000000000001 RSI: 000000000000000a RDI: ffffffff826a4700
+ [ 1079.359967] RBP: 00000000000001ae R08: 0000000000000001 R09: 0000000000000000
+ [ 1079.361005] R10: 0000000000000000 R11: 0000000000000001 R12: ffff888122ff8000
+ [ 1079.362044] R13: 0000000000000202 R14: ffffffff84e24470 R15: ffffffff84ffdf18
+ [ 1079.363090] FS:  00007fb8b7277740(0000) GS:ffff88852cc00000(0000) knlGS:0000000000000000
+ [ 1079.364347] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+ [ 1079.365217] CR2: 000000330000000a CR3: 00000001167d7004 CR4: 0000000000370eb0
+ [ 1079.366259] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+ [ 1079.367304] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+ [ 1079.368353] note: modprobe[31777] exited with irqs disabled
+ [ 1080.829334] ------------[ cut here ]------------
+ [ 1080.830879] WARNING: CPU: 8 PID: 31850 at kernel/locking/lockdep.c:467 lockdep_set_lock_cmp_fn+0x7e/0xa0
+ [ 1080.833713] Modules linked in: mlx5_core(+) ip6_tunnel tunnel6 nf_tables vfio_pci vfio_pci_core act_tunnel_key vxlan act_mirred act_skbedit cls_matchall act_gact cls_flower sch_ingress nfnetlink_cttimeout vfio_iommu_type1 vfio iptable_raw openvswitch nsh xt_conntrack xt_MASQUERADE nf_conntrack_netlink nfnetlink xt_addrtype iptable_nat nf_nat br_netfilter rpcsec_gss_krb5 auth_rpcgss oid_registry overlay rpcrdma ib_iser libiscsi scsi_transport_iscsi rdma_cm iw_cm ib_cm ib_core zram zsmalloc fuse [last unloaded: nf_tables]
+ [ 1080.842428] CPU: 8 PID: 31850 Comm: bash Tainted: G      D            6.10.0-rc2_internal_net_next_60d8b51 #1
+ [ 1080.843911] Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS rel-1.13.0-0-gf21b5a4aeb02-prebuilt.qemu.org 04/01/2014
+ [ 1080.845516] RIP: 0010:lockdep_set_lock_cmp_fn+0x7e/0xa0
+ [ 1080.846331] Code: f8 01 75 26 9c 58 f6 c4 02 75 2e 41 f7 c4 00 02 00 00 74 01 fb 5b 5d 41 5c c3 31 d2 31 f6 e8 49 f8 ff ff 48 85 c0 74 ca eb a0 <0f> 0b 65 c7 05 0d ce e3 7e 00 00 00 00 eb cb e8 6e b7 c9 00 eb cb
+ [ 1080.848956] RSP: 0018:ffff8881c8f5fe68 EFLAGS: 00010002
+ [ 1080.849774] RAX: 0000000000000002 RBX: ffffffff81467940 RCX: 0000000000000000
+ [ 1080.850839] RDX: 0000000000000000 RSI: 0000000000000000 RDI: ffff888101959068
+ [ 1080.851911] RBP: 0000000000000000 R08: 0000000000000003 R09: 0000000000000000
+ [ 1080.852962] R10: ffff8881c8f5fe88 R11: 0000000000000000 R12: 0000000000000246
+ [ 1080.854017] R13: 0000000000000360 R14: 0000000000000000 R15: 0000000000000000
+ [ 1080.855077] FS:  00007f2434925740(0000) GS:ffff88852cc00000(0000) knlGS:0000000000000000
+ [ 1080.856344] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+ [ 1080.857222] CR2: 0000559940a36088 CR3: 00000001ba6a0004 CR4: 0000000000370eb0
+ [ 1080.858273] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+ [ 1080.859329] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+ [ 1080.860389] Call Trace:
+ [ 1080.860860]  <TASK>
+ [ 1080.861293]  ? __warn+0x88/0x190
+ [ 1080.861867]  ? lockdep_set_lock_cmp_fn+0x7e/0xa0
+ [ 1080.862631]  ? report_bug+0x160/0x170
+ [ 1080.863260]  ? handle_bug+0x3c/0x60
+ [ 1080.863874]  ? exc_invalid_op+0x14/0x70
+ [ 1080.864512]  ? asm_exc_invalid_op+0x16/0x20
+ [ 1080.865201]  ? begin_new_exec+0xd30/0xd30
+ [ 1080.865867]  ? lockdep_set_lock_cmp_fn+0x7e/0xa0
+ [ 1080.866609]  ? lockdep_set_lock_cmp_fn+0x77/0xa0
+ [ 1080.867354]  alloc_pipe_info+0x17a/0x240
+ [ 1080.868015]  create_pipe_files+0x40/0x220
+ [ 1080.868680]  do_pipe2+0x3a/0xf0
+ [ 1080.869248]  ? trace_hardirqs_on_prepare+0x3f/0xb0
+ [ 1080.870022]  __x64_sys_pipe+0x10/0x20
+ [ 1080.870661]  do_syscall_64+0x6d/0x140
+ [ 1080.871285]  entry_SYSCALL_64_after_hwframe+0x4b/0x53
+ [ 1080.872103] RIP: 0033:0x7f24347020ab
+ [ 1080.872723] Code: 73 01 c3 48 8b 0d 7d 7d 0f 00 f7 d8 64 89 01 48 83 c8 ff c3 66 2e 0f 1f 84 00 00 00 00 00 90 f3 0f 1e fa b8 16 00 00 00 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 8b 0d 4d 7d 0f 00 f7 d8 64 89 01 48
+ [ 1080.875408] RSP: 002b:00007ffdcba2e4e8 EFLAGS: 00000246 ORIG_RAX: 0000000000000016
+ [ 1080.876594] RAX: ffffffffffffffda RBX: 00007ffdcba2ea5c RCX: 00007f24347020ab
+ [ 1080.877649] RDX: 0000559c1936fbaf RSI: 0000559940a19010 RDI: 00007ffdcba2e5c0
+ [ 1080.878710] RBP: 0000559940a35a90 R08: 0000559940a2f0d0 R09: 00746f6f723d5245
+ [ 1080.879772] R10: 0000000000000048 R11: 0000000000000246 R12: 0000000000000001
+ [ 1080.880812] R13: 0000559940a35bc0 R14: 0000000000000000 R15: 0000000000000022
+ [ 1080.881859]  </TASK>
+ [ 1080.882299] irq event stamp: 0
+ [ 1080.882859] hardirqs last  enabled at (0): [<0000000000000000>] 0x0
+ [ 1080.883818] hardirqs last disabled at (0): [<ffffffff81174b38>] copy_process+0x928/0x2a80
+ [ 1080.885058] softirqs last  enabled at (0): [<ffffffff81174b38>] copy_process+0x928/0x2a80
+ [ 1080.886325] softirqs last disabled at (0): [<0000000000000000>] 0x0
+ [ 1080.887273] ---[ end trace 0000000000000000 ]---
+ [ 1083.381768] ====================================================================================================
 
-[2]
+Thanks
 
-Jun 04 09:23:11 testnode2 kernel: ib_srpt receiving failed for ioctx 000000=
-006d1c31fe with status 5
-Jun 04 09:23:11 testnode2 kernel: ib_srpt receiving failed for ioctx 000000=
-00916ce050 with status 5
-Jun 04 09:23:11 testnode2 kernel: =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D
-Jun 04 09:23:11 testnode2 kernel: ib_srpt receiving failed for ioctx 000000=
-001770ef1b with status 5
-Jun 04 09:23:11 testnode2 kernel: BUG: KASAN: slab-use-after-free in __mute=
-x_lock+0x1110/0x13c0
-Jun 04 09:23:11 testnode2 kernel: Read of size 8 at addr ffff888131a3e418 b=
-y task kworker/u16:6/1345
-Jun 04 09:23:11 testnode2 kernel:=20
-Jun 04 09:23:11 testnode2 kernel: CPU: 1 PID: 1345 Comm: kworker/u16:6 Not =
-tainted 6.10.0-rc2+ #288
-Jun 04 09:23:11 testnode2 kernel: Hardware name: QEMU Standard PC (i440FX +=
- PIIX, 1996), BIOS 1.16.3-2.fc40 04/01/2014
-Jun 04 09:23:11 testnode2 kernel: Workqueue: iw_cm_wq cm_work_handler [iw_c=
-m]
-Jun 04 09:23:11 testnode2 kernel: Call Trace:
-Jun 04 09:23:11 testnode2 kernel:  <TASK>
-Jun 04 09:23:11 testnode2 kernel:  dump_stack_lvl+0x6a/0x90
-Jun 04 09:23:11 testnode2 kernel: ib_srpt receiving failed for ioctx 000000=
-00f727e5c2 with status 5
-Jun 04 09:23:11 testnode2 kernel:  ? __mutex_lock+0x1110/0x13c0
-Jun 04 09:23:11 testnode2 kernel:  print_report+0x174/0x505
-Jun 04 09:23:11 testnode2 kernel:  ? __mutex_lock+0x1110/0x13c0
-Jun 04 09:23:11 testnode2 kernel:  ? __virt_addr_valid+0x1b9/0x400
-Jun 04 09:23:11 testnode2 kernel:  ? __mutex_lock+0x1110/0x13c0
-Jun 04 09:23:11 testnode2 kernel:  kasan_report+0xa7/0x180
-Jun 04 09:23:11 testnode2 kernel:  ? __mutex_lock+0x1110/0x13c0
-Jun 04 09:23:11 testnode2 kernel:  __mutex_lock+0x1110/0x13c0
-Jun 04 09:23:11 testnode2 kernel:  ? cma_iw_handler+0xac/0x500 [rdma_cm]
-Jun 04 09:23:11 testnode2 kernel:  ? __lock_acquire+0x139d/0x5d60
-Jun 04 09:23:11 testnode2 kernel:  ? __pfx___mutex_lock+0x10/0x10
-Jun 04 09:23:11 testnode2 kernel:  ? mark_lock+0xf5/0x1580
-Jun 04 09:23:11 testnode2 kernel:  ? __pfx_mark_lock+0x10/0x10
-Jun 04 09:23:11 testnode2 kernel: ib_srpt receiving failed for ioctx 000000=
-009bc71497 with status 5
-Jun 04 09:23:11 testnode2 kernel:  ? cma_iw_handler+0xac/0x500 [rdma_cm]
-Jun 04 09:23:11 testnode2 kernel: ib_srpt receiving failed for ioctx 000000=
-0041c0fa4b with status 5
-Jun 04 09:23:11 testnode2 kernel:  cma_iw_handler+0xac/0x500 [rdma_cm]
-Jun 04 09:23:11 testnode2 kernel:  ? __pfx_cma_iw_handler+0x10/0x10 [rdma_c=
-m]
-Jun 04 09:23:11 testnode2 kernel:  ? mark_held_locks+0x94/0xe0
-Jun 04 09:23:11 testnode2 kernel:  ? _raw_spin_unlock_irqrestore+0x4c/0x60
-Jun 04 09:23:11 testnode2 kernel:  cm_work_handler+0xb54/0x1c50 [iw_cm]
-Jun 04 09:23:11 testnode2 kernel:  ? __pfx_cm_work_handler+0x10/0x10 [iw_cm=
-]
-Jun 04 09:23:11 testnode2 kernel:  ? __pfx_lock_release+0x10/0x10
-Jun 04 09:23:11 testnode2 kernel: ib_srpt receiving failed for ioctx 000000=
-00f48094cb with status 5
-Jun 04 09:23:11 testnode2 kernel:  process_one_work+0x865/0x1410
-Jun 04 09:23:11 testnode2 kernel: ib_srpt receiving failed for ioctx 000000=
-001c3faa8a with status 5
-Jun 04 09:23:11 testnode2 kernel:  ? __pfx_lock_acquire+0x10/0x10
-Jun 04 09:23:11 testnode2 kernel:  ? __pfx_process_one_work+0x10/0x10
-Jun 04 09:23:11 testnode2 kernel:  ? assign_work+0x16c/0x240
-Jun 04 09:23:11 testnode2 kernel:  ? lock_is_held_type+0xd5/0x130
-Jun 04 09:23:11 testnode2 kernel:  worker_thread+0x5e2/0x1010
-Jun 04 09:23:11 testnode2 kernel:  ? __pfx_worker_thread+0x10/0x10
-Jun 04 09:23:11 testnode2 kernel:  kthread+0x2d1/0x3a0
-Jun 04 09:23:11 testnode2 kernel:  ? _raw_spin_unlock_irq+0x24/0x50
-Jun 04 09:23:11 testnode2 kernel:  ? __pfx_kthread+0x10/0x10
-Jun 04 09:23:11 testnode2 kernel:  ret_from_fork+0x30/0x70
-Jun 04 09:23:11 testnode2 kernel:  ? __pfx_kthread+0x10/0x10
-Jun 04 09:23:11 testnode2 kernel:  ret_from_fork_asm+0x1a/0x30
-Jun 04 09:23:11 testnode2 kernel:  </TASK>
-Jun 04 09:23:11 testnode2 kernel:=20
-Jun 04 09:23:11 testnode2 kernel: Allocated by task 75327:
-Jun 04 09:23:11 testnode2 kernel:  kasan_save_stack+0x2c/0x50
-Jun 04 09:23:11 testnode2 kernel: ib_srpt receiving failed for ioctx 000000=
-001bd9ea09 with status 5
-Jun 04 09:23:11 testnode2 kernel:  kasan_save_track+0x10/0x30
-Jun 04 09:23:11 testnode2 kernel:  __kasan_kmalloc+0xa6/0xb0
-Jun 04 09:23:11 testnode2 kernel:  __rdma_create_id+0x5b/0x5d0 [rdma_cm]
-Jun 04 09:23:11 testnode2 kernel:  __rdma_create_kernel_id+0x12/0x40 [rdma_=
-cm]
-Jun 04 09:23:11 testnode2 kernel:  srp_new_rdma_cm_id+0x7c/0x200 [ib_srp]
-Jun 04 09:23:11 testnode2 kernel:  add_target_store+0x135e/0x29f0 [ib_srp]
-Jun 04 09:23:11 testnode2 kernel: ib_srpt receiving failed for ioctx 000000=
-005afc8065 with status 5
-Jun 04 09:23:11 testnode2 kernel:  kernfs_fop_write_iter+0x3a4/0x5a0
-Jun 04 09:23:11 testnode2 kernel:  vfs_write+0x5e3/0xe70
-Jun 04 09:23:11 testnode2 kernel:  ksys_write+0xf7/0x1d0
-Jun 04 09:23:11 testnode2 kernel:  do_syscall_64+0x93/0x180
-Jun 04 09:23:11 testnode2 kernel:  entry_SYSCALL_64_after_hwframe+0x76/0x7e
-Jun 04 09:23:11 testnode2 kernel:=20
-Jun 04 09:23:11 testnode2 kernel: Freed by task 66344:
-Jun 04 09:23:11 testnode2 kernel:  kasan_save_stack+0x2c/0x50
-Jun 04 09:23:11 testnode2 kernel:  kasan_save_track+0x10/0x30
-Jun 04 09:23:11 testnode2 kernel:  kasan_save_free_info+0x37/0x60
-Jun 04 09:23:11 testnode2 kernel:  poison_slab_object+0x109/0x180
-Jun 04 09:23:11 testnode2 kernel:  __kasan_slab_free+0x2e/0x50
-Jun 04 09:23:11 testnode2 kernel:  kfree+0x11a/0x390
-Jun 04 09:23:11 testnode2 kernel:  srp_free_ch_ib+0x895/0xc80 [ib_srp]
-Jun 04 09:23:11 testnode2 kernel:  srp_remove_work+0x309/0x6c0 [ib_srp]
-Jun 04 09:23:11 testnode2 kernel:  process_one_work+0x865/0x1410
-Jun 04 09:23:11 testnode2 kernel:  worker_thread+0x5e2/0x1010
-Jun 04 09:23:11 testnode2 kernel:  kthread+0x2d1/0x3a0
-Jun 04 09:23:11 testnode2 kernel:  ret_from_fork+0x30/0x70
-Jun 04 09:23:11 testnode2 kernel:  ret_from_fork_asm+0x1a/0x30
-Jun 04 09:23:11 testnode2 kernel:=20
-Jun 04 09:23:11 testnode2 kernel: The buggy address belongs to the object a=
-t ffff888131a3e000
-                                   which belongs to the cache kmalloc-2k of=
- size 2048
-Jun 04 09:23:11 testnode2 kernel: The buggy address is located 1048 bytes i=
-nside of
-                                   freed 2048-byte region [ffff888131a3e000=
-, ffff888131a3e800)
-Jun 04 09:23:11 testnode2 kernel:=20
-Jun 04 09:23:11 testnode2 kernel: The buggy address belongs to the physical=
- page:
-Jun 04 09:23:11 testnode2 kernel: page: refcount:1 mapcount:0 mapping:00000=
-00000000000 index:0xffff888131a38000 pfn:0x131a38
-Jun 04 09:23:11 testnode2 kernel: head: order:3 mapcount:0 entire_mapcount:=
-0 nr_pages_mapped:0 pincount:0
-Jun 04 09:23:11 testnode2 kernel: flags: 0x17ffffc0000240(workingset|head|n=
-ode=3D0|zone=3D2|lastcpupid=3D0x1fffff)
-Jun 04 09:23:11 testnode2 kernel: page_type: 0xffffefff(slab)
-Jun 04 09:23:11 testnode2 kernel: raw: 0017ffffc0000240 ffff888100042f00 ff=
-ffea0004c89610 ffffea0004a3c010
-Jun 04 09:23:11 testnode2 kernel: raw: ffff888131a38000 0000000000080006 00=
-000001ffffefff 0000000000000000
-Jun 04 09:23:11 testnode2 kernel: head: 0017ffffc0000240 ffff888100042f00 f=
-fffea0004c89610 ffffea0004a3c010
-Jun 04 09:23:11 testnode2 kernel: head: ffff888131a38000 0000000000080006 0=
-0000001ffffefff 0000000000000000
-Jun 04 09:23:11 testnode2 kernel: head: 0017ffffc0000003 ffffea0004c68e01 f=
-fffffffffffffff 0000000000000000
-Jun 04 09:23:11 testnode2 kernel: head: 0000000000000008 0000000000000000 0=
-0000000ffffffff 0000000000000000
-Jun 04 09:23:11 testnode2 kernel: page dumped because: kasan: bad access de=
-tected
-Jun 04 09:23:11 testnode2 kernel:=20
-Jun 04 09:23:11 testnode2 kernel: Memory state around the buggy address:
-Jun 04 09:23:11 testnode2 kernel:  ffff888131a3e300: fb fb fb fb fb fb fb f=
-b fb fb fb fb fb fb fb fb
-Jun 04 09:23:11 testnode2 kernel:  ffff888131a3e380: fb fb fb fb fb fb fb f=
-b fb fb fb fb fb fb fb fb
-Jun 04 09:23:11 testnode2 kernel: >ffff888131a3e400: fb fb fb fb fb fb fb f=
-b fb fb fb fb fb fb fb fb
-Jun 04 09:23:11 testnode2 kernel:                             ^
-Jun 04 09:23:11 testnode2 kernel:  ffff888131a3e480: fb fb fb fb fb fb fb f=
-b fb fb fb fb fb fb fb fb
-Jun 04 09:23:11 testnode2 kernel:  ffff888131a3e500: fb fb fb fb fb fb fb f=
-b fb fb fb fb fb fb fb fb
-Jun 04 09:23:11 testnode2 kernel: =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D
-Jun 04 09:23:11 testnode2 kernel: Disabling lock debugging due to kernel ta=
-int
-Jun 04 09:23:11 testnode2 kernel: device-mapper: multipath: 253:2: Failing =
-path 8:80.
-Jun 04 09:23:11 testnode2 kernel: device-mapper: uevent: dm_send_uevents: s=
-kipping sending uevent for lost device
-...
-
-[3] https://lore.kernel.org/linux-rdma/20230612054237.1855292-1-shinichiro.=
-kawasaki@wdc.com/
-[4] https://lore.kernel.org/linux-rdma/g2lh3wh6e6yossw2ktqmxx2rf63m36mumqmx=
-4qbtzvxuygsr6h@gpgftgfigllv/
-[5] https://lore.kernel.org/linux-rdma/ZIn6ul5jPuxC+uIG@ziepe.ca/=
+> 
+> Thanks.
+> 
+> -- 
+> tejun
 
