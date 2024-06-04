@@ -1,126 +1,179 @@
-Return-Path: <linux-rdma+bounces-2859-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-2860-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9066E8FBCFD
-	for <lists+linux-rdma@lfdr.de>; Tue,  4 Jun 2024 22:05:12 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6CD588FBD2A
+	for <lists+linux-rdma@lfdr.de>; Tue,  4 Jun 2024 22:16:02 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4DF832855FB
-	for <lists+linux-rdma@lfdr.de>; Tue,  4 Jun 2024 20:05:11 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9C30D1C227A8
+	for <lists+linux-rdma@lfdr.de>; Tue,  4 Jun 2024 20:16:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5782514C582;
-	Tue,  4 Jun 2024 20:04:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D218513E8BF;
+	Tue,  4 Jun 2024 20:15:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="PcrQlQdx"
+	dkim=pass (2048-bit key) header.d=acm.org header.i=@acm.org header.b="sUW/OtAg"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-pf1-f174.google.com (mail-pf1-f174.google.com [209.85.210.174])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from 009.lax.mailroute.net (009.lax.mailroute.net [199.89.1.12])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BFEE514BFA8;
-	Tue,  4 Jun 2024 20:04:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A83DB83CD6
+	for <linux-rdma@vger.kernel.org>; Tue,  4 Jun 2024 20:15:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=199.89.1.12
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1717531452; cv=none; b=suuXopYSshV3EdqdNaPEPzXTUTjyiJ9irsxQLJZmvTONNWU75TmXaYjsPuz78FMdbYBVI4DzQUZmXeLjAuxStEKKJlU1JZYFjLr5bf6TcReyv+wUz5/VIE4HkW04/HmUuaduLSt4TE3WS04iDeMk/JatZSYs1e2F69IQjHHh4P0=
+	t=1717532156; cv=none; b=ODfkm/kWEQYQepOcJISMvS7rjVoDRSCOi3zkdIIsmvkck3JqjkHjiYMEm+mcJkjgl1FdRDJimQlvR2/8X1mi6iEKhonp5v2q3+VBIUeAFfP6XicUsO3Z0tO0Fv46k661+tEYYnd/XoPg0nyoSFah/rKN/qcordyXeiexMkTS/4Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1717531452; c=relaxed/simple;
-	bh=NoZ60/3I8sWKWSOxRd8whX5XG2JH2IMU+VUKv74CMn8=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Z3lkXVsrcM9o6I+3TfCb6C1jjxcaeLdknc2mb0iOJQTUnADad97RxJx3aSWw76tGq9ViOtWMpVWQMC3L9Ia8d/tMMzRM8eQlN20+STaiHYk2bNcQf1Yi9woLEnJJ6ML5aoiiw1opwIfQkkDJD2CNMRsveYSXqbobzwtBcl1P/7M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=PcrQlQdx; arc=none smtp.client-ip=209.85.210.174
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f174.google.com with SMTP id d2e1a72fcca58-702555eb23bso2898599b3a.1;
-        Tue, 04 Jun 2024 13:04:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1717531450; x=1718136250; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=D+24MUcJLTqMTxLtXfNfOk4eUSJDfkxN4hOKkJZ8yq8=;
-        b=PcrQlQdxW+q0VtepoOLrwbbTk4J2BYjEYoBprRvFo5faLHwc3DXhuaHVHjqVHeyplY
-         y5O2onI4s1eCnefAo6F6hRzKkb6RM0SUsLw8A4Sski51hKAMQHNLYRLIguDSa6wS+RXr
-         +Rpi1/RU4VeqoMSLzN9gfBkrPoE8NxZvfDCfs+fifpHDnIaVVgfoLvltfkdxYxaEY7Yz
-         AHrkUq/nr/9mw8SkbiIagzyoDsU6GM+9LG4avcNPzmCtTErJNdIysLcEC3LIwhFpFbWN
-         6CrUk5dHjt6KsPxLtUQ5bRoRkX+AzQ7qEEu8gMcicqj9wm0JbmOiLzgSi6cnVQ25KSYe
-         ojPg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1717531450; x=1718136250;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=D+24MUcJLTqMTxLtXfNfOk4eUSJDfkxN4hOKkJZ8yq8=;
-        b=LyrXA0uSzydxQ6KigYCkWRJslJi211b4C+syWafYEsIJzOr72d1UFx43fV70ykeK+h
-         rNairxPCK6BWTBJ6E0CSdMGy9pS8H+S4a39QG7pIaE+XUdirO8TBPwXm2dB/+ufp2doy
-         Tb7zbAHCLqpryFjW93RuV9FT/XU6quN5xLBRvBbE4KYfOojSXk/U3z06C+klhOWYUgQP
-         U4u35hcSOOFZsv15Sa0nKR9EyZLbvi+Q/CNh7TYtT8VlTd97+vwqXmahTHz1r3v1w+m6
-         IcbbD53ZzWDnJCv57Gf+fc9XR0sA4oLTU43GgFG++7nBEkL8Ah64mhgf1L5mkyzGi6rz
-         x5bw==
-X-Forwarded-Encrypted: i=1; AJvYcCV0G+WQ4U7IU7I6O6ifX4op6QZAYKAqkGK0YXW3hqQnkkbY+8uoxD6yQJKoOD0ruCox0Jmsj2R3BxCRYLUwHWBOlobxqjaf+qE40tuRDP/zKN3s5yu5uEJjhDUOd/J1IiRFrpRWUsjY/g==
-X-Gm-Message-State: AOJu0YwhbbdikXz+pmbEMgWLIHk4FgpdgVqdStcQ/YxO07Xeviq3Epoq
-	iRpOYlp2Nn+mFRLqSQcWMalrLdqNJWdQL4UGOJuZrOZdHPWZhkgw
-X-Google-Smtp-Source: AGHT+IELiEtMOAJZph6bIqKZ/dy/Dy80YTBB9pmkx9dxb+1OVSPKQaenfPO7D+Vdt9pTlBdXvD6LiA==
-X-Received: by 2002:a05:6a00:2e13:b0:6f8:f020:af02 with SMTP id d2e1a72fcca58-703e5a498ffmr518330b3a.34.1717531449911;
-        Tue, 04 Jun 2024 13:04:09 -0700 (PDT)
-Received: from localhost (dhcp-141-239-159-203.hawaiiantel.net. [141.239.159.203])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-70242af1288sm7408029b3a.134.2024.06.04.13.04.09
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 04 Jun 2024 13:04:09 -0700 (PDT)
-Sender: Tejun Heo <htejun@gmail.com>
-Date: Tue, 4 Jun 2024 10:04:08 -1000
-From: Tejun Heo <tj@kernel.org>
-To: Leon Romanovsky <leon@kernel.org>
-Cc: Hillf Danton <hdanton@sina.com>, Peter Zijlstra <peterz@infradead.org>,
-	Lai Jiangshan <jiangshanlai@gmail.com>,
-	Zqiang <qiang.zhang1211@gmail.com>, linux-kernel@vger.kernel.org,
-	Gal Pressman <gal@nvidia.com>, Tariq Toukan <tariqt@nvidia.com>,
-	RDMA mailing list <linux-rdma@vger.kernel.org>
-Subject: Re: [PATCH -rc] workqueue: Reimplement UAF fix to avoid lockdep
- worning
-Message-ID: <Zl9zOH2hUramwNSi@slm.duckdns.org>
-References: <4c4f1fb769a609a61010cb6d884ab2841ef716d3.1716885172.git.leon@kernel.org>
- <ZljyqODpCD0_5-YD@slm.duckdns.org>
- <20240531034851.GF3884@unreal>
- <Zl4jPImmEeRuYQjz@slm.duckdns.org>
- <20240604105456.1668-1-hdanton@sina.com>
- <20240604113834.GO3884@unreal>
- <Zl9BOaPDsQBc8hSL@slm.duckdns.org>
- <20240604185804.GT3884@unreal>
+	s=arc-20240116; t=1717532156; c=relaxed/simple;
+	bh=As2GM26ltn9/ek8pg/99VnQ6oy6MDY21xD2Sp9hdv/g=;
+	h=Message-ID:Date:MIME-Version:From:Subject:To:References:
+	 In-Reply-To:Content-Type; b=FirdqPAiIlIU55PjqriB1NcOycqGtl3n9o6K80uiD2Bw8zU/DC/RjcO7fb/BFUOuwr0/i+QONf0nLquYwRz+Hoe4bJNs8rWmbyAJDRkdWLPgLw7r1crV+D0X6G39X8lH4OC1k16Y5J6Lwd13/i73CCLbW6R7K9pfW3G0Fz84T7c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=acm.org; spf=pass smtp.mailfrom=acm.org; dkim=pass (2048-bit key) header.d=acm.org header.i=@acm.org header.b=sUW/OtAg; arc=none smtp.client-ip=199.89.1.12
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=acm.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=acm.org
+Received: from localhost (localhost [127.0.0.1])
+	by 009.lax.mailroute.net (Postfix) with ESMTP id 4Vv20N4SzCzlgMVX;
+	Tue,  4 Jun 2024 20:15:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=acm.org; h=
+	content-transfer-encoding:content-type:content-type:in-reply-to
+	:content-language:references:subject:subject:from:from
+	:user-agent:mime-version:date:date:message-id:received:received;
+	 s=mr01; t=1717532145; x=1720124146; bh=IhobA/nARMJe05sx5W26Xa/l
+	u3fRW0jArbLkFW/wjRc=; b=sUW/OtAgbM7TuFTgKH+VmfvxaWV5rgA+PBlPXmhM
+	tQEU149xBJcasIzGikC5eMbaYZbtTTG4z5e1Jx3nZJE+aLNkHSYovBwF9I/xRG1h
+	4yPabTggSOE254hj+0q9XKXRjGL2a2pyy4H3dr6qY3J6CnguFco4zuRDqm+tgSOu
+	d9hvYWtUMJE2T+RUvf62JEqVNdNGY1MDq0sKLF1Iie15hRfboDcwRBV/gMfjT8zv
+	gJvkfsp6aGiBSTBKYEaDU/AloGcY7kei8gPMOs5qCKm7DVG1FSmWIYduX0EfP8hj
+	sbDy6rynQ0uq0lFNxo/fVskw1h8rBsOP7GGuQYTt9JYi2g==
+X-Virus-Scanned: by MailRoute
+Received: from 009.lax.mailroute.net ([127.0.0.1])
+ by localhost (009.lax [127.0.0.1]) (mroute_mailscanner, port 10029) with LMTP
+ id Ljj4e1xZqFTB; Tue,  4 Jun 2024 20:15:45 +0000 (UTC)
+Received: from [192.168.132.235] (unknown [65.117.37.195])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	(Authenticated sender: bvanassche@acm.org)
+	by 009.lax.mailroute.net (Postfix) with ESMTPSA id 4Vv20K2tWCzlgMVV;
+	Tue,  4 Jun 2024 20:15:45 +0000 (UTC)
+Message-ID: <a21021bf-6866-466b-a924-2f465fbb2e64@acm.org>
+Date: Tue, 4 Jun 2024 14:15:44 -0600
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240604185804.GT3884@unreal>
+User-Agent: Mozilla Thunderbird
+From: Bart Van Assche <bvanassche@acm.org>
+Subject: Re: [bug report] KASAN slab-use-after-free at blktests srp/002 with
+ siw driver
+To: Zhu Yanjun <yanjun.zhu@linux.dev>,
+ Shinichiro Kawasaki <shinichiro.kawasaki@wdc.com>,
+ "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+ Jason Gunthorpe <jgg@ziepe.ca>, Leon Romanovsky <leon@kernel.org>
+References: <5prftateosuvgmosryes4lakptbxccwtx7yajoicjhudt7gyvp@w3f6nqdvurir>
+ <6bcbe337-c2fe-46ee-8228-a3cff6852c28@linux.dev>
+Content-Language: en-US
+In-Reply-To: <6bcbe337-c2fe-46ee-8228-a3cff6852c28@linux.dev>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-Hello,
+On 6/4/24 03:26, Zhu Yanjun wrote:
+> 
+> On 04.06.24 09:25, Shinichiro Kawasaki wrote:
+>> As I noted in another thread [1], KASAN slab-use-after-free is 
+>> observed when
+>> I repeat the blktests test case srp/002 with the siw driver [2]. The 
+>> kernel
+>> version was v6.10-rc2. The failure is recreated in stable manner when 
+>> the test
+>> case is repeated around 30 times. It was not observed with the rxe 
+>> driver.
+>>
+>> I think this failure is same as that I reported in Jun/2023 [3]. The 
+>> Call Trace
+>> reported is quite similar. Also, I confirmed that the trial fix patch 
+>> that I
+>> created in Jun/2023 avoided the KASAN failure at srp/002.
+> 
+> "the trial fix patch that I created in Jun/2023" that you mentioned is 
+> the commit in the link?
+> 
+> https://lore.kernel.org/linux-rdma/20230612054237.1855292-1-shinichiro.kawasaki@wdc.com/
 
-On Tue, Jun 04, 2024 at 09:58:04PM +0300, Leon Romanovsky wrote:
-> But at that point, we didn't add newly created WQ to any list which will execute
-> that asynchronous release. Did I miss something?
+To me that patch doesn't seem correct. Jason and Leon, is my understanding
+correct that you are the maintainers for the iwcm code? Can you please help
+with reviewing this patch?
 
-So, wq itself is not the problem. There are multiple pwq's that get attached
-to a wq and each pwq is refcnt'd and released asynchronously. Over time,
-during wq init, how the error paths behave diverged - pwq's still take the
-async path while wq error path stayed synchronous. The flush is there to
-match them. A cleaner solution would be either turning everything async or
-sync.
+Thanks,
 
-> Anyway, I understand that the lockdep_register_key() corruption comes
-> from something else. Do you have any idea what can cause it? How can we
-> help debug this issue?
+Bart.
 
-It looks like other guys are already looking at another commit, but focusing
-on the backtrace which prematurely freed the reported object (rather than
-the backtrace which stumbled upon it while walking shared data structure)
-should help finding the actual culprit.
+ From 879ca4e5f9ab8c4ce522b4edc144a3938a2f4afb Mon Sep 17 00:00:00 2001
+From: Bart Van Assche <bvanassche@acm.org>
+Date: Tue, 4 Jun 2024 12:49:44 -0700
+Subject: [PATCH] RDMA/iwcm: Fix a use-after-free related to destroying CM IDs
 
-Thanks.
+iw_conn_req_handler() associates a new struct rdma_id_private (conn_id) with
+an existing struct iw_cm_id (cm_id) as follows:
 
--- 
-tejun
+         conn_id->cm_id.iw = cm_id;
+         cm_id->context = conn_id;
+         cm_id->cm_handler = cma_iw_handler;
+
+rdma_destroy_id() frees both the cm_id and the struct rdma_id_private. Make
+sure that cm_work_handler() does not trigger a use-after-free by delaing
+freeing of the struct rdma_id_private until all pending work has finished.
+
+Signed-off-by: Bart Van Assche <bvanassche@acm.org>
+---
+  drivers/infiniband/core/iwcm.c | 11 +++++++----
+  1 file changed, 7 insertions(+), 4 deletions(-)
+
+diff --git a/drivers/infiniband/core/iwcm.c b/drivers/infiniband/core/iwcm.c
+index d608952c6e8e..ea9dc26bf563 100644
+--- a/drivers/infiniband/core/iwcm.c
++++ b/drivers/infiniband/core/iwcm.c
+@@ -368,8 +368,10 @@ EXPORT_SYMBOL(iw_cm_disconnect);
+   *
+   * Clean up all resources associated with the connection and release
+   * the initial reference taken by iw_create_cm_id.
++ *
++ * Returns true if and only if the last cm_id_priv reference has been dropped.
+   */
+-static void destroy_cm_id(struct iw_cm_id *cm_id)
++static bool destroy_cm_id(struct iw_cm_id *cm_id)
+  {
+  	struct iwcm_id_private *cm_id_priv;
+  	struct ib_qp *qp;
+@@ -439,7 +441,7 @@ static void destroy_cm_id(struct iw_cm_id *cm_id)
+  		iwpm_remove_mapping(&cm_id->local_addr, RDMA_NL_IWCM);
+  	}
+
+-	(void)iwcm_deref_id(cm_id_priv);
++	return iwcm_deref_id(cm_id_priv);
+  }
+
+  /*
+@@ -450,7 +452,8 @@ static void destroy_cm_id(struct iw_cm_id *cm_id)
+   */
+  void iw_destroy_cm_id(struct iw_cm_id *cm_id)
+  {
+-	destroy_cm_id(cm_id);
++	if (!destroy_cm_id(cm_id))
++		flush_workqueue(iwcm_wq);
+  }
+  EXPORT_SYMBOL(iw_destroy_cm_id);
+
+@@ -1031,7 +1034,7 @@ static void cm_work_handler(struct work_struct *_work)
+  		if (!test_bit(IWCM_F_DROP_EVENTS, &cm_id_priv->flags)) {
+  			ret = process_event(cm_id_priv, &levent);
+  			if (ret)
+-				destroy_cm_id(&cm_id_priv->id);
++				WARN_ON_ONCE(destroy_cm_id(&cm_id_priv->id));
+  		} else
+  			pr_debug("dropping event %d\n", levent.event);
+  		if (iwcm_deref_id(cm_id_priv))
+
 
