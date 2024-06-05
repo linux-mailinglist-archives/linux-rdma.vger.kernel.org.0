@@ -1,75 +1,75 @@
-Return-Path: <linux-rdma+bounces-2901-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-2902-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 762658FD12A
-	for <lists+linux-rdma@lfdr.de>; Wed,  5 Jun 2024 16:52:22 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2B4498FD12B
+	for <lists+linux-rdma@lfdr.de>; Wed,  5 Jun 2024 16:52:29 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2A8331F24579
-	for <lists+linux-rdma@lfdr.de>; Wed,  5 Jun 2024 14:52:22 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 3FFDFB238C9
+	for <lists+linux-rdma@lfdr.de>; Wed,  5 Jun 2024 14:52:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5496F2E403;
-	Wed,  5 Jun 2024 14:52:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 48E65224EA;
+	Wed,  5 Jun 2024 14:52:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=acm.org header.i=@acm.org header.b="bIqUh0+w"
+	dkim=pass (2048-bit key) header.d=acm.org header.i=@acm.org header.b="KnfnMSlV"
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from 009.lax.mailroute.net (009.lax.mailroute.net [199.89.1.12])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C1CB225774
-	for <linux-rdma@vger.kernel.org>; Wed,  5 Jun 2024 14:52:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B5A0027450
+	for <linux-rdma@vger.kernel.org>; Wed,  5 Jun 2024 14:52:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=199.89.1.12
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1717599133; cv=none; b=mHrnVFQrDcbWAwBBFJGBSDxZVed/63OT1lg+lFmZORoH8wlL6YcCBbYdAqBMVzh6p7v+AXCw54LD2K5+t/aUnmwBNpiGiHnhyo/xjGTs45kQLz4tImwjlX5fLq/BS8/c5oIv5fq/+aG2RoqjzdMx6gKf692Ctu3CqCrjqGOffxg=
+	t=1717599142; cv=none; b=p0cScM5CYJX2lRo2doBMX7r/H7sHAcNeAJ1slQlA6icsfs5RkHewVO4knP8AeQeKBSp1NEXSeTdURkC1KD1SrxI90BNsgQ26NbFhPNWPxgbfOwf+DkkpQq5T7zofL8HTRWM8lTuCWX4MbcjnK0cI5JV+HQh9/2KKdqGmKXHD4rs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1717599133; c=relaxed/simple;
-	bh=hG2+BDNfy3pagO2sWcFkx0lXK/nck2spPLDruMjnR0I=;
+	s=arc-20240116; t=1717599142; c=relaxed/simple;
+	bh=TlKUs0z4HGQbT87QlP7EL88FFtI01S4xY4tN+HVAwns=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=Fj6/aoZqix3j9/fRW3fVTii27gmhU2arnGIVMJlcRLanm1iqGJWx1zkgIh/JUgdwOG+7CyyK5pc1IJ+CntbIzO18v82UXOIbGrtrFausHToe+0hl4lFcQ/wkXeDKpvJ+GDnbHIfJz/byq0LllV/FW85ZWhZajXJK5NyBnYy1Yjw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=acm.org; spf=pass smtp.mailfrom=acm.org; dkim=pass (2048-bit key) header.d=acm.org header.i=@acm.org header.b=bIqUh0+w; arc=none smtp.client-ip=199.89.1.12
+	 MIME-Version; b=Qdqe0mCSph7rVIfXj9fEkwyz7RXGpam62TcfL9if8Z/KdMoAa1angyfK3vk3bchrXe2z0jAhIcS8G7VRv+h1sUHRDatdoel5zB331WCZ+wv3d9NDqnaMAzECLjskbw6CUGndmuyp4q9pQGFDTh0Of1MJ1WEzENSPjaI5zETuG60=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=acm.org; spf=pass smtp.mailfrom=acm.org; dkim=pass (2048-bit key) header.d=acm.org header.i=@acm.org header.b=KnfnMSlV; arc=none smtp.client-ip=199.89.1.12
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=acm.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=acm.org
 Received: from localhost (localhost [127.0.0.1])
-	by 009.lax.mailroute.net (Postfix) with ESMTP id 4VvVmW2fGHzlgMVV;
-	Wed,  5 Jun 2024 14:52:11 +0000 (UTC)
+	by 009.lax.mailroute.net (Postfix) with ESMTP id 4VvVmh1rlPzlgMVV;
+	Wed,  5 Jun 2024 14:52:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=acm.org; h=
 	content-transfer-encoding:mime-version:references:in-reply-to
 	:x-mailer:message-id:date:date:subject:subject:from:from
-	:received:received; s=mr01; t=1717599127; x=1720191128; bh=tPUDq
-	vHHJnIoYtVbpAepuZthuvUDN03ZrbWJJYHu0wI=; b=bIqUh0+wKssnlfEgT87jf
-	umqC+lvixPDa6bKzw2GMA2loyiRVzywSy8AjiYVcFux9UUQlOtwEAE/ji5cc5VaP
-	NfYkQvbBxW7rk/MAjP0K8FyVbAOtbnyeIQWMpfi1AkLscBx8GbC3VSSl78lbPWtq
-	tBe8uhFv6yK4o9xKxfscmnxt6PCUwlLPsDnix8tes03bP1A8AXM/L1qEqdz3Hatg
-	O5Eh6m3s6T6ikTPjLmof6vGyK2c3rDbHyz8yIQQkHfF5ciUzM35WIrgiHUoQx/8D
-	0AqRpCthygiExU1TFn4F0SAdY26Vm1mgBg1v6Sdnrd+5cbaXuOMRQMcMBQ+qze/1
+	:received:received; s=mr01; t=1717599136; x=1720191137; bh=DHsoZ
+	4Tf+szqcoTBNHI8hXrUOmjHAAHzpWk3j4+V9Gk=; b=KnfnMSlVdXrJx7vNCQO7p
+	b9twWsYmkU+yZt4SSYzwY67zwC1/QxKikg3fMEhc8JeENrOcWWxjE+7wYWeTVH2S
+	HoaH8WQqOcTG6htU6csFxzqa1emsWZtLr58YT3nVdvXyuk5TdqDj2BZUt+6wrHt0
+	/eMw2Do/+XLDEaNdOxWk72mByvdIL4nnweOdhdtf49uYRO5sk5eYPXNFGByyeL4C
+	eDh1+O+5lJJL6wU0aOe33JcgnaGRe2wsZ8Q3bEA+MYLBLcjPxxnUbWI7fZ4P19ua
+	WK1qO1NqOXp3hykMLhX734PysD/GhaQXEDIv7GBoGKVILi3LjUeYWH8KyU/05kgV
 	g==
 X-Virus-Scanned: by MailRoute
 Received: from 009.lax.mailroute.net ([127.0.0.1])
  by localhost (009.lax [127.0.0.1]) (mroute_mailscanner, port 10029) with LMTP
- id U_w2qN5jHQlj; Wed,  5 Jun 2024 14:52:07 +0000 (UTC)
+ id kce4BlD2Lm03; Wed,  5 Jun 2024 14:52:16 +0000 (UTC)
 Received: from bvanassche-glaptop2.roam.corp.google.com (unknown [65.117.37.195])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
 	(No client certificate requested)
 	(Authenticated sender: bvanassche@acm.org)
-	by 009.lax.mailroute.net (Postfix) with ESMTPSA id 4VvVmP1SjRzlgMVS;
-	Wed,  5 Jun 2024 14:52:04 +0000 (UTC)
+	by 009.lax.mailroute.net (Postfix) with ESMTPSA id 4VvVmZ1TjBzlgMVS;
+	Wed,  5 Jun 2024 14:52:14 +0000 (UTC)
 From: Bart Van Assche <bvanassche@acm.org>
 To: Jason Gunthorpe <jgg@nvidia.com>
 Cc: Shinichiro Kawasaki <shinichiro.kawasaki@wdc.com>,
 	Zhu Yanjun <zyjzyj2000@gmail.com>,
 	linux-rdma@vger.kernel.org,
 	Bart Van Assche <bvanassche@acm.org>,
+	Zhu Yanjun <yanjun.zhu@linux.dev>,
 	Jason Gunthorpe <jgg@ziepe.ca>,
 	Leon Romanovsky <leon@kernel.org>,
-	Zhu Yanjun <yanjun.zhu@linux.dev>,
-	Joel Granados <j.granados@samsung.com>,
-	Luis Chamberlain <mcgrof@kernel.org>
-Subject: [PATCH 4/5] RDMA/iwcm: Simplify cm_work_handler()
-Date: Wed,  5 Jun 2024 08:51:00 -0600
-Message-ID: <20240605145117.397751-5-bvanassche@acm.org>
+	Luis Chamberlain <mcgrof@kernel.org>,
+	Joel Granados <j.granados@samsung.com>
+Subject: [PATCH 5/5] RDMA/iwcm: Fix a use-after-free related to destroying CM IDs
+Date: Wed,  5 Jun 2024 08:51:01 -0600
+Message-ID: <20240605145117.397751-6-bvanassche@acm.org>
 X-Mailer: git-send-email 2.45.1.288.g0e0cd299f1-goog
 In-Reply-To: <20240605145117.397751-1-bvanassche@acm.org>
 References: <20240605145117.397751-1-bvanassche@acm.org>
@@ -81,48 +81,73 @@ List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-Instead of complicating the code to avoid a spin_lock_irqsave() /
-spin_lock_irqrestore() pair before returning, simplify the code by removi=
-ng
-the local variable 'empty'.
+iw_conn_req_handler() associates a new struct rdma_id_private (conn_id) w=
+ith
+an existing struct iw_cm_id (cm_id) as follows:
 
+        conn_id->cm_id.iw =3D cm_id;
+        cm_id->context =3D conn_id;
+        cm_id->cm_handler =3D cma_iw_handler;
+
+rdma_destroy_id() frees both the cm_id and the struct rdma_id_private. Ma=
+ke
+sure that cm_work_handler() does not trigger a use-after-free by only
+freeing of the struct rdma_id_private after all pending work has finished=
+.
+
+Cc: stable
+Reviewed-by: Zhu Yanjun <yanjun.zhu@linux.dev>
+Tested-by: Shin'ichiro Kawasaki <shinichiro.kawasaki@wdc.com>
 Signed-off-by: Bart Van Assche <bvanassche@acm.org>
 ---
- drivers/infiniband/core/iwcm.c | 7 +------
- 1 file changed, 1 insertion(+), 6 deletions(-)
+ drivers/infiniband/core/iwcm.c | 11 +++++++----
+ 1 file changed, 7 insertions(+), 4 deletions(-)
 
 diff --git a/drivers/infiniband/core/iwcm.c b/drivers/infiniband/core/iwc=
 m.c
-index 3d66aec36899..4424f430fc08 100644
+index 4424f430fc08..1a6339f3a63f 100644
 --- a/drivers/infiniband/core/iwcm.c
 +++ b/drivers/infiniband/core/iwcm.c
-@@ -1017,16 +1017,13 @@ static void cm_work_handler(struct work_struct *_=
-work)
- 	struct iw_cm_event levent;
- 	struct iwcm_id_private *cm_id_priv =3D work->cm_id;
- 	unsigned long flags;
--	int empty;
- 	int ret =3D 0;
+@@ -368,8 +368,10 @@ EXPORT_SYMBOL(iw_cm_disconnect);
+  *
+  * Clean up all resources associated with the connection and release
+  * the initial reference taken by iw_create_cm_id.
++ *
++ * Returns true if and only if the last cm_id_priv reference has been dr=
+opped.
+  */
+-static void destroy_cm_id(struct iw_cm_id *cm_id)
++static bool destroy_cm_id(struct iw_cm_id *cm_id)
+ {
+ 	struct iwcm_id_private *cm_id_priv;
+ 	struct ib_qp *qp;
+@@ -439,7 +441,7 @@ static void destroy_cm_id(struct iw_cm_id *cm_id)
+ 		iwpm_remove_mapping(&cm_id->local_addr, RDMA_NL_IWCM);
+ 	}
 =20
- 	spin_lock_irqsave(&cm_id_priv->lock, flags);
--	empty =3D list_empty(&cm_id_priv->work_list);
--	while (!empty) {
-+	while (!list_empty(&cm_id_priv->work_list)) {
- 		work =3D list_first_entry(&cm_id_priv->work_list,
- 					struct iwcm_work, list);
- 		list_del_init(&work->list);
--		empty =3D list_empty(&cm_id_priv->work_list);
- 		levent =3D work->event;
- 		put_work(work);
- 		spin_unlock_irqrestore(&cm_id_priv->lock, flags);
-@@ -1039,8 +1036,6 @@ static void cm_work_handler(struct work_struct *_wo=
+-	(void)iwcm_deref_id(cm_id_priv);
++	return iwcm_deref_id(cm_id_priv);
+ }
+=20
+ /*
+@@ -450,7 +452,8 @@ static void destroy_cm_id(struct iw_cm_id *cm_id)
+  */
+ void iw_destroy_cm_id(struct iw_cm_id *cm_id)
+ {
+-	destroy_cm_id(cm_id);
++	if (!destroy_cm_id(cm_id))
++		flush_workqueue(iwcm_wq);
+ }
+ EXPORT_SYMBOL(iw_destroy_cm_id);
+=20
+@@ -1031,7 +1034,7 @@ static void cm_work_handler(struct work_struct *_wo=
 rk)
+ 		if (!test_bit(IWCM_F_DROP_EVENTS, &cm_id_priv->flags)) {
+ 			ret =3D process_event(cm_id_priv, &levent);
+ 			if (ret)
+-				destroy_cm_id(&cm_id_priv->id);
++				WARN_ON_ONCE(destroy_cm_id(&cm_id_priv->id));
+ 		} else
  			pr_debug("dropping event %d\n", levent.event);
  		if (iwcm_deref_id(cm_id_priv))
- 			return;
--		if (empty)
--			return;
- 		spin_lock_irqsave(&cm_id_priv->lock, flags);
- 	}
- 	spin_unlock_irqrestore(&cm_id_priv->lock, flags);
 
