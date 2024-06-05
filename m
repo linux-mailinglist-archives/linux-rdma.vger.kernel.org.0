@@ -1,379 +1,97 @@
-Return-Path: <linux-rdma+bounces-2890-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-2892-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 10DBE8FCF79
-	for <lists+linux-rdma@lfdr.de>; Wed,  5 Jun 2024 15:36:37 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 750E28FCF65
+	for <lists+linux-rdma@lfdr.de>; Wed,  5 Jun 2024 15:34:17 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 8E268B31168
-	for <lists+linux-rdma@lfdr.de>; Wed,  5 Jun 2024 13:31:23 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0ECD41F23EA9
+	for <lists+linux-rdma@lfdr.de>; Wed,  5 Jun 2024 13:34:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0BF05195B21;
-	Wed,  5 Jun 2024 12:56:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5B1D919754D;
+	Wed,  5 Jun 2024 13:07:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="IdXFpUBn"
+	dkim=pass (2048-bit key) header.d=acm.org header.i=@acm.org header.b="1zNAMiSu"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from out30-113.freemail.mail.aliyun.com (out30-113.freemail.mail.aliyun.com [115.124.30.113])
+Received: from 008.lax.mailroute.net (008.lax.mailroute.net [199.89.1.11])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6825E19309E;
-	Wed,  5 Jun 2024 12:56:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.113
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 95D73197544
+	for <linux-rdma@vger.kernel.org>; Wed,  5 Jun 2024 13:07:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=199.89.1.11
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1717592197; cv=none; b=KpCHLvqfnJNsorbCiXeux9wVfIwbOA/hYxS2Z5GeGTzE8RFCuW8VSyiHDEEVrfQ5RONfvWYm1V5pR3NmkZo4Dep0KpYbjfdfoKg4ol1GEUKdBD9QqZRUnbza1TyXWuXVlaTgmL2DhioaVP/ndSawpw2kqBwfCQttHfyhTXjEzCY=
+	t=1717592837; cv=none; b=AJpAaTV4iG7WrjY9Meb7yfpXhSRHkd7Gvss5CPqfzeVatDjmr+tzrv1HPOur/EQkDTQJxZUufDOEHv+CR5/VInFvw+vL+HdER5tlo5iiKP3dDwRN5dXgTg8AnCdIGiuyzB4W5k6aCRoznCMM63M2q6OBpFOPpNZb2eT2LY0Bqqk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1717592197; c=relaxed/simple;
-	bh=qGM5ZUeTkKUKvYat0NvVfuWmfxXAzgAZS8f3k//PF0g=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References; b=BwKV5te0RTrbTRUkmiKocp8NyVA4bBaOcQkL97H4tyXGUTF1x6HVvJmK/J1dGPVKCSjcaWnqC1u8KXM2ld9mB94MWp6CsNeomuWbHUAl3sqL71map22lXL8VRXBw2jZ4ehdiBvZI38zcnAxesHaN2OdlrOA17Gn7yhQSplzdsZ4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=IdXFpUBn; arc=none smtp.client-ip=115.124.30.113
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
-DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
-	d=linux.alibaba.com; s=default;
-	t=1717592187; h=From:To:Subject:Date:Message-Id;
-	bh=+D++LLxYuPWxjq7RYug+cI/d4/wX6eRFJ4wJchbjINk=;
-	b=IdXFpUBntwzrkAA2kKAm7mZmfJEL1L4l3oF1/ciFnEszXEGTDNHmdV0kQrLM+0oUQ+qgLvBWOcUkLF/3Nx/iExVA5hXLLGoDf6lXBlyx++3L+mSlfxFKAJI/6cD7+N3AmMVFfrJEr5N9jX0j+CgYVn+8hx0wpMsEMbxuqBPDW6g=
-X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R231e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=maildocker-contentspam033045046011;MF=alibuda@linux.alibaba.com;NM=1;PH=DS;RN=13;SR=0;TI=SMTPD_---0W7vCi8t_1717592186;
-Received: from j66a10360.sqa.eu95.tbsite.net(mailfrom:alibuda@linux.alibaba.com fp:SMTPD_---0W7vCi8t_1717592186)
-          by smtp.aliyun-inc.com;
-          Wed, 05 Jun 2024 20:56:26 +0800
-From: "D. Wythe" <alibuda@linux.alibaba.com>
-To: kgraul@linux.ibm.com,
-	wenjia@linux.ibm.com,
-	jaka@linux.ibm.com,
-	wintera@linux.ibm.com,
-	guwen@linux.alibaba.com
-Cc: kuba@kernel.org,
-	davem@davemloft.net,
-	netdev@vger.kernel.org,
-	linux-s390@vger.kernel.org,
-	linux-rdma@vger.kernel.org,
-	tonylu@linux.alibaba.com,
-	pabeni@redhat.com,
-	edumazet@google.com
-Subject: [PATCH net-next v6 3/3] net/smc: Introduce IPPROTO_SMC
-Date: Wed,  5 Jun 2024 20:56:20 +0800
-Message-Id: <1717592180-66181-4-git-send-email-alibuda@linux.alibaba.com>
-X-Mailer: git-send-email 1.8.3.1
-In-Reply-To: <1717592180-66181-1-git-send-email-alibuda@linux.alibaba.com>
-References: <1717592180-66181-1-git-send-email-alibuda@linux.alibaba.com>
+	s=arc-20240116; t=1717592837; c=relaxed/simple;
+	bh=sjEhcBuaVXCuReqf+PmkUJSdnGUyLZGg+N1om5jK6Dg=;
+	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
+	 In-Reply-To:Content-Type; b=mzGkKMMO0oHpH3jLSoL3PfCClAPr3gZN3I/D41cJvz2EkDE8F+dJ/tH9cantiyLYawZuY82h1BFexfa8Tpiz6AtSoS8v7egQOlQphXoPlelc2qeuTqCKMq5b2O2rgriEj8GRTUcPStG4SZgCKQ5Q07AyucfoPxkuVmSIIJH0bqk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=acm.org; spf=pass smtp.mailfrom=acm.org; dkim=pass (2048-bit key) header.d=acm.org header.i=@acm.org header.b=1zNAMiSu; arc=none smtp.client-ip=199.89.1.11
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=acm.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=acm.org
+Received: from localhost (localhost [127.0.0.1])
+	by 008.lax.mailroute.net (Postfix) with ESMTP id 4VvSRQ6ND3z6CmSMs;
+	Wed,  5 Jun 2024 13:07:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=acm.org; h=
+	content-transfer-encoding:content-type:content-type:in-reply-to
+	:from:from:content-language:references:subject:subject
+	:user-agent:mime-version:date:date:message-id:received:received;
+	 s=mr01; t=1717592832; x=1720184833; bh=QsizQ8qJ9ZDAmp1WH0tjRGgU
+	RJoHNngClaFfYKS7ewQ=; b=1zNAMiSuNuuuVHs25v+u7u8UBTGgyyvBrkOx6U2A
+	M3hzl4l9iXOFu3BqzfNJ9r8TRvAaSgoyrhwJp89YA/KxPcR5EzLXcHdsAQ84w55J
+	f3fLmJFqdyj2+77LX3ANVdreOv2R1xkamtne1RjUDv36ocTXLzz1pQMDJNzGsRD4
+	ak2wcpx+LStAWuLhe02m1ZIqml4r8pADrB7zolaPT4oh0JUv+kEbkaKzIW7wQVqC
+	EFUsfkHCvXK5c0QmKYjWMITHBV63fXdHGmz6Xh9vGaN0S4sscv+7UdZy3IIPMfTP
+	qV0lZOY8VpZS5S4tF23aEmZj5PsOjeqC2XbCgYTWUr2lVQ==
+X-Virus-Scanned: by MailRoute
+Received: from 008.lax.mailroute.net ([127.0.0.1])
+ by localhost (008.lax [127.0.0.1]) (mroute_mailscanner, port 10029) with LMTP
+ id MYI-bzHK_RUJ; Wed,  5 Jun 2024 13:07:12 +0000 (UTC)
+Received: from [192.168.132.235] (unknown [65.117.37.195])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	(Authenticated sender: bvanassche@acm.org)
+	by 008.lax.mailroute.net (Postfix) with ESMTPSA id 4VvSRM3hwBz6Cnv3g;
+	Wed,  5 Jun 2024 13:07:11 +0000 (UTC)
+Message-ID: <84acd2b7-553f-4385-8c10-ce70ae70fe39@acm.org>
+Date: Wed, 5 Jun 2024 07:07:08 -0600
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [bug report] KASAN slab-use-after-free at blktests srp/002 with
+ siw driver
+To: Zhu Yanjun <zyjzyj2000@gmail.com>,
+ Shinichiro Kawasaki <shinichiro.kawasaki@wdc.com>,
+ "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+ Jason Gunthorpe <jgg@ziepe.ca>, Leon Romanovsky <leon@kernel.org>
+References: <5prftateosuvgmosryes4lakptbxccwtx7yajoicjhudt7gyvp@w3f6nqdvurir>
+ <6bcbe337-c2fe-46ee-8228-a3cff6852c28@linux.dev>
+ <a21021bf-6866-466b-a924-2f465fbb2e64@acm.org>
+ <2a8ba947-ccb4-4c33-bc60-7833291eb61f@linux.dev>
+Content-Language: en-US
+From: Bart Van Assche <bvanassche@acm.org>
+In-Reply-To: <2a8ba947-ccb4-4c33-bc60-7833291eb61f@linux.dev>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-From: "D. Wythe" <alibuda@linux.alibaba.com>
+On 6/5/24 04:42, Zhu Yanjun wrote:
+> The type of iwcm_deref_id is int.
+> 
+> Not sure if we should make iwcm_deref_id and destroy_cm_id have the different type or not. We can make them use one of the 2 types: int and bool.
 
-This patch allows to create smc socket via AF_INET,
-similar to the following code,
+Since iwcm_deref_id() either returns 0 or 1, I will change its return type into bool.
 
-/* create v4 smc sock */
-v4 = socket(AF_INET, SOCK_STREAM, IPPROTO_SMC);
+> Reviewed-by: Zhu Yanjun <yanjun.zhu@linux.dev>
 
-/* create v6 smc sock */
-v6 = socket(AF_INET6, SOCK_STREAM, IPPROTO_SMC);
+Thanks!
 
-There are several reasons why we believe it is appropriate here:
-
-1. For smc sockets, it actually use IPv4 (AF-INET) or IPv6 (AF-INET6)
-address. There is no AF_SMC address at all.
-
-2. Create smc socket in the AF_INET(6) path, which allows us to reuse
-the infrastructure of AF_INET(6) path, such as common ebpf hooks.
-Otherwise, smc have to implement it again in AF_SMC path.
-
-Signed-off-by: D. Wythe <alibuda@linux.alibaba.com>
-Tested-by: Niklas Schnelle <schnelle@linux.ibm.com>
----
- include/uapi/linux/in.h |   2 +
- net/smc/Makefile        |   2 +-
- net/smc/af_smc.c        |  16 ++++-
- net/smc/smc_inet.c      | 169 ++++++++++++++++++++++++++++++++++++++++++++++++
- net/smc/smc_inet.h      |  22 +++++++
- 5 files changed, 208 insertions(+), 3 deletions(-)
- create mode 100644 net/smc/smc_inet.c
- create mode 100644 net/smc/smc_inet.h
-
-diff --git a/include/uapi/linux/in.h b/include/uapi/linux/in.h
-index e682ab6..0c6322b 100644
---- a/include/uapi/linux/in.h
-+++ b/include/uapi/linux/in.h
-@@ -83,6 +83,8 @@ enum {
- #define IPPROTO_RAW		IPPROTO_RAW
-   IPPROTO_MPTCP = 262,		/* Multipath TCP connection		*/
- #define IPPROTO_MPTCP		IPPROTO_MPTCP
-+  IPPROTO_SMC = 263,		/* Shared Memory Communications		*/
-+#define IPPROTO_SMC		IPPROTO_SMC
-   IPPROTO_MAX
- };
- #endif
-diff --git a/net/smc/Makefile b/net/smc/Makefile
-index 2c510d54..60f1c87 100644
---- a/net/smc/Makefile
-+++ b/net/smc/Makefile
-@@ -4,6 +4,6 @@ obj-$(CONFIG_SMC)	+= smc.o
- obj-$(CONFIG_SMC_DIAG)	+= smc_diag.o
- smc-y := af_smc.o smc_pnet.o smc_ib.o smc_clc.o smc_core.o smc_wr.o smc_llc.o
- smc-y += smc_cdc.o smc_tx.o smc_rx.o smc_close.o smc_ism.o smc_netlink.o smc_stats.o
--smc-y += smc_tracepoint.o
-+smc-y += smc_tracepoint.o smc_inet.o
- smc-$(CONFIG_SYSCTL) += smc_sysctl.o
- smc-$(CONFIG_SMC_LO) += smc_loopback.o
-diff --git a/net/smc/af_smc.c b/net/smc/af_smc.c
-index 8e3ce76..743c27e 100644
---- a/net/smc/af_smc.c
-+++ b/net/smc/af_smc.c
-@@ -54,6 +54,7 @@
- #include "smc_tracepoint.h"
- #include "smc_sysctl.h"
- #include "smc_loopback.h"
-+#include "smc_inet.h"
- 
- static DEFINE_MUTEX(smc_server_lgr_pending);	/* serialize link group
- 						 * creation on server
-@@ -3593,10 +3594,15 @@ static int __init smc_init(void)
- 		pr_err("%s: tcp_ulp_register fails with %d\n", __func__, rc);
- 		goto out_lo;
- 	}
--
-+	rc = smc_inet_init();
-+	if (rc) {
-+		pr_err("%s: smc_inet_init fails with %d\n", __func__, rc);
-+		goto out_ulp;
-+	}
- 	static_branch_enable(&tcp_have_smc);
- 	return 0;
--
-+out_ulp:
-+	tcp_unregister_ulp(&smc_ulp_ops);
- out_lo:
- 	smc_loopback_exit();
- out_ib:
-@@ -3633,6 +3639,7 @@ static int __init smc_init(void)
- static void __exit smc_exit(void)
- {
- 	static_branch_disable(&tcp_have_smc);
-+	smc_inet_exit();
- 	tcp_unregister_ulp(&smc_ulp_ops);
- 	sock_unregister(PF_SMC);
- 	smc_core_exit();
-@@ -3660,4 +3667,9 @@ static void __exit smc_exit(void)
- MODULE_LICENSE("GPL");
- MODULE_ALIAS_NETPROTO(PF_SMC);
- MODULE_ALIAS_TCP_ULP("smc");
-+/* 263 for IPPROTO_SMC and 1 for SOCK_STREAM */
-+MODULE_ALIAS_NET_PF_PROTO_TYPE(PF_INET, 263, 1);
-+#if IS_ENABLED(CONFIG_IPV6)
-+MODULE_ALIAS_NET_PF_PROTO_TYPE(PF_INET6, 263, 1);
-+#endif /* CONFIG_IPV6 */
- MODULE_ALIAS_GENL_FAMILY(SMC_GENL_FAMILY_NAME);
-diff --git a/net/smc/smc_inet.c b/net/smc/smc_inet.c
-new file mode 100644
-index 00000000..bca57ae
---- /dev/null
-+++ b/net/smc/smc_inet.c
-@@ -0,0 +1,169 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+/*
-+ *  Shared Memory Communications over RDMA (SMC-R) and RoCE
-+ *
-+ *  Definitions for the IPPROTO_SMC (socket related)
-+ *
-+ *  Copyright IBM Corp. 2016, 2018
-+ *  Copyright (c) 2024, Alibaba Inc.
-+ *
-+ *  Author: D. Wythe <alibuda@linux.alibaba.com>
-+ */
-+
-+#include <net/protocol.h>
-+#include <net/sock.h>
-+
-+#include "smc_inet.h"
-+#include "smc.h"
-+
-+static struct proto smc_inet_prot;
-+static const struct proto_ops smc_inet_stream_ops;
-+static struct inet_protosw smc_inet_protosw;
-+
-+#if IS_ENABLED(CONFIG_IPV6)
-+static struct proto smc_inet6_prot;
-+static const struct proto_ops smc_inet6_stream_ops;
-+static struct inet_protosw smc_inet6_protosw;
-+#endif /* CONFIG_IPV6 */
-+
-+static int smc_inet_init_sock(struct sock *sk);
-+
-+static struct proto smc_inet_prot = {
-+	.name		= "INET_SMC",
-+	.owner		= THIS_MODULE,
-+	.init		= smc_inet_init_sock,
-+	.hash		= smc_hash_sk,
-+	.unhash		= smc_unhash_sk,
-+	.release_cb	= smc_release_cb,
-+	.obj_size	= sizeof(struct smc_sock),
-+	.h.smc_hash	= &smc_v4_hashinfo,
-+	.slab_flags	= SLAB_TYPESAFE_BY_RCU,
-+};
-+
-+static const struct proto_ops smc_inet_stream_ops = {
-+	.family		= PF_INET,
-+	.owner		= THIS_MODULE,
-+	.release	= smc_release,
-+	.bind		= smc_bind,
-+	.connect	= smc_connect,
-+	.socketpair	= sock_no_socketpair,
-+	.accept		= smc_accept,
-+	.getname	= smc_getname,
-+	.poll		= smc_poll,
-+	.ioctl		= smc_ioctl,
-+	.listen		= smc_listen,
-+	.shutdown	= smc_shutdown,
-+	.setsockopt	= smc_setsockopt,
-+	.getsockopt	= smc_getsockopt,
-+	.sendmsg	= smc_sendmsg,
-+	.recvmsg	= smc_recvmsg,
-+	.mmap		= sock_no_mmap,
-+	.splice_read	= smc_splice_read,
-+};
-+
-+static struct inet_protosw smc_inet_protosw = {
-+	.type		= SOCK_STREAM,
-+	.protocol	= IPPROTO_SMC,
-+	.prot		= &smc_inet_prot,
-+	.ops		= &smc_inet_stream_ops,
-+	.flags		= INET_PROTOSW_ICSK,
-+};
-+
-+#if IS_ENABLED(CONFIG_IPV6)
-+static struct proto smc_inet6_prot = {
-+	.name		= "INET6_SMC",
-+	.owner		= THIS_MODULE,
-+	.init		= smc_inet_init_sock,
-+	.hash		= smc_hash_sk,
-+	.unhash		= smc_unhash_sk,
-+	.release_cb	= smc_release_cb,
-+	.obj_size	= sizeof(struct smc_sock),
-+	.h.smc_hash	= &smc_v6_hashinfo,
-+	.slab_flags	= SLAB_TYPESAFE_BY_RCU,
-+};
-+
-+static const struct proto_ops smc_inet6_stream_ops = {
-+	.family		= PF_INET6,
-+	.owner		= THIS_MODULE,
-+	.release	= smc_release,
-+	.bind		= smc_bind,
-+	.connect	= smc_connect,
-+	.socketpair	= sock_no_socketpair,
-+	.accept		= smc_accept,
-+	.getname	= smc_getname,
-+	.poll		= smc_poll,
-+	.ioctl		= smc_ioctl,
-+	.listen		= smc_listen,
-+	.shutdown	= smc_shutdown,
-+	.setsockopt	= smc_setsockopt,
-+	.getsockopt	= smc_getsockopt,
-+	.sendmsg	= smc_sendmsg,
-+	.recvmsg	= smc_recvmsg,
-+	.mmap		= sock_no_mmap,
-+	.splice_read	= smc_splice_read,
-+};
-+
-+static struct inet_protosw smc_inet6_protosw = {
-+	.type		= SOCK_STREAM,
-+	.protocol	= IPPROTO_SMC,
-+	.prot		= &smc_inet6_prot,
-+	.ops		= &smc_inet6_stream_ops,
-+	.flags		= INET_PROTOSW_ICSK,
-+};
-+#endif /* CONFIG_IPV6 */
-+
-+static int smc_inet_init_sock(struct sock *sk)
-+{
-+	struct net *net = sock_net(sk);
-+
-+	/* init common smc sock */
-+	smc_sk_init(net, sk, IPPROTO_SMC);
-+	/* create clcsock */
-+	return smc_create_clcsk(net, sk, sk->sk_family);
-+}
-+
-+int __init smc_inet_init(void)
-+{
-+	int rc;
-+
-+	rc = proto_register(&smc_inet_prot, 1);
-+	if (rc) {
-+		pr_err("%s: proto_register smc_inet_prot fails with %d\n",
-+		       __func__, rc);
-+		return rc;
-+	}
-+	/* no return value */
-+	inet_register_protosw(&smc_inet_protosw);
-+
-+#if IS_ENABLED(CONFIG_IPV6)
-+	rc = proto_register(&smc_inet6_prot, 1);
-+	if (rc) {
-+		pr_err("%s: proto_register smc_inet6_prot fails with %d\n",
-+		       __func__, rc);
-+		goto out_inet6_prot;
-+	}
-+	rc = inet6_register_protosw(&smc_inet6_protosw);
-+	if (rc) {
-+		pr_err("%s: inet6_register_protosw smc_inet6_protosw fails with %d\n",
-+		       __func__, rc);
-+		goto out_inet6_protosw;
-+	}
-+	return rc;
-+out_inet6_protosw:
-+	proto_unregister(&smc_inet6_prot);
-+out_inet6_prot:
-+	inet_unregister_protosw(&smc_inet_protosw);
-+	proto_unregister(&smc_inet_prot);
-+#endif /* CONFIG_IPV6 */
-+	return rc;
-+}
-+
-+void smc_inet_exit(void)
-+{
-+#if IS_ENABLED(CONFIG_IPV6)
-+	inet6_unregister_protosw(&smc_inet6_protosw);
-+	proto_unregister(&smc_inet6_prot);
-+#endif /* CONFIG_IPV6 */
-+	inet_unregister_protosw(&smc_inet_protosw);
-+	proto_unregister(&smc_inet_prot);
-+}
-diff --git a/net/smc/smc_inet.h b/net/smc/smc_inet.h
-new file mode 100644
-index 00000000..a489c8a
---- /dev/null
-+++ b/net/smc/smc_inet.h
-@@ -0,0 +1,22 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+/*
-+ *  Shared Memory Communications over RDMA (SMC-R) and RoCE
-+ *
-+ *  Definitions for the IPPROTO_SMC (socket related)
-+
-+ *  Copyright IBM Corp. 2016
-+ *  Copyright (c) 2024, Alibaba Inc.
-+ *
-+ *  Author: D. Wythe <alibuda@linux.alibaba.com>
-+ */
-+#ifndef __INET_SMC
-+#define __INET_SMC
-+
-+/* Initialize protocol registration on IPPROTO_SMC,
-+ * @return 0 on success
-+ */
-+int smc_inet_init(void);
-+
-+void smc_inet_exit(void);
-+
-+#endif /* __INET_SMC */
--- 
-1.8.3.1
+Bart.
 
 
