@@ -1,124 +1,96 @@
-Return-Path: <linux-rdma+bounces-2918-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-2919-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id CE8878FD765
-	for <lists+linux-rdma@lfdr.de>; Wed,  5 Jun 2024 22:17:56 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 584708FD913
+	for <lists+linux-rdma@lfdr.de>; Wed,  5 Jun 2024 23:35:09 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CABA01C21EE7
-	for <lists+linux-rdma@lfdr.de>; Wed,  5 Jun 2024 20:17:55 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0816F1F21C85
+	for <lists+linux-rdma@lfdr.de>; Wed,  5 Jun 2024 21:35:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EE45115E5D7;
-	Wed,  5 Jun 2024 20:17:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4DF96168C16;
+	Wed,  5 Jun 2024 21:30:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="t0xJrHMq"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="B5pD0t5O"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from out-182.mta1.migadu.com (out-182.mta1.migadu.com [95.215.58.182])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2FE6115E5DD
-	for <linux-rdma@vger.kernel.org>; Wed,  5 Jun 2024 20:17:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 04ADA4962E;
+	Wed,  5 Jun 2024 21:30:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1717618670; cv=none; b=QMAdgvL9Fi/4TzT9RmyTImtpi3IISY+9qytoLtV4zWOjEG9BFMZrWM+kjUPiUHjZkxjv5u3tHfU6GhK+qAuyIg8B10xJSkSJgjbLho+JvzuPU5GmfKI/9OcoC12f0IXe+qNp4RI24J5QyMM2fsaIGAztoa8WdpMjFn+bWKbqkEI=
+	t=1717623032; cv=none; b=Y6c46dRH8iyB+/lS7gx20bMfWgL4A3sm7sxCKiEL0MgudXVPzDk/CR2vxr2+EBx2C1bxmzRkeCCMLb1wQgBa+taFmsq3ycWdzBdGKnamCpgX9dQW+HDB7c9SmTCuN8Bux557TFkE0YMo0ecTqlSfxs1vJYdmwfIpAeGwO8muxac=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1717618670; c=relaxed/simple;
-	bh=l52cIxYSTS3F9eaBpJrzXujuvrRMnAin4tQhn98+osU=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=TXs6bYHiM6nDjXinaUmTUru8lZpoSCdmZpOcXo29+/nXXx3HBlnrnFBjSul0QNqC479MEB2ybm7zcgLhHusx+zW2t1q0nQwkmEboC9lwEoY+tswItatETPfpyVHnsJkVxnOzLP2VdlGLMtG0YsBS9raGlRUeJDvQCwnC1syNrAw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=t0xJrHMq; arc=none smtp.client-ip=95.215.58.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-X-Envelope-To: bvanassche@acm.org
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1717618666;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=7nItL7NzxTcAYy6SlCvTz5mBf/7GQ7aUFVl0/Cje998=;
-	b=t0xJrHMqMlFktN1Wfhbo/Lfitjs15EbcGjvLQ2oM9qHWntNzT6KUwVE2+/wtsatpObx3ku
-	ZJWwHKXNTHs6dy7AiMux87ADFPL5CmzYj99hGd3Xl05OE41Hvl/Uqis7W6rpIUU9ZkKu+L
-	B5N0PdJD2KT3bayDxR56ZZe4asVkymI=
-X-Envelope-To: jgg@nvidia.com
-X-Envelope-To: shinichiro.kawasaki@wdc.com
-X-Envelope-To: zyjzyj2000@gmail.com
-X-Envelope-To: linux-rdma@vger.kernel.org
-X-Envelope-To: jgg@ziepe.ca
-X-Envelope-To: leon@kernel.org
-X-Envelope-To: j.granados@samsung.com
-X-Envelope-To: mcgrof@kernel.org
-Message-ID: <860f0717-8bd0-4ad2-acb7-28220bddc9a8@linux.dev>
-Date: Wed, 5 Jun 2024 22:17:38 +0200
+	s=arc-20240116; t=1717623032; c=relaxed/simple;
+	bh=QwvAko4zpRbQR4SDkAviF8HJEOiuHXqiAOvLvCo/Bds=;
+	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
+	 In-Reply-To:To:Cc; b=sIh6Sun1JhNYizxsFDrWIaGbu4iFTfy/+4eU9PpmmNpmMcL7TJWBa0/i25yWaqNFvwCDfmwZtffj5G3hoEpZ9I5Nid3vGO8zB0Mr/GmoA1Tb/D+OjTJVV8q8ecu00mJDyd/1zm81eJ5cBLhTIgu7jCmYG08r4En87jYiMyu261U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=B5pD0t5O; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 82FBFC32782;
+	Wed,  5 Jun 2024 21:30:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1717623031;
+	bh=QwvAko4zpRbQR4SDkAviF8HJEOiuHXqiAOvLvCo/Bds=;
+	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+	b=B5pD0t5OThSfVYlbpjHSj9j9I4KAU1eHkpD6EuZ11w18FuvfvXQzbR5XGZ+qyUBUa
+	 iZY+FSYz7DzWM03W9cdHPcZ4eL+lM2xulhJk81QVC1rZa2vYVzUcsTGtO4Mg2+ufjX
+	 a+KDTs/hF3lxzknhvZwrwrrMF5kGKBCahtnDeyg1QGNStjCkQ+C/ZT7tZlk928UI+N
+	 phiQCn/xuDyR7k6oW0zjQUntooeHwJUoI+greKeL41pYOg2tABvP4bHSA5G/1rNHfx
+	 anZ/MdphWwVBWqF+cTJRcZypyRF5NqSM5euJB8GIXUqNiof+5jzr76JiNbrxdeyEhl
+	 XDGPy7Adw3nfA==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 6DCA4D3E997;
+	Wed,  5 Jun 2024 21:30:31 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH 2/5] RDMA/iwcm: Change the return type of iwcm_deref_id()
-To: Bart Van Assche <bvanassche@acm.org>, Jason Gunthorpe <jgg@nvidia.com>
-Cc: Shinichiro Kawasaki <shinichiro.kawasaki@wdc.com>,
- Zhu Yanjun <zyjzyj2000@gmail.com>, linux-rdma@vger.kernel.org,
- Jason Gunthorpe <jgg@ziepe.ca>, Leon Romanovsky <leon@kernel.org>,
- Joel Granados <j.granados@samsung.com>, Luis Chamberlain <mcgrof@kernel.org>
-References: <20240605145117.397751-1-bvanassche@acm.org>
- <20240605145117.397751-3-bvanassche@acm.org>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Zhu Yanjun <yanjun.zhu@linux.dev>
-In-Reply-To: <20240605145117.397751-3-bvanassche@acm.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
+Subject: Re: [PATCH net] net/mlx5: Fix tainted pointer delete is case of flow
+ rules creation fail
+From: patchwork-bot+netdevbpf@kernel.org
+Message-Id: 
+ <171762303144.24326.14850911837497875775.git-patchwork-notify@kernel.org>
+Date: Wed, 05 Jun 2024 21:30:31 +0000
+References: <20240604100552.25201-1-amishin@t-argos.ru>
+In-Reply-To: <20240604100552.25201-1-amishin@t-argos.ru>
+To: Aleksandr Mishin <amishin@t-argos.ru>
+Cc: mbloch@nvidia.com, saeedm@nvidia.com, leon@kernel.org, tariqt@nvidia.com,
+ davem@davemloft.net, edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
+ maorg@nvidia.com, jacob.e.keller@intel.com, shayd@nvidia.com,
+ jianbol@nvidia.com, ruanjinjie@huawei.com, netdev@vger.kernel.org,
+ linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
+ lvc-project@linuxtesting.org
 
+Hello:
 
-在 2024/6/5 16:50, Bart Van Assche 写道:
-> Since iwcm_deref_id() returns either 0 or 1, change its return type from
-> 'int' into 'bool'.
->
-> Signed-off-by: Bart Van Assche <bvanassche@acm.org>
+This patch was applied to netdev/net.git (main)
+by Jakub Kicinski <kuba@kernel.org>:
 
-I am fine with this. Thanks a lot.
+On Tue, 4 Jun 2024 13:05:52 +0300 you wrote:
+> In case of flow rule creation fail in mlx5_lag_create_port_sel_table(),
+> instead of previously created rules, the tainted pointer is deleted
+> deveral times.
+> Fix this bug by using correct flow rules pointers.
+> 
+> Found by Linux Verification Center (linuxtesting.org) with SVACE.
+> 
+> [...]
 
-Reviewed-by: Zhu Yanjun <yanjun.zhu@linux.dev>
+Here is the summary with links:
+  - [net] net/mlx5: Fix tainted pointer delete is case of flow rules creation fail
+    https://git.kernel.org/netdev/net/c/229bedbf62b1
 
-Zhu Yanjun
-
-> ---
->   drivers/infiniband/core/iwcm.c | 8 ++++----
->   1 file changed, 4 insertions(+), 4 deletions(-)
->
-> diff --git a/drivers/infiniband/core/iwcm.c b/drivers/infiniband/core/iwcm.c
-> index 90d8f3d66990..ae9c12409f8a 100644
-> --- a/drivers/infiniband/core/iwcm.c
-> +++ b/drivers/infiniband/core/iwcm.c
-> @@ -206,17 +206,17 @@ static void free_cm_id(struct iwcm_id_private *cm_id_priv)
->   
->   /*
->    * Release a reference on cm_id. If the last reference is being
-> - * released, free the cm_id and return 1.
-> + * released, free the cm_id and return 'true'.
->    */
-> -static int iwcm_deref_id(struct iwcm_id_private *cm_id_priv)
-> +static bool iwcm_deref_id(struct iwcm_id_private *cm_id_priv)
->   {
->   	if (refcount_dec_and_test(&cm_id_priv->refcount)) {
->   		BUG_ON(!list_empty(&cm_id_priv->work_list));
->   		free_cm_id(cm_id_priv);
-> -		return 1;
-> +		return true;
->   	}
->   
-> -	return 0;
-> +	return false;
->   }
->   
->   static void add_ref(struct iw_cm_id *cm_id)
-
+You are awesome, thank you!
 -- 
-Best Regards,
-Yanjun.Zhu
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
 
 
