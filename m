@@ -1,107 +1,124 @@
-Return-Path: <linux-rdma+bounces-2917-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-2918-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9357A8FD752
-	for <lists+linux-rdma@lfdr.de>; Wed,  5 Jun 2024 22:14:19 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id CE8878FD765
+	for <lists+linux-rdma@lfdr.de>; Wed,  5 Jun 2024 22:17:56 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 1EE63B2234F
-	for <lists+linux-rdma@lfdr.de>; Wed,  5 Jun 2024 20:14:17 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CABA01C21EE7
+	for <lists+linux-rdma@lfdr.de>; Wed,  5 Jun 2024 20:17:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 265D0158853;
-	Wed,  5 Jun 2024 20:14:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EE45115E5D7;
+	Wed,  5 Jun 2024 20:17:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="iPNiSGR8"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="t0xJrHMq"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
+Received: from out-182.mta1.migadu.com (out-182.mta1.migadu.com [95.215.58.182])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 88B8B14EC6B;
-	Wed,  5 Jun 2024 20:14:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2FE6115E5DD
+	for <linux-rdma@vger.kernel.org>; Wed,  5 Jun 2024 20:17:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1717618449; cv=none; b=PfjheDixxiDN4KNocesc2bZahxm5tutldgSoJE1zBRRc3e/PHH+6Sxwi2Ib35gr9w0LU1TSVhFRtGhJDAuJVtNDqSRwR8EW9YPCZ9dzx5+1xcawQMoIAJ6sAatQ7a/OkiLyonrqiW2A/g8xmTL8N/u3gWpAhJI1E6yRPgkUl8/0=
+	t=1717618670; cv=none; b=QMAdgvL9Fi/4TzT9RmyTImtpi3IISY+9qytoLtV4zWOjEG9BFMZrWM+kjUPiUHjZkxjv5u3tHfU6GhK+qAuyIg8B10xJSkSJgjbLho+JvzuPU5GmfKI/9OcoC12f0IXe+qNp4RI24J5QyMM2fsaIGAztoa8WdpMjFn+bWKbqkEI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1717618449; c=relaxed/simple;
-	bh=WNiQKc7XInc3wxnxvdi0iSR6wuB1eYAWWFzmkvnEe9E=;
+	s=arc-20240116; t=1717618670; c=relaxed/simple;
+	bh=l52cIxYSTS3F9eaBpJrzXujuvrRMnAin4tQhn98+osU=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=poRwW3Jwk9sGdnfWwrsIjOgzy0JfjCnXhjUypZnopV4cbNxuw8MHud8105RcIkZ8p27Igl6RGHdHiRKwbdVXTO84B1FeP4YG8AhFG9Oskskb0rK+Ra9kQWueQOgz/PvVKtiWJqUiQ2/ggr/arDSdO26NfckAj2nvCjaT8FBcp1U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=iPNiSGR8; arc=none smtp.client-ip=198.137.202.133
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-	Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
-	Message-ID:Sender:Reply-To:Content-ID:Content-Description;
-	bh=CkQB+gxR77I5/qf64o4fg6uN7mw5H6bkQGa9rOQ77b0=; b=iPNiSGR8mNtPRiRaFZwa/2VmzT
-	0vU6b+4CxM7tACmId1uDAc4qJYb4hJ96vVOmv0ZwVYsg/KpYJGPOaYmBgQJWL31NwVvH+NiO5zln2
-	cfc7BdCoNOpUvCivmlmDagfAKeDHh98iAu/rR0fo5wC6C1o4LnBpqII2BKsm7e9owja+FoAFd1MqN
-	E3O4NBLLqSerWbWthV5ZhMl2vUisI9Kum4a1UrChwAP6zxI0rMoGPQE08sYw0UbIEzIjhiUZBLAOi
-	juRoLdlfRitSCgpZfPEOdIgunXc/iCaF8+ywOa2HTlxkEoEiA1U1I3B26WKeuz8jhTPny+moFaEti
-	OQ3TNK/g==;
-Received: from [50.53.4.147] (helo=[192.168.254.15])
-	by bombadil.infradead.org with esmtpsa (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sEx1K-00000007QDT-3UPU;
-	Wed, 05 Jun 2024 20:14:06 +0000
-Message-ID: <29b4266b-4aed-4124-8c48-cc539302bf07@infradead.org>
-Date: Wed, 5 Jun 2024 13:14:04 -0700
+	 In-Reply-To:Content-Type; b=TXs6bYHiM6nDjXinaUmTUru8lZpoSCdmZpOcXo29+/nXXx3HBlnrnFBjSul0QNqC479MEB2ybm7zcgLhHusx+zW2t1q0nQwkmEboC9lwEoY+tswItatETPfpyVHnsJkVxnOzLP2VdlGLMtG0YsBS9raGlRUeJDvQCwnC1syNrAw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=t0xJrHMq; arc=none smtp.client-ip=95.215.58.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+X-Envelope-To: bvanassche@acm.org
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1717618666;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=7nItL7NzxTcAYy6SlCvTz5mBf/7GQ7aUFVl0/Cje998=;
+	b=t0xJrHMqMlFktN1Wfhbo/Lfitjs15EbcGjvLQ2oM9qHWntNzT6KUwVE2+/wtsatpObx3ku
+	ZJWwHKXNTHs6dy7AiMux87ADFPL5CmzYj99hGd3Xl05OE41Hvl/Uqis7W6rpIUU9ZkKu+L
+	B5N0PdJD2KT3bayDxR56ZZe4asVkymI=
+X-Envelope-To: jgg@nvidia.com
+X-Envelope-To: shinichiro.kawasaki@wdc.com
+X-Envelope-To: zyjzyj2000@gmail.com
+X-Envelope-To: linux-rdma@vger.kernel.org
+X-Envelope-To: jgg@ziepe.ca
+X-Envelope-To: leon@kernel.org
+X-Envelope-To: j.granados@samsung.com
+X-Envelope-To: mcgrof@kernel.org
+Message-ID: <860f0717-8bd0-4ad2-acb7-28220bddc9a8@linux.dev>
+Date: Wed, 5 Jun 2024 22:17:38 +0200
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 6/8] fwctl: Add documentation
-To: Jason Gunthorpe <jgg@nvidia.com>
-Cc: Jonathan Corbet <corbet@lwn.net>, Itay Avraham <itayavr@nvidia.com>,
- Jakub Kicinski <kuba@kernel.org>, Leon Romanovsky <leon@kernel.org>,
- linux-doc@vger.kernel.org, linux-rdma@vger.kernel.org,
- netdev@vger.kernel.org, Paolo Abeni <pabeni@redhat.com>,
- Saeed Mahameed <saeedm@nvidia.com>, Tariq Toukan <tariqt@nvidia.com>,
- Andy Gospodarek <andrew.gospodarek@broadcom.com>,
- Aron Silverton <aron.silverton@oracle.com>,
- Dan Williams <dan.j.williams@intel.com>, David Ahern <dsahern@kernel.org>,
- Christoph Hellwig <hch@infradead.org>, Jiri Pirko <jiri@nvidia.com>,
- Leonid Bloch <lbloch@nvidia.com>, Leon Romanovsky <leonro@nvidia.com>,
- linux-cxl@vger.kernel.org, patches@lists.linux.dev
-References: <6-v1-9912f1a11620+2a-fwctl_jgg@nvidia.com>
- <7a28cd2c-b5a8-4c06-b9e2-9b390d8c96e4@infradead.org>
- <20240605160336.GA1760942@nvidia.com>
-Content-Language: en-US
-From: Randy Dunlap <rdunlap@infradead.org>
-In-Reply-To: <20240605160336.GA1760942@nvidia.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Subject: Re: [PATCH 2/5] RDMA/iwcm: Change the return type of iwcm_deref_id()
+To: Bart Van Assche <bvanassche@acm.org>, Jason Gunthorpe <jgg@nvidia.com>
+Cc: Shinichiro Kawasaki <shinichiro.kawasaki@wdc.com>,
+ Zhu Yanjun <zyjzyj2000@gmail.com>, linux-rdma@vger.kernel.org,
+ Jason Gunthorpe <jgg@ziepe.ca>, Leon Romanovsky <leon@kernel.org>,
+ Joel Granados <j.granados@samsung.com>, Luis Chamberlain <mcgrof@kernel.org>
+References: <20240605145117.397751-1-bvanassche@acm.org>
+ <20240605145117.397751-3-bvanassche@acm.org>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Zhu Yanjun <yanjun.zhu@linux.dev>
+In-Reply-To: <20240605145117.397751-3-bvanassche@acm.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
 
 
+在 2024/6/5 16:50, Bart Van Assche 写道:
+> Since iwcm_deref_id() returns either 0 or 1, change its return type from
+> 'int' into 'bool'.
+>
+> Signed-off-by: Bart Van Assche <bvanassche@acm.org>
 
-On 6/5/24 9:03 AM, Jason Gunthorpe wrote:
-> On Tue, Jun 04, 2024 at 07:31:10PM -0700, Randy Dunlap wrote:
-> 
->>> +Modern devices contain extensive amounts of FW, and in many cases, are largely
->>> +software defined pieces of hardware. The evolution of this approach is largely a
->>
->>   software-defined
-> 
-> Thanks a lot Randy, I picked up all your notes.
-> 
->>> +While the kernel can always directly parse and restrict RPCs, it is expected
->>> +that the existing kernel pattern of allowing drivers to delegate validation to
->>> +FW to be a useful design.
->>
->> (and one that can be abused...)
-> 
-> I would really like to write a paragraph about this "abuse", Dan has
-> some good thoughts on this as well. Did you have a specific "abuse"
-> in your mind?
+I am fine with this. Thanks a lot.
 
-No, I don't. It just seems very open (but ioctls are just as open).
+Reviewed-by: Zhu Yanjun <yanjun.zhu@linux.dev>
+
+Zhu Yanjun
+
+> ---
+>   drivers/infiniband/core/iwcm.c | 8 ++++----
+>   1 file changed, 4 insertions(+), 4 deletions(-)
+>
+> diff --git a/drivers/infiniband/core/iwcm.c b/drivers/infiniband/core/iwcm.c
+> index 90d8f3d66990..ae9c12409f8a 100644
+> --- a/drivers/infiniband/core/iwcm.c
+> +++ b/drivers/infiniband/core/iwcm.c
+> @@ -206,17 +206,17 @@ static void free_cm_id(struct iwcm_id_private *cm_id_priv)
+>   
+>   /*
+>    * Release a reference on cm_id. If the last reference is being
+> - * released, free the cm_id and return 1.
+> + * released, free the cm_id and return 'true'.
+>    */
+> -static int iwcm_deref_id(struct iwcm_id_private *cm_id_priv)
+> +static bool iwcm_deref_id(struct iwcm_id_private *cm_id_priv)
+>   {
+>   	if (refcount_dec_and_test(&cm_id_priv->refcount)) {
+>   		BUG_ON(!list_empty(&cm_id_priv->work_list));
+>   		free_cm_id(cm_id_priv);
+> -		return 1;
+> +		return true;
+>   	}
+>   
+> -	return 0;
+> +	return false;
+>   }
+>   
+>   static void add_ref(struct iw_cm_id *cm_id)
 
 -- 
-#Randy
-https://people.kernel.org/tglx/notes-about-netiquette
-https://subspace.kernel.org/etiquette.html
+Best Regards,
+Yanjun.Zhu
+
 
