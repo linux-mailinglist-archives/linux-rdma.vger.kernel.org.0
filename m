@@ -1,235 +1,210 @@
-Return-Path: <linux-rdma+bounces-2958-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-2959-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id CE5378FF5B6
-	for <lists+linux-rdma@lfdr.de>; Thu,  6 Jun 2024 22:14:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id BE2208FF5D5
+	for <lists+linux-rdma@lfdr.de>; Thu,  6 Jun 2024 22:26:43 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 58C4E287725
-	for <lists+linux-rdma@lfdr.de>; Thu,  6 Jun 2024 20:14:07 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3F6FD288D87
+	for <lists+linux-rdma@lfdr.de>; Thu,  6 Jun 2024 20:26:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B914673455;
-	Thu,  6 Jun 2024 20:13:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0EFA7757E7;
+	Thu,  6 Jun 2024 20:26:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Xgcm/jrS"
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="M4XqnpXl"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-lf1-f45.google.com (mail-lf1-f45.google.com [209.85.167.45])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C65084087C;
-	Thu,  6 Jun 2024 20:13:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BE0B64BA94;
+	Thu,  6 Jun 2024 20:26:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.156.1
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1717704839; cv=none; b=HynRlmzM+g69fU+SOL6JodLmgsX7efPwx5dkI9bTBNTvzrrJl5wA3R1Bs/YmR79K2am+C8X8MwR/huG392ewx0HTCayc9oXLHuDa4rap/xh/HhpMG2oW0ZcA65uH4aOtJltDu8z1T6hcJc7q8P+3oIFFb8xxbEdMWqlGcNb4NJk=
+	t=1717705597; cv=none; b=mXhchGyAw9An3BuHYaPVUrv2vmA/kDiEWZXcnfTK4scAj/bNrWXuWO2bsRg0om7DP9HkgpCX1mK/G0w2vbXx7Titjj27cZtoBopwiz+M7NTg8ATm2EC3zCxgMsB9zKE17ntf4GntgkcXljq0GLhYvBAzCDQOv+6xfsEec7ckMbs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1717704839; c=relaxed/simple;
-	bh=e/k8T23IcfrxvnEY3jF5IDKgD7d9+QvRMd9YF93aCrI=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=Qe0MlZexdWgIp8Q29+I1Wjpym/ZnS0Yhyu5yURzvDAA9YbJe40e3XEIF9HUK/Z/EmIHC3hvCBlDblQXfr8ByNIcslebx7oujoXrZR5GTQ8/Sc6p+ndFHnHNzjEcpzWsLcznIwWz9ZcgoM/H+XfrFseELJmjC+Sj3lUINfja2U6E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Xgcm/jrS; arc=none smtp.client-ip=209.85.167.45
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lf1-f45.google.com with SMTP id 2adb3069b0e04-52b912198a6so1775685e87.0;
-        Thu, 06 Jun 2024 13:13:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1717704836; x=1718309636; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=s6byb3FQ3EWJ8Jrp9C5qUBdjUY8SseNTuUFxwvT1eGA=;
-        b=Xgcm/jrSepzRlg9EufKtscxa4o4DQn4qsBpqBEo+chyNhg5tmBZRiMyHOF+jMaryER
-         +vnIhDZNX8M32XDGYtJUEJFzVk5I406XeJ0uR6U3EK3BdmKKuCK4KtW/TUAFC05zxtGP
-         CNP6YCskU0WSCrYOKAjDGr2wOHexffwPzWwtTfLgUSt4gg+vyfrNgUZMWAjVnZI6fl47
-         +1AbrPqpGazVwca/feTwSVDDLqUmvxJ1KUmY00rUXlaciBQjBb/hgZ6A/JlvvptRGLnd
-         ZMoZAjKUeAWCw8ALN6KN9c9sE20kJm1VilKwKceygDbofnucRuednpjiy1vq8FtMs95q
-         jzZA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1717704836; x=1718309636;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=s6byb3FQ3EWJ8Jrp9C5qUBdjUY8SseNTuUFxwvT1eGA=;
-        b=DglKnWpp9BE/kmywFtHfTiinvlqBd0Llj8QMXRHi5Z4yYTHNJHaLvJ6S+76zE9YnaK
-         tAstEeuydw5jgtanSqRN7EPX0wlLyfX13Em0QIwNQ+S11SEz7ydKeoep8xuC/vpT/nkE
-         882HYBmvMKWocUBfjVH1qvbRYyb+2TDT374xurPFNvskKUKKB4HlOKY4K1WntZKdK0fI
-         SlVvNDMUh8kM9Surz1+CSbSfg67srri8Xj5kr3QaoOZ2yLcrDLTgDAGGbF0mp587oEgj
-         jFhseAvW0lfpNyqxa0c+BG0sIWGUPyxzOLvIrmp66cAx3lMdca1LGM3zZDKkUId9PluN
-         z6rw==
-X-Forwarded-Encrypted: i=1; AJvYcCUWQLca7RlycAuIyypedYYP2UahXi9X3hRUSxi8bMLq0WdftOqUz6mDKaI0LnwGeO1uHkWmPOPbEK5xVNTLCSyG8+ffqVkkTtEcY2ApwkNKcaMkQ+llxqvLoT+jMKEV5j3jHEG8mN5FfUHH9F5WtN/fIMb76h3uB7vDZc0hcFLzaw==
-X-Gm-Message-State: AOJu0YxgqqceUwd4OhVgSCarIN446NP8iI0i41/0bO2zf1jUevQZ5Yl5
-	fh+Qdtw7LsdUgReejLNPUXUXzDJ4C9uiPMXrGY1A1D3EO3UMNtEg
-X-Google-Smtp-Source: AGHT+IGGsASs+yGRGOikavcnVUtRQ09wNGnpM686klGUTFEisDih3dGbHw2iNffAqxgjiZhzT0iOcg==
-X-Received: by 2002:ac2:4542:0:b0:51d:6790:b788 with SMTP id 2adb3069b0e04-52bb9fdc22dmr470856e87.56.1717704835752;
-        Thu, 06 Jun 2024 13:13:55 -0700 (PDT)
-Received: from [172.27.33.107] ([193.47.165.251])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-4215c2a544bsm32825635e9.21.2024.06.06.13.13.53
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 06 Jun 2024 13:13:55 -0700 (PDT)
-Message-ID: <f131e427-0541-462c-bd37-2132acf6f559@gmail.com>
-Date: Thu, 6 Jun 2024 23:13:52 +0300
+	s=arc-20240116; t=1717705597; c=relaxed/simple;
+	bh=Xj7XTFZkj95fwztiRLT1cEo2Pr1iePDTIMXSz0TlfA4=;
+	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
+	 Content-Type:MIME-Version; b=j/rMcygsILpFZUrPHu2TY+YU7dk8v5dg5JTGk23lL/16VwLZqxLgch10hk0coKJvBpoXUfmr0GY/23p8GbpXV8THog9HjQ9Ia7Cl3ktkams8M9b2sqJdLztis6XaitCCKPkhulcMZX+8tobm98EPA780C4977fNOdjhKdMTk3uI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=M4XqnpXl; arc=none smtp.client-ip=148.163.156.1
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
+Received: from pps.filterd (m0353726.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 456KMZ6W006436;
+	Thu, 6 Jun 2024 20:26:26 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=cc :
+ content-transfer-encoding : content-type : date : from : in-reply-to :
+ message-id : mime-version : references : subject : to; s=pp1;
+ bh=Z9snNBCsP4hB759QGyYELO1ciqENqF/ID3ZfpfY1WHs=;
+ b=M4XqnpXlgx0r/Li6o9UIc4miRJyLQmJk18+wJCkvHLcBEFIjNs64vfNGncvlhLliEwz5
+ cQq8pzC80BcDyp2eFoEVRTnZ3ZsPZpiPvAhSCyMvEZ+rE/GWvB0zdbKeu8DvYkndzk+0
+ E4kuwn4v+/jrf17cKU2Deg57N5UPtf+DToCDs8qmGR7pyAKSOeAdS8/QX8z0yDqCiutM
+ j65jh13rf4v64Mw7WEJ3NVsi+CAIjiJH3rf8od4oECjuFKEGcSgsWHk5b1jQD1kerx8i
+ j/5223NvxvxkVCLORg/EHoKizC7SvTHWb+RG3JP18HJalI54sfh0FoPyIRDjrY1mGBdj rQ== 
+Received: from pps.reinject (localhost [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3ykm35r0e7-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 06 Jun 2024 20:26:25 +0000
+Received: from m0353726.ppops.net (m0353726.ppops.net [127.0.0.1])
+	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 456KQPJO012325;
+	Thu, 6 Jun 2024 20:26:25 GMT
+Received: from ppma11.dal12v.mail.ibm.com (db.9e.1632.ip4.static.sl-reverse.com [50.22.158.219])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3ykm35r0e3-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 06 Jun 2024 20:26:25 +0000
+Received: from pps.filterd (ppma11.dal12v.mail.ibm.com [127.0.0.1])
+	by ppma11.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 456HSsci026549;
+	Thu, 6 Jun 2024 20:26:24 GMT
+Received: from smtprelay02.wdc07v.mail.ibm.com ([172.16.1.69])
+	by ppma11.dal12v.mail.ibm.com (PPS) with ESMTPS id 3yggp3c39j-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 06 Jun 2024 20:26:24 +0000
+Received: from smtpav02.wdc07v.mail.ibm.com (smtpav02.wdc07v.mail.ibm.com [10.39.53.229])
+	by smtprelay02.wdc07v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 456KQKdA22610656
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Thu, 6 Jun 2024 20:26:22 GMT
+Received: from smtpav02.wdc07v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id B66B05805C;
+	Thu,  6 Jun 2024 20:26:20 +0000 (GMT)
+Received: from smtpav02.wdc07v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 458405805B;
+	Thu,  6 Jun 2024 20:26:18 +0000 (GMT)
+Received: from [9.179.16.56] (unknown [9.179.16.56])
+	by smtpav02.wdc07v.mail.ibm.com (Postfix) with ESMTP;
+	Thu,  6 Jun 2024 20:26:18 +0000 (GMT)
+Message-ID: <1edb2f86-5b8a-4fad-babe-e5f76bbcbf90@linux.ibm.com>
+Date: Thu, 6 Jun 2024 22:26:17 +0200
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH net-next v6 0/3] Introduce IPPROTO_SMC
+To: "D. Wythe" <alibuda@linux.alibaba.com>, kgraul@linux.ibm.com,
+        jaka@linux.ibm.com, wintera@linux.ibm.com, guwen@linux.alibaba.com
+Cc: kuba@kernel.org, davem@davemloft.net, netdev@vger.kernel.org,
+        linux-s390@vger.kernel.org, linux-rdma@vger.kernel.org,
+        tonylu@linux.alibaba.com, pabeni@redhat.com, edumazet@google.com
+References: <1717592180-66181-1-git-send-email-alibuda@linux.alibaba.com>
+Content-Language: en-US
+From: Wenjia Zhang <wenjia@linux.ibm.com>
+In-Reply-To: <1717592180-66181-1-git-send-email-alibuda@linux.alibaba.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: bGNA9BUt1i9urafpCAh5sXGQ1iEg1c-j
+X-Proofpoint-GUID: 0H60egWUIj0rgX4GD3P_LRnQ7PBMqEjA
+Content-Transfer-Encoding: 7bit
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC net-next v4 1/2] net/mlx5e: Add txq to sq stats mapping
-To: Joe Damato <jdamato@fastly.com>, netdev@vger.kernel.org,
- linux-kernel@vger.kernel.org
-Cc: nalramli@fastly.com, Saeed Mahameed <saeedm@nvidia.com>,
- Leon Romanovsky <leon@kernel.org>, "David S. Miller" <davem@davemloft.net>,
- Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
- Paolo Abeni <pabeni@redhat.com>, Gal Pressman <gal@nvidia.com>,
- Carolina Jubran <cjubran@nvidia.com>,
- Naveen Mamindlapalli <naveenm@marvell.com>,
- "open list:MELLANOX MLX5 core VPI driver" <linux-rdma@vger.kernel.org>,
- Tariq Toukan <tariqt@nvidia.com>
-References: <20240604004629.299699-1-jdamato@fastly.com>
- <20240604004629.299699-2-jdamato@fastly.com>
-Content-Language: en-US
-From: Tariq Toukan <ttoukan.linux@gmail.com>
-In-Reply-To: <20240604004629.299699-2-jdamato@fastly.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1039,Hydra:6.0.680,FMLib:17.12.28.16
+ definitions=2024-06-06_16,2024-06-06_02,2024-05-17_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
+ clxscore=1015 phishscore=0 adultscore=0 impostorscore=0 malwarescore=0
+ spamscore=0 priorityscore=1501 mlxlogscore=999 suspectscore=0 mlxscore=0
+ bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2405010000 definitions=main-2406060141
 
 
 
-On 04/06/2024 3:46, Joe Damato wrote:
-> mlx5 currently maps txqs to an sq via priv->txq2sq. It is useful to map
-> txqs to sq_stats, as well, for direct access to stats.
+On 05.06.24 14:56, D. Wythe wrote:
+> From: "D. Wythe" <alibuda@linux.alibaba.com>
 > 
-> Add priv->txq2sq_stats and insert mappings. The mappings will be used
-> next to tabulate stats information.
+> This patch allows to create smc socket via AF_INET,
+> similar to the following code,
 > 
-> Signed-off-by: Joe Damato <jdamato@fastly.com>
-> ---
->   drivers/net/ethernet/mellanox/mlx5/core/en.h      |  2 ++
->   drivers/net/ethernet/mellanox/mlx5/core/en/qos.c  | 13 +++++++++++--
->   drivers/net/ethernet/mellanox/mlx5/core/en_main.c | 11 ++++++++++-
->   3 files changed, 23 insertions(+), 3 deletions(-)
+> /* create v4 smc sock */
+> v4 = socket(AF_INET, SOCK_STREAM, IPPROTO_SMC);
 > 
-> diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en.h b/drivers/net/ethernet/mellanox/mlx5/core/en.h
-> index e85fb71bf0b4..4ae3eee3940c 100644
-> --- a/drivers/net/ethernet/mellanox/mlx5/core/en.h
-> +++ b/drivers/net/ethernet/mellanox/mlx5/core/en.h
-> @@ -885,6 +885,8 @@ struct mlx5e_priv {
->   	/* priv data path fields - start */
->   	struct mlx5e_selq selq;
->   	struct mlx5e_txqsq **txq2sq;
-> +	struct mlx5e_sq_stats **txq2sq_stats;
-> +
->   #ifdef CONFIG_MLX5_CORE_EN_DCB
->   	struct mlx5e_dcbx_dp       dcbx_dp;
->   #endif
-> diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en/qos.c b/drivers/net/ethernet/mellanox/mlx5/core/en/qos.c
-> index 6743806b8480..e89272a5d036 100644
-> --- a/drivers/net/ethernet/mellanox/mlx5/core/en/qos.c
-> +++ b/drivers/net/ethernet/mellanox/mlx5/core/en/qos.c
-> @@ -170,6 +170,7 @@ int mlx5e_activate_qos_sq(void *data, u16 node_qid, u32 hw_id)
->   	mlx5e_tx_disable_queue(netdev_get_tx_queue(priv->netdev, qid));
->   
->   	priv->txq2sq[qid] = sq;
-> +	priv->txq2sq_stats[qid] = sq->stats;
->   
->   	/* Make the change to txq2sq visible before the queue is started.
->   	 * As mlx5e_xmit runs under a spinlock, there is an implicit ACQUIRE,
-> @@ -186,6 +187,7 @@ int mlx5e_activate_qos_sq(void *data, u16 node_qid, u32 hw_id)
->   void mlx5e_deactivate_qos_sq(struct mlx5e_priv *priv, u16 qid)
->   {
->   	struct mlx5e_txqsq *sq;
-> +	u16 mlx5e_qid;
+> /* create v6 smc sock */
+> v6 = socket(AF_INET6, SOCK_STREAM, IPPROTO_SMC);
+> 
+> There are several reasons why we believe it is appropriate here:
+> 
+> 1. For smc sockets, it actually use IPv4 (AF-INET) or IPv6 (AF-INET6)
+> address. There is no AF_SMC address at all.
+> 
+> 2. Create smc socket in the AF_INET(6) path, which allows us to reuse
+> the infrastructure of AF_INET(6) path, such as common ebpf hooks.
+> Otherwise, smc have to implement it again in AF_SMC path. Such as:
+>    1. Replace IPPROTO_TCP with IPPROTO_SMC in the socket() syscall
+>       initiated by the user, without the use of LD-PRELOAD.
+>    2. Select whether immediate fallback is required based on peer's port/ip
+>       before connect().
+> 
+> A very significant result is that we can now use eBPF to implement smc_run
+> instead of LD_PRELOAD, who is completely ineffective in scenarios of static
+> linking.
+> 
+> Another potential value is that we are attempting to optimize the
+> performance of fallback socks, where merging socks is an important part,
+> and it relies on the creation of SMC sockets under the AF_INET path.
+> (More information :
+> https://lore.kernel.org/netdev/1699442703-25015-1-git-send-email-alibuda@linux.alibaba.com/T/)
+> 
+> v2 -> v1:
+> 
+> - Code formatting, mainly including alignment and annotation repair.
+> - move inet_smc proto ops to inet_smc.c, avoiding af_smc.c becoming too bulky.
+> - Fix the issue where refactoring affects the initialization order.
+> - Fix compile warning (unused out_inet_prot) while CONFIG_IPV6 was not set.
+> 
+> v3 -> v2:
+> 
+> - Add Alibaba's copyright information to the newfile
+> 
+> v4 -> v3:
+> 
+> - Fix some spelling errors
+> - Align function naming style with smc_sock_init() to smc_sk_init()
+> - Reversing the order of the conditional checks on clcsock to make the code more intuitive
+> 
+> v5 -> v4:
+> 
+> - Fix some spelling errors
+> - Added comment, "/* CONFIG_IPV6 */", after the final #endif directive.
+> - Rename smc_inet.h and smc_inet.c to smc_inet.h and smc_inet.c
+> - Encapsulate the initialization and destruction of inet_smc in inet_smc.c,
+>    rather than implementing it directly in af_smc.c.
+> - Remove useless header files in smc_inet.h
+> - Make smc_inet_prot_xxx and smc_inet_sock_init() to be static, since it's
+>    only used in smc_inet.c
+> 
+> 
+> v6 -> v5:
+> 
+> - Wrapping lines to not exceed 80 characters
+> - Combine initialization and error handling of smc_inet6 into the same #if
+>    macro block.
+> 
+> D. Wythe (3):
+>    net/smc: refactoring initialization of smc sock
+>    net/smc: expose smc proto operations
+>    net/smc: Introduce IPPROTO_SMC
+> 
+>   include/uapi/linux/in.h |   2 +
+>   net/smc/Makefile        |   2 +-
+>   net/smc/af_smc.c        | 162 ++++++++++++++++++++++++++--------------------
+>   net/smc/smc.h           |  38 +++++++++++
+>   net/smc/smc_inet.c      | 169 ++++++++++++++++++++++++++++++++++++++++++++++++
+>   net/smc/smc_inet.h      |  22 +++++++
+>   6 files changed, 324 insertions(+), 71 deletions(-)
+>   create mode 100644 net/smc/smc_inet.c
+>   create mode 100644 net/smc/smc_inet.h
+> 
+Hi D.Wythe,
 
-Do not use mlx5 in variables names.
+This version of the code looks good to me!
+And I played with it on our platform, and did some basic testing for 
+SMCR and SMCD. It works pretty well. I like it. Thank you for your effort!
 
->   
->   	sq = mlx5e_get_qos_sq(priv, qid);
->   	if (!sq) /* Handle the case when the SQ failed to open. */
-> @@ -194,7 +196,10 @@ void mlx5e_deactivate_qos_sq(struct mlx5e_priv *priv, u16 qid)
->   	qos_dbg(sq->mdev, "Deactivate QoS SQ qid %u\n", qid);
->   	mlx5e_deactivate_txqsq(sq);
->   
-> -	priv->txq2sq[mlx5e_qid_from_qos(&priv->channels, qid)] = NULL;
-> +	mlx5e_qid = mlx5e_qid_from_qos(&priv->channels, qid);
-> +
-> +	priv->txq2sq[mlx5e_qid] = NULL;
-> +	priv->txq2sq_stats[mlx5e_qid] = NULL;
->   
->   	/* Make the change to txq2sq visible before the queue is started again.
->   	 * As mlx5e_xmit runs under a spinlock, there is an implicit ACQUIRE,
-> @@ -325,6 +330,7 @@ void mlx5e_qos_deactivate_queues(struct mlx5e_channel *c)
->   {
->   	struct mlx5e_params *params = &c->priv->channels.params;
->   	struct mlx5e_txqsq __rcu **qos_sqs;
-> +	u16 mlx5e_qid;
->   	int i;
->   
->   	qos_sqs = mlx5e_state_dereference(c->priv, c->qos_sqs);
-> @@ -342,8 +348,11 @@ void mlx5e_qos_deactivate_queues(struct mlx5e_channel *c)
->   		qos_dbg(c->mdev, "Deactivate QoS SQ qid %u\n", qid);
->   		mlx5e_deactivate_txqsq(sq);
->   
-> +		mlx5e_qid = mlx5e_qid_from_qos(&c->priv->channels, qid);
-> +
->   		/* The queue is disabled, no synchronization with datapath is needed. */
-> -		c->priv->txq2sq[mlx5e_qid_from_qos(&c->priv->channels, qid)] = NULL;
-> +		c->priv->txq2sq[mlx5e_qid] = NULL;
-> +		c->priv->txq2sq_stats[mlx5e_qid] = NULL;
->   	}
->   }
->   
-> diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en_main.c b/drivers/net/ethernet/mellanox/mlx5/core/en_main.c
-> index c53c99dde558..d03fd1c98eb6 100644
-> --- a/drivers/net/ethernet/mellanox/mlx5/core/en_main.c
-> +++ b/drivers/net/ethernet/mellanox/mlx5/core/en_main.c
-> @@ -3111,6 +3111,7 @@ static void mlx5e_build_txq_maps(struct mlx5e_priv *priv)
->   			struct mlx5e_txqsq *sq = &c->sq[tc];
->   
->   			priv->txq2sq[sq->txq_ix] = sq;
-> +			priv->txq2sq_stats[sq->txq_ix] = sq->stats;
->   		}
->   	}
->   
-> @@ -3125,6 +3126,7 @@ static void mlx5e_build_txq_maps(struct mlx5e_priv *priv)
->   		struct mlx5e_txqsq *sq = &c->ptpsq[tc].txqsq;
->   
->   		priv->txq2sq[sq->txq_ix] = sq;
-> +		priv->txq2sq_stats[sq->txq_ix] = sq->stats;
->   	}
->   
->   out:
-> @@ -5824,9 +5826,13 @@ int mlx5e_priv_init(struct mlx5e_priv *priv,
->   	if (!priv->txq2sq)
->   		goto err_destroy_workqueue;
->   
-> +	priv->txq2sq_stats = kcalloc_node(num_txqs, sizeof(*priv->txq2sq_stats), GFP_KERNEL, node);
-> +	if (!priv->txq2sq_stats)
-> +		goto err_free_txq2sq;
-> +
->   	priv->tx_rates = kcalloc_node(num_txqs, sizeof(*priv->tx_rates), GFP_KERNEL, node);
->   	if (!priv->tx_rates)
-> -		goto err_free_txq2sq;
-> +		goto err_free_txq2sq_stats;
->   
->   	priv->channel_stats =
->   		kcalloc_node(nch, sizeof(*priv->channel_stats), GFP_KERNEL, node);
-> @@ -5837,6 +5843,8 @@ int mlx5e_priv_init(struct mlx5e_priv *priv,
->   
->   err_free_tx_rates:
->   	kfree(priv->tx_rates);
-> +err_free_txq2sq_stats:
-> +	kfree(priv->txq2sq_stats);
->   err_free_txq2sq:
->   	kfree(priv->txq2sq);
->   err_destroy_workqueue:
-> @@ -5860,6 +5868,7 @@ void mlx5e_priv_cleanup(struct mlx5e_priv *priv)
->   		kvfree(priv->channel_stats[i]);
->   	kfree(priv->channel_stats);
->   	kfree(priv->tx_rates);
-> +	kfree(priv->txq2sq_stats);
->   	kfree(priv->txq2sq);
->   	destroy_workqueue(priv->wq);
->   	mlx5e_selq_cleanup(&priv->selq);
+Please feel free to add my signs for the whole patches series.
+Reviewed-by: Wenjia Zhang <wenjia@linux.ibm.com>
+Tested-by: Wenjia Zhang <wenjia@linux.ibm.com>
+
+Thanks,
+Wenjia
 
