@@ -1,134 +1,98 @@
-Return-Path: <linux-rdma+bounces-2960-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-2961-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id F03778FF5D7
-	for <lists+linux-rdma@lfdr.de>; Thu,  6 Jun 2024 22:29:17 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4A62D8FF61A
+	for <lists+linux-rdma@lfdr.de>; Thu,  6 Jun 2024 22:54:18 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9E6D92892E3
-	for <lists+linux-rdma@lfdr.de>; Thu,  6 Jun 2024 20:29:16 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D805C1F26C90
+	for <lists+linux-rdma@lfdr.de>; Thu,  6 Jun 2024 20:54:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 64102757E7;
-	Thu,  6 Jun 2024 20:29:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 746B312BE9F;
+	Thu,  6 Jun 2024 20:54:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="JyOXOAjJ"
+	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="A6kyP1N4"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from out-189.mta1.migadu.com (out-189.mta1.migadu.com [95.215.58.189])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E076A19D89B
-	for <linux-rdma@vger.kernel.org>; Thu,  6 Jun 2024 20:29:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.189
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 28E7B6F06E;
+	Thu,  6 Jun 2024 20:54:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1717705752; cv=none; b=RxJmt2n046WKzDXvtm5ynzvcv5Z6hjZ0FKd9OiAtPAFRkobBgHFXmutWJlBIvKNUe6VJ2q/ZVLGwoeiqio0Gs1G7HbqZ/Ai0u8PX3/rNmlOhtIrfw9IkXLW7uZGGV1zVBGgvjGd6CfdhcG44uRnmTx0VeOOpNaYK8br+/xdOeYM=
+	t=1717707249; cv=none; b=muizLf7rpNZoT3jwdVC0lzFlPt3LwwUVp2FTpfVP977F5SeXWFxaKACp1RKPZZtNIMX529oIdCLgiLcJBYnhuKGR86glxA3ERrhj93McoN9w7Il7aYuZNb8LjJRcXza/0A276kRMwqPFodLG1w2K3aDFznqs2s/6lCcABl/Fg2I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1717705752; c=relaxed/simple;
-	bh=eo+0M2noRiaZznQk+qnw59T4C87BFNMZ7nD8Bsc+110=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=eO29yrCtP7XxbdWH1Tx34YMC5X096ugTUKFHgph0EnEOzwAXZQ2WijvGd0kiw29ByOyeaaAJhnw1SlISgZaMwj4zJO8/otkwFtVj3bfTR+d4xVAc95rCCw2AS7weWCmOodtwEHmioDMIq6AYpS3YX4XC/q9jo/Jzj4JEQvT+2I0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=JyOXOAjJ; arc=none smtp.client-ip=95.215.58.189
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-X-Envelope-To: bvanassche@acm.org
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1717705747;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=giQGQOjZ9c/ECOWVAx+0DHYTrbt0G04j8/SiVrDzWww=;
-	b=JyOXOAjJFcw2dMHX1xXG60tlFY/hzji5Kgx5yJhZpB3kvMfcJgEo1QCHIybKuDiJm5xMSO
-	V+DXQqFS4fbKcEBkT9M4PQkB+RL4c2PZxjPM4WG8beENlPXaPE91QZ4giMmeIoZJnNzD+v
-	zY1kfPWGx1SGRXn07aLPnseFdEUsGrA=
-X-Envelope-To: jgg@nvidia.com
-X-Envelope-To: shinichiro.kawasaki@wdc.com
-X-Envelope-To: zyjzyj2000@gmail.com
-X-Envelope-To: linux-rdma@vger.kernel.org
-X-Envelope-To: jgg@ziepe.ca
-X-Envelope-To: leon@kernel.org
-X-Envelope-To: j.granados@samsung.com
-X-Envelope-To: mcgrof@kernel.org
-Message-ID: <5b3059aa-7f8e-41ac-b2ca-59f6554c1e83@linux.dev>
-Date: Thu, 6 Jun 2024 22:29:02 +0200
+	s=arc-20240116; t=1717707249; c=relaxed/simple;
+	bh=UqeI96+MM5X3pqwCptXH2eQJ3yuc1OFxEnYiSX/y3zc=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=OThTK7TeDfB4FDEef+Pq4zdCh0CoNe++cWG0bzYJFMCdbGf9WkY6LS3fljVegBAXcHL8Js1ICIr6HxFd+Mz1WfeqkGidY/73hTKHODIJcFD0A4B8/th/MpLyE8P43+RWSM36gRr/XI1cTzqL4ILyKwEP6GY1ad2SUtC3PsBY/mk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=A6kyP1N4; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 59061C2BD10;
+	Thu,  6 Jun 2024 20:54:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+	s=korg; t=1717707248;
+	bh=UqeI96+MM5X3pqwCptXH2eQJ3yuc1OFxEnYiSX/y3zc=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=A6kyP1N4dXj3GzUHpLannf6y6D/DZdpilO3+TVH+Fi8roM8Aj39obTruHOHQheVuo
+	 UJwXzYsvbA9zFqU5zAV9iT651Za7HI5PQpS0joWloWlz6gfYZXd5/Xg1juzOG9Jn4T
+	 4c7WbLPv3KG8D/bcooMr+zVEgBpvvB94WvCxd0eE=
+Date: Thu, 6 Jun 2024 22:54:06 +0200
+From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To: Martin Oliveira <martin.oliveira@eideticom.com>
+Cc: linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-pci@vger.kernel.org, linux-mm@kvack.org,
+	Jason Gunthorpe <jgg@ziepe.ca>, Leon Romanovsky <leon@kernel.org>,
+	Bjorn Helgaas <bhelgaas@google.com>,
+	Logan Gunthorpe <logang@deltatee.com>, Tejun Heo <tj@kernel.org>,
+	"Rafael J. Wysocki" <rafael@kernel.org>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Mike Marciniszyn <mike.marciniszyn@intel.com>,
+	Michael Guralnik <michaelgur@nvidia.com>,
+	Dan Williams <dan.j.williams@intel.com>,
+	Ard Biesheuvel <ardb@kernel.org>,
+	Valentine Sinitsyn <valesini@yandex-team.ru>,
+	Lukas Wunner <lukas@wunner.de>
+Subject: Re: [PATCH 1/6] kernfs: create vm_operations_struct without
+ page_mkwrite()
+Message-ID: <2024060658-ember-unblessed-4c74@gregkh>
+References: <20240605192934.742369-1-martin.oliveira@eideticom.com>
+ <20240605192934.742369-2-martin.oliveira@eideticom.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH 1/5] RDMA/iwcm: Use list_first_entry() where appropriate
-To: Bart Van Assche <bvanassche@acm.org>, Jason Gunthorpe <jgg@nvidia.com>
-Cc: Shinichiro Kawasaki <shinichiro.kawasaki@wdc.com>,
- Zhu Yanjun <zyjzyj2000@gmail.com>, linux-rdma@vger.kernel.org,
- Jason Gunthorpe <jgg@ziepe.ca>, Leon Romanovsky <leon@kernel.org>,
- Joel Granados <j.granados@samsung.com>, Luis Chamberlain <mcgrof@kernel.org>
-References: <20240605145117.397751-1-bvanassche@acm.org>
- <20240605145117.397751-2-bvanassche@acm.org>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Zhu Yanjun <yanjun.zhu@linux.dev>
-In-Reply-To: <20240605145117.397751-2-bvanassche@acm.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240605192934.742369-2-martin.oliveira@eideticom.com>
 
+On Wed, Jun 05, 2024 at 01:29:29PM -0600, Martin Oliveira wrote:
+> The standard kernfs vm_ops installs a page_mkwrite() operator which
+> modifies the file update time on write.
+> 
+> This not always required (or makes sense), such as in the P2PDMA, which
+> uses the sysfs file as an allocator from userspace.
 
-在 2024/6/5 16:50, Bart Van Assche 写道:
-> Improve source code readability by using list_first_entry() where appropriate.
->
-> Signed-off-by: Bart Van Assche <bvanassche@acm.org>
-> ---
->   drivers/infiniband/core/iwcm.c | 8 ++++----
->   1 file changed, 4 insertions(+), 4 deletions(-)
->
-> diff --git a/drivers/infiniband/core/iwcm.c b/drivers/infiniband/core/iwcm.c
-> index 0301fcad4b48..90d8f3d66990 100644
-> --- a/drivers/infiniband/core/iwcm.c
-> +++ b/drivers/infiniband/core/iwcm.c
-> @@ -143,8 +143,8 @@ static struct iwcm_work *get_work(struct iwcm_id_private *cm_id_priv)
->   
->   	if (list_empty(&cm_id_priv->work_free_list))
->   		return NULL;
-> -	work = list_entry(cm_id_priv->work_free_list.next, struct iwcm_work,
-> -			  free_list);
-> +	work = list_first_entry(&cm_id_priv->work_free_list, struct iwcm_work,
-> +				free_list);
+That's not a good idea, please don't do that.  sysfs binary files are
+"pass through", why would you want to use this as an allocator?
 
-The followings are the definitions of list_entry and list_first_entry.
+> Furthermore, having the page_mkwrite() operator causes
+> writable_file_mapping_allowed() to fail due to
+> vma_needs_dirty_tracking() on the gup flow, which is a pre-requisite for
+> enabling P2PDMA over RDMA.
+> 
+> Fix this by adding a new boolean on kernfs_ops to differentiate between
+> the different behaviours.
 
-#define list_entry(ptr, type, member) \
+This isn't going to work well.
 
-     container_of(ptr, type, member)
+What exactly are you wanting to do in sysfs that you feel this is
+required?
 
-#define list_first_entry(ptr, type, member) \
-     list_entry((ptr)->next, type, member)F
+thanks,
 
- From the above, IMO, this commit is fine.
-
-Thanks.
-
-Reviewed-by: Zhu Yanjun <yanjun.zhu@linux.dev>
-
-Zhu Yanjun
-
->   	list_del_init(&work->free_list);
->   	return work;
->   }
-> @@ -1023,8 +1023,8 @@ static void cm_work_handler(struct work_struct *_work)
->   	spin_lock_irqsave(&cm_id_priv->lock, flags);
->   	empty = list_empty(&cm_id_priv->work_list);
->   	while (!empty) {
-> -		work = list_entry(cm_id_priv->work_list.next,
-> -				  struct iwcm_work, list);
-> +		work = list_first_entry(&cm_id_priv->work_list,
-> +					struct iwcm_work, list);
->   		list_del_init(&work->list);
->   		empty = list_empty(&cm_id_priv->work_list);
->   		levent = work->event;
-
--- 
-Best Regards,
-Yanjun.Zhu
-
+greg k-h
 
