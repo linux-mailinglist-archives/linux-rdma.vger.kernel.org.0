@@ -1,226 +1,205 @@
-Return-Path: <linux-rdma+bounces-3000-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-3001-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id DE9CD900A39
-	for <lists+linux-rdma@lfdr.de>; Fri,  7 Jun 2024 18:25:15 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 06085900AB6
+	for <lists+linux-rdma@lfdr.de>; Fri,  7 Jun 2024 18:48:09 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4E5631F23AA1
-	for <lists+linux-rdma@lfdr.de>; Fri,  7 Jun 2024 16:25:15 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7C44B1F20D48
+	for <lists+linux-rdma@lfdr.de>; Fri,  7 Jun 2024 16:48:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1C8EC19A2B8;
-	Fri,  7 Jun 2024 16:25:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0B50919AD62;
+	Fri,  7 Jun 2024 16:47:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ionos.com header.i=@ionos.com header.b="ApNOHe6e"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="RbKQiXW9"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-ej1-f47.google.com (mail-ej1-f47.google.com [209.85.218.47])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C9EE2199EAD
-	for <linux-rdma@vger.kernel.org>; Fri,  7 Jun 2024 16:25:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B940619AD48;
+	Fri,  7 Jun 2024 16:47:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1717777508; cv=none; b=g6YrShpyuVBqiSeZ21AtKCk5/8Mbzbvfu02PeBI5+sUBPhrEXos3HuDuKG5iTycnBgUcd9SxppcHWkMeMJLfT/KgRI8lIVRgTrDDUhIUIUdbcBXJRhOgubZ1TC1qtXT9lgK42s9kKhaekbIFum2txe/5Op7RDeWQw4CvRb8mYMw=
+	t=1717778878; cv=none; b=Cel90/7Dv2sZ71EjuoZm5lmhvIqeaDj/VqxelyNfhsVjOSLLR3rCd4Hu/U1q4n4Qf1fojnYzarnjb1aFBotxTyU+UZhdmxCbiWEtBWVaFNToyzHTvlbIx7PpRZxchOxL97ywFaJJoL9kfwI0aQB+5XEdtlBsJYy3dTSA4aBCWog=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1717777508; c=relaxed/simple;
-	bh=UOV7DS9G3oBogSq2tPvqfq+X6p3ol2Q1L+yZ95iYhjw=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=EdA8VvYZggUt4YJRJzqZDmbPrc5sYKZBFHo8/+E7SwNI1sC2m5DJPvC6COOqdzAFqzIfkM56XjBowJ9zHBb+FxHmyqI0a9X99g99pNLDdSLSDWpzyzuRQQ60X3K8WuiPttTdmGvIhHpbdl5QEuyZoQro07Afe1L2hOZkUs1DSk4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ionos.com; spf=pass smtp.mailfrom=ionos.com; dkim=pass (2048-bit key) header.d=ionos.com header.i=@ionos.com header.b=ApNOHe6e; arc=none smtp.client-ip=209.85.218.47
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ionos.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ionos.com
-Received: by mail-ej1-f47.google.com with SMTP id a640c23a62f3a-a6265d3ba8fso239357766b.0
-        for <linux-rdma@vger.kernel.org>; Fri, 07 Jun 2024 09:25:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ionos.com; s=google; t=1717777504; x=1718382304; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=INlsx8np7RYxS+x/PsMXwLcYpgw9uIOEVBONEyYuKkQ=;
-        b=ApNOHe6ewtjg2UwlTn/xJUlNfe/rqjaEknPyIHvMvCtnT5OPPsj1hjr/ql/Kx7elbW
-         c5KuAGvSkqEvl4cO/pitk7GaVtUtBSW3i6t/PMntSehaCQcyQRv4xQ2zKZ4NXWTMQMJ+
-         TNjENRBNhu1+NSUClMc9eKI1GtTFmKT3MWh5WJkiow1Mf7qEpSStrZnCqDoLea1BuqMf
-         TWrTG/2kt38lmOIuDhyFax4CQyt2R/J5YHnLmpWSek9baxR7ctLsZmRoWVnt4mywph/3
-         Y7qLngrTZKj0na+oHobtZ5N2F3/C27Bau2pvOF3yo4dcDRwwy9L2XwPONF7s5p/t7BDB
-         XXdw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1717777504; x=1718382304;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=INlsx8np7RYxS+x/PsMXwLcYpgw9uIOEVBONEyYuKkQ=;
-        b=Dkhjz4GJtQbndjva1mtYOg2Xqzi1JkSSWjLArq2Ujhl0jOKvsdbv0nnSX4cVZjVzMh
-         edas7gR/Xeymgec63lfjvuA4tW+pPu0n/UlUm79cUYXjR3w9y7FXVjriy1x501oBhwy4
-         qj/O5xwuu4iJyjWcW0d7QDZn3S4hO4SLMW70bmCVZF1ZK2qA3PRGTpUNoRy1npuDaJPV
-         d3o6WqPbBMHcn3ns8A9qIl5EqatBQSwFBV5V7WqjEEKxL0OyAz623ncFmQqgF4uRUqJY
-         IwpV886A8KCegMy6am9vyQjuqj3GaD6D8P6uN7F9dlbOswcCLJ83F6NhQodlf4kDN471
-         njUw==
-X-Forwarded-Encrypted: i=1; AJvYcCVEDoAHM+krPKfiC0lOAuNM56EZRpm9UVRA57H3+Vc3vcGm3cWkaRqES1hkHAf+5mvsWU63oDQ+7il3fEhs22L+MCSuop1Igv2WvQ==
-X-Gm-Message-State: AOJu0YwJ4i3sb6swEslygZXlSNoDIHs6MfXlCy5s+1OirKm7vMO0Jwa1
-	yPP3M1Sq4QhOHFGQriCiM8HiLSta5T+TD3LM2uSQ9sioixQ1twxU5uVcMGIQPIsTBBQvDXeI1R8
-	1jUdU+DiUJ6Da5bbmAXD3PjFFPZ59GZZEIN4OEw==
-X-Google-Smtp-Source: AGHT+IE/Ku73Ss6uPK9q17BoWHv/wkU+34sP4blf4t8hH4ZwaxZkxEp51MEqwvs2EEl3EW/1Xv9mPNzsyaQX+R5+l4w=
-X-Received: by 2002:a17:906:a5a:b0:a62:b679:3e7b with SMTP id
- a640c23a62f3a-a6cdb2f94c8mr200111966b.61.1717777504087; Fri, 07 Jun 2024
- 09:25:04 -0700 (PDT)
+	s=arc-20240116; t=1717778878; c=relaxed/simple;
+	bh=9iL6D9ZDF9G5asbiclELPhk+Wwh+GRu/qUW2URC9UD0=;
+	h=Date:From:To:cc:Subject:In-Reply-To:Message-ID:References:
+	 MIME-Version:Content-Type; b=V4BPZRdrk3ShI3zuXsDwhA5dsnSJkcJocA48bqC/CYAop65JPKmMA9SRQHjkf4OYL7LuOV4X9N6DtD40Olg8jJGs8CDjcecdrO6mhVWUwmHyHYs9gReK+5QKKa5CsL3Gkg/CPQYBR++N3ysyrCOHGmB+ynklXD9fRevfqR7gSak=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=RbKQiXW9; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 16720C2BBFC;
+	Fri,  7 Jun 2024 16:47:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1717778878;
+	bh=9iL6D9ZDF9G5asbiclELPhk+Wwh+GRu/qUW2URC9UD0=;
+	h=Date:From:To:cc:Subject:In-Reply-To:References:From;
+	b=RbKQiXW9XQ5K/q87b4z56mzshQBPQB6l2r1z7ZROZKiNd26DQr56H+EHBFQCi93ZD
+	 7u6X1+AfLaLTb9iJXPYgMcHJiMhko6Gw6KdhlRbA5ngMzEZL4GfbG2WUZozl7NKGYL
+	 +D3jXQ2JSVSdT34v7A0FRdjz6gekiNFJWO6PH/HVlpkRGmDbssTZGU/HVdnAnVKi87
+	 na9EQ6tR1BFpcE4E/Fk6ufiz/0vyo5UkM1IuzNS6jYwjV00fMccn0e7DhBe6pfyFSL
+	 t+/hgBP6gM0rqzlTokRfLYnS1xz2qbXplpVtEKwNq1FMLrzDltONzYA+6uqVwnOj4r
+	 FVe8ml1lUFMbg==
+Date: Fri, 7 Jun 2024 09:47:57 -0700 (PDT)
+From: Mat Martineau <martineau@kernel.org>
+To: "D. Wythe" <alibuda@linux.alibaba.com>, 
+    Matthieu Baerts <matttbe@kernel.org>
+cc: kgraul@linux.ibm.com, wenjia@linux.ibm.com, jaka@linux.ibm.com, 
+    wintera@linux.ibm.com, guwen@linux.alibaba.com, kuba@kernel.org, 
+    davem@davemloft.net, netdev@vger.kernel.org, linux-s390@vger.kernel.org, 
+    linux-rdma@vger.kernel.org, tonylu@linux.alibaba.com, 
+    Paolo Abeni <pabeni@redhat.com>, edumazet@google.com
+Subject: Re: [PATCH net-next v6 3/3] net/smc: Introduce IPPROTO_SMC
+In-Reply-To: <ed6bde75-2783-446e-b667-204ed55071b5@kernel.org>
+Message-ID: <61b94bf6-a383-afff-db62-261cac7360c7@kernel.org>
+References: <1717592180-66181-1-git-send-email-alibuda@linux.alibaba.com> <1717592180-66181-4-git-send-email-alibuda@linux.alibaba.com> <6e0f1c4a-4911-51c3-02fa-a449f2434ef1@kernel.org> <ffe06909-6152-4349-9b60-5697a038ac19@linux.alibaba.com>
+ <ed6bde75-2783-446e-b667-204ed55071b5@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <1717503252-51884-1-git-send-email-arei.gonglei@huawei.com>
- <20240605035622-mutt-send-email-mst@kernel.org> <e39d065823da4ef9beb5b37c17c9a990@huawei.com>
-In-Reply-To: <e39d065823da4ef9beb5b37c17c9a990@huawei.com>
-From: Yu Zhang <yu.zhang@ionos.com>
-Date: Fri, 7 Jun 2024 18:24:52 +0200
-Message-ID: <CAHEcVy5psqfipiRFkvTyfONfX1b90SJ1iwZK7Tw+XnQvNDKUDQ@mail.gmail.com>
-Subject: Re: [PATCH 0/6] refactor RDMA live migration based on rsocket API
-To: "Gonglei (Arei)" <arei.gonglei@huawei.com>, Peter Xu <peterx@redhat.com>, 
-	Michael Galaxy <mgalaxy@akamai.com>, Jinpu Wang <jinpu.wang@ionos.com>, 
-	Elmar Gerdes <elmar.gerdes@ionos.com>
-Cc: "qemu-devel@nongnu.org" <qemu-devel@nongnu.org>, zhengchuan <zhengchuan@huawei.com>, 
-	"berrange@redhat.com" <berrange@redhat.com>, "armbru@redhat.com" <armbru@redhat.com>, 
-	"lizhijian@fujitsu.com" <lizhijian@fujitsu.com>, "pbonzini@redhat.com" <pbonzini@redhat.com>, 
-	"mst@redhat.com" <mst@redhat.com>, Xiexiangyou <xiexiangyou@huawei.com>, 
-	"linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>, "lixiao (H)" <lixiao91@huawei.com>, 
-	Wangjialin <wangjialin23@huawei.com>, Fabiano Rosas <farosas@suse.de>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: multipart/mixed; BOUNDARY="0-1537107791-1717778253=:88167"
+Content-ID: <2de7d536-e29e-8f93-ee53-6909024c177b@kernel.org>
 
-Hello Gonglei,
+  This message is in MIME format.  The first part should be readable text,
+  while the remaining parts are likely unreadable without MIME-aware tools.
 
-Jinpu and I have tested your patchset by using our migration test
-cases on the physical RDMA cards. The result is: among 59 migration
-test cases, 10 failed. They are successful when using the original
-RDMA migration coed, but always fail when using the patchset. The
-syslog on the source server shows an error below:
+--0-1537107791-1717778253=:88167
+Content-Type: text/plain; CHARSET=UTF-8; format=flowed
+Content-Transfer-Encoding: 8BIT
+Content-ID: <5b21e5f9-e28d-1cfd-f572-72f95d66b58b@kernel.org>
 
-Jun  6 13:35:20 ps402a-43 WARN: Migration failed
-uuid=3D"44449999-3333-48dc-9082-1b6950e74ee1"
-target=3D2a02:247f:401:2:2:0:a:2c error=3DFailed(Unable to write to
-rsocket: Connection reset by peer)
+On Fri, 7 Jun 2024, Matthieu Baerts wrote:
 
-We also tried to compare the migration speed between w/o the patchset.
-Without the patchset, a big VM (with 16 cores, 64 GB memory) stressed
-with heavy memory workload can be migrated successfully. With the
-patchset, only a small idle VM (1-2 cores, 2-4 GB memory) can be
-migrated successfully. In each failed migration, the above error is
-issued on the source server.
+> Hi D.Wythe,
+>
+> On 07/06/2024 07:09, D. Wythe wrote:
+>>
+>> On 6/7/24 5:22 AM, Mat Martineau wrote:
+>>> On Wed, 5 Jun 2024, D. Wythe wrote:
+>>>
+>>>> From: "D. Wythe" <alibuda@linux.alibaba.com>
+>>>>
+>>>> This patch allows to create smc socket via AF_INET,
+>>>> similar to the following code,
+>>>>
+>>>> /* create v4 smc sock */
+>>>> v4 = socket(AF_INET, SOCK_STREAM, IPPROTO_SMC);
+>>>>
+>>>> /* create v6 smc sock */
+>>>> v6 = socket(AF_INET6, SOCK_STREAM, IPPROTO_SMC);
+>>>>
+>>>> There are several reasons why we believe it is appropriate here:
+>>>>
+>>>> 1. For smc sockets, it actually use IPv4 (AF-INET) or IPv6 (AF-INET6)
+>>>> address. There is no AF_SMC address at all.
+>>>>
+>>>> 2. Create smc socket in the AF_INET(6) path, which allows us to reuse
+>>>> the infrastructure of AF_INET(6) path, such as common ebpf hooks.
+>>>> Otherwise, smc have to implement it again in AF_SMC path.
+>>>>
+>>>> Signed-off-by: D. Wythe <alibuda@linux.alibaba.com>
+>>>> Tested-by: Niklas Schnelle <schnelle@linux.ibm.com>
+>>>> ---
+>>>> include/uapi/linux/in.h |   2 +
+>>>> net/smc/Makefile        |   2 +-
+>>>> net/smc/af_smc.c        |  16 ++++-
+>>>> net/smc/smc_inet.c      | 169 +++++++++++++++++++++++++++++++++++++++
+>>>> +++++++++
+>>>> net/smc/smc_inet.h      |  22 +++++++
+>>>> 5 files changed, 208 insertions(+), 3 deletions(-)
+>>>> create mode 100644 net/smc/smc_inet.c
+>>>> create mode 100644 net/smc/smc_inet.h
+>>>>
+>>>> diff --git a/include/uapi/linux/in.h b/include/uapi/linux/in.h
+>>>> index e682ab6..0c6322b 100644
+>>>> --- a/include/uapi/linux/in.h
+>>>> +++ b/include/uapi/linux/in.h
+>>>> @@ -83,6 +83,8 @@ enum {
+>>>> #define IPPROTO_RAW        IPPROTO_RAW
+>>>>   IPPROTO_MPTCP = 262,        /* Multipath TCP connection */
+>>>> #define IPPROTO_MPTCP        IPPROTO_MPTCP
+>>>> +  IPPROTO_SMC = 263,        /* Shared Memory Communications        */
+>>>> +#define IPPROTO_SMC        IPPROTO_SMC
+>>>
+>>> Hello,
+>>>
+>>> It's not required to assign IPPROTO_MPTCP+1 as your new IPPROTO_SMC
+>>> value. Making IPPROTO_MAX larger does increase the size of the
+>>> inet_diag_table. Values from 256 to 261 are usable for IPPROTO_SMC
+>>> without increasing IPPROTO_MAX.
+>>>
+>>> Just for background: When we added IPPROTO_MPTCP, we chose 262 because
+>>> it is IPPROTO_TCP+0x100. The IANA reserved protocol numbers are 8 bits
+>>> wide so we knew we would not conflict with any future additions, and
+>>> in the case of MPTCP is was convenient that truncating the proto value
+>>> to 8 bits would match IPPROTO_TCP.
+>>>
+>>> - Mat
+>>>
+>>
+>> Hi Mat,
+>>
+>> Thank you very much for your feedback, I have always been curious about
+>> the origins of IPPROTO_MPTCP and I am glad to
+>> have learned new knowledge.
+>>
 
-Therefore, I assume that this version is not yet quite capable of
-handling heavy load yet. I'm also looking in the code to see if
-anything can be improved. We really appreciate your excellent work!
+Hi D. Whythe -
 
-Best regards,
-Yu Zhang @ IONOS cloud
+Sure, you're welcome!
 
-On Wed, Jun 5, 2024 at 12:00=E2=80=AFPM Gonglei (Arei) <arei.gonglei@huawei=
-.com> wrote:
+>> Regarding the size issue of inet_diag_tables, what you said does make
+>> sense. However, we still hope to continue using 263,
+>> although the rationale may not be fully sufficient, as this series has
+>> been under community evaluation for quite some time now,
+>> and we haven't received any feedback about this value, so we’ve been
+>> using it in some user-space tools ... 🙁
+>>
+
+It's definitely a tradeoff between the Linux UAPI that gets locked in 
+forever vs. handling a transition with your userspace tools. If you change 
+the numeric value of IPPROTO_SMC on the open source side you could 
+transition internally by carrying a kernel patch that allows both the new 
+and old value.
+
+>> I would like to see what the community thinks. If everyone agrees that
+>> using 263 will be completely unacceptable and a disaster,
+>> then we will have no choice but to change it.
 >
+> It will not be a disaster, but a small waste of space (even if
+> CONFIG_SMC is not set).
+
+Well stated Matthieu :)  I chose my "not required" wording carefully, as I 
+didn't want to demand a change here but to make you aware of some of the 
+tradeoffs to consider. And thankfully Matthieu remembered the userspace 
+issues below.
+
+Also, I see that one of the netdev maintainers flagged this v6 series as 
+"changes requested" in patchwork so that may indicate their preference?
+
 >
+> Also, please note that the introduction of IPPROTO_MPTCP caused some
+> troubles in some userspace programs. That was mainly because IPPROTO_MAX
+> got updated, and they didn't expect that, e.g. a quick search on GitHub
+> gave me this:
 >
-> > -----Original Message-----
-> > From: Michael S. Tsirkin [mailto:mst@redhat.com]
-> > Sent: Wednesday, June 5, 2024 3:57 PM
-> > To: Gonglei (Arei) <arei.gonglei@huawei.com>
-> > Cc: qemu-devel@nongnu.org; peterx@redhat.com; yu.zhang@ionos.com;
-> > mgalaxy@akamai.com; elmar.gerdes@ionos.com; zhengchuan
-> > <zhengchuan@huawei.com>; berrange@redhat.com; armbru@redhat.com;
-> > lizhijian@fujitsu.com; pbonzini@redhat.com; Xiexiangyou
-> > <xiexiangyou@huawei.com>; linux-rdma@vger.kernel.org; lixiao (H)
-> > <lixiao91@huawei.com>; jinpu.wang@ionos.com; Wangjialin
-> > <wangjialin23@huawei.com>
-> > Subject: Re: [PATCH 0/6] refactor RDMA live migration based on rsocket =
-API
-> >
-> > On Tue, Jun 04, 2024 at 08:14:06PM +0800, Gonglei wrote:
-> > > From: Jialin Wang <wangjialin23@huawei.com>
-> > >
-> > > Hi,
-> > >
-> > > This patch series attempts to refactor RDMA live migration by
-> > > introducing a new QIOChannelRDMA class based on the rsocket API.
-> > >
-> > > The /usr/include/rdma/rsocket.h provides a higher level rsocket API
-> > > that is a 1-1 match of the normal kernel 'sockets' API, which hides
-> > > the detail of rdma protocol into rsocket and allows us to add support
-> > > for some modern features like multifd more easily.
-> > >
-> > > Here is the previous discussion on refactoring RDMA live migration
-> > > using the rsocket API:
-> > >
-> > > https://lore.kernel.org/qemu-devel/20240328130255.52257-1-philmd@lina=
-r
-> > > o.org/
-> > >
-> > > We have encountered some bugs when using rsocket and plan to submit
-> > > them to the rdma-core community.
-> > >
-> > > In addition, the use of rsocket makes our programming more convenient=
-,
-> > > but it must be noted that this method introduces multiple memory
-> > > copies, which can be imagined that there will be a certain performanc=
-e
-> > > degradation, hoping that friends with RDMA network cards can help ver=
-ify,
-> > thank you!
-> >
-> > So you didn't test it with an RDMA card?
+>  https://github.com/systemd/systemd/issues/15604
+>  https://github.com/strace/strace/issues/164
+>  https://github.com/rust-lang/libc/issues/1896
 >
-> Yep, we tested it by Soft-ROCE.
+> I guess these userspace programs should now be ready for a new update,
+> but still, it might be better to avoid that if there is a "simple" solution.
 >
-> > You really should test with an RDMA card though, for correctness as muc=
-h as
-> > performance.
-> >
-> We will, we just don't have RDMA cards environment on hand at the moment.
->
-> Regards,
-> -Gonglei
->
-> >
-> > > Jialin Wang (6):
-> > >   migration: remove RDMA live migration temporarily
-> > >   io: add QIOChannelRDMA class
-> > >   io/channel-rdma: support working in coroutine
-> > >   tests/unit: add test-io-channel-rdma.c
-> > >   migration: introduce new RDMA live migration
-> > >   migration/rdma: support multifd for RDMA migration
-> > >
-> > >  docs/rdma.txt                     |  420 ---
-> > >  include/io/channel-rdma.h         |  165 ++
-> > >  io/channel-rdma.c                 |  798 ++++++
-> > >  io/meson.build                    |    1 +
-> > >  io/trace-events                   |   14 +
-> > >  meson.build                       |    6 -
-> > >  migration/meson.build             |    3 +-
-> > >  migration/migration-stats.c       |    5 +-
-> > >  migration/migration-stats.h       |    4 -
-> > >  migration/migration.c             |   13 +-
-> > >  migration/migration.h             |    9 -
-> > >  migration/multifd.c               |   10 +
-> > >  migration/options.c               |   16 -
-> > >  migration/options.h               |    2 -
-> > >  migration/qemu-file.c             |    1 -
-> > >  migration/ram.c                   |   90 +-
-> > >  migration/rdma.c                  | 4205 +--------------------------=
---
-> > >  migration/rdma.h                  |   67 +-
-> > >  migration/savevm.c                |    2 +-
-> > >  migration/trace-events            |   68 +-
-> > >  qapi/migration.json               |   13 +-
-> > >  scripts/analyze-migration.py      |    3 -
-> > >  tests/unit/meson.build            |    1 +
-> > >  tests/unit/test-io-channel-rdma.c |  276 ++
-> > >  24 files changed, 1360 insertions(+), 4832 deletions(-)  delete mode
-> > > 100644 docs/rdma.txt  create mode 100644 include/io/channel-rdma.h
-> > > create mode 100644 io/channel-rdma.c  create mode 100644
-> > > tests/unit/test-io-channel-rdma.c
-> > >
-> > > --
-> > > 2.43.0
->
+> I understand changing your userspace tools will be annoying. (On the
+> other hand, it is still time to do that :) )
+
+Agreed!
+
+
+- Mat
+--0-1537107791-1717778253=:88167--
 
