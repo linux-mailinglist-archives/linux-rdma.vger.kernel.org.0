@@ -1,399 +1,778 @@
-Return-Path: <linux-rdma+bounces-2986-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-2987-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id B1D0A8FFF74
-	for <lists+linux-rdma@lfdr.de>; Fri,  7 Jun 2024 11:29:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 8C0A090002E
+	for <lists+linux-rdma@lfdr.de>; Fri,  7 Jun 2024 12:04:43 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 329F61F25845
-	for <lists+linux-rdma@lfdr.de>; Fri,  7 Jun 2024 09:29:08 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1286F1F249AB
+	for <lists+linux-rdma@lfdr.de>; Fri,  7 Jun 2024 10:04:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DAFDD15B985;
-	Fri,  7 Jun 2024 09:28:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7A9BD155328;
+	Fri,  7 Jun 2024 10:01:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=ionos.com header.i=@ionos.com header.b="imiXffGC"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-lj1-f181.google.com (mail-lj1-f181.google.com [209.85.208.181])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BF1CB15B980
-	for <linux-rdma@vger.kernel.org>; Fri,  7 Jun 2024 09:28:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.188
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8ECCB158214
+	for <linux-rdma@vger.kernel.org>; Fri,  7 Jun 2024 10:01:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1717752500; cv=none; b=pXcW/LsCPx2zY+8A2xITXp+vVHF2cdXSPRivhK2BI22/iN5/gvzVBlYCBIMxVyAcP1z6yFFPzISCFD8+NWZinsaiYz0lzcqc9MgM3QzjNo+ef/ic/QCXrRum37hbMNZs6dsurLxPIRh+8XgF0pp/gBSPeiBumPE09QzB+MdJg7E=
+	t=1717754519; cv=none; b=e1uHGJAYVXV2yoKEHnkQF5YzAR5KyGE3rOxOANLnHinM27tPCBrY2XwR8vbYvma0kJ9RM+Q45yeBazx7Ft5G5UdbM2Y6iITYAE7EU4wSo1nFImHf5kG/TNAQT1gFZQgNEk8jufmiySX6tMQBdH5aMyawZcPzeXWrmKNQPLlic3k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1717752500; c=relaxed/simple;
-	bh=BSlI1FOs9zmjMOsgK8YR9ZS7SB4TeyDzw/+tybWBqd4=;
-	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
-	 Content-Type:MIME-Version; b=OP1nVJCNmy3NrIRUwOR4QB47rID69REI6O9R/qXsu1pfZRx0J25D9oxmmr9ErmM7KAA//za0q9acm/iUfLe20xmF46j4BKu81Q+96o6GlEBeJ+hEG7q6AScf1kj/F8Tgo0T5sdbbwqBEI8oCKHqrm/eH+ID8gATrggyMFxxQCbQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.188
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.163.174])
-	by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4VwbSB00mxzdZMC;
-	Fri,  7 Jun 2024 17:26:49 +0800 (CST)
-Received: from kwepemf200003.china.huawei.com (unknown [7.202.181.229])
-	by mail.maildlp.com (Postfix) with ESMTPS id F21E614035E;
-	Fri,  7 Jun 2024 17:28:14 +0800 (CST)
-Received: from dggpemf200006.china.huawei.com (7.185.36.61) by
- kwepemf200003.china.huawei.com (7.202.181.229) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1544.11; Fri, 7 Jun 2024 17:28:14 +0800
-Received: from dggpemf200006.china.huawei.com ([7.185.36.61]) by
- dggpemf200006.china.huawei.com ([7.185.36.61]) with mapi id 15.02.1544.011;
- Fri, 7 Jun 2024 17:28:14 +0800
-From: "Gonglei (Arei)" <arei.gonglei@huawei.com>
-To: =?utf-8?B?RGFuaWVsIFAuIEJlcnJhbmfDqQ==?= <berrange@redhat.com>
-CC: "qemu-devel@nongnu.org" <qemu-devel@nongnu.org>, "peterx@redhat.com"
-	<peterx@redhat.com>, "yu.zhang@ionos.com" <yu.zhang@ionos.com>,
-	"mgalaxy@akamai.com" <mgalaxy@akamai.com>, "elmar.gerdes@ionos.com"
-	<elmar.gerdes@ionos.com>, zhengchuan <zhengchuan@huawei.com>,
-	"armbru@redhat.com" <armbru@redhat.com>, "lizhijian@fujitsu.com"
-	<lizhijian@fujitsu.com>, "pbonzini@redhat.com" <pbonzini@redhat.com>,
-	"mst@redhat.com" <mst@redhat.com>, Xiexiangyou <xiexiangyou@huawei.com>,
-	"linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>, "lixiao (H)"
-	<lixiao91@huawei.com>, "jinpu.wang@ionos.com" <jinpu.wang@ionos.com>,
-	Wangjialin <wangjialin23@huawei.com>
-Subject: RE: [PATCH 3/6] io/channel-rdma: support working in coroutine
-Thread-Topic: [PATCH 3/6] io/channel-rdma: support working in coroutine
-Thread-Index: AQHatni7W52WMMzW8Ee4gnF0E7ZtJ7G7gE6AgACIiQA=
-Date: Fri, 7 Jun 2024 09:28:14 +0000
-Message-ID: <033ea0a597754358b2ca9c881e1b09dc@huawei.com>
-References: <1717503252-51884-1-git-send-email-arei.gonglei@huawei.com>
-	<1717503252-51884-4-git-send-email-arei.gonglei@huawei.com>
- <ZmLNExmXzxb-hgoN@redhat.com>
-In-Reply-To: <ZmLNExmXzxb-hgoN@redhat.com>
-Accept-Language: zh-CN, en-US
-Content-Language: zh-CN
-X-MS-Has-Attach:
-X-MS-TNEF-Correlator:
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+	s=arc-20240116; t=1717754519; c=relaxed/simple;
+	bh=8kLASKfZLAchbfvM5yXWjkQYtN/xmIQT10a1h2r/FTM=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=Ag+6ghENGwXMswx+YeuBRLpPprvzEV5STcbd4YAuQuicKTcr3tQGCWyrUG7CREHjprysY4DF6XNQLiAuMZFIRXccb1MHkXDB5yUp6u0RSCJUkYyXYTiveREntEEbcehwytbiScwD32bDQhWimew1b/3mZpZBKvYxCD+h71NJi8g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ionos.com; spf=pass smtp.mailfrom=ionos.com; dkim=pass (2048-bit key) header.d=ionos.com header.i=@ionos.com header.b=imiXffGC; arc=none smtp.client-ip=209.85.208.181
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ionos.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ionos.com
+Received: by mail-lj1-f181.google.com with SMTP id 38308e7fff4ca-2eab0bc74cdso19733931fa.3
+        for <linux-rdma@vger.kernel.org>; Fri, 07 Jun 2024 03:01:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ionos.com; s=google; t=1717754513; x=1718359313; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=SMNWK2XsVOhMr4LzMM9LpNrh2IhCDcTVBzz5QX4COTo=;
+        b=imiXffGCWb1XqxEqfpOyyGGFNU6iIt++W7YFxHqimNux8jS4bD/gaVaoI7Iu5VcDWn
+         vw+46JmpfjQcHmVsSchYk4ZnXWyf+1tlBTLjljJJinO2xS5uSHCP4FZDPw9pwrhYS/wQ
+         902fSg9eu2o2PK0zpDKSBaLpm7W9pi5FOxKpj2gZHGxj8TT82D3tFWA2XdEdWXHR39WR
+         4CLeV4jyMyHhlN+Wxjdn0E7YM79T/h2Or7iik/iws9clfqPQvKQ3SumxbElXC52Nw65E
+         rxIJauipc7zER0DdpfhbHvdi5wk+XaUde4O+vQgi86nTYSeN1jov1O+MPQZHVZlOF4mD
+         pKvA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1717754513; x=1718359313;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=SMNWK2XsVOhMr4LzMM9LpNrh2IhCDcTVBzz5QX4COTo=;
+        b=WAMMVQhwDwj+7a8ZMkWKjPkhzkZxN5lpER3+z94o3JXTssMwY6XLxFEhby/5WGL93W
+         93rTLQX6sgfSUTDxXBRJa7p9/EcbkKWf+4MmAMd0Uev5QKNt7LArc2TSdwzn7d78d2P6
+         l966n0xDUda9YJ8q2XfYkyxTWkTRKEJJ4QeKxOcoKe+BitlvCh9TeiiXnli9vQ1etb5K
+         U6S3G98TmYq04I8p+6h39pf+O1Q/iekhY9o19Tb/rq7oA5yYC8okcnWRui9S3p//tXyo
+         tPh9bLMLfPJrnRXMaWLEFTRB6xvuZ7CU76K9d6EyZDO6QQqUWxbETp1cxsrEqt9m59vh
+         cfhg==
+X-Forwarded-Encrypted: i=1; AJvYcCVI+BPSHciJWKrUDu+By2gSey3cqF2ML0ENPciNKe9Mx6tkxS5LLnj12+JkF2Js7Wt47giz6g4sjc0R5gybS02g/kEJ5vnhrQKl1w==
+X-Gm-Message-State: AOJu0YzpLrl+5cj9DXDwc9MmnYvQmhFQ4ZgrfgYXXfFo5u+hgS7fsWO3
+	48euacuna3nsYJ9KsnZ2iO69yvmB4EsRdExLPBY9RnRsVORb3X72T7cKocglcdYQlGOe6+Pw5ae
+	XCoivG7HE841jPEUVj7ycQ0dYMkTpFNoYPVnq4A==
+X-Google-Smtp-Source: AGHT+IGr37VAsMKtAkAlMCsayHErrBPl6vL1/q1ZFyeCNDSgdQohTsvPPtimC0VJ91mnjJkJ7lsdNjnbg+gkygcOaBA=
+X-Received: by 2002:a2e:91c6:0:b0:2e6:f2e1:32a6 with SMTP id
+ 38308e7fff4ca-2eadce38050mr13286501fa.27.1717754513562; Fri, 07 Jun 2024
+ 03:01:53 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+References: <1717503252-51884-1-git-send-email-arei.gonglei@huawei.com>
+ <1717503252-51884-4-git-send-email-arei.gonglei@huawei.com>
+ <CAJpMwyh38bHxM7JEjt+w4Y4yOiKDpGnsL6WUy7rL40=4KB0+mg@mail.gmail.com> <4f76b5e737584bfda08bf141d1667b9e@huawei.com>
+In-Reply-To: <4f76b5e737584bfda08bf141d1667b9e@huawei.com>
+From: Haris Iqbal <haris.iqbal@ionos.com>
+Date: Fri, 7 Jun 2024 12:01:42 +0200
+Message-ID: <CAJpMwyhjoofH8i9QdS_H8tNDyU2EAL+_xtHsNZMWhhbyxChG3Q@mail.gmail.com>
+Subject: Re: [PATCH 3/6] io/channel-rdma: support working in coroutine
+To: "Gonglei (Arei)" <arei.gonglei@huawei.com>
+Cc: "qemu-devel@nongnu.org" <qemu-devel@nongnu.org>, "peterx@redhat.com" <peterx@redhat.com>, 
+	"yu.zhang@ionos.com" <yu.zhang@ionos.com>, "mgalaxy@akamai.com" <mgalaxy@akamai.com>, 
+	"elmar.gerdes@ionos.com" <elmar.gerdes@ionos.com>, zhengchuan <zhengchuan@huawei.com>, 
+	"berrange@redhat.com" <berrange@redhat.com>, "armbru@redhat.com" <armbru@redhat.com>, 
+	"lizhijian@fujitsu.com" <lizhijian@fujitsu.com>, "pbonzini@redhat.com" <pbonzini@redhat.com>, 
+	"mst@redhat.com" <mst@redhat.com>, Xiexiangyou <xiexiangyou@huawei.com>, 
+	"linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>, "lixiao (H)" <lixiao91@huawei.com>, 
+	"jinpu.wang@ionos.com" <jinpu.wang@ionos.com>, Wangjialin <wangjialin23@huawei.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-SGkgRGFuaWVsLA0KDQo+IC0tLS0tT3JpZ2luYWwgTWVzc2FnZS0tLS0tDQo+IEZyb206IERhbmll
-bCBQLiBCZXJyYW5nw6kgW21haWx0bzpiZXJyYW5nZUByZWRoYXQuY29tXQ0KPiBTZW50OiBGcmlk
-YXksIEp1bmUgNywgMjAyNCA1OjA0IFBNDQo+IFRvOiBHb25nbGVpIChBcmVpKSA8YXJlaS5nb25n
-bGVpQGh1YXdlaS5jb20+DQo+IENjOiBxZW11LWRldmVsQG5vbmdudS5vcmc7IHBldGVyeEByZWRo
-YXQuY29tOyB5dS56aGFuZ0Bpb25vcy5jb207DQo+IG1nYWxheHlAYWthbWFpLmNvbTsgZWxtYXIu
-Z2VyZGVzQGlvbm9zLmNvbTsgemhlbmdjaHVhbg0KPiA8emhlbmdjaHVhbkBodWF3ZWkuY29tPjsg
-YXJtYnJ1QHJlZGhhdC5jb207IGxpemhpamlhbkBmdWppdHN1LmNvbTsNCj4gcGJvbnppbmlAcmVk
-aGF0LmNvbTsgbXN0QHJlZGhhdC5jb207IFhpZXhpYW5neW91DQo+IDx4aWV4aWFuZ3lvdUBodWF3
-ZWkuY29tPjsgbGludXgtcmRtYUB2Z2VyLmtlcm5lbC5vcmc7IGxpeGlhbyAoSCkNCj4gPGxpeGlh
-bzkxQGh1YXdlaS5jb20+OyBqaW5wdS53YW5nQGlvbm9zLmNvbTsgV2FuZ2ppYWxpbg0KPiA8d2Fu
-Z2ppYWxpbjIzQGh1YXdlaS5jb20+DQo+IFN1YmplY3Q6IFJlOiBbUEFUQ0ggMy82XSBpby9jaGFu
-bmVsLXJkbWE6IHN1cHBvcnQgd29ya2luZyBpbiBjb3JvdXRpbmUNCj4gDQo+IE9uIFR1ZSwgSnVu
-IDA0LCAyMDI0IGF0IDA4OjE0OjA5UE0gKzA4MDAsIEdvbmdsZWkgd3JvdGU6DQo+ID4gRnJvbTog
-SmlhbGluIFdhbmcgPHdhbmdqaWFsaW4yM0BodWF3ZWkuY29tPg0KPiA+DQo+ID4gSXQgaXMgbm90
-IGZlYXNpYmxlIHRvIG9idGFpbiBSRE1BIGNvbXBsZXRpb24gcXVldWUgbm90aWZpY2F0aW9ucw0K
-PiA+IHRocm91Z2ggcG9sbC9wcG9sbCBvbiB0aGUgcnNvY2tldCBmZC4gVGhlcmVmb3JlLCB3ZSBj
-cmVhdGUgYSB0aHJlYWQNCj4gPiBuYW1lZCBycG9sbGVyIGZvciBlYWNoIHJzb2NrZXQgZmQgYW5k
-IHR3byBldmVudGZkczogcG9sbGluX2V2ZW50ZmQgYW5kDQo+ID4gcG9sbG91dF9ldmVudGZkLg0K
-PiA+DQo+ID4gV2hlbiB1c2luZyBpb19jcmVhdGVfd2F0Y2ggb3IgaW9fc2V0X2Fpb19mZF9oYW5k
-bGVyIHdhaXRzIGZvciBQT0xMSU4NCj4gPiBvciBQT0xMT1VUIGV2ZW50cywgaXQgd2lsbCBhY3R1
-YWxseSBwb2xsL3Bwb2xsIG9uIHRoZSBwb2xsaW5fZXZlbnRmZA0KPiA+IGFuZCBwb2xsb3V0X2V2
-ZW50ZmQgaW5zdGVhZCBvZiB0aGUgcnNvY2tldCBmZC4NCj4gPg0KPiA+IFRoZSBycG9sbGVyIHJw
-b2xsKCkgb24gdGhlIHJzb2NrZXQgZmQgdG8gcmVjZWl2ZSBQT0xMSU4gYW5kIFBPTExPVVQNCj4g
-PiBldmVudHMuDQo+ID4gV2hlbiBhIFBPTExJTiBldmVudCBvY2N1cnMsIHRoZSBycG9sbGVyIHdy
-aXRlIHRoZSBwb2xsaW5fZXZlbnRmZCwgYW5kDQo+ID4gdGhlbiBwb2xsL3Bwb2xsIHdpbGwgcmV0
-dXJuIHRoZSBQT0xMSU4gZXZlbnQuDQo+ID4gV2hlbiBhIFBPTExPVVQgZXZlbnQgb2NjdXJzLCB0
-aGUgcnBvbGxlciByZWFkIHRoZSBwb2xsb3V0X2V2ZW50ZmQsIGFuZA0KPiA+IHRoZW4gcG9sbC9w
-cG9sbCB3aWxsIHJldHVybiB0aGUgUE9MTE9VVCBldmVudC4NCj4gPg0KPiA+IEZvciBhIG5vbi1i
-bG9ja2luZyByc29ja2V0IGZkLCBpZiBycmVhZC9yd3JpdGUgcmV0dXJucyBFQUdBSU4sIGl0IHdp
-bGwNCj4gPiByZWFkL3dyaXRlIHRoZSBwb2xsaW4vcG9sbG91dF9ldmVudGZkLCBwcmV2ZW50aW5n
-IHBvbGwvcHBvbGwgZnJvbQ0KPiA+IHJldHVybmluZyBQT0xMSU4vUE9MTE9VVCBldmVudHMuDQo+
-ID4NCj4gPiBLbm93biBsaW1pdGF0aW9uczoNCj4gPg0KPiA+ICAgRm9yIGEgYmxvY2tpbmcgcnNv
-Y2tldCBmZCwgaWYgd2UgdXNlIGlvX2NyZWF0ZV93YXRjaCB0byB3YWl0IGZvcg0KPiA+ICAgUE9M
-TElOIG9yIFBPTExPVVQgZXZlbnRzLCBzaW5jZSB0aGUgcnNvY2tldCBmZCBpcyBibG9ja2luZywg
-d2UNCj4gPiAgIGNhbm5vdCBkZXRlcm1pbmUgd2hlbiBpdCBpcyBub3QgcmVhZHkgdG8gcmVhZC93
-cml0ZSBhcyB3ZSBjYW4gd2l0aA0KPiA+ICAgbm9uLWJsb2NraW5nIGZkcy4gVGhlcmVmb3JlLCB3
-aGVuIGFuIGV2ZW50IG9jY3VycywgaXQgd2lsbCBvY2N1cnMNCj4gPiAgIGFsd2F5cywgcG90ZW50
-aWFsbHkgbGVhdmUgdGhlIHFlbXUgaGFuZ2luZy4gU28gd2UgbmVlZCBiZSBjYXV0aW91cw0KPiA+
-ICAgdG8gYXZvaWQgaGFuZ2luZyB3aGVuIHVzaW5nIGlvX2NyZWF0ZV93YXRjaCAuDQo+ID4NCj4g
-PiBMdWNraWx5LCBjaGFubmVsLXJkbWEgd29ya3Mgd2VsbCBpbiBjb3JvdXRpbmVzIDopDQo+ID4N
-Cj4gPiBTaWduZWQtb2ZmLWJ5OiBKaWFsaW4gV2FuZyA8d2FuZ2ppYWxpbjIzQGh1YXdlaS5jb20+
-DQo+ID4gU2lnbmVkLW9mZi1ieTogR29uZ2xlaSA8YXJlaS5nb25nbGVpQGh1YXdlaS5jb20+DQo+
-ID4gLS0tDQo+ID4gIGluY2x1ZGUvaW8vY2hhbm5lbC1yZG1hLmggfCAgMTUgKy0NCj4gPiAgaW8v
-Y2hhbm5lbC1yZG1hLmMgICAgICAgICB8IDM2Mw0KPiArKysrKysrKysrKysrKysrKysrKysrKysr
-KysrKysrKysrKysrLQ0KPiA+ICAyIGZpbGVzIGNoYW5nZWQsIDM3NiBpbnNlcnRpb25zKCspLCAy
-IGRlbGV0aW9ucygtKQ0KPiA+DQo+ID4gZGlmZiAtLWdpdCBhL2luY2x1ZGUvaW8vY2hhbm5lbC1y
-ZG1hLmggYi9pbmNsdWRlL2lvL2NoYW5uZWwtcmRtYS5oDQo+ID4gaW5kZXggOGNhYjI0NTllNS4u
-Y2I1NjEyN2Q3NiAxMDA2NDQNCj4gPiAtLS0gYS9pbmNsdWRlL2lvL2NoYW5uZWwtcmRtYS5oDQo+
-ID4gKysrIGIvaW5jbHVkZS9pby9jaGFubmVsLXJkbWEuaA0KPiA+IEBAIC00Nyw2ICs0NywxOCBA
-QCBzdHJ1Y3QgUUlPQ2hhbm5lbFJETUEgew0KPiA+ICAgICAgc29ja2xlbl90IGxvY2FsQWRkckxl
-bjsNCj4gPiAgICAgIHN0cnVjdCBzb2NrYWRkcl9zdG9yYWdlIHJlbW90ZUFkZHI7DQo+ID4gICAg
-ICBzb2NrbGVuX3QgcmVtb3RlQWRkckxlbjsNCj4gPiArDQo+ID4gKyAgICAvKiBwcml2YXRlICov
-DQo+ID4gKw0KPiA+ICsgICAgLyogcWVtdSBnX3BvbGwvcHBvbGwoKSBQT0xMSU4gZXZlbnQgb24g
-aXQgKi8NCj4gPiArICAgIGludCBwb2xsaW5fZXZlbnRmZDsNCj4gPiArICAgIC8qIHFlbXUgZ19w
-b2xsL3Bwb2xsKCkgUE9MTE9VVCBldmVudCBvbiBpdCAqLw0KPiA+ICsgICAgaW50IHBvbGxvdXRf
-ZXZlbnRmZDsNCj4gPiArDQo+ID4gKyAgICAvKiB0aGUgaW5kZXggaW4gdGhlIHJwb2xsZXIncyBm
-ZHMgYXJyYXkgKi8NCj4gPiArICAgIGludCBpbmRleDsNCj4gPiArICAgIC8qIHJwb2xsZXIgd2ls
-bCBycG9sbCgpIHJwb2xsX2V2ZW50cyBvbiB0aGUgcnNvY2tldCBmZCAqLw0KPiA+ICsgICAgc2hv
-cnQgaW50IHJwb2xsX2V2ZW50czsNCj4gPiAgfTsNCj4gPg0KPiA+ICAvKioNCj4gPiBAQCAtMTQ3
-LDYgKzE1OSw3IEBAIHZvaWQNCj4gcWlvX2NoYW5uZWxfcmRtYV9saXN0ZW5fYXN5bmMoUUlPQ2hh
-bm5lbFJETUEgKmlvYywgSW5ldFNvY2tldEFkZHJlc3MNCj4gKmFkZHIsDQo+ID4gICAqDQo+ID4g
-ICAqIFJldHVybnM6IHRoZSBuZXcgY2xpZW50IGNoYW5uZWwsIG9yIE5VTEwgb24gZXJyb3INCj4g
-PiAgICovDQo+ID4gLVFJT0NoYW5uZWxSRE1BICpxaW9fY2hhbm5lbF9yZG1hX2FjY2VwdChRSU9D
-aGFubmVsUkRNQSAqaW9jLA0KPiBFcnJvcg0KPiA+ICoqZXJycCk7DQo+ID4gK1FJT0NoYW5uZWxS
-RE1BICpjb3JvdXRpbmVfbWl4ZWRfZm4NCj4gcWlvX2NoYW5uZWxfcmRtYV9hY2NlcHQoUUlPQ2hh
-bm5lbFJETUEgKmlvYywNCj4gPiArDQo+IEVycm9yDQo+ID4gKyoqZXJycCk7DQo+ID4NCj4gPiAg
-I2VuZGlmIC8qIFFJT19DSEFOTkVMX1JETUFfSCAqLw0KPiA+IGRpZmYgLS1naXQgYS9pby9jaGFu
-bmVsLXJkbWEuYyBiL2lvL2NoYW5uZWwtcmRtYS5jIGluZGV4DQo+ID4gOTJjMzYyZGY1Mi4uOTc5
-MmFkZDVjZiAxMDA2NDQNCj4gPiAtLS0gYS9pby9jaGFubmVsLXJkbWEuYw0KPiA+ICsrKyBiL2lv
-L2NoYW5uZWwtcmRtYS5jDQo+ID4gQEAgLTIzLDEwICsyMywxNSBAQA0KPiA+DQo+ID4gICNpbmNs
-dWRlICJxZW11L29zZGVwLmgiDQo+ID4gICNpbmNsdWRlICJpby9jaGFubmVsLXJkbWEuaCINCj4g
-PiArI2luY2x1ZGUgImlvL2NoYW5uZWwtdXRpbC5oIg0KPiA+ICsjaW5jbHVkZSAiaW8vY2hhbm5l
-bC13YXRjaC5oIg0KPiA+ICAjaW5jbHVkZSAiaW8vY2hhbm5lbC5oIg0KPiA+ICAjaW5jbHVkZSAi
-cWFwaS9jbG9uZS12aXNpdG9yLmgiDQo+ID4gICNpbmNsdWRlICJxYXBpL2Vycm9yLmgiDQo+ID4g
-ICNpbmNsdWRlICJxYXBpL3FhcGktdmlzaXQtc29ja2V0cy5oIg0KPiA+ICsjaW5jbHVkZSAicWVt
-dS9hdG9taWMuaCINCj4gPiArI2luY2x1ZGUgInFlbXUvZXJyb3ItcmVwb3J0LmgiDQo+ID4gKyNp
-bmNsdWRlICJxZW11L3RocmVhZC5oIg0KPiA+ICAjaW5jbHVkZSAidHJhY2UuaCINCj4gPiAgI2lu
-Y2x1ZGUgPGVycm5vLmg+DQo+ID4gICNpbmNsdWRlIDxuZXRkYi5oPg0KPiA+IEBAIC0zOSwxMSAr
-NDQsMjc0IEBADQo+ID4gICNpbmNsdWRlIDxzeXMvcG9sbC5oPg0KPiA+ICAjaW5jbHVkZSA8dW5p
-c3RkLmg+DQo+ID4NCj4gPiArdHlwZWRlZiBlbnVtIHsNCj4gPiArICAgIENMRUFSX1BPTExJTiwN
-Cj4gPiArICAgIENMRUFSX1BPTExPVVQsDQo+ID4gKyAgICBTRVRfUE9MTElOLA0KPiA+ICsgICAg
-U0VUX1BPTExPVVQsDQo+ID4gK30gVXBkYXRlRXZlbnQ7DQo+ID4gKw0KPiA+ICt0eXBlZGVmIGVu
-dW0gew0KPiA+ICsgICAgUlBfQ01EX0FERF9JT0MsDQo+ID4gKyAgICBSUF9DTURfREVMX0lPQywN
-Cj4gPiArICAgIFJQX0NNRF9VUERBVEUsDQo+ID4gK30gUnBvbGxlckNNRDsNCj4gPiArDQo+ID4g
-K3R5cGVkZWYgc3RydWN0IHsNCj4gPiArICAgIFJwb2xsZXJDTUQgY21kOw0KPiA+ICsgICAgUUlP
-Q2hhbm5lbFJETUEgKnJpb2M7DQo+ID4gK30gUnBvbGxlck1zZzsNCj4gPiArDQo+ID4gKy8qDQo+
-ID4gKyAqIHJwb2xsKCkgb24gdGhlIHJzb2NrZXQgZmQgd2l0aCBycG9sbF9ldmVudHMsIHdoZW4g
-UE9MTElOL1BPTExPVVQNCj4gPiArZXZlbnQNCj4gPiArICogb2NjdXJzLCBpdCB3aWxsIHdyaXRl
-L3JlYWQgdGhlIHBvbGxpbl9ldmVudGZkL3BvbGxvdXRfZXZlbnRmZCB0bw0KPiA+ICthbGxvdw0K
-PiA+ICsgKiBxZW11IGdfcG9sbC9wcG9sbCgpIGdldCB0aGUgUE9MTElOL1BPTExPVVQgZXZlbnQg
-ICovIHN0YXRpYyBzdHJ1Y3QNCj4gPiArUnBvbGxlciB7DQo+ID4gKyAgICBRZW11VGhyZWFkIHRo
-cmVhZDsNCj4gPiArICAgIGJvb2wgaXNfcnVubmluZzsNCj4gPiArICAgIGludCBzb2NrWzJdOw0K
-PiA+ICsgICAgaW50IGNvdW50OyAvKiB0aGUgbnVtYmVyIG9mIHJzb2NrZXQgZmRzIGJlaW5nIHJw
-b2xsKCkgKi8NCj4gPiArICAgIGludCBzaXplOyAvKiB0aGUgc2l6ZSBvZiBmZHMvcmlvY3MgKi8N
-Cj4gPiArICAgIHN0cnVjdCBwb2xsZmQgKmZkczsNCj4gPiArICAgIFFJT0NoYW5uZWxSRE1BICoq
-cmlvY3M7DQo+ID4gK30gcnBvbGxlcjsNCj4gPiArDQo+ID4gK3N0YXRpYyB2b2lkIHFpb19jaGFu
-bmVsX3JkbWFfbm90aWZ5X3Jwb2xsZXIoUUlPQ2hhbm5lbFJETUEgKnJpb2MsDQo+ID4gKyAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgUnBvbGxlckNNRCBjbWQpIHsN
-Cj4gPiArICAgIFJwb2xsZXJNc2cgbXNnOw0KPiA+ICsgICAgaW50IHJldDsNCj4gPiArDQo+ID4g
-KyAgICBtc2cuY21kID0gY21kOw0KPiA+ICsgICAgbXNnLnJpb2MgPSByaW9jOw0KPiA+ICsNCj4g
-PiArICAgIHJldCA9IFJFVFJZX09OX0VJTlRSKHdyaXRlKHJwb2xsZXIuc29ja1swXSwgJm1zZywg
-c2l6ZW9mIG1zZykpOw0KPiANCj4gU28gdGhpcyBtZXNzYWdlIGlzIGhhbmRsZWQgYXN5bmNocm9u
-b3VzbHkgYnkgdGhlIHBvbGwgdGhyZWFkLCBidXQgeW91J3JlIG5vdA0KPiBhY3F1aXJpbmcgYW55
-IHJlZmVyZW5jZSBvbiB0ZWggJ3Jpb2MnIG9iamVjdC4gU28gdGhlcmUncyB0aGUgcG9zc2liaWxp
-dHkgdGhhdCB0aGUNCj4gb3duZXIgb2YgdGhlIHJpb2MgY2FsbHMgJ3VucmVmJyBmcmVlJ2luZyB0
-aGUgbGFzdCByZWZlcmVuY2UsIGJlZm9yZSB0aGUgcG9sbCB0aHJlYWQNCj4gaGFzIGZpbmlzaGVk
-IHByb2Nlc3NpbmcgdGhlIG1lc3NhZ2UuICBJTUhPIHRoZSBwb2xsIHRocmVhZCBtdXN0IGhvbGQg
-YQ0KPiByZWZlcmVuY2Ugb24gdGhlIHJpb2MgZm9yIGFzIGxvbmcgYXMgaXQgbmVlZHMgdGhlIG9i
-amVjdC4NCj4gDQpZZXMuIFlvdSdyZSByaWdodC4NCg0KDQo+ID4gKyAgICBpZiAocmV0ICE9IHNp
-emVvZiBtc2cpIHsNCj4gPiArICAgICAgICBlcnJvcl9yZXBvcnQoIiVzOiBmYWlsZWQgdG8gc2Vu
-ZCBtc2csIGVycm5vOiAlZCIsIF9fZnVuY19fLA0KPiBlcnJubyk7DQo+ID4gKyAgICB9DQo+IA0K
-PiBJIGZlZWwgbGlrZSB0aGlzIHNob3VsZCBiZSBwcm9wYWdhdGVkIHRvIHRoZSBjYWxsZXIgdmlh
-IGFuIEVycm9yICoqZXJycCBwYXJhbWV0ZXIuDQo+IA0KDQpPSy4gDQoNCg0KPiA+ICt9DQo+ID4g
-Kw0KPiA+ICtzdGF0aWMgdm9pZCBxaW9fY2hhbm5lbF9yZG1hX3VwZGF0ZV9wb2xsX2V2ZW50KFFJ
-T0NoYW5uZWxSRE1BICpyaW9jLA0KPiA+ICsgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgIFVwZGF0ZUV2ZW50DQo+IGFjdGlvbiwNCj4gPiArICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBib29sIG5vdGlmeV9ycG9sbGVyKQ0K
-PiB7DQo+ID4gKyAgICAvKiBBbiBldmVudGZkIHdpdGggdGhlIHZhbHVlIG9mIFVMTE9OR19NQVgg
-LSAxIGlzIHJlYWRhYmxlIGJ1dA0KPiB1bndyaXRhYmxlICovDQo+ID4gKyAgICB1bnNpZ25lZCBs
-b25nIGxvbmcgYnVmID0gVUxMT05HX01BWCAtIDE7DQo+ID4gKw0KPiA+ICsgICAgc3dpdGNoIChh
-Y3Rpb24pIHsNCj4gPiArICAgIC8qIG9ubHkgcnBvbGxlciBkbyBTRVRfKiBhY3Rpb24sIHRvIGFs
-bG93IHFlbXUgcHBvbGwoKSBnZXQgdGhlIGV2ZW50ICovDQo+ID4gKyAgICBjYXNlIFNFVF9QT0xM
-SU46DQo+ID4gKyAgICAgICAgUkVUUllfT05fRUlOVFIod3JpdGUocmlvYy0+cG9sbGluX2V2ZW50
-ZmQsICZidWYsIHNpemVvZiBidWYpKTsNCj4gPiArICAgICAgICByaW9jLT5ycG9sbF9ldmVudHMg
-Jj0gflBPTExJTjsNCj4gPiArICAgICAgICBicmVhazsNCj4gPiArICAgIGNhc2UgU0VUX1BPTExP
-VVQ6DQo+ID4gKyAgICAgICAgUkVUUllfT05fRUlOVFIocmVhZChyaW9jLT5wb2xsb3V0X2V2ZW50
-ZmQsICZidWYsIHNpemVvZiBidWYpKTsNCj4gPiArICAgICAgICByaW9jLT5ycG9sbF9ldmVudHMg
-Jj0gflBPTExPVVQ7DQo+ID4gKyAgICAgICAgYnJlYWs7DQo+ID4gKw0KPiA+ICsgICAgLyogdGhl
-IHJzb2NrZXQgZmQgaXMgbm90IHJlYWR5IHRvIHJyZWFkL3J3cml0ZSAqLw0KPiA+ICsgICAgY2Fz
-ZSBDTEVBUl9QT0xMSU46DQo+ID4gKyAgICAgICAgUkVUUllfT05fRUlOVFIocmVhZChyaW9jLT5w
-b2xsaW5fZXZlbnRmZCwgJmJ1Ziwgc2l6ZW9mIGJ1ZikpOw0KPiA+ICsgICAgICAgIHJpb2MtPnJw
-b2xsX2V2ZW50cyB8PSBQT0xMSU47DQo+ID4gKyAgICAgICAgYnJlYWs7DQo+ID4gKyAgICBjYXNl
-IENMRUFSX1BPTExPVVQ6DQo+ID4gKyAgICAgICAgUkVUUllfT05fRUlOVFIod3JpdGUocmlvYy0+
-cG9sbG91dF9ldmVudGZkLCAmYnVmLCBzaXplb2YgYnVmKSk7DQo+ID4gKyAgICAgICAgcmlvYy0+
-cnBvbGxfZXZlbnRzIHw9IFBPTExPVVQ7DQo+ID4gKyAgICAgICAgYnJlYWs7DQo+ID4gKyAgICBk
-ZWZhdWx0Og0KPiA+ICsgICAgICAgIGJyZWFrOw0KPiA+ICsgICAgfQ0KPiA+ICsNCj4gPiArICAg
-IC8qIG5vdGlmeSBycG9sbGVyIHRvIHJwb2xsKCkgUE9MTElOL1BPTExPVVQgZXZlbnRzICovDQo+
-ID4gKyAgICBpZiAobm90aWZ5X3Jwb2xsZXIpIHsNCj4gPiArICAgICAgICBxaW9fY2hhbm5lbF9y
-ZG1hX25vdGlmeV9ycG9sbGVyKHJpb2MsIFJQX0NNRF9VUERBVEUpOw0KPiA+ICsgICAgfQ0KPiA+
-ICt9DQo+ID4gKw0KPiA+ICtzdGF0aWMgdm9pZCBxaW9fY2hhbm5lbF9yZG1hX3Jwb2xsZXJfYWRk
-X3Jpb2MoUUlPQ2hhbm5lbFJETUEgKnJpb2MpIHsNCj4gPiArICAgIGlmIChyaW9jLT5pbmRleCAh
-PSAtMSkgew0KPiA+ICsgICAgICAgIGVycm9yX3JlcG9ydCgiJXM6IHJpb2MgYWxyZWFkeSBleHNp
-dHMiLCBfX2Z1bmNfXyk7DQo+ID4gKyAgICAgICAgcmV0dXJuOw0KPiA+ICsgICAgfQ0KPiA+ICsN
-Cj4gPiArICAgIHJpb2MtPmluZGV4ID0gKytycG9sbGVyLmNvdW50Ow0KPiA+ICsNCj4gPiArICAg
-IGlmIChycG9sbGVyLmNvdW50ICsgMSA+IHJwb2xsZXIuc2l6ZSkgew0KPiA+ICsgICAgICAgIHJw
-b2xsZXIuc2l6ZSAqPSAyOw0KPiA+ICsgICAgICAgIHJwb2xsZXIuZmRzID0gZ19yZW5ldyhzdHJ1
-Y3QgcG9sbGZkLCBycG9sbGVyLmZkcywgcnBvbGxlci5zaXplKTsNCj4gPiArICAgICAgICBycG9s
-bGVyLnJpb2NzID0gZ19yZW5ldyhRSU9DaGFubmVsUkRNQSAqLCBycG9sbGVyLnJpb2NzLA0KPiBy
-cG9sbGVyLnNpemUpOw0KPiA+ICsgICAgfQ0KPiA+ICsNCj4gPiArICAgIHJwb2xsZXIuZmRzW3Jp
-b2MtPmluZGV4XS5mZCA9IHJpb2MtPmZkOw0KPiA+ICsgICAgcnBvbGxlci5mZHNbcmlvYy0+aW5k
-ZXhdLmV2ZW50cyA9IHJpb2MtPnJwb2xsX2V2ZW50czsNCj4gPiArICAgIHJwb2xsZXIucmlvY3Nb
-cmlvYy0+aW5kZXhdID0gcmlvYzsgfQ0KPiA+ICsNCj4gPiArc3RhdGljIHZvaWQgcWlvX2NoYW5u
-ZWxfcmRtYV9ycG9sbGVyX2RlbF9yaW9jKFFJT0NoYW5uZWxSRE1BICpyaW9jKSB7DQo+ID4gKyAg
-ICBpZiAocmlvYy0+aW5kZXggPT0gLTEpIHsNCj4gPiArICAgICAgICBlcnJvcl9yZXBvcnQoIiVz
-OiByaW9jIG5vdCBleHNpdHMiLCBfX2Z1bmNfXyk7DQo+ID4gKyAgICAgICAgcmV0dXJuOw0KPiA+
-ICsgICAgfQ0KPiA+ICsNCj4gPiArICAgIHJwb2xsZXIuZmRzW3Jpb2MtPmluZGV4XSA9IHJwb2xs
-ZXIuZmRzW3Jwb2xsZXIuY291bnRdOw0KPiA+ICsgICAgcnBvbGxlci5yaW9jc1tyaW9jLT5pbmRl
-eF0gPSBycG9sbGVyLnJpb2NzW3Jwb2xsZXIuY291bnRdOw0KPiA+ICsgICAgcnBvbGxlci5yaW9j
-c1tyaW9jLT5pbmRleF0tPmluZGV4ID0gcmlvYy0+aW5kZXg7DQo+ID4gKyAgICBycG9sbGVyLmNv
-dW50LS07DQo+ID4gKw0KPiA+ICsgICAgY2xvc2UocmlvYy0+cG9sbGluX2V2ZW50ZmQpOw0KPiA+
-ICsgICAgY2xvc2UocmlvYy0+cG9sbG91dF9ldmVudGZkKTsNCj4gPiArICAgIHJpb2MtPmluZGV4
-ID0gLTE7DQo+ID4gKyAgICByaW9jLT5ycG9sbF9ldmVudHMgPSAwOw0KPiA+ICt9DQo+ID4gKw0K
-PiA+ICtzdGF0aWMgdm9pZCBxaW9fY2hhbm5lbF9yZG1hX3Jwb2xsZXJfdXBkYXRlX2lvYyhRSU9D
-aGFubmVsUkRNQSAqcmlvYykNCj4gPiArew0KPiA+ICsgICAgaWYgKHJpb2MtPmluZGV4ID09IC0x
-KSB7DQo+ID4gKyAgICAgICAgZXJyb3JfcmVwb3J0KCIlczogcmlvYyBub3QgZXhzaXRzIiwgX19m
-dW5jX18pOw0KPiA+ICsgICAgICAgIHJldHVybjsNCj4gPiArICAgIH0NCj4gPiArDQo+ID4gKyAg
-ICBycG9sbGVyLmZkc1tyaW9jLT5pbmRleF0uZmQgPSByaW9jLT5mZDsNCj4gPiArICAgIHJwb2xs
-ZXIuZmRzW3Jpb2MtPmluZGV4XS5ldmVudHMgPSByaW9jLT5ycG9sbF9ldmVudHM7IH0NCj4gPiAr
-DQo+ID4gK3N0YXRpYyB2b2lkIHFpb19jaGFubmVsX3JkbWFfcnBvbGxlcl9wcm9jZXNzX21zZyh2
-b2lkKQ0KPiA+ICt7DQo+ID4gKyAgICBScG9sbGVyTXNnIG1zZzsNCj4gPiArICAgIGludCByZXQ7
-DQo+ID4gKw0KPiA+ICsgICAgcmV0ID0gUkVUUllfT05fRUlOVFIocmVhZChycG9sbGVyLnNvY2tb
-MV0sICZtc2csIHNpemVvZiBtc2cpKTsNCj4gPiArICAgIGlmIChyZXQgIT0gc2l6ZW9mIG1zZykg
-ew0KPiA+ICsgICAgICAgIGVycm9yX3JlcG9ydCgiJXM6IHJwb2xsZXIgZmFpbGVkIHRvIHJlY3Yg
-bXNnOiAlcyIsIF9fZnVuY19fLA0KPiA+ICsgICAgICAgICAgICAgICAgICAgICBzdHJlcnJvcihl
-cnJubykpOw0KPiA+ICsgICAgICAgIHJldHVybjsNCj4gPiArICAgIH0NCj4gPiArDQo+ID4gKyAg
-ICBzd2l0Y2ggKG1zZy5jbWQpIHsNCj4gPiArICAgIGNhc2UgUlBfQ01EX0FERF9JT0M6DQo+ID4g
-KyAgICAgICAgcWlvX2NoYW5uZWxfcmRtYV9ycG9sbGVyX2FkZF9yaW9jKG1zZy5yaW9jKTsNCj4g
-PiArICAgICAgICBicmVhazsNCj4gPiArICAgIGNhc2UgUlBfQ01EX0RFTF9JT0M6DQo+ID4gKyAg
-ICAgICAgcWlvX2NoYW5uZWxfcmRtYV9ycG9sbGVyX2RlbF9yaW9jKG1zZy5yaW9jKTsNCj4gPiAr
-ICAgICAgICBicmVhazsNCj4gPiArICAgIGNhc2UgUlBfQ01EX1VQREFURToNCj4gPiArICAgICAg
-ICBxaW9fY2hhbm5lbF9yZG1hX3Jwb2xsZXJfdXBkYXRlX2lvYyhtc2cucmlvYyk7DQo+ID4gKyAg
-ICAgICAgYnJlYWs7DQo+ID4gKyAgICBkZWZhdWx0Og0KPiA+ICsgICAgICAgIGJyZWFrOw0KPiA+
-ICsgICAgfQ0KPiA+ICt9DQo+ID4gKw0KPiA+ICtzdGF0aWMgdm9pZCBxaW9fY2hhbm5lbF9yZG1h
-X3Jwb2xsZXJfY2xlYW51cCh2b2lkKQ0KPiA+ICt7DQo+ID4gKyAgICBjbG9zZShycG9sbGVyLnNv
-Y2tbMF0pOw0KPiA+ICsgICAgY2xvc2UocnBvbGxlci5zb2NrWzFdKTsNCj4gPiArICAgIHJwb2xs
-ZXIuc29ja1swXSA9IC0xOw0KPiA+ICsgICAgcnBvbGxlci5zb2NrWzFdID0gLTE7DQo+ID4gKyAg
-ICBnX2ZyZWUocnBvbGxlci5mZHMpOw0KPiA+ICsgICAgZ19mcmVlKHJwb2xsZXIucmlvY3MpOw0K
-PiA+ICsgICAgcnBvbGxlci5mZHMgPSBOVUxMOw0KPiA+ICsgICAgcnBvbGxlci5yaW9jcyA9IE5V
-TEw7DQo+ID4gKyAgICBycG9sbGVyLmNvdW50ID0gMDsNCj4gPiArICAgIHJwb2xsZXIuc2l6ZSA9
-IDA7DQo+ID4gKyAgICBycG9sbGVyLmlzX3J1bm5pbmcgPSBmYWxzZTsNCj4gPiArfQ0KPiA+ICsN
-Cj4gPiArc3RhdGljIHZvaWQgKnFpb19jaGFubmVsX3JkbWFfcnBvbGxlcl90aHJlYWQodm9pZCAq
-b3BhcXVlKSB7DQo+ID4gKyAgICBpbnQgaSwgcmV0LCBlcnJvcl9ldmVudHMgPSBQT0xMRVJSIHwg
-UE9MTEhVUCB8IFBPTExOVkFMOw0KPiA+ICsNCj4gPiArICAgIGRvIHsNCj4gPiArICAgICAgICBy
-ZXQgPSBycG9sbChycG9sbGVyLmZkcywgcnBvbGxlci5jb3VudCArIDEsIC0xKTsNCj4gPiArICAg
-ICAgICBpZiAocmV0IDwgMCAmJiBlcnJubyAhPSAtRUlOVFIpIHsNCj4gPiArICAgICAgICAgICAg
-ZXJyb3JfcmVwb3J0KCIlczogcnBvbGwoKSBlcnJvcjogJXMiLCBfX2Z1bmNfXywNCj4gc3RyZXJy
-b3IoZXJybm8pKTsNCj4gPiArICAgICAgICAgICAgYnJlYWs7DQo+ID4gKyAgICAgICAgfQ0KPiA+
-ICsNCj4gPiArICAgICAgICBmb3IgKGkgPSAxOyBpIDw9IHJwb2xsZXIuY291bnQ7IGkrKykgew0K
-PiA+ICsgICAgICAgICAgICBpZiAocnBvbGxlci5mZHNbaV0ucmV2ZW50cyAmIChQT0xMSU4gfCBl
-cnJvcl9ldmVudHMpKSB7DQo+ID4gKyAgICAgICAgICAgICAgICBxaW9fY2hhbm5lbF9yZG1hX3Vw
-ZGF0ZV9wb2xsX2V2ZW50KHJwb2xsZXIucmlvY3NbaV0sDQo+IFNFVF9QT0xMSU4sDQo+ID4gKyAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIGZhbHNlKTsN
-Cj4gPiArICAgICAgICAgICAgICAgIHJwb2xsZXIuZmRzW2ldLmV2ZW50cyAmPSB+UE9MTElOOw0K
-PiA+ICsgICAgICAgICAgICB9DQo+ID4gKyAgICAgICAgICAgIGlmIChycG9sbGVyLmZkc1tpXS5y
-ZXZlbnRzICYgKFBPTExPVVQgfCBlcnJvcl9ldmVudHMpKSB7DQo+ID4gKyAgICAgICAgICAgICAg
-ICBxaW9fY2hhbm5lbF9yZG1hX3VwZGF0ZV9wb2xsX2V2ZW50KHJwb2xsZXIucmlvY3NbaV0sDQo+
-ID4gKw0KPiBTRVRfUE9MTE9VVCwgZmFsc2UpOw0KPiA+ICsgICAgICAgICAgICAgICAgcnBvbGxl
-ci5mZHNbaV0uZXZlbnRzICY9IH5QT0xMT1VUOw0KPiA+ICsgICAgICAgICAgICB9DQo+ID4gKyAg
-ICAgICAgICAgIC8qIGlnbm9yZSB0aGlzIGZkICovDQo+ID4gKyAgICAgICAgICAgIGlmIChycG9s
-bGVyLmZkc1tpXS5yZXZlbnRzICYgKGVycm9yX2V2ZW50cykpIHsNCj4gPiArICAgICAgICAgICAg
-ICAgIHJwb2xsZXIuZmRzW2ldLmZkID0gLTE7DQo+ID4gKyAgICAgICAgICAgIH0NCj4gPiArICAg
-ICAgICB9DQo+ID4gKw0KPiA+ICsgICAgICAgIGlmIChycG9sbGVyLmZkc1swXS5yZXZlbnRzKSB7
-DQo+ID4gKyAgICAgICAgICAgIHFpb19jaGFubmVsX3JkbWFfcnBvbGxlcl9wcm9jZXNzX21zZygp
-Ow0KPiA+ICsgICAgICAgIH0NCj4gPiArICAgIH0gd2hpbGUgKHJwb2xsZXIuY291bnQgPj0gMSk7
-DQo+ID4gKw0KPiA+ICsgICAgcWlvX2NoYW5uZWxfcmRtYV9ycG9sbGVyX2NsZWFudXAoKTsNCj4g
-PiArDQo+ID4gKyAgICByZXR1cm4gTlVMTDsNCj4gPiArfQ0KPiA+ICsNCj4gPiArc3RhdGljIHZv
-aWQgcWlvX2NoYW5uZWxfcmRtYV9ycG9sbGVyX3N0YXJ0KHZvaWQpDQo+ID4gK3sNCj4gPiArICAg
-IGlmIChxYXRvbWljX3hjaGcoJnJwb2xsZXIuaXNfcnVubmluZywgdHJ1ZSkpIHsNCj4gPiArICAg
-ICAgICByZXR1cm47DQo+ID4gKyAgICB9DQo+ID4gKw0KPiA+ICsgICAgaWYgKHFlbXVfc29ja2V0
-cGFpcihBRl9VTklYLCBTT0NLX1NUUkVBTSwgMCwgcnBvbGxlci5zb2NrKSkgew0KPiA+ICsgICAg
-ICAgIHJwb2xsZXIuaXNfcnVubmluZyA9IGZhbHNlOw0KPiA+ICsgICAgICAgIGVycm9yX3JlcG9y
-dCgiJXM6IGZhaWxlZCB0byBjcmVhdGUgc29ja2V0cGFpciAlcyIsIF9fZnVuY19fLA0KPiA+ICsg
-ICAgICAgICAgICAgICAgICAgICBzdHJlcnJvcihlcnJubykpOw0KPiA+ICsgICAgICAgIHJldHVy
-bjsNCj4gPiArICAgIH0NCj4gPiArDQo+ID4gKyAgICBycG9sbGVyLmNvdW50ID0gMDsNCj4gPiAr
-ICAgIHJwb2xsZXIuc2l6ZSA9IDQ7DQo+ID4gKyAgICBycG9sbGVyLmZkcyA9IGdfbWFsbG9jMF9u
-KHJwb2xsZXIuc2l6ZSwgc2l6ZW9mKHN0cnVjdCBwb2xsZmQpKTsNCj4gPiArICAgIHJwb2xsZXIu
-cmlvY3MgPSBnX21hbGxvYzBfbihycG9sbGVyLnNpemUsIHNpemVvZihRSU9DaGFubmVsUkRNQSAq
-KSk7DQo+ID4gKyAgICBycG9sbGVyLmZkc1swXS5mZCA9IHJwb2xsZXIuc29ja1sxXTsNCj4gPiAr
-ICAgIHJwb2xsZXIuZmRzWzBdLmV2ZW50cyA9IFBPTExJTjsNCj4gPiArDQo+ID4gKyAgICBxZW11
-X3RocmVhZF9jcmVhdGUoJnJwb2xsZXIudGhyZWFkLCAicWlvLWNoYW5uZWwtcmRtYS1ycG9sbGVy
-IiwNCj4gPiArICAgICAgICAgICAgICAgICAgICAgICBxaW9fY2hhbm5lbF9yZG1hX3Jwb2xsZXJf
-dGhyZWFkLCBOVUxMLA0KPiA+ICsgICAgICAgICAgICAgICAgICAgICAgIFFFTVVfVEhSRUFEX0pP
-SU5BQkxFKTsgfQ0KPiA+ICsNCj4gPiArc3RhdGljIHZvaWQgcWlvX2NoYW5uZWxfcmRtYV9hZGRf
-cmlvY190b19ycG9sbGVyKFFJT0NoYW5uZWxSRE1BDQo+ID4gKypyaW9jKSB7DQo+ID4gKyAgICBp
-bnQgZmxhZ3MgPSBFRkRfQ0xPRVhFQyB8IEVGRF9OT05CTE9DSzsNCj4gPiArDQo+ID4gKyAgICAv
-Kg0KPiA+ICsgICAgICogQSBzaW5nbGUgZXZlbnRmZCBpcyBlaXRoZXIgcmVhZGFibGUgb3Igd3Jp
-dGFibGUuIEEgc2luZ2xlIGV2ZW50ZmQNCj4gY2Fubm90DQo+ID4gKyAgICAgKiByZXByZXNlbnQg
-YSBzdGF0ZSB3aGVyZSBpdCBpcyBuZWl0aGVyIHJlYWRhYmxlIG5vciB3cml0YWJsZS4gc28gdXNl
-DQo+IHR3bw0KPiA+ICsgICAgICogZXZlbnRmZHMgaGVyZS4NCj4gPiArICAgICAqLw0KPiA+ICsg
-ICAgcmlvYy0+cG9sbGluX2V2ZW50ZmQgPSBldmVudGZkKDAsIGZsYWdzKTsNCj4gPiArICAgIHJp
-b2MtPnBvbGxvdXRfZXZlbnRmZCA9IGV2ZW50ZmQoMCwgZmxhZ3MpOw0KPiA+ICsgICAgLyogcG9s
-bG91dF9ldmVudGZkIHdpdGggdGhlIHZhbHVlIDAsIG1lYW5zIHdyaXRhYmxlLCBtYWtlIGl0DQo+
-IHVud3JpdGFibGUgKi8NCj4gPiArICAgIHFpb19jaGFubmVsX3JkbWFfdXBkYXRlX3BvbGxfZXZl
-bnQocmlvYywgQ0xFQVJfUE9MTE9VVCwgZmFsc2UpOw0KPiA+ICsNCj4gPiArICAgIC8qIHRlbGwg
-dGhlIHJwb2xsZXIgdG8gcnBvbGwoKSBldmVudHMgb24gcmlvYy0+c29ja2V0ZmQgKi8NCj4gPiAr
-ICAgIHJpb2MtPnJwb2xsX2V2ZW50cyA9IFBPTExJTiB8IFBPTExPVVQ7DQo+ID4gKyAgICBxaW9f
-Y2hhbm5lbF9yZG1hX25vdGlmeV9ycG9sbGVyKHJpb2MsIFJQX0NNRF9BRERfSU9DKTsgfQ0KPiA+
-ICsNCj4gPiAgUUlPQ2hhbm5lbFJETUEgKnFpb19jaGFubmVsX3JkbWFfbmV3KHZvaWQpICB7DQo+
-ID4gICAgICBRSU9DaGFubmVsUkRNQSAqcmlvYzsNCj4gPiAgICAgIFFJT0NoYW5uZWwgKmlvYzsN
-Cj4gPg0KPiA+ICsgICAgcWlvX2NoYW5uZWxfcmRtYV9ycG9sbGVyX3N0YXJ0KCk7DQo+ID4gKyAg
-ICBpZiAoIXJwb2xsZXIuaXNfcnVubmluZykgew0KPiA+ICsgICAgICAgIHJldHVybiBOVUxMOw0K
-PiA+ICsgICAgfQ0KPiA+ICsNCj4gPiAgICAgIHJpb2MgPQ0KPiBRSU9fQ0hBTk5FTF9SRE1BKG9i
-amVjdF9uZXcoVFlQRV9RSU9fQ0hBTk5FTF9SRE1BKSk7DQo+ID4gICAgICBpb2MgPSBRSU9fQ0hB
-Tk5FTChyaW9jKTsNCj4gPiAgICAgIHFpb19jaGFubmVsX3NldF9mZWF0dXJlKGlvYywgUUlPX0NI
-QU5ORUxfRkVBVFVSRV9TSFVURE9XTik7DQo+IEBADQo+ID4gLTEyNSw2ICszOTMsOCBAQCByZXRy
-eToNCj4gPiAgICAgICAgICBnb3RvIG91dDsNCj4gPiAgICAgIH0NCj4gPg0KPiA+ICsgICAgcWlv
-X2NoYW5uZWxfcmRtYV9hZGRfcmlvY190b19ycG9sbGVyKHJpb2MpOw0KPiA+ICsNCj4gPiAgb3V0
-Og0KPiA+ICAgICAgaWYgKHJldCkgew0KPiA+ICAgICAgICAgIHRyYWNlX3Fpb19jaGFubmVsX3Jk
-bWFfY29ubmVjdF9mYWlsKHJpb2MpOw0KPiA+IEBAIC0yMTEsNiArNDgxLDggQEAgaW50DQo+IHFp
-b19jaGFubmVsX3JkbWFfbGlzdGVuX3N5bmMoUUlPQ2hhbm5lbFJETUEgKnJpb2MsIEluZXRTb2Nr
-ZXRBZGRyZXNzDQo+ICphZGRyLA0KPiA+ICAgICAgcWlvX2NoYW5uZWxfc2V0X2ZlYXR1cmUoUUlP
-X0NIQU5ORUwocmlvYyksDQo+IFFJT19DSEFOTkVMX0ZFQVRVUkVfTElTVEVOKTsNCj4gPiAgICAg
-IHRyYWNlX3Fpb19jaGFubmVsX3JkbWFfbGlzdGVuX2NvbXBsZXRlKHJpb2MsIGZkKTsNCj4gPg0K
-PiA+ICsgICAgcWlvX2NoYW5uZWxfcmRtYV9hZGRfcmlvY190b19ycG9sbGVyKHJpb2MpOw0KPiA+
-ICsNCj4gPiAgb3V0Og0KPiA+ICAgICAgaWYgKHJldCkgew0KPiA+ICAgICAgICAgIHRyYWNlX3Fp
-b19jaGFubmVsX3JkbWFfbGlzdGVuX2ZhaWwocmlvYyk7DQo+ID4gQEAgLTI2Nyw4ICs1MzksMTAg
-QEAgdm9pZA0KPiBxaW9fY2hhbm5lbF9yZG1hX2xpc3Rlbl9hc3luYyhRSU9DaGFubmVsUkRNQSAq
-aW9jLCBJbmV0U29ja2V0QWRkcmVzcw0KPiAqYWRkciwNCj4gPiAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgcWlvX2NoYW5uZWxfbGlzdGVuX3dvcmtlcl9mcmVlLA0KPiBjb250ZXh0KTsNCj4g
-PiB9DQo+ID4NCj4gPiAtUUlPQ2hhbm5lbFJETUEgKnFpb19jaGFubmVsX3JkbWFfYWNjZXB0KFFJ
-T0NoYW5uZWxSRE1BICpyaW9jLA0KPiBFcnJvcg0KPiA+ICoqZXJycCkNCj4gPiArUUlPQ2hhbm5l
-bFJETUEgKmNvcm91dGluZV9taXhlZF9mbg0KPiBxaW9fY2hhbm5lbF9yZG1hX2FjY2VwdChRSU9D
-aGFubmVsUkRNQSAqcmlvYywNCj4gPiArDQo+IEVycm9yDQo+ID4gKyoqZXJycCkNCj4gPiAgew0K
-PiA+ICsgICAgUUlPQ2hhbm5lbCAqaW9jID0gUUlPX0NIQU5ORUwocmlvYyk7DQo+ID4gICAgICBR
-SU9DaGFubmVsUkRNQSAqY2lvYzsNCj4gPg0KPiA+ICAgICAgY2lvYyA9IHFpb19jaGFubmVsX3Jk
-bWFfbmV3KCk7DQo+ID4gQEAgLTI4Myw2ICs1NTcsMTcgQEAgcmV0cnk6DQo+ID4gICAgICAgICAg
-aWYgKGVycm5vID09IEVJTlRSKSB7DQo+ID4gICAgICAgICAgICAgIGdvdG8gcmV0cnk7DQo+ID4g
-ICAgICAgICAgfQ0KPiA+ICsgICAgICAgIGlmIChlcnJubyA9PSBFQUdBSU4pIHsNCj4gPiArICAg
-ICAgICAgICAgaWYgKCEocmlvYy0+cnBvbGxfZXZlbnRzICYgUE9MTElOKSkgew0KPiA+ICsgICAg
-ICAgICAgICAgICAgcWlvX2NoYW5uZWxfcmRtYV91cGRhdGVfcG9sbF9ldmVudChyaW9jLA0KPiBD
-TEVBUl9QT0xMSU4sIHRydWUpOw0KPiA+ICsgICAgICAgICAgICB9DQo+ID4gKyAgICAgICAgICAg
-IGlmIChxZW11X2luX2Nvcm91dGluZSgpKSB7DQo+ID4gKyAgICAgICAgICAgICAgICBxaW9fY2hh
-bm5lbF95aWVsZChpb2MsIEdfSU9fSU4pOw0KPiA+ICsgICAgICAgICAgICB9IGVsc2Ugew0KPiA+
-ICsgICAgICAgICAgICAgICAgcWlvX2NoYW5uZWxfd2FpdChpb2MsIEdfSU9fSU4pOw0KPiA+ICsg
-ICAgICAgICAgICB9DQo+ID4gKyAgICAgICAgICAgIGdvdG8gcmV0cnk7DQo+ID4gKyAgICAgICAg
-fQ0KPiA+ICAgICAgICAgIGVycm9yX3NldGdfZXJybm8oZXJycCwgZXJybm8sICJVbmFibGUgdG8g
-YWNjZXB0IGNvbm5lY3Rpb24iKTsNCj4gPiAgICAgICAgICBnb3RvIGVycm9yOw0KPiA+ICAgICAg
-fQ0KPiA+IEBAIC0yOTQsNiArNTc5LDggQEAgcmV0cnk6DQo+ID4gICAgICAgICAgZ290byBlcnJv
-cjsNCj4gPiAgICAgIH0NCj4gPg0KPiA+ICsgICAgcWlvX2NoYW5uZWxfcmRtYV9hZGRfcmlvY190
-b19ycG9sbGVyKGNpb2MpOw0KPiA+ICsNCj4gPiAgICAgIHRyYWNlX3Fpb19jaGFubmVsX3JkbWFf
-YWNjZXB0X2NvbXBsZXRlKHJpb2MsIGNpb2MsIGNpb2MtPmZkKTsNCj4gPiAgICAgIHJldHVybiBj
-aW9jOw0KPiA+DQo+ID4gQEAgLTMwNyw2ICs1OTQsMTAgQEAgc3RhdGljIHZvaWQgcWlvX2NoYW5u
-ZWxfcmRtYV9pbml0KE9iamVjdCAqb2JqKSAgew0KPiA+ICAgICAgUUlPQ2hhbm5lbFJETUEgKmlv
-YyA9IFFJT19DSEFOTkVMX1JETUEob2JqKTsNCj4gPiAgICAgIGlvYy0+ZmQgPSAtMTsNCj4gPiAr
-ICAgIGlvYy0+cG9sbGluX2V2ZW50ZmQgPSAtMTsNCj4gPiArICAgIGlvYy0+cG9sbG91dF9ldmVu
-dGZkID0gLTE7DQo+ID4gKyAgICBpb2MtPmluZGV4ID0gLTE7DQo+ID4gKyAgICBpb2MtPnJwb2xs
-X2V2ZW50cyA9IDA7DQo+ID4gIH0NCj4gPg0KPiA+ICBzdGF0aWMgdm9pZCBxaW9fY2hhbm5lbF9y
-ZG1hX2ZpbmFsaXplKE9iamVjdCAqb2JqKSBAQCAtMzE0LDYgKzYwNSw3DQo+ID4gQEAgc3RhdGlj
-IHZvaWQgcWlvX2NoYW5uZWxfcmRtYV9maW5hbGl6ZShPYmplY3QgKm9iaikNCj4gPiAgICAgIFFJ
-T0NoYW5uZWxSRE1BICppb2MgPSBRSU9fQ0hBTk5FTF9SRE1BKG9iaik7DQo+ID4NCj4gPiAgICAg
-IGlmIChpb2MtPmZkICE9IC0xKSB7DQo+ID4gKyAgICAgICAgcWlvX2NoYW5uZWxfcmRtYV9ub3Rp
-ZnlfcnBvbGxlcihpb2MsIFJQX0NNRF9ERUxfSU9DKTsNCj4gDQo+IFRoaXMgaXMgdW5zYWZlLg0K
-PiANCj4gV2hlbiBmaW5hbGl6ZSBydW5zLCB0aGUgb2JqZWN0IGhhcyBkcm9wcGVkIGl0cyBsYXN0
-IHJlZmVyZW5jZSBhbmQgaXMgYWJvdXQgdG8gYmUNCj4gZnJlZSgpZC4gIFRoZSBub3RpZnlfcnBv
-bGxlcigpIG1ldGhvZCwgaG93ZXZlciwgc2VuZHMgYW4gYXN5bmMgbWVzc2FnZSB0byB0aGUNCj4g
-cG9sbCB0aHJlYWQsIHdoaWNoIHRoZSBwb2xsIHRocmVhZCB3aWxsIGVuZCB1cCBwcm9jZXNzaW5n
-IGFmdGVyIHRoZSByaW9jIGlzIGZyZWUoKWQuDQo+IGllIGEgdXNlLWFmdGVyLWZyZWUuDQo+IA0K
-PiBJZiB5b3UgdGFrZSBteSBlYXJsaWVyIHN1Z2dlc3Rpb24gdGhhdCB0aGUgcG9sbCB0aHJlYWQg
-c2hvdWxkIGhvbGQgaXRzIG93bg0KPiByZWZlcmVuY2Ugb24gdGhlIGlvYywgdGhlbiBpdCBiZWNv
-bWVzIGltcG9zc2libGUgZm9yIHRoZSByaW9jIHRvIGJlIGZyZWVkIHdoaWxlDQo+IHRoZXJlIGlz
-IHN0aWxsIGFuIGFjdGl2ZSBJL08gd2F0Y2gsIGFuZCB0aHVzIHRoaXMgY2FsbCBjYW4gZ28gYXdh
-eSwgYW5kIHNvIHdpbGwgdGhlDQo+IHVzZSBhZnRlciBmcmVlLg0KPiANCg0KWWVzLCB3aWxsIGZp
-eGVkIGluIHRoZSBuZXh0IHZlcnNpb24uDQoNClJlZ2FyZHMsDQotR29uZ2xlaQ0KDQo+ID4gICAg
-ICAgICAgcmNsb3NlKGlvYy0+ZmQpOw0KPiA+ICAgICAgICAgIGlvYy0+ZmQgPSAtMTsNCj4gPiAg
-ICAgIH0NCj4gDQo+IFdpdGggcmVnYXJkcywNCj4gRGFuaWVsDQo+IC0tDQo+IHw6IGh0dHBzOi8v
-YmVycmFuZ2UuY29tICAgICAgLW8tDQo+IGh0dHBzOi8vd3d3LmZsaWNrci5jb20vcGhvdG9zL2Ri
-ZXJyYW5nZSA6fA0KPiB8OiBodHRwczovL2xpYnZpcnQub3JnICAgICAgICAgLW8tDQo+IGh0dHBz
-Oi8vZnN0b3AxMzguYmVycmFuZ2UuY29tIDp8DQo+IHw6IGh0dHBzOi8vZW50YW5nbGUtcGhvdG8u
-b3JnICAgIC1vLQ0KPiBodHRwczovL3d3dy5pbnN0YWdyYW0uY29tL2RiZXJyYW5nZSA6fA0KPiAN
-Cg0K
+On Fri, Jun 7, 2024 at 10:45=E2=80=AFAM Gonglei (Arei) <arei.gonglei@huawei=
+.com> wrote:
+>
+>
+>
+> > -----Original Message-----
+> > From: Haris Iqbal [mailto:haris.iqbal@ionos.com]
+> > Sent: Thursday, June 6, 2024 9:35 PM
+> > To: Gonglei (Arei) <arei.gonglei@huawei.com>
+> > Cc: qemu-devel@nongnu.org; peterx@redhat.com; yu.zhang@ionos.com;
+> > mgalaxy@akamai.com; elmar.gerdes@ionos.com; zhengchuan
+> > <zhengchuan@huawei.com>; berrange@redhat.com; armbru@redhat.com;
+> > lizhijian@fujitsu.com; pbonzini@redhat.com; mst@redhat.com; Xiexiangyou
+> > <xiexiangyou@huawei.com>; linux-rdma@vger.kernel.org; lixiao (H)
+> > <lixiao91@huawei.com>; jinpu.wang@ionos.com; Wangjialin
+> > <wangjialin23@huawei.com>
+> > Subject: Re: [PATCH 3/6] io/channel-rdma: support working in coroutine
+> >
+> > On Tue, Jun 4, 2024 at 2:14=E2=80=AFPM Gonglei <arei.gonglei@huawei.com=
+> wrote:
+> > >
+> > > From: Jialin Wang <wangjialin23@huawei.com>
+> > >
+> > > It is not feasible to obtain RDMA completion queue notifications
+> > > through poll/ppoll on the rsocket fd. Therefore, we create a thread
+> > > named rpoller for each rsocket fd and two eventfds: pollin_eventfd an=
+d
+> > > pollout_eventfd.
+> > >
+> > > When using io_create_watch or io_set_aio_fd_handler waits for POLLIN
+> > > or POLLOUT events, it will actually poll/ppoll on the pollin_eventfd
+> > > and pollout_eventfd instead of the rsocket fd.
+> > >
+> > > The rpoller rpoll() on the rsocket fd to receive POLLIN and POLLOUT
+> > > events.
+> > > When a POLLIN event occurs, the rpoller write the pollin_eventfd, and
+> > > then poll/ppoll will return the POLLIN event.
+> > > When a POLLOUT event occurs, the rpoller read the pollout_eventfd, an=
+d
+> > > then poll/ppoll will return the POLLOUT event.
+> > >
+> > > For a non-blocking rsocket fd, if rread/rwrite returns EAGAIN, it wil=
+l
+> > > read/write the pollin/pollout_eventfd, preventing poll/ppoll from
+> > > returning POLLIN/POLLOUT events.
+> > >
+> > > Known limitations:
+> > >
+> > >   For a blocking rsocket fd, if we use io_create_watch to wait for
+> > >   POLLIN or POLLOUT events, since the rsocket fd is blocking, we
+> > >   cannot determine when it is not ready to read/write as we can with
+> > >   non-blocking fds. Therefore, when an event occurs, it will occurs
+> > >   always, potentially leave the qemu hanging. So we need be cautious
+> > >   to avoid hanging when using io_create_watch .
+> > >
+> > > Luckily, channel-rdma works well in coroutines :)
+> > >
+> > > Signed-off-by: Jialin Wang <wangjialin23@huawei.com>
+> > > Signed-off-by: Gonglei <arei.gonglei@huawei.com>
+> > > ---
+> > >  include/io/channel-rdma.h |  15 +-
+> > >  io/channel-rdma.c         | 363
+> > +++++++++++++++++++++++++++++++++++++-
+> > >  2 files changed, 376 insertions(+), 2 deletions(-)
+> > >
+> > > diff --git a/include/io/channel-rdma.h b/include/io/channel-rdma.h
+> > > index 8cab2459e5..cb56127d76 100644
+> > > --- a/include/io/channel-rdma.h
+> > > +++ b/include/io/channel-rdma.h
+> > > @@ -47,6 +47,18 @@ struct QIOChannelRDMA {
+> > >      socklen_t localAddrLen;
+> > >      struct sockaddr_storage remoteAddr;
+> > >      socklen_t remoteAddrLen;
+> > > +
+> > > +    /* private */
+> > > +
+> > > +    /* qemu g_poll/ppoll() POLLIN event on it */
+> > > +    int pollin_eventfd;
+> > > +    /* qemu g_poll/ppoll() POLLOUT event on it */
+> > > +    int pollout_eventfd;
+> > > +
+> > > +    /* the index in the rpoller's fds array */
+> > > +    int index;
+> > > +    /* rpoller will rpoll() rpoll_events on the rsocket fd */
+> > > +    short int rpoll_events;
+> > >  };
+> > >
+> > >  /**
+> > > @@ -147,6 +159,7 @@ void
+> > qio_channel_rdma_listen_async(QIOChannelRDMA *ioc, InetSocketAddress
+> > *addr,
+> > >   *
+> > >   * Returns: the new client channel, or NULL on error
+> > >   */
+> > > -QIOChannelRDMA *qio_channel_rdma_accept(QIOChannelRDMA *ioc,
+> > Error
+> > > **errp);
+> > > +QIOChannelRDMA *coroutine_mixed_fn
+> > qio_channel_rdma_accept(QIOChannelRDMA *ioc,
+> > > +
+> > Error
+> > > +**errp);
+> > >
+> > >  #endif /* QIO_CHANNEL_RDMA_H */
+> > > diff --git a/io/channel-rdma.c b/io/channel-rdma.c index
+> > > 92c362df52..9792add5cf 100644
+> > > --- a/io/channel-rdma.c
+> > > +++ b/io/channel-rdma.c
+> > > @@ -23,10 +23,15 @@
+> > >
+> > >  #include "qemu/osdep.h"
+> > >  #include "io/channel-rdma.h"
+> > > +#include "io/channel-util.h"
+> > > +#include "io/channel-watch.h"
+> > >  #include "io/channel.h"
+> > >  #include "qapi/clone-visitor.h"
+> > >  #include "qapi/error.h"
+> > >  #include "qapi/qapi-visit-sockets.h"
+> > > +#include "qemu/atomic.h"
+> > > +#include "qemu/error-report.h"
+> > > +#include "qemu/thread.h"
+> > >  #include "trace.h"
+> > >  #include <errno.h>
+> > >  #include <netdb.h>
+> > > @@ -39,11 +44,274 @@
+> > >  #include <sys/poll.h>
+> > >  #include <unistd.h>
+> > >
+> > > +typedef enum {
+> > > +    CLEAR_POLLIN,
+> > > +    CLEAR_POLLOUT,
+> > > +    SET_POLLIN,
+> > > +    SET_POLLOUT,
+> > > +} UpdateEvent;
+> > > +
+> > > +typedef enum {
+> > > +    RP_CMD_ADD_IOC,
+> > > +    RP_CMD_DEL_IOC,
+> > > +    RP_CMD_UPDATE,
+> > > +} RpollerCMD;
+> > > +
+> > > +typedef struct {
+> > > +    RpollerCMD cmd;
+> > > +    QIOChannelRDMA *rioc;
+> > > +} RpollerMsg;
+> > > +
+> > > +/*
+> > > + * rpoll() on the rsocket fd with rpoll_events, when POLLIN/POLLOUT
+> > > +event
+> > > + * occurs, it will write/read the pollin_eventfd/pollout_eventfd to
+> > > +allow
+> > > + * qemu g_poll/ppoll() get the POLLIN/POLLOUT event  */ static struc=
+t
+> > > +Rpoller {
+> > > +    QemuThread thread;
+> > > +    bool is_running;
+> > > +    int sock[2];
+> > > +    int count; /* the number of rsocket fds being rpoll() */
+> > > +    int size; /* the size of fds/riocs */
+> > > +    struct pollfd *fds;
+> > > +    QIOChannelRDMA **riocs;
+> > > +} rpoller;
+> > > +
+> > > +static void qio_channel_rdma_notify_rpoller(QIOChannelRDMA *rioc,
+> > > +                                            RpollerCMD cmd) {
+> > > +    RpollerMsg msg;
+> > > +    int ret;
+> > > +
+> > > +    msg.cmd =3D cmd;
+> > > +    msg.rioc =3D rioc;
+> > > +
+> > > +    ret =3D RETRY_ON_EINTR(write(rpoller.sock[0], &msg, sizeof msg))=
+;
+> > > +    if (ret !=3D sizeof msg) {
+> > > +        error_report("%s: failed to send msg, errno: %d", __func__,
+> > errno);
+> > > +    }
+> > > +}
+> > > +
+> > > +static void qio_channel_rdma_update_poll_event(QIOChannelRDMA *rioc,
+> > > +                                               UpdateEvent
+> > action,
+> > > +                                               bool notify_rpoller)
+> > {
+> > > +    /* An eventfd with the value of ULLONG_MAX - 1 is readable but
+> > unwritable */
+> > > +    unsigned long long buf =3D ULLONG_MAX - 1;
+> > > +
+> > > +    switch (action) {
+> > > +    /* only rpoller do SET_* action, to allow qemu ppoll() get the e=
+vent */
+> > > +    case SET_POLLIN:
+> > > +        RETRY_ON_EINTR(write(rioc->pollin_eventfd, &buf, sizeof buf)=
+);
+> > > +        rioc->rpoll_events &=3D ~POLLIN;
+> > > +        break;
+> > > +    case SET_POLLOUT:
+> > > +        RETRY_ON_EINTR(read(rioc->pollout_eventfd, &buf, sizeof buf)=
+);
+> > > +        rioc->rpoll_events &=3D ~POLLOUT;
+> > > +        break;
+> > > +
+> > > +    /* the rsocket fd is not ready to rread/rwrite */
+> > > +    case CLEAR_POLLIN:
+> > > +        RETRY_ON_EINTR(read(rioc->pollin_eventfd, &buf, sizeof buf))=
+;
+> > > +        rioc->rpoll_events |=3D POLLIN;
+> > > +        break;
+> > > +    case CLEAR_POLLOUT:
+> > > +        RETRY_ON_EINTR(write(rioc->pollout_eventfd, &buf, sizeof buf=
+));
+> > > +        rioc->rpoll_events |=3D POLLOUT;
+> > > +        break;
+> > > +    default:
+> > > +        break;
+> > > +    }
+> > > +
+> > > +    /* notify rpoller to rpoll() POLLIN/POLLOUT events */
+> > > +    if (notify_rpoller) {
+> > > +        qio_channel_rdma_notify_rpoller(rioc, RP_CMD_UPDATE);
+> > > +    }
+> > > +}
+> > > +
+> > > +static void qio_channel_rdma_rpoller_add_rioc(QIOChannelRDMA *rioc) =
+{
+> > > +    if (rioc->index !=3D -1) {
+> > > +        error_report("%s: rioc already exsits", __func__);
+> > > +        return;
+> > > +    }
+> > > +
+> > > +    rioc->index =3D ++rpoller.count;
+> > > +
+> > > +    if (rpoller.count + 1 > rpoller.size) {
+> > > +        rpoller.size *=3D 2;
+> > > +        rpoller.fds =3D g_renew(struct pollfd, rpoller.fds, rpoller.=
+size);
+> > > +        rpoller.riocs =3D g_renew(QIOChannelRDMA *, rpoller.riocs,
+> > rpoller.size);
+> > > +    }
+> > > +
+> > > +    rpoller.fds[rioc->index].fd =3D rioc->fd;
+> > > +    rpoller.fds[rioc->index].events =3D rioc->rpoll_events;
+> >
+> > The allotment of rioc fds and events to rpoller slots are sequential, b=
+ut making
+> > the deletion also sequentials means that the del_rioc needs to be calle=
+d in the
+> > exact opposite sequence as they were added (through add_rioc). Otherwis=
+e we
+> > leaves holes in between, and readditions might step on an already used =
+slot.
+> >
+> > Does this setup make sure that the above restriction is satisfied, or a=
+m I
+> > missing something?
+> >
+>
+> Actually, we use an O (1) algorithm for deletion, that is, each time we r=
+eplace the array element to be deleted with the last one.
+> Pls see qio_channel_rdma_rpoller_del_rioc():
+
+Ah yes. I missed that. Thanks for the response.
+
+>
+>    rpoller.fds[rioc->index] =3D rpoller.fds[rpoller.count];
+>
+> > > +    rpoller.riocs[rioc->index] =3D rioc; }
+> > > +
+> > > +static void qio_channel_rdma_rpoller_del_rioc(QIOChannelRDMA *rioc) =
+{
+> > > +    if (rioc->index =3D=3D -1) {
+> > > +        error_report("%s: rioc not exsits", __func__);
+> > > +        return;
+> > > +    }
+> > > +
+> > > +    rpoller.fds[rioc->index] =3D rpoller.fds[rpoller.count];
+> >
+> > Should this be rpoller.count-1?
+> >
+> No. the first element is the sockpairs' fd. Pls see qio_channel_rdma_rpol=
+ler_start():
+>
+>    rpoller.fds[0].fd =3D rpoller.sock[1];
+>    rpoller.fds[0].events =3D POLLIN;
+>
+>
+> Regards,
+> -Gonglei
+>
+> > > +    rpoller.riocs[rioc->index] =3D rpoller.riocs[rpoller.count];
+> > > +    rpoller.riocs[rioc->index]->index =3D rioc->index;
+> > > +    rpoller.count--;
+> > > +
+> > > +    close(rioc->pollin_eventfd);
+> > > +    close(rioc->pollout_eventfd);
+> > > +    rioc->index =3D -1;
+> > > +    rioc->rpoll_events =3D 0;
+> > > +}
+> > > +
+> > > +static void qio_channel_rdma_rpoller_update_ioc(QIOChannelRDMA *rioc=
+)
+> > > +{
+> > > +    if (rioc->index =3D=3D -1) {
+> > > +        error_report("%s: rioc not exsits", __func__);
+> > > +        return;
+> > > +    }
+> > > +
+> > > +    rpoller.fds[rioc->index].fd =3D rioc->fd;
+> > > +    rpoller.fds[rioc->index].events =3D rioc->rpoll_events; }
+> > > +
+> > > +static void qio_channel_rdma_rpoller_process_msg(void)
+> > > +{
+> > > +    RpollerMsg msg;
+> > > +    int ret;
+> > > +
+> > > +    ret =3D RETRY_ON_EINTR(read(rpoller.sock[1], &msg, sizeof msg));
+> > > +    if (ret !=3D sizeof msg) {
+> > > +        error_report("%s: rpoller failed to recv msg: %s", __func__,
+> > > +                     strerror(errno));
+> > > +        return;
+> > > +    }
+> > > +
+> > > +    switch (msg.cmd) {
+> > > +    case RP_CMD_ADD_IOC:
+> > > +        qio_channel_rdma_rpoller_add_rioc(msg.rioc);
+> > > +        break;
+> > > +    case RP_CMD_DEL_IOC:
+> > > +        qio_channel_rdma_rpoller_del_rioc(msg.rioc);
+> > > +        break;
+> > > +    case RP_CMD_UPDATE:
+> > > +        qio_channel_rdma_rpoller_update_ioc(msg.rioc);
+> > > +        break;
+> > > +    default:
+> > > +        break;
+> > > +    }
+> > > +}
+> > > +
+> > > +static void qio_channel_rdma_rpoller_cleanup(void)
+> > > +{
+> > > +    close(rpoller.sock[0]);
+> > > +    close(rpoller.sock[1]);
+> > > +    rpoller.sock[0] =3D -1;
+> > > +    rpoller.sock[1] =3D -1;
+> > > +    g_free(rpoller.fds);
+> > > +    g_free(rpoller.riocs);
+> > > +    rpoller.fds =3D NULL;
+> > > +    rpoller.riocs =3D NULL;
+> > > +    rpoller.count =3D 0;
+> > > +    rpoller.size =3D 0;
+> > > +    rpoller.is_running =3D false;
+> > > +}
+> > > +
+> > > +static void *qio_channel_rdma_rpoller_thread(void *opaque) {
+> > > +    int i, ret, error_events =3D POLLERR | POLLHUP | POLLNVAL;
+> > > +
+> > > +    do {
+> > > +        ret =3D rpoll(rpoller.fds, rpoller.count + 1, -1);
+> > > +        if (ret < 0 && errno !=3D -EINTR) {
+> > > +            error_report("%s: rpoll() error: %s", __func__,
+> > strerror(errno));
+> > > +            break;
+> > > +        }
+> > > +
+> > > +        for (i =3D 1; i <=3D rpoller.count; i++) {
+> > > +            if (rpoller.fds[i].revents & (POLLIN | error_events)) {
+> > > +                qio_channel_rdma_update_poll_event(rpoller.riocs[i],
+> > SET_POLLIN,
+> > > +                                                   false);
+> > > +                rpoller.fds[i].events &=3D ~POLLIN;
+> > > +            }
+> > > +            if (rpoller.fds[i].revents & (POLLOUT | error_events)) {
+> > > +                qio_channel_rdma_update_poll_event(rpoller.riocs[i],
+> > > +
+> > SET_POLLOUT, false);
+> > > +                rpoller.fds[i].events &=3D ~POLLOUT;
+> > > +            }
+> > > +            /* ignore this fd */
+> > > +            if (rpoller.fds[i].revents & (error_events)) {
+> > > +                rpoller.fds[i].fd =3D -1;
+> > > +            }
+> > > +        }
+> > > +
+> > > +        if (rpoller.fds[0].revents) {
+> > > +            qio_channel_rdma_rpoller_process_msg();
+> > > +        }
+> > > +    } while (rpoller.count >=3D 1);
+> > > +
+> > > +    qio_channel_rdma_rpoller_cleanup();
+> > > +
+> > > +    return NULL;
+> > > +}
+> > > +
+> > > +static void qio_channel_rdma_rpoller_start(void)
+> > > +{
+> > > +    if (qatomic_xchg(&rpoller.is_running, true)) {
+> > > +        return;
+> > > +    }
+> > > +
+> > > +    if (qemu_socketpair(AF_UNIX, SOCK_STREAM, 0, rpoller.sock)) {
+> > > +        rpoller.is_running =3D false;
+> > > +        error_report("%s: failed to create socketpair %s", __func__,
+> > > +                     strerror(errno));
+> > > +        return;
+> > > +    }
+> > > +
+> > > +    rpoller.count =3D 0;
+> > > +    rpoller.size =3D 4;
+> > > +    rpoller.fds =3D g_malloc0_n(rpoller.size, sizeof(struct pollfd))=
+;
+> > > +    rpoller.riocs =3D g_malloc0_n(rpoller.size, sizeof(QIOChannelRDM=
+A *));
+> > > +    rpoller.fds[0].fd =3D rpoller.sock[1];
+> > > +    rpoller.fds[0].events =3D POLLIN;
+> > > +
+> > > +    qemu_thread_create(&rpoller.thread, "qio-channel-rdma-rpoller",
+> > > +                       qio_channel_rdma_rpoller_thread, NULL,
+> > > +                       QEMU_THREAD_JOINABLE); }
+> > > +
+> > > +static void qio_channel_rdma_add_rioc_to_rpoller(QIOChannelRDMA
+> > > +*rioc) {
+> > > +    int flags =3D EFD_CLOEXEC | EFD_NONBLOCK;
+> > > +
+> > > +    /*
+> > > +     * A single eventfd is either readable or writable. A single eve=
+ntfd
+> > cannot
+> > > +     * represent a state where it is neither readable nor writable. =
+so use
+> > two
+> > > +     * eventfds here.
+> > > +     */
+> > > +    rioc->pollin_eventfd =3D eventfd(0, flags);
+> > > +    rioc->pollout_eventfd =3D eventfd(0, flags);
+> > > +    /* pollout_eventfd with the value 0, means writable, make it
+> > unwritable */
+> > > +    qio_channel_rdma_update_poll_event(rioc, CLEAR_POLLOUT, false);
+> > > +
+> > > +    /* tell the rpoller to rpoll() events on rioc->socketfd */
+> > > +    rioc->rpoll_events =3D POLLIN | POLLOUT;
+> > > +    qio_channel_rdma_notify_rpoller(rioc, RP_CMD_ADD_IOC); }
+> > > +
+> > >  QIOChannelRDMA *qio_channel_rdma_new(void)  {
+> > >      QIOChannelRDMA *rioc;
+> > >      QIOChannel *ioc;
+> > >
+> > > +    qio_channel_rdma_rpoller_start();
+> > > +    if (!rpoller.is_running) {
+> > > +        return NULL;
+> > > +    }
+> > > +
+> > >      rioc =3D
+> > QIO_CHANNEL_RDMA(object_new(TYPE_QIO_CHANNEL_RDMA));
+> > >      ioc =3D QIO_CHANNEL(rioc);
+> > >      qio_channel_set_feature(ioc, QIO_CHANNEL_FEATURE_SHUTDOWN);
+> > @@
+> > > -125,6 +393,8 @@ retry:
+> > >          goto out;
+> > >      }
+> > >
+> > > +    qio_channel_rdma_add_rioc_to_rpoller(rioc);
+> > > +
+> > >  out:
+> > >      if (ret) {
+> > >          trace_qio_channel_rdma_connect_fail(rioc);
+> > > @@ -211,6 +481,8 @@ int
+> > qio_channel_rdma_listen_sync(QIOChannelRDMA *rioc, InetSocketAddress
+> > *addr,
+> > >      qio_channel_set_feature(QIO_CHANNEL(rioc),
+> > QIO_CHANNEL_FEATURE_LISTEN);
+> > >      trace_qio_channel_rdma_listen_complete(rioc, fd);
+> > >
+> > > +    qio_channel_rdma_add_rioc_to_rpoller(rioc);
+> > > +
+> > >  out:
+> > >      if (ret) {
+> > >          trace_qio_channel_rdma_listen_fail(rioc);
+> > > @@ -267,8 +539,10 @@ void
+> > qio_channel_rdma_listen_async(QIOChannelRDMA *ioc, InetSocketAddress
+> > *addr,
+> > >                             qio_channel_listen_worker_free,
+> > context);
+> > > }
+> > >
+> > > -QIOChannelRDMA *qio_channel_rdma_accept(QIOChannelRDMA *rioc,
+> > Error
+> > > **errp)
+> > > +QIOChannelRDMA *coroutine_mixed_fn
+> > qio_channel_rdma_accept(QIOChannelRDMA *rioc,
+> > > +
+> > Error
+> > > +**errp)
+> > >  {
+> > > +    QIOChannel *ioc =3D QIO_CHANNEL(rioc);
+> > >      QIOChannelRDMA *cioc;
+> > >
+> > >      cioc =3D qio_channel_rdma_new();
+> > > @@ -283,6 +557,17 @@ retry:
+> > >          if (errno =3D=3D EINTR) {
+> > >              goto retry;
+> > >          }
+> > > +        if (errno =3D=3D EAGAIN) {
+> > > +            if (!(rioc->rpoll_events & POLLIN)) {
+> > > +                qio_channel_rdma_update_poll_event(rioc,
+> > CLEAR_POLLIN, true);
+> > > +            }
+> > > +            if (qemu_in_coroutine()) {
+> > > +                qio_channel_yield(ioc, G_IO_IN);
+> > > +            } else {
+> > > +                qio_channel_wait(ioc, G_IO_IN);
+> > > +            }
+> > > +            goto retry;
+> > > +        }
+> > >          error_setg_errno(errp, errno, "Unable to accept connection")=
+;
+> > >          goto error;
+> > >      }
+> > > @@ -294,6 +579,8 @@ retry:
+> > >          goto error;
+> > >      }
+> > >
+> > > +    qio_channel_rdma_add_rioc_to_rpoller(cioc);
+> > > +
+> > >      trace_qio_channel_rdma_accept_complete(rioc, cioc, cioc->fd);
+> > >      return cioc;
+> > >
+> > > @@ -307,6 +594,10 @@ static void qio_channel_rdma_init(Object *obj)  =
+{
+> > >      QIOChannelRDMA *ioc =3D QIO_CHANNEL_RDMA(obj);
+> > >      ioc->fd =3D -1;
+> > > +    ioc->pollin_eventfd =3D -1;
+> > > +    ioc->pollout_eventfd =3D -1;
+> > > +    ioc->index =3D -1;
+> > > +    ioc->rpoll_events =3D 0;
+> > >  }
+> > >
+> > >  static void qio_channel_rdma_finalize(Object *obj) @@ -314,6 +605,7
+> > > @@ static void qio_channel_rdma_finalize(Object *obj)
+> > >      QIOChannelRDMA *ioc =3D QIO_CHANNEL_RDMA(obj);
+> > >
+> > >      if (ioc->fd !=3D -1) {
+> > > +        qio_channel_rdma_notify_rpoller(ioc, RP_CMD_DEL_IOC);
+> > >          rclose(ioc->fd);
+> > >          ioc->fd =3D -1;
+> > >      }
+> > > @@ -330,6 +622,12 @@ static ssize_t
+> > qio_channel_rdma_readv(QIOChannel
+> > > *ioc, const struct iovec *iov,
+> > >  retry:
+> > >      ret =3D rreadv(rioc->fd, iov, niov);
+> > >      if (ret < 0) {
+> > > +        if (errno =3D=3D EAGAIN) {
+> > > +            if (!(rioc->rpoll_events & POLLIN)) {
+> > > +                qio_channel_rdma_update_poll_event(rioc,
+> > CLEAR_POLLIN, true);
+> > > +            }
+> > > +            return QIO_CHANNEL_ERR_BLOCK;
+> > > +        }
+> > >          if (errno =3D=3D EINTR) {
+> > >              goto retry;
+> > >          }
+> > > @@ -351,6 +649,12 @@ static ssize_t
+> > qio_channel_rdma_writev(QIOChannel
+> > > *ioc, const struct iovec *iov,
+> > >  retry:
+> > >      ret =3D rwritev(rioc->fd, iov, niov);
+> > >      if (ret <=3D 0) {
+> > > +        if (errno =3D=3D EAGAIN) {
+> > > +            if (!(rioc->rpoll_events & POLLOUT)) {
+> > > +                qio_channel_rdma_update_poll_event(rioc,
+> > CLEAR_POLLOUT, true);
+> > > +            }
+> > > +            return QIO_CHANNEL_ERR_BLOCK;
+> > > +        }
+> > >          if (errno =3D=3D EINTR) {
+> > >              goto retry;
+> > >          }
+> > > @@ -361,6 +665,28 @@ retry:
+> > >      return ret;
+> > >  }
+> > >
+> > > +static int qio_channel_rdma_set_blocking(QIOChannel *ioc, bool enabl=
+ed,
+> > > +                                         Error **errp
+> > G_GNUC_UNUSED)
+> > > +{
+> > > +    QIOChannelRDMA *rioc =3D QIO_CHANNEL_RDMA(ioc);
+> > > +    int flags, ret;
+> > > +
+> > > +    flags =3D rfcntl(rioc->fd, F_GETFL);
+> > > +    if (enabled) {
+> > > +        flags &=3D ~O_NONBLOCK;
+> > > +    } else {
+> > > +        flags |=3D O_NONBLOCK;
+> > > +    }
+> > > +
+> > > +    ret =3D rfcntl(rioc->fd, F_SETFL, flags);
+> > > +    if (ret) {
+> > > +        error_setg_errno(errp, errno,
+> > > +                         "Unable to rfcntl rsocket fd with flags %d"=
+,
+> > flags);
+> > > +    }
+> > > +
+> > > +    return ret;
+> > > +}
+> > > +
+> > >  static void qio_channel_rdma_set_delay(QIOChannel *ioc, bool enabled=
+)
+> > > {
+> > >      QIOChannelRDMA *rioc =3D QIO_CHANNEL_RDMA(ioc); @@ -374,6
+> > +700,7 @@
+> > > static int qio_channel_rdma_close(QIOChannel *ioc, Error **errp)
+> > >      QIOChannelRDMA *rioc =3D QIO_CHANNEL_RDMA(ioc);
+> > >
+> > >      if (rioc->fd !=3D -1) {
+> > > +        qio_channel_rdma_notify_rpoller(rioc, RP_CMD_DEL_IOC);
+> > >          rclose(rioc->fd);
+> > >          rioc->fd =3D -1;
+> > >      }
+> > > @@ -408,6 +735,37 @@ static int qio_channel_rdma_shutdown(QIOChannel
+> > *ioc, QIOChannelShutdown how,
+> > >      return 0;
+> > >  }
+> > >
+> > > +static void
+> > > +qio_channel_rdma_set_aio_fd_handler(QIOChannel *ioc, AioContext
+> > *read_ctx,
+> > > +                                    IOHandler *io_read,
+> > AioContext *write_ctx,
+> > > +                                    IOHandler *io_write, void
+> > > +*opaque) {
+> > > +    QIOChannelRDMA *rioc =3D QIO_CHANNEL_RDMA(ioc);
+> > > +
+> > > +    qio_channel_util_set_aio_fd_handler(rioc->pollin_eventfd, read_c=
+tx,
+> > io_read,
+> > > +                                        rioc->pollout_eventfd,
+> > write_ctx,
+> > > +                                        io_write, opaque); }
+> > > +
+> > > +static GSource *qio_channel_rdma_create_watch(QIOChannel *ioc,
+> > > +                                              GIOCondition
+> > condition)
+> > > +{
+> > > +    QIOChannelRDMA *rioc =3D QIO_CHANNEL_RDMA(ioc);
+> > > +
+> > > +    switch (condition) {
+> > > +    case G_IO_IN:
+> > > +        return qio_channel_create_fd_watch(ioc, rioc->pollin_eventfd=
+,
+> > > +                                           condition);
+> > > +    case G_IO_OUT:
+> > > +        return qio_channel_create_fd_watch(ioc, rioc->pollout_eventf=
+d,
+> > > +                                           condition);
+> > > +    default:
+> > > +        error_report("%s: do not support watch 0x%x event", __func__=
+,
+> > > +                     condition);
+> > > +        return NULL;
+> > > +    }
+> > > +}
+> > > +
+> > >  static void qio_channel_rdma_class_init(ObjectClass *klass,
+> > >                                          void *class_data
+> > > G_GNUC_UNUSED)  { @@ -415,9 +773,12 @@ static void
+> > > qio_channel_rdma_class_init(ObjectClass *klass,
+> > >
+> > >      ioc_klass->io_writev =3D qio_channel_rdma_writev;
+> > >      ioc_klass->io_readv =3D qio_channel_rdma_readv;
+> > > +    ioc_klass->io_set_blocking =3D qio_channel_rdma_set_blocking;
+> > >      ioc_klass->io_close =3D qio_channel_rdma_close;
+> > >      ioc_klass->io_shutdown =3D qio_channel_rdma_shutdown;
+> > >      ioc_klass->io_set_delay =3D qio_channel_rdma_set_delay;
+> > > +    ioc_klass->io_create_watch =3D qio_channel_rdma_create_watch;
+> > > +    ioc_klass->io_set_aio_fd_handler =3D
+> > > + qio_channel_rdma_set_aio_fd_handler;
+> > >  }
+> > >
+> > >  static const TypeInfo qio_channel_rdma_info =3D {
+> > > --
+> > > 2.43.0
+> > >
+> > >
 
