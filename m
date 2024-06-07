@@ -1,189 +1,162 @@
-Return-Path: <linux-rdma+bounces-2977-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-2978-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9FE8A8FFD42
-	for <lists+linux-rdma@lfdr.de>; Fri,  7 Jun 2024 09:34:53 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 699E28FFD57
+	for <lists+linux-rdma@lfdr.de>; Fri,  7 Jun 2024 09:40:51 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7A77F1C225EE
-	for <lists+linux-rdma@lfdr.de>; Fri,  7 Jun 2024 07:34:52 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E8164283564
+	for <lists+linux-rdma@lfdr.de>; Fri,  7 Jun 2024 07:40:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 19B9D1552ED;
-	Fri,  7 Jun 2024 07:34:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7FDBF155C9E;
+	Fri,  7 Jun 2024 07:40:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=resnulli-us.20230601.gappssmtp.com header.i=@resnulli-us.20230601.gappssmtp.com header.b="q+Pz3Mhf"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="RVmhyIzO"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-wm1-f46.google.com (mail-wm1-f46.google.com [209.85.128.46])
+Received: from mail-lf1-f42.google.com (mail-lf1-f42.google.com [209.85.167.42])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EC579153565
-	for <linux-rdma@vger.kernel.org>; Fri,  7 Jun 2024 07:34:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A655B154C17;
+	Fri,  7 Jun 2024 07:40:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1717745665; cv=none; b=WDPTqLPYIFuT4HKKHGHKgvFMwSHkA57YUjTzszgcgNvLYgEhcgXBWvoRtURbLmN0bEWp3JGQHdvE3tjW3Bii5rvmuaRli2fCooZBrwfqq7+R1M0G2738Zdcl1FnnnhhUislWtoRNIyl9rj/s+2N9FmfK+3MGcGFvprxh1D8AbY8=
+	t=1717746045; cv=none; b=lGoCZ+bUpgu8USR9Fo7Ot9a7frVmtWCG8bloMbWkWUKmHaPTOH09G3O33xxpnV1guLZcsUOG/PhlN2EOB2uGWqjCszAoD667eOD+KOmmp9qXJYy9ZhQf/kjrYpDQjK19K0Xa1H7GgP/9DyJLi3ugB1E8O0Q3n7FVfzJ8ErpX7SA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1717745665; c=relaxed/simple;
-	bh=wc7V8buAFkBh3ydPjed2ipAWNFc5GmI1OVqByAfWSWU=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=jjQ3VrMFuN3ACXGSqGNo9riyHe7S8JE4KPi9aAZqasqkNjJG90CoQkRpO2KZUXcbFY4DN4luYrArmsctMAmYZd7Fk0+f9qDiHOOr1UzryaMFIJ9VlsLBfQluprEIS0cZxec4cFh7Zj3Pa7s1OGYeaci8cYkhMhE1qyjdBbPYHFk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=resnulli.us; spf=none smtp.mailfrom=resnulli.us; dkim=pass (2048-bit key) header.d=resnulli-us.20230601.gappssmtp.com header.i=@resnulli-us.20230601.gappssmtp.com header.b=q+Pz3Mhf; arc=none smtp.client-ip=209.85.128.46
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=resnulli.us
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=resnulli.us
-Received: by mail-wm1-f46.google.com with SMTP id 5b1f17b1804b1-4214f52b810so21988085e9.1
-        for <linux-rdma@vger.kernel.org>; Fri, 07 Jun 2024 00:34:23 -0700 (PDT)
+	s=arc-20240116; t=1717746045; c=relaxed/simple;
+	bh=Gm3qXYT7sPdPu6m611tvaJ8w9yI0dFVyI6RzRJF+Wls=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=K6KcsscjmEmb8qSqpjLhEDn0HRAKhF3OF2JMgQvFkMGnAkGYh4OJWKam8dHsnDzjc/Wdj+rAY/DDjtl7pe0Egsg/2Y1GQKbpH+NSi01D6iqJZS9BfAVafwqxnhsQn11V/aGzl6+Qx/0xjSIQjz1RMUnKLhxakKFmz+r2VHrN5DU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=RVmhyIzO; arc=none smtp.client-ip=209.85.167.42
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-lf1-f42.google.com with SMTP id 2adb3069b0e04-52bbf73f334so178657e87.2;
+        Fri, 07 Jun 2024 00:40:43 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=resnulli-us.20230601.gappssmtp.com; s=20230601; t=1717745662; x=1718350462; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=Q9p6Ea3BEh/GCrntLXXZZkFilZ40QZybHi/QN5L8Zn8=;
-        b=q+Pz3MhfhJdXmKzduBXLRXoBo4ZJKF1Lc2nj5i8EWgeRMLJOu+Yb8ulvKkHtKd2a9b
-         oAreJr+aMnnQSewtWckAM30kjNoBouKNwZ+CB705d7ORxkv0chfReUltQNleeopnfdux
-         wOOcwtYCyqzpz7UvmJZ+gyQRgB79TgwV9mU74BgOeyRgmnmdqHC7EZ1umdjbCUwaU4n0
-         i/TpISZAlfgkWcLN4l7xAsAO0Nb5z0xE57/saHQT3wgLVWHLaQRyGHU01jvJxsXfwcFB
-         dWJJqYE/s7ccoXE54aOtHKFCOjEfcmkIbg9AAkoFvnc/oyyph69xU7LKOOBfxqz3Zv8a
-         A0jQ==
+        d=gmail.com; s=20230601; t=1717746042; x=1718350842; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=AS72jLuSxBJ0gHW3RNFPmyDKK389zQityL0CcC1+x9A=;
+        b=RVmhyIzOCdbRYr4jOZjChMeW8rFDoiET8bTmfs9uOne2caYcP2MTTINqLQu6UN91+H
+         X+RVSQ5myYvW6COLrdtA0DlyxzQwEKPEJg3RgP2Dq4l8vOAwCQ9eFJwPGf4atcQeat7H
+         UOjTqEgl/eo0glQ5o2rjDAdDd3/Kq4cME++QgM9HM8+VPLMxnFHQ6jENmP9a3vVKa6OC
+         O9O/7mXZ7sZHGM0cVViykEc//vE7oiltFNShCGlYfYROiFVD9tSqOfKheUG3h984M4lN
+         q0it7qRN6mNiM4B4UhG+9iq4u+C60hKYD6b78Q70Rkp0+HqHsfaTzD+g9LiMEZoHCjZC
+         Qvlg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1717745662; x=1718350462;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Q9p6Ea3BEh/GCrntLXXZZkFilZ40QZybHi/QN5L8Zn8=;
-        b=NJFQSJ7xkKTANAir2/3JiVRUllgC6Xx8vmPcPKVDBHf3kBInRPpPQ0+AnxGCICxC4f
-         f9uCEKMiLtlLXqyWJx3Wv+ZeC8u20EaUaEziZk8rk9jMkIAxgBF7/dT87/M6VA1UYyLB
-         Xzn9E94oNbHpz2fCe+ydoewpF1yjYmHjtrK/kBGdd3670NqrkDvQhuT0t21w/Fqp/puw
-         rv2XvuVHIigmtBwTaXjpnHsqLTvpkZqkZcgthSw8jYW7/24CDGplOQZz3VKj4/sIUNXg
-         DXB0T5uTEOMeYrYEfLbZlDllSPNcPatNnmnLj5Gc4q5msA7UD2e3Xb55H66nUVmqsLS2
-         blhg==
-X-Forwarded-Encrypted: i=1; AJvYcCUp00DkFOFd7DQuAZFvvLQbH46D8VdnQZ2sQA5dHNwTPHgz39q7Vt0Q8ttAJ9E6XWc4kFXfX5wPQbHcNkoRq49z5pmoRVJOQOFv2w==
-X-Gm-Message-State: AOJu0YyWjwuUedCMqH86Ns5d7v/XJ9hhhnN4W66HbF4jT8aV54W5gT73
-	DterynrvfZhZnd0ptp0VfTNhB3Q/5Sc5uJmazwi781eV+fTEgp045aGDZA2RQco=
-X-Google-Smtp-Source: AGHT+IH+3m7gv/wXKg1IjZX1gSf7JkbLx10qHeS1+1YDQg9+/tqA6LeQaS0aSWtLgR0eEgd8FaiPpw==
-X-Received: by 2002:a05:600c:1383:b0:420:182e:eb46 with SMTP id 5b1f17b1804b1-42164a44859mr21469665e9.38.1717745662064;
-        Fri, 07 Jun 2024 00:34:22 -0700 (PDT)
-Received: from localhost ([193.47.165.251])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-421580fe3bfsm79619795e9.8.2024.06.07.00.34.20
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 07 Jun 2024 00:34:21 -0700 (PDT)
-Date: Fri, 7 Jun 2024 09:34:18 +0200
-From: Jiri Pirko <jiri@resnulli.us>
-To: Jakub Kicinski <kuba@kernel.org>
-Cc: David Ahern <dsahern@kernel.org>, Jason Gunthorpe <jgg@nvidia.com>,
-	Dan Williams <dan.j.williams@intel.com>,
-	Jonathan Corbet <corbet@lwn.net>, Itay Avraham <itayavr@nvidia.com>,
-	Leon Romanovsky <leon@kernel.org>, linux-doc@vger.kernel.org,
-	linux-rdma@vger.kernel.org, netdev@vger.kernel.org,
-	Paolo Abeni <pabeni@redhat.com>, Saeed Mahameed <saeedm@nvidia.com>,
-	Tariq Toukan <tariqt@nvidia.com>,
-	Andy Gospodarek <andrew.gospodarek@broadcom.com>,
-	Aron Silverton <aron.silverton@oracle.com>,
-	Christoph Hellwig <hch@infradead.org>, Jiri Pirko <jiri@nvidia.com>,
-	Leonid Bloch <lbloch@nvidia.com>,
-	Leon Romanovsky <leonro@nvidia.com>, linux-cxl@vger.kernel.org,
-	patches@lists.linux.dev
-Subject: Re: [PATCH 0/8] Introduce fwctl subystem
-Message-ID: <ZmK3-rkibH8j4ZwM@nanopsycho.orion>
-References: <0-v1-9912f1a11620+2a-fwctl_jgg@nvidia.com>
- <20240603114250.5325279c@kernel.org>
- <214d7d82-0916-4c29-9012-04590e77df73@kernel.org>
- <20240604070451.79cfb280@kernel.org>
- <665fa9c9e69de_4a4e62941e@dwillia2-xfh.jf.intel.com.notmuch>
- <20240605135911.GT19897@nvidia.com>
- <d97144db-424f-4efd-bf10-513a0b895eca@kernel.org>
- <20240606071811.34767cce@kernel.org>
+        d=1e100.net; s=20230601; t=1717746042; x=1718350842;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=AS72jLuSxBJ0gHW3RNFPmyDKK389zQityL0CcC1+x9A=;
+        b=LL4mR5x5sFvFZr1BM+XVqIKbxRlsel6/k/og2fvx6uJkzKWGSGjsSbcV+HRBhCF7cR
+         gkZKA8yzaPzU35Va/KWfCjAlcJxWgC0aFhfR067+wTgx23L5B7Q2f9dcM/NUfE6IVnIA
+         X2QMx2gsfRK8lCxIGzB4b945nwu+WbD/ii9q9gMxpzuR7dvidxmLv6lcSYgdU5owFhu9
+         zzNhwIa36XhGZPV4s1r9K1G9B4PTKNMXxyLCSR0Hnd2UvoEMU8HUSbIg6aQ6h3Z0RXY7
+         xipcu/KlyIt8i+6D09/3HYc4RqbrllsGILM4z6iAo8C3i9Ejqp5RDqPedCoNfM2IDYvC
+         vXGQ==
+X-Forwarded-Encrypted: i=1; AJvYcCWQUd0Ob2/PTr4YepiLFrUhA9A+EjE7IQzD62XDuX6q0PXbCZWNp8jMmIgJ37KIus4i3Gwcwpbo+iJmoAG8ly0Dktu4uc5OiVnhljYEqvR3vcOPTfsfPxhtO0mMCgWOrNZsG3PnkHUiKdYNVUk/j4RRFenWkLr2+zFEW7IK34TvXg==
+X-Gm-Message-State: AOJu0YwiTiISmVc9bKFI63DQHOhqO1W0GBMJw/DSq0UkRPAukrxv1u0F
+	uV5c17PF0ElsferYHF2pj/450qQ3zNZ6As9x6pRSIelxSqD5PcSF
+X-Google-Smtp-Source: AGHT+IE145ugTmfzMkGbBgDc4EskumPPJu4aSr9T8VWy7YFERUgYNQr8opMDit+pmllO3+UDYOOu9w==
+X-Received: by 2002:ac2:4a9c:0:b0:52b:844f:dd10 with SMTP id 2adb3069b0e04-52bb9f83a84mr1115177e87.40.1717746041445;
+        Fri, 07 Jun 2024 00:40:41 -0700 (PDT)
+Received: from [172.27.33.107] ([193.47.165.251])
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-4215811d13esm76100585e9.24.2024.06.07.00.40.39
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 07 Jun 2024 00:40:41 -0700 (PDT)
+Message-ID: <15007808-b5b1-441c-9a20-94195330b245@gmail.com>
+Date: Fri, 7 Jun 2024 10:40:38 +0300
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240606071811.34767cce@kernel.org>
-
-Thu, Jun 06, 2024 at 04:18:11PM CEST, kuba@kernel.org wrote:
->On Wed, 5 Jun 2024 20:35:49 -0600 David Ahern wrote:
->> Until a feature is standardized and/or commoditized, it does not make
->> sense to create a uapi for every H/W vendor whim.
->
->This is not about non-standard features. I work with multiple vendors
->as my day job. I ask them how to set basic link configuration and the
->support person gives me a link to the vendor tools! I wish I could show
->you the emails.
-
-Even without emails seen, I believe you. Well, isn't it just natural? I
-mean, it always takes a bigger (sometimes much bigger) effort to
-implement things properly introducing/extending apis/uapis.
-Implement things in vendor tool is easy, low hanging fruit, people
-naturally pick them.
-
-I've been around in netdev for better part of second decade.
-I think, for the sake of discussion, it is worth mentioning, that
-a big part of netdev success despite complexicity is that in the
-past, any attempt of kernel bypass (I recall few) was promptly rejected.
-There was always big push for proper abstracted solution. And I believe
-it helped a lot all over the place. Is this approach depleted?
-I don't know, maybe. (And yes, I'm aware not everything could be done
-this way).
-
-I understand the reason and motivation for this patchset and what it
-will solve, don't get me wrong. I kind of like it, it will help to
-remove all painful detours we currenly have.
-
-My concern is, it opens a pandora box for netdev *for sure*.
-It that desired and anticipated?
-
-Do the gains overweight the potential losses? Will it help the
-ecosystem?
-
-What is motivation for vendor to take the hard way of using proper api
-(even existing ones) after?
-
-Moreover, wouldn't this serve for vendors to go out of leash and start
-to introduce even more H/W vendor whims?
-
-I think these are serious questions we need to ask before this is merged.
+User-Agent: Mozilla Thunderbird
+Subject: Re: [RFC net-next v4 2/2] net/mlx5e: Add per queue netdev-genl stats
+To: Jakub Kicinski <kuba@kernel.org>, Joe Damato <jdamato@fastly.com>
+Cc: Tariq Toukan <ttoukan.linux@gmail.com>, netdev@vger.kernel.org,
+ linux-kernel@vger.kernel.org, nalramli@fastly.com,
+ Saeed Mahameed <saeedm@nvidia.com>, Leon Romanovsky <leon@kernel.org>,
+ "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
+ Paolo Abeni <pabeni@redhat.com>, Richard Cochran <richardcochran@gmail.com>,
+ "open list:MELLANOX MLX5 core VPI driver" <linux-rdma@vger.kernel.org>,
+ Tariq Toukan <tariqt@nvidia.com>
+References: <20240604004629.299699-1-jdamato@fastly.com>
+ <20240604004629.299699-3-jdamato@fastly.com>
+ <11b9c844-a56e-427f-aab3-3e223d41b165@gmail.com>
+ <ZmIwIJ9rxllqQT18@LQ3V64L9R2> <20240606171942.4226a854@kernel.org>
+Content-Language: en-US
+From: Tariq Toukan <ttoukan.linux@gmail.com>
+In-Reply-To: <20240606171942.4226a854@kernel.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
 
->
->> All of them are attempting to solve real problems; some of them will
->> stick. We know which features are valuable when customers use them,
->
->Yes, once customers deploy a feature implemented via a vendor API
->they will definitely migrate to a different API. Customers like risk
->and wasting their engineering resources reimplementing and redeploying
->things? And we have so much success move users to new APIs in Linux!
->
->> ask for them and other vendors copy them. Until then it is a 1-off by
->> a vendor basically proposing a solution.
->
->Certainly. Because... who exactly will ask the second vendor to
->implement the common API? 
->
->And the second vendor will most certainly not mind the extra delay and
->inconvenience having their product shipped via the publicly reviewed,
->and slow to deploy kernel, while the first one is happily selling
->the same feature already.
->
->> Not all ideas are good ideas, and we do not need the burden of a uapi
->> or the burden of out of tree drivers.
->
->This API gives user space SDKs a trivial way of implementing all
->switching, routing, filtering, QoS offloads etc.
->An argument can be made that given somewhat mixed switchdev experience
+On 07/06/2024 3:19, Jakub Kicinski wrote:
+> On Thu, 6 Jun 2024 14:54:40 -0700 Joe Damato wrote:
+>>>> Compare the values in /proc/net/dev match the output of cli for the same
+>>>> device, even while the device is down.
+>>>>
+>>>> Note that while the device is down, per queue stats output nothing
+>>>> (because the device is down there are no queues):
+>>>
+>>> This part is not true anymore.
+>>
+>> It is true with this patch applied and running the command below.
+>> Maybe I should have been more explicit that using cli.py outputs []
+>> when scope = queue, which could be an internal cli.py thing, but
+>> this is definitely true with this patch.
+>>
+>> Did you test it and get different results?
+> 
+> To avoid drivers having their own interpretations what "closed" means,
+> core hides all queues in closed state:
+> 
+> https://elixir.bootlin.com/linux/v6.10-rc1/source/net/core/netdev-genl.c#L582
+> 
 
-Can you elaborabe a bit more what you mean by "mixed switchdev
-experience" please?
+Oh, so the kernel doesn't even call the driver's 
+mlx5e_get_queue_stats_rx/tx callbacks if interface is down. Although our 
+driver can easily satisfy the query and provide the stats.
 
+I think the kernel here makes some design assumption about the stats, 
+and enforces it on all vendor drivers.
+I don't think it's a matter of "closed channel" interpretation, it's 
+more about persistent stats.
+IMO the kernel should be generic enough to let both designs (persistent 
+and non-persistent stats) integrate naturally with this new queue 
+netdev-genl stats feature.
 
+>>> PTP RQ index is naively assigned to zero:
+>>> rq->ix           = MLX5E_PTP_CHANNEL_IX;
+>>>
+>>> but this isn't to be used as the stats index.
+>>> Today, the PTP-RQ has no matcing rxq in the kernel level.
+>>> i.e. turning PTP-RQ on won't add a kernel-level RXQ to the
+>>> real_num_rx_queues.
+>>> Maybe we better do.
+>>> If not, and the current state is kept, the best we can do is let the PTP-RQ
+>>> naively contribute its queue-stat to channel 0.
+>>
+>> OK, it sounds like the easiest thing to do is just count PTP as
+>> channel 0, so if i == 0, I'll in the PTP stats.
+>>
+>> But please see below regarding testing whether or not PTP is
+>> actually enabled or not.
+> 
+> If we can I think we should avoid making queue 0 too special.
+> If someone configures steering and only expects certain packets on
+> queue 0 - getting PTP counted there will be a surprise.
+> I vote to always count it towards base.
 
->we should just stay out of the way and let that happen. But just make
->that argument then, instead of pretending the use of this API will be
->limited to custom very vendor specific things.
->
->Again, if someone needs this to ship their custom CXL/Infiniband 
->AI fabric magic, which is un-interoperable by design -- none of 
->my concern. But keep TCP/IP networking out of this :|
->
++1, let's count PTP RX in the base, especially that it has no matching 
+kernel-level rxq.
+
+Another option is to add one more kernel rxq for it (i.e. set 
+real_num_rx_queues to num_channels + 1). But, that would be a bigger 
+change, we can keep it for a followup discussion.
 
