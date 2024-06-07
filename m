@@ -1,195 +1,143 @@
-Return-Path: <linux-rdma+bounces-2983-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-2984-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 77DF48FFE56
-	for <lists+linux-rdma@lfdr.de>; Fri,  7 Jun 2024 10:49:16 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 433278FFE7F
+	for <lists+linux-rdma@lfdr.de>; Fri,  7 Jun 2024 10:57:39 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9A0841C20C5A
-	for <lists+linux-rdma@lfdr.de>; Fri,  7 Jun 2024 08:49:15 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id EB84F1F2A24F
+	for <lists+linux-rdma@lfdr.de>; Fri,  7 Jun 2024 08:57:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4CBC515B102;
-	Fri,  7 Jun 2024 08:49:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7E16715B14D;
+	Fri,  7 Jun 2024 08:57:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="um0y5LO1"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
+Received: from out-180.mta1.migadu.com (out-180.mta1.migadu.com [95.215.58.180])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C02C2405F8
-	for <linux-rdma@vger.kernel.org>; Fri,  7 Jun 2024 08:49:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.187
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1645215B143
+	for <linux-rdma@vger.kernel.org>; Fri,  7 Jun 2024 08:57:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1717750149; cv=none; b=nOsoNtwv2g8OoxmAA7tHHqsfD5kqgdnMOYiytStrrLY5unt2aL7HeiDWY8Fl1tZLlQNaxy1Ot9J+T1+9A0Ro4H07ldIJwEYYvCsBFsGQVn7pvsJK7U0f7H62U2BEpUiC3uf/yEmB95qWi6NTuFDbLmyeTigeylgjLVcpFnNy8wM=
+	t=1717750639; cv=none; b=o/ZPdcIo+ncf9wbqxaZBvezzsWzmFce9+1CXlURQ561LsGlySg6On3GzTiRpwebQXm3JYWhZhFme3zOhbwVkFCr15/1ySMr51ipQ7hb/LreqGlVRQZZaBhBkYJoLJZQ2i3ddvYQN/NHYxuKV5miUJhyoNi/vEHTxH1Sozppcvoc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1717750149; c=relaxed/simple;
-	bh=nnqmp6LaJAqqaFN9gNwf6sVzX5jSndYbIhjxyQ0dtuc=;
-	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
-	 Content-Type:MIME-Version; b=YzDiTA3YRJYcrjkXssQ86PXfvmTQaIYI2qpaLofasZUiH7Tre2UM6gApHdvKM+VpMYO/7cKe3Jc1tq3w8JleRRMa5Aotv6AZkpKLrNEHhbV0BvBY0tG5bRERM5cXo5I9Dyf+SfW+QPRs1OS6ezfdwVD/grmg+2DCUjbKiBIbyGE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.187
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.163.252])
-	by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4VwZWz617hzsTVH;
-	Fri,  7 Jun 2024 16:45:03 +0800 (CST)
-Received: from kwepemf100003.china.huawei.com (unknown [7.202.181.217])
-	by mail.maildlp.com (Postfix) with ESMTPS id AB694180085;
-	Fri,  7 Jun 2024 16:49:02 +0800 (CST)
-Received: from dggpemf200006.china.huawei.com (7.185.36.61) by
- kwepemf100003.china.huawei.com (7.202.181.217) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1544.11; Fri, 7 Jun 2024 16:49:02 +0800
-Received: from dggpemf200006.china.huawei.com ([7.185.36.61]) by
- dggpemf200006.china.huawei.com ([7.185.36.61]) with mapi id 15.02.1544.011;
- Fri, 7 Jun 2024 16:49:02 +0800
-From: "Gonglei (Arei)" <arei.gonglei@huawei.com>
-To: Peter Xu <peterx@redhat.com>
-CC: "qemu-devel@nongnu.org" <qemu-devel@nongnu.org>, "yu.zhang@ionos.com"
-	<yu.zhang@ionos.com>, "mgalaxy@akamai.com" <mgalaxy@akamai.com>,
-	"elmar.gerdes@ionos.com" <elmar.gerdes@ionos.com>, zhengchuan
-	<zhengchuan@huawei.com>, "berrange@redhat.com" <berrange@redhat.com>,
-	"armbru@redhat.com" <armbru@redhat.com>, "lizhijian@fujitsu.com"
-	<lizhijian@fujitsu.com>, "pbonzini@redhat.com" <pbonzini@redhat.com>,
-	"mst@redhat.com" <mst@redhat.com>, Xiexiangyou <xiexiangyou@huawei.com>,
-	"linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>, "lixiao (H)"
-	<lixiao91@huawei.com>, "jinpu.wang@ionos.com" <jinpu.wang@ionos.com>,
-	Wangjialin <wangjialin23@huawei.com>, Fabiano Rosas <farosas@suse.de>
-Subject: RE: [PATCH 0/6] refactor RDMA live migration based on rsocket API
-Thread-Topic: [PATCH 0/6] refactor RDMA live migration based on rsocket API
-Thread-Index: AQHatni5B+Psi4bf8k2CmAL8rvKhtrG3eMaAgAF5NUD//8F2AIADSROQ
-Date: Fri, 7 Jun 2024 08:49:01 +0000
-Message-ID: <2fa61f902c244211af7d1316b67fe0a1@huawei.com>
-References: <1717503252-51884-1-git-send-email-arei.gonglei@huawei.com>
- <Zl9rw3Q9Z9A0iMYV@x1n> <de950e0e2cda4f8dacd15892a6328861@huawei.com>
- <ZmBzusHyxLYqMeQg@x1n>
-In-Reply-To: <ZmBzusHyxLYqMeQg@x1n>
-Accept-Language: zh-CN, en-US
-Content-Language: zh-CN
-X-MS-Has-Attach:
-X-MS-TNEF-Correlator:
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+	s=arc-20240116; t=1717750639; c=relaxed/simple;
+	bh=61vVTHFebob1vxxjuIDUU7M0JBb51w6dp946OI5SAv4=;
+	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
+	 In-Reply-To:Content-Type; b=DIQ83km6nkSpIed7Rjvk7tlbFHOveU1CgNv/tTJuR/ooSZpLmoC1WU8NeSHgNlVeEVVPHf61/asPOVg4HHTFMj4TMgl7PXPUMc9lJqMfY4X4BSiC2gQXEt21NXFvBgZQ3miuLBySalyuPPGEcqhmBS8WzgIV3m51toHbVplETJk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=um0y5LO1; arc=none smtp.client-ip=95.215.58.180
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+X-Envelope-To: leon@kernel.org
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1717750634;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=RDUa0yze7IqLKgiHYZ24zoOj9XdJdjvwiZ7E1plpfm0=;
+	b=um0y5LO1gNfkDVd3ZBgLoy/hnHgeKgxyr+xJhQGAZashpbCSpZOgLyPVvAbmIvulC7NYwk
+	YpCH0Wr94UET5Gd/g9P+WI2rxtXrlZ7tgQV4nVLFJJIu6QQPeBurQ1JfSzs8K1MdGQXQzH
+	8GI8M/8zFSU70NTXx4RssAQgAL2JbU4=
+X-Envelope-To: jgg@ziepe.ca
+X-Envelope-To: rpearsonhpe@gmail.com
+X-Envelope-To: matsuda-daisuke@fujitsu.com
+X-Envelope-To: linux-rdma@vger.kernel.org
+X-Envelope-To: honggangli@163.com
+Message-ID: <4b082825-af44-40fe-a6e9-a33d7caa4351@linux.dev>
+Date: Fri, 7 Jun 2024 10:57:12 +0200
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Subject: Re: [PATCH] RDMA/rxe: Fix responder length checking for UD request
+ packets
+To: Leon Romanovsky <leon@kernel.org>, jgg@ziepe.ca, rpearsonhpe@gmail.com,
+ matsuda-daisuke@fujitsu.com, linux-rdma@vger.kernel.org,
+ Honggang LI <honggangli@163.com>
+References: <20240523094617.141148-1-honggangli@163.com>
+ <171707866514.136408.14977812016177496326.b4-ty@kernel.org>
+Content-Language: en-US
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Zhu Yanjun <yanjun.zhu@linux.dev>
+In-Reply-To: <171707866514.136408.14977812016177496326.b4-ty@kernel.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
 
-DQoNCj4gLS0tLS1PcmlnaW5hbCBNZXNzYWdlLS0tLS0NCj4gRnJvbTogUGV0ZXIgWHUgW21haWx0
-bzpwZXRlcnhAcmVkaGF0LmNvbV0NCj4gU2VudDogV2VkbmVzZGF5LCBKdW5lIDUsIDIwMjQgMTA6
-MTkgUE0NCj4gVG86IEdvbmdsZWkgKEFyZWkpIDxhcmVpLmdvbmdsZWlAaHVhd2VpLmNvbT4NCj4g
-Q2M6IHFlbXUtZGV2ZWxAbm9uZ251Lm9yZzsgeXUuemhhbmdAaW9ub3MuY29tOyBtZ2FsYXh5QGFr
-YW1haS5jb207DQo+IGVsbWFyLmdlcmRlc0Bpb25vcy5jb207IHpoZW5nY2h1YW4gPHpoZW5nY2h1
-YW5AaHVhd2VpLmNvbT47DQo+IGJlcnJhbmdlQHJlZGhhdC5jb207IGFybWJydUByZWRoYXQuY29t
-OyBsaXpoaWppYW5AZnVqaXRzdS5jb207DQo+IHBib256aW5pQHJlZGhhdC5jb207IG1zdEByZWRo
-YXQuY29tOyBYaWV4aWFuZ3lvdQ0KPiA8eGlleGlhbmd5b3VAaHVhd2VpLmNvbT47IGxpbnV4LXJk
-bWFAdmdlci5rZXJuZWwub3JnOyBsaXhpYW8gKEgpDQo+IDxsaXhpYW85MUBodWF3ZWkuY29tPjsg
-amlucHUud2FuZ0Bpb25vcy5jb207IFdhbmdqaWFsaW4NCj4gPHdhbmdqaWFsaW4yM0BodWF3ZWku
-Y29tPjsgRmFiaWFubyBSb3NhcyA8ZmFyb3Nhc0BzdXNlLmRlPg0KPiBTdWJqZWN0OiBSZTogW1BB
-VENIIDAvNl0gcmVmYWN0b3IgUkRNQSBsaXZlIG1pZ3JhdGlvbiBiYXNlZCBvbiByc29ja2V0IEFQ
-SQ0KPiANCj4gT24gV2VkLCBKdW4gMDUsIDIwMjQgYXQgMTA6MDk6NDNBTSArMDAwMCwgR29uZ2xl
-aSAoQXJlaSkgd3JvdGU6DQo+ID4gSGkgUGV0ZXIsDQo+ID4NCj4gPiA+IC0tLS0tT3JpZ2luYWwg
-TWVzc2FnZS0tLS0tDQo+ID4gPiBGcm9tOiBQZXRlciBYdSBbbWFpbHRvOnBldGVyeEByZWRoYXQu
-Y29tXQ0KPiA+ID4gU2VudDogV2VkbmVzZGF5LCBKdW5lIDUsIDIwMjQgMzozMiBBTQ0KPiA+ID4g
-VG86IEdvbmdsZWkgKEFyZWkpIDxhcmVpLmdvbmdsZWlAaHVhd2VpLmNvbT4NCj4gPiA+IENjOiBx
-ZW11LWRldmVsQG5vbmdudS5vcmc7IHl1LnpoYW5nQGlvbm9zLmNvbTsNCj4gbWdhbGF4eUBha2Ft
-YWkuY29tOw0KPiA+ID4gZWxtYXIuZ2VyZGVzQGlvbm9zLmNvbTsgemhlbmdjaHVhbiA8emhlbmdj
-aHVhbkBodWF3ZWkuY29tPjsNCj4gPiA+IGJlcnJhbmdlQHJlZGhhdC5jb207IGFybWJydUByZWRo
-YXQuY29tOyBsaXpoaWppYW5AZnVqaXRzdS5jb207DQo+ID4gPiBwYm9uemluaUByZWRoYXQuY29t
-OyBtc3RAcmVkaGF0LmNvbTsgWGlleGlhbmd5b3UNCj4gPiA+IDx4aWV4aWFuZ3lvdUBodWF3ZWku
-Y29tPjsgbGludXgtcmRtYUB2Z2VyLmtlcm5lbC5vcmc7IGxpeGlhbyAoSCkNCj4gPiA+IDxsaXhp
-YW85MUBodWF3ZWkuY29tPjsgamlucHUud2FuZ0Bpb25vcy5jb207IFdhbmdqaWFsaW4NCj4gPiA+
-IDx3YW5namlhbGluMjNAaHVhd2VpLmNvbT47IEZhYmlhbm8gUm9zYXMgPGZhcm9zYXNAc3VzZS5k
-ZT4NCj4gPiA+IFN1YmplY3Q6IFJlOiBbUEFUQ0ggMC82XSByZWZhY3RvciBSRE1BIGxpdmUgbWln
-cmF0aW9uIGJhc2VkIG9uDQo+ID4gPiByc29ja2V0IEFQSQ0KPiA+ID4NCj4gPiA+IEhpLCBMZWks
-IEppYWxpbiwNCj4gPiA+DQo+ID4gPiBUaGFua3MgYSBsb3QgZm9yIHdvcmtpbmcgb24gdGhpcyEN
-Cj4gPiA+DQo+ID4gPiBJIHRoaW5rIHdlJ2xsIG5lZWQgdG8gd2FpdCBhIGJpdCBvbiBmZWVkYmFj
-a3MgZnJvbSBKaW5wdSBhbmQgaGlzDQo+ID4gPiB0ZWFtIG9uIFJETUEgc2lkZSwgYWxzbyBEYW5p
-ZWwgZm9yIGlvY2hhbm5lbHMuICBBbHNvLCBwbGVhc2UNCj4gPiA+IHJlbWVtYmVyIHRvIGNvcHkg
-RmFiaWFubyBSb3NhcyBpbiBhbnkgcmVsZXZhbnQgZnV0dXJlIHBvc3RzLiAgV2UnZA0KPiA+ID4g
-YWxzbyBsaWtlIHRvIGtub3cgd2hldGhlciBoZSBoYXMgYW55IGNvbW1lbnRzIHRvby4gIEkgaGF2
-ZSBoaW0gY29waWVkIGluDQo+IHRoaXMgcmVwbHkuDQo+ID4gPg0KPiA+ID4gT24gVHVlLCBKdW4g
-MDQsIDIwMjQgYXQgMDg6MTQ6MDZQTSArMDgwMCwgR29uZ2xlaSB3cm90ZToNCj4gPiA+ID4gRnJv
-bTogSmlhbGluIFdhbmcgPHdhbmdqaWFsaW4yM0BodWF3ZWkuY29tPg0KPiA+ID4gPg0KPiA+ID4g
-PiBIaSwNCj4gPiA+ID4NCj4gPiA+ID4gVGhpcyBwYXRjaCBzZXJpZXMgYXR0ZW1wdHMgdG8gcmVm
-YWN0b3IgUkRNQSBsaXZlIG1pZ3JhdGlvbiBieQ0KPiA+ID4gPiBpbnRyb2R1Y2luZyBhIG5ldyBR
-SU9DaGFubmVsUkRNQSBjbGFzcyBiYXNlZCBvbiB0aGUgcnNvY2tldCBBUEkuDQo+ID4gPiA+DQo+
-ID4gPiA+IFRoZSAvdXNyL2luY2x1ZGUvcmRtYS9yc29ja2V0LmggcHJvdmlkZXMgYSBoaWdoZXIg
-bGV2ZWwgcnNvY2tldA0KPiA+ID4gPiBBUEkgdGhhdCBpcyBhIDEtMSBtYXRjaCBvZiB0aGUgbm9y
-bWFsIGtlcm5lbCAnc29ja2V0cycgQVBJLCB3aGljaA0KPiA+ID4gPiBoaWRlcyB0aGUgZGV0YWls
-IG9mIHJkbWEgcHJvdG9jb2wgaW50byByc29ja2V0IGFuZCBhbGxvd3MgdXMgdG8NCj4gPiA+ID4g
-YWRkIHN1cHBvcnQgZm9yIHNvbWUgbW9kZXJuIGZlYXR1cmVzIGxpa2UgbXVsdGlmZCBtb3JlIGVh
-c2lseS4NCj4gPiA+ID4NCj4gPiA+ID4gSGVyZSBpcyB0aGUgcHJldmlvdXMgZGlzY3Vzc2lvbiBv
-biByZWZhY3RvcmluZyBSRE1BIGxpdmUgbWlncmF0aW9uDQo+ID4gPiA+IHVzaW5nIHRoZSByc29j
-a2V0IEFQSToNCj4gPiA+ID4NCj4gPiA+ID4gaHR0cHM6Ly9sb3JlLmtlcm5lbC5vcmcvcWVtdS1k
-ZXZlbC8yMDI0MDMyODEzMDI1NS41MjI1Ny0xLXBoaWxtZEBsDQo+ID4gPiA+IGluYXINCj4gPiA+
-ID4gby5vcmcvDQo+ID4gPiA+DQo+ID4gPiA+IFdlIGhhdmUgZW5jb3VudGVyZWQgc29tZSBidWdz
-IHdoZW4gdXNpbmcgcnNvY2tldCBhbmQgcGxhbiB0bw0KPiA+ID4gPiBzdWJtaXQgdGhlbSB0byB0
-aGUgcmRtYS1jb3JlIGNvbW11bml0eS4NCj4gPiA+ID4NCj4gPiA+ID4gSW4gYWRkaXRpb24sIHRo
-ZSB1c2Ugb2YgcnNvY2tldCBtYWtlcyBvdXIgcHJvZ3JhbW1pbmcgbW9yZQ0KPiA+ID4gPiBjb252
-ZW5pZW50LCBidXQgaXQgbXVzdCBiZSBub3RlZCB0aGF0IHRoaXMgbWV0aG9kIGludHJvZHVjZXMN
-Cj4gPiA+ID4gbXVsdGlwbGUgbWVtb3J5IGNvcGllcywgd2hpY2ggY2FuIGJlIGltYWdpbmVkIHRo
-YXQgdGhlcmUgd2lsbCBiZSBhDQo+ID4gPiA+IGNlcnRhaW4gcGVyZm9ybWFuY2UgZGVncmFkYXRp
-b24sIGhvcGluZyB0aGF0IGZyaWVuZHMgd2l0aCBSRE1BDQo+ID4gPiA+IG5ldHdvcmsgY2FyZHMg
-Y2FuIGhlbHAgdmVyaWZ5LA0KPiA+ID4gdGhhbmsgeW91IQ0KPiA+ID4NCj4gPiA+IEl0J2xsIGJl
-IGdvb2QgdG8gZWxhYm9yYXRlIGlmIHlvdSB0ZXN0ZWQgaXQgaW4taG91c2UuIFdoYXQgcGVvcGxl
-DQo+ID4gPiBzaG91bGQgZXhwZWN0IG9uIHRoZSBudW1iZXJzIGV4YWN0bHk/ICBJcyB0aGF0IG9r
-YXkgZnJvbSBIdWF3ZWkncyBQT1Y/DQo+ID4gPg0KPiA+ID4gQmVzaWRlcyB0aGF0LCB0aGUgY29k
-ZSBsb29rcyBwcmV0dHkgZ29vZCBhdCBhIGZpcnN0IGdsYW5jZSB0byBtZS4NCj4gPiA+IEJlZm9y
-ZSBvdGhlcnMgY2hpbSBpbiwgaGVyZSdyZSBzb21lIGhpZ2ggbGV2ZWwgY29tbWVudHMuLg0KPiA+
-ID4NCj4gPiA+IEZpcnN0bHksIGNhbiB3ZSBhdm9pZCB1c2luZyBjb3JvdXRpbmUgd2hlbiBsaXN0
-ZW4oKT8gIE1pZ2h0IGJlDQo+ID4gPiByZWxldmFudCB3aGVuIEkgc2VlIHRoYXQgcmRtYV9hY2Nl
-cHRfaW5jb21pbmdfbWlncmF0aW9uKCkgcnVucyBpbiBhDQo+ID4gPiBsb29wIHRvIGRvIHJhY2Nl
-cHQoKSwgYnV0IHdvdWxkIHRoYXQgYWxzbyBoYW5nIHRoZSBxZW11IG1haW4gbG9vcA0KPiA+ID4g
-ZXZlbiB3aXRoIHRoZSBjb3JvdXRpbmUsIGJlZm9yZSBhbGwgY2hhbm5lbHMgYXJlIHJlYWR5PyAg
-SSdtIG5vdCBhDQo+ID4gPiBjb3JvdXRpbmUgcGVyc29uLCBidXQgSSB0aGluayB0aGUgaG9wZSBp
-cyB0aGF0IHdlIGNhbiBtYWtlIGRlc3QgUUVNVQ0KPiA+ID4gcnVuIGluIGEgdGhyZWFkIGluIHRo
-ZSBmdXR1cmUganVzdCBsaWtlIHRoZSBzcmMgUUVNVSwgc28gdGhlIGxlc3MgY29yb3V0aW5lDQo+
-IHRoZSBiZXR0ZXIgaW4gdGhpcyBwYXRoLg0KPiA+ID4NCj4gPg0KPiA+IEJlY2F1c2UgcnNvY2tl
-dCBpcyBzZXQgdG8gbm9uLWJsb2NraW5nLCByYWNjZXB0IHdpbGwgcmV0dXJuIEVBR0FJTg0KPiA+
-IHdoZW4gbm8gY29ubmVjdGlvbiBpcyByZWNlaXZlZCwgY29yb3V0aW5lIHdpbGwgeWllbGQsIGFu
-ZCB3aWxsIG5vdCBoYW5nIHRoZQ0KPiBxZW11IG1haW4gbG9vcC4NCj4gDQo+IEFoIHRoYXQncyBv
-ay4gIEFuZCBhbHNvIEkganVzdCBub3RpY2VkIGl0IG1heSBub3QgYmUgYSBiaWcgZGVhbCBlaXRo
-ZXIgYXMgbG9uZyBhcw0KPiB3ZSdyZSBiZWZvcmUgbWlncmF0aW9uX2luY29taW5nX3Byb2Nlc3Mo
-KS4NCj4gDQo+IEknbSB3b25kZXJpbmcgd2hldGhlciBpdCBjYW4gZG8gaXQgc2ltaWxhcmx5IGxp
-a2Ugd2hhdCB3ZSBkbyB3aXRoIHNvY2tldHMgaW4NCj4gcWlvX25ldF9saXN0ZW5lcl9zZXRfY2xp
-ZW50X2Z1bmNfZnVsbCgpLiAgQWZ0ZXIgYWxsLCByc29ja2V0IHdhbnRzIHRvIG1pbWljIHRoZQ0K
-PiBzb2NrZXQgQVBJLiAgSXQnbGwgbWFrZSBzZW5zZSBpZiByc29ja2V0IGNvZGUgdHJpZXMgdG8g
-bWF0Y2ggd2l0aCBzb2NrZXQsIG9yDQo+IGV2ZW4gcmV1c2UuDQo+IA0KDQpBY3R1YWxseSB3ZSB0
-cmllZCB0aGlzIHNvbHV0aW9uLCBidXQgaXQgZGlkbid0IHdvcmsuIFBscyBzZWUgcGF0Y2ggMy82
-DQoNCktub3duIGxpbWl0YXRpb25zOiANCiAgRm9yIGEgYmxvY2tpbmcgcnNvY2tldCBmZCwgaWYg
-d2UgdXNlIGlvX2NyZWF0ZV93YXRjaCB0byB3YWl0IGZvcg0KICBQT0xMSU4gb3IgUE9MTE9VVCBl
-dmVudHMsIHNpbmNlIHRoZSByc29ja2V0IGZkIGlzIGJsb2NraW5nLCB3ZQ0KICBjYW5ub3QgZGV0
-ZXJtaW5lIHdoZW4gaXQgaXMgbm90IHJlYWR5IHRvIHJlYWQvd3JpdGUgYXMgd2UgY2FuIHdpdGgN
-CiAgbm9uLWJsb2NraW5nIGZkcy4gVGhlcmVmb3JlLCB3aGVuIGFuIGV2ZW50IG9jY3VycywgaXQg
-d2lsbCBvY2N1cnMNCiAgYWx3YXlzLCBwb3RlbnRpYWxseSBsZWF2ZSB0aGUgcWVtdSBoYW5naW5n
-LiBTbyB3ZSBuZWVkIGJlIGNhdXRpb3VzDQogIHRvIGF2b2lkIGhhbmdpbmcgd2hlbiB1c2luZyBp
-b19jcmVhdGVfd2F0Y2ggLg0KDQoNClJlZ2FyZHMsDQotR29uZ2xlaQ0KDQo+ID4NCj4gPiA+IEkg
-dGhpbmsgSSBhbHNvIGxlZnQgYSBjb21tZW50IGVsc2V3aGVyZSBvbiB3aGV0aGVyIGl0IHdvdWxk
-IGJlDQo+ID4gPiBwb3NzaWJsZSB0byBhbGxvdyBpb2NoYW5uZWxzIGltcGxlbWVudCB0aGVpciBv
-d24gcG9sbCgpIGZ1bmN0aW9ucyB0bw0KPiA+ID4gYXZvaWQgdGhlIHBlci1jaGFubmVsIHBvbGwg
-dGhyZWFkIHRoYXQgaXMgcHJvcG9zZWQgaW4gdGhpcyBzZXJpZXMuDQo+ID4gPg0KPiA+ID4gaHR0
-cHM6Ly9sb3JlLmtlcm5lbC5vcmcvci9abGRZMjF4VkV4dGlNZGRCQHgxbg0KPiA+ID4NCj4gPg0K
-PiA+IFdlIG5vdGljZWQgdGhhdCwgYW5kIGl0J3MgYSBiaWcgb3BlcmF0aW9uLiBJJ20gbm90IHN1
-cmUgdGhhdCdzIGEgYmV0dGVyIHdheS4NCj4gPg0KPiA+ID4gUGVyc29uYWxseSBJIHRoaW5rIGV2
-ZW4gd2l0aCB0aGUgdGhyZWFkIHByb3Bvc2FsIGl0J3MgYmV0dGVyIHRoYW4NCj4gPiA+IHRoZSBv
-bGQgcmRtYSBjb2RlLCBidXQgSSBqdXN0IHN0aWxsIHdhbnQgdG8gZG91YmxlIGNoZWNrIHdpdGgg
-eW91DQo+ID4gPiBndXlzLiAgRS5nLiwgbWF5YmUgdGhhdCBqdXN0IHdvbid0IHdvcmsgYXQgYWxs
-PyAgQWdhaW4sIHRoYXQnbGwgYWxzbw0KPiA+ID4gYmUgYmFzZWQgb24gdGhlIGZhY3QgdGhhdCB3
-ZSBtb3ZlIG1pZ3JhdGlvbiBpbmNvbWluZyBpbnRvIGEgdGhyZWFkDQo+ID4gPiBmaXJzdCB0byBr
-ZWVwIHRoZSBkZXN0IFFFTVUgbWFpbiBsb29wIGludGFjdCwgSSB0aGluaywgYnV0IEkgaG9wZSB3
-ZQ0KPiA+ID4gd2lsbCByZWFjaCB0aGF0IGlycmVsZXZhbnQgb2YgcmRtYSwgSU9XIGl0J2xsIGJl
-IG5pY2UgdG8gaGFwcGVuIGV2ZW4gZWFybGllciBpZg0KPiBwb3NzaWJsZS4NCj4gPiA+DQo+ID4g
-WWVwLiBUaGlzIGlzIGEgZmFpcmx5IGJpZyBjaGFuZ2UsIEkgd29uZGVyIHdoYXQgb3RoZXIgcGVv
-cGxlJ3Mgc3VnZ2VzdGlvbnMNCj4gYXJlPw0KPiANCj4gWWVzIHdlIGNhbiB3YWl0IGZvciBvdGhl
-cnMnIG9waW5pb25zLiAgQW5kIGJ0dyBJJ20gbm90IGFza2luZyBmb3IgaXQgYW5kIEkgZG9uJ3QN
-Cj4gdGhpbmsgaXQnbGwgYmUgYSBibG9ja2VyIGZvciB0aGlzIGFwcHJvYWNoIHRvIGxhbmQsIGFz
-IEkgc2FpZCB0aGlzIGlzIGJldHRlciB0aGFuIHRoZQ0KPiBjdXJyZW50IGNvZGUgc28gaXQncyBk
-ZWZpbml0ZWx5IGFuIGltcHJvdmVtZW50IHRvIG1lLg0KPiANCj4gSSdtIHB1cmVseSBjdXJpb3Vz
-LCBiZWNhdXNlIGlmIHlvdSdyZSBub3QgZ29pbmcgdG8gZG8gaXQgZm9yIHJkbWEsIG1heWJlDQo+
-IHNvbWVkYXkgSSdsbCB0cnkgdG8gZG8gdGhhdCwgYW5kIEkgd2FudCB0byBrbm93IHdoYXQgImJp
-ZyBjaGFuZ2UiIGNvdWxkIGJlIGFzIEkNCj4gZGlkbid0IGRpZyBmdXJ0aGVyLiAgSXQgbWF5IGhl
-bHAgbWUgYnkgc2hhcmluZyB3aGF0IGlzc3VlcyB5b3UndmUgZm91bmQuDQo+IA0KPiBUaGFua3Ms
-DQo+IA0KPiAtLQ0KPiBQZXRlciBYdQ0KDQo=
+
+On 30.05.24 16:17, Leon Romanovsky wrote:
+> On Thu, 23 May 2024 17:46:17 +0800, Honggang LI wrote:
+>> According to the IBA specification:
+>> If a UD request packet is detected with an invalid length, the request
+>> shall be an invalid request and it shall be silently dropped by
+>> the responder. The responder then waits for a new request packet.
+>>
+>> commit 689c5421bfe0 ("RDMA/rxe: Fix incorrect responder length checking")
+>> defers responder length check for UD QPs in function `copy_data`.
+>> But it introduces a regression issue for UD QPs.
+>>
+>> [...]
+> Applied, thanks!
+>
+> [1/1] RDMA/rxe: Fix responder length checking for UD request packets
+>        https://git.kernel.org/rdma/rdma/c/05301cb42a5567
+
+Hi, Leon
+
+When I built this commit with gcc (Debian 8.3.0-6) 8.3.0, the following 
+warnings will pop out.
+
+"
+drivers/infiniband/sw/rxe/rxe_resp.c: In function ‘rxe_resp_check_length’:
+drivers/infiniband/sw/rxe/rxe_resp.c:401:3: error: ‘for’ loop initial 
+declarations are only allowed in C99 or C11 mode
+    for (int i = 0; i < qp->resp.wqe->dma.num_sge; i++)
+    ^~~
+drivers/infiniband/sw/rxe/rxe_resp.c:401:3: note: use option -std=c99, 
+-std=gnu99, -std=c11 or -std=gnu11 to compile your code
+"
+
+The following diff will fix this problem.
+
+"
+
+diff --git a/drivers/infiniband/sw/rxe/rxe_resp.c 
+b/drivers/infiniband/sw/rxe/rxe_resp.c
+index ad3c7bf76752..6596a85723c9 100644
+--- a/drivers/infiniband/sw/rxe/rxe_resp.c
++++ b/drivers/infiniband/sw/rxe/rxe_resp.c
+@@ -345,10 +345,11 @@ static enum resp_states 
+rxe_resp_check_length(struct rxe_qp *qp,
+          * length checks are performed in check_rkey.
+          */
+         if ((qp_type(qp) == IB_QPT_GSI) || (qp_type(qp) == IB_QPT_UD)) {
+-               unsigned int recv_buffer_len = 0;
+                 unsigned int payload = payload_size(pkt);
++               unsigned int recv_buffer_len = 0;
++               int i;
+
+-               for (int i = 0; i < qp->resp.wqe->dma.num_sge; i++)
++               for (i = 0; i < qp->resp.wqe->dma.num_sge; i++)
+                         recv_buffer_len += qp->resp.wqe->dma.sge[i].length;
+                 if (payload + 40 > recv_buffer_len) {
+                         rxe_dbg_qp(qp, "The receive buffer is too small 
+for this UD packet.\n");
+
+"
+
+Zhu Yanjun
+
+>
+> Best regards,
+
+-- 
+Best Regards,
+Yanjun.Zhu
+
 
