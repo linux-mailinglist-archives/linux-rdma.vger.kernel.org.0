@@ -1,188 +1,162 @@
-Return-Path: <linux-rdma+bounces-2980-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-2981-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3007C8FFD92
-	for <lists+linux-rdma@lfdr.de>; Fri,  7 Jun 2024 09:54:09 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 924B48FFDFD
+	for <lists+linux-rdma@lfdr.de>; Fri,  7 Jun 2024 10:28:41 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BA756285FA6
-	for <lists+linux-rdma@lfdr.de>; Fri,  7 Jun 2024 07:54:07 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 71F871C208DE
+	for <lists+linux-rdma@lfdr.de>; Fri,  7 Jun 2024 08:28:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 859D515A86B;
-	Fri,  7 Jun 2024 07:54:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="dJHjTh5G"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B41AE15B0F7;
+	Fri,  7 Jun 2024 08:28:36 +0000 (UTC)
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-wm1-f54.google.com (mail-wm1-f54.google.com [209.85.128.54])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from szxga03-in.huawei.com (szxga03-in.huawei.com [45.249.212.189])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B38331C2AF;
-	Fri,  7 Jun 2024 07:54:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A74E715B0F2
+	for <linux-rdma@vger.kernel.org>; Fri,  7 Jun 2024 08:28:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.189
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1717746842; cv=none; b=DsmDfEnlM/eOrzqje1Odmp0MMq+msMTR2TvH05oUmEsl9nFbpSM26vECs9xJzylEGNQjXI6IxfAhr1/PrkVVulOWyUD8rImtuGwZ3ayiBW8V+dp390fk30wx3km2pjnM25WO2SzfMLyxxBUrvkHt0/6olpZk7jWrjAx+NxxOnn4=
+	t=1717748916; cv=none; b=kjnla+Ws9/KUhcQROo3zlcCjyzWrAsUc54jel8a4FUAAWkgduSaI8sy4crh8FAi6HNyYL0iINm5BGd+Vh3FmOtIATSrZJWBlhm7vLGlGjb5nvWk3UyG7Xql4bm6pj9v2Wju3SqeQQJ8iiRJWLjiVMGKeyDcnwJLZbfDpDdGX1MU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1717746842; c=relaxed/simple;
-	bh=RwvpPr3bZtIcVDK98m1UdTQjpXUECPEIZKoMiKr39p0=;
-	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=mA9PXQj4dHX/eyT4vddBgC87gewK7LYcPwN3CCU+7NMcDbXOaN3hDHQCm1z9lmcLR+IKUCBDzxadCLRoldy/eEFIn+HqBjr1zXgsTCCY4tWQ9Ie81vanxVzxdqIswfFjj8R+a5sdOsfg3kYsjdjHYtesps9UnnpmMRKvU1+hPv8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=dJHjTh5G; arc=none smtp.client-ip=209.85.128.54
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f54.google.com with SMTP id 5b1f17b1804b1-4210aa00c94so16996225e9.1;
-        Fri, 07 Jun 2024 00:54:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1717746839; x=1718351639; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:to:subject:user-agent:mime-version:date:message-id:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=fGtrfVkEldm/Tp2dI+OgyNdoMT3uZ1fT1eSIIAagWZs=;
-        b=dJHjTh5GTEP3lKzTgZ4TdN2SrNET8hy+3VkWY2ttFXBT1If0/vCCx3BMb82iV7YHtT
-         9rJh363kTKGElk8POTd52qwn9KEexHZF4WW1/P2snYuMP0EqFvRMX7NN1XOwky829D5S
-         5kRiNf0LORY5PnZZaQSwuudGafKYCSDLx76gSQ+hAxZB1oWHel+uSpkTF+xxjddLieK2
-         t/nJxQTWK4PjOmtLNYsO2KsH3rAlKtWIQ8zTZwKhOKPaPuHOFYkWk/Y9SGQMkcCDdAZ1
-         A+vCf3GCa+zWjyEAeNKKljC2bnLFBzm8mpWzJ5pGga1/Rc/2kn5oH8jVJhCgv06eQdtx
-         iOtA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1717746839; x=1718351639;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=fGtrfVkEldm/Tp2dI+OgyNdoMT3uZ1fT1eSIIAagWZs=;
-        b=mYrZBA/h2/cgTGlKpAbbYnTXTDYwgQPvbuIq5lHp1IBQ8Mjy7ET2mL2Fls2uhF2nLE
-         Ihfe2mFCc7LA8Cee+feZmTtfHpMoN3Bu3mQpvj5d4Do1bHlh+fgvKceylt4ZXeCNYNvL
-         uKpXiUDQK/o0XHrwKktkLgFqXlhyUZxizcx1o0BK0BndQ4UyVniaCDyo5xQjWoFY5M5+
-         iDB162QmKK55EHIghL8acpoNheRBDPfB3v7ybxK/Y3d9JFLV0n3dHjvYigAjogjP2W+Q
-         MLFLGVMIpKttAnua7tCCitqYvqKOGvfrs49EWZHGKVLo3ZrETUEwZhtsNCNLpfBXg2op
-         Raqw==
-X-Forwarded-Encrypted: i=1; AJvYcCXe6/e//5sLAjuOFFNEh+vy0WZTMXXlimg8gnNO3CJilTf77q4hbkj0h+g3AyXidIeDi94pfLd/vBgTH0IZvZtnBaml2PxMBHHrrykPIh0WBkAgtbwhbP5VnwMFm8xrki0deBlRolisuLi1p7u4rBm9JtOyyzRSB7yEe1yUfxuyrA==
-X-Gm-Message-State: AOJu0YwvefY7Y42+RsXsFXjE81X+Ej/fRpRh4OobtGPTp2BGKDqCadfg
-	9+74MDy+MxYXdiQfuyc04M7VQ5rfA+/Hb8reXNpFqeslCqkUbSH3
-X-Google-Smtp-Source: AGHT+IH9c8AhBKZVNPTxzNO5koOgJy0uwn1cRU8GIz8p1fKKNqcTqAlSgDII6tUtqjHRN/9kit8feQ==
-X-Received: by 2002:a5d:55c9:0:b0:355:1ae:cec3 with SMTP id ffacd0b85a97d-35efee32edcmr1187216f8f.60.1717746838697;
-        Fri, 07 Jun 2024 00:53:58 -0700 (PDT)
-Received: from [172.27.33.107] ([193.47.165.251])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-35ef5d2f289sm3407491f8f.19.2024.06.07.00.53.56
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 07 Jun 2024 00:53:58 -0700 (PDT)
-Message-ID: <fd788395-c936-49cf-a85d-d39d1d055131@gmail.com>
-Date: Fri, 7 Jun 2024 10:53:55 +0300
+	s=arc-20240116; t=1717748916; c=relaxed/simple;
+	bh=3HZbfz94YyJLLWZau8mRnXynX13RQHVOAz7YFfXVDW0=;
+	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
+	 Content-Type:MIME-Version; b=PE77FTEgEGFXFbEPH87/HqgdiQ+u7XWkg5z88bZal2w+/x0yGWWDOdwjcF1w66Kxmhmze+Eo705uFIPBqPzj45RGfvC8VeDy3Hg558P8fuQZMxSZ5icgwoZPUkp2q8GKv892e0/YgkugjkLdkyilZ64dGPD9zNmJreD9/uRQABk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.189
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.19.163.48])
+	by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4VwZ52262HzPprJ;
+	Fri,  7 Jun 2024 16:25:10 +0800 (CST)
+Received: from dggpeml500013.china.huawei.com (unknown [7.185.36.41])
+	by mail.maildlp.com (Postfix) with ESMTPS id C2C1B18007A;
+	Fri,  7 Jun 2024 16:28:29 +0800 (CST)
+Received: from dggpemf200006.china.huawei.com (7.185.36.61) by
+ dggpeml500013.china.huawei.com (7.185.36.41) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.39; Fri, 7 Jun 2024 16:28:29 +0800
+Received: from dggpemf200006.china.huawei.com ([7.185.36.61]) by
+ dggpemf200006.china.huawei.com ([7.185.36.61]) with mapi id 15.02.1544.011;
+ Fri, 7 Jun 2024 16:28:29 +0800
+From: "Gonglei (Arei)" <arei.gonglei@huawei.com>
+To: Jinpu Wang <jinpu.wang@ionos.com>
+CC: "qemu-devel@nongnu.org" <qemu-devel@nongnu.org>, "peterx@redhat.com"
+	<peterx@redhat.com>, "yu.zhang@ionos.com" <yu.zhang@ionos.com>,
+	"mgalaxy@akamai.com" <mgalaxy@akamai.com>, "elmar.gerdes@ionos.com"
+	<elmar.gerdes@ionos.com>, zhengchuan <zhengchuan@huawei.com>,
+	"berrange@redhat.com" <berrange@redhat.com>, "armbru@redhat.com"
+	<armbru@redhat.com>, "lizhijian@fujitsu.com" <lizhijian@fujitsu.com>,
+	"pbonzini@redhat.com" <pbonzini@redhat.com>, "mst@redhat.com"
+	<mst@redhat.com>, Xiexiangyou <xiexiangyou@huawei.com>,
+	"linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>, "lixiao (H)"
+	<lixiao91@huawei.com>, Wangjialin <wangjialin23@huawei.com>
+Subject: RE: [PATCH 0/6] refactor RDMA live migration based on rsocket API
+Thread-Topic: [PATCH 0/6] refactor RDMA live migration based on rsocket API
+Thread-Index: AQHatni5B+Psi4bf8k2CmAL8rvKhtrG7SwIAgACwxiA=
+Date: Fri, 7 Jun 2024 08:28:29 +0000
+Message-ID: <b637ce3cac16409c83a3391b05011eec@huawei.com>
+References: <1717503252-51884-1-git-send-email-arei.gonglei@huawei.com>
+ <CAMGffEkUd2EOS3+PQ9Yfp=8V1pZB_emo7gcmxmvOX=iWVG6Axg@mail.gmail.com>
+In-Reply-To: <CAMGffEkUd2EOS3+PQ9Yfp=8V1pZB_emo7gcmxmvOX=iWVG6Axg@mail.gmail.com>
+Accept-Language: zh-CN, en-US
+Content-Language: zh-CN
+X-MS-Has-Attach:
+X-MS-TNEF-Correlator:
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC net-next v4 2/2] net/mlx5e: Add per queue netdev-genl stats
-To: Joe Damato <jdamato@fastly.com>, Jakub Kicinski <kuba@kernel.org>,
- Tariq Toukan <ttoukan.linux@gmail.com>, netdev@vger.kernel.org,
- linux-kernel@vger.kernel.org, nalramli@fastly.com,
- Saeed Mahameed <saeedm@nvidia.com>, Leon Romanovsky <leon@kernel.org>,
- "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
- Paolo Abeni <pabeni@redhat.com>, Richard Cochran <richardcochran@gmail.com>,
- "open list:MELLANOX MLX5 core VPI driver" <linux-rdma@vger.kernel.org>,
- Tariq Toukan <tariqt@nvidia.com>
-References: <20240604004629.299699-1-jdamato@fastly.com>
- <20240604004629.299699-3-jdamato@fastly.com>
- <11b9c844-a56e-427f-aab3-3e223d41b165@gmail.com>
- <ZmIwIJ9rxllqQT18@LQ3V64L9R2> <20240606171942.4226a854@kernel.org>
- <ZmJcEM7brxivyDUV@LQ3V64L9R2>
-Content-Language: en-US
-From: Tariq Toukan <ttoukan.linux@gmail.com>
-In-Reply-To: <ZmJcEM7brxivyDUV@LQ3V64L9R2>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
 
-
-
-On 07/06/2024 4:02, Joe Damato wrote:
-> On Thu, Jun 06, 2024 at 05:19:42PM -0700, Jakub Kicinski wrote:
->> On Thu, 6 Jun 2024 14:54:40 -0700 Joe Damato wrote:
->>>>> Compare the values in /proc/net/dev match the output of cli for the same
->>>>> device, even while the device is down.
->>>>>
->>>>> Note that while the device is down, per queue stats output nothing
->>>>> (because the device is down there are no queues):
->>>>
->>>> This part is not true anymore.
->>>
->>> It is true with this patch applied and running the command below.
->>> Maybe I should have been more explicit that using cli.py outputs []
->>> when scope = queue, which could be an internal cli.py thing, but
->>> this is definitely true with this patch.
->>>
->>> Did you test it and get different results?
->>
->> To avoid drivers having their own interpretations what "closed" means,
->> core hides all queues in closed state:
->>
->> https://elixir.bootlin.com/linux/v6.10-rc1/source/net/core/netdev-genl.c#L582
->>
->>>> PTP RQ index is naively assigned to zero:
->>>> rq->ix           = MLX5E_PTP_CHANNEL_IX;
->>>>
->>>> but this isn't to be used as the stats index.
->>>> Today, the PTP-RQ has no matcing rxq in the kernel level.
->>>> i.e. turning PTP-RQ on won't add a kernel-level RXQ to the
->>>> real_num_rx_queues.
->>>> Maybe we better do.
->>>> If not, and the current state is kept, the best we can do is let the PTP-RQ
->>>> naively contribute its queue-stat to channel 0.
->>>
->>> OK, it sounds like the easiest thing to do is just count PTP as
->>> channel 0, so if i == 0, I'll in the PTP stats.
->>>
->>> But please see below regarding testing whether or not PTP is
->>> actually enabled or not.
->>
->> If we can I think we should avoid making queue 0 too special.
->> If someone configures steering and only expects certain packets on
->> queue 0 - getting PTP counted there will be a surprise.
->> I vote to always count it towards base.
-> 
-> I'm OK with reporting PTP RX in base and only in base.
-> 
-> But, that would then leave PTP TX:
-> 
-
-Right, currently there's no consistency between the PTP RX/TX 
-accountment in real_num_queues.
-I don't want to create more work for you, but IMO in the longterm I 
-should follow it up with a patch that adds PTP-RX to real_num_rx_queues.
-
-> PTP TX stats are reported in mlx5e_get_queue_stats_tx because
-> the user will pass in an 'i' which refers to the PTP txq. This works
-> fine with the mlx5e_get_queue_stats_tx code as-is because the PTP
-> txqs are mapped in the new priv->txq2sq_stats array.
-> 
-> However.... if PTP is enabled and then disabled by the user, that
-> leaves us in this state:
-> 
->    priv->tx_ptp_opened && !test_bit(MLX5E_PTP_STATE_TX, channels.ptp->state)
-> 
-> e.g. PTP TX was opened at some point but is currently disabled as
-> the bit is unset.
-> 
-> In this case, when the txq2sq_stats map is built, it'll exclude PTP
-> stats struct from that mapping if MLX5E_PTP_STATE_TX is not set.
-> 
-> So, in this case, the stats have to be reported in base with
-> something like this (psuedo code):
->   
->    if (priv->tx_ptp_opened &&
->       ! test_bit(MLX5E_PTP_STATE_TX, channels.ptp->state)) {
->        for (tc = 0; tc < priv->channels.ptp->num_tc; tc++) {
-
-Do not take num_tc from here, this ptp memory might not exist at this point.
-Calculate it the regular way with max_opened_tc.
-
->           tx->packets += ...ptp_stats.sq[tc].packets;
->           tx->bytes += ...ptp_stats.sq[tc].bytes;
->        }
->    }
-> 
-> Right? Or am I just way off here?
+DQoNCj4gLS0tLS1PcmlnaW5hbCBNZXNzYWdlLS0tLS0NCj4gRnJvbTogSmlucHUgV2FuZyBbbWFp
+bHRvOmppbnB1LndhbmdAaW9ub3MuY29tXQ0KPiBTZW50OiBGcmlkYXksIEp1bmUgNywgMjAyNCAx
+OjU0IFBNDQo+IFRvOiBHb25nbGVpIChBcmVpKSA8YXJlaS5nb25nbGVpQGh1YXdlaS5jb20+DQo+
+IENjOiBxZW11LWRldmVsQG5vbmdudS5vcmc7IHBldGVyeEByZWRoYXQuY29tOyB5dS56aGFuZ0Bp
+b25vcy5jb207DQo+IG1nYWxheHlAYWthbWFpLmNvbTsgZWxtYXIuZ2VyZGVzQGlvbm9zLmNvbTsg
+emhlbmdjaHVhbg0KPiA8emhlbmdjaHVhbkBodWF3ZWkuY29tPjsgYmVycmFuZ2VAcmVkaGF0LmNv
+bTsgYXJtYnJ1QHJlZGhhdC5jb207DQo+IGxpemhpamlhbkBmdWppdHN1LmNvbTsgcGJvbnppbmlA
+cmVkaGF0LmNvbTsgbXN0QHJlZGhhdC5jb207IFhpZXhpYW5neW91DQo+IDx4aWV4aWFuZ3lvdUBo
+dWF3ZWkuY29tPjsgbGludXgtcmRtYUB2Z2VyLmtlcm5lbC5vcmc7IGxpeGlhbyAoSCkNCj4gPGxp
+eGlhbzkxQGh1YXdlaS5jb20+OyBXYW5namlhbGluIDx3YW5namlhbGluMjNAaHVhd2VpLmNvbT4N
+Cj4gU3ViamVjdDogUmU6IFtQQVRDSCAwLzZdIHJlZmFjdG9yIFJETUEgbGl2ZSBtaWdyYXRpb24g
+YmFzZWQgb24gcnNvY2tldCBBUEkNCj4gDQo+IEhpIEdvbmdsZWksIGhpIGZvbGtzIG9uIHRoZSBs
+aXN0LA0KPiANCj4gT24gVHVlLCBKdW4gNCwgMjAyNCBhdCAyOjE04oCvUE0gR29uZ2xlaSA8YXJl
+aS5nb25nbGVpQGh1YXdlaS5jb20+IHdyb3RlOg0KPiA+DQo+ID4gRnJvbTogSmlhbGluIFdhbmcg
+PHdhbmdqaWFsaW4yM0BodWF3ZWkuY29tPg0KPiA+DQo+ID4gSGksDQo+ID4NCj4gPiBUaGlzIHBh
+dGNoIHNlcmllcyBhdHRlbXB0cyB0byByZWZhY3RvciBSRE1BIGxpdmUgbWlncmF0aW9uIGJ5DQo+
+ID4gaW50cm9kdWNpbmcgYSBuZXcgUUlPQ2hhbm5lbFJETUEgY2xhc3MgYmFzZWQgb24gdGhlIHJz
+b2NrZXQgQVBJLg0KPiA+DQo+ID4gVGhlIC91c3IvaW5jbHVkZS9yZG1hL3Jzb2NrZXQuaCBwcm92
+aWRlcyBhIGhpZ2hlciBsZXZlbCByc29ja2V0IEFQSQ0KPiA+IHRoYXQgaXMgYSAxLTEgbWF0Y2gg
+b2YgdGhlIG5vcm1hbCBrZXJuZWwgJ3NvY2tldHMnIEFQSSwgd2hpY2ggaGlkZXMNCj4gPiB0aGUg
+ZGV0YWlsIG9mIHJkbWEgcHJvdG9jb2wgaW50byByc29ja2V0IGFuZCBhbGxvd3MgdXMgdG8gYWRk
+IHN1cHBvcnQNCj4gPiBmb3Igc29tZSBtb2Rlcm4gZmVhdHVyZXMgbGlrZSBtdWx0aWZkIG1vcmUg
+ZWFzaWx5Lg0KPiA+DQo+ID4gSGVyZSBpcyB0aGUgcHJldmlvdXMgZGlzY3Vzc2lvbiBvbiByZWZh
+Y3RvcmluZyBSRE1BIGxpdmUgbWlncmF0aW9uDQo+ID4gdXNpbmcgdGhlIHJzb2NrZXQgQVBJOg0K
+PiA+DQo+ID4gaHR0cHM6Ly9sb3JlLmtlcm5lbC5vcmcvcWVtdS1kZXZlbC8yMDI0MDMyODEzMDI1
+NS41MjI1Ny0xLXBoaWxtZEBsaW5hcg0KPiA+IG8ub3JnLw0KPiA+DQo+ID4gV2UgaGF2ZSBlbmNv
+dW50ZXJlZCBzb21lIGJ1Z3Mgd2hlbiB1c2luZyByc29ja2V0IGFuZCBwbGFuIHRvIHN1Ym1pdA0K
+PiA+IHRoZW0gdG8gdGhlIHJkbWEtY29yZSBjb21tdW5pdHkuDQo+ID4NCj4gPiBJbiBhZGRpdGlv
+biwgdGhlIHVzZSBvZiByc29ja2V0IG1ha2VzIG91ciBwcm9ncmFtbWluZyBtb3JlIGNvbnZlbmll
+bnQsDQo+ID4gYnV0IGl0IG11c3QgYmUgbm90ZWQgdGhhdCB0aGlzIG1ldGhvZCBpbnRyb2R1Y2Vz
+IG11bHRpcGxlIG1lbW9yeQ0KPiA+IGNvcGllcywgd2hpY2ggY2FuIGJlIGltYWdpbmVkIHRoYXQg
+dGhlcmUgd2lsbCBiZSBhIGNlcnRhaW4gcGVyZm9ybWFuY2UNCj4gPiBkZWdyYWRhdGlvbiwgaG9w
+aW5nIHRoYXQgZnJpZW5kcyB3aXRoIFJETUEgbmV0d29yayBjYXJkcyBjYW4gaGVscCB2ZXJpZnks
+DQo+IHRoYW5rIHlvdSENCj4gRmlyc3QgdGh4IGZvciB0aGUgZWZmb3J0LCB3ZSBhcmUgcnVubmlu
+ZyBtaWdyYXRpb24gdGVzdHMgb24gb3VyIElCIGZhYnJpYywgZGlmZmVyZW50DQo+IGdlbmVyYXRp
+b24gb2YgSENBIGZyb20gbWVsbGFub3gsIHRoZSBtaWdyYXRpb24gd29ya3Mgb2ssIHRoZXJlIGFy
+ZSBhIGZldw0KPiBmYWlsdXJlcywgIFl1IHdpbGwgc2hhcmUgdGhlIHJlc3VsdCBsYXRlciBzZXBh
+cmF0ZWx5Lg0KPiANCg0KVGhhbmsgeW91IHNvIG11Y2guIA0KDQo+IFRoZSBvbmUgYmxvY2tlciBm
+b3IgdGhlIGNoYW5nZSBpcyB0aGUgb2xkIGltcGxlbWVudGF0aW9uIGFuZCB0aGUgbmV3IHJzb2Nr
+ZXQNCj4gaW1wbGVtZW50YXRpb247IHRoZXkgZG9uJ3QgdGFsayB0byBlYWNoIG90aGVyIGR1ZSB0
+byB0aGUgZWZmZWN0IG9mIGRpZmZlcmVudCB3aXJlDQo+IHByb3RvY29sIGR1cmluZyBjb25uZWN0
+aW9uIGVzdGFibGlzaG1lbnQuDQo+IGVnIHRoZSBvbGQgUkRNQSBtaWdyYXRpb24gaGFzIHNwZWNp
+YWwgY29udHJvbCBtZXNzYWdlIGR1cmluZyB0aGUgbWlncmF0aW9uDQo+IGZsb3csIHdoaWNoIHJz
+b2NrZXQgdXNlIGEgZGlmZmVyZW50IGNvbnRyb2wgbWVzc2FnZSwgc28gdGhlcmUgbGVhZCB0byBu
+byB3YXkgdG8NCj4gbWlncmF0ZSBWTSB1c2luZyByZG1hIHRyYW5zcG9ydCBwcmUgdG8gdGhlIHJz
+b2NrZXQgcGF0Y2hzZXQgdG8gYSBuZXcgdmVyc2lvbg0KPiB3aXRoIHJzb2NrZXQgaW1wbGVtZW50
+YXRpb24uDQo+IA0KPiBQcm9iYWJseSB3ZSBzaG91bGQga2VlcCBib3RoIGltcGxlbWVudGF0aW9u
+IGZvciBhIHdoaWxlLCBtYXJrIHRoZSBvbGQNCj4gaW1wbGVtZW50YXRpb24gYXMgZGVwcmVjYXRl
+ZCwgYW5kIHByb21vdGUgdGhlIG5ldyBpbXBsZW1lbnRhdGlvbiwgYW5kDQo+IGhpZ2ggbGlnaHQg
+aW4gZG9jLCB0aGV5IGFyZSBub3QgY29tcGF0aWJsZS4NCj4gDQoNCklNTyBJdCBtYWtlcyBzZW5z
+ZS4gV2hhdCdzIHlvdXIgb3Bpbmlvbj8gQFBldGVyLg0KDQoNClJlZ2FyZHMsDQotR29uZ2xlaQ0K
+DQo+IFJlZ2FyZHMhDQo+IEppbnB1DQo+IA0KPiANCj4gDQo+ID4NCj4gPiBKaWFsaW4gV2FuZyAo
+Nik6DQo+ID4gICBtaWdyYXRpb246IHJlbW92ZSBSRE1BIGxpdmUgbWlncmF0aW9uIHRlbXBvcmFy
+aWx5DQo+ID4gICBpbzogYWRkIFFJT0NoYW5uZWxSRE1BIGNsYXNzDQo+ID4gICBpby9jaGFubmVs
+LXJkbWE6IHN1cHBvcnQgd29ya2luZyBpbiBjb3JvdXRpbmUNCj4gPiAgIHRlc3RzL3VuaXQ6IGFk
+ZCB0ZXN0LWlvLWNoYW5uZWwtcmRtYS5jDQo+ID4gICBtaWdyYXRpb246IGludHJvZHVjZSBuZXcg
+UkRNQSBsaXZlIG1pZ3JhdGlvbg0KPiA+ICAgbWlncmF0aW9uL3JkbWE6IHN1cHBvcnQgbXVsdGlm
+ZCBmb3IgUkRNQSBtaWdyYXRpb24NCj4gPg0KPiA+ICBkb2NzL3JkbWEudHh0ICAgICAgICAgICAg
+ICAgICAgICAgfCAgNDIwIC0tLQ0KPiA+ICBpbmNsdWRlL2lvL2NoYW5uZWwtcmRtYS5oICAgICAg
+ICAgfCAgMTY1ICsrDQo+ID4gIGlvL2NoYW5uZWwtcmRtYS5jICAgICAgICAgICAgICAgICB8ICA3
+OTggKysrKysrDQo+ID4gIGlvL21lc29uLmJ1aWxkICAgICAgICAgICAgICAgICAgICB8ICAgIDEg
+Kw0KPiA+ICBpby90cmFjZS1ldmVudHMgICAgICAgICAgICAgICAgICAgfCAgIDE0ICsNCj4gPiAg
+bWVzb24uYnVpbGQgICAgICAgICAgICAgICAgICAgICAgIHwgICAgNiAtDQo+ID4gIG1pZ3JhdGlv
+bi9tZXNvbi5idWlsZCAgICAgICAgICAgICB8ICAgIDMgKy0NCj4gPiAgbWlncmF0aW9uL21pZ3Jh
+dGlvbi1zdGF0cy5jICAgICAgIHwgICAgNSArLQ0KPiA+ICBtaWdyYXRpb24vbWlncmF0aW9uLXN0
+YXRzLmggICAgICAgfCAgICA0IC0NCj4gPiAgbWlncmF0aW9uL21pZ3JhdGlvbi5jICAgICAgICAg
+ICAgIHwgICAxMyArLQ0KPiA+ICBtaWdyYXRpb24vbWlncmF0aW9uLmggICAgICAgICAgICAgfCAg
+ICA5IC0NCj4gPiAgbWlncmF0aW9uL211bHRpZmQuYyAgICAgICAgICAgICAgIHwgICAxMCArDQo+
+ID4gIG1pZ3JhdGlvbi9vcHRpb25zLmMgICAgICAgICAgICAgICB8ICAgMTYgLQ0KPiA+ICBtaWdy
+YXRpb24vb3B0aW9ucy5oICAgICAgICAgICAgICAgfCAgICAyIC0NCj4gPiAgbWlncmF0aW9uL3Fl
+bXUtZmlsZS5jICAgICAgICAgICAgIHwgICAgMSAtDQo+ID4gIG1pZ3JhdGlvbi9yYW0uYyAgICAg
+ICAgICAgICAgICAgICB8ICAgOTAgKy0NCj4gPiAgbWlncmF0aW9uL3JkbWEuYyAgICAgICAgICAg
+ICAgICAgIHwgNDIwNSArLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQ0KPiA+ICBtaWdyYXRp
+b24vcmRtYS5oICAgICAgICAgICAgICAgICAgfCAgIDY3ICstDQo+ID4gIG1pZ3JhdGlvbi9zYXZl
+dm0uYyAgICAgICAgICAgICAgICB8ICAgIDIgKy0NCj4gPiAgbWlncmF0aW9uL3RyYWNlLWV2ZW50
+cyAgICAgICAgICAgIHwgICA2OCArLQ0KPiA+ICBxYXBpL21pZ3JhdGlvbi5qc29uICAgICAgICAg
+ICAgICAgfCAgIDEzICstDQo+ID4gIHNjcmlwdHMvYW5hbHl6ZS1taWdyYXRpb24ucHkgICAgICB8
+ICAgIDMgLQ0KPiA+ICB0ZXN0cy91bml0L21lc29uLmJ1aWxkICAgICAgICAgICAgfCAgICAxICsN
+Cj4gPiAgdGVzdHMvdW5pdC90ZXN0LWlvLWNoYW5uZWwtcmRtYS5jIHwgIDI3NiArKw0KPiA+ICAy
+NCBmaWxlcyBjaGFuZ2VkLCAxMzYwIGluc2VydGlvbnMoKyksIDQ4MzIgZGVsZXRpb25zKC0pICBk
+ZWxldGUgbW9kZQ0KPiA+IDEwMDY0NCBkb2NzL3JkbWEudHh0ICBjcmVhdGUgbW9kZSAxMDA2NDQg
+aW5jbHVkZS9pby9jaGFubmVsLXJkbWEuaA0KPiA+IGNyZWF0ZSBtb2RlIDEwMDY0NCBpby9jaGFu
+bmVsLXJkbWEuYyAgY3JlYXRlIG1vZGUgMTAwNjQ0DQo+ID4gdGVzdHMvdW5pdC90ZXN0LWlvLWNo
+YW5uZWwtcmRtYS5jDQo+ID4NCj4gPiAtLQ0KPiA+IDIuNDMuMA0KPiA+DQoNCg==
 
