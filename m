@@ -1,209 +1,201 @@
-Return-Path: <linux-rdma+bounces-3047-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-3048-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C81C990336B
-	for <lists+linux-rdma@lfdr.de>; Tue, 11 Jun 2024 09:25:16 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 56383903447
+	for <lists+linux-rdma@lfdr.de>; Tue, 11 Jun 2024 09:49:25 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5EF0028C3E7
-	for <lists+linux-rdma@lfdr.de>; Tue, 11 Jun 2024 07:25:15 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 9AEDFB240C6
+	for <lists+linux-rdma@lfdr.de>; Tue, 11 Jun 2024 07:49:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 880F2171E73;
-	Tue, 11 Jun 2024 07:25:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3CA72172BCC;
+	Tue, 11 Jun 2024 07:49:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=corigine.onmicrosoft.com header.i=@corigine.onmicrosoft.com header.b="ARmqufDT"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="kqNWeP+2"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from NAM11-CO1-obe.outbound.protection.outlook.com (mail-co1nam11on2139.outbound.protection.outlook.com [40.107.220.139])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ej1-f52.google.com (mail-ej1-f52.google.com [209.85.218.52])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 40EBC171E7A;
-	Tue, 11 Jun 2024 07:25:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.220.139
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1718090710; cv=fail; b=iN6cOqZkm60s730imoRZIddqQUR3RP8CRJIBms3x7lkj/veFcZlR0pakrktglZnsLXyPdDGovdr9pHTDJ4CzW9nndYFfhz4Hs1cz2uAliVR8QwIAzy/3X69xPd5r5iJvIwpchTUVVxX4/7riYg+iw3Q3zF9puNlxjNTsIP2UxHw=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1718090710; c=relaxed/simple;
-	bh=SyFXd+Q7Df6VHjJCBZ6FZDexDoRkmMDX7ns1pXiH1lQ=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:Content-Type:
-	 Content-Disposition:In-Reply-To:MIME-Version; b=igTp+WT26hNKe6/PY4LXsUfNXwb/YI00UgEuOMBQxC01F/R9uTympHmQZurN9nqVqcEAwXjynPGyC+9mSWVI+LbTc63kj2qfXzckccU0wuSZiFBTnpmIos3SILocscyV45qHoZaHMRwB1++oLBKD5tYyb72WQocK/7YtsVi3akQ=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=corigine.com; spf=pass smtp.mailfrom=corigine.com; dkim=fail (1024-bit key) header.d=corigine.onmicrosoft.com header.i=@corigine.onmicrosoft.com header.b=ARmqufDT reason="signature verification failed"; arc=fail smtp.client-ip=40.107.220.139
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=corigine.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=corigine.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=PLKbDj8m/vvuektI/1xj/BHTX+dP56IAYdQReYQJuMXECa5vTEbuzuo21hDAuUAfGiGKQ/jJSa7GrbNremtGg/ASnzYpiXSfQMk0Xe0VAbXKeEtU6OIy0mh5tZSDafpvOCPq1LBwZeMekQKhfwJD8MMIbdOYDrcMFZqMs4p6941WprJmrfMvjPuclDToi5HROmSDzDKz+lwzmxhTzIOvOvrLO4ZvjKbmbS2LArUh63yn8EtnbQPLUTMewmjDOHjnf4X2FxmrDEN5jjBBNobOL1/KY94E08dWzNGEwY+vQ0L9HyeA5Sc7xZXrEPWL33BABvcaNYL3/8BuBJNbvlVYIw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=OADgyRF36HUIHvacjvGY+5OdTwX2ivFbmeyyPFjiFA0=;
- b=JLfMAMAa7OQ8P9f5ubPpb6/DBA3LG8sg7CeO9m4aGFmtdbev5RpNKhhgI20mZGUMietKVkIwdvKanUJc0Y7RxPtK7qx/r2NiVRzdwC0dpZvQRP2mMaD4010gG6VJeB+IvxbMiHVrKYCf5Xfm0lgkeVtIr2zV8swcXq7t9cA5f95I5RdwqVBSIsj+TLvg9MEdHkpOBy4phmYnXnDGoFT5roWCuFRgWiFQ19iKFdpCIZ3DcUJb8BME+rRsCcYaKZJml22Vrt56ogrTdFj/FeW0MgdpnO6u5Xhuliud0eLOgY6Llyh0TkOPXNtzKg/2IOe0xZzYvGCxFh73Rc0v+Am4fA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=corigine.com; dmarc=pass action=none header.from=corigine.com;
- dkim=pass header.d=corigine.com; arc=none
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 22B5C172BC1;
+	Tue, 11 Jun 2024 07:49:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.52
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1718092150; cv=none; b=ZTiLn66I+AUAb4OmWYB+Y1B6sxCkTfugnOpZfmzoaUrioyfA33IWSNtl4br9ksP1Kk7bAgNewxsy7Ag7QjV2hOET95iFbalCZlYAMOY+KsvnVyn2jj+zkcuOAxNxn+icDgi4L9ZQpks/G8fPiKlvddebkEsc9MWYMnz4+gsfnSQ=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1718092150; c=relaxed/simple;
+	bh=hiTi2Z2kFvgoVOSPubuhZsugltW45Q0GMSzZrbstP/c=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=gmnSZtXIgyx9CLmVyACQWNB5zRBRkr8rbw2JbXpLMFGe6j2Ah1fqT7jnszwVzr0OtndwodQ9Ey5rnc47nvGxFPrhmFYYg/7drJwrcQLX1gfKViMD1Sc+/jS46u0SPkId2yOD9PB+ZpFJjODmRlvrXnR2/2GyZnJLjBeTuWhbaao=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=kqNWeP+2; arc=none smtp.client-ip=209.85.218.52
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ej1-f52.google.com with SMTP id a640c23a62f3a-a68b41ef3f6so585001966b.1;
+        Tue, 11 Jun 2024 00:49:07 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=corigine.onmicrosoft.com; s=selector2-corigine-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=OADgyRF36HUIHvacjvGY+5OdTwX2ivFbmeyyPFjiFA0=;
- b=ARmqufDTWJIbidcERBNuyFOQmqBVWPzF3v3ETk5+NUrvWBWCye7hp3ed2BJ+u5udKe5glqEZ9cBUPy2zIpOSrbsVIbSZ8EJCiQmZxVMjmnFS10/R3XJTS/Twn5ZgbHSE5sWCdApepbKqVzl0XACnz7cxDg/1WQhyboYGtZmIjmY=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=corigine.com;
-Received: from BL0PR13MB4403.namprd13.prod.outlook.com (2603:10b6:208:1c4::8)
- by SN4PR13MB5810.namprd13.prod.outlook.com (2603:10b6:806:21a::11) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7677.17; Tue, 11 Jun
- 2024 07:25:06 +0000
-Received: from BL0PR13MB4403.namprd13.prod.outlook.com
- ([fe80::bbcb:1c13:7639:bdc0]) by BL0PR13MB4403.namprd13.prod.outlook.com
- ([fe80::bbcb:1c13:7639:bdc0%6]) with mapi id 15.20.7677.019; Tue, 11 Jun 2024
- 07:25:06 +0000
-Date: Tue, 11 Jun 2024 09:24:51 +0200
-From: Louis Peens <louis.peens@corigine.com>
-To: =?iso-8859-1?Q?Asbj=F8rn_Sloth_T=F8nnesen?= <ast@fiberby.net>
-Cc: netdev@vger.kernel.org, "David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	Edward Cree <ecree.xilinx@gmail.com>,
-	Martin Habets <habetsm.xilinx@gmail.com>, linux-net-drivers@amd.com,
-	Saeed Mahameed <saeedm@nvidia.com>,
-	Leon Romanovsky <leon@kernel.org>, Tariq Toukan <tariqt@nvidia.com>,
-	linux-rdma@vger.kernel.org,
-	Jesse Brandeburg <jesse.brandeburg@intel.com>,
-	Tony Nguyen <anthony.l.nguyen@intel.com>,
-	intel-wired-lan@lists.osuosl.org, oss-drivers@corigine.com,
-	linux-kernel@vger.kernel.org, Davide Caratti <dcaratti@redhat.com>,
-	i.maximets@ovn.org
-Subject: Re: [PATCH net-next 4/5] nfp: flower: validate encapsulation control
- flags
-Message-ID: <Zmf7w+N5MdF4KMg9@LouisNoVo>
-References: <20240609173358.193178-1-ast@fiberby.net>
- <20240609173358.193178-5-ast@fiberby.net>
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20240609173358.193178-5-ast@fiberby.net>
-X-ClientProxiedBy: JNAP275CA0065.ZAFP275.PROD.OUTLOOK.COM (2603:1086:0:4f::7)
- To CH2PR13MB4411.namprd13.prod.outlook.com (2603:10b6:610:6e::12)
+        d=gmail.com; s=20230601; t=1718092146; x=1718696946; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=kecLidF3g75Y0M4dgmXIi2U7qv7nfX0gCWhXKA3lhlo=;
+        b=kqNWeP+25IMcqBz/PPTvHXgNcexBiD0qWmKen69qLb0yyE0NErMIiuDNtPNGjHfo6s
+         OVVjfE2NzYTWjqFtZUc0rja2vWHLSLKCNUBfHUPJG+ZoTDgc9cp0DTXb1qq7+CFsIWDH
+         1EskANF9CgiWXHeQAZdT/+C4JKbfwYiPAsJiEK1AxRuzO6da3qEJS+pD6CJb+xIPy7CH
+         jSzmwYRDyYGibhlMIUlgMqNOYV/nvX7PceMK8tI2dpDtxl3znFqt9LpoHU0RPfhjaUlL
+         9r6kwFIhPNBfGWJEbv4wXkelI0cpN7hR7B+NW6IWYsccIPrkB246Ba8BP2LjFyd7wM0z
+         5afg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1718092146; x=1718696946;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=kecLidF3g75Y0M4dgmXIi2U7qv7nfX0gCWhXKA3lhlo=;
+        b=pEdjEGt/8iFuAYBM1FR9QELYNHivsRnSpvckMU+R2itFa7kkcPcq8AJOYBSswPgczG
+         gKqI6cgsAP/dq1ESS4VD81IfUXAs8lipY52Qr0BJUiK5zC7+DVbSc03DE2whpG/1/v6o
+         GYjADjreGHYKOYQvHw1oMa4tUR7CrL8Do+ZJJXfkGkr4kjDuyikIwb1LzKp2k5T6vsh8
+         Q+sHPPSZjVf+l3ZF9yl3t4lB/N+gLP/pQpbapMiQyW1mNEWdPhJeIjfb7XgnaQ07CKpb
+         43vGc8Ex5gSPGgGCqA+VROAEju8zjxhaqPPkYCSJps5rwR4zu0JmBoycxPbPgqVsrfyA
+         o5kg==
+X-Forwarded-Encrypted: i=1; AJvYcCWNGNFJj4EfjytCOvm7rju+YJzBlmOonL7ec0xLfAQssBh2hOB17EpcMuDAjSH+1HfGcuA+OO+a/5hnKoL22fRBcc5DU4at2bXBaVFHU0ton6cFjHHtMNwWchn/9RHbKoK0/G5mVIYebTxvCXAqjcJkZXOlLxZ6R0vFvkULjmWg4GOi9/njWo06SWCehsuxAPpZ6FntVRlB1JcxTlvslWgk+UdZuksOpyIvLA04Psih93sJa96U
+X-Gm-Message-State: AOJu0YwXgCgbmqwNr11Ijs1S3o9R14BymHtIiakaMydN7yTbAaeXSewh
+	9gp5GRHwNnv9qCrXVbFzm2GxFZFEMOi3+TCQfi6B0/iYWb1vZieX
+X-Google-Smtp-Source: AGHT+IFzcNCL4DB7c7G7kLyb+7UFm4o2GGJXJ/lKj59bEb2GT+3Qy+R5dFmfo0Jxs1fqaAcSpOVYtA==
+X-Received: by 2002:a17:906:6a0a:b0:a6f:1d19:c0b1 with SMTP id a640c23a62f3a-a6f1d19c496mr372629566b.18.1718092146075;
+        Tue, 11 Jun 2024 00:49:06 -0700 (PDT)
+Received: from [10.16.124.60] ([212.227.34.98])
+        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-a6f2942b02fsm145877166b.167.2024.06.11.00.49.04
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 11 Jun 2024 00:49:05 -0700 (PDT)
+Message-ID: <900d1d56-28ea-4c6d-b8c7-749a952e5f4b@gmail.com>
+Date: Tue, 11 Jun 2024 09:49:03 +0200
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: BL0PR13MB4403:EE_|SN4PR13MB5810:EE_
-X-MS-Office365-Filtering-Correlation-Id: e63da1e8-a65e-4d4e-2b8b-08dc89e79d8c
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;ARA:13230031|1800799015|7416005|366007|376005;
-X-Microsoft-Antispam-Message-Info:
-	=?iso-8859-1?Q?TCkfVThjHex76F4KDCb0f/nunD8yiA9W5JxhhKslVt8v6XWaGpbjIsmgIC?=
- =?iso-8859-1?Q?035OvBjVb3MDnQmOF4VxbLZ1KYIAfPMB8HO7E0/2/iQXDg5b+QY+fbQYm2?=
- =?iso-8859-1?Q?AbZXvPr6Moj1by6mzyCQj0qK/Gyo1AnXMnWBhR2cURQdxaarCySHDOHYVp?=
- =?iso-8859-1?Q?9IhcXORP1yzwcdIGzCofqoAeufNFuX0Z8RWG4IYMKTI5AZpC+3CIMCXneK?=
- =?iso-8859-1?Q?yCsNxj9BfFa+6lmnT0QtE333DCH7z7XRZkhjjHCLD0uSMnfkFAPeOIxgR/?=
- =?iso-8859-1?Q?G2+ZOyjx+n4zxZdES+IkBlvF0DIsgX18AMln4dIu8CbMgJ+EEnJBamRtE8?=
- =?iso-8859-1?Q?UAbvFofn8gOwvTDfQi6iyhKDckfRf+6/5n6IKqjFN8LfCizDptYr8HVBVo?=
- =?iso-8859-1?Q?22vYh4JdwXu50Y3WQgq5FWt/SKqwAp/SAvxBW8UKUIxq67QQERFnKBZTh/?=
- =?iso-8859-1?Q?wIkB9DFxGRX5P5DvhH06AMOQ2IsJkirl2kgpB7Lth5wSO4uKT3jqEvN7y7?=
- =?iso-8859-1?Q?Sg72aIfCEtDJN+dczRZSRmeVV1ZrhxBA3kn6ALyjA4NNt56GElmMYnKSaU?=
- =?iso-8859-1?Q?J0K/K+wAKyPqpGDf7PCKKTpgGV6H1Iw+3F5yTos4wtLohYKlyqTLcvBSl9?=
- =?iso-8859-1?Q?XjsyfOjNSgY3TiwI3qAwxDW3pWws1QzcFfqqtrnzwYiZ/+EDhYSe77FnQ2?=
- =?iso-8859-1?Q?P2CLGJh83GuYFcktR2Umtyg4JYv/7HRvH8h4jhfOhFqhBWCKiSVU0HX0Zt?=
- =?iso-8859-1?Q?Dcbkoo0flOyFrCdeNv13g5Pw4dZ8kph1gQg/wlH1N1ulmO7gfka+oJ0T1Z?=
- =?iso-8859-1?Q?XGozPk93852Q6yS2P5wkwmzD+S+E1wm9CjsUXIBAc3MRewvEz2A1ezfpKI?=
- =?iso-8859-1?Q?ILgNHG967ODB+p5Q6PeJzDPliGSuLxVJruIPW+5QUpoZI0GdwA2kSssdRQ?=
- =?iso-8859-1?Q?QgXlhdivMxP+KzAQIg8I00zaN8uxeNMuExgT/rguWc1e3ULwEstKQuYZq6?=
- =?iso-8859-1?Q?QjbJTceKBzqM17p0jVSNl7sWULhwiOkJPIy/Vi4XgAZtBYdLcviIgKywBl?=
- =?iso-8859-1?Q?4xRbBwx7j/kF3NV9LouXIEge6GmlZBF5l9LtA9bE3qLPbdjW6ij9Lr+YIh?=
- =?iso-8859-1?Q?IW+DPobYjLVcFcuNXMH7p8Ylj4hUiTxitjNCvziUp9tFWm8Tsl2f7+e0Kn?=
- =?iso-8859-1?Q?ImtvJMqWjal+LwPICWBxUU0C5R1Dc2qpeFQ16Qj/4dV4ZHPF3iDqv6+dLQ?=
- =?iso-8859-1?Q?1eepK6xoHFCR1zlU6dA++e51FhumYf4Hyoksg4MIqq550UriqUsCWzO080?=
- =?iso-8859-1?Q?UobBDhcT9VZ+Jc2hxvOmAYpVlA1gph6mzSoUARx3GYZxrbcsTmNY6EGpLp?=
- =?iso-8859-1?Q?kIyXLZvubc?=
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL0PR13MB4403.namprd13.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(1800799015)(7416005)(366007)(376005);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?iso-8859-1?Q?45E0E67n3188+bIFbrxTorBHnsyClv7dvb7nKNmCiU7cgybmnQ7Zlmdxhd?=
- =?iso-8859-1?Q?pqQe6qwoQzgKLIeK15NYJhc7WjXBBaeAGEv4VYfNgQjnreUET/Y+PL3JxG?=
- =?iso-8859-1?Q?Kh6VKd0aaKhBB+8MbQTxjGEN4MuqIlssaaBKyj2hHdonGt3GrKhwgkAwmS?=
- =?iso-8859-1?Q?paYQmKq5tV90a+BWcp7u2YwoUuyQQMrMkGvtJ9Zk76y9U3h1rgcn/eRvZ+?=
- =?iso-8859-1?Q?WOWHyid/v4rwK6wJZhv/hQp6Ji51x6e8gSI1H/dlOuasDOvKin/pqKbYiL?=
- =?iso-8859-1?Q?sDw4ATUHYE1bas4k6JCgl5igThp9ZQuMDWMT3a4Fib9WFeMkN2vEGXIGPk?=
- =?iso-8859-1?Q?kU+4sc51+lRxsUErU2PpULOYJX/pKyzEjEDT5J79MwRNic8gIVZkIMU9z9?=
- =?iso-8859-1?Q?/J155nWo5ExJDtbbNXoaHwWoUa2KFkmb0bvm7//DLKeukrm+jcoHUBTPT8?=
- =?iso-8859-1?Q?RG+i2ub1CkYKN1imQUDiGnvXrdwoHLTKDObLDNcnf/JgYnrN6VRk51q5pO?=
- =?iso-8859-1?Q?+1lhMS/68DagleAC+J861EcKwP5vlIWOUoBMuZyfRX5JXWH7zoPi6R5NGE?=
- =?iso-8859-1?Q?2F/ZVcF3pG0odNohH38c7bBbYc8UeJ+UfbXGo6gxARNO5BlMYMa64bgKP8?=
- =?iso-8859-1?Q?C0lQQgDciY1wr5NwPy/fQVtJL3gvegx7Rrd+hbvVJICfRwhraQ11p9DITK?=
- =?iso-8859-1?Q?08pKCnBkbG/2FWNDAQg9k7kza1aQAnC+aBpzIj/CySVbCjgW2Zu9Qg80Mt?=
- =?iso-8859-1?Q?a3j3khol+4s2DR2IN4P2lYHvvJGRbXdQDo/9/z0d/jdYBHYr0dYH5Y/ix+?=
- =?iso-8859-1?Q?v2RQ83C0q45f9D2JrSAfPBLx7zvKFOst3E827+toKj+wS/8wWKDWlXH/BB?=
- =?iso-8859-1?Q?qsD7UchFxYikdyG8/YHiwrbemV7HWfj0IM6MMQ6o3nPnHEkhF9npgpS/L/?=
- =?iso-8859-1?Q?KObJlWVuRqE8ayVGC1EpUmEmmwA7VT/7Nh2YM75ps+KB2A1NIV8edR/ffa?=
- =?iso-8859-1?Q?2Xo71CcxDqDk6ysFSY38tsVIr+3yoRvjJ2yfLvpF5yRM6ytLpHUnbCsbaV?=
- =?iso-8859-1?Q?ue4BhaOjIHeUZuFa2c5IRuQDzccZAUqOVyBAxacBxTt3tKkAw+0dYEXF9l?=
- =?iso-8859-1?Q?+O7eESLwDBLDZHqBAtnyiADCMWIl9Cer2IBnQHkG9JvX+jfR9LlzxTiktf?=
- =?iso-8859-1?Q?tgGMVja6f8SQsNxKlKJGi+E+8ERcVKGgqJEJ/5Fp/QPsgaxTBnJ7AqA/iw?=
- =?iso-8859-1?Q?TQ+H773jX+HWdllMOzN+V7swg0O3iKZlUIvL2mziGvFlduHJJPdBUHH5vS?=
- =?iso-8859-1?Q?5bZvIRcJXIm3/dbcfNCdCbl48S8HEghTOdGIXbfTTYzAlS88mLgWLDS0vp?=
- =?iso-8859-1?Q?VtElIjvtCFV/gvIp1LwaVGWUtEgFqWTWPctDpbb7IPlKe3DSUW6aSh60Gl?=
- =?iso-8859-1?Q?/Xos7SvyNpB0vwbmvYFsEhu/UZqk7RgpOouPykJ2R4bWxVyBhi/Gs4xyUW?=
- =?iso-8859-1?Q?Zb3LDc3qbK7ZkSkK0m54TksEO0kohw3hrZzX+MrH7iDqcvju6T9qfymXHV?=
- =?iso-8859-1?Q?rUhsl5eMAtMLx6dMIt0qY3UJbqfJwkPHxChw3WAvehE4XWilsyr8dsGJ6Y?=
- =?iso-8859-1?Q?dREWQZDbrpmDeZ73tducdhrRM65xYh5CHJcW7dqzkYPuq66GEXKYfaKg?=
- =?iso-8859-1?Q?=3D=3D?=
-X-OriginatorOrg: corigine.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: e63da1e8-a65e-4d4e-2b8b-08dc89e79d8c
-X-MS-Exchange-CrossTenant-AuthSource: CH2PR13MB4411.namprd13.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 11 Jun 2024 07:25:05.9437
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: fe128f2c-073b-4c20-818e-7246a585940c
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: bV8Veq65pJSvYPo1tMYUKTv4BhEITuhXZ+56UPdIjoh7Yf/32FUSXWpbhRuHbXtT+2iBSXDpRvYQ+l1yEzrgPMPuLx4R5cJ4f4klVUI94hQ=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN4PR13MB5810
+User-Agent: Mozilla Thunderbird
+Subject: Re: [RFC RESEND 00/16] Split IOMMU DMA mapping operation to two steps
+To: "Zeng, Oak" <oak.zeng@intel.com>, Jason Gunthorpe <jgg@ziepe.ca>
+Cc: Leon Romanovsky <leon@kernel.org>, Christoph Hellwig <hch@lst.de>,
+ Robin Murphy <robin.murphy@arm.com>,
+ Marek Szyprowski <m.szyprowski@samsung.com>, Joerg Roedel <joro@8bytes.org>,
+ Will Deacon <will@kernel.org>, Chaitanya Kulkarni <chaitanyak@nvidia.com>,
+ "Brost, Matthew" <matthew.brost@intel.com>,
+ "Hellstrom, Thomas" <thomas.hellstrom@intel.com>,
+ Jonathan Corbet <corbet@lwn.net>, Jens Axboe <axboe@kernel.dk>,
+ Keith Busch <kbusch@kernel.org>, Sagi Grimberg <sagi@grimberg.me>,
+ Yishai Hadas <yishaih@nvidia.com>,
+ Shameer Kolothum <shameerali.kolothum.thodi@huawei.com>,
+ "Tian, Kevin" <kevin.tian@intel.com>,
+ Alex Williamson <alex.williamson@redhat.com>,
+ =?UTF-8?B?SsOpcsO0bWUgR2xpc3Nl?= <jglisse@redhat.com>,
+ Andrew Morton <akpm@linux-foundation.org>,
+ "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
+ "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+ "iommu@lists.linux.dev" <iommu@lists.linux.dev>,
+ "linux-nvme@lists.infradead.org" <linux-nvme@lists.infradead.org>,
+ "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+ "linux-mm@kvack.org" <linux-mm@kvack.org>,
+ Bart Van Assche <bvanassche@acm.org>,
+ Damien Le Moal <damien.lemoal@opensource.wdc.com>,
+ Amir Goldstein <amir73il@gmail.com>,
+ "josef@toxicpanda.com" <josef@toxicpanda.com>,
+ "Martin K. Petersen" <martin.petersen@oracle.com>,
+ "daniel@iogearbox.net" <daniel@iogearbox.net>,
+ "Williams, Dan J" <dan.j.williams@intel.com>, "jack@suse.com"
+ <jack@suse.com>, "Bommu, Krishnaiah" <krishnaiah.bommu@intel.com>,
+ "Ghimiray, Himal Prasad" <himal.prasad.ghimiray@intel.com>
+References: <cover.1709635535.git.leon@kernel.org>
+ <SA1PR11MB6991CB2B1398948F4241E51992182@SA1PR11MB6991.namprd11.prod.outlook.com>
+ <20240503164239.GB901876@ziepe.ca>
+ <PH7PR11MB70047236290DC1CFF9150B8592C62@PH7PR11MB7004.namprd11.prod.outlook.com>
+ <20240610161826.GA4966@unreal>
+ <PH7PR11MB7004A071F27B4CF45740B87E92C62@PH7PR11MB7004.namprd11.prod.outlook.com>
+ <20240610172501.GJ791043@ziepe.ca>
+ <PH7PR11MB7004DDE9816D92F690A5C0B692C62@PH7PR11MB7004.namprd11.prod.outlook.com>
+Content-Language: en-US
+From: Zhu Yanjun <zyjzyj2000@gmail.com>
+In-Reply-To: <PH7PR11MB7004DDE9816D92F690A5C0B692C62@PH7PR11MB7004.namprd11.prod.outlook.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-On Sun, Jun 09, 2024 at 05:33:54PM +0000, Asbjørn Sloth Tønnesen wrote:
-> Encapsulation control flags are currently not used anywhere,
-> so all flags are currently unsupported by all drivers.
-> 
-> This patch adds validation of this assumption, so that
-> encapsulation flags may be used in the future.
-> 
-> In case any encapsulation control flags are masked,
-> flow_rule_match_has_enc_control_flags() sets a NL extended
-> error message, and we return -EOPNOTSUPP.
-> 
-> Only compile tested.
-> 
-> Signed-off-by: Asbjørn Sloth Tønnesen <ast@fiberby.net>
-Looks fair to me, thanks.
 
-Signed-off-by: Louis Peens <louis.peens@corigine.com>
+On 10.06.24 23:28, Zeng, Oak wrote:
+> Hi Jason, Leon,
+>
+> I was able to fix the issue from my side. Things work fine now.
 
-> ---
->  drivers/net/ethernet/netronome/nfp/flower/offload.c | 4 ++++
->  1 file changed, 4 insertions(+)
-> 
-> diff --git a/drivers/net/ethernet/netronome/nfp/flower/offload.c b/drivers/net/ethernet/netronome/nfp/flower/offload.c
-> index 8e0a890381b60..46ffc2c208930 100644
-> --- a/drivers/net/ethernet/netronome/nfp/flower/offload.c
-> +++ b/drivers/net/ethernet/netronome/nfp/flower/offload.c
-> @@ -321,6 +321,10 @@ nfp_flower_calculate_key_layers(struct nfp_app *app,
->  
->  		flow_rule_match_enc_control(rule, &enc_ctl);
->  
-> +		if (flow_rule_has_enc_control_flags(enc_ctl.mask->flags,
-> +						    extack))
-> +			return -EOPNOTSUPP;
-> +
->  		if (enc_ctl.mask->addr_type != 0xffff) {
->  			NL_SET_ERR_MSG_MOD(extack, "unsupported offload: wildcarded protocols on tunnels are not supported");
->  			return -EOPNOTSUPP;
-> -- 
-> 2.45.1
-> 
+Can you enlarge the dma list, then make tests with fio? Not sure if the 
+performance is better or not.
+
+Thanks,
+
+Zhu Yanjun
+
+> I got two questions though:
+>
+> 1) The value returned from dma_link_range function is not contiguous, see below print. The "linked pa" is the function return.
+> I think dma_map_sgtable API would return some contiguous dma address. Is the dma-map_sgtable api is more efficient regarding the iommu page table? i.e., try to use bigger page size, such as use 2M page size when it is possible. With your new API, does it also have such consideration? I vaguely remembered Jason mentioned such thing, but my print below doesn't look like so. Maybe I need to test bigger range (only 16 pages range in the test of below printing). Comment?
+>
+> [17584.665126] drm_svm_hmmptr_map_dma_pages iova.dma_addr = 0x0, linked pa = 18ef3f000
+> [17584.665146] drm_svm_hmmptr_map_dma_pages iova.dma_addr = 0x0, linked pa = 190d00000
+> [17584.665150] drm_svm_hmmptr_map_dma_pages iova.dma_addr = 0x0, linked pa = 190024000
+> [17584.665153] drm_svm_hmmptr_map_dma_pages iova.dma_addr = 0x0, linked pa = 178e89000
+>
+> 2) in the comment of dma_link_range function, it is said: " @dma_offset needs to be advanced by the caller with the size of previous page that was linked + DMA address returned for the previous page".
+> Is this description correct? I don't understand the part "+ DMA address returned for the previous page ".
+> In my codes, let's say I call this function to link 10 pages, the first dma_offset is 0, second is 4k, third 8k. This worked for me. I didn't add the previously returned dma address.
+> Maybe I need more test. But any comment?
+>
+> Thanks,
+> Oak
+>
+>> -----Original Message-----
+>> From: Jason Gunthorpe <jgg@ziepe.ca>
+>> Sent: Monday, June 10, 2024 1:25 PM
+>> To: Zeng, Oak <oak.zeng@intel.com>
+>> Cc: Leon Romanovsky <leon@kernel.org>; Christoph Hellwig <hch@lst.de>;
+>> Robin Murphy <robin.murphy@arm.com>; Marek Szyprowski
+>> <m.szyprowski@samsung.com>; Joerg Roedel <joro@8bytes.org>; Will
+>> Deacon <will@kernel.org>; Chaitanya Kulkarni <chaitanyak@nvidia.com>;
+>> Brost, Matthew <matthew.brost@intel.com>; Hellstrom, Thomas
+>> <thomas.hellstrom@intel.com>; Jonathan Corbet <corbet@lwn.net>; Jens
+>> Axboe <axboe@kernel.dk>; Keith Busch <kbusch@kernel.org>; Sagi
+>> Grimberg <sagi@grimberg.me>; Yishai Hadas <yishaih@nvidia.com>;
+>> Shameer Kolothum <shameerali.kolothum.thodi@huawei.com>; Tian, Kevin
+>> <kevin.tian@intel.com>; Alex Williamson <alex.williamson@redhat.com>;
+>> JÃ©rÃ´me Glisse <jglisse@redhat.com>; Andrew Morton <akpm@linux-
+>> foundation.org>; linux-doc@vger.kernel.org; linux-kernel@vger.kernel.org;
+>> linux-block@vger.kernel.org; linux-rdma@vger.kernel.org;
+>> iommu@lists.linux.dev; linux-nvme@lists.infradead.org;
+>> kvm@vger.kernel.org; linux-mm@kvack.org; Bart Van Assche
+>> <bvanassche@acm.org>; Damien Le Moal
+>> <damien.lemoal@opensource.wdc.com>; Amir Goldstein
+>> <amir73il@gmail.com>; josef@toxicpanda.com; Martin K. Petersen
+>> <martin.petersen@oracle.com>; daniel@iogearbox.net; Williams, Dan J
+>> <dan.j.williams@intel.com>; jack@suse.com; Zhu Yanjun
+>> <zyjzyj2000@gmail.com>; Bommu, Krishnaiah
+>> <krishnaiah.bommu@intel.com>; Ghimiray, Himal Prasad
+>> <himal.prasad.ghimiray@intel.com>
+>> Subject: Re: [RFC RESEND 00/16] Split IOMMU DMA mapping operation to
+>> two steps
+>>
+>> On Mon, Jun 10, 2024 at 04:40:19PM +0000, Zeng, Oak wrote:
+>>> Thanks Leon and Yanjun for the reply!
+>>>
+>>> Based on the reply, we will continue use the current version for
+>>> test (as it is tested for vfio and rdma). We will switch to v1 once
+>>> it is fully tested/reviewed.
+>> I'm glad you are finding it useful, one of my interests with this work
+>> is to improve all the HMM users.
+>>
+>> Jason
+
+-- 
+Best
+
 
