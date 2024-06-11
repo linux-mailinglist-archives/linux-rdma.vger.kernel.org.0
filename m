@@ -1,201 +1,125 @@
-Return-Path: <linux-rdma+bounces-3048-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-3049-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 56383903447
-	for <lists+linux-rdma@lfdr.de>; Tue, 11 Jun 2024 09:49:25 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id D2E4B90378C
+	for <lists+linux-rdma@lfdr.de>; Tue, 11 Jun 2024 11:12:46 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 9AEDFB240C6
-	for <lists+linux-rdma@lfdr.de>; Tue, 11 Jun 2024 07:49:22 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id AFEC1B24B66
+	for <lists+linux-rdma@lfdr.de>; Tue, 11 Jun 2024 09:09:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3CA72172BCC;
-	Tue, 11 Jun 2024 07:49:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 77593173321;
+	Tue, 11 Jun 2024 09:09:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="kqNWeP+2"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="Mjaxns2Z"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-ej1-f52.google.com (mail-ej1-f52.google.com [209.85.218.52])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 22B5C172BC1;
-	Tue, 11 Jun 2024 07:49:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B39B6176244
+	for <linux-rdma@vger.kernel.org>; Tue, 11 Jun 2024 09:09:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1718092150; cv=none; b=ZTiLn66I+AUAb4OmWYB+Y1B6sxCkTfugnOpZfmzoaUrioyfA33IWSNtl4br9ksP1Kk7bAgNewxsy7Ag7QjV2hOET95iFbalCZlYAMOY+KsvnVyn2jj+zkcuOAxNxn+icDgi4L9ZQpks/G8fPiKlvddebkEsc9MWYMnz4+gsfnSQ=
+	t=1718096981; cv=none; b=k0ZnamiY0CqLGEntkCmwkqMVEfzW/j/qrgLO+AZcg7pNKtAV5rkjj/i6YQo+zMwWoGEeK8gX9hcRw5PZ1zHbunYuwGcMBBoh3+NZEAvedYlbOWTkrJk/ITsiSDML6fStMO4XuK9HiyXW8+QI3rMFWKV0Izz00nirmh0Y3IdCWYQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1718092150; c=relaxed/simple;
-	bh=hiTi2Z2kFvgoVOSPubuhZsugltW45Q0GMSzZrbstP/c=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=gmnSZtXIgyx9CLmVyACQWNB5zRBRkr8rbw2JbXpLMFGe6j2Ah1fqT7jnszwVzr0OtndwodQ9Ey5rnc47nvGxFPrhmFYYg/7drJwrcQLX1gfKViMD1Sc+/jS46u0SPkId2yOD9PB+ZpFJjODmRlvrXnR2/2GyZnJLjBeTuWhbaao=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=kqNWeP+2; arc=none smtp.client-ip=209.85.218.52
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f52.google.com with SMTP id a640c23a62f3a-a68b41ef3f6so585001966b.1;
-        Tue, 11 Jun 2024 00:49:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1718092146; x=1718696946; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=kecLidF3g75Y0M4dgmXIi2U7qv7nfX0gCWhXKA3lhlo=;
-        b=kqNWeP+25IMcqBz/PPTvHXgNcexBiD0qWmKen69qLb0yyE0NErMIiuDNtPNGjHfo6s
-         OVVjfE2NzYTWjqFtZUc0rja2vWHLSLKCNUBfHUPJG+ZoTDgc9cp0DTXb1qq7+CFsIWDH
-         1EskANF9CgiWXHeQAZdT/+C4JKbfwYiPAsJiEK1AxRuzO6da3qEJS+pD6CJb+xIPy7CH
-         jSzmwYRDyYGibhlMIUlgMqNOYV/nvX7PceMK8tI2dpDtxl3znFqt9LpoHU0RPfhjaUlL
-         9r6kwFIhPNBfGWJEbv4wXkelI0cpN7hR7B+NW6IWYsccIPrkB246Ba8BP2LjFyd7wM0z
-         5afg==
+	s=arc-20240116; t=1718096981; c=relaxed/simple;
+	bh=i0S4WNj+dZaz3hdz9rhQaN2ahipED7/FlbM3wn5jydM=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=LWcB7LMODkVL+dPFmA7OMZ//fPfYbqbX1ltwewSnXM+tnnla4Ldcy3U415UMDRnktLxMXYmBk/fqKGMvu+urOgKtDgDi27pbl+7TIvXRPOYg7Qw3dzafwIKjtCBQ5cB+f65Kzequg/cGYHE8NDJbSXzXiWeJg0d2wLb7TRwg/3M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=Mjaxns2Z; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1718096978;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=wJ6NmEpm203v83OTy1RMNtAkzbu+fQMhPGN0G4SJVPY=;
+	b=Mjaxns2ZIaRszze7VkyY1v67WCzdRvvbCn9vXexzoUw3TTyb13LI6UMj2jTz4PLlauWHDk
+	G1hJmQbha0TUHlPwfOVf3fWXldibxVgX31VtePXwvWD2xpR2JPRWmcN5NMqAQbVz/NL+sM
+	BeWJ3lo1LfuuK7tMHVuweAUbP3ycrA0=
+Received: from mail-lj1-f198.google.com (mail-lj1-f198.google.com
+ [209.85.208.198]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-646-AcTITdEfPMSTbqJL8jFleQ-1; Tue, 11 Jun 2024 05:09:37 -0400
+X-MC-Unique: AcTITdEfPMSTbqJL8jFleQ-1
+Received: by mail-lj1-f198.google.com with SMTP id 38308e7fff4ca-2ebd7556679so24551161fa.1
+        for <linux-rdma@vger.kernel.org>; Tue, 11 Jun 2024 02:09:36 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1718092146; x=1718696946;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
+        d=1e100.net; s=20230601; t=1718096975; x=1718701775;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=kecLidF3g75Y0M4dgmXIi2U7qv7nfX0gCWhXKA3lhlo=;
-        b=pEdjEGt/8iFuAYBM1FR9QELYNHivsRnSpvckMU+R2itFa7kkcPcq8AJOYBSswPgczG
-         gKqI6cgsAP/dq1ESS4VD81IfUXAs8lipY52Qr0BJUiK5zC7+DVbSc03DE2whpG/1/v6o
-         GYjADjreGHYKOYQvHw1oMa4tUR7CrL8Do+ZJJXfkGkr4kjDuyikIwb1LzKp2k5T6vsh8
-         Q+sHPPSZjVf+l3ZF9yl3t4lB/N+gLP/pQpbapMiQyW1mNEWdPhJeIjfb7XgnaQ07CKpb
-         43vGc8Ex5gSPGgGCqA+VROAEju8zjxhaqPPkYCSJps5rwR4zu0JmBoycxPbPgqVsrfyA
-         o5kg==
-X-Forwarded-Encrypted: i=1; AJvYcCWNGNFJj4EfjytCOvm7rju+YJzBlmOonL7ec0xLfAQssBh2hOB17EpcMuDAjSH+1HfGcuA+OO+a/5hnKoL22fRBcc5DU4at2bXBaVFHU0ton6cFjHHtMNwWchn/9RHbKoK0/G5mVIYebTxvCXAqjcJkZXOlLxZ6R0vFvkULjmWg4GOi9/njWo06SWCehsuxAPpZ6FntVRlB1JcxTlvslWgk+UdZuksOpyIvLA04Psih93sJa96U
-X-Gm-Message-State: AOJu0YwXgCgbmqwNr11Ijs1S3o9R14BymHtIiakaMydN7yTbAaeXSewh
-	9gp5GRHwNnv9qCrXVbFzm2GxFZFEMOi3+TCQfi6B0/iYWb1vZieX
-X-Google-Smtp-Source: AGHT+IFzcNCL4DB7c7G7kLyb+7UFm4o2GGJXJ/lKj59bEb2GT+3Qy+R5dFmfo0Jxs1fqaAcSpOVYtA==
-X-Received: by 2002:a17:906:6a0a:b0:a6f:1d19:c0b1 with SMTP id a640c23a62f3a-a6f1d19c496mr372629566b.18.1718092146075;
-        Tue, 11 Jun 2024 00:49:06 -0700 (PDT)
-Received: from [10.16.124.60] ([212.227.34.98])
-        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-a6f2942b02fsm145877166b.167.2024.06.11.00.49.04
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 11 Jun 2024 00:49:05 -0700 (PDT)
-Message-ID: <900d1d56-28ea-4c6d-b8c7-749a952e5f4b@gmail.com>
-Date: Tue, 11 Jun 2024 09:49:03 +0200
+        bh=wJ6NmEpm203v83OTy1RMNtAkzbu+fQMhPGN0G4SJVPY=;
+        b=ih62BWCPDO0YXKOF5dX57EWa51DGmeHlsYJI8x+JUrogj7VAQNKpWdhlm5EBs3kSHG
+         uY9tYHQbNKCCGCErjQ64t0qntTxh27eWJmQSjBKu4Yd6UMhT9CEvfuUo/t4Gn2p5LXUu
+         6casLcilc5E9cpeiuZ+BMD/WoF7dtD1ieRXXSOUypigwLFYxTRq7ZMP4uUXbzKiI7zFc
+         +WxvYjixxtC/Aarba4tl1sbOMO3tSblBRU0kNsJane279SQ1frN+3q/T+FoLgnG6RAoo
+         vdnPb7cVdrGKiANIi6dPG7Z+UjgmgpbeL5p1ZJU/Xd81ddKNKEU8kmuyUl+dzWHM8r4+
+         dJVA==
+X-Forwarded-Encrypted: i=1; AJvYcCXwKS6rd3rchcz3hLZKHkjBFB97GoK7P8j5jgk0bGO0TT1jY5qPhnG1d1oPFji6rX5K3dYGgtTXxG3yS85CPdsPLT6OYeyKcLfgdA==
+X-Gm-Message-State: AOJu0YwWy023+rbH7f8MyLyoyn/1Bxjm9quwGj1a55xnz+Wqai8/o2hZ
+	+RKq3/QQ4Lez6Ve3tVqKiBk0OQV5v3YvrlcPe7QrxTFeul8pdy+uBtgSejQCDUYnmmtzKT26quY
+	J+BOnx8njAg8ZaJiWXovVFIWVLHX9eRrpRzrZWpJCPUUqW6lNwRZleZlNsv8=
+X-Received: by 2002:a2e:8004:0:b0:2eb:f5ec:5ad6 with SMTP id 38308e7fff4ca-2ebf5ec6fb4mr4791391fa.0.1718096975472;
+        Tue, 11 Jun 2024 02:09:35 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IH7wwWojKAzRVTdY5Y8CDndML4n5EP/ZdMfOeDFja/TJ2/4XahWfKaFctCxnoWRR7nsots0ag==
+X-Received: by 2002:a2e:8004:0:b0:2eb:f5ec:5ad6 with SMTP id 38308e7fff4ca-2ebf5ec6fb4mr4791061fa.0.1718096974914;
+        Tue, 11 Jun 2024 02:09:34 -0700 (PDT)
+Received: from localhost (nat-pool-brq-u.redhat.com. [213.175.37.12])
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-4218193b0c0sm84032445e9.31.2024.06.11.02.09.33
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 11 Jun 2024 02:09:34 -0700 (PDT)
+Date: Tue, 11 Jun 2024 11:09:33 +0200
+From: Davide Caratti <dcaratti@redhat.com>
+To: =?iso-8859-1?Q?Asbj=F8rn_Sloth_T=F8nnesen?= <ast@fiberby.net>
+Cc: netdev@vger.kernel.org, "David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	Edward Cree <ecree.xilinx@gmail.com>,
+	Martin Habets <habetsm.xilinx@gmail.com>, linux-net-drivers@amd.com,
+	Saeed Mahameed <saeedm@nvidia.com>,
+	Leon Romanovsky <leon@kernel.org>, Tariq Toukan <tariqt@nvidia.com>,
+	linux-rdma@vger.kernel.org,
+	Jesse Brandeburg <jesse.brandeburg@intel.com>,
+	Tony Nguyen <anthony.l.nguyen@intel.com>,
+	intel-wired-lan@lists.osuosl.org,
+	Louis Peens <louis.peens@corigine.com>, oss-drivers@corigine.com,
+	linux-kernel@vger.kernel.org, i.maximets@ovn.org
+Subject: Re: [PATCH net-next 0/5] net: flower: validate encapsulation control
+ flags
+Message-ID: <ZmgUTZPFKk1pNxqR@dcaratti.users.ipa.redhat.com>
+References: <20240609173358.193178-1-ast@fiberby.net>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC RESEND 00/16] Split IOMMU DMA mapping operation to two steps
-To: "Zeng, Oak" <oak.zeng@intel.com>, Jason Gunthorpe <jgg@ziepe.ca>
-Cc: Leon Romanovsky <leon@kernel.org>, Christoph Hellwig <hch@lst.de>,
- Robin Murphy <robin.murphy@arm.com>,
- Marek Szyprowski <m.szyprowski@samsung.com>, Joerg Roedel <joro@8bytes.org>,
- Will Deacon <will@kernel.org>, Chaitanya Kulkarni <chaitanyak@nvidia.com>,
- "Brost, Matthew" <matthew.brost@intel.com>,
- "Hellstrom, Thomas" <thomas.hellstrom@intel.com>,
- Jonathan Corbet <corbet@lwn.net>, Jens Axboe <axboe@kernel.dk>,
- Keith Busch <kbusch@kernel.org>, Sagi Grimberg <sagi@grimberg.me>,
- Yishai Hadas <yishaih@nvidia.com>,
- Shameer Kolothum <shameerali.kolothum.thodi@huawei.com>,
- "Tian, Kevin" <kevin.tian@intel.com>,
- Alex Williamson <alex.williamson@redhat.com>,
- =?UTF-8?B?SsOpcsO0bWUgR2xpc3Nl?= <jglisse@redhat.com>,
- Andrew Morton <akpm@linux-foundation.org>,
- "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
- "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
- "iommu@lists.linux.dev" <iommu@lists.linux.dev>,
- "linux-nvme@lists.infradead.org" <linux-nvme@lists.infradead.org>,
- "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
- "linux-mm@kvack.org" <linux-mm@kvack.org>,
- Bart Van Assche <bvanassche@acm.org>,
- Damien Le Moal <damien.lemoal@opensource.wdc.com>,
- Amir Goldstein <amir73il@gmail.com>,
- "josef@toxicpanda.com" <josef@toxicpanda.com>,
- "Martin K. Petersen" <martin.petersen@oracle.com>,
- "daniel@iogearbox.net" <daniel@iogearbox.net>,
- "Williams, Dan J" <dan.j.williams@intel.com>, "jack@suse.com"
- <jack@suse.com>, "Bommu, Krishnaiah" <krishnaiah.bommu@intel.com>,
- "Ghimiray, Himal Prasad" <himal.prasad.ghimiray@intel.com>
-References: <cover.1709635535.git.leon@kernel.org>
- <SA1PR11MB6991CB2B1398948F4241E51992182@SA1PR11MB6991.namprd11.prod.outlook.com>
- <20240503164239.GB901876@ziepe.ca>
- <PH7PR11MB70047236290DC1CFF9150B8592C62@PH7PR11MB7004.namprd11.prod.outlook.com>
- <20240610161826.GA4966@unreal>
- <PH7PR11MB7004A071F27B4CF45740B87E92C62@PH7PR11MB7004.namprd11.prod.outlook.com>
- <20240610172501.GJ791043@ziepe.ca>
- <PH7PR11MB7004DDE9816D92F690A5C0B692C62@PH7PR11MB7004.namprd11.prod.outlook.com>
-Content-Language: en-US
-From: Zhu Yanjun <zyjzyj2000@gmail.com>
-In-Reply-To: <PH7PR11MB7004DDE9816D92F690A5C0B692C62@PH7PR11MB7004.namprd11.prod.outlook.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <20240609173358.193178-1-ast@fiberby.net>
 
-
-On 10.06.24 23:28, Zeng, Oak wrote:
-> Hi Jason, Leon,
+On Sun, Jun 09, 2024 at 05:33:50PM +0000, Asbj¯rn Sloth T¯nnesen wrote:
+> Now that all drivers properly rejects unsupported flower control flags
+> used with FLOW_DISSECTOR_KEY_CONTROL, then time has come to add similar
+> checks to the drivers supporting FLOW_DISSECTOR_KEY_ENC_CONTROL.
+> 
+> There are currently just 4 drivers supporting this key, and
+> 3 of those currently doesn't validate encapsulated control flags.
+> 
+> Encapsulation control flags may currently be unused, but they should
+> still be validated by the drivers, so that drivers will properly
+> reject any new flags when they are introduced.
+> 
+> This series adds some helper functions, and implements them in all
+> 4 drivers.
 >
-> I was able to fix the issue from my side. Things work fine now.
 
-Can you enlarge the dma list, then make tests with fio? Not sure if the 
-performance is better or not.
-
-Thanks,
-
-Zhu Yanjun
-
-> I got two questions though:
->
-> 1) The value returned from dma_link_range function is not contiguous, see below print. The "linked pa" is the function return.
-> I think dma_map_sgtable API would return some contiguous dma address. Is the dma-map_sgtable api is more efficient regarding the iommu page table? i.e., try to use bigger page size, such as use 2M page size when it is possible. With your new API, does it also have such consideration? I vaguely remembered Jason mentioned such thing, but my print below doesn't look like so. Maybe I need to test bigger range (only 16 pages range in the test of below printing). Comment?
->
-> [17584.665126] drm_svm_hmmptr_map_dma_pages iova.dma_addr = 0x0, linked pa = 18ef3f000
-> [17584.665146] drm_svm_hmmptr_map_dma_pages iova.dma_addr = 0x0, linked pa = 190d00000
-> [17584.665150] drm_svm_hmmptr_map_dma_pages iova.dma_addr = 0x0, linked pa = 190024000
-> [17584.665153] drm_svm_hmmptr_map_dma_pages iova.dma_addr = 0x0, linked pa = 178e89000
->
-> 2) in the comment of dma_link_range function, it is said: " @dma_offset needs to be advanced by the caller with the size of previous page that was linked + DMA address returned for the previous page".
-> Is this description correct? I don't understand the part "+ DMA address returned for the previous page ".
-> In my codes, let's say I call this function to link 10 pages, the first dma_offset is 0, second is 4k, third 8k. This worked for me. I didn't add the previously returned dma address.
-> Maybe I need more test. But any comment?
->
-> Thanks,
-> Oak
->
->> -----Original Message-----
->> From: Jason Gunthorpe <jgg@ziepe.ca>
->> Sent: Monday, June 10, 2024 1:25 PM
->> To: Zeng, Oak <oak.zeng@intel.com>
->> Cc: Leon Romanovsky <leon@kernel.org>; Christoph Hellwig <hch@lst.de>;
->> Robin Murphy <robin.murphy@arm.com>; Marek Szyprowski
->> <m.szyprowski@samsung.com>; Joerg Roedel <joro@8bytes.org>; Will
->> Deacon <will@kernel.org>; Chaitanya Kulkarni <chaitanyak@nvidia.com>;
->> Brost, Matthew <matthew.brost@intel.com>; Hellstrom, Thomas
->> <thomas.hellstrom@intel.com>; Jonathan Corbet <corbet@lwn.net>; Jens
->> Axboe <axboe@kernel.dk>; Keith Busch <kbusch@kernel.org>; Sagi
->> Grimberg <sagi@grimberg.me>; Yishai Hadas <yishaih@nvidia.com>;
->> Shameer Kolothum <shameerali.kolothum.thodi@huawei.com>; Tian, Kevin
->> <kevin.tian@intel.com>; Alex Williamson <alex.williamson@redhat.com>;
->> J√©r√¥me Glisse <jglisse@redhat.com>; Andrew Morton <akpm@linux-
->> foundation.org>; linux-doc@vger.kernel.org; linux-kernel@vger.kernel.org;
->> linux-block@vger.kernel.org; linux-rdma@vger.kernel.org;
->> iommu@lists.linux.dev; linux-nvme@lists.infradead.org;
->> kvm@vger.kernel.org; linux-mm@kvack.org; Bart Van Assche
->> <bvanassche@acm.org>; Damien Le Moal
->> <damien.lemoal@opensource.wdc.com>; Amir Goldstein
->> <amir73il@gmail.com>; josef@toxicpanda.com; Martin K. Petersen
->> <martin.petersen@oracle.com>; daniel@iogearbox.net; Williams, Dan J
->> <dan.j.williams@intel.com>; jack@suse.com; Zhu Yanjun
->> <zyjzyj2000@gmail.com>; Bommu, Krishnaiah
->> <krishnaiah.bommu@intel.com>; Ghimiray, Himal Prasad
->> <himal.prasad.ghimiray@intel.com>
->> Subject: Re: [RFC RESEND 00/16] Split IOMMU DMA mapping operation to
->> two steps
->>
->> On Mon, Jun 10, 2024 at 04:40:19PM +0000, Zeng, Oak wrote:
->>> Thanks Leon and Yanjun for the reply!
->>>
->>> Based on the reply, we will continue use the current version for
->>> test (as it is tested for vfio and rdma). We will switch to v1 once
->>> it is fully tested/reviewed.
->> I'm glad you are finding it useful, one of my interests with this work
->> is to improve all the HMM users.
->>
->> Jason
-
--- 
-Best
+Reviewed-by: Davide Caratti <dcaratti@redhat.com>
 
 
