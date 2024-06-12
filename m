@@ -1,115 +1,113 @@
-Return-Path: <linux-rdma+bounces-3076-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-3078-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6E3FC9057A8
-	for <lists+linux-rdma@lfdr.de>; Wed, 12 Jun 2024 17:56:44 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4F02490599D
+	for <lists+linux-rdma@lfdr.de>; Wed, 12 Jun 2024 19:09:41 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6D3DC1C2276E
-	for <lists+linux-rdma@lfdr.de>; Wed, 12 Jun 2024 15:56:43 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E21441F23959
+	for <lists+linux-rdma@lfdr.de>; Wed, 12 Jun 2024 17:09:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 86775181CE4;
-	Wed, 12 Jun 2024 15:55:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2F756183098;
+	Wed, 12 Jun 2024 17:07:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="kYWVzenO"
+	dkim=pass (2048-bit key) header.d=debian.org header.i=@debian.org header.b="uVDMFXK+"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from stravinsky.debian.org (stravinsky.debian.org [82.195.75.108])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A8729181312;
-	Wed, 12 Jun 2024 15:55:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 78248181BAA
+	for <linux-rdma@vger.kernel.org>; Wed, 12 Jun 2024 17:07:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=82.195.75.108
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1718207758; cv=none; b=TqXTeEeTAyXVbweCTjoWfBrrGZJUwDrCPyIDjVgVE3FZ26jyM9Z3RPxx6/LeAjEp3TsP95CT+n6UP0CUMsRsB8M3+YQyKDh1oR2OoF1wnWNVpe8KaS7+09BcaDD6vEo2GpIVOIzC3TiLZ1xqA9gNc9zEuyE5KGmvuf/A4EuNMZA=
+	t=1718212068; cv=none; b=gAkrz7hSSzGkgNS5cIW4rPkqtY99SoGZ/MQJJAewkecB/KmltHWlz1NbnfOZws5UAfcQfp1yEgLC1Rg/80GfI03PK2qPZ3adcnB2dKF4kJttd1Ft4P1z34zK++GlLdKk0V9ldpE6iITq5Zd2GF4EIMqYJi7e7mBu2f2KtRUkRFk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1718207758; c=relaxed/simple;
-	bh=OGohKvk0MjWf9+Q8+mvrBX+1BAlKKRyUXLbfH75xyb4=;
-	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
-	 In-Reply-To:To:Cc; b=aVOTTwsJpcctQuUjdTM8dhm19LLOc1Dt6AuwIhKCXrejUHcYcJPE5H4DC9Fzyw6QCAdYqEK0nP0ui81Knrinl0W7LiaUbPTrmLHR1XPSyo1uTsFW2/6YtmNxiP9jkihUCMxy7nnZMPsyNeMQ5f1h0fnSNwiH7kbWlovFqnKdm34=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=kYWVzenO; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 7AEC7C4DDE4;
-	Wed, 12 Jun 2024 15:55:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1718207757;
-	bh=OGohKvk0MjWf9+Q8+mvrBX+1BAlKKRyUXLbfH75xyb4=;
-	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=kYWVzenO6v46dav7m+6VeeBQvWtkfZ2ijSROLzZNF2xhVox8NT4g6D7nEQ7Yr1CvD
-	 QbMqbzoNwKvtHxN4oOUSJGsdzFSOiqxLCA02gKqMCQ7TCsZzzusBONx5M/RWdCVpV3
-	 EiLccKqgRHfAnZUsG10WiKCsIr5ffuOoIqg1qhcsU6IhDG8FGsX5pkowWNVMy10FlC
-	 cn2EJB/8N7UtSBq02dCqRuSQs3PZ1MDiLAg7XtxdpzyjShLg11I47hWenlonizyvmL
-	 MeVPPNyid+I2VhiIZBpPj5WbK56sRWz78MH6UY8PKtaaCMSFrdgOOixPo+5vEX+bSG
-	 8/iqEXeUVgsUQ==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 61107C43618;
-	Wed, 12 Jun 2024 15:55:57 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+	s=arc-20240116; t=1718212068; c=relaxed/simple;
+	bh=2ketfuSWqORe0WkSjOLYV/exnF2NBm63ivzZrHckAKA=;
+	h=From:To:Subject:Date:Message-ID:MIME-Version:Content-Type; b=oM59zQple7xsW+CS8kRSzJdlgV7Pp5f+zzdL9V+5mpNfcFugRuxfhHsWSjYbKEnx3/1R8QWOXHlD51uEm/ThU6Lr3CHhkA2adICWDlzda4q6+UnJnUd4lqODOwieGX75hoXLU4a1NZ2ZuKR5ilBlUpPVQAmintBL0cZrkmpCbo4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=debian.org; spf=none smtp.mailfrom=debian.org; dkim=pass (2048-bit key) header.d=debian.org header.i=@debian.org header.b=uVDMFXK+; arc=none smtp.client-ip=82.195.75.108
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=debian.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=debian.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=debian.org;
+	s=smtpauto.stravinsky; h=X-Debian-User:Content-Type:MIME-Version:Message-ID:
+	Date:Subject:To:From:Reply-To:Cc:Content-Transfer-Encoding:Content-ID:
+	Content-Description:In-Reply-To:References;
+	bh=2ketfuSWqORe0WkSjOLYV/exnF2NBm63ivzZrHckAKA=; b=uVDMFXK+IiC0ryxlDyZr0jV8Pa
+	CoJcCR1i0AKFqWXBlrLSoSWQczdQ4TTXAf8N+LjXYgdDIltbrPR2L9WoNTwLjCw3it7CaLRVm8KAf
+	ChhS+3l+cFUs3loxyXDhOymNtpCMeC7WcXFf2oIC/riVKVmsklgRULkC3DkNv92qLc2eDdQirDqKP
+	AYSVpZWkg7qn82ci3muHsoxY01dM2h1Zkab+LDHT5IHnnHYz8ZZIebreGv9eIJTnJfQf/eCuHPG6X
+	8bdEUswbmvV3JLDND2qtevGvb1Df64fBryc4M1QNIPiDpIVdKEmFxNLWf0c7JVQiwSItCiyVvHg7V
+	ktD/upbA==;
+Received: from authenticated user
+	by stravinsky.debian.org with esmtpsa (TLS1.3:ECDHE_SECP256R1__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
+	(Exim 4.94.2)
+	(envelope-from <peb@debian.org>)
+	id 1sHR8S-007yDT-FE
+	for linux-rdma@vger.kernel.org; Wed, 12 Jun 2024 16:47:44 +0000
+From: =?utf-8?Q?Pierre-Elliott_B=C3=A9cue?= <peb@debian.org>
+To: linux-rdma@vger.kernel.org
+Subject: What's the current status with bnxt_re-abi.h
+Date: Wed, 12 Jun 2024 18:47:36 +0200
+Message-ID: <87jziucdlj.fsf@daath.pimeys.fr>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [f2fs-dev] [PATCH] tracing/treewide: Remove second parameter of
- __assign_str()
-From: patchwork-bot+f2fs@kernel.org
-Message-Id: 
- <171820775738.32393.13116890369510221266.git-patchwork-notify@kernel.org>
-Date: Wed, 12 Jun 2024 15:55:57 +0000
-References: <20240516133454.681ba6a0@rorschach.local.home>
-In-Reply-To: <20240516133454.681ba6a0@rorschach.local.home>
-To: Steven Rostedt <rostedt@goodmis.org>
-Cc: linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
- linux-hyperv@vger.kernel.org, kvm@vger.kernel.org,
- dri-devel@lists.freedesktop.org, ath10k@lists.infradead.org,
- Julia.Lawall@inria.fr, linux-s390@vger.kernel.org, dev@openvswitch.org,
- linux-cifs@vger.kernel.org, linux-bcachefs@vger.kernel.org,
- linux-rdma@vger.kernel.org, amd-gfx@lists.freedesktop.org,
- io-uring@vger.kernel.org, torvalds@linux-foundation.org,
- iommu@lists.linux.dev, ath11k@lists.infradead.org,
- linux-media@vger.kernel.org, linux-wpan@vger.kernel.org,
- linux-pm@vger.kernel.org, selinux@vger.kernel.org,
- linux-arm-msm@vger.kernel.org, intel-gfx@lists.freedesktop.org,
- linux-erofs@lists.ozlabs.org, virtualization@lists.linux.dev,
- linux-sound@vger.kernel.org, linux-block@vger.kernel.org,
- ocfs2-devel@lists.linux.dev, mathieu.desnoyers@efficios.com,
- linux-cxl@vger.kernel.org, linux-tegra@vger.kernel.org,
- intel-xe@lists.freedesktop.org, linux-edac@vger.kernel.org,
- linux-hwmon@vger.kernel.org, brcm80211-dev-list.pdl@broadcom.com,
- linuxppc-dev@lists.ozlabs.org, linux-usb@vger.kernel.org,
- linux-wireless@vger.kernel.org, brcm80211@lists.linux.dev,
- linux-f2fs-devel@lists.sourceforge.net, linux-xfs@vger.kernel.org,
- ath12k@lists.infradead.org, tipc-discussion@lists.sourceforge.net,
- mhiramat@kernel.org, netdev@vger.kernel.org, bpf@vger.kernel.org,
- freedreno@lists.freedesktop.org, linux-nfs@vger.kernel.org,
- linux-btrfs@vger.kernel.org
+Content-Type: multipart/signed; boundary="=-=-=";
+	micalg=pgp-sha512; protocol="application/pgp-signature"
+X-Debian-User: peb
 
-Hello:
+--=-=-=
+Content-Type: text/plain
+Content-Transfer-Encoding: quoted-printable
 
-This patch was applied to jaegeuk/f2fs.git (dev)
-by Steven Rostedt (Google) <rostedt@goodmis.org>:
+Hello,
 
-On Thu, 16 May 2024 13:34:54 -0400 you wrote:
-> From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
-> 
-> [
->    This is a treewide change. I will likely re-create this patch again in
->    the second week of the merge window of v6.10 and submit it then. Hoping
->    to keep the conflicts that it will cause to a minimum.
-> ]
-> 
-> [...]
+In bnxt_re-abi.h, the abi version mentioned is 1. It's used as it's in
+all libibverbs to determine the min AND max supported ABI.
 
-Here is the summary with links:
-  - [f2fs-dev] tracing/treewide: Remove second parameter of __assign_str()
-    https://git.kernel.org/jaegeuk/f2fs/c/2c92ca849fcc
+bnxt_re isn't currently mainlined in the kernel, and those eager to use
+the driver need to rely on the one provided by broadcom on their
+website.
 
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
+The thing is, they bumped their ABI version multiple times (current is
+6). In the current context, one can't use the manually compiled bnxt_re
+driver with libibverbs as any call will error due to the bnxt_re abi
+version being outside of min/max supported abi version.
 
+What's the current situation regarding bnxt_re, should we consider
+libibverb support of bnxt_re as deprecated?
 
+Of course I could have missed something, sorry for that if that's the
+case.
+
+Bests,
+=2D-=20
+PEB
+
+--=-=-=
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQJDBAEBCgAtFiEE5CQeth7uIW7ehIz87iFbn7jEWwsFAmZp0SgPHHBlYkBkZWJp
+YW4ub3JnAAoJEO4hW5+4xFsL0aYP/0H7Mp7hBV9vnKiy2H3G2sZ+JDF5Axh8wu/e
+NaQGntZqnt1TCyVzSO/owpU6LUcZwWkMVoLbJ+5ZJP8qi8+1xxa9MoKdMeZHy0j8
+eJwPc+ozuVrlYwvd5shnaiKz36M0iG10NjycAsx/uBJY4iSKsrXQmP6OljRewgSi
+W1XPeyUyXW81RJN4lO4IxJGtuVqYGRdRDfSDE66C/u4aVP5YcctdlSW776Xf+8NN
+OtOeTAScD9Xh/glUSvZ0wU7nzf1vAE5FUlXzgut57vhD1jYz19zcuY9jE5B9aki5
+ga3ZwnYLoQTkmX6inudQIZcULe1RHKGcF7tMrhcxysK6ug+aPSGd67QvFGnFkwjr
+VPZ8/bUbiByce3F6d/PJrul1kWl0to/Yr+r29b9UvOY2CWLcSWItqxDKuwqrrN4U
+LuN4coORPTQoRWgZp0EyDhpufUkuDURdM0fSYlI7FW1G+GWtzNAsZq/FoVDlVRHk
+FmR1xKly9kWzQ/7YUuOsh2gxVTBQs39CZw75IlwsytqgBTXRXk5S3CQ4SKMagCaZ
+sDFt7jcm3BkJdvwWd1AoLOTU7Vkyr4auwFFCAI/dxG4h85htm1bkN+w+dCfpS/MO
+uNGYvGPWO68wG1II13ck6knYD3WOFXBPwm350/2kqF43yExdhMzBUYbbhHDLKPNV
+jlWQUqO/
+=D5qW
+-----END PGP SIGNATURE-----
+--=-=-=--
 
