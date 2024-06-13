@@ -1,322 +1,125 @@
-Return-Path: <linux-rdma+bounces-3130-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-3131-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id C25BF907A87
-	for <lists+linux-rdma@lfdr.de>; Thu, 13 Jun 2024 20:00:58 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 43753907A8C
+	for <lists+linux-rdma@lfdr.de>; Thu, 13 Jun 2024 20:01:55 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id ADF481C233AB
-	for <lists+linux-rdma@lfdr.de>; Thu, 13 Jun 2024 18:00:57 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E0B6B1F24AD4
+	for <lists+linux-rdma@lfdr.de>; Thu, 13 Jun 2024 18:01:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D449E14AD32;
-	Thu, 13 Jun 2024 18:00:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DA577149E1A;
+	Thu, 13 Jun 2024 18:01:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="XGVK1dk9"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="NX3JUCQR"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from out30-113.freemail.mail.aliyun.com (out30-113.freemail.mail.aliyun.com [115.124.30.113])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C0C5114A4F7;
-	Thu, 13 Jun 2024 18:00:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.113
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9A2FC12CD8F
+	for <linux-rdma@vger.kernel.org>; Thu, 13 Jun 2024 18:01:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1718301641; cv=none; b=rY5+VJB3TZC1ZdCN21uQl9Tr1mCZx2XmWFaeZmzSbPiskUNxPtQjBV1FdTH4kbo3lHQID8ZfJeQ+jiDcuSD0CxqoctlLVIhUWR3JSyKFKn1QZGPi/9jVgUP9R0SBun7x36bm/vtbfCBWHc2OCjup4rkwkDEwzTnIojWX8KxFa0g=
+	t=1718301710; cv=none; b=j94w58H7bNA3IGbhWopq/n0idZU6Z19pgVE+rqpVrmN6jIJUA9aGrPMGC2Uz9gN1ogLdzGOo4OEp/e4HWIEgQ/zdffTSet1VO/wCdwzMEmEi0uU6/FLs6K/3T08B1FaUM+ipHRR4ls+p+iU2hovuG0R1cN8DdYpq8bDXhuJWTec=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1718301641; c=relaxed/simple;
-	bh=OrlHkV8CMoJF7MbJfNsbRkG3b/fv4msfOMNXuVjNK9A=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References; b=N2Q5KB0ZjVYY38Spem/DNTa9Pc5CSTnLQ8CI5F3RCzllDa5ue+p/RbpMybdZDBzkvB+26BOZB8tiDTGD5IE6dpxMXfDQM0ZwxyE3TeWjmjku3lhMViXs8No+LuifTSMrplP4oKOBNYKnYlw6fh36O54+uZmpPM+Yzb/fZlrACY0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=XGVK1dk9; arc=none smtp.client-ip=115.124.30.113
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
-DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
-	d=linux.alibaba.com; s=default;
-	t=1718301635; h=From:To:Subject:Date:Message-Id;
-	bh=FPRq6uyqHvdTG7bruEq6Zw/E/p09EDNcq/masFD9oUs=;
-	b=XGVK1dk9dqiUprCvM0DN5GTe6APq5GMR1b8ueTwi+zM4L95cbnUPNeHDmIEFkM7WV8Lb41/coJCZgrMH+wRue5qR6shcycTH52S+ud1tR5eGccw9+jYt2Gvf3thxtjrH9MdsK2xrI7E3BB3XkrMr2mRZrVDFCAaoU8W2xNIuXy0=
-X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R181e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=maildocker-contentspam033037067111;MF=alibuda@linux.alibaba.com;NM=1;PH=DS;RN=13;SR=0;TI=SMTPD_---0W8OkrD6_1718301634;
-Received: from j66a10360.sqa.eu95.tbsite.net(mailfrom:alibuda@linux.alibaba.com fp:SMTPD_---0W8OkrD6_1718301634)
-          by smtp.aliyun-inc.com;
-          Fri, 14 Jun 2024 02:00:35 +0800
-From: "D. Wythe" <alibuda@linux.alibaba.com>
-To: kgraul@linux.ibm.com,
-	wenjia@linux.ibm.com,
-	jaka@linux.ibm.com,
-	wintera@linux.ibm.com,
-	guwen@linux.alibaba.com
-Cc: kuba@kernel.org,
-	davem@davemloft.net,
-	netdev@vger.kernel.org,
-	linux-s390@vger.kernel.org,
+	s=arc-20240116; t=1718301710; c=relaxed/simple;
+	bh=tkELYc1YnU+l62BgNK7l5hZmQ3rfGQcB74qQxb5G2Gg=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=A6bVj5P0U6TMBOmRKUwk1Ljnl7WWIktJE8+zfJmcE/2FNZ+mIoKw9cRQ8Dipd4ToRnMSSWUP6rUjrrAIMcpBLqxjunEOJ4NM5G5S/0mS0V9TCio7E6zyxq6znnuRLcXLm8eG1sbgl+mZ2/HqvFfpgCmiM9Ym4+cRAnswvotmVzA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=NX3JUCQR; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 96635C2BBFC;
+	Thu, 13 Jun 2024 18:01:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1718301710;
+	bh=tkELYc1YnU+l62BgNK7l5hZmQ3rfGQcB74qQxb5G2Gg=;
+	h=From:To:Cc:Subject:Date:From;
+	b=NX3JUCQRHUDrVaI2rSsO9dAgTccItLQhCsinhPyDFj24wHjm9MJ1ISCVUwDBF8Q+L
+	 OtS9rlmhdoix47gYjP2P8KyOSLl9rwGLDGWm/KK+MCoXB8r6grnRZvyUl8ua7TnxNm
+	 UpZI6wjKN0R3AlJxQYRH8UTpozG7Xc+oxsAojc8sflBglEjKW4OsHjYeQORcC0G2cC
+	 nX4F2cMYPQwV08tTcgaOxIYuvS7rO5LVSRnpjo1B0xeiQ/BVvsnqVYxnicjNxfUxuR
+	 xisSQhsz1QY8ZqPyNfMmMrhzqm/8kGwKYk9UUll3GyiRXdQJuDnBgIA0G4R2gqgHk6
+	 7yDXU43V3OnrQ==
+From: Leon Romanovsky <leon@kernel.org>
+To: Jason Gunthorpe <jgg@nvidia.com>
+Cc: Chiara Meiohas <cmeiohas@nvidia.com>,
+	Christian Koenig <christian.koenig@amd.com>,
+	Jianxin Xiong <jianxin.xiong@intel.com>,
 	linux-rdma@vger.kernel.org,
-	tonylu@linux.alibaba.com,
-	pabeni@redhat.com,
-	edumazet@google.com
-Subject: [PATCH net-next v8 2/3] net/smc: expose smc proto operations
-Date: Fri, 14 Jun 2024 02:00:29 +0800
-Message-Id: <1718301630-63692-3-git-send-email-alibuda@linux.alibaba.com>
-X-Mailer: git-send-email 1.8.3.1
-In-Reply-To: <1718301630-63692-1-git-send-email-alibuda@linux.alibaba.com>
-References: <1718301630-63692-1-git-send-email-alibuda@linux.alibaba.com>
+	Michael Guralnik <michaelgur@nvidia.com>,
+	"Michael J. Ruhl" <michael.j.ruhl@intel.com>,
+	Sean Hefty <sean.hefty@intel.com>
+Subject: [PATCH rdma-next] RDMA/mlx5: Set mkeys for dmabuf at PAGE_SIZE
+Date: Thu, 13 Jun 2024 21:01:42 +0300
+Message-ID: <1e2289b9133e89f273a4e68d459057d032cbc2ce.1718301631.git.leon@kernel.org>
+X-Mailer: git-send-email 2.45.2
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 
-From: "D. Wythe" <alibuda@linux.alibaba.com>
+From: Chiara Meiohas <cmeiohas@nvidia.com>
 
-Externalize smc proto operations (smc_xxx) to allow
-access from files other than af_smc.c
+Set the mkey for dmabuf at PAGE_SIZE to support any SGL
+after a move operation.
 
-This is in preparation for the subsequent implementation
-of the AF_INET version of SMC.
+ib_umem_find_best_pgsz returns 0 on error, so it is
+incorrect to check the returned page_size against PAGE_SIZE
 
-Signed-off-by: D. Wythe <alibuda@linux.alibaba.com>
-Reviewed-by: Wenjia Zhang <wenjia@linux.ibm.com>
-Reviewed-by: Dust Li <dust.li@linux.alibaba.com>
-Tested-by: Niklas Schnelle <schnelle@linux.ibm.com>
-Tested-by: Wenjia Zhang <wenjia@linux.ibm.com>
+Fixes: 90da7dc8206a ("RDMA/mlx5: Support dma-buf based userspace memory region")
+Signed-off-by: Chiara Meiohas <cmeiohas@nvidia.com>
+Reviewed-by: Michael Guralnik <michaelgur@nvidia.com>
+Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
 ---
- net/smc/af_smc.c | 60 ++++++++++++++++++++++++++++----------------------------
- net/smc/smc.h    | 33 +++++++++++++++++++++++++++++++
- 2 files changed, 63 insertions(+), 30 deletions(-)
+ drivers/infiniband/hw/mlx5/mlx5_ib.h | 13 +++++++++++++
+ drivers/infiniband/hw/mlx5/odp.c     |  6 ++----
+ 2 files changed, 15 insertions(+), 4 deletions(-)
 
-diff --git a/net/smc/af_smc.c b/net/smc/af_smc.c
-index 77a9d58..8e3ce76 100644
---- a/net/smc/af_smc.c
-+++ b/net/smc/af_smc.c
-@@ -170,15 +170,15 @@ static bool smc_hs_congested(const struct sock *sk)
- 	return false;
- }
+diff --git a/drivers/infiniband/hw/mlx5/mlx5_ib.h b/drivers/infiniband/hw/mlx5/mlx5_ib.h
+index cbcb14d9a42a..bf25ddb17bce 100644
+--- a/drivers/infiniband/hw/mlx5/mlx5_ib.h
++++ b/drivers/infiniband/hw/mlx5/mlx5_ib.h
+@@ -115,6 +115,19 @@ unsigned long __mlx5_umem_find_best_quantized_pgoff(
+ 		__mlx5_bit_sz(typ, page_offset_fld), 0, scale,                 \
+ 		page_offset_quantized)
  
--static struct smc_hashinfo smc_v4_hashinfo = {
-+struct smc_hashinfo smc_v4_hashinfo = {
- 	.lock = __RW_LOCK_UNLOCKED(smc_v4_hashinfo.lock),
- };
- 
--static struct smc_hashinfo smc_v6_hashinfo = {
-+struct smc_hashinfo smc_v6_hashinfo = {
- 	.lock = __RW_LOCK_UNLOCKED(smc_v6_hashinfo.lock),
- };
- 
--static int smc_hash_sk(struct sock *sk)
-+int smc_hash_sk(struct sock *sk)
- {
- 	struct smc_hashinfo *h = sk->sk_prot->h.smc_hash;
- 	struct hlist_head *head;
-@@ -193,7 +193,7 @@ static int smc_hash_sk(struct sock *sk)
- 	return 0;
- }
- 
--static void smc_unhash_sk(struct sock *sk)
-+void smc_unhash_sk(struct sock *sk)
- {
- 	struct smc_hashinfo *h = sk->sk_prot->h.smc_hash;
- 
-@@ -207,7 +207,7 @@ static void smc_unhash_sk(struct sock *sk)
-  * work which we didn't do because of user hold the sock_lock in the
-  * BH context
-  */
--static void smc_release_cb(struct sock *sk)
-+void smc_release_cb(struct sock *sk)
- {
- 	struct smc_sock *smc = smc_sk(sk);
- 
-@@ -307,7 +307,7 @@ static int __smc_release(struct smc_sock *smc)
- 	return rc;
- }
- 
--static int smc_release(struct socket *sock)
-+int smc_release(struct socket *sock)
- {
- 	struct sock *sk = sock->sk;
- 	struct smc_sock *smc;
-@@ -401,8 +401,8 @@ static struct sock *smc_sock_alloc(struct net *net, struct socket *sock,
- 	return sk;
- }
- 
--static int smc_bind(struct socket *sock, struct sockaddr *uaddr,
--		    int addr_len)
-+int smc_bind(struct socket *sock, struct sockaddr *uaddr,
-+	     int addr_len)
- {
- 	struct sockaddr_in *addr = (struct sockaddr_in *)uaddr;
- 	struct sock *sk = sock->sk;
-@@ -1649,8 +1649,8 @@ static void smc_connect_work(struct work_struct *work)
- 	release_sock(&smc->sk);
- }
- 
--static int smc_connect(struct socket *sock, struct sockaddr *addr,
--		       int alen, int flags)
-+int smc_connect(struct socket *sock, struct sockaddr *addr,
-+		int alen, int flags)
- {
- 	struct sock *sk = sock->sk;
- 	struct smc_sock *smc;
-@@ -2631,7 +2631,7 @@ static void smc_clcsock_data_ready(struct sock *listen_clcsock)
- 	read_unlock_bh(&listen_clcsock->sk_callback_lock);
- }
- 
--static int smc_listen(struct socket *sock, int backlog)
-+int smc_listen(struct socket *sock, int backlog)
- {
- 	struct sock *sk = sock->sk;
- 	struct smc_sock *smc;
-@@ -2696,8 +2696,8 @@ static int smc_listen(struct socket *sock, int backlog)
- 	return rc;
- }
- 
--static int smc_accept(struct socket *sock, struct socket *new_sock,
--		      struct proto_accept_arg *arg)
-+int smc_accept(struct socket *sock, struct socket *new_sock,
-+	       struct proto_accept_arg *arg)
- {
- 	struct sock *sk = sock->sk, *nsk;
- 	DECLARE_WAITQUEUE(wait, current);
-@@ -2766,8 +2766,8 @@ static int smc_accept(struct socket *sock, struct socket *new_sock,
- 	return rc;
- }
- 
--static int smc_getname(struct socket *sock, struct sockaddr *addr,
--		       int peer)
-+int smc_getname(struct socket *sock, struct sockaddr *addr,
-+		int peer)
- {
- 	struct smc_sock *smc;
- 
-@@ -2780,7 +2780,7 @@ static int smc_getname(struct socket *sock, struct sockaddr *addr,
- 	return smc->clcsock->ops->getname(smc->clcsock, addr, peer);
- }
- 
--static int smc_sendmsg(struct socket *sock, struct msghdr *msg, size_t len)
-+int smc_sendmsg(struct socket *sock, struct msghdr *msg, size_t len)
- {
- 	struct sock *sk = sock->sk;
- 	struct smc_sock *smc;
-@@ -2818,8 +2818,8 @@ static int smc_sendmsg(struct socket *sock, struct msghdr *msg, size_t len)
- 	return rc;
- }
- 
--static int smc_recvmsg(struct socket *sock, struct msghdr *msg, size_t len,
--		       int flags)
-+int smc_recvmsg(struct socket *sock, struct msghdr *msg, size_t len,
-+		int flags)
- {
- 	struct sock *sk = sock->sk;
- 	struct smc_sock *smc;
-@@ -2868,8 +2868,8 @@ static __poll_t smc_accept_poll(struct sock *parent)
- 	return mask;
- }
- 
--static __poll_t smc_poll(struct file *file, struct socket *sock,
--			     poll_table *wait)
-+__poll_t smc_poll(struct file *file, struct socket *sock,
-+		  poll_table *wait)
- {
- 	struct sock *sk = sock->sk;
- 	struct smc_sock *smc;
-@@ -2921,7 +2921,7 @@ static __poll_t smc_poll(struct file *file, struct socket *sock,
- 	return mask;
- }
- 
--static int smc_shutdown(struct socket *sock, int how)
-+int smc_shutdown(struct socket *sock, int how)
- {
- 	struct sock *sk = sock->sk;
- 	bool do_shutdown = true;
-@@ -3061,8 +3061,8 @@ static int __smc_setsockopt(struct socket *sock, int level, int optname,
- 	return rc;
- }
- 
--static int smc_setsockopt(struct socket *sock, int level, int optname,
--			  sockptr_t optval, unsigned int optlen)
-+int smc_setsockopt(struct socket *sock, int level, int optname,
-+		   sockptr_t optval, unsigned int optlen)
- {
- 	struct sock *sk = sock->sk;
- 	struct smc_sock *smc;
-@@ -3148,8 +3148,8 @@ static int smc_setsockopt(struct socket *sock, int level, int optname,
- 	return rc;
- }
- 
--static int smc_getsockopt(struct socket *sock, int level, int optname,
--			  char __user *optval, int __user *optlen)
-+int smc_getsockopt(struct socket *sock, int level, int optname,
-+		   char __user *optval, int __user *optlen)
- {
- 	struct smc_sock *smc;
- 	int rc;
-@@ -3174,8 +3174,8 @@ static int smc_getsockopt(struct socket *sock, int level, int optname,
- 	return rc;
- }
- 
--static int smc_ioctl(struct socket *sock, unsigned int cmd,
--		     unsigned long arg)
-+int smc_ioctl(struct socket *sock, unsigned int cmd,
-+	      unsigned long arg)
- {
- 	union smc_host_cursor cons, urg;
- 	struct smc_connection *conn;
-@@ -3261,9 +3261,9 @@ static int smc_ioctl(struct socket *sock, unsigned int cmd,
-  * Note that subsequent recv() calls have to wait till all splice() processing
-  * completed.
-  */
--static ssize_t smc_splice_read(struct socket *sock, loff_t *ppos,
--			       struct pipe_inode_info *pipe, size_t len,
--			       unsigned int flags)
-+ssize_t smc_splice_read(struct socket *sock, loff_t *ppos,
-+			struct pipe_inode_info *pipe, size_t len,
-+			unsigned int flags)
- {
- 	struct sock *sk = sock->sk;
- 	struct smc_sock *smc;
-diff --git a/net/smc/smc.h b/net/smc/smc.h
-index 3edec1e..34b781e 100644
---- a/net/smc/smc.h
-+++ b/net/smc/smc.h
-@@ -34,6 +34,39 @@
- extern struct proto smc_proto;
- extern struct proto smc_proto6;
- 
-+extern struct smc_hashinfo smc_v4_hashinfo;
-+extern struct smc_hashinfo smc_v6_hashinfo;
++static inline unsigned long
++mlx5_umem_dmabuf_find_best_pgsz(struct ib_umem_dmabuf *umem_dmabuf)
++{
++	/*
++	 * mkeys used for dmabuf are fixed at PAGE_SIZE because we must be able
++	 * to hold any sgl after a move operation. Ideally the mkc page size
++	 * could be changed at runtime to be optimal, but right now the driver
++	 * cannot do that.
++	 */
++	return ib_umem_find_best_pgsz(&umem_dmabuf->umem, PAGE_SIZE,
++				      umem_dmabuf->umem.iova);
++}
 +
-+int smc_hash_sk(struct sock *sk);
-+void smc_unhash_sk(struct sock *sk);
-+void smc_release_cb(struct sock *sk);
-+
-+int smc_release(struct socket *sock);
-+int smc_bind(struct socket *sock, struct sockaddr *uaddr,
-+	     int addr_len);
-+int smc_connect(struct socket *sock, struct sockaddr *addr,
-+		int alen, int flags);
-+int smc_accept(struct socket *sock, struct socket *new_sock,
-+	       struct proto_accept_arg *arg);
-+int smc_getname(struct socket *sock, struct sockaddr *addr,
-+		int peer);
-+__poll_t smc_poll(struct file *file, struct socket *sock,
-+		  poll_table *wait);
-+int smc_ioctl(struct socket *sock, unsigned int cmd,
-+	      unsigned long arg);
-+int smc_listen(struct socket *sock, int backlog);
-+int smc_shutdown(struct socket *sock, int how);
-+int smc_setsockopt(struct socket *sock, int level, int optname,
-+		   sockptr_t optval, unsigned int optlen);
-+int smc_getsockopt(struct socket *sock, int level, int optname,
-+		   char __user *optval, int __user *optlen);
-+int smc_sendmsg(struct socket *sock, struct msghdr *msg, size_t len);
-+int smc_recvmsg(struct socket *sock, struct msghdr *msg, size_t len,
-+		int flags);
-+ssize_t smc_splice_read(struct socket *sock, loff_t *ppos,
-+			struct pipe_inode_info *pipe, size_t len,
-+			unsigned int flags);
-+
- /* smc sock initialization */
- void smc_sk_init(struct net *net, struct sock *sk, int protocol);
- /* clcsock initialization */
+ enum {
+ 	MLX5_IB_MMAP_OFFSET_START = 9,
+ 	MLX5_IB_MMAP_OFFSET_END = 255,
+diff --git a/drivers/infiniband/hw/mlx5/odp.c b/drivers/infiniband/hw/mlx5/odp.c
+index 4a04cbc5b78a..a524181f34df 100644
+--- a/drivers/infiniband/hw/mlx5/odp.c
++++ b/drivers/infiniband/hw/mlx5/odp.c
+@@ -705,10 +705,8 @@ static int pagefault_dmabuf_mr(struct mlx5_ib_mr *mr, size_t bcnt,
+ 		return err;
+ 	}
+ 
+-	page_size = mlx5_umem_find_best_pgsz(&umem_dmabuf->umem, mkc,
+-					     log_page_size, 0,
+-					     umem_dmabuf->umem.iova);
+-	if (unlikely(page_size < PAGE_SIZE)) {
++	page_size = mlx5_umem_dmabuf_find_best_pgsz(umem_dmabuf);
++	if (!page_size) {
+ 		ib_umem_dmabuf_unmap_pages(umem_dmabuf);
+ 		err = -EINVAL;
+ 	} else {
 -- 
-1.8.3.1
+2.45.2
 
 
