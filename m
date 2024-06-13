@@ -1,125 +1,372 @@
-Return-Path: <linux-rdma+bounces-3131-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-3132-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 43753907A8C
-	for <lists+linux-rdma@lfdr.de>; Thu, 13 Jun 2024 20:01:55 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E4A54907A99
+	for <lists+linux-rdma@lfdr.de>; Thu, 13 Jun 2024 20:06:02 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E0B6B1F24AD4
-	for <lists+linux-rdma@lfdr.de>; Thu, 13 Jun 2024 18:01:54 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E7AF61C22BF1
+	for <lists+linux-rdma@lfdr.de>; Thu, 13 Jun 2024 18:06:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DA577149E1A;
-	Thu, 13 Jun 2024 18:01:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9A02414A601;
+	Thu, 13 Jun 2024 18:05:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="NX3JUCQR"
+	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="UaO3xmym"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from out30-113.freemail.mail.aliyun.com (out30-113.freemail.mail.aliyun.com [115.124.30.113])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9A2FC12CD8F
-	for <linux-rdma@vger.kernel.org>; Thu, 13 Jun 2024 18:01:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2A9FA12CD8F;
+	Thu, 13 Jun 2024 18:05:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.113
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1718301710; cv=none; b=j94w58H7bNA3IGbhWopq/n0idZU6Z19pgVE+rqpVrmN6jIJUA9aGrPMGC2Uz9gN1ogLdzGOo4OEp/e4HWIEgQ/zdffTSet1VO/wCdwzMEmEi0uU6/FLs6K/3T08B1FaUM+ipHRR4ls+p+iU2hovuG0R1cN8DdYpq8bDXhuJWTec=
+	t=1718301956; cv=none; b=eX9kSMIHRqgDx13MI2S/q7gYBUn1fHLwQlQcl+u+l6dU/czoysJfdZ/kxfiGhcRyIndnY+T/FUzx0m4mcl6xidNmtlNa7uXuLslzvYwYVn+N7RiYfRTZ7b4SId5uIxEs6uh2xVgZxJIze/pH3FuGirPhjr5RmdAHG0SxBj7IQww=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1718301710; c=relaxed/simple;
-	bh=tkELYc1YnU+l62BgNK7l5hZmQ3rfGQcB74qQxb5G2Gg=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=A6bVj5P0U6TMBOmRKUwk1Ljnl7WWIktJE8+zfJmcE/2FNZ+mIoKw9cRQ8Dipd4ToRnMSSWUP6rUjrrAIMcpBLqxjunEOJ4NM5G5S/0mS0V9TCio7E6zyxq6znnuRLcXLm8eG1sbgl+mZ2/HqvFfpgCmiM9Ym4+cRAnswvotmVzA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=NX3JUCQR; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 96635C2BBFC;
-	Thu, 13 Jun 2024 18:01:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1718301710;
-	bh=tkELYc1YnU+l62BgNK7l5hZmQ3rfGQcB74qQxb5G2Gg=;
-	h=From:To:Cc:Subject:Date:From;
-	b=NX3JUCQRHUDrVaI2rSsO9dAgTccItLQhCsinhPyDFj24wHjm9MJ1ISCVUwDBF8Q+L
-	 OtS9rlmhdoix47gYjP2P8KyOSLl9rwGLDGWm/KK+MCoXB8r6grnRZvyUl8ua7TnxNm
-	 UpZI6wjKN0R3AlJxQYRH8UTpozG7Xc+oxsAojc8sflBglEjKW4OsHjYeQORcC0G2cC
-	 nX4F2cMYPQwV08tTcgaOxIYuvS7rO5LVSRnpjo1B0xeiQ/BVvsnqVYxnicjNxfUxuR
-	 xisSQhsz1QY8ZqPyNfMmMrhzqm/8kGwKYk9UUll3GyiRXdQJuDnBgIA0G4R2gqgHk6
-	 7yDXU43V3OnrQ==
-From: Leon Romanovsky <leon@kernel.org>
-To: Jason Gunthorpe <jgg@nvidia.com>
-Cc: Chiara Meiohas <cmeiohas@nvidia.com>,
-	Christian Koenig <christian.koenig@amd.com>,
-	Jianxin Xiong <jianxin.xiong@intel.com>,
+	s=arc-20240116; t=1718301956; c=relaxed/simple;
+	bh=J6YeRXl4fjjA4QtIpJdCR+m9d2qX+b2WMdGtmMxKUzM=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References; b=ocoxWBi2gyK8240YMH1hwv/NvarfrSiopssePGKgSQrZR3oDkh7TMNFYXdGlw/DRxXKAsFc9a4S3qgftB3u1QzledLiI2teIt/aTUEoyrJVkaKiTE9A3jX0e09A1eRUue19nS0xG20Nj1JnghG+XMCKai3MbMsGbsGKV+vR8TiQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=UaO3xmym; arc=none smtp.client-ip=115.124.30.113
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
+DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
+	d=linux.alibaba.com; s=default;
+	t=1718301951; h=From:To:Subject:Date:Message-Id;
+	bh=SlGKA6pljfK9XzeGDsv9nlJ0FlbpHZJ4xBWinH/CYf0=;
+	b=UaO3xmymayITbkrmk6H9sPVj2EnzAYMaC4Lmek1Ah9opvmZR5U+tgynspzTkWhnT5P9VZBf8r1I8eX7ypgwQkq2Gp62RHj3Zr356tDvlogN5LPdKh2vIGBgJy38TmbEZWqfuMJ+hhIgpUBuy1PwwltINBRI2KMEC1E7KILs0m4s=
+X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R191e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=maildocker-contentspam033037067110;MF=alibuda@linux.alibaba.com;NM=1;PH=DS;RN=13;SR=0;TI=SMTPD_---0W8OkrDG_1718301635;
+Received: from j66a10360.sqa.eu95.tbsite.net(mailfrom:alibuda@linux.alibaba.com fp:SMTPD_---0W8OkrDG_1718301635)
+          by smtp.aliyun-inc.com;
+          Fri, 14 Jun 2024 02:00:35 +0800
+From: "D. Wythe" <alibuda@linux.alibaba.com>
+To: kgraul@linux.ibm.com,
+	wenjia@linux.ibm.com,
+	jaka@linux.ibm.com,
+	wintera@linux.ibm.com,
+	guwen@linux.alibaba.com
+Cc: kuba@kernel.org,
+	davem@davemloft.net,
+	netdev@vger.kernel.org,
+	linux-s390@vger.kernel.org,
 	linux-rdma@vger.kernel.org,
-	Michael Guralnik <michaelgur@nvidia.com>,
-	"Michael J. Ruhl" <michael.j.ruhl@intel.com>,
-	Sean Hefty <sean.hefty@intel.com>
-Subject: [PATCH rdma-next] RDMA/mlx5: Set mkeys for dmabuf at PAGE_SIZE
-Date: Thu, 13 Jun 2024 21:01:42 +0300
-Message-ID: <1e2289b9133e89f273a4e68d459057d032cbc2ce.1718301631.git.leon@kernel.org>
-X-Mailer: git-send-email 2.45.2
+	tonylu@linux.alibaba.com,
+	pabeni@redhat.com,
+	edumazet@google.com
+Subject: [PATCH net-next v8 3/3] net/smc: Introduce IPPROTO_SMC
+Date: Fri, 14 Jun 2024 02:00:30 +0800
+Message-Id: <1718301630-63692-4-git-send-email-alibuda@linux.alibaba.com>
+X-Mailer: git-send-email 1.8.3.1
+In-Reply-To: <1718301630-63692-1-git-send-email-alibuda@linux.alibaba.com>
+References: <1718301630-63692-1-git-send-email-alibuda@linux.alibaba.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
 
-From: Chiara Meiohas <cmeiohas@nvidia.com>
+From: "D. Wythe" <alibuda@linux.alibaba.com>
 
-Set the mkey for dmabuf at PAGE_SIZE to support any SGL
-after a move operation.
+This patch allows to create smc socket via AF_INET,
+similar to the following code,
 
-ib_umem_find_best_pgsz returns 0 on error, so it is
-incorrect to check the returned page_size against PAGE_SIZE
+/* create v4 smc sock */
+v4 = socket(AF_INET, SOCK_STREAM, IPPROTO_SMC);
 
-Fixes: 90da7dc8206a ("RDMA/mlx5: Support dma-buf based userspace memory region")
-Signed-off-by: Chiara Meiohas <cmeiohas@nvidia.com>
-Reviewed-by: Michael Guralnik <michaelgur@nvidia.com>
-Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
+/* create v6 smc sock */
+v6 = socket(AF_INET6, SOCK_STREAM, IPPROTO_SMC);
+
+There are several reasons why we believe it is appropriate here:
+
+1. For smc sockets, it actually use IPv4 (AF-INET) or IPv6 (AF-INET6)
+address. There is no AF_SMC address at all.
+
+2. Create smc socket in the AF_INET(6) path, which allows us to reuse
+the infrastructure of AF_INET(6) path, such as common ebpf hooks.
+Otherwise, smc have to implement it again in AF_SMC path.
+
+Signed-off-by: D. Wythe <alibuda@linux.alibaba.com>
+Reviewed-by: Wenjia Zhang <wenjia@linux.ibm.com>
+Reviewed-by: Dust Li <dust.li@linux.alibaba.com>
+Tested-by: Niklas Schnelle <schnelle@linux.ibm.com>
+Tested-by: Wenjia Zhang <wenjia@linux.ibm.com>
 ---
- drivers/infiniband/hw/mlx5/mlx5_ib.h | 13 +++++++++++++
- drivers/infiniband/hw/mlx5/odp.c     |  6 ++----
- 2 files changed, 15 insertions(+), 4 deletions(-)
+ include/uapi/linux/in.h |   2 +
+ net/smc/Makefile        |   2 +-
+ net/smc/af_smc.c        |  16 ++++-
+ net/smc/smc_inet.c      | 159 ++++++++++++++++++++++++++++++++++++++++++++++++
+ net/smc/smc_inet.h      |  22 +++++++
+ 5 files changed, 198 insertions(+), 3 deletions(-)
+ create mode 100644 net/smc/smc_inet.c
+ create mode 100644 net/smc/smc_inet.h
 
-diff --git a/drivers/infiniband/hw/mlx5/mlx5_ib.h b/drivers/infiniband/hw/mlx5/mlx5_ib.h
-index cbcb14d9a42a..bf25ddb17bce 100644
---- a/drivers/infiniband/hw/mlx5/mlx5_ib.h
-+++ b/drivers/infiniband/hw/mlx5/mlx5_ib.h
-@@ -115,6 +115,19 @@ unsigned long __mlx5_umem_find_best_quantized_pgoff(
- 		__mlx5_bit_sz(typ, page_offset_fld), 0, scale,                 \
- 		page_offset_quantized)
+diff --git a/include/uapi/linux/in.h b/include/uapi/linux/in.h
+index e682ab6..d358add 100644
+--- a/include/uapi/linux/in.h
++++ b/include/uapi/linux/in.h
+@@ -81,6 +81,8 @@ enum {
+ #define IPPROTO_ETHERNET	IPPROTO_ETHERNET
+   IPPROTO_RAW = 255,		/* Raw IP packets			*/
+ #define IPPROTO_RAW		IPPROTO_RAW
++  IPPROTO_SMC = 256,		/* Shared Memory Communications		*/
++#define IPPROTO_SMC		IPPROTO_SMC
+   IPPROTO_MPTCP = 262,		/* Multipath TCP connection		*/
+ #define IPPROTO_MPTCP		IPPROTO_MPTCP
+   IPPROTO_MAX
+diff --git a/net/smc/Makefile b/net/smc/Makefile
+index 2c510d54..60f1c87 100644
+--- a/net/smc/Makefile
++++ b/net/smc/Makefile
+@@ -4,6 +4,6 @@ obj-$(CONFIG_SMC)	+= smc.o
+ obj-$(CONFIG_SMC_DIAG)	+= smc_diag.o
+ smc-y := af_smc.o smc_pnet.o smc_ib.o smc_clc.o smc_core.o smc_wr.o smc_llc.o
+ smc-y += smc_cdc.o smc_tx.o smc_rx.o smc_close.o smc_ism.o smc_netlink.o smc_stats.o
+-smc-y += smc_tracepoint.o
++smc-y += smc_tracepoint.o smc_inet.o
+ smc-$(CONFIG_SYSCTL) += smc_sysctl.o
+ smc-$(CONFIG_SMC_LO) += smc_loopback.o
+diff --git a/net/smc/af_smc.c b/net/smc/af_smc.c
+index 8e3ce76..435f38b 100644
+--- a/net/smc/af_smc.c
++++ b/net/smc/af_smc.c
+@@ -54,6 +54,7 @@
+ #include "smc_tracepoint.h"
+ #include "smc_sysctl.h"
+ #include "smc_loopback.h"
++#include "smc_inet.h"
  
-+static inline unsigned long
-+mlx5_umem_dmabuf_find_best_pgsz(struct ib_umem_dmabuf *umem_dmabuf)
+ static DEFINE_MUTEX(smc_server_lgr_pending);	/* serialize link group
+ 						 * creation on server
+@@ -3593,10 +3594,15 @@ static int __init smc_init(void)
+ 		pr_err("%s: tcp_ulp_register fails with %d\n", __func__, rc);
+ 		goto out_lo;
+ 	}
+-
++	rc = smc_inet_init();
++	if (rc) {
++		pr_err("%s: smc_inet_init fails with %d\n", __func__, rc);
++		goto out_ulp;
++	}
+ 	static_branch_enable(&tcp_have_smc);
+ 	return 0;
+-
++out_ulp:
++	tcp_unregister_ulp(&smc_ulp_ops);
+ out_lo:
+ 	smc_loopback_exit();
+ out_ib:
+@@ -3633,6 +3639,7 @@ static int __init smc_init(void)
+ static void __exit smc_exit(void)
+ {
+ 	static_branch_disable(&tcp_have_smc);
++	smc_inet_exit();
+ 	tcp_unregister_ulp(&smc_ulp_ops);
+ 	sock_unregister(PF_SMC);
+ 	smc_core_exit();
+@@ -3660,4 +3667,9 @@ static void __exit smc_exit(void)
+ MODULE_LICENSE("GPL");
+ MODULE_ALIAS_NETPROTO(PF_SMC);
+ MODULE_ALIAS_TCP_ULP("smc");
++/* 256 for IPPROTO_SMC and 1 for SOCK_STREAM */
++MODULE_ALIAS_NET_PF_PROTO_TYPE(PF_INET, 256, 1);
++#if IS_ENABLED(CONFIG_IPV6)
++MODULE_ALIAS_NET_PF_PROTO_TYPE(PF_INET6, 256, 1);
++#endif /* CONFIG_IPV6 */
+ MODULE_ALIAS_GENL_FAMILY(SMC_GENL_FAMILY_NAME);
+diff --git a/net/smc/smc_inet.c b/net/smc/smc_inet.c
+new file mode 100644
+index 00000000..bece346
+--- /dev/null
++++ b/net/smc/smc_inet.c
+@@ -0,0 +1,159 @@
++// SPDX-License-Identifier: GPL-2.0-only
++/*
++ *  Shared Memory Communications over RDMA (SMC-R) and RoCE
++ *
++ *  Definitions for the IPPROTO_SMC (socket related)
++ *
++ *  Copyright IBM Corp. 2016, 2018
++ *  Copyright (c) 2024, Alibaba Inc.
++ *
++ *  Author: D. Wythe <alibuda@linux.alibaba.com>
++ */
++
++#include <net/protocol.h>
++#include <net/sock.h>
++
++#include "smc_inet.h"
++#include "smc.h"
++
++static int smc_inet_init_sock(struct sock *sk);
++
++static struct proto smc_inet_prot = {
++	.name		= "INET_SMC",
++	.owner		= THIS_MODULE,
++	.init		= smc_inet_init_sock,
++	.hash		= smc_hash_sk,
++	.unhash		= smc_unhash_sk,
++	.release_cb	= smc_release_cb,
++	.obj_size	= sizeof(struct smc_sock),
++	.h.smc_hash	= &smc_v4_hashinfo,
++	.slab_flags	= SLAB_TYPESAFE_BY_RCU,
++};
++
++static const struct proto_ops smc_inet_stream_ops = {
++	.family		= PF_INET,
++	.owner		= THIS_MODULE,
++	.release	= smc_release,
++	.bind		= smc_bind,
++	.connect	= smc_connect,
++	.socketpair	= sock_no_socketpair,
++	.accept		= smc_accept,
++	.getname	= smc_getname,
++	.poll		= smc_poll,
++	.ioctl		= smc_ioctl,
++	.listen		= smc_listen,
++	.shutdown	= smc_shutdown,
++	.setsockopt	= smc_setsockopt,
++	.getsockopt	= smc_getsockopt,
++	.sendmsg	= smc_sendmsg,
++	.recvmsg	= smc_recvmsg,
++	.mmap		= sock_no_mmap,
++	.splice_read	= smc_splice_read,
++};
++
++static struct inet_protosw smc_inet_protosw = {
++	.type		= SOCK_STREAM,
++	.protocol	= IPPROTO_SMC,
++	.prot		= &smc_inet_prot,
++	.ops		= &smc_inet_stream_ops,
++	.flags		= INET_PROTOSW_ICSK,
++};
++
++#if IS_ENABLED(CONFIG_IPV6)
++static struct proto smc_inet6_prot = {
++	.name		= "INET6_SMC",
++	.owner		= THIS_MODULE,
++	.init		= smc_inet_init_sock,
++	.hash		= smc_hash_sk,
++	.unhash		= smc_unhash_sk,
++	.release_cb	= smc_release_cb,
++	.obj_size	= sizeof(struct smc_sock),
++	.h.smc_hash	= &smc_v6_hashinfo,
++	.slab_flags	= SLAB_TYPESAFE_BY_RCU,
++};
++
++static const struct proto_ops smc_inet6_stream_ops = {
++	.family		= PF_INET6,
++	.owner		= THIS_MODULE,
++	.release	= smc_release,
++	.bind		= smc_bind,
++	.connect	= smc_connect,
++	.socketpair	= sock_no_socketpair,
++	.accept		= smc_accept,
++	.getname	= smc_getname,
++	.poll		= smc_poll,
++	.ioctl		= smc_ioctl,
++	.listen		= smc_listen,
++	.shutdown	= smc_shutdown,
++	.setsockopt	= smc_setsockopt,
++	.getsockopt	= smc_getsockopt,
++	.sendmsg	= smc_sendmsg,
++	.recvmsg	= smc_recvmsg,
++	.mmap		= sock_no_mmap,
++	.splice_read	= smc_splice_read,
++};
++
++static struct inet_protosw smc_inet6_protosw = {
++	.type		= SOCK_STREAM,
++	.protocol	= IPPROTO_SMC,
++	.prot		= &smc_inet6_prot,
++	.ops		= &smc_inet6_stream_ops,
++	.flags		= INET_PROTOSW_ICSK,
++};
++#endif /* CONFIG_IPV6 */
++
++static int smc_inet_init_sock(struct sock *sk)
 +{
-+	/*
-+	 * mkeys used for dmabuf are fixed at PAGE_SIZE because we must be able
-+	 * to hold any sgl after a move operation. Ideally the mkc page size
-+	 * could be changed at runtime to be optimal, but right now the driver
-+	 * cannot do that.
-+	 */
-+	return ib_umem_find_best_pgsz(&umem_dmabuf->umem, PAGE_SIZE,
-+				      umem_dmabuf->umem.iova);
++	struct net *net = sock_net(sk);
++
++	/* init common smc sock */
++	smc_sk_init(net, sk, IPPROTO_SMC);
++	/* create clcsock */
++	return smc_create_clcsk(net, sk, sk->sk_family);
 +}
 +
- enum {
- 	MLX5_IB_MMAP_OFFSET_START = 9,
- 	MLX5_IB_MMAP_OFFSET_END = 255,
-diff --git a/drivers/infiniband/hw/mlx5/odp.c b/drivers/infiniband/hw/mlx5/odp.c
-index 4a04cbc5b78a..a524181f34df 100644
---- a/drivers/infiniband/hw/mlx5/odp.c
-+++ b/drivers/infiniband/hw/mlx5/odp.c
-@@ -705,10 +705,8 @@ static int pagefault_dmabuf_mr(struct mlx5_ib_mr *mr, size_t bcnt,
- 		return err;
- 	}
- 
--	page_size = mlx5_umem_find_best_pgsz(&umem_dmabuf->umem, mkc,
--					     log_page_size, 0,
--					     umem_dmabuf->umem.iova);
--	if (unlikely(page_size < PAGE_SIZE)) {
-+	page_size = mlx5_umem_dmabuf_find_best_pgsz(umem_dmabuf);
-+	if (!page_size) {
- 		ib_umem_dmabuf_unmap_pages(umem_dmabuf);
- 		err = -EINVAL;
- 	} else {
++int __init smc_inet_init(void)
++{
++	int rc;
++
++	rc = proto_register(&smc_inet_prot, 1);
++	if (rc) {
++		pr_err("%s: proto_register smc_inet_prot fails with %d\n",
++		       __func__, rc);
++		return rc;
++	}
++	/* no return value */
++	inet_register_protosw(&smc_inet_protosw);
++
++#if IS_ENABLED(CONFIG_IPV6)
++	rc = proto_register(&smc_inet6_prot, 1);
++	if (rc) {
++		pr_err("%s: proto_register smc_inet6_prot fails with %d\n",
++		       __func__, rc);
++		goto out_inet6_prot;
++	}
++	rc = inet6_register_protosw(&smc_inet6_protosw);
++	if (rc) {
++		pr_err("%s: inet6_register_protosw smc_inet6_protosw fails with %d\n",
++		       __func__, rc);
++		goto out_inet6_protosw;
++	}
++	return rc;
++out_inet6_protosw:
++	proto_unregister(&smc_inet6_prot);
++out_inet6_prot:
++	inet_unregister_protosw(&smc_inet_protosw);
++	proto_unregister(&smc_inet_prot);
++#endif /* CONFIG_IPV6 */
++	return rc;
++}
++
++void smc_inet_exit(void)
++{
++#if IS_ENABLED(CONFIG_IPV6)
++	inet6_unregister_protosw(&smc_inet6_protosw);
++	proto_unregister(&smc_inet6_prot);
++#endif /* CONFIG_IPV6 */
++	inet_unregister_protosw(&smc_inet_protosw);
++	proto_unregister(&smc_inet_prot);
++}
+diff --git a/net/smc/smc_inet.h b/net/smc/smc_inet.h
+new file mode 100644
+index 00000000..a489c8a
+--- /dev/null
++++ b/net/smc/smc_inet.h
+@@ -0,0 +1,22 @@
++/* SPDX-License-Identifier: GPL-2.0 */
++/*
++ *  Shared Memory Communications over RDMA (SMC-R) and RoCE
++ *
++ *  Definitions for the IPPROTO_SMC (socket related)
++
++ *  Copyright IBM Corp. 2016
++ *  Copyright (c) 2024, Alibaba Inc.
++ *
++ *  Author: D. Wythe <alibuda@linux.alibaba.com>
++ */
++#ifndef __INET_SMC
++#define __INET_SMC
++
++/* Initialize protocol registration on IPPROTO_SMC,
++ * @return 0 on success
++ */
++int smc_inet_init(void);
++
++void smc_inet_exit(void);
++
++#endif /* __INET_SMC */
 -- 
-2.45.2
+1.8.3.1
 
 
