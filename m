@@ -1,125 +1,177 @@
-Return-Path: <linux-rdma+bounces-3149-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-3150-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id ED0DA9090A8
-	for <lists+linux-rdma@lfdr.de>; Fri, 14 Jun 2024 18:42:19 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5C416909246
+	for <lists+linux-rdma@lfdr.de>; Fri, 14 Jun 2024 20:28:24 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8C93D2825B8
-	for <lists+linux-rdma@lfdr.de>; Fri, 14 Jun 2024 16:42:18 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DDD9A28775C
+	for <lists+linux-rdma@lfdr.de>; Fri, 14 Jun 2024 18:28:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 412F118FC65;
-	Fri, 14 Jun 2024 16:42:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1D11819DF7C;
+	Fri, 14 Jun 2024 18:28:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="da2wXT2I"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="bmux3C2+"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.20])
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.7])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5255449638;
-	Fri, 14 Jun 2024 16:42:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.20
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 42DCF179BC
+	for <linux-rdma@vger.kernel.org>; Fri, 14 Jun 2024 18:28:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.7
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1718383326; cv=none; b=cG5uWAEVCXDlla8pMFqgX7vplGUCzncMLK8N+N4Ptd0eXw1adt7Ir5dx3tcOxgOaVr4W0GqBHFYBSJZrDefnNjDXbRCt2GGyow+7/kS+0szpo4WTq5Sv0FekiunKClm7p0hDjMvFZvTcf3UylEK1Ad/5Iimsjz+ibP+v3kIQpQI=
+	t=1718389699; cv=none; b=p94MsH4F7OYL4gyhxkwxFbzY3oNFC2lQb8o9EEuIAyKGq+oVwBRLg4jGY8K0kql321tT0CEU9OjVI//oW8sStL1ah13XnVFM9jre52VTWDIkutFjyYWG7uhK7I1wATxUiEV6c72p56jERrxhhAAoa82bZscbgJ5NGzJsgtfWHVg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1718383326; c=relaxed/simple;
-	bh=Tu5NT+/HC6v33/UcbBllxGhe377ayPb6xdMlPgPUz4Q=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=ed9I+dUdLGIICsWmyzB2whKsBJZnR9LsTyhgjcpGuxJylRBSUu7wdlxKjpGGecK6NDTa46eAn2nY9P+g2kgn2EGRDgXkAQrsUEUS2M/8kwPrfVEdA0SdhA2qoEhsxHbGL3t6zqBQ3oZQaoQBQ1+l+c7tn4zpRyIOv/1T80f1ks8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=da2wXT2I; arc=none smtp.client-ip=198.175.65.20
+	s=arc-20240116; t=1718389699; c=relaxed/simple;
+	bh=1uijl8ROgK5Br1k70COsZNo55ACHob1qS3SGc/8G27Q=;
+	h=Date:From:To:Cc:Subject:Message-ID; b=qUKlSr2HOlHSSsDvAj3g8NJZLB/kLgo+XFyLsQ6wZ010ehSOn3IobwvhZfsq6Y+f7hb5R2Sns+dzcZKGKQwDoxHoRwrsxnH/VSrjFpqKkaqkQDuBBZIz137gl7D1APx1kzFIVwWOV3XSYWvyrKYIc9PSD/D3UgTrU3iN6qRsPuE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=bmux3C2+; arc=none smtp.client-ip=192.198.163.7
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1718383324; x=1749919324;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=Tu5NT+/HC6v33/UcbBllxGhe377ayPb6xdMlPgPUz4Q=;
-  b=da2wXT2I8MdrDCYJS4zeeHNOSEZcIvYFOhgLWQJcjg/Wcm7QPG2vRz2T
-   ff+R48K2QZEjNztk/nnXQJR86CMFqweFVzlybziNFWtxjPfgVKAbeR0H1
-   Z1Ko+Kh1eDFLpAx8NJQlBtiL9aI7IU1COWCODrha4bQpif2q1aX1A1R/K
-   JoFVFHADXPik/2zG5b4mtUNZPAPLLl3pMIYq03fXxBb5MNTPPtfPT7CWI
-   HiTkmXTSEVms658Lhz18hfcdWVONwFBjgxf+KbQGfRD2sAbBPH1qSGKw7
-   ZXf2teVb1wbYhnn3tS1/L9CVMvsdtzCuXbFaOcFktVAj8rdsFsG7I60jO
-   g==;
-X-CSE-ConnectionGUID: LX1TCqNpTfOjjRl/Q9DCBw==
-X-CSE-MsgGUID: pEvqF8N/QoKPZiRtmZZJrw==
-X-IronPort-AV: E=McAfee;i="6700,10204,11103"; a="15114716"
+  t=1718389698; x=1749925698;
+  h=date:from:to:cc:subject:message-id;
+  bh=1uijl8ROgK5Br1k70COsZNo55ACHob1qS3SGc/8G27Q=;
+  b=bmux3C2+1T9v6C3zUoS5LCEmAnfP0uMxg/+A8epehUWZuweqxNiZTUf1
+   PRwSixfsx2IY9yp4NApZkXXHtmnExu9Z5NkyjRzInpzBnig33unr8Tk6b
+   YLaes+npfF/id01m1ZXf8oSv9Fj6hrk/4aNduoY1bHT+1b0U0ZqJypW08
+   Zh5Qf6ZXQpQwYYQscArPSpQj1MXOH4T2nTRJWXtGCRHoWBG05+oNzK25d
+   z0m7vXRFMPmAW8DMVFSXF2xrcmkjO0z7O+kKlNyfwj/MmSo9X0u2/If21
+   lfiQR0aIk1TTIDrs/60oDVwky6+R5oYTJYTs/jK3dLYoDY4FrrlVXHrE/
+   A==;
+X-CSE-ConnectionGUID: VYJwk/NESyKeSTj/FJ0kKQ==
+X-CSE-MsgGUID: SOBacLbjRriwxzX/qUEIPA==
+X-IronPort-AV: E=McAfee;i="6700,10204,11103"; a="40706277"
 X-IronPort-AV: E=Sophos;i="6.08,238,1712646000"; 
-   d="scan'208";a="15114716"
-Received: from fmviesa003.fm.intel.com ([10.60.135.143])
-  by orvoesa112.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Jun 2024 09:37:53 -0700
-X-CSE-ConnectionGUID: xAAM0oc6R0qoOzVa51X18A==
-X-CSE-MsgGUID: MWl63vUuR+mg54xeFXB5wg==
+   d="scan'208";a="40706277"
+Received: from orviesa003.jf.intel.com ([10.64.159.143])
+  by fmvoesa101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Jun 2024 11:28:16 -0700
+X-CSE-ConnectionGUID: 0/24SbKwSv+Z9dOVZrQACw==
+X-CSE-MsgGUID: u0MJCeFQQc65EX24WTpllg==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="6.08,238,1712646000"; 
-   d="scan'208";a="44921621"
-Received: from djiang5-mobl3.amr.corp.intel.com (HELO [10.125.111.95]) ([10.125.111.95])
-  by fmviesa003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Jun 2024 09:37:51 -0700
-Message-ID: <8078be0c-58cb-4288-bbee-639483675501@intel.com>
-Date: Fri, 14 Jun 2024 09:37:50 -0700
+   d="scan'208";a="45497139"
+Received: from lkp-server01.sh.intel.com (HELO 9e3ee4e9e062) ([10.239.97.150])
+  by orviesa003.jf.intel.com with ESMTP; 14 Jun 2024 11:28:16 -0700
+Received: from kbuild by 9e3ee4e9e062 with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1sIBem-0001dn-3D;
+	Fri, 14 Jun 2024 18:28:12 +0000
+Date: Sat, 15 Jun 2024 02:28:09 +0800
+From: kernel test robot <lkp@intel.com>
+To: Leon Romanovsky <leon@kernel.org>
+Cc: Doug Ledford <dledford@redhat.com>,
+ Jason Gunthorpe <jgg+lists@ziepe.ca>, linux-rdma@vger.kernel.org
+Subject: [rdma:mana-shared] BUILD SUCCESS
+ 7fc45cb68696c7213c484ec81892bc8a986fde52
+Message-ID: <202406150206.FHpbKdO3-lkp@intel.com>
+User-Agent: s-nail v14.9.24
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 3/8] fwctl: FWCTL_INFO to return basic information about
- the device
-To: Jason Gunthorpe <jgg@nvidia.com>
-Cc: Jonathan Corbet <corbet@lwn.net>, Itay Avraham <itayavr@nvidia.com>,
- Jakub Kicinski <kuba@kernel.org>, Leon Romanovsky <leon@kernel.org>,
- linux-doc@vger.kernel.org, linux-rdma@vger.kernel.org,
- netdev@vger.kernel.org, Paolo Abeni <pabeni@redhat.com>,
- Saeed Mahameed <saeedm@nvidia.com>, Tariq Toukan <tariqt@nvidia.com>,
- Andy Gospodarek <andrew.gospodarek@broadcom.com>,
- Aron Silverton <aron.silverton@oracle.com>,
- Dan Williams <dan.j.williams@intel.com>, David Ahern <dsahern@kernel.org>,
- Christoph Hellwig <hch@infradead.org>, Jiri Pirko <jiri@nvidia.com>,
- Leonid Bloch <lbloch@nvidia.com>, Leon Romanovsky <leonro@nvidia.com>,
- linux-cxl@vger.kernel.org, patches@lists.linux.dev
-References: <3-v1-9912f1a11620+2a-fwctl_jgg@nvidia.com>
- <358d2e11-59e2-46eb-a7f4-3c69e6befe02@intel.com>
- <20240613234002.GH19897@nvidia.com>
-Content-Language: en-US
-From: Dave Jiang <dave.jiang@intel.com>
-In-Reply-To: <20240613234002.GH19897@nvidia.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
 
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git mana-shared
+branch HEAD: 7fc45cb68696c7213c484ec81892bc8a986fde52  net: mana: Allow variable size indirection table
 
+elapsed time: 2882m
 
-On 6/13/24 4:40 PM, Jason Gunthorpe wrote:
-> On Thu, Jun 13, 2024 at 04:32:44PM -0700, Dave Jiang wrote:
-> 
->> Are you open to pass in potential user input for the info query? I'm
->> working on plumbing fwctl for CXL. 
-> 
-> Neat!
-> 
->> The current CXL query command [1] takes a number of commands as
->> input for its ioctl. For fwctl_cmd_info(), the current
->> implementation is when ->info() is called no information about the
->> user buffer length or an input buffer is provided. 
-> 
-> Right, the purpose of info is to report information about the fwctl
-> driver. It is to allow the userspace to connect to the correct
-> userspace driver. It shouldn't be doing much with the device.
-> 
-> If you want to execute a info command *to the fw* then I'd expect
-> you'd execute the command through the normal RPC channel? Does
-> something prevent this?
+configs tested: 83
+configs skipped: 3
 
-Ok that makes sense. I should be able to do it through RPC with some tweaks. 
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
-> 
-> This is how the mlx5 driver is working where there are many info
-> (called CAP) commands that return data, and they all run over the rpc
-> channel.
-> 
-> Thanks,
-> Jason
+tested configs:
+alpha                             allnoconfig   gcc-13.2.0
+alpha                            allyesconfig   gcc-13.2.0
+alpha                               defconfig   gcc-13.2.0
+arc                              allmodconfig   gcc-13.2.0
+arc                               allnoconfig   gcc-13.2.0
+arc                              allyesconfig   gcc-13.2.0
+arc                                 defconfig   gcc-13.2.0
+arm                              allmodconfig   gcc-13.2.0
+arm                               allnoconfig   clang-19
+arm                              allyesconfig   gcc-13.2.0
+arm                                 defconfig   clang-14
+arm64                            allmodconfig   clang-19
+arm64                             allnoconfig   gcc-13.2.0
+arm64                               defconfig   gcc-13.2.0
+csky                             allmodconfig   gcc-13.2.0
+csky                              allnoconfig   gcc-13.2.0
+csky                             allyesconfig   gcc-13.2.0
+csky                                defconfig   gcc-13.2.0
+hexagon                          allmodconfig   clang-19
+hexagon                           allnoconfig   clang-19
+hexagon                          allyesconfig   clang-19
+hexagon                             defconfig   clang-19
+i386                             allmodconfig   gcc-13
+i386                              allnoconfig   gcc-13
+i386                             allyesconfig   gcc-13
+i386                                defconfig   clang-18
+loongarch                        allmodconfig   gcc-13.2.0
+loongarch                         allnoconfig   gcc-13.2.0
+loongarch                           defconfig   gcc-13.2.0
+m68k                             allmodconfig   gcc-13.2.0
+m68k                              allnoconfig   gcc-13.2.0
+m68k                             allyesconfig   gcc-13.2.0
+m68k                                defconfig   gcc-13.2.0
+microblaze                       allmodconfig   gcc-13.2.0
+microblaze                        allnoconfig   gcc-13.2.0
+microblaze                       allyesconfig   gcc-13.2.0
+microblaze                          defconfig   gcc-13.2.0
+mips                              allnoconfig   gcc-13.2.0
+mips                             allyesconfig   gcc-13.2.0
+nios2                            allmodconfig   gcc-13.2.0
+nios2                             allnoconfig   gcc-13.2.0
+nios2                            allyesconfig   gcc-13.2.0
+nios2                               defconfig   gcc-13.2.0
+openrisc                          allnoconfig   gcc-13.2.0
+openrisc                         allyesconfig   gcc-13.2.0
+openrisc                            defconfig   gcc-13.2.0
+parisc                           allmodconfig   gcc-13.2.0
+parisc                            allnoconfig   gcc-13.2.0
+parisc                           allyesconfig   gcc-13.2.0
+parisc                              defconfig   gcc-13.2.0
+parisc64                            defconfig   gcc-13.2.0
+powerpc                          allmodconfig   gcc-13.2.0
+powerpc                           allnoconfig   gcc-13.2.0
+powerpc                          allyesconfig   clang-19
+riscv                            allmodconfig   clang-19
+riscv                             allnoconfig   gcc-13.2.0
+riscv                            allyesconfig   clang-19
+riscv                               defconfig   clang-19
+s390                             allmodconfig   clang-19
+s390                              allnoconfig   clang-19
+s390                             allyesconfig   gcc-13.2.0
+s390                                defconfig   clang-19
+sh                               allmodconfig   gcc-13.2.0
+sh                                allnoconfig   gcc-13.2.0
+sh                               allyesconfig   gcc-13.2.0
+sh                                  defconfig   gcc-13.2.0
+sparc                            allmodconfig   gcc-13.2.0
+sparc                             allnoconfig   gcc-13.2.0
+sparc                               defconfig   gcc-13.2.0
+sparc64                          allmodconfig   gcc-13.2.0
+sparc64                          allyesconfig   gcc-13.2.0
+sparc64                             defconfig   gcc-13.2.0
+um                               allmodconfig   clang-19
+um                                allnoconfig   clang-17
+um                               allyesconfig   gcc-13
+um                                  defconfig   clang-19
+um                             i386_defconfig   gcc-13
+um                           x86_64_defconfig   clang-15
+x86_64                            allnoconfig   clang-18
+x86_64                           allyesconfig   clang-18
+x86_64                              defconfig   gcc-13
+x86_64                          rhel-8.3-rust   clang-18
+xtensa                            allnoconfig   gcc-13.2.0
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
