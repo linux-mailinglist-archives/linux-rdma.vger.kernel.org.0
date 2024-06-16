@@ -1,49 +1,50 @@
-Return-Path: <linux-rdma+bounces-3172-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-3177-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 50824909E5B
-	for <lists+linux-rdma@lfdr.de>; Sun, 16 Jun 2024 18:09:32 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id C91E0909E65
+	for <lists+linux-rdma@lfdr.de>; Sun, 16 Jun 2024 18:10:10 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 009012817B8
-	for <lists+linux-rdma@lfdr.de>; Sun, 16 Jun 2024 16:09:31 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 42B461F21411
+	for <lists+linux-rdma@lfdr.de>; Sun, 16 Jun 2024 16:10:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3D37917C6C;
-	Sun, 16 Jun 2024 16:09:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 51FF31C6A0;
+	Sun, 16 Jun 2024 16:09:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="lWpeJx9W"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="gVn5E8H4"
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F04171D54F;
-	Sun, 16 Jun 2024 16:09:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 07FD43B7A8;
+	Sun, 16 Jun 2024 16:09:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1718554144; cv=none; b=bu58Wwy8xopwD6U3Dfk0O3L4ud73QkT57fc0NtNeLBYV5u1Qg9Yp4Vxu8YTs+Pgz0hWchxgOEhQw/zxSX4F3pLGlQybhfFz+gYOgMq+sWpDsJXoRfw3hbwLeWjOmmHLiNLbwCzDpwuEuRD4hzu8KK3aOxBzntUN7XPH78h2otBE=
+	t=1718554165; cv=none; b=g0l+2PAGSwXBcICdvg9wF4YZmmkhlbQ7r4gcVZnMkT7bK+EFvMsuECADZQd7/1yroh0zpKiAxPNJU8s6ijD8Nd2glCs7jK1dIV1l8akmf71jNRNc2b+lfuNMUp4Mm/fVYH7X+X0vHByA/Ymak/csMQKId2E5jWg/GVL6OaZu/Zw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1718554144; c=relaxed/simple;
-	bh=fcoAk42ZmXSoDiFV9ibLWtLT2KUITpLHo2920iegKlg=;
+	s=arc-20240116; t=1718554165; c=relaxed/simple;
+	bh=ZV+dK1amM89ckzUE+eZcuNzNr3bWvI65C6CRlsDcGfI=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=lS/6z7WxIpYi7GfNJBqAzDLZtzsImEQz4DzkJjANMGOmoT2te9YpkeecAoVVXWeykUPdm/D/dbt/BXAK8+QyiW/6EjC2DkGy90bgZ1TFXMZIQr07T1GRGKn7NYjbdtWIi8sTqOt0BnQkZ1J11MPRJkJiO0cHgpX1DX6FM6f49n8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=lWpeJx9W; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E735DC2BBFC;
-	Sun, 16 Jun 2024 16:09:02 +0000 (UTC)
+	 MIME-Version; b=u9MH/ntDbUTjREVRqnkWu3c1M9Tzeaw+BDI2LBiIjHBYnLdL5PYgISK5lUOAWZmmVUthhtelRfVMnStb9sM+s6nA9CyH493Y7N8OHEsHibiK9ITsJ8gT1tSVonVYKGW1hoYgns7KdOGggwF0f0q9Y+WUG1SP4VJ4ALPmoVrwJH4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=gVn5E8H4; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 05EDAC2BBFC;
+	Sun, 16 Jun 2024 16:09:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1718554143;
-	bh=fcoAk42ZmXSoDiFV9ibLWtLT2KUITpLHo2920iegKlg=;
+	s=k20201202; t=1718554164;
+	bh=ZV+dK1amM89ckzUE+eZcuNzNr3bWvI65C6CRlsDcGfI=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=lWpeJx9WVwvNCsKGoAkabH47Vf33uu3rwZtfBOf5m2w1Wm9ViMufgDxTqkRY/SPX8
-	 yCpvbhPyYZE0aoQUMRKFaflNjekxYk0MYf+MaK8JsYciYfWFlLJSC2pSMU9bvlWX4/
-	 hr5zYo5xsRUV0nvvGPz2XFAiT7I4+zABWX0dpdQIioTg+aW3BXJ7hLp/hjOUHZ11Ls
-	 vQN6qESXTq4IfnhBlYc6PgGcKJG+qvY/vCwzsSwRSyfrs+hbg0apRFXfVmV06WRk1X
-	 QFFRcdAJZXpfjMZTDPOcrcQxBLEirJHa027PHDIV22Gxwt3flCopAEIrI0lKT8gktF
-	 Gzgwy9i9FZPuQ==
+	b=gVn5E8H47ClW8Oq/RLGh+o9oBTp5VKtSh5EY6Y5hbHNFx0XJObUqlsOJPIyX0BTop
+	 7yIXKV784uAtGCBfaOL01TlKDD0qvFangnK1Q5CW9HUVMRRQWPUQhed+XCQLCBJR2T
+	 rjaw+F4f01kit1ftQvehCWJNaxuUJBIymwJLtSoqPKlArZ4TI287zKJvMuy1I298vW
+	 uIdofGfFsMhMNj0NcxGBUTRFkdYJrqfNPMxux6R44Amh1po7oxgmGCX2s+Rpb6+Lzl
+	 /n+uTTRGuw3xKQ5W6KZUR0pUSud5XozeYqpyllvT4CofEY3v7oXFSdLk6dqWdQIwCL
+	 +aACgxsUoZzJw==
 From: Leon Romanovsky <leon@kernel.org>
 To: Jason Gunthorpe <jgg@nvidia.com>
 Cc: Mark Zhang <markzhang@nvidia.com>,
+	"David S. Miller" <davem@davemloft.net>,
 	Eric Dumazet <edumazet@google.com>,
 	Jakub Kicinski <kuba@kernel.org>,
 	linux-rdma@vger.kernel.org,
@@ -51,9 +52,9 @@ Cc: Mark Zhang <markzhang@nvidia.com>,
 	Paolo Abeni <pabeni@redhat.com>,
 	Saeed Mahameed <saeedm@nvidia.com>,
 	Tariq Toukan <tariqt@nvidia.com>
-Subject: [PATCH mlx5-next 03/12] RDMA/mlx5: Add support to multi-plane device and port
-Date: Sun, 16 Jun 2024 19:08:35 +0300
-Message-ID: <7e37c06c9cb243be9ac79930cd17053903785b95.1718553901.git.leon@kernel.org>
+Subject: [PATCH rdma-next 04/12] RDMA/core: Support IB sub device with type "SMI"
+Date: Sun, 16 Jun 2024 19:08:36 +0300
+Message-ID: <44253f7508b21eb2caefea3980c2bc072869116c.1718553901.git.leon@kernel.org>
 X-Mailer: git-send-email 2.45.2
 In-Reply-To: <cover.1718553901.git.leon@kernel.org>
 References: <cover.1718553901.git.leon@kernel.org>
@@ -67,172 +68,227 @@ Content-Transfer-Encoding: 8bit
 
 From: Mark Zhang <markzhang@nvidia.com>
 
-When multi-plane is supported, a logical port, which is aggregation of
-multiple physical plane ports, is exposed for data transmission.
-Compared with a normal mlx5 IB port, this logical port supports all
-functionalities except Subnet Management.
+This patch adds 2 APIs, as well as driver operations to support adding
+and deleting an IB sub device, which provides part of functionalities
+of it's parent.
+
+A sub device has a type; for a sub device with type "SMI", it provides
+the smi capability through umad for its parent, meaning uverb is not
+supported.
+
+A sub device cannot live without a parent. So when a parent is
+released, all it's sub devices are released as well.
 
 Signed-off-by: Mark Zhang <markzhang@nvidia.com>
 Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
 ---
- drivers/infiniband/hw/mlx5/main.c             | 60 ++++++++++++++++---
- drivers/infiniband/hw/mlx5/mlx5_ib.h          |  2 +
- .../net/ethernet/mellanox/mlx5/core/vport.c   |  1 +
- include/linux/mlx5/driver.h                   |  1 +
- 4 files changed, 55 insertions(+), 9 deletions(-)
+ drivers/infiniband/core/device.c      | 68 +++++++++++++++++++++++++++
+ drivers/infiniband/core/uverbs_main.c |  3 +-
+ include/rdma/ib_verbs.h               | 43 +++++++++++++++++
+ include/uapi/rdma/rdma_netlink.h      |  5 ++
+ 4 files changed, 118 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/infiniband/hw/mlx5/main.c b/drivers/infiniband/hw/mlx5/main.c
-index a7003316d438..55eb60715b48 100644
---- a/drivers/infiniband/hw/mlx5/main.c
-+++ b/drivers/infiniband/hw/mlx5/main.c
-@@ -1388,7 +1388,13 @@ static int mlx5_query_hca_port(struct ib_device *ibdev, u32 port,
- 	props->sm_sl		= rep->sm_sl;
- 	props->state		= rep->vport_state;
- 	props->phys_state	= rep->port_physical_state;
--	props->port_cap_flags	= rep->cap_mask1;
+diff --git a/drivers/infiniband/core/device.c b/drivers/infiniband/core/device.c
+index 55aa7aa32d4a..8547cab50b23 100644
+--- a/drivers/infiniband/core/device.c
++++ b/drivers/infiniband/core/device.c
+@@ -641,6 +641,11 @@ struct ib_device *_ib_alloc_device(size_t size)
+ 		BIT_ULL(IB_USER_VERBS_CMD_REG_MR) |
+ 		BIT_ULL(IB_USER_VERBS_CMD_REREG_MR) |
+ 		BIT_ULL(IB_USER_VERBS_CMD_RESIZE_CQ);
 +
-+	props->port_cap_flags = rep->cap_mask1;
-+	if (dev->num_plane) {
-+		props->port_cap_flags |= IB_PORT_SM_DISABLED;
-+		props->port_cap_flags &= ~IB_PORT_SM;
++	mutex_init(&device->subdev_lock);
++	INIT_LIST_HEAD(&device->subdev_list_head);
++	INIT_LIST_HEAD(&device->subdev_list);
++
+ 	return device;
+ }
+ EXPORT_SYMBOL(_ib_alloc_device);
+@@ -1461,6 +1466,18 @@ EXPORT_SYMBOL(ib_register_device);
+ /* Callers must hold a get on the device. */
+ static void __ib_unregister_device(struct ib_device *ib_dev)
+ {
++	struct ib_device *sub, *tmp;
++
++	mutex_lock(&ib_dev->subdev_lock);
++	list_for_each_entry_safe_reverse(sub, tmp,
++					 &ib_dev->subdev_list_head,
++					 subdev_list) {
++		list_del(&sub->subdev_list);
++		ib_dev->ops.del_sub_dev(sub);
++		ib_device_put(ib_dev);
++	}
++	mutex_unlock(&ib_dev->subdev_lock);
++
+ 	/*
+ 	 * We have a registration lock so that all the calls to unregister are
+ 	 * fully fenced, once any unregister returns the device is truely
+@@ -2597,6 +2614,7 @@ void ib_set_device_ops(struct ib_device *dev, const struct ib_device_ops *ops)
+ 		ops->uverbs_no_driver_id_binding;
+ 
+ 	SET_DEVICE_OP(dev_ops, add_gid);
++	SET_DEVICE_OP(dev_ops, add_sub_dev);
+ 	SET_DEVICE_OP(dev_ops, advise_mr);
+ 	SET_DEVICE_OP(dev_ops, alloc_dm);
+ 	SET_DEVICE_OP(dev_ops, alloc_hw_device_stats);
+@@ -2631,6 +2649,7 @@ void ib_set_device_ops(struct ib_device *dev, const struct ib_device_ops *ops)
+ 	SET_DEVICE_OP(dev_ops, dealloc_ucontext);
+ 	SET_DEVICE_OP(dev_ops, dealloc_xrcd);
+ 	SET_DEVICE_OP(dev_ops, del_gid);
++	SET_DEVICE_OP(dev_ops, del_sub_dev);
+ 	SET_DEVICE_OP(dev_ops, dereg_mr);
+ 	SET_DEVICE_OP(dev_ops, destroy_ah);
+ 	SET_DEVICE_OP(dev_ops, destroy_counters);
+@@ -2727,6 +2746,55 @@ void ib_set_device_ops(struct ib_device *dev, const struct ib_device_ops *ops)
+ }
+ EXPORT_SYMBOL(ib_set_device_ops);
+ 
++int ib_add_sub_device(struct ib_device *parent,
++		      enum rdma_nl_dev_type type,
++		      const char *name)
++{
++	struct ib_device *sub;
++	int ret = 0;
++
++	if (!parent->ops.add_sub_dev || !parent->ops.del_sub_dev)
++		return -EOPNOTSUPP;
++
++	if (!ib_device_try_get(parent))
++		return -EINVAL;
++
++	sub = parent->ops.add_sub_dev(parent, type, name);
++	if (IS_ERR(sub)) {
++		ib_device_put(parent);
++		return PTR_ERR(sub);
 +	}
 +
- 	props->gid_tbl_len	= mlx5_get_gid_table_len(MLX5_CAP_GEN(mdev, gid_table_size));
- 	props->max_msg_sz	= 1 << MLX5_CAP_GEN(mdev, log_max_msg);
- 	props->pkey_tbl_len	= mlx5_to_sw_pkey_sz(MLX5_CAP_GEN(mdev, pkey_table_size));
-@@ -2807,6 +2813,23 @@ static int mlx5_ib_event_slave_port(struct notifier_block *nb,
- 	return NOTIFY_OK;
- }
- 
-+static int mlx5_ib_get_plane_num(struct mlx5_core_dev *mdev, u8 *num_plane)
++	sub->type = type;
++	sub->parent = parent;
++
++	mutex_lock(&parent->subdev_lock);
++	list_add_tail(&parent->subdev_list_head, &sub->subdev_list);
++	mutex_unlock(&parent->subdev_lock);
++
++	return ret;
++}
++EXPORT_SYMBOL(ib_add_sub_device);
++
++int ib_del_sub_device_and_put(struct ib_device *sub)
 +{
-+	struct mlx5_hca_vport_context vport_ctx;
-+	int err;
++	struct ib_device *parent = sub->parent;
 +
-+	*num_plane = 0;
-+	if (!MLX5_CAP_GEN(mdev, ib_virt))
-+		return 0;
++	if (!parent)
++		return -EOPNOTSUPP;
 +
-+	err = mlx5_query_hca_vport_context(mdev, 0, 1, 0, &vport_ctx);
-+	if (err)
-+		return err;
++	mutex_lock(&parent->subdev_lock);
++	list_del(&sub->subdev_list);
++	mutex_unlock(&parent->subdev_lock);
 +
-+	*num_plane = vport_ctx.num_plane;
++	ib_device_put(sub);
++	parent->ops.del_sub_dev(sub);
++	ib_device_put(parent);
++
 +	return 0;
 +}
++EXPORT_SYMBOL(ib_del_sub_device_and_put);
 +
- static int set_has_smi_cap(struct mlx5_ib_dev *dev)
+ #ifdef CONFIG_INFINIBAND_VIRT_DMA
+ int ib_dma_virt_map_sg(struct ib_device *dev, struct scatterlist *sg, int nents)
  {
- 	struct mlx5_hca_vport_context vport_ctx;
-@@ -2817,10 +2840,14 @@ static int set_has_smi_cap(struct mlx5_ib_dev *dev)
- 		return 0;
+diff --git a/drivers/infiniband/core/uverbs_main.c b/drivers/infiniband/core/uverbs_main.c
+index 495d5a5d0373..bc099287de9a 100644
+--- a/drivers/infiniband/core/uverbs_main.c
++++ b/drivers/infiniband/core/uverbs_main.c
+@@ -1114,7 +1114,8 @@ static int ib_uverbs_add_one(struct ib_device *device)
+ 	struct ib_uverbs_device *uverbs_dev;
+ 	int ret;
  
- 	for (port = 1; port <= dev->num_ports; port++) {
--		if (!MLX5_CAP_GEN(dev->mdev, ib_virt)) {
-+		if (dev->num_plane) {
-+			dev->port_caps[port - 1].has_smi = false;
-+			continue;
-+		} else if (!MLX5_CAP_GEN(dev->mdev, ib_virt)) {
- 			dev->port_caps[port - 1].has_smi = true;
- 			continue;
- 		}
+-	if (!device->ops.alloc_ucontext)
++	if (!device->ops.alloc_ucontext ||
++	    device->type == RDMA_DEVICE_TYPE_SMI)
+ 		return -EOPNOTSUPP;
+ 
+ 	uverbs_dev = kzalloc(sizeof(*uverbs_dev), GFP_KERNEL);
+diff --git a/include/rdma/ib_verbs.h b/include/rdma/ib_verbs.h
+index 477bf9dd5e71..bebc2d22f466 100644
+--- a/include/rdma/ib_verbs.h
++++ b/include/rdma/ib_verbs.h
+@@ -2661,6 +2661,18 @@ struct ib_device_ops {
+ 	 */
+ 	int (*get_numa_node)(struct ib_device *dev);
+ 
++	/**
++	 * add_sub_dev - Add a sub IB device
++	 */
++	struct ib_device *(*add_sub_dev)(struct ib_device *parent,
++					 enum rdma_nl_dev_type type,
++					 const char *name);
 +
- 		err = mlx5_query_hca_vport_context(dev->mdev, 0, port, 0,
- 						   &vport_ctx);
- 		if (err) {
-@@ -3026,6 +3053,11 @@ static u32 get_core_cap_flags(struct ib_device *ibdev,
- 	if (rep->grh_required)
- 		ret |= RDMA_CORE_CAP_IB_GRH_REQUIRED;
- 
-+	if (dev->num_plane)
-+		return ret | RDMA_CORE_CAP_PROT_IB | RDMA_CORE_CAP_IB_MAD |
-+			RDMA_CORE_CAP_IB_CM | RDMA_CORE_CAP_IB_SA |
-+			RDMA_CORE_CAP_AF_IB;
++	/**
++	 * del_sub_dev - Delete a sub IB device
++	 */
++	void (*del_sub_dev)(struct ib_device *sub_dev);
 +
- 	if (ll == IB_LINK_LAYER_INFINIBAND)
- 		return ret | RDMA_CORE_PORT_IBA_IB;
- 
-@@ -4507,11 +4539,18 @@ static int mlx5r_probe(struct auxiliary_device *adev,
- 	dev = ib_alloc_device(mlx5_ib_dev, ib_dev);
- 	if (!dev)
- 		return -ENOMEM;
+ 	DECLARE_RDMA_OBJ_SIZE(ib_ah);
+ 	DECLARE_RDMA_OBJ_SIZE(ib_counters);
+ 	DECLARE_RDMA_OBJ_SIZE(ib_cq);
+@@ -2771,6 +2783,15 @@ struct ib_device {
+ 	char iw_ifname[IFNAMSIZ];
+ 	u32 iw_driver_flags;
+ 	u32 lag_flags;
 +
-+	if (ll == IB_LINK_LAYER_INFINIBAND) {
-+		ret = mlx5_ib_get_plane_num(mdev, &dev->num_plane);
-+		if (ret)
-+			goto fail;
-+	}
++	/* A parent device has a list of sub-devices */
++	struct mutex subdev_lock;
++	struct list_head subdev_list_head;
 +
- 	dev->port = kcalloc(num_ports, sizeof(*dev->port),
- 			     GFP_KERNEL);
- 	if (!dev->port) {
--		ib_dealloc_device(&dev->ib_dev);
--		return -ENOMEM;
-+		ret = -ENOMEM;
-+		goto fail;
- 	}
- 
- 	dev->mdev = mdev;
-@@ -4523,14 +4562,17 @@ static int mlx5r_probe(struct auxiliary_device *adev,
- 		profile = &pf_profile;
- 
- 	ret = __mlx5_ib_add(dev, profile);
--	if (ret) {
--		kfree(dev->port);
--		ib_dealloc_device(&dev->ib_dev);
--		return ret;
--	}
-+	if (ret)
-+		goto fail_ib_add;
- 
- 	auxiliary_set_drvdata(adev, dev);
- 	return 0;
-+
-+fail_ib_add:
-+	kfree(dev->port);
-+fail:
-+	ib_dealloc_device(&dev->ib_dev);
-+	return ret;
- }
- 
- static void mlx5r_remove(struct auxiliary_device *adev)
-diff --git a/drivers/infiniband/hw/mlx5/mlx5_ib.h b/drivers/infiniband/hw/mlx5/mlx5_ib.h
-index a6f2b679a7e9..d97d6bc2dbaa 100644
---- a/drivers/infiniband/hw/mlx5/mlx5_ib.h
-+++ b/drivers/infiniband/hw/mlx5/mlx5_ib.h
-@@ -1189,6 +1189,8 @@ struct mlx5_ib_dev {
- #ifdef CONFIG_MLX5_MACSEC
- 	struct mlx5_macsec macsec;
- #endif
-+
-+	u8 num_plane;
++	/* A sub device has a type and a parent */
++	enum rdma_nl_dev_type type;
++	struct ib_device *parent;
++	struct list_head subdev_list;
  };
  
- static inline struct mlx5_ib_cq *to_mibcq(struct mlx5_core_cq *mcq)
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/vport.c b/drivers/net/ethernet/mellanox/mlx5/core/vport.c
-index 1005bb6935b6..0d5f750faa45 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/vport.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/vport.c
-@@ -737,6 +737,7 @@ int mlx5_query_hca_vport_context(struct mlx5_core_dev *dev,
- 	rep->grh_required = MLX5_GET_PR(hca_vport_context, ctx, grh_required);
- 	rep->sys_image_guid = MLX5_GET64_PR(hca_vport_context, ctx,
- 					    system_image_guid);
-+	rep->num_plane = MLX5_GET_PR(hca_vport_context, ctx, num_port_plane);
+ static inline void *rdma_zalloc_obj(struct ib_device *dev, size_t size,
+@@ -4820,4 +4841,26 @@ static inline u16 rdma_get_udp_sport(u32 fl, u32 lqpn, u32 rqpn)
  
- ex:
- 	kvfree(out);
-diff --git a/include/linux/mlx5/driver.h b/include/linux/mlx5/driver.h
-index 145e2fb1b832..2889ece6c808 100644
---- a/include/linux/mlx5/driver.h
-+++ b/include/linux/mlx5/driver.h
-@@ -917,6 +917,7 @@ struct mlx5_hca_vport_context {
- 	u16			qkey_violation_counter;
- 	u16			pkey_violation_counter;
- 	bool			grh_required;
-+	u8			num_plane;
+ const struct ib_port_immutable*
+ ib_port_immutable_read(struct ib_device *dev, unsigned int port);
++
++/** ib_add_sub_device - Add a sub IB device on an existing one
++ *
++ * @parent: The IB device that needs to add a sub device
++ * @type: The type of the new sub device
++ * @name: The name of the new sub device
++ *
++ *
++ * Return 0 on success, an error code otherwise
++ */
++int ib_add_sub_device(struct ib_device *parent,
++		      enum rdma_nl_dev_type type,
++		      const char *name);
++
++
++/** ib_del_sub_device_and_put - Delect an IB sub device while holding a 'get'
++ *
++ * @sub: The sub device that is going to be deleted
++ *
++ * Return 0 on success, an error code otherwise
++ */
++int ib_del_sub_device_and_put(struct ib_device *sub);
+ #endif /* IB_VERBS_H */
+diff --git a/include/uapi/rdma/rdma_netlink.h b/include/uapi/rdma/rdma_netlink.h
+index a214fc259f28..d15ee16be722 100644
+--- a/include/uapi/rdma/rdma_netlink.h
++++ b/include/uapi/rdma/rdma_netlink.h
+@@ -602,4 +602,9 @@ enum rdma_nl_counter_mask {
+ 	RDMA_COUNTER_MASK_QP_TYPE = 1,
+ 	RDMA_COUNTER_MASK_PID = 1 << 1,
  };
- 
- #define STRUCT_FIELD(header, field) \
++
++/* Supported rdma device types. */
++enum rdma_nl_dev_type {
++	RDMA_DEVICE_TYPE_SMI = 1,
++};
+ #endif /* _UAPI_RDMA_NETLINK_H */
 -- 
 2.45.2
 
