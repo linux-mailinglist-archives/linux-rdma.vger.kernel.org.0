@@ -1,87 +1,87 @@
-Return-Path: <linux-rdma+bounces-3235-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-3234-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9735190B4BB
-	for <lists+linux-rdma@lfdr.de>; Mon, 17 Jun 2024 17:39:30 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C5D2590B4B4
+	for <lists+linux-rdma@lfdr.de>; Mon, 17 Jun 2024 17:39:15 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 14CEC1F26947
-	for <lists+linux-rdma@lfdr.de>; Mon, 17 Jun 2024 15:39:30 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CAE831C21258
+	for <lists+linux-rdma@lfdr.de>; Mon, 17 Jun 2024 15:39:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BB31216EB72;
-	Mon, 17 Jun 2024 15:09:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A699C16EB54;
+	Mon, 17 Jun 2024 15:09:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="YUJz+LgR"
+	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="ZhIk7L8C"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from NAM04-MW2-obe.outbound.protection.outlook.com (mail-mw2nam04on2075.outbound.protection.outlook.com [40.107.101.75])
+Received: from NAM02-DM3-obe.outbound.protection.outlook.com (mail-dm3nam02on2089.outbound.protection.outlook.com [40.107.95.89])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1B45A152DF2;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DD62B153511;
 	Mon, 17 Jun 2024 15:09:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.101.75
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.95.89
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1718636970; cv=fail; b=MdThaeoXAFG5nJq1UyLZ7JmMOOD6rC8dCnl1fnofsAG7V4VzoihDK9riGtGmurtm8tzCVPSTWvzDxP84bgCvsm7dtf5x7Jnxh9tJ9540seR+pO6OjdwoIpXiEbOsZkiKrXO/DMIwC/E4/GKpgtg1R4SmyAQMHGO2deCURwEWvd0=
+	t=1718636969; cv=fail; b=MBg1XD8Y44o/aK39YvU5PpfSQMeu/DKO+St+iXboeKdGtNIpwp6+KIVnzWMV2Tvj3qBvssIbNq2xM9s4H0h8X5n2jDRY9MM4H8Z77mqa+QMRRjvwvCz/+3XUnkphmsSsqUWsSF2liI4+jPLeV/EpkzBsdfTXHmi4JWWrhklxJEI=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1718636970; c=relaxed/simple;
-	bh=nTfUA3+eeP+LjaQ2b4SdWdE3/SHoPs4LUPwULAsEpKc=;
+	s=arc-20240116; t=1718636969; c=relaxed/simple;
+	bh=nGrkEuM6V+w5uB7BA28bNQiRi0JlbeBt8uw3GSdO/i4=;
 	h=From:Date:Subject:MIME-Version:Content-Type:Message-ID:References:
-	 In-Reply-To:To:CC; b=hFNgCYW7p2AaEB1yM3YPu2a2GBgArYcGZg6EkG7tDn9x0ep3mebC3GUziivA1rDVI1dc9RzUqZG7sb/mtvSXMPtSsK0dI7iSmelbIklLOizG84GIRCyQJnXXK0P7XFw15chFRKZxKyKypYQtI0hKwfUCGW2ZaAmAakPqvRiY6QA=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=YUJz+LgR; arc=fail smtp.client-ip=40.107.101.75
+	 In-Reply-To:To:CC; b=GJ7h1p5g/3zm/bCwzkCDoKxSRlvZbHehyUz07Fnzc47qg6/Q2NW+XxG4iHWRk8sHClTJvqr2NkeTRyNidmCwyOV8l2XU0MS1Mqc4IG3pnGzHivp82H2otXfjM5Mv9CvZqyf+LD4QR4eD5Dtb/yN2Uypo/bGmv6WSi9dML5kXxZQ=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=ZhIk7L8C; arc=fail smtp.client-ip=40.107.95.89
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
 Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=YUCOie/OYXHpvBOZeDLZN7CFcD8BMyAmtnoipWS3mb10msO3Y4L6+DJbjMLKLY0j0sD1x48HxNsR1Op8w6upeGTSmkmPDDQO/B2esRndZRoaTL6LrMpjmOVX6UBBQ+xoqJGAd9FL9JdWGxqv44gaR04lnunnnZL/OPSqOgkAhfI50VSOqImwyPAT6MiOWyAww6IwRDJrXuKkFp+tmBpDiDmCPpMu3QGE0y4NUdurwuhSBa6ppnEnMiJeKf5DZMoScqpuozJBaHMsQQt6Dj/3cewtVuDEa/wi7hWm9H6DoG0+pAV4VkZa15ikiw1kooH10chBLBi0ShM10XTVPAML2A==
+ b=P7aV66aVW8/WiLJv2IC3pBuUg6oM8f/LV7Ui6nZ2PvSujXdBhPQ/j4x+bcCzq//LEQTY/u0Gw3qh39NteOMN0io0mf7IQoLv34DRY9fGqPjZOLlNzYZaLTj2y6KZ3mzC/EfSI53pP8xJX7PGusLmiMB6plvn7uS03A3bz4dzgF+aEhiYTRwxP0ZA9nD+N++TeK7xAGngNWZngsQ+gPN+qfKfLlB4zH6WHWJTA/okQdmbSHgH3JxiR6Bu5i5MUsDnGT4hRi4OjWdB1cjMAkOZwIG6BunUDwNNC9FtqskNtqONTQgS+ihkOUUBiZlHK6mRo8jD27y72Yeh8CGJtGq6MQ==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=B2P/m400lrNpunlyWcf3KblMIoK4PdhXSvMi48p9v58=;
- b=KBHNDk+wnFgKvk9imjpBfv44+kTdWD3CoWS+zIQDPtsHg+R+StM4fAnpE28yzPPHKiiyrMBq+UoqfwF/82QHCGk7UyDW5VVNuuVGWGdA0wPRxp3t3NBRzjBrkTqQSMMwuYliYwvutqMBupUayV5VyuQG4t8WnfVAn6ZXWJQviEDL9CECw06sm1Txcd0l+2r3sRHF17+f01fFh0Bkr3bAsYIo8m/OybkQ6F3mhngFwQ8nC+7PEhbTQ4v43dNy8tk500GIitsRypZChutzSMZdqbf5RzrfV39zTWFD7RSbNjpqmzTnAhw9FyQfQuLIDTbJC5UE57BQn2Sg2T9i8Qgdpw==
+ bh=bBnCTbq4ZFBVLXlkrqTHPkFV/4UN4TiMr0Pk3hG0w2c=;
+ b=PchHgmbvUi9WURRkamqO76XbqUo5NBVMn7WLBYQBShRvYGHUG1V0eZ+vMivkdz2zX3/vs5nhe7OQFRkZksaLDkS3tNtQEQcjoC9RliQghu610kLewPK1GMit/4jjWIbSbM2bcnzL/pD28PhKPMQe3rkPaziK93VATdfw13o+4zZngjlfJeZPXwXe6hP9F/Se+pZcLheNAKCK9z7LgzDI/GF2Lr8Y6JNuDEJiMgNuUUa6wl2lh2ZyB/bNguC36BE5DHRqKK3CwwJGCannVdiUDK+1yOO+G19AQqbWBZaZBOT+8CRlVETTfXeneHysf1+zJEh5A4CGwIW8KeCFw7K58w==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 216.228.118.233) smtp.rcpttodomain=redhat.com smtp.mailfrom=nvidia.com;
+ 216.228.118.232) smtp.rcpttodomain=redhat.com smtp.mailfrom=nvidia.com;
  dmarc=pass (p=reject sp=reject pct=100) action=none header.from=nvidia.com;
  dkim=none (message not signed); arc=none (0)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
  s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=B2P/m400lrNpunlyWcf3KblMIoK4PdhXSvMi48p9v58=;
- b=YUJz+LgRSGrzEQOjxMmHInObbEr9BU+zq24bbbXufdGOUIAWrycj6yQlYzba8kBAotLLZ+2aST/8oZuuAyJExISCYcvSm5BYsB+sSxls9YStzvl3ucdaG4DDmzXh/OZCNRLEUvgAF4JISRbeV8NAHV1W4vMnCwFgIAiDGA74fJYDTV80KzXuUNEpeZpVy10o4DJQgN3OE/+XsljeDfa/IG/sto3dh3K/3EMbSTCv4aW0NyATSXOY4m5xh9GzebDTFR1PnqM7497MkYyABpkvtvOGewZjI2kw5C3fGypZvM/xRyEe8lRzpT41jBwEgsf5hFsTN+ylZqS6hYie6cqMQg==
-Received: from SJ0PR03CA0122.namprd03.prod.outlook.com (2603:10b6:a03:33c::7)
- by SJ2PR12MB9239.namprd12.prod.outlook.com (2603:10b6:a03:55e::8) with
+ bh=bBnCTbq4ZFBVLXlkrqTHPkFV/4UN4TiMr0Pk3hG0w2c=;
+ b=ZhIk7L8CfkS3NK3FsqzafukzYEqBU+tSJI5460DhY5+4LxhllEGfoki/SsaUdA9XocEb6e7gCNL76xiJQZ1GW3/NiaBY4a0270VqHOYa/+XnOSrofrDb4bWqq/0dM+/HKeQbpqSyEto+dTl0SYthiMtWehwaBh34vqpwzOniTfnsp8TggWzwsh6TZuLjGrIdsBviZjfELKeyNJm91IqbqVbJ6ZGbdaddiLhedD9lNC/YwcmoAaYq1QvojT4ndIbLRL1TMLya+UYtj2eAsoiBMzZ8V/dSLfpZSQ+B0WmS9JMTpuY7XOYv5fex4apGBK0HkhmZPYNl8E9A9Fj+2z31sQ==
+Received: from SA1PR04CA0003.namprd04.prod.outlook.com (2603:10b6:806:2ce::7)
+ by PH0PR12MB7930.namprd12.prod.outlook.com (2603:10b6:510:283::7) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7677.30; Mon, 17 Jun
- 2024 15:09:25 +0000
-Received: from SJ1PEPF00002314.namprd03.prod.outlook.com
- (2603:10b6:a03:33c:cafe::41) by SJ0PR03CA0122.outlook.office365.com
- (2603:10b6:a03:33c::7) with Microsoft SMTP Server (version=TLS1_2,
+ 2024 15:09:23 +0000
+Received: from SA2PEPF00003AEA.namprd02.prod.outlook.com
+ (2603:10b6:806:2ce:cafe::6b) by SA1PR04CA0003.outlook.office365.com
+ (2603:10b6:806:2ce::7) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7677.30 via Frontend
- Transport; Mon, 17 Jun 2024 15:09:25 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.118.233)
+ Transport; Mon, 17 Jun 2024 15:09:23 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.118.232)
  smtp.mailfrom=nvidia.com; dkim=none (message not signed)
  header.d=none;dmarc=pass action=none header.from=nvidia.com;
 Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
- 216.228.118.233 as permitted sender) receiver=protection.outlook.com;
- client-ip=216.228.118.233; helo=mail.nvidia.com; pr=C
-Received: from mail.nvidia.com (216.228.118.233) by
- SJ1PEPF00002314.mail.protection.outlook.com (10.167.242.168) with Microsoft
+ 216.228.118.232 as permitted sender) receiver=protection.outlook.com;
+ client-ip=216.228.118.232; helo=mail.nvidia.com; pr=C
+Received: from mail.nvidia.com (216.228.118.232) by
+ SA2PEPF00003AEA.mail.protection.outlook.com (10.167.248.10) with Microsoft
  SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.7677.15 via Frontend Transport; Mon, 17 Jun 2024 15:09:25 +0000
+ 15.20.7677.15 via Frontend Transport; Mon, 17 Jun 2024 15:09:23 +0000
 Received: from drhqmail201.nvidia.com (10.126.190.180) by mail.nvidia.com
- (10.127.129.6) with Microsoft SMTP Server (version=TLS1_2,
+ (10.127.129.5) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.4; Mon, 17 Jun
- 2024 08:09:06 -0700
+ 2024 08:09:10 -0700
 Received: from drhqmail201.nvidia.com (10.126.190.180) by
  drhqmail201.nvidia.com (10.126.190.180) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1544.4; Mon, 17 Jun 2024 08:09:06 -0700
+ 15.2.1544.4; Mon, 17 Jun 2024 08:09:10 -0700
 Received: from dev-l-177.mtl.labs.mlnx (10.127.8.11) by mail.nvidia.com
  (10.126.190.180) with Microsoft SMTP Server id 15.2.1544.4 via Frontend
- Transport; Mon, 17 Jun 2024 08:09:03 -0700
+ Transport; Mon, 17 Jun 2024 08:09:07 -0700
 From: Dragos Tatulea <dtatulea@nvidia.com>
-Date: Mon, 17 Jun 2024 18:07:54 +0300
-Subject: [PATCH vhost 20/23] vdpa/mlx5: Pre-create hardware VQs at vdpa
- .dev_add time
+Date: Mon, 17 Jun 2024 18:07:55 +0300
+Subject: [PATCH vhost 21/23] vdpa/mlx5: Re-create HW VQs under certain
+ conditions
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
@@ -90,7 +90,7 @@ List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-ID: <20240617-stage-vdpa-vq-precreate-v1-20-8c0483f0ca2a@nvidia.com>
+Message-ID: <20240617-stage-vdpa-vq-precreate-v1-21-8c0483f0ca2a@nvidia.com>
 References: <20240617-stage-vdpa-vq-precreate-v1-0-8c0483f0ca2a@nvidia.com>
 In-Reply-To: <20240617-stage-vdpa-vq-precreate-v1-0-8c0483f0ca2a@nvidia.com>
 To: "Michael S. Tsirkin" <mst@redhat.com>, Jason Wang <jasowang@redhat.com>,
@@ -105,166 +105,146 @@ X-Mailer: b4 0.13.0
 X-NV-OnPremToCloud: ExternallySecured
 X-EOPAttributedMessage: 0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: SJ1PEPF00002314:EE_|SJ2PR12MB9239:EE_
-X-MS-Office365-Filtering-Correlation-Id: 0f09d0db-13e3-46d6-6d88-08dc8edf79d3
+X-MS-TrafficTypeDiagnostic: SA2PEPF00003AEA:EE_|PH0PR12MB7930:EE_
+X-MS-Office365-Filtering-Correlation-Id: 0f249845-61e2-4aa7-da77-08dc8edf78a0
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam:
-	BCL:0;ARA:13230037|376011|36860700010|82310400023|1800799021|7416011;
+	BCL:0;ARA:13230037|7416011|36860700010|376011|1800799021|82310400023;
 X-Microsoft-Antispam-Message-Info:
-	=?utf-8?B?LzMzVUR3YS8ybkpRbldNZllWWEJrVUpSV0FnUS9tNnpFNEwrdTVkek9GK3cw?=
- =?utf-8?B?M3d1R3ZsUXlPamI3b1RqWXhLd1lSNk1aaHd6WWNQWGNZdE12Q1IyTkc3QjlQ?=
- =?utf-8?B?azNqZ0RDbDFRTFV2bWNoTVFEWWNyc0t3UFQ1V3JlaEZ3ZDR0eUdZbXZzUnJO?=
- =?utf-8?B?dHVFWEwvZm82eFhWaXRpV09UY0xhdU1uT2ZMYmJBMWlSZ3ZsQTZrQk5GMHR0?=
- =?utf-8?B?c21zZzI3SW9yQ2tpSWZYVTY0dEYrRzA4OE1tMWhhanlFMndyQ2xLdm96UG9K?=
- =?utf-8?B?VzBOUjI3Zkh5ZnExS0xWWDkzOVR3UVllcXZuMnAzWGtKWTFJSDVPR2dxalJY?=
- =?utf-8?B?cHFtaHJEbGwzNGN0RnRscCtxVVVWdTl3eFBRNzNaN3VMbzFpY2FKVHJySzlU?=
- =?utf-8?B?U21rQjAzNHpVZDQyWXdLNXUzSFNCZzJxdVROM0dGUHJMaG1hVDh2cDV5WlNR?=
- =?utf-8?B?SjcwRWZtUlRQUjdrY0RFTWdmdSt1M1FRS1B3SEZyamZOR2dnVmRkM0FZTUtO?=
- =?utf-8?B?SzYrNWZ6OUUvYjgvSkRITjluOTc3REx3TmliODMvaVBFVVQxZ2ZicmxkZ3hl?=
- =?utf-8?B?OWQ0WVNPL09hbTR2NzF6alF1ZnRoRWZyTVVuMk8reTZUZmRESm5HelBWdWFi?=
- =?utf-8?B?THR0V2MyMks0MFRPUFpOcWpMZy9OZWdEMFJPM3M4V2FMUi9uY0ZqdXV1QjNo?=
- =?utf-8?B?amJSS3hZTHlsSmd6d2NRVXJ6dUxJZmZOSmlNRVY4c2tmM1dyOHBhaDlPOGJo?=
- =?utf-8?B?M3Ztd0Z5aHphN3hjdWV2QzBnMy9RYW8zZUZoMFhqRnh0OEJpZEt1QTRaSFlo?=
- =?utf-8?B?bW5iamRuYi9veCtzcUMxb1dGUG5PeEJKWXNEeWhyZXVEaWRSblMrN2kvWVlG?=
- =?utf-8?B?a013NkVnYVJUWmpTZHpiWUJBdzcvL3NjTTJWQStTRExGMzVjY1FIOXk3VUhU?=
- =?utf-8?B?dW5paHNKMUY2cUZmck9iQXdvN2pSeTExODFKMTFWUTlpSXZrM2pLTThPOFc0?=
- =?utf-8?B?aWpZM1Fwd0liNkJuRnBnVEthKzFnZ0hFa3UyV2pCU3dFY2xLMzQvbmhwOHJy?=
- =?utf-8?B?cHdySnNoYWtKaE0rdEdBR2tzU2xWSGRySDFQNmYwdWxzeUhUSGJxdG1xS0FD?=
- =?utf-8?B?dlFFa1ZIaVg2NW91cUhpWDZhS1BKaCtiUVhaM1BubTd1dkJLM01VcHByMG55?=
- =?utf-8?B?SzVqM1VHSlFEZGpzMzI2SGpDYm85aWN0QXBXRUNROFRwWVBNQlhHc041SVRZ?=
- =?utf-8?B?YzAwTTJGV2tIcjVjei9sSm0vSGJiQWpma2hzYkU0NndZNVFDeE5hVXNNQ3VO?=
- =?utf-8?B?K0t4ZCtxbVZrVHAxd1ZjK0ZEdlNLZGFqV2lsTnk5Z0hoYmgxWjdVdFhUNjMr?=
- =?utf-8?B?czZhdUpucStzMS9oY0JsUTVDUzVuTzdIYlM0RStEemUwWUR6bVJHZ243clZw?=
- =?utf-8?B?Z2MxMHFHNlJUaVZvc1cvRkxhUnlacEVqSzhFVkg0ZlViYUU3YVNoWTg0cUhm?=
- =?utf-8?B?WEI3NmxjRFpIRXJKWW9ITW1iakZLdTl3Z1g4dEtJcm5BT0U4U09LUW9DMFlJ?=
- =?utf-8?B?U1p4WGcvQU82WGhwV1g1WFhTb3dzZ0NURDlPYk1pVHZ1aE5mbFVzeXdjb3lj?=
- =?utf-8?B?d3FScDlaZE5JVzk3VlVzNE5weDc5TmZNa0x6TUdHTkhZRERFczZlZFNpSnFq?=
- =?utf-8?B?OVBRUGQ3bDNSV1JZUTJEMmQ2cXRpRVhTc2V5R0ZuZTBQMTRsK0M2eVlFUDln?=
- =?utf-8?B?SHlFN0ZnbXc4cGFlTGJBbHlpQitOWjRPbVNCbkUwR1hGZkRVRlU1Z1hWVjFZ?=
- =?utf-8?B?WFM3L0IwdFY1a1lLY3BFNzhzYWkxV0xvUEZPNkUvOU9hZkNXUk5JTndjcG5Z?=
- =?utf-8?B?YmxOZFV2YVpUSkRybTdITENJc014RSs3ME9kQ0pKdXZpMFE9PQ==?=
+	=?utf-8?B?QkNtQWtLNEFOL3ZPTWcyalZKSFI1T3g0S0hIQmpSWXZtTjhvaGFNb04zR2FL?=
+ =?utf-8?B?L0Z0eEZYWmlRVW9yUXZjc09GenNNYkZVMmpVZVlBMWhvZnZSVGhtYlBIZENv?=
+ =?utf-8?B?eG1NZ3k3QjJLRnFsZGt0bm01S1NCYkx1R2VkY3RZOWtMa0pJaDVEQmU3UEM5?=
+ =?utf-8?B?dVJBUDBXNE9vZFRISkI1bGhkTlBXOVJlRHVSWFpwRSsrMFZmRFRDK3ozbFY2?=
+ =?utf-8?B?dVlBN05pdlVHQ0Ixb0x4Wk5tbHZMekIxNjNCczZFaUtGUVpBd3lQSGxDb0k4?=
+ =?utf-8?B?TTAvM21jSm1vMGNpbVcrVk5MQnlBNFJ1UjhWeXF0U0gxZys0R1hCYjU2bFhL?=
+ =?utf-8?B?N1F3a011QTRVUXozOVBvSE1PWW54cDZCSGFZUHVXMkhZZmtUNFBHZzhNU25q?=
+ =?utf-8?B?Mi9vMlVFdHh5SEJCcU8zVXdvMCtjWk1RSlhUK29vUzNrVklVWVp6ZzBoSGJo?=
+ =?utf-8?B?cjYxRmNCVW5rUElSTzVoeFR1Nlcva3FmcnNPRW1OUVJrcDRLbkhVZ1E2T05N?=
+ =?utf-8?B?dVZqdmpnMk9MOU45K0FlR21zbllZTUJKdktZQm9LdGYvYWpzRHhmU3RQVDhP?=
+ =?utf-8?B?ckE2L1ZpSlk2dExqQU85TUtZdlgyRUlZNFBWdmwyb0JTK3lmQ1ZocFhlV2pZ?=
+ =?utf-8?B?dTNyaGxXdFBuNzR5RHU2dkVTVzJXQlNPcHZiR3E5TlVrNjlBN1VPbUpFN1BK?=
+ =?utf-8?B?Zmw0QW1velFsakJ4UExQSHlybW9pNFQwNk8rT1dhYTVWVDlibHFmYTVDZGE5?=
+ =?utf-8?B?ODJLL2tsMVhDWjJLeVpTdk4xbkhiVnlXNTd3NGMyUC9XS0J0R2pJejdoM2R6?=
+ =?utf-8?B?RFRlYmZpcUlBU2ZoNFF5UjF5U0crVkMvK0FSZHpFREFyZzNEWkZqOW9mTHRV?=
+ =?utf-8?B?bTJwK2J2NWJaNmVlV1BtTFUrSEdSbEwvUTJwZGwzdGhNRUFJL2NvQUlZTmRI?=
+ =?utf-8?B?dTZwL3FoWlJZS3gzYlZQY3hnZmtNY1RxK0YvYlRpS3VmVkFuL05GL0N3MG5l?=
+ =?utf-8?B?UlRSVjBHVTkzSTgxQ0RUdkdNYTRscWJHU1YvZkJwdmt2YTErUGZsY0hZdlNs?=
+ =?utf-8?B?YWU2R0dHSCtjVE9zWE9iU21PZHNTOFJGaXIyTndPZlg2TkNXZ0wxNUllb1hp?=
+ =?utf-8?B?MGRHU3ppME9GQW1LeUUvS054NHovTnIrNDdLdXlDVVBMM0xiMFlxSERaekxG?=
+ =?utf-8?B?UjFEZXk2ZjRsWE4yUC9wS0syRmNIY1dTb1ZPM1JwK3MzYytpb1lvMDVCOXNF?=
+ =?utf-8?B?SnAvbGs4MnhyTEJqMVMrUXZYdHJYVVNuUmRncllid2U3T1dZeDN0MEpOSzIy?=
+ =?utf-8?B?L29YVDZkd0gwQzZjRUpJUXFEcVZKb2NQbkNZTVRVQ2c0d2N2TUQ0aG80UXZM?=
+ =?utf-8?B?YWIvVjdKckJFUFJsbWdUaFpUOWt0cWtOVzFpSUNiUVBmRVI4T09YYVloWVFu?=
+ =?utf-8?B?NjJUWjArWHBIZk1xazFkclBTRGJFc1g0TkNBbFh0WGgzazhXSjltbnoxSWRS?=
+ =?utf-8?B?SldObVVUSWVWcTY4SXhabWZNU0ZkNWovTEl2QTBlamJ2K3ZneU4vVndCT3Rv?=
+ =?utf-8?B?K1JIQ3BZY2liUUYzUFRuQ0lwS1lqa1NvNkIxV0dwcm9JNlVBRjZvOG5xOUdp?=
+ =?utf-8?B?V2NsTGlXMHpJK2s2L1RMQjVTd2c4eHA3T2tXbC9SR3JUODdJOWhyLzRNVDF1?=
+ =?utf-8?B?TUVoVEJaTXBYUjZJWDQzWDk3Y3lRQ081bVVYb2taRWdCN0cyNDY1VHpCOXZ4?=
+ =?utf-8?B?dldmRzJrMjRpYStoMTYwMzk3SzVKeUtQRkZ1YkR3ZXFPTDYyNVJZUm9OYjMw?=
+ =?utf-8?B?dnR6R3lQVUp5aFk4Vjd1UEYzVll0THgyUlhHaGt0M2ZBeW1zRGJOckxwRUpy?=
+ =?utf-8?B?RHRwL3JCRHpybUVqS05KRVlBZ0JudlEzcmhuNi9Sam5xOVE9PQ==?=
 X-Forefront-Antispam-Report:
-	CIP:216.228.118.233;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc7edge2.nvidia.com;CAT:NONE;SFS:(13230037)(376011)(36860700010)(82310400023)(1800799021)(7416011);DIR:OUT;SFP:1101;
+	CIP:216.228.118.232;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc7edge1.nvidia.com;CAT:NONE;SFS:(13230037)(7416011)(36860700010)(376011)(1800799021)(82310400023);DIR:OUT;SFP:1101;
 X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 17 Jun 2024 15:09:25.2205
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 17 Jun 2024 15:09:23.0551
  (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 0f09d0db-13e3-46d6-6d88-08dc8edf79d3
+X-MS-Exchange-CrossTenant-Network-Message-Id: 0f249845-61e2-4aa7-da77-08dc8edf78a0
 X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.118.233];Helo=[mail.nvidia.com]
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.118.232];Helo=[mail.nvidia.com]
 X-MS-Exchange-CrossTenant-AuthSource:
-	SJ1PEPF00002314.namprd03.prod.outlook.com
+	SA2PEPF00003AEA.namprd02.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Anonymous
 X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ2PR12MB9239
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR12MB7930
 
-Currently, hardware VQs are created right when the vdpa device gets into
-DRIVER_OK state. That is easier because most of the VQ state is known by
-then.
+There are a few conditions under which the hardware VQs need a full
+teardown and setup:
 
-This patch switches to creating all VQs and their associated resources
-at device creation time. The motivation is to reduce the vdpa device
-live migration downtime by moving the expensive operation of creating
-all the hardware VQs and their associated resources out of downtime on
-the destination VM.
+- VQ size changed to something else than default value. Hardware VQ size
+  modification is not supported.
 
-The VQs are now created in a blank state. The VQ configuration will
-happen later, on DRIVER_OK. Then the configuration will be applied when
-the VQs are moved to the Ready state.
+- User turns off certain device features: mergeable buffers, checksum
+  virtio 1.0 compliance. In these cases, the TIR and RQT need to be
+  re-created.
 
-When .set_vq_ready() is called on a VQ before DRIVER_OK, special care is
-needed: now that the VQ is already created a resume_vq() will be
-triggered too early when no mr has been configured yet. Skip calling
-resume_vq() in this case, let it be handled during DRIVER_OK.
-
-For virtio-vdpa, the device configuration is done earlier during
-.vdpa_dev_add() by vdpa_register_device(). Avoid calling
-setup_vq_resources() a second time in that case.
+Add a needs_teardown configuration variable and set it when detecting
+the above scenarios. On next DRIVER_OK, the resources will be torn down
+first.
 
 Signed-off-by: Dragos Tatulea <dtatulea@nvidia.com>
 Reviewed-by: Cosmin Ratiu <cratiu@nvidia.com>
 ---
- drivers/vdpa/mlx5/net/mlx5_vnet.c | 37 ++++++++++++++++++++++++++++++++-----
- 1 file changed, 32 insertions(+), 5 deletions(-)
+ drivers/vdpa/mlx5/net/mlx5_vnet.c | 15 +++++++++++++++
+ drivers/vdpa/mlx5/net/mlx5_vnet.h |  1 +
+ 2 files changed, 16 insertions(+)
 
 diff --git a/drivers/vdpa/mlx5/net/mlx5_vnet.c b/drivers/vdpa/mlx5/net/mlx5_vnet.c
-index 249b5afbe34a..b2836fd3d1dd 100644
+index b2836fd3d1dd..d80d6b47da61 100644
 --- a/drivers/vdpa/mlx5/net/mlx5_vnet.c
 +++ b/drivers/vdpa/mlx5/net/mlx5_vnet.c
-@@ -2444,7 +2444,7 @@ static void mlx5_vdpa_set_vq_ready(struct vdpa_device *vdev, u16 idx, bool ready
+@@ -2390,6 +2390,7 @@ static void mlx5_vdpa_set_vq_num(struct vdpa_device *vdev, u16 idx, u32 num)
+         }
+ 
  	mvq = &ndev->vqs[idx];
- 	if (!ready) {
- 		suspend_vq(ndev, mvq);
--	} else {
-+	} else if (mvdev->status & VIRTIO_CONFIG_S_DRIVER_OK) {
- 		if (resume_vq(ndev, mvq))
- 			ready = false;
++	ndev->needs_teardown = num != mvq->num_ent;
+ 	mvq->num_ent = num;
+ }
+ 
+@@ -2800,6 +2801,7 @@ static int mlx5_vdpa_set_driver_features(struct vdpa_device *vdev, u64 features)
+ 	struct mlx5_vdpa_dev *mvdev = to_mvdev(vdev);
+ 	struct mlx5_vdpa_net *ndev = to_mlx5_vdpa_ndev(mvdev);
+ 	u64 old_features = mvdev->actual_features;
++	u64 diff_features;
+ 	int err;
+ 
+ 	print_features(mvdev, features, true);
+@@ -2822,6 +2824,14 @@ static int mlx5_vdpa_set_driver_features(struct vdpa_device *vdev, u64 features)
+ 		}
  	}
-@@ -3078,10 +3078,18 @@ static void mlx5_vdpa_set_status(struct vdpa_device *vdev, u8 status)
+ 
++	/* When below features diverge from initial device features, VQs need a full teardown. */
++#define NEEDS_TEARDOWN_MASK (BIT_ULL(VIRTIO_NET_F_MRG_RXBUF) | \
++			     BIT_ULL(VIRTIO_NET_F_CSUM) | \
++			     BIT_ULL(VIRTIO_F_VERSION_1))
++
++	diff_features = mvdev->mlx_features ^ mvdev->actual_features;
++	ndev->needs_teardown = !!(diff_features & NEEDS_TEARDOWN_MASK);
++
+ 	update_cvq_info(mvdev);
+ 	return err;
+ }
+@@ -3038,6 +3048,7 @@ static void teardown_vq_resources(struct mlx5_vdpa_net *ndev)
+ 	destroy_rqt(ndev);
+ 	teardown_virtqueues(ndev);
+ 	ndev->setup = false;
++	ndev->needs_teardown = false;
+ }
+ 
+ static int setup_cvq_vring(struct mlx5_vdpa_dev *mvdev)
+@@ -3078,6 +3089,10 @@ static void mlx5_vdpa_set_status(struct vdpa_device *vdev, u8 status)
  				goto err_setup;
  			}
  			register_link_notifier(ndev);
--			err = setup_vq_resources(ndev, true);
--			if (err) {
--				mlx5_vdpa_warn(mvdev, "failed to setup driver\n");
--				goto err_driver;
-+			if (ndev->setup) {
-+				err = resume_vqs(ndev);
-+				if (err) {
-+					mlx5_vdpa_warn(mvdev, "failed to resume VQs\n");
-+					goto err_driver;
-+				}
-+			} else {
-+				err = setup_vq_resources(ndev, true);
-+				if (err) {
-+					mlx5_vdpa_warn(mvdev, "failed to setup driver\n");
-+					goto err_driver;
-+				}
- 			}
- 		} else {
- 			mlx5_vdpa_warn(mvdev, "did not expect DRIVER_OK to be cleared\n");
-@@ -3142,6 +3150,7 @@ static int mlx5_vdpa_compat_reset(struct vdpa_device *vdev, u32 flags)
- 		if (mlx5_vdpa_create_dma_mr(mvdev))
- 			mlx5_vdpa_warn(mvdev, "create MR failed\n");
- 	}
-+	setup_vq_resources(ndev, false);
- 	up_write(&ndev->reslock);
- 
- 	return 0;
-@@ -3836,8 +3845,21 @@ static int mlx5_vdpa_dev_add(struct vdpa_mgmt_dev *v_mdev, const char *name,
- 		goto err_reg;
- 
- 	mgtdev->ndev = ndev;
 +
-+	/* For virtio-vdpa, the device was set up during device register. */
-+	if (ndev->setup)
-+		return 0;
++			if (ndev->needs_teardown)
++				teardown_vq_resources(ndev);
 +
-+	down_write(&ndev->reslock);
-+	err = setup_vq_resources(ndev, false);
-+	up_write(&ndev->reslock);
-+	if (err)
-+		goto err_setup_vq_res;
-+
- 	return 0;
- 
-+err_setup_vq_res:
-+	_vdpa_unregister_device(&mvdev->vdev);
- err_reg:
- 	destroy_workqueue(mvdev->wq);
- err_res2:
-@@ -3863,6 +3885,11 @@ static void mlx5_vdpa_dev_del(struct vdpa_mgmt_dev *v_mdev, struct vdpa_device *
- 
- 	unregister_link_notifier(ndev);
- 	_vdpa_unregister_device(dev);
-+
-+	down_write(&ndev->reslock);
-+	teardown_vq_resources(ndev);
-+	up_write(&ndev->reslock);
-+
- 	wq = mvdev->wq;
- 	mvdev->wq = NULL;
- 	destroy_workqueue(wq);
+ 			if (ndev->setup) {
+ 				err = resume_vqs(ndev);
+ 				if (err) {
+diff --git a/drivers/vdpa/mlx5/net/mlx5_vnet.h b/drivers/vdpa/mlx5/net/mlx5_vnet.h
+index 2ada29767cc5..da7318f82d2a 100644
+--- a/drivers/vdpa/mlx5/net/mlx5_vnet.h
++++ b/drivers/vdpa/mlx5/net/mlx5_vnet.h
+@@ -56,6 +56,7 @@ struct mlx5_vdpa_net {
+ 	struct dentry *rx_dent;
+ 	struct dentry *rx_table_dent;
+ 	bool setup;
++	bool needs_teardown;
+ 	u32 cur_num_vqs;
+ 	u32 rqt_size;
+ 	u16 default_queue_size;
 
 -- 
 2.45.1
