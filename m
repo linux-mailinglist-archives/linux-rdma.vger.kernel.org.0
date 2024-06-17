@@ -1,189 +1,441 @@
-Return-Path: <linux-rdma+bounces-3237-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-3239-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id E290790B4C7
-	for <lists+linux-rdma@lfdr.de>; Mon, 17 Jun 2024 17:40:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id EB42E90B5AF
+	for <lists+linux-rdma@lfdr.de>; Mon, 17 Jun 2024 18:04:02 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 59A811F26A24
-	for <lists+linux-rdma@lfdr.de>; Mon, 17 Jun 2024 15:40:32 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 69DCD1F22BE0
+	for <lists+linux-rdma@lfdr.de>; Mon, 17 Jun 2024 16:04:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0EB63176AC9;
-	Mon, 17 Jun 2024 15:09:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 582871D9512;
+	Mon, 17 Jun 2024 16:01:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="JnZU86bk"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="dnKnRYGI"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from NAM12-DM6-obe.outbound.protection.outlook.com (mail-dm6nam12on2044.outbound.protection.outlook.com [40.107.243.44])
+Received: from out-187.mta1.migadu.com (out-187.mta1.migadu.com [95.215.58.187])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6F1D31741FE;
-	Mon, 17 Jun 2024 15:09:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.243.44
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1718636978; cv=fail; b=idhnCF+FON4bdK2vJCTuHggU/eW/Mj9af1bAzsuKSI7EiiQzl6hpC5T/AxddpAnm7ergkaDwUdKmEchrmpLnPO2+XKO0fusNhRMTSszcsBrXmhClzbHbTyHC3MPwmix6OkUgo2WbPKjAEXjGpB4rVo9KUdsChPkIQ6Qo7R2ZG1I=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1718636978; c=relaxed/simple;
-	bh=AFKqxZPICXDBRRM3Jnaz0zJRsTPE9v92jV4IJ15lGpI=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-ID:References:
-	 In-Reply-To:To:CC; b=ocZx1YEDrgMwNt/bPtrv7AaFYxPzgjMbVJnqEFJC2gOUUK8e3p2qRnExlLQ2iEVHMlHAF2o7j+s1iHKTPL+unXGfJoYdzr0evSn8VlCUxWEXGZZD36rfcRk4KQao7Gikd0edSO2OBxUxCbBAK6WFVBX3rgW2xSS4oEIyVmGx3dg=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=JnZU86bk; arc=fail smtp.client-ip=40.107.243.44
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=cA1tKSCHsZ44Gl6PeVmtKVMZa8kgiPpR1fX9sYCmBMayujzXbPjOkyOufhJQXM2Jj6iLE9nPebFiNPBMd3QBMPq8N64l0PL+VqMYVOqPD4jG+7jNl6PgxgSNn1lwcHYKRLfC+LUWIVExTyNPN7SzbKbVl7PAuB6AuJFypOmWXPBWznM9LzqtFnjimNmgBLiqNAcIJ7/g36Txju2Vb0cf6bGyRBw6Op1FkmuEdyzU2uJqESaMcLYNixH3/wW6uAVuK0yevq3rA5iFnaPZuwcKZ+AKf+f/L0Cy4nHfwV172cyQuXiq9sPW+kUuoFepI77XeZb6VtGYkUu7OseSg9PoKA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=f2qeVJE78M3ALmMWqAx3P0GQv/ossQz7wdatKeTQmhE=;
- b=VfOHo2JFoiHwBGGucw8dpNRWZuFS3QOdSFjGOY0F69tNoqy/IPIuWaeinH4PZCiZMRXtiv1d1nq6735M6JWbG0fRzsSnvIrq1DfXL+a9nenPZ0aFnPlD02kqD1mGo41IW6J81vT+a8DsElO9VNUftpvZrVs6DZas152mu/WLS5CD7VGKbqYaxmh6VGGgkpMlDC7Op3ZPjXfD6Ch66d7308BJEl4uae9KS29j6kiLuupr+2oZAF2etX/jT9/Kyp4Nb++YKccVHE7RQIH4eOOFC51vtkHTRxhWLLj49wEpAJBTH8w48pLFT9BhnraYSFdHThFIIdpI/Wf91QBwIw7KUg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 216.228.118.233) smtp.rcpttodomain=redhat.com smtp.mailfrom=nvidia.com;
- dmarc=pass (p=reject sp=reject pct=100) action=none header.from=nvidia.com;
- dkim=none (message not signed); arc=none (0)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=f2qeVJE78M3ALmMWqAx3P0GQv/ossQz7wdatKeTQmhE=;
- b=JnZU86bkLUJ/HXQr5Jfi0HdvpLPnx6ph70+untYPC86ixtGCoajK1tjIKLwDdstjkakNmyebqcJ50mJ0XaMnMSOLPk2dRCdsCVfmCHQziZrp+MS8KNV6LPdCfnVvhRJ5fykZv+UGNuUKSc7yxgUDHVJK+gohnaQD97DmugZO47he66RbkR5Tb+PLIvbhLO0GboHDJ4loOAouK0szuUVFr31KYCVNM8c68MWarcRWsiCL4mWeDlHJf7VtWfkYf12J9LfbCbQz5GZFdJHe+r3qXddCmlmI8ge8wOOyBhaJ4JrV8epIHGPDEZDuh4lkU7q7/dd8YS7oniQLJV6I56synQ==
-Received: from SJ0PR03CA0124.namprd03.prod.outlook.com (2603:10b6:a03:33c::9)
- by PH0PR12MB7486.namprd12.prod.outlook.com (2603:10b6:510:1e9::6) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7677.31; Mon, 17 Jun
- 2024 15:09:33 +0000
-Received: from SJ1PEPF00002314.namprd03.prod.outlook.com
- (2603:10b6:a03:33c:cafe::68) by SJ0PR03CA0124.outlook.office365.com
- (2603:10b6:a03:33c::9) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7677.31 via Frontend
- Transport; Mon, 17 Jun 2024 15:09:32 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.118.233)
- smtp.mailfrom=nvidia.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=nvidia.com;
-Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
- 216.228.118.233 as permitted sender) receiver=protection.outlook.com;
- client-ip=216.228.118.233; helo=mail.nvidia.com; pr=C
-Received: from mail.nvidia.com (216.228.118.233) by
- SJ1PEPF00002314.mail.protection.outlook.com (10.167.242.168) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.7677.15 via Frontend Transport; Mon, 17 Jun 2024 15:09:32 +0000
-Received: from drhqmail201.nvidia.com (10.126.190.180) by mail.nvidia.com
- (10.127.129.6) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.4; Mon, 17 Jun
- 2024 08:09:18 -0700
-Received: from drhqmail201.nvidia.com (10.126.190.180) by
- drhqmail201.nvidia.com (10.126.190.180) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1544.4; Mon, 17 Jun 2024 08:09:17 -0700
-Received: from dev-l-177.mtl.labs.mlnx (10.127.8.11) by mail.nvidia.com
- (10.126.190.180) with Microsoft SMTP Server id 15.2.1544.4 via Frontend
- Transport; Mon, 17 Jun 2024 08:09:14 -0700
-From: Dragos Tatulea <dtatulea@nvidia.com>
-Date: Mon, 17 Jun 2024 18:07:57 +0300
-Subject: [PATCH vhost 23/23] vdpa/mlx5: Don't enable non-active VQs in
- .set_vq_ready()
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C08761D9508
+	for <linux-rdma@vger.kernel.org>; Mon, 17 Jun 2024 16:01:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.187
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1718640078; cv=none; b=fy2pSl2mfx5HYFjA6ppLUkFkk4umpK8xy6CC1eLCE/geoyAtTkD/kAjTqhPtk3uHUa/7dPq30z9A6daAdplVcSgi9nJ6muoqZm7yYEDrk74lEr+heGoo7cGqgGhT3B7+j6ClUY+1mNEvfRejdEpNbXtnIPQXRdraIfcZuzZPSu0=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1718640078; c=relaxed/simple;
+	bh=SqZZlDLDWuPGb8gQzgBmsEwsBSqfZlp6HpXADi23ma4=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=YCY21wv4MFBLabsZqqIr8g8Jq+8rgy9oDvz+8Cd9KaYr3iOwhaecgvwMXRTbDyKe/0tUfZfI18RMn18ZZId8Fg2BJS1mLa2OS/HNOq+rqWVgNzfglbfN+J9CBR52iNLdc2HxWsYywJH/eWIsnKPiKrWlCvoQWM2UMuoCjwZUhpk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=dnKnRYGI; arc=none smtp.client-ip=95.215.58.187
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+X-Envelope-To: leon@kernel.org
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1718640069;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=RDcM0ffYbABQuuXgKCZSq6ZW4BoKG3QZfzxc4b484fE=;
+	b=dnKnRYGIJEe2y4b8X3Du3d+CgWZIGXQ4HNGpu87XhlTI+ZBtUKGH0304SKZEfgxE5Q776l
+	STwNNl3wGzs2BXKwjj0zI7GYR5RXq9wY+8uxItgThqkMfVUGHzBhgA9VWdI/eWogRSh76V
+	we3Y8+6M6KQLKilNlhyDAbDSUTUdXMs=
+X-Envelope-To: jgg@nvidia.com
+X-Envelope-To: agoldberger@nvidia.com
+X-Envelope-To: sharmaajay@microsoft.com
+X-Envelope-To: bmt@zurich.ibm.com
+X-Envelope-To: tangchengchang@huawei.com
+X-Envelope-To: chengyou@linux.alibaba.com
+X-Envelope-To: huangjunxian6@hisilicon.com
+X-Envelope-To: kaishen@linux.alibaba.com
+X-Envelope-To: linux-rdma@vger.kernel.org
+X-Envelope-To: longli@microsoft.com
+X-Envelope-To: mrgolin@amazon.com
+X-Envelope-To: mustafa.ismail@intel.com
+X-Envelope-To: bharat@chelsio.com
+X-Envelope-To: selvin.xavier@broadcom.com
+X-Envelope-To: shiraz.saleem@intel.com
+X-Envelope-To: yishaih@nvidia.com
+X-Envelope-To: zyjzyj2000@gmail.com
+Message-ID: <d78846a1-19c8-48f1-baa1-3ee6b961cf63@linux.dev>
+Date: Tue, 18 Jun 2024 00:00:57 +0800
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-ID: <20240617-stage-vdpa-vq-precreate-v1-23-8c0483f0ca2a@nvidia.com>
-References: <20240617-stage-vdpa-vq-precreate-v1-0-8c0483f0ca2a@nvidia.com>
-In-Reply-To: <20240617-stage-vdpa-vq-precreate-v1-0-8c0483f0ca2a@nvidia.com>
-To: "Michael S. Tsirkin" <mst@redhat.com>, Jason Wang <jasowang@redhat.com>,
-	Xuan Zhuo <xuanzhuo@linux.alibaba.com>, =?utf-8?q?Eugenio_P=C3=A9rez?=
-	<eperezma@redhat.com>, Saeed Mahameed <saeedm@nvidia.com>, Leon Romanovsky
-	<leon@kernel.org>, Tariq Toukan <tariqt@nvidia.com>, Si-Wei Liu
-	<si-wei.liu@oracle.com>
-CC: <virtualization@lists.linux.dev>, <linux-kernel@vger.kernel.org>,
-	<linux-rdma@vger.kernel.org>, <netdev@vger.kernel.org>, Dragos Tatulea
-	<dtatulea@nvidia.com>, Cosmin Ratiu <cratiu@nvidia.com>
-X-Mailer: b4 0.13.0
-X-NV-OnPremToCloud: ExternallySecured
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: SJ1PEPF00002314:EE_|PH0PR12MB7486:EE_
-X-MS-Office365-Filtering-Correlation-Id: 2fd2aaea-9aa8-469a-ded9-08dc8edf7e0d
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam:
-	BCL:0;ARA:13230037|36860700010|7416011|376011|1800799021|82310400023;
-X-Microsoft-Antispam-Message-Info:
-	=?utf-8?B?OVRrenhGak5ROG9sczdwSE45N0h4MzZyUTN3QXhsVVdHb3kxeWlicmVRS21k?=
- =?utf-8?B?dE9Eb09LRWxxTUZ1eHh0aGZncnAwYUcxUHc2VVo5VnMvOTB5MHJnZVduM2hx?=
- =?utf-8?B?RXZYUUh1M3I5ZUNGSEtkdTJaNzJKZm8rSzR3dU9Rbi9OQTM2aGo0TWFsaVlS?=
- =?utf-8?B?YVc3czFzRVdZTnVnNWUzM0lrTEt0V2xNQ0I3Z0U0RGlVWlRGT1hCMDlXemxT?=
- =?utf-8?B?VVk5NE53QWlzYVFEYkFmWTM0QmtkcGtvSjFpWktndEJyTk16YzgrTUYzdEpR?=
- =?utf-8?B?VWNzc1NoQitKS05kME1VQ2ZpLzd0ZktLMFVNenMvTzZWdm9CUm5xU1J2VEFR?=
- =?utf-8?B?OUd6Z1BPTVE1Z2JVSCtjeHUvQjJqaGFyUVJZdDNhc3VjcklyNXA5Sm55T2tr?=
- =?utf-8?B?d0k4R21vdnNGZjI2WE1kR1pMUmJrZ0VaY3RNMUtXSEtrZmZMTEMxVS82OUcr?=
- =?utf-8?B?MFhibUdMV0ova1RUSk5hbzRka0FQalExVFVSMEJ0VlhsNkhXN0JtWWdnVjlq?=
- =?utf-8?B?WjBIZWcrUGtSVEVoN1RyRHRyanRvc3FhdEZhWlFqQ2hTNURDdER1ZlVMOWRH?=
- =?utf-8?B?VTd0c2s2MVdtRVlQNTdsNTVnNmk0eFJJVnc3V1RKZlBrOUJkNGVza0ZES3cx?=
- =?utf-8?B?N0hMb1BDNkpCSFVBZkFKaUU0SzNVVk56N0lUdm1XcDZoZVRIR2pvb0tBMW85?=
- =?utf-8?B?cjZISlBySFNaaXhnMEt2TGVMMEtlaHFManMrMHd3TXZTRXo1ZzlCMWhSajZx?=
- =?utf-8?B?TVRoSEFlRE52bUMzcWY1KzJpcUI5NkRtbDlGT2s3bkNlV2dFbE5rQkVscERv?=
- =?utf-8?B?VkMybXY1b0I1WjdLTGZIL1Mra3B2a1h3YlQrWDFoL0Vsdmc3QXkxb1l5dEtC?=
- =?utf-8?B?UHZNdENDSXhxeDBidUV3c2duYkNGVmY2L1NXNXNJMkNpV1B5bHFJRHM3N09h?=
- =?utf-8?B?VzRjczM3Tk5xZldzS3NNdHlFSHMvUFc0UTdjWlRLR01xMGEyejh6OFJtd290?=
- =?utf-8?B?azMwMytmYzFwaVhMSmRmZHl6NDdURk55MEtFYVJGYjVQU1BzQSsrMWNFR1hC?=
- =?utf-8?B?TGlZSDE0VVNZaHY5Qnl4YmZTd1h6UzlXcnRKQjRBVkZqUTduRCtWTyszbm0w?=
- =?utf-8?B?WkpnbXJaOUtLTXNicXRTMzhkRXdXZzIzWUpyMzA5V1VkYkxmTStEZlh3a2NT?=
- =?utf-8?B?YmtGYWZVcTNxYU5PTjBtakJSTm5RMlNMQ0g5NkE5amFCQ1BCNWg5ZTA2V2Nv?=
- =?utf-8?B?ZE16RysyeXd0WjBCbWk1ellHN1RsU0Zsd285aDRIeVJFM1QzQTFDdzlhQnAv?=
- =?utf-8?B?RVpkSGcvSTk1YlJ0cnhtZEd6VWMyOXJlUXN1OE5LUEtTcjVsMnVOR1FPejV0?=
- =?utf-8?B?V3R2RXNGUTBmL1c1SGxhNUlzSFNnbE9vNTVNYUZVQ3lXVDBHV2JxcVFSd3hx?=
- =?utf-8?B?OW03SSs4V05SY0c2YUgxUUpvQnB5T2J5bGRvcnltQlpyaThyVHduUTRob1ZC?=
- =?utf-8?B?ZmIvVW9pNVZqMlJjS1pneER4OEtJejN5NEs0RHRpWlpDYTFidkM5ZEp3OVRF?=
- =?utf-8?B?WW4xV0RYcGtHNy9vTTdUSW03TjhZbmRwT3B6dU0yaFJubmZna3ZTTUsyR1Y1?=
- =?utf-8?B?M3RuM1pUTWRJS2Rjb2htRFBqUTkrUUxUbWVYclhhQUdWUnVDQWxtd0xtaGlo?=
- =?utf-8?B?NlZOVjZUZWM0SEVtN25iSjUwekRRMG9JcEVIVkFMS1pMT2tiSTM2V1FmdW5s?=
- =?utf-8?B?VHZwbHJ4OVRxQ09QaTNkRGJpSDZieklOMEhvaVVSRlZMVlRQU2ZRMDR4ZHJh?=
- =?utf-8?B?dnpxZEFocXRjNkRuVy80WWZYdzdiRHFHaWJxcVBYUUxrbHVlOGRQZFdiMkN4?=
- =?utf-8?B?MGkyMnVDK0lVandXdlJMaWZjQktDZHNBZitxWE9TaHQ0RVE9PQ==?=
-X-Forefront-Antispam-Report:
-	CIP:216.228.118.233;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc7edge2.nvidia.com;CAT:NONE;SFS:(13230037)(36860700010)(7416011)(376011)(1800799021)(82310400023);DIR:OUT;SFP:1101;
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 17 Jun 2024 15:09:32.3144
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 2fd2aaea-9aa8-469a-ded9-08dc8edf7e0d
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.118.233];Helo=[mail.nvidia.com]
-X-MS-Exchange-CrossTenant-AuthSource:
-	SJ1PEPF00002314.namprd03.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR12MB7486
+Subject: Re: [PATCH rdma-next 1/2] RDMA: Pass entire uverbs attr bundle to
+ create cq function
+To: Leon Romanovsky <leon@kernel.org>, Jason Gunthorpe <jgg@nvidia.com>
+Cc: Akiva Goldberger <agoldberger@nvidia.com>,
+ Ajay Sharma <sharmaajay@microsoft.com>, Bernard Metzler
+ <bmt@zurich.ibm.com>, Chengchang Tang <tangchengchang@huawei.com>,
+ Cheng Xu <chengyou@linux.alibaba.com>,
+ Junxian Huang <huangjunxian6@hisilicon.com>,
+ Kai Shen <kaishen@linux.alibaba.com>, linux-rdma@vger.kernel.org,
+ Long Li <longli@microsoft.com>, Michael Margolin <mrgolin@amazon.com>,
+ Mustafa Ismail <mustafa.ismail@intel.com>,
+ Potnuri Bharat Teja <bharat@chelsio.com>,
+ Selvin Xavier <selvin.xavier@broadcom.com>,
+ Shiraz Saleem <shiraz.saleem@intel.com>, Yishai Hadas <yishaih@nvidia.com>,
+ Zhu Yanjun <zyjzyj2000@gmail.com>
+References: <cover.1718554263.git.leon@kernel.org>
+ <7d0deae3798c9314ea41f4eb7a211d1b8b05a7fd.1718554263.git.leon@kernel.org>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Zhu Yanjun <yanjun.zhu@linux.dev>
+In-Reply-To: <7d0deae3798c9314ea41f4eb7a211d1b8b05a7fd.1718554263.git.leon@kernel.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
 
-VQ indices in the range [cur_num_qps, max_vqs) represent queues that
-have not yet been activated. .set_vq_ready should not activate these
-VQs.
+在 2024/6/17 0:15, Leon Romanovsky 写道:
+> From: Akiva Goldberger <agoldberger@nvidia.com>
+> 
+> Changes the create_cq verb signature by sending the entire uverbs attr
+> bundle as a parameter. This allows drivers to send driver specific attrs
+> through ioctl for the create_cq verb and access them in their driver
+> specific code.
+> 
+> Also adds a new enum value for driver specific ioctl attritbutes for
+> methods already supporting UHW.
+> 
+> Signed-off-by: Akiva Goldberger <agoldberger@nvidia.com>
+> Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
+> ---
+>   drivers/infiniband/core/uverbs_cmd.c          | 2 +-
+>   drivers/infiniband/core/uverbs_std_types_cq.c | 2 +-
+>   drivers/infiniband/hw/bnxt_re/ib_verbs.c      | 3 ++-
+>   drivers/infiniband/hw/bnxt_re/ib_verbs.h      | 2 +-
+>   drivers/infiniband/hw/cxgb4/cq.c              | 3 ++-
+>   drivers/infiniband/hw/cxgb4/iw_cxgb4.h        | 2 +-
+>   drivers/infiniband/hw/efa/efa.h               | 2 +-
+>   drivers/infiniband/hw/efa/efa_verbs.c         | 3 ++-
+>   drivers/infiniband/hw/erdma/erdma_verbs.c     | 3 ++-
+>   drivers/infiniband/hw/erdma/erdma_verbs.h     | 2 +-
+>   drivers/infiniband/hw/hns/hns_roce_cq.c       | 3 ++-
+>   drivers/infiniband/hw/hns/hns_roce_device.h   | 2 +-
+>   drivers/infiniband/hw/irdma/verbs.c           | 5 +++--
+>   drivers/infiniband/hw/mana/cq.c               | 2 +-
+>   drivers/infiniband/hw/mana/mana_ib.h          | 2 +-
+>   drivers/infiniband/hw/mlx4/cq.c               | 3 ++-
+>   drivers/infiniband/hw/mlx4/mlx4_ib.h          | 2 +-
+>   drivers/infiniband/hw/mlx5/cq.c               | 3 ++-
+>   drivers/infiniband/hw/mlx5/mlx5_ib.h          | 2 +-
+>   drivers/infiniband/hw/mthca/mthca_provider.c  | 3 ++-
+>   drivers/infiniband/sw/rxe/rxe_verbs.c         | 3 ++-
+>   drivers/infiniband/sw/siw/siw_verbs.c         | 2 +-
+>   drivers/infiniband/sw/siw/siw_verbs.h         | 2 +-
+>   include/rdma/ib_verbs.h                       | 2 +-
+>   include/uapi/rdma/ib_user_ioctl_cmds.h        | 1 +
+>   25 files changed, 36 insertions(+), 25 deletions(-)
+> 
+> diff --git a/drivers/infiniband/core/uverbs_cmd.c b/drivers/infiniband/core/uverbs_cmd.c
+> index 3d3ee3eca983..1b3ea71f2c33 100644
+> --- a/drivers/infiniband/core/uverbs_cmd.c
+> +++ b/drivers/infiniband/core/uverbs_cmd.c
+> @@ -1051,7 +1051,7 @@ static int create_cq(struct uverbs_attr_bundle *attrs,
+>   	rdma_restrack_new(&cq->res, RDMA_RESTRACK_CQ);
+>   	rdma_restrack_set_name(&cq->res, NULL);
+>   
+> -	ret = ib_dev->ops.create_cq(cq, &attr, &attrs->driver_udata);
+> +	ret = ib_dev->ops.create_cq(cq, &attr, attrs);
+>   	if (ret)
+>   		goto err_free;
+>   	rdma_restrack_add(&cq->res);
+> diff --git a/drivers/infiniband/core/uverbs_std_types_cq.c b/drivers/infiniband/core/uverbs_std_types_cq.c
+> index 370ad7c83f88..432054f0a8a4 100644
+> --- a/drivers/infiniband/core/uverbs_std_types_cq.c
+> +++ b/drivers/infiniband/core/uverbs_std_types_cq.c
+> @@ -128,7 +128,7 @@ static int UVERBS_HANDLER(UVERBS_METHOD_CQ_CREATE)(
+>   	rdma_restrack_new(&cq->res, RDMA_RESTRACK_CQ);
+>   	rdma_restrack_set_name(&cq->res, NULL);
+>   
+> -	ret = ib_dev->ops.create_cq(cq, &attr, &attrs->driver_udata);
+> +	ret = ib_dev->ops.create_cq(cq, &attr, attrs);
+>   	if (ret)
+>   		goto err_free;
+>   
+> diff --git a/drivers/infiniband/hw/bnxt_re/ib_verbs.c b/drivers/infiniband/hw/bnxt_re/ib_verbs.c
+> index d261b09025ca..e453ca701e87 100644
+> --- a/drivers/infiniband/hw/bnxt_re/ib_verbs.c
+> +++ b/drivers/infiniband/hw/bnxt_re/ib_verbs.c
+> @@ -2948,10 +2948,11 @@ int bnxt_re_destroy_cq(struct ib_cq *ib_cq, struct ib_udata *udata)
+>   }
+>   
+>   int bnxt_re_create_cq(struct ib_cq *ibcq, const struct ib_cq_init_attr *attr,
+> -		      struct ib_udata *udata)
+> +		      struct uverbs_attr_bundle *attrs)
+>   {
+>   	struct bnxt_re_cq *cq = container_of(ibcq, struct bnxt_re_cq, ib_cq);
+>   	struct bnxt_re_dev *rdev = to_bnxt_re_dev(ibcq->device, ibdev);
+> +	struct ib_udata *udata = &attrs->driver_udata;
+>   	struct bnxt_re_ucontext *uctx =
+>   		rdma_udata_to_drv_context(udata, struct bnxt_re_ucontext, ib_uctx);
+>   	struct bnxt_qplib_dev_attr *dev_attr = &rdev->dev_attr;
+> diff --git a/drivers/infiniband/hw/bnxt_re/ib_verbs.h b/drivers/infiniband/hw/bnxt_re/ib_verbs.h
+> index b267d6d5975f..e98cb1717338 100644
+> --- a/drivers/infiniband/hw/bnxt_re/ib_verbs.h
+> +++ b/drivers/infiniband/hw/bnxt_re/ib_verbs.h
+> @@ -221,7 +221,7 @@ int bnxt_re_post_send(struct ib_qp *qp, const struct ib_send_wr *send_wr,
+>   int bnxt_re_post_recv(struct ib_qp *qp, const struct ib_recv_wr *recv_wr,
+>   		      const struct ib_recv_wr **bad_recv_wr);
+>   int bnxt_re_create_cq(struct ib_cq *ibcq, const struct ib_cq_init_attr *attr,
+> -		      struct ib_udata *udata);
+> +		      struct uverbs_attr_bundle *attrs);
+>   int bnxt_re_resize_cq(struct ib_cq *ibcq, int cqe, struct ib_udata *udata);
+>   int bnxt_re_destroy_cq(struct ib_cq *cq, struct ib_udata *udata);
+>   int bnxt_re_poll_cq(struct ib_cq *cq, int num_entries, struct ib_wc *wc);
+> diff --git a/drivers/infiniband/hw/cxgb4/cq.c b/drivers/infiniband/hw/cxgb4/cq.c
+> index 7e2835dcbc1c..5111421f9473 100644
+> --- a/drivers/infiniband/hw/cxgb4/cq.c
+> +++ b/drivers/infiniband/hw/cxgb4/cq.c
+> @@ -995,8 +995,9 @@ int c4iw_destroy_cq(struct ib_cq *ib_cq, struct ib_udata *udata)
+>   }
+>   
+>   int c4iw_create_cq(struct ib_cq *ibcq, const struct ib_cq_init_attr *attr,
+> -		   struct ib_udata *udata)
+> +		   struct uverbs_attr_bundle *attrs)
+>   {
+> +	struct ib_udata *udata = &attrs->driver_udata;
+>   	struct ib_device *ibdev = ibcq->device;
+>   	int entries = attr->cqe;
+>   	int vector = attr->comp_vector;
+> diff --git a/drivers/infiniband/hw/cxgb4/iw_cxgb4.h b/drivers/infiniband/hw/cxgb4/iw_cxgb4.h
+> index fb8a0c248866..f838bb6718af 100644
+> --- a/drivers/infiniband/hw/cxgb4/iw_cxgb4.h
+> +++ b/drivers/infiniband/hw/cxgb4/iw_cxgb4.h
+> @@ -978,7 +978,7 @@ int c4iw_dereg_mr(struct ib_mr *ib_mr, struct ib_udata *udata);
+>   int c4iw_destroy_cq(struct ib_cq *ib_cq, struct ib_udata *udata);
+>   void c4iw_cq_rem_ref(struct c4iw_cq *chp);
+>   int c4iw_create_cq(struct ib_cq *ibcq, const struct ib_cq_init_attr *attr,
+> -		   struct ib_udata *udata);
+> +		   struct uverbs_attr_bundle *attrs);
+>   int c4iw_arm_cq(struct ib_cq *ibcq, enum ib_cq_notify_flags flags);
+>   int c4iw_modify_srq(struct ib_srq *ib_srq, struct ib_srq_attr *attr,
+>   		    enum ib_srq_attr_mask srq_attr_mask,
+> diff --git a/drivers/infiniband/hw/efa/efa.h b/drivers/infiniband/hw/efa/efa.h
+> index 926f9ff1f60f..e580e087e9da 100644
+> --- a/drivers/infiniband/hw/efa/efa.h
+> +++ b/drivers/infiniband/hw/efa/efa.h
+> @@ -161,7 +161,7 @@ int efa_create_qp(struct ib_qp *ibqp, struct ib_qp_init_attr *init_attr,
+>   		  struct ib_udata *udata);
+>   int efa_destroy_cq(struct ib_cq *ibcq, struct ib_udata *udata);
+>   int efa_create_cq(struct ib_cq *ibcq, const struct ib_cq_init_attr *attr,
+> -		  struct ib_udata *udata);
+> +		  struct uverbs_attr_bundle *attrs);
+>   struct ib_mr *efa_reg_mr(struct ib_pd *ibpd, u64 start, u64 length,
+>   			 u64 virt_addr, int access_flags,
+>   			 struct ib_udata *udata);
+> diff --git a/drivers/infiniband/hw/efa/efa_verbs.c b/drivers/infiniband/hw/efa/efa_verbs.c
+> index 8f7a13b79cdc..9ced560d7f42 100644
+> --- a/drivers/infiniband/hw/efa/efa_verbs.c
+> +++ b/drivers/infiniband/hw/efa/efa_verbs.c
+> @@ -1084,8 +1084,9 @@ static int cq_mmap_entries_setup(struct efa_dev *dev, struct efa_cq *cq,
+>   }
+>   
+>   int efa_create_cq(struct ib_cq *ibcq, const struct ib_cq_init_attr *attr,
+> -		  struct ib_udata *udata)
+> +		  struct uverbs_attr_bundle *attrs)
+>   {
+> +	struct ib_udata *udata = &attrs->driver_udata;
+>   	struct efa_ucontext *ucontext = rdma_udata_to_drv_context(
+>   		udata, struct efa_ucontext, ibucontext);
+>   	struct efa_com_create_cq_params params = {};
+> diff --git a/drivers/infiniband/hw/erdma/erdma_verbs.c b/drivers/infiniband/hw/erdma/erdma_verbs.c
+> index 40c9b6e46b82..d7e1cbf9f5c2 100644
+> --- a/drivers/infiniband/hw/erdma/erdma_verbs.c
+> +++ b/drivers/infiniband/hw/erdma/erdma_verbs.c
+> @@ -1628,8 +1628,9 @@ static int erdma_init_kernel_cq(struct erdma_cq *cq)
+>   }
+>   
+>   int erdma_create_cq(struct ib_cq *ibcq, const struct ib_cq_init_attr *attr,
+> -		    struct ib_udata *udata)
+> +		    struct uverbs_attr_bundle *attrs)
+>   {
+> +	struct ib_udata *udata = &attrs->driver_udata;
+>   	struct erdma_cq *cq = to_ecq(ibcq);
+>   	struct erdma_dev *dev = to_edev(ibcq->device);
+>   	unsigned int depth = attr->cqe;
+> diff --git a/drivers/infiniband/hw/erdma/erdma_verbs.h b/drivers/infiniband/hw/erdma/erdma_verbs.h
+> index 4f02ba06b210..6afdc02f5869 100644
+> --- a/drivers/infiniband/hw/erdma/erdma_verbs.h
+> +++ b/drivers/infiniband/hw/erdma/erdma_verbs.h
+> @@ -329,7 +329,7 @@ int erdma_query_device(struct ib_device *dev, struct ib_device_attr *attr,
+>   int erdma_get_port_immutable(struct ib_device *dev, u32 port,
+>   			     struct ib_port_immutable *ib_port_immutable);
+>   int erdma_create_cq(struct ib_cq *ibcq, const struct ib_cq_init_attr *attr,
+> -		    struct ib_udata *data);
+> +		    struct uverbs_attr_bundle *attrs);
+>   int erdma_query_port(struct ib_device *dev, u32 port,
+>   		     struct ib_port_attr *attr);
+>   int erdma_query_gid(struct ib_device *dev, u32 port, int idx,
+> diff --git a/drivers/infiniband/hw/hns/hns_roce_cq.c b/drivers/infiniband/hw/hns/hns_roce_cq.c
+> index 56dc3908da2f..4ec66611a143 100644
+> --- a/drivers/infiniband/hw/hns/hns_roce_cq.c
+> +++ b/drivers/infiniband/hw/hns/hns_roce_cq.c
+> @@ -353,9 +353,10 @@ static int set_cqe_size(struct hns_roce_cq *hr_cq, struct ib_udata *udata,
+>   }
+>   
+>   int hns_roce_create_cq(struct ib_cq *ib_cq, const struct ib_cq_init_attr *attr,
+> -		       struct ib_udata *udata)
+> +		       struct uverbs_attr_bundle *attrs)
+>   {
+>   	struct hns_roce_dev *hr_dev = to_hr_dev(ib_cq->device);
+> +	struct ib_udata *udata = &attrs->driver_udata;
+>   	struct hns_roce_ib_create_cq_resp resp = {};
+>   	struct hns_roce_cq *hr_cq = to_hr_cq(ib_cq);
+>   	struct ib_device *ibdev = &hr_dev->ib_dev;
+> diff --git a/drivers/infiniband/hw/hns/hns_roce_device.h b/drivers/infiniband/hw/hns/hns_roce_device.h
+> index ff0b3f68ee3a..ef50cd03f489 100644
+> --- a/drivers/infiniband/hw/hns/hns_roce_device.h
+> +++ b/drivers/infiniband/hw/hns/hns_roce_device.h
+> @@ -1267,7 +1267,7 @@ __be32 send_ieth(const struct ib_send_wr *wr);
+>   int to_hr_qp_type(int qp_type);
+>   
+>   int hns_roce_create_cq(struct ib_cq *ib_cq, const struct ib_cq_init_attr *attr,
+> -		       struct ib_udata *udata);
+> +		       struct uverbs_attr_bundle *attrs);
+>   
+>   int hns_roce_destroy_cq(struct ib_cq *ib_cq, struct ib_udata *udata);
+>   int hns_roce_db_map_user(struct hns_roce_ucontext *context, unsigned long virt,
+> diff --git a/drivers/infiniband/hw/irdma/verbs.c b/drivers/infiniband/hw/irdma/verbs.c
+> index 12704efb7b19..fc0ce35da14e 100644
+> --- a/drivers/infiniband/hw/irdma/verbs.c
+> +++ b/drivers/infiniband/hw/irdma/verbs.c
+> @@ -2035,14 +2035,15 @@ static inline int cq_validate_flags(u32 flags, u8 hw_rev)
+>    * irdma_create_cq - create cq
+>    * @ibcq: CQ allocated
+>    * @attr: attributes for cq
+> - * @udata: user data
+> + * @attrs: uverbs attribute bundle
+>    */
+>   static int irdma_create_cq(struct ib_cq *ibcq,
+>   			   const struct ib_cq_init_attr *attr,
+> -			   struct ib_udata *udata)
+> +			   struct uverbs_attr_bundle *attrs)
+>   {
+>   #define IRDMA_CREATE_CQ_MIN_REQ_LEN offsetofend(struct irdma_create_cq_req, user_cq_buf)
+>   #define IRDMA_CREATE_CQ_MIN_RESP_LEN offsetofend(struct irdma_create_cq_resp, cq_size)
+> +	struct ib_udata *udata = &attrs->driver_udata;
+>   	struct ib_device *ibdev = ibcq->device;
+>   	struct irdma_device *iwdev = to_iwdev(ibdev);
+>   	struct irdma_pci_f *rf = iwdev->rf;
+> diff --git a/drivers/infiniband/hw/mana/cq.c b/drivers/infiniband/hw/mana/cq.c
+> index c6a3fd57a196..4bf95df30eb6 100644
+> --- a/drivers/infiniband/hw/mana/cq.c
+> +++ b/drivers/infiniband/hw/mana/cq.c
+> @@ -6,7 +6,7 @@
+>   #include "mana_ib.h"
+>   
+>   int mana_ib_create_cq(struct ib_cq *ibcq, const struct ib_cq_init_attr *attr,
+> -		      struct ib_udata *udata)
+> +		      struct ib_udata *udata, struct uverbs_attr_bundle *attrs)
+>   {
+>   	struct mana_ib_cq *cq = container_of(ibcq, struct mana_ib_cq, ibcq);
+>   	struct mana_ib_create_cq_resp resp = {};
+> diff --git a/drivers/infiniband/hw/mana/mana_ib.h b/drivers/infiniband/hw/mana/mana_ib.h
+> index 977da9569701..522e2d79eae8 100644
+> --- a/drivers/infiniband/hw/mana/mana_ib.h
+> +++ b/drivers/infiniband/hw/mana/mana_ib.h
+> @@ -429,7 +429,7 @@ void mana_ib_uncfg_vport(struct mana_ib_dev *dev, struct mana_ib_pd *pd,
+>   			 u32 port);
+>   
+>   int mana_ib_create_cq(struct ib_cq *ibcq, const struct ib_cq_init_attr *attr,
+> -		      struct ib_udata *udata);
+> +		      struct ib_udata *udata, struct uverbs_attr_bundle *attrs);
+>   
+>   int mana_ib_destroy_cq(struct ib_cq *ibcq, struct ib_udata *udata);
+>   
+> diff --git a/drivers/infiniband/hw/mlx4/cq.c b/drivers/infiniband/hw/mlx4/cq.c
+> index 4cd738aae53c..aa9ea6ba26e5 100644
+> --- a/drivers/infiniband/hw/mlx4/cq.c
+> +++ b/drivers/infiniband/hw/mlx4/cq.c
+> @@ -172,8 +172,9 @@ static int mlx4_ib_get_cq_umem(struct mlx4_ib_dev *dev,
+>   
+>   #define CQ_CREATE_FLAGS_SUPPORTED IB_UVERBS_CQ_FLAGS_TIMESTAMP_COMPLETION
+>   int mlx4_ib_create_cq(struct ib_cq *ibcq, const struct ib_cq_init_attr *attr,
+> -		      struct ib_udata *udata)
+> +		      struct uverbs_attr_bundle *attrs)
+>   {
+> +	struct ib_udata *udata = &attrs->driver_udata;
+>   	struct ib_device *ibdev = ibcq->device;
+>   	int entries = attr->cqe;
+>   	int vector = attr->comp_vector;
+> diff --git a/drivers/infiniband/hw/mlx4/mlx4_ib.h b/drivers/infiniband/hw/mlx4/mlx4_ib.h
+> index 41ca1114a995..b52bceff7d97 100644
+> --- a/drivers/infiniband/hw/mlx4/mlx4_ib.h
+> +++ b/drivers/infiniband/hw/mlx4/mlx4_ib.h
+> @@ -767,7 +767,7 @@ int mlx4_ib_map_mr_sg(struct ib_mr *ibmr, struct scatterlist *sg, int sg_nents,
+>   int mlx4_ib_modify_cq(struct ib_cq *cq, u16 cq_count, u16 cq_period);
+>   int mlx4_ib_resize_cq(struct ib_cq *ibcq, int entries, struct ib_udata *udata);
+>   int mlx4_ib_create_cq(struct ib_cq *ibcq, const struct ib_cq_init_attr *attr,
+> -		      struct ib_udata *udata);
+> +		      struct uverbs_attr_bundle *attrs);
+>   int mlx4_ib_destroy_cq(struct ib_cq *cq, struct ib_udata *udata);
+>   int mlx4_ib_poll_cq(struct ib_cq *ibcq, int num_entries, struct ib_wc *wc);
+>   int mlx4_ib_arm_cq(struct ib_cq *cq, enum ib_cq_notify_flags flags);
+> diff --git a/drivers/infiniband/hw/mlx5/cq.c b/drivers/infiniband/hw/mlx5/cq.c
+> index 4429bf7c746b..172f3987fc87 100644
+> --- a/drivers/infiniband/hw/mlx5/cq.c
+> +++ b/drivers/infiniband/hw/mlx5/cq.c
+> @@ -942,8 +942,9 @@ static void notify_soft_wc_handler(struct work_struct *work)
+>   }
+>   
+>   int mlx5_ib_create_cq(struct ib_cq *ibcq, const struct ib_cq_init_attr *attr,
+> -		      struct ib_udata *udata)
+> +		      struct uverbs_attr_bundle *attrs)
+>   {
+> +	struct ib_udata *udata = &attrs->driver_udata;
+>   	struct ib_device *ibdev = ibcq->device;
+>   	int entries = attr->cqe;
+>   	int vector = attr->comp_vector;
+> diff --git a/drivers/infiniband/hw/mlx5/mlx5_ib.h b/drivers/infiniband/hw/mlx5/mlx5_ib.h
+> index bf25ddb17bce..2b03e607561e 100644
+> --- a/drivers/infiniband/hw/mlx5/mlx5_ib.h
+> +++ b/drivers/infiniband/hw/mlx5/mlx5_ib.h
+> @@ -1332,7 +1332,7 @@ int mlx5_ib_read_wqe_rq(struct mlx5_ib_qp *qp, int wqe_index, void *buffer,
+>   int mlx5_ib_read_wqe_srq(struct mlx5_ib_srq *srq, int wqe_index, void *buffer,
+>   			 size_t buflen, size_t *bc);
+>   int mlx5_ib_create_cq(struct ib_cq *ibcq, const struct ib_cq_init_attr *attr,
+> -		      struct ib_udata *udata);
+> +		      struct uverbs_attr_bundle *attrs);
+>   int mlx5_ib_destroy_cq(struct ib_cq *cq, struct ib_udata *udata);
+>   int mlx5_ib_poll_cq(struct ib_cq *ibcq, int num_entries, struct ib_wc *wc);
+>   int mlx5_ib_arm_cq(struct ib_cq *ibcq, enum ib_cq_notify_flags flags);
+> diff --git a/drivers/infiniband/hw/mthca/mthca_provider.c b/drivers/infiniband/hw/mthca/mthca_provider.c
+> index e1325f2927d6..677ebb145dbf 100644
+> --- a/drivers/infiniband/hw/mthca/mthca_provider.c
+> +++ b/drivers/infiniband/hw/mthca/mthca_provider.c
+> @@ -574,7 +574,8 @@ static int mthca_destroy_qp(struct ib_qp *qp, struct ib_udata *udata)
+>   
+>   static int mthca_create_cq(struct ib_cq *ibcq,
+>   			   const struct ib_cq_init_attr *attr,
+> -			   struct ib_udata *udata)
+> +			   struct ib_udata *udata,
+> +			   struct uverbs_attr_bundle *attrs)
+>   {
+>   	struct ib_device *ibdev = ibcq->device;
+>   	int entries = attr->cqe;
+> diff --git a/drivers/infiniband/sw/rxe/rxe_verbs.c b/drivers/infiniband/sw/rxe/rxe_verbs.c
+> index c7d4d8ab5a09..82bb7f33290c 100644
+> --- a/drivers/infiniband/sw/rxe/rxe_verbs.c
+> +++ b/drivers/infiniband/sw/rxe/rxe_verbs.c
+> @@ -1053,8 +1053,9 @@ static int rxe_post_recv(struct ib_qp *ibqp, const struct ib_recv_wr *wr,
+>   
+>   /* cq */
+>   static int rxe_create_cq(struct ib_cq *ibcq, const struct ib_cq_init_attr *attr,
+> -			 struct ib_udata *udata)
+> +			 struct uverbs_attr_bundle *attrs)
+>   {
+> +	struct ib_udata *udata = &attrs->driver_udata;
+>   	struct ib_device *dev = ibcq->device;
+>   	struct rxe_dev *rxe = to_rdev(dev);
+>   	struct rxe_cq *cq = to_rcq(ibcq);
 
-Signed-off-by: Dragos Tatulea <dtatulea@nvidia.com>
-Reviewed-by: Cosmin Ratiu <cratiu@nvidia.com>
----
- drivers/vdpa/mlx5/net/mlx5_vnet.c | 3 +++
- 1 file changed, 3 insertions(+)
+Reviewed-by: Zhu Yanjun <yanjun.zhu@linux.dev>
 
-diff --git a/drivers/vdpa/mlx5/net/mlx5_vnet.c b/drivers/vdpa/mlx5/net/mlx5_vnet.c
-index 1a5ee0d2b47f..a969a7f105a6 100644
---- a/drivers/vdpa/mlx5/net/mlx5_vnet.c
-+++ b/drivers/vdpa/mlx5/net/mlx5_vnet.c
-@@ -1575,6 +1575,9 @@ static int resume_vq(struct mlx5_vdpa_net *ndev, struct mlx5_vdpa_virtqueue *mvq
- 	if (!mvq->initialized)
- 		return 0;
- 
-+	if (mvq->index >= ndev->cur_num_vqs)
-+		return 0;
-+
- 	switch (mvq->fw_state) {
- 	case MLX5_VIRTIO_NET_Q_OBJECT_STATE_INIT:
- 		/* Due to a FW quirk we need to modify the VQ fields first then change state.
-
--- 
-2.45.1
-
+Zhu Yanjun
 
