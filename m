@@ -1,116 +1,108 @@
-Return-Path: <linux-rdma+bounces-3210-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-3211-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A5F5B90B31A
-	for <lists+linux-rdma@lfdr.de>; Mon, 17 Jun 2024 16:58:58 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7D0EA90B355
+	for <lists+linux-rdma@lfdr.de>; Mon, 17 Jun 2024 17:04:53 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1D2A52805F8
-	for <lists+linux-rdma@lfdr.de>; Mon, 17 Jun 2024 14:58:57 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A2B721C23C9E
+	for <lists+linux-rdma@lfdr.de>; Mon, 17 Jun 2024 15:04:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4939013048C;
-	Mon, 17 Jun 2024 14:06:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EA3FA145B1A;
+	Mon, 17 Jun 2024 14:17:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b="B10/mBrl"
+	dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b="CEOPCv9C"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mout.web.de (mout.web.de [212.227.17.12])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-qk1-f180.google.com (mail-qk1-f180.google.com [209.85.222.180])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 568EA12D74D;
-	Mon, 17 Jun 2024 14:06:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.12
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 212A06A33A
+	for <linux-rdma@vger.kernel.org>; Mon, 17 Jun 2024 14:17:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1718633180; cv=none; b=RS6l9hbXqPVx7CWiihwDPrMHpjIiKsYJqIXKVndrOXmtfjStv0HUhmj56Co6lLvlAUAqZEI4nNiG6rd4fT8X10usHh2L5yndBnttOt6d6XmzjsGXGkxll9wj9vgJ6pINvxP3vfaHurqC2Qo2whm6QoUyIruk0k0sA2/7Vnf+pT8=
+	t=1718633862; cv=none; b=NENoJkb/U15x+fSRNXcvOgOiJoc1W7FlFadnULe0TMo7JdBEsZkCUpzQaMMBaMrXRQGVGOmlESPDkTTvaaMVwbCa4nqOiRdo8mV1nE+yYnEpSOF6gMAKVXWKMhPeF4rpfdMcctVSkMZ997BBe6Q21w78wycIhZAWZgFVL3RtbVw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1718633180; c=relaxed/simple;
-	bh=80ZkpjwAKiz6/UORwNjuJxoHs30DWZAw21hpEDNYGn0=;
-	h=Message-ID:Date:MIME-Version:To:Cc:References:Subject:From:
-	 In-Reply-To:Content-Type; b=ko5SGBdoJh7M4zNXCrWp/VPdh/+9e7lvRRN2lnTEHVzjW4jk34OJLzZCC9s4TpBlDKRlb3rFCdlF87pKCSaSnl0Awl3hWLZ6dtVvtEnCbEHxM8+JScASZBUNAy4y4hIcMnxYZnCPf+tGrA+imGd5Bxy9FlR1WLX0zc+vBQz9XI0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de; spf=pass smtp.mailfrom=web.de; dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b=B10/mBrl; arc=none smtp.client-ip=212.227.17.12
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=web.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=web.de;
-	s=s29768273; t=1718633167; x=1719237967; i=markus.elfring@web.de;
-	bh=rAFBHEie0tyE8G1d25IpirjDgFW89pQaM/fImMbeKhw=;
-	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:To:Cc:References:
-	 Subject:From:In-Reply-To:Content-Type:Content-Transfer-Encoding:
-	 cc:content-transfer-encoding:content-type:date:from:message-id:
-	 mime-version:reply-to:subject:to;
-	b=B10/mBrlkQqWXSMr1hJTR8Jdnlein+KeWU9eMrbCfSe8LCLscuHdyklfvd5KLWF0
-	 o9aLayT7UPGwGLbvcExBi/lHH8RIt7CZP13K5QuKGqed7+QSt4dEx7pctEPJUtTOM
-	 DFTOdC5ygpzcw0ec8RTOgd62ZI7yQQhDuoC3kal8JdYcmKZvwcINzv5c24hcPvFBJ
-	 GB8BCH/Epa0OieimglrXgr2defxR0GGDvGCsT6sibUH6RCbmwX3xeQNF+ZKk9uJE5
-	 ZUSRmZkShfz76xEMxMIAv/wqCXHZZ1QzUWx5d1GlwWRUCgwC+Bb40VXZTm2GqUEzy
-	 C5d5+4WlIOwkPIeYaQ==
-X-UI-Sender-Class: 814a7b36-bfc1-4dae-8640-3722d8ec6cd6
-Received: from [192.168.178.21] ([94.31.83.95]) by smtp.web.de (mrweb106
- [213.165.67.124]) with ESMTPSA (Nemesis) id 1MAtsZ-1sCvbi2jQv-0008hB; Mon, 17
- Jun 2024 16:06:07 +0200
-Message-ID: <9d13548f-7707-4741-9824-390146462db0@web.de>
-Date: Mon, 17 Jun 2024 16:05:57 +0200
+	s=arc-20240116; t=1718633862; c=relaxed/simple;
+	bh=gJB3RcNBcE0/JpE/eNjRla9bs9uh4t4dRien+AQ6M84=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=g5y0GpBJxztmNyd7ooiD+6Fb9gc8GiFex5qEVJGZAntwwaaMRbE+BEUSOna2xkphH29HCliASZxJ+/YtcVLV7vl144NEdwwJJvxeOEnV975qG7t3NnWgrO3fcJ6isyq86/VxydzIuMpYJsyN+WWLfo8yZWOZbkkfGNrGmB3MiGo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca; spf=pass smtp.mailfrom=ziepe.ca; dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b=CEOPCv9C; arc=none smtp.client-ip=209.85.222.180
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ziepe.ca
+Received: by mail-qk1-f180.google.com with SMTP id af79cd13be357-79776e3e351so314629585a.3
+        for <linux-rdma@vger.kernel.org>; Mon, 17 Jun 2024 07:17:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google; t=1718633860; x=1719238660; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=gJB3RcNBcE0/JpE/eNjRla9bs9uh4t4dRien+AQ6M84=;
+        b=CEOPCv9CIojuITA3pObhkOe0s+8H6GZ+LmQgofJdIqT7KuDzDlHvQN1W+gAmg3clgr
+         i7wSkPSkQel9Cotdgnrihmkvj7yxi5685vyiZTBZ8VzbCUuD7hhfJgd7CmxdJ7NbyApt
+         Tve+MnzYU8oIGUaB4M4tftj7HXXWTVygpzYaJFMSmg4xdXLTc/p8WsziLJA/Q5gJNhLa
+         UEPIrd/01vyT4EvW5Kjvk4WNSSYc5bjVosKsRTulsmGiem/MCnT2SgrzSxOvOvp7XGBw
+         OkNsVpRcYwkPpcTNFJzqH8+xC7M2PikvBbWDXW3WZoOsFWfI5OXAAZFTDXfEXgGNTugM
+         BH5g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1718633860; x=1719238660;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=gJB3RcNBcE0/JpE/eNjRla9bs9uh4t4dRien+AQ6M84=;
+        b=SRTlScZs2fw6jlXacRJiXgW5tbfqrvSoZHW61SbYmBZT7V7RYFJ9Mz8TLO1/+CZXb8
+         ICVTTgelVm4C9DJImti8XP44pcFpnziKtXWYAABUSTAHcUoVLLADGemxKlI6R8DA4WUA
+         D/+RE2SdAZkWC0RdvKkebIbSk0VhbwGP75p737qSGzgO3sJZQSzkW2OeuYobTzDDqpnK
+         6asp4hPTA94pabqfOnby2Is1PJ9LMgeB2IPyA5PfC7qBIWivg0UM5npWQk2t3vMrLHB+
+         o8BdAlMG0xtl2faOs8sS46wFcU1dNuXq6wdmU2nn69z/xOYz2bJD4tEaM8NqbKO+WP8D
+         2+zg==
+X-Forwarded-Encrypted: i=1; AJvYcCWLlI4r4xlUH9s+HPKomFM4XIIZtFS2yiMUdVFclL/ko68jw+wL55aYUtGvusuhkm+7TBSHwszOjV5yNYVBmi2q9InDQFCF2hcGaw==
+X-Gm-Message-State: AOJu0YwnHdXKSayGDqDr/2BGwaiK93YAbmNUumaiO/ghpsh7gaKSWlQG
+	KroJt4ZS78mMLJmmJXNdBlMJh6RQzvwpavcRhsDxQoj/x0nDpjhnXMCSGoveAPY=
+X-Google-Smtp-Source: AGHT+IEeVElDnFU6HjCerK8KBYMeNyuzItK5u6pJekKDgwB6IP+lwMt8s0nxNZxohhF7K6rO8Pl5rw==
+X-Received: by 2002:a05:620a:248b:b0:795:59ca:5066 with SMTP id af79cd13be357-798d258e2e6mr1129033085a.53.1718633859951;
+        Mon, 17 Jun 2024 07:17:39 -0700 (PDT)
+Received: from ziepe.ca (hlfxns017vw-142-68-80-239.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.68.80.239])
+        by smtp.gmail.com with ESMTPSA id d75a77b69052e-4420c5e8e4bsm45859201cf.39.2024.06.17.07.17.39
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 17 Jun 2024 07:17:39 -0700 (PDT)
+Received: from jgg by wakko with local (Exim 4.95)
+	(envelope-from <jgg@ziepe.ca>)
+	id 1sJDAw-008eAR-Pl;
+	Mon, 17 Jun 2024 11:17:38 -0300
+Date: Mon, 17 Jun 2024 11:17:38 -0300
+From: Jason Gunthorpe <jgg@ziepe.ca>
+To: Omer Shpigelman <oshpigelman@habana.ai>
+Cc: linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
+	netdev@vger.kernel.org, dri-devel@lists.freedesktop.org,
+	ogabbay@kernel.org, zyehudai@habana.ai
+Subject: Re: [PATCH 11/15] RDMA/hbl: add habanalabs RDMA driver
+Message-ID: <20240617141738.GB791043@ziepe.ca>
+References: <20240613082208.1439968-1-oshpigelman@habana.ai>
+ <20240613082208.1439968-12-oshpigelman@habana.ai>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-To: Abhilash K V <kvabhilash@habana.ai>,
- Andrey Agranovich <aagranovich@habana.ai>,
- Bharat Jauhari <bjauhari@habana.ai>, David Meriin <dmeriin@habana.ai>,
- Omer Shpigelman <oshpigelman@habana.ai>, Sagiv Ozeri <sozeri@habana.ai>,
- Zvika Yehudai <zyehudai@habana.ai>, netdev@vger.kernel.org,
- linux-rdma@vger.kernel.org, dri-devel@lists.freedesktop.org
-Cc: LKML <linux-kernel@vger.kernel.org>
-References: <20240613082208.1439968-2-oshpigelman@habana.ai>
-Subject: Re: [PATCH 01/15] net: hbl_cn: add habanalabs Core Network driver
-Content-Language: en-GB
-From: Markus Elfring <Markus.Elfring@web.de>
-In-Reply-To: <20240613082208.1439968-2-oshpigelman@habana.ai>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:bxkFy6LWoY9U6hOlzw6Od6W0cDm05NCRvqXqGWxxyR0LK6U9tRB
- wXEPJP/oCkw35OIGJ2lZ5PlejFFUvhnV/vSjPBVPxN0f9Wx/a9p5hfFrUZbI25VPeW9uEnN
- MoXDuKof9HFzaT8oDc3VZ74eCzttdDFGzIFa2MOeI4mQmRCVYrYpGdZtXOdgvWv70rs4oTi
- gG30oJ9Zmqp4O9nJZvSeA==
-X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:/XUX4gpEYYc=;owOfkOd1IjGKzAmnsZD3EnQ/DgC
- htmnr7e2oXhtLE60323+++u46bW1UNlqntPulw+WthoxvFJAQmGF9f5O0dPPlaSCy28R8VPff
- oOJ79YUsmrHw8tsBpwgfiDhF2lpOWwAyuLiZy8RJZtD6vr4Uwpk4WBs9RJgFZfqQufw1kcuti
- B7PTygTYlt3m7iobyuyIkImJkvQaA+/3fpdWY+OfkvGuvxwv3DsBTjut+u4ndyR3FTL9oXzF+
- 5a43sZqRMKtOA/fRbjY/mbjhBibiURrBF2MGEQJnwpJbvZqcDH25IbshDT759cAZd1aUmPAJw
- WPlj6U+nLQYs/simMrWAmD4gPhn828RcUHvd50rjsN7teFrF+tJGL2fP71XvhUz6PvqT95nD9
- n2udzHjoYeQ8njq6DBZoIyBG3LKn3VO1w9wXqlJWZL9azF9g7MGPz4OSZWjwLswLiB3+rSXPC
- tPOqcAz3Lo5mkWvspogbSSWz1x6cBX82tBkDXV4IikGBoBqc3DOkDAMgPfAPsMe4Ulhl4ZasS
- RgbhMMn4Qb1q/D2mJ6aUhobHUas/I9Eg1j4HZPHD/Da4osH56460Dkfxi+f1yv2j4lX4JR6dx
- Iwr0LrhWZq3Arn2ivmzrj+grOKYviSTmGzEMNdE9xCrOrXWxUA34/6zS+pl8WZQqftyUFpRoe
- A9Ginu6yl4jSYydHK5I1+UDRjSKJWwifiHO4XpgZPDoOAqPANm1PVJIpZtHeZluzMbhW5D/94
- g8HOW7YxjIzbxBie9SHSPpuerawKvodR855dn7UREkIupMU3exh3Y2tmMWXFMaIiSs3GcFGX+
- iMjG8frxGPn+DybcGdyThMNZyQ3owr/GETwN1/sflffDY=
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240613082208.1439968-12-oshpigelman@habana.ai>
 
-=E2=80=A6
-> +++ b/drivers/net/ethernet/intel/hbl_cn/common/hbl_cn.c
-> @@ -0,0 +1,5954 @@
-=E2=80=A6
-> +int hbl_cn_read_spmu_counters(struct hbl_cn_port *cn_port, u64 out_data=
-[], u32 *num_out_data)
-> +{
-=E2=80=A6
-> +	mutex_lock(&cn_port->cnt_lock);
-> +	rc =3D port_funcs->spmu_sample(cn_port, *num_out_data, out_data);
-> +	mutex_unlock(&cn_port->cnt_lock);
-> +
-> +	return rc;
-> +}
-=E2=80=A6
+On Thu, Jun 13, 2024 at 11:22:04AM +0300, Omer Shpigelman wrote:
+> Add an RDMA driver of Gaudi ASICs family for AI scaling.
+> The driver itself is agnostic to the ASIC in action, it operates according
+> to the capabilities that were passed on device initialization.
+> The device is initialized by the hbl_cn driver via auxiliary bus.
+> The driver also supports QP resource tracking and port/device HW counters.
 
-Would you become interested to apply a statement like =E2=80=9Cguard(mutex=
-)(&cn_port->cnt_lock);=E2=80=9D?
-https://elixir.bootlin.com/linux/v6.10-rc4/source/include/linux/mutex.h#L1=
-96
+I'm glad to finally see this, I've been talking to habana folks a long
+time now to get this worked out!
 
-Regards,
-Markus
+This will need to be split up more, like others have said. I'd post
+the RDMA series assuming that the basic ethernet driver is merged. You
+don't need to combine basic ethernet with rdma in the same series.
+
+Jason
 
