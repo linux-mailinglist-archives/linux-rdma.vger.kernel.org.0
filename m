@@ -1,137 +1,96 @@
-Return-Path: <linux-rdma+bounces-3197-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-3198-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 88D7490AB26
-	for <lists+linux-rdma@lfdr.de>; Mon, 17 Jun 2024 12:34:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id C1B5290AB72
+	for <lists+linux-rdma@lfdr.de>; Mon, 17 Jun 2024 12:40:33 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 38D202852A0
-	for <lists+linux-rdma@lfdr.de>; Mon, 17 Jun 2024 10:34:21 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 60AB0285AD1
+	for <lists+linux-rdma@lfdr.de>; Mon, 17 Jun 2024 10:40:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5D5E91946A7;
-	Mon, 17 Jun 2024 10:34:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6555219414D;
+	Mon, 17 Jun 2024 10:40:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="L0zn0Uns"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ms94PKPn"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from out-184.mta0.migadu.com (out-184.mta0.migadu.com [91.218.175.184])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 782A0190069
-	for <linux-rdma@vger.kernel.org>; Mon, 17 Jun 2024 10:34:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.184
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1AAFB61FCA;
+	Mon, 17 Jun 2024 10:40:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1718620454; cv=none; b=Z9FAfUXmYEMCfKX7DWrWlsLjcfJWyn7yvOjegvgeLKwj4fGlmcOgNxKbL71Qj/sXvFU2Z41UYTEWO+T8aQge5lVD6/8dqvRQ8VsxFEcHArDIwU84i74WghhqK92dugKKiJGNcJC5HeXIESUaYXDgJENaHz5KQS9kmX/9HXYzE/w=
+	t=1718620830; cv=none; b=ZPYH9M8mkjjACCRwyvikgvkfgiu5OPisGMcQ2zFYjVrEiX8yMH42kfyz7c01aygFHvv5dxZFCN0tKJNmTHWUtlXh+Y/Xrqr6LstOp8geXb+2TC8LXNyYECmyKyqsS0lzBk8dohN+DULXlIQTY5US2dA0fqF5HHb7pk+QuW267vk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1718620454; c=relaxed/simple;
-	bh=NN/LB0iNyF5p+kAW7Oq5/02O/+o/KCvnyEWLGVqd5qw=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=WQj5v+9XXs5W2h+LrB5rlMZnBi2fYBZRvcjGR0VowLa9lodOD/AucwyDI04Sis0GgVcaTz2tzkE8YTLkmZnpxZL0JFcVeh5AH9lsBNDxZ6egGG/2ituD6COXjLHE31URfy9kGXwLmQxPuEr2SM/t1r7jdaSlF0GkxCZnD7S0BqA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=L0zn0Uns; arc=none smtp.client-ip=91.218.175.184
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-X-Envelope-To: lihongfu@kylinos.cn
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1718620449;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=4iGdIENTyDHyME+nFTGWO+3nQ6WZFYygsaPwHXuXkSU=;
-	b=L0zn0UnsHEsGZxAMQaTatGqMp8CyargCRzVqGcZHIFzQHG6PyUgUiZuA3aMZepu1NdKYqR
-	oXLn4BIu2lnZ0ljQdqRJ4imkaN16h3MsIDly6m6xylZDPoPey74BnVA5mHoydNie4zqkmX
-	1T91UaDKhf7Un0TEsHkYnLp3TEi/dTc=
-X-Envelope-To: davem@davemloft.net
-X-Envelope-To: edumazet@google.com
-X-Envelope-To: kuba@kernel.org
-X-Envelope-To: pabeni@redhat.com
-X-Envelope-To: allison.henderson@oracle.com
-X-Envelope-To: netdev@vger.kernel.org
-X-Envelope-To: linux-rdma@vger.kernel.org
-X-Envelope-To: rds-devel@oss.oracle.com
-X-Envelope-To: linux-kernel@vger.kernel.org
-Message-ID: <5a2cbc3e-bb37-4753-9c47-b196399ecf0a@linux.dev>
-Date: Mon, 17 Jun 2024 18:34:00 +0800
+	s=arc-20240116; t=1718620830; c=relaxed/simple;
+	bh=/YeVRc5sA8W64kYZ5SXwoCKhOR+BzHU525YdNCIta/I=;
+	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
+	 In-Reply-To:To:Cc; b=NPre8Zseq5uTUZo2+AbEb6u5b/GK4PpGtIK2QrlcPIYSCmXdB/vzYCPpdEQGQWUdnULzwtQFurDc6rlgBMHB8pm+P6NR/jjD7dIlAFrSMACysQ+U3NPKpsQlyaiOJp+2tPoa7ewkwFBIOPx6Wr8ACAgA0sx62fpAACTKdIljX/Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ms94PKPn; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPS id DA217C4AF1D;
+	Mon, 17 Jun 2024 10:40:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1718620829;
+	bh=/YeVRc5sA8W64kYZ5SXwoCKhOR+BzHU525YdNCIta/I=;
+	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+	b=ms94PKPnsMz6JikGONqrMeb9QeVhJd6Fh1Sw5nUGl6QDy0OqvwUVhAsBLxEAXpFbA
+	 EHDZnPMYgo4CWUO784dnVt8LL2MzDwhw2rX64bncDqVT/BZuFahxk8iyPF2lOWDJMX
+	 IqufLeB6iuMArvvxF61FTYggEuTDke7LNXpMX0XjOVDvNdtL+C2q7fiaiS/jB5+28P
+	 7+T/J8kcSgJMBXHpKbjgIBXl1xPPZsLs9eJsA3kbLLbDqOoy6o4rfycu4+6CD4YBfZ
+	 S88zOc9gS+KRnp1QNsWut3ZJk7u28RgGLkRq5ANSfOUomdsoso0n3jst454gVpIM5M
+	 e75g6+tW98mmg==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id B7B4FC4936D;
+	Mon, 17 Jun 2024 10:40:29 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH] rds:Simplify the allocation of slab caches
-To: Hongfu Li <lihongfu@kylinos.cn>, davem@davemloft.net,
- edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
- allison.henderson@oracle.com
-Cc: netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
- rds-devel@oss.oracle.com, linux-kernel@vger.kernel.org
-References: <20240617075435.110024-1-lihongfu@kylinos.cn>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Zhu Yanjun <yanjun.zhu@linux.dev>
-In-Reply-To: <20240617075435.110024-1-lihongfu@kylinos.cn>
-Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
+Subject: Re: [net-next v5 0/2] mlx5: Add netdev-genl queue stats
+From: patchwork-bot+netdevbpf@kernel.org
+Message-Id: 
+ <171862082974.4522.13019612823624585192.git-patchwork-notify@kernel.org>
+Date: Mon, 17 Jun 2024 10:40:29 +0000
+References: <20240612200900.246492-1-jdamato@fastly.com>
+In-Reply-To: <20240612200900.246492-1-jdamato@fastly.com>
+To: Joe Damato <jdamato@fastly.com>
+Cc: netdev@vger.kernel.org, linux-kernel@vger.kernel.org, nalramli@fastly.com,
+ cjubran@nvidia.com, davem@davemloft.net, dtatulea@nvidia.com,
+ edumazet@google.com, gal@nvidia.com, kuba@kernel.org, leon@kernel.org,
+ linux-rdma@vger.kernel.org, naveenm@marvell.com, pabeni@redhat.com,
+ richardcochran@gmail.com, saeedm@nvidia.com, tariqt@nvidia.com
 
-在 2024/6/17 15:54, Hongfu Li 写道:
-> Use the new KMEM_CACHE() macro instead of direct kmem_cache_create
-> to simplify the creation of SLAB caches.
+Hello:
+
+This series was applied to netdev/net-next.git (main)
+by David S. Miller <davem@davemloft.net>:
+
+On Wed, 12 Jun 2024 20:08:55 +0000 you wrote:
+> Greetings:
 > 
-> Signed-off-by: Hongfu Li <lihongfu@kylinos.cn>
-> ---
->   net/rds/tcp.c      | 4 +---
->   net/rds/tcp_recv.c | 4 +---
->   2 files changed, 2 insertions(+), 6 deletions(-)
+> Welcome to v5.
 > 
-> diff --git a/net/rds/tcp.c b/net/rds/tcp.c
-> index d8111ac83bb6..3dc6956f66f8 100644
-> --- a/net/rds/tcp.c
-> +++ b/net/rds/tcp.c
-> @@ -719,9 +719,7 @@ static int __init rds_tcp_init(void)
->   {
->   	int ret;
->   
-> -	rds_tcp_conn_slab = kmem_cache_create("rds_tcp_connection",
-> -					      sizeof(struct rds_tcp_connection),
-> -					      0, 0, NULL);
-> +	rds_tcp_conn_slab = KMEM_CACHE(rds_tcp_connection, 0);
+> Switched from RFC to just a v5, because I think this is pretty close.
+> Minor changes from v4 summarized below in the changelog.
+> 
+> [...]
 
-KMEM_CACHE is declared as below:
+Here is the summary with links:
+  - [net-next,v5,1/2] net/mlx5e: Add txq to sq stats mapping
+    https://git.kernel.org/netdev/net-next/c/0a3e5c1b670f
+  - [net-next,v5,2/2] net/mlx5e: Add per queue netdev-genl stats
+    https://git.kernel.org/netdev/net-next/c/7b66ae536a78
 
-/*
-  * Please use this macro to create slab caches. Simply specify the
-  * name of the structure and maybe some flags that are listed above.
-  *
-  * The alignment of the struct determines object alignment. If you
-  * f.e. add ____cacheline_aligned_in_smp to the struct declaration
-  * then the objects will be properly aligned in SMP configurations.
-  */
-#define KMEM_CACHE(__struct, __flags)                                   \
-                 kmem_cache_create(#__struct, sizeof(struct __struct),   \
-                         __alignof__(struct __struct), (__flags), NULL)
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
 
-Reviewed-by: Zhu Yanjun <yanjun.zhu@linux.dev>
-Thanks a lot.
-
-Zhu Yanjun
-
->   	if (!rds_tcp_conn_slab) {
->   		ret = -ENOMEM;
->   		goto out;
-> diff --git a/net/rds/tcp_recv.c b/net/rds/tcp_recv.c
-> index c00f04a1a534..7997a19d1da3 100644
-> --- a/net/rds/tcp_recv.c
-> +++ b/net/rds/tcp_recv.c
-> @@ -337,9 +337,7 @@ void rds_tcp_data_ready(struct sock *sk)
->   
->   int rds_tcp_recv_init(void)
->   {
-> -	rds_tcp_incoming_slab = kmem_cache_create("rds_tcp_incoming",
-> -					sizeof(struct rds_tcp_incoming),
-> -					0, 0, NULL);
-> +	rds_tcp_incoming_slab = KMEM_CACHE(rds_tcp_incoming, 0);
->   	if (!rds_tcp_incoming_slab)
->   		return -ENOMEM;
->   	return 0;
 
 
