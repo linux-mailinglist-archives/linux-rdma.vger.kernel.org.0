@@ -1,148 +1,109 @@
-Return-Path: <linux-rdma+bounces-3279-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-3280-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2E42D90D83E
-	for <lists+linux-rdma@lfdr.de>; Tue, 18 Jun 2024 18:08:17 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8845390D849
+	for <lists+linux-rdma@lfdr.de>; Tue, 18 Jun 2024 18:09:06 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4336D1C24632
-	for <lists+linux-rdma@lfdr.de>; Tue, 18 Jun 2024 16:08:16 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1A6CE2873BA
+	for <lists+linux-rdma@lfdr.de>; Tue, 18 Jun 2024 16:08:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6321A4D599;
-	Tue, 18 Jun 2024 16:08:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 133E74D8C3;
+	Tue, 18 Jun 2024 16:08:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="BHt4dUg3"
+	dkim=pass (2048-bit key) header.d=acm.org header.i=@acm.org header.b="NhmEOlrQ"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from 009.lax.mailroute.net (009.lax.mailroute.net [199.89.1.12])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 18DFF1CD26;
-	Tue, 18 Jun 2024 16:08:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 67F3478C91
+	for <linux-rdma@vger.kernel.org>; Tue, 18 Jun 2024 16:08:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=199.89.1.12
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1718726891; cv=none; b=YGLBDLN5o9hqBreSSxYX3qMy0i1hcdGxKL28yjN8cvOoUqJNOEvh8/XqxfyJp/hn0RMrDgSauJFLfm5KxITn0OyrRg5UAyzwoOicZdL1M8IRMwlFON2dxX421kFwnypaUh/3BuOerM2NvZpP+UQ3K5kBP4w2Poxye8QI1r+rxVk=
+	t=1718726910; cv=none; b=YPS3rNScTZGOoYeRzO/TbgI9N8fTz0J1BZQcZK3cgqTKQ1eWXdL3FbkC8pCB7KVGihMlxpiqW5+PWCPCtedbPdlqD/9ktyIQbU8MEFUyY4eIQNzQ4wEdzYc6XD69HQVrJKN1+XgTPG89Bca84C9DtuJENm1dF5R1iPuNBvksMDM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1718726891; c=relaxed/simple;
-	bh=zlIm1WzKbhNzUK7tcnez/bSSxuQpZcA+VINGnSx8DrQ=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=WW1L7z0xn3My5wvx5NmScQ656gaAwQLXf8AV7II/lo/jxNEVpHGLQtNMpfOpML8oSgaG0DmGwD22YmV7W9o8f7+sc7z9dRObpkRKZH/RZbmayLO2d2yDMdXmjZ8X6UAlWZJPWukDlVmdcJ3dlLPpQDc0yUdhXZlRiFlHUpt2zjI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=BHt4dUg3; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 10D1CC3277B;
-	Tue, 18 Jun 2024 16:08:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-	s=korg; t=1718726889;
-	bh=zlIm1WzKbhNzUK7tcnez/bSSxuQpZcA+VINGnSx8DrQ=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=BHt4dUg3tbNK71ZBewAGy/C6H730qgiamC6+fyFiy1kFiA6tCBt1OTuM5iiBK4r6C
-	 V/9q9RZMcjPlfScxuXZtzpKwNjz/pM2yIn5nXSbmcErqObJ3xCD2p3hGUGEm+j5fL1
-	 i1B0DRE6tT5SgYzzJBfkEvAlWkUABe15Yy1xtqaY=
-Date: Tue, 18 Jun 2024 18:08:06 +0200
-From: Greg KH <gregkh@linuxfoundation.org>
-To: Przemek Kitszel <przemyslaw.kitszel@intel.com>
-Cc: Shay Drory <shayd@nvidia.com>, rafael@kernel.org, ira.weiny@intel.com,
-	netdev@vger.kernel.org, linux-rdma@vger.kernel.org, leon@kernel.org,
-	tariqt@nvidia.com, Parav Pandit <parav@nvidia.com>,
-	pabeni@redhat.com, davem@davemloft.net, kuba@kernel.org,
-	edumazet@google.com, david.m.ertman@intel.com
-Subject: Re: [PATCH net-next v7 1/2] driver core: auxiliary bus: show
- auxiliary device IRQs
-Message-ID: <2024061840-coping-rubbing-7af3@gregkh>
-References: <20240618150902.345881-1-shayd@nvidia.com>
- <20240618150902.345881-2-shayd@nvidia.com>
- <ca97ec5b-9b46-4456-bf5b-37136aa7f1bf@intel.com>
+	s=arc-20240116; t=1718726910; c=relaxed/simple;
+	bh=zQE1Db58c3BcnTUqIHQ26a76O5g/BAzVpDdPihh7U6s=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=q0bQHci8yz4B8O5n5cap10tJHey/GnlnwPD7i02CKf6oqfzUKVpip2+cz41v914Bkt6urQe+O/OAx2jeq6Z7qHxeMXl92ZfKB6Q9CBGlZbVsXvPdAI+tDbl5v/szUxkHSz8IEW2WIYZSIeOVJehCofB9m17H+QOM72CM3OK3Mgs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=acm.org; spf=pass smtp.mailfrom=acm.org; dkim=pass (2048-bit key) header.d=acm.org header.i=@acm.org header.b=NhmEOlrQ; arc=none smtp.client-ip=199.89.1.12
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=acm.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=acm.org
+Received: from localhost (localhost [127.0.0.1])
+	by 009.lax.mailroute.net (Postfix) with ESMTP id 4W3WrX6QzlzlgMVS;
+	Tue, 18 Jun 2024 16:08:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=acm.org; h=
+	content-transfer-encoding:content-type:content-type:in-reply-to
+	:from:from:content-language:references:subject:subject
+	:user-agent:mime-version:date:date:message-id:received:received;
+	 s=mr01; t=1718726904; x=1721318905; bh=rXm22aa4uNfLbj5oHoqEtahn
+	hATqX9TBEK1apmGNxQQ=; b=NhmEOlrQaPts2vm1dA+hSzHL6zOzrF14r201rIfL
+	WlXlzeNTFzxO3m0fXXUsdX+kySWS3S76lquG6v2/lZ2rqKpCvzfh23IK2ejHj/Bx
+	AkERAjTTcjyMZlWXvgKUNjr9Xa8msRXHpaTH7DGbD3wkOehhCfqWeBQFQEXdYQXv
+	fCLVFxHncNpYCDHkZLpzl2sioB8YsLHXX96YZdw8ppkslr0B57KG+CritpB9jvAE
+	lffmqU3Zq2G8qyeqkNu9+cgOufkFM3jEhJDtUtSnruw6t6uYvPF95IQj6Qirx/b1
+	Lm/hahq2/c0bSjSEcyyqiJwn51fOBXJMjNEFDLG8dFtauw==
+X-Virus-Scanned: by MailRoute
+Received: from 009.lax.mailroute.net ([127.0.0.1])
+ by localhost (009.lax [127.0.0.1]) (mroute_mailscanner, port 10029) with LMTP
+ id a2Ikwti1Rv3a; Tue, 18 Jun 2024 16:08:24 +0000 (UTC)
+Received: from [100.96.154.26] (unknown [104.132.0.90])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	(Authenticated sender: bvanassche@acm.org)
+	by 009.lax.mailroute.net (Postfix) with ESMTPSA id 4W3WrP3F8YzlgMVR;
+	Tue, 18 Jun 2024 16:08:21 +0000 (UTC)
+Message-ID: <8d8ada7d-81c1-4706-9263-7854a7847a85@acm.org>
+Date: Tue, 18 Jun 2024 09:08:18 -0700
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ca97ec5b-9b46-4456-bf5b-37136aa7f1bf@intel.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 3/6] RDMA/srpt: remove the handling of last WQE reached
+ event
+To: Max Gurtovoy <mgurtovoy@nvidia.com>, leonro@nvidia.com, jgg@nvidia.com,
+ linux-nvme@lists.infradead.org, linux-rdma@vger.kernel.org,
+ chuck.lever@oracle.com
+Cc: oren@nvidia.com, israelr@nvidia.com, maorg@nvidia.com,
+ yishaih@nvidia.com, hch@lst.de, shiraz.saleem@intel.com, edumazet@google.com
+References: <20240618001034.22681-1-mgurtovoy@nvidia.com>
+ <20240618001034.22681-4-mgurtovoy@nvidia.com>
+Content-Language: en-US
+From: Bart Van Assche <bvanassche@acm.org>
+In-Reply-To: <20240618001034.22681-4-mgurtovoy@nvidia.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Tue, Jun 18, 2024 at 05:47:15PM +0200, Przemek Kitszel wrote:
-> On 6/18/24 17:09, Shay Drory wrote:
-> > PCI subfunctions (SF) are anchored on the auxiliary bus. PCI physical
-> > and virtual functions are anchored on the PCI bus. The irq information
-> > of each such function is visible to users via sysfs directory "msi_irqs"
-> > containing files for each irq entry. However, for PCI SFs such
-> > information is unavailable. Due to this users have no visibility on IRQs
-> > used by the SFs.
-> > Secondly, an SF can be multi function device supporting rdma, netdevice
-> > and more. Without irq information at the bus level, the user is unable
-> > to view or use the affinity of the SF IRQs.
-> > 
-> > Hence to match to the equivalent PCI PFs and VFs, add "irqs" directory,
-> > for supporting auxiliary devices, containing file for each irq entry.
-> > 
-> > For example:
-> > $ ls /sys/bus/auxiliary/devices/mlx5_core.sf.1/irqs/
-> > 50  51  52  53  54  55  56  57  58
-> > 
-> > Reviewed-by: Parav Pandit <parav@nvidia.com>
-> > Signed-off-by: Shay Drory <shayd@nvidia.com>
-> > 
-> > ---
-> > v6-v7:
-> > - dynamically creating irqs directory when first irq file created (Greg)
-> > - removed irqs flag and simplified the dev_add() API (Greg)
-> > - move sysfs related new code to a new auxiliary_sysfs.c file (Greg)
+On 6/17/24 5:10 PM, Max Gurtovoy wrote:
+> This event is handled by the RDMA core layer.
 > 
-> [...]
+> Signed-off-by: Max Gurtovoy <mgurtovoy@nvidia.com>
+> ---
+>   drivers/infiniband/ulp/srpt/ib_srpt.c | 5 -----
+>   1 file changed, 5 deletions(-)
 > 
-> > +static int auxiliary_irq_dir_prepare(struct auxiliary_device *auxdev)
-> > +{
-> > +	int ret = 0;
-> > +
-> > +	mutex_lock(&auxdev->lock);
-> > +	if (auxdev->dir_exists)
-> > +		goto unlock;
-> > +
-> > +	xa_init(&auxdev->irqs);
-> 
-> due to below error handling you could end up with calling xa_init()
-> twice (and this is a "library" code, so it does not matter how you
-> handle this error in the current sole user ;))
-> 
-> > +	ret = devm_device_add_group(&auxdev->dev, &auxiliary_irqs_group);
-> > +	if (!ret)
-> > +		auxdev->dir_exists = 1;
-> > +
-> > +unlock:
-> > +	mutex_unlock(&auxdev->lock);
-> > +	return ret;
-> > +}
-> > +
-> 
-> [...]
-> 
-> > --- a/include/linux/auxiliary_bus.h
-> > +++ b/include/linux/auxiliary_bus.h
-> > @@ -58,6 +58,7 @@
-> >    *       in
-> >    * @name: Match name found by the auxiliary device driver,
-> >    * @id: unique identitier if multiple devices of the same name are exported,
-> > + * @irqs: irqs xarray contains irq indices which are used by the device,
-> >    *
-> >    * An auxiliary_device represents a part of its parent device's functionality.
-> >    * It is given a name that, combined with the registering drivers
-> > @@ -138,7 +139,10 @@
-> >   struct auxiliary_device {
-> >   	struct device dev;
-> >   	const char *name;
-> > +	struct xarray irqs;
-> > +	struct mutex lock; /* Protects "irqs" directory creation */
-> >   	u32 id;
-> > +	u8 dir_exists:1;
-> 
-> nit: I would make it a bool, or `bool: 1` if you really want
+> diff --git a/drivers/infiniband/ulp/srpt/ib_srpt.c b/drivers/infiniband/ulp/srpt/ib_srpt.c
+> index 9632afbd727b..8503f56b5202 100644
+> --- a/drivers/infiniband/ulp/srpt/ib_srpt.c
+> +++ b/drivers/infiniband/ulp/srpt/ib_srpt.c
+> @@ -231,11 +231,6 @@ static void srpt_qp_event(struct ib_event *event, void *ptr)
+>   		else
+>   			ib_cm_notify(ch->ib_cm.cm_id, event->event);
+>   		break;
+> -	case IB_EVENT_QP_LAST_WQE_REACHED:
+> -		pr_debug("%s-%d, state %s: received Last WQE event.\n",
+> -			 ch->sess_name, ch->qp->qp_num,
+> -			 get_ch_state_name(ch->state));
+> -		break;
+>   	default:
+>   		pr_err("received unrecognized IB QP event %d\n", event->event);
+>   		break;
 
-Why is this even needed?  It should "know" if the directory is there or
-not, it can always be looked up, right?
-
-thanks,
-
-greg k-h
+Acked-by: Bart Van Assche <bvanassche@acm.org>
 
