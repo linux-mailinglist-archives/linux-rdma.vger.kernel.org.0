@@ -1,319 +1,200 @@
-Return-Path: <linux-rdma+bounces-3266-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-3267-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1DBC590D07E
-	for <lists+linux-rdma@lfdr.de>; Tue, 18 Jun 2024 15:34:04 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9324B90D0D1
+	for <lists+linux-rdma@lfdr.de>; Tue, 18 Jun 2024 15:36:56 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 35A501C21051
-	for <lists+linux-rdma@lfdr.de>; Tue, 18 Jun 2024 13:34:03 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 248FF2879BC
+	for <lists+linux-rdma@lfdr.de>; Tue, 18 Jun 2024 13:36:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1009D15666F;
-	Tue, 18 Jun 2024 12:58:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4AB9E146582;
+	Tue, 18 Jun 2024 13:02:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="TWctGH4v"
+	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="opoRuY6V"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from NAM04-DM6-obe.outbound.protection.outlook.com (mail-dm6nam04on2084.outbound.protection.outlook.com [40.107.102.84])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BB55A18040;
-	Tue, 18 Jun 2024 12:58:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1718715527; cv=none; b=OKS4OZ0JQo+APT3L9ul0PZVaLUjVD4/+Vmhgz2MgnwZto/ePhhi+jnhvrJ9sO72qY0952YBMNIa2nIHMlo879G3qdWq1xKyLo25DqzwSVz/CSX3G1RUN2DO+8d21NlOheYClZPV39DDMyHEuOTLKc7tRJ6Te6IRF51Y7BSS2JIA=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1718715527; c=relaxed/simple;
-	bh=ALpN953I2oGcWDEYKbFMfEltWuwARYMRhRvOvM8R09A=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=hAyq4NZek+rBdpELKk8SXl7GIq2cqCMF6X2ZkG6xX0hATH+IkcL64OL5OA+sZDaB37I9EeDIhw6Gczu29gl1alf0NtwKgyxj7geGgJaWlES9vU88TBicUIJ4rgaDOiNZekBTTy+HT4CmCYxysYBc4BR4Cp0ZwyvI77RHFD96hR0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=TWctGH4v; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id F046BC4AF50;
-	Tue, 18 Jun 2024 12:58:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1718715527;
-	bh=ALpN953I2oGcWDEYKbFMfEltWuwARYMRhRvOvM8R09A=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=TWctGH4vf18mZxw/c/tYFJZGy8LVeH+FohXzVrJgK/cvQEuFrN4KeuEqWAYneC3Yp
-	 BBf6wSxdF2dQg/PPhqziOu8N58XCptappPR5Vt4+zzi/QmS3w2jZR2K436fmEP1p3+
-	 hy5ed0q3uDzNHnY59sB6s18/RkT+bJqXKAXEeO3SqxapO3cNG6Jbdz5UHtY+vse5Fd
-	 2GgdJT/uDTE/KIsP2od5ummInqIMjR+gXEn8FgsoqJaFnPKw5E6Rm0hFYNMca4YF1x
-	 lpNKlUhfw4PvN6GVdT4VsdXOgLBQbIlr7mIlKYIOB2fF7phs769oVqKpF2FZL/BqNI
-	 b2Iqmf6p198ZQ==
-Date: Tue, 18 Jun 2024 15:58:42 +0300
-From: Leon Romanovsky <leon@kernel.org>
-To: Omer Shpigelman <oshpigelman@habana.ai>
-Cc: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	"linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-	"netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-	"dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
-	"ogabbay@kernel.org" <ogabbay@kernel.org>,
-	Zvika Yehudai <zyehudai@habana.ai>
-Subject: Re: [PATCH 11/15] RDMA/hbl: add habanalabs RDMA driver
-Message-ID: <20240618125842.GG4025@unreal>
-References: <20240613082208.1439968-1-oshpigelman@habana.ai>
- <20240613082208.1439968-12-oshpigelman@habana.ai>
- <20240613191828.GJ4966@unreal>
- <fbb34afa-8a38-4124-9384-9b858ce2c4e5@habana.ai>
- <20240617190429.GB4025@unreal>
- <461bf44e-fd2f-4c8b-bc41-48d48e5a7fcb@habana.ai>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 711CA18E759
+	for <linux-rdma@vger.kernel.org>; Tue, 18 Jun 2024 13:02:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.102.84
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1718715760; cv=fail; b=MbdslgYHlnlEOQ6+LvU8fDmvonRu8tY5BLnjBTeaQ5X/yLRpaohLHCt5ZmRI9DqdcPEyOn1DBUv0bWBc0lmxPeVXxApv8QTre7zqwWQ+Pihz3ZjJqh/cUFI+ptt9tleCxbdIaULMXDNyQiOE0N6LjohczmOSm4BWEJz84gikVrw=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1718715760; c=relaxed/simple;
+	bh=9OVM4gk7VfsmFYk+n/HKMlTkO4zJKOHMhTGZ3jfyDm0=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:Content-Type:
+	 Content-Disposition:In-Reply-To:MIME-Version; b=E0gsx2NyfnaM12uDf3WigJn5Jyu2SoeuWVMPSRhSOuAgQK4zvZJ/AwvjdJJYgsefEAhTZM9FnavfM4SQDEplUCBkrYN4FG1aLMyISTpzo56AObURTMo5MW/15DTrG9xcCIC3VeyVVRvxaof1ozuTaUgAHodfkkVr5K1b+ajoFsg=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=opoRuY6V; arc=fail smtp.client-ip=40.107.102.84
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=AQoZT2VfVSu8l/mrFjID4sLmxmQKqE/kx/hprAt8uo+uum8VREWrh3HCl3HQOIkVleECum6ZVzwkZE1YPa3p8csyr93NTmVNcc5SO0R1bMpBIUwepMvtl18CU82ngokhTmeauYHtoiUyd+ScWsepgs6xs4R04H7VKQ0NWr8U+YGPdJImog1XNrJSDETXp7dY+euX3PlGFJexMyPl+Gb9/I/w0qunI2+N2pskVy4mQNw2Ayj818lBlioOp14mu384BorlNrKZoKr050gxJ1RpNhWpMKZZjCxfgf+Hg67Rm60EB0vbvQ8JHSPQGzcB1odPDW9Cdd6Aizjsjo/Hjqnj6Q==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=JtqWyuM9sUZTLDDG0gtzMwGQhbTxvuhgis0lKoV3h/E=;
+ b=bl1t9nqND5EbSOGBnbrTAJodiVLYBnXvaEfCqs+WviHsC19GXw/nzo2eyfsJXRGlZ3VsypUyCzYi4xNwjvskGyyxhdwlqEicKA0fxGEwj8x3cN5EWK0zLWORz4Haoyvz1scBGvxC5qpthOs/lki6T0SKmgF1XqiycSPw9I47T/CLnJ80sTS8W+lZbpm08Y8jmKC2M3PW1agRmbfwqM4oJY2KRMN2AlKBw3XpzB0IdEH+XFd5mzbsHMj1gNk1FTpmYO6JZfN/U1XUI1Pb/ZvU/hb6upbXge3v71295IrgabWUvxXkcxhsZaF2m3l5yXMoU62EfBg3KWgyanVw/kLFoQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=JtqWyuM9sUZTLDDG0gtzMwGQhbTxvuhgis0lKoV3h/E=;
+ b=opoRuY6VKO7To+kopgLlaysyrDgjBWS0LNxD6z24XjH3c8sSOmUcF2vYaBqsU+PO5VKvI6N74LuHR/i6Pb7lAUgW/zXiajN2S68BLr/L3nbO2MMDCWyHos/VIhsHaAHmiO9JxEVIlqVJc6V3bAnavPH6U/bDhUp4zqjKfQVbDA9al8fUzXRVwQcm04yz2MhPdHdNlvyauldmBmC0EWE/v1s5t/ewZkDmHZnG9hGjBGQ4nGgPeKdPzQWeAy3LW+azybwSYXZdQNdo0HADE6KnZHUBSao6hBR3OwxP9ToA82nbZoDWGToU09hfKGA/JDUS6EjfJiAX6xZQLDAofMy4bQ==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nvidia.com;
+Received: from DM6PR12MB3849.namprd12.prod.outlook.com (2603:10b6:5:1c7::26)
+ by CY8PR12MB7538.namprd12.prod.outlook.com (2603:10b6:930:95::21) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7677.30; Tue, 18 Jun
+ 2024 13:02:34 +0000
+Received: from DM6PR12MB3849.namprd12.prod.outlook.com
+ ([fe80::c296:774b:a5fc:965e]) by DM6PR12MB3849.namprd12.prod.outlook.com
+ ([fe80::c296:774b:a5fc:965e%5]) with mapi id 15.20.7677.030; Tue, 18 Jun 2024
+ 13:02:34 +0000
+Date: Tue, 18 Jun 2024 10:02:33 -0300
+From: Jason Gunthorpe <jgg@nvidia.com>
+To: Leon Romanovsky <leon@kernel.org>
+Cc: Chiara Meiohas <cmeiohas@nvidia.com>,
+	Christian Koenig <christian.koenig@amd.com>,
+	Jianxin Xiong <jianxin.xiong@intel.com>, linux-rdma@vger.kernel.org,
+	Michael Guralnik <michaelgur@nvidia.com>,
+	"Michael J. Ruhl" <michael.j.ruhl@intel.com>,
+	Sean Hefty <sean.hefty@intel.com>
+Subject: Re: [PATCH rdma-next] RDMA/mlx5: Set mkeys for dmabuf at PAGE_SIZE
+Message-ID: <20240618130233.GA2494510@nvidia.com>
+References: <1e2289b9133e89f273a4e68d459057d032cbc2ce.1718301631.git.leon@kernel.org>
+ <20240617135905.GL19897@nvidia.com>
+ <20240618120814.GF4025@unreal>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240618120814.GF4025@unreal>
+X-ClientProxiedBy: MN2PR03CA0008.namprd03.prod.outlook.com
+ (2603:10b6:208:23a::13) To DM6PR12MB3849.namprd12.prod.outlook.com
+ (2603:10b6:5:1c7::26)
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <461bf44e-fd2f-4c8b-bc41-48d48e5a7fcb@habana.ai>
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: DM6PR12MB3849:EE_|CY8PR12MB7538:EE_
+X-MS-Office365-Filtering-Correlation-Id: b40eda4a-fe66-4cb2-8a79-08dc8f96ebc9
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;ARA:13230037|366013|376011|1800799021;
+X-Microsoft-Antispam-Message-Info:
+	=?us-ascii?Q?VHuohTzQK3WHMpusZy7Y53EDOU2bZjXrpy/NhTC73hQaPbpinA2Mq6w5nN8+?=
+ =?us-ascii?Q?3hEISQXfMfTy2oxmmv9RzzyI1THvCy00N6eAY1IR4zXm4DaRNTkEJPEAKK8D?=
+ =?us-ascii?Q?Ld6+uIzaBiaPTO2KvJ+3DVkrSdm0PYEMmN97HEMezV4i6q2AJcYJb+fEszkT?=
+ =?us-ascii?Q?+aRAteU0rQjLI7IQiAeYKhI1RZTSuWD+KyIO9skjrViIc3ZJbX48TLFD2Zyf?=
+ =?us-ascii?Q?vhsTBc2PzUj+7vtpYpe0ZYL/Cu95yGteYqJxzklPHXGIISL6HzrBJJQzdoaP?=
+ =?us-ascii?Q?x4EnDe3ZlEkpRpr85dqBEfO+gVfF6LmOctPDma/34L3q44ufW7MpDXO1Li4/?=
+ =?us-ascii?Q?zPPSfCqxD7M2yDbRGV4pXwdKFCT9ddJHD17s2z7moUCzZywu1nOv5EL2nG3N?=
+ =?us-ascii?Q?KhNqMTKoI9xn01cEMsI6ArBxsc4XmaAbh/PHtg6eRWDj/e2H6fz3kBcH4KyZ?=
+ =?us-ascii?Q?UVXk0gGPWvz2RA1Vb4YDkvM4wsN6Asstkp3URN0Dl7+LhzfykQ4fn5GBLhCX?=
+ =?us-ascii?Q?jPJI3Etmo18AQ35YrlN28lYogQm0ZLtqzoNgyOw46/JzkxrLFJEbqZlPZRNN?=
+ =?us-ascii?Q?uJneP9gVq1AddHLJBHlflT4hbxQGprBp47SG7jyOmbxm10oD1/IxedChjMTt?=
+ =?us-ascii?Q?dAzVR2ebuPMnT8GyvXwpaJrgbBGAd94i1NYa6s/6jbNJQa6X4yQp19qso7K3?=
+ =?us-ascii?Q?eQYQ0guyI9CozKn9zbb+o5AvWS1EvdVgKbLqZiqgcW1sc76cjWEAppAnQiEU?=
+ =?us-ascii?Q?fbnH7iXJ4VIEm1EMqe96IIls4g/riGEgNtPFBI8N0Ink6Lg3fv7Gb/C5DMnJ?=
+ =?us-ascii?Q?WdWzCaZlq4I/7oxOHh3FlJqNBPiEhY6JPtohIdrWNnre25HsutShywhVwvVf?=
+ =?us-ascii?Q?vDN37PhHM8fFN8v2YTXf3hc1pJsK+5Gki5RRvZDqGGuSNJscRnGUU0PSej8w?=
+ =?us-ascii?Q?5pLZ1rS2qpkdDcld0BF33B8CveeYOm0pOdUxu5D75T/orXoNwGln1SrdJ4H1?=
+ =?us-ascii?Q?Cqb0Sld4BewhmtibQct9R0tkwRmjfjRFEw8XsX20xSWobOr3b985iATcPBEr?=
+ =?us-ascii?Q?KZlH5IyT8ENI/1ctPz14oE1hF/eIecI36kl2BYMrAbHJ+1IJnAi/UtRzbne3?=
+ =?us-ascii?Q?D1O+/MCN1rBPBmbRjbJYCdtZH6fYWtwfcnDVaFpUfmifs9wwS3lm3zInwAsL?=
+ =?us-ascii?Q?cUCHsMqcFBV6KvEeSyTGbsp7bAr1pWQ5QG7V8PeR5tavjPdSlifUf8VigaKI?=
+ =?us-ascii?Q?unzaTaAWd1NE3tQhoQ7mmigIyJB1tmGZ0xFTrQAiahJ9Fbw91ptG5YSLA/k3?=
+ =?us-ascii?Q?ffc7oA3i2U7Cc/SOhsWIZCBZ?=
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR12MB3849.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230037)(366013)(376011)(1800799021);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?us-ascii?Q?+bTKuwqlNcR/A9Iv1OisTZPi+3gROfC74k8oOavAD5etYB882Db3PxGyjf2o?=
+ =?us-ascii?Q?bKVna0+bXU7c83UeOvcFpUF1V+NxHt54K2tZOdvS0H/Bkx0zZGb1sVAe8s6s?=
+ =?us-ascii?Q?Ia6Tr2lejpJYcUPVQvoHCJOM5Yt4ZttfbKVZrR8TWFzC0MUISZ0Xk0LY7Bgq?=
+ =?us-ascii?Q?Dv8tWizDjEpSddnnDh2TGXVzIybtIe4Bdj5byVLgp+yWQeAcTYqeRIZpm2l1?=
+ =?us-ascii?Q?Xo8lCfQfIHVNhGWyPWW+Z8gIYYhKSxIiAsmvIakTV4XXVNfyMzZdKLQJ+ikL?=
+ =?us-ascii?Q?at4e4+ogO6DnCIsoaCJT25mJP3KFrYik+8J2pEFMBSVgwZ55KVeQ0w++HqiM?=
+ =?us-ascii?Q?1b3h5EpriPrYcus1Fkj4N4jtZBLrxJFE4RbRhLI4muDGQFHaclr3WfnWOKDO?=
+ =?us-ascii?Q?434Ycy1XIYwyzKYFc10gcI28JVBGE+8bvk3w8iU+zhGAoxlyDQiCPtN68cjd?=
+ =?us-ascii?Q?ZK95RNXqDhMMvuKng8MsqLmioTXCj01z+iR1C6SgGcJL4btSeH/zBKAl3fnw?=
+ =?us-ascii?Q?g5vUHyB6sDx3lOkkFR9Xws2VvZApqyhKXL/Jf02he8t3c6rXV9aQpAbs9y8n?=
+ =?us-ascii?Q?1rIyU9UgwKwF31IM996HNybrFrhqqnM0BCLwWPlLLWZwrY7TBAy1WbCB+a9y?=
+ =?us-ascii?Q?l2Nxwb6j1dk4SPZTmRiSF/mwClxgvUgcLymyrixTHtFDtqb+91Lj1ArAkAJS?=
+ =?us-ascii?Q?J4j4SbAYDJ0R8fCbTJtdyBJFtElZq7Ysxc7brGtSBCuHsnQ9Pb+/8S+gQkDy?=
+ =?us-ascii?Q?lfjdF9E0s+yRR6iX6dKWqT4CJgulocthZ7W1sURY6EvZu76NER2nNzv/eeE2?=
+ =?us-ascii?Q?TUwDWGtxjTxj16IWB9yHcK7LwSyqA1ZVCrjk/JXJw3zGyswoinEXXRDuRJrr?=
+ =?us-ascii?Q?sMFtoee0B9C8K7eNwdE2Od3dTj+3P5OfAZMtAVts2wG6B+AtLTkZ+uAxhr6T?=
+ =?us-ascii?Q?zCNHY/IYm33rTZS0X4lFq5Xy5lA0igvHXRXXlOnXRHvRUaBwLGO05wg/PtAr?=
+ =?us-ascii?Q?2du+UvWR2oZxJ6EKj+hmhuxWS2/3a1OdZbjH3HKJGZb62ji1yIsEI6EWjk9y?=
+ =?us-ascii?Q?joTCJ13GPdJ2ihSwvboNSw0sH/TeGbQ/C6AJs9XdNWqXzwXf4LRzFStD3Anl?=
+ =?us-ascii?Q?y4+QUB/JBoRffHdCpp4sGgP4u62+uSGvV7JWY2khfGwsJYpd/eiczcEBEq9w?=
+ =?us-ascii?Q?rU4p4J4MikrkOX8EXi+51DvTGbmA0xepRnGQaLM0mu+D7Yn6eaU6wmaNy8qP?=
+ =?us-ascii?Q?LPWZZ2OlKYbXHID30/zBaHSPTLXmyKSWYv2NfMTTWnDvVVouE28rkLa6hdQk?=
+ =?us-ascii?Q?HJDBJn68bJ6MflaQOQ0yyj1hO5tmD+9LnEr1yT7swQ2SbAF8q1XIoyi57Q+2?=
+ =?us-ascii?Q?LUVcTc7z+H+xHVUtofkNJPcymqLuikoU/nUfG+bFjiNTrL4KzqXfTzKTF2Vn?=
+ =?us-ascii?Q?dwAOqyJvFPCZIHSthFF+gigels6ohohOFo0qUXOGr1p3T00An0pTHiWaFedp?=
+ =?us-ascii?Q?gwhqHXsGrlF6wo3NPg7ZmiNP5IN2Pybkm/CuZqpURYzLXkcCzL270tZKGI6+?=
+ =?us-ascii?Q?iZTMFEkJUfuGgA1dJl8ZXcHw9or09kaxpj4GJa2D?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: b40eda4a-fe66-4cb2-8a79-08dc8f96ebc9
+X-MS-Exchange-CrossTenant-AuthSource: DM6PR12MB3849.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 18 Jun 2024 13:02:34.4724
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: ZnmgjHgwQz25yoESftd3GLOyH66hVYclBnNJ23p1v/s7rIuxj4vi8ingGVF65fA5
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY8PR12MB7538
 
-On Tue, Jun 18, 2024 at 11:08:34AM +0000, Omer Shpigelman wrote:
-> On 6/17/24 22:04, Leon Romanovsky wrote:
-> > [Some people who received this message don't often get email from leon@kernel.org. Learn why this is important at https://aka.ms/LearnAboutSenderIdentification ]
+On Tue, Jun 18, 2024 at 03:08:14PM +0300, Leon Romanovsky wrote:
+> > > Set the mkey for dmabuf at PAGE_SIZE to support any SGL
+> > > after a move operation.
+> > > 
+> > > ib_umem_find_best_pgsz returns 0 on error, so it is
+> > > incorrect to check the returned page_size against PAGE_SIZE
 > > 
-> > On Mon, Jun 17, 2024 at 05:43:49PM +0000, Omer Shpigelman wrote:
-> >> On 6/13/24 22:18, Leon Romanovsky wrote:
-> >>> [Some people who received this message don't often get email from leon@kernel.org. Learn why this is important at https://aka.ms/LearnAboutSenderIdentification ]
-> >>>
-> >>> On Thu, Jun 13, 2024 at 11:22:04AM +0300, Omer Shpigelman wrote:
-> >>>> Add an RDMA driver of Gaudi ASICs family for AI scaling.
-> >>>> The driver itself is agnostic to the ASIC in action, it operates according
-> >>>> to the capabilities that were passed on device initialization.
-> >>>> The device is initialized by the hbl_cn driver via auxiliary bus.
-> >>>> The driver also supports QP resource tracking and port/device HW counters.
-> >>>>
-> >>>> Signed-off-by: Omer Shpigelman <oshpigelman@habana.ai>
-> >>>> Co-developed-by: Abhilash K V <kvabhilash@habana.ai>
-> >>>> Signed-off-by: Abhilash K V <kvabhilash@habana.ai>
-> >>>> Co-developed-by: Andrey Agranovich <aagranovich@habana.ai>
-> >>>> Signed-off-by: Andrey Agranovich <aagranovich@habana.ai>
-> >>>> Co-developed-by: Bharat Jauhari <bjauhari@habana.ai>
-> >>>> Signed-off-by: Bharat Jauhari <bjauhari@habana.ai>
-> >>>> Co-developed-by: David Meriin <dmeriin@habana.ai>
-> >>>> Signed-off-by: David Meriin <dmeriin@habana.ai>
-> >>>> Co-developed-by: Sagiv Ozeri <sozeri@habana.ai>
-> >>>> Signed-off-by: Sagiv Ozeri <sozeri@habana.ai>
-> >>>> Co-developed-by: Zvika Yehudai <zyehudai@habana.ai>
-> >>>> Signed-off-by: Zvika Yehudai <zyehudai@habana.ai>
-> >>>
-> >>> I afraid that you misinterpreted the "Co-developed-by" tag. All these
-> >>> people are probably touch the code and not actually sit together at
-> >>> the same room and write the code together. So, please remove the
-> >>> extensive "Co-developed-by" tags.
-> >>>
-> >>> It is not full review yet, but simple pass-by-comments.
-> >>>
-> >>
-> >> Actually except of two, all of the mentioned persons sat in the same room
-> >> and developed the code together.
-> >> The remaining two are located on a different site (but also together).
-> >> Isn't that what "Co-developed-by" tag for?
-> >> I wanted to give them credit for writing the code but I can remove if it's
-> >> not common.
-> > 
-> > Signed-off-by will be enough to give them credit.
-> > 
+> > This commit message is not clear enough for something that need to be
+> > backported:
 > 
-> Ok, good enough.
-> 
-> >>
-> >>>> ---
-> >>>>  MAINTAINERS                              |   10 +
-> >>>>  drivers/infiniband/Kconfig               |    1 +
-> >>>>  drivers/infiniband/hw/Makefile           |    1 +
-> >>>>  drivers/infiniband/hw/hbl/Kconfig        |   17 +
-> >>>>  drivers/infiniband/hw/hbl/Makefile       |    8 +
-> >>>>  drivers/infiniband/hw/hbl/hbl.h          |  326 +++
-> >>>>  drivers/infiniband/hw/hbl/hbl_main.c     |  478 ++++
-> >>>>  drivers/infiniband/hw/hbl/hbl_verbs.c    | 2686 ++++++++++++++++++++++
-> >>>>  include/uapi/rdma/hbl-abi.h              |  204 ++
-> >>>>  include/uapi/rdma/hbl_user_ioctl_cmds.h  |   66 +
-> >>>>  include/uapi/rdma/hbl_user_ioctl_verbs.h |  106 +
-> >>>>  include/uapi/rdma/ib_user_ioctl_verbs.h  |    1 +
-> >>>>  12 files changed, 3904 insertions(+)
-> >>>>  create mode 100644 drivers/infiniband/hw/hbl/Kconfig
-> >>>>  create mode 100644 drivers/infiniband/hw/hbl/Makefile
-> >>>>  create mode 100644 drivers/infiniband/hw/hbl/hbl.h
-> >>>>  create mode 100644 drivers/infiniband/hw/hbl/hbl_main.c
-> >>>>  create mode 100644 drivers/infiniband/hw/hbl/hbl_verbs.c
-> >>>>  create mode 100644 include/uapi/rdma/hbl-abi.h
-> >>>>  create mode 100644 include/uapi/rdma/hbl_user_ioctl_cmds.h
-> >>>>  create mode 100644 include/uapi/rdma/hbl_user_ioctl_verbs.h
-> >>>
-> >>> <...>
-> >>>
-> >>>> +#define hbl_ibdev_emerg(ibdev, format, ...)  ibdev_emerg(ibdev, format, ##__VA_ARGS__)
-> >>>> +#define hbl_ibdev_alert(ibdev, format, ...)  ibdev_alert(ibdev, format, ##__VA_ARGS__)
-> >>>> +#define hbl_ibdev_crit(ibdev, format, ...)   ibdev_crit(ibdev, format, ##__VA_ARGS__)
-> >>>> +#define hbl_ibdev_err(ibdev, format, ...)    ibdev_err(ibdev, format, ##__VA_ARGS__)
-> >>>> +#define hbl_ibdev_warn(ibdev, format, ...)   ibdev_warn(ibdev, format, ##__VA_ARGS__)
-> >>>> +#define hbl_ibdev_notice(ibdev, format, ...) ibdev_notice(ibdev, format, ##__VA_ARGS__)
-> >>>> +#define hbl_ibdev_info(ibdev, format, ...)   ibdev_info(ibdev, format, ##__VA_ARGS__)
-> >>>> +#define hbl_ibdev_dbg(ibdev, format, ...)    ibdev_dbg(ibdev, format, ##__VA_ARGS__)
-> >>>> +
-> >>>> +#define hbl_ibdev_emerg_ratelimited(ibdev, fmt, ...)         \
-> >>>> +     ibdev_emerg_ratelimited(ibdev, fmt, ##__VA_ARGS__)
-> >>>> +#define hbl_ibdev_alert_ratelimited(ibdev, fmt, ...)         \
-> >>>> +     ibdev_alert_ratelimited(ibdev, fmt, ##__VA_ARGS__)
-> >>>> +#define hbl_ibdev_crit_ratelimited(ibdev, fmt, ...)          \
-> >>>> +     ibdev_crit_ratelimited(ibdev, fmt, ##__VA_ARGS__)
-> >>>> +#define hbl_ibdev_err_ratelimited(ibdev, fmt, ...)           \
-> >>>> +     ibdev_err_ratelimited(ibdev, fmt, ##__VA_ARGS__)
-> >>>> +#define hbl_ibdev_warn_ratelimited(ibdev, fmt, ...)          \
-> >>>> +     ibdev_warn_ratelimited(ibdev, fmt, ##__VA_ARGS__)
-> >>>> +#define hbl_ibdev_notice_ratelimited(ibdev, fmt, ...)                \
-> >>>> +     ibdev_notice_ratelimited(ibdev, fmt, ##__VA_ARGS__)
-> >>>> +#define hbl_ibdev_info_ratelimited(ibdev, fmt, ...)          \
-> >>>> +     ibdev_info_ratelimited(ibdev, fmt, ##__VA_ARGS__)
-> >>>> +#define hbl_ibdev_dbg_ratelimited(ibdev, fmt, ...)           \
-> >>>> +     ibdev_dbg_ratelimited(ibdev, fmt, ##__VA_ARGS__)
-> >>>> +
-> >>>
-> >>> Please don't redefine the existing macros. Just use the existing ones.
-> >>>
-> >>>
-> >>> <...>
-> >>>
-> >>
-> >> That's a leftover from some debug code. I'll remove.
-> >>
-> >>>> +     if (hbl_ib_match_netdev(ibdev, netdev))
-> >>>> +             ib_port = hbl_to_ib_port_num(hdev, netdev->dev_port);
-> >>>> +     else
-> >>>> +             return NOTIFY_DONE;
-> >>>
-> >>> It is not kernel coding style. Please write:
-> >>> if (!hbl_ib_match_netdev(ibdev, netdev))
-> >>>     return NOTIFY_DONE;
-> >>>
-> >>> ib_port = hbl_to_ib_port_num(hdev, netdev->dev_port);
-> >>>
-> >>
-> >> I'll fix the code, thanks.
-> >>
-> >>>> +
-> >>>
-> >>> <...>
-> >>>
-> >>>> +static int hbl_ib_probe(struct auxiliary_device *adev, const struct auxiliary_device_id *id)
-> >>>> +{
-> >>>> +     struct hbl_aux_dev *aux_dev = container_of(adev, struct hbl_aux_dev, adev);
-> >>>> +     struct hbl_ib_aux_ops *aux_ops = aux_dev->aux_ops;
-> >>>> +     struct hbl_ib_device *hdev;
-> >>>> +     ktime_t timeout;
-> >>>> +     int rc;
-> >>>> +
-> >>>> +     rc = hdev_init(aux_dev);
-> >>>> +     if (rc) {
-> >>>> +             dev_err(&aux_dev->adev.dev, "Failed to init hdev\n");
-> >>>> +             return -EIO;
-> >>>> +     }
-> >>>> +
-> >>>> +     hdev = aux_dev->priv;
-> >>>> +
-> >>>> +     /* don't allow module unloading while it is attached */
-> >>>> +     if (!try_module_get(THIS_MODULE)) {
-> >>>
-> >>> This part makes wonder, what are you trying to do here? What doesn't work for you
-> >>> in standard driver core and module load mechanism?
-> >>>
-> >>
-> >> Before auxiliary bus was introduced, we used EXPORT_SYMBOLs for inter
-> >> driver communication. That incremented the refcount of the used module so
-> >> it couldn't be removed while it is in use.
-> >> Auxiliary bus usage doesn't increment the used module refcount and hence
-> >> the used module can be removed while it is in use and that's something
-> >> we don't want to allow.
-> >> We could solve it by some global locking or in_use atomic but the most
-> >> simple and clean way is just to increment the used module refcount on
-> >> auxiliary device probe and decrement it on auxiliary device removal.
+> This patch is going to be backported without any relation to the commit
+> message as it has Fixes line.
+
+People doing backports complain with some regularity about poor commit
+messages, especailly now that so many patches get a CVE. We need to do
+better.
+
+> > RDMA/mlx5: Support non-page size aligned DMABUF mkeys
 > > 
-> > No, you was supposed to continue to use EXPORT_SYMBOLs and don't
-> > invent auxiliary ops structure (this is why you lost module
-> > reference counting).
+> > The mkey page size for DMABUF is fixed at PAGE_SIZE because we have to
+> > support a move operation that could change a large-sized page list
+> > into a small page-list and the mkey must be able to represent it.
 > > 
-> 
-> Sorry, but according to the auxiliary bus doc, a domain-specific ops
-> structure can be used.
-> We followed the usage example described at drivers/base/auxiliary.c.
-> What am I missing? 
-
-Being the one who implemented auxiliary bus in the kernel and converted
-number of drivers to use it, I strongly recommend do NOT follow the example
-provided there.
-
-So you are missing "best practice", and "best practice" is to use
-EXPORT_SYMBOLs and rely on module reference counting.
-
-> Moreover, we'd like to support the mode where the IB or the ETH driver is
-> not loaded at all. But this cannot be achieved if we use EXPORT_SYMBOLs
-> exclusively for inter driver communication.
-
-It is not true and not how the kernel works. You can perfectly load core
-driver without IB and ETH, at some extent this is how mlx5 driver works.
-
-> 
-> >>
-> >>>> +             dev_err(hdev->dev, "Failed to increment %s module refcount\n",
-> >>>> +                     module_name(THIS_MODULE));
-> >>>> +             rc = -EIO;
-> >>>> +             goto module_get_err;
-> >>>> +     }
-> >>>> +
-> >>>> +     timeout = ktime_add_ms(ktime_get(), hdev->pending_reset_long_timeout * MSEC_PER_SEC);
-> >>>> +     while (1) {
-> >>>> +             aux_ops->hw_access_lock(aux_dev);
-> >>>> +
-> >>>> +             /* if the device is operational, proceed to actual init while holding the lock in
-> >>>> +              * order to prevent concurrent hard reset
-> >>>> +              */
-> >>>> +             if (aux_ops->device_operational(aux_dev))
-> >>>> +                     break;
-> >>>> +
-> >>>> +             aux_ops->hw_access_unlock(aux_dev);
-> >>>> +
-> >>>> +             if (ktime_compare(ktime_get(), timeout) > 0) {
-> >>>> +                     dev_err(hdev->dev, "Timeout while waiting for hard reset to finish\n");
-> >>>> +                     rc = -EBUSY;
-> >>>> +                     goto timeout_err;
-> >>>> +             }
-> >>>> +
-> >>>> +             dev_notice_once(hdev->dev, "Waiting for hard reset to finish before probing IB\n");
-> >>>> +
-> >>>> +             msleep_interruptible(MSEC_PER_SEC);
-> >>>> +     }
-> >>>
-> >>> The code above is unexpected.
-> >>>
-> >>
-> >> We have no control on when the user insmod the IB driver.
+> > The test for this is not quite correct, instead of checking the output
+> > of mlx5_umem_find_best_pgsz() the call to ib_umem_find_best_pgsz
+> > should specify the exact HW/SW restriction - only PAGE_SIZE is
+> > accepted.
 > > 
-> > It is not true, this is controlled through module dependencies
-> > mechanism.
+> > Then the normal logic for dealing with leading/trailing sub page
+> > alignment works correctly and sub page size DMBUF mappings can be
+> > supported.
 > > 
+> > This is particularly painful on 64K kernels.
 > 
-> Yeah, if we would use EXPORT_SYMBOLs for inter driver communication but
-> we don't.
+> Unfortunately, the patch was already merged, so I can't change the
+> commit message in for-next branch.
 
-So please use it and don't add complexity where it is not needed.
+How is it already merged? There was no message from your script - are
+you loosing emails??
 
-> 
-> >> As a result it is possible that the IB auxiliary device will be probed
-> >> while the compute device is under reset (due to some HW error).
-> > 
-> > No, it is not possible. If you structure your driver right.
-> > 
-> 
-> Again, it is not possible if we would use EXPORT_SYMBOLs.
-> Please let me know if we misunderstood something because AFAIU we followed
-> the auxiliary bus doc usage example.
-
-It is better to follow actual drivers that use auxiliary bus and see how
-they implemented it and not rely on examples in the documentation.
-
-Thanks
-
-> 
-> > Thanks
+Jason
 
