@@ -1,59 +1,63 @@
-Return-Path: <linux-rdma+bounces-3265-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-3266-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2658390CB27
-	for <lists+linux-rdma@lfdr.de>; Tue, 18 Jun 2024 14:09:11 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1DBC590D07E
+	for <lists+linux-rdma@lfdr.de>; Tue, 18 Jun 2024 15:34:04 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 979FC2895A8
-	for <lists+linux-rdma@lfdr.de>; Tue, 18 Jun 2024 12:09:09 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 35A501C21051
+	for <lists+linux-rdma@lfdr.de>; Tue, 18 Jun 2024 13:34:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 07DAE2139BC;
-	Tue, 18 Jun 2024 12:08:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1009D15666F;
+	Tue, 18 Jun 2024 12:58:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="bngoNAx2"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="TWctGH4v"
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BCEF82139B6
-	for <linux-rdma@vger.kernel.org>; Tue, 18 Jun 2024 12:08:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BB55A18040;
+	Tue, 18 Jun 2024 12:58:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1718712500; cv=none; b=pPox4sFvPlh6vFaXzHU4B2SqUEpO3j3pkbQIa4edCc2v13JqJuF3QSGqBhvQVxOwNVchVbZcanLsU2GR4hnktE9lwIT8Y/IPzG/OUPsx201ePNTelDxx4i61cM5gAUqVX1zc3rXtXge/cmo+wR6msMO0BbaUUNv4t4rt/bvP64U=
+	t=1718715527; cv=none; b=OKS4OZ0JQo+APT3L9ul0PZVaLUjVD4/+Vmhgz2MgnwZto/ePhhi+jnhvrJ9sO72qY0952YBMNIa2nIHMlo879G3qdWq1xKyLo25DqzwSVz/CSX3G1RUN2DO+8d21NlOheYClZPV39DDMyHEuOTLKc7tRJ6Te6IRF51Y7BSS2JIA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1718712500; c=relaxed/simple;
-	bh=jdZJjJpj2Wf0HYaA8AS8+eHfh4+rayq9JE1wGZLL2vs=;
+	s=arc-20240116; t=1718715527; c=relaxed/simple;
+	bh=ALpN953I2oGcWDEYKbFMfEltWuwARYMRhRvOvM8R09A=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=aIar44etyTvH8tlNA5zBI8F0jDThNIofzoiWoFg3s/4RnIk7hn3kkIL+cAHjLd3Zuml3/HXFYpONQC4myzXo/6TF1Lmc5aEvE9HMHFHuLX4/l+05B/MFyWW57Lo2nEp7QqdXFoTmHu96VKW9dIhwR00NfyiJJLrDitrZNdvt4sk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=bngoNAx2; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 20DDFC3277B;
-	Tue, 18 Jun 2024 12:08:18 +0000 (UTC)
+	 Content-Type:Content-Disposition:In-Reply-To; b=hAyq4NZek+rBdpELKk8SXl7GIq2cqCMF6X2ZkG6xX0hATH+IkcL64OL5OA+sZDaB37I9EeDIhw6Gczu29gl1alf0NtwKgyxj7geGgJaWlES9vU88TBicUIJ4rgaDOiNZekBTTy+HT4CmCYxysYBc4BR4Cp0ZwyvI77RHFD96hR0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=TWctGH4v; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id F046BC4AF50;
+	Tue, 18 Jun 2024 12:58:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1718712499;
-	bh=jdZJjJpj2Wf0HYaA8AS8+eHfh4+rayq9JE1wGZLL2vs=;
+	s=k20201202; t=1718715527;
+	bh=ALpN953I2oGcWDEYKbFMfEltWuwARYMRhRvOvM8R09A=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=bngoNAx2hW2KpMsFyyGNRizUeDW4aeEv/6Vtpv/SyJToY94NMncAigTsHSrTQ2dmB
-	 u7ZWq6Bpuf5Uonkaua2+gTYBMY5hUPjl+932/yggDKVLnlEoMrnFxXS9k5LEulwJCj
-	 9pAT1yvZggQTV83z97SCCVjy4lfvaVNncm6mP94wsMrt0xI+Qep0v3jUDkaQpb+b4W
-	 y8HVoSg2FwZNhfOazN856E0o3sV3QD+n6oK/aJ+THeVOTFSyyZZLfHuouWsK0r44or
-	 vbc6zB98QcqieSet7BEhT6ESUDJUf09gdrtU9U5sUwSy9W0rBM0FhrQ0IIfxTE3WpL
-	 +tyUef51gAhsw==
-Date: Tue, 18 Jun 2024 15:08:14 +0300
+	b=TWctGH4vf18mZxw/c/tYFJZGy8LVeH+FohXzVrJgK/cvQEuFrN4KeuEqWAYneC3Yp
+	 BBf6wSxdF2dQg/PPhqziOu8N58XCptappPR5Vt4+zzi/QmS3w2jZR2K436fmEP1p3+
+	 hy5ed0q3uDzNHnY59sB6s18/RkT+bJqXKAXEeO3SqxapO3cNG6Jbdz5UHtY+vse5Fd
+	 2GgdJT/uDTE/KIsP2od5ummInqIMjR+gXEn8FgsoqJaFnPKw5E6Rm0hFYNMca4YF1x
+	 lpNKlUhfw4PvN6GVdT4VsdXOgLBQbIlr7mIlKYIOB2fF7phs769oVqKpF2FZL/BqNI
+	 b2Iqmf6p198ZQ==
+Date: Tue, 18 Jun 2024 15:58:42 +0300
 From: Leon Romanovsky <leon@kernel.org>
-To: Jason Gunthorpe <jgg@nvidia.com>
-Cc: Chiara Meiohas <cmeiohas@nvidia.com>,
-	Christian Koenig <christian.koenig@amd.com>,
-	Jianxin Xiong <jianxin.xiong@intel.com>, linux-rdma@vger.kernel.org,
-	Michael Guralnik <michaelgur@nvidia.com>,
-	"Michael J. Ruhl" <michael.j.ruhl@intel.com>,
-	Sean Hefty <sean.hefty@intel.com>
-Subject: Re: [PATCH rdma-next] RDMA/mlx5: Set mkeys for dmabuf at PAGE_SIZE
-Message-ID: <20240618120814.GF4025@unreal>
-References: <1e2289b9133e89f273a4e68d459057d032cbc2ce.1718301631.git.leon@kernel.org>
- <20240617135905.GL19897@nvidia.com>
+To: Omer Shpigelman <oshpigelman@habana.ai>
+Cc: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+	"linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+	"netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+	"dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
+	"ogabbay@kernel.org" <ogabbay@kernel.org>,
+	Zvika Yehudai <zyehudai@habana.ai>
+Subject: Re: [PATCH 11/15] RDMA/hbl: add habanalabs RDMA driver
+Message-ID: <20240618125842.GG4025@unreal>
+References: <20240613082208.1439968-1-oshpigelman@habana.ai>
+ <20240613082208.1439968-12-oshpigelman@habana.ai>
+ <20240613191828.GJ4966@unreal>
+ <fbb34afa-8a38-4124-9384-9b858ce2c4e5@habana.ai>
+ <20240617190429.GB4025@unreal>
+ <461bf44e-fd2f-4c8b-bc41-48d48e5a7fcb@habana.ai>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
@@ -62,49 +66,254 @@ List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240617135905.GL19897@nvidia.com>
+In-Reply-To: <461bf44e-fd2f-4c8b-bc41-48d48e5a7fcb@habana.ai>
 
-On Mon, Jun 17, 2024 at 10:59:05AM -0300, Jason Gunthorpe wrote:
-> On Thu, Jun 13, 2024 at 09:01:42PM +0300, Leon Romanovsky wrote:
-> > From: Chiara Meiohas <cmeiohas@nvidia.com>
+On Tue, Jun 18, 2024 at 11:08:34AM +0000, Omer Shpigelman wrote:
+> On 6/17/24 22:04, Leon Romanovsky wrote:
+> > [Some people who received this message don't often get email from leon@kernel.org. Learn why this is important at https://aka.ms/LearnAboutSenderIdentification ]
 > > 
-> > Set the mkey for dmabuf at PAGE_SIZE to support any SGL
-> > after a move operation.
+> > On Mon, Jun 17, 2024 at 05:43:49PM +0000, Omer Shpigelman wrote:
+> >> On 6/13/24 22:18, Leon Romanovsky wrote:
+> >>> [Some people who received this message don't often get email from leon@kernel.org. Learn why this is important at https://aka.ms/LearnAboutSenderIdentification ]
+> >>>
+> >>> On Thu, Jun 13, 2024 at 11:22:04AM +0300, Omer Shpigelman wrote:
+> >>>> Add an RDMA driver of Gaudi ASICs family for AI scaling.
+> >>>> The driver itself is agnostic to the ASIC in action, it operates according
+> >>>> to the capabilities that were passed on device initialization.
+> >>>> The device is initialized by the hbl_cn driver via auxiliary bus.
+> >>>> The driver also supports QP resource tracking and port/device HW counters.
+> >>>>
+> >>>> Signed-off-by: Omer Shpigelman <oshpigelman@habana.ai>
+> >>>> Co-developed-by: Abhilash K V <kvabhilash@habana.ai>
+> >>>> Signed-off-by: Abhilash K V <kvabhilash@habana.ai>
+> >>>> Co-developed-by: Andrey Agranovich <aagranovich@habana.ai>
+> >>>> Signed-off-by: Andrey Agranovich <aagranovich@habana.ai>
+> >>>> Co-developed-by: Bharat Jauhari <bjauhari@habana.ai>
+> >>>> Signed-off-by: Bharat Jauhari <bjauhari@habana.ai>
+> >>>> Co-developed-by: David Meriin <dmeriin@habana.ai>
+> >>>> Signed-off-by: David Meriin <dmeriin@habana.ai>
+> >>>> Co-developed-by: Sagiv Ozeri <sozeri@habana.ai>
+> >>>> Signed-off-by: Sagiv Ozeri <sozeri@habana.ai>
+> >>>> Co-developed-by: Zvika Yehudai <zyehudai@habana.ai>
+> >>>> Signed-off-by: Zvika Yehudai <zyehudai@habana.ai>
+> >>>
+> >>> I afraid that you misinterpreted the "Co-developed-by" tag. All these
+> >>> people are probably touch the code and not actually sit together at
+> >>> the same room and write the code together. So, please remove the
+> >>> extensive "Co-developed-by" tags.
+> >>>
+> >>> It is not full review yet, but simple pass-by-comments.
+> >>>
+> >>
+> >> Actually except of two, all of the mentioned persons sat in the same room
+> >> and developed the code together.
+> >> The remaining two are located on a different site (but also together).
+> >> Isn't that what "Co-developed-by" tag for?
+> >> I wanted to give them credit for writing the code but I can remove if it's
+> >> not common.
 > > 
-> > ib_umem_find_best_pgsz returns 0 on error, so it is
-> > incorrect to check the returned page_size against PAGE_SIZE
+> > Signed-off-by will be enough to give them credit.
+> > 
 > 
-> This commit message is not clear enough for something that need to be
-> backported:
+> Ok, good enough.
+> 
+> >>
+> >>>> ---
+> >>>>  MAINTAINERS                              |   10 +
+> >>>>  drivers/infiniband/Kconfig               |    1 +
+> >>>>  drivers/infiniband/hw/Makefile           |    1 +
+> >>>>  drivers/infiniband/hw/hbl/Kconfig        |   17 +
+> >>>>  drivers/infiniband/hw/hbl/Makefile       |    8 +
+> >>>>  drivers/infiniband/hw/hbl/hbl.h          |  326 +++
+> >>>>  drivers/infiniband/hw/hbl/hbl_main.c     |  478 ++++
+> >>>>  drivers/infiniband/hw/hbl/hbl_verbs.c    | 2686 ++++++++++++++++++++++
+> >>>>  include/uapi/rdma/hbl-abi.h              |  204 ++
+> >>>>  include/uapi/rdma/hbl_user_ioctl_cmds.h  |   66 +
+> >>>>  include/uapi/rdma/hbl_user_ioctl_verbs.h |  106 +
+> >>>>  include/uapi/rdma/ib_user_ioctl_verbs.h  |    1 +
+> >>>>  12 files changed, 3904 insertions(+)
+> >>>>  create mode 100644 drivers/infiniband/hw/hbl/Kconfig
+> >>>>  create mode 100644 drivers/infiniband/hw/hbl/Makefile
+> >>>>  create mode 100644 drivers/infiniband/hw/hbl/hbl.h
+> >>>>  create mode 100644 drivers/infiniband/hw/hbl/hbl_main.c
+> >>>>  create mode 100644 drivers/infiniband/hw/hbl/hbl_verbs.c
+> >>>>  create mode 100644 include/uapi/rdma/hbl-abi.h
+> >>>>  create mode 100644 include/uapi/rdma/hbl_user_ioctl_cmds.h
+> >>>>  create mode 100644 include/uapi/rdma/hbl_user_ioctl_verbs.h
+> >>>
+> >>> <...>
+> >>>
+> >>>> +#define hbl_ibdev_emerg(ibdev, format, ...)  ibdev_emerg(ibdev, format, ##__VA_ARGS__)
+> >>>> +#define hbl_ibdev_alert(ibdev, format, ...)  ibdev_alert(ibdev, format, ##__VA_ARGS__)
+> >>>> +#define hbl_ibdev_crit(ibdev, format, ...)   ibdev_crit(ibdev, format, ##__VA_ARGS__)
+> >>>> +#define hbl_ibdev_err(ibdev, format, ...)    ibdev_err(ibdev, format, ##__VA_ARGS__)
+> >>>> +#define hbl_ibdev_warn(ibdev, format, ...)   ibdev_warn(ibdev, format, ##__VA_ARGS__)
+> >>>> +#define hbl_ibdev_notice(ibdev, format, ...) ibdev_notice(ibdev, format, ##__VA_ARGS__)
+> >>>> +#define hbl_ibdev_info(ibdev, format, ...)   ibdev_info(ibdev, format, ##__VA_ARGS__)
+> >>>> +#define hbl_ibdev_dbg(ibdev, format, ...)    ibdev_dbg(ibdev, format, ##__VA_ARGS__)
+> >>>> +
+> >>>> +#define hbl_ibdev_emerg_ratelimited(ibdev, fmt, ...)         \
+> >>>> +     ibdev_emerg_ratelimited(ibdev, fmt, ##__VA_ARGS__)
+> >>>> +#define hbl_ibdev_alert_ratelimited(ibdev, fmt, ...)         \
+> >>>> +     ibdev_alert_ratelimited(ibdev, fmt, ##__VA_ARGS__)
+> >>>> +#define hbl_ibdev_crit_ratelimited(ibdev, fmt, ...)          \
+> >>>> +     ibdev_crit_ratelimited(ibdev, fmt, ##__VA_ARGS__)
+> >>>> +#define hbl_ibdev_err_ratelimited(ibdev, fmt, ...)           \
+> >>>> +     ibdev_err_ratelimited(ibdev, fmt, ##__VA_ARGS__)
+> >>>> +#define hbl_ibdev_warn_ratelimited(ibdev, fmt, ...)          \
+> >>>> +     ibdev_warn_ratelimited(ibdev, fmt, ##__VA_ARGS__)
+> >>>> +#define hbl_ibdev_notice_ratelimited(ibdev, fmt, ...)                \
+> >>>> +     ibdev_notice_ratelimited(ibdev, fmt, ##__VA_ARGS__)
+> >>>> +#define hbl_ibdev_info_ratelimited(ibdev, fmt, ...)          \
+> >>>> +     ibdev_info_ratelimited(ibdev, fmt, ##__VA_ARGS__)
+> >>>> +#define hbl_ibdev_dbg_ratelimited(ibdev, fmt, ...)           \
+> >>>> +     ibdev_dbg_ratelimited(ibdev, fmt, ##__VA_ARGS__)
+> >>>> +
+> >>>
+> >>> Please don't redefine the existing macros. Just use the existing ones.
+> >>>
+> >>>
+> >>> <...>
+> >>>
+> >>
+> >> That's a leftover from some debug code. I'll remove.
+> >>
+> >>>> +     if (hbl_ib_match_netdev(ibdev, netdev))
+> >>>> +             ib_port = hbl_to_ib_port_num(hdev, netdev->dev_port);
+> >>>> +     else
+> >>>> +             return NOTIFY_DONE;
+> >>>
+> >>> It is not kernel coding style. Please write:
+> >>> if (!hbl_ib_match_netdev(ibdev, netdev))
+> >>>     return NOTIFY_DONE;
+> >>>
+> >>> ib_port = hbl_to_ib_port_num(hdev, netdev->dev_port);
+> >>>
+> >>
+> >> I'll fix the code, thanks.
+> >>
+> >>>> +
+> >>>
+> >>> <...>
+> >>>
+> >>>> +static int hbl_ib_probe(struct auxiliary_device *adev, const struct auxiliary_device_id *id)
+> >>>> +{
+> >>>> +     struct hbl_aux_dev *aux_dev = container_of(adev, struct hbl_aux_dev, adev);
+> >>>> +     struct hbl_ib_aux_ops *aux_ops = aux_dev->aux_ops;
+> >>>> +     struct hbl_ib_device *hdev;
+> >>>> +     ktime_t timeout;
+> >>>> +     int rc;
+> >>>> +
+> >>>> +     rc = hdev_init(aux_dev);
+> >>>> +     if (rc) {
+> >>>> +             dev_err(&aux_dev->adev.dev, "Failed to init hdev\n");
+> >>>> +             return -EIO;
+> >>>> +     }
+> >>>> +
+> >>>> +     hdev = aux_dev->priv;
+> >>>> +
+> >>>> +     /* don't allow module unloading while it is attached */
+> >>>> +     if (!try_module_get(THIS_MODULE)) {
+> >>>
+> >>> This part makes wonder, what are you trying to do here? What doesn't work for you
+> >>> in standard driver core and module load mechanism?
+> >>>
+> >>
+> >> Before auxiliary bus was introduced, we used EXPORT_SYMBOLs for inter
+> >> driver communication. That incremented the refcount of the used module so
+> >> it couldn't be removed while it is in use.
+> >> Auxiliary bus usage doesn't increment the used module refcount and hence
+> >> the used module can be removed while it is in use and that's something
+> >> we don't want to allow.
+> >> We could solve it by some global locking or in_use atomic but the most
+> >> simple and clean way is just to increment the used module refcount on
+> >> auxiliary device probe and decrement it on auxiliary device removal.
+> > 
+> > No, you was supposed to continue to use EXPORT_SYMBOLs and don't
+> > invent auxiliary ops structure (this is why you lost module
+> > reference counting).
+> > 
+> 
+> Sorry, but according to the auxiliary bus doc, a domain-specific ops
+> structure can be used.
+> We followed the usage example described at drivers/base/auxiliary.c.
+> What am I missing? 
 
-This patch is going to be backported without any relation to the commit
-message as it has Fixes line.
+Being the one who implemented auxiliary bus in the kernel and converted
+number of drivers to use it, I strongly recommend do NOT follow the example
+provided there.
+
+So you are missing "best practice", and "best practice" is to use
+EXPORT_SYMBOLs and rely on module reference counting.
+
+> Moreover, we'd like to support the mode where the IB or the ETH driver is
+> not loaded at all. But this cannot be achieved if we use EXPORT_SYMBOLs
+> exclusively for inter driver communication.
+
+It is not true and not how the kernel works. You can perfectly load core
+driver without IB and ETH, at some extent this is how mlx5 driver works.
+
+> 
+> >>
+> >>>> +             dev_err(hdev->dev, "Failed to increment %s module refcount\n",
+> >>>> +                     module_name(THIS_MODULE));
+> >>>> +             rc = -EIO;
+> >>>> +             goto module_get_err;
+> >>>> +     }
+> >>>> +
+> >>>> +     timeout = ktime_add_ms(ktime_get(), hdev->pending_reset_long_timeout * MSEC_PER_SEC);
+> >>>> +     while (1) {
+> >>>> +             aux_ops->hw_access_lock(aux_dev);
+> >>>> +
+> >>>> +             /* if the device is operational, proceed to actual init while holding the lock in
+> >>>> +              * order to prevent concurrent hard reset
+> >>>> +              */
+> >>>> +             if (aux_ops->device_operational(aux_dev))
+> >>>> +                     break;
+> >>>> +
+> >>>> +             aux_ops->hw_access_unlock(aux_dev);
+> >>>> +
+> >>>> +             if (ktime_compare(ktime_get(), timeout) > 0) {
+> >>>> +                     dev_err(hdev->dev, "Timeout while waiting for hard reset to finish\n");
+> >>>> +                     rc = -EBUSY;
+> >>>> +                     goto timeout_err;
+> >>>> +             }
+> >>>> +
+> >>>> +             dev_notice_once(hdev->dev, "Waiting for hard reset to finish before probing IB\n");
+> >>>> +
+> >>>> +             msleep_interruptible(MSEC_PER_SEC);
+> >>>> +     }
+> >>>
+> >>> The code above is unexpected.
+> >>>
+> >>
+> >> We have no control on when the user insmod the IB driver.
+> > 
+> > It is not true, this is controlled through module dependencies
+> > mechanism.
+> > 
+> 
+> Yeah, if we would use EXPORT_SYMBOLs for inter driver communication but
+> we don't.
+
+So please use it and don't add complexity where it is not needed.
+
+> 
+> >> As a result it is possible that the IB auxiliary device will be probed
+> >> while the compute device is under reset (due to some HW error).
+> > 
+> > No, it is not possible. If you structure your driver right.
+> > 
+> 
+> Again, it is not possible if we would use EXPORT_SYMBOLs.
+> Please let me know if we misunderstood something because AFAIU we followed
+> the auxiliary bus doc usage example.
+
+It is better to follow actual drivers that use auxiliary bus and see how
+they implemented it and not rely on examples in the documentation.
 
 Thanks
 
 > 
-> RDMA/mlx5: Support non-page size aligned DMABUF mkeys
-> 
-> The mkey page size for DMABUF is fixed at PAGE_SIZE because we have to
-> support a move operation that could change a large-sized page list
-> into a small page-list and the mkey must be able to represent it.
-> 
-> The test for this is not quite correct, instead of checking the output
-> of mlx5_umem_find_best_pgsz() the call to ib_umem_find_best_pgsz
-> should specify the exact HW/SW restriction - only PAGE_SIZE is
-> accepted.
-> 
-> Then the normal logic for dealing with leading/trailing sub page
-> alignment works correctly and sub page size DMBUF mappings can be
-> supported.
-> 
-> This is particularly painful on 64K kernels.
-
-Unfortunately, the patch was already merged, so I can't change the
-commit message in for-next branch.
-
-Thanks
-
-> 
-> Jason
+> > Thanks
 
