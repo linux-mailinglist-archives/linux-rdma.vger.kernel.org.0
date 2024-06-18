@@ -1,123 +1,99 @@
-Return-Path: <linux-rdma+bounces-3277-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-3278-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9CB4B90D910
-	for <lists+linux-rdma@lfdr.de>; Tue, 18 Jun 2024 18:23:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 9087290D908
+	for <lists+linux-rdma@lfdr.de>; Tue, 18 Jun 2024 18:21:54 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id CBA81B24488
-	for <lists+linux-rdma@lfdr.de>; Tue, 18 Jun 2024 16:06:09 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A8BAAB2899B
+	for <lists+linux-rdma@lfdr.de>; Tue, 18 Jun 2024 16:07:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 62034482EE;
-	Tue, 18 Jun 2024 16:06:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 470B34C602;
+	Tue, 18 Jun 2024 16:07:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="p+rHEdVF"
+	dkim=pass (2048-bit key) header.d=acm.org header.i=@acm.org header.b="tG4lcb0F"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from 009.lax.mailroute.net (009.lax.mailroute.net [199.89.1.12])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 20533208A0
-	for <linux-rdma@vger.kernel.org>; Tue, 18 Jun 2024 16:06:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 935934C630
+	for <linux-rdma@vger.kernel.org>; Tue, 18 Jun 2024 16:07:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=199.89.1.12
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1718726765; cv=none; b=G+K2nfxjSzae8sO9QKdvCeuXoh5dGgVFvhQK7maRNT2ttDEzqNbWmWiBNLkO8R/5omf45ZHFzjsjG/+0op29WVaJ6YWjiwgYSo5iW+ogDXiCbPg32Q5QraZc2OVcxnbOLp0d4pQEUKub0pVjfe1EU2YlQJgI3qlTWqDJ9smT2Ek=
+	t=1718726864; cv=none; b=rvTlMx4ajH2pkrkOjLUAd1bfqnm3mtoi/cT4V2LazGG1ovNtqZGnUwhHPFD1czmVXlEKU9LUW4xsj70ExfGixKxSHF06JTTUU4q3w70sYRShqc8HgU/g/GUFa9Y2rm7PnEqQL3tPinlWwknZrQJatZKcORiFBkik2J0XjJNIPa8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1718726765; c=relaxed/simple;
-	bh=LjyI+ls8RWRycT0y+u1xSMZ+pFzS3N2kcgJahTLVhu4=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=bYs+TErSAMbaQOAkHLZCpRy0ar28f/VVsdX8BMPjZV1WEHLZKfgthu4y3ViUQCyn293PDgZrCoBATA6AlEETAdaxBLeaZh9cSvwFx1GeRt25hr+stg21JX5JesrSdNWhib5S2hskpB1gIzI0OgtyknHFw88tbYivWLgBQEY0he0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=p+rHEdVF; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 220BAC3277B;
-	Tue, 18 Jun 2024 16:06:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1718726764;
-	bh=LjyI+ls8RWRycT0y+u1xSMZ+pFzS3N2kcgJahTLVhu4=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=p+rHEdVFBdh1bx6fozWyUmPVTxlj5sLNv+N4NMiThBy2TI2lJibZ9ErI/BxW7NEhb
-	 M29Z3xtRhDM96UtdK6/CI90HfTIFuLi8Kf+E2/KIoqZoCsuwzpMGrNcm7CYBAF6g9K
-	 4wU0YuwWCcF2W5CQE5VWwNyimsPItwrfdqwWK4ld5RzraVTdqUCzTf7ZMALCI6s2p4
-	 YFuMMAz8Gau0HsXo9AmviLcPeiI3blOgkZvS90dCW2RhPq7GI6W90ZjF5gdxSMzwAm
-	 x6bhJ1pHFgED9Y0RbyuryU2nFgIT34zyjAFJsJBMOgNbwPuFK7EarHT6aj81gdzFi4
-	 EjokM7IqcMT3Q==
-Date: Tue, 18 Jun 2024 19:05:59 +0300
-From: Leon Romanovsky <leon@kernel.org>
-To: Jason Gunthorpe <jgg@nvidia.com>
-Cc: Akiva Goldberger <agoldberger@nvidia.com>,
-	Ajay Sharma <sharmaajay@microsoft.com>,
-	Bernard Metzler <bmt@zurich.ibm.com>,
-	Chengchang Tang <tangchengchang@huawei.com>,
-	Cheng Xu <chengyou@linux.alibaba.com>,
-	Junxian Huang <huangjunxian6@hisilicon.com>,
-	Kai Shen <kaishen@linux.alibaba.com>, linux-rdma@vger.kernel.org,
-	Long Li <longli@microsoft.com>,
-	Michael Margolin <mrgolin@amazon.com>,
-	Mustafa Ismail <mustafa.ismail@intel.com>,
-	Potnuri Bharat Teja <bharat@chelsio.com>,
-	Selvin Xavier <selvin.xavier@broadcom.com>,
-	Shiraz Saleem <shiraz.saleem@intel.com>,
-	Yishai Hadas <yishaih@nvidia.com>,
-	Zhu Yanjun <zyjzyj2000@gmail.com>
-Subject: Re: [PATCH rdma-next 1/2] RDMA: Pass entire uverbs attr bundle to
- create cq function
-Message-ID: <20240618160559.GH4025@unreal>
-References: <cover.1718554263.git.leon@kernel.org>
- <7d0deae3798c9314ea41f4eb7a211d1b8b05a7fd.1718554263.git.leon@kernel.org>
- <20240617134409.GK19897@nvidia.com>
- <20240617154947.GA4025@unreal>
- <20240617201003.GM19897@nvidia.com>
- <20240618050557.GC4025@unreal>
- <20240618130854.GB2494510@nvidia.com>
+	s=arc-20240116; t=1718726864; c=relaxed/simple;
+	bh=mxYcdCTq26eSDmRxffKDC+ZR12rjvrRcKeWVemdETPI=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=aZnoTKD3Ztmrb+gthgilFrDUZtbH1I+8DFRWxLXC1uHI4tWu1CIt9WLWYK2a2+CeT5Ix8asQE+UPd8jkBLnKP2F1Hjahp/kdZdbm6p9ICMX7jNj+0QAwjV2qRfKSrdwBXElagtRKSe9CXBMaAOdzKXqaB6Y5jVHkUHSp8EJVpkU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=acm.org; spf=pass smtp.mailfrom=acm.org; dkim=pass (2048-bit key) header.d=acm.org header.i=@acm.org header.b=tG4lcb0F; arc=none smtp.client-ip=199.89.1.12
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=acm.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=acm.org
+Received: from localhost (localhost [127.0.0.1])
+	by 009.lax.mailroute.net (Postfix) with ESMTP id 4W3WqX0FBqzlgMVS;
+	Tue, 18 Jun 2024 16:07:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=acm.org; h=
+	content-transfer-encoding:content-type:content-type:in-reply-to
+	:from:from:content-language:references:subject:subject
+	:user-agent:mime-version:date:date:message-id:received:received;
+	 s=mr01; t=1718726852; x=1721318853; bh=IbPD88wHeIbMByJw6Ni+dWXf
+	+0prdKlH7gqjYAmu0lk=; b=tG4lcb0F1Wu1/8hhoO2kVSihdMXuai9iJp4BMfgs
+	BtGa/2oQsgolAErZu/Q0KEYh52oKWNi22iJypwgI6e2MYxn4l05JxYkTeNNPYuwl
+	r4lfq3C/BJ0Htwsq3261nwwBwWT84fWxJy3u1x9bHLeCybfeZlD/LVjdl9+ty3m7
+	uzzDcxac2+Yofwa9vhVx67wxwq/vt4B1L+CKMC/wUMPXRcL6UyAzSXxwn7XmKtxv
+	OoZcDb8mWUBziAz1NS2MuqcagB2ow2AkBU+9Fi+6jtRsq/36W3xM6/emvcKygqxO
+	6kO94ySyAfxJQl9U91qOBC3rktTs4x9eSBusWvmCws/DHQ==
+X-Virus-Scanned: by MailRoute
+Received: from 009.lax.mailroute.net ([127.0.0.1])
+ by localhost (009.lax [127.0.0.1]) (mroute_mailscanner, port 10029) with LMTP
+ id zRDhB_nSnvNl; Tue, 18 Jun 2024 16:07:32 +0000 (UTC)
+Received: from [100.96.154.26] (unknown [104.132.0.90])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	(Authenticated sender: bvanassche@acm.org)
+	by 009.lax.mailroute.net (Postfix) with ESMTPSA id 4W3WqP3flczlgMVR;
+	Tue, 18 Jun 2024 16:07:29 +0000 (UTC)
+Message-ID: <244b708e-be75-435a-8b27-c48e976d4cdd@acm.org>
+Date: Tue, 18 Jun 2024 09:07:26 -0700
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240618130854.GB2494510@nvidia.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 1/6] IB/core: add support for draining Shared receive
+ queues
+To: Max Gurtovoy <mgurtovoy@nvidia.com>, leonro@nvidia.com, jgg@nvidia.com,
+ linux-nvme@lists.infradead.org, linux-rdma@vger.kernel.org,
+ chuck.lever@oracle.com
+Cc: oren@nvidia.com, israelr@nvidia.com, maorg@nvidia.com,
+ yishaih@nvidia.com, hch@lst.de, shiraz.saleem@intel.com, edumazet@google.com
+References: <20240618001034.22681-1-mgurtovoy@nvidia.com>
+ <20240618001034.22681-2-mgurtovoy@nvidia.com>
+Content-Language: en-US
+From: Bart Van Assche <bvanassche@acm.org>
+In-Reply-To: <20240618001034.22681-2-mgurtovoy@nvidia.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Tue, Jun 18, 2024 at 10:08:54AM -0300, Jason Gunthorpe wrote:
-> On Tue, Jun 18, 2024 at 08:05:57AM +0300, Leon Romanovsky wrote:
-> > On Mon, Jun 17, 2024 at 05:10:03PM -0300, Jason Gunthorpe wrote:
-> > > On Mon, Jun 17, 2024 at 06:49:47PM +0300, Leon Romanovsky wrote:
-> > > > On Mon, Jun 17, 2024 at 10:44:09AM -0300, Jason Gunthorpe wrote:
-> > > > > On Sun, Jun 16, 2024 at 07:15:57PM +0300, Leon Romanovsky wrote:
-> > > > > 
-> > > > > > @@ -63,6 +63,7 @@ enum uverbs_default_objects {
-> > > > > >  enum {
-> > > > > >  	UVERBS_ATTR_UHW_IN = UVERBS_UDATA_DRIVER_DATA_FLAG,
-> > > > > >  	UVERBS_ATTR_UHW_OUT,
-> > > > > > +	UVERBS_ATTR_UHW_DRIVER_DATA,
-> > > > > 
-> > > > > The start of the driver's attributes is not a "UHW", the UHW is only
-> > > > > the old structs.
-> > > > 
-> > > > I asked from Akiva to keep existing naming convention UVERBS_ATTR_UHW_XXX
-> > > > to emphasize the namespace and the position of this attribute as
-> > > > relevant for existing UHW calls.
-> > > 
-> > > Well, calling it DRIVER_DATA and UHW is very confusing when it is
-> > > really the start of the indexing for drivers that use UHW.
-> > > 
-> > > A better name is needed
-> > 
-> > UVERBS_ATTR_UHW_PRIVATE ????
-> 
-> I think it need to have the word "start" in it, because it is the
-> start of numbers, not an actual number itself.
+On 6/17/24 5:10 PM, Max Gurtovoy wrote:
+> +	if (wait_for_completion_timeout(&qp->srq_completion, 10 * HZ) > 0) {
+> +		while (polled != cq->cqe) {
+> +			n = ib_process_cq_direct(cq, cq->cqe - polled);
+> +			if (!n)
+> +				return;
+> +			polled += n;
+> +		}
+> +	}
 
-UVERBS_ATTR_UHW_DRIVER_DATA_START ????
-What do you suggest instead?
+Why a hardcoded timeout (10 * HZ) instead of waiting forever?
 
-> 
-> It is also not PRIVATE at all, this is just in the device specific
-> space number space, not the core space.
+Thanks,
 
-Private in the sense of driver specific, like net_priv().
+Bart.
 
-> 
-> Jason
 
