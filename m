@@ -1,82 +1,83 @@
-Return-Path: <linux-rdma+bounces-3245-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-3246-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4D8C390C026
-	for <lists+linux-rdma@lfdr.de>; Tue, 18 Jun 2024 02:11:04 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 319E790C027
+	for <lists+linux-rdma@lfdr.de>; Tue, 18 Jun 2024 02:11:06 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DCC9F281D1A
-	for <lists+linux-rdma@lfdr.de>; Tue, 18 Jun 2024 00:11:02 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 38B281C21828
+	for <lists+linux-rdma@lfdr.de>; Tue, 18 Jun 2024 00:11:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E97AAA3D;
-	Tue, 18 Jun 2024 00:10:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6F623EC0;
+	Tue, 18 Jun 2024 00:11:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="qzlbC+GA"
+	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="Td/DSTDt"
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from NAM12-MW2-obe.outbound.protection.outlook.com (mail-mw2nam12on2075.outbound.protection.outlook.com [40.107.244.75])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 037CA368
-	for <linux-rdma@vger.kernel.org>; Tue, 18 Jun 2024 00:10:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 544F71367
+	for <linux-rdma@vger.kernel.org>; Tue, 18 Jun 2024 00:11:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.244.75
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1718669458; cv=fail; b=gg8fcTicspZA0riCzmEQy2aHPwl5fSUMVYzmeRvenMaWepd1GCW/IhQ0B2wXSNAxS/agY7htoRa3iQxgLyHwDDg6GBvFes+gvOmuDPmXNtJW0k/jTdVs7JSkzzDJmeXHD3vxESCZvF74NQTupTXEqwkm1SYxo6qtB0rThPWVQwQ=
+	t=1718669463; cv=fail; b=gluyBrGzeymSuwxQvQ/pV29K1GBfP1REJtnR42whqLwuBiE4lgaTU5xWnZ7Fa0+krmtER5ivd0GNpTrJhQ5QULpd8le9NUuSXhsOipEgjb6znMDkh5FX8/0qe+cktVtlqaPHx+wY9z85fo2whOX9hJ9P4Pz158ku+1bwlmU8uEM=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1718669458; c=relaxed/simple;
-	bh=1omklRoL5Qy4LsCZV2bB0CW0V45v4qaSKZEbt2BMUkQ=;
-	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=tZgRzIaEBLFxOR++gUC4589GQXqq2IMeoQfvy2ne+YeXvvWfdqj2DCBxb6+hKbB2XKGXLanUq+ES1xF8RChoOF/j9wlFvOfnj9ny5dZyc+aRyZphmc8v7yksyZXJiT+ViDOyZxbRik1k9JNYx2jcYsh5OCODgkNCZJ0zXmQztxo=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=qzlbC+GA; arc=fail smtp.client-ip=40.107.244.75
+	s=arc-20240116; t=1718669463; c=relaxed/simple;
+	bh=en+Xbof2ele3+6M7NQ435F1OuwxyVZGlvyKJ5ZiB058=;
+	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=P+W3ImHZ1Ek/pxTkgp5gv7nu6zIQ2ZR8EHe/NfHAbiSt1DyrE8U0BUdxYOmFcDt8IRhn65NjUyOD0mwpJhkvSLlooOPfXT9gO+a8a08SQQcQ5N2GP32nYO6g9N15Romzw2vgXmSM4kqkRmu6GOODTP6H/yv3wKLNQ+UPeOR0Op8=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=Td/DSTDt; arc=fail smtp.client-ip=40.107.244.75
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
 Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=IoCcQe4pYBL1QSyczz593osSzMKg33JxbZWsavyt0q3WpUP8oCISWjkqI4NBmjXsV6M5CsKPXDqE5FtROdeltNvbthU14j0Y7RBtMmdk2io/CtU2dllV6MSrDIUlOMG6ooliONVTcyix2axVYR6BQLnpNmsH4I3aBolWeeXZboEKpaXQkpdZy4c0HAL4UUYMxfWu8907HJSCgEtAsIuzELTkWp6INmlyOA614qAshrqKddp+qbEhStt15kPgLF2d44mRt7g6y4VVYLfp8ub/R5Yg0wXHt0Qu75KnZlLQxJyjR6K8ZM2UHZUa0wvIHtuhsqECO0DxpUgtG2PO5SwC8A==
+ b=KrXlvE3J+5ETlxgYiJu18FSg/CMhe430+EA2PqlVzlnlfnySF1pFyHe/H90j/Dgk5lQsC+fSHkKChTmGbpYHZKm97NB+Nu9ghNWBYuavT1Sm6Yru3BXQshK90c6ithUg0nuB9/oc/xpoasyTTjookjioZ2FydzTkzyLlCU0Yk7mYjYMzN8HlfOryuX/kEzuA2ImFqkdWjM8N6bEUc7CjpAmaPiRwch0sLmuRwFx9HLeFIe357S6zLNWiQ2lu8QKDUjALBTLjiSQ1w3v7Td9iWtIg8DnOJAhJrgag22GXJMzBqMwH2RQJWZ4kN4E3Ba+TkBJlXIk1jno9/a/CvGx8MA==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=bT1jtiCNj0jDBElJurGLufTeJKAosGncGhPCfxOUxXg=;
- b=CUK4nh1+WlOiVrwNpG+DE/BgPem0lELbzXQ6gFHzxCUlNoHG/gCvhW2bFDNopn7pPwhz3x+UZWeTaXnE1CmNCymu4ZlzKFxtQ3fpOTC325SFirL3c/m1xo5ttxGi96DI3JkAoAa3h6NTDREoxtkoRhf/SqVcw+7BXddeW0yl+4RaGyZ/oS+Wh6f2D/zfkmyh4VkA+ymA4A+IA4XTbwjX1xJUSp9CZh6sJmm0IEcF+6+eq7umEbQM1MIUaq58wmE6jxI4qFRnIs0EEPwHMQjyw37Vu80x+PFro9Vr+rXH1nzstyx7ULgqDMkjF1equIkGf1Aewf/boq75d7LlrnnjeA==
+ bh=/D57k+qje9srjgeYV7+LAq3vzfnZkskwDhTuSBbfNlY=;
+ b=MY7usu3VnMjT6ARZL9MXXxHOsZ4tYwaJRiXHz8MD+BPiKYfz3Bp/1GY56LXtylFYGoKz4TZ8up53ObFgJ1f90TVcW47nPsOancQ/hE8JGwOVEjE/t4ogq8mGPFOIQ8jcOqVV4QtXPpa/lMjOQPUIeO2U371VfBqGaiCad5lYzpthqbG5bVEMD5AQnxt3S/HpJNUy9SNDr03vp17eBuy4p9gWspqF2RqUg5NkCs0RxuJcvUR3QkgkO/Qn2wavoU1JPV9mbtps7/jTOiBU4oAlXDhaB5kSz0LCbQtfON2BnoD9hkF7rHqlLCGUiCZrAAZGI1BJoob9CAXrmBMSa3mYaw==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 216.228.117.161) smtp.rcpttodomain=lists.infradead.org
+ 216.228.117.160) smtp.rcpttodomain=lists.infradead.org
  smtp.mailfrom=nvidia.com; dmarc=pass (p=reject sp=reject pct=100) action=none
  header.from=nvidia.com; dkim=none (message not signed); arc=none (0)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
  s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=bT1jtiCNj0jDBElJurGLufTeJKAosGncGhPCfxOUxXg=;
- b=qzlbC+GAB7axx/0o+wpXsvsMvggCoqZ+KCHjRrQZbA7Rlvsr7O7x8SY96od7zQ3fQOJNQGoMA1XOX0kon3BcB8cONvd6uN5Z+V0NoAqjVKVe2RhWZU5DYmyjbeors8yoSsBTKW//cBB8vsQtWY2MNZCfD7cDDADzlUqjJ6cl+fgriyLyqIntTamh7hIR8KojtsIVgaoxA3YjLOAGvrMd0OIRrrVKtnCBW/W9+NHIfMs/82YQpynoneId1zApZU/R0/6D/cydjog3VWfaZrz26JUTSlUjkjroyM/hlSuiQaO05DMVmLKyU9lebUdw/AmYQ5cGS8fzPsJ3eKYjFbMDZw==
-Received: from SA9P221CA0022.NAMP221.PROD.OUTLOOK.COM (2603:10b6:806:25::27)
- by MW6PR12MB8757.namprd12.prod.outlook.com (2603:10b6:303:239::20) with
+ bh=/D57k+qje9srjgeYV7+LAq3vzfnZkskwDhTuSBbfNlY=;
+ b=Td/DSTDtjyw3xwgQNkDIaD0UkchANqbL+EPdC002D4QAgGje/qBFIeuV4WmNKrvG3OCGEjRQ/nIPj++7H1LfQMfRTD0JIVnlsugoLfg3B7EMh1z7yhkeC3EJ2R+Kb1l3R/0cb3I/8CB3TnqFzvpkdhIbRgLA/TlvQZTareDz4pj07niTN/F8C3Qhs9Vi01ng7PmZZmqYkQBITEkptIGWxNoSTeWGclt3q4n1YfEBUobsq7CxZtJz/3A/xFY2x1u9bbLhEDS0OWsrEDW2a5WsTaGb+kcADvmk0DP9wTeypykl53sGAjM4Blm+thXJyuAqOCmTVGZn4CEmgnmXmk27WQ==
+Received: from CH2PR16CA0009.namprd16.prod.outlook.com (2603:10b6:610:50::19)
+ by CH3PR12MB7572.namprd12.prod.outlook.com (2603:10b6:610:144::17) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7677.30; Tue, 18 Jun
- 2024 00:10:54 +0000
-Received: from SA2PEPF00003F64.namprd04.prod.outlook.com
- (2603:10b6:806:25:cafe::4f) by SA9P221CA0022.outlook.office365.com
- (2603:10b6:806:25::27) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7677.31 via Frontend
- Transport; Tue, 18 Jun 2024 00:10:54 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.117.161)
+ 2024 00:10:58 +0000
+Received: from DS2PEPF00003448.namprd04.prod.outlook.com
+ (2603:10b6:610:50:cafe::1c) by CH2PR16CA0009.outlook.office365.com
+ (2603:10b6:610:50::19) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7677.30 via Frontend
+ Transport; Tue, 18 Jun 2024 00:10:58 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.117.160)
  smtp.mailfrom=nvidia.com; dkim=none (message not signed)
  header.d=none;dmarc=pass action=none header.from=nvidia.com;
 Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
- 216.228.117.161 as permitted sender) receiver=protection.outlook.com;
- client-ip=216.228.117.161; helo=mail.nvidia.com; pr=C
-Received: from mail.nvidia.com (216.228.117.161) by
- SA2PEPF00003F64.mail.protection.outlook.com (10.167.248.39) with Microsoft
+ 216.228.117.160 as permitted sender) receiver=protection.outlook.com;
+ client-ip=216.228.117.160; helo=mail.nvidia.com; pr=C
+Received: from mail.nvidia.com (216.228.117.160) by
+ DS2PEPF00003448.mail.protection.outlook.com (10.167.17.75) with Microsoft
  SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.7677.15 via Frontend Transport; Tue, 18 Jun 2024 00:10:53 +0000
-Received: from rnnvmail203.nvidia.com (10.129.68.9) by mail.nvidia.com
- (10.129.200.67) with Microsoft SMTP Server (version=TLS1_2,
+ 15.20.7677.15 via Frontend Transport; Tue, 18 Jun 2024 00:10:56 +0000
+Received: from rnnvmail202.nvidia.com (10.129.68.7) by mail.nvidia.com
+ (10.129.200.66) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.4; Mon, 17 Jun
- 2024 17:10:39 -0700
-Received: from rnnvmail205.nvidia.com (10.129.68.10) by rnnvmail203.nvidia.com
- (10.129.68.9) with Microsoft SMTP Server (version=TLS1_2,
+ 2024 17:10:43 -0700
+Received: from rnnvmail205.nvidia.com (10.129.68.10) by rnnvmail202.nvidia.com
+ (10.129.68.7) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.4; Mon, 17 Jun
- 2024 17:10:38 -0700
+ 2024 17:10:42 -0700
 Received: from r-arch-stor03.mtr.labs.mlnx (10.127.8.14) by mail.nvidia.com
  (10.129.68.10) with Microsoft SMTP Server id 15.2.1544.4 via Frontend
- Transport; Mon, 17 Jun 2024 17:10:35 -0700
+ Transport; Mon, 17 Jun 2024 17:10:39 -0700
 From: Max Gurtovoy <mgurtovoy@nvidia.com>
 To: <leonro@nvidia.com>, <jgg@nvidia.com>, <linux-nvme@lists.infradead.org>,
 	<linux-rdma@vger.kernel.org>, <chuck.lever@oracle.com>
@@ -84,10 +85,12 @@ CC: <oren@nvidia.com>, <israelr@nvidia.com>, <maorg@nvidia.com>,
 	<yishaih@nvidia.com>, <hch@lst.de>, <bvanassche@acm.org>,
 	<shiraz.saleem@intel.com>, <edumazet@google.com>, Max Gurtovoy
 	<mgurtovoy@nvidia.com>
-Subject: [PATCH v1 0/6] Last WQE Reached event treatment
-Date: Tue, 18 Jun 2024 03:10:28 +0300
-Message-ID: <20240618001034.22681-1-mgurtovoy@nvidia.com>
+Subject: [PATCH 1/6] IB/core: add support for draining Shared receive queues
+Date: Tue, 18 Jun 2024 03:10:29 +0300
+Message-ID: <20240618001034.22681-2-mgurtovoy@nvidia.com>
 X-Mailer: git-send-email 2.18.1
+In-Reply-To: <20240618001034.22681-1-mgurtovoy@nvidia.com>
+References: <20240618001034.22681-1-mgurtovoy@nvidia.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
@@ -98,84 +101,221 @@ Content-Type: text/plain
 X-NV-OnPremToCloud: ExternallySecured
 X-EOPAttributedMessage: 0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: SA2PEPF00003F64:EE_|MW6PR12MB8757:EE_
-X-MS-Office365-Filtering-Correlation-Id: 868f9a52-08dc-414e-17fe-08dc8f2b1e9b
+X-MS-TrafficTypeDiagnostic: DS2PEPF00003448:EE_|CH3PR12MB7572:EE_
+X-MS-Office365-Filtering-Correlation-Id: fac4ebb3-bb6c-4580-fef8-08dc8f2b205e
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam:
 	BCL:0;ARA:13230037|376011|1800799021|82310400023|36860700010;
 X-Microsoft-Antispam-Message-Info:
-	=?us-ascii?Q?PZAhOoiQ1R8AyvvQ9a8gaZfN5BDqG7IhA0TgFTzYRAbgIj2zBJ3ElxmJvDRC?=
- =?us-ascii?Q?onpREayiZu/JRh7+Gdpl6TpPIleybDo2J8vrgqdl5BV1sRHpx/kzlWXpyiPn?=
- =?us-ascii?Q?TJHa7hGJvFRIJYfPWqxeAaOVQoUOknk/z5jQgLXA2Dx78vSaqUYJtBQWDKLI?=
- =?us-ascii?Q?GtOHCoNqDk9OMhsCQ8417nW8oCJvyUEWr+Q2MLjgpsIYwpWmRToMjk9GmOAb?=
- =?us-ascii?Q?SoCgh7Lj0liThkmGZN5k3M0WaXGswfQzVANlUkLUfcV5A8sRt7nUoX6YfL9y?=
- =?us-ascii?Q?BF48eBOu1Md3Jb5Z9l9+ygBgRRsjtv7/s4G5qH+YJs3CAtSoT3kn0roNqOrP?=
- =?us-ascii?Q?90XNj4+sLjb66fq2lcUjdE7kTSKH/Vn3ks/6lzzO1yfzPomIjVziQFypSv+y?=
- =?us-ascii?Q?NF0F6VO23KFCxMyOVrhQEA7a/cJrVMUW+jAAGa+aoOg3GsvmO/0ilfnUjc7W?=
- =?us-ascii?Q?0N/zane68ACvNnUX56kIbVWCoizXF3i0pGKtUBFaZpb2YVtABG/f9uWn+7YM?=
- =?us-ascii?Q?MEqw2IYnhq3yQrU9dPwn91qy124+hLEkufPix8qQa1ddRaARCX2Mc2BAvXrX?=
- =?us-ascii?Q?7iBmAKZOHAZDV/2+U4bjD2/ZBcyZv4ufzyUKYsHmL0M2FcZXxO55Y8rxfzYs?=
- =?us-ascii?Q?uWvbqMW5TAd+PqIwh7tXkf6merI3ZHLNOGQYMjpQlm4+GYm8gT0GD2CC0lfL?=
- =?us-ascii?Q?/TE2weicoTEvoo9YX3PnXww+egNCThxfkLUE2lcumickwcQw1zTM8PVm51ef?=
- =?us-ascii?Q?KfXpAAtCGSe4SkpIPJMlkMdGk+eD7ZSHgX8nSuzbbh98RpO7uqSVMzTR26hg?=
- =?us-ascii?Q?mzZPAq2/eQ/4FiFU3WtDNVw9JOBsz0pRwMPqk8CbAxaOP4KeAv8uWHYpDkk/?=
- =?us-ascii?Q?Sdxeydle6YsR18xWQ47omupV8pXXmaugJGleEupZx69Z+ho42mQJv3aWwog2?=
- =?us-ascii?Q?WYaJiHCPekPbtaRUVxzxAIOK2qQBinqqwGmV+O9ixYzIPH9qv+pA4ggwJyZN?=
- =?us-ascii?Q?e9EdAYpE8ZdlNM4atX/4IMSbibLjHhmRJZ5y+CXXMhNgno5Sj9ijWRIt4D4K?=
- =?us-ascii?Q?tKENG8xkJVPtKcZ98vdcdsr0+0Fc/XnoVS4gDSZvXVsJtD+MRbXcMnHzJYaD?=
- =?us-ascii?Q?dZRY4UHZL42cHhMda7+yQzDE2t0aJeQMy2GxkRKOuHJogIW3D3oCPHG78ZXK?=
- =?us-ascii?Q?pKveHDp3UM7DjDAxDOKyy6ahcmviMFr8+z/C3b4yo36B4WssRDtnv1nqGzXO?=
- =?us-ascii?Q?zM69PTKSE+azJIbW2hi1xPKkWomkxSPRfYS7pQeSZIbsUMYibxkbMQtdZ7Oj?=
- =?us-ascii?Q?1VKFeQTEtSMez6FR/qq8oeK3Fl/5hJK0B010htPifUOajAWVRLFox4K4JdZv?=
- =?us-ascii?Q?jIZCkv7tjR8Q/6dz/6g61ER+NNJEVLCJQYERdbNuh9hzWhBK2A=3D=3D?=
+	=?us-ascii?Q?toPmIOlbiB1zIvr6Hs6brcqa8dO+oZtLrAh2japrbJzDMavelV4dsRg81Vmk?=
+ =?us-ascii?Q?VdatHdB56Py5B/SU0Fk+NNhrdoQEIx+wLLsg9o8gsNxDqDv6ZR5wbIwPjYvb?=
+ =?us-ascii?Q?NncHHpz48wWRBIUUbZhvNZ+5H9glU0Nz5E15rnBEkSjfJpyz0JneSwbLApYT?=
+ =?us-ascii?Q?pDEfqcVVPGU/u55kSSVO3pDCi7gL2LYFU9mFkLIuRrYYtbb4eqNzdKjBigt3?=
+ =?us-ascii?Q?JE05EAencRB0adAt6fmIi9/shQwMvcNvd+4DSLk+q6FTXqk7mGn086L7PN5V?=
+ =?us-ascii?Q?oWVDZ/4MaO7ZMcJKR/NTQdzovaf5ITf1Qs7B12xx9areVgWU/Y2kHLOmol9q?=
+ =?us-ascii?Q?7igVCfHmsPoSeewXdM9XsV5/jRqr5FS2PxStP+wrBXW6aVEqQbMzb24oiS7Z?=
+ =?us-ascii?Q?N92wA4n3Ow5rq9bdBQkziClBnfvcpB5wLQwpCcZmY/vqIbODEIMXK2/zs+0A?=
+ =?us-ascii?Q?pqRdwDf7+MuJ/5ybkGl9nNshFEFHVrt2Ii8OjHdo2H6XVQZeEQncAjQUlFot?=
+ =?us-ascii?Q?Gb01zigwUURHdBWbuV4rVZlleWfd3RB9gOvmcEiyhV3P3/yJXyywvY7g8NTs?=
+ =?us-ascii?Q?CmgQXwc/w01SWT8EqZnBNGaR9SMLROKVDnSRFSeaKfF3Hf4j23VcEAopiJri?=
+ =?us-ascii?Q?wFjxFqj6yFyC9/ALYR8b5ZAfre0p1XNxgRwjk79f4Epirdt6INhKo/ATVLe0?=
+ =?us-ascii?Q?IHJINnEU+zIgZz3EJb40bWkexrH0/k2/AhvYPtEYeCf7WYSwrzyjzLJ5Fi2W?=
+ =?us-ascii?Q?MJD7FQWU9DcGenLEv2t0esEOxrp0DNMWIXFJZnk37LMBVzrE6RTEKGSjO6hN?=
+ =?us-ascii?Q?gYkob8vYesz2mJvanxgkpJ7RNdZqhOxChZKDRTBIh51HUcjw64v+roNyEsXp?=
+ =?us-ascii?Q?hOx4W0d/7L2R2GZs850sFAB3LbqNzv/sLoNsXp+2NPuK8IDCQfasQe/Rq74c?=
+ =?us-ascii?Q?IIe+mVcThCxCn5pwtxucTkOdwVP8lXS8/11uxaTXBpmVtJ7OZNB7h7I/8tZU?=
+ =?us-ascii?Q?BHyY506T/faD/EYSzZNNyyvubnESPZuLRl6DKX18nH3EN6xSTEvYPQhf+tUb?=
+ =?us-ascii?Q?AZ2mH9Pc3YtRgK0LhkhCwljy9GUmqrFTN6PlsKFocHS1QHDpBKn6Bh1xY06f?=
+ =?us-ascii?Q?eTjk0inaFvbMFs7HX8PInA/5Lo0Ar7ytWoUyZkFuaSGWHnyFv1IUJDU1TY7o?=
+ =?us-ascii?Q?RVb79V9hNwUXfJD0KZrJO0NxEjS6xmUhxK13HDqIkbgYCESW33zuPVnnCwH0?=
+ =?us-ascii?Q?psIb8FnZAdRiZUGkisNhM+dQ0+7ih5mvdHpmEC8SEEtDChHvNF+ydKOsfbvC?=
+ =?us-ascii?Q?LmkpS7UfF5GYr/VJxUPSiMaY4Asj2fcvF6ceSnjv9cJyr0R2X94j78dB68Nb?=
+ =?us-ascii?Q?tWVGFOYbx5oUYowd6juhstylOlIf9aCoE4BqzxORejnIIN3aIQ=3D=3D?=
 X-Forefront-Antispam-Report:
-	CIP:216.228.117.161;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc6edge2.nvidia.com;CAT:NONE;SFS:(13230037)(376011)(1800799021)(82310400023)(36860700010);DIR:OUT;SFP:1101;
+	CIP:216.228.117.160;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc6edge1.nvidia.com;CAT:NONE;SFS:(13230037)(376011)(1800799021)(82310400023)(36860700010);DIR:OUT;SFP:1101;
 X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 18 Jun 2024 00:10:53.7895
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 18 Jun 2024 00:10:56.7823
  (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 868f9a52-08dc-414e-17fe-08dc8f2b1e9b
+X-MS-Exchange-CrossTenant-Network-Message-Id: fac4ebb3-bb6c-4580-fef8-08dc8f2b205e
 X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.117.161];Helo=[mail.nvidia.com]
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.117.160];Helo=[mail.nvidia.com]
 X-MS-Exchange-CrossTenant-AuthSource:
-	SA2PEPF00003F64.namprd04.prod.outlook.com
+	DS2PEPF00003448.namprd04.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Anonymous
 X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW6PR12MB8757
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH3PR12MB7572
 
-Hi Jason/Leon/Sagi,
+To avoid leakage for QPs assocoated with SRQ, according to IB spec
+(section 10.3.1):
 
-This series adds a support for draining a QP that is associated with a
-SRQ (Shared Receive Queue).
-Leakage problem can occur if we won't treat Last WQE Reached event.
+"Note, for QPs that are associated with an SRQ, the Consumer should take
+the QP through the Error State before invoking a Destroy QP or a Modify
+QP to the Reset State. The Consumer may invoke the Destroy QP without
+first performing a Modify QP to the Error State and waiting for the Affiliated
+Asynchronous Last WQE Reached Event. However, if the Consumer
+does not wait for the Affiliated Asynchronous Last WQE Reached Event,
+then WQE and Data Segment leakage may occur. Therefore, it is good
+programming practice to teardown a QP that is associated with an SRQ
+by using the following process:
+ - Put the QP in the Error State;
+ - wait for the Affiliated Asynchronous Last WQE Reached Event;
+ - either:
+   - drain the CQ by invoking the Poll CQ verb and either wait for CQ
+     to be empty or the number of Poll CQ operations has exceeded
+     CQ capacity size; or
+   - post another WR that completes on the same CQ and wait for this
+     WR to return as a WC;
+ - and then invoke a Destroy QP or Reset QP."
 
-In the series, that is based on some old series I've send during 2018, I
-used a different approach and handled the event in the RDMA core, as was
-suggested in discussion in the mailing list.
+Catch the Last WQE Reached Event in the core layer without involving the
+ULP drivers with extra logic during drain and destroy QP flows.
 
-I've updated RDMA ULPs. Most of them were trivial except IPoIB that was
-handling the Last WQE reached in the ULP.
+The "Last WQE Reached" event will only be send on the errant QP, for
+signaling that the SRQ flushed all the WQEs that have been dequeued from
+the SRQ for processing by the associated QP.
 
-I've tested this series with NVMf/RDMA on RoCE.
+Signed-off-by: Max Gurtovoy <mgurtovoy@nvidia.com>
+---
+ drivers/infiniband/core/verbs.c | 83 ++++++++++++++++++++++++++++++++-
+ include/rdma/ib_verbs.h         |  2 +
+ 2 files changed, 84 insertions(+), 1 deletion(-)
 
-Max Gurtovoy (6):
-  IB/core: add support for draining Shared receive queues
-  IB/isert: remove the handling of last WQE reached event
-  RDMA/srpt: remove the handling of last WQE reached event
-  nvmet-rdma: remove the handling of last WQE reached event
-  svcrdma: remove the handling of last WQE reached event
-  RDMA/IPoIB: remove the handling of last WQE reached event
-
- drivers/infiniband/core/verbs.c          | 83 +++++++++++++++++++++++-
- drivers/infiniband/ulp/ipoib/ipoib.h     | 33 +---------
- drivers/infiniband/ulp/ipoib/ipoib_cm.c  | 71 ++------------------
- drivers/infiniband/ulp/isert/ib_isert.c  |  3 -
- drivers/infiniband/ulp/srpt/ib_srpt.c    |  5 --
- drivers/nvme/target/rdma.c               |  4 --
- include/rdma/ib_verbs.h                  |  2 +
- net/sunrpc/xprtrdma/svc_rdma_transport.c |  1 -
- 8 files changed, 92 insertions(+), 110 deletions(-)
-
+diff --git a/drivers/infiniband/core/verbs.c b/drivers/infiniband/core/verbs.c
+index 94a7f3b0c71c..9e4df7d40e0c 100644
+--- a/drivers/infiniband/core/verbs.c
++++ b/drivers/infiniband/core/verbs.c
+@@ -1101,6 +1101,16 @@ EXPORT_SYMBOL(ib_destroy_srq_user);
+ 
+ /* Queue pairs */
+ 
++static void __ib_qp_event_handler(struct ib_event *event, void *context)
++{
++	struct ib_qp *qp = event->element.qp;
++
++	if (event->event == IB_EVENT_QP_LAST_WQE_REACHED)
++		complete(&qp->srq_completion);
++	else if (qp->registered_event_handler)
++		qp->registered_event_handler(event, qp->qp_context);
++}
++
+ static void __ib_shared_qp_event_handler(struct ib_event *event, void *context)
+ {
+ 	struct ib_qp *qp = context;
+@@ -1221,7 +1231,10 @@ static struct ib_qp *create_qp(struct ib_device *dev, struct ib_pd *pd,
+ 	qp->qp_type = attr->qp_type;
+ 	qp->rwq_ind_tbl = attr->rwq_ind_tbl;
+ 	qp->srq = attr->srq;
+-	qp->event_handler = attr->event_handler;
++	if (qp->srq)
++		init_completion(&qp->srq_completion);
++	qp->event_handler = __ib_qp_event_handler;
++	qp->registered_event_handler = attr->event_handler;
+ 	qp->port = attr->port_num;
+ 	qp->qp_context = attr->qp_context;
+ 
+@@ -2884,6 +2897,72 @@ static void __ib_drain_rq(struct ib_qp *qp)
+ 		wait_for_completion(&rdrain.done);
+ }
+ 
++/*
++ * __ib_drain_srq() - Block until Last WQE Reached event arrives, or timeout
++ *                    expires.
++ * @qp:               queue pair associated with SRQ to drain
++ *
++ * Quoting 10.3.1 Queue Pair and EE Context States:
++ *
++ * Note, for QPs that are associated with an SRQ, the Consumer should take the
++ * QP through the Error State before invoking a Destroy QP or a Modify QP to the
++ * Reset State.  The Consumer may invoke the Destroy QP without first performing
++ * a Modify QP to the Error State and waiting for the Affiliated Asynchronous
++ * Last WQE Reached Event. However, if the Consumer does not wait for the
++ * Affiliated Asynchronous Last WQE Reached Event, then WQE and Data Segment
++ * leakage may occur. Therefore, it is good programming practice to tear down a
++ * QP that is associated with an SRQ by using the following process:
++ *
++ * - Put the QP in the Error State
++ * - Wait for the Affiliated Asynchronous Last WQE Reached Event;
++ * - either:
++ *       drain the CQ by invoking the Poll CQ verb and either wait for CQ
++ *       to be empty or the number of Poll CQ operations has exceeded
++ *       CQ capacity size;
++ * - or
++ *       post another WR that completes on the same CQ and wait for this
++ *       WR to return as a WC;
++ * - and then invoke a Destroy QP or Reset QP.
++ *
++ * We use the first option.
++ */
++static void __ib_drain_srq(struct ib_qp *qp)
++{
++	struct ib_qp_attr attr = { .qp_state = IB_QPS_ERR };
++	struct ib_cq *cq;
++	int n, polled = 0;
++	int ret;
++
++	if (!qp->srq) {
++		WARN_ONCE(1, "QP 0x%p is not associated with SRQ\n", qp);
++		return;
++	}
++
++	ret = ib_modify_qp(qp, &attr, IB_QP_STATE);
++	if (ret) {
++		WARN_ONCE(ret, "failed to drain shared recv queue: %d\n", ret);
++		return;
++	}
++
++	if (ib_srq_has_cq(qp->srq->srq_type)) {
++		cq = qp->srq->ext.cq;
++	} else if (qp->recv_cq) {
++		cq = qp->recv_cq;
++	} else {
++		WARN_ONCE(1, "QP 0x%p has no CQ associated with SRQ\n", qp);
++		return;
++	}
++
++	if (wait_for_completion_timeout(&qp->srq_completion, 10 * HZ) > 0) {
++		while (polled != cq->cqe) {
++			n = ib_process_cq_direct(cq, cq->cqe - polled);
++			if (!n)
++				return;
++			polled += n;
++		}
++	}
++}
++
+ /**
+  * ib_drain_sq() - Block until all SQ CQEs have been consumed by the
+  *		   application.
+@@ -2962,6 +3041,8 @@ void ib_drain_qp(struct ib_qp *qp)
+ 	ib_drain_sq(qp);
+ 	if (!qp->srq)
+ 		ib_drain_rq(qp);
++	else
++		__ib_drain_srq(qp);
+ }
+ EXPORT_SYMBOL(ib_drain_qp);
+ 
+diff --git a/include/rdma/ib_verbs.h b/include/rdma/ib_verbs.h
+index 477bf9dd5e71..5a193008f99c 100644
+--- a/include/rdma/ib_verbs.h
++++ b/include/rdma/ib_verbs.h
+@@ -1788,6 +1788,7 @@ struct ib_qp {
+ 	struct list_head	rdma_mrs;
+ 	struct list_head	sig_mrs;
+ 	struct ib_srq	       *srq;
++	struct completion	srq_completion;
+ 	struct ib_xrcd	       *xrcd; /* XRC TGT QPs only */
+ 	struct list_head	xrcd_list;
+ 
+@@ -1797,6 +1798,7 @@ struct ib_qp {
+ 	struct ib_qp           *real_qp;
+ 	struct ib_uqp_object   *uobject;
+ 	void                  (*event_handler)(struct ib_event *, void *);
++	void                  (*registered_event_handler)(struct ib_event *, void *);
+ 	void		       *qp_context;
+ 	/* sgid_attrs associated with the AV's */
+ 	const struct ib_gid_attr *av_sgid_attr;
 -- 
 2.18.1
 
