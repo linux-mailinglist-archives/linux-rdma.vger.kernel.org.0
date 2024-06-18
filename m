@@ -1,361 +1,226 @@
-Return-Path: <linux-rdma+bounces-3272-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-3274-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 301D790D69D
-	for <lists+linux-rdma@lfdr.de>; Tue, 18 Jun 2024 17:09:59 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3F85E90D6F3
+	for <lists+linux-rdma@lfdr.de>; Tue, 18 Jun 2024 17:19:21 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3845C1C24133
-	for <lists+linux-rdma@lfdr.de>; Tue, 18 Jun 2024 15:09:58 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id BEAEB1F2493E
+	for <lists+linux-rdma@lfdr.de>; Tue, 18 Jun 2024 15:19:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 64DA2200B7;
-	Tue, 18 Jun 2024 15:09:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 974B132C8C;
+	Tue, 18 Jun 2024 15:13:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="Umvh0jMU"
+	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="YkSTs6wl";
+	dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b="oz7xofKb"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from NAM11-CO1-obe.outbound.protection.outlook.com (mail-co1nam11on2083.outbound.protection.outlook.com [40.107.220.83])
+Received: from mx0a-00069f02.pphosted.com (mx0a-00069f02.pphosted.com [205.220.165.32])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6144B1E895;
-	Tue, 18 Jun 2024 15:09:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.220.83
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7C5B94D5BD
+	for <linux-rdma@vger.kernel.org>; Tue, 18 Jun 2024 15:13:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=205.220.165.32
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1718723391; cv=fail; b=JAynN9z45FaPAPt4E+xk+VvNktDGinVRZpVDx+SwR5ZhF0XMp58kxmm6lcrJlogbZLsj1O6KlKDypj81wm7E6TxB8JZsbSgo9ua2sdESnf5dq1ioqY8H+c9xsTBEMsA9w9Te7P4Wzjyr6DNe2/LsRPke1rYO8HkCydHH/Cu2YRY=
+	t=1718723583; cv=fail; b=usWOcseXhSzDgWdvX+Aix3Up27KJ7K0s/MyfMuVZN/OepsLYZl/gSl2/txpdNHuXlTWx7CV5/SXW5PcD6e6UOgA5pw1Ak2WF0ohKKLm6/U19PkmOG1psplOII6KYNdv6lH1mVjoucY11w7RjO1hl7EQCFjJkJ0MSomnybjaHv9M=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1718723391; c=relaxed/simple;
-	bh=/TfvSavvbDaQP+zQb9ViwjwiqbUen33BBl2zYNDK13g=;
-	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=MpCdhiUPviDBKjfWK0Sq9upqg1tW66A+ivqJ03tjkn3xHQR1TxvvYV3M5+/ZhsocBl+4bAGs3fKxoGmviXgOvVfhTowwlRm9Y58a5fIfmonMd3JiTF8unC3cNrNC4gTTceyu0NrVzjt5tIQTgEaTMXy/gvB5IpAf9VY3ILNTwHs=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=Umvh0jMU; arc=fail smtp.client-ip=40.107.220.83
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
+	s=arc-20240116; t=1718723583; c=relaxed/simple;
+	bh=49EhQJ48CmIOpEmwucNRMbxQWIiWAfhnQCccW7n8MTI=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:Content-Type:
+	 Content-Disposition:In-Reply-To:MIME-Version; b=fl/CQdKgLFPze0uwWmFjIgM2pXv/p9GU+eyVWmtVqQZrep5W/KenW4yuZES+R+16mL+hgfrEy7FaXfV/MGI7AqAX1KaxTBNlmtLY74I4C9iyrTZPWMMbfawEzVIGwxg8FTwuKPWR54WVCvqPFyPXaJmkFyRS5gUudokXtXRqgrk=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oracle.com; spf=pass smtp.mailfrom=oracle.com; dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b=YkSTs6wl; dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b=oz7xofKb; arc=fail smtp.client-ip=205.220.165.32
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oracle.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oracle.com
+Received: from pps.filterd (m0246627.ppops.net [127.0.0.1])
+	by mx0b-00069f02.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 45I7tQm7014702;
+	Tue, 18 Jun 2024 15:12:36 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=
+	date:from:to:cc:subject:message-id:references:content-type
+	:in-reply-to:mime-version; s=corp-2023-11-20; bh=aiZjOkXiDu9247a
+	myw/UvL4L4r9BtpK/ePCv1/i2+Fc=; b=YkSTs6wlOL+yvPDyipP+tA55OhgxAqJ
+	gDGCkNddTQ4RlF1z4xj4g0VkDXcdcaOtUQ+fwccIX7eZ3umfFBOpfYHiWK8FreLj
+	Cfx3N8prF4cNT4B/nvrNlOfAK+xdMLsXEdztW6PNDpMpNQ3wa6CFECGhpY8RQPf4
+	ua2883wYNhYv9iE5ZRYoNug5SmwQcGB+/8DwU48yZ7u+MDkFfyDz2cPzECq6eVsZ
+	DukSCxM8Sy7bFEEuBVfNwp55TYW0FTLNJsFxDmY0ubt5LDdkJ9qtGJ3r99kPa0Dp
+	DVFDkhPgDLuXi4hv5rmo7dP8hmzUHEqF7qEowfft4ykGHASM3hs1vZg==
+Received: from iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta01.appoci.oracle.com [130.35.100.223])
+	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3ys1j0577g-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Tue, 18 Jun 2024 15:12:35 +0000 (GMT)
+Received: from pps.filterd (iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
+	by iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 45IEARSB014903;
+	Tue, 18 Jun 2024 15:12:34 GMT
+Received: from nam02-dm3-obe.outbound.protection.outlook.com (mail-dm3nam02lp2040.outbound.protection.outlook.com [104.47.56.40])
+	by iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTPS id 3ys1dea6hq-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Tue, 18 Jun 2024 15:12:34 +0000
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=id/9hQm5h3lLCSJOnUwY/bOlMBIOXRfWAbodOR7CysJHZAKBEBsC69FJdxbkLOWe4tsBgR8IBi339TM6tQ7mXH4H+3yCUcaH9f3UbMFYJpwh1khs/s8nizeDyyPADfkSSLKTo2eDp7W8HMXV/18HDGOyn9WTGeKdndU1iPOAPcQCGdE8Xmb/7h+dECwIJoW+uMgW2yJdBe5EKcMK5syWlP3JqKEY3lgYtLZBZKPjKI+Jubq6xDvLxUWNpUTzGC64UN0md15ObNx4y7HfGFVfxA0hXYnOnFFtmO+l5Gd8r0CU9HR3Shb8Hlhj+rHpDiKgpj1lUcsX4qxbqdssCAGXNA==
+ b=eebJQhtpaJ2mWwoFNAc5GwmvWX43oTOTRf5TAbUf2JpZnf2eO4jGR0KRfI78r6OVXnDteeppIqc1DJGYLM8XlfKfQEFExiW75JNdEA5cBPyYLfLNbaoBA6yVsNHmhZmb4lXAmOsBEBQr46YZbBYeFE+AOjdJFBpu6HPIYhmFkdbxatAK1USN5ms+J4bI0TFFCTYuaHss2DwZXw7i54acvcDL2dsgqgEnLWLcjzTnRwlrNHsQ9k35DY4rxuG39nOQWkJqIrKm7fy/VW1w3BaDz/zM9EIDeQo6x5QWAsh3WGG1UP3rueYYEJAdLoyzTNGk5IFI0rV5P0tKfKObl/qSpg==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=Yty9ePQj69kxCx7zEiXqtwEQGIHXJ3wrXIRf5O7y/v4=;
- b=nC9/eoTTkm8hqrVO67bgij4z6Mx8nWJItqN7Z16g2Lm+A+5QzLXYR5GUqXDDN7YRRnlgyx0HmtTyWrlKBBj5cA7wd8uMLWzuixJ1+lUDu/jxNuzmhhvlXHKdx0FseiRnUOWCLmnjWVbvpf5vSQE5nMqdWm3/5zJGN6NqaAm4wgNw+VYT7P7bmqD430TkIRLOiBiuiqhDzHj9EV3oUcSx1gCZiV4ZAjTJjIRPAyFgBDGTbbqdmv82BlDc3wQu0s0spIr2oLbOBwnKPfvI7f6ORC9+tpctgut93FoUYgkS5f+NJ5EMhxjymE68HUTTqWH/YbmhjdrjOrclOPxIsRA7wA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 216.228.117.161) smtp.rcpttodomain=vger.kernel.org smtp.mailfrom=nvidia.com;
- dmarc=pass (p=reject sp=reject pct=100) action=none header.from=nvidia.com;
- dkim=none (message not signed); arc=none (0)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
+ bh=aiZjOkXiDu9247amyw/UvL4L4r9BtpK/ePCv1/i2+Fc=;
+ b=IgDsQofUAocpgXkvKqZHqwPD2rLP+dfbIPyW6mO+fb9Vmqn/IPSYvZ+aUEuOpU7z2W83vMuPOtbKMQQmD14PhrD7XfxUsRpjVNwSNvkFjBsgfkTEbg95eTP8NfvqwzYXoNONveIcOl6eFaRRVGFaVMBKiL22bHwV/ggBJMEKcThJk/D2bowFBXEwrkcC3RywqNly2gINSjKHM+jyR7sjfhOgZC8rPMbAqJNrX5CKXdZ/skolza5ft16H8kwSk2epWcUv941/80wbtkzJ4ttWx7nlHbGgLpOCxv5gXh7vVKL7gKDXRr6O/jIgY31IK0xicVqYyAD0u2Y/OSBX00k48g==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Yty9ePQj69kxCx7zEiXqtwEQGIHXJ3wrXIRf5O7y/v4=;
- b=Umvh0jMUmHc577xue2JtgwW3+5vR0AwstfTRT1PSQvBkxL7A4gNN2bl8ktZIMugQRJvhwbtdqbjhwm8ZQkkpHDoPI8KoB0nyDbfyFngXuv5DbI2Zpkhzv/Df/uHg7PDNrmqfAJwz22Z3Y07SI6Z1dE1Y8Hzk7vQ2FcTxJ4JTimef1J/ZbiszMW37EeGa7WdCDvikly/78iT4GNaEN1YQ1tD8uXlX8Ce85/DfBu/t97kWO5xOoLNPQpdijFh3xcUbQIJWv2PtO5xS19fdLzHKMRaauDpBkBX09z1050zEwrbnSuFIKxEph7ARZCpXROoMCDrhpiRDSEtQ3QFmAH2ySg==
-Received: from SA9PR13CA0015.namprd13.prod.outlook.com (2603:10b6:806:21::20)
- by DM4PR12MB5796.namprd12.prod.outlook.com (2603:10b6:8:63::16) with
+ bh=aiZjOkXiDu9247amyw/UvL4L4r9BtpK/ePCv1/i2+Fc=;
+ b=oz7xofKbOvtIyqcVUhGBkjU539qIk92XacgW4EjCkrsM6cJ7SHT0lcI2PeAcgH2eipd75dNfObhTY+H4PsSziZ3wazw+511fkNcgiRtWzIF/vbhgeEMJlJfefLm7OPpOK2ww2m0tdHSIA/fy8s7bzGjIoE3ZhRazPB3BkBCP1j0=
+Received: from BN0PR10MB5128.namprd10.prod.outlook.com (2603:10b6:408:117::24)
+ by MW4PR10MB6630.namprd10.prod.outlook.com (2603:10b6:303:22f::18) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7698.19; Tue, 18 Jun
- 2024 15:09:46 +0000
-Received: from SN1PEPF00026367.namprd02.prod.outlook.com
- (2603:10b6:806:21:cafe::34) by SA9PR13CA0015.outlook.office365.com
- (2603:10b6:806:21::20) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7677.32 via Frontend
- Transport; Tue, 18 Jun 2024 15:09:46 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.117.161)
- smtp.mailfrom=nvidia.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=nvidia.com;
-Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
- 216.228.117.161 as permitted sender) receiver=protection.outlook.com;
- client-ip=216.228.117.161; helo=mail.nvidia.com; pr=C
-Received: from mail.nvidia.com (216.228.117.161) by
- SN1PEPF00026367.mail.protection.outlook.com (10.167.241.132) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.7677.15 via Frontend Transport; Tue, 18 Jun 2024 15:09:45 +0000
-Received: from rnnvmail201.nvidia.com (10.129.68.8) by mail.nvidia.com
- (10.129.200.67) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.4; Tue, 18 Jun
- 2024 08:09:26 -0700
-Received: from nps-server-23.mtl.labs.mlnx (10.126.231.35) by
- rnnvmail201.nvidia.com (10.129.68.8) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1544.4; Tue, 18 Jun 2024 08:09:21 -0700
-From: Shay Drory <shayd@nvidia.com>
-To: <netdev@vger.kernel.org>, <pabeni@redhat.com>, <davem@davemloft.net>,
-	<kuba@kernel.org>, <edumazet@google.com>, <gregkh@linuxfoundation.org>,
-	<david.m.ertman@intel.com>
-CC: <rafael@kernel.org>, <ira.weiny@intel.com>, <linux-rdma@vger.kernel.org>,
-	<leon@kernel.org>, <tariqt@nvidia.com>, Shay Drory <shayd@nvidia.com>, "Parav
- Pandit" <parav@nvidia.com>
-Subject: [PATCH net-next v7 2/2] net/mlx5: Expose SFs IRQs
-Date: Tue, 18 Jun 2024 18:09:02 +0300
-Message-ID: <20240618150902.345881-3-shayd@nvidia.com>
-X-Mailer: git-send-email 2.38.1
-In-Reply-To: <20240618150902.345881-1-shayd@nvidia.com>
-References: <20240618150902.345881-1-shayd@nvidia.com>
+ 2024 15:12:31 +0000
+Received: from BN0PR10MB5128.namprd10.prod.outlook.com
+ ([fe80::743a:3154:40da:cf90]) by BN0PR10MB5128.namprd10.prod.outlook.com
+ ([fe80::743a:3154:40da:cf90%5]) with mapi id 15.20.7698.017; Tue, 18 Jun 2024
+ 15:12:31 +0000
+Date: Tue, 18 Jun 2024 11:12:27 -0400
+From: Chuck Lever <chuck.lever@oracle.com>
+To: Max Gurtovoy <mgurtovoy@nvidia.com>
+Cc: "leonro@nvidia.com" <leonro@nvidia.com>, "jgg@nvidia.com" <jgg@nvidia.com>,
+        "linux-nvme@lists.infradead.org" <linux-nvme@lists.infradead.org>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        "oren@nvidia.com" <oren@nvidia.com>,
+        "israelr@nvidia.com" <israelr@nvidia.com>,
+        "maorg@nvidia.com" <maorg@nvidia.com>,
+        "yishaih@nvidia.com" <yishaih@nvidia.com>, "hch@lst.de" <hch@lst.de>,
+        "bvanassche@acm.org" <bvanassche@acm.org>,
+        "shiraz.saleem@intel.com" <shiraz.saleem@intel.com>,
+        "edumazet@google.com" <edumazet@google.com>
+Subject: Re: [PATCH 5/6] svcrdma: remove the handling of last WQE reached
+ event
+Message-ID: <ZnGj25vWNgTKh6cz@tissot.1015granger.net>
+References: <20240618001034.22681-1-mgurtovoy@nvidia.com>
+ <20240618001034.22681-6-mgurtovoy@nvidia.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240618001034.22681-6-mgurtovoy@nvidia.com>
+X-ClientProxiedBy: CH2PR08CA0022.namprd08.prod.outlook.com
+ (2603:10b6:610:5a::32) To BN0PR10MB5128.namprd10.prod.outlook.com
+ (2603:10b6:408:117::24)
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: rnnvmail203.nvidia.com (10.129.68.9) To
- rnnvmail201.nvidia.com (10.129.68.8)
-X-EOPAttributedMessage: 0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: SN1PEPF00026367:EE_|DM4PR12MB5796:EE_
-X-MS-Office365-Filtering-Correlation-Id: 67524792-fcce-46ca-558e-08dc8fa8b0af
+X-MS-TrafficTypeDiagnostic: BN0PR10MB5128:EE_|MW4PR10MB6630:EE_
+X-MS-Office365-Filtering-Correlation-Id: 7fefe3a1-c055-435d-bbc4-08dc8fa9133a
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam:
-	BCL:0;ARA:13230037|376011|7416011|36860700010|1800799021|82310400023;
-X-Microsoft-Antispam-Message-Info:
-	=?us-ascii?Q?o1GFSUNPp5fDfRkAz8zDOJ/hD34oqPfP7/Q1vmxu0d+2+NHx7SKP/R9mHVcR?=
- =?us-ascii?Q?Zb7zuP/XdIv+j2xRAiduRQa2XXuZfktWCAtSU0iin9nrNPh20sHi7ud87L0K?=
- =?us-ascii?Q?lIlfqZtXCtN9qhCk57nYEWwBiGdzE2R1PTLzUnp6KbyyesVc2t5VeRk7arnp?=
- =?us-ascii?Q?RMak/redlJEU4qRLshSN9KVdZRAY+sQSLA1fg44cX0KX13LFN3z/fcSoQAoW?=
- =?us-ascii?Q?4PYcTohCuiIKoPvlZgboNWtbpTQnesSk6GgNjN/nTt0bePKdow2117grdFTS?=
- =?us-ascii?Q?0GKz2r6fMxaiQIESVXB3tu4KviN4YJV9Kh+ek1C92Z9zwvKelrS1xrujWsbf?=
- =?us-ascii?Q?Jzh5d1Sio+Ik3U/mFdHACpTIK9YhpvMrCTFbNB8oHyd1roZeHMIuYF5sBNS0?=
- =?us-ascii?Q?EBlezY4/R6nSGYVpbyPhiFMuNQ+6M7uyQHRD1px6uEGc76iAmi1HQN0b43rA?=
- =?us-ascii?Q?Ic7ho34TTPA2XCS1CQEpAqRGL6mhSi1DpL1PCp1J/cMRxvOQdkrDON/36JGW?=
- =?us-ascii?Q?I830QHShe/JNCZOt1rVk4pDDkvCVEoWMxOZGeOdM6I4fLkvcKk5X3AoBHa6+?=
- =?us-ascii?Q?8ZYe/rVBHXfZq+Z3CGPU3gVZ+eGchTyW8pW1wuGf5LlnJq7gE+U/Ipm9m6Fd?=
- =?us-ascii?Q?Ks8VIB9kjz7QGCkkR++7TIfkzeA7pbeoTP7PpTdmKoClhGYTi6y9lQoyQ4fu?=
- =?us-ascii?Q?qBiQLHybj5RA4ge0y+Mp3ev6yP6IZ4uph7tCZLEuh71FZQ2RlqE45kcfzR0p?=
- =?us-ascii?Q?uhnEru3+6yKd7vsmW2lYYTiigGDEXZ2amt7wG+NI0hueh39Jll5pNOjbBswS?=
- =?us-ascii?Q?VrRi0mF+BSaqMLpqcDmX9Agse6BHe6RCegMQxJuWl0hcU/ZM7/Ndmt5Qtr5D?=
- =?us-ascii?Q?Wmt8rbnwpOr+PPewMp7BJK6y7SIgJhNBvUt1p5XpBkkyA2Pku3+k6KmYSrYV?=
- =?us-ascii?Q?gFEbn0qw5IwGx3ko7Qnbp8QalasBH5OQIWsuqWR/CtUVESxycgMA3D+ryxKw?=
- =?us-ascii?Q?lEIS384DlFHdF9TbaVxlln+lQ8wlSkmCRdezkSp7gr3mb5GN0RWo+QbIOVJT?=
- =?us-ascii?Q?jpVSWUSfWsBEo6g97YPAcq1qv8M+CXb+4ZoTNMwNGDmFz9X7peNy36B/yeq9?=
- =?us-ascii?Q?bgFscYMeMCB4yXOhZheXU+QHDHjddBKH6ts/w9sJdsiWUBuMh/Bi/Zz8gIq0?=
- =?us-ascii?Q?3WuCfQzXuSHNU+ttAkvO7I3nvO5RZGpMxxhaUI49pp2JRzrtJ4onxQa3GaWA?=
- =?us-ascii?Q?YzlLqPP4Z6Undjj4OyxckgYujjYdJAcGkVnbqvviPdjgMQp5z/pprI9u9pXJ?=
- =?us-ascii?Q?y+7+IY8+tHZNWWbtX4+0ZVIsjRcu7Up7dAvUuUac6sRPkB4Gr4fq1ITPt5d1?=
- =?us-ascii?Q?OQyn4mTAjPe/2npY1U+OsJEUi5TznWlkydnZK5oxLS3NAnId4g=3D=3D?=
-X-Forefront-Antispam-Report:
-	CIP:216.228.117.161;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc6edge2.nvidia.com;CAT:NONE;SFS:(13230037)(376011)(7416011)(36860700010)(1800799021)(82310400023);DIR:OUT;SFP:1101;
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 18 Jun 2024 15:09:45.9607
+X-Microsoft-Antispam: BCL:0;ARA:13230037|376011|7416011|1800799021|366013;
+X-Microsoft-Antispam-Message-Info: 
+	=?us-ascii?Q?af6D4TJ1LGMxqBjH4XFv/gnfwUE1Us3J+ETQgi60IK5KN++Th/KHSdj55RRO?=
+ =?us-ascii?Q?f7tCf7I/ax01ygHPmMtV9a1NcjvW2/af8CQ5BzTVADnz/+L6hF0TAPE7uCKY?=
+ =?us-ascii?Q?YXMJO2h7DrofRMBe7tBEnJOAVkN4D4nXXQ083Zs6MhkJzs7IbojJreEvXL2C?=
+ =?us-ascii?Q?NmJDjy7/XRkExDbgNZloPklSDRi/Qi3tY2viexP73O5jeDP74SqALx0CP9OZ?=
+ =?us-ascii?Q?0VtSFVDmcMwVQWLI4ykJWKvAVOL4fcMBvIUkhr/9A+FZvd3ryuaIY7bmGwEx?=
+ =?us-ascii?Q?s6mbc/JeeqpYOOgVPbVxNl6aBlRgFxec/LVm00z3rwoDUw0rqLv1p19sbpny?=
+ =?us-ascii?Q?CN/8P042E70av+bnFeNWD5jYA0G5rTmJd2SFuFOvbt9By29wgrPsqb5LBaCC?=
+ =?us-ascii?Q?Co2H8aKUdhn1QkX82pmVKhEjkLQOgzybo7jlxxriXHNlO5F7JaiUPtAQyB+t?=
+ =?us-ascii?Q?P827dxNAlfbOf2tS3TcoeV+fVrHY9bnVwgWSlJJomt0Un8VfG4wltjzv42ve?=
+ =?us-ascii?Q?OHoDPTa4tXpBAuWNd4kSxY4WRna1/KPt50tkqulOfDIiV0KGtZAl/PIqFqer?=
+ =?us-ascii?Q?Ht0nCk8JPMLVgOvMe44BP/OwHwnTU+VxY0/BXoMj9uUvf+Xc7S+/+8NsVy5j?=
+ =?us-ascii?Q?DhPxnYjkrprJw5/E/QMeii6HbT9Sq7mjfi8atpIkGNsn2wgylwpqsY0TYRRK?=
+ =?us-ascii?Q?1cb4Wav6wDOLDOJPrplaxttnOR7RnJs+sPWe1cS/kMoejxKdUTwrDqfKzJrS?=
+ =?us-ascii?Q?0u0sv12NonK6Fn1pukxXdaQxQ2XcFKtYiqLI+0d4yjSr379Hc1s7Sf2MezSi?=
+ =?us-ascii?Q?uOISKQ3fDuU1ftG4hAZ0w0d3MN9fXoHDdHqqJfsqx2GpTlrZWUyFNQmA0rpI?=
+ =?us-ascii?Q?dz3i80o4A6XCV7Ri+4DOePmAFaPTlfk0kqxA9DtLDCMBxK5H3bwdB1fNf8wa?=
+ =?us-ascii?Q?i3DFnmUZKJ+uBXrs0wC3szdIgmoT5w5Y1BeD8XYTmiiTOcU2ON9CLGWbaapY?=
+ =?us-ascii?Q?uCPyrORixMAia+nbQh07ffCWMry0rS+s4x/BFYkADvpzOL1OY0gvGS3Qm/MF?=
+ =?us-ascii?Q?+RPr/AQAqwSnJd9z4PmLPfCx4ORTVRKUUFJKAgdFg/BsVCylglNe88iJu1ZF?=
+ =?us-ascii?Q?WAGYpvKCAuJabGF3OzrJujTJSu6vHlovtZ1KYlkOwrnJ6S74FqahsQ4ESa0/?=
+ =?us-ascii?Q?Hpj7+oQfMQzVLjk8Jdhds9MhdiBH1gsNdDf0sGWD0K0EdhBWt2QZImQXfRz6?=
+ =?us-ascii?Q?Kkx/4Cfz/HGptoddBBKQp3SJqCn3s32QjDM8gl20DHviSLVmHO0MlkK58Kau?=
+ =?us-ascii?Q?+RRn5MCNduULUZ/7hBNnls0K?=
+X-Forefront-Antispam-Report: 
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BN0PR10MB5128.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230037)(376011)(7416011)(1800799021)(366013);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: 
+	=?us-ascii?Q?L6uWN8+Dvjtut8xlPamvCh4ms1zJSEu9+xnablyho4X/P1vv97bWwB97LXAe?=
+ =?us-ascii?Q?9gvz9JFVhnGwPkFlpf7R6t2dbR71n3MnL7JJRb9qiXEtF8NIxUhgDB0P/jDr?=
+ =?us-ascii?Q?sQRSM6/M4b2QNF/46UE2PXdUfvHI5FiqX1L/9QRRmMIuyf2ynbS4jit1ZZTx?=
+ =?us-ascii?Q?dyUVAn7Hfj5eFg1eq9KAuj5YFyD9go+CHknXXuwehDbl7tuWWuG36qcNr9Sf?=
+ =?us-ascii?Q?pp7Dn6aOieh8eoS6AoTnweVVzg1Gs44I+dwbhpEnM6x1ubwLdkgEU/Gn+ZPv?=
+ =?us-ascii?Q?cQzUTb08983s3QzR9XSCtCMfr81qz0zEbIAYGZrHshI4glVs60no65kWGT8u?=
+ =?us-ascii?Q?duZf+K00d/cARb15DWZ6KTe2uITBFI1Im1EfYvU9ikKuo1kNhfcFJ2ScMr8/?=
+ =?us-ascii?Q?hWtFZShmX/1EdbmFdAyXKQBYtMYPJQfKtek1XTpeTMqkyYD9C4zVIq5Lui6n?=
+ =?us-ascii?Q?VARb6vKrtXaYByHa3cGK4dreCgPSkarHB1Qbu4le5d0gLrvZU9UpVenVl59m?=
+ =?us-ascii?Q?S1ewgqTL7TuKTMxeN+f4OkxCpR6RsqPAg3O6Jt1DAjZJ0t2CxulFGFlQN8Rl?=
+ =?us-ascii?Q?Q+ojTqf+eN+mdt9mXzuiTTUTBSra2w13Ki8tTTComd3cOiII825Y1kPQ4tnS?=
+ =?us-ascii?Q?e55b4sU0SQeoMWGCpO+cLpG2c8U0WsnECBij3vSbinUGx3jdgx5S3cCtvssr?=
+ =?us-ascii?Q?H9BFKmF0L7UHbq+JvaEvDzFLvvcACRT9xWjukSOjLUgsqdUo8xFADqyDo78S?=
+ =?us-ascii?Q?JmWEuF8ViFnBrtodqzDJGHnWdH2wi0JFjdzj1Rv4drjE04j0tSiGwQRARv3M?=
+ =?us-ascii?Q?un1qZCibjMrBKbDAhHyCc8rq1nv/uDMAxky5+K5jWefkRxLCv//nqSoTOotQ?=
+ =?us-ascii?Q?ebNj/1xX5KrV/zmUszq9Zrpq75eZlQK+iAh5uCjikv9umCbs+a4Mn1biWe9i?=
+ =?us-ascii?Q?gOSeQS+zRVhEc9kGXHIIef6/ewj2qDKoZA8V4tdWIy20E/rIpxe9ukaB5sjl?=
+ =?us-ascii?Q?+/J9pHGc/7b50+r3uQyv4N3MUhfdbJPCjicuGwcaouzdgfftkffyQGyGMxlY?=
+ =?us-ascii?Q?t402EHoyeWBl4hjL8kt7Hilc/1DIg5e0ktigjg1TOxV4hY75yh/Ihi12Ha1b?=
+ =?us-ascii?Q?qpxRfEn5K3q+ZNoRhP+XnB4XDIccTwAiwPc9IDxoA090TfIR6PyhkKxfd408?=
+ =?us-ascii?Q?5jDgvyyY6XavyKwpFngtTkJHcD8TAVkglOnTtG3dwv1FPjIEyOvbuClP/TGJ?=
+ =?us-ascii?Q?3Je4hYhfbcBciRo4+FsSOS8Zby3anv/Bz3O2K9BydYyAZMLXT0xuF5/uasZQ?=
+ =?us-ascii?Q?+ACL7RTCmO2DBzIiDi6pd8LgJftmxpjlATZ4OI+yK4buffQbf/8Kq+8ex0vZ?=
+ =?us-ascii?Q?bjd2ucfKVUj92TYSlhJELro27n2WQ82eOWh4X7pTgekycEpsUHMi+BCqfU4y?=
+ =?us-ascii?Q?Q43rTnw+ZgYdZ42AB6d1sjpjFp8PqyoPkzCV3UghNfx7WPdhiu02Vj2K3N/v?=
+ =?us-ascii?Q?t7Ra8i+PBgxHr3u3AWlYh2mSEqytaa/idyXq7Z1MrBgwdrbPywbHsCkbf4pQ?=
+ =?us-ascii?Q?efBwpOmio1bCjyexz6kdRX+NaeEZKeeIf9Sg4NWR9256brq9ig6IhTtHjp2F?=
+ =?us-ascii?Q?vQ=3D=3D?=
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: 
+	rArMgQISAq1zMl8rQ38tP5ngXBXBPUSnCtzR/b7LK6DcmQof0r2As11c2R1CgacNAZH2hAo5cEaCMuNKPlrVOMWEAdShfu8r9Lvc69MV/2uCdVExwqf4yMKjoPZ9zh/zKnN5UcAPc58/nuEF6xDszoFldIZlJKh7wsJThgD+lyuauN1x9oDrp23W0ZudzE/eoq1pqLZOKEevSQFqU8w6TQ/oaxxc5KHJ5tv4bqnCC1TovDkanaHKY+bxjp4XDqphPtMaM9SPCY1e9LOIRM3IV/xFsYkxLb75FaDy4Ka2rCv5iQN/f18QFwTNylXxXeCKyujZfuAQOOndjIS5CwTMJi0LOqVYpIf5JElwxkgMw2PenrrQtcJ0Bg67cMZhsfIzsGDDn3YCBkpTvLzwKiSCPOatyhssBz30dd52gurB0TJRzHJdWt5sTmT0OUs45x93p+ZeyLYUgRMpqmsWb605HZ/zRIX7054DDzLu8FMLrNh6o5E+DdrgyGDdYaUth9yfUnMWiwgQ/bYkEKM2kFNXFSDVPIo/mWvDKRt4t7v68yoIKxCfWu4xIlGf6G0EG6yi5E+RtBJ1bM1jYbp8vwdnoBll8oFvsOpJQpuKvRX1VLw=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 7fefe3a1-c055-435d-bbc4-08dc8fa9133a
+X-MS-Exchange-CrossTenant-AuthSource: BN0PR10MB5128.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 18 Jun 2024 15:12:31.5837
  (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 67524792-fcce-46ca-558e-08dc8fa8b0af
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.117.161];Helo=[mail.nvidia.com]
-X-MS-Exchange-CrossTenant-AuthSource:
-	SN1PEPF00026367.namprd02.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM4PR12MB5796
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: eNiFJSys319bgjXMDeC3303heefEWKGG/KfwQs+NXNEd5M7W/OoyUV2PFqhXPQFo/qYajtrV9Q62ck9UGvzaZQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW4PR10MB6630
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1039,Hydra:6.0.680,FMLib:17.12.28.16
+ definitions=2024-06-18_02,2024-06-17_01,2024-05-17_01
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 suspectscore=0 spamscore=0
+ adultscore=0 mlxlogscore=999 phishscore=0 mlxscore=0 malwarescore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2405010000
+ definitions=main-2406180113
+X-Proofpoint-GUID: iBrrlssLk9wz64DrlUHdfyxEVkXqt_9t
+X-Proofpoint-ORIG-GUID: iBrrlssLk9wz64DrlUHdfyxEVkXqt_9t
 
-Expose the sysfs files for the IRQs that the mlx5 PCI SFs are using.
-These entries are similar to PCI PFs and VFs in 'msi_irqs' directory.
+On Mon, Jun 17, 2024 at 08:10:33PM -0400, Max Gurtovoy wrote:
+> This event is handled by the RDMA core layer.
+> 
+> Signed-off-by: Max Gurtovoy <mgurtovoy@nvidia.com>
+> ---
+>  net/sunrpc/xprtrdma/svc_rdma_transport.c | 1 -
+>  1 file changed, 1 deletion(-)
+> 
+> diff --git a/net/sunrpc/xprtrdma/svc_rdma_transport.c b/net/sunrpc/xprtrdma/svc_rdma_transport.c
+> index 2b1c16b9547d..4bb94b02c34c 100644
+> --- a/net/sunrpc/xprtrdma/svc_rdma_transport.c
+> +++ b/net/sunrpc/xprtrdma/svc_rdma_transport.c
+> @@ -107,7 +107,6 @@ static void qp_event_handler(struct ib_event *event, void *context)
+>  	case IB_EVENT_PATH_MIG:
+>  	case IB_EVENT_COMM_EST:
+>  	case IB_EVENT_SQ_DRAINED:
+> -	case IB_EVENT_QP_LAST_WQE_REACHED:
+>  		break;
+>  
+>  	/* These are considered fatal events */
+> -- 
+> 2.18.1
+> 
 
-Reviewed-by: Parav Pandit <parav@nvidia.com>
-Signed-off-by: Shay Drory <shayd@nvidia.com>
+Acked-by: Chuck Lever <chuck.lever@oracle.com>
 
----
-v6->v7:
-- remove not needed changes to mlx5 sfnum SF sysfs
-v5->v6:
-- fail IRQ creation in case auxiliary_device_sysfs_irq_add() failed
-  (Parav and Przemek)
-v2->v3:
-- fix mlx5 sfnum SF sysfs
----
- drivers/net/ethernet/mellanox/mlx5/core/eq.c   |  6 +++---
- .../ethernet/mellanox/mlx5/core/irq_affinity.c | 18 +++++++++++++++++-
- .../ethernet/mellanox/mlx5/core/mlx5_core.h    |  6 ++++++
- .../net/ethernet/mellanox/mlx5/core/mlx5_irq.h | 12 ++++++++----
- .../net/ethernet/mellanox/mlx5/core/pci_irq.c  | 12 +++++++++---
- 5 files changed, 43 insertions(+), 11 deletions(-)
-
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/eq.c b/drivers/net/ethernet/mellanox/mlx5/core/eq.c
-index 5693986ae656..5661f047702e 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/eq.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/eq.c
-@@ -714,7 +714,7 @@ static int create_async_eqs(struct mlx5_core_dev *dev)
- err1:
- 	mlx5_cmd_allowed_opcode(dev, CMD_ALLOWED_OPCODE_ALL);
- 	mlx5_eq_notifier_unregister(dev, &table->cq_err_nb);
--	mlx5_ctrl_irq_release(table->ctrl_irq);
-+	mlx5_ctrl_irq_release(dev, table->ctrl_irq);
- 	return err;
- }
- 
-@@ -730,7 +730,7 @@ static void destroy_async_eqs(struct mlx5_core_dev *dev)
- 	cleanup_async_eq(dev, &table->cmd_eq, "cmd");
- 	mlx5_cmd_allowed_opcode(dev, CMD_ALLOWED_OPCODE_ALL);
- 	mlx5_eq_notifier_unregister(dev, &table->cq_err_nb);
--	mlx5_ctrl_irq_release(table->ctrl_irq);
-+	mlx5_ctrl_irq_release(dev, table->ctrl_irq);
- }
- 
- struct mlx5_eq *mlx5_get_async_eq(struct mlx5_core_dev *dev)
-@@ -918,7 +918,7 @@ static int comp_irq_request_sf(struct mlx5_core_dev *dev, u16 vecidx)
- 	af_desc.is_managed = 1;
- 	cpumask_copy(&af_desc.mask, cpu_online_mask);
- 	cpumask_andnot(&af_desc.mask, &af_desc.mask, &table->used_cpus);
--	irq = mlx5_irq_affinity_request(pool, &af_desc);
-+	irq = mlx5_irq_affinity_request(dev, pool, &af_desc);
- 	if (IS_ERR(irq))
- 		return PTR_ERR(irq);
- 
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/irq_affinity.c b/drivers/net/ethernet/mellanox/mlx5/core/irq_affinity.c
-index 612e666ec263..f7b01b3f0cba 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/irq_affinity.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/irq_affinity.c
-@@ -112,15 +112,18 @@ irq_pool_find_least_loaded(struct mlx5_irq_pool *pool, const struct cpumask *req
- 
- /**
-  * mlx5_irq_affinity_request - request an IRQ according to the given mask.
-+ * @dev: mlx5 core device which is requesting the IRQ.
-  * @pool: IRQ pool to request from.
-  * @af_desc: affinity descriptor for this IRQ.
-  *
-  * This function returns a pointer to IRQ, or ERR_PTR in case of error.
-  */
- struct mlx5_irq *
--mlx5_irq_affinity_request(struct mlx5_irq_pool *pool, struct irq_affinity_desc *af_desc)
-+mlx5_irq_affinity_request(struct mlx5_core_dev *dev, struct mlx5_irq_pool *pool,
-+			  struct irq_affinity_desc *af_desc)
- {
- 	struct mlx5_irq *least_loaded_irq, *new_irq;
-+	int ret;
- 
- 	mutex_lock(&pool->lock);
- 	least_loaded_irq = irq_pool_find_least_loaded(pool, &af_desc->mask);
-@@ -153,6 +156,16 @@ mlx5_irq_affinity_request(struct mlx5_irq_pool *pool, struct irq_affinity_desc *
- 			      mlx5_irq_read_locked(least_loaded_irq) / MLX5_EQ_REFS_PER_IRQ);
- unlock:
- 	mutex_unlock(&pool->lock);
-+	if (mlx5_irq_pool_is_sf_pool(pool)) {
-+		ret = auxiliary_device_sysfs_irq_add(mlx5_sf_coredev_to_adev(dev),
-+						     mlx5_irq_get_irq(least_loaded_irq));
-+		if (ret) {
-+			mlx5_core_err(dev, "Failed to create sysfs entry for irq %d, ret = %d\n",
-+				      mlx5_irq_get_irq(least_loaded_irq), ret);
-+			mlx5_irq_put(least_loaded_irq);
-+			least_loaded_irq = ERR_PTR(ret);
-+		}
-+	}
- 	return least_loaded_irq;
- }
- 
-@@ -164,6 +177,9 @@ void mlx5_irq_affinity_irq_release(struct mlx5_core_dev *dev, struct mlx5_irq *i
- 	cpu = cpumask_first(mlx5_irq_get_affinity_mask(irq));
- 	synchronize_irq(pci_irq_vector(pool->dev->pdev,
- 				       mlx5_irq_get_index(irq)));
-+	if (mlx5_irq_pool_is_sf_pool(pool))
-+		auxiliary_device_sysfs_irq_remove(mlx5_sf_coredev_to_adev(dev),
-+						  mlx5_irq_get_irq(irq));
- 	if (mlx5_irq_put(irq))
- 		if (pool->irqs_per_cpu)
- 			cpu_put(pool, cpu);
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/mlx5_core.h b/drivers/net/ethernet/mellanox/mlx5/core/mlx5_core.h
-index c38342b9f320..e764b720d9b2 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/mlx5_core.h
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/mlx5_core.h
-@@ -320,6 +320,12 @@ static inline bool mlx5_core_is_sf(const struct mlx5_core_dev *dev)
- 	return dev->coredev_type == MLX5_COREDEV_SF;
- }
- 
-+static inline struct auxiliary_device *
-+mlx5_sf_coredev_to_adev(struct mlx5_core_dev *mdev)
-+{
-+	return container_of(mdev->device, struct auxiliary_device, dev);
-+}
-+
- int mlx5_mdev_init(struct mlx5_core_dev *dev, int profile_idx);
- void mlx5_mdev_uninit(struct mlx5_core_dev *dev);
- int mlx5_init_one(struct mlx5_core_dev *dev);
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/mlx5_irq.h b/drivers/net/ethernet/mellanox/mlx5/core/mlx5_irq.h
-index 1088114e905d..0881e961d8b1 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/mlx5_irq.h
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/mlx5_irq.h
-@@ -25,7 +25,7 @@ int mlx5_set_msix_vec_count(struct mlx5_core_dev *dev, int devfn,
- int mlx5_get_default_msix_vec_count(struct mlx5_core_dev *dev, int num_vfs);
- 
- struct mlx5_irq *mlx5_ctrl_irq_request(struct mlx5_core_dev *dev);
--void mlx5_ctrl_irq_release(struct mlx5_irq *ctrl_irq);
-+void mlx5_ctrl_irq_release(struct mlx5_core_dev *dev, struct mlx5_irq *ctrl_irq);
- struct mlx5_irq *mlx5_irq_request(struct mlx5_core_dev *dev, u16 vecidx,
- 				  struct irq_affinity_desc *af_desc,
- 				  struct cpu_rmap **rmap);
-@@ -36,13 +36,15 @@ int mlx5_irq_attach_nb(struct mlx5_irq *irq, struct notifier_block *nb);
- int mlx5_irq_detach_nb(struct mlx5_irq *irq, struct notifier_block *nb);
- struct cpumask *mlx5_irq_get_affinity_mask(struct mlx5_irq *irq);
- int mlx5_irq_get_index(struct mlx5_irq *irq);
-+int mlx5_irq_get_irq(const struct mlx5_irq *irq);
- 
- struct mlx5_irq_pool;
- #ifdef CONFIG_MLX5_SF
- struct mlx5_irq *mlx5_irq_affinity_irq_request_auto(struct mlx5_core_dev *dev,
- 						    struct cpumask *used_cpus, u16 vecidx);
--struct mlx5_irq *mlx5_irq_affinity_request(struct mlx5_irq_pool *pool,
--					   struct irq_affinity_desc *af_desc);
-+struct mlx5_irq *
-+mlx5_irq_affinity_request(struct mlx5_core_dev *dev, struct mlx5_irq_pool *pool,
-+			  struct irq_affinity_desc *af_desc);
- void mlx5_irq_affinity_irq_release(struct mlx5_core_dev *dev, struct mlx5_irq *irq);
- #else
- static inline
-@@ -53,7 +55,8 @@ struct mlx5_irq *mlx5_irq_affinity_irq_request_auto(struct mlx5_core_dev *dev,
- }
- 
- static inline struct mlx5_irq *
--mlx5_irq_affinity_request(struct mlx5_irq_pool *pool, struct irq_affinity_desc *af_desc)
-+mlx5_irq_affinity_request(struct mlx5_core_dev *dev, struct mlx5_irq_pool *pool,
-+			  struct irq_affinity_desc *af_desc)
- {
- 	return ERR_PTR(-EOPNOTSUPP);
- }
-@@ -61,6 +64,7 @@ mlx5_irq_affinity_request(struct mlx5_irq_pool *pool, struct irq_affinity_desc *
- static inline
- void mlx5_irq_affinity_irq_release(struct mlx5_core_dev *dev, struct mlx5_irq *irq)
- {
-+	mlx5_irq_release_vector(irq);
- }
- #endif
- #endif /* __MLX5_IRQ_H__ */
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/pci_irq.c b/drivers/net/ethernet/mellanox/mlx5/core/pci_irq.c
-index fb8787e30d3f..ac7c3a76b4cf 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/pci_irq.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/pci_irq.c
-@@ -367,6 +367,11 @@ struct cpumask *mlx5_irq_get_affinity_mask(struct mlx5_irq *irq)
- 	return irq->mask;
- }
- 
-+int mlx5_irq_get_irq(const struct mlx5_irq *irq)
-+{
-+	return irq->map.virq;
-+}
-+
- int mlx5_irq_get_index(struct mlx5_irq *irq)
- {
- 	return irq->map.index;
-@@ -440,11 +445,12 @@ static void _mlx5_irq_release(struct mlx5_irq *irq)
- 
- /**
-  * mlx5_ctrl_irq_release - release a ctrl IRQ back to the system.
-+ * @dev: mlx5 device that releasing the IRQ.
-  * @ctrl_irq: ctrl IRQ to be released.
-  */
--void mlx5_ctrl_irq_release(struct mlx5_irq *ctrl_irq)
-+void mlx5_ctrl_irq_release(struct mlx5_core_dev *dev, struct mlx5_irq *ctrl_irq)
- {
--	_mlx5_irq_release(ctrl_irq);
-+	mlx5_irq_affinity_irq_release(dev, ctrl_irq);
- }
- 
- /**
-@@ -473,7 +479,7 @@ struct mlx5_irq *mlx5_ctrl_irq_request(struct mlx5_core_dev *dev)
- 		/* Allocate the IRQ in index 0. The vector was already allocated */
- 		irq = irq_pool_request_vector(pool, 0, &af_desc, NULL);
- 	} else {
--		irq = mlx5_irq_affinity_request(pool, &af_desc);
-+		irq = mlx5_irq_affinity_request(dev, pool, &af_desc);
- 	}
- 
- 	return irq;
 -- 
-2.38.1
-
+Chuck Lever
 
