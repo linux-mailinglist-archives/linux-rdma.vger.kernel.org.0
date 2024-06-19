@@ -1,149 +1,291 @@
-Return-Path: <linux-rdma+bounces-3292-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-3293-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0036590E399
-	for <lists+linux-rdma@lfdr.de>; Wed, 19 Jun 2024 08:37:36 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0CD0990E3A9
+	for <lists+linux-rdma@lfdr.de>; Wed, 19 Jun 2024 08:45:13 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 795261F24686
-	for <lists+linux-rdma@lfdr.de>; Wed, 19 Jun 2024 06:37:36 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E60B91C214CA
+	for <lists+linux-rdma@lfdr.de>; Wed, 19 Jun 2024 06:45:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B1B4E6F2F1;
-	Wed, 19 Jun 2024 06:37:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 619096F305;
+	Wed, 19 Jun 2024 06:45:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="lZxkk/X2"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-il1-f208.google.com (mail-il1-f208.google.com [209.85.166.208])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 109294C98
-	for <linux-rdma@vger.kernel.org>; Wed, 19 Jun 2024 06:37:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.208
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1653057CA6;
+	Wed, 19 Jun 2024 06:45:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1718779040; cv=none; b=Y6nPM5j2GORVpDeOnydo29of/dEaL0U7aiu5c+o4i3f8LCCo/C9WcXZgYUqXCj08T4SjU1XobQb8xrIn4Jyek/PfXFrML4h79jqvWjYONP0BtUjrCxPQORRKyzjDhMAfXNAhhCupOq2rNXGnOvcvfCnR0MeuiwH474TDDF08Baw=
+	t=1718779507; cv=none; b=uuCUyYFiUzfyo+vwNzHjMW0LDPaJRSbl/nqqH7UYVyVpwfVU2H4FEW9M/1kozoe7eRon/0K+g+5PvDZlTUs08oKRP69pEnHp331GWBatp3j4S8q+76R2YdRerThKI5v0TDZs9A/BdxegFidH/DPMYqvT9WiypPQPltzLWP4jv9Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1718779040; c=relaxed/simple;
-	bh=0z64VV3tdxabQq7QXHNJZwW0mSURlemtbgmNNUvtcqc=;
-	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=PMCeG+STE2SkJKR1UGoYSu4qQ4qtNkw5gxMwARF80rCEtb07e+9lp3jajEIs4dvQgtAf/bOfI9YAK4cG6gsHDWvDFMU+jeAtU7UKDaAHnnNksCslM5mSIkbzu8/IwkRClcAoIlhckPzzU5A1wX6yD2Bdu39aDxilWBfaJR+6n4s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.208
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-il1-f208.google.com with SMTP id e9e14a558f8ab-3761cec5b39so8330495ab.0
-        for <linux-rdma@vger.kernel.org>; Tue, 18 Jun 2024 23:37:18 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1718779038; x=1719383838;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=lKRR7Pu4ur95ahqOkWUJajla0ZS5PHik9EHx/Q1niso=;
-        b=xIRHHpVlDMJLztCxBfQQs/PCeoJaY068T/QSjyqY/MITgUosS5k8qDoLUmf1JQC7Dl
-         XIdtS8w48eOff5FReegP7gupBI9ylXjmb8v/EAw/yDXxoKZmEWHxuOxwIMWV6eVED8Qu
-         nRObrk7GEvyVe4yJi5tK3OIbxMSK0jS0kQAqbTvZqV6VKHhDymQiHt2gRndECwdZUSSz
-         TLHp61XkFEh9ZpjDpPlBP7RaIy4y+/ObfBIs28JiXGb973QFtK/H+heGv4iojz4CtzW8
-         wY1WClfhYMdTbKrmalAVHWIIbSvSTq5cvyGmbfrN1R6Kn1ZiBZevqnmPMNxgU1OGS/PI
-         wPOw==
-X-Forwarded-Encrypted: i=1; AJvYcCXumwZGsP7q6+ecLr1ho44d8hBeCb+Efx0zffOSnharwCcoVb3Z74T8xAZ1zcT2x/e6wc/y5rSZ428KHGoVTNP9bdXuLP6Ql9c83w==
-X-Gm-Message-State: AOJu0YycZecr+5IfZqLXKZsM2f/1gkm/DEA6D42bntZ+9FIzn6FikyWG
-	vUnXwV6qxOOuLRnUWs6UIsbe1NvMByI8zL7IuBg4LWAk5WqUW2QhGC05YO8xqQAq8wJgZ9PgyTf
-	cgxeSCx2rG4SDWiHfxQzkeBrnTQxVQO9E4DJCDvHh0eQPyD1aD8xw1hE=
-X-Google-Smtp-Source: AGHT+IFVjj07L1AdLCCar8TpedvGivk7nJb+5deA/qD8EzAkCU8m/tTFpv4F88j0t+6hmFG8svdjcnlN9922Vb353k5um2B5lnhh
+	s=arc-20240116; t=1718779507; c=relaxed/simple;
+	bh=wrr20MYlmJISLBZ479QlSzHWiXSvqajc/N4FejGC6KA=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=mRMKLvHHmA6zK3hNIZqvkcoUzZ3H6NKpSmLnuAn9h9dZC2/UIHc0oA2K8gXPzQhYqhUk+sjNMqVo3mqJ/vYf6OQodjXuqKVzPxoI8Noh1umjLCkqrxFyMeleTc2cr8KOOOzO8xyb3tMts9yFHYWV1hlSVCIqf+msXz7p5S/Vuss=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=lZxkk/X2; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E4E71C2BBFC;
+	Wed, 19 Jun 2024 06:45:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+	s=korg; t=1718779506;
+	bh=wrr20MYlmJISLBZ479QlSzHWiXSvqajc/N4FejGC6KA=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=lZxkk/X2t6o2mOv0en5iHcSA2iE9lZIzB19u2GMP7o3dDN79r0B9ISqeXXR3g59rz
+	 uSYkvEgLQrMLOXxR1mID/iVjJs2lajdu2crb+01NmLmua8X4qNjMc+4bMetgMRUWWw
+	 CSWeHRHK5Ju0W+YwRpuJno/NXEHDBIJD73NyNt8c=
+Date: Wed, 19 Jun 2024 08:45:03 +0200
+From: Greg KH <gregkh@linuxfoundation.org>
+To: Shay Drori <shayd@nvidia.com>
+Cc: netdev@vger.kernel.org, pabeni@redhat.com, davem@davemloft.net,
+	kuba@kernel.org, edumazet@google.com, david.m.ertman@intel.com,
+	rafael@kernel.org, ira.weiny@intel.com, linux-rdma@vger.kernel.org,
+	leon@kernel.org, tariqt@nvidia.com, Parav Pandit <parav@nvidia.com>
+Subject: Re: [PATCH net-next v7 1/2] driver core: auxiliary bus: show
+ auxiliary device IRQs
+Message-ID: <2024061903-brutishly-hamper-af47@gregkh>
+References: <20240618150902.345881-1-shayd@nvidia.com>
+ <20240618150902.345881-2-shayd@nvidia.com>
+ <2024061849-cupped-throwback-4fee@gregkh>
+ <21f7e9b8-00aa-4e1f-a769-9606834a234b@nvidia.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:20ed:b0:375:e04f:55d0 with SMTP id
- e9e14a558f8ab-3761d6665aemr1055475ab.2.1718779038231; Tue, 18 Jun 2024
- 23:37:18 -0700 (PDT)
-Date: Tue, 18 Jun 2024 23:37:18 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000057e4c061b386e23@google.com>
-Subject: [syzbot] [rdma?] WARNING in ib_uverbs_release_dev
-From: syzbot <syzbot+19ec7595e3aa1a45f623@syzkaller.appspotmail.com>
-To: jgg@ziepe.ca, leon@kernel.org, linux-kernel@vger.kernel.org, 
-	linux-rdma@vger.kernel.org, netdev@vger.kernel.org, 
-	syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <21f7e9b8-00aa-4e1f-a769-9606834a234b@nvidia.com>
 
-Hello,
+On Wed, Jun 19, 2024 at 09:33:12AM +0300, Shay Drori wrote:
+> 
+> 
+> On 18/06/2024 19:13, Greg KH wrote:
+> > External email: Use caution opening links or attachments
+> > 
+> > 
+> > On Tue, Jun 18, 2024 at 06:09:01PM +0300, Shay Drory wrote:
+> > > diff --git a/drivers/base/auxiliary_sysfs.c b/drivers/base/auxiliary_sysfs.c
+> > > new file mode 100644
+> > > index 000000000000..3f112fd26e72
+> > > --- /dev/null
+> > > +++ b/drivers/base/auxiliary_sysfs.c
+> > > @@ -0,0 +1,110 @@
+> > > +// SPDX-License-Identifier: GPL-2.0
+> > > +/*
+> > > + * Copyright (c) 2024, NVIDIA CORPORATION & AFFILIATES
+> > > + */
+> > > +
+> > > +#include <linux/auxiliary_bus.h>
+> > > +#include <linux/slab.h>
+> > > +
+> > > +struct auxiliary_irq_info {
+> > > +     struct device_attribute sysfs_attr;
+> > > +};
+> > > +
+> > > +static struct attribute *auxiliary_irq_attrs[] = {
+> > > +     NULL
+> > > +};
+> > > +
+> > > +static const struct attribute_group auxiliary_irqs_group = {
+> > > +     .name = "irqs",
+> > > +     .attrs = auxiliary_irq_attrs,
+> > > +};
+> > > +
+> > > +static int auxiliary_irq_dir_prepare(struct auxiliary_device *auxdev)
+> > > +{
+> > > +     int ret = 0;
+> > > +
+> > > +     mutex_lock(&auxdev->lock);
+> > > +     if (auxdev->dir_exists)
+> > > +             goto unlock;
+> > 
+> > You do know about cleanup.h, right?  Please use it.
+> > 
+> > But what exactly are you trying to protect here?  How will you race and
+> > add two irqs at the same time?  Driver probe is always single threaded,
+> > so what would be calling this at the same time from multiple places?
+> 
+> 
+> mlx5 driver requests IRQs on demand for PCI PF, VF, SFs.
+> And it occurs from multiple threads, hence we need to protect it.
 
-syzbot found the following issue on:
+How are irqs asked for, for the same device, from multiple threads?
+What threads exactly?  What is causing these irqs to be asked for?
 
-HEAD commit:    2ccbdf43d5e7 Merge tag 'for-linus' of git://git.kernel.org..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=179e93fe980000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=fa0ce06dcc735711
-dashboard link: https://syzkaller.appspot.com/bug?extid=19ec7595e3aa1a45f623
-compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
+But ok, that's fine, if you want to do this, then properly protect the
+allocation, don't just half-protect it like you did here :(
 
-Unfortunately, I don't have any reproducer for this issue yet.
+> > > +
+> > > +     xa_init(&auxdev->irqs);
+> > > +     ret = devm_device_add_group(&auxdev->dev, &auxiliary_irqs_group);
+> > > +     if (!ret)
+> > > +             auxdev->dir_exists = 1;
+> > > +
+> > > +unlock:
+> > > +     mutex_unlock(&auxdev->lock);
+> > > +     return ret;
+> > > +}
+> > > +
+> > > +/**
+> > > + * auxiliary_device_sysfs_irq_add - add a sysfs entry for the given IRQ
+> > > + * @auxdev: auxiliary bus device to add the sysfs entry.
+> > > + * @irq: The associated interrupt number.
+> > > + *
+> > > + * This function should be called after auxiliary device have successfully
+> > > + * received the irq.
+> > > + *
+> > > + * Return: zero on success or an error code on failure.
+> > > + */
+> > > +int auxiliary_device_sysfs_irq_add(struct auxiliary_device *auxdev, int irq)
+> > > +{
+> > > +     struct device *dev = &auxdev->dev;
+> > > +     struct auxiliary_irq_info *info;
+> > > +     int ret;
+> > > +
+> > > +     ret = auxiliary_irq_dir_prepare(auxdev);
+> > > +     if (ret)
+> > > +             return ret;
+> > > +
+> > > +     info = kzalloc(sizeof(*info), GFP_KERNEL);
+> > > +     if (!info)
+> > > +             return -ENOMEM;
+> > > +
+> > > +     sysfs_attr_init(&info->sysfs_attr.attr);
+> > > +     info->sysfs_attr.attr.name = kasprintf(GFP_KERNEL, "%d", irq);
+> > > +     if (!info->sysfs_attr.attr.name) {
+> > > +             ret = -ENOMEM;
+> > > +             goto name_err;
+> > > +     }
+> > > +
+> > > +     ret = xa_insert(&auxdev->irqs, irq, info, GFP_KERNEL);
+> > 
+> > So no lock happening here, either use it always, or not at all?
+> 
+> 
+> the lock is only needed to protect the group (directory) creation, which
+> will be used by all the IRQs of this auxdev.
+> parallel calls to this API will always be with different IRQs, which
+> means each IRQ have a unique index.
 
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/27e64d7472ce/disk-2ccbdf43.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/e1c494bb5c9c/vmlinux-2ccbdf43.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/752498985a5e/bzImage-2ccbdf43.xz
+You are inserting into the sysfs group at the same time?  You are
+calling xa_insert() at the same time?  Is that protected with some
+internal lock?  If so, this needs to be documented a bunch here.
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+19ec7595e3aa1a45f623@syzkaller.appspotmail.com
+Allocating irqs is NOT a fast path, just grab a lock and do it right
+please, don't make us constantly have to stare at the code to ensure it
+is correct.
 
-smc: removing ib device syz0
-------------[ cut here ]------------
-WARNING: CPU: 0 PID: 51 at kernel/rcu/srcutree.c:653 cleanup_srcu_struct+0x404/0x4d0 kernel/rcu/srcutree.c:653
-Modules linked in:
-CPU: 0 PID: 51 Comm: kworker/u8:3 Not tainted 6.10.0-rc3-syzkaller-00044-g2ccbdf43d5e7 #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 06/07/2024
-Workqueue: ib-unreg-wq ib_unregister_work
-RIP: 0010:cleanup_srcu_struct+0x404/0x4d0 kernel/rcu/srcutree.c:653
-Code: 12 80 00 48 c7 03 00 00 00 00 48 83 c4 48 5b 41 5c 41 5d 41 5e 41 5f 5d e9 14 67 34 0a 90 0f 0b 90 eb e7 90 0f 0b 90 eb e1 90 <0f> 0b 90 eb db 90 0f 0b 90 eb 0a 90 0f 0b 90 eb 04 90 0f 0b 90 48
-RSP: 0018:ffffc90000bb7970 EFLAGS: 00010202
-RAX: 0000000000000001 RBX: ffff88802a1bc980 RCX: 0000000000000002
-RDX: 0000000000000000 RSI: 0000000000000008 RDI: ffffe8ffffd74c58
-RBP: 0000000000000001 R08: ffffe8ffffd74c5f R09: 1ffffd1ffffae98b
-R10: dffffc0000000000 R11: fffff91ffffae98c R12: dffffc0000000000
-R13: ffff88802285b5f0 R14: ffff88802285b000 R15: ffff88802a1bc800
-FS:  0000000000000000(0000) GS:ffff8880b9400000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007fa3852cae10 CR3: 000000000e132000 CR4: 0000000000350ef0
-Call Trace:
- <TASK>
- ib_uverbs_release_dev+0x4e/0x80 drivers/infiniband/core/uverbs_main.c:136
- device_release+0x9b/0x1c0
- kobject_cleanup lib/kobject.c:689 [inline]
- kobject_release lib/kobject.c:720 [inline]
- kref_put include/linux/kref.h:65 [inline]
- kobject_put+0x231/0x480 lib/kobject.c:737
- remove_client_context+0xb9/0x1e0 drivers/infiniband/core/device.c:776
- disable_device+0x13b/0x360 drivers/infiniband/core/device.c:1282
- __ib_unregister_device+0x6d/0x170 drivers/infiniband/core/device.c:1475
- ib_unregister_work+0x19/0x30 drivers/infiniband/core/device.c:1586
- process_one_work kernel/workqueue.c:3231 [inline]
- process_scheduled_works+0xa2e/0x1830 kernel/workqueue.c:3312
- worker_thread+0x86d/0xd70 kernel/workqueue.c:3393
- kthread+0x2f2/0x390 kernel/kthread.c:389
- ret_from_fork+0x4d/0x80 arch/x86/kernel/process.c:147
- ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:244
- </TASK>
+> > > +     if (ret)
+> > > +             goto auxdev_xa_err;
+> > > +
+> > > +     ret = sysfs_add_file_to_group(&dev->kobj, &info->sysfs_attr.attr,
+> > > +                                   auxiliary_irqs_group.name);
+> > 
+> > You do know that you are never going to see these files from the
+> > userspace library tools that watch sysfs, right?  libudev will never see
+> > them as you are adding them AFTER the device is created.
+> > 
+> > So, because of that, who is really going to use these files?
+> 
+> To learn about the interrupt mapping of the SF IRQs.
 
+Who is going to "learn"?  Again, you are creating files that our
+userspace tools will miss, so what userspace tools are going to be able
+to learn anything here?
 
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+This is strongly implying that all of this is just a debugging aid.  So
+please, put this in debugfs where that type of thing belongs.
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+> > > +     if (ret)
+> > > +             goto sysfs_add_err;
+> > > +
+> > > +     return 0;
+> > > +
+> > > +sysfs_add_err:
+> > > +     xa_erase(&auxdev->irqs, irq);
+> > > +auxdev_xa_err:
+> > > +     kfree(info->sysfs_attr.attr.name);
+> > > +name_err:
+> > > +     kfree(info);
+> > 
+> > Again, cleanup.h is your friend.
+> > 
+> > > +     return ret;
+> > > +}
+> > > +EXPORT_SYMBOL_GPL(auxiliary_device_sysfs_irq_add);
+> > > +
+> > > +/**
+> > > + * auxiliary_device_sysfs_irq_remove - remove a sysfs entry for the given IRQ
+> > > + * @auxdev: auxiliary bus device to add the sysfs entry.
+> > > + * @irq: the IRQ to remove.
+> > > + *
+> > > + * This function should be called to remove an IRQ sysfs entry.
+> > > + */
+> > > +void auxiliary_device_sysfs_irq_remove(struct auxiliary_device *auxdev, int irq)
+> > > +{
+> > > +     struct auxiliary_irq_info *info = xa_load(&auxdev->irqs, irq);
+> > > +     struct device *dev = &auxdev->dev;
+> > > +
+> > > +     sysfs_remove_file_from_group(&dev->kobj, &info->sysfs_attr.attr,
+> > > +                                  auxiliary_irqs_group.name);
+> > > +     xa_erase(&auxdev->irqs, irq);
+> > > +     kfree(info->sysfs_attr.attr.name);
+> > > +     kfree(info);
+> > > +}
+> > > +EXPORT_SYMBOL_GPL(auxiliary_device_sysfs_irq_remove);
+> > > diff --git a/include/linux/auxiliary_bus.h b/include/linux/auxiliary_bus.h
+> > > index de21d9d24a95..96be140bd1ff 100644
+> > > --- a/include/linux/auxiliary_bus.h
+> > > +++ b/include/linux/auxiliary_bus.h
+> > > @@ -58,6 +58,7 @@
+> > >    *       in
+> > >    * @name: Match name found by the auxiliary device driver,
+> > >    * @id: unique identitier if multiple devices of the same name are exported,
+> > > + * @irqs: irqs xarray contains irq indices which are used by the device,
+> > >    *
+> > >    * An auxiliary_device represents a part of its parent device's functionality.
+> > >    * It is given a name that, combined with the registering drivers
+> > > @@ -138,7 +139,10 @@
+> > >   struct auxiliary_device {
+> > >        struct device dev;
+> > >        const char *name;
+> > > +     struct xarray irqs;
+> > > +     struct mutex lock; /* Protects "irqs" directory creation */
+> > 
+> > Protects it from what?
+> 
+> please look the answer above
 
-If the report is already addressed, let syzbot know by replying with:
-#syz fix: exact-commit-title
+You need to document it here.  Or somewhere.  Don't rely on an email
+thread from 10 years ago for when you look at this in 10 years and
+wonder what is going on...
 
-If you want to overwrite report's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
+> > >        u32 id;
+> > > +     u8 dir_exists:1;
+> > 
+> > I don't think this is needed, but if it really is, just use a bool.
+> 
+> 
+> If you know of an API that query whether a specific group is exists on
+> some device, can you please share it with me?
+> I came out empty when I looked for one :(
 
-If the report is a duplicate of another one, reply with:
-#syz dup: exact-subject-of-another-report
+Normally sysfs groups are NOT created this way at all.  Oh wait, they
+can be now, why not use the new feature where a group is created by the
+core but only exposed if an attribute is added there?
 
-If you want to undo deduplication, reply with:
-#syz undup
+Will that work here?  See commit d87c295f599c ("sysfs: Introduce a
+mechanism to hide static attribute_groups") for details.  That should
+solve the issue of trying to figure out if the directory is present or
+not logic.
+
+thanks,
+
+greg k-h
 
