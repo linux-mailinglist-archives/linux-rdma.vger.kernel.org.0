@@ -1,202 +1,261 @@
-Return-Path: <linux-rdma+bounces-3340-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-3341-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 977F490F3AB
-	for <lists+linux-rdma@lfdr.de>; Wed, 19 Jun 2024 18:07:09 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id F336590F3CA
+	for <lists+linux-rdma@lfdr.de>; Wed, 19 Jun 2024 18:14:17 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2A3B51F2134D
-	for <lists+linux-rdma@lfdr.de>; Wed, 19 Jun 2024 16:07:09 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 526DDB222C5
+	for <lists+linux-rdma@lfdr.de>; Wed, 19 Jun 2024 16:13:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 194CB1514DE;
-	Wed, 19 Jun 2024 16:05:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A7F3C14F9DC;
+	Wed, 19 Jun 2024 16:13:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="Jq1Qxr6x"
+	dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b="hZtWJDV6"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4388F14F9F9
-	for <linux-rdma@vger.kernel.org>; Wed, 19 Jun 2024 16:05:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2479914E2C9;
+	Wed, 19 Jun 2024 16:13:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=156.67.10.101
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1718813102; cv=none; b=edjmkTWF2qtctzXlO4cUUrLybB6sN0gx+thjuzljFakxwbL0NlwAMxMrfv/MPXPCeYlPQbsqWMNTPtgH2xy0M9XqMae/ElMXmof9CD7AqEc55Wg5plB+NhABevp5+MktYVDWAvfAGoqAXfpHiSThFnsJY93FT7SS5uZkFvS9E0E=
+	t=1718813633; cv=none; b=cYRwVMi8QT4dDFZf9ij2jeaGuMsYpalhvUQIiPvFMxm6bFi0dLL6yPyLrZ+i4lDgkkTfxgKXopbsV6yDZmSzBlcfOT7TxLS7ZjeyR7BYauZSBNe5gLTLCOF7cEKv50+DgX3JA7kd96e5fAAkJwMjh8zW8Imwbvhbj5EQH8oPU28=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1718813102; c=relaxed/simple;
-	bh=Zk8KBM+kAiD+53BnHbeYt1t9uy6ihq6v5ohcl+/8Gdk=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=QCWZe1CbqsW4ulazt5l6CRyiF4vgGkieHvKeCWazU+OiBFeagPAGjnP2v3RArqAtn+DHF7A63hX12UhUERGg+tpsn9ZYruBFb3t0u7TJ8mpjunBhLxufIqBSH1WDtgLvnJ3HldnTx4nF+gF2PZusdMX+HJsfDPlX8Ovg2a6nJjk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=Jq1Qxr6x; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1718813100;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=6qMRpfuI0FN17k1qQZ97/BIgCWj0BU7d5gGDLL6iE0E=;
-	b=Jq1Qxr6x890ioy8Q+bCJQ541OP1UllCeZItOZe0st1AV4TYbYJQ1XwwXu0tiiWWriywlNx
-	J0nk0/J9NdUkO9qy2mpuJ5Yx0WKDkxeTfMapC9wgHntmWRZBe6VjJP8G+cpkKklXHTd/ZG
-	JUauBi5rtaYAteBl0RbFO714b5h1VY0=
-Received: from mail-yw1-f198.google.com (mail-yw1-f198.google.com
- [209.85.128.198]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-218-neJSuzt3Mqq5XqC3dZY0Lg-1; Wed, 19 Jun 2024 12:04:59 -0400
-X-MC-Unique: neJSuzt3Mqq5XqC3dZY0Lg-1
-Received: by mail-yw1-f198.google.com with SMTP id 00721157ae682-62f8a1b2969so137228827b3.3
-        for <linux-rdma@vger.kernel.org>; Wed, 19 Jun 2024 09:04:58 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1718813098; x=1719417898;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=6qMRpfuI0FN17k1qQZ97/BIgCWj0BU7d5gGDLL6iE0E=;
-        b=XqRQ4cM42RReJI6SyuUqjghGsN/Mq7KcdEpV6H/4Jh9t3212W/MvxKbKFHlzQ/Txhz
-         d7TjH0wfeZ7bmHsTvPie+1GMfcwMOZPupP4rxg/oraU5DNozEJKSuioeQeFJz+hTEjLE
-         O6rcLW4DnfKA3XMR9LkLYmH04NKltDKIFafEEm8nxh/l04a7z4qbeiCbS5h+z0/RIlrT
-         A7H1RXUutP1k/Y96jiGEza+A+4ol2x4v+r3F6SN4Lbcez7+rfK87BtrNd261mthqRIHf
-         iiXcawNlFdNHXnwOTadByna/8OiIpXrbfVW6rnip9cJ1H+QpTD1wWLC30ab+OYj9Zvve
-         rXrg==
-X-Forwarded-Encrypted: i=1; AJvYcCVLk63R/HAgYhABuz3vfZdQaMM00be8QJZLXeKmPqfSCUkz6Erc2TclIOC+2TuzUIpl0REqkeC/onENMNEbdyJMAa9ilJApKpcM0Q==
-X-Gm-Message-State: AOJu0YxLHy72V24EJhYoufvZpYadGSFGBBkG56Uc58oqTfzB8LMptxeR
-	qF640KUSQpqh1q7UrLRHTvQtfwe8qd90tL+J85tply/RcXbZu23HJ1js1zhPE19CHRdhUUOZZ9B
-	jIz676mtRTwvP30Pq65Sb9B+Ruux8U3Hm9DWSuKZQC7qaSBjt9vNzx/OAYKZVRhFXJfjActDLHh
-	+RnMmdkxS/n5w6Zbq8A1uv1njzuXsk2WRVfQ==
-X-Received: by 2002:a0d:c3c3:0:b0:618:2381:2404 with SMTP id 00721157ae682-63a8ffca0cdmr31982827b3.44.1718813098377;
-        Wed, 19 Jun 2024 09:04:58 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IGOi0Bbuup1rjSY4QNqBeZr45d0/SLJoglpZcqMwzRQ4d442scS4ePsVvRRAEIzgBBpB2IayrTUCHF5plE2VAk=
-X-Received: by 2002:a0d:c3c3:0:b0:618:2381:2404 with SMTP id
- 00721157ae682-63a8ffca0cdmr31982517b3.44.1718813098007; Wed, 19 Jun 2024
- 09:04:58 -0700 (PDT)
+	s=arc-20240116; t=1718813633; c=relaxed/simple;
+	bh=q5gg3wlN1xUa6GvXUQS/Ik0u8Mxip/HY6wE9gPImDaQ=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=ZhJl1DufwiYP87t4FFReHKQdy6hmjD4Tqs9Z9/OEqWfxF1J/0UMRFGOxpOQyOl+44ZjsfAqUlODN8QeA7rF2Mn/De7cYkQXI06Glns7o/2uuJZRPqJoEao64sqrXiwwJp8LFvnt7hJPiRpep1du8qHIxAJQXGqTEDGVvS3bHt6s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch; spf=pass smtp.mailfrom=lunn.ch; dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b=hZtWJDV6; arc=none smtp.client-ip=156.67.10.101
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lunn.ch
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+	s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
+	References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
+	Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
+	Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
+	bh=QYakplpX2ykVLz/kbSetsTy/eCXPauRn2WMhcnSUh5U=; b=hZtWJDV6/74RoNLZREg3Eg1ifW
+	PlUV3M2v70xab1/+k7hwo14qthUfkAdnRIm9oM5VYCQ2HEksluneVYx42N8+dg65fFRz5uE4l25sc
+	0RfDFTo4S1K4SPVcQ7V0KxXnoS1psxbPKFml/pQBxXamEntMS+lN4waE5pSjd5BhSUIY=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+	(envelope-from <andrew@lunn.ch>)
+	id 1sJxwS-000U9w-Kg; Wed, 19 Jun 2024 18:13:48 +0200
+Date: Wed, 19 Jun 2024 18:13:48 +0200
+From: Andrew Lunn <andrew@lunn.ch>
+To: Omer Shpigelman <oshpigelman@habana.ai>
+Cc: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+	"linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+	"netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+	"dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
+	"ogabbay@kernel.org" <ogabbay@kernel.org>,
+	Zvika Yehudai <zyehudai@habana.ai>
+Subject: Re: [PATCH 09/15] net: hbl_en: add habanalabs Ethernet driver
+Message-ID: <2c66dc75-b321-4980-955f-7fdcd902b578@lunn.ch>
+References: <20240613082208.1439968-1-oshpigelman@habana.ai>
+ <20240613082208.1439968-10-oshpigelman@habana.ai>
+ <10902044-fb02-4328-bf88-0b386ee51c78@lunn.ch>
+ <bddb69c3-511b-4385-a67d-903e910a8b51@habana.ai>
+ <621d4891-36d7-48c6-bdd8-2f3ca06a23f6@lunn.ch>
+ <45e35940-c8fc-4f6c-8429-e6681a48b889@habana.ai>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240617-stage-vdpa-vq-precreate-v1-0-8c0483f0ca2a@nvidia.com> <20240617-stage-vdpa-vq-precreate-v1-21-8c0483f0ca2a@nvidia.com>
-In-Reply-To: <20240617-stage-vdpa-vq-precreate-v1-21-8c0483f0ca2a@nvidia.com>
-From: Eugenio Perez Martin <eperezma@redhat.com>
-Date: Wed, 19 Jun 2024 18:04:21 +0200
-Message-ID: <CAJaqyWc75+ccqXUPa4GfwZsbCp+4Q49Vw6Vnsu+n1BXDdLi5Dw@mail.gmail.com>
-Subject: Re: [PATCH vhost 21/23] vdpa/mlx5: Re-create HW VQs under certain conditions
-To: Dragos Tatulea <dtatulea@nvidia.com>
-Cc: "Michael S. Tsirkin" <mst@redhat.com>, Jason Wang <jasowang@redhat.com>, 
-	Xuan Zhuo <xuanzhuo@linux.alibaba.com>, Saeed Mahameed <saeedm@nvidia.com>, 
-	Leon Romanovsky <leon@kernel.org>, Tariq Toukan <tariqt@nvidia.com>, Si-Wei Liu <si-wei.liu@oracle.com>, 
-	virtualization@lists.linux.dev, linux-kernel@vger.kernel.org, 
-	linux-rdma@vger.kernel.org, netdev@vger.kernel.org, 
-	Cosmin Ratiu <cratiu@nvidia.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <45e35940-c8fc-4f6c-8429-e6681a48b889@habana.ai>
 
-On Mon, Jun 17, 2024 at 5:09=E2=80=AFPM Dragos Tatulea <dtatulea@nvidia.com=
-> wrote:
->
-> There are a few conditions under which the hardware VQs need a full
-> teardown and setup:
->
-> - VQ size changed to something else than default value. Hardware VQ size
->   modification is not supported.
->
-> - User turns off certain device features: mergeable buffers, checksum
->   virtio 1.0 compliance. In these cases, the TIR and RQT need to be
->   re-created.
->
-> Add a needs_teardown configuration variable and set it when detecting
-> the above scenarios. On next DRIVER_OK, the resources will be torn down
-> first.
->
-> Signed-off-by: Dragos Tatulea <dtatulea@nvidia.com>
-> Reviewed-by: Cosmin Ratiu <cratiu@nvidia.com>
+On Wed, Jun 19, 2024 at 07:16:20AM +0000, Omer Shpigelman wrote:
+> On 6/18/24 17:19, Andrew Lunn wrote:
+> >>>> +static u32 hbl_en_get_mtu(struct hbl_aux_dev *aux_dev, u32 port_idx)
+> >>>> +{
+> >>>> +     struct hbl_en_port *port = HBL_EN_PORT(aux_dev, port_idx);
+> >>>> +     struct net_device *ndev = port->ndev;
+> >>>> +     u32 mtu;
+> >>>> +
+> >>>> +     if (atomic_cmpxchg(&port->in_reset, 0, 1)) {
+> >>>> +             netdev_err(ndev, "port is in reset, can't get MTU\n");
+> >>>> +             return 0;
+> >>>> +     }
+> >>>> +
+> >>>> +     mtu = ndev->mtu;
+> >>>
+> >>> I think you need a better error message. All this does is access
+> >>> ndev->mtu. What does it matter if the port is in reset? You don't
+> >>> access it.
+> >>>
+> >>
+> >> This function is called from the CN driver to get the current MTU in order
+> >> to configure it to the HW, for exmaple when configuring an IB QP. The MTU
+> >> value might be changed by user while we execute this function.
+> > 
+> > Change of MTU will happen while holding RTNL. Why not simply hold RTNL
+> > while programming the hardware? That is the normal pattern for MAC
+> > drivers.
+> >
+> 
+> I can hold the RTNL lock while configuring the HW but it seems like a big
+> overhead. Configuring the HW might take some time due to QP draining or
+> cache invalidation.
 
-Acked-by: Eugenio P=C3=A9rez <eperezma@redhat.com>
+How often does the MTU change? Once, maybe twice on boot, and never
+again? MTU change is not hot path. For slow path code, KISS is much
+better, so it is likely to be correct. 
 
-> ---
->  drivers/vdpa/mlx5/net/mlx5_vnet.c | 15 +++++++++++++++
->  drivers/vdpa/mlx5/net/mlx5_vnet.h |  1 +
->  2 files changed, 16 insertions(+)
->
-> diff --git a/drivers/vdpa/mlx5/net/mlx5_vnet.c b/drivers/vdpa/mlx5/net/ml=
-x5_vnet.c
-> index b2836fd3d1dd..d80d6b47da61 100644
-> --- a/drivers/vdpa/mlx5/net/mlx5_vnet.c
-> +++ b/drivers/vdpa/mlx5/net/mlx5_vnet.c
-> @@ -2390,6 +2390,7 @@ static void mlx5_vdpa_set_vq_num(struct vdpa_device=
- *vdev, u16 idx, u32 num)
->          }
->
->         mvq =3D &ndev->vqs[idx];
-> +       ndev->needs_teardown =3D num !=3D mvq->num_ent;
->         mvq->num_ent =3D num;
->  }
->
-> @@ -2800,6 +2801,7 @@ static int mlx5_vdpa_set_driver_features(struct vdp=
-a_device *vdev, u64 features)
->         struct mlx5_vdpa_dev *mvdev =3D to_mvdev(vdev);
->         struct mlx5_vdpa_net *ndev =3D to_mlx5_vdpa_ndev(mvdev);
->         u64 old_features =3D mvdev->actual_features;
-> +       u64 diff_features;
->         int err;
->
->         print_features(mvdev, features, true);
-> @@ -2822,6 +2824,14 @@ static int mlx5_vdpa_set_driver_features(struct vd=
-pa_device *vdev, u64 features)
->                 }
->         }
->
-> +       /* When below features diverge from initial device features, VQs =
-need a full teardown. */
-> +#define NEEDS_TEARDOWN_MASK (BIT_ULL(VIRTIO_NET_F_MRG_RXBUF) | \
-> +                            BIT_ULL(VIRTIO_NET_F_CSUM) | \
-> +                            BIT_ULL(VIRTIO_F_VERSION_1))
-> +
-> +       diff_features =3D mvdev->mlx_features ^ mvdev->actual_features;
-> +       ndev->needs_teardown =3D !!(diff_features & NEEDS_TEARDOWN_MASK);
-> +
->         update_cvq_info(mvdev);
->         return err;
->  }
-> @@ -3038,6 +3048,7 @@ static void teardown_vq_resources(struct mlx5_vdpa_=
-net *ndev)
->         destroy_rqt(ndev);
->         teardown_virtqueues(ndev);
->         ndev->setup =3D false;
-> +       ndev->needs_teardown =3D false;
->  }
->
->  static int setup_cvq_vring(struct mlx5_vdpa_dev *mvdev)
-> @@ -3078,6 +3089,10 @@ static void mlx5_vdpa_set_status(struct vdpa_devic=
-e *vdev, u8 status)
->                                 goto err_setup;
->                         }
->                         register_link_notifier(ndev);
-> +
-> +                       if (ndev->needs_teardown)
-> +                               teardown_vq_resources(ndev);
-> +
->                         if (ndev->setup) {
->                                 err =3D resume_vqs(ndev);
->                                 if (err) {
-> diff --git a/drivers/vdpa/mlx5/net/mlx5_vnet.h b/drivers/vdpa/mlx5/net/ml=
-x5_vnet.h
-> index 2ada29767cc5..da7318f82d2a 100644
-> --- a/drivers/vdpa/mlx5/net/mlx5_vnet.h
-> +++ b/drivers/vdpa/mlx5/net/mlx5_vnet.h
-> @@ -56,6 +56,7 @@ struct mlx5_vdpa_net {
->         struct dentry *rx_dent;
->         struct dentry *rx_table_dent;
->         bool setup;
-> +       bool needs_teardown;
->         u32 cur_num_vqs;
->         u32 rqt_size;
->         u16 default_queue_size;
->
-> --
-> 2.45.1
->
+> To me it seems unnecessary but if that's the common way then I'll change
+> it.
+>  
+> >>>> +static int hbl_en_change_mtu(struct net_device *netdev, int new_mtu)
+> >>>> +{
+> >>>> +     struct hbl_en_port *port = hbl_netdev_priv(netdev);
+> >>>> +     int rc = 0;
+> >>>> +
+> >>>> +     if (atomic_cmpxchg(&port->in_reset, 0, 1)) {
+> >>>> +             netdev_err(netdev, "port is in reset, can't change MTU\n");
+> >>>> +             return -EBUSY;
+> >>>> +     }
+> >>>> +
+> >>>> +     if (netif_running(port->ndev)) {
+> >>>> +             hbl_en_port_close(port);
+> >>>> +
+> >>>> +             /* Sleep in order to let obsolete events to be dropped before re-opening the port */
+> >>>> +             msleep(20);
+> >>>> +
+> >>>> +             netdev->mtu = new_mtu;
+> >>>> +
+> >>>> +             rc = hbl_en_port_open(port);
+> >>>> +             if (rc)
+> >>>> +                     netdev_err(netdev, "Failed to reinit port for MTU change, rc %d\n", rc);
+> >>>
+> >>> Does that mean the port is FUBAR?
+> >>>
+> >>> Most operations like this are expected to roll back to the previous
+> >>> working configuration on failure. So if changing the MTU requires new
+> >>> buffers in your ring, you should first allocate the new buffers, then
+> >>> free the old buffers, so that if allocation fails, you still have
+> >>> buffers, and the device can continue operating.
+> >>>
+> >>
+> >> A failure in opening a port is a fatal error. It shouldn't happen. This is
+> >> not something we wish to recover from.
+> > 
+> > What could cause open to fail? Is memory allocated?
+> > 
+> 
+> Memory is allocated but it is freed in case of a failure.
+> Port opening can fail due to other reasons as well like some HW timeout
+> while configuring the ETH QP.
 
+If the hardware timeout because the hardware is dead, there is nothing
+you can do about it. Its dead.
+
+But what about when the system is under memory pressure? You say it
+allocates memory. What happens if those allocations fail. Does
+changing the MTU take me from a working system to a dead system? It is
+good practice to not kill a working system under situations like
+memory pressure. You try to first allocate the memory you need to
+handle the new MTU, and only if successful do you free existing memory
+you no longer need. That means if you cannot allocate the needed
+memory, you still have the old memory, you can keep the old MTU and
+return -ENOMEM, and the system keeps running.
+
+> I didn't check that prior to my submit. Regarding this "no new module
+> parameters allowed" rule, is that documented anywhere?
+
+Lots of emails that fly passed on the mailing list. Maybe once every
+couple of months when a vendor tries to mainline a new driver without
+reading the mailing list for a few months to know how mainline
+actually works. I _guess_ Davem has been pushing back on module
+parameters for 10 years? Maybe more.
+
+
+> if not, is that the
+> common practice? not to try to do something that was not done recently?
+> how "recently" is defined?
+> I just want to clarify this because it's hard to handle these submissions
+> when we write some code based on existing examples but then we are
+> rejected because "we don't do that here anymore".
+> I want to avoid future cases of this mismatch.
+
+My suggestion would be to spend 30 minutes every day reading patches
+and review comment on the mailing list. Avoid making the same mistakes
+others make, especially newbies to mainline, and see what others are
+doing in the same niche as this device. 30 minutes might seem like a
+lot, but how much time did you waste implementing polling mode, now
+you are going to throw it away?
+
+> >>>> +                     ethtool_link_ksettings_add_link_mode(cmd, lp_advertising, Autoneg);
+> >>>
+> >>> That looks odd. Care to explain?
+> >>>
+> >>
+> >> The HW of all of our ports supports autoneg.
+> >> But in addition, the ports are divided to two groups:
+> >> internal: ports which are connected to other Gaudi2 ports in the same server.
+> >> external: ports which are connected to an external switch.
+> >> Only internal ports use autoneg.
+> >> The ports mask which sets each port as internal/external is fetched from
+> >> the FW on device load.
+> > 
+> > That is not what i meant. lc_advertising should indicate the link
+> > modes the peer is advertising. If this was a copper link, it typically
+> > would contain 10BaseT-Half, 10BaseT-Full, 100BaseT-Half,
+> > 100BaseT-Full, 1000BaseT-Half. Setting the Autoneg bit is pointless,
+> > since the peer must be advertising in order that lp_advertising has a
+> > value!
+> > 
+> 
+> Sorry, but I don't get this. The problem is the setting of the Autoneg bit
+> in lp_advertising? is that redundant? I see that other vendors set it too
+> in case that Autoneg was completed.
+
+
+$ ethtool eth0
+Settings for eth0:
+	Supported ports: [ TP	 MII ]
+	Supported link modes:   10baseT/Half 10baseT/Full
+	                        100baseT/Half 100baseT/Full
+	                        1000baseT/Full
+
+This is `supported`. The hardware can do these link modes.
+
+	Supported pause frame use: Symmetric Receive-only
+	Supports auto-negotiation: Yes
+
+It also support symmetric pause, and can do autoneg.
+
+	Supported FEC modes: Not reported
+	Advertised link modes:  10baseT/Half 10baseT/Full
+	                        100baseT/Half 100baseT/Full
+	                        1000baseT/Full
+	Advertised pause frame use: Symmetric Receive-only
+	Advertised auto-negotiation: Yes
+	Advertised FEC modes: Not reported
+
+This is `advertising`, and is what this device is advertising to the
+link partner. By default you copy supported into advertising, but the
+user can use ethtool -s advertise N, where N is a list of link modes,
+to change what is advertised to the link partner.
+
+	Link partner advertised link modes:  10baseT/Half 10baseT/Full
+	                                     100baseT/Half 100baseT/Full
+	                                     1000baseT/Full
+	Link partner advertised pause frame use: Symmetric
+	Link partner advertised auto-negotiation: Yes
+	Link partner advertised FEC modes: Not reported
+
+This is `lp_advertising`, what the link partner is advertising to this
+device. Once you have this, you mask lp_advertising with advertising,
+and generally pick the link mode with the highest bandwidth:
+
+	Speed: 1000Mb/s
+	Duplex: Full
+
+So autoneg resolved to 1000baseT/Full
+
+	Andrew
 
