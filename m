@@ -1,409 +1,142 @@
-Return-Path: <linux-rdma+bounces-3311-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-3312-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1353990E8A5
-	for <lists+linux-rdma@lfdr.de>; Wed, 19 Jun 2024 12:52:32 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C8A2990E8C1
+	for <lists+linux-rdma@lfdr.de>; Wed, 19 Jun 2024 12:56:12 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 04D531C20F0C
-	for <lists+linux-rdma@lfdr.de>; Wed, 19 Jun 2024 10:52:31 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C38101C2104D
+	for <lists+linux-rdma@lfdr.de>; Wed, 19 Jun 2024 10:56:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F115C12FF91;
-	Wed, 19 Jun 2024 10:52:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3DC26135A67;
+	Wed, 19 Jun 2024 10:56:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="CtDpb8Q5"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="MAIIZlik"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A95C880C09;
-	Wed, 19 Jun 2024 10:52:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8D3C213211E
+	for <linux-rdma@vger.kernel.org>; Wed, 19 Jun 2024 10:55:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1718794345; cv=none; b=CB3zieowgZqcvHXKqT/IydWJGiO+N3YRbMzoSFSjgnr9hqnPFMi5VD50EdpPlnmx8ZC95E51DQs0EZOvoVFNjuxHqGFzsRf4tPqMgWZmhY3FizL3MSE5ixd5lUpWjt/odu1PpTqUH9vdLvypsSTY6qMM2IzkALdUJMAZKq6z1DY=
+	t=1718794560; cv=none; b=b4Jd5aWEgCn1jpciAbPWKwbi4yxgcwB2vmDXOFu2+yYHYpRMpjGTSCL1sCz9Z5ngUHEVki9YtEmMqIZk1qzWdV0XHx2KJjMm9BYKSiFl9A4Nrkx8W4SQkiXTMHpI6JTY623t3Ox5SbS8VrIDpf8/5eswh4gN90RSl8X7VJaBHv8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1718794345; c=relaxed/simple;
-	bh=vSTwOnkpOhjoLPdYXhsbyxycs4+sgyR1OWKUT+yuANg=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=h+zOBIuw0vRFKW8Xj4Jttwui1ToTlzzUFxJgVK/CIOCZVIoxgZmMjk5+bXqrvSatAimI8BW/f+xIYTVnN7dTmJJAEYjL0jaJGxK9yPjSU9jvS9V4DYcVZjy3T+7MZQetMhu6Qv5lQ/gCh41FZvnJGdcp8j7r+Stohgj3aV2MqvQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=CtDpb8Q5; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 74E1DC2BBFC;
-	Wed, 19 Jun 2024 10:52:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1718794345;
-	bh=vSTwOnkpOhjoLPdYXhsbyxycs4+sgyR1OWKUT+yuANg=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=CtDpb8Q5lHuHaZ7f9f8roz12g1h3DQNFWWqxZGyjAAf4b9z6g7zLjhIPXuLxXWU3m
-	 IW5VTcS8iESaT0h8QBsq59Lq2yHtioePjg7bFGuw+TLiCeJrGNf3MBzizu6shUm6Xe
-	 hrlFioBpc9T7JD/DH3AxNa5eogB0KF7lztKKZJWTWxfc2ZQCzXfaXa9wQ9uOVccnDf
-	 QGJomdvHrpGizBCOy/itPCvicbmfp9GNrnoxAJf5SDwAfmVZjefznHDICaL3klChWa
-	 oCcE9PH8NF/cVIknlJl3unJT97G6Ezf/7oVoUAxYOjeNDLNckWXEPzLflVu45vHs0/
-	 nkZovwRM6i6jQ==
-Date: Wed, 19 Jun 2024 13:52:19 +0300
-From: Leon Romanovsky <leon@kernel.org>
-To: Omer Shpigelman <oshpigelman@habana.ai>
-Cc: "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	"linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-	"netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-	"dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
-	"ogabbay@kernel.org" <ogabbay@kernel.org>,
-	Zvika Yehudai <zyehudai@habana.ai>
-Subject: Re: [PATCH 11/15] RDMA/hbl: add habanalabs RDMA driver
-Message-ID: <20240619105219.GO4025@unreal>
-References: <20240613082208.1439968-1-oshpigelman@habana.ai>
- <20240613082208.1439968-12-oshpigelman@habana.ai>
- <20240613191828.GJ4966@unreal>
- <fbb34afa-8a38-4124-9384-9b858ce2c4e5@habana.ai>
- <20240617190429.GB4025@unreal>
- <461bf44e-fd2f-4c8b-bc41-48d48e5a7fcb@habana.ai>
- <20240618125842.GG4025@unreal>
- <b4bda963-7026-4037-83e6-de74728569bd@habana.ai>
+	s=arc-20240116; t=1718794560; c=relaxed/simple;
+	bh=kGxMAaJvLmfXkBIK3NGXhSRM0AwoYHtsGbNLEE0bnpY=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=TaGaYhHXLvrtv/G773IrsnWMVw/rgTNrZ8lXeav5PecFpfbXIJ/Osz+JFbN5bj5qlFWbDCBSkm4ilNU31FVEFYKD+b6Mz5z9lKBkvMw528j8NyathsFrRLDOdYR77cFP6EKuLkOF9T3IGYx1MdAHV/E4zKcW0zdNrNiyWzolJYk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=MAIIZlik; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1718794557;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=mOO5ZSP3WLU9Q7oAH7CvSIrRzVR6QPgru4zl8xC0EsM=;
+	b=MAIIZlikYOlUmH5kS9AslrRHuPZ1GDuGor0MCHhPMzwa8alD5JsRrYRlHGftGSZbikoq29
+	FA6Gt/PcvohS4IU6oTcpQO5aqBk04TOEX63H6ZQnxwagR4F2K8ODrFIclXwXtDlcYFzl7y
+	ZKt9TYS9Ffx/X12HYrEsdnyL3WRVUZU=
+Received: from mail-yw1-f200.google.com (mail-yw1-f200.google.com
+ [209.85.128.200]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-510-_LlsWaoWM7-254dJDMj56w-1; Wed, 19 Jun 2024 06:55:54 -0400
+X-MC-Unique: _LlsWaoWM7-254dJDMj56w-1
+Received: by mail-yw1-f200.google.com with SMTP id 00721157ae682-62fb4a1f7bfso145651917b3.3
+        for <linux-rdma@vger.kernel.org>; Wed, 19 Jun 2024 03:55:54 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1718794553; x=1719399353;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=mOO5ZSP3WLU9Q7oAH7CvSIrRzVR6QPgru4zl8xC0EsM=;
+        b=T/pGKYupc8p/56vZPZkTocpgc0tS9qzYI4QNwbynF7moKE98g3wIHzp5Hl3Q1fCDEM
+         +r+E95c47Bm3vVx7WaCAuQ9Hij0TPYbBz4slJEiFakI3nmdJH8vducssp2fifGFQqyDf
+         PKD1EsPvjnxzJ0porKjPwN1I4aDEZa2wcc5H1pmwlAPwVu2irUAodlFzeaehO8fEmEGL
+         cvO7AypxEffDKLm9wL/5oURKNczZyeKS2V9lHXWWXaE2RzZOjqa2z9tWBaAbhMJ2O5Z+
+         BltaR6iwsN8FP5Lt20Z6dInU2qC0eht67P9QQlbmgfhd5Hvt7W59kLEQiMgFGuF7uhRx
+         WtHQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVO3EtgTsmRe7WXoSSxRRGIMAENgfEbE/tW4uUyT8UY54hYRn6fFU2xzh2bASgB/9wg7IKjLGJESEnWx96iBW0cl0mm7XH9mIAAGQ==
+X-Gm-Message-State: AOJu0Yw3m65F1E0p+HDxXMdQj9LgT9SLCBWS73pW1g4lnfNZC9Gq5dqx
+	viGO2Jo0FiypD+3dOllmzPY8KMGF1Vg+R3kPgrodE6DpWLzTtfKYmdbIEcjltlcBFiSzUecNdLi
+	lhS9QMqXXYPq+2ZhrP05oXi+QTFEgmCgma4M2mWZBVIBBrov4uLw2IL6n7NmmNs3cE+tpMiyUZp
+	nFYt3exObJkb5sj8XA6d7ya2YbJzcTJ1A1dA==
+X-Received: by 2002:a81:9144:0:b0:627:a7d7:6d76 with SMTP id 00721157ae682-63a8f6196cfmr23423207b3.39.1718794553597;
+        Wed, 19 Jun 2024 03:55:53 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IFvxPUUYPpg9QjOGGTil9Q0vxhLdibJM9rIX47lCpLHxV4IIFiJXXL5B/tBGDpyegeZIjHDn8kj0g1taUiWYss=
+X-Received: by 2002:a81:9144:0:b0:627:a7d7:6d76 with SMTP id
+ 00721157ae682-63a8f6196cfmr23423047b3.39.1718794553297; Wed, 19 Jun 2024
+ 03:55:53 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <b4bda963-7026-4037-83e6-de74728569bd@habana.ai>
+References: <20240617-stage-vdpa-vq-precreate-v1-0-8c0483f0ca2a@nvidia.com> <20240617-stage-vdpa-vq-precreate-v1-3-8c0483f0ca2a@nvidia.com>
+In-Reply-To: <20240617-stage-vdpa-vq-precreate-v1-3-8c0483f0ca2a@nvidia.com>
+From: Eugenio Perez Martin <eperezma@redhat.com>
+Date: Wed, 19 Jun 2024 12:55:17 +0200
+Message-ID: <CAJaqyWdWSbua3HJaAHP0vetugyy5-ryAD8d-z-Xi26VQXiRSiA@mail.gmail.com>
+Subject: Re: [PATCH vhost 03/23] vdpa/mlx5: Drop redundant code
+To: Dragos Tatulea <dtatulea@nvidia.com>
+Cc: "Michael S. Tsirkin" <mst@redhat.com>, Jason Wang <jasowang@redhat.com>, 
+	Xuan Zhuo <xuanzhuo@linux.alibaba.com>, Saeed Mahameed <saeedm@nvidia.com>, 
+	Leon Romanovsky <leon@kernel.org>, Tariq Toukan <tariqt@nvidia.com>, Si-Wei Liu <si-wei.liu@oracle.com>, 
+	virtualization@lists.linux.dev, linux-kernel@vger.kernel.org, 
+	linux-rdma@vger.kernel.org, netdev@vger.kernel.org, 
+	Cosmin Ratiu <cratiu@nvidia.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Wed, Jun 19, 2024 at 09:27:54AM +0000, Omer Shpigelman wrote:
-> On 6/18/24 15:58, Leon Romanovsky wrote:
-> > On Tue, Jun 18, 2024 at 11:08:34AM +0000, Omer Shpigelman wrote:
-> >> On 6/17/24 22:04, Leon Romanovsky wrote:
-> >>> [Some people who received this message don't often get email from leon@kernel.org. Learn why this is important at https://aka.ms/LearnAboutSenderIdentification ]
-> >>>
-> >>> On Mon, Jun 17, 2024 at 05:43:49PM +0000, Omer Shpigelman wrote:
-> >>>> On 6/13/24 22:18, Leon Romanovsky wrote:
-> >>>>> [Some people who received this message don't often get email from leon@kernel.org. Learn why this is important at https://aka.ms/LearnAboutSenderIdentification ]
-> >>>>>
-> >>>>> On Thu, Jun 13, 2024 at 11:22:04AM +0300, Omer Shpigelman wrote:
-> >>>>>> Add an RDMA driver of Gaudi ASICs family for AI scaling.
-> >>>>>> The driver itself is agnostic to the ASIC in action, it operates according
-> >>>>>> to the capabilities that were passed on device initialization.
-> >>>>>> The device is initialized by the hbl_cn driver via auxiliary bus.
-> >>>>>> The driver also supports QP resource tracking and port/device HW counters.
-> >>>>>>
-> >>>>>> Signed-off-by: Omer Shpigelman <oshpigelman@habana.ai>
-> >>>>>> Co-developed-by: Abhilash K V <kvabhilash@habana.ai>
-> >>>>>> Signed-off-by: Abhilash K V <kvabhilash@habana.ai>
-> >>>>>> Co-developed-by: Andrey Agranovich <aagranovich@habana.ai>
-> >>>>>> Signed-off-by: Andrey Agranovich <aagranovich@habana.ai>
-> >>>>>> Co-developed-by: Bharat Jauhari <bjauhari@habana.ai>
-> >>>>>> Signed-off-by: Bharat Jauhari <bjauhari@habana.ai>
-> >>>>>> Co-developed-by: David Meriin <dmeriin@habana.ai>
-> >>>>>> Signed-off-by: David Meriin <dmeriin@habana.ai>
-> >>>>>> Co-developed-by: Sagiv Ozeri <sozeri@habana.ai>
-> >>>>>> Signed-off-by: Sagiv Ozeri <sozeri@habana.ai>
-> >>>>>> Co-developed-by: Zvika Yehudai <zyehudai@habana.ai>
-> >>>>>> Signed-off-by: Zvika Yehudai <zyehudai@habana.ai>
-> >>>>>
-> >>>>> I afraid that you misinterpreted the "Co-developed-by" tag. All these
-> >>>>> people are probably touch the code and not actually sit together at
-> >>>>> the same room and write the code together. So, please remove the
-> >>>>> extensive "Co-developed-by" tags.
-> >>>>>
-> >>>>> It is not full review yet, but simple pass-by-comments.
-> >>>>>
-> >>>>
-> >>>> Actually except of two, all of the mentioned persons sat in the same room
-> >>>> and developed the code together.
-> >>>> The remaining two are located on a different site (but also together).
-> >>>> Isn't that what "Co-developed-by" tag for?
-> >>>> I wanted to give them credit for writing the code but I can remove if it's
-> >>>> not common.
-> >>>
-> >>> Signed-off-by will be enough to give them credit.
-> >>>
-> >>
-> >> Ok, good enough.
-> >>
-> >>>>
-> >>>>>> ---
-> >>>>>>  MAINTAINERS                              |   10 +
-> >>>>>>  drivers/infiniband/Kconfig               |    1 +
-> >>>>>>  drivers/infiniband/hw/Makefile           |    1 +
-> >>>>>>  drivers/infiniband/hw/hbl/Kconfig        |   17 +
-> >>>>>>  drivers/infiniband/hw/hbl/Makefile       |    8 +
-> >>>>>>  drivers/infiniband/hw/hbl/hbl.h          |  326 +++
-> >>>>>>  drivers/infiniband/hw/hbl/hbl_main.c     |  478 ++++
-> >>>>>>  drivers/infiniband/hw/hbl/hbl_verbs.c    | 2686 ++++++++++++++++++++++
-> >>>>>>  include/uapi/rdma/hbl-abi.h              |  204 ++
-> >>>>>>  include/uapi/rdma/hbl_user_ioctl_cmds.h  |   66 +
-> >>>>>>  include/uapi/rdma/hbl_user_ioctl_verbs.h |  106 +
-> >>>>>>  include/uapi/rdma/ib_user_ioctl_verbs.h  |    1 +
-> >>>>>>  12 files changed, 3904 insertions(+)
-> >>>>>>  create mode 100644 drivers/infiniband/hw/hbl/Kconfig
-> >>>>>>  create mode 100644 drivers/infiniband/hw/hbl/Makefile
-> >>>>>>  create mode 100644 drivers/infiniband/hw/hbl/hbl.h
-> >>>>>>  create mode 100644 drivers/infiniband/hw/hbl/hbl_main.c
-> >>>>>>  create mode 100644 drivers/infiniband/hw/hbl/hbl_verbs.c
-> >>>>>>  create mode 100644 include/uapi/rdma/hbl-abi.h
-> >>>>>>  create mode 100644 include/uapi/rdma/hbl_user_ioctl_cmds.h
-> >>>>>>  create mode 100644 include/uapi/rdma/hbl_user_ioctl_verbs.h
-> >>>>>
-> >>>>> <...>
-> >>>>>
-> >>>>>> +#define hbl_ibdev_emerg(ibdev, format, ...)  ibdev_emerg(ibdev, format, ##__VA_ARGS__)
-> >>>>>> +#define hbl_ibdev_alert(ibdev, format, ...)  ibdev_alert(ibdev, format, ##__VA_ARGS__)
-> >>>>>> +#define hbl_ibdev_crit(ibdev, format, ...)   ibdev_crit(ibdev, format, ##__VA_ARGS__)
-> >>>>>> +#define hbl_ibdev_err(ibdev, format, ...)    ibdev_err(ibdev, format, ##__VA_ARGS__)
-> >>>>>> +#define hbl_ibdev_warn(ibdev, format, ...)   ibdev_warn(ibdev, format, ##__VA_ARGS__)
-> >>>>>> +#define hbl_ibdev_notice(ibdev, format, ...) ibdev_notice(ibdev, format, ##__VA_ARGS__)
-> >>>>>> +#define hbl_ibdev_info(ibdev, format, ...)   ibdev_info(ibdev, format, ##__VA_ARGS__)
-> >>>>>> +#define hbl_ibdev_dbg(ibdev, format, ...)    ibdev_dbg(ibdev, format, ##__VA_ARGS__)
-> >>>>>> +
-> >>>>>> +#define hbl_ibdev_emerg_ratelimited(ibdev, fmt, ...)         \
-> >>>>>> +     ibdev_emerg_ratelimited(ibdev, fmt, ##__VA_ARGS__)
-> >>>>>> +#define hbl_ibdev_alert_ratelimited(ibdev, fmt, ...)         \
-> >>>>>> +     ibdev_alert_ratelimited(ibdev, fmt, ##__VA_ARGS__)
-> >>>>>> +#define hbl_ibdev_crit_ratelimited(ibdev, fmt, ...)          \
-> >>>>>> +     ibdev_crit_ratelimited(ibdev, fmt, ##__VA_ARGS__)
-> >>>>>> +#define hbl_ibdev_err_ratelimited(ibdev, fmt, ...)           \
-> >>>>>> +     ibdev_err_ratelimited(ibdev, fmt, ##__VA_ARGS__)
-> >>>>>> +#define hbl_ibdev_warn_ratelimited(ibdev, fmt, ...)          \
-> >>>>>> +     ibdev_warn_ratelimited(ibdev, fmt, ##__VA_ARGS__)
-> >>>>>> +#define hbl_ibdev_notice_ratelimited(ibdev, fmt, ...)                \
-> >>>>>> +     ibdev_notice_ratelimited(ibdev, fmt, ##__VA_ARGS__)
-> >>>>>> +#define hbl_ibdev_info_ratelimited(ibdev, fmt, ...)          \
-> >>>>>> +     ibdev_info_ratelimited(ibdev, fmt, ##__VA_ARGS__)
-> >>>>>> +#define hbl_ibdev_dbg_ratelimited(ibdev, fmt, ...)           \
-> >>>>>> +     ibdev_dbg_ratelimited(ibdev, fmt, ##__VA_ARGS__)
-> >>>>>> +
-> >>>>>
-> >>>>> Please don't redefine the existing macros. Just use the existing ones.
-> >>>>>
-> >>>>>
-> >>>>> <...>
-> >>>>>
-> >>>>
-> >>>> That's a leftover from some debug code. I'll remove.
-> >>>>
-> >>>>>> +     if (hbl_ib_match_netdev(ibdev, netdev))
-> >>>>>> +             ib_port = hbl_to_ib_port_num(hdev, netdev->dev_port);
-> >>>>>> +     else
-> >>>>>> +             return NOTIFY_DONE;
-> >>>>>
-> >>>>> It is not kernel coding style. Please write:
-> >>>>> if (!hbl_ib_match_netdev(ibdev, netdev))
-> >>>>>     return NOTIFY_DONE;
-> >>>>>
-> >>>>> ib_port = hbl_to_ib_port_num(hdev, netdev->dev_port);
-> >>>>>
-> >>>>
-> >>>> I'll fix the code, thanks.
-> >>>>
-> >>>>>> +
-> >>>>>
-> >>>>> <...>
-> >>>>>
-> >>>>>> +static int hbl_ib_probe(struct auxiliary_device *adev, const struct auxiliary_device_id *id)
-> >>>>>> +{
-> >>>>>> +     struct hbl_aux_dev *aux_dev = container_of(adev, struct hbl_aux_dev, adev);
-> >>>>>> +     struct hbl_ib_aux_ops *aux_ops = aux_dev->aux_ops;
-> >>>>>> +     struct hbl_ib_device *hdev;
-> >>>>>> +     ktime_t timeout;
-> >>>>>> +     int rc;
-> >>>>>> +
-> >>>>>> +     rc = hdev_init(aux_dev);
-> >>>>>> +     if (rc) {
-> >>>>>> +             dev_err(&aux_dev->adev.dev, "Failed to init hdev\n");
-> >>>>>> +             return -EIO;
-> >>>>>> +     }
-> >>>>>> +
-> >>>>>> +     hdev = aux_dev->priv;
-> >>>>>> +
-> >>>>>> +     /* don't allow module unloading while it is attached */
-> >>>>>> +     if (!try_module_get(THIS_MODULE)) {
-> >>>>>
-> >>>>> This part makes wonder, what are you trying to do here? What doesn't work for you
-> >>>>> in standard driver core and module load mechanism?
-> >>>>>
-> >>>>
-> >>>> Before auxiliary bus was introduced, we used EXPORT_SYMBOLs for inter
-> >>>> driver communication. That incremented the refcount of the used module so
-> >>>> it couldn't be removed while it is in use.
-> >>>> Auxiliary bus usage doesn't increment the used module refcount and hence
-> >>>> the used module can be removed while it is in use and that's something
-> >>>> we don't want to allow.
-> >>>> We could solve it by some global locking or in_use atomic but the most
-> >>>> simple and clean way is just to increment the used module refcount on
-> >>>> auxiliary device probe and decrement it on auxiliary device removal.
-> >>>
-> >>> No, you was supposed to continue to use EXPORT_SYMBOLs and don't
-> >>> invent auxiliary ops structure (this is why you lost module
-> >>> reference counting).
-> >>>
-> >>
-> >> Sorry, but according to the auxiliary bus doc, a domain-specific ops
-> >> structure can be used.
-> >> We followed the usage example described at drivers/base/auxiliary.c.
-> >> What am I missing? 
-> > 
-> > Being the one who implemented auxiliary bus in the kernel and converted
-> > number of drivers to use it, I strongly recommend do NOT follow the example
-> > provided there.
-> > 
-> > So you are missing "best practice", and "best practice" is to use
-> > EXPORT_SYMBOLs and rely on module reference counting.
-> >
-> 
-> It is not just the usage example but also the general feature doc before
-> it:
-> "The generic behavior can be extended and specialized as needed by
-> encapsulating an auxiliary_device within other domain-specific structures
-> and the use of .ops callbacks."
-> It is also mentioned there that the ops structure are used for specific
-> auxiliary device operations while EXPORT_SYMBOLs should be used for common
-> infrastrucure the parent driver exposes:
-> "Note that ops are intended as a way to augment instance behavior within a
-> class of auxiliary devices, it is not the mechanism for exporting common
-> infrastructure from the parent."
-> All of our ops callbacks are meant to provide functionality related to the
-> auxiliary device, they are not just general/common infrastructure.
+On Mon, Jun 17, 2024 at 5:08=E2=80=AFPM Dragos Tatulea <dtatulea@nvidia.com=
+> wrote:
 
-Of course they are common, otherwise why did you put them in common code?
-For example, you have callbacks to lock and unlock internal HW access,
-how is it not common?
+Patch message suggestion:
+Originally, the second loop initialized the CVQ. But (acde3929492b
+("vdpa/mlx5: Use consistent RQT size") initialized all the queues in
+the first loop, so the second iteration in ...
 
-> 
-> Why do we have this doc if we should ignore it? why wasn't the doc
-> modified according to the "best practice" you described? the doc is
-> misleading.
+>
+> The second iteration in init_mvqs() is never called because the first
+> one will iterate up to max_vqs.
+>
 
-Because this is how upstream kernel development works. We are trying to
-come to the agreement and get the best solution for the problem. Sometimes,
-the outcome of the discussion is not "the best solution", but "good
-enough". This doc can be served as an example. Everyone involved in the
-development of auxbus and later usage of it, were focused on implementation,
-documentation was good enough as it didn't limit anyone who actually
-used it.
+Either way,
 
-> 
-> Adding gregkh here as he requested the auxiliary bus feature IIRC.
-> Greg - isn't the doc legit? should EXPORT_SYMBOLs necessarily be used
-> together with auxiliary bus rather than ops structure?
+Acked-by: Eugenio P=C3=A9rez <eperezma@redhat.com>
 
-This is not what you are doing here. You completely ditched EXPORT_SYMBOLs
-and reinvented module reference counting which overcomplicated the code
-just to avoid using standard kernel mechanism.
+> Signed-off-by: Dragos Tatulea <dtatulea@nvidia.com>
+> Reviewed-by: Cosmin Ratiu <cratiu@nvidia.com>
+> ---
+>  drivers/vdpa/mlx5/net/mlx5_vnet.c | 6 ------
+>  1 file changed, 6 deletions(-)
+>
+> diff --git a/drivers/vdpa/mlx5/net/mlx5_vnet.c b/drivers/vdpa/mlx5/net/ml=
+x5_vnet.c
+> index 1ad281cbc541..b4d9ef4f66c8 100644
+> --- a/drivers/vdpa/mlx5/net/mlx5_vnet.c
+> +++ b/drivers/vdpa/mlx5/net/mlx5_vnet.c
+> @@ -3519,12 +3519,6 @@ static void init_mvqs(struct mlx5_vdpa_net *ndev)
+>                 mvq->fwqp.fw =3D true;
+>                 mvq->fw_state =3D MLX5_VIRTIO_NET_Q_OBJECT_NONE;
+>         }
+> -       for (; i < ndev->mvdev.max_vqs; i++) {
+> -               mvq =3D &ndev->vqs[i];
+> -               memset(mvq, 0, offsetof(struct mlx5_vdpa_virtqueue, ri));
+> -               mvq->index =3D i;
+> -               mvq->ndev =3D ndev;
+> -       }
+>  }
+>
+>  struct mlx5_vdpa_mgmtdev {
+>
+> --
+> 2.45.1
+>
 
-> As we saw it, auxiliary bus gives us the flexibility to choose which
-> modules will be loaded while EXPORT_SYMBOLs enforces the dependencies
-> which might not be needed in some cases.
->  
-> >> Moreover, we'd like to support the mode where the IB or the ETH driver is
-> >> not loaded at all. But this cannot be achieved if we use EXPORT_SYMBOLs
-> >> exclusively for inter driver communication.
-> > 
-> > It is not true and not how the kernel works. You can perfectly load core
-> > driver without IB and ETH, at some extent this is how mlx5 driver works.
-> > 
-> 
-> mlx5 IB driver doesn't export any symbol that is used by the core driver,
-> that's why the core driver can be loaded without the IB driver (althought
-> you'll get circular dependency if you would export).
-
-Yes, IB and ETH drivers are "users" of core driver. As RDMA maintainer,
-I'm reluctant to accept code that exports symbols from IB drivers to
-other subsystems. We have drivers/infiniband/core/ for that.
-
-> If relying on exported symbols only, then our IB and ETH drivers will need
-> to export symbols too because the core driver accesses them post probing.
-
-So you should fix your core driver. This is exactly what auxbus model
-proposes.
-
-> Hence we won't be able to load the core driver without both of them (or
-> loading anything due to circular dependency).
-> Unless we'll use dynamic symbol lookup and I don't think that's your
-> intention.
-
-No it is not.
-
-> 
-> >>
-> >>>>
-> >>>>>> +             dev_err(hdev->dev, "Failed to increment %s module refcount\n",
-> >>>>>> +                     module_name(THIS_MODULE));
-> >>>>>> +             rc = -EIO;
-> >>>>>> +             goto module_get_err;
-> >>>>>> +     }
-> >>>>>> +
-> >>>>>> +     timeout = ktime_add_ms(ktime_get(), hdev->pending_reset_long_timeout * MSEC_PER_SEC);
-> >>>>>> +     while (1) {
-> >>>>>> +             aux_ops->hw_access_lock(aux_dev);
-> >>>>>> +
-> >>>>>> +             /* if the device is operational, proceed to actual init while holding the lock in
-> >>>>>> +              * order to prevent concurrent hard reset
-> >>>>>> +              */
-> >>>>>> +             if (aux_ops->device_operational(aux_dev))
-> >>>>>> +                     break;
-> >>>>>> +
-> >>>>>> +             aux_ops->hw_access_unlock(aux_dev);
-> >>>>>> +
-> >>>>>> +             if (ktime_compare(ktime_get(), timeout) > 0) {
-> >>>>>> +                     dev_err(hdev->dev, "Timeout while waiting for hard reset to finish\n");
-> >>>>>> +                     rc = -EBUSY;
-> >>>>>> +                     goto timeout_err;
-> >>>>>> +             }
-> >>>>>> +
-> >>>>>> +             dev_notice_once(hdev->dev, "Waiting for hard reset to finish before probing IB\n");
-> >>>>>> +
-> >>>>>> +             msleep_interruptible(MSEC_PER_SEC);
-> >>>>>> +     }
-> >>>>>
-> >>>>> The code above is unexpected.
-> >>>>>
-> >>>>
-> >>>> We have no control on when the user insmod the IB driver.
-> >>>
-> >>> It is not true, this is controlled through module dependencies
-> >>> mechanism.
-> >>>
-> >>
-> >> Yeah, if we would use EXPORT_SYMBOLs for inter driver communication but
-> >> we don't.
-> > 
-> > So please use it and don't add complexity where it is not needed.
-> > 
-> >>
-> >>>> As a result it is possible that the IB auxiliary device will be probed
-> >>>> while the compute device is under reset (due to some HW error).
-> >>>
-> >>> No, it is not possible. If you structure your driver right.
-> >>>
-> >>
-> >> Again, it is not possible if we would use EXPORT_SYMBOLs.
-> >> Please let me know if we misunderstood something because AFAIU we followed
-> >> the auxiliary bus doc usage example.
-> > 
-> > It is better to follow actual drivers that use auxiliary bus and see how
-> > they implemented it and not rely on examples in the documentation.
-> > 
-> 
-> But isn't that what the doc for? to explain the guidelines? and it's not
-> that there is a big red note there of "this example should not be taken as
-> is, please look at your subsystem guidelines".
-
-At the beginning that doc was located in Documentation/ folder and no one
-really cared about it. After moving from Documentation/ to drivers/base/auxiliary.c,
-it became more visible, but still no one relied on it. You are first one
-who read.
-
-There is no subsystem rules here. Everyone relied on EXPORT_SYMBOLs and didn't
-use ops structure. Kernel is evolving project, there is no need to find a rule
-for everything.
-
-Thanks
-
-> 
-> > Thanks
-> > 
-> >>
-> >>> Thanks
 
