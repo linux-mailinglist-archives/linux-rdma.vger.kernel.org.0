@@ -1,261 +1,183 @@
-Return-Path: <linux-rdma+bounces-3341-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-3342-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id F336590F3CA
-	for <lists+linux-rdma@lfdr.de>; Wed, 19 Jun 2024 18:14:17 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4648E90F3CB
+	for <lists+linux-rdma@lfdr.de>; Wed, 19 Jun 2024 18:15:32 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 526DDB222C5
-	for <lists+linux-rdma@lfdr.de>; Wed, 19 Jun 2024 16:13:59 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id CD19C1F21DB8
+	for <lists+linux-rdma@lfdr.de>; Wed, 19 Jun 2024 16:15:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A7F3C14F9DC;
-	Wed, 19 Jun 2024 16:13:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8C1311514FD;
+	Wed, 19 Jun 2024 16:15:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b="hZtWJDV6"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="X4jif4Es"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2479914E2C9;
-	Wed, 19 Jun 2024 16:13:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=156.67.10.101
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BFF04364A4
+	for <linux-rdma@vger.kernel.org>; Wed, 19 Jun 2024 16:15:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1718813633; cv=none; b=cYRwVMi8QT4dDFZf9ij2jeaGuMsYpalhvUQIiPvFMxm6bFi0dLL6yPyLrZ+i4lDgkkTfxgKXopbsV6yDZmSzBlcfOT7TxLS7ZjeyR7BYauZSBNe5gLTLCOF7cEKv50+DgX3JA7kd96e5fAAkJwMjh8zW8Imwbvhbj5EQH8oPU28=
+	t=1718813726; cv=none; b=rCKWVTwQoOIpAfbKOvBc/9zrDYTpMI1kBgiKsEhjIib6pfT8EVMoUV2+1gEtJ+ZOTC1yJ83m6QEy2LqKhR1/Ogdrf/mo6tBCGioMwf6PL3NPBrTTX3j04AxDh/Q9jj9ljmHakdAfXIm95SH5TcaLJjMlxJukY+qo8dDUnB1VyVg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1718813633; c=relaxed/simple;
-	bh=q5gg3wlN1xUa6GvXUQS/Ik0u8Mxip/HY6wE9gPImDaQ=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ZhJl1DufwiYP87t4FFReHKQdy6hmjD4Tqs9Z9/OEqWfxF1J/0UMRFGOxpOQyOl+44ZjsfAqUlODN8QeA7rF2Mn/De7cYkQXI06Glns7o/2uuJZRPqJoEao64sqrXiwwJp8LFvnt7hJPiRpep1du8qHIxAJQXGqTEDGVvS3bHt6s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch; spf=pass smtp.mailfrom=lunn.ch; dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b=hZtWJDV6; arc=none smtp.client-ip=156.67.10.101
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lunn.ch
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-	s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
-	References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
-	Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
-	Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
-	bh=QYakplpX2ykVLz/kbSetsTy/eCXPauRn2WMhcnSUh5U=; b=hZtWJDV6/74RoNLZREg3Eg1ifW
-	PlUV3M2v70xab1/+k7hwo14qthUfkAdnRIm9oM5VYCQ2HEksluneVYx42N8+dg65fFRz5uE4l25sc
-	0RfDFTo4S1K4SPVcQ7V0KxXnoS1psxbPKFml/pQBxXamEntMS+lN4waE5pSjd5BhSUIY=;
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
-	(envelope-from <andrew@lunn.ch>)
-	id 1sJxwS-000U9w-Kg; Wed, 19 Jun 2024 18:13:48 +0200
-Date: Wed, 19 Jun 2024 18:13:48 +0200
-From: Andrew Lunn <andrew@lunn.ch>
-To: Omer Shpigelman <oshpigelman@habana.ai>
-Cc: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	"linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-	"netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-	"dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
-	"ogabbay@kernel.org" <ogabbay@kernel.org>,
-	Zvika Yehudai <zyehudai@habana.ai>
-Subject: Re: [PATCH 09/15] net: hbl_en: add habanalabs Ethernet driver
-Message-ID: <2c66dc75-b321-4980-955f-7fdcd902b578@lunn.ch>
-References: <20240613082208.1439968-1-oshpigelman@habana.ai>
- <20240613082208.1439968-10-oshpigelman@habana.ai>
- <10902044-fb02-4328-bf88-0b386ee51c78@lunn.ch>
- <bddb69c3-511b-4385-a67d-903e910a8b51@habana.ai>
- <621d4891-36d7-48c6-bdd8-2f3ca06a23f6@lunn.ch>
- <45e35940-c8fc-4f6c-8429-e6681a48b889@habana.ai>
+	s=arc-20240116; t=1718813726; c=relaxed/simple;
+	bh=ss0Uh9EdjlVVVTaBDNia4yMe/Wcg/oAnvkrDgWyx1Pc=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=PMeudvfgsU7F+aTyEL9Mt2ZEreUTcTjIKeppnytsNSDxBGVzfXHvingcMqRb7g+xePNJvb9wAdOiA/p/CQUFy3BC+wUr9LIarCsX2Kk55v++96z37z7unW47OFhrp+dQ1Ts23Pa8ExytBwuYClQ+PxC087e93ZFYRkoDmdCzzWU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=X4jif4Es; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1718813723;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=K6uw6c8xTJWi+pvcU2aMToH9/dEBpeu9C2fVbRq6KEk=;
+	b=X4jif4EsFrI9TOIDvNM78NhPXTUq0SCJjpjeWnqEB55B0zC3rBIzfEVbCV2sllD0zvIxHS
+	GMYasazdOMOMJ+sHtg9z8pTuAolZPEuyHX1nvJVl8+oBdyrAryByuXul20gY8NJcDy9HYz
+	E142ujF3iVKmrj4st8wp56m5MeN7fmQ=
+Received: from mail-yw1-f199.google.com (mail-yw1-f199.google.com
+ [209.85.128.199]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-287-tXNhPQQ2MlubEKFd-Xlb3Q-1; Wed, 19 Jun 2024 12:15:22 -0400
+X-MC-Unique: tXNhPQQ2MlubEKFd-Xlb3Q-1
+Received: by mail-yw1-f199.google.com with SMTP id 00721157ae682-63bb7fb3229so4204337b3.2
+        for <linux-rdma@vger.kernel.org>; Wed, 19 Jun 2024 09:15:22 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1718813722; x=1719418522;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=K6uw6c8xTJWi+pvcU2aMToH9/dEBpeu9C2fVbRq6KEk=;
+        b=M/Bd/RZ4VjRa4ihTnkjPpenghxSmj+Qhk+htEqpCJ+GeBRDNGOmai3Onl8eISh+PUk
+         Z8qD68mbZbdhJCzJHzxEOQwmJWxCamZtt7v7rj8RTFORto7ffn5SjpTqa5kYh+QnSigM
+         iy/3ULOTt7r7fZbEOpOKwj7FAwnivfcD/LB+khGO0TG10a9+ryxeiP7ApwWExubpHVua
+         KillU1NrE2OQnZ0VTUtqE3Y55a+AMbvJ4c7nw1ieRTtVvcQU+edy+Ah4m6ye0nb0JeEI
+         OmWaOy3Rluu8e56ziRavp4fClrypwWwz6ahcbUCcidFFAUQwm9ZQY/h6fxuTMWRF7R1M
+         mh3w==
+X-Forwarded-Encrypted: i=1; AJvYcCX8b2E2y1CduLHNTUgjbW47pBQV7GbevlaiCFAb/rYMAwwDpeIFeqPCpA0Abfw6KksP5vH/9UvPwjJPFuQn1I55Tez7VXg/1ACgjA==
+X-Gm-Message-State: AOJu0YyZtkQ2M/4sQNCljN4/oxv1GWS66ebj6NjqP9rfUCXbMY5pKUA5
+	S2wmctzKWwtZjjECTMEsxqKO0Iz1MwKr2HDw+91C5SOJJ97rVz9BmWpGU48w4BIlUx0kU+tcpJE
+	rBzqI20JS5X4JjaTWkZVg1uhffPY3rnRjB5tVxHpTjPoGscY0hIDAkHiwWxIRHw6ePZBnY+ePDQ
+	xUGgaOt9yicSg3YgJaS63qiuu6HTiCM4k5ew==
+X-Received: by 2002:a81:9e04:0:b0:62f:3278:a635 with SMTP id 00721157ae682-63a8db11467mr30440557b3.20.1718813721757;
+        Wed, 19 Jun 2024 09:15:21 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IFYj9yHFJVb+3h0QXR7hz1TBdvtwdMW2hViXwyFTLlI/REfheh7B4/sRoIX5a0uxH+gXSI/PDw6ksDPNWWW1Ps=
+X-Received: by 2002:a81:9e04:0:b0:62f:3278:a635 with SMTP id
+ 00721157ae682-63a8db11467mr30440377b3.20.1718813721450; Wed, 19 Jun 2024
+ 09:15:21 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <45e35940-c8fc-4f6c-8429-e6681a48b889@habana.ai>
+References: <20240617-stage-vdpa-vq-precreate-v1-0-8c0483f0ca2a@nvidia.com> <20240617-stage-vdpa-vq-precreate-v1-22-8c0483f0ca2a@nvidia.com>
+In-Reply-To: <20240617-stage-vdpa-vq-precreate-v1-22-8c0483f0ca2a@nvidia.com>
+From: Eugenio Perez Martin <eperezma@redhat.com>
+Date: Wed, 19 Jun 2024 18:14:45 +0200
+Message-ID: <CAJaqyWezppMAL85-w7QLmEnKrebjdg9BQORApCj2ZHqWtiDptw@mail.gmail.com>
+Subject: Re: [PATCH vhost 22/23] vdpa/mlx5: Don't reset VQs more than necessary
+To: Dragos Tatulea <dtatulea@nvidia.com>
+Cc: "Michael S. Tsirkin" <mst@redhat.com>, Jason Wang <jasowang@redhat.com>, 
+	Xuan Zhuo <xuanzhuo@linux.alibaba.com>, Saeed Mahameed <saeedm@nvidia.com>, 
+	Leon Romanovsky <leon@kernel.org>, Tariq Toukan <tariqt@nvidia.com>, Si-Wei Liu <si-wei.liu@oracle.com>, 
+	virtualization@lists.linux.dev, linux-kernel@vger.kernel.org, 
+	linux-rdma@vger.kernel.org, netdev@vger.kernel.org, 
+	Cosmin Ratiu <cratiu@nvidia.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Wed, Jun 19, 2024 at 07:16:20AM +0000, Omer Shpigelman wrote:
-> On 6/18/24 17:19, Andrew Lunn wrote:
-> >>>> +static u32 hbl_en_get_mtu(struct hbl_aux_dev *aux_dev, u32 port_idx)
-> >>>> +{
-> >>>> +     struct hbl_en_port *port = HBL_EN_PORT(aux_dev, port_idx);
-> >>>> +     struct net_device *ndev = port->ndev;
-> >>>> +     u32 mtu;
-> >>>> +
-> >>>> +     if (atomic_cmpxchg(&port->in_reset, 0, 1)) {
-> >>>> +             netdev_err(ndev, "port is in reset, can't get MTU\n");
-> >>>> +             return 0;
-> >>>> +     }
-> >>>> +
-> >>>> +     mtu = ndev->mtu;
-> >>>
-> >>> I think you need a better error message. All this does is access
-> >>> ndev->mtu. What does it matter if the port is in reset? You don't
-> >>> access it.
-> >>>
-> >>
-> >> This function is called from the CN driver to get the current MTU in order
-> >> to configure it to the HW, for exmaple when configuring an IB QP. The MTU
-> >> value might be changed by user while we execute this function.
-> > 
-> > Change of MTU will happen while holding RTNL. Why not simply hold RTNL
-> > while programming the hardware? That is the normal pattern for MAC
-> > drivers.
-> >
-> 
-> I can hold the RTNL lock while configuring the HW but it seems like a big
-> overhead. Configuring the HW might take some time due to QP draining or
-> cache invalidation.
+On Mon, Jun 17, 2024 at 5:09=E2=80=AFPM Dragos Tatulea <dtatulea@nvidia.com=
+> wrote:
+>
+> The vdpa device can be reset many times in sequence without any
+> significant state changes in between. Previously this was not a problem:
+> VQs were torn down only on first reset. But after VQ pre-creation was
+> introduced, each reset will delete and re-create the hardware VQs and
+> their associated resources.
+>
+> To solve this problem, avoid resetting hardware VQs if the VQs are still
+> in a blank state.
+>
+> Signed-off-by: Dragos Tatulea <dtatulea@nvidia.com>
+> Reviewed-by: Cosmin Ratiu <cratiu@nvidia.com>
 
-How often does the MTU change? Once, maybe twice on boot, and never
-again? MTU change is not hot path. For slow path code, KISS is much
-better, so it is likely to be correct. 
+Acked-by: Eugenio P=C3=A9rez <eperezma@redhat.com>
 
-> To me it seems unnecessary but if that's the common way then I'll change
-> it.
->  
-> >>>> +static int hbl_en_change_mtu(struct net_device *netdev, int new_mtu)
-> >>>> +{
-> >>>> +     struct hbl_en_port *port = hbl_netdev_priv(netdev);
-> >>>> +     int rc = 0;
-> >>>> +
-> >>>> +     if (atomic_cmpxchg(&port->in_reset, 0, 1)) {
-> >>>> +             netdev_err(netdev, "port is in reset, can't change MTU\n");
-> >>>> +             return -EBUSY;
-> >>>> +     }
-> >>>> +
-> >>>> +     if (netif_running(port->ndev)) {
-> >>>> +             hbl_en_port_close(port);
-> >>>> +
-> >>>> +             /* Sleep in order to let obsolete events to be dropped before re-opening the port */
-> >>>> +             msleep(20);
-> >>>> +
-> >>>> +             netdev->mtu = new_mtu;
-> >>>> +
-> >>>> +             rc = hbl_en_port_open(port);
-> >>>> +             if (rc)
-> >>>> +                     netdev_err(netdev, "Failed to reinit port for MTU change, rc %d\n", rc);
-> >>>
-> >>> Does that mean the port is FUBAR?
-> >>>
-> >>> Most operations like this are expected to roll back to the previous
-> >>> working configuration on failure. So if changing the MTU requires new
-> >>> buffers in your ring, you should first allocate the new buffers, then
-> >>> free the old buffers, so that if allocation fails, you still have
-> >>> buffers, and the device can continue operating.
-> >>>
-> >>
-> >> A failure in opening a port is a fatal error. It shouldn't happen. This is
-> >> not something we wish to recover from.
-> > 
-> > What could cause open to fail? Is memory allocated?
-> > 
-> 
-> Memory is allocated but it is freed in case of a failure.
-> Port opening can fail due to other reasons as well like some HW timeout
-> while configuring the ETH QP.
+> ---
+>  drivers/vdpa/mlx5/net/mlx5_vnet.c | 30 +++++++++++++++++++++++++++---
+>  1 file changed, 27 insertions(+), 3 deletions(-)
+>
+> diff --git a/drivers/vdpa/mlx5/net/mlx5_vnet.c b/drivers/vdpa/mlx5/net/ml=
+x5_vnet.c
+> index d80d6b47da61..1a5ee0d2b47f 100644
+> --- a/drivers/vdpa/mlx5/net/mlx5_vnet.c
+> +++ b/drivers/vdpa/mlx5/net/mlx5_vnet.c
+> @@ -3134,18 +3134,41 @@ static void init_group_to_asid_map(struct mlx5_vd=
+pa_dev *mvdev)
+>                 mvdev->group2asid[i] =3D 0;
+>  }
+>
+> +static bool needs_vqs_reset(const struct mlx5_vdpa_dev *mvdev)
+> +{
+> +       struct mlx5_vdpa_net *ndev =3D to_mlx5_vdpa_ndev(mvdev);
+> +       struct mlx5_vdpa_virtqueue *mvq =3D &ndev->vqs[0];
+> +
+> +       if (mvdev->status & VIRTIO_CONFIG_S_DRIVER_OK)
+> +               return true;
+> +
+> +       if (mvq->fw_state !=3D MLX5_VIRTIO_NET_Q_OBJECT_STATE_INIT)
+> +               return true;
+> +
+> +       return mvq->modified_fields & (
+> +               MLX5_VIRTQ_MODIFY_MASK_STATE |
+> +               MLX5_VIRTQ_MODIFY_MASK_VIRTIO_Q_ADDRS |
+> +               MLX5_VIRTQ_MODIFY_MASK_VIRTIO_Q_AVAIL_IDX |
+> +               MLX5_VIRTQ_MODIFY_MASK_VIRTIO_Q_USED_IDX
+> +       );
+> +}
+> +
+>  static int mlx5_vdpa_compat_reset(struct vdpa_device *vdev, u32 flags)
+>  {
+>         struct mlx5_vdpa_dev *mvdev =3D to_mvdev(vdev);
+>         struct mlx5_vdpa_net *ndev =3D to_mlx5_vdpa_ndev(mvdev);
+> +       bool vq_reset;
+>
+>         print_status(mvdev, 0, true);
+>         mlx5_vdpa_info(mvdev, "performing device reset\n");
+>
+>         down_write(&ndev->reslock);
+>         unregister_link_notifier(ndev);
+> -       teardown_vq_resources(ndev);
+> -       init_mvqs(ndev);
+> +       vq_reset =3D needs_vqs_reset(mvdev);
+> +       if (vq_reset) {
+> +               teardown_vq_resources(ndev);
+> +               init_mvqs(ndev);
+> +       }
+>
+>         if (flags & VDPA_RESET_F_CLEAN_MAP)
+>                 mlx5_vdpa_destroy_mr_resources(&ndev->mvdev);
+> @@ -3165,7 +3188,8 @@ static int mlx5_vdpa_compat_reset(struct vdpa_devic=
+e *vdev, u32 flags)
+>                 if (mlx5_vdpa_create_dma_mr(mvdev))
+>                         mlx5_vdpa_warn(mvdev, "create MR failed\n");
+>         }
+> -       setup_vq_resources(ndev, false);
+> +       if (vq_reset)
+> +               setup_vq_resources(ndev, false);
+>         up_write(&ndev->reslock);
+>
+>         return 0;
+>
+> --
+> 2.45.1
+>
 
-If the hardware timeout because the hardware is dead, there is nothing
-you can do about it. Its dead.
-
-But what about when the system is under memory pressure? You say it
-allocates memory. What happens if those allocations fail. Does
-changing the MTU take me from a working system to a dead system? It is
-good practice to not kill a working system under situations like
-memory pressure. You try to first allocate the memory you need to
-handle the new MTU, and only if successful do you free existing memory
-you no longer need. That means if you cannot allocate the needed
-memory, you still have the old memory, you can keep the old MTU and
-return -ENOMEM, and the system keeps running.
-
-> I didn't check that prior to my submit. Regarding this "no new module
-> parameters allowed" rule, is that documented anywhere?
-
-Lots of emails that fly passed on the mailing list. Maybe once every
-couple of months when a vendor tries to mainline a new driver without
-reading the mailing list for a few months to know how mainline
-actually works. I _guess_ Davem has been pushing back on module
-parameters for 10 years? Maybe more.
-
-
-> if not, is that the
-> common practice? not to try to do something that was not done recently?
-> how "recently" is defined?
-> I just want to clarify this because it's hard to handle these submissions
-> when we write some code based on existing examples but then we are
-> rejected because "we don't do that here anymore".
-> I want to avoid future cases of this mismatch.
-
-My suggestion would be to spend 30 minutes every day reading patches
-and review comment on the mailing list. Avoid making the same mistakes
-others make, especially newbies to mainline, and see what others are
-doing in the same niche as this device. 30 minutes might seem like a
-lot, but how much time did you waste implementing polling mode, now
-you are going to throw it away?
-
-> >>>> +                     ethtool_link_ksettings_add_link_mode(cmd, lp_advertising, Autoneg);
-> >>>
-> >>> That looks odd. Care to explain?
-> >>>
-> >>
-> >> The HW of all of our ports supports autoneg.
-> >> But in addition, the ports are divided to two groups:
-> >> internal: ports which are connected to other Gaudi2 ports in the same server.
-> >> external: ports which are connected to an external switch.
-> >> Only internal ports use autoneg.
-> >> The ports mask which sets each port as internal/external is fetched from
-> >> the FW on device load.
-> > 
-> > That is not what i meant. lc_advertising should indicate the link
-> > modes the peer is advertising. If this was a copper link, it typically
-> > would contain 10BaseT-Half, 10BaseT-Full, 100BaseT-Half,
-> > 100BaseT-Full, 1000BaseT-Half. Setting the Autoneg bit is pointless,
-> > since the peer must be advertising in order that lp_advertising has a
-> > value!
-> > 
-> 
-> Sorry, but I don't get this. The problem is the setting of the Autoneg bit
-> in lp_advertising? is that redundant? I see that other vendors set it too
-> in case that Autoneg was completed.
-
-
-$ ethtool eth0
-Settings for eth0:
-	Supported ports: [ TP	 MII ]
-	Supported link modes:   10baseT/Half 10baseT/Full
-	                        100baseT/Half 100baseT/Full
-	                        1000baseT/Full
-
-This is `supported`. The hardware can do these link modes.
-
-	Supported pause frame use: Symmetric Receive-only
-	Supports auto-negotiation: Yes
-
-It also support symmetric pause, and can do autoneg.
-
-	Supported FEC modes: Not reported
-	Advertised link modes:  10baseT/Half 10baseT/Full
-	                        100baseT/Half 100baseT/Full
-	                        1000baseT/Full
-	Advertised pause frame use: Symmetric Receive-only
-	Advertised auto-negotiation: Yes
-	Advertised FEC modes: Not reported
-
-This is `advertising`, and is what this device is advertising to the
-link partner. By default you copy supported into advertising, but the
-user can use ethtool -s advertise N, where N is a list of link modes,
-to change what is advertised to the link partner.
-
-	Link partner advertised link modes:  10baseT/Half 10baseT/Full
-	                                     100baseT/Half 100baseT/Full
-	                                     1000baseT/Full
-	Link partner advertised pause frame use: Symmetric
-	Link partner advertised auto-negotiation: Yes
-	Link partner advertised FEC modes: Not reported
-
-This is `lp_advertising`, what the link partner is advertising to this
-device. Once you have this, you mask lp_advertising with advertising,
-and generally pick the link mode with the highest bandwidth:
-
-	Speed: 1000Mb/s
-	Duplex: Full
-
-So autoneg resolved to 1000baseT/Full
-
-	Andrew
 
