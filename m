@@ -1,165 +1,146 @@
-Return-Path: <linux-rdma+bounces-3297-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-3298-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6707A90E664
-	for <lists+linux-rdma@lfdr.de>; Wed, 19 Jun 2024 10:57:43 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id A88B990E66E
+	for <lists+linux-rdma@lfdr.de>; Wed, 19 Jun 2024 10:59:48 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CD7222829C9
-	for <lists+linux-rdma@lfdr.de>; Wed, 19 Jun 2024 08:57:41 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 43062B21947
+	for <lists+linux-rdma@lfdr.de>; Wed, 19 Jun 2024 08:59:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 94C477D07E;
-	Wed, 19 Jun 2024 08:57:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 82EA67E0F2;
+	Wed, 19 Jun 2024 08:59:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="mxXoaHrt"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="g/G+KU+h"
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 567C22139B1
-	for <linux-rdma@vger.kernel.org>; Wed, 19 Jun 2024 08:57:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 375087D3EF;
+	Wed, 19 Jun 2024 08:59:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1718787457; cv=none; b=BKESWcJDASiG89K4AyT3rs2xv/ukgQzVaQ9cedrrJtKOcTUPEvvYxSbFjMquvDw+GAzLL+8kFxgOMa29FK9y5O9aXpL4Sf/8wfxumt35vrMkRAAgqjd9qTRS5RCHJlbFLwPnlSxr1eOOXfn9if1AqghK0oTE3441BgCXgFbIDSI=
+	t=1718787579; cv=none; b=eSsIH51gqpU7X3UrY2eCITu0wZRZbtK2+NsJaeH10ad8TOdNX8vFLJAEEc4Xk43PG9c+l+jETKCHZx+JDHNMz3szJJjSbBqnxx7JabNbYm00rg1D7ZJ+YUNWI5GLbErPyT4oDH0CjNzefGPUZqVkKR7OXNxLa/D3ynioYiRHqBo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1718787457; c=relaxed/simple;
-	bh=PIG6Kka9k+EKA09IA04D41rfhMH0zRx/yR1QAJNU5bc=;
+	s=arc-20240116; t=1718787579; c=relaxed/simple;
+	bh=zDcR2FS7O6dHmR0unpZTzE5pR4nnWFbov29koMl8rGM=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=lukLi56Twh34yebwdUCGOkk/vBrq/OflNhhA8fof0tbqwEsgzACX23zmIKO+EYTYmUf8+iEJ/LDTlzKfi2QYaag6OBlvQiYyhZI6QPMPdg80WbWBtSP0hozd1J/3PqiufRkRwHKZ+LTA7JY893mT3HSva1w13V6KANIkDssCwpg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=mxXoaHrt; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 66916C2BBFC;
-	Wed, 19 Jun 2024 08:57:36 +0000 (UTC)
+	 Content-Type:Content-Disposition:In-Reply-To; b=jKZwine0JxwBWWU2/rX6B7XeaxLuW4Y9DkmqU9yxKzl0rwm30bAJXuTQrjNGXQTvkrzjpxK0LLk/LRBtVJ/YfDgf4C4fTCZ961K0FuOd7JSZYFLHRn/yX2LjJzuYggjnfYaQVgDo6i2AInViAt6mu3JM9l3g8omV6RwdKJAgczI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=g/G+KU+h; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 85FD0C2BBFC;
+	Wed, 19 Jun 2024 08:59:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1718787456;
-	bh=PIG6Kka9k+EKA09IA04D41rfhMH0zRx/yR1QAJNU5bc=;
+	s=k20201202; t=1718787579;
+	bh=zDcR2FS7O6dHmR0unpZTzE5pR4nnWFbov29koMl8rGM=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=mxXoaHrtVuzxHNBEJMYL6MsPXfy/WwnbYM8F1W+jZlsTwANNUUYuGFODlntgbZnh5
-	 v9SY6fd8UZPjY2S8FAHCFUJaQNQ/hUozrmL9McBOFe4/0elkX3rB+UPucuzwZ4VAF6
-	 VB92h4NfDxP/evmqO6LL0Uxh85BEAIaS7fCKgnsqLrkusLM9DaudUp8leUxapeNtiV
-	 fdd03X8FowZwpN87cRCtuUw0oBZNNR3Mog3nmj2+9OGBOLuWog7OE6l3mrDYRAGsaJ
-	 ihmcsfWhCVVruhA77wnlWsR/keUAGzyLmzB0QgSYJxdfXVj5uyYisncf2MAO+Mqjn4
-	 8wYsLQyXN4wmw==
-Date: Wed, 19 Jun 2024 11:57:32 +0300
+	b=g/G+KU+hrwbUVwRf+GFM0hLoIN4/2yCHbGExcVhR/mKvle4N5LUmJmLvb0p+3QFmW
+	 RSva60BXGfbQSmy1+d6Awk3ldCtsYIAwGWA6kb8Oa69GQgZYqAmPl8r0cc+4scmBVu
+	 iQqLgd77j81O936PgSjKcUte4MBWFUa3VuBKTPlX/O53Zae7uCQtXEvqFkugwTmpsV
+	 l4+tow9Nc3fEB5dup6ehEsRO46n2t6/vKK2QLXv7pj2FJIRdAclqAPh2EWA0GyTRIy
+	 WzpPfeZY0opKjr41KJkPKig79GRb3At8lwpfpQ8bY3Os2bsDp8+pGWTR0FiW6RRLY0
+	 DIzjtjRjf8t+A==
+Date: Wed, 19 Jun 2024 11:59:34 +0300
 From: Leon Romanovsky <leon@kernel.org>
-To: Jason Gunthorpe <jgg@nvidia.com>
-Cc: Akiva Goldberger <agoldberger@nvidia.com>,
-	Ajay Sharma <sharmaajay@microsoft.com>,
-	Bernard Metzler <bmt@zurich.ibm.com>,
-	Chengchang Tang <tangchengchang@huawei.com>,
-	Cheng Xu <chengyou@linux.alibaba.com>,
-	Junxian Huang <huangjunxian6@hisilicon.com>,
-	Kai Shen <kaishen@linux.alibaba.com>, linux-rdma@vger.kernel.org,
-	Long Li <longli@microsoft.com>,
-	Michael Margolin <mrgolin@amazon.com>,
-	Mustafa Ismail <mustafa.ismail@intel.com>,
-	Potnuri Bharat Teja <bharat@chelsio.com>,
-	Selvin Xavier <selvin.xavier@broadcom.com>,
-	Shiraz Saleem <shiraz.saleem@intel.com>,
-	Yishai Hadas <yishaih@nvidia.com>,
-	Zhu Yanjun <zyjzyj2000@gmail.com>
-Subject: Re: [PATCH rdma-next 1/2] RDMA: Pass entire uverbs attr bundle to
- create cq function
-Message-ID: <20240619085732.GK4025@unreal>
-References: <cover.1718554263.git.leon@kernel.org>
- <7d0deae3798c9314ea41f4eb7a211d1b8b05a7fd.1718554263.git.leon@kernel.org>
- <20240617134409.GK19897@nvidia.com>
- <20240617154947.GA4025@unreal>
- <20240617201003.GM19897@nvidia.com>
- <20240618050557.GC4025@unreal>
- <20240618130854.GB2494510@nvidia.com>
- <20240618160559.GH4025@unreal>
- <20240618161345.GD2494510@nvidia.com>
+To: Anand Khoje <anand.a.khoje@oracle.com>
+Cc: linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
+	netdev@vger.kernel.org, saeedm@mellanox.com, davem@davemloft.net
+Subject: Re: [PATCH v3] net/mlx5 : Reclaim max 50K pages at once
+Message-ID: <20240619085934.GL4025@unreal>
+References: <20240614080135.122656-1-anand.a.khoje@oracle.com>
+ <20240616154415.GA57288@unreal>
+ <032ba44f-1552-45bc-a68c-c848bf6da784@oracle.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20240618161345.GD2494510@nvidia.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <032ba44f-1552-45bc-a68c-c848bf6da784@oracle.com>
 
-On Tue, Jun 18, 2024 at 01:13:45PM -0300, Jason Gunthorpe wrote:
-> On Tue, Jun 18, 2024 at 07:05:59PM +0300, Leon Romanovsky wrote:
-> > On Tue, Jun 18, 2024 at 10:08:54AM -0300, Jason Gunthorpe wrote:
-> > > On Tue, Jun 18, 2024 at 08:05:57AM +0300, Leon Romanovsky wrote:
-> > > > On Mon, Jun 17, 2024 at 05:10:03PM -0300, Jason Gunthorpe wrote:
-> > > > > On Mon, Jun 17, 2024 at 06:49:47PM +0300, Leon Romanovsky wrote:
-> > > > > > On Mon, Jun 17, 2024 at 10:44:09AM -0300, Jason Gunthorpe wrote:
-> > > > > > > On Sun, Jun 16, 2024 at 07:15:57PM +0300, Leon Romanovsky wrote:
-> > > > > > > 
-> > > > > > > > @@ -63,6 +63,7 @@ enum uverbs_default_objects {
-> > > > > > > >  enum {
-> > > > > > > >  	UVERBS_ATTR_UHW_IN = UVERBS_UDATA_DRIVER_DATA_FLAG,
-> > > > > > > >  	UVERBS_ATTR_UHW_OUT,
-> > > > > > > > +	UVERBS_ATTR_UHW_DRIVER_DATA,
-> > > > > > > 
-> > > > > > > The start of the driver's attributes is not a "UHW", the UHW is only
-> > > > > > > the old structs.
-> > > > > > 
-> > > > > > I asked from Akiva to keep existing naming convention UVERBS_ATTR_UHW_XXX
-> > > > > > to emphasize the namespace and the position of this attribute as
-> > > > > > relevant for existing UHW calls.
-> > > > > 
-> > > > > Well, calling it DRIVER_DATA and UHW is very confusing when it is
-> > > > > really the start of the indexing for drivers that use UHW.
-> > > > > 
-> > > > > A better name is needed
-> > > > 
-> > > > UVERBS_ATTR_UHW_PRIVATE ????
-> > > 
-> > > I think it need to have the word "start" in it, because it is the
-> > > start of numbers, not an actual number itself.
-> > 
-> > UVERBS_ATTR_UHW_DRIVER_DATA_START ????
-> > What do you suggest instead?
+On Tue, Jun 18, 2024 at 11:14:33PM +0530, Anand Khoje wrote:
 > 
-> How about:
+> On 6/16/24 21:14, Leon Romanovsky wrote:
+> > On Fri, Jun 14, 2024 at 01:31:35PM +0530, Anand Khoje wrote:
+> > > In non FLR context, at times CX-5 requests release of ~8 million FW pages.
+> > > This needs humongous number of cmd mailboxes, which to be released once
+> > > the pages are reclaimed. Release of humongous number of cmd mailboxes is
+> > > consuming cpu time running into many seconds. Which with non preemptible
+> > > kernels is leading to critical process starving on that cpu’s RQ.
+> > > To alleviate this, this change restricts the total number of pages
+> > > a worker will try to reclaim maximum 50K pages in one go.
+> > > The limit 50K is aligned with the current firmware capacity/limit of
+> > > releasing 50K pages at once per MLX5_CMD_OP_MANAGE_PAGES + MLX5_PAGES_TAKE
+> > > device command.
+> > > 
+> > > Our tests have shown significant benefit of this change in terms of
+> > > time consumed by dma_pool_free().
+> > > During a test where an event was raised by HCA
+> > > to release 1.3 Million pages, following observations were made:
+> > > 
+> > > - Without this change:
+> > > Number of mailbox messages allocated was around 20K, to accommodate
+> > > the DMA addresses of 1.3 million pages.
+> > > The average time spent by dma_pool_free() to free the DMA pool is between
+> > > 16 usec to 32 usec.
+> > >             value  ------------- Distribution ------------- count
+> > >               256 |                                         0
+> > >               512 |@                                        287
+> > >              1024 |@@@                                      1332
+> > >              2048 |@                                        656
+> > >              4096 |@@@@@                                    2599
+> > >              8192 |@@@@@@@@@@                               4755
+> > >             16384 |@@@@@@@@@@@@@@@                          7545
+> > >             32768 |@@@@@                                    2501
+> > >             65536 |                                         0
+> > > 
+> > > - With this change:
+> > > Number of mailbox messages allocated was around 800; this was to
+> > > accommodate DMA addresses of only 50K pages.
+> > > The average time spent by dma_pool_free() to free the DMA pool in this case
+> > > lies between 1 usec to 2 usec.
+> > >             value  ------------- Distribution ------------- count
+> > >               256 |                                         0
+> > >               512 |@@@@@@@@@@@@@@@@@@                       346
+> > >              1024 |@@@@@@@@@@@@@@@@@@@@@@                   435
+> > >              2048 |                                         0
+> > >              4096 |                                         0
+> > >              8192 |                                         1
+> > >             16384 |                                         0
+> > > 
+> > > Signed-off-by: Anand Khoje <anand.a.khoje@oracle.com>
+> > > ---
+> > > Changes in v3:
+> > >     - Shifted the logic to function req_pages_handler() as per
+> > >       Leon's suggestion.
+> > > ---
+> > >   drivers/net/ethernet/mellanox/mlx5/core/pagealloc.c | 7 ++++++-
+> > >   1 file changed, 6 insertions(+), 1 deletion(-)
+> > > 
+> > The title has extra space:
+> > "net/mlx5 : Reclaim max 50K pages at once" -> "net/mlx5: Reclaim max 50K pages at once"
+> > 
+> > But the code looks good to me.
+> > 
+> > Thanks,
+> > Reviewed-by: Leon Romanovsky <leonro@nvidia.com>
+> 
+> Hi Leon,
+> 
+> Thanks for providing the R-B. Should I send a v4 with the fix for the extra
+> space issue?
 
-ok, let's take this variant.
+Yes, please.
+And run get_maintainer.pl to get the correct email address for the maintainers and ML.
+This patch will be applied by netdev maintainers.
 
 Thanks
 
 > 
-> diff --git a/include/uapi/rdma/ib_user_ioctl_cmds.h b/include/uapi/rdma/ib_user_ioctl_cmds.h
-> index dafc7ebe545b8d..e9322f66cd2dec 100644
-> --- a/include/uapi/rdma/ib_user_ioctl_cmds.h
-> +++ b/include/uapi/rdma/ib_user_ioctl_cmds.h
-> @@ -37,9 +37,6 @@
->  #define UVERBS_ID_NS_MASK 0xF000
->  #define UVERBS_ID_NS_SHIFT 12
->  
-> -#define UVERBS_UDATA_DRIVER_DATA_NS    1
-> -#define UVERBS_UDATA_DRIVER_DATA_FLAG  (1UL << UVERBS_ID_NS_SHIFT)
-> -
->  enum uverbs_default_objects {
->         UVERBS_OBJECT_DEVICE, /* No instances of DEVICE are allowed */
->         UVERBS_OBJECT_PD,
-> @@ -61,8 +58,10 @@ enum uverbs_default_objects {
->  };
->  
->  enum {
-> -       UVERBS_ATTR_UHW_IN = UVERBS_UDATA_DRIVER_DATA_FLAG,
-> +       UVERBS_ID_DRIVER_NS = 1U << UVERBS_ID_NS_SHIFT,
-> +       UVERBS_ATTR_UHW_IN = UVERBS_ID_DRIVER_NS,
->         UVERBS_ATTR_UHW_OUT,
-> +       UVERBS_ID_DRIVER_NS_WITH_UHW,
->  };
->  
->  enum uverbs_methods_device {
+> -Anand
 > 
-> And recommend replacing the open coded UVERBS_ID_DRIVER_NS all over
-> the place.
-> 
-> > > It is also not PRIVATE at all, this is just in the device specific
-> > > space number space, not the core space.
-> > 
-> > Private in the sense of driver specific, like net_priv().
-> 
-> It is not a private, it is a namespace, that is the naming that was
-> used here.
-> 
-> Jason
 
