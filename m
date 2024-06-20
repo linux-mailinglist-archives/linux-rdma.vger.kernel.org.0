@@ -1,156 +1,557 @@
-Return-Path: <linux-rdma+bounces-3374-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-3375-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 31C72911369
-	for <lists+linux-rdma@lfdr.de>; Thu, 20 Jun 2024 22:39:51 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C290B911595
+	for <lists+linux-rdma@lfdr.de>; Fri, 21 Jun 2024 00:21:42 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DABE3281BD8
-	for <lists+linux-rdma@lfdr.de>; Thu, 20 Jun 2024 20:39:49 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E69981C22C23
+	for <lists+linux-rdma@lfdr.de>; Thu, 20 Jun 2024 22:21:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0E72355E5B;
-	Thu, 20 Jun 2024 20:39:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 922A1155323;
+	Thu, 20 Jun 2024 22:19:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="GyqSNMF1"
+	dkim=pass (2048-bit key) header.d=cloudflare.com header.i=@cloudflare.com header.b="aHW3Xsw3"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-ed1-f42.google.com (mail-ed1-f42.google.com [209.85.208.42])
+Received: from mail-qk1-f174.google.com (mail-qk1-f174.google.com [209.85.222.174])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2386B55882
-	for <linux-rdma@vger.kernel.org>; Thu, 20 Jun 2024 20:39:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 46117154C17
+	for <linux-rdma@vger.kernel.org>; Thu, 20 Jun 2024 22:19:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1718915987; cv=none; b=F1+5wEp+Q2L0IlVe33n4Uz0qPrNF8PqpO6k01HDdqKoyS3/V2A+ApgCn3njSya/9nNfVH1AStk3ag0D7VBDCjEvLIUg+qVvZeixlWc3G3TyzL13FjLJ/l5n6fiSQDHrathp0/1F01SRzH3lGmP1U0CX5/DooSZGgzm1cv8GPde4=
+	t=1718921974; cv=none; b=IxuFNdGgwUX62gc/g2J2LFZawTGjKDwI1GWNGwkUl8HdW749Y8cIW+ymg2Pf9ToDvgGuQym7Gt7i9uE6jnIRUR70yRyIGykaG4Ipii8odWKSA/pS7Ur1yGmyyZnw21xxDfWKt71Y3VONXj8lasci/AxywSWUbEQrS0Ut3NyT2bE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1718915987; c=relaxed/simple;
-	bh=xe0CLiytQL+w07wMVqUc1rJS0v+e/Ti6ErqFWmVCp7I=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=aHEz5DQ/8oo1+OzyR3Kt/JD58Ke2b0XLAuQH8yKwnhj3d+V+4Pu4pZnYRVqmNJGsFEuhUZrecgXQIL0O3Zq3zrseowVhaQgSUPK6omG5aZFeO4JmIzQxoTHnGZT9MaTbA9gzqQ/lM9pGyfSHMWIusi8U4292Xm6abeb2f7wY+HA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org; spf=pass smtp.mailfrom=linuxfoundation.org; dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b=GyqSNMF1; arc=none smtp.client-ip=209.85.208.42
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linuxfoundation.org
-Received: by mail-ed1-f42.google.com with SMTP id 4fb4d7f45d1cf-57d20d89748so1270563a12.0
-        for <linux-rdma@vger.kernel.org>; Thu, 20 Jun 2024 13:39:45 -0700 (PDT)
+	s=arc-20240116; t=1718921974; c=relaxed/simple;
+	bh=5NFFxPVvZiB990JZW1dZ4CHiL7ACNygPdHqSlrsa7z4=;
+	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=tMmBqzXRXQlDUzTmdRbKm5FgruddNCxoTF3B2YPkrMdJjpMiG1mUR1zNIt73Z2PhQIN4s/v5O1Ga7LBK5hkIV5SkihzCvg8q8fo2NEkhQWfU2TcvNqqf6qlfArySgkud9QBuwhLUWmJwb677RnYKQngftF3DfoRyVhtcG9ERAQM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=cloudflare.com; spf=pass smtp.mailfrom=cloudflare.com; dkim=pass (2048-bit key) header.d=cloudflare.com header.i=@cloudflare.com header.b=aHW3Xsw3; arc=none smtp.client-ip=209.85.222.174
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=cloudflare.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cloudflare.com
+Received: by mail-qk1-f174.google.com with SMTP id af79cd13be357-7965d034cedso91988385a.3
+        for <linux-rdma@vger.kernel.org>; Thu, 20 Jun 2024 15:19:32 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google; t=1718915984; x=1719520784; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=w6VZWpwlG7GhpGptpxtkhZuBw3s+vrw3bJ0KsbwAf6c=;
-        b=GyqSNMF1GrbvAE+SpopMbgik7UEFML3ct2vSMVJ8YKRwEhZR1vcikwQrxJ3ftJ+Jsa
-         2qRyT2c4QjbPqK63DNkJmYHIU7uxmR7CetCKEuQ170GA/MWP1IzH9o99uyvMq47y2QnO
-         vXEj7dQ0YSQSxI4BEFxnOJzNDJ9SAvxxRZeIk=
+        d=cloudflare.com; s=google09082023; t=1718921971; x=1719526771; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=rykvLwThOhLrOOeeNqCjBeseo9IibL0Bdz+4MdzT9Nw=;
+        b=aHW3Xsw3/rvH7W/PSf5PZXZHx2lKH3vDD9o81M3R6NwUGEC8JUDdpLuZ58ecj6Atjh
+         BWgsD04L5bi/PfHxs32ocX5eJUPAhwROQPVAfzNtKjMrilewV5NrydvG/ApSEzuY8Wkf
+         YVrnROFCEAO6QpuaGv7iYwWL5TXxB2tmiXDq5yGD1s9T9rlirHZa7WD/6805N5sw9bZJ
+         ci1Fnu23NsIeSNhQtn57/2cQNt7ocmojtcN9mPSOs3U8u69R/0xPSDwwerWRkxs4f4EL
+         8WI9mymLVBaMiuk+d+CoJBoOBSp03gvB/AhPkBcIkHEn07h/YaVf/AIajbiTLPrULlgg
+         s/MA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1718915984; x=1719520784;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=w6VZWpwlG7GhpGptpxtkhZuBw3s+vrw3bJ0KsbwAf6c=;
-        b=OkHlRQzb0XzGBLh5DqEVenwIL+8No3D2kGaSrKVj5nbvp8+ZOY+d4y7px9lYFKnYFb
-         dvR41ewHr4SFOUfEX2bAFV7cNIXLumTn3sFwoKYpAGV9Ya/iM3yPAWgqsmrycksei94P
-         SBWHHbCgn99esrcAuuTwxbBDPvaOCm//LkOrgzmtgEg6fR7WX6sNw6y2aOTA2FuPZ8Uc
-         honvimiRN3qA6cn/LH0iQ9WJg3/ga6D5EOrqYpFEqaiyENXAurLE+wI1ZLAKcmNblb/4
-         jNWev9yVtXuNUqPABLmg/+6QQkHl50sQvEIrKERZPGljQnoSAtmOmugBwkK76GOMUSUS
-         e7ZA==
-X-Forwarded-Encrypted: i=1; AJvYcCW/rHao1JYmH2cWrFASjGfLqMPf9NzHqJO+4S6mfr0JbImU6Z+4dkSLP2BiJXnICvyX+j5c2Z+wu0OdYB/Y458D9B7esxEf0baKXQ==
-X-Gm-Message-State: AOJu0YzZClCNy2y2/A8rt0Jiypi8PbNJhXPPOcvo8b1JqRQN+wjoqChQ
-	glrWel3xORv8oYqdVFUJ25hM10s5uVRtMdnrNwVp6mZvC7WIxwIlbfjbRPL4Bh8Rfodca+JdFD5
-	hh+7Bvn0M
-X-Google-Smtp-Source: AGHT+IGv8kG4R54pcLq/eTDuT+9hWDy8BxKt+zCBNQL5n0gnvDoKFB7vNl1ND+Y+ek1c2Mc6LFHyYA==
-X-Received: by 2002:a50:9351:0:b0:57c:8027:534d with SMTP id 4fb4d7f45d1cf-57d07ed4e9bmr3909096a12.27.1718915984350;
-        Thu, 20 Jun 2024 13:39:44 -0700 (PDT)
-Received: from mail-wm1-f41.google.com (mail-wm1-f41.google.com. [209.85.128.41])
-        by smtp.gmail.com with ESMTPSA id 4fb4d7f45d1cf-57d3042ef50sm4889a12.44.2024.06.20.13.39.43
-        for <linux-rdma@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 20 Jun 2024 13:39:43 -0700 (PDT)
-Received: by mail-wm1-f41.google.com with SMTP id 5b1f17b1804b1-4217926991fso13189255e9.3
-        for <linux-rdma@vger.kernel.org>; Thu, 20 Jun 2024 13:39:43 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCUUvWqouRFVZJVUwxG3FsMfoqgZbhC6fjHgPtUmgztMX9JVj7ngtSgDoaSrGjETBP8vLkycuLd0fuaUldJjJMVTMRu6Fcc/BWfwVQ==
-X-Received: by 2002:a17:906:1348:b0:a6e:2a67:7899 with SMTP id
- a640c23a62f3a-a6fab63aaabmr312193466b.35.1718915542284; Thu, 20 Jun 2024
- 13:32:22 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1718921971; x=1719526771;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=rykvLwThOhLrOOeeNqCjBeseo9IibL0Bdz+4MdzT9Nw=;
+        b=w22q9mMYwW4kTCmUyxlId1Zlk9W5N/9nQ6cf+CdlWSB5LYDyRH8PBObt5PjjO1bkom
+         RMo0RLLCeTbXIw1wtUSg52WEYzNEs9oBDh0k1DgPInQ1XF7ChTHiAj4iIUhi27lRC9t3
+         cNx8G0PqDO6hygRfKTPWqljAYfMaoP+/lhmIApiJra4KsyWITor6pLVdE27euX3O+1p/
+         Zwdv2F314vrEGGBDOAJ0QcIL5Xm5DCcjlwWqsUERomJOXJDJi7OEvDX9qZFSlDPBR7xE
+         x+8Sw+0Mgk4LmGFZ7352+yQ5UfZ1hrMjCHKfzhe4ypOxajayJPzB8PkPvhEm0cFdhhyf
+         vZTQ==
+X-Forwarded-Encrypted: i=1; AJvYcCXyMVH4vxY3dlh+Mf+/cEWZPtt6pXjM61X56oZ/g+bNM59UsTZT07S3qaY+CxFpCFjDe++YuuRGnWBu3QuF1LziXz/Gz1m4Ep8nmg==
+X-Gm-Message-State: AOJu0YyPA+cvFEOfdeidXJnnU44AFvLQUxNhgW8GlHxe36xgRRmuOg2A
+	/kbGNkqAcBOEPcz5/eigH/wXr1R82g5yyCdw5UlK/l9Jm/OA2vqdh8LKdPx1UIk=
+X-Google-Smtp-Source: AGHT+IG8SQF3m3IlxRlHF/5JsZ+TboQGIMJ+L1bIDhhhEA3zuZEzDdHGY8kz+7qvbwzEpIV8spi//w==
+X-Received: by 2002:a05:622a:305:b0:440:607a:dcb with SMTP id d75a77b69052e-444a79e14bdmr75009831cf.29.1718921971108;
+        Thu, 20 Jun 2024 15:19:31 -0700 (PDT)
+Received: from debian.debian ([2a09:bac5:7a49:19cd::292:40])
+        by smtp.gmail.com with ESMTPSA id d75a77b69052e-444c2b96f1bsm1964241cf.50.2024.06.20.15.19.29
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 20 Jun 2024 15:19:30 -0700 (PDT)
+From: Jesper Dangaard Brouer <yan@cloudflare.com>
+X-Google-Original-From: Jesper Dangaard Brouer <hawk@kernel.org>
+Date: Thu, 20 Jun 2024 15:19:28 -0700
+To: netdev@vger.kernel.org
+Cc: Saeed Mahameed <saeedm@nvidia.com>, Leon Romanovsky <leon@kernel.org>,
+	Tariq Toukan <tariqt@nvidia.com>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Jesper Dangaard Brouer <hawk@kernel.org>,
+	John Fastabend <john.fastabend@gmail.com>,
+	Yan Zhai <yan@cloudflare.com>, Dragos Tatulea <dtatulea@nvidia.com>,
+	Alexander Lobakin <aleksander.lobakin@intel.com>,
+	netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
+	linux-kernel@vger.kernel.org, bpf@vger.kernel.org
+Subject: [RFC net-next 7/9] mlx5: move xdp_buff scope one level up
+Message-ID: <5b7a761d6efa1be2ace4c12c1681f341a87d8d24.1718919473.git.yan@cloudflare.com>
+References: <cover.1718919473.git.yan@cloudflare.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240620175703.605111-1-yury.norov@gmail.com> <CAHk-=wiUTXC452qbypG3jW6XCZGfc8d-iehSavxn5JkQ=sv0zA@mail.gmail.com>
- <ZnR1tQN01kN97G_F@yury-ThinkPad> <CAHk-=wjv-DkukaKb7f04WezyPjRERp=xfxv34j5fA8cDQ_JudA@mail.gmail.com>
- <ZnSPBFW5wL0D0b86@yury-ThinkPad>
-In-Reply-To: <ZnSPBFW5wL0D0b86@yury-ThinkPad>
-From: Linus Torvalds <torvalds@linux-foundation.org>
-Date: Thu, 20 Jun 2024 13:32:05 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wi2R7-jyoOw27Svf1PmfDFQgBWVAH3DP5CXO+JF-BeFZA@mail.gmail.com>
-Message-ID: <CAHk-=wi2R7-jyoOw27Svf1PmfDFQgBWVAH3DP5CXO+JF-BeFZA@mail.gmail.com>
-Subject: Re: [PATCH v4 00/40] lib/find: add atomic find_bit() primitives
-To: Yury Norov <yury.norov@gmail.com>
-Cc: linux-kernel@vger.kernel.org, "David S. Miller" <davem@davemloft.net>, 
-	"H. Peter Anvin" <hpa@zytor.com>, "James E.J. Bottomley" <jejb@linux.ibm.com>, 
-	"K. Y. Srinivasan" <kys@microsoft.com>, "Md. Haris Iqbal" <haris.iqbal@ionos.com>, 
-	Akinobu Mita <akinobu.mita@gmail.com>, Andrew Morton <akpm@linux-foundation.org>, 
-	Bjorn Andersson <andersson@kernel.org>, Borislav Petkov <bp@alien8.de>, Chaitanya Kulkarni <kch@nvidia.com>, 
-	Christian Brauner <brauner@kernel.org>, Damien Le Moal <damien.lemoal@opensource.wdc.com>, 
-	Dave Hansen <dave.hansen@linux.intel.com>, David Disseldorp <ddiss@suse.de>, 
-	Edward Cree <ecree.xilinx@gmail.com>, Eric Dumazet <edumazet@google.com>, 
-	Fenghua Yu <fenghua.yu@intel.com>, Geert Uytterhoeven <geert@linux-m68k.org>, 
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Gregory Greenman <gregory.greenman@intel.com>, 
-	Hans Verkuil <hverkuil@xs4all.nl>, Hans de Goede <hdegoede@redhat.com>, 
-	Hugh Dickins <hughd@google.com>, Ingo Molnar <mingo@redhat.com>, Jakub Kicinski <kuba@kernel.org>, 
-	Jaroslav Kysela <perex@perex.cz>, Jason Gunthorpe <jgg@ziepe.ca>, Jens Axboe <axboe@kernel.dk>, 
-	Jiri Pirko <jiri@resnulli.us>, Jiri Slaby <jirislaby@kernel.org>, Kalle Valo <kvalo@kernel.org>, 
-	Karsten Graul <kgraul@linux.ibm.com>, Karsten Keil <isdn@linux-pingi.de>, 
-	Kees Cook <keescook@chromium.org>, Leon Romanovsky <leon@kernel.org>, 
-	Mark Rutland <mark.rutland@arm.com>, Martin Habets <habetsm.xilinx@gmail.com>, 
-	Mauro Carvalho Chehab <mchehab@kernel.org>, Michael Ellerman <mpe@ellerman.id.au>, Michal Simek <monstr@monstr.eu>, 
-	Nicholas Piggin <npiggin@gmail.com>, Oliver Neukum <oneukum@suse.com>, Paolo Abeni <pabeni@redhat.com>, 
-	Paolo Bonzini <pbonzini@redhat.com>, Peter Zijlstra <peterz@infradead.org>, 
-	Ping-Ke Shih <pkshih@realtek.com>, Rich Felker <dalias@libc.org>, Rob Herring <robh@kernel.org>, 
-	Robin Murphy <robin.murphy@arm.com>, Sean Christopherson <seanjc@google.com>, 
-	Shuai Xue <xueshuai@linux.alibaba.com>, Stanislaw Gruszka <stf_xl@wp.pl>, 
-	Steven Rostedt <rostedt@goodmis.org>, Thomas Bogendoerfer <tsbogend@alpha.franken.de>, 
-	Thomas Gleixner <tglx@linutronix.de>, Valentin Schneider <vschneid@redhat.com>, 
-	Vitaly Kuznetsov <vkuznets@redhat.com>, Wenjia Zhang <wenjia@linux.ibm.com>, 
-	Will Deacon <will@kernel.org>, Yoshinori Sato <ysato@users.sourceforge.jp>, 
-	GR-QLogic-Storage-Upstream@marvell.com, alsa-devel@alsa-project.org, 
-	ath10k@lists.infradead.org, dmaengine@vger.kernel.org, iommu@lists.linux.dev, 
-	kvm@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
-	linux-arm-msm@vger.kernel.org, linux-block@vger.kernel.org, 
-	linux-bluetooth@vger.kernel.org, linux-hyperv@vger.kernel.org, 
-	linux-m68k@lists.linux-m68k.org, linux-media@vger.kernel.org, 
-	linux-mips@vger.kernel.org, linux-net-drivers@amd.com, 
-	linux-pci@vger.kernel.org, linux-rdma@vger.kernel.org, 
-	linux-s390@vger.kernel.org, linux-scsi@vger.kernel.org, 
-	linux-serial@vger.kernel.org, linux-sh@vger.kernel.org, 
-	linux-sound@vger.kernel.org, linux-usb@vger.kernel.org, 
-	linux-wireless@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, 
-	mpi3mr-linuxdrv.pdl@broadcom.com, netdev@vger.kernel.org, 
-	sparclinux@vger.kernel.org, x86@kernel.org, 
-	Alexey Klimov <alexey.klimov@linaro.org>, Bart Van Assche <bvanassche@acm.org>, Jan Kara <jack@suse.cz>, 
-	Matthew Wilcox <willy@infradead.org>, Mirsad Todorovac <mirsad.todorovac@alu.unizg.hr>, 
-	Rasmus Villemoes <linux@rasmusvillemoes.dk>, Sergey Shtylyov <s.shtylyov@omp.ru>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <cover.1718919473.git.yan@cloudflare.com>
 
-On Thu, 20 Jun 2024 at 13:20, Yury Norov <yury.norov@gmail.com> wrote:
->
-> FORCE_NR_CPUS helped to generate a better code for me back then. I'll
-> check again against the current kernel.
+This is in preparation for changes.
 
-Of _course_ it generates better code.
+Signed-off-by: Jesper Dangaard Brouer <hawk@kernel.org>
+---
+ drivers/net/ethernet/mellanox/mlx5/core/en.h  |   6 +-
+ .../ethernet/mellanox/mlx5/core/en/xsk/rx.c   |   6 +-
+ .../ethernet/mellanox/mlx5/core/en/xsk/rx.h   |   6 +-
+ .../net/ethernet/mellanox/mlx5/core/en_rx.c   | 103 +++++++++---------
+ 4 files changed, 66 insertions(+), 55 deletions(-)
 
-But when "better code" is a source of bugs, and isn't actually useful
-in general, it's not better, is it.
+diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en.h b/drivers/net/ethernet/mellanox/mlx5/core/en.h
+index 6a343a8f162f..3d26f976f692 100644
+--- a/drivers/net/ethernet/mellanox/mlx5/core/en.h
++++ b/drivers/net/ethernet/mellanox/mlx5/core/en.h
+@@ -580,14 +580,16 @@ struct mlx5e_mpw_info {
+ #define MLX5E_MAX_RX_FRAGS 4
+ 
+ struct mlx5e_rq;
++struct mlx5e_xdp_buff;
+ typedef void (*mlx5e_fp_handle_rx_cqe)(struct mlx5e_rq*, struct mlx5_cqe64*);
+ typedef struct sk_buff *
+ (*mlx5e_fp_skb_from_cqe_mpwrq)(struct mlx5e_rq *rq, struct mlx5e_mpw_info *wi,
+ 			       struct mlx5_cqe64 *cqe, u16 cqe_bcnt,
+-			       u32 head_offset, u32 page_idx);
++			       u32 head_offset, u32 page_idx,
++			       struct mlx5e_xdp_buff *mxbuf);
+ typedef struct sk_buff *
+ (*mlx5e_fp_skb_from_cqe)(struct mlx5e_rq *rq, struct mlx5e_wqe_frag_info *wi,
+-			 struct mlx5_cqe64 *cqe, u32 cqe_bcnt);
++			 struct mlx5_cqe64 *cqe, u32 cqe_bcnt, struct mlx5e_xdp_buff *mxbuf);
+ typedef bool (*mlx5e_fp_post_rx_wqes)(struct mlx5e_rq *rq);
+ typedef void (*mlx5e_fp_dealloc_wqe)(struct mlx5e_rq*, u16);
+ typedef void (*mlx5e_fp_shampo_dealloc_hd)(struct mlx5e_rq*, u16, u16, bool);
+diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en/xsk/rx.c b/drivers/net/ethernet/mellanox/mlx5/core/en/xsk/rx.c
+index 1b7132fa70de..4dacaa61e106 100644
+--- a/drivers/net/ethernet/mellanox/mlx5/core/en/xsk/rx.c
++++ b/drivers/net/ethernet/mellanox/mlx5/core/en/xsk/rx.c
+@@ -249,7 +249,8 @@ struct sk_buff *mlx5e_xsk_skb_from_cqe_mpwrq_linear(struct mlx5e_rq *rq,
+ 						    struct mlx5_cqe64 *cqe,
+ 						    u16 cqe_bcnt,
+ 						    u32 head_offset,
+-						    u32 page_idx)
++						    u32 page_idx,
++						    struct mlx5e_xdp_buff *mxbuf_)
+ {
+ 	struct mlx5e_xdp_buff *mxbuf = xsk_buff_to_mxbuf(wi->alloc_units.xsk_buffs[page_idx]);
+ 	struct bpf_prog *prog;
+@@ -304,7 +305,8 @@ struct sk_buff *mlx5e_xsk_skb_from_cqe_mpwrq_linear(struct mlx5e_rq *rq,
+ struct sk_buff *mlx5e_xsk_skb_from_cqe_linear(struct mlx5e_rq *rq,
+ 					      struct mlx5e_wqe_frag_info *wi,
+ 					      struct mlx5_cqe64 *cqe,
+-					      u32 cqe_bcnt)
++					      u32 cqe_bcnt,
++					      struct mlx5e_xdp_buff *mxbuf_)
+ {
+ 	struct mlx5e_xdp_buff *mxbuf = xsk_buff_to_mxbuf(*wi->xskp);
+ 	struct bpf_prog *prog;
+diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en/xsk/rx.h b/drivers/net/ethernet/mellanox/mlx5/core/en/xsk/rx.h
+index cefc0ef6105d..0890c975042c 100644
+--- a/drivers/net/ethernet/mellanox/mlx5/core/en/xsk/rx.h
++++ b/drivers/net/ethernet/mellanox/mlx5/core/en/xsk/rx.h
+@@ -16,10 +16,12 @@ struct sk_buff *mlx5e_xsk_skb_from_cqe_mpwrq_linear(struct mlx5e_rq *rq,
+ 						    struct mlx5_cqe64 *cqe,
+ 						    u16 cqe_bcnt,
+ 						    u32 head_offset,
+-						    u32 page_idx);
++						    u32 page_idx,
++						    struct mlx5e_xdp_buff *mxbuf_);
+ struct sk_buff *mlx5e_xsk_skb_from_cqe_linear(struct mlx5e_rq *rq,
+ 					      struct mlx5e_wqe_frag_info *wi,
+ 					      struct mlx5_cqe64 *cqe,
+-					      u32 cqe_bcnt);
++					      u32 cqe_bcnt,
++					      struct mlx5e_xdp_buff *mxbuf_);
+ 
+ #endif /* __MLX5_EN_XSK_RX_H__ */
+diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en_rx.c b/drivers/net/ethernet/mellanox/mlx5/core/en_rx.c
+index 225da8d691fc..1a592a1ab988 100644
+--- a/drivers/net/ethernet/mellanox/mlx5/core/en_rx.c
++++ b/drivers/net/ethernet/mellanox/mlx5/core/en_rx.c
+@@ -63,11 +63,11 @@
+ static struct sk_buff *
+ mlx5e_skb_from_cqe_mpwrq_linear(struct mlx5e_rq *rq, struct mlx5e_mpw_info *wi,
+ 				struct mlx5_cqe64 *cqe, u16 cqe_bcnt, u32 head_offset,
+-				u32 page_idx);
++				u32 page_idx, struct mlx5e_xdp_buff *mxbuf);
+ static struct sk_buff *
+ mlx5e_skb_from_cqe_mpwrq_nonlinear(struct mlx5e_rq *rq, struct mlx5e_mpw_info *wi,
+ 				   struct mlx5_cqe64 *cqe, u16 cqe_bcnt, u32 head_offset,
+-				   u32 page_idx);
++				   u32 page_idx, struct mlx5e_xdp_buff *mxbuf);
+ static void mlx5e_handle_rx_cqe(struct mlx5e_rq *rq, struct mlx5_cqe64 *cqe);
+ static void mlx5e_handle_rx_cqe_mpwrq(struct mlx5e_rq *rq, struct mlx5_cqe64 *cqe);
+ static void mlx5e_handle_rx_cqe_mpwrq_shampo(struct mlx5e_rq *rq, struct mlx5_cqe64 *cqe);
+@@ -1658,7 +1658,8 @@ static void mlx5e_fill_mxbuf(struct mlx5e_rq *rq, struct mlx5_cqe64 *cqe,
+ 
+ static struct sk_buff *
+ mlx5e_skb_from_cqe_linear(struct mlx5e_rq *rq, struct mlx5e_wqe_frag_info *wi,
+-			  struct mlx5_cqe64 *cqe, u32 cqe_bcnt)
++			  struct mlx5_cqe64 *cqe, u32 cqe_bcnt,
++			  struct mlx5e_xdp_buff *mxbuf)
+ {
+ 	struct mlx5e_frag_page *frag_page = wi->frag_page;
+ 	u16 rx_headroom = rq->buff.headroom;
+@@ -1680,17 +1681,15 @@ mlx5e_skb_from_cqe_linear(struct mlx5e_rq *rq, struct mlx5e_wqe_frag_info *wi,
+ 
+ 	prog = rcu_dereference(rq->xdp_prog);
+ 	if (prog) {
+-		struct mlx5e_xdp_buff mxbuf;
+-
+ 		net_prefetchw(va); /* xdp_frame data area */
+ 		mlx5e_fill_mxbuf(rq, cqe, va, rx_headroom, rq->buff.frame0_sz,
+-				 cqe_bcnt, &mxbuf);
+-		if (mlx5e_xdp_handle(rq, prog, &mxbuf))
++				 cqe_bcnt, mxbuf);
++		if (mlx5e_xdp_handle(rq, prog, mxbuf))
+ 			return NULL; /* page/packet was consumed by XDP */
+ 
+-		rx_headroom = mxbuf.xdp.data - mxbuf.xdp.data_hard_start;
+-		metasize = mxbuf.xdp.data - mxbuf.xdp.data_meta;
+-		cqe_bcnt = mxbuf.xdp.data_end - mxbuf.xdp.data;
++		rx_headroom = mxbuf->xdp.data - mxbuf->xdp.data_hard_start;
++		metasize = mxbuf->xdp.data - mxbuf->xdp.data_meta;
++		cqe_bcnt = mxbuf->xdp.data_end - mxbuf->xdp.data;
+ 	}
+ 	frag_size = MLX5_SKB_FRAG_SZ(rx_headroom + cqe_bcnt);
+ 	skb = mlx5e_build_linear_skb(rq, va, frag_size, rx_headroom, cqe_bcnt, metasize);
+@@ -1706,14 +1705,14 @@ mlx5e_skb_from_cqe_linear(struct mlx5e_rq *rq, struct mlx5e_wqe_frag_info *wi,
+ 
+ static struct sk_buff *
+ mlx5e_skb_from_cqe_nonlinear(struct mlx5e_rq *rq, struct mlx5e_wqe_frag_info *wi,
+-			     struct mlx5_cqe64 *cqe, u32 cqe_bcnt)
++			     struct mlx5_cqe64 *cqe, u32 cqe_bcnt,
++			     struct mlx5e_xdp_buff *mxbuf)
+ {
+ 	struct mlx5e_rq_frag_info *frag_info = &rq->wqe.info.arr[0];
+ 	struct mlx5e_wqe_frag_info *head_wi = wi;
+ 	u16 rx_headroom = rq->buff.headroom;
+ 	struct mlx5e_frag_page *frag_page;
+ 	struct skb_shared_info *sinfo;
+-	struct mlx5e_xdp_buff mxbuf;
+ 	u32 frag_consumed_bytes;
+ 	struct bpf_prog *prog;
+ 	struct sk_buff *skb;
+@@ -1733,8 +1732,8 @@ mlx5e_skb_from_cqe_nonlinear(struct mlx5e_rq *rq, struct mlx5e_wqe_frag_info *wi
+ 	net_prefetch(va + rx_headroom);
+ 
+ 	mlx5e_fill_mxbuf(rq, cqe, va, rx_headroom, rq->buff.frame0_sz,
+-			 frag_consumed_bytes, &mxbuf);
+-	sinfo = xdp_get_shared_info_from_buff(&mxbuf.xdp);
++			 frag_consumed_bytes, mxbuf);
++	sinfo = xdp_get_shared_info_from_buff(&mxbuf->xdp);
+ 	truesize = 0;
+ 
+ 	cqe_bcnt -= frag_consumed_bytes;
+@@ -1746,7 +1745,7 @@ mlx5e_skb_from_cqe_nonlinear(struct mlx5e_rq *rq, struct mlx5e_wqe_frag_info *wi
+ 
+ 		frag_consumed_bytes = min_t(u32, frag_info->frag_size, cqe_bcnt);
+ 
+-		mlx5e_add_skb_shared_info_frag(rq, sinfo, &mxbuf.xdp, frag_page,
++		mlx5e_add_skb_shared_info_frag(rq, sinfo, &mxbuf->xdp, frag_page,
+ 					       wi->offset, frag_consumed_bytes);
+ 		truesize += frag_info->frag_stride;
+ 
+@@ -1756,7 +1755,7 @@ mlx5e_skb_from_cqe_nonlinear(struct mlx5e_rq *rq, struct mlx5e_wqe_frag_info *wi
+ 	}
+ 
+ 	prog = rcu_dereference(rq->xdp_prog);
+-	if (prog && mlx5e_xdp_handle(rq, prog, &mxbuf)) {
++	if (prog && mlx5e_xdp_handle(rq, prog, mxbuf)) {
+ 		if (__test_and_clear_bit(MLX5E_RQ_FLAG_XDP_XMIT, rq->flags)) {
+ 			struct mlx5e_wqe_frag_info *pwi;
+ 
+@@ -1766,21 +1765,21 @@ mlx5e_skb_from_cqe_nonlinear(struct mlx5e_rq *rq, struct mlx5e_wqe_frag_info *wi
+ 		return NULL; /* page/packet was consumed by XDP */
+ 	}
+ 
+-	skb = mlx5e_build_linear_skb(rq, mxbuf.xdp.data_hard_start, rq->buff.frame0_sz,
+-				     mxbuf.xdp.data - mxbuf.xdp.data_hard_start,
+-				     mxbuf.xdp.data_end - mxbuf.xdp.data,
+-				     mxbuf.xdp.data - mxbuf.xdp.data_meta);
++	skb = mlx5e_build_linear_skb(rq, mxbuf->xdp.data_hard_start, rq->buff.frame0_sz,
++				     mxbuf->xdp.data - mxbuf->xdp.data_hard_start,
++				     mxbuf->xdp.data_end - mxbuf->xdp.data,
++				     mxbuf->xdp.data - mxbuf->xdp.data_meta);
+ 	if (unlikely(!skb))
+ 		return NULL;
+ 
+ 	skb_mark_for_recycle(skb);
+ 	head_wi->frag_page->frags++;
+ 
+-	if (xdp_buff_has_frags(&mxbuf.xdp)) {
++	if (xdp_buff_has_frags(&mxbuf->xdp)) {
+ 		/* sinfo->nr_frags is reset by build_skb, calculate again. */
+ 		xdp_update_skb_shared_info(skb, wi - head_wi - 1,
+ 					   sinfo->xdp_frags_size, truesize,
+-					   xdp_buff_is_frag_pfmemalloc(&mxbuf.xdp));
++					   xdp_buff_is_frag_pfmemalloc(&mxbuf->xdp));
+ 
+ 		for (struct mlx5e_wqe_frag_info *pwi = head_wi + 1; pwi < wi; pwi++)
+ 			pwi->frag_page->frags++;
+@@ -1811,6 +1810,7 @@ static void mlx5e_handle_rx_cqe(struct mlx5e_rq *rq, struct mlx5_cqe64 *cqe)
+ {
+ 	struct mlx5_wq_cyc *wq = &rq->wqe.wq;
+ 	struct mlx5e_wqe_frag_info *wi;
++	struct mlx5e_xdp_buff mxbuf;
+ 	struct sk_buff *skb;
+ 	u32 cqe_bcnt;
+ 	u16 ci;
+@@ -1828,7 +1828,7 @@ static void mlx5e_handle_rx_cqe(struct mlx5e_rq *rq, struct mlx5_cqe64 *cqe)
+ 			      mlx5e_skb_from_cqe_linear,
+ 			      mlx5e_skb_from_cqe_nonlinear,
+ 			      mlx5e_xsk_skb_from_cqe_linear,
+-			      rq, wi, cqe, cqe_bcnt);
++			      rq, wi, cqe, cqe_bcnt, &mxbuf);
+ 	if (!skb) {
+ 		/* probably for XDP */
+ 		if (__test_and_clear_bit(MLX5E_RQ_FLAG_XDP_XMIT, rq->flags))
+@@ -1859,6 +1859,7 @@ static void mlx5e_handle_rx_cqe_rep(struct mlx5e_rq *rq, struct mlx5_cqe64 *cqe)
+ 	struct mlx5_eswitch_rep *rep = rpriv->rep;
+ 	struct mlx5_wq_cyc *wq = &rq->wqe.wq;
+ 	struct mlx5e_wqe_frag_info *wi;
++	struct mlx5e_xdp_buff mxbuf;
+ 	struct sk_buff *skb;
+ 	u32 cqe_bcnt;
+ 	u16 ci;
+@@ -1875,7 +1876,7 @@ static void mlx5e_handle_rx_cqe_rep(struct mlx5e_rq *rq, struct mlx5_cqe64 *cqe)
+ 	skb = INDIRECT_CALL_2(rq->wqe.skb_from_cqe,
+ 			      mlx5e_skb_from_cqe_linear,
+ 			      mlx5e_skb_from_cqe_nonlinear,
+-			      rq, wi, cqe, cqe_bcnt);
++			      rq, wi, cqe, cqe_bcnt, &mxbuf);
+ 	if (!skb) {
+ 		/* probably for XDP */
+ 		if (__test_and_clear_bit(MLX5E_RQ_FLAG_XDP_XMIT, rq->flags))
+@@ -1903,6 +1904,7 @@ static void mlx5e_handle_rx_cqe_mpwrq_rep(struct mlx5e_rq *rq, struct mlx5_cqe64
+ 	u32 wqe_offset     = stride_ix << rq->mpwqe.log_stride_sz;
+ 	u32 head_offset    = wqe_offset & ((1 << rq->mpwqe.page_shift) - 1);
+ 	u32 page_idx       = wqe_offset >> rq->mpwqe.page_shift;
++	struct mlx5e_xdp_buff mxbuf;
+ 	struct mlx5e_rx_wqe_ll *wqe;
+ 	struct mlx5_wq_ll *wq;
+ 	struct sk_buff *skb;
+@@ -1928,7 +1930,7 @@ static void mlx5e_handle_rx_cqe_mpwrq_rep(struct mlx5e_rq *rq, struct mlx5_cqe64
+ 	skb = INDIRECT_CALL_2(rq->mpwqe.skb_from_cqe_mpwrq,
+ 			      mlx5e_skb_from_cqe_mpwrq_linear,
+ 			      mlx5e_skb_from_cqe_mpwrq_nonlinear,
+-			      rq, wi, cqe, cqe_bcnt, head_offset, page_idx);
++			      rq, wi, cqe, cqe_bcnt, head_offset, page_idx, &mxbuf);
+ 	if (!skb)
+ 		goto mpwrq_cqe_out;
+ 
+@@ -1975,7 +1977,7 @@ mlx5e_shampo_fill_skb_data(struct sk_buff *skb, struct mlx5e_rq *rq,
+ static struct sk_buff *
+ mlx5e_skb_from_cqe_mpwrq_nonlinear(struct mlx5e_rq *rq, struct mlx5e_mpw_info *wi,
+ 				   struct mlx5_cqe64 *cqe, u16 cqe_bcnt, u32 head_offset,
+-				   u32 page_idx)
++				   u32 page_idx, struct mlx5e_xdp_buff *mxbuf)
+ {
+ 	struct mlx5e_frag_page *frag_page = &wi->alloc_units.frag_pages[page_idx];
+ 	u16 headlen = min_t(u16, MLX5E_RX_MAX_HEAD, cqe_bcnt);
+@@ -1983,7 +1985,6 @@ mlx5e_skb_from_cqe_mpwrq_nonlinear(struct mlx5e_rq *rq, struct mlx5e_mpw_info *w
+ 	u32 frag_offset    = head_offset;
+ 	u32 byte_cnt       = cqe_bcnt;
+ 	struct skb_shared_info *sinfo;
+-	struct mlx5e_xdp_buff mxbuf;
+ 	unsigned int truesize = 0;
+ 	struct bpf_prog *prog;
+ 	struct sk_buff *skb;
+@@ -2029,9 +2030,9 @@ mlx5e_skb_from_cqe_mpwrq_nonlinear(struct mlx5e_rq *rq, struct mlx5e_mpw_info *w
+ 		}
+ 	}
+ 
+-	mlx5e_fill_mxbuf(rq, cqe, va, linear_hr, linear_frame_sz, linear_data_len, &mxbuf);
++	mlx5e_fill_mxbuf(rq, cqe, va, linear_hr, linear_frame_sz, linear_data_len, mxbuf);
+ 
+-	sinfo = xdp_get_shared_info_from_buff(&mxbuf.xdp);
++	sinfo = xdp_get_shared_info_from_buff(&mxbuf->xdp);
+ 
+ 	while (byte_cnt) {
+ 		/* Non-linear mode, hence non-XSK, which always uses PAGE_SIZE. */
+@@ -2042,7 +2043,7 @@ mlx5e_skb_from_cqe_mpwrq_nonlinear(struct mlx5e_rq *rq, struct mlx5e_mpw_info *w
+ 		else
+ 			truesize += ALIGN(pg_consumed_bytes, BIT(rq->mpwqe.log_stride_sz));
+ 
+-		mlx5e_add_skb_shared_info_frag(rq, sinfo, &mxbuf.xdp, frag_page, frag_offset,
++		mlx5e_add_skb_shared_info_frag(rq, sinfo, &mxbuf->xdp, frag_page, frag_offset,
+ 					       pg_consumed_bytes);
+ 		byte_cnt -= pg_consumed_bytes;
+ 		frag_offset = 0;
+@@ -2050,7 +2051,7 @@ mlx5e_skb_from_cqe_mpwrq_nonlinear(struct mlx5e_rq *rq, struct mlx5e_mpw_info *w
+ 	}
+ 
+ 	if (prog) {
+-		if (mlx5e_xdp_handle(rq, prog, &mxbuf)) {
++		if (mlx5e_xdp_handle(rq, prog, mxbuf)) {
+ 			if (__test_and_clear_bit(MLX5E_RQ_FLAG_XDP_XMIT, rq->flags)) {
+ 				struct mlx5e_frag_page *pfp;
+ 
+@@ -2063,10 +2064,10 @@ mlx5e_skb_from_cqe_mpwrq_nonlinear(struct mlx5e_rq *rq, struct mlx5e_mpw_info *w
+ 			return NULL; /* page/packet was consumed by XDP */
+ 		}
+ 
+-		skb = mlx5e_build_linear_skb(rq, mxbuf.xdp.data_hard_start,
++		skb = mlx5e_build_linear_skb(rq, mxbuf->xdp.data_hard_start,
+ 					     linear_frame_sz,
+-					     mxbuf.xdp.data - mxbuf.xdp.data_hard_start, 0,
+-					     mxbuf.xdp.data - mxbuf.xdp.data_meta);
++					     mxbuf->xdp.data - mxbuf->xdp.data_hard_start, 0,
++					     mxbuf->xdp.data - mxbuf->xdp.data_meta);
+ 		if (unlikely(!skb)) {
+ 			mlx5e_page_release_fragmented(rq, &wi->linear_page);
+ 			return NULL;
+@@ -2076,13 +2077,13 @@ mlx5e_skb_from_cqe_mpwrq_nonlinear(struct mlx5e_rq *rq, struct mlx5e_mpw_info *w
+ 		wi->linear_page.frags++;
+ 		mlx5e_page_release_fragmented(rq, &wi->linear_page);
+ 
+-		if (xdp_buff_has_frags(&mxbuf.xdp)) {
++		if (xdp_buff_has_frags(&mxbuf->xdp)) {
+ 			struct mlx5e_frag_page *pagep;
+ 
+ 			/* sinfo->nr_frags is reset by build_skb, calculate again. */
+ 			xdp_update_skb_shared_info(skb, frag_page - head_page,
+ 						   sinfo->xdp_frags_size, truesize,
+-						   xdp_buff_is_frag_pfmemalloc(&mxbuf.xdp));
++						   xdp_buff_is_frag_pfmemalloc(&mxbuf->xdp));
+ 
+ 			pagep = head_page;
+ 			do
+@@ -2093,12 +2094,12 @@ mlx5e_skb_from_cqe_mpwrq_nonlinear(struct mlx5e_rq *rq, struct mlx5e_mpw_info *w
+ 	} else {
+ 		dma_addr_t addr;
+ 
+-		if (xdp_buff_has_frags(&mxbuf.xdp)) {
++		if (xdp_buff_has_frags(&mxbuf->xdp)) {
+ 			struct mlx5e_frag_page *pagep;
+ 
+ 			xdp_update_skb_shared_info(skb, sinfo->nr_frags,
+ 						   sinfo->xdp_frags_size, truesize,
+-						   xdp_buff_is_frag_pfmemalloc(&mxbuf.xdp));
++						   xdp_buff_is_frag_pfmemalloc(&mxbuf->xdp));
+ 
+ 			pagep = frag_page - sinfo->nr_frags;
+ 			do
+@@ -2120,7 +2121,7 @@ mlx5e_skb_from_cqe_mpwrq_nonlinear(struct mlx5e_rq *rq, struct mlx5e_mpw_info *w
+ static struct sk_buff *
+ mlx5e_skb_from_cqe_mpwrq_linear(struct mlx5e_rq *rq, struct mlx5e_mpw_info *wi,
+ 				struct mlx5_cqe64 *cqe, u16 cqe_bcnt, u32 head_offset,
+-				u32 page_idx)
++				u32 page_idx, struct mlx5e_xdp_buff *mxbuf)
+ {
+ 	struct mlx5e_frag_page *frag_page = &wi->alloc_units.frag_pages[page_idx];
+ 	u16 rx_headroom = rq->buff.headroom;
+@@ -2148,20 +2149,19 @@ mlx5e_skb_from_cqe_mpwrq_linear(struct mlx5e_rq *rq, struct mlx5e_mpw_info *wi,
+ 
+ 	prog = rcu_dereference(rq->xdp_prog);
+ 	if (prog) {
+-		struct mlx5e_xdp_buff mxbuf;
+ 
+ 		net_prefetchw(va); /* xdp_frame data area */
+ 		mlx5e_fill_mxbuf(rq, cqe, va, rx_headroom, rq->buff.frame0_sz,
+-				 cqe_bcnt, &mxbuf);
+-		if (mlx5e_xdp_handle(rq, prog, &mxbuf)) {
++				 cqe_bcnt, mxbuf);
++		if (mlx5e_xdp_handle(rq, prog, mxbuf)) {
+ 			if (__test_and_clear_bit(MLX5E_RQ_FLAG_XDP_XMIT, rq->flags))
+ 				frag_page->frags++;
+ 			return NULL; /* page/packet was consumed by XDP */
+ 		}
+ 
+-		rx_headroom = mxbuf.xdp.data - mxbuf.xdp.data_hard_start;
+-		metasize = mxbuf.xdp.data - mxbuf.xdp.data_meta;
+-		cqe_bcnt = mxbuf.xdp.data_end - mxbuf.xdp.data;
++		rx_headroom = mxbuf->xdp.data - mxbuf->xdp.data_hard_start;
++		metasize = mxbuf->xdp.data - mxbuf->xdp.data_meta;
++		cqe_bcnt = mxbuf->xdp.data_end - mxbuf->xdp.data;
+ 	}
+ 	frag_size = MLX5_SKB_FRAG_SZ(rx_headroom + cqe_bcnt);
+ 	skb = mlx5e_build_linear_skb(rq, va, frag_size, rx_headroom, cqe_bcnt, metasize);
+@@ -2283,12 +2283,14 @@ static void mlx5e_handle_rx_cqe_mpwrq_shampo(struct mlx5e_rq *rq, struct mlx5_cq
+ 	bool flush		= cqe->shampo.flush;
+ 	bool match		= cqe->shampo.match;
+ 	struct mlx5e_rq_stats *stats = rq->stats;
++	struct mlx5e_xdp_buff mxbuf;
+ 	struct mlx5e_rx_wqe_ll *wqe;
+ 	struct mlx5e_mpw_info *wi;
+ 	struct mlx5_wq_ll *wq;
+ 
+ 	wi = mlx5e_get_mpw_info(rq, wqe_id);
+ 	wi->consumed_strides += cstrides;
++	mxbuf.xdp.flags = 0;
+ 
+ 	if (unlikely(MLX5E_RX_ERR_CQE(cqe))) {
+ 		mlx5e_handle_rx_err_cqe(rq, cqe);
+@@ -2311,7 +2313,7 @@ static void mlx5e_handle_rx_cqe_mpwrq_shampo(struct mlx5e_rq *rq, struct mlx5_cq
+ 			*skb = mlx5e_skb_from_cqe_shampo(rq, wi, cqe, header_index);
+ 		else
+ 			*skb = mlx5e_skb_from_cqe_mpwrq_nonlinear(rq, wi, cqe, cqe_bcnt,
+-								  data_offset, page_idx);
++								  data_offset, page_idx, &mxbuf);
+ 		if (unlikely(!*skb))
+ 			goto free_hd_entry;
+ 
+@@ -2369,6 +2371,7 @@ static void mlx5e_handle_rx_cqe_mpwrq(struct mlx5e_rq *rq, struct mlx5_cqe64 *cq
+ 	u32 wqe_offset     = stride_ix << rq->mpwqe.log_stride_sz;
+ 	u32 head_offset    = wqe_offset & ((1 << rq->mpwqe.page_shift) - 1);
+ 	u32 page_idx       = wqe_offset >> rq->mpwqe.page_shift;
++	struct mlx5e_xdp_buff mxbuf;
+ 	struct mlx5e_rx_wqe_ll *wqe;
+ 	struct mlx5_wq_ll *wq;
+ 	struct sk_buff *skb;
+@@ -2396,7 +2399,7 @@ static void mlx5e_handle_rx_cqe_mpwrq(struct mlx5e_rq *rq, struct mlx5_cqe64 *cq
+ 			      mlx5e_skb_from_cqe_mpwrq_nonlinear,
+ 			      mlx5e_xsk_skb_from_cqe_mpwrq_linear,
+ 			      rq, wi, cqe, cqe_bcnt, head_offset,
+-			      page_idx);
++			      page_idx, &mxbuf);
+ 	if (!skb)
+ 		goto mpwrq_cqe_out;
+ 
+@@ -2624,6 +2627,7 @@ static void mlx5i_handle_rx_cqe(struct mlx5e_rq *rq, struct mlx5_cqe64 *cqe)
+ {
+ 	struct mlx5_wq_cyc *wq = &rq->wqe.wq;
+ 	struct mlx5e_wqe_frag_info *wi;
++	struct mlx5e_xdp_buff mxbuf;
+ 	struct sk_buff *skb;
+ 	u32 cqe_bcnt;
+ 	u16 ci;
+@@ -2640,7 +2644,7 @@ static void mlx5i_handle_rx_cqe(struct mlx5e_rq *rq, struct mlx5_cqe64 *cqe)
+ 	skb = INDIRECT_CALL_2(rq->wqe.skb_from_cqe,
+ 			      mlx5e_skb_from_cqe_linear,
+ 			      mlx5e_skb_from_cqe_nonlinear,
+-			      rq, wi, cqe, cqe_bcnt);
++			      rq, wi, cqe, cqe_bcnt, &mxbuf);
+ 	if (!skb)
+ 		goto wq_cyc_pop;
+ 
+@@ -2714,6 +2718,7 @@ static void mlx5e_trap_handle_rx_cqe(struct mlx5e_rq *rq, struct mlx5_cqe64 *cqe
+ {
+ 	struct mlx5_wq_cyc *wq = &rq->wqe.wq;
+ 	struct mlx5e_wqe_frag_info *wi;
++	struct mlx5e_xdp_buff mxbuf;
+ 	struct sk_buff *skb;
+ 	u32 cqe_bcnt;
+ 	u16 trap_id;
+@@ -2729,7 +2734,7 @@ static void mlx5e_trap_handle_rx_cqe(struct mlx5e_rq *rq, struct mlx5_cqe64 *cqe
+ 		goto wq_cyc_pop;
+ 	}
+ 
+-	skb = mlx5e_skb_from_cqe_nonlinear(rq, wi, cqe, cqe_bcnt);
++	skb = mlx5e_skb_from_cqe_nonlinear(rq, wi, cqe, cqe_bcnt, &mxbuf);
+ 	if (!skb)
+ 		goto wq_cyc_pop;
+ 
+-- 
+2.30.2
 
-> The 5d272dd1b343 is wrong. Limiting FORCE_NR_CPUS to UP case makes no
-> sense because in UP case nr_cpu_ids is already a compile-time macro:
 
-Yury, I'm very aware. That was obviously intentional. the whole point
-of the commit is to just disable the the whole thing as useless and
-problematic.
-
-I could have just ripped it out entirely. I ended up doing a one-liner instead.
-
-                Linus
 
