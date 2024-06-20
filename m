@@ -1,145 +1,157 @@
-Return-Path: <linux-rdma+bounces-3367-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-3368-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A8B0791100B
-	for <lists+linux-rdma@lfdr.de>; Thu, 20 Jun 2024 20:05:57 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4767E9110FF
+	for <lists+linux-rdma@lfdr.de>; Thu, 20 Jun 2024 20:33:06 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DA61A1C242A4
-	for <lists+linux-rdma@lfdr.de>; Thu, 20 Jun 2024 18:05:56 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7A7F1B22305
+	for <lists+linux-rdma@lfdr.de>; Thu, 20 Jun 2024 18:16:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1AFDA1BA070;
-	Thu, 20 Jun 2024 17:58:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2EA241BF30A;
+	Thu, 20 Jun 2024 18:08:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="fJW2RHhY"
+	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="e4kBkXYq"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-pf1-f180.google.com (mail-pf1-f180.google.com [209.85.210.180])
+Received: from mail-lf1-f52.google.com (mail-lf1-f52.google.com [209.85.167.52])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 93EE31C9EC3;
-	Thu, 20 Jun 2024 17:58:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.180
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 133C11B4C4B
+	for <linux-rdma@vger.kernel.org>; Thu, 20 Jun 2024 18:08:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1718906299; cv=none; b=i0/+JyG1mRq6yf+PnMuilfQuKx45EoFm6I6+ZpAJGTYL+ssWbwyEFruGcTCySZfeeQ/2ULsUpOcY1AN2tLokirT2xUW1niHwZSfs/HWQ9WxaQKTNn4/Q8Y/TMzVtBiE8TG1C18G9tzaKw0jB8EXxEfVerI+Cen04VWjrCnX8d+o=
+	t=1718906889; cv=none; b=PaYJgLbPDqcESMBuQmCmkTTJYnwayWKENneNtzFYQn/4rAcafg45uV+Tlx3RS0A4yIBOd3lHuRoa+qd1nwz5/l6jbFPdlOO8xzlOnzHvQC3csFznaxAFBjTuK/x8q+RisHCmyZ8XcEWluL2+RttzDkWY0OlLYam1s/SneMvgd/8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1718906299; c=relaxed/simple;
-	bh=EEnf5xzi7eXOhkKDYzRKsCmReB+rHy33vbj/1r6jsqo=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=OjtGivw0aov+S/td7GSoPcBPCInKp6INRoVQn0Xxa9OR6eFPp+hSwR4uhzsu8ilj55TF0b3QwVGss6gWH9mWITPIFKNFmsOWDAzuDoBoQYY+Zmdo+bcIionDN7o7knbYWRPptpONM8b8o4tgyPJlwreQY/kdSwUtineqw8JYRR8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=fJW2RHhY; arc=none smtp.client-ip=209.85.210.180
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f180.google.com with SMTP id d2e1a72fcca58-7061365d2f3so941691b3a.3;
-        Thu, 20 Jun 2024 10:58:18 -0700 (PDT)
+	s=arc-20240116; t=1718906889; c=relaxed/simple;
+	bh=29OxgEL3l6wtk/wr9HSlAcydEGnms+qvS9bonjZCeq4=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=u+a7ZjAs4vk0cSI9p0iDz5wK1LW0Tld5ry13PJCRZmP9LRn3WVJI+tRQfz99FulBD6GCLVBmSxmMe0WvmbNp4EMFTqNoJNyeotmeoI3jYjB44UEd8Zr6NrbTKe10UdC97ma1Y9X8r/eBhSps6USg9b1AVAgaUPxZLzS0jw5bXBs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org; spf=pass smtp.mailfrom=linuxfoundation.org; dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b=e4kBkXYq; arc=none smtp.client-ip=209.85.167.52
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linuxfoundation.org
+Received: by mail-lf1-f52.google.com with SMTP id 2adb3069b0e04-52c82101407so1936150e87.3
+        for <linux-rdma@vger.kernel.org>; Thu, 20 Jun 2024 11:08:06 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1718906298; x=1719511098; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=EllZQDb/fqD8EGwJT0CuH2LSmY08c8ja9Mytx23g1KM=;
-        b=fJW2RHhYQu8j9VzlQBTJNiee2IE2SLdof1Aw7zwr69AS6Hv09/UHjcdevwEW6iFE15
-         sqpJYHqJt8/1E3Hwo/HzeC1KzXfchUjZhedpJUJu1CZnc92HgliMVd/Rbe7bGYeGrirI
-         XkMUL+Yka8uEOQnWUA13T2/99UrG8wbd9QTq7rb66AgjIWmyAIGsLqR0oVDrpenuMflI
-         Bn/oUTb7g9d/NQVqhgLZ8wp+ORkWG/9fcpDOadxhGLv3w0qqQSCX64qdLPvTHP15f5Ua
-         aRdxt4BGLlgNX3syfDSN16KM8A1hOejTv05K/WM5h6jYMnSyDL67RXevfsrKJRsRPGdC
-         ATDQ==
+        d=linux-foundation.org; s=google; t=1718906885; x=1719511685; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=fuatl8An2r1cXJScFESolD1f90VPFvdc9a3mKIi/oro=;
+        b=e4kBkXYqzvGgu8ToqrxyNslxMF/N3V2762oCrJ6AvktdnK07ZMDQiTjH4GUhrx6CN+
+         QQcL92H7b24AVDKujHO+Pr7YJz8K8dJ39mpr01st/BpcoaAldP+XIxYZBB8e3g2pCCon
+         YKGOYvaSlnVj8zaAws565quVoXdqON4Y8AwBA=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1718906298; x=1719511098;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=EllZQDb/fqD8EGwJT0CuH2LSmY08c8ja9Mytx23g1KM=;
-        b=DkFVZG+Pe4KNDRSbq4u2T4zw/JJ9yJ/8gW/eYNR69KS8szoDhufMpUgxWH5GuN1Zsy
-         vdO2h0cPbX4bpqsPrX+MwFlYHM2Cq8qpjZl/6H2HFdNHJ7gwF42S10Ps9KWOHr5DY3Vz
-         zaa824mpi4SVIhOKSMYeM6mJ87tt/+SdgXAk5HRMQJTRmWeSvJO7IowdZHj2fmeUTNH1
-         J+ty8Duow3YBQmrLJ4fO1W13Oo1+y4Eh8mZMiStDRJxMU+i38j8M3+hhl+jnUODq0M39
-         q9qtWxYYG36jrPPBziL7P7IV6lJaiZ75dqWsFWNyyr//hOaJXXucB/dCmw/CLKtQKgAo
-         zESg==
-X-Forwarded-Encrypted: i=1; AJvYcCVZXSKcBY1WWrSlDNTd1Me1EixHLmJgoejOn9eirFYID4FZ9Vk7YUne1Evm0eInD7yoknraZX+SNiXK2objf2xraIxig8GdEAam8A==
-X-Gm-Message-State: AOJu0Yz35JKIezrNq49VusPTgS3ehTRj7S0DgGiMBdO8vqB6UofuBEUv
-	IVIoVGMIAQVlwzME5rr4SndH/5hapFgZR9sh5A70kUkb2GH9Mkaoba/xFAZon1Q=
-X-Google-Smtp-Source: AGHT+IEkrpt1MRFKLlVi7ulyys1DlHO0ZCczRH9xxekWr4vHxde7wTkq55+80B0FxrWnRZBVoG0B4w==
-X-Received: by 2002:a05:6a20:4881:b0:1b0:1a02:4136 with SMTP id adf61e73a8af0-1bcbb386b43mr5771824637.8.1718906297955;
-        Thu, 20 Jun 2024 10:58:17 -0700 (PDT)
-Received: from localhost ([216.228.127.128])
-        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-2c7e53e2846sm1989195a91.24.2024.06.20.10.58.16
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 20 Jun 2024 10:58:17 -0700 (PDT)
-From: Yury Norov <yury.norov@gmail.com>
-To: linux-kernel@vger.kernel.org,
-	"Md. Haris Iqbal" <haris.iqbal@ionos.com>,
-	Jack Wang <jinpu.wang@ionos.com>,
-	Jason Gunthorpe <jgg@ziepe.ca>,
-	Leon Romanovsky <leon@kernel.org>,
-	linux-rdma@vger.kernel.org
-Cc: Yury Norov <yury.norov@gmail.com>,
-	Alexey Klimov <alexey.klimov@linaro.org>,
-	Bart Van Assche <bvanassche@acm.org>,
-	Jan Kara <jack@suse.cz>,
-	Linus Torvalds <torvalds@linux-foundation.org>,
-	Matthew Wilcox <willy@infradead.org>,
-	Mirsad Todorovac <mirsad.todorovac@alu.unizg.hr>,
-	Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-	Sergey Shtylyov <s.shtylyov@omp.ru>
-Subject: [PATCH v4 24/40] RDMA/rtrs: optimize __rtrs_get_permit() by using find_and_set_bit_lock()
-Date: Thu, 20 Jun 2024 10:56:47 -0700
-Message-ID: <20240620175703.605111-25-yury.norov@gmail.com>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20240620175703.605111-1-yury.norov@gmail.com>
-References: <20240620175703.605111-1-yury.norov@gmail.com>
+        d=1e100.net; s=20230601; t=1718906885; x=1719511685;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=fuatl8An2r1cXJScFESolD1f90VPFvdc9a3mKIi/oro=;
+        b=nZGbeVizDAdEDQ/+w4Hk3zVuIAaBGzvefJUXaODgDNhT2qCco657peacltNE+btNOB
+         j5iwzEhY3uUgnOHf7qQBwhaIqYesMjQQrM3oArz3u7aq3T86JE3+AqEfLFZbfjDvmrSr
+         fIs/YcqJQ1DY+4VipdSwJtWb53G2DhvVPFZd/LPa6MwkduedJXazbo1ys6JMpTyl52nv
+         gQg6NDkybJcmHo3r2USMLCe3NIuZhhV8hBFzwwqlEfjjLBcBdu9G32tQFYbFSImyf8t7
+         5y5e1n6V5ybsi0fwHyi5nvAj5Z8rMGd1KxuNDnlt+ZGiaXnMJ2yXNjDWlQ8/K8LNeEsl
+         21Ng==
+X-Forwarded-Encrypted: i=1; AJvYcCXmf4zH+r6/sLBzT58Ea+cRWFH6/5DShRTO7gnGThfn+HWc0CqdGXAAceD78g2NUQI1dalqa6mACSzieGxr2/fO5KNORlyuVPprTg==
+X-Gm-Message-State: AOJu0YxNjcAuw8ZztMD3QX7S8sOYxTojHZdLpZ643CyBgD4znAfy7wSy
+	gQ7obe4j6TAirx4ufNhcsthXgiE6KggnvCa+inX5dSR6NEI3WqPR0x43FJ0amZGSRf86+zRvpdM
+	yn0cUZ4ua
+X-Google-Smtp-Source: AGHT+IF0uloPReQxtiI7kPy2lReag9zrdJq5O37gO2OO26ef72OX90/SmjIHT7A6pqqm7YI9svQj4w==
+X-Received: by 2002:ac2:59db:0:b0:51d:9f10:71b7 with SMTP id 2adb3069b0e04-52ccaa33e25mr4541786e87.28.1718906885001;
+        Thu, 20 Jun 2024 11:08:05 -0700 (PDT)
+Received: from mail-wm1-f41.google.com (mail-wm1-f41.google.com. [209.85.128.41])
+        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-a6f6ac22e57sm656434966b.177.2024.06.20.11.08.04
+        for <linux-rdma@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 20 Jun 2024 11:08:04 -0700 (PDT)
+Received: by mail-wm1-f41.google.com with SMTP id 5b1f17b1804b1-4230366ad7bso13948245e9.1
+        for <linux-rdma@vger.kernel.org>; Thu, 20 Jun 2024 11:08:04 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AJvYcCXolDN7Q/SuNpkn3vf4X3DYLk1c/8u24IZ7YvpbGQgqI1gWLWSxdB39YpFug3Z+OwSTQTIXmWX/m+9fCB3ZUJn5W3yQ4TjndpivOg==
+X-Received: by 2002:a50:96cf:0:b0:57c:5874:4f5c with SMTP id
+ 4fb4d7f45d1cf-57d07ea857fmr5124279a12.32.1718906455555; Thu, 20 Jun 2024
+ 11:00:55 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20240620175703.605111-1-yury.norov@gmail.com>
+In-Reply-To: <20240620175703.605111-1-yury.norov@gmail.com>
+From: Linus Torvalds <torvalds@linux-foundation.org>
+Date: Thu, 20 Jun 2024 11:00:38 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wiUTXC452qbypG3jW6XCZGfc8d-iehSavxn5JkQ=sv0zA@mail.gmail.com>
+Message-ID: <CAHk-=wiUTXC452qbypG3jW6XCZGfc8d-iehSavxn5JkQ=sv0zA@mail.gmail.com>
+Subject: Re: [PATCH v4 00/40] lib/find: add atomic find_bit() primitives
+To: Yury Norov <yury.norov@gmail.com>
+Cc: linux-kernel@vger.kernel.org, "David S. Miller" <davem@davemloft.net>, 
+	"H. Peter Anvin" <hpa@zytor.com>, "James E.J. Bottomley" <jejb@linux.ibm.com>, 
+	"K. Y. Srinivasan" <kys@microsoft.com>, "Md. Haris Iqbal" <haris.iqbal@ionos.com>, 
+	Akinobu Mita <akinobu.mita@gmail.com>, Andrew Morton <akpm@linux-foundation.org>, 
+	Bjorn Andersson <andersson@kernel.org>, Borislav Petkov <bp@alien8.de>, Chaitanya Kulkarni <kch@nvidia.com>, 
+	Christian Brauner <brauner@kernel.org>, Damien Le Moal <damien.lemoal@opensource.wdc.com>, 
+	Dave Hansen <dave.hansen@linux.intel.com>, David Disseldorp <ddiss@suse.de>, 
+	Edward Cree <ecree.xilinx@gmail.com>, Eric Dumazet <edumazet@google.com>, 
+	Fenghua Yu <fenghua.yu@intel.com>, Geert Uytterhoeven <geert@linux-m68k.org>, 
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Gregory Greenman <gregory.greenman@intel.com>, 
+	Hans Verkuil <hverkuil@xs4all.nl>, Hans de Goede <hdegoede@redhat.com>, 
+	Hugh Dickins <hughd@google.com>, Ingo Molnar <mingo@redhat.com>, Jakub Kicinski <kuba@kernel.org>, 
+	Jaroslav Kysela <perex@perex.cz>, Jason Gunthorpe <jgg@ziepe.ca>, Jens Axboe <axboe@kernel.dk>, 
+	Jiri Pirko <jiri@resnulli.us>, Jiri Slaby <jirislaby@kernel.org>, Kalle Valo <kvalo@kernel.org>, 
+	Karsten Graul <kgraul@linux.ibm.com>, Karsten Keil <isdn@linux-pingi.de>, 
+	Kees Cook <keescook@chromium.org>, Leon Romanovsky <leon@kernel.org>, 
+	Mark Rutland <mark.rutland@arm.com>, Martin Habets <habetsm.xilinx@gmail.com>, 
+	Mauro Carvalho Chehab <mchehab@kernel.org>, Michael Ellerman <mpe@ellerman.id.au>, Michal Simek <monstr@monstr.eu>, 
+	Nicholas Piggin <npiggin@gmail.com>, Oliver Neukum <oneukum@suse.com>, Paolo Abeni <pabeni@redhat.com>, 
+	Paolo Bonzini <pbonzini@redhat.com>, Peter Zijlstra <peterz@infradead.org>, 
+	Ping-Ke Shih <pkshih@realtek.com>, Rich Felker <dalias@libc.org>, Rob Herring <robh@kernel.org>, 
+	Robin Murphy <robin.murphy@arm.com>, Sean Christopherson <seanjc@google.com>, 
+	Shuai Xue <xueshuai@linux.alibaba.com>, Stanislaw Gruszka <stf_xl@wp.pl>, 
+	Steven Rostedt <rostedt@goodmis.org>, Thomas Bogendoerfer <tsbogend@alpha.franken.de>, 
+	Thomas Gleixner <tglx@linutronix.de>, Valentin Schneider <vschneid@redhat.com>, 
+	Vitaly Kuznetsov <vkuznets@redhat.com>, Wenjia Zhang <wenjia@linux.ibm.com>, 
+	Will Deacon <will@kernel.org>, Yoshinori Sato <ysato@users.sourceforge.jp>, 
+	GR-QLogic-Storage-Upstream@marvell.com, alsa-devel@alsa-project.org, 
+	ath10k@lists.infradead.org, dmaengine@vger.kernel.org, iommu@lists.linux.dev, 
+	kvm@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
+	linux-arm-msm@vger.kernel.org, linux-block@vger.kernel.org, 
+	linux-bluetooth@vger.kernel.org, linux-hyperv@vger.kernel.org, 
+	linux-m68k@lists.linux-m68k.org, linux-media@vger.kernel.org, 
+	linux-mips@vger.kernel.org, linux-net-drivers@amd.com, 
+	linux-pci@vger.kernel.org, linux-rdma@vger.kernel.org, 
+	linux-s390@vger.kernel.org, linux-scsi@vger.kernel.org, 
+	linux-serial@vger.kernel.org, linux-sh@vger.kernel.org, 
+	linux-sound@vger.kernel.org, linux-usb@vger.kernel.org, 
+	linux-wireless@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, 
+	mpi3mr-linuxdrv.pdl@broadcom.com, netdev@vger.kernel.org, 
+	sparclinux@vger.kernel.org, x86@kernel.org, 
+	Alexey Klimov <alexey.klimov@linaro.org>, Bart Van Assche <bvanassche@acm.org>, Jan Kara <jack@suse.cz>, 
+	Matthew Wilcox <willy@infradead.org>, Mirsad Todorovac <mirsad.todorovac@alu.unizg.hr>, 
+	Rasmus Villemoes <linux@rasmusvillemoes.dk>, Sergey Shtylyov <s.shtylyov@omp.ru>
+Content-Type: text/plain; charset="UTF-8"
 
-The function opencodes find_and_set_bit_lock() with a while-loop polling
-on test_and_set_bit_lock(). Use the dedicated function instead.
+On Thu, 20 Jun 2024 at 10:57, Yury Norov <yury.norov@gmail.com> wrote:
+>
+>
+> The typical lock-protected bit allocation may look like this:
 
-Signed-off-by: Yury Norov <yury.norov@gmail.com>
----
- drivers/infiniband/ulp/rtrs/rtrs-clt.c | 16 ++++------------
- 1 file changed, 4 insertions(+), 12 deletions(-)
+If it looks like this, then nobody cares. Clearly the user in question
+never actually cared about performance, and you SHOULD NOT then say
+"let's optimize this that nobody cares about":.
 
-diff --git a/drivers/infiniband/ulp/rtrs/rtrs-clt.c b/drivers/infiniband/ulp/rtrs/rtrs-clt.c
-index 88106cf5ce55..52b7728f6c63 100644
---- a/drivers/infiniband/ulp/rtrs/rtrs-clt.c
-+++ b/drivers/infiniband/ulp/rtrs/rtrs-clt.c
-@@ -10,6 +10,7 @@
- #undef pr_fmt
- #define pr_fmt(fmt) KBUILD_MODNAME " L" __stringify(__LINE__) ": " fmt
- 
-+#include <linux/find_atomic.h>
- #include <linux/module.h>
- #include <linux/rculist.h>
- #include <linux/random.h>
-@@ -72,18 +73,9 @@ __rtrs_get_permit(struct rtrs_clt_sess *clt, enum rtrs_clt_con_type con_type)
- 	struct rtrs_permit *permit;
- 	int bit;
- 
--	/*
--	 * Adapted from null_blk get_tag(). Callers from different cpus may
--	 * grab the same bit, since find_first_zero_bit is not atomic.
--	 * But then the test_and_set_bit_lock will fail for all the
--	 * callers but one, so that they will loop again.
--	 * This way an explicit spinlock is not required.
--	 */
--	do {
--		bit = find_first_zero_bit(clt->permits_map, max_depth);
--		if (bit >= max_depth)
--			return NULL;
--	} while (test_and_set_bit_lock(bit, clt->permits_map));
-+	bit = find_and_set_bit_lock(clt->permits_map, max_depth);
-+	if (bit >= max_depth)
-+		return NULL;
- 
- 	permit = get_permit(clt, bit);
- 	WARN_ON(permit->mem_id != bit);
--- 
-2.43.0
+Yury, I spend an inordinate amount of time just double-checking your
+patches. I ended up having to basically undo one of them just days
+ago.
 
+New rule: before you send some optimization, you need to have NUMBERS.
+
+Some kind of "look, this code is visible in profiles, so we actually care".
+
+Because without numbers, I'm just not going to pull anything from you.
+These insane inlines for things that don't matter need to stop.
+
+And if they *DO* matter, you need to show that they matter.
+
+               Linus
 
