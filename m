@@ -1,125 +1,172 @@
-Return-Path: <linux-rdma+bounces-3360-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-3361-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 84D0190FF90
-	for <lists+linux-rdma@lfdr.de>; Thu, 20 Jun 2024 10:54:19 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id CD19390FFDF
+	for <lists+linux-rdma@lfdr.de>; Thu, 20 Jun 2024 11:05:44 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 31B1B2821AB
-	for <lists+linux-rdma@lfdr.de>; Thu, 20 Jun 2024 08:54:18 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 58DCB1F234A3
+	for <lists+linux-rdma@lfdr.de>; Thu, 20 Jun 2024 09:05:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 89B1919F49A;
-	Thu, 20 Jun 2024 08:50:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C1DFA15ADA0;
+	Thu, 20 Jun 2024 09:05:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="e62eO2wS"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="QJJvqQHT"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-ej1-f47.google.com (mail-ej1-f47.google.com [209.85.218.47])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out-185.mta0.migadu.com (out-185.mta0.migadu.com [91.218.175.185])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ACD7A19DFB4
-	for <linux-rdma@vger.kernel.org>; Thu, 20 Jun 2024 08:50:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4BF7F628
+	for <linux-rdma@vger.kernel.org>; Thu, 20 Jun 2024 09:05:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.185
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1718873440; cv=none; b=Z+0nnnBwRP9djbmv9BzLO50EqOogFcVCpcP9+ZqK89OcaHwusd1eFCHzfIUxSbcRr0Arr76TmDmMdzrTNL2jBCIyPaJtMHulRmXah6eTs/3cj6G0rd8zI3vx1eBst2BJuz2zg9HgTg6z3MjbM3QANDX/rlt8CDyDeEdh+LWjsKA=
+	t=1718874338; cv=none; b=gNs+6PxjV/2P7UOKqR6dP3veEDNXb6xzX3QjxFVXvjM15y3DTtKtrfXkLCCtWYEXlSZ6a7YXCaH5p+4mvSf4ar/q8BJLsveXsDo7H7JSuTYSzsqJeE8sHX/Tv2TNYyUg8qTbwWk9i6WFRt77B4vPgN3vcB4cT/RGjPAfJsuUCu8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1718873440; c=relaxed/simple;
-	bh=VulQHEs65tf65CzuYJcVfJOkIehYs9N/s9FN9lgO/DM=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition; b=NlSwfgrU6hE3W0a97bHKw27JvRpuuNmFh/Kdn19BM/ta65Nk34a+cdWZ9mMglncqecUvTS6zW3mVzEOjoyVZjYbt05G8Qjb36C2w6OMGcmwWfEsQUICB02hpdKrnoW1JR4Vu24MEHGEkFJoBBotydzJvUYr7OcPefwns8gQqCpI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=e62eO2wS; arc=none smtp.client-ip=209.85.218.47
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ej1-f47.google.com with SMTP id a640c23a62f3a-a63359aaacaso79928166b.1
-        for <linux-rdma@vger.kernel.org>; Thu, 20 Jun 2024 01:50:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1718873437; x=1719478237; darn=vger.kernel.org;
-        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=nV4oQSHDMhtGV5YD3g+WGCVhVZtTpBFjfeRKuMKFWs8=;
-        b=e62eO2wSc5RQbpUfFM9Rmohk3KGgkHSNgYODu7iQscGyZaMqjsHEz50Gsjn4vYTCHZ
-         5u+6phWmTm06dgz6aw03Y/bFnyiLFuXDZY+Aq9EfPVBRENl9AL4u2QKKdS/i75+CjYJx
-         v2ajYL/25/vwLbqetcL8krKJacWs3RfzaeVoGvSzbr1/ky4mqyTITxBX3NXiIHuv1LLc
-         ICK1cilVbB/GyNWaXF9PBD9T9N7gY62hdWFQmBk2sXpQ1+0AwwBIicfe17TjC+wPeG77
-         J8Prn/u/YehijvFjXWP48jDhiUVqWRJPl68dDNawHc/XQ1dm36GKhKfHSvL6OrfddADz
-         wB2A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1718873437; x=1719478237;
-        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=nV4oQSHDMhtGV5YD3g+WGCVhVZtTpBFjfeRKuMKFWs8=;
-        b=KONkqTBgF7GWi1+G8bnm7FOFZd7dGN6aRctyQc++DPL5WZo6UdfD/UU7x13eO7LOAp
-         KpRrsz2pDJiqwN8uSfdN6yPS+ANfpwgX7eesoaP5ZwTZOmKv74uuTQkRNrF5XtNCj0zT
-         iMXMTqTjHkHwjJir15cRq0kVhyJH7qJOx2tHFiqubFQMvSfc7CsEmuI7R1NpT4/ff+DS
-         p10CNugCparbxeNYZ2Eoho5B53qXfeqyxXMO6QlBPjfXa8MrQvpVNQ2hnUxOJrFUSZgj
-         N6wb20YD2EXgCGqc2qTKiMRJoW7Iz4Y6KfJTNO+TYsCIXv9u4Uzojk7c/I1pXwfuTyIL
-         lMJw==
-X-Gm-Message-State: AOJu0YxdIIpiiyYZZOpJiOFR8gN92ytQJ9j5YQb5MCqkxtLOj6oNpVh3
-	iWMrFCLQiTaBF6FEeslBYMtz7ET+yCiweH6jv8N9AAgunK27Vl2V/zBz228IfyedA4PnZv4soz8
-	8
-X-Google-Smtp-Source: AGHT+IFYQJj9DDXRrmYeZlAut878Z4V5ELqYgn0kedSaaqZ6gNWrJVL+n5t8caM1HN1cjHuKcl8N4g==
-X-Received: by 2002:a17:907:9717:b0:a6f:51d5:ef0d with SMTP id a640c23a62f3a-a6fab775691mr315556466b.60.1718873436999;
-        Thu, 20 Jun 2024 01:50:36 -0700 (PDT)
-Received: from localhost ([102.222.70.76])
-        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-a6f56db5c3dsm745580566b.55.2024.06.20.01.50.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 20 Jun 2024 01:50:36 -0700 (PDT)
-Date: Thu, 20 Jun 2024 11:50:33 +0300
-From: Dan Carpenter <dan.carpenter@linaro.org>
-To: Vlad Buslov <vladbu@nvidia.com>
-Cc: linux-rdma@vger.kernel.org
-Subject: [bug report] net/mlx5e: Implement CT entry update
-Message-ID: <74076270-8658-4773-aeac-e99d11acea7b@moroto.mountain>
+	s=arc-20240116; t=1718874338; c=relaxed/simple;
+	bh=jkKEq5JT+Lrrhve6Owgp68jjvCNnaECDynRqPxfxNt4=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=jOg+r2PJGE/mN71n1ORp4uLc1u1qQ54DiA/yrVsmUL4+OynkE+dYBpQwabBSs4HINa3AWvHJ+T5m5cJUHJm8IJTMrWilNV8ykqkV0GcoaTCYYTPvsNm7j0WVTd/fp/0amYUmDbF1wDKhRW5VKrcMx6yEHGx0MbVtQfWO7XBkc+U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=QJJvqQHT; arc=none smtp.client-ip=91.218.175.185
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+X-Envelope-To: leon@kernel.org
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1718874334;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=UvFo5cd3E4KERCkesw8BgsGhNxyquIalxzKIE9JjvGY=;
+	b=QJJvqQHTAHPtgcEoyYsp9kFBQqiswzb48TDSfzE/FHaez1zP0Hd3i+oy8qIe03ZB+kkBc5
+	hiMoakj3Vo9O9PeXkYTjpp12EBINz97SlmaVH743rkUpKUKT3QhPgsWfZJmWk7sqqLVbKd
+	vMNyfag0OyDFpJ+Ih22gQKl4GBB+Zk0=
+X-Envelope-To: syzbot+19ec7595e3aa1a45f623@syzkaller.appspotmail.com
+X-Envelope-To: jgg@ziepe.ca
+X-Envelope-To: linux-kernel@vger.kernel.org
+X-Envelope-To: linux-rdma@vger.kernel.org
+X-Envelope-To: netdev@vger.kernel.org
+X-Envelope-To: syzkaller-bugs@googlegroups.com
+Message-ID: <ef2c01b5-d38b-4409-bbd4-0484564657c9@linux.dev>
+Date: Thu, 20 Jun 2024 17:05:25 +0800
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Subject: Re: [syzbot] [rdma?] WARNING in ib_uverbs_release_dev
+To: Leon Romanovsky <leon@kernel.org>
+Cc: syzbot <syzbot+19ec7595e3aa1a45f623@syzkaller.appspotmail.com>,
+ jgg@ziepe.ca, linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
+ netdev@vger.kernel.org, syzkaller-bugs@googlegroups.com
+References: <000000000000057e4c061b386e23@google.com>
+ <20240619091557.GM4025@unreal>
+ <94d36dd5-313b-46b3-8d43-95016175d273@linux.dev>
+ <20240619174802.GP4025@unreal>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Zhu Yanjun <yanjun.zhu@linux.dev>
+In-Reply-To: <20240619174802.GP4025@unreal>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
 
-Hello Vlad Buslov,
+在 2024/6/20 1:48, Leon Romanovsky 写道:
+> On Wed, Jun 19, 2024 at 10:16:20PM +0800, Zhu Yanjun wrote:
+>> 在 2024/6/19 17:15, Leon Romanovsky 写道:
+>>> On Tue, Jun 18, 2024 at 11:37:18PM -0700, syzbot wrote:
+>>>> Hello,
+>>>>
+>>>> syzbot found the following issue on:
+>>>>
+>>>> HEAD commit:    2ccbdf43d5e7 Merge tag 'for-linus' of git://git.kernel.org..
+>>>> git tree:       upstream
+>>>> console output: https://syzkaller.appspot.com/x/log.txt?x=179e93fe980000
+>>>> kernel config:  https://syzkaller.appspot.com/x/.config?x=fa0ce06dcc735711
+>>>> dashboard link: https://syzkaller.appspot.com/bug?extid=19ec7595e3aa1a45f623
+>>>> compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
+>>>>
+>>>> Unfortunately, I don't have any reproducer for this issue yet.
+>>>>
+>>>> Downloadable assets:
+>>>> disk image: https://storage.googleapis.com/syzbot-assets/27e64d7472ce/disk-2ccbdf43.raw.xz
+>>>> vmlinux: https://storage.googleapis.com/syzbot-assets/e1c494bb5c9c/vmlinux-2ccbdf43.xz
+>>>> kernel image: https://storage.googleapis.com/syzbot-assets/752498985a5e/bzImage-2ccbdf43.xz
+>>>>
+>>>> IMPORTANT: if you fix the issue, please add the following tag to the commit:
+>>>> Reported-by: syzbot+19ec7595e3aa1a45f623@syzkaller.appspotmail.com
+>>>>
+>>>> smc: removing ib device syz0
+>>>> ------------[ cut here ]------------
+>>>> WARNING: CPU: 0 PID: 51 at kernel/rcu/srcutree.c:653 cleanup_srcu_struct+0x404/0x4d0 kernel/rcu/srcutree.c:653
+>>>> Modules linked in:
+>>>> CPU: 0 PID: 51 Comm: kworker/u8:3 Not tainted 6.10.0-rc3-syzkaller-00044-g2ccbdf43d5e7 #0
+>>>> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 06/07/2024
+>>>> Workqueue: ib-unreg-wq ib_unregister_work
+>>>> RIP: 0010:cleanup_srcu_struct+0x404/0x4d0 kernel/rcu/srcutree.c:653
+>>>> Code: 12 80 00 48 c7 03 00 00 00 00 48 83 c4 48 5b 41 5c 41 5d 41 5e 41 5f 5d e9 14 67 34 0a 90 0f 0b 90 eb e7 90 0f 0b 90 eb e1 90 <0f> 0b 90 eb db 90 0f 0b 90 eb 0a 90 0f 0b 90 eb 04 90 0f 0b 90 48
+>>>> RSP: 0018:ffffc90000bb7970 EFLAGS: 00010202
+>>>> RAX: 0000000000000001 RBX: ffff88802a1bc980 RCX: 0000000000000002
+>>>> RDX: 0000000000000000 RSI: 0000000000000008 RDI: ffffe8ffffd74c58
+>>>> RBP: 0000000000000001 R08: ffffe8ffffd74c5f R09: 1ffffd1ffffae98b
+>>>> R10: dffffc0000000000 R11: fffff91ffffae98c R12: dffffc0000000000
+>>>> R13: ffff88802285b5f0 R14: ffff88802285b000 R15: ffff88802a1bc800
+>>>> FS:  0000000000000000(0000) GS:ffff8880b9400000(0000) knlGS:0000000000000000
+>>>> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+>>>> CR2: 00007fa3852cae10 CR3: 000000000e132000 CR4: 0000000000350ef0
+>>>> Call Trace:
+>>>>    <TASK>
+>>>>    ib_uverbs_release_dev+0x4e/0x80 drivers/infiniband/core/uverbs_main.c:136
+>>>>    device_release+0x9b/0x1c0
+>>>>    kobject_cleanup lib/kobject.c:689 [inline]
+>>>>    kobject_release lib/kobject.c:720 [inline]
+>>>>    kref_put include/linux/kref.h:65 [inline]
+>>>>    kobject_put+0x231/0x480 lib/kobject.c:737
+>>>>    remove_client_context+0xb9/0x1e0 drivers/infiniband/core/device.c:776
+>>>>    disable_device+0x13b/0x360 drivers/infiniband/core/device.c:1282
+>>>>    __ib_unregister_device+0x6d/0x170 drivers/infiniband/core/device.c:1475
+>>>>    ib_unregister_work+0x19/0x30 drivers/infiniband/core/device.c:1586
+>>>>    process_one_work kernel/workqueue.c:3231 [inline]
+>>>>    process_scheduled_works+0xa2e/0x1830 kernel/workqueue.c:3312
+>>>>    worker_thread+0x86d/0xd70 kernel/workqueue.c:3393
+>>>>    kthread+0x2f2/0x390 kernel/kthread.c:389
+>>>>    ret_from_fork+0x4d/0x80 arch/x86/kernel/process.c:147
+>>>>    ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:244
+>>>>    </TASK>
+>>>
+>>> I see that this is caused by call to ib_unregister_device_queued() as a
+>>> response to NETDEV_UNREGISTER event, but we don't flush anything before.
+>>> How can we be sure that ib_device is not used anymore?
+>>
+>> Hi, Leon
+>>
+>> This is the console output:
+>>
+>> https://syzkaller.appspot.com/x/log.txt?x=179e93fe980000
+>>
+>>  From the above link, it seems that other devices or subsystems failed
+>> firstly, then caused this call trace to appear. When other problem occurred,
+>> the whole kernel system was in mess state.So it is not weird that some
+>> problems occurred.
+> 
+> Which devices/subsystems failed? I grepped the log and don't see
+> anything suspicious, before first "------------[ cut here ]------------"
+> sentence.
 
-Commit 94ceffb48eac ("net/mlx5e: Implement CT entry update") from Dec
-1, 2022 (linux-next), leads to the following Smatch static checker
-warning:
+Need the script to check this problem. It is an interesting problem.
 
-	drivers/net/ethernet/mellanox/mlx5/core/en/tc_ct.c:1163 mlx5_tc_ct_entry_replace_rules()
-	error: uninitialized symbol 'err'.
+Zhu Yanjun
 
-drivers/net/ethernet/mellanox/mlx5/core/en/tc_ct.c
-    1142 static int
-    1143 mlx5_tc_ct_entry_replace_rules(struct mlx5_tc_ct_priv *ct_priv,
-    1144                                struct flow_rule *flow_rule,
-    1145                                struct mlx5_ct_entry *entry,
-    1146                                u8 zone_restore_id)
-    1147 {
-    1148         int err;
-    1149 
-    1150         if (mlx5_tc_ct_entry_in_ct_table(entry)) {
-    1151                 err = mlx5_tc_ct_entry_replace_rule(ct_priv, flow_rule, entry, false,
-    1152                                                     zone_restore_id);
-    1153                 if (err)
-    1154                         return err;
-    1155         }
-    1156 
-    1157         if (mlx5_tc_ct_entry_in_ct_nat_table(entry)) {
-    1158                 err = mlx5_tc_ct_entry_replace_rule(ct_priv, flow_rule, entry, true,
-    1159                                                     zone_restore_id);
-    1160                 if (err && mlx5_tc_ct_entry_in_ct_table(entry))
-    1161                         mlx5_tc_ct_entry_del_rule(ct_priv, entry, false);
-    1162         }
+> 
+>>
+>> To be simple, the root cause is not in RDMA subsystem.
+>>
+>> I will continue to delve into this problem.
+>>
+>> Zhu Yanjun
+>>>
+>>> Thanks
+>>
 
-Can the entry not be in either table?
-
---> 1163         return err;
-
-If so then err is uninitialized.
-
-    1164 }
-
-regards,
-dan carpenter
 
