@@ -1,82 +1,78 @@
-Return-Path: <linux-rdma+bounces-3362-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-3363-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6FCBD9106BA
-	for <lists+linux-rdma@lfdr.de>; Thu, 20 Jun 2024 15:51:43 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5F7E8910F5A
+	for <lists+linux-rdma@lfdr.de>; Thu, 20 Jun 2024 19:49:06 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6C8671C21920
-	for <lists+linux-rdma@lfdr.de>; Thu, 20 Jun 2024 13:51:42 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0C7191F22A95
+	for <lists+linux-rdma@lfdr.de>; Thu, 20 Jun 2024 17:49:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 65DCF1AD491;
-	Thu, 20 Jun 2024 13:51:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 330CB1B5831;
+	Thu, 20 Jun 2024 17:40:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="kCq4pkoJ"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="NEZpg7BC"
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1E5F21AD3E7;
-	Thu, 20 Jun 2024 13:51:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DF4271DDEE;
+	Thu, 20 Jun 2024 17:40:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1718891497; cv=none; b=Mj1ORTHw+3W/CEz5JdVSWOd8QIXK6oVAmv0/6bDj5SxBd0fVjWqY5Z88DeiWuGVyyg4+TLrPCG3xEpxaYIs9AneCSt+5T2hoEuewMVPcPKqW19jxR1DovQtEBg1JVK8R1dHHbJRsQBTzOnCKNV58AyoXV0McE/PHqRtjoox+sYo=
+	t=1718905240; cv=none; b=Er7S4rro5Q/ekfkNAyrBApQtoxv0dunBld4T73yERVi5+PB622812bH9uKEFZl+nm6a29NNRY5cNcf/zaIor3xCNZaUxMzlM0TFJiF2NSR2LsTSMLZx9HelO0F39EmMhdKxh55oLIaREHLGC6ooYht6DQwNhQ0MVtpa8L0UYYi8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1718891497; c=relaxed/simple;
-	bh=NoN0yBxHD8GgnNnA8qv/Z0+nJZMr5eqvtKZvmOt/ABI=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=iVOEVp7IZZc5taYpgoZn2yBatFlj+l8LaplFuumGI3Xrfasuy7o+Jy/TgFqs7EJXFNVxIRsS73o6rT920MnDS+fSlLc5L4GZwL7E7KdXUfXDfB6Lt9GQ5Tz1qNTeaM/JfWJdmKgEkTwhpu9qLTzzdlLi/L4tpi0xhoimb3tYRRg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=kCq4pkoJ; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2D39EC2BD10;
-	Thu, 20 Jun 2024 13:51:36 +0000 (UTC)
+	s=arc-20240116; t=1718905240; c=relaxed/simple;
+	bh=T/yfp30QLkswItvLIjhSZVSRq/qaXupa+HCdhVeqDI4=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=KRaOmfc87zaXnYztv7LEdDbKN9yarHIYYSOc1AEP33Jkmj/4jPutr4zVviWWyCcROp/oBDDsN+8WnerCLU4Ymif4j/oCGTBT8M0KBkLzV0gS4jH/cO0mJyRgYe1i9l2he8HT2QzXnbZKb2j+htsJZV8byv9Yx5Z6N671IO1grtw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=NEZpg7BC; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id F10EEC2BD10;
+	Thu, 20 Jun 2024 17:40:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1718891496;
-	bh=NoN0yBxHD8GgnNnA8qv/Z0+nJZMr5eqvtKZvmOt/ABI=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=kCq4pkoJZO69wd4/U392ee7h74fLDIx6Ix0wMuYmhNF3a9+w6iKiYwEVm8xZkP1CN
-	 R2rgkhL4KFMGTEaqe51/iokDg91nv2rWZZGVRVPPeAf0SU9AJCLyHW+Kucasqp+UZt
-	 dLMdpFWewiPgWYEsp71JXGk7fP6uNIMyD4zvDLIM4JW6AVUMir2T3Or8fJmsKpiIl/
-	 tHWk/k/wXILWTvP0WXK/gVawf2nbBO2GTgs+foEU09q7yzgs7diw+yu0PjC5Emk02Z
-	 MpTPeYLryy6izNy/qtERVsw7pZYGosTEc4oRrtI6zEXYXmaVIgE4MUTT4E3weTpl4K
-	 Ql+voDn8Q0UMg==
-Date: Thu, 20 Jun 2024 06:51:35 -0700
-From: Jakub Kicinski <kuba@kernel.org>
-To: Omer Shpigelman <oshpigelman@habana.ai>
-Cc: Andrew Lunn <andrew@lunn.ch>, "linux-kernel@vger.kernel.org"
- <linux-kernel@vger.kernel.org>, "linux-rdma@vger.kernel.org"
- <linux-rdma@vger.kernel.org>, "netdev@vger.kernel.org"
- <netdev@vger.kernel.org>, "dri-devel@lists.freedesktop.org"
- <dri-devel@lists.freedesktop.org>, "ogabbay@kernel.org"
- <ogabbay@kernel.org>, Zvika Yehudai <zyehudai@habana.ai>
-Subject: Re: [PATCH 09/15] net: hbl_en: add habanalabs Ethernet driver
-Message-ID: <20240620065135.116d8edf@kernel.org>
-In-Reply-To: <5cb11774-a710-4edc-a55c-c529b0114ca4@habana.ai>
-References: <20240613082208.1439968-1-oshpigelman@habana.ai>
-	<20240613082208.1439968-10-oshpigelman@habana.ai>
-	<10902044-fb02-4328-bf88-0b386ee51c78@lunn.ch>
-	<bddb69c3-511b-4385-a67d-903e910a8b51@habana.ai>
-	<621d4891-36d7-48c6-bdd8-2f3ca06a23f6@lunn.ch>
-	<45e35940-c8fc-4f6c-8429-e6681a48b889@habana.ai>
-	<20240619082104.2dcdcd86@kernel.org>
-	<5cb11774-a710-4edc-a55c-c529b0114ca4@habana.ai>
+	s=k20201202; t=1718905239;
+	bh=T/yfp30QLkswItvLIjhSZVSRq/qaXupa+HCdhVeqDI4=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=NEZpg7BCWLS3xa4vyX7apo4QMY8P36A7LzltzwEENCRmPe0dCeRU+bssqRinXpt2v
+	 k4/F0A8xqMjUbOtgM+D2UUyzpny5Vn2mCfAVZv1eYPIO6PQWksyZBp56/STVoIiEwO
+	 T59sJeka0OBoj9ROKGo21i72GXM7edotFvFkDgLFDPe3TAc/Lpo7O2PsaLI1ss1gL7
+	 V3vGsuyJzZwkG3en0g4tbS0EnWJKzLpb1XRmk5ELXLErYhECh3I79dwIqUiXYkRLyS
+	 LxtCQTDwik+hyF+8qCBZmj2iShEN+F5afjPpgRtpyKNrmZjWFS04Yg//UilHd+PLMq
+	 PLzeiUeQXjwlw==
+Date: Thu, 20 Jun 2024 18:40:34 +0100
+From: Simon Horman <horms@kernel.org>
+To: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+Cc: saeedm@nvidia.com, leon@kernel.org, tariqt@nvidia.com,
+	davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
+	pabeni@redhat.com, netdev@vger.kernel.org,
+	linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
+	Abaci Robot <abaci@linux.alibaba.com>
+Subject: Re: [PATCH] net/mlx5: Lag, Remove NULL check before dev_{put, hold}
+Message-ID: <20240620174034.GQ959333@kernel.org>
+References: <20240619035357.45567-1-jiapeng.chong@linux.alibaba.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240619035357.45567-1-jiapeng.chong@linux.alibaba.com>
 
-On Thu, 20 Jun 2024 08:43:34 +0000 Omer Shpigelman wrote:
-> > You support 400G, you really need to give the user the ability
-> > to access higher pages.  
+On Wed, Jun 19, 2024 at 11:53:57AM +0800, Jiapeng Chong wrote:
+> The call netdev_{put, hold} of dev_{put, hold} will check NULL, so there
+> is no need to check before using dev_{put, hold}, remove it to silence
+> the warning:
 > 
-> Actually the 200G and 400G modes in the ethtool code should be removed
-> from this patch set. They are not relevant for Gaudi2. I'll fix it in the
-> next version.
+> ./drivers/net/ethernet/mellanox/mlx5/core/lag/lag.c:1518:2-10: WARNING: NULL check before dev_{put, hold} functions is not needed.
+> 
+> Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+> Closes: https://bugzilla.openanolis.cn/show_bug.cgi?id=9361
+> Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
 
-How do your customers / users check SFP diagnostics?
+Reviewed-by: Simon Horman <horms@kernel.org>
+
 
