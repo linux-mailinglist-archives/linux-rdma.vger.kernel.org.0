@@ -1,80 +1,80 @@
-Return-Path: <linux-rdma+bounces-3386-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-3387-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id BAB05911A11
-	for <lists+linux-rdma@lfdr.de>; Fri, 21 Jun 2024 07:08:25 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 94D6F911A15
+	for <lists+linux-rdma@lfdr.de>; Fri, 21 Jun 2024 07:08:43 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6FA34287516
-	for <lists+linux-rdma@lfdr.de>; Fri, 21 Jun 2024 05:08:24 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id DC782B2440B
+	for <lists+linux-rdma@lfdr.de>; Fri, 21 Jun 2024 05:08:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7827D16D31E;
-	Fri, 21 Jun 2024 05:05:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3C7CF16D4EF;
+	Fri, 21 Jun 2024 05:06:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="BilxYJbF"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="US0l0Dtt"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-oo1-f53.google.com (mail-oo1-f53.google.com [209.85.161.53])
+Received: from mail-oo1-f51.google.com (mail-oo1-f51.google.com [209.85.161.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AB8E212F37F;
-	Fri, 21 Jun 2024 05:05:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.161.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 81E0A16D33A;
+	Fri, 21 Jun 2024 05:05:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.161.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1718946359; cv=none; b=ZVxwmCXQedBfr8vM69We1gCqGXghs1joG9uPxpbV2+CRjTm3FhGH+6vKJ3X6BeaSMoGzxpSlWfyeddJhAEX0hsV7+u7bPQUN9xc6zzxafgATDyWrHigvadKrJtuAhXiVbC+sYG5nfr1yI/2yn3km1u+HMQJqHgcwkfYZx5I9Hsg=
+	t=1718946361; cv=none; b=ogfWFtr9dh0DuC/DFnpt2BaYYSBPbutZV8ZKUAInFTY1Rv7wVPLjdXmJws5raIvBZ1fdsefTqNdC3P1LdsJPF4pC6aYrkWsPwAyN12GravMLizlhHdrG4+idHo16VuhTOUwxTd6St13ne4uRvbyabfxfoA3Vlk1zsoMRinIBhqM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1718946359; c=relaxed/simple;
-	bh=5wCl1B1i8ji1xA4dADPfV0mjXWvLWyC2722XSPdktnI=;
+	s=arc-20240116; t=1718946361; c=relaxed/simple;
+	bh=zSy815pDO1WbtvQlDxRmFtHqhoClMQgl+qNaM0qSTdg=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=UP+95DzvJEWcCtM6AuEfXJQ/eBXMTMoTiym61HxYzjbK6korYPtaH8HutnQkyxwQKDv29aJsHH43UO0Pq3LLtsZE5y0wCJNX31gX3XKhaxPHllisIcw6KXu9qo5Tlohd3xQCSh7t2+pWbcMa9feUhCzaDPtCxrQLhj8ikOVfR1g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=BilxYJbF; arc=none smtp.client-ip=209.85.161.53
+	 MIME-Version; b=Bl1+SaTKtjhwCZO2KVVBNt9p2H2Ndh2mBjobtcxmNYD+rcyUmtpnSZSGOVfE3tCsH8MMO/n6t6DxMrvPRy9m4PMhhAyqbWY5NMtwgrAtrwJF0ino4UzM7D+PF4cFFlwiBxQ6GDmmJsIKXkZBUoRxc7KTSQ6Cbsp3+EjRnQASkzs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=US0l0Dtt; arc=none smtp.client-ip=209.85.161.51
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-oo1-f53.google.com with SMTP id 006d021491bc7-5c19d338401so810856eaf.0;
-        Thu, 20 Jun 2024 22:05:57 -0700 (PDT)
+Received: by mail-oo1-f51.google.com with SMTP id 006d021491bc7-5bb041514c1so874816eaf.0;
+        Thu, 20 Jun 2024 22:05:59 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1718946357; x=1719551157; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1718946358; x=1719551158; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=9dhdHUZpgwd2/wkpVLwdxeMY04zoPfYMfPcgph0II3s=;
-        b=BilxYJbF5AQglQIk0tqaiyb4LVUbM/BqGAR4htJwugCfIJrJyfBM0yeRPXyi7THQRJ
-         8TVm3DYgoJV1DHIj73RKtHKsqOOGOYpuJOekwyPrPdq3RhmvCfEby9qFNYD5vQLezlfF
-         xrIQZJ/3snT77OvqvcuiQRRo+goKbbDOu4LUlYUDuDZxv5FD8Kf29t9KpO7oX5cTp3kM
-         T9GmP1LSQjr2wYSro24JA0Qds2zaD5ei+mQaJFddItfTpEsPCeHENaKseoGmyif+nzBz
-         tw8VRs4LXL88UvpbJ3oYbq5dzp6U4ds6kGQeFMS4E14u8A4SoF8cIuIvL3FDjxuMvMEt
-         gZrQ==
+        bh=lx2TLXT5aNJZ79dehWaykAutPRc+hLUEunig8hxU8YM=;
+        b=US0l0DttBofAPbq/sKJEw3oMMqtihZps6nPvSmnPm7dUb+2RZ5e4FG6JZKcxSGFqIu
+         Vfe6rJCXxIh043RICE3pJMHE2B7+3+/+a4hMC/PTd+RNOEmzoIyzObNCjB+kxOvVWzRw
+         HJtwCEs+xv9PCLEgCqgrRKVb2lft6kZ0ktRl+XQlLP9/5k9RW1ohq5OjDtnInBH72HNg
+         uAPq/mSdsnRSOTsW1tYXCHLLw+Yzb6DEiL3hLLqknd8vBG51GYPfISq3V5U9cFpa7LtO
+         xroFHEz4dhoxvZiJpCJ804aUVc0A5z4Xlyx0lW6NUqbRqON8Cg3dIqRcLV/A3UiHCURm
+         I7Qw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1718946357; x=1719551157;
+        d=1e100.net; s=20230601; t=1718946358; x=1719551158;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=9dhdHUZpgwd2/wkpVLwdxeMY04zoPfYMfPcgph0II3s=;
-        b=ZV1+SxGfy8DEe8V47goOCWH2lGVSf7qkSdFdE1pml0ZScSjscheI5mW+wSFSrup0pP
-         iacw2qEfJTXe5cml06v37UgJfyHzvVBtWDIObPorew7/frsXXB7OQO3T/WDV1LIpm7Pv
-         dvtcWhR1W6se3yHNWsffp/TlS4iwMwlyIGOTEQMPjOL+/3Ewle9KQSMyJg/9wM0MT0kU
-         rsG6G5Hpot3z8leiulxJ2OdT14PJFSqSN8LDjcAMilW+uCmTSrlD0sDJfncnH+kcFJ8z
-         WvgObr63bCqKtxMyQtem14+zSQVlCSvPliHC3r6dDbfAXxYhJXI8lhVdJ9zRJPK9FEm0
-         yo2Q==
-X-Forwarded-Encrypted: i=1; AJvYcCUKfHj4k02lgLCdCql3c8gtQZcXHcFNJBvMBFj6+HyAucUd1OmE47bRV+pshX3tBMwcCodmY60wrvKR3rjbp15YB0I0t3Q1cFzwlqn1YsLt5v0dRBNcf1vONWPkQ4QjZ6+8AR7DaoM4agNuQs644/XJglLdz3NKPvQY6Mg2TOox1w==
-X-Gm-Message-State: AOJu0YwRIp31vA/75iL5H+egC+Z9MVTM3mIK19sINSicQzR0MDj/kdNz
-	8Oz8F3TgodXeazg16SYDm8yVbfcDlBL1XyEhNDMAyik9KuIxU5G5
-X-Google-Smtp-Source: AGHT+IHhA35uL6dKwMEPYqyMrHx0+sbso3nzM6DX+derz+sMKjvn9qW/U4VOg8Eu5V2sPuLfkd8gmQ==
-X-Received: by 2002:a05:6358:5328:b0:19e:e349:1cfd with SMTP id e5c5f4694b2df-1a1fd5cf280mr812647955d.26.1718946356722;
-        Thu, 20 Jun 2024 22:05:56 -0700 (PDT)
+        bh=lx2TLXT5aNJZ79dehWaykAutPRc+hLUEunig8hxU8YM=;
+        b=PoOWKqjk9BlZX/5Sesoh7Dtq/9Mpm63DgZNqA700e3yGs9dqMnKuqZjbrdD1j+QF3O
+         MNj0n72NNZt2S/1Qz/GjqGS5/T+jVPimDZVzxbTQTYhaFjCbGQMKFiBCNmHBTipmVunR
+         B1oLhFzBU0qu/LLc8XjruVeu+l8MLpLH/eit8geP8zF6HH0xwYIFrlxMIpxv6MXYU83q
+         nWNIIFhHzrsIQ6+ib+FghZ6kQz0bnwo2XK9nJflZuvRb/swV6tCbZHR3pklEzrGlgvTw
+         JR/xmzqBAakkShE1N6l+O4HGSG5Ny9+SejtrCq5MJA7/+xNKxCTmPRYGxgP07N1bQumy
+         jEkw==
+X-Forwarded-Encrypted: i=1; AJvYcCX+4TqOio52JxY54f/5psc9EypEU1Z8d4QRSZP2SnkrM0ouzR/sEX9cGn4UusFccAocU4/pbYp8zCBeEYFGzCCucP+nErw9Q2/WKkUI1JaySVKf2KV56i8fM000isygqtl7S+jsXGY4FyykFHAMLttw7x6xNoAE7kTVbo7VkwNW7Q==
+X-Gm-Message-State: AOJu0YwUG0xawb1s9GMPmWR2RS4A8w7Vp6aryp055thlm4plya9X5QyA
+	5z6v1gKakVIVqL1651VFJfymsKHyFS5B6ikliHW2yv/LVhPF4ZWD
+X-Google-Smtp-Source: AGHT+IFsloJi4lcSbB91bbm5zeI31FHR+XREEpqaM3BX4NY1sLxjxwnbe9vu5NBXWUhyl+ydsqrBXA==
+X-Received: by 2002:a05:6359:5fa9:b0:19f:3355:d300 with SMTP id e5c5f4694b2df-1a1fd55965emr948922755d.25.1718946358477;
+        Thu, 20 Jun 2024 22:05:58 -0700 (PDT)
 Received: from apais-devbox.. ([2001:569:766d:6500:fb4e:6cf3:3ec6:9292])
-        by smtp.gmail.com with ESMTPSA id 41be03b00d2f7-716c950d71asm371308a12.62.2024.06.20.22.05.55
+        by smtp.gmail.com with ESMTPSA id 41be03b00d2f7-716c950d71asm371308a12.62.2024.06.20.22.05.57
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 20 Jun 2024 22:05:56 -0700 (PDT)
+        Thu, 20 Jun 2024 22:05:58 -0700 (PDT)
 From: Allen Pais <allen.lkml@gmail.com>
 To: kuba@kernel.org,
-	Denis Kirjanov <kda@linux-powerpc.org>,
+	Cai Huoqing <cai.huoqing@linux.dev>,
 	"David S. Miller" <davem@davemloft.net>,
 	Eric Dumazet <edumazet@google.com>,
 	Paolo Abeni <pabeni@redhat.com>
 Cc: jes@trained-monkey.org,
-	cai.huoqing@linux.dev,
+	kda@linux-powerpc.org,
 	dougmill@linux.ibm.com,
 	npiggin@gmail.com,
 	christophe.leroy@csgroup.eu,
@@ -103,9 +103,9 @@ Cc: jes@trained-monkey.org,
 	linux-net-drivers@amd.com,
 	Allen Pais <allen.lkml@gmail.com>,
 	netdev@vger.kernel.org
-Subject: [PATCH 09/15] net: sundance: Convert tasklet API to new bottom half workqueue mechanism
-Date: Thu, 20 Jun 2024 22:05:19 -0700
-Message-Id: <20240621050525.3720069-10-allen.lkml@gmail.com>
+Subject: [PATCH 10/15] net: hinic: Convert tasklet API to new bottom half workqueue mechanism
+Date: Thu, 20 Jun 2024 22:05:20 -0700
+Message-Id: <20240621050525.3720069-11-allen.lkml@gmail.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20240621050525.3720069-1-allen.lkml@gmail.com>
 References: <20240621050525.3720069-1-allen.lkml@gmail.com>
@@ -119,147 +119,101 @@ Content-Transfer-Encoding: 8bit
 
 Migrate tasklet APIs to the new bottom half workqueue mechanism. It
 replaces all occurrences of tasklet usage with the appropriate workqueue
-APIs throughout the dlink sundance driver. This transition ensures
+APIs throughout the huawei hinic driver. This transition ensures
 compatibility with the latest design and enhances performance.
 
 Signed-off-by: Allen Pais <allen.lkml@gmail.com>
 ---
- drivers/net/ethernet/dlink/sundance.c | 41 ++++++++++++++-------------
- 1 file changed, 21 insertions(+), 20 deletions(-)
+ .../net/ethernet/huawei/hinic/hinic_hw_cmdq.c   |  2 +-
+ .../net/ethernet/huawei/hinic/hinic_hw_eqs.c    | 17 ++++++++---------
+ .../net/ethernet/huawei/hinic/hinic_hw_eqs.h    |  2 +-
+ 3 files changed, 10 insertions(+), 11 deletions(-)
 
-diff --git a/drivers/net/ethernet/dlink/sundance.c b/drivers/net/ethernet/dlink/sundance.c
-index 8af5ecec7d61..65dfd32a9656 100644
---- a/drivers/net/ethernet/dlink/sundance.c
-+++ b/drivers/net/ethernet/dlink/sundance.c
-@@ -86,6 +86,7 @@ static char *media[MAX_UNITS];
- #include <linux/netdevice.h>
- #include <linux/etherdevice.h>
- #include <linux/skbuff.h>
-+#include <linux/workqueue.h>
- #include <linux/init.h>
- #include <linux/bitops.h>
- #include <linux/uaccess.h>
-@@ -395,8 +396,8 @@ struct netdev_private {
- 	unsigned int an_enable:1;
- 	unsigned int speed;
- 	unsigned int wol_enabled:1;			/* Wake on LAN enabled */
--	struct tasklet_struct rx_tasklet;
--	struct tasklet_struct tx_tasklet;
-+	struct work_struct rx_bh_work;
-+	struct work_struct tx_bh_work;
- 	int budget;
- 	int cur_task;
- 	/* Multicast and receive mode. */
-@@ -430,8 +431,8 @@ static void init_ring(struct net_device *dev);
- static netdev_tx_t start_tx(struct sk_buff *skb, struct net_device *dev);
- static int reset_tx (struct net_device *dev);
- static irqreturn_t intr_handler(int irq, void *dev_instance);
--static void rx_poll(struct tasklet_struct *t);
--static void tx_poll(struct tasklet_struct *t);
-+static void rx_poll(struct work_struct *work);
-+static void tx_poll(struct work_struct *work);
- static void refill_rx (struct net_device *dev);
- static void netdev_error(struct net_device *dev, int intr_status);
- static void netdev_error(struct net_device *dev, int intr_status);
-@@ -541,8 +542,8 @@ static int sundance_probe1(struct pci_dev *pdev,
- 	np->msg_enable = (1 << debug) - 1;
- 	spin_lock_init(&np->lock);
- 	spin_lock_init(&np->statlock);
--	tasklet_setup(&np->rx_tasklet, rx_poll);
--	tasklet_setup(&np->tx_tasklet, tx_poll);
-+	INIT_WORK(&np->rx_bh_work, rx_poll);
-+	INIT_WORK(&np->tx_bh_work, tx_poll);
+diff --git a/drivers/net/ethernet/huawei/hinic/hinic_hw_cmdq.c b/drivers/net/ethernet/huawei/hinic/hinic_hw_cmdq.c
+index d39eec9c62bf..f54feae40ef8 100644
+--- a/drivers/net/ethernet/huawei/hinic/hinic_hw_cmdq.c
++++ b/drivers/net/ethernet/huawei/hinic/hinic_hw_cmdq.c
+@@ -344,7 +344,7 @@ static int cmdq_sync_cmd_direct_resp(struct hinic_cmdq *cmdq,
+ 	struct hinic_hw_wqe *hw_wqe;
+ 	struct completion done;
  
- 	ring_space = dma_alloc_coherent(&pdev->dev, TX_TOTAL_SIZE,
- 			&ring_dma, GFP_KERNEL);
-@@ -965,7 +966,7 @@ static void tx_timeout(struct net_device *dev, unsigned int txqueue)
- 	unsigned long flag;
+-	/* Keep doorbell index correct. bh - for tasklet(ceq). */
++	/* Keep doorbell index correct. For bh_work(ceq). */
+ 	spin_lock_bh(&cmdq->cmdq_lock);
  
- 	netif_stop_queue(dev);
--	tasklet_disable_in_atomic(&np->tx_tasklet);
-+	disable_work_sync(&np->tx_bh_work);
- 	iowrite16(0, ioaddr + IntrEnable);
- 	printk(KERN_WARNING "%s: Transmit timed out, TxStatus %2.2x "
- 		   "TxFrameId %2.2x,"
-@@ -1006,7 +1007,7 @@ static void tx_timeout(struct net_device *dev, unsigned int txqueue)
- 		netif_wake_queue(dev);
- 	}
- 	iowrite16(DEFAULT_INTR, ioaddr + IntrEnable);
--	tasklet_enable(&np->tx_tasklet);
-+	enable_and_queue_work(system_bh_wq, &np->tx_bh_work);
+ 	/* WQE_SIZE = WQEBB_SIZE, we will get the wq element and not shadow*/
+diff --git a/drivers/net/ethernet/huawei/hinic/hinic_hw_eqs.c b/drivers/net/ethernet/huawei/hinic/hinic_hw_eqs.c
+index 045c47786a04..381ced8f3c93 100644
+--- a/drivers/net/ethernet/huawei/hinic/hinic_hw_eqs.c
++++ b/drivers/net/ethernet/huawei/hinic/hinic_hw_eqs.c
+@@ -368,12 +368,12 @@ static void eq_irq_work(struct work_struct *work)
  }
  
- 
-@@ -1058,9 +1059,9 @@ static void init_ring(struct net_device *dev)
- 	}
- }
- 
--static void tx_poll(struct tasklet_struct *t)
-+static void tx_poll(struct work_struct *work)
+ /**
+- * ceq_tasklet - the tasklet of the EQ that received the event
+- * @t: the tasklet struct pointer
++ * ceq_bh_work - the bh_work of the EQ that received the event
++ * @work: the work struct pointer
+  **/
+-static void ceq_tasklet(struct tasklet_struct *t)
++static void ceq_bh_work(struct work_struct *work)
  {
--	struct netdev_private *np = from_tasklet(np, t, tx_tasklet);
-+	struct netdev_private *np = from_work(np, work, tx_bh_work);
- 	unsigned head = np->cur_task % TX_RING_SIZE;
- 	struct netdev_desc *txdesc =
- 		&np->tx_ring[(np->cur_tx - 1) % TX_RING_SIZE];
-@@ -1104,11 +1105,11 @@ start_tx (struct sk_buff *skb, struct net_device *dev)
- 			goto drop_frame;
- 	txdesc->frag.length = cpu_to_le32 (skb->len | LastFrag);
+-	struct hinic_eq *ceq = from_tasklet(ceq, t, ceq_tasklet);
++	struct hinic_eq *ceq = from_work(ceq, work, ceq_bh_work);
  
--	/* Increment cur_tx before tasklet_schedule() */
-+	/* Increment cur_tx before bh_work is queued */
- 	np->cur_tx++;
- 	mb();
--	/* Schedule a tx_poll() task */
--	tasklet_schedule(&np->tx_tasklet);
-+	/* Queue a tx_poll() bh work */
-+	queue_work(system_bh_wq, &np->tx_bh_work);
- 
- 	/* On some architectures: explicitly flush cache lines here. */
- 	if (np->cur_tx - np->dirty_tx < TX_QUEUE_LEN - 1 &&
-@@ -1199,7 +1200,7 @@ static irqreturn_t intr_handler(int irq, void *dev_instance)
- 					ioaddr + IntrEnable);
- 			if (np->budget < 0)
- 				np->budget = RX_BUDGET;
--			tasklet_schedule(&np->rx_tasklet);
-+			queue_work(system_bh_wq, &np->rx_bh_work);
- 		}
- 		if (intr_status & (IntrTxDone | IntrDrvRqst)) {
- 			tx_status = ioread16 (ioaddr + TxStatus);
-@@ -1315,9 +1316,9 @@ static irqreturn_t intr_handler(int irq, void *dev_instance)
- 	return IRQ_RETVAL(handled);
+ 	eq_irq_handler(ceq);
  }
+@@ -413,7 +413,7 @@ static irqreturn_t ceq_interrupt(int irq, void *data)
+ 	/* clear resend timer cnt register */
+ 	hinic_msix_attr_cnt_clear(ceq->hwif, ceq->msix_entry.entry);
  
--static void rx_poll(struct tasklet_struct *t)
-+static void rx_poll(struct work_struct *work)
- {
--	struct netdev_private *np = from_tasklet(np, t, rx_tasklet);
-+	struct netdev_private *np = from_work(np, work, rx_bh_work);
- 	struct net_device *dev = np->ndev;
- 	int entry = np->cur_rx % RX_RING_SIZE;
- 	int boguscnt = np->budget;
-@@ -1407,7 +1408,7 @@ static void rx_poll(struct tasklet_struct *t)
- 	np->budget -= received;
- 	if (np->budget <= 0)
- 		np->budget = RX_BUDGET;
--	tasklet_schedule(&np->rx_tasklet);
-+	queue_work(system_bh_wq, &np->rx_bh_work);
+-	tasklet_schedule(&ceq->ceq_tasklet);
++	queue_work(system_bh_wq, &ceq->ceq_bh_work);
+ 
+ 	return IRQ_HANDLED;
  }
+@@ -782,7 +782,7 @@ static int init_eq(struct hinic_eq *eq, struct hinic_hwif *hwif,
  
- static void refill_rx (struct net_device *dev)
-@@ -1819,9 +1820,9 @@ static int netdev_close(struct net_device *dev)
- 	struct sk_buff *skb;
- 	int i;
+ 		INIT_WORK(&aeq_work->work, eq_irq_work);
+ 	} else if (type == HINIC_CEQ) {
+-		tasklet_setup(&eq->ceq_tasklet, ceq_tasklet);
++		INIT_WORK(&eq->ceq_bh_work, ceq_bh_work);
+ 	}
  
--	/* Wait and kill tasklet */
--	tasklet_kill(&np->rx_tasklet);
--	tasklet_kill(&np->tx_tasklet);
-+	/* Wait and cancel bh work */
-+	cancel_work_sync(&np->rx_bh_work);
-+	cancel_work_sync(&np->tx_bh_work);
- 	np->cur_tx = 0;
- 	np->dirty_tx = 0;
- 	np->cur_task = 0;
+ 	/* set the attributes of the msix entry */
+@@ -833,7 +833,7 @@ static void remove_eq(struct hinic_eq *eq)
+ 		hinic_hwif_write_reg(eq->hwif,
+ 				     HINIC_CSR_AEQ_CTRL_1_ADDR(eq->q_id), 0);
+ 	} else if (eq->type == HINIC_CEQ) {
+-		tasklet_kill(&eq->ceq_tasklet);
++		cancel_work_sync(&eq->ceq_bh_work);
+ 		/* clear ceq_len to avoid hw access host memory */
+ 		hinic_hwif_write_reg(eq->hwif,
+ 				     HINIC_CSR_CEQ_CTRL_1_ADDR(eq->q_id), 0);
+@@ -968,9 +968,8 @@ void hinic_dump_ceq_info(struct hinic_hwdev *hwdev)
+ 		ci = hinic_hwif_read_reg(hwdev->hwif, addr);
+ 		addr = EQ_PROD_IDX_REG_ADDR(eq);
+ 		pi = hinic_hwif_read_reg(hwdev->hwif, addr);
+-		dev_err(&hwdev->hwif->pdev->dev, "Ceq id: %d, ci: 0x%08x, sw_ci: 0x%08x, pi: 0x%x, tasklet_state: 0x%lx, wrap: %d, ceqe: 0x%x\n",
++		dev_err(&hwdev->hwif->pdev->dev, "Ceq id: %d, ci: 0x%08x, sw_ci: 0x%08x, pi: 0x%x, wrap: %d, ceqe: 0x%x\n",
+ 			q_id, ci, eq->cons_idx, pi,
+-			eq->ceq_tasklet.state,
+ 			eq->wrapped, be32_to_cpu(*(__be32 *)(GET_CURR_CEQ_ELEM(eq))));
+ 	}
+ }
+diff --git a/drivers/net/ethernet/huawei/hinic/hinic_hw_eqs.h b/drivers/net/ethernet/huawei/hinic/hinic_hw_eqs.h
+index 2f3222174fc7..8fed3155f15c 100644
+--- a/drivers/net/ethernet/huawei/hinic/hinic_hw_eqs.h
++++ b/drivers/net/ethernet/huawei/hinic/hinic_hw_eqs.h
+@@ -193,7 +193,7 @@ struct hinic_eq {
+ 
+ 	struct hinic_eq_work    aeq_work;
+ 
+-	struct tasklet_struct   ceq_tasklet;
++	struct work_struct	ceq_bh_work;
+ };
+ 
+ struct hinic_hw_event_cb {
 -- 
 2.34.1
 
