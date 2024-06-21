@@ -1,78 +1,81 @@
-Return-Path: <linux-rdma+bounces-3390-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-3391-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id B7455911A20
-	for <lists+linux-rdma@lfdr.de>; Fri, 21 Jun 2024 07:09:48 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1C2C6911A23
+	for <lists+linux-rdma@lfdr.de>; Fri, 21 Jun 2024 07:10:01 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 233F6B24791
-	for <lists+linux-rdma@lfdr.de>; Fri, 21 Jun 2024 05:09:46 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C75FE286ABD
+	for <lists+linux-rdma@lfdr.de>; Fri, 21 Jun 2024 05:09:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AFD8816E887;
-	Fri, 21 Jun 2024 05:06:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2748D16D9B9;
+	Fri, 21 Jun 2024 05:06:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="dWpfJ8Ci"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="cIZVXW9+"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-ot1-f54.google.com (mail-ot1-f54.google.com [209.85.210.54])
+Received: from mail-pj1-f49.google.com (mail-pj1-f49.google.com [209.85.216.49])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C2F0C16DED4;
-	Fri, 21 Jun 2024 05:06:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6BB5E16E882;
+	Fri, 21 Jun 2024 05:06:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1718946366; cv=none; b=oulRkUI5EXQn9KjgxYuU6huRxVOLxbfaXwh1/k9zqMGMugJnVMFDGrzMCjhaJitfwC3pAD79kjBMN6g6g05I/j9ozd2SVeS9PiWUu7hWlFZtHgaU26ZpERmPB+TP7LATWBYmpJGlDGCJenYm+ncvkrkPcKZ++M9eNea7lthbWwk=
+	t=1718946367; cv=none; b=ifX4VPQMWj/eBuvb2jDKN3eRmr2DTiKfJsrY285SGQtg8euMAqTUmxR6ZTt07b+jh4/u1RsC9oqXoDfsu6ImoebQt4r1Dh2G/hg5V8YRlfaVw7lNCXLT1QOGmj8hK4Ib2PGZABdwI1ErBjl52nLMDzKCAMLp1l9UJE0oVaf0OXU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1718946366; c=relaxed/simple;
-	bh=ZDz2LhFLQz9qCiesFC2yTihbYdhNV6oWS3LIkrpVToI=;
+	s=arc-20240116; t=1718946367; c=relaxed/simple;
+	bh=x/RfIjlwpumUmDOu4Tf2V/YAEWwgje+MYgVG2elP/Sw=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=ax68J8kOrGOolyzAMZWOKeQ0hkMw6014QBuzDgKQvcJZHc1DQ1dsPhuQO1OdH/oT291aanPMT5Ikhx7DHbJ6FPgoizV+4LoaEgoUTtfFtrqL3H1mWZ3nmYdv22GzYDzu6w8t6dc+FqXtsI4RAIVEbKLuPBQgXejcieJVGkl8Il0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=dWpfJ8Ci; arc=none smtp.client-ip=209.85.210.54
+	 MIME-Version; b=bXZqx0R9t9xPAl62xlsucjHmmH3wCnDxQHwkdDDrXpIoJMMvp3aKrQf7Hl2iVl/vfYwPVxrHYV2sp5TCscvtFHWRz8Ka+2ZLSeRD1USMVJan06Y6RUI/ob3wVM9TeHjSa5+fGv5YEeIcGws+uX44n7BXs81Yf0EjViWJ72IJpa8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=cIZVXW9+; arc=none smtp.client-ip=209.85.216.49
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ot1-f54.google.com with SMTP id 46e09a7af769-6f9b4d69f53so855088a34.0;
-        Thu, 20 Jun 2024 22:06:04 -0700 (PDT)
+Received: by mail-pj1-f49.google.com with SMTP id 98e67ed59e1d1-2c7c61f7ee3so1385124a91.1;
+        Thu, 20 Jun 2024 22:06:06 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1718946364; x=1719551164; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1718946366; x=1719551166; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=gbaKAp4rBypUxqcKQTtYdGFIU8vf1Ad+mxOnv6tDJnw=;
-        b=dWpfJ8CinP2PJphGYSJfJv3d4QeFOnJjdPdJfIQuyULxMvje7IO6qzBYkLY/xoG024
-         0jPNk1V284eJ/c3KtBZzaaxwd9w8kvgQsS0kUEvZYe4sZT2eukDubwIdhz+yT6+CY4Uk
-         cB6REfKVR+kIGN/GpJfwlPyKbwGt80dLjmJo6T5de5LXEbxOcgpeMDm3zbx7W88YnQy2
-         P8J/kHiPxBKT+jsCO73Z1KRbRTlhWYo/GCGM4+7eeCYcaMKw70IUUcJuFH9h9Q9zsoDc
-         FXl8JMpUSpAtDMw0iyS9yAONqcxiIhTRtoU7ImmEtfS4oVtGOpRC8aI6vCr4xzfwUFJO
-         iwzw==
+        bh=nb9G2dJ7OPjt/ejkd8tb2g/z5QKcxicC+1X1lii3BoE=;
+        b=cIZVXW9+Ae5zckttlTsg85lq7f7jFOVRIWOqG22Voa9Ji3SZR8NoQt9nN+IzOfjdvq
+         pptbiOH6cGQZtewuPd2M0Q0ufzEMOmNHLNMDUbPqDWoyEml52m/9ZrZI/ML+17rQ+4Ip
+         rZ+/8LxtyLURzB0u4/nz0ZaweLlU1VG09f1PKpv52KlqCT4KCO+ZwFDlU9x8eCmSV3Zo
+         3TJQREZcqbD9pz1DOgixG/OivFDvlIyNQhulr+xD0qC8pkc60W82BqDTzvj7B6+FpYnS
+         RKznyLtD+ixk6UOiICzeeBVW9VOG5tX0oi0g0H6DuKMe+Po7V4o3QanvUUKD3xpAdReV
+         jZZQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1718946364; x=1719551164;
+        d=1e100.net; s=20230601; t=1718946366; x=1719551166;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=gbaKAp4rBypUxqcKQTtYdGFIU8vf1Ad+mxOnv6tDJnw=;
-        b=BgNLPY1h4p49U2KAPJ2IAR+2y9EcVR5kWHnEqihgb3zbqnzfC16TsmzIPyILSvMSgk
-         JrQ19NSfiZCnzPgcwT1aLFd+kvR7eiROI3Pp2wFv5saUAVXBajWzpoRay00UtcMZNS2I
-         LosbMqxXCxUpE15yhNIotVJvgm2WZfHTC3+0FSV6RSMcp7uYQMAIqC1F2G/Yw/8rA/EF
-         rpoKq1xYmpjOCmunXC7oJ5s+iiL1YzXVxyJq9z6cg/XZsDpLJwXTzIj6rKNq6inlzMzx
-         kB9aKu/uRug0zhNzgpgLYHmnU+oU5V+15TCFgtwkfIugp7ga7VuX6Vlqx8e/68PfxTBJ
-         YPQA==
-X-Forwarded-Encrypted: i=1; AJvYcCW1sKDJNU360cpOB4PQhiU3HG04lV6oIYxrkqKnFouf/Jzb0OMwyuwLcrhu/7+2VR2nq4zaI8LZzaLloH6jwU2Xz/X9JzL1Uyv2CfvFyMO3N22LH3fxlnyKYMJzMjywutcQgyNcyoqo6ziw7663lFbwhASHf/QvWTbq7ZjrECbWtA==
-X-Gm-Message-State: AOJu0YzeNiOCyyG+74TY53rrgzD2Is1cMb3ab8WS9a2CS1a8r/VeaDLr
-	WYkEWa6GG9R31Qud++oym6b0wvhEG992GKh5T+ZI3vKfmRGJzyHg
-X-Google-Smtp-Source: AGHT+IHpJWoyOgKjSQNeAeyQsc97SFuD4xHKSmRBj8Z2m00tZ3ggPULpelvaMwrLn3RSm6gMyiOWdA==
-X-Received: by 2002:a9d:6558:0:b0:700:8eea:af41 with SMTP id 46e09a7af769-7008eeab075mr6158681a34.1.1718946363694;
-        Thu, 20 Jun 2024 22:06:03 -0700 (PDT)
+        bh=nb9G2dJ7OPjt/ejkd8tb2g/z5QKcxicC+1X1lii3BoE=;
+        b=Jw3ReE8Fmk/6gpveV0yAfLOujcrzPSMMMGrIvPHEyqJ5jcPheTgAUpBWoT8B8MOYpl
+         UhJkJonXMLpT1w9BT0V/eq04Ymiq328JSYzttBV2dGr0ki6CwwpiVWPOaGQdy7WoADub
+         Xs8i2BAasT0XKKTwjf/mqlrGLXVpGH8PxCe+JcmUJOilC9/WFvFs4S/LGrW4yKtzBNwS
+         LRMi+B5h8dN/3RXkR4RvBdiit98lWl84MwCL+M0FnWfw3w5VE0tUuREd72OFYwYHu7Pj
+         GGC7eoXug2RFGhwiJJQMzhgj+dQoDzBeGYUcKvxjN+h9HDfDY0/oYNZ5yh97PA3B1g9s
+         jdmQ==
+X-Forwarded-Encrypted: i=1; AJvYcCX8e2Ku43ALsNeuVy5l9wJNmssu/NwR0UptJxO4s9LzshLNC2v3CT1Y2LbDBAjIksabTeO7Q7yrb1gjPW6wmRSZyRVzQ0rn7ddBrxrfCycGqWNM9190irR43zNevlkkKQa4B/ntLpnYgmnD5p12W+yTHF8TYcG61w/+Kbl7aoIGjQ==
+X-Gm-Message-State: AOJu0YxxGAZ6c0xN8P01NskR8tGxYSUn1wuA0vUBWcqWilP2O2V0G3o6
+	YBQGfCh50WAj49UgtdO5RpIbkPANFILbQxCEIZCdgnd7yG5AHjVn
+X-Google-Smtp-Source: AGHT+IFt/DVrB0r5Yt5O6INCZ9XvmjOda1oxh5UnpUp4RYoHaOpA6xAH45TisqRzLqPRUnNT9XKRaA==
+X-Received: by 2002:a17:90a:43a5:b0:2c2:8d49:5e6c with SMTP id 98e67ed59e1d1-2c7b58fc980mr7060917a91.7.1718946365579;
+        Thu, 20 Jun 2024 22:06:05 -0700 (PDT)
 Received: from apais-devbox.. ([2001:569:766d:6500:fb4e:6cf3:3ec6:9292])
-        by smtp.gmail.com with ESMTPSA id 41be03b00d2f7-716c950d71asm371308a12.62.2024.06.20.22.06.02
+        by smtp.gmail.com with ESMTPSA id 41be03b00d2f7-716c950d71asm371308a12.62.2024.06.20.22.06.04
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 20 Jun 2024 22:06:03 -0700 (PDT)
+        Thu, 20 Jun 2024 22:06:05 -0700 (PDT)
 From: Allen Pais <allen.lkml@gmail.com>
 To: kuba@kernel.org,
-	Guo-Fu Tseng <cooldavid@cooldavid.org>,
+	Marcin Wojtas <marcin.s.wojtas@gmail.com>,
+	Russell King <linux@armlinux.org.uk>,
 	"David S. Miller" <davem@davemloft.net>,
 	Eric Dumazet <edumazet@google.com>,
-	Paolo Abeni <pabeni@redhat.com>
+	Paolo Abeni <pabeni@redhat.com>,
+	Mirko Lindner <mlindner@marvell.com>,
+	Stephen Hemminger <stephen@networkplumber.org>
 Cc: jes@trained-monkey.org,
 	kda@linux-powerpc.org,
 	cai.huoqing@linux.dev,
@@ -83,9 +86,7 @@ Cc: jes@trained-monkey.org,
 	naveen.n.rao@linux.ibm.com,
 	nnac123@linux.ibm.com,
 	tlfalcon@linux.ibm.com,
-	marcin.s.wojtas@gmail.com,
-	mlindner@marvell.com,
-	stephen@networkplumber.org,
+	cooldavid@cooldavid.org,
 	nbd@nbd.name,
 	sean.wang@mediatek.com,
 	Mark-MC.Lee@mediatek.com,
@@ -103,9 +104,9 @@ Cc: jes@trained-monkey.org,
 	linux-net-drivers@amd.com,
 	Allen Pais <allen.lkml@gmail.com>,
 	netdev@vger.kernel.org
-Subject: [PATCH 13/15] net: jme: Convert tasklet API to new bottom half workqueue mechanism
-Date: Thu, 20 Jun 2024 22:05:23 -0700
-Message-Id: <20240621050525.3720069-14-allen.lkml@gmail.com>
+Subject: [PATCH 14/15] net: marvell: Convert tasklet API to new bottom half workqueue mechanism
+Date: Thu, 20 Jun 2024 22:05:24 -0700
+Message-Id: <20240621050525.3720069-15-allen.lkml@gmail.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20240621050525.3720069-1-allen.lkml@gmail.com>
 References: <20240621050525.3720069-1-allen.lkml@gmail.com>
@@ -119,233 +120,100 @@ Content-Transfer-Encoding: 8bit
 
 Migrate tasklet APIs to the new bottom half workqueue mechanism. It
 replaces all occurrences of tasklet usage with the appropriate workqueue
-APIs throughout the jme driver. This transition ensures compatibility
+APIs throughout the marvell driver. This transition ensures compatibility
 with the latest design and enhances performance.
 
 Signed-off-by: Allen Pais <allen.lkml@gmail.com>
 ---
- drivers/net/ethernet/jme.c | 72 +++++++++++++++++++-------------------
- drivers/net/ethernet/jme.h |  8 ++---
- 2 files changed, 40 insertions(+), 40 deletions(-)
+ drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c |  4 +---
+ drivers/net/ethernet/marvell/skge.c             | 12 ++++++------
+ drivers/net/ethernet/marvell/skge.h             |  3 ++-
+ 3 files changed, 9 insertions(+), 10 deletions(-)
 
-diff --git a/drivers/net/ethernet/jme.c b/drivers/net/ethernet/jme.c
-index b06e24562973..b1a92b851b3b 100644
---- a/drivers/net/ethernet/jme.c
-+++ b/drivers/net/ethernet/jme.c
-@@ -1141,7 +1141,7 @@ jme_dynamic_pcc(struct jme_adapter *jme)
- 
- 	if (unlikely(dpi->attempt != dpi->cur && dpi->cnt > 5)) {
- 		if (dpi->attempt < dpi->cur)
--			tasklet_schedule(&jme->rxclean_task);
-+			queue_work(system_bh_wq, &jme->rxclean_bh_work);
- 		jme_set_rx_pcc(jme, dpi->attempt);
- 		dpi->cur = dpi->attempt;
- 		dpi->cnt = 0;
-@@ -1182,9 +1182,9 @@ jme_shutdown_nic(struct jme_adapter *jme)
+diff --git a/drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c b/drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c
+index 671368d2c77e..47fe71a8f57e 100644
+--- a/drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c
++++ b/drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c
+@@ -2628,9 +2628,7 @@ static u32 mvpp2_txq_desc_csum(int l3_offs, __be16 l3_proto,
+  * The number of sent descriptors is returned.
+  * Per-thread access
+  *
+- * Called only from mvpp2_txq_done(), called from mvpp2_tx()
+- * (migration disabled) and from the TX completion tasklet (migration
+- * disabled) so using smp_processor_id() is OK.
++ * Called only from mvpp2_txq_done().
+  */
+ static inline int mvpp2_txq_sent_desc_proc(struct mvpp2_port *port,
+ 					   struct mvpp2_tx_queue *txq)
+diff --git a/drivers/net/ethernet/marvell/skge.c b/drivers/net/ethernet/marvell/skge.c
+index fcfb34561882..4448af079447 100644
+--- a/drivers/net/ethernet/marvell/skge.c
++++ b/drivers/net/ethernet/marvell/skge.c
+@@ -3342,13 +3342,13 @@ static void skge_error_irq(struct skge_hw *hw)
  }
  
- static void
--jme_pcc_tasklet(struct tasklet_struct *t)
-+jme_pcc_bh_work(struct work_struct *work)
+ /*
+- * Interrupt from PHY are handled in tasklet (softirq)
++ * Interrupt from PHY are handled in bh work (softirq)
+  * because accessing phy registers requires spin wait which might
+  * cause excess interrupt latency.
+  */
+-static void skge_extirq(struct tasklet_struct *t)
++static void skge_extirq(struct work_struct *work)
  {
--	struct jme_adapter *jme = from_tasklet(jme, t, pcc_task);
-+	struct jme_adapter *jme = from_work(jme, work, pcc_bh_work);
- 	struct net_device *netdev = jme->dev;
+-	struct skge_hw *hw = from_tasklet(hw, t, phy_task);
++	struct skge_hw *hw = from_work(hw, work, phy_bh_work);
+ 	int port;
  
- 	if (unlikely(test_bit(JME_FLAG_SHUTDOWN, &jme->flags))) {
-@@ -1282,9 +1282,9 @@ static void jme_link_change_work(struct work_struct *work)
- 		jme_stop_shutdown_timer(jme);
- 
- 	jme_stop_pcc_timer(jme);
--	tasklet_disable(&jme->txclean_task);
--	tasklet_disable(&jme->rxclean_task);
--	tasklet_disable(&jme->rxempty_task);
-+	disable_work_sync(&jme->txclean_bh_work);
-+	disable_work_sync(&jme->rxclean_bh_work);
-+	disable_work_sync(&jme->rxempty_bh_work);
- 
- 	if (netif_carrier_ok(netdev)) {
- 		jme_disable_rx_engine(jme);
-@@ -1304,7 +1304,7 @@ static void jme_link_change_work(struct work_struct *work)
- 		rc = jme_setup_rx_resources(jme);
- 		if (rc) {
- 			pr_err("Allocating resources for RX error, Device STOPPED!\n");
--			goto out_enable_tasklet;
-+			goto out_enable_bh_work;
- 		}
- 
- 		rc = jme_setup_tx_resources(jme);
-@@ -1326,22 +1326,22 @@ static void jme_link_change_work(struct work_struct *work)
- 		jme_start_shutdown_timer(jme);
+ 	for (port = 0; port < hw->ports; port++) {
+@@ -3389,7 +3389,7 @@ static irqreturn_t skge_intr(int irq, void *dev_id)
+ 	status &= hw->intr_mask;
+ 	if (status & IS_EXT_REG) {
+ 		hw->intr_mask &= ~IS_EXT_REG;
+-		tasklet_schedule(&hw->phy_task);
++		queue_work(system_bh_wq, &hw->phy_bh_work);
  	}
  
--	goto out_enable_tasklet;
-+	goto out_enable_bh_work;
+ 	if (status & (IS_XA1_F|IS_R1_F)) {
+@@ -3937,7 +3937,7 @@ static int skge_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
+ 	hw->pdev = pdev;
+ 	spin_lock_init(&hw->hw_lock);
+ 	spin_lock_init(&hw->phy_lock);
+-	tasklet_setup(&hw->phy_task, skge_extirq);
++	INIT_WORK(&hw->phy_bh_work, skge_extirq);
  
- err_out_free_rx_resources:
- 	jme_free_rx_resources(jme);
--out_enable_tasklet:
--	tasklet_enable(&jme->txclean_task);
--	tasklet_enable(&jme->rxclean_task);
--	tasklet_enable(&jme->rxempty_task);
-+out_enable_bh_work:
-+	enable_and_queue_work(system_bh_wq, &jme->txclean_bh_work);
-+	enable_and_queue_work(system_bh_wq, &jme->rxclean_bh_work);
-+	enable_and_queue_work(system_bh_wq, &jme->rxempty_bh_work);
- out:
- 	atomic_inc(&jme->link_changing);
- }
+ 	hw->regs = ioremap(pci_resource_start(pdev, 0), 0x4000);
+ 	if (!hw->regs) {
+@@ -4035,7 +4035,7 @@ static void skge_remove(struct pci_dev *pdev)
+ 	dev0 = hw->dev[0];
+ 	unregister_netdev(dev0);
  
- static void
--jme_rx_clean_tasklet(struct tasklet_struct *t)
-+jme_rx_clean_bh_work(struct work_struct *work)
- {
--	struct jme_adapter *jme = from_tasklet(jme, t, rxclean_task);
-+	struct jme_adapter *jme = from_work(jme, work, rxclean_bh_work);
- 	struct dynpcc_info *dpi = &(jme->dpi);
+-	tasklet_kill(&hw->phy_task);
++	cancel_work_sync(&hw->phy_bh_work);
  
- 	jme_process_receive(jme, jme->rx_ring_size);
-@@ -1374,9 +1374,9 @@ jme_poll(JME_NAPI_HOLDER(holder), JME_NAPI_WEIGHT(budget))
- }
+ 	spin_lock_irq(&hw->hw_lock);
+ 	hw->intr_mask = 0;
+diff --git a/drivers/net/ethernet/marvell/skge.h b/drivers/net/ethernet/marvell/skge.h
+index f72217348eb4..0cf77f4b1c57 100644
+--- a/drivers/net/ethernet/marvell/skge.h
++++ b/drivers/net/ethernet/marvell/skge.h
+@@ -5,6 +5,7 @@
+ #ifndef _SKGE_H
+ #define _SKGE_H
+ #include <linux/interrupt.h>
++#include <linux/workqueue.h>
  
- static void
--jme_rx_empty_tasklet(struct tasklet_struct *t)
-+jme_rx_empty_bh_work(struct work_struct *work)
- {
--	struct jme_adapter *jme = from_tasklet(jme, t, rxempty_task);
-+	struct jme_adapter *jme = from_work(jme, work, rxempty_bh_work);
+ /* PCI config registers */
+ #define PCI_DEV_REG1	0x40
+@@ -2418,7 +2419,7 @@ struct skge_hw {
+ 	u32	     	     ram_offset;
+ 	u16		     phy_addr;
+ 	spinlock_t	     phy_lock;
+-	struct tasklet_struct phy_task;
++	struct work_struct   phy_bh_work;
  
- 	if (unlikely(atomic_read(&jme->link_changing) != 1))
- 		return;
-@@ -1386,7 +1386,7 @@ jme_rx_empty_tasklet(struct tasklet_struct *t)
- 
- 	netif_info(jme, rx_status, jme->dev, "RX Queue Full!\n");
- 
--	jme_rx_clean_tasklet(&jme->rxclean_task);
-+	jme_rx_clean_bh_work(&jme->rxclean_bh_work);
- 
- 	while (atomic_read(&jme->rx_empty) > 0) {
- 		atomic_dec(&jme->rx_empty);
-@@ -1410,9 +1410,9 @@ jme_wake_queue_if_stopped(struct jme_adapter *jme)
- 
- }
- 
--static void jme_tx_clean_tasklet(struct tasklet_struct *t)
-+static void jme_tx_clean_bh_work(struct work_struct *work)
- {
--	struct jme_adapter *jme = from_tasklet(jme, t, txclean_task);
-+	struct jme_adapter *jme = from_work(jme, work, txclean_bh_work);
- 	struct jme_ring *txring = &(jme->txring[0]);
- 	struct txdesc *txdesc = txring->desc;
- 	struct jme_buffer_info *txbi = txring->bufinf, *ctxbi, *ttxbi;
-@@ -1510,12 +1510,12 @@ jme_intr_msi(struct jme_adapter *jme, u32 intrstat)
- 
- 	if (intrstat & INTR_TMINTR) {
- 		jwrite32(jme, JME_IEVE, INTR_TMINTR);
--		tasklet_schedule(&jme->pcc_task);
-+		queue_work(system_bh_wq, &jme->pcc_bh_work);
- 	}
- 
- 	if (intrstat & (INTR_PCCTXTO | INTR_PCCTX)) {
- 		jwrite32(jme, JME_IEVE, INTR_PCCTXTO | INTR_PCCTX | INTR_TX0);
--		tasklet_schedule(&jme->txclean_task);
-+		queue_work(system_bh_wq, &jme->txclean_bh_work);
- 	}
- 
- 	if ((intrstat & (INTR_PCCRX0TO | INTR_PCCRX0 | INTR_RX0EMP))) {
-@@ -1538,9 +1538,9 @@ jme_intr_msi(struct jme_adapter *jme, u32 intrstat)
- 	} else {
- 		if (intrstat & INTR_RX0EMP) {
- 			atomic_inc(&jme->rx_empty);
--			tasklet_hi_schedule(&jme->rxempty_task);
-+			queue_work(system_bh_highpri_wq, &jme->rxempty_bh_work);
- 		} else if (intrstat & (INTR_PCCRX0TO | INTR_PCCRX0)) {
--			tasklet_hi_schedule(&jme->rxclean_task);
-+			queue_work(system_bh_highpri_wq, &jme->rxclean_bh_work);
- 		}
- 	}
- 
-@@ -1826,9 +1826,9 @@ jme_open(struct net_device *netdev)
- 	jme_clear_pm_disable_wol(jme);
- 	JME_NAPI_ENABLE(jme);
- 
--	tasklet_setup(&jme->txclean_task, jme_tx_clean_tasklet);
--	tasklet_setup(&jme->rxclean_task, jme_rx_clean_tasklet);
--	tasklet_setup(&jme->rxempty_task, jme_rx_empty_tasklet);
-+	INIT_WORK(&jme->txclean_bh_work, jme_tx_clean_bh_work);
-+	INIT_WORK(&jme->rxclean_bh_work, jme_rx_clean_bh_work);
-+	INIT_WORK(&jme->rxempty_bh_work, jme_rx_empty_bh_work);
- 
- 	rc = jme_request_irq(jme);
- 	if (rc)
-@@ -1914,9 +1914,9 @@ jme_close(struct net_device *netdev)
- 	JME_NAPI_DISABLE(jme);
- 
- 	cancel_work_sync(&jme->linkch_task);
--	tasklet_kill(&jme->txclean_task);
--	tasklet_kill(&jme->rxclean_task);
--	tasklet_kill(&jme->rxempty_task);
-+	cancel_work_sync(&jme->txclean_bh_work);
-+	cancel_work_sync(&jme->rxclean_bh_work);
-+	cancel_work_sync(&jme->rxempty_bh_work);
- 
- 	jme_disable_rx_engine(jme);
- 	jme_disable_tx_engine(jme);
-@@ -3020,7 +3020,7 @@ jme_init_one(struct pci_dev *pdev,
- 	atomic_set(&jme->tx_cleaning, 1);
- 	atomic_set(&jme->rx_empty, 1);
- 
--	tasklet_setup(&jme->pcc_task, jme_pcc_tasklet);
-+	INIT_WORK(&jme->pcc_bh_work, jme_pcc_bh_work);
- 	INIT_WORK(&jme->linkch_task, jme_link_change_work);
- 	jme->dpi.cur = PCC_P1;
- 
-@@ -3180,9 +3180,9 @@ jme_suspend(struct device *dev)
- 	netif_stop_queue(netdev);
- 	jme_stop_irq(jme);
- 
--	tasklet_disable(&jme->txclean_task);
--	tasklet_disable(&jme->rxclean_task);
--	tasklet_disable(&jme->rxempty_task);
-+	disable_work_sync(&jme->txclean_bh_work);
-+	disable_work_sync(&jme->rxclean_bh_work);
-+	disable_work_sync(&jme->rxempty_bh_work);
- 
- 	if (netif_carrier_ok(netdev)) {
- 		if (test_bit(JME_FLAG_POLL, &jme->flags))
-@@ -3198,9 +3198,9 @@ jme_suspend(struct device *dev)
- 		jme->phylink = 0;
- 	}
- 
--	tasklet_enable(&jme->txclean_task);
--	tasklet_enable(&jme->rxclean_task);
--	tasklet_enable(&jme->rxempty_task);
-+	enable_and_queue_work(system_bh_wq, &jme->txclean_bh_work);
-+	enable_and_queue_work(system_bh_wq, &jme->rxclean_bh_work);
-+	enable_and_queue_work(system_bh_wq, &jme->rxempty_bh_work);
- 
- 	jme_powersave_phy(jme);
- 
-diff --git a/drivers/net/ethernet/jme.h b/drivers/net/ethernet/jme.h
-index 860494ff3714..73a8a1438340 100644
---- a/drivers/net/ethernet/jme.h
-+++ b/drivers/net/ethernet/jme.h
-@@ -406,11 +406,11 @@ struct jme_adapter {
- 	spinlock_t		phy_lock;
- 	spinlock_t		macaddr_lock;
- 	spinlock_t		rxmcs_lock;
--	struct tasklet_struct	rxempty_task;
--	struct tasklet_struct	rxclean_task;
--	struct tasklet_struct	txclean_task;
-+	struct work_struct	rxempty_bh_work;
-+	struct work_struct	rxclean_bh_work;
-+	struct work_struct	txclean_bh_work;
- 	struct work_struct	linkch_task;
--	struct tasklet_struct	pcc_task;
-+	struct work_struct	pcc_bh_work;
- 	unsigned long		flags;
- 	u32			reg_txcs;
- 	u32			reg_txpfc;
+ 	char		     irq_name[]; /* skge@pci:000:04:00.0 */
+ };
 -- 
 2.34.1
 
