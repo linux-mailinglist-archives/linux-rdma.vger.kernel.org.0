@@ -1,123 +1,122 @@
-Return-Path: <linux-rdma+bounces-3411-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-3412-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 496A6913ABD
-	for <lists+linux-rdma@lfdr.de>; Sun, 23 Jun 2024 15:03:46 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id C279C913BD7
+	for <lists+linux-rdma@lfdr.de>; Sun, 23 Jun 2024 16:46:17 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id ED12B1F2185B
-	for <lists+linux-rdma@lfdr.de>; Sun, 23 Jun 2024 13:03:45 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7D316282BAF
+	for <lists+linux-rdma@lfdr.de>; Sun, 23 Jun 2024 14:46:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AA4FE17FAD2;
-	Sun, 23 Jun 2024 13:03:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 48CA7181BBE;
+	Sun, 23 Jun 2024 14:46:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="vXJShoiB"
+	dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b="JAE5omCx"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from out-170.mta0.migadu.com (out-170.mta0.migadu.com [91.218.175.170])
+Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EC31884D11
-	for <linux-rdma@vger.kernel.org>; Sun, 23 Jun 2024 13:03:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 342B81EA6E;
+	Sun, 23 Jun 2024 14:46:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=156.67.10.101
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1719147821; cv=none; b=giNv3pZmUFXS/tlmwjD3lt6OTWYk3hnfUiV28a5QSvkZ5db3QIqUuNXLShC906MltFqLnPq1aE7KRTt5qUFtdfmrADiqBAZdY5Gg4uEnOKzPttizFjT6LvVYbbd8KwRezmRneIsHaCbRhxuUaDvkQz0s8cD2+VbGcJMQN6KESmQ=
+	t=1719153972; cv=none; b=sB1qdib8rMq/4ztSBNNgZeypSQowomeEsyoTW+A7hkXRAeAVA2NrpReLacZtZjh3rrg1wBE2qTp/CeWS8quzQYx0FkszT37MZQ+GMjXajr7bWLgo8095n7a//iP3d4m8wsiTeM1ZeY9UVXZ+TlrwjVpi/qOuJV7UIQ6DyDHV9bU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1719147821; c=relaxed/simple;
-	bh=Bj5FnBF4i2sihrGlLuzD5IsOpC/3tWciQWS86QJgc3s=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=SdLmEctp5QeZ/r6iPFCsYUSPJWswrPwNh1iD8rahw0uVD47gQDMmuq4VervvFbFlV+zsCwtMcfjq8txyrae0bSRw76fj4M9S5IztCpH2I1rUkz2r54eR3fjEii9jA8/jvABrX1NyaD/t2516sbGLBQasYiZv3YyaQSe+xRzXdFA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=vXJShoiB; arc=none smtp.client-ip=91.218.175.170
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-X-Envelope-To: mgurtovoy@nvidia.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1719147815;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=YZpMlVJ+jaIKNfbBuiKZlvKVWDvGFGqrDWEQvknRsjU=;
-	b=vXJShoiB6Kl8C6LDFDQf21XiOgU0xnzje9Rg27Lk8JkSB4jwlgxlNxFCxVWMuNFUR7u9G0
-	nvYiTPZmjYFWordThzh/QcB8YnLcQw46rpK+D0kGFfSqMVWU4IlE4fmVeN+cAm5u6bi88m
-	uYUDwLoBEV65Hv4JuSFjDym6vdNCQcE=
-X-Envelope-To: leonro@nvidia.com
-X-Envelope-To: jgg@nvidia.com
-X-Envelope-To: linux-nvme@lists.infradead.org
-X-Envelope-To: linux-rdma@vger.kernel.org
-X-Envelope-To: chuck.lever@oracle.com
-X-Envelope-To: oren@nvidia.com
-X-Envelope-To: israelr@nvidia.com
-X-Envelope-To: maorg@nvidia.com
-X-Envelope-To: yishaih@nvidia.com
-X-Envelope-To: hch@lst.de
-X-Envelope-To: bvanassche@acm.org
-X-Envelope-To: shiraz.saleem@intel.com
-X-Envelope-To: edumazet@google.com
-Message-ID: <9a23267e-3d63-44d2-8f06-ca8cbbf2567a@linux.dev>
-Date: Sun, 23 Jun 2024 21:03:24 +0800
+	s=arc-20240116; t=1719153972; c=relaxed/simple;
+	bh=sSSAApEr//cHzy5xlGIXpABWrJVeEvyJw+2d6f8qIvU=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=uUeOEkFyx88W7WrpIZ+Rqry4fkA+qUpAClQ7hg9L5YFOdnOtJFTCFmEp65WR7qFl40+SLGTYrurZYd0FqSYY8Y7+RfpvdWEVBe8fLmQveK8tsErCyK0hDuMJ1nwn00sCQgRPRgQi7CDRlUba749QK1aj3XOd3zxDFY0B3VhYiNw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch; spf=pass smtp.mailfrom=lunn.ch; dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b=JAE5omCx; arc=none smtp.client-ip=156.67.10.101
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lunn.ch
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+	s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
+	References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
+	Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
+	Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
+	bh=hY35+1Y/0rNSqds3ityzK536HUhtPgnfxWmgWJYkndg=; b=JAE5omCxkdN1nqIHskPoNR398b
+	LPaggnarB+j9AWJLL4oJjC+r2inCjkun9kVK6P4ytxBsa7byMa6MePBQehscJB6X2kjZDXLdV9Qk+
+	OxF7v/K90XQ29x51evD7aOjEPOG7WUWAdyiaXaolKQc/2u1nVwl7cLN2iQT/xdNOcCo8=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+	(envelope-from <andrew@lunn.ch>)
+	id 1sLOTg-000mjj-5e; Sun, 23 Jun 2024 16:46:00 +0200
+Date: Sun, 23 Jun 2024 16:46:00 +0200
+From: Andrew Lunn <andrew@lunn.ch>
+To: Omer Shpigelman <oshpigelman@habana.ai>
+Cc: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+	"linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+	"netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+	"dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
+	"ogabbay@kernel.org" <ogabbay@kernel.org>,
+	Zvika Yehudai <zyehudai@habana.ai>
+Subject: Re: [PATCH 09/15] net: hbl_en: add habanalabs Ethernet driver
+Message-ID: <f45a71f9-640e-473a-9b80-90a50b087474@lunn.ch>
+References: <20240613082208.1439968-1-oshpigelman@habana.ai>
+ <20240613082208.1439968-10-oshpigelman@habana.ai>
+ <10902044-fb02-4328-bf88-0b386ee51c78@lunn.ch>
+ <bddb69c3-511b-4385-a67d-903e910a8b51@habana.ai>
+ <621d4891-36d7-48c6-bdd8-2f3ca06a23f6@lunn.ch>
+ <45e35940-c8fc-4f6c-8429-e6681a48b889@habana.ai>
+ <2c66dc75-b321-4980-955f-7fdcd902b578@lunn.ch>
+ <8a534044-ab84-4722-b4e9-4390c2cc6471@habana.ai>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH v1 0/6] Last WQE Reached event treatment
-To: Max Gurtovoy <mgurtovoy@nvidia.com>, leonro@nvidia.com, jgg@nvidia.com,
- linux-nvme@lists.infradead.org, linux-rdma@vger.kernel.org,
- chuck.lever@oracle.com
-Cc: oren@nvidia.com, israelr@nvidia.com, maorg@nvidia.com,
- yishaih@nvidia.com, hch@lst.de, bvanassche@acm.org, shiraz.saleem@intel.com,
- edumazet@google.com
-References: <20240618001034.22681-1-mgurtovoy@nvidia.com>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Zhu Yanjun <yanjun.zhu@linux.dev>
-In-Reply-To: <20240618001034.22681-1-mgurtovoy@nvidia.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <8a534044-ab84-4722-b4e9-4390c2cc6471@habana.ai>
 
-在 2024/6/18 8:10, Max Gurtovoy 写道:
-> Hi Jason/Leon/Sagi,
+> > But what about when the system is under memory pressure? You say it
+> > allocates memory. What happens if those allocations fail. Does
+> > changing the MTU take me from a working system to a dead system? It is
+> > good practice to not kill a working system under situations like
+> > memory pressure. You try to first allocate the memory you need to
+> > handle the new MTU, and only if successful do you free existing memory
+> > you no longer need. That means if you cannot allocate the needed
+> > memory, you still have the old memory, you can keep the old MTU and
+> > return -ENOMEM, and the system keeps running.
+> > 
 > 
-> This series adds a support for draining a QP that is associated with a
-> SRQ (Shared Receive Queue).
-> Leakage problem can occur if we won't treat Last WQE Reached event.
-> 
-> In the series, that is based on some old series I've send during 2018, I
+> That's a good optimization for these kind of on-the-fly configurations but
+> as you wrote before, changing an MTU value is not a hot path so out of
+> cost-benefit considerations we didn't find it mandatory to optimize this
+> flow.
 
-The old series is as below. It had better to post the link.
+I would not call this an optimization. And it is not just about
+changing the MTU. ethtool set_ringparam() is also likely to run into
+this problem, and any other configuration which requires reallocating
+the rings.
 
-https://www.spinics.net/lists/linux-rdma/msg59633.html
+This is something else which comes up every few months on the list,
+and drivers writers who monitor the list will write their drivers that
+why, not 'optimise' it later.
 
-Zhu Yanjun
+> I get your point but still it will be good if it would be documented
+> somewhere IMHO.
 
-> used a different approach and handled the event in the RDMA core, as was
-> suggested in discussion in the mailing list.
-> 
-> I've updated RDMA ULPs. Most of them were trivial except IPoIB that was
-> handling the Last WQE reached in the ULP.
-> 
-> I've tested this series with NVMf/RDMA on RoCE.
-> 
-> Max Gurtovoy (6):
->    IB/core: add support for draining Shared receive queues
->    IB/isert: remove the handling of last WQE reached event
->    RDMA/srpt: remove the handling of last WQE reached event
->    nvmet-rdma: remove the handling of last WQE reached event
->    svcrdma: remove the handling of last WQE reached event
->    RDMA/IPoIB: remove the handling of last WQE reached event
-> 
->   drivers/infiniband/core/verbs.c          | 83 +++++++++++++++++++++++-
->   drivers/infiniband/ulp/ipoib/ipoib.h     | 33 +---------
->   drivers/infiniband/ulp/ipoib/ipoib_cm.c  | 71 ++------------------
->   drivers/infiniband/ulp/isert/ib_isert.c  |  3 -
->   drivers/infiniband/ulp/srpt/ib_srpt.c    |  5 --
->   drivers/nvme/target/rdma.c               |  4 --
->   include/rdma/ib_verbs.h                  |  2 +
->   net/sunrpc/xprtrdma/svc_rdma_transport.c |  1 -
->   8 files changed, 92 insertions(+), 110 deletions(-)
-> 
+Kernel documentation is poor, agreed. But kernel policy is also
+somewhat fluid, best practices change, and any developers can
+influence that policy, different subsystems can and do have
+contradictory policy, etc. The mailing list is the best place to learn
+and to take part in this community. You need to be on the list for
+other reasons as well.
 
+> I'm familiar with this logic but I don't understand your point. The point
+> you are making is that setting this Autoneg bit in lp_advertising is
+> pointless? I see other vendors setting it too in case that autoneg was
+> completed.
+> Is that redundant also in their case? because it looks to me that in this
+> case we followed the same logic and conventions other vendors followed.
+
+Please show us the output from ethtool. Does it look like the example
+i showed? I must admit, i'm more from the embedded world and don't
+have access to high speed interfaces. But the basic concept of
+auto-neg should not change that much.
+
+	 Andrew
 
