@@ -1,149 +1,123 @@
-Return-Path: <linux-rdma+bounces-3410-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-3411-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 216579139F5
-	for <lists+linux-rdma@lfdr.de>; Sun, 23 Jun 2024 13:19:48 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 496A6913ABD
+	for <lists+linux-rdma@lfdr.de>; Sun, 23 Jun 2024 15:03:46 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id BE1811F21B20
-	for <lists+linux-rdma@lfdr.de>; Sun, 23 Jun 2024 11:19:47 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id ED12B1F2185B
+	for <lists+linux-rdma@lfdr.de>; Sun, 23 Jun 2024 13:03:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 01C4212F37B;
-	Sun, 23 Jun 2024 11:19:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AA4FE17FAD2;
+	Sun, 23 Jun 2024 13:03:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="DigYG/Q8"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="vXJShoiB"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from out-177.mta0.migadu.com (out-177.mta0.migadu.com [91.218.175.177])
+Received: from out-170.mta0.migadu.com (out-170.mta0.migadu.com [91.218.175.170])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9177C53E31
-	for <linux-rdma@vger.kernel.org>; Sun, 23 Jun 2024 11:19:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.177
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EC31884D11
+	for <linux-rdma@vger.kernel.org>; Sun, 23 Jun 2024 13:03:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1719141580; cv=none; b=Xe5lk/fk42MqNOSubFYCDuItO8e/DvRxrWkQYyTJ0fsyM3onLAp5XbwJTrBtqWb6S2ffznrEqC3Bn0iGT1M5Fun6LeFnqnfuMXirNNAEFAWgD4Idvv9BKrLyhvf84lin9uZF/WXJomg32fahATWqiedDBfQNCY0s7tFnk1AAN1s=
+	t=1719147821; cv=none; b=giNv3pZmUFXS/tlmwjD3lt6OTWYk3hnfUiV28a5QSvkZ5db3QIqUuNXLShC906MltFqLnPq1aE7KRTt5qUFtdfmrADiqBAZdY5Gg4uEnOKzPttizFjT6LvVYbbd8KwRezmRneIsHaCbRhxuUaDvkQz0s8cD2+VbGcJMQN6KESmQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1719141580; c=relaxed/simple;
-	bh=ljyVn6sr38jFgPDSUcIip0GOS0XdneIwPIrAqEZGroU=;
+	s=arc-20240116; t=1719147821; c=relaxed/simple;
+	bh=Bj5FnBF4i2sihrGlLuzD5IsOpC/3tWciQWS86QJgc3s=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=Znfi3gCUo6JVeCPrf5eCtj2pEUAWM3zsxYUTxL2HT31IqDgx7xfOqiaiKCUAfAXxQIyo+VQMJ5B0ruXk0i1D2qA8CiShkHsJRvnhZHdzWXmameAbEeN1fnzs7PplKcOMV6dcyI6wot4mQK+z2XHYGQ1vd/5QE9cx0YD/D7U3fDM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=DigYG/Q8; arc=none smtp.client-ip=91.218.175.177
+	 In-Reply-To:Content-Type; b=SdLmEctp5QeZ/r6iPFCsYUSPJWswrPwNh1iD8rahw0uVD47gQDMmuq4VervvFbFlV+zsCwtMcfjq8txyrae0bSRw76fj4M9S5IztCpH2I1rUkz2r54eR3fjEii9jA8/jvABrX1NyaD/t2516sbGLBQasYiZv3YyaQSe+xRzXdFA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=vXJShoiB; arc=none smtp.client-ip=91.218.175.170
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-X-Envelope-To: dtatulea@nvidia.com
+X-Envelope-To: mgurtovoy@nvidia.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1719141575;
+	t=1719147815;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=lRG1uM3WBpbpg3xypH5GmXKA53Zu/bQzjXzygmQbgxU=;
-	b=DigYG/Q8xKuD3izwp/FP6cw0OBaL3fjO3FjEaWeadzNCm+alcSIbKcNdsrvJ4yRCmKq1y3
-	IhaYVsl6dF8pjGbLUyhLGE+DkmXu6dK4BPqEqkw3iGODSQUha2MRSK+2F4/mC5DZGFs06o
-	XsWENHpR5kfeW1yx+3nTmCYYBrMtEJ8=
-X-Envelope-To: mst@redhat.com
-X-Envelope-To: jasowang@redhat.com
-X-Envelope-To: xuanzhuo@linux.alibaba.com
-X-Envelope-To: eperezma@redhat.com
-X-Envelope-To: saeedm@nvidia.com
-X-Envelope-To: leon@kernel.org
-X-Envelope-To: tariqt@nvidia.com
-X-Envelope-To: si-wei.liu@oracle.com
-X-Envelope-To: virtualization@lists.linux.dev
-X-Envelope-To: linux-kernel@vger.kernel.org
+	bh=YZpMlVJ+jaIKNfbBuiKZlvKVWDvGFGqrDWEQvknRsjU=;
+	b=vXJShoiB6Kl8C6LDFDQf21XiOgU0xnzje9Rg27Lk8JkSB4jwlgxlNxFCxVWMuNFUR7u9G0
+	nvYiTPZmjYFWordThzh/QcB8YnLcQw46rpK+D0kGFfSqMVWU4IlE4fmVeN+cAm5u6bi88m
+	uYUDwLoBEV65Hv4JuSFjDym6vdNCQcE=
+X-Envelope-To: leonro@nvidia.com
+X-Envelope-To: jgg@nvidia.com
+X-Envelope-To: linux-nvme@lists.infradead.org
 X-Envelope-To: linux-rdma@vger.kernel.org
-X-Envelope-To: netdev@vger.kernel.org
-X-Envelope-To: cratiu@nvidia.com
-Message-ID: <aea8bc89-ca09-45d7-82ba-05c1fad8bebd@linux.dev>
-Date: Sun, 23 Jun 2024 19:19:24 +0800
+X-Envelope-To: chuck.lever@oracle.com
+X-Envelope-To: oren@nvidia.com
+X-Envelope-To: israelr@nvidia.com
+X-Envelope-To: maorg@nvidia.com
+X-Envelope-To: yishaih@nvidia.com
+X-Envelope-To: hch@lst.de
+X-Envelope-To: bvanassche@acm.org
+X-Envelope-To: shiraz.saleem@intel.com
+X-Envelope-To: edumazet@google.com
+Message-ID: <9a23267e-3d63-44d2-8f06-ca8cbbf2567a@linux.dev>
+Date: Sun, 23 Jun 2024 21:03:24 +0800
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH vhost 18/23] vdpa/mlx5: Forward error in suspend/resume
- device
-To: Dragos Tatulea <dtatulea@nvidia.com>, "Michael S. Tsirkin"
- <mst@redhat.com>, Jason Wang <jasowang@redhat.com>,
- Xuan Zhuo <xuanzhuo@linux.alibaba.com>, =?UTF-8?Q?Eugenio_P=C3=A9rez?=
- <eperezma@redhat.com>, Saeed Mahameed <saeedm@nvidia.com>,
- Leon Romanovsky <leon@kernel.org>, Tariq Toukan <tariqt@nvidia.com>,
- Si-Wei Liu <si-wei.liu@oracle.com>
-Cc: virtualization@lists.linux.dev, linux-kernel@vger.kernel.org,
- linux-rdma@vger.kernel.org, netdev@vger.kernel.org,
- Cosmin Ratiu <cratiu@nvidia.com>
-References: <20240617-stage-vdpa-vq-precreate-v1-0-8c0483f0ca2a@nvidia.com>
- <20240617-stage-vdpa-vq-precreate-v1-18-8c0483f0ca2a@nvidia.com>
+Subject: Re: [PATCH v1 0/6] Last WQE Reached event treatment
+To: Max Gurtovoy <mgurtovoy@nvidia.com>, leonro@nvidia.com, jgg@nvidia.com,
+ linux-nvme@lists.infradead.org, linux-rdma@vger.kernel.org,
+ chuck.lever@oracle.com
+Cc: oren@nvidia.com, israelr@nvidia.com, maorg@nvidia.com,
+ yishaih@nvidia.com, hch@lst.de, bvanassche@acm.org, shiraz.saleem@intel.com,
+ edumazet@google.com
+References: <20240618001034.22681-1-mgurtovoy@nvidia.com>
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 From: Zhu Yanjun <yanjun.zhu@linux.dev>
-In-Reply-To: <20240617-stage-vdpa-vq-precreate-v1-18-8c0483f0ca2a@nvidia.com>
+In-Reply-To: <20240618001034.22681-1-mgurtovoy@nvidia.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
 X-Migadu-Flow: FLOW_OUT
 
-在 2024/6/17 23:07, Dragos Tatulea 写道:
-> Start using the suspend/resume_vq() error return codes previously added.
+在 2024/6/18 8:10, Max Gurtovoy 写道:
+> Hi Jason/Leon/Sagi,
 > 
-> Signed-off-by: Dragos Tatulea <dtatulea@nvidia.com>
-> Reviewed-by: Cosmin Ratiu <cratiu@nvidia.com>
-> ---
->   drivers/vdpa/mlx5/net/mlx5_vnet.c | 12 ++++++++----
->   1 file changed, 8 insertions(+), 4 deletions(-)
+> This series adds a support for draining a QP that is associated with a
+> SRQ (Shared Receive Queue).
+> Leakage problem can occur if we won't treat Last WQE Reached event.
 > 
-> diff --git a/drivers/vdpa/mlx5/net/mlx5_vnet.c b/drivers/vdpa/mlx5/net/mlx5_vnet.c
-> index f5d5b25cdb01..0e1c1b7ff297 100644
-> --- a/drivers/vdpa/mlx5/net/mlx5_vnet.c
-> +++ b/drivers/vdpa/mlx5/net/mlx5_vnet.c
-> @@ -3436,22 +3436,25 @@ static int mlx5_vdpa_suspend(struct vdpa_device *vdev)
->   {
->   	struct mlx5_vdpa_dev *mvdev = to_mvdev(vdev);
->   	struct mlx5_vdpa_net *ndev = to_mlx5_vdpa_ndev(mvdev);
-> +	int err;
+> In the series, that is based on some old series I've send during 2018, I
 
-Reverse Christmas Tree?
+The old series is as below. It had better to post the link.
 
-Reviewed-by: Zhu Yanjun <yanjun.zhu@linux.dev>
+https://www.spinics.net/lists/linux-rdma/msg59633.html
 
 Zhu Yanjun
->   
->   	mlx5_vdpa_info(mvdev, "suspending device\n");
->   
->   	down_write(&ndev->reslock);
->   	unregister_link_notifier(ndev);
-> -	suspend_vqs(ndev);
-> +	err = suspend_vqs(ndev);
->   	mlx5_vdpa_cvq_suspend(mvdev);
->   	mvdev->suspended = true;
->   	up_write(&ndev->reslock);
-> -	return 0;
-> +
-> +	return err;
->   }
->   
->   static int mlx5_vdpa_resume(struct vdpa_device *vdev)
->   {
->   	struct mlx5_vdpa_dev *mvdev = to_mvdev(vdev);
->   	struct mlx5_vdpa_net *ndev;
-> +	int err;
->   
->   	ndev = to_mlx5_vdpa_ndev(mvdev);
->   
-> @@ -3459,10 +3462,11 @@ static int mlx5_vdpa_resume(struct vdpa_device *vdev)
->   
->   	down_write(&ndev->reslock);
->   	mvdev->suspended = false;
-> -	resume_vqs(ndev);
-> +	err = resume_vqs(ndev);
->   	register_link_notifier(ndev);
->   	up_write(&ndev->reslock);
-> -	return 0;
-> +
-> +	return err;
->   }
->   
->   static int mlx5_set_group_asid(struct vdpa_device *vdev, u32 group,
+
+> used a different approach and handled the event in the RDMA core, as was
+> suggested in discussion in the mailing list.
+> 
+> I've updated RDMA ULPs. Most of them were trivial except IPoIB that was
+> handling the Last WQE reached in the ULP.
+> 
+> I've tested this series with NVMf/RDMA on RoCE.
+> 
+> Max Gurtovoy (6):
+>    IB/core: add support for draining Shared receive queues
+>    IB/isert: remove the handling of last WQE reached event
+>    RDMA/srpt: remove the handling of last WQE reached event
+>    nvmet-rdma: remove the handling of last WQE reached event
+>    svcrdma: remove the handling of last WQE reached event
+>    RDMA/IPoIB: remove the handling of last WQE reached event
+> 
+>   drivers/infiniband/core/verbs.c          | 83 +++++++++++++++++++++++-
+>   drivers/infiniband/ulp/ipoib/ipoib.h     | 33 +---------
+>   drivers/infiniband/ulp/ipoib/ipoib_cm.c  | 71 ++------------------
+>   drivers/infiniband/ulp/isert/ib_isert.c  |  3 -
+>   drivers/infiniband/ulp/srpt/ib_srpt.c    |  5 --
+>   drivers/nvme/target/rdma.c               |  4 --
+>   include/rdma/ib_verbs.h                  |  2 +
+>   net/sunrpc/xprtrdma/svc_rdma_transport.c |  1 -
+>   8 files changed, 92 insertions(+), 110 deletions(-)
 > 
 
 
