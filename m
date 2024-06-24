@@ -1,130 +1,82 @@
-Return-Path: <linux-rdma+bounces-3440-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-3441-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6D0B5914FB7
-	for <lists+linux-rdma@lfdr.de>; Mon, 24 Jun 2024 16:18:15 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8F76A914FB9
+	for <lists+linux-rdma@lfdr.de>; Mon, 24 Jun 2024 16:18:59 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2552A2823C1
-	for <lists+linux-rdma@lfdr.de>; Mon, 24 Jun 2024 14:18:14 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C95F71C20357
+	for <lists+linux-rdma@lfdr.de>; Mon, 24 Jun 2024 14:18:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B5545142635;
-	Mon, 24 Jun 2024 14:18:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9A17C142627;
+	Mon, 24 Jun 2024 14:18:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="HcV8da8u"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="XyHvZlEj"
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7747413A894
-	for <linux-rdma@vger.kernel.org>; Mon, 24 Jun 2024 14:18:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 58D0D20330
+	for <linux-rdma@vger.kernel.org>; Mon, 24 Jun 2024 14:18:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1719238691; cv=none; b=a9tF1h9bQQOhFsNMyXHj2yZppgkeL+OaRnFBXewHCmCVXwxxS+6IvP13a7/CJ0WY04GpMDxIXPePwqc4z0CIi9nwu87XydvOJbfS6SOI+3mp5cCNVlQK4Y609GWnsi4pJdYVuZtOJX1aEdGXXYiTHSwgHXkS1sSYP7oEWmSejYs=
+	t=1719238735; cv=none; b=RTKo+C8biwGMErnManGRIXcDxZ21Yj22Cq99U+roJSo7u57xn2p+iqGwMTTuR+6ge/fdXprzUdOgyb7X4Lxk5jnGd9OYkKSaOBd4J7jp9Kgat32OhBntqNVw+pD13vOVCj0zR0GXmduI27yOaiXzW3tofa2lsBGhVCf/RNmDpog=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1719238691; c=relaxed/simple;
-	bh=tuf5bSvIMrggz19fMZWlfeomtN59SNGI2qHBZlr2oDY=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=oS5nTf8jaQuSRV++/BHIYuEcAbjXXVteA34MEuPYY1/1AZqMMQw4/iMAPp+MG8gpI/v3IfIxlVQ/8Mvv4CsLB3Ka9JqbitHJlStpTybLUGiCSC9KnSRhy9YGxuSbWuHjlhurdYazLOtp9t3t7l2/qUFUVQGvvqyFzotlq9tHQSc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=HcV8da8u; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 73E7FC32782;
-	Mon, 24 Jun 2024 14:18:09 +0000 (UTC)
+	s=arc-20240116; t=1719238735; c=relaxed/simple;
+	bh=WKtf9nV6nGucDW1CJXDuHjEEddXp6Q12/6jDbmRBMoA=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Message-Id:Date:
+	 MIME-Version:Content-Type; b=FUCNaOJIitn9bdgknTl8wzQb/N8+X0BhB1yh3XPfGQP5Wkmm00faxXoqYxW+iJMrT4rqV7dE3tH4p4XwTzoCBI5zOBnuWSolaQ94yiJwzfk7+xlH/lLxaogYs1Kips3Gexuwvo9z19uuELjh9ncs33zTzwR++/iPT+ETROKHDvk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=XyHvZlEj; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6E4B7C2BBFC;
+	Mon, 24 Jun 2024 14:18:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1719238690;
-	bh=tuf5bSvIMrggz19fMZWlfeomtN59SNGI2qHBZlr2oDY=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=HcV8da8u95y5Db6IgzGdGjgjN9aq2vK794/D6iVLx9i6iIkSuEASz6vVeYEmQ6qwx
-	 8tmybIjLVVhG2Rm4ytShzjKvr4w0gti/8IPb4UF8w2ALPxDNHyGf3Xc3G8guHIgbp9
-	 3Tsihp0THnmw1PZw8IW2DKqjXdMhidb5yIgbtwGsUJ5Blj09o2j8p4BmEbHh8W6jNA
-	 rATalfZWhh/jM6Eh/xxcDxk+1r+8oOTxR0SWQNK49fL8bxhirbYde+NjxDFyYXvwQq
-	 TWmwy8H+Ffofh0lcJHXI17ez/MzpmMivRTNt68ZKR769MGPcdbip5TAQGiDihg0eF5
-	 zq9Ro6tz9sRRg==
-Date: Mon, 24 Jun 2024 17:18:05 +0300
+	s=k20201202; t=1719238734;
+	bh=WKtf9nV6nGucDW1CJXDuHjEEddXp6Q12/6jDbmRBMoA=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+	b=XyHvZlEjJni5eRuS2Qep8mww7+hEPialbIi7f9CBqH6Nkvs3LphmZBMYor1J0PiLI
+	 AbLf++EeTmDm14RniVeNnegOy6x4ZCml8HdAIumNsNho5fKTae0g0fh8N9mN1H/7EO
+	 92aT8HjDYFHh3b8MGyNZ0v8hzY4+4JNVuyWn0G6GPqDcA9h7iGAWltnjn8MV12f6UV
+	 OQiTb1zxF2XHnyH59oVVJhpKOmw2zrARigR2I5Rdwb0UDpSDLFaAsH+ULvYmcBSGMb
+	 0r+zOcSsH3HhBVXzw5H//aY86jkAMMAgiptc+6zzMyE2WKtNxD3sF4P35a68Yxtjxo
+	 teh5DTJE5tfmw==
 From: Leon Romanovsky <leon@kernel.org>
-To: Honggang LI <honggangli@163.com>
-Cc: zyjzyj2000@gmail.com, jgg@ziepe.ca, linux-rdma@vger.kernel.org,
-	dledford@redhat.com, kamalh@mellanox.com, amirv@mellanox.com,
-	monis@mellanox.com, haggaie@mellanox.com
-Subject: Re: [PATCH] RDMA/rxe: Don't set BTH_ACK_MASK for UC or UD QPs
-Message-ID: <20240624141805.GI29266@unreal>
+To: zyjzyj2000@gmail.com, jgg@ziepe.ca, linux-rdma@vger.kernel.org, 
+ Honggang LI <honggangli@163.com>
+Cc: dledford@redhat.com, kamalh@mellanox.com, amirv@mellanox.com, 
+ monis@mellanox.com, haggaie@mellanox.com
+In-Reply-To: <20240624020348.494338-1-honggangli@163.com>
 References: <20240624020348.494338-1-honggangli@163.com>
+Subject: Re: [PATCH] RDMA/rxe: Don't set BTH_ACK_MASK for UC or UD QPs
+Message-Id: <171923873138.465691.5079469853127857176.b4-ty@kernel.org>
+Date: Mon, 24 Jun 2024 17:18:51 +0300
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240624020348.494338-1-honggangli@163.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Mailer: b4 0.15-dev-13183
 
-On Mon, Jun 24, 2024 at 10:03:48AM +0800, Honggang LI wrote:
+
+On Mon, 24 Jun 2024 10:03:48 +0800, Honggang LI wrote:
 > BTH_ACK_MASK bit is used to indicate that an acknowledge
 > (for this packet) should be scheduled by the responder.
 > Both UC and UD QPs are unacknowledged, so don't set
 > BTH_ACK_MASK for UC or UD QPs.
 > 
-> Fixes: 8700e3e7c485 ("Soft RoCE driver")
-> Signed-off-by: Honggang LI <honggangli@163.com>
-> ---
->  drivers/infiniband/sw/rxe/rxe_req.c | 8 ++++++--
->  1 file changed, 6 insertions(+), 2 deletions(-)
 > 
-> diff --git a/drivers/infiniband/sw/rxe/rxe_req.c b/drivers/infiniband/sw/rxe/rxe_req.c
-> index cd14c4c2dff9..ffd7ed712a02 100644
-> --- a/drivers/infiniband/sw/rxe/rxe_req.c
-> +++ b/drivers/infiniband/sw/rxe/rxe_req.c
-> @@ -445,8 +445,12 @@ static struct sk_buff *init_req_packet(struct rxe_qp *qp,
->  	qp_num = (pkt->mask & RXE_DETH_MASK) ? ibwr->wr.ud.remote_qpn :
->  					 qp->attr.dest_qp_num;
->  
-> -	ack_req = ((pkt->mask & RXE_END_MASK) ||
-> -		(qp->req.noack_pkts++ > RXE_MAX_PKT_PER_ACK));
-> +	if (qp_type(qp) == IB_QPT_UD || qp_type(qp) == IB_QPT_UC)
-> +		ack_req = 0;
-> +	else {
-> +		ack_req = ((pkt->mask & RXE_END_MASK) ||
-> +			(qp->req.noack_pkts++ > RXE_MAX_PKT_PER_ACK));
-> +	}
->  	if (ack_req)
->  		qp->req.noack_pkts = 0;
 
+Applied, thanks!
 
-Applied the patch with the following change:
-diff --git a/drivers/infiniband/sw/rxe/rxe_req.c b/drivers/infiniband/sw/rxe/rxe_req.c
-index ffd7ed712a02..479c07e6e4ed 100644
---- a/drivers/infiniband/sw/rxe/rxe_req.c
-+++ b/drivers/infiniband/sw/rxe/rxe_req.c
-@@ -424,7 +424,7 @@ static struct sk_buff *init_req_packet(struct rxe_qp *qp,
-        int                     paylen;
-        int                     solicited;
-        u32                     qp_num;
--       int                     ack_req;
-+       int                     ack_req = 0;
+[1/1] RDMA/rxe: Don't set BTH_ACK_MASK for UC or UD QPs
+      https://git.kernel.org/rdma/rdma/c/371c54bca36fb5
 
-        /* length from start of bth to end of icrc */
-        paylen = rxe_opcode[opcode].length + payload + pad + RXE_ICRC_SIZE;
-@@ -445,12 +445,9 @@ static struct sk_buff *init_req_packet(struct rxe_qp *qp,
-        qp_num = (pkt->mask & RXE_DETH_MASK) ? ibwr->wr.ud.remote_qpn :
-                                         qp->attr.dest_qp_num;
+Best regards,
+-- 
+Leon Romanovsky <leon@kernel.org>
 
--       if (qp_type(qp) == IB_QPT_UD || qp_type(qp) == IB_QPT_UC)
--               ack_req = 0;
--       else {
-+       if (qp_type(qp) != IB_QPT_UD && qp_type(qp) != IB_QPT_UC)
-                ack_req = ((pkt->mask & RXE_END_MASK) ||
--                       (qp->req.noack_pkts++ > RXE_MAX_PKT_PER_ACK));
--       }
-+                          (qp->req.noack_pkts++ > RXE_MAX_PKT_PER_ACK));
-        if (ack_req)
-                qp->req.noack_pkts = 0;
-
-
-
->  
-> -- 
-> 2.45.2
-> 
 
