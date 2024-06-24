@@ -1,73 +1,73 @@
-Return-Path: <linux-rdma+bounces-3451-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-3448-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C043691532C
-	for <lists+linux-rdma@lfdr.de>; Mon, 24 Jun 2024 18:10:36 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 039D8915321
+	for <lists+linux-rdma@lfdr.de>; Mon, 24 Jun 2024 18:09:36 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 24F13B23943
-	for <lists+linux-rdma@lfdr.de>; Mon, 24 Jun 2024 16:10:34 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2F6FD1C2262D
+	for <lists+linux-rdma@lfdr.de>; Mon, 24 Jun 2024 16:09:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8702719D8AB;
-	Mon, 24 Jun 2024 16:10:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 406EC19D88B;
+	Mon, 24 Jun 2024 16:09:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=amazon.com header.i=@amazon.com header.b="GyfBdnSC"
+	dkim=pass (1024-bit key) header.d=amazon.com header.i=@amazon.com header.b="FkoOeIRj"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from smtp-fw-6002.amazon.com (smtp-fw-6002.amazon.com [52.95.49.90])
+Received: from smtp-fw-80007.amazon.com (smtp-fw-80007.amazon.com [99.78.197.218])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8EAA419DF58
-	for <linux-rdma@vger.kernel.org>; Mon, 24 Jun 2024 16:10:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=52.95.49.90
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8BB1A19D094
+	for <linux-rdma@vger.kernel.org>; Mon, 24 Jun 2024 16:09:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=99.78.197.218
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1719245421; cv=none; b=q0NMyUrTVKlBe/eDETx788zSK+8xhwDT36jweyNDEgfFj+rRYe0Ady7O1pyI6und9z7BmNZ7/RHVnqZiOeBJZbUNanPQ2URukWiXcpRgQiRD2I/UVu4f7Q3dwRHwUPVBetpRqrH1vmk3RExg5SPQVF1EKpE/yp1cWcIg+D6Ud/U=
+	t=1719245372; cv=none; b=AFFJyE/WNgtkh4z6zcoQGa79ZEtnLou913+nTKUU7gIxlRwtixrwNaWQeKF9+r70XOVBrNwaiZ2EAuc+Ca1Q/yZWa0MBT/54qZ0F9cBnhI2hvDTxK5Py/zTuUFEN9bX9bgQaUji35tCRRzpGCJpKR/Saqbf0dCXG8ziitL1nN90=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1719245421; c=relaxed/simple;
-	bh=IWlLiawu5tGMzm2/6X7LyAG28dhMKaSTlSYYwUQQfGg=;
+	s=arc-20240116; t=1719245372; c=relaxed/simple;
+	bh=LRQtr25A5ordjlDH7SYvoSWi9hWZ6jyKJ0EfA5qOW+c=;
 	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=o22nvyIGV2dEpESE89Y/7fPHaVGjnqkU/VMFihX4U4seX7V/NDFxQqxXvSnJ/2gWysJ3KMntbtSRwVVoOz88ZKnaONRuPex9Se1C8Pl1NRi7B+7CWm3i85kFYsDbvW+4ww5WK0gzM9V62o0qAa10+aaHvcFtmbAN8zEM96Hhd2s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amazon.com; spf=pass smtp.mailfrom=amazon.com; dkim=pass (1024-bit key) header.d=amazon.com header.i=@amazon.com header.b=GyfBdnSC; arc=none smtp.client-ip=52.95.49.90
+	 MIME-Version:Content-Type; b=SNtpU/80nIbrv9kH3hpnQ3KWLuAHpvYXmM3tUjp1/DWEwTUWKgAAeKSMP6483FdpegT7QpSDBGsWdVQbW0jYUiCQP4xEwtKdvK7khXgLRINxH+MYkDbB1nk141A+kAKHazu9hU/ICaZwnLUDzpaVr3fTqoAJgHAW5x4Blgycrwc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amazon.com; spf=pass smtp.mailfrom=amazon.com; dkim=pass (1024-bit key) header.d=amazon.com header.i=@amazon.com header.b=FkoOeIRj; arc=none smtp.client-ip=99.78.197.218
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amazon.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=amazon.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
   d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1719245420; x=1750781420;
+  t=1719245370; x=1750781370;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=l/JasX8qkbDdeYZ3JLL00arLOXOjQmeIBMCfYPDXjV0=;
-  b=GyfBdnSCzWWTWS9XszqcdHnoGJmMLxhC8lfcao/0AYCzfliGKoJkY3is
-   1MVOcXdom9m4/xHB1ILE2b7nG/1+uM0JwFVlIFghpAvZZLg8bh7pGC9zv
-   ueYehQvbhG3teqZr3aMxrYIgBFPE7Ztc1i4TBW/MDaZ4rZa34Phpu7tbm
-   M=;
+  bh=/qGrctqkIMm1rwGQSF/GrEpuRRogznIR6BgaVcyZ8UY=;
+  b=FkoOeIRjrocBjYAayOcrAFryPH1aaNl0POarDCCc5WcM8vFbgN0YWVp9
+   D3AIzFcJ4oi/kYuwMwViCTewnHWoXi91sZe1dQeYZKNnjLg4AK8fAUUrE
+   9HTYEkiYtMPRmAMVWqZiFsqBY/5yO06SU39QvaN/HtNcAaRPVFi6tl06v
+   0=;
 X-IronPort-AV: E=Sophos;i="6.08,262,1712620800"; 
-   d="scan'208";a="415408816"
-Received: from iad12-co-svc-p1-lb1-vlan3.amazon.com (HELO smtpout.prod.us-west-2.prod.farcaster.email.amazon.dev) ([10.43.8.6])
-  by smtp-border-fw-6002.iad6.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Jun 2024 16:09:26 +0000
-Received: from EX19MTAEUB001.ant.amazon.com [10.0.43.254:41962]
- by smtpin.naws.eu-west-1.prod.farcaster.email.amazon.dev [10.0.7.61:2525] with esmtp (Farcaster)
- id 4adeb5e0-f8f1-441a-86ee-398ba8e45a94; Mon, 24 Jun 2024 16:09:24 +0000 (UTC)
-X-Farcaster-Flow-ID: 4adeb5e0-f8f1-441a-86ee-398ba8e45a94
-Received: from EX19D019EUA002.ant.amazon.com (10.252.50.84) by
- EX19MTAEUB001.ant.amazon.com (10.252.51.28) with Microsoft SMTP Server
+   d="scan'208";a="305654956"
+Received: from pdx4-co-svc-p1-lb2-vlan2.amazon.com (HELO smtpout.prod.us-west-2.prod.farcaster.email.amazon.dev) ([10.25.36.210])
+  by smtp-border-fw-80007.pdx80.corp.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Jun 2024 16:09:27 +0000
+Received: from EX19MTAEUA002.ant.amazon.com [10.0.17.79:41381]
+ by smtpin.naws.eu-west-1.prod.farcaster.email.amazon.dev [10.0.35.117:2525] with esmtp (Farcaster)
+ id fc7ab1bb-58a9-4e0b-8be8-b602e94cbd01; Mon, 24 Jun 2024 16:09:26 +0000 (UTC)
+X-Farcaster-Flow-ID: fc7ab1bb-58a9-4e0b-8be8-b602e94cbd01
+Received: from EX19D013EUA001.ant.amazon.com (10.252.50.140) by
+ EX19MTAEUA002.ant.amazon.com (10.252.50.124) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1258.34; Mon, 24 Jun 2024 16:09:24 +0000
+ 15.2.1258.34; Mon, 24 Jun 2024 16:09:25 +0000
 Received: from EX19MTAUEA001.ant.amazon.com (10.252.134.203) by
- EX19D019EUA002.ant.amazon.com (10.252.50.84) with Microsoft SMTP Server
+ EX19D013EUA001.ant.amazon.com (10.252.50.140) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1258.34; Mon, 24 Jun 2024 16:09:24 +0000
+ 15.2.1258.34; Mon, 24 Jun 2024 16:09:25 +0000
 Received: from dev-dsk-mrgolin-1c-b2091117.eu-west-1.amazon.com
  (10.253.103.172) by mail-relay.amazon.com (10.252.134.102) with Microsoft
- SMTP Server id 15.2.1258.34 via Frontend Transport; Mon, 24 Jun 2024 16:09:23
+ SMTP Server id 15.2.1258.34 via Frontend Transport; Mon, 24 Jun 2024 16:09:24
  +0000
 From: Michael Margolin <mrgolin@amazon.com>
 To: <jgg@nvidia.com>, <leon@kernel.org>, <linux-rdma@vger.kernel.org>
-CC: <sleybo@amazon.com>, <matua@amazon.com>, <gal.pressman@linux.dev>,
-	"Yonatan Nachum" <ynachum@amazon.com>, Firas Jahjah <firasj@amazon.com>
-Subject: [PATCH for-next 3/5] RDMA/efa: Validate EQ array out of bounds reach
-Date: Mon, 24 Jun 2024 16:09:16 +0000
-Message-ID: <20240624160918.27060-4-mrgolin@amazon.com>
+CC: <sleybo@amazon.com>, <matua@amazon.com>, <gal.pressman@linux.dev>, "Firas
+ Jahjah" <firasj@amazon.com>, Yonatan Nachum <ynachum@amazon.com>
+Subject: [PATCH for-next 4/5] RDMA/efa: Move type conversion helpers to efa.h
+Date: Mon, 24 Jun 2024 16:09:17 +0000
+Message-ID: <20240624160918.27060-5-mrgolin@amazon.com>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <20240624160918.27060-1-mrgolin@amazon.com>
 References: <20240624160918.27060-1-mrgolin@amazon.com>
@@ -80,48 +80,109 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
 
-From: Yonatan Nachum <ynachum@amazon.com>
-
-When creating a new CQ with interrupts enabled, the caller needs to
-specify an EQ index to which the interrupts will be sent on, we don't
-validate the requested index in the EQ array.
-Validate out of bound reach of the EQ array and return an error.
-
-This is not a bug because IB core validates the requested EQ number when
-creating a CQ.
+Move ib_ to efa_ types conversion functions to have them near the types
+definitions and to reduce code in efa_verbs.c.
 
 Reviewed-by: Firas Jahjah <firasj@amazon.com>
-Signed-off-by: Yonatan Nachum <ynachum@amazon.com>
+Reviewed-by: Yonatan Nachum <ynachum@amazon.com>
 Signed-off-by: Michael Margolin <mrgolin@amazon.com>
 ---
- drivers/infiniband/hw/efa/efa_verbs.c | 7 ++++++-
- 1 file changed, 6 insertions(+), 1 deletion(-)
+ drivers/infiniband/hw/efa/efa.h       | 35 +++++++++++++++++++++++++++
+ drivers/infiniband/hw/efa/efa_verbs.c | 35 ---------------------------
+ 2 files changed, 35 insertions(+), 35 deletions(-)
 
+diff --git a/drivers/infiniband/hw/efa/efa.h b/drivers/infiniband/hw/efa/efa.h
+index 926f9ff1f60f..f1020bf85b78 100644
+--- a/drivers/infiniband/hw/efa/efa.h
++++ b/drivers/infiniband/hw/efa/efa.h
+@@ -142,6 +142,41 @@ struct efa_eq {
+ 	struct efa_irq irq;
+ };
+ 
++static inline struct efa_dev *to_edev(struct ib_device *ibdev)
++{
++	return container_of(ibdev, struct efa_dev, ibdev);
++}
++
++static inline struct efa_ucontext *to_eucontext(struct ib_ucontext *ibucontext)
++{
++	return container_of(ibucontext, struct efa_ucontext, ibucontext);
++}
++
++static inline struct efa_pd *to_epd(struct ib_pd *ibpd)
++{
++	return container_of(ibpd, struct efa_pd, ibpd);
++}
++
++static inline struct efa_mr *to_emr(struct ib_mr *ibmr)
++{
++	return container_of(ibmr, struct efa_mr, ibmr);
++}
++
++static inline struct efa_qp *to_eqp(struct ib_qp *ibqp)
++{
++	return container_of(ibqp, struct efa_qp, ibqp);
++}
++
++static inline struct efa_cq *to_ecq(struct ib_cq *ibcq)
++{
++	return container_of(ibcq, struct efa_cq, ibcq);
++}
++
++static inline struct efa_ah *to_eah(struct ib_ah *ibah)
++{
++	return container_of(ibah, struct efa_ah, ibah);
++}
++
+ int efa_query_device(struct ib_device *ibdev,
+ 		     struct ib_device_attr *props,
+ 		     struct ib_udata *udata);
 diff --git a/drivers/infiniband/hw/efa/efa_verbs.c b/drivers/infiniband/hw/efa/efa_verbs.c
-index cd1f735d08a7..9c3e476e3f9c 100644
+index 9c3e476e3f9c..34a9f86af9bd 100644
 --- a/drivers/infiniband/hw/efa/efa_verbs.c
 +++ b/drivers/infiniband/hw/efa/efa_verbs.c
-@@ -1046,7 +1046,7 @@ int efa_destroy_cq(struct ib_cq *ibcq, struct ib_udata *udata)
+@@ -127,41 +127,6 @@ struct pbl_context {
+ 	u8 physically_continuous;
+ };
  
- static struct efa_eq *efa_vec2eq(struct efa_dev *dev, int vec)
+-static inline struct efa_dev *to_edev(struct ib_device *ibdev)
+-{
+-	return container_of(ibdev, struct efa_dev, ibdev);
+-}
+-
+-static inline struct efa_ucontext *to_eucontext(struct ib_ucontext *ibucontext)
+-{
+-	return container_of(ibucontext, struct efa_ucontext, ibucontext);
+-}
+-
+-static inline struct efa_pd *to_epd(struct ib_pd *ibpd)
+-{
+-	return container_of(ibpd, struct efa_pd, ibpd);
+-}
+-
+-static inline struct efa_mr *to_emr(struct ib_mr *ibmr)
+-{
+-	return container_of(ibmr, struct efa_mr, ibmr);
+-}
+-
+-static inline struct efa_qp *to_eqp(struct ib_qp *ibqp)
+-{
+-	return container_of(ibqp, struct efa_qp, ibqp);
+-}
+-
+-static inline struct efa_cq *to_ecq(struct ib_cq *ibcq)
+-{
+-	return container_of(ibcq, struct efa_cq, ibcq);
+-}
+-
+-static inline struct efa_ah *to_eah(struct ib_ah *ibah)
+-{
+-	return container_of(ibah, struct efa_ah, ibah);
+-}
+-
+ static inline struct efa_user_mmap_entry *
+ to_emmap(struct rdma_user_mmap_entry *rdma_entry)
  {
--	return &dev->eqs[vec];
-+	return vec < dev->neqs ? &dev->eqs[vec] : NULL;
- }
- 
- static int cq_mmap_entries_setup(struct efa_dev *dev, struct efa_cq *cq,
-@@ -1173,6 +1173,11 @@ int efa_create_cq(struct ib_cq *ibcq, const struct ib_cq_init_attr *attr,
- 	params.set_src_addr = set_src_addr;
- 	if (cmd.flags & EFA_CREATE_CQ_WITH_COMPLETION_CHANNEL) {
- 		cq->eq = efa_vec2eq(dev, attr->comp_vector);
-+		if (!cq->eq) {
-+			ibdev_dbg(ibdev, "Invalid EQ requested[%u]\n", attr->comp_vector);
-+			err = -EINVAL;
-+			goto err_free_mapped;
-+		}
- 		params.eqn = cq->eq->eeq.eqn;
- 		params.interrupt_mode_enabled = true;
- 	}
 -- 
 2.40.1
 
