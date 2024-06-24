@@ -1,93 +1,96 @@
-Return-Path: <linux-rdma+bounces-3436-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-3437-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 82AC6914E56
-	for <lists+linux-rdma@lfdr.de>; Mon, 24 Jun 2024 15:23:24 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 54D4D914E57
+	for <lists+linux-rdma@lfdr.de>; Mon, 24 Jun 2024 15:24:44 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1BAD11F22FD9
-	for <lists+linux-rdma@lfdr.de>; Mon, 24 Jun 2024 13:23:24 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 078991F22FAB
+	for <lists+linux-rdma@lfdr.de>; Mon, 24 Jun 2024 13:24:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 338C113D639;
-	Mon, 24 Jun 2024 13:23:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 501C213D889;
+	Mon, 24 Jun 2024 13:24:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Dk94aMVM"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="AAS0Rdpj"
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E7D58136E3B
-	for <linux-rdma@vger.kernel.org>; Mon, 24 Jun 2024 13:23:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1156E136E3B
+	for <linux-rdma@vger.kernel.org>; Mon, 24 Jun 2024 13:24:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1719235399; cv=none; b=RAWGthNq7HIHRRqvWYCjGAgYELu/OG+SoIZ08zEkbIhOdufIOU+bylgCDiLtfw1hChnq6asNz1BJNOyC1AYnocZ1IWWQPxEkCCsA8EvyvD0KiZTweLYORC3cOqGxIl3Xq1+ne+bJQkue7rIGkg2K00ok+gu/SyooPVba/WUwMr8=
+	t=1719235479; cv=none; b=D9B4FoEZt2y0Ffa0uYNbpORkSXBfVHIkr1Q6ZWuW224rqgRnH5QI0RYqBrolLKhYIOzZEt/t2P1I4kyP20Yd6IJbge/wLaUnyapv5ast7AiFbRps8K6HSv59pnJNR5pVtm81VjhJcrc24wDIH+lNKDoFeU5ct3xqzqJodwlmbC0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1719235399; c=relaxed/simple;
-	bh=OIz5JHw9RZiPBx79UYece3LX1e6MEHOy0mCHXgYe3bU=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=rYX5oDhyhqK+LwiZtNPvRx1ubbSfx7GyEcxofP3WklqoNMFknYLJzJYdynQRK6y/+9dg3V15r5i2vZ5Hldjp9ex/G59ArloZL9vX1TkAbBJ5v+vLLiSb0rkGZfMUp6gMrWqBwkTgA5p6WWeKfUz7vGUYr10nD1mslpbS+bJK0TU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Dk94aMVM; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id ED4DFC2BBFC;
-	Mon, 24 Jun 2024 13:23:17 +0000 (UTC)
+	s=arc-20240116; t=1719235479; c=relaxed/simple;
+	bh=OtJqbCE9YE8lSOcgpszt1c7qDw//cqstbJDFqzLMyGw=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=KTvHw7eHkjS+8iTuKgVNnaR0ev6I+QhPalRwQFTi8uTBWOh8+SkbrMf2S/HQ9TKLj16MBRizPgzyot5B3J1DPKmbK/A/ZH2muwc54InfkQRqLrW3OBtamflL01bh/SUkuh+bbPg2v1SQuzwDCN+cMgjJcfrLUd3VCT9Vg817DpI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=AAS0Rdpj; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0ADCBC32782;
+	Mon, 24 Jun 2024 13:24:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1719235398;
-	bh=OIz5JHw9RZiPBx79UYece3LX1e6MEHOy0mCHXgYe3bU=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=Dk94aMVMeiVL19SEa2hkWQ24SVzIqHm/AowwLKjKqZsy0U0cB5ZZZMD7isAOM/O+3
-	 pgYQkrsoFP6JtyU72qfFd6Xni4GcXuVEI1S5XLdtBGEi7cskHlgP6nC7PBAj5NTmjb
-	 /vFr1J5Z/hRRVyF/9MJjKNk6dT+jnFXQCCxIxFMNkbVKUjG3hi+AmzeVMFrX4gpuWE
-	 NFFfBwuYmujJJVrgsZ5+eKoaSpEKeZugLYVyu4YqxBvN8LvoNMq6IZI0o7a9BPhPgv
-	 728/s5xv4tHKMAwKjNC21we6WIebbASaoKCwF6oypcrbpbYcGFsuVe2/gn92DEvRXU
-	 Xrm39ZztbHeQA==
-Date: Mon, 24 Jun 2024 16:23:13 +0300
+	s=k20201202; t=1719235478;
+	bh=OtJqbCE9YE8lSOcgpszt1c7qDw//cqstbJDFqzLMyGw=;
+	h=From:To:Cc:Subject:Date:From;
+	b=AAS0RdpjIIgiBotz8CTP+HkedJuneT6ytOK/VJF6eAN1XiJkFwSBIEMYB/cywwune
+	 D5RGeuPMT+RyhSGFNDHw8qes93/7qM1kvrbwunNg+eJPcmhLCDLxNAcA3VyCp2LSPH
+	 bPsS5+0beR6WPF7oI50dWo/I8N+v+8AIOjUB8/hmG5xBzASbM02HM6eN9JxhqCyONj
+	 qdXluN/zZ2YE6XiLv+QFGBQCyhAfIPEJeNwBsDWRSF35so6SDzs9zXX81AvPKUYrqt
+	 iK7KW2YaGGBAeuHtg4L9ec/kh4QUD1LiDRjvpuECtc2rhCfDZHuaYC4tMUIvbQU9CH
+	 irVJGSfauQ9gg==
 From: Leon Romanovsky <leon@kernel.org>
 To: Jason Gunthorpe <jgg@nvidia.com>
-Cc: linux-rdma@vger.kernel.org, Mark Zhang <markzhang@nvidia.com>,
-	Michael Guralnik <michaelgur@nvidia.com>,
-	Or Har-Toov <ohartoov@nvidia.com>,
-	Patrisious Haddad <phaddad@nvidia.com>,
-	Yishai Hadas <yishaih@nvidia.com>
-Subject: Re: [PATCH rdma-rc 1/6] RDMA/cache: Release GID table even if leak
- is detected
-Message-ID: <20240624132313.GG29266@unreal>
-References: <cover.1716900410.git.leon@kernel.org>
- <a62560af06ba82c88ef9194982bfa63d14768ff9.1716900410.git.leon@kernel.org>
- <20240621132139.GA4179191@nvidia.com>
+Cc: Leon Romanovsky <leonro@nvidia.com>,
+	linux-rdma@vger.kernel.org
+Subject: [PATCH rdma-next] RDMA/device: Return error earlier if port in not valid
+Date: Mon, 24 Jun 2024 16:24:32 +0300
+Message-ID: <022047a8b16988fc88d4426da50bf60a4833311b.1719235449.git.leon@kernel.org>
+X-Mailer: git-send-email 2.45.2
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240621132139.GA4179191@nvidia.com>
+Content-Transfer-Encoding: 8bit
 
-On Fri, Jun 21, 2024 at 10:21:39AM -0300, Jason Gunthorpe wrote:
-> On Tue, May 28, 2024 at 03:52:51PM +0300, Leon Romanovsky wrote:
-> > From: Leon Romanovsky <leonro@nvidia.com>
-> > 
-> > When the table is released, we nullify pointer to GID table, it means
-> > that in case GID entry leak is detected, we will leak table too.
-> > 
-> > Delete code that prevents table destruction.
-> > 
-> > Fixes: b150c3862d21 ("IB/core: Introduce GID entry reference counts")
-> > Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
-> > ---
-> >  drivers/infiniband/core/cache.c | 13 ++++---------
-> >  1 file changed, 4 insertions(+), 9 deletions(-)
-> 
-> Since this is causing syzkaller failures and it really doesn't seem
-> like stable material I'm dropping it from the rc branch and putting it
-> in for-next. Lets see if we can fix the failures before the merge window.
+From: Leon Romanovsky <leonro@nvidia.com>
 
-I don't see it in the for-next branch, can you please add it?
+There is no need to allocate port data if port provided is not valid.
 
-Thanks
+Fixes: c2261dd76b54 ("RDMA/device: Add ib_device_set_netdev() as an alternative to get_netdev")
+Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
+---
+ drivers/infiniband/core/device.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-> 
-> Jason
+diff --git a/drivers/infiniband/core/device.c b/drivers/infiniband/core/device.c
+index 8547cab50b23..7aaf2b4c1844 100644
+--- a/drivers/infiniband/core/device.c
++++ b/drivers/infiniband/core/device.c
+@@ -2163,6 +2163,9 @@ int ib_device_set_netdev(struct ib_device *ib_dev, struct net_device *ndev,
+ 	unsigned long flags;
+ 	int ret;
+ 
++	if (!rdma_is_port_valid(ib_dev, port))
++		return -EINVAL;
++
+ 	/*
+ 	 * Drivers wish to call this before ib_register_driver, so we have to
+ 	 * setup the port data early.
+@@ -2171,9 +2174,6 @@ int ib_device_set_netdev(struct ib_device *ib_dev, struct net_device *ndev,
+ 	if (ret)
+ 		return ret;
+ 
+-	if (!rdma_is_port_valid(ib_dev, port))
+-		return -EINVAL;
+-
+ 	pdata = &ib_dev->port_data[port];
+ 	spin_lock_irqsave(&pdata->netdev_lock, flags);
+ 	old_ndev = rcu_dereference_protected(
+-- 
+2.45.2
+
 
