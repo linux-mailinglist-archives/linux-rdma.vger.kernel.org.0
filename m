@@ -1,62 +1,62 @@
-Return-Path: <linux-rdma+bounces-3459-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-3461-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0458B915A0C
-	for <lists+linux-rdma@lfdr.de>; Tue, 25 Jun 2024 00:48:41 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 36865915A12
+	for <lists+linux-rdma@lfdr.de>; Tue, 25 Jun 2024 00:48:54 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 282EA1C22245
-	for <lists+linux-rdma@lfdr.de>; Mon, 24 Jun 2024 22:48:40 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E21372834EA
+	for <lists+linux-rdma@lfdr.de>; Mon, 24 Jun 2024 22:48:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B7D231A2C22;
-	Mon, 24 Jun 2024 22:47:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2712A1A2FA5;
+	Mon, 24 Jun 2024 22:47:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="jD0ppvrn"
+	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="R+d0+vss"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from NAM12-BN8-obe.outbound.protection.outlook.com (mail-bn8nam12on2060.outbound.protection.outlook.com [40.107.237.60])
+Received: from NAM10-MW2-obe.outbound.protection.outlook.com (mail-mw2nam10on2089.outbound.protection.outlook.com [40.107.94.89])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 618701A2C0D;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 155E61A2573;
 	Mon, 24 Jun 2024 22:47:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.237.60
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.94.89
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1719269268; cv=fail; b=XGEVGZy0wkA9Yy4xhNdJjYxgBtgKmNsMfQpYnHpLBM09XopHWK+76CKm5DuHNc5tUtZi7k4K0LJfb1nstV5Bhg+zyjt8LT3oxPOcDbhNcYaECsoZXBdz61HqGRlt9hk8eErYHuTahtNzFZDtCRX73C7ythfmE7Vfgky+z9cRpj0=
+	t=1719269268; cv=fail; b=QhMwph0wWZuE6z4+Weo853LYo5/nwoQ/SLvSBL7WhaJGqaS/PsWiUY55k6O9QlRLEpsoxGy8JOHojI197QQu7jQLLyug3y6JEQmSWeeWDN0G/szcUevdqMJ0oO1UwKm0F4zezZeTzdwOM0dwvbVo5fP1OkAGs8VB/PHd2jfyktk=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1719269268; c=relaxed/simple;
-	bh=VwewmplYDVp+G8uPxuU84wYJGKqGDPz+ZZRBBjyeLdE=;
+	bh=9LL8FTTeqBAcEeNsr/jEn26HrKYFsCnLecYZqYjqnAE=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=TjF9tvP9i8N7Fir5zZqy5APBdsPJmXkMEXyhjkJLol0/+tbY+412/JkiqrIjuQr+laEM+I7IBqiJ9tG1Tra5QOIGf5m2AJzMSLY9X6ZesbhP+5sJWO/G4274hWbjWepYOBeX1YA/Q5kVgeAIDhvV1rkXwghmcBf2vvEYAKxcHGQ=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=jD0ppvrn; arc=fail smtp.client-ip=40.107.237.60
+	 Content-Type:MIME-Version; b=FTKcUiVXxYug6fXQoDgdfvyn71UUXHSkWV0UpK7CkT/j6/PdqPDbZl7zi4tA40zIMX4KBL2dY0LRQkJ0XzPjZNN40K6b5HlQQ1OAtY+Q50SEyNr4tda4b7YRbzysItbb011AWBdWsnSxSYPyRkTF3qBCzjvkg898s96QSSk7Qkc=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=R+d0+vss; arc=fail smtp.client-ip=40.107.94.89
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
 Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=ZBH/zAtOYsDmjggMYM9FrbWkCt9888mJWQpp6a/jQzEWODtFENA0MnLJ9bU7LbmnxgRVqqE91c0VW2eBKZ2Hw6K/ABFzXvaUb9qhKL8NmsFmCi4dFSUuVLNJ/18ZOeGdPuU27QLi7sfyFMb5ll6bE6fKMV67ff6b85Ui8lf5ns1OpHrZmw6wxz6lT+XJi9gZkSbCXUmkoq0fgxbg/Qm/DpaSmqzlBfOwoNSX/Xq1X2ot95fnzkVa4bN1fyS+EjACWMlrPbxrTJuOZq2XHjqO2knUod3bgqNT45f55rrpK11WzBjIXWQ6N+kQWcf45Cal/e3qSguXRscZkD4xVeFjjA==
+ b=itYpGD7n8xVAiQO7sTGztQ6gs44qNEQmLskJ+bnjupWEBXsGfZHcoIzEHsZz0tiLoDRz+ciVo2An1Js//NYlEP3XG/hO+7KmW88iztqfggmajchBksVp3smFpVdUQPznfQ9IrMzsDDghsPbPxfJj3X+wcAmc2lbYnXTMwrVvcLuERpws4r9/gUhTqnFW7i2oz8MNgwveq1vJaa6kO+whTh9uoHllhrtPRAY7jD4untpZqAHlwwB627j7WrVHsKnUeuIwfdBOYyjufjEN3f9PvYXxr07gecsQbjhFtfP/g1a3cZmCt7udx91t/eScC2M3xASZeRmTtH4mgrYLQ55qRA==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=apam43stmI6A8HxJdS7uki9gbqUgu640LtMjI4qCpLE=;
- b=hzOGVY2AjMIzSih9SMaR/b+ytI20fNvuPuaLqjEu8H0MRkydx5xmDcDZMjJAlxKUVu4WxXJ2pqTiH5L/oR+5U1JPZdzMhL8pwWJXc1/CTB6YizszzOkz7b5zuLSwGj3ROKPMUwboGyHi/Gkcl4Lf/9A/HXHSOsxJUgbN1cmwHicUXmnYxpHPME/vvIBuNRfvNEg57i9ct1Bmr1ZPxfVUkEZ4rk2ckNHVQo5KTxU1j0EEGHcSPRH0mm50gfal5RW5F2HQacnGBU5Xa5VJsZVjAfmU9ZLHlBKeqC6txeEokfBmQs+urzT8PaCd8ZW8N5Q8Zszcxw5cKx4xGhk0pyhuqg==
+ bh=4TBNPrZNu2noX0hR3hUW2WU/nT7Y3Zwpb5vhJl0vwi0=;
+ b=MCMsTexjxJ87Tg71WhlUvyHcMNREauVlSMB7kjkSDBntHO+jUGJAJ2TeIU91yN98dCi0T65XTRPVjPySEBH4QO0LEPu+CU3yZHXfjsLOzeN72pxkr2VKmhppfVqj0lnXlmUmRaA5sFFk4pkOp7AC13lEWi4S0YJuhpQ7As6nSvWvSZBtX6EB+trVII5Bm2Zql8WxgSdO7HTqrp5VIlEK629gm88BmKz5pQGxuTdyXu27+7welZvhKOQyCbN+2DpB26sZnqiJEKEB6iqdv1vCw8fP3fG/2Wj2bhnQc1cAinbgVwPAXeFQRWhUC3dRhpnF38QIGfWoZWI1pQBTnYELAQ==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
  dkim=pass header.d=nvidia.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
  s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=apam43stmI6A8HxJdS7uki9gbqUgu640LtMjI4qCpLE=;
- b=jD0ppvrnVhg/1EwFxajKdwA13Zqqo4ir5I7fRyRhXXrLu7oINibVn+Iall23GoieJ71dpokayWQB8geLHDOES3es6S0q5xsVopA8a0wHGK9RsNleZ9u13X3OyJe8XxTc+nBh/nsomm/4opgDoPu5IezJtBUDU3pTfgMMk/e/0lG7EKlsh91H0YaKu5mtI6rKJZP31SlwvspmpFk3+O7lp1jb3DwBRhGei9Buu0wfkHpKrgniE3byNmY8BuWaMy3DUud2pUOKOVoSZJZraGCG2CwkX0tFvlXFQPRC35/YFWKvWOssw9p+XouHyYD578lNGDX8laQ9Kt8fxCcOP7wyFw==
+ bh=4TBNPrZNu2noX0hR3hUW2WU/nT7Y3Zwpb5vhJl0vwi0=;
+ b=R+d0+vsspCzKkhXkqiQwo86gNJ2Mw+fjvuUCXtEP1XKoTLJWn0Wj0DfkBsQdq8n/z5wnGE+PdEdd4Di8fnY5JOrp0PYeVYVrOTZ9dILDc2Z+UyBM8+6COOJFA6DoT6SjAUZqpzL+TDy+Cq0qTbW5MqnkbNVP++G1sXW8EsGCW1u1kKAlT1OMep1MZ8FU1AeicpXqLOWCyhs5C/iw7naWOWDCDPFfSewHOaYxjUYLtfwji/HWp/u/5qKKpd3eAODIh000+qXiL6Nkz8EAOmt4S5OvVuD5LVXFmgO1cM4opJWlOce/mYVel04eLhhQZk1IdKpi0ymC1SV6BZY7nmuqtQ==
 Authentication-Results: dkim=none (message not signed)
  header.d=none;dmarc=none action=none header.from=nvidia.com;
 Received: from DM6PR12MB3849.namprd12.prod.outlook.com (2603:10b6:5:1c7::26)
- by BY5PR12MB4147.namprd12.prod.outlook.com (2603:10b6:a03:205::10) with
+ by DS7PR12MB6024.namprd12.prod.outlook.com (2603:10b6:8:84::17) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7698.29; Mon, 24 Jun
- 2024 22:47:38 +0000
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7698.30; Mon, 24 Jun
+ 2024 22:47:41 +0000
 Received: from DM6PR12MB3849.namprd12.prod.outlook.com
  ([fe80::c296:774b:a5fc:965e]) by DM6PR12MB3849.namprd12.prod.outlook.com
  ([fe80::c296:774b:a5fc:965e%6]) with mapi id 15.20.7698.025; Mon, 24 Jun 2024
- 22:47:37 +0000
+ 22:47:40 +0000
 From: Jason Gunthorpe <jgg@nvidia.com>
 To: Jonathan Corbet <corbet@lwn.net>,
 	Itay Avraham <itayavr@nvidia.com>,
@@ -78,15 +78,15 @@ Cc: Andy Gospodarek <andrew.gospodarek@broadcom.com>,
 	Leon Romanovsky <leonro@nvidia.com>,
 	linux-cxl@vger.kernel.org,
 	patches@lists.linux.dev
-Subject: [PATCH v2 1/8] fwctl: Add basic structure for a class subsystem with a cdev
-Date: Mon, 24 Jun 2024 19:47:25 -0300
-Message-ID: <1-v2-940e479ceba9+3821-fwctl_jgg@nvidia.com>
+Subject: [PATCH v2 2/8] fwctl: Basic ioctl dispatch for the character device
+Date: Mon, 24 Jun 2024 19:47:26 -0300
+Message-ID: <2-v2-940e479ceba9+3821-fwctl_jgg@nvidia.com>
 In-Reply-To: <0-v2-940e479ceba9+3821-fwctl_jgg@nvidia.com>
 References:
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
-X-ClientProxiedBy: BL1PR13CA0330.namprd13.prod.outlook.com
- (2603:10b6:208:2c1::35) To DM6PR12MB3849.namprd12.prod.outlook.com
+X-ClientProxiedBy: BL1P221CA0021.NAMP221.PROD.OUTLOOK.COM
+ (2603:10b6:208:2c5::17) To DM6PR12MB3849.namprd12.prod.outlook.com
  (2603:10b6:5:1c7::26)
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
@@ -95,443 +95,414 @@ List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DM6PR12MB3849:EE_|BY5PR12MB4147:EE_
-X-MS-Office365-Filtering-Correlation-Id: 28fbe3bb-8ece-400b-aed1-08dc949fa32a
+X-MS-TrafficTypeDiagnostic: DM6PR12MB3849:EE_|DS7PR12MB6024:EE_
+X-MS-Office365-Filtering-Correlation-Id: 6209cb50-091b-4700-864d-08dc949fa417
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam:
-	BCL:0;ARA:13230037|376011|366013|7416011|1800799021|921017;
+	BCL:0;ARA:13230037|376011|1800799021|7416011|366013|921017;
 X-Microsoft-Antispam-Message-Info:
-	=?us-ascii?Q?edtw2lwwmzbqZNhcmH8gGE305NYMI/WG8dMAy7WifcPFUTH5pivmIxUny3Ys?=
- =?us-ascii?Q?3H3S8bBGbvyxs3NP2fVy7AwGu86SJqCYdV63E7NdQVfBqW0i3AyrBRwiWO9N?=
- =?us-ascii?Q?nT2JXfv31kAg53ZQhF8UJ9i+hVHEtmEAieZYjLxgku5wQGNY4amHsb3Hs2pK?=
- =?us-ascii?Q?eM6rGFgEb+8Y2+pL77vPUFc9WiRhQ7gUQHoW29ivcPwKJWus22G7Q0dmjPu4?=
- =?us-ascii?Q?vuOnWDXZ2Zeiv32bCyAXuDZOrvbVYo744b8qRL0iXPwmpjlf9GAV2c2V0Yg9?=
- =?us-ascii?Q?OQGzvssAjFJuquso6qjGMZhxFUFYL21yRtjz3fUFqhWX7kDfawjFd1gthi9M?=
- =?us-ascii?Q?55Z21jXfwLWY6n2eQM4/yVkdgluJnGidWAn8XGThs6P/5rrNM7L2o3CXjykx?=
- =?us-ascii?Q?xNSi4Nl3juj+CXZjxdp6RI6TRIZ3F6yYHvsSvZ6cf87bNGPFVTaxex5bJ5tw?=
- =?us-ascii?Q?FgWcuSLxwUEG3Wnmy1BtItoHYmsXPUnlV5mpAOXDO9xtiZw3wWlAc15ibol2?=
- =?us-ascii?Q?IqPTOGZSKmGvIjiKfHMo8PIjAGiUO34X+5YZqsjr5RcX2mf7MwnKs79Srh8L?=
- =?us-ascii?Q?WnF2V+Up7OghXK1x5T418CtkBJfA7MrcS1V7zZw/8PNyh248UFZimVfzh4XA?=
- =?us-ascii?Q?vLkHnIk2s0bjMCLsVPfrtL0agdHKhEzann4fM6ZesIn9+N8zhpgpDk2DA2zK?=
- =?us-ascii?Q?RMtWO41+ug516HLyK+E28bc0bgyW/vhX4l+VcPo3wO6hoX7PiWe3xkfzLl14?=
- =?us-ascii?Q?SfghpD8BNB/iMFkjmWcD17czzLDHGTHwM27hHBP+bg+G1gMg9xopMW1RCP1I?=
- =?us-ascii?Q?CaECbQoRERSsOuloiIGBiCnS0sDflU6Wk6GCYDH2BQ4MTRjovCMtiIONyaSN?=
- =?us-ascii?Q?q5Fhe7nhHJXl/1QvN8kN5QzIPBTYzp/vl+vBsY2teQNTQLGQbf8wcwk6+lew?=
- =?us-ascii?Q?WQb4OJ+8+cEwo/0nLtTsa0lBjwP6rLApMGhf+YK1g1t7EfbZN/L36DiPUsIZ?=
- =?us-ascii?Q?l35ZtS1YrLy8R2XRCzX4g9ZpVJtt6SDIwwIou5oO1MjVeu75Zl8DISOCSOcF?=
- =?us-ascii?Q?OL1ECBVV3agmyYzlDUDlzAkz4GpWWpTM7fb1vZ4qtqtCahn5Ghdqa0auWyPX?=
- =?us-ascii?Q?FPn1/JTF/hLxjYDOjReaU3c7+URjmAVc+goxh0G+Bghq3Ymc7hrUt2FYKTm9?=
- =?us-ascii?Q?Cw3vO435EMVNKkWUVxwhyhYFP2rEAdQBMIeyPQHlJU7udGP+zbScAGN/MJhA?=
- =?us-ascii?Q?Edln1W682Xhp5UBvJcX3TKHWS22MI2ObeJnZ6VL36ReCr9HUb0qPY3QZlPxS?=
- =?us-ascii?Q?SGcXBABd2DBTHV0gJEA7jJnlh0dUYuhKLDiKhGq8K7EK8dujdlRu0x68P0+M?=
- =?us-ascii?Q?Sj00Q/w=3D?=
+	=?us-ascii?Q?qDmf3lf+10UZtCJ0ONtxHIrKZN7VSX4I5g7rNvEYv/A7gWJVe+ezWGVdXQXe?=
+ =?us-ascii?Q?/DnTVZ5Tjb9ehXXIpHth4RMHidEq9bYX1eElCrGIHcTLkiehhIxtB8QgOBYc?=
+ =?us-ascii?Q?EBCFhsb8++r/KIokjdOGsoKWc3hDRHKn90VC2Vcio+JcGCu7meC/WGpbz2OF?=
+ =?us-ascii?Q?PEBScUn4tWzkVoVkAkpaxLZUFwMPiOSqaWXRn0qdPvuOEb3tATjH3XYDFu+n?=
+ =?us-ascii?Q?AQmxqUgf7N5XSSK8bHP6f98t8OjwAJeb7nt/qpKk9drV0bnczJttgV41LnzE?=
+ =?us-ascii?Q?PVNi02Ea7r9wuQ8rgzbroYBPENeSYHkqYgJDpniszquLXQH/FaX4YvwC8VBe?=
+ =?us-ascii?Q?gYt/BDgT8jlOPsZBfTQ0ihXwpQzhR5txomeahaPa6GkAZlD447pNtu6662gc?=
+ =?us-ascii?Q?o3sMgtr6OcF+x5N/TZ8BH6bnOEJ1R19ZadjHztU1N6rUj5t4C1BOuwvQBLsU?=
+ =?us-ascii?Q?m2mKZkHJobfjwJI81tQzcrzaw8652ntJ1ZxoflG/2yGZj6NrfmZWpr/u5pb9?=
+ =?us-ascii?Q?2hT6HVao3ylaar84XC1A5EAIaRliiO2irAO3RLUw7SaDPlIvV75kRvniKbY3?=
+ =?us-ascii?Q?3DNKlCZQLQC6tsHznoIqyF+qhq2ZcQ+WBvsv9fmuGBVrVYmJy8kh2fd0Jelp?=
+ =?us-ascii?Q?ZaXBxXPhrg6Ub4NgE+rDPGxtTy7zm1fh2NXQ+zaTUHk6fxY9YWG1RM8PjvDH?=
+ =?us-ascii?Q?7IzQQGywxT3mAW2ZuMj9nvmnGhZb28e4zszuVD5c78gO8luSoxPH+VXRHw+z?=
+ =?us-ascii?Q?rxig9Ja3/TfBj9f/Nhmo+h1rYszQIguFRJUDxlzlBowAegqEAnZPxrs5KtXi?=
+ =?us-ascii?Q?w8SdX6NQYva6Ayxi4ub1G1HstfXw/m2c3RNy+gY+dtqnBz31WQMVwZHV0CgH?=
+ =?us-ascii?Q?xvzXi6TTQNH6caj+/6Q53qYl4ZDrftxr6GqJBQJIPoXQ6lJcMYXVtHe+NcKI?=
+ =?us-ascii?Q?ZAW8GHrQqh7A8NkXMvUUTL6cbfyEcDvgl2yUpNa1cGiAKCVNvR97RBOgmlKX?=
+ =?us-ascii?Q?q/EYoneSlR7IQZrYHIeCiD0bAyK/DmCeoKgCwD1a3t1R+hK/2PJTPf8L9pCO?=
+ =?us-ascii?Q?dF/1ZYCz3wW2ZB5qiS6/l1/Z0Z7sfxub6bUOjAVzcfro10cpILC0dk2Qbn+u?=
+ =?us-ascii?Q?sOZF+4HfVWbkm7hOIDQxs2CqpMY5vw/TDhCjwbfdjt1eGXScBj/gxhCufjcv?=
+ =?us-ascii?Q?A33cumnyGerYq8gpmlD8hpV8MajZV4/jtazMt+BzYZh8x9DL1BfdX5usxZmL?=
+ =?us-ascii?Q?PKIWSWpRWw2L4vVuvadyAQa79kdsaCKWSo31+uszI/UwFQX/MW4OeiWCdO75?=
+ =?us-ascii?Q?8gOnYjsCcg5SdSzS3Kt3icY3rHXWoVW+O6fj4Sc2AVJSc33rR734HS52eBnk?=
+ =?us-ascii?Q?HhLLUEI=3D?=
 X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR12MB3849.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230037)(376011)(366013)(7416011)(1800799021)(921017);DIR:OUT;SFP:1101;
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR12MB3849.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230037)(376011)(1800799021)(7416011)(366013)(921017);DIR:OUT;SFP:1101;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
 X-MS-Exchange-AntiSpam-MessageData-0:
-	=?us-ascii?Q?K8Mu0LO/XtjcbUOSTPGbXM/BTRzm2xCB1oD69R8ujR61J38x+x3nQPes8OQN?=
- =?us-ascii?Q?nIJ4kKGAFkQ9SUdePHIMeUW5Bpy+Rm9vgbrIe3mOIoc20RPGBi96/IG5VSVQ?=
- =?us-ascii?Q?pZxciqmMPAihpiXaCOSwDLFEOwF/ruI5BPQXVnq07JdnBexPecKyA8kMa321?=
- =?us-ascii?Q?iga00asdvXkxm/3R3JKVVDqdKqBjPFUQlsp43DHABvElJD1y80epQPYxNOOV?=
- =?us-ascii?Q?1P+++Y+t4kzenapBxHNavDj58ujncOE5HL/A2lrC9XHS2wdOd6QJvZUHrmNy?=
- =?us-ascii?Q?79v4O3Wm30v+7QZIlj5RpGGLsS26yoAzvQuGdwaVr96fW0Xr7uIedkZmdy1i?=
- =?us-ascii?Q?c/cDmuqqkAshHy2k4VkA233vn+VqbpIZSvlTkx+zEV/UKghWEAJs6fiIyPU1?=
- =?us-ascii?Q?OEmwladCYx0CuFHniH6aj3ypKkd7AYNyDtpCdCGaAdojZSjFP3v3EIbXCPTl?=
- =?us-ascii?Q?iR/gwyGujQ8ba+pXYA7t/z7qsQRJuyfdNir3KsxGkeQFRaclZowYOKQjwLcv?=
- =?us-ascii?Q?dE+AyDHTnFJ2WXlXID3P1f3SzFDFGaXZawlAMREsRxPIZK0Po3IswvQoM3RH?=
- =?us-ascii?Q?ttGM/fdD26qr1dkcwHw04Vw1XLGHdy+8vkQK+rO5i6XuHv3DrtiyBh63Uaqw?=
- =?us-ascii?Q?OTTGeAMLgi9tpUi5waUCyLhalJE5rvMjd8ALhNI6xoOMF5Pg/DlR6v/W25RP?=
- =?us-ascii?Q?P6ui9MM1vLGkzh0OvbeFfbJzaNq1l+GNh0G4snZqRKyC3q9RO99A4PEZhg2K?=
- =?us-ascii?Q?UKpV85XwYHEJMT+Iju+MpFxf9AKZSziB2Z/6WK4Zla+9N9oC/pUZ4HLQ8Zs+?=
- =?us-ascii?Q?zcQWhw0rxqdSow0n/H0YV+9mnfAHLpfML/kHQkSTjLnOQH7RCxZxajAX8jgX?=
- =?us-ascii?Q?Ox+AG80EJI+99iHBsAM/04YecFSmnXDB1hEkzNNgBUCFNv55u1M+gsRnUf7k?=
- =?us-ascii?Q?tARJMd5TDfaA63QeItPrrOinp8NEz4HIG2d9oPHrqwQPWYw9Wc2TEtQ2z0lU?=
- =?us-ascii?Q?kMYpMhjl00JId7+IxktikG00UqzAZSpTkLNzzCbfE/wgDw5gnybPfRGyYjU/?=
- =?us-ascii?Q?OYsLoEIdy9bj8BMJyZrgZCx8v7Huy88ggUuafORbkEo5C5tlx22ex/dlVU7H?=
- =?us-ascii?Q?QdG2ByZl04LL6cYeM3vXb76H79OtgHG36fVSbqSOgrK2gMbkbG9Oqujqc1JH?=
- =?us-ascii?Q?t+JBUdNtZGb6mOG9J/U+50D7e8yjCtaU6tkmaxVr6ocr11sWGTEaO4K8I5rJ?=
- =?us-ascii?Q?CFWH8MZNmzlX69xm/H4v8l3jyrgi36+gGMvg3ccvnMFyEYw/dawlld15cqWI?=
- =?us-ascii?Q?b4x1IVA9Cme5w7XgMyYEmtEu/xpiZL3YDtGdbJokfmv30lQWAIZm5Xz5XtLF?=
- =?us-ascii?Q?EOBFWA+/GbPZT1AXv2iW5imiWCrpGf/Sqj5TBXKmt5Y6ipMq6E1kwGI9X6op?=
- =?us-ascii?Q?e1mVaK3EKOy+12aIqp+4o9ys06/UPEVxowBTqhk6qQPRRNo+nhW9n2CKqv5M?=
- =?us-ascii?Q?s0zrLSxZZE4wFGVOGXNkN9bN2OYUVAxxID2o5RBTWw7mdXWWOyu288PLUx+x?=
- =?us-ascii?Q?KlJy3/Ip36j5jyEquKpLg9cHBShzHJavdOj7ejdz?=
+	=?us-ascii?Q?q35spNaUx0peN1n/MBRqDHbqecRYL+uYdakOKFwY6hFaMpo7CM9k5yMYlEEo?=
+ =?us-ascii?Q?WA83PoXQJXT00Fn+DkIYeUxzsZJqkp2XlDHVZh0W5RpC8InDxTSt+ZEYxBhN?=
+ =?us-ascii?Q?smtJ/4gHlV5BqOvrwKOWtARCjUAPI8l1yiP5ML+Lju4j+B3WKb6b+96WLB5j?=
+ =?us-ascii?Q?CESMZK/HS0YI4Vgix+1MBB+zC4P7bwPmMwVt4Y8sEWYtilpAPGjqsrU2cTY+?=
+ =?us-ascii?Q?oqPAEswNlYYIZxO//y1GMBBqwnIcAdv2VWjx1ghj7maDNse/t3IqENsMRpDw?=
+ =?us-ascii?Q?PKoIaLl5VQx2WtvWLcnlZpCUu95cQ1dMz8usnv5/y2uOc6krK1VEbYiLgbPE?=
+ =?us-ascii?Q?bVdO/08BO1M+QXE50NV4gQchtKo+Rx0nj9pvsZlSbDY3lfM3mLDLfqLcvQ94?=
+ =?us-ascii?Q?hLtr4bD+cryZTHSHcuGDMp/HOCk1kSYBMf2HwT/32lYuiXKFcrhMUAoXCadE?=
+ =?us-ascii?Q?78t5s7tx+EXLMCQ/VJeWgW8SjWSuI2zONgfVDfmBejzwCUjF9/oHW22ohzUv?=
+ =?us-ascii?Q?0/MjjGSFgLwkR118axLfuC+ziV6T2J6DALwOKLpLVncM+DWyeC9x6CzJPIiM?=
+ =?us-ascii?Q?ATo9k3hqWR9yz/Qj6r+T4jbKfqrowSWHATZ5qCRxfzAc5fb9Bp1aDi1qtnmA?=
+ =?us-ascii?Q?cc+KAJOQq73EWuXWCipflU6FPXzw342hF2D/S5MHFByQhCpCi8/Z5HXFZxIq?=
+ =?us-ascii?Q?Mmv0yqsrKnezWPMRCCbgZWQwYNtbYljS7U0V+m4Atqot3hMBV5TDOTa9NUuA?=
+ =?us-ascii?Q?N7D/4O/Po8RmQ2EI65GuRdNmH2Xe0CbdC2KcdT/NiDEdvHkMLg0k/IVIgZIa?=
+ =?us-ascii?Q?jYDJg2SamAXWm1d1nGRvvn032lOz5um/FqYzbbdqr6w5IaGrgh2oolmyKoOD?=
+ =?us-ascii?Q?IAHNYXBCFmyqGo9gPZnhWRiPs2kS164ZG/jKNJ8MSoEq0uOdyzDxqVrrngx8?=
+ =?us-ascii?Q?MIe47sc3lJDA/0IiWW2xQMY3/43/QD9BcwaMFQZjFzTKtgr3Fc9SYRGFixEq?=
+ =?us-ascii?Q?qR+DPRBnm067wh6yRHs4LLxPb4IQz1i9UHAVT4q4mNbweUgvwYTajRvEzaEJ?=
+ =?us-ascii?Q?fkJm0d9YONAVsL1MiuErpjQIk/nJzL8LkjgmcooemKzsRy6x2XKyuoJOCj7u?=
+ =?us-ascii?Q?JE3pI35NDYAvgLgr7cZ4191Zkyc2S9YGXhe3gHRGhLZeTgdQ86ZRpx+r3Wrt?=
+ =?us-ascii?Q?sdhnt3KRJBXghboTj4vkGC973mszzwdRR13JGaXdE2yEaGf8kicxbUzYtDw6?=
+ =?us-ascii?Q?9WFMufDa5zT3F25Gvyz9gpthcgoLUI0jGlqgZBq6JiSY2N9SM4xOoreESksF?=
+ =?us-ascii?Q?Dka3Pjf2jqKLIeckx4/5XWHtb4PrRLvnbI7+Rr+uhcpPwtXOidhLKBzRaJ8N?=
+ =?us-ascii?Q?5NNcyQUUfBn4Kyr9q0PI39d7WWRP9DdS1Eb5GAKb5NMRCDB6/gHIFsB394iH?=
+ =?us-ascii?Q?zC6f23nkEU0y9uWpBriSU2dMszqHVVnpDjUdzvVZLyia7AHWHpvtJMrKN+SA?=
+ =?us-ascii?Q?B1S+SkDgVvv7BVnmge1Iyvdi+R9BHG5B/K74x5Q4W6jeYcokKGfWoqzfLHeY?=
+ =?us-ascii?Q?ZEA0HC76Puz+xu4N5eIshiL/2xnBbZOmrFkxKZId?=
 X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 28fbe3bb-8ece-400b-aed1-08dc949fa32a
+X-MS-Exchange-CrossTenant-Network-Message-Id: 6209cb50-091b-4700-864d-08dc949fa417
 X-MS-Exchange-CrossTenant-AuthSource: DM6PR12MB3849.namprd12.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 24 Jun 2024 22:47:34.0082
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 24 Jun 2024 22:47:35.5847
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: rYGo8PYaX0/y4ejT/GQ3ljIcCI3qe8gznGIXmWLOk6y+2gcZtI7421/fWW9quPR6
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR12MB4147
+X-MS-Exchange-CrossTenant-UserPrincipalName: CLLIMgMBVmFM+eotuQP3yybmQXhwvuMv3p8z+zc8GO9gE8ws2omkC6snF1gzgOjK
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS7PR12MB6024
 
-Create the class, character device and functions for a fwctl driver to
-un/register to the subsystem.
+Each file descriptor gets a chunk of per-FD driver specific context that
+allows the driver to attach a device specific struct to. The core code
+takes care of the memory lifetime for this structure.
 
-A typical fwctl driver has a sysfs presence like:
+The ioctl dispatch and design is based on what was built for iommufd. The
+ioctls have a struct which has a combined in/out behavior with a typical
+'zero pad' scheme for future extension and backwards compatibility.
 
-$ ls -l /dev/fwctl/fwctl0
-crw------- 1 root root 250, 0 Apr 25 19:16 /dev/fwctl/fwctl0
+Like iommufd some shared logic does most of the ioctl marshalling and
+compatibility work and tables diatches to some function pointers for
+each unique iotcl.
 
-$ ls /sys/class/fwctl/fwctl0
-dev  device  power  subsystem  uevent
+This approach has proven to work quite well in the iommufd and rdma
+subsystems.
 
-$ ls /sys/class/fwctl/fwctl0/device/infiniband/
-ibp0s10f0
-
-$ ls /sys/class/infiniband/ibp0s10f0/device/fwctl/
-fwctl0/
-
-$ ls /sys/devices/pci0000:00/0000:00:0a.0/fwctl/fwctl0
-dev  device  power  subsystem  uevent
-
-Which allows userspace to link all the multi-subsystem driver components
-together and learn the subsystem specific names for the device's
-components.
+Allocate an ioctl number space for the subsystem.
 
 Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
 ---
- MAINTAINERS            |   8 ++
- drivers/Kconfig        |   2 +
- drivers/Makefile       |   1 +
- drivers/fwctl/Kconfig  |   9 +++
- drivers/fwctl/Makefile |   4 +
- drivers/fwctl/main.c   | 177 +++++++++++++++++++++++++++++++++++++++++
- include/linux/fwctl.h  |  68 ++++++++++++++++
- 7 files changed, 269 insertions(+)
- create mode 100644 drivers/fwctl/Kconfig
- create mode 100644 drivers/fwctl/Makefile
- create mode 100644 drivers/fwctl/main.c
- create mode 100644 include/linux/fwctl.h
+ .../userspace-api/ioctl/ioctl-number.rst      |   1 +
+ MAINTAINERS                                   |   1 +
+ drivers/fwctl/main.c                          | 124 +++++++++++++++++-
+ include/linux/fwctl.h                         |  31 +++++
+ include/uapi/fwctl/fwctl.h                    |  41 ++++++
+ 5 files changed, 196 insertions(+), 2 deletions(-)
+ create mode 100644 include/uapi/fwctl/fwctl.h
 
+diff --git a/Documentation/userspace-api/ioctl/ioctl-number.rst b/Documentation/userspace-api/ioctl/ioctl-number.rst
+index a141e8e65c5d3a..4d91c5a20b98c8 100644
+--- a/Documentation/userspace-api/ioctl/ioctl-number.rst
++++ b/Documentation/userspace-api/ioctl/ioctl-number.rst
+@@ -324,6 +324,7 @@ Code  Seq#    Include File                                           Comments
+ 0x97  00-7F  fs/ceph/ioctl.h                                         Ceph file system
+ 0x99  00-0F                                                          537-Addinboard driver
+                                                                      <mailto:buk@buks.ipn.de>
++0x9A  00-0F  include/uapi/fwctl/fwctl.h
+ 0xA0  all    linux/sdp/sdp.h                                         Industrial Device Project
+                                                                      <mailto:kenji@bitgate.com>
+ 0xA1  0      linux/vtpm_proxy.h                                      TPM Emulator Proxy Driver
 diff --git a/MAINTAINERS b/MAINTAINERS
-index 2ca8f35dfe0399..aa7a760d12f8ef 100644
+index aa7a760d12f8ef..2090009a6ae98a 100644
 --- a/MAINTAINERS
 +++ b/MAINTAINERS
-@@ -9076,6 +9076,14 @@ F:	kernel/futex/*
- F:	tools/perf/bench/futex*
- F:	tools/testing/selftests/futex/
+@@ -9083,6 +9083,7 @@ S:	Maintained
+ F:	Documentation/userspace-api/fwctl.rst
+ F:	drivers/fwctl/
+ F:	include/linux/fwctl.h
++F:	include/uapi/fwctl/
  
-+FWCTL SUBSYSTEM
-+M:	Jason Gunthorpe <jgg@nvidia.com>
-+M:	Saeed Mahameed <saeedm@nvidia.com>
-+S:	Maintained
-+F:	Documentation/userspace-api/fwctl.rst
-+F:	drivers/fwctl/
-+F:	include/linux/fwctl.h
-+
  GALAXYCORE GC0308 CAMERA SENSOR DRIVER
  M:	Sebastian Reichel <sre@kernel.org>
- L:	linux-media@vger.kernel.org
-diff --git a/drivers/Kconfig b/drivers/Kconfig
-index 7bdad836fc6207..7c556c5ac4fddc 100644
---- a/drivers/Kconfig
-+++ b/drivers/Kconfig
-@@ -21,6 +21,8 @@ source "drivers/connector/Kconfig"
- 
- source "drivers/firmware/Kconfig"
- 
-+source "drivers/fwctl/Kconfig"
-+
- source "drivers/gnss/Kconfig"
- 
- source "drivers/mtd/Kconfig"
-diff --git a/drivers/Makefile b/drivers/Makefile
-index fe9ceb0d2288ad..f6a241b747b29c 100644
---- a/drivers/Makefile
-+++ b/drivers/Makefile
-@@ -133,6 +133,7 @@ obj-$(CONFIG_MEMSTICK)		+= memstick/
- obj-y				+= leds/
- obj-$(CONFIG_INFINIBAND)	+= infiniband/
- obj-y				+= firmware/
-+obj-$(CONFIG_FWCTL)		+= fwctl/
- obj-$(CONFIG_CRYPTO)		+= crypto/
- obj-$(CONFIG_SUPERH)		+= sh/
- obj-y				+= clocksource/
-diff --git a/drivers/fwctl/Kconfig b/drivers/fwctl/Kconfig
-new file mode 100644
-index 00000000000000..37147a695add9a
---- /dev/null
-+++ b/drivers/fwctl/Kconfig
-@@ -0,0 +1,9 @@
-+# SPDX-License-Identifier: GPL-2.0-only
-+menuconfig FWCTL
-+	tristate "fwctl device firmware access framework"
-+	help
-+	  fwctl provides a userspace API for restricted access to communicate
-+	  with on-device firmware. The communication channel is intended to
-+	  support a wide range of lockdown compatible device behaviors including
-+	  manipulating device FLASH, debugging, and other activities that don't
-+	  fit neatly into an existing subsystem.
-diff --git a/drivers/fwctl/Makefile b/drivers/fwctl/Makefile
-new file mode 100644
-index 00000000000000..1cad210f6ba580
---- /dev/null
-+++ b/drivers/fwctl/Makefile
-@@ -0,0 +1,4 @@
-+# SPDX-License-Identifier: GPL-2.0
-+obj-$(CONFIG_FWCTL) += fwctl.o
-+
-+fwctl-y += main.o
 diff --git a/drivers/fwctl/main.c b/drivers/fwctl/main.c
-new file mode 100644
-index 00000000000000..6e9bf15c743b5c
---- /dev/null
+index 6e9bf15c743b5c..6872c01d5c62e8 100644
+--- a/drivers/fwctl/main.c
 +++ b/drivers/fwctl/main.c
-@@ -0,0 +1,177 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+/*
-+ * Copyright (c) 2024, NVIDIA CORPORATION & AFFILIATES
-+ */
-+#define pr_fmt(fmt) "fwctl: " fmt
-+#include <linux/fwctl.h>
-+#include <linux/module.h>
-+#include <linux/slab.h>
-+#include <linux/container_of.h>
-+#include <linux/fs.h>
+@@ -9,26 +9,131 @@
+ #include <linux/container_of.h>
+ #include <linux/fs.h>
+ 
++#include <uapi/fwctl/fwctl.h>
 +
-+enum {
-+	FWCTL_MAX_DEVICES = 256,
-+};
-+static dev_t fwctl_dev;
-+static DEFINE_IDA(fwctl_ida);
-+
-+static int fwctl_fops_open(struct inode *inode, struct file *filp)
-+{
-+	struct fwctl_device *fwctl =
-+		container_of(inode->i_cdev, struct fwctl_device, cdev);
-+
-+	get_device(&fwctl->dev);
-+	filp->private_data = fwctl;
-+	return 0;
-+}
-+
-+static int fwctl_fops_release(struct inode *inode, struct file *filp)
-+{
-+	struct fwctl_device *fwctl = filp->private_data;
-+
-+	fwctl_put(fwctl);
-+	return 0;
-+}
-+
-+static const struct file_operations fwctl_fops = {
-+	.owner = THIS_MODULE,
-+	.open = fwctl_fops_open,
-+	.release = fwctl_fops_release,
+ enum {
+ 	FWCTL_MAX_DEVICES = 256,
+ };
+ static dev_t fwctl_dev;
+ static DEFINE_IDA(fwctl_ida);
+ 
++struct fwctl_ucmd {
++	struct fwctl_uctx *uctx;
++	void __user *ubuffer;
++	void *cmd;
++	u32 user_size;
 +};
 +
-+static void fwctl_device_release(struct device *device)
-+{
-+	struct fwctl_device *fwctl =
-+		container_of(device, struct fwctl_device, dev);
-+
-+	ida_free(&fwctl_ida, fwctl->dev.devt - fwctl_dev);
-+	kfree(fwctl);
-+}
-+
-+static char *fwctl_devnode(const struct device *dev, umode_t *mode)
-+{
-+	return kasprintf(GFP_KERNEL, "fwctl/%s", dev_name(dev));
-+}
-+
-+static struct class fwctl_class = {
-+	.name = "fwctl",
-+	.dev_release = fwctl_device_release,
-+	.devnode = fwctl_devnode,
++/* On stack memory for the ioctl structs */
++union ucmd_buffer {
 +};
 +
-+static struct fwctl_device *
-+_alloc_device(struct device *parent, const struct fwctl_ops *ops, size_t size)
++struct fwctl_ioctl_op {
++	unsigned int size;
++	unsigned int min_size;
++	unsigned int ioctl_num;
++	int (*execute)(struct fwctl_ucmd *ucmd);
++};
++
++#define IOCTL_OP(_ioctl, _fn, _struct, _last)                         \
++	[_IOC_NR(_ioctl) - FWCTL_CMD_BASE] = {                        \
++		.size = sizeof(_struct) +                             \
++			BUILD_BUG_ON_ZERO(sizeof(union ucmd_buffer) < \
++					  sizeof(_struct)),           \
++		.min_size = offsetofend(_struct, _last),              \
++		.ioctl_num = _ioctl,                                  \
++		.execute = _fn,                                       \
++	}
++static const struct fwctl_ioctl_op fwctl_ioctl_ops[] = {
++};
++
++static long fwctl_fops_ioctl(struct file *filp, unsigned int cmd,
++			       unsigned long arg)
 +{
-+	struct fwctl_device *fwctl __free(kfree) = kzalloc(size, GFP_KERNEL);
-+	int devnum;
-+
-+	if (!fwctl)
-+		return NULL;
-+	fwctl->dev.class = &fwctl_class;
-+	fwctl->dev.parent = parent;
-+
-+	devnum = ida_alloc_max(&fwctl_ida, FWCTL_MAX_DEVICES - 1, GFP_KERNEL);
-+	if (devnum < 0)
-+		return NULL;
-+	fwctl->dev.devt = fwctl_dev + devnum;
-+
-+	device_initialize(&fwctl->dev);
-+	return_ptr(fwctl);
-+}
-+
-+/* Drivers use the fwctl_alloc_device() wrapper */
-+struct fwctl_device *_fwctl_alloc_device(struct device *parent,
-+					 const struct fwctl_ops *ops,
-+					 size_t size)
-+{
-+	struct fwctl_device *fwctl __free(fwctl) =
-+		_alloc_device(parent, ops, size);
-+
-+	if (!fwctl)
-+		return NULL;
-+
-+	cdev_init(&fwctl->cdev, &fwctl_fops);
-+	fwctl->cdev.owner = THIS_MODULE;
-+
-+	if (dev_set_name(&fwctl->dev, "fwctl%d", fwctl->dev.devt - fwctl_dev))
-+		return NULL;
-+
-+	fwctl->ops = ops;
-+	return_ptr(fwctl);
-+}
-+EXPORT_SYMBOL_NS_GPL(_fwctl_alloc_device, FWCTL);
-+
-+/**
-+ * fwctl_register - Register a new device to the subsystem
-+ * @fwctl: Previously allocated fwctl_device
-+ *
-+ * On return the device is visible through sysfs and /dev, driver ops may be
-+ * called.
-+ */
-+int fwctl_register(struct fwctl_device *fwctl)
-+{
++	struct fwctl_uctx *uctx = filp->private_data;
++	const struct fwctl_ioctl_op *op;
++	struct fwctl_ucmd ucmd = {};
++	union ucmd_buffer buf;
++	unsigned int nr;
 +	int ret;
 +
-+	ret = cdev_device_add(&fwctl->cdev, &fwctl->dev);
-+	if (ret)
-+		return ret;
-+	return 0;
-+}
-+EXPORT_SYMBOL_NS_GPL(fwctl_register, FWCTL);
++	nr = _IOC_NR(cmd);
++	if ((nr - FWCTL_CMD_BASE) >= ARRAY_SIZE(fwctl_ioctl_ops))
++		return -ENOIOCTLCMD;
++	op = &fwctl_ioctl_ops[nr - FWCTL_CMD_BASE];
++	if (op->ioctl_num != cmd)
++		return -ENOIOCTLCMD;
 +
-+/**
-+ * fwctl_unregister - Unregister a device from the subsystem
-+ * @fwctl: Previously allocated and registered fwctl_device
-+ *
-+ * Undoes fwctl_register(). On return no driver ops will be called. The
-+ * caller must still call fwctl_put() to free the fwctl.
-+ *
-+ * Unregister will return even if userspace still has file descriptors open.
-+ * This will call ops->close_uctx() on any open FDs and after return no driver
-+ * op will be called. The FDs remain open but all fops will return -ENODEV.
-+ *
-+ * The design of fwctl allows this sort of disassociation of the driver from the
-+ * subsystem primarily by keeping memory allocations owned by the core subsytem.
-+ * The fwctl_device and fwctl_uctx can both be freed without requiring a driver
-+ * callback. This allows the module to remain unlocked while FDs are open.
-+ */
-+void fwctl_unregister(struct fwctl_device *fwctl)
-+{
-+	cdev_device_del(&fwctl->cdev, &fwctl->dev);
-+
-+	/*
-+	 * The driver module may unload after this returns, the op pointer will
-+	 * not be valid.
-+	 */
-+	fwctl->ops = NULL;
-+}
-+EXPORT_SYMBOL_NS_GPL(fwctl_unregister, FWCTL);
-+
-+static int __init fwctl_init(void)
-+{
-+	int ret;
-+
-+	ret = alloc_chrdev_region(&fwctl_dev, 0, FWCTL_MAX_DEVICES, "fwctl");
++	ucmd.uctx = uctx;
++	ucmd.cmd = &buf;
++	ucmd.ubuffer = (void __user *)arg;
++	ret = get_user(ucmd.user_size, (u32 __user *)ucmd.ubuffer);
 +	if (ret)
 +		return ret;
 +
-+	ret = class_register(&fwctl_class);
++	if (ucmd.user_size < op->min_size)
++		return -EINVAL;
++
++	ret = copy_struct_from_user(ucmd.cmd, op->size, ucmd.ubuffer,
++				    ucmd.user_size);
 +	if (ret)
-+		goto err_chrdev;
-+	return 0;
++		return ret;
 +
-+err_chrdev:
-+	unregister_chrdev_region(fwctl_dev, FWCTL_MAX_DEVICES);
-+	return ret;
++	guard(rwsem_read)(&uctx->fwctl->registration_lock);
++	if (!uctx->fwctl->ops)
++		return -ENODEV;
++	return op->execute(&ucmd);
 +}
 +
-+static void __exit fwctl_exit(void)
+ static int fwctl_fops_open(struct inode *inode, struct file *filp)
+ {
+ 	struct fwctl_device *fwctl =
+ 		container_of(inode->i_cdev, struct fwctl_device, cdev);
++	int ret;
++
++	guard(rwsem_read)(&fwctl->registration_lock);
++	if (!fwctl->ops)
++		return -ENODEV;
++
++	struct fwctl_uctx *uctx __free(kfree) =
++		kzalloc(fwctl->ops->uctx_size, GFP_KERNEL | GFP_KERNEL_ACCOUNT);
++	if (!uctx)
++		return -ENOMEM;
++
++	uctx->fwctl = fwctl;
++	ret = fwctl->ops->open_uctx(uctx);
++	if (ret)
++		return ret;
++
++	scoped_guard(mutex, &fwctl->uctx_list_lock) {
++		list_add_tail(&uctx->uctx_list_entry, &fwctl->uctx_list);
++	}
+ 
+ 	get_device(&fwctl->dev);
+-	filp->private_data = fwctl;
++	filp->private_data = no_free_ptr(uctx);
+ 	return 0;
+ }
+ 
++static void fwctl_destroy_uctx(struct fwctl_uctx *uctx)
 +{
-+	class_unregister(&fwctl_class);
-+	unregister_chrdev_region(fwctl_dev, FWCTL_MAX_DEVICES);
++	lockdep_assert_held(&uctx->fwctl->uctx_list_lock);
++	list_del(&uctx->uctx_list_entry);
++	uctx->fwctl->ops->close_uctx(uctx);
 +}
 +
-+module_init(fwctl_init);
-+module_exit(fwctl_exit);
-+MODULE_DESCRIPTION("fwctl device firmware access framework");
-+MODULE_LICENSE("GPL");
+ static int fwctl_fops_release(struct inode *inode, struct file *filp)
+ {
+-	struct fwctl_device *fwctl = filp->private_data;
++	struct fwctl_uctx *uctx = filp->private_data;
++	struct fwctl_device *fwctl = uctx->fwctl;
+ 
++	scoped_guard(rwsem_read, &fwctl->registration_lock) {
++		if (fwctl->ops) {
++			guard(mutex)(&fwctl->uctx_list_lock);
++			fwctl_destroy_uctx(uctx);
++		}
++	}
++
++	kfree(uctx);
+ 	fwctl_put(fwctl);
+ 	return 0;
+ }
+@@ -37,6 +142,7 @@ static const struct file_operations fwctl_fops = {
+ 	.owner = THIS_MODULE,
+ 	.open = fwctl_fops_open,
+ 	.release = fwctl_fops_release,
++	.unlocked_ioctl = fwctl_fops_ioctl,
+ };
+ 
+ static void fwctl_device_release(struct device *device)
+@@ -45,6 +151,7 @@ static void fwctl_device_release(struct device *device)
+ 		container_of(device, struct fwctl_device, dev);
+ 
+ 	ida_free(&fwctl_ida, fwctl->dev.devt - fwctl_dev);
++	mutex_destroy(&fwctl->uctx_list_lock);
+ 	kfree(fwctl);
+ }
+ 
+@@ -69,6 +176,9 @@ _alloc_device(struct device *parent, const struct fwctl_ops *ops, size_t size)
+ 		return NULL;
+ 	fwctl->dev.class = &fwctl_class;
+ 	fwctl->dev.parent = parent;
++	init_rwsem(&fwctl->registration_lock);
++	mutex_init(&fwctl->uctx_list_lock);
++	INIT_LIST_HEAD(&fwctl->uctx_list);
+ 
+ 	devnum = ida_alloc_max(&fwctl_ida, FWCTL_MAX_DEVICES - 1, GFP_KERNEL);
+ 	if (devnum < 0)
+@@ -137,8 +247,18 @@ EXPORT_SYMBOL_NS_GPL(fwctl_register, FWCTL);
+  */
+ void fwctl_unregister(struct fwctl_device *fwctl)
+ {
++	struct fwctl_uctx *uctx;
++
+ 	cdev_device_del(&fwctl->cdev, &fwctl->dev);
+ 
++	/* Disable and free the driver's resources for any still open FDs. */
++	guard(rwsem_write)(&fwctl->registration_lock);
++	guard(mutex)(&fwctl->uctx_list_lock);
++	while ((uctx = list_first_entry_or_null(&fwctl->uctx_list,
++						struct fwctl_uctx,
++						uctx_list_entry)))
++		fwctl_destroy_uctx(uctx);
++
+ 	/*
+ 	 * The driver module may unload after this returns, the op pointer will
+ 	 * not be valid.
 diff --git a/include/linux/fwctl.h b/include/linux/fwctl.h
-new file mode 100644
-index 00000000000000..ef4eaa87c945e4
---- /dev/null
+index ef4eaa87c945e4..1d9651de92fc19 100644
+--- a/include/linux/fwctl.h
 +++ b/include/linux/fwctl.h
-@@ -0,0 +1,68 @@
-+/* SPDX-License-Identifier: GPL-2.0-only */
-+/*
-+ * Copyright (c) 2024, NVIDIA CORPORATION & AFFILIATES
-+ */
-+#ifndef __LINUX_FWCTL_H
-+#define __LINUX_FWCTL_H
-+#include <linux/device.h>
-+#include <linux/cdev.h>
-+#include <linux/cleanup.h>
-+
-+struct fwctl_device;
-+struct fwctl_uctx;
-+
-+struct fwctl_ops {
-+};
-+
+@@ -11,7 +11,20 @@
+ struct fwctl_device;
+ struct fwctl_uctx;
+ 
 +/**
-+ * struct fwctl_device - Per-driver registration struct
-+ * @dev: The sysfs (class/fwctl/fwctlXX) device
-+ *
-+ * Each driver instance will have one of these structs with the driver
-+ * private data following immeidately after. This struct is refcounted,
-+ * it is freed by calling fwctl_put().
++ * struct fwctl_ops - Driver provided operations
++ * @uctx_size: The size of the fwctl_uctx struct to allocate. The first
++ *	bytes of this memory will be a fwctl_uctx. The driver can use the
++ *	remaining bytes as its private memory.
++ * @open_uctx: Called when a file descriptor is opened before the uctx is ever
++ *	used.
++ * @close_uctx: Called when the uctx is destroyed, usually when the FD is
++ *	closed.
 + */
-+struct fwctl_device {
-+	struct device dev;
+ struct fwctl_ops {
++	size_t uctx_size;
++	int (*open_uctx)(struct fwctl_uctx *uctx);
++	void (*close_uctx)(struct fwctl_uctx *uctx);
+ };
+ 
+ /**
+@@ -26,6 +39,10 @@ struct fwctl_device {
+ 	struct device dev;
+ 	/* private: */
+ 	struct cdev cdev;
++
++	struct rw_semaphore registration_lock;
++	struct mutex uctx_list_lock;
++	struct list_head uctx_list;
+ 	const struct fwctl_ops *ops;
+ };
+ 
+@@ -65,4 +82,18 @@ DEFINE_FREE(fwctl, struct fwctl_device *, if (_T) fwctl_put(_T));
+ int fwctl_register(struct fwctl_device *fwctl);
+ void fwctl_unregister(struct fwctl_device *fwctl);
+ 
++/**
++ * struct fwctl_uctx - Per user FD context
++ * @fwctl: fwctl instance that owns the context
++ *
++ * Every FD opened by userspace will get a unique context allocation. Any driver
++ * private data will follow immediately after.
++ */
++struct fwctl_uctx {
++	struct fwctl_device *fwctl;
 +	/* private: */
-+	struct cdev cdev;
-+	const struct fwctl_ops *ops;
++	/* Head at fwctl_device::uctx_list */
++	struct list_head uctx_list_entry;
 +};
 +
-+struct fwctl_device *_fwctl_alloc_device(struct device *parent,
-+					 const struct fwctl_ops *ops,
-+					 size_t size);
-+/**
-+ * fwctl_alloc_device - Allocate a fwctl
-+ * @parent: Physical device that provides the FW interface
-+ * @ops: Driver ops to register
-+ * @drv_struct: 'struct driver_fwctl' that holds the struct fwctl_device
-+ * @member: Name of the struct fwctl_device in @drv_struct
-+ *
-+ * This allocates and initializes the fwctl_device embedded in the drv_struct.
-+ * Upon success the pointer must be freed via fwctl_put(). Returns NULL on
-+ * failure. Returns a 'drv_struct *' on success, NULL on error.
+ #endif
+diff --git a/include/uapi/fwctl/fwctl.h b/include/uapi/fwctl/fwctl.h
+new file mode 100644
+index 00000000000000..0bdce95b6d69d9
+--- /dev/null
++++ b/include/uapi/fwctl/fwctl.h
+@@ -0,0 +1,41 @@
++/* SPDX-License-Identifier: GPL-2.0 WITH Linux-syscall-note */
++/* Copyright (c) 2024, NVIDIA CORPORATION & AFFILIATES.
 + */
-+#define fwctl_alloc_device(parent, ops, drv_struct, member)                  \
-+	container_of(_fwctl_alloc_device(                                    \
-+			     parent, ops,                                    \
-+			     sizeof(drv_struct) +                            \
-+				     BUILD_BUG_ON_ZERO(                      \
-+					     offsetof(drv_struct, member))), \
-+		     drv_struct, member)
++#ifndef _UAPI_FWCTL_H
++#define _UAPI_FWCTL_H
 +
-+static inline struct fwctl_device *fwctl_get(struct fwctl_device *fwctl)
-+{
-+	get_device(&fwctl->dev);
-+	return fwctl;
-+}
-+static inline void fwctl_put(struct fwctl_device *fwctl)
-+{
-+	put_device(&fwctl->dev);
-+}
-+DEFINE_FREE(fwctl, struct fwctl_device *, if (_T) fwctl_put(_T));
++#include <linux/types.h>
++#include <linux/ioctl.h>
 +
-+int fwctl_register(struct fwctl_device *fwctl);
-+void fwctl_unregister(struct fwctl_device *fwctl);
++#define FWCTL_TYPE 0x9A
++
++/**
++ * DOC: General ioctl format
++ *
++ * The ioctl interface follows a general format to allow for extensibility. Each
++ * ioctl is passed in a structure pointer as the argument providing the size of
++ * the structure in the first u32. The kernel checks that any structure space
++ * beyond what it understands is 0. This allows userspace to use the backward
++ * compatible portion while consistently using the newer, larger, structures.
++ *
++ * ioctls use a standard meaning for common errnos:
++ *
++ *  - ENOTTY: The IOCTL number itself is not supported at all
++ *  - E2BIG: The IOCTL number is supported, but the provided structure has
++ *    non-zero in a part the kernel does not understand.
++ *  - EOPNOTSUPP: The IOCTL number is supported, and the structure is
++ *    understood, however a known field has a value the kernel does not
++ *    understand or support.
++ *  - EINVAL: Everything about the IOCTL was understood, but a field is not
++ *    correct.
++ *  - ENOMEM: Out of memory.
++ *  - ENODEV: The underlying device has been hot-unplugged and the FD is
++ *            orphaned.
++ *
++ * As well as additional errnos, within specific ioctls.
++ */
++enum {
++	FWCTL_CMD_BASE = 0,
++};
 +
 +#endif
 -- 
