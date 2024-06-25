@@ -1,89 +1,93 @@
-Return-Path: <linux-rdma+bounces-3480-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-3481-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8FEC9916F82
-	for <lists+linux-rdma@lfdr.de>; Tue, 25 Jun 2024 19:45:28 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id B0926916F8C
+	for <lists+linux-rdma@lfdr.de>; Tue, 25 Jun 2024 19:47:32 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BC49A1C22F7E
-	for <lists+linux-rdma@lfdr.de>; Tue, 25 Jun 2024 17:45:27 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 58D121F2292C
+	for <lists+linux-rdma@lfdr.de>; Tue, 25 Jun 2024 17:47:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AD7F4172BC7;
-	Tue, 25 Jun 2024 17:45:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CE267173325;
+	Tue, 25 Jun 2024 17:47:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="n9EpkWp6"
+	dkim=pass (2048-bit key) header.d=launchpad.net header.i=@launchpad.net header.b="CUbeCJjX"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from smtp-relay-services-1.canonical.com (smtp-relay-services-1.canonical.com [185.125.188.251])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5E89C4437A;
-	Tue, 25 Jun 2024 17:45:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7935D4437A
+	for <linux-rdma@vger.kernel.org>; Tue, 25 Jun 2024 17:47:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.125.188.251
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1719337522; cv=none; b=jKjth+5hbAek2t32jZV6kARf97jNVJHckXZPGxbl1y4VFGNpf02NmEyQF/kz6YjuqONfPmfFvFjlWrcXJfA3cWqnl4tHZh2C7anZfik+qN7nf3qydCuA0yJSeQqo8Na0UGcQcIopoeuPiFixWRprSG2vKTGTUPKUi4HzZKSwXOQ=
+	t=1719337647; cv=none; b=WlggliQlWlz1sLNmjOJnHEIhb2nF2d3mHuD/cFLcR6u48kUz3QXo5m9HodtsdGkgvYR+2yvPEMHFqa89TD0wV8jMSE5CNCdQqYwkcItZ+Lj7YhMlGljA2AQU7iZS0YPKgUC5OXw3XTg0iBvNf4W6mKwBkRbO1RKZAP7+I/Fn9DY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1719337522; c=relaxed/simple;
-	bh=3juEGBiQ0BSrKT3CulYrFtDalEOYotCXZj3U2euRQMA=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Message-Id:Date:
-	 MIME-Version:Content-Type; b=bHTvnazQAb4E63pnApnhN49MTRaxF0hXkw0IMkwasWz+lnyh8na+6v1RPCOEPh6+48xHbjEgQu+bW82GGjA0setLCRUa/JB7jotTifkFjJQyS8KaMNUlCTzS7EDb/cM8Skqqpvdpm7EyKW0Nv7kL6HMNpx6RoNJ/sGb1uARq98k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=n9EpkWp6; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 71874C32781;
-	Tue, 25 Jun 2024 17:45:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1719337522;
-	bh=3juEGBiQ0BSrKT3CulYrFtDalEOYotCXZj3U2euRQMA=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-	b=n9EpkWp67ouvx+rGC2qwzAr0gQpCTZGKe9NRP+i0p33idMEjaZ0GZ+trKm62pc+Xd
-	 e39vFQHH07/YbC8LuahI623ocrlMjua4LZ0R0VtgStyXhz+OFrquuLhm+oyQKPP/Qy
-	 EtYBryaTAVzroSM4pGAjFzTByYM98YjESVwy1zeaKbg1Ngh7VUUuX3Il3CPzOQjTCv
-	 u7B9LLPrfFfJN2DBQMlEZb4gkkOxJRXGibgPJV4hp/fYsiMW8UOBARqXdpwy8yDIxk
-	 gfyvvo5T2qRc+bgBwmthy0fFe7gh3aFabV8ncUT3sv1GV+Jdn2TaFHKIBijAPfUrG8
-	 Q1lpDbsepvl/w==
-From: Leon Romanovsky <leon@kernel.org>
-To: Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>, 
- Jason Gunthorpe <jgg@ziepe.ca>, 
- Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Cc: linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org, 
- linux-rdma@vger.kernel.org
-In-Reply-To: <b826dd05eefa5f4d6a7a1b4d191eaf37c714ed04.1719259997.git.christophe.jaillet@wanadoo.fr>
-References: <b826dd05eefa5f4d6a7a1b4d191eaf37c714ed04.1719259997.git.christophe.jaillet@wanadoo.fr>
-Subject: Re: [PATCH] RDMA/hfi1: Constify struct mmu_rb_ops
-Message-Id: <171933751680.963586.6452376643796322440.b4-ty@kernel.org>
-Date: Tue, 25 Jun 2024 20:45:16 +0300
+	s=arc-20240116; t=1719337647; c=relaxed/simple;
+	bh=OFZdvz3GOA3yfB/4jVjTDEz6Xo/j/ITMjmo6ml2hU9A=;
+	h=Content-Type:MIME-Version:To:From:Subject:Message-Id:Date; b=Z25+MY7qy2vmZXjaNqweVIxlPG8EAIidJj7glPmpOFtNzfvGepmZrl1JlkjvrwB6kD5GvzxPfUS1oqYbr6h5CNjQP5dGwah4wN6h4X/ihFgrD1271pUgHe6asU2Lff1p82lQdntQOGXZKy49jXTddeljslkVZHI73cIHmn6dEcI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=launchpad.net; spf=pass smtp.mailfrom=launchpad.net; dkim=pass (2048-bit key) header.d=launchpad.net header.i=@launchpad.net header.b=CUbeCJjX; arc=none smtp.client-ip=185.125.188.251
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=launchpad.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=launchpad.net
+Received: from buildd-manager.lp.internal (buildd-manager.lp.internal [10.131.215.202])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-relay-services-1.canonical.com (Postfix) with ESMTPSA id C591340135
+	for <linux-rdma@vger.kernel.org>; Tue, 25 Jun 2024 17:47:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=launchpad.net;
+	s=20210803; t=1719337637;
+	bh=OFZdvz3GOA3yfB/4jVjTDEz6Xo/j/ITMjmo6ml2hU9A=;
+	h=Content-Type:MIME-Version:To:From:Subject:Message-Id:Date:
+	 Reply-To;
+	b=CUbeCJjXYsXtP5FZZdvwiA2TSZxZ9s1BAmxQ29T/NFDWo4tSvQhbwiaJ63wEaIFF5
+	 J8SwfBk6/hOWSW2227BwhCLY4UNzgKyYfX1spBdDbZwtWYRHvbeAXibN+ksF4tLVCA
+	 fQHDJG14qHMDnpzzIm4Gus8ceOS+QDAfV6yfHNcU9Vr7AFt5RwI725ZXWdoPpr8BB/
+	 43/snfYMSQts5pwQIPQAslNWlm5+DNd4VbKcCSTHb9n6aV7SAvzQE+S3QNTAUaej47
+	 FfhPIGusrhacXda1j9UeZRHdfG5tEcQ2UYyP6QeV9TBAtwCmo7QJyVp4qGfZvaI7+c
+	 yW8XApOFWagpQ==
+Received: from buildd-manager.lp.internal (localhost [127.0.0.1])
+	by buildd-manager.lp.internal (Postfix) with ESMTP id B7AD27E252
+	for <linux-rdma@vger.kernel.org>; Tue, 25 Jun 2024 17:47:17 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Mailer: b4 0.15-dev-13183
+Content-Transfer-Encoding: quoted-printable
+X-Launchpad-Message-Rationale: Requester @linux-rdma
+X-Launchpad-Message-For: linux-rdma
+X-Launchpad-Notification-Type: recipe-build-status
+X-Launchpad-Archive: ~linux-rdma/ubuntu/rdma-core-daily
+X-Launchpad-Build-State: MANUALDEPWAIT
+To: Linux RDMA <linux-rdma@vger.kernel.org>
+From: noreply@launchpad.net
+Subject: [recipe build #3747720] of ~linux-rdma rdma-core-daily in xenial: Dependency wait
+Message-Id: <171933763774.1839645.14226467328141401651.launchpad@buildd-manager.lp.internal>
+Date: Tue, 25 Jun 2024 17:47:17 -0000
+Reply-To: noreply@launchpad.net
+Sender: noreply@launchpad.net
+Errors-To: noreply@launchpad.net
+Precedence: bulk
+X-Generated-By: Launchpad (canonical.com); Revision="bbfa2351d9d6a9ddfe262109428f7bf5516e65d1"; Instance="launchpad-buildd-manager"
+X-Launchpad-Hash: 64be5542a17afefc33a2b0b1aa61a7c02ba26e6b
 
+ * State: Dependency wait
+ * Recipe: linux-rdma/rdma-core-daily
+ * Archive: ~linux-rdma/ubuntu/rdma-core-daily
+ * Distroseries: xenial
+ * Duration: 2 minutes
+ * Build Log: https://launchpad.net/~linux-rdma/+archive/ubuntu/rdma-core-d=
+aily/+recipebuild/3747720/+files/buildlog.txt.gz
+ * Upload Log:=20
+ * Builder: https://launchpad.net/builders/lcy02-amd64-101
 
-On Mon, 24 Jun 2024 22:13:27 +0200, Christophe JAILLET wrote:
-> 'struct mmu_rb_ops' is not modified in this driver.
-> 
-> Constifying this structure moves some data to a read-only section, so
-> increase overall security.
-> 
-> On a x86_64, with allmodconfig, as an example:
-> Before:
-> ======
->    text	   data	    bss	    dec	    hex	filename
->   10879	    164	      0	  11043	   2b23	drivers/infiniband/hw/hfi1/pin_system.o
-> 
-> [...]
-
-Applied, thanks!
-
-[1/1] RDMA/hfi1: Constify struct mmu_rb_ops
-      https://git.kernel.org/rdma/rdma/c/ccf238c8da1511
-
-Best regards,
--- 
-Leon Romanovsky <leon@kernel.org>
+--=20
+https://launchpad.net/~linux-rdma/+archive/ubuntu/rdma-core-daily/+recipebu=
+ild/3747720
+Your team Linux RDMA is the requester of the build.
 
 
