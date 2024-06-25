@@ -1,111 +1,145 @@
-Return-Path: <linux-rdma+bounces-3483-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-3484-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B3ED4916F9C
-	for <lists+linux-rdma@lfdr.de>; Tue, 25 Jun 2024 19:52:56 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id B2A109170D3
+	for <lists+linux-rdma@lfdr.de>; Tue, 25 Jun 2024 21:03:51 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E53921C208A1
-	for <lists+linux-rdma@lfdr.de>; Tue, 25 Jun 2024 17:52:55 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2FE521F23095
+	for <lists+linux-rdma@lfdr.de>; Tue, 25 Jun 2024 19:03:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 83DAA177991;
-	Tue, 25 Jun 2024 17:52:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3613A17C7A3;
+	Tue, 25 Jun 2024 19:03:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=launchpad.net header.i=@launchpad.net header.b="irOX3ehx"
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="ITKHN6zT"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from smtp-relay-services-1.canonical.com (smtp-relay-services-1.canonical.com [185.125.188.251])
+Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9367B176ABC
-	for <linux-rdma@vger.kernel.org>; Tue, 25 Jun 2024 17:52:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.125.188.251
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 19C071DDF8;
+	Tue, 25 Jun 2024 19:03:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1719337937; cv=none; b=cTYD5CifOGYARqKR04cTdL6kUHxtFvFkB5yF40ZHg4doyv6EGZfgCbNupwwBeejs0V2+ZZQ4xJvPS93OUbSMXXpNOHVQXVJvW6Bwdz7jYzNIpQdz3T/LeIFAlAGxEqqaZIPz2DobH/YNKS0ZH6SqX9ceWlevC7iOTRO+63xvt7s=
+	t=1719342225; cv=none; b=kdI+xmzv/7YTah28rSH5h752UvSzpVh6R2MgYtrHlwpRJuCPjkEqj2LCWg4Ih1bBHw5k4JEIxEopA/Q8IGONOO9FRa5CkUhy8Aid4qGWHQ3H/pI1lAN6ofAKNwO/Qmt1r0Tq0nRsbCzPR+3HmrTj5qHZdYMmPngG9pGE1qKac4c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1719337937; c=relaxed/simple;
-	bh=x16rPCaq4p92QbBYKhGF85FidPrl84XTLbTaNd9JEt8=;
-	h=Content-Type:MIME-Version:To:From:Subject:Message-Id:Date; b=fs5s/qzLJxWb1R7A45Bf4Gexou5QCSasqE1qSk2pFEoB3vOKRKkJd8+PgMydDhOkA/wpw4/0Y6ojl0yerPU4JfUAy92/fVw7WaE0WVaPpJHbKiDYk/eqNuwMGdPTcSJItzJsOOkY4oH1s0FTnaOqfvcgxy3Y1uusxW5x4Jk0kZc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=launchpad.net; spf=pass smtp.mailfrom=launchpad.net; dkim=pass (2048-bit key) header.d=launchpad.net header.i=@launchpad.net header.b=irOX3ehx; arc=none smtp.client-ip=185.125.188.251
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=launchpad.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=launchpad.net
-Received: from buildd-manager.lp.internal (buildd-manager.lp.internal [10.131.215.202])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-relay-services-1.canonical.com (Postfix) with ESMTPSA id 5291B3F361
-	for <linux-rdma@vger.kernel.org>; Tue, 25 Jun 2024 17:52:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=launchpad.net;
-	s=20210803; t=1719337934;
-	bh=x16rPCaq4p92QbBYKhGF85FidPrl84XTLbTaNd9JEt8=;
-	h=Content-Type:MIME-Version:To:From:Subject:Message-Id:Date:
-	 Reply-To;
-	b=irOX3ehxT2n0ecnpIXlYnIet0VU7M3mHK2kBVnfoVAGBsG0X66Fdrczgq/YFfzcdA
-	 aoaXqjVZs9Hcrf9CCxzaRpj9F0yXpCWoWFVUeJ4zT0eKBHOAer3k6zX7UNKWiCa3CR
-	 PnI6g7d8lDX9TU4Tm+YcHWz4Pp+18oRienoC8L5lhJfQ22qigT0hiP3rJtYsAsrQ2L
-	 PcukSb0396z4UDg9bHl5bjkERjUFLqvCRC1NIX8c2mgZZ6z8p7Q2XhSPTmjPg2v4d8
-	 fI0Krmx9FSv1GBz7g6YLgL6hMO/uLJGlq5SQMF2CrOvSZ7ViW9rPe9qGQSBjDNssNd
-	 3KdhDAFHXHyhg==
-Received: from buildd-manager.lp.internal (localhost [127.0.0.1])
-	by buildd-manager.lp.internal (Postfix) with ESMTP id 43BA77E252
-	for <linux-rdma@vger.kernel.org>; Tue, 25 Jun 2024 17:52:14 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+	s=arc-20240116; t=1719342225; c=relaxed/simple;
+	bh=JI9GDj3ulVpvf2zTRea2Df/zqs1xKQepL3nAf2RdH9I=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=kT6dr4WwFghh8DOwxLuebCGs7l3TL+UWtsTVNlPdSMG/XUET/3kaVep1Bmvv634A2YlTFWtus2ccBJJzLFVXx/aZXUjXM4i4woREFJGtebnsZxD8mlgLDKXcnG8ml0KU70tBxS3gPtGqVGDPyK9OnrT7IyO8dnkiCvYqdqn5wQI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=ITKHN6zT; arc=none smtp.client-ip=198.137.202.133
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+	Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
+	Message-ID:Sender:Reply-To:Content-ID:Content-Description;
+	bh=del2IawhL2LDxT1v3/P46ZsGeJnPo7oM5A0i38LokGg=; b=ITKHN6zT66z8ErRMCTqE+jVNdm
+	aifAPFQ/TeaYHXcVhjDil4jV+s0oZ5UpLaOxBpRNT+cYkoXOIsy3jd61cwgPeY0VYGgt3NSd72fxm
+	c/rYxKsxctjYar4GbZzJWayRJkBHDb7+RQCAyPEclG9lr3QQ9/HiDETaBa6H7M3Ddspedc5EIPWDz
+	EgqGueUTMLj4QKShGJTfXUl/00UozYDKiBmIyiTe/pI+YlD24pDkJvl20cEDAyNTVSi/CYxnKo60h
+	t6sg2Epolbj3KXWz1SRq47WcLM2EAiH3h2TtjlTG/xRl08xv258cjuNwITZ8rX6NDmlEix0Gs11c+
+	I17vseCg==;
+Received: from [50.53.4.147] (helo=[192.168.254.15])
+	by bombadil.infradead.org with esmtpsa (Exim 4.97.1 #2 (Red Hat Linux))
+	id 1sMBS7-00000004CWp-0nMl;
+	Tue, 25 Jun 2024 19:03:39 +0000
+Message-ID: <0120d73a-0d15-440f-99bd-4c3e0a925183@infradead.org>
+Date: Tue, 25 Jun 2024 12:03:35 -0700
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-Launchpad-Message-Rationale: Creator @linux-rdma
-X-Launchpad-Message-For: linux-rdma
-X-Launchpad-Notification-Type: package-build-status
-X-Launchpad-Archive: ~linux-rdma/ubuntu/rdma-core-daily
-X-Launchpad-Build-State: FAILEDTOBUILD
-X-Launchpad-Build-Component: main
-X-Launchpad-Build-Arch: armhf
-X-Creator-Recipient: linux-rdma@vger.kernel.org
-X-Launchpad-PPA: linux-rdma-rdma-core-daily
-To: Linux RDMA <linux-rdma@vger.kernel.org>
-From: Launchpad Buildd System <noreply@launchpad.net>
-Subject: [Build #28604926] armhf build of rdma-core 53.0~202406251104+git4d318e35~ubuntu20.04.1 in ubuntu focal RELEASE [~linux-rdma/ubuntu/rdma-core-daily]
-Message-Id: <171933793427.1839645.10902664785344464205.launchpad@buildd-manager.lp.internal>
-Date: Tue, 25 Jun 2024 17:52:14 -0000
-Reply-To: Launchpad Buildd System <noreply@launchpad.net>
-Sender: noreply@launchpad.net
-Errors-To: noreply@launchpad.net
-Precedence: bulk
-X-Generated-By: Launchpad (canonical.com); Revision="bbfa2351d9d6a9ddfe262109428f7bf5516e65d1"; Instance="launchpad-buildd-manager"
-X-Launchpad-Hash: 11ea93c9afe1874d9ff8a5abc9f03c6b92c99d60
-
-
- * Source Package: rdma-core
- * Version: 53.0~202406251104+git4d318e35~ubuntu20.04.1
- * Architecture: armhf
- * Archive: ~linux-rdma/ubuntu/rdma-core-daily
- * Component: main
- * State: Failed to build
- * Duration: 4 minutes
- * Build Log: https://launchpad.net/~linux-rdma/+archive/ubuntu/rdma-core-d=
-aily/+build/28604926/+files/buildlog_ubuntu-focal-armhf.rdma-core_53.0~2024=
-06251104+git4d318e35~ubuntu20.04.1_BUILDING.txt.gz
- * Builder: https://launchpad.net/builders/bos01-arm64-002
- * Source: not available
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 4/8] taint: Add TAINT_FWCTL
+To: Jason Gunthorpe <jgg@nvidia.com>, Jonathan Corbet <corbet@lwn.net>,
+ Itay Avraham <itayavr@nvidia.com>, Jakub Kicinski <kuba@kernel.org>,
+ Leon Romanovsky <leon@kernel.org>, linux-doc@vger.kernel.org,
+ linux-rdma@vger.kernel.org, netdev@vger.kernel.org,
+ Paolo Abeni <pabeni@redhat.com>, Saeed Mahameed <saeedm@nvidia.com>,
+ Tariq Toukan <tariqt@nvidia.com>
+Cc: Andy Gospodarek <andrew.gospodarek@broadcom.com>,
+ Aron Silverton <aron.silverton@oracle.com>,
+ Dan Williams <dan.j.williams@intel.com>, David Ahern <dsahern@kernel.org>,
+ Christoph Hellwig <hch@infradead.org>, Jiri Pirko <jiri@nvidia.com>,
+ Leonid Bloch <lbloch@nvidia.com>, Leon Romanovsky <leonro@nvidia.com>,
+ linux-cxl@vger.kernel.org, patches@lists.linux.dev
+References: <4-v2-940e479ceba9+3821-fwctl_jgg@nvidia.com>
+Content-Language: en-US
+From: Randy Dunlap <rdunlap@infradead.org>
+In-Reply-To: <4-v2-940e479ceba9+3821-fwctl_jgg@nvidia.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
 
 
-If you want further information about this situation, feel free to
-contact us by asking a question on Launchpad
-(https://answers.launchpad.net/launchpad/+addquestion).
+On 6/24/24 3:47 PM, Jason Gunthorpe wrote:
+> Requesting a fwctl scope of access that includes mutating device debug
+> data will cause the kernel to be tainted. Changing the device operation
+> through things in the debug scope may cause the device to malfunction in
+> undefined ways. This should be reflected in the TAINT flags to help any
+> debuggers understand that something has been done.
+> 
+> Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
 
---=20
-armhf build of rdma-core 53.0~202406251104+git4d318e35~ubuntu20.04.1 in ubu=
-ntu focal RELEASE
-https://launchpad.net/~linux-rdma/+archive/ubuntu/rdma-core-daily/+build/28=
-604926
+Please also update tools/debugging/kernel-chktaint.
 
-You are receiving this email because you created this version of this
-package.
+> ---
+>  Documentation/admin-guide/tainted-kernels.rst | 5 +++++
+>  include/linux/panic.h                         | 3 ++-
+>  kernel/panic.c                                | 1 +
+>  3 files changed, 8 insertions(+), 1 deletion(-)
+> 
+> diff --git a/Documentation/admin-guide/tainted-kernels.rst b/Documentation/admin-guide/tainted-kernels.rst
+> index f92551539e8a66..f91a54966a9719 100644
+> --- a/Documentation/admin-guide/tainted-kernels.rst
+> +++ b/Documentation/admin-guide/tainted-kernels.rst
+> @@ -101,6 +101,7 @@ Bit  Log  Number  Reason that got the kernel tainted
+>   16  _/X   65536  auxiliary taint, defined for and used by distros
+>   17  _/T  131072  kernel was built with the struct randomization plugin
+>   18  _/N  262144  an in-kernel test has been run
+> + 19  _/J  524288  userspace used a mutating debug operation in fwctl
+>  ===  ===  ======  ========================================================
+>  
+>  Note: The character ``_`` is representing a blank in this table to make reading
+> @@ -182,3 +183,7 @@ More detailed explanation for tainting
+>       produce extremely unusual kernel structure layouts (even performance
+>       pathological ones), which is important to know when debugging. Set at
+>       build time.
+> +
+> + 18) ``J`` if userpace opened /dev/fwctl/* and performed a FWTCL_RPC_DEBUG_WRITE
+> +     to use the devices debugging features. Device debugging features could
+> +     cause the device to malfunction in undefined ways.
+> diff --git a/include/linux/panic.h b/include/linux/panic.h
+> index 6717b15e798c38..5dfd5295effd40 100644
+> --- a/include/linux/panic.h
+> +++ b/include/linux/panic.h
+> @@ -73,7 +73,8 @@ static inline void set_arch_panic_timeout(int timeout, int arch_default_timeout)
+>  #define TAINT_AUX			16
+>  #define TAINT_RANDSTRUCT		17
+>  #define TAINT_TEST			18
+> -#define TAINT_FLAGS_COUNT		19
+> +#define TAINT_FWCTL			19
+> +#define TAINT_FLAGS_COUNT		20
+>  #define TAINT_FLAGS_MAX			((1UL << TAINT_FLAGS_COUNT) - 1)
+>  
+>  struct taint_flag {
+> diff --git a/kernel/panic.c b/kernel/panic.c
+> index 8bff183d6180e7..b71f573ec7c5fc 100644
+> --- a/kernel/panic.c
+> +++ b/kernel/panic.c
+> @@ -494,6 +494,7 @@ const struct taint_flag taint_flags[TAINT_FLAGS_COUNT] = {
+>  	[ TAINT_AUX ]			= { 'X', ' ', true },
+>  	[ TAINT_RANDSTRUCT ]		= { 'T', ' ', true },
+>  	[ TAINT_TEST ]			= { 'N', ' ', true },
+> +	[ TAINT_FWCTL ]			= { 'J', ' ', true },
+>  };
+>  
+>  /**
 
+-- 
+~Randy
 
