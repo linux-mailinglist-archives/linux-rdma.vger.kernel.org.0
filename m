@@ -1,68 +1,84 @@
-Return-Path: <linux-rdma+bounces-3523-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-3524-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9C8289183B9
-	for <lists+linux-rdma@lfdr.de>; Wed, 26 Jun 2024 16:14:10 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 768CD9185B4
+	for <lists+linux-rdma@lfdr.de>; Wed, 26 Jun 2024 17:26:42 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D942528253F
-	for <lists+linux-rdma@lfdr.de>; Wed, 26 Jun 2024 14:14:08 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 320A5B26E7E
+	for <lists+linux-rdma@lfdr.de>; Wed, 26 Jun 2024 15:25:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 430C31849FB;
-	Wed, 26 Jun 2024 14:14:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 14DD618A942;
+	Wed, 26 Jun 2024 15:25:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b="BJFmmQyQ"
+	dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b="feEKhsJo"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ua1-f46.google.com (mail-ua1-f46.google.com [209.85.222.46])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2047918411D;
-	Wed, 26 Jun 2024 14:13:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=156.67.10.101
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3F61318C32A
+	for <linux-rdma@vger.kernel.org>; Wed, 26 Jun 2024 15:25:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1719411243; cv=none; b=DpEdOrkSH5qzjuIx0Zpo01yhOUbOS0Wu6QoW1RcY3XdKl5bUYssDai6v6VLkyZec+9TdA2S438zv9kMbzhTBIziiBqD0YmM24XxTVbXrD4giTGywbkF4VRRv0D9JpvkU9vrJpbz25xzsXT7R3/otODC66/nryMEaJXAC9ixvSdE=
+	t=1719415531; cv=none; b=Q84j60P/rQv0sx5SNfpqaqfpW5btN/3mSrE7Tfr+EqLsqzU+0gfkzuZgupRdLlBFDIxmOlGxYOfsEm4rvYg3nMb4UJlShlTnKKBQWJffchQrKb4rihpy2Fe3xBc+fjzB82XKSAjWn2gEdRltHLUzPZ08IcSnyqT0MbWql2uBmSA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1719411243; c=relaxed/simple;
-	bh=Jkbyb4fhO6hOpUAa+l/jASV89ZqxVCIKJ/L+aHwLj6s=;
+	s=arc-20240116; t=1719415531; c=relaxed/simple;
+	bh=EHZR1GZqhhvEM/SxvJ5oM8w7ugHdI12FQjE7HuwaT/E=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=eE5QWTpZ5UxuSx8EYKUV5FOCauTmlJ+dCauDp3AAk0jvpOyHdT0iAJ2mMsoX/ZqotdNP+Jnn+wJsWWSuNkPD1JVgDYgOkMgLr8yyzhBNB8e2evaYv4vZEASF3hkYA9rfJod19ykFaevmKw8GcyMCe76y8cHfMAGkFNDQpF40bxU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch; spf=pass smtp.mailfrom=lunn.ch; dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b=BJFmmQyQ; arc=none smtp.client-ip=156.67.10.101
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lunn.ch
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-	s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
-	References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
-	Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
-	Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
-	bh=e/r3KxX+Z2Dmu1E71CISshUp48TvjeiI0ZOqnh1fVEk=; b=BJFmmQyQeuEmVErk5/QtUZe7Yh
-	VUEC0/D9H3JVtFJBThg+eXVMbbm523IfUDOHxbNi4TiM0TlV7a3x+NQOCeXerCOsDd7zLoPswX/Qn
-	atH0p7j8kL1fyzvhOSU3E9daj1yDFmc/MUn4ICdytOcinXApdpsLuiY01h94b1mItE6s=;
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
-	(envelope-from <andrew@lunn.ch>)
-	id 1sMTPH-0012mx-QE; Wed, 26 Jun 2024 16:13:55 +0200
-Date: Wed, 26 Jun 2024 16:13:55 +0200
-From: Andrew Lunn <andrew@lunn.ch>
-To: Omer Shpigelman <oshpigelman@habana.ai>
-Cc: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	"linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-	"netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-	"dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
-	"ogabbay@kernel.org" <ogabbay@kernel.org>,
-	Zvika Yehudai <zyehudai@habana.ai>
-Subject: Re: [PATCH 09/15] net: hbl_en: add habanalabs Ethernet driver
-Message-ID: <1baf52ff-d3ce-4d3f-9655-46a1a919119b@lunn.ch>
-References: <20240613082208.1439968-1-oshpigelman@habana.ai>
- <20240613082208.1439968-10-oshpigelman@habana.ai>
- <10902044-fb02-4328-bf88-0b386ee51c78@lunn.ch>
- <bddb69c3-511b-4385-a67d-903e910a8b51@habana.ai>
- <621d4891-36d7-48c6-bdd8-2f3ca06a23f6@lunn.ch>
- <45e35940-c8fc-4f6c-8429-e6681a48b889@habana.ai>
- <2c66dc75-b321-4980-955f-7fdcd902b578@lunn.ch>
- <8a534044-ab84-4722-b4e9-4390c2cc6471@habana.ai>
- <f45a71f9-640e-473a-9b80-90a50b087474@lunn.ch>
- <96677540-c288-43f6-9a47-1db79a0880eb@habana.ai>
+	 Content-Type:Content-Disposition:In-Reply-To; b=esXzJHObO+bqTI9uWMizfPRy6d+v1HDTwiIBckEOAENvYmPcy3Rr+Mt/EFBopokFrXcKZMuU/IIThsLizIGOE6ouhgWjOUi007Owtp5G4j0OFhkidJjE2CkuwllRLHlvXA5hCGsKJFv+mJ5Pe74DidrWg28IKdehjX1/RNUCe44=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca; spf=pass smtp.mailfrom=ziepe.ca; dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b=feEKhsJo; arc=none smtp.client-ip=209.85.222.46
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ziepe.ca
+Received: by mail-ua1-f46.google.com with SMTP id a1e0cc1a2514c-80f9e894b7eso1107711241.2
+        for <linux-rdma@vger.kernel.org>; Wed, 26 Jun 2024 08:25:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google; t=1719415529; x=1720020329; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=pIGjSE4PWjuRQNSWCnLapYdSUQTn7TC/B7/KXpEiSE0=;
+        b=feEKhsJoMpSPdVYuYNWJkE2G3Ht7EKKbONeff65V1tKoMt722zDD9uoqfnQz5KD+CP
+         U7RVxD7dD1GG3oQgiUxAHm/FGsBtKra89ATdFeCm9A4EbPDMGPtMH5twtBsM0WBZqNv+
+         K6a9qQWFuhze0CJwFmP74cwAjyuiEBkiwtU/FIPzdS2aFCLau+CVBdk02fpVaMMUHyIY
+         34kCwgASnevNM7XmFaILRPKwGCGI+q3jCchErqb0XPrWa3vaz3Ip1hPllHUZDpTRts44
+         5NHL/N61WJXU6pdmuFBdBBzzhMok68CCB6EV6rBx69xEUGN0eDfr7JJzoqUeNXgybgrv
+         ZRxA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1719415529; x=1720020329;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=pIGjSE4PWjuRQNSWCnLapYdSUQTn7TC/B7/KXpEiSE0=;
+        b=eHNvGJXhFcsYNjPSD7a7JL4kwVYyFVz9Y0JOP9H1AkLOGwRStMI2kB01xtlHO7GXqd
+         4H1+i6sn1aVZH3j1dRQfEE2wrBO9XafP9W/58lAu+d/iIWa0sFfRB14tkPLl3xT/l9WK
+         RfdgOO8fNIYYbtOFLsyo/xMAg9OE2KLvGv8yrCEOqgWdf6cfKmBVv2qpQY0U0NMQbHPq
+         SJWeG7XRhKM/Jgsyg/jlJI1BSazNdToHby/CncyVJXOGnKNZDcP5WeUhmZ7ClYDcjQuq
+         JJRK5cc/tCs5p907y5foq9VQNb0RCdZNdZFI+7+yId3juLGYxXEsmppTDhCjJraflVim
+         ER+Q==
+X-Forwarded-Encrypted: i=1; AJvYcCUrUPOgzY73QaHrWpSHN6KvS4b5kPu3F6TxZn2F/VMHdQ6Jn2jgSLJtnH3Hf4j+vT+0YelK7tFO4JO3Q5bde2gmIC/icQI+Xv+ZMg==
+X-Gm-Message-State: AOJu0YxulOr/QUssVsLoxZD77kC6eOjGHPumx10OaKdUQYPyKToNjeI3
+	7htv4+Tjxcx743zQSv8Kjq1330qXhy/Gm47pR+IEBZDRvWNQopga0x6MUtOljgOB6Ly88joY8YO
+	+
+X-Google-Smtp-Source: AGHT+IFCybx2IWZ53e8yjjVdEA5pbBozcSJVksdLnS/q+pEBcqSyVEItEyWXOxVe2GAMvor1IQfNwQ==
+X-Received: by 2002:a05:6102:214a:b0:48f:46df:3b7d with SMTP id ada2fe7eead31-48f52c92d89mr7908004137.35.1719415529083;
+        Wed, 26 Jun 2024 08:25:29 -0700 (PDT)
+Received: from ziepe.ca (hlfxns017vw-142-68-80-239.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.68.80.239])
+        by smtp.gmail.com with ESMTPSA id d75a77b69052e-44501ee383esm14392081cf.5.2024.06.26.08.25.28
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 26 Jun 2024 08:25:28 -0700 (PDT)
+Received: from jgg by wakko with local (Exim 4.95)
+	(envelope-from <jgg@ziepe.ca>)
+	id 1sMUWW-00DXQ6-0w;
+	Wed, 26 Jun 2024 12:25:28 -0300
+Date: Wed, 26 Jun 2024 12:25:28 -0300
+From: Jason Gunthorpe <jgg@ziepe.ca>
+To: fred lu <fredluo89@gmail.com>
+Cc: jgunthorpe@obsidianresearch.com, leon@kernel.org,
+	linux-rdma@vger.kernel.org
+Subject: Re: [rdma-core] Question about udma_from_device_barrier() on x86_64
+Message-ID: <20240626152528.GX791043@ziepe.ca>
+References: <CAHpo+uq5zfKTC0+cc8jSsdeoNcvsWfDRWS-zr242uprHZNrDew@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
@@ -71,66 +87,27 @@ List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <96677540-c288-43f6-9a47-1db79a0880eb@habana.ai>
+In-Reply-To: <CAHpo+uq5zfKTC0+cc8jSsdeoNcvsWfDRWS-zr242uprHZNrDew@mail.gmail.com>
 
-> Here is the output:
-> $ ethtool eth0
-> Settings for eth0:
-> 	Supported ports: [ FIBRE	 Backplane ]
-> 	Supported link modes:   100000baseKR4/Full
-> 	                        100000baseSR4/Full
-> 	                        100000baseCR4/Full
-> 	                        100000baseLR4_ER4/Full
-> 	Supported pause frame use: Symmetric
-> 	Supports auto-negotiation: Yes
-> 	Supported FEC modes: Not reported
-> 	Advertised link modes:  100000baseKR4/Full
-> 	                        100000baseSR4/Full
-> 	                        100000baseCR4/Full
-> 	                        100000baseLR4_ER4/Full
-> 	Advertised pause frame use: Symmetric
-> 	Advertised auto-negotiation: Yes
-> 	Advertised FEC modes: Not reported
-> 	Link partner advertised link modes:  Not reported
-> 	Link partner advertised pause frame use: No
-> 	Link partner advertised auto-negotiation: Yes
-> 	Link partner advertised FEC modes: Not reported
-> 	Speed: 100000Mb/s
-> 	Duplex: Full
-> 	Auto-negotiation: on
-> 
-> There are few points to mention:
-> 1. We don't allow to modify the advertised link modes so by definition the
->    advertised ones are a copy of the supported ones.
+On Wed, Jun 26, 2024 at 10:46:18PM +0800, fred lu wrote:
+>    Hi Jason,
+>    Given that x86 architectures provide strong memory ordering guarantees
+>    for loads and stores by default, it seems that the explicit use of
+>    'lfence' may not be necessary for ensuring memory consistency in many
+>    cases.
+>    So why  not remove 'lfence' from the definition of
+>    udma_from_device_barrier() for x86_64, similar to the change made in
+>    udma_to_device_barrier() as seen in patch below?
 
-So there is no way to ask it use to use 100000baseCR4/Full, for
-example? You would normally change the advertised modes to just that
-one link mode, and then it has no choice. It either uses
-100000baseCR4/Full, or it does not establish a link.
+The trouble with these barriers is none of us really know the x86
+definition well enough to be certain of any change. At this point
+lfence is proven to work.
 
-Also, my experience with slower modules is that one supporting
-2500BaseX can also support 1000BaseX. However, there is no auto-neg
-defined for speeds, just pause. So if the link peer only supports
-1000BaseX, you don't get link. What you typically see is:
+Perhaps it would be OK to remove it, perhaps it will mess up PCIe
+relaxed ordering, or SSE non-temporal, I just don't know.
 
-$ ethtool eth0
-Settings for eth0:
- 	Supported ports: [ FIBRE	 Backplane ]
- 	Supported link modes:   1000baseX
- 	                        2500baseX
- 	Supported pause frame use: Symmetric
- 	Supports auto-negotiation: Yes
- 	Supported FEC modes: Not reported
- 	Advertised link modes:  2500baseX
- 	Advertised pause frame use: Symmetric
+To even motivate someone to look at this there would need to be
+benchmark results indicating there is a significant gain to be had.
 
-and then you use ethtool to change advertising to 1000baseX and then
-you get link. Can these modules support slower speeds?
-
-> 2. Reading the peer advertised link modes is not supported so we don't
->    report them (similarly to some other vendors).
-
-Not supported by your firmware? Or not supported by the modules?
-
-    Andrew
+Jason
 
