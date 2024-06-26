@@ -1,60 +1,68 @@
-Return-Path: <linux-rdma+bounces-3522-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-3523-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id A61309180B1
-	for <lists+linux-rdma@lfdr.de>; Wed, 26 Jun 2024 14:11:30 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9C8289183B9
+	for <lists+linux-rdma@lfdr.de>; Wed, 26 Jun 2024 16:14:10 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 50C8F1F2137A
-	for <lists+linux-rdma@lfdr.de>; Wed, 26 Jun 2024 12:11:30 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D942528253F
+	for <lists+linux-rdma@lfdr.de>; Wed, 26 Jun 2024 14:14:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 94BCC181305;
-	Wed, 26 Jun 2024 12:11:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 430C31849FB;
+	Wed, 26 Jun 2024 14:14:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="IpETkwFa"
+	dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b="BJFmmQyQ"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 531AF17BB19;
-	Wed, 26 Jun 2024 12:11:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2047918411D;
+	Wed, 26 Jun 2024 14:13:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=156.67.10.101
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1719403885; cv=none; b=IqwPviWXDahGTaLqOxdGd9segeO8mwCYrPYFiXsU9OqHEkpqS5IGfegeOcKVWSYWcb+9o3Rc6VZxaXw7X3J5suzTrFW8tQ5M7pJ61/AvscMGqtpKcIr3yuWE9FUxFIGA4N5OPQAyRQem+To6EiNPk8t4Ua9vmxtMqqvWp9PdZ3E=
+	t=1719411243; cv=none; b=DpEdOrkSH5qzjuIx0Zpo01yhOUbOS0Wu6QoW1RcY3XdKl5bUYssDai6v6VLkyZec+9TdA2S438zv9kMbzhTBIziiBqD0YmM24XxTVbXrD4giTGywbkF4VRRv0D9JpvkU9vrJpbz25xzsXT7R3/otODC66/nryMEaJXAC9ixvSdE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1719403885; c=relaxed/simple;
-	bh=NaxH0blfUI2QdjaA7JXSydGnaLqL//LasxB2gq37NH0=;
+	s=arc-20240116; t=1719411243; c=relaxed/simple;
+	bh=Jkbyb4fhO6hOpUAa+l/jASV89ZqxVCIKJ/L+aHwLj6s=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=LT+eMRALwNvxHJFiaGRRDQ7CyEeW2G1bNuHk/23+3E598//kJOYnogrtqjVdleRPqvrIqyZGUE5ZGHcYtUY6ZvkxL7z+iDeaAO6p6XZMpvpYqI47TIPjqB3bsFoDro4oBttIYw4DgpJ0OWMqqRcH9EszfOuqWYzmZBkLumXfr5A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=IpETkwFa; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 68649C2BD10;
-	Wed, 26 Jun 2024 12:11:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1719403883;
-	bh=NaxH0blfUI2QdjaA7JXSydGnaLqL//LasxB2gq37NH0=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=IpETkwFaNfSKFWcD+Ba4ZhItQLKB+qNlkPrz25d1w5QZGOJ1TbAvf+eOu+XfAufds
-	 k0PXetTR9rz+4w/EB0B5v8c0D6lKQJdi6h0wgOlNVwHRvmRv6Eiy53c4mTWc/PJpTz
-	 eEnMzE6AQQUci2gbAumgG3UDYBGhqZgjYtk83E2CBGfB2GZXdwHXgnEZ551TmqOa59
-	 jbPososf+6Hn2+UthW2pB6Rx96TVjo206pTUwZ1GQC6vZXPvXokAtSvTx5JnMA/RrN
-	 puXNh5P7zb9lCiKxe59g8wCeyJl5VniwS1SDzzLki+N1JtQNkW6AqIH7m+GfaZJUjT
-	 Inv1F7rNwthCQ==
-Date: Wed, 26 Jun 2024 15:11:18 +0300
-From: Leon Romanovsky <leon@kernel.org>
-To: Konstantin Taranov <kotaranov@microsoft.com>
-Cc: Konstantin Taranov <kotaranov@linux.microsoft.com>,
-	Wei Hu <weh@microsoft.com>,
-	"sharmaajay@microsoft.com" <sharmaajay@microsoft.com>,
-	Long Li <longli@microsoft.com>, "jgg@ziepe.ca" <jgg@ziepe.ca>,
+	 Content-Type:Content-Disposition:In-Reply-To; b=eE5QWTpZ5UxuSx8EYKUV5FOCauTmlJ+dCauDp3AAk0jvpOyHdT0iAJ2mMsoX/ZqotdNP+Jnn+wJsWWSuNkPD1JVgDYgOkMgLr8yyzhBNB8e2evaYv4vZEASF3hkYA9rfJod19ykFaevmKw8GcyMCe76y8cHfMAGkFNDQpF40bxU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch; spf=pass smtp.mailfrom=lunn.ch; dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b=BJFmmQyQ; arc=none smtp.client-ip=156.67.10.101
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lunn.ch
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+	s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
+	References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
+	Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
+	Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
+	bh=e/r3KxX+Z2Dmu1E71CISshUp48TvjeiI0ZOqnh1fVEk=; b=BJFmmQyQeuEmVErk5/QtUZe7Yh
+	VUEC0/D9H3JVtFJBThg+eXVMbbm523IfUDOHxbNi4TiM0TlV7a3x+NQOCeXerCOsDd7zLoPswX/Qn
+	atH0p7j8kL1fyzvhOSU3E9daj1yDFmc/MUn4ICdytOcinXApdpsLuiY01h94b1mItE6s=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+	(envelope-from <andrew@lunn.ch>)
+	id 1sMTPH-0012mx-QE; Wed, 26 Jun 2024 16:13:55 +0200
+Date: Wed, 26 Jun 2024 16:13:55 +0200
+From: Andrew Lunn <andrew@lunn.ch>
+To: Omer Shpigelman <oshpigelman@habana.ai>
+Cc: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
 	"linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-	linux-netdev <netdev@vger.kernel.org>
-Subject: Re: [PATCH rdma-next 1/1] RDMA/mana_ib: Set correct device into ib
-Message-ID: <20240626121118.GP29266@unreal>
-References: <1719311307-7920-1-git-send-email-kotaranov@linux.microsoft.com>
- <20240626054748.GN29266@unreal>
- <PAXPR83MB0559F4678E73B0091A8ADFBBB4D62@PAXPR83MB0559.EURPRD83.prod.outlook.com>
+	"netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+	"dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
+	"ogabbay@kernel.org" <ogabbay@kernel.org>,
+	Zvika Yehudai <zyehudai@habana.ai>
+Subject: Re: [PATCH 09/15] net: hbl_en: add habanalabs Ethernet driver
+Message-ID: <1baf52ff-d3ce-4d3f-9655-46a1a919119b@lunn.ch>
+References: <20240613082208.1439968-1-oshpigelman@habana.ai>
+ <20240613082208.1439968-10-oshpigelman@habana.ai>
+ <10902044-fb02-4328-bf88-0b386ee51c78@lunn.ch>
+ <bddb69c3-511b-4385-a67d-903e910a8b51@habana.ai>
+ <621d4891-36d7-48c6-bdd8-2f3ca06a23f6@lunn.ch>
+ <45e35940-c8fc-4f6c-8429-e6681a48b889@habana.ai>
+ <2c66dc75-b321-4980-955f-7fdcd902b578@lunn.ch>
+ <8a534044-ab84-4722-b4e9-4390c2cc6471@habana.ai>
+ <f45a71f9-640e-473a-9b80-90a50b087474@lunn.ch>
+ <96677540-c288-43f6-9a47-1db79a0880eb@habana.ai>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
@@ -63,101 +71,66 @@ List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <PAXPR83MB0559F4678E73B0091A8ADFBBB4D62@PAXPR83MB0559.EURPRD83.prod.outlook.com>
+In-Reply-To: <96677540-c288-43f6-9a47-1db79a0880eb@habana.ai>
 
-On Wed, Jun 26, 2024 at 09:05:05AM +0000, Konstantin Taranov wrote:
-> > > When mc->ports[0] is not slave, use it in the set_netdev.
-> > > When mana is used in netvsc, the stored net devices in mana are slaves
-> > > and GIDs should be taken from their master devices.
-> > > In the baremetal case, the mc->ports devices will not be slaves.
-> > 
-> > I wonder, why do you have "... | IFF_SLAVE" in __netvsc_vf_setup() in a first
-> > place? Isn't IFF_SLAVE is supposed to be set by bond driver?
-> > 
+> Here is the output:
+> $ ethtool eth0
+> Settings for eth0:
+> 	Supported ports: [ FIBRE	 Backplane ]
+> 	Supported link modes:   100000baseKR4/Full
+> 	                        100000baseSR4/Full
+> 	                        100000baseCR4/Full
+> 	                        100000baseLR4_ER4/Full
+> 	Supported pause frame use: Symmetric
+> 	Supports auto-negotiation: Yes
+> 	Supported FEC modes: Not reported
+> 	Advertised link modes:  100000baseKR4/Full
+> 	                        100000baseSR4/Full
+> 	                        100000baseCR4/Full
+> 	                        100000baseLR4_ER4/Full
+> 	Advertised pause frame use: Symmetric
+> 	Advertised auto-negotiation: Yes
+> 	Advertised FEC modes: Not reported
+> 	Link partner advertised link modes:  Not reported
+> 	Link partner advertised pause frame use: No
+> 	Link partner advertised auto-negotiation: Yes
+> 	Link partner advertised FEC modes: Not reported
+> 	Speed: 100000Mb/s
+> 	Duplex: Full
+> 	Auto-negotiation: on
 > 
-> I guess it is just a valid use of the IFF_SLAVE bit. In the bond case it is also set
-> as a BOND netdev. The IFF_SLAVE helps to show users that another master
-> netdev should be used for networking. But I am not an expert in netvsc.
+> There are few points to mention:
+> 1. We don't allow to modify the advertised link modes so by definition the
+>    advertised ones are a copy of the supported ones.
 
-The thing is that netvsc is virtual device like many others, but it is
-the only one who uses IFF_SLAVE bit. The comment around that bit says
-"slave of a load balancer.", which is not the case according to the
-Hyper-V documentation.
-https://learn.microsoft.com/en-us/windows-hardware/drivers/network/overview-of-hyper-v
+So there is no way to ask it use to use 100000baseCR4/Full, for
+example? You would normally change the advertised modes to just that
+one link mode, and then it has no choice. It either uses
+100000baseCR4/Full, or it does not establish a link.
 
-You will need to get Ack from netdev maintainers to rely on IFF_SLAVE
-bit in the way you are relying on it now.
+Also, my experience with slower modules is that one supporting
+2500BaseX can also support 1000BaseX. However, there is no auto-neg
+defined for speeds, just pause. So if the link peer only supports
+1000BaseX, you don't get link. What you typically see is:
 
-> 
-> Actually, another alternative solution for mana_ib is always set the slave device,
-> but in the GID mgmt code we need the following patch. The problem is that it may require 
-> testing/confirmation from other ib providers as in the worst case some GIDs will not be listed.
+$ ethtool eth0
+Settings for eth0:
+ 	Supported ports: [ FIBRE	 Backplane ]
+ 	Supported link modes:   1000baseX
+ 	                        2500baseX
+ 	Supported pause frame use: Symmetric
+ 	Supports auto-negotiation: Yes
+ 	Supported FEC modes: Not reported
+ 	Advertised link modes:  2500baseX
+ 	Advertised pause frame use: Symmetric
 
-is_eth_active_slave_of_bonding_rcu() is for bonding.
+and then you use ethtool to change advertising to 1000baseX and then
+you get link. Can these modules support slower speeds?
 
-> 
-> diff --git a/drivers/infiniband/core/roce_gid_mgmt.c b/drivers/infiniband/core/roce_gid_mgmt.c
-> index d5131b3ba8ab..0f20b4e2d1c2 100644
-> --- a/drivers/infiniband/core/roce_gid_mgmt.c
-> +++ b/drivers/infiniband/core/roce_gid_mgmt.c
-> @@ -141,6 +141,8 @@ static enum bonding_slave_state is_eth_active_slave_of_bonding_rcu(struct net_de
->         return BONDING_SLAVE_STATE_NA;
->  }
-> 
-> +#define netdev_is_slave(dev)   (((dev)->flags & IFF_SLAVE) == IFF_SLAVE)
-> +
->  #define REQUIRED_BOND_STATES           (BONDING_SLAVE_STATE_ACTIVE |   \
->                                          BONDING_SLAVE_STATE_NA)
->  static bool
-> @@ -157,11 +159,14 @@ is_eth_port_of_netdev_filter(struct ib_device *ib_dev, u32 port,
->         real_dev = rdma_vlan_dev_real_dev(cookie);
->         if (!real_dev)
->                 real_dev = cookie;
-> -
-> +       /*
-> +        * When rdma netdevice is used in netvsc, the master netdevice should
-> +        * be considered for GIDs. Therefore, ignore slave rdma netdevices.
-> +        */
->         res = ((rdma_is_upper_dev_rcu(rdma_ndev, cookie) &&
->                (is_eth_active_slave_of_bonding_rcu(rdma_ndev, real_dev) &
->                 REQUIRED_BOND_STATES)) ||
-> -              real_dev == rdma_ndev);
-> +              (real_dev == rdma_ndev && !netdev_is_slave(real_dev)));
-> 
->         rcu_read_unlock();
->         return res;
-> @@ -211,12 +216,14 @@ is_ndev_for_default_gid_filter(struct ib_device *ib_dev, u32 port,
-> 
->         /*
->          * When rdma netdevice is used in bonding, bonding master netdevice
-> -        * should be considered for default GIDs. Therefore, ignore slave rdma
-> -        * netdevices when bonding is considered.
-> +        * should be considered for default GIDs.
-> +        * When rdma netdevice is used in netvsc, the master netdevice should
-> +        * be considered for defauld GIDs. Therefore, ignore slave rdma
-> +        * netdevices.
->          * Additionally when event(cookie) netdevice is bond master device,
->          * make sure that it the upper netdevice of rdma netdevice.
->          */
-> -       res = ((cookie_ndev == rdma_ndev && !netif_is_bond_slave(rdma_ndev)) ||
-> +       res = ((cookie_ndev == rdma_ndev && !netdev_is_slave(rdma_ndev)) ||
->                (netif_is_bond_master(cookie_ndev) &&
->                 rdma_is_upper_dev_rcu(rdma_ndev, cookie_ndev)));
-> 
-> > > +#define mana_ndev_is_slave(dev)   (((dev)->flags & IFF_SLAVE) ==
-> > IFF_SLAVE)
-> > 
-> > There is no need in macro for one line of code and there is no need in "==",
-> > as the result will be boolean.
-> > 
-> 
-> Sure, can address in v2. I just saw a similar macro in another kernel file.
+> 2. Reading the peer advertised link modes is not supported so we don't
+>    report them (similarly to some other vendors).
 
-I grepped too and this is why it caused me to wonder why it is not used
-except small number of places.
+Not supported by your firmware? Or not supported by the modules?
 
-Thanks
-
-> 
-> 
+    Andrew
 
