@@ -1,109 +1,242 @@
-Return-Path: <linux-rdma+bounces-3535-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-3536-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 10011919DA6
-	for <lists+linux-rdma@lfdr.de>; Thu, 27 Jun 2024 05:02:04 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 797F6919DA7
+	for <lists+linux-rdma@lfdr.de>; Thu, 27 Jun 2024 05:02:05 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9274F284893
-	for <lists+linux-rdma@lfdr.de>; Thu, 27 Jun 2024 03:02:02 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 834371C217B8
+	for <lists+linux-rdma@lfdr.de>; Thu, 27 Jun 2024 03:02:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8AD2F8814;
-	Thu, 27 Jun 2024 03:01:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B5BE1134B1;
+	Thu, 27 Jun 2024 03:02:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b="PNicAM7x"
+	dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b="C+BTrpwg"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-pl1-f171.google.com (mail-pl1-f171.google.com [209.85.214.171])
+Received: from mail-pg1-f181.google.com (mail-pg1-f181.google.com [209.85.215.181])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CFFC4F9E4
-	for <linux-rdma@vger.kernel.org>; Thu, 27 Jun 2024 03:01:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EA778F9E4
+	for <linux-rdma@vger.kernel.org>; Thu, 27 Jun 2024 03:01:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1719457318; cv=none; b=hPIx11DUN9hoihf//r3ipNsiMmyocqvt/uuoiBFKUdo6o9AY/48BYN9udUlI1labXZyo3XG27NDQtwj180kem5T8dBFnN/ysJDY90oxU9MOwVi1vQBjBJ/IPYpg+gesxg5oy6JxFsnsQ1UQ6B3PNd4EUDfyoP6Hh4RgQZDijfUE=
+	t=1719457321; cv=none; b=WNPEVlJDfE9IPxW3OkcfETJm/X2EveByrntL31r30cguusrGKowKkxCj0xOBODHFbpGIkhc2Mx6eHrDIGwU3hRZgiMvvdb82jXLiVonexcJXnKwMML7QIenBmA13wv996c+e4G3B96JRo0Bb5xsKgt17XL/0LDVuxmFcQiLEUDs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1719457318; c=relaxed/simple;
-	bh=01jjOYQghTIK7VcwbA1ydhJtZPZ1MWBnr4FOOhDUDtY=;
-	h=From:To:Cc:Subject:Date:Message-Id:Content-Type; b=l9gVLV84VGVKYtXj6giOeqpMlzWj4tMKaJieSFHr52T5Ww1wRU7H4Ugyvk/JDF2JJ3kryM2Ot2OkPqwsR1KPnw/h8F+5F0gZSJnZU2h8jjr4WwMmh+3FBYHa+lcmk5M3+29bDmd/Oz1rZiBd1cmY9IrY5XSdMfTUtw23uNj9DMk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com; spf=fail smtp.mailfrom=broadcom.com; dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b=PNicAM7x; arc=none smtp.client-ip=209.85.214.171
+	s=arc-20240116; t=1719457321; c=relaxed/simple;
+	bh=1yjIGELiQA3lMiP3LpOYsS4EzyN6dHVTg3ptYNYhJec=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 Content-Type; b=LItFUX1/YbWzVouF90tw2IXd0E1BBPuWKUXyLcura6AACsyDS1zMaL1liuy79uZLS69Ky4nOcIgo7qiedcESn5DFXBZEGFvPNYmt98cwDQwrZAD6mkhxGrdx2YBSA7dLNIHU/Ac4v2OTlDNLMlWMmKd5sul7eUKkYc57bGStDmM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com; spf=fail smtp.mailfrom=broadcom.com; dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b=C+BTrpwg; arc=none smtp.client-ip=209.85.215.181
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com
 Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=broadcom.com
-Received: by mail-pl1-f171.google.com with SMTP id d9443c01a7336-1f4c7b022f8so63506005ad.1
-        for <linux-rdma@vger.kernel.org>; Wed, 26 Jun 2024 20:01:56 -0700 (PDT)
+Received: by mail-pg1-f181.google.com with SMTP id 41be03b00d2f7-725a7b0fc55so795843a12.3
+        for <linux-rdma@vger.kernel.org>; Wed, 26 Jun 2024 20:01:59 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google; t=1719457316; x=1720062116; darn=vger.kernel.org;
-        h=message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=PEEc4yiG+YMo6MZpnX66GVgBWgz/mYh69B7z0UO5tfQ=;
-        b=PNicAM7xXwZpXaNw3eN5OYemF83JeiXJ58JyhU+EVu0ek/RfZ1gMRkft1zJDcxbPDs
-         YvO11PLyAGs4wYMYLwaMd8f6p1gwXffk5C/zIBjuLuV36FeVtW+QoF1ksnMNhMNmNbVW
-         EnGTN8u95r/g5Sjyotg9WGWZjryIyOBRozjKM=
+        d=broadcom.com; s=google; t=1719457319; x=1720062119; darn=vger.kernel.org;
+        h=references:in-reply-to:message-id:date:subject:cc:to:from:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=iHAC9FGVqvLCNFsGqlyNt0g7E3PC19iLYRwVC4l6Ww8=;
+        b=C+BTrpwg/WWOV/xZg7ty0GkIFP1yu8CCCDaaOR1GdzLRv7qLRhNPrB1NtsEuisoUK6
+         wNiUXlYpgJ12q+NYAlDRXyy92M5DQxaCb46/EdXF7P+vLf5IRAxjyU5BTCdvtibwiDHd
+         iJ18iLseNSPOzs6+NTfC2K0yKw86TLgK5e4k8=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1719457316; x=1720062116;
-        h=message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=PEEc4yiG+YMo6MZpnX66GVgBWgz/mYh69B7z0UO5tfQ=;
-        b=uTPBdfOIoG0vqVNUwnQutvGyDqumFVWmPZAMo7DGYqfWks0G6DyHmyZMMoauEtq7vb
-         Ywj5sddSCp3MS2bZV5/T0SkLDN7CQyo4jDMSfRLIPVP6v/XZCtyplbKEqf2hJo12N37a
-         W4JvL0Qk4iA/4k3K5d2u+VitSvA4wZc+HOcEb9QU3vwnLyDgn9bYkzsznY1/ia/P0NKp
-         pXfC9vKWcJ94B7VOjdG03KrIk9b9PoWQYN+1nuQ2Hq1usxs8Fp7SKSVExcLHqA1u3cZ/
-         uDNVV7ySJj30TalAgpVCoVzV/nxuNJg5Bui6T8hYthH89BM7JpO17ShOM2baszWwv3NC
-         YLQA==
-X-Gm-Message-State: AOJu0YzIpa8SCnX4oPoA1iQ21XnbGP60j4k68J4w/xgmKr2ogVuSQ6lZ
-	lNTjcE8pDhVEeLpkmWrswgDwH9B2gbijXYoKB3oBmc274y2qcR6yQ/OogMNrGg==
-X-Google-Smtp-Source: AGHT+IFgcNs9vRJoq+tOhmbD8V9VRDRvlFV9B5Wj5ObLdWMmSzYANGduw6bm7fzWwhvBq8TkNFphAw==
-X-Received: by 2002:a17:902:f685:b0:1f9:b121:35f0 with SMTP id d9443c01a7336-1fa23ef7c14mr142039545ad.54.1719457315846;
-        Wed, 26 Jun 2024 20:01:55 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1719457319; x=1720062119;
+        h=references:in-reply-to:message-id:date:subject:cc:to:from
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=iHAC9FGVqvLCNFsGqlyNt0g7E3PC19iLYRwVC4l6Ww8=;
+        b=lcQh0w5vHlSmEM+DNqz8EgmD4BORAJodoQ3D5292jeFetc/lah6+Vw5EHTi/ssQ6a5
+         zY0Vn/MI9WsKD/ZhqWSUHKpxxq+G7cO7fSqIbkKh/9v9SUD17+9Ahl67af6Fxp/HVeeD
+         a+U6wcoh4j7y6/9Ld/7eVkRdfRgOi1pZsGuYu6H8Fw6eLpwpJJ4LJ8z9XYHbzJT4m1Ks
+         PVlSKJ/ofzlqF1Pp3XwlfWXhxLFR8gNvChbqrmRajcCp2aGzPI1zWLle+YJUZWvHQz1W
+         NaDtSV2fKqMj6jG3QqITz2Lzzzw5IZqFQRIbrzE7XurOfxJ5j5b7sOBDXKvwBADwxIsr
+         +puw==
+X-Gm-Message-State: AOJu0YwQxc3nvBO+6eoQUsSOcD2aBgKfKUOebO1eFM8tXH9CIpWrlcON
+	xfpCqvKvYKQoUZi55Mk10loB/lWQltelmLVfU7dARpjR9SjPPWxEsBKXUSo6vQ==
+X-Google-Smtp-Source: AGHT+IFQ43BEMg3xIe3HUm55aK0AUj67/DJr3+qon30VQTUsbdUYmoTT7ccfRDwYWoduEqn9kokiaw==
+X-Received: by 2002:a05:6a20:354b:b0:1bd:2d0b:e143 with SMTP id adf61e73a8af0-1bd2d0be318mr3628783637.52.1719457319122;
+        Wed, 26 Jun 2024 20:01:59 -0700 (PDT)
 Received: from sxavier-dev.dhcp.broadcom.net ([192.19.234.250])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-1faac997da7sm2103285ad.216.2024.06.26.20.01.52
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-1faac997da7sm2103285ad.216.2024.06.26.20.01.56
         (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 26 Jun 2024 20:01:54 -0700 (PDT)
+        Wed, 26 Jun 2024 20:01:58 -0700 (PDT)
 From: Selvin Xavier <selvin.xavier@broadcom.com>
 To: leon@kernel.org,
 	jgg@ziepe.ca
 Cc: linux-rdma@vger.kernel.org,
 	andrew.gospodarek@broadcom.com,
-	Selvin Xavier <selvin.xavier@broadcom.com>
-Subject: [PATCH for-next 0/3] RDMA/bnxt_re: DB moderation on GenP7
-Date: Wed, 26 Jun 2024 19:41:02 -0700
-Message-Id: <1719456065-27394-1-git-send-email-selvin.xavier@broadcom.com>
+	Selvin Xavier <selvin.xavier@broadcom.com>,
+	Chandramohan Akula <chandramohan.akula@broadcom.com>,
+	Ajit Khaparde <ajit.khaparde@broadcom.com>
+Subject: [PATCH for-next 1/3] RDMA/bnxt_re: Update the correct DB FIFO depth and mask for GenP7
+Date: Wed, 26 Jun 2024 19:41:03 -0700
+Message-Id: <1719456065-27394-2-git-send-email-selvin.xavier@broadcom.com>
 X-Mailer: git-send-email 2.5.5
+In-Reply-To: <1719456065-27394-1-git-send-email-selvin.xavier@broadcom.com>
+References: <1719456065-27394-1-git-send-email-selvin.xavier@broadcom.com>
 Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
-	boundary="0000000000008d8775061bd65a11"
+	boundary="000000000000bd205a061bd65a3c"
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 
---0000000000008d8775061bd65a11
+--000000000000bd205a061bd65a3c
 
-The series enables DB moderation support for latest adapters. Query
-the FIFO information from the FW to use based on the adapter revision
-before initializing this feature.
+GenP5 and P7 devices have different DB FIFO depth. Use different
+values based on the chip context.
 
-Please review and apply.
+Instead of hardcoding doorbell FIFO related values, get it
+from the HWRM interface. Maintain backward compatibility
+by having default values when FW is not providing the doorbell
+FIFO related values.
 
-Thanks,
-Selvin
+Signed-off-by: Chandramohan Akula <chandramohan.akula@broadcom.com>
+Signed-off-by: Ajit Khaparde <ajit.khaparde@broadcom.com>
+Signed-off-by: Selvin Xavier <selvin.xavier@broadcom.com>
+---
+ drivers/infiniband/hw/bnxt_re/bnxt_re.h | 12 ++++++++---
+ drivers/infiniband/hw/bnxt_re/main.c    | 38 +++++++++++++++++++++------------
+ 2 files changed, 33 insertions(+), 17 deletions(-)
 
-Selvin Xavier (3):
-  RDMA/bnxt_re: Update the correct DB FIFO depth and mask for GenP7
-  RDMA/bnxt_re: Enable DB moderation for genP7 adapters
-  RDMA/bnxt_re: Disable doorbell moderation if hardware register read
-    fails
-
- drivers/infiniband/hw/bnxt_re/bnxt_re.h | 12 +++--
- drivers/infiniband/hw/bnxt_re/main.c    | 78 +++++++++++++++++++++++----------
- 2 files changed, 65 insertions(+), 25 deletions(-)
-
+diff --git a/drivers/infiniband/hw/bnxt_re/bnxt_re.h b/drivers/infiniband/hw/bnxt_re/bnxt_re.h
+index 9dca451..0880b4b 100644
+--- a/drivers/infiniband/hw/bnxt_re/bnxt_re.h
++++ b/drivers/infiniband/hw/bnxt_re/bnxt_re.h
+@@ -131,9 +131,15 @@ struct bnxt_re_pacing {
+ #define BNXT_RE_PACING_ALARM_TH_MULTIPLE 2 /* Multiple of pacing algo threshold */
+ /* Default do_pacing value when there is no congestion */
+ #define BNXT_RE_DBR_DO_PACING_NO_CONGESTION 0x7F /* 1 in 512 probability */
+-#define BNXT_RE_DB_FIFO_ROOM_MASK 0x1FFF8000
+-#define BNXT_RE_MAX_FIFO_DEPTH 0x2c00
+-#define BNXT_RE_DB_FIFO_ROOM_SHIFT 15
++
++#define BNXT_RE_MAX_FIFO_DEPTH_P5       0x2c00
++#define BNXT_RE_MAX_FIFO_DEPTH_P7       0x8000
++
++#define BNXT_RE_MAX_FIFO_DEPTH(ctx)	\
++	(bnxt_qplib_is_chip_gen_p7((ctx)) ? \
++	 BNXT_RE_MAX_FIFO_DEPTH_P7 :\
++	 BNXT_RE_MAX_FIFO_DEPTH_P5)
++
+ #define BNXT_RE_GRC_FIFO_REG_BASE 0x2000
+ 
+ #define MAX_CQ_HASH_BITS		(16)
+diff --git a/drivers/infiniband/hw/bnxt_re/main.c b/drivers/infiniband/hw/bnxt_re/main.c
+index 54b4d2f..2a727f4 100644
+--- a/drivers/infiniband/hw/bnxt_re/main.c
++++ b/drivers/infiniband/hw/bnxt_re/main.c
+@@ -444,6 +444,7 @@ int bnxt_re_hwrm_qcaps(struct bnxt_re_dev *rdev)
+ 
+ static int bnxt_re_hwrm_dbr_pacing_qcfg(struct bnxt_re_dev *rdev)
+ {
++	struct bnxt_qplib_db_pacing_data *pacing_data = rdev->qplib_res.pacing_data;
+ 	struct hwrm_func_dbr_pacing_qcfg_output resp = {};
+ 	struct hwrm_func_dbr_pacing_qcfg_input req = {};
+ 	struct bnxt_en_dev *en_dev = rdev->en_dev;
+@@ -465,6 +466,13 @@ static int bnxt_re_hwrm_dbr_pacing_qcfg(struct bnxt_re_dev *rdev)
+ 		cctx->dbr_stat_db_fifo =
+ 			le32_to_cpu(resp.dbr_stat_db_fifo_reg) &
+ 			~FUNC_DBR_PACING_QCFG_RESP_DBR_STAT_DB_FIFO_REG_ADDR_SPACE_MASK;
++
++	pacing_data->fifo_max_depth = le32_to_cpu(resp.dbr_stat_db_max_fifo_depth);
++	if (!pacing_data->fifo_max_depth)
++		pacing_data->fifo_max_depth = BNXT_RE_MAX_FIFO_DEPTH(cctx);
++	pacing_data->fifo_room_mask = le32_to_cpu(resp.dbr_stat_db_fifo_reg_fifo_room_mask);
++	pacing_data->fifo_room_shift = resp.dbr_stat_db_fifo_reg_fifo_room_shift;
++
+ 	return 0;
+ }
+ 
+@@ -481,6 +489,7 @@ static void bnxt_re_set_default_pacing_data(struct bnxt_re_dev *rdev)
+ 
+ static void __wait_for_fifo_occupancy_below_th(struct bnxt_re_dev *rdev)
+ {
++	struct bnxt_qplib_db_pacing_data *pacing_data = rdev->qplib_res.pacing_data;
+ 	u32 read_val, fifo_occup;
+ 
+ 	/* loop shouldn't run infintely as the occupancy usually goes
+@@ -488,14 +497,14 @@ static void __wait_for_fifo_occupancy_below_th(struct bnxt_re_dev *rdev)
+ 	 */
+ 	while (1) {
+ 		read_val = readl(rdev->en_dev->bar0 + rdev->pacing.dbr_db_fifo_reg_off);
+-		fifo_occup = BNXT_RE_MAX_FIFO_DEPTH -
+-			((read_val & BNXT_RE_DB_FIFO_ROOM_MASK) >>
+-			 BNXT_RE_DB_FIFO_ROOM_SHIFT);
++		fifo_occup = pacing_data->fifo_max_depth -
++			     ((read_val & pacing_data->fifo_room_mask) >>
++			      pacing_data->fifo_room_shift);
+ 		/* Fifo occupancy cannot be greater the MAX FIFO depth */
+-		if (fifo_occup > BNXT_RE_MAX_FIFO_DEPTH)
++		if (fifo_occup > pacing_data->fifo_max_depth)
+ 			break;
+ 
+-		if (fifo_occup < rdev->qplib_res.pacing_data->pacing_th)
++		if (fifo_occup < pacing_data->pacing_th)
+ 			break;
+ 	}
+ }
+@@ -553,9 +562,9 @@ static void bnxt_re_pacing_timer_exp(struct work_struct *work)
+ 
+ 	pacing_data = rdev->qplib_res.pacing_data;
+ 	read_val = readl(rdev->en_dev->bar0 + rdev->pacing.dbr_db_fifo_reg_off);
+-	fifo_occup = BNXT_RE_MAX_FIFO_DEPTH -
+-		((read_val & BNXT_RE_DB_FIFO_ROOM_MASK) >>
+-		 BNXT_RE_DB_FIFO_ROOM_SHIFT);
++	fifo_occup = pacing_data->fifo_max_depth -
++		     ((read_val & pacing_data->fifo_room_mask) >>
++		      pacing_data->fifo_room_shift);
+ 
+ 	if (fifo_occup > pacing_data->pacing_th)
+ 		goto restart_timer;
+@@ -594,7 +603,7 @@ void bnxt_re_pacing_alert(struct bnxt_re_dev *rdev)
+ 	 * Increase the alarm_th to max so that other user lib instances do not
+ 	 * keep alerting the driver.
+ 	 */
+-	pacing_data->alarm_th = BNXT_RE_MAX_FIFO_DEPTH;
++	pacing_data->alarm_th = pacing_data->fifo_max_depth;
+ 	pacing_data->do_pacing = BNXT_RE_MAX_DBR_DO_PACING;
+ 	cancel_work_sync(&rdev->dbq_fifo_check_work);
+ 	schedule_work(&rdev->dbq_fifo_check_work);
+@@ -603,8 +612,6 @@ void bnxt_re_pacing_alert(struct bnxt_re_dev *rdev)
+ 
+ static int bnxt_re_initialize_dbr_pacing(struct bnxt_re_dev *rdev)
+ {
+-	if (bnxt_re_hwrm_dbr_pacing_qcfg(rdev))
+-		return -EIO;
+ 
+ 	/* Allocate a page for app use */
+ 	rdev->pacing.dbr_page = (void *)__get_free_page(GFP_KERNEL);
+@@ -614,6 +621,12 @@ static int bnxt_re_initialize_dbr_pacing(struct bnxt_re_dev *rdev)
+ 	memset((u8 *)rdev->pacing.dbr_page, 0, PAGE_SIZE);
+ 	rdev->qplib_res.pacing_data = (struct bnxt_qplib_db_pacing_data *)rdev->pacing.dbr_page;
+ 
++	if (bnxt_re_hwrm_dbr_pacing_qcfg(rdev)) {
++		free_page((u64)rdev->pacing.dbr_page);
++		rdev->pacing.dbr_page = NULL;
++		return -EIO;
++	}
++
+ 	/* MAP HW window 2 for reading db fifo depth */
+ 	writel(rdev->chip_ctx->dbr_stat_db_fifo & BNXT_GRC_BASE_MASK,
+ 	       rdev->en_dev->bar0 + BNXT_GRCPF_REG_WINDOW_BASE_OUT + 4);
+@@ -627,9 +640,6 @@ static int bnxt_re_initialize_dbr_pacing(struct bnxt_re_dev *rdev)
+ 	rdev->pacing.dbq_pacing_time = BNXT_RE_DBR_PACING_TIME;
+ 	rdev->pacing.dbr_def_do_pacing = BNXT_RE_DBR_DO_PACING_NO_CONGESTION;
+ 	rdev->pacing.do_pacing_save = rdev->pacing.dbr_def_do_pacing;
+-	rdev->qplib_res.pacing_data->fifo_max_depth = BNXT_RE_MAX_FIFO_DEPTH;
+-	rdev->qplib_res.pacing_data->fifo_room_mask = BNXT_RE_DB_FIFO_ROOM_MASK;
+-	rdev->qplib_res.pacing_data->fifo_room_shift = BNXT_RE_DB_FIFO_ROOM_SHIFT;
+ 	rdev->qplib_res.pacing_data->grc_reg_offset = rdev->pacing.dbr_db_fifo_reg_off;
+ 	bnxt_re_set_default_pacing_data(rdev);
+ 	/* Initialize worker for DBR Pacing */
 -- 
 2.5.5
 
 
---0000000000008d8775061bd65a11
+--000000000000bd205a061bd65a3c
 Content-Type: application/pkcs7-signature; name="smime.p7s"
 Content-Transfer-Encoding: base64
 Content-Disposition: attachment; filename="smime.p7s"
@@ -174,15 +307,15 @@ j1Ze9ndr+YDXPpCymOsynmmw0ErHZGGW1OmMpAEt0A+613glWCURLDlP8HONi1wnINV6aDiEf0ad
 9NMGxDsp+YWiRXD3txfo2OMQbpIxM90QfhKKacX8t1J1oAAWxDrLVTJBXBNvz5tr+D1sYwuye93r
 hImmkM1unboxggJtMIICaQIBATBrMFsxCzAJBgNVBAYTAkJFMRkwFwYDVQQKExBHbG9iYWxTaWdu
 IG52LXNhMTEwLwYDVQQDEyhHbG9iYWxTaWduIEdDQyBSMyBQZXJzb25hbFNpZ24gMiBDQSAyMDIw
-Agxy+Cu4x/7lM0zxY7cwDQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIEIBHBBsgSbsj2
-PMKiFmmbnrXGAdOC/yjbRFnP3/we0u7QMBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZI
-hvcNAQkFMQ8XDTI0MDYyNzAzMDE1NlowaQYJKoZIhvcNAQkPMVwwWjALBglghkgBZQMEASowCwYJ
+Agxy+Cu4x/7lM0zxY7cwDQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIEIJHKmloMqgVI
+6+ztRjPRBpJfRb2MhY7LjMd+LohNm4QOMBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZI
+hvcNAQkFMQ8XDTI0MDYyNzAzMDE1OVowaQYJKoZIhvcNAQkPMVwwWjALBglghkgBZQMEASowCwYJ
 YIZIAWUDBAEWMAsGCWCGSAFlAwQBAjAKBggqhkiG9w0DBzALBgkqhkiG9w0BAQowCwYJKoZIhvcN
-AQEHMAsGCWCGSAFlAwQCATANBgkqhkiG9w0BAQEFAASCAQA583XCR6aa0VhUJN0pm7hmU6tzT9Tv
-K4ZQnvx7Cgiai0M+omFgV0ZRE4mY5S3KrmOBPn7yyV/VluWHJMBsJF7LwYaVK+UsGtiiyBE7rZKr
-V7RdODpICtL/ZgDTisOdRZo0oxdMo7gvgXooGaUvPhEvSBnuIz18c348Ro3qe35UD1PxblQeoanq
-eiJbF2YUu3Y0snj9bJTOmxgmNzNyJKKNWe3hVVKZA+RSn5Kdzflg8ytA2iOhgYGg2lvRyeDJ6+zZ
-So+cR2jcXEskjhPfmNtzDkzRqcxC+htrJdV2+SpddOdzrNleFhEA/D61kmubFU/vLbu9S25zkW2p
-l9JL33Xu
---0000000000008d8775061bd65a11--
+AQEHMAsGCWCGSAFlAwQCATANBgkqhkiG9w0BAQEFAASCAQCIrsXk1wWeWMrkIKAyDCVl3/TlHsZ0
+ZJg4zs8kkrHO6YKWCUh32dalqfw9Cyi94zmJjVkPUpStcFQXkNlOd33dNjGfl1hqg9evC2jiGiUS
+8OkwFMQegBEUkiEJ/WGEQ1Yyq0z6QtvbfSmhlIYKKiFTUrUttAAVQU/LRneAMk+4YNlOgkcJ56/M
+rTacwKbZiWU05nFp+cLg9MQeFD1deOs3945JSaAQgo4+C/Gkiqe2padQsEWkXQ1T63d+oHWw3BJQ
+5gC0vDnes1MLVQFEtAajNgQm2bVndRh8pzFbYA8AS6FLjQW9mt2uY1ZAe9+GbAWFzd7Nil/KBbex
+ECpUrwJX
+--000000000000bd205a061bd65a3c--
 
