@@ -1,130 +1,192 @@
-Return-Path: <linux-rdma+bounces-3537-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-3538-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4C866919DA8
-	for <lists+linux-rdma@lfdr.de>; Thu, 27 Jun 2024 05:02:07 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 49DA1919DA9
+	for <lists+linux-rdma@lfdr.de>; Thu, 27 Jun 2024 05:02:09 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6F6D41C217E8
-	for <lists+linux-rdma@lfdr.de>; Thu, 27 Jun 2024 03:02:06 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6D1721C216EF
+	for <lists+linux-rdma@lfdr.de>; Thu, 27 Jun 2024 03:02:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E13928814;
-	Thu, 27 Jun 2024 03:02:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 474441171C;
+	Thu, 27 Jun 2024 03:02:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b="HoW9m7FO"
+	dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b="Pf6z3DZb"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-pl1-f170.google.com (mail-pl1-f170.google.com [209.85.214.170])
+Received: from mail-pf1-f171.google.com (mail-pf1-f171.google.com [209.85.210.171])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 482FEF9E4
-	for <linux-rdma@vger.kernel.org>; Thu, 27 Jun 2024 03:02:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 91D35F9E4
+	for <linux-rdma@vger.kernel.org>; Thu, 27 Jun 2024 03:02:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1719457324; cv=none; b=A5MbLpZFLD7CxenDTCa5SSLUELBe9VgJOi5Ios+mrlb0LAjTqxdyz6UQ1Ofz0K/yeFqATfl8CKYBo1NPmZeMTZ9yYJmqazdZncH86TZiA8SPdRqJBmNTUVkG0unP1vP1K5nHkSd9Y/toodyL4R08LDMPKm+hx3R01wH9GVwzgAA=
+	t=1719457327; cv=none; b=fau+EVQaUyqKXKsC9sq+meQe9ohpQO0vbasNnIbR9HJgYl1BDGYTppgtX6YmQbLOKyPOS8VsHny92O2ztUvQs4HjtwumKLJpGqMt8jkBH5JajQnY/zeEh87/ZbfmTHMuI5j1qYbiaBWwzDPZR0XnLlbwVowfM2tWwfIll+t7Hdg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1719457324; c=relaxed/simple;
-	bh=cQ2CM5xAZJunftQNliRO/vPRPTFuCLA7gZLdBGlMgOw=;
+	s=arc-20240116; t=1719457327; c=relaxed/simple;
+	bh=HKjXnfLm2m4bFdvLBpF3QCDc1g3UNbWlBNNtpbsQFSM=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 Content-Type; b=pVUppYgBa3zoMtJgtBCqgaML8ZHzDiNPjZX8q34hI8YaqdX9Hiz9KocoUDvRF1yo6KDoJmqUBcsajjtnwojIwR+89Lex3cqHpoVDSN4c8KeGkjGKlmS7ALVocf0eSVrc7VlNXu9GMhJNVkQsneDy0pvwwdrALLqcBO95vOLVoTI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com; spf=fail smtp.mailfrom=broadcom.com; dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b=HoW9m7FO; arc=none smtp.client-ip=209.85.214.170
+	 Content-Type; b=cn2BGFfuKIvQMd/J71wkoAGzEqhE0sLUxP55WVMsq/x9GrXFtZqII4gzLTWanKt0nlJQm51Ire+0IIXm3iQN5ULrRO2TzlZEYxjbZpCfU1H+RwHx9gYOL2s9GFzpLr215Ah0Rs1kF0+uyVdGSKGBzwW8oz95Bt2nSxfnLSpZWVw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com; spf=fail smtp.mailfrom=broadcom.com; dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b=Pf6z3DZb; arc=none smtp.client-ip=209.85.210.171
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com
 Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=broadcom.com
-Received: by mail-pl1-f170.google.com with SMTP id d9443c01a7336-1f480624d10so61501865ad.1
-        for <linux-rdma@vger.kernel.org>; Wed, 26 Jun 2024 20:02:03 -0700 (PDT)
+Received: by mail-pf1-f171.google.com with SMTP id d2e1a72fcca58-7065e2fe7d9so4200149b3a.3
+        for <linux-rdma@vger.kernel.org>; Wed, 26 Jun 2024 20:02:05 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google; t=1719457322; x=1720062122; darn=vger.kernel.org;
+        d=broadcom.com; s=google; t=1719457325; x=1720062125; darn=vger.kernel.org;
         h=references:in-reply-to:message-id:date:subject:cc:to:from:from:to
          :cc:subject:date:message-id:reply-to;
-        bh=bSsf9znd4oVsM5HZXF24KiNx2k95El3gJPGyz2GdLX0=;
-        b=HoW9m7FO49r0/MvuoBAVSKI6YcXAW4SpEbGOeiIizuWc+7g+7BSUxarFhoHvZIa0KU
-         FtWciuy09RtxjoiLYNjrw+NvQm/07TJZT1XJb1b38TGL+igIGYoEnnsm0kO31RH1zJ+Z
-         SGTJLe/jDeKJB0vES2RUCESXjM7WS/am9Ju70=
+        bh=BxR07j9lWmVKzHRqDbkJYOyqaI1iQZ6WqhMvpuLEi98=;
+        b=Pf6z3DZbot/q3xNLy7CiwywxsDZptHq2r+I9AgOtAtx5jP9LFW80h/Fw4iTyHfP+qL
+         FhvKSk7ER6Jg6XJfHbKRNuIKv06dKLxehYs6+HZUCBpXvbdkdw05Tl8WIFYa7ay+vttL
+         DQueFNxsU3WAehYDmnJuRVfA/NxfyVYwmphYk=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1719457322; x=1720062122;
+        d=1e100.net; s=20230601; t=1719457325; x=1720062125;
         h=references:in-reply-to:message-id:date:subject:cc:to:from
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=bSsf9znd4oVsM5HZXF24KiNx2k95El3gJPGyz2GdLX0=;
-        b=cmR6QL0eFr5Bk33ulRYRbyCD5Htec+TxfApBeEh8/l/bjyOeMCqUeYUzPbVvbHz/St
-         AHPAG7avBIJSIJABdJNPMU60tfJWAt5oQrV9t1TBq4d9mb/5bd8KCb1/MRYr/JdjPE4o
-         SPqdFtfkG3XUkJF1AdZAiLN2XoMU0485ACH2jlDC8XqmjfmXMtlU682d8TpWqKfYw+Rx
-         SUsifNfnOrW6Q68M3XFgMDEZpU086F/jlZ9AzVgZNklYtmTKcz+Ga0apOt0w9X83nfA3
-         NsV5PQqOlIUlmyJS8sCfqfYyRlGcmhTYSYjj8C4WlGyPZw5tvn0ZxxKzok92ikYOiYJk
-         BuJg==
-X-Gm-Message-State: AOJu0YzlYCNFtZ5rAi1RZMrKPYfoEElVzYgzCwF3pEnohB73jhmuYRAl
-	fbyIX8k2a31dLo8uY6AYmSTH1EqfsYemGreXMp73UToce5ncUAxj26xKABVlDw==
-X-Google-Smtp-Source: AGHT+IGh7dRDZkvmYPBMX0ii2ilWlS3gAeq/irzL856vTJdk40hg/UO4oi15URKsu5Ffn1VOeHRA8Q==
-X-Received: by 2002:a17:902:e995:b0:1f9:8f78:5553 with SMTP id d9443c01a7336-1fa1d4fdc46mr121817505ad.18.1719457322417;
-        Wed, 26 Jun 2024 20:02:02 -0700 (PDT)
+        bh=BxR07j9lWmVKzHRqDbkJYOyqaI1iQZ6WqhMvpuLEi98=;
+        b=Nhb+4kDjeseB3kCEr91r5kz/tNU/rgR3jWl/FuQ+hR15pbikP77Unzx6Nt9hKR9OON
+         LEu83/+sUcLbJYx+5pwvcUVLK24vt6qsZjV/2ENWSnKlPF9Gyx/H1Ub0w22GF5kMDfuh
+         EqG6M3MHQ11OdIiDU5UPOgdNsAxqXsqyUOAXlv+VhweHf1DkdASF9XiCNeWWtYGfb0g+
+         yg/Tg4l6fjHep6KaJ9o7vNP/LhCZJ13KOim5N33QCnImbQNQDIIVl39J3xI8YSTK1daW
+         vwmEhMCON4hyqfyhfhFdO0C3y4AKDuyAg2lqe6CVhD/eNT5KTQMZoh5GTyAS/Fla/kHH
+         2MKA==
+X-Gm-Message-State: AOJu0Yxdmsylvw6GMvAPE4MBLvJQ19nOyTTILL7N7RSgy3oWKDeaw9ml
+	tTLUImJun6TbkF9LMOogpxpqZyZ8U/YXOmNN7KykFr11kIYHHjoZXplKYXoTOA==
+X-Google-Smtp-Source: AGHT+IGlDtCJ+D1onvo8x8HSvajywOz1qx3QqKg4H1CNQ/xF+fd79si4IBDrjJA/aGg7IQMO5Kw6+A==
+X-Received: by 2002:a05:6a20:3b05:b0:1bd:27fd:ff56 with SMTP id adf61e73a8af0-1bd27fe00a6mr5601925637.58.1719457324887;
+        Wed, 26 Jun 2024 20:02:04 -0700 (PDT)
 Received: from sxavier-dev.dhcp.broadcom.net ([192.19.234.250])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-1faac997da7sm2103285ad.216.2024.06.26.20.01.59
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-1faac997da7sm2103285ad.216.2024.06.26.20.02.02
         (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 26 Jun 2024 20:02:01 -0700 (PDT)
+        Wed, 26 Jun 2024 20:02:04 -0700 (PDT)
 From: Selvin Xavier <selvin.xavier@broadcom.com>
 To: leon@kernel.org,
 	jgg@ziepe.ca
 Cc: linux-rdma@vger.kernel.org,
 	andrew.gospodarek@broadcom.com,
-	Selvin Xavier <selvin.xavier@broadcom.com>,
-	Chandramohan Akula <chandramohan.akula@broadcom.com>,
-	Ajit Khaparde <ajit.khaparde@broadcom.com>
-Subject: [PATCH for-next 2/3] RDMA/bnxt_re: Enable DB moderation for genP7 adapters
-Date: Wed, 26 Jun 2024 19:41:04 -0700
-Message-Id: <1719456065-27394-3-git-send-email-selvin.xavier@broadcom.com>
+	Selvin Xavier <selvin.xavier@broadcom.com>
+Subject: [PATCH for-next 3/3] RDMA/bnxt_re: Disable doorbell moderation if hardware register read fails
+Date: Wed, 26 Jun 2024 19:41:05 -0700
+Message-Id: <1719456065-27394-4-git-send-email-selvin.xavier@broadcom.com>
 X-Mailer: git-send-email 2.5.5
 In-Reply-To: <1719456065-27394-1-git-send-email-selvin.xavier@broadcom.com>
 References: <1719456065-27394-1-git-send-email-selvin.xavier@broadcom.com>
 Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
-	boundary="000000000000effc8d061bd65a95"
+	boundary="00000000000014a41c061bd65ba5"
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 
---000000000000effc8d061bd65a95
+--00000000000014a41c061bd65ba5
 
-Enable DB moderation support for GenP7 adapters also. Query from FW
-and update the status.
+If the HW register read fails, the FIFO will be always shown as
+full. DB moderation doesn't work in that case and the traffic fails.
+So disable this feature and log a message.
 
-Signed-off-by: Chandramohan Akula <chandramohan.akula@broadcom.com>
-Signed-off-by: Ajit Khaparde <ajit.khaparde@broadcom.com>
 Signed-off-by: Selvin Xavier <selvin.xavier@broadcom.com>
 ---
- drivers/infiniband/hw/bnxt_re/main.c | 7 ++++---
- 1 file changed, 4 insertions(+), 3 deletions(-)
+ drivers/infiniband/hw/bnxt_re/main.c | 45 +++++++++++++++++++++++++++---------
+ 1 file changed, 34 insertions(+), 11 deletions(-)
 
 diff --git a/drivers/infiniband/hw/bnxt_re/main.c b/drivers/infiniband/hw/bnxt_re/main.c
-index 2a727f4..2c5282f 100644
+index 2c5282f..9714b9a 100644
 --- a/drivers/infiniband/hw/bnxt_re/main.c
 +++ b/drivers/infiniband/hw/bnxt_re/main.c
-@@ -423,6 +423,7 @@ int bnxt_re_hwrm_qcaps(struct bnxt_re_dev *rdev)
- 	struct hwrm_func_qcaps_input req = {};
- 	struct bnxt_qplib_chip_ctx *cctx;
- 	struct bnxt_fw_msg fw_msg = {};
-+	u32 flags_ext2;
- 	int rc;
- 
- 	cctx = rdev->chip_ctx;
-@@ -436,9 +437,9 @@ int bnxt_re_hwrm_qcaps(struct bnxt_re_dev *rdev)
- 		return rc;
- 	cctx->modes.db_push = le32_to_cpu(resp.flags) & FUNC_QCAPS_RESP_FLAGS_WCB_PUSH_MODE;
- 
--	cctx->modes.dbr_pacing =
--		le32_to_cpu(resp.flags_ext2) &
--		FUNC_QCAPS_RESP_FLAGS_EXT2_DBR_PACING_EXT_SUPPORTED;
-+	flags_ext2 = le32_to_cpu(resp.flags_ext2);
-+	cctx->modes.dbr_pacing = flags_ext2 & FUNC_QCAPS_RESP_FLAGS_EXT2_DBR_PACING_EXT_SUPPORTED ||
-+				 flags_ext2 & FUNC_QCAPS_RESP_FLAGS_EXT2_DBR_PACING_V0_SUPPORTED;
- 	return 0;
+@@ -488,19 +488,40 @@ static void bnxt_re_set_default_pacing_data(struct bnxt_re_dev *rdev)
+ 		pacing_data->pacing_th * BNXT_RE_PACING_ALARM_TH_MULTIPLE;
  }
  
+-static void __wait_for_fifo_occupancy_below_th(struct bnxt_re_dev *rdev)
++static u32 __get_fifo_occupancy(struct bnxt_re_dev *rdev)
+ {
+ 	struct bnxt_qplib_db_pacing_data *pacing_data = rdev->qplib_res.pacing_data;
+ 	u32 read_val, fifo_occup;
+ 
++	read_val = readl(rdev->en_dev->bar0 + rdev->pacing.dbr_db_fifo_reg_off);
++	fifo_occup = pacing_data->fifo_max_depth -
++		     ((read_val & pacing_data->fifo_room_mask) >>
++		      pacing_data->fifo_room_shift);
++	return fifo_occup;
++}
++
++static bool is_dbr_fifo_full(struct bnxt_re_dev *rdev)
++{
++	u32 max_occup, fifo_occup;
++
++	fifo_occup = __get_fifo_occupancy(rdev);
++	max_occup = BNXT_RE_MAX_FIFO_DEPTH(rdev->chip_ctx) - 1;
++	if (fifo_occup == max_occup)
++		return true;
++
++	return false;
++}
++
++static void __wait_for_fifo_occupancy_below_th(struct bnxt_re_dev *rdev)
++{
++	struct bnxt_qplib_db_pacing_data *pacing_data = rdev->qplib_res.pacing_data;
++	u32 fifo_occup;
++
+ 	/* loop shouldn't run infintely as the occupancy usually goes
+ 	 * below pacing algo threshold as soon as pacing kicks in.
+ 	 */
+ 	while (1) {
+-		read_val = readl(rdev->en_dev->bar0 + rdev->pacing.dbr_db_fifo_reg_off);
+-		fifo_occup = pacing_data->fifo_max_depth -
+-			     ((read_val & pacing_data->fifo_room_mask) >>
+-			      pacing_data->fifo_room_shift);
++		fifo_occup = __get_fifo_occupancy(rdev);
+ 		/* Fifo occupancy cannot be greater the MAX FIFO depth */
+ 		if (fifo_occup > pacing_data->fifo_max_depth)
+ 			break;
+@@ -556,16 +577,13 @@ static void bnxt_re_pacing_timer_exp(struct work_struct *work)
+ 	struct bnxt_re_dev *rdev = container_of(work, struct bnxt_re_dev,
+ 			dbq_pacing_work.work);
+ 	struct bnxt_qplib_db_pacing_data *pacing_data;
+-	u32 read_val, fifo_occup;
++	u32 fifo_occup;
+ 
+ 	if (!mutex_trylock(&rdev->pacing.dbq_lock))
+ 		return;
+ 
+ 	pacing_data = rdev->qplib_res.pacing_data;
+-	read_val = readl(rdev->en_dev->bar0 + rdev->pacing.dbr_db_fifo_reg_off);
+-	fifo_occup = pacing_data->fifo_max_depth -
+-		     ((read_val & pacing_data->fifo_room_mask) >>
+-		      pacing_data->fifo_room_shift);
++	fifo_occup = __get_fifo_occupancy(rdev);
+ 
+ 	if (fifo_occup > pacing_data->pacing_th)
+ 		goto restart_timer;
+@@ -613,7 +631,6 @@ void bnxt_re_pacing_alert(struct bnxt_re_dev *rdev)
+ 
+ static int bnxt_re_initialize_dbr_pacing(struct bnxt_re_dev *rdev)
+ {
+-
+ 	/* Allocate a page for app use */
+ 	rdev->pacing.dbr_page = (void *)__get_free_page(GFP_KERNEL);
+ 	if (!rdev->pacing.dbr_page)
+@@ -637,6 +654,12 @@ static int bnxt_re_initialize_dbr_pacing(struct bnxt_re_dev *rdev)
+ 	rdev->pacing.dbr_bar_addr =
+ 		pci_resource_start(rdev->qplib_res.pdev, 0) + rdev->pacing.dbr_db_fifo_reg_off;
+ 
++	if (is_dbr_fifo_full(rdev)) {
++		free_page((u64)rdev->pacing.dbr_page);
++		rdev->pacing.dbr_page = NULL;
++		return -EIO;
++	}
++
+ 	rdev->pacing.pacing_algo_th = BNXT_RE_PACING_ALGO_THRESHOLD;
+ 	rdev->pacing.dbq_pacing_time = BNXT_RE_DBR_PACING_TIME;
+ 	rdev->pacing.dbr_def_do_pacing = BNXT_RE_DBR_DO_PACING_NO_CONGESTION;
 -- 
 2.5.5
 
 
---000000000000effc8d061bd65a95
+--00000000000014a41c061bd65ba5
 Content-Type: application/pkcs7-signature; name="smime.p7s"
 Content-Transfer-Encoding: base64
 Content-Disposition: attachment; filename="smime.p7s"
@@ -195,15 +257,15 @@ j1Ze9ndr+YDXPpCymOsynmmw0ErHZGGW1OmMpAEt0A+613glWCURLDlP8HONi1wnINV6aDiEf0ad
 9NMGxDsp+YWiRXD3txfo2OMQbpIxM90QfhKKacX8t1J1oAAWxDrLVTJBXBNvz5tr+D1sYwuye93r
 hImmkM1unboxggJtMIICaQIBATBrMFsxCzAJBgNVBAYTAkJFMRkwFwYDVQQKExBHbG9iYWxTaWdu
 IG52LXNhMTEwLwYDVQQDEyhHbG9iYWxTaWduIEdDQyBSMyBQZXJzb25hbFNpZ24gMiBDQSAyMDIw
-Agxy+Cu4x/7lM0zxY7cwDQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIEILVjd6+Q7kn9
-7w8ElzU0092XzJzFtoCMFHgqIuWAhmL9MBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZI
-hvcNAQkFMQ8XDTI0MDYyNzAzMDIwMlowaQYJKoZIhvcNAQkPMVwwWjALBglghkgBZQMEASowCwYJ
+Agxy+Cu4x/7lM0zxY7cwDQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIEILXvW2eoMiWR
+n7WhBmMgpZ5tyJlg/6RDpPEfAKIS2a4kMBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZI
+hvcNAQkFMQ8XDTI0MDYyNzAzMDIwNVowaQYJKoZIhvcNAQkPMVwwWjALBglghkgBZQMEASowCwYJ
 YIZIAWUDBAEWMAsGCWCGSAFlAwQBAjAKBggqhkiG9w0DBzALBgkqhkiG9w0BAQowCwYJKoZIhvcN
-AQEHMAsGCWCGSAFlAwQCATANBgkqhkiG9w0BAQEFAASCAQAU5C450YNjzT00fCQ8ZAyffRexhZ5l
-Bw8T7Lwg5djY0wJ4u8NwbJBM+Au+4/+g3omKRo1/XAjE7eaGe0wLa5MzRRuZmL7547ue2LNtbQum
-RG3imhDzqt3HNWu2XfVm1v68/hWjNd3GhlA057JH2r2rc/KcxSMic9OXpUO5UvvMg/WUHCscSC25
-a4kNKHJce7lrdWNTwUAGgGsZF1zGgxOSls5OrEbHGPhA0kRY5OyM3RtoV6NSCVukdfLbNwL0Ri2o
-HbBfAvtelepeX133ElNqkP/bnYtiT9qpwx9hAaD81E8MASWQuSitnLWMS1EY/NsKReA6+MYq0DoK
-DU6wADOV
---000000000000effc8d061bd65a95--
+AQEHMAsGCWCGSAFlAwQCATANBgkqhkiG9w0BAQEFAASCAQCSqrIiXHaahc5TG2r/QjW+yerWewDf
+Tr6BdlZ9eLlzkdv9mMFkELPwrFIyFizY4UBXtq88YhlRpGQU3vOigbtBEeSPsAc2sEUdBBbUj3me
+m9ZX2L9LUNkuvjhY7mDi9MTB01mF596xkGmDZglSR0FMf2EcuLUt7L+8kvIww1XgCvmcbJ46KJn2
+ku5GW1Lvk95OacsBuCL9GTkNMypZrwOXvzSDiatwVtBwOo0Y3j6yQYEDHOUWzZOuplSxlY7TfPTc
+ugaA4zQM9CUKSJ6iOsk4EWnI1y8Ts95s0OqR7D1zgKJ+RcDmF4yWOpQD88dVquVvkh2LO4RwGOoY
+2QJeFQyX
+--00000000000014a41c061bd65ba5--
 
