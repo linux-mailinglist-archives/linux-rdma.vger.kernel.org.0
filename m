@@ -1,203 +1,182 @@
-Return-Path: <linux-rdma+bounces-3553-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-3554-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6748491AEF5
-	for <lists+linux-rdma@lfdr.de>; Thu, 27 Jun 2024 20:24:23 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 194E391AEF8
+	for <lists+linux-rdma@lfdr.de>; Thu, 27 Jun 2024 20:25:18 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1FFAC287747
-	for <lists+linux-rdma@lfdr.de>; Thu, 27 Jun 2024 18:24:22 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8DDEE1F23FE1
+	for <lists+linux-rdma@lfdr.de>; Thu, 27 Jun 2024 18:25:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1BDBA19AA42;
-	Thu, 27 Jun 2024 18:24:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CB18019AA62;
+	Thu, 27 Jun 2024 18:25:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="OQq9CAlS"
+	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="m5Dow/Q8"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from mx0a-00069f02.pphosted.com (mx0a-00069f02.pphosted.com [205.220.165.32])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D19BD13A276
-	for <linux-rdma@vger.kernel.org>; Thu, 27 Jun 2024 18:24:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C4A43198838;
+	Thu, 27 Jun 2024 18:25:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.165.32
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1719512647; cv=none; b=VFzlQwnpG+QtyCVZwIQuZizAYb4uowBWzkGfmbKCOA/ebsgQjPSSV7rwZJY5zCNgcoceBRe079s8NzRZLHNMMf71aKmeMGHK16JtRG1DkXmYqCbmfCMdARgJlbme15GIAo+6bwwVP5VsI4b73VkH8fC53LQPFeijdZiM7wm5xYs=
+	t=1719512709; cv=none; b=SVsN3+2gA0fiFuDc9FJkHZUrrQMO9omkptHCv3Ody9ydUfrl/lIl0cXoAqjU8LYR6nSBX76X0oDevnzURWpisiRB3YqE26WoNQ/IF4vi9/9kqElzcJY1orhUlcvLll0aIMg51sCCR2ObTmzarjRb21JSqOc55qzZO6ifdsk84xU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1719512647; c=relaxed/simple;
-	bh=Q6+t5wdwQmI3VpKPVMF7cMAUgsEBENBrxB9V7A6b6q8=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=Tq0mJRAhbpdRdxyMP4suVtTK7XEevB+Jjcm5STB8Jx2UIt9ixJST/yWWoq9EX62WbG4H2QYzhYXITYsjlBlTnwunj8MkzOpLobxN56m1z9QyLS/BwBfpFEVoC1F2+kvq+gP03RSo82Ns6j9TKqraHP3+zqKlCj6DK4NnHbe9lJY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=OQq9CAlS; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E6784C2BBFC;
-	Thu, 27 Jun 2024 18:24:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1719512647;
-	bh=Q6+t5wdwQmI3VpKPVMF7cMAUgsEBENBrxB9V7A6b6q8=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=OQq9CAlSj/hNzUQVd7ZMPQudx2+avOAj5U8+PS8Sq+PchyTrYlx5BdJevn4SCg8sA
-	 DMjTjBsskrR/13SC8LXMsOBiz0+CObnCkQ3Z23uR6Tw2JYWejIL830bxNg21+1sMZP
-	 Qf6TauqxKXkLStlU3fmqc5IEFsQcsi9uswgkHCZxfwMrIlTCY96dZPWbscYuMZ0NLw
-	 rcS/k4fg4UA9+l/koSwmeBMg5RfoZR68Wh0CcWmRpFt61yQ0vbPHVyFsgojZgG0j7v
-	 r50ouG49HpG4xSGzPjJIHiS663hOLGnTa38zkrnFu6jxVP9S8lWZiEoVbUXv+dcyHs
-	 5w7uNk9QX8Wsw==
-From: Leon Romanovsky <leon@kernel.org>
-To: Jason Gunthorpe <jgg@nvidia.com>
-Cc: Akiva Goldberger <agoldberger@nvidia.com>,
-	Ajay Sharma <sharmaajay@microsoft.com>,
-	Bernard Metzler <bmt@zurich.ibm.com>,
-	Bryan Tan <bryan-bt.tan@broadcom.com>,
-	Chengchang Tang <tangchengchang@huawei.com>,
-	Cheng Xu <chengyou@linux.alibaba.com>,
-	Christian Benvenuti <benve@cisco.com>,
-	Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
-	Junxian Huang <huangjunxian6@hisilicon.com>,
-	Kai Shen <kaishen@linux.alibaba.com>,
-	linux-rdma@vger.kernel.org,
-	Long Li <longli@microsoft.com>,
-	Michael Margolin <mrgolin@amazon.com>,
-	Michal Kalderon <mkalderon@marvell.com>,
-	Mustafa Ismail <mustafa.ismail@intel.com>,
-	Nelson Escobar <neescoba@cisco.com>,
-	Potnuri Bharat Teja <bharat@chelsio.com>,
-	Selvin Xavier <selvin.xavier@broadcom.com>,
-	Shiraz Saleem <shiraz.saleem@intel.com>,
-	Vishnu Dasa <vishnu.dasa@broadcom.com>,
-	Yishai Hadas <yishaih@nvidia.com>,
-	Zhu Yanjun <zyjzyj2000@gmail.com>
-Subject: [PATCH rdma-next v2 2/2] RDMA/mlx5: Send UAR page index as ioctl attribute
-Date: Thu, 27 Jun 2024 21:23:50 +0300
-Message-ID: <0e18b34d7ec3b1ae02d694b0d545aed7413c0ef7.1719512393.git.leon@kernel.org>
-X-Mailer: git-send-email 2.45.2
-In-Reply-To: <cover.1719512393.git.leon@kernel.org>
-References: <cover.1719512393.git.leon@kernel.org>
+	s=arc-20240116; t=1719512709; c=relaxed/simple;
+	bh=KeBGO9CRPaD0wSlNnklz3IGku9jngU6aEeR9XG3Lfh4=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=OSl4ldNujFcoUwxnfeWKngnaT4BbJ8cW1H0YQQH+RCTMoHGSgi9HPYEeSOha+6LjtmQapfgDEsBWzLQ+iUAjJPVd5oSIXuf1fg6lkQnU9RmePNo31NGsEgcSvM/tJuqFr+9f1nFSLZunxXpUijsW6kuZgF4VYo7G3bEXejJKl/A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oracle.com; spf=pass smtp.mailfrom=oracle.com; dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b=m5Dow/Q8; arc=none smtp.client-ip=205.220.165.32
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oracle.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oracle.com
+Received: from pps.filterd (m0246617.ppops.net [127.0.0.1])
+	by mx0b-00069f02.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 45RFtWer012266;
+	Thu, 27 Jun 2024 18:24:52 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=
+	from:to:cc:subject:date:message-id:mime-version:content-type
+	:content-transfer-encoding; s=corp-2023-11-20; bh=lWQliWfHdkYY0l
+	iIKUPYYMRUdsUHPFcSTvSEg1ybQA0=; b=m5Dow/Q8S+22FvzT4Rs7+SJAbp1+ST
+	u/H5R0Z6DrUN6NlbuAJ7pEvKf8MT/oYL4oB8aQpXjaJNSwCjRDPAEPeExU/ERwPM
+	hLOyDGqwmOIItPWjYjxexOsvwGfhzQFeIcd7O2JK6+Pk2zGxULrV78LpI3qtG44N
+	B1PyEvC9ZtNmeClw+iwfkeQ3ulNEQwzG+ayBfzTwF6iuc1ve+O/Dn/KpXb5MdXhP
+	gMnZgdSPLN94sOcqBut452JzDfleE564LMkOkszqL1q4jbj5WB/IzvztN5jlhjW6
+	30xNb+SxSmIKzth+6bJLJqwlN4Oi43ZfTPCB1BLHbAlfQT+WFDUIMUsw==
+Received: from iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta01.appoci.oracle.com [130.35.100.223])
+	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3ywq5t6sea-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Thu, 27 Jun 2024 18:24:52 +0000 (GMT)
+Received: from pps.filterd (iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
+	by iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 45RHb7sO023397;
+	Thu, 27 Jun 2024 18:24:50 GMT
+Received: from pps.reinject (localhost [127.0.0.1])
+	by iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTPS id 3ywn2hannt-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Thu, 27 Jun 2024 18:24:50 +0000
+Received: from iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
+	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 45RIOnP3007370;
+	Thu, 27 Jun 2024 18:24:50 GMT
+Received: from aakhoje-ol.in.oracle.com (dhcp-10-191-198-246.vpn.oracle.com [10.191.198.246])
+	by iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTP id 3ywn2hane7-1;
+	Thu, 27 Jun 2024 18:24:49 +0000
+From: Anand Khoje <anand.a.khoje@oracle.com>
+To: linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org
+Cc: saeedm@mellanox.com, leon@kernel.org, tariqt@nvidia.com,
+        edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
+        davem@davemloft.net, rama.nichanamatlu@oracle.com,
+        manjunath.b.patil@oracle.com
+Subject: [PATCH v6] net/mlx5: Reclaim max 50K pages at once
+Date: Thu, 27 Jun 2024 23:54:43 +0530
+Message-ID: <20240627182443.19254-1-anand.a.khoje@oracle.com>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1039,Hydra:6.0.680,FMLib:17.12.28.16
+ definitions=2024-06-27_14,2024-06-27_03,2024-05-17_01
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 bulkscore=0 suspectscore=0
+ phishscore=0 adultscore=0 malwarescore=0 mlxscore=0 mlxlogscore=999
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2406180000
+ definitions=main-2406270138
+X-Proofpoint-GUID: mEh18h35oB4pCkI1VJxZBS92kp5H7oV9
+X-Proofpoint-ORIG-GUID: mEh18h35oB4pCkI1VJxZBS92kp5H7oV9
 
-From: Akiva Goldberger <agoldberger@nvidia.com>
+In non FLR context, at times CX-5 requests release of ~8 million FW pages.
+This needs humongous number of cmd mailboxes, which to be released once
+the pages are reclaimed. Release of humongous number of cmd mailboxes is
+consuming cpu time running into many seconds. Which with non preemptible
+kernels is leading to critical process starving on that cpu’s RQ.
+To alleviate this, this change restricts the total number of pages
+a worker will try to reclaim maximum 50K pages in one go.
+The limit 50K is aligned with the current firmware capacity/limit of
+releasing 50K pages at once per MLX5_CMD_OP_MANAGE_PAGES + MLX5_PAGES_TAKE
+device command.
 
-Add UAR page index as a driver ioctl attribute to increase the number of
-supported indices, previously limited to 16 bits by mlx5_ib_create_cq
-struct.
+Our tests have shown significant benefit of this change in terms of
+time consumed by dma_pool_free().
+During a test where an event was raised by HCA
+to release 1.3 Million pages, following observations were made:
 
-Signed-off-by: Akiva Goldberger <agoldberger@nvidia.com>
-Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
+- Without this change:
+Number of mailbox messages allocated was around 20K, to accommodate
+the DMA addresses of 1.3 million pages.
+The average time spent by dma_pool_free() to free the DMA pool is between
+16 usec to 32 usec.
+           value  ------------- Distribution ------------- count
+             256 |                                         0
+             512 |@                                        287
+            1024 |@@@                                      1332
+            2048 |@                                        656
+            4096 |@@@@@                                    2599
+            8192 |@@@@@@@@@@                               4755
+           16384 |@@@@@@@@@@@@@@@                          7545
+           32768 |@@@@@                                    2501
+           65536 |                                         0
+
+- With this change:
+Number of mailbox messages allocated was around 800; this was to
+accommodate DMA addresses of only 50K pages.
+The average time spent by dma_pool_free() to free the DMA pool in this case
+lies between 1 usec to 2 usec.
+           value  ------------- Distribution ------------- count
+             256 |                                         0
+             512 |@@@@@@@@@@@@@@@@@@                       346
+            1024 |@@@@@@@@@@@@@@@@@@@@@@                   435
+            2048 |                                         0
+            4096 |                                         0
+            8192 |                                         1
+           16384 |                                         0
+
+Signed-off-by: Anand Khoje <anand.a.khoje@oracle.com>
 ---
- drivers/infiniband/hw/mlx5/cq.c          | 28 +++++++++++++++++++++---
- drivers/infiniband/hw/mlx5/main.c        |  1 +
- drivers/infiniband/hw/mlx5/mlx5_ib.h     |  1 +
- include/uapi/rdma/mlx5_user_ioctl_cmds.h |  4 ++++
- 4 files changed, 31 insertions(+), 3 deletions(-)
+Changes in v6
+ - Added comments to explain usage os negative MAX_RECLAIM_NPAGES
+---
+ drivers/net/ethernet/mellanox/mlx5/core/pagealloc.c | 16 +++++++++++++++-
+ 1 file changed, 15 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/infiniband/hw/mlx5/cq.c b/drivers/infiniband/hw/mlx5/cq.c
-index 172f3987fc87..74fc78ee147a 100644
---- a/drivers/infiniband/hw/mlx5/cq.c
-+++ b/drivers/infiniband/hw/mlx5/cq.c
-@@ -38,6 +38,9 @@
- #include "srq.h"
- #include "qp.h"
- 
-+#define UVERBS_MODULE_NAME mlx5_ib
-+#include <rdma/uverbs_named_ioctl.h>
-+
- static void mlx5_ib_cq_comp(struct mlx5_core_cq *cq, struct mlx5_eqe *eqe)
- {
- 	struct ib_cq *ibcq = &to_mibcq(cq)->ibcq;
-@@ -714,7 +717,8 @@ static int mini_cqe_res_format_to_hw(struct mlx5_ib_dev *dev, u8 format)
- 
- static int create_cq_user(struct mlx5_ib_dev *dev, struct ib_udata *udata,
- 			  struct mlx5_ib_cq *cq, int entries, u32 **cqb,
--			  int *cqe_size, int *index, int *inlen)
-+			  int *cqe_size, int *index, int *inlen,
-+			  struct uverbs_attr_bundle *attrs)
- {
- 	struct mlx5_ib_create_cq ucmd = {};
- 	unsigned long page_size;
-@@ -788,7 +792,11 @@ static int create_cq_user(struct mlx5_ib_dev *dev, struct ib_udata *udata,
- 		 order_base_2(page_size) - MLX5_ADAPTER_PAGE_SHIFT);
- 	MLX5_SET(cqc, cqc, page_offset, page_offset_quantized);
- 
--	if (ucmd.flags & MLX5_IB_CREATE_CQ_FLAGS_UAR_PAGE_INDEX) {
-+	if (uverbs_attr_is_valid(attrs, MLX5_IB_ATTR_CREATE_CQ_UAR_INDEX)) {
-+		err = uverbs_copy_from(index, attrs, MLX5_IB_ATTR_CREATE_CQ_UAR_INDEX);
-+		if (err)
-+			goto err_cqb;
-+	} else if (ucmd.flags & MLX5_IB_CREATE_CQ_FLAGS_UAR_PAGE_INDEX) {
- 		*index = ucmd.uar_page_index;
- 	} else if (context->bfregi.lib_uar_dyn) {
- 		err = -EINVAL;
-@@ -981,7 +989,7 @@ int mlx5_ib_create_cq(struct ib_cq *ibcq, const struct ib_cq_init_attr *attr,
- 
- 	if (udata) {
- 		err = create_cq_user(dev, udata, cq, entries, &cqb, &cqe_size,
--				     &index, &inlen);
-+				     &index, &inlen, attrs);
- 		if (err)
- 			return err;
- 	} else {
-@@ -1443,3 +1451,17 @@ int mlx5_ib_generate_wc(struct ib_cq *ibcq, struct ib_wc *wc)
- 
- 	return 0;
- }
-+
-+ADD_UVERBS_ATTRIBUTES_SIMPLE(
-+	mlx5_ib_cq_create,
-+	UVERBS_OBJECT_CQ,
-+	UVERBS_METHOD_CQ_CREATE,
-+	UVERBS_ATTR_PTR_IN(
-+		MLX5_IB_ATTR_CREATE_CQ_UAR_INDEX,
-+		UVERBS_ATTR_TYPE(u32),
-+		UA_OPTIONAL));
-+
-+const struct uapi_definition mlx5_ib_create_cq_defs[] = {
-+	UAPI_DEF_CHAIN_OBJ_TREE(UVERBS_OBJECT_CQ, &mlx5_ib_cq_create),
-+	{},
-+};
-diff --git a/drivers/infiniband/hw/mlx5/main.c b/drivers/infiniband/hw/mlx5/main.c
-index 4a0380e711ea..89083f454952 100644
---- a/drivers/infiniband/hw/mlx5/main.c
-+++ b/drivers/infiniband/hw/mlx5/main.c
-@@ -3833,6 +3833,7 @@ static const struct uapi_definition mlx5_ib_defs[] = {
- 	UAPI_DEF_CHAIN(mlx5_ib_qos_defs),
- 	UAPI_DEF_CHAIN(mlx5_ib_std_types_defs),
- 	UAPI_DEF_CHAIN(mlx5_ib_dm_defs),
-+	UAPI_DEF_CHAIN(mlx5_ib_create_cq_defs),
- 
- 	UAPI_DEF_CHAIN_OBJ_TREE(UVERBS_OBJECT_DEVICE, &mlx5_ib_query_context),
- 	UAPI_DEF_CHAIN_OBJ_TREE_NAMED(MLX5_IB_OBJECT_VAR,
-diff --git a/drivers/infiniband/hw/mlx5/mlx5_ib.h b/drivers/infiniband/hw/mlx5/mlx5_ib.h
-index 2b03e607561e..c718c2cfffb8 100644
---- a/drivers/infiniband/hw/mlx5/mlx5_ib.h
-+++ b/drivers/infiniband/hw/mlx5/mlx5_ib.h
-@@ -1532,6 +1532,7 @@ extern const struct uapi_definition mlx5_ib_devx_defs[];
- extern const struct uapi_definition mlx5_ib_flow_defs[];
- extern const struct uapi_definition mlx5_ib_qos_defs[];
- extern const struct uapi_definition mlx5_ib_std_types_defs[];
-+extern const struct uapi_definition mlx5_ib_create_cq_defs[];
- 
- static inline int is_qp1(enum ib_qp_type qp_type)
- {
-diff --git a/include/uapi/rdma/mlx5_user_ioctl_cmds.h b/include/uapi/rdma/mlx5_user_ioctl_cmds.h
-index 595edad03dfe..5b74d6534899 100644
---- a/include/uapi/rdma/mlx5_user_ioctl_cmds.h
-+++ b/include/uapi/rdma/mlx5_user_ioctl_cmds.h
-@@ -270,6 +270,10 @@ enum mlx5_ib_device_query_context_attrs {
- 	MLX5_IB_ATTR_QUERY_CONTEXT_RESP_UCTX = (1U << UVERBS_ID_NS_SHIFT),
+diff --git a/drivers/net/ethernet/mellanox/mlx5/core/pagealloc.c b/drivers/net/ethernet/mellanox/mlx5/core/pagealloc.c
+index d894a88..972e8e9 100644
+--- a/drivers/net/ethernet/mellanox/mlx5/core/pagealloc.c
++++ b/drivers/net/ethernet/mellanox/mlx5/core/pagealloc.c
+@@ -608,6 +608,11 @@ enum {
+ 	RELEASE_ALL_PAGES_MASK = 0x4000,
  };
  
-+enum mlx5_ib_create_cq_attrs {
-+	MLX5_IB_ATTR_CREATE_CQ_UAR_INDEX = UVERBS_ID_DRIVER_NS_WITH_UHW,
-+};
++/* This limit is based on the capability of the firmware as it cannot release
++ * more than 50000 back to the host in one go.
++ */
++#define MAX_RECLAIM_NPAGES (-50000)
 +
- #define MLX5_IB_DW_MATCH_PARAM 0xA0
+ static int req_pages_handler(struct notifier_block *nb,
+ 			     unsigned long type, void *data)
+ {
+@@ -639,7 +644,16 @@ static int req_pages_handler(struct notifier_block *nb,
  
- struct mlx5_ib_match_params {
+ 	req->dev = dev;
+ 	req->func_id = func_id;
+-	req->npages = npages;
++
++	/* npages > 0 means HCA asking host to allocate/give pages,
++	 * npages < 0 means HCA asking host to reclaim back the pages allocated.
++	 * Here we are restricting the maximum number of pages that can be
++	 * reclaimed to be MAX_RECLAIM_NPAGES. Note that MAX_RECLAIM_NPAGES is
++	 * a negative value.
++	 * Since MAX_RECLAIM is negative, we are using max() to restrict
++	 * req->npages (and not min ()).
++	 */
++	req->npages = max_t(s32, npages, MAX_RECLAIM_NPAGES);
+ 	req->ec_function = ec_function;
+ 	req->release_all = release_all;
+ 	INIT_WORK(&req->work, pages_work_handler);
 -- 
-2.45.2
+1.8.3.1
 
 
