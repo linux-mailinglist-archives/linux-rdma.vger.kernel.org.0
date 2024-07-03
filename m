@@ -1,53 +1,43 @@
-Return-Path: <linux-rdma+bounces-3626-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-3627-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 61E85925AE4
-	for <lists+linux-rdma@lfdr.de>; Wed,  3 Jul 2024 13:04:39 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8DD0E926381
+	for <lists+linux-rdma@lfdr.de>; Wed,  3 Jul 2024 16:35:51 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7DE861C24611
-	for <lists+linux-rdma@lfdr.de>; Wed,  3 Jul 2024 11:04:38 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 445D41F2333A
+	for <lists+linux-rdma@lfdr.de>; Wed,  3 Jul 2024 14:35:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DC7D617E907;
-	Wed,  3 Jul 2024 10:52:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="nYd4RQLP"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 351EE17BB1D;
+	Wed,  3 Jul 2024 14:35:42 +0000 (UTC)
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from verein.lst.de (verein.lst.de [213.95.11.211])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7CB9717E8EE;
-	Wed,  3 Jul 2024 10:52:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 605251791EF;
+	Wed,  3 Jul 2024 14:35:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.95.11.211
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1720003978; cv=none; b=YOFF6x3j98aXgJyBC4HChTdc6evgc8WhOvRQvU0db/P30oRMVqi096cBcm9ulaW/bnxL5jdp7RFlbgopCe0eK0IWQa14ImB+pRu+TVv2GnfL+n6X5XQFGHfA3LtP/Ng2xJZ/XF6ShlHi8Ths8pwxfQEN9JKXEXOdFdYt5huy/Dc=
+	t=1720017342; cv=none; b=V9lUQLrQi7kCpzCzhICdxawP6BfZFJSHaOYzM9+60otS0mVL32hxXIb+lmU70q04moAxeceYHWc7QO3xzEE2pag2rCz9PRBqaW7KxY8eviVh8dNCLMTrmb9wEwa5BvAbI40flnUeyG6BRR8RbOs+0+eDzQNcbeyZPx4Aj9ypya8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1720003978; c=relaxed/simple;
-	bh=pPz+aKLXZOghQ7VtjQHusi+fj+NpFq4VHkcVX8X3bH8=;
+	s=arc-20240116; t=1720017342; c=relaxed/simple;
+	bh=fG/bQbz4zGDzjdtmGG4BM/JphqsFn64XCAczIMZFNZA=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Olzs6C01dW/uyLIQV4DMxyTT65UVUaSAuBCPjmND+aZomXLHdK94+hCxwYIXM99Yw0R4Qz+NnZKoTGZ5NQxAhAgeedsVEDSEKiZ8eAp2XgRnLKPZqDnCS55f/vFlpcPNX6XR4KUQ3tMKdhbw9PBrFRMCDsLP0dT9y0j3qfLuxY4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=nYd4RQLP; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 836CAC4AF0B;
-	Wed,  3 Jul 2024 10:52:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1720003978;
-	bh=pPz+aKLXZOghQ7VtjQHusi+fj+NpFq4VHkcVX8X3bH8=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=nYd4RQLPNWY78pIbNAILafDzME2V0q1JxD04RIMzYEVRTvt89jlLKvJriZcMCuH2T
-	 w96uRRv/Q4LrMA7qbS+tVVzGZ8TbYD4a7uxMEPOOXtyhfAZjqiLtWvl7qwC+YZD5Ba
-	 v6Hluy8LaijXySSMoswEpGvrCLN3gkwpFP2bG31B2uIuuhMWFdHvJ6hmi9njK5bywp
-	 geNwo4OuHZBuA495qG+lQBMrzBgxPLYgn8KinCmvDBq9hmAZenc9g0C6DeVOsibSX2
-	 IVVgir3Al85xqpIrwp6ua76xZvzC0FWDuHMKCBDh5k2QhOV31v4/Nqa/LhITpDNtHG
-	 1wsaj+G6o4oiw==
-Date: Wed, 3 Jul 2024 13:52:53 +0300
-From: Leon Romanovsky <leon@kernel.org>
-To: Christoph Hellwig <hch@lst.de>
-Cc: Jens Axboe <axboe@kernel.dk>, Jason Gunthorpe <jgg@ziepe.ca>,
-	Robin Murphy <robin.murphy@arm.com>, Joerg Roedel <joro@8bytes.org>,
-	Will Deacon <will@kernel.org>, Keith Busch <kbusch@kernel.org>,
-	"Zeng, Oak" <oak.zeng@intel.com>,
+	 Content-Type:Content-Disposition:In-Reply-To; b=U7LjuSEBzTdyPb8CBvlmxKn3yxR4lLUXcpzd4CuPcBHt97C2SV1+k1RKPgoeBCkhnoGLz1Zos+0CHV8FctdgGBx8VC8lpkmHQNO7C5jjZmPQUgaGcyDBafYUbadJBjiODn2/R29jyxzNo6ERsOqpDiDyZJwhLVtwG0TQHDahIiw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=lst.de; spf=pass smtp.mailfrom=lst.de; arc=none smtp.client-ip=213.95.11.211
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=lst.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lst.de
+Received: by verein.lst.de (Postfix, from userid 2407)
+	id D1D0E68AFE; Wed,  3 Jul 2024 16:35:30 +0200 (CEST)
+Date: Wed, 3 Jul 2024 16:35:30 +0200
+From: Christoph Hellwig <hch@lst.de>
+To: Leon Romanovsky <leon@kernel.org>
+Cc: Christoph Hellwig <hch@lst.de>, Jens Axboe <axboe@kernel.dk>,
+	Jason Gunthorpe <jgg@ziepe.ca>, Robin Murphy <robin.murphy@arm.com>,
+	Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
+	Keith Busch <kbusch@kernel.org>, "Zeng, Oak" <oak.zeng@intel.com>,
 	Chaitanya Kulkarni <kch@nvidia.com>,
 	Sagi Grimberg <sagi@grimberg.me>,
 	Bjorn Helgaas <bhelgaas@google.com>,
@@ -64,9 +54,8 @@ Cc: Jens Axboe <axboe@kernel.dk>, Jason Gunthorpe <jgg@ziepe.ca>,
 	linux-nvme@lists.infradead.org, linux-pci@vger.kernel.org,
 	kvm@vger.kernel.org, linux-mm@kvack.org
 Subject: Re: [RFC PATCH v1 00/18] Provide a new two step DMA API mapping API
-Message-ID: <20240703105253.GA95824@unreal>
-References: <cover.1719909395.git.leon@kernel.org>
- <20240703054238.GA25366@lst.de>
+Message-ID: <20240703143530.GA30857@lst.de>
+References: <cover.1719909395.git.leon@kernel.org> <20240703054238.GA25366@lst.de> <20240703105253.GA95824@unreal>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
@@ -75,21 +64,38 @@ List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240703054238.GA25366@lst.de>
+In-Reply-To: <20240703105253.GA95824@unreal>
+User-Agent: Mutt/1.5.17 (2007-11-01)
 
-On Wed, Jul 03, 2024 at 07:42:38AM +0200, Christoph Hellwig wrote:
-> I just tried to boot this on my usual qemu test setup with emulated
-> nvme devices, and it dead-loops with messages like this fairly late
-> in the boot cycle:
+On Wed, Jul 03, 2024 at 01:52:53PM +0300, Leon Romanovsky wrote:
+> On Wed, Jul 03, 2024 at 07:42:38AM +0200, Christoph Hellwig wrote:
+> > I just tried to boot this on my usual qemu test setup with emulated
+> > nvme devices, and it dead-loops with messages like this fairly late
+> > in the boot cycle:
+> > 
+> > [   43.826627] iommu: unaligned: iova 0xfff7e000 pa 0x000000010be33650 size 0x1000 min_pagesz 0x1000
+> > [   43.826982] dma_mapping_error -12
+> > 
+> > passing intel_iommu=off instead of intel_iommu=on (expectedly) makes
+> > it go away.
 > 
-> [   43.826627] iommu: unaligned: iova 0xfff7e000 pa 0x000000010be33650 size 0x1000 min_pagesz 0x1000
-> [   43.826982] dma_mapping_error -12
-> 
-> passing intel_iommu=off instead of intel_iommu=on (expectedly) makes
-> it go away.
+> Can you please share your kernel command line and qemu?
+> On my and Chaitanya setups it works fine.
 
-Can you please share your kernel command line and qemu?
-On my and Chaitanya setups it works fine.
+qemu-system-x86_64 \
+        -nographic \
+	-enable-kvm \
+	-m 6g \
+	-smp 4 \
+	-cpu host \
+	-M q35,kernel-irqchip=split \
+	-kernel arch/x86/boot/bzImage \
+	-append "root=/dev/vda console=ttyS0,115200n8 intel_iommu=on" \
+        -device intel-iommu,intremap=on \
+	-device ioh3420,multifunction=on,bus=pcie.0,id=port9-0,addr=9.0,chassis=0 \	
+        -blockdev driver=file,cache.direct=on,node-name=root,filename=/home/hch/images/bookworm.img \
+	-blockdev driver=host_device,cache.direct=on,node-name=test,filename=/dev/nvme0n1p4 \
+	-device virtio-blk,drive=root \
+	-device nvme,drive=test,serial=1234
 
-Thanks
 
