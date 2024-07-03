@@ -1,168 +1,158 @@
-Return-Path: <linux-rdma+bounces-3629-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-3630-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 599D0926459
-	for <lists+linux-rdma@lfdr.de>; Wed,  3 Jul 2024 17:09:09 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id ABFEA926548
+	for <lists+linux-rdma@lfdr.de>; Wed,  3 Jul 2024 17:51:30 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7C61D1C22D48
-	for <lists+linux-rdma@lfdr.de>; Wed,  3 Jul 2024 15:09:08 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 49904B22820
+	for <lists+linux-rdma@lfdr.de>; Wed,  3 Jul 2024 15:51:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B4B3417C222;
-	Wed,  3 Jul 2024 15:09:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 054EE18131E;
+	Wed,  3 Jul 2024 15:51:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="bEdJhdGI"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Kc+qeyNj"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0DD5F177980
-	for <linux-rdma@vger.kernel.org>; Wed,  3 Jul 2024 15:09:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 969D11DA319;
+	Wed,  3 Jul 2024 15:51:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1720019345; cv=none; b=tkRze+PYUHnR+kwgrtNAG6+3dKpO7Gu78voofAsjUQKrznx9/v/XEvHoWjpwa9K2lKL8I/Ji7oLHYG80oHopx8uL59F6/Q2MEvzUOayvsn4xkLJ7P8xerxD//hvS1Wur5PhD9TzdQUXRmsHmWttDI2zi4L7PUPQD5nJrvbb1fqM=
+	t=1720021880; cv=none; b=gPZ0ZMwK9fy6sULBw1EJZJkMqBCP5SXBcZzxdV2OnbMUdo9Iw/48GTmesXZ0QsufKzuuvfjDktYKYwd2TR+So8d/bfremT3l0BNHJWhJjCz4gmKugCwHj1wTzxLmhsbGTPL1im8eNCq43AAWlLOi34c9VKTp5xmfI90gDugjrkA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1720019345; c=relaxed/simple;
-	bh=jr1zoQlesMQk4r7o3HlIip0zDDWr+3fEo4jdfJsQNtU=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=jdg3UlTekAy88WcjH/My2ztOt/1Qnfca+61qz0psrmvf8cziWNQuJNvgt3EL1XJetgB8lrdaX037BrICfFROaCrnB9BBlFMJe+lmNBIaEXWW2cnuQ4PoCJ8INH6ND+U0FIGGmh/LArhxfWa6+myO/GKPkYWTz1lwAoduuXZoeAU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=bEdJhdGI; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1720019343;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=hJxP5plkEqtGT2+Fyxc7Jfw1c1Ky2bpGqcVIJ84Skao=;
-	b=bEdJhdGIBtvLFgSi0C3HiAg3lD8r6PxNFzrQgUcFD7jv+qqy8tT8nQmYM0EiF6y3AGEZZz
-	FT3yYOGCQcQ9//imaVBzS/0b7guLnvfnRUVNP136zRNc55dMXnTMiOBp9d+r8TuBUcdbbO
-	YOqexfY7vXvcOazTyBdAa1qxsp2d5ig=
-Received: from mail-ot1-f70.google.com (mail-ot1-f70.google.com
- [209.85.210.70]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-536-qeUdlljVO_2l19LOObUx_A-1; Wed, 03 Jul 2024 11:09:01 -0400
-X-MC-Unique: qeUdlljVO_2l19LOObUx_A-1
-Received: by mail-ot1-f70.google.com with SMTP id 46e09a7af769-700cc73affbso4889579a34.2
-        for <linux-rdma@vger.kernel.org>; Wed, 03 Jul 2024 08:09:01 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1720019341; x=1720624141;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=hJxP5plkEqtGT2+Fyxc7Jfw1c1Ky2bpGqcVIJ84Skao=;
-        b=ZX9SFM4dM+8Q2H2wdOMYErpHiZtF2Zxz7eA69/mx5mIijtj+vdGH9Dslya2ZvNVk+1
-         6eeKw6YBiTaSLXLHM84IRURpE8GT6zcAqdtiiNRe8iVNqPs3Fg+8A356+P6WxUlLgZt/
-         KTlidyvgInOhHOZUyAgeZMPcbzHA6yg+ToWMo4/WPx5RxWr8ymAUqra9GziA2PfEMLvy
-         un2XKlz9xheQN5JdxGYPeUW1rGKqWxh8TSQqDSxOEmYBVOh5X9MN3XjJkXrOjfu7JHwZ
-         ThQFUV1xfFYDw7UvCvic4DvYiyVfCl+UqRFSa77hSna11eOlear21Au160DHydpogKzF
-         Qsbg==
-X-Forwarded-Encrypted: i=1; AJvYcCU3exa3Cr570z8euYaRRo9N3NjTulLaPZs3+4HzLrUNDV7NYRor6WJlz/kgthB7QtwKOLN0ISMS3UxOa4w0kmRghVlDftUaoR3R9w==
-X-Gm-Message-State: AOJu0Yw55dH9ka/1J/EPDVcy4k7YuHXLHYAVH2FLtmxzzmeVozW4nUFw
-	YdLZoWEzYETvex1sYj+2GfiF8upAL8kgKY0E6IFzlcvY1WnccQ4z43L/8tO1Pkcrf7rSRFtYY9O
-	2K9hwJho86IWK6gZKoSS2GXsNCDSfMHo8VoV8XFg4zXG8plLsi89RXFEUaGEfALom8DJ7YJ1Un1
-	0sMhKhHSz0+jJ7yYF5yshbNWN1OhOcZGmYEw==
-X-Received: by 2002:a9d:68d8:0:b0:702:2550:4e2c with SMTP id 46e09a7af769-702255051e8mr4714171a34.14.1720019340945;
-        Wed, 03 Jul 2024 08:09:00 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IHZVFTIESQ8I8751zJPQrUjeFOeuFR0etgZWdHlMXhxuGEMPW7TYqK1PmAoORoUI/N+D8s9cfchZbSZ1h971QY=
-X-Received: by 2002:a9d:68d8:0:b0:702:2550:4e2c with SMTP id
- 46e09a7af769-702255051e8mr4714149a34.14.1720019340676; Wed, 03 Jul 2024
- 08:09:00 -0700 (PDT)
+	s=arc-20240116; t=1720021880; c=relaxed/simple;
+	bh=M2TBqenJePHMkynb5A1SIOpLVmH3H7D/iXSAlQYnb5Y=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=UUm/28Twm7s/sqY77yJk1LqAvO5F4uvBi6ZK8M7z3P4tOiw9qq2oTwamY6kL0FOLj0l4CePb4rJhNkfLSDKrFYYEZf4pIjRmVbrcs+gSMQ1IQIQJRZ7y5gfoWbPbcj7K+n/D3lCzQv1dvGpUEoDlakc7MiIQ/L2ZPtrkXNQH7U4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Kc+qeyNj; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 58E69C2BD10;
+	Wed,  3 Jul 2024 15:51:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1720021880;
+	bh=M2TBqenJePHMkynb5A1SIOpLVmH3H7D/iXSAlQYnb5Y=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=Kc+qeyNjcvMfXoLoLSYrV/OjBmRYjN560U9rM5g1KNtJfyhDmn8WFYPVUX8lcMSL6
+	 khJVCU+KU0IiJB0lH+20qj4DzqeRN3kur43qZjoGlHey1qRNicXUsAjw8d2newAM5x
+	 C+2La9qYNOaB19TaKRZeUR8kFkS7h1waDmf4ltPCmAiGBKFugxc54BFHXWm/8SeN1a
+	 GFdr9hsxxrrrevbZ0JCLF/Lyi27Mu1ricAFJVROJUceiw5jv8XbgqQBBd0Xa8n4q+N
+	 RK6NYvdVvLuJ0x0RwfmANnmb6Fu17VSB8t/0ZiSc4qAzbWALiN0J6a9hx7YlBm/nHW
+	 7fUJVXY2mTrPQ==
+Date: Wed, 3 Jul 2024 18:51:14 +0300
+From: Leon Romanovsky <leon@kernel.org>
+To: Christoph Hellwig <hch@lst.de>
+Cc: Jens Axboe <axboe@kernel.dk>, Jason Gunthorpe <jgg@ziepe.ca>,
+	Robin Murphy <robin.murphy@arm.com>, Joerg Roedel <joro@8bytes.org>,
+	Will Deacon <will@kernel.org>, Keith Busch <kbusch@kernel.org>,
+	"Zeng, Oak" <oak.zeng@intel.com>,
+	Chaitanya Kulkarni <kch@nvidia.com>,
+	Sagi Grimberg <sagi@grimberg.me>,
+	Bjorn Helgaas <bhelgaas@google.com>,
+	Logan Gunthorpe <logang@deltatee.com>,
+	Yishai Hadas <yishaih@nvidia.com>,
+	Shameer Kolothum <shameerali.kolothum.thodi@huawei.com>,
+	Kevin Tian <kevin.tian@intel.com>,
+	Alex Williamson <alex.williamson@redhat.com>,
+	Marek Szyprowski <m.szyprowski@samsung.com>,
+	=?iso-8859-1?B?Suly9G1l?= Glisse <jglisse@redhat.com>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-rdma@vger.kernel.org, iommu@lists.linux.dev,
+	linux-nvme@lists.infradead.org, linux-pci@vger.kernel.org,
+	kvm@vger.kernel.org, linux-mm@kvack.org
+Subject: Re: [RFC PATCH v1 00/18] Provide a new two step DMA API mapping API
+Message-ID: <20240703155114.GB95824@unreal>
+References: <cover.1719909395.git.leon@kernel.org>
+ <20240703054238.GA25366@lst.de>
+ <20240703105253.GA95824@unreal>
+ <20240703143530.GA30857@lst.de>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240626-stage-vdpa-vq-precreate-v2-0-560c491078df@nvidia.com> <20240626-stage-vdpa-vq-precreate-v2-9-560c491078df@nvidia.com>
-In-Reply-To: <20240626-stage-vdpa-vq-precreate-v2-9-560c491078df@nvidia.com>
-From: Eugenio Perez Martin <eperezma@redhat.com>
-Date: Wed, 3 Jul 2024 17:08:24 +0200
-Message-ID: <CAJaqyWf-MRS9ahonzAvuHVQ4dfgm6FQPmqk_vKMiRag7XDB8Sw@mail.gmail.com>
-Subject: Re: [PATCH vhost v2 09/24] vdpa/mlx5: Rename init_mvqs
-To: Dragos Tatulea <dtatulea@nvidia.com>
-Cc: "Michael S. Tsirkin" <mst@redhat.com>, Jason Wang <jasowang@redhat.com>, 
-	Xuan Zhuo <xuanzhuo@linux.alibaba.com>, Saeed Mahameed <saeedm@nvidia.com>, 
-	Leon Romanovsky <leon@kernel.org>, Tariq Toukan <tariqt@nvidia.com>, Si-Wei Liu <si-wei.liu@oracle.com>, 
-	virtualization@lists.linux.dev, linux-kernel@vger.kernel.org, 
-	linux-rdma@vger.kernel.org, netdev@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240703143530.GA30857@lst.de>
 
-On Wed, Jun 26, 2024 at 12:27=E2=80=AFPM Dragos Tatulea <dtatulea@nvidia.co=
-m> wrote:
->
-> Function is used to set default values, so name it accordingly.
->
-> Signed-off-by: Dragos Tatulea <dtatulea@nvidia.com>
+On Wed, Jul 03, 2024 at 04:35:30PM +0200, Christoph Hellwig wrote:
+> On Wed, Jul 03, 2024 at 01:52:53PM +0300, Leon Romanovsky wrote:
+> > On Wed, Jul 03, 2024 at 07:42:38AM +0200, Christoph Hellwig wrote:
+> > > I just tried to boot this on my usual qemu test setup with emulated
+> > > nvme devices, and it dead-loops with messages like this fairly late
+> > > in the boot cycle:
+> > > 
+> > > [   43.826627] iommu: unaligned: iova 0xfff7e000 pa 0x000000010be33650 size 0x1000 min_pagesz 0x1000
+> > > [   43.826982] dma_mapping_error -12
+> > > 
+> > > passing intel_iommu=off instead of intel_iommu=on (expectedly) makes
+> > > it go away.
+> > 
+> > Can you please share your kernel command line and qemu?
+> > On my and Chaitanya setups it works fine.
+> 
+> qemu-system-x86_64 \
+>         -nographic \
+> 	-enable-kvm \
+> 	-m 6g \
+> 	-smp 4 \
+> 	-cpu host \
+> 	-M q35,kernel-irqchip=split \
+> 	-kernel arch/x86/boot/bzImage \
+> 	-append "root=/dev/vda console=ttyS0,115200n8 intel_iommu=on" \
+>         -device intel-iommu,intremap=on \
+> 	-device ioh3420,multifunction=on,bus=pcie.0,id=port9-0,addr=9.0,chassis=0 \	
+>         -blockdev driver=file,cache.direct=on,node-name=root,filename=/home/hch/images/bookworm.img \
+> 	-blockdev driver=host_device,cache.direct=on,node-name=test,filename=/dev/nvme0n1p4 \
+> 	-device virtio-blk,drive=root \
+> 	-device nvme,drive=test,serial=1234
 
-Reviewed-by: Eugenio P=C3=A9rez <eperezma@redhat.com>
+Thanks, Chaitanya will take a look.
 
-> ---
->  drivers/vdpa/mlx5/net/mlx5_vnet.c | 10 +++++-----
->  1 file changed, 5 insertions(+), 5 deletions(-)
->
-> diff --git a/drivers/vdpa/mlx5/net/mlx5_vnet.c b/drivers/vdpa/mlx5/net/ml=
-x5_vnet.c
-> index de013b5a2815..739c2886fc33 100644
-> --- a/drivers/vdpa/mlx5/net/mlx5_vnet.c
-> +++ b/drivers/vdpa/mlx5/net/mlx5_vnet.c
-> @@ -155,7 +155,7 @@ static bool is_index_valid(struct mlx5_vdpa_dev *mvde=
-v, u16 idx)
->  }
->
->  static void free_fixed_resources(struct mlx5_vdpa_net *ndev);
-> -static void init_mvqs(struct mlx5_vdpa_net *ndev);
-> +static void mvqs_set_defaults(struct mlx5_vdpa_net *ndev);
->  static int setup_vq_resources(struct mlx5_vdpa_net *ndev);
->  static void teardown_vq_resources(struct mlx5_vdpa_net *ndev);
->
-> @@ -2810,7 +2810,7 @@ static void restore_channels_info(struct mlx5_vdpa_=
-net *ndev)
->         int i;
->
->         mlx5_clear_vqs(ndev);
-> -       init_mvqs(ndev);
-> +       mvqs_set_defaults(ndev);
->         for (i =3D 0; i < ndev->mvdev.max_vqs; i++) {
->                 mvq =3D &ndev->vqs[i];
->                 ri =3D &mvq->ri;
-> @@ -3023,7 +3023,7 @@ static int mlx5_vdpa_compat_reset(struct vdpa_devic=
-e *vdev, u32 flags)
->         down_write(&ndev->reslock);
->         unregister_link_notifier(ndev);
->         teardown_vq_resources(ndev);
-> -       init_mvqs(ndev);
-> +       mvqs_set_defaults(ndev);
->
->         if (flags & VDPA_RESET_F_CLEAN_MAP)
->                 mlx5_vdpa_destroy_mr_resources(&ndev->mvdev);
-> @@ -3485,7 +3485,7 @@ static void free_fixed_resources(struct mlx5_vdpa_n=
-et *ndev)
->         res->valid =3D false;
->  }
->
-> -static void init_mvqs(struct mlx5_vdpa_net *ndev)
-> +static void mvqs_set_defaults(struct mlx5_vdpa_net *ndev)
->  {
->         struct mlx5_vdpa_virtqueue *mvq;
->         int i;
-> @@ -3635,7 +3635,7 @@ static int mlx5_vdpa_dev_add(struct vdpa_mgmt_dev *=
-v_mdev, const char *name,
->         }
->         ndev->cur_num_vqs =3D MLX5V_DEFAULT_VQ_COUNT;
->
-> -       init_mvqs(ndev);
-> +       mvqs_set_defaults(ndev);
->         allocate_irqs(ndev);
->         init_rwsem(&ndev->reslock);
->         config =3D &ndev->config;
->
-> --
-> 2.45.1
->
+If we put aside this issue, do you think that the proposed API is the right one?
 
+BTW, I have more fancy command line, it is probably the root cause of working/not-working:
+/opt/simx/bin/qemu-system-x86_64
+        -append root=/dev/root rw ignore_loglevel rootfstype=9p
+        rootflags="cache=loose,trans=virtio" earlyprintk=serial,ttyS0,115200
+                console=hvc0 noibrs noibpb nopti nospectre_v2 nospectre_v1
+                l1tf=off nospec_store_bypass_disable no_stf_barrier mds=off
+                mitigations=off panic_on_warn=1
+                intel_iommu=on iommu=nopt iommu.forcedac=true
+                vfio_iommu_type1.allow_unsafe_interrupts=1
+                systemd.hostname=mtl-leonro-l-vm
+        -chardev stdio,id=stdio,mux=on,signal=off   
+        -cpu host                                  
+        -device virtio-rng-pci                    
+        -device virtio-balloon-pci               
+        -device isa-serial,chardev=stdio        
+        -device virtio-serial-pci              
+        -device virtconsole,chardev=stdio     
+        -device virtio-9p-pci,fsdev=host_fs,mount_tag=/dev/root  
+        -device virtio-9p-pci,fsdev=host_bind_fs0,mount_tag=bind0
+        -device virtio-9p-pci,fsdev=host_bind_fs1,mount_tag=bind1
+        -device virtio-9p-pci,fsdev=host_bind_fs2,mount_tag=bind2
+        -device intel-iommu,intremap=on 
+        -device connectx7              
+        -device nvme,drive=drv0,serial=foo 
+        -drive file=/home/leonro/.cache/mellanox/mkt/nvme-1g.raw,if=none,id=drv0,format=raw 
+        -enable-kvm                                                                        
+        -fsdev local,id=host_bind_fs1,security_model=none,path=/logs          
+        -fsdev local,id=host_fs,security_model=none,path=/mnt/self           
+        -fsdev local,id=host_bind_fs0,security_model=none,path=/plugins     
+        -fsdev local,id=host_bind_fs2,security_model=none,path=/home/leonro
+        -fw_cfg etc/sercon-port,string=2  
+        -kernel /home/leonro/src/kernel/arch/x86/boot/bzImage 
+        -m 5G -machine q35,kernel-irqchip=split              
+        -mon chardev=stdio                                  
+        -net nic,model=virtio,macaddr=52:54:01:d8:e5:f9    
+        -net user,hostfwd=tcp:127.0.0.1:46645-:22  
+        -no-reboot -nodefaults -nographic -smp 16 -vga none 
+
+> 
+> 
 
