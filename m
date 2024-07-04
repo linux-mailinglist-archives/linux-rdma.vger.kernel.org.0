@@ -1,61 +1,62 @@
-Return-Path: <linux-rdma+bounces-3648-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-3649-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4A8DD927B39
-	for <lists+linux-rdma@lfdr.de>; Thu,  4 Jul 2024 18:38:00 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 823B5927B3B
+	for <lists+linux-rdma@lfdr.de>; Thu,  4 Jul 2024 18:38:08 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C20D11F23790
-	for <lists+linux-rdma@lfdr.de>; Thu,  4 Jul 2024 16:37:59 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0CD821F23FA6
+	for <lists+linux-rdma@lfdr.de>; Thu,  4 Jul 2024 16:38:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3FF871B29C7;
-	Thu,  4 Jul 2024 16:37:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E50F61B3744;
+	Thu,  4 Jul 2024 16:37:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=eideticcom.onmicrosoft.com header.i=@eideticcom.onmicrosoft.com header.b="U56ZMDkM"
+	dkim=pass (1024-bit key) header.d=eideticcom.onmicrosoft.com header.i=@eideticcom.onmicrosoft.com header.b="IMtTti/Y"
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from NAM11-DM6-obe.outbound.protection.outlook.com (mail-dm6nam11on2103.outbound.protection.outlook.com [40.107.223.103])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2E4591AE859;
-	Thu,  4 Jul 2024 16:37:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 336A51B29C2;
+	Thu,  4 Jul 2024 16:37:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.223.103
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1720111074; cv=fail; b=MGjIhRcjpgOVIAIhPn/Dm4fD85mo1Dv7/kHTj8Y37T5V86VsxGpj5JvPaCLffYI8jZRdj2CJqY/SSU6Gynfq/JxGG7Vo6fUA7t0aRBx/vvwjFnhXvMKJXlU+X7PYjgAGQn89W9vLHHv+eeFQJh9h0B0PU2MLezTsJ5ZLcDgEIi4=
+	t=1720111075; cv=fail; b=HsvTVM+D+Hw7lHBXxBGH7+97G8VXqS3cNBp8CKKzTiPOOfUYqsBN9zdIhNPuf56q8kccEntHjSeqzOdLbRaUWMu/bO6lrxewCVc+VguDaI7Vp+CQEul4M1UQ30nwghfH1HIr3XBHSKcYwDn5dslWCVDKGu7d31f+1sqNeLv4Qoo=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1720111074; c=relaxed/simple;
-	bh=JgyHo8hNnjs1c7rjF1ajWqoz0aQ78TXvjjLorDie3pQ=;
-	h=From:To:Cc:Subject:Date:Message-Id:Content-Type:MIME-Version; b=fJThLDCH2q4oSvY1BDhUAe4ceXaK3cvX9BETtzG3MTvQKZ1uNaDO5D8fUFs9fShfyE9KuN34QeZ5BN3IltFR9K4oG8UjzdEJI5ASYklZk5QpbLN3H4B0Rgo1XDReLEdftPXSL5inZ9GkTkQP+YnlTSjmEzpNX27ZHDMUC+NTM2s=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=eideticom.com; spf=pass smtp.mailfrom=eideticom.com; dkim=pass (1024-bit key) header.d=eideticcom.onmicrosoft.com header.i=@eideticcom.onmicrosoft.com header.b=U56ZMDkM; arc=fail smtp.client-ip=40.107.223.103
+	s=arc-20240116; t=1720111075; c=relaxed/simple;
+	bh=GE06KucFSBUQ6DohU7LR5l3v/5cc7brxM/fx2G01KVM=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=nQUTozeG27Wr9OuhbREdzNd1WLi975OxB4k00bf/Nm2lZwYkzGV95MG1GcZobM6HkAO8ATu0Sd+MVARpU5Z8YlKKOf+NfNhPomJxWD7xFHBXi9eVVZ6EeSlxBUZyCTjF4QqAryGKMEo42HWZWZR1pVkOuwzyxUm+1r/Mc8NPVj4=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=eideticom.com; spf=pass smtp.mailfrom=eideticom.com; dkim=pass (1024-bit key) header.d=eideticcom.onmicrosoft.com header.i=@eideticcom.onmicrosoft.com header.b=IMtTti/Y; arc=fail smtp.client-ip=40.107.223.103
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=eideticom.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=eideticom.com
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=LfRZqjU+2/Jt26YHsGelClJdDZA/NRuxzL1BGxZMhnBb+aD8FuSyXfjvuWmt01ZZecxRSdmMZUMeRBJWWrUhiy/1mjzZ7Qoh3BzGgYTsfK0QptLZPRLliVUwaNrunpaW0ft+4H33JZnx5eB8jvCkWDN9bdOlPo0ldnurD3SVcmsRms03VPuOuPBL/xKFmTz36IrxFdosLS3Ud/qyZjk7ptEHabIx8FltOVOgjhrbL3yUIVrxEzbzcsZE7WNb5FnIME0wIiOwXIIoXVs1WpkX0sdfN/sdtUnlnUZrkNt5YnlaHvFOtDSOIeFfMMjI/Yw2Xz3ll8UIxF3k1mxVw9OQqw==
+ b=aeH3sL8HcCzwy3oG7rxLA323cVqweH1WXvU26nrl0QhF8VPEZI/kEDqbgwYEsoPKXDX9m/VECYUSXXHRq3E7tByyYvUuOrdh/BvfaQikq5nmzKiLxxYfdJc1utOjMG3fxkGvwWvnq4PzslIi2dq5lg8aOQhss7yBAJdkv0fI9jWmDOVgWNI8Q+5pUkDBUSosQg26hNl7yOt7fZtEnXVuH+dju2r01Al1ioNwuBaR3Hhz0e/yNdBGA2l2jcN74iIJxAWynZzreIQK+mOeZrwnOfCuJDe15EbuaqgEyfqw+nPLSk+VC0KT6jzPjL//HH8ASkoVeVZ9rOrihtUGcbOj4g==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=6750ZTovsWA5UDdHdp05oHmxOloK2e78i5SNGDFn1GU=;
- b=SUgJUXm3Cqf4QzzKAcc3EOo2x0QIxAjkr+PMzYAUPH6o+hD+K09EiY/B+Ep35auRvxr4NXLbIrw7AHwxWh+U55xySdLUbhMzkgoUy1zQCJP5ggduKSYDSk4B+vQXsUtbdNWAJMAuKHgUdQl3dY5lp9QuLymnwbnUvX19ttEcTselQMf9eb8XMZlL5MhYkTKSIjTzI8YtTSeGkHKfbEJ/xv0yal47rOj5OxZRuKGPQFnnO4pmKFbEPs5gBdPoA4JtipwtP8TAC53hL7takhaio/DlVuhu1PRJkGtGCyfFzyKEUOn+NHCATKOak+dDi/sUzJOVsHE/F3Fa0vHTjZutHA==
+ bh=E9xpThQSwDqFuSjjUacCMlYFqVz7Hv5d66nL0tsLOEM=;
+ b=UMSfxblBFOQNczrUnTON/iLCbVawFCTYInaqNR311rTD07nICPqFBEPUnwgI9q11vt1Urqq//wf6L1QOSW4qQ5z7icpVi8uEfgexCal1y9OJxpXgL6uzUpIzyv9U6H36I2SwocIeWqRZP+ykTD+Y+ZxZPLL6zgdjNbOs4+7sQWRg78vDyvSgQbo2EEFTH17lvSBm4jMXGLYvrtUc164xjP7n73ruL4jHTRtWyMwzlU+hznaYt0jkHSgxdhT8+gJf5dR88pTyPlSdPwpUuG8SJCP4jY8iKudrLFkAX+cylN8JzNGDGR+NC8B5J2nio5pRXeT8aSN8mXzYNUxa0tZPyQ==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=eideticom.com; dmarc=pass action=none
  header.from=eideticom.com; dkim=pass header.d=eideticom.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=eideticcom.onmicrosoft.com; s=selector2-eideticcom-onmicrosoft-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=6750ZTovsWA5UDdHdp05oHmxOloK2e78i5SNGDFn1GU=;
- b=U56ZMDkMgZ01Va/t88kQY1QalnAEK6+ipITrbKrM+cOdTi61UlUNpIdj+6qBw3yROb+ds7Bz6yfKzpXd/SCNggTjC6uvJxIYXoeMf5Pu4KYun+rlrcIjrA8QpkDJGGC2cj91foH6WsUfqSkkwvkNiZe+mxrYq1bVPV6oPec0/sM=
+ bh=E9xpThQSwDqFuSjjUacCMlYFqVz7Hv5d66nL0tsLOEM=;
+ b=IMtTti/Y+8cKQwOWumy3CbRSLFo1b1VI3gUFVdazkZDkm3+8ALaFrLDTepkRvrPA21XYiOYmq8ejcdpmophHyRuSGW3HNJVcoM9maaN19FMbykLErto+dqauWwsw+sVS+XTztD3Waf5f74UMFh3AIJkT9ts+BopNC66riiX43ZM=
 Authentication-Results: dkim=none (message not signed)
  header.d=none;dmarc=none action=none header.from=eideticom.com;
 Received: from MW3PR19MB4250.namprd19.prod.outlook.com (2603:10b6:303:46::16)
  by CH0PR19MB7850.namprd19.prod.outlook.com (2603:10b6:610:189::22) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7719.29; Thu, 4 Jul
- 2024 16:37:49 +0000
+ 2024 16:37:50 +0000
 Received: from MW3PR19MB4250.namprd19.prod.outlook.com
  ([fe80::3280:d8d:de43:6376]) by MW3PR19MB4250.namprd19.prod.outlook.com
  ([fe80::3280:d8d:de43:6376%5]) with mapi id 15.20.7741.029; Thu, 4 Jul 2024
- 16:37:49 +0000
+ 16:37:50 +0000
 From: Martin Oliveira <martin.oliveira@eideticom.com>
 To: linux-kernel@vger.kernel.org,
 	linux-mm@kvack.org,
@@ -74,10 +75,12 @@ Cc: Andrew Morton <akpm@linux-foundation.org>,
 	John Hubbard <jhubbard@nvidia.com>,
 	Dan Williams <dan.j.williams@intel.com>,
 	David Sloan <david.sloan@eideticom.com>
-Subject: [PATCH v3 0/3] Enable P2PDMA in Userspace RDMA
-Date: Thu,  4 Jul 2024 10:37:21 -0600
-Message-Id: <20240704163724.2462161-1-martin.oliveira@eideticom.com>
+Subject: [PATCH v3 1/3] kernfs: remove page_mkwrite() from vm_operations_struct
+Date: Thu,  4 Jul 2024 10:37:22 -0600
+Message-Id: <20240704163724.2462161-2-martin.oliveira@eideticom.com>
 X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20240704163724.2462161-1-martin.oliveira@eideticom.com>
+References: <20240704163724.2462161-1-martin.oliveira@eideticom.com>
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
 X-ClientProxiedBy: MW4PR03CA0078.namprd03.prod.outlook.com
@@ -91,132 +94,150 @@ List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
 X-MS-TrafficTypeDiagnostic: MW3PR19MB4250:EE_|CH0PR19MB7850:EE_
-X-MS-Office365-Filtering-Correlation-Id: 8deaa0c0-f4d6-4f05-e362-08dc9c47a47b
+X-MS-Office365-Filtering-Correlation-Id: aa1941cb-f20c-4244-6de9-08dc9c47a4e8
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam:
 	BCL:0;ARA:13230040|52116014|366016|7416014|376014|1800799024|38350700014;
 X-Microsoft-Antispam-Message-Info:
-	=?us-ascii?Q?YjfT08WkfVuzz2Rax4nEz/fGn/f2EfI/HH9lNUa9buSt/6sNn5zfmNoPsK5G?=
- =?us-ascii?Q?2zEBccvOQH5J4rWgLbYuEw2hjZLffjhhinlMFyMPRM4S7N/GC1PnHzXpYPLt?=
- =?us-ascii?Q?bdbwupoJ5krRvxp0Skh50S4PyBmdp0uysrtfElsyZFJKvyCfd/GCvjoyka23?=
- =?us-ascii?Q?rn1r3Kzq/928PCJPg41P1hiLpGYrmKF23PbPYZ3w0VDVuZZPNFTSlr2qc7tb?=
- =?us-ascii?Q?RoTL1KHzKowpxdASGEjXILCObViAyquVEsAYXlyqPdnpG7FXEXOwH30M/OHh?=
- =?us-ascii?Q?EIOEVK6vkMtjPfqZ++13c+CnLz5/aRYKhUV2BuIH1X0CCdxBENctwjDBsdBD?=
- =?us-ascii?Q?P2YMkFsReJfJBX41TecHz2374Ltu+UG+ZvegeFE6IedasA5CE/abzj95kRuF?=
- =?us-ascii?Q?pW6hb4v6FNlnz/32UZXdC+gdClrH0HUODrCIb/qtxx9i/JYSYiEQYOAJ8sH1?=
- =?us-ascii?Q?Rh50LeWPEI7f3f6EBhwShJspkSIUgTnR52pmG5ftb7oPdyEccBX6aKlFUD6j?=
- =?us-ascii?Q?REVDAikru6iq7Cp2ikEIgJzOQI8Fa0t3E592dqD/8LJebS41tLhGyWeji+Xq?=
- =?us-ascii?Q?o23oMryQsydnRzUpIJ4TG8zvo0+0rwftff3I6j02e9nH3esvsO2kG1VZHG4P?=
- =?us-ascii?Q?txoufssliISrC06QWFMIuDvY/m5LteVba1wF+WuluicC9kV+0lIbMFbQg0AU?=
- =?us-ascii?Q?QznwZ0iKaa3zi+A4zl20ZnE9EHiBGECdxEtPQcWVqPhJyG2vQBSRSXN+jq8h?=
- =?us-ascii?Q?e1Libl70L9MnNGKRSnpN1kgyNW1LF6F3rhArZr/PPtxHl5OdUNk6I1kZFVvK?=
- =?us-ascii?Q?KK/1L+9NQdz7WoK8qAWKpV6E0QMEa0ltsCoGgeDCTY1IKqUQw7LUv+5acOVz?=
- =?us-ascii?Q?RQHa1jENdnk220XGe5YLWvQRGk3J0w54dv/K/cltAvWa6FpUwPjsUdwXkhY7?=
- =?us-ascii?Q?Hq8lNX7VH8irUFa4RRWoc1/mGaRxRBgWzupRi46khIPIhRPIMiL4upy7XFs8?=
- =?us-ascii?Q?UOjVsk3VDb/LBJzS/7aBWK4ru/TwupWHYjevssgxFq0yz/Cb0dTrLGsg4xpo?=
- =?us-ascii?Q?qGPs3oz3L1cQ+1To3n9stIbMOK5LGqcjwmYNe5jjcWkCgE5/sO+7vgstmQzD?=
- =?us-ascii?Q?RiolEswBC0QGECeG3wS31XWPR7aZcOtrXHvtQmR4c1Gr+b3/RKMxYncZp1Tg?=
- =?us-ascii?Q?AV8Jxj3DUvyr/3ktk8Bu789MMzrmEpmusk1NfREULP54bx3hFUs5q5WoHrIU?=
- =?us-ascii?Q?3+1WIkXXCAM3hXgyspDfWQKhL/cN+r7weljgXo0z5oOCR2/6BTfzKm5Ge2BR?=
- =?us-ascii?Q?sbb7G5ayHVImZovZethPcRnK3tJGwXZxUqSMxf3Y3l3j6AbpWMLupjB/zVag?=
- =?us-ascii?Q?sbBbgjI=3D?=
+	=?us-ascii?Q?9rAnHPmSAkso4hCx28EN/Hx1gNvOBuM0trrl5Y+AK7ldriGdsa2ZZ0gh5efh?=
+ =?us-ascii?Q?YhYRX663DSrSinDajt0dtykDd+l6wgbx0gLduq0I01Ye3kRYmCnVtMyA7qFa?=
+ =?us-ascii?Q?zUVcmSbUk3bauF4/KwT7VROpANM3/HXLjoAYKep/4Q09TkIG6oawpCcKEtAG?=
+ =?us-ascii?Q?U5GJtRLgBa5LCLdfDCq51tsLDmL0CfNRsWLAGlDRHMQPLT5u3uH3PEt8QJTF?=
+ =?us-ascii?Q?6HUHQymqssd47dkMAv+iQxzXrUKtpfT2fAo4XJXhT59BCTXt3YUpW6zuLRQ0?=
+ =?us-ascii?Q?YpxKnQdjKwcURXyCA0wL9OlnjlukfuOimmd4kUNraLYNAJwqkm8vIwm5MGvk?=
+ =?us-ascii?Q?n9diX29QPdI5aJ3/W04oliHTkyLJow/cAtWnBFVl68158ZJS4o/Vokr3MQkJ?=
+ =?us-ascii?Q?VEPnWE6Okkr3ntmAO4GEwBWhpjY+M4HAFip14vBq+397q/PPnheQ+vajcroo?=
+ =?us-ascii?Q?1pC0W6by5AJw5u8mOC6zRI9YIShDBmsZm5M/kPxl9xfJ6e/uGE3aIOCi8S3Q?=
+ =?us-ascii?Q?mxp+K2EDP1bwnlBY8znuut/UMOoF8f6FjbCHWQozLHcqs5REVrsZiVRs2zuU?=
+ =?us-ascii?Q?yYolWdDn4sBLT2y1OUyt6PmYDK5+wMyKikwhRz0rQEp1+5MXoq48DpuQCI+/?=
+ =?us-ascii?Q?nOZJNzhefxqT1lgCjMEDzQ+c1JSCziFZsIL9joLiO1IdQj+wSIzHi0mlU7Nl?=
+ =?us-ascii?Q?qMhSaGQj0MjuWQ9wKhOR4Xl9SXToD1a3pZwIRlr1YN5xKQjBERFT5uidZ7LF?=
+ =?us-ascii?Q?G3PU6gAIVaXdFX2HM//saJ1Mgy+vzgBV5WBKacqsTg45O1gWw5qt/PznESQc?=
+ =?us-ascii?Q?m9s+rvVAylf9wLkRJBbfy1JJ4m7K/6oRilJovNdlMUfZV+sOcJaV8RPK2ll+?=
+ =?us-ascii?Q?fdyA8rTQE3a6HZpq+1a6ZLpueXYzsZQRPEZtbQNGLQHHI4pFpDOoJWyckmsk?=
+ =?us-ascii?Q?/KZzwuU/dMLooL+1WdsJ/HZSr6eUjYpalb7ZfAYyflDgNjK9xwyW0C2e45T2?=
+ =?us-ascii?Q?f8xopdvB6QfFKuZzBVScHIJeeAkpNpX6qAQqLcDVQ6cNA+365J3Xn9MRiicd?=
+ =?us-ascii?Q?5OLUGkcp+HK9HVt9svVt/OkxN2UJNC7jGuxgIPW4SixoXM4UxfNd4K/HA+Py?=
+ =?us-ascii?Q?eQrKLRmrGjl4SnOlQHteD+vcbcb9H3HmS2eUSDfyPhxCCc2xg/yhd7/RBeM1?=
+ =?us-ascii?Q?4LGQViKqPTKGpjzr3Iq7LQnHa/QENCVTYUcTLIxTO5rN7piQJuTbnyXfFAI/?=
+ =?us-ascii?Q?pTcE4SP/kgwtsCdwPIlZIixUoxzviOo53hEXDspxhgOAdDl8kKvoSYSTA0K+?=
+ =?us-ascii?Q?SO2TR/PbCmlg5jha6UHj3D5jHqz8ozaqRyLC9mPmLi5NJ13qyfOOAAj2QX/A?=
+ =?us-ascii?Q?4c8inQh/RD/KOGm0p99TAZvEQBBjD9KKD/iN1ZFgbW2TxtZu2Q=3D=3D?=
 X-Forefront-Antispam-Report:
 	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MW3PR19MB4250.namprd19.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(52116014)(366016)(7416014)(376014)(1800799024)(38350700014);DIR:OUT;SFP:1102;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
 X-MS-Exchange-AntiSpam-MessageData-0:
-	=?us-ascii?Q?lXx05AiP//YxkaxzZUGspRbNj7pUQoSRgaIGnk49b8N47nzTyD2w2DHM85+H?=
- =?us-ascii?Q?9faHLhQ2QJWWk3+NbGiapGYhnQ7v1Um5tXtah/hVGiis7jlRlOK4fIQ/EeyN?=
- =?us-ascii?Q?zE1ubeMYm2CIVRTgTzAe9q8TIfRR88JrIYA8BQYm9mQyr8oXoTldfWQqwGPH?=
- =?us-ascii?Q?PMJpoKhVqE3s7UXEu8m2KVl0c4kOX7GbtkOATE/weKuNG/mkhqPrhK6RtdHV?=
- =?us-ascii?Q?E0lR7o1cCcgFUgMSBraqASfCjzg3Eaco/148PK3QxksbjCouiyNcULMShbuT?=
- =?us-ascii?Q?4M1jn7ai2QQlnJivJMVE4eDh4uwho+yjzzkidyX4D3Z0U6X0ugqUInHIyYsd?=
- =?us-ascii?Q?ybU09hatuX8Z4PGJJm5Lb93PDp66SrsJMJTAFVAjt2ymZUJLvF71TVoJjT98?=
- =?us-ascii?Q?68gKvWmQIrySXe26xOl8zir74OwDRB27jGMegMO20aswJ5kxEz6/zBQ/Ln4n?=
- =?us-ascii?Q?//voEQxUDWhvrinZzUkxmh6OZWFe8cbe+YOlPwn6UWke9x6Cqs1qjXQUPnYL?=
- =?us-ascii?Q?hy7bqDleLoz1GINhhvYm872rYHePflQNtoSskchpA1ZxGUW7Rl60fnqB1G86?=
- =?us-ascii?Q?IeR6reJN654WfzI2yA8rhpi4RvTRT1Qhvu51DgBVE/i3swpbgo1zRPX+GT3x?=
- =?us-ascii?Q?ucX59F3Lv3fP8VYRXKvjyWG/jRmyAerMo/+CfPVuRbX9OSP3YTNvMa4/krTc?=
- =?us-ascii?Q?5PKjRF2hZeE+uCIy7Bwnrj/xyYMwJgz2ew3pC6FRgb8jtaSpteCsM83xYyYd?=
- =?us-ascii?Q?6nPBBfjIXkwFweniRuAalDuNNdayrnsQOwQIJcOmbStfeQwNg8uDI6d+jF2E?=
- =?us-ascii?Q?C0eGdeig5BQAA2G2zNmWBgFURYaZZtiILRfqIULLq+RyNUD6Tg8RsilibGc6?=
- =?us-ascii?Q?3eFHhGFYZB380NpkpLkajMgRYCsSCPlIQlwCs8GYs29F4YyiteVB8YfAV/Q8?=
- =?us-ascii?Q?/JB6OKox0O86D3vBT15yZf/qn1NRDpoMc1VcaEs2bAy2TdVNsWIBbxvsNGy8?=
- =?us-ascii?Q?UgIlpAw7G2iIBvdwFLWMumQSdBgZ1p6enwvLP/TDMopFBGYU9w94A9HV1rhn?=
- =?us-ascii?Q?aQvnTKjDLEP4pRa4cs0p+nE9uiMTHy529P+zx8cVfhzhvkTACUFhhb6tuqk/?=
- =?us-ascii?Q?Z0w29UT7PKCBllai7fKf+oG7Vt6EP84D0ckSfWgYc94X3OMUWD0Wj2AVft9l?=
- =?us-ascii?Q?BT/mMvm85nf6Oj2ltIfyZ+F7hB03nZZ7f9yGVjxiLOEvsFPKeU36NU194nst?=
- =?us-ascii?Q?xNTICekVycnMHeIZEsbXKxm/1TzMOXGBdIOCGjgRi4iBr1uE2pWPTbTi6NVr?=
- =?us-ascii?Q?zzmmiiPBjInLb12+sP9qnp3FgZ/uvypR7QN+WOJgjY+Uwtqrpshh5uPnc348?=
- =?us-ascii?Q?8pmkyz81ELyYNojF/olWs81Qi8KCRB8Y24iv5Dpp4sI4QgNnjFG0QA5E+zPq?=
- =?us-ascii?Q?loQcUEJz9c0wHNqtzpK9Yd+qaxmznG1CJnpmbJmpn2VV4NQt4m8g1M3L14/1?=
- =?us-ascii?Q?ri4gK75Qlp0WiYEAU//1rXkqADo/IYgcdkl1poC78FeeQv+nOWCP3T7RZVxK?=
- =?us-ascii?Q?UlGNjtSAYQeMTtkjMvYESz1nyFqPk2j+xnyE73YPGDTICAuieFwKK2jrWe+F?=
- =?us-ascii?Q?/w=3D=3D?=
+	=?us-ascii?Q?WbIwduU3K4nMudLaU7AXM37nBdEo1iSfo74SW9DvXzr6djZS6tXi5b8ddwxc?=
+ =?us-ascii?Q?hfhnvqZ1KZIcjzKbmhYQ9UwPf8aGeSWm/f7ap1BaXrc49NUjPl7DbbFwIO81?=
+ =?us-ascii?Q?NmQe+++XX74IpRyI8mBE+jLgjgM99oJ+7cFj6p/aeVUIifWfPxbsOQnFyP4/?=
+ =?us-ascii?Q?+jihjOiI4ziLVYv1eLk18Ee8grgGnET1zlzvrUcMTPnOp48TLNANFE3DlLpj?=
+ =?us-ascii?Q?pdPcA1zEgv8aNsHZILNIw758dLX33yd3NAcIzk4mgUvy77w9NJnKLpV/MLqb?=
+ =?us-ascii?Q?bCO1cCPhG/Urbte/yVOL7iQn17GiICBseukY/+zeygk8dOVEohSYVUAit3Lr?=
+ =?us-ascii?Q?aBeyfeLFhnnS3hyNeKwpMA6VhARkFznL/8icUXJ0qjTUExdoCLyPTWTyCTdI?=
+ =?us-ascii?Q?0o8EgvypeuIZ9JzN9BFKDtyFO1v17pbFEzYrQ7y0M0VyPC7mUOmALKE5FQaz?=
+ =?us-ascii?Q?fEpeD+tHOUT0lHGL2W7UcEp30r46wQaG+9W100be90MjA35uIUzj9sCqRZbH?=
+ =?us-ascii?Q?9RONsJ6TtCGHq031ZmTIiTrnYZnHCjXLcy/kbZcE6LFVyMXc7cePS70uxowQ?=
+ =?us-ascii?Q?apPwF66s23FTG9NqM5Pfy6xBWuMCxauFN0f9zzTFnzkoUHdJsWhGP9UwW992?=
+ =?us-ascii?Q?SarFh6ydXjnuD1t0PxDcjGIqyLewjfKETYKhCEOANm6eMaH4Kj7chOu11Pj1?=
+ =?us-ascii?Q?RBqoqExs4qQSkZm12fRMGD8Ypek6KtzHO5ye7rANSkT9I8hWDTGix19B1f1L?=
+ =?us-ascii?Q?92f0BxkIYfuzS7RxMN+o/LIY5wHaFtyNGYlhcbtI/0rBDQZz55GnVr0nvtcI?=
+ =?us-ascii?Q?XdNbrBl2W14dg/uUulZ9xo7zrKQiNBoqvZHdrMlZVetolNcflefwQOkapsYe?=
+ =?us-ascii?Q?XKAi0ojvekyQbic86YoYEGIv5Q8haGkm5OLVMbBwihtEcSnJth2x4XiWo2aM?=
+ =?us-ascii?Q?NQJT2CyAg19aK7Cjka86hApVCGVdftt+8+55EoszozTd9LE4hJ02sVXviyyX?=
+ =?us-ascii?Q?6rB1MuF8iqvlzbaCp5cTGVV3xOIIx4Mbka16ObXLUlK6ESmAJRdqD1h+0UGI?=
+ =?us-ascii?Q?1qvcMkzDQ8rT4oUD+z3riKycsG2srE//qhzi90NpOU3hhK+h5WtgYk1qElLL?=
+ =?us-ascii?Q?klO40qvo5jivy9D1wtlGHlUulCJMQoYPxcGbvvvJh5m9Fc+3jLdeaRltj/lE?=
+ =?us-ascii?Q?C/M4u2P+qetDLHqicgFTSj59nn1AkPRCBuLgIHIjeAKoIoxmQQe7hfvh6iD6?=
+ =?us-ascii?Q?FJLucBZ5+knOy/kQ/6mIrNQ6zWTsnUOOlqR9ASHEsOJu1Fp4kuc0fBAt08JO?=
+ =?us-ascii?Q?kIYARaDYcAQus9KdhZRBiF87442MYTf1RCOKRJVwh2a2kSxUwDFj3cbxzqc1?=
+ =?us-ascii?Q?LGrnYlsLvmHmaAzEt06t7xk066K5g/xjY1cmUnnAlHSYxq0ASRb7nY9jHQSU?=
+ =?us-ascii?Q?p6SA9efhB4t03O0pGFTrXZPJGksxzwFatVOB6ipMyzySMsaEqTrtVxoT628N?=
+ =?us-ascii?Q?ZjpvdRaO1WzsUOUXB/mxr8IXWwCjvmwgbm/7Wstm/ay5sG7sZU4faxEgwXM8?=
+ =?us-ascii?Q?zr7GnZz4kvOU/ozjAtRHxe5EgnVlQJLBUO344MsLYBgXScNy/xBHoAwS3fzm?=
+ =?us-ascii?Q?fA=3D=3D?=
 X-OriginatorOrg: eideticom.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 8deaa0c0-f4d6-4f05-e362-08dc9c47a47b
+X-MS-Exchange-CrossTenant-Network-Message-Id: aa1941cb-f20c-4244-6de9-08dc9c47a4e8
 X-MS-Exchange-CrossTenant-AuthSource: MW3PR19MB4250.namprd19.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 04 Jul 2024 16:37:49.7013
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 04 Jul 2024 16:37:50.4367
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 3490cd4b-0360-4377-abb1-15f8c5af8fc2
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 6S0oW60YliAx9qtCkIBepUKKMdabyVVTVQhIjdDRmdvVJpEA9F4JIKbN/HhGOvXpx0PrQFc6hWGF7MAOdN0mOXk7cUZpBdf0BlL8D3vult0=
+X-MS-Exchange-CrossTenant-UserPrincipalName: XBHSmtUXiIhMZbKA7esjKytTNhJro+xd4W9ZeP8ibduQCAZ0x/iXadR+5O+YBGgqHKQt6iMmYjbeoMqhJuBAzhw95y3+iv/hMmRFgyCSJ8c=
 X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH0PR19MB7850
 
-This patch series enables P2PDMA memory to be used in userspace RDMA
-transfers. With this series, P2PDMA memory mmaped into userspace (ie.
-only NVMe CMBs, at the moment) can then be used with ibv_reg_mr() (or
-similar) interfaces. This can be tested by passing a sysfs p2pmem
-allocator to the --mmap flag of the perftest tools.
+The .page_mkwrite operator of kernfs just calls file_update_time().
+This is the same behaviour that the fault code does if .page_mkwrite is
+not set.
 
-This requires addressing two issues:
+Furthermore, having the page_mkwrite() operator causes
+writable_file_mapping_allowed() to fail due to
+vma_needs_dirty_tracking() on the gup flow, which is a pre-requisite for
+enabling P2PDMA over RDMA.
 
-* Stop exporting kernfs VMAs with page_mkwrite, which is incompatible
-with FOLL_LONGTERM and is redudant since the default fault code has the
-same behavior as kernfs_vma_page_mkwrite() (i.e., call
-file_update_time()).
+There are no users of .page_mkwrite and no known valid use cases, so
+just remove the .page_mkwrite from kernfs_ops and WARN_ON() if an mmap()
+implementation sets .page_mkwrite.
 
-* Remove the restriction on FOLL_LONGTREM with FOLL_PCI_P2PDMA which was
-initially put in place due to excessive caution with assuming P2PDMA
-would have similar problems to fsdax with unmap_mapping_range(). Seeing
-P2PDMA only uses unmap_mapping_range() on device unbind and immediately
-waits for all page reference counts to go to zero after calling it, it
-is actually believed to be safe from reuse and user access faults. See
-[1] for more discussion.
+Co-developed-by: Logan Gunthorpe <logang@deltatee.com>
+Signed-off-by: Logan Gunthorpe <logang@deltatee.com>
+Signed-off-by: Martin Oliveira <martin.oliveira@eideticom.com>
+---
+ fs/kernfs/file.c | 25 ++-----------------------
+ 1 file changed, 2 insertions(+), 23 deletions(-)
 
-This was tested using a Mellanox ConnectX-6 SmartNIC (MT28908 Family),
-using the mlx5_core driver, as well as an NVMe CMB.
-
-Thanks,
-Martin
-
-[1]: https://lore.kernel.org/linux-mm/87cypuvh2i.fsf@nvdebian.thelocal/T/
-
---
-
-Changes in v3:
-  - Change to WARN_ON() if an implementaion of kernfs sets
-    .page_mkwrite() (Suggested by Christoph)
-  - Removed fast-gup patch
-
-Changes in v2:
-  - Remove page_mkwrite() for all kernfs, instead of creating a
-    different vm_ops for p2pdma.
-
-Martin Oliveira (3):
-  kernfs: remove page_mkwrite() from vm_operations_struct
-  mm/gup: allow FOLL_LONGTERM & FOLL_PCI_P2PDMA
-  RDMA/umem: add support for P2P RDMA
-
- drivers/infiniband/core/umem.c |  3 +++
- fs/kernfs/file.c               | 25 ++-----------------------
- mm/gup.c                       |  5 -----
- 3 files changed, 5 insertions(+), 28 deletions(-)
-
-
-base-commit: 22a40d14b572deb80c0648557f4bd502d7e83826
+diff --git a/fs/kernfs/file.c b/fs/kernfs/file.c
+index 8502ef68459b..90603664de7f 100644
+--- a/fs/kernfs/file.c
++++ b/fs/kernfs/file.c
+@@ -386,28 +386,6 @@ static vm_fault_t kernfs_vma_fault(struct vm_fault *vmf)
+ 	return ret;
+ }
+ 
+-static vm_fault_t kernfs_vma_page_mkwrite(struct vm_fault *vmf)
+-{
+-	struct file *file = vmf->vma->vm_file;
+-	struct kernfs_open_file *of = kernfs_of(file);
+-	vm_fault_t ret;
+-
+-	if (!of->vm_ops)
+-		return VM_FAULT_SIGBUS;
+-
+-	if (!kernfs_get_active(of->kn))
+-		return VM_FAULT_SIGBUS;
+-
+-	ret = 0;
+-	if (of->vm_ops->page_mkwrite)
+-		ret = of->vm_ops->page_mkwrite(vmf);
+-	else
+-		file_update_time(file);
+-
+-	kernfs_put_active(of->kn);
+-	return ret;
+-}
+-
+ static int kernfs_vma_access(struct vm_area_struct *vma, unsigned long addr,
+ 			     void *buf, int len, int write)
+ {
+@@ -432,7 +410,6 @@ static int kernfs_vma_access(struct vm_area_struct *vma, unsigned long addr,
+ static const struct vm_operations_struct kernfs_vm_ops = {
+ 	.open		= kernfs_vma_open,
+ 	.fault		= kernfs_vma_fault,
+-	.page_mkwrite	= kernfs_vma_page_mkwrite,
+ 	.access		= kernfs_vma_access,
+ };
+ 
+@@ -482,6 +459,8 @@ static int kernfs_fop_mmap(struct file *file, struct vm_area_struct *vma)
+ 	if (vma->vm_ops && vma->vm_ops->close)
+ 		goto out_put;
+ 
++	WARN_ON(vma->vm_ops && vma->vm_ops->page_mkwrite);
++
+ 	rc = 0;
+ 	if (!of->mmapped) {
+ 		of->mmapped = true;
 -- 
 2.34.1
 
