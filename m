@@ -1,88 +1,95 @@
-Return-Path: <linux-rdma+bounces-3637-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-3638-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2A098926E9F
-	for <lists+linux-rdma@lfdr.de>; Thu,  4 Jul 2024 07:00:37 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 04F97926EA0
+	for <lists+linux-rdma@lfdr.de>; Thu,  4 Jul 2024 07:01:34 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 56E701C2173E
-	for <lists+linux-rdma@lfdr.de>; Thu,  4 Jul 2024 05:00:36 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4E39B2827E9
+	for <lists+linux-rdma@lfdr.de>; Thu,  4 Jul 2024 05:01:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B877D176ABE;
-	Thu,  4 Jul 2024 05:00:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E875A194AD7;
+	Thu,  4 Jul 2024 05:01:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Al62yBhS"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="kHvPktvx"
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 769FE176AA2
-	for <linux-rdma@vger.kernel.org>; Thu,  4 Jul 2024 05:00:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A6EBC194AC2
+	for <linux-rdma@vger.kernel.org>; Thu,  4 Jul 2024 05:01:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1720069233; cv=none; b=FYsGYdR63rRMWHMGsRHntQ/FLLwcGCE74vEBM771pdcvEfucSk2Epmlvr2vEO0fo1dPFAQq8S1MhEuZR3klQBba9dS4cWcEsI8syd/psnYO9CVlWx8N5w0OTNBi1H2/TvAAe1JfpMLWvbi7h3mXWcO8Zc1ZNo6Cgd3YhHsZFhDc=
+	t=1720069291; cv=none; b=D91c/w8IKNndX5RbjHJbxPwGxgIVcjTHragzZmg36wr+F6qrdxqCJe7WtnIoAyzemWBpc8n6um0ISZo+Ff/lBMCEg77dQv59smYs4ecATq3jvd6BHybKsembTQ77ajbkFvmIzgw8POso39/X1luXY7e/6KoGWA5q7klvDkEevlo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1720069233; c=relaxed/simple;
-	bh=YPh0H/RZccm8/HsNd4f93vdc6LuKFxrHv17uWtzkOKE=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Message-Id:Date:
-	 MIME-Version:Content-Type; b=BiUA15FRTwvla7l5k6SLBhRFuSvYW1gJziIY9QonlAZAtEPf4zE/2ccUNakL37wRP4uQOMIv5HcMr+QT3muI7Ab+c+kMcBfP2cXlRUAgV98Xpnu0OMUD4Bpmpv0Lk2J6qJbqvTBdhpJOmKH0EwIez+idBWeUc/MG5mTeXcjRUFw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Al62yBhS; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7BAEAC3277B;
-	Thu,  4 Jul 2024 05:00:30 +0000 (UTC)
+	s=arc-20240116; t=1720069291; c=relaxed/simple;
+	bh=OA1zCs5GsXUSqCvIMa4hn/+4GsK3XpQzI3TKcmUtbZ0=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Ar5+TfkYAcBD1fAz9DC0XyqM82EkNa0wkCWfJptr3jjuEEaGMbyApNnKplR2Z7KF/c2QvBzDM3KDNq/PJNlmrOL16zwC8Cgwh7MqONQcnIsFhvK6hlcEYyQR/0dnR3N0b3sM++LY464SyWwk+QzcQS7l5X4sFwNpk+CJyty1J1M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=kHvPktvx; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A6AC1C3277B;
+	Thu,  4 Jul 2024 05:01:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1720069231;
-	bh=YPh0H/RZccm8/HsNd4f93vdc6LuKFxrHv17uWtzkOKE=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-	b=Al62yBhS4G287zh8RxwpOl2eTHuDpBWNkS121gL6p4XQt52O/bA8D6WYP5eb6RDMW
-	 iDnGT9zaNRxhbny5aenSxufgkqpesbgAjA15nwDxSzf/EjOx28ftkPuuzuYBSfamKY
-	 1zndS0pjIlr3bWlnoKPOXJpM/Z3fu0dAJAABI1b7FGanRyo4JSMgsoTPH5UGSBqC9X
-	 2E9oRjtd9zLjpdJjUFI2qG8mK2CYRBmtv1m5bNqgSCCJ1BUz4GjB6nsckRhOkMvS20
-	 bYcyvoxa6cy3KAAf6eSZHqWIqg8U2rSEVjlh4kpBwnHupkMR5Q5K63FPfttAxQDEhd
-	 BST9wZz1AEFeA==
+	s=k20201202; t=1720069291;
+	bh=OA1zCs5GsXUSqCvIMa4hn/+4GsK3XpQzI3TKcmUtbZ0=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=kHvPktvxglzV0ojA4fFq7H27HtTtMemfId51LVqq+r3yXCpo1rHachzirfGq6s4XL
+	 J/6L4M7SS8e6yNfFtTOLqjqxwAphIeZb4H9CIRPwAhl1cbc7XY3dV1TJUPpvBhc0Y9
+	 5v3kSinEsRss6oJNR3JhJScli2HpU8ouJT24LC0Pbhl8OHI+5qAGFyP3nu+YZeLUVH
+	 d2dOmkyD48+5Q9me7zf4nxoONaDv1AXYOX96CqkouL0QGvOns4z9I3DmBtIUDfZ4AS
+	 Ty5XGnq6aQ08DBy+GwA4gJPb/oxJMcg8OvixPt/CbNfZbVd06tYmMjNdesBGrPSYX/
+	 VN9GYSkjXf5Qw==
+Date: Thu, 4 Jul 2024 08:01:27 +0300
 From: Leon Romanovsky <leon@kernel.org>
-To: Jason Gunthorpe <jgg@ziepe.ca>, Leon Romanovsky <leon@kernel.org>
-Cc: Mark Zhang <markzhang@nvidia.com>, Bernard Metzler <bmt@zurich.ibm.com>, 
- linux-rdma@vger.kernel.org, Zhu Yanjun <zyjzyj2000@gmail.com>
-In-Reply-To: <522591bef9a369cc8e5dcb77787e017bffee37fe.1719837610.git.leon@kernel.org>
-References: <522591bef9a369cc8e5dcb77787e017bffee37fe.1719837610.git.leon@kernel.org>
-Subject: Re: [PATCH rdma-next] RDMA/core: Introduce "name_assign_type" for
- an IB device
-Message-Id: <172006922726.579339.15687723900603932142.b4-ty@kernel.org>
-Date: Thu, 04 Jul 2024 08:00:27 +0300
+To: Mark Zhang <markzhang@nvidia.com>
+Cc: dsahern@gmail.com, jgg@nvidia.com, linux-rdma@vger.kernel.org
+Subject: Re: [RFC iproute2-next 0/2] Supports to add/delete IB devices with
+ type SMI
+Message-ID: <20240704050127.GC95824@unreal>
+References: <20240701083112.1793515-1-markzhang@nvidia.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Mailer: b4 0.15-dev-13183
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240701083112.1793515-1-markzhang@nvidia.com>
 
-
-On Mon, 01 Jul 2024 15:40:48 +0300, Leon Romanovsky wrote:
-> The name_assign_type indicates how the name is provided. Currently
-> these types are supported:
-> - RDMA_NAME_ASSIGN_TYPE_UNKNOWN: Unknown or not set;
-> - RDMA_NAME_ASSIGN_TYPE_USER: Name is provided by the user; The
->   user-created sub device, rxe and siw device has this type.
+On Mon, Jul 01, 2024 at 11:31:10AM +0300, Mark Zhang wrote:
+> This series supports to add/delete an IB device with type SMI. This is
+> complimentary to the kernel patches that support to IB sub device
+> and mlx5 implementation.
 > 
-> When filling nl device info, it is set in the new attribute
-> RDMA_NLDEV_ATTR_NAME_ASSIGN_TYPE. User-space tools like udev
-> "rdma_rename" could check this attribute to determine if this
-> device needs to be renamed or not.
+> https://lore.kernel.org/all/cover.1718553901.git.leon@kernel.org/
 > 
-> [...]
+> There's no kernel commit ID for the rdma_netlink.h change as the kernel
+> part isn't accepted yet.
+> 
+> Thanks
+> 
+> Mark Zhang (2):
+>   Update rdma_netlink.h file upto kernel commit
 
-Applied, thanks!
+Kernel part was accepted, please resend this series with the updated
+first commit.
 
-[1/1] RDMA/core: Introduce "name_assign_type" for an IB device
-      https://git.kernel.org/rdma/rdma/c/af48f95492dc1a
+Thanks
 
-Best regards,
--- 
-Leon Romanovsky <leon@kernel.org>
-
+>   rdma: Supports to add/delete a device with type SMI
+> 
+>  man/man8/rdma-dev.8                   |  40 +++++++++
+>  rdma/dev.c                            | 120 ++++++++++++++++++++++++++
+>  rdma/include/uapi/rdma/rdma_netlink.h |  13 +++
+>  rdma/rdma.h                           |   2 +
+>  rdma/utils.c                          |   2 +
+>  5 files changed, 177 insertions(+)
+> 
+> -- 
+> 2.26.3
+> 
+> 
 
