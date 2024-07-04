@@ -1,56 +1,56 @@
-Return-Path: <linux-rdma+bounces-3636-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-3637-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id D8FF0926E9C
-	for <lists+linux-rdma@lfdr.de>; Thu,  4 Jul 2024 06:57:22 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2A098926E9F
+	for <lists+linux-rdma@lfdr.de>; Thu,  4 Jul 2024 07:00:37 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1417D1C21C47
-	for <lists+linux-rdma@lfdr.de>; Thu,  4 Jul 2024 04:57:22 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 56E701C2173E
+	for <lists+linux-rdma@lfdr.de>; Thu,  4 Jul 2024 05:00:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0A78C12E1C1;
-	Thu,  4 Jul 2024 04:57:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B877D176ABE;
+	Thu,  4 Jul 2024 05:00:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="c2UK4/4I"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Al62yBhS"
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BC8161B963
-	for <linux-rdma@vger.kernel.org>; Thu,  4 Jul 2024 04:57:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 769FE176AA2
+	for <linux-rdma@vger.kernel.org>; Thu,  4 Jul 2024 05:00:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1720069037; cv=none; b=BNpfgTYl6SOKu7hn0vxkclAPlMDIUEcqBVr7bcF5WzirsRp42fAUWF0zkM2T+xtCykEI4GfGMMBbUk5JeagsusesWPJVFJc4wgCf3P0ULhKt/IRLaUY1U2dZR41whusym2z9/eYwvNtKbvemvSI8RIJMY3NCLYKLDOxQp8bYPL4=
+	t=1720069233; cv=none; b=FYsGYdR63rRMWHMGsRHntQ/FLLwcGCE74vEBM771pdcvEfucSk2Epmlvr2vEO0fo1dPFAQq8S1MhEuZR3klQBba9dS4cWcEsI8syd/psnYO9CVlWx8N5w0OTNBi1H2/TvAAe1JfpMLWvbi7h3mXWcO8Zc1ZNo6Cgd3YhHsZFhDc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1720069037; c=relaxed/simple;
-	bh=CCnSQKngaIrbHQTeZ6O4CU0VH5rwuXUACT/LC8H1RXM=;
+	s=arc-20240116; t=1720069233; c=relaxed/simple;
+	bh=YPh0H/RZccm8/HsNd4f93vdc6LuKFxrHv17uWtzkOKE=;
 	h=From:To:Cc:In-Reply-To:References:Subject:Message-Id:Date:
-	 MIME-Version:Content-Type; b=JCWDSmZWLmbnSvR76jKMjT6kwoETxGxOkPmi6zXhNaTSrEjI7ezYqMHBqRPGCX3k5BE3uqNkypSHRp4FJq9YsjP5LiKCsaN4+qAwhHtJBqylmYh2agVYD8JZQfyCxkxjvTxgxLER4CguQNzhOmz75GV2iVqy3BsPEdkVeb007Bc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=c2UK4/4I; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C9D07C3277B;
-	Thu,  4 Jul 2024 04:57:16 +0000 (UTC)
+	 MIME-Version:Content-Type; b=BiUA15FRTwvla7l5k6SLBhRFuSvYW1gJziIY9QonlAZAtEPf4zE/2ccUNakL37wRP4uQOMIv5HcMr+QT3muI7Ab+c+kMcBfP2cXlRUAgV98Xpnu0OMUD4Bpmpv0Lk2J6qJbqvTBdhpJOmKH0EwIez+idBWeUc/MG5mTeXcjRUFw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Al62yBhS; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7BAEAC3277B;
+	Thu,  4 Jul 2024 05:00:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1720069037;
-	bh=CCnSQKngaIrbHQTeZ6O4CU0VH5rwuXUACT/LC8H1RXM=;
+	s=k20201202; t=1720069231;
+	bh=YPh0H/RZccm8/HsNd4f93vdc6LuKFxrHv17uWtzkOKE=;
 	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-	b=c2UK4/4IiQYJCMFdZ6f4HZuIqL8HQt/Yl7x9EcBRjFTwB3YERoohDXIY/Jb2FueJO
-	 3siWN3Nzgfz1zEx1uB76F2DRr7PkUxHtoDgK7ln3U5lxjVgamDRuW66tn9p4rsQPf0
-	 7/sbZF8TxngRWOyy6NzbNGHgzIItalGvNBk9tvRFOZnMFrdldupG0hLXCAf8GVQF0g
-	 XfbpTwgtWWSM1tFnceooknw+/+gaymyNMZ2O975L2Izai0i/snEuBLfS9w0VgL0EEp
-	 YTKjsk9rCJ/gmBpVncEEAsrcnzGp+i77jT8DKewe5QPEnRbv8ozFVfTMmdawVmIFMk
-	 PgS7iptbU3Ozg==
+	b=Al62yBhS4G287zh8RxwpOl2eTHuDpBWNkS121gL6p4XQt52O/bA8D6WYP5eb6RDMW
+	 iDnGT9zaNRxhbny5aenSxufgkqpesbgAjA15nwDxSzf/EjOx28ftkPuuzuYBSfamKY
+	 1zndS0pjIlr3bWlnoKPOXJpM/Z3fu0dAJAABI1b7FGanRyo4JSMgsoTPH5UGSBqC9X
+	 2E9oRjtd9zLjpdJjUFI2qG8mK2CYRBmtv1m5bNqgSCCJ1BUz4GjB6nsckRhOkMvS20
+	 bYcyvoxa6cy3KAAf6eSZHqWIqg8U2rSEVjlh4kpBwnHupkMR5Q5K63FPfttAxQDEhd
+	 BST9wZz1AEFeA==
 From: Leon Romanovsky <leon@kernel.org>
 To: Jason Gunthorpe <jgg@ziepe.ca>, Leon Romanovsky <leon@kernel.org>
-Cc: Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>, 
- linux-rdma@vger.kernel.org, Leon Romanovsky <leon@kernel.org>
-In-Reply-To: <ab5222c414a01e9d2c5129ef26836aace9ee2aa5.1719837715.git.leon@kernel.org>
-References: <ab5222c414a01e9d2c5129ef26836aace9ee2aa5.1719837715.git.leon@kernel.org>
-Subject: Re: [PATCH rdma-next 1/2] RDMA/qib: Fix truncation compilation
- warnings in qib_init.c
-Message-Id: <172006903262.578444.8393830029454500717.b4-ty@kernel.org>
-Date: Thu, 04 Jul 2024 07:57:12 +0300
+Cc: Mark Zhang <markzhang@nvidia.com>, Bernard Metzler <bmt@zurich.ibm.com>, 
+ linux-rdma@vger.kernel.org, Zhu Yanjun <zyjzyj2000@gmail.com>
+In-Reply-To: <522591bef9a369cc8e5dcb77787e017bffee37fe.1719837610.git.leon@kernel.org>
+References: <522591bef9a369cc8e5dcb77787e017bffee37fe.1719837610.git.leon@kernel.org>
+Subject: Re: [PATCH rdma-next] RDMA/core: Introduce "name_assign_type" for
+ an IB device
+Message-Id: <172006922726.579339.15687723900603932142.b4-ty@kernel.org>
+Date: Thu, 04 Jul 2024 08:00:27 +0300
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
@@ -58,35 +58,28 @@ List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 X-Mailer: b4 0.15-dev-13183
 
 
-On Mon, 01 Jul 2024 15:42:28 +0300, Leon Romanovsky wrote:
-> drivers/infiniband/hw/qib/qib_init.c: In function ‘qib_init_one’:
-> drivers/infiniband/hw/qib/qib_init.c:586:67: error: ‘%d’ directive output may be truncated writing between 1 and 11 bytes into a region of size between 0 and 3 [-Werror=format-truncation=]
->   586 |                         snprintf(wq_name, sizeof(wq_name), "qib%d_%d",
->       |                                                                   ^~
-> In function ‘qib_create_workqueues’,
->     inlined from ‘qib_init_one’ at drivers/infiniband/hw/qib/qib_init.c:1438:8:
-> drivers/infiniband/hw/qib/qib_init.c:586:60: note: directive argument in the range [-2147483643, 254]
->   586 |                         snprintf(wq_name, sizeof(wq_name), "qib%d_%d",
->       |                                                            ^~~~~~~~~~
-> drivers/infiniband/hw/qib/qib_init.c:586:25: note: ‘snprintf’ output between 7 and 27 bytes into a destination of size 8
->   586 |                         snprintf(wq_name, sizeof(wq_name), "qib%d_%d",
->       |                         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
->   587 |                                 dd->unit, pidx);
->       |                                 ~~~~~~~~~~~~~~~
-> cc1: all warnings being treated as errors
+On Mon, 01 Jul 2024 15:40:48 +0300, Leon Romanovsky wrote:
+> The name_assign_type indicates how the name is provided. Currently
+> these types are supported:
+> - RDMA_NAME_ASSIGN_TYPE_UNKNOWN: Unknown or not set;
+> - RDMA_NAME_ASSIGN_TYPE_USER: Name is provided by the user; The
+>   user-created sub device, rxe and siw device has this type.
+> 
+> When filling nl device info, it is set in the new attribute
+> RDMA_NLDEV_ATTR_NAME_ASSIGN_TYPE. User-space tools like udev
+> "rdma_rename" could check this attribute to determine if this
+> device needs to be renamed or not.
 > 
 > [...]
 
 Applied, thanks!
 
-[1/2] RDMA/qib: Fix truncation compilation warnings in qib_init.c
-      https://git.kernel.org/rdma/rdma/c/1b8ca05469315e
-[2/2] RDMA/qib: Fix truncation compilation warnings in qib_verbs.c
-      https://git.kernel.org/rdma/rdma/c/f802078d3cb882
+[1/1] RDMA/core: Introduce "name_assign_type" for an IB device
+      https://git.kernel.org/rdma/rdma/c/af48f95492dc1a
 
 Best regards,
 -- 
