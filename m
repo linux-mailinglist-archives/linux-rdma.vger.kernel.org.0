@@ -1,251 +1,102 @@
-Return-Path: <linux-rdma+bounces-3675-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-3676-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0EF11928A4E
-	for <lists+linux-rdma@lfdr.de>; Fri,  5 Jul 2024 15:58:17 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 86768928D9D
+	for <lists+linux-rdma@lfdr.de>; Fri,  5 Jul 2024 20:49:00 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3412A1C2415E
-	for <lists+linux-rdma@lfdr.de>; Fri,  5 Jul 2024 13:58:16 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4B3832848D5
+	for <lists+linux-rdma@lfdr.de>; Fri,  5 Jul 2024 18:48:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2948315B98F;
-	Fri,  5 Jul 2024 13:57:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 71E8016DC0D;
+	Fri,  5 Jul 2024 18:48:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ht2Sg2t2"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from stargate.chelsio.com (stargate.chelsio.com [12.32.117.8])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DC2FA15B980
-	for <linux-rdma@vger.kernel.org>; Fri,  5 Jul 2024 13:57:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=12.32.117.8
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 15B73A955;
+	Fri,  5 Jul 2024 18:48:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1720187851; cv=none; b=UF5oE7/YzHMuaSoZzSQ5rlwnJzUXya9EpgliVx/uo6A/l1K5/Nrpsu6OInm+vg+mrcg//ZLQi1fdDjN+7bzGcH4fJhcH5T8xE8B6gkY+nzBXs4uutPpFePGPWTIhLe7GECIxfKI6QRSVTSRBEHzqQZ5iFZP/moFb8TfgmWIGhZE=
+	t=1720205332; cv=none; b=mxo4bqYlqGV3arZLnd3h5xdSarTRP7IHhkMRbKaEJbLUJoX1hSoBFjW1PZi8BXgWuUQztUZRr6p1j430aiF+C2QnJpRmJGXQszztHesRGRiKi47ICR09SMDyTgokvzEMrHgxyW/N4/ZmMbK3jZlTXp8paRhfVLUIwe+vjX7Awx0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1720187851; c=relaxed/simple;
-	bh=WYBDXrg+MIMbuOEJ3LHYDqg3wlWbivkJuTurwYdHuns=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=UuXPd39Q/YI6YNOVh5OVkKOeLLFuG96iK5u1HUuR782xBf8tJf0J9/KvdtncOk7xUctBROBsPGrVYzOdvHuLuBMpDkgoDeoWG3bjv3dyIaiMlBe+/lGOPVWHAwea6Uqf2A984UbLPNE0jKhPcHXRv8foiIb8KA1rN2pSsAZNqdw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=chelsio.com; spf=pass smtp.mailfrom=chelsio.com; arc=none smtp.client-ip=12.32.117.8
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=chelsio.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chelsio.com
-Received: from beagle5.blr.asicdesigners.com (beagle5.blr.asicdesigners.com [10.193.80.119])
-	by stargate.chelsio.com (8.14.7/8.14.7) with ESMTP id 465DFhbJ017029;
-	Fri, 5 Jul 2024 06:15:44 -0700
-From: Anumula Murali Mohan Reddy <anumula@chelsio.com>
-To: jgg@nvidia.com, leonro@nvidia.com
-Cc: linux-rdma@vger.kernel.org,
-        Anumula Murali Mohan Reddy <anumula@chelsio.com>,
-        Potnuri Bharat Teja <bharat@chelsio.com>
-Subject: [PATCH for-next] RDMA/cxgb4: use dma_mmap_coherent() for mapping non-contiguous memory
-Date: Fri,  5 Jul 2024 18:47:53 +0530
-Message-Id: <20240705131753.15550-1-anumula@chelsio.com>
-X-Mailer: git-send-email 2.39.3
+	s=arc-20240116; t=1720205332; c=relaxed/simple;
+	bh=3gQdxm9rrq4HH+3IgyK33e5U18PihTEsMAv3ZFMKGl4=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=n7cJcpkzqsPw1YsYGmiGRJ7dhq9Cl+rI7cU1j6SertII/9DAuQYBCk01jiO03k3oHaL47F25qx6e8onWv1ta1yDMRGuczxAOZEtFtb2XWBVt2nzdxQJO5kx2tdxiBSc205vUmbRyO9rgoFkcmIWP5DXLtn4AGX7guIsBHBZn/ko=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ht2Sg2t2; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D17E5C116B1;
+	Fri,  5 Jul 2024 18:48:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1720205331;
+	bh=3gQdxm9rrq4HH+3IgyK33e5U18PihTEsMAv3ZFMKGl4=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=ht2Sg2t2ndCjMGA6QKO2lqpTrzx5fDYVZJW7Ovgfr1eplx4adbkUHrvVY0Fu92JLt
+	 mU5W84MEOLzWeruLzCzFJBMcezP+9RWb4w2qbxVzYCrWWzfG7s4lg/Gv7+t1mLvgfO
+	 2fdSWrA5Q1UyDcQM7GTChwnkpqlcbSPsNUt/V748Qr4OW0E18YwIXE9gUZ8xqbm3Pa
+	 QZ5HR5+kS74PefChnaUbAqlutm/0zUWk4Ir6koict+0o/SIMktXHfmKvALkPRAwy7e
+	 60A1hFUaIMAvaXkUU5Xx3C78C3VfTgwAozfACG4DXiep2AGvT26MouaYytY3hJ3pYn
+	 tSYLgRXYv+5hA==
+Date: Fri, 5 Jul 2024 21:48:46 +0300
+From: Leon Romanovsky <leon@kernel.org>
+To: Christoph Hellwig <hch@lst.de>
+Cc: Robin Murphy <robin.murphy@arm.com>, Jens Axboe <axboe@kernel.dk>,
+	Jason Gunthorpe <jgg@ziepe.ca>, Joerg Roedel <joro@8bytes.org>,
+	Will Deacon <will@kernel.org>, Keith Busch <kbusch@kernel.org>,
+	"Zeng, Oak" <oak.zeng@intel.com>,
+	Chaitanya Kulkarni <kch@nvidia.com>,
+	Sagi Grimberg <sagi@grimberg.me>,
+	Bjorn Helgaas <bhelgaas@google.com>,
+	Logan Gunthorpe <logang@deltatee.com>,
+	Yishai Hadas <yishaih@nvidia.com>,
+	Shameer Kolothum <shameerali.kolothum.thodi@huawei.com>,
+	Kevin Tian <kevin.tian@intel.com>,
+	Alex Williamson <alex.williamson@redhat.com>,
+	Marek Szyprowski <m.szyprowski@samsung.com>,
+	=?iso-8859-1?B?Suly9G1l?= Glisse <jglisse@redhat.com>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-rdma@vger.kernel.org, iommu@lists.linux.dev,
+	linux-nvme@lists.infradead.org, linux-pci@vger.kernel.org,
+	kvm@vger.kernel.org, linux-mm@kvack.org
+Subject: Re: [RFC PATCH v1 18/18] nvme-pci: use new dma API
+Message-ID: <20240705184846.GF95824@unreal>
+References: <cover.1719909395.git.leon@kernel.org>
+ <47eb0510b0a6aa52d9f5665d75fa7093dd6af53f.1719909395.git.leon@kernel.org>
+ <249ec228-4ffd-4121-bd51-f4a19275fee1@arm.com>
+ <20240704171602.GE95824@unreal>
+ <20240705055806.GA11885@lst.de>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240705055806.GA11885@lst.de>
 
-dma_alloc_coherent() allocates contiguous memory irrespective of
-iommu mode, but after commit f5ff79fddf0e ("dma-mapping: remove
-CONFIG_DMA_REMAP") if iommu is enabled in translate mode,
-dma_alloc_coherent() may allocate non-contiguous memory.
-Attempt to map this memory results in panic.
-This patch fixes the issue by using dma_mmap_coherent() to map each page
-to user space.
+On Fri, Jul 05, 2024 at 07:58:06AM +0200, Christoph Hellwig wrote:
+> > This is exactly how dma_map_sg() works.
+> 
+> Which dma_map_sg?  swiotlb handling is implemented in the underlying
+> ops, dma-direct and dma-iommu specifically.
+> 
+> dma-direct just iterates over the entries and calls dma_direct_map_page,
+> which does a per-entry decision to bounce based on
+> is_swiotlb_force_bounce, dma_capable and dma_kmalloc_needs_bounce.
 
-Fixes: f5ff79fddf0e ("dma-mapping: remove CONFIG_DMA_REMAP")
-Signed-off-by: Anumula Murali Mohan Reddy <anumula@chelsio.com>
-Signed-off-by: Potnuri Bharat Teja <bharat@chelsio.com>
----
- drivers/infiniband/hw/cxgb4/cq.c       |  4 +++
- drivers/infiniband/hw/cxgb4/iw_cxgb4.h |  2 ++
- drivers/infiniband/hw/cxgb4/provider.c | 48 +++++++++++++++++++++-----
- drivers/infiniband/hw/cxgb4/qp.c       | 14 ++++++++
- 4 files changed, 59 insertions(+), 9 deletions(-)
+dma-direct is not going to have "use_iova" flag. Robin pointed to
+dma-iommu path.
 
-diff --git a/drivers/infiniband/hw/cxgb4/cq.c b/drivers/infiniband/hw/cxgb4/cq.c
-index 5111421f9473..81cfc876fa89 100644
---- a/drivers/infiniband/hw/cxgb4/cq.c
-+++ b/drivers/infiniband/hw/cxgb4/cq.c
-@@ -1127,12 +1127,16 @@ int c4iw_create_cq(struct ib_cq *ibcq, const struct ib_cq_init_attr *attr,
- 
- 		mm->key = uresp.key;
- 		mm->addr = virt_to_phys(chp->cq.queue);
-+		mm->vaddr = chp->cq.queue;
-+		mm->dma_addr = chp->cq.dma_addr;
- 		mm->len = chp->cq.memsize;
- 		insert_mmap(ucontext, mm);
- 
- 		mm2->key = uresp.gts_key;
- 		mm2->addr = chp->cq.bar2_pa;
- 		mm2->len = PAGE_SIZE;
-+		mm2->vaddr = NULL;
-+		mm2->dma_addr = 0;
- 		insert_mmap(ucontext, mm2);
- 	}
- 
-diff --git a/drivers/infiniband/hw/cxgb4/iw_cxgb4.h b/drivers/infiniband/hw/cxgb4/iw_cxgb4.h
-index f838bb6718af..5eedc6cf0f8c 100644
---- a/drivers/infiniband/hw/cxgb4/iw_cxgb4.h
-+++ b/drivers/infiniband/hw/cxgb4/iw_cxgb4.h
-@@ -536,6 +536,8 @@ struct c4iw_mm_entry {
- 	struct list_head entry;
- 	u64 addr;
- 	u32 key;
-+	void *vaddr;
-+	dma_addr_t dma_addr;
- 	unsigned len;
- };
- 
-diff --git a/drivers/infiniband/hw/cxgb4/provider.c b/drivers/infiniband/hw/cxgb4/provider.c
-index 246b739ddb2b..6227775970c9 100644
---- a/drivers/infiniband/hw/cxgb4/provider.c
-+++ b/drivers/infiniband/hw/cxgb4/provider.c
-@@ -131,6 +131,10 @@ static int c4iw_mmap(struct ib_ucontext *context, struct vm_area_struct *vma)
- 	struct c4iw_mm_entry *mm;
- 	struct c4iw_ucontext *ucontext;
- 	u64 addr;
-+	size_t size;
-+	void *vaddr;
-+	unsigned long vm_pgoff;
-+	dma_addr_t dma_addr;
- 
- 	pr_debug("pgoff 0x%lx key 0x%x len %d\n", vma->vm_pgoff,
- 		 key, len);
-@@ -145,6 +149,9 @@ static int c4iw_mmap(struct ib_ucontext *context, struct vm_area_struct *vma)
- 	if (!mm)
- 		return -EINVAL;
- 	addr = mm->addr;
-+	vaddr = mm->vaddr;
-+	dma_addr = mm->dma_addr;
-+	size = mm->len;
- 	kfree(mm);
- 
- 	if ((addr >= pci_resource_start(rdev->lldi.pdev, 0)) &&
-@@ -155,9 +162,17 @@ static int c4iw_mmap(struct ib_ucontext *context, struct vm_area_struct *vma)
- 		 * MA_SYNC register...
- 		 */
- 		vma->vm_page_prot = pgprot_noncached(vma->vm_page_prot);
--		ret = io_remap_pfn_range(vma, vma->vm_start,
--					 addr >> PAGE_SHIFT,
--					 len, vma->vm_page_prot);
-+		if (vaddr && is_vmalloc_addr(vaddr)) {
-+			vm_pgoff = vma->vm_pgoff;
-+			vma->vm_pgoff = 0;
-+			ret = dma_mmap_coherent(&rdev->lldi.pdev->dev, vma,
-+						vaddr, dma_addr, size);
-+			vma->vm_pgoff = vm_pgoff;
-+		} else {
-+			ret = io_remap_pfn_range(vma, vma->vm_start,
-+						 addr >> PAGE_SHIFT,
-+						 len, vma->vm_page_prot);
-+		}
- 	} else if ((addr >= pci_resource_start(rdev->lldi.pdev, 2)) &&
- 		   (addr < (pci_resource_start(rdev->lldi.pdev, 2) +
- 		    pci_resource_len(rdev->lldi.pdev, 2)))) {
-@@ -175,17 +190,32 @@ static int c4iw_mmap(struct ib_ucontext *context, struct vm_area_struct *vma)
- 				vma->vm_page_prot =
- 					pgprot_noncached(vma->vm_page_prot);
- 		}
--		ret = io_remap_pfn_range(vma, vma->vm_start,
--					 addr >> PAGE_SHIFT,
--					 len, vma->vm_page_prot);
-+		if (vaddr && is_vmalloc_addr(vaddr)) {
-+			vm_pgoff = vma->vm_pgoff;
-+			vma->vm_pgoff = 0;
-+			ret = dma_mmap_coherent(&rdev->lldi.pdev->dev, vma,
-+						vaddr, dma_addr, size);
-+			vma->vm_pgoff = vm_pgoff;
-+		} else {
-+			ret = io_remap_pfn_range(vma, vma->vm_start,
-+						 addr >> PAGE_SHIFT,
-+						 len, vma->vm_page_prot);
-+		}
- 	} else {
- 
- 		/*
- 		 * Map WQ or CQ contig dma memory...
- 		 */
--		ret = remap_pfn_range(vma, vma->vm_start,
--				      addr >> PAGE_SHIFT,
--				      len, vma->vm_page_prot);
-+		if (vaddr && is_vmalloc_addr(vaddr)) {
-+			vm_pgoff = vma->vm_pgoff;
-+			vma->vm_pgoff = 0;
-+			ret = dma_mmap_coherent(&rdev->lldi.pdev->dev, vma,
-+						vaddr, dma_addr, size);
-+		} else {
-+			ret = remap_pfn_range(vma, vma->vm_start,
-+					      addr >> PAGE_SHIFT,
-+					      len, vma->vm_page_prot);
-+		}
- 	}
- 
- 	return ret;
-diff --git a/drivers/infiniband/hw/cxgb4/qp.c b/drivers/infiniband/hw/cxgb4/qp.c
-index d16d8eaa1415..3f6fb4b34d5a 100644
---- a/drivers/infiniband/hw/cxgb4/qp.c
-+++ b/drivers/infiniband/hw/cxgb4/qp.c
-@@ -2282,16 +2282,22 @@ int c4iw_create_qp(struct ib_qp *qp, struct ib_qp_init_attr *attrs,
- 			goto err_free_ma_sync_key;
- 		sq_key_mm->key = uresp.sq_key;
- 		sq_key_mm->addr = qhp->wq.sq.phys_addr;
-+		sq_key_mm->vaddr = qhp->wq.sq.queue;
-+		sq_key_mm->dma_addr = qhp->wq.sq.dma_addr;
- 		sq_key_mm->len = PAGE_ALIGN(qhp->wq.sq.memsize);
- 		insert_mmap(ucontext, sq_key_mm);
- 		if (!attrs->srq) {
- 			rq_key_mm->key = uresp.rq_key;
- 			rq_key_mm->addr = virt_to_phys(qhp->wq.rq.queue);
-+			rq_key_mm->vaddr = qhp->wq.rq.queue;
-+			rq_key_mm->dma_addr = qhp->wq.rq.dma_addr;
- 			rq_key_mm->len = PAGE_ALIGN(qhp->wq.rq.memsize);
- 			insert_mmap(ucontext, rq_key_mm);
- 		}
- 		sq_db_key_mm->key = uresp.sq_db_gts_key;
- 		sq_db_key_mm->addr = (u64)(unsigned long)qhp->wq.sq.bar2_pa;
-+		sq_db_key_mm->vaddr = NULL;
-+		sq_db_key_mm->dma_addr = 0;
- 		sq_db_key_mm->len = PAGE_SIZE;
- 		insert_mmap(ucontext, sq_db_key_mm);
- 		if (!attrs->srq) {
-@@ -2299,6 +2305,8 @@ int c4iw_create_qp(struct ib_qp *qp, struct ib_qp_init_attr *attrs,
- 			rq_db_key_mm->addr =
- 				(u64)(unsigned long)qhp->wq.rq.bar2_pa;
- 			rq_db_key_mm->len = PAGE_SIZE;
-+			rq_db_key_mm->vaddr = NULL;
-+			rq_db_key_mm->dma_addr = 0;
- 			insert_mmap(ucontext, rq_db_key_mm);
- 		}
- 		if (ma_sync_key_mm) {
-@@ -2307,6 +2315,8 @@ int c4iw_create_qp(struct ib_qp *qp, struct ib_qp_init_attr *attrs,
- 				(pci_resource_start(rhp->rdev.lldi.pdev, 0) +
- 				PCIE_MA_SYNC_A) & PAGE_MASK;
- 			ma_sync_key_mm->len = PAGE_SIZE;
-+			ma_sync_key_mm->vaddr = NULL;
-+			ma_sync_key_mm->dma_addr = 0;
- 			insert_mmap(ucontext, ma_sync_key_mm);
- 		}
- 
-@@ -2763,10 +2773,14 @@ int c4iw_create_srq(struct ib_srq *ib_srq, struct ib_srq_init_attr *attrs,
- 		srq_key_mm->key = uresp.srq_key;
- 		srq_key_mm->addr = virt_to_phys(srq->wq.queue);
- 		srq_key_mm->len = PAGE_ALIGN(srq->wq.memsize);
-+		srq_key_mm->vaddr = srq->wq.queue;
-+		srq_key_mm->dma_addr = srq->wq.dma_addr;
- 		insert_mmap(ucontext, srq_key_mm);
- 		srq_db_key_mm->key = uresp.srq_db_gts_key;
- 		srq_db_key_mm->addr = (u64)(unsigned long)srq->wq.bar2_pa;
- 		srq_db_key_mm->len = PAGE_SIZE;
-+		srq_db_key_mm->vaddr = NULL;
-+		srq_db_key_mm->dma_addr = 0;
- 		insert_mmap(ucontext, srq_db_key_mm);
- 	}
- 
--- 
-2.39.3
+In that case the flow is dma_map_sg()->iommu_dma_map_sg()->dev_use_sg_swiotlb().
 
+Thanks
+
+> 
+> 
 
