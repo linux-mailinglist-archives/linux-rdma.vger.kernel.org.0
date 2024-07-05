@@ -1,260 +1,251 @@
-Return-Path: <linux-rdma+bounces-3674-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-3675-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id BABCB928707
-	for <lists+linux-rdma@lfdr.de>; Fri,  5 Jul 2024 12:48:19 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0EF11928A4E
+	for <lists+linux-rdma@lfdr.de>; Fri,  5 Jul 2024 15:58:17 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 0A8ADB2111D
-	for <lists+linux-rdma@lfdr.de>; Fri,  5 Jul 2024 10:48:17 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3412A1C2415E
+	for <lists+linux-rdma@lfdr.de>; Fri,  5 Jul 2024 13:58:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 33F29145FF5;
-	Fri,  5 Jul 2024 10:48:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="xfIKMMmS"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2948315B98F;
+	Fri,  5 Jul 2024 13:57:31 +0000 (UTC)
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from out-174.mta0.migadu.com (out-174.mta0.migadu.com [91.218.175.174])
+Received: from stargate.chelsio.com (stargate.chelsio.com [12.32.117.8])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 607B514430B;
-	Fri,  5 Jul 2024 10:48:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DC2FA15B980
+	for <linux-rdma@vger.kernel.org>; Fri,  5 Jul 2024 13:57:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=12.32.117.8
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1720176491; cv=none; b=eMu1EogdyYgP++dLzWQozAbTYMc4ezjJZEktZrTqRTkYBAJMXwhK71zQ8fNZXwrgLOSKUqxsh5dPu3xMFeBXqtm7FgA1nCWUTIiNeWvo0T8fmd5adQWBbwySezK86c9H2bA0apXkKh6mXStUC3NJK1JSj+Jm/lrOUsPXgYIHang=
+	t=1720187851; cv=none; b=UF5oE7/YzHMuaSoZzSQ5rlwnJzUXya9EpgliVx/uo6A/l1K5/Nrpsu6OInm+vg+mrcg//ZLQi1fdDjN+7bzGcH4fJhcH5T8xE8B6gkY+nzBXs4uutPpFePGPWTIhLe7GECIxfKI6QRSVTSRBEHzqQZ5iFZP/moFb8TfgmWIGhZE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1720176491; c=relaxed/simple;
-	bh=Ab1xlzhy1Ig+pGrZFHN6XUqu6zwAS58NZW5eVj9hP/c=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=Gy1MLPL4j0joAkeO5rhEuAOK7862Vw1/+C/VXbUp4oBA5snRnFJLPUs39yhOPZR2D/A55w8LjK24PLyARuOEGSD81yn0gsI4UFFRW/ngG1xWXG2a3t0q92ILZI8MTCvxGJ5ZbDtkkCsMy2OZ1AM6vijwO9x/4Ok5/0AqUrGqABY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=xfIKMMmS; arc=none smtp.client-ip=91.218.175.174
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-X-Envelope-To: huangjunxian6@hisilicon.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1720176484;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=hmdqLmpJIiwpuWarBamAIOeZDRcEU1Leayh1fhTIwLo=;
-	b=xfIKMMmSjzQ1iV6/6j20050eGS01jS7IlRCf0krdEgG1FOVinIMbefSrHn3ypbKwOhzj4Q
-	h5jRDHGyC7qBhIungDa7464VEicJJe+pV0tNQcFIYauy3Sk6x6z1PlQ53TBjmDdyCiiVoa
-	gAi2wF0PiOlrnjfw6MI/ToT8Td/bk5s=
-X-Envelope-To: jgg@ziepe.ca
-X-Envelope-To: leon@kernel.org
-X-Envelope-To: linux-rdma@vger.kernel.org
-X-Envelope-To: linuxarm@huawei.com
-X-Envelope-To: linux-kernel@vger.kernel.org
-Message-ID: <aa0acabe-567a-45d9-ad0a-69e85e6c300a@linux.dev>
-Date: Fri, 5 Jul 2024 18:47:56 +0800
+	s=arc-20240116; t=1720187851; c=relaxed/simple;
+	bh=WYBDXrg+MIMbuOEJ3LHYDqg3wlWbivkJuTurwYdHuns=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=UuXPd39Q/YI6YNOVh5OVkKOeLLFuG96iK5u1HUuR782xBf8tJf0J9/KvdtncOk7xUctBROBsPGrVYzOdvHuLuBMpDkgoDeoWG3bjv3dyIaiMlBe+/lGOPVWHAwea6Uqf2A984UbLPNE0jKhPcHXRv8foiIb8KA1rN2pSsAZNqdw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=chelsio.com; spf=pass smtp.mailfrom=chelsio.com; arc=none smtp.client-ip=12.32.117.8
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=chelsio.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chelsio.com
+Received: from beagle5.blr.asicdesigners.com (beagle5.blr.asicdesigners.com [10.193.80.119])
+	by stargate.chelsio.com (8.14.7/8.14.7) with ESMTP id 465DFhbJ017029;
+	Fri, 5 Jul 2024 06:15:44 -0700
+From: Anumula Murali Mohan Reddy <anumula@chelsio.com>
+To: jgg@nvidia.com, leonro@nvidia.com
+Cc: linux-rdma@vger.kernel.org,
+        Anumula Murali Mohan Reddy <anumula@chelsio.com>,
+        Potnuri Bharat Teja <bharat@chelsio.com>
+Subject: [PATCH for-next] RDMA/cxgb4: use dma_mmap_coherent() for mapping non-contiguous memory
+Date: Fri,  5 Jul 2024 18:47:53 +0530
+Message-Id: <20240705131753.15550-1-anumula@chelsio.com>
+X-Mailer: git-send-email 2.39.3
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH for-rc 3/9] RDMA/hns: Fix soft lockup under heavy CEQE
- load
-To: Junxian Huang <huangjunxian6@hisilicon.com>, jgg@ziepe.ca, leon@kernel.org
-Cc: linux-rdma@vger.kernel.org, linuxarm@huawei.com,
- linux-kernel@vger.kernel.org
-References: <20240705085937.1644229-1-huangjunxian6@hisilicon.com>
- <20240705085937.1644229-4-huangjunxian6@hisilicon.com>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Zhu Yanjun <yanjun.zhu@linux.dev>
-In-Reply-To: <20240705085937.1644229-4-huangjunxian6@hisilicon.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
 
-在 2024/7/5 16:59, Junxian Huang 写道:
-> CEQEs are handled in interrupt handler currently. This may cause the
-> CPU core staying in interrupt context too long and lead to soft lockup
-> under heavy load.
-> 
-> Handle CEQEs in tasklet and set an upper limit for the number of CEQE
-> handled by a single call of tasklet.
+dma_alloc_coherent() allocates contiguous memory irrespective of
+iommu mode, but after commit f5ff79fddf0e ("dma-mapping: remove
+CONFIG_DMA_REMAP") if iommu is enabled in translate mode,
+dma_alloc_coherent() may allocate non-contiguous memory.
+Attempt to map this memory results in panic.
+This patch fixes the issue by using dma_mmap_coherent() to map each page
+to user space.
 
-https://patchwork.kernel.org/project/linux-rdma/cover/20240621050525.3720069-1-allen.lkml@gmail.com/
+Fixes: f5ff79fddf0e ("dma-mapping: remove CONFIG_DMA_REMAP")
+Signed-off-by: Anumula Murali Mohan Reddy <anumula@chelsio.com>
+Signed-off-by: Potnuri Bharat Teja <bharat@chelsio.com>
+---
+ drivers/infiniband/hw/cxgb4/cq.c       |  4 +++
+ drivers/infiniband/hw/cxgb4/iw_cxgb4.h |  2 ++
+ drivers/infiniband/hw/cxgb4/provider.c | 48 +++++++++++++++++++++-----
+ drivers/infiniband/hw/cxgb4/qp.c       | 14 ++++++++
+ 4 files changed, 59 insertions(+), 9 deletions(-)
 
-In the above link, it seems that tasklet is not good enough. The tasklet 
-is marked deprecated and has some design flaws. It is being replace BH 
-workqueue.
-
-So directly use workqueue instead of tasklet?
-
-Zhu Yanjun
-
-> 
-> Fixes: a5073d6054f7 ("RDMA/hns: Add eq support of hip08")
-> Signed-off-by: Junxian Huang <huangjunxian6@hisilicon.com>
-> ---
->   drivers/infiniband/hw/hns/hns_roce_device.h |  1 +
->   drivers/infiniband/hw/hns/hns_roce_hw_v2.c  | 88 ++++++++++++---------
->   2 files changed, 53 insertions(+), 36 deletions(-)
-> 
-> diff --git a/drivers/infiniband/hw/hns/hns_roce_device.h b/drivers/infiniband/hw/hns/hns_roce_device.h
-> index 05005079258c..5a2445f357ab 100644
-> --- a/drivers/infiniband/hw/hns/hns_roce_device.h
-> +++ b/drivers/infiniband/hw/hns/hns_roce_device.h
-> @@ -717,6 +717,7 @@ struct hns_roce_eq {
->   	int				shift;
->   	int				event_type;
->   	int				sub_type;
-> +	struct tasklet_struct		tasklet;
->   };
->   
->   struct hns_roce_eq_table {
-> diff --git a/drivers/infiniband/hw/hns/hns_roce_hw_v2.c b/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
-> index ff135df1a761..f73de06a3ca5 100644
-> --- a/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
-> +++ b/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
-> @@ -6146,33 +6146,11 @@ static struct hns_roce_ceqe *next_ceqe_sw_v2(struct hns_roce_eq *eq)
->   		!!(eq->cons_index & eq->entries)) ? ceqe : NULL;
->   }
->   
-> -static irqreturn_t hns_roce_v2_ceq_int(struct hns_roce_dev *hr_dev,
-> -				       struct hns_roce_eq *eq)
-> +static irqreturn_t hns_roce_v2_ceq_int(struct hns_roce_eq *eq)
->   {
-> -	struct hns_roce_ceqe *ceqe = next_ceqe_sw_v2(eq);
-> -	irqreturn_t ceqe_found = IRQ_NONE;
-> -	u32 cqn;
-> -
-> -	while (ceqe) {
-> -		/* Make sure we read CEQ entry after we have checked the
-> -		 * ownership bit
-> -		 */
-> -		dma_rmb();
-> -
-> -		cqn = hr_reg_read(ceqe, CEQE_CQN);
-> -
-> -		hns_roce_cq_completion(hr_dev, cqn);
-> -
-> -		++eq->cons_index;
-> -		ceqe_found = IRQ_HANDLED;
-> -		atomic64_inc(&hr_dev->dfx_cnt[HNS_ROCE_DFX_CEQE_CNT]);
-> -
-> -		ceqe = next_ceqe_sw_v2(eq);
-> -	}
-> +	tasklet_schedule(&eq->tasklet);
->   
-> -	update_eq_db(eq);
-> -
-> -	return IRQ_RETVAL(ceqe_found);
-> +	return IRQ_HANDLED;
->   }
->   
->   static irqreturn_t hns_roce_v2_msix_interrupt_eq(int irq, void *eq_ptr)
-> @@ -6183,7 +6161,7 @@ static irqreturn_t hns_roce_v2_msix_interrupt_eq(int irq, void *eq_ptr)
->   
->   	if (eq->type_flag == HNS_ROCE_CEQ)
->   		/* Completion event interrupt */
-> -		int_work = hns_roce_v2_ceq_int(hr_dev, eq);
-> +		int_work = hns_roce_v2_ceq_int(eq);
->   	else
->   		/* Asynchronous event interrupt */
->   		int_work = hns_roce_v2_aeq_int(hr_dev, eq);
-> @@ -6551,6 +6529,34 @@ static int hns_roce_v2_create_eq(struct hns_roce_dev *hr_dev,
->   	return ret;
->   }
->   
-> +static void hns_roce_ceq_task(struct tasklet_struct *task)
-> +{
-> +	struct hns_roce_eq *eq = from_tasklet(eq, task, tasklet);
-> +	struct hns_roce_ceqe *ceqe = next_ceqe_sw_v2(eq);
-> +	struct hns_roce_dev *hr_dev = eq->hr_dev;
-> +	int ceqe_num = 0;
-> +	u32 cqn;
-> +
-> +	while (ceqe && ceqe_num < hr_dev->caps.ceqe_depth) {
-> +		/* Make sure we read CEQ entry after we have checked the
-> +		 * ownership bit
-> +		 */
-> +		dma_rmb();
-> +
-> +		cqn = hr_reg_read(ceqe, CEQE_CQN);
-> +
-> +		hns_roce_cq_completion(hr_dev, cqn);
-> +
-> +		++eq->cons_index;
-> +		++ceqe_num;
-> +		atomic64_inc(&hr_dev->dfx_cnt[HNS_ROCE_DFX_CEQE_CNT]);
-> +
-> +		ceqe = next_ceqe_sw_v2(eq);
-> +	}
-> +
-> +	update_eq_db(eq);
-> +}
-> +
->   static int __hns_roce_request_irq(struct hns_roce_dev *hr_dev, int irq_num,
->   				  int comp_num, int aeq_num, int other_num)
->   {
-> @@ -6582,21 +6588,24 @@ static int __hns_roce_request_irq(struct hns_roce_dev *hr_dev, int irq_num,
->   			 j - other_num - aeq_num);
->   
->   	for (j = 0; j < irq_num; j++) {
-> -		if (j < other_num)
-> +		if (j < other_num) {
->   			ret = request_irq(hr_dev->irq[j],
->   					  hns_roce_v2_msix_interrupt_abn,
->   					  0, hr_dev->irq_names[j], hr_dev);
-> -
-> -		else if (j < (other_num + comp_num))
-> +		} else if (j < (other_num + comp_num)) {
-> +			tasklet_setup(&eq_table->eq[j - other_num].tasklet,
-> +				      hns_roce_ceq_task);
->   			ret = request_irq(eq_table->eq[j - other_num].irq,
->   					  hns_roce_v2_msix_interrupt_eq,
->   					  0, hr_dev->irq_names[j + aeq_num],
->   					  &eq_table->eq[j - other_num]);
-> -		else
-> +		} else {
->   			ret = request_irq(eq_table->eq[j - other_num].irq,
->   					  hns_roce_v2_msix_interrupt_eq,
->   					  0, hr_dev->irq_names[j - comp_num],
->   					  &eq_table->eq[j - other_num]);
-> +		}
-> +
->   		if (ret) {
->   			dev_err(hr_dev->dev, "request irq error!\n");
->   			goto err_request_failed;
-> @@ -6606,12 +6615,16 @@ static int __hns_roce_request_irq(struct hns_roce_dev *hr_dev, int irq_num,
->   	return 0;
->   
->   err_request_failed:
-> -	for (j -= 1; j >= 0; j--)
-> -		if (j < other_num)
-> +	for (j -= 1; j >= 0; j--) {
-> +		if (j < other_num) {
->   			free_irq(hr_dev->irq[j], hr_dev);
-> -		else
-> -			free_irq(eq_table->eq[j - other_num].irq,
-> -				 &eq_table->eq[j - other_num]);
-> +			continue;
-> +		}
-> +		free_irq(eq_table->eq[j - other_num].irq,
-> +			 &eq_table->eq[j - other_num]);
-> +		if (j < other_num + comp_num)
-> +			tasklet_kill(&eq_table->eq[j - other_num].tasklet);
-> +	}
->   
->   err_kzalloc_failed:
->   	for (i -= 1; i >= 0; i--)
-> @@ -6632,8 +6645,11 @@ static void __hns_roce_free_irq(struct hns_roce_dev *hr_dev)
->   	for (i = 0; i < hr_dev->caps.num_other_vectors; i++)
->   		free_irq(hr_dev->irq[i], hr_dev);
->   
-> -	for (i = 0; i < eq_num; i++)
-> +	for (i = 0; i < eq_num; i++) {
->   		free_irq(hr_dev->eq_table.eq[i].irq, &hr_dev->eq_table.eq[i]);
-> +		if (i < hr_dev->caps.num_comp_vectors)
-> +			tasklet_kill(&hr_dev->eq_table.eq[i].tasklet);
-> +	}
->   
->   	for (i = 0; i < irq_num; i++)
->   		kfree(hr_dev->irq_names[i]);
+diff --git a/drivers/infiniband/hw/cxgb4/cq.c b/drivers/infiniband/hw/cxgb4/cq.c
+index 5111421f9473..81cfc876fa89 100644
+--- a/drivers/infiniband/hw/cxgb4/cq.c
++++ b/drivers/infiniband/hw/cxgb4/cq.c
+@@ -1127,12 +1127,16 @@ int c4iw_create_cq(struct ib_cq *ibcq, const struct ib_cq_init_attr *attr,
+ 
+ 		mm->key = uresp.key;
+ 		mm->addr = virt_to_phys(chp->cq.queue);
++		mm->vaddr = chp->cq.queue;
++		mm->dma_addr = chp->cq.dma_addr;
+ 		mm->len = chp->cq.memsize;
+ 		insert_mmap(ucontext, mm);
+ 
+ 		mm2->key = uresp.gts_key;
+ 		mm2->addr = chp->cq.bar2_pa;
+ 		mm2->len = PAGE_SIZE;
++		mm2->vaddr = NULL;
++		mm2->dma_addr = 0;
+ 		insert_mmap(ucontext, mm2);
+ 	}
+ 
+diff --git a/drivers/infiniband/hw/cxgb4/iw_cxgb4.h b/drivers/infiniband/hw/cxgb4/iw_cxgb4.h
+index f838bb6718af..5eedc6cf0f8c 100644
+--- a/drivers/infiniband/hw/cxgb4/iw_cxgb4.h
++++ b/drivers/infiniband/hw/cxgb4/iw_cxgb4.h
+@@ -536,6 +536,8 @@ struct c4iw_mm_entry {
+ 	struct list_head entry;
+ 	u64 addr;
+ 	u32 key;
++	void *vaddr;
++	dma_addr_t dma_addr;
+ 	unsigned len;
+ };
+ 
+diff --git a/drivers/infiniband/hw/cxgb4/provider.c b/drivers/infiniband/hw/cxgb4/provider.c
+index 246b739ddb2b..6227775970c9 100644
+--- a/drivers/infiniband/hw/cxgb4/provider.c
++++ b/drivers/infiniband/hw/cxgb4/provider.c
+@@ -131,6 +131,10 @@ static int c4iw_mmap(struct ib_ucontext *context, struct vm_area_struct *vma)
+ 	struct c4iw_mm_entry *mm;
+ 	struct c4iw_ucontext *ucontext;
+ 	u64 addr;
++	size_t size;
++	void *vaddr;
++	unsigned long vm_pgoff;
++	dma_addr_t dma_addr;
+ 
+ 	pr_debug("pgoff 0x%lx key 0x%x len %d\n", vma->vm_pgoff,
+ 		 key, len);
+@@ -145,6 +149,9 @@ static int c4iw_mmap(struct ib_ucontext *context, struct vm_area_struct *vma)
+ 	if (!mm)
+ 		return -EINVAL;
+ 	addr = mm->addr;
++	vaddr = mm->vaddr;
++	dma_addr = mm->dma_addr;
++	size = mm->len;
+ 	kfree(mm);
+ 
+ 	if ((addr >= pci_resource_start(rdev->lldi.pdev, 0)) &&
+@@ -155,9 +162,17 @@ static int c4iw_mmap(struct ib_ucontext *context, struct vm_area_struct *vma)
+ 		 * MA_SYNC register...
+ 		 */
+ 		vma->vm_page_prot = pgprot_noncached(vma->vm_page_prot);
+-		ret = io_remap_pfn_range(vma, vma->vm_start,
+-					 addr >> PAGE_SHIFT,
+-					 len, vma->vm_page_prot);
++		if (vaddr && is_vmalloc_addr(vaddr)) {
++			vm_pgoff = vma->vm_pgoff;
++			vma->vm_pgoff = 0;
++			ret = dma_mmap_coherent(&rdev->lldi.pdev->dev, vma,
++						vaddr, dma_addr, size);
++			vma->vm_pgoff = vm_pgoff;
++		} else {
++			ret = io_remap_pfn_range(vma, vma->vm_start,
++						 addr >> PAGE_SHIFT,
++						 len, vma->vm_page_prot);
++		}
+ 	} else if ((addr >= pci_resource_start(rdev->lldi.pdev, 2)) &&
+ 		   (addr < (pci_resource_start(rdev->lldi.pdev, 2) +
+ 		    pci_resource_len(rdev->lldi.pdev, 2)))) {
+@@ -175,17 +190,32 @@ static int c4iw_mmap(struct ib_ucontext *context, struct vm_area_struct *vma)
+ 				vma->vm_page_prot =
+ 					pgprot_noncached(vma->vm_page_prot);
+ 		}
+-		ret = io_remap_pfn_range(vma, vma->vm_start,
+-					 addr >> PAGE_SHIFT,
+-					 len, vma->vm_page_prot);
++		if (vaddr && is_vmalloc_addr(vaddr)) {
++			vm_pgoff = vma->vm_pgoff;
++			vma->vm_pgoff = 0;
++			ret = dma_mmap_coherent(&rdev->lldi.pdev->dev, vma,
++						vaddr, dma_addr, size);
++			vma->vm_pgoff = vm_pgoff;
++		} else {
++			ret = io_remap_pfn_range(vma, vma->vm_start,
++						 addr >> PAGE_SHIFT,
++						 len, vma->vm_page_prot);
++		}
+ 	} else {
+ 
+ 		/*
+ 		 * Map WQ or CQ contig dma memory...
+ 		 */
+-		ret = remap_pfn_range(vma, vma->vm_start,
+-				      addr >> PAGE_SHIFT,
+-				      len, vma->vm_page_prot);
++		if (vaddr && is_vmalloc_addr(vaddr)) {
++			vm_pgoff = vma->vm_pgoff;
++			vma->vm_pgoff = 0;
++			ret = dma_mmap_coherent(&rdev->lldi.pdev->dev, vma,
++						vaddr, dma_addr, size);
++		} else {
++			ret = remap_pfn_range(vma, vma->vm_start,
++					      addr >> PAGE_SHIFT,
++					      len, vma->vm_page_prot);
++		}
+ 	}
+ 
+ 	return ret;
+diff --git a/drivers/infiniband/hw/cxgb4/qp.c b/drivers/infiniband/hw/cxgb4/qp.c
+index d16d8eaa1415..3f6fb4b34d5a 100644
+--- a/drivers/infiniband/hw/cxgb4/qp.c
++++ b/drivers/infiniband/hw/cxgb4/qp.c
+@@ -2282,16 +2282,22 @@ int c4iw_create_qp(struct ib_qp *qp, struct ib_qp_init_attr *attrs,
+ 			goto err_free_ma_sync_key;
+ 		sq_key_mm->key = uresp.sq_key;
+ 		sq_key_mm->addr = qhp->wq.sq.phys_addr;
++		sq_key_mm->vaddr = qhp->wq.sq.queue;
++		sq_key_mm->dma_addr = qhp->wq.sq.dma_addr;
+ 		sq_key_mm->len = PAGE_ALIGN(qhp->wq.sq.memsize);
+ 		insert_mmap(ucontext, sq_key_mm);
+ 		if (!attrs->srq) {
+ 			rq_key_mm->key = uresp.rq_key;
+ 			rq_key_mm->addr = virt_to_phys(qhp->wq.rq.queue);
++			rq_key_mm->vaddr = qhp->wq.rq.queue;
++			rq_key_mm->dma_addr = qhp->wq.rq.dma_addr;
+ 			rq_key_mm->len = PAGE_ALIGN(qhp->wq.rq.memsize);
+ 			insert_mmap(ucontext, rq_key_mm);
+ 		}
+ 		sq_db_key_mm->key = uresp.sq_db_gts_key;
+ 		sq_db_key_mm->addr = (u64)(unsigned long)qhp->wq.sq.bar2_pa;
++		sq_db_key_mm->vaddr = NULL;
++		sq_db_key_mm->dma_addr = 0;
+ 		sq_db_key_mm->len = PAGE_SIZE;
+ 		insert_mmap(ucontext, sq_db_key_mm);
+ 		if (!attrs->srq) {
+@@ -2299,6 +2305,8 @@ int c4iw_create_qp(struct ib_qp *qp, struct ib_qp_init_attr *attrs,
+ 			rq_db_key_mm->addr =
+ 				(u64)(unsigned long)qhp->wq.rq.bar2_pa;
+ 			rq_db_key_mm->len = PAGE_SIZE;
++			rq_db_key_mm->vaddr = NULL;
++			rq_db_key_mm->dma_addr = 0;
+ 			insert_mmap(ucontext, rq_db_key_mm);
+ 		}
+ 		if (ma_sync_key_mm) {
+@@ -2307,6 +2315,8 @@ int c4iw_create_qp(struct ib_qp *qp, struct ib_qp_init_attr *attrs,
+ 				(pci_resource_start(rhp->rdev.lldi.pdev, 0) +
+ 				PCIE_MA_SYNC_A) & PAGE_MASK;
+ 			ma_sync_key_mm->len = PAGE_SIZE;
++			ma_sync_key_mm->vaddr = NULL;
++			ma_sync_key_mm->dma_addr = 0;
+ 			insert_mmap(ucontext, ma_sync_key_mm);
+ 		}
+ 
+@@ -2763,10 +2773,14 @@ int c4iw_create_srq(struct ib_srq *ib_srq, struct ib_srq_init_attr *attrs,
+ 		srq_key_mm->key = uresp.srq_key;
+ 		srq_key_mm->addr = virt_to_phys(srq->wq.queue);
+ 		srq_key_mm->len = PAGE_ALIGN(srq->wq.memsize);
++		srq_key_mm->vaddr = srq->wq.queue;
++		srq_key_mm->dma_addr = srq->wq.dma_addr;
+ 		insert_mmap(ucontext, srq_key_mm);
+ 		srq_db_key_mm->key = uresp.srq_db_gts_key;
+ 		srq_db_key_mm->addr = (u64)(unsigned long)srq->wq.bar2_pa;
+ 		srq_db_key_mm->len = PAGE_SIZE;
++		srq_db_key_mm->vaddr = NULL;
++		srq_db_key_mm->dma_addr = 0;
+ 		insert_mmap(ucontext, srq_db_key_mm);
+ 	}
+ 
+-- 
+2.39.3
 
 
