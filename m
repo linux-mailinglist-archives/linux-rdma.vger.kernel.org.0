@@ -1,113 +1,88 @@
-Return-Path: <linux-rdma+bounces-3663-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-3667-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 35C9A92829E
-	for <lists+linux-rdma@lfdr.de>; Fri,  5 Jul 2024 09:20:44 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 47FDC9284A7
+	for <lists+linux-rdma@lfdr.de>; Fri,  5 Jul 2024 11:06:50 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BFD65287F4F
-	for <lists+linux-rdma@lfdr.de>; Fri,  5 Jul 2024 07:20:42 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 73DDA1C24B02
+	for <lists+linux-rdma@lfdr.de>; Fri,  5 Jul 2024 09:06:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A4488144D25;
-	Fri,  5 Jul 2024 07:20:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="phNk1xRH"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DB60C146A9A;
+	Fri,  5 Jul 2024 09:05:15 +0000 (UTC)
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
+Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DF848139D1B;
-	Fri,  5 Jul 2024 07:20:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F148D146D55;
+	Fri,  5 Jul 2024 09:05:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.187
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1720164039; cv=none; b=f67Q9TgPQVVYnr1T5fgwkcnnqPXkVM5eRkIuyu6DmwwOGtpFGhTbx/zAl0I6LGsY46CryvAdLseuSCHudrpjthFHTQ5ZhRupcjDaa57W1hjcgSLRZLQnq+U/1DHT0rgxfstZ3g71Hp+ymVB6fMFWorRJK5KBbYwx05eGcmGFufY=
+	t=1720170315; cv=none; b=mxjnxLtcZMvkETlq5r3pB7PCCagvExzXqqdyvd2v98ZxPe8fenKlF6J+zIdPpGRlQc1TeqPb+Z8OIN60IsuEYdGVmr9F9Fs8mStcbYsUK6hYVYPmM1z3qCL5/uc4ZLpNe/sOjenfmKfgMtisl3xblT0dGAlyLxo1BMfrIEMlHco=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1720164039; c=relaxed/simple;
-	bh=xLtifxE+kqcKNAFU+XOWtYqz1GUTgsTA2Jtf154doUA=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Pjs9BwXSvkg8Oo9EU8J/0NcC/v2YyOpZ7HXgmpenyWJOhWVutOLdZe/pfTJO2OuHmzXgCNnUEPsNAv8GSO2pEwnk6lG5/wlZu8t8fzSqb1KjE6SGwP/vtYo4WlQJ2xRRxtjN+iT9lPmwl0cKUqAbsChHMRf9jrhraaZRGmpig1A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=bombadil.srs.infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=phNk1xRH; arc=none smtp.client-ip=198.137.202.133
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=bombadil.srs.infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=bombadil.20210309; h=In-Reply-To:Content-Type:MIME-Version
-	:References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description;
-	bh=mSoRdEvE9ngNNW/Fvl9r4sE1gC92uZ4xSa+Z+FECORo=; b=phNk1xRH8vSfNAwEeEb4OY6vyA
-	ZtkfLuMwyfvnFMOX6inCoxL93V43P7K6cstTM+xCzIwh6eHRyGPjQTcWPM9YiMz5o46DXkmL7Xul/
-	WwJlktjVAGjlASSYuRtxe3dUI6S4c8oPCsMz6czPit9nRn4fiLHm23nM5B3Xq9O5hgren3A4/eaJ1
-	zhRNXsOCq+kZ0227NJee/FSjN0OHaQT4CEFaM9z9S1rhiTpkNDB5ALUsR4xXjXELfRid0WvWUH70x
-	dYsrGzcgnBT0jRj/y4qIQhCzQKIUd1bjW/tFq9cROt4E2QAf8X3GN+E8IMjJ4YeaT3cTh1R33GSOV
-	cx4P4imA==;
-Received: from hch by bombadil.infradead.org with local (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sPdFD-0000000F8lp-2Ilh;
-	Fri, 05 Jul 2024 07:20:35 +0000
-Date: Fri, 5 Jul 2024 00:20:35 -0700
-From: Christoph Hellwig <hch@infradead.org>
-To: Martin Oliveira <martin.oliveira@eideticom.com>
-Cc: Matthew Wilcox <willy@infradead.org>, linux-kernel@vger.kernel.org,
-	linux-mm@kvack.org, linux-rdma@vger.kernel.org,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Artemy Kovalyov <artemyko@nvidia.com>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	Jason Gunthorpe <jgg@ziepe.ca>, Leon Romanovsky <leon@kernel.org>,
-	Logan Gunthorpe <logang@deltatee.com>,
-	Michael Guralnik <michaelgur@nvidia.com>,
-	Mike Marciniszyn <mike.marciniszyn@intel.com>,
-	Tejun Heo <tj@kernel.org>, John Hubbard <jhubbard@nvidia.com>,
-	Dan Williams <dan.j.williams@intel.com>,
-	David Sloan <david.sloan@eideticom.com>
-Subject: Re: [PATCH v3 1/3] kernfs: remove page_mkwrite() from
- vm_operations_struct
-Message-ID: <Zoeew3RMOoUIMHz9@infradead.org>
-References: <20240704163724.2462161-1-martin.oliveira@eideticom.com>
- <20240704163724.2462161-2-martin.oliveira@eideticom.com>
- <ZobVol_trCwtwjK4@casper.infradead.org>
- <310071c8-04b7-4996-a496-614c2bdb8163@eideticom.com>
+	s=arc-20240116; t=1720170315; c=relaxed/simple;
+	bh=CMRb6se6WXLyGUIXekn1XnTi7HSlQZnyhkQQc7GAtxE=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=We/JnbX770gvtpbFnhzKemGRjgND6Ovx//xt880PMptowzS89QOoR9bAOWeQv8mm7RraKrrzX2NZSveQvoEPeB/vK5f6j2yieVBz5frhhFLWIQc33W11iPeXE61I+ko08oUPapiwmQmrQjblKYQ0XSrRbiCWKE8GokKoDu39XhA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=hisilicon.com; spf=pass smtp.mailfrom=hisilicon.com; arc=none smtp.client-ip=45.249.212.187
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=hisilicon.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=hisilicon.com
+Received: from mail.maildlp.com (unknown [172.19.163.252])
+	by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4WFnXk4t04zxV9h;
+	Fri,  5 Jul 2024 17:00:22 +0800 (CST)
+Received: from kwepemf100018.china.huawei.com (unknown [7.202.181.17])
+	by mail.maildlp.com (Postfix) with ESMTPS id 4D2C3180AA6;
+	Fri,  5 Jul 2024 17:04:52 +0800 (CST)
+Received: from localhost.localdomain (10.90.30.45) by
+ kwepemf100018.china.huawei.com (7.202.181.17) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1544.11; Fri, 5 Jul 2024 17:04:51 +0800
+From: Junxian Huang <huangjunxian6@hisilicon.com>
+To: <jgg@ziepe.ca>, <leon@kernel.org>
+CC: <linux-rdma@vger.kernel.org>, <linuxarm@huawei.com>,
+	<linux-kernel@vger.kernel.org>, <huangjunxian6@hisilicon.com>
+Subject: [PATCH for-rc 0/9] RDMA/hns: Bugfixes
+Date: Fri, 5 Jul 2024 16:59:28 +0800
+Message-ID: <20240705085937.1644229-1-huangjunxian6@hisilicon.com>
+X-Mailer: git-send-email 2.30.0
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <310071c8-04b7-4996-a496-614c2bdb8163@eideticom.com>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
+ kwepemf100018.china.huawei.com (7.202.181.17)
 
-On Thu, Jul 04, 2024 at 02:43:04PM -0600, Martin Oliveira wrote:
-> On 2024-07-04 11:02, Matthew Wilcox wrote:> Seems to me we should actually _handle_ that, not do something wrong.
-> > eg:
-> > 
-> >         if (vma->vm_ops) {
-> >                 if (vma->vm_ops->close)
-> >                         goto out_put;
-> >                 if (WARN_ON(vma->vm_ops->page_mkwrite))
-> >                         goto out_put;
-> >         }
-> 
-> Good point.
+Here are some bugfixes for hns driver.
 
-Btw, sorry if I mislead you with my WARN_ON_ONCE suggestion.  That
-was always intended in addition to the error handling, not instead.
-(In fact there are very few reasons to use WARN_ON* without actually
-handling the error as well).
+Chengchang Tang (5):
+  RDMA/hns: Fix missing pagesize and alignment check in FRMR
+  RDMA/hns: Fix shift-out-bounds when max_inline_data is 0
+  RDMA/hns: Fix undifined behavior caused by invalid max_sge
+  RDMA/hns: Fix insufficient extend DB for VFs.
+  RDMA/hns: Fix mbx timing out before CMD execution is completed
 
-> 
-> > or maybe this doesn't need to be a WARN at all?  After all, there
-> > isn't one for having a ->close method, so why is page_mkwrite special?
-> 
-> Hmm yeah, they should probably be treated the same.
-> 
-> Maybe ->close should be converted to WARN as well? It would be easier to
-> catch an error this way than chasing the EINVAL, but I'm OK either way.
+Junxian Huang (3):
+  RDMA/hns: Check atomic wr length
+  RDMA/hns: Fix soft lockup under heavy CEQE load
+  RDMA/hns: Fix unmatch exception handling when init eq table fails
 
-Yes, doing the same for ->close or anything unimplemented would be
-nice.  But it's not really in scope for this series.
+wenglianfa (1):
+  RDMA/hns: Fix a long wait for cmdq event during reset
 
-kernfs really should be using it's own ops instead of abusing
-file_operations, but that's even more out of scope..
+ drivers/infiniband/hw/hns/hns_roce_device.h |   7 +
+ drivers/infiniband/hw/hns/hns_roce_hw_v2.c  | 191 +++++++++++++-------
+ drivers/infiniband/hw/hns/hns_roce_hw_v2.h  |   6 +
+ drivers/infiniband/hw/hns/hns_roce_mr.c     |   5 +
+ drivers/infiniband/hw/hns/hns_roce_qp.c     |   4 +-
+ drivers/infiniband/hw/hns/hns_roce_srq.c    |   2 +-
+ 6 files changed, 152 insertions(+), 63 deletions(-)
+
+--
+2.33.0
 
 
