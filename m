@@ -1,64 +1,58 @@
-Return-Path: <linux-rdma+bounces-3680-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-3681-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id C85A3929151
-	for <lists+linux-rdma@lfdr.de>; Sat,  6 Jul 2024 08:26:20 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D761B929702
+	for <lists+linux-rdma@lfdr.de>; Sun,  7 Jul 2024 09:57:53 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 84C6F283D3A
-	for <lists+linux-rdma@lfdr.de>; Sat,  6 Jul 2024 06:26:19 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 69DCF281E11
+	for <lists+linux-rdma@lfdr.de>; Sun,  7 Jul 2024 07:57:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2A5BA1C2BD;
-	Sat,  6 Jul 2024 06:26:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1CBAFF501;
+	Sun,  7 Jul 2024 07:57:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="fEhOyE54"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from verein.lst.de (verein.lst.de [213.95.11.211])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BA1E118E06;
-	Sat,  6 Jul 2024 06:26:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.95.11.211
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BBB77E54C
+	for <linux-rdma@vger.kernel.org>; Sun,  7 Jul 2024 07:57:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1720247171; cv=none; b=itD6WTkqIdURCgSMKiXfelltqhEzbQ6HQpTsxZLuQ4jbS1y4rovX/JQNgvh3uQ+kyZtRx5ncNWfphHp8a1E2Kko2FSuKnhqXQo4H7RMAajBCq/VRrXWAJE5bhL3mfUMobWeVc4zduzZdEN8H8MJ0QK/s4u3yHBNKs4SYezxFOLA=
+	t=1720339067; cv=none; b=rfI36FjlYvYhh5kGJGs6lpcd517V5PITjUm7LaSKGioV8lSwci+dvKLuI4ycd0ggcjVT+w6UfTixkuZMAJwjw4TJ2LDC6+WuVOfMwcvmoymb0rsVlcqXIoqlUImI08I6dg/jL1AYCV9MApgNgMUScgCFcDYi3P6pUqI9Pl1fDV4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1720247171; c=relaxed/simple;
-	bh=qSS2aQCHFsEoF8vnLdLxeJXMBQprUWrDR4lqJIC0dEA=;
+	s=arc-20240116; t=1720339067; c=relaxed/simple;
+	bh=It8UIdY11ReFOcAaNoiPueJACmDj0TSPm4E18Vf8yFQ=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=EPDf9mezaClkhyD0erbPXGbhv5Gb8FOEQay96HG1axJt85dddyqZFLtWzB2Y/OVgUkgIftFxZBIsEKxHl2665JUqJsijnwh+GmOFYnT6YcwP4CBO6kbMPoRs/hKDH4A3eBNJGLcHD0RpCwvkwwURAlyLo417REBWz0z91sfw48g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=lst.de; spf=pass smtp.mailfrom=lst.de; arc=none smtp.client-ip=213.95.11.211
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=lst.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lst.de
-Received: by verein.lst.de (Postfix, from userid 2407)
-	id AA8AA68D0E; Sat,  6 Jul 2024 08:26:04 +0200 (CEST)
-Date: Sat, 6 Jul 2024 08:26:04 +0200
-From: Christoph Hellwig <hch@lst.de>
-To: Chaitanya Kulkarni <chaitanyak@nvidia.com>
-Cc: Christoph Hellwig <hch@lst.de>, Leon Romanovsky <leon@kernel.org>,
-	Jens Axboe <axboe@kernel.dk>, Jason Gunthorpe <jgg@ziepe.ca>,
-	Robin Murphy <robin.murphy@arm.com>, Joerg Roedel <joro@8bytes.org>,
-	Will Deacon <will@kernel.org>, Keith Busch <kbusch@kernel.org>,
-	"Zeng, Oak" <oak.zeng@intel.com>, Sagi Grimberg <sagi@grimberg.me>,
-	Bjorn Helgaas <bhelgaas@google.com>,
-	Logan Gunthorpe <logang@deltatee.com>,
-	Yishai Hadas <yishaih@nvidia.com>,
-	Shameer Kolothum <shameerali.kolothum.thodi@huawei.com>,
-	Kevin Tian <kevin.tian@intel.com>,
-	Alex Williamson <alex.williamson@redhat.com>,
-	Marek Szyprowski <m.szyprowski@samsung.com>,
-	=?iso-8859-1?B?Suly9G1l?= Glisse <jglisse@redhat.com>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	"linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+	 Content-Type:Content-Disposition:In-Reply-To; b=Z2/hbLz02pGXJIAN49Um6Et5Ez7feGx4RSRt0+e9+S1Q4KPfCE7pVm+9cy0yhls/53Zc7AVH3gdGl33J/ZTPPk/aKe1y9cuNU3fitoyNEsFGMJ0OUAiT+0jbmUCh71ClAuYEXHFGSPJ2FugiLCELylSLBdaV7nw1He3AhmfA74I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=fEhOyE54; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CF36AC3277B;
+	Sun,  7 Jul 2024 07:57:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1720339067;
+	bh=It8UIdY11ReFOcAaNoiPueJACmDj0TSPm4E18Vf8yFQ=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=fEhOyE54InEI/61ongTLP6QG9eomZBJWJHJGvjW6yRwyFa7TdeggJA4QWvdBgReet
+	 viOC8xPO1z245VEj9u1ce83WaSQzKXoOrrb0Y8hciPW2p80WBevT7XX97+uX3J+BDw
+	 w+xacoU5pWbQqDq2dxF2D3U5a52WrfgRUevKA5cWkhSvkNUlSnupSJmGokfGUoQYzu
+	 0LgS34GrkV1qAZ7CDzQByTRHfzpcUl8yLrero5da5hJ5wcC59IAEQ7maIXzt5sdIhu
+	 wYJTS5oVoQ+mJEg1PBgFZts7vD4kosorYs9kRZpYwyTdxdlP8KTk/F78HU+0BWm43o
+	 RMVbpAHHghsQw==
+Date: Sun, 7 Jul 2024 10:57:42 +0300
+From: Leon Romanovsky <leon@kernel.org>
+To: Omer Shpigelman <oshpigelman@habana.ai>
+Cc: "ogabbay@kernel.org" <ogabbay@kernel.org>,
+	Zvika Yehudai <zyehudai@habana.ai>,
 	"linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-	"iommu@lists.linux.dev" <iommu@lists.linux.dev>,
-	"linux-nvme@lists.infradead.org" <linux-nvme@lists.infradead.org>,
-	"linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
-	"kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-	"linux-mm@kvack.org" <linux-mm@kvack.org>
-Subject: Re: [RFC PATCH v1 00/18] Provide a new two step DMA API mapping API
-Message-ID: <20240706062604.GA13874@lst.de>
-References: <cover.1719909395.git.leon@kernel.org> <20240703054238.GA25366@lst.de> <20240703105253.GA95824@unreal> <20240703143530.GA30857@lst.de> <a7f1c69a-bbaf-4263-b2c2-3c92d65522c2@nvidia.com>
+	David Meriin <dmeriin@habana.ai>
+Subject: Re: [PATCH 12/15] RDMA/hbl: direct verbs support
+Message-ID: <20240707075742.GA6695@unreal>
+References: <20240613082208.1439968-1-oshpigelman@habana.ai>
+ <20240613082208.1439968-13-oshpigelman@habana.ai>
+ <eebde0ac-9da1-4c52-b52f-a775e2c0d358@habana.ai>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
@@ -67,21 +61,48 @@ List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <a7f1c69a-bbaf-4263-b2c2-3c92d65522c2@nvidia.com>
-User-Agent: Mutt/1.5.17 (2007-11-01)
+In-Reply-To: <eebde0ac-9da1-4c52-b52f-a775e2c0d358@habana.ai>
 
-On Fri, Jul 05, 2024 at 10:53:06PM +0000, Chaitanya Kulkarni wrote:
-> I tried to reproduce this issue somehow it is not reproducible.
+On Thu, Jul 04, 2024 at 10:31:18AM +0000, Omer Shpigelman wrote:
+> On 6/13/24 11:22, Omer Shpigelman wrote:
+> > Add direct verbs (DV) uAPI.
+> > The added operations are:
+> > query_port: query vendor specific port attributes.
+> > set_port_ex: set port extended settings.
+> > usr_fifo: set user FIFO object for triggering HW doorbells.
+> > encap: set port encapsulation (UDP/IPv4).
+> > 
+> > Signed-off-by: Omer Shpigelman <oshpigelman@habana.ai>
+> > Co-developed-by: Abhilash K V <kvabhilash@habana.ai>
+> > Signed-off-by: Abhilash K V <kvabhilash@habana.ai>
+> > Co-developed-by: Andrey Agranovich <aagranovich@habana.ai>
+> > Signed-off-by: Andrey Agranovich <aagranovich@habana.ai>
+> > Co-developed-by: Bharat Jauhari <bjauhari@habana.ai>
+> > Signed-off-by: Bharat Jauhari <bjauhari@habana.ai>
+> > Co-developed-by: David Meriin <dmeriin@habana.ai>
+> > Signed-off-by: David Meriin <dmeriin@habana.ai>
+> > Co-developed-by: Sagiv Ozeri <sozeri@habana.ai>
+> > Signed-off-by: Sagiv Ozeri <sozeri@habana.ai>
+> > Co-developed-by: Zvika Yehudai <zyehudai@habana.ai>
+> > Signed-off-by: Zvika Yehudai <zyehudai@habana.ai>
+> > ---
 > 
-> I'll try again on Leon's setup on my Saturday night, to fix that
-> case.
+> <..>
+> 
+> Hi Leon,
+>  
+> I'd like to ask if it will be possible to add a DV for dumping a QP. The
+> standard way to dump a QP is with rdma resource tool but it might not be
+> available for us on all environments. Hence it will be best for us to add
+> a direct uAPI for exposing this info, similarly to our query port DV.
+> Will that be acceptable? or maybe is there any other way we can achieve
+> this ability?
 
-It is passthrough I/O from userspace.  The address is not page aligned
-as seen in the printk.  Forcing bounce buffering of all passthrough
-I/O makes it go away.
+I don't know, new rdma-core library with new API will be available,
+but stdnalone tool which can be statically linked won't. How is it possible?
 
-The problem is the first mapped segment does not have to be aligned
-and we're missing the code to places it at the aligned offset into
-the IOVA space.
+Thanks
 
+>  
+> Thanks
 
