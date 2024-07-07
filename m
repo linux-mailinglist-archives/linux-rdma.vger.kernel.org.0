@@ -1,72 +1,47 @@
-Return-Path: <linux-rdma+bounces-3691-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-3692-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2C8F7929757
-	for <lists+linux-rdma@lfdr.de>; Sun,  7 Jul 2024 11:46:04 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2C39F9297A0
+	for <lists+linux-rdma@lfdr.de>; Sun,  7 Jul 2024 13:31:16 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 90B70B20F94
-	for <lists+linux-rdma@lfdr.de>; Sun,  7 Jul 2024 09:46:01 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AF75C281739
+	for <lists+linux-rdma@lfdr.de>; Sun,  7 Jul 2024 11:31:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D1C4C179AE;
-	Sun,  7 Jul 2024 09:45:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ahYHGAFD"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5D0111AACA;
+	Sun,  7 Jul 2024 11:31:11 +0000 (UTC)
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from verein.lst.de (verein.lst.de [213.95.11.211])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 76E29B641;
-	Sun,  7 Jul 2024 09:45:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 323376FBE
+	for <linux-rdma@vger.kernel.org>; Sun,  7 Jul 2024 11:31:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.95.11.211
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1720345551; cv=none; b=uvqprH0dNIT0Gndjzrv1TkTby8xB6SkcOG0JrSmip4MLLz+RzeFrRHf/s+SE/HPkW1mx7A1sPjvRL8X7V3ri0J8sGwXA03vpUVf9JG/6zZi84QmwBQE50AUd8tKw0OGRfY8yJKVFVAsfKfCI1aBOEFvsUnvHng9EulOj3GFtNHA=
+	t=1720351871; cv=none; b=Kdxa0SZok2acN8hVAi1J/M4JvUgcfoJIhnzJjoW5ABGGqaCC1KbfVw2I8RKq48S5azqAQaBae1q6YI/s4ifYwiwy76v2SqwSoU1swxCAVeMpzjUPP2VZ6FqoxN1Dx9Fiyndqcy1TBrLwsPRA6DVFbTPSM2styiFCm4Hyec2/Sd4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1720345551; c=relaxed/simple;
-	bh=hNUGTH1mhz5l+9in2/mMOpiVJOQXuWh1yP0g+veKSK0=;
+	s=arc-20240116; t=1720351871; c=relaxed/simple;
+	bh=w8bEWVxkq5PrSjvIwXeOMay/T22y98v3pTVhXXvO6IQ=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=OfAZJxnbTaVoB1aV6CrBw6XxAdgl+Hj5WzUzTcBfHVQ9pYXLGvIXmo3+jQYQUP1cj4q5u3la4tkSG6CJYGpQMCe9vXbr/g08girVshcCDtHIMLYL/ti1ovotIQyWpINI/yru9lGoqZmAtlhqrPKKpKr4moLFLJvEU8Jpo2jNyg0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ahYHGAFD; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 39EC2C3277B;
-	Sun,  7 Jul 2024 09:45:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1720345551;
-	bh=hNUGTH1mhz5l+9in2/mMOpiVJOQXuWh1yP0g+veKSK0=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=ahYHGAFDjGl7i/GWARbP/F9pDYyXX3XPYRGN0PWvpQdcU2oQHDkZ0wJcKKuvKfVJc
-	 2hfX7AU3v42PzHu7U07l94/7jkm9EFmW+xrBKRB9eDQL/pCqX7ppg1lIWwvq0cAt12
-	 ws9vXfMuNdLl8/xOvdEnMeKv6DQwPHTR15Yrh/qHFshtGrrKFVHE9kBTQbipArpx8K
-	 wc/TrHCQ/V42wsh6YAjiO0iQcvH9jBnOC/2CaPidj7zVz1Q39pONyD0/HWnskSVPlF
-	 rm6kA2bjmL1Nqo+OJR+bSkx51dK+h7UENltUEUKGo6rfQ6jQG8sKmmFbrh13JTZ9gV
-	 WrZ4agy073JUw==
-Date: Sun, 7 Jul 2024 12:45:46 +0300
-From: Leon Romanovsky <leon@kernel.org>
-To: Christoph Hellwig <hch@lst.de>
-Cc: Jens Axboe <axboe@kernel.dk>, Jason Gunthorpe <jgg@ziepe.ca>,
-	Robin Murphy <robin.murphy@arm.com>, Joerg Roedel <joro@8bytes.org>,
-	Will Deacon <will@kernel.org>, Keith Busch <kbusch@kernel.org>,
-	"Zeng, Oak" <oak.zeng@intel.com>,
-	Chaitanya Kulkarni <kch@nvidia.com>,
-	Sagi Grimberg <sagi@grimberg.me>,
-	Bjorn Helgaas <bhelgaas@google.com>,
-	Logan Gunthorpe <logang@deltatee.com>,
-	Yishai Hadas <yishaih@nvidia.com>,
-	Shameer Kolothum <shameerali.kolothum.thodi@huawei.com>,
-	Kevin Tian <kevin.tian@intel.com>,
-	Alex Williamson <alex.williamson@redhat.com>,
-	Marek Szyprowski <m.szyprowski@samsung.com>,
-	=?iso-8859-1?B?Suly9G1l?= Glisse <jglisse@redhat.com>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-rdma@vger.kernel.org, iommu@lists.linux.dev,
-	linux-nvme@lists.infradead.org, linux-pci@vger.kernel.org,
-	kvm@vger.kernel.org, linux-mm@kvack.org
-Subject: Re: [RFC PATCH v1 00/18] Provide a new two step DMA API mapping API
-Message-ID: <20240707094546.GI6695@unreal>
-References: <cover.1719909395.git.leon@kernel.org>
- <20240705063910.GA12337@lst.de>
+	 Content-Type:Content-Disposition:In-Reply-To; b=J2smnxBnlG008lKhA2UtwN2b+tvSTsV4t+OmnmxR3Iblb5Hft9RsQnT/e3IjsZy+69Lm//t40Ccwb/zkQcXK7hp1hxxvNVri1A9ONc8Ii4Q+jTW3FtwwtPuPKkLTaXGSz2vTyEssWKGT+YdF+fYE1OB4gUgQTYDFIKhhej3zx6c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=lst.de; spf=pass smtp.mailfrom=lst.de; arc=none smtp.client-ip=213.95.11.211
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=lst.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lst.de
+Received: by verein.lst.de (Postfix, from userid 2407)
+	id 7723868BEB; Sun,  7 Jul 2024 13:31:03 +0200 (CEST)
+Date: Sun, 7 Jul 2024 13:31:03 +0200
+From: Christoph Hellwig <hch@lst.de>
+To: Leon Romanovsky <leon@kernel.org>
+Cc: Anumula Murali Mohan Reddy <anumula@chelsio.com>, jgg@nvidia.com,
+	linux-rdma@vger.kernel.org,
+	Potnuri Bharat Teja <bharat@chelsio.com>,
+	Christoph Hellwig <hch@lst.de>, Robin Murphy <robin.murphy@arm.com>
+Subject: Re: [PATCH for-next] RDMA/cxgb4: use dma_mmap_coherent() for
+ mapping non-contiguous memory
+Message-ID: <20240707113103.GA4441@lst.de>
+References: <20240705131753.15550-1-anumula@chelsio.com> <20240707091105.GG6695@unreal>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
@@ -75,82 +50,56 @@ List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240705063910.GA12337@lst.de>
+In-Reply-To: <20240707091105.GG6695@unreal>
+User-Agent: Mutt/1.5.17 (2007-11-01)
 
-On Fri, Jul 05, 2024 at 08:39:10AM +0200, Christoph Hellwig wrote:
-> Review from the NVMe driver consumer perspective.  I think if all these
-> were implement we'd probably end up with less code than before the
-> conversion.
+On Sun, Jul 07, 2024 at 12:11:05PM +0300, Leon Romanovsky wrote:
+> On Fri, Jul 05, 2024 at 06:47:53PM +0530, Anumula Murali Mohan Reddy wrote:
+> > dma_alloc_coherent() allocates contiguous memory irrespective of
+> > iommu mode, but after commit f5ff79fddf0e ("dma-mapping: remove
+> > CONFIG_DMA_REMAP") if iommu is enabled in translate mode,
+> > dma_alloc_coherent() may allocate non-contiguous memory.
+> > Attempt to map this memory results in panic.
+> > This patch fixes the issue by using dma_mmap_coherent() to map each page
+> > to user space.
+> 
+> It is perfect time to move to use rdma_user_mmap_io(), instead of
+> open-code it in the driver.
 
-Thanks for the review, I will try to address all the comments in the next version.
+rdma_user_mmap_io does not work on dma coherent allocations.
 
+> > Fixes: f5ff79fddf0e ("dma-mapping: remove CONFIG_DMA_REMAP")
 > 
-> The split between dma_iova_attrs, dma_memory_type and dma_iova_state is
-> odd.  I would have expected them to just be just a single object.  While
-> talking about this I think the domain field in dma_iova_state should
-> probably be a private pointer instead of being tied to the iommu.
-> 
-> Also do we need the attrs member in the iova_attrs structure?  The
-> "attrs" really are flags passed to the mapping routines that are
-> per-operation and not persistent, so I'd expect them to be passed
-> per-call and not stored in a structure.
+> + authors of the commit mentioned in Fixes.
 
-It is left-over from my not-send version where I added new attribute
-to indicate that dma_alloc_iova() can't support SWIOTLB to avoid
-dev_use_swiotlb() mess. I will remove it.
+If that commit triggered a bug for you it was buggy before, you
+just didn't hit it.  The fixes tag needs to point to the commit
+assuming trying to convert the return value from dma_alloc* into
+a page/pfn/physical address.
 
-> 
-> I'd also expect that the use_iova field to be in the mapping state
-> and not separately provided by the driver.
-> 
-> For nvme specific data structures I would have expected a dma_add/
-> len pair in struct iod_dma_map, maybe even using a common type.
-> 
-> Also the data structure split seems odd - I'd expect the actual
-> mapping state and a small number (at least one) dma_addr/len pair
-> to be inside the nvme_iod structure, and then only do the dynamic
-> allocation if we need more of them because there are more segments
-> and we are not using the iommu.
-> 
-> If we had a common data structure for the dma_addr/len pairs
-> dma_unlink_range could just take care of the unmap for the non-iommu
-> case as well, which would be neat.  I'd also expect that
-> dma_free_iova would be covered by it.
+> > +++ b/drivers/infiniband/hw/cxgb4/cq.c
+> > @@ -1127,12 +1127,16 @@ int c4iw_create_cq(struct ib_cq *ibcq, const struct ib_cq_init_attr *attr,
+> >  
+> >  		mm->key = uresp.key;
+> >  		mm->addr = virt_to_phys(chp->cq.queue);
 
-Internally Jason asked for the same thing, but I didn't want to produce
-asymmetric API where drivers have a call to dma_alloc_iova() but don't
-have a call to dma_free_iova(). However, now, it is 2 versus 1, so I will
-change it.
+... aka this one.  And it still is buggy and needs to go away.
 
-> 
-> I would have expected dma_link_range to return the dma_addr_t instead
-> of poking into the iova structure in the callers.
-> 
-> In __nvme_rq_dma_map the <= PAGE_SIZE case is pointless.  In the
-> existing code the reason for it is to avoid allocating and mapping the
-> sg_table, but that code is still left before we even get to this code.
-> 
-> My suggestion above to only allocate the dma_addr/len pairs when there
-> is more than 1 or a few of it would allow to trivially implement that
-> suggestion using the normal API without having to keep that special
-> case and the dma_len parameter around.
-> 
-> If this addes a version of dma_map_page_atttrs that directly took
-> the physical address as a prep patch the callers would not have to
-> bother with page pointer manipulations and just work on physical
-> addresses for both the iommu and no-iommu cases.  It would also help
-> a little bit with the eventualy switch to store the physical address
-> instead of page+offset in the bio_vec.  Talking about that, I've
-> been wanting to add a bvec_phys helper for to convert the
-> page_phys(bv.bv_page) + bv.bv_offset calculations.  This is becoming
-> more urgent with more callers needing to that, I'll try to get it out
-> to Jens ASAP so that it can make the 6.11 merge window.
-> 
-> Can we make dma_start_range / dma_end_range simple no-ops for the
-> non-iommu code to avoid boilerplate code in the callers to avoid
-> boilerplate code in the callers to deal with the two cases?
+> > +		if (vaddr && is_vmalloc_addr(vaddr)) {
 
-Yes, sure.
+And this check is broken.  The virtual address returned from
+dma_alloc_coherent can also be other things than a vmalloc address.
 
-Thanks
+>
+>
+> > +			vm_pgoff = vma->vm_pgoff;
+> > +			vma->vm_pgoff = 0;
+> > +			ret = dma_mmap_coherent(&rdev->lldi.pdev->dev, vma,
+> > +						vaddr, dma_addr, size);
+> > +			vma->vm_pgoff = vm_pgoff;
+
+... and you thus must use this path unconditionally.
+
+Same for the other hunks.
+
 
