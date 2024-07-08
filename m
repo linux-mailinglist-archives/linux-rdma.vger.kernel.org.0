@@ -1,112 +1,135 @@
-Return-Path: <linux-rdma+bounces-3696-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-3697-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8447F9298E2
-	for <lists+linux-rdma@lfdr.de>; Sun,  7 Jul 2024 18:38:57 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0E0E8929AC2
+	for <lists+linux-rdma@lfdr.de>; Mon,  8 Jul 2024 04:28:41 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 325321F214F2
-	for <lists+linux-rdma@lfdr.de>; Sun,  7 Jul 2024 16:38:57 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 35613B20C33
+	for <lists+linux-rdma@lfdr.de>; Mon,  8 Jul 2024 02:28:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 69EF23A8D8;
-	Sun,  7 Jul 2024 16:38:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="dqQi8hYq"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 133612C9A;
+	Mon,  8 Jul 2024 02:28:33 +0000 (UTC)
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-io1-f48.google.com (mail-io1-f48.google.com [209.85.166.48])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from szxga08-in.huawei.com (szxga08-in.huawei.com [45.249.212.255])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E23B21DDCE
-	for <linux-rdma@vger.kernel.org>; Sun,  7 Jul 2024 16:38:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 91E4E8F5A;
+	Mon,  8 Jul 2024 02:28:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.255
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1720370331; cv=none; b=S6X8QF69eLpctfqZ0IGJhjt765xMJTpKXkcTim6xjWLSAXY4JJH7j4sf8mlpNasMvCBYCeee0cec0VlsAgxu90yIe5qIvWjf0alzMI3DNTWQRZQCQ6zPB0zaoNX1wlBBGZHTm+Bp/PskT3v1KfpjhCblovSgYStzEZPkDD/PH2I=
+	t=1720405712; cv=none; b=R6KUA9dg4ClZsHT7i1C84Id11MgagyvrwfHmH9E/i82Gzbxc8ljtQt7uXTlPyuRD8S+FycOt7izP0+QYRlna+gOdlPnDgMYOzvfgsMk4aWCqkxAOQkQ6oAY14U2zHMRERsaOMrRiIUg17PX6MXCDREr/4JACZ3ekNBc/p6I87B0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1720370331; c=relaxed/simple;
-	bh=8i6p8Gs40zH7SuHTbPfpgh/uEMha32VXmRpOf1OrbOA=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=czgrJktPm5AKT9OMGTeD5cJPX1prZDqLtliLCjWb0jH7Csh3mXEX8u+BpgCTbouLsS0xbBeG4am0Ch51sv616YjnDoQp575dxczw/Ck9ERrP1q6ieeoYUinatww90G5M5EHkOuPCZa3/98ndSM2xBk9Jex2GaCy/78JbqIBsrmY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=dqQi8hYq; arc=none smtp.client-ip=209.85.166.48
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-io1-f48.google.com with SMTP id ca18e2360f4ac-7fb51934e59so9911039f.1
-        for <linux-rdma@vger.kernel.org>; Sun, 07 Jul 2024 09:38:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1720370329; x=1720975129; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=GKb5M8RBFKYLABFniAHbNV3KWEL0bcEvw8jCBYX7YFw=;
-        b=dqQi8hYq8Vcb3tpncDrBMJWYxNyH8Qx0iCCX+0SBAXYGaSn4hgAU5wggDSIbCyU0ZP
-         CqhOGlmUlik4AsKs0MUuuRB4TDA+7Zf8NhUmIJBG1fgm6H8vIyAE3ljul4QtH7OpxXi0
-         SRZsNkX2XYiT6YiOXW49Eqa4v3gReJ6jJRzVtO9nDPCYFvF86X+Fq0iynRt8NBg4Klr9
-         LwvqDW4X+2GUc/3ATwtbZezfvLX4iowH31sHar9GZn0RyB2pkc4xnnhhbhX8EYpbVAJG
-         v8GJmlQUc9HAOsi9PfmScRvDFX/JvI2ZnoYRbZ7aVWkA6c4mtu5ggf5hT8+rwXuJvMw7
-         TEGA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1720370329; x=1720975129;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=GKb5M8RBFKYLABFniAHbNV3KWEL0bcEvw8jCBYX7YFw=;
-        b=C6Fx/JTfXrPwMmAZ4g/G9Wgsj/qaxl5Ghqe/McI4q3f2f9gtXyjZxJqE+maUM95xjt
-         bAGRpSorEuK9QIFcZ3m2n9VZLBdnGIkdjxZFJi0jCpoeEHOpU6AtDHI+35xocf5VcLm9
-         t9JhG8VbE61BmlXSGxQwwZzRl0s8Wq+OGNPNNr8s6omUC2n9Fv8Xb77Xc5X+fb8yF72q
-         FIpgl/nYNthMRxh4Jj3teNd0kfumvtiTSp8UaP7rXXV+MtG1b8ZDlEJeIk6fhx/wu4kn
-         DPnNMpOndBLYGXh66YSeLQNqLo4SYulMAizOTbEeeBpjffG6K1KSox8EM0W2HWwwt8MX
-         ZYlg==
-X-Forwarded-Encrypted: i=1; AJvYcCUdhxycn+ZlLqccZUZbCNNP9Y3GsOlTuKZHoBwvT7Q56Q7uWGbHg4taz2Z15F5WU7JYfF1j28w4RndlrfTE9k+6lWgTr7qLTM/Bew==
-X-Gm-Message-State: AOJu0YyjvFeQQxe3ECFvLUcNT/9iKCHdrmU0sEQySDqnc4LTrnfipznI
-	WMCwYL77fQ3R1P34q21ebncgdaq+dyShXTej3RKbK5aP62iSHQmAYZcY3XH3
-X-Google-Smtp-Source: AGHT+IFtKVjlzOD/VZ3oHNa9psKtqGK3bgw7wxKmEfE4E8Gve4j4OSyEm+MwOX7ZbcF2OnQuh/MfdA==
-X-Received: by 2002:a05:6602:4249:b0:7f6:1590:44a2 with SMTP id ca18e2360f4ac-7f66f99935dmr606652439f.3.1720370328895;
-        Sun, 07 Jul 2024 09:38:48 -0700 (PDT)
-Received: from ?IPV6:2601:282:1e02:1040:8da3:78f8:d573:7ac? ([2601:282:1e02:1040:8da3:78f8:d573:7ac])
-        by smtp.googlemail.com with ESMTPSA id ca18e2360f4ac-7f8c15f2e24sm118425739f.25.2024.07.07.09.38.48
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 07 Jul 2024 09:38:48 -0700 (PDT)
-Message-ID: <d0ea373e-977d-41df-b5c6-34ab8b2dd865@gmail.com>
-Date: Sun, 7 Jul 2024 10:38:47 -0600
+	s=arc-20240116; t=1720405712; c=relaxed/simple;
+	bh=dQ+UbSZjkxQb58Um+/1r3PkSjYqJnYwo9CDlzn/8SgQ=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=k6ZUlJQndh6PZ66u1PNAj6hW150jcTnl8Af2m0Nm7CVgaWAsefNZ9E44WJzb4do+aaumYB/qJmgcbIXYZgjtLrvLBzGmCerr/SGd8ohERjFg0AS8KaVAC0uyrfD3uRya/wzpQsHHDBE5PuUdxiIWJy7rvE3jt0nMNc7cWz9fqm4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=hisilicon.com; spf=pass smtp.mailfrom=hisilicon.com; arc=none smtp.client-ip=45.249.212.255
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=hisilicon.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=hisilicon.com
+Received: from mail.maildlp.com (unknown [172.19.162.254])
+	by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4WHSbc6dk5z1T5VT;
+	Mon,  8 Jul 2024 10:23:40 +0800 (CST)
+Received: from kwepemf100018.china.huawei.com (unknown [7.202.181.17])
+	by mail.maildlp.com (Postfix) with ESMTPS id 5B65C18010A;
+	Mon,  8 Jul 2024 10:28:05 +0800 (CST)
+Received: from [10.67.120.168] (10.67.120.168) by
+ kwepemf100018.china.huawei.com (7.202.181.17) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1544.11; Mon, 8 Jul 2024 10:27:56 +0800
+Message-ID: <011375d2-b941-23c0-59c7-67698a8e504c@hisilicon.com>
+Date: Mon, 8 Jul 2024 10:27:56 +0800
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC RESEND iproute2-next 0/2] Supports to add/delete IB devices
- with type SMI
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.1.0
+Subject: Re: [PATCH for-rc 1/9] RDMA/hns: Check atomic wr length
+To: Leon Romanovsky <leon@kernel.org>
+CC: <jgg@ziepe.ca>, <linux-rdma@vger.kernel.org>, <linuxarm@huawei.com>,
+	<linux-kernel@vger.kernel.org>
+References: <20240705085937.1644229-1-huangjunxian6@hisilicon.com>
+ <20240705085937.1644229-2-huangjunxian6@hisilicon.com>
+ <20240707082433.GD6695@unreal>
 Content-Language: en-US
-To: Mark Zhang <markzhang@nvidia.com>, leonro@nvidia.com
-Cc: jgg@nvidia.com, linux-rdma@vger.kernel.org
-References: <20240704062901.1906597-1-markzhang@nvidia.com>
-From: David Ahern <dsahern@gmail.com>
-In-Reply-To: <20240704062901.1906597-1-markzhang@nvidia.com>
-Content-Type: text/plain; charset=UTF-8
+From: Junxian Huang <huangjunxian6@hisilicon.com>
+In-Reply-To: <20240707082433.GD6695@unreal>
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
+ kwepemf100018.china.huawei.com (7.202.181.17)
 
-On 7/4/24 12:28 AM, Mark Zhang wrote:
-> This series supports to add/delete an IB device with type SMI. This is
-> complimentary to the kernel patches that support to IB sub device
-> and mlx5 implementation.
+
+
+On 2024/7/7 16:24, Leon Romanovsky wrote:
+> On Fri, Jul 05, 2024 at 04:59:29PM +0800, Junxian Huang wrote:
+>> 8 bytes is the only supported length of atomic. Return an error if
+>> it is not.
+>>
+>> Fixes: 384f88185112 ("RDMA/hns: Add atomic support")
+>> Signed-off-by: Junxian Huang <huangjunxian6@hisilicon.com>
+>> ---
+>>  drivers/infiniband/hw/hns/hns_roce_device.h |  2 ++
+>>  drivers/infiniband/hw/hns/hns_roce_hw_v2.c  | 19 +++++++++++++++----
+>>  2 files changed, 17 insertions(+), 4 deletions(-)
+>>
+>> diff --git a/drivers/infiniband/hw/hns/hns_roce_device.h b/drivers/infiniband/hw/hns/hns_roce_device.h
+>> index ff0b3f68ee3a..05005079258c 100644
+>> --- a/drivers/infiniband/hw/hns/hns_roce_device.h
+>> +++ b/drivers/infiniband/hw/hns/hns_roce_device.h
+>> @@ -91,6 +91,8 @@
+>>  /* Configure to HW for PAGE_SIZE larger than 4KB */
+>>  #define PG_SHIFT_OFFSET				(PAGE_SHIFT - 12)
+>>  
+>> +#define ATOMIC_WR_LEN				8
+>> +
+>>  #define HNS_ROCE_IDX_QUE_ENTRY_SZ		4
+>>  #define SRQ_DB_REG				0x230
+>>  
+>> diff --git a/drivers/infiniband/hw/hns/hns_roce_hw_v2.c b/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
+>> index 4287818a737f..a5d746a5cc68 100644
+>> --- a/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
+>> +++ b/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
+>> @@ -164,15 +164,23 @@ static void set_frmr_seg(struct hns_roce_v2_rc_send_wqe *rc_sq_wqe,
+>>  	hr_reg_clear(fseg, FRMR_BLK_MODE);
+>>  }
+>>  
+>> -static void set_atomic_seg(const struct ib_send_wr *wr,
+>> -			   struct hns_roce_v2_rc_send_wqe *rc_sq_wqe,
+>> -			   unsigned int valid_num_sge)
+>> +static int set_atomic_seg(struct hns_roce_dev *hr_dev,
+>> +			  const struct ib_send_wr *wr,
+>> +			  struct hns_roce_v2_rc_send_wqe *rc_sq_wqe,
+>> +			  unsigned int valid_num_sge, u32 msg_len)
+>>  {
+>>  	struct hns_roce_v2_wqe_data_seg *dseg =
+>>  		(void *)rc_sq_wqe + sizeof(struct hns_roce_v2_rc_send_wqe);
+>>  	struct hns_roce_wqe_atomic_seg *aseg =
+>>  		(void *)dseg + sizeof(struct hns_roce_v2_wqe_data_seg);
+>>  
+>> +	if (msg_len != ATOMIC_WR_LEN) {
+>> +		ibdev_err_ratelimited(&hr_dev->ib_dev,
+>> +				      "invalid atomic wr len, len = %u.\n",
+>> +				      msg_len);
+>> +		return -EINVAL;
 > 
-> https://lore.kernel.org/all/cover.1718553901.git.leon@kernel.org/
+> 1. Please don't add prints in data-path.
+> 2. You most likely need to add this check before calling to set_atomic_seg().
+> 3. You shouldn't continue to process the WQE if the length is invalid.
+> Need to return from set_rc_wqe() and not continue.
+> 4. I wonder if it is right place to put this limitation and can't be
+> enforced much earlier.
 > 
 > Thanks
 > 
-> Mark Zhang (2):
->   rdma: update uapi header
->   rdma: Supports to add/delete a device with type SMI
-> 
->  man/man8/rdma-dev.8                   |  40 +++++++++
->  rdma/dev.c                            | 120 ++++++++++++++++++++++++++
->  rdma/include/uapi/rdma/rdma_netlink.h |  13 +++
->  rdma/rdma.h                           |   2 +
->  rdma/utils.c                          |   2 +
->  5 files changed, 177 insertions(+)
-> 
 
-applied to iproute2-next
+Thanks. 1 & 3 will be fixed. And for 2 & 4, I don't see any place more appropriate,
+so I'll just add this check in set_rc_wqe().
+
+Junxian
 
