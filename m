@@ -1,130 +1,86 @@
-Return-Path: <linux-rdma+bounces-3778-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-3779-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4479A92C54B
-	for <lists+linux-rdma@lfdr.de>; Tue,  9 Jul 2024 23:26:15 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6D90192C5A6
+	for <lists+linux-rdma@lfdr.de>; Tue,  9 Jul 2024 23:45:06 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E2B9F1F232C8
-	for <lists+linux-rdma@lfdr.de>; Tue,  9 Jul 2024 21:26:14 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CA5A62833B9
+	for <lists+linux-rdma@lfdr.de>; Tue,  9 Jul 2024 21:45:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1479A182A58;
-	Tue,  9 Jul 2024 21:26:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D428E18562D;
+	Tue,  9 Jul 2024 21:45:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="UOurk9AO"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="VtiSOa85"
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CA1F8153505
-	for <linux-rdma@vger.kernel.org>; Tue,  9 Jul 2024 21:26:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 927A7185606
+	for <linux-rdma@vger.kernel.org>; Tue,  9 Jul 2024 21:45:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1720560370; cv=none; b=Ge7UOtZBdhQKZp0Xrf/94iOuZOXSAeepvSuKt7rW0B/KACiWk6uTBeoxoJFU5HTqflR83x6Nic13Anzxf9CYiOwvD1aFMXJzcJT2Zb4QujSt6wDlAsAcUMKUy/fPDnDDi+AFMUf9Ngaui01Mg1RjxRDuovpidHiR+vQja2O3Rh0=
+	t=1720561501; cv=none; b=Yua1G9PBDhIk5GO5S+gpl4B81Cs6QywahTYoX9GWoQq2IB0zd782MvI8huafqAW1hZgJgBv1r2psTN9HzaQzXVRQ53uFst3DjC+HPZLmUSyKn3RWlJzrk2SVw2xfVMDcL7jSLoWZbP8YFWtoK/bxFCGggqRqHTRlcJz7/MA+SSk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1720560370; c=relaxed/simple;
-	bh=AWEu4sU0j19F9mfAfoRzNLeMS3uivt27s77ecTWIIGw=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=BlZaGGwlc0F/sDXZNSGaxsBDb9NzEF5GCBDvqseZpHZt+/Qme99lF67LPYt9tm+W2DvK8G8ZWH/t8ParBmDHIsn5+9nuUtpFeqaLLwE54/eULG3HX5V2Gg+y/8k2mw6Ch7oEI6+2zxP97ul6fIvSvOpofqmYhcQQGuMhLcuRnuY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=UOurk9AO; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C1CB9C3277B;
-	Tue,  9 Jul 2024 21:26:09 +0000 (UTC)
+	s=arc-20240116; t=1720561501; c=relaxed/simple;
+	bh=1yjW0tSqvcxyKqSwKF5yTISXJradATOOnsgU0eXpltw=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=MynboXYmpk8X6Gn76WZ98//GAfA6XB/wc3BiKxX4FKpCDx5nPNb9HgwRvwBEtw+z7HCe985xrVHujcSzvM99WYgeTUxok5or8a+MVMO+EstBWKIPLFLfwKmEdAIoiaOOEY7hIe2SeOj6KfXLbeqJOHXFqWJ6w5z4xBv0+/Mzt0k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=VtiSOa85; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 36583C3277B;
+	Tue,  9 Jul 2024 21:45:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1720560370;
-	bh=AWEu4sU0j19F9mfAfoRzNLeMS3uivt27s77ecTWIIGw=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=UOurk9AO4NQ4X9es6oxqH1ay9c8wa5GRV1tXIbrhCPFW42rEl3Zq3IOUg5I+xXvEJ
-	 Aqoapx3oBPRdVqpqY/U54iNR+Irna+th6qSfutVso4Tw5Rdua6kgFZ/UueqsFLLMnj
-	 /d0qF75DDxlmKo6n0defLkNCrOqCcnSxSuW1kh+xDI4D2SEZ8SsFUBYYOsdDrmwZOd
-	 KUsnsilJEhbyv6OSiQHqu+dCk1X4nVdtdkWLFsHbhuZ1EBwKFQE5H1Yv6hs2/Yhlt/
-	 ocDAPnUyi3EKLTdNME3lTu5HMwJCDI7LAq6xzAk/P3N1Fdquf+p+YerWawqXa9v5Ly
-	 Ief5mi5HTGmHQ==
-Date: Tue, 9 Jul 2024 14:26:08 -0700
-From: Nathan Chancellor <nathan@kernel.org>
-To: Leon Romanovsky <leon@kernel.org>
-Cc: flyingpenghao@gmail.com, jgg@ziepe.ca, linux-rdma@vger.kernel.org,
-	Peng Hao <flyingpeng@tencent.com>
-Subject: Re: [PATCH]   infiniband/hw/ocrdma: increase frame warning limit in
- verifier when using KASAN or KCSAN
-Message-ID: <20240709212608.GA1649561@thelio-3990X>
-References: <20240709105242.63299-1-flyingpeng@tencent.com>
- <20240709122737.GD6668@unreal>
+	s=k20201202; t=1720561501;
+	bh=1yjW0tSqvcxyKqSwKF5yTISXJradATOOnsgU0eXpltw=;
+	h=From:To:Cc:Subject:Date:From;
+	b=VtiSOa85yA6531JoU6hk45/gBVRQgYpdpGi3IbKXEWoWwEpKrU5bBwtyheGr4Oa/K
+	 6oe1Ie6HjFFrHMgRZY5uGjGYVlv+zcH9SKlbm3zcMxfyvtDMYTYGPIwuhlddwXYIUE
+	 LL11ZqT3KGfo6pYrT5TUTTtzcu9c1ivnCGely4ZLLaIHNffN8a+kyQEWvuWLGlcmrY
+	 7NW261B5+ML5WBwylHdFocu+l699v0OFqMt4ek0/GjeSwW15+ZMWTGmQRXL6jv0v9b
+	 QWvmX9i4yFtRg0WQ91Qn616EUIkzbUJO10r28p8y4UZNIW3Q87i1e1l2IEFCmN1lS/
+	 mNi+QCCC9WzCg==
+From: David Ahern <dsahern@kernel.org>
+To: linux-rdma@vger.kernel.org
+Cc: jgg@ziepe.ca,
+	leon@kernel.org,
+	David Ahern <dsahern@kernel.org>
+Subject: [PATCH] RDMA: Fix netdev tracker in ib_device_set_netdev
+Date: Tue,  9 Jul 2024 15:44:55 -0600
+Message-Id: <20240709214455.17823-1-dsahern@kernel.org>
+X-Mailer: git-send-email 2.39.3 (Apple Git-146)
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240709122737.GD6668@unreal>
+Content-Transfer-Encoding: 8bit
 
-On Tue, Jul 09, 2024 at 03:27:37PM +0300, Leon Romanovsky wrote:
-> On Tue, Jul 09, 2024 at 06:52:42PM +0800, flyingpenghao@gmail.com wrote:
-> > From: Peng Hao <flyingpeng@tencent.com>
-> > 
-> > When building kernel with clang, which will typically
-> > have sanitizers enabled, there is a warning about a large stack frame.
-> > 
-> > drivers/infiniband/hw/ocrdma/ocrdma_stats.c:686:16: error: stack frame size (20664) exceeds limit (8192) in 'ocrdma_dbgfs_ops_read' [-Werror,-Wframe-larger-than]
-> > static ssize_t ocrdma_dbgfs_ops_read(struct file *filp, char __user *buffer,
-> >                ^
-> 
-> Please fix it, not hide it.
+If a netdev has already been assigned, ib_device_set_netdev needs to release
+the reference on the older but it is mistakenly being called for the new
+netdev. Fix it and in the process use netdev_put to be symmetrical with
+the netdev_hold.
 
-Agreed, this is far from an acceptable solution. No details were
-provided around compiler, architecture, or configuration, so I can only
-speculate what is happening here. From reading the code, I suspect that
-ocrdma_add_stat() is getting inlined into all of its callsites but the
-stack slot for buff[128] is not getting reused, which may be related to
-a missing lifetime marker like [1] or sanitizer instrumentation.  I am
-guessing that marking ocrdma_dbgfs_ops_read() as noinline_for_stack
-would resolve this.
+Fixes: 09f530f0c6d6 ("RDMA: Add netdevice_tracker to ib_device_set_netdev()")
+Signed-off-by: David Ahern <dsahern@kernel.org>
+---
+ drivers/infiniband/core/device.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-static noinline_for_stack int ocrdma_add_stat(char *start, char *pcur,
-
-If this is not tolerable for all configurations, it could be made more
-pointed with something like
-
-static
-#if defined(CONFIG_CC_IS_CLANG) && (defined(CONFIG_KASAN) || defined(CONFIG_KCSAN))
-noinline_for_stack
-#endif
-int ocrdma_add_stat(char *start, char *pcur,
-
-but I am aware that is quite ugly.
-
-[1]: https://github.com/llvm/llvm-project/issues/38157#issuecomment-1756321571
-
-Cheers,
-Nathan
-
-> > Increase the frame size by 20% to set.
-> > 
-> > Signed-off-by: Peng Hao <flyingpeng@tencent.com>
-> > ---
-> >  drivers/infiniband/hw/ocrdma/Makefile | 6 ++++++
-> >  1 file changed, 6 insertions(+)
-> > 
-> > diff --git a/drivers/infiniband/hw/ocrdma/Makefile b/drivers/infiniband/hw/ocrdma/Makefile
-> > index 14fba95021d8..a1e9fcc04751 100644
-> > --- a/drivers/infiniband/hw/ocrdma/Makefile
-> > +++ b/drivers/infiniband/hw/ocrdma/Makefile
-> > @@ -3,4 +3,10 @@ ccflags-y := -I $(srctree)/drivers/net/ethernet/emulex/benet
-> >  
-> >  obj-$(CONFIG_INFINIBAND_OCRDMA)	+= ocrdma.o
-> >  
-> > +ifneq ($(CONFIG_FRAME_WARN),0)
-> > +ifeq ($(filter y,$(CONFIG_KASAN)$(CONFIG_KCSAN)),y)
-> > +CFLAGS_ocrdma_stats.o = -Wframe-larger-than=22664
-> > +endif
-> > +endif
-> > +
-> >  ocrdma-y :=	ocrdma_main.o ocrdma_verbs.o ocrdma_hw.o ocrdma_ah.o ocrdma_stats.o
-> > -- 
-> > 2.27.0
-> > 
-> > 
+diff --git a/drivers/infiniband/core/device.c b/drivers/infiniband/core/device.c
+index 55aa7aa32d4a..7ddaec923569 100644
+--- a/drivers/infiniband/core/device.c
++++ b/drivers/infiniband/core/device.c
+@@ -2167,7 +2167,7 @@ int ib_device_set_netdev(struct ib_device *ib_dev, struct net_device *ndev,
+ 	}
+ 
+ 	if (old_ndev)
+-		netdev_tracker_free(ndev, &pdata->netdev_tracker);
++		netdev_put(old_ndev, &pdata->netdev_tracker);
+ 	if (ndev)
+ 		netdev_hold(ndev, &pdata->netdev_tracker, GFP_ATOMIC);
+ 	rcu_assign_pointer(pdata->netdev, ndev);
+-- 
+2.30.2
 
