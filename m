@@ -1,56 +1,55 @@
-Return-Path: <linux-rdma+bounces-3765-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-3766-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8449A92B962
-	for <lists+linux-rdma@lfdr.de>; Tue,  9 Jul 2024 14:26:07 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8ABD992B969
+	for <lists+linux-rdma@lfdr.de>; Tue,  9 Jul 2024 14:27:48 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 38AD91F26279
-	for <lists+linux-rdma@lfdr.de>; Tue,  9 Jul 2024 12:26:07 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 340441F26232
+	for <lists+linux-rdma@lfdr.de>; Tue,  9 Jul 2024 12:27:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B2DC0158A34;
-	Tue,  9 Jul 2024 12:25:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E3D6E158A11;
+	Tue,  9 Jul 2024 12:27:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="iwOWAzAQ"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="L8r+Y+Qp"
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 646E1155A25;
-	Tue,  9 Jul 2024 12:25:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A5352155A25
+	for <linux-rdma@vger.kernel.org>; Tue,  9 Jul 2024 12:27:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1720527952; cv=none; b=f8mA3Z3q4zMFvrFZz/AjPCQIgpleoxr6FumAx1vZEeZmg7q/zg50I513N/jGgioUgt8TKZ/X6XY9jh+Tr+R44oP9ghCSnEvfhmaK4d5kmVA6QrGAjlBgBzyJOWoVThfwCrD+vSIwLXltz3GPMOnaMf+zzqnSULKz0ADwIVjDH7s=
+	t=1720528062; cv=none; b=dDnKStqhcS7SgRxH1rj0h9UkbmOhtD71LhlH9+VVfc8wYDwUACw/J8xMUjDcdYf/rLCNpDkghYSJpKobJTQWijr0VpTUkKlPzI5pVaJCJUrUxd8csfKIukC7wvBTbQZvMjO2zKxscSq5/rrm9+d0GHF/pvBV118kgXzR0KibKM8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1720527952; c=relaxed/simple;
-	bh=DatjDqG5Bk0Z1300jfUHWZg7b/3EBpsvE2GpZUeXZls=;
+	s=arc-20240116; t=1720528062; c=relaxed/simple;
+	bh=pdPIKBcCgkEfbePTTNgIV2bPs6tSbPT1iQ5SQ8s0M7I=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=iwm43MsxTEIMT5MAuZ+IQ71H7sBCxq3nFeBdVKzhsnABAAJS8vnPNnxAUQP2D08M84hmNr0V0rySBRZCns8F7Gfvns/PX3BzrMIOIa6ynM//j1WQFxvqnsPQRFyG9deNzBKyCduwRZjiuJNmk3zrxNEOCWlzahi36Y4wIrqh2tE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=iwOWAzAQ; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 63937C3277B;
-	Tue,  9 Jul 2024 12:25:51 +0000 (UTC)
+	 Content-Type:Content-Disposition:In-Reply-To; b=nJ8Za7VSp43lxVNwMJ8imWEshfgXCSzXFGVnaqo0whemOUB4kG9H170acKRkTG+tezMXnho4Xq0kDx4yfzEEfGtAUdAuycIX3Oyic+LQOWlZoh9TwmdO1ZHCy0XwYS/j0MmEGMIyNQMC+Gw6BFjnOKUtQZuL/hLSJjkc5YXwaPw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=L8r+Y+Qp; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A4633C3277B;
+	Tue,  9 Jul 2024 12:27:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1720527951;
-	bh=DatjDqG5Bk0Z1300jfUHWZg7b/3EBpsvE2GpZUeXZls=;
+	s=k20201202; t=1720528062;
+	bh=pdPIKBcCgkEfbePTTNgIV2bPs6tSbPT1iQ5SQ8s0M7I=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=iwOWAzAQWvNvavXSbuYiEY1UtzvsZ0fx9TZki9+x50QgVsNW6ZcUKQkQIVpshNOJv
-	 Nul7L74kt9+aiEplAvfamGaV7I83Y9ADW9oy5fvwz/SYby78zxa20X7cNCsSrlQjjW
-	 l29UZ/sJl4ZDPBt6DuIjRBf6A41tZ4N+8kSU68KG6GafNMMj57BSc0LYwFJNINn1b/
-	 QO5gVOod55bdI0qV6n3p1UVP+ECa4yEdTHsRlcB3Y8PHL7QhcACdeFRvLX+3IVsUEe
-	 ERqyUpu2MYR6Yp2P5K+LrJSmY04+SCPhlKyMRwG05z0wOqUeMn3T9mJ0htCXkWWXbB
-	 MQK63QSv2iAKQ==
-Date: Tue, 9 Jul 2024 15:25:47 +0300
+	b=L8r+Y+QplZxX7Fuyc79wBuBOmw9hl03GWh6dNfoACLrOxvVEZd/bd9VaiFtmLu6zr
+	 w4yXzm3NY2XjsyUp/grH6Hkg8ShzIZqkJKO1lBumm4CaEfs7YbzWVpexNPujkgj2n3
+	 dMfp4AArcRw0dnde3/+i4O6Zp008MNIyRLizfiEACpopXndS/zjDxKEyKRpLXvx5tt
+	 yD7jUk3AH4xE+nvT02xawK/dOGTlLFDUNofD8B+gp3FyUD4SgAxAXUqoHS/p1yZQHL
+	 1EwKcrxH3szMo1Fb9MUPHhatWuiM9+ppdkJKsPo8Lpy7EL1EJT6wVENyVbNfcg/++W
+	 lnHuBFTu68eow==
+Date: Tue, 9 Jul 2024 15:27:37 +0300
 From: Leon Romanovsky <leon@kernel.org>
-To: Greg KH <gregkh@linuxfoundation.org>
-Cc: Dan Williams <dan.j.williams@intel.com>, ksummit@lists.linux.dev,
-	linux-cxl@vger.kernel.org, linux-rdma@vger.kernel.org,
-	netdev@vger.kernel.org, jgg@nvidia.com
-Subject: Re: [MAINTAINERS SUMMIT] Device Passthrough Considered Harmful?
-Message-ID: <20240709122547.GC6668@unreal>
-References: <668c67a324609_ed99294c0@dwillia2-xfh.jf.intel.com.notmuch>
- <2024070910-rumbling-unrigged-97ba@gregkh>
+To: flyingpenghao@gmail.com
+Cc: gg@ziepe.ca, nathan@kernel.org, linux-rdma@vger.kernel.org,
+	Peng Hao <flyingpeng@tencent.com>
+Subject: Re: [PATCH]   infiniband/hw/ocrdma: increase frame warning limit in
+ verifier when using KASAN or KCSAN
+Message-ID: <20240709122737.GD6668@unreal>
+References: <20240709105242.63299-1-flyingpeng@tencent.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
@@ -59,28 +58,47 @@ List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <2024070910-rumbling-unrigged-97ba@gregkh>
+In-Reply-To: <20240709105242.63299-1-flyingpeng@tencent.com>
 
-On Tue, Jul 09, 2024 at 12:01:06PM +0200, Greg KH wrote:
-> On Mon, Jul 08, 2024 at 03:26:43PM -0700, Dan Williams wrote:
-
-<...>
-
-> > It sets common expectations for
-> > device designers, distribution maintainers, and kernel developers. It is
-> > complimentary to the Linux-command path for operations that need deeper
-> > kernel coordination.
+On Tue, Jul 09, 2024 at 06:52:42PM +0800, flyingpenghao@gmail.com wrote:
+> From: Peng Hao <flyingpeng@tencent.com>
 > 
-> Yes, it's a good start, BUT by circumventing the network control plane,
-> the network driver maintainers rightfully are worried about this as
-> their review comments seem to be ignored here.  The rest of us
-> maintainers can't ignore that objection, sorry.
+> When building kernel with clang, which will typically
+> have sanitizers enabled, there is a warning about a large stack frame.
+> 
+> drivers/infiniband/hw/ocrdma/ocrdma_stats.c:686:16: error: stack frame size (20664) exceeds limit (8192) in 'ocrdma_dbgfs_ops_read' [-Werror,-Wframe-larger-than]
+> static ssize_t ocrdma_dbgfs_ops_read(struct file *filp, char __user *buffer,
+>                ^
 
-Can you please point to the TECHNICAL review comments that were
-presented and later ignored?
-
-I don't see any, but I and probably Jonathan who posted in-depth
-articles in LWN might have missed them.
+Please fix it, not hide it.
 
 Thanks
+
+> 
+> Increase the frame size by 20% to set.
+> 
+> Signed-off-by: Peng Hao <flyingpeng@tencent.com>
+> ---
+>  drivers/infiniband/hw/ocrdma/Makefile | 6 ++++++
+>  1 file changed, 6 insertions(+)
+> 
+> diff --git a/drivers/infiniband/hw/ocrdma/Makefile b/drivers/infiniband/hw/ocrdma/Makefile
+> index 14fba95021d8..a1e9fcc04751 100644
+> --- a/drivers/infiniband/hw/ocrdma/Makefile
+> +++ b/drivers/infiniband/hw/ocrdma/Makefile
+> @@ -3,4 +3,10 @@ ccflags-y := -I $(srctree)/drivers/net/ethernet/emulex/benet
+>  
+>  obj-$(CONFIG_INFINIBAND_OCRDMA)	+= ocrdma.o
+>  
+> +ifneq ($(CONFIG_FRAME_WARN),0)
+> +ifeq ($(filter y,$(CONFIG_KASAN)$(CONFIG_KCSAN)),y)
+> +CFLAGS_ocrdma_stats.o = -Wframe-larger-than=22664
+> +endif
+> +endif
+> +
+>  ocrdma-y :=	ocrdma_main.o ocrdma_verbs.o ocrdma_hw.o ocrdma_ah.o ocrdma_stats.o
+> -- 
+> 2.27.0
+> 
+> 
 
