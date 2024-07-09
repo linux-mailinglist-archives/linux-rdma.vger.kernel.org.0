@@ -1,86 +1,74 @@
-Return-Path: <linux-rdma+bounces-3772-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-3773-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 84B7E92BDB1
-	for <lists+linux-rdma@lfdr.de>; Tue,  9 Jul 2024 17:02:52 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id A2D8292BF04
+	for <lists+linux-rdma@lfdr.de>; Tue,  9 Jul 2024 18:02:36 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B54CC1C219AD
-	for <lists+linux-rdma@lfdr.de>; Tue,  9 Jul 2024 15:02:51 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C63251C22386
+	for <lists+linux-rdma@lfdr.de>; Tue,  9 Jul 2024 16:02:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 44D7A19D896;
-	Tue,  9 Jul 2024 15:01:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D57DE19D06E;
+	Tue,  9 Jul 2024 16:02:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ionos.com header.i=@ionos.com header.b="C/tML7au"
+	dkim=pass (1024-bit key) header.d=hansenpartnership.com header.i=@hansenpartnership.com header.b="LhE8j7NR";
+	dkim=pass (1024-bit key) header.d=hansenpartnership.com header.i=@hansenpartnership.com header.b="iYeSMbOA"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-ed1-f49.google.com (mail-ed1-f49.google.com [209.85.208.49])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from bedivere.hansenpartnership.com (bedivere.hansenpartnership.com [96.44.175.130])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1E91C19D890
-	for <linux-rdma@vger.kernel.org>; Tue,  9 Jul 2024 15:01:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.49
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CA568181D0D;
+	Tue,  9 Jul 2024 16:02:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=96.44.175.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1720537289; cv=none; b=ESnuFPAgpL2UXxbFBn4pMXdmGxsYUweyjlnLTIG42PQzX8qBkRdeqwAnXdmeUKAVIUBUmP+5+2vrc0mM+dnGiw3YaTlASPFi84e0YRi0OmzVZby+yzzN6EHVTmXcWn4uPFnrEdrN2xOouLYYQPPD5F+3g0Abr8RG0tBFPXiPf2E=
+	t=1720540950; cv=none; b=Dlxqrryag/i3WazcYNiuFN/GIojluk6T0Xw3l+ZvjO22hv6vIvlvteXHJy4b/kW38I5rrsxRxeB2h3AhvlvxMbP7jZL6Kvxefu37FstBUDkunCwC6gAjG4ZcrGUUe52cO4M+TV34eKSfvoT9CkZPpuZAqj2Ho9rKiDjVAd31aRU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1720537289; c=relaxed/simple;
-	bh=FW6fIdGit+pyP1OewBZblyVS76v/fNq0887mMCejRwQ=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=tV2l14k0N1Qs3iyd/tvccVUwo0FzWvC8IhMCAUafpuZ5F6gc1x9t5ej5D/yr1GiWGLlm43zDqQrK58GHR9xtFqkPbqQ5FEVpjISl8nS0sFn8cqzm5u7kf9ij6XoEiAwJfEMYQovPYeErILkwG0Q8sUSSdXbdM8liW9ptm+Tqc4U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ionos.com; spf=pass smtp.mailfrom=ionos.com; dkim=pass (2048-bit key) header.d=ionos.com header.i=@ionos.com header.b=C/tML7au; arc=none smtp.client-ip=209.85.208.49
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ionos.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ionos.com
-Received: by mail-ed1-f49.google.com with SMTP id 4fb4d7f45d1cf-58bac81f419so6974878a12.0
-        for <linux-rdma@vger.kernel.org>; Tue, 09 Jul 2024 08:01:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ionos.com; s=google; t=1720537284; x=1721142084; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=OBqw8jE35wR5me+P1Q3829kCDIv4M/IogxwaM5m70tg=;
-        b=C/tML7audLB7jXMRa/fOhbo5V1KRVaRPJVHDNwna8zMRa3dbMGvkR7Dqn5oYxT2w9c
-         UqN8Iu6wzb+AoCQZpOZoFodMeb681Ac+6pfrAxAY/qiT7WSKunW65zGJ77T+gBRYPLR9
-         Y1s61AkUgUsgDUdjjq5yYLQ9jb0KZfQS5kOdISkyAFV4OjVzhUNeeVaQlIWLd5Om+pcj
-         D0GZ3JBVNeIM6ToW9nrAKYL+kk7MoHw+h9KFcVWh/ityR/AggpZvuXHGWkh1JwpF6hiv
-         sV9ONjWbxKrzio47ewP799n0+IS2cdOMRHemHaljzhD/Nh5MTvN2SqG1t5CmZoH/tlRg
-         rp7A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1720537284; x=1721142084;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=OBqw8jE35wR5me+P1Q3829kCDIv4M/IogxwaM5m70tg=;
-        b=DVtrM89U7VLRdduc+WX/KLvskMxyT8QaVn/Ph12aDXlA1rzotLqarKOAqgXymxbq69
-         fj6RISzruCpXR91z+Kpab6PpcW4S3gluPwEKj/bi1UmKXglcWrmVk94q6iJ8S5lRVdaW
-         i6GNiqeAh/Qpu+/BYKMOJgkykFFwqdEofQA5stv4vFoxDo6s1Y+7K9kz0nUDjTWFCOQg
-         JcJ/zkJqeIdzM0joCEy9Jh7+C/XkiDlFRgR5mhXbRq1MyRSu4ndlL6UUKQhgW8poZIQB
-         sq2ry0ohWBPX9kse7osnm8/G1G3yBuTd6Vnwtfssil1AoFQH5zxPKgpDje8EeSNQO4LR
-         1Vpw==
-X-Gm-Message-State: AOJu0Yymb0eyA7WO4gZNSEJbIwfAwQjPZOXG7IYa4Mj1F6ialc+jbSe+
-	WzdjdFOD7dPQC8MBg4VKV+zsW8OQ9cHCJjuAU6i+VUgs04d6vIy78WffN1iIYB16ALoxNHESS5f
-	a
-X-Google-Smtp-Source: AGHT+IFfv+v12ijQeCSAGiop1O2oF8oiE2Qrai/EXIpvbGLWRPUybiOojHqNPrRP7f26faqbejZVoA==
-X-Received: by 2002:a05:6402:33ce:b0:58e:dbd:65cd with SMTP id 4fb4d7f45d1cf-594bc7c7e1amr1849928a12.26.1720537284156;
-        Tue, 09 Jul 2024 08:01:24 -0700 (PDT)
-Received: from lb02065.fritz.box ([2001:9e8:1436:4f00:2ca:d136:a29a:bb96])
-        by smtp.gmail.com with ESMTPSA id 4fb4d7f45d1cf-594bc4e80c6sm1166172a12.46.2024.07.09.08.01.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 09 Jul 2024 08:01:23 -0700 (PDT)
-From: Jack Wang <jinpu.wang@ionos.com>
-To: linux-rdma@vger.kernel.org
-Cc: bvanassche@acm.org,
-	leon@kernel.org,
-	jgg@ziepe.ca,
-	selvin.xavier@broadcom.com,
-	haris.iqbal@ionos.com,
-	jinpu.wang@ionos.com
-Subject: [PATCH for-next 2/2] bnxt_re: Fix inv_key endianness
-Date: Tue,  9 Jul 2024 17:01:19 +0200
-Message-Id: <20240709150119.29937-3-jinpu.wang@ionos.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20240709150119.29937-1-jinpu.wang@ionos.com>
-References: <20240709150119.29937-1-jinpu.wang@ionos.com>
+	s=arc-20240116; t=1720540950; c=relaxed/simple;
+	bh=XJ/Jh5SnuG3rN/OavcSI+CyZ++lBTUQ2aTx68YCTme0=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=krbIr9lKF/P/hES0cZN6VUNxPIi9++J7e1diz4bJeHsnsd+QjE33iNuSP8Ja+Qb8tMp54QO27nAqmEkfNO/9ufDwJcidxOagXKye2PKWXB4rSgYbofSIdYOW3TDfA/IswpNnodHR9MVntF8olDh4cMwc3uDFl01qlASi4GkQknU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=HansenPartnership.com; spf=pass smtp.mailfrom=HansenPartnership.com; dkim=pass (1024-bit key) header.d=hansenpartnership.com header.i=@hansenpartnership.com header.b=LhE8j7NR; dkim=pass (1024-bit key) header.d=hansenpartnership.com header.i=@hansenpartnership.com header.b=iYeSMbOA; arc=none smtp.client-ip=96.44.175.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=HansenPartnership.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=HansenPartnership.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+	d=hansenpartnership.com; s=20151216; t=1720540947;
+	bh=XJ/Jh5SnuG3rN/OavcSI+CyZ++lBTUQ2aTx68YCTme0=;
+	h=Message-ID:Subject:From:To:Date:In-Reply-To:References:From;
+	b=LhE8j7NR9Or3JdM8y+ZTcypR4EK+IG/fCQDEKhvjVxXMLLJGslRjbR/K4vr6l9loF
+	 wvHxImU4K3rhnWrMv0DnhwuAf1cHulVMn8rxP0XxEoV1AeIIprDKh9pdKq6KFursgh
+	 AL4sjWi+jC7AlEdW5V6I0czTMuhvRuT18Qr6LQxQ=
+Received: from localhost (localhost [127.0.0.1])
+	by bedivere.hansenpartnership.com (Postfix) with ESMTP id 831F41281049;
+	Tue, 09 Jul 2024 12:02:27 -0400 (EDT)
+Received: from bedivere.hansenpartnership.com ([127.0.0.1])
+ by localhost (bedivere.hansenpartnership.com [127.0.0.1]) (amavis, port 10024)
+ with ESMTP id MstJzd94AWbf; Tue,  9 Jul 2024 12:02:27 -0400 (EDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+	d=hansenpartnership.com; s=20151216; t=1720540946;
+	bh=XJ/Jh5SnuG3rN/OavcSI+CyZ++lBTUQ2aTx68YCTme0=;
+	h=Message-ID:Subject:From:To:Date:In-Reply-To:References:From;
+	b=iYeSMbOAD71KMRWonx4RGxhLw83wQPNCXkT/yAbxrzIk50O/DbL+gFDuhA4a2Ec39
+	 lI2P/ws+2QqOsCP/ZIhvFybuHu/dKOMEQFqcHE5k9MP6R7v9cDdwvdNCpfTojp4JpH
+	 +Z6wwBpOT7i7A9Z5AN3LESXPRh2JXShvd+HKAbuk=
+Received: from [172.20.11.192] (unknown [74.85.233.199])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(Client did not present a certificate)
+	by bedivere.hansenpartnership.com (Postfix) with ESMTPSA id 88E661280BA5;
+	Tue, 09 Jul 2024 12:02:26 -0400 (EDT)
+Message-ID: <3b9631cf12f451fc08f410255ebbba23081ada7c.camel@HansenPartnership.com>
+Subject: Re: [MAINTAINERS SUMMIT] Device Passthrough Considered Harmful?
+From: James Bottomley <James.Bottomley@HansenPartnership.com>
+To: Dan Williams <dan.j.williams@intel.com>, ksummit@lists.linux.dev
+Cc: linux-cxl@vger.kernel.org, linux-rdma@vger.kernel.org, 
+	netdev@vger.kernel.org, jgg@nvidia.com
+Date: Tue, 09 Jul 2024 09:02:25 -0700
+In-Reply-To: <668c67a324609_ed99294c0@dwillia2-xfh.jf.intel.com.notmuch>
+References: <668c67a324609_ed99294c0@dwillia2-xfh.jf.intel.com.notmuch>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.42.4 
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
@@ -89,79 +77,133 @@ List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Similar like previous patch, this change the endianness for inv_key,
-hw expect LE, so change the type accordingly.
+On Mon, 2024-07-08 at 15:26 -0700, Dan Williams wrote:
+> Early in my Linux career there was palpable concern around Linux
+> being locked out of future computing platforms by hardware vendors
+> who did not provide open drivers, or even documentation for their
+> hardware. For the hardware vendors that did participate upstream,
+> maintainers used code acceptance to influence them towards common
+> Linux commands and cross-vendor cooperation.
 
-Fixes: 1ac5a4047975 ("RDMA/bnxt_re: Add bnxt_re RoCE driver")
-Signed-off-by: Jack Wang <jinpu.wang@ionos.com>
----
- drivers/infiniband/hw/bnxt_re/ib_verbs.c | 6 +++---
- drivers/infiniband/hw/bnxt_re/qplib_fp.h | 6 +++---
- 2 files changed, 6 insertions(+), 6 deletions(-)
+Firstly could I say "passthrough" seems to be the wrong word here. 
+When I see it I think of device pass through from host to VM (SRIOV and
+the like), which is becoming the bedrock of the virtualization world. 
+However, this proposal seems to be more about user space device drivers
+and fat firmware cards.
 
-diff --git a/drivers/infiniband/hw/bnxt_re/ib_verbs.c b/drivers/infiniband/hw/bnxt_re/ib_verbs.c
-index c5080028247e..cdc8ebcf3a76 100644
---- a/drivers/infiniband/hw/bnxt_re/ib_verbs.c
-+++ b/drivers/infiniband/hw/bnxt_re/ib_verbs.c
-@@ -2483,7 +2483,7 @@ static int bnxt_re_build_send_wqe(struct bnxt_re_qp *qp,
- 		break;
- 	case IB_WR_SEND_WITH_INV:
- 		wqe->type = BNXT_QPLIB_SWQE_TYPE_SEND_WITH_INV;
--		wqe->send.inv_key = wr->ex.invalidate_rkey;
-+		wqe->send.inv_key = cpu_to_le32(wr->ex.invalidate_rkey);
- 		break;
- 	default:
- 		return -EINVAL;
-@@ -2513,7 +2513,7 @@ static int bnxt_re_build_rdma_wqe(const struct ib_send_wr *wr,
- 		break;
- 	case IB_WR_RDMA_READ:
- 		wqe->type = BNXT_QPLIB_SWQE_TYPE_RDMA_READ;
--		wqe->rdma.inv_key = wr->ex.invalidate_rkey;
-+		wqe->rdma.inv_key = cpu_to_le32(wr->ex.invalidate_rkey);
- 		break;
- 	default:
- 		return -EINVAL;
-@@ -2563,7 +2563,7 @@ static int bnxt_re_build_inv_wqe(const struct ib_send_wr *wr,
- 				 struct bnxt_qplib_swqe *wqe)
- {
- 	wqe->type = BNXT_QPLIB_SWQE_TYPE_LOCAL_INV;
--	wqe->local_inv.inv_l_key = wr->ex.invalidate_rkey;
-+	wqe->local_inv.inv_l_key = cpu_to_le32(wr->ex.invalidate_rkey);
- 
- 	if (wr->send_flags & IB_SEND_SIGNALED)
- 		wqe->flags |= BNXT_QPLIB_SWQE_FLAGS_SIGNAL_COMP;
-diff --git a/drivers/infiniband/hw/bnxt_re/qplib_fp.h b/drivers/infiniband/hw/bnxt_re/qplib_fp.h
-index 1fcaba0f680b..813332b2c872 100644
---- a/drivers/infiniband/hw/bnxt_re/qplib_fp.h
-+++ b/drivers/infiniband/hw/bnxt_re/qplib_fp.h
-@@ -165,7 +165,7 @@ struct bnxt_qplib_swqe {
- 		struct {
- 			union {
- 				__le32	imm_data;
--				u32	inv_key;
-+				__le32	inv_key;
- 			};
- 			u32		q_key;
- 			u32		dst_qp;
-@@ -183,7 +183,7 @@ struct bnxt_qplib_swqe {
- 		struct {
- 			union {
- 				__le32	imm_data;
--				u32	inv_key;
-+				__le32	inv_key;
- 			};
- 			u64		remote_va;
- 			u32		r_key;
-@@ -199,7 +199,7 @@ struct bnxt_qplib_swqe {
- 
- 		/* Local Invalidate */
- 		struct {
--			u32		inv_l_key;
-+			__le32		inv_l_key;
- 		} local_inv;
- 
- 		/* FR-PMR */
--- 
-2.34.1
+> The internalized lesson from those days was: "Be wary of vendors
+> pushing 'do anything you want and get away with it' passthrough
+> tunnels. Demand open documentation of all interfaces."
+> 
+> Present day realities and discussions merit revisiting that lesson:
+> 
+> 1/ The truth of the matter is that until the Kernel Lockdown facility
+>    arrived, device vendors *had* an unfettered passthrough tunnel via
+>    userspace driver mechanisms like /dev/mem and pci-sysfs. The
+> presence of
+>    those facilities did not appear to injure the ascension of Linux.
+> 
+> 2/ Device passthrough, kernel passing opaque payloads, is already
+> taken
+>    for granted in many subsystems. USB and HID have "raw" interfaces,
+> EFI
+>    variables provide platform-specific configuration, and the oft-
+> cited
+>    examples of SCSI and NVME that provide facilities to marshal any
+> command
+>    payload whether mainline maintainers think the functionality is a
+> good
+>    idea or not. In the case of NVME, the specification continues to
+> evolve
+>    despite this Linux bypass.
+
+Time was decades ago Oracle demanded raw access to the SCSI device
+because they claimed it was easier for customers and faster for them if
+they just talked to devices in their native protocol and got all of the
+annoying kernel filesystems and page cache out of the way.  Fast
+fowards to today and database vendors largely use filesystems thanks to
+the evolution of interfaces (direct I/O) that support what they want to
+do and the huge annoyance for customers of having to manage huge
+numbers of unidentifiable raw devices.
+
+For NVMe and net we do have SPDK and DPDK.  What I find is that people
+tend to use them for niche use cases (like the NVMe KV command set) or
+obscure network routers.  Even though the claim they both make is to
+get the kernel out of the way and do stuff "way faster" the difficulty
+they create by bypassing everything is quite a high burden.
+
+For USB security tokens in the early days we had the huge problem of
+everyone inventing their own interface, then they realised this was
+unsustainable and came up with CTAP, but it's just a unified way for
+user space applications to talk to FIDO tokens over raw USB ... is this
+a problem?
+
+> 
+> 3/ The practice of requiring Linux commands to wrap all device
+> commands
+>    does not appear to have accelerated upstream participation in the
+> CXL
+>    subsystem. I.e. CXL, in contrast to NVME, relegates passthrough to
+> a
+>    build-time debug option. Some vendors are even shipping vendor
+>    specific firmware update facilities even though mainline has
+> support for
+>    the CXL standard firmware update mechanism.
+> 
+>    With the impending arrival of CXL switch devices wanting to share
+>    mailbox handling code with the CXL core, the prohibition of
+>    device-specific commands is going to generate significant upstream
+> work
+>    to wrap all that in Linux commands with little perceivable long
+> term
+>    benefit to the subsystem.
+> 
+> CXL and RDMA are also foreshadowing conflicts across subsystems. It
+> is not difficult to imagine a future CXL or RDMA device that supports
+> mem, block, net, and drm/accel functionality. Which subsystem's
+> device-command policy applies to such a thing?
+
+We already have that today: pretty much every device protocol looks a
+bit network like and has an Over Ethernet or Over RDMA equivalent.
+
+What all of the prior pass through's taught us is that if the use case
+is big enough it will get pulled into the kernel and the kernel will
+usually manage it better (DB users).  If it remains a niche use case it
+will likely remain out of the kernel, but we won't be hurt by it (NVME
+KV protocol) and sometimes it doesn't really matter and the device
+manufacturers will sort it out on their own (USB tokens).
+
+> Enter the fwctl proposal [1]. From the CXL subsystem perspective it
+> looks like a long-term solution to the problem of managing
+> expectations between hardware vendors and mainline subsystems. It
+> disclaims support for the fast-path (data-plane) and is targeted at
+> the long tail of slow-path (config/debug plane) device-specific
+> operations that are often uninteresting to mainline. It sets
+> expectations that the device must advertise the effect of all
+> commands so that the kernel can deploy reasonable Kernel Lockdown
+> policy, or otherwise require CAP_SYS_RAWIO for commands that may
+> affect user-data. It sets common expectations for device designers,
+> distribution maintainers, and kernel developers. It is complimentary
+> to the Linux-command path for operations that need
+> deeper kernel coordination.
+
+This proposal does look to me more like a tool for configuring highly
+malleable fat firmware (or really mini-os) offload type devices (like
+intelligent network cards) to interact correctly and be easier to
+debug.  Every cloud vendor effectively has their own one of these, so I
+think the problem isn't going away, so trying to bring some order to it
+looks like a potentially good idea.
+
+> The upstream discussion has yielded the full spectrum of positions on
+> device specific functionality, and it is a topic that needs cross-
+> kernel consensus as hardware increasingly spans cross-subsystem
+> concerns. Please consider it for a Maintainers Summit discussion.
+
+I'm with Greg on this ... can you point to some of the contrary
+positions?
+
+Regards,
+
+James
 
 
