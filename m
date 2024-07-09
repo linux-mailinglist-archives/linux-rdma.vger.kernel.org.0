@@ -1,37 +1,37 @@
-Return-Path: <linux-rdma+bounces-3758-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-3759-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 44A8092AFE6
-	for <lists+linux-rdma@lfdr.de>; Tue,  9 Jul 2024 08:17:38 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0AFBF92AFFC
+	for <lists+linux-rdma@lfdr.de>; Tue,  9 Jul 2024 08:20:52 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id F19E328234F
-	for <lists+linux-rdma@lfdr.de>; Tue,  9 Jul 2024 06:17:36 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id AB63F1F227BF
+	for <lists+linux-rdma@lfdr.de>; Tue,  9 Jul 2024 06:20:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D622912FB37;
-	Tue,  9 Jul 2024 06:17:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 69FF2139CEC;
+	Tue,  9 Jul 2024 06:20:22 +0000 (UTC)
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from verein.lst.de (verein.lst.de [213.95.11.211])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7A83F823CB;
-	Tue,  9 Jul 2024 06:17:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AAA5212EBE7;
+	Tue,  9 Jul 2024 06:20:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.95.11.211
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1720505848; cv=none; b=kVxmIN1sG5hZWavTEHSxnC+/JiHAJBMfP6VlJm/Fo5xhsFvXxnSBhjAX0hc1Iyco2VFKCgsyXLcGqzZgHjSRShNKCte2LXuDEpkYORBEhqZoyLgIMIxI0cXYzuobS/75TDq+Rl+gr91MzGduDqZx2kgefsr0zE7U5l60AFfKpTs=
+	t=1720506022; cv=none; b=UcuMemkjmLodUt7mPXbdx0ObXC/nIPyxQi46zvsts8/1IvQ3muht4z8xWdVRdpzPpKWK+MVGZmzP0Zt2iArLp1m4rsvm0hFrjVKIrLIFV4dsxpx81a6zxw+g3srXxAzEzKmWu1SI7sE4tMSGuw5ZTIp8ZOKIM8kPmUpijijyEIY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1720505848; c=relaxed/simple;
-	bh=LpyTG0KfnM7IF4Mu59VZ6DJKNf7qJS9rIcXteLyoEV8=;
+	s=arc-20240116; t=1720506022; c=relaxed/simple;
+	bh=mdrqaCREQW/1Ifa3b72PBPKrXbPhXkFTrlxv2FA9lIs=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=J5OF1Ufx67eo7mjEmfx4Vbmn2Qv5vlvl8cx58ou5E0b2o0rTQ3dtzhIZfkfC6tpxOJ1kra244Ptp/k98JChu4hRtz++JA+tTaeLaH0zclTplRBO5RTLUZo/WhWVwrG7q9JfAHw/EOcY0cLdlzRdjPjpW3i7mIR/ipEuvbEyTLtw=
+	 Content-Type:Content-Disposition:In-Reply-To; b=LmgN6wVj7mXsjen9/AJffe9xxlUBVB/17PZMGwxrJ89tYODnuFFbDITajV/8X93zQ03pQjoi9YCvSvhvFoQhpB5jSnJR4ED/oQ+yoRMn+HkVZGBIKmpHCbAoFdUfIWt5rjXxwjL9WeXPu6I/SLE6mIr+AIQhBXhGST8BPwn2518=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=lst.de; spf=pass smtp.mailfrom=lst.de; arc=none smtp.client-ip=213.95.11.211
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=lst.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lst.de
 Received: by verein.lst.de (Postfix, from userid 2407)
-	id 52C0568AFE; Tue,  9 Jul 2024 08:17:21 +0200 (CEST)
-Date: Tue, 9 Jul 2024 08:17:21 +0200
+	id 7595068AFE; Tue,  9 Jul 2024 08:20:15 +0200 (CEST)
+Date: Tue, 9 Jul 2024 08:20:15 +0200
 From: Christoph Hellwig <hch@lst.de>
 To: Jason Gunthorpe <jgg@ziepe.ca>
 Cc: Christoph Hellwig <hch@lst.de>, Leon Romanovsky <leon@kernel.org>,
@@ -54,8 +54,8 @@ Cc: Christoph Hellwig <hch@lst.de>, Leon Romanovsky <leon@kernel.org>,
 	linux-nvme@lists.infradead.org, linux-pci@vger.kernel.org,
 	kvm@vger.kernel.org, linux-mm@kvack.org
 Subject: Re: [RFC PATCH v1 00/18] Provide a new two step DMA API mapping API
-Message-ID: <20240709061721.GA16180@lst.de>
-References: <cover.1719909395.git.leon@kernel.org> <20240703054238.GA25366@lst.de> <20240703105253.GA95824@unreal> <20240703143530.GA30857@lst.de> <20240703155114.GB95824@unreal> <20240704074855.GA26913@lst.de> <20240708165238.GE14050@ziepe.ca>
+Message-ID: <20240709062015.GB16180@lst.de>
+References: <cover.1719909395.git.leon@kernel.org> <20240705063910.GA12337@lst.de> <20240708235721.GF14050@ziepe.ca>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
@@ -64,38 +64,15 @@ List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240708165238.GE14050@ziepe.ca>
+In-Reply-To: <20240708235721.GF14050@ziepe.ca>
 User-Agent: Mutt/1.5.17 (2007-11-01)
 
-On Mon, Jul 08, 2024 at 01:52:38PM -0300, Jason Gunthorpe wrote:
-> Ideally we'd have some template code that consolidates these loops to
-> common code with driver provided hooks - there are a few ways to get
-> that efficiently in C.
-> 
-> I think it will be clearer when we get to RDMA and there we have the
-> same SGL/PRP kind of split up and we can see what is sharable.
+On Mon, Jul 08, 2024 at 08:57:21PM -0300, Jason Gunthorpe wrote:
+> I understand the block stack already does this using P2P and !P2P, but
+> that isn't quite enough here as we want to split principally based on
+> IOMMU or !IOMMU.
 
-I really would not want to build common code for PRPs - this is a concept
-very specific to RDMA and NVMe.  OTOH more common code SGLs would be
-nice.  If you look at e.g. SCSI drivers most of them have a simpe loop of
-mapping the SG table and then copying the fields into the hardware SGL.
-This would be a very common case for a helper.
-
-That whole thing of course opens the question if we want a pure
-in-memory version of the dma_addr_t/len tuple.  IMHO that is the best
-way to migrate and allows to share code easily.  We can look into ways
-to avoiding that more for drivers that care, but most drivers are
-probably best serve with it to keep the code simple and make the
-conversion easier.
-
-> I'm also cooking something that should let us build a way to iommu map
-> a bio_vec very efficiently, which should transform this into a single
-> indirect call into the iommu driver per bio_vec, and a single radix
-> walk/etc.
-
-I assume you mean array of bio_vecs here.  That would indeed nice.
-We'd still potentially need a few calls for block drivers as
-requests can have multiple bios and thus bio_vec arrays, but it would
-still be a nice reduction of calls.
+Except for the powerpc bypass IOMMU or not is a global decision,
+and the bypass is per I/O.  So I'm not sure what else you want there?
 
 
