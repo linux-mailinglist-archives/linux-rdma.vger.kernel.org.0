@@ -1,63 +1,57 @@
-Return-Path: <linux-rdma+bounces-3756-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-3757-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 474E092AF66
-	for <lists+linux-rdma@lfdr.de>; Tue,  9 Jul 2024 07:24:47 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id BD16092AFD1
+	for <lists+linux-rdma@lfdr.de>; Tue,  9 Jul 2024 08:09:55 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D87CB1F21A5C
-	for <lists+linux-rdma@lfdr.de>; Tue,  9 Jul 2024 05:24:46 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 4DCF9B21BD1
+	for <lists+linux-rdma@lfdr.de>; Tue,  9 Jul 2024 06:09:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6B8F912C52F;
-	Tue,  9 Jul 2024 05:24:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E8E9513211C;
+	Tue,  9 Jul 2024 06:09:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="XDqYKgsI"
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="aWeNn4Sv"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0BAB04D8BB;
-	Tue,  9 Jul 2024 05:24:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 31E0D12C52F;
+	Tue,  9 Jul 2024 06:09:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1720502680; cv=none; b=O5reOLvMf5Q5OwQHDK4k7ArcGcFB3uDxbTFcC05sIN9IHn3bLDf3aeXW7MuYzWwB+07qzN/k12x2MkhC3SIDEFA+GCX+bdLrcIH4/tCsQeHeJnbPf+IB6T3kypvtywW09q1AgZFp2GLtkBE7I2UlwhafuCO+XlGUkMQvcDc16GA=
+	t=1720505383; cv=none; b=jQHj1H1NgDnjY1KZu0w6tLekzUSAEUiRQ4P2H9HmLsh0gHmRfFresdjBkYBr8EEjTITIjAnZ4R1bykvaplN4+wCjeQuCfVdeia6yUGvAstAQWWXZjDLyZzX/ouTuMOAesaiwqLvkUnv+bHuFOVtsrQ9GXUUc83L62ckBI7zy9So=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1720502680; c=relaxed/simple;
-	bh=4tizSs2TAz0RtnGGO1qTakHRK5xJiSrgMw06tNFDBRM=;
+	s=arc-20240116; t=1720505383; c=relaxed/simple;
+	bh=FO/e6sfjH8/QAUa41deJXp8jfrL365o1V/w4bikvz/s=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=doINVKSFpgQY+suw8TFBQajwBUdeEqydP/cOgkAMSgVX73NPjE8T/jBLBoyhXkluuzR+oKdiW0jYSXv5uM7yZnhm0jB2T8Hep41ORrive5cCirdJRWKfal3yjTMcWnre9GHjURWbk+hlx++wtiflL3421fkVUKLoew3qV2pw8BA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=XDqYKgsI; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E1AFAC32782;
-	Tue,  9 Jul 2024 05:24:38 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-	s=korg; t=1720502679;
-	bh=4tizSs2TAz0RtnGGO1qTakHRK5xJiSrgMw06tNFDBRM=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=XDqYKgsIjcET2kG1gBOUaqJpVZRjnWrfe/SliV+a6cDFnihfT2gV17xgJBP/01gLl
-	 KBHufVqFyunnGuPTq+OvlHH2V0IuFokKYmXxwNZ6Kl6NojikK6lbLLQonmlYHil3e0
-	 h9DrFrcyO9g+jAUgHYWyvHHmvafZKTrKlMgmSCDs=
-Date: Tue, 9 Jul 2024 07:24:36 +0200
-From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To: Martin Oliveira <martin.oliveira@eideticom.com>
-Cc: linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-	linux-rdma@vger.kernel.org,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Artemy Kovalyov <artemyko@nvidia.com>,
-	Jason Gunthorpe <jgg@ziepe.ca>, Leon Romanovsky <leon@kernel.org>,
-	Logan Gunthorpe <logang@deltatee.com>,
-	Michael Guralnik <michaelgur@nvidia.com>,
-	Mike Marciniszyn <mike.marciniszyn@intel.com>,
-	Shiraz Saleem <shiraz.saleem@intel.com>, Tejun Heo <tj@kernel.org>,
-	John Hubbard <jhubbard@nvidia.com>,
-	Dan Williams <dan.j.williams@intel.com>,
-	David Sloan <david.sloan@eideticom.com>
-Subject: Re: [PATCH v4 1/3] kernfs: remove page_mkwrite() from
- vm_operations_struct
-Message-ID: <2024070927-expand-carless-0680@gregkh>
-References: <20240708165714.3401377-1-martin.oliveira@eideticom.com>
- <20240708165714.3401377-2-martin.oliveira@eideticom.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=LTyEwcGa6r8H3VtIbnXZEjr9q4lxklc8lY4rq1NNoUYntZXobHdUCbAmBZEHo8wIWy86XxVY1ST7cHK9pXZwYkIRQRgGKBJYxYePr1nRO//geAyUyMac5G0ReNAF/J9+2Oq9Zyq9+yos6p6fEesxHKBhtxq1aCSaUdE+KNFnyVo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=bombadil.srs.infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=aWeNn4Sv; arc=none smtp.client-ip=198.137.202.133
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=bombadil.srs.infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=bombadil.20210309; h=In-Reply-To:Content-Type:MIME-Version
+	:References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description;
+	bh=sl47jH5hsCNX2lI/FbDxlZ/pLUml99/KsZPpS5ibLgA=; b=aWeNn4SvV3oPmk3OO0U3RCNuQy
+	KdKA+6lBgs/YY6hKVbZdnWawkd1n2WLes9tJL2ZJd8AniZgEo7tt3Yjto211xN9H8UXAGMayeGBf9
+	lW+PHVRBlw9Vxt01G90QqxpmJWklB4cG9lN7SDubWUy1YG9nvVit/jhyNHANCjzSEeRoHmS0maV5Y
+	OpGrBlD2uxYX9QmRqem8PNPruAUFMFEghYPjI/uJPVJn1vwibSPkbvZYdmwhXt1w/SJD4zEa+Vb5H
+	kmxfOJ0xajHBfnzJSG50nMakl/FGRP/jAV5MbgpTyUoUpalj0KGXoahx08mcqtaMqWcSFmZDd40wF
+	6aCD+o5w==;
+Received: from hch by bombadil.infradead.org with local (Exim 4.97.1 #2 (Red Hat Linux))
+	id 1sR42n-000000061O2-2QHu;
+	Tue, 09 Jul 2024 06:09:41 +0000
+Date: Mon, 8 Jul 2024 23:09:41 -0700
+From: Christoph Hellwig <hch@infradead.org>
+To: Dan Williams <dan.j.williams@intel.com>
+Cc: ksummit@lists.linux.dev, linux-cxl@vger.kernel.org,
+	linux-rdma@vger.kernel.org, netdev@vger.kernel.org, jgg@nvidia.com
+Subject: Re: [MAINTAINERS SUMMIT] Device Passthrough Considered Harmful?
+Message-ID: <ZozUJepl9_gnKnlv@infradead.org>
+References: <668c67a324609_ed99294c0@dwillia2-xfh.jf.intel.com.notmuch>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
@@ -66,28 +60,17 @@ List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240708165714.3401377-2-martin.oliveira@eideticom.com>
+In-Reply-To: <668c67a324609_ed99294c0@dwillia2-xfh.jf.intel.com.notmuch>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
 
-On Mon, Jul 08, 2024 at 10:57:12AM -0600, Martin Oliveira wrote:
-> The .page_mkwrite operator of kernfs just calls file_update_time().
-> This is the same behaviour that the fault code does if .page_mkwrite is
-> not set.
-> 
-> Furthermore, having the page_mkwrite() operator causes
-> writable_file_mapping_allowed() to fail due to
-> vma_needs_dirty_tracking() on the gup flow, which is a pre-requisite for
-> enabling P2PDMA over RDMA.
-> 
-> There are no users of .page_mkwrite and no known valid use cases, so
-> just remove the .page_mkwrite from kernfs_ops and WARN if an mmap()
-> implementation sets .page_mkwrite.
-> 
-> Co-developed-by: Logan Gunthorpe <logang@deltatee.com>
-> Signed-off-by: Logan Gunthorpe <logang@deltatee.com>
-> Signed-off-by: Martin Oliveira <martin.oliveira@eideticom.com>
-> ---
->  fs/kernfs/file.c | 40 +++++++++++-----------------------------
->  1 file changed, 11 insertions(+), 29 deletions(-)
+Passthrough in general is useful, but the problem is that protocols
+aren't designed with it in mind.  Look at the list of command that
+affect too much state and we have to block in SCSI and NVMe.  And
+in NVMe I'm fighting a constant fight in the technical working group
+to not add new command that instantly disable the access control we've
+built into NVMe passthrough.   So IMHO passthrough can be good idea,
+but only if the protocol is designed for it, and protocol designer
+generally have a hard time how software works at all, never mind
+the futuristic concepts of layering, abstraction and access control.
 
-Acked-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
