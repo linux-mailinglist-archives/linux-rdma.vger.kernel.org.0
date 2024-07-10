@@ -1,38 +1,39 @@
-Return-Path: <linux-rdma+bounces-3793-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-3799-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1F5EE92D316
-	for <lists+linux-rdma@lfdr.de>; Wed, 10 Jul 2024 15:42:35 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 441B992D32D
+	for <lists+linux-rdma@lfdr.de>; Wed, 10 Jul 2024 15:43:50 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B54A21F242F7
-	for <lists+linux-rdma@lfdr.de>; Wed, 10 Jul 2024 13:42:34 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id CF0A7B26448
+	for <lists+linux-rdma@lfdr.de>; Wed, 10 Jul 2024 13:43:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 14272192B94;
-	Wed, 10 Jul 2024 13:42:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D02001946BC;
+	Wed, 10 Jul 2024 13:42:34 +0000 (UTC)
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
+Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D6BEF1DDC5;
-	Wed, 10 Jul 2024 13:42:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.187
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EFABB194141;
+	Wed, 10 Jul 2024 13:42:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.188
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1720618948; cv=none; b=SDYlMHYemLqOHujlPQXkXmf3vLq8afBITOrsKXUhV+2yycdELVxbLEmLdHxIziNlJFv0KS8bcCnsOZ+GJhDE+5hXc4wQ49OYd/q74Y0GASEAB7b5NJwl76j5lybeM/pGMn7jfHpyJbDSOP4ijWnhY0Tss+IsntlP8acYMuAosk4=
+	t=1720618954; cv=none; b=rwul4i76phbQF3wcO4SSk6DWUwFmpN2LFkTqVDWKARe63D5JBGkpQBXQfo7EZwgHM9RyLaPp1Jf1ORyzwP/DAvtwXHYXlgvAEDIDbrB+xjttu2k4snyeKF7R/DERUpgWpHUX/sXb8DIAeavSrUE8sPbWjSrsDTXmU8rG7qM0c58=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1720618948; c=relaxed/simple;
-	bh=MvuMU8T0ANrufEoBpWpD+iDkftf/zrRX3wL5apOQBDU=;
-	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=WFVsB0YDEIzJvSIwLkNFECmnjzgcXjY/+3h4mxCNexBrsk16lzxgiEM7dSHH7MWnP+mKGfkTsGOZi0Woz4u2+lNEW9gaiAR3XYw/xAsR+6TSOz8r7V8WBHsKdQMs5zwl4MQZ0FIxgHhqxTzKx1W/4b1WfdpScexx4Z6EsHckPZ0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=hisilicon.com; spf=pass smtp.mailfrom=hisilicon.com; arc=none smtp.client-ip=45.249.212.187
+	s=arc-20240116; t=1720618954; c=relaxed/simple;
+	bh=PND3fEFJhzk25l89uTHt9gHFkld+VZcBV1FuXneP828=;
+	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=b78OBjM8BKhDUpMAsO8xKw7k3btTPljUihuie2CiKUanFjIQqqfHjo/6u52/sV7IhIn1M1vZavN+RA7Prcd5dX10tUeTrN8vz6X8tSKdsh2eFqYKzVTWr2GsGMLWTShtKvs4q3aVNxtk9eTFBguntgUST1orCZgAPcG6oZFb2uM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=hisilicon.com; spf=pass smtp.mailfrom=hisilicon.com; arc=none smtp.client-ip=45.249.212.188
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=hisilicon.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=hisilicon.com
-Received: from mail.maildlp.com (unknown [172.19.163.174])
-	by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4WJzSW56KTzxVxH;
-	Wed, 10 Jul 2024 21:37:47 +0800 (CST)
+Received: from mail.maildlp.com (unknown [172.19.88.194])
+	by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4WJzYH4kvGzjX65;
+	Wed, 10 Jul 2024 21:41:55 +0800 (CST)
 Received: from kwepemf100018.china.huawei.com (unknown [7.202.181.17])
-	by mail.maildlp.com (Postfix) with ESMTPS id 05A8E140257;
+	by mail.maildlp.com (Postfix) with ESMTPS id 58AF714035F;
 	Wed, 10 Jul 2024 21:42:23 +0800 (CST)
 Received: from localhost.localdomain (10.90.30.45) by
  kwepemf100018.china.huawei.com (7.202.181.17) with Microsoft SMTP Server
@@ -42,10 +43,12 @@ From: Junxian Huang <huangjunxian6@hisilicon.com>
 To: <jgg@ziepe.ca>, <leon@kernel.org>
 CC: <linux-rdma@vger.kernel.org>, <linuxarm@huawei.com>,
 	<linux-kernel@vger.kernel.org>, <huangjunxian6@hisilicon.com>
-Subject: [PATCH v2 for-rc 0/8] RDMA/hns: Bugfixes
-Date: Wed, 10 Jul 2024 21:36:57 +0800
-Message-ID: <20240710133705.896445-1-huangjunxian6@hisilicon.com>
+Subject: [PATCH v2 for-rc 1/8] RDMA/hns: Check atomic wr length
+Date: Wed, 10 Jul 2024 21:36:58 +0800
+Message-ID: <20240710133705.896445-2-huangjunxian6@hisilicon.com>
 X-Mailer: git-send-email 2.30.0
+In-Reply-To: <20240710133705.896445-1-huangjunxian6@hisilicon.com>
+References: <20240710133705.896445-1-huangjunxian6@hisilicon.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
@@ -57,36 +60,54 @@ Content-Type: text/plain
 X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
  kwepemf100018.china.huawei.com (7.202.181.17)
 
-Here are some bugfixes for hns driver.
+8 bytes is the only supported length of atomic. Add this check in
+set_rc_wqe(). Besides, stop processing WQEs and return from
+set_rc_wqe() if there is any error.
 
-v1 -> v2:
-* Drop patch #2 in v1 because Leon pointed out a problem about mailbox
-  mode, and we plan to handle it in another patchset.
-* Patch #1: put the atomic length check in set_rc_wqe(), stop processing
-  WQEs and return immediately if there is an error.
-* Patch #2: use BH workqueue instead of tasklet.
+Fixes: 384f88185112 ("RDMA/hns: Add atomic support")
+Signed-off-by: Junxian Huang <huangjunxian6@hisilicon.com>
+---
+ drivers/infiniband/hw/hns/hns_roce_device.h | 2 ++
+ drivers/infiniband/hw/hns/hns_roce_hw_v2.c  | 9 +++++++--
+ 2 files changed, 9 insertions(+), 2 deletions(-)
 
-Chengchang Tang (5):
-  RDMA/hns: Fix missing pagesize and alignment check in FRMR
-  RDMA/hns: Fix shift-out-bounds when max_inline_data is 0
-  RDMA/hns: Fix undifined behavior caused by invalid max_sge
-  RDMA/hns: Fix insufficient extend DB for VFs.
-  RDMA/hns: Fix mbx timing out before CMD execution is completed
-
-Junxian Huang (3):
-  RDMA/hns: Check atomic wr length
-  RDMA/hns: Fix soft lockup under heavy CEQE load
-  RDMA/hns: Fix unmatch exception handling when init eq table fails
-
- drivers/infiniband/hw/hns/hns_roce_device.h |   7 +
- drivers/infiniband/hw/hns/hns_roce_hw_v2.c  | 164 +++++++++++++-------
- drivers/infiniband/hw/hns/hns_roce_hw_v2.h  |   6 +
- drivers/infiniband/hw/hns/hns_roce_mr.c     |   5 +
- drivers/infiniband/hw/hns/hns_roce_qp.c     |   4 +-
- drivers/infiniband/hw/hns/hns_roce_srq.c    |   2 +-
- 6 files changed, 127 insertions(+), 61 deletions(-)
-
---
+diff --git a/drivers/infiniband/hw/hns/hns_roce_device.h b/drivers/infiniband/hw/hns/hns_roce_device.h
+index ff0b3f68ee3a..05005079258c 100644
+--- a/drivers/infiniband/hw/hns/hns_roce_device.h
++++ b/drivers/infiniband/hw/hns/hns_roce_device.h
+@@ -91,6 +91,8 @@
+ /* Configure to HW for PAGE_SIZE larger than 4KB */
+ #define PG_SHIFT_OFFSET				(PAGE_SHIFT - 12)
+ 
++#define ATOMIC_WR_LEN				8
++
+ #define HNS_ROCE_IDX_QUE_ENTRY_SZ		4
+ #define SRQ_DB_REG				0x230
+ 
+diff --git a/drivers/infiniband/hw/hns/hns_roce_hw_v2.c b/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
+index 4287818a737f..eb6052ee8938 100644
+--- a/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
++++ b/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
+@@ -591,11 +591,16 @@ static inline int set_rc_wqe(struct hns_roce_qp *qp,
+ 		     (wr->send_flags & IB_SEND_SIGNALED) ? 1 : 0);
+ 
+ 	if (wr->opcode == IB_WR_ATOMIC_CMP_AND_SWP ||
+-	    wr->opcode == IB_WR_ATOMIC_FETCH_AND_ADD)
++	    wr->opcode == IB_WR_ATOMIC_FETCH_AND_ADD) {
++		if (msg_len != ATOMIC_WR_LEN)
++			return -EINVAL;
+ 		set_atomic_seg(wr, rc_sq_wqe, valid_num_sge);
+-	else if (wr->opcode != IB_WR_REG_MR)
++	} else if (wr->opcode != IB_WR_REG_MR) {
+ 		ret = set_rwqe_data_seg(&qp->ibqp, wr, rc_sq_wqe,
+ 					&curr_idx, valid_num_sge);
++		if (ret)
++			return ret;
++	}
+ 
+ 	/*
+ 	 * The pipeline can sequentially post all valid WQEs into WQ buffer,
+-- 
 2.33.0
 
 
