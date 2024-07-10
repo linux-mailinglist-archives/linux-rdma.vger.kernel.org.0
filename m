@@ -1,214 +1,197 @@
-Return-Path: <linux-rdma+bounces-3786-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-3787-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id AEA6192CD7F
-	for <lists+linux-rdma@lfdr.de>; Wed, 10 Jul 2024 10:50:18 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id BD30992CE07
+	for <lists+linux-rdma@lfdr.de>; Wed, 10 Jul 2024 11:17:11 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 68DEB28A372
-	for <lists+linux-rdma@lfdr.de>; Wed, 10 Jul 2024 08:50:17 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E08161C2111E
+	for <lists+linux-rdma@lfdr.de>; Wed, 10 Jul 2024 09:17:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 11B1C158D7B;
-	Wed, 10 Jul 2024 08:50:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E68D617BB27;
+	Wed, 10 Jul 2024 09:17:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ionos.com header.i=@ionos.com header.b="cvQRgq7s"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="no2811x1"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-ed1-f42.google.com (mail-ed1-f42.google.com [209.85.208.42])
+Received: from mail-pl1-f182.google.com (mail-pl1-f182.google.com [209.85.214.182])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3C2771527A7
-	for <linux-rdma@vger.kernel.org>; Wed, 10 Jul 2024 08:50:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 56E667D08D
+	for <linux-rdma@vger.kernel.org>; Wed, 10 Jul 2024 09:17:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1720601413; cv=none; b=U+8hpnfHeNRKov35kT0Hd+WEM/RmCChKJXwCMuHz1V1vP0FX1sERnAjcioftwm8oGMUsj106fXHJ9+3Za8Uh4Wuj05Jdf2FI1T0lopwd5zn6rhUDtKTzV6r3LDRud0Z2vtNGBO3O80Zxkyh4y/0K8uGInw+ZVntK+iza1dPNClc=
+	t=1720603026; cv=none; b=WFP/SMBUXJoJL/cZVD6ZeEU1cGqZcnX3txBdYxX98lYCHfWPmZIKHb73nkPbWYEM6StNdlAGNrzIbWjVt5K68Gh6MLn1/zIBkncZF/UYDzixvmWIs8qrlw46j0nflUAe+H0ip1CnUh1bRFHf2ATQgLZQoggmeCJFjEgidOV05Ps=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1720601413; c=relaxed/simple;
-	bh=xIWJZdqQmS40VtfySNljm4qkzaAQCvi0WdVDzPfduPg=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=F9V5eDJkiMnI4A1Mv15Sz03NpaUHRUPN48SDsQ8xeB+1OwQY5rlISyO7Ln5NpeuIFPb+Vbzx9Z6GntjlhIbWfsAmL+XVP2GTKAGea1Qg4r8HeLwJPvJ50ZL+GQaAxYdOZoIdLzOGweedX+bUQvK/oY7G3koXJjFE4yALVe+5rZY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ionos.com; spf=pass smtp.mailfrom=ionos.com; dkim=pass (2048-bit key) header.d=ionos.com header.i=@ionos.com header.b=cvQRgq7s; arc=none smtp.client-ip=209.85.208.42
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ionos.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ionos.com
-Received: by mail-ed1-f42.google.com with SMTP id 4fb4d7f45d1cf-5854ac817afso7337824a12.2
-        for <linux-rdma@vger.kernel.org>; Wed, 10 Jul 2024 01:50:11 -0700 (PDT)
+	s=arc-20240116; t=1720603026; c=relaxed/simple;
+	bh=492R4VMo7A/cOu8yspJiEOXFeZPLtkN1QHxffHiPltc=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=nv/lNa47M8KSvNvZNpEaoXvusPZDN7XAB0Joh2r1qQLoJsbxwmD4unzoOI61m7ZywqzhytqQJEd1W/sMjpfzdOpsaaYGocwcqH2QrEOHVj6sMtN6aSzITYsBEv/+11sZQsIjrBifVurgOXjkKzB6oNaGaXCxgj49MTHvOCZeNLo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=no2811x1; arc=none smtp.client-ip=209.85.214.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f182.google.com with SMTP id d9443c01a7336-1fb0d7e4ee9so39522395ad.3
+        for <linux-rdma@vger.kernel.org>; Wed, 10 Jul 2024 02:17:05 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ionos.com; s=google; t=1720601410; x=1721206210; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=vCueOuhK8iVCiyW5xhIkWfPl83yP8Jfl3gqyyj7EmdQ=;
-        b=cvQRgq7sOlvT6Cdep1EH82TrvzKGj74TqUfhNXnvcJzVSEat0OiIthAwvq4ixZaWcB
-         kdcpCHnOe+rpWU4cyfPDVJSyHOauMcoMUMMHhr6UWUeG6u76DZ6/+8092TEydq14GCEv
-         /KS9fHZIfjENhAE4KoEznLxOWn2t6lYEw9eFUaytuibVHB+nDvOXeTvgIQ1GJMDh4tTF
-         cn1JwiDHwjJ5VAyl0mb6BqL50PjT8jAECStZWMIQAXhP6Bs9PazY/wn/gLt53bFBDBYL
-         6pK4kuLtk8v8Da0x++Nc/tE/7lp1Pf8N9VSeWUycj6dudWF0oUbLxkGRUoAt3jj1qeay
-         vxQw==
+        d=gmail.com; s=20230601; t=1720603024; x=1721207824; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=MH9XFFDHuCxMNoCVVrKEnHyxTG0c/B61jNNryy8Ax8w=;
+        b=no2811x1MsE5u2PF+dahX1TcFzmrA2qcS1Yt8u2CaQkW4G25aFBLBjll2dManR5usJ
+         fBN+snuFawIOqq3K0GEfoMA5Y7ups+zJQV/Vnb3oMoWY3ney5bCHELAwXAFVMRhxaWrv
+         ftOdsAXI7CGvRKya2CctMjAFF400PvhIgJuc/JDSAsRJCHxJnVKQVb+UCMAe6CN3kvUt
+         PugImYo24BFwOcZqPfch9eJlYE1F9XlLFlrC6ILCFNWYFW5B1FfnK9BJju+VzV9HsDDI
+         xS9Y2MWjYOf8+HMgjfQTAqbsp/42jYd7hrm+NfFaVE6GhcHE4qZymwrezpgj/nYwpqeD
+         J82A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1720601410; x=1721206210;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=vCueOuhK8iVCiyW5xhIkWfPl83yP8Jfl3gqyyj7EmdQ=;
-        b=H8+1pMIKeqk1ET1MhOYpTx7j55sg4ma0he40mY8132Z5dWODJvzFampA9EmqalzecD
-         uYeKzodKJTuGO4rUjKswJdg7F+LKh6tdMCO6JaJycCjxKdAlwq3bcFt7hzZhIXqBCr7B
-         XgvyF75xdVS4ZI4Avg1HnEO1cVKy0+FqR+ODoPYGTbEtzjlgKjCsM1Ko6uF/qYs3o1IR
-         bq3wv+soEFQfCosszO93KlG9v/YoEckhU7mN/9Me0HCk+jjwR+FrxLyMBgROV3lOEi0H
-         bB4zPh147KI5K9sctnOTJrXqi/kjncNywaShv4e7KjlisAqP6cPFw16mudDMlJHGo1tt
-         OcBA==
-X-Gm-Message-State: AOJu0YxmGl8jrI7D0XvhwP/B0xsvyHSaftsZUZkZhXrkGZGNUGTCGSSR
-	wDIsVozpeNn9yuhprHc0l6iqaH4LmsR9ESoUxQzucvGKeD5HsLz+o0Wpy7L0vt9gtRnPV7im8h1
-	fyTmElldGfyKb0Nhbh95VMYJK5uI9ezsZXidzGg==
-X-Google-Smtp-Source: AGHT+IHRJQBgRqyofnb9/OduGk0p7jb3RuPG9cpF0n/Nu7p6APj6aSwVk0BOhs7AH0XjupRmhFSiugYXdV+B+yeiFw4=
-X-Received: by 2002:a50:d518:0:b0:585:437c:d7fc with SMTP id
- 4fb4d7f45d1cf-594bc7c7e61mr3034086a12.32.1720601409630; Wed, 10 Jul 2024
- 01:50:09 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1720603024; x=1721207824;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=MH9XFFDHuCxMNoCVVrKEnHyxTG0c/B61jNNryy8Ax8w=;
+        b=tT2rxjOov5SlK3VcsQ2XyNmcUDEKK6dRvVJTuxUNi/gw1tjx95pLK5QVR2cnMx/A7V
+         78kLUc6xjLbgiMmyiAwRtjO87rXd5FVxit4T6jO7CV8F2aXSc+c0BW333y8QIoEj87FJ
+         vknCrgkcNdGIAZVh6mH2+7sUuh8VVnfCFhpW7z4c/hE9G7kiTndaF0nVGjScBz/SdCym
+         6wpqxaPbs2tszFayiRQNgydaaT7/f/fJFkY6Jvr4Bw/ZS1nBEnxwo7pmquxIPff2XWG6
+         r7Uv5yJC9OKq+IBAarOpTxzj9gQ77qr55o5Jcx7R/Si8YyvuMgFVqhAvKAQ+WWJW8FpQ
+         UMUg==
+X-Gm-Message-State: AOJu0YxxDaUleHP6/dIuWtysOaPa1kry8K/Bug6/I2TegdUyGpMwPens
+	t2XWxQWgxyT3VBmAUuI9+vbwJgW2Od7W0Ue1grKuqGVmCZMFBkomECNXPw==
+X-Google-Smtp-Source: AGHT+IEWMG0ktcWImf7hAcQM1wDeRhuw+FZJ0/ym7zNpSwvpXVKrpTSdZAAfPYzWzXztzSeP283VQA==
+X-Received: by 2002:a17:903:22c5:b0:1fb:57a6:2ae7 with SMTP id d9443c01a7336-1fbb6f0a161mr42594765ad.59.1720603024424;
+        Wed, 10 Jul 2024 02:17:04 -0700 (PDT)
+Received: from FLYINGPENG-MB1.tencent.com ([103.7.29.30])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-1fbb6acf8fesm29084125ad.250.2024.07.10.02.17.02
+        (version=TLS1_3 cipher=TLS_CHACHA20_POLY1305_SHA256 bits=256/256);
+        Wed, 10 Jul 2024 02:17:03 -0700 (PDT)
+From: flyingpenghao@gmail.com
+X-Google-Original-From: flyingpeng@tencent.com
+To: gg@ziepe.ca,
+	nathan@kernel.org
+Cc: linux-rdma@vger.kernel.org,
+	Peng Hao <flyingpeng@tencent.com>
+Subject: [PATCH v2] infiniband/hw/ocrdma: fix the problem of KASAN causing the stack frame size to increase
+Date: Wed, 10 Jul 2024 17:16:57 +0800
+Message-Id: <20240710091657.26291-1-flyingpeng@tencent.com>
+X-Mailer: git-send-email 2.39.3 (Apple Git-146)
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240709150119.29937-1-jinpu.wang@ionos.com> <20240709150119.29937-2-jinpu.wang@ionos.com>
- <CA+sbYW0SyjjvYjb++P8P4MHam_YWRXN3Vw8PmNsK4G+e8a3gsA@mail.gmail.com>
-In-Reply-To: <CA+sbYW0SyjjvYjb++P8P4MHam_YWRXN3Vw8PmNsK4G+e8a3gsA@mail.gmail.com>
-From: Jinpu Wang <jinpu.wang@ionos.com>
-Date: Wed, 10 Jul 2024 10:49:58 +0200
-Message-ID: <CAMGffEkmrWhYpct22io+wwVL8kednUwoH_feXJXryFw9asa7EQ@mail.gmail.com>
-Subject: Re: [PATCH for-next 1/2] bnxt_re: Fix imm_data endianness
-To: Selvin Xavier <selvin.xavier@broadcom.com>
-Cc: linux-rdma@vger.kernel.org, bvanassche@acm.org, leon@kernel.org, 
-	jgg@ziepe.ca, haris.iqbal@ionos.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 
-Hi Selvin,
+From: Peng Hao <flyingpeng@tencent.com>
 
-On Wed, Jul 10, 2024 at 10:28=E2=80=AFAM Selvin Xavier
-<selvin.xavier@broadcom.com> wrote:
->
-> On Tue, Jul 9, 2024 at 8:31=E2=80=AFPM Jack Wang <jinpu.wang@ionos.com> w=
-rote:
-> >
-> > When map a device between servers with MLX and BCM RoCE nics, RTRS
-> > server complain about unknown imm type, and can't map the device,
-> >
-> > After more debug, it seems bnxt_re wrongly handle the
-> > imm_data, this patch fixed the compat issue with MLX for us.
-> >
-> > In offlist discussion, Selvin confirm HW is working in little endian
-> > format and all data needs to be converted to LE while providing.
-> >
-> > This patch fix the endianness for imm_data
-> >
-> > Fixes: 1ac5a4047975 ("RDMA/bnxt_re: Add bnxt_re RoCE driver")
-> > Signed-off-by: Jack Wang <jinpu.wang@ionos.com>
-> Hi Jinpu,
->  Thank you for this patch and debugging with Broadcom devices. Couple
-> of comments. Also, maybe you can clean up the commit message by moving
-> the reference of our discussion to the cover letter.
-sure, will do.
->
-> Thanks,
-> Selvin
-> > ---
-> >  drivers/infiniband/hw/bnxt_re/ib_verbs.c | 8 ++++----
-> >  drivers/infiniband/hw/bnxt_re/qplib_fp.h | 6 +++---
-> >  2 files changed, 7 insertions(+), 7 deletions(-)
-> >
-> > diff --git a/drivers/infiniband/hw/bnxt_re/ib_verbs.c b/drivers/infinib=
-and/hw/bnxt_re/ib_verbs.c
-> > index e453ca701e87..c5080028247e 100644
-> > --- a/drivers/infiniband/hw/bnxt_re/ib_verbs.c
-> > +++ b/drivers/infiniband/hw/bnxt_re/ib_verbs.c
-> > @@ -2479,7 +2479,7 @@ static int bnxt_re_build_send_wqe(struct bnxt_re_=
-qp *qp,
-> >                 break;
-> >         case IB_WR_SEND_WITH_IMM:
-> >                 wqe->type =3D BNXT_QPLIB_SWQE_TYPE_SEND_WITH_IMM;
-> > -               wqe->send.imm_data =3D wr->ex.imm_data;
-> > +               wqe->send.imm_data =3D cpu_to_le32(be32_to_cpu(wr->ex.i=
-mm_data));
-> If you see bnxt_re/qplib_fp.c, we have the following code. This
-> ensures that le32
-> is passed down. So in your patch, we just need to do be32_to_cpu of
-> the immediate data.
-> sqe->inv_key_or_imm_data =3D cpu_to_le32(wqe->send.inv_key);
-ok, makes sense.
-> >                 break;
-> >         case IB_WR_SEND_WITH_INV:
-> >                 wqe->type =3D BNXT_QPLIB_SWQE_TYPE_SEND_WITH_INV;
-> > @@ -2509,7 +2509,7 @@ static int bnxt_re_build_rdma_wqe(const struct ib=
-_send_wr *wr,
-> >                 break;
-> >         case IB_WR_RDMA_WRITE_WITH_IMM:
-> >                 wqe->type =3D BNXT_QPLIB_SWQE_TYPE_RDMA_WRITE_WITH_IMM;
-> > -               wqe->rdma.imm_data =3D wr->ex.imm_data;
-> > +               wqe->rdma.imm_data =3D cpu_to_le32(be32_to_cpu(wr->ex.i=
-mm_data));
-> Same comment as above
-ditto
-> >                 break;
-> >         case IB_WR_RDMA_READ:
-> >                 wqe->type =3D BNXT_QPLIB_SWQE_TYPE_RDMA_READ;
-> > @@ -3582,7 +3582,7 @@ static void bnxt_re_process_res_shadow_qp_wc(stru=
-ct bnxt_re_qp *gsi_sqp,
-> >         wc->byte_len =3D orig_cqe->length;
-> >         wc->qp =3D &gsi_qp->ib_qp;
-> >
-> > -       wc->ex.imm_data =3D orig_cqe->immdata;
-> > +       wc->ex.imm_data =3D cpu_to_be32(le32_to_cpu(orig_cqe->immdata))=
-;
-> >         wc->src_qp =3D orig_cqe->src_qp;
-> >         memcpy(wc->smac, orig_cqe->smac, ETH_ALEN);
-> >         if (bnxt_re_is_vlan_pkt(orig_cqe, &vlan_id, &sl)) {
-> > @@ -3727,7 +3727,7 @@ int bnxt_re_poll_cq(struct ib_cq *ib_cq, int num_=
-entries, struct ib_wc *wc)
-> >                                  (unsigned long)(cqe->qp_handle),
-> >                                  struct bnxt_re_qp, qplib_qp);
-> >                         wc->qp =3D &qp->ib_qp;
-> > -                       wc->ex.imm_data =3D cqe->immdata;
-> > +                       wc->ex.imm_data =3D cpu_to_be32(le32_to_cpu(cqe=
-->immdata));
-> >                         wc->src_qp =3D cqe->src_qp;
-> >                         memcpy(wc->smac, cqe->smac, ETH_ALEN);
-> >                         wc->port_num =3D 1;
-> > diff --git a/drivers/infiniband/hw/bnxt_re/qplib_fp.h b/drivers/infinib=
-and/hw/bnxt_re/qplib_fp.h
-> > index 4aaac84c1b1b..1fcaba0f680b 100644
-> > --- a/drivers/infiniband/hw/bnxt_re/qplib_fp.h
-> > +++ b/drivers/infiniband/hw/bnxt_re/qplib_fp.h
-> > @@ -164,7 +164,7 @@ struct bnxt_qplib_swqe {
-> >                 /* Send, with imm, inval key */
-> >                 struct {
-> >                         union {
-> > -                               __be32  imm_data;
-> > +                               __le32  imm_data;
-> Once you implement according to my comment above, this can be a u32
-will do.
-> >                                 u32     inv_key;
-> >                         };
-> >                         u32             q_key;
-> > @@ -182,7 +182,7 @@ struct bnxt_qplib_swqe {
-> >                 /* RDMA write, with imm, read */
-> >                 struct {
-> >                         union {
-> > -                               __be32  imm_data;
-> > +                               __le32  imm_data;
-> >                                 u32     inv_key;
-> >                         };
-> >                         u64             remote_va;
-> > @@ -389,7 +389,7 @@ struct bnxt_qplib_cqe {
-> >         u16                             cfa_meta;
-> >         u64                             wr_id;
-> >         union {
-> > -               __be32                  immdata;
-> > +               __le32                  immdata;
-> >                 u32                     invrkey;
-> >         };
-> >         u64                             qp_handle;
-> > --
-> > 2.34.1
-> >
+drivers/infiniband/hw/ocrdma/ocrdma_stats.c:686:16: error: stack frame size (20664) exceeds limit (8192) in 'ocrdma_dbgfs_ops_read' [-Werror,-Wframe-larger-than]
+static ssize_t ocrdma_dbgfs_ops_read(struct file *filp, char __user *buffer,
+               ^
+
+Some functions called by ocrdma_dbgfs_ops_read occupy a lot of stack space.
+Mark these functions as noinline_for_stack to prevent them from accumulating
+in ocrdma_dbgfs_ops_read.
+
+Signed-off-by: Peng Hao <flyingpeng@tencent.com>
+---
+ drivers/infiniband/hw/ocrdma/ocrdma_stats.c | 20 ++++++++++----------
+ 1 file changed, 10 insertions(+), 10 deletions(-)
+
+diff --git a/drivers/infiniband/hw/ocrdma/ocrdma_stats.c b/drivers/infiniband/hw/ocrdma/ocrdma_stats.c
+index 5f831e3bdbad..3fdc57969f7d 100644
+--- a/drivers/infiniband/hw/ocrdma/ocrdma_stats.c
++++ b/drivers/infiniband/hw/ocrdma/ocrdma_stats.c
+@@ -99,7 +99,7 @@ void ocrdma_release_stats_resources(struct ocrdma_dev *dev)
+ 	kfree(mem->debugfs_mem);
+ }
+ 
+-static char *ocrdma_resource_stats(struct ocrdma_dev *dev)
++static noinline_for_stack char *ocrdma_resource_stats(struct ocrdma_dev *dev)
+ {
+ 	char *stats = dev->stats_mem.debugfs_mem, *pcur;
+ 	struct ocrdma_rdma_stats_resp *rdma_stats =
+@@ -216,7 +216,7 @@ static char *ocrdma_resource_stats(struct ocrdma_dev *dev)
+ 	return stats;
+ }
+ 
+-static char *ocrdma_rx_stats(struct ocrdma_dev *dev)
++static noinline_for_stack char *ocrdma_rx_stats(struct ocrdma_dev *dev)
+ {
+ 	char *stats = dev->stats_mem.debugfs_mem, *pcur;
+ 	struct ocrdma_rdma_stats_resp *rdma_stats =
+@@ -284,7 +284,7 @@ static u64 ocrdma_sysfs_rcv_data(struct ocrdma_dev *dev)
+ 		rx_stats->roce_frame_bytes_hi))/4;
+ }
+ 
+-static char *ocrdma_tx_stats(struct ocrdma_dev *dev)
++static noinline_for_stack char *ocrdma_tx_stats(struct ocrdma_dev *dev)
+ {
+ 	char *stats = dev->stats_mem.debugfs_mem, *pcur;
+ 	struct ocrdma_rdma_stats_resp *rdma_stats =
+@@ -358,7 +358,7 @@ static u64 ocrdma_sysfs_xmit_data(struct ocrdma_dev *dev)
+ 				 tx_stats->read_rsp_bytes_hi))/4;
+ }
+ 
+-static char *ocrdma_wqe_stats(struct ocrdma_dev *dev)
++static noinline_for_stack char *ocrdma_wqe_stats(struct ocrdma_dev *dev)
+ {
+ 	char *stats = dev->stats_mem.debugfs_mem, *pcur;
+ 	struct ocrdma_rdma_stats_resp *rdma_stats =
+@@ -391,7 +391,7 @@ static char *ocrdma_wqe_stats(struct ocrdma_dev *dev)
+ 	return stats;
+ }
+ 
+-static char *ocrdma_db_errstats(struct ocrdma_dev *dev)
++static noinline_for_stack char *ocrdma_db_errstats(struct ocrdma_dev *dev)
+ {
+ 	char *stats = dev->stats_mem.debugfs_mem, *pcur;
+ 	struct ocrdma_rdma_stats_resp *rdma_stats =
+@@ -412,7 +412,7 @@ static char *ocrdma_db_errstats(struct ocrdma_dev *dev)
+ 	return stats;
+ }
+ 
+-static char *ocrdma_rxqp_errstats(struct ocrdma_dev *dev)
++static noinline_for_stack char *ocrdma_rxqp_errstats(struct ocrdma_dev *dev)
+ {
+ 	char *stats = dev->stats_mem.debugfs_mem, *pcur;
+ 	struct ocrdma_rdma_stats_resp *rdma_stats =
+@@ -438,7 +438,7 @@ static char *ocrdma_rxqp_errstats(struct ocrdma_dev *dev)
+ 	return stats;
+ }
+ 
+-static char *ocrdma_txqp_errstats(struct ocrdma_dev *dev)
++static noinline_for_stack char *ocrdma_txqp_errstats(struct ocrdma_dev *dev)
+ {
+ 	char *stats = dev->stats_mem.debugfs_mem, *pcur;
+ 	struct ocrdma_rdma_stats_resp *rdma_stats =
+@@ -462,7 +462,7 @@ static char *ocrdma_txqp_errstats(struct ocrdma_dev *dev)
+ 	return stats;
+ }
+ 
+-static char *ocrdma_tx_dbg_stats(struct ocrdma_dev *dev)
++static noinline_for_stack char *ocrdma_tx_dbg_stats(struct ocrdma_dev *dev)
+ {
+ 	int i;
+ 	char *pstats = dev->stats_mem.debugfs_mem;
+@@ -480,7 +480,7 @@ static char *ocrdma_tx_dbg_stats(struct ocrdma_dev *dev)
+ 	return dev->stats_mem.debugfs_mem;
+ }
+ 
+-static char *ocrdma_rx_dbg_stats(struct ocrdma_dev *dev)
++static noinline_for_stack char *ocrdma_rx_dbg_stats(struct ocrdma_dev *dev)
+ {
+ 	int i;
+ 	char *pstats = dev->stats_mem.debugfs_mem;
+@@ -498,7 +498,7 @@ static char *ocrdma_rx_dbg_stats(struct ocrdma_dev *dev)
+ 	return dev->stats_mem.debugfs_mem;
+ }
+ 
+-static char *ocrdma_driver_dbg_stats(struct ocrdma_dev *dev)
++static noinline_for_stack char *ocrdma_driver_dbg_stats(struct ocrdma_dev *dev)
+ {
+ 	char *stats = dev->stats_mem.debugfs_mem, *pcur;
+ 
+-- 
+2.31.1
+
 
