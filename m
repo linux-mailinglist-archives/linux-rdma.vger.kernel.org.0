@@ -1,53 +1,61 @@
-Return-Path: <linux-rdma+bounces-3782-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-3783-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2674792CA65
-	for <lists+linux-rdma@lfdr.de>; Wed, 10 Jul 2024 08:09:41 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3493C92CAE8
+	for <lists+linux-rdma@lfdr.de>; Wed, 10 Jul 2024 08:22:29 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C59A3281C50
-	for <lists+linux-rdma@lfdr.de>; Wed, 10 Jul 2024 06:09:39 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E3AAB283910
+	for <lists+linux-rdma@lfdr.de>; Wed, 10 Jul 2024 06:22:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EBEE050A80;
-	Wed, 10 Jul 2024 06:09:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="AijnoF2E"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CA9D76FE16;
+	Wed, 10 Jul 2024 06:22:19 +0000 (UTC)
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from verein.lst.de (verein.lst.de [213.95.11.211])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ACC491A28D
-	for <linux-rdma@vger.kernel.org>; Wed, 10 Jul 2024 06:09:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B5C115BAF0;
+	Wed, 10 Jul 2024 06:22:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.95.11.211
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1720591775; cv=none; b=AShhdA4sW0vUJTPdVy62h/1kXSslbZ+W0m5iwfocUCwuQ2sVc10m1GdJdPmczAvBma1iY12XlZRk7jIVf+iOEFRxmKyQ2cdJCUMJXWiRhmT8+Nit1hWoqVu6hV1Unwh5fs8x6z3GU85eplFcY4t4U6gT1QVEd0pABDVU/dmaiDM=
+	t=1720592539; cv=none; b=ehRfjnBLffcoV6YgiCpuc+cxdmxbNrbZT6V6Jf9u0v79mYkDlXM/peFXTRjCuAy8kEOO/RhWUpxz1uoUsDv7fw9TKL2pZKK11J6sLut5CDioai3ZWFyjnNqlcIt6rG3l1MHn6aU4tke5k1jFcZXlBIhhQmUWA5raE7SXyTDRocg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1720591775; c=relaxed/simple;
-	bh=MqsduHl6zqAFfFE/sgEssinmtbsFISnVFZmF1aJQOnQ=;
+	s=arc-20240116; t=1720592539; c=relaxed/simple;
+	bh=NGY6+a5EweXEppSGRkflKSDqFxD1LoZFRBntbil7k4w=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=th6g8lmwHc7rvPMuVVyD//yA3ClEd+y3zDZZq8OgqvadyEXoG1TaJjIgtMuLbfbgUSu7grwOXlgqlbemNIHuA0eVc+AwBJWlyF/OS0HLYniOkloV4eDXHBbGEjfD2DlUO8KcbtYEibINnkFwi/hwKFHdyovMDeu9pxpUkSxVkqw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=AijnoF2E; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 68C22C32781;
-	Wed, 10 Jul 2024 06:09:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1720591775;
-	bh=MqsduHl6zqAFfFE/sgEssinmtbsFISnVFZmF1aJQOnQ=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=AijnoF2EkeoCqt439NnRlTCCpsbAyaAr6yVgeWMobS6Sixth2By0emdnBLYeuMotf
-	 W3l26co7bPN82D1r10lPy/+CoYIyKHZg7W1Q5kmnF2yM5ey6OXwh3PXxqgj5jBJhc4
-	 KSKeePCdtJqk4jX8pQ1lgRagkxh0S2XazSWHcDdIcUl3xCwoXap8DjjnbYJOpZo6Eq
-	 9Epu7D+RWID+HPF2bUuF53HAjLJ9LTYL3oyXVhVktxLIuBHJu1805pmP7ajoNlkvi6
-	 iCcf9bARvnetZbPcn72IttpK7MCR6NRhJ13qAuwrT0UuvKlJFvL9xoSOt3qkPwWaVs
-	 yzXFaHMjaEddg==
-Date: Wed, 10 Jul 2024 09:09:29 +0300
-From: Leon Romanovsky <leon@kernel.org>
-To: David Ahern <dsahern@kernel.org>
-Cc: linux-rdma@vger.kernel.org, jgg@ziepe.ca
-Subject: Re: [PATCH] RDMA: Fix netdev tracker in ib_device_set_netdev
-Message-ID: <20240710060929.GI6668@unreal>
-References: <20240709214455.17823-1-dsahern@kernel.org>
+	 Content-Type:Content-Disposition:In-Reply-To; b=PmSyOAwZE3d2YSfLl9Dt976QbrPsBEdrpqzDa3eqGxfn3oq+4uO+7HddSmmKRx+8gRr1xC+2QR3wpE13877RgaDLurM8J0fCZIIfE89bQUOsGWdsHBW+31KhYdPzDS54e0UYrAPTFgNazP7W4RmUiyFlIAi6dgMg9wTafJ4uwgs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=lst.de; spf=pass smtp.mailfrom=lst.de; arc=none smtp.client-ip=213.95.11.211
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=lst.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lst.de
+Received: by verein.lst.de (Postfix, from userid 2407)
+	id ACBCC227A87; Wed, 10 Jul 2024 08:22:12 +0200 (CEST)
+Date: Wed, 10 Jul 2024 08:22:12 +0200
+From: Christoph Hellwig <hch@lst.de>
+To: Jason Gunthorpe <jgg@ziepe.ca>
+Cc: Christoph Hellwig <hch@lst.de>, Leon Romanovsky <leon@kernel.org>,
+	Jens Axboe <axboe@kernel.dk>, Robin Murphy <robin.murphy@arm.com>,
+	Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
+	Keith Busch <kbusch@kernel.org>, "Zeng, Oak" <oak.zeng@intel.com>,
+	Chaitanya Kulkarni <kch@nvidia.com>,
+	Sagi Grimberg <sagi@grimberg.me>,
+	Bjorn Helgaas <bhelgaas@google.com>,
+	Logan Gunthorpe <logang@deltatee.com>,
+	Yishai Hadas <yishaih@nvidia.com>,
+	Shameer Kolothum <shameerali.kolothum.thodi@huawei.com>,
+	Kevin Tian <kevin.tian@intel.com>,
+	Alex Williamson <alex.williamson@redhat.com>,
+	Marek Szyprowski <m.szyprowski@samsung.com>,
+	=?iso-8859-1?B?Suly9G1l?= Glisse <jglisse@redhat.com>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-rdma@vger.kernel.org, iommu@lists.linux.dev,
+	linux-nvme@lists.infradead.org, linux-pci@vger.kernel.org,
+	kvm@vger.kernel.org, linux-mm@kvack.org
+Subject: Re: [RFC PATCH v1 00/18] Provide a new two step DMA API mapping API
+Message-ID: <20240710062212.GA25895@lst.de>
+References: <cover.1719909395.git.leon@kernel.org> <20240705063910.GA12337@lst.de> <20240708235721.GF14050@ziepe.ca> <20240709062015.GB16180@lst.de> <20240709190320.GN14050@ziepe.ca>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
@@ -56,39 +64,27 @@ List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240709214455.17823-1-dsahern@kernel.org>
+In-Reply-To: <20240709190320.GN14050@ziepe.ca>
+User-Agent: Mutt/1.5.17 (2007-11-01)
 
-On Tue, Jul 09, 2024 at 03:44:55PM -0600, David Ahern wrote:
-> If a netdev has already been assigned, ib_device_set_netdev needs to release
-> the reference on the older but it is mistakenly being called for the new
-> netdev. Fix it and in the process use netdev_put to be symmetrical with
-> the netdev_hold.
+On Tue, Jul 09, 2024 at 04:03:20PM -0300, Jason Gunthorpe wrote:
+> > Except for the powerpc bypass IOMMU or not is a global decision,
+> > and the bypass is per I/O.  So I'm not sure what else you want there?
 > 
-> Fixes: 09f530f0c6d6 ("RDMA: Add netdevice_tracker to ib_device_set_netdev()")
-> Signed-off-by: David Ahern <dsahern@kernel.org>
-> ---
->  drivers/infiniband/core/device.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/infiniband/core/device.c b/drivers/infiniband/core/device.c
-> index 55aa7aa32d4a..7ddaec923569 100644
-> --- a/drivers/infiniband/core/device.c
-> +++ b/drivers/infiniband/core/device.c
-> @@ -2167,7 +2167,7 @@ int ib_device_set_netdev(struct ib_device *ib_dev, struct net_device *ndev,
->  	}
->  
->  	if (old_ndev)
-> -		netdev_tracker_free(ndev, &pdata->netdev_tracker);
-> +		netdev_put(old_ndev, &pdata->netdev_tracker);
+> For P2P we know if the DMA will go through the IOMMU or not based on
+> the PCIe fabric path between the initiator (the one doing the DMA) and
+> the target (the one providing the MMIO memory).
 
-It should stay netdev_tracker_free() and not netdev_put(). We are
-calling to __dev_put(old_ndev) later in the function.
+Oh, yes.  So effectively you are asking if we can arbitrarily mix
+P2P sources in a single map request.  I think the only sane answer
+from the iommu/dma subsystem perspective is: hell no.
 
-Thanks
+But that means the upper layer need to split at such a boundary.
+E.g. get_user_pages needs to look at this and stop at the boundary,
+leaving the rest to the next call.
 
->  	if (ndev)
->  		netdev_hold(ndev, &pdata->netdev_tracker, GFP_ATOMIC);
->  	rcu_assign_pointer(pdata->netdev, ndev);
-> -- 
-> 2.30.2
+For the block layer just having one kind per BIO is fine right now,
+although I could see use cases where people would want to combine
+them.  We can probably defer that until it is needed, though.
+
 
