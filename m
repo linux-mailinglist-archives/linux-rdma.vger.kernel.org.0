@@ -1,174 +1,159 @@
-Return-Path: <linux-rdma+bounces-3810-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-3811-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id D1FB592DEBA
-	for <lists+linux-rdma@lfdr.de>; Thu, 11 Jul 2024 05:08:58 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 680A092E0A5
+	for <lists+linux-rdma@lfdr.de>; Thu, 11 Jul 2024 09:17:32 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 67FDF280FFA
-	for <lists+linux-rdma@lfdr.de>; Thu, 11 Jul 2024 03:08:57 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1C9F5281674
+	for <lists+linux-rdma@lfdr.de>; Thu, 11 Jul 2024 07:17:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 709B4BA29;
-	Thu, 11 Jul 2024 03:08:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 376E484DEA;
+	Thu, 11 Jul 2024 07:17:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="WiUTMyDM"
+	dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b="hkEQxA3W"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-pj1-f49.google.com (mail-pj1-f49.google.com [209.85.216.49])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D57D8E572
-	for <linux-rdma@vger.kernel.org>; Thu, 11 Jul 2024 03:08:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.49
+Received: from m16.mail.163.com (m16.mail.163.com [220.197.31.5])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 67E38770E6
+	for <linux-rdma@vger.kernel.org>; Thu, 11 Jul 2024 07:17:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=220.197.31.5
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1720667333; cv=none; b=CjzOxTdw+dFlRIsvs8muvugWEy/I/6vZtJfTwN4p4xaJxjVETFxKga18BrplEnKA3CSX+5WpCui53MUWJhRGcB3GSriM4X3BrMiJKMFyPwAI7q6srLr34OfxGXEBSnQ/DxOQS2VNIxPF3t4XSSunE40Qy89EZWPSlY+HeC6DQmo=
+	t=1720682236; cv=none; b=pGuMoYOhsy7aAII5r1inlZnuL8Uytv36UbA7AwrVeLSj5p7C76+/B84WFbzQCH365NKjXQiHVhWs0a1IESFAnKvoUnKvxSt9czk+6DTGGqV1rLtNqlPOAwqNMENAg2yesgEVEa0E1sLB5TBtN2U2GagXYbP68hK/z9cV9eKKuOI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1720667333; c=relaxed/simple;
-	bh=f8bUFPiFxogkALhWTPQVZ+N6FOhxORMzi/Cjvv8//Po=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=h3qyqdqY92Jd1mNWxWlfj5BA4Bi4zmUI+HIj7ly55cmToHiZun9EcxHxFm/i5v8zKs/XIK6afGnfVQ497uoEoWbSp/GHsHE/jtJpNjUJWkzkLYsEg/qEySRE7b7AodM7aqmj8SNT5hqmgRYYWsTeyY//DicfQQaVZa0fmXzsV98=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=WiUTMyDM; arc=none smtp.client-ip=209.85.216.49
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f49.google.com with SMTP id 98e67ed59e1d1-2c983d8bdc7so388100a91.0
-        for <linux-rdma@vger.kernel.org>; Wed, 10 Jul 2024 20:08:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1720667331; x=1721272131; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=7cWpdBqeDceYc8fqLDdz/uNMSLkWZrKUHU1F07Yulkw=;
-        b=WiUTMyDMm8h81LAxzia37RC361/G+hsre+8mviTQRkeh/3E/7IEA0PjXdz7EGw+g0X
-         93a6UBO8vr2CeLJMnC15+1dtOA1CPGtA/WGrMDTrzfhq5YCc8a0dqC2YtqK5gDdK8gCa
-         sT38/bcH4J8cO6luqH4Y1SGfI3L2tW95imC0X7sonQJmWr4SFshNmEpqeAs7CU9ixkU/
-         a7Sr9N7vB/pTq8EVHHi7/RK1TLZaEvhH+dfkIyyRvipjRM63Mk/GnexzYvMb6u6kYmyd
-         fHKOkxY1kog+IK2RUaLhm2o7liwtNaQQrM1YiUxvCtBXzFMILG2xIFKnj3CThxWxysr4
-         mynA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1720667331; x=1721272131;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=7cWpdBqeDceYc8fqLDdz/uNMSLkWZrKUHU1F07Yulkw=;
-        b=f0437uFwoj8VM5kWNBQi54eipjcgKhYDFyygwnpxOZj52ci2QKJzKetzxvdElCOyJ2
-         gEGk0f6eei3GLSZha/1w0dQD3KwLZXTIyOATUh/FrYTIl/fiRzO7ECcp1vncTtooi6I/
-         uS/ctJHEsp4fM7hf1ERa+omOxZxpokC20t+e8d8wwBXnJN8YTr+sURIlSXshi8pGkpwP
-         ADBnRCYCXYS1tv5vGmL3YBjblpAAQlgh5xV870kgAT0rnfOb+2KgvCPnv6SqKAlVzraz
-         559tNb6CE1MgYrmp9tUJRC51qah4KORxtukvl6tA1GSKwAmptNZIHo9H4iLIknLXyHZy
-         QEAQ==
-X-Gm-Message-State: AOJu0YxpnPBKcGPifsx097z4x1H4ZUWWu+sPMTKhSVMP8kvRDRqwz/j5
-	/Fp6bObXQBMNKPz2CaLiohP4+1bkFkYO/BZFhbMfZ3/RNYOek9VwWfEAXBK3DZOTwKd0pcnV11q
-	A4v5EYonp4FAYw+21IvJ5Pwhdn0Z2JQ==
-X-Google-Smtp-Source: AGHT+IFrFKVX0lU2q/BiGkrO971pdHiBJysbC2QXXXQQujqFflODRbb2Zwcj1RJOySrVrruCG7M6nHw8scMUiQ+YC50=
-X-Received: by 2002:a17:90a:4b46:b0:2c2:df58:bb8c with SMTP id
- 98e67ed59e1d1-2ca35c2aa92mr6202617a91.18.1720667331089; Wed, 10 Jul 2024
- 20:08:51 -0700 (PDT)
+	s=arc-20240116; t=1720682236; c=relaxed/simple;
+	bh=7BojsyZhxct1U3JFi/Q2xiGBxmO7GLZvORpW4w9QZNo=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=agWb+NQ+is2+imc3GthjtX0mhfK8WfifwBdF9NpH3c8f2T1itGNhl+FmvwSd6mFsd1oCt9K1JN9UPLIyjkdfi4/GjXBY5kxKU9omWLXQVjsiU+Pjv02AcqUJUk2HlrUP0WhMD21CczUj14RU9lQdKLAMDBvmG6BHeNTvTHAuYTk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com; spf=pass smtp.mailfrom=163.com; dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b=hkEQxA3W; arc=none smtp.client-ip=220.197.31.5
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=163.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
+	s=s110527; h=Date:From:Subject:Message-ID:MIME-Version:
+	Content-Type; bh=A9vh4ZRt5tnRgEEm6GPRBBgGjGW6zpq6uTuPIj+wURM=;
+	b=hkEQxA3WM7m4tSVIWoyKef0oZlxYfgsSjzPMznRV2pGaf4/ftw87GU2usfaIav
+	4nzrqvVacCuuJbmyDEwXA8WE03rM/CCpxdUqZSutfb4EyYE+QWM26cRDD2s/m+Pm
+	Kiijk++qeZSJ3UgW4pKsdYNvwnmjTjl2jzX7YRThQNeZE=
+Received: from localhost (unknown [125.33.20.250])
+	by gzga-smtp-mta-g1-1 (Coremail) with SMTP id _____wDn97NIg49ma3QtBQ--.6504S2;
+	Thu, 11 Jul 2024 15:01:29 +0800 (CST)
+Date: Thu, 11 Jul 2024 15:01:28 +0800
+From: Honggang LI <honggangli@163.com>
+To: Greg Sword <gregsword0@gmail.com>
+Cc: zyjzyj2000@gmail.com, jgg@ziepe.ca, leon@kernel.org,
+	rpearsonhpe@gmail.com, linux-rdma@vger.kernel.org
+Subject: Re: [PATCH] RDMA/rxe: Restore tasklet call for rxe_cq.c
+Message-ID: <Zo-DSIrjIGavnuTD@fc39>
+References: <20240711014006.11294-1-honggangli@163.com>
+ <CAEz=Lcvxr4LRhesrWdrodMn2JAG32RzOKTPd=wh470tvH_rG6w@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240709150119.29937-1-jinpu.wang@ionos.com> <20240709150119.29937-3-jinpu.wang@ionos.com>
-In-Reply-To: <20240709150119.29937-3-jinpu.wang@ionos.com>
-From: Greg Sword <gregsword0@gmail.com>
-Date: Thu, 11 Jul 2024 11:08:40 +0800
-Message-ID: <CAEz=LctWiGuHzEcSDQy16_m6havxhLm1mL9zBpi0PafHDv5kew@mail.gmail.com>
-Subject: Re: [PATCH for-next 2/2] bnxt_re: Fix inv_key endianness
-To: Jack Wang <jinpu.wang@ionos.com>
-Cc: linux-rdma@vger.kernel.org, bvanassche@acm.org, leon@kernel.org, 
-	jgg@ziepe.ca, selvin.xavier@broadcom.com, haris.iqbal@ionos.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAEz=Lcvxr4LRhesrWdrodMn2JAG32RzOKTPd=wh470tvH_rG6w@mail.gmail.com>
+X-CM-TRANSID:_____wDn97NIg49ma3QtBQ--.6504S2
+X-Coremail-Antispam: 1Uf129KBjvJXoWxXw4fKw17Ar43WrWfZFW8Zwb_yoW5XF4fpr
+	WkJr98Gr4DXr1jgw4qg3W5Zry7Cry8GrWDGrs5trWrJayrWr13XFW5AryayFWrKrnrGr1q
+	yw4DJF18Aw15AwUanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07UPfHbUUUUU=
+X-CM-SenderInfo: 5krqwwxdqjzxi6rwjhhfrp/xtbBDw0ZRWVOFJznDQAAsX
 
-On Tue, Jul 9, 2024 at 11:03=E2=80=AFPM Jack Wang <jinpu.wang@ionos.com> wr=
-ote:
->
-> Similar like previous patch, this change the endianness for inv_key,
-> hw expect LE, so change the type accordingly.
+On Thu, Jul 11, 2024 at 11:06:06AM +0800, Greg Sword wrote:
+> Subject: Re: [PATCH] RDMA/rxe: Restore tasklet call for rxe_cq.c
+> From: Greg Sword <gregsword0@gmail.com>
+> Date: Thu, 11 Jul 2024 11:06:06 +0800
+> 
+> On Thu, Jul 11, 2024 at 9:41 AM Honggang LI <honggangli@163.com> wrote:
+> >
+> > If ib_req_notify_cq() was called in complete handler, deadlock occurs
+> > in receive path.
+> >
+> > rxe_req_notify_cq+0x21/0x70 [rdma_rxe]
+> > krping_cq_event_handler+0x26f/0x2c0 [rdma_krping]
+> 
+> What is rdma_krping? What is the deadlock?
 
-Too bad, the commit log. A lot of errors
+https://github.com/larrystevenwise/krping.git
 
->
-> Fixes: 1ac5a4047975 ("RDMA/bnxt_re: Add bnxt_re RoCE driver")
-> Signed-off-by: Jack Wang <jinpu.wang@ionos.com>
-> ---
->  drivers/infiniband/hw/bnxt_re/ib_verbs.c | 6 +++---
->  drivers/infiniband/hw/bnxt_re/qplib_fp.h | 6 +++---
->  2 files changed, 6 insertions(+), 6 deletions(-)
->
-> diff --git a/drivers/infiniband/hw/bnxt_re/ib_verbs.c b/drivers/infiniban=
-d/hw/bnxt_re/ib_verbs.c
-> index c5080028247e..cdc8ebcf3a76 100644
-> --- a/drivers/infiniband/hw/bnxt_re/ib_verbs.c
-> +++ b/drivers/infiniband/hw/bnxt_re/ib_verbs.c
-> @@ -2483,7 +2483,7 @@ static int bnxt_re_build_send_wqe(struct bnxt_re_qp=
- *qp,
->                 break;
->         case IB_WR_SEND_WITH_INV:
->                 wqe->type =3D BNXT_QPLIB_SWQE_TYPE_SEND_WITH_INV;
-> -               wqe->send.inv_key =3D wr->ex.invalidate_rkey;
-> +               wqe->send.inv_key =3D cpu_to_le32(wr->ex.invalidate_rkey)=
-;
->                 break;
->         default:
->                 return -EINVAL;
-> @@ -2513,7 +2513,7 @@ static int bnxt_re_build_rdma_wqe(const struct ib_s=
-end_wr *wr,
->                 break;
->         case IB_WR_RDMA_READ:
->                 wqe->type =3D BNXT_QPLIB_SWQE_TYPE_RDMA_READ;
-> -               wqe->rdma.inv_key =3D wr->ex.invalidate_rkey;
-> +               wqe->rdma.inv_key =3D cpu_to_le32(wr->ex.invalidate_rkey)=
-;
->                 break;
->         default:
->                 return -EINVAL;
-> @@ -2563,7 +2563,7 @@ static int bnxt_re_build_inv_wqe(const struct ib_se=
-nd_wr *wr,
->                                  struct bnxt_qplib_swqe *wqe)
->  {
->         wqe->type =3D BNXT_QPLIB_SWQE_TYPE_LOCAL_INV;
-> -       wqe->local_inv.inv_l_key =3D wr->ex.invalidate_rkey;
-> +       wqe->local_inv.inv_l_key =3D cpu_to_le32(wr->ex.invalidate_rkey);
->
->         if (wr->send_flags & IB_SEND_SIGNALED)
->                 wqe->flags |=3D BNXT_QPLIB_SWQE_FLAGS_SIGNAL_COMP;
-> diff --git a/drivers/infiniband/hw/bnxt_re/qplib_fp.h b/drivers/infiniban=
-d/hw/bnxt_re/qplib_fp.h
-> index 1fcaba0f680b..813332b2c872 100644
-> --- a/drivers/infiniband/hw/bnxt_re/qplib_fp.h
-> +++ b/drivers/infiniband/hw/bnxt_re/qplib_fp.h
-> @@ -165,7 +165,7 @@ struct bnxt_qplib_swqe {
->                 struct {
->                         union {
->                                 __le32  imm_data;
-> -                               u32     inv_key;
-> +                               __le32  inv_key;
->                         };
->                         u32             q_key;
->                         u32             dst_qp;
-> @@ -183,7 +183,7 @@ struct bnxt_qplib_swqe {
->                 struct {
->                         union {
->                                 __le32  imm_data;
-> -                               u32     inv_key;
-> +                               __le32  inv_key;
->                         };
->                         u64             remote_va;
->                         u32             r_key;
-> @@ -199,7 +199,7 @@ struct bnxt_qplib_swqe {
->
->                 /* Local Invalidate */
->                 struct {
-> -                       u32             inv_l_key;
-> +                       __le32          inv_l_key;
->                 } local_inv;
->
->                 /* FR-PMR */
-> --
-> 2.34.1
->
->
+> Please explain the deadlock in details.
+
+   88 int rxe_cq_post(struct rxe_cq *cq, struct rxe_cqe *cqe, int solicited)
+   89 {
+   90         struct ib_event ev;
+   91         int full;
+   92         void *addr;
+   93         unsigned long flags;
+   94 
+   95         spin_lock_irqsave(&cq->cq_lock, flags);  // Lock!
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   96 
+   97         full = queue_full(cq->queue, QUEUE_TYPE_TO_CLIENT);
+   98         if (unlikely(full)) {
+   99                 rxe_err_cq(cq, "queue full\n");
+  100                 spin_unlock_irqrestore(&cq->cq_lock, flags);
+  101                 if (cq->ibcq.event_handler) {
+  102                         ev.device = cq->ibcq.device;
+  103                         ev.element.cq = &cq->ibcq;
+  104                         ev.event = IB_EVENT_CQ_ERR;
+  105                         cq->ibcq.event_handler(&ev, cq->ibcq.cq_context);
+  106                 }
+  107 
+  108                 return -EBUSY;
+  109         }
+  110 
+  111         addr = queue_producer_addr(cq->queue, QUEUE_TYPE_TO_CLIENT);
+  112         memcpy(addr, cqe, sizeof(*cqe));
+  113 
+  114         queue_advance_producer(cq->queue, QUEUE_TYPE_TO_CLIENT);
+  115 
+  116         if ((cq->notify & IB_CQ_NEXT_COMP) ||
+  117             (cq->notify & IB_CQ_SOLICITED && solicited)) {
+  118                 cq->notify = 0;
+  119                 cq->ibcq.comp_handler(&cq->ibcq, cq->ibcq.cq_context);
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+		      call the complete handler   krping_cq_event_handler()
+  120         }
+  121 
+  122         spin_unlock_irqrestore(&cq->cq_lock, flags);
+
+
+
+static void krping_cq_event_handler(struct ib_cq *cq, void *ctx)
+{
+        struct krping_cb *cb = ctx;
+        struct ib_wc wc;
+        const struct ib_recv_wr *bad_wr;
+        int ret;
+
+        BUG_ON(cb->cq != cq);
+        if (cb->state == ERROR) {
+                printk(KERN_ERR PFX "cq completion in ERROR state\n");
+                return;
+        }
+        if (cb->frtest) {
+                printk(KERN_ERR PFX "cq completion event in frtest!\n");
+                return;
+        }
+        if (!cb->wlat && !cb->rlat && !cb->bw)
+                ib_req_notify_cq(cb->cq, IB_CQ_NEXT_COMP);
+		^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        while ((ret = ib_poll_cq(cb->cq, 1, &wc)) == 1) {
+                if (wc.status) {
+
+static int rxe_req_notify_cq(struct ib_cq *ibcq, enum ib_cq_notify_flags flags)
+{
+        struct rxe_cq *cq = to_rcq(ibcq);
+        int ret = 0;
+        int empty;
+        unsigned long irq_flags;
+
+        spin_lock_irqsave(&cq->cq_lock, irq_flags);
+	^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Deadlock
+
 
