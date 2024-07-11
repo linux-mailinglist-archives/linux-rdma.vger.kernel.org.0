@@ -1,164 +1,179 @@
-Return-Path: <linux-rdma+bounces-3822-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-3823-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7635592E557
-	for <lists+linux-rdma@lfdr.de>; Thu, 11 Jul 2024 13:01:00 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2C98092E9B5
+	for <lists+linux-rdma@lfdr.de>; Thu, 11 Jul 2024 15:38:11 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 05184B226C2
-	for <lists+linux-rdma@lfdr.de>; Thu, 11 Jul 2024 11:00:58 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5E4CA1C20F88
+	for <lists+linux-rdma@lfdr.de>; Thu, 11 Jul 2024 13:38:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 777981591E2;
-	Thu, 11 Jul 2024 11:00:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6393115F318;
+	Thu, 11 Jul 2024 13:38:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b="XC9fIpH/"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8969C15A4B7;
-	Thu, 11 Jul 2024 11:00:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.176.79.56
+Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B1BD34CE09;
+	Thu, 11 Jul 2024 13:38:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=13.77.154.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1720695639; cv=none; b=aowg6z5kBqQ8qRp0xlIzFimn91DgC4yORKLyoDS2qIx2E5uvRk+QvZEULT7pv5/Vj1bawqc09dY1BHsQmGKt/FWjx2iPOQn5J5lIZOcOzsuJghRfENTddYGixWYNQ62fnyco6S5KUnUPQv/nZaZU3TcOGtL4JwP/lBl89ZTqSUQ=
+	t=1720705084; cv=none; b=lgBAkNToDJRW1th1dVlMBPWOWECUTyh5RtSQ+0z8OUqMdHCIIIvKrcNro2b1OSrjShdS4OkNd5FReHqiNrVCwTYs1RjVAjADEQuJKlBZ1MBZ5lAY024U2OIAtKWEtgiSYLV5oxYjZXb2wZZENFMs4UulwZgVyID5n/Ke4ohcXnc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1720695639; c=relaxed/simple;
-	bh=d+wMvdLVf+YR9DIyh4LVaJL8/YmjqFApmIjGfxbQ41E=;
-	h=Date:From:To:CC:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=BVNam3T+Qsz2Fw7SlMfMSpfftKS3chNSsRRSc9kwB6GYrejNWsGMrtYpxQPrb4BOar5UIh5H+hmxFZIN6Zh07LbBrVnYQRACAmHxcd2fV3r37kzv65mRfI0KUx/l+Bhb/duCLNKLJykpY7FIIu0qEIANT6BUWavKgPLCsL4cxyg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=Huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=185.176.79.56
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=Huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.18.186.216])
-	by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4WKWt71LLrz67Q86;
-	Thu, 11 Jul 2024 18:58:23 +0800 (CST)
-Received: from lhrpeml500005.china.huawei.com (unknown [7.191.163.240])
-	by mail.maildlp.com (Postfix) with ESMTPS id 6E8AB1400C9;
-	Thu, 11 Jul 2024 19:00:28 +0800 (CST)
-Received: from localhost (10.203.174.77) by lhrpeml500005.china.huawei.com
- (7.191.163.240) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.1.2507.39; Thu, 11 Jul
- 2024 12:00:27 +0100
-Date: Thu, 11 Jul 2024 12:00:27 +0100
-From: Jonathan Cameron <Jonathan.Cameron@Huawei.com>
-To: Dan Williams <dan.j.williams@intel.com>
-CC: James Bottomley <James.Bottomley@hansenpartnership.com>,
-	<ksummit@lists.linux.dev>, <linux-cxl@vger.kernel.org>,
-	<linux-rdma@vger.kernel.org>, <netdev@vger.kernel.org>, <jgg@nvidia.com>,
-	<admiyo@os.amperecomputing.com>, Jeremy Kerr <jk@codeconstruct.com.au>, "Matt
- Johnston" <matt@codeconstruct.com.au>
-Subject: Re: [MAINTAINERS SUMMIT] Device Passthrough Considered Harmful?
-Message-ID: <20240711120027.000079b2@Huawei.com>
-In-Reply-To: <20240710142238.00007295@Huawei.com>
-References: <668c67a324609_ed99294c0@dwillia2-xfh.jf.intel.com.notmuch>
-	<3b9631cf12f451fc08f410255ebbba23081ada7c.camel@HansenPartnership.com>
-	<668db67196ca3_1bc8329416@dwillia2-xfh.jf.intel.com.notmuch>
-	<20240710142238.00007295@Huawei.com>
-Organization: Huawei Technologies Research and Development (UK) Ltd.
-X-Mailer: Claws Mail 4.1.0 (GTK 3.24.33; x86_64-w64-mingw32)
+	s=arc-20240116; t=1720705084; c=relaxed/simple;
+	bh=+lpvg91EuVmo4l6WbNPi0rA3weAObdsfpM9GbOYSK4Y=;
+	h=From:To:Cc:Subject:Date:Message-Id; b=Vz9Eh7Rjb7QZoV0sge/VMMpglpp44FEE6vEl+Bs7wmWisS/aGsa6hklQcZX8YgRx6CX1fWF++ypu6P5nAbwqdTcKD8/BZDJAVY+KxbAbaOxV3ILXdyodzZB+1F3RTJqkaSb74ejIvj8l6Z8qvP2vEr/Kgzu2E9tC1b5yW1utphU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com; spf=pass smtp.mailfrom=linux.microsoft.com; dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b=XC9fIpH/; arc=none smtp.client-ip=13.77.154.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.microsoft.com
+Received: from linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net (linux.microsoft.com [13.77.154.182])
+	by linux.microsoft.com (Postfix) with ESMTPSA id 32BD020B7165;
+	Thu, 11 Jul 2024 06:38:02 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 32BD020B7165
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+	s=default; t=1720705082;
+	bh=E8vCEReVfg+1Pp/llNttYBBSJa9eYonYgDLL3JxqQxg=;
+	h=From:To:Cc:Subject:Date:From;
+	b=XC9fIpH/5l/+ozrdPr6ij4Q4Nrb0fheFEQZzyAhw7Z+hF9as0VuUwics1dfwKw3Vh
+	 Rn92l6DuIwd+uayCTM1PYkG/CmLK+PVu1jrcLqg6uB+BbJkeP5fhxRbxe740tKBDBw
+	 e/FEL/a5LmJK2pSadPNb7AafjSSuFfBWLYcSaLqI=
+From: Konstantin Taranov <kotaranov@linux.microsoft.com>
+To: kotaranov@microsoft.com,
+	pabeni@redhat.com,
+	haiyangz@microsoft.com,
+	kys@microsoft.com,
+	edumazet@google.com,
+	kuba@kernel.org,
+	davem@davemloft.net,
+	decui@microsoft.com,
+	wei.liu@kernel.org,
+	sharmaajay@microsoft.com,
+	longli@microsoft.com,
+	jgg@ziepe.ca,
+	leon@kernel.org
+Cc: linux-rdma@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	netdev@vger.kernel.org
+Subject: [PATCH rdma-next v3 1/1] RDMA/mana_ib: Set correct device into ib
+Date: Thu, 11 Jul 2024 06:37:57 -0700
+Message-Id: <1720705077-322-1-git-send-email-kotaranov@linux.microsoft.com>
+X-Mailer: git-send-email 1.8.3.1
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: lhrpeml100003.china.huawei.com (7.191.160.210) To
- lhrpeml500005.china.huawei.com (7.191.163.240)
 
-On Wed, 10 Jul 2024 14:22:38 +0100
-Jonathan Cameron <Jonathan.Cameron@Huawei.com> wrote:
+From: Konstantin Taranov <kotaranov@microsoft.com>
 
-> On Tue, 9 Jul 2024 15:15:13 -0700
-> Dan Williams <dan.j.williams@intel.com> wrote:
-> 
-> > James Bottomley wrote:  
-> > > > The upstream discussion has yielded the full spectrum of positions on
-> > > > device specific functionality, and it is a topic that needs cross-
-> > > > kernel consensus as hardware increasingly spans cross-subsystem
-> > > > concerns. Please consider it for a Maintainers Summit discussion.    
-> > > 
-> > > I'm with Greg on this ... can you point to some of the contrary
-> > > positions?    
-> > 
-> > This thread has that discussion:
-> > 
-> > http://lore.kernel.org/0-v1-9912f1a11620+2a-fwctl_jgg@nvidia.com
-> > 
-> > I do not want to speak for others on the saliency of their points, all I
-> > can say is that the contrary positions have so far not moved me to drop
-> > consideration of fwctl for CXL.  
-> 
-> I was resisting rat holing. Oh well...
+Add mana_get_primary_netdev_rcu helper to get a primary
+netdevice for a given port. When mana is used with
+netvsc, the VF netdev is controlled by an upper netvsc
+device. In a baremetal case, the VF netdev is the
+primary device.
 
-To throw another 'fun' one in there.  For anything integrated with the host
-there is a proposal to provide a MCTP via PCC (ACPI described mailbox). [1]
-I don't think it makes sense to rule that out as it's logically no
-different from MCTP in general (e.g. a host controller for PCI VDM, or
-I2C etc)
+Use the mana_get_primary_netdev_rcu() helper in the mana_ib
+to get the correct device for querying network states.
 
-Anyone who has a suitable firmware can do whatever they like with that
-and the interfaces is exposed directly to userspace. Adam, perhaps you can
-describe your use case a little?  Is it applicable to general server distros?
+Fixes: 8b184e4f1c32 ("RDMA/mana_ib: Enable RoCE on port 1")
+Signed-off-by: Konstantin Taranov <kotaranov@microsoft.com>
+---
+I would appreciate if I could get Acks on it from:
+* netvsc maintainers (e.g., Haiyang)
+* net maintainers (e.g., Jakub, David, Eric, Paolo)
 
-We might suggest distributions don't enable MCTP but does that
-actually get us anywhere?  Anyhow, I suspect there are other similar routes, but
-this one happens to be under review at the moment.
+v1->v2:
+Leon Romanovsky asked to make a helper in the net/mana and get
+acks from net maintainers.
+v2->v3:
+Added warn on rcu lock not held. 
+Use the word "primary" instead of "master"
+Merged two commits into one and submitted to rdma-next
 
-[1] https://lore.kernel.org/all/20240702225845.322234-1-admiyo@os.amperecomputing.com/
+ drivers/infiniband/hw/mana/device.c           | 16 ++++++++--------
+ drivers/net/ethernet/microsoft/mana/mana_en.c | 19 +++++++++++++++++++
+ include/net/mana/mana.h                       |  2 ++
+ 3 files changed, 29 insertions(+), 8 deletions(-)
 
-> 
-> For a 'subset' of CXL.  There are a wide range of controls that are highly
-> destructive, potentially to other hosts (simplest one is a command that
-> will surprise remove someone else's memory). For those I'm not sure
-> fwctl gets us anywhere - but we still need a solution (Subject to
-> config gates etc as typically this is BMCs not hosts).
-> Maybe fwctl eventually ends up with levels of 'safety' (beyond the
-> current read vs write vs write_full, or maybe those are enough).
-> 
-> Complexities such as message tunneling to multiple components are also
-> going to be fun, but we want the non destructive bits of those to work
-> as part of the safe set, so we can get telemetry from downstream devices.
-> 
-> Good to cover the debug and telemetry usecase, but it still leaves us with
-> gaping holes were we need to solve the permissions problem, perhaps that
-> is layered on top of fwctl, perhaps something else is needed.
-> 
-> So if fwctl is adopted, I do want the means to use it for the highly
-> destructive stuff as well!  Maybe that's a future discussion.
-> 
-> 
-> > 
-> > Where CXL has a Command Effects Log that is a reasonable protocol for
-> > making decisions about opaque command codes, and that CXL already has a
-> > few years of experience with the commands that *do* need a Linux-command
-> > wrapper.  
-> 
-> Worth asking if this will incorporate unknown but not vendor defined
-> commands.  There is a long tail of stuff in the spec we haven't caught up
-> with yet.  Or you thinking keep this for the strictly vendor defined stuff?
-> 
-> > 
-> > Some open questions from that thread are: what does it mean for the fate
-> > of a proposal if one subsystem Acks the ABI and another Naks it for a
-> > device that crosses subsystem functionality? Would a cynical hardware
-> > response just lead to plumbing an NVME admin queue, or CXL mailbox to
-> > get device-specific commands past another subsystem's objection?
-> > 
-> > My reconsideration of the "debug-build only" policy for CXL
-> > device-specific commands was influenced by a conversation with a distro
-> > developer where they asserted, paraphrasing: "at what point is a device
-> > vendor incentivized to ship an out-of-tree module just to restore their
-> > passthrough functionality?. At that point upstream has lost out on
-> > collaboration and distro kernel ABI has gained another out-of-tree
-> > consumer."
-> > 
-> > So the tension is healthy, but it has diminishing returns past a certain
-> > point.
-> >   
-> 
-> 
-> 
+diff --git a/drivers/infiniband/hw/mana/device.c b/drivers/infiniband/hw/mana/device.c
+index b07a8e2e838f..7ac01918ef7c 100644
+--- a/drivers/infiniband/hw/mana/device.c
++++ b/drivers/infiniband/hw/mana/device.c
+@@ -56,7 +56,7 @@ static int mana_ib_probe(struct auxiliary_device *adev,
+ {
+ 	struct mana_adev *madev = container_of(adev, struct mana_adev, adev);
+ 	struct gdma_dev *mdev = madev->mdev;
+-	struct net_device *upper_ndev;
++	struct net_device *ndev;
+ 	struct mana_context *mc;
+ 	struct mana_ib_dev *dev;
+ 	u8 mac_addr[ETH_ALEN];
+@@ -84,17 +84,17 @@ static int mana_ib_probe(struct auxiliary_device *adev,
+ 	dev->ib_dev.num_comp_vectors = mdev->gdma_context->max_num_queues;
+ 	dev->ib_dev.dev.parent = mdev->gdma_context->dev;
+ 
+-	rcu_read_lock(); /* required to get upper dev */
+-	upper_ndev = netdev_master_upper_dev_get_rcu(mc->ports[0]);
+-	if (!upper_ndev) {
++	rcu_read_lock(); /* required to get primary netdev */
++	ndev = mana_get_primary_netdev_rcu(mc, 0);
++	if (!ndev) {
+ 		rcu_read_unlock();
+ 		ret = -ENODEV;
+-		ibdev_err(&dev->ib_dev, "Failed to get master netdev");
++		ibdev_err(&dev->ib_dev, "Failed to get netdev for IB port 1");
+ 		goto free_ib_device;
+ 	}
+-	ether_addr_copy(mac_addr, upper_ndev->dev_addr);
+-	addrconf_addr_eui48((u8 *)&dev->ib_dev.node_guid, upper_ndev->dev_addr);
+-	ret = ib_device_set_netdev(&dev->ib_dev, upper_ndev, 1);
++	ether_addr_copy(mac_addr, ndev->dev_addr);
++	addrconf_addr_eui48((u8 *)&dev->ib_dev.node_guid, ndev->dev_addr);
++	ret = ib_device_set_netdev(&dev->ib_dev, ndev, 1);
+ 	rcu_read_unlock();
+ 	if (ret) {
+ 		ibdev_err(&dev->ib_dev, "Failed to set ib netdev, ret %d", ret);
+diff --git a/drivers/net/ethernet/microsoft/mana/mana_en.c b/drivers/net/ethernet/microsoft/mana/mana_en.c
+index b89ad4afd66e..68c2bea2c022 100644
+--- a/drivers/net/ethernet/microsoft/mana/mana_en.c
++++ b/drivers/net/ethernet/microsoft/mana/mana_en.c
+@@ -3007,3 +3007,22 @@ void mana_remove(struct gdma_dev *gd, bool suspending)
+ 	gd->gdma_context = NULL;
+ 	kfree(ac);
+ }
++
++struct net_device *mana_get_primary_netdev_rcu(struct mana_context *ac, u32 port_index)
++{
++	struct net_device *ndev;
++
++	RCU_LOCKDEP_WARN(!rcu_read_lock_held(),
++			 "Taking primary netdev without holding the RCU read lock");
++	if (port_index >= ac->num_ports)
++		return NULL;
++
++	/* When mana is used in netvsc, the upper netdevice should be returned. */
++	if (ac->ports[port_index]->flags & IFF_SLAVE)
++		ndev = netdev_master_upper_dev_get_rcu(ac->ports[port_index]);
++	else
++		ndev = ac->ports[port_index];
++
++	return ndev;
++}
++EXPORT_SYMBOL_NS(mana_get_primary_netdev_rcu, NET_MANA);
+diff --git a/include/net/mana/mana.h b/include/net/mana/mana.h
+index 59823901b74f..f9b4b0dcb69f 100644
+--- a/include/net/mana/mana.h
++++ b/include/net/mana/mana.h
+@@ -797,4 +797,6 @@ void mana_destroy_wq_obj(struct mana_port_context *apc, u32 wq_type,
+ int mana_cfg_vport(struct mana_port_context *apc, u32 protection_dom_id,
+ 		   u32 doorbell_pg_id);
+ void mana_uncfg_vport(struct mana_port_context *apc);
++
++struct net_device *mana_get_primary_netdev_rcu(struct mana_context *ac, u32 port_index);
+ #endif /* _MANA_H */
+-- 
+2.43.0
 
 
