@@ -1,292 +1,158 @@
-Return-Path: <linux-rdma+bounces-3837-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-3838-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 880E192F129
-	for <lists+linux-rdma@lfdr.de>; Thu, 11 Jul 2024 23:32:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 2560B92F291
+	for <lists+linux-rdma@lfdr.de>; Fri, 12 Jul 2024 01:21:58 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 100441F23452
-	for <lists+linux-rdma@lfdr.de>; Thu, 11 Jul 2024 21:32:19 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 84DDA1F23220
+	for <lists+linux-rdma@lfdr.de>; Thu, 11 Jul 2024 23:21:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 70E4A1A01A1;
-	Thu, 11 Jul 2024 21:32:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 24F661A08BA;
+	Thu, 11 Jul 2024 23:21:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="VYfOnO7G"
+	dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b="nIPKSS+K"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-qv1-f54.google.com (mail-qv1-f54.google.com [209.85.219.54])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2ADB719FA79;
-	Thu, 11 Jul 2024 21:31:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3F29616A382
+	for <linux-rdma@vger.kernel.org>; Thu, 11 Jul 2024 23:21:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1720733520; cv=none; b=aLnXXByacjDHqLWRpwVGDEZCzrZTdhwcevd3oHmiFAQGhUmVVhVbAwFp5NUa9LCtVf+VK3LllbS7rcFyM995O7BP5tI+d76ghp5hjNqb53KvAGMQXxKsKlF38C8xKD7qpUe8IhGhwbLveghH6sMyd7XnlWvu/kNoIAcrz9L0NKU=
+	t=1720740109; cv=none; b=uaPRRxn3569tmyowE56v/2mnlU5IkjAQ/22j5Arlz1Kk1tK+w14TJS9bNBUEhfFdkbUsYhDSfm5TRB5jEZI7v7t8M3P76BTfpn0ciqJRAg6EQoiy+H7nk9YKve9QRsPLWWqlfCl7EfbaRI8n5iy8T8l7HB8lUIt1hO7gzRS2ysA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1720733520; c=relaxed/simple;
-	bh=QJjgfTdoV7b94o4F3Xq1+2+74sBTVOAP2xE0/blK3ik=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=ed6s1DlRZyBydO1T2Q4AdUDqcgkOG2Y8Sc9WQyuGu+1h04MXFhlDN+HrQxovE+EdsqUonD7YeHD2Wq8yurQY9dIp60IjqoNCXedFf8MZKz8tMpwvY6fbdmhdCriBG6YPaUNdCKQpGlQt3KBil/FaB9SjvEe5samwtz7WtAX8K18=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=VYfOnO7G; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A81FFC116B1;
-	Thu, 11 Jul 2024 21:31:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1720733519;
-	bh=QJjgfTdoV7b94o4F3Xq1+2+74sBTVOAP2xE0/blK3ik=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=VYfOnO7GnhvHWE1t9KRyozREUCyf5iSL+SVPznMX9JXv8VPxN30iFzfJgXd8/kUk1
-	 U7tG9a3MSsdPbgsFPeMKtuMzq/Cf1eqnh3kmF7TgzJSgAxah23w1Xc9IHoCjCEd6oZ
-	 em4C0Ykf65WVYpIgiWycStWwVwaqD2v8meLtb4WuqjTmPY/IOrvpL6d1umSxB0ekqk
-	 9H6rkv4oSQcuP3DIf5TYONKuhsMJz7VSc3cMIbGC6lIT11fOCP1FL7v59NkNIWU5Ft
-	 ZUFoQUrigOGAlrfAKynnxZ4CsjYiZxplhU90nPHEiT/CDPyjcmdBORAvl6URrAMUi/
-	 KEbG+stIrPDPw==
-From: Saeed Mahameed <saeed@kernel.org>
-To: "David S. Miller" <davem@davemloft.net>,
-	Jakub Kicinski <kuba@kernel.org>,
-	Paolo Abeni <pabeni@redhat.com>,
-	Eric Dumazet <edumazet@google.com>,
-	Jason Gunthorpe <jgg@nvidia.com>
-Cc: Saeed Mahameed <saeedm@nvidia.com>,
-	linux-rdma@vger.kernel.org,
-	Leon Romanovsky <leonro@nvidia.com>,
-	netdev@vger.kernel.org,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	Przemek Kitszel <przemyslaw.kitszel@intel.com>,
-	Parav Pandit <parav@nvidia.com>,
-	Shay Drory <shayd@nvidia.com>
-Subject: [mlx5-next 2/2] net/mlx5: Expose SFs IRQs
-Date: Thu, 11 Jul 2024 14:31:40 -0700
-Message-ID: <20240711213140.256997-3-saeed@kernel.org>
-X-Mailer: git-send-email 2.45.2
-In-Reply-To: <20240711213140.256997-1-saeed@kernel.org>
-References: <20240711213140.256997-1-saeed@kernel.org>
+	s=arc-20240116; t=1720740109; c=relaxed/simple;
+	bh=yBzw/fpawDv/KPcPaY2/FkE3DGz3iFhkQCMcidhYJy0=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=WTDoXEWj4/cVPtyOIzzigmV11YJJFBio5t+0nvv1Qsayh71YxCmyk7zseKpdoENk7n3P4sQLaajCkONv8MEivYpSqLDxp9qPeEoYskwEd/zXH+1PLeSSsjHzDzzROcTqpLxUsGWe0Uu8U/n7Q1QzLn9WUQ/ctr8tlUxF1cX9dyM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca; spf=pass smtp.mailfrom=ziepe.ca; dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b=nIPKSS+K; arc=none smtp.client-ip=209.85.219.54
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ziepe.ca
+Received: by mail-qv1-f54.google.com with SMTP id 6a1803df08f44-6b5d42758a7so8300706d6.2
+        for <linux-rdma@vger.kernel.org>; Thu, 11 Jul 2024 16:21:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google; t=1720740107; x=1721344907; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=iA5EkoKdOMHWMqTqv30k2JtFjPGSRguy2LMuZP+mDPQ=;
+        b=nIPKSS+KTzMPGs/qhTb/4shsJL1+iGXNyq3KD9UF+NJO+MJdrFqd2U8wHvKOpCv6Bp
+         vMhprI2QaXObRppIrhKXDvr0k13uEHaJ0VvqaWRKuCA5P+yzacerw3YQEj0OdWdxAZ95
+         qrbqmqtYdQH3D6ISXGGxdeuuy3lasqj02WoRVtPW7QRsDUuRuHcLsHmqvfp5toIAvZDC
+         6h43YjEE8/7M2usehzHD94FO6bNCoqaee9TIk1HYXGgZl1KqTKiVlqMc1NboIyptS6pQ
+         VPL2KtBPU0tv1GT7TemzEtXkiYBjECJ9W3HEBL5maqCxvIwpGpL3Ke6qed/HfnzmF7cl
+         198A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1720740107; x=1721344907;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=iA5EkoKdOMHWMqTqv30k2JtFjPGSRguy2LMuZP+mDPQ=;
+        b=QxxXup9J6BwLj9+pxwm5eASh/MtaWkZTamIpplgvjSEMvq4Sl3HT9FskVIfN+vutt1
+         AflMMb1G+ptk9pGZipxqEsB2cHL9n4d1inw3eO9ChmvoM5kjmIaBvi6r15GLz/YwH6cn
+         F9VPymyZICmifqXVM25K9K+pf2K1IxZ27+jreZVjvy/qlppims+d+STEpMM+b3Ng8Lq4
+         XaRHHUu22H+V4RXHiND1p6a7B0fc0u0iS1tyPn9zyB5M24HR/n18D+wvJASpC+HDXrhl
+         SNuPOwxtWFx7vxF+0hl9lWmNyt24tl5Y/4i5g3hyzg5XyAvrSf4uIDtT2mie9GN7VlVE
+         ZnBQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVFqHw5EMxbvGo21TVgcp4QhJ6EJ90P7VhcNTa/3bAkE2If7sTA9BKffzby8NAkHqBdfdXgXbHNZ3Dch+E16qiy2zbCVtsPJ2BVvw==
+X-Gm-Message-State: AOJu0Ywy5OQCtK9ksD/zjImXy3M7X26UtXzX4T+CjuGd/kAmNlamZPBL
+	KME5aaq+g7vSO6HF/BSiq+VX6r5cBpyd3lVfeLqvcxIYuel2zgd8wNwGjTGT+mk=
+X-Google-Smtp-Source: AGHT+IE3EReOFfP9Gp9yOBbEQdd9ZoxHQTHmzRvm3onKx9Jai/yPhMccTCjhIICDfGTUxTuCo6A+VA==
+X-Received: by 2002:a05:6214:1c83:b0:6b0:6a57:c982 with SMTP id 6a1803df08f44-6b61bcff6edmr121290886d6.28.1720740107241;
+        Thu, 11 Jul 2024 16:21:47 -0700 (PDT)
+Received: from ziepe.ca ([128.77.69.90])
+        by smtp.gmail.com with ESMTPSA id 6a1803df08f44-6b61ba7a437sm29827036d6.85.2024.07.11.16.21.46
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 11 Jul 2024 16:21:46 -0700 (PDT)
+Received: from jgg by wakko with local (Exim 4.95)
+	(envelope-from <jgg@ziepe.ca>)
+	id 1sS36e-00FPgi-P3;
+	Thu, 11 Jul 2024 20:21:44 -0300
+Date: Thu, 11 Jul 2024 20:21:44 -0300
+From: Jason Gunthorpe <jgg@ziepe.ca>
+To: Christoph Hellwig <hch@lst.de>
+Cc: Leon Romanovsky <leon@kernel.org>, Jens Axboe <axboe@kernel.dk>,
+	Robin Murphy <robin.murphy@arm.com>, Joerg Roedel <joro@8bytes.org>,
+	Will Deacon <will@kernel.org>, Keith Busch <kbusch@kernel.org>,
+	"Zeng, Oak" <oak.zeng@intel.com>,
+	Chaitanya Kulkarni <kch@nvidia.com>,
+	Sagi Grimberg <sagi@grimberg.me>,
+	Bjorn Helgaas <bhelgaas@google.com>,
+	Logan Gunthorpe <logang@deltatee.com>,
+	Yishai Hadas <yishaih@nvidia.com>,
+	Shameer Kolothum <shameerali.kolothum.thodi@huawei.com>,
+	Kevin Tian <kevin.tian@intel.com>,
+	Alex Williamson <alex.williamson@redhat.com>,
+	Marek Szyprowski <m.szyprowski@samsung.com>,
+	=?utf-8?B?SsOpcsO0bWU=?= Glisse <jglisse@redhat.com>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-rdma@vger.kernel.org, iommu@lists.linux.dev,
+	linux-nvme@lists.infradead.org, linux-pci@vger.kernel.org,
+	kvm@vger.kernel.org, linux-mm@kvack.org
+Subject: Re: [RFC PATCH v1 00/18] Provide a new two step DMA API mapping API
+Message-ID: <20240711232144.GQ14050@ziepe.ca>
+References: <cover.1719909395.git.leon@kernel.org>
+ <20240703054238.GA25366@lst.de>
+ <20240703105253.GA95824@unreal>
+ <20240703143530.GA30857@lst.de>
+ <20240703155114.GB95824@unreal>
+ <20240704074855.GA26913@lst.de>
+ <20240708165238.GE14050@ziepe.ca>
+ <20240709061721.GA16180@lst.de>
+ <20240709185315.GM14050@ziepe.ca>
+ <20240710062704.GA25953@lst.de>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240710062704.GA25953@lst.de>
 
-From: Shay Drory <shayd@nvidia.com>
+On Wed, Jul 10, 2024 at 08:27:04AM +0200, Christoph Hellwig wrote:
+> On Tue, Jul 09, 2024 at 03:53:15PM -0300, Jason Gunthorpe wrote:
+> > > That whole thing of course opens the question if we want a pure
+> > > in-memory version of the dma_addr_t/len tuple.  IMHO that is the best
+> > > way to migrate and allows to share code easily.  We can look into ways
+> > > to avoiding that more for drivers that care, but most drivers are
+> > > probably best serve with it to keep the code simple and make the
+> > > conversion easier.
+> > 
+> > My feeling has been that this RFC is the low level interface and we
+> > can bring our own data structure on top.
+> >
+> > It would probably make sense to build a scatterlist v2 on top of this
+> > that has an in-memory dma_addr_t/len list close to today
+> 
+> Yes, the usage of the dma_vec would be in a higher layer.  But I'd
+> really like to see it from the beginning.
 
-Expose the sysfs files for the IRQs that the mlx5 PCI SFs are using.
-These entries are similar to PCI PFs and VFs in 'msi_irqs' directory.
+Well, lets start with agreeing on this layer's API and be confident it
+can succeed.
 
-Reviewed-by: Parav Pandit <parav@nvidia.com>
-Signed-off-by: Shay Drory <shayd@nvidia.com>
-Signed-off-by: Saeed Mahameed <saeedm@nvidia.com>
+Then I'd say to look at RDMA as it is a logical place to build such a
+data structure and we can build something that at least does what RDMA
+needs.
 
----
-v8-v9:
-- add Przemek RB
-v6->v7:
-- remove not needed changes to mlx5 sfnum SF sysfs
-v5->v6:
-- fail IRQ creation in case auxiliary_device_sysfs_irq_add() failed
-  (Parav and Przemek)
-v2->v3:
-- fix mlx5 sfnum SF sysfs
+I need something anyhow to plumb through to DMABUF and over to iommufd
+and VFIO, can't skip out on it :)
 
-Signed-off-by: Saeed Mahameed <saeedm@nvidia.com>
----
- drivers/net/ethernet/mellanox/mlx5/core/eq.c   |  6 +++---
- .../ethernet/mellanox/mlx5/core/irq_affinity.c | 18 +++++++++++++++++-
- .../ethernet/mellanox/mlx5/core/mlx5_core.h    |  6 ++++++
- .../net/ethernet/mellanox/mlx5/core/mlx5_irq.h | 12 ++++++++----
- .../net/ethernet/mellanox/mlx5/core/pci_irq.c  | 12 +++++++++---
- 5 files changed, 43 insertions(+), 11 deletions(-)
+> Yes, I don't think the dma_vec should be the low-level interface.
+> I think a low-level interface based on physical address is the right
+> one.  I'll see what I can do to move the single segment map interface
+> to be physical address based instead of page based so that we can
+> unify them.
 
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/eq.c b/drivers/net/ethernet/mellanox/mlx5/core/eq.c
-index 5693986ae656..5661f047702e 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/eq.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/eq.c
-@@ -714,7 +714,7 @@ static int create_async_eqs(struct mlx5_core_dev *dev)
- err1:
- 	mlx5_cmd_allowed_opcode(dev, CMD_ALLOWED_OPCODE_ALL);
- 	mlx5_eq_notifier_unregister(dev, &table->cq_err_nb);
--	mlx5_ctrl_irq_release(table->ctrl_irq);
-+	mlx5_ctrl_irq_release(dev, table->ctrl_irq);
- 	return err;
- }
- 
-@@ -730,7 +730,7 @@ static void destroy_async_eqs(struct mlx5_core_dev *dev)
- 	cleanup_async_eq(dev, &table->cmd_eq, "cmd");
- 	mlx5_cmd_allowed_opcode(dev, CMD_ALLOWED_OPCODE_ALL);
- 	mlx5_eq_notifier_unregister(dev, &table->cq_err_nb);
--	mlx5_ctrl_irq_release(table->ctrl_irq);
-+	mlx5_ctrl_irq_release(dev, table->ctrl_irq);
- }
- 
- struct mlx5_eq *mlx5_get_async_eq(struct mlx5_core_dev *dev)
-@@ -918,7 +918,7 @@ static int comp_irq_request_sf(struct mlx5_core_dev *dev, u16 vecidx)
- 	af_desc.is_managed = 1;
- 	cpumask_copy(&af_desc.mask, cpu_online_mask);
- 	cpumask_andnot(&af_desc.mask, &af_desc.mask, &table->used_cpus);
--	irq = mlx5_irq_affinity_request(pool, &af_desc);
-+	irq = mlx5_irq_affinity_request(dev, pool, &af_desc);
- 	if (IS_ERR(irq))
- 		return PTR_ERR(irq);
- 
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/irq_affinity.c b/drivers/net/ethernet/mellanox/mlx5/core/irq_affinity.c
-index 612e666ec263..f7b01b3f0cba 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/irq_affinity.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/irq_affinity.c
-@@ -112,15 +112,18 @@ irq_pool_find_least_loaded(struct mlx5_irq_pool *pool, const struct cpumask *req
- 
- /**
-  * mlx5_irq_affinity_request - request an IRQ according to the given mask.
-+ * @dev: mlx5 core device which is requesting the IRQ.
-  * @pool: IRQ pool to request from.
-  * @af_desc: affinity descriptor for this IRQ.
-  *
-  * This function returns a pointer to IRQ, or ERR_PTR in case of error.
-  */
- struct mlx5_irq *
--mlx5_irq_affinity_request(struct mlx5_irq_pool *pool, struct irq_affinity_desc *af_desc)
-+mlx5_irq_affinity_request(struct mlx5_core_dev *dev, struct mlx5_irq_pool *pool,
-+			  struct irq_affinity_desc *af_desc)
- {
- 	struct mlx5_irq *least_loaded_irq, *new_irq;
-+	int ret;
- 
- 	mutex_lock(&pool->lock);
- 	least_loaded_irq = irq_pool_find_least_loaded(pool, &af_desc->mask);
-@@ -153,6 +156,16 @@ mlx5_irq_affinity_request(struct mlx5_irq_pool *pool, struct irq_affinity_desc *
- 			      mlx5_irq_read_locked(least_loaded_irq) / MLX5_EQ_REFS_PER_IRQ);
- unlock:
- 	mutex_unlock(&pool->lock);
-+	if (mlx5_irq_pool_is_sf_pool(pool)) {
-+		ret = auxiliary_device_sysfs_irq_add(mlx5_sf_coredev_to_adev(dev),
-+						     mlx5_irq_get_irq(least_loaded_irq));
-+		if (ret) {
-+			mlx5_core_err(dev, "Failed to create sysfs entry for irq %d, ret = %d\n",
-+				      mlx5_irq_get_irq(least_loaded_irq), ret);
-+			mlx5_irq_put(least_loaded_irq);
-+			least_loaded_irq = ERR_PTR(ret);
-+		}
-+	}
- 	return least_loaded_irq;
- }
- 
-@@ -164,6 +177,9 @@ void mlx5_irq_affinity_irq_release(struct mlx5_core_dev *dev, struct mlx5_irq *i
- 	cpu = cpumask_first(mlx5_irq_get_affinity_mask(irq));
- 	synchronize_irq(pci_irq_vector(pool->dev->pdev,
- 				       mlx5_irq_get_index(irq)));
-+	if (mlx5_irq_pool_is_sf_pool(pool))
-+		auxiliary_device_sysfs_irq_remove(mlx5_sf_coredev_to_adev(dev),
-+						  mlx5_irq_get_irq(irq));
- 	if (mlx5_irq_put(irq))
- 		if (pool->irqs_per_cpu)
- 			cpu_put(pool, cpu);
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/mlx5_core.h b/drivers/net/ethernet/mellanox/mlx5/core/mlx5_core.h
-index c38342b9f320..e764b720d9b2 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/mlx5_core.h
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/mlx5_core.h
-@@ -320,6 +320,12 @@ static inline bool mlx5_core_is_sf(const struct mlx5_core_dev *dev)
- 	return dev->coredev_type == MLX5_COREDEV_SF;
- }
- 
-+static inline struct auxiliary_device *
-+mlx5_sf_coredev_to_adev(struct mlx5_core_dev *mdev)
-+{
-+	return container_of(mdev->device, struct auxiliary_device, dev);
-+}
-+
- int mlx5_mdev_init(struct mlx5_core_dev *dev, int profile_idx);
- void mlx5_mdev_uninit(struct mlx5_core_dev *dev);
- int mlx5_init_one(struct mlx5_core_dev *dev);
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/mlx5_irq.h b/drivers/net/ethernet/mellanox/mlx5/core/mlx5_irq.h
-index 1088114e905d..0881e961d8b1 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/mlx5_irq.h
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/mlx5_irq.h
-@@ -25,7 +25,7 @@ int mlx5_set_msix_vec_count(struct mlx5_core_dev *dev, int devfn,
- int mlx5_get_default_msix_vec_count(struct mlx5_core_dev *dev, int num_vfs);
- 
- struct mlx5_irq *mlx5_ctrl_irq_request(struct mlx5_core_dev *dev);
--void mlx5_ctrl_irq_release(struct mlx5_irq *ctrl_irq);
-+void mlx5_ctrl_irq_release(struct mlx5_core_dev *dev, struct mlx5_irq *ctrl_irq);
- struct mlx5_irq *mlx5_irq_request(struct mlx5_core_dev *dev, u16 vecidx,
- 				  struct irq_affinity_desc *af_desc,
- 				  struct cpu_rmap **rmap);
-@@ -36,13 +36,15 @@ int mlx5_irq_attach_nb(struct mlx5_irq *irq, struct notifier_block *nb);
- int mlx5_irq_detach_nb(struct mlx5_irq *irq, struct notifier_block *nb);
- struct cpumask *mlx5_irq_get_affinity_mask(struct mlx5_irq *irq);
- int mlx5_irq_get_index(struct mlx5_irq *irq);
-+int mlx5_irq_get_irq(const struct mlx5_irq *irq);
- 
- struct mlx5_irq_pool;
- #ifdef CONFIG_MLX5_SF
- struct mlx5_irq *mlx5_irq_affinity_irq_request_auto(struct mlx5_core_dev *dev,
- 						    struct cpumask *used_cpus, u16 vecidx);
--struct mlx5_irq *mlx5_irq_affinity_request(struct mlx5_irq_pool *pool,
--					   struct irq_affinity_desc *af_desc);
-+struct mlx5_irq *
-+mlx5_irq_affinity_request(struct mlx5_core_dev *dev, struct mlx5_irq_pool *pool,
-+			  struct irq_affinity_desc *af_desc);
- void mlx5_irq_affinity_irq_release(struct mlx5_core_dev *dev, struct mlx5_irq *irq);
- #else
- static inline
-@@ -53,7 +55,8 @@ struct mlx5_irq *mlx5_irq_affinity_irq_request_auto(struct mlx5_core_dev *dev,
- }
- 
- static inline struct mlx5_irq *
--mlx5_irq_affinity_request(struct mlx5_irq_pool *pool, struct irq_affinity_desc *af_desc)
-+mlx5_irq_affinity_request(struct mlx5_core_dev *dev, struct mlx5_irq_pool *pool,
-+			  struct irq_affinity_desc *af_desc)
- {
- 	return ERR_PTR(-EOPNOTSUPP);
- }
-@@ -61,6 +64,7 @@ mlx5_irq_affinity_request(struct mlx5_irq_pool *pool, struct irq_affinity_desc *
- static inline
- void mlx5_irq_affinity_irq_release(struct mlx5_core_dev *dev, struct mlx5_irq *irq)
- {
-+	mlx5_irq_release_vector(irq);
- }
- #endif
- #endif /* __MLX5_IRQ_H__ */
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/pci_irq.c b/drivers/net/ethernet/mellanox/mlx5/core/pci_irq.c
-index fb8787e30d3f..ac7c3a76b4cf 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/pci_irq.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/pci_irq.c
-@@ -367,6 +367,11 @@ struct cpumask *mlx5_irq_get_affinity_mask(struct mlx5_irq *irq)
- 	return irq->mask;
- }
- 
-+int mlx5_irq_get_irq(const struct mlx5_irq *irq)
-+{
-+	return irq->map.virq;
-+}
-+
- int mlx5_irq_get_index(struct mlx5_irq *irq)
- {
- 	return irq->map.index;
-@@ -440,11 +445,12 @@ static void _mlx5_irq_release(struct mlx5_irq *irq)
- 
- /**
-  * mlx5_ctrl_irq_release - release a ctrl IRQ back to the system.
-+ * @dev: mlx5 device that releasing the IRQ.
-  * @ctrl_irq: ctrl IRQ to be released.
-  */
--void mlx5_ctrl_irq_release(struct mlx5_irq *ctrl_irq)
-+void mlx5_ctrl_irq_release(struct mlx5_core_dev *dev, struct mlx5_irq *ctrl_irq)
- {
--	_mlx5_irq_release(ctrl_irq);
-+	mlx5_irq_affinity_irq_release(dev, ctrl_irq);
- }
- 
- /**
-@@ -473,7 +479,7 @@ struct mlx5_irq *mlx5_ctrl_irq_request(struct mlx5_core_dev *dev)
- 		/* Allocate the IRQ in index 0. The vector was already allocated */
- 		irq = irq_pool_request_vector(pool, 0, &af_desc, NULL);
- 	} else {
--		irq = mlx5_irq_affinity_request(pool, &af_desc);
-+		irq = mlx5_irq_affinity_request(dev, pool, &af_desc);
- 	}
- 
- 	return irq;
--- 
-2.45.2
+Yeah, I've been talking to Matthew explaining that starting at the DMA
+API makes the most sense and lets remove mandatory struct page
+entanglements there. Then we can start to examine other layers. Having
+a consistent option in the DMA API to be physically based with a
+memory type fits with that plan.
 
+Jason
 
