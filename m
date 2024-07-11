@@ -1,99 +1,90 @@
-Return-Path: <linux-rdma+bounces-3814-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-3815-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id C768592E3E4
-	for <lists+linux-rdma@lfdr.de>; Thu, 11 Jul 2024 11:56:36 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 215AF92E442
+	for <lists+linux-rdma@lfdr.de>; Thu, 11 Jul 2024 12:10:07 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 76C061F21CF4
-	for <lists+linux-rdma@lfdr.de>; Thu, 11 Jul 2024 09:56:36 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D12FF28939C
+	for <lists+linux-rdma@lfdr.de>; Thu, 11 Jul 2024 10:10:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 085DB15748A;
-	Thu, 11 Jul 2024 09:56:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 74040158A17;
+	Thu, 11 Jul 2024 10:09:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="nz8/Is/M"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="LsrHYEjm"
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BA29B4206C;
-	Thu, 11 Jul 2024 09:56:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 35BD3152533
+	for <linux-rdma@vger.kernel.org>; Thu, 11 Jul 2024 10:09:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1720691792; cv=none; b=ARzaqyRMmg0PEpMxAG8nY3azDyOHX9B/qM9KXhh/B8svSZcJDzCnYKYQ87hI6Y1pAL0zWv9rnsajbRhl3cwIIZqw3EH0/YKG1ExdzpS8Uyknr5x5Om8EEK6MPCc9nJENavuKX1yAVZ8vfsDm41OkDHZw/q6wr1JQNnhOTQJQbBA=
+	t=1720692589; cv=none; b=XHMiQYBREG7+LyFFGH//YcQGJvkpIX5Ij6B3oUq5DaC23ucJDH23bIfGTou6MK7sgaL4x8Fz2c6sFAEIytmquiZeGlM8EL0qW4Ka1anuOFLkXUVh1gWYeWytBg6pOPodAvRZa/1DWComkDNopIpKFN40DhVfmvSU4gijq6NyvKA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1720691792; c=relaxed/simple;
-	bh=L9jWCu8i8XpLdqWdfxP0ovGftyzVoEn0XFfVq/Li4kU=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Message-Id:Date:
-	 MIME-Version:Content-Type; b=E5R4uxN9wTLhWt9Q2KlqDcloPJfucJhWzadIYKej+2fQQwtZOGGtoOiOSAM7dFZPhsDLib4qDpMQWC8ihLrxhpf8ehd/cVI4q7PTPH7/8hUWPAcFNzYwgLJF1vlmZH5dSm8exjbMi2R327JmRrPST2zG+v0ZDZmO6DTX8GuYJmE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=nz8/Is/M; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C86C2C116B1;
-	Thu, 11 Jul 2024 09:56:31 +0000 (UTC)
+	s=arc-20240116; t=1720692589; c=relaxed/simple;
+	bh=7j1xNdHEBK9mXxUofg9NkttGqq7Y6Yjw2pWIhaKSI6M=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=JaUp/hIqOWQRQfoVmVSLGYaI6YdClU+gjYYehm7UE+IFl5eMf76wLUSVmRgX3YLdJjSX+RFqFYMzGRok2wuu4YhA4vCaRkBXovJPvw1LkYFpeZLQVnkHm/H/FPT+o9l6AQYOumQfaSolIZK9nGDt4ccn2RUHLy8vy0nNXqphocQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=LsrHYEjm; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 426A6C116B1;
+	Thu, 11 Jul 2024 10:09:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1720691792;
-	bh=L9jWCu8i8XpLdqWdfxP0ovGftyzVoEn0XFfVq/Li4kU=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-	b=nz8/Is/MDQR+6zdyY8/gOnUw2Vi+5Eeyl7Xc2WvR55R6ET3Ydo6AgVzBygFzrcHZc
-	 PIG0XZih976SXunP3xijbU0AwtcgTWbBVhneywuW9bqoAmT77d6pb3xMYW9kEq7wVM
-	 dUxlUrbDMLrRHB2PT/dCVpCA8CIR/kTOk58DEbLQIudbLoHzQaY2VRIF4eDQTe6r+n
-	 5kUnlUoeB2PLnGeOzNjjQB2oxz7a4Wc+19zj2jqLX42LI0IxM+LGf9Uuuh0HqosBGj
-	 oF6EnyrNO5t4pVyy5rZxnRMqKqf5xze31PjPh4+3sb3+jYTfM7UTtpOfQ2+c3eJVGS
-	 cjrF0D4i2INXg==
+	s=k20201202; t=1720692589;
+	bh=7j1xNdHEBK9mXxUofg9NkttGqq7Y6Yjw2pWIhaKSI6M=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=LsrHYEjmWaE0JCguDtxZGjqxy8Mf6giF8rMkqjXR1arwFboazsm/gLnhjxSGRToE4
+	 GjplJ/uqGstmya9bNNKCqz09zDyZ7HZ2z8FKtp+Pm/1ihtQ9uy0LObLEctuO/Kdx66
+	 i96d3yftoiUQrHyKn3gEc1LjtlnAU+v52N/xpep1qg+11w0ShzkSJEz6uestqEj6Qk
+	 wHg7xH/HuPr1XBYPo3tH28Bs7Yewt/R8/6xmhHZZumX80USEmHIAqVaKVu6BflPjIq
+	 zq9sndbRTERpQJPA+I8/Ze4xhjcuLhc2s/ORtvMx90elzUO7lwH8YiIOsE4E9Elce9
+	 4up/cQ8wPDdZA==
+Date: Thu, 11 Jul 2024 13:09:44 +0300
 From: Leon Romanovsky <leon@kernel.org>
-To: jgg@ziepe.ca, Junxian Huang <huangjunxian6@hisilicon.com>
-Cc: linux-rdma@vger.kernel.org, linuxarm@huawei.com, 
- linux-kernel@vger.kernel.org
-In-Reply-To: <20240710133705.896445-1-huangjunxian6@hisilicon.com>
-References: <20240710133705.896445-1-huangjunxian6@hisilicon.com>
-Subject: Re: [PATCH v2 for-rc 0/8] RDMA/hns: Bugfixes
-Message-Id: <172069178813.1711020.16024582484605873294.b4-ty@kernel.org>
-Date: Thu, 11 Jul 2024 12:56:28 +0300
+To: David Ahern <dsahern@kernel.org>
+Cc: linux-rdma@vger.kernel.org, jgg@ziepe.ca
+Subject: Re: [PATCH] RDMA: Fix netdev tracker in ib_device_set_netdev
+Message-ID: <20240711100944.GO6668@unreal>
+References: <20240709214455.17823-1-dsahern@kernel.org>
+ <20240710060929.GI6668@unreal>
+ <4f38320c-22e4-403e-8d68-ce04e504cedc@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Mailer: b4 0.15-dev-13183
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <4f38320c-22e4-403e-8d68-ce04e504cedc@kernel.org>
 
-
-On Wed, 10 Jul 2024 21:36:57 +0800, Junxian Huang wrote:
-> Here are some bugfixes for hns driver.
+On Wed, Jul 10, 2024 at 10:59:15AM -0700, David Ahern wrote:
+> On 7/10/24 12:09 AM, Leon Romanovsky wrote:
+> >> diff --git a/drivers/infiniband/core/device.c b/drivers/infiniband/core/device.c
+> >> index 55aa7aa32d4a..7ddaec923569 100644
+> >> --- a/drivers/infiniband/core/device.c
+> >> +++ b/drivers/infiniband/core/device.c
+> >> @@ -2167,7 +2167,7 @@ int ib_device_set_netdev(struct ib_device *ib_dev, struct net_device *ndev,
+> >>  	}
+> >>  
+> >>  	if (old_ndev)
+> >> -		netdev_tracker_free(ndev, &pdata->netdev_tracker);
+> >> +		netdev_put(old_ndev, &pdata->netdev_tracker);
+> > 
+> > It should stay netdev_tracker_free() and not netdev_put(). We are
+> > calling to __dev_put(old_ndev) later in the function.
+> > 
 > 
-> v1 -> v2:
-> * Drop patch #2 in v1 because Leon pointed out a problem about mailbox
->   mode, and we plan to handle it in another patchset.
-> * Patch #1: put the atomic length check in set_rc_wqe(), stop processing
->   WQEs and return immediately if there is an error.
-> * Patch #2: use BH workqueue instead of tasklet.
+> missed that and KASAN and refcount debugging did not complain ...
 > 
-> [...]
+> Anyways, why have the 2 split apart? ie., why not remove the __dev_put
+> and just do netdev_put here? old_ndev is not needed in between calls.
+> Asymmetric calls like this are always confusing.
 
-Applied, thanks!
+You probably can combine them, but to do so instead of __dev_put() and
+not netdev_tracker_free().
 
-[1/8] RDMA/hns: Check atomic wr length
-      https://git.kernel.org/rdma/rdma/c/dd17883b0c242b
-[2/8] RDMA/hns: Fix soft lockup under heavy CEQE load
-      https://git.kernel.org/rdma/rdma/c/7aa9502ba0aaac
-[3/8] RDMA/hns: Fix unmatch exception handling when init eq table fails
-      https://git.kernel.org/rdma/rdma/c/e1226904317b4f
-[4/8] RDMA/hns: Fix missing pagesize and alignment check in FRMR
-      https://git.kernel.org/rdma/rdma/c/15d66ed71e8c51
-[5/8] RDMA/hns: Fix shift-out-bounds when max_inline_data is 0
-      https://git.kernel.org/rdma/rdma/c/ab7031e560372c
-[6/8] RDMA/hns: Fix undifined behavior caused by invalid max_sge
-      https://git.kernel.org/rdma/rdma/c/a8690d81736a00
-[7/8] RDMA/hns: Fix insufficient extend DB for VFs.
-      https://git.kernel.org/rdma/rdma/c/79dd1e1620f980
-[8/8] RDMA/hns: Fix mbx timing out before CMD execution is completed
-      https://git.kernel.org/rdma/rdma/c/4c3c4cfe0a60b1
-
-Best regards,
--- 
-Leon Romanovsky <leon@kernel.org>
-
+Thanks
 
