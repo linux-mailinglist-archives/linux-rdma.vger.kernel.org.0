@@ -1,81 +1,115 @@
-Return-Path: <linux-rdma+bounces-3830-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-3831-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id F144B92ECB8
-	for <lists+linux-rdma@lfdr.de>; Thu, 11 Jul 2024 18:29:44 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id CBB5492ECDF
+	for <lists+linux-rdma@lfdr.de>; Thu, 11 Jul 2024 18:36:56 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6E4B91F225E7
-	for <lists+linux-rdma@lfdr.de>; Thu, 11 Jul 2024 16:29:44 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EFCBB1C21AC2
+	for <lists+linux-rdma@lfdr.de>; Thu, 11 Jul 2024 16:36:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 714E016D313;
-	Thu, 11 Jul 2024 16:29:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4066A16D4EE;
+	Thu, 11 Jul 2024 16:36:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="khMGCCbD"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="gOnB1Qhj"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from NAM12-BN8-obe.outbound.protection.outlook.com (mail-bn8nam12on2043.outbound.protection.outlook.com [40.107.237.43])
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.15])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 776F716CD39;
-	Thu, 11 Jul 2024 16:29:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.237.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 23A1916B752;
+	Thu, 11 Jul 2024 16:36:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=192.198.163.15
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1720715378; cv=fail; b=V8TahJGLdIINNa/PpvKf69MPNWdSaC/GWe8r1flvHveoGRl+R248UET8L4K1bAlKTD3nQkadKM4U+KtfqvhSoKh5PTRORjM/ZvHUkfglX1W/NkVfLTWBu+4HCNHZFkBVGYov2OlrGLUp1D7+rrj23FQfTtdXz0gRad7tIVpuiis=
+	t=1720715801; cv=fail; b=RbCL7IamZxxwuQ4UPL1ldtK0oFn9SX1UPcmgIJclnN7mpGXqzGoMh0ggt7icXdtBZqQEUKHMMiSIylcI2lxhgUGO28HM99ziT4LjPn7R8PhQduEUv03EPr97cJ0OG21Ly2eB/9NaR9iXBP9ubI7TCDMAtkwQkJDCv2/289Ba6ik=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1720715378; c=relaxed/simple;
-	bh=e1MScWFzLT2KW91VMQBjHLiEZQP27FZJ5+NzTvzd/J8=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:Content-Type:
-	 Content-Disposition:In-Reply-To:MIME-Version; b=cmPage3R7tXy2kE1kNd6aC0TV9AX8fHtN6erQJmQKzqKJBSxFY/POCB0izJWbiu/gldjJrrS2oskGzPVifghbUGZ/7XB73JeofohwBncrz6b/qTbkodPfRLh7mqm1Fh/V8AdE37z+RO1+Jlv+h5JfIoMGCZIhH/xIwHZ1p6X3FA=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=khMGCCbD; arc=fail smtp.client-ip=40.107.237.43
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
+	s=arc-20240116; t=1720715801; c=relaxed/simple;
+	bh=un26M+24/whS7pCsqcy4GGmTN/2VZItaf9VNMJkm9v0=;
+	h=Date:From:To:CC:Subject:Message-ID:References:Content-Type:
+	 Content-Disposition:In-Reply-To:MIME-Version; b=lleA62U2kFRYNhlhwJ/Z3rWII5Te5ccIHZ2j6lCkf4GmSrzJENje/LnJVDgTpjuIgk/eiFbfS+T7bHGQdv4pr3D3bThSjoWBd6pQmq+JvCRINWU/qlSRmxRiIYos8/H0ont/dasQxFPh8SlnoTmPur5DDoMagU05fesCvUN1elE=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=gOnB1Qhj; arc=fail smtp.client-ip=192.198.163.15
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1720715799; x=1752251799;
+  h=date:from:to:cc:subject:message-id:references:
+   in-reply-to:mime-version;
+  bh=un26M+24/whS7pCsqcy4GGmTN/2VZItaf9VNMJkm9v0=;
+  b=gOnB1Qhjqt+t4rTSgnMD0hKdbdLOmI1oKL0v/xVEPwE4fhL/Y6ERvmVN
+   qBUMFWWVujolGxQyyT5lCDPvB7wYM/zeKD501DZOnWwsu4TXRQ70zLgnA
+   W3BcwYa8nbxq4IQyfRkst3W9jrqY2P3grhX7Umu+rsRk4RK6i3C8lkkuS
+   Cp+arUl5msEr3tSgN/qPguCV3eyR52PDkPbhhz7MPX9Yi6w1ZjdTBTYVp
+   L1RswYFzfaHKL8AlTDPYElmZwwiy93y2oRgqCd3rv6Pdkag02PnbgsAw8
+   aSaOI6IDPlbAADlOr+TEGP//7bNdoZZZyXxZIktlpCXgETN6tkXKQFbR3
+   w==;
+X-CSE-ConnectionGUID: HGRDHeT7SZ6Go0qtlCCmnQ==
+X-CSE-MsgGUID: Yx/wfh4CRZib3euBls0z1g==
+X-IronPort-AV: E=McAfee;i="6700,10204,11130"; a="18261226"
+X-IronPort-AV: E=Sophos;i="6.09,200,1716274800"; 
+   d="scan'208";a="18261226"
+Received: from orviesa005.jf.intel.com ([10.64.159.145])
+  by fmvoesa109.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Jul 2024 09:36:38 -0700
+X-CSE-ConnectionGUID: ulZIGwaxRkSNVgLjfSg1gQ==
+X-CSE-MsgGUID: xpdBG833SEaaVUN+tFAt5A==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.09,200,1716274800"; 
+   d="scan'208";a="53564325"
+Received: from fmsmsx601.amr.corp.intel.com ([10.18.126.81])
+  by orviesa005.jf.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 11 Jul 2024 09:36:38 -0700
+Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
+ fmsmsx601.amr.corp.intel.com (10.18.126.81) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.39; Thu, 11 Jul 2024 09:36:37 -0700
+Received: from FMSEDG603.ED.cps.intel.com (10.1.192.133) by
+ fmsmsx610.amr.corp.intel.com (10.18.126.90) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.39 via Frontend Transport; Thu, 11 Jul 2024 09:36:37 -0700
+Received: from NAM12-MW2-obe.outbound.protection.outlook.com (104.47.66.46) by
+ edgegateway.intel.com (192.55.55.68) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.39; Thu, 11 Jul 2024 09:36:37 -0700
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=W8WMf7h1IiaSOycWpa3hILeN5bkbfpJc3iEHOSRKV79CWcgH82yvsvQ/w66Kijis/0xObRdlwjxk3f17uN5J+SpNOteehif9W0NKn8Rom1Pkz7RIsu3J8NvP5FLcdafMAOqnWrD5UyxF2+VlUmM2GYBF2JC/CXAkL1GBRci1517fTrqz7lQV3T8mpanQJkLI2swTGnpLY289gamGbrxAPye5IfwjGfMF5YvW5iTY9x+Opjugn281FJj11HT31LL9vqNl6+u0Ygqu93XSx61bdyhA1Orb26lNVDf43aaoyaxItQtHUJYAhYuzew44XE7qS22ceUEHyACnoE32/efPYQ==
+ b=IyUzQ9amnULVABP21OkjP0KYrfEQtd3GWpgVXd03tQaqzMhMHXO9yF0SaEsRU6BBHPaY5DD7JvUDT0JOU9mCkvrp6+c3PnS0/hSDXEYbeqtf+OPPMEolyeehccbo0fSDhDq6CEl1Onbg8pzAPw7IqqqNlqoorgdbRw1UD7E7yjfgkAKxITYK8swwFMeoaZm2qUX3lWczi3Ncz12m1CNW4f/8pTZszyW7x+5GcZy8a3GT53QJBfLvPiP8OYphGSc7JbObWmLTqzcTZKqUxNDnLb5RwLfmSctfCUlgyf6aqnqDBKIbYsp3M9EIyNRQfxUzTLjyC0nD+t+3Uue96iolAg==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector10001;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=cdA0mhTXLZnGHOJOBXWD5Q1PppE3u7ACdzRj8kSTKPk=;
- b=bGcmaOmqs5w+vL5nVLZAgR/Am85lL7n2iMAw3w+gFqVHRyFfcrcADVxX+PFSKFRzBbRnvBs9dlEhUb4LqVYUqWVVEVFgyfF6Gv9srdOOvOIQWLmWQjNlYVlIlE3HvJN1ZzeYOHzecXGcXce9E8OCgRyJ89p7X3GNEE+/HrRsZ5Et0YZN8KKp+gSdCHYQJ7Kmls2V7cl55lwsTS5NKnuQw7RNXsvV7Za0D5E279UY4qvfh5YKZxWnxRkhqhxAKSKNdnHKH2syHfgE3kuKeayvMuz/olw7Nm3fseLBZq1SAJxy+W3L9mrB2v9BDj02t+9t14XT8YrP9E8Qes5PQpdj3g==
+ bh=e5+f/pg2M1YDTQT+qyTt0eVYTBuqUpUqxO7U6pX3jsQ=;
+ b=HRbE6/tiKmlfvW0lT8uX4d0LO1LY2XORZnEwJ741rMPDskrSX//fEK9duiNpW7WvvZ58gCltMdT2l7B91TD8Chlz+aVlc5n/ygnZhIJrMu7sxeVD4Heg5l/6kST0Nq/illVv4kpI4qqmKsDYEbh03sAfaH5zmqHV1h6ZwxFMtfITr35C7cbNLtIXfP7n1JssYkO3nvCD9xim40UOco2RJ0WCU4An1QQIH44/EPjiIkJBpsfK2RnBvBm581nqlu5PTNKVedDlI0S86K/nMLWVJM1g/FeMQfbqSTMIb+COm7XkhVvN7LVdCMQUX/Qgx3EdU318mwYX70LKQKs4dfk4nA==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=cdA0mhTXLZnGHOJOBXWD5Q1PppE3u7ACdzRj8kSTKPk=;
- b=khMGCCbDPmSprqhljyBPKnDzfhBmcYcONdGNiIScmLNOCibNmhC7nSkmNs88R6jK7gd95ioTtb4rY8wDCy4g6Kb28Cr+WDvGp3XfldB/vGHBu+VtTQ5WF/bPl5QI8pIbUdVNgRhUtNcONwb4Z+a3+4dfrOesWYU3aCkac4IAEv3iH7wIGOJCTX3uKHa0c3s4Raeoo8U1nJgRHT8bZ8Bir0Xj7NqF+CM/gZ+FC+OsqSWEQNN8YMJ8HB3s4r36/fDuO9EUOoRMCigrjEwRTAee60XdL1pZ1DFN67rBT9JufINJ0suGTQqJaJkhoUUSRC1KEBGyOSphHSCt1Cgt5Va0eQ==
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
 Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nvidia.com;
-Received: from DM6PR12MB3849.namprd12.prod.outlook.com (2603:10b6:5:1c7::26)
- by DM6PR12MB4074.namprd12.prod.outlook.com (2603:10b6:5:218::11) with
+ header.d=none;dmarc=none action=none header.from=intel.com;
+Received: from PH8PR11MB8107.namprd11.prod.outlook.com (2603:10b6:510:256::6)
+ by DS7PR11MB7692.namprd11.prod.outlook.com (2603:10b6:8:ef::15) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7762.21; Thu, 11 Jul
- 2024 16:29:30 +0000
-Received: from DM6PR12MB3849.namprd12.prod.outlook.com
- ([fe80::c296:774b:a5fc:965e]) by DM6PR12MB3849.namprd12.prod.outlook.com
- ([fe80::c296:774b:a5fc:965e%5]) with mapi id 15.20.7741.033; Thu, 11 Jul 2024
- 16:29:30 +0000
-Date: Thu, 11 Jul 2024 13:29:27 -0300
-From: Jason Gunthorpe <jgg@nvidia.com>
-To: James Bottomley <James.Bottomley@hansenpartnership.com>
-Cc: Dan Williams <dan.j.williams@intel.com>, ksummit@lists.linux.dev,
-	linux-cxl@vger.kernel.org, linux-rdma@vger.kernel.org,
-	netdev@vger.kernel.org
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7762.20; Thu, 11 Jul
+ 2024 16:36:30 +0000
+Received: from PH8PR11MB8107.namprd11.prod.outlook.com
+ ([fe80::6b05:74cf:a304:ecd8]) by PH8PR11MB8107.namprd11.prod.outlook.com
+ ([fe80::6b05:74cf:a304:ecd8%4]) with mapi id 15.20.7762.020; Thu, 11 Jul 2024
+ 16:36:29 +0000
+Date: Thu, 11 Jul 2024 09:36:27 -0700
+From: Dan Williams <dan.j.williams@intel.com>
+To: Jonathan Cameron <Jonathan.Cameron@huawei.com>, Dan Williams
+	<dan.j.williams@intel.com>
+CC: James Bottomley <James.Bottomley@hansenpartnership.com>,
+	<ksummit@lists.linux.dev>, <linux-cxl@vger.kernel.org>,
+	<linux-rdma@vger.kernel.org>, <netdev@vger.kernel.org>, <jgg@nvidia.com>
 Subject: Re: [MAINTAINERS SUMMIT] Device Passthrough Considered Harmful?
-Message-ID: <20240711162927.GG1482543@nvidia.com>
+Message-ID: <66900a0b9770d_1a7742942c@dwillia2-xfh.jf.intel.com.notmuch>
 References: <668c67a324609_ed99294c0@dwillia2-xfh.jf.intel.com.notmuch>
  <3b9631cf12f451fc08f410255ebbba23081ada7c.camel@HansenPartnership.com>
- <20240711135030.GD1482543@nvidia.com>
- <3ea7076089590e1d2bed139c256dbc077ecd6984.camel@HansenPartnership.com>
-Content-Type: text/plain; charset=utf-8
+ <668db67196ca3_1bc8329416@dwillia2-xfh.jf.intel.com.notmuch>
+ <20240710142238.00007295@Huawei.com>
+Content-Type: text/plain; charset="us-ascii"
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <3ea7076089590e1d2bed139c256dbc077ecd6984.camel@HansenPartnership.com>
-X-ClientProxiedBy: MN2PR20CA0046.namprd20.prod.outlook.com
- (2603:10b6:208:235::15) To DM6PR12MB3849.namprd12.prod.outlook.com
- (2603:10b6:5:1c7::26)
+In-Reply-To: <20240710142238.00007295@Huawei.com>
+X-ClientProxiedBy: MW4PR04CA0205.namprd04.prod.outlook.com
+ (2603:10b6:303:86::30) To PH8PR11MB8107.namprd11.prod.outlook.com
+ (2603:10b6:510:256::6)
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
@@ -83,169 +117,158 @@ List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DM6PR12MB3849:EE_|DM6PR12MB4074:EE_
-X-MS-Office365-Filtering-Correlation-Id: 7621c9d0-b18f-4d06-eec8-08dca1c6a3c1
+X-MS-TrafficTypeDiagnostic: PH8PR11MB8107:EE_|DS7PR11MB7692:EE_
+X-MS-Office365-Filtering-Correlation-Id: d593be2f-6586-4b11-0e87-08dca1c79dce
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;ARA:13230040|1800799024|376014|366016;
-X-Microsoft-Antispam-Message-Info:
-	=?utf-8?B?SjFHbTRhYkcyUmd3SjRLMUhBZ3lERmZqSVI5alh6b2tiYmpEQU1iWmswOVRK?=
- =?utf-8?B?aTg3bGh0MDhRcGJqMkFKVG9hM0V6TXl5eEhMSjRuMlpwY0M5ai95Z1hJc3Za?=
- =?utf-8?B?ZGo2TU9LZmlNMmJWdFlYUmwrWjBEVGFLT2trZGI0SllwYWJndzhucEx0Skhm?=
- =?utf-8?B?cm0vSi9XeHc3U1h5QUpaVGhsZmdBWmNiVkI0Mng4aXAveDFyNjU4d0dpLzkw?=
- =?utf-8?B?SnA5ckpBL2xEdFZ1M0dlTkNDSE9TaHRQTDV2bGxjZDU1WWxhdGhJcnZYL1Zk?=
- =?utf-8?B?L1htMU16blBaZThMaVJXcThuYXM3RERzQzJiWHNZZGxPWHBUYjRLcFZxYUdZ?=
- =?utf-8?B?OGw3VTJvTS9lbU9ndWJRc0kzakZLMVF3UWh5dlQ5a3grbFN5Y2QwZDJhamtS?=
- =?utf-8?B?OFQ2TXJCeUlrdHVGbWVOMkVRU1c0bmZMSGluay81V0NWRllQK3VZaVplZE9j?=
- =?utf-8?B?SFQxelN0Ri9uL1A5b0Z0SzJkd2xXcGRWbThhdHI4MGhOSU43NnY3OVRxYVla?=
- =?utf-8?B?UEs0UkxmWjVqT2R3ZjI3TmgvaUlkUGNNNnA0TlpraERwK2c4dUptKy82QnBu?=
- =?utf-8?B?dnVodU5KMys2cm9YRnJENkt3alNjY0VJOGdJSUx4ZGVEbWdweTdNTTU5ZitF?=
- =?utf-8?B?VjVFOHk1Q0FTK1hSa1ZxMXF1blQ0LzkvWDN4ZlE1MEhvK3NKYXhNSGxnY2U3?=
- =?utf-8?B?RUloNUNYT25iRFJ1d0hlYlZPUEtPUDZuUU9EcDdQd241QmVKL1A5NjVaZkNa?=
- =?utf-8?B?dlFMd1Y1dFJrQ0pVZU9IUUJYMW5KZUZjeDZudnpCbGJsYUJQOWlZV1FiTTcv?=
- =?utf-8?B?emJzcXBaWXpyak53VmhUS2Qyckx2QnQ4KzQyTDVacWpSVkNFdUZzVVBlZ29u?=
- =?utf-8?B?VEVidW9GVys5WHB2ckFENW4yUXVabVhOZzZFWXlYWStLM1pMeXFQeVU1OXZX?=
- =?utf-8?B?YW02SERURytXSWY5OERGZWxIVlhjVVhuR09vQlZ1cEN5NGRlbHZja05TNlRH?=
- =?utf-8?B?bU5IVDRuNnI3OUFXbmVvOUhXSzJHclFqQjFGYWdNaitaK0VWSTFMSW85OEhG?=
- =?utf-8?B?cmYwaFpVQmFFdUwwUkhSS1Q3bkFDa29GRWpzOTJPeUhGRFhRRC9Hb1dndWk0?=
- =?utf-8?B?SEN2eTkxV3dGMjY0M05hOEtyT0Vod0E5NHVqVlFFNnovaENYS1N3NndRRWc5?=
- =?utf-8?B?VVRxOVIxT2ZpUXpVeVNJcEljQSsyaFA1RXNxNEZpRVZXck5zY1Y0YTNzeDFs?=
- =?utf-8?B?SXNrMGxSbWNEajhsNmh6T0YxcjVnVXlBSmUycHJiUWxwemhXR01mTVhhbkVQ?=
- =?utf-8?B?dytHM2NtSjhKY0MzMlNkalZOdnBTbkllbkcyL2swYXI0QXpJekVqUFlOUy9F?=
- =?utf-8?B?QVdtSEptRXlLWDZodkVhOVlBTXdGTVNSU3NUS2xaSG5XcXJMM1o4Q2VLVnF6?=
- =?utf-8?B?WUhNVDg5ZU1jbVlOUGQ5SUlTNlQ4K29YdGNjYTcvZzQwT1J5R1ByK25ZT2xB?=
- =?utf-8?B?Y2VKN084V0lmWjloT1ZETHRmRmVFWExMUU9CVDY1R3I3ZkQrWDVLLzRLVFZJ?=
- =?utf-8?B?MVZsb2VmUGJzMjNZamtSaFAvaUZZZUJTNnZuMng4bmxFYWdDMWp5S2FIaXZ0?=
- =?utf-8?B?RUVVOXcrYmkxYlFQbGdOdnoyTWh3NTFQQkc0NlA1OGNCT0FyZExiaTdWakhC?=
- =?utf-8?B?bGlka2V5RUxDdnAwaWhKbk44WjR0WGZoVy95a1pHV0tqUDJWNE1DQnFBTHZH?=
- =?utf-8?B?UHZSOUNoM1M0d2FrMC9HUHlnOXNTZTFkS2VLRFowdDl3a2RFY3hhMWpFMzV3?=
- =?utf-8?B?RjV0WXpkZmtsTFljUE05dz09?=
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR12MB3849.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(1800799024)(376014)(366016);DIR:OUT;SFP:1101;
+X-Microsoft-Antispam: BCL:0;ARA:13230040|376014|1800799024|366016;
+X-Microsoft-Antispam-Message-Info: =?us-ascii?Q?y2EbSbHQuKzooiZJ6pFwmiaHgh6pPmwO9u4sew+yoj0rGfIS7L618jLh21Qz?=
+ =?us-ascii?Q?khAL0m6VndFUfwWCIek60ciIXivPimu1nf+GuNYWDrGsW57//RlbXxyWO/TI?=
+ =?us-ascii?Q?SaV8jgcLZfwtRxXNrLXisfdjh1nwyXn0H0FcbTbeLD51IYlnG21BF3NrqOfX?=
+ =?us-ascii?Q?/p1zFmq9eCh3iNPVcNZ458fvVlLZr4lCmdr/HdSlXuokZT49D692DT3pKsaU?=
+ =?us-ascii?Q?cJEBEpF3pUHLpXN0NrjBTDX8LHwMLOFYPrMi16o3sUR+8fGI7lXjE7cMxxza?=
+ =?us-ascii?Q?EFqVvr3Wyt9hFsFb10EiKX8CYcwdTSIONJ85vsFT5Aup9mkhfnY+GDSjYtbK?=
+ =?us-ascii?Q?xj4tvort9NhHk9VIzDbBg09BLIEh1RimeS6TVaVRrup+HSIRpLaUZxmNWFIn?=
+ =?us-ascii?Q?VKFBlk7B/vIxW7DY61qJoaIh6ulGa5ynofGWzccmMC8rdsEC5wJF61IraVbs?=
+ =?us-ascii?Q?1HjqYJ7Rib8drHNyyLzA9vVx7OnJnd+yZPpySSeT4+f4rxtG0IjXTmTr89R4?=
+ =?us-ascii?Q?cpemWFdCqdCwyCe5SAGyK/cFDlERC+4gnr/pAm3YcjhTklguMkgWaMykWB1W?=
+ =?us-ascii?Q?hp/rYYt/ClRJSA330Xox4aBrWA354lpCHkBd7SWMpw4NypvcgR8pCg/Ojcx1?=
+ =?us-ascii?Q?qQmMPWHgJhqHp8YxqacZHl3oxxVH0yd0t00neYGNl60h3dMldYvJOPiY/mHD?=
+ =?us-ascii?Q?BkQmIpwi8RsPrnNJJTCKKaM5NL+oMrUHO1GZRfC9fIE5j2rMpWnlVQjmKar5?=
+ =?us-ascii?Q?sw5c72nEoxSPqFMYcHE0kWgr0KyV4vBV+fqJdc8TX2k3XgxTm2iFHt8/RzEp?=
+ =?us-ascii?Q?VzockDBJXxL7YaueMiPfIIeYBDt1V7vojdRaTk4lZGZP1vUkh1XGlB91QQDS?=
+ =?us-ascii?Q?UKo4s+26AeWj1wkA1fpCo0pzV1KUanzm6As1yLXh6iOCTe56aZJxgQDZu3Ix?=
+ =?us-ascii?Q?4L6mJUaQlwygUcOLQVAWHULvcfWdZqP5loGFmO7Drr4mKR8owcuAt/fGqMsq?=
+ =?us-ascii?Q?laYnYPZRj0PeGYKiuYoq7oj5ObPOFmCW0Q9pahxIyshNTUC1qJA6qb/a/COF?=
+ =?us-ascii?Q?P4+jDg2wVIGXol1IJeP6gGWIDS00LlCZNeedUnxQqaC2GP2+G89VkOpXpdpa?=
+ =?us-ascii?Q?bvMcl8UOy5K9SxL8lLgGU/HTsSmKNDur6oEIC6WOr9pHuBBe4wrS+zbmvAOJ?=
+ =?us-ascii?Q?rdK4dWk9PEpuNrNW8aY7s04TLlJpJKnQv0cUH3kqjtGMrfoWEuNHuKUuyOUi?=
+ =?us-ascii?Q?muqzrhemn5XngOi/oeqtfhqffPCSsOe/oqWrBiOnWIC6ZRkmWdjHOltTvrXs?=
+ =?us-ascii?Q?Myg=3D?=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH8PR11MB8107.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(376014)(1800799024)(366016);DIR:OUT;SFP:1101;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?utf-8?B?cVVocHVrdmtBVGY1Y1d3cnRLWEhzckhhRWRaVGxTb1R3Qk9XbUJGblAyMjVK?=
- =?utf-8?B?cUVFVGtjYm1HdzZrMXRzNmZwRDVwUy83NG43WldJU2t0Z2MwVGFNcXBWcnpQ?=
- =?utf-8?B?bm9jdE1RZUY5Vll3MU9TMVFma20zYnJHZThNSGswaEtaeXVTYnllbExqazRs?=
- =?utf-8?B?WXVkdnJTWGZ1LzcvWjM4Ykdtdk45YXdCZHB0K0tZa0VvdjNqdEpHRVltaHRK?=
- =?utf-8?B?bFZhc0NvQjkwTzFOaEZlVWNlZS93WktCZ0EvZE4ybm9ZREY0U3NIM0IwWWJq?=
- =?utf-8?B?ajMwZ2JUTTZua0V3d1FtQWRPeW8vU3F3bGVMa2toVzhkWEhyVmJNTmhYUDdU?=
- =?utf-8?B?WmhLR2kzWnZtWDBvam81eVJha29ZVFpCcG81WXdoT2NNdHg3enFFdC9MNnJB?=
- =?utf-8?B?c2p5cEIwbEI2ZUNQNTl4VDlYUENjMzlOT1NNRlZXckxjd0l1RjVFbGhMeUZS?=
- =?utf-8?B?Z2Q3eW9tQS8rbnFIM0FWdjUyeWYxOEpjejNxbjBSbzBObjlBcWJvZUdLekt2?=
- =?utf-8?B?ZXM2OTVRMGhTWGxybEIyZGNpTTBiQTk5aHcxbXVkTFA2RCtLbzVSY2pBcUlG?=
- =?utf-8?B?Mk9IVGp5OHNsV09BMHNCNjdYSnlyZ0pZejBCN0l3aU1udDA1SkgrcVdJWmVQ?=
- =?utf-8?B?Vy8wWmFIcWVIMTNXMEN6Zkx3eTR3aldqZzI1SDRaeWVIMHNHKzVrMkJ1cmUz?=
- =?utf-8?B?ZHh6Q29UOXowRTlsTnV0UWtXbnZIdEFmNVRrSEdCaW9kMHRSSGx1TE1LcDFq?=
- =?utf-8?B?UjU1VGJMeW93WHdoamZ3WW5yaVRLWnBSdnRaZXVEeVo2dWh3Y0lwNkxYbFRL?=
- =?utf-8?B?WldaYisrOGNYc09VMXREbTN3NWxtMEQ3R2tOY1B4SmNHQUlqQmhXZm1mTXM4?=
- =?utf-8?B?VVFEUFV3VFBGaFk3cEpmOEJYdDBoTTJpSE9tSy84Sm51T0praUdNWnowWjh5?=
- =?utf-8?B?b1RyR2ZNdFZzbFNsY3YwNzJoblpodEZzVVdkOEpteWs3Ti90ZW82NE5zN2Iw?=
- =?utf-8?B?MldPVUJzVmM3MEhBYitaMVRnK1VrQllFVVUzaVVVRVBLcng2aWYvZW13Rlpn?=
- =?utf-8?B?WVN1TjBhK0ljb3IxOXY4QU9kczJQaW5iUG1BY3ZXRWhQMmlrY08yQlQyUm1V?=
- =?utf-8?B?VU9LR3JYRkpXdTNFSEZ6V043QmlKWHlIbGw0Rlp6SmZsWnlEd1NlZDdtcVlD?=
- =?utf-8?B?M0pGenNZWEJkeTZpYTBUZ20vK2hOeVdrQWcrdms3RG9kaWZ0NDJraGpjK1dF?=
- =?utf-8?B?SUw5T2tVbitHOEFwMFdwTXRYNmZpLzRQREpKM0pmcDVmamF6ZFo0ZHJEMlVv?=
- =?utf-8?B?QTZpYWxVZ1J3S0cxbDlhV2x6Z3NZWUJjaVA3WHM1dUU0VElvTDJCaVhBSkln?=
- =?utf-8?B?NHVEbWU3OVMwcmxGTzNIT25JdzZXck9va005T0IyTGtKT2ZnWVlLMVRKbnhh?=
- =?utf-8?B?MkF6YkJ3QlhqYmZtZGRjZFpQMytlK2Z6V2M4NkJCbERzQVhvVEhqK2puT3VZ?=
- =?utf-8?B?OTZJZTBXMzlkNWRHYTlzVkRRZTdqWkk5aUk5SEJiS0dtV20zbWJrZXNNclBR?=
- =?utf-8?B?cnhYQmkyakFpOGVZOXNHNFNFZmp1blk1M3lScmpObDdEdExBRlRjd2dLZDhW?=
- =?utf-8?B?ZTJiQVluMnRiR0p5d3ptZG9qM0FOK2g1OTdFSEdZbEhCVmFVRkhEVnBqQmRW?=
- =?utf-8?B?dDJBNmZ4QmJ1VklvaUFSWmphZGI5VzNkSklXTTUrbHpHUWllUkNOaEtVYm9z?=
- =?utf-8?B?UTNlRXFwNGcvYUtXbmhVQ2p1ZTY0ZXM3eWdodmVEVG5BUlRiQW5tNk5GbURz?=
- =?utf-8?B?RENTMnlHUVZhWlAxTmxTWWUvdERzMFgzZGQwVVBVeXRjREJKenRBRzN3U2Nv?=
- =?utf-8?B?bUlNSmlwSmlFanEzTHFNQzg2MHQvVFpDWEVpL0xXQlBIWVZNTDRvRkJub2N5?=
- =?utf-8?B?QTFxaVhDYVBFeWpjSERVM1ZXVU5UMlhtTmtPSFEvRFU4QW5EU1Q4b25YQU8v?=
- =?utf-8?B?S25YMWtndHhYaWM1K05zZlhyZkQvWlRkRVJuemVxTUtKTWIvVG5MN1pGMFRH?=
- =?utf-8?B?Sk1zK05JckRwUlVJN2pBSmtaRUtlaDltME5wM2ZHeml3N2tpdHYxS1JiZ3Jj?=
- =?utf-8?Q?5oueIoexEA54z0M8NT5pTdwxJ?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 7621c9d0-b18f-4d06-eec8-08dca1c6a3c1
-X-MS-Exchange-CrossTenant-AuthSource: DM6PR12MB3849.namprd12.prod.outlook.com
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?KTort5NbwgMqBEfllU1WV1zWpEIjdyNDep84QIZjNd7MtFHtBaaIBhhO/aA3?=
+ =?us-ascii?Q?gYNMrx8D4d8HFP71DDs6uvaYqxwdH3Cig0OjrH3akcKUMAALN1CqzUn5SfUX?=
+ =?us-ascii?Q?4ZwgBkrxcN5WLN6ejNhG19d1y5OhZ5skpcZMOaaCzGhPt/wzOP4CPP9FHzwy?=
+ =?us-ascii?Q?D23UjdUdBr0ASdXjQ31z0mhCfWnKlsHWLUeje5xYrW991qGpcJWNSysVDtCq?=
+ =?us-ascii?Q?Rxr5KmlDCtHYW4uZ17k/LxyuBL+bkO0ETMRLPWUR1yS3CRuuL/TkCjJlEQS4?=
+ =?us-ascii?Q?vCi+BGCuY+l3C0kbJIbkM33MpqDOLQiOVOEUvOzZJ1/NG0eC8MVHo4Zkbn6d?=
+ =?us-ascii?Q?y/qfF3o4r10SqphMZkBJ59M8GHErQsqs1+K1mp8MxzSyI97jH/U2Z14SraTI?=
+ =?us-ascii?Q?gpCo8TVPH9rhEa4VzoaAIt6jOA8B4cY8xtkKz5xFf3IRiTICSg2EaWWTB7fq?=
+ =?us-ascii?Q?Be1jx5q1juuIStuf12gyEQmBjIyIW5Vs3srogFEQ807QxGrTOe7YO1r6vNyO?=
+ =?us-ascii?Q?coUYdsPR1gNijK0JDsWBnhRWyCCu/LcIC1P9v7/4SPUFCqxLerOjRdFeAAF7?=
+ =?us-ascii?Q?LoosiRWUF7YZ5F2w9Xiard/kkiNndQgu1JJk94RE4CfCFHVr5GUxD7akGxi/?=
+ =?us-ascii?Q?hyltaH4L/k9EGqGVOBnWX/vLJaaqM1ZoaooIYQwWnrf1vvh/b6KHtPq8xkDQ?=
+ =?us-ascii?Q?bPW995hlu0XKyDPLzvHm2ZmONMV0IX9SmyHWR21nvKHHUyXEnSgaxj+Tw0WT?=
+ =?us-ascii?Q?ithWoYm7f3XMdlWedB/whvQGzVxfDBKnISc8bnBvEdzbQ4BWCytv4uHNhfvX?=
+ =?us-ascii?Q?LzzN20YJW3ls/T1MsQijhMV1X9LO1mGEBfIPxh6qtzBdg7C9+AQ143+OZU+l?=
+ =?us-ascii?Q?5IRe4I6hK/c4SFRDqCuXRBX0dYTGUwvBZ0F5KDudnjexpmrTpeiL9I8uiIF4?=
+ =?us-ascii?Q?ibFzOmXqD/cGe6PvGWJDT0uZzcxJuAMAJDFBfWhhtXGzOjq4OpmPdkr2Wb8X?=
+ =?us-ascii?Q?ZibfAiBc8xLd3B1K9O1lvX7BhBBzssVPaKI6CYhysT7ZYWn8c91Ntw5ZkY51?=
+ =?us-ascii?Q?Oe3Ofk2GDJq0I6ZE7r7NUsodEWCPIkyDPP0yWOwg11cE2Ot65bn1OWz5Ro3f?=
+ =?us-ascii?Q?XEUY1d6gNgMAazVmHnrzx2Ri4nb7In1Kys7tYT2S9hnM2XNUSiCFgqn8SwYP?=
+ =?us-ascii?Q?jbDywW6fHfvzPEwUQEN+eUDALoQ8TYHGcyE2N+nsVcFq0guUBV3EJWRuhgIe?=
+ =?us-ascii?Q?Q+KZ3u5NVpcKnPzNdjs2XafYnQWDHGcRuLFU3RUkrDQ+5xmJcHw9FuPRaHLm?=
+ =?us-ascii?Q?34Gl0L6aZkzhfjdF/m5Niid4MejcKD+dxdo7cPe1cDAzLvbFV7nUOa4IAydF?=
+ =?us-ascii?Q?tZWWJvkpmvO7KLpKe3SXrGY5xnSG998qtZb1Otfni41/HOQ+o6EdwcuFMpZO?=
+ =?us-ascii?Q?SGixDEoi+9mDJ+f3NxO8XUrcxu0k1TxJ6uQfQOlOLNtmeD5/VPI9sRJPDAwX?=
+ =?us-ascii?Q?GHujRRUZn5CeuXRK64olfZlguP3G6orCS+MOsODgH7cEHaT18mq6h69Oxa8p?=
+ =?us-ascii?Q?UylykdLNlIXba/0fPr9yX8QZBEwEUDZ/sz+gYnHpW6kJVf/1MeIanYwdE/EI?=
+ =?us-ascii?Q?JQ=3D=3D?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: d593be2f-6586-4b11-0e87-08dca1c79dce
+X-MS-Exchange-CrossTenant-AuthSource: PH8PR11MB8107.namprd11.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 11 Jul 2024 16:29:30.3867
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 11 Jul 2024 16:36:29.8941
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: yzaPIQ0KBVRi+MR3TG4BJ+RdbnpJ0FrQFBB9PwEznFzzoSG+Reyhmm8COrJfXIsf
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR12MB4074
+X-MS-Exchange-CrossTenant-UserPrincipalName: tL5H/HAflt6lrVvLn0J1zZTrsTghx6wxBMJ42y6IYqCYaTfpS4+5hHv96hbtWJcLJiZVgDpx48XvsYGWruVfWBpdln5CJFPvlIBGZdYoe7Q=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS7PR11MB7692
+X-OriginatorOrg: intel.com
 
-On Thu, Jul 11, 2024 at 08:16:55AM -0700, James Bottomley wrote:
-
-> > > What all of the prior pass through's taught us is that if the use
-> > > case is big enough it will get pulled into the kernel and the
-> > > kernel will usually manage it better (DB users).  If it remains a
-> > > niche use case it will likely remain out of the kernel, but we
-> > > won't be hurt by it (NVME KV protocol) and sometimes it doesn't
-> > > really matter and the device manufacturers will sort it out on
-> > > their own (USB tokens).
+Jonathan Cameron wrote:
+> On Tue, 9 Jul 2024 15:15:13 -0700
+> Dan Williams <dan.j.williams@intel.com> wrote:
+> 
+> > James Bottomley wrote:
+> > > > The upstream discussion has yielded the full spectrum of positions on
+> > > > device specific functionality, and it is a topic that needs cross-
+> > > > kernel consensus as hardware increasingly spans cross-subsystem
+> > > > concerns. Please consider it for a Maintainers Summit discussion.  
+> > > 
+> > > I'm with Greg on this ... can you point to some of the contrary
+> > > positions?  
 > > 
-> > I don't see it as being linked to big enough use case at all.
+> > This thread has that discussion:
+> > 
+> > http://lore.kernel.org/0-v1-9912f1a11620+2a-fwctl_jgg@nvidia.com
+> > 
+> > I do not want to speak for others on the saliency of their points, all I
+> > can say is that the contrary positions have so far not moved me to drop
+> > consideration of fwctl for CXL.
 > 
-> 'it' being fwctl?  
-
-Sorry I ment "it" as "if the use case is big enough it will get pulled
-into the kernel"
-
-> I'm in the camp that doesn't squash a novel proposal because the kernel
-> should be controlling it.  I'm confident that if the use case becomes
-> big enough the kernel will likely do it in the end.
-
-Yes, I agree as well. If there is technical excellence to draw
-someting into the kernel then it will definitely happen regardless if
-other options are available.
-
-> > While DPDK shows the opposite, userspace is the technically better
-> > option. This is now shown at scale. DPDK is not some niche. A big
-> > chunk of internet traffic is going through DPDKs, especially for
-> > mobile. Many ORAN solutions include DPDK on Linux.
+> I was resisting rat holing. Oh well...
 > 
-> ORAN being Open Radio Access Network?  
+> For a 'subset' of CXL.  There are a wide range of controls that are highly
+> destructive, potentially to other hosts (simplest one is a command that
+> will surprise remove someone else's memory). For those I'm not sure
+> fwctl gets us anywhere - but we still need a solution (Subject to
+> config gates etc as typically this is BMCs not hosts).
+> Maybe fwctl eventually ends up with levels of 'safety' (beyond the
+> current read vs write vs write_full, or maybe those are enough).
 
-Yes
+It is not clear to me that fwctl needs more levels of safety vs the
+local subsystem config options controlling what can and can not be sent
+over the channel. The CXL backend for fwctl adds the local "command
+effects" level of safety.
 
-> But that's a case in point: the kernel doesn't have a LTE stack or
-> APN handling for networking.
+For the "Linux as BMC" case the security model is external to the
+kernel, right? Which means it does not present a protocol that the
+kernel can reason about.
 
-That isn't really the main point of ORAN, a native LTE stack is
-interesting separately but is a different problem space than ORAN.
+Unless and until someone develops an authorization model for BMC nodes
+to join a network topology I think that use case is orthogonal to the
+primary in-band use case for fwctl.
 
-ORAN is about doing all the complex maths for RF signal processing in
-software disaggregated from the antennae hardware, in realtime. It is
-some bonkers combination of >= 100G networking and hard realtime
-packet processing with incredible math using dedicated accelerator HW.
+It is still useful there to avoid defining yet another transport, but a
+node that has unfettered access to wreak havoc on the network is not the
+kernel's problem.
 
-> I don't disagree: there are many novel protocols and other use cases
-> that will never make it into the kernel simply because they won't get
-> the adoption;
+> Complexities such as message tunneling to multiple components are also
+> going to be fun, but we want the non destructive bits of those to work
+> as part of the safe set, so we can get telemetry from downstream devices.
+> 
+> Good to cover the debug and telemetry usecase, but it still leaves us with
+> gaping holes were we need to solve the permissions problem, perhaps that
+> is layered on top of fwctl, perhaps something else is needed.
 
-My point is that prefering userspace/kernel isn't about NOVEL, it is
-about technical excellence.
+But that's more a CXL switch-management command security protocol
+problem than fwctl, right? In other words, as far as I understand, there
+is no spec provided permission model for switch management that Linux
+could enforce, so it's more in the category of build a kernel that can
+pass any payload and hope someone else has solved the problem of
+limiting what damage that node can inflict.
 
-DPDK running a >= 100G NIC with extensive HW packet processing
-offloads is technically excellent at doing proprietary traffic
-processing work in mobile and cloud networks.
+> So if fwctl is adopted, I do want the means to use it for the highly
+> destructive stuff as well!  Maybe that's a future discussion.
+> 
+> > Where CXL has a Command Effects Log that is a reasonable protocol for
+> > making decisions about opaque command codes, and that CXL already has a
+> > few years of experience with the commands that *do* need a Linux-command
+> > wrapper.
+> 
+> Worth asking if this will incorporate unknown but not vendor defined
+> commands.  There is a long tail of stuff in the spec we haven't caught up
+> with yet.  Or you thinking keep this for the strictly vendor defined stuff?
 
-We are already running these DPDK things at near perfect performance
-with minimal integration hurdles, there is not a lot of room to
-actually be *better* with an in-kernel alternative.
+Long term, yes, it should be able to expand to any command code family.
+Short term, to get started, the CXL "Feature" facility at least conveys
+whether opcodes are reads or writes, independent of their side effects,
+and are scoped to be "settings".
 
-This is what I mean, technically good displaces technically bad, it
-has nothing to do with kernel=good userspace=bad.
-
-The design of DPDK, with reduced kernel involvment, is a technically
-correct approach to achiving it's goal, and it's goal is legitimate.
-
-To expand a bit, Mellanox has supported both paths for a long time, a
-lot of work has been done to improve the netstack and mlx5 to give
-matching performance compared to DPDK in some use cases. Yet, I think
-the market has spoken and DPDK seems to have much more popularity in
-some very big verticals.
-
-Yes, using DPDK carries a heavy development cost and people should
-avoid it if they don't see a 5-10x improvment, IMHO.
-
-Jason
+There is still the matter of background commands need to support
+cancellation to avoid indefinite background-command-slot monopolization,
+and there are still commands that need kernel coordination. So, I see
+fwctl command support arriving in stages.
 
