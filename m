@@ -1,80 +1,103 @@
-Return-Path: <linux-rdma+bounces-3819-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-3820-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5771092E452
-	for <lists+linux-rdma@lfdr.de>; Thu, 11 Jul 2024 12:18:41 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 44BC992E4A2
+	for <lists+linux-rdma@lfdr.de>; Thu, 11 Jul 2024 12:27:30 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 86E27B21DF9
-	for <lists+linux-rdma@lfdr.de>; Thu, 11 Jul 2024 10:18:38 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id F3D682810A5
+	for <lists+linux-rdma@lfdr.de>; Thu, 11 Jul 2024 10:27:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 102251581E1;
-	Thu, 11 Jul 2024 10:18:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BA404158878;
+	Thu, 11 Jul 2024 10:26:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="tyW38H17"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="B5w4w6Dj"
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C4D0D14F9E5
-	for <linux-rdma@vger.kernel.org>; Thu, 11 Jul 2024 10:18:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 79D2015A85A
+	for <linux-rdma@vger.kernel.org>; Thu, 11 Jul 2024 10:26:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1720693112; cv=none; b=iOodfxySe2XW//rOXsytWT1QCmf9xnznExTqXZ1ttLJq1J3Em2KQbdb3p8rmPhW8DtzWdcoK1mOs2R1sJlT5tnx2gmsI29hn486H3Mg3ecfPCNHBC7ga3eGt10quslmL4KYV2WgxbMxkGkMhJj8FGf2ViCXY7O1y19T7qbB3pyE=
+	t=1720693573; cv=none; b=dld1Y004lOUTls6QIXq6ppTGZVcsS3U43gC2lUxWvBVRVCjgMek7KzI9vRX5tjfRx3SyzWCcBCxSVaIhOQaDPFD1+PLOO8cVm7o+nBNaEhe/tg+Ki480XeJxq7aPgOtZWLUr57471QcIjeTvhM6Y8stlpK4SRpVyuwPIyKEmWgY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1720693112; c=relaxed/simple;
-	bh=9t7So2yTIvGyIuM4HXTyuoXp4O6rEiC2WbkWy7gllmQ=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Message-Id:Date:
-	 MIME-Version:Content-Type; b=I3u8NYu26YzogaWyKVlI/9vJzLyMeymxgGDEhVxcaC3YxSXHNAV0YIANM/XhzUty72WlCqJA6CISs7I6zRqXBW30kI2iqp98n9HVsPv26adT7mvp3XE39WSgr7ayEYTDFdQiO2/s/IU3JuTBhy2YiG+rexm+CNCcpQyX9eQOsW8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=tyW38H17; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 88E06C116B1;
-	Thu, 11 Jul 2024 10:18:30 +0000 (UTC)
+	s=arc-20240116; t=1720693573; c=relaxed/simple;
+	bh=dWJ2lhUr3TDrK2SvrT3xGyIyIPBAZgj7KjwJyn99NMM=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Yb6RfLnmv172+xjgH70E+zMLnX/GdyQ/2H93Wo+TCjb7luc+Fgeq7/apb3Nc/X/50ntFcqCCT8ZQos4RLTj2XoO4W92jDmKPZm5+/js2tHoPzHmQEUnGMmTcOohTaI6c06c0PWN6EhWB9QM22C3OZo40kslRmcf05Rz8+KPPFMU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=B5w4w6Dj; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 23807C116B1;
+	Thu, 11 Jul 2024 10:26:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1720693111;
-	bh=9t7So2yTIvGyIuM4HXTyuoXp4O6rEiC2WbkWy7gllmQ=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-	b=tyW38H17ArHMsDsoUs7ksEdSer50cMCSswfXtBS0IUPyv3VWiRC9xEwOxlh1kZTc2
-	 pbV3Rf4/J7ADRN5sWroGp5wu6e4RjIh6qaRcwSV7jsYXvR2PZm9FiviJGrrc98SB16
-	 YzMY2hRGauYErXucC/IZxZsawpOuWFTO3nU/SrOXJrLjnrTbwaLhrD1fBMt3sg5G/w
-	 /LOO8EFs45OqEhyZEW51jPvyqFOHoPQOq6NKCcSQr66PogRZD1RG1m0fyKlUWFAd5O
-	 ClVSbSPhDRmpjjY3POFMvN/URaRxLSvUl/BZInGfGi0aPrdLJDN+1SAE2LEvE/vjTK
-	 YJqHvnmBjRuGA==
+	s=k20201202; t=1720693572;
+	bh=dWJ2lhUr3TDrK2SvrT3xGyIyIPBAZgj7KjwJyn99NMM=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=B5w4w6DjVIbXFFivIpJ9OVtJoyW3GNoSaILfdrV74/I5wY2cmuQ3kPLEcyW1pOH8m
+	 glrNJpfFcpbJVl2KfnaDN4H1VV+HuO3Jusd3AZEABguvm7ELnp7JlEyvVGGPTm7YfG
+	 GQUE7tAZbarcMkLYUkKqdfqh45XJ3OeM8ce+p/NcmpO0OtLfGAjiQFqngYO7Gl/YeE
+	 w5nV42iI16gruCeRdI8nOJeIkxYZuTOcbiojp2UtAMM1idIYl3Lz8+TJzsE4ZQsmR8
+	 SrPw5YtF+dJ1EJq/iFEub6BizhiRExd1EJjXbtrD9hqGpQUqo+6xt4/TP1guSF8Mpx
+	 x22mdQN02oj0g==
+Date: Thu, 11 Jul 2024 13:26:08 +0300
 From: Leon Romanovsky <leon@kernel.org>
-To: linux-rdma@vger.kernel.org, David Ahern <dsahern@kernel.org>
-Cc: jgg@ziepe.ca
-In-Reply-To: <20240710203310.19317-1-dsahern@kernel.org>
-References: <20240710203310.19317-1-dsahern@kernel.org>
-Subject: Re: [PATCH v2] RDMA: Fix netdev tracker in ib_device_set_netdev
-Message-Id: <172069310482.1717335.10447865297194611439.b4-ty@kernel.org>
-Date: Thu, 11 Jul 2024 13:18:24 +0300
+To: flyingpenghao@gmail.com
+Cc: gg@ziepe.ca, nathan@kernel.org, linux-rdma@vger.kernel.org,
+	Peng Hao <flyingpeng@tencent.com>
+Subject: Re: [PATCH v3]  infiniband/hw/ocrdma: make function ocrdma_add_stat
+ as noinline_for_stack
+Message-ID: <20240711102608.GR6668@unreal>
+References: <20240711085647.81004-1-flyingpeng@tencent.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Mailer: b4 0.15-dev-13183
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240711085647.81004-1-flyingpeng@tencent.com>
 
+On Thu, Jul 11, 2024 at 04:56:47PM +0800, flyingpenghao@gmail.com wrote:
+> From: Peng Hao <flyingpeng@tencent.com>
+> 
+> clang report:
+> drivers/infiniband/hw/ocrdma/ocrdma_stats.c:686:16: error: stack frame size (20664) exceeds limit (2048) in 'ocrdma_dbgfs_ops_read' [-Werror,-Wframe-larger-than]
+> static ssize_t ocrdma_dbgfs_ops_read(struct file *filp, char __user *buffer,
+>                ^
+> 
+> A 128-byte array is defined in ocrdma_add_stat and is called multiple times
+> by multiple functions (up to dozens of times), which results in a large amount
+> of stack space being accumulated in ocrdma_dbgfs_ops_read. mark it as noinline_for_stack
+> to prevent it from spreading to ocrdma_dbgfs_ops_read's stack size.
+> 
+> Signed-off-by: Peng Hao <flyingpeng@tencent.com>
+> ---
+>  drivers/infiniband/hw/ocrdma/ocrdma_stats.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 
-On Wed, 10 Jul 2024 13:33:10 -0700, David Ahern wrote:
-> If a netdev has already been assigned, ib_device_set_netdev needs to
-> release the reference on the older netdev but it is mistakenly being
-> called for the new netdev. Fix it and in the process use netdev_put
-> to be symmetrical with the netdev_hold.
+I merged this patch with https://lore.kernel.org/r/20240710091657.26291-1-flyingpeng@tencent.com
+
+Thanks
+
+> 
+> diff --git a/drivers/infiniband/hw/ocrdma/ocrdma_stats.c b/drivers/infiniband/hw/ocrdma/ocrdma_stats.c
+> index 5f831e3bdbad..0b26c4e6de53 100644
+> --- a/drivers/infiniband/hw/ocrdma/ocrdma_stats.c
+> +++ b/drivers/infiniband/hw/ocrdma/ocrdma_stats.c
+> @@ -46,7 +46,7 @@
+>  
+>  static struct dentry *ocrdma_dbgfs_dir;
+>  
+> -static int ocrdma_add_stat(char *start, char *pcur,
+> +static noinline_for_stack int ocrdma_add_stat(char *start, char *pcur,
+>  				char *name, u64 count)
+>  {
+>  	char buff[128] = {0};
+> -- 
+> 2.27.0
 > 
 > 
-
-Applied, thanks!
-
-[1/1] RDMA: Fix netdev tracker in ib_device_set_netdev
-      https://git.kernel.org/rdma/rdma/c/bbff20fb3e6a00
-
-Best regards,
--- 
-Leon Romanovsky <leon@kernel.org>
-
 
