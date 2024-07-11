@@ -1,142 +1,150 @@
-Return-Path: <linux-rdma+bounces-3834-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-3835-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id DA7C892EFF5
-	for <lists+linux-rdma@lfdr.de>; Thu, 11 Jul 2024 21:50:58 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id C072492F125
+	for <lists+linux-rdma@lfdr.de>; Thu, 11 Jul 2024 23:32:03 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 189D41C21132
-	for <lists+linux-rdma@lfdr.de>; Thu, 11 Jul 2024 19:50:58 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6D2361F23EC3
+	for <lists+linux-rdma@lfdr.de>; Thu, 11 Jul 2024 21:32:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C1F9019E802;
-	Thu, 11 Jul 2024 19:50:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1091419EEB7;
+	Thu, 11 Jul 2024 21:31:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b="jLynOA0s"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="WTIJqwsB"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-qk1-f174.google.com (mail-qk1-f174.google.com [209.85.222.174])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2082F450FA
-	for <linux-rdma@vger.kernel.org>; Thu, 11 Jul 2024 19:50:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BF29D12F385;
+	Thu, 11 Jul 2024 21:31:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1720727454; cv=none; b=dx0c9tvuGurrCB+OALvNUjrK25y2jxy2iAW1UD4/Jjp5InKR4b8eatKw7q10kEUB3NSMTO/g/3UDAbJYDmqrIiL48yotMIEL00T4bqHSTA95as2Gzi+71pVEfFDzCbptNdS79YurpjzKPByuvwq2VN1sJ3b5mZwKmX9tvoiGeow=
+	t=1720733517; cv=none; b=YOGo14kpSFcZvNNqSWMcxVrF+u0IAp0tEp8HGR/UU4HK9JkRZCKEnyT+37FYUe7PMJHGvV8wFcbBteQvgaig167rYzOW0OgfyMbMX7ceDRvVBQunVCf7iRbrzn+NpXLHeIRVOXOLUm9FHWqEPtVXDZNXF5G8jx0ll/Vxs/xRgps=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1720727454; c=relaxed/simple;
-	bh=25DL+Hll2lMofFyPyaRO80K0JHQq53U6mfOeNBWKvLw=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Tuo0+KS2TRi5zDZol5Sdcjc2Es73IPCtPEkGTKGxW4SXmrJwhJZOpp0aJ9nlPettwouDMg0hHX9Phe7mWfvsh+I7eNEdOOL0ZytMKwBUcHh43m7MQRDSgPaYGvxkxnFzSwvoo1Jz4Yb8YIT5ICMzK7sAOVnAbwPt5ZlqRe9Uxno=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca; spf=pass smtp.mailfrom=ziepe.ca; dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b=jLynOA0s; arc=none smtp.client-ip=209.85.222.174
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ziepe.ca
-Received: by mail-qk1-f174.google.com with SMTP id af79cd13be357-79f1828ed64so76316485a.1
-        for <linux-rdma@vger.kernel.org>; Thu, 11 Jul 2024 12:50:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google; t=1720727451; x=1721332251; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=viHMewM8nxycM6lp6W84EiwbzVWCYHUyxJqZugyqmt4=;
-        b=jLynOA0siaqMoZaTqQl30DRjgoP47UOzMJ51p+RyUgOWM0zjzB6czGJVnLtKXbgYAH
-         Vb710j5VXS4ikQRg4fYhOq5raneivD687XrGK+4EuqT/loWJlsPswNUowr/IaRPt/J5a
-         wi/83N2UfncTCCOObISPC0pmRYgBgFzhs6aj8fzB/eJ7YEeFCvJl/GUwdU31h0jPgqgE
-         GZ7YEPJSOEGITFEUIDDTqf7JzTkhZiLuRDcgTSsjrZRKHV1bwgPqnS1u5SznRgcT7RFr
-         vcYy8lTuVhb/iB39AUSiC8J+4tswYefvuRY80Maoq0FkmAJKTU+Ou7akse+tV4skaP/D
-         7KLQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1720727451; x=1721332251;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=viHMewM8nxycM6lp6W84EiwbzVWCYHUyxJqZugyqmt4=;
-        b=U+/Rf4GbW26ibb2r6+cBqkNytOmSjXjLNObEj0wmSPy6f84pfFvuu2xdJcE09aqFo6
-         7NzlGJAKmQNQfNVcoGSRaFDKXETN0HtwgjU2FsnUrxAp3pd+7+y/LDid6hHqI2109j1W
-         wBNFaMRbQjKM/nNpmxfSQSZD1HDHEy8qxZyLisPGdv69LYXa+GX+PHt+fw9M1yCaqs4m
-         2sqJ4VH+NoOWJFbyY4ru7m7VnpwJPDC6XXxUO+5+a8DaYG7lxpF1r9AN7TOuPJC0AJFl
-         /7iRRjETjCqqe7s1QoPZxT3pzLtsNMZeWcxiSFQT1uc+H0lYsHxKO5N+/dubqZWT4WhJ
-         bGKg==
-X-Forwarded-Encrypted: i=1; AJvYcCWOINrvf0U+O+yjxLX5k20XnxjXmulI4JtKs11PYecuRPYj+9/RlnXuNCbomF21jm9qs+ORAwOlklB/eTL3atPTQAfao6ZV56C1uA==
-X-Gm-Message-State: AOJu0YynAxdr8ZUWN1jYussPidpHM6HRh4fx8oHmg9MdlXk0nZiegutS
-	RidK3H9wNkbb4eTPl3jyryfRbrywMvCgnqjcCfkl6hgEgmy+uUDdMZKz1B2W3fYL0+yUrTcG10U
-	Q6mI=
-X-Google-Smtp-Source: AGHT+IF2sjsiKIriN9k9MLVO9isuERZhd0Nn5O8DdxJumL8diOhEnAhV8EbrGFCbyVN+VZPDJSRBxw==
-X-Received: by 2002:a05:620a:1b:b0:79f:1731:ae24 with SMTP id af79cd13be357-79f19a65363mr939365785a.32.1720727450849;
-        Thu, 11 Jul 2024 12:50:50 -0700 (PDT)
-Received: from ziepe.ca ([128.77.69.90])
-        by smtp.gmail.com with ESMTPSA id af79cd13be357-79f19015bcesm320932385a.53.2024.07.11.12.50.50
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 11 Jul 2024 12:50:50 -0700 (PDT)
-Received: from jgg by wakko with local (Exim 4.95)
-	(envelope-from <jgg@ziepe.ca>)
-	id 1sRzoX-00Enm9-3m;
-	Thu, 11 Jul 2024 16:50:49 -0300
-Date: Thu, 11 Jul 2024 16:50:49 -0300
-From: Jason Gunthorpe <jgg@ziepe.ca>
-To: David Ahern <dsahern@kernel.org>
-Cc: Leon Romanovsky <leon@kernel.org>, linux-rdma@vger.kernel.org
-Subject: Re: [PATCH] RDMA: Fix netdev tracker in ib_device_set_netdev
-Message-ID: <20240711195049.GO14050@ziepe.ca>
-References: <20240709214455.17823-1-dsahern@kernel.org>
- <20240710060929.GI6668@unreal>
- <4f38320c-22e4-403e-8d68-ce04e504cedc@kernel.org>
+	s=arc-20240116; t=1720733517; c=relaxed/simple;
+	bh=cmzILsofv3wnDXHqreZHYrqZp0j3PJNUAku/F48ywFI=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=G7uYdJMU7Ddak6MmWfmhUbSEJ4QOQFpPgqqrLRQk4QVtW3E7A1aOPY3qFQ/qUX2uI48U2fNHy1Zvezo1SgbtTbg+lptvbRDE7MB/orbk8d3dnauB9oQMdS1G32XBJFKTQa8B17wIPyfJR+WxBGOAnULmeFUTdvDHw+MNKSMKCQg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=WTIJqwsB; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 50F0BC116B1;
+	Thu, 11 Jul 2024 21:31:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1720733517;
+	bh=cmzILsofv3wnDXHqreZHYrqZp0j3PJNUAku/F48ywFI=;
+	h=From:To:Cc:Subject:Date:From;
+	b=WTIJqwsB980TwBMttfwMkjaC0b1Jxkj1x6Atyb9K4U3gSXqxDL/yo/M2uYSJXSYls
+	 7xVivshU1V63jZjQ5xafdVJ5AYT+r0jbgXOIZTV0ZvZ58tcFbCtXMZUATquOf2PlO+
+	 UclJ8BtbjpjRYXf7uwnJO48y6DVLV7IdZ9cnMPMY7EoNYg0q+q0rXmk4ygKXGoc5a+
+	 iwBlSiyvvI6iBZvESWQ7JC7O7ugmjvP1xd5L7WK/F0T4ugxqR5Zi9urBOCM1szJwJM
+	 SrSxWdAQhF7HZYVsib3uEmNqa3qZQcH2UVUKxg3CRWnX0QUapPnN4UujsG/dbROmk7
+	 f2lr2i+aDx7mA==
+From: Saeed Mahameed <saeed@kernel.org>
+To: "David S. Miller" <davem@davemloft.net>,
+	Jakub Kicinski <kuba@kernel.org>,
+	Paolo Abeni <pabeni@redhat.com>,
+	Eric Dumazet <edumazet@google.com>,
+	Jason Gunthorpe <jgg@nvidia.com>
+Cc: Saeed Mahameed <saeedm@nvidia.com>,
+	linux-rdma@vger.kernel.org,
+	Leon Romanovsky <leonro@nvidia.com>,
+	netdev@vger.kernel.org,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	Przemek Kitszel <przemyslaw.kitszel@intel.com>,
+	Parav Pandit <parav@nvidia.com>,
+	Shay Drory <shayd@nvidia.com>
+Subject: [GIT PULL mlx5-next] Introduce auxiliary bus IRQs sysfs
+Date: Thu, 11 Jul 2024 14:31:38 -0700
+Message-ID: <20240711213140.256997-1-saeed@kernel.org>
+X-Mailer: git-send-email 2.45.2
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <4f38320c-22e4-403e-8d68-ce04e504cedc@kernel.org>
+Content-Transfer-Encoding: 8bit
 
-On Wed, Jul 10, 2024 at 10:59:15AM -0700, David Ahern wrote:
-> On 7/10/24 12:09 AM, Leon Romanovsky wrote:
-> >> diff --git a/drivers/infiniband/core/device.c b/drivers/infiniband/core/device.c
-> >> index 55aa7aa32d4a..7ddaec923569 100644
-> >> --- a/drivers/infiniband/core/device.c
-> >> +++ b/drivers/infiniband/core/device.c
-> >> @@ -2167,7 +2167,7 @@ int ib_device_set_netdev(struct ib_device *ib_dev, struct net_device *ndev,
-> >>  	}
-> >>  
-> >>  	if (old_ndev)
-> >> -		netdev_tracker_free(ndev, &pdata->netdev_tracker);
-> >> +		netdev_put(old_ndev, &pdata->netdev_tracker);
-> > 
-> > It should stay netdev_tracker_free() and not netdev_put(). We are
-> > calling to __dev_put(old_ndev) later in the function.
-> > 
-> 
-> missed that and KASAN and refcount debugging did not complain ...
-> 
-> Anyways, why have the 2 split apart? ie., why not remove the __dev_put
-> and just do netdev_put here? old_ndev is not needed in between calls.
-> Asymmetric calls like this are always confusing.
+From: Saeed Mahameed <saeedm@nvidia.com>
 
-Maybe it is Ok like this:
+Hi Jakub and Greg,
 
-@@ -2166,15 +2166,14 @@ int ib_device_set_netdev(struct ib_device *ib_dev, struct net_device *ndev,
-                return 0;
-        }
- 
-+       rcu_assign_pointer(pdata->netdev, ndev);
-        if (old_ndev)
--               netdev_tracker_free(ndev, &pdata->netdev_tracker);
-+               netdev_put(old_ndev, &pdata->netdev_tracker);
-        if (ndev)
-                netdev_hold(ndev, &pdata->netdev_tracker, GFP_ATOMIC);
--       rcu_assign_pointer(pdata->netdev, ndev);
-        spin_unlock_irqrestore(&pdata->netdev_lock, flags);
- 
-        add_ndev_hash(pdata);
--       __dev_put(old_ndev);
- 
-        return 0;
- }
+Following the review of v10 and Greg's request to send this via netdev.
+This is a pull request that includes the 2 patches of adding IRQs sysfs
+to aux dev subsystem based on mlx5-next tree (6.10-rc3).
 
+v10: https://lore.kernel.org/all/2024071041-frosted-stonework-2c60@gregkh/
 
-Don't like that we drop the ref and leave the pdata->netdev assigned
-to something with no ref, even though it is OK for RCU reasons..
+Please pull and let me know if there's any problem.
 
-Jason
+The following changes since commit b339e0a39dc37726712b9f0485d78fe4306d1667:
+
+  RDMA/mlx5: Add Qcounters req_transport_retries_exceeded/req_rnr_retries_exceeded (2024-06-16 18:53:23 +0300)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/mellanox/linux.git tags/aux-sysfs-irqs
+
+for you to fetch changes up to 587aebb80370c9cdea106e5870025ad70114a2ed:
+
+  net/mlx5: Expose SFs IRQs (2024-07-11 13:52:16 -0700)
+
+----------------------------------------------------------------
+aux-sysfs-irqs
+
+Shay Says:
+==========
+Introduce auxiliary bus IRQs sysfs
+
+Today, PCI PFs and VFs, which are anchored on the PCI bus, display their
+IRQ information in the <pci_device>/msi_irqs/<irq_num> sysfs files.  PCI
+subfunctions (SFs) are similar to PFs and VFs and these SFs are anchored
+on the auxiliary bus. However, these PCI SFs lack such IRQ information
+on the auxiliary bus, leaving users without visibility into which IRQs
+are used by the SFs. This absence makes it impossible to debug
+situations and to understand the source of interrupts/SFs for
+performance tuning and debug.
+
+Additionally, the SFs are multifunctional devices supporting RDMA,
+network devices, clocks, and more, similar to their peer PCI PFs and
+VFs. Therefore, it is desirable to have SFs' IRQ information available
+at the bus/device level.
+
+To overcome the above limitations, this short series extends the
+auxiliary bus to display IRQ information in sysfs, similar to that of
+PFs and VFs.
+
+It adds an 'irqs' directory under the auxiliary device and includes an
+<irq_num> sysfs file within it.
+
+For example:
+$ ls /sys/bus/auxiliary/devices/mlx5_core.sf.1/irqs/
+50  51  52  53  54  55  56  57  58
+
+Patch summary:
+patch-1 adds auxiliary bus to support irqs used by auxiliary device
+patch-2 mlx5 driver using exposing irqs for PCI SF devices via auxiliary
+        bus
+
+==========
+
+----------------------------------------------------------------
+Shay Drory (2):
+      driver core: auxiliary bus: show auxiliary device IRQs
+      net/mlx5: Expose SFs IRQs
+
+ Documentation/ABI/testing/sysfs-bus-auxiliary      |   9 ++
+ drivers/base/Makefile                              |   1 +
+ drivers/base/auxiliary.c                           |   1 +
+ drivers/base/auxiliary_sysfs.c                     | 113 +++++++++++++++++++++
+ drivers/net/ethernet/mellanox/mlx5/core/eq.c       |   6 +-
+ .../net/ethernet/mellanox/mlx5/core/irq_affinity.c |  18 +++-
+ .../net/ethernet/mellanox/mlx5/core/mlx5_core.h    |   6 ++
+ drivers/net/ethernet/mellanox/mlx5/core/mlx5_irq.h |  12 ++-
+ drivers/net/ethernet/mellanox/mlx5/core/pci_irq.c  |  12 ++-
+ include/linux/auxiliary_bus.h                      |  24 +++++
+ 10 files changed, 191 insertions(+), 11 deletions(-)
+ create mode 100644 Documentation/ABI/testing/sysfs-bus-auxiliary
+ create mode 100644 drivers/base/auxiliary_sysfs.c
 
