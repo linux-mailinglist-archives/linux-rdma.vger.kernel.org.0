@@ -1,194 +1,128 @@
-Return-Path: <linux-rdma+bounces-3846-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-3847-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id E215D92F90F
-	for <lists+linux-rdma@lfdr.de>; Fri, 12 Jul 2024 12:37:45 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id ABEC792FA6C
+	for <lists+linux-rdma@lfdr.de>; Fri, 12 Jul 2024 14:42:49 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 518E3B2349F
-	for <lists+linux-rdma@lfdr.de>; Fri, 12 Jul 2024 10:37:43 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D3B041C21E9E
+	for <lists+linux-rdma@lfdr.de>; Fri, 12 Jul 2024 12:42:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 366BC158DC1;
-	Fri, 12 Jul 2024 10:37:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 11A7216F825;
+	Fri, 12 Jul 2024 12:42:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b="TuVR3Foc"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-qk1-f173.google.com (mail-qk1-f173.google.com [209.85.222.173])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 819A114B978;
-	Fri, 12 Jul 2024 10:37:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.176.79.56
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4057C16F27C
+	for <linux-rdma@vger.kernel.org>; Fri, 12 Jul 2024 12:42:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1720780652; cv=none; b=Zyd3hjuHqgbC2M3B63b84ezv2XteNyFID9G5WfTGqqkVcEmnj4ioj0fQ2Bbb9GeOKofVRHTef0N5k0oFP/c5JHQNv6MjU6qhPfns/gTF3jR21ryrbOl6UM760OV7kJxmijEm9gTp1YS+njZzEH/rljXEk42mmMt3y8cOJSCUB30=
+	t=1720788161; cv=none; b=jdlu63YS3pSXFnl6IGFY0uDIX0pQE1jD1hgJCrI+WoDUrgjwASNt2kkFB5V6da5iszXOFu/sNloKCzrpO/4Bu5pjdiTOz1BO6cD6wX62s6M1f+kI9/yolz/jYsprzkfjwpDHFC9xf7XZ3e5UIcbkySlbRuMNEfLBPYA+PkxAw5c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1720780652; c=relaxed/simple;
-	bh=YaczT6mneoVMpKwMgJbp7Rg47TMAqdRTX0u8weR9avY=;
-	h=Date:From:To:CC:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=KctPJ5m0BVDCTLGzeEqP/ZyMwlBXu7NR5cdmhPCzZPOP/cja8GblHVmYAaSNXEAO/2hy1LeZUPNoMHpiWRo5+dfT9qFQke8NGsRIU4ZNQ/gJsZLukHXO9WeVAme0w+GD+xpsFmLFB3d58xHN8pud6x3PPuogqcTGz4eAmOv0bJc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=Huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=185.176.79.56
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=Huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.18.186.216])
-	by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4WL7LG3yc9z6JB4b;
-	Fri, 12 Jul 2024 18:36:22 +0800 (CST)
-Received: from lhrpeml500005.china.huawei.com (unknown [7.191.163.240])
-	by mail.maildlp.com (Postfix) with ESMTPS id 69B0B1400D9;
-	Fri, 12 Jul 2024 18:37:26 +0800 (CST)
-Received: from localhost (10.203.174.77) by lhrpeml500005.china.huawei.com
- (7.191.163.240) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.1.2507.39; Fri, 12 Jul
- 2024 11:37:26 +0100
-Date: Fri, 12 Jul 2024 11:37:25 +0100
-From: Jonathan Cameron <Jonathan.Cameron@Huawei.com>
-To: Dan Williams <dan.j.williams@intel.com>
-CC: James Bottomley <James.Bottomley@hansenpartnership.com>,
-	<ksummit@lists.linux.dev>, <linux-cxl@vger.kernel.org>,
-	<linux-rdma@vger.kernel.org>, <netdev@vger.kernel.org>, <jgg@nvidia.com>
-Subject: Re: [MAINTAINERS SUMMIT] Device Passthrough Considered Harmful?
-Message-ID: <20240712113725.00004cdb@Huawei.com>
-In-Reply-To: <66900a0b9770d_1a7742942c@dwillia2-xfh.jf.intel.com.notmuch>
-References: <668c67a324609_ed99294c0@dwillia2-xfh.jf.intel.com.notmuch>
-	<3b9631cf12f451fc08f410255ebbba23081ada7c.camel@HansenPartnership.com>
-	<668db67196ca3_1bc8329416@dwillia2-xfh.jf.intel.com.notmuch>
-	<20240710142238.00007295@Huawei.com>
-	<66900a0b9770d_1a7742942c@dwillia2-xfh.jf.intel.com.notmuch>
-Organization: Huawei Technologies Research and Development (UK) Ltd.
-X-Mailer: Claws Mail 4.1.0 (GTK 3.24.33; x86_64-w64-mingw32)
+	s=arc-20240116; t=1720788161; c=relaxed/simple;
+	bh=kBJT8YbrNHkTssvswA9gJLT8aMBMcBvE6Xo16vVg1no=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=G1uuRHRyd1faMXR3uw5rjaWsyiNuJdUFQRXqQXCmlmEkH0E36of3gqDOa1Nt7L1VhxoxcCEwuPUIsSo45fimdEyqOPTMmHNxmoUD2UWWQMyptpJfr8o07fJWWmGC5AKLbPih6fNyRFxLIMUWzBqH6HR5CMkhn29RS3EmvYvlpgQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca; spf=pass smtp.mailfrom=ziepe.ca; dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b=TuVR3Foc; arc=none smtp.client-ip=209.85.222.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ziepe.ca
+Received: by mail-qk1-f173.google.com with SMTP id af79cd13be357-79f1828ed64so121794285a.1
+        for <linux-rdma@vger.kernel.org>; Fri, 12 Jul 2024 05:42:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google; t=1720788159; x=1721392959; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=kBJT8YbrNHkTssvswA9gJLT8aMBMcBvE6Xo16vVg1no=;
+        b=TuVR3FocARcpqfy530ragffG6U+brCvhWS74eVbcK7zuwsGCjwYxyLVWPeCrW8Tl1Z
+         keThHek33bvykJW6zX6kX1mNKTFcGKYArF07Lhfka5PtwUFxF02HtD8kXJrw28+zvshz
+         z4op9+LIk59enAtbsw38HLzLvvkiKZ9xNLjmPlJO6UaNCm+oKss4tfy/JU2mkZHvYcs5
+         VNGR8sF/olPMkoj1z3PC0/B6VXwgq4l/Sy3r+Xa+Ku64ejfMbrySZOrE6M0ZZ+qcjfMw
+         cB48If94KqPkEJkiivRvonLkUNG26hhA+RLDyQBBDYt8nKt3spEwhEnlaZnw08TdGVoQ
+         iPQw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1720788159; x=1721392959;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=kBJT8YbrNHkTssvswA9gJLT8aMBMcBvE6Xo16vVg1no=;
+        b=F2p/faBNB7kpX5kZ3pmIFD+1dPUjMdAIsU3dLr0FqCmT/nu3GDD6dFm9I3C1Ve6S9r
+         kiuwzg34ylveelths4+XS1Vj8fCp0396G4G9rZfrFzWWDLEdBxaofVZVkECwMSF1Ygqd
+         dyDwpeuMhekriNbwkZWd0hrD35q7wvbJlhf9gM5PJbEqCgMCCPD2K+tMWWGwg5etYNRP
+         uK8ggdY6fBNHMpLgPEXkRGX+KDYEDh+cRKtpFO81tNH4ENrfdAACzU3M3qhA54wOS7I3
+         aRTf1822u4t46qG6XEAYsLzoxoA0QrXNsIDM4iI3b6OxfmshR+tmbGs+u4c87lHUtlIA
+         B8Rw==
+X-Forwarded-Encrypted: i=1; AJvYcCXQJkIOx7UJTB+ikESn3ybcqbCpdvQakm0XcfkZDYRiOUzmQ03Au5hbKnJnedX495noHL9pKLeaoOAni1BIrVSNisWgiAqfXcnE3g==
+X-Gm-Message-State: AOJu0Yx1QYahn2P6DBUua9yEDr6Un/nHCg9VS8m6xadZ1njmuPHhVKDZ
+	LFPu7+PY/ux/hXmAqAdtR5Z9vuvxLgQ/AX9Hdd1BBkqackKd1NWi6HKmgbJurEg=
+X-Google-Smtp-Source: AGHT+IFNcSNXyjLCUq4DHk3R2ij71BFERvS9sNsM3zBakmLtTWzYOjs3C+yBv/o3LvcwnsHGWOmY4Q==
+X-Received: by 2002:ae9:e315:0:b0:79f:1836:b143 with SMTP id af79cd13be357-79f19ae5454mr1218368285a.50.1720788159083;
+        Fri, 12 Jul 2024 05:42:39 -0700 (PDT)
+Received: from ziepe.ca (hlfxns017vw-142-68-80-239.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.68.80.239])
+        by smtp.gmail.com with ESMTPSA id af79cd13be357-79f1902ac2esm394037485a.59.2024.07.12.05.42.38
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 12 Jul 2024 05:42:38 -0700 (PDT)
+Received: from jgg by wakko with local (Exim 4.95)
+	(envelope-from <jgg@ziepe.ca>)
+	id 1sSFbh-000FUg-Ne;
+	Fri, 12 Jul 2024 09:42:37 -0300
+Date: Fri, 12 Jul 2024 09:42:37 -0300
+From: Jason Gunthorpe <jgg@ziepe.ca>
+To: Christoph Hellwig <hch@lst.de>
+Cc: Leon Romanovsky <leon@kernel.org>, Jens Axboe <axboe@kernel.dk>,
+	Robin Murphy <robin.murphy@arm.com>, Joerg Roedel <joro@8bytes.org>,
+	Will Deacon <will@kernel.org>, Keith Busch <kbusch@kernel.org>,
+	"Zeng, Oak" <oak.zeng@intel.com>,
+	Chaitanya Kulkarni <kch@nvidia.com>,
+	Sagi Grimberg <sagi@grimberg.me>,
+	Bjorn Helgaas <bhelgaas@google.com>,
+	Logan Gunthorpe <logang@deltatee.com>,
+	Yishai Hadas <yishaih@nvidia.com>,
+	Shameer Kolothum <shameerali.kolothum.thodi@huawei.com>,
+	Kevin Tian <kevin.tian@intel.com>,
+	Alex Williamson <alex.williamson@redhat.com>,
+	Marek Szyprowski <m.szyprowski@samsung.com>,
+	=?utf-8?B?SsOpcsO0bWU=?= Glisse <jglisse@redhat.com>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-rdma@vger.kernel.org, iommu@lists.linux.dev,
+	linux-nvme@lists.infradead.org, linux-pci@vger.kernel.org,
+	kvm@vger.kernel.org, linux-mm@kvack.org
+Subject: Re: [RFC PATCH v1 00/18] Provide a new two step DMA API mapping API
+Message-ID: <20240712124237.GX14050@ziepe.ca>
+References: <cover.1719909395.git.leon@kernel.org>
+ <20240705063910.GA12337@lst.de>
+ <20240708235721.GF14050@ziepe.ca>
+ <20240709062015.GB16180@lst.de>
+ <20240709190320.GN14050@ziepe.ca>
+ <20240710062212.GA25895@lst.de>
+ <20240711232917.GR14050@ziepe.ca>
+ <20240712045422.GA4774@lst.de>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: lhrpeml100005.china.huawei.com (7.191.160.25) To
- lhrpeml500005.china.huawei.com (7.191.163.240)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240712045422.GA4774@lst.de>
 
-On Thu, 11 Jul 2024 09:36:27 -0700
-Dan Williams <dan.j.williams@intel.com> wrote:
+On Fri, Jul 12, 2024 at 06:54:22AM +0200, Christoph Hellwig wrote:
 
-> Jonathan Cameron wrote:
-> > On Tue, 9 Jul 2024 15:15:13 -0700
-> > Dan Williams <dan.j.williams@intel.com> wrote:
-> >   
-> > > James Bottomley wrote:  
-> > > > > The upstream discussion has yielded the full spectrum of positions on
-> > > > > device specific functionality, and it is a topic that needs cross-
-> > > > > kernel consensus as hardware increasingly spans cross-subsystem
-> > > > > concerns. Please consider it for a Maintainers Summit discussion.    
-> > > > 
-> > > > I'm with Greg on this ... can you point to some of the contrary
-> > > > positions?    
-> > > 
-> > > This thread has that discussion:
-> > > 
-> > > http://lore.kernel.org/0-v1-9912f1a11620+2a-fwctl_jgg@nvidia.com
-> > > 
-> > > I do not want to speak for others on the saliency of their points, all I
-> > > can say is that the contrary positions have so far not moved me to drop
-> > > consideration of fwctl for CXL.  
-> > 
-> > I was resisting rat holing. Oh well...
-> > 
-> > For a 'subset' of CXL.  There are a wide range of controls that are highly
-> > destructive, potentially to other hosts (simplest one is a command that
-> > will surprise remove someone else's memory). For those I'm not sure
-> > fwctl gets us anywhere - but we still need a solution (Subject to
-> > config gates etc as typically this is BMCs not hosts).
-> > Maybe fwctl eventually ends up with levels of 'safety' (beyond the
-> > current read vs write vs write_full, or maybe those are enough).  
-> 
-> It is not clear to me that fwctl needs more levels of safety vs the
-> local subsystem config options controlling what can and can not be sent
-> over the channel. The CXL backend for fwctl adds the local "command
-> effects" level of safety.
-> 
-> For the "Linux as BMC" case the security model is external to the
-> kernel, right? Which means it does not present a protocol that the
-> kernel can reason about.
+> This is all purely hypothetical, and I'm happy to just check for it
+> and reject it for it now.
 
-The security model is indeed external, but I'd like a Linux BMC
-config to allow turning off the protections but still using the
-same fundamental interfaces as we normally use for the safe stuff.
-I don't want
-1) The CXL IOCTLs
-2) FWCTL
-3) Yet another interface.
+I do know a patch set is cooking to allow mixing ZONE_DEVICE P2P and
+anon memory in the same VMA ala HMM with transparent migration of
+ZONE_DEVICE to anon.
 
-> 
-> Unless and until someone develops an authorization model for BMC nodes
-> to join a network topology I think that use case is orthogonal to the
-> primary in-band use case for fwctl.
+In this situation userspace will be generating IO with no idea about
+any P2P/!P2P boundaries.
 
-Use case wise I agree this isn't the current primary in-band use case
-for fwctl, hence the rat hole introductory comment.
-
-> 
-> It is still useful there to avoid defining yet another transport, but a
-> node that has unfettered access to wreak havoc on the network is not the
-> kernel's problem.
-
-As long as I can enable it via a sensible interface (and don't need to
-spin another) that is fine by me.
-
-> 
-> > Complexities such as message tunneling to multiple components are also
-> > going to be fun, but we want the non destructive bits of those to work
-> > as part of the safe set, so we can get telemetry from downstream devices.
-> > 
-> > Good to cover the debug and telemetry usecase, but it still leaves us with
-> > gaping holes were we need to solve the permissions problem, perhaps that
-> > is layered on top of fwctl, perhaps something else is needed.  
-> 
-> But that's more a CXL switch-management command security protocol
-> problem than fwctl, right? In other words, as far as I understand, there
-> is no spec provided permission model for switch management that Linux
-> could enforce, so it's more in the category of build a kernel that can
-> pass any payload and hope someone else has solved the problem of
-> limiting what damage that node can inflict.
-
-Two separate things here.
-
-For tunneling, there is plenty that will map to fwctl because it's just
-a transport question.  The tunnel command itself has a CEL that says
-it might eat babies so we'd need to check the relevant CEL for the
-destination to make sure they were just as safe as non tunneled version.
-So it's just an implementation detail, be it a fiddly one.
-
-For destructive options sure it's a config problem. But I do want
-to be able to lock down the kernel on the BMC but still allow the
-discructive command. Lock down is protecting and restricting the BMC
-not the other hosts in this use case. 
-
-> 
-> > So if fwctl is adopted, I do want the means to use it for the highly
-> > destructive stuff as well!  Maybe that's a future discussion.
-> >   
-> > > Where CXL has a Command Effects Log that is a reasonable protocol for
-> > > making decisions about opaque command codes, and that CXL already has a
-> > > few years of experience with the commands that *do* need a Linux-command
-> > > wrapper.  
-> > 
-> > Worth asking if this will incorporate unknown but not vendor defined
-> > commands.  There is a long tail of stuff in the spec we haven't caught up
-> > with yet.  Or you thinking keep this for the strictly vendor defined stuff?  
-> 
-> Long term, yes, it should be able to expand to any command code family.
-> Short term, to get started, the CXL "Feature" facility at least conveys
-> whether opcodes are reads or writes, independent of their side effects,
-> and are scoped to be "settings".
-> 
-> There is still the matter of background commands need to support
-> cancellation to avoid indefinite background-command-slot monopolization,
-> and there are still commands that need kernel coordination. So, I see
-> fwctl command support arriving in stages.
-
-Makes sense.  Tunneled access to CXL features should be an a good explorative
-feature to do reasonably soon.
-
-Jonathan
-
-
+Jason
 
