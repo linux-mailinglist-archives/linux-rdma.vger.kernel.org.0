@@ -1,241 +1,194 @@
-Return-Path: <linux-rdma+bounces-3845-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-3846-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0977992F666
-	for <lists+linux-rdma@lfdr.de>; Fri, 12 Jul 2024 09:44:03 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id E215D92F90F
+	for <lists+linux-rdma@lfdr.de>; Fri, 12 Jul 2024 12:37:45 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2650E1C22CF9
-	for <lists+linux-rdma@lfdr.de>; Fri, 12 Jul 2024 07:44:02 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 518E3B2349F
+	for <lists+linux-rdma@lfdr.de>; Fri, 12 Jul 2024 10:37:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EE92E13DBA0;
-	Fri, 12 Jul 2024 07:43:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="JXE/sLwS"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 366BC158DC1;
+	Fri, 12 Jul 2024 10:37:32 +0000 (UTC)
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9ECFC8F58;
-	Fri, 12 Jul 2024 07:43:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 819A114B978;
+	Fri, 12 Jul 2024 10:37:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.176.79.56
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1720770236; cv=none; b=mmS3sR+37tf863fUAp96/oFnwY74YfKsyZ+nlzk+4Ktcww8rZFyFm+EpzS5gy9+Q0WxQCDGLVyESUbS9G2JsXwTnrzCTuFahbrIYON15mQ99tNtqmWVQpKvoC9qgar75R2TiLHhnjqG/J15cEj+a6ICImncJvUr4iM+M3Ts+iOw=
+	t=1720780652; cv=none; b=Zyd3hjuHqgbC2M3B63b84ezv2XteNyFID9G5WfTGqqkVcEmnj4ioj0fQ2Bbb9GeOKofVRHTef0N5k0oFP/c5JHQNv6MjU6qhPfns/gTF3jR21ryrbOl6UM760OV7kJxmijEm9gTp1YS+njZzEH/rljXEk42mmMt3y8cOJSCUB30=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1720770236; c=relaxed/simple;
-	bh=lzaWmIZ+RB3H7kwGYmW9hQxX80Gmx1edTEPc27Cixmo=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=iMTweSwFuImmFapi7IT37/AH3XSTwqAU9e8nnkxBuh3FErBZZ2iWxUjIJP5PPOL/h9WHuNl/6scTE8YLCY6Ld+RrK3dCwJMimeTYmOX6aD/iZUxu+SZFvqEcvK/pblR2DsBzMdBt5TS+TjmJ+X1EcxAPJXfogG4b4HbNgvbPUUU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=JXE/sLwS; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 24BEDC3277B;
-	Fri, 12 Jul 2024 07:43:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1720770236;
-	bh=lzaWmIZ+RB3H7kwGYmW9hQxX80Gmx1edTEPc27Cixmo=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=JXE/sLwSVkNc8tuXlKyjNyKH+HLiW2Azc8SHHMEtMhmFi59eE5pTGTuJpDswPHelF
-	 j4irCvasPZFeireyM//BGL5j4CQB1VrCdNnXAZD779Wlvunv6khbY8LfI/dCYaKS/G
-	 F+1c19taBUgfg+LqPonKhUjbK7oEg5vF0ZF0qgZrR0x4IbL5K8EczSY6HP9F/pUvos
-	 wEtEgLCIWYI742a4Kmon0+cjjICVCBiGeDN66yuP4qHZiAAypjxrPVv1oRc9Wso6dr
-	 iYTzxkjEYDJtLdyDugfOgMAU93jAgFYr3i0A8R9kyGeQ5Q5B4hTlqenKxPrfkVrFeo
-	 0EsPsWc4JysiQ==
-Date: Fri, 12 Jul 2024 00:43:54 -0700
-From: Saeed Mahameed <saeed@kernel.org>
-To: Anand Khoje <anand.a.khoje@oracle.com>
-Cc: linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
-	netdev@vger.kernel.org, saeedm@mellanox.com, leon@kernel.org,
-	tariqt@nvidia.com, edumazet@google.com, kuba@kernel.org,
-	pabeni@redhat.com, davem@davemloft.net,
-	rama.nichanamatlu@oracle.com, manjunath.b.patil@oracle.com
-Subject: Re: [PATCH net-next] net/mlx5: Reclaim max 50K pages at once
-Message-ID: <ZpDeuoUlVoUON8Em@x130.lan>
-References: <20240711151322.158274-1-anand.a.khoje@oracle.com>
- <ZpCI0mGJaNDFjMno@x130>
- <c8d99dba-89e9-4bf2-b436-f1a29cd573bb@oracle.com>
+	s=arc-20240116; t=1720780652; c=relaxed/simple;
+	bh=YaczT6mneoVMpKwMgJbp7Rg47TMAqdRTX0u8weR9avY=;
+	h=Date:From:To:CC:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=KctPJ5m0BVDCTLGzeEqP/ZyMwlBXu7NR5cdmhPCzZPOP/cja8GblHVmYAaSNXEAO/2hy1LeZUPNoMHpiWRo5+dfT9qFQke8NGsRIU4ZNQ/gJsZLukHXO9WeVAme0w+GD+xpsFmLFB3d58xHN8pud6x3PPuogqcTGz4eAmOv0bJc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=Huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=185.176.79.56
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=Huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.18.186.216])
+	by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4WL7LG3yc9z6JB4b;
+	Fri, 12 Jul 2024 18:36:22 +0800 (CST)
+Received: from lhrpeml500005.china.huawei.com (unknown [7.191.163.240])
+	by mail.maildlp.com (Postfix) with ESMTPS id 69B0B1400D9;
+	Fri, 12 Jul 2024 18:37:26 +0800 (CST)
+Received: from localhost (10.203.174.77) by lhrpeml500005.china.huawei.com
+ (7.191.163.240) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.1.2507.39; Fri, 12 Jul
+ 2024 11:37:26 +0100
+Date: Fri, 12 Jul 2024 11:37:25 +0100
+From: Jonathan Cameron <Jonathan.Cameron@Huawei.com>
+To: Dan Williams <dan.j.williams@intel.com>
+CC: James Bottomley <James.Bottomley@hansenpartnership.com>,
+	<ksummit@lists.linux.dev>, <linux-cxl@vger.kernel.org>,
+	<linux-rdma@vger.kernel.org>, <netdev@vger.kernel.org>, <jgg@nvidia.com>
+Subject: Re: [MAINTAINERS SUMMIT] Device Passthrough Considered Harmful?
+Message-ID: <20240712113725.00004cdb@Huawei.com>
+In-Reply-To: <66900a0b9770d_1a7742942c@dwillia2-xfh.jf.intel.com.notmuch>
+References: <668c67a324609_ed99294c0@dwillia2-xfh.jf.intel.com.notmuch>
+	<3b9631cf12f451fc08f410255ebbba23081ada7c.camel@HansenPartnership.com>
+	<668db67196ca3_1bc8329416@dwillia2-xfh.jf.intel.com.notmuch>
+	<20240710142238.00007295@Huawei.com>
+	<66900a0b9770d_1a7742942c@dwillia2-xfh.jf.intel.com.notmuch>
+Organization: Huawei Technologies Research and Development (UK) Ltd.
+X-Mailer: Claws Mail 4.1.0 (GTK 3.24.33; x86_64-w64-mingw32)
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <c8d99dba-89e9-4bf2-b436-f1a29cd573bb@oracle.com>
+Content-Type: text/plain; charset="US-ASCII"
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: lhrpeml100005.china.huawei.com (7.191.160.25) To
+ lhrpeml500005.china.huawei.com (7.191.163.240)
 
-On 12 Jul 10:18, Anand Khoje wrote:
->
->On 7/12/24 07:07, Saeed Mahameed wrote:
->>On 11 Jul 20:43, Anand Khoje wrote:
->>>In non FLR context, at times CX-5 requests release of ~8 million 
->>>FW pages.
->>>This needs humongous number of cmd mailboxes, which to be released once
->>>the pages are reclaimed. Release of humongous number of cmd mailboxes is
->>>consuming cpu time running into many seconds. Which with non preemptible
->>>kernels is leading to critical process starving on that cpu’s RQ.
->>>To alleviate this, this change restricts the total number of pages
->>>a worker will try to reclaim maximum 50K pages in one go.
->>>The limit 50K is aligned with the current firmware capacity/limit of
->>>releasing 50K pages at once per MLX5_CMD_OP_MANAGE_PAGES + 
->>>MLX5_PAGES_TAKE
->>>device command.
->>
->>Where do you see this FW limit? currently we don't have it in the driver,
->>the driver requests from FW to reclaim exactly as many pages as the FW
->>already sent in the initial event. It is up to the FW to decide how many
->>pages out of those it actually release to the driver.
->>
->Hi Saeed,
->
->We have a confirmation from Vendor i.e. nVidia that the current limit 
->of maximum pages firmware will release is 50K.
->
+On Thu, 11 Jul 2024 09:36:27 -0700
+Dan Williams <dan.j.williams@intel.com> wrote:
 
-Interesting I will try to find out next week, this should've been
-advertised by FW somewhere.
+> Jonathan Cameron wrote:
+> > On Tue, 9 Jul 2024 15:15:13 -0700
+> > Dan Williams <dan.j.williams@intel.com> wrote:
+> >   
+> > > James Bottomley wrote:  
+> > > > > The upstream discussion has yielded the full spectrum of positions on
+> > > > > device specific functionality, and it is a topic that needs cross-
+> > > > > kernel consensus as hardware increasingly spans cross-subsystem
+> > > > > concerns. Please consider it for a Maintainers Summit discussion.    
+> > > > 
+> > > > I'm with Greg on this ... can you point to some of the contrary
+> > > > positions?    
+> > > 
+> > > This thread has that discussion:
+> > > 
+> > > http://lore.kernel.org/0-v1-9912f1a11620+2a-fwctl_jgg@nvidia.com
+> > > 
+> > > I do not want to speak for others on the saliency of their points, all I
+> > > can say is that the contrary positions have so far not moved me to drop
+> > > consideration of fwctl for CXL.  
+> > 
+> > I was resisting rat holing. Oh well...
+> > 
+> > For a 'subset' of CXL.  There are a wide range of controls that are highly
+> > destructive, potentially to other hosts (simplest one is a command that
+> > will surprise remove someone else's memory). For those I'm not sure
+> > fwctl gets us anywhere - but we still need a solution (Subject to
+> > config gates etc as typically this is BMCs not hosts).
+> > Maybe fwctl eventually ends up with levels of 'safety' (beyond the
+> > current read vs write vs write_full, or maybe those are enough).  
+> 
+> It is not clear to me that fwctl needs more levels of safety vs the
+> local subsystem config options controlling what can and can not be sent
+> over the channel. The CXL backend for fwctl adds the local "command
+> effects" level of safety.
+> 
+> For the "Linux as BMC" case the security model is external to the
+> kernel, right? Which means it does not present a protocol that the
+> kernel can reason about.
 
->>>
->>>Our tests have shown significant benefit of this change in terms of
->>>time consumed by dma_pool_free().
->>>During a test where an event was raised by HCA
->>>to release 1.3 Million pages, following observations were made:
->>>
->>>- Without this change:
->>>Number of mailbox messages allocated was around 20K, to accommodate
->>>the DMA addresses of 1.3 million pages.
->>>The average time spent by dma_pool_free() to free the DMA pool is 
->>>between
->>>16 usec to 32 usec.
->>>          value  ------------- Distribution ------------- count
->>>            256 |                                         0
->>>            512 |@                                        287
->>>           1024 |@@@                                      1332
->>>           2048 |@                                        656
->>>           4096 |@@@@@                                    2599
->>>           8192 |@@@@@@@@@@                               4755
->>>          16384 |@@@@@@@@@@@@@@@                          7545
->>>          32768 |@@@@@                                    2501
->>>          65536 |                                         0
->>>
->>>- With this change:
->>>Number of mailbox messages allocated was around 800; this was to
->>>accommodate DMA addresses of only 50K pages.
->>>The average time spent by dma_pool_free() to free the DMA pool in 
->>>this case
->>>lies between 1 usec to 2 usec.
->>>          value  ------------- Distribution ------------- count
->>>            256 |                                         0
->>>            512 |@@@@@@@@@@@@@@@@@@                       346
->>>           1024 |@@@@@@@@@@@@@@@@@@@@@@                   435
->>>           2048 |                                         0
->>>           4096 |                                         0
->>>           8192 |                                         1
->>>          16384 |                                         0
->>>
->>
->>Sounds like you only release 50k pages out of the 1.3M! what happens 
->>to the
->>rest? eventually we need to release them and waiting for driver unload
->>isn't an option.
->>
->>My theory here of what happened before the patch:
->>1. FW: event to request to release 1.3M;
->>2. driver: prepare a FW command to release 1.3M, send it to FW with 1.3M;
->>3. FW: release 50K;
->>4. goto 1;
->>
->>After the patch:
->>1. FW: event to request to release 1.3M;
->>2. driver: prepare a FW command to release 50k**, send it to FW with 
->>50k*;
->>3. FW: release 50K; Driver didn't ask for more. no event required.
->>4. Done;
->>
->>After your patch it seems like there 1.25M pages that are lingering in FW
->>ownership with no use.
->>
->We have tested this case, here are our observations:
->
->1. FW: event to request to release 1.3M;
->2. driver: prepare a FW command to release 50k**, send it to FW with 50k*;
->3. FW: release 50K; Driver didn't ask for more. no event required.
->4. goto 1 with 1.25M request to release in a new EQE.
->
->It goes on till fw releases all pages from its ownership.
->
->I hope that answers your doubt.
->
+The security model is indeed external, but I'd like a Linux BMC
+config to allow turning off the protections but still using the
+same fundamental interfaces as we normally use for the safe stuff.
+I don't want
+1) The CXL IOCTLs
+2) FWCTL
+3) Yet another interface.
 
-I see, I think now the issue is clear to me, I got confused by the commit
-message a bit, I thought the page allocator gets overwhelmed by the 8M
-pages the FW is trying to release back to the host, but this has nothing to
-do directly with releasing 8M pages, it is just the unnecessary driver allocation
-of the very large command outbox from the dma_pool to accommodate the 8M page
-addresses the FW needs to fill on reclaim, when the FW will only fill up to
-50k.
+> 
+> Unless and until someone develops an authorization model for BMC nodes
+> to join a network topology I think that use case is orthogonal to the
+> primary in-band use case for fwctl.
 
-Maybe improve the commit message a bit? Just explain about the unnecessary
-alloc/free of the extra mailboxes for the large outbox buffer, since the FW
-is limited and will never use this memory, so it's an unnecessary overhead.
+Use case wise I agree this isn't the current primary in-band use case
+for fwctl, hence the rat hole introductory comment.
 
-Anyway, feel free to add:
-Acked-by: Saeed Mahameed <saeedm@nvidia.com>
+> 
+> It is still useful there to avoid defining yet another transport, but a
+> node that has unfettered access to wreak havoc on the network is not the
+> kernel's problem.
 
->Thanks,
->
->Anand
->
->>>Signed-off-by: Anand Khoje <anand.a.khoje@oracle.com>
->>>Reviewed-by: Leon Romanovsky <leonro@nvidia.com>
->>>Reviewed-by: Zhu Yanjun <yanjun.zhu@linux.dev>
->>>---
->>>drivers/net/ethernet/mellanox/mlx5/core/pagealloc.c | 16 
->>>+++++++++++++++-
->>>1 file changed, 15 insertions(+), 1 deletion(-)
->>>
->>>diff --git a/drivers/net/ethernet/mellanox/mlx5/core/pagealloc.c 
->>>b/drivers/net/ethernet/mellanox/mlx5/core/pagealloc.c
->>>index d894a88..972e8e9 100644
->>>--- a/drivers/net/ethernet/mellanox/mlx5/core/pagealloc.c
->>>+++ b/drivers/net/ethernet/mellanox/mlx5/core/pagealloc.c
->>>@@ -608,6 +608,11 @@ enum {
->>>    RELEASE_ALL_PAGES_MASK = 0x4000,
->>>};
->>>
->>>+/* This limit is based on the capability of the firmware as it 
->>>cannot release
->>>+ * more than 50000 back to the host in one go.
->>>+ */
->>>+#define MAX_RECLAIM_NPAGES (-50000)
->>>+
->>>static int req_pages_handler(struct notifier_block *nb,
->>>                 unsigned long type, void *data)
->>>{
->>>@@ -639,7 +644,16 @@ static int req_pages_handler(struct 
->>>notifier_block *nb,
->>>
->>>    req->dev = dev;
->>>    req->func_id = func_id;
->>>-    req->npages = npages;
->>>+
->>>+    /* npages > 0 means HCA asking host to allocate/give pages,
->>>+     * npages < 0 means HCA asking host to reclaim back the pages 
->>>allocated.
->>>+     * Here we are restricting the maximum number of pages that can be
->>>+     * reclaimed to be MAX_RECLAIM_NPAGES. Note that 
->>>MAX_RECLAIM_NPAGES is
->>>+     * a negative value.
->>>+     * Since MAX_RECLAIM is negative, we are using max() to restrict
->>>+     * req->npages (and not min ()).
->>>+     */
->>>+    req->npages = max_t(s32, npages, MAX_RECLAIM_NPAGES);
->>>    req->ec_function = ec_function;
->>>    req->release_all = release_all;
->>>    INIT_WORK(&req->work, pages_work_handler);
->>>-- 
->>>1.8.3.1
->>>
->>>
+As long as I can enable it via a sensible interface (and don't need to
+spin another) that is fine by me.
+
+> 
+> > Complexities such as message tunneling to multiple components are also
+> > going to be fun, but we want the non destructive bits of those to work
+> > as part of the safe set, so we can get telemetry from downstream devices.
+> > 
+> > Good to cover the debug and telemetry usecase, but it still leaves us with
+> > gaping holes were we need to solve the permissions problem, perhaps that
+> > is layered on top of fwctl, perhaps something else is needed.  
+> 
+> But that's more a CXL switch-management command security protocol
+> problem than fwctl, right? In other words, as far as I understand, there
+> is no spec provided permission model for switch management that Linux
+> could enforce, so it's more in the category of build a kernel that can
+> pass any payload and hope someone else has solved the problem of
+> limiting what damage that node can inflict.
+
+Two separate things here.
+
+For tunneling, there is plenty that will map to fwctl because it's just
+a transport question.  The tunnel command itself has a CEL that says
+it might eat babies so we'd need to check the relevant CEL for the
+destination to make sure they were just as safe as non tunneled version.
+So it's just an implementation detail, be it a fiddly one.
+
+For destructive options sure it's a config problem. But I do want
+to be able to lock down the kernel on the BMC but still allow the
+discructive command. Lock down is protecting and restricting the BMC
+not the other hosts in this use case. 
+
+> 
+> > So if fwctl is adopted, I do want the means to use it for the highly
+> > destructive stuff as well!  Maybe that's a future discussion.
+> >   
+> > > Where CXL has a Command Effects Log that is a reasonable protocol for
+> > > making decisions about opaque command codes, and that CXL already has a
+> > > few years of experience with the commands that *do* need a Linux-command
+> > > wrapper.  
+> > 
+> > Worth asking if this will incorporate unknown but not vendor defined
+> > commands.  There is a long tail of stuff in the spec we haven't caught up
+> > with yet.  Or you thinking keep this for the strictly vendor defined stuff?  
+> 
+> Long term, yes, it should be able to expand to any command code family.
+> Short term, to get started, the CXL "Feature" facility at least conveys
+> whether opcodes are reads or writes, independent of their side effects,
+> and are scoped to be "settings".
+> 
+> There is still the matter of background commands need to support
+> cancellation to avoid indefinite background-command-slot monopolization,
+> and there are still commands that need kernel coordination. So, I see
+> fwctl command support arriving in stages.
+
+Makes sense.  Tunneled access to CXL features should be an a good explorative
+feature to do reasonably soon.
+
+Jonathan
+
+
 
