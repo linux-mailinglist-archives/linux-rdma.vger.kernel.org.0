@@ -1,235 +1,275 @@
-Return-Path: <linux-rdma+bounces-3860-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-3861-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 07FD29309E3
-	for <lists+linux-rdma@lfdr.de>; Sun, 14 Jul 2024 14:15:55 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1BA3F930B88
+	for <lists+linux-rdma@lfdr.de>; Sun, 14 Jul 2024 22:21:37 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 891E31F215CE
-	for <lists+linux-rdma@lfdr.de>; Sun, 14 Jul 2024 12:15:54 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8C49F1F229AF
+	for <lists+linux-rdma@lfdr.de>; Sun, 14 Jul 2024 20:21:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DA4C46D1C7;
-	Sun, 14 Jul 2024 12:15:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C6771139CFF;
+	Sun, 14 Jul 2024 20:21:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=wanadoo.fr header.i=@wanadoo.fr header.b="Utcrhdtl"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="lATHmk9Q"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from msa.smtpout.orange.fr (msa-210.smtpout.orange.fr [193.252.23.210])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.15])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A8BB749647;
-	Sun, 14 Jul 2024 12:15:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.252.23.210
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A897C2572
+	for <linux-rdma@vger.kernel.org>; Sun, 14 Jul 2024 20:21:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.15
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1720959347; cv=none; b=dgwABBO6RSB7Oybp50HxVBYslVAnq8ZDQPs5XmVXGav4+QkfmnM502vjXahW9banJnuH6np6JGyVpEYg+EMLfrf2ivsqhDmGpjNXsCsJVIPE8pBQiShsy+5OOu5w1o9NHN5bQvC878siFbN1BqgRGMd/S+3RKlR0WNQq+5OyMcU=
+	t=1720988490; cv=none; b=TgTjv4a2yM1E8rHQswzLItUGmOXjCNlUI5Oxo0BtO+bjzcVotmN2S+7/+zWoljp43YED/BNidAoxGGy2BRu4yRFhnnWn1eH98LYm6e1gedazF6QbIQ9cy74IpedQbqywniOF/qN2u24Bx+PSDpw8nRXFeRaDLptbPJjJNnD49Xc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1720959347; c=relaxed/simple;
-	bh=wemadaPaF5tYj2gDESeIMIx0Xn4/NfVv5MLoAteFeac=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=b7ScIerPyfGSE823O7fznl/gJUbCqUvXkJ4NFZ1l2tL57wdJWtmUxOSTEiu2NCRaIHHU2I0PTXetkVKp5BRzadk1gX+ajSIU48fS3U6t5oQbgbsBz8437JZ3G1bLxGdVZ11XdvX4QZ71BNenj12BGWuyGO4q6qNT8OkNJLGg0Mo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wanadoo.fr; spf=pass smtp.mailfrom=wanadoo.fr; dkim=pass (2048-bit key) header.d=wanadoo.fr header.i=@wanadoo.fr header.b=Utcrhdtl; arc=none smtp.client-ip=193.252.23.210
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wanadoo.fr
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=wanadoo.fr
-Received: from fedora.home ([90.11.132.44])
-	by smtp.orange.fr with ESMTPA
-	id Sy8aseahrEfqMSy8asZxKO; Sun, 14 Jul 2024 14:15:36 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wanadoo.fr;
-	s=t20230301; t=1720959336;
-	bh=Ib9jUMmVKMUmOCzzj+eKpdb7WVSo4L1l4Cu4ds83SNs=;
-	h=From:To:Subject:Date:Message-ID:MIME-Version;
-	b=UtcrhdtlKRnx7p4YDJGKQVifbW5vaTGFLxGBUU6tbNtnme/AAY5U35n1NiGGeMhTd
-	 AdouoG7UHfUpMrEK+e2fIt1N0BAvSF5XO7EkqoslfTHPdwd5gabMw9NGfDHHmXr+s7
-	 SMN3aqhY22JfwqSANXtdYMIOxR3FnE5jeFeBzSpM1wh+CUTH1ktDpcTKyJaWRVa1Vr
-	 VGHEtroAshKuK/G3tuJYBgxcDxPLbMQ59dBRHl3QzuO5wYHPTNeIQu2tWQO0EW7AyM
-	 QqRxgn4PXwAhMSxy0r3Lz8F6ui3dndE1yOgviUH8TCXGDZH9BAFttqpynWR78ZWpwZ
-	 7NDko9UJC7wYA==
-X-ME-Helo: fedora.home
-X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
-X-ME-Date: Sun, 14 Jul 2024 14:15:36 +0200
-X-ME-IP: 90.11.132.44
-From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-To: Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
-	Jason Gunthorpe <jgg@ziepe.ca>,
-	Leon Romanovsky <leon@kernel.org>
-Cc: linux-kernel@vger.kernel.org,
-	kernel-janitors@vger.kernel.org,
-	Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-	linux-rdma@vger.kernel.org
-Subject: [PATCH] IB/hfi1: Constify struct flag_table
-Date: Sun, 14 Jul 2024 14:15:25 +0200
-Message-ID: <782b6a648bfbbf2bb83f81a73c0460b5bb7642a1.1720959310.git.christophe.jaillet@wanadoo.fr>
-X-Mailer: git-send-email 2.45.2
+	s=arc-20240116; t=1720988490; c=relaxed/simple;
+	bh=fjRghipbF4lCN7RiyAF0ER1iRUNJJqRUkhbmHWce23Y=;
+	h=Date:From:To:Cc:Subject:Message-ID; b=XWjVHmzZDioF/lba7P6b9BoRh4SGkzKtR+Q+bgVxblIVuMcatJQ1yt7SI5atbjhHc21Kqmen2AtuqyHB9QfTgCsPagZVQdfLcaGAi0WBOkylfkTAUr70WnVjckJJjY9CSi0t+haz5ujBm3Zj8JdIIzastPyHE0s6x4ZrTN5qkt8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=lATHmk9Q; arc=none smtp.client-ip=192.198.163.15
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1720988489; x=1752524489;
+  h=date:from:to:cc:subject:message-id;
+  bh=fjRghipbF4lCN7RiyAF0ER1iRUNJJqRUkhbmHWce23Y=;
+  b=lATHmk9Q7OhsNyLdjDAdi5S8IP7OP4BBgzWuHLGiZ3AcUhieUX6S6gpE
+   pScP9s9aaDj3YKYDHbqv14zhiJZHXTq9UNH9atd8ru7renOp4/5mblZ4B
+   ke0QRgq52l2CvzUdF06j2NgyjX2H3CzJPkohxhRB4ts9WV32Oif0oqtcA
+   mSUHhYey1sieKgEfP3EPLadch7SWfdl0/rUJJKL9IKEBOgCpZy/YM0lp/
+   XX6eIDBTks6cLdOXkKX+sPzOimfQlc53v0A0ZswXQwY6ikgp4nxY3oDyU
+   03u+ojlmK1Ha/wZZfOB/DKKyYkLa9LMV57QJgzjTbXOQx2OujRP+zl6tf
+   Q==;
+X-CSE-ConnectionGUID: 7FCqbku9S2KACecFJIAIEA==
+X-CSE-MsgGUID: KmoLFZXfQsGh3yedQ61bfw==
+X-IronPort-AV: E=McAfee;i="6700,10204,11133"; a="18514125"
+X-IronPort-AV: E=Sophos;i="6.09,208,1716274800"; 
+   d="scan'208";a="18514125"
+Received: from fmviesa003.fm.intel.com ([10.60.135.143])
+  by fmvoesa109.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Jul 2024 13:21:28 -0700
+X-CSE-ConnectionGUID: fHB9O4DsT4uw53ROi0dB0Q==
+X-CSE-MsgGUID: EVErmpexStO4aZPAjheS+w==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.09,208,1716274800"; 
+   d="scan'208";a="53720122"
+Received: from lkp-server01.sh.intel.com (HELO 68891e0c336b) ([10.239.97.150])
+  by fmviesa003.fm.intel.com with ESMTP; 14 Jul 2024 13:21:26 -0700
+Received: from kbuild by 68891e0c336b with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1sT5im-000diE-1O;
+	Sun, 14 Jul 2024 20:21:24 +0000
+Date: Mon, 15 Jul 2024 04:20:30 +0800
+From: kernel test robot <lkp@intel.com>
+To: Leon Romanovsky <leon@kernel.org>
+Cc: Doug Ledford <dledford@redhat.com>,
+ Jason Gunthorpe <jgg+lists@ziepe.ca>, linux-rdma@vger.kernel.org
+Subject: [rdma:for-next] BUILD SUCCESS
+ 95b087f87b780daafad1dbb2c84e81b729d5d33f
+Message-ID: <202407150425.9wDwX8n9-lkp@intel.com>
+User-Agent: s-nail v14.9.24
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
 
-'struct flag_table' are not modified in this driver.
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git for-next
+branch HEAD: 95b087f87b780daafad1dbb2c84e81b729d5d33f  bnxt_re: Fix imm_data endianness
 
-Constifying this structure moves some data to a read-only section, so
-increase overall security.
+elapsed time: 750m
 
-On a x86_64, with allmodconfig:
-Before:
-======
-   text	   data	    bss	    dec	    hex	filename
- 302932	  40271	    112	 343315	  53d13	drivers/infiniband/hw/hfi1/chip.o
+configs tested: 181
+configs skipped: 3
 
-After:
-=====
-   text	   data	    bss	    dec	    hex	filename
- 311636	  31567	    112	 343315	  53d13	drivers/infiniband/hw/hfi1/chip.o
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
-Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
----
-Compile tested-only.
----
- drivers/infiniband/hw/hfi1/chip.c | 30 +++++++++++++++---------------
- 1 file changed, 15 insertions(+), 15 deletions(-)
+tested configs:
+alpha                             allnoconfig   gcc-13.2.0
+alpha                             allnoconfig   gcc-13.3.0
+alpha                            allyesconfig   gcc-13.3.0
+alpha                               defconfig   gcc-13.2.0
+arc                              allmodconfig   gcc-13.2.0
+arc                               allnoconfig   gcc-13.2.0
+arc                              allyesconfig   gcc-13.2.0
+arc                                 defconfig   gcc-13.2.0
+arc                        nsim_700_defconfig   gcc-13.2.0
+arc                   randconfig-001-20240714   gcc-13.2.0
+arc                   randconfig-002-20240714   gcc-13.2.0
+arm                              allmodconfig   gcc-13.2.0
+arm                              allmodconfig   gcc-14.1.0
+arm                               allnoconfig   clang-19
+arm                               allnoconfig   gcc-13.2.0
+arm                              allyesconfig   gcc-13.2.0
+arm                              allyesconfig   gcc-14.1.0
+arm                                 defconfig   gcc-13.2.0
+arm                         lpc18xx_defconfig   clang-19
+arm                        multi_v5_defconfig   gcc-14.1.0
+arm                   randconfig-001-20240714   clang-19
+arm                   randconfig-002-20240714   clang-15
+arm                   randconfig-003-20240714   clang-17
+arm                   randconfig-004-20240714   clang-15
+arm64                            allmodconfig   clang-19
+arm64                            allmodconfig   gcc-13.2.0
+arm64                             allnoconfig   gcc-13.2.0
+arm64                             allnoconfig   gcc-14.1.0
+arm64                               defconfig   gcc-13.2.0
+arm64                 randconfig-001-20240714   clang-15
+arm64                 randconfig-002-20240714   clang-19
+arm64                 randconfig-003-20240714   clang-19
+arm64                 randconfig-004-20240714   gcc-14.1.0
+csky                              allnoconfig   gcc-13.2.0
+csky                              allnoconfig   gcc-14.1.0
+csky                                defconfig   gcc-13.2.0
+csky                  randconfig-001-20240714   gcc-14.1.0
+csky                  randconfig-002-20240714   gcc-14.1.0
+hexagon                          allmodconfig   clang-19
+hexagon                           allnoconfig   clang-19
+hexagon                          allyesconfig   clang-19
+hexagon               randconfig-001-20240714   clang-19
+hexagon               randconfig-002-20240714   clang-19
+i386                             allmodconfig   clang-18
+i386                             allmodconfig   gcc-13
+i386                              allnoconfig   clang-18
+i386                              allnoconfig   gcc-13
+i386                             allyesconfig   clang-18
+i386                             allyesconfig   gcc-13
+i386         buildonly-randconfig-001-20240714   gcc-13
+i386         buildonly-randconfig-002-20240714   clang-18
+i386         buildonly-randconfig-003-20240714   gcc-11
+i386         buildonly-randconfig-004-20240714   clang-18
+i386         buildonly-randconfig-005-20240714   gcc-9
+i386         buildonly-randconfig-006-20240714   clang-18
+i386                                defconfig   clang-18
+i386                  randconfig-001-20240714   clang-18
+i386                  randconfig-002-20240714   clang-18
+i386                  randconfig-003-20240714   clang-18
+i386                  randconfig-004-20240714   clang-18
+i386                  randconfig-005-20240714   clang-18
+i386                  randconfig-006-20240714   gcc-7
+i386                  randconfig-011-20240714   clang-18
+i386                  randconfig-012-20240714   gcc-13
+i386                  randconfig-013-20240714   clang-18
+i386                  randconfig-014-20240714   gcc-10
+i386                  randconfig-015-20240714   gcc-13
+i386                  randconfig-016-20240714   clang-18
+loongarch                        allmodconfig   gcc-14.1.0
+loongarch                         allnoconfig   gcc-13.2.0
+loongarch                         allnoconfig   gcc-14.1.0
+loongarch                           defconfig   gcc-13.2.0
+loongarch             randconfig-001-20240714   gcc-14.1.0
+loongarch             randconfig-002-20240714   gcc-14.1.0
+m68k                             allmodconfig   gcc-14.1.0
+m68k                              allnoconfig   gcc-13.2.0
+m68k                              allnoconfig   gcc-14.1.0
+m68k                             allyesconfig   gcc-14.1.0
+m68k                                defconfig   gcc-13.2.0
+m68k                          multi_defconfig   gcc-14.1.0
+microblaze                       alldefconfig   gcc-14.1.0
+microblaze                       allmodconfig   gcc-14.1.0
+microblaze                        allnoconfig   gcc-13.2.0
+microblaze                        allnoconfig   gcc-14.1.0
+microblaze                       allyesconfig   gcc-14.1.0
+microblaze                          defconfig   gcc-13.2.0
+mips                              allnoconfig   gcc-13.2.0
+mips                              allnoconfig   gcc-14.1.0
+mips                         db1xxx_defconfig   clang-19
+nios2                             allnoconfig   gcc-13.2.0
+nios2                             allnoconfig   gcc-14.1.0
+nios2                               defconfig   gcc-13.2.0
+nios2                 randconfig-001-20240714   gcc-14.1.0
+nios2                 randconfig-002-20240714   gcc-14.1.0
+openrisc                          allnoconfig   gcc-14.1.0
+openrisc                         allyesconfig   gcc-14.1.0
+openrisc                            defconfig   gcc-14.1.0
+parisc                           allmodconfig   gcc-14.1.0
+parisc                            allnoconfig   gcc-14.1.0
+parisc                           allyesconfig   gcc-14.1.0
+parisc                              defconfig   gcc-14.1.0
+parisc                randconfig-001-20240714   gcc-14.1.0
+parisc                randconfig-002-20240714   gcc-14.1.0
+parisc64                            defconfig   gcc-13.2.0
+powerpc                          allmodconfig   gcc-14.1.0
+powerpc                           allnoconfig   gcc-14.1.0
+powerpc                          allyesconfig   clang-19
+powerpc                   bluestone_defconfig   clang-19
+powerpc                      chrp32_defconfig   clang-19
+powerpc                     kilauea_defconfig   clang-19
+powerpc                     kmeter1_defconfig   gcc-14.1.0
+powerpc                   lite5200b_defconfig   clang-14
+powerpc                      pcm030_defconfig   clang-19
+powerpc                      ppc44x_defconfig   clang-16
+powerpc               randconfig-001-20240714   clang-19
+powerpc               randconfig-002-20240714   clang-19
+powerpc               randconfig-003-20240714   gcc-14.1.0
+powerpc64             randconfig-001-20240714   gcc-14.1.0
+powerpc64             randconfig-002-20240714   gcc-14.1.0
+powerpc64             randconfig-003-20240714   gcc-14.1.0
+riscv                            allmodconfig   clang-19
+riscv                             allnoconfig   gcc-14.1.0
+riscv                            allyesconfig   clang-19
+riscv                               defconfig   clang-19
+riscv                 randconfig-002-20240714   clang-15
+s390                             allmodconfig   clang-19
+s390                              allnoconfig   clang-19
+s390                             allyesconfig   clang-19
+s390                             allyesconfig   gcc-14.1.0
+s390                          debug_defconfig   gcc-14.1.0
+s390                                defconfig   clang-19
+s390                  randconfig-002-20240714   gcc-14.1.0
+sh                               allmodconfig   gcc-14.1.0
+sh                                allnoconfig   gcc-13.2.0
+sh                                allnoconfig   gcc-14.1.0
+sh                               allyesconfig   gcc-14.1.0
+sh                                  defconfig   gcc-14.1.0
+sh                    randconfig-001-20240714   gcc-14.1.0
+sh                    randconfig-002-20240714   gcc-14.1.0
+sh                          rsk7264_defconfig   gcc-14.1.0
+sh                           se7619_defconfig   gcc-14.1.0
+sparc                            allmodconfig   gcc-14.1.0
+sparc64                             defconfig   gcc-14.1.0
+um                               allmodconfig   clang-19
+um                                allnoconfig   clang-17
+um                               allyesconfig   gcc-13
+um                                  defconfig   clang-19
+um                             i386_defconfig   gcc-13
+um                           x86_64_defconfig   clang-15
+x86_64                            allnoconfig   clang-18
+x86_64                           allyesconfig   clang-18
+x86_64       buildonly-randconfig-001-20240714   clang-18
+x86_64       buildonly-randconfig-002-20240714   gcc-13
+x86_64       buildonly-randconfig-003-20240714   gcc-13
+x86_64       buildonly-randconfig-004-20240714   clang-18
+x86_64       buildonly-randconfig-005-20240714   clang-18
+x86_64       buildonly-randconfig-006-20240714   clang-18
+x86_64                              defconfig   clang-18
+x86_64                              defconfig   gcc-13
+x86_64                randconfig-001-20240714   gcc-13
+x86_64                randconfig-002-20240714   clang-18
+x86_64                randconfig-003-20240714   gcc-13
+x86_64                randconfig-004-20240714   clang-18
+x86_64                randconfig-005-20240714   gcc-10
+x86_64                randconfig-006-20240714   gcc-10
+x86_64                randconfig-011-20240714   clang-18
+x86_64                randconfig-012-20240714   gcc-7
+x86_64                randconfig-013-20240714   clang-18
+x86_64                randconfig-014-20240714   clang-18
+x86_64                randconfig-015-20240714   gcc-13
+x86_64                randconfig-016-20240714   clang-18
+x86_64                randconfig-071-20240714   clang-18
+x86_64                randconfig-072-20240714   gcc-13
+x86_64                randconfig-073-20240714   clang-18
+x86_64                randconfig-074-20240714   clang-18
+x86_64                randconfig-075-20240714   clang-18
+x86_64                randconfig-076-20240714   clang-18
+x86_64                          rhel-8.3-rust   clang-18
+xtensa                            allnoconfig   gcc-13.2.0
+xtensa                            allnoconfig   gcc-14.1.0
+xtensa                  audio_kc705_defconfig   gcc-14.1.0
 
-diff --git a/drivers/infiniband/hw/hfi1/chip.c b/drivers/infiniband/hw/hfi1/chip.c
-index 78f27f7b4203..c52e6b2c9914 100644
---- a/drivers/infiniband/hw/hfi1/chip.c
-+++ b/drivers/infiniband/hw/hfi1/chip.c
-@@ -251,7 +251,7 @@ struct flag_table {
- /*
-  * CCE Error flags.
-  */
--static struct flag_table cce_err_status_flags[] = {
-+static const struct flag_table cce_err_status_flags[] = {
- /* 0*/	FLAG_ENTRY0("CceCsrParityErr",
- 		CCE_ERR_STATUS_CCE_CSR_PARITY_ERR_SMASK),
- /* 1*/	FLAG_ENTRY0("CceCsrReadBadAddrErr",
-@@ -341,7 +341,7 @@ static struct flag_table cce_err_status_flags[] = {
-  * Misc Error flags
-  */
- #define MES(text) MISC_ERR_STATUS_MISC_##text##_ERR_SMASK
--static struct flag_table misc_err_status_flags[] = {
-+static const struct flag_table misc_err_status_flags[] = {
- /* 0*/	FLAG_ENTRY0("CSR_PARITY", MES(CSR_PARITY)),
- /* 1*/	FLAG_ENTRY0("CSR_READ_BAD_ADDR", MES(CSR_READ_BAD_ADDR)),
- /* 2*/	FLAG_ENTRY0("CSR_WRITE_BAD_ADDR", MES(CSR_WRITE_BAD_ADDR)),
-@@ -360,7 +360,7 @@ static struct flag_table misc_err_status_flags[] = {
- /*
-  * TXE PIO Error flags and consequences
-  */
--static struct flag_table pio_err_status_flags[] = {
-+static const struct flag_table pio_err_status_flags[] = {
- /* 0*/	FLAG_ENTRY("PioWriteBadCtxt",
- 	SEC_WRITE_DROPPED,
- 	SEND_PIO_ERR_STATUS_PIO_WRITE_BAD_CTXT_ERR_SMASK),
-@@ -502,7 +502,7 @@ static struct flag_table pio_err_status_flags[] = {
- /*
-  * TXE SDMA Error flags
-  */
--static struct flag_table sdma_err_status_flags[] = {
-+static const struct flag_table sdma_err_status_flags[] = {
- /* 0*/	FLAG_ENTRY0("SDmaRpyTagErr",
- 		SEND_DMA_ERR_STATUS_SDMA_RPY_TAG_ERR_SMASK),
- /* 1*/	FLAG_ENTRY0("SDmaCsrParityErr",
-@@ -530,7 +530,7 @@ static struct flag_table sdma_err_status_flags[] = {
-  * TXE Egress Error flags
-  */
- #define SEES(text) SEND_EGRESS_ERR_STATUS_##text##_ERR_SMASK
--static struct flag_table egress_err_status_flags[] = {
-+static const struct flag_table egress_err_status_flags[] = {
- /* 0*/	FLAG_ENTRY0("TxPktIntegrityMemCorErr", SEES(TX_PKT_INTEGRITY_MEM_COR)),
- /* 1*/	FLAG_ENTRY0("TxPktIntegrityMemUncErr", SEES(TX_PKT_INTEGRITY_MEM_UNC)),
- /* 2 reserved */
-@@ -631,7 +631,7 @@ static struct flag_table egress_err_status_flags[] = {
-  * TXE Egress Error Info flags
-  */
- #define SEEI(text) SEND_EGRESS_ERR_INFO_##text##_ERR_SMASK
--static struct flag_table egress_err_info_flags[] = {
-+static const struct flag_table egress_err_info_flags[] = {
- /* 0*/	FLAG_ENTRY0("Reserved", 0ull),
- /* 1*/	FLAG_ENTRY0("VLErr", SEEI(VL)),
- /* 2*/	FLAG_ENTRY0("JobKeyErr", SEEI(JOB_KEY)),
-@@ -680,7 +680,7 @@ static struct flag_table egress_err_info_flags[] = {
-  * TXE Send error flags
-  */
- #define SES(name) SEND_ERR_STATUS_SEND_##name##_ERR_SMASK
--static struct flag_table send_err_status_flags[] = {
-+static const struct flag_table send_err_status_flags[] = {
- /* 0*/	FLAG_ENTRY0("SendCsrParityErr", SES(CSR_PARITY)),
- /* 1*/	FLAG_ENTRY0("SendCsrReadBadAddrErr", SES(CSR_READ_BAD_ADDR)),
- /* 2*/	FLAG_ENTRY0("SendCsrWriteBadAddrErr", SES(CSR_WRITE_BAD_ADDR))
-@@ -689,7 +689,7 @@ static struct flag_table send_err_status_flags[] = {
- /*
-  * TXE Send Context Error flags and consequences
-  */
--static struct flag_table sc_err_status_flags[] = {
-+static const struct flag_table sc_err_status_flags[] = {
- /* 0*/	FLAG_ENTRY("InconsistentSop",
- 		SEC_PACKET_DROPPED | SEC_SC_HALTED,
- 		SEND_CTXT_ERR_STATUS_PIO_INCONSISTENT_SOP_ERR_SMASK),
-@@ -712,7 +712,7 @@ static struct flag_table sc_err_status_flags[] = {
-  * RXE Receive Error flags
-  */
- #define RXES(name) RCV_ERR_STATUS_RX_##name##_ERR_SMASK
--static struct flag_table rxe_err_status_flags[] = {
-+static const struct flag_table rxe_err_status_flags[] = {
- /* 0*/	FLAG_ENTRY0("RxDmaCsrCorErr", RXES(DMA_CSR_COR)),
- /* 1*/	FLAG_ENTRY0("RxDcIntfParityErr", RXES(DC_INTF_PARITY)),
- /* 2*/	FLAG_ENTRY0("RxRcvHdrUncErr", RXES(RCV_HDR_UNC)),
-@@ -847,7 +847,7 @@ static struct flag_table rxe_err_status_flags[] = {
-  * DCC Error Flags
-  */
- #define DCCE(name) DCC_ERR_FLG_##name##_SMASK
--static struct flag_table dcc_err_flags[] = {
-+static const struct flag_table dcc_err_flags[] = {
- 	FLAG_ENTRY0("bad_l2_err", DCCE(BAD_L2_ERR)),
- 	FLAG_ENTRY0("bad_sc_err", DCCE(BAD_SC_ERR)),
- 	FLAG_ENTRY0("bad_mid_tail_err", DCCE(BAD_MID_TAIL_ERR)),
-@@ -900,7 +900,7 @@ static struct flag_table dcc_err_flags[] = {
-  * LCB error flags
-  */
- #define LCBE(name) DC_LCB_ERR_FLG_##name##_SMASK
--static struct flag_table lcb_err_flags[] = {
-+static const struct flag_table lcb_err_flags[] = {
- /* 0*/	FLAG_ENTRY0("CSR_PARITY_ERR", LCBE(CSR_PARITY_ERR)),
- /* 1*/	FLAG_ENTRY0("INVALID_CSR_ADDR", LCBE(INVALID_CSR_ADDR)),
- /* 2*/	FLAG_ENTRY0("RST_FOR_FAILED_DESKEW", LCBE(RST_FOR_FAILED_DESKEW)),
-@@ -943,7 +943,7 @@ static struct flag_table lcb_err_flags[] = {
-  * DC8051 Error Flags
-  */
- #define D8E(name) DC_DC8051_ERR_FLG_##name##_SMASK
--static struct flag_table dc8051_err_flags[] = {
-+static const struct flag_table dc8051_err_flags[] = {
- 	FLAG_ENTRY0("SET_BY_8051", D8E(SET_BY_8051)),
- 	FLAG_ENTRY0("LOST_8051_HEART_BEAT", D8E(LOST_8051_HEART_BEAT)),
- 	FLAG_ENTRY0("CRAM_MBE", D8E(CRAM_MBE)),
-@@ -962,7 +962,7 @@ static struct flag_table dc8051_err_flags[] = {
-  *
-  * Flags in DC8051_DBG_ERR_INFO_SET_BY_8051.ERROR field.
-  */
--static struct flag_table dc8051_info_err_flags[] = {
-+static const struct flag_table dc8051_info_err_flags[] = {
- 	FLAG_ENTRY0("Spico ROM check failed",  SPICO_ROM_FAILED),
- 	FLAG_ENTRY0("Unknown frame received",  UNKNOWN_FRAME),
- 	FLAG_ENTRY0("Target BER not met",      TARGET_BER_NOT_MET),
-@@ -986,7 +986,7 @@ static struct flag_table dc8051_info_err_flags[] = {
-  *
-  * Flags in DC8051_DBG_ERR_INFO_SET_BY_8051.HOST_MSG field.
-  */
--static struct flag_table dc8051_info_host_msg_flags[] = {
-+static const struct flag_table dc8051_info_host_msg_flags[] = {
- 	FLAG_ENTRY0("Host request done", 0x0001),
- 	FLAG_ENTRY0("BC PWR_MGM message", 0x0002),
- 	FLAG_ENTRY0("BC SMA message", 0x0004),
-@@ -5275,7 +5275,7 @@ static int append_str(char *buf, char **curp, int *lenp, const char *s)
-  * the buffer.  End in '*' if the buffer is too short.
-  */
- static char *flag_string(char *buf, int buf_len, u64 flags,
--			 struct flag_table *table, int table_size)
-+			 const struct flag_table *table, int table_size)
- {
- 	char extra[32];
- 	char *p = buf;
 -- 
-2.45.2
-
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
