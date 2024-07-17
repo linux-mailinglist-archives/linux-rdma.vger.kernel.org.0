@@ -1,79 +1,50 @@
-Return-Path: <linux-rdma+bounces-3894-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-3895-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 92074933CAD
-	for <lists+linux-rdma@lfdr.de>; Wed, 17 Jul 2024 13:56:47 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id BCF73933D05
+	for <lists+linux-rdma@lfdr.de>; Wed, 17 Jul 2024 14:33:50 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 36EAA284FE1
-	for <lists+linux-rdma@lfdr.de>; Wed, 17 Jul 2024 11:56:46 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 66AA81F24437
+	for <lists+linux-rdma@lfdr.de>; Wed, 17 Jul 2024 12:33:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3948B17F506;
-	Wed, 17 Jul 2024 11:56:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 22DC417FACA;
+	Wed, 17 Jul 2024 12:33:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b="ifEEHh9g"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="L8xRCewe"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-qt1-f172.google.com (mail-qt1-f172.google.com [209.85.160.172])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7CE301CA9F
-	for <linux-rdma@vger.kernel.org>; Wed, 17 Jul 2024 11:56:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CADE417E8FA;
+	Wed, 17 Jul 2024 12:33:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1721217397; cv=none; b=gTgd3jq1xkZjOKPfHimH++KtyhEi8G7pMHvWCTI6mTs1Y0RgcbO3xvR5gcX1A5tiIX1wK65Rbv5xwkjcs/H2efTQpfQ5fNjR2R1EkqIHZ3GHO+fhcLg3tYA8l+6W1gGZ2L42Uk8ssZEGIJiXU+u7ae6zzXv4ZZrQupLNVGpBZLU=
+	t=1721219623; cv=none; b=HdlSkBcuhsE4hUy7ksO6wWVut15GhDBVpyR0pyONN/438NXAzgoQ4pwDDz3wRWLv7Sk1OUTtxWtHGuVE3Wd9NhdDw4Vcv+IlO/hDJKhdKy5MwH0XhDAIBoi8W/itmp4PRmtskopCX8KtSV7t0z5dWsczYnA8kZEauE0YRuwA2bI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1721217397; c=relaxed/simple;
-	bh=WElkakyy4B3dqTGhkHumOe7VtwvtJDMdwvAuHtPPYZ4=;
+	s=arc-20240116; t=1721219623; c=relaxed/simple;
+	bh=XPoHNvBvk5aWq4Z1/WJjxhDz8NnrxpWn5NC51h1FfQc=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=MISSg5c+8WM+WWKMbmRiYhL3yBytwRjVwJHssI4EAW2jbKG3Wp5rftiKLJ7RvXs9xpgBNSqWqkLSRAFNQn5CGQfwe4blwEhdI0gLE/x0tH07eLUrVn/idNEBo8k10+3goSpHp2Ccb5pTto/2BDTheJsZyHVZ8Dgc4YsY7e/2t+s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca; spf=pass smtp.mailfrom=ziepe.ca; dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b=ifEEHh9g; arc=none smtp.client-ip=209.85.160.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ziepe.ca
-Received: by mail-qt1-f172.google.com with SMTP id d75a77b69052e-4494d41090bso38042211cf.3
-        for <linux-rdma@vger.kernel.org>; Wed, 17 Jul 2024 04:56:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google; t=1721217394; x=1721822194; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=WElkakyy4B3dqTGhkHumOe7VtwvtJDMdwvAuHtPPYZ4=;
-        b=ifEEHh9gYWF+pguC5HORoPi+42HNCnZBF7lRhpgxiK48YXSe8fvJUIwe0lYvjOb79V
-         WkdAMutYB5QXEaq9Gau9FN22BG6EwdC7slaFLjbP4wRSMRcAyyJqvq+EwNC4ckbHJSm2
-         32BeA+Wcoq0fvg6V5o+++vM4l/OctkJAx4b1f+63PBSQ4PWAPdbs4oWLuPCEXOgXaCES
-         PQ8QUuP0jFmTxAveXM/Z4rluCibp49iIXyfxN+0RyCRz7/BdmZCd2Iosb4eDr6WKA5Hb
-         tEXvt3mjRDZemHiV5nuUXnZcLKB+FuVMb0CXkUzAA6WQiHuzaJXlmp+r5psxk75V+GWw
-         drJQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1721217394; x=1721822194;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=WElkakyy4B3dqTGhkHumOe7VtwvtJDMdwvAuHtPPYZ4=;
-        b=Ssd7xpY9jLWzL7rVbsi8XO+gDjSkv3LkIgkdf5A69LoSb+eNEEg9QJT5EF/d7r+/Yn
-         V3PPdcBW9YZPLXfsy2mV7RvX8gll2JLbfV4no95KZzwUshGe3EDIbzs7MGvrDBrGGFZO
-         ZRiffcIDnoJSKNNrjFbRLLpFlIOnjnsmaK0mAIJYcKXbn7XYFyMvjaH1VHcov1iqH3xj
-         lkcq7r7xzG+BiezSYaKiO9HLMLdWcOL4T6PYteTYv9/N3inBj2S54VpvzzT6QspToU9K
-         YT0/s26ZPH0AZd/BtC2c/lqm++XYMmtz7f8y4cmhYprXnbQZnGo2iPY/+UcLGuExZxWi
-         eFsQ==
-X-Forwarded-Encrypted: i=1; AJvYcCX/LgwwXX+g8tkgk339+y3zWWiKz6cWsP7uYNFUZg6yGCGKsGzcdckleZbe2VzvZtDAd5DE1/Ee7NHwbaVGRnvCUyjWJ3wUrRbmOQ==
-X-Gm-Message-State: AOJu0YwpwxQhHAGrndJlbYcquJ3XF/57v02pbs5Hj5yo10lozhZzbyuZ
-	YaMDENyKov+mYF0Ja5Qg9H9K2GcFn2OjCNgEe9DvSd3bEzwshp5tNckUHHDtG4E=
-X-Google-Smtp-Source: AGHT+IE/0Q/uXWsCRcJjxaWZkCF7Tdmfn9zPWdjtndHQVv5k5JZIMW+N7JiwOE20cY8Olz6fQuWeGw==
-X-Received: by 2002:a05:622a:1b9e:b0:447:e40a:f61a with SMTP id d75a77b69052e-44f86194b15mr17153611cf.18.1721217394254;
-        Wed, 17 Jul 2024 04:56:34 -0700 (PDT)
-Received: from ziepe.ca (hlfxns017vw-142-68-80-239.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.68.80.239])
-        by smtp.gmail.com with ESMTPSA id d75a77b69052e-44f5b7f0e7asm46534311cf.40.2024.07.17.04.56.33
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 17 Jul 2024 04:56:33 -0700 (PDT)
-Received: from jgg by wakko with local (Exim 4.95)
-	(envelope-from <jgg@ziepe.ca>)
-	id 1sU3Gr-00FTFD-12;
-	Wed, 17 Jul 2024 08:56:33 -0300
-Date: Wed, 17 Jul 2024 08:56:33 -0300
-From: Jason Gunthorpe <jgg@ziepe.ca>
+	 Content-Type:Content-Disposition:In-Reply-To; b=mKc3SzdG4pGAXaU2LeNjEzEZbHzEZjRNXfFBzix32pRFpaEc38jxKM7hXfWYXPQ2K0eTgnYDhotgWNFNlqYsD68jWP5LCRRC0oL0jj0VeAiv4SBV8SWy8IgjmSqGXt0+gT16q+LIBMlv1sFB9X3IhG7vaslTGR2GqeGvAjfOt6o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=L8xRCewe; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5BEBCC32782;
+	Wed, 17 Jul 2024 12:33:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1721219623;
+	bh=XPoHNvBvk5aWq4Z1/WJjxhDz8NnrxpWn5NC51h1FfQc=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=L8xRCeweLHGmv6CKbjkpl4zryLkOT68tBbaInoO2BoWnkD6sbKpEuyoAyc8KHw70t
+	 9khT7f05JdWaMoAuepBKqZ92egYEyal1O0M8jku1NCBVL+qbdyyAyt7fDXGts/ZYsN
+	 I55CCz8UC2zaZzyEHwxzjSaKTqopdAh3EDN1rw/jqsvQ5eIcKbbiH5LV5RFool9D1Z
+	 Dyh4p78JjS5Yzf7Q7lNO71AHUu0+PPCZyf+3gQ0DxL4r+RUznjEHLE3lSJoPGvQJRt
+	 hClqYrMiaoA+e6xVvBEQqLNdVg3JwlL3w9pqz9V0x8pmE86WyQzF1u97/u499idoJ9
+	 bRB5hNIoMLsow==
+Date: Wed, 17 Jul 2024 15:33:37 +0300
+From: Leon Romanovsky <leon@kernel.org>
 To: Omer Shpigelman <oshpigelman@habana.ai>
-Cc: Leon Romanovsky <leon@kernel.org>,
+Cc: Jason Gunthorpe <jgg@ziepe.ca>,
 	"gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
 	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
 	"linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
@@ -82,7 +53,7 @@ Cc: Leon Romanovsky <leon@kernel.org>,
 	"ogabbay@kernel.org" <ogabbay@kernel.org>,
 	Zvika Yehudai <zyehudai@habana.ai>
 Subject: Re: [PATCH 11/15] RDMA/hbl: add habanalabs RDMA driver
-Message-ID: <20240717115633.GH14050@ziepe.ca>
+Message-ID: <20240717123337.GI5630@unreal>
 References: <20240618125842.GG4025@unreal>
  <b4bda963-7026-4037-83e6-de74728569bd@habana.ai>
  <20240619105219.GO4025@unreal>
@@ -104,14 +75,89 @@ Content-Disposition: inline
 In-Reply-To: <2050e95c-4998-4b2e-88e7-5964429818b5@habana.ai>
 
 On Wed, Jul 17, 2024 at 10:51:03AM +0000, Omer Shpigelman wrote:
-
+> On 7/17/24 10:36, Leon Romanovsky wrote:
+> > On Wed, Jul 17, 2024 at 07:08:59AM +0000, Omer Shpigelman wrote:
+> >> On 7/16/24 16:40, Jason Gunthorpe wrote:
+> >>> On Sun, Jul 14, 2024 at 10:18:12AM +0000, Omer Shpigelman wrote:
+> >>>> On 7/12/24 16:08, Jason Gunthorpe wrote:
+> >>>>> [You don't often get email from jgg@ziepe.ca. Learn why this is important at https://aka.ms/LearnAboutSenderIdentification ]
+> >>>>>
+> >>>>> On Fri, Jun 28, 2024 at 10:24:32AM +0000, Omer Shpigelman wrote:
+> >>>>>
+> >>>>>> We need the core driver to access the IB driver (and to the ETH driver as
+> >>>>>> well). As you wrote, we can't use exported symbols from our IB driver nor
+> >>>>>> rely on function pointers, but what about providing the core driver an ops
+> >>>>>> structure? meaning exporting a register function from the core driver that
+> >>>>>> should be called by the IB driver during auxiliary device probe.
+> >>>>>> Something like:
+> >>>>>>
+> >>>>>> int hbl_cn_register_ib_aux_dev(struct auxiliary_device *adev,
+> >>>>>>                              struct hbl_ib_ops *ops)
+> >>>>>> {
+> >>>>>> ...
+> >>>>>> }
+> >>>>>> EXPORT_SYMBOL(hbl_cn_register_ib_aux_dev);
+> >>>>>
+> >>>>> Definately do not do some kind of double-register like this.
+> >>>>>
+> >>>>> The auxiliary_device scheme can already be extended to provide ops for
+> >>>>> each sub device.
+> >>>>>
+> >>>>> Like
+> >>>>>
+> >>>>> struct habana_driver {
+> >>>>>    struct auxiliary_driver base;
+> >>>>>    const struct habana_ops *ops;
+> >>>>> };
+> >>>>>
+> >>>>> If the ops are justified or not is a different question.
+> >>>>>
+> >>>>
+> >>>> Well, I suggested this double-register option because I got a comment that
+> >>>> the design pattern of embedded ops structure shouldn't be used.
+> >>>> So I'm confused now...
+> >>>
+> >>> Yeah, don't stick ops in random places, but the device_driver is the
+> >>> right place.
+> >>>
+> >>
+> >> Sorry, let me explain again. My original code has an ops structure
+> >> exactly like you are suggesting now (see struct hbl_aux_dev in the first
+> >> patch of the series). But I was instructed not to use this ops structure
+> >> and to rely on exported symbols for inter-driver communication.
+> >> I'll be happy to use this ops structure like in your example rather than
+> >> converting my code to use exported symbols.
+> >> Leon - am I missing anything? what's the verdict here?
+> > 
+> > You are missing the main sentence from Jason's response:  "don't stick ops in random places".
+> > 
+> > It is fine to have ops in device driver, so the core driver can call them. However, in your
+> > original code, you added ops everywhere. It caused to the need to implement module reference
+> > counting and crazy stuff like calls to lock and unlock functions from the aux driver to the core.
+> > 
+> > Verdict is still the same. Core driver should provide EXPORT_SYMBOLs, so the aux driver can call
+> > them directly and enjoy from proper module loading and unloading.
+> > 
+> > The aux driver can have ops in the device driver, so the core driver can call them to perform something
+> > specific for that aux driver.
+> > 
+> > Calls between aux drivers should be done via the core driver.
+> > 
+> > Thanks
+> 
 > The only place we have an ops structure is in the device driver,
-> similarly to Jason's example. In our code it is struct
-> hbl_aux_dev. What
+> similarly to Jason's example. In our code it is struct hbl_aux_dev. What
+> other random places did you see?
 
-No, hbl_aux_dev is an 'struct auxiliary_device', not a 'struct
-device_driver', it is different. I did literally mean struct
-device_driver.
+This is exactly random place.
 
-Jason
+I suggest you to take time, learn how existing drivers in netdev and
+RDMA uses auxbus infrastructure and follow the same pattern. There are
+many examples already in the kernel.
+
+And no, if you do everything right, you won't need custom module
+reference counting and other hacks. There is nothing special in your
+device/driver which requires special treatment.
+
+Thanks
 
