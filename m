@@ -1,103 +1,166 @@
-Return-Path: <linux-rdma+bounces-3936-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-3937-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 061C09394DA
-	for <lists+linux-rdma@lfdr.de>; Mon, 22 Jul 2024 22:40:46 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 56A41939F46
+	for <lists+linux-rdma@lfdr.de>; Tue, 23 Jul 2024 13:03:45 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B6019281FE6
-	for <lists+linux-rdma@lfdr.de>; Mon, 22 Jul 2024 20:40:44 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 87F841C22057
+	for <lists+linux-rdma@lfdr.de>; Tue, 23 Jul 2024 11:03:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 448C339FEF;
-	Mon, 22 Jul 2024 20:40:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DF70614F9D4;
+	Tue, 23 Jul 2024 11:03:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="VFmxf8PO"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from angie.orcam.me.uk (angie.orcam.me.uk [78.133.224.34])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B77C02C879;
-	Mon, 22 Jul 2024 20:40:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=78.133.224.34
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4CD0314A0AE
+	for <linux-rdma@vger.kernel.org>; Tue, 23 Jul 2024 11:03:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1721680835; cv=none; b=bs1+RObjDqYDTmvZpkt8NE43aDXcqHiv39rr+0OkwEmaaCpbLcwdroqjuIG1CgQykDt45jhxemFHvbVaKPw+3WqktfAW1Z7E1PrQnObLpBsdZO33u1gDJYufMREeiMJMN1QVyfZ0DhQRakY+XaVDYm8UoAsRsQ8ek/P4ACLq7l4=
+	t=1721732614; cv=none; b=I9HaoBbCiqGHvZpAvkMipSv28BxqvhF3Ga149Cgzx9d5dTti+WPj7Y8k/nm3cfuYdtX/PufbL7B1f25tgl4WMVEcCv8sgnOdLv+QfN1QW1+faHN9aY/16azGFlT+7fL4QgEyIvYQrqaxJbBZXGQyCGiHQg92gztISKpZiX2oxzE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1721680835; c=relaxed/simple;
-	bh=zMq1COTfxr28zTUf4ikrErgLDnhXEQIb4HQURyhtF7M=;
-	h=Date:From:To:cc:Subject:In-Reply-To:Message-ID:References:
-	 MIME-Version:Content-Type; b=gRPGefbVrH+lKXSrzaxPSc5NRjPcFSHpqsV6gCEdEXieZnaN9L3k6vcxM4oEvTWdX8K1fX4jPIN5L5D577sDRP7GRqb7txdXzzvJw+fD8vgLYyJxQ3d9lttW220zOZje8uHdbp3oVJaH2NTLzKniKP4hGIqrLJ92Q+GI1yJtdgc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=orcam.me.uk; spf=none smtp.mailfrom=orcam.me.uk; arc=none smtp.client-ip=78.133.224.34
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=orcam.me.uk
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=orcam.me.uk
-Received: by angie.orcam.me.uk (Postfix, from userid 500)
-	id 3F9AC92009C; Mon, 22 Jul 2024 22:40:29 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-	by angie.orcam.me.uk (Postfix) with ESMTP id 38AC992009B;
-	Mon, 22 Jul 2024 21:40:29 +0100 (BST)
-Date: Mon, 22 Jul 2024 21:40:29 +0100 (BST)
-From: "Maciej W. Rozycki" <macro@orcam.me.uk>
-To: Matthew W Carlis <mattc@purestorage.com>
-cc: =?UTF-8?Q?Ilpo_J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>, 
-    alex.williamson@redhat.com, Bjorn Helgaas <bhelgaas@google.com>, 
-    christophe.leroy@csgroup.eu, "David S. Miller" <davem@davemloft.net>, 
-    david.abdurachmanov@gmail.com, edumazet@google.com, kuba@kernel.org, 
-    leon@kernel.org, linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org, 
-    linux-rdma@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, lukas@wunner.de, 
-    mahesh@linux.ibm.com, mika.westerberg@linux.intel.com, mpe@ellerman.id.au, 
-    netdev@vger.kernel.org, npiggin@gmail.com, oohall@gmail.com, 
-    pabeni@redhat.com, pali@kernel.org, saeedm@nvidia.com, sr@denx.de, 
-    Jim Wilson <wilson@tuliptree.org>
-Subject: Re: PCI: Work around PCIe link training failures
-In-Reply-To: <20240722193407.23255-1-mattc@purestorage.com>
-Message-ID: <alpine.DEB.2.21.2407222117300.51207@angie.orcam.me.uk>
-References: <alpine.DEB.2.21.2306111619570.64925@angie.orcam.me.uk> <20240722193407.23255-1-mattc@purestorage.com>
-User-Agent: Alpine 2.21 (DEB 202 2017-01-01)
+	s=arc-20240116; t=1721732614; c=relaxed/simple;
+	bh=OOYTAc0WoZeRWU6IrWBLljNUtPQtZJ/KFGIhwGS8JGY=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=G4P9T9Sk52qqlnZ6NczPwR5LrCMKeVwmbs9ZfoRocxGHNSiJzL1M5kpTKSteVKXfrVqqQtnmLMYcsR5t6Fc1hPqZOnUaj5pcbGn8lN1f/bV3aTE8JF6zuIHJR0bqm36CKxCCr5w/Sv570+jlfqBJlNlEDEvmzfAPZA4x9fZoZAc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=VFmxf8PO; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1721732611;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=CG0TDjV60g77He2sGPyPmAEOzJNVXOyb6cTctysXaN0=;
+	b=VFmxf8PORVHXrpsqM4ltJ3s2pzk4wRztrymqsXv3TlV3/EU7ND2XTc1l/ADpOMqKJ89J8B
+	yvhQTsvekt/C+/FEhrYrEsBvczEON2QisqeYvfzv0nqnQwRzY63XxDHtvo593o0F1adxH5
+	SRJoY3VkPB4kUClj6s1pQOiZFAZavus=
+Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
+ [209.85.208.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-494-fGngH7FaNkuXI3aZnwq9tw-1; Tue, 23 Jul 2024 07:03:28 -0400
+X-MC-Unique: fGngH7FaNkuXI3aZnwq9tw-1
+Received: by mail-ed1-f71.google.com with SMTP id 4fb4d7f45d1cf-5a29c8de0f9so377336a12.2
+        for <linux-rdma@vger.kernel.org>; Tue, 23 Jul 2024 04:03:28 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1721732607; x=1722337407;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=CG0TDjV60g77He2sGPyPmAEOzJNVXOyb6cTctysXaN0=;
+        b=A5/LY7f1/A8PD/v3kCa9vU6EU3jUPPBtbMGHGq1nYOvfAgK2fihqou8+Vc5QpDYdf7
+         LAP8QQnUEQpbyWEW3FTJoPEUA2l+421wFjZs5Y2dWyTmPKQtqZTEWKd0Uie4+bizs4nw
+         wmEfKwJK5W+dXI08n1h6rnJzm4c7+8C2iZP/pM6s/b6eE8PQ2uIwP+iH68ekV8z9RTua
+         tPD4xb9LFXOs3nE5NhkAgkfhF5W27X4mUqYqEOA/vtO+qlhgOWDxC02em58TC9pCyWH7
+         h9dVy66BmPvsrcIEgNhshCTocwhts3bDEtaP4lLG0fOQPX31uYnjfhRVxRW8YgE68j+k
+         lBPQ==
+X-Forwarded-Encrypted: i=1; AJvYcCXD/Qsg6pSPjNPKpik+6Jf1M9EnlW4PjeXeZ3z8Wpze3qVqNNfjgogVnVvLw8DkYheLRgdVhw+PLnVyPDwUog7/Il1OiQ8em6nEuw==
+X-Gm-Message-State: AOJu0YziivmLv+QNhV2lfPBYRSmRhYdVNghkrdP10HCVncuxD/3fjxgo
+	tBuaWXOMoO2vTk0hUiW7XilkMNKJwhP4GI+gdYSGnrBfNYRe50rJK1IThPH74QwBrIKZjjLYJY0
+	dMgEHGwEq+VKRR5mSIuVlR/thUawZwFusAwaXmO04xx8/sO7IymGV6BOle8g=
+X-Received: by 2002:a17:907:9714:b0:a79:a1b2:1a5e with SMTP id a640c23a62f3a-a7a420b8f79mr397238266b.10.1721732607618;
+        Tue, 23 Jul 2024 04:03:27 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IGEPlHAKH81TEBLznH9C53oe8ITsSDPLiHU5eE2F64XzAAmhKtDgdv28xYCROtzjI27l2T9gQ==
+X-Received: by 2002:a17:907:9714:b0:a79:a1b2:1a5e with SMTP id a640c23a62f3a-a7a420b8f79mr397236266b.10.1721732607162;
+        Tue, 23 Jul 2024 04:03:27 -0700 (PDT)
+Received: from ?IPV6:2a0d:3344:173f:4f10::f71? ([2a0d:3344:173f:4f10::f71])
+        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-a7a8beef9cdsm92164066b.89.2024.07.23.04.03.25
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 23 Jul 2024 04:03:26 -0700 (PDT)
+Message-ID: <9552840d-b431-4e0b-b79f-e7a90431b709@redhat.com>
+Date: Tue, 23 Jul 2024 13:03:24 +0200
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH net-next v7] net/mlx5: Reclaim max 50K pages at once
+To: Anand Khoje <anand.a.khoje@oracle.com>, linux-rdma@vger.kernel.org,
+ linux-kernel@vger.kernel.org, netdev@vger.kernel.org
+Cc: saeedm@mellanox.com, leon@kernel.org, tariqt@nvidia.com,
+ edumazet@google.com, kuba@kernel.org, davem@davemloft.net,
+ rama.nichanamatlu@oracle.com, manjunath.b.patil@oracle.com
+References: <20240722134633.90620-1-anand.a.khoje@oracle.com>
+Content-Language: en-US
+From: Paolo Abeni <pabeni@redhat.com>
+In-Reply-To: <20240722134633.90620-1-anand.a.khoje@oracle.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-[+cc Ilpo for his previous involvement here]
+On 7/22/24 15:46, Anand Khoje wrote:
+> In non FLR context, at times CX-5 requests release of ~8 million FW pages.
+> This needs humongous number of cmd mailboxes, which to be released once
+> the pages are reclaimed. Release of humongous number of cmd mailboxes is
+> consuming cpu time running into many seconds. Which with non preemptible
+> kernels is leading to critical process starving on that cpu’s RQ.
+> On top of it, the FW does not use all the mailbox messages as it has a
+> limit of releasing 50K pages at once per MLX5_CMD_OP_MANAGE_PAGES +
+> MLX5_PAGES_TAKE device command. Hence, the allocation of these many
+> mailboxes is extra and adds unnecessary overhead.
+> To alleviate this, this change restricts the total number of pages
+> a worker will try to reclaim to maximum 50K pages in one go.
+> 
+> Our tests have shown significant benefit of this change in terms of
+> time consumed by dma_pool_free().
+> During a test where an event was raised by HCA
+> to release 1.3 Million pages, following observations were made:
+> 
+> - Without this change:
+> Number of mailbox messages allocated was around 20K, to accommodate
+> the DMA addresses of 1.3 million pages.
+> The average time spent by dma_pool_free() to free the DMA pool is between
+> 16 usec to 32 usec.
+>             value  ------------- Distribution ------------- count
+>               256 |                                         0
+>               512 |@                                        287
+>              1024 |@@@                                      1332
+>              2048 |@                                        656
+>              4096 |@@@@@                                    2599
+>              8192 |@@@@@@@@@@                               4755
+>             16384 |@@@@@@@@@@@@@@@                          7545
+>             32768 |@@@@@                                    2501
+>             65536 |                                         0
+> 
+> - With this change:
+> Number of mailbox messages allocated was around 800; this was to
+> accommodate DMA addresses of only 50K pages.
+> The average time spent by dma_pool_free() to free the DMA pool in this case
+> lies between 1 usec to 2 usec.
+>             value  ------------- Distribution ------------- count
+>               256 |                                         0
+>               512 |@@@@@@@@@@@@@@@@@@                       346
+>              1024 |@@@@@@@@@@@@@@@@@@@@@@                   435
+>              2048 |                                         0
+>              4096 |                                         0
+>              8192 |                                         1
+>             16384 |                                         0
+> 
+> Signed-off-by: Anand Khoje <anand.a.khoje@oracle.com>
+> Reviewed-by: Leon Romanovsky <leonro@nvidia.com>
+> Reviewed-by: Zhu Yanjun <yanjun.zhu@linux.dev>
+> Acked-by: Saeed Mahameed <saeedm@nvidia.com>
 
-On Mon, 22 Jul 2024, Matthew W Carlis wrote:
+## Form letter - net-next-closed
 
-> Sorry to resurrect this one, but I was wondering why the
-> PCI device ID in drivers/pci/quirks.c for the ASMedia ASM2824
-> isn't checked before forcing the link down to Gen1... We have
-> had to revert this patch during our kernel migration due to it
-> interacting poorly with at least one older Gen3 PLX PCIe switch
-> vendor/generation while using DPC. In another context we have
-> found similar issues during system bringup without DPC while
-> using a more legacy hot-plug model (BIOS defaults for us..).
-> In both contexts our devices are stuck at Gen1 after physical
-> hot-plug/insert, power-cycle.
+The merge window for v6.11 and therefore net-next is closed for new
+drivers, features, code refactoring and optimizations. We are currently
+accepting bug fixes only.
 
- Sorry to hear about your problems.  However the workaround is supposed to 
-only trigger if the link has already failed negotiation.  Could you please 
-be more specific as to the actual scenario where it triggers?
+Please repost when net-next reopens after July 29th.
 
- A scenario was mentioned earlier on, where a downstream device has been 
-removed from a slot and left behind the LBMS bit set in the corresponding 
-downstream port of the upstream device.  It then triggered the workaround 
-where the port was rescanned with the slot still empty, which then left 
-the link capped at 2.5GT/s for a device subsequently inserted.  Is it what 
-happens for you?
+RFC patches sent for review only are obviously welcome at any time.
 
- As I recall Ilpo has been working on changes that among others should 
-make sure no stale LBMS bit has been left set, but I'm not sure what the 
-state of affairs has been here.  Myself I've been too swamped in the 
-recent months and consequently didn't look into any improvements in this 
-area (and unrelated issues involving the system in question in my remote 
-lab have further impeded me).
+See:
+https://www.kernel.org/doc/html/next/process/maintainer-netdev.html#development-cycle
+-- 
+pw-bot: defer
 
-> Tried reading through the patch history/review but it was still
-> a little bit unclear to me. Can we add the device ID check as a
-> precondition to forcing link to Gen1?
-
- The main reason is it is believed that it is the downstream device 
-causing the issue, and obviously you can't fetch its ID if you can't 
-negotiate link so as to talk to it in the first place.
-
-  Maciej
 
