@@ -1,118 +1,157 @@
-Return-Path: <linux-rdma+bounces-3943-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-3944-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C9AEB93B784
-	for <lists+linux-rdma@lfdr.de>; Wed, 24 Jul 2024 21:18:49 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4D75293B7BB
+	for <lists+linux-rdma@lfdr.de>; Wed, 24 Jul 2024 22:00:41 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 074BA1C2039D
-	for <lists+linux-rdma@lfdr.de>; Wed, 24 Jul 2024 19:18:49 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0C51C1C23F33
+	for <lists+linux-rdma@lfdr.de>; Wed, 24 Jul 2024 20:00:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C890B16A95F;
-	Wed, 24 Jul 2024 19:18:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 623A615F41F;
+	Wed, 24 Jul 2024 20:00:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=purestorage.com header.i=@purestorage.com header.b="QjBQFpoD"
+	dkim=pass (1024-bit key) header.d=ideasonboard.com header.i=@ideasonboard.com header.b="OrYYKkvD"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-pf1-f176.google.com (mail-pf1-f176.google.com [209.85.210.176])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [213.167.242.64])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 053364F615
-	for <linux-rdma@vger.kernel.org>; Wed, 24 Jul 2024 19:18:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 52B3DEED8;
+	Wed, 24 Jul 2024 20:00:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.167.242.64
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1721848721; cv=none; b=uVjsX/y2DtLXN75aerbGW8fNissVHAuNdzNpfKUsMX8GxqO8beG7tUtLMfnerYwKNul0lMrvVViIHU2BAn8mMKSI+4rTBy+jqo1R/AfQLls+hAvA4E3Yk2Zi+fA1nvvZE87CATxcmdsUhwuAJm3Y8YZjUKjRHjFFXCaRG2gUo3w=
+	t=1721851235; cv=none; b=KLRG2VQucmI7dlzhMXfM6B6O+OBAY/fklDvRqyBRT7INUsUEGyea2jgM0Np/7oHQR3Q9iY7TdfY7hV2nMEewsQ/iXW+6e/eTO0twaJ5LYoGSMyBkVe/rYOpgAiEqcmUJH9s7BwlTq3sAwJBxNH33Vlf7kczwwcqBL+tkt5WuUsY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1721848721; c=relaxed/simple;
-	bh=a02GUhiWbAY4bVUVygn/E4p/MC1dnbGGAe2U0twtjyY=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References; b=t64cl8Sk6rC2P46D22+aiJfcQ1nmdFeA559bbADcoWipYS3TqKiHykqthNS7NjsqznrzJaihYNwUc1p8XJgdBy1CXP/BDUE0cEyTQ3Lw7RnrXI9txeqVSXP994tWNarWuEbUZoHlAj6skxcN/0a60df4gxw63Q1FLcii9EJWkkE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=purestorage.com; spf=fail smtp.mailfrom=purestorage.com; dkim=pass (2048-bit key) header.d=purestorage.com header.i=@purestorage.com header.b=QjBQFpoD; arc=none smtp.client-ip=209.85.210.176
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=purestorage.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=purestorage.com
-Received: by mail-pf1-f176.google.com with SMTP id d2e1a72fcca58-70d333d5890so139819b3a.0
-        for <linux-rdma@vger.kernel.org>; Wed, 24 Jul 2024 12:18:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=purestorage.com; s=google2022; t=1721848719; x=1722453519; darn=vger.kernel.org;
-        h=references:in-reply-to:message-id:date:subject:cc:to:from:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=a02GUhiWbAY4bVUVygn/E4p/MC1dnbGGAe2U0twtjyY=;
-        b=QjBQFpoDwueoj4zaWBfhpIt1PmvjhP2Y9gai1cprtX9q/W0xgDhg6D1r7Fe0BfRb5T
-         Whvz+oHWbAyt+QN0zkgz2uqn33X5T6cyrbEk8yESXM6lfO0vuo6qCPx/awdTKjqgWXRE
-         QJU70uNzrK0fyWJ1tMFTihcXFcAj0cxZjBwBCYUojvQ5agXyw9jk76WXAS8M+IrPf/3H
-         +k/I9TV/SIcUiM6wXrq0QcU2NkAau0VGiN6HrDOo2C9fsNtcx2BtgasM0sST07zD6Pe4
-         9f6PHzti41HELRptWhxDVjE9h1npUjjUOMY0YQVLieuILaIAzF6Xfml0dPynXZeZMPXN
-         Z4tw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1721848719; x=1722453519;
-        h=references:in-reply-to:message-id:date:subject:cc:to:from
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=a02GUhiWbAY4bVUVygn/E4p/MC1dnbGGAe2U0twtjyY=;
-        b=MI0YFuh8A3JB8fBIRtdKZNGFn2aeB8ayjrKd0ZbgW9nggrm2XjYsVAkkLfg0Jfu/fB
-         NZnD0A4vmN8qb5mqH9WBRwLgry4V8NIDFRaMvKhCCyPKX0tHYBuhOKQrfHbGX4+fvowq
-         v7GU20m7XcQDQuNDflZbFv41N5ex/pKSJcgHCbGAAm7KNsi5puC04ltXJzaasz57bjv9
-         YWOcfyg/fOW6jeYU8qGKcfPiLSx6IFs2Y7mE/zV1BnlTMnYUQ0mwLuPS1CJX2e/nQeBL
-         4E80a8++AKTCnmF/NzzADkD41MT+740uTwmtHGuYWtiu3b4ClvttsdYFBJlsGM3oSfHM
-         Phrg==
-X-Forwarded-Encrypted: i=1; AJvYcCU7O5lmwiU6u5qqRg4ilYDpSTIPcAD/WGFqQ0TWPV4xHTTjHQKcH0Kmw0FlqbgLDw04mvv4phhi2Ky8suGZU/VKVu1BEdgv/1fPug==
-X-Gm-Message-State: AOJu0YzEhthcWJGWkRSpvr2VAZPlPXnTCnWFIQr1KZtVRyeV2GJfrm9C
-	O1INUfKyPMOsVyEDH8Xc1l8yxdKScIfDxgWZs7WBE03Heu5Y+LAsh1K6cyXrxsA=
-X-Google-Smtp-Source: AGHT+IFUwWJ+8obz221hJG5x/jzoeJXTY4KS7z9HkU5UcBMvPmWxLk9KdioZD32zMoXRgep0BAh/AA==
-X-Received: by 2002:a05:6a00:3cd5:b0:70d:15b9:3ece with SMTP id d2e1a72fcca58-70eaa946a3bmr578402b3a.29.1721848719142;
-        Wed, 24 Jul 2024 12:18:39 -0700 (PDT)
-Received: from dev-mattc2.dev.purestorage.com ([208.88.159.128])
-        by smtp.googlemail.com with ESMTPSA id d2e1a72fcca58-70cff4b8166sm8862385b3a.85.2024.07.24.12.18.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 24 Jul 2024 12:18:38 -0700 (PDT)
-From: Matthew W Carlis <mattc@purestorage.com>
-To: macro@orcam.me.uk
-Cc: alex.williamson@redhat.com,
-	bhelgaas@google.com,
-	christophe.leroy@csgroup.eu,
-	davem@davemloft.net,
-	david.abdurachmanov@gmail.com,
-	edumazet@google.com,
-	ilpo.jarvinen@linux.intel.com,
-	kuba@kernel.org,
-	leon@kernel.org,
-	linux-kernel@vger.kernel.org,
-	linux-pci@vger.kernel.org,
-	linux-rdma@vger.kernel.org,
-	linuxppc-dev@lists.ozlabs.org,
-	lukas@wunner.de,
-	mahesh@linux.ibm.com,
-	mattc@purestorage.com,
-	mika.westerberg@linux.intel.com,
-	mpe@ellerman.id.au,
-	netdev@vger.kernel.org,
-	npiggin@gmail.com,
-	oohall@gmail.com,
-	pabeni@redhat.com,
-	pali@kernel.org,
-	saeedm@nvidia.com,
-	sr@denx.de,
-	wilson@tuliptree.org
-Subject: PCI: Work around PCIe link training failures
-Date: Wed, 24 Jul 2024 13:18:30 -0600
-Message-Id: <20240724191830.4807-1-mattc@purestorage.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <alpine.DEB.2.21.2407222117300.51207@angie.orcam.me.uk>
-References: <alpine.DEB.2.21.2407222117300.51207@angie.orcam.me.uk>
+	s=arc-20240116; t=1721851235; c=relaxed/simple;
+	bh=yqHeutwAuHZ84NcqwpxXXX61SqhtOingAlT+nU/ZtBk=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=dvLM5m5w85UvswSr8GF+cJmHBhfcgCB1apw1ekJMuq4tGur3F2Y+OAggS28/KHkQAormUw/BJa7V6CjvE3aPJlFCw9fqUk5fzdnKoguN8ifhpgYvb3guwh4br0fkemYme+uQQNdrsJmy+3Mlxq51/Lv+/rr63W9ccbXXLAdief4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ideasonboard.com; spf=pass smtp.mailfrom=ideasonboard.com; dkim=pass (1024-bit key) header.d=ideasonboard.com header.i=@ideasonboard.com header.b=OrYYKkvD; arc=none smtp.client-ip=213.167.242.64
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ideasonboard.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ideasonboard.com
+Received: from pendragon.ideasonboard.com (85-76-97-131-nat.elisa-mobile.fi [85.76.97.131])
+	by perceval.ideasonboard.com (Postfix) with ESMTPSA id 3D880566;
+	Wed, 24 Jul 2024 21:59:48 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+	s=mail; t=1721851188;
+	bh=yqHeutwAuHZ84NcqwpxXXX61SqhtOingAlT+nU/ZtBk=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=OrYYKkvDqEjm36nJehszCSZ+jU5ljXXz8DRZCc+HNQQLJ2B4tiGpGqgjTQ6mTOC/y
+	 RqKaHsuWMfdyyNOpp2HdqQjFYU3Gtv6fGJ9HL03+K4PWNCbVSGQKgEqrRL+kfiRv56
+	 mtU6w2rbyRcL9xIJ4bYFZC0ABndxwX1rSw0NhzHU=
+Date: Wed, 24 Jul 2024 23:00:12 +0300
+From: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+To: James Bottomley <James.Bottomley@HansenPartnership.com>
+Cc: Jiri Kosina <jikos@kernel.org>, Dan Williams <dan.j.williams@intel.com>,
+	ksummit@lists.linux.dev, linux-cxl@vger.kernel.org,
+	linux-rdma@vger.kernel.org, netdev@vger.kernel.org, jgg@nvidia.com
+Subject: Re: [MAINTAINERS SUMMIT] Device Passthrough Considered Harmful?
+Message-ID: <20240724200012.GA23293@pendragon.ideasonboard.com>
+References: <668c67a324609_ed99294c0@dwillia2-xfh.jf.intel.com.notmuch>
+ <nycvar.YFH.7.76.2407231320210.11380@cbobk.fhfr.pm>
+ <1e82a5c97e915144e01dd65575929c15bc0db397.camel@HansenPartnership.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <1e82a5c97e915144e01dd65575929c15bc0db397.camel@HansenPartnership.com>
 
-Sorry for belated response. I wasn't really sure when you first asked & I
-still only have a 'hand wavy' theory here. I think one thing that is getting
-us in trouble is when we turn the endpoint device on, then off, wait for a
-little while then turn it back on. It seems that the port here in this case
-is forced to Gen1 & there is not any path for the kernel to allow it to
-try another alternative again without an informed user to write the register.
+On Tue, Jul 23, 2024 at 07:36:24AM -0400, James Bottomley wrote:
+> On Tue, 2024-07-23 at 13:20 +0200, Jiri Kosina wrote:
+> > On Mon, 8 Jul 2024, Dan Williams wrote:
+> > 
+> > > 2/ Device passthrough, kernel passing opaque payloads, is already
+> > > taken for granted in many subsystems. USB and HID have "raw"
+> > > interfaces
+> > 
+> > Just as a completely random datapoint here: after I implemented
+> > hidraw inteface long time ago, I was a little bit hesitant about
+> > really merging it, because there was a general fear that this would
+> > shatter the HID driver ecosystem, making it difficult for people to
+> > find proper drivers  for their devices, etc.
+> 
+> The problem with hidraw is that userspace has to understand the device
+> to use it, but a lot of HID devices (keyboards, mice, serial ports,
+> etc.) want to fit into an existing ecosystem so they have to have a
+> kernel driver to avoid having to update all the user applications. 
+> However, entirely new devices don't have the existing ecosystem
+> problem.
+> 
+> > Turns out that that didn't happen. Drivers for generic devices are
+> > still implemented properly in the kernel, and hidraw is mostly used
+> > for rather specific, one-off solutions, where the vendor's business
+> > plan is "ship this one appliance and forget forever", which doesn't
+> > really cause any harm to the whole ecosystem.
+> 
+> That's not entirely true.  FIDO tokens (the ones Konstantin is
+> recommending for kernel.org access) are an entire class of devices that
+> use hidraw and don't have a kernel driver.  There's an array of
+> manufacturers producing them, but the CTAP specification and its
+> conformance is what keeps a single user mode driver (which is now
+> present as a separate implementation in all web browsers and the
+> userspace libfido2) for all of them.  Fido is definitely not a one off,
+> but on the other hand, not having a kernel driver doesn't seem to harm
+> the ecosystem and they can get away with it because there was no
+> existing device type for them to fit into (except, as you say, an array
+> of incompatible and short lived USB key tokens which annoyed everyone
+> by having usability limits due to the oneoffness).
 
-I'm still trying to barter for the time to really deeply dive into this so
-must apologize if this sounds crazy or couldn't be correct.
+While "userspace drivers" often cause allergic reactions, I think I
+won't cause a controversy if I say that we are all used to them in
+certain areas. My heart rate will increase if someone proposes replacing
+a USB webcam driver with a libusb-based solution, but I don't lose sleep
+over the fact that my GPU is mostly controlled by code in Mesa.
 
-- Matt
+What I get from the discussions I've followed or partcipated in over the
+years is that the main worry of free software communities is being
+forced to use closed-source userspace components, whether that would be
+to make the device usable at all, or to achieve decent level of
+performance or full feature set. We've been through years of mostly
+closed-source GPU support, of printer "windrivers", and quite a few
+other horrors. The good news is that we've so far overcome lots (most)
+of those challenges. Reverse engineering projects paid off, and so did
+working hand-in-hand with industry actors in multiple ways (both openly
+and behind the scenes). One could then legitimately ask why we're still
+scared.
+
+I can't fully answer that question, but there are two points that I
+think are relevant. Note that due to my background and experience, this
+will be heavily biased towards consumer and embedded hardware, not data
+centre-grade devices. Some technologies from the latter however have a
+tendency to migrate to the former over time, so the distinction isn't
+necessarily as relevant as one may consider.
+
+The first point is that hardware gets more complicated over time, and in
+some markets there's also an increase in the number of vendors and
+devices. There's a perceived (whether true or not) danger that we won't
+be able to keep up with just reverse engineering and a development model
+relying on hobyists. Getting vendors involved is important if we want to
+scale.
+
+Second, I think there's a fear of regression. For some categories of
+devices, we have made slow but real progress to try and convince the
+industry to be more open. This sometimes took a decade of work,
+patiently building bridges and creating ecosystems brick by brick. Some
+of those ecosystems are sturdy, some not so. Giving pass-through a blank
+check will likely have very different effects in different areas. I
+don't personally believe it will shatter everything, but I'm convinced
+it carries risk in areas where cooperation with vendors is in its
+infancy or is fragile for any other reason.
+
+Finally, let's not forget that pass-through APIs are not an all or
+nothing option. To cite that example only, DRM requires GPU drivers to
+have an open-source userspace implementation to merge the kernel driver,
+and the same subsystems strongly pushes for API standardization for
+display controllers. We can set different rules for different cases.
+
+-- 
+Regards,
+
+Laurent Pinchart
 
