@@ -1,112 +1,127 @@
-Return-Path: <linux-rdma+bounces-3996-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-3997-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4612793C954
-	for <lists+linux-rdma@lfdr.de>; Thu, 25 Jul 2024 22:07:34 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id F37E793C967
+	for <lists+linux-rdma@lfdr.de>; Thu, 25 Jul 2024 22:17:01 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 07437281C50
-	for <lists+linux-rdma@lfdr.de>; Thu, 25 Jul 2024 20:07:33 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7AE2B1F22A4C
+	for <lists+linux-rdma@lfdr.de>; Thu, 25 Jul 2024 20:17:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 28BEC77F11;
-	Thu, 25 Jul 2024 20:07:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CCE023771C;
+	Thu, 25 Jul 2024 20:16:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ideasonboard.com header.i=@ideasonboard.com header.b="PJ8T1cIr"
+	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="NuBBfnPz"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [213.167.242.64])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ej1-f42.google.com (mail-ej1-f42.google.com [209.85.218.42])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7402074C14;
-	Thu, 25 Jul 2024 20:07:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.167.242.64
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 977643224
+	for <linux-rdma@vger.kernel.org>; Thu, 25 Jul 2024 20:16:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1721938046; cv=none; b=AS9nrioezgsvaVqQ8Olca9OP5my8SV/hNHEWMCXhDrUl2maxdGvI0kVCpWRlmZTr33TFrvcBM8TCevi15cRQu9HFvlDXYqtJNlv/o4XnhV1Ej7EXPT6s/Bau92MM5OIns7cWrqBr8cf+DrRivSvZg3kNiKYBPNhNJmOmGEMB1hY=
+	t=1721938616; cv=none; b=JUfKt8glkse9tHcQIPtELjwG4aoDp2iXVnysyfX8+t4EeDdrWOG0eG3LVl5G7tfNLCbhf95cLB5vK9m/gcEtVmel6h4trN9ZtJgCDIRoiMOx9I+SQJ0Fqo+keRWKqcp66+blgRh/KC976XTATi3BCqQlMU8ZuA36g7Qpdt/UKoI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1721938046; c=relaxed/simple;
-	bh=35dVAUVjA+Qv/ORD37Iu0sEtS6k6TBUJehX9nFWZ6/Q=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=smxsRA12d7SlsXU0ge2CIMLQI8ZDVM6s5fu1OGlioi/cFsABP2hy6LV0KASMzFhb/i3FYpzZjAmaqXyerzGTqPfZoHR9FtuZLYUfQbrLSAmU+EqFHBzK1X+SkYSn/EIWdodUQ+qZJUudL9DOE7If+/WUomc37a49iI+2Due55jE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ideasonboard.com; spf=pass smtp.mailfrom=ideasonboard.com; dkim=pass (1024-bit key) header.d=ideasonboard.com header.i=@ideasonboard.com header.b=PJ8T1cIr; arc=none smtp.client-ip=213.167.242.64
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ideasonboard.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ideasonboard.com
-Received: from pendragon.ideasonboard.com (85-76-73-91-nat.elisa-mobile.fi [85.76.73.91])
-	by perceval.ideasonboard.com (Postfix) with ESMTPSA id CF211471;
-	Thu, 25 Jul 2024 22:06:38 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-	s=mail; t=1721937999;
-	bh=35dVAUVjA+Qv/ORD37Iu0sEtS6k6TBUJehX9nFWZ6/Q=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=PJ8T1cIr8cfp4APgPK76+TxiIfJHAGV0ympS3DUmGOF76UcC4/MsoaWlyGPbycpQg
-	 nnG/siG3qmmSMqstIQl74omn9gldYRgh8JjVKMr6yDl2lOixQyRBGBaLKmVlzqrtRO
-	 6u7EWTlEfVL9YI9tR+pcs3k4fO4len0OORZg1p5Q=
-Date: Thu, 25 Jul 2024 23:07:03 +0300
-From: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-To: Jason Gunthorpe <jgg@nvidia.com>
-Cc: James Bottomley <James.Bottomley@hansenpartnership.com>,
-	Jiri Kosina <jikos@kernel.org>,
-	Dan Williams <dan.j.williams@intel.com>, ksummit@lists.linux.dev,
-	linux-cxl@vger.kernel.org, linux-rdma@vger.kernel.org,
-	netdev@vger.kernel.org
-Subject: Re: [MAINTAINERS SUMMIT] Device Passthrough Considered Harmful?
-Message-ID: <20240725200703.GG14252@pendragon.ideasonboard.com>
-References: <668c67a324609_ed99294c0@dwillia2-xfh.jf.intel.com.notmuch>
- <nycvar.YFH.7.76.2407231320210.11380@cbobk.fhfr.pm>
- <1e82a5c97e915144e01dd65575929c15bc0db397.camel@HansenPartnership.com>
- <20240724200012.GA23293@pendragon.ideasonboard.com>
- <a75782218f34ae3cff725cbcfb321527f6aa2e14.camel@HansenPartnership.com>
- <20240725193125.GD14252@pendragon.ideasonboard.com>
- <20240725194314.GS3371438@nvidia.com>
+	s=arc-20240116; t=1721938616; c=relaxed/simple;
+	bh=IvdqZvTacjy6MAQ5qDRh4fw3aGKlpJ5TgBBkoXVfd24=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=hGsXHU9U01mKYJ5NF3gKM/cDwPOAnsHwO/lpQqGC0Ujt8yM/IctuR8xLu+fAZmRGWkyc2cFDd4bHuwelpRpOqmHcVSu6Q3/qWl0QAbtJXWYgcEKnYCqgs6ge9fJs8N+0uko2GwD+R7Gu17L2m3A3iOwcXi5s0K9msSlbBunXLGA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org; spf=pass smtp.mailfrom=linuxfoundation.org; dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b=NuBBfnPz; arc=none smtp.client-ip=209.85.218.42
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linuxfoundation.org
+Received: by mail-ej1-f42.google.com with SMTP id a640c23a62f3a-a7ad02501c3so111545066b.2
+        for <linux-rdma@vger.kernel.org>; Thu, 25 Jul 2024 13:16:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google; t=1721938613; x=1722543413; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=HYXza095pMOoHpnczk24pBNsoS9nyihsTN3J/3umgZw=;
+        b=NuBBfnPzcA8fFre8f8vTtfXrvzqUnVeTZn4Iy3iOneovAAT5SQuGDTYG9eWIdlJK8b
+         ptjA/DNncbXYZJ139oPcUpAT3EEKaNtt2O4x4vWqPoD6K+EiM+16+9vEkL1nSC1/+LKX
+         8CMxmHcpG8WHwX+483zUPJlhBl03AU48CGUhA=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1721938613; x=1722543413;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=HYXza095pMOoHpnczk24pBNsoS9nyihsTN3J/3umgZw=;
+        b=eAjq7KlEAyGcJ4wExn9DbOMcYM5VnetSaUJIsQ22Gb6cMddm0dEd6fI/aVOcnXrESQ
+         vQeZ+1je+/2RgBpdcS/88PJiwSsU18WFSiG8NT6T8dcZ0g0NNeqNvx69XIKQ6lhLYZM8
+         dBuAA5c5Y3wp5odLb3tRjIvikYfdY/LfMmjz7DjUiQsddE3rfd5CFOu+iCjABFe82lKl
+         cBzaES656ZjZU7gB55RSuxEvpqP3C/OL4kDf3E+wYEQEvF/g1RzGk4++jDKM3HUxF1jR
+         myZsfR3z6fXBeLn4xl+0T1KpOl9MW/X90mul1jVs7I6rmCtP5Wc/b8zIN2+51XsAHUwF
+         v3Jg==
+X-Forwarded-Encrypted: i=1; AJvYcCVsN4VfaO+KMOq50HiFIqV1BDiZJVr0DoPC5+QZXNb7boaM1aiKkcLRUsBr3YfmXsm4f0NYbPLqT6rJPlkSwhXaPGnQM44ELFSEog==
+X-Gm-Message-State: AOJu0YzvKt69aTaYprd12PgEwCJkqOTCvbAeQ9gbr94HSxnOzXUzmLTK
+	ckKzecdJSAeNpebjneaRFnX4g3kxeAvXnp/nV2+Bjx4u/2FKgEA5f2OYoHWEINYvtuP9l1GDNwn
+	cLbA=
+X-Google-Smtp-Source: AGHT+IHM6Bs4EbDlB5zuUQokfPP0DyP+enkffyuM+yIatqRKNBl4y8ZQc7UJYQv+wQbNdP1/0hEeBA==
+X-Received: by 2002:a17:906:c10f:b0:a72:aeff:dfed with SMTP id a640c23a62f3a-a7acb82371emr251419066b.53.1721938612720;
+        Thu, 25 Jul 2024 13:16:52 -0700 (PDT)
+Received: from mail-ed1-f42.google.com (mail-ed1-f42.google.com. [209.85.208.42])
+        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-a7acad4114esm103811666b.106.2024.07.25.13.16.52
+        for <linux-rdma@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 25 Jul 2024 13:16:52 -0700 (PDT)
+Received: by mail-ed1-f42.google.com with SMTP id 4fb4d7f45d1cf-5a88be88a3aso1725741a12.3
+        for <linux-rdma@vger.kernel.org>; Thu, 25 Jul 2024 13:16:52 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AJvYcCXZr2MleihKEBtHmZzPf64NtFsj9LKcZlgW7Rq/jMrZ9LiA0BQNwuVjehwBcQgPffHwVm4nEY1Eq10pLmxDBuPDGSRXwAbIq25JbA==
+X-Received: by 2002:a50:a686:0:b0:5a1:1:27a9 with SMTP id 4fb4d7f45d1cf-5ac63b59c17mr2468749a12.18.1721938304541;
+ Thu, 25 Jul 2024 13:11:44 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20240725194314.GS3371438@nvidia.com>
+References: <CGME20240724210020eucas1p2db4a3e71e4b9696804ac8f1bad6e1c61@eucas1p2.samsung.com>
+ <20240724210014.mc6nima6cekgiukx@joelS2.panther.com>
+In-Reply-To: <20240724210014.mc6nima6cekgiukx@joelS2.panther.com>
+From: Linus Torvalds <torvalds@linux-foundation.org>
+Date: Thu, 25 Jul 2024 13:11:27 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wiHHDGQ03qJc+yZKmUpmKOgbz26Tq=XBrYcmNww8L_V0A@mail.gmail.com>
+Message-ID: <CAHk-=wiHHDGQ03qJc+yZKmUpmKOgbz26Tq=XBrYcmNww8L_V0A@mail.gmail.com>
+Subject: Re: [GIT PULL] sysctl constification changes for v6.11-rc1
+To: Joel Granados <j.granados@samsung.com>
+Cc: =?UTF-8?B?VGhvbWFzIFdlae+/vXNjaHVo?= <linux@weissschuh.net>, 
+	Luis Chamberlain <mcgrof@kernel.org>, Kees Cook <kees@kernel.org>, Jakub Kicinski <kuba@kernel.org>, 
+	Dave Chinner <david@fromorbit.com>, linux-arm-kernel@lists.infradead.org, 
+	linux-kernel@vger.kernel.org, linux-s390@vger.kernel.org, 
+	linuxppc-dev@lists.ozlabs.org, netdev@vger.kernel.org, 
+	linux-riscv@lists.infradead.org, linux-fsdevel@vger.kernel.org, 
+	linux-mm@kvack.org, linux-xfs@vger.kernel.org, 
+	linux-trace-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org, 
+	linux-security-module@vger.kernel.org, netfilter-devel@vger.kernel.org, 
+	coreteam@netfilter.org, bpf@vger.kernel.org, kexec@lists.infradead.org, 
+	linux-hardening@vger.kernel.org, bridge@lists.linux.dev, 
+	mptcp@lists.linux.dev, lvs-devel@vger.kernel.org, linux-rdma@vger.kernel.org, 
+	rds-devel@oss.oracle.com, linux-sctp@vger.kernel.org, 
+	linux-nfs@vger.kernel.org, apparmor@lists.ubuntu.com
+Content-Type: text/plain; charset="UTF-8"
 
-Hi Jason,
+On Wed, 24 Jul 2024 at 14:00, Joel Granados <j.granados@samsung.com> wrote:
+>
+> This is my first time sending out a semantic patch, so get back to me if
+> you have issues or prefer some other way of receiving it.
 
-On Thu, Jul 25, 2024 at 04:43:14PM -0300, Jason Gunthorpe wrote:
-> On Thu, Jul 25, 2024 at 10:31:25PM +0300, Laurent Pinchart wrote:
-> 
-> > I don't think those are necessarily relevant examples, as far as device
-> > pass-through goes. Vendors have many times reverted to proprietary ways,
-> > and they still do, at least in the areas of the kernel I'm most active
-> > in. I've seen first hand a large SoC vendor very close to opening a
-> > significant part of their camera stack and changing their mind at the
-> > last minute when they heard they could possibly merge their code through
-> > a different subsystem with a pass-through blank cheque.
-> 
-> If someone came with a fully open source framework for (say) some
-> camera,
+Looks fine to me.
 
-We have such a framework, it's called libcamera :-) Multiple vendors are
-already collaborating.
+Sometimes if it's just a pure scripting change, people send me the
+script itself and just ask me to run it as a final thing before the
+rc1 release or something like that.
 
-> with a passthrough kernel driver design, would you reject it
-> soley because it is passthrough based and you are scared that
-> something else will use it to do something not open source?
+But since in practice there's almost always some additional manual
+cleanup, doing it this way with the script documented in the commit is
+typically the right way to go.
 
-It depends what "passthrough kernel driver design" means. If it means
-accessing the PCI registers directly from userspace, yes. That's what X
-used to do before KMS, and I'm glad it's now a distant past.
+This time it was details like whitespace alignment, sometimes it's
+"the script did 95%, but there was another call site that also needed
+updating", or just a documentation update to go in together with the
+change or whatever.
 
-If it means a kernel driver that takes the majority of its runtime
-parameters from a buffer blob assembled by userspace, while controlling
-clocks, power domains and performing basic validation in kernelspace,
-then I've already acked multiple drivers with such a design, exactly
-because they have open-source userspace that doesn't try to keep many
-device features proprietary and usable by closed-source userspace only.
+Anyway, pulled and just going through my build tests now.
 
-> I wouldn't agree with that position, I think denying users useful open
-> source solutions out of fear is not what Linux should be doing.
-
--- 
-Regards,
-
-Laurent Pinchart
+              Linus
 
