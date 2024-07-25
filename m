@@ -1,127 +1,97 @@
-Return-Path: <linux-rdma+bounces-3997-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-3998-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id F37E793C967
-	for <lists+linux-rdma@lfdr.de>; Thu, 25 Jul 2024 22:17:01 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9F08E93C9A5
+	for <lists+linux-rdma@lfdr.de>; Thu, 25 Jul 2024 22:37:15 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7AE2B1F22A4C
-	for <lists+linux-rdma@lfdr.de>; Thu, 25 Jul 2024 20:17:01 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D05E31C20BAC
+	for <lists+linux-rdma@lfdr.de>; Thu, 25 Jul 2024 20:37:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CCE023771C;
-	Thu, 25 Jul 2024 20:16:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E959713CA8D;
+	Thu, 25 Jul 2024 20:37:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="NuBBfnPz"
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="WDfnaRaD"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-ej1-f42.google.com (mail-ej1-f42.google.com [209.85.218.42])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 977643224
-	for <linux-rdma@vger.kernel.org>; Thu, 25 Jul 2024 20:16:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 66BAA4C7B;
+	Thu, 25 Jul 2024 20:37:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1721938616; cv=none; b=JUfKt8glkse9tHcQIPtELjwG4aoDp2iXVnysyfX8+t4EeDdrWOG0eG3LVl5G7tfNLCbhf95cLB5vK9m/gcEtVmel6h4trN9ZtJgCDIRoiMOx9I+SQJ0Fqo+keRWKqcp66+blgRh/KC976XTATi3BCqQlMU8ZuA36g7Qpdt/UKoI=
+	t=1721939822; cv=none; b=pnZ8kzqdxUTbrjgi/0m2FpPFTIR/MSfG0xLMKm+TZKYXFouIHTKcc0abIYFm1J/kR3u+NOvoVPLQlnrpbhfrUBjlz5R2ctniMQcOa/jxVi0kTFXO8VjR4RryQROP8oFSHcAR6ODWVNAX8J+9dRgLRSlvwTKeplq1YN2ChNzDxms=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1721938616; c=relaxed/simple;
-	bh=IvdqZvTacjy6MAQ5qDRh4fw3aGKlpJ5TgBBkoXVfd24=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=hGsXHU9U01mKYJ5NF3gKM/cDwPOAnsHwO/lpQqGC0Ujt8yM/IctuR8xLu+fAZmRGWkyc2cFDd4bHuwelpRpOqmHcVSu6Q3/qWl0QAbtJXWYgcEKnYCqgs6ge9fJs8N+0uko2GwD+R7Gu17L2m3A3iOwcXi5s0K9msSlbBunXLGA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org; spf=pass smtp.mailfrom=linuxfoundation.org; dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b=NuBBfnPz; arc=none smtp.client-ip=209.85.218.42
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linuxfoundation.org
-Received: by mail-ej1-f42.google.com with SMTP id a640c23a62f3a-a7ad02501c3so111545066b.2
-        for <linux-rdma@vger.kernel.org>; Thu, 25 Jul 2024 13:16:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google; t=1721938613; x=1722543413; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=HYXza095pMOoHpnczk24pBNsoS9nyihsTN3J/3umgZw=;
-        b=NuBBfnPzcA8fFre8f8vTtfXrvzqUnVeTZn4Iy3iOneovAAT5SQuGDTYG9eWIdlJK8b
-         ptjA/DNncbXYZJ139oPcUpAT3EEKaNtt2O4x4vWqPoD6K+EiM+16+9vEkL1nSC1/+LKX
-         8CMxmHcpG8WHwX+483zUPJlhBl03AU48CGUhA=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1721938613; x=1722543413;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=HYXza095pMOoHpnczk24pBNsoS9nyihsTN3J/3umgZw=;
-        b=eAjq7KlEAyGcJ4wExn9DbOMcYM5VnetSaUJIsQ22Gb6cMddm0dEd6fI/aVOcnXrESQ
-         vQeZ+1je+/2RgBpdcS/88PJiwSsU18WFSiG8NT6T8dcZ0g0NNeqNvx69XIKQ6lhLYZM8
-         dBuAA5c5Y3wp5odLb3tRjIvikYfdY/LfMmjz7DjUiQsddE3rfd5CFOu+iCjABFe82lKl
-         cBzaES656ZjZU7gB55RSuxEvpqP3C/OL4kDf3E+wYEQEvF/g1RzGk4++jDKM3HUxF1jR
-         myZsfR3z6fXBeLn4xl+0T1KpOl9MW/X90mul1jVs7I6rmCtP5Wc/b8zIN2+51XsAHUwF
-         v3Jg==
-X-Forwarded-Encrypted: i=1; AJvYcCVsN4VfaO+KMOq50HiFIqV1BDiZJVr0DoPC5+QZXNb7boaM1aiKkcLRUsBr3YfmXsm4f0NYbPLqT6rJPlkSwhXaPGnQM44ELFSEog==
-X-Gm-Message-State: AOJu0YzvKt69aTaYprd12PgEwCJkqOTCvbAeQ9gbr94HSxnOzXUzmLTK
-	ckKzecdJSAeNpebjneaRFnX4g3kxeAvXnp/nV2+Bjx4u/2FKgEA5f2OYoHWEINYvtuP9l1GDNwn
-	cLbA=
-X-Google-Smtp-Source: AGHT+IHM6Bs4EbDlB5zuUQokfPP0DyP+enkffyuM+yIatqRKNBl4y8ZQc7UJYQv+wQbNdP1/0hEeBA==
-X-Received: by 2002:a17:906:c10f:b0:a72:aeff:dfed with SMTP id a640c23a62f3a-a7acb82371emr251419066b.53.1721938612720;
-        Thu, 25 Jul 2024 13:16:52 -0700 (PDT)
-Received: from mail-ed1-f42.google.com (mail-ed1-f42.google.com. [209.85.208.42])
-        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-a7acad4114esm103811666b.106.2024.07.25.13.16.52
-        for <linux-rdma@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 25 Jul 2024 13:16:52 -0700 (PDT)
-Received: by mail-ed1-f42.google.com with SMTP id 4fb4d7f45d1cf-5a88be88a3aso1725741a12.3
-        for <linux-rdma@vger.kernel.org>; Thu, 25 Jul 2024 13:16:52 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCXZr2MleihKEBtHmZzPf64NtFsj9LKcZlgW7Rq/jMrZ9LiA0BQNwuVjehwBcQgPffHwVm4nEY1Eq10pLmxDBuPDGSRXwAbIq25JbA==
-X-Received: by 2002:a50:a686:0:b0:5a1:1:27a9 with SMTP id 4fb4d7f45d1cf-5ac63b59c17mr2468749a12.18.1721938304541;
- Thu, 25 Jul 2024 13:11:44 -0700 (PDT)
+	s=arc-20240116; t=1721939822; c=relaxed/simple;
+	bh=1R5Crw+ZwZOXSfA6dztHaSXevEbv/z06Mpcq8ujXfGo=;
+	h=Subject:From:In-Reply-To:References:Message-Id:Date:To:Cc; b=seedFjRO/lxz1zidWnPB8HT3Sa2wRLMvIHZ6pB0ESuhPeJ7WqppSLxb3G92hjn7CEgPhrKCb57Rn3efmFPw/U7IfZjUSa0G6OVdsulF0VUYN94C6eDmcl9tBCMVCOJjgr0lgecqE8qFHV7eEuBePuoVNc5GQV3YMH0d9B/NU27w=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=WDfnaRaD; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 3CAA4C116B1;
+	Thu, 25 Jul 2024 20:37:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1721939822;
+	bh=1R5Crw+ZwZOXSfA6dztHaSXevEbv/z06Mpcq8ujXfGo=;
+	h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
+	b=WDfnaRaDNE+J6fLuQmaWOq0eu4xt8vrjpGpgzKf8awCk2ncc3CtJgaCG0Hqj7mkzH
+	 UoFpaBz93eVtipyG7XwIyy+aPOZYvlKkx1jddyRJ33g8V5sFd8c9Q3jnneNP0+8L+E
+	 NwzfV4Rx4Ab66C8XgUABs2FgDwBVgWRoEApitYsOBdYg7Tnv1u5ABobfseBFKMtQOK
+	 ySj1sRI+LhTGkJXU5EpVQVAoDpnvqbzNBYZssQddaZNq//Vz+4W7SbGbuq+4pNQLH+
+	 8GL0GHV5QZqFASUwymJc8KCwqU5es4tPtX5yD7rDzhKENPx1+lVxXt/x771BGahmYW
+	 0G8q9ZQ+NQoLw==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 2DA87C43445;
+	Thu, 25 Jul 2024 20:37:02 +0000 (UTC)
+Subject: Re: [GIT PULL] sysctl constification changes for v6.11-rc1
+From: pr-tracker-bot@kernel.org
+In-Reply-To: <20240724210014.mc6nima6cekgiukx@joelS2.panther.com>
+References: <CGME20240724210020eucas1p2db4a3e71e4b9696804ac8f1bad6e1c61@eucas1p2.samsung.com> <20240724210014.mc6nima6cekgiukx@joelS2.panther.com>
+X-PR-Tracked-List-Id: <linux-s390.vger.kernel.org>
+X-PR-Tracked-Message-Id: <20240724210014.mc6nima6cekgiukx@joelS2.panther.com>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/sysctl/sysctl.git/ tags/constfy-sysctl-6.11-rc1
+X-PR-Tracked-Commit-Id: 78eb4ea25cd5fdbdae7eb9fdf87b99195ff67508
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: b485625078cab3b824a84ce185b6e73733704b5b
+Message-Id: <172193982217.17931.952471986314376816.pr-tracker-bot@kernel.org>
+Date: Thu, 25 Jul 2024 20:37:02 +0000
+To: Joel Granados <j.granados@samsung.com>
+Cc: Linus Torvalds <torvalds@linux-foundation.org>,
+	Joel Granados <j.granados@samsung.com>,
+	Thomas =?utf-8?B?V2Vp77+9c2NodWg=?= <linux@weissschuh.net>,
+	Luis Chamberlain <mcgrof@kernel.org>, Kees Cook <kees@kernel.org>,
+	Jakub Kicinski <kuba@kernel.org>, Dave Chinner <david@fromorbit.com>,
+	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+	linux-s390@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+	netdev@vger.kernel.org, linux-riscv@lists.infradead.org,
+	linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+	linux-xfs@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
+	linux-perf-users@vger.kernel.org,
+	linux-security-module@vger.kernel.org,
+	netfilter-devel@vger.kernel.org, coreteam@netfilter.org,
+	bpf@vger.kernel.org, kexec@lists.infradead.org,
+	linux-hardening@vger.kernel.org, bridge@lists.linux.dev,
+	mptcp@lists.linux.dev, lvs-devel@vger.kernel.org,
+	linux-rdma@vger.kernel.org, rds-devel@oss.oracle.com,
+	linux-sctp@vger.kernel.org, linux-nfs@vger.kernel.org,
+	apparmor@lists.ub, untu.com@web.codeaurora.org
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-References: <CGME20240724210020eucas1p2db4a3e71e4b9696804ac8f1bad6e1c61@eucas1p2.samsung.com>
- <20240724210014.mc6nima6cekgiukx@joelS2.panther.com>
-In-Reply-To: <20240724210014.mc6nima6cekgiukx@joelS2.panther.com>
-From: Linus Torvalds <torvalds@linux-foundation.org>
-Date: Thu, 25 Jul 2024 13:11:27 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wiHHDGQ03qJc+yZKmUpmKOgbz26Tq=XBrYcmNww8L_V0A@mail.gmail.com>
-Message-ID: <CAHk-=wiHHDGQ03qJc+yZKmUpmKOgbz26Tq=XBrYcmNww8L_V0A@mail.gmail.com>
-Subject: Re: [GIT PULL] sysctl constification changes for v6.11-rc1
-To: Joel Granados <j.granados@samsung.com>
-Cc: =?UTF-8?B?VGhvbWFzIFdlae+/vXNjaHVo?= <linux@weissschuh.net>, 
-	Luis Chamberlain <mcgrof@kernel.org>, Kees Cook <kees@kernel.org>, Jakub Kicinski <kuba@kernel.org>, 
-	Dave Chinner <david@fromorbit.com>, linux-arm-kernel@lists.infradead.org, 
-	linux-kernel@vger.kernel.org, linux-s390@vger.kernel.org, 
-	linuxppc-dev@lists.ozlabs.org, netdev@vger.kernel.org, 
-	linux-riscv@lists.infradead.org, linux-fsdevel@vger.kernel.org, 
-	linux-mm@kvack.org, linux-xfs@vger.kernel.org, 
-	linux-trace-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org, 
-	linux-security-module@vger.kernel.org, netfilter-devel@vger.kernel.org, 
-	coreteam@netfilter.org, bpf@vger.kernel.org, kexec@lists.infradead.org, 
-	linux-hardening@vger.kernel.org, bridge@lists.linux.dev, 
-	mptcp@lists.linux.dev, lvs-devel@vger.kernel.org, linux-rdma@vger.kernel.org, 
-	rds-devel@oss.oracle.com, linux-sctp@vger.kernel.org, 
-	linux-nfs@vger.kernel.org, apparmor@lists.ubuntu.com
-Content-Type: text/plain; charset="UTF-8"
 
-On Wed, 24 Jul 2024 at 14:00, Joel Granados <j.granados@samsung.com> wrote:
->
-> This is my first time sending out a semantic patch, so get back to me if
-> you have issues or prefer some other way of receiving it.
+The pull request you sent on Wed, 24 Jul 2024 23:00:14 +0200:
 
-Looks fine to me.
+> git://git.kernel.org/pub/scm/linux/kernel/git/sysctl/sysctl.git/ tags/constfy-sysctl-6.11-rc1
 
-Sometimes if it's just a pure scripting change, people send me the
-script itself and just ask me to run it as a final thing before the
-rc1 release or something like that.
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/b485625078cab3b824a84ce185b6e73733704b5b
 
-But since in practice there's almost always some additional manual
-cleanup, doing it this way with the script documented in the commit is
-typically the right way to go.
+Thank you!
 
-This time it was details like whitespace alignment, sometimes it's
-"the script did 95%, but there was another call site that also needed
-updating", or just a documentation update to go in together with the
-change or whatever.
-
-Anyway, pulled and just going through my build tests now.
-
-              Linus
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
 
