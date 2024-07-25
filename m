@@ -1,196 +1,149 @@
-Return-Path: <linux-rdma+bounces-3981-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-3983-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9013793C289
-	for <lists+linux-rdma@lfdr.de>; Thu, 25 Jul 2024 14:57:19 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3956E93C2A8
+	for <lists+linux-rdma@lfdr.de>; Thu, 25 Jul 2024 15:02:38 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B3FFC1C20ACF
-	for <lists+linux-rdma@lfdr.de>; Thu, 25 Jul 2024 12:57:18 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E73B4281D00
+	for <lists+linux-rdma@lfdr.de>; Thu, 25 Jul 2024 13:02:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 87DF119AD6E;
-	Thu, 25 Jul 2024 12:57:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8148C19AD72;
+	Thu, 25 Jul 2024 13:02:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="eEI6C95v"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="dJghbAm2"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from out-186.mta1.migadu.com (out-186.mta1.migadu.com [95.215.58.186])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-oi1-f171.google.com (mail-oi1-f171.google.com [209.85.167.171])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BACF119AD6C
-	for <linux-rdma@vger.kernel.org>; Thu, 25 Jul 2024 12:57:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.186
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D52F3199E8A;
+	Thu, 25 Jul 2024 13:02:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1721912235; cv=none; b=kjqiozhBVm4s+QGXfFsFeA9Chojaz6Ronch3dUSqoa/nwN2cLe4UfQBYmHxdBEvvupF7rc1hve7Ah79q2hz1QrPEeA+bwJDL6slZ0f5w7AgcQvnkBIdx1CYMcBFp/ygqoG48JhmvQrLsX83IxUhirQSYsQEMCwaUEZRzfmSpjpU=
+	t=1721912554; cv=none; b=FippXvbPHwsh7CWhoyl0mlr5dqnrJTKfFLsBYjEr/r4ItS6wKEr5LeuBcIwImCaEEll7ZMiGi64ZAegjkQpCoCw0srGz/R3iOGDc8052IBvvQvXU5I5v0gPULJXavUFbjNicFTHs2FShKVrAYIWJf3U4RfEJ9ZeqerWGTEHGOHQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1721912235; c=relaxed/simple;
-	bh=NWVS0sh4vpStyFvKsoWQrgccVozcEaJHs/9WDhgDGWg=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=WDoxjoYG0uyuZL3s/ylhgr+Z+j0h09mvvw0zzDBn5AZ0W4r269R3zCTwG2NjKLlMf0D1okRbHQr0SlQOAoCM4Uq5b2llTgyfMDwO0Bpr0wsL10qKOhgng64vNiRbVhjSa5Eb+CQwDFATs5Rxszv1Yk3OVt0ZTkDthqzxt7BGDXk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=eEI6C95v; arc=none smtp.client-ip=95.215.58.186
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <17ba17f3-635f-41fe-bc5c-ab15f590c41e@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1721912226;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=PM7wsyh147ArD6p8TXkouqyJAfAdjLvDBo+c/og17WQ=;
-	b=eEI6C95v1tpK8OdLgdsOQW7j4ejeguoMuqyj0dC+5++oBnj6Am4EWpHQnhDUJGuIOkF8aH
-	gp+OjkDJcfDVkmrarK/JzO5WginYmQgUmVtSnkTU1Tf+2hQqAsovlSy3On9AvV9b97f5id
-	PXIMGYHoh3Mhn9vNK0zuT11WEpCgBXM=
-Date: Thu, 25 Jul 2024 14:57:00 +0200
+	s=arc-20240116; t=1721912554; c=relaxed/simple;
+	bh=0KsN8bTzJfBmQj967+w/L9AqPEgh6PQzXgnINTU0gQY=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=T4CaNoq0C9TyOjD/01sHd2HFDsjWt4RIzipCnjy7O0iRh29nExApW6iW0TSzIZde1AxqIwGnmzS+JRS7AICJPqlpkxrrI02+NzBuk+h5BA+7Uyc7l9zhOLJE5IsewL212ZMxjW+mPB/pBMoJPunryNzMfDr86b0kJiNHFcQyvdY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=dJghbAm2; arc=none smtp.client-ip=209.85.167.171
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-oi1-f171.google.com with SMTP id 5614622812f47-3db157d3bb9so259478b6e.2;
+        Thu, 25 Jul 2024 06:02:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1721912552; x=1722517352; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=0KsN8bTzJfBmQj967+w/L9AqPEgh6PQzXgnINTU0gQY=;
+        b=dJghbAm2d3hQbRo6ryCDGxqfByJMPYh9fEv40j4cLd5g8lhiwUCbIozgQKszjDzIqn
+         xwJixptyCXGcCd6oSxedeztTN5gPFbGdiDvbGynl7WYV3Y+e+ZIOcoYetXf4+KbGFr+8
+         VphlwLkrMCJ8LkzvIzvoJEy5gF1Wlhl3zZFnhjvjVtGRukEndv9dqaUJ/Iyb3QSliZYA
+         LPkxNx5S9e465bALYHUpfyj9l0YmOHiBdWQItnzjNZqqGg4iEk9cvJSFgyJ9BuTwEIYo
+         DM488RXEjq2Es5QeJoB0ikWC+oKVtwPw/EM5YmjgYEWyI7OOGHaqj3Be8+3VsS78BgQX
+         Ap6Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1721912552; x=1722517352;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=0KsN8bTzJfBmQj967+w/L9AqPEgh6PQzXgnINTU0gQY=;
+        b=ITyvNHPj5w9lE7MoHQq+EnirsYChlcy3AU2249teM6mojywXFhXk5S6+s8gtuTtPBo
+         jGpj1HIfEumo7SEZ7Al+D8z/hvsHmN/LpoM3RBQrKQPzULsaHRyoNjG6wnd7qeUByNMB
+         GuC+j2OI5+4W2A6hFbncHoOKzyw0h8pXHampqHYRScs596s4YR6SuPpa4p5h6Cxo/i3M
+         5dwNS3Rj+T6Rt96glFTEk6mUinMPbv7M7ZzGemEie/QxIkXawswDkBVe1d8zmOATD61Z
+         Z406AoV4Pt+eHOdAV6n7BtS+P53bTTTQE8Tpb1qBaEM4/zIJCLd41RGYY01uphNoEC91
+         abkw==
+X-Forwarded-Encrypted: i=1; AJvYcCVfsk4bvd+nrRowp3moRLHw8Q0RtX6iL168uQyw+OBvlRalFMLF+IJuY5Mo+gt1+fV2A701F4mu7jP27HcEhRCADVNmTVls2ZpNgYNjdnjHr0oEHSokRfJuaTBmRCXd1FXKY38Doky/D5Myl5Inzxfmx/156CCNoM3IrOEuvA==
+X-Gm-Message-State: AOJu0YxmKTqGOXJQs1p70g5CLd5xwDkCHRFZ53NwYNhv9tw3ye6JuhG9
+	7cD1nadFMhr3lDY0sP8LqInFN6WHCiBtlSbe6wPQocTxxxssaLg5lavgDbzqpXLiXG87Za5hSz8
+	Q3VWtxfasIK0dVuUY8EQaqR8hQVI=
+X-Google-Smtp-Source: AGHT+IFnwa2463n9AhT8ZQ4MfQ5LP7Y8xO4yJdy25Rk02R0VU5cXlOQdpYjPaSUGwmh63uOKNiEP9uSHrDvmPfERl9Y=
+X-Received: by 2002:a05:6358:728:b0:1ac:f839:e001 with SMTP id
+ e5c5f4694b2df-1acfb966725mr193976855d.22.1721912551739; Thu, 25 Jul 2024
+ 06:02:31 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH for-rc] RDMA/siw: Remove NETDEV_GOING_DOWN event handler
-To: Showrya M N <showrya@chelsio.com>, jgg@nvidia.com, leonro@nvidia.com,
- bmt@zurich.ibm.com
-Cc: linux-rdma@vger.kernel.org, Potnuri Bharat Teja <bharat@chelsio.com>
-References: <20240724085428.3813-1-showrya@chelsio.com>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Zhu Yanjun <yanjun.zhu@linux.dev>
-In-Reply-To: <20240724085428.3813-1-showrya@chelsio.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
+References: <668c67a324609_ed99294c0@dwillia2-xfh.jf.intel.com.notmuch>
+ <nycvar.YFH.7.76.2407231320210.11380@cbobk.fhfr.pm> <1e82a5c97e915144e01dd65575929c15bc0db397.camel@HansenPartnership.com>
+ <20240724200012.GA23293@pendragon.ideasonboard.com> <CAPybu_0SN7m=m=+z5hu_4M+STGh2t0J-hFEmtDTgx6fYWKzk3A@mail.gmail.com>
+ <20240725122315.GE7022@unreal>
+In-Reply-To: <20240725122315.GE7022@unreal>
+From: Ricardo Ribalda Delgado <ricardo.ribalda@gmail.com>
+Date: Thu, 25 Jul 2024 15:02:13 +0200
+Message-ID: <CAPybu_1XsNq=ExrO+8XLqnV_KvSaqooM=yNy5iuzcD=-k5CdGA@mail.gmail.com>
+Subject: Re: [MAINTAINERS SUMMIT] Device Passthrough Considered Harmful?
+To: Leon Romanovsky <leon@kernel.org>
+Cc: Laurent Pinchart <laurent.pinchart@ideasonboard.com>, 
+	James Bottomley <James.Bottomley@hansenpartnership.com>, Jiri Kosina <jikos@kernel.org>, 
+	Dan Williams <dan.j.williams@intel.com>, ksummit@lists.linux.dev, 
+	linux-cxl@vger.kernel.org, linux-rdma@vger.kernel.org, netdev@vger.kernel.org, 
+	jgg@nvidia.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-在 2024/7/24 10:54, Showrya M N 写道:
-> Toggling link while running NVME-oF over siw hits a kernel panic
-> due to race condition within siw_handler and ib_destroy_qp().
-> The IB_EVENT_PORT_ERR event can alone handle destroying qps.
-> therefore remove unwanted processing in siw.
+On Thu, Jul 25, 2024 at 2:23=E2=80=AFPM Leon Romanovsky <leon@kernel.org> w=
+rote:
+>
+> On Thu, Jul 25, 2024 at 11:26:38AM +0200, Ricardo Ribalda Delgado wrote:
+> > On Wed, Jul 24, 2024 at 10:02=E2=80=AFPM Laurent Pinchart
+> > <laurent.pinchart@ideasonboard.com> wrote:
+>
+> <...>
+>
+> >
+> > It would be great to define what are the free software communities
+> > here. Distros and final users are also "free software communities" and
+> > they do not care about niche use cases covered by proprietary
+> > software.
+>
+> Are you certain about that?
 
-In the link:
-https://lore.kernel.org/all/000000000000fe34b1061e0ffa36@google.com/T/
+As a user, and as an open source Distro developer I have a small hint.
+But you could also ask users what they think about not being able to
+use their notebook's cameras. The last time that I could not use some
+basic hardware from a notebook with Linux was 20 years ago.
 
-The Call Trace is as below. Not sure if this call trace is the same with 
-this commit.
+>
+> > They only care (and should care) about normal workflows.
+>
+> What is a normal workflow?
+> Does it mean that if user bought something very expensive he
+> should not be able to use it with free software, because his
+> usage is different from yours?
+>
+> Thanks
 
-Call Trace:
-  <TASK>
-  __debug_object_init+0x2a9/0x400 lib/debugobjects.c:654
-  siw_device_goes_down drivers/infiniband/sw/siw/siw_main.c:395 [inline]
-  siw_netdev_event+0x3bd/0x620 drivers/infiniband/sw/siw/siw_main.c:422
-  notifier_call_chain+0x19f/0x3e0 kernel/notifier.c:93
-  call_netdevice_notifiers_extack net/core/dev.c:2032 [inline]
-  call_netdevice_notifiers net/core/dev.c:2046 [inline]
-  __dev_close_many+0x146/0x300 net/core/dev.c:1532
-  __dev_close net/core/dev.c:1570 [inline]
-  __dev_change_flags+0x30e/0x6f0 net/core/dev.c:8835
-  dev_change_flags+0x8b/0x1a0 net/core/dev.c:8909
-  do_setlink+0xccd/0x41f0 net/core/rtnetlink.c:2900
-  rtnl_setlink+0x40d/0x5a0 net/core/rtnetlink.c:3201
-  rtnetlink_rcv_msg+0x73f/0xcf0 net/core/rtnetlink.c:6647
-  netlink_rcv_skb+0x1e3/0x430 net/netlink/af_netlink.c:2550
-  netlink_unicast_kernel net/netlink/af_netlink.c:1331 [inline]
-  netlink_unicast+0x7f0/0x990 net/netlink/af_netlink.c:1357
-  netlink_sendmsg+0x8e4/0xcb0 net/netlink/af_netlink.c:1901
-  sock_sendmsg_nosec net/socket.c:730 [inline]
-  __sock_sendmsg+0x221/0x270 net/socket.c:745
-  sock_write_iter+0x2dd/0x400 net/socket.c:1160
-  do_iter_readv_writev+0x60a/0x890
-  vfs_writev+0x37c/0xbb0 fs/read_write.c:971
-  do_writev+0x1b1/0x350 fs/read_write.c:1018
-  do_syscall_x64 arch/x86/entry/common.c:52 [inline]
-  do_syscall_64+0xf3/0x230 arch/x86/entry/common.c:83
-  entry_SYSCALL_64_after_hwframe+0x77/0x7f
-RIP: 0033:0x7fda35175f19
-Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 
-f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 
-f0 ff ff 73 01 c3 48 c7 c1 a8 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007fda35fff048 EFLAGS: 00000246 ORIG_RAX: 0000000000000014
-RAX: ffffffffffffffda RBX: 00007fda35305f60 RCX: 00007fda35175f19
-RDX: 0000000000000001 RSI: 00000000200003c0 RDI: 0000000000000006
-RBP: 00007fda351e4e68 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
-R13: 000000000000000b R14: 00007fda35305f60 R15: 00007ffc0c742898
-  </TASK>
+It means that we should not block the standard usage for 99% of the
+population just because 1% of the users cannot do something fancy with
+their device.
 
-Zhu Yanjun
+Let me give you an example. When I buy a camera I want to be able to
+do Video Conferencing and take some static photos of documents. I do
+not care about: automatic makeup, AI generated background, unicorn
+filters, eyes recentering... But we need to give a way to vendors to
+implement those things closely, without the marketing differentiators,
+vendors have zero incentive to invest in Linux, and that affects all
+the population.
 
-> 
-> Suggested-by: Bernard Metzler <bmt@zurich.ibm.com>
-> Signed-off-by: Showrya M N <showrya@chelsio.com>
-> Signed-off-by: Potnuri Bharat Teja <bharat@chelsio.com>
-> ---
->   drivers/infiniband/sw/siw/siw.h      |  2 --
->   drivers/infiniband/sw/siw/siw_main.c | 37 ----------------------------
->   2 files changed, 39 deletions(-)
-> 
-> diff --git a/drivers/infiniband/sw/siw/siw.h b/drivers/infiniband/sw/siw/siw.h
-> index 75253f2b3e3d..86d4d6a2170e 100644
-> --- a/drivers/infiniband/sw/siw/siw.h
-> +++ b/drivers/infiniband/sw/siw/siw.h
-> @@ -94,8 +94,6 @@ struct siw_device {
->   	atomic_t num_mr;
->   	atomic_t num_srq;
->   	atomic_t num_ctx;
-> -
-> -	struct work_struct netdev_down;
->   };
->   
->   struct siw_ucontext {
-> diff --git a/drivers/infiniband/sw/siw/siw_main.c b/drivers/infiniband/sw/siw/siw_main.c
-> index 61ad8ca3d1a2..9a50a9dcce39 100644
-> --- a/drivers/infiniband/sw/siw/siw_main.c
-> +++ b/drivers/infiniband/sw/siw/siw_main.c
-> @@ -364,39 +364,6 @@ static struct siw_device *siw_device_create(struct net_device *netdev)
->   	return NULL;
->   }
->   
-> -/*
-> - * Network link becomes unavailable. Mark all
-> - * affected QP's accordingly.
-> - */
-> -static void siw_netdev_down(struct work_struct *work)
-> -{
-> -	struct siw_device *sdev =
-> -		container_of(work, struct siw_device, netdev_down);
-> -
-> -	struct siw_qp_attrs qp_attrs;
-> -	struct list_head *pos, *tmp;
-> -
-> -	memset(&qp_attrs, 0, sizeof(qp_attrs));
-> -	qp_attrs.state = SIW_QP_STATE_ERROR;
-> -
-> -	list_for_each_safe(pos, tmp, &sdev->qp_list) {
-> -		struct siw_qp *qp = list_entry(pos, struct siw_qp, devq);
-> -
-> -		down_write(&qp->state_lock);
-> -		WARN_ON(siw_qp_modify(qp, &qp_attrs, SIW_QP_ATTR_STATE));
-> -		up_write(&qp->state_lock);
-> -	}
-> -	ib_device_put(&sdev->base_dev);
-> -}
-> -
-> -static void siw_device_goes_down(struct siw_device *sdev)
-> -{
-> -	if (ib_device_try_get(&sdev->base_dev)) {
-> -		INIT_WORK(&sdev->netdev_down, siw_netdev_down);
-> -		schedule_work(&sdev->netdev_down);
-> -	}
-> -}
-> -
->   static int siw_netdev_event(struct notifier_block *nb, unsigned long event,
->   			    void *arg)
->   {
-> @@ -418,10 +385,6 @@ static int siw_netdev_event(struct notifier_block *nb, unsigned long event,
->   		siw_port_event(sdev, 1, IB_EVENT_PORT_ACTIVE);
->   		break;
->   
-> -	case NETDEV_GOING_DOWN:
-> -		siw_device_goes_down(sdev);
-> -		break;
-> -
->   	case NETDEV_DOWN:
->   		sdev->state = IB_PORT_DOWN;
->   		siw_port_event(sdev, 1, IB_EVENT_PORT_ERR);
+This challenge seems to be solved for GPUs. I am using my AMD GPU
+freely and my nephew can install the amdgpu-pro proprietary user space
+driver to play duke nukem (or whatever kids play now) at 2000 fps.
 
+There are other other subsystems that allow vendor passthrough and
+their ecosystem has not collapsed.
+
+Can we have some general guidance of what is acceptable? Can we define
+together the "normal workflow" and focus on a *full* open source
+implementation of that?
+
+--=20
+Ricardo Ribalda
 
