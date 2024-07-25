@@ -1,168 +1,144 @@
-Return-Path: <linux-rdma+bounces-3977-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-3978-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A45B693C004
-	for <lists+linux-rdma@lfdr.de>; Thu, 25 Jul 2024 12:37:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 694C693C06F
+	for <lists+linux-rdma@lfdr.de>; Thu, 25 Jul 2024 12:51:58 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 07A95B20ED9
-	for <lists+linux-rdma@lfdr.de>; Thu, 25 Jul 2024 10:37:35 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 9C7E5B20B2D
+	for <lists+linux-rdma@lfdr.de>; Thu, 25 Jul 2024 10:51:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3F8C21990B3;
-	Thu, 25 Jul 2024 10:37:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 089C81991A1;
+	Thu, 25 Jul 2024 10:51:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=sang-engineering.com header.i=@sang-engineering.com header.b="BKL4KzhZ"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-io1-f70.google.com (mail-io1-f70.google.com [209.85.166.70])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mail.zeus03.de (zeus03.de [194.117.254.33])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 800ED198E80
-	for <linux-rdma@vger.kernel.org>; Thu, 25 Jul 2024 10:37:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.70
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C7718196DA2
+	for <linux-rdma@vger.kernel.org>; Thu, 25 Jul 2024 10:51:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=194.117.254.33
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1721903847; cv=none; b=eCciqhO0OJwJoLNy0MK4AfmQ9WbTmHdz4CGBpf2yERBujyXvo3cvq9fQ+ESfQiQNWX6afgY098zRL6HK1gsZba4iv9C+bmFjv98GkQD3ZY0SsSC3LaUI8BRd9jZItN9rdfXrtvnAqhisZes9ljBq3AEefFkOMwj2FyKL0vNHvpk=
+	t=1721904708; cv=none; b=qlKRqZ3cB/aVH71HNUJA/XZlJOz/tCBMmXqXRfScIed+XUmKPHBvuZgXSqZaFM5w74LA0Jhil2rrfYy4/FOhENJc6hfyxR8R6aRA+XVBYTZMMO9WPZViU/T69QTHJcM2HF8xNF7cDJ1JBhpru/U7ScshvjKe4JJeF1/6E4XIQYo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1721903847; c=relaxed/simple;
-	bh=e+HgzfBixzkSmh99gsFRir3r3MIuP1EvSEc7+bTstsc=;
-	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=AEebi0TFDpnS8/KnMkf1T2Y3EYxw5TLJbQpxnEWY+s1UYcQbFBI+4wVv/ZyOm2drq4Jtig7dHVxmBYp6jf7oiXa2aMh0fqEYkkLgFHj4KHqBkSDcp6FXImJ/TUkmPnmKQ8L0CA6HX6BdmvD6icpM8WcRuDn/fX5lef6YLPNdBwc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.70
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-io1-f70.google.com with SMTP id ca18e2360f4ac-7f682b4694aso122302339f.2
-        for <linux-rdma@vger.kernel.org>; Thu, 25 Jul 2024 03:37:25 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1721903845; x=1722508645;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=S3qf9QcL2Ze6DFtKZYBjpyF713HONXLgftyPCH25s68=;
-        b=T+TVyBu60XnhvfdfYWByvDVmf7aX2mCEmuNaFCs0pu9i8JsAcd3xOid/o9OioIXDoY
-         dSD0q8QiNQUkzN6aT7nMvFqU8T0q6PZTDbCRNsqcZSoosnUPGsxjvMxHU+q55KIOwyzX
-         HG38eQo2No5e/LCVc6sn8Yl+qYrDQaoch7jyj0TQMo6HMbrokV3faaFMazwCQMuGCQvn
-         hEYjOv3ul6Kb1t4XU68qC8DxlyHy2aVXzGYII+eC6AbG8C+Z9DJkQnX51lEroRuP+R7O
-         8T6FxL3O2Cyp3qvuFoRCjwRXWSSLtrbL9796yF7pBvnvHryD12DZEoowwrdvlYB0VVNp
-         D/tQ==
-X-Forwarded-Encrypted: i=1; AJvYcCV7clubFyeQCaQNNUJuuGOUJ3Dxz6lC4hvTSdMhJOX5m5l3fTEsl5FzXE1HWqdtcTO5kqljL+zmHDAawDZ9bW4JEfVGCBF8j+ASUw==
-X-Gm-Message-State: AOJu0YxWBfS2Imfy6PfC6+dlHKvDezfpU+lodJaRMSNW6fQpgTkWmSNI
-	Iujaf6YpsmYFKTGT6jGGdmTIPdHsgGGl9XZZTgjUnHrV8mW3fmnoiUeCeqC/oRV0TSuIUg+q9e5
-	vruPn/a2tK35Un1DYy4fmFnX6ZYLynCgD+A75Y8FQfDPi8fU0OWxTKO0=
-X-Google-Smtp-Source: AGHT+IHquEr9IB4p4qNZw3ugs6DFMLLyttRQ6rcaOQPg4RE6OsaHR06OOFlSW1Ym1omKfR/j6AmiNHW+yLCH1lZNRJov0CTso4cx
+	s=arc-20240116; t=1721904708; c=relaxed/simple;
+	bh=3fcLBujA8oEJ6hlp8dEqRtvI9FgUBp6fr0LxMsx9NvQ=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=R8u8co6pj3MWAdj0ZgTmfHYqWuHTywJMgXSzLdxZnnJ16w6lP4uL+3fc15aFe67FE7wzIGnBplCbANmuIkVxdwbXsrr6NkaD43ejvPzGlASHWUOYu/OKJGd+v8lEzedYPt7WgMttDfM0ks4GgGrnzvieftv4bCpqs9gN5tm8xeg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sang-engineering.com; spf=pass smtp.mailfrom=sang-engineering.com; dkim=pass (2048-bit key) header.d=sang-engineering.com header.i=@sang-engineering.com header.b=BKL4KzhZ; arc=none smtp.client-ip=194.117.254.33
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sang-engineering.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sang-engineering.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	sang-engineering.com; h=date:from:to:cc:subject:message-id
+	:references:mime-version:content-type:in-reply-to; s=k1; bh=kcFe
+	Yku6GJhrCR24Aw9mdE9/gi7I04NxDXXehgOMSOk=; b=BKL4KzhZz7eoQX4DqhK/
+	/6oba79W938TvUqntDFMmBEZS6VRRAlblh2z985GTl9t4+21pFopA03vBYYI8Y7C
+	zlBPlfqu2OEY5EzpwWRQ4Xr4m0PX/6ohTIDtIL/HT9SO7KdN6Es7M7RiekR+PmEj
+	dOZZWW+CxXu98k5CQCJ/SLJE+hp2rAV4h6AklD5Jzr5hwFvu1H8ej7vPaO+eExrK
+	Lp+9OB5x0sgnlWBQ4olz9vE4psZGaxbSggZ2px+cqe/IorBDjNs6oda4KhWsF3id
+	QGj9qbsrjGme2P054wEqHqbNavIVtRKhEc1M5OnyqBN74JKsMS3vujEBfGMt9qdu
+	bg==
+Received: (qmail 2964050 invoked from network); 25 Jul 2024 12:51:35 +0200
+Received: by mail.zeus03.de with ESMTPSA (TLS_AES_256_GCM_SHA384 encrypted, authenticated); 25 Jul 2024 12:51:35 +0200
+X-UD-Smtp-Session: l3s3148p1@Hxu0LRAehq0ujnsv
+Date: Thu, 25 Jul 2024 12:51:35 +0200
+From: Wolfram Sang <wsa+renesas@sang-engineering.com>
+To: Ricardo Ribalda Delgado <ricardo.ribalda@gmail.com>
+Cc: Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+	James Bottomley <James.Bottomley@hansenpartnership.com>,
+	Jiri Kosina <jikos@kernel.org>,
+	Dan Williams <dan.j.williams@intel.com>, ksummit@lists.linux.dev,
+	linux-cxl@vger.kernel.org, linux-rdma@vger.kernel.org,
+	netdev@vger.kernel.org, jgg@nvidia.com
+Subject: Re: [MAINTAINERS SUMMIT] Device Passthrough Considered Harmful?
+Message-ID: <ZqIuN2JR_mRgZiJ1@shikoro>
+Mail-Followup-To: Wolfram Sang <wsa+renesas@sang-engineering.com>,
+	Ricardo Ribalda Delgado <ricardo.ribalda@gmail.com>,
+	Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+	James Bottomley <James.Bottomley@hansenpartnership.com>,
+	Jiri Kosina <jikos@kernel.org>,
+	Dan Williams <dan.j.williams@intel.com>, ksummit@lists.linux.dev,
+	linux-cxl@vger.kernel.org, linux-rdma@vger.kernel.org,
+	netdev@vger.kernel.org, jgg@nvidia.com
+References: <668c67a324609_ed99294c0@dwillia2-xfh.jf.intel.com.notmuch>
+ <nycvar.YFH.7.76.2407231320210.11380@cbobk.fhfr.pm>
+ <1e82a5c97e915144e01dd65575929c15bc0db397.camel@HansenPartnership.com>
+ <20240724200012.GA23293@pendragon.ideasonboard.com>
+ <CAPybu_0SN7m=m=+z5hu_4M+STGh2t0J-hFEmtDTgx6fYWKzk3A@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a5d:91cf:0:b0:806:f9d1:52b2 with SMTP id
- ca18e2360f4ac-81f7be70b0emr2428339f.2.1721903844566; Thu, 25 Jul 2024
- 03:37:24 -0700 (PDT)
-Date: Thu, 25 Jul 2024 03:37:24 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000fe34b1061e0ffa36@google.com>
-Subject: [syzbot] [rdma?] WARNING: ODEBUG bug in siw_netdev_event (2)
-From: syzbot <syzbot+3e6d53405f58eda0bd6c@syzkaller.appspotmail.com>
-To: bmt@zurich.ibm.com, jgg@ziepe.ca, leon@kernel.org, 
-	linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org, 
-	netdev@vger.kernel.org, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
-
-Hello,
-
-syzbot found the following issue on:
-
-HEAD commit:    d7e78951a8b8 Merge tag 'net-6.11-rc0' of git://git.kernel...
-git tree:       net-next
-console output: https://syzkaller.appspot.com/x/log.txt?x=14da0779980000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=8d1cf7c29e32ce12
-dashboard link: https://syzkaller.appspot.com/bug?extid=3e6d53405f58eda0bd6c
-compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
-
-Unfortunately, I don't have any reproducer for this issue yet.
-
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/3c208b51873e/disk-d7e78951.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/adec146cf41c/vmlinux-d7e78951.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/52f09b8f7356/bzImage-d7e78951.xz
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+3e6d53405f58eda0bd6c@syzkaller.appspotmail.com
-
-------------[ cut here ]------------
-ODEBUG: init active (active state 0) object: ffff88801e645208 object type: work_struct hint: siw_netdev_down+0x0/0x1f0
-WARNING: CPU: 0 PID: 5666 at lib/debugobjects.c:518 debug_print_object+0x17a/0x1f0 lib/debugobjects.c:515
-Modules linked in:
-CPU: 0 PID: 5666 Comm: syz.3.129 Not tainted 6.10.0-syzkaller-09703-gd7e78951a8b8 #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 06/27/2024
-RIP: 0010:debug_print_object+0x17a/0x1f0 lib/debugobjects.c:515
-Code: e8 1b 7f 42 fd 4c 8b 0b 48 c7 c7 c0 72 20 8c 48 8b 74 24 08 48 89 ea 44 89 e1 4d 89 f8 ff 34 24 e8 db 5b 9e fc 48 83 c4 08 90 <0f> 0b 90 90 ff 05 fc 35 f8 0a 48 83 c4 10 5b 41 5c 41 5d 41 5e 41
-RSP: 0018:ffffc90016e2e7b8 EFLAGS: 00010286
-RAX: e1f1ce699f2edb00 RBX: ffffffff8bc9f240 RCX: ffff88801e51da00
-RDX: 0000000000000000 RSI: 0000000000000001 RDI: 0000000000000000
-RBP: ffffffff8c207440 R08: ffffffff815565a2 R09: fffffbfff1c39f60
-R10: dffffc0000000000 R11: fffffbfff1c39f60 R12: 0000000000000000
-R13: ffffffff8c207358 R14: dffffc0000000000 R15: ffff88801e645208
-FS:  00007fda35fff6c0(0000) GS:ffff8880b9400000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 000000110c352547 CR3: 000000007f7da000 CR4: 00000000003506f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- <TASK>
- __debug_object_init+0x2a9/0x400 lib/debugobjects.c:654
- siw_device_goes_down drivers/infiniband/sw/siw/siw_main.c:395 [inline]
- siw_netdev_event+0x3bd/0x620 drivers/infiniband/sw/siw/siw_main.c:422
- notifier_call_chain+0x19f/0x3e0 kernel/notifier.c:93
- call_netdevice_notifiers_extack net/core/dev.c:2032 [inline]
- call_netdevice_notifiers net/core/dev.c:2046 [inline]
- __dev_close_many+0x146/0x300 net/core/dev.c:1532
- __dev_close net/core/dev.c:1570 [inline]
- __dev_change_flags+0x30e/0x6f0 net/core/dev.c:8835
- dev_change_flags+0x8b/0x1a0 net/core/dev.c:8909
- do_setlink+0xccd/0x41f0 net/core/rtnetlink.c:2900
- rtnl_setlink+0x40d/0x5a0 net/core/rtnetlink.c:3201
- rtnetlink_rcv_msg+0x73f/0xcf0 net/core/rtnetlink.c:6647
- netlink_rcv_skb+0x1e3/0x430 net/netlink/af_netlink.c:2550
- netlink_unicast_kernel net/netlink/af_netlink.c:1331 [inline]
- netlink_unicast+0x7f0/0x990 net/netlink/af_netlink.c:1357
- netlink_sendmsg+0x8e4/0xcb0 net/netlink/af_netlink.c:1901
- sock_sendmsg_nosec net/socket.c:730 [inline]
- __sock_sendmsg+0x221/0x270 net/socket.c:745
- sock_write_iter+0x2dd/0x400 net/socket.c:1160
- do_iter_readv_writev+0x60a/0x890
- vfs_writev+0x37c/0xbb0 fs/read_write.c:971
- do_writev+0x1b1/0x350 fs/read_write.c:1018
- do_syscall_x64 arch/x86/entry/common.c:52 [inline]
- do_syscall_64+0xf3/0x230 arch/x86/entry/common.c:83
- entry_SYSCALL_64_after_hwframe+0x77/0x7f
-RIP: 0033:0x7fda35175f19
-Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 a8 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007fda35fff048 EFLAGS: 00000246 ORIG_RAX: 0000000000000014
-RAX: ffffffffffffffda RBX: 00007fda35305f60 RCX: 00007fda35175f19
-RDX: 0000000000000001 RSI: 00000000200003c0 RDI: 0000000000000006
-RBP: 00007fda351e4e68 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
-R13: 000000000000000b R14: 00007fda35305f60 R15: 00007ffc0c742898
- </TASK>
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="25JKoLVFGJsXZT50"
+Content-Disposition: inline
+In-Reply-To: <CAPybu_0SN7m=m=+z5hu_4M+STGh2t0J-hFEmtDTgx6fYWKzk3A@mail.gmail.com>
 
 
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+--25JKoLVFGJsXZT50
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+Hi Ricardo,
 
-If the report is already addressed, let syzbot know by replying with:
-#syz fix: exact-commit-title
+> It would be great to define what are the free software communities
+> here. Distros and final users are also "free software communities" and
+> they do not care about niche use cases covered by proprietary
+> software.
+> They only care (and should care) about normal workflows.
 
-If you want to overwrite report's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
+Don't you think there are distros and final users who do care about
+proprietary influences, in general. For sure, though, I think they
+should not be told what they should care about?
 
-If the report is a duplicate of another one, reply with:
-#syz dup: exact-subject-of-another-report
+> If we want vendors involved, we need to build an ecosystem where they
+> feel invited.
 
-If you want to undo deduplication, reply with:
-#syz undup
+Definitely. Invited as in "you are welcome to work with us on this",
+though. Not as in "come here and do what you want". This is why we have
+a coding-style etc...
+
+> We should not take as hostages our users and impose rules on how they
+> should build or even sell their product.
+
+Right, it should be a plain buisness decision. I totally agree with your
+"clear rules" request below. And yeah, face to face is probably best
+suited.
+
+> - Vendor passthrough mechanisms are allowed for niche use cases or
+> development/experimentation.
+
+Problem with "niche" is that it can grow really big. See Linux :)
+
+All the best,
+
+   Wolfram
+
+
+--25JKoLVFGJsXZT50
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmaiLjMACgkQFA3kzBSg
+KbYVFxAAo3/PCWMxZwmHL8MWxA34jXcOM9odcmry6DNofkZ5hGEHjT8XjhaYB9l4
+7jbWHf78CsCBAT5g+km2MfYbpy7INfWa+7whZAwNVMuDSndFG4lbCpG6x7qA/dVw
+bM5eRdbS6EUkP9oSSpJ/RvFH3dmtEZ7CULl/wYdUiCjn6JbjVF/0+q0m0SKNskA3
+3HDjVebHimY3oMM37njXTO3Gv0W4H83VEvHt8ExPXwoq8pdr0SflaGFxQ0Bv7dfX
+5pSarLw/Xn2kFx/8MbHigRX74iApoxeUsI94N9uZx7pnSc8Hhxa5vVueKjFOg2/A
+4+TbumL0y5cQYga5Mav5FEStXEj6Lc1ICvrQfpYmiEqsf/TbtTUOmtwpKxV2WZvw
+9egngAuxTOs1WS1MEBWjc7rR1Cvij9zJc0XEPlcgWbd6zMGJSlm5uG7xMudP49Hh
+tuyjr4B08bK5K4ilNfT2E6OkRZSQ3yjHHlj/p0SUj19q9uL+anxvPP7RIbH+/wDT
+mQ0iMoVsIyxtKSzE7YdDg2U5XQJc+jjX7BJ3jotxn0nvMLoHgrmv+6MRCBVR5jvE
+eQdI0dOx1WQr/oJs6Eu+YxWynjLFhEp+keIYerWqAsCUFADBH+2zeu4hpI/SBOz8
+X5vzHqMEh/YaYBF4OH2ZT91fRlXfQQajzDzKhcTkee/z5Nq1Vxw=
+=z870
+-----END PGP SIGNATURE-----
+
+--25JKoLVFGJsXZT50--
 
