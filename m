@@ -1,67 +1,63 @@
-Return-Path: <linux-rdma+bounces-4012-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-4013-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id BE62993D3CC
-	for <lists+linux-rdma@lfdr.de>; Fri, 26 Jul 2024 15:11:39 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6464793D421
+	for <lists+linux-rdma@lfdr.de>; Fri, 26 Jul 2024 15:23:20 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6E146281C08
-	for <lists+linux-rdma@lfdr.de>; Fri, 26 Jul 2024 13:11:38 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 18D33286BAE
+	for <lists+linux-rdma@lfdr.de>; Fri, 26 Jul 2024 13:23:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 050CF17BB0C;
-	Fri, 26 Jul 2024 13:11:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 46C0617C7C7;
+	Fri, 26 Jul 2024 13:22:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ideasonboard.com header.i=@ideasonboard.com header.b="NV1HQ+kl"
+	dkim=pass (1024-bit key) header.d=ideasonboard.com header.i=@ideasonboard.com header.b="BLJe92O9"
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [213.167.242.64])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3CCA817BB02;
-	Fri, 26 Jul 2024 13:11:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 05C6617C227;
+	Fri, 26 Jul 2024 13:22:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.167.242.64
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1721999492; cv=none; b=as0xc+7/U5A3nAyz1BRyecCpbWLBvaDE/nR7ELmQVOL1jUrS97QtkseQrs15eeBY1OC845TjbUQ/J71SV3j2hVJPcUaBUC3ZZ3MUd+4aQ9v+wNuE2rWoM97o0BTeEQCbd8OW5wyVzXss+RZnMCrPMnAW7kfBWzzAvNUID+M+mcc=
+	t=1722000164; cv=none; b=LBgat7JulFCabCsDGkA9JFiIEE3qVdpweHeiWGQJ38lo+uuWZUszmHJHz3mXKB56HTsv3E4sAmLop7sEjzuXIU0y1Wp5TSSvHQFPG9EJQnDQfTXTalF2udO3CDRldVuZIgv8pvdIsT4mbv+sPWjgiIxsVZd5kLlXmK2d8fcpuZk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1721999492; c=relaxed/simple;
-	bh=0cZokRbRzTb8ENdZ9ZJdrYbD9c3DsS5jIGWcAudXj5s=;
+	s=arc-20240116; t=1722000164; c=relaxed/simple;
+	bh=kUSe+c2AZazugy9JtiEaOnVHrrpVwrlwFkF8YSYVgRU=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=bT4kJKydb+mfzF6lnxSEPAuYJvDl6LX3duTXb/36rSPBA4xC6hXiHkJBFf09s6Ude59mH6bHnH0ql7Ho2J1AduqVssSiwZMlLesvjCv39dav+uP+m83G3IOWh0TM5nBsl0gpmrpVfCTrU3Nmnic3R9SyJu0pKQvJqaeOlLjIJfo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ideasonboard.com; spf=pass smtp.mailfrom=ideasonboard.com; dkim=pass (1024-bit key) header.d=ideasonboard.com header.i=@ideasonboard.com header.b=NV1HQ+kl; arc=none smtp.client-ip=213.167.242.64
+	 Content-Type:Content-Disposition:In-Reply-To; b=N9bX1KmWqINgFp/3P6/8ekVpj57UvO+k64W1UgZXfzohbwN6JqfvH3CCOdTloJgr6R9DbOOy+ocHY30qQRIXlBQImiuWw7EbRPdFd2EJkDEdyyPTwxzbLXYVXeYK8ZSKcS+qnDtd0AYBdqBAu9IoFiVG1F1rHOL1RLb7qh0a1hM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ideasonboard.com; spf=pass smtp.mailfrom=ideasonboard.com; dkim=pass (1024-bit key) header.d=ideasonboard.com header.i=@ideasonboard.com header.b=BLJe92O9; arc=none smtp.client-ip=213.167.242.64
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ideasonboard.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ideasonboard.com
 Received: from pendragon.ideasonboard.com (81-175-209-231.bb.dnainternet.fi [81.175.209.231])
-	by perceval.ideasonboard.com (Postfix) with ESMTPSA id 27DC583F;
-	Fri, 26 Jul 2024 15:10:45 +0200 (CEST)
+	by perceval.ideasonboard.com (Postfix) with ESMTPSA id 1BFF883F;
+	Fri, 26 Jul 2024 15:21:56 +0200 (CEST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-	s=mail; t=1721999445;
-	bh=0cZokRbRzTb8ENdZ9ZJdrYbD9c3DsS5jIGWcAudXj5s=;
+	s=mail; t=1722000116;
+	bh=kUSe+c2AZazugy9JtiEaOnVHrrpVwrlwFkF8YSYVgRU=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=NV1HQ+klgtw/G7AjrLtkdcyWUd9tdBpoQMiolh0jppVzKbGkT4KDDBVOwI3YIJwgO
-	 6Tw09fUZSvSHe/62abMyie0rCJ6uXCdmMm13xFYn/YoSp28FPEgvYPWsAY6iwC9Six
-	 mCRW08Ax/rdbWnlrBR0qWKk+iLLs5wTgjaVzX3jo=
-Date: Fri, 26 Jul 2024 16:11:10 +0300
+	b=BLJe92O9dq1pWCnEDtNkuAiUriGnt591MAli5d16QtchjELf/qlqylOQ1gOizfbo/
+	 QmuYpS24/5r1rogqjCAqMO0ub7lPKTIJvTulfzthElYF+UeQ61pW4P480EpBJS+2aA
+	 1XakiNNkljjDStby4N+KYfY4lPZ43piBc4zH5iI4=
+Date: Fri, 26 Jul 2024 16:22:20 +0300
 From: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
 To: Ricardo Ribalda Delgado <ricardo.ribalda@gmail.com>
-Cc: Leon Romanovsky <leon@kernel.org>,
-	James Bottomley <James.Bottomley@hansenpartnership.com>,
+Cc: James Bottomley <James.Bottomley@hansenpartnership.com>,
 	Jiri Kosina <jikos@kernel.org>,
 	Dan Williams <dan.j.williams@intel.com>, ksummit@lists.linux.dev,
 	linux-cxl@vger.kernel.org, linux-rdma@vger.kernel.org,
 	netdev@vger.kernel.org, jgg@nvidia.com
 Subject: Re: [MAINTAINERS SUMMIT] Device Passthrough Considered Harmful?
-Message-ID: <20240726131110.GD28621@pendragon.ideasonboard.com>
+Message-ID: <20240726132220.GE28621@pendragon.ideasonboard.com>
 References: <668c67a324609_ed99294c0@dwillia2-xfh.jf.intel.com.notmuch>
  <nycvar.YFH.7.76.2407231320210.11380@cbobk.fhfr.pm>
  <1e82a5c97e915144e01dd65575929c15bc0db397.camel@HansenPartnership.com>
  <20240724200012.GA23293@pendragon.ideasonboard.com>
- <CAPybu_0SN7m=m=+z5hu_4M+STGh2t0J-hFEmtDTgx6fYWKzk3A@mail.gmail.com>
- <20240725122315.GE7022@unreal>
- <CAPybu_1XsNq=ExrO+8XLqnV_KvSaqooM=yNy5iuzcD=-k5CdGA@mail.gmail.com>
- <20240725132035.GF7022@unreal>
- <20240725194202.GE14252@pendragon.ideasonboard.com>
- <CAPybu_3T8JNkZxf3pgCo4E4VJ3AZvY7NzeXdd7w9Qqe8=eV=9A@mail.gmail.com>
+ <a75782218f34ae3cff725cbcfb321527f6aa2e14.camel@HansenPartnership.com>
+ <20240725193125.GD14252@pendragon.ideasonboard.com>
+ <CAPybu_3GkgcORm0Jbp8ze_rjfXDws8xWT_sQcs_39KY54zpnQg@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
@@ -71,116 +67,151 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAPybu_3T8JNkZxf3pgCo4E4VJ3AZvY7NzeXdd7w9Qqe8=eV=9A@mail.gmail.com>
+In-Reply-To: <CAPybu_3GkgcORm0Jbp8ze_rjfXDws8xWT_sQcs_39KY54zpnQg@mail.gmail.com>
 
-On Fri, Jul 26, 2024 at 10:02:27AM +0200, Ricardo Ribalda Delgado wrote:
-> On Thu, Jul 25, 2024 at 9:44 PM Laurent Pinchart wrote:
-> > On Thu, Jul 25, 2024 at 04:20:35PM +0300, Leon Romanovsky wrote:
-> > > On Thu, Jul 25, 2024 at 03:02:13PM +0200, Ricardo Ribalda Delgado wrote:
-> > > > On Thu, Jul 25, 2024 at 2:23 PM Leon Romanovsky wrote:
-> > > > > On Thu, Jul 25, 2024 at 11:26:38AM +0200, Ricardo Ribalda Delgado wrote:
-> > > > > > On Wed, Jul 24, 2024 at 10:02 PM Laurent Pinchart wrote:
-> > > > >
-> > > > > <...>
-> > > > >
-> > > > > > It would be great to define what are the free software communities
-> > > > > > here. Distros and final users are also "free software communities" and
-> > > > > > they do not care about niche use cases covered by proprietary
-> > > > > > software.
-> > > > >
-> > > > > Are you certain about that?
-> > > >
-> > > > As a user, and as an open source Distro developer I have a small hint.
-> > > > But you could also ask users what they think about not being able to
-> > > > use their notebook's cameras. The last time that I could not use some
-> > > > basic hardware from a notebook with Linux was 20 years ago.
+On Fri, Jul 26, 2024 at 10:03:36AM +0200, Ricardo Ribalda Delgado wrote:
+> On Thu, Jul 25, 2024 at 9:32 PM Laurent Pinchart wrote:
+> > On Wed, Jul 24, 2024 at 04:37:21PM -0400, James Bottomley wrote:
+> > > On Wed, 2024-07-24 at 23:00 +0300, Laurent Pinchart wrote:
+> > > [...]
+> > > > What I get from the discussions I've followed or partcipated in over
+> > > > the years is that the main worry of free software communities is
+> > > > being forced to use closed-source userspace components, whether that
+> > > > would be to make the device usable at all, or to achieve decent level
+> > > > of performance or full feature set. We've been through years of
+> > > > mostly closed-source GPU support, of printer "windrivers", and quite
+> > > > a few other horrors. The good news is that we've so far overcome lots
+> > > > (most) of those challenges. Reverse engineering projects paid off,
+> > > > and so did working hand-in-hand with industry actors in multiple ways
+> > > > (both openly and behind the scenes). One could then legitimately ask
+> > > > why we're still scared.
 > > >
-> > > Lucky you, I still have consumer hardware (speaker) that doesn't work
-> > > with Linux, and even now, there is basic hardware in my current
-> > > laptop (HP docking station) that doesn't work reliably in Linux.
+> > > I don't think I am.  We're mostly fully capable of expounding at length
+> > > on the business rationale for being open if the thing they're hiding
+> > > isn't much of a differentiator anyway (or they're simply hiding it to
+> > > try to retain some illusion of control), so we shouldn't have any fear
+> > > of being able to make our case in language business people understand.
 > > >
-> > > > > > They only care (and should care) about normal workflows.
-> > > > >
-> > > > > What is a normal workflow?
-> > > > > Does it mean that if user bought something very expensive he
-> > > > > should not be able to use it with free software, because his
-> > > > > usage is different from yours?
-> > > > >
-> > > > > Thanks
-> > > >
-> > > > It means that we should not block the standard usage for 99% of the
-> > > > population just because 1% of the users cannot do something fancy with
-> > > > their device.
-> > >
-> > > Right, the problem is that in some areas the statistics slightly different.
-> > > 99% population is blocked because 1% of the users don't need it and
-> > > don't think that it is "normal" flow.
-> > >
-> > > > Let me give you an example. When I buy a camera I want to be able to
-> > > > do Video Conferencing and take some static photos of documents. I do
-> > > > not care about: automatic makeup, AI generated background, unicorn
-> > > > filters, eyes recentering... But we need to give a way to vendors to
-> > > > implement those things closely, without the marketing differentiators,
-> > > > vendors have zero incentive to invest in Linux, and that affects all
-> > > > the population.
+> > > I also think this fear is partly a mindset problem on our part.  We
+> > > came out of the real fight for openness and we do embrace things like a
+> > > licence that forces open code (GPL) and symbols that discourage
+> > > proprietary drivers (EXPORT_SYMBOL_GPL), so we've somewhat drunk the
+> > > FSF coolaid that if we don't stand over manufacturers every second and
+> > > force them they'll slide back to their old proprietary ways.  However,
+> > > if you look at the entirely permissive ecosystem that grew up after we
+> > > did (openstack, docker, kubernetes, etc.) they don't have any such fear
+> > > and yet they still have large amounts of uncompelled openness and give
+> > > back.
 > >
-> > I've seen these kind of examples being repeatedly given in discussions
-> > related to camera ISP support in Linux. They are very misleading. These
-> > are not the kind of features that are relevant for the device
-> > pass-through discussion these day. Those are high-level use cases
-> > implemented in userspace, and vendors can ship any closed-source
-> > binaries they want there. What I care about is the features exposed by
-> > the kernel to userspace API.
+> > I don't think those are necessarily relevant examples, as far as device
+> > pass-through goes. Vendors have many times reverted to proprietary ways,
+> > and they still do, at least in the areas of the kernel I'm most active
+> > in. I've seen first hand a large SoC vendor very close to opening a
+> > significant part of their camera stack and changing their mind at the
+> > last minute when they heard they could possibly merge their code through
+> > a different subsystem with a pass-through blank cheque.
 > 
-> The ISPs are gradually becoming programmable devices and they indeed
-> help during all of those examples.
+> Without knowing who that large SoC vendor is, and what they will be
+> willing to open, it is difficult to know what opportunity has been
+> lost.
 
-I'd like to see more technical information to substantiate this claim.
-So far what I've sometimes seen is ISPs that include programmable
-elements, but hiding those behind a firmware that exposes a fixed
-(configurable) pipeline. I've also heard of attempts to expose some of
-that programmability to the operating system, which were abandoned in
-the end due to lack usefulness.
+I would also like to discuss this in more details, but I can't do so
+publicly :-( That's why I don't want to focus too much on this argument.
 
-> Userspace needs to send/receive information from the ISP, and that is
-> exactly what vendors want to keep in the close.
+> I would argue that if they have cancelled their open plans based
+> on an hypothesis, their willingness to open was not that high.
 
-But that's exactly what we need to implement an open userspace ecosystem
-:-)
+That's exactly what I previously described in this mail thread as areas
+where cooperation with vendors is in its infancy. Convincing large
+industry players is long term work, and it's very demotivating when you
+think there's finally light at the end of the tunel, and plans gets
+cancelled at the last minute. We're not giving up though.
 
-> Describing how they implement those algorithms is a patent minefield
-> and their differentiating factor.
+> It would be more healthy for the ecosystem, if those discussions were
+> done more openly, at least all the core maintainers should be
+> involved.
 
-Those are also arguments I've heard many times before. The
-differentiating factor for cameras today is mostly in userspace ISP
-control algorithms, and nobody is telling vendors they need to open all
-that.
+Can you get all the camera vendors you work with to talk about all this
+openly ? :-) We all know it's a difficult and long process.
 
-When it comes to patents, we all know how software patents is a
-minefield, and hardware is also affected. I can't have much sympathy for
-this argument though, those patents mostly benefit the largest players
-in the market, and those are the ones who currently claim they can't
-open anything due to patents.
+> > I'm willing to believe it can be different in other areas, which may
+> > partly explain why different subsystems and different developers have
+> > different biases and have trouble understand each other's point of view.
+> 
+> It is not different in other areas, it is the same area. At the end of
+> the day it is the same chip manufacturers, with the same legal teams.
+> It is our attitude that is different.
 
-> > > > This challenge seems to be solved for GPUs. I am using my AMD GPU
-> > > > freely and my nephew can install the amdgpu-pro proprietary user space
-> > > > driver to play duke nukem (or whatever kids play now) at 2000 fps.
+I don't agree with that. Not only are there different manufacturers,
+there are also different teams, with different approaches. The world is
+not uniform.
+
+> > > > I can't fully answer that question, but there are two points that I
+> > > > think are relevant. Note that due to my background and experience,
+> > > > this will be heavily biased towards consumer and embedded hardware,
+> > > > not data centre-grade devices. Some technologies from the latter
+> > > > however have a tendency to migrate to the former over time, so the
+> > > > distinction isn't necessarily as relevant as one may consider.
 > > > >
-> > > > There are other other subsystems that allow vendor passthrough and
-> > > > their ecosystem has not collapsed.
+> > > > The first point is that hardware gets more complicated over time, and
+> > > > in some markets there's also an increase in the number of vendors and
+> > > > devices. There's a perceived (whether true or not) danger that we
+> > > > won't be able to keep up with just reverse engineering and a
+> > > > development model relying on hobyists. Getting vendors involved is
+> > > > important if we want to scale.
 > > >
-> > > Yes, I completely agree with you on that.
-> > >
-> > > > Can we have some general guidance of what is acceptable? Can we define
-> > > > together the "normal workflow" and focus on a *full* open source
-> > > > implementation of that?
-> > >
-> > > I don't think that is possible to define "normal workflow". Requirement
-> > > to have open-source counterpart to everything exposed through UAPI is a
-> > > valid one. I'm all for that.
+> > > Yes, but there are lots of not very useful complex devices being
+> > > produced every day that fail to capture market share.  Not having
+> > > reverse engineered drivers for them is no real loss.  If a device does
+> > > gain market share, it gains a huge pool of users some of whom become
+> > > interested in reverse engineering, so I think market forces actually
+> > > work in our favour: we get reverse engineering mostly where the devices
+> > > are actually interesting and capture market share.  It's self scaling.
 > >
-> > That's my current opinion as well, as least when it comes to the kernel
-> > areas I mostly work with.
+> > I can't agree with that, sorry. Not only is the difficulty to
+> > reverse-engineer some classes of devices increasing, but saying that
+> > only devices that make it to the top of the market share chart are worth
+> > considering will leave many users on the side of the road.
+> 
+> Today we have left BILLIONS of users at the other side of the road.
+
+Because we're the only ones to be blamed, or more accuretely, the blame
+is solely on me. Vendors are all saints who want the best for the world.
+This argument doesn't hold. Please stop with this, I don't want to get
+to name calling.
+
+> > > > Second, I think there's a fear of regression. For some categories of
+> > > > devices, we have made slow but real progress to try and convince the
+> > > > industry to be more open. This sometimes took a decade of work,
+> > > > patiently building bridges and creating ecosystems brick by brick.
+> > > > Some of those ecosystems are sturdy, some not so. Giving pass-through
+> > > > a blank check will likely have very different effects in different
+> > > > areas. I don't personally believe it will shatter everything, but I'm
+> > > > convinced it carries risk in areas where cooperation with vendors is
+> > > > in its infancy or is fragile for any other reason.
+> > >
+> > > I also think we're on the rise in this space.  Since most cloud
+> > > workloads are on Linux, there's huge market pressure on most "found in
+> > > the cloud" devices (like accelerators and GPUs) to have an easy to
+> > > consume Linux story.  Nvidia is a case in point.  When it only cared
+> > > about fast games on some other OS, we get shafted with a proprietary
+> > > graphics drivers.  Now it's under pressure to be the number one AI
+> > > accelerator provider for the cloud it's suddenly wondering about open
+> > > source drivers to make adoption easier.
+> >
+> > I can't comment on Nvidia and their inference engines in particular. The
+> > server market may be in a better position that the consumer and embedded
+> > market, and if that's the case, I'm happy for the servers. That doesn't
+> > solve the issues in other markets though.
+> >
+> > > > Finally, let's not forget that pass-through APIs are not an all or
+> > > > nothing option. To cite that example only, DRM requires GPU drivers
+> > > > to have an open-source userspace implementation to merge the kernel
+> > > > driver, and the same subsystems strongly pushes for API
+> > > > standardization for display controllers. We can set different rules
+> > > > for different cases.
+> > >
+> > > I certainly think we can afford to experiment here, yes.
 
 -- 
 Regards,
