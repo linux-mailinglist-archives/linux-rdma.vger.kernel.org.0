@@ -1,252 +1,253 @@
-Return-Path: <linux-rdma+bounces-4023-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-4024-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id E0EBB93D657
-	for <lists+linux-rdma@lfdr.de>; Fri, 26 Jul 2024 17:41:15 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id BB4CD93D660
+	for <lists+linux-rdma@lfdr.de>; Fri, 26 Jul 2024 17:43:48 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6FDD51F24C4C
-	for <lists+linux-rdma@lfdr.de>; Fri, 26 Jul 2024 15:41:15 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id F40CAB239B2
+	for <lists+linux-rdma@lfdr.de>; Fri, 26 Jul 2024 15:43:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 19EA717BB3A;
-	Fri, 26 Jul 2024 15:41:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 989E217C20D;
+	Fri, 26 Jul 2024 15:43:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="dYf+tYcH"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="I8BKMy4B"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-ua1-f54.google.com (mail-ua1-f54.google.com [209.85.222.54])
+Received: from mail-vs1-f51.google.com (mail-vs1-f51.google.com [209.85.217.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 392E11BC46;
-	Fri, 26 Jul 2024 15:41:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B721D7494;
+	Fri, 26 Jul 2024 15:43:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.217.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1722008470; cv=none; b=jSLtI+swlrYt4nQbn/jRSTT/ucpA5I+/wvPFemF4rxFaiZ6clMVAOgBGzPPyFtx4Z7BvMHnl70+9XW32JRjqSle7265KMPA6rdV0L6VuhIWZZejRO94SGZEIW0k5lapd2vz1PapjdB1DcGQjpfOeefzYG38yztpgO12zoR4LzZI=
+	t=1722008622; cv=none; b=eCKlz0KFfYBApqNP0jKtjt0ymwlx5aI03elZVrwx9estTN7MNLt65JanWuOt+IhAVqzKMlF6RxiWlPi/QBvzC6RipPMTCKLet1sdwp6KmALuWxKlXDqPMwHR0baZHEfiEQDV08K2E5RV8QR6AkTAYHMEr3ceaqSrtkHUU2hPApY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1722008470; c=relaxed/simple;
-	bh=+m9x2lcJKmFscPw/9L4WK4+WahMLKs9QvMZUOIPxGMg=;
+	s=arc-20240116; t=1722008622; c=relaxed/simple;
+	bh=vhTnl45JIHDD0H+tAzwiMG4CnPR+IcEAAcDnIULISvU=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=pX6w48MeCDITtDM0oyXLvIQCN6TumaFjSXBItA2AFLDP8FWL/a5RBLUrbH2XeRrcqcCSVYp78Y2cCWQn2MOLY1zFcwlbLhIH7lSEORgBhfmH8N+arj1rn24hb/oc6sBEbgaPorZKz9Xn0FGqyjRelXty5XuOs59tFDvVDggTPd4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=dYf+tYcH; arc=none smtp.client-ip=209.85.222.54
+	 To:Cc:Content-Type; b=EHPO6Jhfr1Lr+Y8p3Kum+f1QvdVXtM73ZTjC+VNTnMtTRSk3v1gN/+w5od3wEYZNehfyBBOziUB/0J7337VNkH20gXdpDaOx7c4TcxSk2QBB0lQAyFTf41GysmPXJSnDicK0tg1x89EI6CQyrnG1QwZM+OwqLFd8VY6HMrSUHws=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=I8BKMy4B; arc=none smtp.client-ip=209.85.217.51
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ua1-f54.google.com with SMTP id a1e0cc1a2514c-825809a4decso275358241.0;
-        Fri, 26 Jul 2024 08:41:09 -0700 (PDT)
+Received: by mail-vs1-f51.google.com with SMTP id ada2fe7eead31-49299adf8adso671660137.2;
+        Fri, 26 Jul 2024 08:43:40 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1722008468; x=1722613268; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1722008619; x=1722613419; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=+m9x2lcJKmFscPw/9L4WK4+WahMLKs9QvMZUOIPxGMg=;
-        b=dYf+tYcHYD0bS/dKoPFga+I7uRqYaqzafFnHmuavzxBRmeE/UyMJbKe1srv9Udv3Z/
-         Ff5OCHDWqXJ3cQIXwRV4ZLpkNMeqaE79hwwL9XH2SS59xe2SLQt69HLAb+C+mLYzSeh8
-         N1SXAkIF6OOj0jRwYEcOKNjHLy4wHi1Z3avhjxDcz9hwgWISHaSxDvnZHqnjteWUxUJ9
-         alBxGiEcYQs3aKv5emzrybJFduOz/6RN/vUE6eMOGvitnQbXBztOu1Pga9F1rYDWT7BE
-         xCc3MfsldNtimATjWrWVAM8C1KGtM4HeQ9zVyvhKzuekwrhNh0V7dlOyr3jZpp3Psf0Z
-         blrw==
+        bh=vhTnl45JIHDD0H+tAzwiMG4CnPR+IcEAAcDnIULISvU=;
+        b=I8BKMy4B7Pae2yiKBnoU1sdoczwC20rYXqC/Ct2uF74i/H4qpwDgM4F4Awu4lG9Cbp
+         NSxwAZK4Cm1gd0bcXUaB5EGIRXP0GqYXMwfx7V8a1AZ+bysDuPPmtkRWI4ceJVPdZQqS
+         svkL2qQiqp2X9OSgko7k/JowDgaz9Vt/oChmLs9cBdg24+BRJ1HD0dJwMe8NWooQylmR
+         +EOlEJSidNITTAU9hATSB8wxEn1toCdJAJ061WWA/CSnj84Onz9cvy9zWIV8niQ+iYDD
+         JSXHzm1F7z4ftR37xT7FGgKP5z/Vr3JZq+mex2V+kaJc4NR09iQkzFNPw32p/0YxWe/1
+         Dtpg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1722008468; x=1722613268;
+        d=1e100.net; s=20230601; t=1722008619; x=1722613419;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=+m9x2lcJKmFscPw/9L4WK4+WahMLKs9QvMZUOIPxGMg=;
-        b=HxY7Yg5N/ADLZF3bnjcPhFe6y8oRPSyRm2U5rmRuz3YBwVzH6oOy4u1SQvt2lvVjDN
-         Z7173l7+4pCng0tHRcjV0qQoT02ZMiIFxKlCbF8pg3q/8eb54Nlfzv9AfjXBDbESPF1F
-         GDN14UdjUN199i/UkQHbgxJYGXN4hBbZsa0l0mdmRZUV4Cg7aMbLk5oi06NIw7Olaq5Z
-         mHDhMK84cVw8TRCTtmqQBy/7e3ZTXmbZHzJe4vL2GjvE0K9XN36wf59tk0quvHXDopUU
-         LzdcCTltRtOWsN93dUixtijL48Ek55r+pNP0MvLrmqe9/rUjFXMan/Haqn/7g+0Fwhbz
-         TBPA==
-X-Forwarded-Encrypted: i=1; AJvYcCV2WcFtc5cCTXeKqaWkr2ajZw483xXMyTv5dphCK6vwMJQ4lSVMpxzh3z2PeTdi32hwKf9EsQ5o1evf7vuyEXcE/JPHfhVs33LBvNt1kRn3F+xGEdBAeunMnAIu+aGqs7QlVSFSpNPSzb93YVkzMSptY5AYdeI9FVE7ajvd2w==
-X-Gm-Message-State: AOJu0Yy9B5U8SjEzLyOtCd46HQ2It78R2KCrVEfEru9KoBHQet1e9mQq
-	2kj9vPy+vdY/IM3o7J8qwmue6556JutdexApubXM9S1+HENmOifP7J2Hi0193V/bQoVvE7BxnOw
-	Upd/Kh2LHVlMJ6TPQ9HCFfO3QMdA=
-X-Google-Smtp-Source: AGHT+IEIIg66IecM+6lEWsGJgeICrY3+CjQGH9NUCEAv6vWv8s9rAshSONg/Ak9ihQ0DSZvfIRGMhFGCI3VQ9cTgx04=
-X-Received: by 2002:a05:6102:dca:b0:48f:e8c6:7c53 with SMTP id
- ada2fe7eead31-493fadc7a4bmr7313137.31.1722008468133; Fri, 26 Jul 2024
- 08:41:08 -0700 (PDT)
+        bh=vhTnl45JIHDD0H+tAzwiMG4CnPR+IcEAAcDnIULISvU=;
+        b=TfBb/dfmnO+IFeiOd7IKw+ewFVJbr24FrKw27f4Pn3WVIOU6h3VeDQV1/MfscFyEGR
+         lHJbpRYZ5ENBl3eHRvfRqiYhgBsEDOag2YecLkewugG8Sxbo9wrcrGKKuynpqYn8RBz6
+         nyE3rSCSCiOtnWMNsa/2mN7/y0LUmoNU3He7eZfSZxAV9FfsS+uRiWchoRMxWFtf1bjC
+         LS1zB74FWGaLWStObwUykvcPFKagQd3979Igvgk0/KNixM9FR3ujjcjTLOAHloPdj3bn
+         KDnk4GdFyWMLJY4s5Ir1+D6AHlm5RkRDC6jhW75B7C9GY3Em1lIiUy/yXRljY0iStACz
+         AHtg==
+X-Forwarded-Encrypted: i=1; AJvYcCVLG01BXZ+PgMvp5gHn+slehlgrgzzcT4gsJ7onz7Ywcbn5xcCk7OuDVCLLptMgLCRli59TATRaxacU1tBkyPL9eAyev/zspDp4BPj/3m4upqKJJRcpfGB3WRKKZdv4oj0pTF2Sz0E6/PkHrEgW+IuUgg4xseQjWM4X3DC2Fg==
+X-Gm-Message-State: AOJu0YwOZZpIx8StHa5nQR2V5AnOLD1gsCeikDiteFPG3xin6ppuVmXU
+	pQF3qsUr6GCrgsGK1Dfty+LZJnNQslzEdo9xOn5NIK1n8K4d3RAfXD5IQzP66yYNVxXP5KljyW5
+	dcpT2KCMA1sRen7/e3U9hGLLstEw=
+X-Google-Smtp-Source: AGHT+IEgQo/9wg7PiJi8ZpLJHpZAGc14Lovj6s9bfiax6cs4MvM80xVDooEjreFb4OJvgA72u2z/UC90dgENbs/poBI=
+X-Received: by 2002:a05:6102:f96:b0:493:ce48:a2ed with SMTP id
+ ada2fe7eead31-493fa46f02emr93862137.29.1722008619379; Fri, 26 Jul 2024
+ 08:43:39 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <668c67a324609_ed99294c0@dwillia2-xfh.jf.intel.com.notmuch>
- <nycvar.YFH.7.76.2407231320210.11380@cbobk.fhfr.pm> <1e82a5c97e915144e01dd65575929c15bc0db397.camel@HansenPartnership.com>
- <20240724200012.GA23293@pendragon.ideasonboard.com> <CAPybu_0SN7m=m=+z5hu_4M+STGh2t0J-hFEmtDTgx6fYWKzk3A@mail.gmail.com>
- <20240725122315.GE7022@unreal> <CAPybu_1XsNq=ExrO+8XLqnV_KvSaqooM=yNy5iuzcD=-k5CdGA@mail.gmail.com>
- <20240725132035.GF7022@unreal> <20240725194202.GE14252@pendragon.ideasonboard.com>
- <CAPybu_3T8JNkZxf3pgCo4E4VJ3AZvY7NzeXdd7w9Qqe8=eV=9A@mail.gmail.com> <20240726131110.GD28621@pendragon.ideasonboard.com>
-In-Reply-To: <20240726131110.GD28621@pendragon.ideasonboard.com>
+References: <nycvar.YFH.7.76.2407231320210.11380@cbobk.fhfr.pm>
+ <1e82a5c97e915144e01dd65575929c15bc0db397.camel@HansenPartnership.com>
+ <20240724200012.GA23293@pendragon.ideasonboard.com> <a75782218f34ae3cff725cbcfb321527f6aa2e14.camel@HansenPartnership.com>
+ <20240725193125.GD14252@pendragon.ideasonboard.com> <20240725194314.GS3371438@nvidia.com>
+ <20240725200703.GG14252@pendragon.ideasonboard.com> <CAPybu_0C44q+d33LN8yKGSyv6HKBMPNy0AG4LkCOqxc87w3WrQ@mail.gmail.com>
+ <20240726124949.GI32300@pendragon.ideasonboard.com> <20240726131106.GW3371438@nvidia.com>
+ <20240726142217.GF28621@pendragon.ideasonboard.com>
+In-Reply-To: <20240726142217.GF28621@pendragon.ideasonboard.com>
 From: Ricardo Ribalda Delgado <ricardo.ribalda@gmail.com>
-Date: Fri, 26 Jul 2024 17:40:50 +0200
-Message-ID: <CAPybu_13+Axb2e_fVYeUv+S3UohbJXBYNF74Qd=pXz8_X3ic9g@mail.gmail.com>
+Date: Fri, 26 Jul 2024 17:43:21 +0200
+Message-ID: <CAPybu_3+J-e-s2+3KV51Nc4Z1rys98xnN6p_0xXkdag-no09JQ@mail.gmail.com>
 Subject: Re: [MAINTAINERS SUMMIT] Device Passthrough Considered Harmful?
 To: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-Cc: Leon Romanovsky <leon@kernel.org>, 
-	James Bottomley <James.Bottomley@hansenpartnership.com>, Jiri Kosina <jikos@kernel.org>, 
-	Dan Williams <dan.j.williams@intel.com>, ksummit@lists.linux.dev, 
-	linux-cxl@vger.kernel.org, linux-rdma@vger.kernel.org, netdev@vger.kernel.org, 
-	jgg@nvidia.com
+Cc: Jason Gunthorpe <jgg@nvidia.com>, James Bottomley <James.Bottomley@hansenpartnership.com>, 
+	Jiri Kosina <jikos@kernel.org>, Dan Williams <dan.j.williams@intel.com>, ksummit@lists.linux.dev, 
+	linux-cxl@vger.kernel.org, linux-rdma@vger.kernel.org, netdev@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Fri, Jul 26, 2024 at 3:11=E2=80=AFPM Laurent Pinchart
+On Fri, Jul 26, 2024 at 4:22=E2=80=AFPM Laurent Pinchart
 <laurent.pinchart@ideasonboard.com> wrote:
 >
-> On Fri, Jul 26, 2024 at 10:02:27AM +0200, Ricardo Ribalda Delgado wrote:
-> > On Thu, Jul 25, 2024 at 9:44=E2=80=AFPM Laurent Pinchart wrote:
-> > > On Thu, Jul 25, 2024 at 04:20:35PM +0300, Leon Romanovsky wrote:
-> > > > On Thu, Jul 25, 2024 at 03:02:13PM +0200, Ricardo Ribalda Delgado w=
-rote:
-> > > > > On Thu, Jul 25, 2024 at 2:23=E2=80=AFPM Leon Romanovsky wrote:
-> > > > > > On Thu, Jul 25, 2024 at 11:26:38AM +0200, Ricardo Ribalda Delga=
-do wrote:
-> > > > > > > On Wed, Jul 24, 2024 at 10:02=E2=80=AFPM Laurent Pinchart wro=
-te:
-> > > > > >
-> > > > > > <...>
-> > > > > >
-> > > > > > > It would be great to define what are the free software commun=
-ities
-> > > > > > > here. Distros and final users are also "free software communi=
-ties" and
-> > > > > > > they do not care about niche use cases covered by proprietary
-> > > > > > > software.
-> > > > > >
-> > > > > > Are you certain about that?
-> > > > >
-> > > > > As a user, and as an open source Distro developer I have a small =
-hint.
-> > > > > But you could also ask users what they think about not being able=
- to
-> > > > > use their notebook's cameras. The last time that I could not use =
-some
-> > > > > basic hardware from a notebook with Linux was 20 years ago.
-> > > >
-> > > > Lucky you, I still have consumer hardware (speaker) that doesn't wo=
-rk
-> > > > with Linux, and even now, there is basic hardware in my current
-> > > > laptop (HP docking station) that doesn't work reliably in Linux.
-> > > >
-> > > > > > > They only care (and should care) about normal workflows.
-> > > > > >
-> > > > > > What is a normal workflow?
-> > > > > > Does it mean that if user bought something very expensive he
-> > > > > > should not be able to use it with free software, because his
-> > > > > > usage is different from yours?
-> > > > > >
-> > > > > > Thanks
-> > > > >
-> > > > > It means that we should not block the standard usage for 99% of t=
-he
-> > > > > population just because 1% of the users cannot do something fancy=
- with
-> > > > > their device.
-> > > >
-> > > > Right, the problem is that in some areas the statistics slightly di=
-fferent.
-> > > > 99% population is blocked because 1% of the users don't need it and
-> > > > don't think that it is "normal" flow.
-> > > >
-> > > > > Let me give you an example. When I buy a camera I want to be able=
- to
-> > > > > do Video Conferencing and take some static photos of documents. I=
- do
-> > > > > not care about: automatic makeup, AI generated background, unicor=
-n
-> > > > > filters, eyes recentering... But we need to give a way to vendors=
- to
-> > > > > implement those things closely, without the marketing differentia=
-tors,
-> > > > > vendors have zero incentive to invest in Linux, and that affects =
-all
-> > > > > the population.
-> > >
-> > > I've seen these kind of examples being repeatedly given in discussion=
-s
-> > > related to camera ISP support in Linux. They are very misleading. The=
-se
-> > > are not the kind of features that are relevant for the device
-> > > pass-through discussion these day. Those are high-level use cases
-> > > implemented in userspace, and vendors can ship any closed-source
-> > > binaries they want there. What I care about is the features exposed b=
-y
-> > > the kernel to userspace API.
+> On Fri, Jul 26, 2024 at 10:11:06AM -0300, Jason Gunthorpe wrote:
+> > On Fri, Jul 26, 2024 at 03:49:49PM +0300, Laurent Pinchart wrote:
 > >
-> > The ISPs are gradually becoming programmable devices and they indeed
-> > help during all of those examples.
+> > > What is not an option exactly in my description above ? We have multi=
+ple
+> > > V4L2 drivers for ISPs. They receive ISP parameters from userspace
+> > > through a data buffer. It's not allowed to be opaque, but it doesn't
+> > > prevent vendor closed-source userspace implementations with additiona=
+l
+> > > *camera* features, as long as the *hardware* features are available t=
+o
+> > > everybody.
+> >
+> > How far do you take opaque?
+> >
+> > In mlx5 we pass command buffers from user to kernel to HW and the
+> > kernel does only a little checking.
 >
-> I'd like to see more technical information to substantiate this claim.
-> So far what I've sometimes seen is ISPs that include programmable
-> elements, but hiding those behind a firmware that exposes a fixed
-> (configurable) pipeline. I've also heard of attempts to expose some of
-> that programmability to the operating system, which were abandoned in
-> the end due to lack usefulness.
+> I won't comment on the mlx5 case in particular, I don't have enough
+> knowledge to do so.
 >
-> > Userspace needs to send/receive information from the ISP, and that is
-> > exactly what vendors want to keep in the close.
+> When it comes to validation of commands by the kernel, at the very least
+> the kernel driver needs to be able to guarantee safety. For instance,
+> that means that any command that can result in DMA operations need to be
+> validated (e.g. verifying buffer addresses and sizes) and/or executed
+> partly by the driver (e.g. mapping a buffer through an IOMMU), depending
+> on hardware constraints.
 >
-> But that's exactly what we need to implement an open userspace ecosystem
-> :-)
+> > There is a 12kloc file describing the layout of alot of commands:
+> > include/linux/mlx5/mlx5_ifc.h
+> >
+> > There is an open PDF describing in detail some subset of this:
+> > https://network.nvidia.com/files/doc-2020/ethernet-adapters-programming=
+-manual.pdf
+> >
+> > There are in-kernel implementations driving most of those commands.
 >
-> > Describing how they implement those algorithms is a patent minefield
-> > and their differentiating factor.
+> For camera ISPs, most of the "commands" wouldn't be driven by the
+> kernel. I don't have expectations when it comes to what commands the
+> kernel exercises directly, I think that highly depends on the device
+> type.
 >
-> Those are also arguments I've heard many times before. The
-> differentiating factor for cameras today is mostly in userspace ISP
-> control algorithms, and nobody is telling vendors they need to open all
-> that.
+> > Other commands are only issued by userspace, and we have open source
+> > DPDK, rdma-core and UCX implementations driving them.
+> >
+> > ie, this is really quite good as far as a device providing open source
+> > solutions goes.
+> >
+> > However, no doubt there is more FW capability and commands than even
+> > this vast amount documents - so lets guess that propritary code is
+> > using this interface with unknown commands too.
+> >
+> > From a camera perspective would you be OK with that? Let's guess that
+> > 90% of use cases are covered with fully open code. Do we also need to
+> > forcefully close the door to an imagined 10% of proprietary cases just
+> > to be sure open always wins?
+>
+> For command buffers interpreted by a firmware, it would be extremely
+> difficult, if not impossible, to ensure that nothing undocumented is
+> possible to access from userspace. I think we have two issues here, one
+> of them is to define what we required to be openly accessible, and the
+> other to avoid vendors cheating by claiming to be more open than they
+> actually are.
+>
+> I believe the latter can't be solved technically. At the end of the day
+> it's a matter of trust, and the only option I can see is to build that
+> trust with the vendors, and to make it clear that breaches of trust will
+> have consequences. A vendor that deliberately lies would end up on my
+> personal backlist for as long as they don't implement structural
+> solutions to be a better player in the ecosystem. What is acceptable as
+> consequences is for the communities to decide. We have previously banned
+> people or organizations from contributing to the kernel for certain
+> periods of time (the University of Minnesota case comes to my mind for
+> instance), and other options can be considered too.
+>
+> As for the first issue, I think it's a difficult one as it is very
+> difficult to quantify the features covered by open implementations, as
+> well as their importance. You could have a 99% open command set where
+> the 1% would impact open implementations extremely negatively, the same
+> way you could have a 50% open command set where the other 50% isn't of
+> any use to anyone but the vendor (for instance used to debug the
+> firmware implementation).
 
-I disagree. The differentiating factor is what the ISP is capable of
-doing and how they do it. Otherwise we would not see new ISPs in the
-market.
+It is not that difficult. You just have to define what an acceptable
+implementation is. Eg
 
-If you define the arguments passed to an ISP you are defining the
-algorithm, and that is a trade secret and/or a patent violation.
+- Sharpness at specific light.
+- Time of convergence for the Auto algorithms
+- Noise ratio
+
+We could even use the SoftISP implementation as reference. Is this ISP
+working better or worse than SoftISP?
+
 
 >
-> When it comes to patents, we all know how software patents is a
-> minefield, and hardware is also affected. I can't have much sympathy for
-> this argument though, those patents mostly benefit the largest players
-> in the market, and those are the ones who currently claim they can't
-> open anything due to patents.
+> For cameras, the feature set can I believe be expressed in terms of ISP
+> processing blocks that are usable by open implementations, as well as in
+> terms of the type of usage of those features. For instance, is it
+> acceptable that a vendor documents how to use 2D noise reduction but
+> makes 3D (temporal) noise reduction available only to close-source
+> userspace ? My personal answer is no. I want to aim for very close to
+> 100% of the features, and certainly 100% of the "large" features. I can
+> close my eyes on features that are very very niche, but what is niche
+> today may not be tomorrow. For instance, if a camera ISP implements a
+> feature used only for very specific camera sensors targetted at
+> autonomous driving in a new generation of research prototypes that only
+> one company has access to, I'll be inclined to ignore that. That
+> technology may however become much more mainstream 5 years later.
 
-Big players do not usually sue each other. The big problem is patent
-trolls that "shoot at everything that moves".
+We can update our requirements in 5 years. Nothing is written in stone.
 
-I dislike patents, but it is the world we have to live in. No vendor
-is going to take our approach if they risk a multi million dollar
-lawsuit.
+Also it is much easier to reverse engineer an open driver, with an
+open userspace and a closed userspace than a close driver with a
+closed userspace.
 
 
 >
-> > > > > This challenge seems to be solved for GPUs. I am using my AMD GPU
-> > > > > freely and my nephew can install the amdgpu-pro proprietary user =
-space
-> > > > > driver to play duke nukem (or whatever kids play now) at 2000 fps=
-.
-> > > > >
-> > > > > There are other other subsystems that allow vendor passthrough an=
-d
-> > > > > their ecosystem has not collapsed.
-> > > >
-> > > > Yes, I completely agree with you on that.
-> > > >
-> > > > > Can we have some general guidance of what is acceptable? Can we d=
-efine
-> > > > > together the "normal workflow" and focus on a *full* open source
-> > > > > implementation of that?
-> > > >
-> > > > I don't think that is possible to define "normal workflow". Require=
-ment
-> > > > to have open-source counterpart to everything exposed through UAPI =
-is a
-> > > > valid one. I'm all for that.
-> > >
-> > > That's my current opinion as well, as least when it comes to the kern=
-el
-> > > areas I mostly work with.
+> The other aspect is the type of usage of the features. For camera ISPs
+> again, some parameters will be computed through a tuning process, and
+> will be fixed for the lifetime of the camera. I want those parameters to
+> be documented, to enable users to tune cameras for their own use cases.
+> This is less important in some market segments, such as laptops for
+> instance, but is crucial for embedded devices. This is an area where
+> I've previously been called unreasonable, and I don't think that's fair.
+> The tuned-and-immutable parameters are not plentiful, as most of the
+> tuning results in data that needs to be combined with runtime
+> information to compute ISP parameters, so the "this is for tuning only"
+> argument doesn't hold as much as one may think. For real immutable
+> parameters, a large number of them are related to image processing steps
+> that are very common and found in most ISPs, such as lens shading
+> correction or geometric distorsion correction. I don't see why we should
+> let vendors keep those closed.
+
+
+We don't have enough leverage for that kind of requirement.
+
+To be fair, we do not ask touchscreen manufacturers to document their
+calibration files. Nor any other calibration file in the kernel.
+
+The calibration file for me is like a firmware blob.
+
+
+
+>
+> I'm sorry that this discussion is turning into something very
+> camera-centric, but that's the relevant area I know best. I hope that
+> discussing problems related to device pass-through in different areas in
+> the open will help build a wider shared understanding of the problems,
+> and hopefully help designing solutions by better taking into account the
+> various aspects of the issues.
+>
+> > Does closing the door have to come at the cost of a technically clean
+> > solution? Doing validation in the kernel to enforce an ideological
+> > position would severely degrade mlx5, and would probably never really
+> > be robust.
 >
 > --
 > Regards,
@@ -255,6 +256,6 @@ el
 
 
 
---=20
+--
 Ricardo Ribalda
 
