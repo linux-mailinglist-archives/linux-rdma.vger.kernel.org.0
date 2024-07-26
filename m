@@ -1,132 +1,177 @@
-Return-Path: <linux-rdma+bounces-4027-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-4028-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8945293D67D
-	for <lists+linux-rdma@lfdr.de>; Fri, 26 Jul 2024 18:01:13 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2A76393D6BB
+	for <lists+linux-rdma@lfdr.de>; Fri, 26 Jul 2024 18:10:56 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0B0EC1F2497F
-	for <lists+linux-rdma@lfdr.de>; Fri, 26 Jul 2024 16:01:13 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 59C031C22FB3
+	for <lists+linux-rdma@lfdr.de>; Fri, 26 Jul 2024 16:10:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9FA905588B;
-	Fri, 26 Jul 2024 16:01:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=hansenpartnership.com header.i=@hansenpartnership.com header.b="uLap637h";
-	dkim=pass (1024-bit key) header.d=hansenpartnership.com header.i=@hansenpartnership.com header.b="uLap637h"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5A14C17C7BC;
+	Fri, 26 Jul 2024 16:10:19 +0000 (UTC)
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from bedivere.hansenpartnership.com (bedivere.hansenpartnership.com [96.44.175.130])
+Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4FEFD171D2;
-	Fri, 26 Jul 2024 16:01:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=96.44.175.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 119F2200AF;
+	Fri, 26 Jul 2024 16:10:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.176.79.56
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1722009666; cv=none; b=AGNhLYU/MxwrmpVg4LwFJq0RdsGlSvwWYSG6xL6h5LEoc/CaGMcPUTmlrkqAgsbXXvNWWhTGuT2JA8bJD3xJWY+QtDBZBH/4zbn4YbJ3OqpohOLsG73VTsrdCqe4+GC0VlIS7b//vqZhaTvPowzL3KK4ofIdH8hEn4mfMGu3ayw=
+	t=1722010219; cv=none; b=GWX7I5sELOWvNA5/54b6pwUFnkhBC2roZdlaKz9LqNoPdJhHOJaYUTobo0t29OKsqpUYKznROro9dpOKUW75SUM5oCMjqjWBAS7tAY0Nk5K7GqSPKhmMsaXStDsmJw39RLrCe70j7/FlUtNQk/tOhJUhTczl4QRuaM2MBiQy0XY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1722009666; c=relaxed/simple;
-	bh=Tv3TBmL5BT+pg1MAcmQYJ2QDHFzbbexc+bWPaNIiilM=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=QJNLlmBD8Qop4S8FgFAlb7wDjJ8RlGnkeV3yHKKmwBwIJYKmtR2Oq+6LtFENmRPbaDRLB9Pxj9el73utR/QYO4uTKfdLsF74mfrmry7b2N/5tjZHYCjkyZWYyWST0mfyzvlWGsGpZ+O1ERr3XDVCMAAPyr185sjZCNoqJkMc86E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=HansenPartnership.com; spf=pass smtp.mailfrom=HansenPartnership.com; dkim=pass (1024-bit key) header.d=hansenpartnership.com header.i=@hansenpartnership.com header.b=uLap637h; dkim=pass (1024-bit key) header.d=hansenpartnership.com header.i=@hansenpartnership.com header.b=uLap637h; arc=none smtp.client-ip=96.44.175.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=HansenPartnership.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=HansenPartnership.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-	d=hansenpartnership.com; s=20151216; t=1722009662;
-	bh=Tv3TBmL5BT+pg1MAcmQYJ2QDHFzbbexc+bWPaNIiilM=;
-	h=Message-ID:Subject:From:To:Date:In-Reply-To:References:From;
-	b=uLap637hrWspXnBsZ3D18mz5GC0+zSXBSApI2ngq/Sqagbcf4L8aRaGe+dEjwZ5ig
-	 3H7KrxPqZbIYT8+eTsLQ1Th+lP+NIJPa/qkfw6mtdutN39JbDuA51VttqVnX0tSDGC
-	 TQVavPGqMw+Unj12xEMGywB7O5lbm1k0YBU6ReiQ=
-Received: from localhost (localhost [127.0.0.1])
-	by bedivere.hansenpartnership.com (Postfix) with ESMTP id 91CAA128100C;
-	Fri, 26 Jul 2024 12:01:02 -0400 (EDT)
-Received: from bedivere.hansenpartnership.com ([127.0.0.1])
- by localhost (bedivere.hansenpartnership.com [127.0.0.1]) (amavis, port 10024)
- with ESMTP id ZnBJzhnOvYyV; Fri, 26 Jul 2024 12:01:02 -0400 (EDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-	d=hansenpartnership.com; s=20151216; t=1722009662;
-	bh=Tv3TBmL5BT+pg1MAcmQYJ2QDHFzbbexc+bWPaNIiilM=;
-	h=Message-ID:Subject:From:To:Date:In-Reply-To:References:From;
-	b=uLap637hrWspXnBsZ3D18mz5GC0+zSXBSApI2ngq/Sqagbcf4L8aRaGe+dEjwZ5ig
-	 3H7KrxPqZbIYT8+eTsLQ1Th+lP+NIJPa/qkfw6mtdutN39JbDuA51VttqVnX0tSDGC
-	 TQVavPGqMw+Unj12xEMGywB7O5lbm1k0YBU6ReiQ=
-Received: from lingrow.int.hansenpartnership.com (unknown [IPv6:2601:5c4:4302:c21::db7])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits))
-	(Client did not present a certificate)
-	by bedivere.hansenpartnership.com (Postfix) with ESMTPSA id 6F5D51280B86;
-	Fri, 26 Jul 2024 12:01:01 -0400 (EDT)
-Message-ID: <8d83a9a69c10bab0e4e39994c58c290f6dc5586b.camel@HansenPartnership.com>
-Subject: Re: [MAINTAINERS SUMMIT] Device Passthrough Considered Harmful?
-From: James Bottomley <James.Bottomley@HansenPartnership.com>
-To: Laurent Pinchart <laurent.pinchart@ideasonboard.com>, Ricardo Ribalda
-	Delgado <ricardo.ribalda@gmail.com>
-Cc: Leon Romanovsky <leon@kernel.org>, Jiri Kosina <jikos@kernel.org>, Dan
- Williams <dan.j.williams@intel.com>, ksummit@lists.linux.dev,
- linux-cxl@vger.kernel.org,  linux-rdma@vger.kernel.org,
- netdev@vger.kernel.org, jgg@nvidia.com
-Date: Fri, 26 Jul 2024 12:01:00 -0400
-In-Reply-To: <20240726131110.GD28621@pendragon.ideasonboard.com>
-References: <668c67a324609_ed99294c0@dwillia2-xfh.jf.intel.com.notmuch>
-	 <nycvar.YFH.7.76.2407231320210.11380@cbobk.fhfr.pm>
-	 <1e82a5c97e915144e01dd65575929c15bc0db397.camel@HansenPartnership.com>
-	 <20240724200012.GA23293@pendragon.ideasonboard.com>
-	 <CAPybu_0SN7m=m=+z5hu_4M+STGh2t0J-hFEmtDTgx6fYWKzk3A@mail.gmail.com>
-	 <20240725122315.GE7022@unreal>
-	 <CAPybu_1XsNq=ExrO+8XLqnV_KvSaqooM=yNy5iuzcD=-k5CdGA@mail.gmail.com>
-	 <20240725132035.GF7022@unreal>
-	 <20240725194202.GE14252@pendragon.ideasonboard.com>
-	 <CAPybu_3T8JNkZxf3pgCo4E4VJ3AZvY7NzeXdd7w9Qqe8=eV=9A@mail.gmail.com>
-	 <20240726131110.GD28621@pendragon.ideasonboard.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.42.4 
+	s=arc-20240116; t=1722010219; c=relaxed/simple;
+	bh=YKgmSzZlu4BIydzWn7bGVh7bITwoK6YWkJlzgZoKcWs=;
+	h=Date:From:To:CC:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=ax+PGVZdJWy16Qhnqhopq++Dkfvb9SsOdqmzxoUiHFfpzyHxpbv7OIMlcpNXgStMGQIav9dh+jpEDJ5Wl+OA9KsM6kdXdJiSKVa1afLHXGiw8IWDqCn/5IV6YMnK8KzU97nkBYZ4aHPeLhEF92n0d2VJle4lDHeoUq28hz94/oI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=Huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=185.176.79.56
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=Huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.18.186.216])
+	by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4WVt2C0zlDz6K9Kk;
+	Sat, 27 Jul 2024 00:07:47 +0800 (CST)
+Received: from lhrpeml500005.china.huawei.com (unknown [7.191.163.240])
+	by mail.maildlp.com (Postfix) with ESMTPS id D2AAB1404FC;
+	Sat, 27 Jul 2024 00:10:14 +0800 (CST)
+Received: from localhost (10.203.174.77) by lhrpeml500005.china.huawei.com
+ (7.191.163.240) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.1.2507.39; Fri, 26 Jul
+ 2024 17:10:14 +0100
+Date: Fri, 26 Jul 2024 17:10:13 +0100
+From: Jonathan Cameron <Jonathan.Cameron@Huawei.com>
+To: Jason Gunthorpe <jgg@nvidia.com>
+CC: Jonathan Corbet <corbet@lwn.net>, Itay Avraham <itayavr@nvidia.com>, Jakub
+ Kicinski <kuba@kernel.org>, Leon Romanovsky <leon@kernel.org>,
+	<linux-doc@vger.kernel.org>, <linux-rdma@vger.kernel.org>,
+	<netdev@vger.kernel.org>, Paolo Abeni <pabeni@redhat.com>, Saeed Mahameed
+	<saeedm@nvidia.com>, Tariq Toukan <tariqt@nvidia.com>, Andy Gospodarek
+	<andrew.gospodarek@broadcom.com>, Aron Silverton <aron.silverton@oracle.com>,
+	Dan Williams <dan.j.williams@intel.com>, David Ahern <dsahern@kernel.org>,
+	Christoph Hellwig <hch@infradead.org>, Jiri Pirko <jiri@nvidia.com>, Leonid
+ Bloch <lbloch@nvidia.com>, "Leon Romanovsky" <leonro@nvidia.com>,
+	<linux-cxl@vger.kernel.org>, <patches@lists.linux.dev>
+Subject: Re: [PATCH v2 7/8] fwctl/mlx5: Support for communicating with mlx5
+ fw
+Message-ID: <20240726171013.00006e67@Huawei.com>
+In-Reply-To: <7-v2-940e479ceba9+3821-fwctl_jgg@nvidia.com>
+References: <0-v2-940e479ceba9+3821-fwctl_jgg@nvidia.com>
+	<7-v2-940e479ceba9+3821-fwctl_jgg@nvidia.com>
+Organization: Huawei Technologies Research and Development (UK) Ltd.
+X-Mailer: Claws Mail 4.1.0 (GTK 3.24.33; x86_64-w64-mingw32)
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset="US-ASCII"
 Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: lhrpeml500005.china.huawei.com (7.191.163.240) To
+ lhrpeml500005.china.huawei.com (7.191.163.240)
 
-On Fri, 2024-07-26 at 16:11 +0300, Laurent Pinchart wrote:
-> On Fri, Jul 26, 2024 at 10:02:27AM +0200, Ricardo Ribalda Delgado
-> wrote:
-[...]
-> > Describing how they implement those algorithms is a patent
-> > minefield and their differentiating factor.
+On Mon, 24 Jun 2024 19:47:31 -0300
+Jason Gunthorpe <jgg@nvidia.com> wrote:
 
-Just on this argument: The Patent Shield around Linux provided by OIN
-is pretty strong and allows us (and entities that contribute to Linux)
-to ignore most patent problems because someone else is looking out for
-them.  OIN is actually free to join if any company would like to
-benefit directly from the Linux Patent Shield:
-
-https://openinventionnetwork.com/about-us/member-benefits/
-
-
-> Those are also arguments I've heard many times before. The
-> differentiating factor for cameras today is mostly in userspace ISP
-> control algorithms, and nobody is telling vendors they need to open
-> all that.
+> From: Saeed Mahameed <saeedm@nvidia.com>
 > 
-> When it comes to patents, we all know how software patents is a
-> minefield, and hardware is also affected. I can't have much sympathy
-> for this argument though, those patents mostly benefit the largest
-> players in the market, and those are the ones who currently claim
-> they can't open anything due to patents.
+> mlx5's fw has long provided a User Context concept. This has a long
+> history in RDMA as part of the devx extended verbs programming
+> interface. A User Context is a security envelope that contains objects and
+> controls access. It contains the Protection Domain object from the
+> InfiniBand Architecture and both togther provide the OS with the necessary
+> tools to bind a security context like a process to the device.
+> 
+> The security context is restricted to not be able to touch the kernel or
+> other processes. In the RDMA verbs case it is also restricted to not touch
+> global device resources.
+> 
+> The fwctl_mlx5 takes this approach and builds a User Context per fwctl
+> file descriptor and uses a FW security capability on the User Context to
+> enable access to global device resources. This makes the context useful
+> for provisioning and debugging the global device state.
+> 
+> mlx5 already has a robust infrastructure for delivering RPC messages to
+> fw. Trivially connect fwctl's RPC mechanism to mlx5_cmd_do(). Enforce the
+> User Context ID in every RPC header so the FW knows the security context
+> of the issuing ID.
+> 
+> Signed-off-by: Saeed Mahameed <saeedm@nvidia.com>
+> Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
 
-In order to get a patent, the claimed invention has to be made public,
-so if they hold the patent there should be no problem.  If there is a
-problem opening something because it infringes on someone else's patent
-and they might see it, then OIN, above, is usually a good answer if the
-patent is owned by another ecosystem contributor or an OIN signatory. 
-For patent contortia (like MPEG) and patent trolls, it's more
-problematic, but, again, OIN can provide help.
+A few minor comments + a reference counting question.
 
-Regards,
+> diff --git a/drivers/fwctl/Kconfig b/drivers/fwctl/Kconfig
+> index 37147a695add9a..e5ee2d46d43126 100644
+> --- a/drivers/fwctl/Kconfig
+> +++ b/drivers/fwctl/Kconfig
+> @@ -7,3 +7,17 @@ menuconfig FWCTL
+>  	  support a wide range of lockdown compatible device behaviors including
+>  	  manipulating device FLASH, debugging, and other activities that don't
+>  	  fit neatly into an existing subsystem.
+> +
+> +if FWCTL
 
-James
+Why not use depends on FWCTL?
+
+> +config FWCTL_MLX5
+> +	tristate "mlx5 ConnectX control fwctl driver"
+> +	depends on MLX5_CORE
+> +	help
+> +	  MLX5CTL provides interface for the user process to access the debug and
+> +	  configuration registers of the ConnectX hardware family
+> +	  (NICs, PCI switches and SmartNIC SoCs).
+> +	  This will allow configuration and debug tools to work out of the box on
+> +	  mainstream kernel.
+> +
+> +	  If you don't know what to do here, say N.
+> +endif
+
+> diff --git a/drivers/fwctl/mlx5/main.c b/drivers/fwctl/mlx5/main.c
+> new file mode 100644
+> index 00000000000000..5e64371d7e5508
+> --- /dev/null
+> +++ b/drivers/fwctl/mlx5/main.c
+
+
+
+> +static void mlx5ctl_remove(struct auxiliary_device *adev)
+> +{
+> +	struct mlx5ctl_dev *mcdev __free(mlx5ctl) = auxiliary_get_drvdata(adev);
+
+So this is calling fwctl_put(&mcdev->fwctl) on scope exit.
+
+Why do you need to drop a reference beyond the one fwctl_unregister() is dropping
+in cdev_device_del()?  Where am I missing a reference get?
+
+> +
+> +	fwctl_unregister(&mcdev->fwctl);
+> +}
+> +
+> +static const struct auxiliary_device_id mlx5ctl_id_table[] = {
+> +	{.name = MLX5_ADEV_NAME ".fwctl",},
+> +	{},
+
+No point in comma after terminating entries
+
+> +};
+> +MODULE_DEVICE_TABLE(auxiliary, mlx5ctl_id_table);
+> +
+> +static struct auxiliary_driver mlx5ctl_driver = {
+> +	.name = "mlx5_fwctl",
+> +	.probe = mlx5ctl_probe,
+> +	.remove = mlx5ctl_remove,
+> +	.id_table = mlx5ctl_id_table,
+> +};
+> +
+> +module_auxiliary_driver(mlx5ctl_driver);
+> +
+> +MODULE_IMPORT_NS(FWCTL);
+> +MODULE_DESCRIPTION("mlx5 ConnectX fwctl driver");
+> +MODULE_AUTHOR("Saeed Mahameed <saeedm@nvidia.com>");
+> +MODULE_LICENSE("Dual BSD/GPL");
+
+> +#endif
 
 
