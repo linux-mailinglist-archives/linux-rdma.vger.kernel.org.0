@@ -1,220 +1,95 @@
-Return-Path: <linux-rdma+bounces-4040-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-4041-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 21A9593E4BF
-	for <lists+linux-rdma@lfdr.de>; Sun, 28 Jul 2024 13:24:30 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 08C3A93E5C6
+	for <lists+linux-rdma@lfdr.de>; Sun, 28 Jul 2024 17:16:40 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 45E7B1C212F4
-	for <lists+linux-rdma@lfdr.de>; Sun, 28 Jul 2024 11:24:29 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 98839B21260
+	for <lists+linux-rdma@lfdr.de>; Sun, 28 Jul 2024 15:16:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0A2B738DE1;
-	Sun, 28 Jul 2024 11:24:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 01CD252F62;
+	Sun, 28 Jul 2024 15:16:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ideasonboard.com header.i=@ideasonboard.com header.b="XX8p+fvZ"
+	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="EV4pJhfw"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [213.167.242.64])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 28DA02BB1B;
-	Sun, 28 Jul 2024 11:24:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.167.242.64
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8805B3FE55;
+	Sun, 28 Jul 2024 15:16:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1722165861; cv=none; b=k7RCXtrmhW2z1ejP+9HADHlrZQ/MuBlmujwUBiiBd75zvMax1zikt0mzLG7g+5y9dlJCB0knruZo+XK7HNAPMo9JpVQRXQV6HBPh8tWD/3fsGz90xzicPxlnvA7ozbZQjSUbF7SWPw8TX+YWJf5UxBWzoc6zfm7dzHyG/A/bT1c=
+	t=1722179790; cv=none; b=oNSgDgDGQUXPuDM6jc0ZqMPCb68SFtxCSa9BMRUB/SWyU31QUK82mBfYALbOKd2hj5ky1FFMMlI2g23L6wkhb2NeNBCrU6UqsgNoLiXFs2/nMnDQBgFhzHnY6G+fHrQmE3Nsd/vVQqfkRsho3eBpwKofHFa9k4lyUlJe/ICKzpU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1722165861; c=relaxed/simple;
-	bh=fTmj/tmttMD10/Ye6QDuNXMP2HnhPPV1mrdv0xVXghI=;
+	s=arc-20240116; t=1722179790; c=relaxed/simple;
+	bh=mwMxZbCgroPb8q3wcXbtPcje/2bO9KTKEIIY9SBR37o=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=LZaoDOUNiHbOniO1NLjROMu0SAKy2UMsPTI5wPTjHhqtxns3FhuGv92fm7SG3xGXTZk22HEdLaK98C6WF45FEfAl9uHxt1sD5x2w8zEePvDn7oa7JH//FhKk/WuFh3kzaPDDtv7rlfyJIGb+AC9TciH3fqlyc4zD7SLSBE+KHng=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ideasonboard.com; spf=pass smtp.mailfrom=ideasonboard.com; dkim=pass (1024-bit key) header.d=ideasonboard.com header.i=@ideasonboard.com header.b=XX8p+fvZ; arc=none smtp.client-ip=213.167.242.64
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ideasonboard.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ideasonboard.com
-Received: from pendragon.ideasonboard.com (81-175-209-231.bb.dnainternet.fi [81.175.209.231])
-	by perceval.ideasonboard.com (Postfix) with ESMTPSA id 9DC4363F;
-	Sun, 28 Jul 2024 13:23:32 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-	s=mail; t=1722165812;
-	bh=fTmj/tmttMD10/Ye6QDuNXMP2HnhPPV1mrdv0xVXghI=;
+	 Content-Type:Content-Disposition:In-Reply-To; b=XXkq9oYbGq3iNyelqH/xzUmEjH5On0e6adso4+IoiCacMT32ofXA49Jm6S5wLAP7/vyvUpuPzf0Pkr/wlE/ob7MqwmkTqg3ch9ZhtBWmmvGhEVBBMBcKct6JsjR5/fD+vnSN2ft8ylQAuIoYzIKbnQDdDumjjyU3N+pb4s8d1kA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=EV4pJhfw; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A9532C116B1;
+	Sun, 28 Jul 2024 15:16:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+	s=korg; t=1722179790;
+	bh=mwMxZbCgroPb8q3wcXbtPcje/2bO9KTKEIIY9SBR37o=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=XX8p+fvZPGAOUl7ZWiMIZuuqizXm9HepnVs5aOxKO62BD+v8FL4+UXIkPMtKdofzt
-	 5BWdPd6A4By9drzGMlIZJQwkgmKz1IhzRjGi66XNTsQO59Lns4O+UyH7BMqNf2HKwh
-	 mndiHF0FaragnHwFv+5dxTwB3LQlPCDXSeGrSiZU=
-Date: Sun, 28 Jul 2024 14:23:58 +0300
-From: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-To: Ricardo Ribalda Delgado <ricardo.ribalda@gmail.com>
-Cc: Leon Romanovsky <leon@kernel.org>,
-	James Bottomley <James.Bottomley@hansenpartnership.com>,
-	Jiri Kosina <jikos@kernel.org>,
-	Dan Williams <dan.j.williams@intel.com>, ksummit@lists.linux.dev,
+	b=EV4pJhfwGMeNhllO6F2W1oISau2BfQ4E2mnL/DpQ5uH1jZS1YSUzE1XVnuq9L9Zo0
+	 K7RoM/o8shefX9gqLPIy8u+r5L4Uu85M85+NIm8jbLmxLbLG7tDDWw/Kod4w7KGL7c
+	 08TYzpzma8/rt0Trsobil6CNalYiNgh3wk5rYfTM=
+Date: Sun, 28 Jul 2024 17:16:28 +0200
+From: Greg KH <gregkh@linuxfoundation.org>
+To: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Cc: Dan Williams <dan.j.williams@intel.com>, ksummit@lists.linux.dev,
 	linux-cxl@vger.kernel.org, linux-rdma@vger.kernel.org,
 	netdev@vger.kernel.org, jgg@nvidia.com
 Subject: Re: [MAINTAINERS SUMMIT] Device Passthrough Considered Harmful?
-Message-ID: <20240728112358.GB30973@pendragon.ideasonboard.com>
-References: <1e82a5c97e915144e01dd65575929c15bc0db397.camel@HansenPartnership.com>
- <20240724200012.GA23293@pendragon.ideasonboard.com>
- <CAPybu_0SN7m=m=+z5hu_4M+STGh2t0J-hFEmtDTgx6fYWKzk3A@mail.gmail.com>
- <20240725122315.GE7022@unreal>
- <CAPybu_1XsNq=ExrO+8XLqnV_KvSaqooM=yNy5iuzcD=-k5CdGA@mail.gmail.com>
- <20240725132035.GF7022@unreal>
- <20240725194202.GE14252@pendragon.ideasonboard.com>
- <CAPybu_3T8JNkZxf3pgCo4E4VJ3AZvY7NzeXdd7w9Qqe8=eV=9A@mail.gmail.com>
- <20240726131110.GD28621@pendragon.ideasonboard.com>
- <CAPybu_13+Axb2e_fVYeUv+S3UohbJXBYNF74Qd=pXz8_X3ic9g@mail.gmail.com>
+Message-ID: <2024072802-amendable-unwatched-e656@gregkh>
+References: <668c67a324609_ed99294c0@dwillia2-xfh.jf.intel.com.notmuch>
+ <20240726142731.GG28621@pendragon.ideasonboard.com>
+ <66a43c48cb6cc_200582942d@dwillia2-mobl3.amr.corp.intel.com.notmuch>
+ <20240728111826.GA30973@pendragon.ideasonboard.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAPybu_13+Axb2e_fVYeUv+S3UohbJXBYNF74Qd=pXz8_X3ic9g@mail.gmail.com>
+In-Reply-To: <20240728111826.GA30973@pendragon.ideasonboard.com>
 
-On Fri, Jul 26, 2024 at 05:40:50PM +0200, Ricardo Ribalda Delgado wrote:
-> On Fri, Jul 26, 2024 at 3:11 PM Laurent Pinchart
-> <laurent.pinchart@ideasonboard.com> wrote:
-> >
-> > On Fri, Jul 26, 2024 at 10:02:27AM +0200, Ricardo Ribalda Delgado wrote:
-> > > On Thu, Jul 25, 2024 at 9:44 PM Laurent Pinchart wrote:
-> > > > On Thu, Jul 25, 2024 at 04:20:35PM +0300, Leon Romanovsky wrote:
-> > > > > On Thu, Jul 25, 2024 at 03:02:13PM +0200, Ricardo Ribalda Delgado wrote:
-> > > > > > On Thu, Jul 25, 2024 at 2:23 PM Leon Romanovsky wrote:
-> > > > > > > On Thu, Jul 25, 2024 at 11:26:38AM +0200, Ricardo Ribalda Delgado wrote:
-> > > > > > > > On Wed, Jul 24, 2024 at 10:02 PM Laurent Pinchart wrote:
-> > > > > > >
-> > > > > > > <...>
-> > > > > > >
-> > > > > > > > It would be great to define what are the free software communities
-> > > > > > > > here. Distros and final users are also "free software communities" and
-> > > > > > > > they do not care about niche use cases covered by proprietary
-> > > > > > > > software.
-> > > > > > >
-> > > > > > > Are you certain about that?
-> > > > > >
-> > > > > > As a user, and as an open source Distro developer I have a small hint.
-> > > > > > But you could also ask users what they think about not being able to
-> > > > > > use their notebook's cameras. The last time that I could not use some
-> > > > > > basic hardware from a notebook with Linux was 20 years ago.
-> > > > >
-> > > > > Lucky you, I still have consumer hardware (speaker) that doesn't work
-> > > > > with Linux, and even now, there is basic hardware in my current
-> > > > > laptop (HP docking station) that doesn't work reliably in Linux.
-> > > > >
-> > > > > > > > They only care (and should care) about normal workflows.
-> > > > > > >
-> > > > > > > What is a normal workflow?
-> > > > > > > Does it mean that if user bought something very expensive he
-> > > > > > > should not be able to use it with free software, because his
-> > > > > > > usage is different from yours?
-> > > > > > >
-> > > > > > > Thanks
-> > > > > >
-> > > > > > It means that we should not block the standard usage for 99% of the
-> > > > > > population just because 1% of the users cannot do something fancy with
-> > > > > > their device.
-> > > > >
-> > > > > Right, the problem is that in some areas the statistics slightly different.
-> > > > > 99% population is blocked because 1% of the users don't need it and
-> > > > > don't think that it is "normal" flow.
-> > > > >
-> > > > > > Let me give you an example. When I buy a camera I want to be able to
-> > > > > > do Video Conferencing and take some static photos of documents. I do
-> > > > > > not care about: automatic makeup, AI generated background, unicorn
-> > > > > > filters, eyes recentering... But we need to give a way to vendors to
-> > > > > > implement those things closely, without the marketing differentiators,
-> > > > > > vendors have zero incentive to invest in Linux, and that affects all
-> > > > > > the population.
-> > > >
-> > > > I've seen these kind of examples being repeatedly given in discussions
-> > > > related to camera ISP support in Linux. They are very misleading. These
-> > > > are not the kind of features that are relevant for the device
-> > > > pass-through discussion these day. Those are high-level use cases
-> > > > implemented in userspace, and vendors can ship any closed-source
-> > > > binaries they want there. What I care about is the features exposed by
-> > > > the kernel to userspace API.
-> > >
-> > > The ISPs are gradually becoming programmable devices and they indeed
-> > > help during all of those examples.
-> >
-> > I'd like to see more technical information to substantiate this claim.
-> > So far what I've sometimes seen is ISPs that include programmable
-> > elements, but hiding those behind a firmware that exposes a fixed
-> > (configurable) pipeline. I've also heard of attempts to expose some of
-> > that programmability to the operating system, which were abandoned in
-> > the end due to lack usefulness.
-> >
-> > > Userspace needs to send/receive information from the ISP, and that is
-> > > exactly what vendors want to keep in the close.
-> >
-> > But that's exactly what we need to implement an open userspace ecosystem
-> > :-)
-> >
-> > > Describing how they implement those algorithms is a patent minefield
-> > > and their differentiating factor.
-> >
-> > Those are also arguments I've heard many times before. The
-> > differentiating factor for cameras today is mostly in userspace ISP
-> > control algorithms, and nobody is telling vendors they need to open all
-> > that.
+On Sun, Jul 28, 2024 at 02:18:26PM +0300, Laurent Pinchart wrote:
+> Hi Dan,
 > 
-> I disagree. The differentiating factor is what the ISP is capable of
-> doing and how they do it. Otherwise we would not see new ISPs in the
-> market.
-
-Hardware certainly evolves, but it's far from being the main
-differentiating factor in the markets and use cases you're usually
-referring to.
-
-> If you define the arguments passed to an ISP you are defining the
-> algorithm, and that is a trade secret and/or a patent violation.
-
-Are you confusing ISP processing blocks, sometimes referred to as
-algorithms, and ISP control algorithms ? There is absolutely no way to
-do anything with an ISP, not even the bare minimum, if you don't know
-what parameters to pass to it.
-
-> > When it comes to patents, we all know how software patents is a
-> > minefield, and hardware is also affected. I can't have much sympathy for
-> > this argument though, those patents mostly benefit the largest players
-> > in the market, and those are the ones who currently claim they can't
-> > open anything due to patents.
+> On Fri, Jul 26, 2024 at 05:16:08PM -0700, Dan Williams wrote:
+> > Laurent Pinchart wrote:
+> > > I know this is a topic proposed for the maintainers summit, but given
+> > > the number of people who seem to have an opinion and be interested in
+> > > dicussing it, would a session at LPC be a better candidate ? I don't
+> > > expect the maintainer summit to invite all relevant experts from all
+> > > subsystems, that would likely overflow the room.
+> > > 
+> > > The downside of an LPC session is that it could easily turn into a
+> > > heated stage fight, and there are probably also quite a few arguments
+> > > that can't really be made in the open :-S
+> > 
+> > A separate LPC session for a subsystem or set of subsystems to explore
+> > local passthrough policy makes sense, but that is not the primary
+> > motivation for also requesting a Maintainer Summit topic slot. The
+> > primary motivation is discussing the provenance and navigation of
+> > cross-subsystem NAKs especially in an environment where the lines
+> > between net, mem, and storage are increasingly blurry at the device
+> > level.
 > 
-> Big players do not usually sue each other. The big problem is patent
-> trolls that "shoot at everything that moves".
-> 
-> I dislike patents, but it is the world we have to live in. No vendor
-> is going to take our approach if they risk a multi million dollar
-> lawsuit.
+> Would there be enough space at the maintainers' summit for all the
+> relevant people to join the discussion ?
 
-When was the last time anyone heard of big players pushing to reform the
-patent system ? At best there are initiatives such as OIN, which some
-large companies have supporting. It's still a workaround though.
+Who exactly would you consider the "relevant people" here?  It's been a
+wide-ranging conversation/thread :)
 
-> > > > > > This challenge seems to be solved for GPUs. I am using my AMD GPU
-> > > > > > freely and my nephew can install the amdgpu-pro proprietary user space
-> > > > > > driver to play duke nukem (or whatever kids play now) at 2000 fps.
-> > > > > >
-> > > > > > There are other other subsystems that allow vendor passthrough and
-> > > > > > their ecosystem has not collapsed.
-> > > > >
-> > > > > Yes, I completely agree with you on that.
-> > > > >
-> > > > > > Can we have some general guidance of what is acceptable? Can we define
-> > > > > > together the "normal workflow" and focus on a *full* open source
-> > > > > > implementation of that?
-> > > > >
-> > > > > I don't think that is possible to define "normal workflow". Requirement
-> > > > > to have open-source counterpart to everything exposed through UAPI is a
-> > > > > valid one. I'm all for that.
-> > > >
-> > > > That's my current opinion as well, as least when it comes to the kernel
-> > > > areas I mostly work with.
+thanks,
 
--- 
-Regards,
-
-Laurent Pinchart
+greg k-h
 
