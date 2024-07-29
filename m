@@ -1,105 +1,80 @@
-Return-Path: <linux-rdma+bounces-4071-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-4072-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3A28A93F8BB
-	for <lists+linux-rdma@lfdr.de>; Mon, 29 Jul 2024 16:52:01 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id C6B0C93F8C9
+	for <lists+linux-rdma@lfdr.de>; Mon, 29 Jul 2024 16:56:16 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 620F21C210FB
-	for <lists+linux-rdma@lfdr.de>; Mon, 29 Jul 2024 14:52:00 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6C5291F22BCE
+	for <lists+linux-rdma@lfdr.de>; Mon, 29 Jul 2024 14:56:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C5192155751;
-	Mon, 29 Jul 2024 14:51:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 25BFC15538C;
+	Mon, 29 Jul 2024 14:56:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="jbkXG6U6"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from angie.orcam.me.uk (angie.orcam.me.uk [78.133.224.34])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AD933146580;
-	Mon, 29 Jul 2024 14:51:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=78.133.224.34
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CE02E1534EC;
+	Mon, 29 Jul 2024 14:56:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1722264709; cv=none; b=QIrL70LHYU6lcAlRh17y07WfhGbM3+AbLsFHJlSjkqxI6dIp8CzxrKlUH+kZ9cMwBreLUnS2JgR1hQvgEenXbZxg2JiPX+zxYeYw0L9z0wnppRO651JqzfhEEWOnlyB40QuOQvBU/6O2+qYzsREWzmiIcd2ics4ZY9Q93Q4Vb8g=
+	t=1722264969; cv=none; b=F+ZCiGCecvNWOUVgAsyJ9KBv8pxJutk4eOBjFZEGJmOiOHAxG6uBbZjKWfr8RE//Sfxu1YSfuZW5tfAUTU7gw2rlZLfSy8bZLMo/G4+kUP8QgfZwt9hUdFSf81RDHuv0rN+tfV/+Rb29qKMXzhVmpauY7s9LnmL1avtIfnEDBYU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1722264709; c=relaxed/simple;
-	bh=JwxZkruffVOFu0w1m6bzqfxuk0TYMxYEJc4mNatpIX0=;
-	h=Date:From:To:cc:Subject:In-Reply-To:Message-ID:References:
-	 MIME-Version:Content-Type; b=VC+qxv6W7Q/TZCcRZ5N1XoHFJIRFwB7usivcB2ToB0TpNaczUjPwtvwIOPR0kxftU/p/BqVv8cHDLsSWkUyh6ziSFSUllFm6zg61IqPldlkBSVnnWemlOzWHnvIGFm7IQyPxXygYBrXQASnuc99f/eRHaqgpLCGBnwCwl8kSe5o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=orcam.me.uk; spf=none smtp.mailfrom=orcam.me.uk; arc=none smtp.client-ip=78.133.224.34
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=orcam.me.uk
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=orcam.me.uk
-Received: by angie.orcam.me.uk (Postfix, from userid 500)
-	id 3FC4D92009C; Mon, 29 Jul 2024 16:51:37 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-	by angie.orcam.me.uk (Postfix) with ESMTP id 3971892009B;
-	Mon, 29 Jul 2024 15:51:37 +0100 (BST)
-Date: Mon, 29 Jul 2024 15:51:37 +0100 (BST)
-From: "Maciej W. Rozycki" <macro@orcam.me.uk>
-To: =?UTF-8?Q?Ilpo_J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
-cc: Matthew W Carlis <mattc@purestorage.com>, alex.williamson@redhat.com, 
-    Bjorn Helgaas <bhelgaas@google.com>, christophe.leroy@csgroup.eu, 
-    "David S. Miller" <davem@davemloft.net>, david.abdurachmanov@gmail.com, 
-    edumazet@google.com, kuba@kernel.org, leon@kernel.org, 
-    LKML <linux-kernel@vger.kernel.org>, linux-pci@vger.kernel.org, 
-    linux-rdma@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, 
-    Lukas Wunner <lukas@wunner.de>, mahesh@linux.ibm.com, 
-    Mika Westerberg <mika.westerberg@linux.intel.com>, mpe@ellerman.id.au, 
-    Netdev <netdev@vger.kernel.org>, npiggin@gmail.com, oohall@gmail.com, 
-    pabeni@redhat.com, pali@kernel.org, saeedm@nvidia.com, sr@denx.de, 
-    Jim Wilson <wilson@tuliptree.org>
-Subject: Re: PCI: Work around PCIe link training failures
-In-Reply-To: <914b7d34-9ed5-cd99-cb76-f6f8eccb842e@linux.intel.com>
-Message-ID: <alpine.DEB.2.21.2407291540120.48387@angie.orcam.me.uk>
-References: <20240724191830.4807-1-mattc@purestorage.com> <20240726080446.12375-1-mattc@purestorage.com> <914b7d34-9ed5-cd99-cb76-f6f8eccb842e@linux.intel.com>
-User-Agent: Alpine 2.21 (DEB 202 2017-01-01)
+	s=arc-20240116; t=1722264969; c=relaxed/simple;
+	bh=EJcJUuQRZXR3rf8lFMt6F/i5OksdABevOMJW7PKpBZA=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=P44r+ogVT+uOdbUu3tjzhs+2OS/B9d9SPX8w/mJwHqLU5WNUwmnwDqDiL2QRz7/ewJ3nD91yefVbe9WivSeopilQrHmZI0Qg+Jp97RQNFZjrit7dxTq7/sWcC9f2S5fuk+TesEMVCGWainLyctLg573RbssdkU704imsJkenWms=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=jbkXG6U6; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 14B09C32786;
+	Mon, 29 Jul 2024 14:56:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1722264969;
+	bh=EJcJUuQRZXR3rf8lFMt6F/i5OksdABevOMJW7PKpBZA=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=jbkXG6U6nH4UA+G7ZfU70c0ljD+B1u2nDArdVs8uhB+F5Yd4orXP5uiYEYbcvOE2H
+	 eoMmmchEb7HmRJ/Ptgmtvfpg5JWq7gg4f9hYaVjM6poY4H4X6KV8aITwOC4Wm3tpVu
+	 OFzR3zGhD1gEkm90iW6saiWmnWAlq5rCGC2GS1x5d/DJTwKF4AUKnRQSkc0aKXS7oQ
+	 EIgVa9PRYC2XkxsexIvKtjYikNAA3rREFzcRBKXdFT8t9Hmkf0Av5TRyQ3shSwNI4z
+	 EqBfW9Kmvta8lbXM3Plm6VoFZiiMQyZkMufUERafs1FHwHLXjcWhyvjHQoEK2bZXgp
+	 RoARF17Dljgsg==
+Date: Mon, 29 Jul 2024 07:56:07 -0700
+From: Jakub Kicinski <kuba@kernel.org>
+To: James Bottomley <James.Bottomley@HansenPartnership.com>
+Cc: Greg KH <gregkh@linuxfoundation.org>, Laurent Pinchart 
+ <laurent.pinchart@ideasonboard.com>, Dan Williams
+ <dan.j.williams@intel.com>, ksummit@lists.linux.dev,
+ linux-cxl@vger.kernel.org, linux-rdma@vger.kernel.org,
+ netdev@vger.kernel.org, jgg@nvidia.com
+Subject: Re: [MAINTAINERS SUMMIT] Device Passthrough Considered Harmful?
+Message-ID: <20240729075607.71ca5150@kernel.org>
+In-Reply-To: <2b4f6ef3fc8e9babf3398ed4a301c2e4964b9e4a.camel@HansenPartnership.com>
+References: <668c67a324609_ed99294c0@dwillia2-xfh.jf.intel.com.notmuch>
+	<20240726142731.GG28621@pendragon.ideasonboard.com>
+	<66a43c48cb6cc_200582942d@dwillia2-mobl3.amr.corp.intel.com.notmuch>
+	<20240728111826.GA30973@pendragon.ideasonboard.com>
+	<2024072802-amendable-unwatched-e656@gregkh>
+	<2b4f6ef3fc8e9babf3398ed4a301c2e4964b9e4a.camel@HansenPartnership.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-On Mon, 29 Jul 2024, Ilpo Järvinen wrote:
+On Sun, 28 Jul 2024 11:49:44 -0400 James Bottomley wrote:
+> cross subsystem NAKs
 
-> > > The main reason is it is believed that it is the downstream device
-> > > causing the issue, and obviously you can't fetch its ID if you can't
-> > > negotiate link so as to talk to it in the first place.
-> > 
-> > Have had some more time to look into this issue. So, I think the problem
-> > with this change is that it is quite strict in its assumptions about what
-> > it means when a device fails to train, but in an environment where hot-plug
-> > is exercised frequently you are essentially bound have something interrupt
-> > the link training. In the first case where we caught this problem our test
-> > automation was doing some power cycle tortures on our endpoints. If you catch
-> > the right timing the link will be forced down to Gen1 forever without some other
-> > automation to recover you unless your device is the one single device in the
-> > allowlist which had the hardware bug in the first place.
-> > 
-> > I wonder if we can come up with some kind of alternative.
-> 
-> The most obvious solution is to not leave the speed at Gen1 on failure in 
-> Target Speed quirk but to restore the original Target Speed value. The 
-> downside with that is if the current retraining interface (function) is 
-> used, it adds delay. But the retraining functions could be reworked such 
-> that the retraining is only triggered in case the Target Speed quirk 
-> fails but we don't wait for its result (which will very likely fail 
-> anyway).
+Could y'all please stop saying "cross subsystem NAKs"..
+It makes it sound like networking is nacking an addition to RDMA 
+or storage. The problem is that nVidia insists on making their
+proprietary gateway a "misc driver" usable in all subsystems.
 
- This is what I have also been thinking of.
-
- After these many years it took from the inception of this change until it 
-landed upstream I'm not sure anymore what my original idea was behind 
-leaving the link clamped on a retrain failure, but I think it was either 
-not to fiddle with the setting beyond the absolute necessity at hand 
-(which the scenarios such as Matthew's prove wrong) or to leave the 
-setting in a hope that training will eventually have succeeded (but it 
-seems to make little sense as there'll be nothing there to actually 
-observe the success unless the bus gets rescanned for another reason).
-
- I'll be at my lab towards the end of the week with a maintenance visit, 
-so I'll allocate some time to fiddle with this issue on that occasion and 
-implement such an update.
-
-  Maciej
+If they want to add something at the top level, all affected
+subsystems should have a say.
 
