@@ -1,236 +1,140 @@
-Return-Path: <linux-rdma+bounces-4065-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-4066-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id CA37193F2F5
-	for <lists+linux-rdma@lfdr.de>; Mon, 29 Jul 2024 12:39:24 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2A1B893F5C4
+	for <lists+linux-rdma@lfdr.de>; Mon, 29 Jul 2024 14:45:24 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 825DC281397
-	for <lists+linux-rdma@lfdr.de>; Mon, 29 Jul 2024 10:39:23 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id CFE8A1F23E8A
+	for <lists+linux-rdma@lfdr.de>; Mon, 29 Jul 2024 12:45:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 32F3E14430E;
-	Mon, 29 Jul 2024 10:39:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ideasonboard.com header.i=@ideasonboard.com header.b="gcgCp6ul"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6B350148FF5;
+	Mon, 29 Jul 2024 12:45:19 +0000 (UTC)
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [213.167.242.64])
+Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4E5C81428F2;
-	Mon, 29 Jul 2024 10:39:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.167.242.64
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 65AF31E515;
+	Mon, 29 Jul 2024 12:45:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.176.79.56
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1722249558; cv=none; b=qg2TxEUppS8zm5cfiQHzad4lVc7CTtV9tzuzVwQTVjrHI8mYNpbcLSZwxDqvLl9F2sCYe+VLqS0cXaNvkU/fl0HjwE/OrMiA+jP1aBCnuGoVg6S6DCKQ0EqYbSs4b6RoC0L1ra+Xj8339y7qgrRKif2s9w/wIBxU8e1HRfa59RE=
+	t=1722257119; cv=none; b=O9htHQYMXodtYAv3CsvWLcWTq6/NsjWtSXriMDN9JEnXEeIBc40p4rAdhnYwQLkmeALXhLJrpHYPp/es5xcm4N7olHQmzdi/W/dteESLBmfGL8pwugvM6Uys2aWWgJkRuUCHtvKlO5+203eqgglmzhqRD9OTd10U3rZNZHYWbw0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1722249558; c=relaxed/simple;
-	bh=BKYm1gVxY2wolZIK3me/oQRBJ4fiaRy6SZ62XyuXAfk=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=hjgtpQmddwAHFzJkmEnhh3fWYDdk51KyYegsOGMqibGapbns01oOmpQgs5kV7jKtcUzuQ/bCf5rRCy3PW7o+ijISEbF8t9T6SUanbLedktbgRJJIBmQVKllkYDXimfg35R6K5a9xodcebJHcMUBUQq+HN5W8EnHFurXyP6lE91U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ideasonboard.com; spf=pass smtp.mailfrom=ideasonboard.com; dkim=pass (1024-bit key) header.d=ideasonboard.com header.i=@ideasonboard.com header.b=gcgCp6ul; arc=none smtp.client-ip=213.167.242.64
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ideasonboard.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ideasonboard.com
-Received: from pendragon.ideasonboard.com (81-175-209-231.bb.dnainternet.fi [81.175.209.231])
-	by perceval.ideasonboard.com (Postfix) with ESMTPSA id 1700545A;
-	Mon, 29 Jul 2024 12:38:28 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-	s=mail; t=1722249508;
-	bh=BKYm1gVxY2wolZIK3me/oQRBJ4fiaRy6SZ62XyuXAfk=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=gcgCp6ul6rLkyYhgbxyEnQYsr+bftAXR9E1Io4+f51rNlf3O5iKRaZVXnsM+ffI9Z
-	 3tyKA5s05n7utzBxOr94yyFzB6O+P3jE10ZOBIIWRHSJRk27M3amKRnjlJEsVY6OoK
-	 8490b/esa/Pvy4IEoq6ISvpGYN8XrQF+yXuEEBPs=
-Date: Mon, 29 Jul 2024 13:38:54 +0300
-From: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-To: Ricardo Ribalda Delgado <ricardo.ribalda@gmail.com>
-Cc: Leon Romanovsky <leon@kernel.org>,
-	James Bottomley <James.Bottomley@hansenpartnership.com>,
-	Jiri Kosina <jikos@kernel.org>,
-	Dan Williams <dan.j.williams@intel.com>, ksummit@lists.linux.dev,
-	linux-cxl@vger.kernel.org, linux-rdma@vger.kernel.org,
-	netdev@vger.kernel.org, jgg@nvidia.com
+	s=arc-20240116; t=1722257119; c=relaxed/simple;
+	bh=xXNZw508FXcZjuW7rOEkNJ5ujjtTvoH1lvrNm/sH9dY=;
+	h=Date:From:To:CC:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=hMhAq13SkJLSOOnkK0RQT40IbGpNwueN28lWu19VY9thMt11c5eGAdYsXccbeheKHPDMdLrOGyNcUmej7y5gdM47PTShS6lEl31JO2DLqfcA9hvNzY3tDCQYAo+AhYAWYcybVkdl81WYHJmRUMfCheukvNwfkjmWoYbWw6DurM8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=Huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=185.176.79.56
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=Huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.18.186.216])
+	by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4WXdLB0yXnz6K91p;
+	Mon, 29 Jul 2024 20:42:42 +0800 (CST)
+Received: from lhrpeml500005.china.huawei.com (unknown [7.191.163.240])
+	by mail.maildlp.com (Postfix) with ESMTPS id B2E75140B2F;
+	Mon, 29 Jul 2024 20:45:13 +0800 (CST)
+Received: from localhost (10.203.177.66) by lhrpeml500005.china.huawei.com
+ (7.191.163.240) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.1.2507.39; Mon, 29 Jul
+ 2024 13:45:13 +0100
+Date: Mon, 29 Jul 2024 13:45:12 +0100
+From: Jonathan Cameron <Jonathan.Cameron@Huawei.com>
+To: Dan Williams <dan.j.williams@intel.com>
+CC: <ksummit@lists.linux.dev>, <linux-cxl@vger.kernel.org>,
+	<linux-rdma@vger.kernel.org>, <netdev@vger.kernel.org>, <jgg@nvidia.com>,
+	<shiju.jose@huawei.com>, Borislav Petkov <bp@alien8.de>, "Mauro Carvalho
+ Chehab" <mchehab@kernel.org>
 Subject: Re: [MAINTAINERS SUMMIT] Device Passthrough Considered Harmful?
-Message-ID: <20240729103854.GE2320@pendragon.ideasonboard.com>
-References: <CAPybu_0SN7m=m=+z5hu_4M+STGh2t0J-hFEmtDTgx6fYWKzk3A@mail.gmail.com>
- <20240725122315.GE7022@unreal>
- <CAPybu_1XsNq=ExrO+8XLqnV_KvSaqooM=yNy5iuzcD=-k5CdGA@mail.gmail.com>
- <20240725132035.GF7022@unreal>
- <20240725194202.GE14252@pendragon.ideasonboard.com>
- <CAPybu_3T8JNkZxf3pgCo4E4VJ3AZvY7NzeXdd7w9Qqe8=eV=9A@mail.gmail.com>
- <20240726131110.GD28621@pendragon.ideasonboard.com>
- <CAPybu_13+Axb2e_fVYeUv+S3UohbJXBYNF74Qd=pXz8_X3ic9g@mail.gmail.com>
- <20240728112358.GB30973@pendragon.ideasonboard.com>
- <CAPybu_0vNbwO6NkWb_P7F+1TZtddmAAgC69X8c0WtZ5P2JoeBg@mail.gmail.com>
+Message-ID: <20240729134512.0000487f@Huawei.com>
+In-Reply-To: <668c67a324609_ed99294c0@dwillia2-xfh.jf.intel.com.notmuch>
+References: <668c67a324609_ed99294c0@dwillia2-xfh.jf.intel.com.notmuch>
+Organization: Huawei Technologies Research and Development (UK) Ltd.
+X-Mailer: Claws Mail 4.1.0 (GTK 3.24.33; x86_64-w64-mingw32)
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAPybu_0vNbwO6NkWb_P7F+1TZtddmAAgC69X8c0WtZ5P2JoeBg@mail.gmail.com>
+Content-Type: text/plain; charset="US-ASCII"
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: lhrpeml500001.china.huawei.com (7.191.163.213) To
+ lhrpeml500005.china.huawei.com (7.191.163.240)
 
-On Mon, Jul 29, 2024 at 11:56:45AM +0200, Ricardo Ribalda Delgado wrote:
-> On Sun, Jul 28, 2024 at 1:24 PM Laurent Pinchart wrote:
-> > On Fri, Jul 26, 2024 at 05:40:50PM +0200, Ricardo Ribalda Delgado wrote:
-> > > On Fri, Jul 26, 2024 at 3:11 PM Laurent Pinchart wrote:
-> > > > On Fri, Jul 26, 2024 at 10:02:27AM +0200, Ricardo Ribalda Delgado wrote:
-> > > > > On Thu, Jul 25, 2024 at 9:44 PM Laurent Pinchart wrote:
-> > > > > > On Thu, Jul 25, 2024 at 04:20:35PM +0300, Leon Romanovsky wrote:
-> > > > > > > On Thu, Jul 25, 2024 at 03:02:13PM +0200, Ricardo Ribalda Delgado wrote:
-> > > > > > > > On Thu, Jul 25, 2024 at 2:23 PM Leon Romanovsky wrote:
-> > > > > > > > > On Thu, Jul 25, 2024 at 11:26:38AM +0200, Ricardo Ribalda Delgado wrote:
-> > > > > > > > > > On Wed, Jul 24, 2024 at 10:02 PM Laurent Pinchart wrote:
-> > > > > > > > >
-> > > > > > > > > <...>
-> > > > > > > > >
-> > > > > > > > > > It would be great to define what are the free software communities
-> > > > > > > > > > here. Distros and final users are also "free software communities" and
-> > > > > > > > > > they do not care about niche use cases covered by proprietary
-> > > > > > > > > > software.
-> > > > > > > > >
-> > > > > > > > > Are you certain about that?
-> > > > > > > >
-> > > > > > > > As a user, and as an open source Distro developer I have a small hint.
-> > > > > > > > But you could also ask users what they think about not being able to
-> > > > > > > > use their notebook's cameras. The last time that I could not use some
-> > > > > > > > basic hardware from a notebook with Linux was 20 years ago.
-> > > > > > >
-> > > > > > > Lucky you, I still have consumer hardware (speaker) that doesn't work
-> > > > > > > with Linux, and even now, there is basic hardware in my current
-> > > > > > > laptop (HP docking station) that doesn't work reliably in Linux.
-> > > > > > >
-> > > > > > > > > > They only care (and should care) about normal workflows.
-> > > > > > > > >
-> > > > > > > > > What is a normal workflow?
-> > > > > > > > > Does it mean that if user bought something very expensive he
-> > > > > > > > > should not be able to use it with free software, because his
-> > > > > > > > > usage is different from yours?
-> > > > > > > > >
-> > > > > > > > > Thanks
-> > > > > > > >
-> > > > > > > > It means that we should not block the standard usage for 99% of the
-> > > > > > > > population just because 1% of the users cannot do something fancy with
-> > > > > > > > their device.
-> > > > > > >
-> > > > > > > Right, the problem is that in some areas the statistics slightly different.
-> > > > > > > 99% population is blocked because 1% of the users don't need it and
-> > > > > > > don't think that it is "normal" flow.
-> > > > > > >
-> > > > > > > > Let me give you an example. When I buy a camera I want to be able to
-> > > > > > > > do Video Conferencing and take some static photos of documents. I do
-> > > > > > > > not care about: automatic makeup, AI generated background, unicorn
-> > > > > > > > filters, eyes recentering... But we need to give a way to vendors to
-> > > > > > > > implement those things closely, without the marketing differentiators,
-> > > > > > > > vendors have zero incentive to invest in Linux, and that affects all
-> > > > > > > > the population.
-> > > > > >
-> > > > > > I've seen these kind of examples being repeatedly given in discussions
-> > > > > > related to camera ISP support in Linux. They are very misleading. These
-> > > > > > are not the kind of features that are relevant for the device
-> > > > > > pass-through discussion these day. Those are high-level use cases
-> > > > > > implemented in userspace, and vendors can ship any closed-source
-> > > > > > binaries they want there. What I care about is the features exposed by
-> > > > > > the kernel to userspace API.
-> > > > >
-> > > > > The ISPs are gradually becoming programmable devices and they indeed
-> > > > > help during all of those examples.
-> > > >
-> > > > I'd like to see more technical information to substantiate this claim.
-> > > > So far what I've sometimes seen is ISPs that include programmable
-> > > > elements, but hiding those behind a firmware that exposes a fixed
-> > > > (configurable) pipeline. I've also heard of attempts to expose some of
-> > > > that programmability to the operating system, which were abandoned in
-> > > > the end due to lack usefulness.
-> > > >
-> > > > > Userspace needs to send/receive information from the ISP, and that is
-> > > > > exactly what vendors want to keep in the close.
-> > > >
-> > > > But that's exactly what we need to implement an open userspace ecosystem
-> > > > :-)
-> > > >
-> > > > > Describing how they implement those algorithms is a patent minefield
-> > > > > and their differentiating factor.
-> > > >
-> > > > Those are also arguments I've heard many times before. The
-> > > > differentiating factor for cameras today is mostly in userspace ISP
-> > > > control algorithms, and nobody is telling vendors they need to open all
-> > > > that.
-> > >
-> > > I disagree. The differentiating factor is what the ISP is capable of
-> > > doing and how they do it. Otherwise we would not see new ISPs in the
-> > > market.
-> >
-> > Hardware certainly evolves, but it's far from being the main
-> > differentiating factor in the markets and use cases you're usually
-> > referring to.
-> >
-> > > If you define the arguments passed to an ISP you are defining the
-> > > algorithm, and that is a trade secret and/or a patent violation.
-> >
-> > Are you confusing ISP processing blocks, sometimes referred to as
-> > algorithms, and ISP control algorithms ? There is absolutely no way to
-> > do anything with an ISP, not even the bare minimum, if you don't know
-> > what parameters to pass to it.
-> 
-> Any ISP released in the last few years has *hundreds of thousands* of
-> parameters.
 
-Could you substantiate that claim ? That doesn't match what I've seen
-(unless perhaps you count each entry in LSC tables or large tone mapping
-LUTs as separate parameters).
+> Enter the fwctl proposal [1]. From the CXL subsystem perspective it
+> looks like a long-term solution to the problem of managing expectations
+> between hardware vendors and mainline subsystems. It disclaims support
+> for the fast-path (data-plane) and is targeted at the long tail of
+> slow-path (config/debug plane) device-specific operations that are often
+> uninteresting to mainline. It sets expectations that the device must
+> advertise the effect of all commands so that the kernel can deploy
+> reasonable Kernel Lockdown policy, or otherwise require CAP_SYS_RAWIO
+> for commands that may affect user-data. It sets common expectations for
+> device designers, distribution maintainers, and kernel developers. It is
+> complimentary to the Linux-command path for operations that need deeper
+> kernel coordination.
 
-> We only modify hundreds of parameters during runtime. Those are the
-> ones we need to be documented.
-> 
-> If we enforce a "usable open camera stack", we will have the
-> documentation and the code needed to use the ISP.
-> 
-> Asking vendors to document *ALL* the parameters means describing how
-> they have implemented the internals of the ISP camera algorithms.
-> 
-> > > > When it comes to patents, we all know how software patents is a
-> > > > minefield, and hardware is also affected. I can't have much sympathy for
-> > > > this argument though, those patents mostly benefit the largest players
-> > > > in the market, and those are the ones who currently claim they can't
-> > > > open anything due to patents.
-> > >
-> > > Big players do not usually sue each other. The big problem is patent
-> > > trolls that "shoot at everything that moves".
-> > >
-> > > I dislike patents, but it is the world we have to live in. No vendor
-> > > is going to take our approach if they risk a multi million dollar
-> > > lawsuit.
-> >
-> > When was the last time anyone heard of big players pushing to reform the
-> > patent system ? At best there are initiatives such as OIN, which some
-> > large companies have supporting. It's still a workaround though.
-> >
-> > > > > > > > This challenge seems to be solved for GPUs. I am using my AMD GPU
-> > > > > > > > freely and my nephew can install the amdgpu-pro proprietary user space
-> > > > > > > > driver to play duke nukem (or whatever kids play now) at 2000 fps.
-> > > > > > > >
-> > > > > > > > There are other other subsystems that allow vendor passthrough and
-> > > > > > > > their ecosystem has not collapsed.
-> > > > > > >
-> > > > > > > Yes, I completely agree with you on that.
-> > > > > > >
-> > > > > > > > Can we have some general guidance of what is acceptable? Can we define
-> > > > > > > > together the "normal workflow" and focus on a *full* open source
-> > > > > > > > implementation of that?
-> > > > > > >
-> > > > > > > I don't think that is possible to define "normal workflow". Requirement
-> > > > > > > to have open-source counterpart to everything exposed through UAPI is a
-> > > > > > > valid one. I'm all for that.
-> > > > > >
-> > > > > > That's my current opinion as well, as least when it comes to the kernel
-> > > > > > areas I mostly work with.
+I'm reasonably on board with the basic justification for the
+fwctl proposal (and it may solve some long term challenges for us), but
+I'm concerned by ABI guarantees.  In particularly what happens when
+we get decision wrong and expose something via fwctl that we later
+have more general kernel support for.
 
--- 
-Regards,
+This was triggered by Dave Jiang's (perhaps unintended) use of Patrol Scrub
+as a test case for the CXL FWCTL RFC.
+https://lore.kernel.org/linux-cxl/20240729130528.0000139b@Huawei.com/T/#t
+I'm using this specific example here, but I think it is a more general
+question.
 
-Laurent Pinchart
+By exposing the Get / Set feature controls, a lot of effective user space
+ABI is added (some of it setting a taint).
+
+Scrub control is an interesting example, because there is an active
+proposal to extend EDAC to cover this and similar RAS related control
+features, something we are going to be discussing at LPC.
+https://lore.kernel.org/linux-cxl/20240726160556.2079-1-shiju.jose@huawei.com/
+One of the key bits of feedback we've had on that series is that it
+should be integrated with EDAC.  Part of the reason being need to get
+appropriate RAS expert review. Something fwctl won't naturally get.
+
+If we expose that particular Feature via Set Feature we may run into
+future problems.  It is probably possible to make the driver stateless
+so any interference from a userspace program using fwctl is not fatal
+- in this case userspace code should probably be safe to state changes
+anyway. We know about this clash today, so could easily block fwctl
+from exposing this feature, but it is illustrative of a wider problem.
+
+We will get some decisions about what should be exposed via fwctl wrong
+in the long term, even if they are correct at time of initial decision.
+So how do we cope with that?
+
+1) Make no guarantees on ABI for taint causing operations.
+   So we can block this FWCTL in a kernel if EDAC / ras control is in place
+   for the same feature.  I'm fine with this but it's not obviously
+   a correct thing to do!
+2) Allow the footgun. Keep the fwctl interface and harden the other kernel
+   support against state changes that result. If userspace code breaks,
+   then tough luck.  (Another form of ABI break, perhaps comprehended by
+   existing proposed FWCTL rules).
+3) We are stuck for ever with not supporting anything via other interfaces
+   that would break if fwctl was in use.  Ouch.
+Note that I think this only matters for the Set path as Get side shouldn't
+have side effects and is fine to expose without synchronization with
+a clear statement that values read are a snapshot only.
+
+So before I'd be happy with fwctl in CXL, I'd want a very clear policy
+decision on this that isn't going leave us in a mess long term.
+
+We could say it can only be used for features we have 'opted' in +
+vendor defined features, but I'm not sure that helps.  If a vendor
+defines a feature for generation A, and does what we want them to by
+proposing a spec addition they use in generation B, we would want a
+path to single upstream interface for both generations.  So I don't
+think restricting this to particular classes of command helps us.
+
+Jonathan
+
 
