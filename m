@@ -1,74 +1,76 @@
-Return-Path: <linux-rdma+bounces-4110-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-4111-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 96902941FA3
-	for <lists+linux-rdma@lfdr.de>; Tue, 30 Jul 2024 20:35:14 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4952E941FA8
+	for <lists+linux-rdma@lfdr.de>; Tue, 30 Jul 2024 20:35:32 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 14CFC1F24D97
-	for <lists+linux-rdma@lfdr.de>; Tue, 30 Jul 2024 18:35:14 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id F0F46285E15
+	for <lists+linux-rdma@lfdr.de>; Tue, 30 Jul 2024 18:35:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3C62518E050;
-	Tue, 30 Jul 2024 18:34:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 235131917D4;
+	Tue, 30 Jul 2024 18:34:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="AvpfcwcD"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Ynlip6uZ"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-oi1-f180.google.com (mail-oi1-f180.google.com [209.85.167.180])
+Received: from mail-pl1-f169.google.com (mail-pl1-f169.google.com [209.85.214.169])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7C24018B49D;
-	Tue, 30 Jul 2024 18:34:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.180
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6739418E054;
+	Tue, 30 Jul 2024 18:34:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.169
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1722364460; cv=none; b=kmNXxKHW7L3HbH1ZHCEUWELMIWmtSUEtZSkqqDnh6DGnsf0sgfFyvoTrkgmlVQGLQZwWcOqQqXgNofcepKoottrZDaD2lOCIIggnb4S03JiUVNAhYRWZerXRE2t4C/ZUTK2SABEHnmz/kvBdiXbC5rhL1WXzSqj2Ni9+z049UdQ=
+	t=1722364461; cv=none; b=UzfElHTq0Eeq0ZIbaCboiNUga6e6m00/P4SRfk4t9QD4WDICqfiu5YpBcv9o+q/ESCg52zki3GU+OL/3cy9ZPMufHL6eTqOaO4uv6F9wdCJi7r7lEqT/MaGSV6xVxcRiVxkjLtzkLyVz25thKSd4KHHZNjXiXC8kUNDQALZaqfo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1722364460; c=relaxed/simple;
-	bh=0lVjZMbqARbw7gbAYzWGubSXpkB35s6c9hWX6BwHW18=;
+	s=arc-20240116; t=1722364461; c=relaxed/simple;
+	bh=zNXUonBkY332KTz7o5NpA8UezyxolbGi/xfiOMJm/xw=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=gKnRFWYUKe1yeWbSdCySjMXb6VKfvlphOYgOKWufM0Wq606Ahmsm9U/e9Pv9YHqt//XlFVI8kKLuA6cEVE7I7plxvreSyKp2m+AxJszQ13G/D6EVn4wtFS9Sab0B0DS3KQd/cDV+WGVHShDGOGXYywO6pf4XVWoHI+fynDwEGGs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=AvpfcwcD; arc=none smtp.client-ip=209.85.167.180
+	 MIME-Version; b=U0WQY1xcmGeDICgjqgZm/p+g/eTSYNxVLqqMPGFYfJ4bpq9hj9xftbpiN3wEdhgzci4KTnf3Burr8+g89/zGuaWZ3fPPbUr/HfaucAnl/PHH+lvdaEt8Q363JpLy75G587I1p+HiHaDcM3ufgw3oZnctVxUw9f5cX+p8lerdFv0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Ynlip6uZ; arc=none smtp.client-ip=209.85.214.169
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-oi1-f180.google.com with SMTP id 5614622812f47-3d9e13ef8edso3281263b6e.2;
-        Tue, 30 Jul 2024 11:34:18 -0700 (PDT)
+Received: by mail-pl1-f169.google.com with SMTP id d9443c01a7336-1fc66fc35f2so1232795ad.0;
+        Tue, 30 Jul 2024 11:34:20 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1722364457; x=1722969257; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1722364460; x=1722969260; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=VYc7brdTKERYILuKkf0RRNv0Il2mQiysyxHJxGPSiB4=;
-        b=AvpfcwcD21BBb7SXRzQF4KPf3b1KSBORFvPMmJ2yW3locfF7Ux4hC5pTDIuaSusnvN
-         3M86bCBpdfsb380ppOYehZTVhWB93geadIiZhLTq9vCyzKz2tSzcauxMGKQW/vrFO4yB
-         GSVkssIHrcMAaofPqhdBHsXfpupXf92Ljlmeuf1RIrbm77mDcJ4hcoaXnO9KbE0NhCUW
-         Uk9ctr6p0MGX7UjZYAhTW+iQsLjqYk7qB5RVIBhqOcWIAhFJ105EfA3UDWNeR4okASCx
-         VkWPngG0I4z1aHWWwYBfrtojfa9euxynv08RaLGXXBGCROnlfkdr8gVcbXiKefRAuYmQ
-         Q08w==
+        bh=2tAJul54dXwAicX38emqI3ljWngiGXZJVJ9lmbTIws0=;
+        b=Ynlip6uZMwB71bcEuIPDjXWDwrBpI7ogJ5kPBOnaR351gRyQmZ/Xxh0pirc5O3avDO
+         JD8R14TpHhwjhWj7+Lu/owvcESOH0N2fgMrvn3WTCY833st1Bgg/3scl3DY9CebkDtDE
+         ei/6gvLFCl2ZoAsHr1m9jEMDNW4URfEFTlPia1u8p91YNH4n7UHQlNbfb+9oiOrbD+ZO
+         EGGSckSJNHa26qbEeEXpxf/TI1BdN61p/ZAURV/4hSrtbgzwHGWtKm/UJ+AGCJrwcihS
+         vYafDkj3sTwYmJQ1DhKMJk3n0ZWZ/JeAJzIZBm1w1ZoO6n3hCdIRAs8ZIYm3JwT0crlt
+         Ng5A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1722364457; x=1722969257;
+        d=1e100.net; s=20230601; t=1722364460; x=1722969260;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=VYc7brdTKERYILuKkf0RRNv0Il2mQiysyxHJxGPSiB4=;
-        b=aOcrxRjoJ/BKB66a+D3zOBiV+J23ItL3Xvsp9DoJqU9uPtAHItWz8gAKsnuQoM3j4Z
-         BZeOa7xo9viqpHm8ekm7xRS2hV4zY3AjsWZ5gTj7uZ/Lo5W6lylbAG2dzbiEroDen1fh
-         I8+BTbNfR7oJ37DSnGqnQtGJ7fN+v2zbav7qJ3xe+k33vhNPQBb8oVR91OtYAcVSF9qW
-         69ZpgzaBBsFChlRVgJuj3HCTu5wlwTMFBPdcI8eaQCRd4G5naMEIslLTvPUN1DT99s8d
-         /xMo7BSlwF9u278qoP9B+pyUXdim96EicDDTKMez14sVrZx9K76Lbde7Tuwi5zdq3qDY
-         V8MQ==
-X-Forwarded-Encrypted: i=1; AJvYcCVup1TNGYTP81NUwTTAJJveVHbyzd3CK4WP+77021ETUCuOmOa0AJQG+0yiZKT/qZipO4sWLeDZycB57XX19YcdPlWBUTk7MVZJXJGVpQ44iwiAMR6hF7Z16dfQ7UqRDYfZBgukaHbzNGA+NB41Mo9UCxNuiyMntbfNxN+/P8TaEA==
-X-Gm-Message-State: AOJu0YyaIipsAfYNTY7zkOgL+lFGwrfPpltn6nX0eWR/DJwEPUK15xLo
-	nDU7xtn2qlO1+amjYPt1Mj4XD2pFtyzp9uB4wAaA5ZfOOgPPGjYB
-X-Google-Smtp-Source: AGHT+IGkxO8m4elnJWTAgkvC2oDhhS4zPbvjuafdt7rYO9m145PA1WYmoB5E1XzY8GmRLJ4E5hhiQA==
-X-Received: by 2002:a05:6808:211a:b0:3db:ae5:9bf3 with SMTP id 5614622812f47-3db236a06e1mr13020392b6e.15.1722364457302;
-        Tue, 30 Jul 2024 11:34:17 -0700 (PDT)
+        bh=2tAJul54dXwAicX38emqI3ljWngiGXZJVJ9lmbTIws0=;
+        b=xFlKRdv3s64Eknhn1KWnKZO8UjzVmS/c/NCF6vS18C19sVVGNeeOj4qWw+osIQT8wo
+         O5kvd8qGxc5kQvZjSR2wpsPhavlnZ3SIU6j/5qKyyUPUjRxm1Exw5KR+HqDF3k+h+4It
+         XiIzUdwi4UPXzxvTRFah7pV3hCY4EwFOw0Pc7xP/W9XxNsM68NYFeBIN+O0lNEqVfsvz
+         xgMiGvZOajQKoMRpJ8hHrbqP3hkXXsyJ5FbvI0qCVjdiu2udBHFMcXUspsHAR89hKOyb
+         1yGzd6/sulV2aviBNXiOtjbaz8WNxWLTbYsY/I2K3JLTybkm+ZR/rAUIItfvvu7NXQs/
+         EmUw==
+X-Forwarded-Encrypted: i=1; AJvYcCVqVMTPLQFrdPy6R3O+gtrvJZNUy1CC89CQ9Xi2x12zCQazFEyPIJOM1nZks1ygLuenfmGaaQa7z3aVBUdUX8qNgS+4Zzc2E2LI5seIlPzKO3wEdyw3Z/Knrh4Qd3x44X6/k4R+WeETMVwkoXsnh551PbzlxPl0ZlqUNJSYQK6vzQ==
+X-Gm-Message-State: AOJu0YwMPsSrMn1AF/ezuq+2IFWfzdic6C/3ygU171pDUOWzwmz3Om+H
+	Vdh+I4G2XTbBdgfpR5nCONFyHAFpPkxrvP7xwEMhXmHnkoTAPqSy
+X-Google-Smtp-Source: AGHT+IGfya6mYn6ddU1tD7ITxjKPgnQCju1kkkFTzl3i1Es4LhqbsMgRa4AGgjVuAFe7V1qwxUpF5A==
+X-Received: by 2002:a17:902:e811:b0:1fd:8dfd:3553 with SMTP id d9443c01a7336-1ff37bec1cemr54739435ad.18.1722364459494;
+        Tue, 30 Jul 2024 11:34:19 -0700 (PDT)
 Received: from apais-devbox.. ([2001:569:766d:6500:f2df:af9:e1f6:390e])
-        by smtp.gmail.com with ESMTPSA id 41be03b00d2f7-7a9f817f5a2sm7837763a12.24.2024.07.30.11.34.15
+        by smtp.gmail.com with ESMTPSA id 41be03b00d2f7-7a9f817f5a2sm7837763a12.24.2024.07.30.11.34.18
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 30 Jul 2024 11:34:16 -0700 (PDT)
+        Tue, 30 Jul 2024 11:34:18 -0700 (PDT)
 From: Allen Pais <allen.lkml@gmail.com>
 To: kuba@kernel.org,
+	Nicolas Ferre <nicolas.ferre@microchip.com>,
+	Claudiu Beznea <claudiu.beznea@tuxon.dev>,
 	"David S. Miller" <davem@davemloft.net>,
 	Eric Dumazet <edumazet@google.com>,
 	Paolo Abeni <pabeni@redhat.com>
@@ -103,9 +105,9 @@ Cc: jes@trained-monkey.org,
 	linux-net-drivers@amd.com,
 	netdev@vger.kernel.org,
 	Allen Pais <allen.lkml@gmail.com>
-Subject: [net-next v3 03/15] net: cnic: Convert tasklet API to new bottom half workqueue mechanism
-Date: Tue, 30 Jul 2024 11:33:51 -0700
-Message-Id: <20240730183403.4176544-4-allen.lkml@gmail.com>
+Subject: [net-next v3 04/15] net: macb: Convert tasklet API to new bottom half workqueue mechanism
+Date: Tue, 30 Jul 2024 11:33:52 -0700
+Message-Id: <20240730183403.4176544-5-allen.lkml@gmail.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20240730183403.4176544-1-allen.lkml@gmail.com>
 References: <20240730183403.4176544-1-allen.lkml@gmail.com>
@@ -119,109 +121,79 @@ Content-Transfer-Encoding: 8bit
 
 Migrate tasklet APIs to the new bottom half workqueue mechanism. It
 replaces all occurrences of tasklet usage with the appropriate workqueue
-APIs throughout the cnic driver. This transition ensures compatibility
+APIs throughout the macb driver. This transition ensures compatibility
 with the latest design and enhances performance.
 
 Signed-off-by: Allen Pais <allen.lkml@gmail.com>
 ---
- drivers/net/ethernet/broadcom/cnic.c | 19 ++++++++++---------
- drivers/net/ethernet/broadcom/cnic.h |  2 +-
- 2 files changed, 11 insertions(+), 10 deletions(-)
+ drivers/net/ethernet/cadence/macb.h      |  3 ++-
+ drivers/net/ethernet/cadence/macb_main.c | 10 +++++-----
+ 2 files changed, 7 insertions(+), 6 deletions(-)
 
-diff --git a/drivers/net/ethernet/broadcom/cnic.c b/drivers/net/ethernet/broadcom/cnic.c
-index c2b4188a1ef1..a9040c42d2ff 100644
---- a/drivers/net/ethernet/broadcom/cnic.c
-+++ b/drivers/net/ethernet/broadcom/cnic.c
-@@ -31,6 +31,7 @@
- #include <linux/if_vlan.h>
- #include <linux/prefetch.h>
- #include <linux/random.h>
+diff --git a/drivers/net/ethernet/cadence/macb.h b/drivers/net/ethernet/cadence/macb.h
+index ea71612f6b36..5740c98d8c9f 100644
+--- a/drivers/net/ethernet/cadence/macb.h
++++ b/drivers/net/ethernet/cadence/macb.h
+@@ -13,6 +13,7 @@
+ #include <linux/net_tstamp.h>
+ #include <linux/interrupt.h>
+ #include <linux/phy/phy.h>
 +#include <linux/workqueue.h>
- #if IS_ENABLED(CONFIG_VLAN_8021Q)
- #define BCM_VLAN 1
- #endif
-@@ -3015,9 +3016,9 @@ static int cnic_service_bnx2(void *data, void *status_blk)
- 	return cnic_service_bnx2_queues(dev);
+ 
+ #if defined(CONFIG_ARCH_DMA_ADDR_T_64BIT) || defined(CONFIG_MACB_USE_HWSTAMP)
+ #define MACB_EXT_DESC
+@@ -1330,7 +1331,7 @@ struct macb {
+ 	spinlock_t rx_fs_lock;
+ 	unsigned int max_tuples;
+ 
+-	struct tasklet_struct	hresp_err_tasklet;
++	struct work_struct	hresp_err_bh_work;
+ 
+ 	int	rx_bd_rd_prefetch;
+ 	int	tx_bd_rd_prefetch;
+diff --git a/drivers/net/ethernet/cadence/macb_main.c b/drivers/net/ethernet/cadence/macb_main.c
+index 11665be3a22c..95e8742dce1d 100644
+--- a/drivers/net/ethernet/cadence/macb_main.c
++++ b/drivers/net/ethernet/cadence/macb_main.c
+@@ -1792,9 +1792,9 @@ static int macb_tx_poll(struct napi_struct *napi, int budget)
+ 	return work_done;
  }
  
--static void cnic_service_bnx2_msix(struct tasklet_struct *t)
-+static void cnic_service_bnx2_msix(struct work_struct *work)
+-static void macb_hresp_error_task(struct tasklet_struct *t)
++static void macb_hresp_error_task(struct work_struct *work)
  {
--	struct cnic_local *cp = from_tasklet(cp, t, cnic_irq_task);
-+	struct cnic_local *cp = from_work(cp, work, cnic_irq_bh_work);
- 	struct cnic_dev *dev = cp->dev;
+-	struct macb *bp = from_tasklet(bp, t, hresp_err_tasklet);
++	struct macb *bp = from_work(bp, work, hresp_err_bh_work);
+ 	struct net_device *dev = bp->dev;
+ 	struct macb_queue *queue;
+ 	unsigned int q;
+@@ -1994,7 +1994,7 @@ static irqreturn_t macb_interrupt(int irq, void *dev_id)
+ 		}
  
- 	cp->last_status_idx = cnic_service_bnx2_queues(dev);
-@@ -3036,7 +3037,7 @@ static void cnic_doirq(struct cnic_dev *dev)
- 		prefetch(cp->status_blk.gen);
- 		prefetch(&cp->kcq1.kcq[KCQ_PG(prod)][KCQ_IDX(prod)]);
+ 		if (status & MACB_BIT(HRESP)) {
+-			tasklet_schedule(&bp->hresp_err_tasklet);
++			queue_work(system_bh_wq, &bp->hresp_err_bh_work);
+ 			netdev_err(dev, "DMA bus error: HRESP not OK\n");
  
--		tasklet_schedule(&cp->cnic_irq_task);
-+		queue_work(system_bh_wq, &cp->cnic_irq_bh_work);
+ 			if (bp->caps & MACB_CAPS_ISR_CLEAR_ON_WRITE)
+@@ -5172,7 +5172,7 @@ static int macb_probe(struct platform_device *pdev)
+ 		goto err_out_unregister_mdio;
  	}
- }
  
-@@ -3140,9 +3141,9 @@ static u32 cnic_service_bnx2x_kcq(struct cnic_dev *dev, struct kcq_info *info)
- 	return last_status;
- }
+-	tasklet_setup(&bp->hresp_err_tasklet, macb_hresp_error_task);
++	INIT_WORK(&bp->hresp_err_bh_work, macb_hresp_error_task);
  
--static void cnic_service_bnx2x_bh(struct tasklet_struct *t)
-+static void cnic_service_bnx2x_bh_work(struct work_struct *work)
- {
--	struct cnic_local *cp = from_tasklet(cp, t, cnic_irq_task);
-+	struct cnic_local *cp = from_work(cp, work, cnic_irq_bh_work);
- 	struct cnic_dev *dev = cp->dev;
- 	struct bnx2x *bp = netdev_priv(dev->netdev);
- 	u32 status_idx, new_status_idx;
-@@ -4428,7 +4429,7 @@ static void cnic_free_irq(struct cnic_dev *dev)
+ 	netdev_info(dev, "Cadence %s rev 0x%08x at 0x%08lx irq %d (%pM)\n",
+ 		    macb_is_gem(bp) ? "GEM" : "MACB", macb_readl(bp, MID),
+@@ -5216,7 +5216,7 @@ static void macb_remove(struct platform_device *pdev)
+ 		mdiobus_free(bp->mii_bus);
  
- 	if (ethdev->drv_state & CNIC_DRV_STATE_USING_MSIX) {
- 		cp->disable_int_sync(dev);
--		tasklet_kill(&cp->cnic_irq_task);
-+		cancel_work_sync(&cp->cnic_irq_bh_work);
- 		free_irq(ethdev->irq_arr[0].vector, dev);
- 	}
- }
-@@ -4441,7 +4442,7 @@ static int cnic_request_irq(struct cnic_dev *dev)
- 
- 	err = request_irq(ethdev->irq_arr[0].vector, cnic_irq, 0, "cnic", dev);
- 	if (err)
--		tasklet_disable(&cp->cnic_irq_task);
-+		disable_work_sync(&cp->cnic_irq_bh_work);
- 
- 	return err;
- }
-@@ -4464,7 +4465,7 @@ static int cnic_init_bnx2_irq(struct cnic_dev *dev)
- 		CNIC_WR(dev, base + BNX2_HC_CMD_TICKS_OFF, (64 << 16) | 220);
- 
- 		cp->last_status_idx = cp->status_blk.bnx2->status_idx;
--		tasklet_setup(&cp->cnic_irq_task, cnic_service_bnx2_msix);
-+		INIT_WORK(&cp->cnic_irq_bh_work, cnic_service_bnx2_msix);
- 		err = cnic_request_irq(dev);
- 		if (err)
- 			return err;
-@@ -4873,7 +4874,7 @@ static int cnic_init_bnx2x_irq(struct cnic_dev *dev)
- 	struct cnic_eth_dev *ethdev = cp->ethdev;
- 	int err = 0;
- 
--	tasklet_setup(&cp->cnic_irq_task, cnic_service_bnx2x_bh);
-+	INIT_WORK(&cp->cnic_irq_bh_work, cnic_service_bnx2x_bh_work);
- 	if (ethdev->drv_state & CNIC_DRV_STATE_USING_MSIX)
- 		err = cnic_request_irq(dev);
- 
-diff --git a/drivers/net/ethernet/broadcom/cnic.h b/drivers/net/ethernet/broadcom/cnic.h
-index fedc84ada937..1a314a75d2d2 100644
---- a/drivers/net/ethernet/broadcom/cnic.h
-+++ b/drivers/net/ethernet/broadcom/cnic.h
-@@ -268,7 +268,7 @@ struct cnic_local {
- 	u32				bnx2x_igu_sb_id;
- 	u32				int_num;
- 	u32				last_status_idx;
--	struct tasklet_struct		cnic_irq_task;
-+	struct work_struct		cnic_irq_bh_work;
- 
- 	struct kcqe		*completed_kcq[MAX_COMPLETED_KCQE];
- 
+ 		unregister_netdev(dev);
+-		tasklet_kill(&bp->hresp_err_tasklet);
++		cancel_work_sync(&bp->hresp_err_bh_work);
+ 		pm_runtime_disable(&pdev->dev);
+ 		pm_runtime_dont_use_autosuspend(&pdev->dev);
+ 		if (!pm_runtime_suspended(&pdev->dev)) {
 -- 
 2.34.1
 
