@@ -1,53 +1,53 @@
-Return-Path: <linux-rdma+bounces-4095-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-4096-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D6044940D37
-	for <lists+linux-rdma@lfdr.de>; Tue, 30 Jul 2024 11:17:37 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8A452940D3C
+	for <lists+linux-rdma@lfdr.de>; Tue, 30 Jul 2024 11:19:11 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 919202848EB
-	for <lists+linux-rdma@lfdr.de>; Tue, 30 Jul 2024 09:17:36 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 5D59DB24B7C
+	for <lists+linux-rdma@lfdr.de>; Tue, 30 Jul 2024 09:19:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A1E3A194ACA;
-	Tue, 30 Jul 2024 09:17:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CB96F194C65;
+	Tue, 30 Jul 2024 09:18:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="DfLArkML"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="QdlzC0wj"
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6270C19412E
-	for <linux-rdma@vger.kernel.org>; Tue, 30 Jul 2024 09:17:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8D78F194AFC
+	for <linux-rdma@vger.kernel.org>; Tue, 30 Jul 2024 09:18:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1722331052; cv=none; b=TI4MAIU8XomP0Ss2xuZSGaw0iZsZR3spduqb6yK559ayO0PjFXPUFkhdKZSU5sjt59Geb25w5Tbbj3irKhF8RqsR/MUkg46yOy6BCwc2zNvgXE3NqmNRlvl9qgiJx7aM1olz9L+CmgO11QK21/kypz3v8ufCJPocH9OvEw+FpV8=
+	t=1722331131; cv=none; b=JgbUaWTpxWZcGFjKmUzGDNfRjNhJmPnp1OJspyvw8CjubOfGNsVQ9T2QkKZRw14s4zrLGxxo1fUhQmkusLYv5bgL92ASiFXRMcfzJi1S7Kt6f3YCAXZXfs5vl9oL8cHzeDNwW3EY5VH9e3CQ87Ydmc+RyT8fiAZf/mkJdNKD8ww=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1722331052; c=relaxed/simple;
-	bh=zlipFjWpIIWzpXxM7YXz6M+elXBIvl7jtvyJ32jvfmk=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=Y9FneOUCwD3e8iXQmSAzx1BubLa/UxHnvMmWuKTKECq3/XZtzpecUW48z5pA+WACERU/Cy7cexsGV6xANEJ6tvVwho71wXoPcm+CjUHlAxhEIdsTEsJlaTacyIB1uzvxzEPJ4S3j5YSKuZKYaDLFVN8ROUCCniAX0Xx4R4dN2jY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=DfLArkML; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9B0B0C32782;
-	Tue, 30 Jul 2024 09:17:31 +0000 (UTC)
+	s=arc-20240116; t=1722331131; c=relaxed/simple;
+	bh=RNERRm1tKULRCHwkJX2oQZjbNCIu8zCHVWj+NzA3G6M=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=i2Tz4/D8Dx/ZAYWpU2UqNPzTBfsok92rxcGdaDvqAXAFgPpk56AOk4THGy889M0pgwUoq0JUiQIt0dI30bFZrPG4vQBAER1HCf96b7UP3sQDXqnPNEUENiHRZJSSAVPtxN0V+mbgHlnS/0+TLaPuov+Nlm8E4fAPSa3dJrA+nPs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=QdlzC0wj; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CF7F9C4AF09;
+	Tue, 30 Jul 2024 09:18:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1722331052;
-	bh=zlipFjWpIIWzpXxM7YXz6M+elXBIvl7jtvyJ32jvfmk=;
+	s=k20201202; t=1722331131;
+	bh=RNERRm1tKULRCHwkJX2oQZjbNCIu8zCHVWj+NzA3G6M=;
 	h=From:To:Cc:Subject:Date:From;
-	b=DfLArkMLyKUECq8CNrOeFIlEw8gcFTzGsdI/CDeWppaegHPKUvby7cxijIfAXsH5f
-	 gjl2rFPfcLs+MiQszG1y9N8yEU3jHoxWkBr4M4ljCNEViPgK67qw2A6zxU+6NOZ5Zn
-	 18pAm8qbjBHAgv+oguQun+o0aP5e349mnrXfUxg+KxcR+H2IQDp6uu3/7/IQxNBzeH
-	 JSr+MTHifE7IIRqDajnRGBZDYibekl0okVl9kHm9/JqBx5+F+nf0YdGHOa1mrcRZWQ
-	 S0cpe2g/8++K8Eh0kSqC3R1Kh5eRYwuNzv+EXDP4ykzxmVY0X4ZK+kEzXxdVAhGj/Z
-	 gx6Em2qaS6i7Q==
+	b=QdlzC0wjnugDXeJnfILYQpryb8R5PpOqoGL1TRkcoDc+st+FbAYge5OBK7RAC2Kyt
+	 xL919125k1oZvi5TY4NykcAEAUeavEaDWS9mVd3Z3TDXY1/LeHQhWV93cIjYmdaQTo
+	 tzgox7xJzyx6kP7AA97r/1Fhac3IhwHAezL6uv3AtIbWH8vFlV7G0+0P04U3w+j+EQ
+	 7IPLSYAGZtpdUzAsJIsNMiKpza2D7TyNT8rw1vd0/K40EfBiglQsQxDwqFaIdMlnvM
+	 wyX2ZD65UXn2ptThHrp4VPIOOqGYpOde0d8BLqayFkZmJGxI58Txhu8pTpr9mrBURw
+	 k57afGtmrnwdw==
 From: Leon Romanovsky <leon@kernel.org>
 To: Jason Gunthorpe <jgg@nvidia.com>
-Cc: Chiara Meiohas <cmeiohas@nvidia.com>,
+Cc: Mark Bloch <mbloch@nvidia.com>,
 	linux-rdma@vger.kernel.org,
-	Michael Guralnik <michaelgur@nvidia.com>
-Subject: [PATCH rdma-next] RDMA/nldev: Enhance netlink message parsing and validation
-Date: Tue, 30 Jul 2024 12:17:25 +0300
-Message-ID: <f633a979a49db090d05c24a3ba83d30727bb777b.1722331020.git.leon@kernel.org>
+	Maor Gottlieb <maorg@nvidia.com>
+Subject: [PATCH rdma-next] RDMA/mlx5: Expose vhca id for all ports in multiport mode
+Date: Tue, 30 Jul 2024 12:18:45 +0300
+Message-ID: <41dea83aa51843aa4c067b4f73f28d64e51bd53c.1722331101.git.leon@kernel.org>
 X-Mailer: git-send-email 2.45.2
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
@@ -57,201 +57,58 @@ List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-From: Chiara Meiohas <cmeiohas@nvidia.com>
+From: Mark Bloch <mbloch@nvidia.com>
 
-Use strict parsing validation for set commands, and liberal
-validation for get commands. Additionally, remove all usage of
-nlmsg_parse_depricate().
+In multiport mode, RDMA devices make it impossible for userspace to use
+DEVX to discover vhca id values for ports beyond port 1. This patch
+addresses the issue by exposing the vhca id of all ports.
 
-Strict parsing validation fails when encountering unrecognized
-attributes in the Netlink message, while liberal parsing
-validation ignores them.
-
-In 57d7a8fd904c ("rdma: Add an option to display driver-specific QPs in the rdma tool")
-in iproute2, the attribute RDMA_NLDEV_ATTR_DRIVER_DETAILS
-was added. This cause backwards compatibility issues when using
-the rdma tool with the new attribute and an older kernel which does
-recognize this attribute.
-In this case, the command "rdma stat show mr" would fail, because the
-new rdma tool would fill the netlink message with the new attribute and
-the older kernel would fail as it used strict parsing and did not
-recognize the new attribute.
-
-In general, strict validation is appropriate for set commands as they
-modify the system, while liberal validation is suitable for get
-commands which only query system information.
-
-Replace all uses of nlmsg_parse_deprecated() with __nlmsg_parse(),
-using the NL_VALIDATE_LIBERAL flag.
-The nlmsg_parse_deprecated() function internally calls
-__nlmsg_parse() with the NL_VALIDATE_LIBERAL flag, but its name
-is confusing.
-
-Signed-off-by: Chiara Meiohas <cmeiohas@nvidia.com>
-Reviewed-by: Michael Guralnik <michaelgur@nvidia.com>
+Signed-off-by: Mark Bloch <mbloch@nvidia.com>
+Reviewed-by: Maor Gottlieb <maorg@nvidia.com>
 Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
 ---
- drivers/infiniband/core/nldev.c | 56 ++++++++++++++++-----------------
- 1 file changed, 28 insertions(+), 28 deletions(-)
+ drivers/infiniband/hw/mlx5/std_types.c | 21 +++++++++++++++++++++
+ 1 file changed, 21 insertions(+)
 
-diff --git a/drivers/infiniband/core/nldev.c b/drivers/infiniband/core/nldev.c
-index a6b80cdc96f7..4d4a1f90e484 100644
---- a/drivers/infiniband/core/nldev.c
-+++ b/drivers/infiniband/core/nldev.c
-@@ -1074,8 +1074,8 @@ static int nldev_get_doit(struct sk_buff *skb, struct nlmsghdr *nlh,
- 	u32 index;
- 	int err;
+diff --git a/drivers/infiniband/hw/mlx5/std_types.c b/drivers/infiniband/hw/mlx5/std_types.c
+index ffeb1e1a1538..bdb568411091 100644
+--- a/drivers/infiniband/hw/mlx5/std_types.c
++++ b/drivers/infiniband/hw/mlx5/std_types.c
+@@ -112,6 +112,23 @@ static int fill_vport_vhca_id(struct mlx5_core_dev *mdev, u16 vport,
+ 	return err;
+ }
  
--	err = nlmsg_parse_deprecated(nlh, 0, tb, RDMA_NLDEV_ATTR_MAX - 1,
--				     nldev_policy, extack);
-+	err = __nlmsg_parse(nlh, 0, tb, RDMA_NLDEV_ATTR_MAX - 1,
-+			    nldev_policy, NL_VALIDATE_LIBERAL, extack);
- 	if (err || !tb[RDMA_NLDEV_ATTR_DEV_INDEX])
- 		return -EINVAL;
++static int fill_multiport_info(struct mlx5_ib_dev *dev, u32 port_num,
++			       struct mlx5_ib_uapi_query_port *info)
++{
++	struct mlx5_core_dev *mdev;
++
++	mdev = mlx5_ib_get_native_port_mdev(dev, port_num, NULL);
++	if (!mdev)
++		return -EINVAL;
++
++	info->vport_vhca_id = MLX5_CAP_GEN(mdev, vhca_id);
++	info->flags |= MLX5_IB_UAPI_QUERY_PORT_VPORT_VHCA_ID;
++
++	mlx5_ib_put_native_port_mdev(dev, port_num);
++
++	return 0;
++}
++
+ static int fill_switchdev_info(struct mlx5_ib_dev *dev, u32 port_num,
+ 			       struct mlx5_ib_uapi_query_port *info)
+ {
+@@ -178,6 +195,10 @@ static int UVERBS_HANDLER(MLX5_IB_METHOD_QUERY_PORT)(
+ 		ret = fill_switchdev_info(dev, port_num, &info);
+ 		if (ret)
+ 			return ret;
++	} else if (mlx5_core_mp_enabled(dev->mdev)) {
++		ret = fill_multiport_info(dev, port_num, &info);
++		if (ret)
++			return ret;
+ 	}
  
-@@ -1123,8 +1123,8 @@ static int nldev_set_doit(struct sk_buff *skb, struct nlmsghdr *nlh,
- 	u32 index;
- 	int err;
- 
--	err = nlmsg_parse_deprecated(nlh, 0, tb, RDMA_NLDEV_ATTR_MAX - 1,
--				     nldev_policy, extack);
-+	err = nlmsg_parse(nlh, 0, tb, RDMA_NLDEV_ATTR_MAX - 1,
-+			    nldev_policy, extack);
- 	if (err || !tb[RDMA_NLDEV_ATTR_DEV_INDEX])
- 		return -EINVAL;
- 
-@@ -1215,8 +1215,8 @@ static int nldev_port_get_doit(struct sk_buff *skb, struct nlmsghdr *nlh,
- 	u32 port;
- 	int err;
- 
--	err = nlmsg_parse_deprecated(nlh, 0, tb, RDMA_NLDEV_ATTR_MAX - 1,
--				     nldev_policy, extack);
-+	err = __nlmsg_parse(nlh, 0, tb, RDMA_NLDEV_ATTR_MAX - 1,
-+			    nldev_policy, NL_VALIDATE_LIBERAL, extack);
- 	if (err ||
- 	    !tb[RDMA_NLDEV_ATTR_DEV_INDEX] ||
- 	    !tb[RDMA_NLDEV_ATTR_PORT_INDEX])
-@@ -1275,8 +1275,8 @@ static int nldev_port_get_dumpit(struct sk_buff *skb,
- 	int err;
- 	unsigned int p;
- 
--	err = nlmsg_parse_deprecated(cb->nlh, 0, tb, RDMA_NLDEV_ATTR_MAX - 1,
--				     nldev_policy, NULL);
-+	err = __nlmsg_parse(cb->nlh, 0, tb, RDMA_NLDEV_ATTR_MAX - 1,
-+			    nldev_policy, NL_VALIDATE_LIBERAL, NULL);
- 	if (err || !tb[RDMA_NLDEV_ATTR_DEV_INDEX])
- 		return -EINVAL;
- 
-@@ -1331,8 +1331,8 @@ static int nldev_res_get_doit(struct sk_buff *skb, struct nlmsghdr *nlh,
- 	u32 index;
- 	int ret;
- 
--	ret = nlmsg_parse_deprecated(nlh, 0, tb, RDMA_NLDEV_ATTR_MAX - 1,
--				     nldev_policy, extack);
-+	ret = __nlmsg_parse(nlh, 0, tb, RDMA_NLDEV_ATTR_MAX - 1,
-+			    nldev_policy, NL_VALIDATE_LIBERAL, extack);
- 	if (ret || !tb[RDMA_NLDEV_ATTR_DEV_INDEX])
- 		return -EINVAL;
- 
-@@ -1481,8 +1481,8 @@ static int res_get_common_doit(struct sk_buff *skb, struct nlmsghdr *nlh,
- 	struct sk_buff *msg;
- 	int ret;
- 
--	ret = nlmsg_parse_deprecated(nlh, 0, tb, RDMA_NLDEV_ATTR_MAX - 1,
--				     nldev_policy, extack);
-+	ret = __nlmsg_parse(nlh, 0, tb, RDMA_NLDEV_ATTR_MAX - 1,
-+			    nldev_policy, NL_VALIDATE_LIBERAL, extack);
- 	if (ret || !tb[RDMA_NLDEV_ATTR_DEV_INDEX] || !fe->id || !tb[fe->id])
- 		return -EINVAL;
- 
-@@ -1569,8 +1569,8 @@ static int res_get_common_dumpit(struct sk_buff *skb,
- 	u32 index, port = 0;
- 	bool filled = false;
- 
--	err = nlmsg_parse_deprecated(cb->nlh, 0, tb, RDMA_NLDEV_ATTR_MAX - 1,
--				     nldev_policy, NULL);
-+	err = __nlmsg_parse(cb->nlh, 0, tb, RDMA_NLDEV_ATTR_MAX - 1,
-+			    nldev_policy, NL_VALIDATE_LIBERAL, NULL);
- 	/*
- 	 * Right now, we are expecting the device index to get res information,
- 	 * but it is possible to extend this code to return all devices in
-@@ -1762,8 +1762,8 @@ static int nldev_newlink(struct sk_buff *skb, struct nlmsghdr *nlh,
- 	char type[IFNAMSIZ];
- 	int err;
- 
--	err = nlmsg_parse_deprecated(nlh, 0, tb, RDMA_NLDEV_ATTR_MAX - 1,
--				     nldev_policy, extack);
-+	err = nlmsg_parse(nlh, 0, tb, RDMA_NLDEV_ATTR_MAX - 1,
-+			    nldev_policy, extack);
- 	if (err || !tb[RDMA_NLDEV_ATTR_DEV_NAME] ||
- 	    !tb[RDMA_NLDEV_ATTR_LINK_TYPE] || !tb[RDMA_NLDEV_ATTR_NDEV_NAME])
- 		return -EINVAL;
-@@ -1806,8 +1806,8 @@ static int nldev_dellink(struct sk_buff *skb, struct nlmsghdr *nlh,
- 	u32 index;
- 	int err;
- 
--	err = nlmsg_parse_deprecated(nlh, 0, tb, RDMA_NLDEV_ATTR_MAX - 1,
--				     nldev_policy, extack);
-+	err = nlmsg_parse(nlh, 0, tb, RDMA_NLDEV_ATTR_MAX - 1,
-+			    nldev_policy, extack);
- 	if (err || !tb[RDMA_NLDEV_ATTR_DEV_INDEX])
- 		return -EINVAL;
- 
-@@ -1836,8 +1836,8 @@ static int nldev_get_chardev(struct sk_buff *skb, struct nlmsghdr *nlh,
- 	u32 index;
- 	int err;
- 
--	err = nlmsg_parse(nlh, 0, tb, RDMA_NLDEV_ATTR_MAX - 1, nldev_policy,
--			  extack);
-+	err = __nlmsg_parse(nlh, 0, tb, RDMA_NLDEV_ATTR_MAX - 1, nldev_policy,
-+			    NL_VALIDATE_LIBERAL, extack);
- 	if (err || !tb[RDMA_NLDEV_ATTR_CHARDEV_TYPE])
- 		return -EINVAL;
- 
-@@ -1920,8 +1920,8 @@ static int nldev_sys_get_doit(struct sk_buff *skb, struct nlmsghdr *nlh,
- 	struct sk_buff *msg;
- 	int err;
- 
--	err = nlmsg_parse(nlh, 0, tb, RDMA_NLDEV_ATTR_MAX - 1,
--			  nldev_policy, extack);
-+	err = __nlmsg_parse(nlh, 0, tb, RDMA_NLDEV_ATTR_MAX - 1,
-+			    nldev_policy, NL_VALIDATE_LIBERAL, extack);
- 	if (err)
- 		return err;
- 
-@@ -2420,8 +2420,8 @@ static int nldev_stat_get_doit(struct sk_buff *skb, struct nlmsghdr *nlh,
- 	struct nlattr *tb[RDMA_NLDEV_ATTR_MAX];
- 	int ret;
- 
--	ret = nlmsg_parse(nlh, 0, tb, RDMA_NLDEV_ATTR_MAX - 1,
--			  nldev_policy, extack);
-+	ret = __nlmsg_parse(nlh, 0, tb, RDMA_NLDEV_ATTR_MAX - 1,
-+			    nldev_policy, NL_VALIDATE_LIBERAL, extack);
- 	if (ret)
- 		return -EINVAL;
- 
-@@ -2450,8 +2450,8 @@ static int nldev_stat_get_dumpit(struct sk_buff *skb,
- 	struct nlattr *tb[RDMA_NLDEV_ATTR_MAX];
- 	int ret;
- 
--	ret = nlmsg_parse(cb->nlh, 0, tb, RDMA_NLDEV_ATTR_MAX - 1,
--			  nldev_policy, NULL);
-+	ret = __nlmsg_parse(cb->nlh, 0, tb, RDMA_NLDEV_ATTR_MAX - 1,
-+			    nldev_policy, NL_VALIDATE_LIBERAL, NULL);
- 	if (ret || !tb[RDMA_NLDEV_ATTR_STAT_RES])
- 		return -EINVAL;
- 
-@@ -2482,8 +2482,8 @@ static int nldev_stat_get_counter_status_doit(struct sk_buff *skb,
- 	u32 devid, port;
- 	int ret, i;
- 
--	ret = nlmsg_parse(nlh, 0, tb, RDMA_NLDEV_ATTR_MAX - 1,
--			  nldev_policy, extack);
-+	ret = __nlmsg_parse(nlh, 0, tb, RDMA_NLDEV_ATTR_MAX - 1,
-+			    nldev_policy, NL_VALIDATE_LIBERAL, extack);
- 	if (ret || !tb[RDMA_NLDEV_ATTR_DEV_INDEX] ||
- 	    !tb[RDMA_NLDEV_ATTR_PORT_INDEX])
- 		return -EINVAL;
+ 	return uverbs_copy_to_struct_or_zero(attrs, MLX5_IB_ATTR_QUERY_PORT, &info,
 -- 
 2.45.2
 
