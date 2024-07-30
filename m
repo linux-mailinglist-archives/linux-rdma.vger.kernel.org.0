@@ -1,45 +1,45 @@
-Return-Path: <linux-rdma+bounces-4104-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-4105-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id DE60E941D48
-	for <lists+linux-rdma@lfdr.de>; Tue, 30 Jul 2024 19:16:14 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id ADFBD941E60
+	for <lists+linux-rdma@lfdr.de>; Tue, 30 Jul 2024 19:28:20 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1BE221C2376D
-	for <lists+linux-rdma@lfdr.de>; Tue, 30 Jul 2024 17:16:14 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 63554285EAC
+	for <lists+linux-rdma@lfdr.de>; Tue, 30 Jul 2024 17:28:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3BDC918C336;
-	Tue, 30 Jul 2024 17:15:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6FDA01A76D3;
+	Tue, 30 Jul 2024 17:28:15 +0000 (UTC)
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6CEE018A6DD;
-	Tue, 30 Jul 2024 17:15:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B86681A76B6;
+	Tue, 30 Jul 2024 17:28:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.176.79.56
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1722359707; cv=none; b=uMNjC6bQOPZuZDa5+InYwu+vGGkw2UAeZ/TywAEe6Q++VUo5xJo/RF8WGW5tKQ4NSlWardiTYqJXZ8yBlNT7/9wOU9ZBlAlqjbDTqFvqkhzg90na7RRK5XPA8Q83M3+KPvNO+I4dFMxPzGM5lWez7MuM7xrtp1H44oafPmeAbfA=
+	t=1722360495; cv=none; b=P+Aa5Hk9kjLX/JpAnH73ClLY57NcXc7aiuaCU2Et6dcetg+oR3zDmoE6VOLAkNH/Amqa9zLfj4vT10LeYpyCGpJiKANvziqwgFsHiFkSyHjU5gSDnndZpMOKaf0YsnY6VYDL1Inqp6BGf4b4ph11hKN9l37bWBVPiRbSc96DwIA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1722359707; c=relaxed/simple;
-	bh=gBg5+KZL7H8xd5TqmtpjPdibVkxz0gSUgYQbeHeYzlc=;
+	s=arc-20240116; t=1722360495; c=relaxed/simple;
+	bh=7daEbXGSt0R/2I9y22jF33qxuWpoXdUkkONHXI538qk=;
 	h=Date:From:To:CC:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=FU145bMB4LqScC6Mu9rfPRqB9bBweNXgS5mt9y/ThQjAHUXVfR8qWtKslTh5X1Y97JFoWjV7lF+Iai/27WlWRbc8X6XmGDN5XdxOdPYGZ/X+6kufPJTk5kZSat7KsAscysjYTkkZL/ylVBWGRn4NYIg7qmInyURK9NGBcDXJCGY=
+	 MIME-Version:Content-Type; b=XtdOANu0zDoNYx794lGN22H400XbW1bOINFI/99+msYGe+bi5TZfYBDjwh/grOJd/U5eco3Jz8Wu2UsnKTSHrzlrMOW2ZeaM9yOwB2v05vqz8SFKM4DRze+TObJRCWdo6NkJneXUtQURrj9w8vA7MVQ8Z8AA/xiouDgNqC+AD3k=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=Huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=185.176.79.56
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=Huawei.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.18.186.231])
-	by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4WYMHj63Mwz6K9Ns;
-	Wed, 31 Jul 2024 01:13:05 +0800 (CST)
+Received: from mail.maildlp.com (unknown [172.18.186.216])
+	by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4WYMZ84m1Vz6K8qR;
+	Wed, 31 Jul 2024 01:25:36 +0800 (CST)
 Received: from lhrpeml500005.china.huawei.com (unknown [7.191.163.240])
-	by mail.maildlp.com (Postfix) with ESMTPS id A330F1408F9;
-	Wed, 31 Jul 2024 01:15:01 +0800 (CST)
+	by mail.maildlp.com (Postfix) with ESMTPS id 056D6140AA7;
+	Wed, 31 Jul 2024 01:28:10 +0800 (CST)
 Received: from localhost (10.203.177.66) by lhrpeml500005.china.huawei.com
  (7.191.163.240) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.1.2507.39; Tue, 30 Jul
- 2024 18:15:01 +0100
-Date: Tue, 30 Jul 2024 18:15:00 +0100
+ 2024 18:28:09 +0100
+Date: Tue, 30 Jul 2024 18:28:08 +0100
 From: Jonathan Cameron <Jonathan.Cameron@Huawei.com>
 To: Jason Gunthorpe <jgg@nvidia.com>
 CC: Jonathan Corbet <corbet@lwn.net>, Itay Avraham <itayavr@nvidia.com>, Jakub
@@ -52,14 +52,14 @@ CC: Jonathan Corbet <corbet@lwn.net>, Itay Avraham <itayavr@nvidia.com>, Jakub
 	Christoph Hellwig <hch@infradead.org>, "Jiri Pirko" <jiri@nvidia.com>, Leonid
  Bloch <lbloch@nvidia.com>, "Leon Romanovsky" <leonro@nvidia.com>,
 	<linux-cxl@vger.kernel.org>, <patches@lists.linux.dev>
-Subject: Re: [PATCH v2 1/8] fwctl: Add basic structure for a class subsystem
- with a cdev
-Message-ID: <20240730181500.00004733@Huawei.com>
-In-Reply-To: <20240729173038.GF3625856@nvidia.com>
+Subject: Re: [PATCH v2 2/8] fwctl: Basic ioctl dispatch for the character
+ device
+Message-ID: <20240730182808.00003af7@Huawei.com>
+In-Reply-To: <20240729170553.GE3625856@nvidia.com>
 References: <0-v2-940e479ceba9+3821-fwctl_jgg@nvidia.com>
-	<1-v2-940e479ceba9+3821-fwctl_jgg@nvidia.com>
-	<20240726153042.00002749@Huawei.com>
-	<20240729173038.GF3625856@nvidia.com>
+	<2-v2-940e479ceba9+3821-fwctl_jgg@nvidia.com>
+	<20240726160157.0000797d@Huawei.com>
+	<20240729170553.GE3625856@nvidia.com>
 Organization: Huawei Technologies Research and Development (UK) Ltd.
 X-Mailer: Claws Mail 4.1.0 (GTK 3.24.33; x86_64-w64-mingw32)
 Precedence: bulk
@@ -70,72 +70,200 @@ List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="US-ASCII"
 Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: lhrpeml100002.china.huawei.com (7.191.160.241) To
+X-ClientProxiedBy: lhrpeml100004.china.huawei.com (7.191.162.219) To
  lhrpeml500005.china.huawei.com (7.191.163.240)
 
+On Mon, 29 Jul 2024 14:05:53 -0300
+Jason Gunthorpe <jgg@nvidia.com> wrote:
+
+> On Fri, Jul 26, 2024 at 04:01:57PM +0100, Jonathan Cameron wrote:
+> 
+> > > +struct fwctl_ioctl_op {
+> > > +	unsigned int size;
+> > > +	unsigned int min_size;
+> > > +	unsigned int ioctl_num;
+> > > +	int (*execute)(struct fwctl_ucmd *ucmd);
+> > > +};
+> > > +
+> > > +#define IOCTL_OP(_ioctl, _fn, _struct, _last)                         \
+> > > +	[_IOC_NR(_ioctl) - FWCTL_CMD_BASE] = {                        \  
+> > 
+> > If this is always zero indexed, maybe just drop the - FWCTL_CMD_BASE here
+> > and elsewhere?  Maybe through in a BUILD_BUG to confirm it is always 0.  
+> 
+> I left it like this in case someone had different ideas for the number
+> space (iommufd uses a non 0 base also). I think either is fine, and I
+> slightly prefer keeping it rather than a static_assert.
+
+Ok. Feels a little messy to me. But fair enough I guess.
+
+
+> > > +	if (!uctx)
+> > > +		return -ENOMEM;
+> > > +
+> > > +	uctx->fwctl = fwctl;
+> > > +	ret = fwctl->ops->open_uctx(uctx);
+> > > +	if (ret)
+> > > +		return ret;
+> > > +
+> > > +	scoped_guard(mutex, &fwctl->uctx_list_lock) {
+> > > +		list_add_tail(&uctx->uctx_list_entry, &fwctl->uctx_list);
+> > > +	}  
+> > 
+> > I guess more may come later but do we need {}?  
+> 
+> I guessed the extra {} would be style guide for this construct?
+
+Maybe. Not seen any statements on that yet, and it's becoming
+quite common.
+
+> 
+> > >  static int fwctl_fops_release(struct inode *inode, struct file *filp)
+> > >  {
+> > > -	struct fwctl_device *fwctl = filp->private_data;
+> > > +	struct fwctl_uctx *uctx = filp->private_data;
+> > > +	struct fwctl_device *fwctl = uctx->fwctl;
+> > >  
+> > > +	scoped_guard(rwsem_read, &fwctl->registration_lock) {
+> > > +		if (fwctl->ops) {  
+> > 
+> > Maybe a comment on when this path happens to help the reader
+> > along. (when the file is closed and device is still alive).
+> > Otherwise was cleaned up already in fwctl_unregister()  
+> 
+> 	scoped_guard(rwsem_read, &fwctl->registration_lock) {
+> 		/*
+> 		 * fwctl_unregister() has already removed the driver and
+> 		 * destroyed the uctx.
+> 		 */
+> 		if (fwctl->ops) {
+> 
+
+Good.
+
+> > >  void fwctl_unregister(struct fwctl_device *fwctl)
+> > >  {
+> > > +	struct fwctl_uctx *uctx;
+> > > +
+> > >  	cdev_device_del(&fwctl->cdev, &fwctl->dev);
+> > >  
+> > > +	/* Disable and free the driver's resources for any still open FDs. */
+> > > +	guard(rwsem_write)(&fwctl->registration_lock);
+> > > +	guard(mutex)(&fwctl->uctx_list_lock);
+> > > +	while ((uctx = list_first_entry_or_null(&fwctl->uctx_list,
+> > > +						struct fwctl_uctx,
+> > > +						uctx_list_entry)))
+> > > +		fwctl_destroy_uctx(uctx);
+> > > +  
+> > 
+> > Obviously it's a little more heavy weight but I'd just use
+> > list_for_each_entry_safe()
+> > 
+> > Less effort for reviewers than consider the custom iteration
+> > you are doing instead.  
+> 
+> For these constructs the goal is the make the list empty, it is a
+> tinsy bit safer/clearer to drive the list to empty purposefully rather
+> than iterate over it and hope it is empty once done.
+> 
+> However there is no possible way that list_for_each_entry_safe() would
+> be an unsafe construct here. I can change it if you feel strongly
+
+Meh. You get to maintain this if it flies, so your choice.
+
+> 
+> > > @@ -26,6 +39,10 @@ struct fwctl_device {
+> > >  	struct device dev;
+> > >  	/* private: */
+> > >  	struct cdev cdev;
+> > > +
+> > > +	struct rw_semaphore registration_lock;
+> > > +	struct mutex uctx_list_lock;  
+> > 
+> > Even for private locks, a scope statement would
+> > be good to have.  
+> 
+> Like so?
+> 
+> 	/*
+> 	 * Protect ops, held for write when ops becomes NULL during unregister,
+> 	 * held for read whenver ops is loaded or an ops function is running.
+
+That does the job nicely.
+
+> 	 */
+> 	struct rw_semaphore registration_lock;
+> 	/* Protect uctx_list */
+> 	struct mutex uctx_list_lock;
 
 > 
 > > > +/**
-> > > + * fwctl_alloc_device - Allocate a fwctl
-> > > + * @parent: Physical device that provides the FW interface
-> > > + * @ops: Driver ops to register
-> > > + * @drv_struct: 'struct driver_fwctl' that holds the struct fwctl_device
-> > > + * @member: Name of the struct fwctl_device in @drv_struct
+> > > + * DOC: General ioctl format
 > > > + *
-> > > + * This allocates and initializes the fwctl_device embedded in the drv_struct.
-> > > + * Upon success the pointer must be freed via fwctl_put(). Returns NULL on
-> > > + * failure. Returns a 'drv_struct *' on success, NULL on error.
-> > > + */
-> > > +#define fwctl_alloc_device(parent, ops, drv_struct, member)                  \
-> > > +	container_of(_fwctl_alloc_device(                                    \
-> > > +			     parent, ops,                                    \
-> > > +			     sizeof(drv_struct) +                            \
-> > > +				     BUILD_BUG_ON_ZERO(                      \
-> > > +					     offsetof(drv_struct, member))), \  
-> > Doesn't that fire a build_bug when the member is at the start of drv_struct?
-> > Or do I have that backwards?  
+> > > + * The ioctl interface follows a general format to allow for extensibility. Each
+> > > + * ioctl is passed in a structure pointer as the argument providing the size of
+> > > + * the structure in the first u32. The kernel checks that any structure space
+> > > + * beyond what it understands is 0. This allows userspace to use the backward
+> > > + * compatible portion while consistently using the newer, larger, structures.  
+> > 
+> > Is that particularly helpful?  Userspace needs to know not to put anything in
+> > those fields, not hard for it to also know what the size it should send is?
+> > The two will change together.  
 > 
-> BUILD_BUG_ON(true) == failure, evaluates to void
-> BUILD_BUG_ON_ZERO(true) == fails, evaluates to 0
-> BUILD_BUG_ON_ZERO(false) == false, evaluates to 0
+> It is very helpful for a practical userspace.
 > 
-> It is a bit confusing name, it is not ON_ZERO it is BUG_ON return ZERO
+> Lets say we have an ioctl struct:
+> 
+> struct fwctl_info {
+> 	__u32 size;
+> 	__u32 flags;
+> 	__u32 out_device_type;
+> 	__u32 device_data_len;
+> 	__aligned_u64 out_device_data;
+> };
+> 
+> And the basic userspace pattern is:
+> 
+>   struct fwctl_info info = {.size = sizeof(info), ...);
+>   ioctl(fd, FWCTL_INFO, &info);
+> 
+> This works today and generates the 24 byte command.
+> 
+> Tomorrow the kernel adds a new member:
+> 
+> struct fwctl_info {
+> 	__u32 size;
+> 	__u32 flags;
+> 	__u32 out_device_type;
+> 	__u32 device_data_len;
+> 	__aligned_u64 out_device_data;
+> 	__aligned_u64 new_thing;
+> };
+> 
+> Current builds of the userpace use a 24 byte command. A new kernel
+> will see the 24 bytes and behave as before.
+> 
+> When I recompile the userspace with the updated header it will issue a
+> 32 byte command with no source change.
+> 
+> Old kernel will see a 32 byte command with the trailing bytes it
+> doesn't understand as 0 and keep working.
+> 
+> The new kernel will see the new_thing bytes are zero and behave the
+> same as before.
+> 
+> If then the userspace decides to set new_thing the old kernel will
+> stop working. Userspace can use some 'try and fail' approach to try
+> again with new_thing = 0.
 
-Ah.  That indeed got me.  ouch.
-
-
-> 
-> > Does container_of() safely handle a NULL?  
-> 
-> Generally no, nor does it handle ERR_PTR, but it does work for both if
-> the offset is 0.
-
-Ah.  Good point, I'd neglected the zero offset meaning it is really
-just a fancy pointer type cast.
+I'm not keen on try and fail interfaces because they become messy
+if this has potentially be extended multiple times. Rest
+of argument is fair enough. Thanks for the explanation.
 
 > 
-> The BUILD_BUG guarentees the 0 offset both so that the casting inside
-> _fwctl_alloc_device() works and we can use safely use container_of()
-> to enforce the type check.
-> 
-> What do you think about writing it like this instead:
-> 
-> #define fwctl_alloc_device(parent, ops, drv_struct, member)               \
-> 	({                                                                \
-> 		static_assert(__same_type(struct fwctl_device,            \
-> 					  ((drv_struct *)NULL)->member)); \
-> 		static_assert(offsetof(drv_struct, member) == 0);         \
-> 		(drv_struct *)_fwctl_alloc_device(parent, ops,            \
-> 						  sizeof(drv_struct));    \
-> 	})
-> 
-> ?
-> 
-> In some ways I like it better..
-Seems more readable to me and avoids entertaining corners of the previous approach.
-
-Jonathan
-
+> It gives a whole bunch of easy paths for userspace, otherwise
+> userspace has to be very careful to match the size of the struct to
+> the ABI it is targetting. Realistically nobody will do that right.
 > 
 > Thanks,
 > Jason
